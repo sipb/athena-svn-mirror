@@ -131,7 +131,7 @@ GetScreenOrigin(nsIDOMElement* aElement)
       if (presContext) {
         // Get the scale from that Presentation Context
         float scale;
-        presContext->GetTwipsToPixels(&scale);
+        scale = presContext->TwipsToPixels();
 
         nsIFrame* frame;
         nsresult rv = presShell->GetPrimaryFrameFor(content, &frame);
@@ -140,17 +140,15 @@ GetScreenOrigin(nsIDOMElement* aElement)
         nsPoint offset;
         frame->GetOffsetFromView(presContext, offset, &view);
         if (view) {
-          nscoord dummy;
-          nsCOMPtr<nsIWidget> widget;
-          rv = view->GetOffsetFromWidget(&dummy, &dummy, *getter_AddRefs(widget));
+          nsPoint widgetOffset(0, 0);
+          nsIWidget* widget = view->GetNearestWidget(&widgetOffset);
           if (widget) {
             nsRect oldBox(0,0,0,0);
             widget->WidgetToScreen(oldBox, *rect);
           }
           
-          nsPoint viewPos = view->GetPosition();
-          rect->x += NSTwipsToIntPixels(offset.x+viewPos.x, scale);
-          rect->y += NSTwipsToIntPixels(offset.y+viewPos.y, scale);
+          rect->x += NSTwipsToIntPixels(offset.x+widgetOffset.x, scale);
+          rect->y += NSTwipsToIntPixels(offset.y+widgetOffset.y, scale);
         }
         
         size = frame->GetSize();
@@ -229,12 +227,12 @@ nsFormFillController::GetPopupOpen(PRBool *aPopupOpen)
 NS_IMETHODIMP
 nsFormFillController::SetPopupOpen(PRBool aPopupOpen)
 {
-  if (aPopupOpen) {
-    nsRect popupRect = GetScreenOrigin(mFocusedInput);
-    if (mFocusedPopup)
+  if (mFocusedPopup) {
+    if (aPopupOpen) {
+      nsRect popupRect = GetScreenOrigin(mFocusedInput);
       mFocusedPopup->OpenPopup(this, popupRect.x, popupRect.y+popupRect.height, popupRect.width);
-  } else {
-    mFocusedPopup->ClosePopup();
+    } else
+      mFocusedPopup->ClosePopup();
   }
     
   return NS_OK;
@@ -564,8 +562,20 @@ nsFormFillController::KeyPress(nsIDOMEvent* aEvent)
   PRUint32 k;
   keyEvent->GetKeyCode(&k);
   switch (k) {
-  case nsIDOMKeyEvent::DOM_VK_BACK_SPACE:
   case nsIDOMKeyEvent::DOM_VK_DELETE:
+    {
+      PRBool isShift = PR_FALSE;
+      keyEvent->GetShiftKey(&isShift);
+
+      if (isShift) {
+        mController->HandleDelete(&cancel);
+
+        break;
+      }
+
+      // fall through
+    }
+  case nsIDOMKeyEvent::DOM_VK_BACK_SPACE:
     mController->HandleText();
     break;
   case nsIDOMKeyEvent::DOM_VK_UP:

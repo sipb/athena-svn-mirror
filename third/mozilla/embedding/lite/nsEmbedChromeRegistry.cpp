@@ -257,13 +257,13 @@ nsEmbedChromeRegistry::ProcessChromeLine(const char* aBuffer, PRInt32 aLength)
     }
     NS_ASSERTION(tokenCount == 4, "Unexpected tokens in line");
 
-    nsDependentSingleFragmentCSubstring
+    nsDependentCSubstring
         chromeType(tokens[0].tokenStart, tokens[0].tokenEnd);
-    nsDependentSingleFragmentCSubstring
+    nsDependentCSubstring
         chromeProfile(tokens[1].tokenStart, tokens[1].tokenEnd);
-    nsDependentSingleFragmentCSubstring
+    nsDependentCSubstring
         chromeLocType(tokens[2].tokenStart, tokens[2].tokenEnd);
-    nsDependentSingleFragmentCSubstring
+    nsDependentCSubstring
         chromeLocation(tokens[3].tokenStart, tokens[3].tokenEnd);
     
     RegisterChrome(chromeType, chromeProfile, chromeLocType, chromeLocation);
@@ -353,31 +353,5 @@ nsEmbedChromeRegistry::ConvertChromeURL(nsIURI* aChromeURL, nsACString& aResult)
     rv = aChromeURL->GetSpec(aResult);
     if (NS_FAILED(rv)) return rv;
     
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsEmbedChromeRegistry::GetStyleSheets(nsIURI* aChromeURL, nsISupportsArray** aResult)
-{
-    *aResult = mEmptyArray;
-    NS_ADDREF(*aResult);
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsEmbedChromeRegistry::GetAgentSheets(nsIDocShell* aDocShell,
-                                      nsISupportsArray** aResult)
-{
-    *aResult = mEmptyArray;
-    NS_ADDREF(*aResult);
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsEmbedChromeRegistry::GetUserSheets(PRBool aUseChromeSheets,
-                                     nsISupportsArray** aResult)
-{
-    *aResult = mEmptyArray;
-    NS_ADDREF(*aResult);
     return NS_OK;
 }

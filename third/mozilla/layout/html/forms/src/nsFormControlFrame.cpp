@@ -605,13 +605,11 @@ nsFormControlFrame::RegUnRegAccessKey(nsIPresContext* aPresContext, nsIFrame * a
   }
 
   if (NS_CONTENT_ATTR_NOT_THERE != rv) {
-    nsCOMPtr<nsIEventStateManager> stateManager;
-    if (NS_SUCCEEDED(aPresContext->GetEventStateManager(getter_AddRefs(stateManager)))) {
-      if (aDoReg) {
-        return stateManager->RegisterAccessKey(aFrame->GetContent(), (PRUint32)accessKey.First());
-      } else {
-        return stateManager->UnregisterAccessKey(aFrame->GetContent(), (PRUint32)accessKey.First());
-      }
+    nsIEventStateManager *stateManager = aPresContext->EventStateManager();
+    if (aDoReg) {
+      return stateManager->RegisterAccessKey(aFrame->GetContent(), (PRUint32)accessKey.First());
+    } else {
+      return stateManager->UnregisterAccessKey(aFrame->GetContent(), (PRUint32)accessKey.First());
     }
   }
   return NS_ERROR_FAILURE;
@@ -632,8 +630,7 @@ void
 nsFormControlFrame::ScrollIntoView(nsIPresContext* aPresContext)
 {
   if (aPresContext) {
-    nsCOMPtr<nsIPresShell> presShell;
-    aPresContext->GetShell(getter_AddRefs(presShell));
+    nsIPresShell *presShell = aPresContext->GetPresShell();
     if (presShell) {
       presShell->ScrollFrameIntoView(this,
                    NS_PRESSHELL_SCROLL_IF_NOT_VISIBLE,NS_PRESSHELL_SCROLL_IF_NOT_VISIBLE);
@@ -863,31 +860,25 @@ nsFormControlFrame::SetSuggestedSize(nscoord aWidth, nscoord aHeight)
 }
 
 nsresult 
-nsFormControlFrame::GetScreenHeight(nsIPresContext* aPresContext, nscoord& aHeight)
+nsFormControlFrame::GetScreenHeight(nsIPresContext* aPresContext,
+                                    nscoord& aHeight)
 {
-  aHeight = 0;
-  nsCOMPtr<nsIDeviceContext> context;
-  aPresContext->GetDeviceContext( getter_AddRefs(context) );
-  if ( context ) {
-    nsRect screen;
+  nsRect screen;
 
-    PRBool dropdownCanOverlapOSBar = PR_FALSE;
-    nsCOMPtr<nsILookAndFeel> lookAndFeel;
-    aPresContext->GetLookAndFeel(getter_AddRefs(lookAndFeel));
-    if ( lookAndFeel )
-      lookAndFeel->GetMetric(nsILookAndFeel::eMetric_MenusCanOverlapOSBar, dropdownCanOverlapOSBar);
-    if ( dropdownCanOverlapOSBar )
-      context->GetRect ( screen );
-    else
-      context->GetClientRect(screen);
+  nsIDeviceContext *context = aPresContext->DeviceContext();
+  PRBool dropdownCanOverlapOSBar = PR_FALSE;
+  nsILookAndFeel *lookAndFeel = aPresContext->LookAndFeel();
+  lookAndFeel->GetMetric(nsILookAndFeel::eMetric_MenusCanOverlapOSBar,
+                         dropdownCanOverlapOSBar);
+  if ( dropdownCanOverlapOSBar )
+    context->GetRect ( screen );
+  else
+    context->GetClientRect(screen);
       
-    float devUnits;
-    context->GetDevUnitsToAppUnits(devUnits);
-    aHeight = NSToIntRound(float(screen.height) / devUnits );
-    return NS_OK;
-  }
-
-  return NS_ERROR_FAILURE;
+  float devUnits;
+  devUnits = context->DevUnitsToAppUnits();
+  aHeight = NSToIntRound(float(screen.height) / devUnits );
+  return NS_OK;
 }
 
 // Calculate a frame's position in screen coordinates
@@ -910,8 +901,8 @@ nsFormControlFrame::GetAbsoluteFramePosition(nsIPresContext* aPresContext,
   // Get conversions between twips and pixels
   float t2p;
   float p2t;
-  aPresContext->GetTwipsToPixels(&t2p);
-  aPresContext->GetPixelsToTwips(&p2t);
+  t2p = aPresContext->TwipsToPixels();
+  p2t = aPresContext->PixelsToTwips();
 
   // Start with frame's offset from it it's containing view
   nsIView *view = nsnull;

@@ -59,14 +59,8 @@ nsGopherDirListingConv::Convert(nsIInputStream *aFromStream,
     
     nsresult rv;
 
-    char buffer[CONV_BUF_SIZE];
-    int i = 0;
-    while (i < CONV_BUF_SIZE) {
-        buffer[i] = '\0';
-        i++;
-    }
-    CBufDescriptor desc(buffer, PR_TRUE, CONV_BUF_SIZE);
-    nsCAutoString aBuffer(desc);
+    char buffer[CONV_BUF_SIZE] = {0};
+    nsFixedCString aBuffer(buffer, CONV_BUF_SIZE, 0);
     nsCAutoString convertedData;
 
     NS_ASSERTION(aCtxt, "Gopher dir conversion needs the context");
@@ -139,7 +133,7 @@ nsGopherDirListingConv::AsyncConvertData(const PRUnichar *aFromType,
                                   mUri,
                                   nsnull,
                                   NS_LITERAL_CSTRING(APPLICATION_HTTP_INDEX_FORMAT),
-                                  NS_LITERAL_CSTRING(""));
+                                  EmptyCString());
     if (NS_FAILED(rv)) return rv;
 
     return NS_OK;

@@ -59,15 +59,10 @@ public:
   PrintContext();
   ~PrintContext();
 
-  NS_IMETHOD GetImageLoadFlags(nsLoadFlags& aLoadFlags);
-  NS_IMETHOD GetMedium(nsIAtom** aMedium);
-  NS_IMETHOD IsPaginated(PRBool* aResult);
-  NS_IMETHOD SetPaginatedScrolling(PRBool aResult)  { return NS_ERROR_FAILURE; }
-  NS_IMETHOD GetPaginatedScrolling(PRBool* aResult);
-  NS_IMETHOD GetPageDim(nsRect* aActualRect, nsRect* aAdjRect);
-  NS_IMETHOD SetPageDim(nsRect* aRect);
-  NS_IMETHOD SetImageAnimationMode(PRUint16 aMode);
-  NS_IMETHOD GetImageAnimationMode(PRUint16* aModeResult);
+  virtual void SetPaginatedScrolling(PRBool aResult) {}
+  virtual void GetPageDim(nsRect* aActualRect, nsRect* aAdjRect);
+  virtual void SetPageDim(nsRect* aRect);
+  virtual void SetImageAnimationMode(PRUint16 aMode);
   NS_IMETHOD SetPrintSettings(nsIPrintSettings* aPS);
   NS_IMETHOD GetPrintSettings(nsIPrintSettings** aPS);
 
@@ -81,6 +76,11 @@ PrintContext::PrintContext() :
 {
   SetBackgroundImageDraw(PR_FALSE);
   SetBackgroundColorDraw(PR_FALSE);
+  // Printed images are never animated
+  mImageAnimationMode = imgIContainer::kDontAnimMode;
+  mNeverAnimate = PR_TRUE;
+  mMedium = nsLayoutAtoms::print;
+  mPaginated = PR_TRUE;
 }
 
 PrintContext::~PrintContext()
@@ -106,78 +106,32 @@ PrintContext::QueryInterface(REFNSIID aIID, void** aInstancePtr)
   return nsPresContext::QueryInterface(aIID, aInstancePtr);
 }
 
-NS_IMETHODIMP 
-PrintContext::GetImageLoadFlags(nsLoadFlags& aLoadFlags)
-{
-  aLoadFlags = nsIRequest::LOAD_FROM_CACHE | nsIRequest::VALIDATE_NEVER | nsIRequest::LOAD_NORMAL;
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-PrintContext::GetMedium(nsIAtom** aResult)
-{
-  NS_ENSURE_ARG_POINTER(aResult);
-  *aResult = nsLayoutAtoms::print;
-  NS_ADDREF(*aResult);
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-PrintContext::IsPaginated(PRBool* aResult)
-{
-  NS_ENSURE_ARG_POINTER(aResult);
-  *aResult = PR_TRUE;
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-PrintContext::GetPaginatedScrolling(PRBool* aResult)
-{
-  NS_ENSURE_ARG_POINTER(aResult);
-  *aResult = PR_FALSE;
-  return NS_OK;
-}
-
-NS_IMETHODIMP
+void
 PrintContext::GetPageDim(nsRect* aActualRect, nsRect* aAdjRect)
 {
-  NS_ENSURE_ARG_POINTER(aActualRect);
-  NS_ENSURE_ARG_POINTER(aAdjRect);
+  if (aActualRect && aAdjRect) {
 
-  PRInt32 width,height;
-  if (NS_SUCCEEDED(mDeviceContext->GetDeviceSurfaceDimensions(width, height))) {
-    aActualRect->SetRect(0, 0, width, height);
+    PRInt32 width,height;
+    nsresult rv = mDeviceContext->GetDeviceSurfaceDimensions(width, height);
+    if (NS_SUCCEEDED(rv))
+      aActualRect->SetRect(0, 0, width, height);
   }
   *aAdjRect = mPageDim;
-  return NS_OK;
 }
 
-NS_IMETHODIMP
+void
 PrintContext::SetPageDim(nsRect* aPageDim)
 {
-  NS_ENSURE_ARG_POINTER(aPageDim);
-  mPageDim = *aPageDim;
-  return NS_OK;
+  if (aPageDim)
+    mPageDim = *aPageDim;
 }
 
 /**
  * Ignore any attempt to set an animation mode for printed images
  */
-NS_IMETHODIMP
+void
 PrintContext::SetImageAnimationMode(PRUint16 aMode)
 {
-  return NS_OK;
-}
-
-/**
- * Printed images are never animated: always return kDontAnimMode
- */
-NS_IMETHODIMP
-PrintContext::GetImageAnimationMode(PRUint16* aModeResult)
-{
-  NS_PRECONDITION(aModeResult, "null out param");
-  *aModeResult = imgIContainer::kDontAnimMode;
-  return NS_OK;
 }
 
 NS_IMETHODIMP 

@@ -50,15 +50,19 @@ class nsSVGGraphicElement : public nsSVGGraphicElementBase,
                             public nsIDOMSVGTransformable // : nsIDOMSVGLocatable
 {
 protected:
-  virtual nsresult Init();
+  nsresult Init(nsINodeInfo* aNodeInfo);
   
 public:
   // interfaces:  
   NS_DECL_ISUPPORTS_INHERITED
   NS_DECL_NSIDOMSVGLOCATABLE
   NS_DECL_NSIDOMSVGTRANSFORMABLE
+
+  // nsIStyledContent interface
+  NS_IMETHOD_(PRBool) IsAttributeMapped(const nsIAtom* aAttribute) const;
   
 protected:
+  
   nsCOMPtr<nsIDOMSVGAnimatedTransformList> mTransforms;
 };
 

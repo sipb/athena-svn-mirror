@@ -245,7 +245,19 @@ struct nsCSSMargin : public nsCSSStruct  {
 #endif
 
   nsCSSRect   mMargin;
+  nsCSSValue  mMarginStart;
+  nsCSSValue  mMarginEnd;
+  nsCSSValue  mMarginLeftLTRSource;
+  nsCSSValue  mMarginLeftRTLSource;
+  nsCSSValue  mMarginRightLTRSource;
+  nsCSSValue  mMarginRightRTLSource;
   nsCSSRect   mPadding;
+  nsCSSValue  mPaddingStart;
+  nsCSSValue  mPaddingEnd;
+  nsCSSValue  mPaddingLeftLTRSource;
+  nsCSSValue  mPaddingLeftRTLSource;
+  nsCSSValue  mPaddingRightLTRSource;
+  nsCSSValue  mPaddingRightRTLSource;
   nsCSSRect   mBorderWidth;
   nsCSSRect   mBorderColor;
   nsCSSValueListRect mBorderColors;
@@ -494,9 +506,12 @@ struct nsCSSSVG : public nsCSSStruct {
   void List(FILE* out = stdout, PRInt32 aIndent = 0) const;
 #endif
 
+  nsCSSValue mDominantBaseline;
   nsCSSValue mFill;
   nsCSSValue mFillOpacity;
   nsCSSValue mFillRule;
+  nsCSSValue mPointerEvents;
+  nsCSSValue mShapeRendering;
   nsCSSValue mStroke;
   nsCSSValue mStrokeDasharray;
   nsCSSValue mStrokeDashoffset;
@@ -505,6 +520,8 @@ struct nsCSSSVG : public nsCSSStruct {
   nsCSSValue mStrokeMiterlimit;
   nsCSSValue mStrokeOpacity;
   nsCSSValue mStrokeWidth;
+  nsCSSValue mTextAnchor;
+  nsCSSValue mTextRendering;
 };
 
 struct nsRuleDataSVG : public nsCSSSVG {

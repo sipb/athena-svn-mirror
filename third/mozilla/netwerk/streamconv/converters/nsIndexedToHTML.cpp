@@ -47,6 +47,7 @@
 #include "nsURLHelper.h"
 #include "nsCRT.h"
 #include "nsIPlatformCharset.h"
+#include "nsInt64.h"
 
 NS_IMPL_THREADSAFE_ISUPPORTS4(nsIndexedToHTML,
                               nsIDirIndexListener,
@@ -129,8 +130,6 @@ nsIndexedToHTML::AsyncConvertData(const PRUnichar *aFromType,
     return Init(aListener);
 }
 
-static NS_NAMED_LITERAL_STRING(tableHeading,"<table>\n");
-
 NS_IMETHODIMP
 nsIndexedToHTML::OnStartRequest(nsIRequest* request, nsISupports *aContext) {
     nsresult rv;
@@ -192,7 +191,7 @@ nsIndexedToHTML::OnStartRequest(nsIRequest* request, nsISupports *aContext) {
              nsCOMPtr<nsIURI> newUri;
              rv = uri->Clone(getter_AddRefs(newUri));
              if (NS_FAILED(rv)) return rv;
-             rv = newUri->SetPassword(NS_LITERAL_CSTRING(""));
+             rv = newUri->SetPassword(EmptyCString());
              if (NS_FAILED(rv)) return rv;
              rv = newUri->GetAsciiSpec(titleUri);
              if (NS_FAILED(rv)) return rv;
@@ -239,9 +238,25 @@ nsIndexedToHTML::OnStartRequest(nsIRequest* request, nsISupports *aContext) {
     } else if (NS_SUCCEEDED(uri->SchemeIs("gopher", &isScheme)) && isScheme) {
         mExpectAbsLoc = PR_TRUE;
     }
+    else {
+        // default behavior for other protocols is to assume the channel's
+        // URL references a directory ending in '/' -- fixup if necessary.
+        nsCAutoString path;
+        rv = uri->GetPath(path);
+        if (NS_FAILED(rv)) return rv;
+        if (baseUri.Last() != '/') {
+            baseUri.Append('/');
+            path.Append('/');
+            uri->SetPath(path);
+        }
+        if (!path.Equals("/")) {
+            rv = uri->Resolve(NS_LITERAL_CSTRING(".."), parentStr);
+            if (NS_FAILED(rv)) return rv;
+        }
+    }
 
     nsString buffer;
-    buffer.Assign(NS_LITERAL_STRING("<?xml version=\"1.0\""));
+    buffer.Assign(NS_LITERAL_STRING("<?xml version=\"1.0\" encoding=\""));
     
     // Get the encoding from the parser
     // XXX - this won't work for any encoding set via a 301: line in the
@@ -253,11 +268,9 @@ nsIndexedToHTML::OnStartRequest(nsIRequest* request, nsISupports *aContext) {
     rv = mParser->GetEncoding(getter_Copies(encoding));
     if (NS_FAILED(rv)) return rv;
 
-    buffer.Append(NS_LITERAL_STRING(" encoding=\"") +
-                  NS_ConvertASCIItoUCS2(encoding) +
-                  NS_LITERAL_STRING("\""));
+    AppendASCIItoUTF16(encoding, buffer);
 
-    buffer.Append(NS_LITERAL_STRING("?>\n") +
+    buffer.Append(NS_LITERAL_STRING("\"?>\n") +
                   NS_LITERAL_STRING("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.1//EN\" ") +
                   NS_LITERAL_STRING("\"http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd\">\n"));
 
@@ -324,7 +337,7 @@ nsIndexedToHTML::OnStartRequest(nsIRequest* request, nsISupports *aContext) {
     
     ConvertNonAsciiToNCR(title, strNCR);
     buffer.Append(strNCR);
-    buffer.Append(NS_LITERAL_STRING("</h1>\n<hr/>") + tableHeading);
+    buffer.Append(NS_LITERAL_STRING("</h1>\n<hr/><table>\n"));
 
     //buffer.Append(NS_LITERAL_STRING("<tr><th>Name</th><th>Size</th><th>Last modified</th></tr>\n"));
 
@@ -335,9 +348,9 @@ nsIndexedToHTML::OnStartRequest(nsIRequest* request, nsISupports *aContext) {
         if (NS_FAILED(rv)) return rv;
         
         ConvertNonAsciiToNCR(parentText, strNCR);
-        buffer.Append(NS_LITERAL_STRING("<tr><td colspan=\"3\"><a href=\"") +
-                      NS_ConvertASCIItoUCS2(parentStr) +
-                      NS_LITERAL_STRING("\">") +
+        buffer.Append(NS_LITERAL_STRING("<tr><td colspan=\"3\"><a href=\""));
+        AppendASCIItoUTF16(parentStr, buffer);
+        buffer.Append(NS_LITERAL_STRING("\">") +
                       strNCR +
                       NS_LITERAL_STRING("</a></td></tr>\n"));
     }
@@ -510,7 +523,7 @@ nsIndexedToHTML::OnIndexAvailable(nsIRequest *aRequest,
     }
     NS_EscapeURL(utf8UnEscapeSpec.get(), utf8UnEscapeSpec.Length(), escFlags, escapeBuf);
   
-    pushBuffer.Append(NS_ConvertUTF8toUCS2(escapeBuf));
+    AppendUTF8toUTF16(escapeBuf, pushBuffer);
     
     pushBuffer.Append(NS_LITERAL_STRING("\"><img src=\""));
 
@@ -534,10 +547,10 @@ nsIndexedToHTML::OnIndexAvailable(nsIRequest *aRequest,
 
     pushBuffer.Append(NS_LITERAL_STRING("</a></td>\n <td>"));
 
-    PRUint32 size;
+    PRInt64 size;
     aIndex->GetSize(&size);
     
-    if (size != PRUint32(-1) &&
+    if (LL_NE(size, LL_INIT(0, -1)) &&
         type != nsIDirIndex::TYPE_DIRECTORY &&
         type != nsIDirIndex::TYPE_SYMLINK) {
         nsAutoString  sizeString;
@@ -577,19 +590,20 @@ nsIndexedToHTML::OnIndexAvailable(nsIRequest *aRequest,
     // Split this up to avoid slow layout performance with large tables
     // - bug 85381
     if (++mRowCount > ROWS_PER_TABLE) {
-        pushBuffer.Append(NS_LITERAL_STRING("</table>\n") + tableHeading);
+        pushBuffer.Append(NS_LITERAL_STRING("</table>\n<table>\n"));
         mRowCount = 0;
     }
     
     return FormatInputStream(aRequest, aCtxt, pushBuffer);
 }
 
-void nsIndexedToHTML::FormatSizeString(PRUint32 inSize, nsString& outSizeString)
+void nsIndexedToHTML::FormatSizeString(PRInt64 inSize, nsString& outSizeString)
 {
+    nsInt64 size(inSize);
     outSizeString.Truncate();
-    if (inSize > 0) {
+    if (size > nsInt64(0)) {
         // round up to the nearest Kilobyte
-        PRUint32  upperSize = (inSize + 1023) / 1024;
+        PRInt64  upperSize = (size + nsInt64(1023)) / nsInt64(1024);
         outSizeString.AppendInt(upperSize);
         outSizeString.Append(NS_LITERAL_STRING(" KB"));
     }

@@ -36,6 +36,10 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+#ifdef MOZ_LOGGING
+// sorry, this has to be before the pre-compiled header
+#define FORCE_PR_LOG /* Allow logging in the release build */
+#endif
 #include "jsapi.h"
 #include "nsIXPCSecurityManager.h"
 #include "nsIXPConnect.h"
@@ -47,6 +51,9 @@
 #include "nsString.h"
 #include "nsIPrefService.h"
 #include "nsIJSContextStack.h"
+#include "nspr.h"
+
+extern PRLogModuleInfo *MCD;
 
 // Security Manager for new XPCONNECT enabled JS Context
 // Right now it allows all access
@@ -111,6 +118,7 @@ autoConfigErrorReporter(JSContext *cx, const char *message,
                         JSErrorReport *report)
 {
     NS_ERROR(message);
+    PR_LOG(MCD, PR_LOG_DEBUG, ("JS error in js from MCD server: %s\n", message));
 } 
 
 nsresult CentralizedAdminPrefManagerInit()

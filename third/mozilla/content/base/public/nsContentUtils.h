@@ -52,11 +52,16 @@ class nsIContent;
 class nsIDocument;
 class nsIDocShell;
 class nsINameSpaceManager;
+class nsINodeInfo;
+class nsINodeInfoManager;
 class nsIScriptSecurityManager;
 class nsIThreadJSContextStack;
 class nsIParserService;
 class nsIIOService;
 class nsIURI;
+class imgIDecoderObserver;
+class imgIRequest;
+class imgILoader;
 
 class nsContentUtils
 {
@@ -172,19 +177,15 @@ public:
 
   // These are copied from nsJSUtils.h
 
-  static nsresult GetStaticScriptGlobal(JSContext* aContext,
-                                        JSObject* aObj,
-                                        nsIScriptGlobalObject** aNativeGlobal);
+  static nsIScriptGlobalObject *GetStaticScriptGlobal(JSContext* aContext,
+                                                      JSObject* aObj);
 
-  static nsresult GetStaticScriptContext(JSContext* aContext,
-                                         JSObject* aObj,
-                                         nsIScriptContext** aScriptContext);
+  static nsIScriptContext *GetStaticScriptContext(JSContext* aContext,
+                                                  JSObject* aObj);
 
-  static nsresult GetDynamicScriptGlobal(JSContext *aContext,
-                                         nsIScriptGlobalObject** aNativeGlobal);
+  static nsIScriptGlobalObject *GetDynamicScriptGlobal(JSContext *aContext);
 
-  static nsresult GetDynamicScriptContext(JSContext *aContext,
-                                          nsIScriptContext** aScriptContext);
+  static nsIScriptContext *GetDynamicScriptContext(JSContext *aContext);
 
   static PRUint32 CopyNewlineNormalizedUnicodeTo(const nsAString& aSource, 
                                                  PRUint32 aSrcOffset, 
@@ -224,7 +225,7 @@ public:
    *
    * @param aDocShell The docshell or null if no JS context
    */
-  static void GetDocShellFromCaller(nsIDocShell** aDocShell);
+  static nsIDocShell *GetDocShellFromCaller();
 
   /**
    * Get the document through the JS context that's currently on the stack.
@@ -232,7 +233,7 @@ public:
    *
    * @param aDocument The document or null if no JS context
    */
-  static void GetDocumentFromCaller(nsIDOMDocument** aDocument);
+  static nsIDOMDocument *GetDocumentFromCaller();
 
   // Check if a node is in the document prolog, i.e. before the document
   // element.
@@ -280,11 +281,46 @@ public:
   static PRBool BelongsInForm(nsIDOMHTMLFormElement *aForm,
                               nsIContent *aContent);
   
-private:
+  static nsresult CheckQName(const nsAString& aQualifiedName,
+                             PRBool aNamespaceAware = PR_TRUE);
+
+  static nsresult GetNodeInfoFromQName(const nsAString& aNamespaceURI,
+                                       const nsAString& aQualifiedName,
+                                       nsINodeInfoManager* aNodeInfoManager,
+                                       nsINodeInfo** aNodeInfo);
+
   static nsresult GetDocumentAndPrincipal(nsIDOMNode* aNode,
                                           nsIDocument** aDocument,
                                           nsIPrincipal** aPrincipal);
 
+  /**
+   * Method to do security and content policy checks on the image URI
+   *
+   * @param aURI uri of the image to be loaded
+   * @param aContext the context the image is loaded in (eg an element)
+   * @param aLoadingDocument the document we belong to
+   * @throws NS_ERROR_IMAGE_BLOCKED if the load is blocked.  This is
+   *         subject to change.  See nsIContentPolicy.
+   */
+  static nsresult CanLoadImage(nsIURI* aURI,
+                               nsISupports* aContext,
+                               nsIDocument* aLoadingDocument);
+  /**
+   * Method to start an image load.  This does not do any security checks.
+   *
+   * @param aURI uri of the image to be loaded
+   * @param aLoadingDocument the document we belong to
+   * @param aObserver the observer for the image load
+   * @param aLoadFlags the load flags to use.  See nsIRequest
+   * @return the imgIRequest for the image load
+   */
+  static nsresult LoadImage(nsIURI* aURI,
+                            nsIDocument* aLoadingDocument,
+                            imgIDecoderObserver* aObserver,
+                            PRInt32 aLoadFlags,
+                            imgIRequest** aRequest);
+  
+private:
   static nsresult doReparentContentWrapper(nsIContent *aChild,
                                            nsIDocument *aNewDocument,
                                            nsIDocument *aOldDocument,
@@ -306,6 +342,8 @@ private:
 
   static nsIIOService *sIOService;
 
+  static imgILoader* sImgLoader;
+  
   static PRBool sInitialized;
 };
 
@@ -340,11 +378,19 @@ private:
   if (aIID.Equals(NS_GET_IID(nsIClassInfo))) {                                \
     foundInterface =                                                          \
       nsContentUtils::GetClassInfoInstance(eDOMClassInfo_##_class##_id);      \
-    NS_ENSURE_TRUE(foundInterface, NS_ERROR_OUT_OF_MEMORY);                   \
-                                                                              \
-    *aInstancePtr = foundInterface;                                           \
-                                                                              \
-    return NS_OK;                                                             \
+    if (!foundInterface) {                                                    \
+      *aInstancePtr = nsnull;                                                 \
+      return NS_ERROR_OUT_OF_MEMORY;                                          \
+    }                                                                         \
+  } else
+
+#define NS_INTERFACE_MAP_ENTRY_TEAROFF(_interface, _allocator)                \
+  if (aIID.Equals(NS_GET_IID(_interface))) {                                  \
+    foundInterface = NS_STATIC_CAST(_interface *, _allocator);                \
+    if (!foundInterface) {                                                    \
+      *aInstancePtr = nsnull;                                                 \
+      return NS_ERROR_OUT_OF_MEMORY;                                          \
+    }                                                                         \
   } else
 
 #endif /* nsContentUtils_h___ */

@@ -36,11 +36,12 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+class nsIAtom;
+class nsICSSStyleSheet;
 class nsIRDFService;
 class nsIRDFDataSource;
 class nsIRDFResource;
 class nsIRDFNode;
-class nsICSSLoader;
 class nsISimpleEnumerator;
 class nsSupportsHashtable;
 class nsIRDFContainer;
@@ -48,13 +49,14 @@ class nsIRDFContainerUtils;
 class nsIDOMWindowInternal;
 class nsIDocument;
 
+#include "nsIChromeRegistry.h"
+#include "nsIXULOverlayProvider.h"
 #include "nsIRDFCompositeDataSource.h"
-#include "nsICSSStyleSheet.h"
 #include "nsIObserver.h"
 #include "nsWeakReference.h"
 #include "nsString.h"
 #include "nsIZipReader.h"
-#include "nsICSSLoader.h"
+#include "nsCOMArray.h"
      
 // for component registration
 // {D8C7D8A2-E84C-11d2-BF87-00105A1B0627}
@@ -62,6 +64,7 @@ class nsIDocument;
 { 0xd8c7d8a2, 0xe84c, 0x11d2, { 0xbf, 0x87, 0x0, 0x10, 0x5a, 0x1b, 0x6, 0x27 } }
 
 class nsChromeRegistry : public nsIXULChromeRegistry,
+                         public nsIXULOverlayProvider,
                          public nsIObserver,
                          public nsSupportsWeakReference
 {
@@ -71,6 +74,7 @@ public:
   // nsIChromeRegistry methods:
   NS_DECL_NSICHROMEREGISTRY
   NS_DECL_NSIXULCHROMEREGISTRY
+  NS_DECL_NSIXULOVERLAYPROVIDER
 
   NS_DECL_NSIOBSERVER
 
@@ -91,7 +95,10 @@ public:
 
 protected:
   nsresult GetDynamicDataSource(nsIURI *aChromeURL, PRBool aIsOverlay, PRBool aUseProfile, PRBool aCreateDS, nsIRDFDataSource **aResult);
+  nsresult GetURIList(nsIRDFDataSource *aDS, nsIRDFResource *aResource, nsCOMArray<nsIURI>& aArray);
   nsresult GetDynamicInfo(nsIURI *aChromeURL, PRBool aIsOverlay, nsISimpleEnumerator **aResult);
+
+  PRBool   IsOverlayAllowed(nsIURI *aChromeURI);
 
   nsresult GetResource(const nsACString& aChromeType, nsIRDFResource** aResult);
   
@@ -108,16 +115,13 @@ protected:
                                  PRBool aIsOverlay, PRBool
                                  aUseProfile, PRBool aRemove);
  
-  nsresult LoadStyleSheet(nsICSSStyleSheet** aSheet, const nsACString & aURL);
   nsresult LoadStyleSheetWithURL(nsIURI* aURL, nsICSSStyleSheet** aSheet);
-  
-  nsresult GetUserSheetURL(PRBool aIsChrome, nsACString & aURL);
-  nsresult GetFormSheetURL(nsACString& aURL);
-  
+
   nsresult LoadInstallDataSource();
   nsresult LoadProfileDataSource();
-  
-  nsresult FlushCaches();
+
+  void FlushSkinCaches();
+  void FlushAllCaches();
 
 private:
   nsresult LoadDataSource(const nsACString &aFileName,
@@ -247,21 +251,11 @@ protected:
   nsCOMPtr<nsIRDFResource> mPackageVersion;
   nsCOMPtr<nsIRDFResource> mDisabled;
 
-  // Style Sheets
-  nsCOMPtr<nsICSSStyleSheet> mScrollbarSheet;
-  nsCOMPtr<nsICSSStyleSheet> mUserChromeSheet;
-  nsCOMPtr<nsICSSStyleSheet> mUserContentSheet;
-  nsCOMPtr<nsICSSStyleSheet> mFormSheet;
-
-  nsCOMPtr<nsICSSLoader> mCSSLoader;
-  
   nsCOMPtr<nsIZipReader> mOverrideJAR;
   nsCString              mOverrideJARURL;
   
   // useful atoms - these are static atoms, so don't use nsCOMPtr
   static nsIAtom* sCPrefix;            // "c"
-  
-  PRBool mUseXBLForms;
   
   PRPackedBool mInstallInitialized;
   PRPackedBool mProfileInitialized;
@@ -275,4 +269,3 @@ protected:
   // make sure we only look once for the JAR override
   PRPackedBool mSearchedForOverride;
 };
-

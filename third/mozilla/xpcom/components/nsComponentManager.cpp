@@ -178,7 +178,7 @@ nsCreateInstanceFromCategory::operator()(const nsIID& aIID, void** aInstancePtr)
                                   getter_Copies(value));
     if (NS_FAILED(rv)) goto error;
     if (!value) {
-        rv = NS_ERROR_SERVICE_NOT_FOUND;
+        rv = NS_ERROR_SERVICE_NOT_AVAILABLE;
         goto error;
     }
     NS_GetComponentManager(getter_AddRefs(compMgr));
@@ -216,7 +216,7 @@ nsGetServiceFromCategory::operator()(const nsIID& aIID, void** aInstancePtr) con
                                   getter_Copies(value));
     if (NS_FAILED(rv)) goto error;
     if (!value) {
-        rv = NS_ERROR_SERVICE_NOT_FOUND;
+        rv = NS_ERROR_SERVICE_NOT_AVAILABLE;
         goto error;
     }
     if (mServiceManager) {
@@ -413,13 +413,14 @@ public:
     NS_DECL_NSIBIDIRECTIONALENUMERATOR
     NS_DECL_NSISIMPLEENUMERATOR
 
-    virtual ~PLDHashTableEnumeratorImpl();
     PLDHashTableEnumeratorImpl(PLDHashTable *table,
                                EnumeratorConverter converter,
                                void *converterData);
     PRInt32 Count() { return mCount; }
 private:
     PLDHashTableEnumeratorImpl(); /* no implementation */
+
+    ~PLDHashTableEnumeratorImpl();
     NS_IMETHODIMP ReleaseElements();
 
     nsVoidArray   mElements;
@@ -513,13 +514,15 @@ PL_NewDHashTableEnumerator(PLDHashTable *table,
     if (!impl)
         return NS_ERROR_OUT_OF_MEMORY;
 
+    NS_ADDREF(impl);
+
     if (impl->Count() == -1) {
         // conversion failed
-        delete impl;
+        NS_RELEASE(impl);
         return NS_ERROR_FAILURE;
     }
 
-    NS_ADDREF(*retval = impl);
+    *retval = impl;
     return NS_OK;
 }
 
@@ -1147,7 +1150,9 @@ nsComponentManagerImpl::ReadPersistentRegistry()
 
         int loadertype = GetLoaderType(values[2]);
         if (loadertype < 0) {
-            loadertype = AddLoaderType(values[2]);
+            rv = AddLoaderType(values[2], &loadertype);
+            if (NS_FAILED(rv))
+                continue;
         }
 
         void *mem;
@@ -1231,7 +1236,7 @@ nsComponentManagerImpl::ReadPersistentRegistry()
             "@mozilla.org/intl/charsetalias;1",
             "@mozilla.org/locale/win32-locale;1",
             "@mozilla.org/widget/lookandfeel/win;1",
-        //*/
+        // */
             0
         };
         for (int i=0; abusedContracts[i] && *abusedContracts[i]; i++) {
@@ -2195,7 +2200,7 @@ nsComponentManagerImpl::UnregisterService(const nsCID& aClass)
     }
 
     if (!entry || !entry->mServiceObject)
-        return NS_ERROR_SERVICE_NOT_FOUND;
+        return NS_ERROR_SERVICE_NOT_AVAILABLE;
 
     entry->mServiceObject = nsnull;
     return rv;
@@ -2274,7 +2279,7 @@ nsComponentManagerImpl::IsServiceInstantiated(const nsCID & aClass,
         return NS_ERROR_UNEXPECTED;
     }
 
-    nsresult rv = NS_ERROR_SERVICE_NOT_FOUND;
+    nsresult rv = NS_ERROR_SERVICE_NOT_AVAILABLE;
     nsFactoryEntry* entry = nsnull;
     nsFactoryTableEntry* factoryTableEntry =
         NS_STATIC_CAST(nsFactoryTableEntry*,
@@ -2315,7 +2320,7 @@ NS_IMETHODIMP nsComponentManagerImpl::IsServiceInstantiatedByContractID(const ch
         return NS_ERROR_UNEXPECTED;
     }
 
-    nsresult rv = NS_ERROR_SERVICE_NOT_FOUND;
+    nsresult rv = NS_ERROR_SERVICE_NOT_AVAILABLE;
     nsFactoryEntry *entry = nsnull;
     {
         nsAutoMonitor mon(mMon);
@@ -2357,7 +2362,7 @@ nsComponentManagerImpl::UnregisterService(const char* aContractID)
    }
 
    if (entry == nsnull || entry == kNonExistentContractID || entry->mServiceObject == nsnull)
-        return NS_ERROR_SERVICE_NOT_FOUND;
+        return NS_ERROR_SERVICE_NOT_AVAILABLE;
 
    entry->mServiceObject = nsnull;
    return rv;
@@ -2932,14 +2937,15 @@ nsComponentManagerImpl::GetLoaderType(const char *typeStr)
     return NS_COMPONENT_TYPE_FACTORY_ONLY;
 }
 
-// Add a loader type if not already known. Return the typeIndex
+// Add a loader type if not already known. Out the typeIndex
 // if the loader type is either added or already there.
-int
-nsComponentManagerImpl::AddLoaderType(const char *typeStr)
+nsresult
+nsComponentManagerImpl::AddLoaderType(const char *typeStr, int *aTypeIndex)
 {
     int typeIndex = GetLoaderType(typeStr);
     if (typeIndex >= 0) {
-        return typeIndex;
+        *aTypeIndex = typeIndex;
+        return NS_OK;
     }
 
     // Add the loader type
@@ -2963,7 +2969,8 @@ nsComponentManagerImpl::AddLoaderType(const char *typeStr)
     mLoaderData[typeIndex].loader = nsnull;
     mNLoaderData++;
 
-    return typeIndex;
+    *aTypeIndex = typeIndex;
+    return NS_OK;
 }
 
 typedef struct
@@ -3233,7 +3240,11 @@ nsComponentManagerImpl::AutoRegisterImpl(PRInt32 when,
         // We depend on the loader being created. Add the loader type and
         // create the loader object too.
         nsCOMPtr<nsIComponentLoader> loader;
-        GetLoaderForType(AddLoaderType(loaderType.get()), getter_AddRefs(loader));
+        int typeIndex;
+        rv = AddLoaderType(loaderType.get(), &typeIndex);
+        if (NS_FAILED(rv))
+            return rv;
+        GetLoaderForType(typeIndex, getter_AddRefs(loader));
     }
 
     rv = AutoRegisterNonNativeComponents(dir.get());

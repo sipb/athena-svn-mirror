@@ -29,6 +29,9 @@
 
 class nsWeakReference;
 
+#undef  IMETHOD_VISIBILITY
+#define IMETHOD_VISIBILITY NS_VISIBILITY_DEFAULT
+
 class NS_COM nsSupportsWeakReference : public nsISupportsWeakReference
   {
     public:
@@ -38,9 +41,10 @@ class NS_COM nsSupportsWeakReference : public nsISupportsWeakReference
           // nothing else to do here
         }
 
-      inline virtual ~nsSupportsWeakReference();
-
       NS_DECL_NSISUPPORTSWEAKREFERENCE
+
+    protected:
+      inline ~nsSupportsWeakReference();
 
     private:
       friend class nsWeakReference;
@@ -59,6 +63,9 @@ class NS_COM nsSupportsWeakReference : public nsISupportsWeakReference
 			inline void ClearWeakReferences();
 			PRBool HasWeakReferences() const {return mProxy != 0;}
   };
+
+#undef  IMETHOD_VISIBILITY
+#define IMETHOD_VISIBILITY NS_VISIBILITY_HIDDEN
 
 class NS_COM nsWeakReference : public nsIWeakReference
   {
@@ -82,7 +89,7 @@ class NS_COM nsWeakReference : public nsIWeakReference
           // nothing else to do here
         }
 
-    virtual ~nsWeakReference()
+      ~nsWeakReference()
            // ...I will only be destroyed by calling |delete| myself.
         {
           if ( mReferent )

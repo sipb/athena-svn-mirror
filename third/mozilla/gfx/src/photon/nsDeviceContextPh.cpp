@@ -76,8 +76,9 @@ nsDeviceContextPh :: nsDeviceContextPh( )
 
   mSpec = nsnull;
   mDC = nsnull;
+	mGC = nsnull;
 
-  mIsPrinting = 0;
+	mIsPrintingStart = 0;
 	}
 
 nsDeviceContextPh :: ~nsDeviceContextPh( ) {
@@ -85,6 +86,8 @@ nsDeviceContextPh :: ~nsDeviceContextPh( ) {
 
   NS_IF_RELEASE(surf);    //this clears the surf pointer...
   mSurface = nsnull;
+
+	if( mGC ) PgDestroyGC( mGC ); /* we are always the owners of this gc */
 
 	if( mFontLoadCache ) { 
 #ifdef DEBUG_Adrian
@@ -97,16 +100,8 @@ printf( "\n\n\n!!!!!!!!!!!!!!!!! ~nsDeviceContextPh is unloading the mFontLoadCa
 	}
 
 NS_IMETHODIMP nsDeviceContextPh :: Init( nsNativeWidget aWidget ) {
-  float newscale, origscale;
-  float a2d,t2d;
-    
-  CommonInit(NULL);
- 
-  GetTwipsToDevUnits(newscale);
-  GetAppUnitsToDevUnits(origscale);
 
-  GetTwipsToDevUnits(t2d);
-  GetAppUnitsToDevUnits(a2d);
+  CommonInit(NULL);
 
   // Call my base class
   return DeviceContextImpl::Init( aWidget );
@@ -115,34 +110,31 @@ NS_IMETHODIMP nsDeviceContextPh :: Init( nsNativeWidget aWidget ) {
 
 /* Called for Printing */
 nsresult nsDeviceContextPh :: Init( nsNativeDeviceContext aContext, nsIDeviceContext *aOrigContext ) {
-  float                  origscale, newscale, t2d, a2d;
+  float origscale, newscale, t2d, a2d;
     
   mDC = aContext;
 
   CommonInit(mDC);
 
-  GetTwipsToDevUnits(newscale);
-  aOrigContext->GetAppUnitsToDevUnits(origscale);
+  newscale = TwipsToDevUnits();
+  origscale = aOrigContext->AppUnitsToDevUnits();
   
   mPixelScale = newscale / origscale;
 
-  aOrigContext->GetTwipsToDevUnits(t2d);
-  aOrigContext->GetAppUnitsToDevUnits(a2d);
+  t2d = aOrigContext->TwipsToDevUnits();
+  a2d = aOrigContext->AppUnitsToDevUnits();
 
   mAppUnitsToDevUnits = (a2d / t2d) * mTwipsToPixels;
   mDevUnitsToAppUnits = 1.0f / mAppUnitsToDevUnits;
 
-	// for printers
-	const PhDim_t *psize;
-	PhDim_t dim;
-	PpPrintContext_t *pc = ((nsDeviceContextSpecPh *)mSpec)->GetPrintContext();
+	int w, h;
+	GetPrinterRect( &w, &h );
+	mWidthFloat = w;
+	mHeightFloat = h;
 
-	PpPrintGetPC(pc, Pp_PC_PAPER_SIZE, (const void **)&psize );
-	mWidthFloat = (float)(psize->w / 10);
-	mHeightFloat = (float)(psize->h / 10);
-	dim.w = psize->w / 10;
-	dim.h = psize->h / 10;
-	PpPrintSetPC(pc, INITIAL_PC, 0 , Pp_PC_SOURCE_SIZE, &dim );
+	/* Call Base Class */
+	DeviceContextImpl::CommonInit( );
+
 	return NS_OK;
 	}
 
@@ -220,12 +212,17 @@ void nsDeviceContextPh :: CommonInit( nsNativeDeviceContext aDC ) {
   /* Revisit: the scroll bar sizes is a gross guess based on Phab */
   mScrollbarHeight = 17;
   mScrollbarWidth  = 17;
-  
-  /* Call Base Class */
-  DeviceContextImpl::CommonInit( );
 	}
 
 NS_IMETHODIMP nsDeviceContextPh :: CreateRenderingContext( nsIRenderingContext *&aContext ) {
+
+#ifdef NS_PRINT_PREVIEW
+	// Defer to Alt when there is one
+	if(mAltDC && ((mUseAltDC & kUseAltDCFor_CREATERC_PAINT) || (mUseAltDC & kUseAltDCFor_CREATERC_REFLOW))) {
+		return mAltDC->CreateRenderingContext(aContext);
+		}
+#endif
+
   nsIRenderingContext *pContext;
   nsresult             rv;
   nsDrawingSurfacePh  *surf;
@@ -237,7 +234,9 @@ NS_IMETHODIMP nsDeviceContextPh :: CreateRenderingContext( nsIRenderingContext *
 
 	  surf = new nsDrawingSurfacePh();
 	  if( nsnull != surf ) {
-			rv = surf->Init( NULL );
+			PpPrintContext_t *pc = ((nsDeviceContextSpecPh *)mSpec)->GetPrintContext();
+			mGC = PgCreateGC( 0 );
+			rv = surf->Init( (PhDrawContext_t*)pc, mGC );
 			if( NS_OK == rv ) rv = pContext->Init(this, surf);
 			else rv = NS_ERROR_OUT_OF_MEMORY;
 			}
@@ -247,7 +246,6 @@ NS_IMETHODIMP nsDeviceContextPh :: CreateRenderingContext( nsIRenderingContext *
 	if( NS_OK != rv ) NS_IF_RELEASE( pContext );
 
 	aContext = pContext;
-	NS_ADDREF( pContext ); // otherwise it's crashing after printing
 	return rv;
 	}
 
@@ -343,23 +341,23 @@ int nsDeviceContextPh :: ReadSystemFonts( ) const
 void nsDeviceContextPh :: DefaultSystemFonts( ) const
 {
 	FaceMessageFont = "MessageFont";
-	SizeMessageFont = 9;
-	StyleMessageFont = NS_FONT_STYLE_NORMAL | NS_FONT_STYLE_ANTIALIAS;
+	SizeMessageFont = 8;
+	StyleMessageFont = NS_FONT_STYLE_NORMAL;
 	WeightMessageFont = NS_FONT_WEIGHT_NORMAL;
 
 	FaceMenuFont = "MenuFont";
-	SizeMenuFont = 9;
-	StyleMenuFont = NS_FONT_STYLE_NORMAL | NS_FONT_STYLE_ANTIALIAS;
+	SizeMenuFont = 8;
+	StyleMenuFont = NS_FONT_STYLE_NORMAL;
 	WeightMenuFont = NS_FONT_WEIGHT_NORMAL;
 
 	FaceBalloonFont = "BalloonFont";
-	SizeBalloonFont = 9;
-	StyleBalloonFont = NS_FONT_STYLE_NORMAL | NS_FONT_STYLE_ANTIALIAS;
+	SizeBalloonFont = 8;
+	StyleBalloonFont = NS_FONT_STYLE_NORMAL;
 	WeightBalloonFont = NS_FONT_WEIGHT_NORMAL;
 
 	FaceGeneralFont = "TextFont";
-	SizeGeneralFont = 9;
-	StyleGeneralFont = NS_FONT_STYLE_NORMAL | NS_FONT_STYLE_ANTIALIAS;
+	SizeGeneralFont = 8;
+	StyleGeneralFont = NS_FONT_STYLE_NORMAL;
 	WeightGeneralFont = NS_FONT_WEIGHT_NORMAL;
 }
 
@@ -393,44 +391,33 @@ NS_IMETHODIMP nsDeviceContextPh :: GetSystemFont( nsSystemFontID aID, nsFont *aF
 	  	aFont->name.AssignWithConversion( FaceGeneralFont );
 			aFont->style = StyleGeneralFont;
 			aFont->weight = WeightGeneralFont;
-			aFont->size = NSIntPointsToTwips( SizeGeneralFont );
+			aFont->size = SizeGeneralFont / ( mAppUnitsToDevUnits * 0.68 ); /* see nsFontMetricsPh::Init */
 			break;
 		case eSystemFont_MessageBox:
 			aFont->name.AssignWithConversion( FaceMessageFont );
 			aFont->style = StyleMessageFont;
 			aFont->weight = WeightMessageFont;
-			aFont->size = NSIntPointsToTwips( SizeMessageFont );
+			aFont->size = SizeMessageFont / ( mAppUnitsToDevUnits * 0.68 ); /* see nsFontMetricsPh::Init */
 			break;
 		case eSystemFont_Tooltips:     // moz
 			aFont->name.AssignWithConversion( FaceBalloonFont );
 			aFont->style = StyleBalloonFont;
 			aFont->weight = WeightBalloonFont;
-			aFont->size = NSIntPointsToTwips( SizeBalloonFont );
+			aFont->size = SizeBalloonFont / ( mAppUnitsToDevUnits * 0.68 ); /* see nsFontMetricsPh::Init */
 			break;
 		case eSystemFont_Menu:
 			aFont->name.AssignWithConversion( FaceMenuFont );
 			aFont->style = StyleMenuFont;
 			aFont->weight = WeightMenuFont;
-			aFont->size = NSIntPointsToTwips( SizeMenuFont );
+			aFont->size = SizeMenuFont / ( mAppUnitsToDevUnits * 0.68 ); /* see nsFontMetricsPh::Init */
 			break;
   	}
+
+  aFont->systemFont = PR_TRUE;
 
   return NS_OK;
 }
 
-
-NS_IMETHODIMP nsDeviceContextPh :: GetClientRect( nsRect &aRect ) {
-	nsresult rv = NS_OK;
-	if( mIsPrinting ) { //( mSpec )
-	  // we have a printer device
-	  aRect.x = 0;
-	  aRect.y = 0;
-	  aRect.width = NSToIntRound(mWidth * mDevUnitsToAppUnits);
-	  aRect.height = NSToIntRound(mHeight * mDevUnitsToAppUnits);
-		}
-	else rv = GetRect ( aRect );
-	return rv;
-	}
 
 NS_IMETHODIMP nsDeviceContextPh :: CheckFontExistence( const nsString& aFontName ) {
   char *fontName = ToNewCString(aFontName);
@@ -485,11 +472,13 @@ printf( "\t\t Not Found in cache\n" );
 
 
 NS_IMETHODIMP nsDeviceContextPh :: GetDeviceSurfaceDimensions( PRInt32 &aWidth, PRInt32 &aHeight ) {
-	if( mIsPrinting ) { //(mSpec)
-		aWidth = NSToIntRound(mWidthFloat * mDevUnitsToAppUnits);
-		aHeight = NSToIntRound(mHeightFloat * mDevUnitsToAppUnits);
-		return NS_OK;
+
+#ifdef NS_PRINT_PREVIEW
+	// Defer to Alt when there is one
+	if (mAltDC && (mUseAltDC & kUseAltDCFor_SURFACE_DIM)) {
+		return mAltDC->GetDeviceSurfaceDimensions(aWidth, aHeight);
 		}
+#endif
 
   if( mWidth == -1 ) mWidth = NSToIntRound(mWidthFloat * mDevUnitsToAppUnits);
   if( mHeight == -1 ) mHeight = NSToIntRound(mHeightFloat * mDevUnitsToAppUnits);
@@ -565,7 +554,6 @@ NS_IMETHODIMP nsDeviceContextPh :: BeginDocument(PRUnichar *t, PRUnichar* aPrint
 	if( mSpec ) {
 		PpPrintContext_t *pc = ((nsDeviceContextSpecPh *)mSpec)->GetPrintContext();
 		PpStartJob(pc);
-		mIsPrinting = 1;
 		mIsPrintingStart = 1;
 		}
 	return NS_OK;
@@ -575,7 +563,6 @@ NS_IMETHODIMP nsDeviceContextPh :: EndDocument( void ) {
 	if( mSpec ) {
   	PpPrintContext_t *pc = ((nsDeviceContextSpecPh *)mSpec)->GetPrintContext();
   	PpEndJob(pc);
-		mIsPrinting = 0;
 		}
   return NS_OK;
 	}
@@ -587,8 +574,8 @@ NS_IMETHODIMP nsDeviceContextPh :: AbortDocument( void ) {
 NS_IMETHODIMP nsDeviceContextPh :: BeginPage( void ) {
 	if( mSpec ) {
 		PpPrintContext_t *pc = ((nsDeviceContextSpecPh *)mSpec)->GetPrintContext();
-		if( !mIsPrintingStart ) PpPrintNewPage( pc );
 		PpContinueJob( pc );
+		if( !mIsPrintingStart ) PpPrintNewPage( pc );
 		mIsPrintingStart = 0;
 		}
 	return NS_OK;
@@ -601,8 +588,6 @@ NS_IMETHODIMP nsDeviceContextPh :: EndPage( void ) {
 		}
 	return NS_OK;
 	}
-
-int nsDeviceContextPh :: IsPrinting( void ) { return mIsPrinting ? 1 : 0; }
 
 /*
  Get the size and color depth of the display

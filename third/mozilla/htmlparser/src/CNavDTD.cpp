@@ -332,6 +332,9 @@ CNavDTD::CanParse(CParserContext& aParserContext,
     else if (aParserContext.mMimeType.Equals(NS_LITERAL_CSTRING(kRDFTextContentType)) ||
              aParserContext.mMimeType.Equals(NS_LITERAL_CSTRING(kXULTextContentType)) ||
              aParserContext.mMimeType.Equals(NS_LITERAL_CSTRING(kXMLTextContentType)) ||
+#ifdef MOZ_SVG
+             aParserContext.mMimeType.Equals(NS_LITERAL_CSTRING(kSVGTextContentType)) ||
+#endif
              aParserContext.mMimeType.Equals(NS_LITERAL_CSTRING(kXMLApplicationContentType))) {
       result=eUnknownDetect;
     }
@@ -2975,7 +2978,7 @@ nsresult CNavDTD::OpenTransientStyles(eHTMLTags aChildTag){
                   // precedence over the residual style tags' size info.. 
                   // *Note: Make sure that this attribute is transient since it
                   // should not get carried over to cases other than heading.
-                  CAttributeToken theAttrToken(NS_LITERAL_STRING("_moz-rs-heading"),NS_LITERAL_STRING(""));
+                  CAttributeToken theAttrToken(NS_LITERAL_STRING("_moz-rs-heading"), EmptyString());
                   theNode->AddAttribute(&theAttrToken);
                   result = OpenContainer(theNode,theNodeTag,PR_FALSE,theStack);
                   theNode->PopAttributeToken();

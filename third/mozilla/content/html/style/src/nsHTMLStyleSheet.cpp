@@ -35,8 +35,7 @@
 #include "nsIServiceManager.h"
 #include "nsISupportsArray.h"
 #include "pldhash.h"
-#include "nsIHTMLContent.h"
-#include "nsHTMLAttributes.h"
+#include "nsMappedAttributes.h"
 #include "nsILink.h"
 #include "nsIStyleRuleProcessor.h"
 #include "nsIStyleRule.h"
@@ -46,8 +45,6 @@
 #include "nsIPresContext.h"
 #include "nsIEventStateManager.h"
 #include "nsIDocument.h"
-#include "nsICSSFrameConstructor.h"
-#include "nsIStyleFrameConstruction.h"
 #include "nsHTMLParts.h"
 #include "nsIPresShell.h"
 #include "nsStyleConsts.h"
@@ -58,10 +55,6 @@
 #include "nsCSSAnonBoxes.h"
 
 #include "nsRuleWalker.h"
-
-#include "nsIStyleSet.h"
-
-static NS_DEFINE_CID(kCSSFrameConstructorCID, NS_CSSFRAMECONSTRUCTOR_CID);
 
 class HTMLColorRule : public nsIStyleRule {
 public:
@@ -251,6 +244,11 @@ ProcessTableRulesAttribute(nsStyleStruct* aStyleStruct,
     // XXX It appears that the style system erronously applies the custom style rule after css style, 
     // consequently it does not properly fit into the casade. For now, assume that a border style of none
     // implies that the style has not been set.
+    // XXXldb No, there's nothing wrong with the style system.  The problem
+    // is that the author of all these table rules made them work as
+    // post-resolve callbacks, which is an override mechanism that was meant
+    // to be used for other things.  They should instead map their rule data
+    // normally (see nsIStyleRule.h).
     if (NS_STYLE_BORDER_STYLE_NONE == borderStyle) {
       // use the table's border style if it is dashed or dotted, otherwise use solid
       PRUint8 bStyle = ((NS_STYLE_BORDER_STYLE_NONE != tableBorderStyle) &&
@@ -452,18 +450,16 @@ TableColRule::MapRuleInfoInto(nsRuleData* aRuleData)
 // -----------------------------------------------------------
 
 struct MappedAttrTableEntry : public PLDHashEntryHdr {
-  nsIHTMLMappedAttributes *mAttributes;
+  nsMappedAttributes *mAttributes;
 };
 
 PR_STATIC_CALLBACK(PLDHashNumber)
 MappedAttrTable_HashKey(PLDHashTable *table, const void *key)
 {
-  nsIHTMLMappedAttributes *attributes =
-    NS_STATIC_CAST(nsIHTMLMappedAttributes*, NS_CONST_CAST(void*, key));
+  nsMappedAttributes *attributes =
+    NS_STATIC_CAST(nsMappedAttributes*, NS_CONST_CAST(void*, key));
 
-  PRUint32 hash;
-  attributes->HashValue(hash);
-  return hash;
+  return attributes->HashValue();
 }
 
 PR_STATIC_CALLBACK(void)
@@ -479,14 +475,12 @@ PR_STATIC_CALLBACK(PRBool)
 MappedAttrTable_MatchEntry(PLDHashTable *table, const PLDHashEntryHdr *hdr,
                            const void *key)
 {
-  nsIHTMLMappedAttributes *attributes =
-    NS_STATIC_CAST(nsIHTMLMappedAttributes*, NS_CONST_CAST(void*, key));
+  nsMappedAttributes *attributes =
+    NS_STATIC_CAST(nsMappedAttributes*, NS_CONST_CAST(void*, key));
   const MappedAttrTableEntry *entry =
     NS_STATIC_CAST(const MappedAttrTableEntry*, hdr);
 
-  PRBool equal;
-  attributes->Equals(entry->mAttributes, equal);
-  return equal;
+  return attributes->Equals(entry->mAttributes);
 }
 
 static PLDHashTableOps MappedAttrTable_Ops = {
@@ -545,11 +539,11 @@ public:
 
   NS_IMETHOD HasStateDependentStyle(StateRuleProcessorData* aData,
                                     nsIAtom* aMedium,
-                                    PRBool* aResult);
+                                    nsReStyleHint* aResult);
 
   NS_IMETHOD HasAttributeDependentStyle(AttributeRuleProcessorData* aData,
                                         nsIAtom* aMedium,
-                                        PRBool* aResult);
+                                        nsReStyleHint* aResult);
 
   // nsIHTMLStyleSheet api
   NS_IMETHOD Init(nsIURI* aURL, nsIDocument* aDocument);
@@ -562,9 +556,9 @@ public:
   NS_IMETHOD SetVisitedLinkColor(nscolor aColor);
 
   // Mapped Attribute management methods
-  NS_IMETHOD UniqueMappedAttributes(nsIHTMLMappedAttributes* aMapped,
-                                    nsIHTMLMappedAttributes*& aUniqueMapped);
-  NS_IMETHOD DropMappedAttributes(nsIHTMLMappedAttributes* aMapped);
+  NS_IMETHOD UniqueMappedAttributes(nsMappedAttributes* aMapped,
+                                    nsMappedAttributes*& aUniqueMapped);
+  NS_IMETHOD DropMappedAttributes(nsMappedAttributes* aMapped);
 
 #ifdef DEBUG
   virtual void List(FILE* out = stdout, PRInt32 aIndent = 0) const;
@@ -682,49 +676,7 @@ HTMLStyleSheetImpl::~HTMLStyleSheetImpl()
     PL_DHashTableFinish(&mMappedAttrTable);
 }
 
-NS_IMPL_ADDREF(HTMLStyleSheetImpl)
-NS_IMPL_RELEASE(HTMLStyleSheetImpl)
-
-nsresult HTMLStyleSheetImpl::QueryInterface(const nsIID& aIID,
-                                            void** aInstancePtrResult)
-{
-  NS_PRECONDITION(aInstancePtrResult, "null out param");
-
-  if (aIID.Equals(NS_GET_IID(nsIHTMLStyleSheet))) {
-    *aInstancePtrResult = NS_STATIC_CAST(nsIHTMLStyleSheet*, this);
-  } else if (aIID.Equals(NS_GET_IID(nsIStyleSheet))) {
-    *aInstancePtrResult = NS_STATIC_CAST(nsIStyleSheet *, this);
-  } else if (aIID.Equals(NS_GET_IID(nsIStyleRuleProcessor))) {
-    *aInstancePtrResult = NS_STATIC_CAST(nsIStyleRuleProcessor *, this);
-  } else if (aIID.Equals(NS_GET_IID(nsIStyleFrameConstruction))) {
-    // XXX this breaks XPCOM rules since it isn't a proper delegate
-    // This is a temporary method of connecting the constructor for
-    // now
-    nsresult rv;
-    nsCOMPtr<nsICSSFrameConstructor> constructor =
-      do_CreateInstance(kCSSFrameConstructorCID, &rv);
-
-    if (NS_SUCCEEDED(rv)) {
-      rv = constructor->Init(mDocument);
-
-      if (NS_SUCCEEDED(rv)) {
-        rv = constructor->QueryInterface(aIID, aInstancePtrResult);
-      }
-    }
-
-    return rv;
-  } else if (aIID.Equals(NS_GET_IID(nsISupports))) {
-    *aInstancePtrResult = NS_STATIC_CAST(nsIHTMLStyleSheet *, this);
-  } else {
-    *aInstancePtrResult = nsnull;
-
-    return NS_NOINTERFACE;
-  }
-
-  NS_ADDREF_THIS();
-
-  return NS_OK;
-}
+NS_IMPL_ISUPPORTS3(HTMLStyleSheetImpl, nsIHTMLStyleSheet, nsIStyleSheet, nsIStyleRuleProcessor)
 
 NS_IMETHODIMP
 HTMLStyleSheetImpl::GetStyleRuleProcessor(nsIStyleRuleProcessor*& aProcessor,
@@ -737,9 +689,8 @@ HTMLStyleSheetImpl::GetStyleRuleProcessor(nsIStyleRuleProcessor*& aProcessor,
 
 static nsresult GetBodyColor(nsIPresContext* aPresContext, nscolor* aColor)
 {
-  nsCOMPtr<nsIPresShell> shell;
-  aPresContext->GetShell(getter_AddRefs(shell));
   nsCOMPtr<nsIDocument> doc;
+  nsIPresShell *shell = aPresContext->PresShell();
   shell->GetDocument(getter_AddRefs(doc));
   nsCOMPtr<nsIDOMHTMLDocument> domdoc = do_QueryInterface(doc);
   if (!domdoc)
@@ -840,14 +791,17 @@ HTMLStyleSheetImpl::RulesMatching(ElementRuleProcessorData* aData,
 NS_IMETHODIMP
 HTMLStyleSheetImpl::HasStateDependentStyle(StateRuleProcessorData* aData,
                                            nsIAtom* aMedium,
-                                           PRBool* aResult)
+                                           nsReStyleHint* aResult)
 {
-  *aResult = mActiveRule &&
-             (aData->mStateMask & NS_EVENT_STATE_ACTIVE) &&
-             aData->mStyledContent &&
-             aData->mIsHTMLContent &&
-             aData->mIsHTMLLink &&
-             aData->mContentTag == nsHTMLAtoms::a;
+  if (mActiveRule &&
+      (aData->mStateMask & NS_EVENT_STATE_ACTIVE) &&
+      aData->mStyledContent &&
+      aData->mIsHTMLContent &&
+      aData->mIsHTMLLink &&
+      aData->mContentTag == nsHTMLAtoms::a)
+    *aResult = eReStyle_Self;
+  else
+    *aResult = nsReStyleHint(0);
 
   return NS_OK;
 }
@@ -855,7 +809,7 @@ HTMLStyleSheetImpl::HasStateDependentStyle(StateRuleProcessorData* aData,
 NS_IMETHODIMP
 HTMLStyleSheetImpl::HasAttributeDependentStyle(AttributeRuleProcessorData* aData,
                                                nsIAtom* aMedium,
-                                               PRBool* aResult)
+                                               nsReStyleHint* aResult)
 {
   // Result is true for |href| changes on HTML links if we have link rules.
   nsIStyledContent *styledContent = aData->mStyledContent;
@@ -864,7 +818,7 @@ HTMLStyleSheetImpl::HasAttributeDependentStyle(AttributeRuleProcessorData* aData
       styledContent &&
       styledContent->IsContentOfType(nsIContent::eHTML) &&
       aData->mContentTag == nsHTMLAtoms::a) {
-    *aResult = PR_TRUE;
+    *aResult = eReStyle_Self;
     return NS_OK;
   }
 
@@ -872,14 +826,12 @@ HTMLStyleSheetImpl::HasAttributeDependentStyle(AttributeRuleProcessorData* aData
   // to descendants of body, when we're already reresolving.
 
   // Handle the content style rules.
-  if (styledContent) {
-    if (styledContent->HasAttributeDependentStyle(aData->mAttribute)) {
-      *aResult = PR_TRUE;
-      return NS_OK;
-    }
+  if (styledContent && styledContent->IsAttributeMapped(aData->mAttribute)) {
+    *aResult = eReStyle_Self;
+    return NS_OK;
   }
 
-  *aResult = PR_FALSE;
+  *aResult = nsReStyleHint(0);
   return NS_OK;
 }
 
@@ -1139,8 +1091,8 @@ HTMLStyleSheetImpl::SetVisitedLinkColor(nscolor aColor)
 }
 
 NS_IMETHODIMP
-HTMLStyleSheetImpl::UniqueMappedAttributes(nsIHTMLMappedAttributes* aMapped,
-                                           nsIHTMLMappedAttributes*& aUniqueMapped)
+HTMLStyleSheetImpl::UniqueMappedAttributes(nsMappedAttributes* aMapped,
+                                           nsMappedAttributes*& aUniqueMapped)
 {
   aUniqueMapped = nsnull;
   if (!mMappedAttrTable.ops) {
@@ -1158,7 +1110,6 @@ HTMLStyleSheetImpl::UniqueMappedAttributes(nsIHTMLMappedAttributes* aMapped,
   if (!entry->mAttributes) {
     // We added a new entry to the hashtable, so we have a new unique set.
     entry->mAttributes = aMapped;
-    aMapped->SetUniqued(PR_TRUE);
   }
   aUniqueMapped = entry->mAttributes;
   NS_ADDREF(aUniqueMapped);
@@ -1167,14 +1118,9 @@ HTMLStyleSheetImpl::UniqueMappedAttributes(nsIHTMLMappedAttributes* aMapped,
 }
 
 NS_IMETHODIMP
-HTMLStyleSheetImpl::DropMappedAttributes(nsIHTMLMappedAttributes* aMapped)
+HTMLStyleSheetImpl::DropMappedAttributes(nsMappedAttributes* aMapped)
 {
   NS_ENSURE_TRUE(aMapped, NS_OK);
-
-  PRBool inTable = PR_FALSE;
-  aMapped->GetUniqued(inTable);
-  if (!inTable)
-    return NS_OK;
 
   NS_ASSERTION(mMappedAttrTable.ops, "table uninitialized");
 #ifdef DEBUG

@@ -59,11 +59,12 @@
 #include "nsXBLPrototypeBinding.h"
 #include "nsIConsoleService.h"
 #include "nsIScriptError.h"
+#include "nsIStringBundle.h"
 
 nsresult
 NS_NewXBLContentSink(nsIXMLContentSink** aResult,
                      nsIDocument* aDoc,
-                     nsIURI* aURL,
+                     nsIURI* aURI,
                      nsISupports* aContainer)
 {
   NS_ENSURE_ARG_POINTER(aResult);
@@ -73,7 +74,7 @@ NS_NewXBLContentSink(nsIXMLContentSink** aResult,
   NS_ENSURE_TRUE(it, NS_ERROR_OUT_OF_MEMORY);
 
   nsCOMPtr<nsIXMLContentSink> kungFuDeathGrip = it;
-  nsresult rv = it->Init(aDoc, aURL, aContainer);
+  nsresult rv = it->Init(aDoc, aURI, aContainer);
   NS_ENSURE_SUCCESS(rv, rv);
 
   return CallQueryInterface(it, aResult);
@@ -101,11 +102,11 @@ nsXBLContentSink::~nsXBLContentSink()
 
 nsresult
 nsXBLContentSink::Init(nsIDocument* aDoc,
-                       nsIURI* aURL,
+                       nsIURI* aURI,
                        nsISupports* aContainer)
 {
   nsresult rv;
-  rv = nsXMLContentSink::Init(aDoc, aURL, aContainer, nsnull);
+  rv = nsXMLContentSink::Init(aDoc, aURI, aContainer, nsnull);
   return rv;
 }
 
@@ -169,24 +170,31 @@ nsXBLContentSink::FlushText(PRBool aCreateTextNode,
     return NS_OK;
   }
 
-  PRBool isWS = PR_TRUE;
-  if (mTextLength > 0) {
-    const PRUnichar* cp = mText;
-    const PRUnichar* end = mText + mTextLength;
-    while (cp < end) {
-      PRUnichar ch = *cp++;
-      if (!XP_IS_SPACE(ch)) {
-        isWS = PR_FALSE;
-        break;
+  nsIContent* content = GetCurrentContent();
+  if (content && (content->GetNodeInfo()->NamespaceEquals(kNameSpaceID_XBL) || (
+      content->GetNodeInfo()->NamespaceEquals(kNameSpaceID_XUL) &&
+      content->Tag() != nsXULAtoms::label &&
+      content->Tag() != nsXULAtoms::description))) {
+
+    PRBool isWS = PR_TRUE;
+    if (mTextLength > 0) {
+      const PRUnichar* cp = mText;
+      const PRUnichar* end = mText + mTextLength;
+      while (cp < end) {
+        PRUnichar ch = *cp++;
+        if (!XP_IS_SPACE(ch)) {
+          isWS = PR_FALSE;
+          break;
+        }
       }
     }
-  }
 
-  if (isWS && mTextLength > 0) {
-    mTextLength = 0;
-    if (aDidFlush)
-      *aDidFlush = PR_TRUE;
-    return NS_OK;
+    if (isWS && mTextLength > 0) {
+      mTextLength = 0;
+      if (aDidFlush)
+        *aDidFlush = PR_TRUE;
+      return NS_OK;
+    }
   }
 
   return nsXMLContentSink::FlushText(aCreateTextNode, aDidFlush);
@@ -224,6 +232,57 @@ nsXBLContentSink::ReportError(const PRUnichar* aErrorText,
 
   // Most of what this does won't be too useful, but whatever...
   return nsXMLContentSink::ReportError(aErrorText, aSourceText);
+}
+
+nsresult
+nsXBLContentSink::ReportUnexpectedElement(nsIAtom* aElementName,
+                                          PRUint32 aLineNumber)
+{
+  // XXX we should really somehow stop the parse and drop the binding
+  // instead of just letting the XML sink build the content model like
+  // we do...
+  mState = eXBL_Error;
+  nsAutoString elementName;
+  aElementName->ToString(elementName);
+
+  nsresult rv;
+  nsCOMPtr<nsIConsoleService> consoleService =
+    do_GetService(NS_CONSOLESERVICE_CONTRACTID, &rv);
+  NS_ENSURE_SUCCESS(rv, rv);
+  nsCOMPtr<nsIScriptError> errorObject =
+    do_CreateInstance(NS_SCRIPTERROR_CONTRACTID, &rv);
+  NS_ENSURE_SUCCESS(rv, rv);
+  nsCOMPtr<nsIStringBundleService> stringBundleService =
+    do_GetService(NS_STRINGBUNDLE_CONTRACTID, &rv);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  nsCOMPtr<nsIStringBundle> bundle;
+  rv = stringBundleService->CreateBundle(
+           "chrome://global/locale/xbl.properties", getter_AddRefs(bundle));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  const PRUnichar* params[] = { elementName.get() };
+  
+  nsXPIDLString errorText;
+  rv = bundle->FormatStringFromName(NS_LITERAL_STRING("UnexpectedElement").get(),
+                                    params, NS_ARRAY_LENGTH(params),
+                                    getter_Copies(errorText));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  nsCAutoString documentURI;
+  mDocumentURI->GetSpec(documentURI);
+  
+  rv = errorObject->Init(errorText.get(),
+                         NS_ConvertUTF8toUCS2(documentURI).get(),
+                         EmptyString().get(), /* source line */
+                         aLineNumber,
+                         0,  /* column number */
+                         nsIScriptError::errorFlag,
+                         "XBL Content Sink");
+
+  NS_ENSURE_SUCCESS(rv, rv);
+  
+  return consoleService->LogMessage(errorObject);
 }
 
 NS_IMETHODIMP 
@@ -302,15 +361,16 @@ nsXBLContentSink::HandleEndElement(const PRUnichar *aName)
           mSecondaryState = eXBL_InMethod;
         return NS_OK;
       }
-
+      else if (mState == eXBL_InBindings && tagAtom == nsXBLAtoms::bindings) {
+        mState = eXBL_InDocument;
+      }
+      
       nsresult rv = nsXMLContentSink::HandleEndElement(aName);
       if (NS_FAILED(rv))
         return rv;
 
-      if (mState == eXBL_InImplementation && tagAtom == nsXBLAtoms::implementation)
-        mState = eXBL_InBinding;
-      else if (mState == eXBL_InBinding && tagAtom == nsXBLAtoms::binding) {
-        mState = eXBL_InDocument;
+      if (mState == eXBL_InBinding && tagAtom == nsXBLAtoms::binding) {
+        mState = eXBL_InBindings;
         mBinding->Initialize();
         mBinding = nsnull; // Clear our current binding ref.
       }
@@ -338,39 +398,68 @@ nsXBLContentSink::OnOpenContainer(const PRUnichar **aAtts,
                                   nsIAtom* aTagName,
                                   PRUint32 aLineNumber)
 {
+  if (mState == eXBL_Error) {
+    return PR_TRUE;
+  }
+  
   PRBool ret = PR_TRUE;
   if (aNameSpaceID == kNameSpaceID_XBL) {
     if (aTagName == nsXBLAtoms::bindings) {
+      if (mState != eXBL_InDocument) {
+        ReportUnexpectedElement(aTagName, aLineNumber);
+        return PR_TRUE;
+      }
+      
       NS_NewXBLDocumentInfo(mDocument, &mDocInfo);
-      if (!mDocInfo)
-        return NS_ERROR_FAILURE;
+      if (!mDocInfo) {
+        mState = eXBL_Error;
+        return PR_TRUE;
+      }
 
       mDocument->GetBindingManager()->PutXBLDocumentInfo(mDocInfo);
 
-      nsIURI *url = mDocument->GetDocumentURL();
+      nsIURI *uri = mDocument->GetDocumentURI();
       
       PRBool isChrome = PR_FALSE;
       PRBool isRes = PR_FALSE;
 
-      url->SchemeIs("chrome", &isChrome);
-      url->SchemeIs("resource", &isRes);
+      uri->SchemeIs("chrome", &isChrome);
+      uri->SchemeIs("resource", &isRes);
       mIsChromeOrResource = isChrome || isRes;
       
       nsIXBLDocumentInfo* info = mDocInfo;
       NS_RELEASE(info); // We keep a weak ref. We've created a cycle between doc/binding manager/doc info.
+      mState = eXBL_InBindings; 
     }
-    else if (aTagName == nsXBLAtoms::binding)
+    else if (aTagName == nsXBLAtoms::binding) {
+      if (mState != eXBL_InBindings) {
+        ReportUnexpectedElement(aTagName, aLineNumber);
+        return PR_TRUE;
+      }
       mState = eXBL_InBinding;
+    }
     else if (aTagName == nsXBLAtoms::handlers) {
+      if (mState != eXBL_InBinding) {
+        ReportUnexpectedElement(aTagName, aLineNumber);
+        return PR_TRUE;
+      }
       mState = eXBL_InHandlers;
       ret = PR_FALSE; // The XML content sink should not do anything with <handlers>.
     }
     else if (aTagName == nsXBLAtoms::handler) {
+      if (mState != eXBL_InHandlers) {
+        ReportUnexpectedElement(aTagName, aLineNumber);
+        return PR_TRUE;
+      }
       mSecondaryState = eXBL_InHandler;
       ConstructHandler(aAtts, aLineNumber);
       ret = PR_FALSE;
     }
     else if (aTagName == nsXBLAtoms::resources) {
+      if (mState != eXBL_InBinding) {
+        ReportUnexpectedElement(aTagName, aLineNumber);
+        return PR_TRUE;
+      }
       mState = eXBL_InResources;
       ret = PR_FALSE; // The XML content sink should ignore all <resources>.
     }
@@ -380,6 +469,10 @@ nsXBLContentSink::OnOpenContainer(const PRUnichar **aAtts,
       ret = PR_FALSE; // The XML content sink should ignore everything within a <resources> block.
     }
     else if (aTagName == nsXBLAtoms::implementation) {
+      if (mState != eXBL_InBinding) {
+        ReportUnexpectedElement(aTagName, aLineNumber);
+        return PR_TRUE;
+      }
       mState = eXBL_InImplementation;
       ConstructImplementation(aAtts);
       ret = PR_FALSE; // The XML content sink should ignore the <implementation>.
@@ -776,16 +869,17 @@ nsXBLContentSink::CreateElement(const PRUnichar** aAtts, PRUint32 aAttsCount,
 
   prototype->mNodeInfo = aNodeInfo;
 
-  // Reset the refcnt to 0.  Normally XUL prototype elements get a refcnt of 1
-  // to represent ownership by the XUL prototype document.  In our case we have
-  // no prototype document, and our initial ref count of 1 will come from being
-  // wrapped by a real XUL element in the Create call below.
-  prototype->mRefCnt = 0;
-
   AddAttributesToXULPrototype(aAtts, aAttsCount, prototype);
 
-  // Following this function call, the prototype's ref count will be 1.
-  return nsXULElement::Create(prototype, mDocument, PR_FALSE, aResult);
+  nsresult rv = nsXULElement::Create(prototype, mDocument, PR_FALSE, aResult);
+
+  // XUL prototype elements start with a refcnt of 1 to represent
+  // ownership by the XUL prototype document.  In our case we have no
+  // prototype document, so release that reference.  The Create call
+  // above took a reference.
+  prototype->Release();
+
+  return rv;
 #endif
 }
 
@@ -821,9 +915,10 @@ nsXBLContentSink::AddAttributesToXULPrototype(const PRUnichar **aAtts,
 
   // Copy the attributes into the prototype
   nsCOMPtr<nsIAtom> nameSpacePrefix, nameAtom;
-  
-  for (; *aAtts; aAtts += 2) {
-    const nsDependentString key(aAtts[0]);
+
+  PRUint32 i;  
+  for (i = 0; i < aAttsCount; ++i) {
+    const nsDependentString key(aAtts[i * 2]);
 
     SplitXMLName(key, getter_AddRefs(nameSpacePrefix),
                  getter_AddRefs(nameAtom));
@@ -845,43 +940,19 @@ nsXBLContentSink::AddAttributesToXULPrototype(const PRUnichar **aAtts,
       nameSpacePrefix = nsnull;
     } 
 
-    mNodeInfoManager->GetNodeInfo(nameAtom, nameSpacePrefix, nameSpaceID,
-                                  getter_AddRefs(attrs->mNodeInfo));
+    if (nameSpaceID == kNameSpaceID_None) {
+      attrs[i].mName.SetTo(nameAtom);
+    }
+    else {
+      nsCOMPtr<nsINodeInfo> ni;
+      mNodeInfoManager->GetNodeInfo(nameAtom, nameSpacePrefix, nameSpaceID,
+                                    getter_AddRefs(ni));
+      attrs[i].mName.SetTo(ni);
+    }
     
-    attrs->mValue.SetValue(nsDependentString(aAtts[1]));
-    ++attrs;
-  }
-
-  // XUL elements may require some additional work to compute
-  // derived information.
-  if (aElement->mNodeInfo->NamespaceEquals(kNameSpaceID_XUL)) {
-    nsAutoString value;
-
-    // Compute the element's class list if the element has a 'class' attribute.
-    rv = aElement->GetAttr(kNameSpaceID_None, nsXULAtoms::clazz, value);
-    if (NS_FAILED(rv)) return rv;
-
-    if (rv == NS_CONTENT_ATTR_HAS_VALUE) {
-      rv = nsClassList::ParseClasses(&aElement->mClassList, value);
-      if (NS_FAILED(rv)) return rv;
-    }
-
-    // Parse the element's 'style' attribute
-    rv = aElement->GetAttr(kNameSpaceID_None, nsHTMLAtoms::style, value);
-    if (NS_FAILED(rv)) return rv;
-
-    if (rv == NS_CONTENT_ATTR_HAS_VALUE) {
-      if (!mCSSParser) {
-          mCSSParser = do_CreateInstance(kCSSParserCID, &rv);
-          NS_ENSURE_SUCCESS(rv, rv);
-      }
-
-      rv = mCSSParser->ParseStyleAttribute(value, mDocumentURL,
-                             getter_AddRefs(aElement->mInlineStyleRule));
-
-      NS_ASSERTION(NS_SUCCEEDED(rv), "unable to parse style rule");
-      if (NS_FAILED(rv)) return rv;
-    }
+    rv = aElement->SetAttrAt(i, nsDependentString(aAtts[i * 2 + 1]),
+                             mDocumentURI); 
+    NS_ENSURE_SUCCESS(rv, rv);
   }
 
   return NS_OK;

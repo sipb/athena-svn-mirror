@@ -56,6 +56,7 @@
 #include "nsSOCKSSocketProvider.h"
 #include "nsCacheService.h"
 #include "nsIOThreadPool.h"
+#include "nsMimeTypes.h"
 
 #include "nsNetCID.h"
 
@@ -112,12 +113,6 @@ NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsSyncStreamListener, Init)
 #include "nsAppleFileDecoder.h"
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsAppleFileDecoder)
 #endif
-
-///////////////////////////////////////////////////////////////////////////////
-
-#include "nsMIMEInfoImpl.h"
-
-NS_GENERIC_FACTORY_CONSTRUCTOR(nsMIMEInfoImpl)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -263,7 +258,8 @@ nsresult NS_NewStreamConv(nsStreamConverterService **aStreamConv);
 #define MULTI_MIXED_X                "?from=multipart/x-mixed-replace&to=*/*"
 #define MULTI_MIXED                  "?from=multipart/mixed&to=*/*"
 #define MULTI_BYTERANGES             "?from=multipart/byteranges&to=*/*"
-#define UNKNOWN_CONTENT              "?from=application/x-unknown-content-type&to=*/*"
+#define UNKNOWN_CONTENT              "?from=" UNKNOWN_CONTENT_TYPE "&to=*/*"
+#define MAYBE_TEXT                   "?from=" APPLICATION_MAYBE_TEXT "&to=*/*"
 #define GZIP_TO_UNCOMPRESSED         "?from=gzip&to=uncompressed"
 #define XGZIP_TO_UNCOMPRESSED        "?from=x-gzip&to=uncompressed"
 #define COMPRESS_TO_UNCOMPRESSED     "?from=compress&to=uncompressed"
@@ -283,6 +279,7 @@ static const char *const g_StreamConverterArray[] = {
         MULTI_MIXED,
         MULTI_BYTERANGES,
         UNKNOWN_CONTENT,
+        MAYBE_TEXT,
         GZIP_TO_UNCOMPRESSED,
         XGZIP_TO_UNCOMPRESSED,
         COMPRESS_TO_UNCOMPRESSED,
@@ -515,6 +512,31 @@ CreateNewUnknownDecoderFactory(nsISupports *aOuter, REFNSIID aIID, void **aResul
   nsUnknownDecoder *inst;
   
   inst = new nsUnknownDecoder();
+  if (!inst) {
+    return NS_ERROR_OUT_OF_MEMORY;
+  }
+  NS_ADDREF(inst);
+  rv = inst->QueryInterface(aIID, aResult);
+  NS_RELEASE(inst);
+
+  return rv;
+}
+
+static NS_IMETHODIMP
+CreateNewBinaryDetectorFactory(nsISupports *aOuter, REFNSIID aIID, void **aResult)
+{
+  nsresult rv;
+
+  if (!aResult) {
+    return NS_ERROR_NULL_POINTER;
+  }
+  *aResult = nsnull;
+
+  if (aOuter) {
+    return NS_ERROR_NO_AGGREGATION;
+  }
+
+  nsBinaryDetector* inst = new nsBinaryDetector();
   if (!inst) {
     return NS_ERROR_OUT_OF_MEMORY;
   }
@@ -792,6 +814,12 @@ static const nsModuleComponentInfo gNetModuleInfo[] = {
       CreateNewUnknownDecoderFactory
     },
 
+    { "Binary Detector",
+      NS_BINARYDETECTOR_CID,
+      NS_ISTREAMCONVERTER_KEY MAYBE_TEXT,
+      CreateNewBinaryDetectorFactory
+    },
+
     { "HttpCompressConverter", 
       NS_HTTPCOMPRESSCONVERTER_CID,
       NS_ISTREAMCONVERTER_KEY GZIP_TO_UNCOMPRESSED,
@@ -844,12 +872,6 @@ static const nsModuleComponentInfo gNetModuleInfo[] = {
     },
 
     // from netwerk/mime:
-    { "xml mime INFO", 
-      NS_MIMEINFO_CID,
-      NS_MIMEINFO_CONTRACTID,
-      nsMIMEInfoImplConstructor
-    },
-
     { "mime header param", 
       NS_MIMEHEADERPARAM_CID,
       NS_MIMEHEADERPARAM_CONTRACTID,

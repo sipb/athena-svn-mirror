@@ -24,6 +24,8 @@
  *   Roland Mainz <roland.mainz@informatik.med.uni-giessen.de>
  *   Brian Stell <bstell@ix.netcom.com>
  *   Morten Nilsen <morten@nilsen.com>
+ *   Jungshik Shin <jshin@mailaps.org>
+ *   IBM Corporation
  *
  *
  * Alternatively, the contents of this file may be used under the terms of
@@ -218,9 +220,6 @@ static gint ISO10646Convert(nsFontCharSetInfo* aSelf, XFontStruct* aFont,
 static nsFontCharSetInfo Unknown = { nsnull };
 static nsFontCharSetInfo Special = { nsnull };
 
-static nsFontCharSetInfo CP1251 =
-  { "windows-1251", SingleByteConvert, 0,
-    TT_OS2_CPR1_CYRILLIC, TT_OS2_CPR2_RUSSIAN };
 static nsFontCharSetInfo USASCII =
   { "us-ascii", SingleByteConvert, 0,
     TT_OS2_CPR1_LATIN1 | TT_OS2_CPR1_MAC_ROMAN,
@@ -251,6 +250,9 @@ static nsFontCharSetInfo ISO885968x =
       TT_OS2_CPR1_ARABIC, TT_OS2_CPR2_ARABIC | TT_OS2_CPR2_ARABIC_708 };
 static nsFontCharSetInfo ISO8859616 =
   { "x-iso-8859-6-16", SingleByteConvert, 0,
+      TT_OS2_CPR1_ARABIC, TT_OS2_CPR2_ARABIC | TT_OS2_CPR2_ARABIC_708 };
+static nsFontCharSetInfo IBM1046 =
+  { "x-IBM1046", SingleByteConvert, 0,
       TT_OS2_CPR1_ARABIC, TT_OS2_CPR2_ARABIC | TT_OS2_CPR2_ARABIC_708 };
 static nsFontCharSetInfo ISO88597 =
   { "ISO-8859-7", SingleByteConvert, 0,
@@ -368,6 +370,23 @@ static nsFontCharSetInfo JamoTTF =
 static nsFontCharSetInfo TamilTTF =
   { "x-tamilttf-0", DoubleByteConvert, 0,
     0, 0 };
+static nsFontCharSetInfo CP1250 =
+  { "windows-1250", SingleByteConvert, 0,
+    TT_OS2_CPR1_LATIN2, TT_OS2_CPR2_LATIN2 };
+static nsFontCharSetInfo CP1251 =
+  { "windows-1251", SingleByteConvert, 0,
+    TT_OS2_CPR1_CYRILLIC, TT_OS2_CPR2_RUSSIAN };
+static nsFontCharSetInfo CP1252 =
+  { "windows-1252", SingleByteConvert, 0,
+    TT_OS2_CPR1_LATIN1 | TT_OS2_CPR1_MAC_ROMAN,
+    TT_OS2_CPR2_CA_FRENCH |  TT_OS2_CPR2_PORTUGESE
+    | TT_OS2_CPR2_WE_LATIN1 |  TT_OS2_CPR2_US };
+static nsFontCharSetInfo CP1253 =
+  { "windows-1253", SingleByteConvert, 0,
+    TT_OS2_CPR1_GREEK, TT_OS2_CPR2_GREEK | TT_OS2_CPR2_GREEK_437G };
+static nsFontCharSetInfo CP1257 =
+  { "windows-1257", SingleByteConvert, 0,
+    TT_OS2_CPR1_BALTIC, TT_OS2_CPR2_BALTIC };
 
 #ifdef SUNCTL
 /* Hindi range currently unsupported in FT2 range. Change TT* once we 
@@ -410,6 +429,8 @@ static nsFontCharSetInfo Mathematica5 =
 
 static nsFontLangGroup FLG_WESTERN = { "x-western",     nsnull };
 static nsFontLangGroup FLG_RUSSIAN = { "x-cyrillic",    nsnull };
+static nsFontLangGroup FLG_BALTIC  = { "x-baltic",      nsnull };
+static nsFontLangGroup FLG_CE      = { "x-central-euro",nsnull };
 static nsFontLangGroup FLG_GREEK   = { "el",            nsnull };
 static nsFontLangGroup FLG_TURKISH = { "tr",            nsnull };
 static nsFontLangGroup FLG_HEBREW  = { "he",            nsnull };
@@ -522,6 +543,7 @@ static nsFontCharSetMap gCharSetMap[] =
   { "hpbig5-",            &FLG_ZHTW,    &Big5          },
   { "hphkbig5-",          &FLG_ZHHK,    &HKSCS         },
   { "hproc16-",           &FLG_NONE,    &Unknown       },
+  { "ibm-1046",           &FLG_ARABIC,  &IBM1046       },
   { "ibm-1252",           &FLG_NONE,    &Unknown       },
   { "ibm-850",            &FLG_NONE,    &Unknown       },
   { "ibm-fontspecific",   &FLG_NONE,    &Unknown       },
@@ -533,15 +555,15 @@ static nsFontCharSetMap gCharSetMap[] =
   { "ibm-udctw",          &FLG_NONE,    &Unknown       },
   { "iso646.1991-irv",    &FLG_NONE,    &Unknown       },
   { "iso8859-1",          &FLG_WESTERN, &ISO88591      },
-  { "iso8859-13",         &FLG_WESTERN, &ISO885913     },
+  { "iso8859-13",         &FLG_BALTIC,  &ISO885913     },
   { "iso8859-15",         &FLG_WESTERN, &ISO885915     },
   { "iso8859-1@cn",       &FLG_NONE,    &Unknown       },
   { "iso8859-1@kr",       &FLG_NONE,    &Unknown       },
   { "iso8859-1@tw",       &FLG_NONE,    &Unknown       },
   { "iso8859-1@zh",       &FLG_NONE,    &Unknown       },
-  { "iso8859-2",          &FLG_WESTERN, &ISO88592      },
+  { "iso8859-2",          &FLG_CE,      &ISO88592      },
   { "iso8859-3",          &FLG_WESTERN, &ISO88593      },
-  { "iso8859-4",          &FLG_WESTERN, &ISO88594      },
+  { "iso8859-4",          &FLG_BALTIC,  &ISO88594      },
   { "iso8859-5",          &FLG_RUSSIAN, &ISO88595      },
   { "iso8859-6",          &FLG_ARABIC,  &ISO88596      },
   { "iso8859-6.8x",       &FLG_ARABIC,  &ISO885968x    },
@@ -566,7 +588,11 @@ static nsFontCharSetMap gCharSetMap[] =
   { "ksc5601.1987-1",     &FLG_KO,      &KSC5601       },
   { "ksc5601.1992-3",     &FLG_KO,      &JohabNoAscii  },
   { "koreanjamo-0",       &FLG_KO,      &JamoTTF       },
+  { "microsoft-cp1250",   &FLG_CE,      &CP1250        },
   { "microsoft-cp1251",   &FLG_RUSSIAN, &CP1251        },
+  { "microsoft-cp1252",   &FLG_WESTERN, &CP1252        },
+  { "microsoft-cp1253",   &FLG_GREEK,   &CP1253        },
+  { "microsoft-cp1257",   &FLG_BALTIC,  &CP1257        },
   { "misc-fontspecific",  &FLG_NONE,    &Unknown       },
   { "sgi-fontspecific",   &FLG_NONE,    &Unknown       },
   { "sun-fontspecific",   &FLG_NONE,    &Unknown       },
@@ -1430,7 +1456,7 @@ NS_IMETHODIMP nsFontMetricsGTK::Init(const nsFont& aFont, nsIAtom* aLangGroup,
   mDeviceContext = aContext;
 
   float app2dev;
-  mDeviceContext->GetAppUnitsToDevUnits(app2dev);
+  app2dev = mDeviceContext->AppUnitsToDevUnits();
 
   mPixelSize = NSToIntRound(app2dev * mFont->size);
   // Make sure to clamp the pixel size to something reasonable so we
@@ -1529,7 +1555,7 @@ NS_IMETHODIMP  nsFontMetricsGTK::Destroy()
 void nsFontMetricsGTK::RealizeFont()
 {
   float f;
-  mDeviceContext->GetDevUnitsToAppUnits(f);
+  f = mDeviceContext->DevUnitsToAppUnits();
 
   if (mWesternFont->IsFreeTypeFont()) {
     nsFreeTypeFont *ft = (nsFreeTypeFont *)mWesternFont;
@@ -1615,7 +1641,7 @@ void nsFontMetricsGTK::RealizeFont()
   }
   nsXFont *xFont = mWesternFont->GetXFont();
   XFontStruct *fontInfo = xFont->GetXFontStruct();
-  mDeviceContext->GetDevUnitsToAppUnits(f);
+  f = mDeviceContext->DevUnitsToAppUnits();
 
   nscoord lineSpacing = nscoord((fontInfo->ascent + fontInfo->descent) * f);
   mEmHeight = PR_MAX(1, nscoord(mWesternFont->mSize * f));
@@ -3467,7 +3493,7 @@ nsFontMetricsGTK::GetWidth  (const char* aString, PRUint32 aLength,
     }
 
     float f;
-    mDeviceContext->GetDevUnitsToAppUnits(f);
+    f = mDeviceContext->DevUnitsToAppUnits();
     aWidth = NSToCoordRound(rawWidth * f);
 
     return NS_OK;
@@ -3532,7 +3558,7 @@ nsFontMetricsGTK::GetWidth  (const PRUnichar* aString, PRUint32 aLength,
     }
 
     float f;
-    mDeviceContext->GetDevUnitsToAppUnits(f);
+    f = mDeviceContext->DevUnitsToAppUnits();
     aWidth = NSToCoordRound(rawWidth * f);
 
     if (nsnull != aFontID)
@@ -3821,7 +3847,7 @@ nsFontMetricsGTK::GetBoundingMetrics(const char *aString, PRUint32 aLength,
     }
 
     float P2T;
-    mDeviceContext->GetDevUnitsToAppUnits(P2T);
+    P2T = mDeviceContext->DevUnitsToAppUnits();
 
     aBoundingMetrics.leftBearing =
         NSToCoordRound(aBoundingMetrics.leftBearing * P2T);
@@ -3911,7 +3937,7 @@ nsFontMetricsGTK::GetBoundingMetrics(const PRUnichar *aString,
 
     // convert to app units
     float P2T;
-    mDeviceContext->GetDevUnitsToAppUnits(P2T);
+    P2T = mDeviceContext->DevUnitsToAppUnits();
 
     aBoundingMetrics.leftBearing =
         NSToCoordRound(aBoundingMetrics.leftBearing * P2T);
@@ -3999,7 +4025,7 @@ nsFontMetricsGTK::GetTextDimensions (const PRUnichar* aString,
     }
 
     float P2T;
-    mDeviceContext->GetDevUnitsToAppUnits(P2T);
+    P2T = mDeviceContext->DevUnitsToAppUnits();
 
     aDimensions.width = NSToCoordRound(rawWidth * P2T);
     aDimensions.ascent = NSToCoordRound(rawAscent * P2T);
@@ -4429,7 +4455,7 @@ nsFontMetricsGTK::GetTextDimensions (const PRUnichar*    aString,
     offsets.AppendElement((void*)aString);
 
     float f;
-    mDeviceContext->GetDevUnitsToAppUnits(f);
+    f = mDeviceContext->DevUnitsToAppUnits();
     BreakGetTextDimensionsData data = { f, aAvailWidth,
                                         aBreaks, aNumBreaks,
                                         spaceWidth, aveCharWidth,
@@ -5686,11 +5712,11 @@ FFRESubstituteEncoding(nsACString &aFFREName,
 nsFontGTK*
 nsFontMetricsGTK::TryNodes(nsACString &aFFREName, PRUint32 aChar)
 {
-  FIND_FONT_PRINTF(("        TryNodes aFFREName = %s", 
-                        PromiseFlatCString(aFFREName).get()));
-  const char *FFREName = PromiseFlatCString(aFFREName).get();
+  const nsPromiseFlatCString& FFREName = PromiseFlatCString(aFFREName);
+
+  FIND_FONT_PRINTF(("        TryNodes aFFREName = %s", FFREName.get()));
   nsCStringKey key(FFREName);
-  PRBool anyFoundry = (FFREName[0] == '*');
+  PRBool anyFoundry = (FFREName.First() == '*');
   nsFontNodeArray* nodes = (nsFontNodeArray*) gCachedFFRESearches->Get(&key);
   if (!nodes) {
     nsCAutoString pattern;

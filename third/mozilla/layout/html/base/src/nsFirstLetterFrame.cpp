@@ -43,6 +43,8 @@
 #include "nsHTMLAtoms.h"
 #include "nsLayoutAtoms.h"
 #include "nsAutoPtr.h"
+#include "nsStyleSet.h"
+#include "nsFrameManager.h"
 
 #define nsFirstLetterFrameSuper nsHTMLContainerFrame
 
@@ -142,7 +144,8 @@ nsFirstLetterFrame::Init(nsIPresContext*  aPresContext,
     // a style context like we would for a text node.
     nsStyleContext* parentStyleContext = aContext->GetParent();
     if (parentStyleContext) {
-      newSC = aPresContext->ResolveStyleContextForNonElement(parentStyleContext);
+      newSC = aPresContext->StyleSet()->
+        ResolveStyleForNonElement(parentStyleContext);
       if (newSC)
         aContext = newSC;
     }
@@ -158,8 +161,10 @@ nsFirstLetterFrame::SetInitialChildList(nsIPresContext* aPresContext,
                                         nsIFrame*       aChildList)
 {
   mFrames.SetFrames(aChildList);
+  nsFrameManager *frameManager = aPresContext->FrameManager();
+
   for (nsIFrame* frame = aChildList; frame; frame = frame->GetNextSibling()) {
-    aPresContext->ReParentStyleContext(frame, mStyleContext);
+    frameManager->ReParentStyleContext(frame, mStyleContext);
   }
   return NS_OK;
 }
@@ -169,10 +174,7 @@ nsFirstLetterFrame::SetSelected(nsIPresContext* aPresContext, nsIDOMRange *aRang
 {
   if (aSelected && ParentDisablesSelection())
     return NS_OK;
-  nsIFrame *child;
-  nsresult result = FirstChild(aPresContext, nsnull, &child);
-  if (NS_FAILED(result))
-    return NS_OK;
+  nsIFrame *child = GetFirstChild(nsnull);
   while (child)
   {
     child->SetSelected(aPresContext, aRange, aSelected, aSpread);
@@ -373,7 +375,7 @@ nsFirstLetterFrame::DrainOverflowFrames(nsIPresContext* aPresContext)
     if (kidContent) {
       NS_ASSERTION(kidContent->IsContentOfType(nsIContent::eTEXT),
                    "should contain only text nodes");
-      sc = aPresContext->ResolveStyleContextForNonElement(mStyleContext);
+      sc = aPresContext->StyleSet()->ResolveStyleForNonElement(mStyleContext);
       if (sc) {
         kid->SetStyleContext(aPresContext, sc);
       }

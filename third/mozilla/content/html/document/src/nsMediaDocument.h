@@ -51,15 +51,15 @@ public:
   nsMediaDocument();
   virtual ~nsMediaDocument();
 
-  virtual nsresult  Init();
+  virtual nsresult Init();
 
-  NS_IMETHOD StartDocumentLoad(const char*         aCommand,
-                               nsIChannel*         aChannel,
-                               nsILoadGroup*       aLoadGroup,
-                               nsISupports*        aContainer,
-                               nsIStreamListener** aDocListener,
-                               PRBool              aReset = PR_TRUE,
-                               nsIContentSink*     aSink = nsnull);
+  virtual nsresult StartDocumentLoad(const char*         aCommand,
+                                     nsIChannel*         aChannel,
+                                     nsILoadGroup*       aLoadGroup,
+                                     nsISupports*        aContainer,
+                                     nsIStreamListener** aDocListener,
+                                     PRBool              aReset = PR_TRUE,
+                                     nsIContentSink*     aSink = nsnull);
 
 protected:
   virtual nsresult CreateSyntheticDocument();
@@ -82,7 +82,7 @@ protected:
                              const char* const* aFormatNames = sFormatNames,
                              PRInt32            aWidth = 0,
                              PRInt32            aHeight = 0,
-                             const nsAString&   aStatus = NS_LITERAL_STRING(""));
+                             const nsAString&   aStatus = EmptyString());
 
   nsCOMPtr<nsIStringBundle>     mStringBundle;
   static const char* const      sFormatNames[4];

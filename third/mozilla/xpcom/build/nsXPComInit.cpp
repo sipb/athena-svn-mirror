@@ -47,6 +47,7 @@
 #include "nsPersistentProperties.h"
 #include "nsScriptableInputStream.h"
 #include "nsBinaryStream.h"
+#include "nsStorageStream.h"
 
 #include "nsMemoryImpl.h"
 #include "nsDebugImpl.h"
@@ -79,6 +80,7 @@
 
 #include "nsThread.h"
 #include "nsProcess.h"
+#include "nsEnvironment.h"
 
 #include "nsEmptyEnumerator.h"
 
@@ -129,6 +131,8 @@ static NS_DEFINE_CID(kEventQueueServiceCID, NS_EVENTQUEUESERVICE_CID);
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsProcess)
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsEventQueueServiceImpl, Init)
 
+#define NS_ENVIRONMENT_CLASSNAME "Environment Service"
+
 #include "nsXPCOM.h"
 // ds/nsISupportsPrimitives
 #define NS_SUPPORTS_ID_CLASSNAME "Supports ID"
@@ -175,6 +179,7 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsTimerImpl)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsTimerManager)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsBinaryOutputStream)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsBinaryInputStream)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsStorageStream)
 
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsVariant)
 
@@ -287,6 +292,7 @@ static const nsModuleComponentInfo components[] = {
     COMPONENT(SCRIPTABLEINPUTSTREAM, nsScriptableInputStream::Create),
     COMPONENT(BINARYINPUTSTREAM, nsBinaryInputStreamConstructor),
     COMPONENT(BINARYOUTPUTSTREAM, nsBinaryOutputStreamConstructor),
+    COMPONENT(STORAGESTREAM, nsStorageStreamConstructor),
 
 #define NS_PROPERTIES_CLASSNAME  "Properties"
     COMPONENT(PROPERTIES, nsProperties::Create),
@@ -341,6 +347,7 @@ static const nsModuleComponentInfo components[] = {
 #define NS_DIRECTORY_SERVICE_CLASSNAME  "nsIFile Directory Service"
     COMPONENT(DIRECTORY_SERVICE, nsDirectoryService::Create),
     COMPONENT(PROCESS, nsProcessConstructor),
+    COMPONENT(ENVIRONMENT, nsEnvironment::Create),
 
     COMPONENT(STRINGINPUTSTREAM, nsStringInputStreamConstructor),
     COMPONENT(MULTIPLEXINPUTSTREAM, nsMultiplexInputStreamConstructor),
@@ -847,9 +854,29 @@ NS_GetFrozenFunctions(XPCOMFunctions *functions, const char* libraryPath)
     GET_FUNC(unregisterExitRoutine, UnregisterXPCOMExitRoutineFunc, "NS_UnregisterXPCOMExitRoutine");
 
     // these functions were added post 1.4 (need to check size of |functions|)
-    if (functions->size >= sizeof(XPCOMFunctions)) {
+    if (functions->size > offsetof(XPCOMFunctions, getTraceRefcnt)) {
         GET_FUNC(getDebug,          GetDebugFunc,                   "NS_GetDebug");
         GET_FUNC(getTraceRefcnt,    GetTraceRefcntFunc,             "NS_GetTraceRefcnt");
+    }
+
+    // these functions were added post 1.6 (need to check size of |functions|)
+    if (functions->size > offsetof(XPCOMFunctions, cstringCloneData)) {
+        GET_FUNC(stringContainerInit,    StringContainerInitFunc,        "NS_StringContainerInit");
+        GET_FUNC(stringContainerFinish,  StringContainerFinishFunc,      "NS_StringContainerFinish");
+        GET_FUNC(stringGetData,          StringGetDataFunc,              "NS_StringGetData");
+        GET_FUNC(stringSetData,          StringSetDataFunc,              "NS_StringSetData");
+        GET_FUNC(stringSetDataRange,     StringSetDataRangeFunc,         "NS_StringSetDataRange");
+        GET_FUNC(stringCopy,             StringCopyFunc,                 "NS_StringCopy");
+        GET_FUNC(cstringContainerInit,   CStringContainerInitFunc,       "NS_CStringContainerInit");
+        GET_FUNC(cstringContainerFinish, CStringContainerFinishFunc,     "NS_CStringContainerFinish");
+        GET_FUNC(cstringGetData,         CStringGetDataFunc,             "NS_CStringGetData");
+        GET_FUNC(cstringSetData,         CStringSetDataFunc,             "NS_CStringSetData");
+        GET_FUNC(cstringSetDataRange,    CStringSetDataRangeFunc,        "NS_CStringSetDataRange");
+        GET_FUNC(cstringCopy,            CStringCopyFunc,                "NS_CStringCopy");
+        GET_FUNC(cstringToUTF16,         CStringToUTF16,                 "NS_CStringToUTF16");
+        GET_FUNC(utf16ToCString,         UTF16ToCString,                 "NS_UTF16ToCString");
+        GET_FUNC(stringCloneData,        StringCloneDataFunc,            "NS_StringCloneData");
+        GET_FUNC(cstringCloneData,       CStringCloneDataFunc,           "NS_CStringCloneData");
     }
 
     rv = NS_OK;

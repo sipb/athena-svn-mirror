@@ -40,7 +40,6 @@
 #include "prprf.h"
 
 #include "nsCOMPtr.h"
-#include "nsIPref.h"
 
 #include "nsXPIDLString.h"
 #include "nsIStringBundle.h"
@@ -67,7 +66,6 @@ nsPop3IncomingServer::nsPop3IncomingServer()
     m_capabilityFlags = 
         POP3_AUTH_MECH_UNDEFINED |
         POP3_HAS_AUTH_USER |               // should be always there
-        POP3_XSENDER_UNDEFINED |
         POP3_GURL_UNDEFINED |
         POP3_UIDL_UNDEFINED |
         POP3_TOP_UNDEFINED |

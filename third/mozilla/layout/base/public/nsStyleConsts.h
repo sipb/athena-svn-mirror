@@ -41,12 +41,15 @@
 
 // XXX fold this into nsStyleContext and group by nsStyleXXX struct
 
-// Indicies into border/padding/margin arrays
+// Indices into border/padding/margin arrays
 #define NS_SIDE_TOP     0
 #define NS_SIDE_RIGHT   1
 #define NS_SIDE_BOTTOM  2
 #define NS_SIDE_LEFT    3
 
+// {margin,padding}-{left,right}-{ltr,rtl}-source
+#define NS_BOXPROP_SOURCE_PHYSICAL 0
+#define NS_BOXPROP_SOURCE_LOGICAL  1
 
 // box-sizing
 #define NS_STYLE_BOX_SIZING_CONTENT       0
@@ -248,13 +251,12 @@
 #define NS_STYLE_BORDER_STYLE_DASHED            4
 #define NS_STYLE_BORDER_STYLE_SOLID             5
 #define NS_STYLE_BORDER_STYLE_DOUBLE            6
-#define NS_STYLE_BORDER_STYLE_BLANK             7
-#define NS_STYLE_BORDER_STYLE_INSET             8
-#define NS_STYLE_BORDER_STYLE_OUTSET            9
-#define NS_STYLE_BORDER_STYLE_HIDDEN            10
-#define NS_STYLE_BORDER_STYLE_BG_INSET          11
-#define NS_STYLE_BORDER_STYLE_BG_OUTSET         12
-#define NS_STYLE_BORDER_STYLE_BG_SOLID          13
+#define NS_STYLE_BORDER_STYLE_INSET             7
+#define NS_STYLE_BORDER_STYLE_OUTSET            8
+#define NS_STYLE_BORDER_STYLE_HIDDEN            9
+#define NS_STYLE_BORDER_STYLE_BG_INSET          10
+#define NS_STYLE_BORDER_STYLE_BG_OUTSET         11
+#define NS_STYLE_BORDER_STYLE_BG_SOLID          12
 // a bit ORed onto the style for table border collapsing indicating that the style was 
 // derived from a table with its rules attribute set
 #define NS_STYLE_BORDER_STYLE_RULES_MASK      0x10  
@@ -506,7 +508,6 @@
 #define NS_STYLE_LIST_STYLE_MOZ_ETHIOPIC_HALEHAME_AM  52
 #define NS_STYLE_LIST_STYLE_MOZ_ETHIOPIC_HALEHAME_TI_ER  53
 #define NS_STYLE_LIST_STYLE_MOZ_ETHIOPIC_HALEHAME_TI_ET  54
-#define NS_STYLE_LIST_STYLE_BASIC                 100  // not in css
 
 // See nsStyleList
 #define NS_STYLE_LIST_STYLE_POSITION_INSIDE     0
@@ -536,6 +537,7 @@
 #define NS_STYLE_TEXT_DECORATION_BLINK          0x08
 #define NS_STYLE_TEXT_DECORATION_OVERRIDE_ALL   0x10
 #define NS_STYLE_TEXT_DECORATION_PREF_ANCHORS   0x20
+#define NS_STYLE_TEXT_DECORATION_LINES_MASK     (NS_STYLE_TEXT_DECORATION_UNDERLINE | NS_STYLE_TEXT_DECORATION_OVERLINE | NS_STYLE_TEXT_DECORATION_LINE_THROUGH)
 
 // See nsStyleText
 #define NS_STYLE_TEXT_TRANSFORM_NONE            0
@@ -626,20 +628,70 @@
 #define NS_STYLE_PAGE_BREAK_RIGHT               4
 
 #ifdef MOZ_SVG
+// Some of our constants must map to the same values as those defined in
+// nsISVG{,Path,Glyph}GeometrySource.idl/
+// I don't want to add a dependency on the SVG module
+// everywhere by #include'ing nsISVG{,Path,Glyph}GeometrySource.h, so these consts
+// have to be kept in sync manually.
+
+// dominant-baseline
+#define NS_STYLE_DOMINANT_BASELINE_AUTO              0
+#define NS_STYLE_DOMINANT_BASELINE_USE_SCRIPT        1
+#define NS_STYLE_DOMINANT_BASELINE_NO_CHANGE         2
+#define NS_STYLE_DOMINANT_BASELINE_RESET_SIZE        3
+#define NS_STYLE_DOMINANT_BASELINE_ALPHABETIC        4
+#define NS_STYLE_DOMINANT_BASELINE_HANGING           5
+#define NS_STYLE_DOMINANT_BASELINE_IDEOGRAPHIC       6
+#define NS_STYLE_DOMINANT_BASELINE_MATHEMATICAL      7
+#define NS_STYLE_DOMINANT_BASELINE_CENTRAL           8
+#define NS_STYLE_DOMINANT_BASELINE_MIDDLE            9
+#define NS_STYLE_DOMINANT_BASELINE_TEXT_AFTER_EDGE  10
+#define NS_STYLE_DOMINANT_BASELINE_TEXT_BEFORE_EDGE 11
+#define NS_STYLE_DOMINANT_BASELINE_TEXT_TOP         12
+#define NS_STYLE_DOMINANT_BASELINE_TEXT_BOTTOM      13
 
 // fill-rule
-#define NS_STYLE_FILL_RULE_NONZERO              0
-#define NS_STYLE_FILL_RULE_EVENODD              1
+#define NS_STYLE_FILL_RULE_NONZERO              0 /* == nsISVGGeometrySource::FILL_RULE_NONZERO */
+#define NS_STYLE_FILL_RULE_EVENODD              1 /* == nsISVGGeometrySource::FILL_RULE_EVENODD */
+
+// pointer-events
+#define NS_STYLE_POINTER_EVENTS_NONE            0
+#define NS_STYLE_POINTER_EVENTS_VISIBLEPAINTED  1
+#define NS_STYLE_POINTER_EVENTS_VISIBLEFILL     2
+#define NS_STYLE_POINTER_EVENTS_VISIBLESTROKE   3
+#define NS_STYLE_POINTER_EVENTS_VISIBLE         4
+#define NS_STYLE_POINTER_EVENTS_PAINTED         5
+#define NS_STYLE_POINTER_EVENTS_FILL            6
+#define NS_STYLE_POINTER_EVENTS_STROKE          7
+#define NS_STYLE_POINTER_EVENTS_ALL             8
+
+// shape-rendering
+#define NS_STYLE_SHAPE_RENDERING_AUTO               0 /* == nsISVGPathGeometrySource::SHAPE_RENDERING_AUTO */
+#define NS_STYLE_SHAPE_RENDERING_OPTIMIZESPEED      1 /* == nsISVGPathGeometrySource::SHAPE_RENDERING_OPTIMIZESPEED */
+#define NS_STYLE_SHAPE_RENDERING_CRISPEDGES         2 /* == nsISVGPathGeometrySource::SHAPE_RENDERING_CRISPEDGES */
+#define NS_STYLE_SHAPE_RENDERING_GEOMETRICPRECISION 3 /* == nsISVGPathGeometrySource::SHAPE_RENDERING_GEOMETRICPRECISION */
+
 
 // stroke-linecap
-#define NS_STYLE_STROKE_LINECAP_BUTT            0
-#define NS_STYLE_STROKE_LINECAP_ROUND           1
-#define NS_STYLE_STROKE_LINECAP_SQUARE          2
+#define NS_STYLE_STROKE_LINECAP_BUTT            0 /* == nsISVGGeometrySource::STROKE_LINECAP_BUTT */
+#define NS_STYLE_STROKE_LINECAP_ROUND           1 /* == nsISVGGeometrySource::STROKE_LINECAP_ROUND */
+#define NS_STYLE_STROKE_LINECAP_SQUARE          2 /* == nsISVGGeometrySource::STROKE_LINECAP_SQUARE */
 
 // stroke-linejoin
-#define NS_STYLE_STROKE_LINEJOIN_MITER          0
-#define NS_STYLE_STROKE_LINEJOIN_ROUND          1
-#define NS_STYLE_STROKE_LINEJOIN_BEVEL          2
+#define NS_STYLE_STROKE_LINEJOIN_MITER          0 /* == nsISVGGeometrySource::STROKE_LINEJOIN_MITER */
+#define NS_STYLE_STROKE_LINEJOIN_ROUND          1 /* == nsISVGGeometrySource::STROKE_LINEJOIN_ROUND */
+#define NS_STYLE_STROKE_LINEJOIN_BEVEL          2 /* == nsISVGGeometrySource::STROKE_LINEJOIN_BEVEL */
+
+// text-anchor
+#define NS_STYLE_TEXT_ANCHOR_START              0 
+#define NS_STYLE_TEXT_ANCHOR_MIDDLE             1 
+#define NS_STYLE_TEXT_ANCHOR_END                2 
+
+// text-rendering
+#define NS_STYLE_TEXT_RENDERING_AUTO               0 /* == nsISVGGlyphGeometrySource::TEXT_RENDERING_AUTO */
+#define NS_STYLE_TEXT_RENDERING_OPTIMIZESPEED      1 /* == nsISVGG.G.S.::TEXT_RENDERING_OPTIMIZESPEED */
+#define NS_STYLE_TEXT_RENDERING_OPTIMIZELEGIBILITY 2 /* == nsISVGG.G.S.::TEXT_RENDERING_OPTIMIZELEGIBILITY */
+#define NS_STYLE_TEXT_RENDERING_GEOMETRICPRECISION 3 /* == nsISVGG.G.S.::TEXT_RENDERING_GEOMETRICPRECISION */
 
 #endif // MOZ_SVG
 

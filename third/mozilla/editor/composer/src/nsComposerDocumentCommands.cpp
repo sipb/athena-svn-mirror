@@ -128,17 +128,14 @@ nsSetDocumentOptionsCommand::DoCommandParams(const char *aCommandName,
   {
     // for possible values of animation mode, see:
     // http://lxr.mozilla.org/seamonkey/source/modules/libpr0n/public/imgIContainer.idl
-    rv = presContext->SetImageAnimationMode(animationMode);
-    if (NS_FAILED(rv)) return rv;
+    presContext->SetImageAnimationMode(animationMode);
   }
 
   PRBool allowPlugins; 
   rv = aParams->GetBooleanValue("plugins", &allowPlugins);
   if (NS_SUCCEEDED(rv))
   {
-    nsCOMPtr<nsISupports> container;
-    rv = presContext->GetContainer(getter_AddRefs(container));
-    if (NS_FAILED(rv)) return rv;
+    nsCOMPtr<nsISupports> container = presContext->GetContainer();
     if (!container) return NS_ERROR_FAILURE;
 
     nsCOMPtr<nsIDocShell> docShell(do_QueryInterface(container, &rv));
@@ -182,11 +179,8 @@ nsSetDocumentOptionsCommand::GetCommandStateParams(const char *aCommandName,
   {
     // for possible values of animation mode, see
     // http://lxr.mozilla.org/seamonkey/source/modules/libpr0n/public/imgIContainer.idl
-    PRUint16 tmp;
-    rv = presContext->GetImageAnimationMode(&tmp);
-    if (NS_FAILED(rv)) return rv;
-
-    rv = aParams->SetLongValue("imageAnimation", animationMode);
+    rv = aParams->SetLongValue("imageAnimation",
+                               presContext->ImageAnimationMode());
     if (NS_FAILED(rv)) return rv;
   }
 
@@ -194,9 +188,7 @@ nsSetDocumentOptionsCommand::GetCommandStateParams(const char *aCommandName,
   rv = aParams->GetBooleanValue("plugins", &allowPlugins);
   if (NS_SUCCEEDED(rv))
   {
-    nsCOMPtr<nsISupports> container;
-    rv = presContext->GetContainer(getter_AddRefs(container));
-    if (NS_FAILED(rv)) return rv;
+    nsCOMPtr<nsISupports> container = presContext->GetContainer();
     if (!container) return NS_ERROR_FAILURE;
 
     nsCOMPtr<nsIDocShell> docShell(do_QueryInterface(container, &rv));
@@ -466,7 +458,7 @@ nsDocumentStateCommand::GetCommandStateParams(const char *aCommandName,
       nsCOMPtr<nsIDocument> doc = do_QueryInterface(domDoc);
       if (!doc) return NS_ERROR_FAILURE;
 
-      nsIURI *uri = doc->GetDocumentURL();
+      nsIURI *uri = doc->GetDocumentURI();
       if (!uri) return NS_ERROR_FAILURE;
 
       return aParams->SetISupportsValue(STATE_DATA, (nsISupports*)uri);

@@ -46,6 +46,7 @@ var oldListName = "";
 var gAddressBookBundle;
 var rdf = Components.classes["@mozilla.org/rdf/rdf-service;1"].getService(Components.interfaces.nsIRDFService);
 var gPromptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
+var gHeaderParser = Components.classes["@mozilla.org/messenger/headerparser;1"].getService(Components.interfaces.nsIMsgHeaderParser);
 
 try
 {
@@ -78,9 +79,9 @@ function mailingListExists(listname)
 
 function GetListValue(mailList, doAdd)
 {
-  mailList.dirName = document.getElementById('ListName').value;
+  var listname = document.getElementById('ListName').value;
 
-  if (mailList.dirName.length == 0)
+  if (listname.length == 0)
   {
     var alertText = gAddressBookBundle.getString("emptyListName");
     alert(alertText);
@@ -88,21 +89,21 @@ function GetListValue(mailList, doAdd)
   }
   else
   {
-    var listname = mailList.dirName;
-    listname = listname.toLowerCase();
-    oldListName = oldListName.toLowerCase();
+    var canonicalNewListName = listname.toLowerCase();
+    var canonicalOldListName = oldListName.toLowerCase();
     if (doAdd)
     {
-      if (mailingListExists(listname))
+      if (mailingListExists(canonicalNewListName))
         return false;
     }
-    else if (oldListName != listname)
+    else if (canonicalOldListName != canonicalNewListName)
     {
-      if (mailingListExists(listname))
+      if (mailingListExists(canonicalNewListName))
         return false;
     }
   }
-
+  
+  mailList.dirName = listname;
   mailList.listNickName = document.getElementById('ListNickName').value;
   mailList.description = document.getElementById('ListDescription').value;
 
@@ -139,12 +140,10 @@ function GetListValue(mailList, doAdd)
       cardproperty = cardproperty.QueryInterface(Components.interfaces.nsIAbCard);
       if (cardproperty)
       {
-        var msgHeaderParser = Components.classes["@mozilla.org/messenger/headerparser;1"]
-                                        .getService(Components.interfaces.nsIMsgHeaderParser);
         var addresses = {};
         var names = {};
         var fullNames = {};
-        var numAddresses = msgHeaderParser.parseHeadersWithArray(fieldValue, addresses, names, fullNames);
+        var numAddresses = gHeaderParser.parseHeadersWithArray(fieldValue, addresses, names, fullNames);
 
         cardproperty.primaryEmail = addresses.value[0];
         cardproperty.displayName = names.value[0];
@@ -312,11 +311,7 @@ function OnLoadEditList()
       {
         var card = gEditList.addressLists.GetElementAt(i);
         card = card.QueryInterface(Components.interfaces.nsIAbCard);
-        var address;
-        if (card.displayName)
-          address = card.displayName + " <" + card.primaryEmail + ">";
-        else
-          address = card.primaryEmail;
+        var address = gHeaderParser.makeFullAddressWString(card.displayName, card.primaryEmail);
         SetInputValue(address, newListBoxNode, templateNode);
       }
       var parent = listbox.parentNode;

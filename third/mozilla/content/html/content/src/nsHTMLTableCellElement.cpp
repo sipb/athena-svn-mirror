@@ -41,7 +41,7 @@
 #include "nsIDOMHTMLCollection.h"
 #include "nsIDOMEventReceiver.h"
 #include "nsIHTMLContent.h"
-#include "nsHTMLAttributes.h"
+#include "nsMappedAttributes.h"
 #include "nsGenericHTMLElement.h"
 #include "nsHTMLAtoms.h"
 #include "nsStyleConsts.h"
@@ -49,7 +49,7 @@
 #include "nsRuleNode.h"
 #include "nsIDocument.h"
 
-class nsHTMLTableCellElement : public nsGenericHTMLContainerElement,
+class nsHTMLTableCellElement : public nsGenericHTMLElement,
                                public nsIHTMLTableCellElement,
                                public nsIDOMHTMLTableCellElement
 {
@@ -61,13 +61,13 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
   // nsIDOMNode
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLContainerElement::)
+  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLElement::)
 
   // nsIDOMElement
-  NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLContainerElement::)
+  NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLElement::)
 
   // nsIDOMHTMLElement
-  NS_FORWARD_NSIDOMHTMLELEMENT(nsGenericHTMLContainerElement::)
+  NS_FORWARD_NSIDOMHTMLELEMENT(nsGenericHTMLElement::)
 
   // nsIDOMHTMLTableCellElement
   NS_DECL_NSIDOMHTMLTABLECELLELEMENT
@@ -76,15 +76,15 @@ public:
   NS_METHOD GetColIndex (PRInt32* aColIndex);
   NS_METHOD SetColIndex (PRInt32 aColIndex);
 
-  NS_IMETHOD StringToAttribute(nsIAtom* aAttribute,
-                               const nsAString& aValue,
-                               nsHTMLValue& aResult);
+  virtual PRBool ParseAttribute(nsIAtom* aAttribute,
+                                const nsAString& aValue,
+                                nsAttrValue& aResult);
   NS_IMETHOD AttributeToString(nsIAtom* aAttribute,
                                const nsHTMLValue& aValue,
                                nsAString& aResult) const;
   NS_IMETHOD GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRuleFunc) const;
   NS_IMETHOD WalkContentStyleRules(nsRuleWalker* aRuleWalker);
-  NS_IMETHOD_(PRBool) HasAttributeDependentStyle(const nsIAtom* aAttribute) const;
+  NS_IMETHOD_(PRBool) IsAttributeMapped(const nsIAtom* aAttribute) const;
 
 protected:
   // This does not return a nsresult since all we care about is if we
@@ -97,7 +97,7 @@ protected:
 
 nsresult
 NS_NewHTMLTableCellElement(nsIHTMLContent** aInstancePtrResult,
-                           nsINodeInfo *aNodeInfo)
+                           nsINodeInfo *aNodeInfo, PRBool aFromParser)
 {
   NS_ENSURE_ARG_POINTER(aInstancePtrResult);
 
@@ -137,8 +137,7 @@ NS_IMPL_RELEASE_INHERITED(nsHTMLTableCellElement, nsGenericElement)
 
 
 // QueryInterface implementation for nsHTMLTableCellElement
-NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLTableCellElement,
-                                    nsGenericHTMLContainerElement)
+NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLTableCellElement, nsGenericHTMLElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMHTMLTableCellElement)
   NS_INTERFACE_MAP_ENTRY(nsIHTMLTableCellElement)
   NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(HTMLTableCellElement)
@@ -164,7 +163,7 @@ nsHTMLTableCellElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
   if (NS_FAILED(rv))
     return rv;
 
-  CopyInnerTo(this, it, aDeep);
+  CopyInnerTo(it, aDeep);
 
   *aReturn = NS_STATIC_CAST(nsIDOMNode *, it);
 
@@ -267,8 +266,7 @@ nsHTMLTableCellElement::GetCellIndex(PRInt32* aCellIndex)
 NS_IMETHODIMP
 nsHTMLTableCellElement::WalkContentStyleRules(nsRuleWalker* aRuleWalker)
 {
-  nsresult rv = 
-    nsGenericHTMLContainerElement::WalkContentStyleRules(aRuleWalker);
+  nsresult rv = nsGenericHTMLElement::WalkContentStyleRules(aRuleWalker);
   NS_ENSURE_SUCCESS(rv, rv);
 
   // Add style information from the mapped attributes of the table
@@ -336,79 +334,52 @@ static const nsHTMLValue::EnumTable kCellScopeTable[] = {
   { 0 }
 };
 
-#define MAX_COLSPAN 8190
-#define MAX_ROWSPAN 8190 // celldata.h can not handle more
+#define MAX_COLROWSPAN 8190 // celldata.h can not handle more
 
-NS_IMETHODIMP
-nsHTMLTableCellElement::StringToAttribute(nsIAtom* aAttribute,
-                                          const nsAString& aValue,
-                                          nsHTMLValue& aResult)
+PRBool
+nsHTMLTableCellElement::ParseAttribute(nsIAtom* aAttribute,
+                                       const nsAString& aValue,
+                                       nsAttrValue& aResult)
 {
   /* ignore these attributes, stored simply as strings
      abbr, axis, ch, headers
    */
   if (aAttribute == nsHTMLAtoms::charoff) {
     /* attributes that resolve to integers with a min of 0 */
-
-    if (aResult.ParseIntWithBounds(aValue, eHTMLUnit_Integer, 0)) {
-      return NS_CONTENT_ATTR_HAS_VALUE;
-    }
+    return aResult.ParseIntWithBounds(aValue, 0);
   }
   else if ((aAttribute == nsHTMLAtoms::colspan) ||
            (aAttribute == nsHTMLAtoms::rowspan)) {
-    PRBool parsed = (aAttribute == nsHTMLAtoms::colspan)
-      ? aResult.ParseIntWithBounds(aValue, eHTMLUnit_Integer, -1, MAX_COLSPAN)
-      : aResult.ParseIntWithBounds(aValue, eHTMLUnit_Integer, -1, MAX_ROWSPAN);
-    if (parsed) {
-      PRInt32 val = aResult.GetIntValue();
+    PRBool res = aResult.ParseIntWithBounds(aValue, -1, MAX_COLROWSPAN);
+    if (res) {
+      PRInt32 val = aResult.GetIntegerValue();
       // quirks mode does not honor the special html 4 value of 0
-      if ((val < 0) || ((0 == val) && InNavQuirksMode(mDocument))) {
-        nsHTMLUnit unit = aResult.GetUnit();
-        aResult.SetIntValue(1, unit);
+      if (val < 0 || (0 == val && InNavQuirksMode(mDocument))) {
+        aResult.SetTo(1, nsAttrValue::eInteger);
       }
-
-      return NS_CONTENT_ATTR_HAS_VALUE;
     }
+    return res;
   }
-  else if (aAttribute == nsHTMLAtoms::height) {
-    /* attributes that resolve to integers or percents */
-
-    if (aResult.ParseSpecialIntValue(aValue, eHTMLUnit_Pixel, PR_TRUE, PR_FALSE)) {
-      return NS_CONTENT_ATTR_HAS_VALUE;
-    }
+  if (aAttribute == nsHTMLAtoms::height) {
+    return aResult.ParseSpecialIntValue(aValue, PR_TRUE, PR_FALSE);
   }
-  else if (aAttribute == nsHTMLAtoms::width) {
-    /* attributes that resolve to integers or percents */
-
-    if (aResult.ParseSpecialIntValue(aValue, eHTMLUnit_Pixel, PR_TRUE, PR_FALSE)) {
-      return NS_CONTENT_ATTR_HAS_VALUE;
-    }
+  if (aAttribute == nsHTMLAtoms::width) {
+    return aResult.ParseSpecialIntValue(aValue, PR_TRUE, PR_FALSE);
   }
-  else if (aAttribute == nsHTMLAtoms::align) {
-    /* other attributes */
-
-    if (ParseTableCellHAlignValue(aValue, aResult)) {
-      return NS_CONTENT_ATTR_HAS_VALUE;
-    }
+  if (aAttribute == nsHTMLAtoms::align) {
+    return ParseTableCellHAlignValue(aValue, aResult);
   }
-  else if (aAttribute == nsHTMLAtoms::bgcolor) {
-    if (aResult.ParseColor(aValue,
-                           nsGenericHTMLContainerElement::GetOwnerDocument())) {
-      return NS_CONTENT_ATTR_HAS_VALUE;
-    }
+  if (aAttribute == nsHTMLAtoms::bgcolor) {
+    return aResult.ParseColor(aValue, nsGenericHTMLElement::GetOwnerDocument());
   }
-  else if (aAttribute == nsHTMLAtoms::scope) {
-    if (aResult.ParseEnumValue(aValue, kCellScopeTable)) {
-      return NS_CONTENT_ATTR_HAS_VALUE;
-    }
+  if (aAttribute == nsHTMLAtoms::scope) {
+    return aResult.ParseEnumValue(aValue, kCellScopeTable);
   }
-  else if (aAttribute == nsHTMLAtoms::valign) {
-    if (ParseTableVAlignValue(aValue, aResult)) {
-      return NS_CONTENT_ATTR_HAS_VALUE;
-    }
+  if (aAttribute == nsHTMLAtoms::valign) {
+    return ParseTableVAlignValue(aValue, aResult);
   }
 
-  return NS_CONTENT_ATTR_NOT_THERE;
+  return nsGenericHTMLElement::ParseAttribute(aAttribute, aValue, aResult);
 }
 
 NS_IMETHODIMP
@@ -438,12 +409,11 @@ nsHTMLTableCellElement::AttributeToString(nsIAtom* aAttribute,
     }
   }
 
-  return nsGenericHTMLContainerElement::AttributeToString(aAttribute, aValue,
-                                                          aResult);
+  return nsGenericHTMLElement::AttributeToString(aAttribute, aValue, aResult);
 }
 
 static 
-void MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
+void MapAttributesIntoRule(const nsMappedAttributes* aAttributes,
                            nsRuleData* aData)
 {
   if (aData->mSID == eStyleStruct_Position) {
@@ -451,9 +421,9 @@ void MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
     nsHTMLValue value;
     if (aData->mPositionData->mWidth.GetUnit() == eCSSUnit_Null) {
       aAttributes->GetAttribute(nsHTMLAtoms::width, value);
-      if (value.GetUnit() == eHTMLUnit_Pixel) {
-        if (value.GetPixelValue() > 0)
-          aData->mPositionData->mWidth.SetFloatValue((float)value.GetPixelValue(), eCSSUnit_Pixel); 
+      if (value.GetUnit() == eHTMLUnit_Integer) {
+        if (value.GetIntValue() > 0)
+          aData->mPositionData->mWidth.SetFloatValue((float)value.GetIntValue(), eCSSUnit_Pixel); 
         // else 0 implies auto for compatibility.
       }
       else if (value.GetUnit() == eHTMLUnit_Percent) {
@@ -466,9 +436,9 @@ void MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
     // height: value
     if (aData->mPositionData->mHeight.GetUnit() == eCSSUnit_Null) {
       aAttributes->GetAttribute(nsHTMLAtoms::height, value);
-      if (value.GetUnit() == eHTMLUnit_Pixel) {
-        if (value.GetPixelValue() > 0)
-          aData->mPositionData->mHeight.SetFloatValue((float)value.GetPixelValue(), eCSSUnit_Pixel);
+      if (value.GetUnit() == eHTMLUnit_Integer) {
+        if (value.GetIntValue() > 0)
+          aData->mPositionData->mHeight.SetFloatValue((float)value.GetIntValue(), eCSSUnit_Pixel);
         // else 0 implies auto for compatibility.
       }
       else if (value.GetUnit() == eHTMLUnit_Percent) {
@@ -490,12 +460,12 @@ void MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
     if (aData->mTextData->mWhiteSpace.GetUnit() == eCSSUnit_Null) {
       // nowrap: enum
       nsHTMLValue value;
-      aAttributes->GetAttribute(nsHTMLAtoms::nowrap, value);
-      if (value.GetUnit() != eHTMLUnit_Null) {
-        // See if our width is not a pixel width.
+      if (aAttributes->GetAttribute(nsHTMLAtoms::nowrap, value) !=
+          NS_CONTENT_ATTR_NOT_THERE) {
+        // See if our width is not a integer width.
         nsHTMLValue widthValue;
         aAttributes->GetAttribute(nsHTMLAtoms::width, widthValue);
-        if (widthValue.GetUnit() != eHTMLUnit_Pixel)
+        if (widthValue.GetUnit() != eHTMLUnit_Integer)
           aData->mTextData->mWhiteSpace.SetIntValue(NS_STYLE_WHITESPACE_NOWRAP, eCSSUnit_Enumerated);
       }
     }
@@ -515,9 +485,9 @@ void MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
 }
 
 NS_IMETHODIMP_(PRBool)
-nsHTMLTableCellElement::HasAttributeDependentStyle(const nsIAtom* aAttribute) const
+nsHTMLTableCellElement::IsAttributeMapped(const nsIAtom* aAttribute) const
 {
-  static const AttributeDependenceEntry attributes[] = {
+  static const MappedAttributeEntry attributes[] = {
     { &nsHTMLAtoms::align }, 
     { &nsHTMLAtoms::valign },
     { &nsHTMLAtoms::nowrap },
@@ -534,7 +504,7 @@ nsHTMLTableCellElement::HasAttributeDependentStyle(const nsIAtom* aAttribute) co
     { nsnull }
   };
 
-  static const AttributeDependenceEntry* const map[] = {
+  static const MappedAttributeEntry* const map[] = {
     attributes,
     sCommonAttributeMap,
     sBackgroundAttributeMap,

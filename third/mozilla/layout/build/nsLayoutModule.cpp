@@ -48,13 +48,12 @@
 #include "nsContentDLF.h"
 #include "nsContentPolicyUtils.h"
 #include "nsContentUtils.h"
+#include "nsLayoutStylesheetCache.h"
 #include "nsDOMCID.h"
 #include "nsCSSOMFactory.h"
 #include "nsInspectorCSSUtils.h"
-#include "nsEventStateManager.h"
 #include "nsEventListenerManager.h"
 #include "nsGenericElement.h"
-#include "nsGenericDOMDataNode.h"
 #include "nsHTMLAtoms.h"
 #include "nsHTMLAtoms.h"
 #include "nsHTMLContentSerializer.h"
@@ -82,7 +81,6 @@
 #include "nsIFrameSelection.h"
 #include "nsIFrameUtil.h"
 #include "nsIGenericFactory.h"
-#include "nsHTMLAttributes.h"
 #include "nsIHTMLCSSStyleSheet.h"
 #include "nsIHTMLContent.h"
 #include "nsIHTMLFragmentContentSink.h"
@@ -131,12 +129,25 @@
 #include "nsXULAtoms.h"
 #include "nsLayoutCID.h"
 #include "nsImageLoadingContent.h"
+#include "nsStyleSet.h"
+#include "nsImageFrame.h"
 
 // view stuff
 #include "nsViewsCID.h"
 #include "nsView.h"
 #include "nsScrollPortView.h"
 #include "nsViewManager.h"
+
+// DOM includes
+#include "nsDOMException.h"
+#include "nsGlobalWindowCommands.h"
+#include "nsIControllerCommandTable.h"
+#include "nsJSProtocolHandler.h"
+#include "nsGlobalWindow.h"
+#include "nsDOMClassInfo.h"
+#include "nsScriptNameSpaceManager.h"
+#include "nsIControllerContext.h"
+#include "nsDOMScriptObjectFactory.h"
 
 class nsIDocumentLoaderFactory;
 
@@ -152,6 +163,11 @@ class nsIDocumentLoaderFactory;
 #define NS_PLUGINDOCLOADERFACTORY_CID \
 { 0x0ddf4df8, 0x4dbb, 0x4133, { 0x8b, 0x79, 0x9a, 0xfb, 0x96, 0x65, 0x14, 0xf5 } }
 
+#define NS_WINDOWCOMMANDTABLE_CID \
+ { /* 0DE2FBFA-6B7F-11D7-BBBA-0003938A9D96 */        \
+  0x0DE2FBFA, 0x6B7F, 0x11D7, {0xBB, 0xBA, 0x00, 0x03, 0x93, 0x8A, 0x9D, 0x96} }
+
+static NS_DEFINE_CID(kWindowCommandTableCID, NS_WINDOWCOMMANDTABLE_CID);
 
 #ifdef MOZ_XUL
 #include "nsIXULDocument.h"
@@ -180,6 +196,21 @@ PR_STATIC_CALLBACK(void) Shutdown(nsIModule* aSelf);
 
 #ifdef MOZ_SVG
 #include "nsSVGAtoms.h"
+#include "nsSVGTypeCIDs.h"
+#include "nsISVGRenderer.h"
+#include "nsSVGRect.h"
+#ifdef MOZ_SVG_RENDERER_LIBART
+void NS_InitSVGRendererLibartGlobals();
+void NS_FreeSVGRendererLibartGlobals();
+#endif
+#ifdef MOZ_SVG_RENDERER_GDIPLUS
+void NS_InitSVGRendererGDIPlusGlobals();
+void NS_FreeSVGRendererGDIPlusGlobals();
+#endif
+#ifdef MOZ_SVG_RENDERER_CAIRO
+void NS_InitSVGRendererCairoGlobals();
+void NS_FreeSVGRendererCairoGlobals();
+#endif
 #endif
 
 // jst says, ``we need this to avoid holding on to XPConnect past its
@@ -264,6 +295,15 @@ Initialize(nsIModule* aSelf)
 
 #ifdef MOZ_SVG
   nsSVGAtoms::AddRefAtoms();
+#ifdef MOZ_SVG_RENDERER_LIBART
+  NS_InitSVGRendererLibartGlobals();
+#endif
+#ifdef MOZ_SVG_RENDERER_GDIPLUS
+  NS_InitSVGRendererGDIPlusGlobals();
+#endif
+#ifdef MOZ_SVG_RENDERER_CAIRO
+  NS_InitSVGRendererCairoGlobals();
+#endif
 #endif
 
 #ifdef DEBUG
@@ -316,7 +356,6 @@ Shutdown(nsIModule* aSelf)
 
   nsRange::Shutdown();
   nsGenericElement::Shutdown();
-  nsGenericDOMDataNode::Shutdown();
   nsEventListenerManager::Shutdown();
   nsContentList::Shutdown();
   nsComputedDOMStyle::Shutdown();
@@ -345,18 +384,36 @@ Shutdown(nsIModule* aSelf)
   nsMathMLOperators::ReleaseTable();
 #endif
 
+#ifdef MOZ_SVG
+#ifdef MOZ_SVG_RENDERER_LIBART
+  NS_FreeSVGRendererLibartGlobals();
+#endif
+#ifdef MOZ_SVG_RENDERER_GDIPLUS
+  NS_FreeSVGRendererGDIPlusGlobals();
+#endif
+#ifdef MOZ_SVG_RENDERER_CAIRO
+  NS_FreeSVGRendererCairoGlobals();
+#endif
+#endif
+
   nsCSSFrameConstructor::ReleaseGlobals();
   nsTextTransformer::Shutdown();
   nsSpaceManager::Shutdown();
   nsTextControlFrame::ReleaseGlobals();
+  nsImageFrame::ReleaseGlobals();
 
   NS_IF_RELEASE(nsContentDLF::gUAStyleSheet);
   NS_IF_RELEASE(nsRuleNode::gLangService);
   nsGenericHTMLElement::Shutdown();
 
   nsContentUtils::Shutdown();
+  nsLayoutStylesheetCache::Shutdown();
   NS_NameSpaceManagerShutdown();
   nsImageLoadingContent::Shutdown();
+  nsStyleSet::FreeGlobals();
+
+  GlobalWindowImpl::ShutDown();
+  nsDOMClassInfo::ShutDown();
 }
 
 #ifdef NS_DEBUG
@@ -378,7 +435,6 @@ nsresult NS_NewXULElementFactory(nsIElementFactory** aResult);
 #endif
 
 nsresult NS_CreateFrameTraversal(nsIFrameTraversal** aResult);
-nsresult NS_CreateCSSFrameConstructor(nsICSSFrameConstructor** aResult);
 nsresult NS_NewLayoutHistoryState(nsILayoutHistoryState** aResult);
 nsresult NS_NewAutoCopyService(nsIAutoCopyService** aResult);
 nsresult NS_NewSelectionImageService(nsISelectionImageService** aResult);
@@ -413,6 +469,16 @@ nsresult NS_NewMathMLElementFactory(nsIElementFactory** aResult);
 #endif
 
 #ifdef MOZ_SVG
+#ifdef MOZ_SVG_RENDERER_GDIPLUS
+nsresult NS_NewSVGRendererGDIPlus(nsISVGRenderer** aResult);
+#endif // MOZ_SVG_RENDERER_GDIPLUS
+#ifdef MOZ_SVG_RENDERER_LIBART
+nsresult NS_NewSVGRendererLibart(nsISVGRenderer** aResult);
+#endif // MOZ_SVG_RENDERER_LIBART
+#ifdef MOZ_SVG_RENDERER_CAIRO
+nsresult NS_NewSVGRendererCairo(nsISVGRenderer** aResult);
+#endif // MOZ_SVG_RENDERER_CAIRO
+
 nsresult NS_NewSVGElementFactory(nsIElementFactory** aResult);
 #endif
 
@@ -437,7 +503,6 @@ MAKE_CTOR(CreateNewFrameUtil,             nsIFrameUtil,                NS_NewFra
 MAKE_CTOR(CreateNewLayoutDebugger,        nsILayoutDebugger,           NS_NewLayoutDebugger)
 #endif
 
-MAKE_CTOR(CreateNewCSSFrameConstructor, nsICSSFrameConstructor, NS_CreateCSSFrameConstructor)
 MAKE_CTOR(CreateNewFrameTraversal,      nsIFrameTraversal,      NS_CreateFrameTraversal)
 MAKE_CTOR(CreateNewLayoutHistoryState,  nsILayoutHistoryState,  NS_NewLayoutHistoryState)
 MAKE_CTOR(CreateNewPresShell,           nsIPresShell,           NS_NewPresShell)
@@ -458,15 +523,24 @@ MAKE_CTOR(CreateNewTreeBoxObject,       nsIBoxObject,           NS_NewTreeBoxObj
 #endif
 MAKE_CTOR(CreateNewAutoCopyService,     nsIAutoCopyService,     NS_NewAutoCopyService)
 MAKE_CTOR(CreateSelectionImageService,  nsISelectionImageService,NS_NewSelectionImageService)
+#ifdef MOZ_SVG
+#ifdef MOZ_SVG_RENDERER_GDIPLUS
+MAKE_CTOR(CreateNewSVGRendererGDIPlus,  nsISVGRenderer,         NS_NewSVGRendererGDIPlus)
+#endif // MOZ_SVG_RENDERER_GDIPLUS
+#ifdef MOZ_SVG_RENDERER_LIBART
+MAKE_CTOR(CreateNewSVGRendererLibart,   nsISVGRenderer,         NS_NewSVGRendererLibart)
+#endif // MOZ_SVG_RENDERER_LIBART
+#ifdef MOZ_SVG_RENDERER_CAIRO
+MAKE_CTOR(CreateNewSVGRendererCairo,    nsISVGRenderer,         NS_NewSVGRendererCairo)
+#endif // MOZ_SVG_RENDERER_CAIRO
+#endif
 MAKE_CTOR(CreateCaret,                  nsICaret,               NS_NewCaret)
 
 MAKE_CTOR(CreateNameSpaceManager,         nsINameSpaceManager,         NS_GetNameSpaceManager)
 MAKE_CTOR(CreateEventListenerManager,     nsIEventListenerManager,     NS_NewEventListenerManager)
-MAKE_CTOR(CreateEventStateManager,        nsIEventStateManager,        NS_NewEventStateManager)
 MAKE_CTOR(CreateDOMEventGroup,            nsIDOMEventGroup,            NS_NewDOMEventGroup)
 MAKE_CTOR(CreateDocumentViewer,           nsIDocumentViewer,           NS_NewDocumentViewer)
 MAKE_CTOR(CreateHTMLStyleSheet,           nsIHTMLStyleSheet,           NS_NewHTMLStyleSheet)
-MAKE_CTOR(CreateStyleSet,                 nsIStyleSet,                 NS_NewStyleSet)
 MAKE_CTOR(CreateCSSStyleSheet,            nsICSSStyleSheet,            NS_NewCSSStyleSheet)
 MAKE_CTOR(CreateHTMLDocument,             nsIDocument,                 NS_NewHTMLDocument)
 MAKE_CTOR(CreateHTMLCSSStyleSheet,        nsIHTMLCSSStyleSheet,        NS_NewHTMLCSSStyleSheet)
@@ -523,6 +597,7 @@ MAKE_CTOR(CreateMathMLElementFactory,     nsIElementFactory,           NS_NewMat
 #endif
 #ifdef MOZ_SVG
 MAKE_CTOR(CreateSVGElementFactory,        nsIElementFactory,           NS_NewSVGElementFactory)
+MAKE_CTOR(CreateSVGRect,                  nsIDOMSVGRect,               NS_NewSVGRect)
 #endif
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsContentHTTPStartup)
 MAKE_CTOR(CreateContentDLF,               nsIDocumentLoaderFactory,    NS_NewContentDocumentLoaderFactory)
@@ -664,8 +739,72 @@ UnregisterHTMLOptionElement(nsIComponentManager* aCompMgr,
   return NS_OK;
 }
 
+static NS_METHOD
+CreateWindowCommandTableConstructor(nsISupports *aOuter,
+                                    REFNSIID aIID, void **aResult)
+{
+  nsresult rv;
+  nsCOMPtr<nsIControllerCommandTable> commandTable =
+      do_CreateInstance(NS_CONTROLLERCOMMANDTABLE_CONTRACTID, &rv);
+  if (NS_FAILED(rv)) return rv;
+
+  rv = nsWindowCommandRegistration::RegisterWindowCommands(commandTable);
+  if (NS_FAILED(rv)) return rv;
+
+  return commandTable->QueryInterface(aIID, aResult);
+}
+
+static NS_METHOD
+CreateWindowControllerWithSingletonCommandTable(nsISupports *aOuter,
+                                      REFNSIID aIID, void **aResult)
+{
+  nsresult rv;
+  nsCOMPtr<nsIController> controller =
+       do_CreateInstance("@mozilla.org/embedcomp/base-command-controller;1", &rv);
+
+ if (NS_FAILED(rv)) return rv;
+
+  nsCOMPtr<nsIControllerCommandTable> windowCommandTable = do_GetService(kWindowCommandTableCID, &rv);
+  if (NS_FAILED(rv)) return rv;
+
+  // this is a singleton; make it immutable
+  windowCommandTable->MakeImmutable();
+
+  nsCOMPtr<nsIControllerContext> controllerContext = do_QueryInterface(controller, &rv);
+  if (NS_FAILED(rv)) return rv;
+
+  controllerContext->Init(windowCommandTable);
+  if (NS_FAILED(rv)) return rv;
+
+  return controller->QueryInterface(aIID, aResult);
+}
+
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsDOMScriptObjectFactory)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsBaseDOMException)
+
 // The list of components we register
 static const nsModuleComponentInfo gComponents[] = {
+#ifdef MOZ_SVG
+#ifdef MOZ_SVG_RENDERER_GDIPLUS
+  { "SVG GdiPlus Renderer",
+    NS_SVG_RENDERER_GDIPLUS_CID,
+    NS_SVG_RENDERER_GDIPLUS_CONTRACTID,
+    CreateNewSVGRendererGDIPlus },
+#endif // MOZ_SVG_RENDERER_GDIPLUS
+#ifdef MOZ_SVG_RENDERER_LIBART
+  { "SVG Libart Renderer",
+    NS_SVG_RENDERER_LIBART_CID,
+    NS_SVG_RENDERER_LIBART_CONTRACTID,
+    CreateNewSVGRendererLibart },
+#endif // MOZ_SVG_RENDERER_LIBART
+#ifdef MOZ_SVG_RENDERER_CAIRO
+  { "SVG Cairo Renderer",
+    NS_SVG_RENDERER_CAIRO_CID,
+    NS_SVG_RENDERER_CAIRO_CONTRACTID,
+    CreateNewSVGRendererCairo },
+#endif // MOZ_SVG_RENDERER_CAIRO
+#endif // MOZ_SVG
+
 #ifdef DEBUG
   { "Frame utility",
     NS_FRAME_UTIL_CID,
@@ -676,11 +815,6 @@ static const nsModuleComponentInfo gComponents[] = {
     nsnull,
     CreateNewLayoutDebugger },
 #endif
-
-  { "CSS Frame Constructor",
-    NS_CSSFRAMECONSTRUCTOR_CID,
-    nsnull,
-    CreateNewCSSFrameConstructor },
 
   { "Frame Traversal",
     NS_FRAMETRAVERSAL_CID,
@@ -791,11 +925,6 @@ static const nsModuleComponentInfo gComponents[] = {
     nsnull,
     CreateEventListenerManager },
 
-  { "Event state manager",
-    NS_EVENTSTATEMANAGER_CID,
-    nsnull,
-    CreateEventStateManager },
-
   { "DOM Event group",
     NS_DOMEVENTGROUP_CID,
     nsnull,
@@ -810,11 +939,6 @@ static const nsModuleComponentInfo gComponents[] = {
     NS_HTMLSTYLESHEET_CID,
     nsnull,
     CreateHTMLStyleSheet },
-
-  { "Style Set",
-    NS_STYLESET_CID,
-    nsnull,
-    CreateStyleSet },
 
   { "CSS Style Sheet",
     NS_CSS_STYLESHEET_CID,
@@ -1147,15 +1271,15 @@ static const nsModuleComponentInfo gComponents[] = {
 #endif
 
 #ifdef MOZ_SVG
-  { "SVG element factory (deprecated namespace)",
-    NS_SVGELEMENTFACTORY_CID,
-    NS_SVG_DEPRECATED_ELEMENT_FACTORY_CONTRACTID,
-    CreateSVGElementFactory },
-
   { "SVG element factory",
     NS_SVGELEMENTFACTORY_CID,
     NS_SVG_ELEMENT_FACTORY_CONTRACTID,
     CreateSVGElementFactory },
+  
+  { "SVG Rect",
+    NS_SVGRECT_CID,
+    NS_SVGRECT_CONTRACTID,
+    CreateSVGRect },
 #endif
 
   { "Content HTTP Startup Listener",
@@ -1186,6 +1310,32 @@ static const nsModuleComponentInfo gComponents[] = {
     NS_SYNCLOADDOMSERVICE_CID,
     NS_SYNCLOADDOMSERVICE_CONTRACTID,
     CreateSyncLoadDOMService },
+
+  // DOM objects
+  { "Script Object Factory",
+    NS_DOM_SCRIPT_OBJECT_FACTORY_CID,
+    nsnull,
+    nsDOMScriptObjectFactoryConstructor
+  },
+  { "Base DOM Exception",
+    NS_BASE_DOM_EXCEPTION_CID,
+    nsnull,
+    nsBaseDOMExceptionConstructor
+  },
+  { "JavaScript Protocol Handler",
+    NS_JSPROTOCOLHANDLER_CID,
+    NS_JSPROTOCOLHANDLER_CONTRACTID,
+    nsJSProtocolHandler::Create },
+  { "Window Command Table",
+    NS_WINDOWCOMMANDTABLE_CID,
+    "",
+    CreateWindowCommandTableConstructor
+  },
+  { "Window Command Controller",
+    NS_WINDOWCONTROLLER_CID,
+    NS_WINDOWCONTROLLER_CONTRACTID,
+    CreateWindowControllerWithSingletonCommandTable
+  },
 
   // view stuff
   { "View Manager", NS_VIEW_MANAGER_CID, "@mozilla.org/view-manager;1",

@@ -33,6 +33,8 @@ IS_COMPONENT	= 1
 MODULE_NAME	= nsCookieModule
 GRE_MODULE	= 1
 
+PACKAGE_FILE = cookie.pkg
+
 REQUIRES	= xpcom \
 		  string \
 		  necko \
@@ -58,7 +60,6 @@ CPPSRCS		= \
 
 XPIDLSRCS	= \
 		nsIImgManager.idl \
-		nsIPermissionManager.idl \
 		nsIPermission.idl \
 		nsICookieAcceptDialog.idl \
 		nsICookiePromptService.idl \

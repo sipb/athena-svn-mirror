@@ -1606,7 +1606,9 @@ jsdContext::GetScriptsEnabled (PRBool *_rval)
     if (!context)
         return NS_ERROR_NO_INTERFACE;
 
-    return context->GetScriptsEnabled(_rval);
+    *_rval = context->GetScriptsEnabled();
+
+    return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -1617,7 +1619,9 @@ jsdContext::SetScriptsEnabled (PRBool _rval)
     if (!context)
         return NS_ERROR_NO_INTERFACE;
 
-    return context->SetScriptsEnabled(_rval, PR_TRUE);
+    context->SetScriptsEnabled(_rval, PR_TRUE);
+
+    return NS_OK;
 }
 
 /* Stack Frames */
@@ -1870,9 +1874,11 @@ jsdStackFrame::Eval (const nsAString &bytes, const char *fileName,
     if (bytes.IsEmpty())
         return NS_ERROR_INVALID_ARG;
 
-    const nsSharedBufferHandle<PRUnichar> *h = bytes.GetSharedBufferHandle();
-    const jschar *char_bytes = NS_REINTERPRET_CAST(const jschar *,
-                                                   h->DataStart());
+    // get pointer to buffer contained in |bytes|
+    nsAString::const_iterator h;
+    bytes.BeginReading(h);
+    const jschar *char_bytes = NS_REINTERPRET_CAST(const jschar *, h.get());
+
     JSExceptionState *estate = 0;
     jsval jv;
 
@@ -2133,8 +2139,8 @@ jsdValue::GetStringValue(char **_rval)
 {
     ASSERT_VALID_EPHEMERAL;
     JSString *jstr_val = JSD_GetValueString(mCx, mValue);
-    char *bytes = JS_GetStringBytes(jstr_val);
-    if (bytes) {
+    if (jstr_val) {
+        char *bytes = JS_GetStringBytes(jstr_val);
         *_rval = PL_strdup(bytes);
         if (!*_rval)
             return NS_ERROR_OUT_OF_MEMORY;
@@ -2650,7 +2656,9 @@ jsdService::EnumerateScripts (jsdIScriptEnumerator *enumerator)
 }
 
 #ifdef GC_MARK_DEBUG
-extern JS_FRIEND_DATA(FILE *) js_DumpGCHeap;
+JS_BEGIN_EXTERN_C
+JS_FRIEND_DATA(FILE *) js_DumpGCHeap;
+JS_END_EXTERN_C
 #endif
 
 NS_IMETHODIMP
@@ -2664,7 +2672,8 @@ jsdService::GC (void)
 #endif
     JS_GC(cx);
 #ifdef GC_MARK_DEBUG
-    fclose (file);
+    if (file)
+        fclose (file);
     js_DumpGCHeap = NULL;
 #endif
     return NS_OK;
@@ -2686,6 +2695,8 @@ jsdService::InsertFilter (jsdIFilter *filter, jsdIFilter *after)
         return NS_ERROR_INVALID_ARG;
 
     FilterRecord *rec = PR_NEWZAP (FilterRecord);
+    if (!rec)
+        return NS_ERROR_OUT_OF_MEMORY;
 
     if (!jsds_SyncFilter (rec, filter)) {
         PR_Free (rec);

@@ -58,6 +58,7 @@
 #include "nsIPrefService.h"
 #include "nsAutoPtr.h"
 #include "nsMediaDocument.h"
+#include "nsStyleSet.h"
 
 #define AUTOMATIC_IMAGE_RESIZING_PREF "browser.enable_automatic_image_resizing"
 
@@ -87,13 +88,13 @@ public:
 
   virtual nsresult Init();
 
-  NS_IMETHOD StartDocumentLoad(const char*         aCommand,
-                               nsIChannel*         aChannel,
-                               nsILoadGroup*       aLoadGroup,
-                               nsISupports*        aContainer,
-                               nsIStreamListener** aDocListener,
-                               PRBool              aReset = PR_TRUE,
-                               nsIContentSink*     aSink = nsnull);
+  virtual nsresult StartDocumentLoad(const char*         aCommand,
+                                     nsIChannel*         aChannel,
+                                     nsILoadGroup*       aLoadGroup,
+                                     nsISupports*        aContainer,
+                                     nsIStreamListener** aDocListener,
+                                     PRBool              aReset = PR_TRUE,
+                                     nsIContentSink*     aSink = nsnull);
 
   virtual void SetScriptGlobalObject(nsIScriptGlobalObject* aScriptGlobalObject);
 
@@ -176,9 +177,9 @@ ImageListener::OnStopRequest(nsIRequest* request, nsISupports *ctxt,
   imgDoc->UpdateTitleAndCharset();
   
   nsCOMPtr<nsIImageLoadingContent> imageLoader = do_QueryInterface(imgDoc->mImageElement);
-  NS_ENSURE_TRUE(imageLoader, NS_ERROR_UNEXPECTED);
-
-  imageLoader->RemoveObserver(imgDoc);
+  if (imageLoader) {
+    imageLoader->RemoveObserver(imgDoc);
+  }
 
   return nsMediaDocumentStreamListener::OnStopRequest(request, ctxt, status);
 }
@@ -227,7 +228,7 @@ nsImageDocument::Init()
   return NS_OK;
 }
 
-NS_IMETHODIMP
+nsresult
 nsImageDocument::StartDocumentLoad(const char*         aCommand,
                                    nsIChannel*         aChannel,
                                    nsILoadGroup*       aLoadGroup,
@@ -267,7 +268,12 @@ nsImageDocument::SetScriptGlobalObject(nsIScriptGlobalObject* aScriptGlobalObjec
                                   PR_FALSE);
     }
 
-    // drop the ref to mImageElement, in case it has a ref to us
+    // Break reference cycle with mImageElement, if we have one
+    nsCOMPtr<nsIImageLoadingContent> imageLoader = do_QueryInterface(mImageElement);
+    if (imageLoader) {
+      imageLoader->RemoveObserver(this);
+    }
+    
     mImageElement = nsnull;
   }
 
@@ -383,6 +389,7 @@ nsImageDocument::OnStartContainer(imgIRequest* aRequest, imgIContainer* aImage)
   if (mImageResizingEnabled) {
     CheckOverflowing();
   }
+  UpdateTitleAndCharset();
 
   return NS_OK;
 }
@@ -494,7 +501,7 @@ nsImageDocument::CreateSyntheticDocument()
   NS_ENSURE_TRUE(imageLoader, NS_ERROR_UNEXPECTED);
 
   nsCAutoString src;
-  mDocumentURL->GetSpec(src);
+  mDocumentURI->GetSpec(src);
 
   NS_ConvertUTF8toUCS2 srcString(src);
   // Make sure not to start the image load from here...
@@ -528,12 +535,11 @@ nsImageDocument::CheckOverflowing()
   nsCOMPtr<nsIPresContext> context;
   shell->GetPresContext(getter_AddRefs(context));
 
-  nsRect visibleArea;
-  context->GetVisibleArea(visibleArea);
+  nsRect visibleArea = context->GetVisibleArea();
 
   nsCOMPtr<nsIContent> content = do_QueryInterface(mBodyContent);
   nsRefPtr<nsStyleContext> styleContext =
-    context->ResolveStyleContextFor(content, nsnull);
+    context->StyleSet()->ResolveStyleFor(content, nsnull);
 
   const nsStyleMargin* marginData = styleContext->GetStyleMargin();
   nsMargin margin;
@@ -546,7 +552,7 @@ nsImageDocument::CheckOverflowing()
   visibleArea.Deflate(margin);
 
   float t2p;
-  context->GetTwipsToPixels(&t2p);
+  t2p = context->TwipsToPixels();
   mVisibleWidth = NSTwipsToIntPixels(visibleArea.width, t2p);
   mVisibleHeight = NSTwipsToIntPixels(visibleArea.height, t2p);
 

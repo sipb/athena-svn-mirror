@@ -163,18 +163,31 @@ const gEditorToolbarPrefListener =
 
 function nsButtonPrefListener()
 {
-  try {
-    var pbi = pref.QueryInterface(Components.interfaces.nsIPrefBranchInternal);
-    pbi.addObserver(this.domain, this, false);
-  } catch(ex) {
-    dump("Failed to observe prefs: " + ex + "\n");
-  }
+  this.startup();
 }
 
 // implements nsIObserver
 nsButtonPrefListener.prototype =
 {
   domain: "editor.use_css",
+  startup: function()
+  {
+    try {
+      var pbi = pref.QueryInterface(Components.interfaces.nsIPrefBranchInternal);
+      pbi.addObserver(this.domain, this, false);
+    } catch(ex) {
+      dump("Failed to observe prefs: " + ex + "\n");
+    }
+  },
+  shutdown: function()
+  {
+    try {
+      var pbi = pref.QueryInterface(Components.interfaces.nsIPrefBranchInternal);
+      pbi.removeObserver(this.domain, this);
+    } catch(ex) {
+      dump("Failed to remove pref observers: " + ex + "\n");
+    }
+  },
   observe: function(subject, topic, prefName)
   {
     if (!IsHTMLEditor())
@@ -366,7 +379,7 @@ var gEditorDocumentObserver =
           if (!editor && editorStatus == nsIEditingSession.eEditorOK)
           {
             dump("\n ****** NO EDITOR BUT NO EDITOR ERROR REPORTED ******* \n\n");
-            editorStatus = nsIEditingSession.eEditorErrorUnkown;
+            editorStatus = nsIEditingSession.eEditorErrorUnknown;
           }
 
           switch (editorStatus)
@@ -377,7 +390,7 @@ var gEditorDocumentObserver =
             case nsIEditingSession.eEditorErrorCantEditMimeType:
               errorStringId = "CantEditMimeTypeMsg";
               break;
-            case nsIEditingSession.eEditorErrorUnkown:
+            case nsIEditingSession.eEditorErrorUnknown:
               errorStringId = "CantEditDocumentMsg";
               break;
             // Note that for "eEditorErrorFileNotFound, 
@@ -684,6 +697,7 @@ function EditorResetFontAndColorAttributes()
 function EditorShutdown()
 {
   RemoveToolbarPrefListener();
+  gCSSPrefListener.shutdown();
 
   try {
     var commandManager = GetCurrentCommandManager();
@@ -2026,7 +2040,7 @@ function UpdateWindowTitle()
       SaveRecentFilesPrefs();
     }
     // Set window title with " - Composer" appended
-    xulWin = document.documentElement;
+    var xulWin = document.documentElement;
     window.title = windowTitle + xulWin.getAttribute("titlemenuseparator") + 
                    xulWin.getAttribute("titlemodifier");
   } catch (e) { dump(e); }
@@ -3373,8 +3387,9 @@ function FillInHTMLTooltip(tooltip)
 {
   const XLinkNS = "http://www.w3.org/1999/xlink";
   var tooltipText = null;
+  var node;
   if (gEditorDisplayMode == kDisplayModePreview) {
-    for (var node = document.tooltipNode; node; node = node.parentNode) {
+    for (node = document.tooltipNode; node; node = node.parentNode) {
       if (node.nodeType == Node.ELEMENT_NODE) {
         tooltipText = node.getAttributeNS(XLinkNS, "title");
         if (tooltipText && /\S/.test(tooltipText)) {
@@ -3389,7 +3404,7 @@ function FillInHTMLTooltip(tooltip)
       }
     }
   } else {
-    for (var node = document.tooltipNode; node; node = node.parentNode) {
+    for (node = document.tooltipNode; node; node = node.parentNode) {
       if (node instanceof Components.interfaces.nsIDOMHTMLImageElement ||
           node instanceof Components.interfaces.nsIDOMHTMLInputElement)
         tooltipText = node.getAttribute("src");

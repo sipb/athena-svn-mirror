@@ -321,17 +321,17 @@ public:
         NS_ADDREF(mStorageStream);
 	}
 
-    virtual ~nsStorageInputStream()
-    {
-        NS_IF_RELEASE(mStorageStream);
-    }
-
     NS_DECL_ISUPPORTS
     NS_DECL_NSIINPUTSTREAM
     NS_DECL_NSISEEKABLESTREAM
 
+private:
+    ~nsStorageInputStream()
+    {
+        NS_IF_RELEASE(mStorageStream);
+    }
+
 protected:
-    
     NS_METHOD Seek(PRUint32 aPosition);
 
     friend class nsStorageStream;
@@ -537,8 +537,12 @@ NS_NewStorageStream(PRUint32 segmentSize, PRUint32 maxSize, nsIStorageStream **r
     nsStorageStream* storageStream = new nsStorageStream();
     if (!storageStream) return NS_ERROR_OUT_OF_MEMORY;
     
-    storageStream->Init(segmentSize, maxSize);
     NS_ADDREF(storageStream);
+    nsresult rv = storageStream->Init(segmentSize, maxSize);
+    if (NS_FAILED(rv)) {
+        NS_RELEASE(storageStream);
+        return rv;
+    }
     *result = storageStream;
     return NS_OK;
 }

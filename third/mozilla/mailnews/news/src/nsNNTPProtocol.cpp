@@ -848,7 +848,6 @@ nsresult nsNNTPProtocol::ReadFromMemCache(nsICacheEntryDescriptor *entry)
     rv = pump->AsyncRead(cacheListener, m_channelContext);
     NS_RELEASE(cacheListener);
  
-    MarkCurrentMsgRead();
     if (NS_SUCCEEDED(rv)) // ONLY if we succeeded in actually starting the read should we return
     {
       // we're not calling nsMsgProtocol::AsyncRead(), which calls nsNNTPProtocol::LoadUrl, so we need to take care of some stuff it does.
@@ -913,7 +912,6 @@ PRBool nsNNTPProtocol::ReadFromLocalCache()
           rv = pump->AsyncRead(cacheListener, m_channelContext);
 
         NS_RELEASE(cacheListener);
-        MarkCurrentMsgRead();
 
         if (NS_SUCCEEDED(rv)) // ONLY if we succeeded in actually starting the read should we return
         {
@@ -984,7 +982,7 @@ nsresult nsNNTPProtocol::OpenCacheEntry()
   nsCAutoString urlSpec;
   mailnewsUrl->GetAsciiSpec(urlSpec);
   // for now, truncate of the query part so we don't duplicate urls in the cache...
-  char * anchor = (char *)strrchr(urlSpec.get(), '?');
+  char * anchor = (char *)strrchr(urlSpec.BeginWriting(), '?');
   if (anchor)
     *anchor = '\0';
   return cacheSession->AsyncOpenCacheEntry(urlSpec.get(), nsICache::ACCESS_READ_WRITE, this);
@@ -2313,7 +2311,6 @@ PRInt32 nsNNTPProtocol::SendFirstNNTPCommandResponse()
       FinishMemCacheEntry(PR_FALSE);  // cleanup mem cache entry
     
     if (NS_SUCCEEDED(rv) && group_name && !savingArticleOffline) {
-      MarkCurrentMsgRead();
       nsXPIDLString titleStr;
       rv = GetNewsStringByName("htmlNewsErrorTitle", getter_Copies(titleStr));
       NS_ENSURE_SUCCESS(rv,rv);
@@ -2569,7 +2566,6 @@ PRInt32 nsNNTPProtocol::DisplayArticle(nsIInputStream * inputStream, PRUint32 le
     if (line[0] == '.' && line[1] == 0)
     {
       m_nextState = NEWS_DONE;
-      MarkCurrentMsgRead();
       
       ClearFlag(NNTP_PAUSE_FOR_READ);
       
@@ -2596,26 +2592,6 @@ PRInt32 nsNNTPProtocol::DisplayArticle(nsIInputStream * inputStream, PRUint32 le
   }
   
   return 0;	
-}
-
-nsresult nsNNTPProtocol::MarkCurrentMsgRead()
-{
-  nsCOMPtr<nsIMsgDBHdr> msgHdr;
-  nsresult rv = NS_OK;
-  
-  // if this is a message id url, (news://host/message-id) then don't go try to mark it read
-  if (m_runningURL && !m_messageID && (m_key != nsMsgKey_None)) {
-    rv = m_runningURL->GetMessageHeader(getter_AddRefs(msgHdr));
-    
-    if (NS_SUCCEEDED(rv) && msgHdr)
-    {
-      PRBool isRead;
-      msgHdr->GetIsRead(&isRead);
-      if (!isRead)
-        msgHdr->MarkRead(PR_TRUE);
-    }
-  }
-  return rv;
 }
 
 PRInt32 nsNNTPProtocol::ReadArticle(nsIInputStream * inputStream, PRUint32 length)
@@ -4000,7 +3976,7 @@ PRInt32 nsNNTPProtocol::GetNextGroupNeedingCounts( nsISupports** pNextGroup, PRI
     
     if (m_newsRCListCount) {
       // clear the status text.
-      rv = SetProgressStatus(NS_LITERAL_STRING("").get());
+      rv = SetProgressStatus(EmptyString().get());
       NS_ENSURE_SUCCESS(rv, rv);
       
       SetProgressBarPercent(0, -1);

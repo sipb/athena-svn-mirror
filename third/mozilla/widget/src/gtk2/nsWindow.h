@@ -142,7 +142,7 @@ public:
     NS_IMETHOD         CaptureRollupEvents(nsIRollupListener *aListener,
                                            PRBool aDoCapture,
                                            PRBool aConsumeRollupEvent);
-    NS_IMETHOD         GetAttention();
+    NS_IMETHOD         GetAttention(PRInt32 aCycleCount);
     NS_IMETHOD         HideWindowChrome(PRBool aShouldHide);
 
     // utility methods
@@ -273,7 +273,7 @@ private:
     void               GetToplevelWidget(GtkWidget **aWidget);
     void               GetContainerWindow(nsWindow  **aWindow);
     void              *SetupPluginPort(void);
-    nsresult           SetWindowIcon(nsCString &aPath);
+    nsresult           SetWindowIconList(const nsCStringArray &aIconList);
     void               SetDefaultIcon(void);
 
     GtkWidget          *mShell;
@@ -297,6 +297,9 @@ private:
 #ifdef ACCESSIBILITY
     nsCOMPtr<nsIAccessible> mRootAccessible;
     void                CreateRootAccessible();
+    void                GetRootAccessible(nsIAccessible** aAccessible);
+    void                DispatchActivateEvent(void);
+    void                DispatchDeactivateEvent(void);
     NS_IMETHOD_(PRBool) DispatchAccessibleEvent(nsIAccessible** aAccessible);
 #endif
 

@@ -46,7 +46,7 @@
 #include "nsCRT.h"
 
 #include "nsCOMPtr.h"
-#include "nsIStyleSet.h"
+#include "nsStyleSet.h"
 #include "nsIPresShell.h"
 #include "nsLayoutAtoms.h"
 #include "prenv.h"
@@ -54,6 +54,7 @@
 #include "nsRuleNode.h"
 #include "nsUnitConversion.h"
 #include "nsStyleContext.h"
+#include "imgIRequest.h"
 
 #ifdef DEBUG
 // #define NOISY_DEBUG
@@ -94,11 +95,8 @@ nsStyleContext::~nsStyleContext()
 
   nsIPresContext *presContext = mRuleNode->GetPresContext();
 
-  nsCOMPtr<nsIPresShell> shell;
-  presContext->GetShell(getter_AddRefs(shell));
-  nsCOMPtr<nsIStyleSet> set;
-  shell->GetStyleSet(getter_AddRefs(set));
-  set->NotifyStyleContextDestroyed(presContext, this);
+  presContext->PresShell()->StyleSet()->
+    NotifyStyleContextDestroyed(presContext, this);
 
   if (mParent) {
     mParent->RemoveChild(this);
@@ -277,45 +275,43 @@ nsStyleContext::GetBorderPaddingFor(nsStyleBorderPadding& aBorderPadding)
 // style data!  Do not use this function unless you absolutely have to!  You should avoid
 // this at all costs! -dwh
 nsStyleStruct* 
-nsStyleContext::GetUniqueStyleData(nsIPresContext* aPresContext, const nsStyleStructID& aSID)
+nsStyleContext::GetUniqueStyleData(const nsStyleStructID& aSID)
 {
-  nsStyleStruct* result = nsnull;
+  // If we already own the struct and no kids could depend on it, then
+  // just return it.  (We leak in this case if there are kids -- and this
+  // function really shouldn't be called for style contexts that could
+  // have kids depending on the data.  ClearStyleData would be OK, but
+  // this test for no mChild or mEmptyChild doesn't catch that case.)
+  const nsStyleStruct *current = GetStyleData(aSID);
+  if (!mChild && !mEmptyChild &&
+      !(mBits & nsCachedStyleData::GetBitForSID(aSID)) &&
+      mCachedStyleData.GetStyleData(aSID))
+    return NS_CONST_CAST(nsStyleStruct*, current);
+
+  nsStyleStruct* result;
+  nsIPresContext *presContext = PresContext();
   switch (aSID) {
-  case eStyleStruct_Display: {
-    const nsStyleDisplay* dis = GetStyleDisplay();
-    nsStyleDisplay* newDis = new (aPresContext) nsStyleDisplay(*dis);
-    SetStyle(aSID, newDis);
-    result = newDis;
-    mBits &= ~NS_STYLE_INHERIT_BIT(Display);
+
+#define UNIQUE_CASE(c_)                                                       \
+  case eStyleStruct_##c_:                                                     \
+    result = new (presContext) nsStyle##c_(                                   \
+      * NS_STATIC_CAST(const nsStyle##c_ *, current));                        \
     break;
-  }
-  case eStyleStruct_Background: {
-    const nsStyleBackground* bg = GetStyleBackground();
-    nsStyleBackground* newBG = new (aPresContext) nsStyleBackground(*bg);
-    SetStyle(aSID, newBG);
-    result = newBG;
-    mBits &= ~NS_STYLE_INHERIT_BIT(Background);
-    break;
-  }
-  case eStyleStruct_Text: {
-    const nsStyleText* text = GetStyleText();
-    nsStyleText* newText = new (aPresContext) nsStyleText(*text);
-    SetStyle(aSID, newText);
-    result = newText;
-    mBits &= ~NS_STYLE_INHERIT_BIT(Text);
-    break;
-  }
-  case eStyleStruct_TextReset: {
-    const nsStyleTextReset* reset = GetStyleTextReset();
-    nsStyleTextReset* newReset = new (aPresContext) nsStyleTextReset(*reset);
-    SetStyle(aSID, newReset);
-    result = newReset;
-    mBits &= ~NS_STYLE_INHERIT_BIT(TextReset);
-    break;
-  }
+
+  UNIQUE_CASE(Display)
+  UNIQUE_CASE(Background)
+  UNIQUE_CASE(Text)
+  UNIQUE_CASE(TextReset)
+
+#undef UNIQUE_CASE
+
   default:
     NS_ERROR("Struct type not supported.  Please find another way to do this if you can!\n");
+    return nsnull;
   }
+
+  SetStyle(aSID, result);
+  mBits &= ~nsCachedStyleData::GetBitForSID(aSID);
 
   return result;
 }
@@ -380,7 +376,7 @@ nsStyleContext::ApplyStyleFixups(nsIPresContext* aPresContext)
     if (text->mTextAlign == NS_STYLE_TEXT_ALIGN_MOZ_CENTER ||
         text->mTextAlign == NS_STYLE_TEXT_ALIGN_MOZ_RIGHT)
     {
-      nsStyleText* uniqueText = (nsStyleText*)GetUniqueStyleData(aPresContext, eStyleStruct_Text);
+      nsStyleText* uniqueText = (nsStyleText*)GetUniqueStyleData(eStyleStruct_Text);
       uniqueText->mTextAlign = NS_STYLE_TEXT_ALIGN_DEFAULT;
     }
   }
@@ -537,6 +533,18 @@ public:
     }
   }
 
+  URICString(imgIRequest* aImageRequest) {
+    nsCOMPtr<nsIURI> uri;
+    if (aImageRequest) {
+      aImageRequest->GetURI(getter_AddRefs(uri));
+    }
+    if (uri) {
+      uri->GetSpec(*this);
+    } else {
+      Assign("[none]");
+    }
+  }
+  
   URICString& operator=(const URICString& aOther) {
     Assign(aOther);
     return *this;
@@ -621,6 +629,7 @@ void nsStyleContext::DumpRegressionData(nsIPresContext* aPresContext, FILE* out,
     (int)bg->mBackgroundFlags,
     (int)bg->mBackgroundRepeat,
     (long)bg->mBackgroundColor,
+    // XXX These aren't initialized unless flags are set:
     (long)bg->mBackgroundXPosition.mCoord, // potentially lossy on some platforms
     (long)bg->mBackgroundYPosition.mCoord, // potentially lossy on some platforms
     URICString(bg->mBackgroundImage).get());
@@ -785,12 +794,11 @@ void nsStyleContext::DumpRegressionData(nsIPresContext* aPresContext, FILE* out,
   // UI
   IndentBy(out,aIndent);
   const nsStyleUserInterface* ui = GetStyleUserInterface();
-  fprintf(out, "<ui data=\"%d %d %d %d %s\" />\n",
+  fprintf(out, "<ui data=\"%d %d %d %d\" />\n",
     (int)ui->mUserInput,
     (int)ui->mUserModify,
     (int)ui->mUserFocus, 
-    (int)ui->mCursor,
-    URICString(ui->mCursorImage).get());
+    (int)ui->mCursor);
 
   // UIReset
   IndentBy(out,aIndent);
@@ -812,17 +820,34 @@ void nsStyleContext::DumpRegressionData(nsIPresContext* aPresContext, FILE* out,
     (int)xul->mBoxOrdinal);
   fprintf(out, "\" />\n");
 
-  // SVG
 #ifdef MOZ_SVG
+  // SVG
   IndentBy(out,aIndent);
   const nsStyleSVG* svg = GetStyleSVG();
-  fprintf(out, "<svg data=\"%d %f %f %d %f",
-          (int)svg->mStroke.mType,
-          svg->mStrokeWidth,
-          svg->mStrokeOpacity,
+  fprintf(out, "<svg data=\"%d %ld %f %d %d %d %d %ld %s %f %d %d %f %f %f %d %d\" />\n",
           (int)svg->mFill.mType,
-          svg->mFillOpacity);
-  fprintf(out, "\" />\n");
+          (long)svg->mFill.mColor,
+          svg->mFillOpacity,
+          (int)svg->mFillRule,
+          (int)svg->mPointerEvents,
+          (int)svg->mShapeRendering,
+          (int)svg->mStroke.mType,
+          (long)svg->mStroke.mColor,
+          NS_ConvertUCS2toUTF8(svg->mStrokeDasharray).get(),
+          svg->mStrokeDashoffset,
+          (int)svg->mStrokeLinecap,
+          (int)svg->mStrokeLinejoin,
+          svg->mStrokeMiterlimit,
+          svg->mStrokeOpacity,
+          svg->mStrokeWidth,
+          (int)svg->mTextAnchor,
+          (int)svg->mTextRendering);
+
+  // SVGReset
+  IndentBy(out,aIndent);
+  const nsStyleSVGReset* svgReset = GetStyleSVGReset();
+  fprintf(out, "<svgreset data=\"%d\" />\n",
+          (int)svgReset->mDominantBaseline);
 #endif
   //#insert new style structs here#
 }

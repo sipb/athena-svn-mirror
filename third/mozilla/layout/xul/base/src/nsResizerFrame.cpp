@@ -152,17 +152,13 @@ nsResizerFrame::HandleEvent(nsIPresContext* aPresContext,
 			 if(mTrackingMouseMove)
 			 {				 				 
 			   // get the document and the global script object - should this be cached?
-			   nsCOMPtr<nsIPresShell> presShell;
-			   aPresContext->GetShell(getter_AddRefs(presShell));
 			   nsCOMPtr<nsIDocument> document;
-			   presShell->GetDocument(getter_AddRefs(document));
+			   aPresContext->PresShell()->GetDocument(getter_AddRefs(document));
 			   nsIScriptGlobalObject *scriptGlobalObject = document->GetScriptGlobalObject();
          NS_ENSURE_TRUE(scriptGlobalObject, NS_ERROR_FAILURE);
 
-         nsCOMPtr<nsIDocShell> docShell;
-         scriptGlobalObject->GetDocShell(getter_AddRefs(docShell));
-
-         nsCOMPtr<nsIDocShellTreeItem> docShellAsItem(do_QueryInterface(docShell));
+         nsCOMPtr<nsIDocShellTreeItem> docShellAsItem =
+           do_QueryInterface(scriptGlobalObject->GetDocShell());
          NS_ENSURE_TRUE(docShellAsItem, NS_ERROR_FAILURE);
 
          nsCOMPtr<nsIDocShellTreeOwner> treeOwner;
@@ -363,14 +359,6 @@ nsResizerFrame::MouseClicked (nsIPresContext* aPresContext)
 {
   // Execute the oncommand event handler.
   nsEventStatus status = nsEventStatus_eIgnore;
-  nsMouseEvent event;
-  event.eventStructType = NS_EVENT;
-  event.message = NS_XUL_COMMAND;
-  event.isShift = PR_FALSE;
-  event.isControl = PR_FALSE;
-  event.isAlt = PR_FALSE;
-  event.isMeta = PR_FALSE;
-  event.clickCount = 0;
-  event.widget = nsnull;
+  nsMouseEvent event(NS_XUL_COMMAND);
   mContent->HandleDOMEvent(aPresContext, &event, nsnull, NS_EVENT_FLAG_INIT, &status);
 }

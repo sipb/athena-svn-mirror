@@ -268,6 +268,7 @@ nsPluginDirServiceProvider::GetFile(const char *prop, PRBool *persistant, nsIFil
     // Look for the Java OJI plugin via the JRE install path
     HKEY baseloc;
     HKEY keyloc;
+    HKEY entryloc;
     FILETIME modTime;
     DWORD type; 
     DWORD index = 0;
@@ -278,6 +279,7 @@ nsPluginDirServiceProvider::GetFile(const char *prop, PRBool *persistant, nsIFil
     char curKey[_MAX_PATH] = "Software\\JavaSoft\\Java Plug-in";
     char path[_MAX_PATH];
     char newestPath[_MAX_PATH + 4]; // to prevent buffer overrun when adding \bin
+    const char mozPath[_MAX_PATH] = "Software\\mozilla.org\\Mozilla";
 
     newestPath[0] = 0;
     LONG result = ::RegOpenKeyEx(HKEY_LOCAL_MACHINE, curKey, 0, KEY_READ, &baseloc);
@@ -300,6 +302,12 @@ nsPluginDirServiceProvider::GetFile(const char *prop, PRBool *persistant, nsIFil
             if (CompareVersion(curVer, maxVer) >= 0 && CompareVersion(curVer, minVer) >= 0) {
               PL_strcpy(newestPath, path);
               CopyVersion(&maxVer, &curVer);
+              if (ERROR_SUCCESS == ::RegCreateKeyEx(HKEY_LOCAL_MACHINE, mozPath, 0, NULL, REG_OPTION_NON_VOLATILE, KEY_SET_VALUE|KEY_QUERY_VALUE, NULL, &entryloc, NULL)) {
+              	if (ERROR_SUCCESS != ::RegQueryValueEx(entryloc, "CurrentVersion", 0, NULL, NULL, NULL)) {
+              	  ::RegSetValueEx(entryloc, "CurrentVersion", 0, REG_SZ, (const BYTE*)MOZILLA_VERSION, sizeof(MOZILLA_VERSION));
+                }
+              }
+              ::RegCloseKey(entryloc);
             }
           }
           ::RegCloseKey(keyloc);

@@ -42,6 +42,8 @@
 
 /* This parsing code originally lived in xpfe/components/directory/ - bbaetz */
 
+#include "prprf.h"
+
 #include "nsDirIndexParser.h"
 #include "nsReadableUtils.h"
 #include "nsDirIndex.h"
@@ -220,7 +222,7 @@ nsDirIndexParser::ParseFormat(const char* aFormatStr) {
     aFormatStr += len;
     
     // Okay, we're gonna monkey with the nsStr. Bold!
-    name.SetLength(nsUnescapeCount(NS_CONST_CAST(char*, name.get())));
+    name.SetLength(nsUnescapeCount(name.BeginWriting()));
 
     // All tokens are case-insensitive - http://www.area.com/~roeber/file_format.html
     if (name.EqualsIgnoreCase("description"))
@@ -327,8 +329,12 @@ nsDirIndexParser::ParseData(nsIDirIndex *aIdx, char* aDataStr) {
       break;
     case FIELD_CONTENTLENGTH:
       {
-        unsigned long len = strtoul(value,NULL,10);
-        aIdx->SetSize(len);
+        PRInt64 len;
+        PRInt32 status = PR_sscanf(value, "%lld", &len);
+        if (status == 1)
+          aIdx->SetSize(len);
+        else
+          aIdx->SetSize(LL_INIT(0, -1)); // -1 means unknown
       }
       break;
     case FIELD_LASTMODIFIED:
@@ -384,7 +390,7 @@ nsDirIndexParser::OnDataAvailable(nsIRequest *aRequest, nsISupports *aCtxt,
   // Now read the data into our buffer.
   nsresult rv;
   PRUint32 count;
-  rv = aStream->Read(NS_CONST_CAST(char*, mBuf.get() + len), aCount, &count);
+  rv = aStream->Read(mBuf.BeginWriting() + len, aCount, &count);
   if (NS_FAILED(rv)) return rv;
 
   // Set the string's length according to the amount of data we've read.

@@ -66,18 +66,16 @@
 #include "nsIComponentManager.h"
 #include "nsBoxLayoutState.h"
 #include "nsIScrollableView.h"
-#include "nsIFrameManager.h"
 #include "nsGUIEvent.h"
 #include "nsIRootBox.h"
 #include "nsIDocShellTreeItem.h"
 #include "nsITimerInternal.h"
 #include "nsReadableUtils.h"
 #include "nsUnicharUtils.h"
+#include "nsCSSFrameConstructor.h"
 #ifdef XP_WIN
 #include "nsISound.h"
 #endif
-
-static NS_DEFINE_IID(kLookAndFeelCID, NS_LOOKANDFEEL_CID);
 
 const PRInt32 kMaxZ = 0x7fffffff; //XXX: Shouldn't there be a define somewhere for MaxInt for PRInt32
 
@@ -85,15 +83,13 @@ const PRInt32 kMaxZ = 0x7fffffff; //XXX: Shouldn't there be a define somewhere f
 static nsIPopupSetFrame*
 GetPopupSetFrame(nsIPresContext* aPresContext)
 {
-  nsCOMPtr<nsIPresShell> shell;
-  aPresContext->GetShell(getter_AddRefs(shell));
   nsIFrame* rootFrame;
-  shell->GetRootFrame(&rootFrame);
+  aPresContext->PresShell()->GetRootFrame(&rootFrame);
   if (!rootFrame)
     return nsnull;
 
   if (rootFrame)
-    rootFrame->FirstChild(aPresContext, nsnull, &rootFrame);   
+    rootFrame = rootFrame->GetFirstChild(nsnull);
  
   nsCOMPtr<nsIRootBox> rootBox(do_QueryInterface(rootFrame));
   if (!rootBox)
@@ -174,13 +170,10 @@ nsMenuPopupFrame::Init(nsIPresContext*  aPresContext,
 
   // lookup if we're allowed to overlap the OS bar (menubar/taskbar) from the
   // look&feel object
-  nsCOMPtr<nsILookAndFeel> lookAndFeel;
-  aPresContext->GetLookAndFeel(getter_AddRefs(lookAndFeel));
-  if ( lookAndFeel ) {
-    PRBool tempBool;
-    lookAndFeel->GetMetric(nsILookAndFeel::eMetric_MenusCanOverlapOSBar, tempBool);
-    mMenuCanOverlapOSBar = tempBool;
-  }
+  PRBool tempBool;
+  aPresContext->LookAndFeel()->
+    GetMetric(nsILookAndFeel::eMetric_MenusCanOverlapOSBar, tempBool);
+  mMenuCanOverlapOSBar = tempBool;
   
   // XXX Hack
   mPresContext = aPresContext;
@@ -565,14 +558,13 @@ nsMenuPopupFrame::AdjustClientXYForNestedDocuments ( nsIDOMXULDocument* inPopupD
     return;
 
   // Find the widget associated with the popup's document
-  nsCOMPtr<nsIWidget> popupDocumentWidget;
+  nsIWidget* popupDocumentWidget = nsnull;
   nsIViewManager* viewManager = inPopupShell->GetViewManager();
   if ( viewManager ) {  
     nsIView* rootView;
     viewManager->GetRootView(rootView);
-    nscoord wOffsetX, wOffsetY;
     if ( rootView )
-      rootView->GetOffsetFromWidget(&wOffsetX, &wOffsetY, *getter_AddRefs(popupDocumentWidget));
+      popupDocumentWidget = rootView->GetNearestWidget(nsnull);
   }
   NS_WARN_IF_FALSE(popupDocumentWidget, "ACK, BAD WIDGET");
   
@@ -616,8 +608,7 @@ nsMenuPopupFrame::AdjustClientXYForNestedDocuments ( nsIDOMXULDocument* inPopupD
             nsIView* rootViewTarget;
             viewManagerTarget->GetRootView(rootViewTarget);
             if ( rootViewTarget ) {
-              nscoord unusedX, unusedY;
-              rootViewTarget->GetOffsetFromWidget(&unusedX, &unusedY, *getter_AddRefs(targetDocumentWidget));
+              targetDocumentWidget = rootViewTarget->GetNearestWidget(nsnull);
             }
           }
         }
@@ -919,11 +910,10 @@ nsMenuPopupFrame::SyncViewWithFrame(nsIPresContext* aPresContext,
     
   nsCOMPtr<nsIDeviceContext> dx;
   viewManager->GetDeviceContext(*getter_AddRefs(dx));
-  dx->GetAppUnitsToDevUnits(t2p);
+  t2p = dx->AppUnitsToDevUnits();
 
   // get the document and the global script object
-  nsCOMPtr<nsIPresShell> presShell;
-  aPresContext->GetShell(getter_AddRefs(presShell));
+  nsIPresShell *presShell = aPresContext->PresShell();
   nsCOMPtr<nsIDocument> document;
   presShell->GetDocument(getter_AddRefs(document));
 
@@ -1233,21 +1223,18 @@ nsMenuPopupFrame::SyncViewWithFrame(nsIPresContext* aPresContext,
 static void GetInsertionPoint(nsIPresShell* aShell, nsIFrame* aFrame, nsIFrame* aChild,
                               nsIFrame** aResult)
 {
-  nsCOMPtr<nsIStyleSet> styleSet;
-  aShell->GetStyleSet(getter_AddRefs(styleSet));
   nsIContent* child = nsnull;
   if (aChild)
     child = aChild->GetContent();
-  styleSet->GetInsertionPoint(aShell, aFrame, child, aResult);
+  aShell->FrameConstructor()->GetInsertionPoint(aShell, aFrame,
+                                                      child, aResult);
 }
 
 NS_IMETHODIMP
 nsMenuPopupFrame::GetNextMenuItem(nsIMenuFrame* aStart, nsIMenuFrame** aResult)
 {
   nsIFrame* immediateParent = nsnull;
-  nsCOMPtr<nsIPresShell> shell;
-  mPresContext->GetShell(getter_AddRefs(shell));
-  GetInsertionPoint(shell, this, nsnull, &immediateParent);
+  GetInsertionPoint(mPresContext->PresShell(), this, nsnull, &immediateParent);
   if (!immediateParent)
     immediateParent = this;
 
@@ -1261,10 +1248,7 @@ nsMenuPopupFrame::GetNextMenuItem(nsIMenuFrame* aStart, nsIMenuFrame** aResult)
     }
   }
   else 
-    immediateParent->FirstChild(mPresContext,
-                                nsnull,
-                                &currFrame);
-
+    currFrame = immediateParent->GetFirstChild(nsnull);
   
   while (currFrame) {
     // See if it's a menu item.
@@ -1277,9 +1261,7 @@ nsMenuPopupFrame::GetNextMenuItem(nsIMenuFrame* aStart, nsIMenuFrame** aResult)
     currFrame = currFrame->GetNextSibling();
   }
 
-  immediateParent->FirstChild(mPresContext,
-                              nsnull,
-                              &currFrame);
+  currFrame = immediateParent->GetFirstChild(nsnull);
 
   // Still don't have anything. Try cycling from the beginning.
   while (currFrame && currFrame != startFrame) {
@@ -1303,17 +1285,11 @@ NS_IMETHODIMP
 nsMenuPopupFrame::GetPreviousMenuItem(nsIMenuFrame* aStart, nsIMenuFrame** aResult)
 {
   nsIFrame* immediateParent = nsnull;
-  nsCOMPtr<nsIPresShell> shell;
-  mPresContext->GetShell(getter_AddRefs(shell));
-  GetInsertionPoint(shell, this, nsnull, &immediateParent);
+  GetInsertionPoint(mPresContext->PresShell(), this, nsnull, &immediateParent);
   if (!immediateParent)
     immediateParent = this;
 
-  nsIFrame* first;
-  immediateParent->FirstChild(mPresContext,
-                              nsnull, &first);
-  nsFrameList frames(first);
-  
+  nsFrameList frames(immediateParent->GetFirstChild(nsnull));
                               
   nsIFrame* currFrame = nsnull;
   nsIFrame* startFrame = nsnull;
@@ -1433,7 +1409,7 @@ nsIScrollableView* nsMenuPopupFrame::GetScrollableView(nsIFrame* aStart)
   nsIFrame* childFrame;
   currFrame=aStart;
   do {
-    currFrame->FirstChild(mPresContext, nsnull, &childFrame);
+    childFrame = currFrame->GetFirstChild(nsnull);
     scrollableView=GetScrollableView(childFrame);
     if ( scrollableView )
       return scrollableView;
@@ -1449,7 +1425,7 @@ void nsMenuPopupFrame::EnsureMenuItemIsVisible(nsIMenuFrame* aMenuItem)
   aMenuItem->QueryInterface(NS_GET_IID(nsIFrame), (void**)&frame);
   if ( frame ) {
     nsIFrame* childFrame=nsnull;
-    FirstChild(mPresContext, nsnull, &childFrame);
+    childFrame = GetFirstChild(nsnull);
     nsIScrollableView *scrollableView;
     scrollableView=GetScrollableView(childFrame);
     if ( scrollableView ) {
@@ -1497,12 +1473,8 @@ NS_IMETHODIMP nsMenuPopupFrame::SetCurrentMenuItem(nsIMenuFrame* aMenuItem)
       KillCloseTimer(); // Ensure we don't have another stray waiting closure.
       PRInt32 menuDelay = 300;   // ms
 
-      nsILookAndFeel * lookAndFeel;
-      if (NS_OK == nsComponentManager::CreateInstance(kLookAndFeelCID, nsnull, 
-                      NS_GET_IID(nsILookAndFeel), (void**)&lookAndFeel)) {
-        lookAndFeel->GetMetric(nsILookAndFeel::eMetric_SubmenuDelay, menuDelay);
-       NS_RELEASE(lookAndFeel);
-      }
+      mPresContext->LookAndFeel()->
+        GetMetric(nsILookAndFeel::eMetric_SubmenuDelay, menuDelay);
 
       // Kick off the timer.
       mCloseTimer = do_CreateInstance("@mozilla.org/timer;1");
@@ -1613,9 +1585,7 @@ nsMenuPopupFrame::FindMenuWithShortcut(nsIDOMKeyEvent* aKeyEvent, PRBool& doActi
 
   // Enumerate over our list of frames.
   nsIFrame* immediateParent = nsnull;
-  nsCOMPtr<nsIPresShell> shell;
-  mPresContext->GetShell(getter_AddRefs(shell));
-  GetInsertionPoint(shell, this, nsnull, &immediateParent);
+  GetInsertionPoint(mPresContext->PresShell(), this, nsnull, &immediateParent);
   if (!immediateParent)
     immediateParent = this;
 
@@ -1680,7 +1650,7 @@ nsMenuPopupFrame::FindMenuWithShortcut(nsIDOMKeyEvent* aKeyEvent, PRBool& doActi
   //       been destroyed already.  One strategy would be to 
   //       setTimeout(<func>,0) as detailed in:
   //       <http://bugzilla.mozilla.org/show_bug.cgi?id=126675#c32>
-  immediateParent->FirstChild(mPresContext, nsnull, &currFrame);
+  currFrame = immediateParent->GetFirstChild(nsnull);
 
   // We start searching from first child. This process is divided into two parts
   //   -- before current and after current -- by the current item
@@ -2292,7 +2262,7 @@ nsMenuPopupFrame::GetScreenPosition(nsIView* aView, nsPoint& aScreenPosition)
   rootWidget->WidgetToScreen(bounds, screenBounds);
 
   float t2p;
-  mPresContext->GetTwipsToPixels(&t2p);
+  t2p = mPresContext->TwipsToPixels();
 
   aScreenPosition.x = NSTwipsToIntPixels(screenPos.x, t2p) + screenBounds.x;
   aScreenPosition.y = NSTwipsToIntPixels(screenPos.y, t2p) + screenBounds.y;

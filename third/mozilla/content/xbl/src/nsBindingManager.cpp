@@ -64,7 +64,7 @@
 #include "nsITextContent.h"
 #include "nsIStreamListener.h"
 #include "nsIStyleRuleSupplier.h"
-#include "nsIDocumentObserver.h"
+#include "nsStubDocumentObserver.h"
 
 #include "nsIXBLBinding.h"
 #include "nsIXBLDocumentInfo.h"
@@ -73,10 +73,8 @@
 #include "nsIStyleSheet.h"
 #include "nsIHTMLStyleSheet.h"
 #include "nsIHTMLCSSStyleSheet.h"
-#include "nsIHTMLContentContainer.h"
 
 #include "nsIStyleRuleProcessor.h"
-#include "nsIStyleSet.h"
 #include "nsIWeakReference.h"
 
 #include "jsapi.h"
@@ -296,7 +294,9 @@ SetOrRemoveObject(PLDHashTable& table, nsISupports* aKey, nsISupports* aValue)
 
 ////////////////////////////////////////////////////////////////////////
 
-class nsBindingManager : public nsIBindingManager, public nsIStyleRuleSupplier, public nsIDocumentObserver
+class nsBindingManager : public nsIBindingManager,
+                         public nsIStyleRuleSupplier,
+                         public nsStubDocumentObserver
 {
   NS_DECL_ISUPPORTS
 
@@ -359,12 +359,27 @@ public:
 
   // nsIStyleRuleSupplier
   NS_IMETHOD UseDocumentRules(nsIContent* aContent, PRBool* aResult);
-  NS_IMETHOD WalkRules(nsIStyleSet* aStyleSet, 
-                       nsISupportsArrayEnumFunc aFunc,
+  NS_IMETHOD WalkRules(nsStyleSet* aStyleSet, 
+                       nsIStyleRuleProcessor::EnumFunc aFunc,
                        RuleProcessorData* aData);
 
   // nsIDocumentObserver
-  NS_DECL_NSIDOCUMENTOBSERVER
+  virtual void ContentAppended(nsIDocument* aDocument,
+                               nsIContent* aContainer,
+                               PRInt32     aNewIndexInContainer);
+  virtual void ContentInserted(nsIDocument* aDocument,
+                               nsIContent* aContainer,
+                               nsIContent* aChild,
+                               PRInt32 aIndexInContainer);
+  virtual void ContentRemoved(nsIDocument* aDocument,
+                              nsIContent* aContainer,
+                              nsIContent* aChild,
+                              PRInt32 aIndexInContainer);
+  virtual void ContentReplaced(nsIDocument *aDocument,
+                               nsIContent* aContainer,
+                               nsIContent* aOldChild,
+                               nsIContent* aNewChild,
+                               PRInt32 aIndexInContainer);
 
 protected:
   nsresult GetXBLChildNodesInternal(nsIContent* aContent,
@@ -379,7 +394,8 @@ protected:
   }
   nsIContent* GetOutermostStyleScope(nsIContent* aContent);
 
-  void WalkRules(nsISupportsArrayEnumFunc aFunc, RuleProcessorData* aData,
+  void WalkRules(nsIStyleRuleProcessor::EnumFunc aFunc,
+                 RuleProcessorData* aData,
                  nsIContent* aParent, nsIContent* aCurrContent);
 
   nsresult GetNestedInsertionPoint(nsIContent* aParent, nsIContent* aChild, nsIContent** aResult);
@@ -579,8 +595,7 @@ nsBindingManager::ChangeDocumentFor(nsIContent* aContent, nsIDocument* aOldDocum
       anonymousElements->Count(&count);
 
       while (PRInt32(--count) >= 0) {
-        nsCOMPtr<nsISupports> isupports( getter_AddRefs(anonymousElements->ElementAt(count)) );
-        nsCOMPtr<nsIContent> content( do_QueryInterface(isupports) );
+        nsCOMPtr<nsIContent> content( do_QueryElementAt(anonymousElements, count));
         NS_ASSERTION(content != nsnull, "not an nsIContent");
         if (! content)
           continue;
@@ -866,7 +881,7 @@ nsBindingManager::LoadBindingDocument(nsIDocument* aBoundDoc,
   aURL->GetScheme(otherScheme);
   
   nsCAutoString scheme;
-  aBoundDoc->GetDocumentURL()->GetScheme(scheme);
+  aBoundDoc->GetDocumentURI()->GetScheme(scheme);
 
   // First we need to load our binding.
   *aResult = nsnull;
@@ -1132,8 +1147,7 @@ nsBindingManager::GetBindingImplementation(nsIContent* aContent, REFNSIID aIID,
       if (!global)
         return NS_NOINTERFACE;
 
-      nsCOMPtr<nsIScriptContext> context;
-      global->GetContext(getter_AddRefs(context));
+      nsIScriptContext *context = global->GetContext();
       if (!context)
         return NS_NOINTERFACE;
 
@@ -1146,7 +1160,6 @@ nsBindingManager::GetBindingImplementation(nsIContent* aContent, REFNSIID aIID,
         return NS_NOINTERFACE;
 
       nsCOMPtr<nsIXPConnectWrappedNative> wrapper;
-
       xpConnect->GetWrappedNativeOfNativeObject(jscontext,
                                                 JS_GetGlobalObject(jscontext),
                                                 aContent,
@@ -1232,7 +1245,7 @@ nsBindingManager::GetOutermostStyleScope(nsIContent* aContent)
 }
 
 void
-nsBindingManager::WalkRules(nsISupportsArrayEnumFunc aFunc,
+nsBindingManager::WalkRules(nsIStyleRuleProcessor::EnumFunc aFunc,
                             RuleProcessorData* aData,
                             nsIContent* aParent, nsIContent* aCurrContent)
 {
@@ -1250,8 +1263,8 @@ nsBindingManager::WalkRules(nsISupportsArrayEnumFunc aFunc,
 }
 
 NS_IMETHODIMP
-nsBindingManager::WalkRules(nsIStyleSet* aStyleSet,
-                            nsISupportsArrayEnumFunc aFunc,
+nsBindingManager::WalkRules(nsStyleSet* aStyleSet,
+                            nsIStyleRuleProcessor::EnumFunc aFunc,
                             RuleProcessorData* aData)
 {
   nsIContent *content = aData->mContent;
@@ -1268,14 +1281,12 @@ nsBindingManager::WalkRules(nsIStyleSet* aStyleSet,
   if (parent) {
     // We cut ourselves off, but we still need to walk the document's attribute sheet
     // so that inline style continues to work on anonymous content.
-    nsCOMPtr<nsIHTMLContentContainer> container(
-          do_QueryInterface(content->GetDocument()));
-    if (container) {
-      nsCOMPtr<nsIHTMLCSSStyleSheet> inlineSheet;
-      container->GetInlineStyleSheet(getter_AddRefs(inlineSheet));  
-      nsCOMPtr<nsIStyleRuleProcessor> inlineCSS(do_QueryInterface(inlineSheet));
+    nsIDocument* doc = content->GetDocument();
+    if (doc) {
+      nsCOMPtr<nsIStyleRuleProcessor> inlineCSS(
+              do_QueryInterface(doc->GetInlineStyleSheet()));
       if (inlineCSS)
-        (*aFunc)((nsISupports*)(inlineCSS.get()), aData);
+        (*aFunc)(inlineCSS, aData);
     }
   }
 
@@ -1322,39 +1333,15 @@ nsBindingManager::GetNestedInsertionPoint(nsIContent* aParent, nsIContent* aChil
   return NS_OK;
 }
 
-NS_IMPL_NSIDOCUMENTOBSERVER_CORE_STUB(nsBindingManager)
-NS_IMPL_NSIDOCUMENTOBSERVER_LOAD_STUB(nsBindingManager)
-NS_IMPL_NSIDOCUMENTOBSERVER_REFLOW_STUB(nsBindingManager)
-NS_IMPL_NSIDOCUMENTOBSERVER_STATE_STUB(nsBindingManager)
-NS_IMPL_NSIDOCUMENTOBSERVER_STYLE_STUB(nsBindingManager)
-
-NS_IMETHODIMP
-nsBindingManager::ContentChanged(nsIDocument* aDoc, 
-                            nsIContent* aContent,
-                            nsISupports* aSubContent)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsBindingManager::AttributeChanged(nsIDocument* aDocument,
-                              nsIContent*  aContent,
-                              PRInt32      aNameSpaceID,
-                              nsIAtom*     aAttribute,
-                              PRInt32      aModType)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
+void
 nsBindingManager::ContentAppended(nsIDocument* aDocument,
-			                            nsIContent* aContainer,
+                                  nsIContent* aContainer,
                                   PRInt32     aNewIndexInContainer)
 {
   // XXX This is hacked and not quite correct. See below.
   if (aNewIndexInContainer == -1 || !mContentListTable.ops)
     // It's anonymous.
-    return NS_OK;
+    return;
 
   PRInt32 childCount = aContainer->GetChildCount();
 
@@ -1391,11 +1378,9 @@ nsBindingManager::ContentAppended(nsIDocument* aDocument,
       }
     }
   }
- 
-  return NS_OK;
 }
 
-NS_IMETHODIMP
+void
 nsBindingManager::ContentInserted(nsIDocument* aDocument,
                                   nsIContent* aContainer,
                                   nsIContent* aChild,
@@ -1404,8 +1389,8 @@ nsBindingManager::ContentInserted(nsIDocument* aDocument,
 // XXX This is hacked just to make menus work again.
   if (aIndexInContainer == -1 || !mContentListTable.ops)
     // It's anonymous.
-    return NS_OK;
- 
+    return;
+
   nsCOMPtr<nsIContent> ins;
   GetNestedInsertionPoint(aContainer, aChild, getter_AddRefs(ins));
 
@@ -1426,38 +1411,53 @@ nsBindingManager::ContentInserted(nsIDocument* aDocument,
         if (point->GetInsertionIndex() != -1) {
           // We're real. Jam the kid in.
           // XXX Check the filters to find the correct points.
-          point->InsertChildAt(aIndexInContainer, aChild);
+
+          // Find the right insertion spot.  Can't just insert in the insertion
+          // point at aIndexInContainer since the point may contain anonymous
+          // content, not all of aContainer's kids, etc.  So find the last
+          // child of aContainer that comes before aIndexInContainer and is in
+          // the insertion point and insert right after it.
+          PRInt32 pointSize = point->ChildCount();
+          PRBool inserted = PR_FALSE;
+          for (PRInt32 parentIndex = aIndexInContainer - 1;
+               parentIndex >= 0 && !inserted; --parentIndex) {
+            nsIContent* currentSibling = aContainer->GetChildAt(parentIndex);
+            for (PRInt32 pointIndex = pointSize - 1; pointIndex >= 0;
+                 --pointIndex) {
+              nsCOMPtr<nsIContent> currContent = point->ChildAt(pointIndex);
+              if (currContent == currentSibling) {
+                point->InsertChildAt(pointIndex + 1, aChild);
+                inserted = PR_TRUE;
+                break;
+              }
+            }
+          }
+          if (!inserted) {
+            // None of our previous siblings are in here... just stick
+            // ourselves in at the beginning of the insertion point.
+            // XXXbz if we ever start doing the filter thing right, this may be
+            // no good, since we may _still_ have anonymous kids in there and
+            // may need to get the ordering with those right.
+            point->InsertChildAt(0, aChild);
+          }
           SetInsertionParent(aChild, ins);
           break;
         }
       }
     }
   }
- 
-  return NS_OK;
 }
 
-NS_IMETHODIMP
-nsBindingManager::ContentReplaced(nsIDocument* aDocument,
-                                  nsIContent* aContainer,
-                                  nsIContent* aOldChild,
-                                  nsIContent* aNewChild,
-                                  PRInt32 aIndexInContainer)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
+void
 nsBindingManager::ContentRemoved(nsIDocument* aDocument,
                                  nsIContent* aContainer,
                                  nsIContent* aChild,
                                  PRInt32 aIndexInContainer)
-
 {
   if (aIndexInContainer == -1 || !mContentListTable.ops)
     // It's anonymous.
-    return NS_OK;
- 
+    return;
+
   nsCOMPtr<nsIContent> point;
   GetNestedInsertionPoint(aContainer, aChild, getter_AddRefs(point));
 
@@ -1479,9 +1479,18 @@ nsBindingManager::ContentRemoved(nsIDocument* aDocument,
       }
     }
   }
- 
-  return NS_OK;
 }
+
+void nsBindingManager::ContentReplaced(nsIDocument *aDocument,
+                                       nsIContent* aContainer,
+                                       nsIContent* aOldChild,
+                                       nsIContent* aNewChild,
+                                       PRInt32 aIndexInContainer)
+{
+  ContentRemoved(aDocument, aContainer, aOldChild, aIndexInContainer);
+  ContentInserted(aDocument, aContainer, aNewChild, aIndexInContainer);
+}
+
 
 // Creation Routine ///////////////////////////////////////////////////////////////////////
 

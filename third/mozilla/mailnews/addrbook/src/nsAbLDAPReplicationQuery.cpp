@@ -1,3 +1,4 @@
+/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -20,7 +21,7 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- * 	Dan Mosedale <dmose@netscape.com>
+ *   Dan Mosedale <dmose@netscape.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -110,6 +111,18 @@ nsresult nsAbLDAPReplicationQuery::InitLDAPData()
     return rv;
 }
 
+nsresult nsAbLDAPReplicationQuery::CreateNewLDAPOperation()
+{
+  nsresult rv;
+  nsCOMPtr <nsILDAPMessageListener> oldListener;
+  mOperation->GetMessageListener(getter_AddRefs(oldListener));
+  // release old and create a new instance
+  mOperation = do_CreateInstance(NS_LDAPOPERATION_CONTRACTID, &rv);
+  NS_ENSURE_SUCCESS(rv, rv);
+  return mOperation->Init(mConnection, oldListener, nsnull);
+}
+
+
 NS_IMETHODIMP nsAbLDAPReplicationQuery::ConnectToLDAPServer(nsILDAPURL *aURL, const nsACString & aAuthDN)
 {
     NS_ENSURE_ARG_POINTER(aURL);
@@ -163,10 +176,17 @@ NS_IMETHODIMP nsAbLDAPReplicationQuery::ConnectToLDAPServer(nsILDAPURL *aURL, co
             return rv;
     }
 
+    PRUint32 protocolVersion;
+    if (DIR_TestFlag(mDirServer, DIR_LDAP_VERSION3)) {
+        protocolVersion = nsILDAPConnection::VERSION3;
+    } else {
+        protocolVersion = nsILDAPConnection::VERSION2;
+    }
+
     // initialize the LDAP connection
     return mConnection->Init(host.get(), port, 
-			     (options & nsILDAPURL::OPT_SECURE) ? PR_TRUE : PR_FALSE,
-			     aAuthDN, listener, nsnull);
+                             (options & nsILDAPURL::OPT_SECURE) ? PR_TRUE : PR_FALSE,
+                             aAuthDN, listener, nsnull, protocolVersion);
 }
 
 NS_IMETHODIMP nsAbLDAPReplicationQuery::Init(const nsACString & aPrefName, nsIWebProgressListener *aProgressListener)
@@ -192,7 +212,7 @@ NS_IMETHODIMP nsAbLDAPReplicationQuery::Init(const nsACString & aPrefName, nsIWe
 
 NS_IMETHODIMP nsAbLDAPReplicationQuery::DoReplicationQuery()
 {
-    return ConnectToLDAPServer(mURL, NS_LITERAL_CSTRING(""));
+    return ConnectToLDAPServer(mURL, EmptyCString());
 }
 
 NS_IMETHODIMP nsAbLDAPReplicationQuery::QueryAllEntries()
@@ -224,6 +244,8 @@ NS_IMETHODIMP nsAbLDAPReplicationQuery::QueryAllEntries()
     if (NS_FAILED(rv)) 
         return rv;
 
+    rv = CreateNewLDAPOperation();
+    NS_ENSURE_SUCCESS(rv, rv);
     return mOperation->SearchExt(dn, scope, urlFilter, 
                                attributes.GetSize(), attributes.GetArray(),
                                0, 0);

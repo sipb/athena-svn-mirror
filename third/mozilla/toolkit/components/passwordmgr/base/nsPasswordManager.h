@@ -133,6 +133,7 @@ public:
   // nsIDOMLoadListener
   NS_IMETHOD Load(nsIDOMEvent* aEvent);
   NS_IMETHOD Unload(nsIDOMEvent* aEvent);
+  NS_IMETHOD BeforeUnload(nsIDOMEvent* aEvent);
   NS_IMETHOD Abort(nsIDOMEvent* aEvent);
   NS_IMETHOD Error(nsIDOMEvent* aEvent);
 
@@ -143,8 +144,7 @@ public:
                             nsIAutoCompleteResult** aResult);
 
 protected:
-  void ReadSignonFile();
-  void WriteSignonFile();
+  void WritePasswords(nsIFile* aPasswordFile);
   void AddSignonData(const nsACString& aRealm, SignonDataEntry* aEntry);
 
   nsresult FindPasswordEntryInternal(const SignonDataEntry* aEntry,

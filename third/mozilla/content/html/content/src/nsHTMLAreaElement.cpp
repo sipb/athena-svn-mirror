@@ -52,7 +52,7 @@
 #include "nsReadableUtils.h"
 #include "nsIDocument.h"
 
-class nsHTMLAreaElement : public nsGenericHTMLLeafElement,
+class nsHTMLAreaElement : public nsGenericHTMLElement,
                           public nsIDOMHTMLAreaElement,
                           public nsIDOMNSHTMLAreaElement,
                           public nsILink
@@ -65,13 +65,13 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
   // nsIDOMNode
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLLeafElement::)
+  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLElement::)
 
   // nsIDOMElement
-  NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLLeafElement::)
+  NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLElement::)
 
   // nsIDOMHTMLElement
-  NS_FORWARD_NSIDOMHTMLELEMENT(nsGenericHTMLLeafElement::)
+  NS_FORWARD_NSIDOMHTMLELEMENT(nsGenericHTMLElement::)
 
   // nsIDOMHTMLAreaElement
   NS_DECL_NSIDOMHTMLAREAELEMENT
@@ -84,25 +84,28 @@ public:
   NS_IMETHOD SetLinkState(nsLinkState aState);
   NS_IMETHOD GetHrefURI(nsIURI** aURI);
 
-  NS_IMETHOD StringToAttribute(nsIAtom* aAttribute,
-                               const nsAString& aValue,
-                               nsHTMLValue& aResult);
-  NS_IMETHOD HandleDOMEvent(nsIPresContext* aPresContext, nsEvent* aEvent,
-                            nsIDOMEvent** aDOMEvent, PRUint32 aFlags,
-                            nsEventStatus* aEventStatus);
-  NS_IMETHOD SetFocus(nsIPresContext* aPresContext);
-  NS_IMETHOD RemoveFocus(nsIPresContext* aPresContext);
+  virtual PRBool ParseAttribute(nsIAtom* aAttribute,
+                                const nsAString& aValue,
+                                nsAttrValue& aResult);
+  virtual nsresult HandleDOMEvent(nsIPresContext* aPresContext,
+                                  nsEvent* aEvent, nsIDOMEvent** aDOMEvent,
+                                  PRUint32 aFlags,
+                                  nsEventStatus* aEventStatus);
+  virtual void SetFocus(nsIPresContext* aPresContext);
+  virtual void RemoveFocus(nsIPresContext* aPresContext);
 
-  NS_IMETHOD SetDocument(nsIDocument* aDocument, PRBool aDeep,
-                         PRBool aCompileEventHandlers);
-  NS_IMETHOD SetAttr(nsINodeInfo* aNodeInfo,
-                     const nsAString& aValue,
-                     PRBool aNotify);
-  NS_IMETHOD SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
-                     const nsAString& aValue,
-                     PRBool aNotify);
-  NS_IMETHOD UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aAttribute,
-                       PRBool aNotify);
+  virtual void SetDocument(nsIDocument* aDocument, PRBool aDeep,
+                           PRBool aCompileEventHandlers);
+  nsresult SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
+                   const nsAString& aValue, PRBool aNotify)
+  {
+    return SetAttr(aNameSpaceID, aName, nsnull, aValue, aNotify);
+  }
+  virtual nsresult SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
+                           nsIAtom* aPrefix, const nsAString& aValue,
+                           PRBool aNotify);
+  virtual nsresult UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aAttribute,
+                             PRBool aNotify);
 
 protected:
   // The cached visited state
@@ -111,7 +114,7 @@ protected:
 
 nsresult
 NS_NewHTMLAreaElement(nsIHTMLContent** aInstancePtrResult,
-                      nsINodeInfo *aNodeInfo)
+                      nsINodeInfo *aNodeInfo, PRBool aFromParser)
 {
   NS_ENSURE_ARG_POINTER(aInstancePtrResult);
 
@@ -150,8 +153,7 @@ NS_IMPL_RELEASE_INHERITED(nsHTMLAreaElement, nsGenericElement)
 
 
 // QueryInterface implementation for nsHTMLAreaElement
-NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLAreaElement,
-                                    nsGenericHTMLLeafElement)
+NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLAreaElement, nsGenericHTMLElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMHTMLAreaElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMNSHTMLAreaElement)
   NS_INTERFACE_MAP_ENTRY(nsILink)
@@ -178,7 +180,7 @@ nsHTMLAreaElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
   if (NS_FAILED(rv))
     return rv;
 
-  CopyInnerTo(this, it, aDeep);
+  CopyInnerTo(it, aDeep);
 
   *aReturn = it;
 
@@ -195,28 +197,39 @@ NS_IMPL_URI_ATTR(nsHTMLAreaElement, Href, href)
 NS_IMPL_BOOL_ATTR(nsHTMLAreaElement, NoHref, nohref)
 NS_IMPL_STRING_ATTR(nsHTMLAreaElement, Shape, shape)
 NS_IMPL_INT_ATTR(nsHTMLAreaElement, TabIndex, tabindex)
-NS_IMPL_STRING_ATTR(nsHTMLAreaElement, Target, target)
-
 
 NS_IMETHODIMP
-nsHTMLAreaElement::StringToAttribute(nsIAtom* aAttribute,
-                                     const nsAString& aValue,
-                                     nsHTMLValue& aResult)
+nsHTMLAreaElement::GetTarget(nsAString& aValue)
 {
-  if (aAttribute == nsHTMLAtoms::nohref) {
-    aResult.SetEmptyValue();
-    return NS_CONTENT_ATTR_HAS_VALUE;
-  }
-  else if (aAttribute == nsHTMLAtoms::tabindex) {
-    if (aResult.ParseIntWithBounds(aValue, eHTMLUnit_Integer, 0)) {
-      return NS_CONTENT_ATTR_HAS_VALUE;
-    }
-  }
+  aValue.Truncate();
 
-  return NS_CONTENT_ATTR_NOT_THERE;
+  nsresult rv;
+  rv = GetAttr(kNameSpaceID_None, nsHTMLAtoms::target, aValue);
+  if (rv == NS_CONTENT_ATTR_NOT_THERE) {
+    GetBaseTarget(aValue);
+  }
+  return NS_OK;
 }
 
 NS_IMETHODIMP
+nsHTMLAreaElement::SetTarget(const nsAString& aValue)
+{
+  return SetAttr(kNameSpaceID_None, nsHTMLAtoms::target, aValue, PR_TRUE);
+}
+
+PRBool
+nsHTMLAreaElement::ParseAttribute(nsIAtom* aAttribute,
+                                  const nsAString& aValue,
+                                  nsAttrValue& aResult)
+{
+  if (aAttribute == nsHTMLAtoms::tabindex) {
+    return aResult.ParseIntWithBounds(aValue, 0, 32767);
+  }
+
+  return nsGenericHTMLElement::ParseAttribute(aAttribute, aValue, aResult);
+}
+
+nsresult
 nsHTMLAreaElement::HandleDOMEvent(nsIPresContext* aPresContext,
                                   nsEvent* aEvent,
                                   nsIDOMEvent** aDOMEvent,
@@ -227,48 +240,43 @@ nsHTMLAreaElement::HandleDOMEvent(nsIPresContext* aPresContext,
                                   aFlags, aEventStatus);
 }
 
-NS_IMETHODIMP
+void
 nsHTMLAreaElement::SetFocus(nsIPresContext* aPresContext)
 {
-  NS_ENSURE_ARG_POINTER(aPresContext);
-  nsCOMPtr<nsIEventStateManager> esm;
-  aPresContext->GetEventStateManager(getter_AddRefs(esm));
-  if (esm) {
-    esm->SetContentState(this, NS_EVENT_STATE_FOCUS);
+  if (!aPresContext)
+    return;
+
+  aPresContext->EventStateManager()->SetContentState(this,
+                                                     NS_EVENT_STATE_FOCUS);
     
-    // Make sure the presentation is up-to-date    
-    if (mDocument) {
-      mDocument->FlushPendingNotifications();
-    }
+  // Make sure the presentation is up-to-date    
+  if (mDocument) {
+    mDocument->FlushPendingNotifications();
+  }
 
-    nsCOMPtr<nsIPresShell> presShell;
-    aPresContext->GetShell(getter_AddRefs(presShell));
+  nsIPresShell *presShell = aPresContext->GetPresShell();
 
-    if (presShell) {
-      nsIFrame* frame = nsnull;
-      presShell->GetPrimaryFrameFor(this, &frame);
-      if (frame) {
-        presShell->ScrollFrameIntoView(frame, NS_PRESSHELL_SCROLL_ANYWHERE,
-                                       NS_PRESSHELL_SCROLL_ANYWHERE);
-      }
+  if (presShell) {
+    nsIFrame* frame = nsnull;
+    presShell->GetPrimaryFrameFor(this, &frame);
+    if (frame) {
+      presShell->ScrollFrameIntoView(frame, NS_PRESSHELL_SCROLL_ANYWHERE,
+                                     NS_PRESSHELL_SCROLL_ANYWHERE);
     }
   }
-  return NS_OK;
 }
 
-NS_IMETHODIMP
+void
 nsHTMLAreaElement::RemoveFocus(nsIPresContext* aPresContext)
 {
-  NS_ENSURE_ARG_POINTER(aPresContext);
-  nsIEventStateManager* esm;
-  if (NS_OK == aPresContext->GetEventStateManager(&esm)) {
-    esm->SetContentState(nsnull, NS_EVENT_STATE_FOCUS);
-    NS_RELEASE(esm);
-  }
-  return NS_OK;
+  if (!aPresContext)
+    return;
+
+  aPresContext->EventStateManager()->SetContentState(nsnull,
+                                                     NS_EVENT_STATE_FOCUS);
 }
 
-NS_IMETHODIMP
+void
 nsHTMLAreaElement::SetDocument(nsIDocument* aDocument, PRBool aDeep,
                                PRBool aCompileEventHandlers)
 {
@@ -279,29 +287,17 @@ nsHTMLAreaElement::SetDocument(nsIDocument* aDocument, PRBool aDeep,
     RegUnRegAccessKey(PR_FALSE);
   }
 
-  nsresult rv = nsGenericHTMLElement::SetDocument(aDocument, aDeep,
-                                                  aCompileEventHandlers);
+  nsGenericHTMLElement::SetDocument(aDocument, aDeep, aCompileEventHandlers);
 
   // Register the access key for the new document.
   if (documentChanging && mDocument) {
     RegUnRegAccessKey(PR_TRUE);
   }
-
-  return rv;
 }
 
-NS_IMETHODIMP
-nsHTMLAreaElement::SetAttr(nsINodeInfo* aNodeInfo,
-                           const nsAString& aValue,
-                           PRBool aNotify)
-{
-  return nsGenericHTMLElement::SetAttr(aNodeInfo, aValue, aNotify);
-}
-
-
-NS_IMETHODIMP
+nsresult
 nsHTMLAreaElement::SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
-                           const nsAString& aValue,
+                           nsIAtom* aPrefix, const nsAString& aValue,
                            PRBool aNotify)
 {
   if (aName == nsHTMLAtoms::accesskey && aNameSpaceID == kNameSpaceID_None) {
@@ -313,7 +309,7 @@ nsHTMLAreaElement::SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
   }
 
   nsresult rv =
-    nsGenericHTMLElement::SetAttr(aNameSpaceID, aName, aValue, aNotify);
+    nsGenericHTMLElement::SetAttr(aNameSpaceID, aName, aPrefix, aValue, aNotify);
 
   if (aName == nsHTMLAtoms::accesskey && aNameSpaceID == kNameSpaceID_None &&
       !aValue.IsEmpty()) {
@@ -323,7 +319,7 @@ nsHTMLAreaElement::SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
   return rv;
 }
 
-NS_IMETHODIMP
+nsresult
 nsHTMLAreaElement::UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aAttribute,
                              PRBool aNotify)
 {
@@ -346,7 +342,7 @@ nsHTMLAreaElement::GetProtocol(nsAString& aProtocol)
 
   // XXX this should really use GetHrefURI and not do so much string stuff
   return GetProtocolFromHrefString(href, aProtocol,
-                                   nsGenericHTMLLeafElement::GetOwnerDocument());
+                                   nsGenericHTMLElement::GetOwnerDocument());
 }
 
 NS_IMETHODIMP

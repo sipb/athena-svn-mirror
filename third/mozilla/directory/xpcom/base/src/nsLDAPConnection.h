@@ -112,6 +112,7 @@ class nsLDAPConnection : public nsILDAPConnection,
      */
     nsresult RemovePendingOperation(nsILDAPOperation *aOperation);
 
+    void Close();                       // close the connection
     LDAP *mConnectionHandle;            // the LDAP C SDK's connection object
     nsCString mBindName;                // who to bind as
     nsCOMPtr<nsIThread> mThread;        // thread which marshals results
@@ -121,6 +122,7 @@ class nsLDAPConnection : public nsILDAPConnection,
 
     PRInt32 mPort;                      // The LDAP port we're binding to
     PRBool mSSL;                        // the options
+    PRUint32 mVersion;                  // LDAP protocol version
 
     nsCString mResolvedIP;              // Preresolved list of host IPs
     nsCOMPtr<nsILDAPMessageListener> mInitListener; // Init callback

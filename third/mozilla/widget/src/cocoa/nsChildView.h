@@ -94,6 +94,8 @@ class nsChildView;
   NSRange mSelectedRange;
   BOOL mInComposition;
 
+  BOOL mToggleMouseMoveEventWatching;
+
   BOOL mInHandScroll; // true for as long as we are hand scrolling
   // hand scroll locations
   NSPoint mHandScrollStartMouseLoc;
@@ -216,7 +218,7 @@ public:
   NS_IMETHOD        CaptureRollupEvents(nsIRollupListener * aListener, PRBool aDoCapture, PRBool aConsumeRollupEvent);
   NS_IMETHOD        SetTitle(const nsString& title);
 
-  NS_IMETHOD        GetAttention();
+  NS_IMETHOD        GetAttention(PRInt32 aCycleCount);
 
   // nsIPluginWidget
   NS_IMETHOD        GetPluginClipRect(nsRect& outClipRect, nsPoint& outOrigin, PRBool& outWidgetVisible);
@@ -261,6 +263,7 @@ protected:
     // override to create different kinds of child views. Autoreleases, so
     // caller must retain.
   virtual NSView* CreateCocoaView() ;
+  void            TearDownView();
 
     // Find a quickdraw port in which to draw (needed by GFX until it
     // is converted to Cocoa). This MUST be overridden if CreateCocoaView()

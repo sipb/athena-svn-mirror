@@ -625,7 +625,7 @@ var BookmarksCommand = {
         return;
 
       // Select the first tab in the group.
-      var tabs = browser.mTabContainer.childNodes;
+      var tabs = browser.tabContainer.childNodes;
       browser.selectedTab = tabs[index0];
 
       // Close any remaining open tabs that are left over.
@@ -864,7 +864,7 @@ var BookmarksController = {
     case "cmd_bm_setpersonaltoolbarfolder":
       if (length != 1)
         return false;
-      return item0 != "NC:PersonalToolbarFolder" && 
+      return item0 != BMSVC.getBookmarksToolbarFolder().Value && 
              item0 != "NC:BookmarksRoot" && type0 == "Folder";
     case "cmd_bm_movebookmark":
       return length > 0 && !aSelection.containsImmutable;
@@ -1104,7 +1104,7 @@ var BookmarksUtils = {
       aSelection.type       [i] = type;
       aSelection.isContainer[i] = isContainer;
     }
-    if (this.isContainerChildOrSelf(RDF.GetResource("NC:PersonalToolbarFolder"), aSelection))
+    if (this.isContainerChildOrSelf(BMSVC.getBookmarksToolbarFolder(), aSelection))
       aSelection.containsPTF = true;
   },
 
@@ -1673,6 +1673,9 @@ function dumpDOM (aElement, aIndent)
 {
   if (!aElement)
     return;
+  if (typeof(aElement) == "string")
+    aElement = document.getElementById(aElement);
+
   if (!aIndent)
     aIndent = 0;
   for (var i=0; i<aIndent*2; ++i)

@@ -175,6 +175,7 @@ function selectServer(server, selectPage)
 
   var index = accounttree.contentView.getIndexOfItem(selectedItem);
   accounttree.treeBoxObject.selection.select(index);
+  accounttree.treeBoxObject.ensureRowIsVisible(index);
 
   var lastItem = selectedServer.lastChild.lastChild;
   if (lastItem.localName == "treeitem")
@@ -481,6 +482,7 @@ function onSetDefault(event) {
   if (!account) return;
 
   accountManager.defaultAccount = account;
+  setEnabled(setDefaultButton, false);
 }
 
 function onRemoveAccount(event) {
@@ -698,33 +700,23 @@ function setEnabled(control, enabled)
     control.setAttribute("disabled", true);
 }
 
-// this is a workaround for bug #51546
-// the on click handler is getting called twice
-var bug51546CurrentPage = null;
-var bug51546CurrentServerId = null;
-
 //
-// called when someone clicks on an account
-// figure out context by what they clicked on
+// Called when someone clicks on an account. Figure out context by what they
+// clicked on. This is also called when an account is removed. In this case,
+// nothing is selected.
 //
-function onAccountClick(tree) {
-  //dump("onAccountClick()\n");
+function onAccountClick(tree)
+{
+  var currentSelection = getServerIdAndPageIdFromTree(tree);
 
-  var result = getServerIdAndPageIdFromTree(tree);
-
-  //dump("sputter:"+bug51546CurrentPage+","+bug51546CurrentServerId+":"+result.pageId+","+result.serverId+"\n");
-  if ((bug51546CurrentPage == result.pageId) && (bug51546CurrentServerId == result.serverId)) {
-    //dump("workaround for #51546\n");
+  // Nothing is selected. This is the case when an account was removed.
+  // A call of selectServer(null,null) after the removal ensures that
+  // onAccountClick() is called again after that with a valid selection.
+  if (!currentSelection)
     return;
-  }
 
-  bug51546CurrentPage = result.pageId;
-  bug51546CurrentServerId = result.serverId;
-
-  if (result) {
-    showPage(result.serverId, result.pageId);
-    updateButtons(tree,result.serverId);
-  }
+  showPage(currentSelection.serverId, currentSelection.pageId);
+  updateButtons(tree, currentSelection.serverId);
 }
 
 // show the page for the given server:
@@ -800,7 +792,8 @@ function loadPage(pageId)
   {
     chromePackageName = "messenger";
   }
-  document.getElementById("contentFrame").setAttribute("src","chrome://" + chromePackageName + "/content/" + pageId);
+  const LOAD_FLAGS_NONE = Components.interfaces.nsIWebNavigation.LOAD_FLAGS_NONE;
+  document.getElementById("contentFrame").webNavigation.loadURI("chrome://" + chromePackageName + "/content/" + pageId, LOAD_FLAGS_NONE, null, null, null);
 }
 
 //
@@ -992,7 +985,7 @@ function getFormElementValue(formElement) {
         formElement.getAttribute("datatype") == "nsIFileSpec") {
       if (formElement.value) {
         var filespec = Components.classes["@mozilla.org/filespec;1"].createInstance(Components.interfaces.nsIFileSpec);
-        filespec.nativePath = formElement.value;
+        filespec.unicodePath = formElement.value;
         return filespec;
       }
       return null;
@@ -1065,7 +1058,7 @@ function setFormElementValue(formElement, value) {
     if (value) {
       var filespec = value.QueryInterface(Components.interfaces.nsIFileSpec);
       try {
-        formElement.value = filespec.nativePath;
+        formElement.value = filespec.unicodePath;
       } catch (ex) {
         dump("Still need to fix uninitialized filespec problem!\n");
       }

@@ -77,6 +77,13 @@
 #include "nsIForm.h"
 #include "nsIFormControl.h"
 #include "nsHTMLAtoms.h"
+#include "nsLayoutAtoms.h"
+#include "imgIDecoderObserver.h"
+#include "imgIRequest.h"
+#include "imgILoader.h"
+#include "nsILoadGroup.h"
+#include "nsContentPolicyUtils.h"
+#include "nsDOMString.h"
 
 static const char kJSStackContractID[] = "@mozilla.org/js/xpc/ContextStack;1";
 static NS_DEFINE_IID(kParserServiceCID, NS_PARSERSERVICE_CID);
@@ -88,6 +95,7 @@ nsIThreadJSContextStack *nsContentUtils::sThreadJSContextStack = nsnull;
 nsIParserService *nsContentUtils::sParserService = nsnull;
 nsINameSpaceManager *nsContentUtils::sNameSpaceManager = nsnull;
 nsIIOService *nsContentUtils::sIOService = nsnull;
+imgILoader *nsContentUtils::sImgLoader = nsnull;
 
 PRBool nsContentUtils::sInitialized = PR_FALSE;
 
@@ -131,6 +139,13 @@ nsContentUtils::Init()
     sIOService = nsnull;
   }
 
+  // Ignore failure and just don't load images
+  rv = CallGetService("@mozilla.org/image/loader;1", &sImgLoader);
+  if (NS_FAILED(rv)) {
+    // no image loading for us.  Oh, well.
+    sImgLoader = nsnull;
+  }
+  
   sInitialized = PR_TRUE;
 
   return NS_OK;
@@ -158,21 +173,18 @@ nsContentUtils::GetParserServiceWeakRef()
 }
 
 // static
-nsresult
-nsContentUtils::GetStaticScriptGlobal(JSContext* aContext, JSObject* aObj,
-                                      nsIScriptGlobalObject** aNativeGlobal)
+nsIScriptGlobalObject *
+nsContentUtils::GetStaticScriptGlobal(JSContext* aContext, JSObject* aObj)
 {
   if (!sXPConnect) {
-    *aNativeGlobal = nsnull;
-
-    return NS_OK;
+    return nsnull;
   }
 
   JSObject* parent;
   JSObject* glob = aObj; // starting point for search
 
   if (!glob)
-    return NS_ERROR_FAILURE;
+    return nsnull;
 
   while (nsnull != (parent = JS_GetParent(aContext, glob))) {
     glob = parent;
@@ -180,54 +192,47 @@ nsContentUtils::GetStaticScriptGlobal(JSContext* aContext, JSObject* aObj,
 
   nsCOMPtr<nsIXPConnectWrappedNative> wrapped_native;
 
-  nsresult rv =
-    sXPConnect->GetWrappedNativeOfJSObject(aContext, glob,
-                                           getter_AddRefs(wrapped_native));
-  NS_ENSURE_SUCCESS(rv, rv);
+  sXPConnect->GetWrappedNativeOfJSObject(aContext, glob,
+                                         getter_AddRefs(wrapped_native));
+  NS_ENSURE_TRUE(wrapped_native, nsnull);
 
   nsCOMPtr<nsISupports> native;
-  rv = wrapped_native->GetNative(getter_AddRefs(native));
-  NS_ENSURE_SUCCESS(rv, rv);
+  wrapped_native->GetNative(getter_AddRefs(native));
 
-  return CallQueryInterface(native, aNativeGlobal);
+  nsCOMPtr<nsIScriptGlobalObject> sgo(do_QueryInterface(native));
+
+  // This will return a pointer to something that's about to be
+  // released, but that's ok here.
+  return sgo;
 }
 
 //static
-nsresult
+nsIScriptContext *
 nsContentUtils::GetStaticScriptContext(JSContext* aContext,
-                                       JSObject* aObj,
-                                       nsIScriptContext** aScriptContext)
+                                       JSObject* aObj)
 {
-  nsCOMPtr<nsIScriptGlobalObject> nativeGlobal;
-  GetStaticScriptGlobal(aContext, aObj, getter_AddRefs(nativeGlobal));
+  nsIScriptGlobalObject *nativeGlobal = GetStaticScriptGlobal(aContext, aObj);
   if (!nativeGlobal)
-    return NS_ERROR_FAILURE;
-  nsIScriptContext* scriptContext = nsnull;
-  nativeGlobal->GetContext(&scriptContext);
-  *aScriptContext = scriptContext;
-  return scriptContext ? NS_OK : NS_ERROR_FAILURE;
+    return nsnull;
+  return nativeGlobal->GetContext();
 }
 
 //static
-nsresult
-nsContentUtils::GetDynamicScriptGlobal(JSContext* aContext,
-                                       nsIScriptGlobalObject** aNativeGlobal)
+nsIScriptGlobalObject *
+nsContentUtils::GetDynamicScriptGlobal(JSContext* aContext)
 {
-  nsCOMPtr<nsIScriptContext> scriptCX;
-  GetDynamicScriptContext(aContext, getter_AddRefs(scriptCX));
+  nsIScriptContext *scriptCX = GetDynamicScriptContext(aContext);
   if (!scriptCX) {
-    *aNativeGlobal = nsnull;
-    return NS_ERROR_FAILURE;
+    return nsnull;
   }
-  return scriptCX->GetGlobalObject(aNativeGlobal);
+  return scriptCX->GetGlobalObject();
 }
 
 //static
-nsresult
-nsContentUtils::GetDynamicScriptContext(JSContext *aContext,
-                                        nsIScriptContext** aScriptContext)
+nsIScriptContext *
+nsContentUtils::GetDynamicScriptContext(JSContext *aContext)
 {
-  return GetScriptContextFromJSContext(aContext, aScriptContext);
+  return GetScriptContextFromJSContext(aContext);
 }
 
 template <class OutputIterator>
@@ -411,6 +416,7 @@ nsContentUtils::Shutdown()
   NS_IF_RELEASE(sNameSpaceManager);
   NS_IF_RELEASE(sParserService);
   NS_IF_RELEASE(sIOService);
+  NS_IF_RELEASE(sImgLoader);
 }
 
 // static
@@ -465,12 +471,12 @@ nsContentUtils::GetDocumentAndPrincipal(nsIDOMNode* aNode,
     if (!domDoc) {
       // if we can't get a doc then lets try to get principal through nodeinfo
       // manager
-      nsCOMPtr<nsINodeInfo> ni;
+      nsINodeInfo *ni;
       if (content) {
         ni = content->GetNodeInfo();
       }
       else {
-        attr->GetNodeInfo(getter_AddRefs(ni));
+        ni = attr->NodeInfo();
       }
 
       if (!ni) {
@@ -652,8 +658,18 @@ nsContentUtils::CanCallerAccess(nsIDOMNode *aNode)
 
   rv = sSecurityManager->CheckSameOriginPrincipal(subjectPrincipal,
                                                   principal);
+  if (NS_SUCCEEDED(rv)) {
+    return PR_TRUE;
+  }
 
-  return NS_SUCCEEDED(rv);
+  // see if the caller has otherwise been given the ability to touch
+  // input args to DOM methods
+
+  PRBool enabled = PR_FALSE;
+  rv = sSecurityManager->IsCapabilityEnabled("UniversalBrowserRead",
+                                             &enabled);
+  NS_ENSURE_SUCCESS(rv, PR_FALSE);
+  return enabled;
 }
 
 //static
@@ -746,31 +762,26 @@ nsContentUtils::doReparentContentWrapper(nsIContent *aChild,
   return rv;
 }
 
-static
-nsresult GetContextFromDocument(nsIDocument *aDocument, JSContext **cx)
+static JSContext *
+GetContextFromDocument(nsIDocument *aDocument)
 {
-  *cx = nsnull;
-
   nsIScriptGlobalObject *sgo = aDocument->GetScriptGlobalObject();
 
   if (!sgo) {
     // No script global, no context.
 
-    return NS_OK;
+    return nsnull;
   }
 
-  nsCOMPtr<nsIScriptContext> scx;
-  sgo->GetContext(getter_AddRefs(scx));
+  nsIScriptContext *scx = sgo->GetContext();
 
   if (!scx) {
     // No context left in the old scope...
 
-    return NS_OK;
+    return nsnull;
   }
 
-  *cx = (JSContext *)scx->GetNativeContext();
-
-  return NS_OK;
+  return (JSContext *)scx->GetNativeContext();
 }
 
 // static
@@ -813,9 +824,7 @@ nsContentUtils::ReparentContentWrapper(nsIContent *aContent,
     new_parent = aNewParent;
   }
 
-  JSContext *cx = nsnull;
-
-  GetContextFromDocument(old_doc, &cx);
+  JSContext *cx = GetContextFromDocument(old_doc);
 
   if (!cx) {
     // No JSContext left in the old scope, can't find the old wrapper
@@ -857,49 +866,51 @@ nsContentUtils::ReparentContentWrapper(nsIContent *aContent,
                                   obj);
 }
 
-void
-nsContentUtils::GetDocShellFromCaller(nsIDocShell** aDocShell)
+nsIDocShell *
+nsContentUtils::GetDocShellFromCaller()
 {
-  *aDocShell = nsnull;
   if (!sThreadJSContextStack) {
-    return;
+    return nsnull;
   }
 
   JSContext *cx = nsnull;
   sThreadJSContextStack->Peek(&cx);
 
   if (cx) {
-    nsCOMPtr<nsIScriptGlobalObject> sgo;
-    GetDynamicScriptGlobal(cx, getter_AddRefs(sgo));
+    nsIScriptGlobalObject *sgo = GetDynamicScriptGlobal(cx);
 
     if (sgo) {
-      sgo->GetDocShell(aDocShell);
+      return sgo->GetDocShell();
     }
   }
+
+  return nsnull;
 }
 
-void
-nsContentUtils::GetDocumentFromCaller(nsIDOMDocument** aDocument)
+nsIDOMDocument *
+nsContentUtils::GetDocumentFromCaller()
 {
-  *aDocument = nsnull;
   if (!sThreadJSContextStack) {
-    return;
+    return nsnull;
   }
 
   JSContext *cx = nsnull;
   sThreadJSContextStack->Peek(&cx);
 
+  nsCOMPtr<nsIDOMDocument> doc;
+
   if (cx) {
-    nsCOMPtr<nsIScriptGlobalObject> sgo;
-    GetDynamicScriptGlobal(cx, getter_AddRefs(sgo));
+    nsIScriptGlobalObject *sgo = GetDynamicScriptGlobal(cx);
 
     nsCOMPtr<nsIDOMWindowInternal> win(do_QueryInterface(sgo));
-    if (!win) {
-      return;
+    if (win) {
+      win->GetDocument(getter_AddRefs(doc));
     }
-
-    win->GetDocument(aDocument);
   }
+
+  // This will return a pointer to something we're about to release,
+  // but that's ok here.
+  return doc;
 }
 
 PRBool
@@ -981,7 +992,6 @@ nsContentUtils::GetAncestorsAndOffsets(nsIDOMNode* aNode,
 {
   NS_ENSURE_ARG_POINTER(aNode);
 
-  PRInt32 offset = 0;
   nsCOMPtr<nsIContent> content(do_QueryInterface(aNode));
 
   if (!content) {
@@ -1006,9 +1016,8 @@ nsContentUtils::GetAncestorsAndOffsets(nsIDOMNode* aNode,
   nsIContent* child = content;
   nsIContent* parent = child->GetParent();
   while (parent) {
-    offset = parent->IndexOf(child);
     aAncestorNodes->AppendElement(parent);
-    aAncestorOffsets->AppendElement(NS_INT32_TO_PTR(offset));
+    aAncestorOffsets->AppendElement(NS_INT32_TO_PTR(parent->IndexOf(child)));
     child = parent;
     parent = parent->GetParent();
   }
@@ -1411,8 +1420,10 @@ nsContentUtils::GenerateStateKey(nsIContent* aContent,
     domHtmlDocument->GetForms(getter_AddRefs(forms));
     nsCOMPtr<nsIContentList> htmlForms(do_QueryInterface(forms));
 
-    nsCOMPtr<nsIDOMNodeList> formControls;
-    htmlDocument->GetFormControlElements(getter_AddRefs(formControls));
+    nsCOMPtr<nsIDOMNodeList> formControls =
+      htmlDocument->GetFormControlElements();
+    NS_ENSURE_TRUE(formControls, NS_ERROR_OUT_OF_MEMORY);
+
     nsCOMPtr<nsIContentList> htmlFormControls(do_QueryInterface(formControls));
 
     // If we have a form control and can calculate form information, use
@@ -1454,8 +1465,7 @@ nsContentUtils::GenerateStateKey(nsIContent* aContent,
           // guess that the highest form parsed so far is the one.
           // This code should not be on trunk, only branch.
           //
-          htmlDocument->GetNumFormsSynchronous(&index);
-          index--;
+          index = htmlDocument->GetNumFormsSynchronous() - 1;
         }
         if (index > -1) {
           KeyAppendInt(index, aKey);
@@ -1604,6 +1614,137 @@ nsContentUtils::BelongsInForm(nsIDOMHTMLFormElement *aForm,
   return PR_FALSE;
 }
 
+// static
+nsresult
+nsContentUtils::CheckQName(const nsAString& aQualifiedName,
+                           PRBool aNamespaceAware)
+{
+  nsIParserService *parserService = GetParserServiceWeakRef();
+  NS_ENSURE_TRUE(parserService, NS_ERROR_FAILURE);
+
+  const PRUnichar *colon;
+  return parserService->CheckQName(PromiseFlatString(aQualifiedName),
+                                   aNamespaceAware, &colon);
+}
+
+// static
+nsresult
+nsContentUtils::GetNodeInfoFromQName(const nsAString& aNamespaceURI,
+                                     const nsAString& aQualifiedName,
+                                     nsINodeInfoManager* aNodeInfoManager,
+                                     nsINodeInfo** aNodeInfo)
+{
+  nsIParserService* parserService = GetParserServiceWeakRef();
+  NS_ENSURE_TRUE(parserService, NS_ERROR_FAILURE);
+
+  const nsAFlatString& qName = PromiseFlatString(aQualifiedName);
+  const PRUnichar* colon;
+  nsresult rv = parserService->CheckQName(qName, PR_TRUE, &colon);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  if (colon) {
+    const PRUnichar* end;
+    qName.EndReading(end);
+
+    nsCOMPtr<nsIAtom> prefix = do_GetAtom(Substring(qName.get(), colon));
+
+    rv = aNodeInfoManager->GetNodeInfo(Substring(colon + 1, end), prefix,
+                                       aNamespaceURI, aNodeInfo);
+  }
+  else {
+    rv = aNodeInfoManager->GetNodeInfo(aQualifiedName, nsnull, aNamespaceURI,
+                                       aNodeInfo);
+  }
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  nsIAtom* prefix = (*aNodeInfo)->GetPrefixAtom();
+  PRInt32 nsID = (*aNodeInfo)->NamespaceID();
+  nsIAtom* nil = nsnull;
+
+  // NAMESPACE_ERR: Raised if the qualifiedName is a malformed qualified name,
+  // if the qualifiedName has a prefix and the namespaceURI is null, if the
+  // qualifiedName has a prefix that is "xml" and the namespaceURI is different
+  // from "http://www.w3.org/XML/1998/namespace", if the qualifiedName or its
+  // prefix is "xmlns" and the namespaceURI is different from
+  // "http://www.w3.org/2000/xmlns/", or if the namespaceURI is
+  // "http://www.w3.org/2000/xmlns/" and neither the qualifiedName nor its
+  // prefix is "xmlns".
+  PRBool xmlPrefix = prefix == nsLayoutAtoms::xmlNameSpace;
+  PRBool xmlns = (*aNodeInfo)->Equals(nsLayoutAtoms::xmlnsNameSpace, nil) ||
+                 prefix == nsLayoutAtoms::xmlnsNameSpace;
+
+  return (prefix && DOMStringIsNull(aNamespaceURI)) ||
+         (xmlPrefix && nsID != kNameSpaceID_XML) ||
+         (xmlns && nsID != kNameSpaceID_XMLNS) ||
+         (nsID == kNameSpaceID_XMLNS && !xmlns) ?
+         NS_ERROR_DOM_NAMESPACE_ERR : NS_OK;
+}
+
+// static
+nsresult
+nsContentUtils::CanLoadImage(nsIURI* aURI, nsISupports* aContext,
+                             nsIDocument* aLoadingDocument)
+{
+  NS_PRECONDITION(aURI, "Must have a URI");
+  NS_PRECONDITION(aLoadingDocument, "Must have a document");
+
+  // XXXbz Do security manager check here!
+
+  // Check with content policy
+  nsIScriptGlobalObject* globalScript = aLoadingDocument->GetScriptGlobalObject();
+
+  if (!globalScript) {
+    // just let it load.  Documents loaded as data should take care to
+    // prevent image loading themselves.
+    return NS_OK;
+  }
+  
+  nsCOMPtr<nsIDOMWindow> domWin(do_QueryInterface(globalScript));
+
+  PRBool shouldLoad = PR_TRUE;
+  nsresult rv = NS_CheckContentLoadPolicy(nsIContentPolicy::IMAGE, aURI,
+                                          aContext,
+                                          domWin, &shouldLoad);
+  if (NS_SUCCEEDED(rv) && !shouldLoad) {
+    return NS_ERROR_IMAGE_BLOCKED;
+  }
+
+  return NS_OK;
+}
+
+nsresult
+nsContentUtils::LoadImage(nsIURI* aURI, nsIDocument* aLoadingDocument,
+                          imgIDecoderObserver* aObserver,
+                          PRInt32 aLoadFlags, imgIRequest** aRequest)
+{
+  NS_PRECONDITION(aURI, "Must have a URI");
+  NS_PRECONDITION(aLoadingDocument, "Must have a document");
+  NS_PRECONDITION(aRequest, "Null out param");
+
+  if (!sImgLoader) {
+    // nothing we can do here
+    return NS_OK;
+  }
+  
+  nsCOMPtr<nsILoadGroup> loadGroup = aLoadingDocument->GetDocumentLoadGroup();
+  NS_WARN_IF_FALSE(loadGroup, "Could not get loadgroup; onload may fire too early");
+
+  nsIURI *documentURI = aLoadingDocument->GetDocumentURI();
+
+  // XXXbz using "documentURI" for the initialDocumentURI is not quite
+  // right, but the best we can do here...
+  return sImgLoader->LoadImage(aURI,                 /* uri to load */
+                               documentURI,          /* initialDocumentURI */
+                               documentURI,          /* referrer */
+                               loadGroup,            /* loadgroup */
+                               aObserver,            /* imgIDecoderObserver */
+                               aLoadingDocument,     /* uniquification key */
+                               aLoadFlags,           /* load flags */
+                               nsnull,               /* cache key */
+                               nsnull,               /* existing request*/
+                               aRequest);
+}
+
 void
 nsCxPusher::Push(nsISupports *aCurrentTarget)
 {
@@ -1636,7 +1777,7 @@ nsCxPusher::Push(nsISupports *aCurrentTarget)
   JSContext *cx = nsnull;
 
   if (sgo) {
-    sgo->GetContext(getter_AddRefs(mScx));
+    mScx = sgo->GetContext();
 
     if (mScx) {
       cx = (JSContext *)mScx->GetNativeContext();

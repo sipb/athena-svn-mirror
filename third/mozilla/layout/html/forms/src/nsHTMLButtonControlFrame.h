@@ -87,7 +87,7 @@ public:
                     const nsHTMLReflowState& aReflowState,
                     nsReflowStatus&          aStatus);
 
-  NS_IMETHOD IsPercentageBase(PRBool& aBase) const;
+  virtual PRBool IsContainingBlock() const;
   
   NS_IMETHOD HandleEvent(nsIPresContext* aPresContext, 
                          nsGUIEvent* aEvent,
@@ -171,7 +171,7 @@ public:
   NS_IMETHOD SetSuggestedSize(nscoord aWidth, nscoord aHeight);
 
 protected:
-  void ReParentFrameList(nsIFrameManager* aFrameManager, nsIFrame* aFrameList);
+  void ReParentFrameList(nsFrameManager* aFrameManager, nsIFrame* aFrameList);
   virtual PRBool IsReset(PRInt32 type);
   virtual PRBool IsSubmit(PRInt32 type);
   void ReflowButtonContents(nsIPresContext* aPresContext,
@@ -186,13 +186,9 @@ protected:
                                                    const nsHTMLReflowState& aSuggestedReflowState);
   NS_IMETHOD_(nsrefcnt) AddRef(void);
   NS_IMETHOD_(nsrefcnt) Release(void);
-  void GetTranslatedRect(nsIPresContext* aPresContext, nsRect& aRect);
 
   PRIntn GetSkipSides() const;
   PRBool mInline;
-  nsCursor mPreviousCursor;
-  nsRect mTranslatedRect;
-  PRBool mDidInit;
   nsButtonFrameRenderer mRenderer;
 
   //Resize Reflow OpitmizationSize;

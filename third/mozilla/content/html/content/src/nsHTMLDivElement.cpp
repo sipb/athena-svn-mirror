@@ -42,13 +42,13 @@
 #include "nsHTMLAtoms.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
-#include "nsHTMLAttributes.h"
+#include "nsMappedAttributes.h"
 #include "nsRuleNode.h"
 
 // XXX support missing nav attributes? gutter, cols, width
 
 
-class nsHTMLDivElement : public nsGenericHTMLContainerElement,
+class nsHTMLDivElement : public nsGenericHTMLElement,
                          public nsIDOMHTMLDivElement
 {
 public:
@@ -59,30 +59,30 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
   // nsIDOMNode
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLContainerElement::)
+  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLElement::)
 
   // nsIDOMElement
-  NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLContainerElement::)
+  NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLElement::)
 
   // nsIDOMHTMLElement
-  NS_FORWARD_NSIDOMHTMLELEMENT(nsGenericHTMLContainerElement::)
+  NS_FORWARD_NSIDOMHTMLELEMENT(nsGenericHTMLElement::)
 
   // nsIDOMHTMLDivElement
   NS_DECL_NSIDOMHTMLDIVELEMENT
 
-  NS_IMETHOD StringToAttribute(nsIAtom* aAttribute,
-                               const nsAString& aValue,
-                               nsHTMLValue& aResult);
+  virtual PRBool ParseAttribute(nsIAtom* aAttribute,
+                                const nsAString& aValue,
+                                nsAttrValue& aResult);
   NS_IMETHOD AttributeToString(nsIAtom* aAttribute,
                                const nsHTMLValue& aValue,
                                nsAString& aResult) const;
-  NS_IMETHOD_(PRBool) HasAttributeDependentStyle(const nsIAtom* aAttribute) const;
+  NS_IMETHOD_(PRBool) IsAttributeMapped(const nsIAtom* aAttribute) const;
   NS_IMETHOD GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRuleFunc) const;
 };
 
 nsresult
 NS_NewHTMLDivElement(nsIHTMLContent** aInstancePtrResult,
-                     nsINodeInfo *aNodeInfo)
+                     nsINodeInfo *aNodeInfo, PRBool aFromParser)
 {
   NS_ENSURE_ARG_POINTER(aInstancePtrResult);
 
@@ -122,8 +122,7 @@ NS_IMPL_RELEASE_INHERITED(nsHTMLDivElement, nsGenericElement)
 
 
 // QueryInterface implementation for nsHTMLDivElement
-NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLDivElement,
-                                    nsGenericHTMLContainerElement)
+NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLDivElement, nsGenericHTMLElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMHTMLDivElement)
   NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(HTMLDivElement)
 NS_HTML_CONTENT_INTERFACE_MAP_END
@@ -148,7 +147,7 @@ nsHTMLDivElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
   if (NS_FAILED(rv))
     return rv;
 
-  CopyInnerTo(this, it, aDeep);
+  CopyInnerTo(it, aDeep);
 
   *aReturn = NS_STATIC_CAST(nsIDOMNode *, it);
 
@@ -161,33 +160,25 @@ nsHTMLDivElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
 NS_IMPL_STRING_ATTR(nsHTMLDivElement, Align, align)
 
 
-NS_IMETHODIMP
-nsHTMLDivElement::StringToAttribute(nsIAtom* aAttribute,
-                                    const nsAString& aValue,
-                                    nsHTMLValue& aResult)
+PRBool
+nsHTMLDivElement::ParseAttribute(nsIAtom* aAttribute,
+                                 const nsAString& aValue,
+                                 nsAttrValue& aResult)
 {
   if (aAttribute == nsHTMLAtoms::align) {
-    if (ParseDivAlignValue(aValue, aResult)) {
-      return NS_CONTENT_ATTR_HAS_VALUE;
-    }
+    return ParseDivAlignValue(aValue, aResult);
   }
-  else if (aAttribute == nsHTMLAtoms::cols) {
-    if (aResult.ParseIntWithBounds(aValue, eHTMLUnit_Integer, 0)) {
-      return NS_CONTENT_ATTR_HAS_VALUE;
-    }
+  if (aAttribute == nsHTMLAtoms::cols) {
+    return aResult.ParseIntWithBounds(aValue, 0);
   }
-  else if (aAttribute == nsHTMLAtoms::gutter) {
-    if (aResult.ParseIntWithBounds(aValue, eHTMLUnit_Pixel, 1)) {
-      return NS_CONTENT_ATTR_HAS_VALUE;
-    }
+  if (aAttribute == nsHTMLAtoms::gutter) {
+    return aResult.ParseIntWithBounds(aValue, 1);
   }
-  else if (aAttribute == nsHTMLAtoms::width) {
-    if (aResult.ParseSpecialIntValue(aValue, eHTMLUnit_Pixel, PR_TRUE, PR_FALSE)) {
-      return NS_CONTENT_ATTR_HAS_VALUE;
-    }
+  if (aAttribute == nsHTMLAtoms::width) {
+    return aResult.ParseSpecialIntValue(aValue, PR_TRUE, PR_FALSE);
   }
 
-  return NS_CONTENT_ATTR_NOT_THERE;
+  return nsGenericHTMLElement::ParseAttribute(aAttribute, aValue, aResult);
 }
 
 NS_IMETHODIMP
@@ -201,21 +192,20 @@ nsHTMLDivElement::AttributeToString(nsIAtom* aAttribute,
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
-  return nsGenericHTMLContainerElement::AttributeToString(aAttribute, aValue,
-                                                          aResult);
+  return nsGenericHTMLElement::AttributeToString(aAttribute, aValue, aResult);
 }
 
 static void
-MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes, nsRuleData* aData)
+MapAttributesIntoRule(const nsMappedAttributes* aAttributes, nsRuleData* aData)
 {
   nsGenericHTMLElement::MapDivAlignAttributeInto(aAttributes, aData);
   nsGenericHTMLElement::MapCommonAttributesInto(aAttributes, aData);
 }
 
 NS_IMETHODIMP_(PRBool)
-nsHTMLDivElement::HasAttributeDependentStyle(const nsIAtom* aAttribute) const
+nsHTMLDivElement::IsAttributeMapped(const nsIAtom* aAttribute) const
 {
-  static const AttributeDependenceEntry* const map[] = {
+  static const MappedAttributeEntry* const map[] = {
     sDivAlignAttributeMap,
     sCommonAttributeMap
   };

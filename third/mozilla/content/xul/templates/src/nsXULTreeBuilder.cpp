@@ -94,7 +94,7 @@ public:
     // nsITreeView
     NS_DECL_NSITREEVIEW
 
-    NS_IMETHOD DocumentWillBeDestroyed(nsIDocument *aDocument);
+    virtual void DocumentWillBeDestroyed(nsIDocument *aDocument);
 
 protected:
     friend NS_IMETHODIMP
@@ -1069,13 +1069,13 @@ nsXULTreeBuilder::PerformActionOnCell(const PRUnichar* action, PRInt32 row, cons
 }
 
 
-NS_IMETHODIMP
+void
 nsXULTreeBuilder::DocumentWillBeDestroyed(nsIDocument* aDocument)
 {
     if (mObservers)
         mObservers->Clear();
 
-    return nsXULTemplateBuilder::DocumentWillBeDestroyed(aDocument);
+    nsXULTemplateBuilder::DocumentWillBeDestroyed(aDocument);
 }
 
  
@@ -1112,7 +1112,7 @@ nsXULTreeBuilder::ReplaceMatch(nsIRDFResource* aMember,
             // Remove the rows from the view
             PRInt32 row = iter.GetRowIndex();
             PRInt32 delta = mRows.GetSubtreeSizeFor(iter);
-            if (mRows.RemoveRowAt(iter) == 0) {
+            if (mRows.RemoveRowAt(iter) == 0 && iter.GetRowIndex() >= 0) {
               // In this case iter now points to its parent
               // Invalidate the row's cached fill state
               iter->mContainerFill = nsTreeRows::eContainerFill_Unknown;

@@ -103,10 +103,8 @@ nsNativeTheme::GetContentState(nsIFrame* aFrame, PRUint8 aWidgetType)
 
   nsCOMPtr<nsIPresContext> context;
   shell->GetPresContext(getter_AddRefs(context));
-  nsCOMPtr<nsIEventStateManager> esm;
-  context->GetEventStateManager(getter_AddRefs(esm));
   PRInt32 flags = 0;
-  esm->GetContentState(aFrame->GetContent(), flags);
+  context->EventStateManager()->GetContentState(aFrame->GetContent(), flags);
   
   if (isXULCheckboxRadio && aWidgetType == NS_THEME_RADIO) {
     if (IsFocused(aFrame))
@@ -123,23 +121,17 @@ nsNativeTheme::CheckBooleanAttr(nsIFrame* aFrame, nsIAtom* aAtom)
     return PR_FALSE;
 
   nsIContent* content = aFrame->GetContent();
-  nsAutoString attr;
-  nsresult res = content->GetAttr(kNameSpaceID_None, aAtom, attr);
+  if (content->IsContentOfType(nsIContent::eHTML))
+    return content->HasAttr(kNameSpaceID_None, aAtom);
 
-  // For HTML elements, boolean attributes will return NOT_THERE if they
-  // are not present and HAS_VALUE + a string (possibly empty)
-  // if they are present.
+  nsAutoString attr;
+  content->GetAttr(kNameSpaceID_None, aAtom, attr);
 
   // For XML/XUL elements, an attribute must be equal to the literal
   // string "true" to be counted as true.  An empty string should _not_
   // be counted as true.
 
-  PRBool isHTML = content->IsContentOfType(nsIContent::eHTML);
-  if (isHTML && (res == NS_CONTENT_ATTR_NO_VALUE ||
-                 res != NS_CONTENT_ATTR_NOT_THERE && attr.IsEmpty()))
-    return PR_TRUE;
-
-  return attr.EqualsIgnoreCase("true");
+  return attr.Equals(NS_LITERAL_STRING("true"));
 }
 
 PRInt32
@@ -217,12 +209,9 @@ nsNativeTheme::IsWidgetStyled(nsIPresContext* aPresContext, nsIFrame* aFrame,
       PRBool defaultBGTransparent = PR_FALSE;
 
       float p2t;
-      aPresContext->GetPixelsToTwips(&p2t);
+      p2t = aPresContext->PixelsToTwips();
 
-      nsCOMPtr<nsILookAndFeel> lookAndFeel;
-      aPresContext->GetLookAndFeel(getter_AddRefs(lookAndFeel));
-      if (!lookAndFeel)
-        return PR_TRUE;
+      nsILookAndFeel *lookAndFeel = aPresContext->LookAndFeel();
 
       switch (aWidgetType) {
       case NS_THEME_BUTTON:

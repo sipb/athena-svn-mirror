@@ -44,6 +44,7 @@
 #include "nsIPresContext.h" // for nsCompatability
 #include "nsILinkHandler.h"
 #include "nsString.h"
+#include "nsChangeHint.h"
 
 class nsIStyleSheet;
 class nsIPresContext;
@@ -175,6 +176,10 @@ class nsIStyleRuleProcessor : public nsISupports {
 public:
   NS_DEFINE_STATIC_IID_ACCESSOR(NS_ISTYLE_RULE_PROCESSOR_IID)
 
+  // Shorthand for:
+  //  nsCOMArray<nsIStyleRuleProcessor>::nsCOMArrayEnumFunc
+  typedef PRBool (* PR_CALLBACK EnumFunc)(nsIStyleRuleProcessor*, void*);
+
   // populate rule node tree with nsIStyleRule*
   // rules are ordered, those with higher precedence are farthest from the root of the tree
   NS_IMETHOD RulesMatching(ElementRuleProcessorData* aData,
@@ -183,14 +188,25 @@ public:
   NS_IMETHOD RulesMatching(PseudoRuleProcessorData* aData,
                            nsIAtom* aMedium) = 0;
 
-  // Test if style is dependent on content state
+  /**
+   * Test whether style is dependent on content state.  This test is
+   * used for optimization only, and may err on the side of reporting
+   * more dependencies than really exist.
+   *
+   * Event states are defined in nsIEventStateManager.h.
+   */
   NS_IMETHOD HasStateDependentStyle(StateRuleProcessorData* aData,
                                     nsIAtom* aMedium,
-                                    PRBool* aResult) = 0;
-  // Test if style is dependent on attribute
+                                    nsReStyleHint* aResult) = 0;
+
+  /**
+   * Test whether style is dependent the presence or value of an
+   * attribute.  This test is used for optimization only, and may err on
+   * the side of reporting more dependencies than really exist.
+   */
   NS_IMETHOD HasAttributeDependentStyle(AttributeRuleProcessorData* aData,
                                         nsIAtom* aMedium,
-                                        PRBool* aResult) = 0;
+                                        nsReStyleHint* aResult) = 0;
 };
 
 #endif /* nsIStyleRuleProcessor_h___ */

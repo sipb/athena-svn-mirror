@@ -41,7 +41,6 @@
 #include "nsIRenderingContext.h"
 #include "nsHTMLAtoms.h"
 #include "nsLayoutAtoms.h"
-#include "nsIStyleSet.h"
 #include "nsIPresShell.h"
 #include "nsIDeviceContext.h"
 #include "nsReadableUtils.h"
@@ -170,11 +169,10 @@ nsPageContentFrame::GetFrameName(nsAString& aResult) const
 }
 #endif
 
-NS_IMETHODIMP
-nsPageContentFrame::IsPercentageBase(PRBool& aBase) const
+/* virtual */ PRBool
+nsPageContentFrame::IsContainingBlock() const
 {
-  aBase = PR_TRUE;
-  return NS_OK;
+  return PR_TRUE;
 }
 
 

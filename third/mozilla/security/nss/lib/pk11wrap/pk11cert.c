@@ -3525,17 +3525,40 @@ PK11_GetLowLevelKeyIDForPrivateKey(SECKEYPrivateKey *privKey)
     return pk11_GetLowLevelKeyFromHandle(privKey->pkcs11Slot,privKey->pkcs11ID);
 }
 
+/* argument type for listCertsCallback */
+typedef struct {
+    CERTCertList *list;
+    PK11SlotInfo *slot;
+} ListCertsArg;
+
 static SECStatus
 listCertsCallback(CERTCertificate* cert, void*arg)
 {
-    CERTCertList *list = (CERTCertList*)arg;
+    ListCertsArg *cdata = (ListCertsArg*)arg;
     char *nickname = NULL;
+    nssCryptokiObject *instance, **ci;
+    nssCryptokiObject **instances;
+    NSSCertificate *c = STAN_GetNSSCertificate(cert);
 
-    if (cert->nickname) {
-	nickname = PORT_ArenaStrdup(list->arena,cert->nickname);
+    instances = nssPKIObject_GetInstances(&c->object);
+    instance = NULL;
+    for (ci = instances; *ci; ci++) {
+	if ((*ci)->token->pk11slot == cdata->slot) {
+	    instance = *ci;
+	    break;
+	}
     }
+    PORT_Assert(instance != NULL);
+    if (!instance) {
+	nssCryptokiObjectArray_Destroy(instances);
+	PORT_SetError(SEC_ERROR_LIBRARY_FAILURE);
+	return SECFailure;
+    }
+    nickname = STAN_GetCERTCertificateNameForInstance(cdata->list->arena,
+	c, instance);
+    nssCryptokiObjectArray_Destroy(instances);
 
-    return CERT_AddCertToListTailWithData(list, 
+    return CERT_AddCertToListTailWithData(cdata->list, 
 				CERT_DupCertificate(cert),nickname);
 }
 
@@ -3544,12 +3567,15 @@ PK11_ListCertsInSlot(PK11SlotInfo *slot)
 {
     SECStatus status;
     CERTCertList *certs;
+    ListCertsArg cdata;
 
     certs = CERT_NewCertList();
     if(certs == NULL) return NULL;
+    cdata.list = certs;
+    cdata.slot = slot;
 
     status = PK11_TraverseCertsInSlot(slot, listCertsCallback,
-		(void*)certs);
+		&cdata);
 
     if( status != SECSuccess ) {
 	CERT_DestroyCertList(certs);
@@ -4140,6 +4166,7 @@ CERTSignedCrl* PK11_ImportCRL(PK11SlotInfo * slot, SECItem *derCRL, char *url,
 {
     CERTSignedCrl *newCrl, *crl;
     SECStatus rv;
+    CERTCertificate *caCert = NULL;
 
     newCrl = crl = NULL;
 
@@ -4158,7 +4185,6 @@ CERTSignedCrl* PK11_ImportCRL(PK11SlotInfo * slot, SECItem *derCRL, char *url,
         }
 
         if (0 == (importOptions & CRL_IMPORT_BYPASS_CHECKS)){
-            CERTCertificate *caCert;
             CERTCertDBHandle* handle = CERT_GetDefaultCertDB();
             PR_ASSERT(handle != NULL);
             caCert = CERT_FindCertByName (handle,
@@ -4193,6 +4219,9 @@ CERTSignedCrl* PK11_ImportCRL(PK11SlotInfo * slot, SECItem *derCRL, char *url,
 
     if (crl == NULL) {
 	SEC_DestroyCrl (newCrl);
+    }
+    if (caCert) {
+        CERT_DestroyCertificate(caCert);
     }
     return (crl);
 }

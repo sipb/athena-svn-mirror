@@ -85,6 +85,7 @@ nsMsgDBViewCommandUpdater.prototype =
   displayMessageChanged : function(aFolder, aSubject, aKeywords)
   {
     setTitleFromFolder(aFolder, aSubject);
+    ClearPendingReadTimer(); // we are loading / selecting a new message so kill the mark as read timer for the currently viewed message
     gHaveLoadedMessage = true;
     SetKeywords(aKeywords);
     goUpdateCommand("button_junk");
@@ -281,10 +282,24 @@ function MsgReverseSortThreadPane()
 
 function MsgToggleThreaded()
 {
-  var dbview = GetDBView();
-  dbview.viewFlags ^= nsMsgViewFlagsType.kThreadedDisplay;
-  dbview.sort(dbview.sortType, dbview.sortOrder); // resort
-  UpdateSortIndicators(dbview.sortType, dbview.sortOrder);
+    var dbview = GetDBView();
+    dbview.viewFlags ^= nsMsgViewFlagsType.kThreadedDisplay;
+    dbview.sort(dbview.sortType, dbview.sortOrder);
+    UpdateSortIndicators(dbview.sortType, dbview.sortOrder);
+}
+
+function MsgSortThreaded()
+{
+    // Toggle if not already threaded.
+    if ((GetDBView().viewFlags & nsMsgViewFlagsType.kThreadedDisplay) == 0)
+        MsgToggleThreaded();
+}
+
+function MsgSortUnthreaded()
+{
+    // Toggle if not already unthreaded.
+    if ((GetDBView().viewFlags & nsMsgViewFlagsType.kThreadedDisplay) != 0)
+        MsgToggleThreaded();
 }
 
 function MsgSortAscending()

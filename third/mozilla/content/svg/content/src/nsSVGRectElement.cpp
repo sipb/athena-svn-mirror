@@ -21,6 +21,7 @@
  *
  * Contributor(s):
  *    William Cook <william.cook@crocodile-clips.com> (original author)
+ *    Alex Fritze <alex.fritze@crocodile-clips.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or 
@@ -42,18 +43,21 @@
 #include "nsSVGLength.h"
 #include "nsIDOMSVGRectElement.h"
 #include "nsCOMPtr.h"
+#include "nsISVGSVGElement.h"
+#include "nsISVGViewportAxis.h"
+#include "nsISVGViewportRect.h"
 
 typedef nsSVGGraphicElement nsSVGRectElementBase;
 
 class nsSVGRectElement : public nsSVGRectElementBase,
-                           public nsIDOMSVGRectElement
+                         public nsIDOMSVGRectElement
 {
 protected:
   friend nsresult NS_NewSVGRectElement(nsIContent **aResult,
-                                         nsINodeInfo *aNodeInfo);
+                                       nsINodeInfo *aNodeInfo);
   nsSVGRectElement();
   virtual ~nsSVGRectElement();
-  virtual nsresult Init();
+  nsresult Init(nsINodeInfo* aNodeInfo);
 
 public:
   // interfaces:
@@ -66,7 +70,11 @@ public:
   NS_FORWARD_NSIDOMELEMENT(nsSVGRectElementBase::)
   NS_FORWARD_NSIDOMSVGELEMENT(nsSVGRectElementBase::)
 
+  // nsISVGContent specializations:
+  virtual void ParentChainChanged();
+
 protected:
+  
   nsCOMPtr<nsIDOMSVGAnimatedLength> mX;
   nsCOMPtr<nsIDOMSVGAnimatedLength> mY;
   nsCOMPtr<nsIDOMSVGAnimatedLength> mWidth;
@@ -85,21 +93,14 @@ nsresult NS_NewSVGRectElement(nsIContent **aResult, nsINodeInfo *aNodeInfo)
   if (!it) return NS_ERROR_OUT_OF_MEMORY;
   NS_ADDREF(it);
 
-  nsresult rv = NS_STATIC_CAST(nsGenericElement*,it)->Init(aNodeInfo);
+  nsresult rv = it->Init(aNodeInfo);
 
   if (NS_FAILED(rv)) {
     it->Release();
     return rv;
   }
 
-  rv = it->Init();
-
-  if (NS_FAILED(rv)) {
-    it->Release();
-    return rv;
-  }
-
-  *aResult = NS_STATIC_CAST(nsIContent *, it);
+  *aResult = it;
 
   return NS_OK;
 }
@@ -111,6 +112,9 @@ NS_IMPL_ADDREF_INHERITED(nsSVGRectElement,nsSVGRectElementBase)
 NS_IMPL_RELEASE_INHERITED(nsSVGRectElement,nsSVGRectElementBase)
 
 NS_INTERFACE_MAP_BEGIN(nsSVGRectElement)
+  NS_INTERFACE_MAP_ENTRY(nsIDOMNode)
+  NS_INTERFACE_MAP_ENTRY(nsIDOMElement)
+  NS_INTERFACE_MAP_ENTRY(nsIDOMSVGElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMSVGRectElement)
   NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(SVGRectElement)
 NS_INTERFACE_MAP_END_INHERITING(nsSVGRectElementBase)
@@ -125,120 +129,89 @@ nsSVGRectElement::nsSVGRectElement()
 
 nsSVGRectElement::~nsSVGRectElement()
 {
-  if (mX) {
-    nsCOMPtr<nsISVGValue> value = do_QueryInterface(mX);
-    value->RemoveObserver(this);
-  }
-  if (mY) {
-    nsCOMPtr<nsISVGValue> value = do_QueryInterface(mY);
-    value->RemoveObserver(this);
-  }
-  if (mWidth) {
-    nsCOMPtr<nsISVGValue> value = do_QueryInterface(mWidth);
-    value->RemoveObserver(this);
-  }
-  if (mHeight) {
-    nsCOMPtr<nsISVGValue> value = do_QueryInterface(mHeight);
-    value->RemoveObserver(this);
-  }
-  if (mRx) {
-    nsCOMPtr<nsISVGValue> value = do_QueryInterface(mRx);
-    value->RemoveObserver(this);
-  }
-  if (mRy) {
-    nsCOMPtr<nsISVGValue> value = do_QueryInterface(mRy);
-    value->RemoveObserver(this);
-  }
 }
 
 
 nsresult
-nsSVGRectElement::Init()
+nsSVGRectElement::Init(nsINodeInfo* aNodeInfo)
 {
-  nsresult rv;
-  rv = nsSVGRectElementBase::Init();
+  nsresult rv = nsSVGRectElementBase::Init(aNodeInfo);
   NS_ENSURE_SUCCESS(rv,rv);
 
   // Create mapped properties:
 
   // DOM property: x ,  #IMPLIED attrib: x
   {
-    nsCOMPtr<nsIDOMSVGLength> length;
+    nsCOMPtr<nsISVGLength> length;
     rv = NS_NewSVGLength(getter_AddRefs(length),
-                         (nsSVGElement*)this, eXDirection,
                          0.0f);
     NS_ENSURE_SUCCESS(rv,rv);
     rv = NS_NewSVGAnimatedLength(getter_AddRefs(mX), length);
     NS_ENSURE_SUCCESS(rv,rv);
-    rv = mAttributes->AddMappedSVGValue(nsSVGAtoms::x, mX);
+    rv = AddMappedSVGValue(nsSVGAtoms::x, mX);
     NS_ENSURE_SUCCESS(rv,rv);
   }
 
   // DOM property: y ,  #IMPLIED attrib: y
   {
-    nsCOMPtr<nsIDOMSVGLength> length;
+    nsCOMPtr<nsISVGLength> length;
     rv = NS_NewSVGLength(getter_AddRefs(length),
-                         (nsSVGElement*)this, eYDirection,
                          0.0f);
     NS_ENSURE_SUCCESS(rv,rv);
     rv = NS_NewSVGAnimatedLength(getter_AddRefs(mY), length);
     NS_ENSURE_SUCCESS(rv,rv);
-    rv = mAttributes->AddMappedSVGValue(nsSVGAtoms::y, mY);
+    rv = AddMappedSVGValue(nsSVGAtoms::y, mY);
     NS_ENSURE_SUCCESS(rv,rv);
   }
 
   // DOM property: width ,  #REQUIRED  attrib: width
   // XXX: enforce requiredness
   {
-    nsCOMPtr<nsIDOMSVGLength> length;
+    nsCOMPtr<nsISVGLength> length;
     rv = NS_NewSVGLength(getter_AddRefs(length),
-                         (nsSVGElement*)this, eXDirection,
                          0.0f);
     NS_ENSURE_SUCCESS(rv,rv);
     rv = NS_NewSVGAnimatedLength(getter_AddRefs(mWidth), length);
     NS_ENSURE_SUCCESS(rv,rv);
-    rv = mAttributes->AddMappedSVGValue(nsSVGAtoms::width, mWidth);
+    rv = AddMappedSVGValue(nsSVGAtoms::width, mWidth);
     NS_ENSURE_SUCCESS(rv,rv);
   }
 
   // DOM property: height ,  #REQUIRED  attrib: height
   // XXX: enforce requiredness
   {
-    nsCOMPtr<nsIDOMSVGLength> length;
+    nsCOMPtr<nsISVGLength> length;
     rv = NS_NewSVGLength(getter_AddRefs(length),
-                         (nsSVGElement*)this, eYDirection,
                          0.0f);
     NS_ENSURE_SUCCESS(rv,rv);
     rv = NS_NewSVGAnimatedLength(getter_AddRefs(mHeight), length);
     NS_ENSURE_SUCCESS(rv,rv);
-    rv = mAttributes->AddMappedSVGValue(nsSVGAtoms::height, mHeight);
+    rv = AddMappedSVGValue(nsSVGAtoms::height, mHeight);
     NS_ENSURE_SUCCESS(rv,rv);
   }
   // DOM property: rx ,  #IMPLIED  attrib: rx
   // XXX: enforce requiredness
   {
-    nsCOMPtr<nsIDOMSVGLength> length;
+    nsCOMPtr<nsISVGLength> length;
     rv = NS_NewSVGLength(getter_AddRefs(length),
-                         (nsSVGElement*)this, eXDirection,
                          0.0f);
     NS_ENSURE_SUCCESS(rv,rv);
     rv = NS_NewSVGAnimatedLength(getter_AddRefs(mRx), length);
     NS_ENSURE_SUCCESS(rv,rv);
-    rv = mAttributes->AddMappedSVGValue(nsSVGAtoms::rx, mRx);
+    rv = AddMappedSVGValue(nsSVGAtoms::rx, mRx);
     NS_ENSURE_SUCCESS(rv,rv);
   }
 
   // DOM property: ry ,  #IMPLIED  attrib: ry
   // XXX: enforce requiredness
   {
-    nsCOMPtr<nsIDOMSVGLength> length;
+    nsCOMPtr<nsISVGLength> length;
     rv = NS_NewSVGLength(getter_AddRefs(length),
-                         (nsSVGElement*)this, eYDirection,
                          0.0f);
     NS_ENSURE_SUCCESS(rv,rv);
     rv = NS_NewSVGAnimatedLength(getter_AddRefs(mRy), length);
     NS_ENSURE_SUCCESS(rv,rv);
-    rv = mAttributes->AddMappedSVGValue(nsSVGAtoms::ry, mRy);
+    rv = AddMappedSVGValue(nsSVGAtoms::ry, mRy);
     NS_ENSURE_SUCCESS(rv,rv);
   }
 
@@ -258,14 +231,7 @@ nsSVGRectElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
   if (!it) return NS_ERROR_OUT_OF_MEMORY;
   NS_ADDREF(it);
 
-  nsresult rv = NS_STATIC_CAST(nsGenericElement*,it)->Init(mNodeInfo);
-
-  if (NS_FAILED(rv)) {
-    it->Release();
-    return rv;
-  }
-
-  rv = it->Init();
+  nsresult rv = it->Init(mNodeInfo);
 
   if (NS_FAILED(rv)) {
     it->Release();
@@ -279,11 +245,10 @@ nsSVGRectElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
     return rv;
   }
 
-  *aReturn = NS_STATIC_CAST(nsSVGRectElementBase*, it);
+  *aReturn = it;
 
   return NS_OK;
 }
-
 
 //----------------------------------------------------------------------
 // nsIDOMSVGRectElement methods
@@ -335,3 +300,116 @@ NS_IMETHODIMP nsSVGRectElement::GetRy(nsIDOMSVGAnimatedLength * *aRy)
   NS_IF_ADDREF(*aRy);
   return NS_OK;
 }
+
+//----------------------------------------------------------------------
+// nsISVGContent methods
+
+void nsSVGRectElement::ParentChainChanged()
+{
+  // set new context information on our length-properties:
+  
+  nsCOMPtr<nsIDOMSVGSVGElement> dom_elem;
+  GetOwnerSVGElement(getter_AddRefs(dom_elem));
+  if (!dom_elem) return;
+
+  nsCOMPtr<nsISVGSVGElement> svg_elem = do_QueryInterface(dom_elem);
+  NS_ASSERTION(svg_elem, "<svg> element missing interface");
+
+  // x:
+  {
+    nsCOMPtr<nsIDOMSVGLength> dom_length;
+    mX->GetBaseVal(getter_AddRefs(dom_length));
+    nsCOMPtr<nsISVGLength> length = do_QueryInterface(dom_length);
+    NS_ASSERTION(length, "svg length missing interface");
+
+    nsCOMPtr<nsIDOMSVGRect> vp_dom;
+    svg_elem->GetViewport(getter_AddRefs(vp_dom));
+    nsCOMPtr<nsISVGViewportRect> vp = do_QueryInterface(vp_dom);
+    nsCOMPtr<nsISVGViewportAxis> ctx;
+    vp->GetXAxis(getter_AddRefs(ctx));
+    
+    length->SetContext(ctx);
+  }
+
+  // y:
+  {
+    nsCOMPtr<nsIDOMSVGLength> dom_length;
+    mY->GetBaseVal(getter_AddRefs(dom_length));
+    nsCOMPtr<nsISVGLength> length = do_QueryInterface(dom_length);
+    NS_ASSERTION(length, "svg length missing interface");
+
+    nsCOMPtr<nsIDOMSVGRect> vp_dom;
+    svg_elem->GetViewport(getter_AddRefs(vp_dom));
+    nsCOMPtr<nsISVGViewportRect> vp = do_QueryInterface(vp_dom);
+    nsCOMPtr<nsISVGViewportAxis> ctx;
+    vp->GetYAxis(getter_AddRefs(ctx));
+    
+    length->SetContext(ctx);
+  }
+
+  // width:
+  {
+    nsCOMPtr<nsIDOMSVGLength> dom_length;
+    mWidth->GetBaseVal(getter_AddRefs(dom_length));
+    nsCOMPtr<nsISVGLength> length = do_QueryInterface(dom_length);
+    NS_ASSERTION(length, "svg length missing interface");
+
+    nsCOMPtr<nsIDOMSVGRect> vp_dom;
+    svg_elem->GetViewport(getter_AddRefs(vp_dom));
+    nsCOMPtr<nsISVGViewportRect> vp = do_QueryInterface(vp_dom);
+    nsCOMPtr<nsISVGViewportAxis> ctx;
+    vp->GetXAxis(getter_AddRefs(ctx));
+    
+    length->SetContext(ctx);
+  }
+
+  // height:
+  {
+    nsCOMPtr<nsIDOMSVGLength> dom_length;
+    mHeight->GetBaseVal(getter_AddRefs(dom_length));
+    nsCOMPtr<nsISVGLength> length = do_QueryInterface(dom_length);
+    NS_ASSERTION(length, "svg length missing interface");
+
+    nsCOMPtr<nsIDOMSVGRect> vp_dom;
+    svg_elem->GetViewport(getter_AddRefs(vp_dom));
+    nsCOMPtr<nsISVGViewportRect> vp = do_QueryInterface(vp_dom);
+    nsCOMPtr<nsISVGViewportAxis> ctx;
+    vp->GetYAxis(getter_AddRefs(ctx));
+    
+    length->SetContext(ctx);
+  }
+  
+  // rx:
+  {
+    nsCOMPtr<nsIDOMSVGLength> dom_length;
+    mRx->GetBaseVal(getter_AddRefs(dom_length));
+    nsCOMPtr<nsISVGLength> length = do_QueryInterface(dom_length);
+    NS_ASSERTION(length, "svg length missing interface");
+
+    nsCOMPtr<nsIDOMSVGRect> vp_dom;
+    svg_elem->GetViewport(getter_AddRefs(vp_dom));
+    nsCOMPtr<nsISVGViewportRect> vp = do_QueryInterface(vp_dom);
+    nsCOMPtr<nsISVGViewportAxis> ctx;
+    vp->GetXAxis(getter_AddRefs(ctx));
+    
+    length->SetContext(ctx);
+  }
+
+  // ry:
+  {
+    nsCOMPtr<nsIDOMSVGLength> dom_length;
+    mRy->GetBaseVal(getter_AddRefs(dom_length));
+    nsCOMPtr<nsISVGLength> length = do_QueryInterface(dom_length);
+    NS_ASSERTION(length, "svg length missing interface");
+
+    nsCOMPtr<nsIDOMSVGRect> vp_dom;
+    svg_elem->GetViewport(getter_AddRefs(vp_dom));
+    nsCOMPtr<nsISVGViewportRect> vp = do_QueryInterface(vp_dom);
+    nsCOMPtr<nsISVGViewportAxis> ctx;
+    vp->GetYAxis(getter_AddRefs(ctx));
+    
+    length->SetContext(ctx);
+  }
+
+  // XXX call baseclass version to recurse into children?
+}  

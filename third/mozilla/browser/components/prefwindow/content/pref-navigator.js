@@ -1,25 +1,24 @@
-# -*- Mode: Java; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*-
+# ***** BEGIN LICENSE BLOCK *****
 # Version: MPL 1.1/GPL 2.0/LGPL 2.1
-# 
+#
 # The contents of this file are subject to the Mozilla Public License Version
 # 1.1 (the "License"); you may not use this file except in compliance with
 # the License. You may obtain a copy of the License at
 # http://www.mozilla.org/MPL/
-# 
+#
 # Software distributed under the License is distributed on an "AS IS" basis,
 # WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License
 # for the specific language governing rights and limitations under the
 # License.
-# 
-# The Original Code is Mozilla.org Code.
-# 
-# The Initial Developer of the Original Code is
-# Doron Rosenberg.
-# Portions created by the Initial Developer are Copyright (C) 2001
+#
+# The Original Code is the Firefox Options Dialog
+#
+# The Initial Developer of the Original Code is mozilla.org.
+# Portions created by the Initial Developer are Copyright (C) 2004
 # the Initial Developer. All Rights Reserved.
-# 
+#
 # Contributor(s):
-# 
+#
 # Alternatively, the contents of this file may be used under the terms of
 # either the GNU General Public License Version 2 or later (the "GPL"), or
 # the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
@@ -28,16 +27,14 @@
 # under the terms of either the GPL or the LGPL, and not to allow others to
 # use your version of this file under the terms of the MPL, indicate your
 # decision by deleting the provisions above and replace them with the notice
-# and other provisions required by the GPL or the LGPL. If you do not delete
+# and other provisions required by the LGPL or the GPL. If you do not delete
 # the provisions above, a recipient may use your version of this file under
 # the terms of any one of the MPL, the GPL or the LGPL.
-# 
-# ***** END LICENSE BLOCK *****
+#
+# ***** END LICENSE BLOCK ***** -->
 
-/* -*- Mode: Java; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*-
- *
- */
-
+var _elementIDs = ["browserStartupHomepage", "checkForDefault"];
+    
 const nsIPrefService    = Components.interfaces.nsIPrefService;
 const nsIPrefLocalizedString = Components.interfaces.nsIPrefLocalizedString;
 
@@ -83,8 +80,10 @@ function setHomePageToDefaultPage()
   homePageField.value = url;
 }
 
-function onOK() {
-  if (!('homepage' in parent)) return;
+function onOK() 
+{
+  if (!('homepage' in parent)) 
+    return;
 
   // Replace pipes with commas to look nicer.
   parent.homepage = parent.homepage.replace(/\|/g,', ');
@@ -95,71 +94,32 @@ function onOK() {
   while (eb.hasMoreElements()) {
     // Update the home button tooltip.
     var domWin = eb.getNext().QueryInterface(Components.interfaces.nsIDOMWindow);
-    domWin.document.getElementById("home-button").setAttribute("tooltiptext", parent.homepage);
+    var homeButton = domWin.document.getElementById("home-button");
+    if (homeButton)
+      homeButton.setAttribute("tooltiptext", parent.homepage);
   }
-}
 
-// check download directory is valid
-function checkDownloadDirectory() {
-   var dloadDir = Components.classes["@mozilla.org/file/local;1"]
-                            .createInstance(Components.interfaces.nsILocalFile);
-   if (!dloadDir) 
-     return false;
-
-   var givenValue = document.getElementById("defaultDir");
-   var downloadDir = document.getElementById("downloadDir");
-   if (downloadDir.selectedItem == document.getElementById("alwaysAskRadio"))
-     return;
-   
-   try {
-     dloadDir.initWithPath(givenValue.value);
-     dloadDir.isDirectory();
-   }
-   catch(ex) {
-     var promptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
-                                   .getService(Components.interfaces.nsIPromptService);
-     var prefbundle = document.getElementById("bundle_prefutilities");
-
-     if (givenValue.value == "") { 
-       // no directory, reset back to Always Ask
-       downloadDir.selectedItem = document.getElementById("alwaysAskRadio");
-     } else {
-       var checkValue = {value:false};
-
-       var title = prefbundle.getString("downloadDirTitle");
-       var description = prefbundle.getFormattedString("invalidDirPopup", [givenValue.value]);
-       var buttonPressed = promptService.confirmEx(window, 
-         title, description,
-         (promptService.BUTTON_TITLE_YES * promptService.BUTTON_POS_0) +
-         (promptService.BUTTON_TITLE_NO * promptService.BUTTON_POS_1),
-         null, null, null, null, checkValue);
-
-       if (buttonPressed != 0) {
-         // they don't want to create the directory
-         return;
-       }
-       try { 
-         dloadDir.create(nsIFile.DIRECTORY_TYPE, 0755);
-       } catch(ex) {
-         title = prefbundle.getString("invalidDirPopupTitle");
-         description = prefbundle.getFormattedString("invalidDir", [givenValue.value])
-         promptService.alert(parent, title, description);
-       }
-     }
-  }
+  var shell = Components.classes["@mozilla.org/browser/shell-service;1"]
+                        .getService(Components.interfaces.nsIShellService);      
+  if ("shouldBeDefaultBrowser" in parent && parent.shouldBeDefautBrowser)
+    shell.setDefaultBrowser(true);
 }
 
 function Startup()
-{  
-  if (top.opener) {
-    var browser = top.opener.document.getElementById("content");
-    var l = browser.mPanelContainer.childNodes.length;
+{
+  var useButton = document.getElementById("browserUseCurrent");
+  
+  try {
+    var browser = top.opener.document.getElementById("content");  
 
-    if (l > 1) {
-      var useButton = document.getElementById("browserUseCurrent");
+    var l = browser.mPanelContainer.childNodes.length;
+    if (l > 1)
       useButton.label = useButton.getAttribute("label2");
-    }
+  } catch (e) { 
+    // prefwindow wasn't opened from a browser window, so no current page
+    useButton.disabled = true;
   }
+    
   parent.hPrefWindow.registerOKCallbackFunc(onOK);
 }
       
@@ -247,3 +207,35 @@ function saveFontPrefs()
     pref.SetBoolPref(prefs[i], prefvalue)
   }
 }
+
+#ifdef XP_WIN
+function checkNow()
+{
+  var shell = Components.classes["@mozilla.org/browser/shell-service;1"]
+                        .getService(Components.interfaces.nsIShellService);
+
+  var brandBundle = document.getElementById("bundle_brand");
+  var shellBundle = document.getElementById("bundle_shell");
+  var brandShortName = brandBundle.getString("brandShortName");
+  var promptTitle = shellBundle.getString("setDefaultBrowserTitle");
+  var promptMessage;
+  const IPS = Components.interfaces.nsIPromptService;
+  var psvc = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
+                       .getService(IPS);
+  if (!shell.isDefaultBrowser(false)) {
+    promptMessage = shellBundle.getFormattedString("setDefaultBrowserMessage", 
+                                                   [brandShortName]);
+    var rv = psvc.confirmEx(window, promptTitle, promptMessage, 
+                            (IPS.BUTTON_TITLE_YES * IPS.BUTTON_POS_0) + 
+                            (IPS.BUTTON_TITLE_NO * IPS.BUTTON_POS_1),
+                            null, null, null, null, { });
+    if (rv == 0)
+      shell.setDefaultBrowser(true);
+  }
+  else {
+    promptMessage = shellBundle.getFormattedString("alreadyDefaultBrowser",
+                                                   [brandShortName]);
+    psvc.alert(window, promptTitle, promptMessage);
+  }
+}
+#endif

@@ -468,15 +468,6 @@ NS_METHOD nsMenu::RemoveItem(const PRUint32 aPos)
 //-------------------------------------------------------------------------
 NS_METHOD nsMenu::RemoveAll()
 {
-#ifdef notdef
-#if !TARGET_CARBON
-  MenuHandle helpmh;
-  ::HMGetHelpMenuHandle(&helpmh);
-  if ( helpmh != mMacMenuHandle)
-    helpmh = nsnull;
-#endif
-#endif
-
   PRUint32 curItem;
   mMenuItemsArray.Count(&curItem);
   while (curItem > 0)
@@ -1129,7 +1120,7 @@ nsMenu::LoadSubMenu( nsIMenu * pParentMenu, nsIContent* inMenuItemContent )
     if (!webShell)
         return;
     nsCOMPtr<nsISupports> supports(do_QueryInterface(pParentMenu));
-    pnsMenu->Create(supports, menuName, NS_LITERAL_STRING(""), mManager, webShell, inMenuItemContent);
+    pnsMenu->Create(supports, menuName, EmptyString(), mManager, webShell, inMenuItemContent);
 
     // set if it's enabled or disabled
     nsAutoString disabled;

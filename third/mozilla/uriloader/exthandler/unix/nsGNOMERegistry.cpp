@@ -42,6 +42,8 @@
 #include "nsString.h"
 #include "nsIComponentManager.h"
 #include "nsILocalFile.h"
+#include "nsMIMEInfoImpl.h"
+#include "nsAutoPtr.h"
 
 #include <glib.h>
 #include <glib-object.h>
@@ -64,6 +66,8 @@ typedef struct {
 typedef GConfClient * (*_gconf_client_get_default_fn)();
 typedef gchar * (*_gconf_client_get_string_fn)(GConfClient *,
 					       const char *, GError **);
+typedef gboolean (*_gconf_client_get_bool_fn)(GConfClient *,
+                                              const char *, GError **);
 typedef gboolean (*_gnome_url_show_fn)(const char *, GError **);
 typedef const char * (*_gnome_vfs_mime_type_from_name_fn)(const char *);
 typedef GList * (*_gnome_vfs_mime_get_extensions_list_fn)(const char *);
@@ -82,6 +86,7 @@ typedef GnomeProgram * (*_gnome_program_get_fn)();
 
 DECL_FUNC_PTR(gconf_client_get_default);
 DECL_FUNC_PTR(gconf_client_get_string);
+DECL_FUNC_PTR(gconf_client_get_bool);
 DECL_FUNC_PTR(gnome_url_show);
 DECL_FUNC_PTR(gnome_vfs_mime_type_from_name);
 DECL_FUNC_PTR(gnome_vfs_mime_get_extensions_list);
@@ -143,6 +148,7 @@ nsGNOMERegistry::Startup()
 
   GET_LIB_FUNCTION(gconf, gconf_client_get_default);
   GET_LIB_FUNCTION(gconf, gconf_client_get_string);
+  GET_LIB_FUNCTION(gconf, gconf_client_get_bool);
 
   // Attempt to open libgnome
   gnomeLib = LoadVersionedLibrary("gnome-2", ".0");
@@ -196,7 +202,13 @@ nsGNOMERegistry::HandlerExists(const char *aProtocolScheme)
 
   if (app) {
     g_free(app);
-    return PR_TRUE;
+
+    nsCAutoString enabledPath(NS_LITERAL_CSTRING("/desktop/gnome/url-handlers/") +
+                              nsDependentCString(aProtocolScheme) +
+                              NS_LITERAL_CSTRING("/enabled"));
+    gboolean isEnabled = _gconf_client_get_bool(client, enabledPath.get(), NULL);
+
+    return isEnabled ? PR_TRUE : PR_FALSE;
   }
 
   return PR_FALSE;
@@ -219,7 +231,7 @@ nsGNOMERegistry::LoadURL(nsIURI *aURL)
   return NS_ERROR_FAILURE;
 }
 
-/* static */ already_AddRefed<nsIMIMEInfo>
+/* static */ already_AddRefed<nsMIMEInfoBase>
 nsGNOMERegistry::GetFromExtension(const char *aFileExt)
 {
   if (!gconfLib)
@@ -241,19 +253,17 @@ nsGNOMERegistry::GetFromExtension(const char *aFileExt)
   return GetFromType(mimeType);
 }
 
-/* static */ already_AddRefed<nsIMIMEInfo>
+/* static */ already_AddRefed<nsMIMEInfoBase>
 nsGNOMERegistry::GetFromType(const char *aMIMEType)
 {
   if (!gconfLib)
     return nsnull;
 
-  nsCOMPtr<nsIMIMEInfo> mimeInfo;
-
   GnomeVFSMimeApplication *handlerApp = _gnome_vfs_mime_get_default_application(aMIMEType);
   if (!handlerApp)
     return nsnull;
 
-  mimeInfo = do_CreateInstance(NS_MIMEINFO_CONTRACTID);
+  nsRefPtr<nsMIMEInfoImpl> mimeInfo = new nsMIMEInfoImpl();
   NS_ENSURE_TRUE(mimeInfo, nsnull);
 
   mimeInfo->SetMIMEType(aMIMEType);
@@ -275,6 +285,7 @@ nsGNOMERegistry::GetFromType(const char *aMIMEType)
                                               -1, NULL, NULL, NULL);
   if (!nativeCommand) {
     NS_ERROR("Could not convert helper app command to filesystem encoding");
+    _gnome_vfs_mime_application_free(handlerApp);
     return nsnull;
   }
 
@@ -282,18 +293,25 @@ nsGNOMERegistry::GetFromType(const char *aMIMEType)
 
   g_free(nativeCommand);
 
+  if (!commandPath) {
+    _gnome_vfs_mime_application_free(handlerApp);
+    return nsnull;
+  }
+
   nsCOMPtr<nsILocalFile> appFile;
   NS_NewNativeLocalFile(nsDependentCString(commandPath), PR_TRUE,
                         getter_AddRefs(appFile));
   if (appFile) {
-    mimeInfo->SetDefaultApplicationHandler(appFile);
+    mimeInfo->SetDefaultApplication(appFile);
     mimeInfo->SetDefaultDescription(NS_ConvertUTF8toUCS2(handlerApp->name).get());
     mimeInfo->SetPreferredAction(nsIMIMEInfo::useSystemDefault);
   }
 
+  g_free(commandPath);
+
   _gnome_vfs_mime_application_free(handlerApp);
 
-  nsIMIMEInfo* retval;
+  nsMIMEInfoBase* retval;
   NS_ADDREF((retval = mimeInfo));
   return retval;
 }

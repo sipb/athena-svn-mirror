@@ -84,8 +84,7 @@ function initSmtpSettings(server) {
             gSmtpTrySSL.getElementsByAttribute("value", "1")[0];
     }
 
-    if (gSmtpAuthMethod.getAttribute("value") == "1")
-        gSmtpUseUsername.checked = true;
+    gSmtpUseUsername.checked = (gSmtpAuthMethod.getAttribute("value") == "1");
 
     //dump("gSmtpAuthMethod = <" + gSmtpAuthMethod.localName + ">\n");
     //dump("gSmtpAuthMethod.value = " + gSmtpAuthMethod.getAttribute("value") + "\n");
@@ -184,7 +183,7 @@ function updateControls() {
 }
 
 function selectProtocol(init) {
-  prevDefaultPort = gDefaultPort.value;
+  var prevDefaultPort = gDefaultPort.value;
 
   if (gSmtpTrySSL.selectedItem == gSmtpS) {
     gDefaultPort.value = "465";

@@ -45,7 +45,6 @@
 #include "nsICSSStyleSheet.h"
 #include "nsICSSParser.h"
 #include "nsICSSLoader.h"
-#include "nsIHTMLContentContainer.h"
 #include "nsIURL.h"
 #include "nsIPresContext.h"
 #include "nsIDocument.h"
@@ -67,8 +66,6 @@
 #include "nsRuleNode.h"
 #include "nsUnicharUtils.h"
 #include "nsCSSPseudoElements.h"
-
-#include "nsIStyleSet.h"
 
 #include "nsContentUtils.h"
 #include "nsContentErrors.h"
@@ -988,10 +985,8 @@ DOMCSSDeclarationImpl::GetCSSParsingEnvironment(nsIURI** aURI,
       sheet->GetURL(*aURI);
       nsCOMPtr<nsIDocument> document;
       sheet->GetOwningDocument(*getter_AddRefs(document));
-      nsCOMPtr<nsIHTMLContentContainer> htmlContainer =
-        do_QueryInterface(document);
-      if (htmlContainer) {
-        htmlContainer->GetCSSLoader(*aCSSLoader);
+      if (document) {
+        NS_IF_ADDREF(*aCSSLoader = document->GetCSSLoader());
         NS_ASSERTION(*aCSSLoader, "Document with no CSS loader!");
       }
     }
@@ -1192,9 +1187,6 @@ public:
 
   virtual already_AddRefed<nsIStyleRule> GetImportantRule(void);
 
-  // hook for inspector
-  virtual nsresult GetValue(nsCSSProperty aProperty, nsCSSValue& aValue);
-
   NS_IMETHOD GetStyleSheet(nsIStyleSheet*& aSheet) const;
   NS_IMETHOD SetStyleSheet(nsICSSStyleSheet* aSheet);
   
@@ -1282,7 +1274,7 @@ CSSStyleRuleImpl::CSSStyleRuleImpl(CSSStyleRuleImpl& aCopy,
 #else
   // We ought to be able to transfer ownership of the selector and the
   // declaration since this rule should now be unused, but unfortunately
-  // SetHTMLAttribute might use it before setting the new rule (see
+  // SetInlineStyleRule might use it before setting the new rule (see
   // stack in bug 209575).  So leave the declaration pointer on the old
   // rule.
   mDeclaration->AddRef();
@@ -1350,12 +1342,6 @@ already_AddRefed<nsIStyleRule> CSSStyleRuleImpl::GetImportantRule(void)
   }
   NS_IF_ADDREF(mImportantRule);
   return mImportantRule;
-}
-
-nsresult
-CSSStyleRuleImpl::GetValue(nsCSSProperty aProperty, nsCSSValue& aValue)
-{
-  return mDeclaration->GetValueOrImportantValue(aProperty, aValue);
 }
 
 NS_IMETHODIMP

@@ -79,8 +79,9 @@ public:
   static PRBool  gExitMainLoop;
 
 private:
-  nsIEventQueue* mEventQueue;
-  int			 mFD;
+	nsCOMPtr<nsIEventQueue> mEventQueue;
+  int	mFD;
+	static PRBool mPtInited;
 
 };
 

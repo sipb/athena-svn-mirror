@@ -60,7 +60,7 @@
 // Interfaces Needed
 #include "nsIDocumentCharsetInfo.h"
 #include "nsIDocCharset.h"
-#include "nsIGlobalHistory.h"
+#include "nsIGlobalHistory2.h"
 #include "nsIInterfaceRequestor.h"
 #include "nsIInterfaceRequestorUtils.h"
 #include "nsIPrompt.h"
@@ -149,10 +149,9 @@ public:
 
     nsCOMPtr<nsIDocShell> mDocShell;
     nsCOMPtr<nsIURI>      mURI;
-    PRBool                mRepeat;
     PRInt32               mDelay;
-    PRBool                mMetaRefresh;
-
+    PRPackedBool          mRepeat;
+    PRPackedBool          mMetaRefresh;
     
 protected:
     virtual ~nsRefreshTimer();
@@ -262,8 +261,7 @@ protected:
     PRBool ShouldDiscardLayoutState(nsIHttpChannel * aChannel);
     
     // Global History
-    nsresult ShouldAddToGlobalHistory(nsIURI * aURI, PRBool * aShouldAdd);
-    nsresult AddToGlobalHistory(nsIURI * aURI, PRBool );
+    nsresult AddToGlobalHistory(nsIURI * aURI, PRBool aRedirect);
 
     // Helper Routines
     NS_IMETHOD GetPromptAndStringBundle(nsIPrompt ** aPrompt,
@@ -309,6 +307,9 @@ protected:
     virtual nsresult EndPageLoad(nsIWebProgress * aProgress,
                                  nsIChannel * aChannel,
                                  nsresult aResult);
+
+    nsresult CheckLoadingPermissions(nsISupports *aOwner);
+
 protected:
     nsString                   mName;
     nsString                   mTitle;
@@ -327,7 +328,7 @@ protected:
     nsCOMPtr<nsIScriptGlobalObject> mScriptGlobal;
     nsCOMPtr<nsIScriptContext> mScriptContext;
     nsCOMPtr<nsISHistory>      mSessionHistory;
-    nsCOMPtr<nsIGlobalHistory> mGlobalHistory;
+    nsCOMPtr<nsIGlobalHistory2> mGlobalHistory;
     nsCOMPtr<nsISupports>      mLoadCookie; // the load cookie associated with the window context.
     nsCOMPtr<nsIURIFixup>      mURIFixup;
     nsCOMPtr<nsIWebBrowserFind> mFind;
@@ -360,30 +361,33 @@ protected:
     // Somebody give me better name
     nsCOMPtr<nsISHEntry>       mLSHE;
 
-    PRBool                     mFiredUnloadEvent;
+    PRPackedBool               mFiredUnloadEvent;
 
     // this flag is for bug #21358. a docshell may load many urls
     // which don't result in new documents being created (i.e. a new content viewer)
     // we want to make sure we don't call a on load event more than once for a given
     // content viewer. 
-    PRBool                     mEODForCurrentDocument; 
-    PRBool                     mURIResultedInDocument;
+    PRPackedBool               mEODForCurrentDocument; 
+    PRPackedBool               mURIResultedInDocument;
+
+    PRPackedBool               mIsBeingDestroyed;
 
     // used to keep track of whether user click links should be handle by us
     // or immediately kicked out to an external application. mscott: eventually
     // i'm going to try to fold this up into the uriloader where it belongs but i haven't
     // figured out how to do that yet.
-    PRBool                     mUseExternalProtocolHandler;
+    PRPackedBool               mUseExternalProtocolHandler;
 
     // Disallow popping up new windows with target=
-    PRBool                     mDisallowPopupWindows;
+    PRPackedBool               mDisallowPopupWindows;
 
     // Validate window targets to prevent frameset spoofing
-    PRBool                     mValidateOrigin;
-
-    PRBool                     mIsBeingDestroyed;
+    PRPackedBool               mValidateOrigin;
 
     PRPackedBool               mIsExecutingOnLoadHandler;
+
+    // Indicates that a DocShell in this "docshell tree" is printing
+    PRPackedBool               mIsPrintingOrPP;
 
     // Editor stuff
     nsDocShellEditorData*      mEditorData;          // editor data, if any
@@ -399,8 +403,6 @@ protected:
     nsIDocShellTreeOwner *     mTreeOwner; // Weak Reference
     nsIChromeEventHandler *    mChromeEventHandler; //Weak Reference
 
-    // Indicates that a DocShell in this "docshell tree" is printing
-    PRBool mIsPrintingOrPP;
 
 public:
     class InterfaceRequestorProxy : public nsIInterfaceRequestor {

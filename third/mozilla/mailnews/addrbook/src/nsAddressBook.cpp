@@ -187,19 +187,19 @@ NS_IMETHODIMP nsAddressBook::NewAddressBook(nsIAbDirectoryProperties *aPropertie
 
   nsresult rv;
 
-    nsCOMPtr<nsIRDFService> rdfService = do_GetService (NS_RDF_CONTRACTID "/rdf-service;1", &rv);
-    NS_ENSURE_SUCCESS(rv, rv);
+  nsCOMPtr<nsIRDFService> rdfService = do_GetService (NS_RDF_CONTRACTID "/rdf-service;1", &rv);
+  NS_ENSURE_SUCCESS(rv, rv);
 
-    nsCOMPtr<nsIRDFResource> parentResource;
-    rv = rdfService->GetResource(NS_LITERAL_CSTRING(kAllDirectoryRoot),
-                                 getter_AddRefs(parentResource));
-    NS_ENSURE_SUCCESS(rv, rv);
+  nsCOMPtr<nsIRDFResource> parentResource;
+  rv = rdfService->GetResource(NS_LITERAL_CSTRING(kAllDirectoryRoot),
+                               getter_AddRefs(parentResource));
+  NS_ENSURE_SUCCESS(rv, rv);
 
-    nsCOMPtr<nsIAbDirectory> parentDir = do_QueryInterface(parentResource, &rv);
-    NS_ENSURE_SUCCESS(rv, rv);
-        
+  nsCOMPtr<nsIAbDirectory> parentDir = do_QueryInterface(parentResource, &rv);
+  NS_ENSURE_SUCCESS(rv, rv);
+
   rv = parentDir->CreateNewDirectory(aProperties);
-    return rv;
+  return rv;
 }
 
 NS_IMETHODIMP nsAddressBook::ModifyAddressBook
@@ -245,42 +245,38 @@ nsresult nsAddressBook::DoCommand(nsIRDFDataSource* db,
                                   nsISupportsArray *srcArray,
                                   nsISupportsArray *argumentArray)
 {
+  nsresult rv = NS_OK;
 
-    nsresult rv = NS_OK;
+  nsCOMPtr<nsIRDFService> rdfService = do_GetService (NS_RDF_CONTRACTID "/rdf-service;1", &rv);
+  NS_ENSURE_SUCCESS(rv, rv);
 
-    nsCOMPtr<nsIRDFService> rdfService = do_GetService (NS_RDF_CONTRACTID "/rdf-service;1", &rv);
-    NS_ENSURE_SUCCESS(rv, rv);
+  nsCOMPtr<nsIRDFResource> commandResource;
+  rv = rdfService->GetResource(command, getter_AddRefs(commandResource));
+  if(NS_SUCCEEDED(rv))
+  {
+    rv = db->DoCommand(srcArray, commandResource, argumentArray);
+  }
 
-    nsCOMPtr<nsIRDFResource> commandResource;
-    rv = rdfService->GetResource(command, getter_AddRefs(commandResource));
-    if(NS_SUCCEEDED(rv))
-    {
-        rv = db->DoCommand(srcArray, commandResource, argumentArray);
-    }
-
-    return rv;
-
+  return rv;
 }
 
 NS_IMETHODIMP nsAddressBook::SetDocShellWindow(nsIDOMWindowInternal *aWin)
 {
-   NS_PRECONDITION(aWin != nsnull, "null ptr");
-   if (!aWin)
-       return NS_ERROR_NULL_POINTER;
+  NS_PRECONDITION(aWin != nsnull, "null ptr");
+  if (!aWin)
+    return NS_ERROR_NULL_POINTER;
  
-   nsCOMPtr<nsIScriptGlobalObject> globalObj( do_QueryInterface(aWin) );
-   if (!globalObj) {
-     return NS_ERROR_FAILURE;
-   }
- 
-   globalObj->GetDocShell(&mDocShell);
-   if (!mDocShell)
-     return NS_ERROR_NOT_INITIALIZED;
+  nsCOMPtr<nsIScriptGlobalObject> globalObj( do_QueryInterface(aWin) );
+  if (!globalObj) {
+    return NS_ERROR_FAILURE;
+  }
 
-   // Make reference weak by releasing
-   mDocShell->Release();
- 
-   return NS_OK;
+  // mDocShell is a weak reference
+  mDocShell = globalObj->GetDocShell();
+  if (!mDocShell)
+    return NS_ERROR_NOT_INITIALIZED;
+
+  return NS_OK;
 }
 
 NS_IMETHODIMP nsAddressBook::GetAbDatabaseFromURI(const char *aURI, nsIAddrDatabase **aDB)
@@ -427,9 +423,9 @@ public:
 
 AddressBookParser::AddressBookParser(nsIFileSpec * fileSpec, PRBool migrating, nsIAddrDatabase *db, PRBool bStoreLocAsHome, PRBool bImportingComm4x)
 {
-    mFileSpec = fileSpec;
-    mDbUri = nsnull;
-    mMigrating = migrating;
+  mFileSpec = fileSpec;
+  mDbUri = nsnull;
+  mMigrating = migrating;
   mDatabase = db;
   if (mDatabase)
     mDeleteDB = PR_FALSE;
@@ -893,10 +889,24 @@ void AddressBookParser::ClearLdifRecordBuffer()
   }
 }
 
+
 // We have two copies of this function in the code, one here for import and 
 // the other one in addrbook/src/nsAddressBook.cpp for migrating.  If ths 
 // function need modification, make sure change in both places until we resolve
 // this problem.
+static void SplitCRLFAddressField(nsCString &inputAddress, nsCString &outputLine1, nsCString &outputLine2)
+{
+  PRInt32 crlfPos = inputAddress.Find("\r\n");
+  if (crlfPos != kNotFound)
+  {
+    inputAddress.Left(outputLine1, crlfPos);
+    inputAddress.Right(outputLine2, inputAddress.Length() - (crlfPos + 2));
+  }
+  else
+    outputLine1.Assign(inputAddress);
+}
+
+
 void AddressBookParser::AddLdifColToDatabase(nsIMdbRow* newRow, char* typeSlot, char* valueSlot, PRBool bIsList)
 {
     nsCAutoString colType(typeSlot);
@@ -1113,8 +1123,12 @@ void AddressBookParser::AddLdifColToDatabase(nsIMdbRow* newRow, char* typeSlot, 
       }
 
       else if ( kNotFound != colType.Find("postOfficeBox") )
-        mDatabase->AddWorkAddress(newRow, column.get());
-
+      {
+        nsCAutoString workAddr1, workAddr2;
+        SplitCRLFAddressField(column, workAddr1, workAddr2);
+        mDatabase->AddWorkAddress(newRow, workAddr1.get());
+        mDatabase->AddWorkAddress2(newRow, workAddr2.get());
+      }
       else if ( kNotFound != colType.Find("pager") ||
         kNotFound != colType.Find("pagerphone") )
         mDatabase->AddPagerNumber(newRow, column.get());
@@ -1161,12 +1175,19 @@ void AddressBookParser::AddLdifColToDatabase(nsIMdbRow* newRow, char* typeSlot, 
 
       else if ( kNotFound != colType.Find("streetaddress") )
        {
+          nsCAutoString addr1, addr2;
+          SplitCRLFAddressField(column, addr1, addr2);
       if (mStoreLocAsHome )
-          mDatabase->AddHomeAddress(newRow, column.get());
+          {
+              mDatabase->AddHomeAddress(newRow, addr1.get());
+              mDatabase->AddHomeAddress2(newRow, addr2.get());
+          }
       else
-          mDatabase->AddWorkAddress(newRow, column.get());
+          {
+              mDatabase->AddWorkAddress(newRow, addr1.get());
+              mDatabase->AddWorkAddress2(newRow, addr2.get());
+          }
       }
-
       else if ( kNotFound != colType.Find("st") )
       {
       if (mStoreLocAsHome )
@@ -1669,7 +1690,7 @@ nsAddressBook::ExportDirectoryToLDIF(nsIAbDirectory *aDirectory, nsILocalFile *a
           if (length != writeCount)
             return NS_ERROR_FAILURE;
           
-          valueCStr = "";   
+          valueCStr.Truncate();
 
           for (i = 0; i < EXPORT_ATTRIBUTES_TABLE_COUNT; i++) {
             if (EXPORT_ATTRIBUTES_TABLE[i].ldapPropertyName) {
@@ -1682,7 +1703,7 @@ nsAddressBook::ExportDirectoryToLDIF(nsIAbDirectory *aDirectory, nsILocalFile *a
                 else if (value.Equals(NS_LITERAL_STRING("plaintext").get()))
                   value = NS_LITERAL_STRING("false");
                 else
-                  value = NS_LITERAL_STRING(""); // unknown.
+                  value.Truncate(); // unknown.
               }
 
               if (!value.IsEmpty()) {
@@ -1692,7 +1713,7 @@ nsAddressBook::ExportDirectoryToLDIF(nsIAbDirectory *aDirectory, nsILocalFile *a
                 valueCStr += LDIF_LINEBREAK;
               }
               else
-                valueCStr = "";
+                valueCStr.Truncate();
               
               length = valueCStr.Length();
               if (length) {
@@ -1701,7 +1722,7 @@ nsAddressBook::ExportDirectoryToLDIF(nsIAbDirectory *aDirectory, nsILocalFile *a
                 if (length != writeCount)
                   return NS_ERROR_FAILURE;
               }
-              valueCStr = "";
+              valueCStr.Truncate();
             }
             else {
               // something we don't support yet
@@ -2038,7 +2059,7 @@ NS_IMETHODIMP nsAddressBook::HandleContent(const char * aContentType, const char
 
             rv = parentWindow->OpenDialog(
                 NS_LITERAL_STRING("chrome://messenger/content/addressbook/abNewCardDialog.xul"),
-                NS_LITERAL_STRING(""),
+                EmptyString(),
                 NS_LITERAL_STRING("chrome,resizable=no,titlebar,modal,centerscreen"),
                 ifptr, getter_AddRefs(dialogWindow));
             NS_ENSURE_SUCCESS(rv, rv);
@@ -2102,7 +2123,6 @@ static nsresult addProperty(char **currentVCard, const char *currentRoot, const 
     // we add those automatically...
     
     const char *beginPhrase = "begin";
-    char *children = nsnull;
     
     nsCOMPtr<nsIPrefBranch> prefBranch = do_GetService(NS_PREFSERVICE_CONTRACTID);
     if (currentVCard && prefBranch)

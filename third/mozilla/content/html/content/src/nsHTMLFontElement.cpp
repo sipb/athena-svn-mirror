@@ -44,12 +44,12 @@
 #include "nsIDeviceContext.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
-#include "nsHTMLAttributes.h"
+#include "nsMappedAttributes.h"
 #include "nsCSSStruct.h"
 #include "nsRuleNode.h"
 #include "nsIDocument.h"
 
-class nsHTMLFontElement : public nsGenericHTMLContainerElement,
+class nsHTMLFontElement : public nsGenericHTMLElement,
                           public nsIDOMHTMLFontElement
 {
 public:
@@ -60,30 +60,30 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
   // nsIDOMNode
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLContainerElement::)
+  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLElement::)
 
   // nsIDOMElement
-  NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLContainerElement::)
+  NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLElement::)
 
   // nsIDOMHTMLElement
-  NS_FORWARD_NSIDOMHTMLELEMENT(nsGenericHTMLContainerElement::)
+  NS_FORWARD_NSIDOMHTMLELEMENT(nsGenericHTMLElement::)
 
   // nsIDOMHTMLFontElement
   NS_DECL_NSIDOMHTMLFONTELEMENT
 
-  NS_IMETHOD StringToAttribute(nsIAtom* aAttribute,
-                               const nsAString& aValue,
-                               nsHTMLValue& aResult);
+  virtual PRBool ParseAttribute(nsIAtom* aAttribute,
+                                const nsAString& aValue,
+                                nsAttrValue& aResult);
   NS_IMETHOD AttributeToString(nsIAtom* aAttribute,
                                const nsHTMLValue& aValue,
                                nsAString& aResult) const;
-  NS_IMETHOD_(PRBool) HasAttributeDependentStyle(const nsIAtom* aAttribute) const;
+  NS_IMETHOD_(PRBool) IsAttributeMapped(const nsIAtom* aAttribute) const;
   NS_IMETHOD GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRuleFunc) const;
 };
 
 nsresult
 NS_NewHTMLFontElement(nsIHTMLContent** aInstancePtrResult,
-                      nsINodeInfo *aNodeInfo)
+                      nsINodeInfo *aNodeInfo, PRBool aFromParser)
 {
   NS_ENSURE_ARG_POINTER(aInstancePtrResult);
 
@@ -121,8 +121,7 @@ NS_IMPL_RELEASE_INHERITED(nsHTMLFontElement, nsGenericElement)
 
 
 // QueryInterface implementation for nsHTMLFontElement
-NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLFontElement,
-                                    nsGenericHTMLContainerElement)
+NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLFontElement, nsGenericHTMLElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMHTMLFontElement)
   NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(HTMLFontElement)
 NS_HTML_CONTENT_INTERFACE_MAP_END
@@ -147,7 +146,7 @@ nsHTMLFontElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
   if (NS_FAILED(rv))
     return rv;
 
-  CopyInnerTo(this, it, aDeep);
+  CopyInnerTo(it, aDeep);
 
   *aReturn = NS_STATIC_CAST(nsIDOMNode *, it);
 
@@ -162,33 +161,32 @@ NS_IMPL_STRING_ATTR(nsHTMLFontElement, Face, face)
 NS_IMPL_STRING_ATTR(nsHTMLFontElement, Size, size)
 
 
-NS_IMETHODIMP
-nsHTMLFontElement::StringToAttribute(nsIAtom* aAttribute,
-                              const nsAString& aValue,
-                              nsHTMLValue& aResult)
+PRBool
+nsHTMLFontElement::ParseAttribute(nsIAtom* aAttribute,
+                                  const nsAString& aValue,
+                                  nsAttrValue& aResult)
 {
-  if ((aAttribute == nsHTMLAtoms::size) ||
-      (aAttribute == nsHTMLAtoms::pointSize) ||
-      (aAttribute == nsHTMLAtoms::fontWeight)) {
+  if (aAttribute == nsHTMLAtoms::size) {
     nsAutoString tmp(aValue);
-      //rickg: fixed flaw where ToInteger error code was not being checked.
-      //       This caused wrong default value for font size.
     PRInt32 ec, v = tmp.ToInteger(&ec);
-    if(NS_SUCCEEDED(ec)){
+    if(NS_SUCCEEDED(ec)) {
       tmp.CompressWhitespace(PR_TRUE, PR_FALSE);
-      PRUnichar ch = tmp.IsEmpty() ? 0 : tmp.First();
-      aResult.SetIntValue(v, ((ch == '+') || (ch == '-')) ?
-                          eHTMLUnit_Integer : eHTMLUnit_Enumerated);
-      return NS_CONTENT_ATTR_HAS_VALUE;
+      PRUnichar ch = tmp.First();
+      aResult.SetTo(v, (ch == '+' || ch == '-') ?
+                       nsAttrValue::eEnum : nsAttrValue::eInteger);
+      return PR_TRUE;
     }
+    return PR_FALSE;
   }
-  else if (aAttribute == nsHTMLAtoms::color) {
-    if (aResult.ParseColor(aValue,
-                           nsGenericHTMLContainerElement::GetOwnerDocument())) {
-      return NS_CONTENT_ATTR_HAS_VALUE;
-    }
+  if (aAttribute == nsHTMLAtoms::pointSize ||
+      aAttribute == nsHTMLAtoms::fontWeight) {
+    return aResult.ParseIntValue(aValue);
   }
-  return NS_CONTENT_ATTR_NOT_THERE;
+  if (aAttribute == nsHTMLAtoms::color) {
+    return aResult.ParseColor(aValue, nsGenericHTMLElement::GetOwnerDocument());
+  }
+
+  return nsGenericHTMLElement::ParseAttribute(aAttribute, aValue, aResult);
 }
 
 NS_IMETHODIMP
@@ -199,32 +197,27 @@ nsHTMLFontElement::AttributeToString(nsIAtom* aAttribute,
   if ((aAttribute == nsHTMLAtoms::size) ||
       (aAttribute == nsHTMLAtoms::pointSize) ||
       (aAttribute == nsHTMLAtoms::fontWeight)) {
-    aResult.Truncate();
-    nsAutoString intVal;
     if (aValue.GetUnit() == eHTMLUnit_Enumerated) {
-      intVal.AppendInt(aValue.GetIntValue(), 10);
-      aResult.Append(intVal);
-      return NS_CONTENT_ATTR_HAS_VALUE;
-    }
-    else if (aValue.GetUnit() == eHTMLUnit_Integer) {
+      nsAutoString intVal;
       PRInt32 value = aValue.GetIntValue(); 
+      intVal.AppendInt(value, 10);
       if (value >= 0) {
-        aResult.Append(NS_LITERAL_STRING("+"));
+        aResult = NS_LITERAL_STRING("+") + intVal;
       }
-      intVal.AppendInt(value, 10);      
-      aResult.Append(intVal);
+      else {
+        aResult = intVal;
+      }
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
 
     return NS_CONTENT_ATTR_NOT_THERE;
   }
 
-  return nsGenericHTMLContainerElement::AttributeToString(aAttribute, aValue,
-                                                          aResult);
+  return nsGenericHTMLElement::AttributeToString(aAttribute, aValue, aResult);
 }
 
 static void
-MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
+MapAttributesIntoRule(const nsMappedAttributes* aAttributes,
                       nsRuleData* aData)
 {
   if (aData->mSID == eStyleStruct_Font) {
@@ -233,8 +226,9 @@ MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
     
     // face: string list
     if (font.mFamily.GetUnit() == eCSSUnit_Null) {
-      aAttributes->GetAttribute(nsHTMLAtoms::face, value);
-      if (value.GetUnit() == eHTMLUnit_String) {
+      if (aAttributes->GetAttribute(nsHTMLAtoms::face, value) !=
+          NS_CONTENT_ATTR_NOT_THERE &&
+          value.GetUnit() == eHTMLUnit_String) {
         nsAutoString familyList;
         value.GetStringValue(familyList);
         if (!familyList.IsEmpty()) {
@@ -258,8 +252,8 @@ MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
         nsHTMLUnit unit = value.GetUnit();
         if (unit == eHTMLUnit_Integer || unit == eHTMLUnit_Enumerated) { 
           PRInt32 size = value.GetIntValue();
-          if (unit == eHTMLUnit_Integer) // int (+/-)
-            size += 3;  // XXX should be BASEFONT, not three
+          if (unit == eHTMLUnit_Enumerated) // int (+/-)
+            size += 3;  // XXX should be BASEFONT, not three see bug 3875
 	            
           size = ((0 < size) ? ((size < 8) ? size : 7) : 1); 
           font.mSize.SetIntValue(size, eCSSUnit_Enumerated);
@@ -280,11 +274,11 @@ MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
     if (aData->mColorData->mColor.GetUnit() == eCSSUnit_Null) {
       // color: color
       nsHTMLValue value;
+      nscolor color;
       if (NS_CONTENT_ATTR_NOT_THERE !=
-          aAttributes->GetAttribute(nsHTMLAtoms::color, value)) {
-        if (((eHTMLUnit_Color == value.GetUnit())) ||
-            (eHTMLUnit_ColorName == value.GetUnit()))
-          aData->mColorData->mColor.SetColorValue(value.GetColorValue());
+          aAttributes->GetAttribute(nsHTMLAtoms::color, value) &&
+          value.GetColorValue(color)) {
+        aData->mColorData->mColor.SetColorValue(color);
       }
     }
   }
@@ -293,10 +287,10 @@ MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
     // in quirks mode.  The NS_STYLE_TEXT_DECORATION_OVERRIDE_ALL flag only
     // affects quirks mode rendering.
     nsHTMLValue value;
+    nscolor color;
     if (NS_CONTENT_ATTR_NOT_THERE !=
         aAttributes->GetAttribute(nsHTMLAtoms::color, value) &&
-        (eHTMLUnit_Color == value.GetUnit() ||
-         eHTMLUnit_ColorName == value.GetUnit())) {
+        value.GetColorValue(color)) {
       nsCSSValue& decoration = aData->mTextData->mDecoration;
       PRInt32 newValue = NS_STYLE_TEXT_DECORATION_OVERRIDE_ALL;
       if (decoration.GetUnit() == eCSSUnit_Enumerated) {
@@ -310,9 +304,9 @@ MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
 }
 
 NS_IMETHODIMP_(PRBool)
-nsHTMLFontElement::HasAttributeDependentStyle(const nsIAtom* aAttribute) const
+nsHTMLFontElement::IsAttributeMapped(const nsIAtom* aAttribute) const
 {
-  static const AttributeDependenceEntry attributes[] = {
+  static const MappedAttributeEntry attributes[] = {
     { &nsHTMLAtoms::face },
     { &nsHTMLAtoms::pointSize },
     { &nsHTMLAtoms::size },
@@ -321,7 +315,7 @@ nsHTMLFontElement::HasAttributeDependentStyle(const nsIAtom* aAttribute) const
     { nsnull }
   };
 
-  static const AttributeDependenceEntry* const map[] = {
+  static const MappedAttributeEntry* const map[] = {
     attributes,
     sCommonAttributeMap,
   };

@@ -21,7 +21,7 @@
  *
  * Contributor(s):
  * Seth Spitzer <sspitzer@netscape.com>
- * David Bienvenu <bienvenu@netscape.com>
+ * David Bienvenu <bienvenu@nventure.com>
  * Henrik Gemal <mozilla@gemal.dk>
  *
  * Alternatively, the contents of this file may be used under the terms of
@@ -64,6 +64,7 @@
 #define VALID_VERSION           1
 #define NEW_NEWS_DIR_NAME       "News"
 #define PREF_MAIL_NEWSRC_ROOT   "mail.newsrc_root"
+#define PREF_MAIL_NEWSRC_ROOT_REL "mail.newsrc_root-rel"
 #define HOSTINFO_FILE_NAME      "hostinfo.dat"
 
 #define NEWS_DELIMITER          '.'
@@ -231,15 +232,16 @@ nsNntpIncomingServer::GetLocalStoreType(char **type)
 NS_IMETHODIMP
 nsNntpIncomingServer::SetNewsrcRootPath(nsIFileSpec *aNewsrcRootPath)
 {
-    nsresult rv;
-    
-    nsCOMPtr<nsIPrefBranch> prefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID, &rv));
-    if (NS_SUCCEEDED(rv) && prefBranch) {
-        return prefBranch->SetComplexValue(PREF_MAIL_NEWSRC_ROOT, NS_GET_IID(nsIFileSpec),
-                                           aNewsrcRootPath);
-    }
+    NS_ENSURE_ARG(aNewsrcRootPath);
+    nsFileSpec spec;
 
-    return NS_ERROR_FAILURE;
+    nsresult rv = aNewsrcRootPath->GetFileSpec(&spec);
+    NS_ENSURE_SUCCESS(rv, rv);
+    nsCOMPtr<nsILocalFile> localFile;
+    NS_FileSpecToIFile(&spec, getter_AddRefs(localFile));
+    if (!localFile) return NS_ERROR_FAILURE;
+    
+    return NS_SetPersistentFile(PREF_MAIL_NEWSRC_ROOT_REL, PREF_MAIL_NEWSRC_ROOT, localFile);
 }
 
 NS_IMETHODIMP
@@ -248,42 +250,35 @@ nsNntpIncomingServer::GetNewsrcRootPath(nsIFileSpec **aNewsrcRootPath)
     NS_ENSURE_ARG_POINTER(aNewsrcRootPath);
     *aNewsrcRootPath = nsnull;
     
-    nsresult rv;
-    nsCOMPtr<nsIPrefBranch> prefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID, &rv));
-    if (NS_FAILED(rv)) return rv;
-    
-    PRBool havePref = PR_FALSE;
-    nsCOMPtr<nsIFile> localFile;
-    nsCOMPtr<nsILocalFile> prefLocal;
-    rv = prefBranch->GetComplexValue(PREF_MAIL_NEWSRC_ROOT, NS_GET_IID(nsILocalFile),
-                                     getter_AddRefs(prefLocal));
-    if (NS_SUCCEEDED(rv)) {
-        localFile = prefLocal;
-        havePref = PR_TRUE;
-    }
-    if (!localFile) {
-        rv = NS_GetSpecialDirectory(NS_APP_NEWS_50_DIR, getter_AddRefs(localFile));
-        if (NS_FAILED(rv)) return rv;
-        havePref = PR_FALSE;
-    }
+    PRBool havePref;
+    nsCOMPtr<nsILocalFile> localFile;    
+    nsresult rv = NS_GetPersistentFile(PREF_MAIL_NEWSRC_ROOT_REL,
+                              PREF_MAIL_NEWSRC_ROOT,
+                              NS_APP_NEWS_50_DIR,
+                              havePref,
+                              getter_AddRefs(localFile));
+
+    NS_ENSURE_SUCCESS(rv, rv);
 
     PRBool exists;
     rv = localFile->Exists(&exists);
     if (NS_SUCCEEDED(rv) && !exists)
         rv = localFile->Create(nsIFile::DIRECTORY_TYPE, 0775);
-    if (NS_FAILED(rv)) return rv;
+    NS_ENSURE_SUCCESS(rv, rv);
     
     // Make the resulting nsIFileSpec
     // TODO: Convert arg to nsILocalFile and avoid this
     nsCOMPtr<nsIFileSpec> outSpec;
     rv = NS_NewFileSpecFromIFile(localFile, getter_AddRefs(outSpec));
-    if (NS_FAILED(rv)) return rv;
+    NS_ENSURE_SUCCESS(rv, rv);
     
-    if (!havePref || !exists)
-        rv = SetNewsrcRootPath(outSpec);
+    if (!havePref || !exists) 
+    {
+        rv = NS_SetPersistentFile(PREF_MAIL_NEWSRC_ROOT_REL, PREF_MAIL_NEWSRC_ROOT, localFile);
+        NS_ASSERTION(NS_SUCCEEDED(rv), "Failed to set root dir pref.");
+    }
         
-    *aNewsrcRootPath = outSpec;
-    NS_IF_ADDREF(*aNewsrcRootPath);
+    NS_IF_ADDREF(*aNewsrcRootPath = outSpec);
     return rv;
 }
 
@@ -1009,7 +1004,7 @@ nsNntpIncomingServer::AddNewsgroupToList(const char *aName)
 {
 	nsresult rv;
 
-	rv = AddTo(aName, PR_FALSE, PR_TRUE);
+	rv = AddTo(aName, PR_FALSE, PR_TRUE, PR_TRUE);
 	if (NS_FAILED(rv)) return rv;
 	return NS_OK;
 }
@@ -1117,7 +1112,7 @@ nsNntpIncomingServer::UpdateSubscribed()
 }
 
 NS_IMETHODIMP
-nsNntpIncomingServer::AddTo(const char *aName, PRBool addAsSubscribed, PRBool changeIfExists)
+nsNntpIncomingServer::AddTo(const char *aName, PRBool addAsSubscribed, PRBool aSubscribable, PRBool changeIfExists)
 {
     nsresult rv = EnsureInner();
     NS_ENSURE_SUCCESS(rv,rv);
@@ -1131,7 +1126,7 @@ nsNntpIncomingServer::AddTo(const char *aName, PRBool addAsSubscribed, PRBool ch
     rv = AddGroupOnServer(escapedName);
     NS_ENSURE_SUCCESS(rv,rv);
  
-    rv = mInner->AddTo(escapedName,addAsSubscribed,changeIfExists);
+    rv = mInner->AddTo(escapedName,addAsSubscribed, aSubscribable, changeIfExists);
     NS_ENSURE_SUCCESS(rv,rv);
 
     PR_FREEIF(escapedName);
@@ -1241,7 +1236,7 @@ nsNntpIncomingServer::HandleLine(char* line, PRUint32 line_size)
 		char *commaPos = PL_strchr(line,',');
 		if (commaPos) *commaPos = 0;
 
-		nsresult rv = AddTo(line, PR_FALSE, PR_TRUE);
+		nsresult rv = AddTo(line, PR_FALSE, PR_TRUE, PR_TRUE);
 		NS_ASSERTION(NS_SUCCEEDED(rv),"failed to add line");
 		if (NS_SUCCEEDED(rv)) {
           // since we've seen one group, we can claim we've loaded the hostinfo file
@@ -1324,6 +1319,14 @@ nsNntpIncomingServer::IsSubscribed(const char *path, PRBool *aIsSubscribed)
     nsresult rv = EnsureInner();
     NS_ENSURE_SUCCESS(rv,rv);
     return mInner->IsSubscribed(path, aIsSubscribed);
+}
+
+NS_IMETHODIMP
+nsNntpIncomingServer::IsSubscribable(const char *path, PRBool *aIsSubscribable)
+{
+    nsresult rv = EnsureInner();
+    NS_ENSURE_SUCCESS(rv,rv);
+    return mInner->IsSubscribable(path, aIsSubscribable);
 }
 
 NS_IMETHODIMP

@@ -67,14 +67,14 @@ public :
 
     // Get the list of Address Books for the currently logged in user profile
     STDMETHODIMP nsGetABList(BOOL aIsUnicode, short * aABListCount,
-                            lpnsMozABDesc * aABList, long ** aABCatIndexList, BOOL ** aFirstTimeSyncList);
+                            lpnsMozABDesc * aABList, long ** aABCatIndexList, BOOL ** aDirFlags);
 
     // Synchronize the Address Book represented by the aCategoryIndex and/or corresponding aABName in Mozilla
     STDMETHODIMP nsSynchronizeAB(BOOL aIsUnicode, long aCategoryIndex, long aCategoryId, LPTSTR aABName,
                         int aModRemoteRecCount, lpnsABCOMCardStruct aModRemoteRecList,
                         int * aModMozRecCount, lpnsABCOMCardStruct * aModMozRecList);
 
-    STDMETHODIMP nsAddAllABRecords(BOOL aIsUnicode, long aCategoryIndex, LPTSTR aABName,
+    STDMETHODIMP nsAddAllABRecords(BOOL aIsUnicode, BOOL replaceExisting, long aCategoryIndex, LPTSTR aABName,
                             int aRemoteRecCount, lpnsABCOMCardStruct aRemoteRecList);
 
 
@@ -89,7 +89,14 @@ public :
  
     STDMETHODIMP nsRenameAB(BOOL aIsUnicode, long aCategoryIndex, LPTSTR aABName, LPTSTR aABUrl);
 
+    STDMETHODIMP nsUseABHomeAddressForPalmAddress(BOOL *aUseHomeAddress);
+
+    STDMETHODIMP nsPreferABHomePhoneForPalmPhone(BOOL *aPreferHomePhone);
+
+    STDMETHODIMP nsGetABDeleted(LPTSTR aABName, BOOL *abDeleted);
+
     static PRBool GetBoolPref(const char *prefName, PRBool defaultVal);
+    static PRInt32 GetIntPref(const char *prefName, PRInt32 defaultVal);
     static PRBool nsUseABHomeAddressForPalmAddress();
     static PRBool nsPreferABHomePhoneForPalmPhone();
 private :

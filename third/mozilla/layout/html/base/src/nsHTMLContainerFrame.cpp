@@ -51,7 +51,6 @@
 #include "nsIDocument.h"
 #include "nsIURL.h"
 #include "nsPlaceholderFrame.h"
-#include "nsIHTMLContent.h"
 #include "nsHTMLParts.h"
 #include "nsIView.h"
 #include "nsIViewManager.h"
@@ -59,11 +58,11 @@
 #include "nsIDOMEvent.h"
 #include "nsIScrollableView.h"
 #include "nsWidgetsCID.h"
-#include "nsIStyleSet.h"
 #include "nsCOMPtr.h"
 #include "nsIDeviceContext.h"
 #include "nsIFontMetrics.h"
 #include "nsReflowPath.h"
+#include "nsCSSFrameConstructor.h"
 
 static NS_DEFINE_CID(kCChildCID, NS_CHILD_CID);
 
@@ -104,11 +103,9 @@ nsHTMLContainerFrame::PaintDecorationsAndChildren(
   nscolor underColor, overColor, strikeColor;
   PRUint8 decorations = NS_STYLE_TEXT_DECORATION_NONE;
   nsCOMPtr<nsIFontMetrics> fm;
-  nsCompatibility mode;
-  aPresContext->GetCompatibilityMode(&mode);
   PRBool isVisible;
 
-  if (eCompatibility_NavQuirks != mode && 
+  if (eCompatibility_NavQuirks != aPresContext->CompatibilityMode() && 
       NS_FRAME_PAINT_LAYER_FOREGROUND == aWhichLayer &&
       NS_SUCCEEDED(IsVisibleForPainting(aPresContext, aRenderingContext,
                                         PR_TRUE, &isVisible)) &&
@@ -230,9 +227,7 @@ nsHTMLContainerFrame::GetTextDecorations(nsIPresContext* aPresContext,
 static PRBool 
 HasTextFrameDescendant(nsIPresContext* aPresContext, nsIFrame* aParent)
 {
-  nsIFrame* kid = nsnull;
-    
-  for (aParent->FirstChild(aPresContext, nsnull, &kid); kid;
+  for (nsIFrame* kid = aParent->GetFirstChild(nsnull); kid;
        kid = kid->GetNextSibling())
   {
     if (kid->GetType() == nsLayoutAtoms::textFrame) {
@@ -323,13 +318,8 @@ nsHTMLContainerFrame::CreateNextInFlow(nsIPresContext* aPresContext,
     // into our lines child list.
     nsIFrame* nextFrame = aFrame->GetNextSibling();
 
-    nsIPresShell* presShell;
-    nsIStyleSet*  styleSet;
-    aPresContext->GetShell(&presShell);
-    presShell->GetStyleSet(&styleSet);
-    NS_RELEASE(presShell);
-    styleSet->CreateContinuingFrame(aPresContext, aFrame, aOuterFrame, &nextInFlow);
-    NS_RELEASE(styleSet);
+    aPresContext->PresShell()->FrameConstructor()->
+      CreateContinuingFrame(aPresContext, aFrame, aOuterFrame, &nextInFlow);
 
     if (nsnull == nextInFlow) {
       return NS_ERROR_OUT_OF_MEMORY;
@@ -371,21 +361,18 @@ ReparentFrameViewTo(nsIPresContext* aPresContext,
     aViewManager->InsertChild(aNewParentView, view, insertBefore, insertBefore != nsnull);
   } else {
     PRInt32 listIndex = 0;
-    nsCOMPtr<nsIAtom> listName;
+    nsIAtom* listName = nsnull;
     // This loop iterates through every child list name, and also
     // executes once with listName == nsnull.
     do {
-      aFrame->GetAdditionalChildListName(listIndex, getter_AddRefs(listName));
-      listIndex++;
-
       // Iterate the child frames, and check each child frame to see if it has
       // a view
-      nsIFrame* childFrame;
-      aFrame->FirstChild(aPresContext, listName, &childFrame);
+      nsIFrame* childFrame = aFrame->GetFirstChild(listName);
       for (; childFrame; childFrame = childFrame->GetNextSibling()) {
         ReparentFrameViewTo(aPresContext, childFrame, aViewManager,
                             aNewParentView, aOldParentView);
       }
+      listName = aFrame->GetAdditionalChildListName(listIndex++);
     } while (listName);
   }
 
@@ -407,9 +394,7 @@ nsHTMLContainerFrame::ReparentFrameView(nsIPresContext* aPresContext,
   // see if we can trivially detect that no work needs to be done
   if (!aChildFrame->HasView()) {
     // Child frame doesn't have a view. See if it has any child frames
-    nsIFrame* firstChild;
-    aChildFrame->FirstChild(aPresContext, nsnull, &firstChild);
-    if (!firstChild) {
+    if (!aChildFrame->GetFirstChild(nsnull)) {
       return NS_OK;
     }
   }
@@ -600,69 +585,4 @@ nsHTMLContainerFrame::CreateViewForFrame(nsIFrame* aFrame,
                ("nsHTMLContainerFrame::CreateViewForFrame: frame=%p view=%p",
                 aFrame));
   return NS_OK;
-}
-
-void
-nsHTMLContainerFrame::CheckInvalidateSizeChange(nsIPresContext* aPresContext,
-                                                nsHTMLReflowMetrics& aDesiredSize,
-                                                const nsHTMLReflowState& aReflowState)
-{
-  if (aDesiredSize.width == mRect.width
-      && aDesiredSize.height == mRect.height)
-    return;
-
-  // Below, we invalidate the old frame area (or, in the case of
-  // outline, combined area) if the outline, border or background
-  // settings indicate that something other than the difference
-  // between the old and new areas needs to be painted. We are
-  // assuming that the difference between the old and new areas will
-  // be invalidated by some other means. That also means invalidating
-  // the old frame area is the same as invalidating the new frame area
-  // (since in either case the UNION of old and new areas will be
-  // invalidated)
-
-  // Invalidate the entire old frame+outline if the frame has an outline
-
-  // This assumes 'outline' is painted outside the element, as CSS2 requires.
-  // Currently we actually paint 'outline' inside the element so this code
-  // isn't strictly necessary. But we're trying to get ready to switch to
-  // CSS2 compliance.
-  const nsStyleOutline* outline = GetStyleOutline();
-  PRUint8 outlineStyle = outline->GetOutlineStyle();
-  if (outlineStyle != NS_STYLE_BORDER_STYLE_NONE
-      && outlineStyle != NS_STYLE_BORDER_STYLE_HIDDEN) {
-    nscoord width;
-    outline->GetOutlineWidth(width);
-    if (width > 0) {
-      nsRect r(0, 0, mRect.width, mRect.height);
-      r.Inflate(width, width);
-      Invalidate(aPresContext, r);
-      return;
-    }
-  }
-
-  if (mRect.IsEmpty()) {
-    // nothing else to do here
-    return;
-  }
-  
-  // Invalidate the old frame if the frame has borders. Those borders
-  // may be moving.
-  const nsStyleBorder* border = GetStyleBorder();
-  if (border->IsBorderSideVisible(NS_SIDE_LEFT)
-      || border->IsBorderSideVisible(NS_SIDE_RIGHT)
-      || border->IsBorderSideVisible(NS_SIDE_TOP)
-      || border->IsBorderSideVisible(NS_SIDE_BOTTOM)) {
-    Invalidate(aPresContext, nsRect(0, 0, mRect.width, mRect.height));
-    return;
-  }
-
-  // Invalidate the old frame if the frame has a background
-  // whose position depends on the size of the frame
-  const nsStyleBackground* background = GetStyleBackground();
-  if (background->mBackgroundFlags &
-      (NS_STYLE_BG_X_POSITION_PERCENT | NS_STYLE_BG_Y_POSITION_PERCENT)) {
-    Invalidate(aPresContext, nsRect(0, 0, mRect.width, mRect.height));
-    return;
-  }
 }

@@ -158,8 +158,6 @@ static NS_DEFINE_CID(kMenuItemCID,         NS_MENUITEM_CID);
 
 #define SIZE_PERSISTENCE_TIMEOUT 500 // msec
 
-const char * kPrimaryContentTypeValue  = "content-primary";
-
 struct ThreadedWindowEvent {
   PLEvent           event;
   nsWebShellWindow  *window;
@@ -979,12 +977,6 @@ void nsWebShellWindow::DynamicLoadMenus(nsIDOMDocument * aDOMDoc, nsIWidget * aP
           return;
       }
 
-      nsCOMPtr<nsIPresShell> presShell;
-      if (NS_FAILED(rv = presContext->GetShell(getter_AddRefs(presShell)))) {
-          NS_ERROR("Unable to retrieve the shell from the presentation context.");
-          return;
-      }
-
       nsRect rect;
 
       if (NS_FAILED(rv = mWindow->GetClientBounds(rect))) {
@@ -1423,13 +1415,14 @@ void nsWebShellWindow::LoadContentAreas() {
     if (docViewer) {
       nsCOMPtr<nsIDocument> doc;
       docViewer->GetDocument(getter_AddRefs(doc));
-      nsIURI *mainURL = doc->GetDocumentURL();
-      if (mainURL) {
-        nsCAutoString search;
-        nsCOMPtr<nsIURL> url = do_QueryInterface(mainURL);
-        if (url)
-          url->GetQuery(search);
-        searchSpec = NS_ConvertUTF8toUCS2(search);
+      nsIURI *mainURL = doc->GetDocumentURI();
+
+      nsCAutoString search;
+      nsCOMPtr<nsIURL> url = do_QueryInterface(mainURL);
+      if (url) {
+        url->GetQuery(search);
+
+        CopyUTF8toUTF16(search, searchSpec);
       }
     }
   }
@@ -1494,28 +1487,25 @@ PRBool nsWebShellWindow::ExecuteCloseHandler()
      than it otherwise would.) */
   nsCOMPtr<nsIWebShellWindow> kungFuDeathGrip(this);
 
-  nsresult rv;
-  nsCOMPtr<nsIScriptGlobalObjectOwner> globalObjectOwner(do_QueryInterface(mWebShell));
-  nsCOMPtr<nsIScriptGlobalObject> globalObject;
+  nsCOMPtr<nsIScriptGlobalObject> globalObject(do_GetInterface(mWebShell));
 
-  if (globalObjectOwner) {
-    if (NS_SUCCEEDED(globalObjectOwner->GetScriptGlobalObject(getter_AddRefs(globalObject))) && globalObject) {
-      nsCOMPtr<nsIContentViewer> contentViewer;
-      if (NS_SUCCEEDED(mDocShell->GetContentViewer(getter_AddRefs(contentViewer)))) {
-        nsCOMPtr<nsIDocumentViewer> docViewer;
-        nsCOMPtr<nsIPresContext> presContext;
-        docViewer = do_QueryInterface(contentViewer);
-        if (docViewer && NS_SUCCEEDED(docViewer->GetPresContext(getter_AddRefs(presContext)))) {
-          nsEventStatus status = nsEventStatus_eIgnore;
-          nsMouseEvent event;
-          event.eventStructType = NS_EVENT;
-          event.message = NS_XUL_CLOSE;
-          rv = globalObject->HandleDOMEvent(presContext, &event, nsnull, NS_EVENT_FLAG_INIT, &status);
-          if (NS_FAILED(rv) || status == nsEventStatus_eConsumeNoDefault)
-            return PR_TRUE;
-          // else fall through and return PR_FALSE
-        }
-      }
+  if (globalObject) {
+    nsCOMPtr<nsIContentViewer> contentViewer;
+    mDocShell->GetContentViewer(getter_AddRefs(contentViewer));
+    nsCOMPtr<nsIDocumentViewer> docViewer(do_QueryInterface(contentViewer));
+
+    if (docViewer) {
+      nsCOMPtr<nsIPresContext> presContext;
+      docViewer->GetPresContext(getter_AddRefs(presContext));
+
+      nsEventStatus status = nsEventStatus_eIgnore;
+      nsMouseEvent event(NS_XUL_CLOSE);
+
+      nsresult rv = globalObject->HandleDOMEvent(presContext, &event, nsnull,
+                                                 NS_EVENT_FLAG_INIT, &status);
+      if (NS_SUCCEEDED(rv) && status == nsEventStatus_eConsumeNoDefault)
+        return PR_TRUE;
+      // else fall through and return PR_FALSE
     }
   }
 
@@ -1535,21 +1525,22 @@ NS_IMPL_NSIDOCUMENTOBSERVER_STYLE_STUB(nsWebShellWindow)
 // nsIDocumentObserver
 // this is needed for menu changes
 ///////////////////////////////////////////////////////////////
-NS_IMETHODIMP
-nsWebShellWindow::ContentChanged(nsIDocument *aDocument,
-                                 nsIContent* aContent,
-                                 nsISupports* aSubContent)
+void
+nsWebShellWindow::CharacterDataChanged(nsIDocument *aDocument,
+                                       nsIContent* aContent,
+                                       PRBool aAppend)
 {
-  return NS_OK;
 }
 
-NS_IMETHODIMP
+void
 nsWebShellWindow::AttributeChanged(nsIDocument *aDocument,
                                    nsIContent*  aContent,
                                    PRInt32      aNameSpaceID,
                                    nsIAtom*     aAttribute,
                                    PRInt32      aModType)
 {
+  // XXX: Uh, none of this nsIDocumentObserver stuff is needed if the
+  // blow code isn't needed.
 #if 0
   //printf("AttributeChanged\n");
   PRInt32 i;
@@ -1570,43 +1561,38 @@ nsWebShellWindow::AttributeChanged(nsIDocument *aDocument,
     }
   }
 #endif  
-  return NS_OK;
 }
 
-NS_IMETHODIMP
+void
 nsWebShellWindow::ContentAppended(nsIDocument *aDocument,
                             nsIContent* aContainer,
                             PRInt32     aNewIndexInContainer)
 {
-  return NS_OK;
 }
 
-NS_IMETHODIMP
+void
 nsWebShellWindow::ContentInserted(nsIDocument *aDocument,
                             nsIContent* aContainer,
                             nsIContent* aChild,
                             PRInt32 aIndexInContainer)
 {
-  return NS_OK;
 }
 
-NS_IMETHODIMP
+void
 nsWebShellWindow::ContentReplaced(nsIDocument *aDocument,
                             nsIContent* aContainer,
                             nsIContent* aOldChild,
                             nsIContent* aNewChild,
                             PRInt32 aIndexInContainer)
 {
-  return NS_OK;
 }
 
-NS_IMETHODIMP
+void
 nsWebShellWindow::ContentRemoved(nsIDocument *aDocument,
                            nsIContent* aContainer,
                            nsIContent* aChild,
                            PRInt32 aIndexInContainer)
 {
-  return NS_OK;
 }
 
 // This should rightfully be somebody's CONTRACTID?

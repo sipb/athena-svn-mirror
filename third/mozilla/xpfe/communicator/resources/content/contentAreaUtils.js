@@ -78,9 +78,7 @@ function getReferrer(doc)
   var sourceURL = getContentFrameURI(focusedWindow);
 
   try {
-    var uri = Components.classes["@mozilla.org/network/standard-url;1"].createInstance(Components.interfaces.nsIURI);
-    uri.spec = sourceURL;
-    return uri;
+    return makeURL(sourceURL);
   } catch (e) {
     return null;
   }
@@ -353,7 +351,7 @@ function foundHeaderInfo(aSniffer, aData)
   var persistArgs = {
     source      : source,
     contentType : (useSaveDocument && fp.filterIndex == 2) ? "text/plain" : contentType,
-    target      : fp.file,
+    target      : makeFileURL(fp.file),
     postData    : isDocument ? getPostData() : null,
     bypassCache : aData.bypassCache
   };
@@ -379,10 +377,7 @@ function foundHeaderInfo(aSniffer, aData)
     var filesFolder = null;
     if (persistArgs.contentType != "text/plain") {
       // Create the local directory into which to save associated files. 
-      const lfContractID = "@mozilla.org/file/local;1";
-      const lfIID = Components.interfaces.nsILocalFile;
-      filesFolder = Components .classes[lfContractID].createInstance(lfIID);
-      filesFolder.initWithPath(persistArgs.target.path);
+      filesFolder = fp.file.clone();
       
       var nameWithoutExtension = filesFolder.leafName.replace(/\.[^.]*$/, "");
       var filesFolderLeafName = getStringBundle().formatStringFromName("filesFolder",
@@ -408,7 +403,8 @@ function foundHeaderInfo(aSniffer, aData)
                          persistArgs.contentType, encodingFlags, kWrapColumn);
   } else {
     dl.init(source, persistArgs.target, null, null, null, persist);
-    persist.saveURI(source, null, null, persistArgs.postData, null, persistArgs.target);
+    var referer = getReferrer(document);
+    persist.saveURI(source, null, referer, persistArgs.postData, null, persistArgs.target);
   }
 }
 
@@ -431,6 +427,13 @@ function nsHeaderSniffer(aURL, aCallback, aData)
   }
   this.linkChecker.loadFlags = flags;
 
+  // Set referrer, ignore errors
+  try {
+    var referrer = getReferrer(document);
+    this.linkChecker.baseChannel.QueryInterface(Components.interfaces.nsIHttpChannel).referrer = referrer;
+  }
+  catch (ex) { }
+
   this.linkChecker.asyncCheck(this, null);
 }
 
@@ -440,8 +443,7 @@ nsHeaderSniffer.prototype = {
   QueryInterface: function (iid) {
     if (!iid.equals(Components.interfaces.nsIRequestObserver) &&
         !iid.equals(Components.interfaces.nsISupports) &&
-        !iid.equals(Components.interfaces.nsIInterfaceRequestor) &&
-        !iid.equals(Components.interfaces.nsIAuthPrompt)) {
+        !iid.equals(Components.interfaces.nsIInterfaceRequestor)) {
       throw Components.results.NS_ERROR_NO_INTERFACE;
     }
     return this;
@@ -449,37 +451,14 @@ nsHeaderSniffer.prototype = {
 
   // ---------- nsIInterfaceRequestor methods ----------
   getInterface : function(iid) {
-    return this.QueryInterface(iid);
-  },
-
-  // ---------- nsIAuthPrompt methods ----------
-  prompt : function(dlgTitle, text, pwrealm, savePW, defaultText, result)
-  {
-    dump("authprompt prompt! pwrealm="+pwrealm+"\n");
-    var promptServ = this.promptService;
-    if (!promptServ)
-      return false;
-    var saveCheck = {value:savePW};
-    return promptServ.prompt(window, dlgTitle, text, defaultText, pwrealm, saveCheck);
-  },
-  promptUsernameAndPassword : function(dlgTitle, text, pwrealm, savePW, user, pw)
-  {
-    dump("authprompt promptUsernameAndPassword!  "+dlgTitle+" "+text+", pwrealm="+pwrealm+"\n");
-    var promptServ = this.promptService;
-    if (!promptServ)
-      return false;
-    var saveCheck = {value:savePW};
-    return promptServ.promptUsernameAndPassword(window, dlgTitle, text, user, pw, pwrealm, saveCheck);
-  },
-  promptPassword : function(dlgTitle, text, pwrealm, savePW, pw)
-  {
-    dump("auth promptPassword!  "+dlgTitle+" "+text+", pwrealm="+pwrealm+"\n");
-    var promptServ = this.promptService;
-    if (!promptServ)
-      return false;
-
-    var saveCheck = {value:savePW};
-    return promptServ.promptPassword(window, dlgTitle, text, pw, pwrealm, saveCheck);
+    if (iid.equals(Components.interfaces.nsIAuthPrompt)) {
+      // use the window watcher service to get a nsIAuthPrompt impl
+      var ww = Components.classes["@mozilla.org/embedcomp/window-watcher;1"]
+                         .getService(Components.interfaces.nsIWindowWatcher);
+      return ww.getNewAuthPrompter(window);
+    }
+    Components.returnCode = Components.results.NS_ERROR_NO_INTERFACE;
+    return null;
   },
 
   // ---------- nsIRequestObserver methods ----------
@@ -556,7 +535,7 @@ nsHeaderSniffer.prototype = {
   {
     var fileName = "";
 
-    if (this.mContentDisposition) {
+    if ("mContentDisposition" in this) {
       const mhpContractID = "@mozilla.org/network/mime-hdrparam;1"
       const mhpIID = Components.interfaces.nsIMIMEHeaderParam;
       const mhp = Components.classes[mhpContractID].getService(mhpIID);
@@ -664,9 +643,9 @@ function getPostData()
 {
   try {
     var sessionHistory = getWebNavigation().sessionHistory;
-    entry = sessionHistory.getEntryAtIndex(sessionHistory.index, false);
-    entry = entry.QueryInterface(Components.interfaces.nsISHEntry);
-    return entry.postData;
+    return sessionHistory.getEntryAtIndex(sessionHistory.index, false)
+                         .QueryInterface(Components.interfaces.nsISHEntry)
+                         .postData;
   }
   catch (e) {
   }
@@ -695,19 +674,18 @@ function makeWebBrowserPersist()
   return Components.classes[persistContractID].createInstance(persistIID);
 }
 
-function makeProgressDialog()
-{
-  const progressDialogContractID = "@mozilla.org/progressdialog;1";
-  const progressDialogIID = Components.interfaces.nsIProgressDialog;
-  return Components.classes[progressDialogContractID].createInstance(progressDialogIID);
-}
-
 function makeURL(aURL)
 {
   var ioService = Components.classes["@mozilla.org/network/io-service;1"]
                 .getService(Components.interfaces.nsIIOService);
   return ioService.newURI(aURL, null, null);
-  
+}
+
+function makeFileURL(aFile)
+{
+  var ioService = Components.classes["@mozilla.org/network/io-service;1"]
+                .getService(Components.interfaces.nsIIOService);
+  return ioService.newFileURI(aFile);
 }
 
 function makeFilePicker()
@@ -715,17 +693,6 @@ function makeFilePicker()
   const fpContractID = "@mozilla.org/filepicker;1";
   const fpIID = Components.interfaces.nsIFilePicker;
   return Components.classes[fpContractID].createInstance(fpIID);
-}
-
-function makeTempFile()
-{
-  const mimeTypes = "TmpD";
-  const flContractID = "@mozilla.org/file/directory_service;1";
-  const flIID = Components.interfaces.nsIProperties;
-  var fileLocator = Components.classes[flContractID].getService(flIID);
-  var tempFile = fileLocator.get(mimeTypes, Components.interfaces.nsIFile);
-  tempFile.append("~sav" + Math.floor(Math.random() * 1000) + ".tmp");
-  return tempFile;
 }
 
 function getMIMEService()

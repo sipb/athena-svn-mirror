@@ -123,13 +123,12 @@ struct NS_GFX nsRect {
   PRBool  operator!=(const nsRect& aRect) const {
     return (PRBool) !operator==(aRect);
   }
-  nsRect  operator+(const nsRect& aRect) const {
-    return nsRect(x + aRect.x, y + aRect.y,
-                  width + aRect.width, height + aRect.height);
+
+  nsRect  operator+(const nsPoint& aPoint) const {
+    return nsRect(x + aPoint.x, y + aPoint.y, width, height);
   }
-  nsRect  operator-(const nsRect& aRect) const {
-    return nsRect(x - aRect.x, y - aRect.y,
-                  width - aRect.width, height - aRect.height);
+  nsRect  operator-(const nsPoint& aPoint) const {
+    return nsRect(x - aPoint.x, y - aPoint.y, width, height);
   }
   nsRect& operator+=(const nsPoint& aPoint) {x += aPoint.x; y += aPoint.y; return *this;}
   nsRect& operator-=(const nsPoint& aPoint) {x -= aPoint.x; y -= aPoint.y; return *this;}
@@ -142,6 +141,12 @@ struct NS_GFX nsRect {
 
   nsRect& ScaleRoundOut(const float aScale);
   nsRect& ScaleRoundIn(const float aScale);
+
+  // Helpers for accessing the vertices
+  nsPoint TopLeft() const { return nsPoint(x, y); }
+  nsPoint TopRight() const { return nsPoint(XMost(), y); }
+  nsPoint BottomLeft() const { return nsPoint(x, YMost()); }
+  nsPoint BottomRight() const { return nsPoint(XMost(), YMost()); }
 
   // Helper methods for computing the extents
   nscoord XMost() const {return x + width;}

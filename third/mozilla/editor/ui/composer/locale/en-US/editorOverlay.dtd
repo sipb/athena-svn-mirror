@@ -50,17 +50,17 @@
 <!ENTITY filesaveas.accesskey "A">
 
 <!ENTITY publishCmd.label "Publish">
-<!ENTITY publishcmd.accesskey "u">
+<!ENTITY publishcmd.accesskey "b">
 <!ENTITY publishAsCmd.label "Publish As...">
-<!ENTITY publishas.accesskey "b">
+<!ENTITY publishas.accesskey "h">
 <!ENTITY exportToTextCmd.label "Export to Text...">
 <!ENTITY fileexporttotext.accesskey "T">
-<!ENTITY saveAsCharsetCmd.label "Save As Charset...">
-<!ENTITY filesaveascharset.accesskey "h">
+<!ENTITY saveAsChangeEncodingCmd.label "Save And Change Character Encoding">
+<!ENTITY filesaveandchangeencoding.accesskey "E">
 <!ENTITY previewCmd.label "Browse Page">
 <!ENTITY filepreview.accesskey "w">
 <!ENTITY sendPageCmd.label "Send Page...">
-<!ENTITY sendPage.accesskey "g">
+<!ENTITY sendPage.accesskey "d">
 <!ENTITY printSetupCmd.label "Page Setup...">
 <!ENTITY fileprintsetup.accesskey "u">
 <!ENTITY printPreviewCmd.label "Print Preview">
@@ -112,6 +112,7 @@
 <!ENTITY findCmd.label "Find and Replace...">
 <!ENTITY editfind.accesskey "f">
 <!ENTITY editfind.keybinding "f">
+<!ENTITY editfind.keybinding2 "VK_F19">
 <!ENTITY findAgainCmd.label "Find Again">
 <!ENTITY editfindnext.accesskey "g">
 <!ENTITY editfindnext.keybinding "g">

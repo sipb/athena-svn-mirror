@@ -63,7 +63,6 @@
 class nsPref : public nsIPref,
                public nsIPrefService,
                public nsIObserver,
-               public nsIPrefBranch,
                public nsIPrefBranchInternal,
                public nsISecurityPref,
                public nsSupportsWeakReference
@@ -506,6 +505,7 @@ NS_IMETHODIMP nsPref::SetFileXPref(const char *pref, nsILocalFile *value)
 {
   nsresult rv;
 
+  NS_ENSURE_ARG_POINTER(value);
   nsCOMPtr<nsIPrefBranch> prefBranch = do_QueryInterface(mPrefService, &rv);
   if (NS_SUCCEEDED(rv))
     rv = prefBranch->SetComplexValue(pref, NS_GET_IID(nsILocalFile), value);

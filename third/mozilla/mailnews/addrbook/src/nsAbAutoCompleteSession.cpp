@@ -477,6 +477,14 @@ nsresult nsAbAutoCompleteSession::SearchCards(nsIAbDirectory* directory, nsAbAut
           rv = card->GetNickName(getter_Copies(pNickNameStr));
           if (NS_FAILED(rv))
               continue;
+
+          // in the address book a mailing list does not have an email address field. However,
+          // we do "fix up" mailing lists in the UI sometimes to look like "My List <My List>"
+          // if we are looking up an address and we are comparing it to a mailing list to see if it is a match
+          // instead of just looking for an exact match on "My List", hijack the unused email address field 
+          // and use that to test against "My List <My List>"
+          if (bIsMailList)
+            mParser->MakeFullAddressWString (pDisplayNameStr, pDisplayNameStr, getter_Copies(pEmailStr[0]));  
             
           for (i = 0 ; i < MAX_NUMBER_OF_EMAIL_ADDRESSES; i ++)
           {
@@ -610,29 +618,27 @@ nsresult nsAbAutoCompleteSession::SearchDirectory(const nsACString& aURI, nsAbAu
     if (!searchSubDirectory)
         return rv;
   
-    nsCOMPtr<nsIEnumerator> subDirectories;
+    nsCOMPtr<nsISimpleEnumerator> subDirectories;
     if (NS_SUCCEEDED(directory->GetChildNodes(getter_AddRefs(subDirectories))) && subDirectories)
     {
         nsCOMPtr<nsISupports> item;
-        if (NS_SUCCEEDED(subDirectories->First()))
+        PRBool hasMore;
+        while (NS_SUCCEEDED(rv = subDirectories->HasMoreElements(&hasMore)) && hasMore)
         {
-            do
+            if (NS_SUCCEEDED(subDirectories->GetNext(getter_AddRefs(item))))
             {
-                if (NS_SUCCEEDED(subDirectories->CurrentItem(getter_AddRefs(item))))
+              directory = do_QueryInterface(item, &rv);
+              if (NS_SUCCEEDED(rv))
+              {
+                nsCOMPtr<nsIRDFResource> subResource(do_QueryInterface(item, &rv));
+                if (NS_SUCCEEDED(rv))
                 {
-                    directory = do_QueryInterface(item, &rv);
-                    if (NS_SUCCEEDED(rv))
-                    {
-                        nsCOMPtr<nsIRDFResource> subResource(do_QueryInterface(item, &rv));
-                        if (NS_SUCCEEDED(rv))
-                        {
-                            nsXPIDLCString URI;
-                            subResource->GetValue(getter_Copies(URI));
-                            rv = SearchDirectory(URI, searchStr, PR_TRUE, results);
-                        }
-                    }
+                    nsXPIDLCString URI;
+                    subResource->GetValue(getter_Copies(URI));
+                    rv = SearchDirectory(URI, searchStr, PR_TRUE, results);
                 }
-            } while (NS_SUCCEEDED(subDirectories->Next()));
+              }
+            }
         }
     }
     return rv;
@@ -734,9 +740,12 @@ NS_IMETHODIMP nsAbAutoCompleteSession::OnStartLookup(const PRUnichar *uSearchStr
       mAutoCompleteCommentColumn = 0;
     }
 
+
+    // strings with @ signs or commas (commas denote multiple names) should be ignored for 
+    // autocomplete purposes
     PRInt32 i;
     for (i = nsCRT::strlen(uSearchString) - 1; i >= 0; i --)
-        if (uSearchString[i] == '@')
+        if (uSearchString[i] == '@' || uSearchString[i] == ',')
         {
             listener->OnAutoComplete(nsnull, nsIAutoCompleteStatus::ignored);
             return NS_OK;

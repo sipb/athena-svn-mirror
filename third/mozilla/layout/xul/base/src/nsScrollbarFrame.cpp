@@ -100,14 +100,34 @@ nsScrollbarFrame::Init(nsIPresContext*  aPresContext,
   return rv;
 }
 
-NS_IMETHODIMP nsScrollbarFrame::IsPercentageBase(PRBool& aBase) const
+NS_IMETHODIMP
+nsScrollbarFrame::Reflow(nsIPresContext*          aPresContext,
+                         nsHTMLReflowMetrics&     aDesiredSize,
+                         const nsHTMLReflowState& aReflowState,
+                         nsReflowStatus&          aStatus)
 {
-  // Return true so that the nsHTMLReflowState code is happy with us
-  // being a reflow root.
-  aBase = PR_TRUE;
+  nsresult rv = nsBoxFrame::Reflow(aPresContext, aDesiredSize, aReflowState, aStatus);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  // nsGfxScrollFrame may have told us to shrink to nothing. If so, make sure our
+  // desired size agrees.
+  if (aReflowState.availableWidth == 0) {
+    aDesiredSize.width = 0;
+  }
+  if (aReflowState.availableHeight == 0) {
+    aDesiredSize.height = 0;
+  }
+
   return NS_OK;
 }
 
+/* virtual */ PRBool
+nsScrollbarFrame::IsContainingBlock() const
+{
+  // Return true so that the nsHTMLReflowState code is happy with us
+  // being a reflow root.
+  return PR_TRUE;
+}
 
 NS_IMETHODIMP
 nsScrollbarFrame::AttributeChanged(nsIPresContext* aPresContext,

@@ -45,6 +45,7 @@
 #include "nsCSSProps.h"
 #include "nsCOMPtr.h"
 #include "nsIURL.h"
+#include "nsReadableUtils.h"
 
 #include "nsContentUtils.h"
 
@@ -74,7 +75,6 @@ nsDOMCSSDeclaration::GetCssText(nsAString& aCssText)
   nsCSSDeclaration* decl;
   aCssText.Truncate();
   GetCSSDeclaration(&decl, PR_FALSE);
-  NS_ASSERTION(decl, "null CSSDeclaration");
 
   if (decl) {
     decl->ToString(aCssText);
@@ -199,6 +199,9 @@ nsDOMCSSDeclaration::RemoveProperty(const nsAString& aPropertyName,
   }
 
   nsCSSProperty prop = nsCSSProps::LookupProperty(aPropertyName);
+  if (prop == eCSSProperty_UNKNOWN) {
+    return NS_OK;
+  }
 
   decl->GetValue(prop, aReturn);
 
@@ -325,26 +328,30 @@ CSS2PropertiesTearoff::QueryInterface(REFNSIID aIID, void** aInstancePtr)
 // nsIDOMCSS2Properties
 // nsIDOMNSCSS2Properties
 
-#define CSS_PROP(name_, id_, method_, datastruct_, member_, type_, iscoord_) \
-  NS_IMETHODIMP                                                         \
-  CSS2PropertiesTearoff::Get##method_(nsAString& aValue)                \
-  {                                                                     \
-    return mOuter->GetPropertyValue(NS_LITERAL_STRING(#name_), aValue); \
-  }                                                                     \
-                                                                        \
-  NS_IMETHODIMP                                                         \
-  CSS2PropertiesTearoff::Set##method_(const nsAString& aValue)          \
-  {                                                                     \
-    return mOuter->SetProperty(NS_LITERAL_STRING(#name_), aValue,       \
-                               NS_LITERAL_STRING(""));                  \
+#define CSS_PROP(name_, id_, method_, datastruct_, member_, type_, iscoord_, kwtable_) \
+  NS_IMETHODIMP                                                              \
+  CSS2PropertiesTearoff::Get##method_(nsAString& aValue)                     \
+  {                                                                          \
+    return mOuter->GetPropertyValue(NS_LITERAL_STRING(#name_), aValue);      \
+  }                                                                          \
+                                                                             \
+  NS_IMETHODIMP                                                              \
+  CSS2PropertiesTearoff::Set##method_(const nsAString& aValue)               \
+  {                                                                          \
+    return mOuter->SetProperty(NS_LITERAL_STRING(#name_), aValue,            \
+                               EmptyString());                               \
   }
 
 #define CSS_PROP_LIST_EXCLUDE_INTERNAL
 #define CSS_PROP_NOTIMPLEMENTED(name_, id_, method_) \
-  CSS_PROP(name_, id_, method_, , , ,)
+  CSS_PROP(name_, id_, method_, , , , ,)
 #define CSS_PROP_SHORTHAND(name_, id_, method_) \
-  CSS_PROP(name_, id_, method_, , , ,)
+  CSS_PROP(name_, id_, method_, , , , ,)
 #include "nsCSSPropList.h"
+
+// Aliases
+CSS_PROP(opacity, X, MozOpacity, X, X, X, X, X)
+
 #undef CSS_PROP_SHORTHAND
 #undef CSS_PROP_NOTIMPLEMENTED
 #undef CSS_PROP_LIST_EXCLUDE_INTERNAL

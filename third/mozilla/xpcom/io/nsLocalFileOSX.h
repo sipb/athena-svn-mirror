@@ -49,9 +49,10 @@ class nsDirEnumerator;
 //
 // The native charset of this implementation is UTF-8. The Unicode used by the
 // Mac OS file system is decomposed, so "Native" versions of these routines will
-// always use decomposed Unicode. Their "non-Native" counterparts are intended
-// to be simple wrappers which call the "Native" version and convert between
-// UTF-8 and UCS-2. All the work is done on the "Native" side.
+// always use decomposed Unicode (NFD). Their "non-Native" counterparts are 
+// intended to be simple wrappers which call the "Native" version and convert 
+// between UTF-8 and UTF-16. All the work is done on the "Native" side except
+// for the conversion to NFC (composed Unicode) done in "non-Native" getters.
 //*****************************************************************************
 
 class NS_COM nsLocalFile : public nsILocalFileMac
@@ -62,7 +63,6 @@ public:
     NS_DEFINE_STATIC_CID_ACCESSOR(NS_LOCAL_FILE_CID)
     
                         nsLocalFile();
-    virtual             ~nsLocalFile();
 
     static NS_METHOD    nsLocalFileConstructor(nsISupports* outer, const nsIID& aIID, void* *aInstancePtr);
 
@@ -76,6 +76,9 @@ public:
     static void         GlobalInit();
     static void         GlobalShutdown();
     
+private:
+                        ~nsLocalFile();
+
 protected:
                         nsLocalFile(const nsLocalFile& src);
     

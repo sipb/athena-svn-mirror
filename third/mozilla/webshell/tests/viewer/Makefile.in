@@ -218,7 +218,7 @@ endif # BUILD_STATIC_LIBS
 ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
 LOCAL_INCLUDES		+= -I$(topsrcdir)/widget/src/mac
 ifdef BUILD_STATIC_LIBS
-EXTRA_LIBS		+= -framework QuickTime
+EXTRA_LIBS		+= -framework QuickTime -framework IOKit
 endif
 endif
 
@@ -247,7 +247,7 @@ endif
 endif
 
 libs:: $(PROGRAM) $(srcdir)/mozilla-viewer.sh
-ifneq ($(MOZ_WIDGET_TOOLKIT),os2)
+ifeq (,$(filter WINNT OS2,$(OS_ARCH)))
 	$(INSTALL) $(srcdir)/mozilla-viewer.sh $(DIST)/bin
 endif
 

@@ -91,6 +91,12 @@
 #include "nsIContentSink.h"
 #include "mozISanitizingSerializer.h"
 
+#ifdef XP_WIN32
+#include <windows.h>
+#include <shellapi.h>
+#include "nsIWidget.h"
+#endif
+
 static NS_DEFINE_CID(kParserCID, NS_PARSER_CID);
 static NS_DEFINE_CID(kNavDTDCID, NS_CNAVDTD_CID);
 // </for>
@@ -165,10 +171,6 @@ nsMsgComposeService::~nsMsgComposeService()
 nsresult nsMsgComposeService::Init()
 {
   nsresult rv = NS_OK;
-  nsCOMPtr<nsIPrefService> prefService = do_GetService(NS_PREF_CONTRACTID);
-  if (!prefService)
-    return NS_ERROR_FAILURE;
-
   // Register observers
 
   // Register for quit application and profile change, we will need to clear the cache.
@@ -180,16 +182,11 @@ nsresult nsMsgComposeService::Init()
   }
 
   // Register some pref observer
-  nsCOMPtr<nsIPrefBranch> prefs;
-  rv = prefService->GetBranch(nsnull, getter_AddRefs(prefs));
-  if (NS_SUCCEEDED(rv))
-  {
-    nsCOMPtr<nsIPrefBranchInternal> pbi = do_QueryInterface(prefs, &rv);
-    if (NS_SUCCEEDED(rv))
-      rv = pbi->AddObserver(PREF_MAIL_COMPOSE_MAXRECYCLEDWINDOWS, this, PR_TRUE);
-  }
+  nsCOMPtr<nsIPrefBranchInternal> pbi = do_GetService(NS_PREFSERVICE_CONTRACTID);
+  if (pbi)
+    rv = pbi->AddObserver(PREF_MAIL_COMPOSE_MAXRECYCLEDWINDOWS, this, PR_TRUE);
 
-	Reset();
+  Reset();
 
   AddGlobalHtmlDomains();
 	
@@ -208,15 +205,9 @@ void nsMsgComposeService::Reset()
     mMaxRecycledWindows = 0;
   }
 
-  nsCOMPtr<nsIPrefService> prefService = do_GetService(NS_PREF_CONTRACTID);
-  if (!prefService)
-    return;
-  nsCOMPtr<nsIPrefBranch> prefs;
-  rv = prefService->GetBranch(nsnull, getter_AddRefs(prefs));
-  if (NS_FAILED(rv))
-    return;
-
-  rv = prefs->GetIntPref(PREF_MAIL_COMPOSE_MAXRECYCLEDWINDOWS, &mMaxRecycledWindows);
+  nsCOMPtr<nsIPrefBranch> prefs(do_GetService(NS_PREFSERVICE_CONTRACTID));
+  if(prefs)
+    rv = prefs->GetIntPref(PREF_MAIL_COMPOSE_MAXRECYCLEDWINDOWS, &mMaxRecycledWindows);
   if (NS_SUCCEEDED(rv) && mMaxRecycledWindows > 0)
   {
     mCachedWindows = new nsMsgCachedWindowInfo[mMaxRecycledWindows];
@@ -313,21 +304,19 @@ void nsMsgComposeService::CloseWindow(nsIDOMWindowInternal *domWindow)
     nsCOMPtr<nsIScriptGlobalObject> globalObj(do_QueryInterface(domWindow));
     if (globalObj)
     {
-      globalObj->GetDocShell(getter_AddRefs(docshell));
-      if (docshell)
+      nsCOMPtr<nsIDocShellTreeItem> treeItem =
+        do_QueryInterface(globalObj->GetDocShell());
+
+      if (treeItem)
       {
-        nsCOMPtr<nsIDocShellTreeItem>  treeItem(do_QueryInterface(docshell));
-        if (treeItem)
+        nsCOMPtr<nsIDocShellTreeOwner> treeOwner;
+        treeItem->GetTreeOwner(getter_AddRefs(treeOwner));
+        if (treeOwner)
         {
-          nsCOMPtr<nsIDocShellTreeOwner> treeOwner;
-          treeItem->GetTreeOwner(getter_AddRefs(treeOwner));
-          if (treeOwner)
-          {
-            nsCOMPtr<nsIBaseWindow> baseWindow;
-            baseWindow = do_QueryInterface(treeOwner);
-            if (baseWindow)
-              baseWindow->Destroy();
-          }
+          nsCOMPtr<nsIBaseWindow> baseWindow;
+          baseWindow = do_QueryInterface(treeOwner);
+          if (baseWindow)
+            baseWindow->Destroy();
         }
       }
     }
@@ -382,22 +371,16 @@ nsMsgComposeService::DetermineComposeHTML(nsIMsgIdentity *aIdentity, MSG_Compose
       }
       else
       {
-        nsresult rv;
-
         // default identity not found.  Use the mail.html_compose pref to determine
         // message compose type (HTML or PlainText).
-        nsCOMPtr<nsIPrefService> prefService = do_GetService(NS_PREF_CONTRACTID, &rv);
-        if (NS_SUCCEEDED(rv))
+        nsCOMPtr<nsIPrefBranch> prefs(do_GetService(NS_PREFSERVICE_CONTRACTID));
+        if (prefs)
         {
-          nsCOMPtr<nsIPrefBranch> prefs;
-          rv = prefService->GetBranch(MAIL_ROOT_PREF, getter_AddRefs(prefs));
+          nsresult rv;
+          PRBool useHTMLCompose;
+          rv = prefs->GetBoolPref(MAIL_ROOT_PREF "html_compose", &useHTMLCompose);
           if (NS_SUCCEEDED(rv))        
-          {
-            PRBool useHTMLCompose;
-            rv = prefs->GetBoolPref("html_compose", &useHTMLCompose);
-            if (NS_SUCCEEDED(rv))        
-              *aComposeHTML = useHTMLCompose;
-          }
+            *aComposeHTML = useHTMLCompose;
         }
       }
       break;
@@ -550,14 +533,9 @@ NS_IMETHODIMP nsMsgComposeService::GetParamsForMailto(nsIURI * aURI, nsIMsgCompo
         nsCOMPtr<nsIContentSink> sink = do_CreateInstance(MOZ_SANITIZINGHTMLSERIALIZER_CONTRACTID);
         
         nsXPIDLCString allowedTags;
-        nsCOMPtr<nsIPrefService> prefService = do_GetService(NS_PREF_CONTRACTID);
-        if (prefService)
-        {
-          nsCOMPtr<nsIPrefBranch> prefs;
-          rv = prefService->GetBranch(MAILNEWS_ROOT_PREF, getter_AddRefs(prefs));
-          if (NS_SUCCEEDED(rv))        
-            prefs->GetCharPref("display.html_sanitizer.allowed_tags", getter_Copies(allowedTags));
-        }
+        nsCOMPtr<nsIPrefBranch> prefs(do_GetService(NS_PREFSERVICE_CONTRACTID));
+        if (prefs)
+          prefs->GetCharPref(MAILNEWS_ROOT_PREF "display.html_sanitizer.allowed_tags", getter_Copies(allowedTags));
 
         if (parser && sink)
         {
@@ -699,6 +677,45 @@ nsresult nsMsgComposeService::OpenComposeWindowWithParams(const char *msgCompose
   return OpenWindow(msgComposeWindowURL, params);
 }
 
+// the following two Windows routines are used to ensure new compose windows
+// come to the very front of the desktop, even if the mozilla app is not the application
+// with focus. This situation happens when Simple MAPI is used to invoke the compose window.
+
+#ifdef XP_WIN32 
+// begin shameless copying from nsNativeAppSupportWin
+HWND hwndForComposeDOMWindow( nsISupports *window ) 
+{
+  nsCOMPtr<nsIScriptGlobalObject> ppScriptGlobalObj( do_QueryInterface(window) );
+  if ( !ppScriptGlobalObj )
+      return 0;
+
+  nsCOMPtr<nsIBaseWindow> ppBaseWindow =
+    do_QueryInterface( ppScriptGlobalObj->GetDocShell() );
+  if (!ppBaseWindow) return 0;
+
+  nsCOMPtr<nsIWidget> ppWidget;
+  ppBaseWindow->GetMainWidget( getter_AddRefs( ppWidget ) );
+
+  return (HWND)( ppWidget->GetNativeData( NS_NATIVE_WIDGET ) );
+}
+
+static void activateComposeWindow( nsIDOMWindowInternal *win ) 
+{
+  // Try to get native window handle.
+  HWND hwnd = hwndForComposeDOMWindow( win );
+  if ( hwnd ) 
+  {
+    // Restore the window if it is minimized.
+    if ( ::IsIconic( hwnd ) ) 
+      ::ShowWindow( hwnd, SW_RESTORE );
+    // Use the OS call, if possible.
+    ::SetForegroundWindow( hwnd );
+  } else // Use internal method.  
+    win->Focus();
+}
+// end shameless copying from nsNativeAppWinSupport.cpp
+#endif
+
 NS_IMETHODIMP nsMsgComposeService::InitCompose(nsIDOMWindowInternal *aWindow,
                                           nsIMsgComposeParams *params,
                                           nsIMsgCompose **_retval)
@@ -720,6 +737,11 @@ NS_IMETHODIMP nsMsgComposeService::InitCompose(nsIDOMWindowInternal *aWindow,
 	
   rv = msgCompose->Initialize(aWindow, params);
   NS_ENSURE_SUCCESS(rv,rv);
+
+#ifdef XP_WIN32
+  // on windows, ensure the compose window comes up to the front
+  activateComposeWindow(aWindow);
+#endif
 
   NS_IF_ADDREF(*_retval = msgCompose);
  	return rv;
@@ -863,10 +885,8 @@ nsresult nsMsgComposeService::ShowCachedComposeWindow(nsIDOMWindowInternal *aCom
   nsCOMPtr <nsIScriptGlobalObject> globalScript = do_QueryInterface(aComposeWindow, &rv);
 
   NS_ENSURE_SUCCESS(rv,rv);
-  nsCOMPtr <nsIDocShell> docShell;
 
-  rv = globalScript->GetDocShell(getter_AddRefs(docShell));
-  NS_ENSURE_SUCCESS(rv,rv);
+  nsIDocShell *docShell = globalScript->GetDocShell();
 
   nsCOMPtr <nsIWebShell> webShell = do_QueryInterface(docShell, &rv);
   NS_ENSURE_SUCCESS(rv,rv);
@@ -937,7 +957,7 @@ nsresult nsMsgComposeService::AddGlobalHtmlDomains()
 {
 
   nsresult rv;
-  nsCOMPtr<nsIPref> prefs = do_GetService(NS_PREF_CONTRACTID, &rv);
+  nsCOMPtr<nsIPrefService> prefs = do_GetService(NS_PREFSERVICE_CONTRACTID, &rv);
   NS_ENSURE_SUCCESS(rv,rv);
 
   nsCOMPtr<nsIPrefBranch> prefBranch;

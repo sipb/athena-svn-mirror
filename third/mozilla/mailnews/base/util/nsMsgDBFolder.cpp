@@ -74,6 +74,7 @@
 #include "nsIRDFService.h"
 #include "nsTextFormatter.h"
 #include "nsCPasswordManager.h"
+#include "nsMsgDBCID.h"
 
 #include <time.h>
 
@@ -89,6 +90,7 @@ static PRTime gtimeOfLastPurgeCheck;    //variable to know when to check for pur
 
 static NS_DEFINE_CID(kRDFServiceCID, NS_RDFSERVICE_CID);
 static NS_DEFINE_CID(kCollationFactoryCID, NS_COLLATIONFACTORY_CID);
+static NS_DEFINE_CID(kCMailDB, NS_MAILDB_CID);
 
 nsIAtom* nsMsgDBFolder::mFolderLoadedAtom=nsnull;
 nsIAtom* nsMsgDBFolder::mDeleteOrMoveMsgCompletedAtom=nsnull;
@@ -106,7 +108,7 @@ nsIAtom* nsMsgDBFolder::kNameAtom=nsnull;
 nsIAtom* nsMsgDBFolder::kSynchronizeAtom=nsnull;
 nsIAtom* nsMsgDBFolder::kOpenAtom=nsnull;
 
-nsICollation * nsMsgDBFolder::kCollationKeyGenerator = nsnull;
+nsICollation * nsMsgDBFolder::gCollationKeyGenerator = nsnull;
 
 PRUnichar *nsMsgDBFolder::kLocalizedInboxName;
 PRUnichar *nsMsgDBFolder::kLocalizedTrashName;
@@ -151,6 +153,7 @@ nsMsgDBFolder::nsMsgDBFolder(void)
   mLastMessageLoaded(nsMsgKey_None),
   mFlags(0),
   mNumUnreadMessages(-1),
+  mNumTotalMessages(-1),
   mNotifyCountChanges(PR_TRUE),
   mExpungedBytes(0),
   mInitializedFromCache(PR_FALSE),
@@ -182,7 +185,7 @@ nsMsgDBFolder::~nsMsgDBFolder(void)
   CRTFREEIF(mBaseMessageURI);
 
   if (--mInstanceCount == 0) {
-    NS_IF_RELEASE(kCollationKeyGenerator);
+    NS_IF_RELEASE(gCollationKeyGenerator);
     CRTFREEIF(kLocalizedInboxName);
     CRTFREEIF(kLocalizedTrashName);
     CRTFREEIF(kLocalizedSentName);
@@ -249,6 +252,13 @@ NS_IMETHODIMP nsMsgDBFolder::ForceDBClosed()
     {
         mDatabase->ForceClosed();
         mDatabase = nsnull;
+    }
+    else
+    {
+      nsCOMPtr<nsIMsgDatabase> mailDBFactory;
+      nsresult rv = nsComponentManager::CreateInstance(kCMailDB, nsnull, NS_GET_IID(nsIMsgDatabase), (void **) getter_AddRefs(mailDBFactory));
+      if (NS_SUCCEEDED(rv) && mailDBFactory)
+        mailDBFactory->ForceFolderDBClosed(this);
     }
     return NS_OK;
 }
@@ -510,13 +520,13 @@ nsresult nsMsgDBFolder::ReadDBFolderInfo(PRBool force)
         }
         
         folderInfo->GetNumMessages(&mNumTotalMessages);
-        folderInfo->GetNumNewMessages(&mNumUnreadMessages);
+        folderInfo->GetNumUnreadMessages(&mNumUnreadMessages);
         folderInfo->GetExpungedBytes((PRInt32 *)&mExpungedBytes);
         
         nsXPIDLCString utf8Name;
         folderInfo->GetFolderName(getter_Copies(utf8Name));
         if (!utf8Name.IsEmpty())
-          mName = NS_ConvertUTF8toUCS2(utf8Name.get());
+          CopyUTF8toUTF16(utf8Name, mName);
         
         //These should be put in IMAP folder only.
         //folderInfo->GetImapTotalPendingMessages(&mNumPendingTotalMessages);
@@ -525,7 +535,7 @@ nsresult nsMsgDBFolder::ReadDBFolderInfo(PRBool force)
         PRBool defaultUsed;
         folderInfo->GetCharacterSet(&mCharset, &defaultUsed);
         if (defaultUsed)
-          mCharset.Assign(NS_LITERAL_STRING(""));
+          mCharset.Truncate();
         folderInfo->GetCharacterSetOverride(&mCharsetOverride);
         
         if (db) {
@@ -599,13 +609,11 @@ NS_IMETHODIMP nsMsgDBFolder::GetOfflineFileStream(nsMsgKey msgKey, PRUint32 *off
 
   *offset = *size = 0;
   
-  nsresult rv;
-
   nsXPIDLCString nativePath;
   mPath->GetNativePath(getter_Copies(nativePath));
 
   nsCOMPtr <nsILocalFile> localStore;
-  rv = NS_NewNativeLocalFile(nativePath, PR_TRUE, getter_AddRefs(localStore));
+  nsresult rv = NS_NewNativeLocalFile(nativePath, PR_TRUE, getter_AddRefs(localStore));
   if (NS_SUCCEEDED(rv) && localStore)
   {
     rv = NS_NewLocalFileInputStream(aFileStream, localStore);
@@ -613,14 +621,34 @@ NS_IMETHODIMP nsMsgDBFolder::GetOfflineFileStream(nsMsgKey msgKey, PRUint32 *off
     if (NS_SUCCEEDED(rv))
     {
 
-      nsresult rv = GetDatabase(nsnull);
+      rv = GetDatabase(nsnull);
       NS_ENSURE_SUCCESS(rv, NS_OK);
-        nsCOMPtr<nsIMsgDBHdr> hdr;
-        rv = mDatabase->GetMsgHdrForKey(msgKey, getter_AddRefs(hdr));
+      nsCOMPtr<nsIMsgDBHdr> hdr;
+      rv = mDatabase->GetMsgHdrForKey(msgKey, getter_AddRefs(hdr));
       if (hdr && NS_SUCCEEDED(rv))
       {
         hdr->GetMessageOffset(offset);
         hdr->GetOfflineMessageSize(size);
+      }
+      // check if offline store really has the correct offset into the offline 
+      // store by reading the first few bytes. If it doesn't, clear the offline
+      // flag on the msg and return false, which will fall back to reading the message
+      // from the server.
+      nsCOMPtr <nsISeekableStream> seekableStream = do_QueryInterface(*aFileStream);
+      if (seekableStream)
+      {
+        rv = seekableStream->Seek(nsISeekableStream::NS_SEEK_CUR, *offset);
+        char startOfMsg[10];
+        PRUint32 bytesRead;
+        if (NS_SUCCEEDED(rv))
+          rv = (*aFileStream)->Read(startOfMsg, sizeof(startOfMsg), &bytesRead);
+
+        if (NS_FAILED(rv) || bytesRead != sizeof(startOfMsg) || strncmp(startOfMsg, "From ", 5))
+        {
+          if (mDatabase)
+            mDatabase->MarkOffline(msgKey, PR_FALSE, nsnull);
+          rv = NS_ERROR_FAILURE;
+        }
       }
     }
   }
@@ -1070,9 +1098,15 @@ nsresult nsMsgDBFolder::GetFolderCacheKey(nsIFileSpec **aFileSpec)
 		{
 			nsFileSpec		folderName;
 			dbPath->GetFileSpec(&folderName);
-			nsLocalFolderSummarySpec	summarySpec(folderName);
+			nsLocalFolderSummarySpec summarySpec(folderName);
 
 			dbPath->SetFromFileSpec(summarySpec);
+
+	  	        // create the .msf file
+			// see bug #244217 for details
+			PRBool exists;
+			if (NS_SUCCEEDED(dbPath->Exists(&exists)) && !exists)
+				dbPath->Touch();
 		}
 	}
 	return rv;
@@ -1433,7 +1467,7 @@ nsresult nsMsgDBFolder::CompactOfflineStore(nsIMsgWindow *inWindow)
   nsresult rv;
   nsCOMPtr <nsIMsgFolderCompactor> folderCompactor =  do_CreateInstance(NS_MSGOFFLINESTORECOMPACTOR_CONTRACTID, &rv);
   if (NS_SUCCEEDED(rv) && folderCompactor)
-      rv = folderCompactor->Compact(this, inWindow);
+      rv = folderCompactor->Compact(this, PR_TRUE, inWindow);
   return rv;
 }
 
@@ -1564,7 +1598,7 @@ nsMsgDBFolder::CompactAllOfflineStores(nsIMsgWindow *aWindow, nsISupportsArray *
   folderCompactor = do_CreateInstance(NS_MSGOFFLINESTORECOMPACTOR_CONTRACTID, &rv);
 
   if (NS_SUCCEEDED(rv) && folderCompactor)
-    rv = folderCompactor->CompactAll(aOfflineFolderArray, aWindow, PR_FALSE, nsnull);
+    rv = folderCompactor->CompactAll(nsnull, aWindow, PR_TRUE, aOfflineFolderArray);
   return rv;
 }
 
@@ -1980,9 +2014,12 @@ nsresult nsMsgDBFolder::PromptForCachePassword(nsIMsgIncomingServer *server, nsI
         nsAutoString userNameFound;
         nsAutoString passwordFound;
 
+        const nsAFlatString& empty = EmptyString();
+
         // Get password entry corresponding to the host URI we are passing in.
-        rv = passwordMgrInt->FindPasswordEntry(currServerUri, NS_LITERAL_STRING(""), NS_LITERAL_STRING(""),
-                                               hostFound, userNameFound, passwordFound);
+        rv = passwordMgrInt->FindPasswordEntry(currServerUri, empty, empty,
+                                               hostFound, userNameFound,
+                                               passwordFound);
         if (NS_FAILED(rv)) 
           break;
         // compare the user-entered password with the saved password with
@@ -2060,7 +2097,7 @@ nsMsgDBFolder::createCollationKeyGenerator()
   nsCOMPtr <nsICollationFactory> factory = do_CreateInstance(kCollationFactoryCID, &rv);
   NS_ENSURE_SUCCESS(rv, rv);
 
-  rv = factory->CreateCollation(locale, &kCollationKeyGenerator);
+  rv = factory->CreateCollation(locale, &gCollationKeyGenerator);
   return NS_OK;
 }
 
@@ -2414,12 +2451,12 @@ nsMsgDBFolder::parseURI(PRBool needServer)
       nsCAutoString userPass;
       rv = url->GetUserPass(userPass);
       if (NS_SUCCEEDED(rv) && !userPass.IsEmpty())
-        nsUnescape(NS_CONST_CAST(char*,userPass.get()));
+        nsUnescape(userPass.BeginWriting());
 
       nsCAutoString hostName;
       rv = url->GetHost(hostName);
       if (NS_SUCCEEDED(rv) && !hostName.IsEmpty())
-        nsUnescape(NS_CONST_CAST(char*,hostName.get()));
+        nsUnescape(hostName.BeginWriting());
 
       // turn it back into a server:
 
@@ -3153,13 +3190,16 @@ void nsMsgDBFolder::ChangeNumPendingUnread(PRInt32 delta)
     mNumPendingUnreadMessages += delta;
     PRInt32 newUnreadMessages = mNumUnreadMessages + mNumPendingUnreadMessages;
     NS_ASSERTION(newUnreadMessages >= 0, "shouldn't have negative unread message count");
-    nsCOMPtr<nsIMsgDatabase> db;
-    nsCOMPtr<nsIDBFolderInfo> folderInfo;
-    nsresult rv = GetDBFolderInfoAndDB(getter_AddRefs(folderInfo), getter_AddRefs(db));
-    if (NS_SUCCEEDED(rv) && folderInfo)
-      folderInfo->SetImapUnreadPendingMessages(mNumPendingUnreadMessages);
+    if (newUnreadMessages >= 0)
+    {
+      nsCOMPtr<nsIMsgDatabase> db;
+      nsCOMPtr<nsIDBFolderInfo> folderInfo;
+      nsresult rv = GetDBFolderInfoAndDB(getter_AddRefs(folderInfo), getter_AddRefs(db));
+      if (NS_SUCCEEDED(rv) && folderInfo)
+        folderInfo->SetImapUnreadPendingMessages(mNumPendingUnreadMessages);
 
-    NotifyIntPropertyChanged(kTotalUnreadMessagesAtom, oldUnreadMessages, newUnreadMessages);
+      NotifyIntPropertyChanged(kTotalUnreadMessagesAtom, oldUnreadMessages, newUnreadMessages);
+    }
   }
 }
 
@@ -3660,7 +3700,7 @@ NS_IMETHODIMP nsMsgDBFolder::GetNumNewMessages(PRBool deep, PRInt32 *aNumNewMess
         {
           PRInt32 num;
           folder->GetNumNewMessages(deep, &num);
-          if (num >= 0) // it's legal for counts to be negative if we don't know
+          if (num > 0) // it's legal for counts to be negative if we don't know
             numNewMessages += num;
         }
       }
@@ -3814,6 +3854,9 @@ nsMsgDBFolder::MarkMessagesFlagged(nsISupportsArray *messages, PRBool markFlagge
 NS_IMETHODIMP
 nsMsgDBFolder::SetLabelForMessages(nsISupportsArray *aMessages, nsMsgLabelValue aLabel)
 {
+  GetDatabase(nsnull);
+  if (mDatabase)
+  {
   PRUint32 count;
   NS_ENSURE_ARG(aMessages);
   nsresult rv = aMessages->Count(&count);
@@ -3821,11 +3864,13 @@ nsMsgDBFolder::SetLabelForMessages(nsISupportsArray *aMessages, nsMsgLabelValue 
 
   for(PRUint32 i = 0; i < count; i++)
   {
+      nsMsgKey msgKey;
     nsCOMPtr<nsIMsgDBHdr> message = do_QueryElementAt(aMessages, i, &rv);
     NS_ENSURE_SUCCESS(rv, rv);
-
-    rv = message->SetLabel(aLabel);
+      (void) message->GetMessageKey(&msgKey);
+      rv = mDatabase->SetLabel(msgKey, aLabel);
     NS_ENSURE_SUCCESS(rv, rv);
+    }
   }
   return NS_OK;
 }
@@ -4463,11 +4508,11 @@ NS_IMETHODIMP nsMsgDBFolder::GetPersistElided(PRBool *aPersistElided)
 nsresult
 nsMsgDBFolder::CreateCollationKey(const nsString &aSource,  PRUint8 **aKey, PRUint32 *aLength)
 {
-  NS_ASSERTION(kCollationKeyGenerator, "kCollationKeyGenerator is null");
-  if (!kCollationKeyGenerator)
+  NS_ASSERTION(gCollationKeyGenerator, "gCollationKeyGenerator is null");
+  if (!gCollationKeyGenerator)
     return NS_ERROR_NULL_POINTER;
 
-  return kCollationKeyGenerator->AllocateRawSortKey(kCollationCaseInSensitive, aSource, aKey, aLength);
+  return gCollationKeyGenerator->AllocateRawSortKey(kCollationCaseInSensitive, aSource, aKey, aLength);
 }
 
 NS_IMETHODIMP nsMsgDBFolder::CompareSortKeys(nsIMsgFolder *aFolder, PRInt32 *sortOrder)
@@ -4481,7 +4526,7 @@ NS_IMETHODIMP nsMsgDBFolder::CompareSortKeys(nsIMsgFolder *aFolder, PRInt32 *sor
   aFolder->GetSortKey(&sortKey2, &sortKey2Length);
   NS_ENSURE_SUCCESS(rv,rv);
 
-  rv = kCollationKeyGenerator->CompareRawSortKey(sortKey1, sortKey1Length, sortKey2, sortKey2Length, sortOrder);
+  rv = gCollationKeyGenerator->CompareRawSortKey(sortKey1, sortKey1Length, sortKey2, sortKey2Length, sortOrder);
   PR_Free(sortKey1);
   PR_Free(sortKey2);
   return rv;

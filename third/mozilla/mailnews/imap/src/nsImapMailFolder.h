@@ -100,11 +100,13 @@ public:
     PRUint32 m_curIndex; // message index to the message array which we are
                          // copying 
     PRUint32 m_totalCount;// total count of messages we have to do
+    PRUint32 m_unreadCount; // num unread messages we're moving
     PRBool m_streamCopy;
     char *m_dataBuffer; // temporary buffer for this copy operation
     PRUint32 m_dataBufferSize;
     PRUint32 m_leftOver;
     PRBool m_allowUndo;
+    PRBool m_eatLF;
 };
 
 // ACLs for this folder.
@@ -368,7 +370,7 @@ protected:
 
   nsresult MarkMessagesImapDeleted(nsMsgKeyArray *keyArray, PRBool deleted, nsIMsgDatabase *db);
   
-  void UpdatePendingCounts(PRBool countUnread, PRBool missingAreRead);
+  void UpdatePendingCounts();
   void SetIMAPDeletedFlag(nsIMsgDatabase *mailDB, const nsMsgKeyArray &msgids, PRBool markDeleted);
   virtual PRBool ShowDeletedMessages();
   virtual PRBool DeleteIsMoveToTrash();
@@ -411,6 +413,7 @@ protected:
                           nsISupportsArray* messages,
                           PRBool isMove,
                           PRBool selectedState,
+                          PRBool acrossServers,
                           nsIMsgCopyServiceListener* listener,
                           nsIMsgWindow *msgWindow,
                           PRBool allowUndo);
@@ -419,6 +422,7 @@ protected:
     nsCString& msgIds, nsMsgKeyArray& keyArray);
   
   nsresult GetMoveCoalescer();
+  nsresult PlaybackCoalescedOperations();
   virtual nsresult CreateBaseMessageURI(const char *aURI);
   // offline-ish methods
   nsresult GetClearedOriginalOp(nsIMsgOfflineImapOperation *op, nsIMsgOfflineImapOperation **originalOp, 

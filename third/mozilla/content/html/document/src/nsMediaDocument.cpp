@@ -150,7 +150,7 @@ nsMediaDocument::Init()
   return NS_OK;
 }
 
-NS_IMETHODIMP
+nsresult
 nsMediaDocument::StartDocumentLoad(const char*         aCommand,
                                    nsIChannel*         aChannel,
                                    nsILoadGroup*       aLoadGroup,
@@ -285,8 +285,7 @@ nsMediaDocument::StartLayout()
     // Initial-reflow this time.
     nsCOMPtr<nsIPresContext> context;
     shell->GetPresContext(getter_AddRefs(context));
-    nsRect visibleArea;
-    context->GetVisibleArea(visibleArea);
+    nsRect visibleArea = context->GetVisibleArea();
     shell->InitialReflow(visibleArea.width, visibleArea.height);
 
     // Now trigger a refresh.
@@ -306,7 +305,7 @@ nsMediaDocument::UpdateTitleAndCharset(const nsACString& aTypeStr,
                                        const nsAString& aStatus)
 {
   nsXPIDLString fileStr;
-  nsCOMPtr<nsIURI> uri = do_QueryInterface(mDocumentURL);
+  nsCOMPtr<nsIURI> uri = do_QueryInterface(mDocumentURI);
   if (uri) {
     nsCAutoString fileName;
     nsCOMPtr<nsIURL> url = do_QueryInterface(uri);

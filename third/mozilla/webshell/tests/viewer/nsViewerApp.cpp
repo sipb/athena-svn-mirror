@@ -77,7 +77,6 @@
 #include "nsILookAndFeel.h"
 #include "nsColor.h"
 #include "nsWidgetSupport.h"
-#include "nsVector.h"
 
 
 // XXX For font setting below
@@ -921,7 +920,7 @@ PRBool CreateRobotDialog(nsIWidget * aParent)
 
   nsIDeviceContext* dc = aParent->GetDeviceContext();
   float t2d;
-  dc->GetTwipsToDevUnits(t2d);
+  t2d = dc->TwipsToDevUnits();
   nsFont font(DIALOG_FONT, NS_FONT_STYLE_NORMAL, NS_FONT_VARIANT_NORMAL,
               NS_FONT_WEIGHT_NORMAL, 0,
               nscoord(t2d * NSIntPointsToTwips(DIALOG_FONT_SIZE)));
@@ -1089,7 +1088,7 @@ nsViewerApp::CreateRobot(nsBrowserWindow* aWindow)
       shell->GetDocument(getter_AddRefs(doc));
       if (doc) {
         nsCAutoString str;
-        nsresult rv = doc->GetDocumentURL()->GetSpec(str);
+        nsresult rv = doc->GetDocumentURI()->GetSpec(str);
         if (NS_FAILED(rv)) {
           return rv;
         }
@@ -1098,7 +1097,7 @@ nsViewerApp::CreateRobot(nsBrowserWindow* aWindow)
         {
           nsString* tempStr = new nsString;
           if ( tempStr )
-            tempStr->Assign(NS_ConvertUTF8toUCS2(str));
+            CopyUTF8toUTF16(str, *tempStr);
           gWorkList->AppendElement(tempStr);
         }
 #if defined(XP_WIN) && defined(NS_DEBUG)
@@ -1364,7 +1363,7 @@ PRBool CreateSiteDialog(nsIWidget * aParent)
 
     nsIDeviceContext* dc = aParent->GetDeviceContext();
     float t2d;
-    dc->GetTwipsToDevUnits(t2d);
+    t2d = dc->TwipsToDevUnits();
     nsFont font(DIALOG_FONT, NS_FONT_STYLE_NORMAL, NS_FONT_VARIANT_NORMAL,
                 NS_FONT_WEIGHT_NORMAL, 0,
                 nscoord(t2d * NSIntPointsToTwips(DIALOG_FONT_SIZE)));
@@ -1559,10 +1558,10 @@ static void ShowConsole(nsBrowserWindow* aWindow)
                                                   MAKEINTRESOURCE(ACCELERATOR_TABLE));
       }
       
-      nsIScriptContext *context = nsnull;
       nsCOMPtr<nsIScriptGlobalObject> scriptGlobal(do_GetInterface(aWindow->mDocShell));
-      if (scriptGlobal) {       
-        if ((NS_OK == scriptGlobal->GetContext(&context)) && context) {
+      if (scriptGlobal) {
+        nsIScriptContext *context;
+        if ((context = scriptGlobal->GetContext())) {
 
           // create the console
           gConsole = JSConsole::CreateConsole();

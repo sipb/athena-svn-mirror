@@ -42,13 +42,13 @@
 #include "nsHTMLAtoms.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
-#include "nsHTMLAttributes.h"
+#include "nsMappedAttributes.h"
 #include "nsRuleNode.h"
 
 // XXX missing nav attributes
 
 
-class nsHTMLParagraphElement : public nsGenericHTMLContainerElement,
+class nsHTMLParagraphElement : public nsGenericHTMLElement,
                                public nsIDOMHTMLParagraphElement
 {
 public:
@@ -59,30 +59,30 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
   // nsIDOMNode
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLContainerElement::)
+  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLElement::)
 
   // nsIDOMElement
-  NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLContainerElement::)
+  NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLElement::)
 
   // nsIDOMHTMLElement
-  NS_FORWARD_NSIDOMHTMLELEMENT(nsGenericHTMLContainerElement::)
+  NS_FORWARD_NSIDOMHTMLELEMENT(nsGenericHTMLElement::)
 
   // nsIDOMHTMLParagraphElement
   NS_DECL_NSIDOMHTMLPARAGRAPHELEMENT
 
-  NS_IMETHOD StringToAttribute(nsIAtom* aAttribute,
-                               const nsAString& aValue,
-                               nsHTMLValue& aResult);
+  virtual PRBool ParseAttribute(nsIAtom* aAttribute,
+                                const nsAString& aValue,
+                                nsAttrValue& aResult);
   NS_IMETHOD AttributeToString(nsIAtom* aAttribute,
                                const nsHTMLValue& aValue,
                                nsAString& aResult) const;
-  NS_IMETHOD_(PRBool) HasAttributeDependentStyle(const nsIAtom* aAttribute) const;
+  NS_IMETHOD_(PRBool) IsAttributeMapped(const nsIAtom* aAttribute) const;
   NS_IMETHOD GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRuleFunc) const;
 };
 
 nsresult
 NS_NewHTMLParagraphElement(nsIHTMLContent** aInstancePtrResult,
-                           nsINodeInfo *aNodeInfo)
+                           nsINodeInfo *aNodeInfo, PRBool aFromParser)
 {
   NS_ENSURE_ARG_POINTER(aInstancePtrResult);
 
@@ -122,7 +122,7 @@ NS_IMPL_RELEASE_INHERITED(nsHTMLParagraphElement, nsGenericElement)
 
 // QueryInterface implementation for nsHTMLParagraphElement
 NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLParagraphElement,
-                                    nsGenericHTMLContainerElement)
+                                    nsGenericHTMLElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMHTMLParagraphElement)
   NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(HTMLParagraphElement)
 NS_HTML_CONTENT_INTERFACE_MAP_END
@@ -147,7 +147,7 @@ nsHTMLParagraphElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
   if (NS_FAILED(rv))
     return rv;
 
-  CopyInnerTo(this, it, aDeep);
+  CopyInnerTo(it, aDeep);
 
   *aReturn = NS_STATIC_CAST(nsIDOMNode *, it);
 
@@ -160,17 +160,16 @@ nsHTMLParagraphElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
 NS_IMPL_STRING_ATTR(nsHTMLParagraphElement, Align, align)
 
 
-NS_IMETHODIMP
-nsHTMLParagraphElement::StringToAttribute(nsIAtom* aAttribute,
-                                          const nsAString& aValue,
-                                          nsHTMLValue& aResult)
+PRBool
+nsHTMLParagraphElement::ParseAttribute(nsIAtom* aAttribute,
+                                       const nsAString& aValue,
+                                       nsAttrValue& aResult)
 {
   if (aAttribute == nsHTMLAtoms::align) {
-    if (ParseDivAlignValue(aValue, aResult)) {
-      return NS_CONTENT_ATTR_HAS_VALUE;
-    }
+    return ParseDivAlignValue(aValue, aResult);
   }
-  return NS_CONTENT_ATTR_NOT_THERE;
+
+  return nsGenericHTMLElement::ParseAttribute(aAttribute, aValue, aResult);
 }
 
 NS_IMETHODIMP
@@ -185,21 +184,20 @@ nsHTMLParagraphElement::AttributeToString(nsIAtom* aAttribute,
     }
   }
 
-  return nsGenericHTMLContainerElement::AttributeToString(aAttribute, aValue,
-                                                          aResult);
+  return nsGenericHTMLElement::AttributeToString(aAttribute, aValue, aResult);
 }
 
 static void
-MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes, nsRuleData* aData)
+MapAttributesIntoRule(const nsMappedAttributes* aAttributes, nsRuleData* aData)
 {
   nsGenericHTMLElement::MapDivAlignAttributeInto(aAttributes, aData);
   nsGenericHTMLElement::MapCommonAttributesInto(aAttributes, aData);
 }
 
 NS_IMETHODIMP_(PRBool)
-nsHTMLParagraphElement::HasAttributeDependentStyle(const nsIAtom* aAttribute) const
+nsHTMLParagraphElement::IsAttributeMapped(const nsIAtom* aAttribute) const
 {
-  static const AttributeDependenceEntry* const map[] = {
+  static const MappedAttributeEntry* const map[] = {
     sDivAlignAttributeMap,
     sCommonAttributeMap,
   };

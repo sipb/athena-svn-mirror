@@ -97,7 +97,7 @@ nsXMLPrettyPrinter::PrettyPrint(nsIDocument* aDocument)
                 do_QueryInterface(defaultView);
             if (defaultCSSView) {
                 defaultCSSView->GetComputedStyle(frameElem,
-                                                 NS_LITERAL_STRING(""),
+                                                 EmptyString(),
                                                  getter_AddRefs(computedStyle));
             }
         }
@@ -186,9 +186,10 @@ nsXMLPrettyPrinter::PrettyPrint(nsIDocument* aDocument)
     NS_ASSERTION(binding, "Prettyprint binding doesn't implement nsIObserver");
     NS_ENSURE_TRUE(binding, NS_ERROR_UNEXPECTED);
     
-    rv = binding->Observe(resultFragment, "prettyprint-dom-created", NS_LITERAL_STRING("").get());
+    rv = binding->Observe(resultFragment, "prettyprint-dom-created",
+                          EmptyString().get());
     NS_ENSURE_SUCCESS(rv, rv);
-    
+
     // Observe the document so we know when to switch to "normal" view
     aDocument->AddObserver(this);
     mDocument = aDocument;
@@ -209,19 +210,15 @@ nsXMLPrettyPrinter::MaybeUnhook(nsIContent* aContent)
 }
 
 // nsIDocumentObserver implementation
-NS_IMPL_NSIDOCUMENTOBSERVER_LOAD_STUB(nsXMLPrettyPrinter)
-NS_IMPL_NSIDOCUMENTOBSERVER_REFLOW_STUB(nsXMLPrettyPrinter)
-NS_IMPL_NSIDOCUMENTOBSERVER_STATE_STUB(nsXMLPrettyPrinter)
-NS_IMPL_NSIDOCUMENTOBSERVER_STYLE_STUB(nsXMLPrettyPrinter)
 
-NS_IMETHODIMP
-nsXMLPrettyPrinter::BeginUpdate(nsIDocument* aDocument, nsUpdateType aUpdateType)
+void
+nsXMLPrettyPrinter::BeginUpdate(nsIDocument* aDocument,
+                                nsUpdateType aUpdateType)
 {
     mUpdateDepth++;
-    return NS_OK;
 }
 
-NS_IMETHODIMP
+void
 nsXMLPrettyPrinter::EndUpdate(nsIDocument* aDocument, nsUpdateType aUpdateType)
 {
     mUpdateDepth--;
@@ -245,20 +242,9 @@ nsXMLPrettyPrinter::EndUpdate(nsIDocument* aDocument, nsUpdateType aUpdateType)
 
         NS_RELEASE_THIS();
     }
-    return NS_OK;
 }
 
-
-
-NS_IMETHODIMP
-nsXMLPrettyPrinter::ContentChanged(nsIDocument* aDocument,
-                                   nsIContent *aContent,
-                                   nsISupports *aSubContent)
-{
-    return NS_OK;
-}
-
-NS_IMETHODIMP
+void
 nsXMLPrettyPrinter::AttributeChanged(nsIDocument* aDocument,
                                      nsIContent* aContent,
                                      PRInt32 aNameSpaceID,
@@ -266,29 +252,26 @@ nsXMLPrettyPrinter::AttributeChanged(nsIDocument* aDocument,
                                      PRInt32 aModType)
 {
     MaybeUnhook(aContent);
-    return NS_OK;
 }
 
-NS_IMETHODIMP
+void
 nsXMLPrettyPrinter::ContentAppended(nsIDocument* aDocument,
                                     nsIContent* aContainer,
                                     PRInt32 aNewIndexInContainer)
 {
     MaybeUnhook(aContainer);
-    return NS_OK;
 }
 
-NS_IMETHODIMP
+void
 nsXMLPrettyPrinter::ContentInserted(nsIDocument* aDocument,
                                     nsIContent* aContainer,
                                     nsIContent* aChild,
                                     PRInt32 aIndexInContainer)
 {
     MaybeUnhook(aContainer);
-    return NS_OK;
 }
 
-NS_IMETHODIMP
+void
 nsXMLPrettyPrinter::ContentReplaced(nsIDocument* aDocument,
                                     nsIContent* aContainer,
                                     nsIContent* aOldChild,
@@ -296,26 +279,22 @@ nsXMLPrettyPrinter::ContentReplaced(nsIDocument* aDocument,
                                     PRInt32 aIndexInContainer)
 {
     MaybeUnhook(aContainer);
-    return NS_OK;
 }
 
-NS_IMETHODIMP
+void
 nsXMLPrettyPrinter::ContentRemoved(nsIDocument* aDocument,
                                    nsIContent* aContainer,
                                    nsIContent* aChild,
                                    PRInt32 aIndexInContainer)
 {
     MaybeUnhook(aContainer);
-    return NS_OK;
 }
 
-NS_IMETHODIMP
+void
 nsXMLPrettyPrinter::DocumentWillBeDestroyed(nsIDocument* aDocument)
 {
     mDocument = nsnull;
     NS_RELEASE_THIS();
-
-    return NS_OK;
 }
 
 

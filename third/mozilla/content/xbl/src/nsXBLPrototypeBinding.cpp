@@ -54,7 +54,6 @@
 #include "plstr.h"
 #include "nsIContent.h"
 #include "nsIDocument.h"
-#include "nsIXMLContent.h"
 #include "nsIXMLContentSink.h"
 #include "nsContentCID.h"
 #include "nsXMLDocument.h"
@@ -219,6 +218,8 @@ static const PRInt32 kInsInitialSize = (NS_SIZE_IN_HEAP(sizeof(nsXBLInsertionPoi
 
 // Implementation /////////////////////////////////////////////////////////////////
 
+MOZ_DECL_CTOR_COUNTER(nsXBLPrototypeBinding)
+
 // Constructors/Destructors
 nsXBLPrototypeBinding::nsXBLPrototypeBinding()
 : mImplementation(nsnull),
@@ -231,6 +232,7 @@ nsXBLPrototypeBinding::nsXBLPrototypeBinding()
   mInsertionPointTable(nsnull),
   mInterfaceTable(nsnull)
 {
+  MOZ_COUNT_CTOR(nsXBLPrototypeBinding);
   gRefCnt++;
 
   if (gRefCnt == 1) {
@@ -264,7 +266,7 @@ nsXBLPrototypeBinding::Init(const nsACString& aID,
   mBindingURI = do_QueryInterface(uri, &rv);
   NS_ENSURE_SUCCESS(rv, rv);
   
-  mXBLDocInfoWeak = do_GetWeakReference(aInfo);
+  mXBLDocInfoWeak = aInfo;
 
   SetBindingElement(aElement);
   return NS_OK;
@@ -292,6 +294,7 @@ nsXBLPrototypeBinding::~nsXBLPrototypeBinding(void)
     delete kAttrPool;
     delete kInsPool;
   }
+  MOZ_COUNT_DTOR(nsXBLPrototypeBinding);
 }
 
 void
@@ -326,19 +329,10 @@ nsXBLPrototypeBinding::SetBindingElement(nsIContent* aElement)
     mInheritStyle = PR_FALSE;
 }
 
-nsIURI*
-nsXBLPrototypeBinding::DocURI() const
-{
-  nsCOMPtr<nsIXBLDocumentInfo> info = GetXBLDocumentInfo(nsnull);
-  
-  return info->DocumentURI();
-}
-
 nsresult
 nsXBLPrototypeBinding::GetAllowScripts(PRBool* aResult)
 {
-  nsCOMPtr<nsIXBLDocumentInfo> info = GetXBLDocumentInfo(nsnull);
-  return info->GetScriptAccess(aResult);
+  return mXBLDocInfoWeak->GetScriptAccess(aResult);
 }
 
 PRBool
@@ -388,14 +382,6 @@ nsXBLPrototypeBinding::BindingDetached(nsIDOMEventReceiver* aReceiver)
   if (mImplementation && mImplementation->mDestructor)
     return mImplementation->mDestructor->BindingDetached(aReceiver);
   return NS_OK;
-}
-
-already_AddRefed<nsIXBLDocumentInfo>
-nsXBLPrototypeBinding::GetXBLDocumentInfo(nsIContent* aBoundElement) const
-{
-  nsIXBLDocumentInfo* result = nsnull;
-  CallQueryReferent(mXBLDocInfoWeak.get(), &result);  // addrefs
-  return result;
 }
 
 nsXBLPrototypeHandler*
@@ -927,28 +913,24 @@ nsXBLPrototypeBinding::SetInitialAttributes(nsIContent* aBoundElement, nsIConten
   }
 }
 
-already_AddRefed<nsISupportsArray>
+nsCOMArray<nsIStyleRuleProcessor>*
 nsXBLPrototypeBinding::GetRuleProcessors()
 {
-  nsISupportsArray* result;
   if (mResources) {
-    result = mResources->mRuleProcessors;
-    NS_IF_ADDREF(result);
-  } else
-    result = nsnull;
-  return result;
+    return &mResources->mRuleProcessors;
+  }
+  
+  return nsnull;
 }
 
-already_AddRefed<nsISupportsArray>
+nsCOMArray<nsICSSStyleSheet>*
 nsXBLPrototypeBinding::GetStyleSheets()
 {
-  nsISupportsArray* result;
   if (mResources) {
-    result = mResources->mStyleSheetList;
-    NS_IF_ADDREF(result);
-  } else
-    result = nsnull;
-  return result;
+    return &mResources->mStyleSheetList;
+  }
+
+  return nsnull;
 }
 
 PRBool
@@ -1167,7 +1149,7 @@ nsXBLPrototypeBinding::ConstructInterfaceTable(const nsAString& aImpls)
 
     // The user specified at least one attribute.
     NS_ConvertUCS2toUTF8 utf8impl(aImpls);
-    char* str = NS_CONST_CAST(char *, utf8impl.get());
+    char* str = utf8impl.BeginWriting();
     char* newStr;
     // XXX We should use a strtok function that tokenizes PRUnichars
     // so that we don't have to convert from Unicode to ASCII and then back

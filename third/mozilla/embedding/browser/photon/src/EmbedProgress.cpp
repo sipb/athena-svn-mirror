@@ -39,6 +39,8 @@
 #include <netCore.h>
 #include "nsGfxCIID.h"
 
+#include "nsIDOMWindow.h"
+
 #include "EmbedWindow.h"
 #include "EmbedPrivate.h"
 
@@ -84,8 +86,7 @@ EmbedProgress::OnStateChange(nsIWebProgress *aWebProgress,
 	nsString tmpString;
 	tmpString.AssignWithConversion(uriString);
 
-#if 0
-	if( ( aStateFlags & STATE_IS_NETWORK ) && NS_FAILED( aStatus ) ) 
+	if( ( aStateFlags & STATE_IS_REQUEST ) && NS_FAILED( aStatus ) ) 
 	{
 		PtWebErrorCallback_t cbw;
 
@@ -96,9 +97,10 @@ EmbedProgress::OnStateChange(nsIWebProgress *aWebProgress,
 		cbinfo.cbdata = &cbw;
 
 		memset( &cbw, 0, sizeof( PtWebErrorCallback_t ) );
-		strcpy(cbw.url, (const char *)uriString);
+		cbw.url = (char*)((const char *)uriString);
+		cbw.description = "";
 
-		cbw.type = WWW_ERROR_TOPVIEW;
+		cbw.type = Pt_WEB_ERROR_TOPVIEW;
 		switch( aStatus ) 
 		{
 			case NS_ERROR_UNKNOWN_HOST:				
@@ -124,7 +126,6 @@ EmbedProgress::OnStateChange(nsIWebProgress *aWebProgress,
 			PtInvokeCallbackList(cb, (PtWidget_t *)moz, &cbinfo);
 		/* let it check for STATE_STOP */
 	}
-#endif
 
 	memset(&cbinfo, 0, sizeof(cbinfo));
 
@@ -139,52 +140,27 @@ EmbedProgress::OnStateChange(nsIWebProgress *aWebProgress,
     	else if( aStateFlags & STATE_STOP ) 
 		{
 			PtWebCompleteCallback_t cbcomplete;
-#if 1
-			/* if the mozilla was saving a file as a result of Pt_ARG_MOZ_DOWNLOAD or Pt_ARG_MOZ_UNKNOWN_RESP, move the temporary file into the desired destination ( moz->download_dest ) */
-			if( moz->download_dest ) 
-			{
-				if( moz->EmbedRef->app_launcher ) 
-				{
-					nsCOMPtr<nsIURI> aSourceUrl;
-					nsCOMPtr<nsIFile> tempFile;
-					moz->EmbedRef->app_launcher->GetSource( getter_AddRefs(aSourceUrl) );
-					moz->EmbedRef->app_launcher->GetTargetFile( getter_AddRefs( tempFile ) );
-
-					if( tempFile ) 
-					{
-						nsresult rv;
-						nsCOMPtr<nsILocalFile> fileToUse = do_CreateInstance( NS_LOCAL_FILE_CONTRACTID, &rv );
-						fileToUse->InitWithNativePath( nsDependentCString(moz->download_dest) );
-	
-						PRBool equalToTempFile = PR_FALSE;
-						PRBool filetoUseAlreadyExists = PR_FALSE;
-						fileToUse->Equals( tempFile, &equalToTempFile );
-						fileToUse->Exists(&filetoUseAlreadyExists);
-						if( filetoUseAlreadyExists && !equalToTempFile )
-							fileToUse->Remove(PR_FALSE);
-
-						// extract the new leaf name from the file location
-						nsXPIDLCString fileName;
-						fileToUse->GetNativeLeafName(fileName);
-						nsCOMPtr<nsIFile> directoryLocation;
-						fileToUse->GetParent(getter_AddRefs(directoryLocation));
-						if( directoryLocation ) rv = tempFile->MoveToNative(directoryLocation, fileName);
-					}
-
-					moz->EmbedRef->app_launcher = NULL;
-				}
-				free(moz->download_dest);
-				moz->download_dest = NULL;
-			}
-#endif
 
 			cbinfo.reason = Pt_CB_MOZ_COMPLETE;
 			cbinfo.cbdata = &cbcomplete;
 			memset( &cbcomplete, 0, sizeof( PtWebCompleteCallback_t ) );
-			REMOVE_WHEN_NEW_PT_WEB_strcpy(cbcomplete.url, (const char *)uriString);
+			cbcomplete.url = strdup( uriString );
 
 			if( ( cb = moz->complete_cb ) )
 				PtInvokeCallbackList(cb, (PtWidget_t *) moz, &cbinfo);
+
+			free( cbcomplete.url );
+
+			if( moz->text_zoom != moz->actual_text_zoom ) {
+				nsCOMPtr<nsIDOMWindow> domWindow;
+				moz->EmbedRef->mWindow->mWebBrowser->GetContentDOMWindow(getter_AddRefs(domWindow));
+				if(domWindow) {
+					domWindow->SetTextZoom( moz->text_zoom/100. );
+					float vv;
+					domWindow->GetTextZoom( &vv );
+					moz->actual_text_zoom = (int) ( vv * 100 );
+					}
+				}
     	}
 	}
 

@@ -1,3 +1,4 @@
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /*
  * The contents of this file are subject to the Mozilla Public
  * License Version 1.1 (the "License"); you may not use this file
@@ -26,18 +27,19 @@
 
 // used to map attributes into CSS rules
 #include "nsIDocument.h"
-#include "nsIStyleSet.h"
+#include "nsStyleSet.h"
 #include "nsIStyleSheet.h"
 #include "nsICSSStyleSheet.h"
 #include "nsIDOMCSSStyleSheet.h"
 #include "nsICSSRule.h"
 #include "nsICSSStyleRule.h"
 #include "nsStyleChangeList.h"
-#include "nsIFrameManager.h"
+#include "nsFrameManager.h"
 #include "nsNetUtil.h"
 #include "nsIURI.h"
 #include "nsContentCID.h"
 #include "nsAutoPtr.h"
+#include "nsStyleSet.h"
 static NS_DEFINE_CID(kCSSStyleSheetCID, NS_CSS_STYLESHEET_CID);
 
 
@@ -117,8 +119,9 @@ nsMathMLFrame::ResolveMathMLCharStyle(nsIPresContext*  aPresContext,
     nsCSSAnonBoxes::mozMathStretchy :
     nsCSSAnonBoxes::mozMathAnonymous; // savings
   nsRefPtr<nsStyleContext> newStyleContext;
-  newStyleContext = aPresContext->ResolvePseudoStyleContextFor(aContent, pseudoStyle,
-							       aParentStyleContext);
+  newStyleContext = aPresContext->StyleSet()->
+    ResolvePseudoStyleFor(aContent, pseudoStyle, aParentStyleContext);
+
   if (newStyleContext)
     aMathMLChar->SetStyleContext(newStyleContext);
 }
@@ -505,15 +508,13 @@ GetMathMLAttributeStyleSheet(nsIPresContext* aPresContext,
   *aSheet = nsnull;
 
   // first, look if the attribute stylesheet is already there
-  nsCOMPtr<nsIPresShell> presShell;
-  aPresContext->GetShell(getter_AddRefs(presShell));
-  nsCOMPtr<nsIStyleSet> styleSet;
-  presShell->GetStyleSet(getter_AddRefs(styleSet));
-  if (!styleSet)
-    return;
+  nsStyleSet *styleSet = aPresContext->StyleSet();
+  NS_ASSERTION(styleSet, "no style set");
+
   nsAutoString title;
-  for (PRInt32 i = styleSet->GetNumberOfAgentStyleSheets() - 1; i >= 0; --i) {
-    nsCOMPtr<nsIStyleSheet> sheet = getter_AddRefs(styleSet->GetAgentStyleSheetAt(i));
+  for (PRInt32 i = styleSet->SheetCount(nsStyleSet::eAgentSheet) - 1;
+       i >= 0; --i) {
+    nsIStyleSheet *sheet = styleSet->StyleSheetAt(nsStyleSet::eAgentSheet, i);
     nsCOMPtr<nsICSSStyleSheet> cssSheet(do_QueryInterface(sheet));
     if (cssSheet) {
       cssSheet->GetTitle(title);
@@ -541,14 +542,13 @@ GetMathMLAttributeStyleSheet(nsIPresContext* aPresContext,
                                            0, &index);
   }
   cssSheet->SetTitle(NS_ConvertASCIItoUCS2(kTitle));
-  nsCOMPtr<nsIStyleSheet> sheet(do_QueryInterface(cssSheet));
 
   // all done, no further activity from the net involved, so we better do this
-  sheet->SetComplete();
+  cssSheet->SetComplete();
 
   // insert the stylesheet into the styleset without notifying observers
-  styleSet->AppendAgentStyleSheet(sheet);
-  *aSheet = sheet;
+  styleSet->AppendStyleSheet(nsStyleSet::eAgentSheet, cssSheet);
+  *aSheet = cssSheet;
   NS_ADDREF(*aSheet);
 }
 
@@ -694,23 +694,14 @@ nsMathMLFrame::MapAttributesIntoCSS(nsIPresContext* aPresContext,
     return 0;
 
   // now, re-resolve the style contexts in our subtree
-  nsCOMPtr<nsIPresShell> presShell;
-  aPresContext->GetShell(getter_AddRefs(presShell));
-  if (presShell) {
-    nsCOMPtr<nsIFrameManager> fm;
-    presShell->GetFrameManager(getter_AddRefs(fm));
-    if (fm) {
-      nsChangeHint maxChange = NS_STYLE_HINT_NONE, minChange = NS_STYLE_HINT_NONE;
-      nsStyleChangeList changeList;
-      fm->ComputeStyleChangeFor(aFrame, kNameSpaceID_None, nsnull,
-                                changeList, minChange, maxChange);
+  nsFrameManager *fm = aPresContext->FrameManager();
+  nsStyleChangeList changeList;
+  fm->ComputeStyleChangeFor(aFrame, &changeList, NS_STYLE_HINT_NONE);
 #ifdef DEBUG
-      // Use the parent frame to make sure we catch in-flows and such
-      nsIFrame* parentFrame = aFrame->GetParent();
-      fm->DebugVerifyStyleTree(parentFrame ? parentFrame : aFrame);
+  // Use the parent frame to make sure we catch in-flows and such
+  nsIFrame* parentFrame = aFrame->GetParent();
+  fm->DebugVerifyStyleTree(parentFrame ? parentFrame : aFrame);
 #endif
-    }
-  }
 
   return ruleCount;
 }

@@ -154,18 +154,18 @@ nsresult nsDeviceContextOS2::Init( nsNativeDeviceContext aContext,
   mPixelsToTwips = ((float)NSIntPointsToTwips(72)) / ((float)dpi);
   mTwipsToPixels = 1.0 / mPixelsToTwips;
 
-  GetTwipsToDevUnits(newscale);
+  newscale = TwipsToDevUnits();
 // On OS/2, origscale can be different based on the video resolution.
 // On 640x480, it's 1/15, on everything else it is 1/12.
 // For consistent printing, 1/15 is the correct value to use.
 // It is the closest to 4.x and to Windows.
-//  aOrigContext->GetTwipsToDevUnits( origscale);
+//  origscale = aOrigContext->TwipsToDevUnits();
   origscale = 1.0/15.0;
 
   mCPixelScale = newscale / origscale;
 
-  aOrigContext->GetTwipsToDevUnits(t2d);
-  aOrigContext->GetAppUnitsToDevUnits(a2d);
+  t2d = aOrigContext->TwipsToDevUnits();
+  a2d = aOrigContext->AppUnitsToDevUnits();
 
   mAppUnitsToDevUnits = (a2d / t2d) * mTwipsToPixels;
   mDevUnitsToAppUnits = 1.0f / mAppUnitsToDevUnits;
@@ -347,84 +347,61 @@ nscolor GetSysColorInfo(int iSysColor)
   return NS_RGB( pRGB2->bRed, pRGB2->bGreen, pRGB2->bBlue);
 }
 
+/* Helper function to query font from INI file */
+
+void QueryFontFromINI(char* fontType, char* fontName, ULONG ulLength)
+{
+  ULONG ulMaxNameL = ulLength;
+
+  /* We had to switch to using PrfQueryProfileData because */
+  /* some users have binary font data in their INI files */
+  BOOL rc = PrfQueryProfileData(HINI_USER, "PM_SystemFonts", fontType,
+                                fontName, &ulMaxNameL);
+  /* If there was no entry in the INI, default to something */
+  if (rc == FALSE) {
+    /* Different values for DBCS vs. SBCS */
+    if (!IsDBCS()) {
+      /* WarpSans is only available on Warp 4 and above */
+      if (gIsWarp4)
+        strcpy(fontName, "9.WarpSans");
+      else
+        strcpy(fontName, "8.Helv");
+    } else {
+      /* WarpSans is only available on Warp 4 and above */
+      if (gIsWarp4)
+        strcpy(fontName, "9.WarpSans Combined");
+      else
+        strcpy(fontName, "10.Helv Combined");
+    }
+  } else {
+    /* null terminate fontname */
+    fontName[ulMaxNameL] = '\0';
+  }
+}
+
+
 nsresult GetSysFontInfo(nsSystemFontID aID, nsFont* aFont) 
 {
   char szFontNameSize[MAXNAMEL];
 
   switch (aID)
   {
-    case eSystemFont_Caption: 
-      if (!IsDBCS()) {
-        PrfQueryProfileString(HINI_USER, "PM_SystemFonts", "WindowText",
-                              gIsWarp4 ? "9.WarpSans" : "8.Helv",
-                              szFontNameSize, MAXNAMEL);
-      } else {
-        PrfQueryProfileString(HINI_USER, "PM_SystemFonts", "WindowText",
-                              gIsWarp4 ? "9.WarpSans Combined" : "8.Helv Combined",
-                              szFontNameSize, MAXNAMEL);
-      } /* endif */
-      break;
-
     case eSystemFont_Icon: 
-      if (!IsDBCS()) {
-        PrfQueryProfileString(HINI_USER, "PM_SystemFonts", "IconText",
-                              gIsWarp4 ? "9.WarpSans" : "8.Helv",
-                              szFontNameSize, MAXNAMEL);
-      } else {
-        PrfQueryProfileString(HINI_USER, "PM_SystemFonts", "IconText",
-                              gIsWarp4 ? "9.WarpSans Combined" : "8.Helv Combined",
-                              szFontNameSize, MAXNAMEL);
-      } /* endif */
+      QueryFontFromINI("IconText", szFontNameSize, MAXNAMEL);
       break;
 
     case eSystemFont_Menu: 
-      if (!IsDBCS()) {
-        PrfQueryProfileString(HINI_USER, "PM_SystemFonts", "Menus",
-                              gIsWarp4 ? "9.WarpSans Bold" : "10.Helv",
-                              szFontNameSize, MAXNAMEL);
-      } else {
-        PrfQueryProfileString(HINI_USER, "PM_SystemFonts", "Menus", 
-                              gIsWarp4 ? "9.WarpSans Combined" : "10.Helv Combined",
-                              szFontNameSize, MAXNAMEL);
-      } /* endif */
+      QueryFontFromINI("Menus", szFontNameSize, MAXNAMEL);
       break;
+
+    case eSystemFont_Caption: 
 
     case eSystemFont_MessageBox: 
-      if (!IsDBCS()) {
-        PrfQueryProfileString(HINI_USER, "PM_SystemFonts", "WindowText",
-                              gIsWarp4 ? "9.WarpSans" : "8.Helv",
-                              szFontNameSize, MAXNAMEL);
-      } else {
-        PrfQueryProfileString(HINI_USER, "PM_SystemFonts", "WindowText",
-                              gIsWarp4 ? "9.WarpSans Combined" : "8.Helv Combined",
-                              szFontNameSize, MAXNAMEL);
-      } /* endif */
-      break;
 
     case eSystemFont_SmallCaption: 
-      if (!IsDBCS()) {
-        PrfQueryProfileString(HINI_USER, "PM_SystemFonts", "WindowText",
-                              gIsWarp4 ? "9.WarpSans" : "8.Helv",
-                              szFontNameSize, MAXNAMEL);
-      } else {
-        PrfQueryProfileString(HINI_USER, "PM_SystemFonts", "WindowText", 
-                              gIsWarp4 ? "9.WarpSans Combined" : "8.Helv Combined",
-                              szFontNameSize, MAXNAMEL);
-      } /* endif */
-      break;
 
     case eSystemFont_StatusBar: 
     case eSystemFont_Tooltips: 
-      if (!IsDBCS()) {
-        PrfQueryProfileString(HINI_USER, "PM_SystemFonts", "WindowText",
-                              gIsWarp4 ? "9.WarpSans" : "8.Helv",
-                              szFontNameSize, MAXNAMEL);
-      } else {
-        PrfQueryProfileString(HINI_USER, "PM_SystemFonts", "WindowText",
-                              gIsWarp4 ? "9.WarpSans Combined" : "8.Helv Combined",
-                              szFontNameSize, MAXNAMEL);
-      } /* endif */
-      break;
 
     case eSystemFont_Widget:
 
@@ -438,15 +415,7 @@ nsresult GetSysFontInfo(nsSystemFontID aID, nsFont* aFont)
     case eSystemFont_PullDownMenu:
     case eSystemFont_List:
     case eSystemFont_Field:
-      if (!IsDBCS()) {
-        PrfQueryProfileString(HINI_USER, "PM_SystemFonts", "WindowText",
-                              gIsWarp4 ? "9.WarpSans" : "8.Helv",
-                              szFontNameSize, MAXNAMEL);
-      } else {
-        PrfQueryProfileString(HINI_USER, "PM_SystemFonts", "WindowText",
-                              gIsWarp4 ? "9.WarpSans Combined" : "8.Helv Combined",
-                              szFontNameSize, MAXNAMEL);
-      } /* endif */
+      QueryFontFromINI("WindowText", szFontNameSize, MAXNAMEL);
       break;
   } // switch 
 
@@ -503,6 +472,9 @@ nsresult GetSysFontInfo(nsSystemFontID aID, nsFont* aFont)
 
   // Do Size
   aFont->size = NSIntPointsToTwips(pointSize);
+
+  aFont->systemFont = PR_TRUE;
+
   return NS_OK;
 }
 
@@ -550,14 +522,15 @@ NS_IMETHODIMP nsDeviceContextOS2 :: CheckFontExistence(const nsString& aFontName
     hps = ::WinGetPS((HWND)mWidget);
   }
 
-  char fontName[FACESIZE];
-
-  WideCharToMultiByte(0, aFontName.get(), aFontName.Length() + 1,
-    fontName, sizeof(fontName));
+  nsAutoCharBuffer fontName;
+  PRInt32 fontNameLength;
+  WideCharToMultiByte(0, aFontName.get(), aFontName.Length(),
+                      fontName, fontNameLength);
 
   long lWant = 0;
-  long lFonts = GFX (::GpiQueryFonts (hps, QF_PUBLIC | QF_PRIVATE,
-                     fontName, &lWant, 0, 0), GPI_ALTERROR);
+  long lFonts = GFX (::GpiQueryFonts(hps, QF_PUBLIC | QF_PRIVATE,
+                                     fontName.get(), &lWant, 0, 0),
+                     GPI_ALTERROR);
 
   if (NULL == mPrintDC)
     ::WinReleasePS(hps);
@@ -621,12 +594,6 @@ int prefChanged(const char *aPref, void *aClosure)
   }
   
   return 0;
-}
-
-NS_IMETHODIMP nsDeviceContextOS2 :: ConvertPixel(nscolor aColor, PRUint32 & aPixel)
-{
-  aPixel = aColor;
-  return NS_OK;
 }
 
 NS_IMETHODIMP nsDeviceContextOS2 :: GetDeviceSurfaceDimensions(PRInt32 &aWidth, PRInt32 &aHeight)
@@ -788,7 +755,7 @@ nsresult nsDeviceContextOS2::PrepareDocument(PRUnichar * aTitle, PRUnichar* aPri
       rv = NS_ERROR_GFX_PRINTER_STARTDOC;
 
     if (title != nsnull) {
-      delete [] title;
+      nsMemory::Free(title);
     }
   }
 
@@ -867,20 +834,14 @@ nsresult nsDeviceContextOS2::EndPage()
 char* 
 nsDeviceContextOS2::GetACPString(const nsString& aStr)
 {
-   int acplen = aStr.Length() * 3 + 1;
-   if (acplen == 1) {
+   if (aStr.Length() == 0) {
       return nsnull;
    }
-   char* acp = new char[acplen];
-   if(acp)
-   {
-      int outlen = ::WideCharToMultiByte( 0,
-                      aStr.get(), aStr.Length(),
-                      acp, acplen);
-      if ( outlen > 0)
-         acp[outlen] = '\0';  // null terminate
-   }
-   return acp;
+
+   nsAutoCharBuffer acp;
+   PRInt32 acpLength;
+   WideCharToMultiByte(0, aStr.get(), aStr.Length(), acp, acpLength);
+   return ToNewCString(nsDependentCString(acp.get()));
 }
 
 BOOL nsDeviceContextOS2::isPrintDC()

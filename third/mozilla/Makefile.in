@@ -35,6 +35,7 @@ ifeq ($(BUILD_MODULES),all)
 # Tiers must be defined on module boundaries 
 #
 default: $(SUBMAKEFILES)
+	$(RM) -rf $(DIST)/sdk
 	$(MAKE) -C config export
 	$(MAKE) nspr
 	$(MAKE) ldap
@@ -198,6 +199,20 @@ ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
 tier_9_dirs	+= xpfe/bootstrap/appleevents
 endif
 
+ifdef MOZ_THUNDERBIRD
+ifdef MOZ_USE_OFFICIAL_BRANDING
+tier_9_dirs  += other-licenses/branding/thunderbird
+endif
+endif
+
+ifdef MOZ_PHOENIX
+ifdef MOZ_USE_OFFICIAL_BRANDING
+tier_9_dirs  += other-licenses/branding/firefox
+endif
+
+tier_9_dirs	+= toolkit/components/profile/public
+endif
+
 tier_9_dirs	+= \
 		xpfe/appshell \
 		xpfe/browser/public \
@@ -205,10 +220,12 @@ tier_9_dirs	+= \
 		xpfe/components/xremote/public \
 		$(NULL)
 
+ifdef MOZ_XUL
 ifdef MOZ_XUL_APP
-tier_9_dirs	+= toolkit/components/history/public chrome
+tier_9_dirs	+= chrome
 else
-tier_9_dirs	+= xpfe/components/history/public
+tier_9_dirs	+= rdf/chrome
+endif
 endif
 
 ifdef ACCESSIBILITY
@@ -217,6 +234,10 @@ endif
 
 ifdef MOZ_LDAP_XPCOM
 tier_9_dirs	+= directory/xpcom
+endif
+
+ifndef MOZ_XUL
+tier_9_dirs    += embedding/minimo/chromelite
 endif
 
 #
@@ -233,6 +254,12 @@ endif
 # This must preceed xpfe
 ifdef MOZ_JPROF
 tier_50_dirs        += tools/jprof
+endif
+
+ifdef MOZ_XUL_APP
+tier_50_dirs += toolkit/components/history/public
+else
+tier_50_dirs += xpfe/components/history/public
 endif
 
 tier_50_dirs	+= xpfe themes
@@ -253,25 +280,15 @@ ifdef MOZ_XUL_APP
 tier_50_dirs	+= toolkit
 endif
 
-ifdef MINIMO
-tier_9_dirs	+= embedding/minimo
-endif
-
 ifdef MOZ_PHOENIX
-# xpfe/components/search depends on nsIBookmarksService.idl
-tier_50_dirs    += browser/components/bookmarks/public
+#xpfe/components/search depends on nsIBookmarksService.idl
+#XXXBlake this shell path is a temp hack; toolkit shouldn't depend on browser
+tier_50_dirs    += browser/components/bookmarks/public browser/components/shell/public
 endif
 
 # toolkit/xre/ depends on xpinstall, so it must be in tier 50
 ifdef MOZ_XPINSTALL
 tier_50_dirs     +=  xpinstall
-endif
-
-# mozapps installer needs to be built after xpinstall
-ifdef MOZ_XUL_APP
-ifdef MOZ_INSTALLER
-tier_50_dirs     +=  toolkit/mozapps/installer
-endif
 endif
 
 #
@@ -307,11 +324,11 @@ endif
 endif # MOZ_COMPONENTLIB
 
 ifdef MOZ_PHOENIX
-tier_99_dirs	+= browser
+tier_99_dirs	+= browser xpfe/bootstrap/init.d
 endif
 
 ifdef MOZ_THUNDERBIRD
-tier_99_dirs	+= mail
+tier_99_dirs	+= mail xpfe/bootstrap/init.d
 endif
 
 ifdef MOZ_STANDALONE_COMPOSER
@@ -319,6 +336,9 @@ tier_99_dirs	+= composer
 endif
 
 ifdef MOZ_XUL_APP
+ifdef MOZ_INSTALLER
+tier_99_dirs     +=  toolkit/mozapps/installer
+endif
 else
 ifneq (,$(MOZ_XPFE_COMPONENTS)$(MOZ_XUL))
 tier_99_dirs	+= xpfe/bootstrap
@@ -378,6 +398,7 @@ DIST_GARBAGE = config.cache config.log config.status config-defs.h \
 
 # Build pseudo-external modules first when export is explicitly called
 export::
+	$(RM) -rf $(DIST)/sdk
 	$(MAKE) -C config export
 	$(MAKE) nspr
 	$(MAKE) ldap
@@ -459,6 +480,8 @@ ifdef MOZILLA_OFFICIAL
 	/bin/find $(DIST) -name "*.dll" -exec splitsym {} \;
 	/bin/find $(DIST) -name "*.exe" -exec splitsym {} \;
 	/bin/find $(DIST) -name "*.EXE" -exec splitsym {} \;
+	mkdir -p $(DIST)/$(BUILDID)
+	/bin/find $(DIST) -name "*.dbg" -exec mv {} $(DIST)/$(BUILDID) \;
 endif # MOZILLA_OFFICIAL
 
 signnss:
@@ -467,6 +490,7 @@ ifdef MOZILLA_OFFICIAL
 	cd $(DIST)/bin; ./shlibsign.exe -v -i softokn3.dll
 endif # MOZILLA_OFFICIAL
 
+BUILDID = $(shell cat $(DEPTH)/config/build_number)
 deliver: splitsymbols rebase signnss
 
 endif # WINNT

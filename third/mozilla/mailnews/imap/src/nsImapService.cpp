@@ -101,7 +101,9 @@
 #include "nsIMsgMailSession.h"
 #include "nsIStreamConverterService.h"
 
-#define PREF_MAIL_ROOT_IMAP "mail.root.imap"
+
+#define PREF_MAIL_ROOT_IMAP "mail.root.imap"            // old - for backward compatibility only
+#define PREF_MAIL_ROOT_IMAP_REL "mail.root.imap-rel"
 
 static NS_DEFINE_CID(kEventQueueServiceCID, NS_EVENTQUEUESERVICE_CID);
 static NS_DEFINE_CID(kImapUrlCID, NS_IMAPURL_CID);
@@ -407,11 +409,25 @@ NS_IMETHODIMP nsImapService::OpenAttachment(const char *aContentType,
       rv = CreateStartOfImapUrl(uri.get(), getter_AddRefs(imapUrl), folder, aUrlListener, urlSpec, hierarchySeparator);
       if (NS_FAILED(rv)) 
         return rv;
+    
+      urlSpec.Append("/fetch>UID>");
+      urlSpec.Append(char(hierarchySeparator));
+    
+      nsXPIDLCString folderName;
+      GetFolderName(folder, getter_Copies(folderName));
+      urlSpec.Append((const char *) folderName);
+      urlSpec.Append(">");
+      urlSpec.Append(msgKey.get());
+      urlSpec.Append(uriMimePart.get());
+      
       if (uriMimePart)
       {
         nsCOMPtr<nsIMsgMailNewsUrl> mailUrl (do_QueryInterface(imapUrl));
         if (mailUrl)
+        {
+          mailUrl->SetSpec(urlSpec);
           mailUrl->SetFileName(nsDependentCString(aFileName));
+        }
         rv =  FetchMimePart(imapUrl, nsIImapUrl::nsImapOpenMimePart, folder, imapMessageSink,
           nsnull, aDisplayConsumer, msgKey, uriMimePart);
       }
@@ -553,7 +569,13 @@ NS_IMETHODIMP nsImapService::DisplayMessage(const char* aMessageURI,
       if (hasMsgOffline)
         msgurl->SetMsgIsInLocalCache(PR_TRUE);
       
-      rv = FetchMessage(imapUrl, nsIImapUrl::nsImapMsgFetch, folder, imapMessageSink,
+      nsCOMPtr<nsIPrefBranch> prefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID, &rv)); 
+      PRBool forcePeek = PR_FALSE; // should the message fetch force a peak or a traditional fetch? 
+
+      if (NS_SUCCEEDED(rv) && prefBranch) 
+         prefBranch->GetBoolPref("mailnews.mark_message_read.delay", &forcePeek);
+      
+      rv = FetchMessage(imapUrl, forcePeek ? nsIImapUrl::nsImapMsgFetchPeek : nsIImapUrl::nsImapMsgFetch, folder, imapMessageSink,
         aMsgWindow, aDisplayConsumer, msgKey, PR_FALSE, (mPrintingOperation) ? "print" : nsnull, aURL);
     }
   }
@@ -597,18 +619,6 @@ nsresult nsImapService::FetchMimePart(nsIImapUrl * aImapUrl,
   {
     nsCOMPtr<nsIURI> url = do_QueryInterface(aImapUrl);
     url->GetSpec(urlSpec);
-    
-    PRUnichar hierarchySeparator = GetHierarchyDelimiter(aImapMailFolder); 
-    
-    urlSpec.Append("fetch>UID>");
-    urlSpec.Append(char(hierarchySeparator));
-    
-    nsXPIDLCString folderName;
-    GetFolderName(aImapMailFolder, getter_Copies(folderName));
-    urlSpec.Append((const char *) folderName);
-    urlSpec.Append(">");
-    urlSpec.Append(messageIdentifierList);
-    urlSpec.Append(mimePart);
     
     // rhp: If we are displaying this message for the purpose of printing, we
     // need to append the header=print option.
@@ -819,12 +829,12 @@ NS_IMETHODIMP nsImapService::Search(nsIMsgSearchSession *aSearchSession, nsIMsgW
 
   if (NS_SUCCEEDED(rv))
   {
-	nsXPIDLCString folderName;
+    nsXPIDLCString folderName;
     GetFolderName(aMsgFolder, getter_Copies(folderName));
 
-	nsCOMPtr <nsIMsgMailNewsUrl> mailNewsUrl = do_QueryInterface(imapUrl);
-	urlSpec.Append("/search>UID>");
-	urlSpec.Append(char(hierarchySeparator));
+    nsCOMPtr <nsIMsgMailNewsUrl> mailNewsUrl = do_QueryInterface(imapUrl);
+    urlSpec.Append("/search>UID>");
+    urlSpec.Append(char(hierarchySeparator));
     urlSpec.Append((const char *) folderName);
     urlSpec.Append('>');
     // escape aSearchUri so that IMAP special characters (i.e. '\')
@@ -838,14 +848,14 @@ NS_IMETHODIMP nsImapService::Search(nsIMsgSearchSession *aSearchSession, nsIMsgW
     {
       nsCOMPtr<nsIEventQueue> queue;	
       // get the Event Queue for this thread...
-	    nsCOMPtr<nsIEventQueueService> pEventQService = 
-	             do_GetService(kEventQueueServiceCID, &rv);
+      nsCOMPtr<nsIEventQueueService> pEventQService = 
+          do_GetService(kEventQueueServiceCID, &rv);
 
       if (NS_FAILED(rv)) return rv;
 
       rv = pEventQService->GetThreadEventQueue(NS_CURRENT_THREAD, getter_AddRefs(queue));
       if (NS_FAILED(rv)) return rv;
-       rv = GetImapConnectionAndLoadUrl(queue, imapUrl, nsnull, nsnull);
+        rv = GetImapConnectionAndLoadUrl(queue, imapUrl, nsnull, nsnull);
     }
   }
   return rv;
@@ -1166,7 +1176,7 @@ nsImapService::CreateStartOfImapUrl(const char * aImapURI, nsIImapUrl ** imapUrl
                                     nsIMsgFolder* aImapMailFolder,
                                     nsIUrlListener * aUrlListener,
                                     nsCString & urlSpec, 
-									                  PRUnichar &hierarchyDelimiter)
+                                    PRUnichar &hierarchyDelimiter)
 {
   nsresult rv = NS_OK;
   char *hostname = nsnull;
@@ -1188,7 +1198,8 @@ nsImapService::CreateStartOfImapUrl(const char * aImapURI, nsIImapUrl ** imapUrl
   PRInt32 port = IMAP_PORT;
   nsCOMPtr<nsIMsgIncomingServer> server;
   rv = aImapMailFolder->GetServer(getter_AddRefs(server));
-  if (NS_SUCCEEDED(rv)) {
+  if (NS_SUCCEEDED(rv)) 
+  {
     server->GetPort(&port);
     if (port == -1 || port == 0) port = IMAP_PORT;
   }
@@ -1196,8 +1207,7 @@ nsImapService::CreateStartOfImapUrl(const char * aImapURI, nsIImapUrl ** imapUrl
   // now we need to create an imap url to load into the connection. The url
   // needs to represent a select folder action. 
   rv = nsComponentManager::CreateInstance(kImapUrlCID, nsnull,
-    NS_GET_IID(nsIImapUrl), (void **)
-    imapUrl);
+    NS_GET_IID(nsIImapUrl), (void **) imapUrl);
   if (NS_SUCCEEDED(rv) && *imapUrl)
   {
     nsCOMPtr<nsIMsgMailNewsUrl> mailnewsUrl = do_QueryInterface(*imapUrl, &rv);
@@ -2363,7 +2373,7 @@ nsImapService::RenameLeaf(nsIEventQueue* eventQueue, nsIMsgFolder* srcFolder,
 
 			nsCAutoString cStrFolderName(NS_STATIC_CAST(const char *, folderName));
       // Unescape the name before looking for parent path
-      nsUnescape(NS_CONST_CAST(char*, cStrFolderName.get()));
+      nsUnescape(cStrFolderName.BeginWriting());
       PRInt32 leafNameStart = 
             cStrFolderName.RFindChar(hierarchySeparator);
             if (leafNameStart != -1)
@@ -2676,7 +2686,7 @@ NS_IMETHODIMP nsImapService::NewURI(const nsACString &aSpec,
     // now extract lots of fun information...
     nsCOMPtr<nsIMsgMailNewsUrl> mailnewsUrl = do_QueryInterface(aImapUrl);
     //nsCAutoString unescapedSpec(aSpec);
-    // nsUnescape(NS_CONST_CAST(char*, unescapedSpec.get()));
+    // nsUnescape(unescapedSpec.BeginWriting());
 
     // set the spec
     if (aBaseURI) 
@@ -2943,11 +2953,16 @@ NS_IMETHODIMP nsImapService::NewChannel(nsIURI *aURI, nsIChannel **_retval)
 NS_IMETHODIMP
 nsImapService::SetDefaultLocalPath(nsIFileSpec *aPath)
 {
-    nsresult rv;
-    nsCOMPtr<nsIPrefBranch> prefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID, &rv));
-    if (NS_FAILED(rv)) return rv;
-
-    return prefBranch->SetComplexValue(PREF_MAIL_ROOT_IMAP, NS_GET_IID(nsIFileSpec), aPath);
+    NS_ENSURE_ARG(aPath);
+    
+    nsFileSpec spec;
+    nsresult rv = aPath->GetFileSpec(&spec);
+    NS_ENSURE_SUCCESS(rv, rv);
+    nsCOMPtr<nsILocalFile> localFile;
+    NS_FileSpecToIFile(&spec, getter_AddRefs(localFile));
+    if (!localFile) return NS_ERROR_FAILURE;
+    
+    return NS_SetPersistentFile(PREF_MAIL_ROOT_IMAP_REL, PREF_MAIL_ROOT_IMAP, localFile);
 }       
 
 NS_IMETHODIMP
@@ -2960,41 +2975,34 @@ nsImapService::GetDefaultLocalPath(nsIFileSpec ** aResult)
     nsCOMPtr<nsIPrefBranch> prefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID, &rv));
     if (NS_FAILED(rv)) return rv;
     
-    PRBool havePref = PR_FALSE;
-    nsCOMPtr<nsILocalFile> prefLocal;
-    nsCOMPtr<nsIFile> localFile;
-    rv = prefBranch->GetComplexValue(PREF_MAIL_ROOT_IMAP, NS_GET_IID(nsILocalFile),
-                                     getter_AddRefs(prefLocal));
-    if (NS_SUCCEEDED(rv)) {
-        localFile = prefLocal;
-        havePref = PR_TRUE;
-    }
-    if (!localFile) {
-        rv = NS_GetSpecialDirectory(NS_APP_IMAP_MAIL_50_DIR, getter_AddRefs(localFile));
-        if (NS_FAILED(rv)) return rv;
-        havePref = PR_FALSE;
-    }
+    PRBool havePref;
+    nsCOMPtr<nsILocalFile> localFile;    
+    rv = NS_GetPersistentFile(PREF_MAIL_ROOT_IMAP_REL,
+                              PREF_MAIL_ROOT_IMAP,
+                              NS_APP_IMAP_MAIL_50_DIR,
+                              havePref,
+                              getter_AddRefs(localFile));
         
     PRBool exists;
     rv = localFile->Exists(&exists);
-    if (NS_FAILED(rv)) return rv;
-    if (!exists) {
+    if (NS_SUCCEEDED(rv) && !exists)
         rv = localFile->Create(nsIFile::DIRECTORY_TYPE, 0775);
-        if (NS_FAILED(rv)) return rv;
-    }
+    NS_ENSURE_SUCCESS(rv, rv);
     
     // Make the resulting nsIFileSpec
     // TODO: Convert arg to nsILocalFile and avoid this
     nsCOMPtr<nsIFileSpec> outSpec;
     rv = NS_NewFileSpecFromIFile(localFile, getter_AddRefs(outSpec));
-    if (NS_FAILED(rv)) return rv;
+    NS_ENSURE_SUCCESS(rv, rv);
     
-    if (!havePref || !exists)
-        rv = SetDefaultLocalPath(outSpec);
+    if (!havePref || !exists) 
+    {
+        rv = NS_SetPersistentFile(PREF_MAIL_ROOT_IMAP_REL, PREF_MAIL_ROOT_IMAP, localFile);
+        NS_ASSERTION(NS_SUCCEEDED(rv), "Failed to set root dir pref.");
+    }
         
-    *aResult = outSpec;
-    NS_IF_ADDREF(*aResult);
-    return rv;
+    NS_IF_ADDREF(*aResult = outSpec);
+    return NS_OK;
 }
     
 NS_IMETHODIMP

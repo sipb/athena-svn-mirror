@@ -45,7 +45,6 @@
 #include "nsIEnumerator.h"
 #include "nsRegionMac.h"
 #include "nsGraphicState.h"
-#include "nsGraphicsImpl.h"
 
 #include "nsTransform2D.h"
 #include "nsVoidArray.h"
@@ -239,12 +238,12 @@ void nsRenderingContextMac::SelectDrawingSurface(nsDrawingSurfaceMac* aSurface, 
 	((nsDeviceContextMac *)mContext)->InstallColormap();
 #endif
 
-	mContext->GetDevUnitsToAppUnits(mP2T);
+	mP2T = mContext->DevUnitsToAppUnits();
 
 	if (mGS->mTMatrix.GetType() == MG_2DIDENTITY) {
 		// apply the new scaling
 		float app2dev;
-		mContext->GetAppUnitsToDevUnits(app2dev);
+		app2dev = mContext->AppUnitsToDevUnits();
 		mGS->mTMatrix.AddScale(app2dev, app2dev);
 	}
 
@@ -1445,16 +1444,6 @@ nsRenderingContextMac::FlushRect(nscoord aX, nscoord aY, nscoord aWidth, nscoord
     }
 #endif
     return NS_OK;
-}
-
-NS_IMETHODIMP nsRenderingContextMac::GetGraphics(nsIGraphics* *aGraphics)
-{
-	NS_ASSERTION((aGraphics != nsnull), "aGraphics is NULL");
-	nsCOMPtr<nsIGraphics> graphics = new nsGraphicsImpl(this);
-	if (graphics)
-		return graphics->QueryInterface(NS_GET_IID(nsIGraphics), (void**)aGraphics);
-	else
-		return NS_ERROR_OUT_OF_MEMORY;
 }
 
 #ifdef MOZ_MATHML

@@ -53,6 +53,10 @@
  *   be passed additional information, which gets mapped to the 
  *   window.arguments array:
  * 
+ *   XXXben - it would be cleaner just to take this dialog take an
+ *            object so items don't need to be passed in a particular
+ *            order.
+ * 
  *   window.arguments[0]: Bookmark Name. The value to be prefilled
  *                        into the "Name: " field (if visible).
  *   window.arguments[1]: Bookmark URL: The location of the bookmark.
@@ -69,21 +73,38 @@
  *                        of objects with name, URL and charset
  *                        properties, one for each group member.
  *   window.arguments[6]: If the bookmark should become a web panel.
+ *   window.arguments[7]: A suggested keyword for the bookmark. If this
+ *                        argument is supplied, the keyword row is made
+ *                        visible.
+ *   window.arguments[8]: Whether or not a keyword is required to add
+ *                        the bookmark.
  */
 
 var gSelectedFolder;
 var gName;
+var gKeyword;
+var gKeywordRow;
 var gExpander;
 var gMenulist;
 var gBookmarksTree;
 var gGroup;
+var gKeywordRequired;
+var gSuggestedKeyword;
+var gRequiredFields = [];
+
+# on windows, sizeToContent is buggy (see bug 227951), we''ll use resizeTo
+# instead and cache the bookmarks tree view size.
+var WSucks;
 
 function Startup()
 {
   sizeToContent(); //XXXpch buggy imo, we shouldn't need it
   initServices();
   initBMService();
-  gName  = document.getElementById("name");
+  gName = document.getElementById("name");
+  gRequiredFields.push(gName);
+  gKeywordRow = document.getElementById("keywordRow");
+  gKeyword = document.getElementById("keyword");
   gGroup = document.getElementById("addgroup");
   gExpander = document.getElementById("expander");
   gMenulist = document.getElementById("select-menu");
@@ -91,11 +112,20 @@ function Startup()
   gName.value = window.arguments[0];
   gName.select();
   gName.focus();
+  gKeyword.value = window.arguments[7];
+  gKeywordRequired = window.arguments[8];
+  if (!window.arguments[7] && !gKeywordRequired)
+    gKeywordRow.hidden = true;
+  if (gKeywordRequired)
+    gRequiredFields.push(gKeyword);
   onFieldInput();
   gSelectedFolder = RDF.GetResource(gMenulist.selectedItem.id);
   gExpander.setAttribute("tooltiptext", gExpander.getAttribute("tooltiptextdown"));
-  dump('down: '+gExpander.getAttribute("tooltiptextdown")+"\n");
-  dump('up: '+gExpander.getAttribute("tooltiptextup")+"\n");
+
+# read the persisted attribute. If it is not present, set a default height.
+  WSucks = parseInt(gBookmarksTree.getAttribute("height"));
+  if (!WSucks)
+    WSucks = 150;
 
   // fix no more persisted class attribute in old profiles
   var localStore = RDF.GetDataSource("rdf:local-store");
@@ -114,9 +144,15 @@ function Startup()
 
 function onFieldInput()
 {
-  const ok = document.documentElement.getButton("accept");
-  ok.disabled = gName.value == "";
-}    
+  var ok = document.documentElement.getButton("accept");
+  ok.disabled = false;
+  for (var i = 0; i < gRequiredFields.length; ++i) {
+    if (gRequiredFields[i].value == "") {
+      ok.disabled = true;
+      return;
+    }
+  }
+}
 
 function onOK()
 {
@@ -128,12 +164,12 @@ function onOK()
     const groups = window.arguments[5];
     for (var i = 0; i < groups.length; ++i) {
       url = getNormalizedURL(groups[i].url);
-      BMDS.createBookmarkInContainer(groups[i].name, url, null, null,
+      BMDS.createBookmarkInContainer(groups[i].name, url, gKeyword.value, null,
                                      groups[i].charset, rSource, -1);
     }
   } else {
     url = getNormalizedURL(window.arguments[1]);
-    rSource = BMDS.createBookmark(gName.value, url, null, null, window.arguments[3]);
+    rSource = BMDS.createBookmark(gName.value, url, gKeyword.value, null, window.arguments[3]);
   }
 
   var selection = BookmarksUtils.getSelectionFromResource(rSource);
@@ -212,9 +248,10 @@ function expandTree()
   var willCollapse = !gBookmarksTree.collapsed;
   gExpander.setAttribute("class",willCollapse?"down":"up");
   gExpander.setAttribute("tooltiptext", gExpander.getAttribute("tooltiptext"+(willCollapse?"down":"up")));
-  if (willCollapse)
+  if (willCollapse) {
     document.documentElement.buttons = "accept,cancel";
-  else {
+    WSucks = gBookmarksTree.boxObject.height;
+  } else {
     document.documentElement.buttons = "accept,cancel,extra2";
 #   always open the bookmark root folder
     if (!gBookmarksTree.treeBoxObject.view.isContainerOpen(0))
@@ -223,7 +260,7 @@ function expandTree()
     gBookmarksTree.focus();
   }
   gBookmarksTree.collapsed = willCollapse;
-  sizeToContent();
+  resizeTo(window.outerWidth, window.outerHeight+(willCollapse?-WSucks:+WSucks));
 }
 
 function setFolderTreeHeight()

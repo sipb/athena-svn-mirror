@@ -53,60 +53,63 @@ class nsICSSLoader;
 class nsIContent;
 class nsIDOMHTMLBodyElement;
 
-/* b2a848b0-d0a9-11d1-89b1-006008911b81 */
+/* 30dc35c0-75b5-4e96-a828-54470ce86726 */
 #define NS_IHTMLDOCUMENT_IID \
-{0xb2a848b0, 0xd0a9, 0x11d1, {0x89, 0xb1, 0x00, 0x60, 0x08, 0x91, 0x1b, 0x81}}
+{0x30dc35c0, 0x75b5, 0x4e96, {0xa8, 0x28, 0x54, 0x47, 0x0c, 0xe8, 0x67, 0x26}}
 
 
 /**
  * HTML document extensions to nsIDocument.
  */
-class nsIHTMLDocument : public nsISupports {
+class nsIHTMLDocument : public nsISupports
+{
 public:
   NS_DEFINE_STATIC_IID_ACCESSOR(NS_IHTMLDOCUMENT_IID)
 
-  NS_IMETHOD AddImageMap(nsIDOMHTMLMapElement* aMap) = 0;
+  virtual nsresult AddImageMap(nsIDOMHTMLMapElement* aMap) = 0;
 
-  NS_IMETHOD GetImageMap(const nsAString& aMapName,
-                         nsIDOMHTMLMapElement** aResult) = 0;
+  virtual nsIDOMHTMLMapElement *GetImageMap(const nsAString& aMapName) = 0;
 
-  NS_IMETHOD RemoveImageMap(nsIDOMHTMLMapElement* aMap) = 0;
-
-  NS_IMETHOD SetReferrer(const nsAString& aReferrer) = 0;
+  virtual void RemoveImageMap(nsIDOMHTMLMapElement* aMap) = 0;
 
   /**
    * Access compatibility mode for this document
    */
-  NS_IMETHOD GetCompatibilityMode(nsCompatibility& aMode) = 0;
-  NS_IMETHOD SetCompatibilityMode(nsCompatibility aMode) = 0;
+  virtual nsCompatibility GetCompatibilityMode() = 0;
+  virtual void SetCompatibilityMode(nsCompatibility aMode) = 0;
 
   /*
    * Returns true if document.domain was set for this document
    */
-  NS_IMETHOD WasDomainSet(PRBool* aDomainWasSet) = 0;
+  virtual PRBool WasDomainSet() = 0;
 
-  NS_IMETHOD ResolveName(const nsAString& aName,
-                         nsIDOMHTMLFormElement *aForm,
-                         nsISupports **aResult) = 0;
+  virtual nsresult ResolveName(const nsAString& aName,
+                               nsIDOMHTMLFormElement *aForm,
+                               nsISupports **aResult) = 0;
 
-  NS_IMETHOD GetFormControlElements(nsIDOMNodeList** aReturn) = 0;
+  /*
+   * This method returns null if we run out of memory. Callers should
+   * check for null.
+   */
+  virtual already_AddRefed<nsIDOMNodeList> GetFormControlElements() = 0;
+  
   /**
    * Called when form->SetDocument() is called so that document knows
    * immediately when a form is added
    */
-  NS_IMETHOD AddedForm() = 0;
+  virtual void AddedForm() = 0;
   /**
    * Called when form->SetDocument() is called so that document knows
    * immediately when a form is removed
    */
-  NS_IMETHOD RemovedForm() = 0;
+  virtual void RemovedForm() = 0;
   /**
    * Called to get a better count of forms than document.forms can provide
    * without calling FlushPendingNotifications (bug 138892).
    */
-  NS_IMETHOD GetNumFormsSynchronous(PRInt32* aNumForms) = 0;
+  virtual PRInt32 GetNumFormsSynchronous() = 0;
   
-  NS_IMETHOD_(PRBool) IsWriting() = 0;
+  virtual PRBool IsWriting() = 0;
 };
 
 #endif /* nsIHTMLDocument_h___ */

@@ -117,6 +117,10 @@ struct nsKeyConverter nsKeycodes[] = {
     { NS_VK_SEMICOLON, GDK_colon },
     { NS_VK_QUOTE, GDK_apostrophe },
 
+    // context menu key, keysym 0xff67, typically keycode 117 on 105-key (Microsoft) 
+    // x86 keyboards, located between right 'Windows' key and right Ctrl key
+    { NS_VK_CONTEXT_MENU, GDK_Menu },
+
     // NS doesn't have dash or equals distinct from the numeric keypad ones,
     // so we'll use those for now.  See bug 17008:
     { NS_VK_SUBTRACT, GDK_minus },
@@ -153,6 +157,7 @@ struct nsKeyConverter nsKeycodes[] = {
 // map Sun Keyboard special keysyms on to NS_VK keys
 struct nsKeyConverter nsSunKeycodes[] = {
     {NS_VK_ESCAPE, GDK_F11 }, //bug 57262, Sun Stop key generates F11 keysym
+    {NS_VK_F1, GDK_Help }, //Mapping Help key to F1
     {NS_VK_F11, 0x1005ff10 }, //Sun F11 key generates SunF36(0x1005ff10) keysym
     {NS_VK_F12, 0x1005ff11 }, //Sun F12 key generates SunF37(0x1005ff11) keysym
     {NS_VK_PAGE_UP,    GDK_F29 }, //KP_Prior

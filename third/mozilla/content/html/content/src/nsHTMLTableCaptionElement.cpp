@@ -42,10 +42,10 @@
 #include "nsHTMLAtoms.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
-#include "nsHTMLAttributes.h"
+#include "nsMappedAttributes.h"
 #include "nsRuleNode.h"
 
-class nsHTMLTableCaptionElement :  public nsGenericHTMLContainerElement,
+class nsHTMLTableCaptionElement :  public nsGenericHTMLElement,
                                    public nsIDOMHTMLTableCaptionElement
 {
 public:
@@ -56,30 +56,30 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
   // nsIDOMNode
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLContainerElement::)
+  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLElement::)
 
   // nsIDOMElement
-  NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLContainerElement::)
+  NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLElement::)
 
   // nsIDOMHTMLElement
-  NS_FORWARD_NSIDOMHTMLELEMENT(nsGenericHTMLContainerElement::)
+  NS_FORWARD_NSIDOMHTMLELEMENT(nsGenericHTMLElement::)
 
   // nsIDOMHTMLTableCaptionElement
   NS_DECL_NSIDOMHTMLTABLECAPTIONELEMENT
 
-  NS_IMETHOD StringToAttribute(nsIAtom* aAttribute,
-                               const nsAString& aValue,
-                               nsHTMLValue& aResult);
+  virtual PRBool ParseAttribute(nsIAtom* aAttribute,
+                                const nsAString& aValue,
+                                nsAttrValue& aResult);
   NS_IMETHOD AttributeToString(nsIAtom* aAttribute,
                                const nsHTMLValue& aValue,
                                nsAString& aResult) const;
   NS_IMETHOD GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRuleFunc) const;
-  NS_IMETHOD_(PRBool) HasAttributeDependentStyle(const nsIAtom* aAttribute) const;
+  NS_IMETHOD_(PRBool) IsAttributeMapped(const nsIAtom* aAttribute) const;
 };
 
 nsresult
 NS_NewHTMLTableCaptionElement(nsIHTMLContent** aInstancePtrResult,
-                              nsINodeInfo *aNodeInfo)
+                              nsINodeInfo *aNodeInfo, PRBool aFromParser)
 {
   NS_ENSURE_ARG_POINTER(aInstancePtrResult);
 
@@ -119,7 +119,7 @@ NS_IMPL_RELEASE_INHERITED(nsHTMLTableCaptionElement, nsGenericElement)
 
 // QueryInterface implementation for nsHTMLTableCaptionElement
 NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLTableCaptionElement,
-                                    nsGenericHTMLContainerElement)
+                                    nsGenericHTMLElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMHTMLTableCaptionElement)
   NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(HTMLTableCaptionElement)
 NS_HTML_CONTENT_INTERFACE_MAP_END
@@ -144,7 +144,7 @@ nsHTMLTableCaptionElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
   if (NS_FAILED(rv))
     return rv;
 
-  CopyInnerTo(this, it, aDeep);
+  CopyInnerTo(it, aDeep);
 
   *aReturn = NS_STATIC_CAST(nsIDOMNode *, it);
 
@@ -165,17 +165,16 @@ static const nsHTMLValue::EnumTable kCaptionAlignTable[] = {
   { 0 }
 };
 
-NS_IMETHODIMP
-nsHTMLTableCaptionElement::StringToAttribute(nsIAtom* aAttribute,
-                                      const nsAString& aValue,
-                                      nsHTMLValue&    aResult)
+PRBool
+nsHTMLTableCaptionElement::ParseAttribute(nsIAtom* aAttribute,
+                                          const nsAString& aValue,
+                                          nsAttrValue& aResult)
 {
   if (aAttribute == nsHTMLAtoms::align) {
-    if (aResult.ParseEnumValue(aValue, kCaptionAlignTable)) {
-      return NS_CONTENT_ATTR_HAS_VALUE;
-    }
+    return aResult.ParseEnumValue(aValue, kCaptionAlignTable);
   }
-  return NS_CONTENT_ATTR_NOT_THERE;
+
+  return nsGenericHTMLElement::ParseAttribute(aAttribute, aValue, aResult);
 }
 
 NS_IMETHODIMP
@@ -195,7 +194,7 @@ nsHTMLTableCaptionElement::AttributeToString(nsIAtom* aAttribute,
 }
 
 static 
-void MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes, nsRuleData* aData)
+void MapAttributesIntoRule(const nsMappedAttributes* aAttributes, nsRuleData* aData)
 {
   if (aData->mSID == eStyleStruct_TableBorder) {
     if (aData->mTableData->mCaptionSide.GetUnit() == eCSSUnit_Null) {
@@ -210,14 +209,14 @@ void MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes, nsRuleDat
 }
 
 NS_IMETHODIMP_(PRBool)
-nsHTMLTableCaptionElement::HasAttributeDependentStyle(const nsIAtom* aAttribute) const
+nsHTMLTableCaptionElement::IsAttributeMapped(const nsIAtom* aAttribute) const
 {
-  static const AttributeDependenceEntry attributes[] = {
+  static const MappedAttributeEntry attributes[] = {
     { &nsHTMLAtoms::align },
     { nsnull }
   };
 
-  static const AttributeDependenceEntry* const map[] = {
+  static const MappedAttributeEntry* const map[] = {
     attributes,
     sCommonAttributeMap,
   };

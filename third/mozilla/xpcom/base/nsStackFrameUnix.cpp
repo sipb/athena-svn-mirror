@@ -52,14 +52,13 @@
 
 
 
-// This thing is exported by libiberty.a (-liberty)
+// This thing is exported by libstdc++
 // Yes, this is a gcc only hack
 #if defined(MOZ_DEMANGLE_SYMBOLS)
-extern "C" char * cplus_demangle(const char *,int);
+#include <cxxabi.h>
 #include <stdlib.h> // for free()
 #endif // MOZ_DEMANGLE_SYMBOLS
 
-#if (defined(__linux__) || defined(__sun)) && defined(__GNUC__)
 void DemangleSymbol(const char * aSymbol, 
                     char * aBuffer,
                     int aBufLen)
@@ -68,7 +67,7 @@ void DemangleSymbol(const char * aSymbol,
 
 #if defined(MOZ_DEMANGLE_SYMBOLS)
     /* See demangle.h in the gcc source for the voodoo */
-    char * demangled = cplus_demangle(aSymbol,3);
+    char * demangled = abi::__cxa_demangle(aSymbol,0,0,0);
     
     if (demangled)
     {
@@ -77,17 +76,6 @@ void DemangleSymbol(const char * aSymbol,
     }
 #endif // MOZ_DEMANGLE_SYMBOLS
 }
-
-#else
-void DemangleSymbol(const char * aSymbol, 
-                    char * aBuffer,
-                    int aBufLen)
-{
-  // lose
-  aBuffer[0] = '\0';
-}
-#endif
-
 
 
 #if defined(linux) && defined(__GLIBC__) && (defined(__i386) || defined(PPC)) // i386 or PPC Linux stackwalking code
@@ -103,21 +91,21 @@ void DumpStackToFile(FILE* aStream)
   // Stack walking code courtesy Kipp's "leaky".
 
   // Get the frame pointer out of the jmp_buf
+  void **bp = (void**)
 #if defined(__i386) 
-  unsigned long* bp = (unsigned long*) (jb[0].__jmpbuf[JB_BP]);
+    (jb[0].__jmpbuf[JB_BP]);
 #elif defined(PPC)
-  unsigned long* bp = (unsigned long*) (jb[0].__jmpbuf[JB_GPR1]);
+    (jb[0].__jmpbuf[JB_GPR1]);
 #endif
 
   int skip = 2;
-  for (unsigned long *nextbp = (unsigned long*) *bp++, pc = *bp;
-       pc >= 0x08000000 && pc < 0x7fffffff && nextbp > bp;
-       bp = nextbp, nextbp = (unsigned long*) *bp++, pc = *bp) {
+  for ( ; (void**)*bp > bp; bp = (void**)*bp) {
+    void *pc = *(bp+1);
     if (--skip <= 0) {
       Dl_info info;
-      int ok = dladdr((void*) pc, &info);
+      int ok = dladdr(pc, &info);
       if (!ok) {
-        fprintf(aStream, "UNKNOWN %p\n", (void *)pc);
+        fprintf(aStream, "UNKNOWN %p\n", pc);
         continue;
       }
 
@@ -255,31 +243,27 @@ write_address_file(void * pc, FILE* aStream)
     } else {
         char buffer[4096], dembuff[4096];
         Dl_info info;
-        char *func, *lib;
+        const char *func = "??", *lib = "??";
 
         ptr->next = newbucket(pc);
         mutex_unlock(&lock);
  
-        if (dladdr(pc, & info) == 0) {
-            func = "??";
-            lib  = "??";
-        } else {
-            lib =   (char *) info.dli_fname;
-            func =  (char *) info.dli_sname;
+        if (dladdr(pc, & info)) {
+            if (info.dli_fname)
+                lib =  info.dli_fname;
+            if (info.dli_sname)
+                func = info.dli_sname;
         }
  
 #ifdef __GNUC__
         DemangleSymbol(func, dembuff, sizeof(dembuff));
+#else
+        if (!demf || demf(func, dembuff, sizeof (dembuff)))
+            dembuff[0] = 0;
+#endif /*__GNUC__*/
         if (strlen(dembuff)) {
             func = dembuff;
         }
-#else
-        if (demf) {
-            if (demf(func, dembuff, sizeof (dembuff)) == 0)
-                func = dembuff;
-		}
-#endif /*__GNUC__*/
- 
         fprintf(aStream, "%u %s:%s+0x%x\n",
                 ptr->next->index,
                 lib,

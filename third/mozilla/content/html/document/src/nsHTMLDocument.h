@@ -45,7 +45,6 @@
 #include "nsIDOMHTMLBodyElement.h"
 #include "nsIDOMHTMLMapElement.h"
 #include "nsIDOMHTMLCollection.h"
-#include "nsIHTMLContentContainer.h"
 #include "nsIParser.h"
 #include "jsapi.h"
 #include "rdf.h"
@@ -73,8 +72,7 @@ class nsICacheEntryDescriptor;
 class nsHTMLDocument : public nsDocument,
                        public nsIHTMLDocument,
                        public nsIDOMHTMLDocument,
-                       public nsIDOMNSHTMLDocument,
-                       public nsIHTMLContentContainer
+                       public nsIDOMNSHTMLDocument
 {
 public:
   nsHTMLDocument();
@@ -89,43 +87,35 @@ public:
   virtual void Reset(nsIChannel* aChannel, nsILoadGroup* aLoadGroup);
   virtual void ResetToURI(nsIURI* aURI, nsILoadGroup* aLoadGroup);
 
-  NS_IMETHOD CreateShell(nsIPresContext* aContext,
-                         nsIViewManager* aViewManager,
-                         nsIStyleSet* aStyleSet,
-                         nsIPresShell** aInstancePtrResult);
+  virtual nsresult CreateShell(nsIPresContext* aContext,
+                               nsIViewManager* aViewManager,
+                               nsStyleSet* aStyleSet,
+                               nsIPresShell** aInstancePtrResult);
 
-  NS_IMETHOD StartDocumentLoad(const char* aCommand,
-                               nsIChannel* aChannel,
-                               nsILoadGroup* aLoadGroup,
-                               nsISupports* aContainer,
-                               nsIStreamListener **aDocListener,
-                               PRBool aReset = PR_TRUE,
-                               nsIContentSink* aSink = nsnull);
+  virtual nsresult StartDocumentLoad(const char* aCommand,
+                                     nsIChannel* aChannel,
+                                     nsILoadGroup* aLoadGroup,
+                                     nsISupports* aContainer,
+                                     nsIStreamListener **aDocListener,
+                                     PRBool aReset = PR_TRUE,
+                                     nsIContentSink* aSink = nsnull);
 
-  NS_IMETHOD StopDocumentLoad();
+  virtual void StopDocumentLoad();
 
   virtual void EndLoad();
 
-  NS_IMETHOD AddImageMap(nsIDOMHTMLMapElement* aMap);
+  virtual nsresult AddImageMap(nsIDOMHTMLMapElement* aMap);
 
-  NS_IMETHOD RemoveImageMap(nsIDOMHTMLMapElement* aMap);
+  virtual void RemoveImageMap(nsIDOMHTMLMapElement* aMap);
 
-  NS_IMETHOD GetImageMap(const nsAString& aMapName,
-                         nsIDOMHTMLMapElement** aResult);
+  virtual nsIDOMHTMLMapElement *GetImageMap(const nsAString& aMapName);
 
-  NS_IMETHOD GetAttributeStyleSheet(nsIHTMLStyleSheet** aStyleSheet);
-  NS_IMETHOD GetInlineStyleSheet(nsIHTMLCSSStyleSheet** aStyleSheet);
-  NS_IMETHOD GetCSSLoader(nsICSSLoader*& aLoader);
+  virtual nsICSSLoader* GetCSSLoader();
 
-  virtual void GetBaseTarget(nsAString& aTarget) const;
-  virtual void SetBaseTarget(const nsAString& aTarget);
+  virtual nsCompatibility GetCompatibilityMode();
+  virtual void SetCompatibilityMode(nsCompatibility aMode);
 
-  NS_IMETHOD SetReferrer(const nsAString& aReferrer);
-
-  NS_IMETHOD GetCompatibilityMode(nsCompatibility& aMode);
-  NS_IMETHOD SetCompatibilityMode(nsCompatibility aMode);
-
-  NS_IMETHOD_(PRBool) IsWriting()
+  virtual PRBool IsWriting()
   {
     return mWriteLevel != PRUint32(0);
   }
@@ -153,7 +143,7 @@ public:
   virtual void FlushPendingNotifications(PRBool aFlushReflows = PR_TRUE,
                                          PRBool aUpdateViews = PR_FALSE);
 
-  NS_IMETHOD_(PRBool) IsCaseSensitive();
+  virtual PRBool IsCaseSensitive();
 
   // nsIDOMDocument interface
   NS_DECL_NSIDOMDOCUMENT
@@ -166,7 +156,7 @@ public:
   NS_IMETHOD SetXmlVersion(const nsAString& aXmlVersion);
 
   // nsIDOMNode interface
-  NS_DECL_NSIDOMNODE
+  NS_FORWARD_NSIDOMNODE(nsDocument::)
 
   // nsIDOM3Node interface
   NS_IMETHOD GetBaseURI(nsAString& aBaseURI);
@@ -198,16 +188,16 @@ public:
   /*
    * Returns true if document.domain was set for this document
    */
-  NS_IMETHOD WasDomainSet(PRBool* aDomainWasSet);
+  virtual PRBool WasDomainSet();
 
-  NS_IMETHOD ResolveName(const nsAString& aName,
+  virtual nsresult ResolveName(const nsAString& aName,
                          nsIDOMHTMLFormElement *aForm,
                          nsISupports **aResult);
 
-  NS_IMETHOD GetFormControlElements(nsIDOMNodeList** aReturn);
-  NS_IMETHOD AddedForm();
-  NS_IMETHOD RemovedForm();
-  NS_IMETHOD GetNumFormsSynchronous(PRInt32* aNumForms);
+  virtual already_AddRefed<nsIDOMNodeList> GetFormControlElements();
+  virtual void AddedForm();
+  virtual void RemovedForm();
+  virtual PRInt32 GetNumFormsSynchronous();
 
   PRBool IsXHTML()
   {
@@ -246,7 +236,7 @@ protected:
   static PRBool MatchNameAttribute(nsIContent* aContent, nsString* aData);
   static PRBool MatchFormControls(nsIContent* aContent, nsString* aData);
 
-  static nsresult GetSourceDocumentURL(nsIURI** sourceURL);
+  static nsresult GetSourceDocumentURI(nsIURI** sourceURI);
 
   static void DocumentWriteTerminationFunc(nsISupports *aRef);
 
@@ -263,18 +253,12 @@ protected:
   nsresult CreateAndAddWyciwygChannel(void);
   nsresult RemoveWyciwygChannel(void);
 
-  void BaseResetToURI(nsIURI* aURI);
-
-  virtual void RetrieveRelevantHeaders(nsIChannel *aChannel);
-
-  nsCOMPtr<nsIHTMLStyleSheet> mAttrStyleSheet;
-  nsCOMPtr<nsIHTMLCSSStyleSheet> mStyleAttrStyleSheet;
-
-  nsString mBaseTarget;
-  nsString mReferrer;
+  PRInt32 GetDefaultNamespaceID() const
+  {
+    return mDefaultNamespaceID;
+  };
 
   nsCOMPtr<nsIChannel>     mChannel;
-  nsCOMPtr<nsIHttpChannel> mHttpChannel;
 
   nsCompatibility mCompatMode;
 
@@ -317,9 +301,6 @@ protected:
                                  PRInt32& charsetSource, nsACString& aCharset);
   static PRBool UseWeakDocTypeDefault(PRInt32& aCharsetSource,
                                       nsACString& aCharset);
-  static PRBool TryChannelCharset(nsIChannel *aChannel,
-                                  PRInt32& aCharsetSource,
-                                  nsACString& aCharset);
   static PRBool TryDefaultCharset(nsIMarkupDocumentViewer* aMarkupDV,
                                   PRInt32& aCharsetSource,
                                   nsACString& aCharset);

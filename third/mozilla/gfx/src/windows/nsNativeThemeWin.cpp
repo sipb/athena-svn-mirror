@@ -328,10 +328,8 @@ static PRInt32 GetContentState(nsIFrame* aFrame)
 
   nsCOMPtr<nsIPresContext> context;
   shell->GetPresContext(getter_AddRefs(context));
-  nsCOMPtr<nsIEventStateManager> esm;
-  context->GetEventStateManager(getter_AddRefs(esm));
   PRInt32 flags = 0;
-  esm->GetContentState(aFrame->GetContent(), flags);
+  context->EventStateManager()->GetContentState(aFrame->GetContent(), flags);
   return flags;
 }
 
@@ -339,13 +337,11 @@ static PRBool CheckBooleanAttr(nsIFrame* aFrame, nsIAtom* aAtom)
 {
   if (!aFrame)
     return PR_FALSE;
+  if (!aFrame->GetContent()->IsContentOfType(nsIContent::eXUL))
+    return aFrame->GetContent()->HasAttr(kNameSpaceID_None, aAtom);
   nsAutoString attr;
-  nsresult res = aFrame->GetContent()->GetAttr(kNameSpaceID_None, aAtom, attr);
-  if (res == NS_CONTENT_ATTR_NO_VALUE ||
-      (res != NS_CONTENT_ATTR_NOT_THERE && attr.IsEmpty()))
-    return PR_TRUE; // This handles the HTML case (an attr with no value is like a true val)
-  return attr.Equals(NS_LITERAL_STRING("true"), // This handles the XUL case.
-                     nsCaseInsensitiveStringComparator()); 
+  aFrame->GetContent()->GetAttr(kNameSpaceID_None, aAtom, attr);
+  return attr.Equals(NS_LITERAL_STRING("true")); 
 }
 
 static PRBool
@@ -1051,7 +1047,10 @@ nsNativeThemeWin::ThemeChanged()
 
 PRBool nsNativeThemeWin::IsWidgetStyled(nsIPresContext* aPresContext, nsIFrame* aFrame, PRUint8 aWidgetType) 
 {  
-  if (aFrame && (aWidgetType == NS_THEME_BUTTON || aWidgetType == NS_THEME_TEXTFIELD)) {
+  if (aFrame && (aWidgetType == NS_THEME_BUTTON || 
+                 aWidgetType == NS_THEME_TEXTFIELD ||
+                 aWidgetType == NS_THEME_LISTBOX || 
+                 aWidgetType == NS_THEME_DROPDOWN)) {
     if (aFrame->GetContent()->IsContentOfType(nsIContent::eHTML)) {
       
       // Get default CSS style values for widget
@@ -1065,12 +1064,9 @@ PRBool nsNativeThemeWin::IsWidgetStyled(nsIPresContext* aPresContext, nsIFrame* 
       nscoord defaultBorderSize;
             
       float p2t;
-      aPresContext->GetPixelsToTwips(&p2t);
+      p2t = aPresContext->PixelsToTwips();
 
-      nsCOMPtr<nsILookAndFeel> lookAndFeel;
-      aPresContext->GetLookAndFeel(getter_AddRefs(lookAndFeel));            
-      if (!lookAndFeel)
-        return PR_TRUE;
+      nsILookAndFeel *lookAndFeel = aPresContext->LookAndFeel();
 
       switch (aWidgetType) {
         case NS_THEME_BUTTON: {          
@@ -1097,6 +1093,10 @@ PRBool nsNativeThemeWin::IsWidgetStyled(nsIPresContext* aPresContext, nsIFrame* 
         case NS_THEME_TEXTFIELD: {
           defaultBorderStyle = NS_STYLE_BORDER_STYLE_INSET;
           defaultBorderSize = NSIntPixelsToTwips(TEXTFIELD_BORDER_SIZE, p2t);
+          // fall through...
+        }
+        case NS_THEME_LISTBOX:
+        case NS_THEME_DROPDOWN: {
           lookAndFeel->GetColor(nsILookAndFeel::eColor_threedface, defaultBorderColor);
 
           if (IsDisabled(aFrame))
@@ -1118,6 +1118,10 @@ PRBool nsNativeThemeWin::IsWidgetStyled(nsIPresContext* aPresContext, nsIFrame* 
           !(ourBG->mBackgroundFlags & NS_STYLE_BG_IMAGE_NONE))
         return PR_TRUE;
       
+      // We don't honor CSS-specified border for listbox and dropdown
+      if (aWidgetType == NS_THEME_LISTBOX || aWidgetType == NS_THEME_DROPDOWN)
+          return PR_FALSE;
+
       // Check whether border style or color differs from default
       const nsStyleBorder* ourBorder = aFrame->GetStyleBorder();
 
@@ -1152,12 +1156,8 @@ nsNativeThemeWin::ThemeSupportsWidget(nsIPresContext* aPresContext,
   // XXXdwh We can go even further and call the API to ask if support exists for
   // specific widgets.
 
-  if (aPresContext) {
-    nsCOMPtr<nsIPresShell> shell;
-    aPresContext->GetShell(getter_AddRefs(shell));
-    if (!shell->IsThemeSupportEnabled())
-      return PR_FALSE;
-  }
+  if (aPresContext && !aPresContext->PresShell()->IsThemeSupportEnabled())
+    return PR_FALSE;
 
   HANDLE theme = NULL;
   if (aWidgetType == NS_THEME_CHECKBOX_CONTAINER)

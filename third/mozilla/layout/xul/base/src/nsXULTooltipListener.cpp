@@ -294,14 +294,13 @@ nsXULTooltipListener::Init(nsIContent* aSourceNode, nsIRootBox* aRootBox)
 
   // Only the first time, register the callback and get the initial value of the pref
   if (!prefChangeRegistered) {
-    nsCOMPtr<nsIPrefBranch> prefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID));  
+    nsCOMPtr<nsIPrefBranchInternal> prefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID));  
     if (prefBranch) {
       // get the initial value of the pref
       nsresult rv = prefBranch->GetBoolPref("browser.chrome.toolbar_tips", &sShowTooltips);
       if (NS_SUCCEEDED(rv)) {
         // register the callback so we get notified of updates
-        nsCOMPtr<nsIPrefBranchInternal> prefInternal(do_QueryInterface(prefBranch));
-        rv = prefInternal->AddObserver("browser.chrome.toolbar_tips", this, PR_FALSE);
+        rv = prefBranch->AddObserver("browser.chrome.toolbar_tips", this, PR_FALSE);
         if (NS_SUCCEEDED(rv))
           prefChangeRegistered = PR_TRUE;
       }
@@ -435,6 +434,8 @@ nsXULTooltipListener::ShowTooltip()
 }
 
 #ifdef MOZ_XUL
+// XXX: "This stuff inside DEBUG_crap could be used to make tree tooltips work
+//       in the future."
 #ifdef DEBUG_crap
 static void
 GetTreeCellCoords(nsITreeBoxObject* aTreeBox, nsIContent* aSourceNode, 
@@ -565,8 +566,9 @@ nsXULTooltipListener::GetTooltipFor(nsIContent* aTarget, nsIContent** aTooltip)
   }
   nsIScriptGlobalObject *global = document->GetScriptGlobalObject();
   if (global) {
-    nsCOMPtr<nsIScriptContext> context;
-    if (NS_SUCCEEDED(global->GetContext(getter_AddRefs(context))) && context) {
+    nsIScriptContext *context = global->GetContext();
+
+    if (context) {
       nsCOMPtr<nsIDOMWindowInternal> domWindow = do_QueryInterface(global);
       if (!domWindow)
         return NS_ERROR_FAILURE;

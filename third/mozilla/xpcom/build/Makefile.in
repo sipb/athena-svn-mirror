@@ -29,6 +29,13 @@ include $(DEPTH)/config/autoconf.mk
 MODULE		= xpcom
 LIBRARY_NAME	= xpcom
 
+PACKAGE_FILE = xpcom.pkg
+PACKAGE_VARS += USE_SHORT_LIBNAME
+
+ifdef ENABLE_TESTS
+PACKAGE_FILE += xpcom-tests.pkg
+endif
+
 # Do not set EXPORT_LIBRARY as we do not want xpcom in the static libs list
 #EXPORT_LIBRARY = 1
 GRE_MODULE	= 1
@@ -41,7 +48,9 @@ ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
 REQUIRES += macmorefiles
 endif
 
-CPPSRCS		= nsXPComInit.cpp
+CPPSRCS		= nsXPComInit.cpp \
+		  nsStringAPI.cpp \
+		  $(NULL)
 
 ifeq ($(OS_ARCH),WINNT)
 CPPSRCS		+= dlldeps.cpp
@@ -71,7 +80,6 @@ SHARED_LIBRARY_LIBS = \
 		$(DIST)/lib/$(LIB_PREFIX)xpt.$(LIB_SUFFIX) \
 		$(DIST)/lib/$(LIB_PREFIX)xptcmd.$(LIB_SUFFIX) \
 		$(DIST)/lib/$(LIB_PREFIX)string_s.$(LIB_SUFFIX) \
-		$(DIST)/lib/$(LIB_PREFIX)string_obsolete_s.$(LIB_SUFFIX) \
 		$(DIST)/lib/$(LIB_PREFIX)xpcomglue_s.$(LIB_SUFFIX) \
 		$(NULL)
 
@@ -92,11 +100,8 @@ SDK_HEADERS =  \
 		nsXPCOMCID.h    \
 		$(NULL)
 
-SDK_BINARY = $(IMPORT_LIBRARY) $(SHARED_LIBRARY)
-
-ifdef MOZ_DEMANGLE_SYMBOLS
-EXTRA_DSO_LDOPTS += -liberty
-endif
+SDK_LIBRARY = $(IMPORT_LIBRARY)
+SDK_BINARY = $(SHARED_LIBRARY)
 
 # pull in MoreFiles for MacOSX
 ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))

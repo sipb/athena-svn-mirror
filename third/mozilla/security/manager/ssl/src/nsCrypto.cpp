@@ -36,6 +36,8 @@
 #include "nsDOMCID.h"
 #include "nsIDOMWindowInternal.h"
 #include "nsIDOMClassInfo.h"
+#include "nsIDOMDocument.h"
+#include "nsIDocument.h"
 #include "nsIScriptObjectPrincipal.h"
 #include "nsIScriptContext.h"
 #include "nsIScriptGlobalObject.h"
@@ -51,6 +53,8 @@
 #include "nsXPIDLString.h"
 #include "nsIGenKeypairInfoDlg.h"
 #include "nsIDOMCryptoDialogs.h"
+#include "nsIFormSigningDialog.h"
+#include "nsIProxyObjectManager.h"
 #include "jsapi.h"
 #include "jsdbgapi.h"
 #include <ctype.h>
@@ -59,6 +63,8 @@
 #include "keyhi.h"
 #include "cryptohi.h"
 #include "seccomon.h"
+#include "secerr.h"
+#include "sechash.h"
 extern "C" {
 #include "crmf.h"
 #include "pk11pqg.h"
@@ -68,10 +74,12 @@ extern "C" {
 #include "base64.h"
 #include "certdb.h"
 #include "secmod.h"
+#include "nsISaveAsCharset.h"
 
 #include "nsNSSCleaner.h"
 NSSCleanupAutoPtrClass(SECKEYPrivateKey, SECKEY_DestroyPrivateKey)
 NSSCleanupAutoPtrClass(PK11SlotInfo, PK11_FreeSlot)
+NSSCleanupAutoPtrClass(CERTCertNicknames, CERT_FreeNicknames)
 
 #include "nsNSSShutDown.h"
 
@@ -81,10 +89,7 @@ NSSCleanupAutoPtrClass(PK11SlotInfo, PK11_FreeSlot)
  */
 
 #define JS_ERROR       "error:"
-#define JS_ERROR_INVAL_PARAM JS_ERROR"invalidParameter:"
-#define JS_ERROR_USER_CANCEL JS_ERROR"userCancel"
 #define JS_ERROR_INTERNAL  JS_ERROR"internalError"
-#define JS_ERROR_ARGC_ERR  JS_ERROR"incorrect number of parameters"
 
 #undef REPORT_INCORRECT_NUM_ARGS
 
@@ -374,15 +379,12 @@ nsCrypto::GetScriptPrincipal(JSContext *cx)
   if (principal)
     return principal;
 
-  nsCOMPtr<nsIScriptContext> scriptContext;
-  GetScriptContextFromJSContext(cx, getter_AddRefs(scriptContext));
+  nsIScriptContext *scriptContext = GetScriptContextFromJSContext(cx);
 
   if (scriptContext)
   {
-    nsCOMPtr<nsIScriptGlobalObject> global;
-    scriptContext->GetGlobalObject(getter_AddRefs(global));
-    NS_ENSURE_TRUE(global, nsnull);
-    nsCOMPtr<nsIScriptObjectPrincipal> globalData = do_QueryInterface(global);
+    nsCOMPtr<nsIScriptObjectPrincipal> globalData =
+      do_QueryInterface(scriptContext->GetGlobalObject());
     NS_ENSURE_TRUE(globalData, nsnull);
     globalData->GetPrincipal(&principal);
   }
@@ -1711,16 +1713,13 @@ nsP12Runnable::Run()
 
   //Build up the message that let's the user know we're trying to 
   //make PKCS12 backups of the new certs.
-  nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("ForcedBackup1").get(),
-                                      final);
+  nssComponent->GetPIPNSSBundleString("ForcedBackup1", final);
   final.Append(NS_LITERAL_STRING("\n\n").get());
-  nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("ForcedBackup2").get(),
-                                      temp);
+  nssComponent->GetPIPNSSBundleString("ForcedBackup2", temp);
   final.Append(temp.get());
   final.Append(NS_LITERAL_STRING("\n\n").get());
 
-  nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("ForcedBackup3").get(),
-                                      temp);
+  nssComponent->GetPIPNSSBundleString("ForcedBackup3", temp);
 
   final.Append(temp.get());
   alertUser(final.get());
@@ -1733,7 +1732,7 @@ nsP12Runnable::Run()
   }
 
   nsString filePickMessage;
-  nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("chooseP12BackupFileDialog").get(),
+  nssComponent->GetPIPNSSBundleString("chooseP12BackupFileDialog",
                                       filePickMessage);
   filePicker->Init(nsnull, filePickMessage.get(), nsIFilePicker::modeSave);
   filePicker->AppendFilter(NS_LITERAL_STRING("PKCS12").get(),
@@ -2073,13 +2072,406 @@ nsCrypto::Random(PRInt32 aNumBytes, nsAString& aReturn)
   return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-NS_IMETHODIMP
-nsCrypto::SignText(nsAString& aReturn)
+static void
+GetDocumentFromContext(JSContext *cx, nsIDocument **aDocument)
 {
-  return NS_ERROR_NOT_IMPLEMENTED;
+  // Get the script context.
+  nsIScriptContext* scriptContext = GetScriptContextFromJSContext(cx);
+  if (!scriptContext) {
+    return;
+  }
+
+  nsCOMPtr<nsIDOMWindow> domWindow = 
+    do_QueryInterface(scriptContext->GetGlobalObject());
+  if (!domWindow) {
+    return;
+  }
+
+  nsCOMPtr<nsIDOMDocument> domDocument;
+  domWindow->GetDocument(getter_AddRefs(domDocument));
+  if (!domDocument) {
+    return;
+  }
+
+  CallQueryInterface(domDocument, aDocument);
+
+  return;
 }
 
+void signTextOutputCallback(void *arg, const char *buf, unsigned long len)
+{
+  ((nsCString*)arg)->Append(buf, len);
+}
 
+#define NICKNAME_EXPIRED_STRING " (expired)"
+#define NICKNAME_NOT_YET_VALID_STRING " (not yet valid)"
+
+NS_IMETHODIMP
+nsCrypto::SignText(const nsAString& aStringToSign, const nsAString& aCaOption,
+                   nsAString& aResult)
+{
+  // XXX This code should return error codes, but we're keeping this
+  //     backwards compatible with NS4.x and so we can't throw exceptions.
+  NS_NAMED_LITERAL_STRING(internalError, "error:internalError");
+
+  aResult.Truncate();
+
+  nsCOMPtr<nsIXPCNativeCallContext> ncc;
+  nsCOMPtr<nsIXPConnect> xpc(do_GetService(nsIXPConnect::GetCID()));
+  if (xpc) {
+    xpc->GetCurrentNativeCallContext(getter_AddRefs(ncc));
+  }
+
+  if (!ncc) {
+    aResult.Append(internalError);
+
+    return NS_OK;
+  }
+
+  PRUint32 argc;
+  ncc->GetArgc(&argc);
+
+  JSContext *cx;
+  ncc->GetJSContext(&cx);
+  if (!cx) {
+    aResult.Append(internalError);
+
+    return NS_OK;
+  }
+
+  if (!aCaOption.Equals(NS_LITERAL_STRING("auto")) &&
+      !aCaOption.Equals(NS_LITERAL_STRING("ask"))) {
+    JS_ReportError(cx, "%s%s\n", JS_ERROR, "caOption argument must be ask or auto");
+
+    aResult.Append(internalError);
+
+    return NS_OK;
+  }
+
+  // It was decided to always behave as if "ask" were specified.
+  // XXX Should we warn in the JS Console for auto?
+
+  nsCOMPtr<nsIInterfaceRequestor> uiContext = new PipUIContext;
+  if (!uiContext) {
+    aResult.Append(internalError);
+
+    return NS_OK;
+  }
+
+  PRBool bestOnly = PR_TRUE;
+  PRBool validOnly = PR_TRUE;
+  CERTCertList* certList =
+    CERT_FindUserCertsByUsage(CERT_GetDefaultCertDB(), certUsageEmailSigner,
+                              bestOnly, validOnly, uiContext);
+
+  PRUint32 numCAs = argc - 2;
+  if (numCAs > 0) {
+    nsAutoArrayPtr<char*> caNames(new char*[numCAs]);
+    if (!caNames) {
+      aResult.Append(internalError);
+
+      return NS_OK;
+    }
+
+    jsval *argv = nsnull;
+    ncc->GetArgvPtr(&argv);
+
+    PRUint32 i;
+    for (i = 2; i < argc; ++i) {
+      JSString *caName = JS_ValueToString(cx, argv[i]);
+      if (!caName) {
+        aResult.Append(internalError);
+
+        return NS_OK;
+      }
+      caNames[i] = JS_GetStringBytes(caName);
+    }
+
+    if (certList &&
+        CERT_FilterCertListByCANames(certList, numCAs, caNames,
+                                     certUsageEmailSigner) != SECSuccess) {
+      aResult.Append(internalError);
+
+      return NS_OK;
+    }
+  }
+
+  if (!certList || CERT_LIST_EMPTY(certList)) {
+    aResult.Append(NS_LITERAL_STRING("error:noMatchingCert"));
+
+    return NS_OK;
+  }
+
+  nsCOMPtr<nsIFormSigningDialog> fsd =
+    do_CreateInstance(NS_FORMSIGNINGDIALOG_CONTRACTID);
+  if (!fsd) {
+    aResult.Append(internalError);
+
+    return NS_OK;
+  }
+
+  nsCOMPtr<nsIProxyObjectManager> proxyman =
+    do_GetService(NS_XPCOMPROXY_CONTRACTID);
+  if (!proxyman) {
+    aResult.Append(internalError);
+
+    return NS_OK;
+  }
+
+  nsCOMPtr<nsIFormSigningDialog> proxied_fsd;
+  nsresult rv = proxyman->GetProxyForObject(NS_UI_THREAD_EVENTQ,
+                                            NS_GET_IID(nsIFormSigningDialog), 
+                                            fsd, PROXY_SYNC,
+                                            getter_AddRefs(proxied_fsd));
+  if (NS_FAILED(rv)) {
+    aResult.Append(internalError);
+
+    return NS_OK;
+  }
+
+  nsCOMPtr<nsIDocument> document;
+  GetDocumentFromContext(cx, getter_AddRefs(document));
+  if (!document) {
+    aResult.Append(internalError);
+
+    return NS_OK;
+  }
+
+  // Get the hostname from the URL of the document.
+  nsIURI* uri = document->GetDocumentURI();
+  if (!uri) {
+    aResult.Append(internalError);
+
+    return NS_OK;
+  }
+
+  nsCString host;
+  rv = uri->GetHost(host);
+  if (NS_FAILED(rv)) {
+    aResult.Append(internalError);
+
+    return NS_OK;
+  }
+
+  PRInt32 numberOfCerts = 0;
+  CERTCertListNode* node;
+  for (node = CERT_LIST_HEAD(certList); !CERT_LIST_END(node, certList);
+       node = CERT_LIST_NEXT(node)) {
+    ++numberOfCerts;
+  }
+
+  CERTCertNicknames* nicknames =
+    CERT_NicknameStringsFromCertList(certList, NICKNAME_EXPIRED_STRING,
+                                     NICKNAME_NOT_YET_VALID_STRING);
+  if (!nicknames) {
+    aResult.Append(internalError);
+
+    return NS_OK;
+  }
+
+  CERTCertNicknamesCleaner cnc(nicknames);
+
+  NS_ASSERTION(nicknames->numnicknames == numberOfCerts,
+               "nicknames->numnicknames != numberOfCerts");
+
+  nsAutoArrayPtr<PRUnichar*> certNicknameList(new PRUnichar*[nicknames->numnicknames * 2]);
+  if (!certNicknameList) {
+    aResult.Append(internalError);
+
+    return NS_OK;
+  }
+
+  PRUnichar** certDetailsList = certNicknameList.get() + nicknames->numnicknames;
+
+  PRInt32 certsToUse;
+  for (node = CERT_LIST_HEAD(certList), certsToUse = 0;
+       !CERT_LIST_END(node, certList) && certsToUse < nicknames->numnicknames;
+       node = CERT_LIST_NEXT(node)) {
+    nsRefPtr<nsNSSCertificate> tempCert = new nsNSSCertificate(node->cert);
+    if (tempCert) {
+      nsAutoString nickWithSerial, details;
+      rv = tempCert->FormatUIStrings(NS_ConvertUTF8toUTF16(nicknames->nicknames[certsToUse]),
+                                     nickWithSerial, details);
+      if (NS_SUCCEEDED(rv)) {
+        certNicknameList[certsToUse] = ToNewUnicode(nickWithSerial);
+        if (certNicknameList[certsToUse]) {
+          certDetailsList[certsToUse] = ToNewUnicode(details);
+          if (!certDetailsList[certsToUse]) {
+            nsMemory::Free(certNicknameList[certsToUse]);
+            continue;
+          }
+          ++certsToUse;
+        }
+      }
+    }
+  }
+
+  if (certsToUse == 0) {
+    aResult.Append(internalError);
+
+    return NS_OK;
+  }
+
+  NS_ConvertUTF8toUTF16 utf16Host(host);
+
+  CERTCertificate *signingCert = nsnull;
+  PRBool tryAgain, canceled;
+  nsAutoString password;
+  do {
+    // Throw up the form signing confirmation dialog and get back the index
+    // of the selected cert.
+    PRInt32 selectedIndex = -1;
+    rv = proxied_fsd->ConfirmSignText(uiContext, utf16Host, aStringToSign,
+                                      NS_CONST_CAST(const PRUnichar**, certNicknameList.get()),
+                                      NS_CONST_CAST(const PRUnichar**, certDetailsList),
+                                      certsToUse, &selectedIndex, password,
+                                      &canceled);
+    if (NS_FAILED(rv) || canceled) {
+      break; // out of tryAgain loop
+    }
+
+    PRInt32 j = 0;
+    for (node = CERT_LIST_HEAD(certList); !CERT_LIST_END(node, certList);
+         node = CERT_LIST_NEXT(node)) {
+      if (j == selectedIndex) {
+        signingCert = CERT_DupCertificate(node->cert);
+        break; // out of cert list iteration loop
+      }
+      ++j;
+    }
+
+    if (!signingCert) {
+      rv = NS_ERROR_FAILURE;
+      break; // out of tryAgain loop
+    }
+
+    NS_ConvertUTF16toUTF8 pwUtf8(password);
+
+    tryAgain =
+      PK11_CheckUserPassword(signingCert->slot,
+                             NS_CONST_CAST(char *, pwUtf8.get())) != SECSuccess;
+    // XXX we should show an error dialog before retrying
+  } while (tryAgain);
+
+  PRInt32 k;
+  for (k = 0; k < certsToUse; ++k) {
+    nsMemory::Free(certNicknameList[k]);
+    nsMemory::Free(certDetailsList[k]);
+  }
+
+  if (NS_FAILED(rv)) { // something went wrong inside the tryAgain loop
+    aResult.Append(internalError);
+
+    return NS_OK;
+  }
+
+  if (canceled) {
+    aResult.Append(NS_LITERAL_STRING("error:userCancel"));
+
+    return NS_OK;
+  }
+
+  SECKEYPrivateKey* privKey = PK11_FindKeyByAnyCert(signingCert, uiContext);
+  if (!privKey) {
+    aResult.Append(internalError);
+
+    return NS_OK;
+  }
+
+  nsCAutoString charset(document->GetDocumentCharacterSet());
+
+  // XXX Doing what nsFormSubmission::GetEncoder does (see
+  //     http://bugzilla.mozilla.org/show_bug.cgi?id=81203).
+  if (charset.Equals(NS_LITERAL_CSTRING("ISO-8859-1"))) {
+    charset.Assign(NS_LITERAL_CSTRING("windows-1252"));
+  }
+
+  nsCOMPtr<nsISaveAsCharset> encoder =
+    do_CreateInstance(NS_SAVEASCHARSET_CONTRACTID);
+  if (encoder) {
+    rv = encoder->Init(charset.get(),
+                       (nsISaveAsCharset::attr_EntityAfterCharsetConv + 
+                       nsISaveAsCharset::attr_FallbackDecimalNCR),
+                       0);
+  }
+
+  nsXPIDLCString buffer;
+  if (aStringToSign.Length() > 0) {
+    if (encoder && NS_SUCCEEDED(rv)) {
+      rv = encoder->Convert(PromiseFlatString(aStringToSign).get(),
+                            getter_Copies(buffer));
+      if (NS_FAILED(rv)) {
+        aResult.Append(internalError);
+
+        return NS_OK;
+      }
+    }
+    else {
+      AppendUTF16toUTF8(aStringToSign, buffer);
+    }
+  }
+
+  HASHContext *hc = HASH_Create(HASH_AlgSHA1);
+  if (!hc) {
+    aResult.Append(internalError);
+
+    return NS_OK;
+  }
+
+  unsigned char hash[SHA1_LENGTH];
+
+  SECItem digest;
+  digest.data = hash;
+
+  HASH_Begin(hc);
+  HASH_Update(hc, NS_REINTERPRET_CAST(const unsigned char*, buffer.get()),
+              buffer.Length());
+  HASH_End(hc, digest.data, &digest.len, SHA1_LENGTH);
+  HASH_Destroy(hc);
+
+  nsCString p7;
+  SECStatus srv = SECFailure;
+
+  SEC_PKCS7ContentInfo *ci = SEC_PKCS7CreateSignedData(signingCert,
+                                                       certUsageEmailSigner,
+                                                       nsnull, SEC_OID_SHA1,
+                                                       &digest, nsnull, uiContext);
+  if (ci) {
+    srv = SEC_PKCS7IncludeCertChain(ci, nsnull);
+    if (srv == SECSuccess) {
+      srv = SEC_PKCS7AddSigningTime(ci);
+      if (srv == SECSuccess) {
+        srv = SEC_PKCS7Encode(ci, signTextOutputCallback, &p7, nsnull, nsnull,
+                              uiContext);
+      }
+    }
+
+    SEC_PKCS7DestroyContentInfo(ci);
+  }
+
+  if (srv != SECSuccess) {
+    aResult.Append(internalError);
+
+    return NS_OK;
+  }
+
+  SECItem binary_item;
+  binary_item.data = NS_REINTERPRET_CAST(unsigned char*,
+                                         NS_CONST_CAST(char*, p7.get()));
+  binary_item.len = p7.Length();
+
+  char *result = NSSBase64_EncodeItem(nsnull, nsnull, 0, &binary_item);
+  if (result) {
+    AppendASCIItoUTF16(result, aResult);
+  }
+  else {
+    aResult.Append(internalError);
+  }
+
+  PORT_Free(result);
+
+  return NS_OK;
+}
 
 NS_IMETHODIMP
 nsCrypto::Alert(const nsAString& aMessage)
@@ -2180,22 +2572,19 @@ nsPkcs11::Deletemodule(const nsAString& aModuleName, PRInt32* aReturn)
   nsCOMPtr<nsINSSComponent> nssComponent(do_GetService(kNSSComponentCID, &rv));
   if (aModuleName.IsEmpty()) {
     *aReturn = JS_ERR_BAD_MODULE_NAME;
-    nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("DelModuleBadName").get(),
-                                        errorMessage);
+    nssComponent->GetPIPNSSBundleString("DelModuleBadName", errorMessage);
     alertUser(errorMessage.get());
     return NS_OK;
   }
   nsString final;
-  nsXPIDLString temp;
+  nsAutoString temp;
   //Make sure the user knows we're trying to do this.
-  nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("DelModuleWarning").get(),
-                                      final);
+  nssComponent->GetPIPNSSBundleString("DelModuleWarning", final);
   final.Append(NS_LITERAL_STRING("\n").get());
   PRUnichar *tempUni = ToNewUnicode(aModuleName);
   const PRUnichar *formatStrings[1] = { tempUni };
-  rv = nssComponent->PIPBundleFormatStringFromName(NS_LITERAL_STRING("AddModuleName").get(),
-                                                   formatStrings, 1,
-                                                   getter_Copies(temp));
+  rv = nssComponent->PIPBundleFormatStringFromName("AddModuleName",
+                                                   formatStrings, 1, temp);
   nsMemory::Free(tempUni);
   final.Append(temp);
   if (!confirm_user(final.get())) {
@@ -2208,18 +2597,15 @@ nsPkcs11::Deletemodule(const nsAString& aModuleName, PRInt32* aReturn)
   SECStatus srv = SECMOD_DeleteModule(modName, &modType);
   if (srv == SECSuccess) {
     if (modType == SECMOD_EXTERNAL) {
-      nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("DelModuleExtSuccess").get(),
-                                          errorMessage);
+      nssComponent->GetPIPNSSBundleString("DelModuleExtSuccess", errorMessage);
       *aReturn = JS_OK_DEL_EXTERNAL_MOD;
     } else {
-      nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("DelModuleIntSuccess").get(),
-                                          errorMessage);
+      nssComponent->GetPIPNSSBundleString("DelModuleIntSuccess", errorMessage);
       *aReturn = JS_OK_DEL_INTERNAL_MOD;
     }
   } else {
     *aReturn = JS_ERR_DEL_MOD;
-    nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("DelModuleError").get(),
-                                        errorMessage);
+    nssComponent->GetPIPNSSBundleString("DelModuleError", errorMessage);
   }
   alertUser(errorMessage.get());
   return NS_OK;
@@ -2236,10 +2622,9 @@ nsPkcs11::Addmodule(const nsAString& aModuleName,
   nsresult rv;
   nsCOMPtr<nsINSSComponent> nssComponent(do_GetService(kNSSComponentCID, &rv));
   nsString final;
-  nsXPIDLString temp;
+  nsAutoString temp;
 
-  rv = nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("AddModulePrompt").get(),
-                                           final);
+  rv = nssComponent->GetPIPNSSBundleString("AddModulePrompt", final);
   if (NS_FAILED(rv))
     return rv;
 
@@ -2247,9 +2632,8 @@ nsPkcs11::Addmodule(const nsAString& aModuleName,
   
   PRUnichar *tempUni = ToNewUnicode(aModuleName); 
   const PRUnichar *formatStrings[1] = { tempUni };
-  rv = nssComponent->PIPBundleFormatStringFromName(NS_LITERAL_STRING("AddModuleName").get(),
-                                                   formatStrings, 1,
-                                                   getter_Copies(temp));
+  rv = nssComponent->PIPBundleFormatStringFromName("AddModuleName",
+                                                   formatStrings, 1, temp);
   nsMemory::Free(tempUni);
 
   if (NS_FAILED(rv))
@@ -2260,9 +2644,8 @@ nsPkcs11::Addmodule(const nsAString& aModuleName,
 
   tempUni = ToNewUnicode(aLibraryFullPath);
   formatStrings[0] = tempUni;
-  rv = nssComponent->PIPBundleFormatStringFromName(NS_LITERAL_STRING("AddModulePath").get(),
-                                                   formatStrings, 1,
-                                                   getter_Copies(temp));
+  rv = nssComponent->PIPBundleFormatStringFromName("AddModulePath",
+                                                   formatStrings, 1, temp);
   nsMemory::Free(tempUni);
   if (NS_FAILED(rv))
     return rv;
@@ -2289,18 +2672,15 @@ nsPkcs11::Addmodule(const nsAString& aModuleName,
   // what the return value for SEDMOD_AddNewModule is
   switch (srv) {
   case SECSuccess:
-    nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("AddModuleSuccess").get(),
-                                        final);
+    nssComponent->GetPIPNSSBundleString("AddModuleSuccess", final);
     *aReturn = JS_OK_ADD_MOD;
     break;
   case SECFailure:
-    nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("AddModuleFailure").get(),
-                                        final);
+    nssComponent->GetPIPNSSBundleString("AddModuleFailure", final);
     *aReturn = JS_ERR_ADD_MOD;
     break;
   case -2:
-    nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("AddModuleDup").get(),
-                                        final);
+    nssComponent->GetPIPNSSBundleString("AddModuleDup", final);
     *aReturn = JS_ERR_ADD_DUPLICATE_MOD;
     break;
   default:

@@ -1754,7 +1754,7 @@ nsresult nsParser::ResumeParse(PRBool allowIteration, PRBool aIsFinalChunk, PRBo
           }
         }
 
-        //Only allow parsing to be interuptted in the subsequent call
+        //Only allow parsing to be interrupted in the subsequent call
         //to build model.
         SetCanInterrupt(aCanInterrupt); 
         nsresult theTokenizerResult = mFlags & NS_PARSER_FLAG_CAN_TOKENIZE ? Tokenize(aIsFinalChunk) : NS_OK;   // kEOF==2152596456
@@ -2403,7 +2403,7 @@ NS_PRECONDITION((eOnStart == mParserContext->mStreamListenerState ||
 
     if(eInvalidDetect==theContext->mAutoDetectStatus) { 
       if(theContext->mScanner) { 
-        nsReadingIterator<PRUnichar> iter;
+        nsScannerIterator iter;
         theContext->mScanner->EndReading(iter);
         theContext->mScanner->SetPosition(iter, PR_TRUE);
       } 

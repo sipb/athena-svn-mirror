@@ -33,6 +33,12 @@ IS_COMPONENT	= 1
 MODULE_NAME	= necko_core_and_primary_protocols
 GRE_MODULE	= 1
 
+PACKAGE_FILE = necko.pkg
+
+ifdef ENABLE_TESTS
+PACKAGE_FILE += necko-tests.pkg
+endif
+
 REQUIRES	= xpcom \
 		  string \
 		  nkcache \
@@ -108,6 +114,6 @@ include $(topsrcdir)/config/rules.mk
 
 ifeq ($(OS_ARCH),WINNT)
 ifdef GNU_CC
-OS_LIBS		+= -lws2_32
+OS_LIBS		+= -lwsock32
 endif
 endif

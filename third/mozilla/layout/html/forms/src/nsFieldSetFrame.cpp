@@ -50,7 +50,6 @@
 #include "nsISupports.h"
 #include "nsIAtom.h"
 #include "nsIPresContext.h"
-#include "nsIHTMLContent.h"
 #include "nsHTMLParts.h"
 #include "nsHTMLAtoms.h"
 #include "nsLayoutAtoms.h"
@@ -549,7 +548,7 @@ nsFieldSetFrame::Reflow(nsIPresContext*          aPresContext,
             break;
           case NS_STYLE_TEXT_ALIGN_CENTER:
             float p2t;
-            aPresContext->GetPixelsToTwips(&p2t);
+            p2t = aPresContext->PixelsToTwips();
             mLegendRect.x = NSIntPixelsToTwips((nscoord) NSToIntRound((float)(contentRect.width/2 - mLegendRect.width/2 + borderPadding.left) / p2t),p2t);
         }
   

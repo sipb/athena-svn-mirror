@@ -12,6 +12,7 @@
     <object class="wxMenuBar" name="mainmenu">
       <style>wxMB_DOCKABLE</style>
       <object_ref ref="menu_file"/>
+      <object_ref ref="menu_edit"/>
     </object>
 
     <!-- Editor tool bar -->
@@ -67,7 +68,6 @@
         <tooltip>Set the paragraph background colour</tooltip>
       </object>
     </object>
-
 
     <object class="wxFlexGridSizer">
       <cols>1</cols>

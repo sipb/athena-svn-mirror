@@ -55,6 +55,9 @@ bin/components/libxpcom_compat_c.so
 [browser]
 bin/mozilla
 bin/mozilla-bin
+bin/init.d/README
+bin/init.d/S02solaris_patchchecker.sh
+bin/moz_patch_checker.dtksh
 bin/icons/*
 bin/libgtksuperwin.so
 bin/libgtkxtbin.so
@@ -90,7 +93,6 @@ bin/components/caps.xpt
 bin/components/cookie.xpt
 bin/components/libjsd.so
 bin/components/jsdservice.xpt
-bin/components/libjsdom.so
 bin/components/dom.xpt
 bin/components/dom_base.xpt
 bin/components/dom_core.xpt
@@ -241,6 +243,15 @@ bin/components/typeaheadfind.xpt
 bin/components/libtypeaheadfind.so
 bin/components/nsCloseAllWindows.js
 
+; Kerberos NegotiateAuth
+bin/components/libnegotiateauth.so
+
+; GnomeVFS support
+bin/components/libnkgnomevfs.so
+
+; Kerberos NegotiateAuth
+bin/components/libnegotiateauth.so
+
 ; webservices
 bin/components/libwebsrvcs.so
 bin/components/websrvcs.xpt
@@ -282,6 +293,7 @@ bin/chrome/icons/default/main-window*.xpm
 
 ; all the pref files must be part of base
 ; to prevent migration bugs
+bin/greprefs/*
 bin/defaults/pref/*
 bin/defaults/autoconfig/*
 ; this is only here if you have plugins -blizzard
@@ -409,6 +421,9 @@ bin/chrome/icons/default/venkman-window*.xpm
 ;       developers to create an installer.  Release builds contain 
 ;       a legitimate, working talkback.xpi.
 bin/components/nsSample.js
+bin/components/libqfaservices.so
+bin/components/qfaservices.xpt
+bin/components/talkback/*
 
 [psm]
 bin/libnssckbi.so

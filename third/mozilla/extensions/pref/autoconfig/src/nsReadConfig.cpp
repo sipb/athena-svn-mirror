@@ -37,6 +37,10 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
+#ifdef MOZ_LOGGING
+// sorry, this has to be before the pre-compiled header
+#define FORCE_PR_LOG /* Allow logging in the release build */
+#endif
 #include "nsReadConfig.h"
 #include "nsAppDirectoryServiceDefs.h"
 #include "nsIAppShellService.h"
@@ -55,7 +59,9 @@
 #include "prmem.h"
 #include "nsString.h"
 #include "nsCRT.h"
+#include "nspr.h"
 
+extern PRLogModuleInfo *MCD;
 
 extern nsresult EvaluateAdminConfigScript(const char *js_buffer, size_t length,
                                           const char *filename, 
@@ -97,7 +103,6 @@ static void DisplayError(void)
     promptService->Alert(nsnull, title.get(), err.get());
 }
 
-
 // nsISupports Implementation
 
 NS_IMPL_THREADSAFE_ISUPPORTS2(nsReadConfig, nsIReadConfig, nsIObserver)
@@ -105,6 +110,8 @@ NS_IMPL_THREADSAFE_ISUPPORTS2(nsReadConfig, nsIReadConfig, nsIObserver)
 nsReadConfig::nsReadConfig() :
     mRead(PR_FALSE)
 {
+    if (!MCD)
+      MCD = PR_NewLogModule("MCD");
 }
 
 nsresult nsReadConfig::Init()
@@ -166,6 +173,9 @@ nsresult nsReadConfig::readConfigFile()
 
     rv = prefBranch->GetCharPref("general.config.filename", 
                                   getter_Copies(lockFileName));
+
+
+    PR_LOG(MCD, PR_LOG_DEBUG, ("general.config.filename = %s\n", lockFileName.get()));
     if (NS_FAILED(rv))
         return rv;
 
@@ -179,12 +189,12 @@ nsresult nsReadConfig::readConfigFile()
             return rv;
         
         // Open and evaluate function calls to set/lock/unlock prefs
-        rv = openAndEvaluateJSFile("prefcalls.js", PR_FALSE, PR_FALSE);
+        rv = openAndEvaluateJSFile("prefcalls.js", 0, PR_FALSE, PR_FALSE);
         if (NS_FAILED(rv)) 
             return rv;
 
         // Evaluate platform specific directives
-        rv = openAndEvaluateJSFile("platform.js", PR_FALSE, PR_FALSE);
+        rv = openAndEvaluateJSFile("platform.js", 0, PR_FALSE, PR_FALSE);
         if (NS_FAILED(rv)) 
             return rv;
 
@@ -198,9 +208,15 @@ nsresult nsReadConfig::readConfigFile()
     // file we allow for the preference to be set (and locked) by the creator 
     // of the cfg file meaning the file can not be renamed (successfully).
 
-    rv = openAndEvaluateJSFile(lockFileName.get(), PR_TRUE, PR_TRUE);
-    if (NS_FAILED(rv)) 
-        return rv;
+    PRInt32 obscureValue = 0;
+    (void) prefBranch->GetIntPref("general.config.obscure_value", &obscureValue);
+    PR_LOG(MCD, PR_LOG_DEBUG, ("evaluating .cfg file %s with obscureValue %d\n", lockFileName.get(), obscureValue));
+    rv = openAndEvaluateJSFile(lockFileName.get(), PR_TRUE, obscureValue, PR_TRUE);
+    if (NS_FAILED(rv))
+    {
+      PR_LOG(MCD, PR_LOG_DEBUG, ("error evaluating .cfg file %s %x\n", lockFileName.get(), rv));
+      return rv;
+    }
     
     rv = prefBranch->GetCharPref("general.config.filename", 
                                   getter_Copies(lockFileName));
@@ -246,8 +262,8 @@ nsresult nsReadConfig::readConfigFile()
 } // ReadConfigFile
 
 
-nsresult nsReadConfig::openAndEvaluateJSFile(const char *aFileName, 
-                                             PRBool isEncoded, 
+nsresult nsReadConfig::openAndEvaluateJSFile(const char *aFileName, PRBool isEncoded, 
+                                             PRInt32 obscureValue,
                                              PRBool isBinDir)
 {
     nsresult rv;
@@ -292,11 +308,11 @@ nsresult nsReadConfig::openAndEvaluateJSFile(const char *aFileName,
     rv = inStr->Read(buf, fs, &amt);
     NS_ASSERTION((amt == fs), "failed to read the entire configuration file!!");
     if (NS_SUCCEEDED(rv)) {
-        if (isEncoded) {
+        if (obscureValue > 0) {
+
             // Unobscure file by subtracting some value from every char. 
-            const int obscure_value = 13;
             for (PRUint32 i = 0; i < amt; i++)
-                buf[i] -= obscure_value;
+                buf[i] -= obscureValue;
         }
         nsCAutoString path;
 

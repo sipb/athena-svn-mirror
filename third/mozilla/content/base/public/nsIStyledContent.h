@@ -45,6 +45,7 @@ class nsString;
 class nsICSSStyleRule;
 class nsISupportsArray;
 class nsRuleWalker;
+class nsAttrValue;
 
 // IID for the nsIStyledContent class
 #define NS_ISTYLEDCONTENT_IID   \
@@ -61,7 +62,7 @@ public:
   // corresponds to the attribute nsHTMLAtoms::kClass.  If this becomes
   // incorrect, then new methods need to be added here.
   NS_IMETHOD GetID(nsIAtom** aResult) const = 0;
-  NS_IMETHOD GetClasses(nsVoidArray& aArray) const = 0;
+  virtual const nsAttrValue* GetClasses() const = 0;
   NS_IMETHOD_(PRBool) HasClass(nsIAtom* aClass, PRBool aCaseSensitive) const = 0;
 
   NS_IMETHOD WalkContentStyleRules(nsRuleWalker* aRuleWalker) = 0;
@@ -70,10 +71,11 @@ public:
   NS_IMETHOD SetInlineStyleRule(nsICSSStyleRule* aStyleRule, PRBool aNotify) = 0;
 
   /**
-   * Does the list of style rules walked by |WalkContentStyleRules|
-   * depend on the attribute?
+   * Is the attribute named stored in the mapped attributes?
+   *
+   * This really belongs on nsIHTMLContent instead.
    */
-  NS_IMETHOD_(PRBool) HasAttributeDependentStyle(const nsIAtom* aAttribute) const = 0;
+  NS_IMETHOD_(PRBool) IsAttributeMapped(const nsIAtom* aAttribute) const = 0;
 
 
   /**

@@ -336,6 +336,7 @@ public:
     NS_IMETHOD              SetFocus(PRBool aRaise);
     NS_IMETHOD              GetBounds(nsRect &aRect);
     NS_IMETHOD              GetClientBounds(nsRect &aRect);
+    NS_IMETHOD              GetScreenBounds(nsRect &aRect);
     NS_IMETHOD              SetBackgroundColor(const nscolor &aColor);
     virtual nsIFontMetrics* GetFont(void);
     NS_IMETHOD              SetFont(const nsFont &aFont);
@@ -371,7 +372,7 @@ public:
 
     NS_IMETHOD              CaptureRollupEvents(nsIRollupListener * aListener, PRBool aDoCapture, PRBool aConsumeRollupEvent);
 
-    NS_IMETHOD              GetAttention();
+    NS_IMETHOD              GetAttention(PRInt32 aCycleCount);
     NS_IMETHOD              GetLastInputEventTime(PRUint32& aTime);
 
     // nsIKBStateControl interface 
@@ -401,7 +402,7 @@ public:
 
     PRInt32                 GetNewCmdMenuId() { mMenuCmdId++; return mMenuCmdId;}
 
-    void InitEvent(nsGUIEvent& event, PRUint32 aEventType, nsPoint* aPoint = nsnull);
+    void InitEvent(nsGUIEvent& event, nsPoint* aPoint = nsnull);
 
     void                    SuppressBlurEvents(PRBool aSuppress);
     PRBool                  BlurEventsSuppressed();

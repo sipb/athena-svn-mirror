@@ -275,7 +275,7 @@ NS_IMETHODIMP nsDeviceContextMac :: GetSystemFont(nsSystemFontID aID, nsFont *aF
     case eSystemFont_Tooltips:
     case eSystemFont_Widget:
       float  dev2app;
-      GetDevUnitsToAppUnits(dev2app);
+      dev2app = DevUnitsToAppUnits();
 
       aFont->style       = NS_FONT_STYLE_NORMAL;
       aFont->weight      = NS_FONT_WEIGHT_NORMAL;
@@ -395,6 +395,8 @@ NS_IMETHODIMP nsDeviceContextMac :: GetSystemFont(nsSystemFontID aID, nsFont *aF
 
   }
 
+  aFont->systemFont = PR_TRUE;
+
   return status;
 }
 
@@ -436,17 +438,6 @@ NS_IMETHODIMP nsDeviceContextMac::GetDepth(PRUint32& aDepth)
     
   return NS_OK;
 }
-
-/** ---------------------------------------------------
- *  See documentation in nsIDeviceContext.h
- *	@update 12/9/98 dwc
- */
-NS_IMETHODIMP nsDeviceContextMac :: ConvertPixel(nscolor aColor, PRUint32 & aPixel)
-{
-  aPixel = aColor;
-  return NS_OK;
-}
-
 
 /** ---------------------------------------------------
  *  See documentation in nsIDeviceContext.h

@@ -149,13 +149,13 @@ nsresult nsDeviceContextWin :: Init(nsNativeDeviceContext aContext, nsIDeviceCon
   CommonInit(mDC);
 
 
-  GetTwipsToDevUnits(newscale);
-  aOrigContext->GetTwipsToDevUnits(origscale);
+  newscale = TwipsToDevUnits();
+  origscale = aOrigContext->TwipsToDevUnits();
 
   mPixelScale = newscale / origscale;
 
-  aOrigContext->GetTwipsToDevUnits(t2d);
-  aOrigContext->GetAppUnitsToDevUnits(a2d);
+  t2d = aOrigContext->TwipsToDevUnits();
+  a2d = aOrigContext->AppUnitsToDevUnits();
 
   mAppUnitsToDevUnits = (a2d / t2d) * mTwipsToPixels;
   mDevUnitsToAppUnits = 1.0f / mAppUnitsToDevUnits;
@@ -519,6 +519,8 @@ nsresult nsDeviceContextWin :: GetSysFontInfo(HDC aHDC, nsSystemFontID anID, nsF
     return NS_ERROR_FAILURE;
   }
 
+  aFont->systemFont = PR_TRUE;
+
   return CopyLogFontToNSFont(&aHDC, ptrLogFont, aFont);
 }
 
@@ -638,12 +640,6 @@ NS_IMETHODIMP nsDeviceContextWin::GetPaletteInfo(nsPaletteInfo& aPaletteInfo)
 
   aPaletteInfo.palette = mPaletteInfo.palette;
                                          
-  return NS_OK;
-}
-
-NS_IMETHODIMP nsDeviceContextWin :: ConvertPixel(nscolor aColor, PRUint32 & aPixel)
-{
-  aPixel = aColor;
   return NS_OK;
 }
 

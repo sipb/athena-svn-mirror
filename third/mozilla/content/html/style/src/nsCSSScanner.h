@@ -142,6 +142,25 @@ class nsCSSScanner {
   // Get the next token that may be a string or unquoted URL or whitespace
   PRBool NextURL(nsresult& aErrorCode, nsCSSToken& aTokenResult);
 
+  static inline PRBool
+  IsIdentStart(PRInt32 aChar, const PRUint8* aLexTable)
+  {
+    return aChar >= 0 &&
+      (aChar >= 256 || (aLexTable[aChar] & START_IDENT) != 0);
+  }
+
+  static inline PRBool
+  StartsIdent(PRInt32 aFirstChar, PRInt32 aSecondChar,
+              const PRUint8* aLexTable)
+  {
+    return IsIdentStart(aFirstChar, aLexTable) ||
+      (aFirstChar == '-' && IsIdentStart(aSecondChar, aLexTable));
+  }
+
+  static inline const PRUint8* GetLexTable() {
+    return gLexTable;
+  }
+  
 protected:
   void Close();
   PRInt32 Read(nsresult& aErrorCode);
@@ -186,6 +205,16 @@ protected:
   nsString mError;
 #endif
 
+  static const PRUint8 IS_DIGIT;
+  static const PRUint8 IS_HEX_DIGIT;
+  static const PRUint8 IS_ALPHA;
+  static const PRUint8 START_IDENT;
+  static const PRUint8 IS_IDENT;
+  static const PRUint8 IS_WHITESPACE;
+
+  static PRUint8 gLexTable[256];
+  static void BuildLexTable();
+  static PRBool CheckLexTable(PRInt32 aChar, PRUint8 aBit, PRUint8* aLexTable);
 };
 
 #endif /* nsCSSScanner_h___ */

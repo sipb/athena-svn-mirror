@@ -48,7 +48,7 @@ MimeDefClass (MimeObject, MimeObjectClass, mimeObjectClass, NULL);
 static int MimeObject_initialize (MimeObject *);
 static void MimeObject_finalize (MimeObject *);
 static int MimeObject_parse_begin (MimeObject *);
-static int MimeObject_parse_buffer (char *, PRInt32, MimeObject *);
+static int MimeObject_parse_buffer (const char *, PRInt32, MimeObject *);
 static int MimeObject_parse_line (char *, PRInt32, MimeObject *);
 static int MimeObject_parse_eof (MimeObject *, PRBool);
 static int MimeObject_parse_end (MimeObject *, PRBool);
@@ -203,20 +203,21 @@ MimeObject_parse_begin (MimeObject *obj)
 	  char *id = mime_part_address(obj);
 	  if (!id) return MIME_OUT_OF_MEMORY;
 
-    // We need to check if a part is the subpart of the part to load.
-    // If so and this is a raw or body display output operation, then
-    // we should mark the part for subsequent output.
-    //
-    obj->output_p = PR_FALSE;
-	  PRBool exactMatch = !strcmp(id, obj->options->part_to_load);
-    if (exactMatch)
-      obj->output_p = PR_TRUE;
-    else if (obj->options->format_out == nsMimeOutput::nsMimeMessageRaw ||
-             obj->options->format_out == nsMimeOutput::nsMimeMessageBodyDisplay)
-          {
-            obj->output_p = !strncmp((const char*)id, (const char*)obj->options->part_to_load, 
-                                            (unsigned int)strlen(obj->options->part_to_load));
-    }
+      // We need to check if a part is the subpart of the part to load.
+      // If so and this is a raw or body display output operation, then
+      // we should mark the part for subsequent output.
+      //
+     
+      // First, check for an exact match
+      obj->output_p = !strcmp(id, obj->options->part_to_load); 
+      if (!obj->output_p && (obj->options->format_out == nsMimeOutput::nsMimeMessageRaw ||
+             obj->options->format_out == nsMimeOutput::nsMimeMessageBodyDisplay))
+    {
+        // Then, check for subpart
+        unsigned int partlen = strlen(obj->options->part_to_load);
+        obj->output_p = (strlen(id) >= partlen + 2) && (id[partlen] == '.') &&
+            !strncmp(id, obj->options->part_to_load, partlen);
+      }
 
 	  PR_Free(id);
 	}
@@ -237,7 +238,7 @@ MimeObject_parse_begin (MimeObject *obj)
 }
 
 static int
-MimeObject_parse_buffer (char *buffer, PRInt32 size, MimeObject *obj)
+MimeObject_parse_buffer (const char *buffer, PRInt32 size, MimeObject *obj)
 {
   NS_ASSERTION(!obj->closed_p, "object shouldn't be closed");
   if (obj->closed_p) return -1;

@@ -42,18 +42,12 @@ var gLastHostname;
 var gLastDomain;
 var gGlobalHistory;
 var gPrefService;
+var gIOService;
 var gDeleteByHostname;
 var gDeleteByDomain;
 var gHistoryBundle;
 var gHistoryStatus;
 var gHistoryGrouping = "";
-var gWindowManager = null;
-
-function HistoryWindowInit()
-{
-    HistoryCommonInit();
-    gHistoryTree.focus();
-}
 
 function HistoryCommonInit()
 {
@@ -91,7 +85,7 @@ function HistoryCommonInit()
         catch(e) {
             gHistoryGrouping = "day";
         }
-        GroupBy(gHistoryGrouping);
+        UpdateTreeGrouping();
         if (gHistoryStatus) {  // must be the window
             switch(gHistoryGrouping) {
             case "none":
@@ -113,7 +107,17 @@ function HistoryCommonInit()
     } 
 
     SortInNewDirection(find_sort_direction(find_sort_column()));
+
+    if (gHistoryStatus)
+        gHistoryTree.focus();
     gHistoryTree.treeBoxObject.view.selection.select(0);
+}
+
+function HistoryPanelUnload()
+{
+  var pb = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefBranch);
+  var pbi = pb.QueryInterface(Components.interfaces.nsIPrefBranchInternal);
+  pbi.removeObserver("browser.history.grouping", groupObserver, false);
 }
 
 function updateHistoryCommands()
@@ -134,7 +138,7 @@ function historyOnClick(aEvent)
     gHistoryTree.treeBoxObject.getCellAt(aEvent.clientX, aEvent.clientY, row, col, elt);
     if (row.value >= 0 && col.value) {
       if (!isContainer(gHistoryTree, row.value))
-        OpenURL(false);
+        OpenURL("current");
       else if (elt.value != "twisty")
         gHistoryTree.treeBoxObject.view.toggleOpenState(row.value);
     }
@@ -148,28 +152,25 @@ function historyOnSelect()
     gLastDomain = "";
     var match;
     var currentIndex = gHistoryTree.currentIndex;
-    var rowIsContainer = gHistoryGrouping != "none" && currentIndex >= 0 && isContainer(gHistoryTree, currentIndex);
-    var url = rowIsContainer ? gHistoryTree.treeBoxObject.view.getCellText(currentIndex, "URL") : null;
+    var rowIsContainer = currentIndex < 0 || (gHistoryGrouping != "none" && isContainer(gHistoryTree, currentIndex));
+    var url = rowIsContainer ? "" : gHistoryTree.treeBoxObject.view.getCellText(currentIndex, "URL");
 
     if (url) {
-        // matches scheme://(hostname)...
-        match = url.match(/^.*?:\/\/(?:([^\/:]*)(?::([^\/:]*))?@)?([^\/:]*)(?::([^\/:]*))?(.*)$/);
+        if (!gIOService)
+            gIOService = Components.classes['@mozilla.org/network/io-service;1']
+                                   .getService(Components.interfaces.nsIIOService);
+        try {
+            gLastHostname = gIOService.newURI(url, null, null).host;
+            // matches the last foo.bar in foo.bar or baz.foo.bar
+            match = gLastHostname.match(/([^.]+\.[^.]+$)/);
+            if (match)
+                gLastDomain = match[1];
+        } catch (e) {}
+    }
 
-        if (match && match.length>1)
-            gLastHostname = match[3];
-      
+    if (gHistoryStatus)
         gHistoryStatus.label = url;
-    }
-    else {
-        gHistoryStatus.label = "";
-    }
 
-    if (gLastHostname) {
-        // matches the last foo.bar in foo.bar or baz.foo.bar
-        match = gLastHostname.match(/([^.]+\.[^.]+$)/);
-        if (match)
-            gLastDomain = match[1];
-    }
     document.commandDispatcher.updateCommands("select");
 }
 
@@ -274,11 +275,11 @@ function collapseExpand()
     gHistoryTree.treeBoxObject.view.toggleOpenState(currentIndex);
 }
 
-function OpenURL(aInNewWindow)
+function OpenURL(aTarget)
 {
     var currentIndex = gHistoryTree.currentIndex;     
     var builder = gHistoryTree.builder.QueryInterface(Components.interfaces.nsIXULTreeBuilder);
-    var url = builder.getResourceAtIndex(currentIndex).Value;
+    var url = builder.getResourceAtIndex(currentIndex).ValueUTF8;
     var uri = Components.classes["@mozilla.org/network/standard-url;1"].
                 createInstance(Components.interfaces.nsIURI);
     uri.spec = url;
@@ -295,14 +296,15 @@ function OpenURL(aInNewWindow)
       return false;
     }
 
-    if (aInNewWindow) {
+    if (aTarget != "current") {
       var count = gHistoryTree.treeBoxObject.view.selection.count;
+      var URLArray = [];
       if (count == 1) {
         if (isContainer(gHistoryTree, currentIndex))
           openDialog("chrome://communicator/content/history/history.xul", 
                      "", "chrome,all,dialog=no", url, "newWindow");
-        else      
-          openDialog( getBrowserURL(), "_blank", "chrome,all,dialog=no", url );
+        else
+          URLArray.push(url);
       }
       else {
         var min = new Object(); 
@@ -312,9 +314,17 @@ function OpenURL(aInNewWindow)
           gHistoryTree.treeBoxObject.view.selection.getRangeAt(i, min, max);
           for (var k = max.value; k >= min.value; --k) {
             url = gHistoryTree.treeBoxObject.view.getCellText(k, "URL");
-            window.openDialog(getBrowserURL(), "_blank", "chrome,all,dialog=no", url);
+            URLArray.push(url);
           }
         }
+      }
+      if (aTarget == "window") {
+        for (i = 0; i < URLArray.length; i++) {
+          openDialog(getBrowserURL(), "_blank", "chrome,all,dialog=no", URLArray[i]);
+        }
+      } else {
+        if (URLArray.length > 0)
+          OpenURLArrayInTabs(URLArray);
       }
     }        
     else if (!isContainer(gHistoryTree, currentIndex))
@@ -322,31 +332,54 @@ function OpenURL(aInNewWindow)
     return true;
 }
 
-function GroupBy(groupingType)
+// This opens the URLs contained in the given array in new tabs
+// of the most recent window, creates a new window if necessary.
+function OpenURLArrayInTabs(aURLArray)
 {
-    var tree = document.getElementById("historyTree");
-    switch(groupingType) {
-    case "none":
-        tree.setAttribute("ref", "NC:HistoryRoot");
-        break;
-    case "site":
-        tree.setAttribute("ref", "find:datasource=history&groupby=Hostname");
-        break;
-    case "day":
-    default:
-        tree.setAttribute("ref", "NC:HistoryByDate");
-        break;
-    }
-    gPrefService.setCharPref("browser.history.grouping", groupingType);
+  var browserWin = getTopWin();
+  if (browserWin) {
+    var browser = browserWin.getBrowser();
+    browser.selectedTab = browser.addTab(aURLArray[0]);
+    for (var i = 1; i < aURLArray.length; ++i)
+      tab = browser.addTab(aURLArray[i]);
+  } else {
+    openTopWin(aURLArray.join("\n")); // Pretend that we're a home page group
+  }
+}
+
+function GroupBy(aGroupingType)
+{
+  gHistoryGrouping = aGroupingType;
+  UpdateTreeGrouping();
+  gPrefService.setCharPref("browser.history.grouping", aGroupingType);
+}
+
+function UpdateTreeGrouping()
+{
+  var tree = document.getElementById("historyTree");
+  switch(gHistoryGrouping) {
+  case "none":
+    tree.setAttribute("ref", "NC:HistoryRoot");
+    break;
+  case "site":
+    tree.setAttribute("ref", "find:datasource=history&groupby=Hostname");
+    break;
+  case "day":
+  default:
+    tree.setAttribute("ref", "NC:HistoryByDate");
+    break;
+  }
 }
 
 var groupObserver = {
   observe: function(aPrefBranch, aTopic, aPrefName) {
     try {
-      GroupBy(aPrefBranch.QueryInterface(Components.interfaces.nsIPrefBranch).getCharPref(aPrefName));
+      gHistoryGrouping = gPrefService.getCharPref("browser.history.grouping");
     }
-    catch(ex) {
+    catch(e) {
+      gHistoryGrouping = "day";
     }
+    UpdateTreeGrouping();
   }
 }
 
@@ -359,18 +392,22 @@ function historyAddBookmarks()
     var currentIndex = gHistoryTree.currentIndex;
     url = gHistoryTree.treeBoxObject.view.getCellText(currentIndex, "URL");
     title = gHistoryTree.treeBoxObject.view.getCellText(currentIndex, "Name");
-    BookmarksUtils.addBookmark(url, title, undefined, true);
+    BookmarksUtils.addBookmark(url, title, null, true);
   }
   else if (count > 1) {
     var min = new Object(); 
     var max = new Object();
     var rangeCount = gHistoryTree.treeBoxObject.view.selection.getRangeCount();
+    if (!BMSVC) {
+      initServices();
+      initBMService();
+    }
     for (var i = 0; i < rangeCount; ++i) {
       gHistoryTree.treeBoxObject.view.selection.getRangeAt(i, min, max);
       for (var k = max.value; k >= min.value; --k) {
         url = gHistoryTree.treeBoxObject.view.getCellText(k, "URL");
         title = gHistoryTree.treeBoxObject.view.getCellText(k, "Name");
-        BookmarksUtils.addBookmark(url, title, undefined, false);
+        BookmarksUtils.addBookmark(url, title, null, false);
       }
     }
   }
@@ -384,7 +421,9 @@ function updateItems()
   var bookmarkItem = document.getElementById("miAddBookmark");
   var copyLocationItem = document.getElementById("miCopyLinkLocation");
   var sep1 = document.getElementById("pre-bookmarks-separator");
+  var sep2 = document.getElementById("post-bookmarks-separator");
   var openItemInNewWindow = document.getElementById("miOpenInNewWindow");
+  var openItemInNewTab = document.getElementById("miOpenInNewTab");
   var collapseExpandItem = document.getElementById("miCollapseExpand");
   if (count > 1) {
     var hasContainer = false;
@@ -402,36 +441,45 @@ function updateItems()
         }
       }
     }
-    if (hasContainer) {
-      bookmarkItem.setAttribute("hidden", "true");
-      copyLocationItem.setAttribute("hidden", "true");
-      sep1.setAttribute("hidden", "true");
-      document.getElementById("post-bookmarks-separator").setAttribute("hidden", "true");
-      openItem.setAttribute("hidden", "true");
-      openItemInNewWindow.setAttribute("hidden", "true");
-      collapseExpandItem.setAttribute("hidden", "true");
+    collapseExpandItem.hidden = true;
+    openItem.hidden = true;
+    if (hasContainer) {   // several items selected, folder(s) amongst them
+      bookmarkItem.hidden = true;
+      copyLocationItem.hidden = true;
+      sep1.hidden = true;
+      sep2.hidden = true;
+      openItemInNewWindow.hidden = true;
+      openItemInNewTab.hidden = true;
     }
-    else {
-      bookmarkItem.removeAttribute("hidden");
-      copyLocationItem.removeAttribute("hidden");
-      sep1.removeAttribute("hidden");
+    else {                // several items selected, but no folder
+      bookmarkItem.hidden = false;
+      copyLocationItem.hidden = false;
+      sep1.hidden = false;
+      sep2.hidden = false;
       bookmarkItem.setAttribute("label", document.getElementById('multipleBookmarks').getAttribute("label"));
-      openItem.setAttribute("hidden", "true");
+      bookmarkItem.setAttribute("accesskey", document.getElementById('multipleBookmarks').getAttribute("accesskey"));
       openItem.removeAttribute("default");
       openItemInNewWindow.setAttribute("default", "true");
+      openItemInNewWindow.hidden = false;
+      openItemInNewTab.hidden = false;
     }
   }
   else {
+    openItemInNewWindow.hidden = false;
     bookmarkItem.setAttribute("label", document.getElementById('oneBookmark').getAttribute("label"));
+    bookmarkItem.setAttribute("accesskey", document.getElementById('oneBookmark').getAttribute("accesskey"));
+    sep2.hidden = false;
     var currentIndex = gHistoryTree.currentIndex;
-    if (isContainer(gHistoryTree, currentIndex)) {
-        openItem.setAttribute("hidden", "true");
+    if (isContainer(gHistoryTree, currentIndex)) {   // one folder selected
+        openItem.hidden = true;
         openItem.removeAttribute("default");
-        collapseExpandItem.removeAttribute("hidden");
+        openItemInNewWindow.removeAttribute("default");
+        openItemInNewTab.hidden = true;
+        collapseExpandItem.hidden = false;
         collapseExpandItem.setAttribute("default", "true");
-        bookmarkItem.setAttribute("hidden", "true");
-        copyLocationItem.setAttribute("hidden", "true");
-        sep1.setAttribute("hidden", "true");
+        bookmarkItem.hidden = true;
+        copyLocationItem.hidden = true;
+        sep1.hidden = true;
         if (isContainerOpen(gHistoryTree, currentIndex)) {
           collapseExpandItem.setAttribute("label", gHistoryBundle.getString("collapseLabel"));
           collapseExpandItem.setAttribute("accesskey", gHistoryBundle.getString("collapseAccesskey"));
@@ -441,23 +489,19 @@ function updateItems()
           collapseExpandItem.setAttribute("accesskey", gHistoryBundle.getString("expandAccesskey"));          
         }
         return true;
-    }
-    collapseExpandItem.setAttribute("hidden", "true");
-    bookmarkItem.removeAttribute("hidden");
-    copyLocationItem.removeAttribute("hidden");
-    sep1.removeAttribute("hidden");
-    if (!gWindowManager) {
-      gWindowManager = Components.classes['@mozilla.org/appshell/window-mediator;1'].getService();
-      gWindowManager = gWindowManager.QueryInterface( Components.interfaces.nsIWindowMediator);
-    }
-    var topWindowOfType = gWindowManager.getMostRecentWindow("navigator:browser");
-    if (!topWindowOfType) {
-        openItem.setAttribute("hidden", "true");
+    }                                                // one entry selected (not a folder)
+    openItemInNewTab.hidden = false;
+    collapseExpandItem.hidden = true;
+    bookmarkItem.hidden = false;
+    copyLocationItem.hidden = false;
+    sep1.hidden = false;
+    if (!getTopWin()) {
+        openItem.hidden = true;
         openItem.removeAttribute("default");
         openItemInNewWindow.setAttribute("default", "true");
     }
     else {
-      openItem.removeAttribute("hidden");
+      openItem.hidden = false;
       if (!openItem.getAttribute("default"))
         openItem.setAttribute("default", "true");
       openItemInNewWindow.removeAttribute("default");
@@ -465,7 +509,3 @@ function updateItems()
   }
   return true;
 }
-
-
-
- 

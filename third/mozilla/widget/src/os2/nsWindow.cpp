@@ -72,7 +72,7 @@
 #include <ctype.h>
 
 #include "nsdefs.h"
-#include "resource.h"
+#include "wdgtos2rc.h"
 
 #ifdef DEBUG_sobotka
 static int WINDOWCOUNT = 0;
@@ -115,7 +115,6 @@ PRBool              gRollupConsumeRollupEvent = PR_FALSE;
 
 PRBool gJustGotActivate = PR_FALSE;
 PRBool gJustGotDeactivate = PR_FALSE;
-PRBool gIsDestroyingAny = PR_FALSE;
 
 ////////////////////////////////////////////////////
 // Mouse Clicks - static variable defintions 
@@ -134,10 +133,6 @@ static PRBool gGlobalsInitialized = PR_FALSE;
 static HPOINTER gPtrArray[IDC_COUNT];
 static PRBool gIsTrackPoint = PR_FALSE;
 static PRBool gIsDBCS = PR_FALSE;
-static CHAR gNumPadMap[] = {NS_VK_NUMPAD7, NS_VK_NUMPAD8, NS_VK_NUMPAD9, 0,
-                           NS_VK_NUMPAD4, NS_VK_NUMPAD5, NS_VK_NUMPAD6, 0,
-                           NS_VK_NUMPAD1, NS_VK_NUMPAD2, NS_VK_NUMPAD3, NS_VK_NUMPAD0, NS_VK_DECIMAL};
-#define CHAR_CODE_MASK 0x00FF
 
 // The last user input event time in milliseconds. If there are any pending
 // native toolkit input events it returns the current time. The value is
@@ -151,8 +146,6 @@ static int currentWindowIdentifier = 0;
 //-------------------------------------------------------------------------
 // Drag and Drop flags and global data
 // see the D&D section toward the end of this file for additional info
-
-#define DispatchDragDropEvent(msg) DispatchStandardEvent(msg,NS_DRAGDROP_EVENT)
 
 // actions that might cause problems during d&d
 #define ACTION_PAINT    1
@@ -193,8 +186,8 @@ nsWindow::nsWindow() : nsBaseWidget()
     mFrameIcon          = 0;
     mDeadKey            = 0;
     mHaveDeadKey        = FALSE;
-    // This is so that frame windows can be destroyed from their destructors.
-    mHackDestroyWnd     = 0;
+    mIsDestroying       = PR_FALSE;
+    mOnDestroyCalled    = PR_FALSE;
 
     mPreferredWidth     = 0;
     mPreferredHeight    = 0;
@@ -402,11 +395,9 @@ PRBool nsWindow::ConvertStatus(nsEventStatus aStatus)
 // Initialize an event to dispatch
 //
 //-------------------------------------------------------------------------
-void nsWindow::InitEvent(nsGUIEvent& event, PRUint32 aEventType, nsPoint* aPoint)
+void nsWindow::InitEvent(nsGUIEvent& event, nsPoint* aPoint)
 {
-    event.widget = this;
     NS_ADDREF(event.widget);
-    event.nativeMsg = 0;
 
     if (nsnull == aPoint) {     // use the point from the event
       // for most events, get the message position;  for drag events,
@@ -442,7 +433,6 @@ void nsWindow::InitEvent(nsGUIEvent& event, PRUint32 aEventType, nsPoint* aPoint
    }
 
    event.time = WinQueryMsgTime( 0/*hab*/);
-   event.message = aEventType;
 
    /* OS2TODO
    mLastPoint.x = event.point.x;
@@ -502,11 +492,10 @@ PRBool nsWindow::DispatchWindowEvent(nsGUIEvent*event, nsEventStatus &aStatus) {
 //
 //-------------------------------------------------------------------------
 
-PRBool nsWindow::DispatchStandardEvent(PRUint32 aMsg, PRUint8 aEST)
+PRBool nsWindow::DispatchStandardEvent(PRUint32 aMsg)
 {
-  nsGUIEvent event;
-  event.eventStructType = aEST;
-  InitEvent(event, aMsg);
+  nsGUIEvent event(aMsg, this);
+  InitEvent(event);
 
   PRBool result = DispatchWindowEvent(&event);
   NS_RELEASE(event.widget);
@@ -1071,10 +1060,6 @@ NS_METHOD nsWindow::Destroy()
    }
    else
    {
-#if DEBUG_sobotka
-     printf("\n++++++++++nsWindow::Destroy trashing 0x%lx\n\n", mHackDestroyWnd ? mHackDestroyWnd : mWnd);
-     printf("+++++++++++WINDOWCOUNT- = %d\n\n", --WINDOWCOUNT);
-#endif
       // avoid calling into other objects if we're being deleted, 'cos
       // they must have no references to us.
       if( (mWindowState & nsWindowState_eLive) && mParent )
@@ -1091,7 +1076,6 @@ NS_METHOD nsWindow::Destroy()
       if( mWnd)
       {
          HWND hwndBeingDestroyed = mFrameWnd ? mFrameWnd : mWnd;
-         gIsDestroyingAny = PR_TRUE;
 #ifdef DEBUG_FOCUS
          printf("[%x] Destroy (%d)\n", this, mWindowIdentifier);
 #endif
@@ -1099,7 +1083,6 @@ NS_METHOD nsWindow::Destroy()
            WinSetFocus(HWND_DESKTOP, WinQueryWindow(hwndBeingDestroyed, QW_PARENT));
          }
          WinDestroyWindow(hwndBeingDestroyed);
-         gIsDestroyingAny = PR_FALSE;
       }
    }
    return NS_OK;
@@ -1118,9 +1101,14 @@ nsIWidget* nsWindow::GetParent(void)
        // a HWND which is not associated with a nsIWidget.
       return nsnull;
     }
+    /* If this widget has already been destroyed, pretend we have no parent.
+       This corresponds to code in Destroy which removes the destroyed
+       widget from its parent's child list. */
+    if (mIsDestroying || mOnDestroyCalled)
+      return nsnull;
 
    nsWindow *widget = nsnull;
-   if( nsnull != mParent)
+   if ((nsnull != mParent) && (!mParent->mIsDestroying))
    {
       NS_ADDREF(mParent);
       widget = mParent;
@@ -1592,8 +1580,8 @@ nsIFontMetrics *nsWindow::GetFont(void)
       if( 2 == sscanf( buf[0], "%d.%s", &ptSize, buf[1])) // mmm, scanf()...
       {
          float twip2dev, twip2app;
-         mContext->GetTwipsToDevUnits( twip2dev);
-         mContext->GetDevUnitsToAppUnits( twip2app);
+         twip2dev = mContext->TwipsToDevUnits();
+         twip2app = mContext->DevUnitsToAppUnits();
          twip2app *= twip2dev;
    
          nscoord appSize = (nscoord) (twip2app * ptSize * 20);
@@ -1620,31 +1608,22 @@ NS_METHOD nsWindow::SetFont(const nsFont &aFont)
       // jump through hoops to convert the size in the font (in app units)
       // into points. 
       float dev2twip, app2twip;
-      mContext->GetDevUnitsToTwips( dev2twip);
-      mContext->GetAppUnitsToDevUnits( app2twip);
+      dev2twip = mContext->DevUnitsToTwips();
+      app2twip = mContext->AppUnitsToDevUnits();
       app2twip *= dev2twip;
-   
       int points = NSTwipsToFloorIntPoints( nscoord( aFont.size * app2twip));
 
-      int length = aFont.name.Length() * 2 + 1;
-      char * fontname = new char[length];
-      if (fontname) {
-        int outlen = ::WideCharToMultiByte( 0, 
-                       aFont.name.get(), aFont.name.Length(),
-                       fontname, length);
-        if ( outlen >= 0) {
-          fontname[outlen] = '\0';
-        }
-   
-        char *buffer = new char [ strlen( fontname) + 6];
-        if (buffer) {
-          sprintf( buffer, "%d.%s", points, fontname);
-   
-          BOOL rc = WinSetPresParam( mWnd, PP_FONTNAMESIZE,
-                                     strlen( buffer) + 1, buffer);
-          delete [] buffer;
-        }
-        delete [] fontname;
+      nsAutoCharBuffer fontname;
+      PRInt32 fontnameLength;
+      WideCharToMultiByte(0, aFont.name.get(), aFont.name.Length(),
+                          fontname, fontnameLength);
+
+      char *buffer = new char[fontnameLength + 6];
+      if (buffer) {
+        sprintf(buffer, "%d.%s", points, fontname.get());
+        BOOL rc = ::WinSetPresParam(mWnd, PP_FONTNAMESIZE,
+                                    strlen(buffer) + 1, buffer);
+        delete [] buffer;
       }
    }
 
@@ -2151,25 +2130,20 @@ BOOL nsWindow::CallMethod(MethodInfo *info)
 //
 PRBool nsWindow::OnKey( MPARAM mp1, MPARAM mp2)
 {
-   nsKeyEvent event, pressEvent;
+   nsKeyEvent pressEvent;
    USHORT     fsFlags = SHORT1FROMMP(mp1);
    USHORT     usVKey = SHORT2FROMMP(mp2);
    USHORT     usChar = SHORT1FROMMP(mp2);
    UCHAR      uchScan = CHAR4FROMMP(mp1);
    int        unirc = ULS_SUCCESS;
 
-   if (fsFlags & KC_KEYUP)  // On OS/2 the scancode is in the upper byte of
-   {                        // usChar when KC_KEYUP is set so mask it off
-     usChar = usChar & CHAR_CODE_MASK;
-   }
    // It appears we're not supposed to transmit shift, control & alt events
    // to gecko.  Shrug.
    //
    // XXX this may be wrong, but is what gtk is doing...
-// Comment out since this is blocking out the shift and  ctrl keys..
-//   if( fsFlags & KC_VIRTUALKEY && !(fsFlags & KC_KEYUP) &&  // Added if KC_KEYUP then send thru
-//      (usVKey == VK_SHIFT || usVKey == VK_CTRL ||
-//       usVKey == VK_ALTGRAF)) return PR_FALSE;
+   if( fsFlags & KC_VIRTUALKEY &&
+      (usVKey == VK_SHIFT || usVKey == VK_CTRL ||
+       usVKey == VK_ALTGRAF)) return PR_FALSE;
 
    // My gosh this is ugly
    // Workaround bug where using Alt+Esc let an Alt key creep through
@@ -2197,25 +2171,25 @@ PRBool nsWindow::OnKey( MPARAM mp1, MPARAM mp2)
    // have the unicode charcode in.
 
    nsPoint point(0,0);
-   InitEvent( event, (fsFlags & KC_KEYUP) ? NS_KEY_UP : NS_KEY_DOWN, &point);
+   nsKeyEvent event((fsFlags & KC_KEYUP) ? NS_KEY_UP : NS_KEY_DOWN, this);
+   InitEvent( event, &point);
    event.keyCode   = WMChar2KeyCode( mp1, mp2);
    event.isShift   = (fsFlags & KC_SHIFT) ? PR_TRUE : PR_FALSE;
    event.isControl = (fsFlags & KC_CTRL) ? PR_TRUE : PR_FALSE;
    event.isAlt     = (fsFlags & KC_ALT) ? PR_TRUE : PR_FALSE;
    event.isMeta    = PR_FALSE;
-   event.eventStructType = NS_KEY_EVENT;
    event.charCode = 0;
-   // OS2 does not set the shift, ctl, or alt on keyup
-   if( fsFlags & (KC_VIRTUALKEY|KC_KEYUP|KC_LONEKEY))
-   {
-      if (usVKey == VK_SHIFT)   event.isShift = PR_TRUE;
-      if (usVKey == VK_CTRL)    event.isControl = PR_TRUE;
-      if (usVKey == VK_ALTGRAF || usVKey == VK_ALT) event.isAlt = PR_TRUE;
-   }    
 
-   if (((event.keyCode == NS_VK_UP) || (event.keyCode == NS_VK_DOWN)) && (!(fsFlags & KC_KEYUP))) {
+   /* Checking for a scroll mouse event vs. a keyboard event */
+   /* The way we know this is that the repeat count is 0 and */
+   /* the key is not physically down */
+   /* unfortunately, there is an exception here - if alt or ctrl are */
+   /* held down, repeat count is set so we have to add special checks for them */
+   if (((event.keyCode == NS_VK_UP) || (event.keyCode == NS_VK_DOWN)) &&
+       (!(fsFlags & KC_KEYUP))
+       && ((CHAR3FROMMP(mp1) == 0) || fsFlags & KC_CTRL || fsFlags & KC_ALT)
+       ) {
       if (!(WinGetPhysKeyState(HWND_DESKTOP, CHAR4FROMMP(mp1)) & 0x8000)) {
-         /* This isn't a real keyboard event - assume it is a scroll mouse */
          MPARAM mp2;
          if (event.keyCode == NS_VK_UP)
             mp2 = MPFROM2SHORT(0, SB_LINEUP);
@@ -2256,14 +2230,14 @@ PRBool nsWindow::OnKey( MPARAM mp1, MPARAM mp2)
    if( usChar)
    {
       USHORT inbuf[2];
-      PRUnichar outbuf[4];
       inbuf[0] = usChar;
       inbuf[1] = '\0';
-      outbuf[0] = (PRUnichar)0;
 
-      MultiByteToWideChar(0, (const char*)inbuf, 2, outbuf, 4);
+      nsAutoChar16Buffer outbuf;
+      PRInt32 bufLength;
+      MultiByteToWideChar(0, (const char*)inbuf, 2, outbuf, bufLength);
 
-      pressEvent.charCode = outbuf[0];
+      pressEvent.charCode = outbuf.get()[0];
 
       if (pressEvent.isControl && !(fsFlags & (KC_VIRTUALKEY | KC_DEADKEY))) {
         if (!pressEvent.isShift && (pressEvent.charCode >= 'A' && pressEvent.charCode <= 'Z'))
@@ -2280,38 +2254,31 @@ PRBool nsWindow::OnKey( MPARAM mp1, MPARAM mp2)
          if ( !(fsFlags & KC_VIRTUALKEY) || 
               ((fsFlags & KC_CHAR) && (pressEvent.keyCode == 0)) )
          {
-            pressEvent.isShift = PR_FALSE;
+//            pressEvent.isShift = PR_FALSE;
             pressEvent.keyCode = 0;
          }
          else if (usVKey == VK_SPACE)
          {
 //            pressEvent.isShift = PR_FALSE;
          }
-         else if (fsFlags & KC_VIRTUALKEY   &&
-                  isNumPadScanCode(uchScan) &&
-                  event.keyCode != 0)
-         {
-           // this is NumLock+numpad (no Alt) use the pressEvent.charCode
-         }
          else  // Real virtual key 
          {
             pressEvent.charCode = 0;
          }
       }
+      rc = DispatchWindowEvent( &pressEvent);
    }
 
-   rc = DispatchWindowEvent( &pressEvent);
    NS_RELEASE( pressEvent.widget);
    return rc;
 }
 
 void nsWindow::ConstrainZLevel(HWND *aAfter) {
 
-  nsZLevelEvent  event;
+  nsZLevelEvent  event(NS_SETZLEVEL, this);
   nsWindow      *aboveWindow = 0;
 
-  event.eventStructType = NS_ZLEVEL_EVENT;
-  InitEvent(event, NS_SETZLEVEL);
+  InitEvent(event);
 
   if (*aAfter == HWND_BOTTOM)
     event.mPlacement = nsWindowZBottom;
@@ -2356,10 +2323,9 @@ PRBool nsWindow::ProcessMessage( ULONG msg, MPARAM mp1, MPARAM mp2, MRESULT &rc)
 //#if 0
         case WM_COMMAND: // fire off menu selections
         {
-           nsMenuEvent event;
+           nsMenuEvent event(NS_MENU_SELECTED, this);
            event.mCommand = SHORT1FROMMP(mp1);
-           event.eventStructType = NS_MENU_EVENT;
-           InitEvent(event, NS_MENU_SELECTED);
+           InitEvent(event);
            result = DispatchWindowEvent(&event);
            NS_RELEASE(event.widget);
         }
@@ -2382,10 +2348,9 @@ PRBool nsWindow::ProcessMessage( ULONG msg, MPARAM mp1, MPARAM mp2, MRESULT &rc)
 #if 0  // Tooltips appear to be gone
         case WMU_SHOW_TOOLTIP:
         {
-          nsTooltipEvent event;
-          InitEvent( event, NS_SHOW_TOOLTIP);
+          nsTooltipEvent event(NS_SHOW_TOOLTIP, this);
+          InitEvent( event );
           event.tipIndex = LONGFROMMP(mp1);
-          event.eventStructType = NS_TOOLTIP_EVENT;
           result = DispatchWindowEvent(&event);
           NS_RELEASE(event.widget);
           break;
@@ -2456,14 +2421,11 @@ PRBool nsWindow::ProcessMessage( ULONG msg, MPARAM mp1, MPARAM mp2, MRESULT &rc)
         case WM_QUERYCONVERTPOS:
           {
             PRECTL pCursorRect = (PRECTL)mp1;
-            nsCompositionEvent event;
+            nsCompositionEvent event(NS_COMPOSITION_QUERY, this);
             nsPoint point;
             point.x = 0;
             point.y = 0;
-            InitEvent(event,NS_COMPOSITION_QUERY,&point);
-            event.widget = NS_STATIC_CAST(nsIWidget *, this);
-            event.eventStructType = NS_COMPOSITION_QUERY;
-            event.compositionMessage = NS_COMPOSITION_QUERY;
+            InitEvent(event,&point);
             DispatchWindowEvent(&event);
             if ((event.theReply.mCursorPosition.x) || 
                 (event.theReply.mCursorPosition.y)) 
@@ -2546,9 +2508,9 @@ PRBool nsWindow::ProcessMessage( ULONG msg, MPARAM mp1, MPARAM mp2, MRESULT &rc)
                   (WinQuerySysValue(HWND_DESKTOP, SV_CYMOTIONSTART) / 2))
               isCopy = TRUE;
 
-            nsKeyEvent event;
+            nsKeyEvent event(NS_KEY_PRESS, this);
             nsPoint point(0,0);
-            InitEvent( event, NS_KEY_PRESS, &point);
+            InitEvent( event, &point);
 
             event.keyCode   = NS_VK_INSERT;
             if (isCopy) {
@@ -2625,31 +2587,26 @@ PRBool nsWindow::ProcessMessage( ULONG msg, MPARAM mp1, MPARAM mp2, MRESULT &rc)
 #endif
           if (SHORT1FROMMP(mp2)) {
             /* We are receiving focus */
-            if (!gIsDestroyingAny) {
 #ifdef DEBUG_FOCUS
-              printf("[%x] NS_GOTFOCUS (%d)\n", this, mWindowIdentifier);
+            printf("[%x] NS_GOTFOCUS (%d)\n", this, mWindowIdentifier);
 #endif
-              result = DispatchFocus(NS_GOTFOCUS, isMozWindowTakingFocus);
-              /* If mp1 is 0, this is the special WM_FOCUSCHANGED we got */
-              /* from the frame activate, so act like we just got activated */
-              if (gJustGotActivate || mp1 == 0) {
-                gJustGotActivate = PR_FALSE;
-                gJustGotDeactivate = PR_FALSE;
+            result = DispatchFocus(NS_GOTFOCUS, isMozWindowTakingFocus);
+            /* If mp1 is 0, this is the special WM_FOCUSCHANGED we got */
+            /* from the frame activate, so act like we just got activated */
+            if (gJustGotActivate || mp1 == 0) {
+              gJustGotActivate = PR_FALSE;
+              gJustGotDeactivate = PR_FALSE;
 #ifdef DEBUG_FOCUS
-                printf("[%x] NS_ACTIVATE (%d)\n", this, mWindowIdentifier);
+              printf("[%x] NS_ACTIVATE (%d)\n", this, mWindowIdentifier);
 #endif
-                result = DispatchFocus(NS_ACTIVATE, isMozWindowTakingFocus);
-              }
-              if ( WinIsChild( mWnd, HWNDFROMMP(mp1)) && mNextID == 1) {
+              result = DispatchFocus(NS_ACTIVATE, isMozWindowTakingFocus);
+            }
+            if ( WinIsChild( mWnd, HWNDFROMMP(mp1)) && mNextID == 1) {
 #ifdef DEBUG_FOCUS
-                printf("[%x] NS_PLUGIN_ACTIVATE (%d)\n", this, mWindowIdentifier);
+              printf("[%x] NS_PLUGIN_ACTIVATE (%d)\n", this, mWindowIdentifier);
 #endif
-                result = DispatchFocus(NS_PLUGIN_ACTIVATE, isMozWindowTakingFocus);
-                WinSetFocus(HWND_DESKTOP, mWnd);
-              }
-            } else {
-              nsToolkit *toolkit = NS_STATIC_CAST(nsToolkit *, mToolkit);
-              WinPostMsg(toolkit->GetDispatchWindow(), WM_FOCUSCHANGED, mp1, mp2);
+              result = DispatchFocus(NS_PLUGIN_ACTIVATE, isMozWindowTakingFocus);
+              WinSetFocus(HWND_DESKTOP, mWnd);
             }
 
           } else {
@@ -2796,6 +2753,8 @@ PRBool nsWindow::OnControl( MPARAM mp1, MPARAM mp2)
 //-------------------------------------------------------------------------
 void nsWindow::OnDestroy()
 {
+   mOnDestroyCalled = PR_TRUE;
+
    SubclassWindow( PR_FALSE);
    mWnd = 0;
 
@@ -2838,11 +2797,10 @@ void nsWindow::OnDestroy()
 PRBool nsWindow::OnMove(PRInt32 aX, PRInt32 aY)
 {            
   // Params here are in XP-space for the desktop
-  nsGUIEvent event;
-  InitEvent( event, NS_MOVE);
+  nsGUIEvent event(NS_MOVE, this);
+  InitEvent( event);
   event.point.x = aX;
   event.point.y = aY;
-  event.eventStructType = NS_GUI_EVENT;
 
   PRBool result = DispatchWindowEvent( &event);
   NS_RELEASE(event.widget);
@@ -2877,8 +2835,8 @@ PRBool nsWindow::OnPaint()
           // call the event callback 
           if (mEventCallback) 
           {
-              nsPaintEvent event;
-              InitEvent(event, NS_PAINT);
+              nsPaintEvent event(NS_PAINT, this);
+              InitEvent(event);
      
               // build XP rect from in-ex window rect
               nsRect rect;
@@ -2888,7 +2846,6 @@ PRBool nsWindow::OnPaint()
               rect.height = rcl.yTop - rcl.yBottom;
               event.rect = &rect;
               event.region = nsnull;
-              event.eventStructType = NS_PAINT_EVENT;
      
 #ifdef NS_DEBUG
           debug_DumpPaintEvent(stdout,
@@ -2955,11 +2912,10 @@ PRBool nsWindow::DispatchResizeEvent( PRInt32 aX, PRInt32 aY)
 {
    PRBool result;
    // call the event callback 
-   nsSizeEvent event;
+   nsSizeEvent event(NS_SIZE, this);
    nsRect      rect( 0, 0, aX, aY);
 
-   InitEvent( event, NS_SIZE);
-   event.eventStructType = NS_SIZE_EVENT;
+   InitEvent( event);
    event.windowSize = &rect;             // this is the *client* rectangle
    event.mWinWidth = mBounds.width;
    event.mWinHeight = mBounds.height;
@@ -2982,7 +2938,7 @@ PRBool nsWindow::DispatchMouseEvent( PRUint32 aEventType, MPARAM mp1, MPARAM mp2
     return result;
   }
 
-  nsMouseEvent event;
+  nsMouseEvent event(aEventType, this);
 
   // Mouse leave & enter messages don't seem to have position built in.
   if( aEventType && aEventType != NS_MOUSE_ENTER && aEventType != NS_MOUSE_EXIT)
@@ -2997,7 +2953,7 @@ PRBool nsWindow::DispatchMouseEvent( PRUint32 aEventType, MPARAM mp1, MPARAM mp2
     }
     PM2NS(ptl);
     nsPoint pt( ptl.x, ptl.y);
-    InitEvent( event, aEventType, &pt);
+    InitEvent( event, &pt);
 
     USHORT usFlags = SHORT2FROMMP( mp2);
     event.isShift = (usFlags & KC_SHIFT) ? PR_TRUE : PR_FALSE;
@@ -3006,14 +2962,13 @@ PRBool nsWindow::DispatchMouseEvent( PRUint32 aEventType, MPARAM mp1, MPARAM mp2
   }
   else
   {
-    InitEvent( event, aEventType, nsnull);
+    InitEvent( event, nsnull);
     event.isShift = WinIsKeyDown( VK_SHIFT);
     event.isControl = WinIsKeyDown( VK_CTRL);
     event.isAlt = WinIsKeyDown( VK_ALT) || WinIsKeyDown( VK_ALTGRAF);
   }
 
   event.isMeta    = PR_FALSE;
-  event.eventStructType = NS_MOUSE_EVENT;
 
   //Dblclicks are used to set the click count, then changed to mousedowns
   if (aEventType == NS_MOUSE_LEFT_DOUBLECLICK ||
@@ -3208,9 +3163,8 @@ PRBool nsWindow::DispatchFocus(PRUint32 aEventType, PRBool isMozWindowTakingFocu
 {
   // call the event callback 
   if (mEventCallback) {
-    nsFocusEvent event;
-    event.eventStructType = NS_FOCUS_EVENT;
-    InitEvent(event, aEventType);
+    nsFocusEvent event(aEventType, this);
+    InitEvent(event);
 
     //focus and blur event should go to their base widget loc, not current mouse pos
     event.point.x = 0;
@@ -3258,9 +3212,8 @@ PRBool nsWindow::OnScroll( ULONG msgid, MPARAM mp1, MPARAM mp2)
 PRBool nsWindow::OnVScroll( MPARAM mp1, MPARAM mp2)
 {
     if (nsnull != mEventCallback) {
-        nsMouseScrollEvent scrollEvent;
-        scrollEvent.eventStructType = NS_MOUSE_SCROLL_EVENT;
-        InitEvent(scrollEvent, NS_MOUSE_SCROLL);
+        nsMouseScrollEvent scrollEvent(NS_MOUSE_SCROLL, this);
+        InitEvent(scrollEvent);
         scrollEvent.isShift = WinIsKeyDown( VK_SHIFT);
         scrollEvent.isControl = WinIsKeyDown( VK_CTRL);
         scrollEvent.isAlt = WinIsKeyDown( VK_ALT) || WinIsKeyDown( VK_ALTGRAF);
@@ -3294,9 +3247,8 @@ PRBool nsWindow::OnVScroll( MPARAM mp1, MPARAM mp2)
 PRBool nsWindow::OnHScroll( MPARAM mp1, MPARAM mp2)
 {
     if (nsnull != mEventCallback) {
-        nsMouseScrollEvent scrollEvent;
-        scrollEvent.eventStructType = NS_MOUSE_SCROLL_EVENT;
-        InitEvent(scrollEvent, NS_MOUSE_SCROLL);
+        nsMouseScrollEvent scrollEvent(NS_MOUSE_SCROLL, this);
+        InitEvent(scrollEvent);
         scrollEvent.isShift = WinIsKeyDown( VK_SHIFT);
         scrollEvent.isControl = WinIsKeyDown( VK_CTRL);
         scrollEvent.isAlt = WinIsKeyDown( VK_ALT) || WinIsKeyDown( VK_ALTGRAF);
@@ -3342,49 +3294,36 @@ NS_METHOD nsWindow::SetTitle(const nsString& aTitle)
    }
    else if( mWnd)
    {
-     int length = aTitle.Length() * 2 + 1;
-     char * title = new char[length];
-     if (title)
-     {
-          
-       PRUnichar* uchtemp = ToNewUnicode(aTitle);
-       for (int i=0;i<aTitle.Length();i++) {
-         switch (uchtemp[i]) {
-           case 0x2018:
-           case 0x2019:
-             uchtemp[i] = 0x0027;
-             break;
-           case 0x201C:
-           case 0x201D:
-             uchtemp[i] = 0x0022;
-             break;
-           case 0x2014:
-             uchtemp[i] = 0x002D;
-             break;
-         }
+      PRUnichar* uchtemp = ToNewUnicode(aTitle);
+      for (int i=0;i<aTitle.Length();i++) {
+       switch (uchtemp[i]) {
+         case 0x2018:
+         case 0x2019:
+           uchtemp[i] = 0x0027;
+           break;
+         case 0x201C:
+         case 0x201D:
+           uchtemp[i] = 0x0022;
+           break;
+         case 0x2014:
+           uchtemp[i] = 0x002D;
+           break;
        }
+      }
 
-       int outlen = ::WideCharToMultiByte( 0, 
-                      uchtemp, aTitle.Length(),
-                      title, length);
-       if ( outlen >= 0) {
-         if (outlen > MAX_TITLEBAR_LENGTH) {
-           title[MAX_TITLEBAR_LENGTH] = '\0';
-         } else {
-           title[outlen] = '\0';
-         }
-       }
-       WinSetWindowText( GetMainWindow(), title );
-       if (mChromeHidden) {
+      nsAutoCharBuffer title;
+      PRInt32 titleLength;
+      WideCharToMultiByte(0, uchtemp, aTitle.Length(), title, titleLength);
+      ::WinSetWindowText(GetMainWindow(), title.get());
+      if (mChromeHidden) {
          /* If the chrome is hidden, set the text of the titlebar directly */
          if (mFrameWnd) {
-           HWND hwndTitleBar = (HWND)WinQueryProperty(mFrameWnd, "hwndTitleBar");
-           WinSetWindowText( hwndTitleBar, title );
+            HWND hwndTitleBar = (HWND)::WinQueryProperty(mFrameWnd,
+                                                         "hwndTitleBar");
+            ::WinSetWindowText(hwndTitleBar, title.get());
          }
-       }
-       nsMemory::Free(uchtemp);
-       delete [] title;
-     }
+      }
+      nsMemory::Free(uchtemp);
    }
    return NS_OK;
 } 
@@ -3601,10 +3540,10 @@ PRBool nsWindow::OnDragDropMsg(ULONG msg, MPARAM mp1, MPARAM mp2, MRESULT &mr)
         mDragStatus = gDragStatus = (dragFlags & DND_DragStatus);
 
         if (dragFlags & DND_DispatchEnterEvent)
-          DispatchDragDropEvent(NS_DRAGDROP_ENTER);
+          DispatchStandardEvent(NS_DRAGDROP_ENTER);
 
         if (dragFlags & DND_DispatchEvent)
-          DispatchDragDropEvent(eventType);
+          DispatchStandardEvent(eventType);
 
         if (dragFlags & DND_GetDragoverResult)
           dragSession->GetDragoverResult(mr);
@@ -3717,164 +3656,39 @@ PRUint32 WMChar2KeyCode( MPARAM mp1, MPARAM mp2)
    if( !(flags & (KC_VIRTUALKEY | KC_DEADKEY)))
    {
       rc = SHORT1FROMMP(mp2);
-      if (flags & KC_KEYUP)  // On OS/2 the scancode is in the upper byte of
-      {                      // usChar when KC_KEYUP is set so mask it off
-        rc = rc & CHAR_CODE_MASK;
-      }
-      else  // not KC_KEYUP
-      {
-        if ( ! (flags & KC_CHAR))
-        {  
-           if  ((flags & KC_ALT) || (flags & KC_CTRL))
-           {
-             rc = rc & CHAR_CODE_MASK;
-           }
-           else rc = 0;
-        }
-      }
 
       if( rc < 0xFF)
       {
-         if (rc >= 'a' && rc <= 'z')   // The DOM_VK are for upper case only so
-         {                             // if rc is lower case upper case it.
-           rc = rc - 'a' + NS_VK_A;
-         }
-         else if (rc >= 'A' && rc <= 'Z')   // Upper case
+         switch( rc)
          {
-           rc = rc - 'A' + NS_VK_A;
-         }
-         else if ((rc >= '0' && rc <= '9') && (CHAR4FROMMP(mp1) != 0x4C))   // Number keys excepting numpad5
-         {
-           rc = rc - '0' + NS_VK_0;
-         }
-         else {
-           /* For some characters, map the scan code to the NS_VK value */
-           /* This only happens in the char case NOT the VK case! */
-           switch (CHAR4FROMMP(mp1)) {
-             case 0x02:
-               rc = NS_VK_1;
-               break;
-             case 0x03:
-               rc = NS_VK_2;
-               break;
-             case 0x04:
-               rc = NS_VK_3;
-               break;
-             case 0x05:
-               rc = NS_VK_4;
-               break;
-             case 0x06:
-               rc = NS_VK_5;
-               break;
-             case 0x07:
-               rc = NS_VK_6;
-               break;
-             case 0x08:
-               rc = NS_VK_7;
-               break;
-             case 0x09:
-               rc = NS_VK_8;
-               break;
-             case 0x0A:
-               rc = NS_VK_9;
-               break;
-             case 0x0B:
-               rc = NS_VK_0;
-               break;
-             case 0x0D:
-               rc = NS_VK_EQUALS;
-               break;
-            case 0x1A:
-               rc = NS_VK_OPEN_BRACKET;
-               break;
-            case 0x1B:
-               rc = NS_VK_CLOSE_BRACKET;
-               break;
-            case 0x27:
-               rc = NS_VK_SEMICOLON;
-               break;
-            case 0x28:
-               rc = NS_VK_QUOTE;
-               break;
-            case 0x29:
-               rc = NS_VK_BACK_QUOTE;
-               break;
-            case 0x2B:
-               rc = NS_VK_BACK_SLASH;
-               break;
-            case 0x33:
-               rc = NS_VK_COMMA;
-               break;
-            case 0x34:
-               rc = NS_VK_PERIOD;
-               break;
-            case 0x35:
-               rc = NS_VK_SLASH;
-               break;
-            case 0x37:
-               rc = NS_VK_MULTIPLY;
-               break;
-            case 0x4A:
-               rc = NS_VK_SUBTRACT;
-               break;
-            case 0x4C:
-               if (rc == '5') {
-                 rc = NS_VK_NUMPAD5;
-               } else {
-                 rc = NS_VK_CLEAR;
-               }
-               break;
-            case 0x4E:
-               rc = NS_VK_ADD;
-               break;
-            case 0x5C:
-               rc = NS_VK_DIVIDE;
-               break;
-
-             case 0x0C:
-               rc = NS_VK_SUBTRACT; /* THIS IS WRONG! */
-               break;
-
-             default:
-               break;
-           }
+            case ';':  rc = NS_VK_SEMICOLON;     break;
+            case '=':  rc = NS_VK_EQUALS;        break;
+            case '*':  rc = NS_VK_MULTIPLY;      break;
+            case '+':  rc = NS_VK_ADD;           break;
+            case '-':  rc = NS_VK_SUBTRACT;      break;
+            case '.':  rc = NS_VK_PERIOD;        break; // NS_VK_DECIMAL ?
+            case '|':  rc = NS_VK_SEPARATOR;     break;
+            case ',':  rc = NS_VK_COMMA;         break;
+            case '/':  rc = NS_VK_SLASH;         break; // NS_VK_DIVIDE ?
+            case '`':  rc = NS_VK_BACK_QUOTE;    break;
+            case '(':  rc = NS_VK_OPEN_BRACKET;  break;
+            case '\\': rc = NS_VK_BACK_SLASH;    break;
+            case ')':  rc = NS_VK_CLOSE_BRACKET; break;
+            case '\'': rc = NS_VK_QUOTE;         break;
          }
       }
    }
    else if( flags & KC_VIRTUALKEY)
    {
-      printf("OR HERE\n");
-      USHORT vk = SHORT2FROMMP(mp2);
-      USHORT sc = CHAR4FROMMP(mp1);
-      USHORT rc2 = SHORT1FROMMP(mp2);
-      if (flags & KC_KEYUP)  // On OS/2 there are extraneous bits in the upper byte of
-      {                        // usChar when KC_KEYUP is set so mask them off
-        rc2 = rc2 & CHAR_CODE_MASK;
+      USHORT vk = SHORT2FROMMP( mp2);
+      if( isNumPadScanCode(CHAR4FROMMP(mp1)) && 
+          ( ((flags & KC_ALT) && (CHAR4FROMMP(mp1) != PMSCAN_PADPERIOD)) || 
+            ((flags & (KC_CHAR | KC_SHIFT)) == KC_CHAR) ) )
+      {
+         // No virtual key for Alt+NumPad or NumLock+NumPad
+         rc = 0;
       }
-      if( isNumPadScanCode(sc) && 
-          ( ((flags & KC_ALT) && ( sc != PMSCAN_PADPERIOD)) || 
-            ((flags & (KC_CHAR | KC_SHIFT)) == KC_CHAR)  ||
-            ((flags & KC_KEYUP) && rc2 != 0) )  )
-      { // If this is the Numpad must not return VK for ALT+Numpad or ALT+NumLock+NumPad
-        // NumLock+NumPad is OK
-         if( gNumPadMap[sc - PMSCAN_PAD7] != 0)
-         {
-            if (flags & KC_ALT )
-            {
-               rc = 0;
-            }
-            else
-            {
-               rc = gNumPadMap[sc - PMSCAN_PAD7];
-            }
-         }  
-         else
-         {
-            // No virtual key for Alt+NumPad or NumLock+NumPad
-            rc = 0;
-         }  
-      }
-      else if( !(flags & KC_CHAR) || isNumPadScanCode(sc) ||
+      else if( !(flags & KC_CHAR) || isNumPadScanCode(CHAR4FROMMP(mp1)) ||
           (vk == VK_BACKSPACE) || (vk == VK_TAB) || (vk == VK_BACKTAB) ||
           (vk == VK_ENTER) || (vk == VK_NEWLINE) || (vk == VK_SPACE) )
       {
@@ -3951,6 +3765,9 @@ ULONG nsWindow::GetFCFlags()
     style |= FCF_SIZEBORDER | FCF_MINMAX;
   }
 
+  if (mWindowType == eWindowType_invisible) {
+    style &= ~FCF_TASKLIST;
+  }
 
   if (mBorderStyle != eBorderStyle_default && mBorderStyle != eBorderStyle_all) {
     if (mBorderStyle == eBorderStyle_none || !(mBorderStyle & eBorderStyle_resizeh)) {

@@ -46,7 +46,6 @@
 #include "nsILinkHandler.h"
 #include "nsILink.h"
 #include "nsIXMLContent.h"
-#include "nsIHTMLContent.h"
 #include "nsIDocument.h"
 #include "nsINameSpaceManager.h"
 #include "nsIURI.h"
@@ -227,13 +226,11 @@ nsStyleUtil::CalcFontPointSize(PRInt32 aHTMLSize, PRInt32 aBasePointSize,
   if ((fontSize >= sFontSizeTableMin) && (fontSize <= sFontSizeTableMax))
   {
     float p2t;
-    aPresContext->GetPixelsToTwips(&p2t);
+    p2t = aPresContext->PixelsToTwips();
 
     PRInt32 row = fontSize - sFontSizeTableMin;
 
-		nsCompatibility mode;
-	  aPresContext->GetCompatibilityMode(&mode);
-	  if (mode == eCompatibility_NavQuirks) {
+	  if (aPresContext->CompatibilityMode() == eCompatibility_NavQuirks) {
 	    dFontSize = NSIntPixelsToTwips(sQuirksFontSizeTable[row][column[aHTMLSize]], p2t);
 	  } else {
 	    dFontSize = NSIntPixelsToTwips(sStrictFontSizeTable[row][column[aHTMLSize]], p2t);
@@ -275,7 +272,7 @@ nscoord nsStyleUtil::FindNextSmallerFontSize(nscoord aFontSize, PRInt32 aBasePoi
   float p2t;
   nscoord onePx;
   
-  aPresContext->GetPixelsToTwips(&p2t);
+  p2t = aPresContext->PixelsToTwips();
   onePx = NSToCoordRound(p2t);
     
 	if (aFontSizeType == eFontSize_HTML) {
@@ -343,7 +340,7 @@ nscoord nsStyleUtil::FindNextLargerFontSize(nscoord aFontSize, PRInt32 aBasePoin
   float p2t;
   nscoord onePx;
   
-  aPresContext->GetPixelsToTwips(&p2t);
+  p2t = aPresContext->PixelsToTwips();
   onePx = NSToCoordRound(p2t);
     
 	if (aFontSizeType == eFontSize_HTML) {
@@ -386,7 +383,7 @@ nscoord nsStyleUtil::FindNextLargerFontSize(nscoord aFontSize, PRInt32 aBasePoin
   }
   else { // smaller than HTML table, increase by 1px
     float p2t;
-    aPresContext->GetPixelsToTwips(&p2t);
+    p2t = aPresContext->PixelsToTwips();
     largerSize = aFontSize + NSToCoordRound(p2t); 
   }
   return largerSize;
@@ -450,8 +447,7 @@ PRBool nsStyleUtil::IsHTMLLink(nsIContent *aContent, nsIAtom *aTag, nsIPresConte
         link->GetHrefURI(getter_AddRefs(hrefURI));
 
         if (hrefURI) {
-          nsCOMPtr<nsILinkHandler> linkHandler;
-          aPresContext->GetLinkHandler(getter_AddRefs(linkHandler));
+          nsILinkHandler *linkHandler = aPresContext->GetLinkHandler();
           if (linkHandler) {
             linkHandler->GetLinkState(hrefURI, linkState);
           }
@@ -499,15 +495,13 @@ PRBool nsStyleUtil::IsSimpleXlink(nsIContent *aContent, nsIPresContext *aPresCon
         aContent->GetAttr(kNameSpaceID_XLink, nsHTMLAtoms::href, val);
 
         // It's an XLink. Resolve it relative to aContent's base URI.
-        nsCOMPtr<nsIURI> baseURI;
-        aContent->GetBaseURL(getter_AddRefs(baseURI));
+        nsCOMPtr<nsIURI> baseURI = aContent->GetBaseURI();
 
         nsCOMPtr<nsIURI> absURI;
         // XXX should we make sure to get the right charset off the document?
         (void) NS_NewURI(getter_AddRefs(absURI), val, nsnull, baseURI);
 
-        nsCOMPtr<nsILinkHandler> linkHandler;
-        aPresContext->GetLinkHandler(getter_AddRefs(linkHandler));
+        nsILinkHandler *linkHandler = aPresContext->GetLinkHandler();
         if (linkHandler) {
           linkHandler->GetLinkState(absURI, *aState);
         }

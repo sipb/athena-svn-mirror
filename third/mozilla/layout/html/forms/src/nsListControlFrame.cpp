@@ -43,7 +43,6 @@
 #include "nsFormControlFrame.h" // for COMPARE macro
 #include "nsFormControlHelper.h"
 #include "nsHTMLAtoms.h"
-#include "nsIHTMLContent.h"
 #include "nsIFormControl.h"
 #include "nsIDeviceContext.h" 
 #include "nsIDocument.h"
@@ -85,9 +84,11 @@
 #include "nsISelectElement.h"
 #include "nsIPrivateDOMEvent.h"
 #include "nsCSSRendering.h"
-#include "nsILookAndFeel.h"
 #include "nsReflowPath.h"
 #include "nsITheme.h"
+#include "nsIDOMMouseListener.h"
+#include "nsIDOMMouseMotionListener.h"
+#include "nsIDOMKeyListener.h"
 
 // Timer Includes
 #include "nsITimer.h"
@@ -110,6 +111,48 @@ nsListControlFrame * nsListControlFrame::mFocused = nsnull;
 //  if someone changes one, please also change the other.
 
 DOMTimeStamp nsListControlFrame::gLastKeyTime = 0;
+
+/******************************************************************************
+ * nsListEventListener
+ * This class is responsible for propagating events to the nsListControlFrame.
+ * Frames are not refcounted so they can't be used as event listeners.
+ *****************************************************************************/
+
+class nsListEventListener : public nsIDOMKeyListener,
+                            public nsIDOMMouseListener,
+                            public nsIDOMMouseMotionListener
+{
+public:
+  nsListEventListener(nsListControlFrame *aFrame)
+    : mFrame(aFrame) { }
+
+  void SetFrame(nsListControlFrame *aFrame) { mFrame = aFrame; }
+
+  NS_DECL_ISUPPORTS
+
+  // nsIDOMEventListener
+  NS_IMETHOD HandleEvent(nsIDOMEvent* aEvent);
+
+  // nsIDOMKeyListener
+  NS_IMETHOD KeyDown(nsIDOMEvent* aKeyEvent);
+  NS_IMETHOD KeyUp(nsIDOMEvent* aKeyEvent);
+  NS_IMETHOD KeyPress(nsIDOMEvent* aKeyEvent);
+
+  // nsIDOMMouseListener
+  NS_IMETHOD MouseDown(nsIDOMEvent* aMouseEvent);
+  NS_IMETHOD MouseUp(nsIDOMEvent* aMouseEvent);
+  NS_IMETHOD MouseClick(nsIDOMEvent* aMouseEvent);
+  NS_IMETHOD MouseDblClick(nsIDOMEvent* aMouseEvent);
+  NS_IMETHOD MouseOver(nsIDOMEvent* aMouseEvent);
+  NS_IMETHOD MouseOut(nsIDOMEvent* aMouseEvent);
+
+  // nsIDOMMouseMotionListener
+  NS_IMETHOD MouseMove(nsIDOMEvent* aMouseEvent);
+  NS_IMETHOD DragMove(nsIDOMEvent* aMouseEvent);
+
+private:
+  nsListControlFrame  *mFrame;
+};
 
 //---------------------------------------------------------
 nsresult
@@ -391,7 +434,7 @@ nsSelectUpdateTimer::~nsSelectUpdateTimer()
 //---------------------------------------------------------
 nsListControlFrame::nsListControlFrame(nsIPresShell* aShell,
   nsIDocument* aDocument)
-  : nsGfxScrollFrame(aShell, aDocument, PR_FALSE), mWeakReferent(this)
+  : nsGfxScrollFrame(aShell, aDocument, PR_FALSE)
 {
   mComboboxFrame      = nsnull;
   mButtonDown         = PR_FALSE;
@@ -441,17 +484,22 @@ nsListControlFrame::Destroy(nsIPresContext *aPresContext)
   // get the receiver interface from the browser button's content node
   nsCOMPtr<nsIDOMEventReceiver> receiver(do_QueryInterface(mContent));
 
-  nsCOMPtr<nsIDOMMouseListener> mouseListener = do_QueryInterface(mEventListener);
-  if (!mouseListener) { return NS_ERROR_NO_INTERFACE; }
-  receiver->RemoveEventListenerByIID(mouseListener, NS_GET_IID(nsIDOMMouseListener));
+  // Clear the frame pointer on our event listener, just in case the
+  // event listener can outlive the frame.
 
-  nsCOMPtr<nsIDOMMouseMotionListener> mouseMotionListener = do_QueryInterface(mEventListener);
-  if (!mouseMotionListener) { return NS_ERROR_NO_INTERFACE; }
-  receiver->RemoveEventListenerByIID(mouseMotionListener, NS_GET_IID(nsIDOMMouseMotionListener));
+  mEventListener->SetFrame(nsnull);
 
-  nsCOMPtr<nsIDOMKeyListener> keyListener = do_QueryInterface(mEventListener);
-  if (!keyListener) { return NS_ERROR_NO_INTERFACE; }
-  receiver->RemoveEventListenerByIID(keyListener, NS_GET_IID(nsIDOMKeyListener));
+  receiver->RemoveEventListenerByIID(NS_STATIC_CAST(nsIDOMMouseListener*,
+                                                    mEventListener),
+                                     NS_GET_IID(nsIDOMMouseListener));
+
+  receiver->RemoveEventListenerByIID(NS_STATIC_CAST(nsIDOMMouseMotionListener*,
+                                                    mEventListener),
+                                     NS_GET_IID(nsIDOMMouseMotionListener));
+
+  receiver->RemoveEventListenerByIID(NS_STATIC_CAST(nsIDOMKeyListener*,
+                                                    mEventListener),
+                                     NS_GET_IID(nsIDOMKeyListener));
 
   if (IsInDropDownMode() == PR_FALSE) {
     nsFormControlFrame::RegUnRegAccessKey(aPresContext, NS_STATIC_CAST(nsIFrame*, this), PR_FALSE);
@@ -472,30 +520,22 @@ nsListControlFrame::Paint(nsIPresContext*      aPresContext,
 
   // Don't allow painting of list controls when painting is suppressed.
   PRBool paintingSuppressed = PR_FALSE;
-  nsCOMPtr<nsIPresShell> shell;
-  aPresContext->GetShell(getter_AddRefs(shell));
-  shell->IsPaintingSuppressed(&paintingSuppressed);
+  aPresContext->PresShell()->IsPaintingSuppressed(&paintingSuppressed);
   if (paintingSuppressed)
     return NS_OK;
 
   // Start by assuming we are visible and need to be painted
   PRBool isVisible = PR_TRUE;
 
-  PRBool isPaginated;
-  aPresContext->IsPaginated(&isPaginated);
-  if (isPaginated) {
-    PRBool isRendingSelection;;
-    aPresContext->IsRenderingOnlySelection(&isRendingSelection);
-    if (isRendingSelection) {
+  if (aPresContext->IsPaginated()) {
+    if (aPresContext->IsRenderingOnlySelection()) {
       // Check the quick way first
       PRBool isSelected = (mState & NS_FRAME_SELECTED_CONTENT) == NS_FRAME_SELECTED_CONTENT;
       // if we aren't selected in the mState we could be a container
       // so check to see if we are in the selection range
       if (!isSelected) {
-        nsCOMPtr<nsIPresShell> shell;
-        aPresContext->GetShell(getter_AddRefs(shell));
         nsCOMPtr<nsISelectionController> selcon;
-        selcon = do_QueryInterface(shell);
+        selcon = do_QueryInterface(aPresContext->PresShell());
         if (selcon) {
           nsCOMPtr<nsISelection> selection;
           selcon->GetSelection(nsISelectionController::SELECTION_NORMAL, getter_AddRefs(selection));
@@ -551,8 +591,7 @@ void nsListControlFrame::PaintFocus(nsIRenderingContext& aRC, nsFramePaintLayer 
   GetScrollableView(mPresContext, &scrollableView);
   if (!scrollableView) return;
 
-  nsCOMPtr<nsIPresShell> presShell;
-  mPresContext->GetShell(getter_AddRefs(presShell));
+  nsIPresShell *presShell = mPresContext->GetPresShell();
   if (!presShell) return;
 
   nsIFrame* containerFrame;
@@ -616,7 +655,8 @@ void nsListControlFrame::PaintFocus(nsIRenderingContext& aRC, nsFramePaintLayer 
     if (!childframe) {
       // The only way we can get right here is that there are no options
       // and we need to get the dummy frame so it has the focus ring
-      result = containerFrame->FirstChild(mPresContext, nsnull, &childframe);
+      childframe = containerFrame->GetFirstChild(nsnull);
+      result = NS_OK;
     }
   }
 
@@ -644,14 +684,10 @@ void nsListControlFrame::PaintFocus(nsIRenderingContext& aRC, nsFramePaintLayer 
 
   // set up back stop colors and then ask L&F service for the real colors
   nscolor color;
-  nsCOMPtr<nsILookAndFeel> lookAndFeel;
-  mPresContext->GetLookAndFeel(getter_AddRefs(lookAndFeel));
-  if (lookAndFeel){
-    lookAndFeel->GetColor(lastItemIsSelected?nsILookAndFeel::eColor_WidgetSelectForeground:nsILookAndFeel::eColor_WidgetSelectBackground, color);
-  } else {
-    // Use some backstop colors if for some reason we don't have a L&F object
-    color = lastItemIsSelected? NS_RGB(245,219,149) : NS_RGB(0,0,0);
-  }
+  mPresContext->LookAndFeel()->
+    GetColor(lastItemIsSelected ?
+             nsILookAndFeel::eColor_WidgetSelectForeground :
+             nsILookAndFeel::eColor_WidgetSelectBackground, color);
 
   float p2t;
   mPresContext->GetScaledPixelsToTwips(&p2t);
@@ -690,18 +726,6 @@ nsListControlFrame::QueryInterface(const nsIID& aIID, void** aInstancePtr)
     *aInstancePtr =
       NS_STATIC_CAST(void*,NS_STATIC_CAST(nsIStatefulFrame*,this));
     return NS_OK;
-  }
-  if (aIID.Equals(NS_GET_IID(nsIDOMMouseListener))) {
-    *aInstancePtr = (void*)(nsIDOMMouseListener*) this;
-    return NS_OK;                                                        
-  }
-  if (aIID.Equals(NS_GET_IID(nsIDOMMouseMotionListener))) {
-    *aInstancePtr = (void*)(nsIDOMMouseMotionListener*) this;
-    return NS_OK;                                                        
-  }
-  if (aIID.Equals(NS_GET_IID(nsIDOMKeyListener))) {
-    *aInstancePtr = (void*)(nsIDOMKeyListener*) this;
-    return NS_OK;                                                        
   }
   return nsGfxScrollFrame::QueryInterface(aIID, aInstancePtr);
 }
@@ -858,8 +882,7 @@ static nscoord
 GetMaxOptionHeight(nsIPresContext *aPresContext, nsIFrame *aContainer)
 {
   nscoord result = 0;
-  nsIFrame *option;
-  for (aContainer->FirstChild(aPresContext, nsnull, &option);
+  for (nsIFrame* option = aContainer->GetFirstChild(nsnull);
        option; option = option->GetNextSibling()) {
     nscoord optionHeight;
     if (nsCOMPtr<nsIDOMHTMLOptGroupElement>
@@ -1151,18 +1174,15 @@ nsListControlFrame::Reflow(nsIPresContext*          aPresContext,
     nsIContent * option = GetOptionContent(0);
     if (option != nsnull) {
       nsIFrame * optFrame;
-      nsCOMPtr<nsIPresShell> presShell;
-      mPresContext->GetShell(getter_AddRefs(presShell));
-      nsresult result = presShell->GetPrimaryFrameFor(option, &optFrame);
+      nsresult result = mPresContext->PresShell()->
+        GetPrimaryFrameFor(option, &optFrame);
       if (NS_SUCCEEDED(result) && optFrame != nsnull) {
         nsStyleContext* optStyle = optFrame->GetStyleContext();
         if (optStyle) {
           const nsStyleFont* styleFont = optStyle->GetStyleFont();
-          nsCOMPtr<nsIDeviceContext> deviceContext;
-          aPresContext->GetDeviceContext(getter_AddRefs(deviceContext));
-          NS_ASSERTION(deviceContext, "Couldn't get the device context"); 
           nsIFontMetrics * fontMet;
-          result = deviceContext->GetMetricsFor(styleFont->mFont, fontMet);
+          result = aPresContext->DeviceContext()->
+            GetMetricsFor(styleFont->mFont, fontMet);
           if (NS_SUCCEEDED(result) && fontMet != nsnull) {
             if (fontMet) {
               fontMet->GetHeight(heightOfARow);
@@ -1204,7 +1224,7 @@ nsListControlFrame::Reflow(nsIPresContext*          aPresContext,
         nscoord screenHeightInPixels = 0;
         if (NS_SUCCEEDED(nsFormControlFrame::GetScreenHeight(aPresContext, screenHeightInPixels))) {
           float   p2t;
-          aPresContext->GetPixelsToTwips(&p2t);
+          p2t = aPresContext->PixelsToTwips();
           nscoord screenHeight = NSIntPixelsToTwips(screenHeightInPixels, p2t);
 
           nscoord availDropHgt = (screenHeight / 2) - (heightOfARow*2); // approx half screen minus combo size
@@ -1691,9 +1711,7 @@ nsListControlFrame::HandleEvent(nsIPresContext* aPresContext,
 {
   NS_ENSURE_ARG_POINTER(aEventStatus);
   // temp fix until Bug 124990 gets fixed
-  PRBool isPaginated = PR_FALSE;
-  aPresContext->IsPaginated(&isPaginated);
-  if (isPaginated && NS_IS_MOUSE_EVENT(aEvent)) {
+  if (aPresContext->IsPaginated() && NS_IS_MOUSE_EVENT(aEvent)) {
     return NS_OK;
   }
 
@@ -1744,13 +1762,10 @@ nsListControlFrame::SetInitialChildList(nsIPresContext* aPresContext,
                                         nsIFrame*       aChildList)
 {
   // First check to see if all the content has been added
-  nsCOMPtr<nsISelectElement> element(do_QueryInterface(mContent));
-  if (element) {
-    element->IsDoneAddingChildren(&mIsAllContentHere);
-    if (!mIsAllContentHere) {
-      mIsAllFramesHere    = PR_FALSE;
-      mHasBeenInitialized = PR_FALSE;
-    }
+  mIsAllContentHere = mContent->IsDoneAddingChildren();
+  if (!mIsAllContentHere) {
+    mIsAllFramesHere    = PR_FALSE;
+    mHasBeenInitialized = PR_FALSE;
   }
   nsresult rv = nsGfxScrollFrame::SetInitialChildList(aPresContext, aListName, aChildList);
 
@@ -1802,23 +1817,21 @@ nsListControlFrame::Init(nsIPresContext*  aPresContext,
   // our frame goes away all these content node go away as well
   // because our frame is the only one who references them.
   // we need to hook up our listeners before the editor is initialized
-  result = NS_NewListEventListener(getter_AddRefs(mEventListener));
-  if (NS_FAILED(result)) { return result ; }
-  if (!mEventListener) { return NS_ERROR_NULL_POINTER; }
+  mEventListener = new nsListEventListener(this);
+  if (!mEventListener) 
+    return NS_ERROR_OUT_OF_MEMORY;
 
-  mEventListener->SetFrame(this);
+  receiver->AddEventListenerByIID(NS_STATIC_CAST(nsIDOMMouseListener*,
+                                                 mEventListener),
+                                  NS_GET_IID(nsIDOMMouseListener));
 
-  nsCOMPtr<nsIDOMMouseListener> mouseListener = do_QueryInterface(mEventListener);
-  if (!mouseListener) { return NS_ERROR_NO_INTERFACE; }
-  receiver->AddEventListenerByIID(mouseListener, NS_GET_IID(nsIDOMMouseListener));
+  receiver->AddEventListenerByIID(NS_STATIC_CAST(nsIDOMMouseMotionListener*,
+                                                 mEventListener),
+                                  NS_GET_IID(nsIDOMMouseMotionListener));
 
-  nsCOMPtr<nsIDOMMouseMotionListener> mouseMotionListener = do_QueryInterface(mEventListener);
-  if (!mouseMotionListener) { return NS_ERROR_NO_INTERFACE; }
-  receiver->AddEventListenerByIID(mouseMotionListener, NS_GET_IID(nsIDOMMouseMotionListener));
-
-  nsCOMPtr<nsIDOMKeyListener> keyListener = do_QueryInterface(mEventListener);
-  if (!keyListener) { return NS_ERROR_NO_INTERFACE; }
-  receiver->AddEventListenerByIID(keyListener, NS_GET_IID(nsIDOMKeyListener));
+  receiver->AddEventListenerByIID(NS_STATIC_CAST(nsIDOMKeyListener*,
+                                                 mEventListener),
+                                  NS_GET_IID(nsIDOMKeyListener));
 
   mStartSelectionIndex = kNothingSelected;
   mEndSelectionIndex = kNothingSelected;
@@ -2042,8 +2055,8 @@ nsListControlFrame::GetFormControlType() const
 
 
 //---------------------------------------------------------
-void 
-nsListControlFrame::MouseClicked(nsIPresContext* aPresContext) 
+void
+nsListControlFrame::MouseClicked(nsIPresContext* aPresContext)
 {
 }
 
@@ -2108,7 +2121,7 @@ nsListControlFrame::SetFocus(PRBool aOn, PRBool aRepaint)
   }
 
   // Make sure the SelectArea frame gets painted
-  Invalidate(mPresContext, nsRect(0,0,mRect.width,mRect.height), PR_TRUE);
+  Invalidate(nsRect(0,0,mRect.width,mRect.height), PR_TRUE);
 }
 
 void nsListControlFrame::ComboboxFocusSet()
@@ -2121,8 +2134,7 @@ void
 nsListControlFrame::ScrollIntoView(nsIPresContext* aPresContext)
 {
   if (aPresContext) {
-    nsCOMPtr<nsIPresShell> presShell;
-    aPresContext->GetShell(getter_AddRefs(presShell));
+    nsIPresShell *presShell = aPresContext->GetPresShell();
     if (presShell) {
       presShell->ScrollFrameIntoView(this,
                    NS_PRESSHELL_SCROLL_IF_NOT_VISIBLE,NS_PRESSHELL_SCROLL_IF_NOT_VISIBLE);
@@ -2291,15 +2303,12 @@ nsListControlFrame::AddOption(nsIPresContext* aPresContext, PRInt32 aIndex)
   GetNumberOfOptions(&numOptions);
 
   if (!mIsAllContentHere) {
-    nsCOMPtr<nsISelectElement> element(do_QueryInterface(mContent));
-    if (element) {
-      element->IsDoneAddingChildren(&mIsAllContentHere);
-      if (!mIsAllContentHere) {
-        mIsAllFramesHere    = PR_FALSE;
-        mHasBeenInitialized = PR_FALSE;
-      } else {
-        mIsAllFramesHere = aIndex == numOptions-1;
-      }
+    mIsAllContentHere = mContent->IsDoneAddingChildren();
+    if (!mIsAllContentHere) {
+      mIsAllFramesHere    = PR_FALSE;
+      mHasBeenInitialized = PR_FALSE;
+    } else {
+      mIsAllFramesHere = aIndex == numOptions-1;
     }
   }
   
@@ -2454,12 +2463,9 @@ nsListControlFrame::FireOnChange()
 
   // Dispatch the NS_FORM_CHANGE event
   nsEventStatus status = nsEventStatus_eIgnore;
-  nsEvent event;
-  event.eventStructType = NS_EVENT;
-  event.message = NS_FORM_CHANGE;
+  nsEvent event(NS_FORM_CHANGE);
 
-  nsCOMPtr<nsIPresShell> presShell;
-  rv = mPresContext->GetShell(getter_AddRefs(presShell));
+  nsIPresShell *presShell = mPresContext->GetPresShell();
   if (presShell) {
     rv = presShell->HandleEventWithTarget(&event, this, nsnull,
                                            NS_EVENT_FLAG_INIT, &status);
@@ -2849,10 +2855,8 @@ nsListControlFrame::FireMenuItemActiveEvent()
       NS_SUCCEEDED(manager->CreateEvent(mPresContext, nsnull, NS_LITERAL_STRING("Events"), getter_AddRefs(event)))) {
     event->InitEvent(NS_LITERAL_STRING("DOMMenuItemActive"), PR_TRUE, PR_TRUE);
     PRBool noDefault;
-    nsCOMPtr<nsIEventStateManager> esm;
-    mPresContext->GetEventStateManager(getter_AddRefs(esm));
-    if (esm)
-      esm->DispatchNewEvent(mContent, event, &noDefault);
+    mPresContext->EventStateManager()->DispatchNewEvent(mContent, event,
+                                                        &noDefault);
   }
 }
 #endif
@@ -2875,26 +2879,27 @@ nsListControlFrame::GetIndexFromDOMEvent(nsIDOMEvent* aMouseEvent,
   nsCOMPtr<nsIDOMNode> node;
   mouseEvent->GetTarget(getter_AddRefs(node));
   nsCOMPtr<nsIContent> content = do_QueryInterface(node);
-  nsCOMPtr<nsIPresShell> presShell;
-  mPresContext->GetShell(getter_AddRefs(presShell));
   nsIFrame * frame;
-  nsresult result = presShell->GetPrimaryFrameFor(content, &frame);
+  mPresContext->PresShell()->GetPrimaryFrameFor(content, &frame);
   printf("Target Frame: %p  this: %p\n", frame, this);
   printf("-->\n");
 #endif
 
-  nsresult rv = NS_ERROR_FAILURE;
-  nsCOMPtr<nsIEventStateManager> stateManager;
-  if (NS_SUCCEEDED(mPresContext->GetEventStateManager(getter_AddRefs(stateManager)))) {
-    nsCOMPtr<nsIContent> content;
-    stateManager->GetEventTargetContent(nsnull, getter_AddRefs(content));
+  nsresult rv;
+  
+  nsCOMPtr<nsIContent> content;
+  mPresContext->EventStateManager()->
+    GetEventTargetContent(nsnull, getter_AddRefs(content));
 
-    nsCOMPtr<nsIContent> optionContent = GetOptionFromContent(content);
-    if (optionContent) {
-      aCurIndex = GetIndexFromContent(optionContent);
-      rv = NS_OK;
-    }
+  nsCOMPtr<nsIContent> optionContent = GetOptionFromContent(content);
+  if (optionContent) {
+    aCurIndex = GetIndexFromContent(optionContent);
+    rv = NS_OK;
+  } else {
+    rv = NS_ERROR_FAILURE;
   }
+
+
   return rv;
 }
 
@@ -2984,7 +2989,7 @@ nsListControlFrame::MouseMove(nsIDOMEvent* aMouseEvent)
       // XXX this shouldn't be needed, but other places in this code do it
       // and if we don't do this, invalidation doesn't happen when we move out
       // of the top-level window. We should track this down and fix it --- roc
-      Invalidate(mPresContext, nsRect(0,0,mRect.width,mRect.height), PR_TRUE);
+      Invalidate(nsRect(0,0,mRect.width,mRect.height), PR_TRUE);
     }
   } else {// XXX - temporary until we get drag events
     if (mButtonDown) {
@@ -3024,15 +3029,6 @@ nsListControlFrame::DragMove(nsIDOMEvent* aMouseEvent)
   return NS_OK;
 }
 
-//----------------------------------------------------------------------
-// nsIDOMKeyListener
-//----------------------------------------------------------------------
-nsresult
-nsListControlFrame::KeyDown(nsIDOMEvent* aKeyEvent)
-{
-  return NS_OK;
-}
-
 nsresult
 nsListControlFrame::ScrollToIndex(PRInt32 aIndex)
 {
@@ -3063,8 +3059,7 @@ nsListControlFrame::ScrollToFrame(nsIContent* aOptElement)
     }
   
     // otherwise we find the content's frame and scroll to it
-    nsCOMPtr<nsIPresShell> presShell;
-    mPresContext->GetShell(getter_AddRefs(presShell));
+    nsIPresShell *presShell = mPresContext->PresShell();
     nsIFrame * childframe;
     nsresult result;
     if (aOptElement) {
@@ -3111,10 +3106,12 @@ nsListControlFrame::ScrollToFrame(nsIContent* aOptElement)
         }
         fRect.y += optRect.y;
 
-        // see if the selected frame is inside the scrolled area
-        if (!rect.Contains(fRect)) {
+        // See if the selected frame (fRect) is inside the scrolled
+        // area (rect). Check only the vertical dimension. Don't
+        // scroll just because there's horizontal overflow.
+        if (!(rect.y <= fRect.y && fRect.YMost() <= rect.YMost())) {
           // figure out which direction we are going
-          if (fRect.y+fRect.height >= rect.y+rect.height) {
+          if (fRect.YMost() > rect.YMost()) {
             y = fRect.y-(rect.height-fRect.height);
           } else {
             y = fRect.y;
@@ -3343,8 +3340,12 @@ nsListControlFrame::KeyPress(nsIDOMEvent* aKeyEvent)
       } break;
 
     case nsIDOMKeyEvent::DOM_VK_ESCAPE: {
-      if (IsInDropDownMode() == PR_TRUE) {
-        ComboboxFinish(mSelectedIndexWhenPoppedDown);
+      if (mComboboxFrame != nsnull) {
+        PRBool droppedDown = PR_FALSE;
+        mComboboxFrame->IsDroppedDown(&droppedDown);
+        if (droppedDown) {
+          ComboboxFinish(mSelectedIndexWhenPoppedDown);
+        }
       }
       } break;
 
@@ -3497,14 +3498,12 @@ nsListControlFrame::KeyPress(nsIDOMEvent* aKeyEvent)
     // Why aren't they getting flushed each time?
     // because this isn't needed for Gfx
     if (IsInDropDownMode() == PR_TRUE) {
-      nsCOMPtr<nsIPresShell> presShell;
-      mPresContext->GetShell(getter_AddRefs(presShell));
-      presShell->FlushPendingNotifications(PR_FALSE);
+      mPresContext->PresShell()->FlushPendingNotifications(PR_FALSE);
     }
     REFLOW_DEBUG_MSG2("  After: %d\n", newIndex);
 
     // Make sure the SelectArea frame gets painted
-    Invalidate(mPresContext, nsRect(0,0,mRect.width,mRect.height), PR_TRUE);
+    Invalidate(nsRect(0,0,mRect.width,mRect.height), PR_TRUE);
 
   } else {
     REFLOW_DEBUG_MSG("  After: SKIPPED it\n");
@@ -3514,225 +3513,59 @@ nsListControlFrame::KeyPress(nsIDOMEvent* aKeyEvent)
 }
 
 
-/*******************************************************************************
+/******************************************************************************
  * nsListEventListener
- ******************************************************************************/
-
-nsresult 
-NS_NewListEventListener(nsIListEventListener ** aInstancePtr)
-{
-  nsListEventListener* it = new nsListEventListener();
-  if (nsnull == it) {
-    return NS_ERROR_OUT_OF_MEMORY;
-  }
-  return it->QueryInterface(NS_GET_IID(nsIListEventListener), (void **) aInstancePtr);   
-}
+ *****************************************************************************/
 
 NS_IMPL_ADDREF(nsListEventListener)
-
 NS_IMPL_RELEASE(nsListEventListener)
+NS_INTERFACE_MAP_BEGIN(nsListEventListener)
+  NS_INTERFACE_MAP_ENTRY(nsIDOMMouseListener)
+  NS_INTERFACE_MAP_ENTRY(nsIDOMMouseMotionListener)
+  NS_INTERFACE_MAP_ENTRY(nsIDOMKeyListener)
+  NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsIDOMEventListener, nsIDOMMouseListener)
+  NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIDOMMouseListener)
+NS_INTERFACE_MAP_END
 
-
-nsListEventListener::nsListEventListener()
-{
+#define FORWARD_EVENT(_event) \
+NS_IMETHODIMP \
+nsListEventListener::_event(nsIDOMEvent* aEvent) \
+{ \
+  if (mFrame) \
+    return mFrame->nsListControlFrame::_event(aEvent); \
+  return NS_OK; \
 }
 
-nsListEventListener::~nsListEventListener()
-{
-  // all refcounted objects are held as nsCOMPtrs, clear themselves
-}
+#define IGNORE_EVENT(_event) \
+NS_IMETHODIMP \
+nsListEventListener::_event(nsIDOMEvent* aEvent) \
+{ return NS_OK; }
 
-NS_IMETHODIMP
-nsListEventListener::SetFrame(nsListControlFrame *aFrame)
-{
-  mFrame.SetReference(aFrame->WeakReferent());
-  if (aFrame)
-  {
-    mContent = aFrame->GetContent();
-  }
-  return NS_OK;
-}
+IGNORE_EVENT(HandleEvent)
 
-nsresult
-nsListEventListener::QueryInterface(REFNSIID aIID, void** aInstancePtr)
-{
-  if (nsnull == aInstancePtr) {
-    return NS_ERROR_NULL_POINTER;
-  }
-  if (aIID.Equals(NS_GET_IID(nsISupports))) {
-    nsIDOMKeyListener *tmp = this;
-    nsISupports *tmp2 = tmp;
-    *aInstancePtr = (void*) tmp2;
-    NS_ADDREF_THIS();
-    return NS_OK;
-  }
+/*================== nsIDOMKeyListener =========================*/
 
-  if (aIID.Equals(NS_GET_IID(nsIDOMEventListener))) {
-    nsIDOMKeyListener *kl = (nsIDOMKeyListener*)this;
-    nsIDOMEventListener *temp = kl;
-    *aInstancePtr = (void*)temp;
-    NS_ADDREF_THIS();
-    return NS_OK;
-  }
-  
-  if (aIID.Equals(NS_GET_IID(nsIDOMMouseMotionListener))) {                                         
-    *aInstancePtr = (void*)(nsIDOMMouseMotionListener*) this;                                        
-    NS_ADDREF_THIS();
-    return NS_OK;                                                        
-  }
-  if (aIID.Equals(NS_GET_IID(nsIDOMKeyListener))) {
-    *aInstancePtr = (void*)(nsIDOMKeyListener*)this;
-    NS_ADDREF_THIS();
-    return NS_OK;
-  }
-  if (aIID.Equals(NS_GET_IID(nsIDOMMouseListener))) {
-    *aInstancePtr = (void*)(nsIDOMMouseListener*)this;
-    NS_ADDREF_THIS();
-    return NS_OK;
-  }
-  if (aIID.Equals(NS_GET_IID(nsIListEventListener))) {
-    *aInstancePtr = (void*)(nsIListEventListener*)this;
-    NS_ADDREF_THIS();
-    return NS_OK;
-  }
+IGNORE_EVENT(KeyDown)
+IGNORE_EVENT(KeyUp)
+FORWARD_EVENT(KeyPress)
 
-  return NS_NOINTERFACE;
-}
+/*=============== nsIDOMMouseListener ======================*/
 
-nsresult
-nsListEventListener::HandleEvent(nsIDOMEvent* aEvent)
-{
-  return NS_OK;
-}
-
-/*================== nsIKeyListener =========================*/
-
-nsresult
-nsListEventListener::KeyDown(nsIDOMEvent* aKeyEvent)
-{
-  nsListControlFrame *gfxFrame = mFrame.Reference();
-  if (gfxFrame && mContent)
-  {
-    return gfxFrame->KeyDown(aKeyEvent);
-  }
-  return NS_OK;
-}
-
-nsresult
-nsListEventListener::KeyUp(nsIDOMEvent* aKeyEvent)
-{
-  nsListControlFrame *gfxFrame = mFrame.Reference();
-  if (gfxFrame && mContent)
-  {
-    return gfxFrame->KeyUp(aKeyEvent);
-  }
-  return NS_OK;
-}
-
-nsresult
-nsListEventListener::KeyPress(nsIDOMEvent* aKeyEvent)
-{
-  nsListControlFrame *gfxFrame = mFrame.Reference();
-  if (gfxFrame && mContent)
-  {
-    return gfxFrame->KeyPress(aKeyEvent);
-  }
-  return NS_OK;
-}
-
-/*=============== nsIMouseListener ======================*/
-
-nsresult
-nsListEventListener::MouseDown(nsIDOMEvent* aMouseEvent)
-{
-  nsListControlFrame *gfxFrame = mFrame.Reference();
-  if (gfxFrame && mContent)
-  {
-    return gfxFrame->MouseDown(aMouseEvent);
-  }
-  return NS_OK;
-}
-
-nsresult
-nsListEventListener::MouseUp(nsIDOMEvent* aMouseEvent)
-{
-  nsListControlFrame *gfxFrame = mFrame.Reference();
-  if (gfxFrame && mContent)
-  {
-    return gfxFrame->MouseUp(aMouseEvent);
-  }
-  return NS_OK;
-}
-
-nsresult
-nsListEventListener::MouseClick(nsIDOMEvent* aMouseEvent)
-{
-  nsListControlFrame *gfxFrame = mFrame.Reference();
-  if (gfxFrame && mContent)
-  {
-    return gfxFrame->MouseClick(aMouseEvent);
-  }
-  return NS_OK;
-}
-
-nsresult
-nsListEventListener::MouseDblClick(nsIDOMEvent* aMouseEvent)
-{
-  nsListControlFrame *gfxFrame = mFrame.Reference();
-  if (gfxFrame && mContent)
-  {
-    return gfxFrame->MouseDblClick(aMouseEvent);
-  }
-  return NS_OK;
-}
-
-nsresult
-nsListEventListener::MouseOver(nsIDOMEvent* aMouseEvent)
-{
-  nsListControlFrame *gfxFrame = mFrame.Reference();
-  if (gfxFrame && mContent)
-  {
-    return gfxFrame->MouseOver(aMouseEvent);
-  }
-  return NS_OK;
-}
-
-nsresult
-nsListEventListener::MouseOut(nsIDOMEvent* aMouseEvent)
-{
-  nsListControlFrame *gfxFrame = mFrame.Reference();
-  if (gfxFrame && mContent)
-  {
-    return gfxFrame->MouseOut(aMouseEvent);
-  }
-  return NS_OK;
-}
+FORWARD_EVENT(MouseDown)
+FORWARD_EVENT(MouseUp)
+IGNORE_EVENT(MouseClick)
+IGNORE_EVENT(MouseDblClick)
+IGNORE_EVENT(MouseOver)
+IGNORE_EVENT(MouseOut)
 
 /*=============== nsIDOMMouseMotionListener ======================*/
 
-nsresult
-nsListEventListener::MouseMove(nsIDOMEvent* aMouseEvent)
-{
-  nsListControlFrame *gfxFrame = mFrame.Reference();
-  if (gfxFrame && mContent)
-  {
-    return gfxFrame->MouseMove(aMouseEvent);
-  }
-  return NS_OK;
-}
+FORWARD_EVENT(MouseMove)
+// XXXbryner does anyone call this, ever?
+IGNORE_EVENT(DragMove)
 
-nsresult
-nsListEventListener::DragMove(nsIDOMEvent* aMouseEvent)
-{
-  /*
-  nsListControlFrame *gfxFrame = mFrame.Reference();
-  if (gfxFrame && mContent)
-  {
-    return gfxFrame->DragMove(aMouseEvent);
-  }
-  */
-  return NS_OK;
-}
+#undef FORWARD_EVENT
+#undef IGNORE_EVENT
 
 /*=============== Timer Related Code ======================*/
 nsresult

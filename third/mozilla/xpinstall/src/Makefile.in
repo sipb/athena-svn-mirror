@@ -38,12 +38,14 @@ IS_COMPONENT	= 1
 MODULE_NAME	= nsSoftwareUpdate
 GRE_MODULE	= 1
 
+PACKAGE_FILE = base.pkg
+
 REQUIRES	= xpcom \
 		  xpcom_obsolete \
 		  string \
 		  jar \
 		  caps \
-		  chrome \
+		  content \
 		  necko \
 		  intl \
 		  locale \
@@ -57,6 +59,9 @@ REQUIRES	= xpcom \
 		  windowwatcher \
 		  plugin \
 		  unicharutil \
+		  appshell \
+		  docshell \
+		  cookie \
 		  $(ZLIB_REQUIRES) \
 		  $(NULL)
 

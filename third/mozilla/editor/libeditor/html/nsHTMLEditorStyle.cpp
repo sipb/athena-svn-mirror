@@ -53,7 +53,6 @@
 #include "nsISelectionController.h"
 #include "nsICSSLoader.h"
 #include "nsICSSStyleSheet.h"
-#include "nsIHTMLContentContainer.h"
 #include "nsIDocumentObserver.h"
 #include "TypeInState.h"
 
@@ -216,7 +215,6 @@ NS_IMETHODIMP nsHTMLEditor::SetInlineProperty(nsIAtom *aProperty,
         if (!iter)          return NS_ERROR_FAILURE;
 
         nsCOMArray<nsIDOMNode> arrayOfNodes;
-        nsCOMPtr<nsIContent> content;
         nsCOMPtr<nsIDOMNode> node;
         
         // iterate range and build up array
@@ -227,18 +225,18 @@ NS_IMETHODIMP nsHTMLEditor::SetInlineProperty(nsIAtom *aProperty,
         // any *whole* nodes.
         if (NS_SUCCEEDED(res))
         {
-          while (NS_ENUMERATOR_FALSE == iter->IsDone())
+          while (!iter->IsDone())
           {
-            res = iter->CurrentNode(getter_AddRefs(content));
-            if (NS_FAILED(res)) return res;
-            node = do_QueryInterface(content);
-            if (!node) return NS_ERROR_FAILURE;
+            node = do_QueryInterface(iter->GetCurrentNode());
+            if (!node)
+              return NS_ERROR_FAILURE;
+
             if (IsEditable(node))
             { 
               arrayOfNodes.AppendObject(node);
             }
-            res = iter->Next();
-            if (NS_FAILED(res)) return res;
+
+            iter->Next();
           }
         }
         // first check the start parent of the range to see if it needs to 
@@ -687,7 +685,8 @@ nsresult nsHTMLEditor::RemoveStyleInside(nsIDOMNode *aNode,
       NS_NAMED_LITERAL_STRING(classAttr, "class");
       PRBool hasStyleAttr = HasAttr(aNode, &styleAttr);
       PRBool hasClassAtrr = HasAttr(aNode, &classAttr);
-      if (hasStyleAttr || hasClassAtrr) {
+      if (aProperty &&
+          (hasStyleAttr || hasClassAtrr)) {
         // aNode carries inline styles or a class attribute so we can't
         // just remove the element... We need to create above the element
         // a span that will carry those styles or class, then we can delete
@@ -703,6 +702,20 @@ nsresult nsHTMLEditor::RemoveStyleInside(nsIDOMNode *aNode,
         res = CloneAttribute(classAttr, spanNode, aNode);
         if (NS_FAILED(res))
           return res;
+        if (hasStyleAttr)
+        {
+          // we need to remove the styles property corresponding to
+          // aProperty (bug 215406)
+          nsAutoString propertyValue;
+          mHTMLCSSUtils->RemoveCSSEquivalentToHTMLStyle(spanNode,
+                                                        aProperty,
+                                                        aAttribute,
+                                                        &propertyValue,
+                                                        PR_FALSE);
+          // remove the span if it's useless
+          nsCOMPtr<nsIDOMElement> element = do_QueryInterface(spanNode);
+          res = RemoveElementIfNoStyleOrIdOrClass(element, nsEditProperty::span);
+        }
       }
       res = RemoveContainer(aNode);
     }
@@ -1087,17 +1100,18 @@ nsHTMLEditor::GetInlinePropertyBase(nsIAtom *aProperty,
     if (!iter) return NS_ERROR_NULL_POINTER;
 
     iter->Init(range);
-    nsCOMPtr<nsIContent> content;
     nsAutoString firstValue, theValue;
-    iter->CurrentNode(getter_AddRefs(content));
+
     nsCOMPtr<nsIDOMNode> endNode;
     PRInt32 endOffset;
     result = range->GetEndContainer(getter_AddRefs(endNode));
     if (NS_FAILED(result)) return result;
     result = range->GetEndOffset(&endOffset);
     if (NS_FAILED(result)) return result;
-    while (NS_ENUMERATOR_FALSE == iter->IsDone())
+    while (!iter->IsDone())
     {
+      nsIContent *content = iter->GetCurrentNode();
+
       nsCOMPtr<nsIDOMNode> node = do_QueryInterface(content);
 
       if (node && nsTextEditUtils::IsBody(node))
@@ -1132,12 +1146,9 @@ nsHTMLEditor::GetInlinePropertyBase(nsIAtom *aProperty,
           skipNode = PR_TRUE;
         }
       }
-      else
+      else if (content->IsContentOfType(nsIContent::eELEMENT))
       { // handle non-text leaf nodes here
-        if (content->CanContainChildren())
-        {
-          skipNode = PR_TRUE;
-        }
+        skipNode = PR_TRUE;
       }
       if (!skipNode)
       {
@@ -1191,10 +1202,8 @@ nsHTMLEditor::GetInlinePropertyBase(nsIAtom *aProperty,
           }
         }
       }
-      result = iter->Next();
-      if (NS_FAILED(result))  
-        break;
-      iter->CurrentNode(getter_AddRefs(content));
+
+      iter->Next();
     }
   }
   if (!*aAny) 
@@ -1379,23 +1388,22 @@ nsresult nsHTMLEditor::RemoveInlinePropertyImpl(nsIAtom *aProperty, const nsAStr
         if (!iter)          return NS_ERROR_FAILURE;
 
         nsCOMArray<nsIDOMNode> arrayOfNodes;
-        nsCOMPtr<nsIContent> content;
         nsCOMPtr<nsIDOMNode> node;
         
         // iterate range and build up array
         iter->Init(range);
-        while (NS_ENUMERATOR_FALSE == iter->IsDone())
+        while (!iter->IsDone())
         {
-          res = iter->CurrentNode(getter_AddRefs(content));
-          if (NS_FAILED(res)) return res;
-          node = do_QueryInterface(content);
-          if (!node) return NS_ERROR_FAILURE;
+          node = do_QueryInterface(iter->GetCurrentNode());
+          if (!node)
+            return NS_ERROR_FAILURE;
+
           if (IsEditable(node))
           { 
             arrayOfNodes.AppendObject(node);
           }
-          res = iter->Next();
-          if (NS_FAILED(res)) return res;
+
+          iter->Next();
         }
         
         // loop through the list, remove the property on each node
@@ -1558,23 +1566,23 @@ nsHTMLEditor::RelativeFontChange( PRInt32 aSizeChange)
       if (!iter)          return NS_ERROR_FAILURE;
 
       nsCOMArray<nsIDOMNode> arrayOfNodes;
-      nsCOMPtr<nsIContent> content;
       nsCOMPtr<nsIDOMNode> node;
       
       // iterate range and build up array
       res = iter->Init(range);
       if (NS_SUCCEEDED(res))
       {
-        while (NS_ENUMERATOR_FALSE == iter->IsDone())
+        while (!iter->IsDone())
         {
-          res = iter->CurrentNode(getter_AddRefs(content));
-          if (NS_FAILED(res)) return res;
-          node = do_QueryInterface(content);
-          if (!node) return NS_ERROR_FAILURE;
+          node = do_QueryInterface(iter->GetCurrentNode());
+          if (!node)
+            return NS_ERROR_FAILURE;
+
           if (IsEditable(node))
           { 
             arrayOfNodes.AppendObject(node);
           }
+
           iter->Next();
         }
         

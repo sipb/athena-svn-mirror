@@ -131,7 +131,7 @@ NS_IMETHODIMP nsFilePicker::Show(PRInt16 *retval)
   if(initialDir.IsEmpty())
     initialDir = mLastUsedDirectory;
 
-  mFile.SetLength(0);
+  mFile.Truncate();
 
   FILEDLG filedlg;
   memset(&filedlg, 0, sizeof(FILEDLG));
@@ -152,7 +152,7 @@ NS_IMETHODIMP nsFilePicker::Show(PRInt16 *retval)
     if (filedlg.lReturn == DID_OK) {
       result = PR_TRUE;
       mDisplayDirectory->InitWithNativePath(nsDependentCString(filedlg.szFullFile));
-      mFile.Append(filedlg.szFullFile);
+      mFile.Assign(filedlg.szFullFile);
     }
   }
   else {
@@ -179,16 +179,11 @@ NS_IMETHODIMP nsFilePicker::Show(PRInt16 *retval)
     for (i = 0; i < mTitles.Count(); i++)
     {
       const nsString& typeWide = *mTitles[i];
-      PRInt32 l = (typeWide.Length()+2)*2;
-      char *filterBuffer = (char*) nsMemory::Alloc(l);
-      int len = WideCharToMultiByte(0,
-                                    typeWide.get(),
-                                    typeWide.Length(),
-                                    filterBuffer,
-                                    l);
-      filterBuffer[len] = NULL;
-      filterBuffer[len+1] = NULL;
-      apszTypeList[i] = filterBuffer;
+      nsAutoCharBuffer buffer;
+      PRInt32 bufLength;
+      WideCharToMultiByte(0, typeWide.get(), typeWide.Length(),
+                          buffer, bufLength);
+      apszTypeList[i] = ToNewCString(nsDependentCString(buffer.get()));
     }
     apszTypeList[i] = 0;
     filedlg.papszITypeList = (PAPSZ)apszTypeList;
@@ -302,7 +297,7 @@ NS_IMETHODIMP nsFilePicker::Show(PRInt16 *retval)
           NS_ENSURE_SUCCESS(rv,rv);
         }
       } else {
-        mFile.Append(filedlg.szFullFile);
+        mFile.Assign(filedlg.szFullFile);
       }
       mSelectedType = (PRInt16)pmydata->ulCurExt;
     }
@@ -522,8 +517,7 @@ NS_IMETHODIMP nsFilePicker::InitNative(nsIWidget *aParent,
                                        PRInt16 aMode)
 {
   mWnd = (HWND) ((aParent) ? aParent->GetNativeData(NS_NATIVE_WINDOW) : 0); 
-  mTitle.SetLength(0);
-  mTitle.Append(aTitle);
+  mTitle.Assign(aTitle);
   mMode = aMode;
   return NS_OK;
 }

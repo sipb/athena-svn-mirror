@@ -53,13 +53,13 @@ public:
   NS_DECL_ISUPPORTS
   NS_DECL_NSIPLUGINDOCUMENT
 
-  NS_IMETHOD StartDocumentLoad(const char*         aCommand,
-                               nsIChannel*         aChannel,
-                               nsILoadGroup*       aLoadGroup,
-                               nsISupports*        aContainer,
-                               nsIStreamListener** aDocListener,
-                               PRBool              aReset = PR_TRUE,
-                               nsIContentSink*     aSink = nsnull);
+  virtual nsresult StartDocumentLoad(const char*         aCommand,
+                                     nsIChannel*         aChannel,
+                                     nsILoadGroup*       aLoadGroup,
+                                     nsISupports*        aContainer,
+                                     nsIStreamListener** aDocListener,
+                                     PRBool              aReset = PR_TRUE,
+                                     nsIContentSink*     aSink = nsnull);
 
   virtual void SetScriptGlobalObject(nsIScriptGlobalObject* aScriptGlobalObject);
 
@@ -102,7 +102,7 @@ nsPluginDocument::SetScriptGlobalObject(nsIScriptGlobalObject* aScriptGlobalObje
 }
 
 
-NS_IMETHODIMP
+nsresult
 nsPluginDocument::StartDocumentLoad(const char*         aCommand,
                                     nsIChannel*         aChannel,
                                     nsILoadGroup*       aLoadGroup,
@@ -157,16 +157,16 @@ nsPluginDocument::CreateSyntheticPluginDocument()
   NS_ENSURE_SUCCESS(rv, rv);
   // then attach our plugin
 
-  nsCOMPtr<nsIHTMLContent> body = do_QueryInterface(mBodyContent);
+  nsCOMPtr<nsIContent> body = do_QueryInterface(mBodyContent);
   if (!body) {
     NS_WARNING("no body on plugin document!");
     return NS_ERROR_FAILURE;
   }
 
   // remove margins from body
-  nsHTMLValue zero(0, eHTMLUnit_Pixel);
-  body->SetHTMLAttribute(nsHTMLAtoms::marginwidth, zero, PR_FALSE);
-  body->SetHTMLAttribute(nsHTMLAtoms::marginheight, zero, PR_FALSE);
+  NS_NAMED_LITERAL_STRING(zero, "0");
+  body->SetAttr(kNameSpaceID_None, nsHTMLAtoms::marginwidth, zero, PR_FALSE);
+  body->SetAttr(kNameSpaceID_None, nsHTMLAtoms::marginheight, zero, PR_FALSE);
 
 
   // make plugin content
@@ -182,25 +182,25 @@ nsPluginDocument::CreateSyntheticPluginDocument()
   mPluginContent->SetDocument(this, PR_FALSE, PR_TRUE);
 
   // make it a named element
-  nsHTMLValue name(NS_ConvertUTF8toUCS2("plugin"));
-  mPluginContent->SetHTMLAttribute(nsHTMLAtoms::name, name, PR_FALSE);
+  mPluginContent->SetAttr(kNameSpaceID_None, nsHTMLAtoms::name,
+                          NS_LITERAL_STRING("plugin"), PR_FALSE);
 
-  // fill viewport and auto-reize
-  nsHTMLValue percent100 ((float)1.0);
-  mPluginContent->SetHTMLAttribute(nsHTMLAtoms::width, percent100, PR_FALSE);
-  mPluginContent->SetHTMLAttribute(nsHTMLAtoms::height, percent100, PR_FALSE);
+  // fill viewport and auto-resize
+  NS_NAMED_LITERAL_STRING(percent100, "100%");
+  mPluginContent->SetAttr(kNameSpaceID_None, nsHTMLAtoms::width, percent100,
+                          PR_FALSE);
+  mPluginContent->SetAttr(kNameSpaceID_None, nsHTMLAtoms::height, percent100,
+                          PR_FALSE);
 
   // set URL
   nsCAutoString src;
-  mDocumentURL->GetSpec(src);
-
-  NS_ConvertUTF8toUCS2 srcString(src);
-  nsHTMLValue val(srcString);
-  mPluginContent->SetHTMLAttribute(nsHTMLAtoms::src, val, PR_FALSE);
+  mDocumentURI->GetSpec(src);
+  mPluginContent->SetAttr(kNameSpaceID_None, nsHTMLAtoms::src,
+                          NS_ConvertUTF8toUTF16(src), PR_FALSE);
 
   // set mime type
-  val.SetStringValue(NS_ConvertUTF8toUCS2(mMimeType));
-  mPluginContent->SetHTMLAttribute(nsHTMLAtoms::type, val, PR_FALSE);
+  mPluginContent->SetAttr(kNameSpaceID_None, nsHTMLAtoms::type,
+                          NS_ConvertUTF8toUTF16(mMimeType), PR_FALSE);
 
   body->AppendChildTo(mPluginContent, PR_FALSE, PR_FALSE);
 

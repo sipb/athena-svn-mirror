@@ -73,12 +73,14 @@ nsAccessibleHyperText::nsAccessibleHyperText(nsIDOMNode* aDomNode, nsIWeakRefere
       nsCOMPtr<nsIContent> content(do_QueryInterface(aDomNode));
       shell->GetPrimaryFrameFor(content, &frame);
       nsIFrame *parentFrame = nsAccessible::GetParentBlockFrame(frame);
-      nsCOMPtr<nsIPresContext> presContext;
-      shell->GetPresContext(getter_AddRefs(presContext));
-      nsIFrame* childFrame = nsnull;
-      parentFrame->FirstChild(presContext, nsnull, &childFrame);
-      PRBool bSave = PR_FALSE;
-      GetAllTextChildren(presContext, childFrame, aDomNode, bSave);
+      NS_ASSERTION(parentFrame, "Error: HyperText can't get parent block frame");
+      if (parentFrame) {
+        nsCOMPtr<nsIPresContext> presContext;
+        shell->GetPresContext(getter_AddRefs(presContext));
+        nsIFrame* childFrame = parentFrame->GetFirstChild(nsnull);
+        PRBool bSave = PR_FALSE;
+        GetAllTextChildren(presContext, childFrame, aDomNode, bSave);
+      }
     }
   }
 }
@@ -122,8 +124,7 @@ PRBool nsAccessibleHyperText::GetAllTextChildren(nsIPresContext *aPresContext, n
       }
     }
 
-    nsIFrame* childFrame = nsnull;
-    aCurFrame->FirstChild(aPresContext, nsnull, &childFrame);
+    nsIFrame* childFrame = aCurFrame->GetFirstChild(nsnull);
     if (GetAllTextChildren(aPresContext, childFrame, aNode, bSave))
       return PR_TRUE;
   }
@@ -151,7 +152,7 @@ nsIDOMNode* nsAccessibleHyperText::FindTextNodeByOffset(PRInt32 aOffset, PRInt32
     nsAccessibleText accText(domNode);
     PRInt32 charCount;
     if (NS_SUCCEEDED(accText.GetCharacterCount(&charCount))) {
-      if (aOffset >= 0 && aOffset < charCount) {
+      if (aOffset >= 0 && aOffset <= charCount) {
         return domNode;
       }
       aOffset -= charCount;
@@ -387,14 +388,29 @@ NS_IMETHODIMP nsAccessibleHyperText::RemoveSelection(PRInt32 aSelectionNum)
   *aLinks = 0;
 
   PRUint32 index, count;
+  PRInt32 caretOffset;
   mTextChildren->Count(&count);
   for (index = 0; index < count; index++) {
     nsCOMPtr<nsIDOMNode> domNode(do_QueryInterface(mTextChildren->ElementAt(index)));
     nsCOMPtr<nsIDOMNode> parentNode;
+    nsCOMPtr<nsILink> link = nsnull;
     domNode->GetParentNode(getter_AddRefs(parentNode));
-    nsCOMPtr<nsILink> link(do_QueryInterface(parentNode));
+    while (parentNode) {
+      link = do_QueryInterface(parentNode);
+      if (link)
+        break;
+      nsCOMPtr<nsIDOMNode> temp = parentNode;
+      temp->GetParentNode(getter_AddRefs(parentNode));
+    }
     if (link)
       (*aLinks)++;
+    else {
+      nsAccessibleText accText(domNode);
+      if (NS_SUCCEEDED(accText.GetCaretOffset(&caretOffset))) {
+        *aLinks = 0;
+        return NS_OK;
+      }
+    }
   }
 
   return NS_OK;
@@ -408,9 +424,18 @@ NS_IMETHODIMP nsAccessibleHyperText::GetLink(PRInt32 aIndex, nsIAccessibleHyperL
   for (index = 0; index < count; index++) {
     nsCOMPtr<nsIDOMNode> domNode(do_QueryInterface(mTextChildren->ElementAt(index)));
     nsCOMPtr<nsIDOMNode> parentNode;
-    // text node maybe a child of a link node
+
+    // text node maybe a child (or grandchild, ...) of a link node
+    nsCOMPtr<nsILink> link;
     domNode->GetParentNode(getter_AddRefs(parentNode));
-    nsCOMPtr<nsILink> link(do_QueryInterface(parentNode));
+    while (parentNode) {
+      link = do_QueryInterface(parentNode);
+      if (link)
+        break; 
+      nsCOMPtr<nsIDOMNode> temp = parentNode;
+      temp->GetParentNode(getter_AddRefs(parentNode));
+    }
+
     if (link) {
       if (linkCount++ == NS_STATIC_CAST(PRUint32, aIndex)) {
         nsCOMPtr<nsIWeakReference> weakShell;
@@ -505,6 +530,9 @@ nsresult nsAccessibleHyperText::GetBounds(nsIWeakReference *aWeakShell, PRInt32 
   for (index = 0; index < count; index++) {
     nsHTMLTextAccessible *accText = new nsHTMLTextAccessible(
         (nsIDOMNode *)mTextChildren->ElementAt(index), aWeakShell);
+    if (!accText)
+      return NS_ERROR_OUT_OF_MEMORY;
+
     nsRect frameRect;
     accText->GetBounds(&frameRect.x, &frameRect.y, &frameRect.width, &frameRect.height);
     unionRectTwips.UnionRect(unionRectTwips, frameRect);

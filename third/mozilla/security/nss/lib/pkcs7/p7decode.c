@@ -34,7 +34,7 @@
 /*
  * PKCS7 decoding, verification.
  *
- * $Id: p7decode.c,v 1.1.1.3 2004-02-27 16:51:23 rbasch Exp $
+ * $Id: p7decode.c,v 1.1.1.4 2004-06-30 17:06:23 rbasch Exp $
  */
 
 #include "nssrenam.h"
@@ -1573,7 +1573,7 @@ sec_pkcs7_verify_signature(SEC_PKCS7ContentInfo *cinfo,
      */
     encoded_stime = SEC_PKCS7GetSigningTime (cinfo);
     if (encoded_stime != NULL) {
-	if (CERT_DecodeTimeChoice (&stime, encoded_stime) != SECSuccess)
+	if (DER_DecodeTimeChoice (&stime, encoded_stime) != SECSuccess)
 	    encoded_stime = NULL;	/* conversion failed, so pretend none */
     }
 

@@ -43,7 +43,6 @@
 #include "nsStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
-#include "nsIHTMLContent.h"
 #include "nsHTMLParts.h"
 #include "nsHTMLAtoms.h"
 #include "nsCOMPtr.h"
@@ -66,8 +65,7 @@ void nsTableColGroupFrame::SetColType(nsTableColGroupType aType)
   mState |= (type << COL_GROUP_TYPE_OFFSET);
 }
 
-void nsTableColGroupFrame::ResetColIndices(nsIPresContext* aPresContext,
-                                           nsIFrame*       aFirstColGroup,
+void nsTableColGroupFrame::ResetColIndices(nsIFrame*       aFirstColGroup,
                                            PRInt32         aFirstColIndex,
                                            nsIFrame*       aStartColFrame)
 {
@@ -83,7 +81,7 @@ void nsTableColGroupFrame::ResetColIndices(nsIPresContext* aPresContext,
       }
       nsIFrame* colFrame = aStartColFrame; 
       if (!colFrame || (colIndex != aFirstColIndex)) {
-        colGroupFrame->FirstChild(aPresContext, nsnull, &colFrame);
+        colFrame = colGroupFrame->GetFirstChild(nsnull);
       }
       while (colFrame) {
         if (nsLayoutAtoms::tableColFrame == colFrame->GetType()) {
@@ -131,7 +129,7 @@ nsTableColGroupFrame::AddColsToTable(nsIPresContext&  aPresContext,
   }
 
   if (aResetSubsequentColIndices && GetNextSibling()) {
-    ResetColIndices(&aPresContext, GetNextSibling(), colIndex);
+    ResetColIndices(GetNextSibling(), colIndex);
   }
 
   return rv;
@@ -265,7 +263,7 @@ nsTableColGroupFrame::InsertFrames(nsIPresContext* aPresContext,
   nsIFrame* lastFrame = frames.LastChild();
 
   mFrames.InsertFrames(this, aPrevFrameIn, aFrameList);
-  nsIFrame* prevFrame = nsTableFrame::GetFrameAtOrBefore(aPresContext, this, aPrevFrameIn, 
+  nsIFrame* prevFrame = nsTableFrame::GetFrameAtOrBefore(this, aPrevFrameIn,
                                                          nsLayoutAtoms::tableColFrame);
 
   PRInt32 colIndex = (prevFrame) ? ((nsTableColFrame*)prevFrame)->GetColIndex() + 1 : 0;
@@ -308,7 +306,7 @@ nsTableColGroupFrame::RemoveChild(nsIPresContext&  aPresContext,
   if (mFrames.DestroyFrame(&aPresContext, (nsIFrame*)&aChild)) {
     mColCount--;
     if (aResetColIndices) {
-      ResetColIndices(&aPresContext, this, colIndex, nextChild);
+      ResetColIndices(this, colIndex, nextChild);
     }
   }
   nsTableFrame* tableFrame;
@@ -318,7 +316,7 @@ nsTableColGroupFrame::RemoveChild(nsIPresContext&  aPresContext,
   // XXX this could be optimized with much effort
   tableFrame->SetNeedStrategyInit(PR_TRUE);
   // Generate a reflow command so we reflow the table
-  nsTableFrame::AppendDirtyReflowCommand(nsTableFrame::GetPresShellNoAddref(&aPresContext), tableFrame);
+  nsTableFrame::AppendDirtyReflowCommand(aPresContext.PresShell(), tableFrame);
 }
 
 // this removes children form the last col group (eColGroupAnonymousCell) in the 
@@ -392,8 +390,6 @@ nsTableColGroupFrame::Paint(nsIPresContext*      aPresContext,
   if (NS_SUCCEEDED(IsVisibleForPainting(aPresContext, aRenderingContext, PR_FALSE, &isVisible)) && !isVisible) {
     return NS_OK;
   }
-
-  // Standards mode background painting removed.  See bug 4510
 
   PaintChildren(aPresContext, aRenderingContext, aDirtyRect, aWhichLayer);
   return NS_OK;
@@ -643,34 +639,39 @@ PRInt32 nsTableColGroupFrame::SetStartColumnIndex (int aIndex)
   return result;
 }
 
-
-// this could be optimized by using col group frame starting indicies, 
-// but typically there aren't enough very large col groups for the added complexity.
-nsTableColGroupFrame* 
-nsTableColGroupFrame::GetColGroupFrameContaining(nsIPresContext*  aPresContext,
-                                                 nsFrameList&     aColGroupList,
-                                                 nsTableColFrame& aColFrame)
-{
-  nsIFrame* childFrame = aColGroupList.FirstChild();
-  while (childFrame) { 
-    if (nsLayoutAtoms::tableColGroupFrame == childFrame->GetType()) {
-      nsTableColFrame* colFrame = nsnull;
-      childFrame->FirstChild(aPresContext, nsnull, (nsIFrame **)&colFrame);
-      while (colFrame) {
-        if (colFrame == &aColFrame) {
-          return (nsTableColGroupFrame *)childFrame;
-        }
-        colFrame = NS_STATIC_CAST(nsTableColFrame*, colFrame->GetNextSibling());
-      }
-    }
-    childFrame = childFrame->GetNextSibling();
-  }
-  return nsnull;
-}
-
 void nsTableColGroupFrame::DeleteColFrame(nsIPresContext* aPresContext, nsTableColFrame* aColFrame)
 {
   mFrames.DestroyFrame(aPresContext, aColFrame);
+}
+
+
+void nsTableColGroupFrame::SetContinuousBCBorderWidth(PRUint8     aForSide,
+                                                      BCPixelSize aPixelValue)
+{
+  switch (aForSide) {
+    case NS_SIDE_TOP:
+      mTopContBorderWidth = aPixelValue;
+      return;
+    case NS_SIDE_BOTTOM:
+      mBottomContBorderWidth = aPixelValue;
+      return;
+    default:
+      NS_ERROR("invalid side arg");
+  }
+}
+
+void nsTableColGroupFrame::GetContinuousBCBorderWidth(float     aPixelsToTwips,
+                                                      nsMargin& aBorder)
+{
+  nsTableFrame* table;
+  nsTableFrame::GetTableFrame(this, table);
+  nsTableColFrame* col = table->GetColFrame(mStartColIndex + mColCount - 1);
+  col->GetContinuousBCBorderWidth(aPixelsToTwips, aBorder);
+  aBorder.top = BC_BORDER_BOTTOM_HALF_COORD(aPixelsToTwips,
+                                            mTopContBorderWidth);
+  aBorder.bottom = BC_BORDER_TOP_HALF_COORD(aPixelsToTwips,
+                                            mBottomContBorderWidth);
+  return;
 }
 
 /* ----- global methods ----- */

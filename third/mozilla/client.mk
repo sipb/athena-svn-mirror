@@ -52,18 +52,18 @@
 #
 # For branches, uncomment the MOZ_CO_TAG line with the proper tag,
 # and commit this file on that tag.
-MOZ_CO_TAG = MOZILLA_1_6_RELEASE
-NSPR_CO_TAG = MOZILLA_1_6_RELEASE
-PSM_CO_TAG = MOZILLA_1_6_RELEASE
-NSS_CO_TAG = MOZILLA_1_6_RELEASE
-LDAPCSDK_CO_TAG = MOZILLA_1_6_RELEASE
-ACCESSIBLE_CO_TAG = MOZILLA_1_6_RELEASE
-IMGLIB2_CO_TAG = MOZILLA_1_6_RELEASE
-IPC_CO_TAG = MOZILLA_1_6_RELEASE
-TOOLKIT_CO_TAG = MOZILLA_1_6_RELEASE
-BROWSER_CO_TAG = MOZILLA_1_6_RELEASE
-MAIL_CO_TAG = MOZILLA_1_6_RELEASE
-STANDALONE_COMPOSER_CO_TAG = MOZILLA_1_6_RELEASE
+MOZ_CO_TAG =  MOZILLA_1_7_RELEASE
+NSPR_CO_TAG =  MOZILLA_1_7_RELEASE
+PSM_CO_TAG =  MOZILLA_1_7_RELEASE
+NSS_CO_TAG =  MOZILLA_1_7_RELEASE
+LDAPCSDK_CO_TAG =  MOZILLA_1_7_RELEASE
+ACCESSIBLE_CO_TAG =  MOZILLA_1_7_RELEASE
+IMGLIB2_CO_TAG =  MOZILLA_1_7_RELEASE
+IPC_CO_TAG =  MOZILLA_1_7_RELEASE
+TOOLKIT_CO_TAG = MOZILLA_1_7_RELEASE
+BROWSER_CO_TAG = MOZILLA_1_7_RELEASE
+MAIL_CO_TAG = MOZILLA_1_7_RELEASE
+STANDALONE_COMPOSER_CO_TAG = MOZILLA_1_7_RELEASE
 BUILD_MODULES = all
 
 #######################################################################
@@ -380,7 +380,9 @@ ifdef BROWSER_CO_TAG
   BROWSER_CO_FLAGS := $(BROWSER_CO_FLAGS) -r $(BROWSER_CO_TAG)
 endif
 
-CVSCO_PHOENIX := $(CVS) $(CVS_FLAGS) co $(BROWSER_CO_FLAGS) $(CVS_CO_DATE_FLAGS) mozilla/browser
+BROWSER_CO_DIRS := mozilla/browser mozilla/other-licenses/branding/firefox
+
+CVSCO_PHOENIX := $(CVS) $(CVS_FLAGS) co $(BROWSER_CO_FLAGS) $(CVS_CO_DATE_FLAGS) $(BROWSER_CO_DIRS)
 
 ifdef MOZ_PHOENIX
 FASTUPDATE_PHOENIX := fast_update $(CVSCO_PHOENIX)
@@ -403,7 +405,9 @@ ifdef MAIL_CO_TAG
   MAIL_CO_FLAGS := $(MAIL_CO_FLAGS) -r $(MAIL_CO_TAG)
 endif
 
-CVSCO_THUNDERBIRD := $(CVS) $(CVS_FLAGS) co $(MAIL_CO_FLAGS) $(CVS_CO_DATE_FLAGS) mozilla/mail
+MAIL_CO_DIRS := mozilla/mail mozilla/other-licenses/branding/thunderbird
+
+CVSCO_THUNDERBIRD := $(CVS) $(CVS_FLAGS) co $(MAIL_CO_FLAGS) $(CVS_CO_DATE_FLAGS) $(MAIL_CO_DIRS)
 ifdef MOZ_THUNDERBIRD
 FASTUPDATE_THUNDERBIRD := fast_update $(CVSCO_THUNDERBIRD)
 CHECKOUT_THUNDERBIRD := cvs_co $(CVSCO_THUNDERBIRD)
@@ -737,6 +741,21 @@ depend:: $(OBJDIR)/Makefile $(OBJDIR)/config.status
 
 build::  $(OBJDIR)/Makefile $(OBJDIR)/config.status
 	$(MOZ_MAKE)
+
+####################################
+# Profile-feedback build (gcc only)
+#  To use this, you should set the following variables in your mozconfig
+#    mk_add_options PROFILE_GEN_SCRIPT=/path/to/profile-script
+#
+#  The profile script should exercise the functionality to be included
+#  in the profile feedback.
+
+profiledbuild:: $(OBJDIR)/Makefile $(OBJDIR)/config.status
+	$(MOZ_MAKE) MOZ_PROFILE_GENERATE=1
+	OBJDIR=${OBJDIR} $(PROFILE_GEN_SCRIPT)
+	$(MOZ_MAKE) clobber_all
+	$(MOZ_MAKE) MOZ_PROFILE_USE=1
+	find $(OBJDIR) -name "*.da" -exec rm {} \;
 
 ####################################
 # Other targets

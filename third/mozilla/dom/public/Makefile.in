@@ -41,7 +41,6 @@ EXPORTS=nsIScriptContext.h		\
 	nsIScriptObjectOwner.h		\
 	nsIScriptObjectPrincipal.h	\
 	nsIScriptGlobalObject.h		\
-	nsIScriptEventListener.h	\
 	nsIDOMScriptObjectFactory.h	\
 	nsDOMCID.h			\
 	nsIScriptExternalNameSet.h	\
@@ -50,6 +49,7 @@ EXPORTS=nsIScriptContext.h		\
 	nsIJSEventListener.h		\
 	nsIDOMClassInfo.h		\
 	nsIBaseDOMException.h		\
+	nsDOMString.h			\
 	$(NULL)
 
 include $(topsrcdir)/config/rules.mk

@@ -215,8 +215,7 @@ nsNSSCertificate::FormatUIStrings(const nsAutoString &nickname, nsAutoString &ni
     return NS_ERROR_FAILURE;
   }
   
-  NS_DEFINE_CID(nssComponentCID, NS_NSSCOMPONENT_CID);
-  nsCOMPtr<nsINSSComponent> nssComponent(do_GetService(nssComponentCID, &rv));
+  nsCOMPtr<nsINSSComponent> nssComponent(do_GetService(kNSSComponentCID, &rv));
 
   if (NS_FAILED(rv) || !nssComponent) {
     return NS_ERROR_FAILURE;
@@ -240,24 +239,18 @@ nsNSSCertificate::FormatUIStrings(const nsAutoString &nickname, nsAutoString &ni
 
     nickWithSerial.Append(nickname);
 
-    if (NS_SUCCEEDED(nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertInfoIssuedFor").get(), info))) {
+    if (NS_SUCCEEDED(nssComponent->GetPIPNSSBundleString("CertInfoIssuedFor", info))) {
       details.Append(info);
-      details.Append(NS_LITERAL_STRING("\n"));
-    }
-
-    if (NS_SUCCEEDED(x509Proxy->GetSubjectName(temp1)) && !temp1.IsEmpty()) {
-      details.Append(NS_LITERAL_STRING("  "));
-      if (NS_SUCCEEDED(nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpSubject").get(), info))) {
-        details.Append(info);
-        details.Append(NS_LITERAL_STRING(": "));
+      details.Append(PRUnichar(' '));
+      if (NS_SUCCEEDED(x509Proxy->GetSubjectName(temp1)) && !temp1.IsEmpty()) {
+        details.Append(temp1);
       }
-      details.Append(temp1);
-      details.Append(NS_LITERAL_STRING("\n"));
+      details.Append(PRUnichar('\n'));
     }
 
     if (NS_SUCCEEDED(x509Proxy->GetSerialNumber(temp1)) && !temp1.IsEmpty()) {
       details.Append(NS_LITERAL_STRING("  "));
-      if (NS_SUCCEEDED(nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpSerialNo").get(), info))) {
+      if (NS_SUCCEEDED(nssComponent->GetPIPNSSBundleString("CertDumpSerialNo", info))) {
         details.Append(info);
         details.Append(NS_LITERAL_STRING(": "));
       }
@@ -265,9 +258,9 @@ nsNSSCertificate::FormatUIStrings(const nsAutoString &nickname, nsAutoString &ni
 
       nickWithSerial.Append(NS_LITERAL_STRING(" ["));
       nickWithSerial.Append(temp1);
-      nickWithSerial.Append(NS_LITERAL_STRING("]"));
+      nickWithSerial.Append(PRUnichar(']'));
 
-      details.Append(NS_LITERAL_STRING("\n"));
+      details.Append(PRUnichar('\n'));
     }
 
 
@@ -285,68 +278,72 @@ nsNSSCertificate::FormatUIStrings(const nsAutoString &nickname, nsAutoString &ni
 
       if (validity) {
         details.Append(NS_LITERAL_STRING("  "));
-        if (NS_SUCCEEDED(nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertInfoValid").get(), info))) {
+        if (NS_SUCCEEDED(nssComponent->GetPIPNSSBundleString("CertInfoValid", info))) {
           details.Append(info);
         }
 
         if (NS_SUCCEEDED(validity->GetNotBeforeLocalTime(temp1)) && !temp1.IsEmpty()) {
-          details.Append(NS_LITERAL_STRING(" "));
-          if (NS_SUCCEEDED(nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertInfoFrom").get(), info))) {
+          details.Append(PRUnichar(' '));
+          if (NS_SUCCEEDED(nssComponent->GetPIPNSSBundleString("CertInfoFrom", info))) {
             details.Append(info);
+            details.Append(PRUnichar(' '));
           }
-          details.Append(NS_LITERAL_STRING(" "));
           details.Append(temp1);
         }
 
         if (NS_SUCCEEDED(validity->GetNotAfterLocalTime(temp1)) && !temp1.IsEmpty()) {
-          details.Append(NS_LITERAL_STRING(" "));
-          if (NS_SUCCEEDED(nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertInfoTo").get(), info))) {
+          details.Append(PRUnichar(' '));
+          if (NS_SUCCEEDED(nssComponent->GetPIPNSSBundleString("CertInfoTo", info))) {
             details.Append(info);
+            details.Append(PRUnichar(' '));
           }
-          details.Append(NS_LITERAL_STRING(" "));
           details.Append(temp1);
         }
 
-        details.Append(NS_LITERAL_STRING("\n"));
+        details.Append(PRUnichar('\n'));
       }
     }
 
     PRUint32 tempInt = 0;
     if (NS_SUCCEEDED(x509Proxy->GetUsagesString(PR_FALSE, &tempInt, temp1)) && !temp1.IsEmpty()) {
       details.Append(NS_LITERAL_STRING("  "));
-      if (NS_SUCCEEDED(nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertInfoPurposes").get(), info))) {
-        details.Append(info);
-      }
-      details.Append(NS_LITERAL_STRING(": "));
-      details.Append(temp1);
-      details.Append(NS_LITERAL_STRING("\n"));
-    }
-
-    if (NS_SUCCEEDED(nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertInfoIssuedBy").get(), info))) {
-      details.Append(info);
-      details.Append(NS_LITERAL_STRING("\n"));
-    }
-
-    if (NS_SUCCEEDED(x509Proxy->GetIssuerName(temp1)) && !temp1.IsEmpty()) {
-      details.Append(NS_LITERAL_STRING("  "));
-      if (NS_SUCCEEDED(nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpSubject").get(), info))) {
+      if (NS_SUCCEEDED(nssComponent->GetPIPNSSBundleString("CertInfoPurposes", info))) {
         details.Append(info);
         details.Append(NS_LITERAL_STRING(": "));
       }
       details.Append(temp1);
-      details.Append(NS_LITERAL_STRING("\n"));
+      details.Append(PRUnichar('\n'));
+    }
+
+    if (NS_SUCCEEDED(nssComponent->GetPIPNSSBundleString("CertInfoIssuedBy", info))) {
+      details.Append(info);
+      details.Append(PRUnichar(' '));
+
+      if (NS_SUCCEEDED(x509Proxy->GetIssuerName(temp1)) && !temp1.IsEmpty()) {
+        details.Append(temp1);
+      }
+
+      details.Append(PRUnichar('\n'));
+    }
+
+    if (NS_SUCCEEDED(nssComponent->GetPIPNSSBundleString("CertInfoStoredIn", info))) {
+      details.Append(info);
+      details.Append(PRUnichar(' '));
+
+      if (NS_SUCCEEDED(x509Proxy->GetTokenName(temp1)) && !temp1.IsEmpty()) {
+        details.Append(temp1);
+      }
     }
 
     /*
       the above produces output the following output:
 
-      Issued to: 
-        Subject: $subjectName
+      Issued to: $subjectName
         Serial number: $serialNumber
-        Valid from: $starting_date to $expriation_date
+        Valid from: $starting_date to $expiration_date
         Purposes: $purposes
-      Issued by:
-        Subject: $issuerName
+      Issued by: $issuerName
+      Stored in: $token
     */
   }
   
@@ -408,29 +405,42 @@ nsNSSCertificate::GetWindowTitle(char * *aWindowTitle)
 }
 
 NS_IMETHODIMP
-nsNSSCertificate::GetNickname(nsAString &_nickname)
+nsNSSCertificate::GetNickname(nsAString &aNickname)
 {
   nsNSSShutDownPreventionLock locker;
   if (isAlreadyShutDown())
     return NS_ERROR_NOT_AVAILABLE;
 
-// XXX kaie: this is bad. We return a non localizable hardcoded string.
-  const char *nickname = (mCert->nickname) ? mCert->nickname : "(no nickname)";
-  _nickname = NS_ConvertUTF8toUCS2(nickname);
+  if (mCert->nickname) {
+    CopyUTF8toUTF16(mCert->nickname, aNickname);
+  } else {
+    nsresult rv;
+    nsCOMPtr<nsINSSComponent> nssComponent(do_GetService(kNSSComponentCID, &rv));
+    if (NS_FAILED(rv) || !nssComponent) {
+      return NS_ERROR_FAILURE;
+    }
+    nssComponent->GetPIPNSSBundleString("CertNoNickname", aNickname);
+  }
   return NS_OK;
 }
 
 NS_IMETHODIMP
-nsNSSCertificate::GetEmailAddress(nsAString &_emailAddress)
+nsNSSCertificate::GetEmailAddress(nsAString &aEmailAddress)
 {
   nsNSSShutDownPreventionLock locker;
   if (isAlreadyShutDown())
     return NS_ERROR_NOT_AVAILABLE;
 
-// XXX kaie: this is bad. We return a non localizable hardcoded string.
-//           And agents could be confused, assuming the email address == "(no nickname)"
-  const char *email = (mCert->emailAddr) ? mCert->emailAddr : "(no email address)";
-  _emailAddress = NS_ConvertUTF8toUCS2(email);
+  if (mCert->emailAddr) {
+    CopyUTF8toUTF16(mCert->emailAddr, aEmailAddress);
+  } else {
+    nsresult rv;
+    nsCOMPtr<nsINSSComponent> nssComponent(do_GetService(kNSSComponentCID, &rv));
+    if (NS_FAILED(rv) || !nssComponent) {
+      return NS_ERROR_FAILURE;
+    }
+    nssComponent->GetPIPNSSBundleString("CertNoEmailAddress", aEmailAddress);
+  }
   return NS_OK;
 }
 
@@ -833,8 +843,7 @@ nsNSSCertificate::GetTokenName(nsAString &aTokenName)
       nsAutoString tok;
       nsCOMPtr<nsINSSComponent> nssComponent(do_GetService(kNSSComponentCID, &rv));
       if (NS_FAILED(rv)) return rv;
-      rv = nssComponent->GetPIPNSSBundleString(
-                                NS_LITERAL_STRING("InternalToken").get(), tok);
+      rv = nssComponent->GetPIPNSSBundleString("InternalToken", tok);
       if (NS_SUCCEEDED(rv))
         aTokenName = tok;
     }
@@ -1018,7 +1027,7 @@ nsNSSCertificate::GetUsagesArray(PRBool ignoreOcsp,
   nsresult rv;
   const int max_usages = 13;
   PRUnichar *tmpUsages[max_usages];
-  char *suffix = "";
+  const char *suffix = "";
   PRUint32 tmpCount;
   nsUsageArrayHelper uah(mCert);
   rv = uah.GetUsagesArray(suffix, ignoreOcsp, max_usages, _verified, &tmpCount, tmpUsages);
@@ -1047,7 +1056,7 @@ nsNSSCertificate::GetUsagesString(PRBool ignoreOcsp,
   nsresult rv;
   const int max_usages = 13;
   PRUnichar *tmpUsages[max_usages];
-  char *suffix = "_p";
+  const char *suffix = "_p";
   PRUint32 tmpCount;
   nsUsageArrayHelper uah(mCert);
   rv = uah.GetUsagesArray(suffix, ignoreOcsp, max_usages, _verified, &tmpCount, tmpUsages);
@@ -1081,13 +1090,11 @@ ProcessSECAlgorithmID(SECAlgorithmID *algID,
     nsCOMPtr<nsIMutableArray> asn1Objects;
     sequence->GetASN1Objects(getter_AddRefs(asn1Objects));
     asn1Objects->AppendElement(printableItem, PR_FALSE);
-    nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpAlgID").get(),
-                                        text);
+    nssComponent->GetPIPNSSBundleString("CertDumpAlgID", text);
     printableItem->SetDisplayName(text);
     printableItem = new nsNSSASN1PrintableItem();
     asn1Objects->AppendElement(printableItem, PR_FALSE);
-    nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpParams").get(),
-                                        text);
+    nssComponent->GetPIPNSSBundleString("CertDumpParams", text);
     printableItem->SetDisplayName(text); 
     ProcessRawBytes(&algID->parameters,text);
     printableItem->SetDisplayValue(text);
@@ -1151,12 +1158,10 @@ ProcessSubjectPublicKeyInfo(CERTSubjectPublicKeyInfo *spki,
     return NS_ERROR_OUT_OF_MEMORY;
 
   nsString text;
-  nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpSPKI").get(),
-                                      text);
+  nssComponent->GetPIPNSSBundleString("CertDumpSPKI", text);
   spkiSequence->SetDisplayName(text);
 
-  nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpSPKIAlg").get(),
-                                      text);
+  nssComponent->GetPIPNSSBundleString("CertDumpSPKIAlg", text);
   nsCOMPtr<nsIASN1Sequence> sequenceItem;
   nsresult rv = ProcessSECAlgorithmID(&spki->algorithm, nssComponent,
                                       getter_AddRefs(sequenceItem));
@@ -1180,8 +1185,7 @@ ProcessSubjectPublicKeyInfo(CERTSubjectPublicKeyInfo *spki,
     return NS_ERROR_OUT_OF_MEMORY;
 
   printableItem->SetDisplayValue(text);
-  nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpSubjPubKey").get(),
-                                      text);
+  nssComponent->GetPIPNSSBundleString("CertDumpSubjPubKey", text);
   printableItem->SetDisplayName(text);
   asn1Objects->AppendElement(printableItem, PR_FALSE);
   
@@ -1200,8 +1204,7 @@ ProcessExtensions(CERTCertExtension **extensions,
     return NS_ERROR_OUT_OF_MEMORY;
 
   nsString text;
-  nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpExtensions").get(),
-                                      text);
+  nssComponent->GetPIPNSSBundleString("CertDumpExtensions", text);
   extensionSequence->SetDisplayName(text);
   PRInt32 i;
   nsresult rv;
@@ -1237,7 +1240,7 @@ ProcessName(CERTName *name, nsINSSComponent *nssComponent, PRUnichar **value)
   nsresult rv;
   const PRUnichar *params[2];
   nsString avavalue;
-  nsXPIDLString temp;
+  nsAutoString temp;
   CERTRDN **lastRdn;
   lastRdn = rdns;
 
@@ -1273,14 +1276,13 @@ ProcessName(CERTName *name, nsINSSComponent *nssComponent, PRUnichar **value)
       if(!decodeItem) {
          return NS_ERROR_FAILURE;
       }
-      avavalue.AssignWithConversion((char*)decodeItem->data, decodeItem->len);
+      avavalue = NS_ConvertUTF8toUTF16((char*)decodeItem->data, decodeItem->len);
 
       SECITEM_FreeItem(decodeItem, PR_TRUE);
       params[0] = type.get();
       params[1] = avavalue.get();
-      nssComponent->PIPBundleFormatStringFromName(NS_LITERAL_STRING("AVATemplate").get(),
-                                                  params, 2, 
-                                                  getter_Copies(temp));
+      nssComponent->PIPBundleFormatStringFromName("AVATemplate",
+                                                  params, 2, temp);
       finalString += temp + NS_LITERAL_STRING("\n");
     }
   }
@@ -1321,8 +1323,7 @@ nsNSSCertificate::CreateTBSCertificateASN1Struct(nsIASN1Sequence **retSequence,
     return NS_ERROR_OUT_OF_MEMORY;
 
   nsString text;
-  nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpCertificate").get(),
-                                      text);
+  nssComponent->GetPIPNSSBundleString("CertDumpCertificate", text);
   sequence->SetDisplayName(text);
   nsCOMPtr<nsIASN1PrintableItem> printableItem;
   
@@ -1349,8 +1350,7 @@ nsNSSCertificate::CreateTBSCertificateASN1Struct(nsIASN1Sequence **retSequence,
   if (NS_FAILED(rv))
     return rv;
 
-  nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpSigAlg").get(),
-                                      text);
+  nssComponent->GetPIPNSSBundleString("CertDumpSigAlg", text);
   algID->SetDisplayName(text);
   asn1Objects->AppendElement(algID, PR_FALSE);
 
@@ -1362,18 +1362,15 @@ nsNSSCertificate::CreateTBSCertificateASN1Struct(nsIASN1Sequence **retSequence,
     return NS_ERROR_OUT_OF_MEMORY;
 
   printableItem->SetDisplayValue(value);
-  nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpIssuer").get(),
-                                      text);
+  nssComponent->GetPIPNSSBundleString("CertDumpIssuer", text);
   printableItem->SetDisplayName(text);
   asn1Objects->AppendElement(printableItem, PR_FALSE);
   
   nsCOMPtr<nsIASN1Sequence> validitySequence = new nsNSSASN1Sequence();
-  nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpValidity").get(),
-                                      text);
+  nssComponent->GetPIPNSSBundleString("CertDumpValidity", text);
   validitySequence->SetDisplayName(text);
   asn1Objects->AppendElement(validitySequence, PR_FALSE);
-  nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpNotBefore").get(),
-                                      text);
+  nssComponent->GetPIPNSSBundleString("CertDumpNotBefore", text);
   nsCOMPtr<nsIX509CertValidity> validityData;
   GetValidity(getter_AddRefs(validityData));
   PRTime notBefore, notAfter;
@@ -1385,14 +1382,12 @@ nsNSSCertificate::CreateTBSCertificateASN1Struct(nsIASN1Sequence **retSequence,
   if (NS_FAILED(rv))
     return rv;
 
-  nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpNotAfter").get(),
-                                      text);
+  nssComponent->GetPIPNSSBundleString("CertDumpNotAfter", text);
   rv = ProcessTime(notAfter, text.get(), validitySequence);
   if (NS_FAILED(rv))
     return rv;
 
-  nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpSubject").get(),
-                                      text);
+  nssComponent->GetPIPNSSBundleString("CertDumpSubject", text);
 
   printableItem = new nsNSSASN1PrintableItem();
   if (printableItem == nsnull)
@@ -1424,8 +1419,7 @@ nsNSSCertificate::CreateTBSCertificateASN1Struct(nsIASN1Sequence **retSequence,
       return NS_ERROR_OUT_OF_MEMORY;
 
     printableItem->SetDisplayValue(text);
-    nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpIssuerUniqueID").get(),
-                                         text);
+    nssComponent->GetPIPNSSBundleString("CertDumpIssuerUniqueID", text);
     printableItem->SetDisplayName(text);
     asn1Objects->AppendElement(printableItem, PR_FALSE);
   }
@@ -1444,8 +1438,7 @@ nsNSSCertificate::CreateTBSCertificateASN1Struct(nsIASN1Sequence **retSequence,
       return NS_ERROR_OUT_OF_MEMORY;
 
     printableItem->SetDisplayValue(text);
-    nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpSubjectUniqueID").get(),
-                                         text);
+    nssComponent->GetPIPNSSBundleString("CertDumpSubjectUniqueID", text);
     printableItem->SetDisplayName(text);
     asn1Objects->AppendElement(printableItem, PR_FALSE);
 
@@ -1460,7 +1453,7 @@ nsNSSCertificate::CreateTBSCertificateASN1Struct(nsIASN1Sequence **retSequence,
   return NS_OK;
 }
 
-#ifdef DEBUG_javi
+#if defined(DEBUG_javi) || defined(DEBUG_jgmyers)
 void
 DumpASN1Object(nsIASN1Object *object, unsigned int level)
 {
@@ -1479,14 +1472,13 @@ DumpASN1Object(nsIASN1Object *object, unsigned int level)
   nsCOMPtr<nsIASN1Sequence> sequence(do_QueryInterface(object));
   if (sequence) {
     printf ("%s ", NS_ConvertUCS2toUTF8(dispNameU).get());
-    sequence->GetProcessObjects(&processObjects);
+    sequence->GetIsValidContainer(&processObjects);
     if (processObjects) {
       printf("\n");
       sequence->GetASN1Objects(getter_AddRefs(asn1Objects));
-      asn1Objects->Count(&numObjects);
+      asn1Objects->GetLength(&numObjects);
       for (i=0; i<numObjects;i++) {
-        isupports = dont_AddRef(asn1Objects->ElementAt(i));
-        currObject = do_QueryInterface(isupports);
+        asn1Objects->QueryElementAt(i, NS_GET_IID(nsISupports), getter_AddRefs(currObject));
         DumpASN1Object(currObject, level+1);    
       }
     } else { 
@@ -1520,7 +1512,7 @@ nsNSSCertificate::CreateASN1Struct()
   nsXPIDLCString title;
   GetWindowTitle(getter_Copies(title));
   
-  mASN1Structure->SetDisplayName(NS_ConvertASCIItoUCS2(title));
+  mASN1Structure->SetDisplayName(NS_ConvertUTF8toUCS2(title));
   // This sequence will be contain the tbsCertificate, signatureAlgorithm,
   // and signatureValue.
   nsresult rv;
@@ -1541,13 +1533,11 @@ nsNSSCertificate::CreateASN1Struct()
   if (NS_FAILED(rv))
     return rv;
   nsString text;
-  nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpSigAlg").get(),
-                                      text);
+  nssComponent->GetPIPNSSBundleString("CertDumpSigAlg", text);
   algID->SetDisplayName(text);
   asn1Objects->AppendElement(algID, PR_FALSE);
   nsCOMPtr<nsIASN1PrintableItem>printableItem = new nsNSSASN1PrintableItem();
-  nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpCertSig").get(),
-                                      text);
+  nssComponent->GetPIPNSSBundleString("CertDumpCertSig", text);
   printableItem->SetDisplayName(text);
   // The signatureWrap is encoded as a bit string.
   // The function ProcessRawBytes expects the

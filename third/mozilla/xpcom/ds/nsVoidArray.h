@@ -271,23 +271,23 @@ public:
     return nsVoidArray::Count();
   }
 
-  void CStringAt(PRInt32 aIndex, nsCString& aCString) const;
+  void CStringAt(PRInt32 aIndex, nsACString& aCString) const;
   nsCString* CStringAt(PRInt32 aIndex) const;
   nsCString* operator[](PRInt32 aIndex) const { return CStringAt(aIndex); }
 
-  PRInt32 IndexOf(const nsCString& aPossibleString) const;
-  PRInt32 IndexOfIgnoreCase(const nsCString& aPossibleString) const;
+  PRInt32 IndexOf(const nsACString& aPossibleString) const;
+  PRInt32 IndexOfIgnoreCase(const nsACString& aPossibleString) const;
 
-  PRBool InsertCStringAt(const nsCString& aCString, PRInt32 aIndex);
+  PRBool InsertCStringAt(const nsACString& aCString, PRInt32 aIndex);
 
-  PRBool ReplaceCStringAt(const nsCString& aCString, PRInt32 aIndex);
+  PRBool ReplaceCStringAt(const nsACString& aCString, PRInt32 aIndex);
 
-  PRBool AppendCString(const nsCString& aCString) {
+  PRBool AppendCString(const nsACString& aCString) {
     return InsertCStringAt(aCString, Count());
   }
 
-  PRBool RemoveCString(const nsCString& aCString);
-  PRBool RemoveCStringIgnoreCase(const nsCString& aCString);
+  PRBool RemoveCString(const nsACString& aCString);
+  PRBool RemoveCStringIgnoreCase(const nsACString& aCString);
   PRBool RemoveCStringAt(PRInt32 aIndex);
   void   Clear(void);
 

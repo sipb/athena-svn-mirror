@@ -38,7 +38,7 @@
  * may use your version of this file under either the MPL or the
  * GPL.
  *
- * $Id: ssl3con.c,v 1.1.1.3 2004-02-27 16:47:08 rbasch Exp $
+ * $Id: ssl3con.c,v 1.1.1.4 2004-06-30 17:23:56 rbasch Exp $
  */
 
 #include "nssrenam.h"
@@ -2776,6 +2776,10 @@ ssl3_ComputeHandshakeHashes(sslSocket *     ss,
     PORT_Assert( ssl_HaveSSL3HandshakeLock(ss) );
 
     isTLS = (PRBool)(spec->version > SSL_LIBRARY_VERSION_3_0);
+    if (!spec->master_secret) {
+    	PORT_SetError(SSL_ERROR_RX_UNEXPECTED_HANDSHAKE);
+	return SECFailure;
+    }
 
     md5StateBuf = PK11_SaveContextAlloc(ssl3->hs.md5, md5StackBuf,
                                         sizeof md5StackBuf, &md5StateLen);
@@ -3759,9 +3763,9 @@ sendECDHClientKeyExchange(sslSocket * ss, SECKEYPublicKey * svrPubKey)
     }
 
     /*  Determine the PMS */
-    pms = PK11_PubDeriveExtended(privKey, svrPubKey, PR_FALSE, NULL, NULL,
-			    CKM_ECDH1_DERIVE, target, CKA_DERIVE, 0, NULL,
-			    kdf, NULL);
+    pms = PK11_PubDeriveWithKDF(privKey, svrPubKey, PR_FALSE, NULL, NULL,
+			    CKM_ECDH1_DERIVE, target, CKA_DERIVE, 0,
+			    kdf, NULL, NULL);
 
     if (pms == NULL) {
 	ssl_MapLowLevelError(SSL_ERROR_CLIENT_KEY_EXCHANGE_FAILURE);
@@ -6983,9 +6987,9 @@ ssl3_HandleECDHClientKeyExchange(sslSocket *ss, SSL3Opaque *b,
     }
 
     /*  Determine the PMS */
-    pms = PK11_PubDeriveExtended(srvrPrivKey, &clntPubKey, PR_FALSE, NULL, NULL,
-			    CKM_ECDH1_DERIVE, target, CKA_DERIVE, 0, NULL,
-			    kdf, NULL);
+    pms = PK11_PubDeriveWithKDF(srvrPrivKey, &clntPubKey, PR_FALSE, NULL, NULL,
+			    CKM_ECDH1_DERIVE, target, CKA_DERIVE, 0,
+			    kdf, NULL, NULL);
 
     PORT_Free(clntPubKey.u.ec.publicValue.data);
 

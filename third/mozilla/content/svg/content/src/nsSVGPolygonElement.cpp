@@ -54,7 +54,7 @@ protected:
                                           nsINodeInfo *aNodeInfo);
   nsSVGPolygonElement();
   virtual ~nsSVGPolygonElement();
-  virtual nsresult Init();
+  nsresult Init(nsINodeInfo* aNodeInfo);
   
 public:
   // interfaces:
@@ -81,21 +81,14 @@ nsresult NS_NewSVGPolygonElement(nsIContent **aResult, nsINodeInfo *aNodeInfo)
   if (!it) return NS_ERROR_OUT_OF_MEMORY;
   NS_ADDREF(it);
 
-  nsresult rv = NS_STATIC_CAST(nsGenericElement*,it)->Init(aNodeInfo);
-
-  if (NS_FAILED(rv)) {
-    it->Release();
-    return rv;
-  }
-
-  rv = it->Init();
+  nsresult rv = it->Init(aNodeInfo);
 
   if (NS_FAILED(rv)) {
     it->Release();
     return rv;
   }
   
-  *aResult = NS_STATIC_CAST(nsIContent *, it);
+  *aResult = it;
 
   return NS_OK;
 }
@@ -107,6 +100,9 @@ NS_IMPL_ADDREF_INHERITED(nsSVGPolygonElement,nsSVGPolygonElementBase)
 NS_IMPL_RELEASE_INHERITED(nsSVGPolygonElement,nsSVGPolygonElementBase)
 
 NS_INTERFACE_MAP_BEGIN(nsSVGPolygonElement)
+  NS_INTERFACE_MAP_ENTRY(nsIDOMNode)
+  NS_INTERFACE_MAP_ENTRY(nsIDOMElement)
+  NS_INTERFACE_MAP_ENTRY(nsIDOMSVGElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMSVGPolygonElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMSVGAnimatedPoints)
   NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(SVGPolygonElement)
@@ -122,18 +118,13 @@ nsSVGPolygonElement::nsSVGPolygonElement()
 
 nsSVGPolygonElement::~nsSVGPolygonElement()
 {
-  if (mPoints) {
-    nsCOMPtr<nsISVGValue> value = do_QueryInterface(mPoints);
-    value->RemoveObserver(this);
-  }
 }
 
   
 nsresult
-nsSVGPolygonElement::Init()
+nsSVGPolygonElement::Init(nsINodeInfo* aNodeInfo)
 {
-  nsresult rv;
-  rv = nsSVGPolygonElementBase::Init();
+  nsresult rv = nsSVGPolygonElementBase::Init(aNodeInfo);
   NS_ENSURE_SUCCESS(rv,rv);
 
   // Create mapped properties:
@@ -141,7 +132,7 @@ nsSVGPolygonElement::Init()
   // points #IMPLIED
   rv = nsSVGPointList::Create(getter_AddRefs(mPoints));
   NS_ENSURE_SUCCESS(rv,rv);
-  rv = mAttributes->AddMappedSVGValue(nsSVGAtoms::points, mPoints);
+  rv = AddMappedSVGValue(nsSVGAtoms::points, mPoints);
   NS_ENSURE_SUCCESS(rv,rv);
   
     
@@ -160,14 +151,7 @@ nsSVGPolygonElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
   if (!it) return NS_ERROR_OUT_OF_MEMORY;
   NS_ADDREF(it);
 
-  nsresult rv = NS_STATIC_CAST(nsGenericElement*,it)->Init(mNodeInfo);
-
-  if (NS_FAILED(rv)) {
-    it->Release();
-    return rv;
-  }
-
-  rv = it->Init();
+  nsresult rv = it->Init(mNodeInfo);
 
   if (NS_FAILED(rv)) {
     it->Release();
@@ -181,7 +165,7 @@ nsSVGPolygonElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
     return rv;
   }
  
-  *aReturn = NS_STATIC_CAST(nsSVGPolygonElementBase*, it);
+  *aReturn = it;
 
   return NS_OK; 
 }

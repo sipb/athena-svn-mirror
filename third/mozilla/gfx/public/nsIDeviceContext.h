@@ -150,7 +150,16 @@ typedef void * nsNativeDeviceContext;
 /* requested plex mode not supported by printer */
 #define NS_ERROR_GFX_PRINTER_PLEX_NOT_SUPPORTED \
   NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_GFX,NS_ERROR_GFX_PRINTER_BASE+31)
-  
+/* The document is still being loaded */
+#define NS_ERROR_GFX_PRINTER_DOC_IS_BUSY \
+  NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_GFX,NS_ERROR_GFX_PRINTER_BASE+32)
+/* Printing is not implemented */
+#define NS_ERROR_GFX_PRINTING_NOT_IMPLEMENTED \
+  NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_GFX,NS_ERROR_GFX_PRINTER_BASE+33)
+/* Cannot load the matching print module */
+#define NS_ERROR_GFX_COULD_NOT_LOAD_PRINT_MODULE \
+  NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_GFX,NS_ERROR_GFX_PRINTER_BASE+34)   
+      
 /**
  * Conts need for Print Preview
  */
@@ -263,17 +272,15 @@ public:
   /**
    * Obtain the size of a device unit relative to a Twip. A twip is 1/20 of
    * a point (which is 1/72 of an inch).
-   * @param aDevUnitsToTwips out parameter for conversion value
-   * @return error status
+   * @return conversion value
    */
-  NS_IMETHOD  GetDevUnitsToTwips(float &aDevUnitsToTwips) const = 0;
+  float DevUnitsToTwips() const { return mPixelsToTwips; }
 
   /**
    * Obtain the size of a Twip relative to a device unit.
-   * @param aTwipsToDevUnits out parameter for conversion value
-   * @return error status
+   * @return conversion value
    */
-  NS_IMETHOD  GetTwipsToDevUnits(float &aTwipsToDevUnits) const = 0;
+  float TwipsToDevUnits() const { return mTwipsToPixels; }
 
   /**
    * Set the scale factor to convert units used by the application
@@ -285,9 +292,11 @@ public:
    * to convert device units <-> app units.
    * @param aAppUnits scale value to convert from application defined
    *        units to device units.
-   * @return error status
    */
-  NS_IMETHOD  SetAppUnitsToDevUnits(float aAppUnits) = 0;
+  void SetAppUnitsToDevUnits(float aAppUnits)
+  {
+    mAppUnitsToDevUnits = aAppUnits;
+  }
 
   /**
    * Set the scale factor to convert device units to units
@@ -295,17 +304,18 @@ public:
    * 1.0f / the value passed into SetAppUnitsToDevUnits().
    * @param aDevUnits scale value to convert from device units to
    *        application defined units
-   * @return error status
    */
-  NS_IMETHOD  SetDevUnitsToAppUnits(float aDevUnits) = 0;
+  void SetDevUnitsToAppUnits(float aDevUnits)
+  {
+    mDevUnitsToAppUnits = aDevUnits;
+  }
 
   /**
    * Get the scale factor to convert from application defined
    * units to device units.
-   * @param aAppUnits out paramater for scale value
-   * @return error status
+   * @param aAppUnits scale value
    */
-  NS_IMETHOD  GetAppUnitsToDevUnits(float &aAppUnits) const = 0;
+  float AppUnitsToDevUnits() const { return mAppUnitsToDevUnits; }
 
   /**
    * Get the scale factor to convert from device units to
@@ -313,7 +323,7 @@ public:
    * @param aDevUnits out paramater for scale value
    * @return error status
    */
-  NS_IMETHOD  GetDevUnitsToAppUnits(float &aDevUnits) const = 0;
+  float DevUnitsToAppUnits() const { return mDevUnitsToAppUnits; }
 
   /**
    * Get the value used to scale a "standard" pixel to a pixel
@@ -423,11 +433,6 @@ public:
    * Returns information about the device's palette capabilities.
    */
   NS_IMETHOD GetPaletteInfo(nsPaletteInfo& aPaletteInfo) = 0;
-
-  /**
-   * Returns Platform specific pixel value for an RGB value
-   */
-  NS_IMETHOD ConvertPixel(nscolor aColor, PRUint32 & aPixel) = 0;
 
   /**
    * Get the size of the displayable area of the output device
@@ -553,6 +558,11 @@ public:
   NS_IMETHOD SetUseAltDC(PRUint8 aValue, PRBool aOn) = 0;
 #endif
 
+protected:
+  float mTwipsToPixels;
+  float mPixelsToTwips;
+  float mAppUnitsToDevUnits;
+  float mDevUnitsToAppUnits;
 };
 
 #endif /* nsIDeviceContext_h___ */

@@ -125,7 +125,7 @@ interface nsIMsgComposeRecyclingListener : nsISupports {
 };
 
 
-[scriptable, uuid(4E606270-B588-11D2-8289-00805F2A0107)]
+[scriptable, uuid(6ed82ccd-21a3-4ee5-83b0-8d39e0d65a83)]
 interface nsIMsgCompose : nsISupports {
 
 	/* ... */
@@ -141,7 +141,7 @@ interface nsIMsgCompose : nsISupports {
 	void UnregisterStateListener(in nsIMsgComposeStateListener stateListener);
 
 	/* ... */
-	void SendMsg(in MSG_DeliverMode deliverMode, in nsIMsgIdentity identity, in nsIMsgWindow aMsgWindow, in nsIMsgProgress progress);
+	void SendMsg(in MSG_DeliverMode deliverMode, in nsIMsgIdentity identity, in string accountKey, in nsIMsgWindow aMsgWindow, in nsIMsgProgress progress);
 
 	/* ... */
   void CloseWindow(in boolean reclycleIt);
@@ -158,7 +158,7 @@ interface nsIMsgCompose : nsISupports {
     charset. In case of URL, |charset| parameter will be used in the conversion.
     This UI utility function should probably go into it's own class
   */
-  AString AttachmentPrettyName(in string url, in string charset);
+  AUTF8String AttachmentPrettyName(in string url, in string charset);
     
 	/*
 		CheckAndPopulateRecipients will perform several task:

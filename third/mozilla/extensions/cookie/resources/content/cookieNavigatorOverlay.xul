@@ -35,20 +35,10 @@
     // both are necessary. popupmanager is just a special case
     // of permissionmanager but does extra work on add/remove
     const nsIPermissionManager = Components.interfaces.nsIPermissionManager;
+    const nsICookiePermission = Components.interfaces.nsICookiePermission;
     var permissionmanager;
     var popupmanager;
-
-    // Remove the image entries from the task menu
-    function HideImage() {
-      document.getElementById("image").hidden = true;
-    }
-
-    // for some unexplainable reason, CheckForImage() keeps getting called repeatedly
-    // as we mouse over the task menu.  IMO, that shouldn't be happening.  To avoid
-    // taking a performance hit due to this, we will set the following flag to avoid
-    // reexecuting the routine
-    var alreadyCheckedForImage = false;
-
+    
     // determine which items we need to hide or disable from the task menu
     function CheckForVisibility()
     {
@@ -69,6 +59,7 @@
       var uri = getBrowser().currentURI;
       setRadioButton("UseCookiesDefault", uri, nsIPermissionManager.UNKNOWN_ACTION, "cookie");
       setRadioButton("AllowCookies", uri, nsIPermissionManager.ALLOW_ACTION, "cookie");
+      setRadioButton("AllowSessionCookies", uri, nsICookiePermission.ACCESS_SESSION, "cookie");
       setRadioButton("BlockCookies", uri, nsIPermissionManager.DENY_ACTION, "cookie");
       setRadioButton("UseImagesDefault", uri, nsIPermissionManager.UNKNOWN_ACTION, "image");
       setRadioButton("AllowImages", uri, nsIPermissionManager.ALLOW_ACTION, "image");
@@ -80,20 +71,6 @@
       pref = Components.classes['@mozilla.org/preferences-service;1'];
       pref = pref.getService();
       pref = pref.QueryInterface(Components.interfaces.nsIPrefBranch);
-
-      // determine if image manager should be in the UI
-      if (alreadyCheckedForImage) {
-        return;
-      }
-      alreadyCheckedForImage = true;
-      // remove image functions (unless overruled by the "imageblocker.enabled" pref)
-      try {
-        if (!pref.getBoolPref("imageblocker.enabled")) {
-          HideImage();
-        }
-      } catch(e) {
-        HideImage();
-      }
     }
 
     function SetPopupMenuEnabledState() {
@@ -142,6 +119,12 @@
             return;
           permissionmanager.add(uri, "cookie", nsIPermissionManager.ALLOW_ACTION);
           element = document.getElementById("AllowCookies");
+          break;
+        case "cookieSession":
+          if (permissionmanager.testPermission(uri, "cookie") == nsICookiePermission.ACCESS_SESSION)
+            return;
+          permissionmanager.add(uri, "cookie", nsICookiePermission.ACCESS_SESSION);
+          element = document.getElementById("AllowSessionCookies");
           break;
         case "cookieDefault":
           if (permissionmanager.testPermission(uri, "cookie") == nsIPermissionManager.UNKNOWN_ACTION)
@@ -214,6 +197,12 @@
                   msg="&cookieCookiesDefaultMsg.label;"
                   type="radio" name="cookies" checked="true"
                   oncommand="CookieImageAction('cookieDefault');"/> 
+        <menuitem id="AllowSessionCookies" label="&cookieAllowSessionCookiesCmd.label;"
+                  title="&cookieMessageTitle.label;"
+                  accesskey="&cookieAllowSessionCookiesCmd.accesskey;" 
+                  msg="&cookieAllowSessionCookiesMsg.label;"
+                  type="radio" name="cookies"
+                  oncommand="CookieImageAction('cookieSession');"/> 
         <menuitem id="AllowCookies" label="&cookieAllowCookiesCmd.label;"
                   title="&cookieMessageTitle.label;"
                   accesskey="&cookieAllowCookiesCmd.accesskey;" 

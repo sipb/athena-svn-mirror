@@ -61,7 +61,7 @@ public:
 
   virtual void*       GetBitInfo() { return nsnull; }
 
-  virtual PRBool      GetIsRowOrderTopToBottom() { return mIsTopToBottom; }
+  virtual PRBool      GetIsRowOrderTopToBottom() { return PR_TRUE; }
   virtual PRInt32     GetLineStride() { return mRowBytes; }
 
 	inline
@@ -94,11 +94,9 @@ public:
   NS_IMETHOD DrawToImage(nsIImage* aDstImage, nscoord aDX, nscoord aDY,
              nscoord aDWidth, nscoord aDHeight);
 
-  NS_IMETHOD 		DrawTile(nsIRenderingContext &aContext, nsDrawingSurface aSurface, 
-  						nsRect &aSrcRect, nsRect &aTileRect);
-
   NS_IMETHOD 		  DrawTile(nsIRenderingContext &aContext, nsDrawingSurface aSurface,
-                        PRInt32 aSXOffset, PRInt32 aSYOffset, const nsRect &aTileRect);
+                        PRInt32 aSXOffset, PRInt32 aSYOffset, PRInt32 aPadX, PRInt32 aPadY,
+												const nsRect &aTileRect);
 
   virtual void        ImageUpdated(nsIDeviceContext *aContext, PRUint8 aFlags, nsRect *aUpdateRect)
 		{
@@ -107,10 +105,11 @@ public:
 		if( y > mDecodedY2 ) mDecodedY2 = y;
 		if( x > mDecodedX2 ) mDecodedX2 = x;
 		mDirtyFlags = aFlags;
+		mPhImage.size.h = mDecodedY2;
 		}
 
   virtual nsresult    Init(PRInt32 aWidth, PRInt32 aHeight, PRInt32 aDepth, nsMaskRequirements aMaskRequirements);
-  virtual PRBool      IsOptimized() { return mIsOptimized; }
+//  virtual PRBool      IsOptimized() { return mIsOptimized; }
 
   virtual nsresult    Optimize(nsIDeviceContext* aContext);
 
@@ -121,9 +120,6 @@ public:
   virtual PRInt32     GetAlphaLineStride() { return mAlphaRowBytes; }
   virtual nsIImage*   DuplicateImage() { return nsnull; }
   
-  virtual void  	  	SetAlphaLevel(PRInt32 aAlphaLevel) { mAlphaLevel=aAlphaLevel; }
-  virtual PRInt32 	  GetAlphaLevel() { return mAlphaLevel; }
-
   /**
    * Get the alpha depth for the image mask
    * @update - lordpixel 2001/05/16
@@ -140,18 +136,6 @@ public:
 
 private:
   void ComputePaletteSize(PRIntn nBitCount);
-  inline PRUint8 * CreateSRamImage(PRUint32 size)
-		{
-		/* TODO: add code to check for remote drivers (no shmem then) */
-		return (PRUint8 *) PgShmemCreate(size,NULL);
-		}
-
-  inline PRBool DestroySRamImage(PRUint8 *ptr)
-		{
-		PgShmemDestroy(ptr);
-		return PR_TRUE;
-		}
-  
 
 private:
   PRInt32             mWidth;
@@ -159,12 +143,10 @@ private:
   PRInt32             mDepth;
   PRInt32             mRowBytes;          // number of bytes per row
   PRUint8*            mImageBits;         // starting address of DIB bits
-  PRUint8           *mConvertedBits;      // NEW
-  PRInt32             mSizeImage;         // number of bytes
-  PRBool              mIsTopToBottom;  
-  PRBool			  mIsOptimized;
+
   PRInt8              mNumBytesPixel;     // number of bytes per pixel
-  PRInt16             mNumPaletteColors;  // either 8 or 0
+  PRUint8             mImageFlags;
+	PRUint8							mDirtyFlags;
 
   PRInt32             mDecodedX1;       //Keeps track of what part of image
   PRInt32             mDecodedY1;       // has been decoded.
@@ -174,21 +156,13 @@ private:
   // alpha layer members
   PRUint8             *mAlphaBits;        // alpha layer if we made one
   PRInt8              mAlphaDepth;        // alpha layer depth
-  PRInt16             mAlphaRowBytes;         // number of bytes per row in the image for tha alpha
+  PRInt16             mAlphaRowBytes;         // number of bytes per row in the image for the alpha
   PRInt16             mAlphaWidth;        // alpha layer width
   PRInt16             mAlphaHeight;       // alpha layer height
-  PRInt8              mImageCache;        // place to save off the old image for fast animation
-  PRInt16             mAlphaLevel;        // an alpha level every pixel uses
   PhImage_t           mPhImage;
   PhImage_t           *mPhImageZoom;			// the zoomed version of mPhImage
 	PRInt32							mDecodedY2_when_scaled;
 
-#ifdef ALLOW_PHIMAGE_CACHEING
-  PdOffscreenContext_t *mPhImageCache;	  // Cache for the image offscreen
-#endif
-
-  PRUint8             mImageFlags;
-	PRUint8							mDirtyFlags;
   PRInt32 mNaturalWidth;
   PRInt32 mNaturalHeight;
 };

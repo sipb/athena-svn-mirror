@@ -30,6 +30,9 @@ MODULE      = gfx
 LIBRARY_NAME    = gkgfx
 EXPORT_LIBRARY = 1
 GRE_MODULE	= 1
+
+PACKAGE_FILE = gfx.pkg
+
 REQUIRES	= xpcom \
 		  windowwatcher \
 		  dom \
@@ -92,7 +95,6 @@ CPPSRCS = \
         nsRegion.cpp \
         nsTransform2D.cpp \
         nsScriptableRegion.cpp \
-        nsGraphicsImpl.cpp \
         nsPrintOptionsImpl.cpp \
         nsPrintSettingsImpl.cpp \
         nsPrintSession.cpp \
@@ -108,7 +110,7 @@ CPPSRCS += \
         $(NULL)
 endif
 
-ifneq (,$(filter gtk gtk2 xlib beos windows os2,$(MOZ_WIDGET_TOOLKIT)))
+ifneq (,$(filter gtk gtk2 xlib beos windows os2 mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
 CPPSRCS += imgScaler.cpp
 endif
 
@@ -126,6 +128,13 @@ CPPSRCS += \
 EXPORTS += \
         os2/nsOS2Uni.h \
         os2/nsPaletteOS2.h \
+        $(NULL)
+endif
+
+ifdef MOZ_ENABLE_POSTSCRIPT
+PS_LCPPSRCS = nsPaperPS.cpp
+CPPSRCS += \
+        $(PS_LCPPSRCS) \
         $(NULL)
 endif
 
@@ -148,3 +157,9 @@ include $(topsrcdir)/config/rules.mk
 
 DEFINES     += -D_IMPL_NS_GFX
 
+ifdef MOZ_ENABLE_POSTSCRIPT
+GARBAGE     += $(PS_LCPPSRCS)
+
+export:: $(addprefix $(srcdir)/ps/,$(PS_LCPPSRCS))
+	$(INSTALL) $^ .
+endif

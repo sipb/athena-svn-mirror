@@ -89,7 +89,9 @@ txStylesheetCompiler::startElement(PRInt32 aNamespaceID, nsIAtom* aLocalName,
                                    PRInt32 aAttrCount)
 {
     if (NS_FAILED(mStatus)) {
-        return mStatus;
+        // ignore content after failure
+        // XXX reevaluate once expat stops on failure
+        return NS_OK;
     }
 
     nsresult rv = flushCharacters();
@@ -132,7 +134,9 @@ txStylesheetCompiler::startElement(const PRUnichar *aName,
                                    PRInt32 aAttrCount, PRInt32 aIDOffset)
 {
     if (NS_FAILED(mStatus)) {
-        return mStatus;
+        // ignore content after failure
+        // XXX reevaluate once expat stops on failure
+        return NS_OK;
     }
 
     nsresult rv = flushCharacters();
@@ -328,7 +332,7 @@ txStylesheetCompiler::startElementInternal(PRInt32 aNamespaceID,
             mEmbedStatus = eInEmbed;
         }
     }
-    txElementHandler* handler;
+    const txElementHandler* handler;
     do {
         handler = isInstruction ?
                   mHandlerTable->find(aNamespaceID, aLocalName) :
@@ -340,7 +344,7 @@ txStylesheetCompiler::startElementInternal(PRInt32 aNamespaceID,
 
     NS_ENSURE_SUCCESS(rv, rv);
 
-    rv = pushPtr(handler);
+    rv = pushPtr(NS_CONST_CAST(txElementHandler*, handler));
     NS_ENSURE_SUCCESS(rv, rv);
 
     mElementContext->mDepth++;
@@ -352,7 +356,9 @@ nsresult
 txStylesheetCompiler::endElement()
 {
     if (NS_FAILED(mStatus)) {
-        return mStatus;
+        // ignore content after failure
+        // XXX reevaluate once expat stops on failure
+        return NS_OK;
     }
 
     nsresult rv = flushCharacters();
@@ -374,7 +380,9 @@ txStylesheetCompiler::endElement()
         }
     }
 
-    txElementHandler* handler = NS_STATIC_CAST(txElementHandler*, popPtr());
+    const txElementHandler* handler =
+        NS_CONST_CAST(const txElementHandler*,
+                      NS_STATIC_CAST(txElementHandler*, popPtr()));
     rv = (handler->mEndFunction)(*this);
     NS_ENSURE_SUCCESS(rv, rv);
 
@@ -390,7 +398,9 @@ nsresult
 txStylesheetCompiler::characters(const nsAString& aStr)
 {
     if (NS_FAILED(mStatus)) {
-        return mStatus;
+        // ignore content after failure
+        // XXX reevaluate once expat stops on failure
+        return NS_OK;
     }
 
     mCharacters.Append(aStr);
@@ -693,7 +703,9 @@ txStylesheetCompilerState::popObject()
 nsresult
 txStylesheetCompilerState::pushPtr(void* aPtr)
 {
+#ifdef TX_DEBUG_STACK
     PR_LOG(txLog::xslt, PR_LOG_DEBUG, ("pushPtr: %d\n", aPtr));
+#endif
     return mOtherStack.push(aPtr);
 }
 
@@ -701,7 +713,9 @@ void*
 txStylesheetCompilerState::popPtr()
 {
     void* value = mOtherStack.pop();
+#ifdef TX_DEBUG_STACK
     PR_LOG(txLog::xslt, PR_LOG_DEBUG, ("popPtr: %d\n", value));
+#endif
     return value;
 }
 

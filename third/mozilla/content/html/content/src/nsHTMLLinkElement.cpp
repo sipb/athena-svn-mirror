@@ -58,7 +58,7 @@
 #include "nsIDOMEventTarget.h"
 #include "nsParserUtils.h"
 
-class nsHTMLLinkElement : public nsGenericHTMLLeafElement,
+class nsHTMLLinkElement : public nsGenericHTMLElement,
                           public nsIDOMHTMLLinkElement,
                           public nsILink,
                           public nsStyleLinkElement
@@ -71,13 +71,13 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
   // nsIDOMNode
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLLeafElement::)
+  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLElement::)
 
   // nsIDOMElement
-  NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLLeafElement::)
+  NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLElement::)
 
   // nsIDOMHTMLElement
-  NS_FORWARD_NSIDOMHTMLELEMENT(nsGenericHTMLLeafElement::)
+  NS_FORWARD_NSIDOMHTMLELEMENT(nsGenericHTMLElement::)
 
   // nsIDOMHTMLLinkElement
   NS_DECL_NSIDOMHTMLLINKELEMENT
@@ -87,105 +87,26 @@ public:
   NS_IMETHOD    SetLinkState(nsLinkState aState);
   NS_IMETHOD    GetHrefURI(nsIURI** aURI);
 
-  NS_IMETHOD SetDocument(nsIDocument* aDocument, PRBool aDeep,
-                         PRBool aCompileEventHandlers) {
-    nsCOMPtr<nsIDocument> oldDoc = mDocument;
-
-    nsAutoString rel;
-    nsAutoString rev;
-    GetAttr(kNameSpaceID_None, nsHTMLAtoms::rel, rel);
-    GetAttr(kNameSpaceID_None, nsHTMLAtoms::rev, rev);
-    
-    CreateAndDispatchEvent(oldDoc, rel, rev, NS_LITERAL_STRING("DOMLinkRemoved"));
-
-    // Do the removal and addition into the new doc.
-    nsresult rv = nsGenericHTMLLeafElement::SetDocument(aDocument, aDeep,
-                                                        aCompileEventHandlers);
-    if (NS_SUCCEEDED(rv)) {
-      UpdateStyleSheet(oldDoc);
-    }
-		
-    CreateAndDispatchEvent(mDocument, rel, rev, NS_LITERAL_STRING("DOMLinkAdded"));
-
-    return rv;
-  }
- 
+  virtual void SetDocument(nsIDocument* aDocument, PRBool aDeep,
+                           PRBool aCompileEventHandlers);
   void CreateAndDispatchEvent(nsIDocument* aDoc, const nsString& aRel,
-                              const nsString& aRev, 
-                              const nsAString& aEventName) {
-    if (!aDoc)
-      return;
-
-    // In the unlikely case that both rev is specified *and* rel=stylesheet,
-    // this code will cause the event to fire, on the principle that maybe the
-    // page really does want to specify that it's author is a stylesheet. Since
-    // this should never actually happen and the performance hit is minimal,
-    // doing the "right" thing costs virtually nothing here, even if it doesn't
-    // make much sense.
-    if (aRev.IsEmpty() &&
-        (aRel.IsEmpty() || aRel.EqualsIgnoreCase("stylesheet")))
-      return;
-
-    nsCOMPtr<nsIDOMDocumentEvent> docEvent(do_QueryInterface(aDoc));
-    nsCOMPtr<nsIDOMEvent> event;
-    docEvent->CreateEvent(NS_LITERAL_STRING("Events"), getter_AddRefs(event));
-    if (event) {
-      event->InitEvent(aEventName, PR_TRUE, PR_TRUE);
-      PRBool noDefault;
-      nsCOMPtr<nsIDOMEventTarget> target(do_QueryInterface(NS_STATIC_CAST(nsIDOMNode*, this)));
-      if (target)
-        target->DispatchEvent(event, &noDefault);
-    }
+                              const nsString& aRev,
+                              const nsAString& aEventName);
+  nsresult SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
+                   const nsAString& aValue, PRBool aNotify)
+  {
+    return SetAttr(aNameSpaceID, aName, nsnull, aValue, aNotify);
   }
+  virtual nsresult SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
+                           nsIAtom* aPrefix, const nsAString& aValue,
+                           PRBool aNotify);
+  virtual nsresult UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aAttribute,
+                             PRBool aNotify);
 
-  NS_IMETHOD SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
-                     const nsAString& aValue, PRBool aNotify) {
-    if (aName == nsHTMLAtoms::href && kNameSpaceID_None == aNameSpaceID) {
-      SetLinkState(eLinkState_Unknown);
-    }
-    
-    nsresult rv = nsGenericHTMLLeafElement::SetAttr(aNameSpaceID, aName,
-                                                    aValue, aNotify);
-    if (NS_SUCCEEDED(rv)) {
-      UpdateStyleSheet();
-    }
-    return rv;
-  }
-  NS_IMETHOD SetAttr(nsINodeInfo* aNodeInfo, const nsAString& aValue,
-                     PRBool aNotify) {
-    nsresult rv = nsGenericHTMLLeafElement::SetAttr(aNodeInfo, aValue,
-                                                    aNotify);
-
-    // nsGenericHTMLLeafElement::SetAttr(nsINodeInfo* aNodeInfo,
-    //                                   const nsAString& aValue,
-    //                                   PRBool aNotify)
-    //
-    // calls
-    //
-    // nsHTMLLinkElement::SetAttr(PRInt32 aNameSpaceID,
-    //                            nsIAtom* aName,
-    //                            const nsAString& aValue,
-    //                            PRBool aNotify)
-    //
-    // which ends up calling UpdateStyleSheet so we don't call UpdateStyleSheet
-    // here ourselves.
-
-    return rv;
-  }
-  NS_IMETHOD UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aAttribute,
-                       PRBool aNotify) {
-    nsresult rv = nsGenericHTMLLeafElement::UnsetAttr(aNameSpaceID,
-                                                      aAttribute,
-                                                      aNotify);
-    if (NS_SUCCEEDED(rv)) {
-      UpdateStyleSheet();
-    }
-    return rv;
-  }
-
-  NS_IMETHOD HandleDOMEvent(nsIPresContext* aPresContext, nsEvent* aEvent,
-                            nsIDOMEvent** aDOMEvent, PRUint32 aFlags,
-                            nsEventStatus* aEventStatus);
+  virtual nsresult HandleDOMEvent(nsIPresContext* aPresContext,
+                                  nsEvent* aEvent, nsIDOMEvent** aDOMEvent,
+                                  PRUint32 aFlags,
+                                  nsEventStatus* aEventStatus);
 
 protected:
   virtual void GetStyleSheetURL(PRBool* aIsInline,
@@ -201,7 +122,7 @@ protected:
 
 nsresult
 NS_NewHTMLLinkElement(nsIHTMLContent** aInstancePtrResult,
-                      nsINodeInfo *aNodeInfo)
+                      nsINodeInfo *aNodeInfo, PRBool aFromParser)
 {
   NS_ENSURE_ARG_POINTER(aInstancePtrResult);
 
@@ -241,8 +162,7 @@ NS_IMPL_RELEASE_INHERITED(nsHTMLLinkElement, nsGenericElement)
 
 
 // QueryInterface implementation for nsHTMLLinkElement
-NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLLinkElement,
-                                    nsGenericHTMLLeafElement)
+NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLLinkElement, nsGenericHTMLElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMHTMLLinkElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMLinkStyle)
   NS_INTERFACE_MAP_ENTRY(nsILink)
@@ -270,7 +190,7 @@ nsHTMLLinkElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
   if (NS_FAILED(rv))
     return rv;
 
-  CopyInnerTo(this, it, aDeep);
+  CopyInnerTo(it, aDeep);
 
   *aReturn = NS_STATIC_CAST(nsIDOMNode *, it);
 
@@ -318,7 +238,92 @@ NS_IMPL_STRING_ATTR(nsHTMLLinkElement, Rev, rev)
 NS_IMPL_STRING_ATTR(nsHTMLLinkElement, Target, target)
 NS_IMPL_STRING_ATTR(nsHTMLLinkElement, Type, type)
 
-NS_IMETHODIMP
+void
+nsHTMLLinkElement::SetDocument(nsIDocument* aDocument, PRBool aDeep,
+                               PRBool aCompileEventHandlers)
+{
+  nsCOMPtr<nsIDocument> oldDoc = mDocument;
+
+  nsAutoString rel;
+  nsAutoString rev;
+  GetAttr(kNameSpaceID_None, nsHTMLAtoms::rel, rel);
+  GetAttr(kNameSpaceID_None, nsHTMLAtoms::rev, rev);
+    
+  CreateAndDispatchEvent(oldDoc, rel, rev,
+                         NS_LITERAL_STRING("DOMLinkRemoved"));
+
+  // Do the removal and addition into the new doc.
+  nsGenericHTMLElement::SetDocument(aDocument, aDeep, aCompileEventHandlers);
+  UpdateStyleSheet(oldDoc);
+		
+  CreateAndDispatchEvent(mDocument, rel, rev,
+                         NS_LITERAL_STRING("DOMLinkAdded"));
+}
+ 
+void
+nsHTMLLinkElement::CreateAndDispatchEvent(nsIDocument* aDoc,
+                                          const nsString& aRel,
+                                          const nsString& aRev, 
+                                          const nsAString& aEventName)
+{
+  if (!aDoc)
+    return;
+
+  // In the unlikely case that both rev is specified *and* rel=stylesheet,
+  // this code will cause the event to fire, on the principle that maybe the
+  // page really does want to specify that it's author is a stylesheet. Since
+  // this should never actually happen and the performance hit is minimal,
+  // doing the "right" thing costs virtually nothing here, even if it doesn't
+  // make much sense.
+  if (aRev.IsEmpty() &&
+      (aRel.IsEmpty() || aRel.EqualsIgnoreCase("stylesheet")))
+    return;
+
+  nsCOMPtr<nsIDOMDocumentEvent> docEvent(do_QueryInterface(aDoc));
+  nsCOMPtr<nsIDOMEvent> event;
+  docEvent->CreateEvent(NS_LITERAL_STRING("Events"), getter_AddRefs(event));
+  if (event) {
+    event->InitEvent(aEventName, PR_TRUE, PR_TRUE);
+    PRBool noDefault;
+    nsCOMPtr<nsIDOMEventTarget> target =
+      do_QueryInterface(NS_STATIC_CAST(nsIDOMNode*, this));
+    if (target)
+      target->DispatchEvent(event, &noDefault);
+  }
+}
+
+nsresult
+nsHTMLLinkElement::SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
+                           nsIAtom* aPrefix, const nsAString& aValue,
+                           PRBool aNotify)
+{
+  if (aName == nsHTMLAtoms::href && kNameSpaceID_None == aNameSpaceID) {
+    SetLinkState(eLinkState_Unknown);
+  }
+
+  nsresult rv = nsGenericHTMLElement::SetAttr(aNameSpaceID, aName, aPrefix,
+                                              aValue, aNotify);
+  if (NS_SUCCEEDED(rv)) {
+    UpdateStyleSheet();
+  }
+
+  return rv;
+}
+
+nsresult
+nsHTMLLinkElement::UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aAttribute,
+                             PRBool aNotify)
+{
+  nsresult rv = nsGenericHTMLElement::UnsetAttr(aNameSpaceID, aAttribute,
+                                                aNotify);
+  if (NS_SUCCEEDED(rv)) {
+    UpdateStyleSheet();
+  }
+
+  return rv;
+}
+
+nsresult
 nsHTMLLinkElement::HandleDOMEvent(nsIPresContext* aPresContext,
                            nsEvent* aEvent,
                            nsIDOMEvent** aDOMEvent,

@@ -42,7 +42,7 @@
 #include "nsIEventStateManager.h"
 #include "nsGUIEvent.h"
 #include "nsIContent.h"
-#include "nsIPrefBranch.h"
+#include "nsIPrefBranchInternal.h"
 #include "nsIObserver.h"
 #include "nsWeakReference.h"
 #include "nsHashtable.h"
@@ -58,6 +58,7 @@ class nsIDocShell;
 class nsIDocShellTreeNode;
 class nsIDocShellTreeItem;
 class nsIFocusController;
+class CurrentEventShepherd;
 
 // mac uses click-hold context menus, a holdover from 4.x
 #if defined(XP_MAC) || defined(XP_MACOSX)
@@ -121,6 +122,11 @@ public:
                              nsEventStatus* aStatus,
                              nsIView* aView);
 
+  NS_IMETHOD GetCurrentEvent(nsEvent **aEvent)
+               { *aEvent = mCurrentEvent; return NS_OK; }
+  NS_IMETHOD SetCurrentEvent(nsEvent *aEvent)
+               { mCurrentEvent = aEvent; return NS_OK; }
+
   NS_IMETHOD SetPresContext(nsIPresContext* aPresContext);
   NS_IMETHOD ClearFrameRefs(nsIFrame* aFrame);
 
@@ -157,6 +163,8 @@ public:
   NS_IMETHOD MoveCaretToFocus();
 
 protected:
+  friend class CurrentEventShepherd;
+
   void UpdateCursor(nsIPresContext* aPresContext, nsEvent* aEvent, nsIFrame* aTargetFrame, nsEventStatus* aStatus);
   /**
    * Turn a GUI mouse event into a mouse event targeted at the specified
@@ -214,16 +222,21 @@ protected:
 
   // These functions are for mousewheel scrolling
   nsIScrollableView* GetNearestScrollingView(nsIView* aView);
-  nsresult GetParentScrollingView(nsMouseScrollEvent* aEvent,
+  nsresult GetParentScrollingView(nsInputEvent* aEvent,
                                   nsIPresContext* aPresContext,
                                   nsIFrame* &targetOuterFrame,
                                   nsIPresContext* &presCtxOuter);
-  nsresult DoWheelScroll(nsIPresContext* aPresContext,
-                         nsIFrame* aTargetFrame,
-                         nsMouseScrollEvent* aMSEvent, PRInt32 aNumLines,
-                         PRBool aScrollHorizontal, PRBool aScrollPage, PRBool aUseTargetFrame);
+  nsresult DoScrollText(nsIPresContext* aPresContext,
+                        nsIFrame* aTargetFrame,
+                        nsInputEvent* aEvent,
+                        PRInt32 aNumLines,
+                        PRBool aScrollHorizontal,
+                        PRBool aScrollPage,
+                        PRBool aUseTargetFrame);
   void ForceViewUpdate(nsIView* aView);
   nsresult getPrefBranch();
+  void DoScrollHistory(PRInt32 direction);
+  void DoScrollTextsize(nsIFrame *aTargetFrame, PRInt32 adjustment);
   nsresult ChangeTextSize(PRInt32 change);
   // end mousewheel functions
 
@@ -277,6 +290,7 @@ protected:
   PRInt32 mCurrentTabIndex;
   PRBool      mConsumeFocusEvents;
   PRInt32     mLockCursor;
+  nsEvent    *mCurrentEvent;
 
   // DocShell Traversal Data Memebers
   nsCOMPtr<nsIContent> mLastContentFocus;
@@ -306,7 +320,7 @@ protected:
   static PRInt32 gGeneralAccesskeyModifier;
 
   // For preferences handling
-  nsCOMPtr<nsIPrefBranch> mPrefBranch;
+  nsCOMPtr<nsIPrefBranchInternal> mPrefBranch;
   PRPackedBool m_haveShutdown;
 
   // To inform people that dispatched events that frames have been cleared and
@@ -346,8 +360,5 @@ protected:
 #endif
 
 };
-
-nsresult
-NS_NewEventStateManager(nsIEventStateManager** aInstancePtrResult);
 
 #endif // nsEventStateManager_h__

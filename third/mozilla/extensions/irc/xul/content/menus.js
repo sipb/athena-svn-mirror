@@ -40,6 +40,31 @@ function initMenus()
         return "client.prefs['motif.current'] == " +
             "client.prefs['motif." + name + "']";
     };
+    
+    function isFontFamily(name)
+    {
+        return "cx.sourceObject.prefs['font.family'] == '" + name + "'";
+    };
+    
+    function isFontFamilyCustom()
+    {
+        return "!cx.sourceObject.prefs['font.family']." + 
+               "match(/^(default|(sans-)?serif|monospace)$/)";
+    };
+    
+    function isFontSize(size)
+    {
+        return "cx.fontSize == cx.fontSizeDefault + " + size;
+    };
+
+    function isFontSizeCustom()
+    {
+        // It's "custom" if it's set (non-zero/not default), not the default
+        // size (medium) and not +/-2 (small/large).
+        return "'fontSize' in cx && cx.fontSize != 0 && " +
+               "cx.fontSizeDefault != cx.fontSize && " +
+               "Math.abs((cx.fontSizeDefault - cx.fontSize) / 2) != 1";
+    };
 
     function onMenuCommand (event, window)
     {
@@ -124,12 +149,16 @@ function initMenus()
          ["leave",       {visibleif: "cx.channel && cx.channel.active"}],
          ["-"],
          [">popup:motifs"],
+         [">popup:fonts"],
          ["toggle-ccm",
                  {type: "checkbox",
                   checkedif: "client.prefs['collapseMsgs']"}],
          ["toggle-copy",
                  {type: "checkbox",
-                  checkedif: "client.prefs['copyMessages']"}]
+                  checkedif: "client.prefs['copyMessages']"}],
+         ["toggle-timestamps",
+                 {type: "checkbox",
+                  checkedif: "cx.sourceObject.prefs['timestamps']"}]
         ]
     };
 
@@ -163,18 +192,52 @@ function initMenus()
 
         ]
     };
+    
+    client.menuSpecs["popup:fonts"] = {
+        label: MSG_MNU_FONTS,
+        getContext: getFontContext,
+        items:
+        [
+         ["font-size-bigger", {}],
+         ["font-size-smaller", {}],
+         ["-"],
+         ["font-size-default",
+                 {type: "checkbox", checkedif: "!cx.fontSize"}],
+         ["font-size-small",
+                 {type: "checkbox", checkedif: isFontSize(-2)}],
+         ["font-size-medium",
+                 {type: "checkbox", checkedif: isFontSize(0)}],
+         ["font-size-large",
+                 {type: "checkbox", checkedif: isFontSize(+2)}],
+         ["font-size-other", 
+                 {type: "checkbox", checkedif: isFontSizeCustom()}],
+         ["-"],
+         ["font-family-default",
+                 {type: "checkbox", checkedif: isFontFamily("default")}],
+         ["font-family-serif",
+                 {type: "checkbox", checkedif: isFontFamily("serif")}],
+         ["font-family-sans-serif",
+                 {type: "checkbox", checkedif: isFontFamily("sans-serif")}],
+         ["font-family-monospace",
+                 {type: "checkbox", checkedif: isFontFamily("monospace")}],
+         ["font-family-other", 
+                 {type: "checkbox", checkedif: isFontFamilyCustom()}]
+        ]
+    };
+
+    var isopish = "(cx.channel.iAmOp() || cx.channel.iAmHalfOp())";
 
     client.menuSpecs["popup:opcommands"] = {
         label: MSG_MNU_OPCOMMANDS,
         items:
         [
-         ["op",         {enabledif: "cx.channel.iAmOp() && !cx.user.isOp"}],
-         ["deop",       {enabledif: "cx.channel.iAmOp() && cx.user.isOp"}],
-         ["voice",      {enabledif: "cx.channel.iAmOp() && !cx.user.isVoice"}],
-         ["devoice",    {enabledif: "cx.channel.iAmOp() && cx.user.isVoice"}],
+         ["op",         {enabledif: isopish + " && !cx.user.isOp"}],
+         ["deop",       {enabledif: isopish + " && cx.user.isOp"}],
+         ["voice",      {enabledif: isopish + " && !cx.user.isVoice"}],
+         ["devoice",    {enabledif: isopish + " && cx.user.isVoice"}],
          ["-"],
-         ["kick",       {enabledif: "cx.channel.iAmOp()"}],
-         ["kick-ban",       {enabledif: "cx.channel.iAmOp()"}]
+         ["kick",       {enabledif: isopish}],
+         ["kick-ban",       {enabledif: isopish}]
         ]
     };
 
@@ -188,29 +251,34 @@ function initMenus()
          ["toggle-umode", {type: "checkbox",
                            checkedif: "client.prefs['showModeSymbols']"}],
          ["-"],
-         [">popup:opcommands", {enabledif: "cx.channel && cx.channel.iAmOp()"}],
+         [">popup:opcommands", {enabledif: "cx.channel && " + isopish}],
          ["whois"],
          ["query"],
          ["version"],
         ]
     };
 
-    var urlenabled = "has('url') && cx.url.search(/^irc:/i) == -1";
+    var urlenabled = "has('url')";
+    var urlexternal = "has('url') && cx.url.search(/^irc:/i) == -1";
+    var textselected = "getCommandEnabled('cmd_copy')";
     
     client.menuSpecs["context:messages"] = {
         getContext: getMessagesContext,
         items:
         [
-         ["goto-url", {enabledif: urlenabled}],
-         ["goto-url-newwin", {enabledif: urlenabled}],
-         ["goto-url-newtab", {enabledif: urlenabled}],
+         ["goto-url", {visibleif: urlenabled}],
+         ["goto-url-newwin", {visibleif: urlexternal}],
+         ["goto-url-newtab", {visibleif: urlexternal}],
+         ["cmd-copy-link-url", {visibleif: urlenabled}],
+         ["cmd-copy", {visibleif: "!" + urlenabled, enabledif: textselected }],
+         ["cmd-selectall", {visibleif: "!" + urlenabled }],
          ["-"],
          ["leave", 
                  {enabledif: "cx.TYPE == 'IRCChannel'"}],
          ["delete-view", {enabledif: "client.viewsArray.length > 1"}],
          ["disconnect"],
          ["-"],
-         [">popup:opcommands", {enabledif: "cx.channel && cx.channel.iAmOp()"}],
+         [">popup:opcommands", {enabledif: "cx.channel && " + isopish}],
          ["whois"],
          ["query"],
          ["version"],

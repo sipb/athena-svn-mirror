@@ -42,9 +42,10 @@
 #include "nsVoidArray.h"
 #include "nsRect.h"
 
+#undef DEBUG_TABLE_CELLMAP
+
 class nsTableColFrame;
 class nsTableCellFrame;
-class nsIPresContext;
 class nsTableRowGroupFrame;
 class nsTableFrame;
 class nsCellMap;
@@ -78,8 +79,7 @@ struct BCInfo
 class nsTableCellMap
 {
 public:
-  nsTableCellMap(nsIPresContext* aPresContext, 
-                 nsTableFrame&   aTableFrame,
+  nsTableCellMap(nsTableFrame&   aTableFrame,
                  PRBool          aBorderCollapse);
 
   /** destructor
@@ -122,15 +122,13 @@ public:
                   PRInt32           aRowIndex,
                   nsRect&           aDamageArea);
 
-  void InsertRows(nsIPresContext*       aPresContext,
-                  nsTableRowGroupFrame& aRowGroup,
+  void InsertRows(nsTableRowGroupFrame& aRowGroup,
                   nsVoidArray&          aRows,
                   PRInt32               aFirstRowIndex,
                   PRBool                aConsiderSpans,
                   nsRect&               aDamageArea);
 
-  void RemoveRows(nsIPresContext* aPresContext,
-                  PRInt32         aFirstRowIndex,
+  void RemoveRows(PRInt32         aFirstRowIndex,
                   PRInt32         aNumRowsToRemove,
                   PRBool          aConsiderSpans,
                   nsRect&               aDamageArea);
@@ -284,15 +282,13 @@ public:
                   PRInt32           aRowIndex,
                   nsRect&           aDamageArea);
 
-  void InsertRows(nsIPresContext* aPresContext,
-                  nsTableCellMap& aMap,
+  void InsertRows(nsTableCellMap& aMap,
                   nsVoidArray&    aRows,
                   PRInt32         aFirstRowIndex,
                   PRBool          aConsiderSpans,
                   nsRect&         aDamageArea);
 
-  void RemoveRows(nsIPresContext* aPresContext,
-                  nsTableCellMap& aMap,
+  void RemoveRows(nsTableCellMap& aMap,
                   PRInt32         aFirstRowIndex,
                   PRInt32         aNumRowsToRemove,
                   PRBool          aConsiderSpans,
@@ -362,8 +358,7 @@ protected:
 
   PRInt32 GetNumCellsIn(PRInt32 aColIndex) const;
 
-  void ExpandWithRows(nsIPresContext* aPresContext,
-                      nsTableCellMap& aMap,
+  void ExpandWithRows(nsTableCellMap& aMap,
                       nsVoidArray&    aRowFrames,
                       PRInt32         aStartRowIndex,
                       nsRect&         aDamageArea);
@@ -387,8 +382,7 @@ protected:
                          PRInt32           aColIndex,
                          nsRect&           aDamageArea);
 
-  void RebuildConsideringRows(nsIPresContext* aPresContext,
-                              nsTableCellMap& aMap,
+  void RebuildConsideringRows(nsTableCellMap& aMap,
                               PRInt32         aStartRowIndex,
                               nsVoidArray*    aRowsToInsert,
                               PRInt32         aNumRowsToRemove,
@@ -401,8 +395,7 @@ protected:
                                PRBool          aInsert,
                                nsRect&         aDamageArea);
 
-  PRBool CellsSpanOut(nsIPresContext* aPresContext, 
-                      nsVoidArray&    aNewRows);
+  PRBool CellsSpanOut(nsVoidArray&    aNewRows);
 
   PRBool CellsSpanInOrOut(nsTableCellMap& aMap,
                           PRInt32         aStartRowIndex, 

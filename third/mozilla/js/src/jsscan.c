@@ -347,25 +347,29 @@ GetChar(JSTokenStream *ts)
                                  &ts->listenerTSData, ts->listenerData);
                 }
 
-                /*
-                 * Any one of \n, \r, or \r\n ends a line (longest match wins).
-                 * Also allow the Unicode line and paragraph separators.
-                 */
-                for (nl = ts->userbuf.ptr; nl < ts->userbuf.limit; nl++) {
+                nl = ts->saveEOL;
+                if (!nl) {
                     /*
-                     * Try to prevent value-testing on most characters by
-                     * filtering out characters that aren't 000x or 202x.
+                     * Any one of \n, \r, or \r\n ends a line (the longest
+                     * match wins).  Also allow the Unicode line and paragraph
+                     * separators.
                      */
-                    if ((*nl & 0xDFD0) == 0) {
-                        if (*nl == '\n')
-                            break;
-                        if (*nl == '\r') {
-                            if (nl + 1 < ts->userbuf.limit && nl[1] == '\n')
-                                nl++;
-                            break;
+                    for (nl = ts->userbuf.ptr; nl < ts->userbuf.limit; nl++) {
+                        /*
+                         * Try to prevent value-testing on most characters by
+                         * filtering out characters that aren't 000x or 202x.
+                         */
+                        if ((*nl & 0xDFD0) == 0) {
+                            if (*nl == '\n')
+                                break;
+                            if (*nl == '\r') {
+                                if (nl + 1 < ts->userbuf.limit && nl[1] == '\n')
+                                    nl++;
+                                break;
+                            }
+                            if (*nl == LINE_SEPARATOR || *nl == PARA_SEPARATOR)
+                                break;
                         }
-                        if (*nl == LINE_SEPARATOR || *nl == PARA_SEPARATOR)
-                            break;
                     }
                 }
 
@@ -375,8 +379,12 @@ GetChar(JSTokenStream *ts)
                  */
                 if (nl < ts->userbuf.limit)
                     len = PTRDIFF(nl, ts->userbuf.ptr, jschar) + 1;
-                if (len >= JS_LINE_LIMIT)
+                if (len >= JS_LINE_LIMIT) {
                     len = JS_LINE_LIMIT - 1;
+                    ts->saveEOL = nl;
+                } else {
+                    ts->saveEOL = NULL;
+                }
                 js_strncpy(ts->linebuf.base, ts->userbuf.ptr, len);
                 ts->userbuf.ptr += len;
                 olen = len;
@@ -656,7 +664,7 @@ js_PeekTokenSameLine(JSContext *cx, JSTokenStream *ts)
     JSTokenType tt;
 
     JS_ASSERT(ts->lookahead == 0 ||
-              CURRENT_TOKEN(ts).pos.end.lineno == ts->lineno);
+              ON_CURRENT_LINE(ts, CURRENT_TOKEN(ts).pos));
     ts->flags |= TSF_NEWLINES;
     tt = js_PeekToken(cx, ts);
     ts->flags &= ~TSF_NEWLINES;
@@ -775,7 +783,7 @@ retry:
     tp = &CURRENT_TOKEN(ts);
     tp->ptr = ts->linebuf.ptr - 1;
     tp->pos.begin.index = ts->linepos + (tp->ptr - ts->linebuf.base);
-    tp->pos.begin.lineno = tp->pos.end.lineno = ts->lineno;
+    tp->pos.begin.lineno = tp->pos.end.lineno = (uint16)ts->lineno;
 
     if (c == EOF)
         RETURN(TOK_EOF);
@@ -994,7 +1002,7 @@ retry:
                                0);
         if (!atom)
             RETURN(TOK_ERROR);
-        tp->pos.end.lineno = ts->lineno;
+        tp->pos.end.lineno = (uint16)ts->lineno;
         tp->t_op = JSOP_STRING;
         tp->t_atom = atom;
         RETURN(TOK_STRING);

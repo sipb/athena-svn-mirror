@@ -20,6 +20,8 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
+ *   Andrew Wellington <proton@wiretapped.net>
+ *   Graham Dennis <u3952328@anu.edu.au>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or 
@@ -121,7 +123,6 @@ ConvertKeyEventToContextMenuEvent(const nsKeyEvent* inKeyEvent,
                                   nsMouseEvent* outCMEvent)
 {
   *(nsInputEvent *)outCMEvent = *(nsInputEvent *)inKeyEvent;
-  outCMEvent->eventStructType = NS_MOUSE_EVENT;
   outCMEvent->message = NS_CONTEXTMENU_KEY;
   outCMEvent->isShift = outCMEvent->isControl = PR_FALSE;
   outCMEvent->isAlt = outCMEvent->isMeta = PR_FALSE;
@@ -138,10 +139,12 @@ ConvertKeyEventToContextMenuEvent(const nsKeyEvent* inKeyEvent,
 static inline PRBool
 IsContextMenuKey(const nsKeyEvent& inKeyEvent)
 {
-   enum { kContextMenuKey = NS_VK_F10 };
+   enum { kContextMenuKey = NS_VK_F10, kDedicatedContextMenuKey = NS_VK_CONTEXT_MENU };
 
-   return (inKeyEvent.keyCode == kContextMenuKey && inKeyEvent.isShift &&
-            !inKeyEvent.isControl && !inKeyEvent.isMeta && !inKeyEvent.isAlt);
+   return ((inKeyEvent.keyCode == kContextMenuKey && inKeyEvent.isShift &&
+            !inKeyEvent.isControl && !inKeyEvent.isMeta && !inKeyEvent.isAlt) ||
+           (inKeyEvent.keyCode == kDedicatedContextMenuKey && !inKeyEvent.isShift &&
+            !inKeyEvent.isControl && !inKeyEvent.isMeta && !inKeyEvent.isAlt));
 }
 
 PRBool nsWidget::OnInput(nsInputEvent &aEvent)
@@ -604,14 +607,10 @@ NS_IMETHODIMP nsWidget::Resize(PRInt32 aWidth, PRInt32 aHeight, PRBool aRepaint)
     gtk_widget_set_usize(mWidget, aWidth, aHeight);
 
   ResetInternalVisibility();
-  PRUint32 childCount, index;
-  if (NS_SUCCEEDED(mChildren->Count(&childCount))) {
-    for (index = 0; index < childCount; index++) {
-      nsCOMPtr<nsIWidget> childWidget;
-      if (NS_SUCCEEDED(mChildren->QueryElementAt(index, NS_GET_IID(nsIWidget), (void**)getter_AddRefs(childWidget)))) {
-        NS_STATIC_CAST(nsWidget*, NS_STATIC_CAST(nsIWidget*, childWidget.get()))->ResetInternalVisibility();
-      }
-    }
+  PRInt32 childCount = mChildren.Count();
+  PRInt32 index;
+  for (index = 0; index < childCount; index++) {
+    NS_STATIC_CAST(nsWidget*, mChildren[index])->ResetInternalVisibility();
   }
 
   return NS_OK;
@@ -642,10 +641,9 @@ PRBool nsWidget::OnResize(nsSizeEvent *event)
 
 PRBool nsWidget::OnResize(nsRect &aRect)
 {
-  nsSizeEvent event;
+  nsSizeEvent event(NS_SIZE, this);
 
-  InitEvent(event, NS_SIZE);
-  event.eventStructType = NS_SIZE_EVENT;
+  InitEvent(event);
 
   nsRect *foo = new nsRect(0, 0, aRect.width, aRect.height);
   event.windowSize = foo;
@@ -683,11 +681,10 @@ PRBool nsWidget::OnMove(PRInt32 aX, PRInt32 aY)
 
     ResetInternalVisibility();
 
-    nsGUIEvent event;
-    InitEvent(event, NS_MOVE);
+    nsGUIEvent event(NS_MOVE, this);
+    InitEvent(event);
     event.point.x = aX;
     event.point.y = aY;
-    event.eventStructType = NS_GUI_EVENT;
     PRBool result = DispatchWindowEvent(&event);
     return result;
 }
@@ -1338,10 +1335,8 @@ void nsWidget::ConvertToDeviceCoordinates(nscoord &aX, nscoord &aY)
 
 }
 
-void nsWidget::InitEvent(nsGUIEvent& event, PRUint32 aEventType, nsPoint* aPoint)
+void nsWidget::InitEvent(nsGUIEvent& event, nsPoint* aPoint)
 {
-  event.widget = this;
-
   // This copies, and we need to call gdk_event_free.
   GdkEvent *ge = gtk_get_current_event();
 
@@ -1352,9 +1347,6 @@ void nsWidget::InitEvent(nsGUIEvent& event, PRUint32 aEventType, nsPoint* aPoint
       //       ::ScreenToClient(mWnd, &cpos);
       event.point.x = PRInt32(ge->configure.x);
       event.point.y = PRInt32(ge->configure.y);
-    } else { 
-      event.point.x = 0;
-      event.point.y = 0;
     }  
   }    
   else {                      // use the point override if provided
@@ -1363,7 +1355,6 @@ void nsWidget::InitEvent(nsGUIEvent& event, PRUint32 aEventType, nsPoint* aPoint
   }
 
   event.time = gdk_event_get_time(ge);
-  event.message = aEventType;
 
   //    mLastPoint.x = event.point.x;
   //    mLastPoint.y = event.point.y;
@@ -1403,9 +1394,8 @@ PRBool nsWidget::DispatchWindowEvent(nsGUIEvent* event)
 
 PRBool nsWidget::DispatchStandardEvent(PRUint32 aMsg)
 {
-  nsGUIEvent event;
-  event.eventStructType = NS_GUI_EVENT;
-  InitEvent(event, aMsg);
+  nsGUIEvent event(aMsg, this);
+  InitEvent(event);
   PRBool result = DispatchWindowEvent(&event);
   return result;
 }
@@ -1675,10 +1665,7 @@ nsWidget::OnMotionNotifySignal(GdkEventMotion * aGdkMotionEvent)
   if (mIsDestroying)
     return;
 
-  nsMouseEvent event;
-
-  event.message = NS_MOUSE_MOVE;
-  event.eventStructType = NS_MOUSE_EVENT;
+  nsMouseEvent event(NS_MOUSE_MOVE);
 
   // If there is a button motion target, use that instead of the
   // current widget
@@ -1770,11 +1757,7 @@ nsWidget::OnEnterNotifySignal(GdkEventCrossing * aGdkCrossingEvent)
     return;
   }
 
-  nsMouseEvent event;
-
-  event.message = NS_MOUSE_ENTER;
-  event.widget  = this;
-  event.eventStructType = NS_MOUSE_EVENT;
+  nsMouseEvent event(NS_MOUSE_ENTER, this);
 
   if (aGdkCrossingEvent != NULL) 
   {
@@ -1805,11 +1788,7 @@ nsWidget::OnLeaveNotifySignal(GdkEventCrossing * aGdkCrossingEvent)
     return;
   }
 
-  nsMouseEvent event;
-
-  event.message = NS_MOUSE_EXIT;
-  event.widget  = this;
-  event.eventStructType = NS_MOUSE_EVENT;
+  nsMouseEvent event(NS_MOUSE_EXIT, this);
 
   if (aGdkCrossingEvent != NULL) 
   {
@@ -1830,9 +1809,23 @@ nsWidget::OnLeaveNotifySignal(GdkEventCrossing * aGdkCrossingEvent)
 /* virtual */ void
 nsWidget::OnButtonPressSignal(GdkEventButton * aGdkButtonEvent)
 {
-  nsMouseEvent event;
-  nsMouseScrollEvent scrollEvent;
+  nsMouseScrollEvent scrollEvent(NS_MOUSE_SCROLL, this);
   PRUint32 eventType = 0;
+
+  // If you double click in GDK, it will actually generate a single
+  // click event before sending the double click event, and this is
+  // different than the DOM spec.  GDK puts this in the queue
+  // programatically, so it's safe to assume that if there's a
+  // double click in the queue, it was generated so we can just drop
+  // this click.
+  GdkEvent *peekedEvent = gdk_event_peek();
+  if (peekedEvent) {
+    GdkEventType type = peekedEvent->any.type;
+    gdk_event_free(peekedEvent);
+    if (type == GDK_2BUTTON_PRESS || type == GDK_3BUTTON_PRESS)
+      return;
+  }
+
 
   // Switch on single, double, triple click.
   switch (aGdkButtonEvent->type) 
@@ -1860,15 +1853,17 @@ nsWidget::OnButtonPressSignal(GdkEventButton * aGdkButtonEvent)
 
     case 4:
     case 5:
-      scrollEvent.scrollFlags = nsMouseScrollEvent::kIsVertical;
-      if (aGdkButtonEvent->button == 4)
+    case 6:
+    case 7:
+      if (aGdkButtonEvent->button == 4 || aGdkButtonEvent->button == 5)
+        scrollEvent.scrollFlags = nsMouseScrollEvent::kIsVertical;
+      else
+        scrollEvent.scrollFlags = nsMouseScrollEvent::kIsHorizontal;
+
+      if (aGdkButtonEvent->button == 4 || aGdkButtonEvent->button == 6)
         scrollEvent.delta = -3;
       else
         scrollEvent.delta = 3;
-
-      scrollEvent.message = NS_MOUSE_SCROLL;
-      scrollEvent.widget = this;
-      scrollEvent.eventStructType = NS_MOUSE_SCROLL_EVENT;
 
       scrollEvent.point.x = nscoord(aGdkButtonEvent->x);
       scrollEvent.point.y = nscoord(aGdkButtonEvent->y);
@@ -1895,7 +1890,8 @@ nsWidget::OnButtonPressSignal(GdkEventButton * aGdkButtonEvent)
     break;
   }
 
-  InitMouseEvent(aGdkButtonEvent, event, eventType);
+  nsMouseEvent event(eventType, this);
+  InitMouseEvent(aGdkButtonEvent, event);
 
   // Set the button motion target and remeber the widget and root coords
   sButtonMotionTarget = this;
@@ -1920,8 +1916,8 @@ nsWidget::OnButtonPressSignal(GdkEventButton * aGdkButtonEvent)
   // if we're a right-button-down on linux, we're trying to
   // popup a context menu. send that event to gecko also.
   if (eventType == NS_MOUSE_RIGHT_BUTTON_DOWN) {
-    nsMouseEvent contextMenuEvent;
-    InitMouseEvent(aGdkButtonEvent, contextMenuEvent, NS_CONTEXTMENU);
+    nsMouseEvent contextMenuEvent(NS_CONTEXTMENU, this);
+    InitMouseEvent(aGdkButtonEvent, contextMenuEvent);
     DispatchMouseEvent(contextMenuEvent);
   }
 
@@ -1932,7 +1928,6 @@ nsWidget::OnButtonPressSignal(GdkEventButton * aGdkButtonEvent)
 /* virtual */ void
 nsWidget::OnButtonReleaseSignal(GdkEventButton * aGdkButtonEvent)
 {
-  nsMouseEvent event;
   PRUint32 eventType = 0;
 
   switch (aGdkButtonEvent->button)
@@ -1951,6 +1946,8 @@ nsWidget::OnButtonReleaseSignal(GdkEventButton * aGdkButtonEvent)
 
   case 4:
   case 5:
+  case 6:
+  case 7:
     // We don't really need to do anything here, but we don't want
     // LEFT_BUTTON_UP to happen
     return;
@@ -1960,8 +1957,8 @@ nsWidget::OnButtonReleaseSignal(GdkEventButton * aGdkButtonEvent)
     break;
 	}
 
-
-  InitMouseEvent(aGdkButtonEvent, event, eventType);
+  nsMouseEvent event(eventType, this);
+  InitMouseEvent(aGdkButtonEvent, event);
 
   if (sButtonMotionTarget) {
     gint diffX = 0;
@@ -1969,7 +1966,7 @@ nsWidget::OnButtonReleaseSignal(GdkEventButton * aGdkButtonEvent)
 
     diffX = (gint) aGdkButtonEvent->x_root - sButtonMotionRootX;
     diffY = (gint) aGdkButtonEvent->y_root - sButtonMotionRootY;
-    
+
     event.widget = sButtonMotionTarget;
 
     // see comments in nsWidget::OnMotionNotifySignal
@@ -1999,18 +1996,10 @@ nsWidget::OnFocusInSignal(GdkEventFocus * aGdkFocusEvent)
 
   GTK_WIDGET_SET_FLAGS(mWidget, GTK_HAS_FOCUS);
 
-  nsGUIEvent event;
-  
-  event.message = NS_GOTFOCUS;
-  event.widget  = this;
-
-  event.eventStructType = NS_GUI_EVENT;
+  nsFocusEvent event(NS_GOTFOCUS, this);
 
 //  event.time = aGdkFocusEvent->time;;
 //  event.time = PR_Now();
-  event.time = 0;
-  event.point.x = 0;
-  event.point.y = 0;
 
   AddRef();
   
@@ -2027,18 +2016,10 @@ nsWidget::OnFocusOutSignal(GdkEventFocus * aGdkFocusEvent)
 
   GTK_WIDGET_UNSET_FLAGS(mWidget, GTK_HAS_FOCUS);
 
-  nsGUIEvent event;
-  
-  event.message = NS_LOSTFOCUS;
-  event.widget  = this;
-
-  event.eventStructType = NS_GUI_EVENT;
+  nsFocusEvent event(NS_LOSTFOCUS, this);
 
 //  event.time = aGdkFocusEvent->time;;
 //  event.time = PR_Now();
-  event.time = 0;
-  event.point.x = 0;
-  event.point.y = 0;
 
   AddRef();
   
@@ -2079,14 +2060,8 @@ nsWidget::InstallSignal(GtkWidget *   aWidget,
 //////////////////////////////////////////////////////////////////
 void 
 nsWidget::InitMouseEvent(GdkEventButton * aGdkButtonEvent,
-						 nsMouseEvent &anEvent,
-						 PRUint32   aEventType)
+						 nsMouseEvent &anEvent)
 {
-  anEvent.message = aEventType;
-  anEvent.widget  = this;
-
-  anEvent.eventStructType = NS_MOUSE_EVENT;
-
   if (aGdkButtonEvent != NULL) {
     anEvent.point.x = nscoord(aGdkButtonEvent->x);
     anEvent.point.y = nscoord(aGdkButtonEvent->y);

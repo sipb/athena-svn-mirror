@@ -95,8 +95,10 @@ components/libcookie.so
 components/libdocshell.so                 
 components/docshell.xpt
 components/uriloader.xpt
+; we have either chrome or chrmlite, depending on MOZ_XUL
 components/libchrome.so                   
 components/chrome.xpt                   
+components/libchrmlite.so 
 components/libwebbrwsr.so
 components/webBrowser_core.xpt
 components/libembedcomponents.so
@@ -138,7 +140,6 @@ components/unicharutil.xpt
 ; 
 ; DOM:
 ; 
-components/libjsdom.so 
 components/dom.xpt                      
 components/dom_base.xpt
 components/dom_core.xpt
@@ -225,8 +226,7 @@ res/unixcharset.properties
 ; res/strres.properties 
 
 ; required prefs files
-defaults/pref/all.js
-defaults/pref/unix.js
+greprefs/*
 
 
 ;

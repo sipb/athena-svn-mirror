@@ -49,6 +49,7 @@
 #include "nsCSSAnonBoxes.h"
 #include "nsReflowPath.h"
 #include "nsAutoPtr.h"
+#include "nsFrameManager.h"
 #ifdef ACCESSIBILITY
 #include "nsIServiceManager.h"
 #include "nsIAccessibilityService.h"
@@ -142,9 +143,7 @@ nsInlineFrame::IsEmpty()
 #if 0
   // I used to think inline frames worked this way, but it seems they
   // don't.  At least not in our codebase.
-  nsCompatibility compatMode;
-  GetPresContext()->GetCompatibilityMode(&compatMode);
-  if (compatMode == eCompatibility_FullStandards) {
+  if (GetPresContext()->CompatibilityMode() == eCompatibility_FullStandards) {
     return PR_FALSE;
   }
 #endif
@@ -687,9 +686,7 @@ void MarkPercentAwareFrame(nsIPresContext *aPresContext,
   }
   else
   {
-    nsIFrame *child;
-    aFrame->FirstChild(aPresContext, nsnull, &child);
-    if (child)
+    if (aFrame->GetFirstChild(nsnull))
     { // aFrame is an inline container frame, check my frame state
       if (aFrame->GetStateBits() & NS_INLINE_FRAME_CONTAINS_PERCENT_AWARE_CHILD) {
         SetContainsPercentAwareChild(aInline); // if a child container is effected, so am I
@@ -913,9 +910,11 @@ ReParentChildListStyle(nsIPresContext* aPresContext,
                        nsStyleContext* aParentStyleContext,
                        nsFrameList& aFrameList)
 {
+  nsFrameManager *frameManager = aPresContext->FrameManager();
+
   for (nsIFrame* kid = aFrameList.FirstChild(); kid;
        kid = kid->GetNextSibling()) {
-    aPresContext->ReParentStyleContext(kid, aParentStyleContext);
+    frameManager->ReParentStyleContext(kid, aParentStyleContext);
   }
 }
 
@@ -971,7 +970,7 @@ nsFirstLineFrame::PullOneFrame(nsIPresContext* aPresContext, InlineReflowState& 
   if (frame && !mPrevInFlow) {
     // We are a first-line frame. Fixup the child frames
     // style-context that we just pulled.
-    aPresContext->ReParentStyleContext(frame, mStyleContext);
+    aPresContext->FrameManager()->ReParentStyleContext(frame, mStyleContext);
   }
   return frame;
 }
@@ -1057,9 +1056,10 @@ nsFirstLineFrame::Reflow(nsIPresContext* aPresContext,
         // style context thus removing the :first-line style. This way
         // we behave as if an anonymous (unstyled) span was the child
         // of the parent frame.
-        nsRefPtr<nsStyleContext> newSC = aPresContext->ResolvePseudoStyleContextFor(nsnull,
-                                                                                    nsCSSAnonBoxes::mozLineFrame,
-                                                                                    parentContext);
+        nsRefPtr<nsStyleContext> newSC;
+        newSC = aPresContext->StyleSet()->
+          ResolvePseudoStyleFor(nsnull,
+                                nsCSSAnonBoxes::mozLineFrame, parentContext);
         if (newSC) {
           // Switch to the new style context.
           SetStyleContext(aPresContext, newSC);
@@ -1191,30 +1191,25 @@ nsPositionedInlineFrame::ReplaceFrame(nsIPresContext* aPresContext,
   }
 }
 
-NS_IMETHODIMP
-nsPositionedInlineFrame::GetAdditionalChildListName(PRInt32   aIndex,
-                                                    nsIAtom** aListName) const
+nsIAtom*
+nsPositionedInlineFrame::GetAdditionalChildListName(PRInt32 aIndex) const
 {
-  NS_PRECONDITION(nsnull != aListName, "null OUT parameter pointer");
-  *aListName = nsnull;
   if (0 == aIndex) {
-    *aListName = mAbsoluteContainer.GetChildListName();
-    NS_ADDREF(*aListName);
+    return mAbsoluteContainer.GetChildListName();
   }
-  return NS_OK;
+  return nsnull;
 }
 
-NS_IMETHODIMP
-nsPositionedInlineFrame::FirstChild(nsIPresContext* aPresContext,
-                                    nsIAtom*        aListName,
-                                    nsIFrame**      aFirstChild) const
+nsIFrame*
+nsPositionedInlineFrame::GetFirstChild(nsIAtom* aListName) const
 {
-  NS_PRECONDITION(nsnull != aFirstChild, "null OUT parameter pointer");
   if (mAbsoluteContainer.GetChildListName() == aListName) {
-    return mAbsoluteContainer.FirstChild(this, aListName, aFirstChild);
+    nsIFrame* result = nsnull;
+    mAbsoluteContainer.FirstChild(this, aListName, &result);
+    return result;
   }
 
-  return nsInlineFrame::FirstChild(aPresContext, aListName, aFirstChild);
+  return nsInlineFrame::GetFirstChild(aListName);
 }
 
 nsIAtom*
@@ -1256,9 +1251,6 @@ nsPositionedInlineFrame::Reflow(nsIPresContext*          aPresContext,
       reflowState.path = nsnull;
       rv = nsInlineFrame::Reflow(aPresContext, aDesiredSize, reflowState, aStatus);
 
-      // XXX Although this seems like the correct thing to do the line layout
-      // code seems to reset the NS_FRAME_OUTSIDE_CHILDREN and so it is ignored
-#if 0
       // Factor the absolutely positioned child bounds into the overflow area
       nsRect childBounds;
       mAbsoluteContainer.CalculateChildBounds(aPresContext, childBounds);
@@ -1273,7 +1265,6 @@ nsPositionedInlineFrame::Reflow(nsIPresContext*          aPresContext,
       } else {
         mState &= ~NS_FRAME_OUTSIDE_CHILDREN;
       }
-#endif
       return rv;
     }
   }
@@ -1303,9 +1294,6 @@ nsPositionedInlineFrame::Reflow(nsIPresContext*          aPresContext,
                                    containingBlockWidth, containingBlockHeight,
                                    &childBounds);
     
-    // XXX Although this seems like the correct thing to do the line layout
-    // code seems to reset the NS_FRAME_OUTSIDE_CHILDREN and so it is ignored
-#if 0
     // Factor the absolutely positioned child bounds into the overflow area
     aDesiredSize.mOverflowArea.UnionRect(aDesiredSize.mOverflowArea, childBounds);
 
@@ -1318,7 +1306,6 @@ nsPositionedInlineFrame::Reflow(nsIPresContext*          aPresContext,
     } else {
       mState &= ~NS_FRAME_OUTSIDE_CHILDREN;
     }
-#endif
   }
 
   return rv;

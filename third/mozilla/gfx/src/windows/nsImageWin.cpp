@@ -755,14 +755,16 @@ nsresult nsImageWin::DrawComposited(HDC TheHDC, int aDX, int aDY,
   }
 
   /* Copy back to the HDC */
-  if (scaling)
+  if (scaling) {
     /* only copy back the valid portion of the image */
     retval = ::BitBlt(TheHDC, aDX, aDY,
                       aDWidth, (mDecodedY2*aDHeight + aSHeight - 1)/aSHeight,
                       memDC, 0, 0, SRCCOPY);
-  else
+  } else {
     retval = ::BitBlt(TheHDC, aDX, aDY, aDWidth, aDHeight,
                       memDC, 0, 0, SRCCOPY);
+  }
+
   if (!retval) {
     ::SelectObject(memDC, oldBitmap);
     ::DeleteObject(tmpBitmap);
@@ -795,6 +797,7 @@ NS_IMETHODIMP nsImageWin :: Draw(nsIRenderingContext &aContext, nsDrawingSurface
 NS_IMETHODIMP nsImageWin::DrawTile(nsIRenderingContext &aContext,
                                    nsDrawingSurface aSurface,
                                    PRInt32 aSXOffset, PRInt32 aSYOffset,
+                                   PRInt32 aPadX, PRInt32 aPadY,
                                    const nsRect &aDestRect)
 {
   if (mDecodedX2 < mDecodedX1 || mDecodedY2 < mDecodedY1)
@@ -808,17 +811,18 @@ NS_IMETHODIMP nsImageWin::DrawTile(nsIRenderingContext &aContext,
   nsCOMPtr<nsIDeviceContext> theDeviceContext;
   HDC             theHDC;
   nscoord         ScaledTileWidth,ScaledTileHeight;
+  PRBool          padded = (aPadX || aPadY);
 
   ((nsDrawingSurfaceWin *)aSurface)->GetTECHNOLOGY(&canRaster);
+  aContext.GetDeviceContext(*getter_AddRefs(theDeviceContext));
 
   // We can Progressive Double Blit if we aren't printing to a printer, and
-  // we aren't in 256 color mode, and we don't have an unoptimized 8 bit alpha.
+  // we aren't a 256 color image, and we don't have an unoptimized 8 bit alpha.
   if ((canRaster != DT_RASPRINTER) && (256 != mNumPaletteColors) &&
-      !(mAlphaDepth == 8 && !mIsOptimized))
-    if (ProgressiveDoubleBlit(aSurface, aSXOffset, aSYOffset, aDestRect))
+      !(mAlphaDepth == 8 && !mIsOptimized) && !padded)
+    if (ProgressiveDoubleBlit(theDeviceContext, aSurface,
+                              aSXOffset, aSYOffset, aDestRect))
       return NS_OK;
-
-  aContext.GetDeviceContext(*getter_AddRefs(theDeviceContext));
   theDeviceContext->GetCanonicalPixelScale(scale);
 
   destScaledWidth  = PR_MAX(PRInt32(mBHead->biWidth*scale), 1);
@@ -863,7 +867,7 @@ NS_IMETHODIMP nsImageWin::DrawTile(nsIRenderingContext &aContext,
   ScaledTileHeight = PR_MAX(PRInt32(mBHead->biHeight*scale), 1);
 
   // do alpha depth equal to 8 here.. this needs some special attention
-  if (mAlphaDepth == 8 && !mIsOptimized) {
+  if (mAlphaDepth == 8 && !mIsOptimized && !padded) {
     unsigned char *screenBits=nsnull,*adjAlpha,*adjImage,*adjScreen;
     HDC           memDC=nsnull;
     HBITMAP       tmpBitmap=nsnull,oldBitmap;
@@ -959,8 +963,8 @@ NS_IMETHODIMP nsImageWin::DrawTile(nsIRenderingContext &aContext,
 
   // if we got to this point.. everything else failed.. and the slow blit backstop
   // will finish this tiling
-  for (y=y0;y<y1;y+=ScaledTileHeight) {
-    for (x=x0;x<x1;x+=ScaledTileWidth) {
+  for (y=y0;y<y1;y+=ScaledTileHeight+aPadY*scale) {
+    for (x=x0;x<x1;x+=ScaledTileWidth+aPadX*scale) {
     Draw(aContext, aSurface,
          0, 0, PR_MIN(validWidth, x1-x), PR_MIN(validHeight, y1-y),
          x, y, PR_MIN(destScaledWidth, x1-x), PR_MIN(destScaledHeight, y1-y));
@@ -973,7 +977,8 @@ NS_IMETHODIMP nsImageWin::DrawTile(nsIRenderingContext &aContext,
  *  See documentation in nsImageWin.h
  */
 PRBool
-nsImageWin::ProgressiveDoubleBlit(nsDrawingSurface aSurface,
+nsImageWin::ProgressiveDoubleBlit(nsIDeviceContext *aContext,
+                                  nsDrawingSurface aSurface,
                                   PRInt32 aSXOffset, PRInt32 aSYOffset,
                                   nsRect aDestRect)
 {
@@ -1004,6 +1009,14 @@ nsImageWin::ProgressiveDoubleBlit(nsDrawingSurface aSurface,
   if (!imgDC) {
     ((nsDrawingSurfaceWin *)aSurface)->ReleaseDC();
     return PR_FALSE;
+  }
+  
+  nsPaletteInfo palInfo;
+  aContext->GetPaletteInfo(palInfo);
+  if (palInfo.isPaletteDevice && palInfo.palette) {
+    ::SetStretchBltMode(imgDC, HALFTONE);
+    ::SelectPalette(imgDC, (HPALETTE)palInfo.palette, TRUE);
+    ::RealizePalette(imgDC);
   }
 
   // Create a maskDC, and fill it with mAlphaBits
@@ -1452,11 +1465,17 @@ nsImageWin :: Optimize(nsIDeviceContext* aContext)
     if (mAlphaDepth == 8) {
       CreateImageWithAlphaBits(TheHDC);
     } else {
-      mHBitmap = ::CreateDIBitmap(TheHDC, mBHead, CBM_INIT, mImageBits,
-                                  (LPBITMAPINFO)mBHead,
-                                  256 == mNumPaletteColors ? DIB_PAL_COLORS
-                                                           : DIB_RGB_COLORS);
-      mIsOptimized = (mHBitmap != 0);
+      LPVOID bits;
+      mHBitmap = ::CreateDIBSection(TheHDC, (LPBITMAPINFO)mBHead,
+        256 == mNumPaletteColors ? DIB_PAL_COLORS : DIB_RGB_COLORS,
+        &bits, NULL, 0);
+
+      if (mHBitmap) {
+        memcpy(bits, mImageBits, mSizeImage);
+        mIsOptimized = PR_TRUE;
+      } else {
+        mIsOptimized = PR_FALSE;
+      }
     }
     if (mIsOptimized)
       CleanUpDIB();
@@ -1865,9 +1884,9 @@ NS_IMETHODIMP nsImageWin::DrawToImage(nsIImage* aDstImage, nscoord aDX, nscoord 
             } else {
               dstAlpha[(aDX+x)>>3]       |= alphaPixels >> offset;
               // avoid write if no 1's to write - also avoids going past end of array
-              // compiler should merge the common sub-expressions
-              if (alphaPixels << (8U - offset))
-                dstAlpha[((aDX+x)>>3) + 1] |= alphaPixels << (8U - offset);
+              PRUint8 alphaTemp = alphaPixels << (8U - offset);
+              if (alphaTemp & 0xff)
+                dstAlpha[((aDX+x)>>3) + 1] |= alphaTemp;
             }
 
 

@@ -55,14 +55,13 @@
   </RDF:Description>
   
    <RDF:Description about="urn:mozilla:skin:modern/1.0:calendar"
-      chrome:skinVersion="1.5"/>
+#expand       chrome:skinVersion="__MOZILLA_SKIN_VERSION__"/>
 	<RDF:Seq about="urn:mozilla:stylesheets">
 		<RDF:li resource="chrome://browser/content/browser.xul"/>
 		<RDF:li resource="chrome://global/content/customizeToolbar.xul"/>
 	</RDF:Seq>
 	<RDF:Seq about="chrome://browser/content/browser.xul">
 		<RDF:li>chrome://calendar/skin/calendar-button.css</RDF:li>
-		<RDF:li>chrome://calendar/skin/calendar.css</RDF:li>
 	</RDF:Seq>
 	<RDF:Seq about="chrome://global/content/customizeToolbar.xul">
 		<RDF:li>chrome://calendar/skin/calendar-button.css</RDF:li>

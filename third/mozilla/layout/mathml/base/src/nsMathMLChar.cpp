@@ -121,8 +121,7 @@ CheckFontExistence(nsIPresContext* aPresContext, const nsString& aFontName)
 {
   PRBool aliased;
   nsAutoString localName;
-  nsCOMPtr<nsIDeviceContext> deviceContext;
-  aPresContext->GetDeviceContext(getter_AddRefs(deviceContext));
+  nsIDeviceContext *deviceContext = aPresContext->DeviceContext();
   deviceContext->GetLocalFontName(aFontName, localName, aliased);
   PRBool rv = (aliased || (NS_OK == deviceContext->CheckFontExistence(localName)));
   // (see bug 35824 for comments about the aliased localName)
@@ -900,8 +899,9 @@ nsGlyphTableList::GetListFor(nsIPresContext* aPresContext,
   // @see the documentation of -moz-math-stretchy in mathml.css
   // for how this work
   aGlyphTableList->Clear();
-  PRBool useDocumentFonts = PR_TRUE;
-  aPresContext->GetCachedBoolPref(kPresContext_UseDocumentFonts, useDocumentFonts);
+  PRBool useDocumentFonts =
+    aPresContext->GetCachedBoolPref(kPresContext_UseDocumentFonts);
+
   // Check to honor the pref("browser.display.use_document_fonts", 0)
   // Only include fonts from CSS if the pref to disallow authors' fonts isn't set
   if (useDocumentFonts) {
@@ -1953,14 +1953,11 @@ nsMathMLChar::Paint(nsIPresContext*      aPresContext,
     // paint the selection background -- beware MathML frames overlap a lot
     if (aSelectedRect && !aSelectedRect->IsEmpty()) {
       // get color to use for selection from the look&feel object
-      nsCOMPtr<nsILookAndFeel> lf;
-      aPresContext->GetLookAndFeel(getter_AddRefs(lf));
-      if (lf) {
-        nscolor bgColor = NS_RGB(0, 0, 0);
-        lf->GetColor(nsILookAndFeel::eColor_TextSelectBackground, bgColor);
-        aRenderingContext.SetColor(bgColor);
-        aRenderingContext.FillRect(*aSelectedRect);
-      }
+      nscolor bgColor = NS_RGB(0, 0, 0);
+      aPresContext->LookAndFeel()->
+	GetColor(nsILookAndFeel::eColor_TextSelectBackground, bgColor);
+      aRenderingContext.SetColor(bgColor);
+      aRenderingContext.FillRect(*aSelectedRect);
     }
     else if (mRect.width && mRect.height) {
       const nsStyleBorder* border = styleContext->GetStyleBorder();
@@ -1993,11 +1990,8 @@ nsMathMLChar::Paint(nsIPresContext*      aPresContext,
     nscolor fgColor = styleContext->GetStyleColor()->mColor;
     if (aSelectedRect && !aSelectedRect->IsEmpty()) {
       // get color to use for selection from the look&feel object
-      nsCOMPtr<nsILookAndFeel> lf;
-      aPresContext->GetLookAndFeel(getter_AddRefs(lf));
-      if (lf) {
-        lf->GetColor(nsILookAndFeel::eColor_TextSelectForeground, fgColor);
-      }
+      aPresContext->LookAndFeel()->
+	GetColor(nsILookAndFeel::eColor_TextSelectForeground, fgColor);
     }
     aRenderingContext.SetColor(fgColor);
 

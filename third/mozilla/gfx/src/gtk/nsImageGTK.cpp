@@ -516,12 +516,18 @@ XlibRectStretch(PRInt32 srcWidth, PRInt32 srcHeight,
 
 //  fprintf(stderr, "scaleY Start/End = %d %d\n", scaleStartY, scaleEndY);
 
-  if (!skipHorizontal && !skipVertical)
+  if (!skipHorizontal && !skipVertical) {
     aTmpImage = gdk_pixmap_new(nsnull,
                                endColumn-startColumn,
                                scaleEndY-scaleStartY,
                                aDepth);
-  
+#ifdef MOZ_WIDGET_GTK2
+    if (aDepth != 1)
+      gdk_drawable_set_colormap(GDK_DRAWABLE(aTmpImage),
+                                gdk_rgb_get_colormap());
+#endif
+  }
+ 
   dx = abs((int)(yd2-yd1));
   dy = abs((int)(ys2-ys1));
   sx = sign(yd2-yd1);
@@ -1544,6 +1550,9 @@ void nsImageGTK::CreateOffscreenPixmap(PRInt32 aWidth, PRInt32 aHeight)
     // Create an off screen pixmap to hold the image bits.
     mImagePixmap = gdk_pixmap_new(nsnull, aWidth, aHeight,
                                   gdk_rgb_get_visual()->depth);
+#ifdef MOZ_WIDGET_GTK2
+    gdk_drawable_set_colormap(GDK_DRAWABLE(mImagePixmap), gdk_rgb_get_colormap());
+#endif
   }
 
     // Ditto for the clipmask
@@ -1663,6 +1672,7 @@ void nsImageGTK::TilePixmap(GdkPixmap *src, GdkPixmap *dest,
 NS_IMETHODIMP nsImageGTK::DrawTile(nsIRenderingContext &aContext,
                                    nsDrawingSurface aSurface,
                                    PRInt32 aSXOffset, PRInt32 aSYOffset,
+                                   PRInt32 aPadX, PRInt32 aPadY,
                                    const nsRect &aTileRect)
 {
 #ifdef DEBUG_TILING
@@ -1715,7 +1725,7 @@ NS_IMETHODIMP nsImageGTK::DrawTile(nsIRenderingContext &aContext,
     return NS_OK;
   }
 
-  if (partial || (mAlphaDepth == 8)) {
+  if (partial || (mAlphaDepth == 8) || (aPadX || aPadY)) {
     PRInt32 aY0 = aTileRect.y - aSYOffset,
             aX0 = aTileRect.x - aSXOffset,
             aY1 = aTileRect.y + aTileRect.height,
@@ -1737,8 +1747,8 @@ NS_IMETHODIMP nsImageGTK::DrawTile(nsIRenderingContext &aContext,
 #ifdef DEBUG_TILING
       printf("Warning: using slow tiling\n");
 #endif
-      for (PRInt32 y = aY0; y < aY1; y += mHeight)
-        for (PRInt32 x = aX0; x < aX1; x += mWidth)
+      for (PRInt32 y = aY0; y < aY1; y += mHeight + aPadY)
+        for (PRInt32 x = aX0; x < aX1; x += mWidth + aPadX)
           Draw(aContext,aSurface, x,y,
                PR_MIN(validWidth, aX1-x),
                PR_MIN(validHeight, aY1-y));
@@ -1757,6 +1767,9 @@ NS_IMETHODIMP nsImageGTK::DrawTile(nsIRenderingContext &aContext,
 
     tileImg = gdk_pixmap_new(nsnull, aTileRect.width, 
                              aTileRect.height, drawing->GetDepth());
+#ifdef MOZ_WIDGET_GTK2
+    gdk_drawable_set_colormap(GDK_DRAWABLE(tileImg), gdk_rgb_get_colormap());
+#endif
     TilePixmap(mImagePixmap, tileImg, aSXOffset, aSYOffset, tmpRect,
                tmpRect, PR_FALSE);
 
@@ -1981,9 +1994,9 @@ NS_IMETHODIMP nsImageGTK::DrawToImage(nsIImage* aDstImage,
           else {
             dstAlpha[(aDX+x)>>3]       |= alphaPixels >> offset;
             // avoid write if no 1's to write - also avoids going past end of array
-            // compiler should merge the common sub-expressions
-            if (alphaPixels << (8U - offset))
-              dstAlpha[((aDX+x)>>3) + 1] |= alphaPixels << (8U - offset);
+            PRUint8 alphaTemp = alphaPixels << (8U - offset);
+            if (alphaTemp & 0xff)
+              dstAlpha[((aDX+x)>>3) + 1] |= alphaTemp;
           }
           
           if (alphaPixels == 0xff) {

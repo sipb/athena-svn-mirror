@@ -1,3 +1,4 @@
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /*
  * The contents of this file are subject to the Mozilla Public
  * License Version 1.1 (the "License"); you may not use this file
@@ -30,7 +31,7 @@
 
 #include "nsIDOMText.h"
 #include "nsITextContent.h"
-#include "nsIFrameManager.h"
+#include "nsFrameManager.h"
 #include "nsLayoutAtoms.h"
 #include "nsStyleChangeList.h"
 #include "nsINameSpaceManager.h"
@@ -149,8 +150,7 @@ printf("\n");
                       aDesiredSize.mFlags | NS_REFLOW_CALC_BOUNDING_METRICS);
   nsSize availSize(aReflowState.mComputedWidth, aReflowState.mComputedHeight);
   PRInt32 count = 0;
-  nsIFrame* childFrame;
-  FirstChild(aPresContext, nsnull, &childFrame);
+  nsIFrame* childFrame = GetFirstChild(nsnull);
   while (childFrame) {
     nsHTMLReflowState childReflowState(aPresContext, aReflowState,
                                        childFrame, availSize);
@@ -181,6 +181,8 @@ printf("\n");
 
   // place and size children
   FinalizeReflow(aPresContext, *aReflowState.rendContext, aDesiredSize);
+
+  aStatus = NS_FRAME_COMPLETE;
   NS_FRAME_SET_TRUNCATION(aStatus, aReflowState, aDesiredSize);
   return NS_OK;
 }
@@ -208,8 +210,7 @@ nsMathMLTokenFrame::Place(nsIPresContext*      aPresContext,
 
   if (aPlaceOrigin) {
     nscoord dy, dx = 0;
-    nsIFrame* childFrame;
-    FirstChild(aPresContext, nsnull, &childFrame);
+    nsIFrame* childFrame = GetFirstChild(nsnull);
     while (childFrame) {
       nsRect rect = childFrame->GetRect();
       nsHTMLReflowMetrics childSize(nsnull);
@@ -324,24 +325,14 @@ nsMathMLTokenFrame::SetTextStyle(nsIPresContext* aPresContext)
     mContent->SetAttr(kNameSpaceID_None, nsMathMLAtoms::fontstyle, fontstyle, PR_FALSE);
 
   // then, re-resolve the style contexts in our subtree
-  nsCOMPtr<nsIPresShell> presShell;
-  aPresContext->GetShell(getter_AddRefs(presShell));
-  if (presShell) {
-    nsCOMPtr<nsIFrameManager> fm;
-    presShell->GetFrameManager(getter_AddRefs(fm));
-    if (fm) {
-      nsChangeHint maxChange, minChange = NS_STYLE_HINT_NONE;
-      nsStyleChangeList changeList;
-      fm->ComputeStyleChangeFor(this,
-                                kNameSpaceID_None, nsMathMLAtoms::fontstyle,
-                                changeList, minChange, maxChange);
+  nsFrameManager *fm = aPresContext->FrameManager();
+  nsStyleChangeList changeList;
+  fm->ComputeStyleChangeFor(this, &changeList, NS_STYLE_HINT_NONE);
 #ifdef DEBUG
-      // Use the parent frame to make sure we catch in-flows and such
-      nsIFrame* parentFrame = GetParent();
-      fm->DebugVerifyStyleTree(parentFrame ? parentFrame : this);
+  // Use the parent frame to make sure we catch in-flows and such
+  nsIFrame* parentFrame = GetParent();
+  fm->DebugVerifyStyleTree(parentFrame ? parentFrame : this);
 #endif
-    }
-  }
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -366,7 +357,7 @@ SetQuote(nsIPresContext* aPresContext,
   nsIFrame* textFrame;
   do {
     // walk down the hierarchy of first children because they could be wrapped
-    aFrame->FirstChild(aPresContext, nsnull, &textFrame);
+    textFrame = aFrame->GetFirstChild(nsnull);
     if (textFrame) {
       if (textFrame->GetType() == nsLayoutAtoms::textFrame)
         break;

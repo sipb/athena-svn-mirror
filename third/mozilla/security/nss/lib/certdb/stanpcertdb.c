@@ -154,6 +154,7 @@ __CERT_AddTempCertToPerm(CERTCertificate *cert, char *nickname,
     NSSCertificate *c = STAN_GetNSSCertificate(cert);
     context = c->object.cryptoContext;
     if (!context) {
+	PORT_SetError(SEC_ERROR_ADDING_CERT); 
 	return SECFailure; /* wasn't a temp cert */
     }
     stanNick = nssCertificate_GetNickname(c, NULL);
@@ -235,19 +236,21 @@ __CERT_NewTempCertificate(CERTCertDBHandle *handle, SECItem *derCert,
 	    /* Then, see if it is already a perm cert */
 	    c = NSSTrustDomain_FindCertificateByEncodedCertificate(handle, 
 	                                                           &encoding);
+	}
+	if (c) {
 	    /* actually, that search ends up going by issuer/serial,
 	     * so it is still possible to return a cert with the same
 	     * issuer/serial but a different encoding, and we're
 	     * going to reject that
 	     */
-	    if (c && !nssItem_Equal(&c->encoding, &encoding, NULL)) {
+	    if (!nssItem_Equal(&c->encoding, &encoding, NULL)) {
 		nssCertificate_Destroy(c);
 		PORT_SetError(SEC_ERROR_REUSED_ISSUER_AND_SERIAL);
-		return NULL;
+		cc = NULL;
+	    } else {
+		cc = STAN_GetCERTCertificate(c);
 	    }
-	}
-	if (c) {
-	    return STAN_GetCERTCertificate(c);
+	    return cc;
 	}
     }
     pkio = nssPKIObject_Create(NULL, NULL, gTD, gCC);

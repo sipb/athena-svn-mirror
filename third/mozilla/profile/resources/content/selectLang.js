@@ -72,9 +72,6 @@ function SelectListItem(listRef, itemValue)
 
 function Startup()
 {
-
-  var prefInterface;
-  
   var defaultLanguage;
   var languageList = document.getElementById("langList");
   var selectedLanguage = window.arguments.length ? window.arguments[0] : null;
@@ -86,14 +83,12 @@ function Startup()
   //get pref defaults
   try
   {
-    prefInterface =    Components.classes["@mozilla.org/preferences;1"].
-                       getService(Components.interfaces.nsIPref);
-
-    defaultLanguage =  prefInterface.
-                       getLocalizedUnicharPref("general.useragent.locale");
-
-    defaultRegion =   prefInterface.
-                       getLocalizedUnicharPref("general.useragent.contentlocale");
+    const nsIPrefLocalizedString = Components.interfaces.nsIPrefLocalizedString;
+    var prefBranch = Components.classes["@mozilla.org/preferences-service;1"]
+                               .getService(Components.interfaces.nsIPrefService)
+                               .getBranch("general.useragent.");
+    defaultLanguage = prefBranch.getComplexValue("locale", nsIPrefLocalizedString).data;
+    defaultRegion = prefBranch.getComplexValue("contentlocale", nsIPrefLocalizedString).data;
   }
 
   catch(e) 
@@ -121,7 +116,7 @@ function onAccept()
 
   if (selectedItem) {
     var langName = selectedItem.getAttribute("value");
-    var langStore = opener.document.getElementById("ProfileLanguage");
+    var langStore = opener.document.getElementById("profileLanguage");
 
     if (langStore)
       langStore.setAttribute("data", langName);
@@ -133,7 +128,7 @@ function onAccept()
 
   if (selectedItem) {
     var regionName = selectedItem.getAttribute("value");
-    var regionStore = opener.document.getElementById("ProfileRegion");
+    var regionStore = opener.document.getElementById("profileRegion");
 
     if (regionStore)
       regionStore.setAttribute("data", regionName);

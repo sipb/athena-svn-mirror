@@ -56,7 +56,6 @@
 #include "nsMenuFrame.h"
 #include "nsIView.h"
 #include "nsIViewManager.h"
-#include "nsIFrameManager.h"
 #include "nsMenuPopupFrame.h"
 #include "nsGUIEvent.h"
 #include "nsUnicharUtils.h"
@@ -66,6 +65,7 @@
 #include "nsIDOMDocument.h"
 #include "nsPIDOMWindow.h"
 #include "nsIInterfaceRequestorUtils.h"
+#include "nsCSSFrameConstructor.h"
 #ifdef XP_WIN
 #include "nsISound.h"
 #include "nsWidgetsCID.h"
@@ -203,8 +203,7 @@ nsMenuBarFrame::SetActive(PRBool aActiveFlag)
   // The caret distracts screen readers and other assistive technologies from the menu selection
   // There is 1 caret per document, we need to find the focused document and toggle its caret 
   do {
-    nsCOMPtr<nsIPresShell> presShell;
-    mPresContext->GetShell(getter_AddRefs(presShell));
+    nsIPresShell *presShell = mPresContext->GetPresShell();
     if (!presShell)
       break;
 
@@ -297,12 +296,11 @@ nsMenuBarFrame::ToggleMenuActiveState()
 static void GetInsertionPoint(nsIPresShell* aShell, nsIFrame* aFrame, nsIFrame* aChild,
                               nsIFrame** aResult)
 {
-  nsCOMPtr<nsIStyleSet> styleSet;
-  aShell->GetStyleSet(getter_AddRefs(styleSet));
   nsIContent* child = nsnull;
   if (aChild)
     child = aChild->GetContent();
-  styleSet->GetInsertionPoint(aShell, aFrame, child, aResult);
+  aShell->FrameConstructor()->GetInsertionPoint(aShell, aFrame,
+                                                      child, aResult);
 }
 
 nsIMenuFrame*
@@ -313,14 +311,11 @@ nsMenuBarFrame::FindMenuWithShortcut(nsIDOMKeyEvent* aKeyEvent)
 
   // Enumerate over our list of frames.
   nsIFrame* immediateParent = nsnull;
-  nsCOMPtr<nsIPresShell> shell;
-  mPresContext->GetShell(getter_AddRefs(shell));
-  GetInsertionPoint(shell, this, nsnull, &immediateParent);
+  GetInsertionPoint(mPresContext->PresShell(), this, nsnull, &immediateParent);
   if (!immediateParent)
     immediateParent = this;
 
-  nsIFrame* currFrame;
-  immediateParent->FirstChild(mPresContext, nsnull, &currFrame);
+  nsIFrame* currFrame = immediateParent->GetFirstChild(nsnull);
 
   while (currFrame) {
     nsIContent* current = currFrame->GetContent();
@@ -442,9 +437,7 @@ NS_IMETHODIMP
 nsMenuBarFrame::GetNextMenuItem(nsIMenuFrame* aStart, nsIMenuFrame** aResult)
 {
   nsIFrame* immediateParent = nsnull;
-  nsCOMPtr<nsIPresShell> shell;
-  mPresContext->GetShell(getter_AddRefs(shell));
-  GetInsertionPoint(shell, this, nsnull, &immediateParent);
+  GetInsertionPoint(mPresContext->PresShell(), this, nsnull, &immediateParent);
   if (!immediateParent)
     immediateParent = this;
 
@@ -458,9 +451,7 @@ nsMenuBarFrame::GetNextMenuItem(nsIMenuFrame* aStart, nsIMenuFrame** aResult)
     }
   }
   else 
-    immediateParent->FirstChild(mPresContext,
-                                nsnull,
-                                &currFrame);
+    currFrame = immediateParent->GetFirstChild(nsnull);
 
   while (currFrame) {
     // See if it's a menu item.
@@ -473,9 +464,7 @@ nsMenuBarFrame::GetNextMenuItem(nsIMenuFrame* aStart, nsIMenuFrame** aResult)
     currFrame = currFrame->GetNextSibling();
   }
 
-  immediateParent->FirstChild(mPresContext,
-                              nsnull,
-                              &currFrame);
+  currFrame = immediateParent->GetFirstChild(nsnull);
 
   // Still don't have anything. Try cycling from the beginning.
   while (currFrame && currFrame != startFrame) {
@@ -499,16 +488,11 @@ NS_IMETHODIMP
 nsMenuBarFrame::GetPreviousMenuItem(nsIMenuFrame* aStart, nsIMenuFrame** aResult)
 {
   nsIFrame* immediateParent = nsnull;
-  nsCOMPtr<nsIPresShell> shell;
-  mPresContext->GetShell(getter_AddRefs(shell));
-  GetInsertionPoint(shell, this, nsnull, &immediateParent);
+  GetInsertionPoint(mPresContext->PresShell(), this, nsnull, &immediateParent);
   if (!immediateParent)
     immediateParent = this;
 
-  nsIFrame* first;
-  immediateParent->FirstChild(mPresContext,
-                              nsnull, &first);
-  nsFrameList frames(first);
+  nsFrameList frames(immediateParent->GetFirstChild(nsnull));
                               
   nsIFrame* currFrame = nsnull;
   nsIFrame* startFrame = nsnull;

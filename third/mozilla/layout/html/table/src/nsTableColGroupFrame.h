@@ -40,9 +40,9 @@
 #include "nscore.h"
 #include "nsHTMLContainerFrame.h"
 #include "nsTableColFrame.h"
+#include "nsTablePainter.h"
 
 class nsTableColFrame;
-class nsTableFrame;
 
 enum nsTableColGroupType {
   eColGroupContent            = 0, // there is real col group content associated   
@@ -117,6 +117,9 @@ public:
                    nsFramePaintLayer    aWhichLayer,
                    PRUint32             aFlags = 0);
 
+  // column groups don't paint their own background -- the cells do
+  virtual PRBool CanPaintBackground() { return PR_FALSE; }
+
   NS_IMETHOD GetFrameForPoint(nsIPresContext* aPresContext,
                               const nsPoint& aPoint, 
                               nsFramePaintLayer aWhichLayer,
@@ -173,22 +176,28 @@ public:
   /** helper method to get the span attribute for this colgroup */
   PRInt32 GetSpan();
 
-  /** helper method returns PR_TRUE if this colgroup exists without any
-    * colgroup or col content in the table backing it.
-    */
-  //PRBool IsManufactured();
-
   void DeleteColFrame(nsIPresContext* aPresContext, nsTableColFrame* aColFrame);
 
-  static nsTableColGroupFrame* GetColGroupFrameContaining(nsIPresContext*  aPresContext,
-                                                          nsFrameList&     aColGroupList,
-                                                          nsTableColFrame& aColFrame);
   nsFrameList& GetChildList();
 
-  static void ResetColIndices(nsIPresContext* aPresContext,
-                              nsIFrame*       aFirstColGroup,
+  static void ResetColIndices(nsIFrame*       aFirstColGroup,
                               PRInt32         aFirstColIndex,
                               nsIFrame*       aStartColFrame = nsnull);
+
+  /**
+   * Gets inner border widths before collapsing with cell borders
+   * Caller must get left border from previous column
+   * GetContinuousBCBorderWidth will not overwrite aBorder.left
+   * see nsTablePainter about continuous borders
+   */
+  void GetContinuousBCBorderWidth(float     aPixelsToTwips,
+                                  nsMargin& aBorder);
+  /**
+   * Set full border widths before collapsing with cell borders
+   * @param aForSide - side to set; only accepts top and bottom
+   */
+  void SetContinuousBCBorderWidth(PRUint8     aForSide,
+                                  BCPixelSize aPixelValue);
 protected:
   nsTableColGroupFrame();
 
@@ -227,6 +236,10 @@ protected:
   PRInt32 mColCount;
   // the starting column index this col group represents. Must be >= 0. 
   PRInt32 mStartColIndex;
+
+  // border width in pixels
+  BCPixelSize mTopContBorderWidth;
+  BCPixelSize mBottomContBorderWidth;
 };
 
 inline nsTableColGroupFrame::nsTableColGroupFrame()

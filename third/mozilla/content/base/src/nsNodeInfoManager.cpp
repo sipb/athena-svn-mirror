@@ -48,7 +48,6 @@
 #include "nsContentUtils.h"
 #include "nsReadableUtils.h"
 
-nsNodeInfoManager* nsNodeInfoManager::gAnonymousNodeInfoManager;
 PRUint32 nsNodeInfoManager::gNodeManagerCount;
 
 
@@ -96,19 +95,7 @@ nsNodeInfoManager::NodeInfoInnerKeyCompare(const void *key1, const void *key2)
 
 nsNodeInfoManager::nsNodeInfoManager()
 {
-
-  if (gNodeManagerCount == 1 && gAnonymousNodeInfoManager) {
-    /*
-     * If we get here the global nodeinfo manager was the first one created,
-     * in that case we're not holding a strong reference to the global nodeinfo
-     * manager. Now we're creating one more nodeinfo manager so we'll grab
-     * a strong reference to the global nodeinfo manager so that it's
-     * lifetime will be longer than the lifetime of the other node managers.
-     */
-    NS_ADDREF(gAnonymousNodeInfoManager);
-  }
-
-  gNodeManagerCount++;
+  ++gNodeManagerCount;
 
   mNodeInfoHash = PL_NewHashTable(32, GetNodeInfoInnerHashValue,
                                   NodeInfoInnerKeyCompare,
@@ -122,17 +109,7 @@ nsNodeInfoManager::nsNodeInfoManager()
 
 nsNodeInfoManager::~nsNodeInfoManager()
 {
-  gNodeManagerCount--;
-
-  if (gNodeManagerCount == 1 && gAnonymousNodeInfoManager) {
-    NS_RELEASE(gAnonymousNodeInfoManager);
-  } else if (!gNodeManagerCount) {
-    /*
-     * Here we just make sure that we don't leave a dangling pointer to
-     * the global nodeinfo manager after it's deleted.
-     */
-    gAnonymousNodeInfoManager = nsnull;
-  }
+  --gNodeManagerCount;
 
   if (mNodeInfoHash)
     PL_HashTableDestroy(mNodeInfoHash);
@@ -166,7 +143,6 @@ nsNodeInfoManager::Init(nsIDocument *aDocument)
   return NS_OK;
 }
 
-
 void
 nsNodeInfoManager::DropDocumentReference()
 {
@@ -177,7 +153,7 @@ nsNodeInfoManager::DropDocumentReference()
     // that we're creating a principal without having a uri.
     // This happens in a few cases where a document is created and then
     // immediately dropped without ever getting a URI.
-    if (mDocument->GetDocumentURL()) {
+    if (mDocument->GetDocumentURI()) {
       mPrincipal = mDocument->GetPrincipal();
     }
   }
@@ -225,8 +201,9 @@ nsresult
 nsNodeInfoManager::GetNodeInfo(const nsAString& aName, nsIAtom *aPrefix,
                                PRInt32 aNamespaceID, nsINodeInfo** aNodeInfo)
 {
-  return nsNodeInfoManager::GetNodeInfo(NS_ConvertUTF16toUTF8(aName),
-                                        aPrefix, aNamespaceID, aNodeInfo);
+  nsCOMPtr<nsIAtom> name = do_GetAtom(aName);
+  return nsNodeInfoManager::GetNodeInfo(name, aPrefix, aNamespaceID,
+                                        aNodeInfo);
 }
 
 
@@ -264,25 +241,30 @@ nsNodeInfoManager::GetNodeInfo(const nsAString& aQualifiedName,
   PRInt32 nsid = kNameSpaceID_None;
 
   if (!aNamespaceURI.IsEmpty()) {
-    nsresult rv = nsContentUtils::GetNSManagerWeakRef()->RegisterNameSpace(aNamespaceURI, nsid);
+    nsresult rv = nsContentUtils::GetNSManagerWeakRef()->
+      RegisterNameSpace(aNamespaceURI, nsid);
     NS_ENSURE_SUCCESS(rv, rv);
   }
 
-  return nsNodeInfoManager::GetNodeInfo(nameAtom, prefixAtom, nsid, aNodeInfo);
+  return GetNodeInfo(nameAtom, prefixAtom, nsid, aNodeInfo);
 }
 
 nsresult
-nsNodeInfoManager::GetNodeInfo(const nsACString& aName, nsIAtom *aPrefix,
-                               PRInt32 aNamespaceID, nsINodeInfo** aNodeInfo)
+nsNodeInfoManager::GetNodeInfo(const nsAString& aName, nsIAtom *aPrefix,
+                               const nsAString& aNamespaceURI,
+                               nsINodeInfo** aNodeInfo)
 {
-  NS_ENSURE_ARG(!aName.IsEmpty());
+  nsCOMPtr<nsIAtom> nameAtom = do_GetAtom(aName);
 
-  nsCOMPtr<nsIAtom> name = do_GetAtom(aName);
-  NS_ENSURE_TRUE(name, NS_ERROR_OUT_OF_MEMORY);
+  PRInt32 nsid = kNameSpaceID_None;
+  if (!aNamespaceURI.IsEmpty()) {
+    nsresult rv = nsContentUtils::GetNSManagerWeakRef()->
+      RegisterNameSpace(aNamespaceURI, nsid);
+    NS_ENSURE_SUCCESS(rv, rv);
+  }
 
-  return GetNodeInfo(name, aPrefix, aNamespaceID, aNodeInfo);
+  return GetNodeInfo(nameAtom, aPrefix, nsid, aNodeInfo);
 }
-
 
 nsresult
 nsNodeInfoManager::GetDocumentPrincipal(nsIPrincipal** aPrincipal)
@@ -294,7 +276,7 @@ nsNodeInfoManager::GetDocumentPrincipal(nsIPrincipal** aPrincipal)
   if (mDocument) {
     // If the document has a uri we'll ask for it's principal. Otherwise we'll
     // consider this document 'anonymous'
-    if (!mDocument->GetDocumentURL()) {
+    if (!mDocument->GetDocumentURI()) {
       *aPrincipal = nsnull;
       return NS_OK;
     }
@@ -319,33 +301,6 @@ nsNodeInfoManager::SetDocumentPrincipal(nsIPrincipal* aPrincipal)
   return NS_OK;
 }
 
-nsresult
-nsNodeInfoManager::GetNodeInfos(nsCOMArray<nsINodeInfo> *aArray)
-{
-  PL_HashTableEnumerateEntries(mNodeInfoHash,
-                               GetNodeInfoArrayEnumerator,
-                               aArray);
-  PRInt32 n = aArray->Count();
-  NS_ENSURE_TRUE((PRUint32)n == mNodeInfoHash->nentries, NS_ERROR_OUT_OF_MEMORY);
-
-  return NS_OK;
-}
-
-//static
-PRIntn
-nsNodeInfoManager::GetNodeInfoArrayEnumerator(PLHashEntry* he, PRIntn i,
-                                              void* arg)
-{
-  NS_ASSERTION(arg, "missing array");
-  nsCOMArray<nsINodeInfo> *array = (nsCOMArray<nsINodeInfo> *) arg;
-
-  if (!array->AppendObject((nsINodeInfo*)he->value)) {
-    return HT_ENUMERATE_STOP;
-  }
-
-  return HT_ENUMERATE_NEXT;
-}
-
 void
 nsNodeInfoManager::RemoveNodeInfo(nsNodeInfo *aNodeInfo)
 {
@@ -360,31 +315,3 @@ nsNodeInfoManager::RemoveNodeInfo(nsNodeInfo *aNodeInfo)
     NS_WARN_IF_FALSE(ret, "Can't find nsINodeInfo to remove!!!");
   }
 }
-
-
-nsresult
-nsNodeInfoManager::GetAnonymousManager(nsINodeInfoManager** aNodeInfoManager)
-{
-  if (!gAnonymousNodeInfoManager) {
-    gAnonymousNodeInfoManager = new nsNodeInfoManager;
-
-    if (!gAnonymousNodeInfoManager)
-      return NS_ERROR_OUT_OF_MEMORY;
-
-    NS_ADDREF(gAnonymousNodeInfoManager);
-  }
-
-  *aNodeInfoManager = gAnonymousNodeInfoManager;
-
-  /*
-   * If the only nodeinfo manager is the global one we don't hold a ref
-   * since the global nodeinfo manager should be destroyed when it's released,
-   * even if it's the last one arround.
-   */
-  if (gNodeManagerCount > 1) {
-    NS_ADDREF(*aNodeInfoManager);
-  }
-
-  return NS_OK;
-}
-

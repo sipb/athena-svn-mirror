@@ -48,6 +48,7 @@
 #include "nsCDefaultURIFixup.h"
 #include "nsIURIFixup.h"
 #include "nsIURL.h"
+#include "nsIJARURI.h"
 #include "nsIIOService.h"
 #include "nsIServiceManager.h"
 #include "nsNetUtil.h"
@@ -67,8 +68,10 @@
 #include "nsDOMClassInfo.h"
 #include "nsCRT.h"
 #include "nsIProtocolHandler.h"
+#include "nsReadableUtils.h"
 
-static nsresult GetDocumentCharacterSetForURI(const nsAString& aHref, nsACString& aCharset)
+static nsresult
+GetDocumentCharacterSetForURI(const nsAString& aHref, nsACString& aCharset)
 {
   aCharset.Truncate();
 
@@ -82,23 +85,22 @@ static nsresult GetDocumentCharacterSetForURI(const nsAString& aHref, nsACString
   rv = stack->Peek(&cx);
   NS_ENSURE_SUCCESS(rv, rv);
 
-  nsCOMPtr<nsIScriptGlobalObject> nativeGlob;
-  nsJSUtils::GetDynamicScriptGlobal(cx, getter_AddRefs(nativeGlob));
-  NS_ENSURE_TRUE(nativeGlob, NS_ERROR_FAILURE);
+  if (cx) {
+    nsCOMPtr<nsIDOMWindow> window =
+      do_QueryInterface(nsJSUtils::GetDynamicScriptGlobal(cx));
+    NS_ENSURE_TRUE(window, NS_ERROR_FAILURE);
 
-  nsCOMPtr<nsIDOMWindow> window = do_QueryInterface(nativeGlob);
-  NS_ENSURE_TRUE(window, NS_ERROR_FAILURE);
+    nsCOMPtr<nsIDOMDocument> domDoc;
+    rv = window->GetDocument(getter_AddRefs(domDoc));
+    NS_ENSURE_SUCCESS(rv, rv);
 
-  nsCOMPtr<nsIDOMDocument> domDoc;
-  rv = window->GetDocument(getter_AddRefs(domDoc));
-  NS_ENSURE_SUCCESS(rv, rv);
-  if (!domDoc)
-    return NS_OK;
+    nsCOMPtr<nsIDocument> doc(do_QueryInterface(domDoc));
 
-  nsCOMPtr<nsIDocument> doc(do_QueryInterface(domDoc));
-  NS_ENSURE_TRUE(doc, NS_ERROR_FAILURE);
+    if (doc) {
+      aCharset = doc->GetDocumentCharacterSet();
+    }
+  }
 
-  aCharset = doc->GetDocumentCharacterSet();
   return NS_OK;
 }
 
@@ -124,7 +126,8 @@ NS_INTERFACE_MAP_END
 NS_IMPL_ADDREF(LocationImpl)
 NS_IMPL_RELEASE(LocationImpl)
 
-NS_IMETHODIMP_(void) LocationImpl::SetDocShell(nsIDocShell *aDocShell)
+void
+LocationImpl::SetDocShell(nsIDocShell *aDocShell)
 {
    mDocShell = aDocShell; // Weak Reference
 }
@@ -254,7 +257,7 @@ LocationImpl::FindUsableBaseURI(nsIURI * aBaseURI, nsIDocShell * aParent, nsIURI
 
 
 nsresult
-LocationImpl::GetURI(nsIURI** aURI)
+LocationImpl::GetURI(nsIURI** aURI, PRBool aGetInnermostURI)
 {
   *aURI = nsnull;
 
@@ -274,6 +277,16 @@ LocationImpl::GetURI(nsIURI** aURI)
   if (!uri) {
     return NS_OK;
   }
+
+  if (aGetInnermostURI) {
+    nsCOMPtr<nsIJARURI> jarURI(do_QueryInterface(uri));
+    while (jarURI) {
+      jarURI->GetJARFile(getter_AddRefs(uri));
+      jarURI = do_QueryInterface(uri);
+    }
+  }
+
+  NS_ASSERTION(uri, "nsJARURI screwed up?");
 
   nsCOMPtr<nsIURIFixup> urifixup(do_GetService(NS_URIFIXUP_CONTRACTID, &rv));
   NS_ENSURE_SUCCESS(rv, rv);
@@ -334,7 +347,8 @@ LocationImpl::GetHash(nsAString& aHash)
     NS_UnescapeURL(ref);
 
     if (NS_SUCCEEDED(result) && !ref.IsEmpty()) {
-      aHash.Assign(NS_LITERAL_STRING("#") + NS_ConvertASCIItoUCS2(ref));
+      aHash.Assign(PRUnichar('#'));
+      AppendASCIItoUTF16(ref, aHash);
     }
   }
 
@@ -372,12 +386,12 @@ LocationImpl::SetHash(const nsAString& aHash)
 NS_IMETHODIMP
 LocationImpl::GetHost(nsAString& aHost)
 {
-  aHost.SetLength(0);
+  aHost.Truncate();
 
   nsCOMPtr<nsIURI> uri;
   nsresult result;
 
-  result = GetURI(getter_AddRefs(uri));
+  result = GetURI(getter_AddRefs(uri), PR_TRUE);
 
   if (uri) {
     nsCAutoString hostport;
@@ -385,7 +399,7 @@ LocationImpl::GetHost(nsAString& aHost)
     result = uri->GetHostPort(hostport);
 
     if (NS_SUCCEEDED(result)) {
-      aHost = NS_ConvertUTF8toUCS2(hostport);
+      AppendUTF8toUTF16(hostport, aHost);
     }
   }
 
@@ -411,12 +425,12 @@ LocationImpl::SetHost(const nsAString& aHost)
 NS_IMETHODIMP
 LocationImpl::GetHostname(nsAString& aHostname)
 {
-  aHostname.SetLength(0);
+  aHostname.Truncate();
 
   nsCOMPtr<nsIURI> uri;
   nsresult result;
 
-  result = GetURI(getter_AddRefs(uri));
+  result = GetURI(getter_AddRefs(uri), PR_TRUE);
 
   if (uri) {
     nsCAutoString host;
@@ -424,7 +438,7 @@ LocationImpl::GetHostname(nsAString& aHostname)
     result = uri->GetHost(host);
 
     if (NS_SUCCEEDED(result)) {
-      aHostname = NS_ConvertUTF8toUCS2(host);
+      AppendUTF8toUTF16(host, aHostname);
     }
   }
 
@@ -450,7 +464,7 @@ LocationImpl::SetHostname(const nsAString& aHostname)
 NS_IMETHODIMP
 LocationImpl::GetHref(nsAString& aHref)
 {
-  aHref.SetLength(0);
+  aHref.Truncate();
 
   nsCOMPtr<nsIURI> uri;
   nsresult result;
@@ -463,7 +477,7 @@ LocationImpl::GetHref(nsAString& aHref)
     result = uri->GetSpec(uriString);
 
     if (NS_SUCCEEDED(result)) {
-      aHref = NS_ConvertUTF8toUCS2(uriString);
+      AppendUTF8toUTF16(uriString, aHref);
     }
   }
 
@@ -571,11 +585,11 @@ LocationImpl::SetHrefWithBase(const nsAString& aHref,
 
       result = stack->Peek(&cx);
       if (cx) {
-        nsCOMPtr<nsIScriptContext> scriptContext;
-        nsJSUtils::GetDynamicScriptContext(cx, getter_AddRefs(scriptContext));
+        nsIScriptContext *scriptContext =
+          nsJSUtils::GetDynamicScriptContext(cx);
 
         if (scriptContext) {
-          scriptContext->GetProcessingScriptTag(&inScriptTag);
+          inScriptTag = scriptContext->GetProcessingScriptTag();
         }  
       } //cx
     }  // stack
@@ -595,7 +609,7 @@ LocationImpl::SetHrefWithBase(const nsAString& aHref,
 NS_IMETHODIMP
 LocationImpl::GetPathname(nsAString& aPathname)
 {
-  aPathname.SetLength(0);
+  aPathname.Truncate();
 
   nsCOMPtr<nsIURI> uri;
   nsresult result = NS_OK;
@@ -609,7 +623,7 @@ LocationImpl::GetPathname(nsAString& aPathname)
     result = url->GetFilePath(file);
 
     if (NS_SUCCEEDED(result)) {
-      aPathname = NS_ConvertUTF8toUCS2(file);
+      AppendUTF8toUTF16(file, aPathname);
     }
   }
 
@@ -640,7 +654,7 @@ LocationImpl::GetPort(nsAString& aPort)
   nsCOMPtr<nsIURI> uri;
   nsresult result = NS_OK;
 
-  result = GetURI(getter_AddRefs(uri));
+  result = GetURI(getter_AddRefs(uri), PR_TRUE);
 
   if (uri) {
     PRInt32 port;
@@ -702,7 +716,7 @@ LocationImpl::GetProtocol(nsAString& aProtocol)
     result = uri->GetScheme(protocol);
 
     if (NS_SUCCEEDED(result)) {
-      aProtocol.Assign(NS_ConvertASCIItoUCS2(protocol));
+      CopyASCIItoUTF16(protocol, aProtocol);
       aProtocol.Append(PRUnichar(':'));
     }
   }
@@ -744,7 +758,8 @@ LocationImpl::GetSearch(nsAString& aSearch)
     result = url->GetQuery(search);
 
     if (NS_SUCCEEDED(result) && !search.IsEmpty()) {
-      aSearch.Assign(NS_LITERAL_STRING("?") + NS_ConvertUTF8toUCS2(search));
+      aSearch.Assign(PRUnichar('?'));
+      AppendUTF8toUTF16(search, aSearch);
     }
   }
 
@@ -897,30 +912,27 @@ LocationImpl::GetSourceDocument(JSContext* cx, nsIDocument** aDocument)
   // could break if any of the connections along the way change.
   // I wish there were a better way.
 
-  nsresult result = NS_ERROR_FAILURE;
+  nsresult rv = NS_ERROR_FAILURE;
 
   // We need to use the dynamically scoped global and assume that the
   // current JSContext is a DOM context with a nsIScriptGlobalObject so
   // that we can get the url of the caller.
   // XXX This will fail on non-DOM contexts :(
 
-  nsCOMPtr<nsIScriptGlobalObject> nativeGlob;
-  nsJSUtils::GetDynamicScriptGlobal(cx, getter_AddRefs(nativeGlob));
+  nsCOMPtr<nsIDOMWindow> window =
+    do_QueryInterface(nsJSUtils::GetDynamicScriptGlobal(cx), &rv);
 
-  if (nativeGlob) {
-    nsCOMPtr<nsIDOMWindow> window = do_QueryInterface(nativeGlob, &result);
-
-    if (window) {
-      nsCOMPtr<nsIDOMDocument> domDoc;
-      result = window->GetDocument(getter_AddRefs(domDoc));
-      if (domDoc) {
-        return CallQueryInterface(domDoc, aDocument);
-      }
+  if (window) {
+    nsCOMPtr<nsIDOMDocument> domDoc;
+    rv = window->GetDocument(getter_AddRefs(domDoc));
+    if (domDoc) {
+      return CallQueryInterface(domDoc, aDocument);
     }
   } else {
     *aDocument = nsnull;
   }
-  return result;
+
+  return rv;
 }
 
 nsresult
@@ -929,11 +941,11 @@ LocationImpl::GetSourceBaseURL(JSContext* cx, nsIURI** sourceURL)
   nsCOMPtr<nsIDocument> doc;
   nsresult rv = GetSourceDocument(cx, getter_AddRefs(doc));
   if (doc) {
-    NS_IF_ADDREF(*sourceURL = doc->GetBaseURL());
-    return NS_OK;
+    NS_IF_ADDREF(*sourceURL = doc->GetBaseURI());
+  } else {
+    *sourceURL = nsnull;
   }
 
-  *sourceURL = nsnull;
   return rv;
 }
 
@@ -943,7 +955,7 @@ LocationImpl::GetSourceURL(JSContext* cx, nsIURI** sourceURL)
   nsCOMPtr<nsIDocument> doc;
   nsresult rv = GetSourceDocument(cx, getter_AddRefs(doc));
   if (doc) {
-    NS_IF_ADDREF(*sourceURL = doc->GetDocumentURL());
+    NS_IF_ADDREF(*sourceURL = doc->GetDocumentURI());
   } else {
     *sourceURL = nsnull;
   }

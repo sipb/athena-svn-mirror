@@ -83,9 +83,11 @@ public:
 
 		mSurface = (nsDrawingSurfacePh *) aSurface;
 		NS_ADDREF(mSurface);
+		mOffscreenSurface = mSurface;
 
 		mGC = mSurface->GetGC();
 		mOwner = PR_FALSE;
+		mSurfaceDC = ((nsDrawingSurfacePh*)mSurface)->GetDC();
 
 		return CommonInit();
 		}
@@ -118,8 +120,8 @@ public:
    
 	 inline
    NS_IMETHODIMP SelectOffScreenDrawingSurface(nsDrawingSurface aSurface)
-		{ mSurface = nsnull==aSurface ? mOffscreenSurface : (nsDrawingSurfacePh *) aSurface;
-			mSurface->Select( );
+		{ mSurface = ( nsnull==aSurface ) ? mOffscreenSurface : (nsDrawingSurfacePh *) aSurface;
+			mSurfaceDC = mSurface->Select( );
 			return NS_OK;
 		}
 
@@ -156,7 +158,12 @@ public:
 
    NS_IMETHOD GetClipRegion(nsIRegion **aRegion);
    
-   NS_IMETHOD SetLineStyle(nsLineStyle aLineStyle);
+   inline
+	 NS_IMETHODIMP SetLineStyle(nsLineStyle aLineStyle)
+   { mCurrentLineStyle = aLineStyle;
+   	 return NS_OK;
+	 }
+
 	 inline
    NS_IMETHODIMP GetLineStyle(nsLineStyle &aLineStyle)
 		{ aLineStyle = mCurrentLineStyle;
@@ -164,9 +171,9 @@ public:
 		}
    
    inline
-	 NS_IMETHODIMP SetColor(nscolor aColor) { mCurrentColor = aColor; return NS_OK; }
+	 NS_IMETHODIMP SetColor(nscolor aColor) { mCurrentColor = NS_TO_PH_RGB( aColor ); return NS_OK; }
 	 inline
-   NS_IMETHODIMP GetColor(nscolor &aColor) const { aColor = mCurrentColor; return NS_OK; }
+   NS_IMETHODIMP GetColor(nscolor &aColor) const { aColor = PH_TO_NS_RGB( mCurrentColor ); return NS_OK; }
    
 	 inline
 	 NS_IMETHODIMP SetFont(const nsFont& aFont, nsIAtom* aLangGroup)
@@ -256,7 +263,7 @@ public:
 	 inline
    NS_IMETHODIMP GetWidth(char aC, nscoord& aWidth)
 		{ // Check for the very common case of trying to get the width of a single space
-			if(aC == ' ' && nsnull != mFontMetrics )
+			if(aC == ' ')
 			  return mFontMetrics->GetSpaceWidth(aWidth);
 			return GetWidth( &aC, 1, aWidth );
 		}
@@ -306,7 +313,6 @@ public:
 	 inline
    NS_IMETHODIMP GetTextDimensions(const char* aString, PRUint32 aLength, nsTextDimensions& aDimensions)
 		{
-		aDimensions.Clear();
 		mFontMetrics->GetMaxAscent(aDimensions.ascent);
 		mFontMetrics->GetMaxDescent(aDimensions.descent);
 		return GetWidth(aString, aLength, aDimensions.width);
@@ -314,7 +320,7 @@ public:
 
    NS_IMETHOD GetTextDimensions(const PRUnichar *aString, PRUint32 aLength,
 								nsTextDimensions& aDimensions, PRInt32 *aFontID);
-   
+
 	 inline
    NS_IMETHODIMP DrawImage(nsIImage *aImage, nscoord aX, nscoord aY)
 		{
@@ -341,10 +347,6 @@ public:
    NS_IMETHODIMP DrawImage(nsIImage *aImage, const nsRect& aRect) { return DrawImage( aImage, aRect.x, aRect.y, aRect.width, aRect.height ); }
 
    NS_IMETHOD DrawImage(nsIImage *aImage, const nsRect& aSRect, const nsRect& aDRect);
-   NS_IMETHOD DrawTile(nsIImage *aImage,nscoord aX0,nscoord aY0,nscoord aX1,nscoord aY1,
-					   nscoord aWidth,nscoord aHeight);
-   NS_IMETHOD DrawTile(nsIImage *aImage, nscoord aSrcXOffset, nscoord aSrcYOffset,
-					   const nsRect &aTileRect);
    
    NS_IMETHOD CopyOffScreenBits(nsDrawingSurface aSrcSurf, PRInt32 aSrcX, PRInt32 aSrcY,
 								const nsRect &aDestBounds, PRUint32 aCopyFlags);
@@ -380,9 +382,9 @@ private:
 	inline NS_IMETHODIMP CommonInit()
 		{
 		if( mContext && mTranMatrix ) {
-		  mContext->GetDevUnitsToAppUnits(mP2T);
+		  mP2T = mContext->DevUnitsToAppUnits();
 		  float app2dev;
-		  mContext->GetAppUnitsToDevUnits(app2dev);
+		  app2dev = mContext->AppUnitsToDevUnits();
 		  mTranMatrix->AddScale(app2dev, app2dev);
 		  }
 		return NS_OK;
@@ -392,18 +394,29 @@ private:
 	void CreateClipRegion( );
   inline void UpdateGC( )
 		{
-		PgSetGC( mGC ); /* new */
-		PgSetStrokeColor( NS_TO_PH_RGB( mCurrentColor ) );
-		PgSetTextColor( NS_TO_PH_RGB( mCurrentColor ) );
-		PgSetFillColor( NS_TO_PH_RGB( mCurrentColor ) );
-		PgSetStrokeDash( mLineStyle, strlen((char *)mLineStyle), 0x10000 );
+		PgSetGCCx( mSurfaceDC, mGC ); /* new */
+		if( mRegionID ) mSurfaceDC->gin.rid = mRegionID;
 		ApplyClipping( mGC );
 		}
 
+   // ConditionRect is used to fix coordinate overflow problems for
+   // rectangles after they are transformed to screen coordinates
+   inline void ConditionRect(nscoord &x, nscoord &y, nscoord &w, nscoord &h) {
+	   if ( y < -32766 )
+		   y = -32766;
+	   if ( y + h > 32766 )
+		   h  = 32766 - y;
+	   if ( x < -32766 )
+		   x = -32766;
+	   if ( x + w > 32766 ) 
+		   w  = 32766 - x;
+   }
+
    PhGC_t             *mGC;
+	 PhDrawContext_t		*mSurfaceDC; /* the DC of the mSurface - keep this in sync with mSurface */
+	 PhRid_t						mRegionID;
    nscolor            mCurrentColor;
    nsLineStyle        mCurrentLineStyle;
-   unsigned char      mLineStyle[2];
    nsIFontMetrics     *mFontMetrics;
    nsDrawingSurfacePh *mOffscreenSurface;
    nsDrawingSurfacePh *mSurface;
@@ -415,20 +428,6 @@ private:
    
    //state management
    nsVoidArray       *mStateCache;
-   
-   // ConditionRect is used to fix coordinate overflow problems for
-   // rectangles after they are transformed to screen coordinates
-   
-   void ConditionRect(nscoord &x, nscoord &y, nscoord &w, nscoord &h) {
-	   if ( y < -32766 )
-		   y = -32766;
-	   if ( y + h > 32766 )
-		   h  = 32766 - y;
-	   if ( x < -32766 )
-		   x = -32766;
-	   if ( x + w > 32766 ) 
-		   w  = 32766 - x;
-   }
 };
 
 #endif /* nsRenderingContextPh_h___ */

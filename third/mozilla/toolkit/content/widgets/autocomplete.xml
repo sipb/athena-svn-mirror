@@ -194,7 +194,9 @@
 
       <method name="onTextEntered">
         <body><![CDATA[
-          return this.fireEvent("textentered", this.mEnterEvent);
+          var rv = this.fireEvent("textentered", this.mEnterEvent);
+          this.mEnterEvent = null;
+          return rv;
         ]]></body>
       </method>
 
@@ -369,6 +371,10 @@
             case KeyEvent.DOM_VK_RETURN:
               this.mEnterEvent = aEvent;
               cancel = this.mController.handleEnter();
+              break;
+            case KeyEvent.DOM_VK_DELETE:
+              if (aEvent.shiftKey)
+                cancel = this.mController.handleDelete();
               break;
           }
 
@@ -632,6 +638,7 @@
       </method>
 
       <method name="onPopupClick">
+        <parameter name="aEvent"/>
         <body><![CDATA[
           var controller = this.view.QueryInterface(Components.interfaces.nsIAutoCompleteController);
           controller.handleEnter();
@@ -682,7 +689,7 @@
     
     <handlers>
       <handler event="mouseout" action="this.parentNode.currentIndex = -1;"/>
-      <handler event="mouseup" action="this.parentNode.parentNode.onPopupClick();"/>
+      <handler event="mouseup" action="this.parentNode.parentNode.onPopupClick(event);"/>
 
       <handler event="mousemove"><![CDATA[
         if (new Date() - this.mLastMoveTime > 30) {

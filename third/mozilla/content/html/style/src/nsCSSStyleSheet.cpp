@@ -59,9 +59,8 @@
 #include "nsICSSNameSpaceRule.h"
 #include "nsICSSMediaRule.h"
 #include "nsIMediaList.h"
-#include "nsIHTMLContent.h"
+#include "nsIStyledContent.h"
 #include "nsIDocument.h"
-#include "nsIHTMLContentContainer.h"
 #include "nsIPresContext.h"
 #include "nsIEventStateManager.h"
 #include "nsHTMLAtoms.h"
@@ -96,12 +95,12 @@
 #include "nsITextContent.h"
 #include "prlog.h"
 #include "nsCOMPtr.h"
-#include "nsIStyleSet.h"
 #include "nsStyleUtil.h"
 #include "nsQuickSort.h"
 #include "nsContentUtils.h"
 #include "nsIJSContextStack.h"
 #include "nsIScriptSecurityManager.h"
+#include "nsAttrValue.h"
 
 struct RuleValue {
   /**
@@ -345,7 +344,7 @@ public:
   ~RuleHash();
   void PrependRule(RuleValue *aRuleInfo);
   void EnumerateAllRules(PRInt32 aNameSpace, nsIAtom* aTag, nsIAtom* aID,
-                         const nsVoidArray& aClassList,
+                         const nsAttrValue* aClassList,
                          RuleEnumFunc aFunc, void* aData);
   void EnumerateTagRules(nsIAtom* aTag,
                          RuleEnumFunc aFunc, void* aData);
@@ -533,10 +532,11 @@ void RuleHash::PrependRule(RuleValue *aRuleInfo)
 #endif
 
 void RuleHash::EnumerateAllRules(PRInt32 aNameSpace, nsIAtom* aTag,
-                                 nsIAtom* aID, const nsVoidArray& aClassList,
+                                 nsIAtom* aID, const nsAttrValue* aClassList,
                                  RuleEnumFunc aFunc, void* aData)
 {
-  PRInt32 classCount = aClassList.Count();
+  PRInt32 classCount = aClassList ? aClassList->GetAtomCount() : 0;
+
   // assume 1 universal, tag, id, and namespace, rather than wasting
   // time counting
   PRInt32 testCount = classCount + 4;
@@ -588,9 +588,9 @@ void RuleHash::EnumerateAllRules(PRInt32 aNameSpace, nsIAtom* aTag,
   }
   { // extra scope to work around compiler bugs with |for| scoping.
     for (PRInt32 index = 0; index < classCount; ++index) {
-      nsIAtom* classAtom = (nsIAtom*)aClassList.ElementAt(index);
       RuleHashTableEntry *entry = NS_STATIC_CAST(RuleHashTableEntry*,
-          PL_DHashTableOperate(&mClassTable, classAtom, PL_DHASH_LOOKUP));
+        PL_DHashTableOperate(&mClassTable, aClassList->AtomAt(index),
+                             PL_DHASH_LOOKUP));
       if (PL_DHASH_ENTRY_IS_BUSY(entry)) {
         RuleValue *value = entry->mRules;
         mEnumList[valueCount++] = value;
@@ -744,11 +744,11 @@ public:
 
   NS_IMETHOD HasStateDependentStyle(StateRuleProcessorData* aData,
                                     nsIAtom* aMedium,
-                                    PRBool* aResult);
+                                    nsReStyleHint* aResult);
 
   NS_IMETHOD HasAttributeDependentStyle(AttributeRuleProcessorData* aData,
                                         nsIAtom* aMedium,
-                                        PRBool* aResult);
+                                        nsReStyleHint* aResult);
 
 protected:
   RuleCascadeData* GetRuleCascade(nsIPresContext* aPresContext, nsIAtom* aMedium);
@@ -1075,33 +1075,9 @@ DOMMediaListImpl::~DOMMediaListImpl()
 }
 
 nsresult
-NS_NewMediaList(nsIMediaList** aInstancePtrResult) {
-  return NS_NewMediaList(NS_LITERAL_STRING(""), aInstancePtrResult);
-}
-
-nsresult
-NS_NewMediaList(const nsAString& aMediaText, nsIMediaList** aInstancePtrResult) {
-  nsresult rv;
-  NS_ASSERTION(aInstancePtrResult, "Null out param.");
-
-  nsCOMPtr<nsISupportsArray> array;
-  rv = NS_NewISupportsArray(getter_AddRefs(array));
-  if (NS_FAILED(rv)) {
-    return NS_ERROR_OUT_OF_MEMORY;
-  }
-  DOMMediaListImpl* medialist = new DOMMediaListImpl(array, nsnull);
-  *aInstancePtrResult = medialist;
-  NS_ENSURE_TRUE(medialist, NS_ERROR_OUT_OF_MEMORY);
-  NS_ADDREF(*aInstancePtrResult);
-  rv = medialist->SetMediaText(aMediaText);
-  if (NS_FAILED(rv)) {
-    NS_RELEASE(*aInstancePtrResult);
-    *aInstancePtrResult = nsnull;
-  }
-  return rv;
-}
-
-nsresult NS_NewMediaList(nsISupportsArray* aArray, nsICSSStyleSheet* aSheet, nsIMediaList** aInstancePtrResult)
+NS_NewMediaList(nsISupportsArray* aArray,
+                nsICSSStyleSheet* aSheet,
+                nsIMediaList** aInstancePtrResult)
 {
   NS_ASSERTION(aInstancePtrResult, "Null out param.");
   DOMMediaListImpl* medialist = new DOMMediaListImpl(aArray, NS_STATIC_CAST(CSSStyleSheetImpl*, aSheet));
@@ -1138,6 +1114,8 @@ DOMMediaListImpl::GetText(nsAString& aMediaText)
   return NS_OK;
 }
 
+// XXXbz this is so ill-defined in the spec, it's not clear quite what
+// it should be doing....
 NS_IMETHODIMP
 DOMMediaListImpl::SetText(const nsAString& aMediaText)
 {
@@ -1897,16 +1875,7 @@ CSSStyleSheetImpl::GetApplicable(PRBool& aApplicable) const
 NS_IMETHODIMP
 CSSStyleSheetImpl::SetEnabled(PRBool aEnabled)
 {
-  PRBool oldDisabled = mDisabled;
-  mDisabled = !aEnabled;
-
-  if (mDocument && mInner && mInner->mComplete && oldDisabled != mDisabled) {
-    mDocument->BeginUpdate(UPDATE_STYLE);
-    mDocument->SetStyleSheetApplicableState(this, !mDisabled);
-    mDocument->EndUpdate(UPDATE_STYLE);
-  }
-
-  return NS_OK;
+  return CSSStyleSheetImpl::SetDisabled(!aEnabled);
 }
 
 NS_IMETHODIMP
@@ -2468,6 +2437,8 @@ CSSStyleSheetImpl::SetDisabled(PRBool aDisabled)
   mDisabled = aDisabled;
 
   if (mDocument && mInner && mInner->mComplete && oldDisabled != mDisabled) {
+    ClearRuleCascades();
+
     mDocument->BeginUpdate(UPDATE_STYLE);
     mDocument->SetStyleSheetApplicableState(this, !mDisabled);
     mDocument->EndUpdate(UPDATE_STYLE);
@@ -2638,13 +2609,15 @@ CSSStyleSheetImpl::InsertRule(const nsAString& aRule,
   if (aIndex > count)
     return NS_ERROR_DOM_INDEX_SIZE_ERR;
   
+  // Hold strong ref to the CSSLoader in case the document update
+  // kills the document
   nsCOMPtr<nsICSSLoader> loader;
-  nsCOMPtr<nsICSSParser> css;
-  nsCOMPtr<nsIHTMLContentContainer> htmlContainer(do_QueryInterface(mDocument));
-  if (htmlContainer) {
-    htmlContainer->GetCSSLoader(*getter_AddRefs(loader));
+  if (mDocument) {
+    loader = mDocument->GetCSSLoader();
+    NS_ASSERTION(loader, "Document with no CSS loader!");
   }
-  NS_ASSERTION(loader || !mDocument, "Document with no CSS loader!");
+  
+  nsCOMPtr<nsICSSParser> css;
   if (loader) {
     result = loader->GetParserFor(this, getter_AddRefs(css));
   }
@@ -2877,15 +2850,15 @@ CSSStyleSheetImpl::InsertRuleIntoGroup(const nsAString & aRule, nsICSSGroupRule*
     return NS_ERROR_INVALID_ARG;
   }
 
-  // get the css parser
+  // Hold strong ref to the CSSLoader in case the document update
+  // kills the document
   nsCOMPtr<nsICSSLoader> loader;
-  nsCOMPtr<nsICSSParser> css;
-  nsCOMPtr<nsIHTMLContentContainer> htmlContainer(do_QueryInterface(mDocument));
-  if (htmlContainer) {
-    htmlContainer->GetCSSLoader(*getter_AddRefs(loader));
+  if (mDocument) {
+    loader = mDocument->GetCSSLoader();
+    NS_ASSERTION(loader, "Document with no CSS loader!");
   }
-  NS_ASSERTION(loader || !mDocument, "Document with no CSS loader!");
 
+  nsCOMPtr<nsICSSParser> css;
   if (loader) {
     result = loader->GetParserFor(this, getter_AddRefs(css));
   }
@@ -3139,7 +3112,7 @@ RuleProcessorData::RuleProcessorData(nsIPresContext* aPresContext,
 
   // get the compat. mode (unless it is provided)
   if(!aCompat) {
-    mPresContext->GetCompatibilityMode(&mCompatMode);
+    mCompatMode = mPresContext->CompatibilityMode();
   } else {
     mCompatMode = *aCompat;
   }
@@ -3157,12 +3130,7 @@ RuleProcessorData::RuleProcessorData(nsIPresContext* aPresContext,
     mParentContent = aContent->GetParent();
 
     // get the event state
-    nsIEventStateManager* eventStateManager = nsnull;
-    mPresContext->GetEventStateManager(&eventStateManager);
-    if(eventStateManager) {
-      eventStateManager->GetContentState(aContent, mEventState);
-      NS_RELEASE(eventStateManager);
-    }
+    mPresContext->EventStateManager()->GetContentState(aContent, mEventState);
 
     // get the styledcontent interface and the ID
     if (NS_SUCCEEDED(aContent->QueryInterface(NS_GET_IID(nsIStyledContent), (void**)&mStyledContent))) {
@@ -3261,8 +3229,8 @@ static PRBool ValueIncludes(const nsString& aValueList, const nsString& aValue, 
 
   valueList.Append(kNullCh);  // put an extra null at the end
 
-  PRUnichar* value = (PRUnichar*)(const PRUnichar*)aValue.get();
-  PRUnichar* start = (PRUnichar*)(const PRUnichar*)valueList.get();
+  const PRUnichar* value = aValue.get();
+  PRUnichar* start = valueList.BeginWriting();
   PRUnichar* end   = start;
 
   while (kNullCh != *start) {
@@ -3423,8 +3391,13 @@ static PRBool AttrMatchesValue(const nsAttrSelector* aAttrSelector,
                                 nsCaseInsensitiveStringComparator());
       }
     case NS_ATTR_FUNC_CONTAINSMATCH:
-      return FindInReadable(aAttrSelector->mValue, aValue,
-                            nsCaseInsensitiveStringComparator());
+      if (isCaseSensitive) {
+        return FindInReadable(aAttrSelector->mValue, aValue);
+      }
+      else {
+        return FindInReadable(aAttrSelector->mValue, aValue,
+                              nsCaseInsensitiveStringComparator());
+      }
     default:
       NS_NOTREACHED("Shouldn't be ending up here");
       return PR_FALSE;
@@ -3801,6 +3774,12 @@ static PRBool SelectorMatches(RuleProcessorData &data,
   return result;
 }
 
+// Right now, there are four operators:
+//   PRUnichar(0), the descendent combinator, is greedy
+//   '~', the indirect adjacent sibling combinator, is greedy
+//   '+' and '>', the direct adjacent sibling and child combinators, are not
+#define NS_IS_GREEDY_OPERATOR(ch) (ch == PRUnichar(0) || ch == PRUnichar('~'))
+
 static PRBool SelectorMatchesTree(RuleProcessorData& aPrevData,
                                   nsCSSSelector* aSelector) 
 {
@@ -3814,7 +3793,8 @@ static PRBool SelectorMatchesTree(RuleProcessorData& aPrevData,
     // for adjacent sibling combinators, the content to test against the
     // selector is the previous sibling *element*
     RuleProcessorData* data;
-    if (PRUnichar('+') == selector->mOperator) {
+    if (PRUnichar('+') == selector->mOperator ||
+        PRUnichar('~') == selector->mOperator) {
       data = prevdata->mPreviousSiblingData;
       if (!data) {
         nsIContent* content = prevdata->mContent;
@@ -3917,13 +3897,17 @@ CSSRuleProcessor::RulesMatching(ElementRuleProcessorData *aData,
   RuleCascadeData* cascade = GetRuleCascade(aData->mPresContext, aMedium);
 
   if (cascade) {
-    nsAutoVoidArray classArray;
-
     nsIStyledContent* styledContent = aData->mStyledContent;
+    const nsAttrValue* classes = nsnull;
     if (styledContent)
-      styledContent->GetClasses(classArray);
-
-    cascade->mRuleHash.EnumerateAllRules(aData->mNameSpaceID, aData->mContentTag, aData->mContentID, classArray, ContentEnumFunc, aData);
+      classes = styledContent->GetClasses();
+    
+    cascade->mRuleHash.EnumerateAllRules(aData->mNameSpaceID,
+                                         aData->mContentTag,
+                                         aData->mContentID,
+                                         classes,
+                                         ContentEnumFunc,
+                                         aData);
   }
   return NS_OK;
 }
@@ -3990,23 +3974,41 @@ CSSRuleProcessor::RulesMatching(PseudoRuleProcessorData* aData,
   return NS_OK;
 }
 
+inline PRBool
+IsSiblingOperator(PRUnichar oper)
+{
+  return oper == PRUnichar('+') || oper == PRUnichar('~');
+}
+
+struct StateEnumData {
+  StateEnumData(StateRuleProcessorData *aData)
+    : data(aData), change(nsReStyleHint(0)) {}
+
+  StateRuleProcessorData *data;
+  nsReStyleHint change;
+};
 
 PR_STATIC_CALLBACK(PRBool) StateEnumFunc(void* aSelector, void* aData)
 {
-  StateRuleProcessorData* data =
-      NS_STATIC_CAST(StateRuleProcessorData*, aData);
+  StateEnumData *enumData = NS_STATIC_CAST(StateEnumData*, aData);
+  StateRuleProcessorData *data = enumData->data;
   nsCSSSelector* selector = NS_STATIC_CAST(nsCSSSelector*, aSelector);
 
-  // Return whether we want to halt the enumeration, which is the
-  // negation of whether we find a match (ignoring the event state mask).
-  return !( SelectorMatches(*data, selector, data->mStateMask, nsnull, 0) &&
-            SelectorMatchesTree(*data, selector->mNext) );
+  if (SelectorMatches(*data, selector, data->mStateMask, nsnull, 0) &&
+      SelectorMatchesTree(*data, selector->mNext)) {
+    if (IsSiblingOperator(selector->mOperator))
+      enumData->change = nsReStyleHint(enumData->change | eReStyle_LaterSiblings);
+    else
+      enumData->change = nsReStyleHint(enumData->change | eReStyle_Self);
+  }
+
+  return PR_TRUE;
 }
 
 NS_IMETHODIMP
 CSSRuleProcessor::HasStateDependentStyle(StateRuleProcessorData* aData,
                                          nsIAtom* aMedium,
-                                         PRBool* aResult)
+                                         nsReStyleHint* aResult)
 {
   NS_PRECONDITION(aData->mContent->IsContentOfType(nsIContent::eELEMENT),
                   "content must be element");
@@ -4021,34 +4023,48 @@ CSSRuleProcessor::HasStateDependentStyle(StateRuleProcessorData* aData,
   // "body > p:hover" will be in |cascade->mStateSelectors|).  Note that
   // |IsStateSelector| below determines which selectors are in
   // |cascade->mStateSelectors|.
-  // The enumeration function signals the presence of state by stopping
-  // the enumeration, which is reflected in the return value from
-  // |EnumerateForwards|.
-  *aResult = cascade &&
-             !cascade->mStateSelectors.EnumerateForwards(StateEnumFunc, aData);
-
+  StateEnumData data(aData);
+  if (cascade)
+    cascade->mStateSelectors.EnumerateForwards(StateEnumFunc, &data);
+  *aResult = data.change;
   return NS_OK;
 }
 
+struct AttributeEnumData {
+  AttributeEnumData(AttributeRuleProcessorData *aData)
+    : data(aData), change(nsReStyleHint(0)) {}
+
+  AttributeRuleProcessorData *data;
+  nsReStyleHint change;
+};
+
+
 PR_STATIC_CALLBACK(PRBool) AttributeEnumFunc(void* aSelector, void* aData)
 {
-  AttributeRuleProcessorData* data =
-      NS_STATIC_CAST(AttributeRuleProcessorData*, aData);
+  AttributeEnumData *enumData = NS_STATIC_CAST(AttributeEnumData*, aData);
+  AttributeRuleProcessorData *data = enumData->data;
   nsCSSSelector* selector = NS_STATIC_CAST(nsCSSSelector*, aSelector);
 
-  // Return whether we want to halt the enumeration, which is the
-  // negation of whether we find a match (ignoring the event state mask).
-  return !( SelectorMatches(*data, selector, 0, data->mAttribute, 0) &&
-            SelectorMatchesTree(*data, selector->mNext) );
+  if (SelectorMatches(*data, selector, 0, data->mAttribute, 0) &&
+      SelectorMatchesTree(*data, selector->mNext)) {
+    if (IsSiblingOperator(selector->mOperator))
+      enumData->change = nsReStyleHint(enumData->change | eReStyle_LaterSiblings);
+    else
+      enumData->change = nsReStyleHint(enumData->change | eReStyle_Self);
+  }
+
+  return PR_TRUE;
 }
 
 NS_IMETHODIMP
 CSSRuleProcessor::HasAttributeDependentStyle(AttributeRuleProcessorData* aData,
                                              nsIAtom* aMedium,
-                                             PRBool* aResult)
+                                             nsReStyleHint* aResult)
 {
   NS_PRECONDITION(aData->mContent->IsContentOfType(nsIContent::eELEMENT),
                   "content must be element");
+
+  AttributeEnumData data(aData);
 
   // Since we always have :-moz-any-link (and almost always have :link
   // and :visited rules from prefs), rather than hacking AddRule below
@@ -4058,8 +4074,7 @@ CSSRuleProcessor::HasAttributeDependentStyle(AttributeRuleProcessorData* aData,
       (aData->mContentTag == nsHTMLAtoms::a ||
        aData->mContentTag == nsHTMLAtoms::area ||
        aData->mContentTag == nsHTMLAtoms::link)) {
-    *aResult = PR_TRUE;
-    return NS_OK;
+    data.change = nsReStyleHint(data.change | eReStyle_Self);
   }
   // XXX What about XLinks?
 
@@ -4069,17 +4084,16 @@ CSSRuleProcessor::HasAttributeDependentStyle(AttributeRuleProcessorData* aData,
   // (see HasStateDependentStyle), except that instead of one big list
   // we have a hashtable with a per-attribute list.
 
-  *aResult = PR_FALSE;
   if (cascade) {
     AttributeSelectorEntry *entry = NS_STATIC_CAST(AttributeSelectorEntry*,
         PL_DHashTableOperate(&cascade->mAttributeSelectors, aData->mAttribute,
                              PL_DHASH_LOOKUP));
     if (PL_DHASH_ENTRY_IS_BUSY(entry)) {
-      *aResult =
-        !entry->mSelectors->EnumerateForwards(AttributeEnumFunc, aData);
+      entry->mSelectors->EnumerateForwards(AttributeEnumFunc, &data);
     }
   }
 
+  *aResult = data.change;
   return NS_OK;
 }
 
@@ -4318,11 +4332,8 @@ CSSRuleProcessor::GetRuleCascade(nsIPresContext* aPresContext, nsIAtom* aMedium)
   }
 
   if (mSheets) {
-    nsCompatibility quirkMode;
-    aPresContext->GetCompatibilityMode(&quirkMode);
-
     cascade = new RuleCascadeData(aMedium,
-                                  eCompatibility_NavQuirks == quirkMode);
+                                  eCompatibility_NavQuirks == aPresContext->CompatibilityMode());
     if (cascade) {
       CascadeEnumData data(aMedium, cascade->mRuleHash.Arena());
       mSheets->EnumerateForwards(CascadeSheetRulesInto, &data);

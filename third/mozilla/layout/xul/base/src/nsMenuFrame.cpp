@@ -258,17 +258,13 @@ nsMenuFrame::~nsMenuFrame()
 
 // The following methods are all overridden to ensure that the menupopup frame
 // is placed in the appropriate list.
-NS_IMETHODIMP
-nsMenuFrame::FirstChild(nsIPresContext* aPresContext,
-                        nsIAtom*        aListName,
-                        nsIFrame**      aFirstChild) const
+nsIFrame*
+nsMenuFrame::GetFirstChild(nsIAtom* aListName) const
 {
   if (nsLayoutAtoms::popupList == aListName) {
-    *aFirstChild = mPopupFrames.FirstChild();
-  } else {
-    nsBoxFrame::FirstChild(aPresContext, aListName, aFirstChild);
+    return mPopupFrames.FirstChild();
   }
-  return NS_OK;
+  return nsBoxFrame::GetFirstChild(aListName);
 }
 
 NS_IMETHODIMP
@@ -306,23 +302,17 @@ nsMenuFrame::SetInitialChildList(nsIPresContext* aPresContext,
   return rv;
 }
 
-NS_IMETHODIMP
-nsMenuFrame::GetAdditionalChildListName(PRInt32   aIndex,
-                                        nsIAtom** aListName) const
+nsIAtom*
+nsMenuFrame::GetAdditionalChildListName(PRInt32 aIndex) const
 {
-  NS_PRECONDITION(nsnull != aListName, "null OUT parameter pointer");
-
-  *aListName = nsnull;
-
   // don't expose the child frame list, it slows things down
 #if 0
   if (NS_MENU_POPUP_LIST_INDEX == aIndex) {
-    *aListName = nsLayoutAtoms::popupList;
-    NS_ADDREF(*aListName);
+    return nsLayoutAtoms::popupList;
   }
 #endif
 
-  return NS_OK;
+  return nsnull;
 }
 
 nsresult
@@ -812,9 +802,7 @@ nsMenuFrame::OpenMenuInternal(PRBool aActivateFlag)
       {
          menuPopup->MarkDirty(state);
 
-         nsCOMPtr<nsIPresShell> shell;
-         mPresContext->GetShell(getter_AddRefs(shell));
-         shell->FlushPendingNotifications(PR_FALSE);
+         mPresContext->PresShell()->FlushPendingNotifications(PR_FALSE);
       }
 
       nsRect curRect;
@@ -835,9 +823,7 @@ nsMenuFrame::OpenMenuInternal(PRBool aActivateFlag)
       if (curRect.height != rect.height || mLastPref.height != rect.height)
       {
          menuPopup->MarkDirty(state);
-         nsCOMPtr<nsIPresShell> shell;
-         mPresContext->GetShell(getter_AddRefs(shell));
-         shell->FlushPendingNotifications(PR_FALSE);
+         mPresContext->PresShell()->FlushPendingNotifications(PR_FALSE);
       }
 
       ActivateMenu(PR_TRUE);
@@ -889,10 +875,12 @@ nsMenuFrame::OpenMenuInternal(PRBool aActivateFlag)
       // XXX, bug 137033, In Windows, if mouse is outside the window when the menupopup closes, no
       // mouse_enter/mouse_exit event will be fired to clear current hover state, we should clear it manually.
       // This code may not the best solution, but we can leave it here untill we find the better approach.
-      nsCOMPtr<nsIEventStateManager> esm;
-      mPresContext->GetEventStateManager(getter_AddRefs(esm));
+
+      nsIEventStateManager *esm = mPresContext->EventStateManager();
+
       PRInt32 state;
       esm->GetContentState(menuPopup->GetContent(), state);
+
       if (state & NS_EVENT_STATE_HOVER)
         esm->SetContentState(nsnull, NS_EVENT_STATE_HOVER);
     }
@@ -1026,17 +1014,14 @@ nsMenuFrame::DoLayout(nsBoxLayoutState& aState)
 
       if (pref == nsIScrollableFrame::Auto)  
       {
-        // if our pref height
         if (bounds.height < prefSize.height) {
            // layout the child
            ibox->Layout(aState);
 
-           nscoord width;
-           nscoord height;
-           scrollframe->GetScrollbarSizes(aState.GetPresContext(), &width, &height);
-           if (bounds.width < prefSize.width + width)
+           nsMargin scrollbars = scrollframe->GetActualScrollbarSizes();
+           if (bounds.width < prefSize.width + scrollbars.left + scrollbars.right)
            {
-             bounds.width += width;
+             bounds.width += scrollbars.left + scrollbars.right;
              //printf("Width=%d\n",width);
              ibox->SetBounds(aState, bounds);
            }
@@ -1412,7 +1397,6 @@ nsMenuFrame::UpdateMenuSpecialState(nsIPresContext* aPresContext) {
    */
 
   /* walk siblings, looking for the other checked item with the same name */
-  nsIFrame *sib;
   nsIMenuFrame *sibMenu;
   nsMenuType sibType;
   nsAutoString sibGroup;
@@ -1421,8 +1405,8 @@ nsMenuFrame::UpdateMenuSpecialState(nsIPresContext* aPresContext) {
   // get the first sibling in this menu popup. This frame may be it, and if we're
   // being called at creation time, this frame isn't yet in the parent's child list.
   // All I'm saying is that this may fail, but it's most likely alright.
-  nsresult rv = GetParent()->FirstChild(aPresContext, NULL, &sib);
-  if ( NS_FAILED(rv) || !sib )
+  nsIFrame* sib = GetParent()->GetFirstChild(nsnull);
+  if ( !sib )
     return;
 
   // XXX - egcs 1.1.2 & gcc 2.95.x -Oy builds, where y > 1, 
@@ -1637,9 +1621,7 @@ nsMenuFrame::Execute(nsGUIEvent *aEvent)
 
 
   nsEventStatus status = nsEventStatus_eIgnore;
-  nsMouseEvent event;
-  event.eventStructType = NS_EVENT;
-  event.message = NS_XUL_COMMAND;
+  nsMouseEvent event(NS_XUL_COMMAND);
   if (aEvent && (aEvent->eventStructType == NS_MOUSE_EVENT ||
                  aEvent->eventStructType == NS_KEY_EVENT ||
                  aEvent->eventStructType == NS_ACCESSIBLE_EVENT)) {
@@ -1648,24 +1630,19 @@ nsMenuFrame::Execute(nsGUIEvent *aEvent)
     event.isControl = NS_STATIC_CAST(nsInputEvent *, aEvent)->isControl;
     event.isAlt = NS_STATIC_CAST(nsInputEvent *, aEvent)->isAlt;
     event.isMeta = NS_STATIC_CAST(nsInputEvent *, aEvent)->isMeta;
-  } else {
-    event.isShift = PR_FALSE;
-    event.isControl = PR_FALSE;
-    event.isAlt = PR_FALSE;
-    event.isMeta = PR_FALSE;
   }
-  event.clickCount = 0;
-  event.widget = nsnull;
+
   // The order of the nsIViewManager and nsIPresShell COM pointers is
   // important below.  We want the pres shell to get released before the
   // associated view manager on exit from this function.
   // See bug 54233.
   nsCOMPtr<nsIViewManager> kungFuDeathGrip = mPresContext->GetViewManager();
-  nsCOMPtr<nsIPresShell> shell;
-  nsresult result = mPresContext->GetShell(getter_AddRefs(shell));
+  // keep a reference so we can safely use this after dispatching the DOM event
+  nsCOMPtr<nsIPresShell> shell = mPresContext->GetPresShell();
   nsIFrame* me = this;
-  if (NS_SUCCEEDED(result) && shell) {
+  if (shell) {
     shell->HandleDOMEventWithTarget(mContent, &event, &status);
+    // shell may no longer be alive, don't use it here unless you keep a ref
   }
 
   // XXX HACK. Just gracefully exit if the node has been removed, e.g., window.close()
@@ -1689,29 +1666,22 @@ PRBool
 nsMenuFrame::OnCreate()
 {
   nsEventStatus status = nsEventStatus_eIgnore;
-  nsMouseEvent event;
-  event.eventStructType = NS_EVENT;
-  event.message = NS_XUL_POPUP_SHOWING;
-  event.isShift = PR_FALSE;
-  event.isControl = PR_FALSE;
-  event.isAlt = PR_FALSE;
-  event.isMeta = PR_FALSE;
-  event.clickCount = 0;
-  event.widget = nsnull;
+  nsMouseEvent event(NS_XUL_POPUP_SHOWING);
   
   nsCOMPtr<nsIContent> child;
   GetMenuChildrenElement(getter_AddRefs(child));
   
-  nsresult rv;
-  nsCOMPtr<nsIPresShell> shell;
-  rv = mPresContext->GetShell(getter_AddRefs(shell));
-  if (NS_SUCCEEDED(rv) && shell) {
+  nsresult rv = NS_OK;
+
+  nsIPresShell *shell = mPresContext->GetPresShell();
+  if (shell) {
     if (child) {
       rv = shell->HandleDOMEventWithTarget(child, &event, &status);
     }
     else {
       rv = shell->HandleDOMEventWithTarget(mContent, &event, &status);
     }
+    // shell may no longer be alive, don't use it here unless you keep a ref
   }
 
   if ( NS_FAILED(rv) || status == nsEventStatus_eConsumeNoDefault )
@@ -1785,29 +1755,21 @@ PRBool
 nsMenuFrame::OnCreated()
 {
   nsEventStatus status = nsEventStatus_eIgnore;
-  nsMouseEvent event;
-  event.eventStructType = NS_EVENT;
-  event.message = NS_XUL_POPUP_SHOWN;
-  event.isShift = PR_FALSE;
-  event.isControl = PR_FALSE;
-  event.isAlt = PR_FALSE;
-  event.isMeta = PR_FALSE;
-  event.clickCount = 0;
-  event.widget = nsnull;
+  nsMouseEvent event(NS_XUL_POPUP_SHOWN);
   
   nsCOMPtr<nsIContent> child;
   GetMenuChildrenElement(getter_AddRefs(child));
   
-  nsresult rv;
-  nsCOMPtr<nsIPresShell> shell;
-  rv = mPresContext->GetShell(getter_AddRefs(shell));
-  if (NS_SUCCEEDED(rv) && shell) {
+  nsresult rv = NS_OK;
+  nsIPresShell *shell = mPresContext->GetPresShell();
+  if (shell) {
     if (child) {
       rv = shell->HandleDOMEventWithTarget(child, &event, &status);
     }
     else {
       rv = shell->HandleDOMEventWithTarget(mContent, &event, &status);
     }
+    // shell may no longer be alive, don't use it here unless you keep a ref
   }
 
   if ( NS_FAILED(rv) || status == nsEventStatus_eConsumeNoDefault )
@@ -1819,29 +1781,21 @@ PRBool
 nsMenuFrame::OnDestroy()
 {
   nsEventStatus status = nsEventStatus_eIgnore;
-  nsMouseEvent event;
-  event.eventStructType = NS_EVENT;
-  event.message = NS_XUL_POPUP_HIDING;
-  event.isShift = PR_FALSE;
-  event.isControl = PR_FALSE;
-  event.isAlt = PR_FALSE;
-  event.isMeta = PR_FALSE;
-  event.clickCount = 0;
-  event.widget = nsnull;
+  nsMouseEvent event(NS_XUL_POPUP_HIDING);
   
   nsCOMPtr<nsIContent> child;
   GetMenuChildrenElement(getter_AddRefs(child));
   
-  nsresult rv;
-  nsCOMPtr<nsIPresShell> shell;
-  rv = mPresContext->GetShell(getter_AddRefs(shell));
-  if (NS_SUCCEEDED(rv) && shell) {
+  nsresult rv = NS_OK;
+  nsIPresShell *shell = mPresContext->GetPresShell();
+  if (shell) {
     if (child) {
       rv = shell->HandleDOMEventWithTarget(child, &event, &status);
     }
     else {
       rv = shell->HandleDOMEventWithTarget(mContent, &event, &status);
     }
+    // shell may no longer be alive, don't use it here unless you keep a ref
   }
 
   if ( NS_FAILED(rv) || status == nsEventStatus_eConsumeNoDefault )
@@ -1853,29 +1807,21 @@ PRBool
 nsMenuFrame::OnDestroyed()
 {
   nsEventStatus status = nsEventStatus_eIgnore;
-  nsMouseEvent event;
-  event.eventStructType = NS_EVENT;
-  event.message = NS_XUL_POPUP_HIDDEN;
-  event.isShift = PR_FALSE;
-  event.isControl = PR_FALSE;
-  event.isAlt = PR_FALSE;
-  event.isMeta = PR_FALSE;
-  event.clickCount = 0;
-  event.widget = nsnull;
+  nsMouseEvent event(NS_XUL_POPUP_HIDDEN);
   
   nsCOMPtr<nsIContent> child;
   GetMenuChildrenElement(getter_AddRefs(child));
   
-  nsresult rv;
-  nsCOMPtr<nsIPresShell> shell;
-  rv = mPresContext->GetShell(getter_AddRefs(shell));
-  if (NS_SUCCEEDED(rv) && shell) {
+  nsresult rv = NS_OK;
+  nsIPresShell *shell = mPresContext->GetPresShell();
+  if (shell) {
     if (child) {
       rv = shell->HandleDOMEventWithTarget(child, &event, &status);
     }
     else {
       rv = shell->HandleDOMEventWithTarget(mContent, &event, &status);
     }
+    // shell may no longer be alive, don't use it here unless you keep a ref
   }
 
   if ( NS_FAILED(rv) || status == nsEventStatus_eConsumeNoDefault )
@@ -2063,10 +2009,8 @@ nsMenuFrame::SetActiveChild(nsIDOMElement* aChild)
 
   nsCOMPtr<nsIContent> child(do_QueryInterface(aChild));
   
-  nsCOMPtr<nsIPresShell> shell;
-  mPresContext->GetShell(getter_AddRefs(shell));
   nsIFrame* kid;
-  shell->GetPrimaryFrameFor(child, &kid);
+  mPresContext->PresShell()->GetPrimaryFrameFor(child, &kid);
   if (!kid)
     return NS_ERROR_FAILURE;
   nsCOMPtr<nsIMenuFrame> menuFrame(do_QueryInterface(kid));
@@ -2084,8 +2028,7 @@ nsMenuFrame::GetScrollableView(nsIPresContext* aPresContext, nsIScrollableView**
     return NS_OK;
 
   nsMenuPopupFrame* popup = (nsMenuPopupFrame*) mPopupFrames.FirstChild();
-  nsIFrame* childFrame = nsnull;
-  popup->FirstChild(mPresContext, nsnull, &childFrame);
+  nsIFrame* childFrame = popup->GetFirstChild(nsnull);
   if (childFrame) {
     *aView = popup->GetScrollableView(childFrame);
     (*aView)->SetLineHeight(childFrame->GetSize().height);

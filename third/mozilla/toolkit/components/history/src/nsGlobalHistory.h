@@ -41,7 +41,6 @@
 #ifndef nsglobalhistory__h____
 #define nsglobalhistory__h____
 
-#include "nsIGlobalHistory.h"
 #include "nsIBrowserHistory.h"
 
 #include "mdb.h"
@@ -56,8 +55,7 @@
 #include "nsVoidArray.h"
 #include "nsHashtable.h"
 #include "nsCOMPtr.h"
-#include "nsAString.h"
-#include "nsSharableString.h"
+#include "nsString.h"
 #include "nsITimer.h"
 #include "nsIAutoCompleteSearch.h"
 #include "nsIAutoCompleteResult.h"
@@ -129,7 +127,6 @@ struct AutocompleteExclude {
 };
 
 class nsGlobalHistory : nsSupportsWeakReference,
-                        public nsIGlobalHistory,
                         public nsIBrowserHistory,
                         public nsIObserver,
                         public nsIRDFDataSource,
@@ -140,7 +137,7 @@ public:
   // nsISupports methods 
   NS_DECL_ISUPPORTS
 
-  NS_DECL_NSIGLOBALHISTORY
+  NS_DECL_NSIGLOBALHISTORY2
   NS_DECL_NSIBROWSERHISTORY
   NS_DECL_NSIOBSERVER
   NS_DECL_NSIRDFDATASOURCE
@@ -222,7 +219,7 @@ protected:
                               nsIAutoCompleteMdbResult** aResult);
   void AutoCompleteCutPrefix(nsAString& aURL, AutocompleteExclude* aExclude);
   void AutoCompleteGetExcludeInfo(const nsAString& aURL, AutocompleteExclude* aExclude);
-  nsSharableString AutoCompletePrefilter(const nsAString& aSearchString);
+  nsString AutoCompletePrefilter(const nsAString& aSearchString);
   PRBool AutoCompleteCompare(nsAString& aHistoryURL, 
                              const nsAString& aUserURL,
                              AutocompleteExclude* aExclude);
@@ -304,8 +301,8 @@ protected:
   //
   // AddPage-oriented stuff
   //
-  nsresult AddPageToDatabase(const char *aURL,
-                             PRInt64 aDate);
+  nsresult AddPageToDatabase(nsIURI* aURI, PRBool aRedirect, PRBool aTopLevel,
+                             PRInt64 aLastVisitDate);
   nsresult AddExistingPageToDatabase(nsIMdbRow *row,
                                      PRInt64 aDate,
                                      PRInt64 *aOldDate,

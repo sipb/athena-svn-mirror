@@ -39,7 +39,7 @@
 #include "nsReadableUtils.h"
 #include "nsComboboxControlFrame.h"
 #include "nsIDOMEventReceiver.h"
-#include "nsIFrameManager.h"
+#include "nsFrameManager.h"
 #include "nsFormControlFrame.h"
 #include "nsIHTMLContent.h"
 #include "nsHTMLAtoms.h"
@@ -84,6 +84,7 @@
 #include "nsIDOMNode.h"
 #include "nsGUIEvent.h"
 #include "nsAutoPtr.h"
+#include "nsStyleSet.h"
 
 static NS_DEFINE_CID(kTextNodeCID,   NS_TEXTNODE_CID);
 static NS_DEFINE_CID(kHTMLElementFactoryCID,   NS_HTML_ELEMENT_FACTORY_CID);
@@ -529,11 +530,12 @@ nsComboboxControlFrame::SetFocus(PRBool aOn, PRBool aRepaint)
   // This is needed on a temporary basis. It causes the focus
   // rect to be drawn. This is much faster than ReResolvingStyle
   // Bug 32920
-  Invalidate(mPresContext, nsRect(0,0,mRect.width,mRect.height), PR_TRUE);
+  Invalidate(nsRect(0,0,mRect.width,mRect.height), PR_TRUE);
 
   // Make sure the content area gets updated for where the dropdown was
   // This is only needed for embedding, the focus may go to 
   // the chrome that is not part of the Gecko system (Bug 83493)
+  // XXX this is rather inefficient
   nsIViewManager* vm = GetPresContext()->GetViewManager();
   if (vm) {
     vm->UpdateAllViews(NS_VMREFRESH_NO_SYNC);
@@ -544,8 +546,7 @@ void
 nsComboboxControlFrame::ScrollIntoView(nsIPresContext* aPresContext)
 {
   if (aPresContext) {
-    nsCOMPtr<nsIPresShell> presShell;
-    aPresContext->GetShell(getter_AddRefs(presShell));
+    nsIPresShell *presShell = aPresContext->GetPresShell();
     if (presShell) {
       presShell->ScrollFrameIntoView(this,
                    NS_PRESSHELL_SCROLL_IF_NOT_VISIBLE,NS_PRESSHELL_SCROLL_IF_NOT_VISIBLE);
@@ -577,20 +578,11 @@ nsComboboxControlFrame::ShowPopup(PRBool aShowPopup)
 
   // fire a popup dom event
   nsEventStatus status = nsEventStatus_eIgnore;
-  nsMouseEvent event;
-  event.eventStructType = NS_EVENT;
-  event.message = aShowPopup ? NS_XUL_POPUP_SHOWING : NS_XUL_POPUP_HIDING;
-  event.isShift = PR_FALSE;
-  event.isControl = PR_FALSE;
-  event.isAlt = PR_FALSE;
-  event.isMeta = PR_FALSE;
-  event.clickCount = 0;
-  event.widget = nsnull;
+  nsMouseEvent event(aShowPopup ? NS_XUL_POPUP_SHOWING : NS_XUL_POPUP_HIDING);
 
-  nsCOMPtr<nsIPresShell> shell;
-  nsresult rv = mPresContext->GetShell(getter_AddRefs(shell));
-  if (NS_SUCCEEDED(rv) && shell) 
-    rv = shell->HandleDOMEventWithTarget(mContent, &event, &status);
+  nsIPresShell *shell = mPresContext->GetPresShell();
+  if (shell) 
+    shell->HandleDOMEventWithTarget(mContent, &event, &status);
 }
 
 // Show the dropdown list
@@ -624,9 +616,7 @@ nsComboboxControlFrame::ShowList(nsIPresContext* aPresContext, PRBool aShowList)
     mDroppedDown = PR_FALSE;
   }
 
-  nsCOMPtr<nsIPresShell> presShell;
-  aPresContext->GetShell(getter_AddRefs(presShell));
-  presShell->FlushPendingNotifications(PR_FALSE);
+  aPresContext->PresShell()->FlushPendingNotifications(PR_FALSE);
 
   if (widget)
     widget->CaptureRollupEvents((nsIRollupListener *)this, mDroppedDown, aShowList);
@@ -696,14 +686,12 @@ nsComboboxControlFrame::SetChildFrameSize(nsIFrame* aFrame, nscoord aWidth, nsco
 nsresult 
 nsComboboxControlFrame::GetPrimaryComboFrame(nsIPresContext* aPresContext, nsIContent* aContent, nsIFrame** aFrame)
 {
-  nsresult rv = NS_OK;
    // Get the primary frame from the presentation shell.
-  nsCOMPtr<nsIPresShell> presShell;
-  rv = aPresContext->GetShell(getter_AddRefs(presShell));
-  if (NS_SUCCEEDED(rv) && presShell) {
+  nsIPresShell *presShell = aPresContext->GetPresShell();
+  if (presShell) {
     presShell->GetPrimaryFrameFor(aContent, aFrame);
   }
-  return rv;
+  return NS_OK;
 }
 
 nsresult 
@@ -734,7 +722,7 @@ nsComboboxControlFrame::PositionDropdown(nsIPresContext* aPresContext,
   if (NS_SUCCEEDED(nsFormControlFrame::GetScreenHeight(aPresContext, screenHeightInPixels))) {
      // Get the height of the dropdown list in pixels.
      float t2p;
-     aPresContext->GetTwipsToPixels(&t2p);
+     t2p = aPresContext->TwipsToPixels();
      nscoord absoluteDropDownHeight = NSTwipsToIntPixels(dropdownRect.height, t2p);
     
       // Check to see if the drop-down list will go offscreen
@@ -818,11 +806,8 @@ nsComboboxControlFrame::ReflowItems(nsIPresContext* aPresContext,
 {
   //printf("*****************\n");
   const nsStyleFont* dspFont = mDisplayFrame->GetStyleFont();
-  nsCOMPtr<nsIDeviceContext> deviceContext;
-  aPresContext->GetDeviceContext(getter_AddRefs(deviceContext));
-  NS_ASSERTION(deviceContext, "Couldn't get the device context"); 
   nsIFontMetrics * fontMet;
-  deviceContext->GetMetricsFor(dspFont->mFont, fontMet);
+  aPresContext->DeviceContext()->GetMetricsFor(dspFont->mFont, fontMet);
 
   nscoord visibleHeight;
   //nsCOMPtr<nsIFontMetrics> fontMet;
@@ -1255,15 +1240,10 @@ nsComboboxControlFrame::Reflow(nsIPresContext*          aPresContext,
   // the default size of the of scrollbar
   // that will be the default width of the dropdown button
   // the height will be the height of the text
-  nscoord scrollbarWidth = 0;
-  nsCOMPtr<nsIDeviceContext> dx;
-  aPresContext->GetDeviceContext(getter_AddRefs(dx));
-  if (dx) { 
-    float w, h;
-    // Get the width in Device pixels times p2t
-    dx->GetScrollBarDimensions(w, h);
-    scrollbarWidth = NSToCoordRound(w);
-  }
+  float w, h;
+  // Get the width in Device pixels times p2t
+  aPresContext->DeviceContext()->GetScrollBarDimensions(w, h);
+  nscoord scrollbarWidth = NSToCoordRound(w);
   
   // set up a new reflow state for use throughout
   nsHTMLReflowState firstPassState(aReflowState);
@@ -1370,8 +1350,7 @@ nsComboboxControlFrame::Reflow(nsIPresContext*          aPresContext,
       } else {
         nsIFrame * plainLstFrame;
         if (NS_SUCCEEDED(mListControlFrame->QueryInterface(NS_GET_IID(nsIFrame), (void**)&plainLstFrame))) {
-          nsIFrame * frame;
-          plainLstFrame->FirstChild(aPresContext, nsnull, &frame);
+          nsIFrame * frame = plainLstFrame->GetFirstChild(nsnull);
           nsIScrollableFrame * scrollFrame;
           if (NS_SUCCEEDED(frame->QueryInterface(NS_GET_IID(nsIScrollableFrame), (void**)&scrollFrame))) {
             plainLstFrame->Reflow(aPresContext, aDesiredSize, aReflowState, aStatus);
@@ -1717,17 +1696,8 @@ nsComboboxControlFrame::ShowDropDown(PRBool aDoDropDown)
   }
 
   if (!mDroppedDown && aDoDropDown) {
-    // XXX Temporary for Bug 19416
-    nsIView* lstView = mDropdownFrame->GetView();
-    if (lstView) {
-      lstView->IgnoreSetPosition(PR_FALSE);
-    }
     if (mListControlFrame) {
       mListControlFrame->SyncViewWithFrame(mPresContext);
-    }
-    // XXX Temporary for Bug 19416
-    if (lstView) {
-      lstView->IgnoreSetPosition(PR_TRUE);
     }
     ToggleList(mPresContext);
     return NS_OK;
@@ -1841,13 +1811,9 @@ nsComboboxControlFrame::RedisplayText(PRInt32 aIndex)
       rv = ActuallyDisplayText(textToDisplay, PR_TRUE);
       //mTextFrame->AddStateBits(NS_FRAME_IS_DIRTY);
       mDisplayFrame->AddStateBits(NS_FRAME_IS_DIRTY);
-      nsCOMPtr<nsIPresShell> shell;
-      rv = mPresContext->GetShell(getter_AddRefs(shell));
-      ReflowDirtyChild(shell, (nsIFrame*) mDisplayFrame);
+      ReflowDirtyChild(mPresContext->PresShell(), mDisplayFrame);
 
-//      nsCOMPtr<nsIPresShell> presShell;
-//      mPresContext->GetShell(getter_AddRefs(presShell));
-//      presShell->FlushPendingNotifications(PR_FALSE);
+//      mPresContext->PresShell()->FlushPendingNotifications(PR_FALSE);
     }
   }
   return rv;
@@ -1978,9 +1944,7 @@ nsComboboxControlFrame::HandleEvent(nsIPresContext* aPresContext,
 {
   NS_ENSURE_ARG_POINTER(aEventStatus);
   // temp fix until Bug 124990 gets fixed
-  PRBool isPaginated = PR_FALSE;
-  aPresContext->IsPaginated(&isPaginated);
-  if (isPaginated && NS_IS_MOUSE_EVENT(aEvent)) {
+  if (aPresContext->IsPaginated() && NS_IS_MOUSE_EVENT(aEvent)) {
     return NS_OK;
   }
 
@@ -2049,17 +2013,18 @@ nsComboboxControlFrame::CreateDisplayFrame(nsIPresContext* aPresContext)
     return NS_OK;
   }
 
-  nsCOMPtr<nsIPresShell> shell;
-  aPresContext->GetShell(getter_AddRefs(shell));
+  nsIPresShell *shell = aPresContext->PresShell();
+  nsStyleSet *styleSet = shell->StyleSet();
+
   nsresult rv = NS_NewBlockFrame(shell, (nsIFrame**)&mDisplayFrame, NS_BLOCK_SPACE_MGR);
   if (NS_FAILED(rv)) { return rv; }
   if (!mDisplayFrame) { return NS_ERROR_NULL_POINTER; }
 
   // create the style context for the anonymous frame
   nsRefPtr<nsStyleContext> styleContext;
-  styleContext = aPresContext->ResolvePseudoStyleContextFor(mContent, 
-                                                  nsCSSAnonBoxes::mozDisplayComboboxControlFrame,
-                                                  mStyleContext);
+  styleContext = styleSet->ResolvePseudoStyleFor(mContent, 
+                                                 nsCSSAnonBoxes::mozDisplayComboboxControlFrame,
+                                                 mStyleContext);
   if (!styleContext) { return NS_ERROR_NULL_POINTER; }
 
   // create a text frame and put it inside the block frame
@@ -2067,20 +2032,13 @@ nsComboboxControlFrame::CreateDisplayFrame(nsIPresContext* aPresContext)
   if (NS_FAILED(rv)) { return rv; }
   if (!mTextFrame) { return NS_ERROR_NULL_POINTER; }
   nsRefPtr<nsStyleContext> textStyleContext;
-  textStyleContext = aPresContext->ResolveStyleContextForNonElement(styleContext);
+  textStyleContext = styleSet->ResolveStyleForNonElement(styleContext);
   if (!textStyleContext) { return NS_ERROR_NULL_POINTER; }
   nsCOMPtr<nsIContent> content(do_QueryInterface(mDisplayContent));
   mTextFrame->Init(aPresContext, content, mDisplayFrame, textStyleContext, nsnull);
   mTextFrame->SetInitialChildList(aPresContext, nsnull, nsnull);
-  nsCOMPtr<nsIPresShell> presShell;
-  rv = aPresContext->GetShell(getter_AddRefs(presShell));
-  if (NS_FAILED(rv)) { return rv; }
-  if (!presShell) { return NS_ERROR_NULL_POINTER; }
-  nsCOMPtr<nsIFrameManager> frameManager;
-  rv = presShell->GetFrameManager(getter_AddRefs(frameManager));
-  if (NS_FAILED(rv)) { return rv; }
-  if (!frameManager) { return NS_ERROR_NULL_POINTER; }
-  frameManager->SetPrimaryFrameFor(content, mTextFrame);
+
+  aPresContext->FrameManager()->SetPrimaryFrameFor(content, mTextFrame);
 
   rv = mDisplayFrame->Init(aPresContext, mContent, this, styleContext, nsnull);
   if (NS_FAILED(rv)) { return rv; }
@@ -2180,8 +2138,8 @@ nsComboboxControlFrame::CreateFrameFor(nsIPresContext*   aPresContext,
   nsCOMPtr<nsIContent> content(do_QueryInterface(mDisplayContent));
   if (aContent == content.get()) {
     // Get PresShell
-    nsCOMPtr<nsIPresShell> shell;
-    aPresContext->GetShell(getter_AddRefs(shell));
+    nsIPresShell *shell = aPresContext->PresShell();
+    nsStyleSet *styleSet = shell->StyleSet();
 
     // Start by by creating a containing frame
     nsresult rv = NS_NewBlockFrame(shell, (nsIFrame**)&mDisplayFrame, NS_BLOCK_SPACE_MGR);
@@ -2190,9 +2148,9 @@ nsComboboxControlFrame::CreateFrameFor(nsIPresContext*   aPresContext,
 
     // create the style context for the anonymous block frame
     nsRefPtr<nsStyleContext> styleContext;
-    styleContext = aPresContext->ResolvePseudoStyleContextFor(mContent, 
-                                                    nsCSSAnonBoxes::mozDisplayComboboxControlFrame,
-                                                    mStyleContext);
+    styleContext = styleSet->ResolvePseudoStyleFor(mContent, 
+                                                   nsCSSAnonBoxes::mozDisplayComboboxControlFrame,
+                                                   mStyleContext);
     if (!styleContext) { return NS_ERROR_NULL_POINTER; }
 
     // Create a text frame and put it inside the block frame
@@ -2200,7 +2158,7 @@ nsComboboxControlFrame::CreateFrameFor(nsIPresContext*   aPresContext,
     if (NS_FAILED(rv)) { return rv; }
     if (!mTextFrame)   { return NS_ERROR_NULL_POINTER; }
     nsRefPtr<nsStyleContext> textStyleContext;
-    textStyleContext = aPresContext->ResolveStyleContextForNonElement(styleContext);
+    textStyleContext = styleSet->ResolveStyleForNonElement(styleContext);
     if (!textStyleContext) { return NS_ERROR_NULL_POINTER; }
 
     // initialize the text frame
@@ -2271,17 +2229,13 @@ nsComboboxControlFrame::Destroy(nsIPresContext* aPresContext)
 }
 
 
-NS_IMETHODIMP
-nsComboboxControlFrame::FirstChild(nsIPresContext* aPresContext,
-                                   nsIAtom*        aListName,
-                                   nsIFrame**      aFirstChild) const
+nsIFrame*
+nsComboboxControlFrame::GetFirstChild(nsIAtom* aListName) const
 {
   if (nsLayoutAtoms::popupList == aListName) {
-    *aFirstChild = mPopupFrames.FirstChild();
-  } else {
-    nsAreaFrame::FirstChild(aPresContext, aListName, aFirstChild);
+    return mPopupFrames.FirstChild();
   }
-  return NS_OK;
+  return nsAreaFrame::GetFirstChild(aListName);
 }
 
 NS_IMETHODIMP
@@ -2312,25 +2266,21 @@ nsComboboxControlFrame::SetInitialChildList(nsIPresContext* aPresContext,
   return rv;
 }
 
-NS_IMETHODIMP
-nsComboboxControlFrame::GetAdditionalChildListName(PRInt32   aIndex,
-                                         nsIAtom** aListName) const
+nsIAtom*
+nsComboboxControlFrame::GetAdditionalChildListName(PRInt32 aIndex) const
 {
    // Maintain a separate child list for the dropdown list (i.e. popup listbox)
    // This is necessary because we don't want the listbox to be included in the layout
    // of the combox's children because it would take up space, when it is suppose to
    // be floating above the display.
-  NS_PRECONDITION(nsnull != aListName, "null OUT parameter pointer");
   if (aIndex <= NS_BLOCK_FRAME_ABSOLUTE_LIST_INDEX) {
-    return nsAreaFrame::GetAdditionalChildListName(aIndex, aListName);
+    return nsAreaFrame::GetAdditionalChildListName(aIndex);
   }
   
-  *aListName = nsnull;
   if (NS_COMBO_FRAME_POPUP_LIST_INDEX == aIndex) {
-    *aListName = nsLayoutAtoms::popupList;
-    NS_ADDREF(*aListName);
+    return nsLayoutAtoms::popupList;
   }
-  return NS_OK;
+  return nsnull;
 }
 
 PRIntn
@@ -2426,33 +2376,28 @@ nsComboboxControlFrame::Paint(nsIPresContext*     aPresContext,
       // XXX This is only temporary
       // Only paint the focus if we're visible
       if (GetStyleVisibility()->IsVisible()) {
-        nsCOMPtr<nsIEventStateManager> stateManager;
-        nsresult rv = mPresContext->GetEventStateManager(getter_AddRefs(stateManager));
-        if (NS_SUCCEEDED(rv)) {
-          if (!nsFormControlHelper::GetDisabled(mContent) && mFocused == this) {
-            aRenderingContext.SetLineStyle(nsLineStyle_kDotted);
-            aRenderingContext.SetColor(0);
-          } else {
-            aRenderingContext.SetColor(GetStyleBackground()->mBackgroundColor);
-            aRenderingContext.SetLineStyle(nsLineStyle_kSolid);
-          }
-          //aRenderingContext.DrawRect(clipRect);
-          float p2t;
-          aPresContext->GetPixelsToTwips(&p2t);
-          nscoord onePixel = NSIntPixelsToTwips(1, p2t);
-          clipRect.width -= onePixel;
-          clipRect.height -= onePixel;
-          aRenderingContext.DrawLine(clipRect.x, clipRect.y, 
-                                     clipRect.x+clipRect.width, clipRect.y);
-          aRenderingContext.DrawLine(clipRect.x+clipRect.width, clipRect.y, 
-                                     clipRect.x+clipRect.width, clipRect.y+clipRect.height);
-          aRenderingContext.DrawLine(clipRect.x+clipRect.width, clipRect.y+clipRect.height, 
-                                     clipRect.x, clipRect.y+clipRect.height);
-          aRenderingContext.DrawLine(clipRect.x, clipRect.y+clipRect.height, 
-                                     clipRect.x, clipRect.y);
-          aRenderingContext.DrawLine(clipRect.x, clipRect.y+clipRect.height, 
-                                     clipRect.x, clipRect.y);
+        if (!nsFormControlHelper::GetDisabled(mContent) && mFocused == this) {
+          aRenderingContext.SetLineStyle(nsLineStyle_kDotted);
+          aRenderingContext.SetColor(0);
+        } else {
+          aRenderingContext.SetColor(GetStyleBackground()->mBackgroundColor);
+          aRenderingContext.SetLineStyle(nsLineStyle_kSolid);
         }
+        //aRenderingContext.DrawRect(clipRect);
+        float p2t = aPresContext->PixelsToTwips();
+        nscoord onePixel = NSIntPixelsToTwips(1, p2t);
+        clipRect.width -= onePixel;
+        clipRect.height -= onePixel;
+        aRenderingContext.DrawLine(clipRect.x, clipRect.y, 
+                                   clipRect.x+clipRect.width, clipRect.y);
+        aRenderingContext.DrawLine(clipRect.x+clipRect.width, clipRect.y, 
+                                   clipRect.x+clipRect.width, clipRect.y+clipRect.height);
+        aRenderingContext.DrawLine(clipRect.x+clipRect.width, clipRect.y+clipRect.height, 
+                                   clipRect.x, clipRect.y+clipRect.height);
+        aRenderingContext.DrawLine(clipRect.x, clipRect.y+clipRect.height, 
+                                   clipRect.x, clipRect.y);
+        aRenderingContext.DrawLine(clipRect.x, clipRect.y+clipRect.height, 
+                                   clipRect.x, clipRect.y);
       }
       /////////////////////
       aRenderingContext.PopState(clipEmpty);

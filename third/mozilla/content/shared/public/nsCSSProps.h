@@ -75,6 +75,7 @@ public:
 
   static const nsCSSType       kTypeTable[eCSSProperty_COUNT_no_shorthands];
   static const nsStyleStructID kSIDTable[eCSSProperty_COUNT_no_shorthands];
+  static const PRInt32* const  kKeywordTableTable[eCSSProperty_COUNT_no_shorthands];
 
   // A table for shorthand properties.  The appropriate index is the
   // property ID minus eCSSProperty_COUNT_no_shorthands.
@@ -105,6 +106,8 @@ public:
   static const PRInt32 kBackgroundInlinePolicyKTable[];
   static const PRInt32 kBackgroundOriginKTable[];
   static const PRInt32 kBackgroundRepeatKTable[];
+  static const PRInt32 kBackgroundXPositionKTable[];
+  static const PRInt32 kBackgroundYPositionKTable[];
   static const PRInt32 kBorderCollapseKTable[];
   static const PRInt32 kBorderColorKTable[];
   static const PRInt32 kBorderStyleKTable[];
@@ -114,10 +117,16 @@ public:
   static const PRInt32 kBoxOrientKTable[];
   static const PRInt32 kBoxPackKTable[];
 #ifdef MOZ_SVG
+  static const PRInt32 kDominantBaselineKTable[];
   static const PRInt32 kFillRuleKTable[];
+  static const PRInt32 kPointerEventsKTable[];
+  static const PRInt32 kShapeRenderingKTable[];
   static const PRInt32 kStrokeLinecapKTable[];
   static const PRInt32 kStrokeLinejoinKTable[];
+  static const PRInt32 kTextAnchorKTable[];
+  static const PRInt32 kTextRenderingKTable[];
 #endif
+  static const PRInt32 kBoxPropSourceKTable[];
   static const PRInt32 kBoxSizingKTable[];
   static const PRInt32 kCaptionSideKTable[];
   static const PRInt32 kClearKTable[];

@@ -57,28 +57,26 @@ static const char kWhitespace[] = " \r\n\t"; // Optimized for typical cases
 /***************************** EXPAT CALL BACKS *******************************/
 
  // The callback handlers that get called from the expat parser 
-PR_STATIC_CALLBACK(int)
+PR_STATIC_CALLBACK(void)
 Driver_HandleStartElement(void *aUserData, 
                           const XML_Char *aName, 
                           const XML_Char **aAtts) 
 {
   NS_ASSERTION(aUserData, "expat driver should exist");
   if (aUserData) {
-    return NS_STATIC_CAST(nsExpatDriver*,aUserData)->HandleStartElement((const PRUnichar*)aName,
-                                                                        (const PRUnichar**)aAtts);
+    NS_STATIC_CAST(nsExpatDriver*,aUserData)->HandleStartElement((const PRUnichar*)aName,
+                                                                 (const PRUnichar**)aAtts);
   }
-  return XML_ERROR_NONE;
 }
 
-PR_STATIC_CALLBACK(int)
+PR_STATIC_CALLBACK(void)
 Driver_HandleEndElement(void *aUserData, 
                         const XML_Char *aName) 
 {
   NS_ASSERTION(aUserData, "expat driver should exist");
   if (aUserData) {
-    return NS_STATIC_CAST(nsExpatDriver*,aUserData)->HandleEndElement((const PRUnichar*)aName);
+    NS_STATIC_CAST(nsExpatDriver*,aUserData)->HandleEndElement((const PRUnichar*)aName);
   }
-  return XML_ERROR_NONE;
 }
 
 PR_STATIC_CALLBACK(void)
@@ -103,17 +101,16 @@ Driver_HandleComment(void *aUserData,
   }
 }
 
-PR_STATIC_CALLBACK(int)
+PR_STATIC_CALLBACK(void)
 Driver_HandleProcessingInstruction(void *aUserData, 
                                    const XML_Char *aTarget, 
                                    const XML_Char *aData)
 {
   NS_ASSERTION(aUserData, "expat driver should exist");
   if (aUserData) {
-    return NS_STATIC_CAST(nsExpatDriver*,aUserData)->HandleProcessingInstruction((const PRUnichar*)aTarget,
-                                                                                 (const PRUnichar*)aData);
+    NS_STATIC_CAST(nsExpatDriver*,aUserData)->HandleProcessingInstruction((const PRUnichar*)aTarget,
+                                                                          (const PRUnichar*)aData);
   }
-  return XML_ERROR_NONE;
 }
 
 PR_STATIC_CALLBACK(void)
@@ -205,6 +202,7 @@ static const nsCatalogData kCatalogTable[] = {
  {"-//W3C//DTD XHTML Basic 1.0//EN",           "xhtml11.dtd", nsnull },
  {"-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN", "mathml.dtd",  "resource://gre/res/mathml.css" },
  {"-//W3C//DTD XHTML 1.1 plus MathML 2.0 plus SVG 1.1//EN", "mathml.dtd", "resource://gre/res/mathml.css" },
+ {"-//W3C//DTD MathML 2.0//EN",                "mathml.dtd",  "resource://gre/res/mathml.css" },
  {"-//W3C//DTD SVG 20001102//EN",              "svg.dtd",     nsnull },
  {"-//WAPFORUM//DTD XHTML Mobile 1.0//EN",     "xhtml11.dtd", nsnull },
  {nsnull, nsnull, nsnull}
@@ -609,6 +607,25 @@ nsExpatDriver::HandleEndDoctypeDecl()
   return NS_OK;
 }
 
+static NS_METHOD
+ExternalDTDStreamReaderFunc(nsIUnicharInputStream* aIn,
+                            void* aClosure,
+                            const PRUnichar* aFromSegment,
+                            PRUint32 aToOffset,
+                            PRUint32 aCount,
+                            PRUint32 *aWriteCount)
+{
+  // Pass the buffer to expat for parsing. XML_Parse returns 0 for
+  // fatal errors.
+  if (XML_Parse((XML_Parser)aClosure, (char *)aFromSegment, 
+                aCount * sizeof(PRUnichar), 0)) {
+    *aWriteCount = aCount;
+    return NS_OK;
+  }
+  *aWriteCount = 0;
+  return NS_ERROR_FAILURE;
+}
+
 int 
 nsExpatDriver::HandleExternalEntityRef(const PRUnichar *openEntityNames,
                                        const PRUnichar *base,
@@ -653,24 +670,17 @@ nsExpatDriver::HandleExternalEntityRef(const PRUnichar *openEntityNames,
         (const XML_Char*) NS_LITERAL_STRING("UTF-16").get());
 
     if (entParser) {
-      PRUint32 readCount = 0;
-      PRUnichar uniBuff[1024] = {0};
-
       XML_SetBase(entParser, (const XML_Char*) absURL.get());
 
       mInExternalDTD = PR_TRUE;
 
-      while (NS_SUCCEEDED(uniIn->Read(uniBuff, 1024, &readCount)) && result) {
-        if (readCount) {
-          // Pass the buffer to expat for parsing
-          result = XML_Parse(entParser, (char *)uniBuff,  readCount * sizeof(PRUnichar), 0);
-        }
-        else {
-          // done reading
-          result = XML_Parse(entParser, nsnull, 0, 1);
-          break;
-        }
-      }
+      PRUint32 totalRead;
+      do {
+        rv = uniIn->ReadSegments(ExternalDTDStreamReaderFunc, 
+                                 (void*)entParser, PRUint32(-1), &totalRead);
+      } while (NS_SUCCEEDED(rv) && totalRead > 0);
+
+      result = XML_Parse(entParser, nsnull, 0, 1);
 
       mInExternalDTD = PR_FALSE;
 
@@ -690,10 +700,11 @@ nsExpatDriver::OpenInputStreamFromExternalDTD(const PRUnichar* aFPIStr,
 {
   nsresult rv;
   nsCOMPtr<nsIURI> baseURI;  
-  rv = NS_NewURI(getter_AddRefs(baseURI), NS_ConvertUCS2toUTF8(aBaseURL).get());
+  rv = NS_NewURI(getter_AddRefs(baseURI), NS_ConvertUTF16toUTF8(aBaseURL));
   if (NS_SUCCEEDED(rv) && baseURI) {
     nsCOMPtr<nsIURI> uri;
-    rv = NS_NewURI(getter_AddRefs(uri), NS_ConvertUCS2toUTF8(aURLStr).get(), baseURI);
+    rv = NS_NewURI(getter_AddRefs(uri), NS_ConvertUTF16toUTF8(aURLStr), nsnull,
+                   baseURI);
     if (NS_SUCCEEDED(rv) && uri) {
       // check if it is alright to load this uri
       PRBool isChrome = PR_FALSE;
@@ -712,7 +723,7 @@ nsExpatDriver::OpenInputStreamFromExternalDTD(const PRUnichar* aFPIStr,
       rv = NS_OpenURI(in, uri);
       nsCAutoString absURL;
       uri->GetSpec(absURL);
-      aAbsURL = NS_ConvertUTF8toUCS2(absURL);
+      CopyUTF8toUTF16(absURL, aAbsURL);
     }
   }
   return rv;
@@ -924,7 +935,7 @@ nsExpatDriver::ConsumeToken(nsScanner& aScanner,
   mInternalState = NS_OK; // Resume in case we're blocked.
   XML_UnblockParser(mExpatParser);
 
-  nsReadingIterator<PRUnichar> start, end;
+  nsScannerIterator start, end;
   aScanner.CurrentPosition(start);
   aScanner.EndReading(end);
   
@@ -968,6 +979,9 @@ nsExpatDriver::CanParse(CParserContext& aParserContext,
         aParserContext.mMimeType.EqualsWithConversion(kXMLApplicationContentType)  ||
         aParserContext.mMimeType.EqualsWithConversion(kXHTMLApplicationContentType)||
         aParserContext.mMimeType.EqualsWithConversion(kRDFTextContentType)         ||
+#ifdef MOZ_SVG
+        aParserContext.mMimeType.EqualsWithConversion(kSVGTextContentType)         ||
+#endif
         aParserContext.mMimeType.EqualsWithConversion(kXULTextContentType)) {
       result=ePrimaryDetect;
     }

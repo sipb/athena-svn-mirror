@@ -60,10 +60,24 @@ PRLogModuleInfo *PhGfxLog = PR_NewLogModule("PhGfxLog");
 NS_IMPL_ISUPPORTS1(nsRenderingContextPh, nsIRenderingContext)
 
 
+static unsigned char sLineStyle[4][2] =
+  {
+  { 0 },     	/* nsLineStyle_kNone */
+  { 0 },     	/* nsLineStyle_kSolid */
+  { 10, 4 },  /* nsLineStyle_kDashed */
+  { 1 }				/* nsLineStyle_kDotted */
+  };
+
+static unsigned char sLineStyleLen[4] =
+  {
+  0,        /* nsLineStyle_kNone */
+  0,      /* nsLineStyle_kSolid */
+  2,      /* nsLineStyle_kDashed */
+  1       /* nsLineStyle_kDotted */
+  };
+
 nsRenderingContextPh :: nsRenderingContextPh() 
 {
-	NS_INIT_ISUPPORTS();
-	
 	mGC               = nsnull;
 	mTranMatrix       = nsnull;
 	mClipRegion       = nsnull;
@@ -141,23 +155,23 @@ NS_IMETHODIMP nsRenderingContextPh :: Init( nsIDeviceContext* aContext, nsIWidge
 		return NS_ERROR_FAILURE;
 	}
 	
-	PhRid_t rid = PtWidgetRid( widget );
-	if( rid ) {
+	mRegionID = PtWidgetRid( widget );
+	if( mRegionID ) {
 		mSurface = new nsDrawingSurfacePh();
 		if( mSurface ) {
 
 			mGC = PgCreateGC( 0 );
 			mOwner = PR_TRUE;
 
-			res = mSurface->Init( mGC );
+			/* use the dc you get by doing a PhDCSetCurrent( NULL ) */
+			res = mSurface->Init( _Ph_->dflt_draw_context, mGC );
 			if( res != NS_OK )
 				return NS_ERROR_FAILURE;
 			
 			mOffscreenSurface = mSurface;
 			NS_ADDREF( mSurface );
 
-			PgSetGC( mGC );
-			PgSetRegion( rid );
+			mSurfaceDC = ((nsDrawingSurfacePh*)mSurface)->GetDC();
 		}
 		else 
 			return NS_ERROR_FAILURE;
@@ -226,11 +240,8 @@ NS_IMETHODIMP nsRenderingContextPh :: PopState( PRBool &aClipEmpty )
 			SetFont( state->mFontMetrics );
 		
 		//    if( mSurface && mClipRegion ) ApplyClipping( mGC );
-		if( state->mColor != mCurrentColor ) 
-			SetColor( state->mColor );
-		
-		if( state->mLineStyle != mCurrentLineStyle ) 
-			SetLineStyle( state->mLineStyle );
+		mCurrentColor = state->mColor;
+		mCurrentLineStyle = state->mLineStyle;
 		
 		// Delete this graphics state object
 #ifdef USE_GS_POOL
@@ -288,7 +299,17 @@ NS_IMETHODIMP nsRenderingContextPh :: SetClipRect( const nsRect& aRect, nsClipCo
 		}
 	}
 	
-	CreateClipRegion();
+	/* create clip region ( CreateClipRegion ) */
+  if( !mClipRegion ) {
+    PRUint32 w, h;
+    mSurface->GetSize(&w, &h);
+
+    mClipRegion = do_CreateInstance(kRegionCID);
+    if( mClipRegion ) {
+      mClipRegion->Init();
+      mClipRegion->SetTo(0,0,w,h);
+      }
+    }
 	
 	if( mTranMatrix && mClipRegion ) {
 		mTranMatrix->TransformCoord( &trect.x, &trect.y,&trect.width, &trect.height );
@@ -335,7 +356,17 @@ NS_IMETHODIMP nsRenderingContextPh :: SetClipRegion( const nsIRegion& aRegion, n
 		}
 	}
 	
-	CreateClipRegion();
+	/* create clip region ( CreateClipRegion ) */
+  if( !mClipRegion ) {
+    PRUint32 w, h;
+    mSurface->GetSize(&w, &h);
+
+    mClipRegion = do_CreateInstance(kRegionCID);
+    if( mClipRegion ) {
+      mClipRegion->Init();
+      mClipRegion->SetTo(0,0,w,h);
+      }
+    }
 	
 	switch( aCombine ) {
 		case nsClipCombine_kIntersect:
@@ -379,28 +410,6 @@ NS_IMETHODIMP nsRenderingContextPh :: GetClipRegion( nsIRegion **aRegion )
 		rv = NS_ERROR_FAILURE;
 	}
 	return rv;
-}
-
-NS_IMETHODIMP nsRenderingContextPh :: SetLineStyle( nsLineStyle aLineStyle ) 
-{
-	mCurrentLineStyle = aLineStyle;
-	switch( mCurrentLineStyle ) {
-		case nsLineStyle_kSolid:
-			mLineStyle[0] = 0;
-			break;
-		case nsLineStyle_kDashed:
-			mLineStyle[0] = 10;
-			mLineStyle[1] = 4;
-			break;
-		case nsLineStyle_kDotted:
-			mLineStyle[0] = 1;
-			mLineStyle[1] = 0;
-			break;
-		case nsLineStyle_kNone:
-		default:
-			break;
-	}
-	return NS_OK;
 }
 
 NS_IMETHODIMP nsRenderingContextPh :: SetFont( nsIFontMetrics *aFontMetrics ) 
@@ -450,27 +459,40 @@ NS_IMETHODIMP nsRenderingContextPh :: CreateDrawingSurface( const nsRect &aBound
 
 NS_IMETHODIMP nsRenderingContextPh :: DrawLine( nscoord aX0, nscoord aY0, nscoord aX1, nscoord aY1 ) 
 {
+	nscoord diffX, diffY;
+
 	mTranMatrix->TransformCoord( &aX0, &aY0 );
 	mTranMatrix->TransformCoord( &aX1, &aY1 );
-	
-	if( aY0 != aY1 ) aY1--;
-	if( aX0 != aX1 ) aX1--;
+
+	diffX = aX1 - aX0;
+	diffY = aY1 - aY0;
+
+	if( diffX != 0 ) diffX = ( diffX > 0 ? 1 : -1 );
+	if( diffY != 0 ) diffY = ( diffY > 0 ? 1 : -1 );
 	
 	UpdateGC();
+	PgSetStrokeColorCx( mGC, mCurrentColor );
+	PgSetStrokeDashCx( mGC, sLineStyle[mCurrentLineStyle], sLineStyleLen[mCurrentLineStyle], 0x10000 );
 	
-	PgDrawILine( aX0, aY0, aX1, aY1 );
+	PgDrawILineCx( mSurfaceDC, aX0, aY0, aX1-diffX, aY1-diffY );
 	return NS_OK;
 }
 
 NS_IMETHODIMP nsRenderingContextPh :: DrawStdLine( nscoord aX0, nscoord aY0, nscoord aX1, nscoord aY1 ) 
 {
-	
-	if( aY0 != aY1 ) aY1--;
-	if( aX0 != aX1 ) aX1--;
+	nscoord diffX, diffY;
+
+	diffX = aX1 - aX0;
+	diffY = aY1 - aY0;
+
+	if( diffX != 0 ) diffX = ( diffX > 0 ? 1 : -1 );
+	if( diffY != 0 ) diffY = ( diffY > 0 ? 1 : -1 );
 	
 	UpdateGC();
+	PgSetStrokeColorCx( mGC, mCurrentColor );
+	PgSetStrokeDashCx( mGC, sLineStyle[mCurrentLineStyle], sLineStyleLen[mCurrentLineStyle], 0x10000 );
 	
-	PgDrawILine( aX0, aY0, aX1, aY1 );
+	PgDrawILineCx( mSurfaceDC, aX0, aY0, aX1-diffX, aY1-diffY );
 	return NS_OK;
 }
 
@@ -485,9 +507,12 @@ NS_IMETHODIMP nsRenderingContextPh :: DrawRect( nscoord aX, nscoord aY, nscoord 
 	mTranMatrix->TransformCoord( &x, &y, &w, &h );
 	
 	UpdateGC();	
+	PgSetStrokeColorCx( mGC, mCurrentColor );
+	PgSetStrokeDashCx( mGC, sLineStyle[mCurrentLineStyle], sLineStyleLen[mCurrentLineStyle], 0x10000 );
+
 	ConditionRect(x,y,w,h);	
 	if( w && h )
-		PgDrawIRect( x, y, x + w - 1, y + h - 1, Pg_DRAW_STROKE );
+		PgDrawIRectCx( mSurfaceDC, x, y, x + w - 1, y + h - 1, Pg_DRAW_STROKE );
 	return NS_OK;
 }
 
@@ -503,13 +528,17 @@ NS_IMETHODIMP nsRenderingContextPh :: FillRect( nscoord aX, nscoord aY, nscoord 
 	mTranMatrix->TransformCoord( &x, &y, &w, &h );
 	
 	UpdateGC();
+	PgSetStrokeColorCx( mGC, mCurrentColor );
+	PgSetStrokeDashCx( mGC, sLineStyle[mCurrentLineStyle], sLineStyleLen[mCurrentLineStyle], 0x10000 );
+	PgSetFillColorCx( mGC, mCurrentColor );
+
 	ConditionRect(x,y,w,h);	
 	if( w && h ) {
 		int y2 = y + h - 1;
 		if( y < SHRT_MIN ) y = SHRT_MIN;			/* on very large documents, the PgDrawIRect will take only the short part from the int, which could lead to randomly, hazardous results see PR: 5864 */
 		if( y2 >= SHRT_MAX ) y2 = SHRT_MAX;		/* on very large documents, the PgDrawIRect will take only the short part from the int, which could lead to randomly, hazardous results see PR: 5864 */
 		
-		PgDrawIRect( x, y, x + w - 1, y2, Pg_DRAW_FILL );
+		PgDrawIRectCx( mSurfaceDC, x, y, x + w - 1, y2, Pg_DRAW_FILL );
 	}
 	return NS_OK;
 }
@@ -527,13 +556,20 @@ NS_IMETHODIMP nsRenderingContextPh :: InvertRect( nscoord aX, nscoord aY, nscoor
 	
 	if( !w || !h ) return NS_OK;
 	
-	UpdateGC();	
+	UpdateGC();
+	PgSetStrokeColorCx( mGC, mCurrentColor );
+	PgSetStrokeDashCx( mGC, sLineStyle[mCurrentLineStyle], sLineStyleLen[mCurrentLineStyle], 0x10000 );
+	PgSetFillColorCx( mGC, mCurrentColor );
+
 	ConditionRect(x,y,w,h);
-	PgSetFillColor(Pg_INVERT_COLOR);
-	PgSetDrawMode(Pg_DRAWMODE_XOR);
-	PgDrawIRect( x, y, x + w - 1, y + h - 1, Pg_DRAW_FILL );
-	PgSetDrawMode(Pg_DRAWMODE_OPAQUE);
-//	mSurface->Flush();
+	PgSetFillColorCx( mGC, Pg_INVERT_COLOR );
+	PgSetDrawModeCx( mGC, Pg_DRAWMODE_XOR );
+	PgDrawIRectCx( mSurfaceDC, x, y, x + w - 1, y + h - 1, Pg_DRAW_FILL );
+	PgSetDrawModeCx( mGC, Pg_DRAWMODE_OPAQUE );
+
+	/* this is necessary here in 630 because of PR:18744 ( http://bugs.qnx.com ) - please remove it when the PR is fixed */
+	PgFlushCx( mSurfaceDC );
+
 	return NS_OK;
 }
 
@@ -555,8 +591,35 @@ NS_IMETHODIMP nsRenderingContextPh :: DrawPolygon( const nsPoint aPoints[], PRIn
 			pts[i].x = x;
 			pts[i].y = y;
 		}
+
 		UpdateGC();
-		PgDrawPolygon( pts, aNumPoints, &pos, Pg_DRAW_STROKE );
+		PgSetStrokeColorCx( mGC, mCurrentColor );
+		PgSetStrokeDashCx( mGC, sLineStyle[mCurrentLineStyle], sLineStyleLen[mCurrentLineStyle], 0x10000 );
+
+		if( aNumPoints == 4 ) {
+			/* this code makes the edges of the controls like buttons, texts etc appear less heavy */
+			int dx = pts[1].x - pts[0].x;
+			int dy = pts[1].y - pts[0].y;
+			if( !dx ) {
+				/* the edge is vertical - move us (0,1) closer to the other 2 points (2,3) */
+				pts[0].y++;
+				pts[1].y--;
+				int diff = pts[3].x > pts[0].x ? 1 : -1;
+				pts[0].x += diff;
+				pts[1].x += diff;
+				}
+			if( !dy ) {
+				/* the edge is horizontal - move the other 2 points (2,3) closer to us (0,1) */
+				pts[2].x++;
+				pts[3].x--;
+				int diff = pts[3].y > pts[0].y ? -1 : 1;
+				pts[2].y += diff;
+				pts[3].y += diff;
+				}
+			}
+
+
+		PgDrawPolygonCx( mSurfaceDC, pts, aNumPoints, &pos, Pg_DRAW_STROKE );
 		delete [] pts;
 	}
 	return NS_OK;
@@ -581,8 +644,36 @@ NS_IMETHODIMP nsRenderingContextPh :: FillPolygon( const nsPoint aPoints[], PRIn
 			pts[i].x = x;
 			pts[i].y = y;
 		}
+
 		UpdateGC();
-		PgDrawPolygon( pts, aNumPoints, &pos, Pg_DRAW_FILL );
+		PgSetStrokeColorCx( mGC, mCurrentColor );
+		PgSetStrokeDashCx( mGC, sLineStyle[mCurrentLineStyle], sLineStyleLen[mCurrentLineStyle], 0x10000 );
+		PgSetFillColorCx( mGC, mCurrentColor );
+
+		if( aNumPoints == 4 ) {
+			/* this code makes the edges of the controls like buttons, texts etc appear less heavy */
+			int dx = pts[1].x - pts[0].x;
+			int dy = pts[1].y - pts[0].y;
+			if( !dx ) {
+				/* the edge is vertical - move us (0,1) closer to the other 2 points (2,3) */
+				pts[0].y++;
+				pts[1].y--;
+				int diff = pts[3].x > pts[0].x ? 1 : -1;
+				pts[0].x += diff;
+				pts[1].x += diff;
+				}
+			if( !dy ) {
+				/* the edge is horizontal - move the other 2 points (2,3) closer to us (0,1) */
+				pts[2].x++;
+				pts[3].x--;
+				int diff = pts[3].y > pts[0].y ? -1 : 1;
+				pts[2].y += diff;
+				pts[3].y += diff;
+				}
+			}
+
+
+		PgDrawPolygonCx( mSurfaceDC, pts, aNumPoints, &pos, Pg_DRAW_FILL );
 		delete [] pts;
 	}
 	return NS_OK;
@@ -604,8 +695,12 @@ NS_IMETHODIMP nsRenderingContextPh :: DrawEllipse( nscoord aX, nscoord aY, nscoo
 	center.y = y;
 	radii.x = x+w-1;
 	radii.y = y+h-1;
+
 	UpdateGC();
-	PgDrawEllipse( &center, &radii, Pg_EXTENT_BASED | Pg_DRAW_STROKE );
+	PgSetStrokeColorCx( mGC, mCurrentColor );
+	PgSetStrokeDashCx( mGC, sLineStyle[mCurrentLineStyle], sLineStyleLen[mCurrentLineStyle], 0x10000 );
+
+	PgDrawEllipseCx( mSurfaceDC, &center, &radii, Pg_EXTENT_BASED | Pg_DRAW_STROKE );
 	return NS_OK;
 }
 
@@ -627,7 +722,11 @@ NS_IMETHODIMP nsRenderingContextPh :: FillEllipse( nscoord aX, nscoord aY, nscoo
 	radii.y = y+h-1;
 	
 	UpdateGC();
-	PgDrawEllipse( &center, &radii, Pg_EXTENT_BASED | Pg_DRAW_FILL );
+	PgSetStrokeColorCx( mGC, mCurrentColor );
+	PgSetStrokeDashCx( mGC, sLineStyle[mCurrentLineStyle], sLineStyleLen[mCurrentLineStyle], 0x10000 );
+	PgSetFillColorCx( mGC, mCurrentColor );
+
+	PgDrawEllipseCx( mSurfaceDC, &center, &radii, Pg_EXTENT_BASED | Pg_DRAW_FILL );
 	return NS_OK;
 }
 
@@ -650,7 +749,10 @@ NS_IMETHODIMP nsRenderingContextPh :: DrawArc(nscoord aX, nscoord aY, nscoord aW
 	radii.y = y+h-1;
 	
 	UpdateGC();
-	PgDrawArc( &center, &radii, (unsigned int)aStartAngle, (unsigned int)aEndAngle, Pg_EXTENT_BASED | Pg_DRAW_STROKE );
+	PgSetStrokeColorCx( mGC, mCurrentColor );
+	PgSetStrokeDashCx( mGC, sLineStyle[mCurrentLineStyle], sLineStyleLen[mCurrentLineStyle], 0x10000 );
+
+	PgDrawArcCx( mSurfaceDC, &center, &radii, (unsigned int)aStartAngle, (unsigned int)aEndAngle, Pg_EXTENT_BASED | Pg_DRAW_STROKE );
 	return NS_OK;
 }
 
@@ -672,7 +774,11 @@ NS_IMETHODIMP nsRenderingContextPh :: FillArc( nscoord aX, nscoord aY, nscoord a
 	radii.y = y+h-1;
 	
 	UpdateGC();
-	PgDrawArc( &center, &radii, (unsigned int)aStartAngle, (unsigned int)aEndAngle, Pg_EXTENT_BASED | Pg_DRAW_FILL );
+	PgSetStrokeColorCx( mGC, mCurrentColor );
+	PgSetStrokeDashCx( mGC, sLineStyle[mCurrentLineStyle], sLineStyleLen[mCurrentLineStyle], 0x10000 );
+	PgSetFillColorCx( mGC, mCurrentColor );
+
+	PgDrawArcCx( mSurfaceDC, &center, &radii, (unsigned int)aStartAngle, (unsigned int)aEndAngle, Pg_EXTENT_BASED | Pg_DRAW_FILL );
 	return NS_OK;
 }
 
@@ -680,54 +786,32 @@ NS_IMETHODIMP nsRenderingContextPh :: FillArc( nscoord aX, nscoord aY, nscoord a
 NS_IMETHODIMP nsRenderingContextPh :: GetWidth(const char* aString, PRUint32 aLength, nscoord& aWidth ) 
 {
 	PhRect_t extent;
-	nsresult ret_code = NS_ERROR_FAILURE;
-	
-	aWidth = 0;	// Initialize to zero in case we fail.
-	
-	if( nsnull != mFontMetrics ) 
-	{
-		if( PfExtentText( &extent, NULL, mPhotonFontName, aString, aLength ) )
-		{
-			aWidth = NSToCoordRound((int) ((extent.lr.x - extent.ul.x + 1) * mP2T));
-			ret_code = NS_OK;
-		}
-	}
-	else 
-		ret_code = NS_ERROR_FAILURE;
-	
-	return ret_code;
+
+	/* Check for the very common case of trying to get the width of a single space */
+	if( aString[0] == ' ' && aLength == 1 )
+		return mFontMetrics->GetSpaceWidth(aWidth);
+
+	PfExtent( &extent, NULL, mPhotonFontName, 0L, 0L, aString, aLength, PF_SIMPLE_METRICS, NULL );
+	aWidth = NSToCoordRound((int) ((extent.lr.x - extent.ul.x + 1) * mP2T));
+	return NS_OK;
 }
 
 NS_IMETHODIMP nsRenderingContextPh :: GetWidth( const PRUnichar *aString, PRUint32 aLength, nscoord &aWidth, PRInt32 *aFontID ) 
 {
-	nsresult ret_code = NS_ERROR_FAILURE;
-	
-	aWidth = 0;	// Initialize to zero in case we fail.
-	if( nsnull != mFontMetrics ) {
-		NS_ConvertUCS2toUTF8    theUnicodeString (aString, aLength);
-		ret_code = GetWidth( theUnicodeString.get(), strlen(theUnicodeString.get()), aWidth );
-	}
-	if( nsnull != aFontID ) 
-		*aFontID = 0;
-	return ret_code;
+	NS_ConvertUCS2toUTF8    theUnicodeString (aString, aLength);
+	const char *s = theUnicodeString.get();
+	return GetWidth( s, strlen(s), aWidth );
 }
 
 NS_IMETHODIMP nsRenderingContextPh::GetTextDimensions(const PRUnichar* aString, PRUint32 aLength,
 													  nsTextDimensions& aDimensions, PRInt32* aFontID)
 {
-	nsresult ret_code = NS_ERROR_FAILURE;
-
-	aDimensions.Clear();
-	if( nsnull != mFontMetrics ) {
-		mFontMetrics->GetMaxAscent(aDimensions.ascent);
-		mFontMetrics->GetMaxDescent(aDimensions.descent);
+	mFontMetrics->GetMaxAscent(aDimensions.ascent);
+	mFontMetrics->GetMaxDescent(aDimensions.descent);
 		
-		NS_ConvertUCS2toUTF8    theUnicodeString (aString, aLength);
-		ret_code = GetWidth( theUnicodeString.get(), strlen(theUnicodeString.get()), aDimensions.width );
-	}
-	if (nsnull != aFontID)
-		*aFontID = 0;
-	return NS_OK;
+	NS_ConvertUCS2toUTF8    theUnicodeString (aString, aLength);
+	const char *s = theUnicodeString.get();
+	return GetWidth( s, strlen(s), aDimensions.width );
 }
 
 NS_IMETHODIMP nsRenderingContextPh::DrawString(const char *aString, PRUint32 aLength,
@@ -738,29 +822,40 @@ NS_IMETHODIMP nsRenderingContextPh::DrawString(const char *aString, PRUint32 aLe
 		return NS_OK;
 
 	UpdateGC();
+	PgSetTextColorCx( mGC, mCurrentColor );
 	
-	PgSetFont( mPhotonFontName );
-
+	PgSetFontCx( mGC, mPhotonFontName );
+	PgSetExtendedTextFlagsCx( mGC, Pg_TEXT_SIMPLE_METRICS );
 
 	if( !aSpacing ) {
 		mTranMatrix->TransformCoord( &aX, &aY );
 		PhPoint_t pos = { aX, aY };
-		PgDrawTextChars( aString, aLength, &pos, Pg_TEXT_LEFT);
+		PgDrawTextCharsCx( mSurfaceDC, aString, aLength, &pos, Pg_TEXT_LEFT);
 		}
 	else {
-		nscoord x = aX;
-		nscoord y = aY;
-		const char* end = aString + aLength;
-		while( aString < end ) {
-			char ch = *aString++;
-			nscoord xx = x;
-			nscoord yy = y;
-			mTranMatrix->TransformCoord(&xx, &yy);
-			PhPoint_t pos = { xx, yy };
-			PgDrawText( &ch, 1, &pos, Pg_TEXT_LEFT);
+    nscoord x = aX;
+    nscoord y = aY;
+    const char* end = aString + aLength;
+    while( aString < end ) {
+			const char *ch = aString;
+			int charlen = utf8len( aString, aLength );
+			if( charlen <= 0 )
+				break;
+
+			aString += charlen;
+			aLength -= charlen;
+
+      nscoord xx = x;
+      nscoord yy = y;
+      mTranMatrix->TransformCoord(&xx, &yy);
+      PhPoint_t pos = { xx, yy };
+			PgDrawTextCx( mSurfaceDC, ch, charlen, &pos, Pg_TEXT_LEFT);
 			x += *aSpacing++;
+			}
 		}
-	}
+
+	PgSetExtendedTextFlagsCx( mGC, 0 );
+
 	return NS_OK;
 }
 
@@ -787,33 +882,6 @@ NS_IMETHODIMP nsRenderingContextPh::DrawImage( nsIImage *aImage, const nsRect& a
  *  See documentation in nsIRenderingContext.h
  *	@update 3/16/00 dwc
  */
-NS_IMETHODIMP nsRenderingContextPh::DrawTile( nsIImage *aImage,nscoord aX0,nscoord aY0,nscoord aX1,nscoord aY1, nscoord aWidth,nscoord aHeight ) 
-{
-	mTranMatrix->TransformCoord(&aX0,&aY0,&aWidth,&aHeight);
-	mTranMatrix->TransformCoord(&aX1,&aY1);
-	
-	nsRect srcRect (0, 0, aWidth,  aHeight);
-	nsRect tileRect(aX0, aY0, aX1-aX0, aY1-aY0);
-	
-	((nsImagePh*)aImage)->DrawTile(*this, mSurface, srcRect, tileRect);
-	return NS_OK;
-}
-
-NS_IMETHODIMP nsRenderingContextPh::DrawTile( nsIImage *aImage, nscoord aSrcXOffset, nscoord aSrcYOffset, const nsRect &aTileRect ) 
-{
-	nsRect tileRect( aTileRect );
-	nsRect srcRect(0, 0, aSrcXOffset, aSrcYOffset);
-	mTranMatrix->TransformCoord(&srcRect.x, &srcRect.y, &srcRect.width, &srcRect.height);
-	mTranMatrix->TransformCoord(&tileRect.x, &tileRect.y, &tileRect.width, &tileRect.height);
-	
-	if( tileRect.width > 0 && tileRect.height > 0 )
-		((nsImagePh*)aImage)->DrawTile(*this, mSurface, srcRect.width, srcRect.height, tileRect);
-	else
-		NS_ASSERTION(aTileRect.width > 0 && aTileRect.height > 0,
-			   "You can't draw an image with a 0 width or height!");
-	return NS_OK;
-}
-
 NS_IMETHODIMP nsRenderingContextPh :: CopyOffScreenBits( nsDrawingSurface aSrcSurf, PRInt32 aSrcX, PRInt32 aSrcY, const nsRect &aDestBounds, PRUint32 aCopyFlags ) 
 {
 	PhArea_t              darea, sarea;
@@ -836,9 +904,8 @@ NS_IMETHODIMP nsRenderingContextPh :: CopyOffScreenBits( nsDrawingSurface aSrcSu
 	if( aCopyFlags & NS_COPYBITS_XFORM_DEST_VALUES )
 		mTranMatrix->TransformCoord( &drect.x, &drect.y, &drect.width, &drect.height );
 
-	destsurf->Select();
+	mSurfaceDC = destsurf->Select();
 	UpdateGC();
-	(PgGetGC())->target_rid = 0;  // kedl, fix the animations showing thru all regions
 
 	sarea.pos.x = srcX;
 	sarea.pos.y = srcY;
@@ -848,8 +915,10 @@ NS_IMETHODIMP nsRenderingContextPh :: CopyOffScreenBits( nsDrawingSurface aSrcSu
 	darea.pos.y = drect.y;
 	darea.size.w = sarea.size.w;
 	darea.size.h = sarea.size.h;
-	PgContextBlitArea( (PdOffscreenContext_t *) ((nsDrawingSurfacePh *)aSrcSurf)->GetDC(), &sarea,  
-					   (PdOffscreenContext_t *) ((nsDrawingSurfacePh *)destsurf)->GetDC(), &darea );
+
+	PgContextBlitAreaCx( mSurfaceDC, ((nsDrawingSurfacePh *)aSrcSurf)->GetDC(), &sarea, mSurfaceDC, &darea );
+	PgFlushCx( mSurfaceDC );
+
 	return NS_OK;
 }
 
@@ -891,23 +960,9 @@ void nsRenderingContextPh::ApplyClipping( PhGC_t *gc )
 		
 		if( tiles != nsnull ) {
 			rects = PhTilesToRects( tiles, &rect_count );
-			PgSetMultiClip( rect_count, rects );
+			PgSetMultiClipCx( gc, rect_count, rects );
 			free( rects );
 		}
-		else PgSetMultiClip( 0, NULL );
+		else PgSetMultiClipCx( gc, 0, NULL );
 	}
-}
-
-void nsRenderingContextPh::CreateClipRegion( )
-{
-	if( mClipRegion ) return;
-
-	PRUint32 w, h;
-	mSurface->GetSize(&w, &h);
-
-	mClipRegion = do_CreateInstance(kRegionCID);
-	if( mClipRegion ) {
-		mClipRegion->Init();
-		mClipRegion->SetTo(0,0,w,h);
-		}
 }

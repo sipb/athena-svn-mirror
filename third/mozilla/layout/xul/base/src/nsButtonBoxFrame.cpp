@@ -105,10 +105,10 @@ nsButtonBoxFrame::HandleEvent(nsIPresContext* aPresContext,
       if (NS_KEY_EVENT == aEvent->eventStructType) {
         nsKeyEvent* keyEvent = (nsKeyEvent*)aEvent;
         if (NS_VK_SPACE == keyEvent->keyCode) {
-           nsCOMPtr<nsIEventStateManager> esm;
-           aPresContext->GetEventStateManager(getter_AddRefs(esm));           
-           esm->SetContentState(mContent, NS_EVENT_STATE_HOVER |  
-                                          NS_EVENT_STATE_ACTIVE);  // :hover:active state
+          nsIEventStateManager *esm = aPresContext->EventStateManager();
+          // :hover:active state
+          esm->SetContentState(mContent,
+                               NS_EVENT_STATE_HOVER |  NS_EVENT_STATE_ACTIVE);
         }
       }
       break;
@@ -132,8 +132,7 @@ nsButtonBoxFrame::HandleEvent(nsIPresContext* aPresContext,
           // only activate on keyup if we're already in the :hover:active state
           PRInt32 buttonState;
           const PRInt32 activeHover = NS_EVENT_STATE_ACTIVE | NS_EVENT_STATE_HOVER;
-          nsCOMPtr<nsIEventStateManager> esm;
-          aPresContext->GetEventStateManager(getter_AddRefs(esm));
+          nsIEventStateManager *esm = aPresContext->EventStateManager();
           esm->GetContentState(mContent, buttonState);
           if ((buttonState & activeHover) == activeHover) {
             esm->SetContentState(nsnull, activeHover);    // return to normal state
@@ -160,31 +159,20 @@ nsButtonBoxFrame::MouseClicked (nsIPresContext* aPresContext, nsGUIEvent* aEvent
   if (disabled.Equals(NS_LITERAL_STRING("true")))
     return;
 
-  nsresult rv = NS_OK;
-
   // Execute the oncommand event handler.
   nsEventStatus status = nsEventStatus_eIgnore;
-  nsMouseEvent event;
-  event.eventStructType = NS_EVENT;
-  event.message = NS_XUL_COMMAND;
+  nsMouseEvent event(NS_XUL_COMMAND);
   if(aEvent) {
     event.isShift = ((nsInputEvent*)(aEvent))->isShift;
     event.isControl = ((nsInputEvent*)(aEvent))->isControl;
     event.isAlt = ((nsInputEvent*)(aEvent))->isAlt;
     event.isMeta = ((nsInputEvent*)(aEvent))->isMeta;
-  } else {
-    event.isShift = PR_FALSE;
-    event.isControl = PR_FALSE;
-    event.isAlt = PR_FALSE;
-    event.isMeta = PR_FALSE;
   }
-  event.clickCount = 0;
-  event.widget = nsnull;
 
   // Have the content handle the event, propagating it according to normal DOM rules.
-  nsCOMPtr<nsIPresShell> shell;
-  rv = aPresContext->GetShell(getter_AddRefs(shell));
-  if (NS_SUCCEEDED(rv) && shell) {
+  nsIPresShell *shell = aPresContext->GetPresShell();
+  if (shell) {
     shell->HandleDOMEventWithTarget(mContent, &event, &status);
+    // shell may no longer be alive, don't use it here unless you keep a ref
   }
 }

@@ -76,7 +76,7 @@
       </row>
       <row align="center">
         <hbox pack="end">
-          <label value="&shortcutURL.label;" accesskey="&shortcutURL.accesskey;" control="shortcutURL"/>
+          <label value="&shortcutURL.label;" accesskey="&shortcutURL.accesskey;" control="shortcutUrl"/>
         </hbox>
         <textbox id="shortcutUrl"/>
       </row>
@@ -107,6 +107,7 @@
     </hbox>
   </vbox>
 
-  <separator style="width: 36em"/>
+  <!-- Ensure a decent dialog width when the bookmarks-tree is hidden. -->
+  <spacer style="width: 36em;"/>
 
 </dialog>

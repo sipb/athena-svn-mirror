@@ -20,6 +20,7 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
+ *   Mike Calmus
  *
  *
  * Alternatively, the contents of this file may be used under the terms of
@@ -66,6 +67,8 @@ class nsPasswordManagerEnumerator : public nsISimpleEnumerator
       PRUnichar * pswd;
       nsresult rv = SINGSIGN_Enumerate(mHostCount, mUserCount++, &host, &user, &pswd);
       if (NS_FAILED(rv)) {
+        mUserCount = 0;
+        mHostCount++;
         return rv;
       }
       if (mUserCount == SINGSIGN_UserCount(mHostCount)) {
@@ -222,11 +225,10 @@ nsPasswordManager::FindPasswordEntry
   // Emumerate through set of saved logins
   while (hasMoreElements) {
     rv = enumerator->GetNext(getter_AddRefs(passwordElem));
-    if (NS_FAILED(rv)) {
+    if (NS_FAILED(rv))
       return rv;
-    }
 
-    if (NS_SUCCEEDED(rv) && passwordElem) {
+    if (passwordElem) {
 
       // Get the contents of this saved login
       nsCAutoString hostURI;
@@ -261,5 +263,20 @@ nsPasswordManager::FindPasswordEntry
 NS_IMETHODIMP nsPasswordManager::AddReject(const nsACString& host)
 {
   return ::SINGSIGN_AddReject(PromiseFlatCString(host).get());
+}
+
+NS_IMETHODIMP
+nsPasswordManager::AddUserFull(const nsACString& aKey,
+                               const nsAString& aUser,
+                               const nsAString& aPassword,
+                               const nsAString& aUserFieldName,
+                               const nsAString& aPassFieldName)
+{
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+NS_IMETHODIMP nsPasswordManager::ReadPasswords(nsIFile* aPasswordFile)
+{
+  return NS_ERROR_NOT_IMPLEMENTED;
 }
 

@@ -399,7 +399,7 @@ main(int argc, char **argv)
 
     XI_IF_DELETE(installer);
 
-	_exit(err);
+    exit(err);
 }
 
 /*------------------------------------------------------------------*
@@ -452,6 +452,8 @@ ErrorHandler(int aErr, const char* aErrMsg)
     gtk_widget_grab_default(okButton);
     gtk_widget_show_all(sErrDlg);
 
+    gtk_main();
+
     return aErr;
 }
 
@@ -466,6 +468,8 @@ ErrDlgOK(GtkWidget *aWidget, gpointer aData)
         sErrDlg = NULL;
     }
 
+    gtk_main_quit();
+
     if (IsErrFatal(err))
         exit(err);
 }
@@ -478,10 +482,11 @@ IsErrFatal(int aErr)
     /* non-fatal errors */
     switch (aErr)
     {
-        case -620:
-        case -621:
-        case -624:
-        case -625:
+        case E_XPI_FAIL:
+        case E_INSTALL:
+        case E_MKDIR_FAIL:
+        case E_OLD_INST:
+        case E_DIR_NOT_EMPTY:
             bFatal = FALSE;
         default:
             break; 

@@ -350,7 +350,7 @@ nsLeafIterator::Next()
     parent = getLast();
   if (!mExtensive)
   {
-     while(NS_SUCCEEDED(parent->FirstChild(mPresContext, nsnull,&result)) && result)
+    while (nsnull != (result = parent->GetFirstChild(nsnull)))
     {
       parent = result;
     }
@@ -364,7 +364,7 @@ nsLeafIterator::Next()
       result = parent->GetNextSibling();
       if (result) {
         parent = result;
-        while(NS_SUCCEEDED(parent->FirstChild(mPresContext, nsnull,&result)) && result)
+        while (nsnull != (result = parent->GetFirstChild(nsnull)))
           {
             parent = result;
           }
@@ -406,7 +406,7 @@ NS_IMETHODIMP
 nsLeafIterator::Prev()
 {
 //recursive-oid method to get prev frame
-  nsIFrame *result;
+  nsIFrame *result = nsnull;
   nsIFrame *parent = getCurrent();
   if (!parent)
     parent = getLast();
@@ -433,36 +433,33 @@ nsLeafIterator::Prev()
         if ( atom == nsLayoutAtoms::scrollFrame ) 
           return NS_ERROR_FAILURE;
       }
-      if (NS_SUCCEEDED(grandParent->FirstChild(mPresContext, nsnull,&result)))
+      result = grandParent->GetFirstChild(nsnull);
+      nsFrameList list(result);
+      result = list.GetPrevSiblingFor(parent);
+      if (result)
       {
-
-        nsFrameList list(result);
-        result = list.GetPrevSiblingFor(parent);
-        if (result)
+        parent = result;
+        while (nsnull != (result = parent->GetFirstChild(nsnull)))
         {
           parent = result;
-          while(NS_SUCCEEDED(parent->FirstChild(mPresContext, nsnull,&result)) && result)
+          while ((result = parent->GetNextSibling()) != nsnull)
           {
             parent = result;
-            while ((result = parent->GetNextSibling()) != nsnull)
-            {
-              parent = result;
-            }
           }
-          result = parent;
+        }
+        result = parent;
+        break;
+      }
+      else if (!(result = parent->GetParent()))
+      {
+        result = nsnull;
+        break;
+      }
+      else 
+      {
+        parent = result;
+        if (mExtensive)
           break;
-        }
-        else if (!(result = parent->GetParent()))
-        {
-          result = nsnull;
-          break;
-        }
-        else 
-        {
-          parent = result;
-          if (mExtensive)
-            break;
-        }
       }
     }
     else
@@ -495,8 +492,7 @@ nsIFrame*
 nsFocusIterator::GetPlaceholderFrame(nsIFrame* aFrame)
 {
   nsIFrame* result = aFrame;
-  nsCOMPtr<nsIPresShell> presShell;
-  mPresContext->GetShell(getter_AddRefs(presShell));
+  nsIPresShell *presShell = mPresContext->GetPresShell();
   if (presShell) {
     nsIFrame* placeholder = 0;
     presShell->GetPlaceholderFrameFor(aFrame, &placeholder);
@@ -551,8 +547,7 @@ nsFocusIterator::GetParentFrame(nsIFrame* aFrame)
 nsIFrame*
 nsFocusIterator::GetFirstChild(nsIFrame* aFrame)
 {
-  nsIFrame* result = 0;
-  aFrame->FirstChild(mPresContext, nsnull, &result);
+  nsIFrame* result = aFrame->GetFirstChild(nsnull);
   if (result)
     result = GetRealFrame(result);
 
@@ -587,9 +582,7 @@ nsFocusIterator::GetPrevSibling(nsIFrame* aFrame)
   if (placeholder) {
     nsIFrame* parent = GetParentFrame(placeholder);
     if (parent) {
-      nsIFrame* child = 0;
-      parent->FirstChild(mPresContext, nsnull, &child);
-      nsFrameList list(child);
+      nsFrameList list(parent->GetFirstChild(nsnull));
       result = list.GetPrevSiblingFor(placeholder);
       result = GetRealFrame(result);
     }
@@ -639,7 +632,7 @@ nsFocusIterator::Next()
 NS_IMETHODIMP
 nsFocusIterator::Prev()
 {
-  nsIFrame *result = 0;
+  nsIFrame *result = nsnull;
   nsIFrame *parent = getCurrent();
   if (!parent)
     parent = getLast();
@@ -704,7 +697,7 @@ NS_IMETHODIMP
   nsIFrame *parent = getCurrent();
   if (!parent)
     parent = getLast();
-  while(NS_SUCCEEDED(parent->FirstChild(mPresContext, nsnull,&result)) && result)
+  while (nsnull != (result = parent->GetFirstChild(nsnull)))
   {
     parent = result;
   }
@@ -715,13 +708,12 @@ NS_IMETHODIMP
   else {
     while(parent && !IsRootFrame(parent)) {
       nsIFrame *grandParent = parent->GetParent();
-      if (grandParent &&
-          NS_SUCCEEDED(grandParent->FirstChild(mPresContext, nsnull,&result))){
-        nsFrameList list(result);
+      if (grandParent) {
+        nsFrameList list(grandParent->GetFirstChild(nsnull));
         result = list.GetNextVisualFor(parent);
         if (result){
           parent = result;
-          while(NS_SUCCEEDED(parent->FirstChild(mPresContext, nsnull,&result)) && result) {
+          while (nsnull != (result = parent->GetFirstChild(nsnull))) {
             parent = result;
           }
           result = parent;
@@ -754,19 +746,18 @@ NS_IMETHODIMP
    nsVisualIterator::Prev()
 {
   //recursive-oid method to get prev frame
-  nsIFrame *result;
+  nsIFrame *result = nsnull;
   nsIFrame *parent = getCurrent();
   if (!parent)
     parent = getLast();
   while(parent){
     nsIFrame *grandParent = parent->GetParent();
-    if (grandParent &&
-        NS_SUCCEEDED(grandParent->FirstChild(mPresContext, nsnull,&result))){
-      nsFrameList list(result);
+    if (grandParent) {
+      nsFrameList list(grandParent->GetFirstChild(nsnull));
       result = list.GetPrevVisualFor(parent);
       if (result){
         parent = result;
-        while(NS_SUCCEEDED(parent->FirstChild(mPresContext, nsnull,&result)) && result){
+        while (nsnull != (result = parent->GetFirstChild(nsnull))) {
           parent = result;
           while ((result = parent->GetNextSibling()) != nsnull) {
             parent = result;

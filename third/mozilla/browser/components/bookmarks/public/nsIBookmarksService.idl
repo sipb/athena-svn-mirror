@@ -47,7 +47,7 @@ interface nsIArray;
 interface nsIRDFResource;
 interface nsITransactionManager;
 
-[scriptable, uuid(a82e9300-e4af-11d2-8fdf-0008c70adc7b)]
+[scriptable, uuid(bd03e58b-61b6-4f85-ad61-33f6a05e29ce)]
 interface nsIBookmarksService : nsISupports
 {
     const unsigned long BOOKMARK_DEFAULT_TYPE   = 0;
@@ -62,12 +62,12 @@ interface nsIBookmarksService : nsISupports
                                            in long aIndex);
 
     nsIRDFResource createBookmark(in wstring aName,
-                                  in string aURL,
+                                  in wstring aURL,
                                   in wstring aShortcutURL,
                                   in wstring aDescription,
                                   in wstring aDocCharSet);
     nsIRDFResource createBookmarkInContainer(in wstring aName,
-                                             in string aURL,
+                                             in wstring aURL,
                                              in wstring aShortcutURL,
                                              in wstring aDescription,
                                              in wstring aDocCharSet, 
@@ -95,7 +95,7 @@ interface nsIBookmarksService : nsISupports
     readonly attribute nsITransactionManager transactionManager;
 
     //XXXpch: to be removed.
-    void addBookmarkImmediately(in string aURI, in wstring aTitle, in long bmType, in wstring docCharset);
+    void addBookmarkImmediately(in wstring aURI, in wstring aTitle, in long bmType, in wstring docCharset);
     boolean isBookmarked(in string aURL);
 
 };

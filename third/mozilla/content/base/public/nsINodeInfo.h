@@ -59,7 +59,7 @@
 #include "nsISupports.h"
 #include "nsIAtom.h"
 #include "nsAString.h"
-#include "domstubs.h"
+#include "nsDOMString.h"
 #include "nsINameSpaceManager.h"
 #include "nsCOMPtr.h"
 #include "nsCOMArray.h"
@@ -119,9 +119,8 @@ public:
   virtual nsresult GetNodeInfo(const nsAString& aQualifiedName,
                                const nsAString& aNamespaceURI,
                                nsINodeInfo** aNodeInfo) = 0;
-
-  virtual nsresult GetNodeInfo(const nsACString& aName, nsIAtom *aPrefix,
-                               PRInt32 aNamespaceID,
+  virtual nsresult GetNodeInfo(const nsAString& aName, nsIAtom *aPrefix,
+                               const nsAString& aNamespaceURI,
                                nsINodeInfo** aNodeInfo) = 0;
 
   /*
@@ -144,12 +143,6 @@ public:
    */
   virtual nsresult SetDocumentPrincipal(nsIPrincipal* aPrincipal) = 0;
   
-  /**
-   * Populate the given nsCOMArray with all of the nsINodeInfos
-   * managed by this manager.
-   */
-  virtual nsresult GetNodeInfos(nsCOMArray<nsINodeInfo> *aArray) = 0;
-
 protected:
   nsIDocument *mDocument; // WEAK
 };

@@ -32,7 +32,7 @@
  * may use your version of this file under either the MPL or the
  * GPL.
  *
- * $Id: sslgathr.c,v 1.1.1.1 2003-02-14 18:22:39 rbasch Exp $
+ * $Id: sslgathr.c,v 1.1.1.2 2004-06-30 17:06:31 rbasch Exp $
  */
 #include "cert.h"
 #include "ssl.h"
@@ -194,6 +194,10 @@ ssl2_GatherData(sslSocket *ss, sslGather *gs, int flags)
 		gs->count = ((gs->hdr[0] & 0x3f) << 8) | gs->hdr[1];
 	    /*  is_escape =  (gs->hdr[0] & 0x40) != 0; */
 		gs->recordPadding = gs->hdr[2];
+	    }
+	    if (!gs->count) {
+		PORT_SetError(SSL_ERROR_RX_RECORD_TOO_LONG);
+		goto cleanup;
 	    }
 
 	    if (gs->count > gs->buf.space) {

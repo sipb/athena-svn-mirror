@@ -43,10 +43,10 @@
 #include "nsHTMLAtoms.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
-#include "nsHTMLAttributes.h"
+#include "nsMappedAttributes.h"
 #include "nsRuleNode.h"
 
-class nsHTMLHRElement : public nsGenericHTMLLeafElement,
+class nsHTMLHRElement : public nsGenericHTMLElement,
                         public nsIDOMHTMLHRElement,
                         public nsIDOMNSHTMLHRElement
 {
@@ -58,13 +58,13 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
   // nsIDOMNode
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLLeafElement::)
+  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLElement::)
 
   // nsIDOMElement
-  NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLLeafElement::)
+  NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLElement::)
 
   // nsIDOMHTMLElement
-  NS_FORWARD_NSIDOMHTMLELEMENT(nsGenericHTMLLeafElement::)
+  NS_FORWARD_NSIDOMHTMLELEMENT(nsGenericHTMLElement::)
 
   // nsIDOMHTMLHRElement
   NS_DECL_NSIDOMHTMLHRELEMENT
@@ -72,19 +72,19 @@ public:
   // nsIDOMNSHTMLHRElement
   NS_DECL_NSIDOMNSHTMLHRELEMENT
 
-  NS_IMETHOD StringToAttribute(nsIAtom* aAttribute,
-                               const nsAString& aValue,
-                               nsHTMLValue& aResult);
+  virtual PRBool ParseAttribute(nsIAtom* aAttribute,
+                                const nsAString& aValue,
+                                nsAttrValue& aResult);
   NS_IMETHOD AttributeToString(nsIAtom* aAttribute,
                                const nsHTMLValue& aValue,
                                nsAString& aResult) const;
-  NS_IMETHOD_(PRBool) HasAttributeDependentStyle(const nsIAtom* aAttribute) const;
+  NS_IMETHOD_(PRBool) IsAttributeMapped(const nsIAtom* aAttribute) const;
   NS_IMETHOD GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRuleFunc) const;
 };
 
 nsresult
 NS_NewHTMLHRElement(nsIHTMLContent** aInstancePtrResult,
-                    nsINodeInfo *aNodeInfo)
+                    nsINodeInfo *aNodeInfo, PRBool aFromParser)
 {
   NS_ENSURE_ARG_POINTER(aInstancePtrResult);
 
@@ -123,8 +123,7 @@ NS_IMPL_RELEASE_INHERITED(nsHTMLHRElement, nsGenericElement)
 
 
 // QueryInterface implementation for nsHTMLHRElement
-NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLHRElement,
-                                    nsGenericHTMLLeafElement)
+NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLHRElement, nsGenericHTMLElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMHTMLHRElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMNSHTMLHRElement)
   NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(HTMLHRElement)
@@ -150,7 +149,7 @@ nsHTMLHRElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
   if (NS_FAILED(rv))
     return rv;
 
-  CopyInnerTo(this, it, aDeep);
+  CopyInnerTo(it, aDeep);
 
   *aReturn = NS_STATIC_CAST(nsIDOMNode *, it);
 
@@ -173,38 +172,25 @@ static const nsHTMLValue::EnumTable kAlignTable[] = {
   { 0 }
 };
 
-NS_IMETHODIMP
-nsHTMLHRElement::StringToAttribute(nsIAtom* aAttribute,
-                                   const nsAString& aValue,
-                                   nsHTMLValue& aResult)
+PRBool
+nsHTMLHRElement::ParseAttribute(nsIAtom* aAttribute,
+                                const nsAString& aValue,
+                                nsAttrValue& aResult)
 {
   if (aAttribute == nsHTMLAtoms::width) {
-    if (aResult.ParseSpecialIntValue(aValue, eHTMLUnit_Pixel, PR_TRUE, PR_FALSE)) {
-      return NS_CONTENT_ATTR_HAS_VALUE;
-    }
+    return aResult.ParseSpecialIntValue(aValue, PR_TRUE, PR_FALSE);
   }
-  else if (aAttribute == nsHTMLAtoms::size) {
-    if (aResult.ParseIntWithBounds(aValue, eHTMLUnit_Pixel, 1, 1000)) {
-      return NS_CONTENT_ATTR_HAS_VALUE;
-    }
+  if (aAttribute == nsHTMLAtoms::size) {
+    return aResult.ParseIntWithBounds(aValue, 1, 1000);
   }
-  else if (aAttribute == nsHTMLAtoms::noshade) {
-    aResult.SetEmptyValue();
-    return NS_CONTENT_ATTR_HAS_VALUE;
+  if (aAttribute == nsHTMLAtoms::align) {
+    return aResult.ParseEnumValue(aValue, kAlignTable);
   }
-  else if (aAttribute == nsHTMLAtoms::align) {
-    if (aResult.ParseEnumValue(aValue, kAlignTable)) {
-      return NS_CONTENT_ATTR_HAS_VALUE;
-    }
-  }
-  else if (aAttribute == nsHTMLAtoms::color) {
-    if (aResult.ParseColor(aValue,
-                           nsGenericHTMLLeafElement::GetOwnerDocument())) {
-      return NS_CONTENT_ATTR_HAS_VALUE;
-    }
+  if (aAttribute == nsHTMLAtoms::color) {
+    return aResult.ParseColor(aValue, nsGenericHTMLElement::GetOwnerDocument());
   }
 
-  return NS_CONTENT_ATTR_NOT_THERE;
+  return nsGenericHTMLElement::ParseAttribute(aAttribute, aValue, aResult);
 }
 
 NS_IMETHODIMP
@@ -219,30 +205,28 @@ nsHTMLHRElement::AttributeToString(nsIAtom* aAttribute,
     }
   }
 
-  return nsGenericHTMLLeafElement::AttributeToString(aAttribute, aValue,
-                                                     aResult);
+  return nsGenericHTMLElement::AttributeToString(aAttribute, aValue, aResult);
 }
 
 static void
-MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
+MapAttributesIntoRule(const nsMappedAttributes* aAttributes,
                       nsRuleData* aData)
 {
   nsHTMLValue value;
   PRBool noshade = PR_FALSE;
 
-  nsHTMLValue color;
-  aAttributes->GetAttribute(nsHTMLAtoms::color, color);
-
-  PRBool colorIsSet = color.GetUnit() == eHTMLUnit_Color ||
-                      color.GetUnit() == eHTMLUnit_ColorName;
+  nsHTMLValue colorValue;
+  nscolor color;
+  PRBool colorIsSet = aAttributes->GetAttribute(nsHTMLAtoms::color, colorValue) !=
+                      NS_CONTENT_ATTR_NOT_THERE &&
+                      colorValue.GetColorValue(color);
 
   if (aData->mSID == eStyleStruct_Position ||
       aData->mSID == eStyleStruct_Border) {
     if (colorIsSet) {
       noshade = PR_TRUE;
     } else {
-      aAttributes->GetAttribute(nsHTMLAtoms::noshade, value);
-      noshade = value.GetUnit() != eHTMLUnit_Null;
+      noshade = !!aAttributes->GetAttr(nsHTMLAtoms::noshade);
     }
   }
 
@@ -275,18 +259,18 @@ MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
     }
   }
   else if (aData->mSID == eStyleStruct_Position) {
-    // width: pixel, percent
+    // width: integer, percent
     if (aData->mPositionData->mWidth.GetUnit() == eCSSUnit_Null) {
       aAttributes->GetAttribute(nsHTMLAtoms::width, value);
-      if (value.GetUnit() == eHTMLUnit_Pixel) {
-        aData->mPositionData->mWidth.SetFloatValue((float)value.GetPixelValue(), eCSSUnit_Pixel);
+      if (value.GetUnit() == eHTMLUnit_Integer) {
+        aData->mPositionData->mWidth.SetFloatValue((float)value.GetIntValue(), eCSSUnit_Pixel);
       } else if (value.GetUnit() == eHTMLUnit_Percent) {
         aData->mPositionData->mWidth.SetPercentValue(value.GetPercentValue());
       }
     }
 
     if (aData->mPositionData->mHeight.GetUnit() == eCSSUnit_Null) {
-      // size: pixel
+      // size: integer
       if (noshade) {
         // noshade case: size is set using the border
         aData->mPositionData->mHeight.SetAutoValue();
@@ -296,20 +280,20 @@ MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
         // for size=1, html.css has a special case rule that makes this work by
         // removing all but the top border.
         aAttributes->GetAttribute(nsHTMLAtoms::size, value);
-        if (value.GetUnit() == eHTMLUnit_Pixel) {
-          aData->mPositionData->mHeight.SetFloatValue((float)value.GetPixelValue(), eCSSUnit_Pixel);
+        if (value.GetUnit() == eHTMLUnit_Integer) {
+          aData->mPositionData->mHeight.SetFloatValue((float)value.GetIntValue(), eCSSUnit_Pixel);
         } // else use default value from html.css
       }
     }
   }
   else if (aData->mSID == eStyleStruct_Border && noshade) { // if not noshade, border styles are dealt with by html.css
-    // size: pixel
+    // size: integer
     // if a size is set, use half of it per side, otherwise, use 1px per side
     float sizePerSide;
     PRBool allSides = PR_TRUE;
     aAttributes->GetAttribute(nsHTMLAtoms::size, value);
-    if (value.GetUnit() == eHTMLUnit_Pixel) {
-      sizePerSide = (float)value.GetPixelValue() / 2.0f;
+    if (value.GetUnit() == eHTMLUnit_Integer) {
+      sizePerSide = (float)value.GetIntValue() / 2.0f;
       if (sizePerSide < 1.0f) {
         // XXX When the pixel bug is fixed, all the special casing for
         // subpixel borders should be removed.
@@ -379,7 +363,7 @@ MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
     // (we got the color attribute earlier)
     if (colorIsSet &&
         aData->mColorData->mColor.GetUnit() == eCSSUnit_Null) {
-      aData->mColorData->mColor.SetColorValue(color.GetColorValue());
+      aData->mColorData->mColor.SetColorValue(color);
     }
   }
 
@@ -387,9 +371,9 @@ MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
 }
 
 NS_IMETHODIMP_(PRBool)
-nsHTMLHRElement::HasAttributeDependentStyle(const nsIAtom* aAttribute) const
+nsHTMLHRElement::IsAttributeMapped(const nsIAtom* aAttribute) const
 {
-  static const AttributeDependenceEntry attributes[] = {
+  static const MappedAttributeEntry attributes[] = {
     { &nsHTMLAtoms::align },
     { &nsHTMLAtoms::width },
     { &nsHTMLAtoms::size },
@@ -398,7 +382,7 @@ nsHTMLHRElement::HasAttributeDependentStyle(const nsIAtom* aAttribute) const
     { nsnull },
   };
   
-  static const AttributeDependenceEntry* const map[] = {
+  static const MappedAttributeEntry* const map[] = {
     attributes,
     sCommonAttributeMap,
   };

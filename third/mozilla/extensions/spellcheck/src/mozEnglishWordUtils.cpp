@@ -36,117 +36,68 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "mozEnglishWordUtils.h"
-#include "nsICharsetConverterManager.h"
 #include "nsICharsetAlias.h"
-#include "nsUnicharUtilCIID.h"
 #include "nsReadableUtils.h"
 #include "nsIServiceManager.h"
+#include "nsUnicharUtilCIID.h"
 #include "nsCRT.h"
 #include "cattable.h"
 
-
-static NS_DEFINE_CID(kCharsetConverterManagerCID, NS_ICHARSETCONVERTERMANAGER_CID);
-static NS_DEFINE_CID(kUnicharUtilCID, NS_UNICHARUTIL_CID);
+static NS_DEFINE_CID(kUnicharUtilCID, NS_UNICHARUTIL_CID); 
 
 NS_IMPL_ISUPPORTS1(mozEnglishWordUtils, mozISpellI18NUtil)
 
 mozEnglishWordUtils::mozEnglishWordUtils()
 {
-  NS_INIT_ISUPPORTS();
-  /* member initializers and constructor code */
   mLanguage.Assign(NS_LITERAL_STRING("en"));
+
+  nsresult rv;
+  mURLDetector = do_CreateInstance(MOZ_TXTTOHTMLCONV_CONTRACTID, &rv);
 }
 
 mozEnglishWordUtils::~mozEnglishWordUtils()
 {
-  /* destructor code */
 }
 
 /* attribute wstring language; */
 NS_IMETHODIMP mozEnglishWordUtils::GetLanguage(PRUnichar * *aLanguage)
 {
-  nsresult res=NS_OK;
-  NS_PRECONDITION(aLanguage != nsnull, "null ptr");
-  if(!aLanguage){
-    res = NS_ERROR_NULL_POINTER;
-  }
-  else{
-    *aLanguage = ToNewUnicode(mLanguage);
-    if(!aLanguage) res = NS_ERROR_OUT_OF_MEMORY;
-  }
-  return res;
-}
+  nsresult rv = NS_OK;
+  NS_ENSURE_ARG_POINTER(aLanguage);
 
-/* attribute wstring charset; */
-NS_IMETHODIMP mozEnglishWordUtils::GetCharset(PRUnichar * *aCharset)
-{
-  nsresult res=NS_OK;
-  NS_PRECONDITION(aCharset != nsnull, "null ptr");
-  if(!aCharset){
-    res = NS_ERROR_NULL_POINTER;
-  }
-  else{
-    *aCharset = ToNewUnicode(mCharset);
-    if(!aCharset) res = NS_ERROR_OUT_OF_MEMORY;
-  }
-  return res;
-}
-NS_IMETHODIMP mozEnglishWordUtils::SetCharset(const PRUnichar * aCharset)
-{
-  nsresult res;
+  *aLanguage = ToNewUnicode(mLanguage);
+  if(!aLanguage) rv = NS_ERROR_OUT_OF_MEMORY;
+  return rv;
+ }
 
-  mCharset = aCharset;
-
-  nsCAutoString convCharset;
-  convCharset.AssignWithConversion(mCharset); 
-  
-  nsCOMPtr<nsICharsetConverterManager> ccm = do_GetService(kCharsetConverterManagerCID, &res);
-  if (NS_FAILED(res)) return res;
-  if(!ccm) return NS_ERROR_FAILURE;
-  res=ccm->GetUnicodeEncoder(convCharset.get(),getter_AddRefs(mEncoder));
-  if(mEncoder && NS_SUCCEEDED(res)){
-    res=mEncoder->SetOutputErrorBehavior(mEncoder->kOnError_Signal,nsnull,'?');
-  }
-  if (NS_FAILED(res)) return res;
-  res=ccm->GetUnicodeDecoder(convCharset.get(),getter_AddRefs(mDecoder));
-  if (NS_FAILED(res)) return res;
-  res = nsServiceManager::GetService(kUnicharUtilCID,NS_GET_IID(nsICaseConversion), getter_AddRefs(mCaseConv));
-  return res;
-}
-
-/* void GetRootForm (in wstring aWord, in PRUint32 type, [array, size_is (count)] out string words, out PRUint32 count); */
-// convert aWord to the spellcheck charset and return the possible root forms.
-// If convertion errors occur, return an empty list.
-NS_IMETHODIMP mozEnglishWordUtils::GetRootForm(const PRUnichar *aWord, PRUint32 type, char ***words, PRUint32 *count)
+/* void GetRootForm (in wstring aWord, in PRUint32 type, [array, size_is (count)] out wstring words, out PRUint32 count); */
+// return the possible root forms of aWord.
+NS_IMETHODIMP mozEnglishWordUtils::GetRootForm(const PRUnichar *aWord, PRUint32 type, PRUnichar ***words, PRUint32 *count)
 {
   nsAutoString word(aWord);
-  nsresult res;
-  char **tmpPtr;
-  PRUnichar *tWord;
-  PRInt32 inLength,outLength;
+  PRUnichar **tmpPtr;
+  PRInt32 length = word.Length();
+
   *count = 0;
+
+  if (!mCaseConv) {
+    mCaseConv = do_GetService(kUnicharUtilCID);
+    if (!mCaseConv)
+      return NS_ERROR_FAILURE;
+  }
 
   mozEnglishWordUtils::myspCapitalization ct = captype(word);
   switch (ct)
     {
     case HuhCap:
     case NoCap: 
-      tmpPtr = (char **)nsMemory::Alloc(sizeof(char *));
-      inLength = word.Length();
-      res = mEncoder->GetMaxLength(word.get(),inLength,&outLength);
-      if(NS_FAILED(res)|| res == NS_ERROR_UENC_NOMAPPING){
-        nsMemory::Free(tmpPtr);
-        *words=nsnull;
-        break;
-      }
-      tmpPtr[0] = (char *) nsMemory::Alloc(sizeof(char) * (outLength+1));
-      res = mEncoder->Convert(aWord,&inLength,tmpPtr[0],&outLength);
-      tmpPtr[0][outLength]='\0';
-      if(NS_FAILED(res)|| res == NS_ERROR_UENC_NOMAPPING){
-        nsMemory::Free(tmpPtr[0]);
-        nsMemory::Free(tmpPtr);
-        *words=nsnull;
-        break;
+      tmpPtr = (PRUnichar **)nsMemory::Alloc(sizeof(PRUnichar *));
+      if (!tmpPtr)
+        return NS_ERROR_OUT_OF_MEMORY;
+      tmpPtr[0] = ToNewUnicode(word);
+      if (!tmpPtr[0]) {
+        NS_FREE_XPCOM_ALLOCATED_POINTER_ARRAY(0, tmpPtr);
+        return NS_ERROR_OUT_OF_MEMORY;
       }
       *words = tmpPtr;
       *count = 1;
@@ -154,130 +105,65 @@ NS_IMETHODIMP mozEnglishWordUtils::GetRootForm(const PRUnichar *aWord, PRUint32 
     
 
     case AllCap:
-      tmpPtr = (char **)nsMemory::Alloc(sizeof(char *)*3);
-      inLength = word.Length();
-      res = mEncoder->GetMaxLength(word.get(),inLength,&outLength);
-      if(NS_FAILED(res)|| res == NS_ERROR_UENC_NOMAPPING){
-        nsMemory::Free(tmpPtr);
-        *words=nsnull;
-        break;
+      tmpPtr = (PRUnichar **)nsMemory::Alloc(sizeof(PRUnichar *) * 3);
+      if (!tmpPtr)
+        return NS_ERROR_OUT_OF_MEMORY;
+      tmpPtr[0] = ToNewUnicode(word);
+      if (!tmpPtr[0]) {
+        NS_FREE_XPCOM_ALLOCATED_POINTER_ARRAY(0, tmpPtr);
+        return NS_ERROR_OUT_OF_MEMORY;
       }
-      tmpPtr[0] = (char *) nsMemory::Alloc(sizeof(char) * (outLength+1));
-      res = mEncoder->Convert(aWord,&inLength,tmpPtr[0],&outLength);
-      if(NS_FAILED(res)|| res == NS_ERROR_UENC_NOMAPPING){
-        nsMemory::Free(tmpPtr[0]);
-        nsMemory::Free(tmpPtr);
-        *words=nsnull;
-        break;
-      }
-      tmpPtr[0][outLength]='\0';
+      mCaseConv->ToLower(tmpPtr[0], tmpPtr[0], length);
 
-      inLength = word.Length();
-      tWord=ToNewUnicode(word);
-      mCaseConv->ToLower(tWord,tWord,inLength);
-      res = mEncoder->GetMaxLength(tWord,inLength,&outLength);
-      if(NS_FAILED(res)|| res == NS_ERROR_UENC_NOMAPPING){
-        nsMemory::Free(tmpPtr[0]);
-        nsMemory::Free(tmpPtr);
-        *words=nsnull;
-        break;
+      tmpPtr[1] = ToNewUnicode(word);
+      if (!tmpPtr[1]) {
+        NS_FREE_XPCOM_ALLOCATED_POINTER_ARRAY(1, tmpPtr);
+        return NS_ERROR_OUT_OF_MEMORY;
       }
-      tmpPtr[1] = (char *) nsMemory::Alloc(sizeof(char) * (outLength+1));
-      res = mEncoder->Convert(tWord,&inLength,tmpPtr[1],&outLength);
-      if(NS_FAILED(res)|| res == NS_ERROR_UENC_NOMAPPING){
-        nsMemory::Free(tmpPtr[0]);
-        nsMemory::Free(tmpPtr[1]);
-        nsMemory::Free(tmpPtr);
-        *words=nsnull;
-        break;
-      }
-      tmpPtr[1][outLength]='\0';
-      nsMemory::Free(tWord);
+      mCaseConv->ToLower(tmpPtr[1], tmpPtr[1], length);
+      mCaseConv->ToUpper(tmpPtr[1], tmpPtr[1], 1);
 
-      tWord=ToNewUnicode(word);
-      mCaseConv->ToLower(tWord,tWord,inLength);
-      mCaseConv->ToUpper(tWord,tWord,1);
-      res = mEncoder->GetMaxLength(tWord,inLength,&outLength);
-      if(NS_FAILED(res)|| res == NS_ERROR_UENC_NOMAPPING){
-        nsMemory::Free(tmpPtr[0]);
-        nsMemory::Free(tmpPtr[1]);
-        nsMemory::Free(tmpPtr);
-        *words=nsnull;
-        break;
+      tmpPtr[2] = ToNewUnicode(word);
+      if (!tmpPtr[2]) {
+        NS_FREE_XPCOM_ALLOCATED_POINTER_ARRAY(2, tmpPtr);
+        return NS_ERROR_OUT_OF_MEMORY;
       }
-      tmpPtr[2] = (char *) nsMemory::Alloc(sizeof(char) * (outLength+1));
-      res = mEncoder->Convert(tWord,&inLength,tmpPtr[2],&outLength);
-      if(NS_FAILED(res)|| res == NS_ERROR_UENC_NOMAPPING){
-        nsMemory::Free(tmpPtr[0]);
-        nsMemory::Free(tmpPtr[1]);
-        nsMemory::Free(tmpPtr[2]);
-        nsMemory::Free(tmpPtr);
-        *words=nsnull;
-        break;
-      }
-      tmpPtr[2][outLength]='\0';
-      nsMemory::Free(tWord);
-      
+
       *words = tmpPtr;
       *count = 3;
       break;
-
+ 
     case InitCap:  
-      tmpPtr = (char **)nsMemory::Alloc(sizeof(char *)*2);
-      inLength = word.Length();
-      res = mEncoder->GetMaxLength(word.get(),inLength,&outLength);
-      if(NS_FAILED(res)|| res == NS_ERROR_UENC_NOMAPPING){
-        nsMemory::Free(tmpPtr);
-        *words=nsnull;
-        break;
-      }
-      tmpPtr[0] = (char *) nsMemory::Alloc(sizeof(char) * (outLength+1));
-      res = mEncoder->Convert(aWord,&inLength,tmpPtr[0],&outLength);
-      if(NS_FAILED(res)|| res == NS_ERROR_UENC_NOMAPPING){
-        nsMemory::Free(tmpPtr[0]);
-        nsMemory::Free(tmpPtr);
-        *words=nsnull;
-        break;
-      }
-      tmpPtr[0][outLength]='\0';
+      tmpPtr = (PRUnichar **)nsMemory::Alloc(sizeof(PRUnichar *) * 2);
+      if (!tmpPtr)
+        return NS_ERROR_OUT_OF_MEMORY;
 
-      tWord=ToNewUnicode(word);
-      inLength = word.Length();
-      mCaseConv->ToLower(tWord,tWord,inLength);
-      res = mEncoder->GetMaxLength(tWord,inLength,&outLength);
-      if(NS_FAILED(res)|| res == NS_ERROR_UENC_NOMAPPING){
-        nsMemory::Free(tmpPtr[0]);
-        nsMemory::Free(tmpPtr);
-        *words=nsnull;
-        break;
+      tmpPtr[0] = ToNewUnicode(word);
+      if (!tmpPtr[0]) {
+        NS_FREE_XPCOM_ALLOCATED_POINTER_ARRAY(0, tmpPtr);
+        return NS_ERROR_OUT_OF_MEMORY;
       }
-      tmpPtr[1] = (char *) nsMemory::Alloc(sizeof(char) * (outLength+1));
-      res = mEncoder->Convert(tWord,&inLength,tmpPtr[1],&outLength);
-      if(NS_FAILED(res)|| res == NS_ERROR_UENC_NOMAPPING){
-        nsMemory::Free(tmpPtr[1]);
-        nsMemory::Free(tmpPtr[0]);
-        nsMemory::Free(tmpPtr);
-        *words=nsnull;
-        break;
+      mCaseConv->ToLower(tmpPtr[0], tmpPtr[0], length);
+
+      tmpPtr[1] = ToNewUnicode(word);
+      if (!tmpPtr[1]) {
+        NS_FREE_XPCOM_ALLOCATED_POINTER_ARRAY(1, tmpPtr);
+        return NS_ERROR_OUT_OF_MEMORY;
       }
-      nsMemory::Free(tWord);
-      tmpPtr[1][outLength]='\0';
 
       *words = tmpPtr;
       *count = 2;
       break;
     default:
-      res=NS_ERROR_FAILURE; // should never get here;
-      break;
+      return NS_ERROR_FAILURE; // should never get here;
     }
-  return res;
+  return NS_OK;
 }
 
-// This needs vast improvement -- take the charset from he ISpell dictionary
+// This needs vast improvement
 static PRBool ucIsAlpha(PRUnichar c)
 {
-  if(5==GetCat(c)) return PR_TRUE;
-  return PR_FALSE;
+  return (5 == GetCat(c));
 }
 
 /* void FindNextWord (in wstring word, in PRUint32 length, in PRUint32 offset, out PRUint32 begin, out PRUint32 end); */
@@ -296,6 +182,36 @@ NS_IMETHODIMP mozEnglishWordUtils::FindNextWord(const PRUnichar *word, PRUint32 
       { 
         p++;
       }
+    
+    // we could be trying to break down a url, we don't want to break a url into parts,
+    // instead we want to find out if it really is a url and if so, skip it, advancing startWord 
+    // to a point after the url.
+
+    // before we spend more time looking to see if the word is a url, look for a url identifer
+    // and make sure that identifer isn't the last character in the word fragment.
+    if ( (*p == ':' || *p == '@' || *p == '.') &&  p < endbuf - 1) {
+
+        // ok, we have a possible url...do more research to find out if we really have one
+        // and determine the length of the url so we can skip over it.
+       
+        if (mURLDetector)
+        {
+          PRInt32 startPos = -1;
+          PRInt32 endPos = -1;        
+
+          mURLDetector->FindURLInPlaintext(startWord, endbuf - startWord, p - startWord, &startPos, &endPos);
+
+          // ok, if we got a url, adjust the array bounds, skip the current url text and find the next word again
+          if (startPos != -1 && endPos != -1) { 
+            startWord = p + endPos + 1; // skip over the url
+            p = startWord; // reset p
+
+            // now recursively call FindNextWord to search for the next word now that we have skipped the url
+            return FindNextWord(word, length, startWord - word, begin, end);
+          }
+        }
+    }
+
     while((p > startWord)&&(*(p-1) == '\'')){  // trim trailing apostrophes
       p--;
     }
@@ -338,27 +254,25 @@ mozEnglishWordUtils::captype(const nsString &word)
   nsMemory::Free(lword);
   return HuhCap;
 }
+
 // Convert the list of words in iwords to the same capitalization aWord and 
-// convert them to unicode then return them in owords.
-NS_IMETHODIMP mozEnglishWordUtils::FromRootForm(const PRUnichar *aWord, const char **iwords, PRUint32 icount, PRUnichar ***owords, PRUint32 *ocount)
+// return them in owords.
+NS_IMETHODIMP mozEnglishWordUtils::FromRootForm(const PRUnichar *aWord, const PRUnichar **iwords, PRUint32 icount, PRUnichar ***owords, PRUint32 *ocount)
 {
   nsAutoString word(aWord);
-  nsresult res = NS_OK;
+  nsresult rv = NS_OK;
 
-  PRInt32 inLength,outLength;
+  PRInt32 length;
   PRUnichar **tmpPtr  = (PRUnichar **)nsMemory::Alloc(sizeof(PRUnichar *)*icount);
   if (!tmpPtr)
     return NS_ERROR_OUT_OF_MEMORY;
 
   mozEnglishWordUtils::myspCapitalization ct = captype(word);
-  for(PRUint32 i=0;i<icount;i++){
-    inLength = nsCRT::strlen(iwords[i]);
-    res = mDecoder->GetMaxLength(iwords[i],inLength,&outLength);
-    if(NS_FAILED(res))
-      break;
-    tmpPtr[i] = (PRUnichar *) nsMemory::Alloc(sizeof(PRUnichar *) * (outLength+1));
-    res = mDecoder->Convert(iwords[i],&inLength,tmpPtr[i],&outLength);
-    tmpPtr[i][outLength]=0;
+  for(PRUint32 i = 0; i < icount; ++i) {
+    length = nsCRT::strlen(iwords[i]);
+    tmpPtr[i] = (PRUnichar *) nsMemory::Alloc(sizeof(PRUnichar) * (length + 1));
+    memcpy(tmpPtr[i], iwords[i], (length + 1) * sizeof(PRUnichar));
+
     nsAutoString capTest(tmpPtr[i]);
     mozEnglishWordUtils::myspCapitalization newCt=captype(capTest);
     if(newCt == NoCap){
@@ -368,22 +282,22 @@ NS_IMETHODIMP mozEnglishWordUtils::FromRootForm(const PRUnichar *aWord, const ch
         case NoCap:
           break;
         case AllCap:
-          res=mCaseConv->ToUpper(tmpPtr[i],tmpPtr[i],outLength);
+          rv = mCaseConv->ToUpper(tmpPtr[i],tmpPtr[i],length);
           break;
         case InitCap:  
-          res=mCaseConv->ToUpper(tmpPtr[i],tmpPtr[i],1);
+          rv = mCaseConv->ToUpper(tmpPtr[i],tmpPtr[i],1);
           break;
         default:
-          res=NS_ERROR_FAILURE; // should never get here;
+          rv = NS_ERROR_FAILURE; // should never get here;
           break;
 
         }
     }
   }
-  if(NS_SUCCEEDED(res)){
+  if (NS_SUCCEEDED(rv)){
     *owords = tmpPtr;
     *ocount = icount;
   }
-  return res;
+  return rv;
 }
 

@@ -60,7 +60,6 @@
 #include "nsIVariant.h"
 #include "nsIPrefService.h"
 #include "nsIPrefBranchInternal.h"
-#include "nsIPref.h"
 #include "nsIJSContextStack.h"
 
 #define WSA_GRANT_ACCESS_TO_ALL     (1 << 0)
@@ -68,23 +67,6 @@
 #define WSA_FILE_DELEGATED          (1 << 2)
 #define SERVICE_LISTED_PUBLIC       (1 << 3)
 #define HAS_MASTER_SERVICE_DECISION (1 << 4)
-
-NS_NAMED_LITERAL_STRING(kNamespace2002, "http://www.mozilla.org/2002/soap/security");
-
-// Element set
-NS_NAMED_LITERAL_STRING(kWebScriptAccessTag, "webScriptAccess");
-NS_NAMED_LITERAL_STRING(kDelegateTag, "delegate");
-NS_NAMED_LITERAL_STRING(kAllowTag, "allow");
-
-// Attribute set
-NS_NAMED_LITERAL_STRING(kTypeAttr, "type");
-NS_NAMED_LITERAL_STRING(kFromAttr, "from");
-
-// Default attribute value
-NS_NAMED_LITERAL_STRING(kAny, "any");
-
-// Method name. Note: This method should be implemented by master services.
-NS_NAMED_LITERAL_STRING(kIsServicePublic, "isServicePublic");
 
 static PRBool PR_CALLBACK 
 FreeEntries(nsHashKey *aKey, void *aData, void* aClosure)
@@ -96,9 +78,16 @@ FreeEntries(nsHashKey *aKey, void *aData, void* aClosure)
 
 NS_IMPL_ISUPPORTS1(nsWebScriptsAccess, 
                    nsIWebScriptsAccessService)
-                   
 
 nsWebScriptsAccess::nsWebScriptsAccess()
+  : NS_LITERAL_STRING_INIT(kNamespace2002, "http://www.mozilla.org/2002/soap/security")
+  , NS_LITERAL_STRING_INIT(kWebScriptAccessTag, "webScriptAccess")
+  , NS_LITERAL_STRING_INIT(kDelegateTag, "delegate")
+  , NS_LITERAL_STRING_INIT(kAllowTag, "allow")
+  , NS_LITERAL_STRING_INIT(kTypeAttr, "type")
+  , NS_LITERAL_STRING_INIT(kFromAttr, "from")
+  , NS_LITERAL_STRING_INIT(kAny, "any")
+  , NS_LITERAL_STRING_INIT(kIsServicePublic, "isServicePublic")
 {
 }
 
@@ -210,7 +199,7 @@ nsWebScriptsAccess::GetAccessInfoEntry(const char* aKey,
 }
 
 nsresult 
-nsWebScriptsAccess::GetDocument(const char* aDeclFilePath,
+nsWebScriptsAccess::GetDocument(const nsACString& aDeclFilePath,
                                 nsIDOMDocument** aDocument)
 {
   nsresult rv = NS_OK;
@@ -219,11 +208,13 @@ nsWebScriptsAccess::GetDocument(const char* aDeclFilePath,
     mRequest = do_CreateInstance(NS_XMLHTTPREQUEST_CONTRACTID, &rv);
     NS_ENSURE_SUCCESS(rv, rv);
   }
- 
-  rv = mRequest->OpenRequest("GET", aDeclFilePath, PR_FALSE, nsnull, nsnull);
+
+  const nsAString& empty = EmptyString();
+  rv = mRequest->OpenRequest(NS_LITERAL_CSTRING("GET"), aDeclFilePath,
+                             PR_FALSE, empty, empty);
   NS_ENSURE_SUCCESS(rv, rv);
     
-  rv = mRequest->OverrideMimeType("text/xml");
+  rv = mRequest->OverrideMimeType(NS_LITERAL_CSTRING("text/xml"));
   NS_ENSURE_SUCCESS(rv, rv);
 
   rv = mRequest->Send(0);
@@ -275,8 +266,8 @@ nsWebScriptsAccess::CreateEntry(const char* aKey,
   // it. Record the extracted info. for this session
   nsCOMPtr<nsIDOMDocument> document;
   nsresult rv = 
-    GetDocument(PromiseFlatCString(nsDependentCString(aKey) + 
-                NS_LITERAL_CSTRING("web-scripts-access.xml")).get(),
+    GetDocument(nsDependentCString(aKey) +
+                NS_LITERAL_CSTRING("web-scripts-access.xml"),
                 getter_AddRefs(document));
   NS_ENSURE_SUCCESS(rv, rv);
   if (document) {

@@ -70,6 +70,7 @@
 #include "nsXULElement.h"
 #include "nsXULTemplateBuilder.h"
 #include "nsSupportsArray.h"
+#include "nsContentUtils.h"
 
 #include "jsapi.h"
 #include "pldhash.h"
@@ -128,13 +129,13 @@ public:
     NS_IMETHOD CreateContents(nsIContent* aElement);
 
     // nsIDocumentObserver interface
-    NS_IMETHOD AttributeChanged(nsIDocument* aDocument,
-                                nsIContent*  aContent,
-                                PRInt32      aNameSpaceID,
-                                nsIAtom*     aAttribute,
-                                PRInt32      aModType);
+    virtual void AttributeChanged(nsIDocument* aDocument,
+                                  nsIContent*  aContent,
+                                  PRInt32      aNameSpaceID,
+                                  nsIAtom*     aAttribute,
+                                  PRInt32      aModType);
 
-    NS_IMETHOD DocumentWillBeDestroyed(nsIDocument* aDocument);
+    void DocumentWillBeDestroyed(nsIDocument* aDocument);
 
 protected:
     friend NS_IMETHODIMP
@@ -664,7 +665,7 @@ nsXULContentBuilder::BuildContentFromTemplate(nsIContent *aTemplateNode,
             // actual value of the 'rdf:resource' attribute for the
             // given node.
             PRUnichar attrbuf[128];
-            nsAutoString attrValue(CBufDescriptor(attrbuf, PR_TRUE, sizeof(attrbuf) / sizeof(PRUnichar), 0));
+            nsFixedString attrValue(attrbuf, NS_ARRAY_LENGTH(attrbuf), 0);
             rv = tmplKid->GetAttr(kNameSpaceID_None, nsXULAtoms::value, attrValue);
             if (NS_FAILED(rv)) return rv;
 
@@ -733,7 +734,7 @@ nsXULContentBuilder::BuildContentFromTemplate(nsIContent *aTemplateNode,
                     // going to be an RDF URI, which is usually
                     // longish.
                     PRUnichar attrbuf[128];
-                    nsAutoString attribValue(CBufDescriptor(attrbuf, PR_TRUE, sizeof(attrbuf) / sizeof(PRUnichar), 0));
+                    nsFixedString attribValue(attrbuf, NS_ARRAY_LENGTH(attrbuf), 0);
                     rv = tmplKid->GetAttr(attribNameSpaceID, attribName, attribValue);
                     if (NS_FAILED(rv)) return rv;
 
@@ -1079,8 +1080,7 @@ nsXULContentBuilder::RemoveMember(nsIContent* aContainerElement,
 
         // Set its document to null so that it'll get knocked out of
         // the XUL doc's resource-to-element map.
-        rv = child->SetDocument(nsnull, PR_TRUE, PR_TRUE);
-        if (NS_FAILED(rv)) return rv;
+        child->SetDocument(nsnull, PR_TRUE, PR_TRUE);
 
         // Remove from the content support map.
         mContentSupportMap.Remove(child);
@@ -1515,9 +1515,7 @@ nsXULContentBuilder::CreateElement(PRInt32 aNameSpaceID,
             return NS_ERROR_UNEXPECTED;
     }
 
-    rv = result->SetDocument(doc, PR_FALSE, PR_TRUE);
-    NS_ASSERTION(NS_SUCCEEDED(rv), "unable to set element's document");
-    if (NS_FAILED(rv)) return rv;
+    result->SetDocument(doc, PR_FALSE, PR_TRUE);
 
     *aResult = result;
     NS_ADDREF(*aResult);
@@ -1602,7 +1600,7 @@ nsXULContentBuilder::CreateContents(nsIContent* aElement)
 // nsIDocumentObserver methods
 //
 
-NS_IMETHODIMP
+void
 nsXULContentBuilder::AttributeChanged(nsIDocument* aDocument,
                                       nsIContent*  aContent,
                                       PRInt32      aNameSpaceID,
@@ -1627,16 +1625,17 @@ nsXULContentBuilder::AttributeChanged(nsIDocument* aDocument,
     }
 
     // Pass along to the generic template builder.
-    return nsXULTemplateBuilder::AttributeChanged(aDocument, aContent, aNameSpaceID, aAttribute, aModType);
+    nsXULTemplateBuilder::AttributeChanged(aDocument, aContent, aNameSpaceID,
+                                           aAttribute, aModType);
 }
 
-NS_IMETHODIMP
+void
 nsXULContentBuilder::DocumentWillBeDestroyed(nsIDocument *aDocument)
 {
     // Break circular references
     mContentSupportMap.Clear();
 
-    return nsXULTemplateBuilder::DocumentWillBeDestroyed(aDocument);
+    nsXULTemplateBuilder::DocumentWillBeDestroyed(aDocument);
 }
 
 

@@ -131,7 +131,7 @@ void nsGtkIMEHelper::SetupUnicodeDecoder()
            do_GetService(NS_PLATFORMCHARSET_CONTRACTID, &result);
   if (platform && NS_SUCCEEDED(result)) {
     nsCAutoString charset;
-    charset.Assign(NS_LITERAL_CSTRING(""));
+    charset.Truncate();
     result = platform->GetCharset(kPlatformCharsetSel_Menu, charset);
     if (NS_FAILED(result) || charset.IsEmpty()) {
       charset.Assign(NS_LITERAL_CSTRING("ISO-8859-1"));   // default
@@ -222,14 +222,14 @@ void nsIMEPreedit::Reset()
   mIMECompAttr->SetCapacity(0);
 }
 
-PRUnichar*
+const PRUnichar*
 nsIMEPreedit::GetPreeditString() const {
-  return (PRUnichar *) mIMECompUnicode->get();
+  return mIMECompUnicode->get();
 }
 
-char*
+const char*
 nsIMEPreedit::GetPreeditFeedback() const {
-  return (char*)mIMECompAttr->get();
+  return mIMECompAttr->get();
 }
 
 int nsIMEPreedit::GetPreeditLength() const {

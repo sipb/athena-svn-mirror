@@ -71,6 +71,12 @@
                 label="&viewImageCmd.label;"
                 accesskey="&viewImageCmd.accesskey;"
                 oncommand="gContextMenu.viewImage();"/>
+#ifndef XP_UNIX
+      <menuitem id="context-copyimage-contents"
+                label="&copyImageContentsCmd.label;"
+                accesskey="&copyImageContentsCmd.accesskey;"
+                command="cmd_copyImageContents"/>
+#endif
       <menuitem id="context-copyimage"
                 label="&copyImageCmd.label;"
                 accesskey="&copyImageCmd.accesskey;"
@@ -91,6 +97,7 @@
 
 <!--XXXBlake XUL sucks! We need autocheck for menuitems. -->
       <menuitem id="context-blockimage" class="menuitem-iconic"
+                accesskey="&blockImageCmd.accesskey;"
                 oncommand="gContextMenu.toggleImageBlocking(this.getAttribute('checked') != 'true');"/>
       <menuitem id="context-back"
                 label="&backCmd.label;"
@@ -153,6 +160,10 @@
                 accesskey="&selectAllCmd.accesskey;"
                 command="cmd_selectAll"/>      
       <menuseparator id="context-sep-selectall"/>
+      <menuitem id="context-keywordfield"
+                label="&keywordfield.label;"
+                accesskey="&keywordfield.accesskey;"
+                oncommand="AddKeywordForSearchField();"/>
       <menuitem id="context-searchselect"
                 accesskey="&search.accesskey;"
                 oncommand="OpenSearch('internet', gContextMenu.searchSelected(), true);"/>

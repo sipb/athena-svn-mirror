@@ -159,6 +159,9 @@ NS_IMETHODIMP nsRenderingContextGTK::Init(nsIDeviceContext* aContext,
                            w->allocation.width,
                            w->allocation.height,
                            gdk_rgb_get_visual()->depth);
+#ifdef MOZ_WIDGET_GTK2
+      gdk_drawable_set_colormap(win, gdk_rgb_get_colormap());
+#endif
     }
 
     GdkGC *gc = (GdkGC *)aWindow->GetNativeData(NS_NATIVE_GRAPHIC);
@@ -191,9 +194,9 @@ NS_IMETHODIMP nsRenderingContextGTK::Init(nsIDeviceContext* aContext,
 
 NS_IMETHODIMP nsRenderingContextGTK::CommonInit()
 {
-  mContext->GetDevUnitsToAppUnits(mP2T);
+  mP2T = mContext->DevUnitsToAppUnits();
   float app2dev;
-  mContext->GetAppUnitsToDevUnits(app2dev);
+  app2dev = mContext->AppUnitsToDevUnits();
   mTranMatrix->AddScale(app2dev, app2dev);
 
   return NS_OK;

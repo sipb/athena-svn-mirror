@@ -55,6 +55,9 @@
 #define GENERAL             "General"
 #define DEFAULT_LOCATION    "Default Location" 
 
+#define CLEAN_UPGRADE       "Cleanup On Upgrade"
+#define OBJECT_IGNOREd      "ObjectToIgnore%d"
+
 #define DLG_WELCOME         "Dialog Welcome"
 #define SHOW_DLG            "Show Dialog"
 #define TITLE               "Title"
@@ -67,7 +70,6 @@
 #define MSG0                "Message0"
 #define MSG1                "Message1"
 #define MSG2                "Message2"
-#define SETUP_TYPE          "Setup Type"
 #define SETUP_TYPEd         "Setup Type%d"
 #define DESC_SHORT          "Description Short"
 #define DESC_LONG           "Description Long"
@@ -93,6 +95,7 @@
 #define DOWNLOAD_ONLY_ATTR  "DOWNLOAD_ONLY"
 
 #define RUNAPPd             "RunApp%d"
+#define POSTINSTALLRUNd     "PostInstallRun%d"
 #define TARGET              "Target"
 #define ARGS                "Arguments"
 
@@ -142,16 +145,6 @@ do {                                                    \
     }                                                   \
 } while (0); 
 
-#define XI_ERR_BAIL_EXCEPT(_function, _errexpected)     \
-do {                                                    \
-    err = _function;                                    \
-    if (err != OK && err != _errexpected)               \
-    {                                                   \
-        ErrorHandler(err);                              \
-        goto BAIL;                                      \
-    }                                                   \
-} while(0);
-        
 #define XI_VERIFY(_ptr)                                 \
 do {                                                    \
     if (!_ptr)                                          \

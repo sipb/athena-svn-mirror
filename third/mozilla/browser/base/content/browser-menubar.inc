@@ -55,6 +55,8 @@
                 <menuitem label="&printSetupCmd.label;" accesskey="&printSetupCmd.accesskey;" oncommand="PrintUtils.showPageSetup();"/>
                 <menuitem label="&printPreviewCmd.label;" accesskey="&printPreviewCmd.accesskey;" oncommand="PrintUtils.printPreview(onEnterPrintPreview, onExitPrintPreview);"/>
                 <menuitem label="&printCmd.label;" accesskey="&printCmd.accesskey;" key="printKb" command="cmd_print"/>
+                <menuseparator/>
+                <menuitem label="&import.label;" accesskey="&import.accesskey;" oncommand="BrowserImport();"/>
 #ifndef XP_MACOSX
                 <menuseparator/>
 #endif
@@ -230,6 +232,17 @@
                                 <menupopup>
                                 </menupopup>
                             </menu>
+                            <menu label="&charsetMenuUnicode.label;" accesskey="&charsetMenuUnicode.accesskey;" datasources="rdf:charset-menu" ref="NC:BrowserUnicodeCharsetMenuRoot">
+                                <template>
+                                    <rule>
+                                        <menupopup>
+                                        <menuitem uri="..." label="rdf:http://home.netscape.com/NC-rdf#Name"/>
+                                        </menupopup>
+                                    </rule>
+                                </template>
+                                <menupopup>
+                                </menupopup>
+                            </menu>
                             <menuseparator />
                         </menupopup>
                     </menu>
@@ -309,13 +322,13 @@
             <rule>
                 <menupopup>
                 <menuitem uri="rdf:*" label="rdf:http://home.netscape.com/NC-rdf#Name" type="radio"
-                            oncommand="ShowWindowFromResource(event.target)"/>
+                            name="windowList" oncommand="ShowWindowFromResource(event.target)"/>
                 </menupopup>
             </rule>
             </template>
             <menupopup id="windowPopup">
-              <menuitem label="&zoomWindow.label;" disabled="true"/>
               <menuitem command="minimizeWindow" key="key_minimizeWindow"/>
+              <menuitem label="&zoomWindow.label;" disabled="true"/>
               <menuseparator/>
               <menuitem label="&bringAllToFront.label;" disabled="true"/>
               <menuseparator id="sep-window-list"/>

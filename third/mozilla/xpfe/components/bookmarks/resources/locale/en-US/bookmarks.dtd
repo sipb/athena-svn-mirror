@@ -36,7 +36,7 @@
 <!ENTITY button.newSeparator.label     "New Separator">
 <!ENTITY button.newSeparator.accesskey  "o">
 <!ENTITY command.newSeparator.accesskey "S">
-<!ENTITY menuitem.open.label           "Open Bookmark File...">
+<!ENTITY menuitem.open.label           "Open Bookmarks File...">
 <!ENTITY menuitem.open.accesskey       "O">
 <!ENTITY menuitem.import.label         "Import...">
 <!ENTITY menuitem.import.accesskey     "i">
@@ -48,7 +48,7 @@
 <!ENTITY edit.find.keybinding          "f">
 <!ENTITY command.properties.label      "Properties...">
 <!ENTITY button.properties.accesskey  "P">
-<!ENTITY command.properties.accesskey  "r">
+<!ENTITY command.properties.accesskey  "o">
 <!ENTITY edit.properties.keybinding    "i">
 <!ENTITY command.rename.label          "Rename...">
 <!ENTITY button.rename.accesskey      "R">

@@ -78,6 +78,7 @@
 #include "jsinterp.h"
 #include "jscntxt.h"
 #include "jsdbgapi.h"
+#include "jsgc.h"
 #include "xptinfo.h"
 #include "xpcforwards.h"
 #include "xpclog.h"
@@ -2172,6 +2173,9 @@ private:
     nsXPCWrappedJS* mRoot;
     nsXPCWrappedJS* mNext;
     nsISupports* mOuter;    // only set in root
+#ifdef GC_MARK_DEBUG
+    char *mGCRootName;
+#endif
 };
 
 /***************************************************************************/
@@ -2323,69 +2327,19 @@ private:
 
 /***************************************************************************/
 
-// class to export a JSString as an const nsAString, including refcounting
+// class to export a JSString as an const nsAString, no refcounting :(
 class XPCReadableJSStringWrapper : public nsDependentString
 {
 public:
-    static PRUnichar sEmptyString;
+    typedef nsDependentString::char_traits char_traits;
 
-    XPCReadableJSStringWrapper(JSString *str, PRUnichar *chars,
-                               size_t length) :
-        nsDependentString(chars, length), mStr(str), mSharedBufferHandle(0),
-        mBufferHandle(chars, chars + length)
+    XPCReadableJSStringWrapper(PRUnichar *chars, size_t length) :
+        nsDependentString(chars, length)
     { }
 
     XPCReadableJSStringWrapper() :
-        nsDependentString(&sEmptyString, &sEmptyString), mStr(nsnull),
-        mSharedBufferHandle(nsnull),
-        mBufferHandle(&sEmptyString, &sEmptyString)
-    { }
-
-    ~XPCReadableJSStringWrapper();
-
-    // buffer-handle accessors (virtual)
-    const nsBufferHandle<PRUnichar>* GetBufferHandle() const;
-    const nsBufferHandle<PRUnichar>* GetFlatBufferHandle() const;
-    const nsSharedBufferHandle<PRUnichar>* GetSharedBufferHandle() const;
-
-    // Override Length() to avoid multiple virtual calls to access the
-    // length
-    virtual size_type Length() const
-    {
-        return mStr ? JS_GetStringLength(mStr) : 0;
-    }
-
-    PRBool IsVoid() const
-    {
-        return mStr == nsnull;
-    }
-
-protected:
-    class SharedWrapperBufferHandle :
-        public nsSharedBufferHandleWithDestroy<PRUnichar>
-    {
-    public:
-        SharedWrapperBufferHandle(JSString *str, PRUnichar *chars,
-                                  size_t length) :
-            nsSharedBufferHandleWithDestroy<PRUnichar>(chars, chars + length,
-                                                       length + 1),
-            mStr(OBJECT_TO_JSVAL(str))
-        { }
-
-        virtual void Destroy();
-
-        JSBool RootString();
-
-        jsval mStr;
-    };
-
-    JSString *mStr;
-
-    // Pointer to shared buffer handle
-    SharedWrapperBufferHandle *mSharedBufferHandle;
-
-    // Inline non-shared buffer handle
-    nsBufferHandle<PRUnichar> mBufferHandle;
+        nsDependentString(char_traits::sEmptyBuffer, char_traits::sEmptyBuffer)
+    { SetIsVoid(PR_TRUE); }
 };
 
 // readable string conversions, static methods only
@@ -2397,8 +2351,6 @@ public:
                                         const nsAString &readable);
 
     static XPCReadableJSStringWrapper *JSStringToReadable(JSString *str);
-
-    static void ShutdownDOMStringFinalizer();
 
 private:
     XPCStringConvert();         // not implemented
@@ -2858,13 +2810,14 @@ private:
     void ClearMembers();
 
 private:
-    nsXPCComponents_Interfaces*  mInterfaces;
-    nsXPCComponents_Classes*     mClasses;
-    nsXPCComponents_ClassesByID* mClassesByID;
-    nsXPCComponents_Results*     mResults;
-    nsXPCComponents_ID*          mID;
-    nsXPCComponents_Exception*   mException;
-    nsXPCComponents_Constructor* mConstructor;
+    nsXPCComponents_Interfaces*     mInterfaces;
+    nsXPCComponents_InterfacesByID* mInterfacesByID;
+    nsXPCComponents_Classes*        mClasses;
+    nsXPCComponents_ClassesByID*    mClassesByID;
+    nsXPCComponents_Results*        mResults;
+    nsXPCComponents_ID*             mID;
+    nsXPCComponents_Exception*      mException;
+    nsXPCComponents_Constructor*    mConstructor;
 };
 
 /***************************************************************************/

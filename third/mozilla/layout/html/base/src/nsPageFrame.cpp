@@ -42,8 +42,8 @@
 #include "nsIRenderingContext.h"
 #include "nsHTMLAtoms.h"
 #include "nsLayoutAtoms.h"
-#include "nsIStyleSet.h"
 #include "nsIPresShell.h"
+#include "nsCSSFrameConstructor.h"
 #include "nsIDeviceContext.h"
 #include "nsReadableUtils.h"
 #include "nsIPrintPreviewContext.h"
@@ -127,11 +127,8 @@ nsPageFrame::SetInitialChildList(nsIPresContext* aPresContext,
 {
   nsIView* view = aChildList->GetView();
   if (view && mDoCreateWidget) {
-    nscoord dx, dy;
-    nsCOMPtr<nsIWidget> widget;
-    view->GetOffsetFromWidget(&dx, &dy, *getter_AddRefs(widget));
     nsCOMPtr<nsIPrintPreviewContext> ppContext = do_QueryInterface(aPresContext);
-    if (ppContext && widget) {
+    if (ppContext && view->GetNearestWidget(nsnull)) {
       view->CreateWidget(kCChildCID);  
     }
   }
@@ -163,13 +160,12 @@ NS_IMETHODIMP nsPageFrame::Reflow(nsIPresContext*          aPresContext,
       nsIFrame*           prevLastChild   = prevContentPage->mFrames.LastChild();
 
       // Create a continuing child of the previous page's last child
-      nsCOMPtr<nsIPresShell> presShell;
-      nsCOMPtr<nsIStyleSet>  styleSet;
       nsIFrame*     newFrame;
 
-      aPresContext->GetShell(getter_AddRefs(presShell));
-      presShell->GetStyleSet(getter_AddRefs(styleSet));
-      styleSet->CreateContinuingFrame(aPresContext, prevLastChild, contentPage, &newFrame);
+      aPresContext->PresShell()->FrameConstructor()->
+        CreateContinuingFrame(aPresContext, prevLastChild,
+                              contentPage, &newFrame);
+
       // Make the new area frame the 1st child of the page content frame. There may already be
       // children placeholders which don't get reflowed but must not be destroyed until the 
       // page content frame is destroyed.
@@ -225,8 +221,7 @@ NS_IMETHODIMP nsPageFrame::Reflow(nsIPresContext*          aPresContext,
 
       nsIView* view = frame->GetView();
       if (view) {
-        nsRegion region;
-        region.Copy(nsRect(0, 0, aDesiredSize.width, aDesiredSize.height));
+        nsRegion region(nsRect(0, 0, aDesiredSize.width, aDesiredSize.height));
         view->GetViewManager()->SetViewChildClipRegion(view, &region);
       }
 
@@ -280,11 +275,10 @@ nsPageFrame::GetFrameName(nsAString& aResult) const
 }
 #endif
 
-NS_IMETHODIMP
-nsPageFrame::IsPercentageBase(PRBool& aBase) const
+/* virtual */ PRBool
+nsPageFrame::IsContainingBlock() const
 {
-  aBase = PR_TRUE;
-  return NS_OK;
+  return PR_TRUE;
 }
 
 // Remove fix below when string gets fixed
@@ -360,7 +354,7 @@ nsPageFrame::ProcessSpecialCodes(const nsString& aStr, nsString& aNewStr)
     if (mPD->mDateTimeStr != nsnull) {
       aNewStr.ReplaceSubstring(kDate.get(), mPD->mDateTimeStr);
     } else {
-      aNewStr.ReplaceSubstring(kDate.get(), NS_LITERAL_STRING("").get());
+      aNewStr.ReplaceSubstring(kDate.get(), EmptyString().get());
     }
     return;
   }
@@ -549,7 +543,7 @@ nsPageFrame::DrawHeaderFooter(nsIPresContext*      aPresContext,
       aPresContext->GetBidiUtils(&bidiUtils);
       
       if (bidiUtils) {
-        PRUnichar* buffer = (PRUnichar*)str.get();
+        PRUnichar* buffer = str.BeginWriting();
         // Base direction is always LTR for now. If bug 139337 is fixed, 
         // that should change.
         rv = bidiUtils->RenderText(buffer, str.Length(), NSBIDI_LTR,
@@ -674,11 +668,9 @@ nsPageFrame::Paint(nsIPresContext*      aPresContext,
     aRenderingContext.SetColor(NS_RGB(0,0,0));
 
     // Get the FontMetrics to determine width.height of strings
-    nsCOMPtr<nsIDeviceContext> deviceContext;
-    aPresContext->GetDeviceContext(getter_AddRefs(deviceContext));
-    NS_ASSERTION(deviceContext, "Couldn't get the device context"); 
     nsCOMPtr<nsIFontMetrics> fontMet;
-    deviceContext->GetMetricsFor(*mPD->mHeadFootFont, nsnull, *getter_AddRefs(fontMet));
+    aPresContext->DeviceContext()->GetMetricsFor(*mPD->mHeadFootFont, nsnull,
+                                                 *getter_AddRefs(fontMet));
     nscoord ascent = 0;
     nscoord visibleHeight = 0;
     if (fontMet) {
@@ -762,9 +754,7 @@ NS_NewPageBreakFrame(nsIPresShell* aPresShell, nsIFrame** aNewFrame)
   //check that we are only creating page break frames when printing
   nsCOMPtr<nsIPresContext> presContext;    
   aPresShell->GetPresContext(getter_AddRefs(presContext));
-  PRBool isPaginated;
-  presContext->IsPaginated(&isPaginated);
-  NS_ASSERTION(isPaginated, "created a page break frame while not printing");
+  NS_ASSERTION(presContext->IsPaginated(), "created a page break frame while not printing");
 #endif
 
   nsPageBreakFrame* it = new (aPresShell) nsPageBreakFrame;

@@ -131,13 +131,13 @@ nsDeviceContextXp::InitDeviceContextXP(nsIDeviceContext *aCreatingDeviceContext,
   mPixelsToTwips = (float)NSIntPointsToTwips(72) / (float)print_resolution;
   mTwipsToPixels = 1.0f / mPixelsToTwips;
 
-  GetTwipsToDevUnits(newscale);
-  aParentContext->GetTwipsToDevUnits(origscale);
+  newscale = TwipsToDevUnits();
+  origscale = aParentContext->TwipsToDevUnits();
 
   mCPixelScale = newscale / origscale;
 
-  aParentContext->GetTwipsToDevUnits(t2d);
-  aParentContext->GetAppUnitsToDevUnits(a2d);
+  t2d = aParentContext->TwipsToDevUnits();
+  a2d = aParentContext->AppUnitsToDevUnits();
 
   mAppUnitsToDevUnits = (a2d / t2d) * mTwipsToPixels;
   mDevUnitsToAppUnits = 1.0f / mAppUnitsToDevUnits;
@@ -372,21 +372,6 @@ NS_IMETHODIMP nsDeviceContextXp::EndPage(void)
   return mPrintContext->EndPage();
 }
 
-/** ---------------------------------------------------
- *  See documentation in nsIDeviceContext.h
- *        @update 12/21/98 dwc
- */
-NS_IMETHODIMP nsDeviceContextXp :: ConvertPixel(nscolor aColor, 
-                                                        PRUint32 & aPixel)
-{
-  PR_LOG(nsDeviceContextXpLM, PR_LOG_DEBUG, ("nsDeviceContextXp::ConvertPixel()\n"));
-  aPixel = xxlib_rgb_xpixel_from_rgb(GetXlibRgbHandle(),
-                                     NS_RGB(NS_GET_B(aColor),
-                                            NS_GET_G(aColor),
-                                            NS_GET_R(aColor)));
-  return NS_OK;
-}
-
 NS_IMETHODIMP
 nsDeviceContextXp::GetPrintContext(nsXPrintContext*& aContext)
 {
@@ -398,11 +383,11 @@ class nsFontCacheXp : public nsFontCache
 {
 public:
   /* override DeviceContextImpl::CreateFontCache() */
-  NS_IMETHOD CreateFontMetricsInstance(nsIFontMetrics** aResult);
+  virtual nsresult CreateFontMetricsInstance(nsIFontMetrics** aResult);
 };
 
 
-NS_IMETHODIMP nsFontCacheXp::CreateFontMetricsInstance(nsIFontMetrics** aResult)
+nsresult nsFontCacheXp::CreateFontMetricsInstance(nsIFontMetrics** aResult)
 {
   NS_PRECONDITION(aResult, "null out param");
   nsIFontMetrics *fm = new nsFontMetricsXlib();

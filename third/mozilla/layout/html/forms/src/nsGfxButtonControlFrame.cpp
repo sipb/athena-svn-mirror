@@ -51,6 +51,7 @@
 #include "nsLayoutAtoms.h"
 #include "nsReflowPath.h"
 #include "nsAutoPtr.h"
+#include "nsStyleSet.h"
 // MouseEvent suppression in PP
 #include "nsGUIEvent.h"
 
@@ -58,7 +59,6 @@ static NS_DEFINE_CID(kTextNodeCID,   NS_TEXTNODE_CID);
 
 // Saving PresState
 #include "nsIPresState.h"
-#include "nsIHTMLContent.h"
 
 const nscoord kSuggestedNotSet = -1;
 
@@ -231,17 +231,15 @@ nsGfxButtonControlFrame::CreateFrameFor(nsIPresContext*   aPresContext,
 
   nsCOMPtr<nsIContent> content(do_QueryInterface(mTextContent));
   if (aContent == content.get()) {
-    nsCOMPtr<nsIPresShell> shell;
-    aPresContext->GetShell(getter_AddRefs(shell));
-
     nsIFrame * parentFrame = mFrames.FirstChild();
     nsStyleContext* styleContext = parentFrame->GetStyleContext();
 
-    rv = NS_NewTextFrame(shell, &newFrame);
+    rv = NS_NewTextFrame(aPresContext->PresShell(), &newFrame);
     if (NS_FAILED(rv)) { return rv; }
     if (!newFrame)   { return NS_ERROR_NULL_POINTER; }
     nsRefPtr<nsStyleContext> textStyleContext;
-    textStyleContext = aPresContext->ResolveStyleContextForNonElement(styleContext);
+    textStyleContext = aPresContext->StyleSet()->
+      ResolveStyleForNonElement(styleContext);
     if (!textStyleContext) { return NS_ERROR_NULL_POINTER; }
 
     if (styleContext) {
@@ -309,7 +307,7 @@ nsGfxButtonControlFrame::GetDefaultLabel(nsString& aString)
     rv = nsFormControlHelper::GetLocalizedString(propname, NS_LITERAL_STRING("Browse").get(), aString);
   }
   else {
-    aString.Assign(NS_LITERAL_STRING(""));
+    aString.Truncate();
     rv = NS_OK;
   }
   return rv;
@@ -389,9 +387,7 @@ nsGfxButtonControlFrame::HandleEvent(nsIPresContext* aPresContext,
                                       nsEventStatus*  aEventStatus)
 {
   // temp fix until Bug 124990 gets fixed
-  PRBool isPaginated = PR_FALSE;
-  aPresContext->IsPaginated(&isPaginated);
-  if (isPaginated && NS_IS_MOUSE_EVENT(aEvent)) {
+  if (aPresContext->IsPaginated() && NS_IS_MOUSE_EVENT(aEvent)) {
     return NS_OK;
   }
   // Override the HandleEvent to prevent the nsFrame::HandleEvent

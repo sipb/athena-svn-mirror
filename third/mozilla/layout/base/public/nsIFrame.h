@@ -166,11 +166,6 @@ typedef PRUint32 nsFrameState;
 // If this bit is set, then the frame corresponds to generated content
 #define NS_FRAME_GENERATED_CONTENT                    0x00000040
 
-// If this bit is set, then the frame has requested one or more image
-// loads via the nsIPresContext.StartLoadImage API at some time during
-// its lifetime.
-#define NS_FRAME_HAS_LOADED_IMAGES                    0x00000080
-
 // If this bit is set, then the frame has been moved out of the flow,
 // e.g., it is absolutely positioned or floated
 #define NS_FRAME_OUT_OF_FLOW                          0x00000100
@@ -669,23 +664,18 @@ public:
    *
    * Note that the list is only the additional named child lists and does not
    * include the unnamed principal child list.
-   *
-   * @return NS_ERROR_INVALID_ARG if the index is < 0 and NS_OK otherwise
    */
-  NS_IMETHOD  GetAdditionalChildListName(PRInt32   aIndex,
-                                         nsIAtom** aListName) const = 0;
+  virtual nsIAtom* GetAdditionalChildListName(PRInt32 aIndex) const = 0;
 
   /**
    * Get the first child frame from the specified child list.
    *
    * @param   aListName the name of the child list. A NULL pointer for the atom
    *            name means the unnamed principal child list
-   * @return  NS_ERROR_INVALID_ARG if there is no child list with the specified name
+   * @return  the child frame, or NULL if there is no such child
    * @see     #GetAdditionalListName()
    */
-  NS_IMETHOD  FirstChild(nsIPresContext* aPresContext,
-                         nsIAtom*        aListName,
-                         nsIFrame**      aFirstChild) const = 0;
+  virtual nsIFrame* GetFirstChild(nsIAtom* aListName) const = 0;
 
   /**
    * Child frames are linked together in a singly-linked list
@@ -803,11 +793,11 @@ public:
    *
    * @param aPresContext the presentation context
    * @param aContent     the content node that was changed
-   * @param aSubContent  a hint to the frame about the change
+   * @param aAppend      a hint to the frame about the change
    */
-  NS_IMETHOD  ContentChanged(nsIPresContext* aPresContext,
-                             nsIContent*     aChild,
-                             nsISupports*    aSubContent) = 0;
+  NS_IMETHOD  CharacterDataChanged(nsIPresContext* aPresContext,
+                                   nsIContent*     aChild,
+                                   PRBool          aAppend) = 0;
 
   /**
    * This call is invoked when the value of a content objects's attribute
@@ -1016,9 +1006,30 @@ public:
   virtual nsIAtom* GetType() const = 0;
   
   /**
-   * Is this frame a "containing block"?
+   * Is this frame a containing block for non-positioned elements?
    */
-  NS_IMETHOD  IsPercentageBase(PRBool& aBase) const = 0;
+  virtual PRBool IsContainingBlock() const = 0;
+
+  /**
+   * Invalidate part of the frame by asking the view manager to repaint.
+   * aDamageRect is allowed to extend outside the frame's bounds. We'll do the right
+   * thing. But it must be within the bounds of the view enclosing this frame.
+   * We deliberately don't have an Invalidate() method that defaults to the frame's bounds.
+   * We want all callers to *think* about what has changed in the frame and what area might
+   * need to be repainted.
+   *
+   * @param aDamageRect is in the frame's local coordinate space
+   */
+  void Invalidate(const nsRect& aDamageRect, PRBool aImmediate = PR_FALSE) const;
+
+  /**
+   * Computes a rect that includes this frame's outline. The returned rect is
+   * relative to this frame's origin.
+   *
+   * @param if nonnull, we record whether this rect is bigger than the frame's bounds
+   * @return the rect relative to this frame's origin
+   */
+  nsRect GetOutlineRect(PRBool* aAnyOutline = nsnull) const;
 
   /** Selection related calls
    */

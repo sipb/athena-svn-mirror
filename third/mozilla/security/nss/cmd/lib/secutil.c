@@ -229,13 +229,17 @@ SECU_GetModulePassword(PK11SlotInfo *slot, PRBool retry, void *arg)
     char prompt[255];
     secuPWData *pwdata = (secuPWData *)arg;
     secuPWData pwnull = { PW_NONE, 0 };
+    secuPWData pwxtrn = { PW_EXTERNAL, "external" };
     char *pw;
 
     if (pwdata == NULL)
 	pwdata = &pwnull;
 
+    if (PK11_ProtectedAuthenticationPath(slot)) {
+	pwdata = &pwxtrn;
+    }
     if (retry && pwdata->source != PW_NONE) {
-	PR_fprintf(PR_STDERR, "incorrect password entered at command line.\n");
+	PR_fprintf(PR_STDERR, "Incorrect password/PIN entered.\n");
     	return NULL;
     }
 
@@ -253,6 +257,12 @@ SECU_GetModulePassword(PK11SlotInfo *slot, PRBool retry, void *arg)
 	pwdata->data = PL_strdup(pw);
 	/* it's already been dup'ed */
 	return pw;
+    case PW_EXTERNAL:
+	sprintf(prompt, 
+	        "Press Enter, then enter PIN for \"%s\" on external device.\n",
+		PK11_GetTokenName(slot));
+	(void) SECU_GetPasswordString(NULL, prompt);
+    	/* Fall Through */
     case PW_PLAINTEXT:
 	return PL_strdup(pwdata->data);
     default:
@@ -622,10 +632,10 @@ SECStatus
 SECU_ReadDERFromFile(SECItem *der, PRFileDesc *inFile, PRBool ascii)
 {
     SECStatus rv;
-    char *asc, *body, *trailer;
     if (ascii) {
 	/* First convert ascii to binary */
 	SECItem filedata;
+	char *asc, *body;
 
 	/* Read in ascii data */
 	rv = SECU_FileToItem(&filedata, inFile);
@@ -637,8 +647,13 @@ SECU_ReadDERFromFile(SECItem *der, PRFileDesc *inFile, PRBool ascii)
 
 	/* check for headers and trailers and remove them */
 	if ((body = strstr(asc, "-----BEGIN")) != NULL) {
-	    body = PORT_Strchr(body, '\n') + 1;
-	    trailer = strstr(body, "-----END");
+	    char *trailer = NULL;
+	    asc = body;
+	    body = PORT_Strchr(body, '\n');
+	    if (!body)
+		body = PORT_Strchr(asc, '\r'); /* maybe this is a MAC file */
+	    if (body)
+		trailer = strstr(++body, "-----END");
 	    if (trailer != NULL) {
 		*trailer = '\0';
 	    } else {
@@ -658,7 +673,7 @@ SECU_ReadDERFromFile(SECItem *der, PRFileDesc *inFile, PRBool ascii)
 	    PORT_Free(filedata.data);
 	    return SECFailure;
 	}
-	PORT_Free(asc);
+
 	PORT_Free(filedata.data);
     } else {
 	/* Read in binary der */
@@ -712,8 +727,6 @@ SECU_PrintAsHex(FILE *out, SECItem *data, const char *m, int level)
 
     if (!isString) 
       for (i = 0; i < data->len; i++) {
-	unsigned char val = data->data[i];
-
 	if (i != data->len - 1) {
 	    fprintf(out, "%02x:", data->data[i]);
 	    column += 3;
@@ -1497,7 +1510,7 @@ secu_PrintPolicyInfo(FILE *out,CERTPolicyInfo *policyInfo,char *msg,int level)
    policyQualifiers = policyInfo->policyQualifiers;
    SECU_PrintObjectID(out, &policyInfo->policyID , "Policy Name", level);
    
-   while (*policyQualifiers != NULL) {
+   while (policyQualifiers != NULL && *policyQualifiers != NULL) {
 	secu_PrintPolicyQualifier(out,*policyQualifiers,"",level+1);
 	policyQualifiers++;
    }

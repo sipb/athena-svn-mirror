@@ -329,6 +329,7 @@ function onLoadPageInfo()
 }
 
 function doHelpButton() {
+  var helpdoc;
   var tabControl = document.getElementById("tabbox");
   switch (tabControl.selectedTab.id) {
     case "generalTab":
@@ -613,14 +614,12 @@ function onFormSelect()
     var ft = null;
     if (form.name)
       ft = theBundle.getFormattedString("formTitle", [form.name]);
-    else
-      ft = theBundle.getString("formUntitled");
 
     document.getElementById("formname").value = ft || theBundle.getString("formUntitled");
     document.getElementById("formenctype").value = form.encoding || theBundle.getString("default");
     document.getElementById("formtarget").value = form.target || theBundle.getString("formDefaultTarget");
 
-    var formfields = findFormControls(form);
+    var formfields = form.elements;
 
     var length = formfields.length;
     var i = 0;
@@ -637,7 +636,7 @@ function onFormSelect()
       else
         val = (/^password$/i.test(elem.type)) ? theBundle.getString("formPassword") : elem.value;
 
-      fieldView.addRow(["", elem.id || elem.name, elem.type, val]);
+      fieldView.addRow(["", elem.name, elem.type, val]);
     }
 
     var labels = form.getElementsByTagName("label");
@@ -676,17 +675,6 @@ function findFirstControl(node)
   var iterator = theDocument.createTreeWalker(node, NodeFilter.SHOW_ELEMENT, FormControlFilter, true);
 
   return iterator.nextNode();
-}
-
-function findFormControls(node)
-{
-  var iterator = theDocument.createTreeWalker(node, NodeFilter.SHOW_ELEMENT, FormControlFilter, true);
-
-  var list = [];
-  while (iterator.nextNode())
-    list.push(iterator.currentNode);
-
-  return list;
 }
 
 //******** Link Stuff
@@ -936,14 +924,11 @@ function makePreview(row)
 
 function getContentTypeFromHeaders(cacheEntryDescriptor)
 {
-  var headers, match;
+  if (!cacheEntryDescriptor)
+    return null;
 
-  if (cacheEntryDescriptor)
-  {  
-    headers = cacheEntryDescriptor.getMetaDataElement("response-head");
-    match = /^Content-Type:\s*(.*?)\s*(?:\;|$)/mi.exec(headers);
-    return match[1];
-  }
+  return (/^Content-Type:\s*(.*?)\s*(?:\;|$)/mi
+          .exec(cacheEntryDescriptor.getMetaDataElement("response-head")))[1];
 }
 
 function getContentTypeFromImgRequest(item)

@@ -73,7 +73,7 @@ protected:
   nsContentSink();
   virtual ~nsContentSink();
 
-  nsresult Init(nsIDocument* aDoc, nsIURI* aURL,
+  nsresult Init(nsIDocument* aDoc, nsIURI* aURI,
                 nsISupports* aContainer, nsIChannel* aChannel);
 
   nsresult ProcessHTTPHeaders(nsIChannel* aChannel);
@@ -92,10 +92,13 @@ protected:
                                     const nsAString& aType,
                                     const nsAString& aMedia);
 
+  nsresult ProcessMETATag(nsIContent* aContent);
+
   void PrefetchHref(const nsAString &aHref, PRBool aExplicit);
 
   PRBool ScrollToRef(PRBool aReallyScroll);
   nsresult RefreshIfEnabled(nsIViewManager* vm);
+  void StartLayout(PRBool aIsFrameset);
 
   // Overridable hooks into script evaluation
   virtual void PreEvaluateScript()  {return;}
@@ -103,8 +106,8 @@ protected:
 
   nsCOMPtr<nsIDocument>         mDocument;
   nsCOMPtr<nsIParser>           mParser;
-  nsCOMPtr<nsIURI>              mDocumentURL;
-  nsCOMPtr<nsIURI>              mDocumentBaseURL;
+  nsCOMPtr<nsIURI>              mDocumentURI;
+  nsCOMPtr<nsIURI>              mDocumentBaseURI;
   nsCOMPtr<nsIDocShell>         mDocShell;
   nsCOMPtr<nsICSSLoader>        mCSSLoader;
   nsCOMPtr<nsINodeInfoManager>  mNodeInfoManager;

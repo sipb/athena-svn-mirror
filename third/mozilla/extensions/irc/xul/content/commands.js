@@ -50,9 +50,11 @@ function initCommands()
          ["away",              cmdAway,             CMD_NEED_SRV | CMD_CONSOLE],
          ["cancel",            cmdCancel,           CMD_NEED_NET | CMD_CONSOLE],
          ["charset",           cmdCharset,                         CMD_CONSOLE],
-         ["channel-charset",   cmdCharset,         CMD_NEED_CHAN | CMD_CONSOLE],
          ["channel-motif",     cmdMotif,           CMD_NEED_CHAN | CMD_CONSOLE],
          ["channel-pref",      cmdPref,            CMD_NEED_CHAN | CMD_CONSOLE],
+         ["cmd-copy",          cmdCopy,                                      0],
+         ["cmd-copy-link-url", cmdCopyLinkURL,                               0],
+         ["cmd-selectall",     cmdSelectAll,                                 0],
          ["op",                cmdChanUserMode,    CMD_NEED_CHAN | CMD_CONSOLE],
          ["deop",              cmdChanUserMode,    CMD_NEED_CHAN | CMD_CONSOLE],
          ["hop",               cmdChanUserMode,    CMD_NEED_CHAN | CMD_CONSOLE],
@@ -63,6 +65,7 @@ function initCommands()
          ["client",            cmdClient,                          CMD_CONSOLE],
          ["commands",          cmdCommands,                        CMD_CONSOLE],
          ["ctcp",              cmdCTCP,             CMD_NEED_SRV | CMD_CONSOLE],
+         ["default-charset",   cmdCharset,                         CMD_CONSOLE],
          ["delete-view",       cmdDeleteView,                      CMD_CONSOLE],
          ["disable-plugin",    cmdAblePlugin,                      CMD_CONSOLE],
          ["disconnect",        cmdDisconnect,       CMD_NEED_SRV | CMD_CONSOLE],
@@ -70,11 +73,16 @@ function initCommands()
          ["enable-plugin",     cmdAblePlugin,                      CMD_CONSOLE],
          ["eval",              cmdEval,                            CMD_CONSOLE],
          ["focus-input",       cmdFocusInput,                      CMD_CONSOLE],
+         ["font-family",       cmdFont,                            CMD_CONSOLE],
+         ["font-family-other", cmdFont,                                      0],
+         ["font-size",         cmdFont,                            CMD_CONSOLE],
+         ["font-size-other",   cmdFont,                                      0],
          ["goto-url",          cmdGotoURL,                                   0],
          ["goto-url-newwin",   cmdGotoURL,                                   0],
          ["goto-url-newtab",   cmdGotoURL,                                   0],
          ["help",              cmdHelp,                            CMD_CONSOLE],
          ["hide-view",         cmdHideView,                        CMD_CONSOLE],
+         ["ignore",            cmdIgnore,           CMD_NEED_NET | CMD_CONSOLE],
          ["invite",            cmdInvite,           CMD_NEED_SRV | CMD_CONSOLE],
          ["join",              cmdJoin,             CMD_NEED_SRV | CMD_CONSOLE],
          ["join-charset",      cmdJoin,             CMD_NEED_SRV | CMD_CONSOLE],
@@ -90,7 +98,6 @@ function initCommands()
          ["msg",               cmdMsg,              CMD_NEED_SRV | CMD_CONSOLE],
          ["names",             cmdNames,            CMD_NEED_SRV | CMD_CONSOLE],
          ["network",           cmdNetwork,                         CMD_CONSOLE],
-         ["network-charset",   cmdCharset,          CMD_NEED_NET | CMD_CONSOLE],
          ["network-motif",     cmdMotif,            CMD_NEED_NET | CMD_CONSOLE],
          ["network-pref",      cmdPref,             CMD_NEED_NET | CMD_CONSOLE],
          ["networks",          cmdNetworks,                        CMD_CONSOLE],
@@ -109,17 +116,21 @@ function initCommands()
          ["squery",            cmdSquery,           CMD_NEED_SRV | CMD_CONSOLE],
          ["stalk",             cmdStalk,                           CMD_CONSOLE],
          ["supports",          cmdSupports,         CMD_NEED_SRV | CMD_CONSOLE],
+         ["sync-fonts",        cmdSync,                                      0],
          ["sync-headers",      cmdSync,                                      0],
          ["sync-logs",         cmdSync,                                      0],
          ["sync-motifs",       cmdSync,                                      0],
+         ["sync-timestamps",   cmdSync,                                      0],
          ["sync-windows",      cmdSync,                                      0],
          ["testdisplay",       cmdTestDisplay,                     CMD_CONSOLE],
+         ["timestamps",        cmdTimestamps,                      CMD_CONSOLE],
+         ["timestamp-format",  cmdTimestampFormat,                 CMD_CONSOLE],
          ["toggle-ui",         cmdToggleUI,                        CMD_CONSOLE],
          ["toggle-pref",       cmdTogglePref,                                0],
          ["topic",             cmdTopic,           CMD_NEED_CHAN | CMD_CONSOLE],
+         ["unignore",          cmdIgnore,           CMD_NEED_NET | CMD_CONSOLE],
          ["unstalk",           cmdUnstalk,                         CMD_CONSOLE],
          ["usermode",          cmdUsermode,                        CMD_CONSOLE],
-         ["user-charset",      cmdCharset,         CMD_NEED_USER | CMD_CONSOLE],
          ["user-motif",        cmdMotif,           CMD_NEED_USER | CMD_CONSOLE],
          ["user-pref",         cmdPref,            CMD_NEED_USER | CMD_CONSOLE],
          ["version",           cmdVersion,                         CMD_CONSOLE],
@@ -135,11 +146,26 @@ function initCommands()
          ["name",             "pref username",                     CMD_CONSOLE],
          ["part",             "leave",                             CMD_CONSOLE],
          ["j",                "join",                              CMD_CONSOLE],
+         // These are all the font family/size menu commands...
+         ["font-family-default",    "font-family default",                   0],
+         ["font-family-serif",      "font-family serif",                     0],
+         ["font-family-sans-serif", "font-family sans-serif",                0],
+         ["font-family-monospace",  "font-family monospace",                 0],
+         ["font-size-default",      "font-size default",                     0],
+         ["font-size-small",        "font-size small",                       0],
+         ["font-size-medium",       "font-size medium",                      0],
+         ["font-size-large",        "font-size large",                       0],
+         ["font-size-bigger",       "font-size bigger",                      0],
+         // This next command is not visible; it maps to Ctrl-=, which is what
+         // you get when the user tries to do Ctrl-+ (previous command's key).
+         ["font-size-bigger2",      "font-size bigger",                      0],
+         ["font-size-smaller",      "font-size smaller",                     0],
          ["toggle-oas",       "open-at-startup toggle",                      0],
          ["toggle-ccm",       "toggle-pref collapseMsgs",                    0],
          ["toggle-copy",      "toggle-pref copyMessages",                    0],
          ["toggle-usort",     "toggle-pref sortUsersByMode",                 0],
          ["toggle-umode",     "toggle-pref showModeSymbols",                 0],
+         ["toggle-timestamps","timestamps toggle",                           0],
          ["motif-dark",       "motif dark",                                  0],
          ["motif-light",      "motif light",                                 0],
          ["motif-default",    "motif default",                               0],
@@ -160,7 +186,7 @@ function initCommands()
     client.commandManager.defineCommands(cmdary);
 
     client.commandManager.argTypes.__aliasTypes__(["reason", "action", "text",
-                                                   "message", "params", 
+                                                   "message", "params", "font", 
                                                    "reason", "expression",
                                                    "ircCommand", "prefValue",
                                                    "newTopic", "commandList"],
@@ -265,8 +291,10 @@ function dispatch(text, e, isInteractive, flags)
             if (e.server && e.server.isConnected &&
                 client.prefs["guessCommands"])
             {
-                return dispatch("quote", {inputData: e.commandText + " " +
-                                                     e.inputData});
+                /* Want to keep the source details. */
+                var e2 = getObjectDetails(e.sourceObject);
+                e2.inputData = e.commandText + " " + e.inputData;
+                return dispatch("quote", e2);
             }
 
             display(getMsg(MSG_NO_CMDMATCH, e.commandText), MT_ERROR);
@@ -580,25 +608,15 @@ function cmdCharset(e)
 {
     var pm;
     
-    if (e.command.name == "channel-charset")
-    {
-        pm = e.channel.prefManager;
-        msg = MSG_CURRENT_CHARSET_CHAN;
-    }
-    else if (e.command.name == "network-charset")
-    {
-        pm = e.network.prefManager;
-        msg = MSG_CURRENT_CHARSET_NET;
-    }
-    else if (e.command.name == "user-charset")
-    {
-        pm = e.user.prefManager;
-        msg = MSG_CURRENT_CHARSET_USER;
-    }
-    else
+    if (e.command.name == "default-charset")
     {
         pm = client.prefManager;
         msg = MSG_CURRENT_CHARSET;
+    }
+    else
+    {
+        pm = e.sourceObject.prefManager;
+        msg = MSG_CURRENT_CHARSET_VIEW;
     }
 
     if (e.newCharset)
@@ -628,6 +646,18 @@ function cmdSync(e)
 
     switch (e.command.name)
     {
+        case "sync-fonts":
+            fun = function () 
+                  {
+                      if (view.prefs["displayHeader"])
+                          view.setHeaderState(false);
+                      view.changeCSS(view.getFontCSS("data"), 
+                                     "cz-fonts");
+                      if (view.prefs["displayHeader"])
+                          view.setHeaderState(true);
+                  };
+            break;
+            
         case "sync-headers":
             fun = function () 
                   {
@@ -639,6 +669,14 @@ function cmdSync(e)
             fun = function () 
                   {
                       view.changeCSS(view.prefs["motif.current"]);
+                  };
+            break;
+            
+        case "sync-timestamps":
+            fun = function () 
+                  {
+                      view.changeCSS(view.getTimestampCSS("data"), 
+                                     "cz-timestamp-format");
                   };
             break;
             
@@ -948,6 +986,11 @@ function cmdServer(e)
         client.addNetwork(name, [{name: e.hostname, port: e.port,
                                         password: e.password}])
     }
+    else if (e.password)
+    {
+        /* update password on existing server. */
+        client.networks[name].serverList[0].password = e.password;
+    }
 
     return client.connectToNetwork(name);
 }
@@ -1000,13 +1043,15 @@ function cmdDeleteView(e)
             client.deck.removeChild(e.view.frame);
             delete e.view.frame;
 
+            var oldView = client.currentObject;
             if (client.currentObject == e.view)
             {
                 if (i >= client.viewsArray.length)
                     i = client.viewsArray.length - 1;
-                client.currentObject = null;
-                setCurrentObject(client.viewsArray[i].source);
+                oldView = client.viewsArray[i].source
             }
+            client.currentObject = null;
+            setCurrentObject(oldView);
         }
     }
 }
@@ -1025,11 +1070,16 @@ function cmdHideView(e)
         {
             client.deck.removeChild(e.view.frame);
             delete e.view.frame;
-            if (i >= client.viewsArray.length)
-                i = client.viewsArray.length - 1;
 
+            var oldView = client.currentObject;
+            if (client.currentObject == e.view)
+            {
+                if (i >= client.viewsArray.length)
+                    i = client.viewsArray.length - 1;
+                oldView = client.viewsArray[i].source
+            }
             client.currentObject = null;
-            setCurrentObject (client.viewsArray[i].source);
+            setCurrentObject(oldView);
         }
     }
 }
@@ -1049,12 +1099,10 @@ function cmdClearView(e)
 
 function cmdNames(e)
 {
-    var name;
-    
     if (e.channelName)
     {
         var encodedName = fromUnicode(e.channelName, e.network);
-        name = encodedName;
+        e.channel = new CIRCChannel (e.server, encodedName, e.channelName);
     }
     else
     {
@@ -1063,12 +1111,10 @@ function cmdNames(e)
             display(getMsg(MSG_ERR_REQUIRED_PARAM, "channel-name"), MT_ERROR);
             return;
         }
-
-        name = e.channel.encodedName;
     }
     
     e.channel.pendingNamesReply = true;
-    e.server.sendData ("NAMES " + name + "\n");
+    e.server.sendData ("NAMES " + e.channel.encodedName + "\n");
 }
 
 function cmdTogglePref (e)
@@ -1250,7 +1296,7 @@ function cmdList(e)
 {
     e.network.list = new Array();
     e.network.list.regexp = null;
-    if (!e.channelName)
+    if (!e.channelName || !e.inputData)
         e.channelName = "";
     e.server.sendData("LIST " + e.channelName + "\n");
 }
@@ -1423,6 +1469,22 @@ function cmdJoin(e)
         return null;
     }
 
+    if (e.channelName && (e.channelName.search(",") != -1))
+    {
+        // We can join multiple channels! Woo!
+        var chan;
+        var chans = e.channelName.split(",");
+        var keys = [];
+        if (e.key)
+            keys = e.key.split(",");
+        for (var c in chans)
+        {
+            chan = dispatch("join", { charset: e.charset, 
+                                      channelName: chans[c], 
+                                      key: keys.shift() });
+        }
+        return chan;
+    }
     if (!e.channelName)
     {
         var channel = e.channel;
@@ -1447,14 +1509,19 @@ function cmdJoin(e)
     
     e.channel.join(e.key);
     
-    if (!("messages" in e.channel))
+    /* !-channels are "safe" channels, and get a server-generated prefix. For
+     * this reason, we shouldn't do anything client-side until the server 
+     * replies (since the reply will have the appropriate prefix). */
+    if (e.channelName[0] != "!")
     {
-        e.channel.displayHere(getMsg(MSG_CHANNEL_OPENED, e.channel.unicodeName),
-                              MT_INFO);
-    }
+        if (!("messages" in e.channel))
+        {
+            e.channel.displayHere(getMsg(MSG_CHANNEL_OPENED, 
+                                         e.channel.unicodeName), MT_INFO);
+        }
 
-    if (!e.isInteractive || client.prefs["focusChannelOnJoin"])
         setCurrentObject(e.channel);
+    }
 
     return e.channel;
 }
@@ -1473,7 +1540,7 @@ function cmdLeave(e)
             e.channelName = "#" + e.channelName;
 
         e.channelName = fromUnicode(e.channelName, e.network);
-        var key = e.channelName.toLowerCase();
+        var key = e.server.toLowerCase(e.channelName);
         if (key in e.server.channels)
             e.channel = e.server.channels[key];
         else
@@ -1490,14 +1557,25 @@ function cmdLeave(e)
         e.channelName = e.channel.encodedName;
     }
 
-    if (e.channel && e.noDelete)
-        e.channel.noDelete = true;
+    /* If it's not active, we're not actually in it, even though the view is
+     * still here.
+     */
+    if (e.channel && e.channel.active)
+    {
+        if (e.noDelete)
+            e.channel.noDelete = true;
 
-    if (!e.reason)
-        e.reason = "";
-    
-    e.server.sendData("PART " + e.channelName + " :" +
-                      fromUnicode(e.reason, e.channel) + "\n");
+        if (!e.reason)
+            e.reason = "";
+        
+        e.server.sendData("PART " + e.channelName + " :" +
+                          fromUnicode(e.reason, e.channel) + "\n");
+    }
+    else
+    {
+        if (!e.noDelete && client.prefs["deleteOnPart"])
+            e.channel.dispatch("delete");
+    }
 }
 
 function cmdLoad (e)
@@ -1587,9 +1665,9 @@ function cmdAlias(e)
     {
         for (var i = 0; i < aliasDefs.length; ++i)
         {
-            var ary = aliasDefs[i].split(/\s*=\s*/);
-            if (ary[0] == commandName)
-                return [i, ary[1]];
+            var ary = aliasDefs[i].match(/^(.*?)\s*=\s*(.*)$/);
+            if (ary[1] == commandName)
+                return [i, ary[2]];
         }
 
         return null;
@@ -1608,7 +1686,7 @@ function cmdAlias(e)
         }
         
         delete client.commandManager.commands[e.aliasName];
-        arrayRemoveAt(aliasDefs, ary[1]);
+        arrayRemoveAt(aliasDefs, ary[0]);
         aliasDefs.update();
 
         feedback(e, getMsg(MSG_ALIAS_REMOVED, e.aliasName));
@@ -1638,8 +1716,8 @@ function cmdAlias(e)
         {
             for (var i = 0; i < aliasDefs.length; ++i)
             {
-                ary = aliasDefs[i].split(/\s*=\s*/);
-                display(getMsg(MSG_FMT_ALIAS, [ary[0], ary[1]]));
+                ary = aliasDefs[i].match(/^(.*?)\s*=\s*(.*)$/);
+                display(getMsg(MSG_FMT_ALIAS, [ary[1], ary[2]]));
             }
         }
     }
@@ -1843,7 +1921,8 @@ function cmdInvite(e)
     }
     else
     {
-        var encodeName = fromUnicode(e.channelName.toLowerCase(), e.network);
+        var encodeName = fromUnicode(e.server.toLowerCase(e.channelName), 
+                                     e.network);
         channel = e.server.channels[encodeName];
              
         if (!channel) 
@@ -1858,9 +1937,10 @@ function cmdInvite(e)
 
 function cmdKick(e) 
 {
-    var cuser = e.channel.getUser(e.nickname);
-
-    if (!cuser)
+    if (!e.user)
+        e.user = e.channel.getUser(e.nickname);
+    
+    if (!e.user)
     {
         display(getMsg(MSG_ERR_UNKNOWN_USER, e.nickname), MT_ERROR);
         return;
@@ -1873,7 +1953,7 @@ function cmdKick(e)
                           e.user.name + "@" + hostmask + "\n");
     }
     
-    cuser.kick(e.reason);
+    e.user.kick(e.reason);
 }
 
 function cmdClient(e)
@@ -1898,7 +1978,7 @@ function cmdNotify(e)
     
     if (!e.nickname)
     {
-        if ("notifyList" in net && net.notifyList.length > 0)
+        if (net.prefs["notifyList"].length > 0)
         {
             /* delete the lists and force a ISON check, this will
              * print the current online/offline status when the server
@@ -1917,23 +1997,22 @@ function cmdNotify(e)
         var adds = new Array();
         var subs = new Array();
         
-        if (!("notifyList" in net))
-            net.notifyList = new Array();
         for (var i in e.nicknameList)
         {
-            var nickname = e.nicknameList[i];
-            var idx = arrayIndexOf (net.notifyList, nickname);
+            var nickname = e.server.toLowerCase(e.nicknameList[i]);
+            var idx = arrayIndexOf (net.prefs["notifyList"], nickname);
             if (idx == -1)
             {
-                net.notifyList.push (nickname);
+                net.prefs["notifyList"].push (nickname);
                 adds.push(nickname);
             }
             else
             {
-                arrayRemoveAt (net.notifyList, idx);
+                arrayRemoveAt (net.prefs["notifyList"], idx);
                 subs.push(nickname);
             }
         }
+        net.prefs["notifyList"].update();
 
         var msgname;
         
@@ -2098,4 +2177,173 @@ function cmdSupports(e)
     display(getMsg(MSG_SUPPORTS_FLAGSON, listB1.join(MSG_COMMASP)));
     display(getMsg(MSG_SUPPORTS_FLAGSOFF, listB2.join(MSG_COMMASP)));
     display(getMsg(MSG_SUPPORTS_MISCOPTIONS, listN.join(MSG_COMMASP)));
+}
+
+function cmdCopy(e)
+{
+    doCommand("cmd_copy");
+}
+
+function cmdSelectAll(e)
+{
+    doCommand("cmd_selectAll");
+}
+
+function cmdCopyLinkURL(e)
+{
+    doCommand("cmd_copyLink");
+}
+
+function cmdTimestamps(e)
+{
+    var view = e.sourceObject;
+
+    if (e.toggle != null)
+    {
+        e.toggle = getToggle(e.toggle, view.prefs["timestamps"])
+        view.prefs["timestamps"] = e.toggle;
+    }
+    else
+    {
+        display(getMsg(MSG_FMT_PREF, ["timestamps", 
+                                      view.prefs["timestamps"]]));
+    }
+}
+
+function cmdTimestampFormat(e)
+{
+    var view = e.sourceObject;
+
+    if (e.format != null)
+    {
+        view.prefs["timestampFormat"] = e.format;
+    }
+    else
+    {
+        display(getMsg(MSG_FMT_PREF, ["timestampFormat", 
+                                      view.prefs["timestampFormat"]]));
+    }
+}
+
+function cmdIgnore(e)
+{
+    if (("mask" in e) && e.mask)
+    {
+        e.mask = e.server.toLowerCase(e.mask);
+        
+        if (e.command.name == "ignore")
+        {
+            if (e.network.ignore(e.mask))
+                display(getMsg(MSG_IGNORE_ADD, e.mask));
+            else
+                display(getMsg(MSG_IGNORE_ADDERR, e.mask));
+        }
+        else
+        {
+            if (e.network.unignore(e.mask))
+                display(getMsg(MSG_IGNORE_DEL, e.mask));
+            else
+                display(getMsg(MSG_IGNORE_DELERR, e.mask));
+        }
+    }
+    else
+    {
+        var list = new Array();
+        for (var m in e.network.ignoreList)
+            list.push(m);
+        if (list.length == 0)
+            display(MSG_IGNORE_LIST_1);
+        else
+            display(getMsg(MSG_IGNORE_LIST_2, arraySpeak(list)));
+    }
+}
+
+function cmdFont(e)
+{
+    var view = client;
+    var pref, val, pVal;
+    
+    if (e.command.name == "font-family")
+    {
+        pref = "font.family";
+        val = e.font;
+        
+        // Save new value, then display pref value.
+        if (val)
+            view.prefs[pref] = val;
+        
+        display(getMsg(MSG_FONTS_FAMILY_FMT, view.prefs[pref]));
+    }
+    else if (e.command.name == "font-size")
+    {
+        pref = "font.size";
+        val = e.fontSize;
+        
+        // Ok, we've got an input.
+        if (val)
+        {
+            // Get the current value, use user's default if needed.
+            pVal = view.prefs[pref];
+            if (pVal == 0)
+                pVal = getDefaultFontSize();
+            
+            // Handle user's input...
+            switch(val) {
+                case "default":
+                    val = 0;
+                    break;
+                    
+                case "small":
+                    val = getDefaultFontSize() - 2;
+                    break;
+                    
+                case "medium":
+                    val = getDefaultFontSize();
+                    break;
+                    
+                case "large":
+                    val = getDefaultFontSize() + 2;
+                    break;
+                    
+                case "smaller":
+                    val = pVal - 2;
+                    break;
+                    
+                case "bigger":
+                    val = pVal + 2;
+                    break;
+                    
+                default:
+                    val = Number(val);
+            }
+            // Save the new value.
+            view.prefs[pref] = val;
+        }
+        
+        // Show the user what the pref is set to.
+        if (view.prefs[pref] == 0)
+            display(MSG_FONTS_SIZE_DEFAULT);
+        else
+            display(getMsg(MSG_FONTS_SIZE_FMT, view.prefs[pref]));
+    }
+    else if (e.command.name == "font-family-other")
+    {
+        val = prompt(MSG_FONTS_FAMILY_PICK, view.prefs["font.family"]);
+        if (!val)
+            return;
+        
+        dispatch("font-family", { font: val });
+    }
+    else if (e.command.name == "font-size-other")
+    {
+        pVal = view.prefs["font.size"];
+        if (pVal == 0)
+            pVal = getDefaultFontSize();
+        
+        val = prompt(MSG_FONTS_SIZE_PICK, pVal);
+        if (!val)
+            return;
+        
+        dispatch("font-size", { fontSize: val });
+    }
 }

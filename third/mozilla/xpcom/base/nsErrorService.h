@@ -45,7 +45,6 @@ class nsInt2StrHashtable
 {
 public:
     nsInt2StrHashtable();
-    virtual ~nsInt2StrHashtable();
 
     nsresult  Put(PRUint32 key, const char* aData);
     char*     Get(PRUint32 key);
@@ -62,10 +61,12 @@ public:
     NS_DECL_NSIERRORSERVICE
 
     nsErrorService() {}
-    virtual ~nsErrorService() {}
 
     static NS_METHOD
     Create(nsISupports* outer, const nsIID& aIID, void* *aInstancePtr);
+
+private:
+    ~nsErrorService() {}
 
 protected:
     nsInt2StrHashtable mErrorStringBundleURLMap;

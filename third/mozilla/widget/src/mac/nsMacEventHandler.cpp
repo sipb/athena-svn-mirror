@@ -150,7 +150,7 @@ HandleScrollEvent ( EventMouseWheelAxis inAxis, PRBool inByLine, PRInt32 inDelta
   if (!inWidget)
     return nsEventStatus_eIgnore;
 
-  nsMouseScrollEvent scrollEvent;
+  nsMouseScrollEvent scrollEvent(NS_MOUSE_SCROLL, inWidget);
   
   scrollEvent.scrollFlags = 
     (inAxis == kEventMouseWheelAxisX) ? nsMouseScrollEvent::kIsHorizontal : nsMouseScrollEvent::kIsVertical;
@@ -166,18 +166,10 @@ HandleScrollEvent ( EventMouseWheelAxis inAxis, PRBool inByLine, PRInt32 inDelta
   inWidget->ConvertToDeviceCoordinates(widgetOrigin.x, widgetOrigin.y);
   mouseLocRelativeToWidget.MoveBy(-widgetOrigin.x, -widgetOrigin.y);
 		
-  scrollEvent.eventStructType = NS_MOUSE_SCROLL_EVENT;
-  scrollEvent.isShift = PR_FALSE;
-  scrollEvent.isControl = PR_FALSE;
-  scrollEvent.isMeta = PR_FALSE;
-  scrollEvent.isAlt = PR_FALSE;
-	scrollEvent.message = NS_MOUSE_SCROLL;
   scrollEvent.delta = inDelta;
 	scrollEvent.point.x = mouseLocRelativeToWidget.x;
 	scrollEvent.point.y = mouseLocRelativeToWidget.y;
 	scrollEvent.time = PR_IntervalNow();
-	scrollEvent.widget = inWidget;
-	scrollEvent.nativeMsg = nsnull;
 
   // dispatch scroll event
   nsEventStatus rv;
@@ -235,14 +227,8 @@ void nsMacEventDispatchHandler::DispatchGuiEvent(nsWindow *aWidget, PRUint32 aEv
 	if (!aWidget)
 		return;
 
-	nsGUIEvent	guiEvent;
-	guiEvent.eventStructType = NS_GUI_EVENT;
-	guiEvent.point.x = 0;
-	guiEvent.point.y = 0;
+	nsGUIEvent	guiEvent(aEventType, aWidget);
 	guiEvent.time = PR_IntervalNow();
-	guiEvent.nativeMsg = nsnull;
-	guiEvent.message = aEventType;
-	guiEvent.widget = aWidget;
 	aWidget->DispatchWindowEvent(guiEvent);
 }
 
@@ -255,14 +241,8 @@ void nsMacEventDispatchHandler::DispatchSizeModeEvent(nsWindow *aWidget, nsSizeM
 	if (!aWidget)
 		return;
 
-	nsSizeModeEvent	event;
-	event.eventStructType = NS_SIZEMODE_EVENT;
-	event.point.x = 0;
-	event.point.y = 0;
+	nsSizeModeEvent	event(NS_SIZEMODE, aWidget);
 	event.time = PR_IntervalNow();
-	event.nativeMsg = nsnull;
-	event.message = NS_SIZEMODE;
-	event.widget = aWidget;
 	event.mSizeMode = aMode;
 	aWidget->DispatchWindowEvent(event);
 }
@@ -593,19 +573,16 @@ PRBool nsMacEventHandler::HandleMenuCommand(
 		focusedWidget = mTopLevelWidget;
 
 	// nsEvent
-	nsMenuEvent menuEvent;
-	menuEvent.eventStructType = NS_MENU_EVENT;
-	menuEvent.message		= NS_MENU_SELECTED;
+	nsMenuEvent menuEvent(NS_MENU_SELECTED, focusedWidget);
 	menuEvent.point.x		= aOSEvent.where.h;
 	menuEvent.point.y		= aOSEvent.where.v;
 	menuEvent.time			= PR_IntervalNow();
 
 	// nsGUIEvent
-	menuEvent.widget		= focusedWidget;
 	menuEvent.nativeMsg	= (void*)&aOSEvent;
 
 	// nsMenuEvent
-	menuEvent.mMenuItem	= nsnull;						//ÄTODO: initialize mMenuItem
+  // TODO: initialize mMenuItem
 	menuEvent.mCommand	= aMenuResult;
 
 	// dispatch the menu event
@@ -659,8 +636,6 @@ PRBool nsMacEventHandler::HandleMenuCommand(
 //
 PRBool nsMacEventHandler::DragEvent ( unsigned int aMessage, Point aMouseGlobal, UInt16 aKeyModifiers )
 {
-	nsMouseEvent geckoEvent;
-
 	// convert the mouse to local coordinates. We have to do all the funny port origin
 	// stuff just in case it has been changed.
 	Point hitPointLocal = aMouseGlobal;
@@ -693,15 +668,11 @@ PRBool nsMacEventHandler::DragEvent ( unsigned int aMessage, Point aMouseGlobal,
 	// update the tracking of which widget the mouse is now over.
 	gEventDispatchHandler.SetWidgetPointed(widgetHit);
 	
+	nsMouseEvent geckoEvent(aMessage, widgetHit);
+
 	// nsEvent
-	geckoEvent.eventStructType = NS_DRAGDROP_EVENT;
-	geckoEvent.message = aMessage;
 	geckoEvent.point = widgetHitPoint;
 	geckoEvent.time	= PR_IntervalNow();
-
-	// nsGUIEvent
-	geckoEvent.widget = widgetHit;
-	geckoEvent.nativeMsg = nsnull;
 
 	// nsInputEvent
 	geckoEvent.isShift = ((aKeyModifiers & shiftKey) != 0);
@@ -933,10 +904,6 @@ void nsMacEventHandler::InitializeKeyEvent(nsKeyEvent& aKeyEvent,
 	//
 	// initalize the basic message parts
 	//
-	aKeyEvent.eventStructType = NS_KEY_EVENT;
-  aKeyEvent.message = aMessage;
-	aKeyEvent.point.x			= 0;
-	aKeyEvent.point.y			= 0;
 	aKeyEvent.time				= PR_IntervalNow();
 	
 	//
@@ -1178,7 +1145,7 @@ PRBool nsMacEventHandler::HandleKeyEvent(EventRecord& aOSEvent)
 	{
 		case keyUp:
       {
-        nsKeyEvent keyUpEvent;
+        nsKeyEvent keyUpEvent(NS_KEY_UP);
         InitializeKeyEvent(keyUpEvent, aOSEvent, focusedWidget, NS_KEY_UP);
         result = focusedWidget->DispatchWindowEvent(keyUpEvent);
         break;
@@ -1186,7 +1153,7 @@ PRBool nsMacEventHandler::HandleKeyEvent(EventRecord& aOSEvent)
 
     case keyDown:	
       {
-        nsKeyEvent keyDownEvent, keyPressEvent;
+        nsKeyEvent keyDownEvent(NS_KEY_DOWN), keyPressEvent(NS_KEY_PRESS);
         InitializeKeyEvent(keyDownEvent, aOSEvent, focusedWidget, NS_KEY_DOWN);
         result = focusedWidget->DispatchWindowEvent(keyDownEvent);
 
@@ -1218,7 +1185,7 @@ PRBool nsMacEventHandler::HandleKeyEvent(EventRecord& aOSEvent)
 
     case autoKey:
       {
-        nsKeyEvent keyPressEvent;
+        nsKeyEvent keyPressEvent(NS_KEY_PRESS);
         InitializeKeyEvent(keyPressEvent, aOSEvent, focusedWidget, NS_KEY_PRESS);
         result = focusedWidget->DispatchWindowEvent(keyPressEvent);
         break;
@@ -1242,7 +1209,6 @@ ConvertKeyEventToContextMenuEvent(const nsKeyEvent* inKeyEvent, nsMouseEvent* ou
 {
   *(nsInputEvent*)outCMEvent = *(nsInputEvent*)inKeyEvent;
   
-  outCMEvent->eventStructType = NS_MOUSE_EVENT;
   outCMEvent->message = NS_CONTEXTMENU_KEY;
   outCMEvent->isShift = outCMEvent->isControl = outCMEvent->isAlt = outCMEvent->isMeta = PR_FALSE;
   
@@ -1272,7 +1238,7 @@ IsContextMenuKey(const nsKeyEvent& inKeyEvent)
 // HandleUKeyEvent
 //
 //-------------------------------------------------------------------------
-PRBool nsMacEventHandler::HandleUKeyEvent(PRUnichar* text, long charCount, EventRecord& aOSEvent)
+PRBool nsMacEventHandler::HandleUKeyEvent(const PRUnichar* text, long charCount, EventRecord& aOSEvent)
 {
   nsresult result;
   // get the focused widget
@@ -1285,7 +1251,7 @@ PRBool nsMacEventHandler::HandleUKeyEvent(PRUnichar* text, long charCount, Event
   // simulate key down event if this isn't an autoKey event
   if (aOSEvent.what == keyDown)
   {
-    nsKeyEvent keyDownEvent;
+    nsKeyEvent keyDownEvent(NS_KEY_DOWN);
     InitializeKeyEvent(keyDownEvent, aOSEvent, focusedWidget, NS_KEY_DOWN, &isCharacter, PR_FALSE);
     result = focusedWidget->DispatchWindowEvent(keyDownEvent);
     NS_ASSERTION(NS_SUCCEEDED(result), "cannot DispatchWindowEvent keydown");
@@ -1299,7 +1265,7 @@ PRBool nsMacEventHandler::HandleUKeyEvent(PRUnichar* text, long charCount, Event
   }
 
   // simulate key press events
-  nsKeyEvent keyPressEvent;
+  nsKeyEvent keyPressEvent(NS_KEY_PRESS);
   InitializeKeyEvent(keyPressEvent, aOSEvent, focusedWidget, NS_KEY_PRESS, &isCharacter, PR_FALSE);
 
   if (isCharacter) 
@@ -1901,7 +1867,6 @@ void nsMacEventHandler::ConvertOSEventToMouseEvent(
         widgetHit = mTopLevelWidget;
 		
     // nsEvent
-    aMouseEvent.eventStructType = NS_MOUSE_EVENT;
     aMouseEvent.message     = aMessage;
     aMouseEvent.point       = widgetHitPoint;
     aMouseEvent.time        = PR_IntervalNow();
@@ -1959,7 +1924,7 @@ nsresult nsMacEventHandler::HandleOffsetToPosition(long offset,Point* thePoint)
 //-------------------------------------------------------------------------
 // See ftp://ftp.unicode.org/Public/MAPPINGS/VENDORS/APPLE/CORPCHAR.TXT for detail of IS_APPLE_HINT_IN_PRIVATE_ZONE
 #define IS_APPLE_HINT_IN_PRIVATE_ZONE(u) ((0xF850 <= (u)) && ((u)<=0xF883))
-nsresult nsMacEventHandler::HandleUpdateInputArea(char* text,Size text_size, ScriptCode textScript,long fixedLength,TextRangeArray* textRangeList)
+nsresult nsMacEventHandler::HandleUpdateInputArea(const char* text,Size text_size, ScriptCode textScript,long fixedLength,TextRangeArray* textRangeList)
 {
 #ifdef DEBUG_TSM
 	printf("********************************************************************************\n");
@@ -2013,7 +1978,7 @@ nsresult nsMacEventHandler::HandleUpdateInputArea(char* text,Size text_size, Scr
 	}
 	// Prepare buffer....
 	mIMECompositionStr->SetCapacity(text_size+1);
-	ubuf = (PRUnichar*)mIMECompositionStr->get();
+	ubuf = mIMECompositionStr->BeginWriting();
 	size_t len;
 
 	//====================================================================================================
@@ -2314,7 +2279,7 @@ error:
 }
 
 
-nsresult nsMacEventHandler::UnicodeHandleUpdateInputArea(PRUnichar* text, long charCount,
+nsresult nsMacEventHandler::UnicodeHandleUpdateInputArea(const PRUnichar* text, long charCount,
                                                          long fixedLength, TextRangeArray* textRangeList)
 {
 #ifdef DEBUG_TSM
@@ -2484,7 +2449,7 @@ nsresult nsMacEventHandler::UnicodeHandleUpdateInputArea(PRUnichar* text, long c
     // This is needed when we input some uncommitted text, and then delete all of them
     // When the last delete come, we will got a text_size = 0 and fixedLength = 0
     // In that case, we need to send a text event to clean up the input hole....
-    mIMECompositionStr->Assign(NS_LITERAL_STRING(""));      
+    mIMECompositionStr->Truncate();      
 #ifdef DEBUG_TSM
       printf("3.====================================\n");
 #endif
@@ -2511,15 +2476,8 @@ nsresult nsMacEventHandler::HandleUnicodeGetSelectedText(nsAString& outString)
   if (!focusedWidget)
     focusedWidget = mTopLevelWidget;
 
-  nsReconversionEvent reconversionEvent;
-  reconversionEvent.eventStructType = NS_RECONVERSION_QUERY;
-  reconversionEvent.message = NS_RECONVERSION_QUERY;
-  reconversionEvent.point.x = 0;
-  reconversionEvent.point.y = 0;
-  reconversionEvent.nativeMsg = nsnull;
+  nsReconversionEvent reconversionEvent(NS_RECONVERSION_QUERY, focusedWidget);
   reconversionEvent.time = PR_IntervalNow();
-  reconversionEvent.widget = focusedWidget;
-  reconversionEvent.theReply.mReconversionString = NULL;
 
   nsresult res = focusedWidget->DispatchWindowEvent(reconversionEvent);
 
@@ -2558,19 +2516,8 @@ nsresult nsMacEventHandler::HandleStartComposition(void)
 	//
 	// create the nsCompositionEvent
 	//
-	nsCompositionEvent		compositionEvent;
-
-	compositionEvent.eventStructType = NS_COMPOSITION_START;
-	compositionEvent.message = NS_COMPOSITION_START;
-	compositionEvent.point.x = 0;
-	compositionEvent.point.y = 0;
+	nsCompositionEvent		compositionEvent(NS_COMPOSITION_START, focusedWidget);
 	compositionEvent.time = PR_IntervalNow();
-
-	//
-	// nsGUIEvent parts
-	//
-	compositionEvent.widget	= focusedWidget;
-	compositionEvent.nativeMsg	= (void*)nsnull;		// no native message for this
 
 	nsresult res = focusedWidget->DispatchWindowEvent(compositionEvent);
 	if(NS_SUCCEEDED(res)) {
@@ -2606,19 +2553,9 @@ nsresult nsMacEventHandler::HandleEndComposition(void)
 	//
 	// create the nsCompositionEvent
 	//
-	nsCompositionEvent		compositionEvent;
-
-	compositionEvent.eventStructType = NS_COMPOSITION_END;
-	compositionEvent.message = NS_COMPOSITION_END;
-	compositionEvent.point.x = 0;
-	compositionEvent.point.y = 0;
+	nsCompositionEvent		compositionEvent(NS_COMPOSITION_END, focusedWidget);
 	compositionEvent.time = PR_IntervalNow();
 
-	//
-	// nsGUIEvent parts
-	//
-	compositionEvent.widget	= focusedWidget;
-	compositionEvent.nativeMsg	= (void*)nsnull;		// no native message for this
 	return(focusedWidget->DispatchWindowEvent(compositionEvent));
 }
 
@@ -2677,24 +2614,13 @@ nsresult nsMacEventHandler::HandleTextEvent(PRUint32 textRangeCount, nsTextRange
 		focusedWidget = mTopLevelWidget;
 	
 	//
-	// create the nsCompositionEvent
+	// create the nsTextEvent
 	//
-	nsTextEvent		textEvent;
-
-	textEvent.eventStructType = NS_TEXT_EVENT;
-	textEvent.message = NS_TEXT_EVENT;
-	textEvent.point.x = 0;
-	textEvent.point.y = 0;
+	nsTextEvent		textEvent(NS_TEXT_TEXT, focusedWidget);
 	textEvent.time = PR_IntervalNow();
-	textEvent.theText = (PRUnichar*)mIMECompositionStr->get();
+	textEvent.theText = mIMECompositionStr->get();
 	textEvent.rangeCount = textRangeCount;
 	textEvent.rangeArray = textRangeArray;
-
-	//
-	// nsGUIEvent parts
-	//
-	textEvent.widget	= focusedWidget;
-	textEvent.nativeMsg	= (void*)nsnull;		// no native message for this
 
 	nsresult res = NS_OK;
 	if (NS_SUCCEEDED(res = focusedWidget->DispatchWindowEvent(textEvent))) {

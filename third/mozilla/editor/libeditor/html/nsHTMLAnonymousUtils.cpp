@@ -56,6 +56,8 @@
 #include "nsIDOMCSSPrimitiveValue.h"
 #include "nsIDOMCSSStyleDeclaration.h"
 
+#include "nsUnicharUtils.h"
+
 // retrieve an integer stored into a CSS computed float value
 static PRInt32 GetCSSFloatValue(nsIDOMCSSStyleDeclaration * aDecl,
                                 const nsAString & aProperty)
@@ -201,6 +203,7 @@ nsHTMLEditor::CheckSelectionStateForAnonymousButtons(nsISelection * aSelection)
   nsCOMPtr<nsIDOMElement> focusElement;
   // let's get the containing element of the selection
   nsresult res  = GetSelectionContainer(getter_AddRefs(focusElement));
+  if (!focusElement) return NS_OK;
   if (NS_FAILED(res)) return res;
 
   // what's its tag?

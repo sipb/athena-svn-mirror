@@ -34,7 +34,7 @@
 /*
  * Certificate handling code
  *
- * $Id: certdb.c,v 1.1.1.4 2004-02-27 16:51:22 rbasch Exp $
+ * $Id: certdb.c,v 1.1.1.5 2004-06-30 17:40:38 rbasch Exp $
  */
 
 #include "nssilock.h"
@@ -118,12 +118,12 @@ const SEC_ASN1Template CERT_CertificateTemplate[] = {
     { SEC_ASN1_INLINE,
 	  offsetof(CERTCertificate,subjectPublicKeyInfo),
 	  CERT_SubjectPublicKeyInfoTemplate },
-    { SEC_ASN1_OPTIONAL | SEC_ASN1_CONSTRUCTED | SEC_ASN1_CONTEXT_SPECIFIC | 1,
+    { SEC_ASN1_OPTIONAL |  SEC_ASN1_CONTEXT_SPECIFIC | 1,
 	  offsetof(CERTCertificate,issuerID),
-	  SEC_ObjectIDTemplate },
-    { SEC_ASN1_OPTIONAL | SEC_ASN1_CONSTRUCTED | SEC_ASN1_CONTEXT_SPECIFIC | 2,
+	  SEC_BitStringTemplate },
+    { SEC_ASN1_OPTIONAL |  SEC_ASN1_CONTEXT_SPECIFIC | 2,
 	  offsetof(CERTCertificate,subjectID),
-	  SEC_ObjectIDTemplate },
+	  SEC_BitStringTemplate },
     { SEC_ASN1_EXPLICIT | SEC_ASN1_OPTIONAL | SEC_ASN1_CONSTRUCTED | 
 	  SEC_ASN1_CONTEXT_SPECIFIC | 3,
 	  offsetof(CERTCertificate,extensions),
@@ -963,13 +963,13 @@ CERT_GetCertTimes(CERTCertificate *c, PRTime *notBefore, PRTime *notAfter)
     }
     
     /* convert DER not-before time */
-    rv = CERT_DecodeTimeChoice(notBefore, &c->validity.notBefore);
+    rv = DER_DecodeTimeChoice(notBefore, &c->validity.notBefore);
     if (rv) {
 	return(SECFailure);
     }
     
     /* convert DER not-after time */
-    rv = CERT_DecodeTimeChoice(notAfter, &c->validity.notAfter);
+    rv = DER_DecodeTimeChoice(notAfter, &c->validity.notAfter);
     if (rv) {
 	return(SECFailure);
     }
@@ -1020,14 +1020,14 @@ SEC_GetCrlTimes(CERTCrl *date, PRTime *notBefore, PRTime *notAfter)
     int rv;
     
     /* convert DER not-before time */
-    rv = CERT_DecodeTimeChoice(notBefore, &date->lastUpdate);
+    rv = DER_DecodeTimeChoice(notBefore, &date->lastUpdate);
     if (rv) {
 	return(SECFailure);
     }
     
     /* convert DER not-after time */
     if (date->nextUpdate.data) {
-	rv = CERT_DecodeTimeChoice(notAfter, &date->nextUpdate);
+	rv = DER_DecodeTimeChoice(notAfter, &date->nextUpdate);
 	if (rv) {
 	    return(SECFailure);
 	}
@@ -1213,26 +1213,37 @@ CERT_CheckKeyUsage(CERTCertificate *cert, unsigned int requiredUsage)
      * type in cert
      */
     if ( requiredUsage & KU_KEY_AGREEMENT_OR_ENCIPHERMENT ) {
-	SECKEYPublicKey *key = CERT_ExtractPublicKey(cert);
-	if (!key)
-	    return SECFailure;
-	if ( ( key->keyType == keaKey ) || ( key->keyType == fortezzaKey ) ||
-	     ( key->keyType == dhKey ) ) {
-	    requiredUsage |= KU_KEY_AGREEMENT;
-	} else {
-	    requiredUsage |= KU_KEY_ENCIPHERMENT;
-	} 
-
-	/* now turn off the special bit */
+	KeyType keyType = CERT_GetCertKeyType(&cert->subjectPublicKeyInfo);
+	/* turn off the special bit */
 	requiredUsage &= (~KU_KEY_AGREEMENT_OR_ENCIPHERMENT);
-	
-	SECKEY_DestroyPublicKey(key);
+
+	switch (keyType) {
+	case rsaKey:
+	    requiredUsage |= KU_KEY_ENCIPHERMENT;
+	    break;
+	case dsaKey:
+	    requiredUsage |= KU_DIGITAL_SIGNATURE;
+	    break;
+	case fortezzaKey:
+	case keaKey:
+	case dhKey:
+	    requiredUsage |= KU_KEY_AGREEMENT;
+	    break;
+	case ecKey:
+	    /* Accept either signature or agreement. */
+	    if (!(cert->keyUsage & (KU_DIGITAL_SIGNATURE | KU_KEY_AGREEMENT)))
+		 goto loser;
+	    break;
+	default:
+	    goto loser;
+	}
     }
 
-    if ( ( cert->keyUsage & requiredUsage ) != requiredUsage ) {
-	return(SECFailure);
-    }
-    return(SECSuccess);
+    if ( (cert->keyUsage & requiredUsage) == requiredUsage ) 
+    	return SECSuccess;
+loser:
+    PORT_SetError(SEC_ERROR_INADEQUATE_KEY_USAGE);
+    return SECFailure;
 }
 
 
@@ -1325,20 +1336,7 @@ CERT_AddOKDomainName(CERTCertificate *cert, const char *hn)
 static SECStatus
 cert_TestHostName(char * cn, const char * hn)
 {
-    char * hndomain;
-    int    regvalid;
-
-    if ((hndomain = PORT_Strchr(hn, '.')) == NULL) {
-	/* No domain in URI host name */
-	char * cndomain;
-	if ((cndomain = PORT_Strchr(cn, '.')) != NULL &&
-	    (cndomain - cn) > 0) {
-	    /* there is a domain in the cn string, so chop it off */
-	    *cndomain = '\0';
-	}
-    }
-
-    regvalid = PORT_RegExpValid(cn);
+    int regvalid = PORT_RegExpValid(cn);
     if (regvalid != NON_SXP) {
 	SECStatus rv;
 	/* cn is a regular expression, try to match the shexp */
@@ -1359,13 +1357,6 @@ cert_TestHostName(char * cn, const char * hn)
 	return SECSuccess;
     }
 	    
-    if ( hndomain ) {
-	/* compare just domain name with cert name */
-	if ( PORT_Strcasecmp(hndomain+1, cn) == 0 ) {
-	    return SECSuccess;
-	}
-    }
-
     PORT_SetError(SSL_ERROR_BAD_CERT_DOMAIN);
     return SECFailure;
 }
@@ -2245,7 +2236,7 @@ CERT_ImportCerts(CERTCertDBHandle *certdb, SECCertUsage usage,
     unsigned int fcerts = 0;
 
     if ( ncerts ) {
-	certs = (CERTCertificate**)PORT_ZAlloc(sizeof(CERTCertificate *) * ncerts );
+	certs = PORT_ZNewArray(CERTCertificate*, ncerts);
 	if ( certs == NULL ) {
 	    return(SECFailure);
 	}
@@ -2306,18 +2297,7 @@ CERT_ImportCerts(CERTCertDBHandle *certdb, SECCertUsage usage,
 	}
     }
 
-    return(SECSuccess);
-    
-#if 0	/* dead code here - why ?? XXX */
-loser:
-    if ( retCerts ) {
-	*retCerts = NULL;
-    }
-    if ( certs ) {
-	CERT_DestroyCertArray(certs, ncerts);
-    }    
-    return(SECFailure);
-#endif
+    return (fcerts ? SECSuccess : SECFailure);
 }
 
 /*
@@ -2609,7 +2589,7 @@ CERT_FilterCertListByUsage(CERTCertList *certList, SECCertUsage usage,
 		 * takes trust flags into consideration.  Should probably
 		 * fix the cert decoding code to do this.
 		 */
-		PRBool dummyret = CERT_IsCACert(node->cert, &certType);
+		(void)CERT_IsCACert(node->cert, &certType);
 	    } else {
 		certType = node->cert->nsCertType;
 	    }

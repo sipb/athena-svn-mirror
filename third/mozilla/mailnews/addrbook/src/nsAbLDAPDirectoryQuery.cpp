@@ -631,6 +631,7 @@ nsresult nsAbQueryLDAPMessageListener::QueryResultStatus (nsISupportsArray* prop
 NS_IMPL_THREADSAFE_ISUPPORTS1(nsAbLDAPDirectoryQuery, nsIAbDirectoryQuery)
 
 nsAbLDAPDirectoryQuery::nsAbLDAPDirectoryQuery() :
+    mProtocolVersion (nsILDAPConnection::VERSION3),
     mInitialized(PR_FALSE),
     mCounter (1),
     mLock (nsnull)
@@ -733,6 +734,32 @@ NS_IMETHODIMP nsAbLDAPDirectoryQuery::DoQuery(nsIAbDirectoryQueryArguments* argu
     rv = mDirectoryUrl->GetOptions(&options);
     NS_ENSURE_SUCCESS(rv,rv);
 
+    // get the directoryFilter from the directory url and merge it with the user's
+    // search filter
+    nsCAutoString urlFilter;
+    rv = mDirectoryUrl->GetFilter(urlFilter);
+
+    // if urlFilter is unset (or set to the default "objectclass=*"), there's
+    // no need to AND in an empty search term, so leave prefix and suffix empty
+
+    nsCAutoString searchFilter;
+    if (urlFilter.Length() && !urlFilter.Equals(NS_LITERAL_CSTRING("(objectclass=*)"))) 
+    {
+
+      // if urlFilter isn't parenthesized, we need to add in parens so that
+      // the filter works as a term to &
+      //
+      if (urlFilter[0] != '(') 
+        searchFilter = NS_LITERAL_CSTRING("(&(") + urlFilter + NS_LITERAL_CSTRING(")");
+      else
+        searchFilter = NS_LITERAL_CSTRING("(&") + urlFilter;
+
+      searchFilter += filter;
+      searchFilter += ')';
+    } 
+    else
+      searchFilter = filter;
+
     nsCString ldapSearchUrlString;
     char* _ldapSearchUrlString = 
         PR_smprintf ("ldap%s://%s:%d/%s?%s?%s?%s",
@@ -742,7 +769,7 @@ NS_IMETHODIMP nsAbLDAPDirectoryQuery::DoQuery(nsIAbDirectoryQueryArguments* argu
                      dn.get (),
                      returnAttributes.get (),
                      scope.get (),
-                     filter.get ());
+                     searchFilter.get ());
     if (!_ldapSearchUrlString)
         return NS_ERROR_OUT_OF_MEMORY;
     ldapSearchUrlString = _ldapSearchUrlString;
@@ -799,7 +826,7 @@ NS_IMETHODIMP nsAbLDAPDirectoryQuery::DoQuery(nsIAbDirectoryQueryArguments* argu
     // Now lets initialize the LDAP connection properly. We'll kick
     // off the bind operation in the callback function, |OnLDAPInit()|.
     rv = ldapConnection->Init(host.get(), port, options, mLogin,
-                              messageListener, nsnull);
+                              messageListener, nsnull, mProtocolVersion);
     NS_ENSURE_SUCCESS(rv, rv);
 
     return rv;

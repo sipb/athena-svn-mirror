@@ -61,7 +61,7 @@
 #include "nsIProfileChangeStatus.h"
 #include "nsISound.h"
 #include "nsIPrefService.h"
-#include "nsIURL.h"
+#include "nsIFileURL.h"
 
 /* Outstanding issues/todo:
  * 1. Implement pause/resume.
@@ -87,6 +87,28 @@ static nsIRDFResource* gNC_StatusText = nsnull;
 static nsIRDFService* gRDFService = nsnull;
 
 static PRInt32 gRefCnt = 0;
+
+/**
+ * This function extracts the local file path corresponding to the given URI.
+ */
+static nsresult
+GetFilePathUTF8(nsIURI *aURI, nsACString &aResult)
+{
+  nsresult rv;
+
+  nsCOMPtr<nsIFileURL> fileURL = do_QueryInterface(aURI, &rv);
+  if (NS_FAILED(rv)) return rv;
+
+  nsCOMPtr<nsIFile> file;
+  rv = fileURL->GetFile(getter_AddRefs(file));
+  if (NS_FAILED(rv)) return rv;
+
+  nsAutoString path;
+  rv = file->GetPath(path);
+  if (NS_SUCCEEDED(rv))
+    CopyUTF16toUTF8(path, aResult);
+  return rv;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // nsDownloadManager
@@ -128,6 +150,9 @@ nsDownloadManager::Init()
     return NS_ERROR_UNEXPECTED; // This will make the |CreateInstance| fail.
   }
 
+  if (!mCurrDownloads.Init())
+    return NS_ERROR_FAILURE;
+
   nsresult rv;
   mRDFContainerUtils = do_GetService("@mozilla.org/rdf/container-utils;1", &rv);
   if (NS_FAILED(rv)) return rv;
@@ -135,8 +160,6 @@ nsDownloadManager::Init()
   nsCOMPtr<nsIObserverService> obsService = do_GetService("@mozilla.org/observer-service;1", &rv);
   if (NS_FAILED(rv)) return rv;
   
-  obsService->AddObserver(this, "profile-before-change", PR_FALSE);
-  obsService->AddObserver(this, "profile-approve-change", PR_FALSE);
 
   rv = CallGetService(kRDFServiceCID, &gRDFService);
   if (NS_FAILED(rv)) return rv;                                                 
@@ -164,14 +187,21 @@ nsDownloadManager::Init()
   nsCOMPtr<nsIStringBundleService> bundleService = do_GetService(kStringBundleServiceCID, &rv);
   if (NS_FAILED(rv)) return rv;
   
-  return bundleService->CreateBundle(DOWNLOAD_MANAGER_BUNDLE, getter_AddRefs(mBundle));
+  rv =  bundleService->CreateBundle(DOWNLOAD_MANAGER_BUNDLE, getter_AddRefs(mBundle));
+  if (NS_FAILED(rv))
+    return rv;
+
+  // failure to add an observer is not critical
+  obsService->AddObserver(this, "profile-before-change", PR_FALSE);
+  obsService->AddObserver(this, "profile-approve-change", PR_FALSE);
+
+  return NS_OK;
 }
 
 nsresult
 nsDownloadManager::DownloadStarted(const nsACString& aTargetPath)
 {
-  nsCStringKey key(aTargetPath);
-  if (mCurrDownloads.Exists(&key))
+  if (mCurrDownloads.GetWeak(aTargetPath))
     AssertProgressInfoFor(aTargetPath);
 
   return NS_OK;
@@ -180,10 +210,10 @@ nsDownloadManager::DownloadStarted(const nsACString& aTargetPath)
 nsresult
 nsDownloadManager::DownloadEnded(const nsACString& aTargetPath, const PRUnichar* aMessage)
 {
-  nsCStringKey key(aTargetPath);
-  if (mCurrDownloads.Exists(&key)) {
+  nsDownload* dl = mCurrDownloads.GetWeak(aTargetPath);
+  if (dl) {
     AssertProgressInfoFor(aTargetPath);
-    mCurrDownloads.Remove(&key);
+    mCurrDownloads.Remove(aTargetPath);
   }
 
   return NS_OK;
@@ -275,14 +305,8 @@ nsDownloadManager::AssertProgressInfo()
 nsresult
 nsDownloadManager::AssertProgressInfoFor(const nsACString& aTargetPath)
 {
-  nsCStringKey key(aTargetPath);
-  if (!mCurrDownloads.Exists(&key))
-    return NS_ERROR_FAILURE;
- 
-  nsDownload* internalDownload = NS_STATIC_CAST(nsDownload*, mCurrDownloads.Get(&key));
-  nsCOMPtr<nsIDownload> download;
-  internalDownload->QueryInterface(NS_GET_IID(nsIDownload), (void**) getter_AddRefs(download));
-  if (!download)
+  nsDownload* internalDownload = mCurrDownloads.GetWeak(aTargetPath);
+  if (!internalDownload)
     return NS_ERROR_FAILURE;
   
   nsresult rv;
@@ -354,7 +378,7 @@ nsDownloadManager::AssertProgressInfoFor(const nsACString& aTargetPath)
   }
   
   // update percentage
-  download->GetPercentComplete(&percentComplete);
+  internalDownload->GetPercentComplete(&percentComplete);
 
   mDataSource->GetTarget(res, gNC_ProgressPercent, PR_TRUE, getter_AddRefs(oldTarget));
   gRDFService->GetIntLiteral(percentComplete, getter_AddRefs(intLiteral));
@@ -403,7 +427,7 @@ nsDownloadManager::AssertProgressInfoFor(const nsACString& aTargetPath)
 
 NS_IMETHODIMP
 nsDownloadManager::AddDownload(nsIURI* aSource,
-                               nsILocalFile* aTarget,
+                               nsIURI* aTarget,
                                const PRUnichar* aDisplayName,
                                nsIMIMEInfo *aMIMEInfo,
                                PRInt64 aStartTime,
@@ -422,18 +446,20 @@ nsDownloadManager::AddDownload(nsIURI* aSource,
   if (!internalDownload)
     return NS_ERROR_OUT_OF_MEMORY;
 
-  internalDownload->QueryInterface(NS_GET_IID(nsIDownload), (void**) aDownload);
-  if (!aDownload)
-    return NS_ERROR_FAILURE;
+  NS_ADDREF(*aDownload = internalDownload);
 
   // give our new nsIDownload some info so it's ready to go off into the world
   internalDownload->SetDownloadManager(this);
   internalDownload->SetTarget(aTarget);
   internalDownload->SetSource(aSource);
 
-  // the persistent descriptor of the target is the unique identifier we use
+  // the path of the target is the unique identifier we use
+  nsCOMPtr<nsILocalFile> targetFile;
+  rv = internalDownload->GetTargetFile(getter_AddRefs(targetFile));
+  if (NS_FAILED(rv)) return rv;
+
   nsAutoString path;
-  rv = aTarget->GetPath(path);
+  rv = targetFile->GetPath(path);
   if (NS_FAILED(rv)) return rv;
 
   NS_ConvertUCS2toUTF8 utf8Path(path);
@@ -459,9 +485,9 @@ nsDownloadManager::AddDownload(nsIURI* aSource,
   // Set and assert the "pretty" (display) name of the download
   nsAutoString displayName; displayName.Assign(aDisplayName);
   if (displayName.IsEmpty()) {
-    aTarget->GetLeafName(displayName);
+    targetFile->GetLeafName(displayName);
   }
-  (*aDownload)->SetDisplayName(displayName.get());
+  internalDownload->SetDisplayName(displayName.get());
  
   nsCOMPtr<nsIRDFLiteral> nameLiteral;
   gRDFService->GetLiteral(displayName.get(), getter_AddRefs(nameLiteral));
@@ -507,15 +533,10 @@ nsDownloadManager::AddDownload(nsIURI* aSource,
   // this will create a cycle that will be broken in nsDownload::OnStateChange
   if (aPersist) {
     internalDownload->SetPersist(aPersist);
-    nsCOMPtr<nsIWebProgressListener> listener = do_QueryInterface(*aDownload);
-    aPersist->SetProgressListener(listener);
+    aPersist->SetProgressListener(internalDownload);
   }
 
-  nsCStringKey key(utf8Path);
-  if (mCurrDownloads.Exists(&key))
-    mCurrDownloads.Remove(&key);
-
-  mCurrDownloads.Put(&key, *aDownload);
+  mCurrDownloads.Put(utf8Path, internalDownload);
 
   return rv;
 }
@@ -528,14 +549,7 @@ nsDownloadManager::GetDownload(const nsACString & aTargetPath, nsIDownload** aDo
   // if it's currently downloading we can get it from the table
   // XXX otherwise we should look for it in the datasource and
   //     create a new nsIDownload with the resource's properties
-  nsCStringKey key(aTargetPath);
-  if (mCurrDownloads.Exists(&key)) {
-    *aDownloadItem = NS_STATIC_CAST(nsIDownload*, mCurrDownloads.Get(&key));
-    NS_ADDREF(*aDownloadItem);
-    return NS_OK;
-  }
-
-  *aDownloadItem = nsnull;
+  NS_IF_ADDREF(*aDownloadItem = mCurrDownloads.GetWeak(aTargetPath));
   return NS_OK;
 }
 
@@ -543,15 +557,8 @@ NS_IMETHODIMP
 nsDownloadManager::CancelDownload(const nsACString & aTargetPath)
 {
   nsresult rv = NS_OK;
-  nsCStringKey key(aTargetPath);
-  if (!mCurrDownloads.Exists(&key))
-    return NS_ERROR_FAILURE;
-  
-  nsDownload* internalDownload = NS_STATIC_CAST(nsDownload*, mCurrDownloads.Get(&key));
-  nsCOMPtr<nsIDownload> download;
-  CallQueryInterface(internalDownload, NS_STATIC_CAST(nsIDownload**,
-                                                      getter_AddRefs(download)));
-  if (!download)
+  nsRefPtr<nsDownload> internalDownload = mCurrDownloads.GetWeak(aTargetPath);
+  if (!internalDownload)
     return NS_ERROR_FAILURE;
 
   // Don't cancel if download is already finished
@@ -562,7 +569,7 @@ nsDownloadManager::CancelDownload(const nsACString & aTargetPath)
 
   // if a persist was provided, we can do the cancel ourselves.
   nsCOMPtr<nsIWebBrowserPersist> persist;
-  download->GetPersist(getter_AddRefs(persist));
+  internalDownload->GetPersist(getter_AddRefs(persist));
   if (persist) {
     rv = persist->CancelSave();
     if (NS_FAILED(rv)) return rv;
@@ -572,9 +579,9 @@ nsDownloadManager::CancelDownload(const nsACString & aTargetPath)
   // if no persist was provided, this is necessary so that whatever transfer
   // component being used can cancel the download itself.
   nsCOMPtr<nsIObserver> observer;
-  download->GetObserver(getter_AddRefs(observer));
+  internalDownload->GetObserver(getter_AddRefs(observer));
   if (observer) {
-    rv = observer->Observe(download, "oncancel", nsnull);
+    rv = observer->Observe(NS_STATIC_CAST(nsIDownload*, internalDownload), "oncancel", nsnull);
     if (NS_FAILED(rv)) return rv;
   }
   
@@ -586,7 +593,7 @@ nsDownloadManager::CancelDownload(const nsACString & aTargetPath)
   internalDownload->GetDialog(getter_AddRefs(dialog));
   if (dialog) {
     observer = do_QueryInterface(dialog);
-    rv = observer->Observe(download, "oncancel", nsnull);
+    rv = observer->Observe(NS_STATIC_CAST(nsIDownload*, internalDownload), "oncancel", nsnull);
     if (NS_FAILED(rv)) return rv;
   }
   
@@ -596,11 +603,9 @@ nsDownloadManager::CancelDownload(const nsACString & aTargetPath)
 NS_IMETHODIMP
 nsDownloadManager::RemoveDownload(const nsACString & aTargetPath)
 {
-  nsCStringKey key(aTargetPath);
-  
   // RemoveDownload is for downloads not currently in progress. Having it
   // cancel in-progress downloads would make things complicated, so just return.
-  PRBool inProgress = mCurrDownloads.Exists(&key);
+  nsDownload* inProgress = mCurrDownloads.GetWeak(aTargetPath);
   NS_ASSERTION(!inProgress, "Can't call RemoveDownload on a download in progress!");
   if (inProgress)
     return NS_ERROR_FAILURE;
@@ -744,20 +749,11 @@ nsDownloadManager::Open(nsIDOMWindow* aParent, nsIDownload* aDownload)
 }
 
 NS_IMETHODIMP
-nsDownloadManager::OpenProgressDialogFor(const nsACString & aTargetPath, nsIDOMWindow* aParent, PRBool aCancelDownloadOnClose)
+nsDownloadManager::OpenProgressDialogFor(nsIDownload* aDownload, nsIDOMWindow* aParent, PRBool aCancelDownloadOnClose)
 {
+  NS_ENSURE_ARG_POINTER(aDownload);
   nsresult rv;
-  nsCStringKey key(aTargetPath);
-  if (!mCurrDownloads.Exists(&key))
-    return NS_ERROR_FAILURE;
-
-  nsCOMPtr<nsIDownload> download;
-  nsDownload* internalDownload = NS_STATIC_CAST(nsDownload*, mCurrDownloads.Get(&key));
-  internalDownload->QueryInterface(NS_GET_IID(nsIDownload), (void**) getter_AddRefs(download));
-  if (!download)
-    return NS_ERROR_FAILURE;
- 
-
+  nsDownload* internalDownload = NS_STATIC_CAST(nsDownload*, aDownload);
   nsCOMPtr<nsIProgressDialog> oldDialog;
   internalDownload->GetDialog(getter_AddRefs(oldDialog));
   
@@ -776,28 +772,26 @@ nsDownloadManager::OpenProgressDialogFor(const nsACString & aTargetPath, nsIDOMW
   
   dialog->SetCancelDownloadOnClose(aCancelDownloadOnClose);
   
-  nsCOMPtr<nsIDownload> dl = do_QueryInterface(dialog);
-
   // now give the dialog the necessary context
   
   // start time...
   PRInt64 startTime = 0;
-  download->GetStartTime(&startTime);
+  aDownload->GetStartTime(&startTime);
   
   // source...
   nsCOMPtr<nsIURI> source;
-  download->GetSource(getter_AddRefs(source));
+  aDownload->GetSource(getter_AddRefs(source));
 
   // target...
-  nsCOMPtr<nsILocalFile> target;
-  download->GetTarget(getter_AddRefs(target));
+  nsCOMPtr<nsIURI> target;
+  aDownload->GetTarget(getter_AddRefs(target));
   
   // helper app...
   nsCOMPtr<nsIMIMEInfo> mimeInfo;
-  download->GetMIMEInfo(getter_AddRefs(mimeInfo));
+  aDownload->GetMIMEInfo(getter_AddRefs(mimeInfo));
 
-  dl->Init(source, target, nsnull, mimeInfo, startTime, nsnull); 
-  dl->SetObserver(this);
+  dialog->Init(source, target, nsnull, mimeInfo, startTime, nsnull); 
+  dialog->SetObserver(this);
 
   // now set the listener so we forward notifications to the dialog
   nsCOMPtr<nsIWebProgressListener> listener = do_QueryInterface(dialog);
@@ -832,8 +826,7 @@ nsDownloadManager::HandleEvent(nsIDOMEvent* aEvent)
   nsresult rv = aEvent->GetTarget(getter_AddRefs(target));
   if (NS_FAILED(rv)) return rv;
 
-  nsCOMPtr<nsIDOMNode> targetNode(do_QueryInterface(target));
-  mDocument = do_QueryInterface(targetNode);
+  mDocument = do_QueryInterface(target);
   mListener->SetDocument(mDocument);
   return NS_OK;
 }
@@ -847,22 +840,19 @@ nsDownloadManager::Observe(nsISupports* aSubject, const char* aTopic, const PRUn
   nsresult rv;
   if (nsCRT::strcmp(aTopic, "oncancel") == 0) {
     nsCOMPtr<nsIProgressDialog> dialog = do_QueryInterface(aSubject);
-    nsCOMPtr<nsILocalFile> target;
+    nsCOMPtr<nsIURI> target;
     dialog->GetTarget(getter_AddRefs(target));
-    
-    nsAutoString path;
-    rv = target->GetPath(path);
-    if (NS_FAILED(rv)) return rv;
 
-    NS_ConvertUCS2toUTF8 utf8Path(path);
+    nsCAutoString path;
+    rv = GetFilePathUTF8(target, path); 
+    if (NS_FAILED(rv)) return rv;
     
-    nsCStringKey key(utf8Path);
-    if (mCurrDownloads.Exists(&key)) {
+    nsDownload* download = mCurrDownloads.GetWeak(path);
+    if (download) {
       // unset dialog since it's closing
-      nsDownload* download = NS_STATIC_CAST(nsDownload*, mCurrDownloads.Get(&key));
       download->SetDialog(nsnull);
       
-      return CancelDownload(utf8Path);  
+      return CancelDownload(path);  
     }
   }
   else if (nsCRT::strcmp(aTopic, "profile-approve-change") == 0) {
@@ -938,7 +928,7 @@ nsDownloadManager::Observe(nsISupports* aSubject, const char* aTopic, const PRUn
 ///////////////////////////////////////////////////////////////////////////////
 // nsDownload
 
-NS_IMPL_ISUPPORTS2(nsDownload, nsIDownload, nsIWebProgressListener)
+NS_IMPL_ISUPPORTS3(nsDownload, nsIDownload, nsITransfer, nsIWebProgressListener)
 
 nsDownload::nsDownload():mDownloadState(NOTSTARTED),
                          mPercentComplete(0),
@@ -951,11 +941,11 @@ nsDownload::nsDownload():mDownloadState(NOTSTARTED),
 
 nsDownload::~nsDownload()
 {  
-  nsAutoString path;
-  nsresult rv = mTarget->GetPath(path);
+  nsCAutoString path;
+  nsresult rv = GetFilePathUTF8(mTarget, path);
   if (NS_FAILED(rv)) return;
 
-  mDownloadManager->AssertProgressInfoFor(NS_ConvertUCS2toUTF8(path));
+  mDownloadManager->AssertProgressInfoFor(path);
 }
 
 nsresult
@@ -1024,7 +1014,7 @@ nsDownload::SetSource(nsIURI* aSource)
 }
 
 nsresult
-nsDownload::SetTarget(nsILocalFile* aTarget)
+nsDownload::SetTarget(nsIURI* aTarget)
 {
   mTarget = aTarget;
   return NS_OK;
@@ -1077,12 +1067,12 @@ nsDownload::OnProgressChange(nsIWebProgress *aWebProgress,
   mLastUpdate = now;
 
   if (mDownloadState == NOTSTARTED) {
-    nsAutoString path;
-    nsresult rv = mTarget->GetPath(path);
+    nsCAutoString path;
+    nsresult rv = GetFilePathUTF8(mTarget, path);
     if (NS_FAILED(rv)) return rv;
 
     mDownloadState = DOWNLOADING;
-    mDownloadManager->DownloadStarted(NS_ConvertUCS2toUTF8(path));
+    mDownloadManager->DownloadStarted(path);
   }
 
   if (aMaxTotalProgress > 0)
@@ -1142,10 +1132,10 @@ nsDownload::OnStatusChange(nsIWebProgress *aWebProgress,
 {   
   if (NS_FAILED(aStatus)) {
     mDownloadState = FAILED;
-    nsAutoString path;
-    nsresult rv = mTarget->GetPath(path);
+    nsCAutoString path;
+    nsresult rv = GetFilePathUTF8(mTarget, path);
     if (NS_SUCCEEDED(rv))
-      mDownloadManager->DownloadEnded(NS_ConvertUCS2toUTF8(path), aMessage);
+      mDownloadManager->DownloadEnded(path, aMessage);
   }
 
   if (mListener)
@@ -1199,10 +1189,7 @@ nsDownload::OnStateChange(nsIWebProgress* aWebProgress,
 
   // When we break the ref cycle with mPersist, we don't want to lose
   // access to out member vars!
-  // XXX can't do_QueryInterface because of bug 181387
-  nsCOMPtr<nsIDownload> kungFuDeathGrip;
-  CallQueryInterface(this, NS_STATIC_CAST(nsIDownload**,
-                                          getter_AddRefs(kungFuDeathGrip)));
+  nsRefPtr<nsDownload> kungFuDeathGrip(this);
   
   if (mListener)
     mListener->OnStateChange(aWebProgress, aRequest, aStateFlags, aStatus);
@@ -1246,11 +1233,11 @@ nsDownload::OnStateChange(nsIWebProgress* aWebProgress,
         }
       }
 
-      nsAutoString path;
-      rv = mTarget->GetPath(path);
+      nsCAutoString path;
+      rv = GetFilePathUTF8(mTarget, path);
       // can't do an early return; have to break reference cycle below
       if (NS_SUCCEEDED(rv)) {
-        mDownloadManager->DownloadEnded(NS_ConvertUCS2toUTF8(path), nsnull);
+        mDownloadManager->DownloadEnded(path, nsnull);
       }
     }
 
@@ -1297,7 +1284,7 @@ nsDownload::OnSecurityChange(nsIWebProgress *aWebProgress,
 
 NS_IMETHODIMP
 nsDownload::Init(nsIURI* aSource,
-                 nsILocalFile* aTarget,
+                 nsIURI* aTarget,
                  const PRUnichar* aDisplayName,
                  nsIMIMEInfo *aMIMEInfo,
                  PRInt64 aStartTime,
@@ -1317,11 +1304,11 @@ nsDownload::SetDisplayName(const PRUnichar* aDisplayName)
 
   nsCOMPtr<nsIRDFLiteral> nameLiteral;
   nsCOMPtr<nsIRDFResource> res;
-  nsAutoString path;
-  nsresult rv = mTarget->GetPath(path);
+  nsCAutoString path;
+  nsresult rv = GetFilePathUTF8(mTarget, path);
   if (NS_FAILED(rv)) return rv;
 
-  gRDFService->GetUnicodeResource(path, getter_AddRefs(res));
+  gRDFService->GetResource(path, getter_AddRefs(res));
   
   gRDFService->GetLiteral(aDisplayName, getter_AddRefs(nameLiteral));
   ds->Assert(res, gNC_Name, nameLiteral, PR_TRUE);
@@ -1337,7 +1324,7 @@ nsDownload::GetDisplayName(PRUnichar** aDisplayName)
 }
 
 NS_IMETHODIMP
-nsDownload::GetTarget(nsILocalFile** aTarget)
+nsDownload::GetTarget(nsIURI** aTarget)
 {
   *aTarget = mTarget;
   NS_IF_ADDREF(*aTarget);
@@ -1410,4 +1397,19 @@ nsDownload::GetMIMEInfo(nsIMIMEInfo** aMIMEInfo)
   *aMIMEInfo = mMIMEInfo;
   NS_IF_ADDREF(*aMIMEInfo);
   return NS_OK;
+}
+
+NS_IMETHODIMP
+nsDownload::GetTargetFile(nsILocalFile** aTargetFile)
+{
+  nsresult rv;
+
+  nsCOMPtr<nsIFileURL> fileURL = do_QueryInterface(mTarget, &rv);
+  if (NS_FAILED(rv)) return rv;
+
+  nsCOMPtr<nsIFile> file;
+  rv = fileURL->GetFile(getter_AddRefs(file));
+  if (NS_SUCCEEDED(rv))
+    rv = CallQueryInterface(file, aTargetFile);
+  return rv;
 }

@@ -242,10 +242,18 @@ JS_ConvertArgumentsVA(JSContext *cx, uintN argc, jsval *argv,
             *va_arg(ap, JSObject **) = obj;
             break;
           case 'f':
-            fun = js_ValueToFunction(cx, sp, 0);
-            if (!fun)
-                return JS_FALSE;
-            *sp = OBJECT_TO_JSVAL(fun->object);
+            /*
+             * Don't convert a cloned function object to its shared private
+             * data, then follow fun->object back to the clone-parent.
+             */
+            if (JSVAL_IS_FUNCTION(cx, *sp)) {
+                fun = (JSFunction *) JS_GetPrivate(cx, JSVAL_TO_OBJECT(*sp));
+            } else {
+                fun = js_ValueToFunction(cx, sp, 0);
+                if (!fun)
+                    return JS_FALSE;
+                *sp = OBJECT_TO_JSVAL(fun->object);
+            }
             *va_arg(ap, JSFunction **) = fun;
             break;
           case 'v':
@@ -464,10 +472,19 @@ JS_ConvertValue(JSContext *cx, jsval v, JSType type, jsval *vp)
             *vp = OBJECT_TO_JSVAL(obj);
         break;
       case JSTYPE_FUNCTION:
-        fun = js_ValueToFunction(cx, &v, JSV2F_SEARCH_STACK);
-        ok = (fun != NULL);
-        if (ok)
-            *vp = OBJECT_TO_JSVAL(fun->object);
+        /*
+         * Don't convert a cloned function object to its shared private data,
+         * then follow fun->object back to the clone-parent.
+         */
+        if (JSVAL_IS_FUNCTION(cx, v)) {
+            ok = JS_TRUE;
+            *vp = v;
+        } else {
+            fun = js_ValueToFunction(cx, &v, JSV2F_SEARCH_STACK);
+            ok = (fun != NULL);
+            if (ok)
+                *vp = OBJECT_TO_JSVAL(fun->object);
+        }
         break;
       case JSTYPE_STRING:
         str = js_ValueToString(cx, v);
@@ -588,9 +605,18 @@ JS_TypeOfValue(JSContext *cx, jsval v)
              ops == &js_ObjectOps
              ? (clasp = OBJ_GET_CLASS(cx, obj),
                 clasp->call || clasp == &js_FunctionClass)
-             : ops->call != 0)) {
+             : ops->call != NULL)) {
             type = JSTYPE_FUNCTION;
         } else {
+#ifdef NARCISSUS
+            /* XXX suppress errors/exceptions */
+            OBJ_GET_PROPERTY(cx, obj,
+                             (jsid)cx->runtime->atomState.callAtom,
+                             &v);
+            if (JSVAL_IS_FUNCTION(cx, v))
+                type = JSTYPE_FUNCTION;
+            else
+#endif
             type = JSTYPE_OBJECT;
         }
     } else if (JSVAL_IS_NUMBER(v)) {
@@ -636,8 +662,6 @@ JS_NewRuntime(uint32 maxbytes)
     JS_END_MACRO;
 #endif /* DEBUG */
 
-    if (!js_InitScriptGlobals())
-        return NULL;
     if (!js_InitStringGlobals())
         return NULL;
     rt = (JSRuntime *) malloc(sizeof(JSRuntime));
@@ -735,7 +759,6 @@ JS_ShutDown(void)
 {
     JS_ArenaShutDown();
     js_FinishDtoa();
-    js_FreeScriptGlobals();
     js_FreeStringGlobals();
 #ifdef JS_THREADSAFE
     js_CleanupLocks();
@@ -1033,7 +1056,7 @@ JS_ToggleOptions(JSContext *cx, uint32 options)
 JS_PUBLIC_API(const char *)
 JS_GetImplementationVersion(void)
 {
-    return "JavaScript-C 1.5 pre-release 5a 2003-05-29";
+    return "JavaScript-C 1.5 pre-release 6 2004-01-27";
 }
 
 
@@ -2056,6 +2079,14 @@ JS_GetConstructor(JSContext *cx, JSObject *proto)
         return NULL;
     }
     return JSVAL_TO_OBJECT(cval);
+}
+
+JS_PUBLIC_API(JSBool)
+JS_GetObjectId(JSContext *cx, JSObject *obj, jsid *idp)
+{
+    JS_ASSERT(((jsid)obj & JSVAL_TAGMASK) == 0);
+    *idp = (jsid) obj | JSVAL_INT;
+    return JS_TRUE;
 }
 
 JS_PUBLIC_API(JSObject *)
@@ -3512,12 +3543,16 @@ JS_EvaluateUCScriptForPrincipals(JSContext *cx, JSObject *obj,
                                  const char *filename, uintN lineno,
                                  jsval *rval)
 {
+    uint32 options;
     JSScript *script;
     JSBool ok;
 
     CHECK_REQUEST(cx);
+    options = cx->options;
+    cx->options = options | JSOPTION_COMPILE_N_GO;
     script = JS_CompileUCScriptForPrincipals(cx, obj, principals, chars, length,
                                              filename, lineno);
+    cx->options = options;
     if (!script)
         return JS_FALSE;
     ok = js_Execute(cx, obj, script, NULL, 0, rval);
@@ -4048,6 +4083,7 @@ JS_ClearPendingException(JSContext *cx)
 {
 #if JS_HAS_EXCEPTIONS
     cx->throwing = JS_FALSE;
+    cx->exception = JSVAL_VOID;
 #endif
 }
 

@@ -314,6 +314,8 @@ nsAccessibilityService::CreateRootAccessible(nsIPresShell *aShell,
   else {
     *aRootAcc = new nsRootAccessibleWrap(rootNode, weakShell);
   }
+  if (!*aRootAcc)
+    return NS_ERROR_OUT_OF_MEMORY;
 
   nsCOMPtr<nsPIAccessNode> privateAccessNode(do_QueryInterface(*aRootAcc));
   privateAccessNode->Init();
@@ -460,10 +462,8 @@ nsAccessibilityService::CreateHTMLComboboxAccessible(nsIDOMNode* aDOMNode, nsISu
   nsCOMPtr<nsIPresContext> presContext(do_QueryInterface(aPresContext));
   NS_ASSERTION(presContext,"Error non prescontext passed to accessible factory!!!");
 
-  nsCOMPtr<nsIPresShell> presShell;
-  presContext->GetShell(getter_AddRefs(presShell)); 
-
-  nsCOMPtr<nsIWeakReference> weakShell = do_GetWeakReference(presShell);
+  nsCOMPtr<nsIWeakReference> weakShell =
+    do_GetWeakReference(presContext->PresShell());
 
   *_retval = new nsHTMLComboboxAccessible(aDOMNode, weakShell);
   if (! *_retval)
@@ -529,10 +529,8 @@ nsAccessibilityService::CreateHTMLListboxAccessible(nsIDOMNode* aDOMNode, nsISup
   nsCOMPtr<nsIPresContext> presContext(do_QueryInterface(aPresContext));
   NS_ASSERTION(presContext,"Error non prescontext passed to accessible factory!!!");
 
-  nsCOMPtr<nsIPresShell> presShell;
-  presContext->GetShell(getter_AddRefs(presShell)); 
-
-  nsCOMPtr<nsIWeakReference> weakShell = do_GetWeakReference(presShell);
+  nsCOMPtr<nsIWeakReference> weakShell =
+    do_GetWeakReference(presContext->PresShell());
 
   *_retval = new nsHTMLSelectListAccessible(aDOMNode, weakShell);
   if (! *_retval) 
@@ -588,15 +586,8 @@ nsAccessibilityService::CreateHTMLObjectFrameAccessible(nsObjectFrame *aFrame,
 #endif
 
   // 3) for images and imagemaps, or anything else with a child frame
-  nsCOMPtr<nsIPresShell> shell(do_QueryReferent(weakShell));
-  if (!shell)
-    return NS_ERROR_FAILURE;
-  nsCOMPtr<nsIPresContext> context;
-  shell->GetPresContext(getter_AddRefs(context));
-  if (!context)
-    return NS_ERROR_FAILURE;
   // we have the object frame, get the image frame
-  aFrame->FirstChild(context, nsnull, &frame);
+  frame = aFrame->GetFirstChild(nsnull);
   if (frame) {
     return frame->GetAccessible(aAccessible);
   }
@@ -649,10 +640,8 @@ nsAccessibilityService::CreateHTMLSelectOptionAccessible(nsIDOMNode* aDOMNode,
   nsCOMPtr<nsIPresContext> presContext(do_QueryInterface(aPresContext));
   NS_ASSERTION(presContext,"Error non prescontext passed to accessible factory!!!");
 
-  nsCOMPtr<nsIPresShell> presShell;
-  presContext->GetShell(getter_AddRefs(presShell)); 
-
-  nsCOMPtr<nsIWeakReference> weakShell = do_GetWeakReference(presShell);
+  nsCOMPtr<nsIWeakReference> weakShell =
+    do_GetWeakReference(presContext->PresShell());
 
   *_retval = new nsHTMLSelectOptionAccessible(aDOMNode, weakShell);
   if (! *_retval) 
@@ -796,8 +785,7 @@ nsAccessibilityService::CreateHTMLTextAccessible(nsISupports *aFrame, nsIAccessi
   nsCOMPtr<nsIPresShell> presShell(do_QueryReferent(weakShell));
   nsCOMPtr<nsIPresContext> presContext;
   presShell->GetPresContext(getter_AddRefs(presContext));
-  nsIFrame* childFrame = nsnull;
-  parentFrame->FirstChild(presContext, nsnull, &childFrame);
+  nsIFrame* childFrame = parentFrame->GetFirstChild(nsnull);
   PRInt32 index = 0;
   nsIFrame* firstTextFrame = nsnull;
   PRBool ret = nsAccessible::FindTextFrame(index, presContext, childFrame, &firstTextFrame, frame);

@@ -39,7 +39,7 @@
     var cookieContextMenu = {
 
       // Determine if "Block Image" is to appear in the menu.
-      // Return true if "imageBlocker.enabled" pref is set and image is not already blocked.
+      // Return true if image is not already blocked.
       isBlockingImages : function () {
         /* determine if image is already being blocked */
         const nsIPermissionManager = Components.interfaces.nsIPermissionManager;
@@ -51,19 +51,8 @@
         }
         var ioService = Components.classes["@mozilla.org/network/io-service;1"]
                                   .getService(Components.interfaces.nsIIOService);
-        uri = ioService.newURI(gContextMenu.imageURL, null, null);
+        var uri = ioService.newURI(gContextMenu.imageURL, null, null);
         return permissionmanager.testPermission(uri, "image") != nsIPermissionManager.DENY_ACTION;
-      },
-
-      // Determine if "imageBlocker.enabled" pref is set
-      isPrefSet: function () {
-        var pref = gContextMenu.getService('@mozilla.org/preferences-service;1', 'nsIPrefBranch');
-        var result = false;
-        try {
-          result = pref.getBoolPref( "imageblocker.enabled" );
-        } catch(e) {
-        }
-        return result;
       },
 
       // Block image from loading in the future.
@@ -93,23 +82,29 @@
         var ioService = Components.classes["@mozilla.org/network/io-service;1"]
                                   .getService(Components.interfaces.nsIIOService);
         uri = ioService.newURI(gContextMenu.imageURL, null, null);
-        permissionmanager.add(uri, "image", nsIPermissionManager.ALLOW_ACTION);
+        permissionmanager.remove(uri.host, "image");
       },
 
       initImageBlocking : function () {
+        var showImageBlockingContextMenu;
         try {
-        // Block image depends on whether an image was clicked on, and,
-        // whether the user pref is enabled.
-
+          var prefs = Components.classes["@mozilla.org/preferences-service;1"]
+                     .getService(Components.interfaces.nsIPrefBranch);
+          showImageBlockingContextMenu = prefs.getBoolPref("imageblocker.enabled");
+        }
+        catch (ex) {
+          showImageBlockingContextMenu = true;
+        }
+        
+        try {        
+        // Block image depends on whether an image was clicked on
         gContextMenu.showItem
           ("context-blockimage",
-           gContextMenu.onImage && cookieContextMenu.isPrefSet() &&
-           cookieContextMenu.isBlockingImages());
+           showImageBlockingContextMenu && gContextMenu.onImage && cookieContextMenu.isBlockingImages());
 
         gContextMenu.showItem
           ("context-unblockimage",
-           gContextMenu.onImage && cookieContextMenu.isPrefSet() &&
-           !cookieContextMenu.isBlockingImages());
+           showImageBlockingContextMenu && gContextMenu.onImage && !cookieContextMenu.isBlockingImages());
         } catch (e) {}
       },
 

@@ -38,7 +38,7 @@
  * 
  * NOTE - These are not public interfaces
  *
- * $Id: secport.c,v 1.1.1.2 2004-02-27 16:03:45 rbasch Exp $
+ * $Id: secport.c,v 1.1.1.3 2004-06-30 17:08:36 rbasch Exp $
  */
 
 #include "seccomon.h"
@@ -207,6 +207,8 @@ PORT_NewArena(unsigned long chunksize)
     return(&pool->arena);
 }
 
+#define MAX_SIZE 0x7fffffffUL
+
 void *
 PORT_ArenaAlloc(PLArenaPool *arena, size_t size)
 {
@@ -218,6 +220,9 @@ PORT_ArenaAlloc(PLArenaPool *arena, size_t size)
 	size = 1;
     }
 
+    if (size > MAX_SIZE) {
+	/* you lose. */
+    } else 
     /* Is it one of ours?  Assume so and check the magic */
     if (ARENAPOOL_MAGIC == pool->magic ) {
 	PZ_Lock(pool->lock);
@@ -534,6 +539,15 @@ PORT_UCS2_UTF8Conversion(PRBool toUnicode, unsigned char *inBuf,
 
     return (*ucs2Utf8ConvertFunc)(toUnicode, inBuf, inBufLen, outBuf, 
 				  maxOutBufLen, outBufLen);
+}
+
+PRBool 
+PORT_ISO88591_UTF8Conversion(const unsigned char *inBuf,
+			 unsigned int inBufLen, unsigned char *outBuf,
+			 unsigned int maxOutBufLen, unsigned int *outBufLen)
+{
+    return sec_port_iso88591_utf8_conversion_function(inBuf, inBufLen,
+      outBuf, maxOutBufLen, outBufLen);
 }
 
 PRBool 

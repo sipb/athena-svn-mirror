@@ -24,6 +24,7 @@
     Ben Goodger <ben@netscape.com> (Original Author)
     Blake Ross <blakeross@telocity.com>
     Pierre Chanial <chanial@noos.fr> (v2.0)
+    Dan Cannon <dc2@myrealbox.com>
 
 -->
 
@@ -368,9 +369,7 @@
       <method name="createTreeContextMenu">
         <parameter name="aEvent"/>
         <body><![CDATA[
-          var selection = this._selection;
-          var target    = this._target;
-          BookmarksCommand.createContextMenu(aEvent, selection);
+          BookmarksCommand.createContextMenu(aEvent, this._selection);
           this.onCommandUpdate();
         ]]></body>
       </method>
@@ -500,9 +499,9 @@
         isCommandEnabled: function (aCommand)
         {
           // warning: this is not the called function in BookmarksController.onCommandUpdate
-          var selection = this.mOuter._selection;
-          var target    = this.mOuter._target;
-          return BookmarksController.isCommandEnabled(aCommand, selection, target)
+          return BookmarksController.isCommandEnabled(aCommand,
+                                                      this.mOuter._selection,
+                                                      this.mOuter._target);
         },
 
         doCommand: function (aCommand)
@@ -538,7 +537,12 @@
               rangeMax = {};
               s.getRangeAt(0, rangeMin, rangeMax);
               BookmarksController.doCommand(aCommand, selection, target);
-              s.select(rangeMin.value);
+              // Select the next remaining row if there is one,
+              // or the previous row, even "Bookmarks for <profile name>"(= 0)
+              // if no other row remains.
+              s.select((rangeMin.value >= this.mOuter.treeBuilder.rowCount)
+                       ? this.mOuter.treeBuilder.rowCount - 1
+                       : rangeMin.value);
               break;
             case "cmd_bm_expandfolder":
               this.mOuter.treeBoxObject.view.toggleOpenState(this.mOuter.currentIndex);
@@ -555,9 +559,7 @@
 
       <method name="onCommandUpdate">
         <body><![CDATA[
-          var selection = this._selection;
-          var target    = this._target;
-          BookmarksController.onCommandUpdate(selection, target);
+          BookmarksController.onCommandUpdate(this._selection, this._target);
         ]]></body>
       </method>
 
@@ -638,11 +640,18 @@
         {
           var selection = this.mOuter.getTreeSelection();
           this.mOuter._selection = selection;
-          this.mOuter._target    = this.mOuter.getTreeTarget(selection.item[0], selection.parent[0], BookmarksUtils.DROP_BEFORE);
+          var selectionLength = selection.length;
+          if (!selectionLength)
+            this.mOuter._target = null;
+          else {
+            // Paste or create items into an expanded folder, otherwise after the selected item.
+            var orient = selection.isExpanded[0] ? BookmarksUtils.DROP_ON : BookmarksUtils.DROP_AFTER;
+            this.mOuter._target = this.mOuter.getTreeTarget(selection.item[0], selection.parent[0], orient);
+          }
           this.mOuter.onCommandUpdate();
           const kStatusBar = document.getAnonymousElementByAttribute(this.mOuter, "anonid", "statusbar-text");
           var displayValue;
-          if (kStatusBar && selection.length == 1) {
+          if (kStatusBar && selectionLength == 1) {
             var protocol = selection.protocol[0];
             if (selection.isContainer[0] && protocol != "find" && protocol != "file") {
               RDFC.Init(this.mOuter.db, selection.item[0]);
@@ -775,6 +784,7 @@
                 <treeitem uri="rdf:*">
                   <treerow properties="rdf:http://www.w3.org/1999/02/22-rdf-syntax-ns#type rdf:http://home.netscape.com/NC-rdf#loading rdf:http://home.netscape.com/WEB-rdf#status">
                     <treecell src="rdf:http://home.netscape.com/NC-rdf#Icon"
+                              properties="rdf:http://home.netscape.com/WEB-rdf#status"
                               label="rdf:http://home.netscape.com/NC-rdf#Name"/>
                     <treecell label="rdf:http://home.netscape.com/NC-rdf#URL" />
                     <treecell label="rdf:http://home.netscape.com/NC-rdf#ShortcutURL" />
@@ -873,6 +883,7 @@
               <treeitem uri="rdf:*">
                 <treerow properties="rdf:http://www.w3.org/1999/02/22-rdf-syntax-ns#type rdf:http://home.netscape.com/NC-rdf#loading rdf:http://home.netscape.com/WEB-rdf#status">
                   <treecell src="rdf:http://home.netscape.com/NC-rdf#Icon"
+                            properties="rdf:http://home.netscape.com/WEB-rdf#status"
                             label="rdf:http://home.netscape.com/NC-rdf#Name"/>
                 </treerow>
               </treeitem>

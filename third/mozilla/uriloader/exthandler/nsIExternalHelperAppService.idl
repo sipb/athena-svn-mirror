@@ -65,16 +65,9 @@ interface nsIExternalHelperAppService : nsISupports
  * This is a private interface shared between external app handlers and the platform specific
  * external helper app service
  */
-[scriptable, uuid(491D04D5-449C-11d4-98D0-001083010E9B)]
+[scriptable, uuid(d0b5d7d3-9565-403d-9fb5-e5089c4567c6)]
 interface nsPIExternalAppLauncher : nsISupports
 {
-  /**
-   * Used by the handler to actually launch the helper application.
-   * @param aTempFile The file which contains the data we want the helper app
-   *                  to use when it is launched
-   */
-  void launchAppWithTempFile(in nsIMIMEInfo aMIMEInfo, in nsIFile aTempFile);
-
   /**
    * mscott --> eventually I should move this into a new service so other
    * consumers can add temporary files they want deleted on exit.
@@ -107,13 +100,15 @@ interface nsIHelperAppLauncher : nsISupports
   readonly attribute wstring suggestedFileName;
 
   /**
-   * Called when we want to just save the content to a particular file
+   * Called when we want to just save the content to a particular file.
+   * NOTE: This will release the reference to the nsIHelperAppLauncherDialog.
    * @param aNewFileLocation Location where the content should be saved
    */
   void saveToDisk(in nsIFile aNewFileLocation, in boolean aRememberThisPreference);
 
   /**
    * Use aApplication to launch with this content.
+   * NOTE: This will release the reference to the nsIHelperAppLauncherDialog.
    * @param aApplication nsIFile corresponding to the location of the application to use.
    * @param aRememberThisPreference TRUE if we should remember this choice.
    */
@@ -121,14 +116,18 @@ interface nsIHelperAppLauncher : nsISupports
 
   /**
    * Called if the user decides to cancel the handling of this content type
+   * NOTE: This will release the reference to the nsIHelperAppLauncherDialog.
    */
   void Cancel();
 
   /**
-   * the following methods are used by the progress dialog to get or set
+   * The following methods are used by the progress dialog to get or set
    * information on the current helper app launcher download.
+   * This reference will be released when the download is finished (after the
+   * listener receives the STATE_STOP notification).
    */
   void setWebProgressListener(in nsIWebProgressListener aWebProgressListener);
+
   /**
    * when the stand alone progress window actually closes, it calls this method
    * so we can release any local state...

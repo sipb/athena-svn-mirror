@@ -24,17 +24,6 @@
 #include "gfxImageFrame.h"
 #include "nsIServiceManager.h"
 
-
-/* Limit the width and height of images to (2^15 - 1) to avoid any overflows.
-   We know that (width * height * alpha) needs to be under 2^32.
-   In the event of padding being needed, we do -1 to save some extra space.
-   
-   therefore, the maxium image buffer imagelib will create is:
-   ((2^15 - 1) * (2^15 - 1) * 4) == 4294705156
-   This is less than 2^32 so we're safe.
- */
-#define SIZE_LIMIT 32767
-
 NS_IMPL_ISUPPORTS2(gfxImageFrame, gfxIImageFrame, nsIInterfaceRequestor)
 
 gfxImageFrame::gfxImageFrame() :
@@ -64,7 +53,16 @@ NS_IMETHODIMP gfxImageFrame::Init(nscoord aX, nscoord aY, nscoord aWidth, nscoor
     return NS_ERROR_FAILURE;
   }
 
-  if (aWidth > SIZE_LIMIT || aHeight > SIZE_LIMIT) {
+  /* check to make sure we don't overflow a 32-bit */
+  nscoord tmp = aWidth * aHeight;
+  if (tmp / aHeight != aWidth) {
+    fprintf(stderr, "erp\n");
+    NS_ASSERTION(0, "width or height too large\n");
+    return NS_ERROR_FAILURE;
+  }
+  tmp = tmp * 4;
+  if (tmp / 4 != aWidth * aHeight) {
+    fprintf(stderr, "erp2\n");
     NS_ASSERTION(0, "width or height too large\n");
     return NS_ERROR_FAILURE;
   }
@@ -428,9 +426,19 @@ NS_IMETHODIMP gfxImageFrame::GetTimeout(PRInt32 *aTimeout)
     return NS_ERROR_NOT_INITIALIZED;
 
   // Ensure a minimal time between updates so we don't throttle the UI thread.
-  // consider 0 == unspecified and make it fast but not too fast.
-  // 100 is compatible with IE and Opera among others
-  if (mTimeout >= 0 && mTimeout < 100)
+  // consider 0 == unspecified and make it fast but not too fast.  See bug
+  // 125137, bug 139677, and bug 207059.  The behavior of recent IE and Opera
+  // versions seems to be:
+  // IE 6/Win:
+  //   10 - 50ms go 100ms
+  //   >50ms go correct speed
+  // Opera 7 final/Win:
+  //   10ms goes 100ms
+  //   >10ms go correct speed
+  // It seems that there are broken tools out there that set a 0ms or 10ms
+  // timeout when they really want a "default" one.  So munge values in that
+  // range.
+  if (mTimeout >= 0 && mTimeout <= 10)
     *aTimeout = 100;
   else
     *aTimeout = mTimeout;

@@ -44,7 +44,6 @@ REQUIRES	= xpcom \
 		  pref \
 		  docshell \
 		  webshell \
-		  chrome \
 		  lwbrk \
 		  xul \
 		  xuldoc \
@@ -52,6 +51,7 @@ REQUIRES	= xpcom \
 		  imglib2 \
 		  unicharutil \
 		  locale \
+		  intl \
 		  $(NULL)
 
 CPPSRCS		= \
@@ -61,6 +61,7 @@ CPPSRCS		= \
     nsXBLResourceLoader.cpp \
     nsXBLDocumentInfo.cpp \
     nsXBLContentSink.cpp \
+    nsXBLProtoImplMember.cpp \
     nsXBLProtoImplProperty.cpp \
     nsXBLProtoImplMethod.cpp \
     nsXBLProtoImplField.cpp \
@@ -91,3 +92,4 @@ LOCAL_INCLUDES	= \
 		-I$(srcdir)/../../xul/content/src \
 		$(NULL)
 
+DEFINES += -D_IMPL_NS_LAYOUT

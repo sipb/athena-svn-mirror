@@ -85,7 +85,7 @@
 
 #include "nsIPresShell.h"
 #include "nsIDocumentObserver.h"
-#include "nsIFrameManager.h"
+#include "nsFrameManager.h"
 #include "nsStyleContext.h"
 #include "nsIScriptSecurityManager.h"
 
@@ -170,9 +170,9 @@ public:
       shell->GetPrimaryFrameFor(mBoundElement, &childFrame);
       if (!childFrame) {
         // Check to see if it's in the undisplayed content map.
-        nsCOMPtr<nsIFrameManager> frameManager;
-        shell->GetFrameManager(getter_AddRefs(frameManager));
-        nsStyleContext* sc = frameManager->GetUndisplayedContent(mBoundElement);
+        nsStyleContext* sc =
+          shell->FrameManager()->GetUndisplayedContent(mBoundElement);
+
         if (!sc) {
           nsCOMPtr<nsIDocumentObserver> obs(do_QueryInterface(shell));
           obs->ContentInserted(doc, parent, mBoundElement, index);
@@ -232,6 +232,7 @@ public:
   NS_DECL_NSIREQUESTOBSERVER
 
   NS_IMETHOD Load(nsIDOMEvent* aEvent);
+  NS_IMETHOD BeforeUnload(nsIDOMEvent* aEvent) { return NS_OK; };
   NS_IMETHOD Unload(nsIDOMEvent* aEvent) { return NS_OK; };
   NS_IMETHOD Abort(nsIDOMEvent* aEvent) { return NS_OK; };
   NS_IMETHOD Error(nsIDOMEvent* aEvent) { return NS_OK; };
@@ -392,7 +393,7 @@ nsXBLStreamListener::Load(nsIDOMEvent* aEvent)
 
     // Remove ourselves from the set of pending docs.
     nsIBindingManager *bindingManager = doc->GetBindingManager();
-    nsIURI* documentURI = mBindingDocument->GetDocumentURL();
+    nsIURI* documentURI = mBindingDocument->GetDocumentURI();
     bindingManager->RemoveLoadingDocListener(documentURI);
 
     if (!mBindingDocument->GetRootContent()) {
@@ -563,7 +564,7 @@ nsXBLService::LoadBindings(nsIContent* aContent, nsIURI* aURL, PRBool aAugmentFl
   }
 
   // Security check - remote pages can't load local bindings, except from chrome
-  nsIURI *docURI = document->GetDocumentURL();
+  nsIURI *docURI = document->GetDocumentURI();
   PRBool isChrome = PR_FALSE;
   rv = docURI->SchemeIs("chrome", &isChrome);
 
@@ -982,8 +983,8 @@ NS_IMETHODIMP nsXBLService::GetBindingInternal(nsIContent* aBoundElement,
         nsCOMPtr<nsIURI> bindingURI;
         nsresult rv =
           NS_NewURI(getter_AddRefs(bindingURI), value,
-                    PromiseFlatCString(doc->GetDocumentCharacterSet()).get(),
-                    doc->GetBaseURL());
+                    doc->GetDocumentCharacterSet().get(),
+                    doc->GetBaseURI());
         NS_ENSURE_SUCCESS(rv, rv);
         
         if (NS_FAILED(GetBindingInternal(aBoundElement, bindingURI, aPeekOnly,
@@ -1031,8 +1032,8 @@ nsXBLService::LoadBindingDocumentInfo(nsIContent* aBoundElement,
   
   nsCOMPtr<nsIURL> documentURI(do_QueryInterface(uriClone, &rv));
   NS_ENSURE_TRUE(documentURI, rv);
-  
-  documentURI->SetRef(NS_LITERAL_CSTRING(""));
+
+  documentURI->SetRef(EmptyCString());
 
 #ifdef MOZ_XUL
   // We've got a file.  Check our XBL document cache.

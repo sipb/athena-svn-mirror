@@ -195,64 +195,64 @@ nsresult nsMailtoUrl::ParseMailtoUrl(char * searchPart)
 	} // if rest && *rest
 
   nsCOMPtr<nsIMimeConverter> mimeConverter = do_GetService(NS_MIME_CONVERTER_CONTRACTID);
-  nsXPIDLCString decodedString;
+  char *decodedString;
 
   // Now unescape any fields that need escaped...
 	if (!m_toPart.IsEmpty())
   {
-		nsUnescape(NS_CONST_CAST(char*, m_toPart.get()));
+		nsUnescape(m_toPart.BeginWriting());
     if (mimeConverter)
     {
       if (NS_SUCCEEDED(mimeConverter->DecodeMimeHeader(m_toPart.get(),
-                                                       getter_Copies(decodedString),
+                                                       &decodedString,
                                                        "UTF-8", PR_FALSE))
                                                        && decodedString)
-        m_toPart = decodedString;
+        m_toPart.Adopt(decodedString);
     }
   }
 	if (!m_ccPart.IsEmpty())
   {
-		nsUnescape(NS_CONST_CAST(char*, m_ccPart.get()));
+		nsUnescape(m_ccPart.BeginWriting());
     if (mimeConverter)
     {
       if (NS_SUCCEEDED(mimeConverter->DecodeMimeHeader(m_ccPart.get(),
-                                                       getter_Copies(decodedString),
+                                                       &decodedString,
                                                        "UTF-8", PR_FALSE))
                                                        && decodedString)
-        m_ccPart = decodedString;
+        m_ccPart.Adopt(decodedString);
     }
   }
 	if (!m_subjectPart.IsEmpty())
   {
-    nsUnescape(NS_CONST_CAST(char*, m_subjectPart.get()));
+    nsUnescape(m_subjectPart.BeginWriting());
     if (mimeConverter)
     {
       if (NS_SUCCEEDED(mimeConverter->DecodeMimeHeader(m_subjectPart.get(),
-                                                       getter_Copies(decodedString),
+                                                       &decodedString,
                                                        "UTF-8", PR_FALSE))
                                                        && decodedString)
-        m_subjectPart = decodedString;
+        m_subjectPart.Adopt(decodedString);
     }
   }
 	if (!m_newsgroupPart.IsEmpty())
-		nsUnescape(NS_CONST_CAST(char*, m_newsgroupPart.get()));
+		nsUnescape(m_newsgroupPart.BeginWriting());
 	if (!m_referencePart.IsEmpty())
-		nsUnescape(NS_CONST_CAST(char*, m_referencePart.get()));
+		nsUnescape(m_referencePart.BeginWriting());
 	if (!m_bodyPart.IsEmpty())
   {
-		nsUnescape(NS_CONST_CAST(char*, m_bodyPart.get()));
+		nsUnescape(m_bodyPart.BeginWriting());
     if (mimeConverter)
     {
       if (NS_SUCCEEDED(mimeConverter->DecodeMimeHeader(m_bodyPart.get(),
-                                                       getter_Copies(decodedString),
+                                                       &decodedString,
                                                        "UTF-8", PR_FALSE,
                                                        PR_FALSE))
                                                        && decodedString)
-        m_bodyPart = decodedString;
+        m_bodyPart.Adopt(decodedString);
     }
   }
 	if (!m_newsHostPart.IsEmpty())
-		nsUnescape(NS_CONST_CAST(char*, m_newsHostPart.get()));
+		nsUnescape(m_newsHostPart.BeginWriting());
 
 	return NS_OK;
 }
@@ -304,12 +304,12 @@ nsresult nsMailtoUrl::ParseUrl()
       // now we need to strip off the search part from the
       // to part....
       m_toPart.Cut(startOfSearchPart, numExtraChars);
-      ParseMailtoUrl(NS_CONST_CAST(char*, searchPart.get()));
+      ParseMailtoUrl(searchPart.BeginWriting());
     }
 	}
   else if (!m_toPart.IsEmpty())
   {
-    nsUnescape(NS_CONST_CAST(char*, m_toPart.get()));
+    nsUnescape(m_toPart.BeginWriting());
   }
 
   return rv;
@@ -503,10 +503,10 @@ NS_IMETHODIMP nsMailtoUrl::Resolve(const nsACString &relativePath, nsACString &r
 
 nsSmtpUrl::nsSmtpUrl() : nsMsgMailNewsUrl()
 {
-	// nsISmtpUrl specific state...
+  // nsISmtpUrl specific state...
 
-	m_fileName = nsnull;
-	m_isPostMessage = PR_TRUE;
+  m_fileName = nsnull;
+  m_isPostMessage = PR_TRUE;
 }
  
 nsSmtpUrl::~nsSmtpUrl()
@@ -522,24 +522,24 @@ NS_IMPL_ISUPPORTS_INHERITED1(nsSmtpUrl, nsMsgMailNewsUrl, nsISmtpUrl)
 
 NS_IMETHODIMP nsSmtpUrl::SetSpec(const nsACString &aSpec)
 {
-	nsresult rv = nsMsgMailNewsUrl::SetSpec(aSpec);
-	if (NS_SUCCEEDED(rv))
-		rv = ParseUrl();
-	return rv;
+  nsresult rv = nsMsgMailNewsUrl::SetSpec(aSpec);
+  if (NS_SUCCEEDED(rv))
+    rv = ParseUrl();
+  return rv;
 }
 
 // mscott - i think this function can be obsoleted and its functionality
 // moved into SetSpec or an init method....
 nsresult nsSmtpUrl::ParseUrl()
 {
-	nsresult rv = NS_OK;
-	
-	// set the username
-	nsCAutoString userName;
-	rv = GetUsername(userName);
-	if (NS_FAILED(rv)) return rv; 
-	m_userName = userName;
- 
+  nsresult rv = NS_OK;
+  
+  // set the username
+  nsCAutoString userName;
+  rv = GetUsername(userName);
+  if (NS_FAILED(rv)) return rv; 
+  m_userName = userName;
+  
   return NS_OK;
 }
 
@@ -549,7 +549,7 @@ nsSmtpUrl::SetRecipients(const char * aRecipientsList)
   NS_ENSURE_ARG(aRecipientsList);
   m_toPart = aRecipientsList;
   if (!m_toPart.IsEmpty())
-    nsUnescape(NS_CONST_CAST(char*, m_toPart.get()));
+    nsUnescape(m_toPart.BeginWriting());
   return NS_OK;
 }
 
@@ -569,46 +569,46 @@ NS_IMPL_GETSET(nsSmtpUrl, PostMessage, PRBool, m_isPostMessage)
 // the file name to post...
 NS_IMETHODIMP nsSmtpUrl::SetPostMessageFile(nsIFileSpec * aFileSpec)
 {
-	nsresult rv = NS_OK;
-	if (aFileSpec)
-		m_fileName = aFileSpec;
-	else
-		rv = NS_ERROR_NULL_POINTER;
-
-	return rv;
+  nsresult rv = NS_OK;
+  if (aFileSpec)
+    m_fileName = aFileSpec;
+  else
+    rv = NS_ERROR_NULL_POINTER;
+  
+  return rv;
 }
 
 NS_IMETHODIMP nsSmtpUrl::GetPostMessageFile(nsIFileSpec ** aFileSpec)
 {
-	nsresult rv = NS_OK;
-	if (aFileSpec)
-	{
-		*aFileSpec = m_fileName;
-		NS_IF_ADDREF(*aFileSpec);
-	}
-	else
-		rv = NS_ERROR_NULL_POINTER;
-	
-	return rv;
+  nsresult rv = NS_OK;
+  if (aFileSpec)
+  {
+    *aFileSpec = m_fileName;
+    NS_IF_ADDREF(*aFileSpec);
+  }
+  else
+    rv = NS_ERROR_NULL_POINTER;
+  
+  return rv;
 }
 
 NS_IMETHODIMP 
 nsSmtpUrl::GetSenderIdentity(nsIMsgIdentity * *aSenderIdentity)
 {
-	NS_ENSURE_ARG_POINTER(aSenderIdentity); 
-
-	*aSenderIdentity = m_senderIdentity;
-	NS_ADDREF(*aSenderIdentity);
-	return NS_OK;
+  NS_ENSURE_ARG_POINTER(aSenderIdentity); 
+  
+  *aSenderIdentity = m_senderIdentity;
+  NS_ADDREF(*aSenderIdentity);
+  return NS_OK;
 }
 
 NS_IMETHODIMP 
 nsSmtpUrl::SetSenderIdentity(nsIMsgIdentity * aSenderIdentity) 
 {
-	NS_ENSURE_ARG_POINTER(aSenderIdentity);
-
-	m_senderIdentity = aSenderIdentity;
-	return NS_OK;
+  NS_ENSURE_ARG_POINTER(aSenderIdentity);
+  
+  m_senderIdentity = aSenderIdentity;
+  return NS_OK;
 }
 
 NS_IMETHODIMP

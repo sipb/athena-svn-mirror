@@ -110,12 +110,11 @@ nsMathMLmoFrame::IsFrameInSelection(nsIPresContext* aPresContext,
     return PR_FALSE;
 
   SelectionDetails* details = nsnull;
-  nsCOMPtr<nsIPresShell> shell;
-  nsresult rv = aPresContext->GetShell(getter_AddRefs(shell));
-  if (NS_SUCCEEDED(rv) && shell) {
+  nsIPresShell *shell = aPresContext->GetPresShell();
+  if (shell) {
     nsCOMPtr<nsIFrameSelection> frameSelection;
     nsCOMPtr<nsISelectionController> selCon;
-    rv = GetSelectionController(aPresContext, getter_AddRefs(selCon));
+    nsresult rv = GetSelectionController(aPresContext, getter_AddRefs(selCon));
     if (NS_SUCCEEDED(rv) && selCon)
       frameSelection = do_QueryInterface(selCon);
     if (!frameSelection)
@@ -376,9 +375,7 @@ nsMathMLmoFrame::ProcessOperatorData(nsIPresContext* aPresContext)
 
     // find the position of our outermost embellished container w.r.t
     // its siblings (frames are singly-linked together).
-    nsIFrame* firstChild;
-    parentAncestor->FirstChild(aPresContext, nsnull, &firstChild);
-    nsFrameList frameList(firstChild);
+    nsFrameList frameList(parentAncestor->GetFirstChild(nsnull));
 
     nsIFrame* nextSibling = embellishAncestor->GetNextSibling();
     nsIFrame* prevSibling = frameList.GetPrevSiblingFor(embellishAncestor);

@@ -67,6 +67,7 @@
 #include "nsIFontMetrics.h"
 #include "nsITimer.h"
 #include "nsAutoPtr.h"
+#include "nsStyleSet.h"
 
 /////////////// nsListScrollSmoother //////////////////
 
@@ -258,10 +259,9 @@ nsListBoxBodyFrame::Init(nsIPresContext* aPresContext, nsIContent* aContent,
 
   nsBoxLayoutState boxLayoutState(aPresContext);
 
-  nsCOMPtr<nsIDeviceContext> dc;
-  aPresContext->GetDeviceContext(getter_AddRefs(dc));
   nsCOMPtr<nsIFontMetrics> fm;
-  dc->GetMetricsFor(aContext->GetStyleFont()->mFont, *getter_AddRefs(fm));
+  aPresContext->DeviceContext()->GetMetricsFor(aContext->GetStyleFont()->mFont,
+                                               *getter_AddRefs(fm));
   fm->GetHeight(mRowHeight);
 
   return rv;
@@ -272,11 +272,8 @@ NS_IMETHODIMP
 nsListBoxBodyFrame::Destroy(nsIPresContext* aPresContext)
 {
   // make sure we cancel any posted callbacks.
-  if (mReflowCallbackPosted) {
-     nsCOMPtr<nsIPresShell> shell;
-     aPresContext->GetShell(getter_AddRefs(shell));
-     shell->CancelReflowCallback(this);
-  }
+  if (mReflowCallbackPosted)
+     aPresContext->PresShell()->CancelReflowCallback(this);
 
   return nsBoxFrame::Destroy(aPresContext);
 }
@@ -298,7 +295,7 @@ nsListBoxBodyFrame::AttributeChanged(nsIPresContext* aPresContext,
       PRInt32 dummy;
       PRInt32 count = rows.ToInteger(&dummy);
       float t2p;
-      aPresContext->GetTwipsToPixels(&t2p);
+      t2p = aPresContext->TwipsToPixels();
       PRInt32 rowHeight = GetRowHeightTwips();
       rowHeight = NSTwipsToIntPixels(rowHeight, t2p);
       nsAutoString value;
@@ -380,9 +377,7 @@ nsListBoxBodyFrame::PositionChanged(PRInt32 aOldIndex, PRInt32& aNewIndex)
 
      smoother->Stop();
 
-     nsCOMPtr<nsIPresShell> shell;
-     mPresContext->GetShell(getter_AddRefs(shell));
-     shell->FlushPendingNotifications(PR_FALSE);
+     mPresContext->PresShell()->FlushPendingNotifications(PR_FALSE);
 
      smoother->mDelta = newTwipIndex > oldTwipIndex ? rowDelta : -rowDelta;
 
@@ -407,8 +402,14 @@ nsListBoxBodyFrame::PositionChanged(PRInt32 aOldIndex, PRInt32& aNewIndex)
 NS_IMETHODIMP
 nsListBoxBodyFrame::VisibilityChanged(PRBool aVisible)
 {
-  if (!aVisible && mCurrentIndex > 0)
-    EnsureIndexIsVisible(0);
+  PRInt32 lastPageTopRow = GetRowCount() - (GetAvailableHeight() / mRowHeight);
+  if (lastPageTopRow < 0)
+    lastPageTopRow = 0;
+  PRInt32 delta = mCurrentIndex - lastPageTopRow;
+  if (delta > 0) {
+    mCurrentIndex = lastPageTopRow;
+    InternalPositionChanged(PR_TRUE, delta, PR_FALSE);
+  }
 
   return NS_OK;
 }
@@ -503,6 +504,8 @@ nsListBoxBodyFrame::EnsureIndexIsVisible(PRInt32 aRowIndex)
   PRInt32 rows = 0;
   if (mRowHeight)
     rows = GetAvailableHeight()/mRowHeight;
+  if (rows <= 0)
+    rows = 1;
   PRInt32 bottomIndex = mCurrentIndex + rows;
   
   // if row is visible, ignore
@@ -666,7 +669,7 @@ nsListBoxBodyFrame::SetRowHeight(nscoord aRowHeight)
       PRInt32 dummy;
       PRInt32 count = rows.ToInteger(&dummy);
       float t2p;
-      mPresContext->GetTwipsToPixels(&t2p);
+      t2p = mPresContext->TwipsToPixels();
       PRInt32 rowHeight = NSTwipsToIntPixels(aRowHeight, t2p);
       nsAutoString value;
       value.AppendInt(rowHeight*count);
@@ -715,8 +718,9 @@ nsListBoxBodyFrame::ComputeIntrinsicWidth(nsBoxLayoutState& aBoxLayoutState)
 
   if (firstRowContent) {
     nsRefPtr<nsStyleContext> styleContext;
-    styleContext = aBoxLayoutState.GetPresContext()->ResolveStyleContextFor(firstRowContent,
-                                                                            nsnull);
+    nsIPresContext *presContext = aBoxLayoutState.GetPresContext();
+    styleContext = presContext->StyleSet()->
+      ResolveStyleFor(firstRowContent, nsnull);
 
     nscoord width = 0;
     nsMargin margin(0,0,0,0);
@@ -751,10 +755,10 @@ nsListBoxBodyFrame::ComputeIntrinsicWidth(nsBoxLayoutState& aBoxLayoutState)
               text->AppendTextTo(value);
             }
           }
-          nsCOMPtr<nsIDeviceContext> dc;
-          presContext->GetDeviceContext(getter_AddRefs(dc));
           nsCOMPtr<nsIFontMetrics> fm;
-          dc->GetMetricsFor(styleContext->GetStyleFont()->mFont, *getter_AddRefs(fm));
+          presContext->DeviceContext()->
+            GetMetricsFor(styleContext->GetStyleFont()->mFont,
+                          *getter_AddRefs(fm));
           rendContext->SetFont(fm);
 
           nscoord textWidth;
@@ -791,9 +795,7 @@ nsListBoxBodyFrame::PostReflowCallback()
 {
   if (!mReflowCallbackPosted) {
     mReflowCallbackPosted = PR_TRUE;
-    nsCOMPtr<nsIPresShell> shell;
-    mPresContext->GetShell(getter_AddRefs(shell));
-    shell->PostReflowCallback(this);
+    mPresContext->PresShell()->PostReflowCallback(this);
   }
 }
 
@@ -852,8 +854,7 @@ nsListBoxBodyFrame::InternalPositionChanged(PRBool aUp, PRInt32 aDelta, PRBool a
   // begin timing how long it takes to scroll a row
   PRTime start = PR_Now();
 
-  nsCOMPtr<nsIPresShell> shell;
-  mPresContext->GetShell(getter_AddRefs(shell));
+  nsIPresShell *shell = mPresContext->PresShell();
   shell->FlushPendingNotifications(PR_FALSE);
 
   PRInt32 visibleRows = 0;
@@ -1258,10 +1259,10 @@ nsListBoxBodyFrame::ListBoxInsertFrames(nsIFrame* aPrevFrame, nsIFrame* aFrameLi
 void 
 nsListBoxBodyFrame::OnContentInserted(nsIPresContext* aPresContext, nsIContent* aChildContent)
 {
-  ++mRowCount;
+  if (mRowCount >= 0)
+    ++mRowCount;
 
-  nsCOMPtr<nsIPresShell> shell;
-  aPresContext->GetShell(getter_AddRefs(shell));
+  nsIPresShell *shell = aPresContext->PresShell();
   // The RDF content builder will build content nodes such that they are all 
   // ready when OnContentInserted is first called, meaning the first call
   // to CreateRows will create all the frames, but OnContentInserted will
@@ -1299,7 +1300,8 @@ nsListBoxBodyFrame::OnContentInserted(nsIPresContext* aPresContext, nsIContent* 
 void
 nsListBoxBodyFrame::OnContentRemoved(nsIPresContext* aPresContext, nsIFrame* aChildFrame, PRInt32 aIndex)
 {
-  --mRowCount;
+  if (mRowCount >= 0)
+    --mRowCount;
 
   if (!aChildFrame) {
     // The row we are removing is out of view, so we need to try to
@@ -1333,10 +1335,9 @@ nsListBoxBodyFrame::OnContentRemoved(nsIPresContext* aPresContext, nsIFrame* aCh
     PRUint32 childCount = listBoxContent->GetChildCount();
     if (childCount > 0) {
       nsIContent *lastChild = listBoxContent->GetChildAt(childCount - 1);
-      nsCOMPtr<nsIPresShell> shell;
-      aPresContext->GetShell(getter_AddRefs(shell));
       nsIFrame* lastChildFrame = nsnull;
-      shell->GetPrimaryFrameFor(lastChild, &lastChildFrame);
+      aPresContext->PresShell()->GetPrimaryFrameFor(lastChild,
+                                                    &lastChildFrame);
     
       if (lastChildFrame) {
         mTopFrame = nsnull;
@@ -1362,9 +1363,7 @@ nsListBoxBodyFrame::OnContentRemoved(nsIPresContext* aPresContext, nsIFrame* aCh
   }
 
   MarkDirtyChildren(state);
-  nsCOMPtr<nsIPresShell> shell;
-  aPresContext->GetShell(getter_AddRefs(shell));
-  shell->FlushPendingNotifications(PR_FALSE);
+  aPresContext->PresShell()->FlushPendingNotifications(PR_FALSE);
 }
 
 void
@@ -1416,25 +1415,6 @@ nsListBoxBodyFrame::GetListItemNextSibling(nsIContent* aListItem, nsIContent** a
   aSiblingIndex = -1; // no match, so there is no next sibling
 }
 
-void
-nsListBoxBodyFrame::ForceDrawFrame(nsIPresContext* aPresContext, nsIFrame * aFrame)
-{
-  if (aFrame == nsnull) {
-    return;
-  }
-  nsIView * view;
-  nsPoint   pnt;
-  aFrame->GetOffsetFromView(aPresContext, pnt, &view);
-  nsRect rect = aFrame->GetRect();
-  rect.x = pnt.x;
-  rect.y = pnt.y;
-  if (view) {
-    nsIViewManager* viewMgr = view->GetViewManager();
-    if (viewMgr)
-      viewMgr->UpdateView(view, rect, NS_VMREFRESH_IMMEDIATE);
-  }
-}
-
 //////////////////////////////////////////////////////////////////////////
 ///// nsListboxScrollPortFrame
 
@@ -1469,10 +1449,8 @@ nsListboxScrollPortFrame::GetMinSize(nsBoxLayoutState& aBoxLayoutState, nsSize& 
       scrollFrame->GetScrollPreference(aBoxLayoutState.GetPresContext(), &scrollPref);
 
       if (scrollPref == nsIScrollableFrame::Auto) {
-        nscoord vbarwidth, hbarheight;
-        scrollFrame->GetScrollbarSizes(aBoxLayoutState.GetPresContext(),
-                                       &vbarwidth, &hbarheight);
-        aSize.width += vbarwidth;
+        nsMargin scrollbars = scrollFrame->GetDesiredScrollbarSizes(&aBoxLayoutState);
+        aSize.width += scrollbars.left + scrollbars.right;
       }
     }
   }
@@ -1508,10 +1486,8 @@ nsListboxScrollPortFrame::GetPrefSize(nsBoxLayoutState& aBoxLayoutState, nsSize&
     scrollFrame->GetScrollPreference(aBoxLayoutState.GetPresContext(), &scrollPref);
 
     if (scrollPref == nsIScrollableFrame::Auto) {
-      nscoord vbarwidth, hbarheight;
-      scrollFrame->GetScrollbarSizes(aBoxLayoutState.GetPresContext(),
-                                     &vbarwidth, &hbarheight);
-      aSize.width += vbarwidth;
+      nsMargin scrollbars = scrollFrame->GetDesiredScrollbarSizes(&aBoxLayoutState);
+      aSize.width += scrollbars.left + scrollbars.right;
     }
   }
 

@@ -62,7 +62,7 @@
 
 #include "nsIServiceManager.h"
 #include "nsIComponentManager.h"
-
+#include "nsContentUtils.h"
 
 class nsBulletListener : public imgIDecoderObserver
 {
@@ -139,7 +139,7 @@ nsBulletFrame::Init(nsIPresContext*  aPresContext,
     if (mContent) {
       doc = mContent->GetDocument();
       if (doc) {
-        documentURI = doc->GetDocumentURL();
+        documentURI = doc->GetDocumentURI();
       }
     }
 
@@ -153,8 +153,10 @@ nsBulletFrame::Init(nsIPresContext*  aPresContext,
       NS_RELEASE(listener);
     }
 
-    // XXX: initialDocumentURI is NULL !
-    il->LoadImage(imgURI, nsnull, documentURI, loadGroup, mListener, aPresContext, nsIRequest::LOAD_NORMAL, nsnull, nsnull, getter_AddRefs(mImageRequest));
+    if (imgURI && NS_SUCCEEDED(nsContentUtils::CanLoadImage(imgURI, doc, doc))) {
+      // XXX: initialDocumentURI is NULL !
+      il->LoadImage(imgURI, nsnull, documentURI, loadGroup, mListener, aPresContext, nsIRequest::LOAD_NORMAL, nsnull, nsnull, getter_AddRefs(mImageRequest));
+    }
   }
 
   return NS_OK;
@@ -230,7 +232,6 @@ nsBulletFrame::Paint(nsIPresContext*      aPresContext,
       break;
 
     default:
-    case NS_STYLE_LIST_STYLE_BASIC:
     case NS_STYLE_LIST_STYLE_DISC:
       aRenderingContext.FillEllipse(mPadding.left, mPadding.top,
                                     mRect.width - (mPadding.left + mPadding.right),
@@ -443,7 +444,7 @@ static PRBool OtherDecimalToText(PRInt32 ordinal, PRUnichar zeroChar, nsString& 
 {
    PRUnichar diff = zeroChar - PRUnichar('0');
    DecimalToText(ordinal, result);
-   PRUnichar* p = NS_CONST_CAST(PRUnichar*, result.get());
+   PRUnichar* p = result.BeginWriting();
    if (ordinal < 0) {
      // skip the leading '-'
      ++p;
@@ -460,7 +461,7 @@ static PRBool TamilToText(PRInt32 ordinal,  nsString& result)
      // Can't do those in this system.
      return PR_FALSE;
    }
-   PRUnichar* p = (PRUnichar*)result.get();
+   PRUnichar* p = result.BeginWriting();
    for(; nsnull != *p ; p++) 
       if(*p != PRUnichar('0'))
          *p += diff;
@@ -1366,6 +1367,9 @@ nsBulletFrame::GetDesiredSize(nsIPresContext*  aCX,
                               const nsHTMLReflowState& aReflowState,
                               nsHTMLReflowMetrics& aMetrics)
 {
+  // Reset our padding.  If we need it, we'll set it below.
+  mPadding.SizeTo(0, 0, 0, 0);
+  
   const nsStyleList* myList = GetStyleList();
   nscoord ascent;
 
@@ -1481,16 +1485,15 @@ nsBulletFrame::GetDesiredSize(nsIPresContext*  aCX,
 
     case NS_STYLE_LIST_STYLE_DISC:
     case NS_STYLE_LIST_STYLE_CIRCLE:
-    case NS_STYLE_LIST_STYLE_BASIC:
     case NS_STYLE_LIST_STYLE_SQUARE:
-      aCX->GetTwipsToPixels(&t2p);
+      t2p = aCX->TwipsToPixels();
       fm->GetMaxAscent(ascent);
       bulletSize = NSTwipsToIntPixels(
         (nscoord)NSToIntRound(0.8f * (float(ascent) / 2.0f)), t2p);
       if (bulletSize < 1) {
         bulletSize = MIN_BULLET_SIZE;
       }
-      aCX->GetPixelsToTwips(&p2t);
+      p2t = aCX->PixelsToTwips();
       bulletSize = NSIntPixelsToTwips(bulletSize, p2t);
       mPadding.bottom = NSIntPixelsToTwips((nscoord) NSToIntRound((float)ascent / (8.0f * p2t)),p2t);
       aMetrics.width = mPadding.right + bulletSize;
@@ -1632,7 +1635,7 @@ nsBulletFrame::Reflow(nsIPresContext* aPresContext,
         if (mContent) {
           doc = mContent->GetDocument();
           if (doc) {
-            documentURI = doc->GetDocumentURL();
+            documentURI = doc->GetDocumentURI();
           }
         }
 
@@ -1683,7 +1686,7 @@ NS_IMETHODIMP nsBulletFrame::OnStartContainer(imgIRequest *aRequest,
   aImage->GetHeight(&h);
 
   float p2t;
-  mPresContext->GetPixelsToTwips(&p2t);
+  p2t = mPresContext->PixelsToTwips();
 
   nsSize newsize(NSIntPixelsToTwips(w, p2t), NSIntPixelsToTwips(h, p2t));
 
@@ -1692,17 +1695,15 @@ NS_IMETHODIMP nsBulletFrame::OnStartContainer(imgIRequest *aRequest,
 
     // Now that the size is available (or an error occurred), trigger
     // a reflow of the bullet frame.
-    nsCOMPtr<nsIPresShell> shell;
-    nsresult rv = mPresContext->GetShell(getter_AddRefs(shell));
-    if (NS_SUCCEEDED(rv) && shell) {
+    nsIPresShell *shell = mPresContext->GetPresShell();
+    if (shell) {
       NS_ASSERTION(mParent, "No parent to pass the reflow request up to.");
       if (mParent) {
         // Reflow the first child of the parent not the bullet frame.
         // The bullet frame is not in a line list so marking it dirty
         // has no effect. The reflowing of the bullet frame is done 
         // indirectly.
-        nsIFrame* frame = nsnull;
-        mParent->FirstChild(mPresContext, nsnull, &frame);
+        nsIFrame* frame = mParent->GetFirstChild(nsnull);
         NS_ASSERTION(frame, "No frame to mark dirty for bullet frame.");
         if (frame) {
           frame->AddStateBits(NS_FRAME_IS_DIRTY);
@@ -1712,6 +1713,12 @@ NS_IMETHODIMP nsBulletFrame::OnStartContainer(imgIRequest *aRequest,
     }
   }
 
+  // Handle animations
+  aImage->SetAnimationMode(mPresContext->ImageAnimationMode());
+  // Ensure the animation (if any) is started.
+  aImage->StartAnimation();
+
+  
   return NS_OK;
 }
 
@@ -1719,24 +1726,10 @@ NS_IMETHODIMP nsBulletFrame::OnDataAvailable(imgIRequest *aRequest,
                                              gfxIImageFrame *aFrame,
                                              const nsRect *aRect)
 {
-  if (!aRect) return NS_ERROR_NULL_POINTER;
-  NS_ENSURE_TRUE(mPresContext, NS_ERROR_UNEXPECTED); // Why are we bothering?
-  
-
-  // XXX Should we do anything here if an error occured in the decode?
-  
-  nsRect r(*aRect);
-
-  // XXX what if this frame ever has a padding or border?
-  
-  float p2t;
-  mPresContext->GetPixelsToTwips(&p2t);
-  r.x = NSIntPixelsToTwips(r.x, p2t);
-  r.y = NSIntPixelsToTwips(r.y, p2t);
-  r.width = NSIntPixelsToTwips(r.width, p2t);
-  r.height = NSIntPixelsToTwips(r.height, p2t);
-
-  Invalidate(mPresContext, r, PR_FALSE);
+  // The image has changed.
+  // Invalidate the entire content area. Maybe it's not optimal but it's simple and
+  // always correct, and I'll be a stunned mullet if it ever matters for performance
+  Invalidate(nsRect(0, 0, mRect.width, mRect.height), PR_FALSE);
 
   return NS_OK;
 }
@@ -1751,10 +1744,6 @@ NS_IMETHODIMP nsBulletFrame::OnStopDecode(imgIRequest *aRequest,
 #if 0
   NS_ENSURE_TRUE(mPresContext, NS_ERROR_UNEXPECTED); // Why are we bothering?
   
-  nsCOMPtr<nsIPresShell> presShell;
-  mPresContext->GetShell(getter_AddRefs(presShell));
-
-
   if (NS_FAILED(aStatus)) {
     // We failed to load the image. Notify the pres shell
     if (NS_FAILED(aStatus) && (mImageRequest == aRequest || !mImageRequest)) {
@@ -1770,18 +1759,9 @@ NS_IMETHODIMP nsBulletFrame::FrameChanged(imgIContainer *aContainer,
                                           gfxIImageFrame *aNewFrame,
                                           nsRect *aDirtyRect)
 {
-  NS_ENSURE_TRUE(mPresContext, NS_ERROR_UNEXPECTED); // Why are we bothering?
-
-  nsRect r(*aDirtyRect);
-
-  float p2t;
-  mPresContext->GetPixelsToTwips(&p2t);
-  r.x = NSIntPixelsToTwips(r.x, p2t);
-  r.y = NSIntPixelsToTwips(r.y, p2t);
-  r.width = NSIntPixelsToTwips(r.width, p2t);
-  r.height = NSIntPixelsToTwips(r.height, p2t);
-
-  Invalidate(mPresContext, r, PR_FALSE);
+  // Invalidate the entire content area. Maybe it's not optimal but it's simple and
+  // always correct.
+  Invalidate(nsRect(0, 0, mRect.width, mRect.height), PR_FALSE);
 
   return NS_OK;
 }
@@ -1794,8 +1774,7 @@ nsBulletFrame::GetLoadGroup(nsIPresContext *aPresContext, nsILoadGroup **aLoadGr
 
   NS_PRECONDITION(nsnull != aLoadGroup, "null OUT parameter pointer");
 
-  nsCOMPtr<nsIPresShell> shell;
-  aPresContext->GetShell(getter_AddRefs(shell));
+  nsIPresShell *shell = aPresContext->GetPresShell();
 
   if (!shell)
     return;

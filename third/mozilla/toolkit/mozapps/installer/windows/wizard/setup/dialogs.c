@@ -26,6 +26,11 @@
  *     Ben Goodger <ben@mozilla.org>
  */
 
+// needed to build with mingw
+#ifndef _WIN32_IE
+#define _WIN32_IE 0x0400
+#endif
+
 #include "extern.h"
 #include "extra.h"
 #include "dialogs.h"
@@ -37,6 +42,7 @@
 #include <shellapi.h>
 #include <objidl.h>
 #include <logkeys.h>
+#include <prsht.h>
 
 // commdlg.h is needed to build with WIN32_LEAN_AND_MEAN
 #include <commdlg.h>
@@ -199,7 +205,13 @@ void InitSequence(HINSTANCE hInstance)
 
 
   // Create the Font for Intro/End page headers.
+#ifdef MOZ_THUNDERBIRD
+  // The title text "Welcome to Mozilla Thunderbird" is too large to fit on the screen with a 14 pt
+  // font. For now, use a 12 pt font to prevent the text from getting clipped because it is too big.
+  sgInstallGui.welcomeTitleFont = MakeFont(TEXT("Trebuchet MS Bold"), 12, FW_BOLD);
+#else
   sgInstallGui.welcomeTitleFont = MakeFont(TEXT("Trebuchet MS Bold"), 14, FW_BOLD);
+#endif
 
   // Start the Wizard.
   PropertySheet(&psh);
@@ -513,6 +525,21 @@ LRESULT CALLBACK DlgProcSetupType(HWND hDlg, UINT msg, WPARAM wParam, LONG lPara
 #define BIF_USENEWUI 0x50
 #endif
 
+int CALLBACK BrowseCallbackProc(HWND hwnd, UINT uMsg, LPARAM lParam, LPARAM lpData)
+{
+  if (uMsg == BFFM_INITIALIZED)
+  {
+    char * filePath = (char *) lpData;
+    if (filePath)
+    {
+      SendMessage(hwnd, BFFM_SETSELECTION, TRUE /* true because lpData is a path string */, lpData);
+      free(filePath);
+    }
+  }
+
+  return 0;
+}
+
 void BrowseForDirectory(HWND hParent)
 { 
 	LPITEMIDLIST  itemIDList;
@@ -528,6 +555,13 @@ void BrowseForDirectory(HWND hParent)
 	browseInfo.ulFlags			  = BIF_USENEWUI | BIF_RETURNONLYFSDIRS;
 	browseInfo.lpfn				    = NULL;
 	browseInfo.lParam			    = 0;
+
+  if (currDir[0]) {
+    browseInfo.lParam = (LPARAM) strdup(currDir);
+    browseInfo.lpfn = &BrowseCallbackProc;
+  }
+  else
+    browseInfo.lParam = 0;
 	
 	// Show the dialog
 	itemIDList = SHBrowseForFolder(&browseInfo);
@@ -580,7 +614,8 @@ void CheckForUpgrade(HWND aPanel, int aNextPanel)
   // "Easy Install" mode. If that flag is set to FALSE, the Upgrade 
   // panel is shown only in the "Custom"/"Advanced" pass. 
   if (sgProduct.checkCleanupOnUpgrade && 
-      !(dwSetupType == ST_RADIO0 && !diUpgrade.bShowInEasyInstall)) {
+      !(dwSetupType == ST_RADIO0 && !diUpgrade.bShowInEasyInstall) && 
+      !(dwSetupType == ST_RADIO1 && !diUpgrade.bShowDialog)) {
 
     // Found destination folder.  check to see if we're upgrading ontop
     // of a previous installation.  If so, we need to prompt the user
@@ -1293,14 +1328,7 @@ LRESULT CALLBACK DlgProcSummary(HWND hDlg, UINT msg, WPARAM wParam, LONG lParam)
     SetDlgItemText(hDlg, IDC_CONNECTION_SETTINGS, sgInstallGui.szProxyButton);
     SetDlgItemText(hDlg, IDC_INSTALL_FOLDER_LABEL, sgInstallGui.szInstallFolder);
 
-    // This is a bit of a hack for now, not parameterizable as I'd like it to be. 
-    // Unfortunately pressed for time. Revisit. 
-    // -Ben
-#if defined(MOZ_PHOENIX)
     ExtractIconEx("setuprsc.dll", 1, &largeIcon, &smallIcon, 1);
-#elif defined(MOZ_THUNDERBIRD)
-    ExtractIconEx("setuprsc.dll", 2, &largeIcon, &smallIcon, 1);
-#endif
     SendMessage(GetDlgItem(hDlg, IDC_APP_ICON), STM_SETICON, (LPARAM)smallIcon, 0);
 
     break;

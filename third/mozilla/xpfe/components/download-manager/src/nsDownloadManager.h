@@ -53,7 +53,7 @@
 #include "nsIURI.h"
 #include "nsIWebBrowserPersist.h"
 #include "nsILocalFile.h"
-#include "nsHashtable.h"
+#include "nsRefPtrHashtable.h"
 #include "nsIRequest.h"
 #include "nsIObserver.h"
 #include "nsIStringBundle.h"
@@ -61,6 +61,8 @@
 #include "nsIMIMEInfo.h"
  
 enum DownloadState { NOTSTARTED = -1, DOWNLOADING, FINISHED, FAILED, CANCELED };
+
+class nsDownload;
 
 class nsDownloadManager : public nsIDownloadManager,
                           public nsIDOMEventListener,
@@ -96,7 +98,7 @@ private:
   nsCOMPtr<nsIRDFContainerUtils> mRDFContainerUtils;
   nsCOMPtr<nsIStringBundle> mBundle;
   PRInt32 mBatches;
-  nsHashtable mCurrDownloads;
+  nsRefPtrHashtable<nsCStringHashKey, nsDownload> mCurrDownloads;
 
   friend class nsDownload;
 };
@@ -106,6 +108,7 @@ class nsDownload : public nsIDownload,
 {
 public:
   NS_DECL_NSIWEBPROGRESSLISTENER
+  NS_DECL_NSITRANSFER
   NS_DECL_NSIDOWNLOAD
   NS_DECL_ISUPPORTS
 
@@ -119,7 +122,7 @@ protected:
   nsresult SetDialog(nsIProgressDialog* aDialog);
   nsresult GetDialog(nsIProgressDialog** aDialog);
   nsresult SetPersist(nsIWebBrowserPersist* aPersist);
-  nsresult SetTarget(nsILocalFile* aTarget);
+  nsresult SetTarget(nsIURI* aTarget);
   nsresult SetSource(nsIURI* aSource);
   nsresult GetTransferInformation(PRInt32* aCurr, PRInt32* aMax);
   nsresult GetDownloadState(DownloadState* aState);
@@ -131,7 +134,7 @@ private:
 
   nsString mDisplayName;
 
-  nsCOMPtr<nsILocalFile> mTarget;
+  nsCOMPtr<nsIURI> mTarget;
   nsCOMPtr<nsIURI> mSource;
   nsCOMPtr<nsIWebProgressListener> mListener;
   nsCOMPtr<nsIWebProgressListener> mDialogListener;
@@ -145,7 +148,7 @@ private:
   PRInt32 mPercentComplete;
   PRInt32 mCurrBytes;
   PRInt32 mMaxBytes;
-  PRInt64 mStartTime;
+  PRTime mStartTime;
   PRTime mLastUpdate;
 
   friend class nsDownloadManager;

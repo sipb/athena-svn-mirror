@@ -222,7 +222,7 @@ NS_IMETHODIMP nsDeviceContextGTK::Init(nsNativeWidget aNativeWidget)
   mScreenManager->GetPrimaryScreen ( getter_AddRefs(screen) );
   if ( screen ) {
     PRInt32 x, y, width, height, depth;
-    screen->GetAvailRect ( &x, &y, &width, &height );
+    screen->GetRect ( &x, &y, &width, &height );
     screen->GetPixelDepth ( &depth );
     mWidthFloat = float(width);
     mHeightFloat = float(height);
@@ -334,11 +334,15 @@ NS_IMETHODIMP nsDeviceContextGTK::CreateRenderingContext(nsIRenderingContext *&a
         // window might not be realized... ugh
         if (gwin)
           gdk_window_ref(gwin);
-        else
+        else {
           win = gdk_pixmap_new(nsnull,
                                w->allocation.width,
                                w->allocation.height,
                                gdk_rgb_get_visual()->depth);
+#ifdef MOZ_WIDGET_GTK2
+          gdk_drawable_set_colormap(win, gdk_rgb_get_colormap());
+#endif
+        }
 
         GdkGC *gc = gdk_gc_new(win);
 
@@ -439,15 +443,6 @@ NS_IMETHODIMP nsDeviceContextGTK::GetSystemFont(nsSystemFontID aID, nsFont *aFon
   return status;
 }
 
-NS_IMETHODIMP nsDeviceContextGTK::ConvertPixel(nscolor aColor, 
-                                               PRUint32 & aPixel)
-{
-  aPixel = ::gdk_rgb_xpixel_from_rgb (NS_TO_GDK_RGB(aColor));
-
-  return NS_OK;
-}
-
-
 NS_IMETHODIMP nsDeviceContextGTK::CheckFontExistence(const nsString& aFontName)
 {
   return NS_FontMetricsFamilyExists(this, aFontName);
@@ -510,9 +505,34 @@ NS_IMETHODIMP nsDeviceContextGTK::GetRect(nsRect &aRect)
 
 NS_IMETHODIMP nsDeviceContextGTK::GetClientRect(nsRect &aRect)
 {
-  // The client rect is never different from the standard rect on
-  // linux because we don't have the concept of the title bar.
-  return GetRect ( aRect );
+  // if we have an initialized widget for this device context, use it
+  // to try and get real screen coordinates.
+  if (mDeviceWindow) {
+    gint x, y, width, height, depth;
+    x = y = width = height = 0;
+
+    gdk_window_get_geometry(mDeviceWindow, &x, &y, &width, &height,
+                            &depth);
+    gdk_window_get_origin(mDeviceWindow, &x, &y);
+
+    nsCOMPtr<nsIScreen> screen;
+    mScreenManager->ScreenForRect(x, y, width, height, getter_AddRefs(screen));
+    screen->GetAvailRect(&aRect.x, &aRect.y, &aRect.width, &aRect.height);
+    aRect.x = NSToIntRound(mDevUnitsToAppUnits * aRect.x);
+    aRect.y = NSToIntRound(mDevUnitsToAppUnits * aRect.y);
+    aRect.width = NSToIntRound(mDevUnitsToAppUnits * aRect.width);
+    aRect.height = NSToIntRound(mDevUnitsToAppUnits * aRect.height);
+  }
+  else {
+    PRInt32 width, height;
+    GetDeviceSurfaceDimensions(width, height);
+    aRect.x = 0;
+    aRect.y = 0;
+    aRect.width = width;
+    aRect.height = height;
+  }
+
+  return NS_OK;
 }
 
 NS_IMETHODIMP nsDeviceContextGTK::GetDeviceContextFor(nsIDeviceContextSpec *aDevice,
@@ -532,7 +552,7 @@ NS_IMETHODIMP nsDeviceContextGTK::GetDeviceContextFor(nsIDeviceContextSpec *aDev
     nsCOMPtr<nsIDeviceContextXp> dcxp(do_CreateInstance(kCDeviceContextXp, &rv));
     NS_ASSERTION(NS_SUCCEEDED(rv), "Couldn't create Xp Device context.");    
     if (NS_FAILED(rv)) 
-      return rv;
+      return NS_ERROR_GFX_COULD_NOT_LOAD_PRINT_MODULE;
     
     rv = dcxp->SetSpec(aDevice);
     if (NS_FAILED(rv)) 
@@ -558,7 +578,7 @@ NS_IMETHODIMP nsDeviceContextGTK::GetDeviceContextFor(nsIDeviceContextSpec *aDev
     nsCOMPtr<nsIDeviceContextPS> dcps(do_CreateInstance(kCDeviceContextPS, &rv));
     NS_ASSERTION(NS_SUCCEEDED(rv), "Couldn't create PS Device context.");
     if (NS_FAILED(rv)) 
-      return rv;
+      return NS_ERROR_GFX_COULD_NOT_LOAD_PRINT_MODULE;
   
     rv = dcps->SetSpec(aDevice);
     if (NS_FAILED(rv)) 
@@ -691,10 +711,7 @@ nsSystemFontsGTK::nsSystemFontsGTK(float aPixelsToTwips)
   gtk_container_add(GTK_CONTAINER(parent), label);
   gtk_container_add(GTK_CONTAINER(window), parent);
 
-  gtk_widget_set_rc_style(parent);
-  gtk_widget_set_rc_style(label);
-  gtk_widget_realize(parent);
-  gtk_widget_realize(label);
+  gtk_widget_ensure_style(label);
 
   GetSystemFontInfo(label, &mDefaultFont, aPixelsToTwips);
 
@@ -707,9 +724,7 @@ nsSystemFontsGTK::nsSystemFontsGTK(float aPixelsToTwips)
 
   gtk_container_add(GTK_CONTAINER(parent), entry);
   gtk_container_add(GTK_CONTAINER(window), parent);
-
-  gtk_widget_set_rc_style(entry);
-  gtk_widget_realize(entry);
+  gtk_widget_ensure_style(entry);
 
   GetSystemFontInfo(entry, &mFieldFont, aPixelsToTwips);
 
@@ -725,10 +740,7 @@ nsSystemFontsGTK::nsSystemFontsGTK(float aPixelsToTwips)
   gtk_container_add(GTK_CONTAINER(menuitem), accel_label);
   gtk_menu_append(GTK_MENU(menu), menuitem);
 
-  gtk_widget_set_rc_style(accel_label);
-  gtk_widget_set_rc_style(menu);
-  gtk_widget_realize(menu);
-  gtk_widget_realize(accel_label);
+  gtk_widget_ensure_style(accel_label);
 
   GetSystemFontInfo(accel_label, &mMenuFont, aPixelsToTwips);
 
@@ -744,11 +756,7 @@ nsSystemFontsGTK::nsSystemFontsGTK(float aPixelsToTwips)
   gtk_container_add(GTK_CONTAINER(parent), button);
   gtk_container_add(GTK_CONTAINER(window), parent);
 
-  gtk_widget_set_rc_style(button);
-  gtk_widget_set_rc_style(label);
-
-  gtk_widget_realize(button);
-  gtk_widget_realize(label);
+  gtk_widget_ensure_style(label);
 
   GetSystemFontInfo(label, &mButtonFont, aPixelsToTwips);
 
@@ -970,12 +978,16 @@ nsSystemFontsGTK::GetSystemFontInfo(GtkWidget *aWidget, nsFont* aFont,
   PangoFontDescription *desc;
   desc = pango_font_description_from_string(fontname);
 
+  aFont->systemFont = PR_TRUE;
+
   g_free(fontname);
 
   aFont->name.Truncate();
 #ifdef MOZ_ENABLE_XFT
   if (NS_IsXftEnabled()) {
+    aFont->name.Assign(PRUnichar('"'));
     aFont->name.AppendWithConversion(pango_font_description_get_family(desc));
+    aFont->name.Append(PRUnichar('"'));
   }
 #endif /* MOZ_ENABLE_XFT */
 
@@ -987,10 +999,18 @@ nsSystemFontsGTK::GetSystemFontInfo(GtkWidget *aWidget, nsFont* aFont,
 #endif /* MOZ_ENABLE_COREXFONTS */
   aFont->weight = pango_font_description_get_weight(desc);
 
-  gint size;
-  size = pango_font_description_get_size(desc);
-
-  aFont->size = NSIntPointsToTwips(size / PANGO_SCALE);
+  float size = float(pango_font_description_get_size(desc) / PANGO_SCALE);
+#ifdef MOZ_ENABLE_XFT
+  if (NS_IsXftEnabled()) {
+    PRInt32 dpi = GetXftDPI();
+    if (dpi != 0) {
+      // pixels/inch * twips/pixel * inches/twip == 1, except it isn't, since
+      // our idea of dpi may be different from Xft's.
+      size *= float(dpi) * aPixelsToTwips * (1.0f/1440.0f);
+    }
+  }
+#endif /* MOZ_ENABLE_XFT */
+  aFont->size = NSFloatPointsToTwips(size);
   
   pango_font_description_free(desc);
 

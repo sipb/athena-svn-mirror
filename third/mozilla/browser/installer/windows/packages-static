@@ -1,4 +1,4 @@
-; Package file for Win32 static Firebird build. 
+; Package file for Win32 static Firefox build. 
 ;
 ; File format:
 ;
@@ -42,10 +42,12 @@ bin\xpcom_compat.dll
 
 [browser]
 ; [Base Browser Files]
-bin\MozillaFirebird.exe
+bin\firefox.exe
 bin\plugins\npnul32.dll
 bin\res\cmessage.txt
 bin\xpicleanup.exe
+bin\LICENSE
+bin\README.txt
 
 ; [Components]
 bin\components\alerts.xpt
@@ -104,6 +106,7 @@ bin\components\layout_xul.xpt
 bin\components\layout_xul_tree.xpt
 bin\components\locale.xpt
 bin\components\lwbrk.xpt
+bin\components\migration.xpt
 bin\components\mimetype.xpt
 bin\components\mozbrwsr.xpt
 bin\components\mozfind.xpt
@@ -154,7 +157,7 @@ bin\components\websrvcs.xpt
 bin\components\widget.xpt
 bin\components\windowds.xpt
 bin\components\windowwatcher.xpt
-bin\components\winhooks.xpt
+bin\components\shellservice.xpt
 bin\components\xml-rpc.xpt
 bin\components\xmlextras.xpt
 bin\components\xpcom_base.xpt
@@ -169,6 +172,7 @@ bin\components\xpinstall.xpt
 bin\components\xuldoc.xpt
 bin\components\xultmpl.xpt
 ; JavaScript components
+bin\components\nsSetDefaultBrowser.js
 bin\components\nsCloseAllWindows.js
 bin\components\nsDictionary.js
 bin\components\nsHelperAppDlg.js
@@ -184,10 +188,10 @@ bin\chrome\toolkit.jar
 
 ; [Default Preferences]
 ; All the pref files must be part of base to prevent migration bugs
-bin\defaults\pref\all.js
-bin\defaults\pref\security-prefs.js
-bin\defaults\pref\winpref.js
-bin\defaults\pref\xpinstall.js
+bin\defaults\pref\firefox.js
+bin\greprefs\all.js
+bin\greprefs\security-prefs.js
+bin\greprefs\xpinstall.js
 bin\defaults\autoconfig\platform.js
 bin\defaults\autoconfig\prefcalls.js
 

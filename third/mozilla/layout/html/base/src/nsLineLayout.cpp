@@ -98,9 +98,8 @@ static nscoord AccumulateImageSizes(nsIPresContext& aPresContext, nsIFrame& aFra
     sizes += aFrame.GetSize().width;
   } else {
     // see if there are children to process
-    nsIFrame* child = nsnull;
     // XXX: process alternate child lists?
-    aFrame.FirstChild(&aPresContext,nsnull,&child);
+    nsIFrame* child = aFrame.GetFirstChild(nsnull);
     while (child) {
       // recurse: note that we already know we are in a child frame, so no need to track further
       sizes += AccumulateImageSizes(aPresContext, *child);
@@ -182,7 +181,7 @@ nsLineLayout::nsLineLayout(nsIPresContext* aPresContext,
   mCurrentSpan = mRootSpan = nsnull;
   mSpanDepth = 0;
 
-  mPresContext->GetCompatibilityMode(&mCompatMode);
+  mCompatMode = mPresContext->CompatibilityMode();
 }
 
 nsLineLayout::~nsLineLayout()
@@ -906,19 +905,9 @@ nsLineLayout::ReflowFrame(nsIFrame* aFrame,
       reason = eReflowReason_Dirty;
   }
 
-  // Unless we're doing an unconstrained reflow, compute the
-  // containing block's width.
-  nscoord containingBlockWidth =
-    (NS_UNCONSTRAINEDSIZE != psd->mRightEdge)
-      ? (psd->mRightEdge - psd->mLeftEdge)
-      : NS_UNCONSTRAINEDSIZE;
-
   // Setup reflow state for reflowing the frame
   nsHTMLReflowState reflowState(mPresContext, *psd->mReflowState,
-                                aFrame, availSize,
-                                containingBlockWidth,
-                                psd->mReflowState->availableHeight,
-                                reason);
+                                aFrame, availSize, reason);
   reflowState.mLineLayout = this;
   reflowState.mFlags.mIsTopOfPage = GetFlag(LL_ISTOPOFPAGE);
   SetFlag(LL_UNDERSTANDSNWHITESPACE, PR_FALSE);
@@ -1051,6 +1040,7 @@ nsLineLayout::ReflowFrame(nsIFrame* aFrame,
   // the float.
   if (frameType) {
     if (nsLayoutAtoms::placeholderFrame == frameType) {
+      pfd->SetFlag(PFD_ISPLACEHOLDERFRAME, PR_TRUE);
       nsIFrame* outOfFlowFrame = ((nsPlaceholderFrame*)aFrame)->GetOutOfFlowFrame();
       if (outOfFlowFrame) {
         // Make sure it's floated and not absolutely positioned
@@ -1662,8 +1652,7 @@ PRBool IsPercentageAwareFrame(nsIPresContext *aPresContext, nsIFrame *aFrame)
   }
   else
   {
-    nsIFrame *child;
-    aFrame->FirstChild(aPresContext, nsnull, &child);
+    nsIFrame *child = aFrame->GetFirstChild(nsnull);
     if (child)
     { // aFrame is an inline container frame, check my frame state
       if (aFrame->GetStateBits() & NS_INLINE_FRAME_CONTAINS_PERCENT_AWARE_CHILD) {
@@ -2654,9 +2643,10 @@ nsLineLayout::TrimTrailingWhiteSpaceIn(PerSpanData* psd,
         return PR_TRUE;
       }
     }
-    else if (!pfd->GetFlag(PFD_ISTEXTFRAME)) {
-      // If we hit a frame on the end that's not text, then there is
-      // no trailing whitespace to trim. Stop the search.
+    else if (!pfd->GetFlag(PFD_ISTEXTFRAME) &&
+             !pfd->GetFlag(PFD_ISPLACEHOLDERFRAME)) {
+      // If we hit a frame on the end that's not text and not a placeholder,
+      // then there is no trailing whitespace to trim. Stop the search.
       *aDeltaWidth = 0;
       return PR_TRUE;
     }
@@ -2805,6 +2795,18 @@ nsLineLayout::ApplyFrameJustification(PerSpanData* aPSD, FrameJustificationState
       }
       
       pfd->mBounds.width += dw;
+      // Make sure mCombinedArea includes the new bounds.
+      // Don't just set it to the new bounds because it could include
+      // the overflow of some children of the frame... (e.g., rel pos children).
+      pfd->mCombinedArea.UnionRect(pfd->mCombinedArea,
+        nsRect(0, 0, pfd->mBounds.width, pfd->mBounds.height));
+
+      // Ah, but what if this frame is actually a span with a child
+      // that overflows and the child is moved by justification? How
+      // do we ensure that mCombinedArea includes that child? NO
+      // PROBLEM! RelativePositionFrames gets called later, and it
+      // unions all child frame bounds back into our combinedArea.
+
       deltaX += dw;
       pfd->mFrame->SetRect(pfd->mBounds);
     }
@@ -2927,7 +2929,7 @@ nsLineLayout::HorizontalAlignFrames(nsRect& aLineBounds,
       if (aShrinkWrapWidth) {
         return PR_FALSE;
       }
-      mPresContext->IsVisualMode(visualRTL);
+      visualRTL = mPresContext->IsVisualMode();
 
       if (bulletPfd) {
         bulletPfd->mBounds.x += maxX;
@@ -2994,33 +2996,30 @@ nsLineLayout::RelativePositionFrames(nsRect& aCombinedArea)
 void
 nsLineLayout::RelativePositionFrames(PerSpanData* psd, nsRect& aCombinedArea)
 {
-  nsRect spanCombinedArea;
-  PerFrameData* pfd;
-
-  nscoord minX, minY, maxX, maxY;
+  nsRect combinedAreaResult;
   if (nsnull != psd->mFrame) {
     // The minimum combined area for the frames in a span covers the
-    // entire span frame.
-    pfd = psd->mFrame;
-    minX = 0;
-    minY = 0;
-    maxX = pfd->mBounds.width;
-    maxY = pfd->mBounds.height;
+    // entire span frame's overflow area. The span frame might have
+    // overflowing additional non-inline frames (e.g. absolute children
+    // of a relatively positioned span) and we need to make sure their 
+    // overflow area, if any, makes it into our final combined area.
+    combinedAreaResult = psd->mFrame->mCombinedArea;
   }
   else {
     // The minimum combined area for the frames that are direct
     // children of the block starts at the upper left corner of the
     // line and is sized to match the size of the line's bounding box
     // (the same size as the values returned from VerticalAlignFrames)
-    minX = psd->mLeftEdge;
-    maxX = psd->mX;
-    minY = mTopEdge;
-    maxY = mTopEdge + mFinalLineHeight;
+    combinedAreaResult.x = psd->mLeftEdge;
+    // If this turns out to be negative, the rect will be treated as empty.
+    // Which is just fine.
+    combinedAreaResult.width = psd->mX - combinedAreaResult.x;
+    combinedAreaResult.y = mTopEdge;
+    combinedAreaResult.height = mFinalLineHeight;
   }
 
-  for (pfd = psd->mFirstFrame; pfd; pfd = pfd->mNext) {
-    nscoord x = pfd->mBounds.x;
-    nscoord y = pfd->mBounds.y;
+  for (PerFrameData* pfd = psd->mFirstFrame; pfd; pfd = pfd->mNext) {
+    nsPoint origin = nsPoint(pfd->mBounds.x, pfd->mBounds.y);
     nsIFrame* frame = pfd->mFrame;
 
     // Adjust the origin of the frame
@@ -3029,8 +3028,7 @@ nsLineLayout::RelativePositionFrames(PerSpanData* psd, nsRect& aCombinedArea)
       // nsHTMLReflowState::ComputeRelativeOffsets
       nsPoint change(pfd->mOffsets.left, pfd->mOffsets.top);
       frame->SetPosition(frame->GetPosition() + change);
-      x += change.x;
-      y += change.y;
+      origin += change;
     }
 
     // We must position the view correctly before positioning its
@@ -3046,6 +3044,7 @@ nsLineLayout::RelativePositionFrames(PerSpanData* psd, nsRect& aCombinedArea)
     // system. We adjust the childs combined area into our coordinate
     // system before computing the aggregated value by adding in
     // <b>x</b> and <b>y</b> which were computed above.
+    nsRect spanCombinedArea;
     nsRect* r = &pfd->mCombinedArea;
     if (pfd->mSpan) {
       // Compute a new combined area for the child span before
@@ -3071,36 +3070,19 @@ nsLineLayout::RelativePositionFrames(PerSpanData* psd, nsRect& aCombinedArea)
                                                  frame->GetView(), r,
                                                  NS_FRAME_NO_MOVE_VIEW);
 
-    nscoord xl = x + r->x;
-    if (xl < minX) {
-      minX = xl;
-    }
-    nscoord xr = x + r->XMost();
-    if (xr > maxX) {
-      maxX = xr;
-    }
-    nscoord yt = y + r->y;
-    if (yt < minY) {
-      minY = yt;
-    }
-    nscoord yb = y + r->YMost();
-    if (yb > maxY) {
-      maxY = yb;
-    }
+    combinedAreaResult.UnionRect(combinedAreaResult, *r + origin);
   }
 
-  aCombinedArea.x = minX;
-  aCombinedArea.y = minY;
-  aCombinedArea.width = maxX - minX;
-  aCombinedArea.height = maxY - minY;
+  aCombinedArea = combinedAreaResult;
 
   // If we just computed a spans combined area, we need to update its
   // NS_FRAME_OUTSIDE_CHILDREN bit..
   if (psd->mFrame) {
-    pfd = psd->mFrame;
-    nsIFrame* frame = pfd->mFrame;
-    if ((minX < 0) || (minY < 0) ||
-        (maxX > pfd->mBounds.width) || (maxY > pfd->mBounds.height)) {
+    PerFrameData* spanPFD = psd->mFrame;
+    nsIFrame* frame = spanPFD->mFrame;
+    if ((combinedAreaResult.x < 0) || (combinedAreaResult.y < 0) ||
+        (combinedAreaResult.XMost() > spanPFD->mBounds.width) ||
+        (combinedAreaResult.YMost() > spanPFD->mBounds.height)) {
       frame->AddStateBits(NS_FRAME_OUTSIDE_CHILDREN);
     } else {
       frame->RemoveStateBits(NS_FRAME_OUTSIDE_CHILDREN);
@@ -3186,8 +3168,7 @@ nsLineLayout::FindNextText(nsIPresContext* aPresContext, nsIFrame* aFrame)
       if (! canContinue)
         return nsnull;
 
-      nsIFrame* child;
-      next->FirstChild(aPresContext, nsnull, &child);
+      nsIFrame* child = next->GetFirstChild(nsnull);
 
       if (! child)
         break;

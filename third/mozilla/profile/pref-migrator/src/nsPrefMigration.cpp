@@ -444,11 +444,9 @@ nsPrefMigration::WindowCloseCallback()
   nsresult rv;
   nsCOMPtr<nsIScriptGlobalObject> scriptGO(do_QueryInterface(mPMProgressWindow));
   if (!scriptGO) return NS_ERROR_FAILURE;
-  
-  nsCOMPtr<nsIDocShell> docShell;
-  rv = scriptGO->GetDocShell(getter_AddRefs(docShell));
-  if (!docShell) return NS_ERROR_FAILURE;
-  nsCOMPtr<nsIDocShellTreeItem> treeItem(do_QueryInterface(docShell));
+
+  nsCOMPtr<nsIDocShellTreeItem> treeItem =
+    do_QueryInterface(scriptGO->GetDocShell());
   if (!treeItem) return NS_ERROR_FAILURE;
   nsCOMPtr<nsIDocShellTreeOwner> treeOwner;
   treeItem->GetTreeOwner(getter_AddRefs(treeOwner));
@@ -2131,7 +2129,7 @@ nsPrefMigration::RenameAndMove4xImapFilterFiles(nsIFileSpec * profilePath)
   if (!hostList || !*hostList) return NS_OK; 
 
   char *token = nsnull;
-  char *rest = NS_CONST_CAST(char*,(const char*)hostList);
+  char *rest = hostList;
   nsCAutoString str;
 
   token = nsCRT::strtok(rest, ",", &rest);

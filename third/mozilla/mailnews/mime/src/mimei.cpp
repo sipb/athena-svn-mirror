@@ -229,7 +229,7 @@ mime_locate_external_content_handler(const char *content_type,
 
 /* This is necessary to expose the MimeObject method outside of this DLL */
 int
-MIME_MimeObject_write(MimeObject *obj, char *output, PRInt32 length, PRBool user_visible_p)
+MIME_MimeObject_write(MimeObject *obj, const char *output, PRInt32 length, PRBool user_visible_p)
 {
   return MimeObject_write(obj, output, length, user_visible_p);
 }
@@ -755,17 +755,6 @@ mime_create (const char *content_type, MimeHeaders *hdrs,
   char *content_disposition = 0;
   MimeObject *obj = 0;
   char *override_content_type = 0;
-  static PRBool reverse_lookup = PR_FALSE, got_lookup_pref = PR_FALSE;
-
-  if (!got_lookup_pref)
-  {
-     nsIPref *pref = GetPrefServiceManager(opts);   // Pref service manager 
-     if (pref)
-     {
-       pref->GetBoolPref("mailnews.autolookup_unknown_mime_types",&reverse_lookup);
-       got_lookup_pref = PR_TRUE;
-     }
-  }
 
 
   /* There are some clients send out all attachments with a content-type
@@ -784,13 +773,7 @@ mime_create (const char *content_type, MimeHeaders *hdrs,
 	  (content_type ? nsCRT::strcasecmp(content_type, MULTIPART_APPLEDOUBLE) : PR_TRUE) &&
 	  (!content_type ||
 	   !nsCRT::strcasecmp(content_type, APPLICATION_OCTET_STREAM) ||
-	   !nsCRT::strcasecmp(content_type, UNKNOWN_CONTENT_TYPE) ||
-	   (reverse_lookup
-#if 0
-	    && !NET_cinfo_find_info_by_type((char*)content_type))))
-#else
-        )))
-#endif
+	   !nsCRT::strcasecmp(content_type, UNKNOWN_CONTENT_TYPE)))
 	{
 	  char *name = MimeHeaders_get_name(hdrs, opts);
 	  if (name)
@@ -1764,7 +1747,7 @@ mime_parse_url_options(const char *url, MimeDisplayOptions *options)
  */
 
 int
-MimeOptions_write(MimeDisplayOptions *opt, char *data, PRInt32 length,
+MimeOptions_write(MimeDisplayOptions *opt, const char *data, PRInt32 length,
 				  PRBool user_visible_p)
 {
   int status = 0;
@@ -1803,7 +1786,7 @@ MimeOptions_write(MimeDisplayOptions *opt, char *data, PRInt32 length,
 }
 
 int
-MimeObject_write(MimeObject *obj, char *output, PRInt32 length,
+MimeObject_write(MimeObject *obj, const char *output, PRInt32 length,
 				 PRBool user_visible_p)
 {
   if (!obj->output_p) return 0;

@@ -43,7 +43,6 @@
 #include "nsIDeviceContext.h"
 #include "nsIViewManager.h"
 #include "nsIPresShell.h"
-#include "nsIStyleSet.h"
 #include "nsIFontMetrics.h"
 #include "nsIPrintSettings.h"
 #include "nsPageFrame.h"
@@ -52,6 +51,7 @@
 #include "nsStyleConsts.h"
 #include "nsRegion.h"
 #include "nsLayoutAtoms.h"
+#include "nsCSSFrameConstructor.h"
 
 // for header/footer gap & ExtraMargin for Print Preview
 #include "nsIPrefBranch.h"
@@ -59,13 +59,7 @@
 
 // DateTime Includes
 #include "nsDateTimeFormatCID.h"
-#include "nsIDateTimeFormat.h"
-#include "nsIServiceManager.h"
-#include "nsILocale.h"
-#include "nsLocaleCID.h"
-#include "nsILocaleService.h"
 static NS_DEFINE_CID(kDateTimeFormatCID, NS_DATETIMEFORMAT_CID);
-static NS_DEFINE_CID(kLocaleServiceCID, NS_LOCALESERVICE_CID); 
 
 #define OFFSET_NOT_SET -1
 
@@ -203,17 +197,9 @@ nsSimplePageSequenceFrame::CreateContinuingPageFrame(nsIPresContext* aPresContex
                                                      nsIFrame*       aPageFrame,
                                                      nsIFrame**      aContinuingPage)
 {
-  nsIPresShell* presShell;
-  nsIStyleSet*  styleSet;
-  nsresult      rv;
-
   // Create the continuing frame
-  aPresContext->GetShell(&presShell);
-  presShell->GetStyleSet(&styleSet);
-  NS_RELEASE(presShell);
-  rv = styleSet->CreateContinuingFrame(aPresContext, aPageFrame, this, aContinuingPage);
-  NS_RELEASE(styleSet);
-  return rv;
+  return aPresContext->PresShell()->FrameConstructor()->
+    CreateContinuingFrame(aPresContext, aPageFrame, this, aContinuingPage);
 }
 
 void
@@ -303,11 +289,8 @@ nsSimplePageSequenceFrame::Reflow(nsIPresContext*          aPresContext,
   // and if this Document is in the upper left hand corner
   // we need to suppress the top margin or it will reflow too small
   // Start by getting the actual printer page dimensions to see if we are not a whole page
-  nsCOMPtr<nsIDeviceContext> dc;
-  aPresContext->GetDeviceContext(getter_AddRefs(dc));
-  NS_ASSERTION(dc, "nsIDeviceContext can't be NULL!");
   nscoord width, height;
-  dc->GetDeviceSurfaceDimensions(width, height);
+  aPresContext->DeviceContext()->GetDeviceSurfaceDimensions(width, height);
 
   // Compute the size of each page and the x coordinate that each page will
   // be placed at
@@ -453,7 +436,7 @@ nsSimplePageSequenceFrame::Reflow(nsIPresContext*          aPresContext,
       // once we reach the 32k boundary for positioning
       if (nsPageFrame::GetCreateWidget()) {
         float t2p;
-        aPresContext->GetTwipsToPixels(&t2p);
+        t2p = aPresContext->TwipsToPixels();
         nscoord xp = NSTwipsToIntPixels(x, t2p);
         nscoord yp = NSTwipsToIntPixels(y, t2p);
         nsPageFrame::SetCreateWidget(xp < 0x8000 && yp < 0x8000);
@@ -501,27 +484,21 @@ nsSimplePageSequenceFrame::Reflow(nsIPresContext*          aPresContext,
     }
 
     // Create current Date/Time String
-    nsresult rv;
-    nsCOMPtr<nsILocale> locale; 
-    nsCOMPtr<nsILocaleService> localeSvc = do_GetService(kLocaleServiceCID, &rv);
-    if (NS_SUCCEEDED(rv)) {
-      rv = localeSvc->GetApplicationLocale(getter_AddRefs(locale));
-      if (NS_SUCCEEDED(rv) && locale) {
-        nsCOMPtr<nsIDateTimeFormat> dateTime;
-        rv = nsComponentManager::CreateInstance(kDateTimeFormatCID,
-                                               NULL,
-                                               NS_GET_IID(nsIDateTimeFormat),
-                                               (void**) getter_AddRefs(dateTime));
-        if (NS_SUCCEEDED(rv)) {
-          nsAutoString dateString;
-          time_t ltime;
-          time( &ltime );
-          if (NS_SUCCEEDED(dateTime->FormatTime(locale, kDateFormatShort, kTimeFormatNoSeconds, ltime, dateString))) {
-            PRUnichar * uStr = ToNewUnicode(dateString);
-            SetDateTimeStr(uStr); // memory will be freed
-          }
-        }
-      }
+    if (!mDateFormatter)
+      mDateFormatter = do_CreateInstance(kDateTimeFormatCID);
+
+    NS_ENSURE_TRUE(mDateFormatter, NS_ERROR_FAILURE);
+
+    nsAutoString formattedDateString;
+    time_t ltime;
+    time( &ltime );
+    if (NS_SUCCEEDED(mDateFormatter->FormatTime(nsnull /* nsILocale* locale */,
+                                                kDateFormatShort,
+                                                kTimeFormatNoSeconds,
+                                                ltime,
+                                                formattedDateString))) {
+      PRUnichar * uStr = ToNewUnicode(formattedDateString);
+      SetDateTimeStr(uStr); // memory will be freed
     }
 
   }
@@ -665,10 +642,6 @@ nsSimplePageSequenceFrame::StartPrint(nsIPresContext*   aPresContext,
   }
 
   // Begin printing of the document
-  nsCOMPtr<nsIDeviceContext> dc;
-  aPresContext->GetDeviceContext(getter_AddRefs(dc));
-  NS_ASSERTION(dc, "nsIDeviceContext can't be NULL!");
-
   nsresult rv = NS_OK;
 
 #if defined(DEBUG_rods) || defined(DEBUG_dcone)
@@ -707,8 +680,8 @@ nsSimplePageSequenceFrame::StartPrint(nsIPresContext*   aPresContext,
   if (mDoingPageRange) {
     // XXX because of the hack for making the selection all print on one page
     // we must make sure that the page is sized correctly before printing.
-    PRInt32 width,height;
-    dc->GetDeviceSurfaceDimensions(width,height);
+    PRInt32 width, height;
+    aPresContext->DeviceContext()->GetDeviceSurfaceDimensions(width, height);
 
     PRInt32 pageNum = 1;
     nscoord y = 0;//mMargin.top;
@@ -819,8 +792,7 @@ nsSimplePageSequenceFrame::PrintNextPage(nsIPresContext*  aPresContext)
   mPageData->mPrintSettings->GetPrintOptions(nsIPrintSettings::kPrintOddPages, &printOddPages);
 
   // Begin printing of the document
-  nsCOMPtr<nsIDeviceContext> dc;
-  aPresContext->GetDeviceContext(getter_AddRefs(dc));
+  nsIDeviceContext *dc = aPresContext->DeviceContext();
   NS_ASSERTION(dc, "nsIDeviceContext can't be NULL!");
 
   nsIViewManager* vm = aPresContext->GetViewManager();
@@ -873,8 +845,7 @@ nsSimplePageSequenceFrame::PrintNextPage(nsIPresContext*  aPresContext)
     nsRect   containerRect;
     if (mSelectionHeight > -1) {
       nsIFrame* childFrame = mFrames.FirstChild();
-      nsIFrame* conFrame;
-      childFrame->FirstChild(aPresContext, nsnull, &conFrame);
+      nsIFrame* conFrame = childFrame->GetFirstChild(nsnull);
       containerView = conFrame->GetView();
       NS_ASSERTION(containerView, "Container view can't be null!");
       containerRect = containerView->GetBounds();
@@ -974,13 +945,9 @@ nsSimplePageSequenceFrame::DoPageEnd(nsIPresContext*  aPresContext)
 	nsresult rv = NS_OK;
 	
   if (mPrintThisPage) {
-    nsCOMPtr<nsIDeviceContext> dc;
-    aPresContext->GetDeviceContext(getter_AddRefs(dc));
-    NS_ASSERTION(dc, "nsIDeviceContext can't be NULL!");
-
     if(mSkipPageEnd){
 	    PR_PL(("***************** End Page (DoPageEnd) *****************\n"));
-      nsresult rv = dc->EndPage();
+      nsresult rv = aPresContext->DeviceContext()->EndPage();
 	    if (NS_FAILED(rv)) {
 	      return rv;
       }

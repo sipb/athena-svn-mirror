@@ -35,24 +35,156 @@
  * the terms of any one of the NPL, the GPL or the LGPL.
  *
  * ***** END LICENSE BLOCK ***** */
- 
+
 #include "nsIGenericFactory.h"
 
 #include "nsBrowserCompsCID.h"
 #include "nsBookmarksService.h"
+#ifdef XP_WIN
+#include "nsWindowsShellService.h"
+#elif defined(XP_MACOSX)
+#include "nsMacShellService.h"
+#else
+#include "nsGNOMEShellService.h"
+#endif
+#include "nsProfileMigrator.h"
+#include "nsDogbertProfileMigrator.h"
+#if !defined(XP_OS2)
+#include "nsOperaProfileMigrator.h"
+#endif
+#include "nsPhoenixProfileMigrator.h"
+#include "nsSeamonkeyProfileMigrator.h"
+#if defined(XP_WIN) && !defined(__MINGW32__)
+#include "nsIEProfileMigrator.h"
+#elif defined(XP_MACOSX)
+#include "nsSafariProfileMigrator.h"
+#include "nsOmniWebProfileMigrator.h"
+#include "nsMacIEProfileMigrator.h"
+#include "nsCaminoProfileMigrator.h"
+#include "nsICabProfileMigrator.h"
+#endif
 
 /////////////////////////////////////////////////////////////////////////////
 
 NS_GENERIC_FACTORY_CONSTRUCTOR_INIT(nsBookmarksService, Init)
+#ifdef XP_WIN
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsWindowsShellService)
+#elif defined(XP_MACOSX)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsMacShellService)
+#else
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsGNOMEShellService)
+#endif
 
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsDogbertProfileMigrator)
+#if !defined(XP_OS2)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsOperaProfileMigrator)
+#endif
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsPhoenixProfileMigrator)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsProfileMigrator)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsSeamonkeyProfileMigrator)
+#if defined(XP_WIN) && !defined(__MINGW32__)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsIEProfileMigrator)
+#elif defined(XP_MACOSX)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsSafariProfileMigrator)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsOmniWebProfileMigrator)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsMacIEProfileMigrator)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsCaminoProfileMigrator)
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsICabProfileMigrator)
+#endif
 /////////////////////////////////////////////////////////////////////////////
 
 static const nsModuleComponentInfo components[] =
 {
-  { "Bookmarks", NS_BOOKMARKS_SERVICE_CID, NS_BOOKMARKS_SERVICE_CONTRACTID,
-      nsBookmarksServiceConstructor },
-    { "Bookmarks", NS_BOOKMARKS_SERVICE_CID, NS_BOOKMARKS_DATASOURCE_CONTRACTID,
-      nsBookmarksServiceConstructor },
+#if defined(XP_WIN)
+  { "Browser Shell Shervice",
+    NS_SHELLSERVICE_CID,
+    NS_SHELLSERVICE_CONTRACTID,
+    nsWindowsShellServiceConstructor },
+
+#elif defined (XP_MACOSX)
+  { "Browser Shell Shervice",
+    NS_SHELLSERVICE_CID,
+    NS_SHELLSERVICE_CONTRACTID,
+    nsMacShellServiceConstructor },
+
+#else
+  { "Browser Shell Shervice",
+    NS_SHELLSERVICE_CID,
+    NS_SHELLSERVICE_CONTRACTID,
+    nsGNOMEShellServiceConstructor },
+
+#endif
+  { "Bookmarks",
+    NS_BOOKMARKS_SERVICE_CID,
+    NS_BOOKMARKS_SERVICE_CONTRACTID,
+    nsBookmarksServiceConstructor },
+
+  { "Bookmarks",
+    NS_BOOKMARKS_SERVICE_CID,
+    NS_BOOKMARKS_DATASOURCE_CONTRACTID,
+    nsBookmarksServiceConstructor },
+
+  { "Profile Migrator",
+    NS_PROFILEMIGRATOR_CID,
+    NS_PROFILEMIGRATOR_CONTRACTID,
+    nsProfileMigratorConstructor },
+
+#if defined(XP_WIN) && !defined(__MINGW32__)
+  { "Internet Explorer (Windows) Profile Migrator",
+    NS_WINIEPROFILEMIGRATOR_CID,
+    NS_BROWSERPROFILEMIGRATOR_CONTRACTID_PREFIX "ie",
+    nsIEProfileMigratorConstructor },
+
+#elif defined(XP_MACOSX)
+  { "Safari Profile Migrator",
+    NS_SAFARIPROFILEMIGRATOR_CID,
+    NS_BROWSERPROFILEMIGRATOR_CONTRACTID_PREFIX "safari",
+    nsSafariProfileMigratorConstructor },
+
+  { "Internet Explorer (Macintosh) Profile Migrator",
+    NS_MACIEPROFILEMIGRATOR_CID,
+    NS_BROWSERPROFILEMIGRATOR_CONTRACTID_PREFIX "macie",
+    nsMacIEProfileMigratorConstructor },
+
+  { "OmniWeb Profile Migrator",
+    NS_OMNIWEBPROFILEMIGRATOR_CID,
+    NS_BROWSERPROFILEMIGRATOR_CONTRACTID_PREFIX "omniweb",
+    nsOmniWebProfileMigratorConstructor },
+
+  { "Camino Profile Migrator",
+    NS_CAMINOPROFILEMIGRATOR_CID,
+    NS_BROWSERPROFILEMIGRATOR_CONTRACTID_PREFIX "camino",
+    nsCaminoProfileMigratorConstructor },
+
+  { "iCab Profile Migrator",
+    NS_ICABPROFILEMIGRATOR_CID,
+    NS_BROWSERPROFILEMIGRATOR_CONTRACTID_PREFIX "icab",
+    nsICabProfileMigratorConstructor },
+
+#endif
+
+#if !defined(XP_OS2)
+  { "Opera Profile Migrator",
+    NS_OPERAPROFILEMIGRATOR_CID,
+    NS_BROWSERPROFILEMIGRATOR_CONTRACTID_PREFIX "opera",
+    nsOperaProfileMigratorConstructor },
+#endif
+
+  { "Phoenix Profile Migrator",
+    NS_PHOENIXPROFILEMIGRATOR_CID,
+    NS_BROWSERPROFILEMIGRATOR_CONTRACTID_PREFIX "phoenix",
+    nsPhoenixProfileMigratorConstructor },
+
+  { "Seamonkey Profile Migrator",
+    NS_SEAMONKEYPROFILEMIGRATOR_CID,
+    NS_BROWSERPROFILEMIGRATOR_CONTRACTID_PREFIX "seamonkey",
+    nsSeamonkeyProfileMigratorConstructor },
+
+  { "Netscape 4.x Profile Migrator",
+    NS_DOGBERTPROFILEMIGRATOR_CID,
+    NS_BROWSERPROFILEMIGRATOR_CONTRACTID_PREFIX "dogbert",
+    nsDogbertProfileMigratorConstructor }
+
 };
 
 NS_IMPL_NSGETMODULE(nsBrowserCompsModule, components)

@@ -59,7 +59,7 @@
 extern "C" {
 unsigned char *_mbsstr( const unsigned char *str,
                         const unsigned char *substr );
-};
+}
 #endif
 
 //----------------------------------------------------------------------------
@@ -70,7 +70,8 @@ class ShortcutResolver
 {
 public:
     ShortcutResolver();
-    virtual ~ShortcutResolver();
+    // nonvirtual since we're not subclassed
+    ~ShortcutResolver();
 
     nsresult Init();
     nsresult Resolve(const WCHAR* in, char* out);
@@ -377,7 +378,9 @@ class nsDirEnumerator : public nsISimpleEnumerator
             return NS_OK;
         }
 
-        virtual ~nsDirEnumerator()
+        // dtor can be non-virtual since there are no subclasses, but must be
+        // public to use the class on the stack.
+        ~nsDirEnumerator()
         {
             if (mDir)
             {
@@ -404,10 +407,6 @@ nsLocalFile::nsLocalFile()
     mLastResolution = PR_FALSE;
     mFollowSymlinks = PR_FALSE;
     MakeDirty();
-}
-
-nsLocalFile::~nsLocalFile()
-{
 }
 
 NS_METHOD
@@ -570,7 +569,11 @@ nsLocalFile::ResolvePath(const char* workingPath, PRBool resolveTerminal, char**
 
                 if (0 == statrv && (_S_IFDIR & st.st_mode))
                 {
-                    strcat(temp, "\\");
+                    // For root directory slash is already appended
+                    // XXX not multibyte safe
+                    if (temp[strlen(temp) - 1] != '\\')
+                       strcat(temp, "\\");
+
                     isDir = PR_TRUE;
                 }
 
@@ -1843,7 +1846,7 @@ nsLocalFile::IsExecutable(PRBool *_retval)
         GetNativePath(path);
 
     // Get extension.
-    char* ext = ::strrchr( path.get(), '.' );
+    char* ext = ::strrchr( path.BeginWriting(), '.' );
     if ( ext ) {
         // Convert extension to lower case.
         for( char *p = ext; *p; p++ ) {
@@ -1852,18 +1855,52 @@ nsLocalFile::IsExecutable(PRBool *_retval)
             }
         }
         // Search for any of the set of executable extensions.
-        const char * const executableExts[] = { ".exe",
-                                                ".bat",
-                                                ".com",
-                                                ".pif",
-                                                ".cmd",
-                                                ".js",
-                                                ".vbs",
-                                                ".lnk",
-                                                ".reg",
-                                                ".wsf",
-                                                ".hta",
-                                                0 };
+        const char * const executableExts[] = {
+            ".ad",
+            ".adp",
+            ".asp",
+            ".bas",
+            ".bat",
+            ".chm",
+            ".cmd",
+            ".com",
+            ".cpl",
+            ".crt",
+            ".exe",
+            ".hlp",
+            ".hta",
+            ".inf",
+            ".ins",
+            ".isp",
+            ".js",
+            ".jse",
+            ".lnk",
+            ".mdb",
+            ".mde",
+            ".msc",
+            ".msi",
+            ".msp",
+            ".mst",
+            ".pcd",
+            ".pif",
+            ".reg",
+            ".scr",
+            ".sct",
+            ".shb",
+            ".shs",
+            ".url",
+            ".vb",
+            ".vbe",
+            ".vbs",
+            ".vsd",
+            ".vss",
+            ".vst",
+            ".vsw",
+            ".ws",
+            ".wsc",
+            ".wsf",
+            ".wsh",
+            0 };
         for ( int i = 0; executableExts[i]; i++ ) {
             if ( ::strcmp( executableExts[i], ext ) == 0 ) {
                 // Found a match.  Set result and quit.

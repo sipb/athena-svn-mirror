@@ -43,7 +43,7 @@
 #include "nsString.h"
 #include "nsIDOMHTMLCollection.h"
 #include "nsIDOMNodeList.h"
-#include "nsIDocumentObserver.h"
+#include "nsStubDocumentObserver.h"
 #include "nsIContentList.h"
 #include "nsIAtom.h"
 
@@ -65,10 +65,10 @@ public:
   // nsIDOMNodeList
   NS_DECL_NSIDOMNODELIST
 
-  NS_IMETHOD AppendElement(nsIContent *aContent);
-  NS_IMETHOD RemoveElement(nsIContent *aContent);
-  NS_IMETHOD_(PRInt32) IndexOf(nsIContent *aContent, PRBool aDoFlush);
-  NS_IMETHOD Reset();
+  virtual void AppendElement(nsIContent *aContent);
+  virtual void RemoveElement(nsIContent *aContent);
+  virtual PRInt32 IndexOf(nsIContent *aContent, PRBool aDoFlush);
+  virtual void Reset();
 
   static void Shutdown();
 
@@ -87,10 +87,10 @@ public:
                     nsBaseContentList& aContentList);
   virtual ~nsFormContentList();
 
-  NS_IMETHOD AppendElement(nsIContent *aContent);
-  NS_IMETHOD RemoveElement(nsIContent *aContent);
+  virtual void AppendElement(nsIContent *aContent);
+  virtual void RemoveElement(nsIContent *aContent);
 
-  NS_IMETHOD Reset();
+  virtual void Reset();
 };
 
 /**
@@ -152,7 +152,7 @@ protected:
 class nsContentList : public nsBaseContentList,
                       protected nsContentListKey,
                       public nsIDOMHTMLCollection,
-                      public nsIDocumentObserver,
+                      public nsStubDocumentObserver,
                       public nsIContentList
 {
 public:
@@ -169,21 +169,26 @@ public:
   virtual ~nsContentList();
 
   // nsIDOMHTMLCollection
-  NS_IMETHOD GetLength(PRUint32* aLength);
-  NS_IMETHOD Item(PRUint32 aIndex, nsIDOMNode** aReturn);
-  NS_IMETHOD NamedItem(const nsAString& aName, nsIDOMNode** aReturn);
+  NS_DECL_NSIDOMHTMLCOLLECTION
 
   /// nsIContentList
-  NS_IMETHOD GetParentObject(nsISupports** aParentObject);
-  NS_IMETHOD_(PRUint32) GetLength(PRBool aDoFlush);
-  NS_IMETHOD Item(PRUint32 aIndex, nsIDOMNode** aReturn,
-                  PRBool aDoFlush);
-  NS_IMETHOD NamedItem(const nsAString& aName, nsIDOMNode** aReturn,
-                       PRBool aDoFlush);
-  NS_IMETHOD_(PRInt32) IndexOf(nsIContent *aContent, PRBool aDoFlush);
+  virtual nsISupports *GetParentObject();
+  virtual PRUint32 Length(PRBool aDoFlush);
+  virtual nsIContent *Item(PRUint32 aIndex, PRBool aDoFlush);
+  virtual nsIContent *NamedItem(const nsAString& aName, PRBool aDoFlush);
+  virtual PRInt32 IndexOf(nsIContent *aContent, PRBool aDoFlush);
 
   // nsIDocumentObserver
-  NS_DECL_NSIDOCUMENTOBSERVER
+  virtual void ContentAppended(nsIDocument *aDocument, nsIContent* aContainer,
+                               PRInt32 aNewIndexInContainer);
+  virtual void ContentInserted(nsIDocument *aDocument, nsIContent* aContainer,
+                               nsIContent* aChild, PRInt32 aIndexInContainer);
+  virtual void ContentReplaced(nsIDocument *aDocument, nsIContent* aContainer,
+                               nsIContent* aOldChild, nsIContent* aNewChild,
+                               PRInt32 aIndexInContainer);
+  virtual void ContentRemoved(nsIDocument *aDocument, nsIContent* aContainer,
+                              nsIContent* aChild, PRInt32 aIndexInContainer);
+  virtual void DocumentWillBeDestroyed(nsIDocument *aDocument);
 
   // Other public methods
   nsContentListKey* GetKey() {

@@ -32,8 +32,10 @@ EXPORT_LIBRARY = 1
 IS_COMPONENT	= 1
 MODULE_NAME	= application
 
+PACKAGE_FILE = appcomps.pkg
+PACKAGE_VARS += MOZ_PHOENIX
+
 REQUIRES	= xpcom \
-		  xpcom_obsolete \
 		  string \
 		  content \
 		  rdf \
@@ -93,6 +95,7 @@ SHARED_LIBRARY_LIBS += \
 ifeq ($(OS_ARCH),WINNT)
 SHARED_LIBRARY_LIBS += \
 	$(DIST)/lib/$(LIB_PREFIX)alerts_s.$(LIB_SUFFIX) \
+  $(DIST)/lib/$(LIB_PREFIX)winhooks_s.$(LIB_SUFFIX) \
 	$(NULL)
 endif
 
@@ -118,6 +121,7 @@ LOCAL_INCLUDES += \
 ifeq ($(OS_ARCH),WINNT)
 LOCAL_INCLUDES += \
 	-I$(srcdir)/../alerts/src \
+  -I$(srcdir)/../winhooks \
   $(NULL)
 endif
 
@@ -126,7 +130,6 @@ endif
 ifeq ($(OS_ARCH),WINNT)
 
 SHARED_LIBRARY_LIBS += \
-	$(DIST)/lib/$(LIB_PREFIX)winhooks_s.$(LIB_SUFFIX) \
 	$(DIST)/lib/$(LIB_PREFIX)urlwidgt_s.$(LIB_SUFFIX) \
 	$(NULL)
 
@@ -135,16 +138,14 @@ OS_LIBS	+= $(call EXPAND_LIBNAME,ole32 shell32)
 
 LOCAL_INCLUDES	+= \
 	-I$(srcdir)/../urlwidget \
-	-I$(srcdir)/../winhooks \
 	$(NULL)
 endif
 
 EXTRA_DSO_LDOPTS = \
 	$(MOZ_UNICHARUTIL_LIBS) \
 	$(MOZ_COMPONENT_LIBS) \
-	$(MOZ_XPCOM_OBSOLETE_LIBS) \
 	$(EXTRA_DSO_LIBS) \
 	$(MOZ_JS_LIBS) \
 	$(NULL)
-
+ 
 include $(topsrcdir)/config/rules.mk

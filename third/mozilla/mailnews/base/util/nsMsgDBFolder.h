@@ -65,6 +65,9 @@ class nsICollation;
   * class derived from nsMsgFolder for those folders that use an nsIMsgDatabase
   */ 
 
+#undef IMETHOD_VISIBILITY
+#define IMETHOD_VISIBILITY NS_VISIBILITY_DEFAULT
+
 class NS_MSG_BASE nsMsgDBFolder: public nsRDFResource,
                                  public nsSupportsWeakReference,
                                  public nsIMsgFolder,
@@ -236,7 +239,7 @@ protected:
   static nsIAtom* kNameAtom;
   static nsIAtom* kSynchronizeAtom;
   static nsIAtom* kOpenAtom;
-  static nsICollation* kCollationKeyGenerator;
+  static nsICollation* gCollationKeyGenerator;
 
 #ifdef MSG_FASTER_URI_PARSING
   // cached parsing URL object
@@ -246,5 +249,8 @@ protected:
 
   static const nsStaticAtom folder_atoms[];
 };
+
+#undef  IMETHOD_VISIBILITY
+#define IMETHOD_VISIBILITY NS_VISIBILITY_HIDDEN
 
 #endif

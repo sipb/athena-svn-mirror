@@ -21,6 +21,7 @@
  *
  * Contributor(s):
  *    William Cook <william.cook@crocodile-clips.com> (original author)
+ *    Alex Fritze <alex.fritze@crocodile-clips.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or 
@@ -42,18 +43,21 @@
 #include "nsSVGLength.h"
 #include "nsIDOMSVGLineElement.h"
 #include "nsCOMPtr.h"
+#include "nsISVGSVGElement.h"
+#include "nsISVGViewportAxis.h"
+#include "nsISVGViewportRect.h"
 
 typedef nsSVGGraphicElement nsSVGLineElementBase;
 
 class nsSVGLineElement : public nsSVGLineElementBase,
-                           public nsIDOMSVGLineElement
+                         public nsIDOMSVGLineElement
 {
 protected:
   friend nsresult NS_NewSVGLineElement(nsIContent **aResult,
                                          nsINodeInfo *aNodeInfo);
   nsSVGLineElement();
   virtual ~nsSVGLineElement();
-  virtual nsresult Init();
+  nsresult Init(nsINodeInfo* aNodeInfo);
 
 public:
   // interfaces:
@@ -66,7 +70,11 @@ public:
   NS_FORWARD_NSIDOMELEMENT(nsSVGLineElementBase::)
   NS_FORWARD_NSIDOMSVGELEMENT(nsSVGLineElementBase::)
 
+  // nsISVGContent specializations:
+  virtual void ParentChainChanged();
+
 protected:
+  
   nsCOMPtr<nsIDOMSVGAnimatedLength> mX1;
   nsCOMPtr<nsIDOMSVGAnimatedLength> mY1;
   nsCOMPtr<nsIDOMSVGAnimatedLength> mX2;
@@ -83,21 +91,14 @@ nsresult NS_NewSVGLineElement(nsIContent **aResult, nsINodeInfo *aNodeInfo)
   if (!it) return NS_ERROR_OUT_OF_MEMORY;
   NS_ADDREF(it);
 
-  nsresult rv = NS_STATIC_CAST(nsGenericElement*,it)->Init(aNodeInfo);
+  nsresult rv = it->Init(aNodeInfo);
 
   if (NS_FAILED(rv)) {
     it->Release();
     return rv;
   }
 
-  rv = it->Init();
-
-  if (NS_FAILED(rv)) {
-    it->Release();
-    return rv;
-  }
-
-  *aResult = NS_STATIC_CAST(nsIContent *, it);
+  *aResult = it;
 
   return NS_OK;
 }
@@ -109,6 +110,9 @@ NS_IMPL_ADDREF_INHERITED(nsSVGLineElement,nsSVGLineElementBase)
 NS_IMPL_RELEASE_INHERITED(nsSVGLineElement,nsSVGLineElementBase)
 
 NS_INTERFACE_MAP_BEGIN(nsSVGLineElement)
+  NS_INTERFACE_MAP_ENTRY(nsIDOMNode)
+  NS_INTERFACE_MAP_ENTRY(nsIDOMElement)
+  NS_INTERFACE_MAP_ENTRY(nsIDOMSVGElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMSVGLineElement)
   NS_INTERFACE_MAP_ENTRY_CONTENT_CLASSINFO(SVGLineElement)
 NS_INTERFACE_MAP_END_INHERITING(nsSVGLineElementBase)
@@ -123,83 +127,62 @@ nsSVGLineElement::nsSVGLineElement()
 
 nsSVGLineElement::~nsSVGLineElement()
 {
-  if (mX1) {
-    nsCOMPtr<nsISVGValue> value = do_QueryInterface(mX1);
-    value->RemoveObserver(this);
-  }
-  if (mY1) {
-    nsCOMPtr<nsISVGValue> value = do_QueryInterface(mY1);
-    value->RemoveObserver(this);
-  }
-  if (mX2) {
-    nsCOMPtr<nsISVGValue> value = do_QueryInterface(mX2);
-    value->RemoveObserver(this);
-  }
-  if (mY2) {
-    nsCOMPtr<nsISVGValue> value = do_QueryInterface(mY2);
-    value->RemoveObserver(this);
-  }
 }
 
 
 nsresult
-nsSVGLineElement::Init()
+nsSVGLineElement::Init(nsINodeInfo* aNodeInfo)
 {
-  nsresult rv;
-  rv = nsSVGLineElementBase::Init();
+  nsresult rv = nsSVGLineElementBase::Init(aNodeInfo);
   NS_ENSURE_SUCCESS(rv,rv);
 
   // Create mapped properties:
 
   // DOM property: x1 ,  #IMPLIED attrib: x1
   {
-    nsCOMPtr<nsIDOMSVGLength> length;
+    nsCOMPtr<nsISVGLength> length;
     rv = NS_NewSVGLength(getter_AddRefs(length),
-                         (nsSVGElement*)this, eXDirection,
                          0.0f);
     NS_ENSURE_SUCCESS(rv,rv);
     rv = NS_NewSVGAnimatedLength(getter_AddRefs(mX1), length);
     NS_ENSURE_SUCCESS(rv,rv);
-    rv = mAttributes->AddMappedSVGValue(nsSVGAtoms::x1, mX1);
+    rv = AddMappedSVGValue(nsSVGAtoms::x1, mX1);
     NS_ENSURE_SUCCESS(rv,rv);
   }
 
   // DOM property: y1 ,  #IMPLIED attrib: y1
   {
-    nsCOMPtr<nsIDOMSVGLength> length;
+    nsCOMPtr<nsISVGLength> length;
     rv = NS_NewSVGLength(getter_AddRefs(length),
-                         (nsSVGElement*)this, eYDirection,
                          0.0f);
     NS_ENSURE_SUCCESS(rv,rv);
     rv = NS_NewSVGAnimatedLength(getter_AddRefs(mY1), length);
     NS_ENSURE_SUCCESS(rv,rv);
-    rv = mAttributes->AddMappedSVGValue(nsSVGAtoms::y1, mY1);
+    rv = AddMappedSVGValue(nsSVGAtoms::y1, mY1);
     NS_ENSURE_SUCCESS(rv,rv);
   }
 
   // DOM property: x2 ,  #IMPLIED  attrib: x2
   {
-    nsCOMPtr<nsIDOMSVGLength> length;
+    nsCOMPtr<nsISVGLength> length;
     rv = NS_NewSVGLength(getter_AddRefs(length),
-                         (nsSVGElement*)this, eXDirection,
                          0.0f);
     NS_ENSURE_SUCCESS(rv,rv);
     rv = NS_NewSVGAnimatedLength(getter_AddRefs(mX2), length);
     NS_ENSURE_SUCCESS(rv,rv);
-    rv = mAttributes->AddMappedSVGValue(nsSVGAtoms::x2, mX2);
+    rv = AddMappedSVGValue(nsSVGAtoms::x2, mX2);
     NS_ENSURE_SUCCESS(rv,rv);
   }
 
   // DOM property: y2 ,  #IMPLIED  attrib: y2
   {
-    nsCOMPtr<nsIDOMSVGLength> length;
+    nsCOMPtr<nsISVGLength> length;
     rv = NS_NewSVGLength(getter_AddRefs(length),
-                         (nsSVGElement*)this, eYDirection,
                          0.0f);
     NS_ENSURE_SUCCESS(rv,rv);
     rv = NS_NewSVGAnimatedLength(getter_AddRefs(mY2), length);
     NS_ENSURE_SUCCESS(rv,rv);
-    rv = mAttributes->AddMappedSVGValue(nsSVGAtoms::y2, mY2);
+    rv = AddMappedSVGValue(nsSVGAtoms::y2, mY2);
     NS_ENSURE_SUCCESS(rv,rv);
   }
 
@@ -219,14 +202,7 @@ nsSVGLineElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
   if (!it) return NS_ERROR_OUT_OF_MEMORY;
   NS_ADDREF(it);
 
-  nsresult rv = NS_STATIC_CAST(nsGenericElement*,it)->Init(mNodeInfo);
-
-  if (NS_FAILED(rv)) {
-    it->Release();
-    return rv;
-  }
-
-  rv = it->Init();
+  nsresult rv = it->Init(mNodeInfo);
 
   if (NS_FAILED(rv)) {
     it->Release();
@@ -240,11 +216,10 @@ nsSVGLineElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
     return rv;
   }
 
-  *aReturn = NS_STATIC_CAST(nsSVGLineElementBase*, it);
+  *aReturn = it;
 
   return NS_OK;
 }
-
 
 //----------------------------------------------------------------------
 // nsIDOMSVGLineElement methods
@@ -280,3 +255,84 @@ NS_IMETHODIMP nsSVGLineElement::GetY2(nsIDOMSVGAnimatedLength * *aY2)
   NS_IF_ADDREF(*aY2);
   return NS_OK;
 }
+
+//----------------------------------------------------------------------
+// nsISVGContent methods
+
+void nsSVGLineElement::ParentChainChanged()
+{
+  // set new context information on our length-properties:
+  
+  nsCOMPtr<nsIDOMSVGSVGElement> dom_elem;
+  GetOwnerSVGElement(getter_AddRefs(dom_elem));
+  if (!dom_elem) return;
+
+  nsCOMPtr<nsISVGSVGElement> svg_elem = do_QueryInterface(dom_elem);
+  NS_ASSERTION(svg_elem, "<svg> element missing interface");
+
+  // x1:
+  {
+    nsCOMPtr<nsIDOMSVGLength> dom_length;
+    mX1->GetBaseVal(getter_AddRefs(dom_length));
+    nsCOMPtr<nsISVGLength> length = do_QueryInterface(dom_length);
+    NS_ASSERTION(length, "svg length missing interface");
+
+    nsCOMPtr<nsIDOMSVGRect> vp_dom;
+    svg_elem->GetViewport(getter_AddRefs(vp_dom));
+    nsCOMPtr<nsISVGViewportRect> vp = do_QueryInterface(vp_dom);
+    nsCOMPtr<nsISVGViewportAxis> ctx;
+    vp->GetXAxis(getter_AddRefs(ctx));
+    
+    length->SetContext(ctx);
+  }
+
+  // y1:
+  {
+    nsCOMPtr<nsIDOMSVGLength> dom_length;
+    mY1->GetBaseVal(getter_AddRefs(dom_length));
+    nsCOMPtr<nsISVGLength> length = do_QueryInterface(dom_length);
+    NS_ASSERTION(length, "svg length missing interface");
+
+    nsCOMPtr<nsIDOMSVGRect> vp_dom;
+    svg_elem->GetViewport(getter_AddRefs(vp_dom));
+    nsCOMPtr<nsISVGViewportRect> vp = do_QueryInterface(vp_dom);
+    nsCOMPtr<nsISVGViewportAxis> ctx;
+    vp->GetYAxis(getter_AddRefs(ctx));
+    
+    length->SetContext(ctx);
+  }
+
+  // x2:
+  {
+    nsCOMPtr<nsIDOMSVGLength> dom_length;
+    mX2->GetBaseVal(getter_AddRefs(dom_length));
+    nsCOMPtr<nsISVGLength> length = do_QueryInterface(dom_length);
+    NS_ASSERTION(length, "svg length missing interface");
+
+    nsCOMPtr<nsIDOMSVGRect> vp_dom;
+    svg_elem->GetViewport(getter_AddRefs(vp_dom));
+    nsCOMPtr<nsISVGViewportRect> vp = do_QueryInterface(vp_dom);
+    nsCOMPtr<nsISVGViewportAxis> ctx;
+    vp->GetXAxis(getter_AddRefs(ctx));
+    
+    length->SetContext(ctx);
+  }
+
+  // y2:
+  {
+    nsCOMPtr<nsIDOMSVGLength> dom_length;
+    mY2->GetBaseVal(getter_AddRefs(dom_length));
+    nsCOMPtr<nsISVGLength> length = do_QueryInterface(dom_length);
+    NS_ASSERTION(length, "svg length missing interface");
+
+    nsCOMPtr<nsIDOMSVGRect> vp_dom;
+    svg_elem->GetViewport(getter_AddRefs(vp_dom));
+    nsCOMPtr<nsISVGViewportRect> vp = do_QueryInterface(vp_dom);
+    nsCOMPtr<nsISVGViewportAxis> ctx;
+    vp->GetYAxis(getter_AddRefs(ctx));
+    
+    length->SetContext(ctx);
+  }
+  
+  // XXX call baseclass version to recurse into children?
+}  

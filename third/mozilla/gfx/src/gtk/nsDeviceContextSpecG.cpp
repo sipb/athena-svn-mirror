@@ -63,8 +63,7 @@
 #endif /* USE_XPRINT */
 
 #ifdef USE_POSTSCRIPT
-/* Fetch |postscript_module_paper_sizes| */
-#include "nsPostScriptObj.h"
+#include "nsPaperPS.h"  /* Paper size list */
 #endif /* USE_POSTSCRIPT */
 
 /* Ensure that the result is always equal to either PR_TRUE or PR_FALSE */
@@ -862,12 +861,12 @@ NS_IMETHODIMP nsPrinterEnumeratorGTK::InitPrintSettingsFromPrinter(const PRUnich
              total_height = default_medium->ma3 + default_medium->ma4;
 
       /* Either "paper" or "tray/paper" */
+      papername.Truncate();
       if (default_medium->tray_name) {
-        papername = nsPrintfCString(256, "%s/%s", default_medium->tray_name, default_medium->medium_name);
+        papername.Append(default_medium->tray_name);
+        papername.Append("/");
       }
-      else {
-        papername.Assign(default_medium->medium_name);
-      }
+      papername.Append(default_medium->medium_name);
  
       DO_PR_DEBUG_LOG(("setting default paper size to '%s' (%g/%g mm)\n", papername.get(), total_width, total_height));
       aPrintSettings->SetPaperSizeType(nsIPrintSettings::kPaperSizeDefined);
@@ -883,12 +882,13 @@ NS_IMETHODIMP nsPrinterEnumeratorGTK::InitPrintSettingsFromPrinter(const PRUnich
         XpuMediumSourceSizeRec *curr = &mlist[i];
         double total_width  = curr->ma1 + curr->ma2,
                total_height = curr->ma3 + curr->ma4;
+
+        papername.Truncate();
         if (curr->tray_name) {
-          papername = nsPrintfCString(256, "%s/%s", curr->tray_name, curr->medium_name);
+          papername.Append(curr->tray_name);
+          papername.Append("/");
         }
-        else {
-          papername.Assign(curr->medium_name);
-        }
+        papername.Append(curr->medium_name);
 
         printerFeatures.SetPaperRecord(i, papername, PRInt32(total_width), PRInt32(total_height), PR_FALSE);
       }
@@ -948,13 +948,9 @@ NS_IMETHODIMP nsPrinterEnumeratorGTK::InitPrintSettingsFromPrinter(const PRUnich
     }
 
 #ifdef SET_PRINTER_FEATURES_VIA_PREFS
-    int i;
-    for( i = 0 ; postscript_module_orientations[i].orientation != nsnull ; i++ )
-    {
-      const PSOrientationRec *curr = &postscript_module_orientations[i];
-      printerFeatures.SetOrientationRecord(i, curr->orientation);
-    }
-    printerFeatures.SetNumOrientationRecords(i);
+    printerFeatures.SetOrientationRecord(0, "portrait");
+    printerFeatures.SetOrientationRecord(1, "landscape");
+    printerFeatures.SetNumOrientationRecords(2);
 #endif /* SET_PRINTER_FEATURES_VIA_PREFS */
 
     /* PostScript module does not support changing the plex mode... */
@@ -973,44 +969,31 @@ NS_IMETHODIMP nsPrinterEnumeratorGTK::InitPrintSettingsFromPrinter(const PRUnich
 #endif /* SET_PRINTER_FEATURES_VIA_PREFS */
     nsXPIDLCString papername;
     if (NS_SUCCEEDED(CopyPrinterCharPref(pPrefs, "postscript", printerName, "paper_size", getter_Copies(papername)))) {
-      int                   i;
-      const PSPaperSizeRec *default_paper = nsnull;
-      
-      for( i = 0 ; postscript_module_paper_sizes[i].name != nsnull ; i++ )
-      {
-        const PSPaperSizeRec *curr = &postscript_module_paper_sizes[i];
+      nsPaperSizePS paper;
 
-        if (!PL_strcasecmp(papername, curr->name)) {
-          default_paper = curr;        
-          break;
-        }
-      }  
-
-      if (default_paper) {
-        DO_PR_DEBUG_LOG(("setting default paper size to '%s' (%g inch/%g inch)\n", 
-                        default_paper->name,
-                        PSPaperSizeRec_FullPaperWidth(default_paper),
-                        PSPaperSizeRec_FullPaperHeight(default_paper)));
-        aPrintSettings->SetPaperSizeType(nsIPrintSettings::kPaperSizeDefined);
-        aPrintSettings->SetPaperSizeUnit(nsIPrintSettings::kPaperSizeInches);
-        aPrintSettings->SetPaperWidth(PSPaperSizeRec_FullPaperWidth(default_paper));
-        aPrintSettings->SetPaperHeight(PSPaperSizeRec_FullPaperHeight(default_paper));
-        aPrintSettings->SetPaperName(NS_ConvertUTF8toUCS2(default_paper->name).get());
+      if (paper.Find(papername)) {
+        DO_PR_DEBUG_LOG(("setting default paper size to '%s' (%g mm/%g mm)\n",
+              paper.Name(), paper.Width_mm(), paper.Height_mm()));
+        aPrintSettings->SetPaperSizeUnit(paper.IsMetric() ?
+            (int)nsIPrintSettings::kPaperSizeMillimeters :
+            (int)nsIPrintSettings::kPaperSizeInches);
+        aPrintSettings->SetPaperWidth(paper.Width_mm());
+        aPrintSettings->SetPaperHeight(paper.Height_mm());
+        aPrintSettings->SetPaperName(NS_ConvertASCIItoUCS2(paper.Name()).get());
       }
       else {
         DO_PR_DEBUG_LOG(("Unknown paper size '%s' given.\n", papername.get()));
       }
 #ifdef SET_PRINTER_FEATURES_VIA_PREFS
-      for( i = 0 ; postscript_module_paper_sizes[i].name != nsnull ; i++ )
+      paper.First();
+      int count = 0;
+      while (!paper.AtEnd())
       {
-        const PSPaperSizeRec *curr = &postscript_module_paper_sizes[i];
-#define CONVERT_INCH_TO_MILLIMETERS(inch) ((inch) * 25.4)
-        double total_width  = CONVERT_INCH_TO_MILLIMETERS(PSPaperSizeRec_FullPaperWidth(curr)),
-               total_height = CONVERT_INCH_TO_MILLIMETERS(PSPaperSizeRec_FullPaperHeight(curr));
-
-        printerFeatures.SetPaperRecord(i, curr->name, PRInt32(total_width), PRInt32(total_height), PR_TRUE);
+        printerFeatures.SetPaperRecord(count++, paper.Name(),
+            (int)paper.Width_mm(), (int)paper.Height_mm(), !paper.IsMetric());
+        paper.Next();
       }
-      printerFeatures.SetNumPaperSizeRecords(i);
+      printerFeatures.SetNumPaperSizeRecords(count);
 #endif /* SET_PRINTER_FEATURES_VIA_PREFS */
     }
 
@@ -1070,9 +1053,18 @@ nsresult GlobalPrinters::InitializeGlobalPrinters ()
 #ifdef USE_POSTSCRIPT
   nsCOMPtr<nsIPref> pPrefs = do_GetService(NS_PREF_CONTRACTID);
   PRBool psPrintModuleEnabled = PR_TRUE;
-  if (pPrefs) {
-    if (NS_FAILED(pPrefs->GetBoolPref("print.postscript.enabled", &psPrintModuleEnabled))) {
-      psPrintModuleEnabled = PR_TRUE;
+
+  const char *val = PR_GetEnv("MOZILLA_POSTSCRIPT_ENABLED");
+  if (val) {
+    if (val[0] == '0' || !strcasecmp(val, "false"))
+      psPrintModuleEnabled = PR_FALSE;
+  }
+  else
+  {
+    if (pPrefs) {
+      if (NS_FAILED(pPrefs->GetBoolPref("print.postscript.enabled", &psPrintModuleEnabled))) {
+        psPrintModuleEnabled = PR_TRUE;
+      }
     }
   }
 

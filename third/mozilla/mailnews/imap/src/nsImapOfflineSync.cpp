@@ -50,6 +50,8 @@
 #include "nsSpecialSystemDirectory.h"
 #include "nsIFileStream.h"
 #include "nsIMsgCopyService.h"
+#include "nsImapProtocol.h"
+
 static NS_DEFINE_CID(kRDFServiceCID, NS_RDFSERVICE_CID);
 
 NS_IMPL_ISUPPORTS2(nsImapOfflineSync, nsIUrlListener, nsIMsgCopyServiceListener)
@@ -95,14 +97,22 @@ nsImapOfflineSync::OnStopRunningUrl(nsIURI* url, nsresult exitCode)
   PRBool stopped = PR_FALSE;
   if (m_window)
     m_window->GetStopped(&stopped);
-  if (stopped)
-    exitCode = NS_BINDING_ABORTED;
 
   if (m_curTempFile)
   {
     m_curTempFile->Delete(PR_FALSE);
     m_curTempFile = nsnull;
   }
+  if (stopped)
+  {
+    if (m_listener)
+      m_listener->OnStopRunningUrl(url, NS_BINDING_ABORTED);
+    return NS_OK;
+  }
+  nsCOMPtr<nsIImapUrl> imapUrl = do_QueryInterface(url);
+
+  if (imapUrl)
+    nsImapProtocol::LogImapUrl(NS_SUCCEEDED(rv) ? "offline imap url succeeded:" : "offline imap url failed:", imapUrl);
   // NS_BINDING_ABORTED is used for the user pressing stop, which
   // should cause us to abort the offline process. Other errors
   // should allow us to continue.
@@ -110,10 +120,12 @@ nsImapOfflineSync::OnStopRunningUrl(nsIURI* url, nsresult exitCode)
     rv = ProcessNextOperation();
   // else if it's a non-stop error, and we're doing multiple folders,
   // go to the next folder.
-  else if (exitCode != NS_BINDING_ABORTED && !m_singleFolderToUpdate)
+  else if (!m_singleFolderToUpdate)
+  {
     rv = AdvanceToNextFolder();
-  else if (m_listener)  // notify main observer.
-    m_listener->OnStopRunningUrl(url, exitCode);
+    if (NS_SUCCEEDED(rv))
+      rv = ProcessNextOperation();
+  }
 
   return rv;
 }
@@ -592,8 +604,7 @@ PRBool nsImapOfflineSync::CreateOfflineFolder(nsIMsgFolder *folder)
   imapFolder->GetOnlineName(getter_Copies(onlineName));
 
   NS_ConvertASCIItoUCS2 folderName(onlineName);
-//  folderName.AssignWithConversion(onlineName);
-	nsresult rv = imapFolder->PlaybackOfflineFolderCreate(folderName.get(), nsnull,  getter_AddRefs(createFolderURI));
+  nsresult rv = imapFolder->PlaybackOfflineFolderCreate(folderName.get(), nsnull,  getter_AddRefs(createFolderURI));
   if (createFolderURI && NS_SUCCEEDED(rv))
   {
     nsCOMPtr <nsIMsgMailNewsUrl> mailnewsUrl = do_QueryInterface(createFolderURI);
@@ -1025,7 +1036,7 @@ nsresult nsImapOfflineDownloader::ProcessNextOperation()
     if (m_currentFolder)
       imapFolder = do_QueryInterface(m_currentFolder);
     m_currentFolder->GetFlags(&folderFlags);
-		// need to check if folder has offline events, or is configured for offline
+    // need to check if folder has offline events, or is configured for offline
     if (imapFolder && folderFlags & MSG_FOLDER_FLAG_OFFLINE)
     {
       rv = m_currentFolder->DownloadAllForOffline(this, m_window);

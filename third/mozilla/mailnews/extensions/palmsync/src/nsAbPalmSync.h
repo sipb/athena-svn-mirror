@@ -70,7 +70,7 @@ public:
     nsresult GetCardsToBeSentToPalm(PRInt32 * aCount, lpnsABCOMCardStruct * aCardList);
 
     // this will create a new AB and all data into it
-    nsresult AddAllRecordsInNewAB(PRInt32 aCount, lpnsABCOMCardStruct aPalmRecords);
+    nsresult AddAllRecordsToAB(PRBool replaceExisting, PRInt32 aCount, lpnsABCOMCardStruct aPalmRecords);
 
     // this will be called when an AckSyncDone is recieved from the Conduit
     nsresult Done(PRBool aSuccess, PRInt32 aPalmCatIndex, PRUint32 aPalmRecIDListCount = 0, unsigned long * aPalmRecordIDList = nsnull);
@@ -135,8 +135,8 @@ protected:
 
     // Checks with the corresponding Palm record for any discrepencies
     // if any modification needed, this will return the modified card
-    // returns if card to be kept or discarded completely
-    PRBool CheckWithPalmRecord(nsAbIPCCard  * aIPCCard);
+    // returns whether card exists (in which case it can be discarded)
+    PRBool CardExistsInPalmList(nsAbIPCCard  * aIPCCard);
 
     // utility function
     nsresult AddToListForPalm(nsAbIPCCard & ipcCard);

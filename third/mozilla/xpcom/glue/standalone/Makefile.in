@@ -46,7 +46,6 @@ MODULE		= xpcom
 LIBRARY_NAME	= xpcomglue
 
 REQUIRES	= string \
-		  embedstring \
 		  $(NULL)
 
 LOCAL_INCLUDES	= \
@@ -63,7 +62,7 @@ SDK_HEADERS     = \
 		nsXPCOMGlue.h \
 		$(NULL)
 
-SDK_BINARY     	= \
+SDK_LIBRARY     	= \
 		$(LIB_PREFIX)xpcomglue.$(LIB_SUFFIX) \
 		$(NULL)
 
@@ -87,5 +86,3 @@ export:: $(XPCOM_GLUE_SRC_CSRCS)
 	$(INSTALL) $^ .
 
 DEFINES		+= -DXPCOM_GLUE
-
-

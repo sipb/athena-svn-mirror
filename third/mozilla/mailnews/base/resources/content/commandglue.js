@@ -211,7 +211,7 @@ function ChangeFolderByURI(uri, viewType, viewFlags, sortType, sortOrder)
   var showMessagesAfterLoading;
   try {
     var server = msgfolder.server;
-    if (gPrefs.getBoolPref("mail.password_protect_local_cache"))
+    if (gPrefBranch.getBoolPref("mail.password_protect_local_cache"))
     {
       showMessagesAfterLoading = server.passwordPromptRequired;
       // servers w/o passwords (like local mail) will always be non-authenticated.
@@ -219,7 +219,7 @@ function ChangeFolderByURI(uri, viewType, viewFlags, sortType, sortOrder)
     }
     else if (server.redirectorType) {
       var prefString = server.type + "." + server.redirectorType + ".showMessagesAfterLoading";
-      showMessagesAfterLoading = gPrefs.getBoolPref(prefString);
+      showMessagesAfterLoading = gPrefBranch.getBoolPref(prefString);
     }
     else
       showMessagesAfterLoading = false;
@@ -297,6 +297,9 @@ function RerootFolder(uri, newFolder, viewType, viewFlags, sortType, sortOrder)
     gDBView.close();
     gDBView = null;
   }
+
+  // cancel the pending mark as read timer
+  ClearPendingReadTimer();
 
   // if this is the drafts, sent, or send later folder,
   // we show "Recipient" instead of "Author"

@@ -183,14 +183,18 @@ nsLocalFile::GetRelativeDescriptor(nsILocalFile *fromFile, nsACString& _retval)
     rv = fromFile->GetPath(fromPath);
     if (NS_FAILED(rv))
         return rv;
+
+    // get raw pointer to mutable string buffer
+    PRUnichar *thisPathPtr; thisPath.BeginWriting(thisPathPtr);
+    PRUnichar *fromPathPtr; fromPath.BeginWriting(fromPathPtr);
     
-    thisNodeCnt = SplitPath((PRUnichar *)thisPath.get(), thisNodes, kMaxNodesInPath);
-    fromNodeCnt = SplitPath((PRUnichar *)fromPath.get(), fromNodes, kMaxNodesInPath);
+    thisNodeCnt = SplitPath(thisPathPtr, thisNodes, kMaxNodesInPath);
+    fromNodeCnt = SplitPath(fromPathPtr, fromNodes, kMaxNodesInPath);
     if (thisNodeCnt < 0 || fromNodeCnt < 0)
       return NS_ERROR_FAILURE;
     
     for (nodeIndex = 0; nodeIndex < thisNodeCnt && nodeIndex < fromNodeCnt; nodeIndex++) {
-      if (!nsCRT::strcmp(thisNodes[nodeIndex], fromNodes[nodeIndex]))
+      if (nsCRT::strcmp(thisNodes[nodeIndex], fromNodes[nodeIndex]))
         break;
     }
     

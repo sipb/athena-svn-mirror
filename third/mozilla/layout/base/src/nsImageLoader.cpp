@@ -37,11 +37,12 @@
 
 #include "imgIContainer.h"
 
-#include "nsIHTMLContent.h"
-
 #include "nsIViewManager.h"
 
 #include "nsStyleContext.h"
+
+// Paint forcing
+#include "prenv.h"
 
 NS_IMPL_ISUPPORTS2(nsImageLoader, imgIDecoderObserver, imgIContainerObserver)
 
@@ -82,46 +83,31 @@ nsImageLoader::Destroy()
 }
 
 nsresult
-nsImageLoader::Load(nsIURI *aURI)
+nsImageLoader::Load(imgIRequest *aImage)
 {
   if (!mFrame)
     return NS_ERROR_NOT_INITIALIZED;
 
-  if (!aURI)
+  if (!aImage)
     return NS_ERROR_FAILURE;
-
-  nsCOMPtr<nsIPresShell> shell;
-  nsresult rv = mPresContext->GetShell(getter_AddRefs(shell));
-  if ((NS_FAILED(rv)) || (!shell)) return NS_ERROR_FAILURE;
-
-  nsCOMPtr<nsIDocument> doc;
-  rv = shell->GetDocument(getter_AddRefs(doc));
-  if (NS_FAILED(rv)) return rv;
-
-  // Get the document's loadgroup
-  nsCOMPtr<nsILoadGroup> loadGroup = doc->GetDocumentLoadGroup();
 
   if (mRequest) {
     nsCOMPtr<nsIURI> oldURI;
     mRequest->GetURI(getter_AddRefs(oldURI));
+    nsCOMPtr<nsIURI> newURI;
+    aImage->GetURI(getter_AddRefs(newURI));
     PRBool eq = PR_FALSE;
-    aURI->Equals(oldURI, &eq);
-    if (eq) {
+    nsresult rv = newURI->Equals(oldURI, &eq);
+    if (NS_SUCCEEDED(rv) && eq) {
       return NS_OK;
     }
 
     // Now cancel the old request so it won't hold a stale ref to us.
     mRequest->Cancel(NS_ERROR_FAILURE);
+    mRequest = nsnull;
   }
 
-  nsCOMPtr<imgILoader> il(do_GetService("@mozilla.org/image/loader;1", &rv));
-  if (NS_FAILED(rv)) return rv;
-
-  // XXX: initialDocumentURI is NULL!
-  return il->LoadImage(aURI, nsnull, doc->GetDocumentURL(), loadGroup,
-                       this, 
-                       doc, nsIRequest::LOAD_BACKGROUND, nsnull, nsnull,
-                       getter_AddRefs(mRequest));
+  return aImage->Clone(this, getter_AddRefs(mRequest));
 }
 
                     
@@ -141,10 +127,9 @@ NS_IMETHODIMP nsImageLoader::OnStartContainer(imgIRequest *aRequest,
      *   one frame = 1
      *   one loop = 2
      */
-    PRUint16 animateMode = imgIContainer::kNormalAnimMode; //default value
-    nsresult rv = mPresContext->GetImageAnimationMode(&animateMode);
-    if (NS_SUCCEEDED(rv))
-      aImage->SetAnimationMode(animateMode);
+    aImage->SetAnimationMode(mPresContext->ImageAnimationMode());
+    // Ensure the animation (if any) is started.
+    aImage->StartAnimation();
   }
   return NS_OK;
 }
@@ -183,6 +168,11 @@ NS_IMETHODIMP nsImageLoader::OnStopFrame(imgIRequest *aRequest,
   }
 #endif
 
+  if (!mRequest) {
+    // We're in the middle of a paint anyway
+    return NS_OK;
+  }
+  
   // Draw the background image
   RedrawDirtyFrame(nsnull);
   return NS_OK;
@@ -208,10 +198,15 @@ NS_IMETHODIMP nsImageLoader::FrameChanged(imgIContainer *aContainer,
   if (!mFrame)
     return NS_ERROR_FAILURE;
 
+  if (!mRequest) {
+    // We're in the middle of a paint anyway
+    return NS_OK;
+  }
+  
   nsRect r(*dirtyRect);
 
   float p2t;
-  mPresContext->GetPixelsToTwips(&p2t);
+  p2t = mPresContext->PixelsToTwips();
   r.x = NSIntPixelsToTwips(r.x, p2t);
   r.y = NSIntPixelsToTwips(r.y, p2t);
   r.width = NSIntPixelsToTwips(r.width, p2t);
@@ -226,10 +221,6 @@ NS_IMETHODIMP nsImageLoader::FrameChanged(imgIContainer *aContainer,
 void
 nsImageLoader::RedrawDirtyFrame(const nsRect* aDamageRect)
 {
-  // Determine damaged area and tell view manager to redraw it
-  nsPoint offset;
-  nsIView* view;
-
   // NOTE: It is not sufficient to invalidate only the size of the image:
   //       the image may be tiled! 
   //       The best option is to call into the frame, however lacking this
@@ -239,8 +230,8 @@ nsImageLoader::RedrawDirtyFrame(const nsRect* aDamageRect)
 
   // Invalidate the entire frame
   // XXX We really only need to invalidate the client area of the frame...    
-  nsRect bounds = mFrame->GetRect();
-  bounds.x = bounds.y = 0;
+
+  nsRect bounds(nsPoint(0, 0), mFrame->GetSize());
 
   // XXX this should be ok, but there is some crappy ass bug causing it not to work
   // XXX seems related to the "body fixup rule" dealing with the canvas and body frames...
@@ -264,22 +255,6 @@ nsImageLoader::RedrawDirtyFrame(const nsRect* aDamageRect)
   }
 
 #endif
-  if ((bounds.width > 0) && (bounds.height > 0)) {
 
-    // XXX We should tell the frame the damage area and let it invalidate
-    // itself. Add some API calls to nsIFrame to allow a caller to invalidate
-    // parts of the frame...
-    if (mFrame->HasView()) {
-      view = mFrame->GetView();
-    } else {
-      mFrame->GetOffsetFromView(mPresContext, offset, &view);
-      bounds.x += offset.x;
-      bounds.y += offset.y;
-    }
-
-    nsIViewManager* vm = view->GetViewManager();
-    if (vm) {
-      vm->UpdateView(view, bounds, NS_VMREFRESH_NO_SYNC);    
-    }
-  }
+  mFrame->Invalidate(bounds, PR_FALSE);
 }

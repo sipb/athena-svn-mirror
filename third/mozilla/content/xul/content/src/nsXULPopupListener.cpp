@@ -56,6 +56,7 @@
 #include "nsIDOMMouseListener.h"
 #include "nsIDOMContextMenuListener.h"
 #include "nsContentCID.h"
+#include "nsContentUtils.h"
 
 #include "nsIScriptGlobalObject.h"
 #include "nsIScriptContext.h"
@@ -67,6 +68,11 @@
 #include "nsIDOMNSUIEvent.h"
 #include "nsIDOMEventTarget.h"
 #include "nsIDOMNSEvent.h"
+#include "nsIPrefService.h"
+#include "nsIPrefBranch.h"
+#include "nsIServiceManagerUtils.h"
+#include "nsIPrincipal.h"
+#include "nsIScriptSecurityManager.h"
 
 #include "nsIBoxObject.h"
 #include "nsIPopupBoxObject.h"
@@ -218,18 +224,52 @@ XULPopupListenerImpl::PreLaunchPopup(nsIDOMEvent* aMouseEvent)
     return NS_OK;
   }
 
+  // Get the node that was clicked on.
+  nsCOMPtr<nsIDOMEventTarget> target;
+  mouseEvent->GetTarget(getter_AddRefs(target));
+  nsCOMPtr<nsIDOMNode> targetNode = do_QueryInterface(target);
+
   PRBool preventDefault;
   nsUIEvent->GetPreventDefault(&preventDefault);
+  if (preventDefault && targetNode && popupType == eXULPopupType_context) {
+    // Someone called preventDefault on a context menu.
+    // Let's make sure they are allowed to do so.
+    nsCOMPtr<nsIPrefService> prefService =
+      do_GetService(NS_PREFSERVICE_CONTRACTID);
+
+    NS_ENSURE_TRUE(prefService, NS_ERROR_FAILURE);
+
+    nsCOMPtr<nsIPrefBranch> prefBranch;
+    prefService->GetBranch(nsnull, getter_AddRefs(prefBranch));
+
+    PRBool eventEnabled;
+    nsresult rv = prefBranch->GetBoolPref("dom.event.contextmenu.enabled",
+                                          &eventEnabled);
+    if (NS_SUCCEEDED(rv) && !eventEnabled) {
+      // The user wants his contextmenus.  Let's make sure that this is a website
+      // and not chrome since there could be places in chrome which don't want
+      // contextmenus.
+      nsCOMPtr<nsIDocument> doc;
+      nsCOMPtr<nsIPrincipal> prin;
+      nsContentUtils::GetDocumentAndPrincipal(targetNode,
+                                              getter_AddRefs(doc),
+                                              getter_AddRefs(prin));
+      if (prin) {
+        nsCOMPtr<nsIPrincipal> system;
+        nsContentUtils::GetSecurityManager()->GetSystemPrincipal(getter_AddRefs(system));
+        if (prin != system) {
+          // This isn't chrome.  Cancel the preventDefault() and
+          // let the event go forth.
+          preventDefault = PR_FALSE;
+        }
+      }
+    }
+  }
+
   if (preventDefault) {
     // someone called preventDefault. bail.
     return NS_OK;
   }
-
-  // Get the node that was clicked on.
-  nsCOMPtr<nsIDOMEventTarget> target;
-  mouseEvent->GetTarget( getter_AddRefs( target ) );
-  nsCOMPtr<nsIDOMNode> targetNode;
-  if (target) targetNode = do_QueryInterface(target);
 
   // This is a gross hack to deal with a recursive popup situation happening in AIM code. 
   // See http://bugzilla.mozilla.org/show_bug.cgi?id=96920.
@@ -340,8 +380,7 @@ XULPopupListenerImpl::FireFocusOnTargetContent(nsIDOMNode* aTargetNode)
         currFrame = currFrame->GetParent();
     } 
     nsCOMPtr<nsIContent> focusableContent = do_QueryInterface(element);
-    nsCOMPtr<nsIEventStateManager> esm;
-    context->GetEventStateManager(getter_AddRefs(esm));
+    nsIEventStateManager *esm = context->EventStateManager();
 
     if (focusableContent)
       focusableContent->SetFocus(context);
@@ -554,38 +593,33 @@ XULPopupListenerImpl::LaunchPopup(PRInt32 aClientX, PRInt32 aClientY)
     return NS_OK;
 
   // We have some popup content. Obtain our window.
-  nsCOMPtr<nsIScriptContext> context;
-  nsCOMPtr<nsIScriptGlobalObject> global = document->GetScriptGlobalObject();
-  if (global) {
-    if ((NS_OK == global->GetContext(getter_AddRefs(context))) && context) {
-      // Get the DOM window
-      nsCOMPtr<nsIDOMWindowInternal> domWindow = do_QueryInterface(global);
-      if (domWindow != nsnull) {
-        // Find out if we're anchored.
-        mPopupContent = popupContent.get();
+  nsCOMPtr<nsIDOMWindowInternal> domWindow =
+    do_QueryInterface(document->GetScriptGlobalObject());
 
-        nsAutoString anchorAlignment;
-        mPopupContent->GetAttribute(NS_LITERAL_STRING("popupanchor"), anchorAlignment);
+  if (domWindow) {
+    // Find out if we're anchored.
+    mPopupContent = popupContent.get();
 
-        nsAutoString popupAlignment;
-        mPopupContent->GetAttribute(NS_LITERAL_STRING("popupalign"), popupAlignment);
+    nsAutoString anchorAlignment;
+    mPopupContent->GetAttribute(NS_LITERAL_STRING("popupanchor"), anchorAlignment);
 
-        PRInt32 xPos = aClientX, yPos = aClientY;
-        
-        ConvertPosition(mPopupContent, anchorAlignment, popupAlignment, yPos);
-        if (!anchorAlignment.IsEmpty() && !popupAlignment.IsEmpty())
-          xPos = yPos = -1;
+    nsAutoString popupAlignment;
+    mPopupContent->GetAttribute(NS_LITERAL_STRING("popupalign"), popupAlignment);
 
-        nsCOMPtr<nsIBoxObject> popupBox;
-        nsCOMPtr<nsIDOMXULElement> xulPopupElt(do_QueryInterface(mPopupContent));
-        xulPopupElt->GetBoxObject(getter_AddRefs(popupBox));
-        nsCOMPtr<nsIPopupBoxObject> popupBoxObject(do_QueryInterface(popupBox));
-        if (popupBoxObject)
-          popupBoxObject->ShowPopup(mElement, mPopupContent, xPos, yPos, 
-                                    type.get(), anchorAlignment.get(), 
-                                    popupAlignment.get());
-      }
-    }
+    PRInt32 xPos = aClientX, yPos = aClientY;
+
+    ConvertPosition(mPopupContent, anchorAlignment, popupAlignment, yPos);
+    if (!anchorAlignment.IsEmpty() && !popupAlignment.IsEmpty())
+      xPos = yPos = -1;
+
+    nsCOMPtr<nsIBoxObject> popupBox;
+    nsCOMPtr<nsIDOMXULElement> xulPopupElt(do_QueryInterface(mPopupContent));
+    xulPopupElt->GetBoxObject(getter_AddRefs(popupBox));
+    nsCOMPtr<nsIPopupBoxObject> popupBoxObject(do_QueryInterface(popupBox));
+    if (popupBoxObject)
+      popupBoxObject->ShowPopup(mElement, mPopupContent, xPos, yPos, 
+                                type.get(), anchorAlignment.get(), 
+                                popupAlignment.get());
   }
 
   return NS_OK;

@@ -89,7 +89,7 @@ class nsFormControlList;
 
 // nsHTMLFormElement
 
-class nsHTMLFormElement : public nsGenericHTMLContainerElement,
+class nsHTMLFormElement : public nsGenericHTMLElement,
                           public nsSupportsWeakReference,
                           public nsIDOMHTMLFormElement,
                           public nsIDOMNSHTMLFormElement,
@@ -104,24 +104,25 @@ public:
     mIsSubmitting(PR_FALSE),
     mDeferSubmission(PR_FALSE),
     mPendingSubmission(nsnull),
-    mSubmittingRequest(nsnull) { }
-
+    mSubmittingRequest(nsnull)
+  {
+  }
 
   virtual ~nsHTMLFormElement();
 
-  virtual nsresult Init(nsINodeInfo* aNodeInfo);
+  nsresult Init(nsINodeInfo* aNodeInfo);
 
   // nsISupports
   NS_DECL_ISUPPORTS_INHERITED
 
   // nsIDOMNode
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLContainerElement::)
+  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericHTMLElement::)
 
   // nsIDOMElement
-  NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLContainerElement::)
+  NS_FORWARD_NSIDOMELEMENT(nsGenericHTMLElement::)
 
   // nsIDOMHTMLElement
-  NS_FORWARD_NSIDOMHTMLELEMENT(nsGenericHTMLContainerElement::)
+  NS_FORWARD_NSIDOMHTMLELEMENT(nsGenericHTMLElement::)
 
   // nsIDOMHTMLFormElement
   NS_DECL_NSIDOMHTMLFORMELEMENT
@@ -163,25 +164,26 @@ public:
                                   nsIFormControl* aRadio);
 
   // nsIContent
-  NS_IMETHOD StringToAttribute(nsIAtom* aAttribute,
-                               const nsAString& aValue,
-                               nsHTMLValue& aResult);
+  virtual PRBool ParseAttribute(nsIAtom* aAttribute,
+                                const nsAString& aValue,
+                                nsAttrValue& aResult);
   NS_IMETHOD AttributeToString(nsIAtom* aAttribute,
                                const nsHTMLValue& aValue,
                                nsAString& aResult) const;
-  NS_IMETHOD HandleDOMEvent(nsIPresContext* aPresContext, nsEvent* aEvent,
-                            nsIDOMEvent** aDOMEvent, PRUint32 aFlags,
-                            nsEventStatus* aEventStatus);
-  NS_IMETHOD SetDocument(nsIDocument* aDocument, PRBool aDeep,
-                         PRBool aCompileEventHandlers);
-  NS_IMETHOD SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
-                     const nsAString& aValue, PRBool aNotify);
-  NS_IMETHOD SetAttr(nsINodeInfo* aNodeInfo, const nsAString& aValue,
-                     PRBool aNotify) {
-    // This will end up calling the other SetAttr().
-    return nsGenericHTMLContainerElement::SetAttr(aNodeInfo, aValue, aNotify);
+  virtual nsresult HandleDOMEvent(nsIPresContext* aPresContext,
+                                  nsEvent* aEvent, nsIDOMEvent** aDOMEvent,
+                                  PRUint32 aFlags,
+                                  nsEventStatus* aEventStatus);
+  virtual void SetDocument(nsIDocument* aDocument, PRBool aDeep,
+                           PRBool aCompileEventHandlers);
+  nsresult SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
+                   const nsAString& aValue, PRBool aNotify)
+  {
+    return SetAttr(aNameSpaceID, aName, nsnull, aValue, aNotify);
   }
-
+  virtual nsresult SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
+                           nsIAtom* aPrefix, const nsAString& aValue,
+                           PRBool aNotify);
 
   /**
    * Forget all information about the current submission (and the fact that we
@@ -407,7 +409,7 @@ ShouldBeInElements(nsIFormControl* aFormControl)
 // construction, destruction
 nsresult
 NS_NewHTMLFormElement(nsIHTMLContent** aInstancePtrResult,
-                      nsINodeInfo *aNodeInfo)
+                      nsINodeInfo *aNodeInfo, PRBool aFromParser)
 {
   NS_ENSURE_ARG_POINTER(aInstancePtrResult);
 
@@ -435,7 +437,7 @@ NS_NewHTMLFormElement(nsIHTMLContent** aInstancePtrResult,
 nsresult
 nsHTMLFormElement::Init(nsINodeInfo *aNodeInfo)
 {
-  nsresult rv = nsGenericHTMLContainerElement::Init(aNodeInfo);
+  nsresult rv = nsGenericHTMLElement::Init(aNodeInfo);
   NS_ENSURE_SUCCESS(rv, rv);
 
   mControls = new nsFormControlList(this);
@@ -478,8 +480,7 @@ NS_IMPL_RELEASE_INHERITED(nsHTMLFormElement, nsGenericElement)
 
 
 // QueryInterface implementation for nsHTMLFormElement
-NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLFormElement,
-                                    nsGenericHTMLContainerElement)
+NS_HTML_CONTENT_INTERFACE_MAP_BEGIN(nsHTMLFormElement, nsGenericHTMLElement)
   NS_INTERFACE_MAP_ENTRY(nsISupportsWeakReference)
   NS_INTERFACE_MAP_ENTRY(nsIDOMHTMLFormElement)
   NS_INTERFACE_MAP_ENTRY(nsIDOMNSHTMLFormElement)
@@ -509,7 +510,7 @@ nsHTMLFormElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
   nsresult rv = it->Init(mNodeInfo);
   NS_ENSURE_SUCCESS(rv, rv);
 
-  CopyInnerTo(this, it, aDeep);
+  CopyInnerTo(it, aDeep);
 
   *aReturn = NS_STATIC_CAST(nsIDOMNode *, it);
 
@@ -526,11 +527,13 @@ nsHTMLFormElement::GetElements(nsIDOMHTMLCollection** aElements)
   return NS_OK;
 }
 
-NS_IMETHODIMP
+nsresult
 nsHTMLFormElement::SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
-                           const nsAString& aValue, PRBool aNotify)
+                           nsIAtom* aPrefix, const nsAString& aValue,
+                           PRBool aNotify)
 {
-  if (aName == nsHTMLAtoms::action || aName == nsHTMLAtoms::target) {
+  if ((aName == nsHTMLAtoms::action || aName == nsHTMLAtoms::target) &&
+      aNameSpaceID == kNameSpaceID_None) {
     if (mPendingSubmission) {
       // aha, there is a pending submission that means we're in
       // the script and we need to flush it. let's tell it
@@ -540,8 +543,8 @@ nsHTMLFormElement::SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
     }
     ForgetCurrentSubmission();
   }
-  return nsGenericHTMLContainerElement::SetAttr(aNameSpaceID, aName,
-                                                aValue, aNotify);
+  return nsGenericHTMLElement::SetAttr(aNameSpaceID, aName, aPrefix, aValue,
+                                       aNotify);
 }
 
 NS_IMPL_STRING_ATTR(nsHTMLFormElement, AcceptCharset, acceptcharset)
@@ -600,10 +603,7 @@ nsHTMLFormElement::Reset()
     // the frame does not exist.  This does not have an effect right now, but
     // If PresShell::HandleEventWithTarget() ever starts to work for elements
     // without frames, that should be called instead.
-    nsFormEvent event;
-    event.eventStructType = NS_FORM_EVENT;
-    event.message         = NS_FORM_RESET;
-    event.originator      = nsnull;
+    nsFormEvent event(NS_FORM_RESET);
     nsEventStatus status  = nsEventStatus_eIgnore;
     HandleDOMEvent(presContext, &event, nsnull, NS_EVENT_FLAG_INIT, &status);
   }
@@ -623,22 +623,19 @@ static const nsHTMLValue::EnumTable kFormEnctypeTable[] = {
   { 0 }
 };
 
-NS_IMETHODIMP
-nsHTMLFormElement::StringToAttribute(nsIAtom* aAttribute,
-                                     const nsAString& aValue,
-                                     nsHTMLValue& aResult)
+PRBool
+nsHTMLFormElement::ParseAttribute(nsIAtom* aAttribute,
+                                  const nsAString& aValue,
+                                  nsAttrValue& aResult)
 {
   if (aAttribute == nsHTMLAtoms::method) {
-    if (aResult.ParseEnumValue(aValue, kFormMethodTable)) {
-      return NS_CONTENT_ATTR_HAS_VALUE;
-    }
+    return aResult.ParseEnumValue(aValue, kFormMethodTable);
   }
-  else if (aAttribute == nsHTMLAtoms::enctype) {
-    if (aResult.ParseEnumValue(aValue, kFormEnctypeTable)) {
-      return NS_CONTENT_ATTR_HAS_VALUE;
-    }
+  if (aAttribute == nsHTMLAtoms::enctype) {
+    return aResult.ParseEnumValue(aValue, kFormEnctypeTable);
   }
-  return NS_CONTENT_ATTR_NOT_THERE;
+
+  return nsGenericHTMLElement::ParseAttribute(aAttribute, aValue, aResult);
 }
 
 NS_IMETHODIMP
@@ -659,18 +656,15 @@ nsHTMLFormElement::AttributeToString(nsIAtom* aAttribute,
     }
   }
 
-  return nsGenericHTMLContainerElement::AttributeToString(aAttribute,
-                                                          aValue, aResult);
+  return nsGenericHTMLElement::AttributeToString(aAttribute, aValue, aResult);
 }
 
-NS_IMETHODIMP
+void
 nsHTMLFormElement::SetDocument(nsIDocument* aDocument, PRBool aDeep,
                                PRBool aCompileEventHandlers)
 {
   nsCOMPtr<nsIHTMLDocument> oldDocument = do_QueryInterface(mDocument);
-  nsresult rv = nsGenericHTMLContainerElement::SetDocument(aDocument, aDeep,
-                                                           aCompileEventHandlers);
-  NS_ENSURE_SUCCESS(rv, rv);
+  nsGenericHTMLElement::SetDocument(aDocument, aDeep, aCompileEventHandlers);
   
   nsCOMPtr<nsIHTMLDocument> newDocument = do_QueryInterface(mDocument);
   if (oldDocument != newDocument) {
@@ -682,12 +676,10 @@ nsHTMLFormElement::SetDocument(nsIDocument* aDocument, PRBool aDeep,
       newDocument->AddedForm();
     }
   }
-
-  return rv;
 }
 
 
-NS_IMETHODIMP
+nsresult
 nsHTMLFormElement::HandleDOMEvent(nsIPresContext* aPresContext,
                                   nsEvent* aEvent,
                                   nsIDOMEvent** aDOMEvent,
@@ -724,11 +716,9 @@ nsHTMLFormElement::HandleDOMEvent(nsIPresContext* aPresContext,
   }
 
 
-  nsresult rv = nsGenericHTMLContainerElement::HandleDOMEvent(aPresContext,
-                                                              aEvent,
-                                                              aDOMEvent,
-                                                              aFlags,
-                                                              aEventStatus); 
+  nsresult rv = nsGenericHTMLElement::HandleDOMEvent(aPresContext, aEvent,
+                                                     aDOMEvent, aFlags,
+                                                     aEventStatus); 
   if (aEvent->message == NS_FORM_SUBMIT) {
     // let the form know not to defer subsequent submissions
     mDeferSubmission = PR_FALSE;
@@ -751,7 +741,7 @@ nsHTMLFormElement::HandleDOMEvent(nsIPresContext* aPresContext,
             // to forget it and the form element will build a new one
             ForgetPendingSubmission();
           }
-          rv = DoSubmitOrReset(aPresContext, aEvent, aEvent->message);
+          DoSubmitOrReset(aPresContext, aEvent, aEvent->message);
         }
         break;
       }
@@ -858,9 +848,7 @@ nsHTMLFormElement::DoSubmit(nsIPresContext* aPresContext, nsEvent* aEvent)
   // 
   // perform the submission
   //
-  SubmitSubmission(aPresContext, submission); 
-
-  return NS_OK;
+  return SubmitSubmission(aPresContext, submission); 
 }
 
 nsresult
@@ -1272,8 +1260,8 @@ nsHTMLFormElement::GetActionURL(nsIURI** aActionURL)
   }
 
   // Get base URL
-  nsIURI *docURL = mDocument->GetDocumentURL();
-  NS_ENSURE_TRUE(docURL, NS_ERROR_UNEXPECTED);
+  nsIURI *docURI = mDocument->GetDocumentURI();
+  NS_ENSURE_TRUE(docURI, NS_ERROR_UNEXPECTED);
 
   // If an action is not specified and we are inside
   // a HTML document then reload the URL. This makes us
@@ -1291,11 +1279,10 @@ nsHTMLFormElement::GetActionURL(nsIURI** aActionURL)
       return NS_OK;
     }
 
-    rv = docURL->Clone(getter_AddRefs(actionURL));
+    rv = docURI->Clone(getter_AddRefs(actionURL));
     NS_ENSURE_SUCCESS(rv, rv);
   } else {
-    nsCOMPtr<nsIURI> baseURL;
-    GetBaseURL(getter_AddRefs(baseURL));
+    nsCOMPtr<nsIURI> baseURL = GetBaseURI();
     NS_ASSERTION(baseURL, "No Base URL found in Form Submit!\n");
     if (!baseURL) {
       return NS_OK; // No base URL -> exit early, see Bug 30721
@@ -1311,7 +1298,7 @@ nsHTMLFormElement::GetActionURL(nsIURI** aActionURL)
   //
   nsIScriptSecurityManager *securityManager =
       nsContentUtils::GetSecurityManager();
-  rv = securityManager->CheckLoadURI(docURL, actionURL,
+  rv = securityManager->CheckLoadURI(docURI, actionURL,
                                      nsIScriptSecurityManager::STANDARD);
   NS_ENSURE_SUCCESS(rv, rv);
 

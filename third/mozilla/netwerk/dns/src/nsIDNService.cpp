@@ -94,8 +94,8 @@ NS_IMETHODIMP nsIDNService::Observe(nsISupports *aSubject,
       }
       else if (NS_LITERAL_STRING(NS_NET_PREF_IDNPREFIX).Equals(aData)) {
         nsXPIDLCString prefix;
-        if (NS_SUCCEEDED(prefBranch->GetCharPref(NS_NET_PREF_IDNPREFIX, getter_Copies(prefix))) &&
-            prefix.Length() <= kACEPrefixLen)
+        nsresult rv = prefBranch->GetCharPref(NS_NET_PREF_IDNPREFIX, getter_Copies(prefix));
+        if (NS_SUCCEEDED(rv) && prefix.Length() <= kACEPrefixLen)
           PL_strncpyz(nsIDNService::mACEPrefix, prefix.get(), kACEPrefixLen + 1);
       }
     }
@@ -106,8 +106,6 @@ NS_IMETHODIMP nsIDNService::Observe(nsISupports *aSubject,
 
 nsIDNService::nsIDNService()
 {
-  NS_INIT_ISUPPORTS();
-
   nsresult rv;
 
   // initialize to the official prefix (RFC 3490 "5. ACE prefix")
@@ -240,6 +238,15 @@ NS_IMETHODIMP nsIDNService::IsACE(const nsACString & input, PRBool *_retval)
   }
 
   return NS_OK;
+}
+
+NS_IMETHODIMP nsIDNService::Normalize(const nsACString & input, nsACString & output)
+{
+  nsAutoString outUTF16;
+  nsresult rv = stringPrep(NS_ConvertUTF8toUTF16(input), outUTF16);
+  if (NS_SUCCEEDED(rv))
+    CopyUTF16toUTF8(outUTF16, output);
+  return rv;
 }
 
 //-----------------------------------------------------------------------------
@@ -515,7 +522,7 @@ nsresult nsIDNService::decodeACE(const nsACString& in, nsACString& out)
   nsAutoString utf16;
   ucs4toUtf16(output, utf16);
   delete [] output;
-  out.Assign(NS_ConvertUCS2toUTF8(utf16));
+  CopyUTF16toUTF8(utf16, out);
 
   // Validation: encode back to ACE and compare the strings
   nsCAutoString ace;

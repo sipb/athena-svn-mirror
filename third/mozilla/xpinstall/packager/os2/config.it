@@ -350,6 +350,8 @@ Extra Cmd0 Parameter=-kill
 [Check Instance1]
 Process Name=mozturbo.exe
 Extra Cmd0 Parameter=-u
+;*** LOCALIZE ME BABY ***
+Message=Unable to close mozturbo.exe. Please press OK to try again. If this problem persists, press the Cancel button and close mozturbo.exe manually. To do this, go to the directory where $ProductName$ is installed and type 'mozturbo -u'.
 
 [Component XPCOM]
 Description Short=Mozilla XPCOM
@@ -763,7 +765,7 @@ Key=Install Directory
 ;
 ; Default value is TRUE if nothing is set.
 ;
-; When creating objects, you can specify Attribute=UPDATE or FAIL
+; When creating objects, you can specify Attributes=UPDATE or FAIL
 ; FAIL will fail when trying to create the object, UPDATE will replace it
 
 [Program Folder0]
@@ -774,6 +776,7 @@ ClassName=WPFolder
 Title=$ProductName$
 Location=[DESKTOP]
 Object ID=<MOZILLAFLDR>
+Attributes=FAIL
 
 [Component Navigator-Program Folder0]
 Timing=post smartupdate
@@ -787,6 +790,7 @@ Location=[Default Folder]
 Association Filters=*.HTM,*.HTML
 Association Types=HTML,text/html
 Object ID=<MOZILLAEXE>
+Attributes=UPDATE
 
 [Component Navigator-Program Folder0-Object1]
 ClassName=WPProgram
@@ -796,6 +800,7 @@ Parameters=-ProfileManager
 Working Dir=[SETUP PATH]
 Location=[Default Folder]
 Object ID=<MOZILLAPROFMANAGER>
+Attributes=UPDATE
 
 [Component Uninstaller-Program Folder0]
 Timing=post smartupdate
@@ -808,6 +813,7 @@ Parameters=/ua \"$UserAgent$\"
 Working Dir=[SETUP PATH]
 Location=[Default Folder]
 Object ID=<MOZILLA_UNINSTALL>
+Attributes=UPDATE
 
 [Component MailNews-Program Folder0]
 Timing=post smartupdate
@@ -819,7 +825,8 @@ File=[SETUP PATH]\$MainExeFile$
 Parameters=-mail
 Working Dir=[SETUP PATH]
 Location=[Default Folder]
-Object ID=<CCINBOX>
+Object ID=<MOZILLAMAIL>
+Attributes=UPDATE
 
 [Strings]
 ;*** LOCALIZE ME BABY ***

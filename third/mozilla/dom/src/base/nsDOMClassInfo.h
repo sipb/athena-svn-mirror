@@ -240,6 +240,7 @@ protected:
   static jsval sOnchange_id;
   static jsval sOnselect_id;
   static jsval sOnload_id;
+  static jsval sOnbeforeunload_id;
   static jsval sOnunload_id;
   static jsval sOnabort_id;
   static jsval sOnerror_id;
@@ -260,6 +261,7 @@ protected:
   static jsval sFrames_id;
   static jsval sSelf_id;
   static jsval sOpener_id;
+  static jsval sAdd_id;
 
   static const JSClass *sObjectClass;
 
@@ -808,6 +810,8 @@ protected:
 public:
   NS_IMETHOD PostCreate(nsIXPConnectWrappedNative *wrapper, JSContext *cx,
                         JSObject *obj);
+  NS_IMETHOD SetProperty(nsIXPConnectWrappedNative *wrapper, JSContext *cx,
+                         JSObject *obj, jsval id, jsval *vp, PRBool *_retval);
 };
 
 
@@ -882,10 +886,16 @@ protected:
   {
   }
 
+  static JSBool JS_DLL_CALLBACK Add(JSContext *cx, JSObject *obj, uintN argc,
+                                    jsval *argv, jsval *rval);
+
 public:
   NS_IMETHOD SetProperty(nsIXPConnectWrappedNative *wrapper, JSContext *cx,
                          JSObject *obj, jsval id, jsval *vp, PRBool *_retval);
-
+  NS_IMETHOD NewResolve(nsIXPConnectWrappedNative *wrapper, JSContext *cx,
+                        JSObject *obj, jsval id, PRUint32 flags,
+                        JSObject **objp, PRBool *_retval);
+  
   static nsIClassInfo *doCreate(nsDOMClassInfoData* aData)
   {
     return new nsHTMLOptionsCollectionSH(aData);
@@ -1220,11 +1230,10 @@ void InvalidateContextAndWrapperCache();
   if (aIID.Equals(NS_GET_IID(nsIClassInfo))) {                                \
     foundInterface =                                                          \
       nsDOMClassInfo::GetClassInfoInstance(eDOMClassInfo_##_class##_id);      \
-    NS_ENSURE_TRUE(foundInterface, NS_ERROR_OUT_OF_MEMORY);                   \
-                                                                              \
-    *aInstancePtr = foundInterface;                                           \
-                                                                              \
-    return NS_OK;                                                             \
+    if (!foundInterface) {                                                    \
+      *aInstancePtr = nsnull;                                                 \
+      return NS_ERROR_OUT_OF_MEMORY;                                          \
+    }                                                                         \
   } else
 
 #endif /* nsDOMClassInfo_h___ */

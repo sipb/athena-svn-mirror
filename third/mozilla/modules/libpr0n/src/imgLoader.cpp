@@ -197,7 +197,7 @@ static nsresult NewImageChannel(nsIChannel **aResult,
   newHttpChannel = do_QueryInterface(*aResult);
   if (newHttpChannel) {
     newHttpChannel->SetRequestHeader(NS_LITERAL_CSTRING("Accept"),
-                                     NS_LITERAL_CSTRING("image/png,image/jpeg,image/gif;q=0.2,*/*;q=0.1"),
+                                     NS_LITERAL_CSTRING("image/png,*/*;q=0.5"),
                                      PR_FALSE);
 
     nsCOMPtr<nsIHttpChannelInternal> httpChannelInternal = do_QueryInterface(newHttpChannel);
@@ -223,6 +223,11 @@ NS_IMETHODIMP imgLoader::LoadImage(nsIURI *aURI,
                                    imgIRequest **_retval)
 {
   NS_ASSERTION(aURI, "imgLoader::LoadImage -- NULL URI pointer");
+
+  // CreateNewProxyForRequest treats _retval as inout - null out
+  // to make sure the passed value doesn't affect the behavior of
+  // this method
+  *_retval = nsnull;
 
   if (!aURI)
     return NS_ERROR_NULL_POINTER;
@@ -491,22 +496,7 @@ NS_IMETHODIMP imgLoader::LoadImage(nsIURI *aURI,
     NS_RELEASE(pl);
 
     if (NS_FAILED(openRes)) {
-      /* If AsyncOpen fails, then we want to hand back a request proxy
-         object that has a canceled load.
-       */
-      LOG_MSG(gImgLog, "imgLoader::LoadImage", "async open failed.");
-
-      rv = CreateNewProxyForRequest(request, aLoadGroup, aObserver,
-                                    requestFlags, aRequest, _retval);
-      request->NotifyProxyListener(NS_STATIC_CAST(imgRequestProxy*, *_retval));
-
-      if (NS_SUCCEEDED(rv)) {
-        request->OnStartRequest(newChannel, nsnull);
-        request->OnStopRequest(newChannel, nsnull, NS_BINDING_ABORTED);
-      }
-
       NS_RELEASE(request);
-      
       return openRes;
     }
 
@@ -550,6 +540,11 @@ NS_IMETHODIMP imgLoader::LoadImage(nsIURI *aURI,
 NS_IMETHODIMP imgLoader::LoadImageWithChannel(nsIChannel *channel, imgIDecoderObserver *aObserver, nsISupports *aCX, nsIStreamListener **listener, imgIRequest **_retval)
 {
   NS_ASSERTION(channel, "imgLoader::LoadImageWithChannel -- NULL channel pointer");
+
+  // CreateNewProxyForRequest treats _retval as inout - null out
+  // to make sure the passed value doesn't affect the behavior of
+  // this method
+  *_retval = nsnull;
 
   nsresult rv;
   imgRequest *request = nsnull;
@@ -691,6 +686,10 @@ imgLoader::CreateNewProxyForRequest(imgRequest *aRequest, nsILoadGroup *aLoadGro
     return rv;
   }
 
+  if (*_retval) {
+    (*_retval)->Cancel(NS_IMAGELIB_ERROR_LOAD_ABORTED);
+    NS_RELEASE(*_retval);
+  }
   *_retval = NS_STATIC_CAST(imgIRequest*, proxyRequest);
   NS_ADDREF(*_retval);
 

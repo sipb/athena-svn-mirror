@@ -41,21 +41,32 @@
 #include <windows.h>
 #endif
 
+const int TMP_ARG_MAX=21;
+
 int main(int argc, char* argv[])
 {
+  char* temparg[TMP_ARG_MAX+1];
   nsXREAppData appData;
+  temparg[0] = argv[0];
+  temparg[1] = "-calendar";
+  int i;
+  for( i=1; i<argc && i<TMP_ARG_MAX-1; i++ ) {
+     temparg[i+1]=argv[i];
+  }
+  //we still might lose some args. a check would be handy with big neon letters yelling at the user.
+  temparg[i+1]=nsnull;
   appData.SetSplashEnabled(PR_FALSE);
   appData.SetProductName(NS_LITERAL_CSTRING("Sunbird"));
   appData.SetUseStartupPrefs(PR_FALSE);
 
-  return xre_main(argc, argv, appData);
+  return xre_main(argc+1, temparg, appData);
 }
 
 #if defined(MOZ_WIDGET_GTK) || defined(MOZ_WIDGET_GTK2)
 char* splash_xpm[] = {0};
 #endif
 
-#ifdef XP_WIN
+#if defined( XP_WIN ) && defined( WIN32 ) && !defined(__GNUC__)
 // We need WinMain in order to not be a console app.  This function is
 // unused if we are a console application.
 int WINAPI WinMain( HINSTANCE, HINSTANCE, LPSTR args, int )

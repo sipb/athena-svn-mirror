@@ -1,5 +1,3 @@
-#!nmake
-#
 # The contents of this file are subject to the Netscape Public
 # License Version 1.1 (the "License"); you may not use this file
 # except in compliance with the License. You may obtain a copy of
@@ -57,7 +55,7 @@ REQUIRES = \
 ifdef XPC_IDISPATCH_SUPPORT
 REQUIRES += \
 	caps \
-	embedstring \
+	string \
 	$(NULL)
 endif
 XPIFILE         = mozactivex.xpi
@@ -110,7 +108,6 @@ MOZ_ACTIVEX_PLUGIN_XPCONNECT = 1
 
 # Settings will also be read from this supplemental file if it exists
 -include $(srcdir)/plugin.mk
-
 
 ###############################################################################
 
@@ -192,14 +189,10 @@ LIBS = \
 # LiveConnect links to XPCOM glue
 ifdef MOZ_ACTIVEX_PLUGIN_LIVECONNECT
 EXTRA_DSO_LDOPTS += \
-    $(DIST)/lib/$(LIB_PREFIX)embedstring_s.$(LIB_SUFFIX) \
     $(DIST)/lib/$(LIB_PREFIX)string_s.$(LIB_SUFFIX) \
-    $(DIST)/lib/$(LIB_PREFIX)string_obsolete_s.$(LIB_SUFFIX) \
     $(DIST)/lib/$(LIB_PREFIX)xpcomglue.$(LIB_SUFFIX)
 LIBS += \
-    $(DIST)/lib/$(LIB_PREFIX)embedstring_s.$(LIB_SUFFIX) \
     $(DIST)/lib/$(LIB_PREFIX)string_s.$(LIB_SUFFIX) \
-    $(DIST)/lib/$(LIB_PREFIX)string_obsolete_s.$(LIB_SUFFIX) \
     $(DIST)/lib/$(LIB_PREFIX)xpcomglue.$(LIB_SUFFIX)
 endif
 
@@ -245,6 +238,13 @@ install-prefs: activex.js
 	$(INSTALL) $< $(DIST)/bin/defaults/pref
 
 ifdef MOZ_USE_ACTIVEX_PLUGIN
+PACKAGE_FILE = axplugin.pkg
+PACKAGE_VARS += \
+	MOZ_ACTIVEX_PLUGIN_LIVECONNECT \
+	MOZ_ACTIVEX_PLUGIN_XPCONNECT \
+	XPC_IDISPATCH_SUPPORT \
+	$(NULL)
+
 libs:: install-plugin install-prefs
 
 ifdef MOZ_ACTIVEX_PLUGIN_LIVECONNECT

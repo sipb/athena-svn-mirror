@@ -89,6 +89,7 @@ public:
 
   // nsIDOMLoadListener
   NS_IMETHOD Load(nsIDOMEvent* aEvent);
+  NS_IMETHOD BeforeUnload(nsIDOMEvent* aEvent);
   NS_IMETHOD Unload(nsIDOMEvent* aEvent);
   NS_IMETHOD Abort(nsIDOMEvent* aEvent);
   NS_IMETHOD Error(nsIDOMEvent* aEvent);
@@ -109,7 +110,7 @@ protected:
                                PRInt32 aLength,
                                nsIInputStream** aStream);
   nsresult DetectCharset(nsACString& aCharset);
-  nsresult ConvertBodyToText(PRUnichar **aOutBuffer);
+  nsresult ConvertBodyToText(nsAString& aOutBuffer);
   static NS_METHOD StreamReaderFunc(nsIInputStream* in,
                 void* closure,
                 const char* fromRawSegment,
@@ -121,14 +122,17 @@ protected:
   nsresult ChangeState(PRUint32 aState, PRBool aBroadcast = PR_TRUE);
   nsresult RequestCompleted();
   nsresult GetLoadGroup(nsILoadGroup **aLoadGroup);
-  nsresult GetBaseURI(nsIURI **aBaseURI);
+  nsIURI *GetBaseURI();
+  nsresult CreateEvent(nsEvent* event, nsIDOMEvent** domevent);
+  void NotifyEventListeners(nsIDOMEventListener* aHandler,
+                            nsISupportsArray* aListeners, nsIDOMEvent* aEvent);
   void ClearEventListeners();
+  already_AddRefed<nsIHttpChannel> GetCurrentHttpChannel();
 
   nsCOMPtr<nsISupports> mContext;
   nsCOMPtr<nsIChannel> mChannel;
   nsCOMPtr<nsIRequest> mReadRequest;
   nsCOMPtr<nsIDOMDocument> mDocument;
-  nsCOMPtr<nsIURI> mBaseURI;
 
   nsCOMPtr<nsISupportsArray> mLoadEventListeners;
   nsCOMPtr<nsISupportsArray> mErrorEventListeners;

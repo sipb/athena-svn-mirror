@@ -1,3 +1,4 @@
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /*
  * The contents of this file are subject to the Mozilla Public
  * License Version 1.1 (the "License"); you may not use this file
@@ -23,7 +24,6 @@
 
 #include "nsCOMPtr.h"
 #include "nsHTMLParts.h"
-#include "nsIHTMLContent.h"
 #include "nsFrame.h"
 #include "nsIPresContext.h"
 #include "nsIPresShell.h"
@@ -38,7 +38,7 @@
 #include "nsIDOMText.h"
 #include "nsITextContent.h"
 #include "nsIDOMMutationEvent.h"
-#include "nsIFrameManager.h"
+#include "nsFrameManager.h"
 #include "nsStyleChangeList.h"
 
 #include "nsMathMLAtoms.h"
@@ -46,6 +46,7 @@
 #include "nsMathMLChar.h"
 #include "nsMathMLContainerFrame.h"
 #include "nsAutoPtr.h"
+#include "nsStyleSet.h"
 
 NS_DEFINE_CID(kInlineFrameCID, NS_INLINE_FRAME_CID);
 
@@ -201,9 +202,8 @@ nsMathMLContainerFrame::GetPreferredStretchSize(nsIPresContext*      aPresContex
                  "invalid call to GetPreferredStretchSize");
     PRBool firstTime = PR_TRUE;
     nsBoundingMetrics bm, bmChild;
-    nsIFrame* childFrame;
     // XXXrbs need overloaded FirstChild() and clean integration of <maction> throughout
-    FirstChild(aPresContext, nsnull, &childFrame);
+    nsIFrame* childFrame = GetFirstChild(nsnull);
     while (childFrame) {
       // initializations in case this child happens not to be a MathML frame
       nsRect rect = childFrame->GetRect();
@@ -528,8 +528,7 @@ nsMathMLContainerFrame::PropagatePresentationDataFor(nsIPresContext* aPresContex
   }
   else {
     // propagate down the subtrees
-    nsIFrame* childFrame;
-    aFrame->FirstChild(aPresContext, nsnull, &childFrame);
+    nsIFrame* childFrame = aFrame->GetFirstChild(nsnull);
     while (childFrame) {
       PropagatePresentationDataFor(aPresContext, childFrame,
         aScriptLevelIncrement, aFlagsValues, aFlagsToUpdate);
@@ -550,8 +549,7 @@ nsMathMLContainerFrame::PropagatePresentationDataFromChildAt(nsIPresContext* aPr
   if (!aFlagsToUpdate && !aScriptLevelIncrement)
     return;
   PRInt32 index = 0;
-  nsIFrame* childFrame;
-  aParentFrame->FirstChild(aPresContext, nsnull, &childFrame);
+  nsIFrame* childFrame = aParentFrame->GetFirstChild(nsnull);
   while (childFrame) {
     if ((index >= aFirstChildIndex) &&
         ((aLastChildIndex <= 0) || ((aLastChildIndex > 0) &&
@@ -652,29 +650,18 @@ nsMathMLContainerFrame::PropagateScriptStyleFor(nsIPresContext* aPresContext,
     }
 
     // now, re-resolve the style contexts in our subtree
-    nsCOMPtr<nsIPresShell> presShell;
-    aPresContext->GetShell(getter_AddRefs(presShell));
-    if (presShell) {
-      nsCOMPtr<nsIFrameManager> fm;
-      presShell->GetFrameManager(getter_AddRefs(fm));
-      if (fm) {
-        nsChangeHint maxChange = NS_STYLE_HINT_NONE, minChange = NS_STYLE_HINT_NONE;
-        nsStyleChangeList changeList;
-        fm->ComputeStyleChangeFor(aFrame, kNameSpaceID_None,
-                                  nsMathMLAtoms::fontsize, changeList,
-                                  minChange, maxChange);
+    nsFrameManager *fm = aPresContext->FrameManager();
+    nsStyleChangeList changeList;
+    fm->ComputeStyleChangeFor(aFrame, &changeList, NS_STYLE_HINT_NONE);
 #ifdef DEBUG
-        // Use the parent frame to make sure we catch in-flows and such
-        nsIFrame* parentFrame = aFrame->GetParent();
-        fm->DebugVerifyStyleTree(parentFrame ? parentFrame : aFrame);
+    // Use the parent frame to make sure we catch in-flows and such
+    nsIFrame* parentFrame = aFrame->GetParent();
+    fm->DebugVerifyStyleTree(parentFrame ? parentFrame : aFrame);
 #endif
-      }
-    }
   }
 
   // recurse down the subtrees for changes that may arise deep down
-  nsIFrame* childFrame;
-  aFrame->FirstChild(aPresContext, nsnull, &childFrame);
+  nsIFrame* childFrame = aFrame->GetFirstChild(nsnull);
   while (childFrame) {
     childFrame->QueryInterface(NS_GET_IID(nsIMathMLFrame), (void**)&mathMLFrame);
     if (mathMLFrame) {
@@ -707,6 +694,8 @@ nsresult
 nsMathMLContainerFrame::WrapForeignFrames(nsIPresContext* aPresContext)
 {
   nsIFrame* next = mFrames.FirstChild();
+  nsFrameManager *frameManager = aPresContext->FrameManager();
+
   while (next) {
     nsIFrame* child = next;
     next = next->GetNextSibling();
@@ -714,15 +703,15 @@ nsMathMLContainerFrame::WrapForeignFrames(nsIPresContext* aPresContext)
     child->QueryInterface(kInlineFrameCID, (void**)&inlineFrame);
     if (inlineFrame) {
       // create a new wrapper frame to wrap this child
-      nsCOMPtr<nsIPresShell> shell;
-      aPresContext->GetShell(getter_AddRefs(shell));
       nsIFrame* wrapper;
-      nsresult rv = NS_NewMathMLForeignFrameWrapper(shell, &wrapper);
+      nsresult rv = NS_NewMathMLForeignFrameWrapper(aPresContext->PresShell(),
+						    &wrapper);
       if (NS_FAILED(rv)) return rv;
       nsRefPtr<nsStyleContext> newStyleContext;
-      newStyleContext = aPresContext->ResolvePseudoStyleContextFor(mContent,
-								   nsCSSAnonBoxes::mozAnonymousBlock,
-								   mStyleContext);
+      newStyleContext = aPresContext->StyleSet()->
+	ResolvePseudoStyleFor(mContent,
+			      nsCSSAnonBoxes::mozAnonymousBlock,
+			      mStyleContext);
       rv = wrapper->Init(aPresContext, mContent, this, newStyleContext, nsnull);
       if (NS_FAILED(rv)) {
         wrapper->Destroy(aPresContext);
@@ -731,7 +720,7 @@ nsMathMLContainerFrame::WrapForeignFrames(nsIPresContext* aPresContext)
       mFrames.ReplaceFrame(aPresContext, this, child, wrapper, PR_FALSE);
       child->SetParent(wrapper);
       child->SetNextSibling(nsnull);
-      aPresContext->ReParentStyleContext(child, newStyleContext);
+      frameManager->ReParentStyleContext(child, newStyleContext);
       wrapper->SetInitialChildList(aPresContext, nsnull, child);
     }
   }
@@ -745,7 +734,9 @@ nsMathMLContainerFrame::Paint(nsIPresContext*      aPresContext,
                               nsFramePaintLayer    aWhichLayer,
                               PRUint32             aFlags)
 {
-  nsresult rv = NS_OK;
+  if (NS_FRAME_IS_UNFLOWABLE & mState) {
+    return NS_OK;
+  }
 
   // report an error if something wrong was found in this frame
   if (NS_MATHML_HAS_ERROR(mPresentationData.flags)) {
@@ -753,8 +744,13 @@ nsMathMLContainerFrame::Paint(nsIPresContext*      aPresContext,
                       aDirtyRect, aWhichLayer);
   }
 
-  rv = nsHTMLContainerFrame::Paint(aPresContext, aRenderingContext,
-                                   aDirtyRect, aWhichLayer);
+  // Paint inline element backgrounds in the foreground layer (bug 36710).
+  if (NS_FRAME_PAINT_LAYER_FOREGROUND == aWhichLayer) {
+    PaintSelf(aPresContext, aRenderingContext, aDirtyRect);
+  }
+
+  PaintDecorationsAndChildren(aPresContext, aRenderingContext, aDirtyRect,
+                              aWhichLayer, PR_FALSE, aFlags);
 
 #if defined(NS_DEBUG) && defined(SHOW_BOUNDING_BOX)
   // for visual debug
@@ -777,7 +773,7 @@ nsMathMLContainerFrame::Paint(nsIPresContext*      aPresContext,
     aRenderingContext.DrawRect(x,y,w,h);
   }
 #endif
-  return rv;
+  return NS_OK;
 }
 
 // This method is called in a top-down manner, as we descend the frame tree
@@ -837,8 +833,7 @@ nsMathMLContainerFrame::RebuildAutomaticDataForChildren(nsIPresContext* aPresCon
   // the parent
   // 2. As we ascend the tree, transmit any specific change that we want
   // down the subtrees
-  nsIFrame* childFrame;
-  aParentFrame->FirstChild(aPresContext, nsnull, &childFrame);
+  nsIFrame* childFrame = aParentFrame->GetFirstChild(nsnull);
   while (childFrame) {
     nsIMathMLFrame* childMathMLFrame;
     childFrame->QueryInterface(NS_GET_IID(nsIMathMLFrame), (void**)&childMathMLFrame);
@@ -907,8 +902,7 @@ nsMathMLContainerFrame::ReLayoutChildren(nsIPresContext* aPresContext,
 #endif
 
   // re-resolve the style data to sync any change of script sizes
-  nsIFrame* childFrame;
-  aParentFrame->FirstChild(aPresContext, nsnull, &childFrame);
+  nsIFrame* childFrame = aParentFrame->GetFirstChild(nsnull);
   while (childFrame) {
     nsIMathMLFrame* mathMLFrame;
     childFrame->QueryInterface(NS_GET_IID(nsIMathMLFrame), (void**)&mathMLFrame);
@@ -924,9 +918,7 @@ nsMathMLContainerFrame::ReLayoutChildren(nsIPresContext* aPresContext,
   }
 
   // Ask our parent frame to reflow us
-  nsCOMPtr<nsIPresShell> presShell;
-  aPresContext->GetShell(getter_AddRefs(presShell));
-  return frame->ReflowDirtyChild(presShell, nsnull);
+  return frame->ReflowDirtyChild(aPresContext->PresShell(), nsnull);
 }
 
 // There are precise rules governing children of a MathML frame,
@@ -1025,9 +1017,7 @@ nsMathMLContainerFrame::AttributeChanged(nsIPresContext* aPresContext,
     MapAttributesIntoCSS(aPresContext, this);
   }
 
-  nsCOMPtr<nsIPresShell> presShell;
-  aPresContext->GetShell(getter_AddRefs(presShell));
-  return ReflowDirtyChild(presShell, nsnull);
+  return ReflowDirtyChild(aPresContext->PresShell(), nsnull);
 }
 
 // We are an inline frame, so we handle dirty request like nsInlineFrame
@@ -1401,8 +1391,7 @@ GetInterFrameSpacingFor(nsIPresContext* aPresContext,
                         nsIFrame*       aParentFrame,
                         nsIFrame*       aChildFrame)
 {
-  nsIFrame* childFrame;
-  aParentFrame->FirstChild(aPresContext, nsnull, &childFrame);
+  nsIFrame* childFrame = aParentFrame->GetFirstChild(nsnull);
   if (!childFrame || aChildFrame == childFrame)
     return 0;
 

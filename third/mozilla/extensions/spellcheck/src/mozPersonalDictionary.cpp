@@ -42,11 +42,14 @@
 #include "nsAppDirectoryServiceDefs.h"
 #include "nsICharsetConverterManager.h"
 #include "nsICharsetAlias.h"
-#include "nsAVLTree.h"
 #include "nsIObserverService.h"
-#include "nsIPref.h"
+#include "nsIPrefService.h"
+#include "nsIPrefBranch.h"
+#include "nsIPrefBranchInternal.h"
+#include "nsIWeakReference.h"
 #include "nsCRT.h"
 #include "nsNetUtil.h"
+#include "nsStringEnumerator.h"
 
 #define MOZ_PERSONAL_DICT_NAME "persdict.dat"
 static NS_DEFINE_CID(kCharsetConverterManagerCID, NS_ICHARSETCONVERTERMANAGER_CID);
@@ -67,279 +70,52 @@ static PRBool SessionSave=PR_FALSE;
  */
 
 
-NS_IMPL_ISUPPORTS3(mozPersonalDictionary, mozIPersonalDictionary, nsIObserver, nsSupportsWeakReference)
+NS_IMPL_ISUPPORTS3(mozPersonalDictionary, mozIPersonalDictionary, nsIObserver, nsISupportsWeakReference)
 
-/* AVL node functors */
-
-/*
- * String comparitor for Unicode tree
- **/
-class StringNodeComparitor: public nsAVLNodeComparitor {
-public:
-  StringNodeComparitor(){}
-  virtual ~StringNodeComparitor(){}
-  virtual PRInt32 operator() (void *item1,void *item2){
-    return nsCRT::strcmp((PRUnichar *)item1,(PRUnichar *)item2);
-  }
-};
-
-/*
- * String comparitor for charset tree
- **/
-class CStringNodeComparitor: public nsAVLNodeComparitor {
-public:
-  CStringNodeComparitor(){}
-  virtual ~CStringNodeComparitor(){}
-  virtual PRInt32 operator() (void *item1,void *item2){
-    return nsCRT::strcmp((char *)item1,(char *)item2);
-  }
-};
-/*
- * the generic deallocator
- **/
-class DeallocatorFunctor: public nsAVLNodeFunctor {
-public:
-  DeallocatorFunctor(){}
-  virtual ~DeallocatorFunctor(){}
-  virtual void* operator() (void * anItem){
-    nsMemory::Free(anItem);
-    return nsnull;
-  }
-};
-
-static StringNodeComparitor *gStringNodeComparitor;
-static CStringNodeComparitor *gCStringNodeComparitor;
-static DeallocatorFunctor *gDeallocatorFunctor;
-
-/*
- * Functor for copying the unicode tree to the charset tree with conversion
- **/
-class ConvertedCopyFunctor: public nsAVLNodeFunctor {
-public:
-  ConvertedCopyFunctor(nsIUnicodeEncoder* anEncoder, nsAVLTree *aNewTree):newTree(aNewTree),encoder(anEncoder){
-    res = NS_OK;
-  }
-  virtual ~ConvertedCopyFunctor(){}
-  nsresult GetResult(){return res;}
-  virtual void* operator() (void * anItem){
-    if(NS_SUCCEEDED(res)){
-      PRUnichar * word=(PRUnichar *) anItem;
-      PRInt32 inLength,outLength;
-      inLength = nsCRT::strlen(word);
-      res = encoder->GetMaxLength(word,inLength,&outLength);
-      if(NS_FAILED(res))
-        return nsnull;
-      char * tmp = (char *) nsMemory::Alloc(sizeof(PRUnichar *) * (outLength+1));
-      res = encoder->Convert(word,&inLength,tmp,&outLength);
-      if(res == NS_ERROR_UENC_NOMAPPING){
-        res = NS_OK;   // word just doesnt fit in our charset -- assume that it is the wrong language.
-        nsMemory::Free(tmp);
-      }
-      else{
-        tmp[outLength]='\0';
-        newTree->AddItem(tmp);
-      }
-    }
-    return nsnull;
-  }
-protected:
-  nsresult res;
-  nsAVLTree *newTree;
-  nsCOMPtr<nsIUnicodeEncoder> encoder;
-};
-
-/*
- * Copy the tree to a waiiting aray of Unichar pointers.
- * All the strings are newly created.  It is the callers responsibility to free them
- **/
-class CopyToArrayFunctor: public nsAVLNodeFunctor {
-public:
-  CopyToArrayFunctor(PRUnichar **tabulaRasa){
-    data = tabulaRasa;
-    count =0;
-    res = NS_OK;
-  }
-  virtual ~CopyToArrayFunctor(){}
-  nsresult GetResult(){return res;}
-  virtual void* operator() (void * anItem){
-    PRUnichar * word=(PRUnichar *) anItem;
-    if(NS_SUCCEEDED(res)){
-      data[count]=ToNewUnicode(nsDependentString(word));
-      if(!data[count]) res = NS_ERROR_OUT_OF_MEMORY;
-      return (void*) (data[count++]);
-    }
-    return nsnull;
-  }
-protected:
-  nsresult res;
-  PRUnichar **data;
-  PRUint32 count;
-};
-
-/*
- * Copy the tree to an open file.
- **/
-class CopyToStreamFunctor: public nsAVLNodeFunctor {
-public:
-  CopyToStreamFunctor(nsIOutputStream *aStream):mStream(aStream){
-    res = NS_OK;
-  }
-  virtual ~CopyToStreamFunctor(){}
-  nsresult GetResult(){return res;}
-  virtual void* operator() (void * anItem){
-    nsString word((PRUnichar *) anItem);
-    if(NS_SUCCEEDED(res)){
-      PRUint32 bytesWritten;
-      word.Append(NS_LITERAL_STRING("\n"));
-      NS_ConvertUCS2toUTF8 UTF8word(word);
-      res = mStream->Write(UTF8word.get(),UTF8word.Length(),&bytesWritten);
-    }
-    return nsnull;
-  }
-protected:
-  nsresult res;
-  nsIOutputStream* mStream;
-};
-
-mozPersonalDictionary::mozPersonalDictionary():mUnicodeTree(nsnull),mCharsetTree(nsnull),mUnicodeIgnoreTree(nsnull),mCharsetIgnoreTree(nsnull)
+mozPersonalDictionary::mozPersonalDictionary()
+ : mDirty(PR_FALSE)
 {
-  NS_INIT_ISUPPORTS();
-
-  NS_ASSERTION(!gStringNodeComparitor,"Someone's been writing in my statics! I'm a Singleton Bear!");
-  if(!gStringNodeComparitor){
-    gStringNodeComparitor = new StringNodeComparitor;
-    gCStringNodeComparitor = new CStringNodeComparitor;
-    gDeallocatorFunctor = new DeallocatorFunctor;
-  }
 }
 
 mozPersonalDictionary::~mozPersonalDictionary()
 {
-  delete mUnicodeTree;
-  delete mCharsetTree;
-  delete mUnicodeIgnoreTree;
-  delete mCharsetIgnoreTree;
 }
 
-int PR_CALLBACK
-SpellcheckerSavePrefChanged(const char * newpref, void * data) 
+nsresult mozPersonalDictionary::Init()
 {
-  nsresult rv;
-  nsCOMPtr<nsIPref> prefs(do_GetService(NS_PREF_CONTRACTID, &rv));
-  if(NS_SUCCEEDED(rv)&&prefs) {
-    if(NS_FAILED(prefs->GetBoolPref(spellchecker_savePref,&SessionSave))){
-      SessionSave = PR_TRUE;
-    }
-  }
-  else{
-    SessionSave = PR_TRUE;
-  }
-  return 0;
-}
+  if (!mDictionaryTable.Init() || !mIgnoreTable.Init())
+    return NS_ERROR_OUT_OF_MEMORY;
 
-NS_IMETHODIMP mozPersonalDictionary::Init()
-{
   nsresult rv;
-
   nsCOMPtr<nsIObserverService> svc = 
            do_GetService("@mozilla.org/observer-service;1", &rv);
   if (NS_SUCCEEDED(rv) && svc) {
-    // Register as an oserver of shutdown
+    // Register as an observer of shutdown
     rv = svc->AddObserver(this,   NS_XPCOM_SHUTDOWN_OBSERVER_ID, PR_TRUE);
     // Register as an observer of profile changes
     if (NS_SUCCEEDED(rv))
       rv = svc->AddObserver(this, "profile-before-change", PR_TRUE);
     if (NS_SUCCEEDED(rv))
-      rv = svc->AddObserver(this, "profile-after-change", PR_TRUE);
+      rv = svc->AddObserver(this, "profile-do-change", PR_TRUE);
   }
-  if(NS_FAILED(rv)) return rv;
+  if (NS_FAILED(rv)) return rv;
    
-  nsCOMPtr<nsIPref> prefs(do_GetService(NS_PREF_CONTRACTID, &rv));
-  if(NS_SUCCEEDED(rv)&&prefs) {
-    if(NS_FAILED(prefs->GetBoolPref(spellchecker_savePref, &SessionSave))){
+  nsCOMPtr<nsIPrefBranchInternal> prefs(do_GetService(NS_PREFSERVICE_CONTRACTID, &rv));
+  if (NS_SUCCEEDED(rv)) {
+    if (NS_FAILED(prefs->GetBoolPref(spellchecker_savePref, &SessionSave))){
       SessionSave = PR_TRUE;
     }
-    prefs->RegisterCallback(spellchecker_savePref,SpellcheckerSavePrefChanged,nsnull);
+    prefs->AddObserver(spellchecker_savePref, this, PR_TRUE);
   }
-  else{
+  else {
     SessionSave = PR_FALSE;
   }
 
-  if(NS_FAILED(rv)) return rv;
+  if (NS_FAILED(rv)) return rv;
 
-  return Load();
-}
-
-/* attribute wstring language; */
-NS_IMETHODIMP mozPersonalDictionary::GetLanguage(PRUnichar * *aLanguage)
-{
-  nsresult res=NS_OK;
-  NS_PRECONDITION(aLanguage != nsnull, "null ptr");
-  if(!aLanguage){
-    res = NS_ERROR_NULL_POINTER;
-  }
-  else{
-    *aLanguage = ToNewUnicode(mLanguage);
-    if(!aLanguage) res = NS_ERROR_OUT_OF_MEMORY;
-  }
-  return res;
-}
-
-NS_IMETHODIMP mozPersonalDictionary::SetLanguage(const PRUnichar * aLanguage)
-{
-  mLanguage = aLanguage;
+  Load();
+  
   return NS_OK;
-}
-
-/* attribute wstring charset; */
-NS_IMETHODIMP mozPersonalDictionary::GetCharset(PRUnichar * *aCharset)
-{
-  nsresult res=NS_OK;
-  NS_PRECONDITION(aCharset != nsnull, "null ptr");
-  if(!aCharset){
-    res = NS_ERROR_NULL_POINTER;
-  }
-  else{
-    *aCharset = ToNewUnicode(mLanguage);
-    if(!aCharset) res = NS_ERROR_OUT_OF_MEMORY;
-  }
-  return res;
-}
-
-NS_IMETHODIMP mozPersonalDictionary::SetCharset(const PRUnichar * aCharset)
-{
-  nsresult res;
-  mCharset = aCharset;
-
-  nsCAutoString convCharset;
-  convCharset.AssignWithConversion(mCharset); 
-
-  nsCOMPtr<nsICharsetConverterManager> ccm = do_GetService(kCharsetConverterManagerCID, &res);
-  if (NS_FAILED(res)) return res;
-  if(!ccm) return NS_ERROR_FAILURE;
-
-  res=ccm->GetUnicodeEncoder(convCharset.get(),getter_AddRefs(mEncoder));
-
-  if (NS_FAILED(res)) return res;
-  if(!mEncoder) return NS_ERROR_FAILURE;
-
-  if(mEncoder && NS_SUCCEEDED(res)){
-    res=mEncoder->SetOutputErrorBehavior(mEncoder->kOnError_Signal,nsnull,'?');
-  }
-
-  if(mEncoder && mUnicodeTree){
-    delete mCharsetTree;
-    mCharsetTree = new nsAVLTree(*gCStringNodeComparitor,gDeallocatorFunctor);
-    ConvertedCopyFunctor converter(mEncoder,mCharsetTree);
-    mUnicodeTree->ForEachDepthFirst(converter);
-  }
-  if(mEncoder && mUnicodeIgnoreTree){
-    delete mCharsetIgnoreTree;
-    mCharsetIgnoreTree = new nsAVLTree(*gCStringNodeComparitor,gDeallocatorFunctor);
-    ConvertedCopyFunctor converter(mEncoder,mCharsetIgnoreTree);
-    mUnicodeIgnoreTree->ForEachDepthFirst(converter);
-  }
-  return res;
 }
 
 /* void Load (); */
@@ -358,14 +134,9 @@ NS_IMETHODIMP mozPersonalDictionary::Load()
   res = theFile->Exists(&dictExists);
   if(NS_FAILED(res)) return res;
 
-  if(!dictExists) {
-    //create new user dictionary
-    nsCOMPtr<nsIOutputStream> outStream;
-    NS_NewLocalFileOutputStream(getter_AddRefs(outStream), theFile, PR_CREATE_FILE | PR_WRONLY | PR_TRUNCATE ,0664);
-
-    CopyToStreamFunctor writer(outStream);
-    if(NS_FAILED(res)) return res;
-    if(!outStream)return NS_ERROR_FAILURE;
+  if (!dictExists) {
+    // Nothing is really wrong...
+    return NS_OK;
   }
   
   nsCOMPtr<nsIInputStream> inStream;
@@ -374,9 +145,8 @@ NS_IMETHODIMP mozPersonalDictionary::Load()
   res = NS_NewUTF8ConverterStream(getter_AddRefs(convStream), inStream, 0);
   if(NS_FAILED(res)) return res;
   
-  // we're rereading get rid of the old data  -- we shouldn't have any, but...
-  delete mUnicodeTree;
-  mUnicodeTree = new nsAVLTree(*gStringNodeComparitor,gDeallocatorFunctor);
+  // we're rereading to get rid of the old data  -- we shouldn't have any, but...
+  mDictionaryTable.Clear();
 
   PRUnichar c;
   PRUint32 nRead;
@@ -392,12 +162,22 @@ NS_IMETHODIMP mozPersonalDictionary::Load()
         word.Append(c);
         if( (NS_OK != convStream->Read(&c, 1, &nRead)) || (nRead != 1)) done = PR_TRUE;
       }
-      mUnicodeTree->AddItem((void *)ToNewUnicode(word));
+      mDictionaryTable.PutEntry(word.get());
     }
-  }while(!done);
+  } while(!done);
   mDirty = PR_FALSE;
   
   return res;
+}
+
+// A little helper function to add the key to the list.
+// This is not threadsafe, and only safe if the consumer does not 
+// modify the list.
+PR_STATIC_CALLBACK(PLDHashOperator)
+AddHostToStringArray(nsUniCharEntry *aEntry, void *aArg)
+{
+  NS_STATIC_CAST(nsStringArray*, aArg)->AppendString(nsDependentString(aEntry->GetKey()));
+  return PL_DHASH_NEXT;
 }
 
 /* void Save (); */
@@ -407,8 +187,8 @@ NS_IMETHODIMP mozPersonalDictionary::Save()
   nsresult res;
 
   if(!mDirty) return NS_OK;
-  //FIXME Deinst  -- get dictionary name from prefs;
 
+  //FIXME Deinst  -- get dictionary name from prefs;
   res = NS_GetSpecialDirectory(NS_APP_USER_PROFILE_50_DIR, getter_AddRefs(theFile));
   if(NS_FAILED(res)) return res;
   if(!theFile)return NS_ERROR_FAILURE;
@@ -418,170 +198,84 @@ NS_IMETHODIMP mozPersonalDictionary::Save()
   nsCOMPtr<nsIOutputStream> outStream;
   NS_NewLocalFileOutputStream(getter_AddRefs(outStream), theFile, PR_CREATE_FILE | PR_WRONLY | PR_TRUNCATE ,0664);
 
-  CopyToStreamFunctor writer(outStream);
-  if(NS_FAILED(res)) return res;
-  if(!outStream)return NS_ERROR_FAILURE;
-  if (mUnicodeTree) mUnicodeTree->ForEach(writer);
-  mDirty = PR_FALSE;
-  return NS_OK;
-}
+  // get a buffered output stream 4096 bytes big, to optimize writes
+  nsCOMPtr<nsIOutputStream> bufferedOutputStream;
+  res = NS_NewBufferedOutputStream(getter_AddRefs(bufferedOutputStream), outStream, 4096);
+  if (NS_FAILED(res)) return res;
 
-/* void GetWordList ([array, size_is (count)] out wstring words, out PRUint32 count); */
-NS_IMETHODIMP mozPersonalDictionary::GetWordList(PRUnichar ***words, PRUint32 *count)
-{
-  if(!words || !count) 
-    return NS_ERROR_NULL_POINTER;
-  *words=0;
-  *count=0;
-  PRUnichar **tmpPtr = 0;
-  if(!mUnicodeTree){
-    return NS_OK;
-  }
-  tmpPtr = (PRUnichar **)nsMemory::Alloc(sizeof(PRUnichar *) * (mUnicodeTree->GetCount()));
-  if (!tmpPtr)
-    return NS_ERROR_OUT_OF_MEMORY;
-  CopyToArrayFunctor pitneyBowes(tmpPtr);
-  mUnicodeTree->ForEach(pitneyBowes);
+  nsStringArray array(mDictionaryTable.Count());
+  mDictionaryTable.EnumerateEntries(AddHostToStringArray, &array);
 
-  nsresult res = pitneyBowes.GetResult();
-  if(NS_SUCCEEDED(res)){
-    *count = mUnicodeTree->GetCount();
-    *words = tmpPtr;
+  PRUint32 bytesWritten;
+  nsCAutoString utf8Key;
+  for (PRInt32 i = 0; i < array.Count(); ++i ) {
+    const nsString *key = array[i];
+    CopyUTF16toUTF8(*key, utf8Key);
+
+    bufferedOutputStream->Write(utf8Key.get(), utf8Key.Length(), &bytesWritten);
+    bufferedOutputStream->Write("\n", 1, &bytesWritten);
   }
   return res;
 }
 
-/* boolean CheckUnicode (in wstring word); */
-NS_IMETHODIMP mozPersonalDictionary::CheckUnicode(const PRUnichar *word, PRBool *_retval)
+/* readonly attribute nsIStringEnumerator GetWordList() */
+NS_IMETHODIMP mozPersonalDictionary::GetWordList(nsIStringEnumerator **aWords)
 {
-  if(!word || !_retval || !mUnicodeTree)
-    return NS_ERROR_NULL_POINTER;
-  if(mUnicodeTree->FindItem((void *)word)){
-    *_retval = PR_TRUE;
-  }
-  else{
-    if(mUnicodeIgnoreTree&&mUnicodeIgnoreTree->FindItem((void *)word)){
-      *_retval = PR_TRUE;
-    }
-    else{
-      *_retval = PR_FALSE;
-    }
-  }
-  return NS_OK;
+  NS_ENSURE_ARG_POINTER(aWords);
+  *aWords = nsnull;
+
+  nsStringArray *array = new nsStringArray(mDictionaryTable.Count());
+  if (!array)
+    return NS_ERROR_OUT_OF_MEMORY;
+
+  mDictionaryTable.EnumerateEntries(AddHostToStringArray, array);
+
+  array->Sort();
+
+  return NS_NewAdoptingStringEnumerator(aWords, array);
 }
 
-/* boolean Check (in string word); */
-NS_IMETHODIMP mozPersonalDictionary::Check(const char *word, PRBool *_retval)
+/* boolean Check (in wstring word, in wstring language); */
+NS_IMETHODIMP mozPersonalDictionary::Check(const PRUnichar *aWord, const PRUnichar *aLanguage, PRBool *aResult)
 {
-  if(!word || !_retval || !mCharsetTree)
-    return NS_ERROR_NULL_POINTER;
-  if(mCharsetTree->FindItem((void *)word)){
-    *_retval = PR_TRUE;
-  }
-  else{
-    if(mCharsetIgnoreTree&&mCharsetIgnoreTree->FindItem((void *)word)){
-      *_retval = PR_TRUE;
-    }
-    else{
-      *_retval = PR_FALSE;
-    }
-  }
+  NS_ENSURE_ARG_POINTER(aWord);
+  NS_ENSURE_ARG_POINTER(aResult);
+
+  *aResult = (mDictionaryTable.GetEntry(aWord) || mIgnoreTable.GetEntry(aWord));
   return NS_OK;
 }
 
 /* void AddWord (in wstring word); */
-NS_IMETHODIMP mozPersonalDictionary::AddWord(const PRUnichar *word, const PRUnichar *lang)
+NS_IMETHODIMP mozPersonalDictionary::AddWord(const PRUnichar *aWord, const PRUnichar *aLang)
 {
-  nsAutoString temp(word);
-  if(mUnicodeTree) mUnicodeTree->AddItem(ToNewUnicode(nsDependentString(word)));
-  mDirty=PR_TRUE;
-
-  nsresult res=NS_OK;
-  if(mCharsetTree&&mEncoder){
-    PRInt32 inLength,outLength;
-    inLength = nsCRT::strlen(word);
-    res = mEncoder->GetMaxLength(word,inLength,&outLength);
-    if(NS_FAILED(res))
-      return res;
-    char * tmp = (char *) nsMemory::Alloc(sizeof(PRUnichar *) * (outLength+1));
-    res = mEncoder->Convert(word,&inLength,tmp,&outLength);
-    if(NS_FAILED(res))
-      return res;
-    tmp[outLength]='\0';
-    mCharsetTree->AddItem(tmp);
-  }
-
-  return res;
+  mDictionaryTable.PutEntry(aWord);
+  mDirty = PR_TRUE;
+  return NS_OK;
 }
 
 /* void RemoveWord (in wstring word); */
-NS_IMETHODIMP mozPersonalDictionary::RemoveWord(const PRUnichar *word, const PRUnichar *lang)
+NS_IMETHODIMP mozPersonalDictionary::RemoveWord(const PRUnichar *aWord, const PRUnichar *aLang)
 {
-  nsAutoString temp(word);
-  if(mUnicodeTree) mUnicodeTree->RemoveItem((void *)word);
-  mDirty=PR_TRUE;
-
-  nsresult res=NS_OK;
-  if(mCharsetTree&&mEncoder){
-    PRInt32 inLength,outLength;
-    inLength = nsCRT::strlen(word);
-    res = mEncoder->GetMaxLength(word,inLength,&outLength);
-    if(NS_FAILED(res))
-      return res;
-    char * tmp = (char *) nsMemory::Alloc(sizeof(PRUnichar *) * (outLength+1));
-    res = mEncoder->Convert(word,&inLength,tmp,&outLength);
-    if(NS_FAILED(res))
-      return res;
-    tmp[outLength]='\0';
-    mCharsetTree->AddItem(tmp);
-  }
-
-  return res;
+  mDictionaryTable.RemoveEntry(aWord);
+  mDirty = PR_TRUE;
+  return NS_OK;
 }
-/* void IgnoreWord (in wstring word); */
-NS_IMETHODIMP mozPersonalDictionary::IgnoreWord(const PRUnichar *word)
-{
-  if(!mUnicodeIgnoreTree){
-    mUnicodeIgnoreTree=new nsAVLTree(*gStringNodeComparitor,gDeallocatorFunctor);
-  }
-  if(!mUnicodeIgnoreTree){
-    return NS_ERROR_OUT_OF_MEMORY;
-  }
-  mUnicodeIgnoreTree->AddItem(ToNewUnicode(nsDependentString(word)));
-  if(!mCharsetIgnoreTree){
-    mCharsetIgnoreTree=new nsAVLTree(*gCStringNodeComparitor,gDeallocatorFunctor);
-  }
-  if(!mCharsetIgnoreTree){
-    return NS_ERROR_OUT_OF_MEMORY;
-  }
 
-  if(mCharsetIgnoreTree&&mEncoder){
-    PRInt32 inLength,outLength;
-    nsresult res;
-    inLength = nsCRT::strlen(word);
-    res = mEncoder->GetMaxLength(word,inLength,&outLength);
-    if(NS_FAILED(res))
-      return res;
-    char * tmp = (char *) nsMemory::Alloc(sizeof(PRUnichar *) * (outLength+1));
-    res = mEncoder->Convert(word,&inLength,tmp,&outLength);
-    if(NS_FAILED(res))
-      return res;
-    tmp[outLength]='\0';
-    mCharsetIgnoreTree->AddItem(tmp);
-  }
-  
+/* void IgnoreWord (in wstring word); */
+NS_IMETHODIMP mozPersonalDictionary::IgnoreWord(const PRUnichar *aWord)
+{
+  mIgnoreTable.PutEntry(aWord);
   return NS_OK;
 }
 
 /* void EndSession (); */
 NS_IMETHODIMP mozPersonalDictionary::EndSession()
 {
-  if(SessionSave)Save();
-  delete mUnicodeIgnoreTree;
-  delete mCharsetIgnoreTree;
-  mUnicodeIgnoreTree=nsnull;
-  mCharsetIgnoreTree=nsnull;
-    return NS_OK;
+  if (SessionSave)
+    Save();
+
+  mIgnoreTable.Clear();
+  return NS_OK;
 }
 
 /* void AddCorrection (in wstring word, in wstring correction); */
@@ -605,31 +299,20 @@ NS_IMETHODIMP mozPersonalDictionary::GetCorrection(const PRUnichar *word, PRUnic
 /* void observe (in nsISupports aSubject, in string aTopic, in wstring aData); */
 NS_IMETHODIMP mozPersonalDictionary::Observe(nsISupports *aSubject, const char *aTopic, const PRUnichar *aData)
 {
-  if (!nsCRT::strcmp(aTopic, "profile-before-change")) {
+  if (!nsCRT::strcmp(aTopic, "profile-before-change") || !nsCRT::strcmp(aTopic, NS_XPCOM_SHUTDOWN_OBSERVER_ID)) {
     Save();
-    delete mUnicodeTree;
-    delete mCharsetTree;
-    delete mUnicodeIgnoreTree;
-    delete mCharsetIgnoreTree;
-    mUnicodeTree=nsnull;
-    mCharsetTree=nsnull;
-    mUnicodeIgnoreTree=nsnull;
-    mCharsetIgnoreTree=nsnull;
+    mDictionaryTable.Clear();
+    mIgnoreTable.Clear();
   }
-  else if (!nsCRT::strcmp(aTopic, NS_XPCOM_SHUTDOWN_OBSERVER_ID)) {
-    Save();
-    delete mUnicodeTree;
-    delete mCharsetTree;
-    delete mUnicodeIgnoreTree;
-    delete mCharsetIgnoreTree;
-    mUnicodeTree=nsnull;
-    mCharsetTree=nsnull;
-    mUnicodeIgnoreTree=nsnull;
-    mCharsetIgnoreTree=nsnull;
+  else if (!nsCRT::strcmp(aTopic, NS_PREFBRANCH_PREFCHANGE_TOPIC_ID)) {
+    nsCOMPtr<nsIPrefBranch> prefs(do_QueryInterface(aSubject));
+    if(prefs)
+      prefs->GetBoolPref(spellchecker_savePref, &SessionSave);
   }
-  if (!nsCRT::strcmp(aTopic, "profile-before-change")) {
+  if (!nsCRT::strcmp(aTopic, "profile-do-change")) {
     Load();
   }
+
   return NS_OK;
 }
 

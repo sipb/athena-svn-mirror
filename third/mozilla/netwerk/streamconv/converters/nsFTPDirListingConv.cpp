@@ -114,7 +114,7 @@ nsFTPDirListingConv::AsyncConvertData(const PRUnichar *aFromType, const PRUnicha
                                   uri,
                                   nsnull,
                                   NS_LITERAL_CSTRING(APPLICATION_HTTP_INDEX_FORMAT),
-                                  NS_LITERAL_CSTRING(""));
+                                  EmptyCString());
     NS_RELEASE(uri);
     if (NS_FAILED(rv)) return rv;
 
@@ -283,7 +283,7 @@ nsFTPDirListingConv::GetHeaders(nsACString& headers,
     nsCAutoString spec;
     uri->GetPassword(pw);
     if (!pw.IsEmpty()) {
-         rv = uri->SetPassword(NS_LITERAL_CSTRING(""));
+         rv = uri->SetPassword(EmptyCString());
          if (NS_FAILED(rv)) return rv;
          rv = uri->GetAsciiSpec(spec);
          if (NS_FAILED(rv)) return rv;
@@ -363,7 +363,7 @@ nsFTPDirListingConv::DigestBufferLines(char *aBuffer, nsCString &aString) {
         
         if (type != 'd') 
         {
-            for (int i = 0; i < sizeof(result.fe_size); i++)
+            for (int i = 0; i < int(sizeof(result.fe_size)); ++i)
             {
                 if (result.fe_size[i] != '\0')
                     aString.Append((const char*)&result.fe_size[i], 1);
@@ -425,4 +425,3 @@ NS_NewFTPDirListingConv(nsFTPDirListingConv** aFTPDirListingConv)
     NS_ADDREF(*aFTPDirListingConv);
     return (*aFTPDirListingConv)->Init();
 }
-

@@ -54,8 +54,7 @@ class nsIDOMAttr;
 class nsIDOMEventListener;
 class nsIDOMNodeList;
 class nsIFrame;
-class nsHTMLAttributes;
-class nsIHTMLMappedAttributes;
+class nsMappedAttributes;
 class nsIHTMLContent;
 class nsIStyleRule;
 class nsISupportsArray;
@@ -77,9 +76,6 @@ struct nsSize;
 class nsGenericHTMLElement : public nsGenericElement
 {
 public:
-  nsGenericHTMLElement();
-  virtual ~nsGenericHTMLElement();
-
 #ifdef GATHER_ELEMENT_USEAGE_STATISTICS
   nsresult Init(nsINodeInfo *aNodeInfo);
 #endif
@@ -102,27 +98,22 @@ public:
                              void **aInstancePtr);
 
   // From nsGenericElement
-  NS_METHOD CopyInnerTo(nsIContent* aSrcContent,
-                        nsGenericHTMLElement* aDest,
-                        PRBool aDeep);
+  nsresult CopyInnerTo(nsGenericElement* aDest, PRBool aDeep);
 
   // Implementation for nsIDOMNode
   NS_METHOD GetNodeName(nsAString& aNodeName);
   NS_METHOD GetLocalName(nsAString& aLocalName);
 
   // Implementation for nsIDOMElement
-  NS_METHOD GetAttribute(const nsAString& aName,
-                         nsAString& aReturn) 
-  {
-    return nsGenericElement::GetAttribute(aName, aReturn);
-  }
   NS_METHOD SetAttribute(const nsAString& aName,
                          const nsAString& aValue);
   NS_METHOD GetTagName(nsAString& aTagName);
   NS_METHOD GetElementsByTagName(const nsAString& aTagname,
                                  nsIDOMNodeList** aReturn);
 
-  // Implementation for nsIDOMHTMLElement
+  // nsIDOMHTMLElement methods. Note that these are non-virtual
+  // methods, implementations are expected to forward calls to these
+  // methods.
   nsresult GetId(nsAString& aId);
   nsresult SetId(const nsAString& aId);
   nsresult GetTitle(nsAString& aTitle);
@@ -133,6 +124,10 @@ public:
   nsresult SetDir(const nsAString& aDir);
   nsresult GetClassName(nsAString& aClassName);
   nsresult SetClassName(const nsAString& aClassName);
+
+  // nsIDOMNSHTMLElement methods. Note that these are non-virtual
+  // methods, implementations are expected to forward calls to these
+  // methods.
   nsresult GetStyle(nsIDOMCSSStyleDeclaration** aStyle);
   nsresult GetOffsetTop(PRInt32* aOffsetTop);
   nsresult GetOffsetLeft(PRInt32* aOffsetLeft);
@@ -157,10 +152,9 @@ public:
    * @param aOffsetParent the parent the offset is relative to (offsetParent)
    *        [OUT]
    */
-  nsresult GetOffsetRect(nsRect& aRect,
-                         nsIContent** aOffsetParent);
-  nsresult GetScrollInfo(nsIScrollableView **aScrollableView, float *aP2T,
-                         float *aT2P, nsIFrame **aFrame = nsnull);
+  void GetOffsetRect(nsRect& aRect, nsIContent** aOffsetParent);
+  void GetScrollInfo(nsIScrollableView **aScrollableView, float *aP2T,
+                     float *aT2P, nsIFrame **aFrame = nsnull);
 
   /**
    * Get an element's client info if the element doesn't have a
@@ -171,33 +165,26 @@ public:
   static const nsSize GetClientAreaSize(nsIFrame *aFrame);
 
   // Implementation for nsIContent
-  NS_IMETHOD SetDocument(nsIDocument* aDocument, PRBool aDeep,
-                         PRBool aCompileEventHandlers);
-  NS_IMETHOD GetNameSpaceID(PRInt32* aID) const;
-  NS_IMETHOD_(already_AddRefed<nsINodeInfo>) GetExistingAttrNameFromQName(const nsAString& aStr);
-  NS_IMETHOD SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
-                     const nsAString& aValue,
-                          PRBool aNotify);
-  NS_IMETHOD SetAttr(nsINodeInfo* aNodeInfo,
-                     const nsAString& aValue,
-                     PRBool aNotify);
-  NS_IMETHOD GetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
-                     nsAString& aResult) const;
-  NS_IMETHOD GetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
-                     nsIAtom** aPrefix, nsAString& aResult) const;
-  NS_IMETHOD_(PRBool) HasAttr(PRInt32 aNameSpaceID, nsIAtom* aName) const;
-  NS_IMETHOD UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
-                       PRBool aNotify);
-  NS_IMETHOD GetAttrNameAt(PRUint32 aIndex,
-                           PRInt32* aNameSpaceID,
-                           nsIAtom** aName,
-                           nsIAtom** aPrefix) const;
-  NS_IMETHOD_(PRUint32) GetAttrCount() const;
+  virtual void SetDocument(nsIDocument* aDocument, PRBool aDeep,
+                           PRBool aCompileEventHandlers);
+  virtual void GetNameSpaceID(PRInt32* aID) const;
+  nsresult SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
+                   const nsAString& aValue, PRBool aNotify)
+  {
+    return SetAttr(aNameSpaceID, aName, nsnull, aValue, aNotify);
+  }
+  virtual nsresult SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName, nsIAtom* aPrefix,
+                           const nsAString& aValue,
+                           PRBool aNotify);
+  virtual nsresult GetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
+                           nsAString& aResult) const;
+  virtual nsresult UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
+                             PRBool aNotify);
 #ifdef DEBUG
-  NS_IMETHOD List(FILE* out, PRInt32 aIndent) const;
-  NS_IMETHOD DumpContent(FILE* out, PRInt32 aIndent,PRBool aDumpAll) const;
+  virtual void List(FILE* out, PRInt32 aIndent) const;
+  virtual void DumpContent(FILE* out, PRInt32 aIndent,PRBool aDumpAll) const;
 #endif
-  NS_IMETHOD_(PRBool) IsContentOfType(PRUint32 aFlags);
+  virtual PRBool IsContentOfType(PRUint32 aFlags) const;
 
   /**
    * Standard anchor HandleDOMEvent, used by A, AREA and LINK (parameters
@@ -214,26 +201,60 @@ public:
   nsresult GetHrefURIForAnchors(nsIURI** aURI);
 
   // Implementation for nsIHTMLContent
-  NS_IMETHOD SetHTMLAttribute(nsIAtom* aAttribute, const nsHTMLValue& aValue,
-                              PRBool aNotify);
   NS_IMETHOD GetHTMLAttribute(nsIAtom* aAttribute, nsHTMLValue& aValue) const;
   NS_IMETHOD GetID(nsIAtom** aResult) const;
-  NS_IMETHOD GetClasses(nsVoidArray& aArray) const;
-  NS_IMETHOD_(nsIAtom*) GetIDAttributeName() const;
-  NS_IMETHOD_(nsIAtom*) GetClassAttributeName() const;
+  virtual const nsAttrValue* GetClasses() const;
+  virtual nsIAtom *GetIDAttributeName() const;
+  virtual nsIAtom *GetClassAttributeName() const;
   NS_IMETHOD_(PRBool) HasClass(nsIAtom* aClass, PRBool aCaseSensitive) const;
   NS_IMETHOD WalkContentStyleRules(nsRuleWalker* aRuleWalker);
   NS_IMETHOD GetInlineStyleRule(nsICSSStyleRule** aStyleRule);
   NS_IMETHOD SetInlineStyleRule(nsICSSStyleRule* aStyleRule, PRBool aNotify);
-  NS_IMETHOD GetBaseURL(nsIURI** aBaseURL) const;
-  NS_IMETHOD GetBaseTarget(nsAString& aBaseTarget) const;
+  already_AddRefed<nsIURI> GetBaseURI() const;
 
   //----------------------------------------
+  /**
+   * Turn an attribute value into string based on the type of attribute
+   * (does not need to do standard types such as string, integer,
+   * color ...).  Called by GetAttr().
+   *
+   * @param aAttribute the attribute to convert
+   * @param aValue the value to convert
+   * @param aResult the string [OUT]
+   * @return NS_CONTENT_ATTR_HAS_VALUE if the value was successfully converted
+   *         NS_CONTENT_ATTR_NOT_THERE if the value could not be converted
+   * @see nsGenericHTMLElement::GetAttr
+   */
   NS_IMETHOD AttributeToString(nsIAtom* aAttribute,
                                const nsHTMLValue& aValue,
                                nsAString& aResult) const;
-  NS_IMETHOD_(PRBool) HasAttributeDependentStyle(const nsIAtom* aAttribute) const;
+
+  /**
+   * Convert an attribute string value to attribute type based on the type of
+   * attribute.  Called by SetAttr().
+   *
+   * @param aAttribute to attribute to convert
+   * @param aValue the string value to convert
+   * @param aResult the nsAttrValue [OUT]
+   * @return PR_TRUE if the parsing was successful, PR_FALSE otherwise
+   * @see nsGenericHTMLElement::SetAttr
+   */
+  virtual PRBool ParseAttribute(nsIAtom* aAttribute,
+                                const nsAString& aValue,
+                                nsAttrValue& aResult);
+
+  NS_IMETHOD_(PRBool) IsAttributeMapped(const nsIAtom* aAttribute) const;
   NS_IMETHOD GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRuleFunc) const;
+
+  /**
+   * Get the base target for any links within this piece
+   * of content. Generally, this is the document's base target,
+   * but certain content carries a local base for backward
+   * compatibility.
+   *
+   * @param aBaseTarget the base target [OUT]
+   */
+  void GetBaseTarget(nsAString& aBaseTarget) const;
 
 #ifdef DEBUG
   void ListAttributes(FILE* out) const;
@@ -273,17 +294,6 @@ public:
   //----------------------------------------
 
   /**
-   * Parse common attributes (currently dir and lang, may be more)
-   *
-   * @param aAttribute the attr to parse
-   * @param aValue the value to parse
-   * @param aResult the resulting HTMLValue
-   * @return whether the value was parsed
-   */
-  static PRBool ParseCommonAttribute(nsIAtom* aAttribute, 
-                                     const nsAString& aValue, 
-                                     nsHTMLValue& aResult);
-  /**
    * Parse an alignment attribute (top/middle/bottom/baseline)
    *
    * @param aString the string to parse
@@ -291,7 +301,7 @@ public:
    * @return whether the value was parsed
    */
   static PRBool ParseAlignValue(const nsAString& aString,
-                                nsHTMLValue& aResult);
+                                nsAttrValue& aResult);
 
   /**
    * Parse a div align string to value (left/right/center/middle/justify)
@@ -301,7 +311,7 @@ public:
    * @return whether the value was parsed
    */
   PRBool ParseDivAlignValue(const nsAString& aString,
-                            nsHTMLValue& aResult) const;
+                            nsAttrValue& aResult) const;
   /**
    * Convert a div align value to string
    *
@@ -320,7 +330,7 @@ public:
    * @return whether the value was parsed
    */
   PRBool ParseTableHAlignValue(const nsAString& aString,
-                               nsHTMLValue& aResult) const;
+                               nsAttrValue& aResult) const;
   /**
    * Convert a table halign value to string
    *
@@ -339,7 +349,7 @@ public:
    * @return whether the value was parsed
    */
   PRBool ParseTableCellHAlignValue(const nsAString& aString,
-                                   nsHTMLValue& aResult) const;
+                                   nsAttrValue& aResult) const;
   /**
    * Convert a table cell halign value to string
    *
@@ -359,7 +369,7 @@ public:
    * @return whether the value was parsed
    */
   static PRBool ParseTableVAlignValue(const nsAString& aString,
-                                      nsHTMLValue& aResult);
+                                      nsAttrValue& aResult);
   /**
    * Convert a table valign value to string
    *
@@ -401,19 +411,7 @@ public:
    */
   static PRBool ParseImageAttribute(nsIAtom* aAttribute,
                                     const nsAString& aString,
-                                    nsHTMLValue& aResult);
-  /**
-   * Convert an image attribute to string
-   *
-   * @param aAttribute the attribute to parse
-   * @param aValue the value to convert
-   * @param aResult the resulting string
-   * @return whether the value was converted
-   */
-  static PRBool ImageAttributeToString(nsIAtom* aAttribute,
-                                       const nsHTMLValue& aValue,
-                                       nsAString& aResult);
-
+                                    nsAttrValue& aResult);
   /**
    * Convert a frameborder string to value (yes/no/1/0)
    *
@@ -422,7 +420,7 @@ public:
    * @return whether the value was parsed
    */
   static PRBool ParseFrameborderValue(const nsAString& aString,
-                                      nsHTMLValue& aResult);
+                                      nsAttrValue& aResult);
   /**
    * Convert a frameborder value to string
    *
@@ -441,7 +439,7 @@ public:
    * @return whether the value was parsed
    */
   static PRBool ParseScrollingValue(const nsAString& aString,
-                                    nsHTMLValue& aResult);
+                                    nsAttrValue& aResult);
   /**
    * Convert a scrolling value to string
    *
@@ -453,31 +451,25 @@ public:
                                        nsAString& aResult);
 
   /**
-   * Take an attribute name, and return the value of that attribute,
-   * resolved to an absolute URI.  Used by NS_IMPL_URI_ATTR macro.
-   */
-  nsresult AttrToURI(nsIAtom* aAttrName, nsAString& aAbsoluteURI);
-
-  /**
    * Create the style struct from the style attr.  Used when an element is first
    * put into a document.  Only has an effect if the old value is a string.
    */
   nsresult  ReparseStyleAttribute(void);
   /**
    * Parse a style attr value into a CSS rulestruct (or, if there is no
-   * document, leave it as a string) and return as HTMLValue.
+   * document, leave it as a string) and return as nsAttrValue.
+   * Note: this function is used by other classes than nsGenericHTMLElement
    *
    * @param aValue the value to parse
    * @param aResult the resulting HTMLValue [OUT]
    */
-  nsresult  ParseStyleAttribute(const nsAString& aValue,
-                                nsHTMLValue& aResult);
+  static void ParseStyleAttribute(nsIContent* aContent,
+                                  PRBool aCaseSensitive,
+                                  const nsAString& aValue,
+                                  nsAttrValue& aResult);
 
   /*
    * Attribute Mapping Helpers
-   *
-   * All attributes that are mapped into style contexts must have a 
-   * matched set of mapping function and impact getter
    */
 
   /**
@@ -489,30 +481,16 @@ public:
    * @param aData the returned rule data [INOUT]
    * @see GetAttributeMappingFunction
    */
-  static void MapCommonAttributesInto(const nsIHTMLMappedAttributes* aAttributes, 
+  static void MapCommonAttributesInto(const nsMappedAttributes* aAttributes, 
                                       nsRuleData* aRuleData);
-  struct AttributeDependenceEntry {
-    nsIAtom** attribute;
-  };
-
-  static const AttributeDependenceEntry sCommonAttributeMap[];
-  static const AttributeDependenceEntry sImageMarginSizeAttributeMap[];
-  static const AttributeDependenceEntry sImageBorderAttributeMap[];
-  static const AttributeDependenceEntry sImageAlignAttributeMap[];
-  static const AttributeDependenceEntry sDivAlignAttributeMap[];
-  static const AttributeDependenceEntry sBackgroundAttributeMap[];
-  static const AttributeDependenceEntry sScrollingAttributeMap[];
+  static const MappedAttributeEntry sCommonAttributeMap[];
+  static const MappedAttributeEntry sImageMarginSizeAttributeMap[];
+  static const MappedAttributeEntry sImageBorderAttributeMap[];
+  static const MappedAttributeEntry sImageAlignAttributeMap[];
+  static const MappedAttributeEntry sDivAlignAttributeMap[];
+  static const MappedAttributeEntry sBackgroundAttributeMap[];
+  static const MappedAttributeEntry sScrollingAttributeMap[];
   
-  /**
-   * A common method where you can just pass in a list of maps to check
-   * for attribute dependence. Most implementations of
-   * HasAttributeDependentStyle should use this function as a default
-   * handler.
-   */
-  static PRBool
-  FindAttributeDependence(const nsIAtom* aAttribute,
-                          const AttributeDependenceEntry* const aMaps[],
-                          PRUint32 aMapCount);
   /**
    * Helper to map the align attribute into a style struct.
    *
@@ -520,7 +498,7 @@ public:
    * @param aData the returned rule data [INOUT]
    * @see GetAttributeMappingFunction
    */
-  static void MapImageAlignAttributeInto(const nsIHTMLMappedAttributes* aAttributes,
+  static void MapImageAlignAttributeInto(const nsMappedAttributes* aAttributes,
                                          nsRuleData* aData);
 
   /**
@@ -531,7 +509,7 @@ public:
    * @param aData the returned rule data [INOUT]
    * @see GetAttributeMappingFunction
    */
-  static void MapDivAlignAttributeInto(const nsIHTMLMappedAttributes* aAttributes,
+  static void MapDivAlignAttributeInto(const nsMappedAttributes* aAttributes,
                                        nsRuleData* aData);
 
   /**
@@ -541,7 +519,7 @@ public:
    * @param aData the returned rule data [INOUT]
    * @see GetAttributeMappingFunction
    */
-  static void MapImageBorderAttributeInto(const nsIHTMLMappedAttributes* aAttributes,
+  static void MapImageBorderAttributeInto(const nsMappedAttributes* aAttributes,
                                           nsRuleData* aData);
   /**
    * Helper to map the image margin attribute into a style struct.
@@ -550,7 +528,7 @@ public:
    * @param aData the returned rule data [INOUT]
    * @see GetAttributeMappingFunction
    */
-  static void MapImageMarginAttributeInto(const nsIHTMLMappedAttributes* aAttributes,
+  static void MapImageMarginAttributeInto(const nsMappedAttributes* aAttributes,
                                           nsRuleData* aData);
   /**
    * Helper to map the image position attribute into a style struct.
@@ -559,7 +537,7 @@ public:
    * @param aData the returned rule data [INOUT]
    * @see GetAttributeMappingFunction
    */
-  static void MapImageSizeAttributesInto(const nsIHTMLMappedAttributes* aAttributes,
+  static void MapImageSizeAttributesInto(const nsMappedAttributes* aAttributes,
                                          nsRuleData* aData);
   /**
    * Helper to map the background attributes (currently background and bgcolor)
@@ -569,7 +547,7 @@ public:
    * @param aData the returned rule data [INOUT]
    * @see GetAttributeMappingFunction
    */
-  static void MapBackgroundAttributesInto(const nsIHTMLMappedAttributes* aAttributes,
+  static void MapBackgroundAttributesInto(const nsMappedAttributes* aAttributes,
                                           nsRuleData* aData);
   /**
    * Helper to map the scrolling attribute on FRAME and IFRAME
@@ -579,7 +557,7 @@ public:
    * @param aData the returned rule data [INOUT]
    * @see GetAttributeMappingFunction
    */
-  static void MapScrollingAttributeInto(const nsIHTMLMappedAttributes* aAttributes,
+  static void MapScrollingAttributeInto(const nsMappedAttributes* aAttributes,
                                         nsRuleData* aData);
   /**
    * Get the primary frame for a piece of content.
@@ -647,32 +625,12 @@ public:
   static nsresult GetPresContext(nsIHTMLContent* aContent,
                                  nsIPresContext** aPresContext);
 
-  /**
-   * Resolve the base URL from a _baseHref attribute (could be empty) and
-   * from the document.
-   *
-   * @param aBaseHref the _baseHref attribute
-   * @param aDocument the document
-   * @param aResult the base URL
-   */
-  static nsresult GetBaseURL(const nsHTMLValue& aBaseHref,
-                             nsIDocument* aDocument,
-                             nsIURI** aResult);
-
   // Form Helper Routines
   /**
    * Find an ancestor of this content node which is a form (could be null)
    * @param aForm the form ancestore [OUT]
    */
-  nsresult FindForm(nsIDOMHTMLFormElement **aForm);
-
-  /**
-   * Find the form for this element and set aFormControl's form to it
-   * (aFormControl is passed in to avoid QI)
-   *
-   * @param aFormControl the form control to set the form for
-   */
-  void FindAndSetForm(nsIFormControl *aFormControl);
+  already_AddRefed<nsIDOMHTMLFormElement> FindForm();
 
   /**
    * See if the document being tested has nav-quirks mode enabled.
@@ -681,23 +639,29 @@ public:
   static PRBool InNavQuirksMode(nsIDocument* aDoc);
 
   /**
-   * Helper for the form subclasses of nsGenericHTMLElement to take care
-   * of fixing up form.elements when name, id and type change
+   * Set attribute and (if needed) notify documentobservers and fire off
+   * mutation events.
    *
-   * @param aForm the form the control is in
-   * @param aNameSpaceID the namespace of the attr
-   * @param aName the name of the attr
-   * @param aValue the value of the attr
-   * @param aNotify whether to notify the document of the attribute change
+   * @param aNamespaceID  namespace of attribute
+   * @param aAttribute    local-name of attribute
+   * @param aPrefix       aPrefix of attribute
+   * @param aOldValue     previous value of attribute. Only needed if
+   *                      aFireMutation is true.
+   * @param aParsedValue  parsed new value of attribute
+   * @param aModification is this a attribute-modification or addition. Only
+   *                      needed if aFireMutation or aNotify is true.
+   * @param aFireMutation should mutation-events be fired?
+   * @param aNotify       should we notify document-observers?
    */
-  nsresult SetFormControlAttribute(nsIForm* aForm, PRInt32 aNameSpaceID,
-                                   nsIAtom* aName,
-                                   const nsAString& aValue,
-                                   PRBool aNotify);
-
-  /** The list of attributes */
-  nsHTMLAttributes* mAttributes;
-
+  nsresult SetAttrAndNotify(PRInt32 aNamespaceID,
+                            nsIAtom* aAttribute,
+                            nsIAtom* aPrefix,
+                            const nsAString& aOldValue,
+                            nsAttrValue& aParsedValue,
+                            PRBool aModification,
+                            PRBool aFireMutation,
+                            PRBool aNotify);
+ 
   // Helper functions for <a> and <area>
   static nsresult SetProtocolInHrefString(const nsAString &aHref,
                                           const nsAString &aProtocol,
@@ -755,7 +719,7 @@ protected:
    * methods where you want to catch what occurs on your element.
    * @param aDoFocus true to focus, false to blur
    */
-  nsresult SetElementFocus(PRBool aDoFocus);
+  void SetElementFocus(PRBool aDoFocus);
   /**
    * Register or unregister an access key to this element based on the
    * accesskey attribute.
@@ -769,149 +733,9 @@ protected:
    * @return whether the name is an event handler name
    */
   PRBool IsEventName(nsIAtom* aName);
-};
 
+  virtual const nsAttrName* InternalGetExistingAttrNameFromQName(const nsAString& aStr) const;
 
-//----------------------------------------------------------------------
-
-/**
- * A helper class to subclass for leaf elements.
- */
-class nsGenericHTMLLeafElement : public nsGenericHTMLElement {
-public:
-  nsGenericHTMLLeafElement();
-  virtual ~nsGenericHTMLLeafElement();
-
-  NS_METHOD CopyInnerTo(nsIContent* aSrcContent,
-                        nsGenericHTMLLeafElement* aDest,
-                        PRBool aDeep);
-
-  // Remainder of nsIDOMHTMLElement (and nsIDOMNode)
-  NS_METHOD GetChildNodes(nsIDOMNodeList** aChildNodes);
-  NS_METHOD HasChildNodes(PRBool* aHasChildNodes) {
-    *aHasChildNodes = PR_FALSE;
-    return NS_OK;
-  }
-  NS_METHOD GetFirstChild(nsIDOMNode** aFirstChild) {
-    *aFirstChild = nsnull;
-    return NS_OK;
-  }
-  NS_METHOD GetLastChild(nsIDOMNode** aLastChild) {
-    *aLastChild = nsnull;
-    return NS_OK;
-  }
-  NS_METHOD InsertBefore(nsIDOMNode* aNewChild, nsIDOMNode* aRefChild,
-                        nsIDOMNode** aReturn) {
-    return NS_ERROR_FAILURE;
-  }
-  NS_METHOD ReplaceChild(nsIDOMNode* aNewChild, nsIDOMNode* aOldChild,
-                        nsIDOMNode** aReturn) {
-    return NS_ERROR_FAILURE;
-  }
-  NS_METHOD RemoveChild(nsIDOMNode* aOldChild, nsIDOMNode** aReturn) {
-    return NS_ERROR_FAILURE;
-  }
-  NS_METHOD AppendChild(nsIDOMNode* aNewChild, nsIDOMNode** aReturn) {
-    return NS_ERROR_FAILURE;
-  }
-
-  // Remainder of nsIHTMLContent (and nsIContent)
-  NS_IMETHOD Compact() {
-    return NS_OK;
-  }
-  NS_IMETHOD_(PRBool) CanContainChildren() const {
-    return PR_FALSE;
-  }
-  NS_IMETHOD_(PRUint32) GetChildCount() const {
-    return 0;
-  }
-  NS_IMETHOD_(nsIContent *) GetChildAt(PRUint32 aIndex) const {
-    return nsnull;
-  }
-  NS_IMETHOD_(PRInt32) IndexOf(nsIContent* aPossibleChild) const {
-    return -1;
-  }
-  NS_IMETHOD InsertChildAt(nsIContent* aKid, PRUint32 aIndex, PRBool aNotify,
-                           PRBool aDeepSetDocument) {
-    return NS_OK;
-  }
-  NS_IMETHOD ReplaceChildAt(nsIContent* aKid, PRUint32 aIndex, PRBool aNotify,
-                            PRBool aDeepSetDocument) {
-    return NS_OK;
-  }
-  NS_IMETHOD AppendChildTo(nsIContent* aKid, PRBool aNotify,
-                           PRBool aDeepSetDocument) {
-    return NS_OK;
-  }
-  NS_IMETHOD RemoveChildAt(PRUint32 aIndex, PRBool aNotify) {
-    return NS_OK;
-  }
-};
-
-//----------------------------------------------------------------------
-
-/**
- * A helper class to subclass for elements that can contain children
- */
-class nsGenericHTMLContainerElement : public nsGenericHTMLElement
-{
-public:
-  nsGenericHTMLContainerElement();
-  virtual ~nsGenericHTMLContainerElement();
-
-  NS_METHOD CopyInnerTo(nsIContent* aSrcContent,
-                       nsGenericHTMLContainerElement* aDest,
-                       PRBool aDeep);
-
-  // Remainder of nsIDOMHTMLElement (and nsIDOMNode)
-  NS_METHOD GetChildNodes(nsIDOMNodeList** aChildNodes);
-  NS_METHOD HasChildNodes(PRBool* aHasChildNodes);
-  NS_METHOD GetFirstChild(nsIDOMNode** aFirstChild);
-  NS_METHOD GetLastChild(nsIDOMNode** aLastChild);
-  
-  NS_METHOD InsertBefore(nsIDOMNode* aNewChild, nsIDOMNode* aRefChild,
-                         nsIDOMNode** aReturn)
-  {
-    return nsGenericElement::doInsertBefore(aNewChild, aRefChild, aReturn);
-  }
-  NS_METHOD ReplaceChild(nsIDOMNode* aNewChild, nsIDOMNode* aOldChild,
-                         nsIDOMNode** aReturn)
-  {
-    return nsGenericElement::doReplaceChild(aNewChild, aOldChild, aReturn);
-  }
-  NS_METHOD RemoveChild(nsIDOMNode* aOldChild, nsIDOMNode** aReturn)
-  {
-    return nsGenericElement::doRemoveChild(aOldChild, aReturn);
-  }
-  NS_METHOD AppendChild(nsIDOMNode* aNewChild, nsIDOMNode** aReturn)
-  {
-    return nsGenericElement::doInsertBefore(aNewChild, nsnull, aReturn);
-  }
-
-  // Remainder of nsIHTMLContent (and nsIContent)
-  NS_IMETHOD Compact();
-  NS_IMETHOD_(PRBool) CanContainChildren() const;
-  NS_IMETHOD_(PRUint32) GetChildCount() const;
-  NS_IMETHOD_(nsIContent *) GetChildAt(PRUint32 aIndex) const;
-  NS_IMETHOD_(PRInt32) IndexOf(nsIContent* aPossibleChild) const;
-
-  // Child list modification hooks
-  virtual PRBool InternalInsertChildAt(nsIContent* aKid, PRUint32 aIndex) {
-    return mChildren.InsertElementAt(aKid, aIndex);
-  }
-  virtual PRBool InternalReplaceChildAt(nsIContent* aKid, PRUint32 aIndex) {
-    return mChildren.ReplaceElementAt(aKid, aIndex);
-  }
-  virtual PRBool InternalAppendChildTo(nsIContent* aKid) {
-    return mChildren.AppendElement(aKid);
-  }
-  virtual PRBool InternalRemoveChildAt(PRUint32 aIndex) {
-    return mChildren.RemoveElementAt(aIndex);
-  }
-
-  /** The list of children */
-  nsSmallVoidArray mChildren;
-protected:
   /**
    * ReplaceContentsWithText will take the aText string and make sure
    * that the only child of |this| is a textnode which corresponds to
@@ -921,6 +745,7 @@ protected:
    * @param aNotify whether to notify the document of child adds/removes
    */
   nsresult ReplaceContentsWithText(const nsAString& aText, PRBool aNotify);
+
   /**
    * GetContentsAsText will take all the textnodes that are children
    * of |this| and concatenate the text in them into aText.  It
@@ -931,102 +756,131 @@ protected:
    * @param aText the resulting text [OUT]
    */
   nsresult GetContentsAsText(nsAString& aText);
+
+  /**
+   * Helper method for NS_IMPL_STRING_ATTR_DEFAULT_VALUE macro.
+   * Gets the value of an attribute, returns specified default value if the
+   * attribute isn't set. Only works for attributes in null namespace.
+   *
+   * @param aAttr    name of attribute.
+   * @param aDefault default-value to return if attribute isn't set.
+   * @param aResult  result value [out]
+   */
+  void GetStringAttrWithDefault(nsIAtom* aAttr,
+                                const nsAString& aDefault,
+                                nsAString& aResult);
+
+  /**
+   * Helper method for NS_IMPL_BOOL_ATTR macro.
+   * Sets value of boolean attribute by removing attribute or setting it to
+   * the empty string. Only works for attributes in null namespace.
+   *
+   * @param aAttr    name of attribute.
+   * @param aValue   Boolean value of attribute.
+   */
+  nsresult SetBoolAttr(nsIAtom* aAttr, PRBool aValue);
+
+  /**
+   * Helper method for NS_IMPL_INT_ATTR macro.
+   * Gets the integer-value of an attribute, returns specified default value
+   * if the attribute isn't set or isn't set to an integer. Only works for
+   * attributes in null namespace.
+   *
+   * @param aAttr    name of attribute.
+   * @param aDefault default-value to return if attribute isn't set.
+   * @param aResult  result value [out]
+   */
+  void GetIntAttr(nsIAtom* aAttr, PRInt32 aDefault, PRInt32* aValue);
+
+  /**
+   * Helper method for NS_IMPL_INT_ATTR macro.
+   * Sets value of attribute to specified integer. Only works for attributes
+   * in null namespace.
+   *
+   * @param aAttr    name of attribute.
+   * @param aValue   Integer value of attribute.
+   */
+  nsresult SetIntAttr(nsIAtom* aAttr, PRInt32 aValue);
+
+  /**
+   * Helper method for NS_IMPL_URI_ATTR macro.
+   * Gets the absolute URI value of an attribute, by resolving any relative
+   * URIs in the attribute against the baseuri of the element. If the attribute
+   * isn't a relative URI the value of the attribute is returned as is. Only
+   * works for attributes in null namespace.
+   *
+   * @param aAttr    name of attribute.
+   * @param aResult  result value [out]
+   */
+  void GetURIAttr(nsIAtom* aAttr, nsAString& aResult);
+
+  /**
+   * Helper method to recreate all frames for this content, if there
+   * are any.
+   */
+  void RecreateFrames();
 };
+
 
 //----------------------------------------------------------------------
 
 /**
  * A helper class for form elements that can contain children
  */
-class nsGenericHTMLContainerFormElement : public nsGenericHTMLContainerElement,
-                                          public nsIFormControl
+class nsGenericHTMLFormElement : public nsGenericHTMLElement,
+                                 public nsIFormControl
 {
 public:
-  nsGenericHTMLContainerFormElement();
-  virtual ~nsGenericHTMLContainerFormElement();
+  nsGenericHTMLFormElement();
+  virtual ~nsGenericHTMLFormElement();
 
   NS_IMETHOD QueryInterface(REFNSIID aIID, void** aInstancePtr);
 
-  NS_IMETHOD_(PRBool) IsContentOfType(PRUint32 aFlags);
+  virtual PRBool IsContentOfType(PRUint32 aFlags) const;
 
   // nsIFormControl
   NS_IMETHOD GetForm(nsIDOMHTMLFormElement** aForm);
   NS_IMETHOD SetForm(nsIDOMHTMLFormElement* aForm,
                      PRBool aRemoveFromForm = PR_TRUE);
-  NS_IMETHOD SaveState() { return NS_OK; }
-  NS_IMETHOD RestoreState(nsIPresState* aState) { return NS_OK; }
-
-  // nsIContent
-  NS_IMETHOD_(void) SetParent(nsIContent *aParent);
-  NS_IMETHOD SetDocument(nsIDocument* aDocument, PRBool aDeep,
-                         PRBool aCompileEventHandlers);
-
-  NS_IMETHOD SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
-                     const nsAString& aValue, PRBool aNotify);
-
-  NS_IMETHOD SetAttr(nsINodeInfo* aNodeInfo,
-                     const nsAString& aValue,
-                     PRBool aNotify);
-
-
-  NS_METHOD SetAttribute(const nsAString& aName,
-                         const nsAString& aValue)
+  NS_IMETHOD SaveState()
   {
-    return nsGenericHTMLElement::SetAttribute(aName, aValue);
+    return NS_OK;
+  }
+  NS_IMETHOD RestoreState(nsIPresState* aState)
+  {
+    return NS_OK;
+  }
+  virtual PRBool AllowDrop()
+  {
+    return PR_TRUE;
   }
 
+  // nsIContent
+  virtual void SetParent(nsIContent *aParent);
+  virtual void SetDocument(nsIDocument* aDocument, PRBool aDeep,
+                           PRBool aCompileEventHandlers);
+
+  nsresult SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
+                   const nsAString& aValue, PRBool aNotify)
+  {
+    return SetAttr(aNameSpaceID, aName, nsnull, aValue, aNotify);
+  }
+  virtual nsresult SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
+                           nsIAtom* aPrefix, const nsAString& aValue,
+                           PRBool aNotify);
+
 protected:
+  /**
+   * Find the form for this element and set aFormControl's form to it
+   * (aFormControl is passed in to avoid QI)
+   *
+   * @param aFormControl the form control to set the form for
+   */
+  void FindAndSetForm();
+
   /** The form that contains this control */
   nsIForm* mForm;
 };
-
-//----------------------------------------------------------------------
-
-/**
- * A helper class for form elements that can contain children
- */
-class nsGenericHTMLLeafFormElement : public nsGenericHTMLLeafElement,
-                                     public nsIFormControl
-{
-public:
-  nsGenericHTMLLeafFormElement();
-  ~nsGenericHTMLLeafFormElement();
-
-  NS_IMETHOD QueryInterface(REFNSIID aIID, void** aInstancePtr);
-
-  NS_IMETHOD_(PRBool) IsContentOfType(PRUint32 aFlags);
-
-  // nsIFormControl
-  NS_IMETHOD GetForm(nsIDOMHTMLFormElement** aForm);
-  NS_IMETHOD SetForm(nsIDOMHTMLFormElement* aForm,
-                     PRBool aRemoveFromForm = PR_TRUE);
-  NS_IMETHOD SaveState() { return NS_OK; }
-  NS_IMETHOD RestoreState(nsIPresState* aState) { return NS_OK; }
-
-  // nsIContent
-  NS_IMETHOD_(void) SetParent(nsIContent *aParent);
-  NS_IMETHOD SetDocument(nsIDocument* aDocument, PRBool aDeep,
-                         PRBool aCompileEventHandlers);
-
-  NS_IMETHOD SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
-                     const nsAString& aValue, PRBool aNotify);
-
-  NS_IMETHOD SetAttr(nsINodeInfo* aNodeInfo,
-                     const nsAString& aValue,
-                     PRBool aNotify);
-  NS_IMETHOD DoneCreatingElement();
-
-  NS_METHOD SetAttribute(const nsAString& aName,
-                         const nsAString& aValue)
-  {
-    return nsGenericHTMLElement::SetAttribute(aName, aValue);
-  }
-
-protected:
-  /** The form that contains this control */
-  nsIForm* mForm;
-};
-
 
 //----------------------------------------------------------------------
 
@@ -1036,7 +890,19 @@ protected:
  * SetAttr methods.
  */
 #define NS_IMPL_STRING_ATTR(_class, _method, _atom)                  \
-  NS_IMPL_STRING_ATTR_DEFAULT_VALUE(_class, _method, _atom, "")
+  NS_IMETHODIMP                                                      \
+  _class::Get##_method(nsAString& aValue)                            \
+  {                                                                  \
+    GetAttr(kNameSpaceID_None, nsHTMLAtoms::_atom, aValue);          \
+                                                                     \
+    return NS_OK;                                                    \
+  }                                                                  \
+  NS_IMETHODIMP                                                      \
+  _class::Set##_method(const nsAString& aValue)                      \
+  {                                                                  \
+    return SetAttr(kNameSpaceID_None, nsHTMLAtoms::_atom, aValue,    \
+                   PR_TRUE);                                         \
+  }
 
 /**
  * A macro to implement the getter and setter for a given string
@@ -1047,11 +913,10 @@ protected:
   NS_IMETHODIMP                                                      \
   _class::Get##_method(nsAString& aValue)                            \
   {                                                                  \
-    nsresult rv = GetAttr(kNameSpaceID_None,                         \
-                          nsHTMLAtoms::_atom, aValue);               \
-    if (rv == NS_CONTENT_ATTR_NOT_THERE) {                           \
-      aValue.Assign(NS_LITERAL_STRING(_default));                    \
-    }                                                                \
+    GetStringAttrWithDefault(nsHTMLAtoms::_atom,                     \
+                             NS_LITERAL_STRING(_default),            \
+                             aValue);                                \
+                                                                     \
     return NS_OK;                                                    \
   }                                                                  \
   NS_IMETHODIMP                                                      \
@@ -1070,22 +935,14 @@ protected:
   NS_IMETHODIMP                                                       \
   _class::Get##_method(PRBool* aValue)                                \
   {                                                                   \
-    nsHTMLValue val;                                                  \
-    nsresult rv = GetHTMLAttribute(nsHTMLAtoms::_atom, val);          \
-    *aValue = NS_CONTENT_ATTR_NOT_THERE != rv;                        \
+    *aValue = HasAttr(kNameSpaceID_None, nsHTMLAtoms::_atom);         \
+                                                                      \
     return NS_OK;                                                     \
   }                                                                   \
   NS_IMETHODIMP                                                       \
   _class::Set##_method(PRBool aValue)                                 \
   {                                                                   \
-    nsHTMLValue empty(eHTMLUnit_Empty);                               \
-    if (aValue) {                                                     \
-      return SetHTMLAttribute(nsHTMLAtoms::_atom, empty, PR_TRUE);    \
-    }                                                                 \
-    else {                                                            \
-      UnsetAttr(kNameSpaceID_None, nsHTMLAtoms::_atom, PR_TRUE);      \
-      return NS_OK;                                                   \
-    }                                                                 \
+    return SetBoolAttr(nsHTMLAtoms::_atom, aValue);                   \
   }
 
 /**
@@ -1096,64 +953,18 @@ protected:
 #define NS_IMPL_INT_ATTR(_class, _method, _atom)                    \
   NS_IMPL_INT_ATTR_DEFAULT_VALUE(_class, _method, _atom, -1)
 
-/**
- * A macro to implement the getter and setter for a given integer
- * valued content property with a default value.
- * The method uses the generic GetAttr and SetAttr methods.
- */
-#define NS_IMPL_INT_ATTR_DEFAULT_VALUE(_class, _method, _atom, _default) \
-  NS_IMETHODIMP                                                     \
-  _class::Get##_method(PRInt32* aValue)                             \
-  {                                                                 \
-    nsHTMLValue value;                                              \
-    *aValue = _default;                                             \
-    if (NS_CONTENT_ATTR_HAS_VALUE ==                                \
-        GetHTMLAttribute(nsHTMLAtoms::_atom, value)) {              \
-      if (value.GetUnit() == eHTMLUnit_Integer) {                   \
-        *aValue = value.GetIntValue();                              \
-      }                                                             \
-    }                                                               \
-    return NS_OK;                                                   \
-  }                                                                 \
-  NS_IMETHODIMP                                                     \
-  _class::Set##_method(PRInt32 aValue)                              \
-  {                                                                 \
-    nsHTMLValue value(aValue, eHTMLUnit_Integer);                   \
-    return SetHTMLAttribute(nsHTMLAtoms::_atom, value, PR_TRUE);    \
-  }
-
-/**
- * A macro to implement the getter and the setter for a given pixel
- * valued content property. The method uses the generic GetAttr and
- * SetAttr methods.
- */
-#define NS_IMPL_PIXEL_ATTR(_class, _method, _atom)                  \
-  NS_IMPL_PIXEL_ATTR_DEFAULT_VALUE(_class, _method, _atom, -1)
-
-/**
- * A macro to implement the getter and the setter for a given pixel
- * valued content property with a default value.
- * The method uses the generic GetAttr and SetAttr methods.
- */
-#define NS_IMPL_PIXEL_ATTR_DEFAULT_VALUE(_class, _method, _atom, _default) \
-  NS_IMETHODIMP                                                     \
-  _class::Get##_method(PRInt32* aValue)                             \
-  {                                                                 \
-    nsHTMLValue value;                                              \
-    *aValue = _default;                                                   \
-    if (NS_CONTENT_ATTR_HAS_VALUE ==                                \
-        GetHTMLAttribute(nsHTMLAtoms::_atom, value)) {              \
-      if (value.GetUnit() == eHTMLUnit_Pixel) {                     \
-        *aValue = value.GetPixelValue();                            \
-      }                                                             \
-    }                                                               \
-    return NS_OK;                                                   \
-  }                                                                 \
-  NS_IMETHODIMP                                                     \
-  _class::Set##_method(PRInt32 aValue)                              \
-  {                                                                 \
-    nsHTMLValue value(aValue, eHTMLUnit_Pixel);                     \
-    return SetHTMLAttribute(nsHTMLAtoms::_atom, value, PR_TRUE);    \
+#define NS_IMPL_INT_ATTR_DEFAULT_VALUE(_class, _method, _atom, _default)  \
+  NS_IMETHODIMP                                                           \
+  _class::Get##_method(PRInt32* aValue)                                   \
+  {                                                                       \
+    GetIntAttr(nsHTMLAtoms::_atom, _default, aValue);                     \
+                                                                          \
+    return NS_OK;                                                         \
+  }                                                                       \
+  NS_IMETHODIMP                                                           \
+  _class::Set##_method(PRInt32 aValue)                                    \
+  {                                                                       \
+    return SetIntAttr(nsHTMLAtoms::_atom, aValue);                        \
   }
 
 /**
@@ -1163,22 +974,20 @@ protected:
  * like the NS_IMPL_STRING_ATTR macro, except we make sure the URI is
  * absolute.
  */
-#define NS_IMPL_URI_ATTR_GETTER(_class, _method, _atom)             \
+#define NS_IMPL_URI_ATTR(_class, _method, _atom)                    \
   NS_IMETHODIMP                                                     \
   _class::Get##_method(nsAString& aValue)                           \
   {                                                                 \
-    return AttrToURI(nsHTMLAtoms::_atom, aValue);                   \
-  }
-#define NS_IMPL_URI_ATTR_SETTER(_class, _method, _atom)             \
+    GetURIAttr(nsHTMLAtoms::_atom, aValue);                         \
+                                                                    \
+    return NS_OK;                                                   \
+  }                                                                 \
   NS_IMETHODIMP                                                     \
   _class::Set##_method(const nsAString& aValue)                     \
   {                                                                 \
     return SetAttr(kNameSpaceID_None, nsHTMLAtoms::_atom, aValue,   \
                    PR_TRUE);                                        \
   }
-#define NS_IMPL_URI_ATTR(_class, _method, _atom) \
-  NS_IMPL_URI_ATTR_GETTER(_class, _method, _atom) \
-  NS_IMPL_URI_ATTR_SETTER(_class, _method, _atom)
 
 /**
  * QueryInterface() implementation helper macros
@@ -1237,11 +1046,10 @@ protected:
       aIID.Equals(NS_GET_IID(nsIClassInfo))) {                                \
     foundInterface =                                                          \
       nsContentUtils::GetClassInfoInstance(eDOMClassInfo_##_class##_id);      \
-    NS_ENSURE_TRUE(foundInterface, NS_ERROR_OUT_OF_MEMORY);                   \
-                                                                              \
-    *aInstancePtr = foundInterface;                                           \
-                                                                              \
-    return NS_OK;                                                             \
+    if (!foundInterface) {                                                    \
+      *aInstancePtr = nsnull;                                                 \
+      return NS_ERROR_OUT_OF_MEMORY;                                          \
+    }                                                                         \
   } else
 
 
@@ -1249,173 +1057,227 @@ protected:
 // Element class factory methods
 
 nsresult
-NS_NewHTMLSharedLeafElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLSharedLeafElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                            PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLAnchorElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLAnchorElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                        PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLAppletElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLAppletElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                        PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLAreaElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLAreaElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                      PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLBRElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLBRElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                    PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLBaseFontElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLBaseFontElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                          PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLBodyElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLBodyElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                      PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLButtonElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLButtonElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                        PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLDListElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLDListElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                       PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLDelElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLDelElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                     PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLDirectoryElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLDirectoryElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                           PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLDivElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLDivElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                     PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLFieldSetElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLFieldSetElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                          PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLFontElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLFontElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                      PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLFormElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLFormElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                      PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLFrameElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLFrameElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                       PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLFrameSetElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLFrameSetElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                          PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLHRElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLHRElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                    PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLHeadElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLHeadElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                      PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLHeadingElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLHeadingElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                         PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLHtmlElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLHtmlElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                      PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLIFrameElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLIFrameElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                        PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLImageElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLImageElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                       PRBool aFromParser = PR_FALSE);
 
 nsresult
 NS_NewHTMLInputElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
                        PRBool aFromParser);
 
 nsresult
-NS_NewHTMLInsElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLInsElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                     PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLLIElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLLIElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                    PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLLabelElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLLabelElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                       PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLLegendElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLLegendElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                        PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLLinkElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLLinkElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                      PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLMapElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLMapElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                     PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLMenuElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLMenuElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                      PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLMetaElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLMetaElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                      PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLOListElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLOListElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                       PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLObjectElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLObjectElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                        PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLOptGroupElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLOptGroupElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                          PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLOptionElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLOptionElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                        PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLParagraphElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLParagraphElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                           PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLPreElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLPreElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                     PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLQuoteElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLQuoteElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                       PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLScriptElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLScriptElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                        PRBool aFromParser = PR_FALSE);
 
 nsresult
 NS_NewHTMLSelectElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
                         PRBool aFromParser);
 
 nsresult
-NS_NewHTMLSpanElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLSpanElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                      PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLStyleElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLStyleElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                       PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLTableCaptionElement(nsIHTMLContent** aResult,nsINodeInfo *aNodeInfo);
+NS_NewHTMLTableCaptionElement(nsIHTMLContent** aResult,nsINodeInfo *aNodeInfo,
+                              PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLTableCellElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLTableCellElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                           PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLTableColElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLTableColElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                          PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLTableElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLTableElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                       PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLTableRowElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLTableRowElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                          PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLTableSectionElement(nsIHTMLContent** aResult,nsINodeInfo *aNodeInfo);
+NS_NewHTMLTableSectionElement(nsIHTMLContent** aResult,nsINodeInfo *aNodeInfo,
+                              PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLTbodyElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLTbodyElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                       PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLTextAreaElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLTextAreaElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                          PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLTfootElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLTfootElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                       PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLTheadElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLTheadElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                       PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLTitleElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLTitleElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                       PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLUListElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLUListElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                       PRBool aFromParser = PR_FALSE);
 
 nsresult
-NS_NewHTMLUnknownElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo);
+NS_NewHTMLUnknownElement(nsIHTMLContent** aResult, nsINodeInfo *aNodeInfo,
+                         PRBool aFromParser = PR_FALSE);
 
 #endif /* nsGenericHTMLElement_h___ */

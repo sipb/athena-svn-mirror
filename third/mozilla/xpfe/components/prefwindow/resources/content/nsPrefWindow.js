@@ -27,7 +27,9 @@ const _DEBUG = false;
  *  =>> CHANGES MUST BE REVIEWED BY ben@netscape.com!! <<=
  **/ 
 
+var hPrefWindow = null;
 var queuedTag; 
+
 function initPanel ( aPrefTag )
   {
     if( hPrefWindow )
@@ -35,9 +37,17 @@ function initPanel ( aPrefTag )
     else
       queuedTag = aPrefTag;
   } 
- 
-window.doneLoading = false; 
- 
+
+function onLoad()
+{
+  hPrefWindow = new nsPrefWindow('panelFrame');
+
+  if (!hPrefWindow)
+    throw "failed to create prefwindow";
+  else
+    hPrefWindow.init();
+}
+
 function nsPrefWindow( frame_id )
 {
   if ( !frame_id )
@@ -69,7 +79,7 @@ nsPrefWindow.prototype =
         {
           try 
             {
-              this.pref = Components.classes["@mozilla.org/preferences;1"].getService(Components.interfaces.nsIPref);
+              this.pref = Components.classes["@mozilla.org/preferences-service;1"].getService(Components.interfaces.nsIPrefService).getBranch(null);
               this.chromeRegistry = Components.classes["@mozilla.org/chrome/chrome-registry;1"].getService(Components.interfaces.nsIXULChromeRegistry);
               this.observerService = Components.classes["@mozilla.org/observer-service;1"].getService(Components.interfaces.nsIObserverService);
             }
@@ -84,22 +94,18 @@ nsPrefWindow.prototype =
         function ()
           {        
             if( window.queuedTag )
-              {
                 this.onpageload( window.queuedTag );
-              }
   
             if( window.arguments[1] )
               this.openBranch( window.arguments[1], window.arguments[2] );
           },
                   
-      onOK:
+      onAccept:
         function ()
           {
             var tag = document.getElementById( hPrefWindow.contentFrame ).getAttribute("tag");
             if( tag == "" )
-              {
                 tag = document.getElementById( hPrefWindow.contentFrame ).getAttribute("src");
-              }
             hPrefWindow.wsm.savePageData( tag );
             for( var i = 0; i < hPrefWindow.okHandlers.length; i++ )
               try {
@@ -108,6 +114,8 @@ nsPrefWindow.prototype =
                 dump("some silly ok handler /*"+hPrefWindow.okHandlers[i]+"*/ failed: "+ e);
               }
             hPrefWindow.savePrefs();
+
+            return true;
           },
         
       onCancel:
@@ -119,6 +127,8 @@ nsPrefWindow.prototype =
               } catch (e) {
                 dump("some silly cancel handler /*"+hPrefWindow.cancelHandlers[i]+"*/ failed: "+ e);
               }
+
+            return true;
           },
 
       registerOKCallbackFunc:
@@ -135,26 +145,25 @@ nsPrefWindow.prototype =
       getPrefIsLocked:
         function ( aPrefString )
           {
-            return hPrefWindow.pref.PrefIsLocked(aPrefString);
+            return this.pref.prefIsLocked(aPrefString);
           },
       getPref:
-        function ( aPrefType, aPrefString, aDefaultFlag )
+        function ( aPrefType, aPrefString )
           {
-            var pref = hPrefWindow.pref;
             try
               {
                 switch ( aPrefType )
                   {
                     case "bool":
-                      return !aDefaultFlag ? pref.GetBoolPref( aPrefString ) : pref.GetDefaultBoolPref( aPrefString );
+                      return this.pref.getBoolPref( aPrefString );
                     case "int":
-                      return !aDefaultFlag ? pref.GetIntPref( aPrefString ) : pref.GetDefaultIntPref( aPrefString );
+                      return this.pref.getIntPref( aPrefString );
                     case "localizedstring":
-                      return pref.getLocalizedUnicharPref( aPrefString );
+                      return this.pref.getComplexValue( aPrefString, Components.interfaces.nsIPrefLocalizedString ).data;
                     case "color":
                     case "string":
                     default:
-                         return !aDefaultFlag ? pref.CopyUnicharPref( aPrefString ) : pref.CopyDefaultUnicharPref( aPrefString );
+                       return this.pref.getComplexValue( aPrefString, Components.interfaces.nsISupportsString ).data;
                   }
               }
             catch (e)
@@ -176,16 +185,18 @@ nsPrefWindow.prototype =
                 switch ( aPrefType )
                   {
                     case "bool":
-                      hPrefWindow.pref.SetBoolPref( aPrefString, aValue );
+                      this.pref.setBoolPref( aPrefString, aValue );
                       break;
                     case "int":
-                      hPrefWindow.pref.SetIntPref( aPrefString, aValue );
+                      this.pref.setIntPref( aPrefString, aValue );
                       break;
                     case "color":
                     case "string":
                     case "localizedstring":
                     default:
-                      hPrefWindow.pref.SetUnicharPref( aPrefString, aValue );
+                      var supportsString = Components.classes["@mozilla.org/supports-string;1"].createInstance(Components.interfaces.nsISupportsString);
+                      supportsString.data = aValue;
+                      this.pref.setComplexValue( aPrefString, Components.interfaces.nsISupportsString, supportsString );
                       break;
                   }
               }
@@ -242,7 +253,7 @@ nsPrefWindow.prototype =
                                 value = !value;
                               break;
                             case "int":
-                              value = parseInt(value);                              
+                              value = parseInt(value, 10);                              
                               break;
                             case "color":
                               if( toString(value) == "" )
@@ -254,9 +265,7 @@ nsPrefWindow.prototype =
                             case "localizedstring":
                             default:
                               if( typeof(value) != "string" )
-                                {
                                   value = toString(value);
-                                }
                               break;
                           }
 
@@ -264,16 +273,16 @@ nsPrefWindow.prototype =
                         // changed or the pref is locked.
                         if( !this.getPrefIsLocked(itemObject.prefstring) &&
                            (value != this.getPref( preftype, itemObject.prefstring)))
-                          {
                             this.setPref( preftype, itemObject.prefstring, value );
-                          }
                       }
                   }
               }
               }
               try 
                 {
-                  this.pref.savePrefFile(null);
+                  Components.classes["@mozilla.org/preferences-service;1"]
+                            .getService(Components.interfaces.nsIPrefService)
+                            .savePrefFile(null);
                 }
               catch (e)
                 {
@@ -301,9 +310,7 @@ nsPrefWindow.prototype =
 
             var oldURL = document.getElementById( this.contentFrame ).getAttribute("tag");
             if( !oldURL )
-              {
                 oldURL = document.getElementById( this.contentFrame ).getAttribute("src");
-              }
             this.wsm.savePageData( oldURL );      // save data from the current page. 
             var newURL = selectedItem.firstChild.firstChild.getAttribute("url");
             var newTag = selectedItem.firstChild.firstChild.getAttribute("tag");
@@ -359,9 +366,7 @@ nsPrefWindow.prototype =
                     }
                     var prefvalue = this.getPref( preftype, prefstring );
                     if( prefvalue == "!/!ERROR_UNDEFINED_PREF!/!" )
-                      {
                         prefvalue = prefdefval;
-                      }
                     var root = this.wsm.dataManager.getItemData( aPageTag, prefid ); 
                     root[prefattribute] = prefvalue;              
                     var isPrefLocked = this.getPrefIsLocked(prefstring);
@@ -378,9 +383,8 @@ nsPrefWindow.prototype =
             this.wsm.setPageData( aPageTag );  // do not set extra elements, accept hard coded defaults
             
             if( 'Startup' in window.frames[ this.contentFrame ])
-              {
                 window.frames[ this.contentFrame ].Startup();
-              }
+
             this.wsm.dataManager.pageData[aPageTag].initialized=true;
           },
 
@@ -400,4 +404,3 @@ nsPrefWindow.prototype =
         }
 
   };
-

@@ -1,3 +1,4 @@
+# vim:set ts=8 sw=8 sts=8 noet:
 # 
 # The contents of this file are subject to the Mozilla Public
 # License Version 1.1 (the "License"); you may not use this file
@@ -35,18 +36,17 @@ REQUIRES	= xpcom \
 		  $(NULL)
 
 CPPSRCS		=				\
-		nsASingleFragmentString.cpp	\
 		nsAString.cpp			\
-		nsDependentConcatenation.cpp	\
 		nsDependentSubstring.cpp	\
-		nsFragmentedString.cpp		\
+		nsObsoleteAStringThunk.cpp	\
 		nsPrintfCString.cpp		\
 		nsPromiseFlatString.cpp		\
 		nsReadableUtils.cpp		\
-		nsSharableString.cpp		\
-		nsSharedBufferList.cpp		\
-		nsSlidingString.cpp		\
-		nsXPIDLString.cpp		\
+		nsSubstring.cpp			\
+		nsSubstringTuple.cpp		\
+		nsString.cpp			\
+		nsStringComparator.cpp		\
+		nsStringObsolete.cpp		\
 		$(NULL)
 
 # we don't want the shared lib, but we want to force the creation of a

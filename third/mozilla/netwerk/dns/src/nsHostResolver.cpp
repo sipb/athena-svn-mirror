@@ -157,7 +157,7 @@ nsHostRecord::Create(const char *host, nsHostRecord **result)
 
     rec->_refc = 1; // addref
     rec->host = ((char *) rec) + sizeof(nsHostRecord);
-    rec->addrinfo = nsnull;
+    rec->addr_info = nsnull;
     rec->addr = nsnull;
     rec->expiration = NowInMinutes();
     rec->resolving = PR_FALSE;
@@ -171,8 +171,8 @@ nsHostRecord::Create(const char *host, nsHostRecord **result)
 
 nsHostRecord::~nsHostRecord()
 {
-    if (addrinfo)
-        PR_FreeAddrInfo(addrinfo);
+    if (addr_info)
+        PR_FreeAddrInfo(addr_info);
     if (addr)
         free(addr);
 }
@@ -213,21 +213,22 @@ PR_STATIC_CALLBACK(void)
 HostDB_ClearEntry(PLDHashTable *table,
                   PLDHashEntryHdr *entry)
 {
+    LOG(("evicting record\n"));
     nsHostDBEnt *he = NS_STATIC_CAST(nsHostDBEnt *, entry);
 #if defined(PR_LOGGING)
-    if (!he->rec->addrinfo)
-        LOG(("%s: => no addrinfo\n", he->rec->host));
+    if (!he->rec->addr_info)
+        LOG(("%s: => no addr_info\n", he->rec->host));
     else {
         PRInt32 now = (PRInt32) NowInMinutes();
         PRInt32 diff = (PRInt32) he->rec->expiration - now;
         LOG(("%s: exp=%d => %s\n",
             he->rec->host, diff,
-            PR_GetCanonNameFromAddrInfo(he->rec->addrinfo)));
+            PR_GetCanonNameFromAddrInfo(he->rec->addr_info)));
         void *iter = nsnull;
         PRNetAddr addr;
         char buf[64];
         for (;;) {
-            iter = PR_EnumerateAddrInfo(iter, he->rec->addrinfo, 0, &addr);
+            iter = PR_EnumerateAddrInfo(iter, he->rec->addr_info, 0, &addr);
             if (!iter)
                 break;
             PR_NetAddrToString(&addr, buf, sizeof(buf));
@@ -351,7 +352,8 @@ nsHostResolver::Shutdown()
 nsresult
 nsHostResolver::ResolveHost(const char            *host,
                             PRBool                 bypassCache,
-                            nsResolveHostCallback *callback)
+                            nsResolveHostCallback *callback,
+                            PRUint16               af = PR_AF_UNSPEC)
 {
     NS_ENSURE_TRUE(host && *host, NS_ERROR_UNEXPECTED);
 
@@ -391,6 +393,7 @@ nsHostResolver::ResolveHost(const char            *host,
             else if (!bypassCache &&
                      he->rec->HasResult() &&
                      NowInMinutes() <= he->rec->expiration) {
+                LOG(("using cached record\n"));
                 // put reference to host record on stack...
                 result = he->rec;
             }
@@ -414,6 +417,7 @@ nsHostResolver::ResolveHost(const char            *host,
                 PR_APPEND_LINK(callback, &he->rec->callbacks);
 
                 if (!he->rec->resolving) {
+                    he->rec->af = af;
                     rv = IssueLookup(he->rec);
                     if (NS_FAILED(rv))
                         PR_REMOVE_AND_INIT_LINK(callback);
@@ -552,24 +556,24 @@ nsHostResolver::OnLookupComplete(nsHostRecord *rec, nsresult status, PRAddrInfo 
         MoveCList(rec->callbacks, cbs);
 
         // update record fields
-        rec->addrinfo = result;
+        rec->addr_info = result;
         rec->expiration = NowInMinutes() + mMaxCacheLifetime;
         rec->resolving = PR_FALSE;
         
-        if (rec->addrinfo) {
+        if (rec->addr_info) {
             // add to mEvictionQ
             PR_APPEND_LINK(rec, &mEvictionQ);
             NS_ADDREF(rec);
             if (mEvictionQSize < mMaxCacheEntries)
                 mEvictionQSize++;
             else {
-                // remove last element on mEvictionQ
-                nsHostRecord *tail =
-                    NS_STATIC_CAST(nsHostRecord *, PR_LIST_TAIL(&mEvictionQ));
-                PR_REMOVE_AND_INIT_LINK(tail);
-                PL_DHashTableOperate(&mDB, tail->host, PL_DHASH_REMOVE);
+                // remove first element on mEvictionQ
+                nsHostRecord *head =
+                    NS_STATIC_CAST(nsHostRecord *, PR_LIST_HEAD(&mEvictionQ));
+                PR_REMOVE_AND_INIT_LINK(head);
+                PL_DHashTableOperate(&mDB, head->host, PL_DHASH_REMOVE);
                 // release reference to rec owned by mEvictionQ
-                NS_RELEASE(tail);
+                NS_RELEASE(head);
             }
         }
     }
@@ -603,10 +607,10 @@ nsHostResolver::ThreadFunc(void *arg)
     PRAddrInfo *ai;
     while (resolver->GetHostToLookup(&rec)) {
         LOG(("resolving %s ...\n", rec->host));
-        ai = PR_GetAddrInfoByName(rec->host, PR_AF_UNSPEC, PR_AI_ADDRCONFIG);
+        ai = PR_GetAddrInfoByName(rec->host, rec->af, PR_AI_ADDRCONFIG);
 #if defined(RES_RETRY_ON_FAILURE)
         if (!ai && rs.Reset())
-            ai = PR_GetAddrInfoByName(rec->host, PR_AF_UNSPEC, PR_AI_ADDRCONFIG);
+            ai = PR_GetAddrInfoByName(rec->host, rec->af, PR_AI_ADDRCONFIG);
 #endif
         // convert error code to nsresult.
         nsresult status = ai ? NS_OK : NS_ERROR_UNKNOWN_HOST;

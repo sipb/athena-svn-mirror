@@ -62,6 +62,8 @@
 
 #ifdef ACCESSIBILITY
 #include "nsPIAccessNode.h"
+#include "nsPIAccessible.h"
+#include "nsIAccessibleEvent.h"
 #include "prenv.h"
 #include "stdlib.h"
 static PRBool sAccessibilityChecked = PR_FALSE;
@@ -433,6 +435,11 @@ NS_IMETHODIMP
 nsWindow::IsVisible(PRBool & aState)
 {
     aState = mIsVisible;
+    if (mIsTopLevel && mShell && !GTK_WIDGET_MAPPED(mShell)) {
+        /* we do not change mIsVisible to PR_FALSE here so we don't bother to
+           to change it back to PR_TRUE when the mShell is mapped again. */
+        aState = PR_FALSE;
+    }
     return NS_OK;
 }
 
@@ -577,7 +584,7 @@ nsWindow::SetFocus(PRBool aRaise)
     if (gRaiseWindows && aRaise && toplevelWidget &&
         !GTK_WIDGET_HAS_FOCUS(owningWidget) &&
         !GTK_WIDGET_HAS_FOCUS(toplevelWidget))
-        GetAttention();
+        GetAttention(-1);
 
     nsWindow  *owningWindow = get_window_for_gtk_widget(owningWidget);
     if (!owningWindow)
@@ -969,7 +976,24 @@ nsWindow::SetIcon(const nsAString& aIconSpec)
     nsCAutoString path;
     pathConverter->GetNativePath(path);
 
-    return SetWindowIcon(path);
+    nsCStringArray iconList;
+    iconList.AppendCString(path);
+
+    // Get the 16px icon path as well
+    iconSpec = aIconSpec + NS_LITERAL_STRING("16.xpm");
+
+    chromeDir->GetPath(iconPath);
+    iconPath.Append(iconSpec.get() + n - 1);
+
+    rv = NS_NewLocalFile(iconPath, PR_TRUE,
+                         getter_AddRefs(pathConverter));
+    if (NS_FAILED(rv))
+        return rv;
+
+    pathConverter->GetNativePath(path);
+    iconList.AppendCString(path);
+
+    return SetWindowIconList(iconList);
 }
 
 NS_IMETHODIMP
@@ -1108,7 +1132,7 @@ nsWindow::CaptureRollupEvents(nsIRollupListener *aListener,
 }
 
 NS_IMETHODIMP
-nsWindow::GetAttention()
+nsWindow::GetAttention(PRInt32 aCycleCount)
 {
     LOG(("nsWindow::GetAttention [%p]\n", (void *)this));
 
@@ -1161,9 +1185,7 @@ nsWindow::OnExposeEvent(GtkWidget *aWidget, GdkEventExpose *aEvent)
     // XXX figure out the region/rect stuff!
     nsRect rect(aEvent->area.x, aEvent->area.y,
                 aEvent->area.width, aEvent->area.height);
-    nsPaintEvent event;
-
-    InitPaintEvent(event);
+    nsPaintEvent event(NS_PAINT, this);
 
     event.point.x = aEvent->area.x;
     event.point.y = aEvent->area.y;
@@ -1193,8 +1215,7 @@ nsWindow::OnConfigureEvent(GtkWidget *aWidget, GdkEventConfigure *aEvent)
         mBounds.y == aEvent->y)
         return FALSE;
 
-    nsGUIEvent event;
-    InitGUIEvent(event, NS_MOVE);
+    nsGUIEvent event(NS_MOVE, this);
 
     event.point.x = aEvent->x;
     event.point.y = aEvent->y;
@@ -1232,9 +1253,7 @@ nsWindow::OnSizeAllocate(GtkWidget *aWidget, GtkAllocation *aAllocation)
 void
 nsWindow::OnDeleteEvent(GtkWidget *aWidget, GdkEventAny *aEvent)
 {
-    nsGUIEvent event;
-
-    InitGUIEvent(event, NS_XUL_CLOSE);
+    nsGUIEvent event(NS_XUL_CLOSE, this);
 
     event.point.x = 0;
     event.point.y = 0;
@@ -1246,8 +1265,7 @@ nsWindow::OnDeleteEvent(GtkWidget *aWidget, GdkEventAny *aEvent)
 void
 nsWindow::OnEnterNotifyEvent(GtkWidget *aWidget, GdkEventCrossing *aEvent)
 {
-    nsMouseEvent event;
-    InitMouseEvent(event, NS_MOUSE_ENTER);
+    nsMouseEvent event(NS_MOUSE_ENTER, this);
 
     event.point.x = nscoord(aEvent->x);
     event.point.y = nscoord(aEvent->y);
@@ -1261,8 +1279,7 @@ nsWindow::OnEnterNotifyEvent(GtkWidget *aWidget, GdkEventCrossing *aEvent)
 void
 nsWindow::OnLeaveNotifyEvent(GtkWidget *aWidget, GdkEventCrossing *aEvent)
 {
-    nsMouseEvent event;
-    InitMouseEvent(event, NS_MOUSE_EXIT);
+    nsMouseEvent event(NS_MOUSE_EXIT, this);
 
     event.point.x = nscoord(aEvent->x);
     event.point.y = nscoord(aEvent->y);
@@ -1294,8 +1311,7 @@ nsWindow::OnMotionNotifyEvent(GtkWidget *aWidget, GdkEventMotion *aEvent)
         gPluginFocusWindow->LoseNonXEmbedPluginFocus();
     }
 
-    nsMouseEvent event;
-    InitMouseEvent(event, NS_MOUSE_MOVE);
+    nsMouseEvent event(NS_MOUSE_MOVE, this);
 
     if (synthEvent) {
         event.point.x = nscoord(xevent.xmotion.x);
@@ -1327,9 +1343,22 @@ nsWindow::OnMotionNotifyEvent(GtkWidget *aWidget, GdkEventMotion *aEvent)
 void
 nsWindow::OnButtonPressEvent(GtkWidget *aWidget, GdkEventButton *aEvent)
 {
-    nsMouseEvent  event;
     PRUint32      eventType;
     nsEventStatus status;
+
+    // If you double click in GDK, it will actually generate a single
+    // click event before sending the double click event, and this is
+    // different than the DOM spec.  GDK puts this in the queue
+    // programatically, so it's safe to assume that if there's a
+    // double click in the queue, it was generated so we can just drop
+    // this click.
+    GdkEvent *peekedEvent = gdk_event_peek();
+    if (peekedEvent) {
+        GdkEventType type = peekedEvent->any.type;
+        gdk_event_free(peekedEvent);
+        if (type == GDK_2BUTTON_PRESS || type == GDK_3BUTTON_PRESS)
+            return;
+    }
 
     // Always save the time of this event
     mLastButtonPressTime = aEvent->time;
@@ -1358,14 +1387,15 @@ nsWindow::OnButtonPressEvent(GtkWidget *aWidget, GdkEventButton *aEvent)
         break;
     }
 
-    InitButtonEvent(event, eventType, aEvent);
+    nsMouseEvent event(eventType, this);
+    InitButtonEvent(event, aEvent);
 
     DispatchEvent(&event, status);
 
     // right menu click on linux should also pop up a context menu
     if (eventType == NS_MOUSE_RIGHT_BUTTON_DOWN) {
-        nsMouseEvent contextMenuEvent;
-        InitButtonEvent(contextMenuEvent, NS_CONTEXTMENU, aEvent);
+        nsMouseEvent contextMenuEvent(NS_CONTEXTMENU, this);
+        InitButtonEvent(contextMenuEvent, aEvent);
         DispatchEvent(&contextMenuEvent, status);
     }
 }
@@ -1373,7 +1403,6 @@ nsWindow::OnButtonPressEvent(GtkWidget *aWidget, GdkEventButton *aEvent)
 void
 nsWindow::OnButtonReleaseEvent(GtkWidget *aWidget, GdkEventButton *aEvent)
 {
-    nsMouseEvent  event;
     PRUint32      eventType;
 
     switch (aEvent->button) {
@@ -1394,7 +1423,8 @@ nsWindow::OnButtonReleaseEvent(GtkWidget *aWidget, GdkEventButton *aEvent)
         break;
     }
 
-    InitButtonEvent(event, eventType, aEvent);
+    nsMouseEvent  event(eventType, this);
+    InitButtonEvent(event, aEvent);
 
     nsEventStatus status;
     DispatchEvent(&event, status);
@@ -1500,7 +1530,6 @@ nsWindow::OnKeyPressEvent(GtkWidget *aWidget, GdkEventKey *aEvent)
    LOGIM(("sending as regular key press event\n"));
 #endif
 
-    nsKeyEvent event;
     nsEventStatus status;
 
     // work around for annoying things.
@@ -1529,11 +1558,13 @@ nsWindow::OnKeyPressEvent(GtkWidget *aWidget, GdkEventKey *aEvent)
         mInKeyRepeat = PR_TRUE;
 
         // send the key down event
-        InitKeyEvent(event, aEvent, NS_KEY_DOWN);
-        DispatchEvent(&event, status);
+        nsKeyEvent downEvent(NS_KEY_DOWN, this);
+        InitKeyEvent(downEvent, aEvent);
+        DispatchEvent(&downEvent, status);
     }
 
-    InitKeyEvent(event, aEvent, NS_KEY_PRESS);
+    nsKeyEvent event(NS_KEY_PRESS, this);
+    InitKeyEvent(event, aEvent);
     event.charCode = nsConvertCharCodeToUnicode(aEvent);
     if (event.charCode) {
         event.keyCode = 0;
@@ -1589,7 +1620,6 @@ nsWindow::OnKeyReleaseEvent(GtkWidget *aWidget, GdkEventKey *aEvent)
         return TRUE;
 #endif
 
-    nsKeyEvent event;
     nsEventStatus status;
     
     // unset the repeat flag
@@ -1606,7 +1636,8 @@ nsWindow::OnKeyReleaseEvent(GtkWidget *aWidget, GdkEventKey *aEvent)
         return TRUE;
     }
 
-    InitKeyEvent(event, aEvent, NS_KEY_UP);
+    nsKeyEvent event(NS_KEY_UP, this);
+    InitKeyEvent(event, aEvent);
 
     DispatchEvent(&event, status);
 
@@ -1622,8 +1653,8 @@ nsWindow::OnKeyReleaseEvent(GtkWidget *aWidget, GdkEventKey *aEvent)
 void
 nsWindow::OnScrollEvent(GtkWidget *aWidget, GdkEventScroll *aEvent)
 {
-    nsMouseScrollEvent event;
-    InitMouseScrollEvent(event, aEvent, NS_MOUSE_SCROLL);
+    nsMouseScrollEvent event(NS_MOUSE_SCROLL, this);
+    InitMouseScrollEvent(event, aEvent);
 
     // check to see if we should rollup
     if (check_for_rollup(aEvent->window, aEvent->x_root, aEvent->y_root,
@@ -1658,8 +1689,7 @@ nsWindow::OnWindowStateEvent(GtkWidget *aWidget, GdkEventWindowState *aEvent)
     LOG(("nsWindow::OnWindowStateEvent [%p] changed %d new_window_state %d\n",
          (void *)this, aEvent->changed_mask, aEvent->new_window_state));
 
-    nsSizeModeEvent event;
-    InitSizeModeEvent(event);
+    nsSizeModeEvent event(NS_SIZEMODE, this);
 
     // We don't care about anything but changes in the maximized/icon
     // states
@@ -1749,17 +1779,12 @@ nsWindow::OnDragMotionEvent(GtkWidget *aWidget,
     // notify the drag service that we are starting a drag motion.
     dragSessionGTK->TargetStartDragMotion();
 
-    nsMouseEvent event;
+    nsMouseEvent event(NS_DRAGDROP_OVER, innerMostWidget);
 
     InitDragEvent(event);
 
     // now that we have initialized the event update our drag status
     UpdateDragStatus(event, aDragContext, dragService);
-
-    event.message = NS_DRAGDROP_OVER;
-    event.eventStructType = NS_DRAGDROP_EVENT;
-
-    event.widget = innerMostWidget;
 
     event.point.x = retx;
     event.point.y = rety;
@@ -1869,26 +1894,20 @@ nsWindow::OnDragDropEvent(GtkWidget *aWidget,
 
     innerMostWidget->AddRef();
 
-    nsMouseEvent event;
+    nsMouseEvent event(NS_DRAGDROP_OVER, innerMostWidget);
 
     InitDragEvent(event);
 
     // now that we have initialized the event update our drag status
     UpdateDragStatus(event, aDragContext, dragService);
 
-    event.message = NS_DRAGDROP_OVER;
-    event.eventStructType = NS_DRAGDROP_EVENT;
-    event.widget = innerMostWidget;
     event.point.x = retx;
     event.point.y = rety;
 
     nsEventStatus status;
     innerMostWidget->DispatchEvent(&event, status);
 
-    InitDragEvent(event);
-
     event.message = NS_DRAGDROP_DROP;
-    event.eventStructType = NS_DRAGDROP_EVENT;
     event.widget = innerMostWidget;
     event.point.x = retx;
     event.point.y = rety;
@@ -1944,15 +1963,7 @@ nsWindow::OnDragLeave(void)
 {
     LOG(("nsWindow::OnDragLeave(%p)\n", this));
 
-    nsMouseEvent event;
-
-    event.message = NS_DRAGDROP_EXIT;
-    event.eventStructType = NS_DRAGDROP_EVENT;
-
-    event.widget = this;
-
-    event.point.x = 0;
-    event.point.y = 0;
+    nsMouseEvent event(NS_DRAGDROP_EXIT, this);
 
     AddRef();
 
@@ -1967,12 +1978,7 @@ nsWindow::OnDragEnter(nscoord aX, nscoord aY)
 {
     LOG(("nsWindow::OnDragEnter(%p)\n", this));
     
-    nsMouseEvent event;
-
-    event.message = NS_DRAGDROP_ENTER;
-    event.eventStructType = NS_DRAGDROP_EVENT;
-
-    event.widget = this;
+    nsMouseEvent event(NS_DRAGDROP_ENTER, this);
 
     event.point.x = aX;
     event.point.y = aY;
@@ -2571,18 +2577,27 @@ nsWindow::SetupPluginPort(void)
 }
 
 nsresult
-nsWindow::SetWindowIcon(nsCString &aPath)
+nsWindow::SetWindowIconList(const nsCStringArray &aIconList)
 {
-    LOG(("window [%p] Loading icon from %s\n", (void *)this, aPath.get()));
+    GList *list = NULL;
 
-    GdkPixbuf *icon = gdk_pixbuf_new_from_file(aPath.get(), NULL);
-    if (!icon)
+    for (int i = 0; i < aIconList.Count(); ++i) {
+        const char *path = aIconList[i]->get();
+        LOG(("window [%p] Loading icon from %s\n", (void *)this, path));
+
+        GdkPixbuf *icon = gdk_pixbuf_new_from_file(path, NULL);
+        if (!icon)
+            continue;
+
+        list = g_list_append(list, icon);
+    }
+
+    if (!list)
         return NS_ERROR_FAILURE;
 
-    GList *list = NULL;
-    list = g_list_append(list, icon);
     gtk_window_set_icon_list(GTK_WINDOW(mShell), list);
-    g_object_unref(G_OBJECT(icon));
+
+    g_list_foreach(list, (GFunc) g_object_unref, NULL);
     g_list_free(list);
 
     return NS_OK;
@@ -2613,7 +2628,10 @@ nsWindow::SetDefaultIcon(void)
     nsCAutoString path;
     defaultPathConverter->GetNativePath(path);
 
-    SetWindowIcon(path);
+    nsCStringArray iconList;
+    iconList.AppendCString(path);
+
+    SetWindowIconList(iconList);
 }
 
 void
@@ -3445,8 +3463,6 @@ property_notify_event_cb  (GtkWidget *widget, GdkEventProperty *event)
 void
 nsWindow::InitDragEvent(nsMouseEvent &aEvent)
 {
-    // set everything to zero
-    memset(&aEvent, 0, sizeof(nsMouseEvent));
     // set the keyboard modifiers
     gint x, y;
     GdkModifierType state = (GdkModifierType)0;
@@ -3705,8 +3721,10 @@ get_inner_gdk_window (GdkWindow *aWindow,
 inline PRBool
 is_context_menu_key(const nsKeyEvent& aKeyEvent)
 {
-    return (aKeyEvent.keyCode == NS_VK_F10 && aKeyEvent.isShift &&
-            !aKeyEvent.isControl && !aKeyEvent.isMeta && !aKeyEvent.isAlt);
+    return ((aKeyEvent.keyCode == NS_VK_F10 && aKeyEvent.isShift &&
+             !aKeyEvent.isControl && !aKeyEvent.isMeta && !aKeyEvent.isAlt) ||
+            (aKeyEvent.keyCode == NS_VK_CONTEXT_MENU && !aKeyEvent.isShift &&
+             !aKeyEvent.isControl && !aKeyEvent.isMeta && !aKeyEvent.isAlt));
 }
 
 void
@@ -3714,7 +3732,6 @@ key_event_to_context_menu_event(const nsKeyEvent* aKeyEvent,
                                 nsMouseEvent* aCMEvent)
 {
     memcpy(aCMEvent, aKeyEvent, sizeof(nsInputEvent));
-    aCMEvent->eventStructType = NS_MOUSE_EVENT;
     aCMEvent->message = NS_CONTEXTMENU_KEY;
     aCMEvent->isShift = aCMEvent->isControl = PR_FALSE;
     aCMEvent->isAlt = aCMEvent->isMeta = PR_FALSE;
@@ -3761,6 +3778,25 @@ nsWindow::CreateRootAccessible()
     }
 }
 
+void
+nsWindow::GetRootAccessible(nsIAccessible** aAccessible)
+{
+    nsCOMPtr<nsIAccessible> docAcc, parentAcc;
+    DispatchAccessibleEvent(getter_AddRefs(docAcc));
+    PRUint32 role;
+
+    while (docAcc) {
+        docAcc->GetRole(&role);
+        if (role == nsIAccessible::ROLE_FRAME) {
+            *aAccessible = docAcc;
+            NS_ADDREF(*aAccessible);
+            break;
+        } 
+        docAcc->GetParent(getter_AddRefs(parentAcc));
+        docAcc = parentAcc;
+    }
+}
+
 /**
  * void
  * nsWindow::DispatchAccessibleEvent
@@ -3773,11 +3809,10 @@ PRBool
 nsWindow::DispatchAccessibleEvent(nsIAccessible** aAccessible)
 {
     PRBool result = PR_FALSE;
-    nsAccessibleEvent event;
+    nsAccessibleEvent event(NS_GETACCESSIBLE, this);
 
     *aAccessible = nsnull;
 
-    InitAccessibleEvent(event);
     nsEventStatus status;
     DispatchEvent(&event, status);
     result = (nsEventStatus_eConsumeNoDefault == status) ? PR_TRUE : PR_FALSE;
@@ -3789,6 +3824,39 @@ nsWindow::DispatchAccessibleEvent(nsIAccessible** aAccessible)
     return result;
 }
 
+void
+nsWindow::DispatchActivateEvent(void)
+{
+    nsCommonWidget::DispatchActivateEvent();
+
+    if (sAccessibilityEnabled) {
+        nsCOMPtr<nsIAccessible> rootAcc;
+        GetRootAccessible(getter_AddRefs(rootAcc));
+        nsCOMPtr<nsPIAccessible> privAcc(do_QueryInterface(rootAcc));
+        if (privAcc) {
+            privAcc->FireToolkitEvent(
+                         nsIAccessibleEvent::EVENT_ATK_WINDOW_ACTIVATE,
+                         rootAcc, nsnull);
+        }
+    }
+ }
+
+void
+nsWindow::DispatchDeactivateEvent(void)
+{
+    nsCommonWidget::DispatchDeactivateEvent();
+
+    if (sAccessibilityEnabled) {
+        nsCOMPtr<nsIAccessible> rootAcc;
+        GetRootAccessible(getter_AddRefs(rootAcc));
+        nsCOMPtr<nsPIAccessible> privAcc(do_QueryInterface(rootAcc));
+        if (privAcc) {
+            privAcc->FireToolkitEvent(
+                         nsIAccessibleEvent::EVENT_ATK_WINDOW_DEACTIVATE,
+                         rootAcc, nsnull);
+        }
+    }
+}
 #endif /* #ifdef ACCESSIBILITY */
 
 // nsChildWindow class
@@ -3857,13 +3925,7 @@ nsWindow::IMEComposeStart(void)
 
     mComposingText = PR_TRUE;
 
-    nsCompositionEvent compEvent;
-
-    compEvent.widget = NS_STATIC_CAST(nsIWidget *, this);
-    compEvent.point.x = compEvent.point.y = 0;
-    compEvent.time = 0;    // Potential problem ?
-    compEvent.message = compEvent.eventStructType
-        = compEvent.compositionMessage = NS_COMPOSITION_START;
+    nsCompositionEvent compEvent(NS_COMPOSITION_START, this);
 
     nsEventStatus status;
     DispatchEvent(&compEvent, status);
@@ -3880,24 +3942,10 @@ nsWindow::IMEComposeText (const PRUnichar *aText,
         IMEComposeStart();
 
     LOGIM(("IMEComposeText\n"));
-    nsTextEvent textEvent;
+    nsTextEvent textEvent(NS_TEXT_TEXT, this);
 
-    textEvent.time = 0;
-    textEvent.isShift = textEvent.isControl =
-    textEvent.isAlt = textEvent.isMeta = PR_FALSE;
-  
-    textEvent.message = textEvent.eventStructType = NS_TEXT_EVENT;
-    textEvent.widget = NS_STATIC_CAST(nsIWidget *, this);
-    textEvent.point.x = textEvent.point.y = 0;
-
-    if (aLen == 0) {
-        textEvent.theText = nsnull;
-        textEvent.rangeCount = 0;
-        textEvent.rangeArray = nsnull;
-    } else {
+    if (aLen != 0) {
         textEvent.theText = (PRUnichar*)aText;
-        textEvent.rangeCount = 0;
-        textEvent.rangeArray = nsnull;
 
         if (aPreeditString && aFeedback && (aLen > 0)) {
             IM_set_text_range(aLen, aPreeditString, aFeedback,
@@ -3926,12 +3974,7 @@ nsWindow::IMEComposeEnd(void)
 
     mComposingText = PR_FALSE;
 
-    nsCompositionEvent compEvent;
-    compEvent.widget = NS_STATIC_CAST(nsIWidget *, this);
-    compEvent.point.x = compEvent.point.y = 0;
-    compEvent.time = 0;
-    compEvent.message = compEvent.eventStructType
-        = compEvent.compositionMessage = NS_COMPOSITION_END;
+    nsCompositionEvent compEvent(NS_COMPOSITION_END, this);
 
     nsEventStatus status;
     DispatchEvent(&compEvent, status);
@@ -4151,9 +4194,9 @@ IM_set_text_range(const PRInt32 aLen,
     START_OFFSET(0) = aLen;
     END_OFFSET(0) = aLen;
 
-    int count;
+    int count = 0;
     PangoAttribute * aPangoAttr;
-    count = 0;
+    PangoAttribute * aPangoAttrReverse, * aPangoAttrUnderline;
     /*
      * Depend on gtk2's implementation on XIM support.
      * In aFeedback got from gtk2, there are only three types of data:
@@ -4163,61 +4206,63 @@ IM_set_text_range(const PRInt32 aLen,
      * PANGO_ATTR_BACKGROUND and PANGO_ATTR_FOREGROUND are always
      * a couple.
      */
+    gint start, end;
     gunichar2 * uniStr;
     glong uniStrLen;
     do {
-        aPangoAttr = pango_attr_iterator_get(aFeedbackIterator,
-                                             PANGO_ATTR_UNDERLINE);
-        if (aPangoAttr) {
-            // Stands for XIMUnderline
-            count++;
-            START_OFFSET(count) = 0;
-            END_OFFSET(count) = 0;
-            
-            uniStr = NULL;
-            if (aPangoAttr->start_index > 0)
-                uniStr = g_utf8_to_utf16(aPreeditString,
-                                         aPangoAttr->start_index,
-                                         NULL, &uniStrLen, NULL);
-            if (uniStr)
-                START_OFFSET(count) = uniStrLen;
-            
-            uniStr = NULL;
-            uniStr = g_utf8_to_utf16(aPreeditString + aPangoAttr->start_index,
-                         aPangoAttr->end_index - aPangoAttr->start_index,
-                         NULL, &uniStrLen, NULL);
-            if (uniStr) {
-                END_OFFSET(count) = START_OFFSET(count) + uniStrLen;
-                SET_FEEDBACKTYPE(count, NS_TEXTRANGE_CONVERTEDTEXT);
-            }
-        } else {
-            aPangoAttr = pango_attr_iterator_get(aFeedbackIterator,
-                                                 PANGO_ATTR_FOREGROUND);
-            if (aPangoAttr) {
-                count++;
-                START_OFFSET(count) = 0;
-                END_OFFSET(count) = 0;
-                
-                uniStr = NULL;
-                if (aPangoAttr->start_index > 0)
-                    uniStr = g_utf8_to_utf16(aPreeditString,
-                                             aPangoAttr->start_index,
-                                             NULL, &uniStrLen, NULL);
-                if (uniStr)
-                    START_OFFSET(count) = uniStrLen;
-            
-                uniStr = NULL;
-                uniStr = g_utf8_to_utf16(
-                             aPreeditString + aPangoAttr->start_index,
-                             aPangoAttr->end_index - aPangoAttr->start_index,
-                             NULL, &uniStrLen, NULL);
+        aPangoAttrUnderline = pango_attr_iterator_get(aFeedbackIterator,
+                                                      PANGO_ATTR_UNDERLINE);
+        aPangoAttrReverse = pango_attr_iterator_get(aFeedbackIterator,
+                                                    PANGO_ATTR_FOREGROUND);
+        if (!aPangoAttrUnderline && !aPangoAttrReverse)
+            continue;
 
-                if (uniStr) {
-                    END_OFFSET(count) = START_OFFSET(count) + uniStrLen;
-                    SET_FEEDBACKTYPE(count, NS_TEXTRANGE_SELECTEDRAWTEXT);
-                }
-            }
+        // Get the range of the current attribute(s)
+        pango_attr_iterator_range(aFeedbackIterator, &start, &end);
+
+        PRUint32 feedbackType;
+        // XIMReverse | XIMUnderline
+        if (aPangoAttrUnderline && aPangoAttrReverse) {
+            feedbackType = NS_TEXTRANGE_SELECTEDCONVERTEDTEXT;
+            // Doesn't matter which attribute we use here since we
+            // are using pango_attr_iterator_range to determine the
+            // range of the attributes.
+            aPangoAttr = aPangoAttrUnderline;
         }
+        // XIMUnderline
+        else if (aPangoAttrUnderline) {
+            feedbackType = NS_TEXTRANGE_CONVERTEDTEXT;
+            aPangoAttr = aPangoAttrUnderline;
+        }
+        // XIMReverse
+        else if (aPangoAttrReverse) {
+            feedbackType = NS_TEXTRANGE_SELECTEDRAWTEXT;
+            aPangoAttr = aPangoAttrReverse;
+        }
+
+        count++;
+        START_OFFSET(count) = 0;
+        END_OFFSET(count) = 0;
+        
+        uniStr = NULL;
+        if (start > 0) {
+            uniStr = g_utf8_to_utf16(aPreeditString, start,
+                                     NULL, &uniStrLen, NULL);
+        }
+        if (uniStr) {
+            START_OFFSET(count) = uniStrLen;
+            g_free(uniStr);
+        }
+        
+        uniStr = NULL;
+        uniStr = g_utf8_to_utf16(aPreeditString + start, end - start,
+                                 NULL, &uniStrLen, NULL);
+        if (uniStr) {
+            END_OFFSET(count) = START_OFFSET(count) + uniStrLen;
+            SET_FEEDBACKTYPE(count, feedbackType);
+            g_free(uniStr);
+        }
+
     } while ((count < aMaxLenOfTextRange - 1) &&
              (pango_attr_iterator_next(aFeedbackIterator)));
 

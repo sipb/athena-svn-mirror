@@ -54,7 +54,7 @@ GRE_DIST	= $(DIST)/gre
 VERSION_NUMBER		= 50
 
 BUILD_TOOLS	= $(topsrcdir)/build/unix
-CONFIG_TOOLS	= $(DEPTH)/config
+CONFIG_TOOLS	= $(MOZ_BUILD_ROOT)/config
 AUTOCONF_TOOLS	= $(topsrcdir)/build/autoconf
 
 #
@@ -421,13 +421,28 @@ endif
 MOZ_META_COMPONENTS_crypto = BOOT PKI NSS
 MOZ_META_COMPONENTS_crypto_comps = pipboot pippki pipnss
 
+# If we're applying MOZ_PROFILE_GENERATE to a non-static build, then we
+# need to create a static build _with_ PIC.  This allows us to generate
+# profile data that will still be valid when the object files are linked into
+# shared libraries.
+ifdef MOZ_PROFILE_GENERATE
+ifdef BUILD_SHARED_LIBS
+BUILD_SHARED_LIBS=
+BUILD_STATIC_LIBS=1
+MOZ_STATIC_COMPONENT_LIBS=1
+STATIC_BUILD_PIC=1
+endif
+endif
+
 #
 # Build using PIC by default
 # Do not use PIC if not building a shared lib (see exceptions below)
 #
+#ifeq (,$(PROGRAM)$(SIMPLE_PROGRAMS)$(HOST_PROGRAM)$(HOST_SIMPLE_PROGRAMS))
 ifneq (,$(BUILD_SHARED_LIBS)$(FORCE_SHARED_LIB)$(FORCE_USE_PIC))
 _ENABLE_PIC=1
 endif
+#endif
 
 # If module is going to be merged into the nsStaticModule, 
 # make sure that the entry points are translated and 
@@ -464,6 +479,20 @@ ifneq (,$(findstring mozcomps, $(MOZ_META_COMPONENTS)))
 _ENABLE_PIC=1
 endif
 
+ifdef STATIC_BUILD_PIC
+ifndef _ENABLE_PIC
+# If PIC hasn't been enabled now, object files in this directory will not
+# ever be linked into a DSO.  Turn PIC on and set ENABLE_PROFILE_GENERATE.
+ENABLE_PROFILE_GENERATE=1
+_ENABLE_PIC=1
+endif
+else
+# For static builds, always enable profile generation for non-PIC objects.
+ifndef _ENABLE_PIC
+ENABLE_PROFILE_GENERATE=1
+endif
+endif
+
 #
 # Disable PIC if necessary
 #
@@ -475,8 +504,24 @@ DSO_PIC_CFLAGS=-mdynamic-no-pic
 else
 DSO_PIC_CFLAGS=
 endif
+
 MKSHLIB=
 endif
+
+# Enable profile-based feedback for non-PIC objects
+ifdef ENABLE_PROFILE_GENERATE
+ifdef MOZ_PROFILE_GENERATE
+DSO_PIC_CFLAGS += $(PROFILE_GEN_CFLAGS)
+endif
+endif
+# We always use the profile-use flags, even in cases where we didn't use the
+# profile-generate flags.  It's harmless, and it saves us from having to
+# answer the question "Would these objects have been built using
+# the profile-generate flags?" which is not trivial.
+ifdef MOZ_PROFILE_USE
+DSO_PIC_CFLAGS += $(PROFILE_USE_CFLAGS)
+endif
+
 
 # Force _all_ exported methods to be |_declspec(dllexport)| when we're
 # building them into the executable.
@@ -485,7 +530,6 @@ ifdef MOZ_STATIC_COMPONENT_LIBS
 DEFINES	+= \
 	-D_IMPL_NS_GFX \
 	-D_IMPL_NS_MSG_BASE \
-	-D_IMPL_NS_PICS \
 	-D_IMPL_NS_WIDGET \
 	$(NULL)
 endif
@@ -506,8 +550,8 @@ NFSPWD		= $(CONFIG_TOOLS)/nfspwd
 PURIFY		= purify $(PURIFYOPTIONS)
 QUANTIFY	= quantify $(QUANTIFYOPTIONS)
 ifdef CROSS_COMPILE
-XPIDL_COMPILE 	= $(CYGWIN_WRAPPER) $(DIST)/host/bin/host_xpidl$(BIN_SUFFIX)
-XPIDL_LINK	= $(CYGWIN_WRAPPER) $(DIST)/host/bin/host_xpt_link$(BIN_SUFFIX)
+XPIDL_COMPILE 	= $(CYGWIN_WRAPPER) $(DIST)/host/bin/host_xpidl$(HOST_BIN_SUFFIX)
+XPIDL_LINK	= $(CYGWIN_WRAPPER) $(DIST)/host/bin/host_xpt_link$(HOST_BIN_SUFFIX)
 else
 XPIDL_COMPILE 	= $(CYGWIN_WRAPPER) $(DIST)/bin/xpidl$(BIN_SUFFIX)
 XPIDL_LINK	= $(CYGWIN_WRAPPER) $(DIST)/bin/xpt_link$(BIN_SUFFIX)
@@ -623,9 +667,10 @@ else
 PUBLIC		= $(DIST)/include
 endif
 
-SDK_PUBLIC	= $(DIST)/sdk/$(MODULE)/include
-SDK_IDL_DIR	= $(DIST)/sdk/$(MODULE)/idl
-SDK_BIN_DIR	= $(DIST)/sdk/$(MODULE)/bin
+SDK_PUBLIC  = $(DIST)/sdk/include
+SDK_IDL_DIR = $(DIST)/sdk/idl
+SDK_LIB_DIR = $(DIST)/sdk/lib
+SDK_BIN_DIR = $(DIST)/sdk/bin
 
 DEPENDENCIES	= .md
 
@@ -634,11 +679,6 @@ MOZ_COMPONENT_LIBS=$(MOZ_COMPONENT_XPCOM_LIBS) $(MOZ_COMPONENT_NSPR_LIBS)
 ifdef GC_LEAK_DETECTOR
 MOZ_COMPONENT_XPCOM_LIBS += -lboehm
 XPCOM_LIBS += -lboehm
-endif
-
-ifdef MOZ_DEMANGLE_SYMBOLS
-MOZ_COMPONENT_XPCOM_LIBS += -liberty
-XPCOM_LIBS += -liberty
 endif
 
 ifeq (xpconnect, $(findstring xpconnect, $(BUILD_MODULES)))
@@ -664,6 +704,10 @@ ifdef USE_PREBINDING
 export LD_PREBIND=1
 export LD_SEG_ADDR_TABLE=$(shell cd $(topsrcdir); pwd)/config/prebind-address-table
 endif
+ifdef MACOS_SDK_DIR
+export NEXT_ROOT=$(MACOS_SDK_DIR)
+endif
+PBBUILD=NEXT_ROOT= $(PBBUILD_BIN)
 endif
 
 ifdef MOZ_NATIVE_MAKEDEPEND
@@ -742,7 +786,7 @@ endif
 PWD := $(shell pwd)
 endif
 
-ifeq (,$(filter-out WINNT OS2, $(OS_ARCH)))
+ifeq (,$(CROSS_COMPILE)$(filter-out WINNT OS2, $(OS_ARCH)))
 ifeq ($(OS_ARCH),WINNT)
 NSINSTALL	= $(CYGWIN_WRAPPER) $(MOZ_TOOLS_DIR)/bin/nsinstall
 else

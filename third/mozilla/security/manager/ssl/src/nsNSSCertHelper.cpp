@@ -19,6 +19,7 @@
  * Contributor(s):
  *  Ian McGreer <mcgreer@netscape.com>
  *  Javier Delgadillo <javi@netscape.com>
+ *  John Gardiner Myers <jgmyers@speakeasy.net>
  * 
  * Alternatively, the contents of this file may be used under the
  * terms of the GNU General Public License Version 2 or later (the
@@ -46,7 +47,7 @@
 #include "nsNSSCertTrust.h"
 
 
-nsresult
+static nsresult
 GetIntValue(SECItem *versionItem, 
             unsigned long *version)
 {
@@ -66,13 +67,12 @@ ProcessVersion(SECItem         *versionItem,
                nsIASN1PrintableItem **retItem)
 {
   nsresult rv;
-  nsString text;
+  nsAutoString text;
   nsCOMPtr<nsIASN1PrintableItem> printableItem = new nsNSSASN1PrintableItem();
   if (printableItem == nsnull)
     return NS_ERROR_OUT_OF_MEMORY;
  
-  nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpVersion").get(),
-                                      text);
+  nssComponent->GetPIPNSSBundleString("CertDumpVersion", text);
   rv = printableItem->SetDisplayName(text);
   if (NS_FAILED(rv))
     return rv;
@@ -92,16 +92,13 @@ ProcessVersion(SECItem         *versionItem,
 
   switch (version){
   case 0:
-    rv = nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpVersion1").get(),
-                                             text);
+    rv = nssComponent->GetPIPNSSBundleString("CertDumpVersion1", text);
     break;
   case 1:
-    rv = nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpVersion2").get(),
-                                             text);
+    rv = nssComponent->GetPIPNSSBundleString("CertDumpVersion2", text);
     break;
   case 2:
-    rv = nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpVersion3").get(),
-                                             text);
+    rv = nssComponent->GetPIPNSSBundleString("CertDumpVersion3", text);
     break;
   default:
     NS_ASSERTION(0,"Bad value for cert version");
@@ -126,14 +123,13 @@ ProcessSerialNumberDER(SECItem         *serialItem,
                        nsIASN1PrintableItem **retItem)
 {
   nsresult rv;
-  nsString text;
+  nsAutoString text;
   nsCOMPtr<nsIASN1PrintableItem> printableItem = new nsNSSASN1PrintableItem();
 
   if (printableItem == nsnull)
     return NS_ERROR_OUT_OF_MEMORY;
 
-  rv = nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpSerialNo").get(),
-                                           text); 
+  rv = nssComponent->GetPIPNSSBundleString("CertDumpSerialNo", text); 
   if (NS_FAILED(rv))
     return rv;
 
@@ -152,9 +148,9 @@ ProcessSerialNumberDER(SECItem         *serialItem,
   return rv;
 }
 
-nsresult
+static nsresult
 GetDefaultOIDFormat(SECItem *oid,
-                    nsString &outString)
+                    nsAString &outString)
 {
   char buf[300];
   unsigned int len;
@@ -191,97 +187,167 @@ GetDefaultOIDFormat(SECItem *oid,
     val = 0;      
   }
 
-  outString = NS_ConvertASCIItoUCS2(buf).get();
+  CopyASCIItoUTF16(buf, outString);
   return NS_OK; 
 }
 
 nsresult
-GetOIDText(SECItem *oid, nsINSSComponent *nssComponent, nsString &text)
+GetOIDText(SECItem *oid, nsINSSComponent *nssComponent, nsAString &text)
 { 
   nsresult rv;
   SECOidTag oidTag = SECOID_FindOIDTag(oid);
+  const char *bundlekey = 0;
 
   switch (oidTag) {
   case SEC_OID_PKCS1_MD2_WITH_RSA_ENCRYPTION:
-    rv = nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpMD2WithRSA").get(),
-                                             text);
+    bundlekey = "CertDumpMD2WithRSA";
     break;
   case SEC_OID_PKCS1_MD5_WITH_RSA_ENCRYPTION:
-    rv = nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpMD5WithRSA").get(),
-                                             text);
+    bundlekey = "CertDumpMD5WithRSA";
     break;
   case SEC_OID_PKCS1_SHA1_WITH_RSA_ENCRYPTION:
-    rv = nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpSHA1WithRSA").get(),
-                                             text);
-    break;
-  case SEC_OID_AVA_COUNTRY_NAME:
-    rv = nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpAVACountry").get(),
-                                             text);
-    break;
-  case SEC_OID_AVA_COMMON_NAME:
-    rv = nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpAVACN").get(),
-                                             text);
-    break;
-  case SEC_OID_AVA_ORGANIZATIONAL_UNIT_NAME:
-    rv = nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpAVAOU").get(),
-                                             text);
-    break;
-  case SEC_OID_AVA_ORGANIZATION_NAME:
-    rv = nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpAVAOrg").get(),
-                                             text);
-    break;
-  case SEC_OID_AVA_LOCALITY:
-    rv = nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpAVALocality").get(),
-                                             text);
-    break;
-  case SEC_OID_AVA_DN_QUALIFIER:
-    rv = nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpAVADN").get(),
-                                             text);
-    break;
-  case SEC_OID_AVA_DC:
-    rv = nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpAVADC").get(),
-                                             text);
-    break;
-  case SEC_OID_AVA_STATE_OR_PROVINCE:
-    rv = nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpAVAState").get(),
-                                             text);
+    bundlekey = "CertDumpSHA1WithRSA";
     break;
   case SEC_OID_PKCS1_RSA_ENCRYPTION:
-    rv = nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpRSAEncr").get(),
-                                             text);
+    bundlekey = "CertDumpRSAEncr";
     break;
-  case SEC_OID_X509_KEY_USAGE:
-    rv = nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpKeyUsage").get(),
-                                             text);
+  case SEC_OID_PKCS1_SHA256_WITH_RSA_ENCRYPTION:
+    bundlekey = "CertDumpSHA256WithRSA";
+    break;
+  case SEC_OID_PKCS1_SHA384_WITH_RSA_ENCRYPTION:
+    bundlekey = "CertDumpSHA384WithRSA";
+    break;
+  case SEC_OID_PKCS1_SHA512_WITH_RSA_ENCRYPTION:
+    bundlekey = "CertDumpSHA512WithRSA";
     break;
   case SEC_OID_NS_CERT_EXT_CERT_TYPE:
-    rv = nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpCertType").get(),
-                                             text);
+    bundlekey = "CertDumpCertType";
+    break;
+  case SEC_OID_NS_CERT_EXT_BASE_URL:
+    bundlekey = "CertDumpNSCertExtBaseUrl";
+    break;
+  case SEC_OID_NS_CERT_EXT_REVOCATION_URL:
+    bundlekey = "CertDumpNSCertExtRevocationUrl";
+    break;
+  case SEC_OID_NS_CERT_EXT_CA_REVOCATION_URL:
+    bundlekey = "CertDumpNSCertExtCARevocationUrl";
+    break;
+  case SEC_OID_NS_CERT_EXT_CERT_RENEWAL_URL:
+    bundlekey = "CertDumpNSCertExtCertRenewalUrl";
+    break;
+  case SEC_OID_NS_CERT_EXT_CA_POLICY_URL:
+    bundlekey = "CertDumpNSCertExtCAPolicyUrl";
+    break;
+  case SEC_OID_NS_CERT_EXT_SSL_SERVER_NAME:
+    bundlekey = "CertDumpNSCertExtSslServerName";
+    break;
+  case SEC_OID_NS_CERT_EXT_COMMENT:
+    bundlekey = "CertDumpNSCertExtComment";
+    break;
+  case SEC_OID_NS_CERT_EXT_LOST_PASSWORD_URL:
+    bundlekey = "CertDumpNSCertExtLostPasswordUrl";
+    break;
+  case SEC_OID_NS_CERT_EXT_CERT_RENEWAL_TIME:
+    bundlekey = "CertDumpNSCertExtCertRenewalTime";
+    break;
+  case SEC_OID_NETSCAPE_AOLSCREENNAME:
+    bundlekey = "CertDumpNetscapeAolScreenname";
+    break;
+  case SEC_OID_AVA_COUNTRY_NAME:
+    bundlekey = "CertDumpAVACountry";
+    break;
+  case SEC_OID_AVA_COMMON_NAME:
+    bundlekey = "CertDumpAVACN";
+    break;
+  case SEC_OID_AVA_ORGANIZATIONAL_UNIT_NAME:
+    bundlekey = "CertDumpAVAOU";
+    break;
+  case SEC_OID_AVA_ORGANIZATION_NAME:
+    bundlekey = "CertDumpAVAOrg";
+    break;
+  case SEC_OID_AVA_LOCALITY:
+    bundlekey = "CertDumpAVALocality";
+    break;
+  case SEC_OID_AVA_DN_QUALIFIER:
+    bundlekey = "CertDumpAVADN";
+    break;
+  case SEC_OID_AVA_DC:
+    bundlekey = "CertDumpAVADC";
+    break;
+  case SEC_OID_AVA_STATE_OR_PROVINCE:
+    bundlekey = "CertDumpAVAState";
+    break;
+  case SEC_OID_X509_SUBJECT_DIRECTORY_ATTR:
+    bundlekey = "CertDumpSubjectDirectoryAttr";
+    break;
+  case SEC_OID_X509_SUBJECT_KEY_ID:
+    bundlekey = "CertDumpSubjectKeyID";
+    break;
+  case SEC_OID_X509_KEY_USAGE:
+    bundlekey = "CertDumpKeyUsage";
+    break;
+  case SEC_OID_X509_SUBJECT_ALT_NAME:
+    bundlekey = "CertDumpSubjectAltName";
+    break;
+  case SEC_OID_X509_ISSUER_ALT_NAME:
+    bundlekey = "CertDumpIssuerAltName";
+    break;
+  case SEC_OID_X509_BASIC_CONSTRAINTS:
+    bundlekey = "CertDumpBasicConstraints";
+    break;
+  case SEC_OID_X509_NAME_CONSTRAINTS:
+    bundlekey = "CertDumpNameConstraints";
+    break;
+  case SEC_OID_X509_CRL_DIST_POINTS:
+    bundlekey = "CertDumpCrlDistPoints";
+    break;
+  case SEC_OID_X509_CERTIFICATE_POLICIES:
+    bundlekey = "CertDumpCertPolicies";
+    break;
+  case SEC_OID_X509_POLICY_MAPPINGS:
+    bundlekey = "CertDumpPolicyMappings";
+    break;
+  case SEC_OID_X509_POLICY_CONSTRAINTS:
+    bundlekey = "CertDumpPolicyConstraints";
     break;
   case SEC_OID_X509_AUTH_KEY_ID:
-    rv = nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpAuthKeyID").get(),
-                                             text);
+    bundlekey = "CertDumpAuthKeyID";
+    break;
+  case SEC_OID_X509_EXT_KEY_USAGE:
+    bundlekey = "CertDumpExtKeyUsage";
+    break;
+  case SEC_OID_X509_AUTH_INFO_ACCESS:
+    bundlekey = "CertDumpAuthInfoAccess";
+    break;
+  case SEC_OID_ANSIX9_DSA_SIGNATURE:
+    bundlekey = "CertDumpAnsiX9DsaSignature";
+    break;
+  case SEC_OID_ANSIX9_DSA_SIGNATURE_WITH_SHA1_DIGEST:
+    bundlekey = "CertDumpAnsiX9DsaSignatureWithSha1";
+    break;
+  case SEC_OID_ANSIX962_ECDSA_SIGNATURE_WITH_SHA1_DIGEST:
+    bundlekey = "CertDumpAnsiX962ECDsaSignatureWithSha1";
     break;
   case SEC_OID_RFC1274_UID:
-    rv = nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpUserID").get(),
-                                             text);
+    bundlekey = "CertDumpUserID";
     break;
   case SEC_OID_PKCS9_EMAIL_ADDRESS:
-    rv = nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpPK9Email").get(),
-                                             text);
+    bundlekey = "CertDumpPK9Email";
     break;
-  default:
-    rv = GetDefaultOIDFormat(oid, text);
+  default: ;
+  }
+
+  if (bundlekey) {
+    rv = nssComponent->GetPIPNSSBundleString(bundlekey, text);
+  } else {
+    nsAutoString text2;
+    rv = GetDefaultOIDFormat(oid, text2);
     if (NS_FAILED(rv))
       return rv;
 
-    const PRUnichar *params[1] = {text.get()};
-    nsXPIDLString text2;
-    rv = nssComponent->PIPBundleFormatStringFromName(NS_LITERAL_STRING("CertDumpDefOID").get(),
-                                                     params, 1,
-                                                     getter_Copies(text2));
-    text = text2;
-    break;
+    const PRUnichar *params[1] = {text2.get()};
+    rv = nssComponent->PIPBundleFormatStringFromName("CertDumpDefOID",
+                                                     params, 1, text);
   }
   return rv;  
 }
@@ -289,7 +355,7 @@ GetOIDText(SECItem *oid, nsINSSComponent *nssComponent, nsString &text)
 #define SEPARATOR "\n"
 
 nsresult
-ProcessRawBytes(SECItem *data, nsString &text)
+ProcessRawBytes(SECItem *data, nsAString &text)
 {
   // This function is used to display some DER bytes
   // that we have not added support for decoding.
@@ -309,9 +375,9 @@ ProcessRawBytes(SECItem *data, nsString &text)
   return NS_OK;
 }    
 
-nsresult
+static nsresult
 ProcessNSCertTypeExtensions(SECItem  *extData, 
-                            nsString &text,
+                            nsAString &text,
                             nsINSSComponent *nssComponent)
 {
   nsAutoString local;
@@ -320,60 +386,52 @@ ProcessNSCertTypeExtensions(SECItem  *extData,
   decoded.len  = 0;
   if (SECSuccess != SEC_ASN1DecodeItem(nsnull, &decoded, 
 		SEC_ASN1_GET(SEC_BitStringTemplate), extData)) {
-    nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpExtensionFailure").get(),
-                                        local);
+    nssComponent->GetPIPNSSBundleString("CertDumpExtensionFailure", local);
     text.Append(local.get());
     return NS_OK;
   }
   unsigned char nsCertType = decoded.data[0];
   nsMemory::Free(decoded.data);
   if (nsCertType & NS_CERT_TYPE_SSL_CLIENT) {
-    nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("VerifySSLClient").get(),
-                                        local);
+    nssComponent->GetPIPNSSBundleString("VerifySSLClient", local);
     text.Append(local.get());
     text.Append(NS_LITERAL_STRING(SEPARATOR).get());
   }
   if (nsCertType & NS_CERT_TYPE_SSL_SERVER) {
-    nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("VerifySSLServer").get(),
-                                        local);
+    nssComponent->GetPIPNSSBundleString("VerifySSLServer", local);
     text.Append(local.get());
     text.Append(NS_LITERAL_STRING(SEPARATOR).get());
   }
   if (nsCertType & NS_CERT_TYPE_EMAIL) {
-    nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpCertTypeEmail").get(),
-                                        local);
+    nssComponent->GetPIPNSSBundleString("CertDumpCertTypeEmail", local);
     text.Append(local.get());
     text.Append(NS_LITERAL_STRING(SEPARATOR).get());
   }
   if (nsCertType & NS_CERT_TYPE_OBJECT_SIGNING) {
-    nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("VerifyObjSign").get(),
-                                        local);
+    nssComponent->GetPIPNSSBundleString("VerifyObjSign", local);
     text.Append(local.get());
     text.Append(NS_LITERAL_STRING(SEPARATOR).get());
   }
   if (nsCertType & NS_CERT_TYPE_SSL_CA) {
-    nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("VerifySSLCA").get(),
-                                        local);
+    nssComponent->GetPIPNSSBundleString("VerifySSLCA", local);
     text.Append(local.get());
     text.Append(NS_LITERAL_STRING(SEPARATOR).get());
   }
   if (nsCertType & NS_CERT_TYPE_EMAIL_CA) {
-    nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpEmailCA").get(),
-                                        local);
+    nssComponent->GetPIPNSSBundleString("CertDumpEmailCA", local);
     text.Append(local.get());
     text.Append(NS_LITERAL_STRING(SEPARATOR).get());
   }
   if (nsCertType & NS_CERT_TYPE_OBJECT_SIGNING_CA) {
-    nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("VerifyObjSign").get(),
-                                        local);
+    nssComponent->GetPIPNSSBundleString("VerifyObjSign", local);
     text.Append(local.get());
     text.Append(NS_LITERAL_STRING(SEPARATOR).get());
   }
   return NS_OK;
 }
 
-nsresult
-ProcessKeyUsageExtension(SECItem *extData, nsString &text,
+static nsresult
+ProcessKeyUsageExtension(SECItem *extData, nsAString &text,
                          nsINSSComponent *nssComponent)
 {
   nsAutoString local;
@@ -382,52 +440,44 @@ ProcessKeyUsageExtension(SECItem *extData, nsString &text,
   decoded.len  = 0;
   if (SECSuccess != SEC_ASN1DecodeItem(nsnull, &decoded, 
 				SEC_ASN1_GET(SEC_BitStringTemplate), extData)) {
-    nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpExtensionFailure").get(),
-                                        local);
+    nssComponent->GetPIPNSSBundleString("CertDumpExtensionFailure", local);
     text.Append(local.get());
     return NS_OK;
   }
   unsigned char keyUsage = decoded.data[0];
   nsMemory::Free(decoded.data);  
   if (keyUsage & KU_DIGITAL_SIGNATURE) {
-    nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpKUSign").get(),
-                                        local);
+    nssComponent->GetPIPNSSBundleString("CertDumpKUSign", local);
     text.Append(local.get());
     text.Append(NS_LITERAL_STRING(SEPARATOR).get());
   }
   if (keyUsage & KU_NON_REPUDIATION) {
-    nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpKUNonRep").get(),
-                                        local);
+    nssComponent->GetPIPNSSBundleString("CertDumpKUNonRep", local);
     text.Append(local.get());
     text.Append(NS_LITERAL_STRING(SEPARATOR).get());
   }
   if (keyUsage & KU_KEY_ENCIPHERMENT) {
-    nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpKUEnc").get(),
-                                        local);
+    nssComponent->GetPIPNSSBundleString("CertDumpKUEnc", local);
     text.Append(local.get());
     text.Append(NS_LITERAL_STRING(SEPARATOR).get());
   }
   if (keyUsage & KU_DATA_ENCIPHERMENT) {
-    nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpKUDEnc").get(),
-                                        local);
+    nssComponent->GetPIPNSSBundleString("CertDumpKUDEnc", local);
     text.Append(local.get());
     text.Append(NS_LITERAL_STRING(SEPARATOR).get());
   }
   if (keyUsage & KU_KEY_AGREEMENT) {
-    nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpKUKA").get(),
-                                        local);
+    nssComponent->GetPIPNSSBundleString("CertDumpKUKA", local);
     text.Append(local.get());
     text.Append(NS_LITERAL_STRING(SEPARATOR).get());
   }
   if (keyUsage & KU_KEY_CERT_SIGN) {
-    nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpKUCertSign").get(),
-                                        local);
+    nssComponent->GetPIPNSSBundleString("CertDumpKUCertSign", local);
     text.Append(local.get());
     text.Append(NS_LITERAL_STRING(SEPARATOR).get());
   }
   if (keyUsage & KU_CRL_SIGN) {
-    nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpKUCRLSign").get(),
-                                        local);
+    nssComponent->GetPIPNSSBundleString("CertDumpKUCRLSign", local);
     text.Append(local.get());
     text.Append(NS_LITERAL_STRING(SEPARATOR).get());
   }
@@ -435,9 +485,9 @@ ProcessKeyUsageExtension(SECItem *extData, nsString &text,
   return NS_OK;
 }
 
-nsresult
+static nsresult
 ProcessExtensionData(SECOidTag oidTag, SECItem *extData, 
-                     nsString &text, nsINSSComponent *nssComponent)
+                     nsAString &text, nsINSSComponent *nssComponent)
 {
   nsresult rv;
   switch (oidTag) {
@@ -459,7 +509,7 @@ ProcessSingleExtension(CERTCertExtension *extension,
                        nsINSSComponent *nssComponent,
                        nsIASN1PrintableItem **retExtension)
 {
-  nsString text;
+  nsAutoString text;
   GetOIDText(&extension->id, nssComponent, text);
   nsCOMPtr<nsIASN1PrintableItem>extensionItem = new nsNSSASN1PrintableItem();
   if (extensionItem == nsnull)
@@ -470,15 +520,12 @@ ProcessSingleExtension(CERTCertExtension *extension,
   text.Truncate();
   if (extension->critical.data != nsnull) {
     if (extension->critical.data[0]) {
-      nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpCritical").get(),
-                                          text);
+      nssComponent->GetPIPNSSBundleString("CertDumpCritical", text);
     } else {
-      nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpNonCritical").get(),
-                                         text);
+      nssComponent->GetPIPNSSBundleString("CertDumpNonCritical", text);
     }
   } else {
-    nssComponent->GetPIPNSSBundleString(NS_LITERAL_STRING("CertDumpNonCritical").get(),
-                                        text);
+    nssComponent->GetPIPNSSBundleString("CertDumpNonCritical", text);
   }
   text.Append(NS_LITERAL_STRING(SEPARATOR).get());
   nsresult rv = ProcessExtensionData(oidTag, &extension->value, text, 
@@ -495,23 +542,18 @@ ProcessSingleExtension(CERTCertExtension *extension,
 PRUint32 
 getCertType(CERTCertificate *cert)
 {
-  char *nick = cert->nickname;
-  char *email = cert->emailAddr;
   nsNSSCertTrust trust(cert->trust);
-  /*
-fprintf(stderr, "====> nick: %s  email: %s  has-any-user: %d  hash-any-ca: %d  has-peer100: %d  has-peer001: %d\n",
-  nick, email, (nick) ? trust.HasAnyUser() : 0, (nick) ? trust.HasAnyCA() : 0, (nick) ? trust.HasPeer(PR_TRUE, PR_FALSE, PR_FALSE) : 0, 
-  (email) ? trust.HasPeer(PR_FALSE, PR_TRUE, PR_FALSE) : 0 );
-*/
-  if (nick) {
-    if (trust.HasAnyUser())
-      return nsIX509Cert::USER_CERT;
-    if (trust.HasAnyCA() || CERT_IsCACert(cert,NULL))
-      return nsIX509Cert::CA_CERT;
-    if (trust.HasPeer(PR_TRUE, PR_FALSE, PR_FALSE))
-      return nsIX509Cert::SERVER_CERT;
-  }
-  if (email && trust.HasPeer(PR_FALSE, PR_TRUE, PR_FALSE))
+  if (cert->nickname && trust.HasAnyUser())
+    return nsIX509Cert::USER_CERT;
+  if (trust.HasAnyCA())
+    return nsIX509Cert::CA_CERT;
+  if (trust.HasPeer(PR_TRUE, PR_FALSE, PR_FALSE))
+    return nsIX509Cert::SERVER_CERT;
+  if (trust.HasPeer(PR_FALSE, PR_TRUE, PR_FALSE) && cert->emailAddr)
     return nsIX509Cert::EMAIL_CERT;
-  return nsIX509Cert::UNKNOWN_CERT;
+  if (CERT_IsCACert(cert,NULL))
+    return nsIX509Cert::CA_CERT;
+  if (cert->emailAddr)
+    return nsIX509Cert::EMAIL_CERT;
+  return nsIX509Cert::SERVER_CERT;
 }

@@ -68,7 +68,7 @@ public:
   virtual PRInt32 HandleLine(char *line, PRUint32 line_length) = 0;
 };
 
-class NS_MSG_BASE nsMsgLineBuffer : public nsByteArray
+class NS_MSG_BASE nsMsgLineBuffer : public nsMsgLineBufferHandler
 {
 public:
   nsMsgLineBuffer(nsMsgLineBufferHandler *handler, PRBool convertNewlinesP);
@@ -90,6 +90,7 @@ protected:
   nsMsgLineBufferHandler *m_handler;
   PRBool		m_convertNewlinesP;
   PRBool      m_lookingForCRLF; 
+  PRBool    m_ignoreCRLFs;
 };
 
 // I'm adding this utility class here for lack of a better place. This utility class is similar to nsMsgLineBuffer
@@ -113,7 +114,8 @@ public:
   //				 PR_FALSE if you do want to see them.
   // aLineToken -- Specify the line token to look for, by default is LF ('\n') which cover as well CRLF. If
   //            lines are terminated with a CR only, you need to set aLineToken to CR ('\r')
-  nsMsgLineStreamBuffer(PRUint32 aBufferSize, PRBool aAllocateNewLines, PRBool aEatCRLFs = PR_TRUE, char aLineToken = '\n'); // specify the size of the buffer you want the class to use....
+  nsMsgLineStreamBuffer(PRUint32 aBufferSize, PRBool aAllocateNewLines, 
+                        PRBool aEatCRLFs = PR_TRUE, char aLineToken = '\n'); // specify the size of the buffer you want the class to use....
   virtual ~nsMsgLineStreamBuffer();
   
   // Caller must free the line returned using PR_Free
@@ -122,6 +124,7 @@ public:
   // aPauseForMoreData -- There is not enough data in the stream to make a line at this time...
   char * ReadNextLine(nsIInputStream * aInputStream, PRUint32 &anumBytesInLine, PRBool &aPauseForMoreData, nsresult *rv = nsnull);
   nsresult GrowBuffer(PRInt32 desiredSize);
+  PRBool NextLineAvailable();
 protected:
   PRBool m_eatCRLFs;
   PRBool m_allocateNewLines;

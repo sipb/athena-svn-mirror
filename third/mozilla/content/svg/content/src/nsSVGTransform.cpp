@@ -155,9 +155,12 @@ nsSVGTransform::GetValueString(nsAString& aValue)
     case nsIDOMSVGTransform::SVG_TRANSFORM_ROTATE:
       {
         if (mOriginX != 0.0f || mOriginY != 0.0f)
-          nsTextFormatter::snprintf(buf, sizeof(buf)/sizeof(PRUnichar), NS_LITERAL_STRING("rotate(%g, %g, %g)").get(), mAngle, mOriginX, mOriginY);
+          nsTextFormatter::snprintf(buf, sizeof(buf)/sizeof(PRUnichar),
+                                    NS_LITERAL_STRING("rotate(%g, %g, %g)").get(),
+                                    mAngle, mOriginX, mOriginY);
         else
-          nsTextFormatter::snprintf(buf, sizeof(buf)/sizeof(PRUnichar), NS_LITERAL_STRING("rotate(%g)").get(), mAngle);
+          nsTextFormatter::snprintf(buf, sizeof(buf)/sizeof(PRUnichar),
+                                    NS_LITERAL_STRING("rotate(%g)").get(), mAngle);
       }
       break;        
     case nsIDOMSVGTransform::SVG_TRANSFORM_SCALE:
@@ -166,28 +169,41 @@ nsSVGTransform::GetValueString(nsAString& aValue)
         mMatrix->GetA(&sx);
         mMatrix->GetD(&sy);
         if (sy != 0.0f)
-          nsTextFormatter::snprintf(buf, sizeof(buf)/sizeof(PRUnichar), NS_LITERAL_STRING("scale(%g, %g)").get(), sx, sy);
+          nsTextFormatter::snprintf(buf, sizeof(buf)/sizeof(PRUnichar),
+                                    NS_LITERAL_STRING("scale(%g, %g)").get(), sx, sy);
         else
-          nsTextFormatter::snprintf(buf, sizeof(buf)/sizeof(PRUnichar), NS_LITERAL_STRING("scale(%g)").get(), sx);
+          nsTextFormatter::snprintf(buf, sizeof(buf)/sizeof(PRUnichar),
+                                    NS_LITERAL_STRING("scale(%g)").get(), sx);
       }
       break;
     case nsIDOMSVGTransform::SVG_TRANSFORM_SKEWX:
       {
-        float sx;
-        mMatrix->GetC(&sx);
-        nsTextFormatter::snprintf(buf, sizeof(buf)/sizeof(PRUnichar), NS_LITERAL_STRING("skewX(%g)").get(), sx);
+        nsTextFormatter::snprintf(buf, sizeof(buf)/sizeof(PRUnichar),
+                                  NS_LITERAL_STRING("skewX(%g)").get(), mAngle);
       }
       break;
     case nsIDOMSVGTransform::SVG_TRANSFORM_SKEWY:
       {
-        float sy;
-        mMatrix->GetB(&sy);
-        nsTextFormatter::snprintf(buf, sizeof(buf)/sizeof(PRUnichar), NS_LITERAL_STRING("skewY(%g)").get(), sy);
+        nsTextFormatter::snprintf(buf, sizeof(buf)/sizeof(PRUnichar),
+                                  NS_LITERAL_STRING("skewY(%g)").get(), mAngle);
       }
       break;
+    case nsIDOMSVGTransform::SVG_TRANSFORM_MATRIX:
+      {
+        float a,b,c,d,e,f;
+        mMatrix->GetA(&a);
+        mMatrix->GetB(&b);
+        mMatrix->GetC(&c);
+        mMatrix->GetD(&d);
+        mMatrix->GetE(&e);
+        mMatrix->GetF(&f);
+        nsTextFormatter::snprintf(buf, sizeof(buf)/sizeof(PRUnichar),
+                                  NS_LITERAL_STRING("matrix(%g, %g, %g, %g, %g, %g)").get(),
+                                  a, b, c, d, e, f);
+      } 
     default:
       buf[0] = '\0';
-      NS_NOTYETIMPLEMENTED("write me!");
+      NS_ERROR("unknown transformation type");
       break;
   }
 

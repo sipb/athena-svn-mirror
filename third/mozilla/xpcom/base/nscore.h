@@ -67,6 +67,55 @@
 /*----------------------------------------------------------------------*/
 /* Import/export defines */
 
+/**
+ * Using the visibility("hidden") attribute allows the compiler to use
+ * PC-relative addressing to call this function.  If a function does not
+ * access any global data, and does not call any methods which are not either
+ * file-local or hidden, then on ELF systems we avoid loading the address of
+ * the PLT into a register at the start of the function, which reduces code
+ * size and frees up a register for general use.
+ *
+ * As a general rule, this should be used for any non-exported symbol
+ * (including virtual method implementations).  NS_IMETHOD uses this by
+ * default; if you need to have your NS_IMETHOD functions exported, you can
+ * wrap your class as follows:
+ *
+ * #undef  IMETHOD_VISIBILITY
+ * #define IMETHOD_VISIBILITY NS_VISIBILITY_DEFAULT
+ *
+ * class Foo {
+ * ...
+ * };
+ *
+ * #undef  IMETHOD_VISIBILITY
+ * #define IMETHOD_VISIBILITY NS_VISIBILITY_HIDDEN
+ *
+ * Don't forget to change the visibility back to hidden before the end
+ * of a header!
+ *
+ * Other examples:
+ *
+ * NS_HIDDEN_(int) someMethod();
+ * SomeCtor() NS_HIDDEN;
+ */
+
+#ifdef HAVE_VISIBILITY_ATTRIBUTE
+#define NS_VISIBILITY_HIDDEN   __attribute__ ((visibility ("hidden")))
+#define NS_VISIBILITY_DEFAULT
+
+#define NS_HIDDEN_(type)   NS_VISIBILITY_HIDDEN type
+#else
+#define NS_VISIBILITY_HIDDEN
+#define NS_VISIBILITY_DEFAULT
+
+#define NS_HIDDEN_(type)   type
+#endif
+
+#define NS_HIDDEN           NS_VISIBILITY_HIDDEN
+
+#undef  IMETHOD_VISIBILITY
+#define IMETHOD_VISIBILITY  NS_VISIBILITY_HIDDEN
+
 #ifdef NS_WIN32
 
 #define NS_IMPORT __declspec(dllimport)
@@ -97,7 +146,7 @@
 #define NS_IMPORT_(type) type
 #define NS_EXPORT
 #define NS_EXPORT_(type) type
-#define NS_IMETHOD_(type) virtual type
+#define NS_IMETHOD_(type) virtual IMETHOD_VISIBILITY type
 #define NS_IMETHODIMP_(type) type
 #define NS_METHOD_(type) type
 #define NS_CALLBACK_(_type, _name) _type (* _name)
@@ -318,6 +367,28 @@ typedef PRUint32 nsresult;
 
 #define NS_PTR_TO_INT32(x) ((char *)(x) - (char *)0)
 #define NS_INT32_TO_PTR(x) ((void *)((char *)0 + (x)))
+
+/*
+ * These macros allow you to give a hint to the compiler about branch
+ * probability so that it can better optimize.  Use them like this:
+ *
+ *  if (NS_LIKELY(v == 1)) {
+ *    ... expected code path ...
+ *  }
+ *
+ *  if (NS_UNLIKELY(v == 0)) {
+ *    ... non-expected code path ...
+ *  }
+ *
+ */
+
+#if defined(__GNUC__) && (__GNUC__ > 2)
+#define NS_LIKELY(x)    (__builtin_expect((x), 1))
+#define NS_UNLIKELY(x)  (__builtin_expect((x), 0))
+#else
+#define NS_LIKELY(x)    (x)
+#define NS_UNLIKELY(x)  (x)
+#endif
 
 #endif /* nscore_h___ */
 

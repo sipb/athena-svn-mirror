@@ -51,7 +51,7 @@ class nsIEventListenerManager;
 class nsIURI;
 class nsIDocShell;
 
-class nsXMLElement : public nsGenericContainerElement,
+class nsXMLElement : public nsGenericElement,
                      public nsIDOMElement
 {
 public:
@@ -62,10 +62,10 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
   // nsIDOMNode
-  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericContainerElement::)
+  NS_FORWARD_NSIDOMNODE_NO_CLONENODE(nsGenericElement::)
 
   // nsIDOMElement
-  NS_FORWARD_NSIDOMELEMENT(nsGenericContainerElement::)
+  NS_FORWARD_NSIDOMELEMENT(nsGenericElement::)
 
   // nsIXMLContent
   NS_IMETHOD MaybeTriggerAutoLink(nsIDocShell *aShell);
@@ -74,17 +74,18 @@ public:
   NS_IMETHOD GetID(nsIAtom** aResult) const;
 
   // nsIContent
-  NS_IMETHOD SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
-                     const nsAString& aValue,
-                     PRBool aNotify);
-  NS_IMETHOD SetAttr(nsINodeInfo *aNodeInfo,
-                     const nsAString& aValue,
-                     PRBool aNotify);
-  NS_IMETHOD HandleDOMEvent(nsIPresContext* aPresContext,
-                            nsEvent* aEvent,
-                            nsIDOMEvent** aDOMEvent,
-                            PRUint32 aFlags,
-                            nsEventStatus* aEventStatus);
+  nsresult SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
+                   const nsAString& aValue, PRBool aNotify)
+  {
+    return SetAttr(aNameSpaceID, aName, nsnull, aValue, aNotify);
+  }
+  virtual nsresult SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
+                           nsIAtom* aPrefix, const nsAString& aValue,
+                           PRBool aNotify);
+  virtual nsresult HandleDOMEvent(nsIPresContext* aPresContext,
+                                  nsEvent* aEvent, nsIDOMEvent** aDOMEvent,
+                                  PRUint32 aFlags,
+                                  nsEventStatus* aEventStatus);
 
 protected:
   PRBool mIsLink;

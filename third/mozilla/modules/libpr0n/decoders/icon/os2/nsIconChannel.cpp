@@ -18,6 +18,7 @@
  *
  * Contributor(s):
  *   Scott MacGregor <mscott@netscape.com>
+ *   Neil Rashbrook <neil@parkwaycc.co.uk>
  *   IBM Corp.
  */
 
@@ -39,16 +40,13 @@
 #include "nsIMIMEService.h"
 #include "nsCExternalHandlerService.h"
 
-// we need windows.h to read out registry information...
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #define INCL_WINWORKPLACE
 #define INCL_WIN
 #define INCL_PM
 #define INCL_DEV
 #define INCL_GPI
 #include <os2.h>
+#include <stdlib.h> // for getenv
 
 // From Windows
 #define SHGFI_ICON               0x0001
@@ -69,21 +67,25 @@ PRUint32 CalcWordAlignedRowSpan(PRUint32  aWidth, PRUint32 aBitCount);
 // nsIconChannel methods
 nsIconChannel::nsIconChannel()
 {
-  mStatus = NS_OK;
 }
 
 nsIconChannel::~nsIconChannel()
 {}
 
-NS_IMPL_THREADSAFE_ISUPPORTS2(nsIconChannel,
+NS_IMPL_THREADSAFE_ISUPPORTS4(nsIconChannel, 
                               nsIChannel,
-                              nsIRequest)
+                              nsIRequest,
+                              nsIRequestObserver,
+                              nsIStreamListener)
 
 nsresult nsIconChannel::Init(nsIURI* uri)
 {
   NS_ASSERTION(uri, "no uri");
   mUrl = uri;
-  return NS_OK;
+
+  nsresult rv;
+  mPump = do_CreateInstance(NS_INPUTSTREAMPUMP_CONTRACTID, &rv);
+  return rv;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -91,40 +93,55 @@ nsresult nsIconChannel::Init(nsIURI* uri)
 
 NS_IMETHODIMP nsIconChannel::GetName(nsACString &result)
 {
-  return NS_ERROR_NOT_IMPLEMENTED;
+  return mUrl->GetSpec(result);
 }
 
 NS_IMETHODIMP nsIconChannel::IsPending(PRBool *result)
 {
-  NS_NOTREACHED("nsIconChannel::IsPending");
-  return NS_ERROR_NOT_IMPLEMENTED;
+  return mPump->IsPending(result);
 }
 
 NS_IMETHODIMP nsIconChannel::GetStatus(nsresult *status)
 {
-  *status = mStatus;
-  return NS_OK;
+  return mPump->GetStatus(status);
 }
 
 NS_IMETHODIMP nsIconChannel::Cancel(nsresult status)
 {
-  NS_ASSERTION(NS_FAILED(status), "shouldn't cancel with a success code");
-  nsresult rv = NS_ERROR_FAILURE;
-
-  mStatus = status;
-  return rv;
+  return mPump->Cancel(status);
 }
 
 NS_IMETHODIMP nsIconChannel::Suspend(void)
 {
-  NS_NOTREACHED("nsIconChannel::Suspend");
-  return NS_ERROR_NOT_IMPLEMENTED;
+  return mPump->Suspend();
 }
 
 NS_IMETHODIMP nsIconChannel::Resume(void)
 {
-  NS_NOTREACHED("nsIconChannel::Resume");
-  return NS_ERROR_NOT_IMPLEMENTED;
+  return mPump->Resume();
+}
+
+NS_IMETHODIMP nsIconChannel::GetLoadGroup(nsILoadGroup* *aLoadGroup)
+{
+  *aLoadGroup = mLoadGroup;
+  NS_IF_ADDREF(*aLoadGroup);
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsIconChannel::SetLoadGroup(nsILoadGroup* aLoadGroup)
+{
+  mLoadGroup = aLoadGroup;
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsIconChannel::GetLoadFlags(PRUint32 *aLoadAttributes)
+{
+  return mPump->GetLoadFlags(aLoadAttributes);
+}
+
+NS_IMETHODIMP nsIconChannel::SetLoadFlags(PRUint32 aLoadAttributes)
+{
+  return mPump->SetLoadFlags(aLoadAttributes);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -153,7 +170,7 @@ NS_IMETHODIMP nsIconChannel::GetURI(nsIURI* *aURI)
 NS_IMETHODIMP
 nsIconChannel::Open(nsIInputStream **_retval)
 {
-  return NS_ERROR_FAILURE;
+  return MakeInputStream(_retval, PR_FALSE);
 }
 
 void InvertRows(PBYTE aInitialBuffer, PRUint32 sizeOfBuffer, PRUint32 numBytesPerRow)
@@ -198,12 +215,11 @@ nsresult nsIconChannel::ExtractIconInfoFromUrl(nsIFile ** aLocalFile, PRUint32 *
   nsCOMPtr<nsIFile> file;
   rv = fileURL->GetFile(getter_AddRefs(file));
   if (NS_FAILED(rv) || !file) return NS_OK;
-
+  
   *aLocalFile = file;
   NS_IF_ADDREF(*aLocalFile);
   return NS_OK;
 }
-
 
 INT AddBGR(PRGB2 pColorTableEntry, nsCString& iconBuffer)
 {
@@ -248,7 +264,7 @@ void ConvertColorBitMap(PBYTE buffer, PBITMAPINFO2 pBitMapInfo, nsCString& iconB
     {
       iIter = pBitMapInfo->cx;  // Bytes = Pels
     }
-    for (INT j = 0; j < pBitMapInfo->cy; j++)  //Number of rows
+    for (ULONG j = 0; j < pBitMapInfo->cy; j++)  //Number of rows
     {
       pPelPair = buffer;
       pPel     = (PBYTE)buffer;
@@ -269,7 +285,7 @@ void ConvertColorBitMap(PBYTE buffer, PBITMAPINFO2 pBitMapInfo, nsCString& iconB
       }
       if (numBytesPaddingPerRowRGB)
       {
-        for (INT k = 0; k < numBytesPaddingPerRowRGB; k++)
+        for (PRUint32 k = 0; k < numBytesPaddingPerRowRGB; k++)
         {
           iconBuffer.Append((char) 0);
         }
@@ -374,6 +390,29 @@ void ConvertMaskBitMap(PBYTE aBitMaskBuffer, PBITMAPINFO2 pBitMapInfo, nsCString
 
 NS_IMETHODIMP nsIconChannel::AsyncOpen(nsIStreamListener *aListener, nsISupports *ctxt)
 {
+  nsCOMPtr<nsIInputStream> inStream;
+  nsresult rv = MakeInputStream(getter_AddRefs(inStream), PR_TRUE);
+  if (NS_FAILED(rv))
+    return rv;
+
+  // Init our streampump
+  rv = mPump->Init(inStream, -1, -1, 0, 0, PR_FALSE);
+  if (NS_FAILED(rv))
+    return rv;
+
+  rv = mPump->AsyncRead(this, ctxt);
+  if (NS_SUCCEEDED(rv)) {
+    // Store our real listener
+    mListener = aListener;
+    // Add ourself to the load group, if available
+    if (mLoadGroup)
+      mLoadGroup->AddRequest(this, nsnull);
+  }
+  return rv;
+}
+
+nsresult nsIconChannel::MakeInputStream(nsIInputStream** _retval, PRBool nonBlocking)
+{
   nsXPIDLCString contentType;
   nsCAutoString filePath;
   nsCOMPtr<nsIFile> localFile; // file we want an icon for
@@ -400,26 +439,41 @@ NS_IMETHODIMP nsIconChannel::AsyncOpen(nsIStreamListener *aListener, nsISupports
   else
     infoFlags |= SHGFI_SMALLICON;
 
-  if ( (filePath.IsEmpty()) && (contentType.get() && *contentType.get()) ) // if we have a content type without a file extension...then use it!
+  // if we have a content type... then use it! but for existing files, we want
+  // to show their real icon.
+  if (!fileExists && !contentType.IsEmpty())
   {
     nsCOMPtr<nsIMIMEService> mimeService (do_GetService(NS_MIMESERVICE_CONTRACTID, &rv));
-    nsCOMPtr<nsIMIMEInfo> mimeObject;
     NS_ENSURE_SUCCESS(rv, rv);
 
-    mimeService->GetFromTypeAndExtension(contentType.get(), nsnull, getter_AddRefs(mimeObject));
-    if (mimeObject)
-    {
-      nsXPIDLCString fileExt;
-      mimeObject->GetPrimaryExtension(getter_Copies(fileExt));
-      // we need to insert a '.' b4 the extension...
-      filePath = NS_LITERAL_CSTRING(".") + fileExt;
-    }
+    nsXPIDLCString fileExt;
+    mimeService->GetPrimaryExtension(contentType.get(), nsnull, getter_Copies(fileExt));
+    // If the mime service does not know about this mime type, we show
+    // the generic icon.
+    // In any case, we need to insert a '.' before the extension.
+    filePath = NS_LITERAL_CSTRING(".") + fileExt;
   }
 
   // (1) get an hIcon for the file
   PSZ pszFileName = (PSZ)filePath.get();
   HPOINTER hIcon = WinLoadFileIcon(pszFileName, FALSE);
-  if (hIcon == NULL)
+  if ((hIcon == NULLHANDLE) && (pszFileName[0] == '.')) {
+    /* Just trying to get an icon for an extension */
+    /* Create a temporary file to try to get an icon */
+    char* tmpdir = getenv("TMP");
+    if (tmpdir) {
+      char tmpfile[CCHMAXPATH];
+      strcpy(tmpfile, tmpdir);
+      strcat(tmpfile, pszFileName);
+      FILE* fp = fopen(tmpfile, "wb+");
+      if (fp) {
+        fclose(fp);
+        hIcon = WinLoadFileIcon(tmpfile, FALSE);
+        remove(tmpfile);
+      }
+    }
+  }
+  if (hIcon == NULLHANDLE)
     return NS_ERROR_FAILURE;
   // we got a handle to an icon. Now we want to get a bitmap for the icon using GetIconInfo....
   POINTERINFO IconInfo;
@@ -525,17 +579,18 @@ NS_IMETHODIMP nsIconChannel::AsyncOpen(nsIStreamListener *aListener, nsISupports
       pBitMapInfo->cSize1  =  iScanLineSize;
       ConvertMaskBitMap(buffer, pBitMapInfo, iconBuffer);
 
-      // turn our nsString into a stream looking object...
-      aListener->OnStartRequest(this, ctxt);
-
-      // turn our string into a stream...and make the appropriate calls on our consumer
-      nsCOMPtr<nsIInputStream> inputStr;
-      rv = NS_NewByteInputStream(getter_AddRefs(inputStr), iconBuffer.get(),
-                                 iconBuffer.Length());
-      if (NS_SUCCEEDED(rv))
-          aListener->OnDataAvailable(this, ctxt, inputStr, 0,
-                                     iconBuffer.Length());
-      aListener->OnStopRequest(this, ctxt, rv);
+      // Now, create a pipe and stuff our data into it
+      nsCOMPtr<nsIInputStream> inStream;
+      nsCOMPtr<nsIOutputStream> outStream;
+      rv = NS_NewPipe(getter_AddRefs(inStream), getter_AddRefs(outStream),
+                      iconBuffer.Length(), iconBuffer.Length(), nonBlocking);
+      if (NS_SUCCEEDED(rv)) {
+        PRUint32 written;
+        rv = outStream->Write(iconBuffer.get(), iconBuffer.Length(), &written);
+        if (NS_SUCCEEDED(rv)) {
+          NS_ADDREF(*_retval = inStream);
+        }
+      }
     } // if we have a mask buffer to apply
 
   } // if we got color info
@@ -554,18 +609,6 @@ NS_IMETHODIMP nsIconChannel::AsyncOpen(nsIStreamListener *aListener, nsISupports
     WinFreeFileIcon(hIcon);
 
   return rv;
-}
-
-NS_IMETHODIMP nsIconChannel::GetLoadFlags(PRUint32 *aLoadAttributes)
-{
-  *aLoadAttributes = mLoadAttributes;
-  return NS_OK;
-}
-
-NS_IMETHODIMP nsIconChannel::SetLoadFlags(PRUint32 aLoadAttributes)
-{
-  mLoadAttributes = aLoadAttributes;
-  return NS_OK;
 }
 
 NS_IMETHODIMP nsIconChannel::GetContentType(nsACString &aContentType) 
@@ -608,19 +651,6 @@ NS_IMETHODIMP nsIconChannel::SetContentLength(PRInt32 aContentLength)
   return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-NS_IMETHODIMP nsIconChannel::GetLoadGroup(nsILoadGroup* *aLoadGroup)
-{
-  *aLoadGroup = mLoadGroup;
-  NS_IF_ADDREF(*aLoadGroup);
-  return NS_OK;
-}
-
-NS_IMETHODIMP nsIconChannel::SetLoadGroup(nsILoadGroup* aLoadGroup)
-{
-  mLoadGroup = aLoadGroup;
-  return NS_OK;
-}
-
 NS_IMETHODIMP nsIconChannel::GetOwner(nsISupports* *aOwner)
 {
   *aOwner = mOwner.get();
@@ -653,3 +683,36 @@ NS_IMETHODIMP nsIconChannel::GetSecurityInfo(nsISupports * *aSecurityInfo)
   return NS_OK;
 }
 
+// nsIRequestObserver methods
+NS_IMETHODIMP nsIconChannel::OnStartRequest(nsIRequest* aRequest, nsISupports* aContext)
+{
+  if (mListener)
+    return mListener->OnStartRequest(this, aContext);
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsIconChannel::OnStopRequest(nsIRequest* aRequest, nsISupports* aContext, nsresult aStatus)
+{
+  if (mListener) {
+    mListener->OnStopRequest(this, aContext, aStatus);
+    mListener = nsnull;
+  }
+
+  // Remove from load group
+  if (mLoadGroup)
+    mLoadGroup->RemoveRequest(this, nsnull, aStatus);
+
+  return NS_OK;
+}
+
+// nsIStreamListener methods
+NS_IMETHODIMP nsIconChannel::OnDataAvailable(nsIRequest* aRequest,
+                                             nsISupports* aContext,
+                                             nsIInputStream* aStream,
+                                             PRUint32 aOffset,
+                                             PRUint32 aCount)
+{
+  if (mListener)
+    return mListener->OnDataAvailable(this, aContext, aStream, aOffset, aCount);
+  return NS_OK;
+}

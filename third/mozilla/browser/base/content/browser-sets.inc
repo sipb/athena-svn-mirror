@@ -36,6 +36,8 @@
 # ***** END LICENSE BLOCK *****
 
   <stringbundleset id="stringbundleset"> 
+    <stringbundle id="bundle_brand" src="chrome://global/locale/brand.properties"/>
+    <stringbundle id="bundle_shell" src="chrome://browser/locale/shellservice.properties"/>
     <stringbundle id="bundle_browser" src="chrome://browser/locale/browser.properties"/>
     <stringbundle id="bundle_browser_region" src="chrome://browser-region/locale/region.properties"/>
     <stringbundle id="findBundle" src="chrome://global/locale/finddialog.properties"/>
@@ -76,8 +78,14 @@
     <command id="cmd_newNavigatorTab" oncommand="BrowserOpenTab();"/>
     <command id="Browser:OpenFile"  oncommand="BrowserOpenFileWindow();"/>
     <command id="Browser:SavePage" oncommand="saveDocument(window._content.document);"/>
-    <command id="Browser:SendLink" oncommand="sendLink(Components.lookupMethod(window._content, 'location').call(window._content).href,
-                                              Components.lookupMethod(window._content.document, 'title').call(window._content.document));"/>
+
+    <command id="Browser:SendLink" oncommand="MailIntegration.sendLinkForContent();"/>
+    <command id="Browser:NewMessage" oncommand="MailIntegration.sendMessage('', '');"/>
+#ifdef XP_WIN
+    <command id="Browser:ReadMail" oncommand="MailIntegration.readMail();"/>
+    <command id="Browser:ReadNews" oncommand="MailIntegration.readNews();"/>
+#endif
+
     <command id="cmd_print" oncommand="PrintUtils.print();"/>
     <command id="cmd_close" oncommand="BrowserCloseTabOrWindow()"/>
     <command id="cmd_closeWindow" oncommand="BrowserCloseWindow()"/>
@@ -162,6 +170,8 @@
     <key id="key_newNavigatorTab" key="&tabCmd.commandkey;" modifiers="accel" command="cmd_newNavigatorTab"/>
     <key id="focusURLBar" key="&openCmd.commandkey;" command="Browser:OpenLocation"
          modifiers="accel"/>
+    <key id="focusURLBar2" key="&urlbar.accesskey;" command="Browser:OpenLocation"
+         modifiers="alt"/>
 #ifdef XP_UNIX
 #ifndef XP_MACOSX
     <key id="focusSearchBar" key="&searchFocusUnix.commandkey;" oncommand="focusSearchBar();" modifiers="accel"/>
@@ -194,18 +204,20 @@
     <key id="key_delete" keycode="VK_DELETE" command="cmd_delete"/>
 
 #ifdef XP_WIN
-    <key id="key_selectAll" key="&selectAllCmd.key;" modifiers="accel"/>
-    <key id="goBackKb"  keycode="VK_LEFT" command="Browser:Back" modifiers="alt"/>
-    <key id="goForwardKb"  keycode="VK_RIGHT" command="Browser:Forward" modifiers="alt"/>
     <key keycode="VK_BACK" command="cmd_handleBackspace"/>
     <key keycode="VK_BACK" command="Browser:Forward" modifiers="shift"/>
-
-    <key id="goHome" keycode="VK_HOME" command="Browser:Home" modifiers="alt"/>
-
-    <key id="key_fullScreen" keycode="VK_F11" command="View:FullScreen"/>
+#endif
+#ifdef XP_UNIX
+    <key key="&goBackCmd.commandKey;" command="Browser:Back" modifiers="accel"/>
+    <key key="&goForwardCmd.commandKey;" command="Browser:Forward" modifiers="accel"/>
+#ifdef XP_MACOSX
+    <key id="key_selectAll" key="&selectAllCmd.key;" modifiers="accel"/>
 #else
     <key id="key_selectAll" key="&selectAllCmd.key;" modifiers="alt"/>
-    
+#endif
+#else
+    <key id="key_selectAll" key="&selectAllCmd.key;" modifiers="accel"/>
+#endif
 #ifdef XP_MACOSX
     <key id="goBackKb"  keycode="VK_LEFT" command="Browser:Back" modifiers="accel"/>
     <key id="goForwardKb"  keycode="VK_RIGHT" command="Browser:Forward" modifiers="accel"/>
@@ -213,13 +225,8 @@
     <key id="goBackKb"  keycode="VK_LEFT" command="Browser:Back" modifiers="alt"/>
     <key id="goForwardKb"  keycode="VK_RIGHT" command="Browser:Forward" modifiers="alt"/>
 #endif
-
-    <key key="&goBackCmd.commandKey;" command="Browser:Back" modifiers="accel"/>
-    <key key="&goForwardCmd.commandKey;" command="Browser:Forward" modifiers="accel"/>
-
     <key id="goHome" keycode="VK_HOME" command="Browser:Home" modifiers="alt"/>
     <key id="key_fullScreen" keycode="VK_F11" command="View:FullScreen"/>
-#endif
     <key keycode="VK_F5" oncommand="BrowserReload();"/>
     <key keycode="VK_F5" modifiers="control" oncommand="BrowserReloadSkipCache();"/>
     <key id="key_reload"  key="&reloadCmd.commandkey;" oncommand="BrowserReload();" modifiers="accel"/>
@@ -237,13 +244,11 @@
     <key keycode="&findAgainCmd.commandkey2;"  command="cmd_findPrevious" modifiers="shift"/>
 
     <key id="addBookmarkAsKb" key="&addCurPageAsCmd.commandkey;" command="Browser:AddBookmarkAs" modifiers="accel"/>
-    <key id="viewBookmarksSidebarKb" key="&manBookmarksCmd.commandkey;" command="viewBookmarksSidebar" modifiers="accel"/>
-
 #ifdef XP_WIN
-# Ctrl+I is conventially mapped to Info on MacOS X, thus it should not be 
-# overridden for other purposes there. 
+# Cmd+I is conventially mapped to Info on MacOS X, thus it should not be overridden for other purposes there.
     <key id="viewBookmarksSidebarKb" key="&manBookmarksWinCmd.commandkey;" command="viewBookmarksSidebar" modifiers="accel"/>
 #endif
+    <key id="viewBookmarksSidebarKb" key="&manBookmarksCmd.commandkey;" command="viewBookmarksSidebar" modifiers="accel"/>
 
     <key id="key_stop" keycode="VK_ESCAPE" command="Browser:Stop"/>
 #ifdef XP_MACOSX
@@ -253,6 +258,8 @@
 #endif
 
     <key id="key_openDownloads"   key="&downloads.commandkey;"           command="Tools:Downloads" modifiers="accel"/>
+
+    <key id="key_newMessage" key="&sendMessage.commandkey;" command="Browser:NewMessage" modifiers="accel"/>
 
     <key id="key_textZoomReduce"  key="&textZoomReduceCmd.commandkey;"   command="cmd_textZoomReduce"  modifiers="accel"/>
     <key id="key_textZoomEnlarge" key="&textZoomEnlargeCmd.commandkey;"  command="cmd_textZoomEnlarge" modifiers="accel"/>

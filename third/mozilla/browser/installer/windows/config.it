@@ -279,7 +279,7 @@ Sub Title=Where $ProductName$ will be installed.
 Message0=$ProductName$ will be installed into the following folder:
 
 [Dialog Upgrade]
-Show Dialog=TRUE
+Show Dialog=FALSE
 Show In Easy Install=FALSE
 ;*** LOCALIZE ME BABY ***
 Title=Upgrade
@@ -287,12 +287,16 @@ Title=Upgrade
 Sub Title=Upgrades an existing $ProductName$ installation.
 ;*** LOCALIZE ME BABY ***
 Message Cleanup=A previous $ProductNameInternal$ installation has been found in the chosen folder.
+; XXXben - we need a strategy for uninstallation that obviates the need for "Safe Upgrade" which can doing nasty things if you have installed the app into a stupid location.
 ;*** LOCALIZE ME BABY ***
-Checkbox Clean Install=Perform a Safe Upgrade
+;Checkbox Clean Install=Perform a Safe Upgrade
+Checkbox Clean Install=Perform a Clean Install
 ;*** LOCALIZE ME BABY ***
-Message Clean Install=A Safe Upgrade will completely remove the old installation. Any third party components you have installed will be lost. This is recommended as it may prevent incompatibilities. 
+;Message Clean Install=A Safe Upgrade will completely remove the old installation. Any third party components you have installed will be lost. This is recommended as it may prevent incompatibilities. 
+Message Clean Install=A Clean Install will COMPLETELY REMOVE the contents of the install folder! Any third party components you have installed will be lost. This is recommended as it may prevent incompatibilities. (XXXben) 
 ;*** LOCALIZE ME BABY ***
-Message Install Over=If you choose not to perform a Safe Upgrade, third party components will not be removed, which may cause unpredictable behavior. 
+;Message Install Over=If you choose not to perform a Safe Upgrade, third party components will not be removed, which may cause unpredictable behavior. 
+Message Install Over=If you choose not to perform a Clean Install, third party components will not be removed, which may cause unpredictable behavior. 
 ;*** LOCALIZE ME BABY ***
 Message Install Over Windir=A Safe Upgrade of $ProductNameInternal$ cannot be performed because the program is installed within the Windows folder. It is recommended that you choose another folder to install $ProductNameInternal$ into. 
 
@@ -477,7 +481,7 @@ Message Retry0=Some files have failed the CRC check and are being downloaded aga
 Show Dialog=AUTO
 
 [Check Instance0]
-Class Name=MozillaMessageWindow
+Class Name=FirefoxMessageWindow
 Window Name=
 Process Name=$MainExeFile$
 Pretty Name=$ProductNameInternal$
@@ -493,41 +497,11 @@ Message wait=Shutting down $ProductNameInternal$.  Please wait...
 Close All Process Windows=TRUE
 
 ; These keys are not normally necessary for checking instances.  They are
-; set here because Mozilla requires a way to shut down it's turbo mode.
+; set here because Mozilla requires a way to shut down its turbo mode.
 Extra Cmd0 Reg Key Root=HKEY_LOCAL_MACHINE
 Extra Cmd0 Reg Key=Software\Microsoft\Windows\CurrentVersion\App Paths\$MainExeFile$
 Extra Cmd0 Reg Name=
 Extra Cmd0 Parameter=-kill
-
-[Check Instance1]
-Class Name=Netscape6MessageWindow
-Window Name=
-Process Name=Netscp.exe
-Pretty Name=Netscape
-;*** LOCALIZE ME BABY ***
-Message=Download of $ProductName$ was successful. However, Netscape must be closed to proceed with this installation. Click OK to exit Netscape automatically and to begin installation.
-;*** LOCALIZE ME BABY ***
-Message Full Installer=Netscape must be closed to proceed with this installation. Click OK to exit Netscape automatically and to begin installation.
-;*** LOCALIZE ME BABY ***
-Message wait=Shutting down Netscape.  Please wait...
-
-; This key indicates whether or not to close all the windows associated with
-; the process id of this app instance window found.
-Close All Process Windows=TRUE
-
-; These keys are not normally necessary for checking instances.  They are
-; set here because Netscape 6 requires a way to shut down it's turbo mode.
-; This will stop at the first one that succeeds (key and file found).
-Extra Cmd0 Reg Key Root=HKEY_LOCAL_MACHINE
-Extra Cmd0 Reg Key=Software\Microsoft\Windows\CurrentVersion\App Paths\Netscp6.exe
-Extra Cmd0 Reg Name=
-Extra Cmd0 Parameter=-kill
-
-Extra Cmd1 Reg Key Root=HKEY_LOCAL_MACHINE
-Extra Cmd1 Reg Key=Software\Microsoft\Windows\CurrentVersion\App Paths\Netscp.exe
-Extra Cmd1 Reg Name=
-Extra Cmd1 Parameter=-kill
-
 
 ;DependeeX=Component A means
 ;  - if Component A gets checked this component gets checked

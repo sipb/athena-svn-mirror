@@ -25,6 +25,9 @@
 #include "nsDTDUtils.h"
 #include "nsVoidArray.h"
 
+extern "C" int MOZ_XMLIsLetter(const char* ptr);
+extern "C" int MOZ_XMLIsNCNameChar(const char* ptr);
+
 class nsParserService : public nsIParserService {
 public:
   nsParserService();
@@ -48,7 +51,7 @@ public:
   NS_IMETHOD IsContainer(PRInt32 aId, PRBool& aIsContainer) const;
   NS_IMETHOD IsBlock(PRInt32 aId, PRBool& aIsBlock) const;
 
-   // Observer mechanism5
+   // Observer mechanism
   NS_IMETHOD RegisterObserver(nsIElementObserver* aObserver,
                               const nsAString& aTopic,
                               const eHTMLTags* aTags = nsnull);
@@ -57,6 +60,19 @@ public:
                                 const nsAString& aTopic);
   NS_IMETHOD GetTopicObservers(const nsAString& aTopic,
                                nsIObserverEntry** aEntry);
+
+  nsresult CheckQName(const nsASingleFragmentString& aQName,
+                      PRBool aNamespaceAware, const PRUnichar** aColon);
+
+  PRBool IsXMLLetter(PRUnichar aChar)
+  {
+    return MOZ_XMLIsLetter(NS_REINTERPRET_CAST(const char*, &aChar));
+  }
+  PRBool IsXMLNCNameChar(PRUnichar aChar)
+  {
+    return MOZ_XMLIsNCNameChar(NS_REINTERPRET_CAST(const char*, &aChar));
+  }
+
 protected:
   nsObserverEntry* GetEntry(const nsAString& aTopic);
   nsresult CreateEntry(const nsAString& aTopic,

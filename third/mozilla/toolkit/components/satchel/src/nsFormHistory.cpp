@@ -1,3 +1,4 @@
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: NPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -55,9 +56,12 @@
 #include "nsIDOMHTMLInputElement.h"
 #include "nsIDOMHTMLCollection.h"
 #include "nsIPrefService.h"
+#include "nsIPrefBranch.h"
+#include "nsIPrefBranchInternal.h"
 #include "nsVoidArray.h"
 
-#define PREF_FORMFILL_ENABLE "browser.formfill.enable"
+#define PREF_FORMFILL_BRANCH "browser.formfill."
+#define PREF_FORMFILL_ENABLE "enable"
 
 static const char *kFormHistoryFileName = "formhistory.dat";
 
@@ -75,6 +79,9 @@ NS_IMPL_THREADSAFE_RELEASE(nsFormHistory)
 mdb_column nsFormHistory::kToken_ValueColumn = 0;
 mdb_column nsFormHistory::kToken_NameColumn = 0;
 
+PRBool nsFormHistory::gFormHistoryEnabled = PR_FALSE;
+PRBool nsFormHistory::gPrefsInitialized = PR_FALSE;
+
 nsFormHistory::nsFormHistory() :
   mEnv(nsnull),
   mStore(nsnull),
@@ -91,7 +98,7 @@ nsresult
 nsFormHistory::Init()
 {
   gFormHistory = this;
-  
+
   nsCOMPtr<nsIObserverService> service = do_GetService("@mozilla.org/observer-service;1");
   if (service)
     service->AddObserver(this, NS_FORMSUBMIT_SUBJECT, PR_TRUE);
@@ -130,6 +137,25 @@ nsFormHistory::ReleaseInstance()
 {
   NS_IF_RELEASE(gFormHistory);
 }
+
+/* static */ PRBool
+nsFormHistory::FormHistoryEnabled()
+{
+  if (!gPrefsInitialized) {
+    nsCOMPtr<nsIPrefService> prefService = do_GetService(NS_PREFSERVICE_CONTRACTID);
+    nsCOMPtr<nsIPrefBranch> branch;
+    prefService->GetBranch(PREF_FORMFILL_BRANCH, getter_AddRefs(branch));
+    branch->GetBoolPref(PREF_FORMFILL_ENABLE, &gFormHistoryEnabled);
+
+    nsCOMPtr<nsIPrefBranchInternal> branchInternal = do_QueryInterface(branch);
+    branchInternal->AddObserver(PREF_FORMFILL_BRANCH, gFormHistory, PR_TRUE);
+
+    gPrefsInitialized = PR_TRUE;
+  }
+
+  return gFormHistoryEnabled;
+}
+
 
 ////////////////////////////////////////////////////////////////////////
 //// nsIFormHistory
@@ -195,6 +221,9 @@ nsFormHistory::GetValueAt(PRUint32 aIndex, nsAString &aValue)
 NS_IMETHODIMP
 nsFormHistory::AddEntry(const nsAString &aName, const nsAString &aValue)
 {
+  nsresult rv = OpenDatabase(); // lazily ensure that the database is open
+  NS_ENSURE_SUCCESS(rv, rv);
+
   nsCOMPtr<nsIMdbRow> row;
   AppendRow(aName, aValue, getter_AddRefs(row));
   return NS_OK;
@@ -308,6 +337,11 @@ nsFormHistory::EntryExists(const nsAString &aName, const nsAString &aValue, PRBo
 NS_IMETHODIMP
 nsFormHistory::Observe(nsISupports *aSubject, const char *aTopic, const PRUnichar *aData) 
 {
+  if (!strcmp(aTopic, NS_PREFBRANCH_PREFCHANGE_TOPIC_ID)) {
+    nsCOMPtr<nsIPrefBranch> branch = do_QueryInterface(aSubject);
+    branch->GetBoolPref(PREF_FORMFILL_ENABLE, &gFormHistoryEnabled);
+  }
+
   return NS_OK;
 }
 
@@ -317,46 +351,42 @@ nsFormHistory::Observe(nsISupports *aSubject, const char *aTopic, const PRUnicha
 NS_IMETHODIMP
 nsFormHistory::Notify(nsIContent* aFormNode, nsIDOMWindowInternal* aWindow, nsIURI* aActionURL, PRBool* aCancelSubmit)
 {
-  PRBool shouldSaveData = PR_TRUE;
-  nsCOMPtr<nsIPrefBranch> pref(do_GetService(NS_PREFSERVICE_CONTRACTID));
-  if (pref) 
-    pref->GetBoolPref(PREF_FORMFILL_ENABLE, &shouldSaveData);
+  if (!FormHistoryEnabled())
+    return NS_OK;
 
-  if (shouldSaveData) {
-    nsresult rv = OpenDatabase(); // lazily ensure that the database is open
-    NS_ENSURE_SUCCESS(rv, rv);
-    
-    nsCOMPtr<nsIDOMHTMLFormElement> formElt = do_QueryInterface(aFormNode);
-    NS_ENSURE_TRUE(formElt, NS_ERROR_FAILURE);
+  nsresult rv = OpenDatabase(); // lazily ensure that the database is open
+  NS_ENSURE_SUCCESS(rv, rv);
+  
+  nsCOMPtr<nsIDOMHTMLFormElement> formElt = do_QueryInterface(aFormNode);
+  NS_ENSURE_TRUE(formElt, NS_ERROR_FAILURE);
 
-    nsCOMPtr<nsIDOMHTMLCollection> elts;
-    formElt->GetElements(getter_AddRefs(elts));
-    
-    const char *textString = "text";
-    
-    PRUint32 length;
-    elts->GetLength(&length);
-    for (PRUint32 i = 0; i < length; ++i) {
-      nsCOMPtr<nsIDOMNode> node;
-      elts->Item(i, getter_AddRefs(node));
-      nsCOMPtr<nsIDOMHTMLInputElement> inputElt = do_QueryInterface(node);
-      if (inputElt) {
-        // Filter only inputs that are of type "text"
-        nsAutoString type;
-        inputElt->GetType(type);
-        if (type.EqualsIgnoreCase(textString)) {
-          // If this input has a name/id and value, add it to the database
-          nsAutoString value;
-          inputElt->GetValue(value);
-          if (!value.IsEmpty()) {
-            nsAutoString name;
-            inputElt->GetName(name);
-            if (name.IsEmpty())
-              inputElt->GetId(name);
-            
-            if (!name.IsEmpty())
-              AppendRow(name, value, nsnull);
-          }
+  nsCOMPtr<nsIDOMHTMLCollection> elts;
+  formElt->GetElements(getter_AddRefs(elts));
+  
+  const char *textString = "text";
+  
+  PRUint32 length;
+  elts->GetLength(&length);
+  for (PRUint32 i = 0; i < length; ++i) {
+    nsCOMPtr<nsIDOMNode> node;
+    elts->Item(i, getter_AddRefs(node));
+    nsCOMPtr<nsIDOMHTMLInputElement> inputElt = do_QueryInterface(node);
+    if (inputElt) {
+      // Filter only inputs that are of type "text"
+      nsAutoString type;
+      inputElt->GetType(type);
+      if (type.EqualsIgnoreCase(textString)) {
+        // If this input has a name/id and value, add it to the database
+        nsAutoString value;
+        inputElt->GetValue(value);
+        if (!value.IsEmpty()) {
+          nsAutoString name;
+          inputElt->GetName(name);
+          if (name.IsEmpty())
+            inputElt->GetId(name);
+          
+          if (!name.IsEmpty())
+            AppendRow(name, value, nsnull);
         }
       }
     }
@@ -657,6 +687,9 @@ nsFormHistory::AutoCompleteSearch(const nsAString &aInputName,
                                   nsIAutoCompleteMdbResult *aPrevResult,
                                   nsIAutoCompleteResult **aResult)
 {
+  if (!FormHistoryEnabled())
+    return NS_OK;
+
   nsresult rv = OpenDatabase(); // lazily ensure that the database is open
   NS_ENSURE_SUCCESS(rv, rv);
 
@@ -672,7 +705,7 @@ nsFormHistory::AutoCompleteSearch(const nsAString &aInputName,
       nsIMdbRow *row;
       result->GetRowAt(i, &row);
       if (!RowMatch(row, aInputName, aInputValue, nsnull))
-        result->RemoveRowAt(i);
+        result->RemoveRowAt(i, PR_FALSE);
     }
   } else {
     result = do_CreateInstance("@mozilla.org/autocomplete/mdb-result;1");
@@ -758,11 +791,12 @@ nsFormHistory::SortComparison(const void *v1, const void *v2, void *closureVoid)
 PRBool
 nsFormHistory::RowMatch(nsIMdbRow *aRow, const nsAString &aInputName, const nsAString &aInputValue, PRUnichar **aValue)
 {
-  nsAutoString name, value;
+  nsAutoString name;
   GetRowValue(aRow, kToken_NameColumn, name);
-  GetRowValue(aRow, kToken_ValueColumn, value);
-  
+
   if (name.Equals(aInputName)) {
+    nsAutoString value;
+    GetRowValue(aRow, kToken_ValueColumn, value);
     if (value.Length() != aInputValue.Length() && // ignore exact matches
         Compare(Substring(value, 0, aInputValue.Length()), aInputValue, nsCaseInsensitiveStringComparator()) == 0)
     {

@@ -106,6 +106,7 @@ public:
   NS_IMETHOD DrawTile(nsIRenderingContext &aContext,
                       nsDrawingSurface aSurface,
                       PRInt32 aSXOffset, PRInt32 aSYOffset,
+                      PRInt32 aPadX, PRInt32 aPadY,
                       const nsRect &aTileRect);
 
    /** 
@@ -204,7 +205,8 @@ private:
    * Progressively double the bitmap size as we blit.. very fast way to tile
    * @return if TRUE, no errors
    */
-  PRBool ProgressiveDoubleBlit(nsDrawingSurface aSurface,
+  PRBool ProgressiveDoubleBlit(nsIDeviceContext *aContext,
+                               nsDrawingSurface aSurface,
                                PRInt32 aSXOffset, PRInt32 aSYOffset,
                                nsRect aDestRect);
 

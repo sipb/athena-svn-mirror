@@ -46,7 +46,7 @@
 #include "nsIPresContext.h"
 #include "nsIRenderingContext.h"
 #include "nsIServiceManager.h"
-#include "nsIFrameManager.h"
+#include "nsFrameManager.h"
 #include "nsBidiFrames.h"
 #include "nsBidiUtils.h"
 
@@ -114,8 +114,7 @@ CreateBidiContinuation(nsIPresContext* aPresContext,
 
   NS_PRECONDITION(aFrame, "null ptr");
 
-  nsCOMPtr<nsIPresShell>   presShell;
-  aPresContext->GetShell(getter_AddRefs(presShell) );
+  nsIPresShell *presShell = aPresContext->PresShell();
 
   NS_ASSERTION(presShell, "PresShell must be set on PresContext before calling nsBidiPresUtils::CreateBidiContinuation");
 
@@ -237,7 +236,7 @@ nsBidiPresUtils::Resolve(nsIPresContext* aPresContext,
   if (aIsVisualFormControl) {
     isVisual = PR_FALSE;
   } else {
-    aPresContext->IsVisualMode(isVisual);
+    isVisual = aPresContext->IsVisualMode();
   }
   mSuccess = mBidiEngine->CountRuns(&runCount);
   if (NS_FAILED(mSuccess) ) {
@@ -368,7 +367,6 @@ nsBidiPresUtils::InitLogicalArray(nsIPresContext* aPresContext,
 {
   nsIFrame*             frame;
   nsIFrame*             directionalFrame;
-  nsIFrame*             kid;
   nsresult              rv;
   nsresult              res = NS_OK;
 
@@ -413,7 +411,7 @@ nsBidiPresUtils::InitLogicalArray(nsIPresContext* aPresContext,
           || (nsLayoutAtoms::positionedInlineFrame == frameType)
           || (nsLayoutAtoms::letterFrame == frameType)
           || (nsLayoutAtoms::blockFrame == frameType) ) ) {
-      frame->FirstChild(aPresContext, nsnull, &kid);
+      nsIFrame* kid = frame->GetFirstChild(nsnull);
       res = InitLogicalArray(aPresContext, kid, aNextInFlow, aAddMarkers);
     }
     else {
@@ -703,11 +701,10 @@ nsBidiPresUtils::RepositionContainerFrame(nsIPresContext* aPresContext,
                                           PRInt32& aMaxX) const
 {
   nsIFrame* frame;
-  nsIFrame* firstChild;
   PRInt32 minX = 0x7FFFFFFF;
   PRInt32 maxX = 0;
 
-  aContainer->FirstChild(aPresContext, nsnull, &firstChild);
+  nsIFrame* firstChild = aContainer->GetFirstChild(nsnull);
 
   for (frame = firstChild; frame; frame = frame->GetNextSibling()) {
     nsIAtom* frameType = frame->GetType();
@@ -787,8 +784,7 @@ nsBidiPresUtils::RemoveBidiContinuation(nsIPresContext* aPresContext,
   PRInt32           index;
   nsIFrame*         parent = aFrame->GetParent();
       
-  nsCOMPtr<nsIPresShell> presShell;
-  aPresContext->GetShell(getter_AddRefs(presShell) );
+  nsIPresShell *presShell = aPresContext->PresShell();
 
   aOffset = 0;
 
@@ -814,25 +810,24 @@ nsBidiPresUtils::RemoveBidiContinuation(nsIPresContext* aPresContext,
   nsIFrame* thisFramesNextBidiFrame;
   nsIFrame* previousFramesNextBidiFrame;
 
-  nsIFrameManager* frameManager = presShell->GetFrameManager();
-  if (frameManager) {
-    frameManager->GetFrameProperty(aFrame, nsLayoutAtoms::nextBidi,
-                                   0, (void**) &thisFramesNextBidiFrame);
-    if (thisFramesNextBidiFrame) {
-      // Remove nextBidi property, associated with the current frame
-      // and with all of its prev-in-flow.
-      frame = aFrame;
-      do {
-        frameManager->RemoveFrameProperty(frame, nsLayoutAtoms::nextBidi);
-        frame->GetPrevInFlow(&frame);
-        if (!frame) {
-          break;
-        }
-        frameManager->GetFrameProperty(frame, nsLayoutAtoms::nextBidi,
-                                       0, (void**) &previousFramesNextBidiFrame);
-      } while (thisFramesNextBidiFrame == previousFramesNextBidiFrame);
-    } // if (thisFramesNextBidiFrame)
-  } // if (frameManager)
+  nsFrameManager* frameManager = presShell->FrameManager();
+  thisFramesNextBidiFrame = NS_STATIC_CAST(nsIFrame*,
+    frameManager->GetFrameProperty(aFrame, nsLayoutAtoms::nextBidi, 0));
+
+  if (thisFramesNextBidiFrame) {
+    // Remove nextBidi property, associated with the current frame
+    // and with all of its prev-in-flow.
+    frame = aFrame;
+    do {
+      frameManager->RemoveFrameProperty(frame, nsLayoutAtoms::nextBidi);
+      frame->GetPrevInFlow(&frame);
+      if (!frame) {
+        break;
+      }
+      previousFramesNextBidiFrame = NS_STATIC_CAST(nsIFrame*,
+        frameManager->GetFrameProperty(frame, nsLayoutAtoms::nextBidi, 0));
+    } while (thisFramesNextBidiFrame == previousFramesNextBidiFrame);
+  } // if (thisFramesNextBidiFrame)
 }
 
 nsresult
@@ -908,7 +903,7 @@ nsBidiPresUtils::FormatUnicodeText(nsIPresContext*  aPresContext,
     if (mBuffer.Length() < aTextLength) {
       mBuffer.SetLength(aTextLength);
     }
-    PRUnichar* buffer = NS_CONST_CAST(PRUnichar*, mBuffer.get());
+    PRUnichar* buffer = mBuffer.BeginWriting();
 
     if (doReverse) {
       rv = mBidiEngine->WriteReverse(aText, aTextLength, buffer,
@@ -1163,7 +1158,7 @@ nsBidiPresUtils::ReorderUnicodeText(PRUnichar*       aText,
     if (mBuffer.Length() < aTextLength) {
       mBuffer.SetLength(aTextLength);
     }
-    PRUnichar* buffer = NS_CONST_CAST(PRUnichar*, mBuffer.get());
+    PRUnichar* buffer = mBuffer.BeginWriting();
 
     if (doReverse) {
       rv = mBidiEngine->WriteReverse(aText, aTextLength, buffer,

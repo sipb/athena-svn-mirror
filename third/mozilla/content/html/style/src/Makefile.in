@@ -48,6 +48,7 @@ REQUIRES	= xpcom \
 		  view \
 		  intl \
 		  pref \
+		  imglib2 \
 		  $(NULL)
 
 CPPSRCS		= \
@@ -66,7 +67,6 @@ CPPSRCS		= \
 		nsComputedDOMStyle.cpp \
 		nsDOMCSSAttrDeclaration.cpp \
 		nsDOMCSSDeclaration.cpp \
-		nsHTMLAttributes.cpp \
 		nsHTMLStyleSheet.cpp \
 		nsHTMLCSSStyleSheet.cpp \
 		nsInspectorCSSUtils.cpp \
@@ -119,3 +119,5 @@ LOCAL_INCLUDES += \
         -I$(srcdir)/../../../svg/content/src \
         -I$(srcdir)/../../../svg/base/src
 endif
+
+DEFINES += -D_IMPL_NS_LAYOUT

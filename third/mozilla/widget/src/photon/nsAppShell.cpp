@@ -47,7 +47,7 @@
 
 #include "nsIWidget.h"
 #include "nsIPref.h"
-#include "nsPhWidgetLog.h"
+#include "nsCRT.h"
 
 #include <Pt.h>
 #include <errno.h>
@@ -57,6 +57,9 @@ PRBool nsAppShell::gExitMainLoop = PR_FALSE;
 
 static PLHashTable *sQueueHashTable = nsnull;
 static PLHashTable *sCountHashTable = nsnull;
+
+// Set our static member
+PRBool nsAppShell::mPtInited = PR_FALSE;
 
 //-------------------------------------------------------------------------
 //
@@ -73,7 +76,6 @@ static NS_DEFINE_CID(kCmdLineServiceCID, NS_COMMANDLINE_SERVICE_CID);
 //-------------------------------------------------------------------------
 nsAppShell::nsAppShell()  
 {
-	NS_INIT_ISUPPORTS();
   mEventQueue  = nsnull;
   mFD          = -1;
 }
@@ -133,9 +135,6 @@ static int event_processor_callback(int fd, void *data, unsigned mode)
 
 NS_IMETHODIMP nsAppShell::Create(int *bac, char **bav)
 {
-  if (!PhWidLog)
-    PhWidLog =  PR_NewLogModule("PhWidLog");
-
   int argc = bac ? *bac : 0;
   char **argv = bav;
 
@@ -153,6 +152,18 @@ NS_IMETHODIMP nsAppShell::Create(int *bac, char **bav)
     if(NS_FAILED(rv))
       argv = bav;
   }
+
+	/*
+	This used to be done in the init function of nsToolkit. It was moved here because the phoenix
+	browser may ( when -ProfileManager is used ) create/ListenToEventQueue of an nsAppShell before
+	the toolkit is initialized and ListenToEventQueue relies on the Pt being already initialized
+	*/
+	if( !mPtInited )
+	{
+		PtInit( NULL );
+		PtChannelCreate(); // Force use of pulses
+		mPtInited = PR_TRUE;
+	}
 
   return NS_OK;
 }
@@ -175,8 +186,7 @@ NS_METHOD nsAppShell::Spinup()
   }
 
   //Get the event queue for the thread.
-  //rv = eventQService->GetThreadEventQueue(NS_CURRENT_THREAD, getter_AddRefs(mEventQueue));
-  rv = eventQService->GetThreadEventQueue(NS_CURRENT_THREAD, &mEventQueue);
+	rv = eventQService->GetThreadEventQueue(NS_CURRENT_THREAD, getter_AddRefs(mEventQueue));
 
   // If we got an event queue, use it.
   if (mEventQueue)
@@ -190,8 +200,7 @@ NS_METHOD nsAppShell::Spinup()
   }
 
   // Ask again nicely for the event queue now that we have created one.
-  //rv = eventQService->GetThreadEventQueue(NS_CURRENT_THREAD, getter_AddRefs(mEventQueue));
-  rv = eventQService->GetThreadEventQueue(NS_CURRENT_THREAD, &mEventQueue);
+	rv = eventQService->GetThreadEventQueue(NS_CURRENT_THREAD, getter_AddRefs(mEventQueue));
 
   // XXX shouldn't this be automatic?
  done:
@@ -278,6 +287,7 @@ IntHashKey(PRInt32 key)
 NS_IMETHODIMP nsAppShell::ListenToEventQueue(nsIEventQueue *aQueue,
                                              PRBool aListen)
 {
+
   if (!sQueueHashTable) {
     sQueueHashTable = PL_NewHashTable(3, (PLHashFunction)IntHashKey,
                                       PL_CompareValues, PL_CompareValues, 0, 0);

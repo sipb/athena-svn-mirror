@@ -48,7 +48,7 @@ SDK_BINARY     =           \
 		$(NULL)
 
 ifdef CROSS_COMPILE
-HOST_PROGRAM	= host_xpidl
+HOST_PROGRAM	= host_xpidl$(HOST_BIN_SUFFIX)
 HOST_CSRCS	= $(CSRCS)
 endif
 
@@ -77,6 +77,11 @@ HOST_EXTRA_DEPS	= $(wildcard $(DIST)/host/lib/libhostxpt.*)
 ifdef HOST_NSPR_MDCPUCFG
 HOST_CFLAGS	+= -DMDCPUCFG=$(HOST_NSPR_MDCPUCFG)
 endif
+endif
+
+ifdef MACOS_SDK_DIR
+NEXT_ROOT=
+OS_LIBS := $(patsubst -L$(MACOS_SDK_DIR)/usr/lib%,,$(OS_LIBS))
 endif
 
 export::
