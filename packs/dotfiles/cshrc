@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.9 2004-09-11 16:52:11 rbasch Exp $
+# $Id: cshrc,v 1.10 2004-11-10 15:38:59 rbasch Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -199,7 +199,6 @@ if ($?prompt) then		# For interactive shells only (i.e., NOT rsh):
     set prompt = "athena%# "
   endif
 
-  set history = 20		#   Number of commands saved as history
   set cdpath = (~)		#   Path to search for directory changes
   set interactive		#   Provide shell variable for compatability
   set nostat = (/afs/)		#   Don't stat when completing in /afs
