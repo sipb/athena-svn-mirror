@@ -3,7 +3,7 @@
 # Accepts one optional argument, either "nocalls" (use no user files)
 # or "dash" (use old dash-based interface).
 #
-# $Id: xsession,v 1.11 2001-03-28 01:42:19 ghudson Exp $
+# $Id: xsession,v 1.12 2001-04-04 00:06:29 rbasch Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -88,10 +88,12 @@ endif
 
 if ($?ATHENA_DASH_INTERFACE) then
 	set default_windowmanager=mwm
-	set terminal='xterm -geometry 80x48+0+38'
+	set terminal=xterm
+	set terminal_geometry=80x48+0+250
 else
 	set default_windowmanager=sawfish
-	set terminal='gnome-terminal --geometry=80x48+0+30'
+	set terminal=gnome-terminal
+	set terminal_geometry=80x48+0+242
 endif
 
 
@@ -184,8 +186,16 @@ endif
 # you can type "logout"). 
 
 if (! $?skip_initial_xterm) then
-	if ($?verbose_login) echo "Creating initial xterm window..."
-	($terminal &)
+	if ($?verbose_login) echo "Creating initial $terminal window..."
+	# We need to remove the WM_COMMAND property on the terminal window
+	# so that 4Dwm does not session-manage it.
+	if ($terminal == xterm) then
+		(xterm -geometry $terminal_geometry -title xterm -n xterm -e /bin/sh -c 'xprop -id $WINDOWID -remove WM_COMMAND; exec $SHELL' &)
+	else if ($terminal == gnome-terminal) then
+		(gnome-terminal --geometry=$terminal_geometry --title=Terminal -x /bin/sh -c 'xprop -id $WINDOWID -remove WM_COMMAND; exec $SHELL' &)
+	else
+		($terminal &)
+	endif
 endif
 
 # Run default system startup activities.  To skip these, put the command
