@@ -1,3 +1,148 @@
+2001-01-22  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-01-22  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-01-20  Fatih Demir	<kabalak@gmx.net>
+
+	* ko.po: Committed updated Korean translation.
+
+2001-01-18  Martin Norbäck  <d95mback@dtek.chalmers.se>
+
+	* sv.po: Updated Swedish translation.
+
+2001-01-18  Kenneth Christiansen  <kenneth@gnu.org>
+
+	* POTFILES.in: Updated
+	* da.po, fi.po, fr.po, no.po, sv.po:
+	All updated to include translations from
+	the gnome-vfs.keys file. All extracted with
+	a script of mine.
+
+2001-01-18  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+	
+2001-01-11  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2001-01-10  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation.
+
+2001-01-09  Valek Filippov  <frob@df.ru>
+
+	* ru.po: updated russian translation.
+
+2001-01-03  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-01-03  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2000-12-31  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian translation.
+	
+2000-12-31  Pauli Virtanen <pauli.virtanen@saunalahti.fi>
+
+	* fi.po: Updated Finnish translation.
+
+2000-12-27  Kai Lahmann <kl@linuxfaqs.de>
+
+	* de.po: Updated German translation
+
+2000-12-20  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2000-12-18  Christopher R. Gabriel  <cgabriel@softwarelibero.org>
+
+	* it.po: Updated italian translation
+
+2000-12-13  Valek Filippov  <frob@df.ru>
+
+	* ru.po: updated russian translation.
+
+2000-12-13  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2000-12-11  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian translation.
+	
+2000-12-06  Fatih Demir <kabalak@gmx.net>
+
+	* ko.po: Committed updated Korean
+		translation.
+
+2000-12-05  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian translation.
+	
+2000-12-03  Kai Lahmann <kl@linuxfaqs.de>
+
+	* de.po: Updated German translation
+
+2000-11-24  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian translation.
+	
+2000-11-21  Valek Filippov  <frob@df.ru>
+
+	* ru.po: updated russian translation.
+
+2000-11-20  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2000-11-20  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2000-11-17  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2000-11-16  Matthias Warkus  <mawa@iname.com>
+
+	* de.po: Update.
+
+2000-11-14  Valek Filippov  <frob@df.ru>
+
+	* ru.po: updated russian translation.
+
+2000-11-14  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2000-11-14  Christopher R. Gabriel  <cgabriel@softwarelibero.org>
+
+	* it.po: Updated italian translation
+
+2000-11-13  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2000-11-11  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian translation.
+	
+2000-11-09  Szabolcs BAN <shooby@gnome.hu>
+
+	* hu.po: Updated.
+
+2000-11-08  Yukihiro Nakai  <nakai@gnome.gr.jp>
+
+	* sk.po: Update Slovak translation from Stanislav Visnovsky.
+
 2000-11-05  Yukihiro Nakai  <nakai@gnome.gr.jp>
 
 	* sk.po: Intial Slovak translation from Stanislav Visnovsky.
@@ -283,7 +428,7 @@
 
 	* gl.po: Added Galician translation.
 
-1999-12-28  Martin Norb$Bdc(Bk  <d95mback@dtek.chalmers.se>
+1999-12-28  Martin Norbäck  <d95mback@dtek.chalmers.se>
 
 	* sv.po: Added Swedish translation.
 

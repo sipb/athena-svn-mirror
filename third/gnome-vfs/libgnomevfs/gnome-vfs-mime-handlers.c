@@ -24,63 +24,31 @@
 #include <config.h>
 #include "gnome-vfs-mime-handlers.h"
 
-#include "gnome-vfs-mime-info.h"
 #include "gnome-vfs-application-registry.h"
+#include "gnome-vfs-mime-info.h"
+#include "gnome-vfs-result.h"
+#include "gnome-vfs-utils.h"
 #include <gconf/gconf.h>
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
 #include <sys/stat.h>
-#include "gnome-vfs-result.h"
+#include <unistd.h>
+
+static GConfEngine *gconf_engine = NULL;
 
 static char *         get_user_level                          (void);
-static char *         extract_prefix_add_suffix               (const char         *string,
-							       const char         *separator,
-							       const char         *suffix);
 static char *         mime_type_get_supertype                 (const char         *mime_type);
-static char **        strsplit_handle_null                    (const char         *str,
-							       const char         *delim,
-							       int                 max);
-static char *         join_str_list                           (const char         *separator,
-							       GList              *list);
 static GList *        OAF_ServerInfoList_to_ServerInfo_g_list (OAF_ServerInfoList *info_list);
 static GList *        comma_separated_str_to_str_list         (const char         *str);
 static GList *        str_list_difference                     (GList              *a,
 							       GList              *b);
 static char *         str_list_to_comma_separated_str         (GList              *list);
-static GList *        gnome_vfs_strsplit_to_list              (const char         *str,
-							       const char         *delim,
-							       int                 max);
-static char *         gnome_vfs_strjoin_from_list             (const char         *separator,
-							       GList              *list);
 static void           g_list_free_deep                        (GList              *list);
 static GList *        prune_ids_for_nonexistent_applications  (GList              *list);
 static GnomeVFSResult gnome_vfs_mime_edit_user_file           (const char         *mime_type,
 							       const char         *key,
 							       const char         *value);
 static gboolean       application_known_to_be_nonexistent     (const char         *application_id);
-
-
-static GConfEngine *gconf_engine = NULL;
-
-static GnomeVFSMimeActionType
-gnome_vfs_mime_get_default_action_type_without_fallback (const char *mime_type)
-{
-	const char *action_type_string;
-
-	action_type_string = gnome_vfs_mime_get_value
-		(mime_type, "default_action_type");
-
-	if (action_type_string != NULL && strcasecmp (action_type_string, "application") == 0) {
-		return GNOME_VFS_MIME_ACTION_TYPE_APPLICATION;
-	} else if (action_type_string != NULL && strcasecmp (action_type_string, "component") == 0) {
-		return GNOME_VFS_MIME_ACTION_TYPE_COMPONENT;
-	} else {
-		return GNOME_VFS_MIME_ACTION_TYPE_NONE;
-	}
-}
-
-
 
 /**
  * gnome_vfs_mime_get_description:
@@ -99,38 +67,28 @@ gnome_vfs_mime_get_description (const char *mime_type)
 GnomeVFSMimeActionType
 gnome_vfs_mime_get_default_action_type (const char *mime_type)
 {
-	char *supertype;
-	GnomeVFSMimeActionType action_type;
+	const char *action_type_string;
 
-	action_type = gnome_vfs_mime_get_default_action_type_without_fallback (mime_type);
+	action_type_string = gnome_vfs_mime_get_value (mime_type, "default_action_type");
 
-	/* FIXME bugzilla.eazel.com 2650: the current (and the previous) implementation of 
-	   gnome_vfs_mime_get_value
-	   tries the supertype. This means that the folowing code is useless.
-	   The correct fix for this is to add a new funciotn in gnome-vfs-mime-info.c
-	   gnome_vfs_mime_get_value_without_callback. Waiting for evolution guys to fix it.
-	   Might remove this code too if we can convince them that wht they do with this 
-	   function is bad.
-	*/
-	if (action_type == GNOME_VFS_MIME_ACTION_TYPE_NONE) {
-		/* Fall back to the supertype. */
-		supertype = mime_type_get_supertype (mime_type);
-
-		action_type = gnome_vfs_mime_get_default_action_type_without_fallback (supertype);
-		g_free (supertype);
+	if (action_type_string != NULL && strcasecmp (action_type_string, "application") == 0) {
+		return GNOME_VFS_MIME_ACTION_TYPE_APPLICATION;
+	} else if (action_type_string != NULL && strcasecmp (action_type_string, "component") == 0) {
+		return GNOME_VFS_MIME_ACTION_TYPE_COMPONENT;
+	} else {
+		return GNOME_VFS_MIME_ACTION_TYPE_NONE;
 	}
 
-	return action_type;
 }
 
 GnomeVFSMimeAction *
-gnome_vfs_mime_get_default_action_without_fallback (const char *mime_type)
+gnome_vfs_mime_get_default_action (const char *mime_type)
 {
 	GnomeVFSMimeAction *action;
 
 	action = g_new0 (GnomeVFSMimeAction, 1);
 
-	action->action_type = gnome_vfs_mime_get_default_action_type_without_fallback (mime_type);
+	action->action_type = gnome_vfs_mime_get_default_action_type (mime_type);
 
 	switch (action->action_type) {
 	case GNOME_VFS_MIME_ACTION_TYPE_APPLICATION:
@@ -160,29 +118,11 @@ gnome_vfs_mime_get_default_action_without_fallback (const char *mime_type)
 	return action;
 }
 
-GnomeVFSMimeAction *
-gnome_vfs_mime_get_default_action (const char *mime_type)
-{
-	GnomeVFSMimeAction *action;
-	char *supertype;
-
-	action = gnome_vfs_mime_get_default_action_without_fallback (mime_type);
-	if (action == NULL) {
-		/* Fall back to the supertype. */
-		supertype = mime_type_get_supertype (mime_type);
-		action = gnome_vfs_mime_get_default_action_without_fallback (supertype);
-		g_free (supertype);
-	}
-
-	return action;
-}
-
 GnomeVFSMimeApplication *
 gnome_vfs_mime_get_default_application (const char *mime_type)
 {
 	const char *default_application_id;
 	GnomeVFSMimeApplication *default_application;
-	char *supertype;
 	GList *short_list;
 
 	default_application = NULL;
@@ -191,10 +131,10 @@ gnome_vfs_mime_get_default_application (const char *mime_type)
 	default_application_id = gnome_vfs_mime_get_value
 		(mime_type, "default_application_id");
 
-	if (default_application_id != NULL && 
-	    strcmp (default_application_id, "") != 0
-	    && ! application_known_to_be_nonexistent (default_application_id)) {
-		default_application = 
+	if (default_application_id != NULL
+	    && default_application_id[0] != '\0'
+	    && !application_known_to_be_nonexistent (default_application_id)) {
+		default_application =
 			gnome_vfs_application_registry_get_mime_application (default_application_id);
 	}
 
@@ -204,22 +144,12 @@ gnome_vfs_mime_get_default_application (const char *mime_type)
 		short_list = gnome_vfs_mime_get_short_list_applications (mime_type);
 
 		if (short_list != NULL) {
-			default_application = gnome_vfs_mime_application_copy 
+			default_application = gnome_vfs_mime_application_copy
 				((GnomeVFSMimeApplication *) (short_list->data));
 			gnome_vfs_mime_application_list_free (short_list);
 		}
 	}
 
-	if (default_application == NULL) {
-		/* If that still fails, try the supertype */
-
-		supertype = mime_type_get_supertype (mime_type);
-		/* Check if already a supertype */
-		if (strcmp (supertype, mime_type) != 0) {
-			default_application = gnome_vfs_mime_get_default_application (supertype);
-		} 
-		g_free (supertype);
-	}
 
 	return default_application;
 }
@@ -227,14 +157,44 @@ gnome_vfs_mime_get_default_application (const char *mime_type)
 const char *
 gnome_vfs_mime_get_icon (const char *mime_type)
 {
-	return (gnome_vfs_mime_get_value (mime_type, "icon-filename"));
+	return gnome_vfs_mime_get_value (mime_type, "icon_filename");
 }
 
 GnomeVFSResult
 gnome_vfs_mime_set_icon (const char *mime_type, const char *filename)
 {
 	return gnome_vfs_mime_edit_user_file
-		(mime_type, "icon-filename", filename);
+		(mime_type, "icon_filename", filename);
+}
+
+/* Check whether files of this MIME type might conceivably be executable.
+ * Default for known types if FALSE. Default for unknown types is TRUE.
+ */
+gboolean
+gnome_vfs_mime_can_be_executable (const char *mime_type)
+{
+	const char *result_as_string;
+	gboolean result;
+	
+	result_as_string = gnome_vfs_mime_get_value (mime_type, "can_be_executable");
+	if (result_as_string != NULL) {
+		result = strcmp (result_as_string, "TRUE") == 0;
+	} else {
+		/* If type is not known, we treat it as potentially executable.
+		 * If type is known, we use default value of not executable.
+		 */
+		result = !gnome_vfs_mime_type_is_known (mime_type);
+	}
+
+	return result;
+}
+
+/* Set whether files of this MIME type might conceivably be executable. */
+GnomeVFSResult
+gnome_vfs_mime_set_can_be_executable (const char *mime_type, gboolean new_value)
+{
+	return gnome_vfs_mime_edit_user_file
+		(mime_type, "can_be_executable", new_value ? "TRUE" : "FALSE");
 }
 
 
@@ -737,28 +697,40 @@ gnome_vfs_mime_get_short_list_components (const char *mime_type)
 GList *
 gnome_vfs_mime_get_all_applications (const char *mime_type)
 {
-	GList *applications, *li;
+	GList *applications, *node, *next;
+	char *application_id;
+	GnomeVFSMimeApplication *application;
 
 	g_return_val_if_fail (mime_type != NULL, NULL);
 
 	applications = gnome_vfs_application_registry_get_applications (mime_type);
 
-	/* convert list to list of GnomeVFSMimeApplication's */
-	li = applications;
-	while (li != NULL) {
-		const char *application_id = li->data;
-		li->data = gnome_vfs_application_registry_get_mime_application (application_id);
-		/* Make sure we get no NULLs */
-		if (li->data == NULL) {
-			GList *link_to_remove = li;
+	/* We get back a list of const char *, but the prune function
+	 * wants a list of strings that we own.
+	 */
+	for (node = applications; node != NULL; node = node->next) {
+		node->data = g_strdup (node->data);
+	}
 
-			li = li->next;
+	/* Remove application ids representing nonexistent (not in path) applications */
+	applications = prune_ids_for_nonexistent_applications (applications);
 
-			applications = g_list_remove_link (applications,
-							   link_to_remove);
-			g_list_free_1 (link_to_remove);
-		} else
-			li = li->next;
+	/* Convert to GnomeVFSMimeApplication's (leaving out NULLs) */
+	for (node = applications; node != NULL; node = next) {
+		next = node->next;
+
+		application_id = node->data;
+		application = gnome_vfs_application_registry_get_mime_application (application_id);
+
+		/* Replace the application ID with the application */
+		if (application == NULL) {
+			applications = g_list_remove_link (applications, node);
+			g_list_free_1 (node);
+		} else {
+			node->data = application;
+		}
+
+		g_free (application_id);
 	}
 
 	return applications;
@@ -1517,6 +1489,7 @@ gnome_vfs_mime_application_copy (GnomeVFSMimeApplication *application)
 	result->command = g_strdup (application->command);
 	result->can_open_multiple_files = application->can_open_multiple_files;
 	result->can_open_uris = application->can_open_uris;
+	result->requires_terminal = application->requires_terminal;
 
 	return result;
 }
@@ -1596,20 +1569,10 @@ mime_type_get_supertype (const char *mime_type)
 }
 
 
-static char **
-strsplit_handle_null (const char *str, const char *delim, int max)
-{
-	return g_strsplit ((str == NULL ? "" : str), delim, max);
-}
-
 GnomeVFSMimeApplication *
 gnome_vfs_mime_application_new_from_id (const char *id)
 {
-	GnomeVFSMimeApplication *application;
-
-	application = gnome_vfs_application_registry_get_mime_application (id);
-
-	return application;
+	return gnome_vfs_application_registry_get_mime_application (id);
 }
 
 static char *
@@ -1644,11 +1607,12 @@ is_executable_file (const char *path)
 	return TRUE;
 }
 
+
 static gboolean
 executable_in_path (const char *executable_name)
 {
 	const char *path_list, *piece_start, *piece_end;
-	char *piece, *path;
+	char *piece, *raw_path, *expanded_path;
 	gboolean is_good;
 
 	path_list = g_getenv ("PATH");
@@ -1663,9 +1627,12 @@ executable_in_path (const char *executable_name)
 			is_good = FALSE;
 		} else {
 			/* Try out this path with the executable. */
-			path = g_strconcat (piece, "/", executable_name, NULL);
-			is_good = is_executable_file (path);
-			g_free (path);
+			raw_path = g_strconcat (piece, "/", executable_name, NULL);
+			expanded_path = gnome_vfs_expand_initial_tilde (raw_path);
+			g_free (raw_path);
+			
+			is_good = is_executable_file (expanded_path);
+			g_free (expanded_path);
 		}
 		
 		g_free (piece);
@@ -1723,7 +1690,7 @@ prune_ids_for_nonexistent_applications (GList *list)
 		if (application_known_to_be_nonexistent (p->data)) {
 			list = g_list_remove_link (list, p);
 			g_free (p->data);
-			g_list_free (p);
+			g_list_free_1 (p);
 		}
 	}
 
@@ -1793,12 +1760,14 @@ get_user_level (void)
 	return user_level;
 }
 
-
-
-
+static char **
+strsplit_handle_null (const char *str, const char *delim, int max)
+{
+	return g_strsplit ((str == NULL ? "" : str), delim, max);
+}
 
 static GList *
-gnome_vfs_strsplit_to_list (const char *str, const char *delim, int max)
+strsplit_to_list (const char *str, const char *delim, int max)
 {
 	char **strv;
 	GList *retval;
@@ -1821,7 +1790,7 @@ gnome_vfs_strsplit_to_list (const char *str, const char *delim, int max)
 }
 
 static char *
-gnome_vfs_strjoin_from_list (const char *separator, GList *list)
+strjoin_from_list (const char *separator, GList *list)
 {
 	char **strv;
 	int i;
@@ -1844,30 +1813,31 @@ gnome_vfs_strjoin_from_list (const char *separator, GList *list)
 static GList *
 comma_separated_str_to_str_list (const char *str)
 {
-	return gnome_vfs_strsplit_to_list (str, ",", 0);
+	return strsplit_to_list (str, ",", 0);
 }
 
 static char *
 str_list_to_comma_separated_str (GList *list)
 {
-	return gnome_vfs_strjoin_from_list (",", list);
+	return strjoin_from_list (",", list);
 }
-
 
 static GList *
 str_list_difference (GList *a, GList *b)
 {
-	GList *p;
-	GList *retval;
+	GList *node, *result;
 
-	retval = NULL;
+	/* Uses an N^2 algorithm rather than a more efficient one
+	 * that sorts or creates a hash table.
+	 */
 
-	for (p = a; p != NULL; p = p->next) {
-		if (g_list_find_custom (b, p->data, (GCompareFunc) strcmp) == NULL) {
-			retval = g_list_prepend (retval, p->data);
+	result = NULL;
+
+	for (node = a; node != NULL; node = node->next) {
+		if (g_list_find_custom (b, node->data, (GCompareFunc) strcmp) == NULL) {
+			result = g_list_prepend (result, node->data);
 		}
 	}
 
-	retval = g_list_reverse (retval);
-	return retval;
+	return g_list_reverse (result);
 }

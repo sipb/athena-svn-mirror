@@ -124,6 +124,17 @@ progress_set_source_target_uris (GnomeVFSProgressCallbackState *progress,
 
 }
 
+static void
+progress_set_source_target (GnomeVFSProgressCallbackState *progress, 
+	      const char *source, const char *dest)
+{
+	g_free (progress->progress_info->source_name);
+	progress->progress_info->source_name = source ? g_strdup (source) : NULL;
+	g_free (progress->progress_info->target_name);
+	progress->progress_info->target_name = dest ? g_strdup (dest) : NULL;
+
+}
+
 static int
 call_progress (GnomeVFSProgressCallbackState *progress, GnomeVFSXferPhase phase)
 {
@@ -141,9 +152,10 @@ call_progress (GnomeVFSProgressCallbackState *progress, GnomeVFSXferPhase phase)
 	if (progress->sync_callback != NULL)
 		result = (* progress->sync_callback) (progress->progress_info, progress->user_data);
 
-	if (progress->update_callback != NULL)
+	if (progress->update_callback != NULL) {
 		result = (* progress->update_callback) (progress->progress_info, 
-		progress->async_job_data);
+			progress->async_job_data);
+	}
 
 	return result;	
 }
@@ -160,12 +172,14 @@ call_progress_with_current_names (GnomeVFSProgressCallbackState *progress, Gnome
 	
 	progress->progress_info->phase = phase;
 
-	if (progress->sync_callback != NULL)
+	if (progress->sync_callback != NULL) {
 		result = (* progress->sync_callback) (progress->progress_info, progress->user_data);
-
-	if (progress->update_callback != NULL)
+	}
+	
+	if (progress->update_callback != NULL) {
 		result = (* progress->update_callback) (progress->progress_info, 
-		progress->async_job_data);
+			progress->async_job_data);
+	}
 
 	return result;	
 }
@@ -185,12 +199,15 @@ call_progress_uri (GnomeVFSProgressCallbackState *progress,
 	
 	progress->progress_info->phase = phase;
 
-	if (progress->sync_callback != NULL)
+	if (progress->sync_callback != NULL) {
 		result = (* progress->sync_callback) (progress->progress_info, progress->user_data);
-
-	if (progress->update_callback != NULL)
-		result = (* progress->update_callback) (progress->progress_info, progress->async_job_data);
-
+	}
+	
+	if (progress->update_callback != NULL) {
+		result = (* progress->update_callback) (progress->progress_info,
+			progress->async_job_data);
+	}
+	
 	return result;	
 }
 
@@ -235,16 +252,19 @@ call_progress_with_uris_often (GnomeVFSProgressCallbackState *progress,
 
 	progress->progress_info->phase = phase;
 
-	if (progress->sync_callback != NULL)
+	if (progress->sync_callback != NULL) {
 		result = (* progress->sync_callback) (progress->progress_info, progress->user_data);
-
-	if (now < progress->next_text_update_callback_time)
+	}
+	
+	if (now < progress->next_text_update_callback_time) {
 		return result;
+	}
 
 	progress->next_text_update_callback_time = now + progress->update_callback_period;
 	
-	if (progress->update_callback != NULL)
+	if (progress->update_callback != NULL) {
 		result = (* progress->update_callback) (progress->progress_info, progress->async_job_data);
+	}
 
 	return result;
 }
@@ -369,12 +389,11 @@ remove_file (GnomeVFSURI *uri,
 
 	do {
 		retry = FALSE;
-
-		result = gnome_vfs_unlink_from_uri (uri);
-		if (result != GNOME_VFS_OK)
+		result = gnome_vfs_unlink_from_uri (uri);		
+		if (result != GNOME_VFS_OK) {
 			retry = handle_error (&result, progress,
 					      error_mode, skip);
-		else {
+		} else {
 			progress->progress_info->file_index++;
 			/* add some small size for each deleted item because delete overhead
 			 * does not depend on file/directory size
@@ -439,25 +458,30 @@ empty_directory (GnomeVFSURI *uri,
 
 		item_uri = gnome_vfs_uri_append_file_name (uri, info.name);
 		
+		progress_set_source_target_uris (progress, item_uri, NULL);
+		
 		if (info.type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
 			result = remove_directory (item_uri, TRUE, 
-					    progress, xfer_options, error_mode, 
-					    skip);
+						   progress, xfer_options, error_mode, 
+						   skip);
 		} else {
 			result = remove_file (item_uri, progress, 
-					    xfer_options, error_mode, 
-					    skip);
+					      xfer_options,
+					      error_mode, 
+					      skip);
 		}
 
 		gnome_vfs_uri_unref (item_uri);
 
-		if (result != GNOME_VFS_OK)
+		if (result != GNOME_VFS_OK) {
 			break;
+		}
 	}
 	gnome_vfs_directory_close (directory_handle);
 
-	if (result == GNOME_VFS_ERROR_EOF)
+	if (result == GNOME_VFS_ERROR_EOF) {
 		result = GNOME_VFS_OK;
+	}
 
 	return result;
 }
@@ -521,6 +545,7 @@ non_recursive_empty_directory (GnomeVFSURI *directory_uri,
 			uri = (GnomeVFSURI *)p->data;
 			gnome_vfs_file_info_init (&info);
 			result = gnome_vfs_get_file_info_uri (uri, &info, GNOME_VFS_FILE_INFO_DEFAULT);
+			progress_set_source_target_uris (progress, uri, NULL);
 			if (result == GNOME_VFS_OK) {
 				if (info.type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
 					result = remove_directory (uri, FALSE, 
@@ -560,8 +585,9 @@ remove_directory (GnomeVFSURI *uri,
 		}
 	}
 
-	if (result == GNOME_VFS_ERROR_EOF)
+	if (result == GNOME_VFS_ERROR_EOF) {
 		result = GNOME_VFS_OK;
+	}
 
 	if (result == GNOME_VFS_OK) {
 		do {
@@ -606,6 +632,7 @@ gnome_vfs_visit_list (const GList *name_uri_list,
 	const GList *p;
 	GnomeVFSURI *uri;
 	GnomeVFSFileInfo info;
+	gboolean tmp_recurse;
 	
 	result = GNOME_VFS_OK;
 
@@ -613,18 +640,17 @@ gnome_vfs_visit_list (const GList *name_uri_list,
 	for (p = name_uri_list; p != NULL; p = p->next) {
 		
 		/* get the URI and VFSFileInfo for each */
-		uri = p->data;
+		uri = (GnomeVFSURI *)p->data;
 		gnome_vfs_file_info_init (&info);
 		result = gnome_vfs_get_file_info_uri (uri, &info, info_options);
 		
 		if (result == GNOME_VFS_OK) {
-			gboolean tmp_recurse;
-			
 			tmp_recurse = TRUE;
 			
 			/* call our callback on each item*/
-			if (!callback (p->data, &info, FALSE, data, &tmp_recurse))
+			if (!callback (gnome_vfs_uri_get_path (uri), &info, FALSE, data, &tmp_recurse)) {
 				result = GNOME_VFS_ERROR_INTERRUPTED;
+			}
 			
 			if (result == GNOME_VFS_OK
 			    && recursive
@@ -665,6 +691,9 @@ count_each_file_size_one (const gchar *rel_path,
 		*recurse = FALSE;
 		return FALSE;
 	}
+
+	/* keep track of the item we are counting so we can correctly report errors */
+	progress_set_source_target (params->progress, rel_path, NULL);
 
 	/* count each file, folder, symlink */
 	params->progress->progress_info->files_total++;
@@ -784,8 +813,9 @@ handle_name_conflicts (GList **source_uri_list,
 	     target_item = target_item->next) {
 	     	if (gnome_vfs_uri_exists ((GnomeVFSURI *)target_item->data)) {
 			conflict_count++;
-			if (conflict_count > 1)
+			if (conflict_count > 1) {
 				break;
+			}
 	     	}
 	}
 
@@ -825,6 +855,7 @@ handle_name_conflicts (GList **source_uri_list,
 			if (replace) {
 				gnome_vfs_file_info_init (&info);
 				gnome_vfs_get_file_info_uri (uri, &info, GNOME_VFS_FILE_INFO_DEFAULT);
+				progress_set_source_target_uris (progress, uri, NULL);
 				if (info.type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
 					remove_directory (uri, TRUE, progress, 
 						xfer_options, error_mode, &skip);
@@ -891,7 +922,7 @@ create_directory (GnomeVFSURI *dir_uri,
 	do {
 		retry = FALSE;
 
-		result = gnome_vfs_make_directory_for_uri (dir_uri, 0700);
+		result = gnome_vfs_make_directory_for_uri (dir_uri, 0777);
 
 		if (result == GNOME_VFS_ERROR_FILE_EXISTS) {
 			gboolean force_replace;
@@ -1001,7 +1032,7 @@ copy_file_data (GnomeVFSHandle *target_handle,
 			}
 
 			bytes_to_write -= bytes_written;
-		} while (retry || bytes_to_write > 0);
+		} while ((result == GNOME_VFS_OK && bytes_to_write > 0) || retry);
 
 		progress->progress_info->phase = GNOME_VFS_XFER_PHASE_COPYING;
 		progress->progress_info->bytes_copied += bytes_read;
@@ -1074,7 +1105,7 @@ xfer_create_target (GnomeVFSHandle **target_handle,
 
 		result = gnome_vfs_create_uri (target_handle, target_uri,
 					       GNOME_VFS_OPEN_WRITE,
-					       exclusive, 0600);
+					       exclusive, 0666);
 
 		if (result == GNOME_VFS_ERROR_FILE_EXISTS) {
 			gboolean replace;
@@ -1099,6 +1130,23 @@ xfer_create_target (GnomeVFSHandle **target_handle,
 }
 
 static GnomeVFSResult
+copy_symlink (GnomeVFSURI *source_uri,
+	      GnomeVFSURI *target_uri,
+	      const char *link_name,
+	      GnomeVFSProgressCallbackState *progress)
+{
+	GnomeVFSResult result;
+	
+	result = gnome_vfs_create_symbolic_link (target_uri, link_name);
+	
+	if (result == GNOME_VFS_OK && call_progress_with_uris_often (progress, source_uri,
+		target_uri, GNOME_VFS_XFER_PHASE_OPENTARGET) == 0) {
+		result = GNOME_VFS_ERROR_INTERRUPTED;
+	}
+	return result;
+}
+
+static GnomeVFSResult
 copy_file (GnomeVFSFileInfo *info,  
 	   GnomeVFSURI *source_uri,
 	   GnomeVFSURI *target_uri,
@@ -1110,6 +1158,7 @@ copy_file (GnomeVFSFileInfo *info,
 {
 	GnomeVFSResult close_result, result;
 	GnomeVFSHandle *source_handle, *target_handle;
+	GnomeVFSSetFileInfoMask set_mask;
 
 	progress->progress_info->phase = GNOME_VFS_XFER_PHASE_OPENSOURCE;
 	progress->progress_info->bytes_copied = 0;
@@ -1143,7 +1192,6 @@ copy_file (GnomeVFSFileInfo *info,
 	if (call_progress_with_uris_often (progress, source_uri, target_uri, 
 		GNOME_VFS_XFER_PHASE_OPENTARGET) != GNOME_VFS_XFER_OVERWRITE_ACTION_ABORT) {
 
-
 		result = copy_file_data (target_handle, source_handle,
 					progress, xfer_options, error_mode,
 					/* use an arbitrary default block size of 4096 
@@ -1161,16 +1209,33 @@ copy_file (GnomeVFSFileInfo *info,
 	}
 
 	close_result = gnome_vfs_close (source_handle);
-	if (result == GNOME_VFS_OK &&
-	    close_result != GNOME_VFS_OK) {
+	if (result == GNOME_VFS_OK && close_result != GNOME_VFS_OK) {
 		handle_error (&close_result, progress, error_mode, skip);
 		return close_result;
 	}
+
 	close_result = gnome_vfs_close (target_handle);
-	if (result == GNOME_VFS_OK &&
-	    close_result != GNOME_VFS_OK) {
+	if (result == GNOME_VFS_OK && close_result != GNOME_VFS_OK) {
 		handle_error (&close_result, progress, error_mode, skip);
 		return close_result;
+	}
+
+	if (result == GNOME_VFS_OK) {
+		/* FIXME the modules should ignore setting of permissions if
+		 * "valid_fields & GNOME_VFS_FILE_INFO_FIELDS_PERMISSIONS" is clear
+		 * for now, make sure permissions aren't set to 000
+		 */
+
+		if ((info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_PERMISSIONS) == 0) {
+			set_mask = GNOME_VFS_SET_FILE_INFO_TIME;
+		} else {
+			set_mask = GNOME_VFS_SET_FILE_INFO_PERMISSIONS
+					| GNOME_VFS_SET_FILE_INFO_OWNER
+					| GNOME_VFS_SET_FILE_INFO_TIME;
+		}
+
+		/* ignore errors while setting file info attributes at this point */
+		gnome_vfs_set_file_info_uri (target_uri, info, set_mask);
 	}
 
 	if (*skip) {
@@ -1181,7 +1246,8 @@ copy_file (GnomeVFSFileInfo *info,
 }
 
 static GnomeVFSResult
-copy_directory (GnomeVFSURI *source_dir_uri,
+copy_directory (GnomeVFSFileInfo *source_file_info,
+		GnomeVFSURI *source_dir_uri,
 		GnomeVFSURI *target_dir_uri,
 		GnomeVFSXferOptions xfer_options,
 		GnomeVFSXferErrorMode *error_mode,
@@ -1192,6 +1258,7 @@ copy_directory (GnomeVFSURI *source_dir_uri,
 	GnomeVFSResult result;
 	GnomeVFSDirectoryHandle *source_directory_handle;
 	GnomeVFSDirectoryHandle *dest_directory_handle;
+	GnomeVFSSetFileInfoMask set_mask;
 
 	source_directory_handle = NULL;
 	dest_directory_handle = NULL;
@@ -1222,13 +1289,14 @@ copy_directory (GnomeVFSURI *source_dir_uri,
 		gnome_vfs_directory_close (source_directory_handle);
 		return GNOME_VFS_OK;
 	}
+	
 	if (result != GNOME_VFS_OK) {
 		gnome_vfs_directory_close (source_directory_handle);
 		return result;
 	}
 
 	if (call_progress_with_uris_often (progress, source_dir_uri, target_dir_uri, 
-			       GNOME_VFS_XFER_PHASE_OPENTARGET) != 0) {
+					   GNOME_VFS_XFER_PHASE_OPENTARGET) != 0) {
 
 		progress->progress_info->file_index++;
 		progress->progress_info->total_bytes_copied += DEFAULT_SIZE_OVERHEAD;
@@ -1259,18 +1327,18 @@ copy_directory (GnomeVFSURI *source_dir_uri,
 			
 			if (info.type == GNOME_VFS_FILE_TYPE_REGULAR) {
 				result = copy_file (&info, source_uri, dest_uri, 
-						    xfer_options, error_mode, overwrite_mode, 
-						    progress, skip);
+					xfer_options, error_mode, overwrite_mode, 
+					progress, skip);
 			} else if (info.type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
-				result = copy_directory (source_uri, dest_uri, 
-						    xfer_options, error_mode, overwrite_mode, 
-						    progress, skip);
+				result = copy_directory (&info, source_uri, dest_uri, 
+					xfer_options, error_mode, overwrite_mode, 
+					progress, skip);
 			} else if (info.type == GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK) {
-				result = gnome_vfs_create_symbolic_link (dest_uri, info.symlink_name);
-			} else {
-				g_assert_not_reached ();
+				result = copy_symlink (source_uri, dest_uri, info.symlink_name,
+					progress);
 			}
-
+			/* just ignore all the other special file system objects here */
+			
 			gnome_vfs_uri_unref (dest_uri);
 			gnome_vfs_uri_unref (source_uri);
 
@@ -1285,6 +1353,24 @@ copy_directory (GnomeVFSURI *source_dir_uri,
 	gnome_vfs_directory_close (dest_directory_handle);
 	gnome_vfs_directory_close (source_directory_handle);
 
+	if (result == GNOME_VFS_OK) {
+		/* FIXME the modules should ignore setting of permissions if
+		 * "valid_fields & GNOME_VFS_FILE_INFO_FIELDS_PERMISSIONS" is clear
+		 * for now, make sure permissions aren't set to 000
+		 */
+
+		if ((source_file_info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_PERMISSIONS) == 0) {
+			set_mask = GNOME_VFS_SET_FILE_INFO_TIME;
+		} else {
+			set_mask = GNOME_VFS_SET_FILE_INFO_PERMISSIONS
+					| GNOME_VFS_SET_FILE_INFO_OWNER
+					| GNOME_VFS_SET_FILE_INFO_TIME;
+		}
+
+		/* ignore errors while setting file info attributes at this point */
+		gnome_vfs_set_file_info_uri (target_dir_uri, source_file_info, set_mask);
+	}
+
 	return result;
 }
 
@@ -1294,7 +1380,8 @@ copy_items (const GList *source_uri_list,
 	    GnomeVFSXferOptions xfer_options,
 	    GnomeVFSXferErrorMode *error_mode,
 	    GnomeVFSXferOverwriteMode overwrite_mode,
-	    GnomeVFSProgressCallbackState *progress)
+	    GnomeVFSProgressCallbackState *progress,
+	    GList **p_source_uris_copied_list)
 {
 	GnomeVFSResult result;
 	const GList *source_item, *target_item;
@@ -1356,15 +1443,20 @@ copy_items (const GList *source_uri_list,
 							    &overwrite_mode_abort, 
 							    progress, &skip);
 				} else if (info.type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
-					result = copy_directory (source_uri, target_uri, 
-							    xfer_options, error_mode,
-							    &overwrite_mode_abort,
-							    progress, &skip);
+					result = copy_directory (&info, source_uri, target_uri, 
+								 xfer_options, error_mode,
+								 &overwrite_mode_abort,
+								 progress, &skip);
                                 } else if (info.type == GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK) {
-					result = gnome_vfs_create_symbolic_link (target_uri, info.symlink_name);
-                                } else {
-					g_message ("type: %d", info.type);
-					g_assert_not_reached ();
+					result = copy_symlink (source_uri, target_uri, info.symlink_name,
+						progress);
+                                }
+				/* just ignore all the other special file system objects here */
+
+				if (result == GNOME_VFS_OK && !skip) {
+					/* Add to list of successfully copied files... */
+					*p_source_uris_copied_list = g_list_prepend (*p_source_uris_copied_list, source_uri);
+					gnome_vfs_uri_ref (source_uri);
 				}
 
 				if (result != GNOME_VFS_ERROR_FILE_EXISTS) {
@@ -1502,8 +1594,9 @@ move_items (const GList *source_uri_list,
 			}
 
 			if (result == GNOME_VFS_OK 
-				&& call_progress_with_uris_often (progress, source_uri,
-				target_uri, GNOME_VFS_XFER_PHASE_MOVING) == 0) {
+			    && !skip
+			    && call_progress_with_uris_often (progress, source_uri,
+					target_uri, GNOME_VFS_XFER_PHASE_MOVING) == 0) {
 				result = GNOME_VFS_ERROR_INTERRUPTED;
 				gnome_vfs_uri_unref (target_uri);
 				break;
@@ -1635,8 +1728,6 @@ gnome_vfs_xfer_empty_trash (const GList *trash_dir_uris,
 	gboolean skip;
 
 	result = GNOME_VFS_OK;
-	
-	call_progress (progress, GNOME_VFS_XFER_PHASE_INITIAL);
 
 		/* initialize the results */
 	progress->progress_info->files_total = 0;
@@ -1678,8 +1769,6 @@ gnome_vfs_xfer_empty_trash (const GList *trash_dir_uris,
 		}
 	}
 
-	call_progress (progress, GNOME_VFS_XFER_PHASE_COMPLETED);
-
 	return result;
 }
 
@@ -1711,6 +1800,7 @@ gnome_vfs_xfer_delete_items_common (const GList *source_uri_list,
 			break;
 		}
 
+		progress_set_source_target_uris (progress, uri, NULL);
 		if (info.type == GNOME_VFS_FILE_TYPE_DIRECTORY) {
 			remove_directory (uri, TRUE, progress, xfer_options, 
 					  &error_mode, &skip);
@@ -1732,24 +1822,20 @@ gnome_vfs_xfer_delete_items (const GList *source_uri_list,
 
 	GnomeVFSResult result;
 		
-	call_progress (progress, GNOME_VFS_XFER_PHASE_INITIAL);
-
 		/* initialize the results */
 	progress->progress_info->files_total = 0;
 	progress->progress_info->bytes_total = 0;
-	progress->progress_info->phase = GNOME_VFS_XFER_PHASE_COLLECTING;
+	call_progress (progress, GNOME_VFS_XFER_PHASE_COLLECTING);
 
 
 	result = count_items_and_size (source_uri_list,
 		GNOME_VFS_XFER_REMOVESOURCE | GNOME_VFS_XFER_RECURSIVE, progress, TRUE, FALSE);
 
-	if (result == GNOME_VFS_OK) {
+	if (result != GNOME_VFS_ERROR_INTERRUPTED) {
 		call_progress (progress, GNOME_VFS_XFER_PHASE_READYTOGO);
 		result = gnome_vfs_xfer_delete_items_common (source_uri_list,
 			error_mode, xfer_options, progress);
 	}
-
-	call_progress (progress, GNOME_VFS_XFER_PHASE_COMPLETED);
 
 	return result;
 }
@@ -1769,6 +1855,7 @@ gnome_vfs_new_directory_with_unique_name (const GnomeVFSURI *target_dir_uri,
 	int conflict_count;
 	
 	dest_directory_handle = NULL;
+	progress->progress_info->top_level_item = TRUE;
 	progress->progress_info->duplicate_name = g_strdup (name);
 
 	for (conflict_count = 1; ; conflict_count++) {
@@ -1802,11 +1889,11 @@ gnome_vfs_new_directory_with_unique_name (const GnomeVFSURI *target_dir_uri,
 		if (progress_result == GNOME_VFS_XFER_OVERWRITE_ACTION_ABORT) {
 			break;
 		}
+
 		gnome_vfs_uri_unref (target_uri);
-		result = GNOME_VFS_OK;
 	}
 
-	call_progress_uri (progress, NULL, target_uri, 
+	call_progress_uri (progress, NULL, target_uri,
 		GNOME_VFS_XFER_PHASE_OPENTARGET);
 
 	if (dest_directory_handle != NULL) {
@@ -1861,6 +1948,7 @@ gnome_vfs_xfer_uri_internal (const GList *source_uris,
 	GnomeVFSResult result;
 	GList *source_uri_list, *target_uri_list;
 	GList *source_uri, *target_uri;
+	GList *source_uri_list_copied;
 	GnomeVFSURI *target_dir_uri;
 	gboolean move, link;
 	GnomeVFSFileSize free_bytes;
@@ -1870,8 +1958,10 @@ gnome_vfs_xfer_uri_internal (const GList *source_uris,
 	move = FALSE;
 	link = FALSE;
 	target_dir_uri = NULL;
+	source_uri_list_copied = NULL;
 
 	/* Check and see if target is writable. Return error if it is not. */
+	call_progress (progress, GNOME_VFS_XFER_CHECKING_DESTINATION);
 	target_dir_uri = gnome_vfs_uri_get_parent ((GnomeVFSURI *)((GList *)target_uris)->data);
 	result = gnome_vfs_destination_is_writable (target_dir_uri);
 	progress_set_source_target_uris (progress, NULL, target_dir_uri);
@@ -1881,15 +1971,19 @@ gnome_vfs_xfer_uri_internal (const GList *source_uris,
 		return result;
 	}
 
+	move = (xfer_options & GNOME_VFS_XFER_REMOVESOURCE) != 0;
+	link = (xfer_options & GNOME_VFS_XFER_LINK_ITEMS) != 0;
+
+	if (move && link) {
+		return GNOME_VFS_ERROR_BAD_PARAMETERS;
+	}
+
 	/* Create an owning list of source and destination uris.
 	 * We want to be able to remove items that we decide to skip during
 	 * name conflict check.
 	 */
 	source_uri_list = gnome_vfs_uri_list_copy ((GList *)source_uris);
 	target_uri_list = gnome_vfs_uri_list_copy ((GList *)target_uris);
-
-	move = (xfer_options & GNOME_VFS_XFER_REMOVESOURCE) != 0;
-	link = (xfer_options & GNOME_VFS_XFER_LINK_ITEMS) != 0;
 
 	if ((xfer_options & GNOME_VFS_XFER_USE_UNIQUE_NAMES) == 0) {
 		/* see if moved files are on the same file system so that we decide to do
@@ -1919,85 +2013,92 @@ gnome_vfs_xfer_uri_internal (const GList *source_uris,
 	}
 	
 	if (result == GNOME_VFS_OK) {
-
-		call_progress (progress, GNOME_VFS_XFER_PHASE_INITIAL);
-
-		progress->progress_info->phase = GNOME_VFS_XFER_PHASE_COLLECTING;
+		call_progress (progress, GNOME_VFS_XFER_PHASE_COLLECTING);
 		result = count_items_and_size (source_uri_list, xfer_options, progress, move, link);
-		if (result == GNOME_VFS_OK) {
-
-			/* Calculate free space on destination. If an error is returned, we have a non-local
-			 * file system, so we just forge ahead and hope for the best 
-			 */			 
-			target_dir_uri = gnome_vfs_uri_get_parent ((GnomeVFSURI *)target_uri_list->data);
-			result = gnome_vfs_get_volume_free_space (target_dir_uri, &free_bytes);
-			if (target_dir_uri != NULL) {
-				gnome_vfs_uri_unref (target_dir_uri);
-				target_dir_uri = NULL;
-			}
-
-			if (result == GNOME_VFS_OK) {
-				if (!move && progress->progress_info->bytes_total > free_bytes) {
-					result = GNOME_VFS_ERROR_NO_SPACE;
-					handle_error (&result, progress, &error_mode, &skip);
-					return result;
-				}
-			}
+		if (result != GNOME_VFS_ERROR_INTERRUPTED) {
+			/* Ignore anything but interruptions here -- we will deal with the errors
+			 * during the actual copy
+			 */
+			result = GNOME_VFS_OK;
+		}
+	}
 			
+	if (result == GNOME_VFS_OK) {
+		/* Calculate free space on destination. If an error is returned, we have a non-local
+		 * file system, so we just forge ahead and hope for the best 
+		 */			 
+		target_dir_uri = gnome_vfs_uri_get_parent ((GnomeVFSURI *)target_uri_list->data);
+		result = gnome_vfs_get_volume_free_space (target_dir_uri, &free_bytes);
+
+
+		if (result == GNOME_VFS_OK) {
+			if (!move && progress->progress_info->bytes_total > free_bytes) {
+				result = GNOME_VFS_ERROR_NO_SPACE;
+				progress_set_source_target_uris (progress, NULL, target_dir_uri);
+				handle_error (&result, progress, &error_mode, &skip);
+			}
+		} else {
 			/* Errors from gnome_vfs_get_volume_free_space should be ignored */
 			result = GNOME_VFS_OK;
+		}
+		
+		if (target_dir_uri != NULL) {
+			gnome_vfs_uri_unref (target_dir_uri);
+			target_dir_uri = NULL;
+		}
+
+		if (result != GNOME_VFS_OK) {
+			return result;
+		}
 			
-			if ((xfer_options & GNOME_VFS_XFER_USE_UNIQUE_NAMES) == 0) {
-				result = handle_name_conflicts (&source_uri_list, &target_uri_list,
-							        xfer_options, &error_mode, &overwrite_mode,
-							        progress);
-			}
-			/* reset the preflight numbers */
-			progress->progress_info->file_index = 0;
-			progress->progress_info->total_bytes_copied = 0;
+		if ((xfer_options & GNOME_VFS_XFER_USE_UNIQUE_NAMES) == 0) {
+			result = handle_name_conflicts (&source_uri_list, &target_uri_list,
+						        xfer_options, &error_mode, &overwrite_mode,
+						        progress);
+		}
+		/* reset the preflight numbers */
+		progress->progress_info->file_index = 0;
+		progress->progress_info->total_bytes_copied = 0;
 
-			if (result != GNOME_VFS_OK) {
-				/* don't care about any results from handle_error */
-				handle_error (&result, progress, &error_mode, &skip);
+		if (result != GNOME_VFS_OK) {
+			/* don't care about any results from handle_error */
+			handle_error (&result, progress, &error_mode, &skip);
 
-				/* whatever error it was, we handled it */
-				result = GNOME_VFS_OK;
+			/* whatever error it was, we handled it */
+			result = GNOME_VFS_OK;
+		} else {
+			call_progress (progress, GNOME_VFS_XFER_PHASE_READYTOGO);
+
+			if (move) {
+				g_assert (!link);
+				result = move_items (source_uri_list, target_uri_list,
+						     xfer_options, &error_mode, &overwrite_mode, 
+						     progress);
+			} else if (link) {
+				result = link_items (source_uri_list, target_uri_list,
+						     xfer_options, &error_mode, &overwrite_mode,
+						     progress);
 			} else {
-				call_progress (progress, GNOME_VFS_XFER_PHASE_READYTOGO);
-
-				if (move) {
-					g_assert (!link);
-					result = move_items (source_uri_list, target_uri_list,
-							     xfer_options, &error_mode, &overwrite_mode, 
-							     progress);
-				} else if (link) {
-					result = link_items (source_uri_list, target_uri_list,
-							     xfer_options, &error_mode, &overwrite_mode,
-							     progress);
-				} else {
-					result = copy_items (source_uri_list, target_uri_list,
-							     xfer_options, &error_mode, overwrite_mode, 
-							     progress);
-				}
-				
-				if (result == GNOME_VFS_OK) {
-					if (xfer_options & GNOME_VFS_XFER_REMOVESOURCE) {
-						call_progress (progress, GNOME_VFS_XFER_PHASE_CLEANUP);
-						result = gnome_vfs_xfer_delete_items_common (source_uri_list,
-							error_mode, xfer_options, progress);
-					}
+				result = copy_items (source_uri_list, target_uri_list,
+						     xfer_options, &error_mode, overwrite_mode, 
+						     progress, &source_uri_list_copied);
+			}
+			
+			if (result == GNOME_VFS_OK) {
+				if (xfer_options & GNOME_VFS_XFER_REMOVESOURCE
+				    && ! (move || link)) {
+					call_progress (progress, GNOME_VFS_XFER_PHASE_CLEANUP);
+					result = gnome_vfs_xfer_delete_items_common ( 
+						 	source_uri_list_copied,
+						 	error_mode, xfer_options, progress);
 				}
 			}
 		}
 	}
 
-	/* Done, at last.  At this point, there is no chance to interrupt the
-           operation anymore so we don't check the return value.  */
-	call_progress (progress, GNOME_VFS_XFER_PHASE_COMPLETED);
-
-	free_progress (progress->progress_info);
 	gnome_vfs_uri_list_free (source_uri_list);
 	gnome_vfs_uri_list_free (target_uri_list);
+	gnome_vfs_uri_list_free (source_uri_list_copied);
 
 	return result;
 }
@@ -2024,30 +2125,36 @@ gnome_vfs_xfer_private (const GList *source_uri_list,
 	progress_state.update_callback = progress_callback;
 	progress_state.async_job_data = data;
 
+
 	if ((xfer_options & GNOME_VFS_XFER_EMPTY_DIRECTORIES) != 0) {
 		/* Directory empty operation (Empty Trash, etc.). */
 		g_assert (source_uri_list != NULL);
 		g_assert (target_uri_list == NULL);
 		
+		call_progress (&progress_state, GNOME_VFS_XFER_PHASE_INITIAL);
 	 	result = gnome_vfs_xfer_empty_trash (source_uri_list, error_mode, &progress_state);
+		call_progress (&progress_state, GNOME_VFS_XFER_PHASE_COMPLETED);
+		free_progress (&progress_info);
 	} else if ((xfer_options & GNOME_VFS_XFER_DELETE_ITEMS) != 0) {
 		/* Delete items operation */
 		g_assert (source_uri_list != NULL);
 		g_assert (target_uri_list == NULL);
 				
+		call_progress (&progress_state, GNOME_VFS_XFER_PHASE_INITIAL);
 		result = gnome_vfs_xfer_delete_items (source_uri_list,
 		      error_mode, xfer_options, &progress_state);
+		call_progress (&progress_state, GNOME_VFS_XFER_PHASE_COMPLETED);
+		free_progress (&progress_info);
 	} else if ((xfer_options & GNOME_VFS_XFER_NEW_UNIQUE_DIRECTORY) != 0) {
 		/* New directory create operation */
 		g_assert (source_uri_list == NULL);
 		g_assert (g_list_length ((GList *)target_uri_list) == 1);
 
-
 		target_dir_uri = gnome_vfs_uri_get_parent ((GnomeVFSURI *)target_uri_list->data);
 		if (target_dir_uri == NULL 
 			|| gnome_vfs_uri_get_basename ((GnomeVFSURI *)target_uri_list->data) == NULL)
 			return GNOME_VFS_ERROR_INVALID_URI;
-			
+		
 		result = gnome_vfs_new_directory_with_unique_name (target_dir_uri, 
 			gnome_vfs_uri_get_basename ((GnomeVFSURI *)target_uri_list->data),
 			error_mode, overwrite_mode, &progress_state);
@@ -2058,9 +2165,13 @@ gnome_vfs_xfer_private (const GList *source_uri_list,
 		g_assert (target_uri_list != NULL);
 		g_assert (g_list_length ((GList *)source_uri_list) == g_list_length ((GList *)target_uri_list));
 
+		call_progress (&progress_state, GNOME_VFS_XFER_PHASE_INITIAL);
 		result = gnome_vfs_xfer_uri_internal (source_uri_list, target_uri_list,
 			xfer_options, error_mode, overwrite_mode, &progress_state);
+		call_progress (&progress_state, GNOME_VFS_XFER_PHASE_COMPLETED);
+		free_progress (&progress_info);
 	}
+
 
 	/* FIXME bugzilla.eazel.com 1218:
 	 * 
@@ -2089,6 +2200,7 @@ gnome_vfs_xfer_uri_list (const GList *source_uri_list,
 {
 	GnomeVFSProgressCallbackState progress_state;
 	GnomeVFSXferProgressInfo progress_info;
+	GnomeVFSResult result;
 
 	g_return_val_if_fail (source_uri_list != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
 	g_return_val_if_fail (target_uri_list != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);	
@@ -2099,8 +2211,15 @@ gnome_vfs_xfer_uri_list (const GList *source_uri_list,
 	progress_state.sync_callback = progress_callback;
 	progress_state.user_data = data;
 
-	return gnome_vfs_xfer_uri_internal (source_uri_list, target_uri_list,
+	call_progress (&progress_state, GNOME_VFS_XFER_PHASE_INITIAL);
+
+	result = gnome_vfs_xfer_uri_internal (source_uri_list, target_uri_list,
 		xfer_options, error_mode, overwrite_mode, &progress_state);
+
+	call_progress (&progress_state, GNOME_VFS_XFER_PHASE_COMPLETED);
+	free_progress (&progress_info);
+
+	return result;
 }
 
 GnomeVFSResult	
@@ -2142,6 +2261,7 @@ gnome_vfs_xfer_delete_list (const GList *uri_list,
 {
 	GnomeVFSProgressCallbackState progress_state;
 	GnomeVFSXferProgressInfo progress_info;
+	GnomeVFSResult result;
 
 	g_return_val_if_fail (uri_list != NULL, GNOME_VFS_ERROR_BAD_PARAMETERS);
 	g_return_val_if_fail (progress_callback != NULL || error_mode != GNOME_VFS_XFER_ERROR_MODE_QUERY,
@@ -2150,8 +2270,14 @@ gnome_vfs_xfer_delete_list (const GList *uri_list,
 	init_progress (&progress_state, &progress_info);
 	progress_state.sync_callback = progress_callback;
 	progress_state.user_data = data;
+	call_progress (&progress_state, GNOME_VFS_XFER_PHASE_INITIAL);
 
-	return gnome_vfs_xfer_delete_items (uri_list, error_mode, xfer_options,
+	result = gnome_vfs_xfer_delete_items (uri_list, error_mode, xfer_options,
 		&progress_state);
+	
+	call_progress (&progress_state, GNOME_VFS_XFER_PHASE_COMPLETED);
+	free_progress (&progress_info);
+
+	return result;
 }
 

@@ -44,6 +44,9 @@ typedef struct {
 	} operation;
 	gchar *dirlist;
 	gchar *dirlistptr;
+	gchar *server_type; /* the response from TYPE */
+	gboolean anonymous;
+	GnomeVFSResult fivefifty; /* the result to return for an FTP 550 */
 	GnomeVFSFileInfoOptions file_info_options;
 } FtpConnection;
 

@@ -23,11 +23,14 @@
 #ifndef GNOME_VFS_MIME_PRIVATE_H
 #define GNOME_VFS_MIME_PRIVATE_H
 
+#include "gnome-vfs-mime-monitor.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif /*__cplusplus*/
 
-void gnome_vfs_mime_info_shutdown (void);
+void gnome_vfs_mime_info_shutdown 	      (void);
+void gnome_vfs_mime_monitor_emit_data_changed (GnomeVFSMIMEMonitor *monitor);
 
 #ifdef __cplusplus
 }

@@ -106,7 +106,6 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
-LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBEFS_CFLAGS = @LIBEFS_CFLAGS@
 LIBEFS_LIBS = @LIBEFS_LIBS@
@@ -117,7 +116,6 @@ LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-NM = @NM@
 OAF_CFLAGS = @OAF_CFLAGS@
 OAF_CONFIG = @OAF_CONFIG@
 OAF_LIBS = @OAF_LIBS@
@@ -160,6 +158,9 @@ VFS_SIZE_PRINTF = @VFS_SIZE_PRINTF@
 WERROR = @WERROR@
 XML_CFLAGS = @XML_CFLAGS@
 XML_CONFIG = @XML_CONFIG@
+XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
+XML_I18N_MERGE = @XML_I18N_MERGE@
+XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XML_LIBS = @XML_LIBS@
 ZVT_LIBS = @ZVT_LIBS@
 cflags_set = @cflags_set@
@@ -169,7 +170,7 @@ need_gnome_support = @need_gnome_support@
 
 SUBDIRS = extfs
 
-INCLUDES =  	-I$(top_srcdir)/libgnomevfs			-I$(top_builddir)/libgnomevfs			-I$(top_srcdir)/intl				-I$(top_builddir)/intl				$(GLIB_CFLAGS)					$(XML_CFLAGS)	 				$(LIBEFS_CFLAGS)				$(GCONF_CFLAGS)					$(GTK_CFLAGS)					$(VFS_CFLAGS) $(WERROR)				-D_GNU_SOURCE					-D_REENTRANT					-D_POSIX_PTHREAD_SEMANTICS			-DPREFIX=\"$(prefix)\"
+INCLUDES =  	-I$(top_srcdir)					-I$(top_srcdir)/libgnomevfs			-I$(top_builddir)/libgnomevfs			-I$(top_srcdir)/intl				-I$(top_builddir)/intl				$(GLIB_CFLAGS)					$(XML_CFLAGS)	 				$(LIBEFS_CFLAGS)				$(GCONF_CFLAGS)					$(GTK_CFLAGS)					$(VFS_CFLAGS) $(WERROR)				-D_GNU_SOURCE					-D_REENTRANT					-D_POSIX_PTHREAD_SEMANTICS			-DPREFIX=\"$(prefix)\"
 
 
 EXTRA_DIST =  	default-modules.conf				efs-method.c                            	efs-method.h
@@ -180,7 +181,7 @@ EXTRA_DIST =  	default-modules.conf				efs-method.c                            	
 module_flags = -export_dynamic -avoid-version
 modulesdir = $(libdir)/vfs/modules
 
-modules_LTLIBRARIES =  	libextfs.la					libfile.la					libvfs-test.la				libhttp.la					libbzip2.la					libgzip.la					libftp.la					libvfs-pipe.la				libvfs-translate.la			libnfs.la
+modules_LTLIBRARIES =  	libextfs.la					libfile.la					libvfs-test.la					libhttp.la					libbzip2.la					libgzip.la					libftp.la					libvfs-pipe.la					libvfs-translate.la				libnfs.la
 
 
 modulesconfdir = $(sysconfdir)/vfs/modules
@@ -248,7 +249,7 @@ libgconf_la_LIBADD = $(GCONF_LIBS) $(GTK_LIBS)
 libgconf_la_LDFLAGS = $(module_flags)
 
 ### `nfs' method
-libnfs_la_SOURCES =  	nfs-method.c					nfs-method.h					nfs-method_mount_xdr.c					nfs-method_nfs_prot_xdr.c					nfs-method_mount.h						nfs-method_nfs_prot.h
+libnfs_la_SOURCES =  	nfs-method.c					nfs-method.h					nfs-method_mount_xdr.c				nfs-method_nfs_prot_xdr.c			nfs-method_mount.h				nfs-method_nfs_prot.h
 
 
 libnfs_la_LDFLAGS = $(module_flags)
@@ -566,7 +567,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$/$$file $(distdir)/$$file; \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \

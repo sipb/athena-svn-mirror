@@ -20,85 +20,88 @@
 
    Authors: Seth Nickell      (seth@eazel.com) */
 
-/* To use: create a /gnome/etc/vfs/Test-conf.xml, and point gnome-vfs
- * clients to Test:restofuri which will translate into the "real" method
+/* Create a settings file and put it at /gnome/etc/vfs/Test-conf.xml,
+ * then point gnome-vfs clients to test:<uri_minus_scheme> which will
+ * translate into the "real" method (e.g. test:///home/seth).
  *
- * here's a sample config file (pointing to the file method):
+ * The delay is in milliseconds.
+ *
+ * Here's a sample config file (pointing to the file method):
  *
  *    <?xml version="1.0"?>
  *        <TestModule method="file">
- *	      <Function name="do_open_directory" result="GNOME_VFS_OK" execute_operation="TRUE" delay="2000"/>
+ *	      <function name="open_directory" delay="2000"/>
  *        </TestModule>
- *
- */
+ * */
 
 #include <config.h>
 
-#include <stdio.h>
+#include <gnome-xml/parser.h>
+#include <gnome-xml/tree.h>
+#include <gnome-xml/xmlmemory.h>
 #include <libgnome/gnome-defs.h>
 #include <libgnome/gnome-util.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libgnomevfs/gnome-vfs-private.h>
+#include <stdio.h>
 #include <string.h>
-#include <gnome-xml/tree.h>
-#include <gnome-xml/parser.h>
-#include "gnome-vfs-uri.h"
+#include <unistd.h>
 
 typedef struct {
 	char *operation_name;
-	GnomeVFSResult new_result;
-	gboolean execute_operation;
         int delay;
-} Interposition;
+	gboolean skip;
+	gboolean override_result;
+	GnomeVFSResult overridden_result_value;
+} OperationSettings;
 
 #define NUM_RESULT_STRINGS 41
 
-static char TestMethodName[10];
+static char *test_method_name;
+static GList *settings_list;
 
-static GList *TestOperationConfig;
-
-static char
-TestGnomeVFSResultString[NUM_RESULT_STRINGS][40] = {
-			 "GNOME_VFS_OK",
-			 "GNOME_VFS_ERROR_NOT_FOUND",
-			 "GNOME_VFS_ERROR_GENERIC",
-			 "GNOME_VFS_ERROR_INTERNAL",
-			 "GNOME_VFS_ERROR_BAD_PARAMETERS",
-			 "GNOME_VFS_ERROR_NOT_SUPPORTED",
-			 "GNOME_VFS_ERROR_IO",
-			 "GNOME_VFS_ERROR_CORRUPTED_DATA",
-			 "GNOME_VFS_ERROR_WRONG_FORMAT",
-			 "GNOME_VFS_ERROR_BAD_FILE",
-			 "GNOME_VFS_ERROR_TOO_BIG",
-			 "GNOME_VFS_ERROR_NO_SPACE",
-			 "GNOME_VFS_ERROR_READ_ONLY",
-			 "GNOME_VFS_ERROR_INVALID_URI",
-			 "GNOME_VFS_ERROR_NOT_OPEN",
-			 "GNOME_VFS_ERROR_INVALID_OPEN_MODE",
-			 "GNOME_VFS_ERROR_ACCESS_DENIED",
-			 "GNOME_VFS_ERROR_TOO_MANY_OPEN_FILES",
-			 "GNOME_VFS_ERROR_EOF",
-			 "GNOME_VFS_ERROR_NOT_A_DIRECTORY",
-			 "GNOME_VFS_ERROR_IN_PROGRESS",
-			 "GNOME_VFS_ERROR_INTERRUPTED",
-			 "GNOME_VFS_ERROR_FILE_EXISTS",
-			 "GNOME_VFS_ERROR_LOOP",
-			 "GNOME_VFS_ERROR_NOT_PERMITTED",
-			 "GNOME_VFS_ERROR_IS_DIRECTORY",
-			 "GNOME_VFS_ERROR_NO_MEMORY",
-			 "GNOME_VFS_ERROR_HOST_NOT_FOUND",
-			 "GNOME_VFS_ERROR_INVALID_HOST_NAME",
-			 "GNOME_VFS_ERROR_HOST_HAS_NO_ADDRESS",
-			 "GNOME_VFS_ERROR_LOGIN_FAILED",
-			 "GNOME_VFS_ERROR_CANCELLED",
-			 "GNOME_VFS_ERROR_DIRECTORY_BUSY",
-			 "GNOME_VFS_ERROR_DIRECTORY_NOT_EMPTY",
-			 "GNOME_VFS_ERROR_TOO_MANY_LINKS",
-			 "GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM",
-			 "GNOME_VFS_ERROR_NOT_SAME_FILE_SYSTEM",
-			 "GNOME_VFS_ERROR_NAME_TOO_LONG",
-			 "GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE",
-			 "GNOME_VFS_NUM_ERRORS"
+static const char * const
+result_strings[NUM_RESULT_STRINGS] = {
+	"GNOME_VFS_OK",
+	"GNOME_VFS_ERROR_NOT_FOUND",
+	"GNOME_VFS_ERROR_GENERIC",
+	"GNOME_VFS_ERROR_INTERNAL",
+	"GNOME_VFS_ERROR_BAD_PARAMETERS",
+	"GNOME_VFS_ERROR_NOT_SUPPORTED",
+	"GNOME_VFS_ERROR_IO",
+	"GNOME_VFS_ERROR_CORRUPTED_DATA",
+	"GNOME_VFS_ERROR_WRONG_FORMAT",
+	"GNOME_VFS_ERROR_BAD_FILE",
+	"GNOME_VFS_ERROR_TOO_BIG",
+	"GNOME_VFS_ERROR_NO_SPACE",
+	"GNOME_VFS_ERROR_READ_ONLY",
+	"GNOME_VFS_ERROR_INVALID_URI",
+	"GNOME_VFS_ERROR_NOT_OPEN",
+	"GNOME_VFS_ERROR_INVALID_OPEN_MODE",
+	"GNOME_VFS_ERROR_ACCESS_DENIED",
+	"GNOME_VFS_ERROR_TOO_MANY_OPEN_FILES",
+	"GNOME_VFS_ERROR_EOF",
+	"GNOME_VFS_ERROR_NOT_A_DIRECTORY",
+	"GNOME_VFS_ERROR_IN_PROGRESS",
+	"GNOME_VFS_ERROR_INTERRUPTED",
+	"GNOME_VFS_ERROR_FILE_EXISTS",
+	"GNOME_VFS_ERROR_LOOP",
+	"GNOME_VFS_ERROR_NOT_PERMITTED",
+	"GNOME_VFS_ERROR_IS_DIRECTORY",
+	"GNOME_VFS_ERROR_NO_MEMORY",
+	"GNOME_VFS_ERROR_HOST_NOT_FOUND",
+	"GNOME_VFS_ERROR_INVALID_HOST_NAME",
+	"GNOME_VFS_ERROR_HOST_HAS_NO_ADDRESS",
+	"GNOME_VFS_ERROR_LOGIN_FAILED",
+	"GNOME_VFS_ERROR_CANCELLED",
+	"GNOME_VFS_ERROR_DIRECTORY_BUSY",
+	"GNOME_VFS_ERROR_DIRECTORY_NOT_EMPTY",
+	"GNOME_VFS_ERROR_TOO_MANY_LINKS",
+	"GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM",
+	"GNOME_VFS_ERROR_NOT_SAME_FILE_SYSTEM",
+	"GNOME_VFS_ERROR_NAME_TOO_LONG",
+	"GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE",
+	"GNOME_VFS_NUM_ERRORS"
 };
 
 /* Module entry points. */
@@ -116,16 +119,13 @@ translate_uri (GnomeVFSURI *uri)
 
 	uri_text = gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_NONE);
 	no_method = strchr (uri_text, ':');
-	translated_uri_text = g_strconcat (TestMethodName, no_method, NULL);
-
-	translated_uri = gnome_vfs_uri_new (translated_uri_text);
-
+	translated_uri_text = g_strconcat (test_method_name, no_method, NULL);
 	g_free (uri_text);
+	translated_uri = gnome_vfs_uri_new (translated_uri_text);
 	g_free (translated_uri_text);
 
 	return translated_uri;
 }
-
 
 /* reads the configuration file and returns TRUE if there are special options for
    this execution of the operation.
@@ -134,176 +134,156 @@ translate_uri (GnomeVFSURI *uri)
    and perform_operation will be TRUE if the operation should execute the underlying
    operation anyway
 */
-static gboolean
-get_operation_configuration (char *function_identifier, GnomeVFSResult *result, 
-			     gboolean *perform_operation, int *delay,
-			     GList **other_options)
+static const OperationSettings *
+get_operation_settings (const char *function_identifier)
 {
+	static OperationSettings empty_settings;
         GList *node;
-	Interposition *operation_config;
-	Interposition *found_config = NULL;
+	OperationSettings *settings;
 
-	printf ("get_operation_configuration for %s\n", function_identifier);
-	for (node = TestOperationConfig; node != NULL; node = node->next) {
-	        operation_config = node->data;
-		if (strcmp (operation_config->operation_name, function_identifier)) {
-		        found_config = operation_config;
+	for (node = settings_list; node != NULL; node = node->next) {
+	        settings = node->data;
+		if (g_strcasecmp (settings->operation_name, function_identifier) == 0) {
+			return settings;
 		}
 	}
-	if (!found_config) {
-	        return FALSE;
-	} else {
-	        *result = found_config->new_result;
-		*perform_operation = found_config->execute_operation;
-		*delay = found_config->delay;
-		return TRUE;
-	}	  
+	
+	return &empty_settings;
 }
 
-#define SWITCH_DEBUG(URI, OPERATION, FUNCTION_NAME)                      \
-do {                                                                     \
-	gboolean  perform_operation = FALSE;                             \
-	GList    *other_options;                                         \
-	GnomeVFSResult result_new;                                       \
-	GnomeVFSURI *translated_uri, *hold_uri;                          \
-	gboolean found_configuration;                                    \
-        int delay;                                                       \
-        char *delay_command;                                             \
-                                                                         \
-	found_configuration =                                            \
-		get_operation_configuration ( (FUNCTION_NAME),           \
-					      &result_new,               \
-					      &perform_operation,        \
-                                              &delay,                    \
-					      &other_options);           \
-	                                                                 \
-        if (found_configuration) {                                       \
-                delay_command = g_new (char, 90);                        \
-                g_snprintf (delay_command, 90, "usleep %d",              \
-			    delay * 1000);                               \
-                system (delay_command);                                  \
-                g_free (delay_command);                                  \
-        }                                                                \
-	if (!found_configuration || perform_operation) {                 \
-	        translated_uri = URI;                                    \
-	        URI = translate_uri( (URI) );                            \
-                                                                         \
-		if (found_configuration) {                               \
-			OPERATION;                                       \
-		} else {                                                 \
-			result_new = OPERATION;                          \
-		}                                                        \
-                                                                         \
-                hold_uri = URI;                                          \
-	        URI = translated_uri;                                    \
-                gnome_vfs_uri_unref (hold_uri);                          \
-	}                                                                \
-                                                                         \
-	return result_new;                                               \
-} while (0)       
+static const OperationSettings *
+start_operation (const char *name,
+		 GnomeVFSURI **uri,
+		 GnomeVFSURI **saved_uri)
+{
+	const OperationSettings *settings;
 
-
-#define SWITCH_DEBUG_NO_URI(OPERATION, FUNCTION_NAME)                    \
-do {                                                                     \
-	gboolean  perform_operation = FALSE;                             \
-	GList    *other_options;                                         \
-	GnomeVFSResult result_new;                                       \
-	gboolean found_configuration;                                    \
-        int delay;                                                       \
-        char *delay_command;                                             \
-                                                                         \
-	found_configuration =                                            \
-		get_operation_configuration ( (FUNCTION_NAME),           \
-					      &result_new,               \
-					      &perform_operation,        \
-                                              &delay,                    \
-					      &other_options);           \
-	                                                                 \
-        if (found_configuration) {                                       \
-                delay_command = g_new (char, 90);                        \
-                g_snprintf (delay_command, 90, "usleep %d",              \
-			    delay * 1000);                               \
-                system (delay_command);                                  \
-                g_free (delay_command);                                  \
-        }                                                                \
-	if (!found_configuration || perform_operation) {                 \
-                                                                         \
-		if (found_configuration) {                               \
-			OPERATION;                                       \
-		} else {                                                 \
-			result_new = OPERATION;                          \
-		}                                                        \
-	}                                                                \
-                                                                         \
-	return result_new;                                               \
-} while (0)       
+	settings = get_operation_settings (name);
+	usleep (settings->delay * 1000);
+	
+	if (uri != NULL) {
+		*saved_uri = *uri;
+		*uri = translate_uri (*uri);
+	}
+	return settings;
+}
 
 static GnomeVFSResult
-parse_results_text (char *result) {
-	int i;
-	gboolean found = FALSE;
+finish_operation (const OperationSettings *settings,
+		  GnomeVFSResult result,
+		  GnomeVFSURI **uri,
+		  GnomeVFSURI **saved_uri)
+{
+	if (uri != NULL) {
+		gnome_vfs_uri_unref (*uri);
+		*uri = *saved_uri;
+	}
 
-	for (i = 0; i < NUM_RESULT_STRINGS && !found; i++) {
-		found = g_strcasecmp (result, TestGnomeVFSResultString[i]);
+	if (settings->override_result) {
+		return settings->overridden_result_value;
 	}
-	
-	if (found) {
-		return i;
-	} else { 
-			return GNOME_VFS_ERROR_NOT_FOUND;
-	}
+	return result;
 }
 
-static GList *
-load_config_file (char *filename) 
+#define PERFORM_OPERATION(name, operation)			\
+do {								\
+	const OperationSettings *settings;			\
+	GnomeVFSURI *saved_uri;					\
+	GnomeVFSResult result;					\
+								\
+	settings = start_operation (#name, &uri, &saved_uri);	\
+	if (settings->skip) {					\
+		result = GNOME_VFS_OK;				\
+	} else {						\
+		result = operation;				\
+	}							\
+	return finish_operation (settings, result,		\
+				 &uri, &saved_uri);		\
+} while (0)
+
+
+#define PERFORM_OPERATION_NO_URI(name, operation)		\
+do {								\
+	const OperationSettings *settings;			\
+	GnomeVFSResult result;					\
+								\
+	settings = start_operation (#name, NULL, NULL);		\
+	if (settings->skip) {					\
+		result = GNOME_VFS_OK;				\
+	} else {						\
+		result = operation;				\
+	}							\
+	return finish_operation (settings, result,		\
+				 NULL, NULL);			\
+} while (0)
+
+static gboolean
+parse_result_text (const char *result_text,
+		   GnomeVFSResult *result_code)
 {
-	Interposition *operation;
-	GList *operation_list = NULL;
-	xmlDocPtr doc;
-	xmlNodePtr node;
-	char *new_result_text;
-	char *execute_text;
-	char *method_name;
-	char *delay_string;
+	int i;
 
-	doc = xmlParseFile(filename); 
-
-	/* FIXME bugzilla.eazel.com 3836: the module shouldn't crash when the config file doesn't exist */
-	
-	if(!doc || !doc->root || !doc->root->name || g_strcasecmp(doc->root->name,"TestModule")!=0) {
-		xmlFreeDoc(doc);
-		return FALSE;
-	}
-
-	method_name = xmlGetProp(doc->root, "method");
-	g_snprintf (TestMethodName, 10, "%s", method_name);
-	
-	printf ("target method: %s\n", TestMethodName);
-
-	for(node = doc->root->childs; node != NULL; node = node->next) {
-		if (xmlGetProp (node, "name") != NULL) {
-			operation = g_new (Interposition, 1);
-			operation->operation_name = xmlGetProp(node, "name");
-			new_result_text = xmlGetProp(node, "result");
-			execute_text = xmlGetProp(node, "execute_operation");
-			
-			operation->new_result = parse_results_text (new_result_text);
-			operation->execute_operation = execute_text != NULL && g_strcasecmp (execute_text, "TRUE");
-
-			delay_string = xmlGetProp(node, "delay");
-			if (delay_string != NULL) {
-			      sscanf (delay_string, "%d", &(operation->execute_operation));
-			} else {
-			  operation->execute_operation = 0;
-			}
-						   			
-			printf ("Added debug mode for %s, return value %s (%s), executed operation %s, delays %d seconds.\n", operation->operation_name, new_result_text, gnome_vfs_result_to_string(operation->new_result), execute_text, operation->execute_operation);
-
-			g_list_append (operation_list, operation);
+	for (i = 0; i < NUM_RESULT_STRINGS; i++) {
+		if (g_strcasecmp (result_text, result_strings[i]) == 0) {
+			*result_code = i;
+			return TRUE;
 		}
 	}
+	
+	return FALSE;
+}
 
-	return operation_list;
+static void
+load_settings (const char *filename) 
+{
+	xmlDocPtr doc;
+	xmlNodePtr node;
+	char *name;
+	OperationSettings *operation;
+	char *str;
+
+	doc = xmlParseFile (filename); 
+
+	if (doc == NULL
+	    || doc->xmlRootNode == NULL
+	    || doc->xmlRootNode->name == NULL
+	    || g_strcasecmp (doc->xmlRootNode->name, "testmodule") != 0) {
+		xmlFreeDoc(doc);
+		return;
+	}
+
+	test_method_name = xmlGetProp (doc->xmlRootNode, "method");
+	
+	for (node = doc->xmlRootNode->xmlChildrenNode; node != NULL; node = node->next) {
+		name = xmlGetProp (node, "name");
+		if (name == NULL) {
+			continue;
+		}
+
+		operation = g_new0 (OperationSettings, 1);
+		operation->operation_name = name;
+
+		str = xmlGetProp (node, "delay");
+		if (str != NULL) {
+			sscanf (str, "%d", &operation->delay);
+		}
+		xmlFree (str);
+
+		str = xmlGetProp(node, "execute_operation");
+		if (str != NULL && g_strcasecmp (str, "FALSE") == 0) {
+			operation->skip = TRUE;
+		}
+		xmlFree (str);
+
+		str = xmlGetProp (node, "result");
+		if (str != NULL) {
+			operation->override_result = parse_result_text
+				(str, &operation->overridden_result_value);
+		}
+		xmlFree (str);
+		
+		settings_list = g_list_prepend (settings_list, operation);
+	}
 }
 
 static GnomeVFSResult
@@ -313,14 +293,7 @@ do_open (GnomeVFSMethod *method,
 	 GnomeVFSOpenMode mode,
 	 GnomeVFSContext *context)
 {	
-	SWITCH_DEBUG (uri, gnome_vfs_open_uri_cancellable ((GnomeVFSHandle **) method_handle, uri, mode, context), "do_open");
-	/*
-	GnomeVFSResult result;
-
-	result = gnome_vfs_open_uri_cancellable
-		((GnomeVFSHandle **) method_handle, uri, mode, context);
-	return result;
-	*/
+	PERFORM_OPERATION (open, gnome_vfs_open_uri_cancellable ((GnomeVFSHandle **) method_handle, uri, mode, context));
 }
 
 static GnomeVFSResult
@@ -332,7 +305,7 @@ do_create (GnomeVFSMethod *method,
 	   guint perm,
 	   GnomeVFSContext *context)
 {
-	/* fixme: what do we do here? */
+	/* FIXME bugzilla.eazel.com 3837: Not implemented. */
 	return GNOME_VFS_ERROR_INTERNAL;
 }
 
@@ -341,14 +314,7 @@ do_close (GnomeVFSMethod *method,
 	  GnomeVFSMethodHandle *method_handle,
 	  GnomeVFSContext *context)
 {
-	SWITCH_DEBUG_NO_URI (gnome_vfs_close_cancellable ((GnomeVFSHandle *)method_handle, context), "do_close");
-	/* GnomeVFSResult result;
-
-	result = gnome_vfs_close_cancellable
-		((GnomeVFSHandle *)method_handle, context);
-
-	return result;
-	*/
+	PERFORM_OPERATION_NO_URI (close, gnome_vfs_close_cancellable ((GnomeVFSHandle *) method_handle, context));
 }
 
 static GnomeVFSResult
@@ -359,11 +325,7 @@ do_read (GnomeVFSMethod *method,
 	 GnomeVFSFileSize *bytes_read,
 	 GnomeVFSContext *context)
 {
-	SWITCH_DEBUG_NO_URI (gnome_vfs_read_cancellable((GnomeVFSHandle *)method_handle, buffer, num_bytes, bytes_read, context), "do_read");
-	/*
-	return gnome_vfs_read_cancellable
-		((GnomeVFSHandle *)method_handle, buffer, num_bytes, bytes_read, context);
-	*/
+	PERFORM_OPERATION_NO_URI (read, gnome_vfs_read_cancellable ((GnomeVFSHandle *) method_handle, buffer, num_bytes, bytes_read, context));
 }
 
 static GnomeVFSResult
@@ -374,11 +336,7 @@ do_write (GnomeVFSMethod *method,
 	  GnomeVFSFileSize *bytes_written,
 	  GnomeVFSContext *context)
 {
-	SWITCH_DEBUG_NO_URI (gnome_vfs_write_cancellable((GnomeVFSHandle *)method_handle, buffer, num_bytes, bytes_written, context), "do_write");
-	/*
-	return gnome_vfs_write_cancellable
-		((GnomeVFSHandle *)method_handle, buffer, num_bytes, bytes_written, context);
-	*/
+	PERFORM_OPERATION_NO_URI (write, gnome_vfs_write_cancellable((GnomeVFSHandle *) method_handle, buffer, num_bytes, bytes_written, context));
 }
 
 static GnomeVFSResult
@@ -388,11 +346,7 @@ do_seek (GnomeVFSMethod *method,
 	 GnomeVFSFileOffset offset,
 	 GnomeVFSContext *context)
 {
-	SWITCH_DEBUG_NO_URI (gnome_vfs_seek_cancellable((GnomeVFSHandle *)method_handle, whence, offset, context), "do_seek");
-	/*
-	return gnome_vfs_seek_cancellable
-		((GnomeVFSHandle *)method_handle, whence, offset, context);
-	*/
+	PERFORM_OPERATION_NO_URI (seek, gnome_vfs_seek_cancellable ((GnomeVFSHandle *) method_handle, whence, offset, context));
 }
 
 static GnomeVFSResult
@@ -400,11 +354,7 @@ do_tell (GnomeVFSMethod *method,
 	 GnomeVFSMethodHandle *method_handle,
 	 GnomeVFSFileOffset *offset_return)
 {
-	SWITCH_DEBUG_NO_URI (gnome_vfs_tell((GnomeVFSHandle *)method_handle, offset_return), "do_tell");
-	/*
-	return gnome_vfs_tell
-		((GnomeVFSHandle *)method_handle, offset_return);
-	*/
+	PERFORM_OPERATION_NO_URI (tell, gnome_vfs_tell ((GnomeVFSHandle *) method_handle, offset_return));
 }
 
 
@@ -416,23 +366,15 @@ do_open_directory (GnomeVFSMethod *method,
 		   const GnomeVFSDirectoryFilter *filter,
 		   GnomeVFSContext *context)
 {
-	SWITCH_DEBUG (uri, gnome_vfs_directory_open_from_uri((GnomeVFSDirectoryHandle **)method_handle, uri, options, filter), "do_open_directory");
-	/*
-	return gnome_vfs_directory_open_from_uri
-		((GnomeVFSDirectoryHandle **)method_handle, uri, options, filter);
-	*/
+	PERFORM_OPERATION (open_directory, gnome_vfs_directory_open_from_uri ((GnomeVFSDirectoryHandle **) method_handle, uri, options, filter));
 }
 
 static GnomeVFSResult
 do_close_directory (GnomeVFSMethod *method,
 		    GnomeVFSMethodHandle *method_handle,
 		    GnomeVFSContext *context)
-{	
-	return GNOME_VFS_OK;
-	/* SWITCH_DEBUG_NO_URI (gnome_vfs_close ((GnomeVFSHandle *)method_handle), "do_close_directory"); */
-	/*
-	return gnome_vfs_close ((GnomeVFSHandle *)method_handle);
-	*/
+{
+	PERFORM_OPERATION_NO_URI (close_directory, gnome_vfs_directory_close ((GnomeVFSDirectoryHandle *) method_handle));
 }
 
 static GnomeVFSResult
@@ -441,14 +383,7 @@ do_read_directory (GnomeVFSMethod *method,
 		   GnomeVFSFileInfo *file_info,
 		   GnomeVFSContext *context)
 {
-	SWITCH_DEBUG_NO_URI (gnome_vfs_directory_read_next ((GnomeVFSDirectoryHandle *) method_handle, file_info), "do_read_directory");
-	/*
-	GnomeVFSResult result;
-
-	result = gnome_vfs_directory_read_next ((GnomeVFSDirectoryHandle *) method_handle,
-						file_info);
-	return result;
-	*/
+	PERFORM_OPERATION_NO_URI (read_directory, gnome_vfs_directory_read_next ((GnomeVFSDirectoryHandle *) method_handle, file_info));
 }
 
 static GnomeVFSResult
@@ -458,14 +393,7 @@ do_get_file_info (GnomeVFSMethod *method,
 		  GnomeVFSFileInfoOptions options,
 		  GnomeVFSContext *context)
 {
-	SWITCH_DEBUG (uri, gnome_vfs_get_file_info_uri_cancellable (uri, file_info, options, context), "do_get_file_info");
-	/*
-	GnomeVFSResult result;
-	result = gnome_vfs_get_file_info_uri_cancellable (uri, file_info, 
-							  options, context);
-
-	return result;
-	*/
+	PERFORM_OPERATION (get_file_info, gnome_vfs_get_file_info_uri_cancellable (uri, file_info, options, context));
 }
 
 static GnomeVFSResult
@@ -475,24 +403,15 @@ do_get_file_info_from_handle (GnomeVFSMethod *method,
 			      GnomeVFSFileInfoOptions options,
 			      GnomeVFSContext *context)
 {
-	SWITCH_DEBUG_NO_URI (gnome_vfs_get_file_info_from_handle_cancellable((GnomeVFSHandle *)method_handle, file_info, options, context), "do_get_file_info_from_handle");
-	/*
-	GnomeVFSResult result;
-
-	result = gnome_vfs_get_file_info_from_handle_cancellable 
-		((GnomeVFSHandle *)method_handle, file_info, options,
-		 context);
-	return result;
-	*/
+	PERFORM_OPERATION_NO_URI (get_file_info_from_handle, gnome_vfs_get_file_info_from_handle_cancellable ((GnomeVFSHandle *) method_handle, file_info, options, context));
 }
 
 static gboolean
 do_is_local (GnomeVFSMethod *method,
 	     const GnomeVFSURI *uri)
 {
-	gboolean result;
-	result = TRUE;
-	return result;
+	/* FIXME bugzilla.eazel.com 3837: Not implemented. */
+	return TRUE;
 }
 
 static GnomeVFSResult
@@ -501,12 +420,7 @@ do_make_directory (GnomeVFSMethod *method,
 		   guint perm,
 		   GnomeVFSContext *context)
 {
-	SWITCH_DEBUG (uri,  gnome_vfs_make_directory_for_uri_cancellable (uri, perm, context), "do_make_directory");
-	/*
-	GnomeVFSResult result;
-	result = gnome_vfs_make_directory_for_uri_cancellable (uri, perm, context);
-	return result;
-	*/
+	PERFORM_OPERATION (make_directory, gnome_vfs_make_directory_for_uri_cancellable (uri, perm, context));
 }
 
 static GnomeVFSResult
@@ -514,12 +428,7 @@ do_remove_directory (GnomeVFSMethod *method,
 		     GnomeVFSURI *uri,
 		     GnomeVFSContext *context)
 {
-	SWITCH_DEBUG (uri, gnome_vfs_remove_directory_from_uri_cancellable (uri, context), "do_remove_directory");
-	/*
-	GnomeVFSResult result;
-	result = gnome_vfs_remove_directory_from_uri_cancellable (uri, context);
-	return result;
-	*/
+	PERFORM_OPERATION (remove_directory, gnome_vfs_remove_directory_from_uri_cancellable (uri, context));
 }
 
 static GnomeVFSResult
@@ -529,10 +438,8 @@ do_move (GnomeVFSMethod *method,
 	 gboolean force_replace,
 	 GnomeVFSContext *context)
 {
-	/* FIXME bugzilla.eazel.com 3837: special case */
-	GnomeVFSResult result;
-	result = gnome_vfs_move_uri_cancellable (old_uri, new_uri, force_replace, context);
-	return result;
+	/* FIXME bugzilla.eazel.com 3837: Not implemented. */
+	return gnome_vfs_move_uri_cancellable (old_uri, new_uri, force_replace, context);
 }
 
 static GnomeVFSResult
@@ -540,12 +447,7 @@ do_unlink (GnomeVFSMethod *method,
 	   GnomeVFSURI *uri,
 	   GnomeVFSContext *context)
 {
-	SWITCH_DEBUG (uri,  gnome_vfs_unlink_from_uri_cancellable (uri, context), "do_unlink");
-	/*
-	GnomeVFSResult result;
-	result = gnome_vfs_unlink_from_uri_cancellable (uri, context);
-	return result;
-	*/
+	PERFORM_OPERATION (unlink, gnome_vfs_unlink_from_uri_cancellable (uri, context));
 }
 
 static GnomeVFSResult
@@ -555,10 +457,8 @@ do_check_same_fs (GnomeVFSMethod *method,
 		  gboolean *same_fs_return,
 		  GnomeVFSContext *context)
 {
-	/* FIXME bugzilla.eazel.com 3837: special case */
-	GnomeVFSResult result;
-	result = gnome_vfs_check_same_fs_uris_cancellable (a, b, same_fs_return, context);
-	return result;
+	/* FIXME bugzilla.eazel.com 3837: Not implemented. */
+	return gnome_vfs_check_same_fs_uris_cancellable (a, b, same_fs_return, context);
 }
 
 static GnomeVFSResult
@@ -568,12 +468,7 @@ do_set_file_info (GnomeVFSMethod *method,
 		  GnomeVFSSetFileInfoMask mask,
 		  GnomeVFSContext *context)
 {	
-	SWITCH_DEBUG (uri, gnome_vfs_set_file_info_cancellable (uri, info, mask, context), "do_set_file_info");
-	/*
-	GnomeVFSResult result;
-	result = gnome_vfs_set_file_info_cancellable (uri, info, mask, context);
-	return result;
-	*/
+	PERFORM_OPERATION (set_file_info, gnome_vfs_set_file_info_cancellable (uri, info, mask, context));
 }
 
 static GnomeVFSResult
@@ -582,12 +477,7 @@ do_truncate (GnomeVFSMethod *method,
 	     GnomeVFSFileSize where,
 	     GnomeVFSContext *context)
 {
-	SWITCH_DEBUG (uri,  gnome_vfs_truncate_uri_cancellable (uri, where, context), "do_truncate");
-	/*
-	GnomeVFSResult result;
-	result = gnome_vfs_truncate_uri_cancellable (uri, where, context);
-	return result;
-	*/
+	PERFORM_OPERATION (truncate, gnome_vfs_truncate_uri_cancellable (uri, where, context));
 }
 
 static GnomeVFSResult
@@ -596,16 +486,12 @@ do_truncate_handle (GnomeVFSMethod *method,
 		    GnomeVFSFileSize where,
 		    GnomeVFSContext *context)
 {
-	SWITCH_DEBUG_NO_URI (gnome_vfs_truncate_handle_cancellable((GnomeVFSHandle *)method_handle, where, context), "do_truncate_handle");
-	/*
-	return gnome_vfs_truncate_handle_cancellable
-		((GnomeVFSHandle *)method_handle, where, context);
-	*/
+	PERFORM_OPERATION_NO_URI (truncate_handle, gnome_vfs_truncate_handle_cancellable ((GnomeVFSHandle *) method_handle, where, context));
 }
 
 static GnomeVFSResult
 do_find_directory (GnomeVFSMethod *method,
-		   GnomeVFSURI *near_uri,
+		   GnomeVFSURI *uri,
 		   GnomeVFSFindDirectoryKind kind,
 		   GnomeVFSURI **result_uri,
 		   gboolean create_if_needed,
@@ -613,13 +499,7 @@ do_find_directory (GnomeVFSMethod *method,
 		   guint permissions,
 		   GnomeVFSContext *context)
 {
-	SWITCH_DEBUG (near_uri, gnome_vfs_find_directory_cancellable (near_uri, kind, result_uri, create_if_needed, find_if_needed, permissions, context), "do_find_directory");
-	/*
-	GnomeVFSResult result;
-	result = gnome_vfs_find_directory_cancellable (near_uri, kind, result_uri, 
-			create_if_needed, find_if_needed, permissions, context);
-	return result;
-	*/
+	PERFORM_OPERATION (find_directory, gnome_vfs_find_directory_cancellable (uri, kind, result_uri, create_if_needed, find_if_needed, permissions, context));
 }
 
 static GnomeVFSResult
@@ -628,12 +508,7 @@ do_create_symbolic_link (GnomeVFSMethod *method,
 			 const char *target_reference,
 			 GnomeVFSContext *context)
 {
-	SWITCH_DEBUG (uri, gnome_vfs_create_symbolic_link_cancellable (uri, target_reference, context), "do_create_symbolic_link");
-	/*
-	GnomeVFSResult result;
-	result = gnome_vfs_create_symbolic_link_cancellable (uri, target_reference, context);
-	return result;
-	*/
+	PERFORM_OPERATION (create_symbolic_link, gnome_vfs_create_symbolic_link_cancellable (uri, target_reference, context));
 }
 
 static GnomeVFSMethod method = {
@@ -666,13 +541,25 @@ static GnomeVFSMethod method = {
 GnomeVFSMethod *
 vfs_module_init (const char *method_name, const char *args)
 {
+	LIBXML_TEST_VERSION
+	
 	/* FIXME bugzilla.eazel.com 3838: the path to the config file should not be hardcoded */
-	TestOperationConfig = load_config_file ("/gnome/etc/vfs/Test-conf.xml");
-	printf ("Module initialized.\n");
+	load_settings ("/gnome/etc/vfs/Test-conf.xml");
+
 	return &method;
 }
 
 void
 vfs_module_shutdown (GnomeVFSMethod *method)
 {
+	GList *node;
+	OperationSettings *settings;
+
+	for (node = settings_list; node != NULL; node = node->next) {
+	        settings = node->data;
+		xmlFree (settings->operation_name);
+		g_free (settings);
+	}
+	g_list_free (settings_list);
+	xmlFree (test_method_name);
 }

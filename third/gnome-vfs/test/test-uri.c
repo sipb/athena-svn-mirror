@@ -133,6 +133,26 @@ test_make_canonical (const char *input,
 }
 
 static void
+test_uri_match (const char *uri_string_1, const char *uri_string_2, gboolean expected_result)
+{
+	GnomeVFSURI *uri1;
+	GnomeVFSURI *uri2;
+	
+	uri1 = gnome_vfs_uri_new (uri_string_1);
+	uri2 = gnome_vfs_uri_new (uri_string_2);
+	
+	if (gnome_vfs_uri_equal (uri1, uri2) != expected_result) {
+		test_failed ("test_uri_match (%s, %s) resulted in a %s instead of %s",
+			uri_string_1, uri_string_2,
+			expected_result ? "mismatch" : "match",
+			expected_result ? "match" : "mismatch");
+	}
+	
+	gnome_vfs_uri_unref (uri2);
+	gnome_vfs_uri_unref (uri1);
+}
+
+static void
 test_file_path_to_uri_string (const char *input,
 			      const char *expected_output,
 			      GnomeVFSURIHideOptions hide_options)
@@ -477,6 +497,23 @@ main (int argc, char **argv)
 	test_make_canonical ("eazel-services:///&", "eazel-services:///&");
 	test_make_canonical ("eazel-services:///x", "eazel-services:///x");
 
+	/* test proper case-sensitivity handling */
+	test_uri_match ("http://www.zoo.com/ed", "HTTP://WWW.ZOO.COM/ed", TRUE);
+	test_uri_match ("http://www.zoo.com/ed", "http://www.zoo.com/ED", FALSE);
+
+	test_uri_match ("http://ed:ed@www.zoo.com/ed", "http://ed:ed@www.zoo.com/ed", TRUE);
+	test_uri_match ("http://ed:ed@www.zoo.com/ed", "HTTP://ed:ed@www.zoo.com/ed", TRUE);
+	test_uri_match ("http://ed:ed@www.zoo.com/ed", "http://ED:ed@www.zoo.com/ed", FALSE);
+	test_uri_match ("http://ed:ed@www.zoo.com/ed", "http://ed:ED@www.zoo.com/ed", FALSE);
+	test_uri_match ("http://ed:ed@www.zoo.com/ed", "http://ed:ed@WWW.zoo.com/ed", TRUE);
+	test_uri_match ("http://ed:ed@www.zoo.com/ed", "http://ed:ed@www.ZOO.com/ed", TRUE);
+	test_uri_match ("http://ed:ed@www.zoo.com/ed", "http://ed:ed@www.zoo.COM/ed", TRUE);
+	test_uri_match ("http://ed:ed@www.zoo.com/ed", "http://ed:ed@www.zoo.com/ED", FALSE);
+
+	test_uri_match ("/tmp/foo", "/tmp/foo", TRUE);
+	test_uri_match ("file:/tmp/foo", "file:/TMP/foo", FALSE);
+	test_uri_match ("/tmp/foo", "/TMP/foo", FALSE);
+
 	/* Test chained uris */
 	test_uri_to_string ("/tmp/t.efs#http:///foobar/", "file:///tmp/t.efs#http:/foobar/", GNOME_VFS_URI_HIDE_NONE);
 	test_uri_parent ("/tmp/t.efs#http:/", "file:///tmp/t.efs");
@@ -504,7 +541,7 @@ main (int argc, char **argv)
 	/* FIXME bugzilla.eazel.com 4102: illegal? */
 	test_uri_to_string ("file:foo", "file:foo", GNOME_VFS_URI_HIDE_NONE);
 	/* correct */
-	test_uri_to_string ("help:foo", "help:foo", GNOME_VFS_URI_HIDE_NONE);
+	test_uri_to_string ("pipe:foo", "pipe:foo", GNOME_VFS_URI_HIDE_NONE);
 
 	/* FIXME bugzilla.eazel.com 3830: This turns a good path with
 	 * a redundant "/" in it into a completely different one.

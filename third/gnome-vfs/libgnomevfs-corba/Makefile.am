@@ -4,6 +4,7 @@ OBJECT_DIRECTORY_LIBS = $(OAF_LIBS)
 lib_LTLIBRARIES = libgnomevfs-corba.la
 
 INCLUDES =					\
+	-I$(top_srcdir)				\
 	-I$(top_srcdir)/intl			\
 	-I$(top_builddir)/intl			\
 	-I$(top_srcdir)/libgnomevfs		\

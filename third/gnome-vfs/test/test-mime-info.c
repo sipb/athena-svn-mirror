@@ -85,7 +85,6 @@ main (int argc, char **argv)
 	}
 
 
-	
 	/* test reading of gnome-vfs.mime file */
 	{
 		GList *list, *temp;
@@ -185,7 +184,53 @@ main (int argc, char **argv)
 		gnome_vfs_mime_set_registered_type_key ("application/postscript", "ext", "");
 	}
 
+	{
+		GList *mime_types_list;
+		char *deleted_mime_type;
+		GList *temp;
+		gboolean found_mime_type;
+
+		mime_types_list = gnome_vfs_get_registered_mime_types ();
+
+		if (mime_types_list->data != NULL) {
+			/* try to delete a mime type */
+			deleted_mime_type = mime_types_list->data;
+			gnome_vfs_mime_registered_mime_type_delete (deleted_mime_type);
+			gnome_vfs_mime_registered_mime_type_list_free (mime_types_list);
+			mime_types_list = gnome_vfs_get_registered_mime_types ();
+			for (temp = mime_types_list; temp != NULL; temp = temp->next) {
+				if (strcmp (deleted_mime_type, (char *)temp->data) == 0) {
+					printf ("Error: could not delete mime type.\n");
+					exit (1);
+				}
+			}
+			gnome_vfs_mime_registered_mime_type_list_free (mime_types_list);
+			
+			/* reset to system defaults */
+			gnome_vfs_mime_reset ();
+
+			/* try to find the original mime type again */
+			mime_types_list = gnome_vfs_get_registered_mime_types ();
+			found_mime_type = FALSE;
+			for (temp = mime_types_list; temp != NULL; temp = temp->next) {
+				if (strcmp (deleted_mime_type, (char *)temp->data) == 0) {
+					found_mime_type = TRUE;
+					break;
+				}
+			}
+			if (!found_mime_type) {
+				printf ("Error: lost a mime type.\n");
+				exit (1);
+			}
+			
+		}
+		
+	}
+
+
 	/* do hard stuff on the API */
+
+	printf ("all mime-info-related tests succeeded\n");
 
 	return 0;
 }

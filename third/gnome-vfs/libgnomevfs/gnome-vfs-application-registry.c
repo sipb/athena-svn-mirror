@@ -40,6 +40,7 @@
 #include <unistd.h>
 #include <dirent.h>
 #include <glib.h>
+#include <ctype.h>
 
 #include "gnome-vfs-types.h"
 #include "gnome-vfs-result.h"
@@ -581,6 +582,20 @@ typedef enum {
 	STATE_ON_VALUE
 } ParserState;
 
+
+static void
+strip_trailing_whitespace (GString *string)
+{
+	int i;
+
+	for (i = string->len - 1; i >= 0; i--) {
+		if (!isspace (string->str[i]))
+			break;
+	}
+
+	g_string_truncate (string, i + 1);
+}
+
 static void
 load_application_info_from (const char *filename, gboolean user_owned)
 {
@@ -619,7 +634,7 @@ load_application_info_from (const char *filename, gboolean user_owned)
 		if (c == '\n'){
 			in_comment = FALSE;
 			column = -1;
-			if (state == STATE_ON_APPLICATION){
+			if (state == STATE_ON_APPLICATION) {
 
 				/* set previous key to nothing
 				   for this mime type */
@@ -627,6 +642,7 @@ load_application_info_from (const char *filename, gboolean user_owned)
 				previous_key = NULL;
 				previous_key_lang_level = -1;
 
+				strip_trailing_whitespace (line);
 				application = application_lookup_or_create (line->str, user_owned);
 				app_used = FALSE;
 				g_string_assign (line, "");
@@ -956,7 +972,7 @@ get_keys_foreach(gpointer key, gpointer value, gpointer user_data)
 	GList **listp = user_data;
 
 	/* make sure we only insert unique keys */
-	if ( (*listp) && strcmp ((*listp)->data, key) == 0)
+	if ( (*listp) && strcmp ((const char *) (*listp)->data, (const char *) key) == 0)
 		return;
 
 	(*listp) = g_list_insert_sorted ((*listp), key,
@@ -1186,7 +1202,7 @@ gnome_vfs_application_registry_get_applications (const char *mime_type)
 		/* Note that this list is sorted so to kill duplicates
 		 * in app_list we only need to check the first entry */
 		if (retval == NULL ||
-		    strcmp (retval->data, application->app_id) != 0)
+		    strcmp ((const char *) retval->data, application->app_id) != 0)
 			retval = g_list_prepend (retval, application->app_id);
 	}
 
@@ -1392,7 +1408,7 @@ gnome_vfs_application_registry_get_mime_application (const char *app_id)
 
 	application = g_new0 (GnomeVFSMimeApplication, 1);
 
-	application->id = g_strdup(app_id);
+	application->id = g_strdup (app_id);
 
 	application->name =
 		g_strdup (real_peek_value

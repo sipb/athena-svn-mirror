@@ -472,7 +472,7 @@ gnome_vfs_mime_type_from_name_or_default (const gchar *filename, const gchar *de
 const char *
 gnome_vfs_mime_type_from_name (const gchar * filename)
 {
-	return gnome_vfs_mime_type_from_name_or_default (filename, "application/octet-stream");
+	return gnome_vfs_mime_type_from_name_or_default (filename, GNOME_VFS_MIME_TYPE_UNKNOWN);
 }
 
 static const char *
@@ -544,7 +544,7 @@ gnome_vfs_get_mime_type (GnomeVFSURI *uri)
 
 	if (result == NULL) {
 		/* no type detected, return a generic file type */
-		result = "application/octet-stream";
+		result = GNOME_VFS_MIME_TYPE_UNKNOWN;
 	}
 	
 	gnome_vfs_mime_sniff_buffer_free (buffer);
@@ -625,7 +625,7 @@ gnome_vfs_get_file_mime_type (const char *path, const struct stat *stat_info,
 			return "x-special/socket";
 		else
 			/* unknown entry type, return generic file type */
-			return "application/octet-stream";
+			return GNOME_VFS_MIME_TYPE_UNKNOWN;
 	}
 
 	if (!suffix_only) {
@@ -653,7 +653,7 @@ gnome_vfs_get_file_mime_type (const char *path, const struct stat *stat_info,
 		result = gnome_vfs_mime_type_from_name_or_default (path, NULL);	
 	}
 	if (result == NULL) {
-		result = "application/octet-stream";
+		result = GNOME_VFS_MIME_TYPE_UNKNOWN;
 	}
 	if (buffer) {
 		gnome_vfs_mime_sniff_buffer_free (buffer);
@@ -680,7 +680,7 @@ gnome_vfs_get_mime_type_from_uri (GnomeVFSURI *uri)
 	result = gnome_vfs_get_mime_type_from_uri_internal (uri);
 	if (result == NULL) {
 		/* no type, return generic file type */
-		result = "application/octet-stream";
+		result = GNOME_VFS_MIME_TYPE_UNKNOWN;
 	}
 
 	return result;
@@ -720,7 +720,7 @@ gnome_vfs_get_mime_type_from_file_data (GnomeVFSURI *uri)
 
 	if (result == NULL) {
 		/* no type detected, return a generic file type */
-		result = "application/octet-stream";
+		result = GNOME_VFS_MIME_TYPE_UNKNOWN;
 	}
 	
 	gnome_vfs_mime_sniff_buffer_free (buffer);

@@ -88,6 +88,7 @@ typedef enum {
 	GNOME_VFS_ERROR_NOT_SAME_FILE_SYSTEM,
 	GNOME_VFS_ERROR_NAME_TOO_LONG,
 	GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE,
+	GNOME_VFS_ERROR_SERVICE_OBSOLETE,
 	GNOME_VFS_NUM_ERRORS
 } GnomeVFSResult;
 
@@ -452,6 +453,8 @@ typedef enum {
 typedef enum {
 	/* Initial phase */
 	GNOME_VFS_XFER_PHASE_INITIAL,
+	/* Checking if destination can handle move/copy */
+	GNOME_VFS_XFER_CHECKING_DESTINATION,
 	/* Collecting file list */
 	GNOME_VFS_XFER_PHASE_COLLECTING,
 	/* File list collected (*) */

@@ -106,7 +106,6 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
-LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBEFS_CFLAGS = @LIBEFS_CFLAGS@
 LIBEFS_LIBS = @LIBEFS_LIBS@
@@ -117,7 +116,6 @@ LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-NM = @NM@
 OAF_CFLAGS = @OAF_CFLAGS@
 OAF_CONFIG = @OAF_CONFIG@
 OAF_LIBS = @OAF_LIBS@
@@ -160,6 +158,9 @@ VFS_SIZE_PRINTF = @VFS_SIZE_PRINTF@
 WERROR = @WERROR@
 XML_CFLAGS = @XML_CFLAGS@
 XML_CONFIG = @XML_CONFIG@
+XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
+XML_I18N_MERGE = @XML_I18N_MERGE@
+XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XML_LIBS = @XML_LIBS@
 ZVT_LIBS = @ZVT_LIBS@
 cflags_set = @cflags_set@
@@ -171,7 +172,7 @@ need_gnome_support = @need_gnome_support@
 
 SUBDIRS = gnome-file-selection
 
-INCLUDES =  	-I$(top_srcdir)/intl				-I$(top_builddir)/intl				-I$(top_srcdir)/libgnomevfs			$(OAF_CFLAGS)					$(GNOME_INCLUDEDIR)				$(GTK_CFLAGS)					$(VFS_CFLAGS) $(WERROR)
+INCLUDES =  	-I$(top_srcdir)					-I$(top_srcdir)/intl				-I$(top_builddir)/intl				-I$(top_srcdir)/libgnomevfs			$(OAF_CFLAGS)					$(GNOME_INCLUDEDIR)				$(GTK_CFLAGS)					$(VFS_CFLAGS) $(WERROR)
 
 
 noinst_PROGRAMS =  	test-async-cancel                       	test-async-directory_pthread			test-async_pthread				test-channel_pthread				test-directory					test-directory-visit				test-escape					test-find-directory				test-info					test-mime					test-mime-handlers				test-mime-handlers-set				test-seek					test-symlinks					test-sync					test-sync-write					test-sync-create				test-xfer					test-shell					test-uri					test-unlink					test-dirop					test-mime-info					$(oaf_programs)
@@ -188,27 +189,27 @@ TESTS = test-async-cancel test-escape test-uri $(auto_tests)
 
 libraries =  	$(top_builddir)/libgnomevfs/libgnomevfs.la		$(GNOME_LIBDIR)						$(GNOMEUI_LIBS)						$(GNOMEGNORBA_LIBS)                             	$(GCONF_LIBS)						$(LIBEFS_LIBS)
 
-test_async_pthread_SOURCES = 
+test_async_pthread_SOURCES = dummy.c
 test_async_pthread_LDADD =  	test-async_pthread.o							$(libraries)								$(top_builddir)/libgnomevfs-pthread/libgnomevfs-pthread.la
 
 test_async_pthread_LDFLAGS = 
-test_async_corba_SOURCES = 
+test_async_corba_SOURCES = dummy.c
 test_async_corba_LDADD =  	test-async_corba.o						$(libraries)							$(top_builddir)/libgnomevfs-corba/libgnomevfs-corba.la
 
 test_async_corba_LDFLAGS = 
-test_async_directory_pthread_SOURCES = 
+test_async_directory_pthread_SOURCES = dummy.c
 test_async_directory_pthread_LDADD =  	test-async-directory_pthread.o						$(libraries)								$(top_builddir)/libgnomevfs-pthread/libgnomevfs-pthread.la
 
 test_async_directory_pthread_LDFLAGS = 
-test_async_directory_corba_SOURCES = 
+test_async_directory_corba_SOURCES = dummy.c
 test_async_directory_corba_LDADD =  	test-async-directory_corba.o					$(libraries)							$(top_builddir)/libgnomevfs-corba/libgnomevfs-corba.la
 
 test_async_directory_corba_LDFLAGS = 
-test_channel_corba_SOURCES = 
+test_channel_corba_SOURCES = dummy.c
 test_channel_corba_LDADD =  	test-channel_corba.o						$(libraries)							$(top_builddir)/libgnomevfs-corba/libgnomevfs-corba.la
 
 test_channel_corba_LDFLAGS = 
-test_channel_pthread_SOURCES = 
+test_channel_pthread_SOURCES = dummy.c
 test_channel_pthread_LDADD =  	test-channel_pthread.o						$(libraries)							$(top_builddir)/libgnomevfs-pthread/libgnomevfs-pthread.la
 
 test_channel_pthread_LDFLAGS = 
@@ -306,16 +307,16 @@ LIBS = @LIBS@
 test_async_cancel_OBJECTS =  test-async-cancel.o
 test_async_cancel_DEPENDENCIES =  \
 $(top_builddir)/libgnomevfs/libgnomevfs.la
-test_async_directory_pthread_OBJECTS = 
+test_async_directory_pthread_OBJECTS =  dummy.o
 test_async_directory_pthread_DEPENDENCIES =  \
 test-async-directory_pthread.o \
 $(top_builddir)/libgnomevfs/libgnomevfs.la \
 $(top_builddir)/libgnomevfs-pthread/libgnomevfs-pthread.la
-test_async_pthread_OBJECTS = 
+test_async_pthread_OBJECTS =  dummy.o
 test_async_pthread_DEPENDENCIES =  test-async_pthread.o \
 $(top_builddir)/libgnomevfs/libgnomevfs.la \
 $(top_builddir)/libgnomevfs-pthread/libgnomevfs-pthread.la
-test_channel_pthread_OBJECTS = 
+test_channel_pthread_OBJECTS =  dummy.o
 test_channel_pthread_DEPENDENCIES =  test-channel_pthread.o \
 $(top_builddir)/libgnomevfs/libgnomevfs.la \
 $(top_builddir)/libgnomevfs-pthread/libgnomevfs-pthread.la
@@ -365,15 +366,15 @@ test_dirop_DEPENDENCIES =  $(top_builddir)/libgnomevfs/libgnomevfs.la
 test_mime_info_OBJECTS =  test-mime-info.o
 test_mime_info_DEPENDENCIES =  \
 $(top_builddir)/libgnomevfs/libgnomevfs.la
-test_async_directory_corba_OBJECTS = 
+test_async_directory_corba_OBJECTS =  dummy.o
 test_async_directory_corba_DEPENDENCIES =  test-async-directory_corba.o \
 $(top_builddir)/libgnomevfs/libgnomevfs.la \
 $(top_builddir)/libgnomevfs-corba/libgnomevfs-corba.la
-test_async_corba_OBJECTS = 
+test_async_corba_OBJECTS =  dummy.o
 test_async_corba_DEPENDENCIES =  test-async_corba.o \
 $(top_builddir)/libgnomevfs/libgnomevfs.la \
 $(top_builddir)/libgnomevfs-corba/libgnomevfs-corba.la
-test_channel_corba_OBJECTS = 
+test_channel_corba_OBJECTS =  dummy.o
 test_channel_corba_DEPENDENCIES =  test-channel_corba.o \
 $(top_builddir)/libgnomevfs/libgnomevfs.la \
 $(top_builddir)/libgnomevfs-corba/libgnomevfs-corba.la
@@ -652,7 +653,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$/$$file $(distdir)/$$file; \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \

@@ -77,6 +77,11 @@ char *gnome_vfs_make_uri_canonical	     (const char 	*uri);
 /* returns a copy of path, converted to a canonical form */
 char *gnome_vfs_make_path_name_canonical     (const char      *path);
 
+/* returns a copy of path, with initial ~ expanded, or just copy of path
+ * if there's no initial ~ 
+ */
+char *gnome_vfs_expand_initial_tilde	     (const char      *path);
+
 /* Prepare an escaped string for display. Unlike gnome_vfs_unescape_string,
  * this doesn't return NULL if an illegal sequences appears in the string,
  * instead doing its best to provide a useful result.
@@ -98,5 +103,7 @@ void   gnome_vfs_list_deep_free               (GList            *list);
 /* Return amount of free space on target */
 GnomeVFSResult	gnome_vfs_get_volume_free_space	(const GnomeVFSURI 	*vfs_uri, 
 						 GnomeVFSFileSize 	*size);
+
+char *gnome_vfs_icon_path_from_filename       (const char *filename);
 
 #endif /* GNOME_VFS_UTILS_H */

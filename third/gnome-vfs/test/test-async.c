@@ -35,8 +35,7 @@
 CORBA_Environment ev;
 #endif
 
-
-/* Callbacks.  */
+/* Callbacks.  */
 static void
 close_callback (GnomeVFSAsyncHandle *handle,
 		GnomeVFSResult result,

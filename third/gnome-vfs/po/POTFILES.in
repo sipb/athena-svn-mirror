@@ -1,3 +1,4 @@
+data/mime/gnome-vfs.keys.in
 libgnomevfs/gnome-vfs-configuration.c
 libgnomevfs/gnome-vfs-file-info.c
 libgnomevfs/gnome-vfs-init.c

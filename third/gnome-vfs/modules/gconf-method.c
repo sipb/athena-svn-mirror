@@ -35,6 +35,7 @@
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
 
+#include "gnome-vfs-mime.h"
 #include "gnome-vfs-module.h"
 
 #include "file-method.h"
@@ -233,7 +234,7 @@ set_mime_type_value (GnomeVFSFileInfo *info,
                 mime_type = "application/x-gconf-pair";
                 break;
         default :
-                mime_type = "application/octet-stream";
+                mime_type = GNOME_VFS_MIME_TYPE_UNKNOWN;
                 break;
                 
         }

@@ -39,7 +39,7 @@ static int sort = 0;
 static int items_per_notification = 1;
 static int read_files = 0;
 
-struct poptOption options[] = {
+static struct poptOption options[] = {
 	{
 		"chunk-size",
 		'c',

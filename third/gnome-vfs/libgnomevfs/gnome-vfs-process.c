@@ -165,7 +165,7 @@ gnome_vfs_process_init (void)
 
 	sigaction (SIGCHLD, &sigchld_action, &old_sigchld_action);
 
-	pid_to_process = g_hash_table_new (g_direct_hash, g_direct_equal);
+	pid_to_process = g_hash_table_new (NULL, NULL);
 
 	wake_up_channel_in = g_io_channel_unix_new (pipe_fd[0]);
 	wake_up_channel_out_fd = pipe_fd[1];

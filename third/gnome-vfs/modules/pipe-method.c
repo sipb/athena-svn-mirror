@@ -83,10 +83,10 @@ mime_from_uri (const gchar *uri)
 		if (result[0] == '\0') {
 			/* No mime-type specified */
 			g_free (result);
-			result = g_strdup ("application/octet-stream");
+			result = g_strdup (GNOME_VFS_MIME_TYPE_UNKNOWN);
 		}
 	} else {
-		result = g_strdup ("application/octet-stream");
+		result = g_strdup (GNOME_VFS_MIME_TYPE_UNKNOWN);
 	}
 	return result;
 }

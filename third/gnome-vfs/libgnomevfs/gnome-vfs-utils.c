@@ -37,6 +37,7 @@
 #include "gnome-vfs-private-utils.h"
 
 #include <ctype.h>
+#include <pwd.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -50,10 +51,16 @@
 #include <sys/mount.h>
 #endif
 
+#define KILOBYTE_FACTOR 1024.0
+
+#define MEGABYTE_FACTOR (1024.0 * 1024.0)
+
+#define GIGABYTE_FACTOR (1024.0 * 1024.0 * 1024.0)
+
 gchar*
 gnome_vfs_format_file_size_for_display (GnomeVFSFileSize bytes)
 {
-	if (bytes < (GnomeVFSFileSize) 1e3) {
+	if (bytes < (GnomeVFSFileSize) KILOBYTE_FACTOR) {
 		if (bytes == 1)
 			return g_strdup (_("1 byte"));
 		else
@@ -62,17 +69,17 @@ gnome_vfs_format_file_size_for_display (GnomeVFSFileSize bytes)
 	} else {
 		gdouble displayed_size;
 
-		if (bytes < (GnomeVFSFileSize) 1e6) {
-			displayed_size = (gdouble) bytes / 1.0e3;
-			return g_strdup_printf (_("%.1fK"),
+		if (bytes < (GnomeVFSFileSize) MEGABYTE_FACTOR) {
+			displayed_size = (gdouble) bytes / KILOBYTE_FACTOR;
+			return g_strdup_printf (_("%.1f K"),
 						       displayed_size);
-		} else if (bytes < (GnomeVFSFileSize) 1e9) {
-			displayed_size = (gdouble) bytes / 1.0e6;
-			return g_strdup_printf (_("%.1fM"),
+		} else if (bytes < (GnomeVFSFileSize) GIGABYTE_FACTOR) {
+			displayed_size = (gdouble) bytes / MEGABYTE_FACTOR;
+			return g_strdup_printf (_("%.1f MB"),
 						       displayed_size);
 		} else {
-			displayed_size = (gdouble) bytes / 1.0e9;
-			return g_strdup_printf (_("%.1fG"),
+			displayed_size = (gdouble) bytes / GIGABYTE_FACTOR;
+			return g_strdup_printf (_("%.1f GB"),
 						       displayed_size);
 		}
 	}
@@ -297,6 +304,41 @@ gnome_vfs_escape_set (const char *string,
 	*result_scanner = '\0';
 
 	return result;
+}
+
+char *
+gnome_vfs_expand_initial_tilde (const char *path)
+{
+	char *slash_after_user_name, *user_name;
+	struct passwd *passwd_file_entry;
+
+	g_return_val_if_fail (path != NULL, NULL);
+
+	if (path[0] != '~') {
+		return g_strdup (path);
+	}
+	
+	if (path[1] == '/' || path[1] == '\0') {
+		return g_strconcat (g_get_home_dir (), &path[1], NULL);
+	}
+
+	slash_after_user_name = strchr (&path[1], '/');
+	if (slash_after_user_name == NULL) {
+		user_name = g_strdup (&path[1]);
+	} else {
+		user_name = g_strndup (&path[1],
+				       slash_after_user_name - &path[1]);
+	}
+	passwd_file_entry = getpwnam (user_name);
+	g_free (user_name);
+
+	if (passwd_file_entry == NULL || passwd_file_entry->pw_dir == NULL) {
+		return g_strdup (path);
+	}
+
+	return g_strconcat (passwd_file_entry->pw_dir,
+			    slash_after_user_name,
+			    NULL);
 }
 
 static int
@@ -723,6 +765,50 @@ gnome_vfs_get_volume_free_space (const GnomeVFSURI *vfs_uri, GnomeVFSFileSize *s
 	return GNOME_VFS_OK;
 }
 
+/**
+ * hack_file_exists
+ * @filename: pathname to test for existance.
+ *
+ * Returns true if filename exists
+ */
+static int
+hack_file_exists (const char *filename)
+{
+	struct stat s;
 
+	g_return_val_if_fail (filename != NULL,FALSE);
+    
+	return stat (filename, &s) == 0;
+}
+
+
+char *
+gnome_vfs_icon_path_from_filename (const char *relative_filename)
+{
+	const char *gnome_var;
+	char *full_filename;
+	char **paths, **temp_paths;
+
+	gnome_var = g_getenv ("GNOME_PATH");
+
+	if (gnome_var == NULL) {
+		gnome_var = GNOME_VFS_PREFIX;
+	}
+
+	paths = g_strsplit (gnome_var, ":", 0); 
+
+	for (temp_paths = paths; *temp_paths != NULL; temp_paths++) {
+		full_filename = g_strconcat (*temp_paths, "/share/pixmaps/", relative_filename, NULL);
+		if (hack_file_exists (full_filename)) {
+			g_strfreev (paths);
+			return full_filename;
+		}
+		g_free (full_filename);
+		full_filename = NULL;
+	}
+
+	g_strfreev (paths);
+	return NULL;
+}
 
 

@@ -106,7 +106,6 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
-LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBEFS_CFLAGS = @LIBEFS_CFLAGS@
 LIBEFS_LIBS = @LIBEFS_LIBS@
@@ -117,7 +116,6 @@ LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-NM = @NM@
 OAF_CFLAGS = @OAF_CFLAGS@
 OAF_CONFIG = @OAF_CONFIG@
 OAF_LIBS = @OAF_LIBS@
@@ -160,6 +158,9 @@ VFS_SIZE_PRINTF = @VFS_SIZE_PRINTF@
 WERROR = @WERROR@
 XML_CFLAGS = @XML_CFLAGS@
 XML_CONFIG = @XML_CONFIG@
+XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
+XML_I18N_MERGE = @XML_I18N_MERGE@
+XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XML_LIBS = @XML_LIBS@
 ZVT_LIBS = @ZVT_LIBS@
 cflags_set = @cflags_set@
@@ -169,9 +170,12 @@ need_gnome_support = @need_gnome_support@
 
 NULL = 
 
+keys_in_files = gnome-vfs.keys.in
+keys_files = $(keys_in_files:.keys.in=.keys)
+
 mimedir = $(datadir)/mime-info
 
-mime_DATA =  	gnome-vfs.mime 	gnome-vfs.keys 	$(NULL)
+mime_DATA =  	$(keys_files) 	gnome-vfs.mime 	$(NULL)
 
 
 applicationsdir = $(datadir)/application-registry
@@ -181,7 +185,7 @@ applications_DATA =  	gnome-vfs.applications 	$(NULL)
 
 sysconf_DATA = gnome-vfs-mime-magic
 
-EXTRA_DIST = $(mime_DATA) $(sysconf_DATA) $(applications_DATA)
+EXTRA_DIST = $(keys_in_files) $(mime_DATA) $(sysconf_DATA) $(applications_DATA)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
@@ -272,7 +276,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$/$$file $(distdir)/$$file; \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
@@ -346,8 +350,7 @@ distclean-generic clean-generic maintainer-clean-generic clean \
 mostlyclean distclean maintainer-clean
 
 
-#install-data-local:
-#	$(top_builddir)/libgnomevfs/gnome-vfs-gen-mimedb $(DESTDIR)$(sysconfdir)/gnome-vfs-mime-magic
+@XML_I18N_MERGE_KEYS_RULE@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

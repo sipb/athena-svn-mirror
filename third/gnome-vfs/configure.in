@@ -1,9 +1,11 @@
 AC_INIT(libgnomevfs/gnome-vfs.h)
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gnome-vfs, 0.4.2)
+AM_INIT_AUTOMAKE(gnome-vfs, 0.5)
 AM_ACLOCAL_INCLUDE(macros)
 
 AM_MAINTAINER_MODE
+
+AM_PROG_XML_I18N_TOOLS
 
 AC_ISC_POSIX
 AC_PROG_CC
@@ -190,13 +192,13 @@ else
 fi
 ])
 
-WERROR=
+WERROR=""
 if test "$GCC" = "yes" -a "$set_more_warnings" != "no"; then
 	echo "enable compile warnings = $set_more_warnings"
 	VFS_CFLAGS="-Wall \
 	-Wchar-subscripts -Wmissing-declarations -Wmissing-prototypes \
 	-Wnested-externs -Wpointer-arith"
-	WERROR=""
+	WERROR="-Werror"
 
 	for option in -Wsign-promo -Wno-sign-compare; do
 		SAVE_CFLAGS="$CFLAGS"

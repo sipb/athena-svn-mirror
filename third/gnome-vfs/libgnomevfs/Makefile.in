@@ -106,7 +106,6 @@ INSTOBJEXT = @INSTOBJEXT@
 INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
 INTLOBJS = @INTLOBJS@
-LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBEFS_CFLAGS = @LIBEFS_CFLAGS@
 LIBEFS_LIBS = @LIBEFS_LIBS@
@@ -117,7 +116,6 @@ LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
-NM = @NM@
 OAF_CFLAGS = @OAF_CFLAGS@
 OAF_CONFIG = @OAF_CONFIG@
 OAF_LIBS = @OAF_LIBS@
@@ -160,6 +158,9 @@ VFS_SIZE_PRINTF = @VFS_SIZE_PRINTF@
 WERROR = @WERROR@
 XML_CFLAGS = @XML_CFLAGS@
 XML_CONFIG = @XML_CONFIG@
+XML_I18N_EXTRACT = @XML_I18N_EXTRACT@
+XML_I18N_MERGE = @XML_I18N_MERGE@
+XML_I18N_UPDATE = @XML_I18N_UPDATE@
 XML_LIBS = @XML_LIBS@
 ZVT_LIBS = @ZVT_LIBS@
 cflags_set = @cflags_set@
@@ -169,7 +170,7 @@ need_gnome_support = @need_gnome_support@
 
 NULL = 
 
-INCLUDES =  	-DGNOME_VFS_CONFDIR=\"$(sysconfdir)\"		-DGNOME_VFS_DATADIR=\"$(datadir)\"		-I$(top_srcdir)/intl				-I$(top_builddir)				-I$(top_builddir)/intl				-I$(top_builddir)/libgnomevfs			$(OAF_CFLAGS)					$(GCONF_CFLAGS) 				$(GNOME_INCLUDEDIR)				$(VFS_CFLAGS) $(WERROR)				-D_GNU_SOURCE					-D_REENTRANT					-D_POSIX_PTHREAD_SEMANTICS			-DLIBDIR=\"$(libdir)\"				-DSYSCONFDIR=\"$(sysconfdir)\"			-DG_LOG_DOMAIN=\"GnomeVFS\"			$(NULL)
+INCLUDES =  	-DGNOME_VFS_CONFDIR=\"$(sysconfdir)\"		-DGNOME_VFS_DATADIR=\"$(datadir)\"		-DGNOME_VFS_PREFIX=\"$(prefix)\"		-I$(top_srcdir)					-I$(top_srcdir)/intl				-I$(top_builddir)				-I$(top_builddir)/intl				-I$(top_builddir)/libgnomevfs			$(OAF_CFLAGS)					$(GCONF_CFLAGS) 				$(GNOME_INCLUDEDIR)				$(VFS_CFLAGS) $(WERROR)				-D_GNU_SOURCE					-D_REENTRANT					-D_POSIX_PTHREAD_SEMANTICS			-DLIBDIR=\"$(libdir)\"				-DSYSCONFDIR=\"$(sysconfdir)\"			-DG_LOG_DOMAIN=\"GnomeVFS\"			$(NULL)
 
 
 lib_LTLIBRARIES = libgnomevfs.la
@@ -185,10 +186,10 @@ libgnomevfs_la_CFLAGS =  	$(GNOME_CFLAGS)					$(OAF_CFLAGS)	                    
 
 libgnomevfsincludedir = $(includedir)/libgnomevfs
 
-libgnomevfsinclude_HEADERS =  	gnome-vfs-async-ops.h				gnome-vfs-constants.h				gnome-vfs-directory.h				gnome-vfs-directory-filter.h			gnome-vfs-directory-list.h			gnome-vfs-file-info.h				gnome-vfs-file-size.h				gnome-vfs-find-directory.h			gnome-vfs-init.h				gnome-vfs-xfer.h				gnome-vfs-ops.h					gnome-vfs-process.h				gnome-vfs-result.h				gnome-vfs-types.h				gnome-vfs-uri.h					gnome-vfs-utils.h				gnome-vfs.h					gnome-vfs-backend.h				gnome-vfs-cancellation.h			gnome-vfs-configuration.h			gnome-vfs-context.h				gnome-vfs-handle.h				gnome-vfs-iobuf.h				gnome-vfs-inet-connection.h			gnome-vfs-list-sort.h				gnome-vfs-messages.h				gnome-vfs-method.h				gnome-vfs-mime.h				gnome-vfs-mime-handlers.h			gnome-vfs-mime-info.h				gnome-vfs-mime-magic.h				gnome-vfs-mime-sniff-buffer.h			gnome-vfs-mime-sniff-buffer-private.h		gnome-vfs-application-registry.h		gnome-vfs-module.h				gnome-vfs-module-shared.h			gnome-vfs-parse-ls.h				gnome-vfs-cancellable-ops.h			gnome-vfs-private-types.h			gnome-vfs-private.h				gnome-vfs-private-utils.h			gnome-vfs-regexp-filter.h			gnome-vfs-seekable.h				gnome-vfs-shellpattern-filter.h
+libgnomevfsinclude_HEADERS =  	gnome-vfs-async-ops.h				gnome-vfs-constants.h				gnome-vfs-directory.h				gnome-vfs-directory-filter.h			gnome-vfs-directory-list.h			gnome-vfs-file-info.h				gnome-vfs-file-size.h				gnome-vfs-find-directory.h			gnome-vfs-init.h				gnome-vfs-xfer.h				gnome-vfs-ops.h					gnome-vfs-process.h				gnome-vfs-result.h				gnome-vfs-types.h				gnome-vfs-uri.h					gnome-vfs-utils.h				gnome-vfs.h					gnome-vfs-backend.h				gnome-vfs-cancellation.h			gnome-vfs-configuration.h			gnome-vfs-context.h				gnome-vfs-handle.h				gnome-vfs-iobuf.h				gnome-vfs-inet-connection.h			gnome-vfs-list-sort.h				gnome-vfs-messages.h				gnome-vfs-method.h				gnome-vfs-mime.h				gnome-vfs-mime-handlers.h			gnome-vfs-mime-info.h				gnome-vfs-mime-magic.h				gnome-vfs-mime-monitor.h			gnome-vfs-mime-sniff-buffer.h			gnome-vfs-mime-sniff-buffer-private.h		gnome-vfs-application-registry.h		gnome-vfs-module.h				gnome-vfs-module-shared.h			gnome-vfs-parse-ls.h				gnome-vfs-cancellable-ops.h			gnome-vfs-private-types.h			gnome-vfs-private.h				gnome-vfs-private-utils.h			gnome-vfs-regexp-filter.h			gnome-vfs-seekable.h				gnome-vfs-shellpattern-filter.h
 
 
-libgnomevfs_la_SOURCES =  	fnmatch.h					gnome-vfs-backend.c				gnome-vfs-cancellation.c			gnome-vfs-configuration.c			gnome-vfs-context.c				gnome-vfs-directory.c				gnome-vfs-directory-filter.c			gnome-vfs-directory-list.c			gnome-vfs-handle.c				gnome-vfs-file-info.c				gnome-vfs-find-directory.c			gnome-vfs-init.c				gnome-vfs-inet-connection.c			gnome-vfs-iobuf.c				gnome-vfs-list-sort.c				gnome-vfs-messages.c				gnome-vfs-method.c				gnome-vfs-mime.c				gnome-vfs-mime-handlers.c               	gnome-vfs-mime-info.c				gnome-vfs-mime-magic.c				gnome-vfs-mime-sniff-buffer.c			gnome-vfs-application-registry.c		gnome-vfs-module-shared.c			gnome-vfs-xfer.c				gnome-vfs-ops.c					gnome-vfs-parse-ls.c				gnome-vfs-cancellable-ops.c	 		gnome-vfs-private-utils.c			gnome-vfs-process.c				gnome-vfs-result.c				gnome-vfs-regexp-filter.c			gnome-vfs-seekable.c				gnome-vfs-shellpattern-filter.c			gnome-vfs-uri.c					gnome-vfs-utils.c				fnmatch.c
+libgnomevfs_la_SOURCES =  	fnmatch.h					gnome-vfs-backend.c				gnome-vfs-cancellation.c			gnome-vfs-configuration.c			gnome-vfs-context.c				gnome-vfs-directory.c				gnome-vfs-directory-filter.c			gnome-vfs-directory-list.c			gnome-vfs-handle.c				gnome-vfs-file-info.c				gnome-vfs-find-directory.c			gnome-vfs-init.c				gnome-vfs-inet-connection.c			gnome-vfs-iobuf.c				gnome-vfs-list-sort.c				gnome-vfs-messages.c				gnome-vfs-method.c				gnome-vfs-mime.c				gnome-vfs-mime-handlers.c               	gnome-vfs-mime-info.c				gnome-vfs-mime-magic.c				gnome-vfs-mime-monitor.c			gnome-vfs-mime-sniff-buffer.c			gnome-vfs-application-registry.c		gnome-vfs-module-shared.c			gnome-vfs-xfer.c				gnome-vfs-ops.c					gnome-vfs-parse-ls.c				gnome-vfs-cancellable-ops.c	 		gnome-vfs-private-utils.c			gnome-vfs-process.c				gnome-vfs-result.c				gnome-vfs-regexp-filter.c			gnome-vfs-seekable.c				gnome-vfs-shellpattern-filter.c			gnome-vfs-uri.c					gnome-vfs-utils.c				fnmatch.c
 
 
 noinst_HEADERS =  	gnome-vfs-mime-private.h
@@ -198,11 +199,6 @@ noinst_HEADERS =  	gnome-vfs-mime-private.h
 libgnomevfsplatofrmincludedir = $(libdir)/vfs/include
 libgnomevfsplatofrminclude_HEADERS =  	gnome-vfs-file-size.h
 
-
-bin_PROGRAMS = gnome-vfs-gen-mimedb
-gnome_vfs_gen_mimedb_SOURCES = gnome-vfs-gen-mimedb.c
-gnome_vfs_gen_mimedb_LDFLAGS = -static
-gnome_vfs_gen_mimedb_LDADD = libgnomevfs.la 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES =  gnome-vfs-file-size.h
@@ -220,17 +216,14 @@ gnome-vfs-handle.lo gnome-vfs-file-info.lo gnome-vfs-find-directory.lo \
 gnome-vfs-init.lo gnome-vfs-inet-connection.lo gnome-vfs-iobuf.lo \
 gnome-vfs-list-sort.lo gnome-vfs-messages.lo gnome-vfs-method.lo \
 gnome-vfs-mime.lo gnome-vfs-mime-handlers.lo gnome-vfs-mime-info.lo \
-gnome-vfs-mime-magic.lo gnome-vfs-mime-sniff-buffer.lo \
-gnome-vfs-application-registry.lo gnome-vfs-module-shared.lo \
-gnome-vfs-xfer.lo gnome-vfs-ops.lo gnome-vfs-parse-ls.lo \
-gnome-vfs-cancellable-ops.lo gnome-vfs-private-utils.lo \
-gnome-vfs-process.lo gnome-vfs-result.lo gnome-vfs-regexp-filter.lo \
-gnome-vfs-seekable.lo gnome-vfs-shellpattern-filter.lo gnome-vfs-uri.lo \
-gnome-vfs-utils.lo fnmatch.lo
-PROGRAMS =  $(bin_PROGRAMS)
-
-gnome_vfs_gen_mimedb_OBJECTS =  gnome-vfs-gen-mimedb.o
-gnome_vfs_gen_mimedb_DEPENDENCIES =  libgnomevfs.la
+gnome-vfs-mime-magic.lo gnome-vfs-mime-monitor.lo \
+gnome-vfs-mime-sniff-buffer.lo gnome-vfs-application-registry.lo \
+gnome-vfs-module-shared.lo gnome-vfs-xfer.lo gnome-vfs-ops.lo \
+gnome-vfs-parse-ls.lo gnome-vfs-cancellable-ops.lo \
+gnome-vfs-private-utils.lo gnome-vfs-process.lo gnome-vfs-result.lo \
+gnome-vfs-regexp-filter.lo gnome-vfs-seekable.lo \
+gnome-vfs-shellpattern-filter.lo gnome-vfs-uri.lo gnome-vfs-utils.lo \
+fnmatch.lo
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
@@ -245,8 +238,8 @@ DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
 TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(libgnomevfs_la_SOURCES) $(gnome_vfs_gen_mimedb_SOURCES)
-OBJECTS = $(libgnomevfs_la_OBJECTS) $(gnome_vfs_gen_mimedb_OBJECTS)
+SOURCES = $(libgnomevfs_la_SOURCES)
+OBJECTS = $(libgnomevfs_la_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -327,35 +320,6 @@ maintainer-clean-libtool:
 libgnomevfs.la: $(libgnomevfs_la_OBJECTS) $(libgnomevfs_la_DEPENDENCIES)
 	$(LINK) -rpath $(libdir) $(libgnomevfs_la_LDFLAGS) $(libgnomevfs_la_OBJECTS) $(libgnomevfs_la_LIBADD) $(LIBS)
 
-mostlyclean-binPROGRAMS:
-
-clean-binPROGRAMS:
-	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
-
-distclean-binPROGRAMS:
-
-maintainer-clean-binPROGRAMS:
-
-install-binPROGRAMS: $(bin_PROGRAMS)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(bindir)
-	@list='$(bin_PROGRAMS)'; for p in $$list; do \
-	  if test -f $$p; then \
-	    echo " $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`"; \
-	    $(LIBTOOL)  --mode=install $(INSTALL_PROGRAM) $$p $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
-	  else :; fi; \
-	done
-
-uninstall-binPROGRAMS:
-	@$(NORMAL_UNINSTALL)
-	list='$(bin_PROGRAMS)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(bindir)/`echo $$p|sed 's/$(EXEEXT)$$//'|sed '$(transform)'|sed 's/$$/$(EXEEXT)/'`; \
-	done
-
-gnome-vfs-gen-mimedb: $(gnome_vfs_gen_mimedb_OBJECTS) $(gnome_vfs_gen_mimedb_DEPENDENCIES)
-	@rm -f gnome-vfs-gen-mimedb
-	$(LINK) $(gnome_vfs_gen_mimedb_LDFLAGS) $(gnome_vfs_gen_mimedb_OBJECTS) $(gnome_vfs_gen_mimedb_LDADD) $(LIBS)
-
 install-libgnomevfsincludeHEADERS: $(libgnomevfsinclude_HEADERS)
 	@$(NORMAL_INSTALL)
 	$(mkinstalldirs) $(DESTDIR)$(libgnomevfsincludedir)
@@ -423,7 +387,7 @@ distdir: $(DISTFILES)
 	@for file in $(DISTFILES); do \
 	  d=$(srcdir); \
 	  if test -d $$d/$$file; then \
-	    cp -pr $$/$$file $(distdir)/$$file; \
+	    cp -pr $$d/$$file $(distdir)/$$file; \
 	  else \
 	    test -f $(distdir)/$$file \
 	    || ln $$d/$$file $(distdir)/$$file 2> /dev/null \
@@ -439,7 +403,7 @@ check-am: all-am
 check: check-am
 installcheck-am:
 installcheck: installcheck-am
-install-exec-am: install-libLTLIBRARIES install-binPROGRAMS
+install-exec-am: install-libLTLIBRARIES
 install-exec: install-exec-am
 
 install-data-am: install-libgnomevfsincludeHEADERS \
@@ -449,16 +413,16 @@ install-data: install-data-am
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-am
-uninstall-am: uninstall-libLTLIBRARIES uninstall-binPROGRAMS \
+uninstall-am: uninstall-libLTLIBRARIES \
 		uninstall-libgnomevfsincludeHEADERS \
 		uninstall-libgnomevfsplatofrmincludeHEADERS
 uninstall: uninstall-am
-all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(HEADERS)
+all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs:
-	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(bindir) \
+	$(mkinstalldirs)  $(DESTDIR)$(libdir) \
 		$(DESTDIR)$(libgnomevfsincludedir) \
 		$(DESTDIR)$(libgnomevfsplatofrmincludedir)
 
@@ -473,28 +437,27 @@ distclean-generic:
 
 maintainer-clean-generic:
 mostlyclean-am:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
-		mostlyclean-libtool mostlyclean-binPROGRAMS \
-		mostlyclean-tags mostlyclean-generic
+		mostlyclean-libtool mostlyclean-tags \
+		mostlyclean-generic
 
 mostlyclean: mostlyclean-am
 
-clean-am:  clean-libLTLIBRARIES clean-compile clean-libtool \
-		clean-binPROGRAMS clean-tags clean-generic \
-		mostlyclean-am
+clean-am:  clean-libLTLIBRARIES clean-compile clean-libtool clean-tags \
+		clean-generic mostlyclean-am
 
 clean: clean-am
 
 distclean-am:  distclean-libLTLIBRARIES distclean-compile \
-		distclean-libtool distclean-binPROGRAMS distclean-tags \
-		distclean-generic clean-am
+		distclean-libtool distclean-tags distclean-generic \
+		clean-am
 	-rm -f libtool
 
 distclean: distclean-am
 
 maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
 		maintainer-clean-compile maintainer-clean-libtool \
-		maintainer-clean-binPROGRAMS maintainer-clean-tags \
-		maintainer-clean-generic distclean-am
+		maintainer-clean-tags maintainer-clean-generic \
+		distclean-am
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
@@ -505,9 +468,7 @@ clean-libLTLIBRARIES maintainer-clean-libLTLIBRARIES \
 uninstall-libLTLIBRARIES install-libLTLIBRARIES mostlyclean-compile \
 distclean-compile clean-compile maintainer-clean-compile \
 mostlyclean-libtool distclean-libtool clean-libtool \
-maintainer-clean-libtool mostlyclean-binPROGRAMS distclean-binPROGRAMS \
-clean-binPROGRAMS maintainer-clean-binPROGRAMS uninstall-binPROGRAMS \
-install-binPROGRAMS uninstall-libgnomevfsincludeHEADERS \
+maintainer-clean-libtool uninstall-libgnomevfsincludeHEADERS \
 install-libgnomevfsincludeHEADERS \
 uninstall-libgnomevfsplatofrmincludeHEADERS \
 install-libgnomevfsplatofrmincludeHEADERS tags mostlyclean-tags \
