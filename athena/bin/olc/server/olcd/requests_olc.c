@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *	$Id: requests_olc.c,v 1.32 1991-01-03 23:10:51 lwvanels Exp $
+ *	$Id: requests_olc.c,v 1.33 1991-01-07 04:08:04 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.32 1991-01-03 23:10:51 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.33 1991-01-07 04:08:04 lwvanels Exp $";
 #endif
 #endif
 
@@ -942,6 +942,13 @@ olc_ask(fd, request)
   set_status(target, NOT_SEEN);
   strcpy(target->title,target->user->title1); 
 
+  if (!isme(request)) {
+    sprintf(msgbuf,"Question asked on users behalf by %s@%s [%d].",
+	    requester->user->username, requester->user->machine,
+	    requester->instance);
+    log_daemon(target,msgbuf);
+  }
+
   status = match_maker(target);
   switch(status)
     {
@@ -1445,7 +1452,7 @@ olc_comment(fd, request)
 	    requester->user->username, requester->instance,
 	    target->user->username,target->instance);
   else
-    sprintf(mesg,"%s [%d] privately in %s [%d]'s log",
+    sprintf(mesg,"%s [%d] comments in %s [%d]'s log",
 	    requester->user->username, requester->instance,
 	    target->user->username,target->instance);
   log_status(mesg);
