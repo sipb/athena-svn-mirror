@@ -31,16 +31,20 @@
 #include "nautilus-metafile.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
+#include <eel/eel-vfs-extensions.h>
 #include <libgnome/gnome-util.h>
+#include <libgnome/gnome-i18n.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 #define NAUTILUS_USER_DIRECTORY_NAME ".nautilus"
 #define DEFAULT_NAUTILUS_DIRECTORY_MODE (0755)
 
-#define DESKTOP_DIRECTORY_NAME ".gnome-desktop"
+#define DESKTOP_DIRECTORY_NAME "Desktop"
+#define LEGACY_DESKTOP_DIRECTORY_NAME ".gnome-desktop"
 #define DEFAULT_DESKTOP_DIRECTORY_MODE (0755)
 
 gboolean
@@ -74,7 +78,7 @@ nautilus_get_user_directory (void)
 	user_directory = g_build_filename (g_get_home_dir (),
 					   NAUTILUS_USER_DIRECTORY_NAME,
 					   NULL);
-
+	
 	if (!g_file_test (user_directory, G_FILE_TEST_EXISTS)) {
 		mkdir (user_directory, DEFAULT_NAUTILUS_DIRECTORY_MODE);
 		/* FIXME bugzilla.gnome.org 41286: 
@@ -89,6 +93,17 @@ nautilus_get_user_directory (void)
 	return user_directory;
 }
 
+static char *
+get_desktop_path (void)
+{
+	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR)) {
+		return g_strdup (g_get_home_dir());
+	} else {
+		return g_build_filename (g_get_home_dir (), DESKTOP_DIRECTORY_NAME, NULL);
+	}
+	
+}
+
 /**
  * nautilus_get_desktop_directory:
  * 
@@ -100,11 +115,11 @@ char *
 nautilus_get_desktop_directory (void)
 {
 	char *desktop_directory;
+	
+	desktop_directory = get_desktop_path ();
 
-	if (eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR)) {
-		desktop_directory = g_strdup (g_get_home_dir());
-	} else {
-		desktop_directory = nautilus_get_gmc_desktop_directory ();
+	/* Don't try to create a home directory */
+	if (!eel_preferences_get_boolean (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR)) {
 		if (!g_file_test (desktop_directory, G_FILE_TEST_EXISTS)) {
 			mkdir (desktop_directory, DEFAULT_DESKTOP_DIRECTORY_MODE);
 			/* FIXME bugzilla.gnome.org 41286: 
@@ -120,6 +135,145 @@ nautilus_get_desktop_directory (void)
 	return desktop_directory;
 }
 
+
+/**
+ * nautilus_get_desktop_directory_uri:
+ * 
+ * Get the uri for the directory containing files on the desktop.
+ *
+ * Return value: the directory path.
+ **/
+char *
+nautilus_get_desktop_directory_uri (void)
+{
+	char *desktop_path;
+	char *desktop_uri;
+	
+	desktop_path = nautilus_get_desktop_directory ();
+	desktop_uri = gnome_vfs_get_uri_from_local_path (desktop_path);
+	g_free (desktop_path);
+
+	return desktop_uri;
+}
+
+char *
+nautilus_get_desktop_directory_uri_no_create (void)
+{
+	char *desktop_path;
+	char *desktop_uri;
+	
+	desktop_path = get_desktop_path ();
+	desktop_uri = gnome_vfs_get_uri_from_local_path (desktop_path);
+	g_free (desktop_path);
+
+	return desktop_uri;
+}
+
+char *
+nautilus_get_templates_directory (void)
+{
+	return  g_build_filename (g_get_home_dir(),
+				  "Templates", NULL);
+}
+
+void
+nautilus_create_templates_directory (void)
+{
+	char *dir;
+
+	dir = nautilus_get_templates_directory ();
+	if (!g_file_test (dir, G_FILE_TEST_EXISTS)) {
+		mkdir (dir, DEFAULT_NAUTILUS_DIRECTORY_MODE);
+	}
+	g_free (dir);
+}
+
+char *
+nautilus_get_templates_directory_uri (void)
+{
+	char *directory, *uri;
+
+	directory = nautilus_get_templates_directory ();
+	uri = gnome_vfs_get_uri_from_local_path (directory);
+	g_free (directory);
+	return uri;
+}
+
+/* These need to be reset to NULL when desktop_is_home_dir changes */
+static char *escaped_desktop_dir = NULL;
+static char *escaped_desktop_dir_dirname = NULL;
+static char *escaped_desktop_dir_filename = NULL;
+static gboolean desktop_dir_changed_callback_installed = FALSE;
+
+static void
+desktop_dir_changed_callback (gpointer callback_data)
+{
+	g_free (escaped_desktop_dir);
+	g_free (escaped_desktop_dir_filename);
+	g_free (escaped_desktop_dir_dirname);
+	escaped_desktop_dir = NULL;
+	escaped_desktop_dir_dirname = NULL;
+	escaped_desktop_dir_filename = NULL;
+}
+
+static void
+update_desktop_dir (void)
+{
+	char *uri, *path;
+	GnomeVFSURI *vfs_uri;
+
+	path = get_desktop_path ();
+	uri = gnome_vfs_get_uri_from_local_path (path);
+	vfs_uri = gnome_vfs_uri_new (uri);
+	g_free (path);
+	g_free (uri);
+	
+	escaped_desktop_dir = g_strdup (vfs_uri->text);
+	escaped_desktop_dir_filename = gnome_vfs_uri_extract_short_path_name (vfs_uri);
+	escaped_desktop_dir_dirname = gnome_vfs_uri_extract_dirname (vfs_uri);
+	
+	gnome_vfs_uri_unref (vfs_uri);
+}
+
+gboolean
+nautilus_is_desktop_directory_file_escaped (char *escaped_dirname,
+					    char *escaped_file)
+{
+
+	if (!desktop_dir_changed_callback_installed) {
+		eel_preferences_add_callback (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
+					      desktop_dir_changed_callback,
+					      NULL);
+		desktop_dir_changed_callback_installed = TRUE;
+	}
+		
+	if (escaped_desktop_dir == NULL) {
+		update_desktop_dir ();
+	}
+
+	return (strcmp (escaped_dirname, escaped_desktop_dir_dirname) == 0 &&
+		strcmp (escaped_file, escaped_desktop_dir_filename) == 0);
+}
+
+gboolean
+nautilus_is_desktop_directory_escaped (char *escaped_dir)
+{
+
+	if (!desktop_dir_changed_callback_installed) {
+		eel_preferences_add_callback (NAUTILUS_PREFERENCES_DESKTOP_IS_HOME_DIR,
+					      desktop_dir_changed_callback,
+					      NULL);
+		desktop_dir_changed_callback_installed = TRUE;
+	}
+		
+	if (escaped_desktop_dir == NULL) {
+		update_desktop_dir ();
+	}
+
+	return strcmp (escaped_dir, escaped_desktop_dir) == 0;
+}
+
+
 /**
  * nautilus_get_gmc_desktop_directory:
  * 
@@ -130,7 +284,7 @@ nautilus_get_desktop_directory (void)
 char *
 nautilus_get_gmc_desktop_directory (void)
 {
-	return g_build_filename (g_get_home_dir (), DESKTOP_DIRECTORY_NAME, NULL);
+	return g_build_filename (g_get_home_dir (), LEGACY_DESKTOP_DIRECTORY_NAME, NULL);
 }
 
 /**
@@ -193,16 +347,110 @@ nautilus_unique_temporary_file_name (void)
 {
 	const char *prefix = "/tmp/nautilus-temp-file";
 	char *file_name;
-	static guint count = 1;
+	int fd;
 
 	file_name = g_strdup_printf ("%sXXXXXX", prefix);
 
-	if (mktemp (file_name) != file_name) {
+	fd = mkstemp (file_name); 
+	if (fd == -1) {
 		g_free (file_name);
-		file_name = g_strdup_printf ("%s-%d-%d", prefix, count++, getpid ());
+		file_name = NULL;
+	} else {
+		close (fd);
+	}
+	
+	return file_name;
+}
+
+const char *
+nautilus_get_vfs_method_display_name (char *method)
+{
+	if (g_ascii_strcasecmp (method, "computer") == 0 ) {
+		return _("Computer");
+	} else if (g_ascii_strcasecmp (method, "network") == 0 ) {
+		return _("Network");
+	} else if (g_ascii_strcasecmp (method, "fonts") == 0 ) {
+		return _("Fonts");
+	} else if (g_ascii_strcasecmp (method, "themes") == 0 ) {
+		return _("Themes");
+	} else if (g_ascii_strcasecmp (method, "burn") == 0 ) {
+		return _("CD/DVD Creator");
+	} else if (g_ascii_strcasecmp (method, "smb") == 0 ) {
+		return _("Windows Network");
+	} else if (g_ascii_strcasecmp (method, "dns-sd") == 0 ) {
+		return _("Services in");
+	}
+	return NULL;
+}
+
+gboolean
+nautilus_have_broken_filenames (void)
+{
+	static gboolean initialized = FALSE;
+	static gboolean broken;
+  
+	if (initialized) {
+		return broken;
 	}
 
-	return file_name;
+	broken = g_getenv ("G_BROKEN_FILENAMES") != NULL;
+  
+	initialized = TRUE;
+  
+	return broken;
+}
+
+char *
+nautilus_get_uri_shortname_for_display (GnomeVFSURI *uri)
+{
+	gboolean broken_filenames;
+	char *utf8_name, *name, *tmp;
+	gboolean validated;
+	const char *method;
+	
+	validated = FALSE;
+	name = gnome_vfs_uri_extract_short_name (uri);
+	if (name == NULL) {
+		name = gnome_vfs_uri_to_string (uri, GNOME_VFS_URI_HIDE_PASSWORD);
+	} else if (g_ascii_strcasecmp (uri->method_string, "file") == 0) {
+		broken_filenames = nautilus_have_broken_filenames ();
+		if (broken_filenames || !g_utf8_validate (name, -1, NULL)) {
+			utf8_name = g_locale_to_utf8 (name, -1, NULL, NULL, NULL);
+			if (utf8_name != NULL) {
+				g_free (name);
+				name = utf8_name;
+				/* Guaranteed to be correct utf8 here */
+				validated = TRUE;
+			}
+		} else if (!broken_filenames) {
+			/* name was valid, no need to re-validate */
+			validated = TRUE;
+		}
+	} else if (!gnome_vfs_uri_has_parent (uri)) {
+		/* Special-case the display name for roots that are not local files */
+		method = nautilus_get_vfs_method_display_name (uri->method_string);
+		if (method == NULL) {
+			method = uri->method_string;
+		}
+		
+		if (name == NULL ||
+		    strcmp (name, GNOME_VFS_URI_PATH_STR) == 0) {
+			g_free (name);
+			name = g_strdup (method);
+		} else {
+			tmp = name;
+			name = g_strdup_printf ("%s: %s", method, name);
+			g_free (tmp);
+		}
+	}
+
+	if (!validated && !g_utf8_validate (name, -1, NULL)) {
+		utf8_name = eel_make_valid_utf8 (name);
+		g_free (name);
+		name = utf8_name;
+	}
+
+	return name;
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)

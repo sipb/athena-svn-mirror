@@ -24,6 +24,9 @@
 	<cmd name="Sort by Emblems"
          _label="By _Emblems"
 	 _tip="Keep icons sorted by emblems in rows"/>
+	<cmd name="Keep Aligned"
+         _label="_Keep Aligned"
+	 _tip="Keep icons lined up on a grid"/>
 	<cmd name="Tighter Layout"
          _label="Compact _Layout"
 	 _tip="Toggle using a tighter layout scheme"/>
@@ -51,7 +54,7 @@
 				<menuitem name="Manual Layout"
 					  type="radio" group="layout group"
 					  id="Manual Layout"/>
-				<placeholder name="Auto Layout" delimit="top">
+				<placeholder name="Auto Layout">
 					<menuitem name="Sort by Name"
 						  type="radio" group="layout group"
 						  id="Sort by Name"/>
@@ -78,6 +81,9 @@
 			</submenu>
 			<menuitem name="Clean Up"
 				  verb="Clean Up"/>
+			<menuitem name="Keep Aligned" 
+	                          id="Keep Aligned"
+	                          type="toggle"/>
 		</placeholder>
 		
 	</submenu>
@@ -90,7 +96,7 @@
 					<menuitem name="Manual Layout"
 						  type="radio" group="context menu layout group"
 						  id="Manual Layout"/>
-					<placeholder name="Auto Layout" delimit="top">
+					<placeholder name="Auto Layout">
 						<menuitem name="Sort by Name"
 							  type="radio" group="context menu layout group"
 							  id="Sort by Name"/>
@@ -108,6 +114,7 @@
 							  id="Sort by Emblems"/>
 					</placeholder>
 					<separator/>
+
 					<menuitem name="Tighter Layout" 
 	                                          id="Tighter Layout"
 	                                          type="toggle"/>
@@ -115,14 +122,16 @@
 	                                          id="Reversed Order"
 	                                          type="toggle"/>
 				</submenu>
+
 				<menuitem name="Clean Up" verb="Clean Up"/>
+				<menuitem name="Keep Aligned" 
+	                                        id="Keep Aligned"
+	                                        type="toggle"/>
 			</placeholder>
 		</placeholder>
 	</popup>
 	<popup name="selection">
 		<placeholder name="Icon Appearance Items">
-			<menuitem name="Stretch" verb="Stretch"/>
-			<menuitem name="Unstretch" verb="Unstretch"/>
 		</placeholder>
 	</popup>
 </popups>

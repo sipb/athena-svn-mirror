@@ -28,8 +28,11 @@
 #include <config.h>
 #include "nautilus-bonobo-extensions.h"
 
+#include "nautilus-icon-factory.h"
+
 #include <eel/eel-string.h>
 #include <eel/eel-gnome-extensions.h>
+#include <eel/eel-debug.h>
 #include <bonobo/bonobo-ui-util.h>
 #include <gtk/gtkmain.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
@@ -41,6 +44,7 @@ struct NautilusBonoboActivationHandle {
 	Bonobo_Unknown activated_object;
 	gboolean cancel;
 	guint idle_id;
+	guint timeout_id;
 };
 
 typedef enum {
@@ -486,6 +490,175 @@ nautilus_bonobo_set_label_for_toolitem_and_command (BonoboUIComponent *ui,
 	g_free (label_no_underscore);
 }
 
+static char *
+get_extension_menu_item_xml (NautilusMenuItem *item)
+{
+	GString *ui_xml;
+	char *pixbuf_data;
+	GdkPixbuf *pixbuf;
+	char *name;
+	char *icon;
+	
+	ui_xml = g_string_new ("");
+
+	g_object_get (G_OBJECT (item), "name", &name, "icon", &icon, NULL);
+
+	g_string_append_printf (ui_xml,
+				"<menuitem name=\"%s\" verb=\"%s\"",
+				name, name);
+	
+	if (icon) {
+		pixbuf = nautilus_icon_factory_get_pixbuf_from_name 
+			(icon,
+			 NULL,
+			 NAUTILUS_ICON_SIZE_FOR_MENUS,
+			 NULL);
+		if (pixbuf) {
+			pixbuf_data = bonobo_ui_util_pixbuf_to_xml (pixbuf);
+			g_string_append_printf (ui_xml, " pixtype=\"pixbuf\" pixname=\"%s\"", pixbuf_data);
+			g_free (pixbuf_data);
+			g_object_unref (pixbuf);
+		}
+	}
+	g_string_append (ui_xml, "/>");
+
+	g_free (name);
+	g_free (icon);
+
+	return g_string_free (ui_xml, FALSE);
+}
+
+static void
+extension_action_callback (BonoboUIComponent *component,
+			   gpointer callback_data, const char *path)
+{
+	nautilus_menu_item_activate (NAUTILUS_MENU_ITEM (callback_data));
+}
+
+char *
+nautilus_bonobo_get_extension_item_command_xml (NautilusMenuItem *item)
+{
+	char *name;
+	char *label;
+	char *tip;
+	gboolean sensitive;
+	char *xml;
+
+	g_object_get (G_OBJECT (item), 
+		      "name", &name, "label", &label, 
+		      "tip", &tip, "sensitive", &sensitive,
+		      NULL);
+
+	xml = g_strdup_printf ("<cmd name=\"%s\" label=\"%s\" tip=\"%s\" sensitive=\"%s\"/>", 
+			       name, label, tip, sensitive ? "1" : "0");
+
+	g_free (name);
+	g_free (label);
+	g_free (tip);
+
+	return xml;
+}
+
+void
+nautilus_bonobo_add_extension_item_command (BonoboUIComponent *ui,
+					    NautilusMenuItem *item)
+{
+	char *xml;
+	char *name;
+	GClosure *closure;
+
+	xml = nautilus_bonobo_get_extension_item_command_xml (item);
+
+	bonobo_ui_component_set (ui, "/commands", xml, NULL);
+
+	g_free (xml);
+
+	g_object_get (G_OBJECT (item), "name", &name, NULL);
+
+	closure = g_cclosure_new
+		(G_CALLBACK (extension_action_callback),
+		 g_object_ref (item),
+		 (GClosureNotify)g_object_unref);
+	
+	bonobo_ui_component_add_verb_full (ui, name, closure);
+
+	g_free (name);
+}
+
+void 
+nautilus_bonobo_add_extension_item (BonoboUIComponent *ui,
+				    const char *path,
+				    NautilusMenuItem *item)
+{
+	char *item_xml;
+
+	item_xml = get_extension_menu_item_xml (item);
+	
+	bonobo_ui_component_set (ui, path, item_xml, NULL);
+
+	g_free (item_xml);
+}
+
+static char *
+get_extension_toolbar_item_xml (NautilusMenuItem *item)
+{
+	GString *ui_xml;
+	char *pixbuf_data;
+	GdkPixbuf *pixbuf;
+	char *name;
+	char *icon;
+	gboolean priority;
+	
+	ui_xml = g_string_new ("");
+
+
+	g_object_get (item, 
+		      "name", &name, "priority", &priority, 
+		      "icon", &icon,
+		      NULL);
+	g_string_append_printf (ui_xml,
+				"<toolitem name=\"%s\" verb=\"%s\"",
+				name, name);
+
+	if (priority) {
+		g_string_append (ui_xml, " priority=\"1\"");
+	}
+
+	if (icon) {
+		pixbuf = nautilus_icon_factory_get_pixbuf_from_name 
+			(icon,
+			 NULL,
+			 NAUTILUS_ICON_SIZE_FOR_MENUS,
+			 NULL);
+		if (pixbuf) {
+			pixbuf_data = bonobo_ui_util_pixbuf_to_xml (pixbuf);
+			g_string_append_printf (ui_xml, " pixtype=\"pixbuf\" pixname=\"%s\"", pixbuf_data);
+			g_free (pixbuf_data);
+			g_object_unref (pixbuf);
+		}
+	}
+	g_string_append (ui_xml, "/>");
+
+	g_free (name);
+	g_free (icon);
+
+	return g_string_free (ui_xml, FALSE);
+}
+
+void 
+nautilus_bonobo_add_extension_toolbar_item (BonoboUIComponent *ui,
+					    const char *path,
+					    NautilusMenuItem *item)
+{
+	char *item_xml;
+
+	item_xml = get_extension_toolbar_item_xml (item);
+	
+	bonobo_ui_component_set (ui, path, item_xml, NULL);
+
+	g_free (item_xml);
+}
+
 static void
 activation_handle_done (NautilusBonoboActivationHandle *handle)
 {
@@ -505,6 +678,44 @@ activation_handle_free (NautilusBonoboActivationHandle *handle)
 	}
 	
 	g_free (handle);
+}
+
+static GHashTable *nautilus_activation_shortcuts = NULL;
+
+struct CreateObjectData {
+	NautilusBonoboCreateObject create_object;
+	gpointer callback_data;
+};
+
+void
+nautilus_bonobo_register_activation_shortcut (const char                       *iid,
+					      NautilusBonoboCreateObject        create_object_callback,
+					      gpointer                          callback_data)
+{
+	struct CreateObjectData *data;
+	
+	if (nautilus_activation_shortcuts == NULL) {
+		nautilus_activation_shortcuts = g_hash_table_new_full
+			(g_str_hash, g_str_equal, g_free, g_free);
+		eel_debug_call_at_shutdown_with_data ((GFreeFunc)g_hash_table_destroy,
+						      nautilus_activation_shortcuts);
+	}
+
+	data = g_new (struct CreateObjectData, 1);
+	data->create_object = create_object_callback;
+	data->callback_data = callback_data;
+	g_hash_table_insert (nautilus_activation_shortcuts,
+			     g_strdup (iid), data);
+}
+
+void
+nautilus_bonobo_unregister_activation_shortcut (const char *iid)
+{
+	if (nautilus_activation_shortcuts == NULL) {
+		g_assert_not_reached ();
+		return;
+	}
+	g_hash_table_remove (nautilus_activation_shortcuts, iid);
 }
 
 static gboolean
@@ -535,8 +746,12 @@ bonobo_activation_activation_callback (Bonobo_Unknown activated_object,
 				       gpointer callback_data)
 {
 	NautilusBonoboActivationHandle *handle;
-	
+
 	handle = (NautilusBonoboActivationHandle *) callback_data;
+
+	if (handle->timeout_id != 0) {
+		g_source_remove (handle->timeout_id);
+	}
 
 	if (activated_object == NULL) {
 		g_warning ("activation failed: %s", error_reason);
@@ -550,6 +765,20 @@ bonobo_activation_activation_callback (Bonobo_Unknown activated_object,
 		handle->idle_id = g_idle_add (activation_idle_callback,
 					      handle);
 	}
+}
+
+static gboolean
+activation_timed_out (gpointer callback_data)
+{
+	NautilusBonoboActivationHandle *handle = callback_data;
+
+	(* handle->callback) (handle,
+			      NULL,
+			      handle->callback_data);
+	
+	handle->timeout_id = 0;
+	nautilus_bonobo_activate_cancel (handle);
+	return FALSE;
 }
 
 /**
@@ -567,7 +796,9 @@ nautilus_bonobo_activate_from_id (const char *iid,
 				  gpointer callback_data)
 {
 	NautilusBonoboActivationHandle *handle;
-
+	struct CreateObjectData *data;
+	CORBA_Object activated_object;
+	
 	g_return_val_if_fail (iid != NULL, NULL);
 	g_return_val_if_fail (callback != NULL, NULL);
 
@@ -577,6 +808,24 @@ nautilus_bonobo_activate_from_id (const char *iid,
 	handle->callback = callback;
 	handle->callback_data = callback_data;
 
+	handle->activated_object = CORBA_OBJECT_NIL;
+	
+	if (nautilus_activation_shortcuts != NULL) {
+		data = g_hash_table_lookup (nautilus_activation_shortcuts, iid);
+		if (data != NULL) {
+			activated_object = (*data->create_object) (iid, data->callback_data);
+			if (activated_object != CORBA_OBJECT_NIL) {
+				handle->activated_object = activated_object;
+				handle->early_completion_hook = NULL;
+				handle->idle_id = g_idle_add (activation_idle_callback,
+							      handle);
+				return handle;
+			}
+		}
+	}
+
+	handle->timeout_id = g_timeout_add (4*1000, activation_timed_out, handle);
+	
 	bonobo_activation_activate_from_id_async ((char *) iid, 0,
 				    bonobo_activation_activation_callback, 
 				    handle, NULL);
@@ -584,7 +833,7 @@ nautilus_bonobo_activate_from_id (const char *iid,
 	if (handle != NULL) {
 		handle->early_completion_hook = NULL;
 	}
-
+	
 	return handle;
 }
 
@@ -604,6 +853,11 @@ nautilus_bonobo_activate_cancel (NautilusBonoboActivationHandle *handle)
 		return;
 	}
 
+	if (handle->timeout_id != 0) {
+		g_source_remove (handle->timeout_id);
+		handle->timeout_id = 0;
+	}
+	
 	activation_handle_done (handle);
 
 	if (handle->idle_id == 0) {

@@ -35,6 +35,7 @@
 #include <libgnomevfs/gnome-vfs-result.h>
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-mime-actions.h>
+#include <libnautilus-private/nautilus-view-query.h>
 #include <libnautilus-private/nautilus-view-identifier.h>
 
 struct NautilusDetermineViewHandle {
@@ -42,6 +43,7 @@ struct NautilusDetermineViewHandle {
 	NautilusDetermineViewCallback callback;
 	gpointer callback_data;
         NautilusFile *file;
+        gboolean fallback;
 };
 
 static NautilusDetermineViewResult
@@ -109,7 +111,11 @@ got_file_info_callback (NautilusFile *file,
         if (vfs_result_code == GNOME_VFS_OK
             || vfs_result_code == GNOME_VFS_ERROR_NOT_SUPPORTED
             || vfs_result_code == GNOME_VFS_ERROR_INVALID_URI) {
-                default_component = nautilus_mime_get_default_component_for_file (handle->file);
+                if (handle->fallback) {
+                        default_component = nautilus_view_query_get_fallback_component_for_file (handle->file);
+                } else {
+                        default_component = nautilus_view_query_get_default_component_for_file (handle->file);
+                }
                 if (default_component != NULL) {
                         default_id = nautilus_view_identifier_new_from_content_view (default_component);
                         CORBA_free (default_component);
@@ -120,8 +126,6 @@ got_file_info_callback (NautilusFile *file,
         }
         
         if (vfs_result_code == GNOME_VFS_OK && default_id == NULL) {
-                /* If the complete list is non-empty, the default shouldn't have been NULL */
-                g_assert (!nautilus_mime_has_any_components_for_file (handle->file));
                 result_code = NAUTILUS_DETERMINE_VIEW_NO_HANDLER_FOR_TYPE;
         } else {
                 result_code = get_view_result_from_gnome_vfs_result (vfs_result_code);
@@ -139,11 +143,12 @@ got_file_info_callback (NautilusFile *file,
 
 NautilusDetermineViewHandle *
 nautilus_determine_initial_view (const char *location,
+                                 gboolean fallback,
                                  NautilusDetermineViewCallback callback,
                                  gpointer callback_data)
 {
         NautilusDetermineViewHandle *handle;
-        GList *attributes;
+        NautilusFileAttributes attributes;
 
         g_return_val_if_fail (location != NULL, NULL);
         g_return_val_if_fail (callback != NULL, NULL);
@@ -154,13 +159,13 @@ nautilus_determine_initial_view (const char *location,
 
         handle->callback = callback;
         handle->callback_data = callback_data;
+        handle->fallback = fallback;
         
         handle->file = nautilus_file_get (location);
 
         attributes = nautilus_mime_actions_get_minimum_file_attributes ();
         nautilus_file_call_when_ready (handle->file, attributes,
                                        got_file_info_callback, handle);
-        g_list_free (attributes);
 
         if (handle != NULL) {
                 handle->early_completion_hook = NULL;

@@ -46,9 +46,6 @@ G_BEGIN_DECLS
 /* How wide the sidebar is (or how wide it will be when expanded) */
 #define NAUTILUS_PREFERENCES_SIDEBAR_WIDTH  			"preferences/sidebar_width"
 
-/* Window options */
-#define NAUTILUS_PREFERENCES_WINDOW_ALWAYS_NEW			"preferences/window_always_new"
-
 /* Trash options */
 #define NAUTILUS_PREFERENCES_CONFIRM_TRASH			"preferences/confirm_trash"
 #define NAUTILUS_PREFERENCES_ENABLE_DELETE			"preferences/enable_delete"
@@ -62,6 +59,14 @@ G_BEGIN_DECLS
 #define NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES  		"/desktop/gnome/file_views/show_hidden_files"
 #define NAUTILUS_PREFERENCES_SHOW_BACKUP_FILES  		"/desktop/gnome/file_views/show_backup_files"
 #define NAUTILUS_PREFERENCES_SHOW_SPECIAL_FLAGS			"preferences/show_special_flags"
+#define NAUTILUS_PREFERENCES_DATE_FORMAT			"preferences/date_format"
+
+typedef enum
+{
+	NAUTILUS_DATE_FORMAT_LOCALE,
+	NAUTILUS_DATE_FORMAT_ISO,
+	NAUTILUS_DATE_FORMAT_INFORMAL
+} NautilusDateFormat;
 
 /* Sidebar panels  */
 #define NAUTILUS_PREFERENCES_TREE_SHOW_ONLY_DIRECTORIES         "sidebar_panels/tree/show_only_directories"
@@ -76,8 +81,10 @@ G_BEGIN_DECLS
 /* Activating executable text files */
 #define NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION		"preferences/executable_text_activation"
 
+/* Spatial or browser mode */
+#define NAUTILUS_PREFERENCES_ALWAYS_USE_BROWSER       		"preferences/always_use_browser"
+
 /* Which views should be displayed for new windows */
-#define NAUTILUS_PREFERENCES_START_WITH_TOOLBAR			"preferences/start_with_toolbar"
 #define NAUTILUS_PREFERENCES_START_WITH_LOCATION_BAR		"preferences/start_with_location_bar"
 #define NAUTILUS_PREFERENCES_START_WITH_STATUS_BAR		"preferences/start_with_status_bar"
 #define NAUTILUS_PREFERENCES_START_WITH_SIDEBAR		 	"preferences/start_with_sidebar"
@@ -108,6 +115,9 @@ enum
 #define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL		"icon_view/default_zoom_level"
 #define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_USE_MANUAL_LAYOUT	"icon_view/default_use_manual_layout"
 
+#define NAUTILUS_PREFERENCES_ICON_VIEW_LABELS_BESIDE_ICONS      	"icon_view/labels_beside_icons"
+
+
 /* The icon view uses 2 variables to store the sort order and
  * whether to use manual layout.  However, the UI for these
  * preferences presensts them as single option menu.  So we
@@ -124,6 +134,8 @@ enum
 #define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_IN_REVERSE_ORDER	"list_view/default_sort_in_reverse_order"
 #define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_SORT_ORDER		"list_view/default_sort_order"
 #define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL		"list_view/default_zoom_level"
+#define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS	        "list_view/default_visible_columns"
+#define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER	        "list_view/default_column_order"
 
 /* News panel */
 #define NAUTILUS_PREFERENCES_NEWS_MAX_ITEMS				"news/max_items"
@@ -164,13 +176,16 @@ typedef enum
 	NAUTILUS_SIMPLE_SEARCH_BAR
 } NautilusSearchBarMode;
 
-/* Gnome session management */
-#define NAUTILUS_PREFERENCES_ADD_TO_SESSION		   "preferences/add_to_session"
+#define NAUTILUS_PREFERENCES_DESKTOP_HOME_VISIBLE          "desktop/home_icon_visible"
+#define NAUTILUS_PREFERENCES_DESKTOP_HOME_NAME             "desktop/home_icon_name"
+#define NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_VISIBLE      "desktop/computer_icon_visible"
+#define NAUTILUS_PREFERENCES_DESKTOP_COMPUTER_NAME         "desktop/computer_icon_name"
+#define NAUTILUS_PREFERENCES_DESKTOP_TRASH_VISIBLE         "desktop/trash_icon_visible"
+#define NAUTILUS_PREFERENCES_DESKTOP_TRASH_NAME            "desktop/trash_icon_name"
+#define NAUTILUS_PREFERENCES_DESKTOP_VOLUMES_VISIBLE	   "desktop/volumes_visible"
 
 void nautilus_global_preferences_init                      (void);
-void nautilus_global_preferences_init_with_folder_browsing (void);
-void nautilus_global_preferences_set_default_folder_viewer (const char *iid);
-
+char *nautilus_global_preferences_get_default_folder_viewer_preference_as_iid (void);
 G_END_DECLS
 
 #endif /* NAUTILUS_GLOBAL_PREFERENCES_H */

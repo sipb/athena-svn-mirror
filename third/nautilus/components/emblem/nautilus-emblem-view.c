@@ -106,6 +106,7 @@ typedef struct _Emblem {
 	GdkPixbuf *pixbuf;
 	char *uri;
 	char *name;
+	char *keyword;
 } Emblem;
 
 BONOBO_CLASS_BOILERPLATE (NautilusEmblemView, nautilus_emblem_view,
@@ -199,8 +200,9 @@ nautilus_emblem_view_delete_cb (GtkWidget *menu_item,
 	if (nautilus_emblem_remove_emblem (emblem_view->details->popup_emblem_keyword)) {
 		nautilus_emblem_view_refresh (emblem_view);
 	} else {
-		error = g_strdup_printf (_("Couldn't remove emblem with name '%s'.  This is probably because the emblem is a permanent one, and not one you added yourself."), emblem_view->details->popup_emblem_display_name);
-		eel_show_error_dialog (error, _("Couldn't remove emblem"),
+		error = g_strdup_printf (_("Couldn't remove emblem with name '%s'."), emblem_view->details->popup_emblem_display_name);
+		eel_show_error_dialog (error, _("This is probably because the emblem is a permanent one, and not one you added yourself."),
+				       _("Couldn't Remove Emblem"),
 				       NULL);
 		g_free (error);
 	}
@@ -234,8 +236,9 @@ rename_dialog_response_cb (GtkWidget *dialog, int response,
 	if (nautilus_emblem_rename_emblem (keyword, name)) {
 		nautilus_emblem_view_refresh (emblem_view);
 	} else {
-		error = g_strdup_printf (_("Couldn't rename emblem with name '%s'.  This is probably because the emblem is a permanent one, and not one that you added yourself."), name);
-		eel_show_error_dialog (error, _("Couldn't rename emblem"),
+		error = g_strdup_printf (_("Couldn't rename emblem with name '%s'."), name);
+		eel_show_error_dialog (error, _("This is probably because the emblem is a permanent one, and not one that you added yourself."),
+				       _("Couldn't Rename Emblem"),
 				       NULL);
 		g_free (error);
 	}
@@ -471,6 +474,11 @@ destroy_emblem (Emblem *emblem, gpointer user_data)
 		g_free (emblem->uri);
 		emblem->uri = NULL;
 	}
+
+	if (emblem->keyword != NULL) {
+		g_free (emblem->keyword);
+		emblem->keyword = NULL;
+	}
 	
 	g_free (emblem);
 }
@@ -598,7 +606,7 @@ add_emblems_dialog_response_cb (GtkWidget *dialog, int response,
 {
 	Emblem *emblem;
 	GSList *emblems;
-	char *keyword;
+	GSList *l;
 
 	switch (response) {
 	case GTK_RESPONSE_CANCEL:
@@ -613,18 +621,33 @@ add_emblems_dialog_response_cb (GtkWidget *dialog, int response,
 		emblems = g_object_get_data (G_OBJECT (dialog),
 					     "emblems-to-add");
 
-		while (emblems != NULL) {
-			emblem = (Emblem *)emblems->data;
+		for (l = emblems; l; l = l->next) {
+			char *keyword;
+
+			emblem = (Emblem *)l->data;
+			if (emblem->keyword != NULL) {
+				/* this one has already been verified */
+				continue;
+			}
 
 			keyword = nautilus_emblem_create_unique_keyword (emblem->name);
+			if (!nautilus_emblem_verify_keyword
+				(GTK_WINDOW (dialog), keyword, emblem->name)) {
+				g_free (keyword);
+				return;
+			} else {
+				emblem->keyword = keyword;
+			}
+
+		}
+
+		for (l = emblems; l; l = l->next) {
+			emblem = (Emblem *)l->data;
+
 			nautilus_emblem_install_custom_emblem (emblem->pixbuf,
-							       keyword,
+							       emblem->keyword,
 							       emblem->name,
 							       GTK_WINDOW (dialog));
-
-			g_free (keyword);
-		
-			emblems = emblems->next;
 		}
 
 		gtk_widget_destroy (dialog);
@@ -708,6 +731,7 @@ nautilus_emblem_view_drag_received_cb (GtkWidget *widget,
 			emblem = g_new (Emblem, 1);
 			emblem->uri = uri;
 			emblem->name = NULL; /* created later on by the user */
+			emblem->keyword = NULL;
 			emblem->pixbuf = pixbuf;
 
 			emblems = g_slist_prepend (emblems, emblem);
@@ -715,9 +739,9 @@ nautilus_emblem_view_drag_received_cb (GtkWidget *widget,
 		nautilus_icon_dnd_uri_list_free_strings (uris);
 
 		if (had_failure && emblems != NULL) {
-			eel_show_error_dialog (_("Some of the files could not be added as emblems because they did not appear to be valid images."), _("Couldn't add emblems"), NULL);
+			eel_show_error_dialog (_("Some of the files could not be added as emblems."), _("The emblems do not appear to be valid images."), _("Couldn't Add Emblems"), NULL);
 		} else if (had_failure && emblems == NULL) {
-			eel_show_error_dialog (_("None of the files could be added as emblems because they did not appear to be valid images."), _("Couldn't add emblems"), NULL);
+			eel_show_error_dialog (_("None of the files could be added as emblems."), _("The emblems do not appear to be valid images."), _("Couldn't Add Emblems"), NULL);
 
 		}
  
@@ -738,7 +762,7 @@ nautilus_emblem_view_drag_received_cb (GtkWidget *widget,
 		uri = g_strndup (data->data, data->length);
 
 		if (!eel_is_valid_uri (uri)) {
-			eel_show_error_dialog (_("The dragged text was not a valid file location."), _("Couldn't add emblem"), NULL);
+			eel_show_error_dialog (_("The emblem cannot be added."), _("The dragged text was not a valid file location."), _("Couldn't Add Emblem"), NULL);
 			break;
 		}
 
@@ -748,6 +772,7 @@ nautilus_emblem_view_drag_received_cb (GtkWidget *widget,
 			emblem = g_new (Emblem, 1);
 			emblem->uri = uri;
 			emblem->name = NULL;
+			emblem->keyword = NULL;
 			emblem->pixbuf = pixbuf;
 
 			emblems = g_slist_prepend (NULL, emblem);
@@ -762,7 +787,7 @@ nautilus_emblem_view_drag_received_cb (GtkWidget *widget,
 			} else {
 				error = g_strdup (_("The dragged file does not appear to be a valid image."));
 			}
-			eel_show_error_dialog (error, _("Couldn't add emblem"),
+			eel_show_error_dialog (_("The emblem cannot be added."), error, _("Couldn't Add Emblem"),
 					       NULL);
 			g_free (error);
 			g_free (uri_utf8);
@@ -802,6 +827,7 @@ nautilus_emblem_view_drag_received_cb (GtkWidget *widget,
 			emblem = g_new (Emblem, 1);
 			emblem->uri = g_strdup (uri);
 			emblem->name = NULL;
+			emblem->keyword = NULL;
 			emblem->pixbuf = pixbuf;
 
 			emblems = g_slist_prepend (NULL, emblem);
@@ -811,7 +837,7 @@ nautilus_emblem_view_drag_received_cb (GtkWidget *widget,
 			g_warning ("Tried to load '%s', but failed.\n",
 				   uri);
 			error = g_strdup_printf (_("The file '%s' does not appear to be a valid image."), uri);
-			eel_show_error_dialog (error, _("Couldn't add emblem"),
+			eel_show_error_dialog (_("The emblem cannot be added."), error, _("Couldn't Add Emblem"),
 					       NULL);
 			g_free (error);
 		}

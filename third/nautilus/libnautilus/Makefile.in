@@ -60,6 +60,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
+AR = @AR@
 ART_REQUIRED = @ART_REQUIRED@
 AS = @AS@
 BONOBO_ACTIVATION_REQUIRED = @BONOBO_ACTIVATION_REQUIRED@
@@ -74,16 +75,24 @@ CORE_CFLAGS = @CORE_CFLAGS@
 CORE_IDL_INCLUDES = @CORE_IDL_INCLUDES@
 CORE_LIBS = @CORE_LIBS@
 CPP = @CPP@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
 DISABLE_DEPRECATED_CFLAGS = @DISABLE_DEPRECATED_CFLAGS@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
 EEL_REQUIRED = @EEL_REQUIRED@
+EGREP = @EGREP@
 EMBLEM_COMPONENT_CFLAGS = @EMBLEM_COMPONENT_CFLAGS@
 EMBLEM_COMPONENT_LIBS = @EMBLEM_COMPONENT_LIBS@
 ENABLE_PROFILER = @ENABLE_PROFILER@
 ESOUND_REQUIRED = @ESOUND_REQUIRED@
 EXEEXT = @EXEEXT@
+EXIF_CFLAGS = @EXIF_CFLAGS@
+EXIF_LIBS = @EXIF_LIBS@
+F77 = @F77@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
@@ -97,14 +106,17 @@ GNOME_DESKTOP_REQUIRED = @GNOME_DESKTOP_REQUIRED@
 GNOME_REQUIRED = @GNOME_REQUIRED@
 GNOME_UI_REQUIRED = @GNOME_UI_REQUIRED@
 GNOME_VFS_REQUIRED = @GNOME_VFS_REQUIRED@
+GSEQUENCE_CFLAGS = @GSEQUENCE_CFLAGS@
 GTK_REQUIRED = @GTK_REQUIRED@
 HAVE_JW = @HAVE_JW@
+HAVE_LIB = @HAVE_LIB@
 INSTOBJEXT = @INSTOBJEXT@
 INTLLIBS = @INTLLIBS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
 INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KBD_RULE = @INTLTOOL_KBD_RULE@
 INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
 INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
@@ -118,15 +130,20 @@ INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
 INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XAM_RULE = @INTLTOOL_XAM_RULE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
 JW = @JW@
+LIB = @LIB@
 LIBEGG_CFLAGS = @LIBEGG_CFLAGS@
 LIBJPEG = @LIBJPEG@
 LIBNAUTILUS_CFLAGS = @LIBNAUTILUS_CFLAGS@
+LIBNAUTILUS_EXTENSION_CFLAGS = @LIBNAUTILUS_EXTENSION_CFLAGS@
+LIBNAUTILUS_EXTENSION_LIBS = @LIBNAUTILUS_EXTENSION_LIBS@
 LIBNAUTILUS_IDL_INCLUDES = @LIBNAUTILUS_IDL_INCLUDES@
 LIBNAUTILUS_LIBS = @LIBNAUTILUS_LIBS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
+LTLIB = @LTLIB@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MEDUSA_REQUIRED = @MEDUSA_REQUIRED@
@@ -139,11 +156,15 @@ PACKAGE = @PACKAGE@
 PANGO_REQUIRED = @PANGO_REQUIRED@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
+POPT_LIBS = @POPT_LIBS@
 POSUB = @POSUB@
 PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
 PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
+RC = @RC@
 RSVG_REQUIRED = @RSVG_REQUIRED@
+STARTUP_NOTIFICATION_PACKAGE = @STARTUP_NOTIFICATION_PACKAGE@
+STARTUP_NOTIFICATION_REQUIRED = @STARTUP_NOTIFICATION_REQUIRED@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
@@ -153,100 +174,44 @@ NULL =
 
 lib_LTLIBRARIES = libnautilus.la
 
-INCLUDES = \
-	-I$(top_srcdir) \
-	-I$(top_builddir) \
-	$(LIBNAUTILUS_CFLAGS) \
-	$(DISABLE_DEPRECATED_CFLAGS) \
-	-DDATADIR=\""$(datadir)"\" \
-	$(NULL)
+INCLUDES =  	-I$(top_srcdir) 	-I$(top_builddir) 	$(LIBNAUTILUS_CFLAGS) 	$(DISABLE_DEPRECATED_CFLAGS) 	-DDATADIR=\""$(datadir)"\" 	$(NULL)
 
 
-libnautilus_la_LDFLAGS = \
-	-version-info 2:0:0 \
-	$(NULL)
+libnautilus_la_LDFLAGS =  	-version-info 2:0:0 	$(LIBNAUTILUS_LIBS) 	-no-undefined 	$(NULL)
 
 
-nautilus_view_component_idl_sources = \
-	nautilus-view-component-stubs.c		\
-	nautilus-view-component-skels.c		\
-	nautilus-view-component.h		\
-	nautilus-view-component-common.c
+nautilus_view_component_idl_sources =  	nautilus-view-component-stubs.c			nautilus-view-component-skels.c			nautilus-view-component.h			nautilus-view-component-common.c
 
 
-nautilus_distributed_undo_idl_sources = \
-	nautilus-distributed-undo-stubs.c	\
-	nautilus-distributed-undo-skels.c	\
-	nautilus-distributed-undo.h		\
-	nautilus-distributed-undo-common.c
+nautilus_distributed_undo_idl_sources =  	nautilus-distributed-undo-stubs.c		nautilus-distributed-undo-skels.c		nautilus-distributed-undo.h			nautilus-distributed-undo-common.c
 
 
 libnautilusincludedir = $(includedir)/libnautilus
 
-libnautilusinclude_HEADERS = \
-	libnautilus.h				\
-	nautilus-bonobo-ui.h			\
-	nautilus-clipboard.h			\
-	nautilus-distributed-undo.h		\
-	nautilus-idle-queue.h			\
-	nautilus-scroll-positionable.h		\
-	nautilus-view-component.h		\
-	nautilus-view.h				\
-	nautilus-view-standard-main.h		\
-	nautilus-undo.h				\
-	nautilus-undo-private.h			\
-	$(NULL)
+libnautilusinclude_HEADERS =  	libnautilus.h					nautilus-bonobo-ui.h				nautilus-clipboard.h				nautilus-distributed-undo.h			nautilus-idle-queue.h				nautilus-scroll-positionable.h			nautilus-view-component.h			nautilus-view.h					nautilus-view-standard-main.h			nautilus-undo.h					nautilus-undo-private.h				$(NULL)
 
 
-libnautilus_la_SOURCES = \
-	$(nautilus_view_component_idl_sources)		\
-	$(nautilus_distributed_undo_idl_sources)	\
-	nautilus-clipboard.c				\
-	nautilus-idle-queue.c				\
-	nautilus-scroll-positionable.c			\
-	nautilus-undo-transaction.c			\
-	nautilus-undo-transaction.h			\
-	nautilus-undo.c					\
-	nautilus-view.c					\
-	nautilus-view-standard-main.c			\
-	$(NULL)
+libnautilus_la_SOURCES =  	$(nautilus_view_component_idl_sources)			$(nautilus_distributed_undo_idl_sources)		nautilus-clipboard.c					nautilus-idle-queue.c					nautilus-scroll-positionable.c				nautilus-undo-transaction.c				nautilus-undo-transaction.h				nautilus-undo.c						nautilus-view.c						nautilus-view-standard-main.c				$(NULL)
 
 
 uidir = $(datadir)/gnome-2.0/ui
-ui_DATA = \
-	nautilus-clipboard-ui.xml	\
-	$(NULL)
+ui_DATA =  	nautilus-clipboard-ui.xml		$(NULL)
 
 
 idldir = $(datadir)/idl
-idl_DATA = \
-	nautilus-view-component.idl	\
-	nautilus-distributed-undo.idl	\
-	$(NULL)
+idl_DATA =  	nautilus-view-component.idl		nautilus-distributed-undo.idl		$(NULL)
 
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libnautilus.pc
 
-EXTRA_DIST = \
-	$(ui_DATA)			\
-	$(idl_DATA)			\
-	libnautilus.pc.in		\
-	$(NULL)
+EXTRA_DIST =  	$(ui_DATA)				$(idl_DATA)				libnautilus.pc.in			$(NULL)
 
 
-BUILT_SOURCES = \
-	$(nautilus_view_component_idl_sources)		\
-	$(nautilus_distributed_undo_idl_sources)	\
-	$(NULL)
+BUILT_SOURCES =  	$(nautilus_view_component_idl_sources)			$(nautilus_distributed_undo_idl_sources)		$(NULL)
 
 
-CLEANFILES = \
-	$(nautilus_view_component_idl_sources)		\
-	nautilus_view_component_idl_stamp		\
-	$(nautilus_distributed_undo_idl_sources)	\
-	nautilus_distributed_undo_idl_stamp             \
-	$(NULL)
+CLEANFILES =  	$(nautilus_view_component_idl_sources)			nautilus_view_component_idl_stamp			$(nautilus_distributed_undo_idl_sources)		nautilus_distributed_undo_idl_stamp             	$(NULL)
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -491,6 +456,39 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
+nautilus-clipboard.lo nautilus-clipboard.o : nautilus-clipboard.c \
+	../config.h nautilus-clipboard.h nautilus-bonobo-ui.h
+nautilus-distributed-undo-common.lo nautilus-distributed-undo-common.o : \
+	nautilus-distributed-undo-common.c nautilus-distributed-undo.h
+nautilus-distributed-undo-skels.lo nautilus-distributed-undo-skels.o : \
+	nautilus-distributed-undo-skels.c nautilus-distributed-undo.h
+nautilus-distributed-undo-stubs.lo nautilus-distributed-undo-stubs.o : \
+	nautilus-distributed-undo-stubs.c nautilus-distributed-undo.h
+nautilus-idle-queue.lo nautilus-idle-queue.o : nautilus-idle-queue.c \
+	../config.h nautilus-idle-queue.h
+nautilus-scroll-positionable.lo nautilus-scroll-positionable.o : \
+	nautilus-scroll-positionable.c nautilus-scroll-positionable.h \
+	nautilus-view-component.h ../config.h
+nautilus-undo-transaction.lo nautilus-undo-transaction.o : \
+	nautilus-undo-transaction.c ../config.h \
+	nautilus-undo-transaction.h nautilus-undo.h \
+	nautilus-distributed-undo.h nautilus-undo-private.h
+nautilus-undo.lo nautilus-undo.o : nautilus-undo.c ../config.h \
+	nautilus-undo.h nautilus-undo-private.h \
+	nautilus-distributed-undo.h nautilus-undo-transaction.h \
+	nautilus-undo.h
+nautilus-view-component-common.lo nautilus-view-component-common.o : \
+	nautilus-view-component-common.c nautilus-view-component.h
+nautilus-view-component-skels.lo nautilus-view-component-skels.o : \
+	nautilus-view-component-skels.c nautilus-view-component.h
+nautilus-view-component-stubs.lo nautilus-view-component-stubs.o : \
+	nautilus-view-component-stubs.c nautilus-view-component.h
+nautilus-view-standard-main.lo nautilus-view-standard-main.o : \
+	nautilus-view-standard-main.c ../config.h \
+	nautilus-view-standard-main.h
+nautilus-view.lo nautilus-view.o : nautilus-view.c ../config.h \
+	nautilus-view.h nautilus-view-component.h nautilus-idle-queue.h \
+	nautilus-undo.h
 
 info-am:
 info: info-am

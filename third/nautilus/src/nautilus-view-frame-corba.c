@@ -53,6 +53,8 @@ typedef struct {
 	char *location;
 	GList *selection;
 	char *title;
+	Nautilus_ViewFrame_OpenMode mode;
+	Nautilus_ViewFrame_OpenFlags flags;
 } LocationPlus;
 
 static void
@@ -75,29 +77,17 @@ free_location_plus_callback (gpointer callback_data)
 }
 
 static void
-open_in_this_window (NautilusViewFrame *view,
-		     gpointer callback_data)
-{
-	nautilus_view_frame_open_location_in_this_window (view, callback_data);
-}
-
-static void
-open_prefer_existing_window (NautilusViewFrame *view,
-			     gpointer callback_data)
-{
-	nautilus_view_frame_open_location_prefer_existing_window (view, callback_data);
-}
-
-static void
-open_force_new_window (NautilusViewFrame *view,
-		       gpointer callback_data)
+open_location (NautilusViewFrame *view,
+	       gpointer callback_data)
 {
 	LocationPlus *location_plus;
 
 	location_plus = callback_data;
-	nautilus_view_frame_open_location_force_new_window
+	nautilus_view_frame_open_location
 		(view,
 		 location_plus->location,
+		 location_plus->mode,
+		 location_plus->flags,
 		 location_plus->selection);
 }
 
@@ -173,6 +163,15 @@ report_load_failed (NautilusViewFrame *view,
 }
 
 static void
+set_show_hidden_files_mode (NautilusViewFrame *view, gpointer callback_data)
+{
+        nautilus_view_frame_set_show_hidden_files_mode (view,
+							* (Nautilus_ShowHiddenFilesMode *) callback_data,
+							TRUE);
+}
+
+
+static void
 set_title (NautilusViewFrame *view,
 	   gpointer callback_data)
 {
@@ -192,46 +191,25 @@ close_window (NautilusViewFrame *view,
 {
 	nautilus_view_frame_close_window (view);
 }
-
 static void
-impl_Nautilus_ViewFrame_open_location_in_this_window (PortableServer_Servant servant,
-						      const CORBA_char *location,
-						      CORBA_Environment *ev)
-{
-	nautilus_view_frame_queue_incoming_call
-		(servant,
-		 open_in_this_window,
-		 g_strdup (location),
-		 g_free);
-}
-
-static void
-impl_Nautilus_ViewFrame_open_location_prefer_existing_window (PortableServer_Servant servant,
-							      const CORBA_char *location,
-							      CORBA_Environment *ev)
-{
-	nautilus_view_frame_queue_incoming_call
-		(servant,
-		 open_prefer_existing_window,
-		 g_strdup (location),
-		 g_free);
-}
-
-static void
-impl_Nautilus_ViewFrame_open_location_force_new_window (PortableServer_Servant servant,
-							const CORBA_char *location,
-							const Nautilus_URIList *selection,
-							CORBA_Environment *ev)
+impl_Nautilus_ViewFrame_open_location (PortableServer_Servant servant,
+				       const CORBA_char *location,
+				       Nautilus_ViewFrame_OpenMode mode,
+				       Nautilus_ViewFrame_OpenFlags flags,
+				       const Nautilus_URIList *selection,
+				       CORBA_Environment *ev)
 {
 	LocationPlus *location_plus;
 
 	location_plus = g_new0 (LocationPlus, 1);
 	location_plus->location = g_strdup (location);
 	location_plus->selection = nautilus_g_list_from_uri_list (selection);
+	location_plus->mode = mode;
+	location_plus->flags = flags;
 
 	nautilus_view_frame_queue_incoming_call
 		(servant,
-		 open_force_new_window,
+		 open_location,
 		 location_plus,
 		 free_location_plus_callback);
 }
@@ -354,6 +332,18 @@ impl_Nautilus_ViewFrame_report_load_failed (PortableServer_Servant servant,
 }
 
 static void
+impl_Nautilus_ViewFrame_set_show_hidden_files_mode (PortableServer_Servant servant,
+                                                    const Nautilus_ShowHiddenFilesMode mode,
+                                                    CORBA_Environment *ev)
+{
+	nautilus_view_frame_queue_incoming_call
+		(servant,
+		 set_show_hidden_files_mode,
+		 g_memdup (&mode, sizeof (Nautilus_ShowHiddenFilesMode)),
+		 g_free);
+}
+
+static void
 impl_Nautilus_ViewFrame_set_title (PortableServer_Servant servant,
 				   const CORBA_char *title,
 				   CORBA_Environment *ev)
@@ -393,9 +383,7 @@ BONOBO_CLASS_BOILERPLATE_FULL (NautilusViewFrameCorbaPart, nautilus_view_frame_c
 static void
 nautilus_view_frame_corba_part_class_init (NautilusViewFrameCorbaPartClass *class)
 {
-	class->epv.open_location_in_this_window = impl_Nautilus_ViewFrame_open_location_in_this_window;
-	class->epv.open_location_prefer_existing_window = impl_Nautilus_ViewFrame_open_location_prefer_existing_window;
-	class->epv.open_location_force_new_window = impl_Nautilus_ViewFrame_open_location_force_new_window;
+	class->epv.open_location = impl_Nautilus_ViewFrame_open_location;
 	class->epv.report_location_change = impl_Nautilus_ViewFrame_report_location_change;
 	class->epv.report_redirect = impl_Nautilus_ViewFrame_report_redirect;
 	class->epv.report_selection_change = impl_Nautilus_ViewFrame_report_selection_change;
@@ -404,6 +392,7 @@ nautilus_view_frame_corba_part_class_init (NautilusViewFrameCorbaPartClass *clas
 	class->epv.report_load_progress = impl_Nautilus_ViewFrame_report_load_progress;
 	class->epv.report_load_complete = impl_Nautilus_ViewFrame_report_load_complete;
 	class->epv.report_load_failed = impl_Nautilus_ViewFrame_report_load_failed;
+	class->epv.set_show_hidden_files_mode = impl_Nautilus_ViewFrame_set_show_hidden_files_mode;
 	class->epv.set_title = impl_Nautilus_ViewFrame_set_title;
 	class->epv.go_back = impl_Nautilus_ViewFrame_go_back;
 	class->epv.close_window = impl_Nautilus_ViewFrame_close_window;

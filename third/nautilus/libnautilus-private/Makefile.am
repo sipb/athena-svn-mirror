@@ -2,6 +2,10 @@ include $(top_srcdir)/Makefile.shared
 
 lib_LTLIBRARIES=libnautilus-private.la
 
+libnautilus_private_la_LIBADD = \
+	../libnautilus/libnautilus.la \
+	../libnautilus-extension/libnautilus-extension.la
+
 INCLUDES = 						\
 	-I$(top_srcdir) 				\
 	-I$(top_builddir) 				\
@@ -11,6 +15,7 @@ INCLUDES = 						\
 	-DDATADIR=\""$(datadir)"\" 			\
 	-DSYSCONFDIR=\""$(sysconfdir)"\" 			\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 	\
+	-DNAUTILUS_EXTENSIONDIR=\""$(libdir)/nautilus/extensions-1.0"\" \
 	$(NULL)
 
 dependency_static_libs = \
@@ -21,6 +26,7 @@ dependency_static_libs = \
 
 libnautilus_private_la_LDFLAGS =	\
 	-version-info 2:0:0		\
+	-no-undefined			\
 	$(dependency_static_libs)	\
 	$(CORE_LIBS)			\
 	$(NULL)
@@ -42,17 +48,33 @@ libnautilus_private_la_SOURCES = \
 	$(nautilus_metafile_server_idl_sources)	\
 	nautilus-audio-player.c \
 	nautilus-audio-player.h \
-	nautilus-authn-manager.c \
-	nautilus-authn-manager.h \
 	nautilus-bonobo-extensions.c \
 	nautilus-bonobo-extensions.h \
 	nautilus-bookmark.c \
 	nautilus-bookmark.h \
+	nautilus-cell-renderer-pixbuf-emblem.c \
+	nautilus-cell-renderer-pixbuf-emblem.h \
 	nautilus-cdrom-extensions.h \
+	nautilus-clipboard-monitor.c \
+	nautilus-clipboard-monitor.h \
+	nautilus-column-chooser.c \
+	nautilus-column-chooser.h \
+	nautilus-column-utilities.c \
+	nautilus-column-utilities.h \
 	nautilus-customization-data.c \
 	nautilus-customization-data.h \
 	nautilus-default-file-icon.c \
 	nautilus-default-file-icon.h \
+	nautilus-desktop-directory.c \
+	nautilus-desktop-directory.h \
+	nautilus-desktop-directory-file.c \
+	nautilus-desktop-directory-file.h \
+	nautilus-desktop-icon-file.c \
+	nautilus-desktop-icon-file.h \
+	nautilus-desktop-link.c \
+	nautilus-desktop-link.h \
+	nautilus-desktop-link-monitor.c \
+	nautilus-desktop-link-monitor.h \
 	nautilus-directory-async.c \
 	nautilus-directory-background.c \
 	nautilus-directory-background.h \
@@ -127,10 +149,10 @@ libnautilus_private_la_SOURCES = \
 	nautilus-metafile.h \
 	nautilus-mime-actions.c \
 	nautilus-mime-actions.h \
+	nautilus-module.c \
+	nautilus-module.h \
 	nautilus-monitor.c \
 	nautilus-monitor.h \
-	nautilus-program-chooser.c \
-	nautilus-program-chooser.h \
 	nautilus-program-choosing.c \
 	nautilus-program-choosing.h \
 	nautilus-recent.h \
@@ -165,12 +187,9 @@ libnautilus_private_la_SOURCES = \
 	nautilus-vfs-file.h \
 	nautilus-view-identifier.c \
 	nautilus-view-identifier.h \
-	nautilus-volume-monitor.c \
-	nautilus-volume-monitor.h \
+	nautilus-view-query.c \
+	nautilus-view-query.h \
 	$(NULL)
-
-fsattributesdir = $(datadir)/nautilus
-fsattributes_DATA = filesystem-attributes.xml
 
 $(lib_LTLIBRARIES): $(dependency_static_libs)
 
@@ -186,29 +205,34 @@ nautilus-marshal-guts.c: nautilus-marshal.list $(GLIB_GENMARSHAL)
 
 $(libnautilus_private_la_OBJECTS): nautilus_metafile_server_idl_stamp $(marshal_sources)
 
+
+schema_in_files =  apps_nautilus_preferences.schemas.in
 schemadir   = $(GCONF_SCHEMA_FILE_DIR)
-schema_DATA = apps_nautilus_preferences.schemas
+schema_DATA = $(schema_in_files:.schemas.in=.schemas)
+
+@INTLTOOL_SCHEMAS_RULE@
 
 # don't do this if we are building in eg. rpm
+if GCONF_SCHEMAS_INSTALL
 install-data-local:
 	if test -z "$(DESTDIR)" ; then \
 		for p in $(schema_DATA) ; do \
-			GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(srcdir)/$$p; \
+			GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $$p; \
 		done \
 	fi
-
+endif
 
 EXTRA_DIST = 				\
-	$(fsattributes_DATA)		\
 	nautilus-metafile-server.idl	\
 	nautilus-marshal.list		\
-	$(schema_DATA)			\
+	$(schema_in_files)              \
 	$(NULL)
 
 CLEANFILES = \
 	$(nautilus_metafile_server_idl_sources)		\
 	nautilus_metafile_server_idl_stamp		\
 	$(marshal_sources)				\
+	$(schema_DATA)			                \
 	$(NULL)
 
 dist-hook:

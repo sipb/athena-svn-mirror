@@ -119,6 +119,7 @@ struct NautilusIconContainerDetails {
 
 	/* Current icon for keyboard navigation. */
 	NautilusIcon *keyboard_focus;
+	NautilusIcon *keyboard_rubberband_start;
 
 	/* Current icon with stretch handles, so we have only one. */
 	NautilusIcon *stretch_icon;
@@ -163,6 +164,8 @@ struct NautilusIconContainerDetails {
 	gboolean icon_selected_on_button_down;
 	NautilusIcon *double_click_icon[2]; /* Both clicks in a double click need to be on the same icon */
 
+	NautilusIcon *range_selection_base_icon;
+	
 	/* Renaming Details */
 	gboolean renaming;
 	GtkWidget *rename_widget;	/* Editable text item */
@@ -176,6 +179,9 @@ struct NautilusIconContainerDetails {
 
 	/* Idle handler for stretch code */
 	guint stretch_idle_id;
+
+	/* Align idle id */
+	guint align_idle_id;
 
 	/* DnD info. */
 	NautilusIconDndInfo *dnd_info;
@@ -215,7 +221,13 @@ struct NautilusIconContainerDetails {
 	/* Layout mode */
 	NautilusIconLayoutMode layout_mode;
 
-	/* Set to TRUE after first allocation has been done */
+	/* Label position */
+	NautilusIconLabelPosition label_position;
+
+	/* Should the container keep icons aligned to a grid */
+	gboolean keep_aligned;
+
+        /* Set to TRUE after first allocation has been done */
 	gboolean has_been_allocated;
 	
 	/* Is the container fixed or resizable */
@@ -240,6 +252,10 @@ struct NautilusIconContainerDetails {
 	/* Whether we should use drop shadows for the icon labels or not */
 	gboolean use_drop_shadows;
 	gboolean drop_shadows_requested;
+
+	/* a11y items used by canvas items */
+	guint a11y_item_action_idle_handler;
+	GQueue* a11y_item_action_queue;
 };
 
 /* Private functions shared by mutiple files. */
@@ -252,6 +268,7 @@ void          nautilus_icon_container_move_icon                   (NautilusIconC
 								   double                 scale_x,
 								   double                 scale_y,
 								   gboolean               raise,
+								   gboolean               snap,
 								   gboolean		  update_position);
 void          nautilus_icon_container_select_list_unselect_others (NautilusIconContainer *container,
 								   GList                 *icons);

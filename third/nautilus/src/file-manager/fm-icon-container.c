@@ -24,6 +24,8 @@
 #include <config.h>
 
 #include <libgnome/gnome-macros.h>
+#include <libgnome/gnome-i18n.h>
+#include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 #include <libgnomevfs/gnome-vfs-utils.h>
@@ -31,6 +33,7 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-thumbnails.h>
+#include <libnautilus-private/nautilus-desktop-icon-file.h>
 
 #include "fm-icon-container.h"
 
@@ -53,7 +56,8 @@ fm_icon_container_get_icon_images (NautilusIconContainer *container,
 				   NautilusIconData      *data,
 				   GList                **emblem_icons,
 				   char                 **embedded_text,
-				   gboolean              *embedded_text_needs_loading)
+				   gboolean              *embedded_text_needs_loading,
+				   gboolean              *has_window_open)
 {
 	FMIconView *icon_view;
 	EelStringList *emblems_to_ignore;
@@ -77,7 +81,30 @@ fm_icon_container_get_icon_images (NautilusIconContainer *container,
 		eel_string_list_free (emblems_to_ignore);
 	}
 
+	*has_window_open = nautilus_file_has_open_window (file);
+	
 	return nautilus_icon_factory_get_icon_for_file (file, TRUE);
+}
+
+static char *
+fm_icon_container_get_icon_description (NautilusIconContainer *container,
+				        NautilusIconData      *data)
+{
+	NautilusFile *file;
+	char *mime_type;
+	const char *description;
+
+	file = NAUTILUS_FILE (data);
+	g_assert (NAUTILUS_IS_FILE (file));
+
+	if (NAUTILUS_IS_DESKTOP_ICON_FILE (file)) {
+		return NULL;
+	}
+
+	mime_type = nautilus_file_get_mime_type (file);
+	description = gnome_vfs_mime_get_description (mime_type);
+	g_free (mime_type);
+	return g_strdup (description);
 }
 
 static void
@@ -86,19 +113,12 @@ fm_icon_container_start_monitor_top_left (NautilusIconContainer *container,
 					  gconstpointer          client)
 {
 	NautilusFile *file;
-	GList *attributes;
 
 	file = (NautilusFile *) data;
 
 	g_assert (NAUTILUS_IS_FILE (file));
 
-
-	attributes = NULL;
-	attributes = g_list_prepend (attributes,
-				     NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT);
-
-	nautilus_file_monitor_add (file, client, attributes);
-        g_list_free (attributes);
+	nautilus_file_monitor_add (file, client, NAUTILUS_FILE_ATTRIBUTE_TOP_LEFT_TEXT);
 }
 
 static void
@@ -255,6 +275,13 @@ fm_icon_container_get_icon_text (NautilusIconContainer *container,
 		*editable_text = nautilus_file_get_display_name (file);
 	}
 
+	if (NAUTILUS_IS_DESKTOP_ICON_FILE (file)) {
+		/* Don't show the normal extra information for desktop icons, it doesn't
+		 * make sense. */
+ 		*additional_text = NULL;
+		return;
+	}
+	
 	/* Handle link files specially. */
 	if (nautilus_file_is_nautilus_link (file)) {
 		/* FIXME bugzilla.gnome.org 42531: Does sync. I/O and works only locally. */
@@ -316,6 +343,7 @@ fm_icon_container_get_icon_text (NautilusIconContainer *container,
  *   4) trash link
  */
 typedef enum {
+	SORT_COMPUTER_LINK,
 	SORT_HOME_LINK,
 	SORT_MOUNT_LINK,
 	SORT_OTHER,
@@ -325,34 +353,33 @@ typedef enum {
 static SortCategory
 get_sort_category (NautilusFile *file)
 {
-	char *uri;
+	NautilusDesktopLink *link;
 	SortCategory category;
 
-	if (!nautilus_file_is_nautilus_link (file)) {
-		category = SORT_OTHER;
-	} else {
-		if (!nautilus_file_is_local (file))
-			return SORT_OTHER;
-
-		uri = nautilus_file_get_uri (file);
+	if (NAUTILUS_IS_DESKTOP_ICON_FILE (file)) {
+		link = nautilus_desktop_icon_file_get_link (NAUTILUS_DESKTOP_ICON_FILE (file));
 		
-		switch (nautilus_link_local_get_link_type (uri, NULL)) {
-		case NAUTILUS_LINK_HOME:
+		switch (nautilus_desktop_link_get_link_type (link)) {
+		case NAUTILUS_DESKTOP_LINK_COMPUTER:
+			category = SORT_COMPUTER_LINK;
+			break;
+		case NAUTILUS_DESKTOP_LINK_HOME:
 			category = SORT_HOME_LINK;
 			break;
-		case NAUTILUS_LINK_MOUNT:
+		case NAUTILUS_DESKTOP_LINK_VOLUME:
 			category = SORT_MOUNT_LINK;
 			break;
-		case NAUTILUS_LINK_TRASH:
+		case NAUTILUS_DESKTOP_LINK_TRASH:
 			category = SORT_TRASH_LINK;
 			break;
 		default:
 			category = SORT_OTHER;
 			break;
 		}
-		
-		g_free (uri);
-	}
+		g_object_unref (link);
+	} else {
+		category = SORT_OTHER;
+	} 
 	
 	return category;
 }
@@ -444,6 +471,7 @@ fm_icon_container_class_init (FMIconContainerClass *klass)
 
 	ic_class->get_icon_text = fm_icon_container_get_icon_text;
 	ic_class->get_icon_images = fm_icon_container_get_icon_images;
+	ic_class->get_icon_description = fm_icon_container_get_icon_description;
 	ic_class->start_monitor_top_left = fm_icon_container_start_monitor_top_left;
 	ic_class->stop_monitor_top_left = fm_icon_container_stop_monitor_top_left;
 	ic_class->prioritize_thumbnailing = fm_icon_container_prioritize_thumbnailing;
@@ -462,9 +490,13 @@ fm_icon_container_instance_init (FMIconContainer *icon_container)
 NautilusIconContainer *
 fm_icon_container_construct (FMIconContainer *icon_container, FMIconView *view)
 {
+	AtkObject *atk_obj;
+
 	g_return_val_if_fail (FM_IS_ICON_VIEW (view), NULL);
 
 	icon_container->view = view;
+	atk_obj = gtk_widget_get_accessible (GTK_WIDGET (icon_container));
+	atk_object_set_name (atk_obj, _("Icon View"));
 
 	return NAUTILUS_ICON_CONTAINER (icon_container);
 }

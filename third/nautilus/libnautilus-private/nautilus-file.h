@@ -27,6 +27,8 @@
 
 #include <gtk/gtkobject.h>
 #include <libgnomevfs/gnome-vfs-types.h>
+#include <libgnomevfs/gnome-vfs-volume.h>
+#include <libnautilus-private/nautilus-file-attributes.h>
 
 /* NautilusFile is an object used to represent a single element of a
  * NautilusDirectory. It's lightweight and relies on NautilusDirectory
@@ -72,8 +74,11 @@ typedef enum {
 #define NAUTILUS_FILE_EMBLEM_NAME_CANT_WRITE "nowrite"
 #define NAUTILUS_FILE_EMBLEM_NAME_TRASH "trash"
 #define NAUTILUS_FILE_EMBLEM_NAME_NOTE "note"
+#define NAUTILUS_FILE_EMBLEM_NAME_DESKTOP "desktop"
 
 typedef void (*NautilusFileCallback)          (NautilusFile  *file,
+				               gpointer       callback_data);
+typedef void (*NautilusFileListCallback)      (GList         *file_list,
 				               gpointer       callback_data);
 typedef void (*NautilusFileOperationCallback) (NautilusFile  *file,
 					       GnomeVFSResult result,
@@ -100,7 +105,7 @@ void                    nautilus_file_unref                             (Nautilu
 /* Monitor the file. */
 void                    nautilus_file_monitor_add                       (NautilusFile                   *file,
 									 gconstpointer                   client,
-									 GList                          *attributes);
+									 NautilusFileAttributes          attributes);
 void                    nautilus_file_monitor_remove                    (NautilusFile                   *file,
 									 gconstpointer                   client);
 
@@ -109,16 +114,16 @@ void                    nautilus_file_monitor_remove                    (Nautilu
  * to other attributes as well.
  */
 void                    nautilus_file_call_when_ready                   (NautilusFile                   *file,
-									 GList                          *attributes,
+									 NautilusFileAttributes          attributes,
 									 NautilusFileCallback            callback,
 									 gpointer                        callback_data);
 void                    nautilus_file_cancel_call_when_ready            (NautilusFile                   *file,
 									 NautilusFileCallback            callback,
 									 gpointer                        callback_data);
 gboolean                nautilus_file_check_if_ready                    (NautilusFile                   *file,
-									 GList                          *attributes);
+									 NautilusFileAttributes          attributes);
 void                    nautilus_file_invalidate_attributes             (NautilusFile                   *file,
-									 GList                          *attributes);
+									 NautilusFileAttributes          attributes);
 void                    nautilus_file_invalidate_all_attributes         (NautilusFile                   *file);
 
 /* Basic attributes for file objects. */
@@ -132,9 +137,11 @@ char *                  nautilus_file_get_parent_uri                    (Nautilu
 char *                  nautilus_file_get_parent_uri_for_display        (NautilusFile                   *file);
 GnomeVFSFileSize        nautilus_file_get_size                          (NautilusFile                   *file);
 GnomeVFSFileType        nautilus_file_get_file_type                     (NautilusFile                   *file);
+char *                  nautilus_file_get_guessed_mime_type             (NautilusFile                   *file);
 char *                  nautilus_file_get_mime_type                     (NautilusFile                   *file);
 gboolean                nautilus_file_is_mime_type                      (NautilusFile                   *file,
 									 const char                     *mime_type);
+gboolean                nautilus_file_needs_slow_mime_type              (NautilusFile                   *file);
 gboolean                nautilus_file_is_symbolic_link                  (NautilusFile                   *file);
 char *                  nautilus_file_get_volume_free_space             (NautilusFile                   *file);
 char *                  nautilus_file_get_volume_name                   (NautilusFile                   *file);
@@ -178,7 +185,7 @@ gboolean                nautilus_file_can_set_group                     (Nautilu
 char *                  nautilus_file_get_owner_name                    (NautilusFile                   *file);
 char *                  nautilus_file_get_group_name                    (NautilusFile                   *file);
 GList *                 nautilus_get_user_names                         (void);
-GList *                 nautilus_get_group_names                        (void);
+GList *                 nautilus_get_all_group_names                    (void);
 GList *                 nautilus_file_get_settable_group_names          (NautilusFile                   *file);
 
 /* "Capabilities". */
@@ -186,6 +193,12 @@ gboolean                nautilus_file_can_read                          (Nautilu
 gboolean                nautilus_file_can_write                         (NautilusFile                   *file);
 gboolean                nautilus_file_can_execute                       (NautilusFile                   *file);
 gboolean                nautilus_file_can_rename                        (NautilusFile                   *file);
+
+/* Volumes. */
+gboolean                nautilus_file_has_volume                        (NautilusFile                   *file);
+gboolean                nautilus_file_has_drive                         (NautilusFile                   *file);
+GnomeVFSVolume *        nautilus_file_get_volume                        (NautilusFile                   *file);
+GnomeVFSDrive *         nautilus_file_get_drive                         (NautilusFile                   *file);
 
 /* Basic operations for file objects. */
 void                    nautilus_file_set_owner                         (NautilusFile                   *file,
@@ -277,6 +290,11 @@ int                     nautilus_file_compare_for_sort                  (Nautilu
 									 NautilusFileSortType            sort_type,
 									 gboolean			 directories_first,
 									 gboolean		  	 reversed);
+int                     nautilus_file_compare_for_sort_by_attribute     (NautilusFile                   *file_1,
+									 NautilusFile                   *file_2,
+									 const char                     *attribute,
+									 gboolean                        directories_first,
+									 gboolean                        reversed);
 int                     nautilus_file_compare_display_name              (NautilusFile                   *file_1,
 									 const char                     *pattern);
 
@@ -302,6 +320,10 @@ char *                  nautilus_file_get_drop_target_uri               (Nautilu
 char *                  nautilus_file_get_custom_icon                   (NautilusFile                   *file);
 
 
+gboolean                nautilus_file_has_open_window                   (NautilusFile                   *file);
+void                    nautilus_file_set_has_open_window               (NautilusFile                   *file,
+									 gboolean                        has_open_window);
+
 /* Thumbnailing handling */
 gboolean                nautilus_file_is_thumbnailing                   (NautilusFile                   *file);
 
@@ -313,6 +335,10 @@ void                    nautilus_file_list_unref                        (GList  
 void                    nautilus_file_list_free                         (GList                          *file_list);
 GList *                 nautilus_file_list_copy                         (GList                          *file_list);
 GList *			nautilus_file_list_sort_by_display_name		(GList				*file_list);
+void                    nautilus_file_list_call_when_ready              (GList                          *file_list,
+									 NautilusFileAttributes          attributes,
+									 NautilusFileListCallback        callback,
+									 gpointer                        callback_data);
 
 /* Debugging */
 void                    nautilus_file_dump                              (NautilusFile                   *file);
@@ -344,33 +370,33 @@ typedef struct {
 	void                  (* updated_deep_count_in_progress) (NautilusFile *file);
 
 	/* Virtual functions (mainly used for trash directory). */
-	void                  (* monitor_add)            (NautilusFile         *file,
-							  gconstpointer         client,
-							  GList                *attributes);
-	void                  (* monitor_remove)         (NautilusFile         *file,
-							  gconstpointer         client);
-	void                  (* call_when_ready)        (NautilusFile         *file,
-							  GList                *attributes,
-							  NautilusFileCallback  callback,
-							  gpointer              callback_data);
-	void                  (* cancel_call_when_ready) (NautilusFile         *file,
-							  NautilusFileCallback  callback,
-							  gpointer              callback_data);
-	gboolean              (* check_if_ready)         (NautilusFile         *file,
-							  GList                *attributes);
-	GnomeVFSFileType      (* get_file_type)          (NautilusFile         *file);
-	gboolean              (* get_item_count)         (NautilusFile         *file,
-							  guint                *count,
-							  gboolean             *count_unreadable);
-	NautilusRequestStatus (* get_deep_counts)        (NautilusFile         *file,
-							  guint                *directory_count,
-							  guint                *file_count,
-							  guint                *unreadable_directory_count,
-							  GnomeVFSFileSize     *total_size);
-	gboolean              (* get_date)               (NautilusFile         *file,
-							  NautilusDateType      type,
-							  time_t               *date);
-	char *                (* get_where_string)       (NautilusFile         *file);
+	void                  (* monitor_add)            (NautilusFile           *file,
+							  gconstpointer           client,
+							  NautilusFileAttributes  attributes);
+	void                  (* monitor_remove)         (NautilusFile           *file,
+							  gconstpointer           client);
+	void                  (* call_when_ready)        (NautilusFile           *file,
+							  NautilusFileAttributes  attributes,
+							  NautilusFileCallback    callback,
+							  gpointer                callback_data);
+	void                  (* cancel_call_when_ready) (NautilusFile           *file,
+							  NautilusFileCallback    callback,
+							  gpointer                callback_data);
+	gboolean              (* check_if_ready)         (NautilusFile           *file,
+							  NautilusFileAttributes  attributes);
+	GnomeVFSFileType      (* get_file_type)          (NautilusFile           *file);
+	gboolean              (* get_item_count)         (NautilusFile           *file,
+							  guint                  *count,
+							  gboolean               *count_unreadable);
+	NautilusRequestStatus (* get_deep_counts)        (NautilusFile           *file,
+							  guint                  *directory_count,
+							  guint                  *file_count,
+							  guint                  *unreadable_directory_count,
+							  GnomeVFSFileSize       *total_size);
+	gboolean              (* get_date)               (NautilusFile           *file,
+							  NautilusDateType        type,
+							  time_t                 *date);
+	char *                (* get_where_string)       (NautilusFile           *file);
 } NautilusFileClass;
 
 #endif /* NAUTILUS_FILE_H */

@@ -70,13 +70,11 @@ NautilusView *     nautilus_view_new_from_bonobo_control              (BonoboCon
 BonoboControl *    nautilus_view_get_bonobo_control                   (NautilusView           *view);
 
 /* Calls to the Nautilus shell via the view frame. See the IDL for detailed comments. */
-void               nautilus_view_open_location_in_this_window         (NautilusView           *view,
-								       const char             *location_uri);
-void               nautilus_view_open_location_prefer_existing_window (NautilusView           *view,
-								       const char             *location_uri);
-void               nautilus_view_open_location_force_new_window       (NautilusView           *view,
+void               nautilus_view_open_location                        (NautilusView           *view,
 								       const char             *location_uri,
-								       GList                  *selection); /* list of URI char *s */
+								       Nautilus_ViewFrame_OpenMode mode,
+								       Nautilus_ViewFrame_OpenFlags flags,
+								       GList                  *selection);
 void               nautilus_view_report_location_change               (NautilusView           *view,
 								       const char             *location_uri,
 								       GList                  *selection, /* list of URI char *s */
@@ -100,6 +98,10 @@ void               nautilus_view_set_title                            (NautilusV
 void               nautilus_view_go_back                              (NautilusView           *view);
 void               nautilus_view_close_window                         (NautilusView           *view);
 
+/* call from the view component to indicate a change in this setting has occured*/
+void		   nautilus_view_set_show_hidden_files_mode 	      (NautilusView 	      		*view,
+					   			       Nautilus_ShowHiddenFilesMode     mode);
+
 /* Some utility functions useful for doing the CORBA work directly.
  * Not needed by most components, but shared with the view frame code,
  * which is why they are public.
@@ -117,13 +119,16 @@ BonoboUIComponent *nautilus_view_set_up_ui                            (NautilusV
 typedef enum {
 	NAUTILUS_VIEW_LISTEN_TITLE     = 1<<0,
 	NAUTILUS_VIEW_LISTEN_HISTORY   = 1<<1,
-	NAUTILUS_VIEW_LISTEN_SELECTION = 1<<2
+	NAUTILUS_VIEW_LISTEN_SELECTION = 1<<2,
+	NAUTILUS_VIEW_LISTEN_SHOW_HIDDEN_FILES_MODE = 1<<3
 } NautilusViewListenerMask;
 
 Bonobo_PropertyBag nautilus_view_get_ambient_properties               (NautilusView            *view,
 								       CORBA_Environment       *opt_ev);
 void               nautilus_view_set_listener_mask                    (NautilusView            *view,
 								       NautilusViewListenerMask mask);
+Nautilus_WindowType nautilus_view_get_window_type                     (NautilusView *view);
+Nautilus_ShowHiddenFilesMode nautilus_view_get_show_hidden_files_mode (NautilusView *view);
 
 /* `protected' functions for use by subclasses only. */
 NautilusView *     nautilus_view_construct                            (NautilusView           *view,

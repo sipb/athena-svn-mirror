@@ -3,15 +3,13 @@
 # and change the G_LOG_DOMAIN.
 
 INCLUDES =						\
-	-DG_DISABLE_DEPRECATED				\
-	-DGTK_DISABLE_DEPRECATED			\
-	-DGNOME_DISABLE_DEPRECATED			\
 	-DG_LOG_DOMAIN=\"Nautilus-Image-Properties\"	\
 	-DDATADIR=\"$(datadir)\"			\
 	-I$(top_srcdir)					\
 	-I$(top_builddir)				\
 	$(DISABLE_DEPRECATED_CFLAGS)			\
-	$(COMPONENT_CFLAGS)
+	$(COMPONENT_CFLAGS)				\
+	$(EXIF_CFLAGS)
 
 bonobodir = $(libdir)/bonobo
 bonobo_LTLIBRARIES = libnautilus-image-properties-view.la
@@ -23,9 +21,10 @@ libnautilus_image_properties_view_la_SOURCES =		\
 
 libnautilus_image_properties_view_la_LIBADD =			\
 	$(top_builddir)/libnautilus/libnautilus.la	\
-	$(COMPONENT_LIBS)
+	$(COMPONENT_LIBS)				\
+	$(EXIF_LIBS)
 
-libnautilus_image_properties_view_la_LDFLAGS = -module -avoid-version
+libnautilus_image_properties_view_la_LDFLAGS = -module -avoid-version -no-undefined
 
 server_in_files = Nautilus_View_image_properties.server.in.in
 

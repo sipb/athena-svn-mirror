@@ -57,7 +57,7 @@ enum {
 	HISTORY_VIEW_COLUMN_ICON,
 	HISTORY_VIEW_COLUMN_NAME,
 	HISTORY_VIEW_COLUMN_BOOKMARK,
-	HISTORY_VIEW_COLUMN_COUNT,
+	HISTORY_VIEW_COLUMN_COUNT
 };
 
 BONOBO_CLASS_BOILERPLATE (NautilusHistoryView, nautilus_history_view,
@@ -168,8 +168,9 @@ row_activated_callback (GtkTreeView *tree_view,
 	
 	/* Navigate to the clicked location. */
 	uri = nautilus_bookmark_get_uri (NAUTILUS_BOOKMARK (bookmark));
-	nautilus_view_open_location_in_this_window
-		(NAUTILUS_VIEW (view), uri);
+	nautilus_view_open_location
+		(NAUTILUS_VIEW (view), 
+		 uri, Nautilus_ViewFrame_OPEN_ACCORDING_TO_MODE, 0, NULL);
 	g_free (uri);	
 }
 

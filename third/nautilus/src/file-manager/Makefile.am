@@ -9,18 +9,16 @@ INCLUDES = 					\
 	-DVERSION="\"$(VERSION)\""		\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" \
 	-DDATADIR=\""$(datadir)"\"		\
-	-DG_DISABLE_DEPRECATED \
-	-DGDK_DISABLE_DEPRECATED \
-	-DGDK_PIXBUF_DISABLE_DEPRECATED \
-	-DGTK_DISABLE_DEPRECATED \
-	-DGNOME_DISABLE_DEPRECATED \
+	$(DISABLE_DEPRECATED_CFLAGS)            \
 	$(NULL)	
 
 
 
 libnautilus_file_manager_la_SOURCES=	\
+	fm-bonobo-provider.c            \
 	fm-desktop-icon-view.c		\
 	fm-directory-view.c		\
+	fm-ditem-page.c			\
 	fm-error-reporting.c		\
 	fm-icon-container.c		\
 	fm-icon-view.c			\
@@ -29,8 +27,12 @@ libnautilus_file_manager_la_SOURCES=	\
 	fm-properties-window.c		\
 	fm-search-list-view.c		\
 	nautilus-indexing-info.c	\
+	fm-tree-model.c			\
+	fm-tree-view.c			\
+	fm-bonobo-provider.h 		\
 	fm-desktop-icon-view.h 		\
 	fm-directory-view.h 		\
+	fm-ditem-page.h			\
 	fm-error-reporting.h 		\
 	fm-icon-container.h		\
 	fm-icon-view.h 			\
@@ -40,6 +42,8 @@ libnautilus_file_manager_la_SOURCES=	\
 	fm-properties-window.h 		\
 	fm-search-list-view.h 		\
 	nautilus-indexing-info.h 	\
+	fm-tree-model.h			\
+	fm-tree-view.h			\
 	$(NULL)
 
 uidir = $(datadir)/gnome-2.0/ui
@@ -47,6 +51,7 @@ ui_DATA =					\
 	nautilus-desktop-icon-view-ui.xml	\
 	nautilus-directory-view-ui.xml		\
 	nautilus-icon-view-ui.xml		\
+	nautilus-list-view-ui.xml		\
 	nautilus-search-list-view-ui.xml	\
 	$(NULL)
 

@@ -58,7 +58,8 @@ static LinkStyle
 get_link_style_for_mime_type (const char *mime_type)
 {
 	if (mime_type != NULL) {
-		if (g_ascii_strcasecmp (mime_type, "application/x-gnome-app-info") == 0) {
+		if (g_ascii_strcasecmp (mime_type, "application/x-gnome-app-info") == 0 ||
+		    g_ascii_strcasecmp (mime_type, "application/x-desktop") == 0) {
 			return desktop;
 		}
 		if (g_ascii_strcasecmp (mime_type, "application/x-nautilus-link") == 0) {
@@ -112,11 +113,13 @@ nautilus_link_local_create (const char *directory_uri,
 			    const char *image,
 			    const char *target_uri,
 			    const GdkPoint *point,
+			    int screen,
 			    NautilusLinkType type)
 {
 	return nautilus_link_desktop_file_local_create (directory_uri,
 							name, image,
-							target_uri, point,
+							target_uri, 
+							point, screen,
 							type);
 }
 
@@ -125,7 +128,6 @@ nautilus_link_local_set_icon (const char *uri, const char *icon_name)
 {
 	gboolean result;
 	NautilusFile *file;
-	GList *attributes;
 
 	switch (get_link_style_for_local_file (uri, NULL)) {
 	case desktop:
@@ -139,10 +141,8 @@ nautilus_link_local_set_icon (const char *uri, const char *icon_name)
 	}
 
 	file = nautilus_file_get (uri);
-	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
-	nautilus_file_invalidate_attributes (file, attributes);
+	nautilus_file_invalidate_attributes (file, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
 	nautilus_file_unref (file);
-	g_list_free (attributes);
 
 	return result;
 }
@@ -152,7 +152,6 @@ nautilus_link_local_set_link_uri (const char *uri, const char *link_uri)
 {
 	gboolean result;
 	NautilusFile *file;
-	GList *attributes;
 
 	switch (get_link_style_for_local_file (uri, NULL)) {
 	case desktop:
@@ -168,10 +167,8 @@ nautilus_link_local_set_link_uri (const char *uri, const char *link_uri)
 
 	
 	file = nautilus_file_get (uri);
-	attributes = g_list_prepend (NULL, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
-	nautilus_file_invalidate_attributes (file, attributes);
+	nautilus_file_invalidate_attributes (file, NAUTILUS_FILE_ATTRIBUTE_ACTIVATION_URI);
 	nautilus_file_unref (file);
-	g_list_free (attributes);
 
 	return result;
 }
@@ -246,48 +243,31 @@ nautilus_link_local_is_utf8 (const char *uri,
 	}
 }
 
-char *
-nautilus_link_get_link_uri_given_file_contents (const char *uri,
-						const char *file_contents,
-						int file_size)
+void
+nautilus_link_get_link_info_given_file_contents (const char       *file_contents,
+						 int               link_file_size,
+						 char            **uri,
+						 char            **name,
+						 char            **icon,
+						 gulong           *drive_id,
+						 gulong           *volume_id)
 {
-	switch (get_link_style_for_data (file_contents, file_size)) {
+	*uri = NULL;
+	*name = NULL;
+	*icon = NULL;
+	*drive_id = 0;
+	*volume_id = 0;
+	
+	switch (get_link_style_for_data (file_contents, link_file_size)) {
 	case desktop:
-		return nautilus_link_desktop_file_get_link_uri_given_file_contents (uri, file_contents, file_size);
+		nautilus_link_desktop_file_get_link_info_given_file_contents (file_contents, link_file_size, uri, name, icon, drive_id, volume_id);
+		break;
 	case historical:
-		return nautilus_link_historical_get_link_uri_given_file_contents (file_contents, file_size);
+		*uri = nautilus_link_historical_get_link_uri_given_file_contents (file_contents, link_file_size);
+		*icon = nautilus_link_historical_get_link_icon_given_file_contents (file_contents, link_file_size);
+		break;
 	default:
-		return NULL;
-	}
-}
-
-char *
-nautilus_link_get_link_name_given_file_contents (const char *uri,
-						 const char *file_contents,
-						 int file_size)
-{
-	switch (get_link_style_for_data (file_contents, file_size)) {
-	case desktop:
-		return nautilus_link_desktop_file_get_link_name_given_file_contents (uri, file_contents, file_size);
-	case historical:
-		return NULL;
-	default:
-		return NULL;
-	}
-}
-
-char *
-nautilus_link_get_link_icon_given_file_contents (const char *uri,
-						 const char *file_contents,
-						 int file_size)
-{
-	switch (get_link_style_for_data (file_contents, file_size)) {
-	case desktop:
-		return nautilus_link_desktop_file_get_link_icon_given_file_contents (uri, file_contents, file_size);
-	case historical:
-		return nautilus_link_historical_get_link_icon_given_file_contents (file_contents, file_size);
-	default:
-		return NULL;
+		return;
 	}
 }
 
@@ -330,7 +310,8 @@ nautilus_link_local_is_special_link (const char *uri)
 void
 nautilus_link_local_create_from_gnome_entry (GnomeDesktopItem *item,
 					     const char *dest_uri,
-					     const GdkPoint *position)
+					     const GdkPoint *position,
+					     int screen)
 {
-	nautilus_link_desktop_file_local_create_from_gnome_entry (item, dest_uri, position);
+	nautilus_link_desktop_file_local_create_from_gnome_entry (item, dest_uri, position, screen);
 }

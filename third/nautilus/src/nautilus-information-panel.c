@@ -144,7 +144,7 @@ static GtkTargetEntry target_table[] = {
 typedef enum {
 	NO_PART,
 	BACKGROUND_PART,
-	ICON_PART,
+	ICON_PART
 } InformationPanelPart;
 
 EEL_CLASS_BOILERPLATE (NautilusInformationPanel, nautilus_information_panel, EEL_TYPE_BACKGROUND_BOX)
@@ -503,8 +503,8 @@ receive_dropped_uri_list (NautilusInformationPanel *information_panel,
 		
 		if (!exactly_one) {
 			eel_show_error_dialog (
-				_("You can't assign more than one custom icon at a time! "
-				  "Please drag just one image to set a custom icon."), 
+				_("You can't assign more than one custom icon at a time."),
+				_("Please drag just one image to set a custom icon."), 
 				_("More Than One Image"),
 				window);
 			break;
@@ -524,15 +524,15 @@ receive_dropped_uri_list (NautilusInformationPanel *information_panel,
 		} else {	
 			if (eel_is_remote_uri (uris[0])) {
 				eel_show_error_dialog (
-					_("The file that you dropped is not local.  "
-					  "You can only use local images as custom icons."), 
+					_("The file that you dropped is not local."),
+					_("You can only use local images as custom icons."), 
 					_("Local Images Only"),
 					window);
 			
 			} else {
 				eel_show_error_dialog (
-					_("The file that you dropped is not an image.  "
-					  "You can only use local images as custom icons."),
+					_("The file that you dropped is not an image."),
+					_("You can only use images as custom icons."),
 					_("Images Only"),
 					window);
 			}
@@ -831,6 +831,7 @@ metadata_button_callback (GtkWidget *button, const char *command_str)
 	information_panel = NAUTILUS_INFORMATION_PANEL (g_object_get_data (G_OBJECT (button), "user_data"));
 }
 
+#if NEW_MIME_COMPLETE
 static void
 nautilus_information_panel_chose_application_callback (GnomeVFSMimeApplication *application,
 					     gpointer callback_data)
@@ -846,10 +847,12 @@ nautilus_information_panel_chose_application_callback (GnomeVFSMimeApplication *
 			 nautilus_information_panel_get_window (information_panel));
 	}
 }
+#endif
 
 static void
 open_with_callback (GtkWidget *button, gpointer ignored)
 {
+#if NEW_MIME_COMPLETE
 	NautilusInformationPanel *information_panel;
 	
 	information_panel = NAUTILUS_INFORMATION_PANEL (g_object_get_data (G_OBJECT (button), "user_data"));
@@ -861,6 +864,7 @@ open_with_callback (GtkWidget *button, gpointer ignored)
 		 GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (information_panel))),
 		 nautilus_information_panel_chose_application_callback,
 		 information_panel);
+#endif
 }
 
 /* utility routine that allocates the command buttons from the command list */
@@ -976,6 +980,27 @@ empty_trash_callback (GtkWidget *button, gpointer data)
 	nautilus_file_operations_empty_trash (window);
 }
 
+
+static void
+burn_cd_callback (GtkWidget *button, gpointer data)
+{
+	GError *error;
+	char *argv[] = { "nautilus-cd-burner", NULL};
+
+	error = NULL;
+	if (!g_spawn_async (NULL,
+			    argv, NULL,
+			    G_SPAWN_SEARCH_PATH,
+			    NULL, NULL,
+			    NULL,
+			    &error)) {
+		eel_show_error_dialog (_("Unable to launch the cd burner application."), error->message,
+				       _("Can't Launch CD Burner"),
+				       GTK_WINDOW (gtk_widget_get_toplevel (button)));
+		g_error_free (error);
+	}
+}
+
 static void
 nautilus_information_panel_trash_state_changed_callback (NautilusTrashMonitor *trash_monitor,
 						gboolean state, gpointer callback_data)
@@ -1029,6 +1054,18 @@ nautilus_information_panel_update_buttons (NautilusInformationPanel *information
 		g_signal_connect_object (nautilus_trash_monitor_get (), "trash_state_changed",
 					 G_CALLBACK (nautilus_information_panel_trash_state_changed_callback), temp_button, 0);
 	}
+	if (eel_istr_has_prefix (information_panel->details->uri, "burn:")) {
+		/* FIXME: We don't use spaces to pad labels! */
+		temp_button = gtk_button_new_with_mnemonic (_("_Write contents to CD"));
+
+		gtk_box_pack_start (GTK_BOX (information_panel->details->button_box), 
+					temp_button, FALSE, FALSE, 0);
+		gtk_widget_show (temp_button);
+		information_panel->details->has_buttons = TRUE;
+					
+		g_signal_connect (temp_button, "clicked",
+				  G_CALLBACK (burn_cd_callback), NULL);
+	}
 	
 	/* Make buttons for each item in short list + "Open with..." catchall,
 	 * unless there aren't any applications at all in complete list. 
@@ -1036,7 +1073,7 @@ nautilus_information_panel_update_buttons (NautilusInformationPanel *information
 
 	if (nautilus_mime_has_any_applications_for_file (information_panel->details->file)) {
 		short_application_list = 
-			nautilus_mime_get_short_list_applications_for_file (information_panel->details->file);
+			nautilus_mime_get_applications_for_file (information_panel->details->file);
 		add_command_buttons (information_panel, short_application_list);
 		gnome_vfs_mime_application_list_free (short_application_list);
 	}
@@ -1109,12 +1146,11 @@ nautilus_information_panel_update_appearance (NautilusInformationPanel *informat
 static void
 background_metadata_changed_callback (NautilusInformationPanel *information_panel)
 {
-	GList *attributes;
+	NautilusFileAttributes attributes;
 	gboolean ready;
 
 	attributes = nautilus_mime_actions_get_minimum_file_attributes ();
 	ready = nautilus_file_check_if_ready (information_panel->details->file, attributes);
-	g_list_free (attributes);
 
 	if (ready) {
 		nautilus_information_panel_update_appearance (information_panel);
@@ -1132,7 +1168,7 @@ nautilus_information_panel_set_uri (NautilusInformationPanel *information_panel,
 			  const char* initial_title)
 {       
 	NautilusFile *file;
-	GList *attributes;
+	NautilusFileAttributes attributes;
 
 	g_return_if_fail (NAUTILUS_IS_INFORMATION_PANEL (information_panel));
 	g_return_if_fail (new_uri != NULL);
@@ -1166,7 +1202,6 @@ nautilus_information_panel_set_uri (NautilusInformationPanel *information_panel,
 
 	attributes = nautilus_mime_actions_get_minimum_file_attributes ();
 	nautilus_file_monitor_add (information_panel->details->file, information_panel, attributes);
-	g_list_free (attributes);
 
 	background_metadata_changed_callback (information_panel);
 

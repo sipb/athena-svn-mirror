@@ -59,6 +59,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
+AR = @AR@
 ART_REQUIRED = @ART_REQUIRED@
 AS = @AS@
 BONOBO_ACTIVATION_REQUIRED = @BONOBO_ACTIVATION_REQUIRED@
@@ -73,16 +74,24 @@ CORE_CFLAGS = @CORE_CFLAGS@
 CORE_IDL_INCLUDES = @CORE_IDL_INCLUDES@
 CORE_LIBS = @CORE_LIBS@
 CPP = @CPP@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DATADIRNAME = @DATADIRNAME@
 DISABLE_DEPRECATED_CFLAGS = @DISABLE_DEPRECATED_CFLAGS@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
 EEL_REQUIRED = @EEL_REQUIRED@
+EGREP = @EGREP@
 EMBLEM_COMPONENT_CFLAGS = @EMBLEM_COMPONENT_CFLAGS@
 EMBLEM_COMPONENT_LIBS = @EMBLEM_COMPONENT_LIBS@
 ENABLE_PROFILER = @ENABLE_PROFILER@
 ESOUND_REQUIRED = @ESOUND_REQUIRED@
 EXEEXT = @EXEEXT@
+EXIF_CFLAGS = @EXIF_CFLAGS@
+EXIF_LIBS = @EXIF_LIBS@
+F77 = @F77@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
 GCONFTOOL = @GCONFTOOL@
 GCONF_SCHEMA_CONFIG_SOURCE = @GCONF_SCHEMA_CONFIG_SOURCE@
 GCONF_SCHEMA_FILE_DIR = @GCONF_SCHEMA_FILE_DIR@
@@ -96,14 +105,17 @@ GNOME_DESKTOP_REQUIRED = @GNOME_DESKTOP_REQUIRED@
 GNOME_REQUIRED = @GNOME_REQUIRED@
 GNOME_UI_REQUIRED = @GNOME_UI_REQUIRED@
 GNOME_VFS_REQUIRED = @GNOME_VFS_REQUIRED@
+GSEQUENCE_CFLAGS = @GSEQUENCE_CFLAGS@
 GTK_REQUIRED = @GTK_REQUIRED@
 HAVE_JW = @HAVE_JW@
+HAVE_LIB = @HAVE_LIB@
 INSTOBJEXT = @INSTOBJEXT@
 INTLLIBS = @INTLLIBS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
 INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KBD_RULE = @INTLTOOL_KBD_RULE@
 INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
 INTLTOOL_MERGE = @INTLTOOL_MERGE@
 INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
@@ -117,15 +129,20 @@ INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
 INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XAM_RULE = @INTLTOOL_XAM_RULE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
 JW = @JW@
+LIB = @LIB@
 LIBEGG_CFLAGS = @LIBEGG_CFLAGS@
 LIBJPEG = @LIBJPEG@
 LIBNAUTILUS_CFLAGS = @LIBNAUTILUS_CFLAGS@
+LIBNAUTILUS_EXTENSION_CFLAGS = @LIBNAUTILUS_EXTENSION_CFLAGS@
+LIBNAUTILUS_EXTENSION_LIBS = @LIBNAUTILUS_EXTENSION_LIBS@
 LIBNAUTILUS_IDL_INCLUDES = @LIBNAUTILUS_IDL_INCLUDES@
 LIBNAUTILUS_LIBS = @LIBNAUTILUS_LIBS@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
+LTLIB = @LTLIB@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MEDUSA_REQUIRED = @MEDUSA_REQUIRED@
@@ -138,11 +155,15 @@ PACKAGE = @PACKAGE@
 PANGO_REQUIRED = @PANGO_REQUIRED@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
+POPT_LIBS = @POPT_LIBS@
 POSUB = @POSUB@
 PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
 PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
+RC = @RC@
 RSVG_REQUIRED = @RSVG_REQUIRED@
+STARTUP_NOTIFICATION_PACKAGE = @STARTUP_NOTIFICATION_PACKAGE@
+STARTUP_NOTIFICATION_REQUIRED = @STARTUP_NOTIFICATION_REQUIRED@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
@@ -150,29 +171,15 @@ XML_REQUIRED = @XML_REQUIRED@
 
 NULL = 
 
-SUBDIRS = services
-
-INCLUDES = \
-	-DG_LOG_DOMAIN=\"Nautilus-Text\"	\
-	-DDATADIR=\""$(datadir)"\" 		\
-	-I$(top_srcdir)				\
-	-DGNOMELOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\"	\
-	$(DISABLE_DEPRECATED_CFLAGS)		\
-	$(COMPONENT_CFLAGS)			\
-	-DGTK_ENABLE_BROKEN			\
-	$(NULL)
+INCLUDES =  	-DG_LOG_DOMAIN=\"Nautilus-Text\"		-DDATADIR=\""$(datadir)"\" 			-I$(top_srcdir)					-DGNOMELOCALEDIR=\""$(prefix)/${DATADIRNAME}/locale"\"		$(DISABLE_DEPRECATED_CFLAGS)			$(COMPONENT_CFLAGS)				-DGTK_ENABLE_BROKEN				$(NULL)
 
 
 libexec_PROGRAMS = nautilus-text-view
 
-nautilus_text_view_SOURCES = \
-	nautilus-text-view.c
+nautilus_text_view_SOURCES =  	nautilus-text-view.c
 
 
-nautilus_text_view_LDADD = \
-	../../libnautilus/libnautilus.la        \
-	$(COMPONENT_LIBS)			\
-	$(NULL)
+nautilus_text_view_LDADD =  	../../libnautilus/libnautilus.la        	$(COMPONENT_LIBS)				$(NULL)
 
 
 uidir = $(datadir)/gnome-2.0/ui
@@ -342,61 +349,6 @@ uninstall-uiDATA:
 	  rm -f $(DESTDIR)$(uidir)/$$p; \
 	done
 
-# This directory's subdirectories are mostly independent; you can cd
-# into them and run `make' without going through this Makefile.
-# To change the values of `make' variables: instead of editing Makefiles,
-# (1) if the variable is set in `config.status', edit `config.status'
-#     (which will cause the Makefiles to be regenerated when you run `make');
-# (2) otherwise, pass the desired values on the `make' command line.
-
-@SET_MAKE@
-
-all-recursive install-data-recursive install-exec-recursive \
-installdirs-recursive install-recursive uninstall-recursive  \
-check-recursive installcheck-recursive info-recursive dvi-recursive:
-	@set fnord $(MAKEFLAGS); amf=$$2; \
-	dot_seen=no; \
-	target=`echo $@ | sed s/-recursive//`; \
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  echo "Making $$target in $$subdir"; \
-	  if test "$$subdir" = "."; then \
-	    dot_seen=yes; \
-	    local_target="$$target-am"; \
-	  else \
-	    local_target="$$target"; \
-	  fi; \
-	  (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
-	   || case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
-	done; \
-	if test "$$dot_seen" = "no"; then \
-	  $(MAKE) $(AM_MAKEFLAGS) "$$target-am" || exit 1; \
-	fi; test -z "$$fail"
-
-mostlyclean-recursive clean-recursive distclean-recursive \
-maintainer-clean-recursive:
-	@set fnord $(MAKEFLAGS); amf=$$2; \
-	dot_seen=no; \
-	rev=''; list='$(SUBDIRS)'; for subdir in $$list; do \
-	  rev="$$subdir $$rev"; \
-	  test "$$subdir" != "." || dot_seen=yes; \
-	done; \
-	test "$$dot_seen" = "no" && rev=". $$rev"; \
-	target=`echo $@ | sed s/-recursive//`; \
-	for subdir in $$rev; do \
-	  echo "Making $$target in $$subdir"; \
-	  if test "$$subdir" = "."; then \
-	    local_target="$$target-am"; \
-	  else \
-	    local_target="$$target"; \
-	  fi; \
-	  (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
-	   || case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
-	done && test -z "$$fail"
-tags-recursive:
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-	  test "$$subdir" = . || (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) tags); \
-	done
-
 tags: TAGS
 
 ID: $(HEADERS) $(SOURCES) $(LISP)
@@ -407,14 +359,9 @@ ID: $(HEADERS) $(SOURCES) $(LISP)
 	here=`pwd` && cd $(srcdir) \
 	  && mkid -f$$here/ID $$unique $(LISP)
 
-TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	tags=; \
 	here=`pwd`; \
-	list='$(SUBDIRS)'; for subdir in $$list; do \
-   if test "$$subdir" = .; then :; else \
-	    test -f $$subdir/TAGS && tags="$$tags -i $$here/$$subdir/TAGS"; \
-   fi; \
-	done; \
 	list='$(SOURCES) $(HEADERS)'; \
 	unique=`for i in $$list; do echo $$i; done | \
 	  awk '    { files[$$0] = 1; } \
@@ -446,43 +393,36 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-	for subdir in $(SUBDIRS); do \
-	  if test "$$subdir" = .; then :; else \
-	    test -d $(distdir)/$$subdir \
-	    || mkdir $(distdir)/$$subdir \
-	    || exit 1; \
-	    chmod 777 $(distdir)/$$subdir; \
-	    (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) top_distdir=../$(top_distdir) distdir=../$(distdir)/$$subdir distdir) \
-	      || exit 1; \
-	  fi; \
-	done
+nautilus-text-view.o: nautilus-text-view.c ../../config.h \
+	../../libnautilus/nautilus-view.h \
+	../../libnautilus/nautilus-view-component.h \
+	../../libnautilus/nautilus-view-standard-main.h
 
 info-am:
-info: info-recursive
+info: info-am
 dvi-am:
-dvi: dvi-recursive
+dvi: dvi-am
 check-am: all-am
-check: check-recursive
+check: check-am
 installcheck-am:
-installcheck: installcheck-recursive
+installcheck: installcheck-am
 install-exec-am: install-libexecPROGRAMS
-install-exec: install-exec-recursive
+install-exec: install-exec-am
 
 install-data-am: install-serverDATA install-uiDATA
-install-data: install-data-recursive
+install-data: install-data-am
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
-install: install-recursive
+install: install-am
 uninstall-am: uninstall-libexecPROGRAMS uninstall-serverDATA \
 		uninstall-uiDATA
-uninstall: uninstall-recursive
+uninstall: uninstall-am
 all-am: Makefile $(PROGRAMS) $(DATA)
-all-redirect: all-recursive
+all-redirect: all-am
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
-installdirs: installdirs-recursive
-installdirs-am:
+installdirs:
 	$(mkinstalldirs)  $(DESTDIR)$(libexecdir) $(DESTDIR)$(serverdir) \
 		$(DESTDIR)$(uidir)
 
@@ -501,19 +441,19 @@ mostlyclean-am:  mostlyclean-libexecPROGRAMS mostlyclean-compile \
 		mostlyclean-libtool mostlyclean-tags \
 		mostlyclean-generic
 
-mostlyclean: mostlyclean-recursive
+mostlyclean: mostlyclean-am
 
 clean-am:  clean-libexecPROGRAMS clean-compile clean-libtool clean-tags \
 		clean-generic mostlyclean-am
 
-clean: clean-recursive
+clean: clean-am
 
 distclean-am:  distclean-libexecPROGRAMS distclean-compile \
 		distclean-libtool distclean-tags distclean-generic \
 		clean-am
 	-rm -f libtool
 
-distclean: distclean-recursive
+distclean: distclean-am
 
 maintainer-clean-am:  maintainer-clean-libexecPROGRAMS \
 		maintainer-clean-compile maintainer-clean-libtool \
@@ -522,7 +462,7 @@ maintainer-clean-am:  maintainer-clean-libexecPROGRAMS \
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
-maintainer-clean: maintainer-clean-recursive
+maintainer-clean: maintainer-clean-am
 
 .PHONY: mostlyclean-libexecPROGRAMS distclean-libexecPROGRAMS \
 clean-libexecPROGRAMS maintainer-clean-libexecPROGRAMS \
@@ -530,18 +470,13 @@ uninstall-libexecPROGRAMS install-libexecPROGRAMS mostlyclean-compile \
 distclean-compile clean-compile maintainer-clean-compile \
 mostlyclean-libtool distclean-libtool clean-libtool \
 maintainer-clean-libtool uninstall-serverDATA install-serverDATA \
-uninstall-uiDATA install-uiDATA install-data-recursive \
-uninstall-data-recursive install-exec-recursive \
-uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
-all-recursive check-recursive installcheck-recursive info-recursive \
-dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \
-maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
-distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
-dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
-install-exec install-data-am install-data install-am install \
-uninstall-am uninstall all-redirect all-am all installdirs-am \
-installdirs mostlyclean-generic distclean-generic clean-generic \
-maintainer-clean-generic clean mostlyclean distclean maintainer-clean
+uninstall-uiDATA install-uiDATA tags mostlyclean-tags distclean-tags \
+clean-tags maintainer-clean-tags distdir info-am info dvi-am dvi check \
+check-am installcheck-am installcheck install-exec-am install-exec \
+install-data-am install-data install-am install uninstall-am uninstall \
+all-redirect all-am all installdirs mostlyclean-generic \
+distclean-generic clean-generic maintainer-clean-generic clean \
+mostlyclean distclean maintainer-clean
 
 $(server_in_files:.server.in.in=.server.in): $(server_in_files)
 	sed -e "s|\@LIBEXECDIR\@|$(libexecdir)|" $< > $@

@@ -27,6 +27,7 @@
 #include <gdk/gdkdnd.h>
 #include <libnautilus-private/nautilus-file.h>
 #include <libnautilus-private/nautilus-icon-factory.h>
+#include <libnautilus-extension/nautilus-column.h>
 
 #ifndef FM_LIST_MODEL_H
 #define FM_LIST_MODEL_H
@@ -46,10 +47,13 @@ enum {
 	FM_LIST_MODEL_LARGE_ICON_COLUMN,
 	FM_LIST_MODEL_LARGER_ICON_COLUMN,
 	FM_LIST_MODEL_LARGEST_ICON_COLUMN,
-	FM_LIST_MODEL_NAME_COLUMN,
-	FM_LIST_MODEL_SIZE_COLUMN,
-	FM_LIST_MODEL_TYPE_COLUMN,
-	FM_LIST_MODEL_DATE_MODIFIED_COLUMN,
+	FM_LIST_MODEL_SMALLEST_EMBLEM_COLUMN,
+	FM_LIST_MODEL_SMALLER_EMBLEM_COLUMN,
+	FM_LIST_MODEL_SMALL_EMBLEM_COLUMN,
+	FM_LIST_MODEL_STANDARD_EMBLEM_COLUMN,
+	FM_LIST_MODEL_LARGE_EMBLEM_COLUMN,
+	FM_LIST_MODEL_LARGER_EMBLEM_COLUMN,
+	FM_LIST_MODEL_LARGEST_EMBLEM_COLUMN,
 	FM_LIST_MODEL_FILE_NAME_IS_EDITABLE_COLUMN,
 	FM_LIST_MODEL_NUM_COLUMNS
 };
@@ -71,6 +75,7 @@ void     fm_list_model_add_file                          (FMListModel          *
 void     fm_list_model_file_changed                      (FMListModel          *model,
 							  NautilusFile         *file);
 gboolean fm_list_model_is_empty                          (FMListModel          *model);
+guint    fm_list_model_get_length                        (FMListModel          *model);
 void     fm_list_model_remove_file                       (FMListModel          *model,
 							  NautilusFile         *file);
 void     fm_list_model_clear                             (FMListModel          *model);
@@ -80,14 +85,16 @@ gboolean fm_list_model_get_tree_iter_from_file           (FMListModel          *
 void     fm_list_model_set_should_sort_directories_first (FMListModel          *model,
 							  gboolean              sort_directories_first);
 
-int      fm_list_model_get_sort_column_id_from_attribute (const char           *attribute);
-char    *fm_list_model_get_attribute_from_sort_column_id (int                   sort_column_id);
+int      fm_list_model_get_sort_column_id_from_attribute (FMListModel *model,
 
-int      fm_list_model_get_sort_column_id_from_sort_type (NautilusFileSortType  sort_type);
-NautilusFileSortType fm_list_model_get_sort_type_from_sort_column_id (int       sort_column_id);
+							  const char           *attribute);
+char    *fm_list_model_get_attribute_from_sort_column_id (FMListModel *model,
+							  int sort_column_id);
 
 NautilusZoomLevel fm_list_model_get_zoom_level_from_column_id (int               column);
 int               fm_list_model_get_column_id_from_zoom_level (NautilusZoomLevel zoom_level);
+NautilusZoomLevel fm_list_model_get_zoom_level_from_emblem_column_id (int               column);
+int               fm_list_model_get_emblem_column_id_from_zoom_level (NautilusZoomLevel zoom_level);
 
 NautilusFile *    fm_list_model_file_for_path (FMListModel *model, GtkTreePath *path);
 
@@ -101,4 +108,9 @@ void              fm_list_model_set_drag_view (FMListModel *model,
 void              fm_list_model_get_drag_types (GtkTargetEntry **entries,
 						int *num_entries);
 
+
+int               fm_list_model_add_column (FMListModel *model,
+					    NautilusColumn *column);
+int               fm_list_model_get_column_number (FMListModel *model,
+						   const char *column_name);
 #endif /* FM_LIST_MODEL_H */

@@ -57,6 +57,7 @@
 #define MINIMUM_TIME_UP    1000
 
 #define SHOW_TIMEOUT	   1200
+#define TIME_REMAINING_TIMEOUT 1000
 
 static GdkPixbuf *empty_jar_pixbuf, *full_jar_pixbuf;
 
@@ -82,9 +83,10 @@ struct NautilusFileOperationsProgressDetails {
 	const char *from_prefix;
 	const char *to_prefix;
 
-	gulong bytes_copied;
 	gulong files_total;
-	gulong bytes_total;
+	
+	GnomeVFSFileSize bytes_copied;
+	GnomeVFSFileSize bytes_total;
 
 	/* system time (microseconds) when show timeout was started */
 	gint64 start_time;
@@ -98,6 +100,10 @@ struct NautilusFileOperationsProgressDetails {
 	guint delayed_close_timeout_id;
 	guint delayed_show_timeout_id;
 
+	/* system time (microseconds) when first file transfer began */
+	gint64 first_transfer_time;
+	guint time_remaining_timeout_id;
+	
 	int progress_jar_position;
 };
 
@@ -208,6 +214,11 @@ nautilus_file_operations_progress_destroy (GtkObject *object)
 		g_source_remove (progress->details->delayed_show_timeout_id);
 		progress->details->delayed_show_timeout_id = 0;
 	}
+
+	if (progress->details->time_remaining_timeout_id != 0) {
+		g_source_remove (progress->details->time_remaining_timeout_id);
+		progress->details->time_remaining_timeout_id = 0;
+	}
 	
 	EEL_CALL_PARENT (GTK_OBJECT_CLASS, destroy, (object));
 }
@@ -293,6 +304,8 @@ nautilus_file_operations_progress_init (NautilusFileOperationsProgress *progress
 	progress->details->progress_bar = gtk_progress_bar_new ();
 	gtk_window_set_default_size (GTK_WINDOW (progress), PROGRESS_DIALOG_WIDTH, -1);
 	gtk_box_pack_start (GTK_BOX (vbox), progress->details->progress_bar, FALSE, TRUE, 0);
+	/* prevent a resizing of the bar when a real text is inserted later */
+	gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progress->details->progress_bar), " ");
 
 	titled_label_table = GTK_TABLE (gtk_table_new (3, 2, FALSE));
 	gtk_table_set_row_spacings (titled_label_table, 4);
@@ -354,6 +367,57 @@ nautilus_file_operations_progress_class_init (NautilusFileOperationsProgressClas
 }
 
 static gboolean
+time_remaining_callback (gpointer callback_data)
+{
+	int elapsed_time;
+	int transfer_rate;
+	int time_remaining;
+	char *str;
+	NautilusFileOperationsProgress *progress;
+	
+	progress = NAUTILUS_FILE_OPERATIONS_PROGRESS (callback_data);
+	
+	elapsed_time = (eel_get_system_time () - progress->details->first_transfer_time) / 1000000;
+
+	if (elapsed_time == 0) {
+		progress->details->time_remaining_timeout_id =
+			g_timeout_add (TIME_REMAINING_TIMEOUT, time_remaining_callback, progress);
+		
+		return FALSE;
+	}
+	
+	transfer_rate = progress->details->bytes_copied / elapsed_time;
+
+	if (transfer_rate == 0) {
+		progress->details->time_remaining_timeout_id =
+			g_timeout_add (TIME_REMAINING_TIMEOUT, time_remaining_callback, progress);
+
+		return FALSE;
+	}
+
+	time_remaining = (progress->details->bytes_total -
+			  progress->details->bytes_copied) / transfer_rate;
+
+	if (time_remaining >= 3600) {
+		str = g_strdup_printf (_("(%d:%02d:%d Remaining)"), 
+				       time_remaining / 3600, (time_remaining % 3600) / 60, (time_remaining % 3600) % 60);
+
+	}
+	else {
+		str = g_strdup_printf (_("(%d:%02d Remaining)"), 
+				       time_remaining / 60, time_remaining % 60);
+	}
+	gtk_progress_bar_set_text (GTK_PROGRESS_BAR (progress->details->progress_bar), str);
+	
+	g_free (str);
+
+	progress->details->time_remaining_timeout_id =
+		g_timeout_add (TIME_REMAINING_TIMEOUT, time_remaining_callback, progress);
+	
+	return FALSE;
+}
+
+static gboolean
 delayed_show_callback (gpointer callback_data)
 {
 	NautilusFileOperationsProgress *progress;
@@ -373,7 +437,7 @@ nautilus_file_operations_progress_new (const char *title,
 				       const char *from_prefix,
 				       const char *to_prefix,
 				       gulong total_files,
-				       gulong total_bytes,
+				       GnomeVFSFileSize total_bytes,
 				       gboolean use_timeout)
 {
 	GtkWidget *widget;
@@ -405,7 +469,7 @@ nautilus_file_operations_progress_new (const char *title,
 void
 nautilus_file_operations_progress_set_total (NautilusFileOperationsProgress *progress,
 					     gulong files_total,
-					     gulong bytes_total)
+					     GnomeVFSFileSize bytes_total)
 {
 	g_return_if_fail (NAUTILUS_IS_FILE_OPERATIONS_PROGRESS (progress));
 
@@ -434,7 +498,7 @@ nautilus_file_operations_progress_new_file (NautilusFileOperationsProgress *prog
 					    const char *from_prefix,
 					    const char *to_prefix,
 					    gulong file_index,
-					    gulong size)
+					    GnomeVFSFileSize size)
 {
 	char *progress_count;
 
@@ -468,6 +532,10 @@ nautilus_file_operations_progress_new_file (NautilusFileOperationsProgress *prog
 			set_text_unescaped_trimmed 
 				(EEL_ELLIPSIZING_LABEL (progress->details->to_path_label), to_path);
 		}
+
+		if (progress->details->first_transfer_time == 0) {
+			progress->details->first_transfer_time = eel_get_system_time ();
+		}
 	}
 
 	nautilus_file_operations_progress_update (progress);
@@ -489,13 +557,22 @@ nautilus_file_operations_progress_clear (NautilusFileOperationsProgress *progres
 
 void
 nautilus_file_operations_progress_update_sizes (NautilusFileOperationsProgress *progress,
-						gulong bytes_done_in_file,
-						gulong bytes_done)
+						GnomeVFSFileSize bytes_done_in_file,
+						GnomeVFSFileSize bytes_done)
 {
 	g_return_if_fail (NAUTILUS_IS_FILE_OPERATIONS_PROGRESS (progress));
 
 	progress->details->bytes_copied = bytes_done;
 
+
+	if (progress->details->time_remaining_timeout_id == 0) {
+		/* The first time we wait five times as long before
+		 * starting to show the time remaining */
+		progress->details->time_remaining_timeout_id =
+				g_timeout_add (TIME_REMAINING_TIMEOUT * 5, time_remaining_callback, progress);
+
+	}
+	
 	nautilus_file_operations_progress_update (progress);
 }
 

@@ -83,6 +83,10 @@ struct NautilusFileDetails
 	char *custom_icon;
 	char *activation_uri;
 
+	/* The guessed (extension-based) mime type.  This is saved for
+	 * comparison vs. the slow mime type upon activation */
+	char *guessed_mime_type;
+
 	/* The following is for file operations in progress. Since
 	 * there are normally only a few of these, we can move them to
 	 * a separate hash table or something if required to keep the
@@ -93,7 +97,18 @@ struct NautilusFileDetails
 	/* We use this to cache automatic emblems and emblem keywords
 	   to speed up compare_by_emblems. */
 	NautilusFileSortByEmblemCache *compare_by_emblem_cache;
-	
+
+	/* NautilusInfoProviders that need to be run for this file */
+	GList *pending_info_providers;
+
+	/* Emblems provided by extensions */
+	GList *extension_emblems;
+	GList *pending_extension_emblems;
+
+	/* Attributes provided by extensions */
+	GHashTable *extension_attributes;
+	GHashTable *pending_extension_attributes;
+
 	/* boolean fields: bitfield to save space, since there can be
            many NautilusFile objects. */
 
@@ -106,12 +121,14 @@ struct NautilusFileDetails
 	/* got_info known from info field being non-NULL */
 	eel_boolean_bit get_info_failed               : 1;
 	eel_boolean_bit file_info_is_up_to_date       : 1;
+	
+	eel_boolean_bit got_slow_mime_type            : 1;
 
 	eel_boolean_bit got_directory_count           : 1;
 	eel_boolean_bit directory_count_failed        : 1;
 	eel_boolean_bit directory_count_is_up_to_date : 1;
 
-	NautilusRequestStatus deep_counts_status      : 2;
+	eel_boolean_bit deep_counts_status      : 2; /* NautilusRequestStatus */
 	/* no deep_counts_are_up_to_date field; since we expose
            intermediate values for this attribute, we do actually
            forget it rather than invalidating. */
@@ -126,7 +143,13 @@ struct NautilusFileDetails
 	eel_boolean_bit got_link_info                 : 1;
 	eel_boolean_bit link_info_is_up_to_date       : 1;
 
-	eel_boolean_bit is_thumbnailing             : 1;
+	eel_boolean_bit is_thumbnailing               : 1;
+
+	eel_boolean_bit has_volume                    : 1;
+	eel_boolean_bit has_drive                     : 1;
+
+	/* TRUE if the file is open in a spatial window */
+	eel_boolean_bit has_open_window               : 1;
 };
 
 NautilusFile *nautilus_file_new_from_info                  (NautilusDirectory      *directory,
@@ -151,7 +174,8 @@ void          nautilus_file_clear_cached_display_name      (NautilusFile        
  * no change, update file and return TRUE if the file info contains
  * new state.  */
 gboolean      nautilus_file_update_info                    (NautilusFile           *file,
-							    GnomeVFSFileInfo       *info);
+							    GnomeVFSFileInfo       *info,
+							    gboolean                info_has_slow_mime);
 gboolean      nautilus_file_update_name                    (NautilusFile           *file,
 							    const char             *name);
 
@@ -167,18 +191,25 @@ gboolean      nautilus_file_should_get_top_left_text       (NautilusFile        
 /* Mark specified attributes for this file out of date without canceling current
  * I/O or kicking off new I/O.
  */
-void          nautilus_file_invalidate_attributes_internal (NautilusFile           *file,
-							    GList                  *file_attributes);
-GList *       nautilus_file_get_all_attributes             (void);
-gboolean      nautilus_file_is_self_owned                  (NautilusFile           *file);
-void          nautilus_file_invalidate_count_and_mime_list (NautilusFile           *file);
-gboolean      nautilus_file_rename_in_progress             (NautilusFile           *file);
+void                   nautilus_file_invalidate_attributes_internal     (NautilusFile           *file,
+									 NautilusFileAttributes  file_attributes);
+NautilusFileAttributes nautilus_file_get_all_attributes                 (void);
+gboolean               nautilus_file_is_self_owned                      (NautilusFile           *file);
+void                   nautilus_file_invalidate_count_and_mime_list     (NautilusFile           *file);
+gboolean               nautilus_file_rename_in_progress                 (NautilusFile           *file);
+GnomeVFSFileInfo *     nautilus_file_peek_vfs_file_info                 (NautilusFile           *file);
+void                   nautilus_file_invalidate_extension_info_internal (NautilusFile           *file);
+void                   nautilus_file_info_providers_done                (NautilusFile           *file);
 
-GnomeVFSFileInfo *nautilus_file_peek_vfs_file_info         (NautilusFile           *file);
 
 /* Thumbnailing: */
 void          nautilus_file_set_is_thumbnailing            (NautilusFile           *file,
 							    gboolean                is_thumbnailing);
 
+/* Volumes: */
+void nautilus_file_set_drive  (NautilusFile   *file,
+			       GnomeVFSDrive  *drive);
+void nautilus_file_set_volume (NautilusFile   *file,
+			       GnomeVFSVolume *volume);
 
 #endif
