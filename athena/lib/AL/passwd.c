@@ -7,11 +7,12 @@
  **********************************************************************/
 #include <mit-copyright.h>
 
-#include "al.h"
+#include <AL/AL.h>
 #include <sys/types.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <string.h>
 #ifdef SOLARIS
 #include <shadow.h>
 #endif
@@ -58,11 +59,7 @@ ALaddPasswdEntry(ALsession session)
     }
 
   /* lock password file */
-  for (cnt=10; cnt >= 0; cnt--)
-    {
-      if ((fd = open("/etc/ptmp", O_WRONLY|O_CREAT|O_EXCL, 0644)) > 0) break;
-      sleep(1);
-    }
+  fd = ALopenLockFile("/etc/ptmp");
   if (fd < 0) ALreturnError(session, ALerrNoLock, "/etc/ptmp for insert");
 
   /* append correct line */
@@ -102,4 +99,25 @@ ALaddPasswdEntry(ALsession session)
     unlink("/etc/ptmp");
 
   return 0L;
+}
+
+long
+ALremovePasswdEntry(ALsession session)
+{
+  long code;
+
+  /* XXX should decrement refcount */
+  /* if we didn't find user via hesiod, we're done */
+  if (!ALisTrue(session, ALdidGetHesiodPasswd)) return 0L;
+
+  /* delete user's entry */
+  code = ALmodifyLinesOfFile(session, "/etc/passwd", "/etc/ptmp",
+			     ALmodifyRemoveUser, ALappendNOT);
+#ifdef SOLARIS
+  if (code) return(code);
+  code = ALmodifyLinesOfFile(session, "/etc/shadow", "/etc/ptmp",
+			     ALmodifyRemoveUser, ALappendNOT);
+#endif
+
+  return(code);
 }

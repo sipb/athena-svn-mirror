@@ -9,37 +9,89 @@
 
 #include <krb.h>	
 #include <pwd.h>
-#include <utmp.h>
-#ifdef SOLARIS
-#include <utmpx.h>
-#include <shadow.h>
-#endif
+#include <sys/types.h>
+#include <AL/etale.h>
+#include <AL/etalw.h>
 
-#ifdef SOLARIS
-#define AL_NMAX	sizeof(utmpx.ut_name)
-#define AL_HMAX	sizeof(utmpx.ut_host)
-#else
-#define AL_NMAX	sizeof(utmp.ut_name)
-#define AL_HMAX	sizeof(utmp.ut_host)
-#endif
+#define ALtempDotfiles		"/usr/athena/lib/prototype_tmpuser/."
+#define ALtempDirPerm		(0710)
+#define ALlengthErrContext	4096
+
+typedef long ALflag_t;
+
+typedef struct _ALgroup
+{
+  char gname[64];
+  char gid[16];
+  int gadded;			/* 0 if not added to /etc/group yet */
+} ALgroupStruct, *ALgroup;
 
 typedef struct _ALsession
 {
-  long flags;
-  struct passwd pwd;
-  char	rusername[AL_NMAX+1], lusername[AL_NMAX+1];
-  char	rpassword[AL_NMAX+1];
-  char	name[AL_NMAX+1];
-  char	*rhost;
-  AUTH_DAT *kdata;
-}
+  ALflag_t flags;
+  struct passwd *pwd;		/* don't use directly; use macros */
+  char context[ALlengthErrContext]; /* more information about error */
+  pid_t attach_pid;
+  int ngroups;
+  ALgroup groups;
+} ALsessionStruct, *ALsession;
 
-#define AL_FKRB  (1<<0)		/* True if Kerberos-authenticated login */
-#define AL_FPAG  (1<<1)		/* True if we call setpag() */
-#define AL_FTMPP (1<<2)		/* True if passwd entry is temporary */
-#define AL_FTMPD (1<<3)		/* True if home directory is temporary */
-#define AL_FINH  (1<<4)		/* inhibit account creation on the fly */
-#define AL_FATOK (1<<5)		/* True if /etc/noattach doesn't exist */
-#define AL_FATD  (1<<6)		/* True if homedir attached */
-#define AL_FERPT (1<<7)		/* True if login error already printed */
-#define AL_FNRMT (1<<8)		/* True if /etc/noremote exists */
+/* macros to access passwd entry of ALsession */
+
+#define ALpw_name(session)	((session)->pwd->pw_name)
+#define ALpw_passwd(session)	((session)->pwd->pw_passwd)
+#define ALpw_uid(session)	((session)->pwd->pw_uid)
+#define ALpw_gid(session)	((session)->pwd->pw_gid)
+#define ALpw_gecos(session)	((session)->pwd->pw_gecos)
+#define ALpw_dir(session)	((session)->pwd->pw_dir)
+#define ALpw_shell(session)	((session)->pwd->pw_shell)
+
+/* group macros */
+
+#define ALgroupName(s, n)	((s)->groups[(n)].gname)
+#define ALgroupId(s, n)		((s)->groups[(n)].gid)
+#define ALgroupAdded(s, n)	((s)->groups[(n)].gadded)
+#define ALngroups(s)		((s)->ngroups)
+
+/* other ALsession macros */
+
+#define ALcontext(s)		((s)->context)
+#define ALattach_pid(s)		((s)->attach_pid)
+
+/* macros for manipulating flags */
+
+#define ALflagClear(session, flag)	((session)->flags &= ~(flag))
+#define ALflagSet(session, flag)	((session)->flags |= (flag))
+#define ALisTrue(session, flag)		((session)->flags & (flag))
+#define ALflagNone	((ALflag_t)0)
+
+/* flags pertaining to the existence of files */
+
+#define ALhaveNOLOGIN	((ALflag_t)(1<<0))
+#define ALhaveNOCREATE	((ALflag_t)(1<<1))
+#define ALhaveNOREMOTE	((ALflag_t)(1<<2))
+#define ALhaveNOATTACH	((ALflag_t)(1<<3))
+
+#define ALfileNOLOGIN	"/etc/nologin"
+#define ALfileNOCREATE	"/etc/nocreate"
+#define ALfileNOREMOTE	"/etc/noremote"
+#define ALfileNOATTACH	"/etc/noattach"
+
+#define ALfileExists(f) (access((f), F_OK) == 0)
+
+/* flags saying what we've done */
+
+#define ALdidGetHesiodPasswd	((ALflag_t)(1<<4))
+#define ALdidAttachHomedir	((ALflag_t)(1<<5))
+#define ALdidCreateHomedir	((ALflag_t)(1<<6))
+
+/* how library functions return an error */
+
+#define ALreturnError(session, code, string) { strncpy((session)->context, string, ALlengthErrContext-1); (session)->context[ALlengthErrContext-1]='\0'; return(code); }
+
+/* for ALmodifyLinesOfFile() */
+#define ALmodifyNOT ((long (*)(ALsession, char[]))0)
+#define ALappendNOT ((long (*)(ALsession, int))0)
+
+/* function prototypes */
+#include <AL/ptypes.h>

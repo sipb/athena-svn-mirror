@@ -7,11 +7,12 @@
  **********************************************************************/
 #include <mit-copyright.h>
 
-#include "al.h"
-#include "etale.h"
+#include <AL/AL.h>
+#include <AL/etale.h>
 #include <unistd.h>
 #include <pwd.h>
 #include <hesiod.h>
+#include <string.h>
 
 /* Fill in elements of Athena login session */
 
@@ -20,13 +21,14 @@ ALsetUser(ALsession session, char *uname, ALflag_t initial_flags)
 {
   /* make com_err work */
   initialize_ale_error_table();
+  initialize_alw_error_table();
 
   session->flags = initial_flags;
   /* set flags according to noattach, nocreate, noremote, nologin */
-  if (access(ALfileNOLOGIN, F_OK)==0) ALflagSet(session, ALhaveNOLOGIN);
-  if (access(ALfileNOCREATE, F_OK)==0) ALflagSet(session, ALhaveNOCREATE);
-  if (access(ALfileNOREMOTE, F_OK)==0) ALflagSet(session, ALhaveNOREMOTE);
-  if (access(ALfileNOATTACH, F_OK)==0) ALflagSet(session, ALhaveNOATTACH);
+  if (ALfileExists(ALfileNOLOGIN)) ALflagSet(session, ALhaveNOLOGIN);
+  if (ALfileExists(ALfileNOCREATE)) ALflagSet(session, ALhaveNOCREATE);
+  if (ALfileExists(ALfileNOREMOTE)) ALflagSet(session, ALhaveNOREMOTE);
+  if (ALfileExists(ALfileNOATTACH)) ALflagSet(session, ALhaveNOATTACH);
 
   /* find user in passwd file */
   session->pwd = getpwnam(uname);

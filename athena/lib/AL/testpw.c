@@ -7,7 +7,7 @@
  **********************************************************************/
 #include <mit-copyright.h>
 
-#include "al.h"
+#include <AL/AL.h>
 #include <stdio.h>
 
 main(argc, argv)
