@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/requests.h,v $
- *	$Id: requests.h,v 1.18 1991-04-10 13:15:33 lwvanels Exp $
+ *	$Id: requests.h,v 1.19 1991-05-08 10:57:27 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -88,7 +88,7 @@ offset(dec)	name		type		meaning
 194		r_machine	char[32]	machine name
 226		r_pad		char[2]		padding (historical)
 --- target data ---
-227		t_uid		net long	uid
+228		t_uid		net long	uid
 232		t_instance	net long	instance
 236		t_username	char[10]	username
 246		t_realname	char[32]	"real" name
