@@ -67,9 +67,7 @@ make the Makefile work for you.
 In order to compile delete, you need to get your hands on the com_err
 package, which was written by members of the MIT Student Information
 Processing Board (SIPB); it should be archived in the same place
-delete is archived, or, if you got the sources directly from me, you
-will probably find it in the "et" subdirectory of the delete source
-tree.  You should compile the library and compile_et utility that
+delete is.  You should compile the library and compile_et utility that
 comes with it and then either install them in a "standard location" on
 your machine or modify the delete Makefile so that it knows where they
 are.  The delete Makefile does not compile them by default, since they
