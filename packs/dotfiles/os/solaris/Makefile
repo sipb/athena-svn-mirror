@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.3 1999-11-10 03:51:34 kcr Exp $
+# $Id: Makefile,v 1.4 2000-04-27 14:25:18 rbasch Exp $
 
 SYSTEM=/usr/athena/lib/init
 ETCDIR=/etc
@@ -12,8 +12,8 @@ check:
 install:
 	mkdir -p ${DESTDIR}${SYSTEM}
 	mkdir -p ${DESTDIR}${ETCDIR}
-	mkdir -p ${DESTDIR}${ATHRETCDIR}
-	install -c -m 0655 ../../Xsession ${DESTDIR}${ATHLOGINDIR}
+	mkdir -p ${DESTDIR}${ATHLOGINDIR}
+	install -c -m 0755 ../../Xsession ${DESTDIR}${ATHLOGINDIR}
 	install -c -m 0644 cshrc ${DESTDIR}${SYSTEM}
 	install -c -m 0644 root.cshrc ${DESTDIR}/.cshrc
 	install -c -m 0644 root.login ${DESTDIR}/.login
