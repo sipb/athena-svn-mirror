@@ -1,10 +1,14 @@
-# $Id: Makefile.athena,v 1.4 1998-04-30 20:08:12 ghudson Exp $
+# $Id: Makefile.athena,v 1.5 1998-06-04 14:36:32 danw Exp $
 
 SHELL=/bin/sh
 
 prepare:
 	rm -f config.cache
-	./configure --disable-suid-ssh \
+	# gmp-2.0.2 doesn't work with the Irix 6.2/6.3 assembler
+	if [ "$$HOSTTYPE" = sgi ]; then \
+		asm=--disable-asm; \
+	fi; \
+	./configure --disable-suid-ssh $$asm \
 		--with-kerberos5=${ATHTOOLROOT}/usr/athena \
 		--enable-kerberos-tgt-passing \
 		--with-rsh=/usr/athena/bin/rsh
