@@ -14,6 +14,7 @@ The areas covered in this file are:
 	Release notes
 	Release cycles
 	Patch releases
+	Third-party pullups for patch releases
 	Rel-eng machines
 	Cluster information
 
@@ -495,6 +496,52 @@ release are:
 	  and what was in it.  (You can find many example pieces of
 	  mail in the discuss archive.)  Include instructions
 	  explaining how to propagate the release to the athena cell.
+
+Third-party pull-ups for patch releases
+---------------------------------------
+
+In CVS, unmodified imported files have the default branch set to
+1.1.1.  When a new version is imported, such files need no merging;
+the new version on the vendor branch automatically becomes the current
+version of the file.  This optimization reduces storage requirements
+and makes the merge step of an import faster and less error-prone, at
+the cost of rendering a third-party module inconsistent between an
+import and a merge.
+
+Due to an apparent bug in CVS (as of version 1.11.2), a commit to a
+branch may reset the default branch of an unmodified imported file as
+if the commit were to the trunk.  The practical effect for us is that
+pulling up versions of third-party packages to a release branch
+results in many files being erroneously shifted from the unmodified
+category to the modified category.
+
+To account for this problem as well as other corner cases, use the
+following procedure to pull up third-party packages for a patch
+release:
+
+	cvs co -r athena-X_Y third/module
+	cd third/module
+	cvs update -d
+	cvs update -j athena-X_Y -j HEAD
+	cvs ci
+	cd /afs/dev.mit.edu/source/repository/third/module
+	find . -name "*,v" -print0 | xargs -0 sh /tmp/vend.sh
+
+Where /tmp/vend.sh is:
+
+	#!/bin/sh
+
+	for f; do
+	  if rlog -h "$f" | grep -q '^head: 1\.1$' && \
+	     rlog -h "$f" | grep -q '^branch:$' && \
+	     rlog -h "$f" | grep -q 'vendor: 1\.1\.1$'; then
+	    rcs -bvendor "$f"
+	  fi
+	done
+
+The find -print0 and xargs -0 flags are not available on the native
+Solaris versions of find and xargs, so the final step may be best
+performed under Linux.
 
 Rel-eng machines
 ----------------
