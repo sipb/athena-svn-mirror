@@ -94,7 +94,8 @@ install-rmail: rmail
 
 install-docs: rmail.${MAN8SRC}
 ifdef(`confNO_MAN_INSTALL', `dnl',
-`	${INSTALL} -c -o ${MANOWN} -g ${MANGRP} -m ${MANMODE} rmail.${MAN8SRC} ${MAN8}/rmail.${MAN8EXT}')
+`	mkdir -p ${MAN8}
+	${INSTALL} -c -o ${MANOWN} -g ${MANGRP} -m ${MANMODE} rmail.${MAN8SRC} ${MAN8}/rmail.${MAN8EXT}')
 
 clean:
 	rm -f ${OBJS} rmail

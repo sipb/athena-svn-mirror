@@ -1,7 +1,7 @@
 /* 
  * Imakefile for the FX (file exchange) server
  *
- * $Id: Imakefile,v 1.8 1999-01-29 00:42:45 ghudson Exp $
+ * $Id: Imakefile,v 1.9 1999-09-02 14:48:25 ghudson Exp $
  *
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
@@ -65,6 +65,7 @@ FXSRVSRCS = \
 	multi.c \
 	util.c
 
+create_dir($(ATHETCDIR))
 SimpleProgram(fxserver,${FXSRVOBJS},${LIBS},$(ATHETCDIR))
 
 saber_src:

@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.12 1999-07-22 03:18:09 rbasch Exp $
+# $Id: Makefile,v 1.13 1999-09-02 14:57:35 ghudson Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -36,6 +36,7 @@ install:
 	mkdir -p ${DESTDIR}${NCS}
 	mkdir -p ${DESTDIR}${XDMDIR}
 	mkdir -p ${DESTDIR}${AMCONFIGDIR}
+	mkdir -p ${DESTDIR}${ATHLOGINDIR}
 	install -c -m 0644 ../../aliases ${DESTDIR}${ETCDIR}
 	install -c -m 0644 ../../system.mwmrc ${DESTDIR}${X11LIB}
 	install -c -m 0644 4DWm ${DESTDIR}${X11APPDEFS}

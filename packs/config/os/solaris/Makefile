@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.8 1999-06-01 19:17:59 ghudson Exp $
+# $Id: Makefile,v 1.9 1999-09-02 14:57:28 ghudson Exp $
 
 ETCDIR=/etc
 ATHRETCDIR=/etc/athena
@@ -36,6 +36,7 @@ install:
 	mkdir -p ${DESTDIR}${MAIL}
 	mkdir -p ${DESTDIR}${CRONTABS}
 	mkdir -p ${DESTDIR}${USRLIB}
+	mkdir -p ${DESTDIR}${ATHLOGINDIR}
 	install -c -m 0644 ../../aliases ${DESTDIR}${MAIL}
 	install -c -m 0644 ../../system.mwmrc ${DESTDIR}${ATHX11LIB}
 	install -c -m 0644 Athena4.kt ${DESTDIR}${KEYTABLES}

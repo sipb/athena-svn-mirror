@@ -17,6 +17,8 @@ distclean:
 	rm -f ${LIBOBJS} libathdir.a
 
 install:
+	mkdir -p ${DESTDIR}${includedir}
+	mkdir -p ${DESTDIR}${libdir}
 	install -m 644 athdir.h ${DESTDIR}${includedir}
 	install -m 644 libathdir.a ${DESTDIR}${libdir}
 

@@ -1,7 +1,7 @@
 /* 
  * Imakefile for the FX (file exchange) intermediate level
  *
- * $Id: Imakefile,v 1.9 1999-01-22 23:17:48 ghudson Exp $
+ * $Id: Imakefile,v 1.10 1999-09-02 14:48:24 ghudson Exp $
  *
  * Copyright (c) 1989, Massachusetts Institute of Technology
  *
@@ -46,6 +46,7 @@ LIBS = -lhesiod -lkrb4 -ldes425 -lkrb5 -lcrypto -lcom_err -lfxrpc
 
 DEFINES = ${INCLUDES} -DKERBEROS -DHESIOD
 
+create_dir(${ATHLIBDIR})
 build_library(fxcl,${FXCLOBJ})
 build_library(acl,libacl.o)
 

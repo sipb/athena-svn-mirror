@@ -1,5 +1,5 @@
 #
-# $Id: Imakefile,v 1.9 1999-05-11 18:09:17 rbasch Exp $
+# $Id: Imakefile,v 1.10 1999-09-02 14:56:21 ghudson Exp $
 #
 
 CONFDIR=	/etc/athena/login/xdm
@@ -8,6 +8,7 @@ CONFIGS=	xdm-config Xaccess Xservers
 
 install::
 	$(MKDIRHIER) $(DESTDIR)$(CONFDIR)
+	$(MKDIRHIER) $(DESTDIR)$(ATHRETCDIR)
 	-for i in $(CONFIGS); do \
 		$(INSTALL) -m 0644 $$i $(DESTDIR)$(CONFDIR)/; \
 		done

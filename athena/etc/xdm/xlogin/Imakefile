@@ -1,4 +1,4 @@
-# $Id: Imakefile,v 1.49 1999-03-21 20:58:51 ghudson Exp $
+# $Id: Imakefile,v 1.50 1999-09-02 14:56:22 ghudson Exp $
 
 #ifdef SOLARIS
 MACHDEFS=-DSOLARIS_MAE
@@ -43,6 +43,10 @@ PRESOURCES=Xlogin.l/**/inux.presed
 
 create_dir(/etc/athena/login)
 create_dir(/etc/athena/login/bitmaps)
+create_dir($(ATHBINDIR))
+create_dir($(ATHRETCDIR))
+create_dir($(ATHMANDIR)/man1)
+create_dir($(ATHMANDIR)/man8)
 SimpleProgram(timeout,timeout.o,,$(ATHBINDIR))
 
 static_program(xlogin,$(OBJS),,$(LIBS))

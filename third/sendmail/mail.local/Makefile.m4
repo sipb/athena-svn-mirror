@@ -95,7 +95,8 @@ install-mail.local: mail.local
 
 install-docs: mail.local.${MAN8SRC}
 ifdef(`confNO_MAN_INSTALL', `dnl',
-`	${INSTALL} -c -o ${MANOWN} -g ${MANGRP} -m ${MANMODE} mail.local.${MAN8SRC} ${MAN8}/mail.local.${MAN8EXT}')
+`	mkdir -p ${MAN8}
+	${INSTALL} -c -o ${MANOWN} -g ${MANGRP} -m ${MANMODE} mail.local.${MAN8SRC} ${MAN8}/mail.local.${MAN8EXT}')
 
 clean:
 	rm -f ${OBJS} mail.local

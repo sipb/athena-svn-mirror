@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.35 1999-06-17 17:48:32 danw Exp $
+# $Id: Makefile,v 1.36 1999-09-02 14:57:10 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -66,6 +66,7 @@ install:
 	mkdir -p ${DESTDIR}${ATHRBINDIR}
 	mkdir -p ${DESTDIR}${ATHBINDIR}
 	mkdir -p ${DESTDIR}${ATHETCDIR}
+	mkdir -p ${DESTDIR}${ATHLIBEXECDIR}
 	mkdir -p ${DESTDIR}${ATHMANDIR}/man1
 	mkdir -p ${DESTDIR}${ATHMANDIR}/cat1
 	mkdir -p ${DESTDIR}${ATHMANDIR}/man8

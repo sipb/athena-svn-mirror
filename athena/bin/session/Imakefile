@@ -1,5 +1,5 @@
 #
-# $Id: Imakefile,v 1.7 1997-06-29 00:31:41 cfields Exp $
+# $Id: Imakefile,v 1.8 1999-09-02 14:44:12 ghudson Exp $
 #
 
 SCRIPT=  end_session 
@@ -19,6 +19,7 @@ install:: install.man
 
 /* Install */
 create_dir($(ATHBINDIR))
+create_dir($(ATHMANDIR)/man1)
 
 install::
 	install -c -m 755 end_session.sh ${DESTDIR}${ATHBINDIR}/end_session

@@ -1,6 +1,6 @@
 # This is the makefile for rkinitd.
 #
-# $Id: Imakefile,v 1.5 1998-04-02 06:03:13 danw Exp $
+# $Id: Imakefile,v 1.6 1999-09-02 14:56:42 ghudson Exp $
 
 KLIBS		= -lkrb4 -ldes425 -lkrb5 -lcrypto -lcom_err
 RKLIB		= ../lib/librkinit.a
@@ -20,6 +20,7 @@ RKLIBDEP	= ../lib/rk_rpc.o ../lib/rk_lib.o ../lib/rk_util.o \
 SOBJS		= rkinitd.o util.o rpc.o krb.o
 HEADERS		= ../include/rkinit.h ../include/rkinit_private.h $(RKERR_H)
 
+create_dir($(ATHETCDIR))
 SimpleProgram(rkinitd,$(SOBJS),$(LIBS),$(ATHETCDIR)/rkinitd)
 
 $(SOBJS): $(HEADERS)

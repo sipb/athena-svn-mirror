@@ -1,5 +1,5 @@
 /*
- * $Id: Imakefile,v 1.22 1999-01-25 21:29:20 ghudson Exp $
+ * $Id: Imakefile,v 1.23 1999-09-02 14:41:22 ghudson Exp $
  */
 
 #ifdef SOLARIS
@@ -21,6 +21,9 @@ INSTALLFLAGS = -m 2755 -o root -g sys
 NAME=${HOSTTYPE}
 OSNAME=`uname -s`
 OSVERS=`uname -r`
+
+create_dir(${ATHRBINDIR})
+create_dir(${ATHMANDIR}/man1)
 
 #ifdef SCRIPT
 
