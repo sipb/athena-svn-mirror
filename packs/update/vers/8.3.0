@@ -10,6 +10,8 @@ sgi)
 	echo "/etc/services"				>> "$CONFCHG"
 	echo "/etc/sendmail.cf"				>> "$CONFCHG"
 	echo "/etc/compiler.defaults"			>> "$CONFCHG"
+	echo "/etc/syslog.conf"				>> "$CONFCHG"
+	echo "/etc/inetd.conf"				>> "$CONFCHG"
 
 	# Boot up 6.5 miniroot to upgrade the OS.
 	echo "NEWOS=true"				>> "$CONFVARS"
