@@ -1,12 +1,12 @@
 /* 
- * $Id: aklog_main.c,v 1.25 1994-04-14 18:46:02 probe Exp $
+ * $Id: aklog_main.c,v 1.26 1994-09-06 14:20:09 probe Exp $
  *
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_main.c,v 1.25 1994-04-14 18:46:02 probe Exp $";
+static char *rcsid = "$Id: aklog_main.c,v 1.26 1994-09-06 14:20:09 probe Exp $";
 #endif lint || SABER
 
 #include <stdio.h>
@@ -395,7 +395,7 @@ static int auth_to_cell(cell, realm)
 	    sprintf(msgbuf, "Getting tokens.\n");
 	    params.pstdout(msgbuf);
 	}
-	if (status = ktc_SetToken(&aserver, &atoken, &aclient)) {
+	if (status = ktc_SetToken(&aserver, &atoken, &aclient, 0)) {
 	    sprintf(msgbuf, 
 		    "%s: unable to obtain tokens for cell %s (status: %d).\n",
 		    progname, cell_to_use, status);
