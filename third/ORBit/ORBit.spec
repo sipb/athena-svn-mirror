@@ -1,4 +1,4 @@
-%define ver    0.5.12 
+%define ver    0.5.13 
 %define  RELEASE 1
 %define  rel     %{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
 %define prefix  /usr
@@ -86,7 +86,7 @@ rm -rf $RPM_BUILD_ROOT
 %doc -P libIDL/README* libIDL/NEWS libIDL/BUGS libIDL/tstidl.c
 
 %{_libdir}/lib*.so.*
-%{_bindir}/bin/orbit-event-server
+%{_bindir}/orbit-event-server
 %{_bindir}/orbit-name-server
 #don't install old-name-server
 #%{_bindir}/old-name-server

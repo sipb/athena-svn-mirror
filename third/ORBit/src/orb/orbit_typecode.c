@@ -133,6 +133,7 @@ void ORBit_encode_CORBA_TypeCode(CORBA_TypeCode t, GIOPSendBuffer* buf)
 	for(l=ctx.prior_tcs;l;l=l->next)
 		g_free(l->data);
 	g_slist_free(ctx.prior_tcs);
+	giop_message_buffer_do_alignment(GIOP_MESSAGE_BUFFER(buf), 4);
 	giop_send_buffer_append_mem_indirect(buf,
 					     codec->buffer,
 					     codec->wptr);
@@ -146,6 +147,7 @@ void ORBit_decode_CORBA_TypeCode(CORBA_TypeCode* t, GIOPRecvBuffer* buf)
 	GSList* l;
 
 	CDR_codec_init_static(codec);
+	buf->cur = ALIGN_ADDRESS(buf->cur, 4);
 	codec->buffer=buf->cur;
 	codec->release_buffer=CORBA_FALSE;
 	codec->readonly=CORBA_TRUE;

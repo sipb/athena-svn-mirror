@@ -1,3 +1,33 @@
+2002-01-07  Mark McLoughlin  <mark@skynet.ie>
+
+	* Version 0.5.13
+
+2002-01-07  Mark McLoughlin  <mark@skynet.ie>
+
+	Reported by Chris Waters <xtifr@debian.org>
+
+	* src/orbit-idl-compiler/orbit-idl-main.c: fix --skeleton-impl
+	help output.
+
+	* src/services/event/Makefile.am:
+	* src/services/name/Makefile.am:
+	* src/services/time/Makefile.am: install idl files in
+	$(datadir)/orbit-1.0/idl.
+
+2002-01-03  Huw Rogers <count0@building2.co.jp>
+
+	reviewed by: Mark McLoughlin <mark@skynet.ie>
+
+	* src/orb/corba_any.c: (ORBit_marshal_value): don't do pointer
+	arithmetic on void pointers.
+
+	* src/orb/orb.c: (CORBA_ORB_resolve_initial_references):
+	Sun compiler workaround.
+	
+	* src/orb/orbit_typecode.c: (ORBit_encode_CORBA_TypeCode),
+	(ORBit_decode_CORBA_TypeCode): properly align then buffers
+	before encoding or decoding tyepcodes.
+
 2001-11-01  Michael Meeks  <michael@ximian.com>
 
 	* Version 0.5.12

@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p1 from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -63,8 +63,6 @@ AS = @AS@
 AWK = @AWK@
 CC = @CC@
 DLLTOOL = @DLLTOOL@
-ECHO = @ECHO@
-EXEEXT = @EXEEXT@
 GLIB_CFLAGS = @GLIB_CFLAGS@
 GLIB_CONFIG = @GLIB_CONFIG@
 GLIB_LIBS = @GLIB_LIBS@
@@ -83,7 +81,6 @@ LT_REVISION = @LT_REVISION@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 OBJDUMP = @OBJDUMP@
-OBJEXT = @OBJEXT@
 ORBIT_HAVE_ALLOCA_H = @ORBIT_HAVE_ALLOCA_H@
 ORBIT_MAJOR_VERSION = @ORBIT_MAJOR_VERSION@
 ORBIT_MICRO_VERSION = @ORBIT_MICRO_VERSION@
@@ -92,7 +89,6 @@ ORBIT_SERIAL = @ORBIT_SERIAL@
 ORBIT_VERSION = @ORBIT_VERSION@
 PACKAGE = @PACKAGE@
 RANLIB = @RANLIB@
-STRIP = @STRIP@
 VERSION = @VERSION@
 YACC = @YACC@
 pkglibdir = @pkglibdir@
@@ -114,7 +110,6 @@ test_poa_LDADD = $(LDADDS)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
-noinst_PROGRAMS =  test-poa$(EXEEXT)
 PROGRAMS =  $(noinst_PROGRAMS)
 
 
@@ -122,7 +117,7 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I../..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-test_poa_OBJECTS =  test.$(OBJEXT)
+test_poa_OBJECTS =  test.o
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -140,7 +135,7 @@ OBJECTS = $(test_poa_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
-.SUFFIXES: .S .c .lo .o .obj .s
+.SUFFIXES: .S .c .lo .o .s
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(top_srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(top_srcdir) && $(AUTOMAKE) --gnu --include-deps test/test-poa/Makefile
 
@@ -161,11 +156,6 @@ maintainer-clean-noinstPROGRAMS:
 .c.o:
 	$(COMPILE) -c $<
 
-# FIXME: We should only use cygpath when building on Windows,
-# and only if it is available.
-.c.obj:
-	$(COMPILE) -c `cygpath -w $<`
-
 .s.o:
 	$(COMPILE) -c $<
 
@@ -174,7 +164,6 @@ maintainer-clean-noinstPROGRAMS:
 
 mostlyclean-compile:
 	-rm -f *.o core *.core
-	-rm -f *.$(OBJEXT)
 
 clean-compile:
 
@@ -202,8 +191,8 @@ distclean-libtool:
 
 maintainer-clean-libtool:
 
-test-poa$(EXEEXT): $(test_poa_OBJECTS) $(test_poa_DEPENDENCIES)
-	@rm -f test-poa$(EXEEXT)
+test-poa: $(test_poa_OBJECTS) $(test_poa_DEPENDENCIES)
+	@rm -f test-poa
 	$(LINK) $(test_poa_LDFLAGS) $(test_poa_OBJECTS) $(test_poa_LDADD) $(LIBS)
 
 tags: TAGS
