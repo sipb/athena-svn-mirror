@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -57,6 +60,10 @@ char *strchr();
 #include <sys/socket.h>
 #endif
 
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
 #include <netdb.h>
 
 int
@@ -69,7 +76,6 @@ main(argc, argv)
 	char addrcopy[4];
 	struct hostent *host;
 	int quiet = 0;
-	int err;
 
 	argc--; argv++;
 	while (argc) {
@@ -124,7 +130,13 @@ main(argc, argv)
 	else
 	    printf("FQDN: %s\n", host->h_name);
 	
-	if(strchr(host->h_name, '.') == NULL) {
+	/*
+	 * The host name must have at least one '.' in the name, and
+	 * if there is only one '.', it must not be at the end of the
+	 * string.  (i.e., "foo." is not a FQDN)
+	 */
+	ptr = strchr(host->h_name, '.');
+	if (ptr == NULL || ptr[1] == '\0') {
 		fprintf(stderr, "\nResolve library did not return a fully qualified domain name\n");
 		fprintf(stderr, "You may have to reconfigure the kerberos distribution to select a\ndifferent set of libraries using --with-netlib[=libs]\n");
 		exit(3);

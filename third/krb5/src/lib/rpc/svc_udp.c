@@ -40,9 +40,12 @@ static char sccsid[] = "@(#)svc_udp.c 1.24 87/08/11 Copyr 1984 Sun Micro";
  */
 
 #include <stdio.h>
-#include <rpc/rpc.h>
+#include <gssrpc/rpc.h>
 #include <sys/socket.h>
 #include <errno.h>
+#ifdef HAVE_SYS_UIO_H
+#include <sys/uio.h>
+#endif
 
 
 #define rpc_buffer(xprt) ((xprt)->xp_p1)
@@ -116,7 +119,7 @@ svcudp_bufcreate(sock, sendsz, recvsz)
 	}
 	memset((char *)&addr, 0, sizeof (addr));
 	addr.sin_family = AF_INET;
-	if (bindresvport(sock, &addr)) {
+	if (gssrpc_bindresvport(sock, &addr)) {
 		addr.sin_port = 0;
 		(void)bind(sock, (struct sockaddr *)&addr, len);
 	}
@@ -174,6 +177,8 @@ svcudp_recv(xprt, msg)
 	register SVCXPRT *xprt;
 	struct rpc_msg *msg;
 {
+        struct msghdr dummy;
+	struct iovec dummy_iov[1];
 	register struct svcudp_data *su = su_data(xprt);
 	register XDR *xdrs = &(su->su_xdrs);
 	register int rlen;
@@ -181,6 +186,21 @@ svcudp_recv(xprt, msg)
 	rpc_u_int32 replylen;
 
     again:
+	memset((char *) &dummy, 0, sizeof(dummy));
+	dummy_iov[0].iov_base = rpc_buffer(xprt);
+	dummy_iov[0].iov_len = (int) su->su_iosz;
+	dummy.msg_iov = dummy_iov;
+	dummy.msg_iovlen = 1;
+	dummy.msg_namelen = xprt->xp_laddrlen = sizeof(struct sockaddr_in);
+	dummy.msg_name = (char *) &xprt->xp_laddr;
+	rlen = recvmsg(xprt->xp_sock, &dummy, MSG_PEEK);
+	if (rlen == -1) {
+	     if (errno == EINTR)
+		  goto again;
+	     else
+		  return (FALSE);
+	}
+	
 	xprt->xp_addrlen = sizeof(struct sockaddr_in);
 	rlen = recvfrom(xprt->xp_sock, rpc_buffer(xprt), (int) su->su_iosz,
 	    0, (struct sockaddr *)&(xprt->xp_raddr), &(xprt->xp_addrlen));
@@ -354,7 +374,7 @@ struct udp_cache {
  * Enable use of the cache. 
  * Note: there is no disable.
  */
-svcudp_enablecache(transp, size)
+gssrpc_svcudp_enablecache(transp, size)
 	SVCXPRT *transp;
 	rpc_u_int32 size;
 {

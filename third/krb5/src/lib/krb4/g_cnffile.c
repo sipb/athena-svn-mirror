@@ -16,7 +16,7 @@
    it solves a problem for now. */
 
 #include <stdio.h>
-#include <krb.h>
+#include "krb.h"
 #include "k5-int.h"
 
 krb5_context krb5__krb4_context = 0;
@@ -41,7 +41,7 @@ krb__v5_get_file(s)
 	    if (retval == 0 && full_name && full_name[0]) {
 		cnffile = fopen(full_name[0],"r");
 		for (cpp = full_name; *cpp; cpp++) 
-			krb5_xfree(*cpp);
+		    krb5_xfree(*cpp);
 		krb5_xfree(full_name);
 	    }
 	}

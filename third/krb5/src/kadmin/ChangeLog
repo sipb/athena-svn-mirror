@@ -1,3 +1,43 @@
+Tue Jan 12 18:26:04 1999  Tom Yu  <tlyu@mit.edu>
+
+	* configure.in: Define NDBM_PW_CHECK if enable_athena is set to
+	deal with v4kadmind kludge.
+
+1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Set the myfulldir and mydir variables (which are
+		relative to buildtop and thisconfigdir, respectively.)
+
+Tue Mar  3 10:40:09 1998  Ezra Peisach  <epeisach@kangaroo.mit.edu>
+
+	* configure.in: Enable v4 kadmin tests only if athena
+        compatibility is enabled.
+
+Sun Mar  1 21:12:08 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* configure.in: Define S_TOP to contain an absolute pathname
+		to the top of the source tree.
+
+Fri Feb 27 23:32:38 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* configure.in: Move tests from all of kadmin's subdirectories into
+		this configure.in, and make it generate makefiles for all
+		of the subdirectories.
+
+	* Makefile.in: Add a LOCAL_SUBDIRS macro for all subdirectories in
+		the kadmin directory.
+
+Wed Feb 18 15:53:46 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (thisconfigdir): Remove trailing slash.
+
+Mon Feb  2 17:02:29 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* configure.in: Use AC_CONFIG_DIRS instead of CONFIG_DIRS, and
+		remove use of DO_SUBDIRS.
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
 Wed Nov 13 19:24:36 1996  Tom Yu  <tlyu@mit.edu>
 
 	* testing/Makefile.in (clean): Remove krb5-test-root.

@@ -21,7 +21,7 @@
  */
 
 /*
- * $Id: util_buffer.c,v 1.1.1.2 1999-05-03 21:54:07 danw Exp $
+ * $Id: util_buffer.c,v 1.1.1.3 1999-10-05 16:12:09 ghudson Exp $
  */
 
 #include "gssapiP_generic.h"
@@ -37,7 +37,7 @@ int g_make_string_buffer(str, buffer)
 {
    buffer->length = strlen(str);
 
-   if ((buffer->value = (void *) xmalloc(buffer->length+1)) == NULL) {
+   if ((buffer->value = (void *) xmalloc(buffer->length + 1)) == NULL) {
       buffer->length = 0;
       return(0);
    }

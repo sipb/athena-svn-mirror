@@ -1,34 +1,32 @@
+thisconfigdir=./..
+myfulldir=lib/gssapi/generic
+mydir=generic
+BUILDTOP=$(REL)$(U)$(S)$(U)$(S)$(U)
 CFLAGS = $(CCOPTS) $(DEFS) -I. -I$(srcdir)
 
-##DOSBUILDTOP = ..\..\..
-##DOSLIBNAME=..\gssapi.$(LIBEXT)
+##DOS##BUILDTOP = ..\..\..
+##DOS##PREFIXDIR=generic
+##DOS##OBJFILE=..\$(OUTPRE)generic.lst
+##WIN16##LIBNAME=..\gssapi.lib
 
-.c.o:
-	$(CC) $(CFLAGS) -c $(srcdir)/$*.c
-@SHARED_RULE@
-
-all-windows:: $(OBJS)
-
-shared:
-	mkdir shared
+##DOS##DLL_EXP_TYPE=GSS
 
 ETSRCS= gssapi_err_generic.c
-ETOBJS= gssapi_err_generic.$(OBJEXT)
+ETOBJS= $(OUTPRE)gssapi_err_generic.$(OBJEXT)
 ETHDRS= gssapi_err_generic.h
 
 EHDRDIR= $(BUILDTOP)$(S)include$(S)gssapi
 
-HDRS=	$(EHDRDIR)/gssapi.h \
-	$(EHDRDIR)/gssapi_generic.h
+HDRS=	$(EHDRDIR)$(S)gssapi.h \
+	$(EHDRDIR)$(S)gssapi_generic.h
 
-gssapi_err_generic.$(OBJEXT): gssapi_err_generic.c
-	$(CC) $(CFLAGS) -c $*.c
-@SHARED_RULE_LOCAL@
-##WIN16##	$(LIBCMD) $(PAGESIZE) /nologo $(LIBNAME) -+$@;
-##WIN32##	$(LIBCMD) /out:$(LIBNAME) /nologo $@
+$(EHDRDIR)$(S)gssapi.h: gssapi.h
+	$(CP) gssapi.h $@
+$(EHDRDIR)$(S)gssapi_generic.h: $(srcdir)$(S)gssapi_generic.h
+	$(CP) $(srcdir)$(S)gssapi_generic.h $@
 
+$(OUTPRE)gssapi_err_generic.$(OBJEXT): gssapi_err_generic.c
 gssapi_err_generic.h: gssapi_err_generic.et
-
 gssapi_err_generic.c: gssapi_err_generic.et
 
 gssapi.h: gssapi.hin
@@ -38,7 +36,7 @@ gssapi.h: gssapi.hin
 	grep SIZEOF $(BUILDTOP)/include/krb5/autoconf.h >> $@
 	grep 'HAVE_.*_H' $(BUILDTOP)/include/krb5/autoconf.h >> $@
 	grep 'USE_.*_H' $(BUILDTOP)/include/krb5/autoconf.h >> $@
-	echo "/* End of gssapi.h prologue. */"
+	echo "/* End of gssapi.h prologue. */" >> $@
 	cat $(srcdir)/gssapi.hin >> $@
 
 #if HasHashLibrary
@@ -67,50 +65,67 @@ SRCS = \
 	gssapi_err_generic.c
 
 OBJS = \
-	disp_com_err_status.$(OBJEXT) \
-	disp_major_status.$(OBJEXT) \
-	gssapi_generic.$(OBJEXT) \
-	oid_ops.$(OBJEXT) \
-	rel_buffer.$(OBJEXT) \
-	rel_oid_set.$(OBJEXT) \
-	util_buffer.$(OBJEXT) \
-	util_canonhost.$(OBJEXT) \
-	util_dup.$(OBJEXT) \
-	util_oid.$(OBJEXT) \
-	util_ordering.$(OBJEXT) \
-	util_set.$(OBJEXT) \
-	util_token.$(OBJEXT) \
-	util_validate.$(OBJEXT) \
-	gssapi_err_generic.$(OBJEXT)
+	$(OUTPRE)disp_com_err_status.$(OBJEXT) \
+	$(OUTPRE)disp_major_status.$(OBJEXT) \
+	$(OUTPRE)gssapi_generic.$(OBJEXT) \
+	$(OUTPRE)oid_ops.$(OBJEXT) \
+	$(OUTPRE)rel_buffer.$(OBJEXT) \
+	$(OUTPRE)rel_oid_set.$(OBJEXT) \
+	$(OUTPRE)util_buffer.$(OBJEXT) \
+	$(OUTPRE)util_canonhost.$(OBJEXT) \
+	$(OUTPRE)util_dup.$(OBJEXT) \
+	$(OUTPRE)util_oid.$(OBJEXT) \
+	$(OUTPRE)util_ordering.$(OBJEXT) \
+	$(OUTPRE)util_set.$(OBJEXT) \
+	$(OUTPRE)util_token.$(OBJEXT) \
+	$(OUTPRE)util_validate.$(OBJEXT) \
+	$(OUTPRE)gssapi_err_generic.$(OBJEXT)
 
-$(OBJS): $(HDRS) $(ETHDRS)
+STLIBOBJS = \
+	disp_com_err_status.o \
+	disp_major_status.o \
+	gssapi_generic.o \
+	oid_ops.o \
+	rel_buffer.o \
+	rel_oid_set.o \
+	util_buffer.o \
+	util_canonhost.o \
+	util_dup.o \
+	util_oid.o \
+	util_ordering.o \
+	util_set.o \
+	util_token.o \
+	util_validate.o \
+	gssapi_err_generic.o
 
 EXPORTED_HEADERS= gssapi_generic.h
 EXPORTED_BUILT_HEADERS= gssapi.h
 
-all-unix:: shared $(SRCS) $(ETHDRS) $(OBJS)
+$(OBJS): $(EXPORTED_HEADERS) $(ETHDRS)
 
-all-mac:: $(SRCS) $(HDRS) $(ETHDRS) $(OBJS)
+all-unix:: includes-unix
+all-unix:: $(EXPORTED_HEADERS) $(ETHDRS) $(HDRS)
+all-unix:: all-libobjs
 
-all-windows:: $(SRCS) $(ETHDRS) win-include
-all-windows:: $(OBJS)
 
-win-include::
-	if not exist $(EHDRDIR)\nul mkdir $(EHDRDIR)
-	copy gssapi.h $(EHDRDIR)
-	copy gssapi_generic.h $(EHDRDIR)
+##DOS##LIBOBJS = $(OBJS)
+
+all-windows:: $(EHDRDIR) $(HDRS)
+
+##DOS##$(EHDRDIR):
+##DOS##	mkdir $(EHDRDIR)
 
 unixmac: $(SRCS) $(ETHDRS)
 
-clean-unix::
-	$(RM) $(ETHDRS) $(ETSRCS) $(HDRS) shared/*
-
-clean-mac::
-	$(RM) $(ETHDRS) $(ETSRCS) $(HDRS) shared/*
+clean-unix:: clean-libobjs
+	$(RM) $(ETHDRS) $(ETSRCS) $(HDRS) $(EXPORTED_BUILT_HEADERS)
 
 clean-windows::
-	$(RM) $(EHDRDIR)\gssapi.h $(EHDRDIR)\gssapi_generic.h
-	if exist $(EHDRDIR)\nul rmdir $(EHDRDIR)
+	$(RM) $(HDRS)
+	-if exist $(EHDRDIR)\nul rmdir $(EHDRDIR)
+
+includes-unix::
+	@if test -d $(EHDRDIR); then :; else (set -x; mkdir $(EHDRDIR)) fi
 
 # Krb5InstallHeaders($(EXPORTED_HEADERS), $(KRB5_INCDIR)/krb5)
 install::

@@ -1,5 +1,5 @@
-This is Info file krb5-user.info, produced by Makeinfo-1.55 from the
-input file user-guide.texinfo.
+This is Info file krb5-user.info, produced by Makeinfo version 1.68
+from the input file user-guide.texinfo.
 
 
 File: krb5-user.info,  Node: Top,  Next: Copyright,  Prev: (dir),  Up: (dir)
@@ -20,8 +20,7 @@ File: krb5-user.info,  Node: Copyright,  Next: Introduction,  Prev: Top,  Up: To
 Copyright
 *********
 
-Copyright (C) 1990, 1991, 1992, 1993, 1994, 1995, 1996 by the
-Massachusetts Institute of Technology.
+Copyright (C) 1985-1999 by the Massachusetts Institute of Technology.
 
      Export of software employing encryption from the United States of
      America may require a specific license from the United States
@@ -34,9 +33,12 @@ hereby granted, provided that the above copyright notice appear in all
 copies and that both that copyright notice and this permission notice
 appear in supporting documentation, and that the name of M.I.T. not be
 used in advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.  M.I.T. makes no
-representations about the suitability of this software for any purpose.
-It is provided "as is" without express or implied warranty.
+software without specific, written prior permission.  Furthermore if you
+modify this software you must label your software as modified software
+and not distribute it in such a fashion that it might be confused with
+the original MIT software.  M.I.T. makes no representations about the
+suitability of this software for any purpose.  It is provided "as is"
+without express or implied warranty.
 
 The following copyright and permission notice applies to the OpenVision
 Kerberos Administration system located in kadmin/create, kadmin/dbutil,
@@ -296,14 +298,14 @@ name `mit.edu' and the Kerberos realm `ATHENA.MIT.EDU').  She would
 type:
 
      shell% kinit
-     Password for jennifer@ATHENA.MIT.EDU: <-- [Type jennifer's password here.]
+     Password for jennifer@ATHENA.MIT.EDU: <- [Type jennifer's password here.]
      shell%
 
 If you type your password incorrectly, kinit will give you the following
 error message:
 
      shell% kinit
-     Password for jennifer@ATHENA.MIT.EDU: <-- [Type the wrong password here.]
+     Password for jennifer@ATHENA.MIT.EDU: <- [Type the wrong password here.]
      kinit: Password incorrect
      shell%
 
@@ -315,7 +317,7 @@ he wants to borrow a window to check his mail.  David needs to get
 tickets for himself in his own realm, FUBAR.ORG.(1)  He would type:
 
      shell% kinit david@FUBAR.ORG
-     Password for david@FUBAR.ORG: <-- [Type david's password here.]
+     Password for david@FUBAR.ORG: <- [Type david's password here.]
      shell%
 
 David would then have tickets which he could use to log onto his own
@@ -328,7 +330,7 @@ to request "forwardable" tickets.  You do this by specifying the `-f'
 option:
 
      shell% kinit -f
-     Password for jennifer@ATHENA.MIT.EDU: <-- [Type your password here.]
+     Password for jennifer@ATHENA.MIT.EDU: <- [Type your password here.]
      shell%
 
 Note that `kinit' does not tell you that it obtained forwardable
@@ -343,7 +345,7 @@ For example, to obtain forwardable tickets for `david@FUBAR.ORG' that
 would be good for three hours, you would type:
 
      shell% kinit -f -l 3h david@FUBAR.ORG
-     Password for david@FUBAR.ORG: <-- [Type david's password here.]
+     Password for david@FUBAR.ORG: <- [Type david's password here.]
      shell%
 
 You cannot mix units; specifying a lifetime of `3h30m' would result in
@@ -353,7 +355,7 @@ automatically truncated to the maximum lifetime.
 
 ---------- Footnotes ----------
 
-(1)  Note:  the realm FUBAR.ORG must be listed in your computer's
+(1) Note:  the realm FUBAR.ORG must be listed in your computer's
 Kerberos configuration file, `/etc/krb5.conf'.
 
 
@@ -807,7 +809,7 @@ as follows:
      Trying 128.0.0.5...
      Connected to trillium.fubar.org.
      Escape character is '^]'.
-     [ Kerberos V5 accepts you as ``jennifer@fubar.org'' ]
+     [ Kerberos V5 accepts you as "jennifer@fubar.org" ]
      [ Kerberos V5 accepted forwarded credentials ]
      NetBSD 1.1: Tue May 21 00:31:42 EDT 1996
      
@@ -1222,10 +1224,10 @@ tree.  You can read them from emacs with the command:
 
 ---------- Footnotes ----------
 
-(1)  The MANPATH variable may be specified in a different
-initialization file, depending on your operating system.  Some of the
-files in which you might specify environment variables include
-`.login', `.profile', or `.cshrc'.
+(1) The MANPATH variable may be specified in a different initialization
+file, depending on your operating system.  Some of the files in which
+you might specify environment variables include `.login', `.profile',
+or `.cshrc'.
 
 
 File: krb5-user.info,  Node: kinit Reference,  Next: klist Reference,  Prev: Kerberos V5 Reference,  Up: Kerberos V5 Reference
@@ -1377,40 +1379,40 @@ TGT
 
 
 Tag Table:
-Node: Top101
-Node: Copyright360
-Node: Introduction5241
-Node: What is a Ticket?7108
-Node: What is a Kerberos Principal?8359
-Node: Kerberos V5 Tutorial9806
-Node: Setting Up to Use Kerberos V510594
-Node: Ticket Management11486
-Node: Obtaining Tickets with kinit12543
-Node: Viewing Your Tickets with klist15740
-Node: Destroying Your Tickets with kdestroy19878
-Node: Password Management20774
-Node: Changing Your Password21803
-Node: Password Advice23749
-Node: Granting Access to Your Account26138
-Node: Kerberos V5 Applications28044
-Node: Overview of Additional Features29051
-Node: telnet30318
-Node: rlogin33540
-Node: FTP36330
-Node: rsh38307
-Node: rcp39838
-Node: ksu40651
-Node: Kerberos V5 Reference46315
-Node: kinit Reference47991
-Node: klist Reference48211
-Node: kdestroy Reference48428
-Node: kpasswd Reference48656
-Node: telnet Reference48882
-Node: rlogin Reference49103
-Node: FTP Reference49320
-Node: rsh Reference49525
-Node: rcp Reference49727
-Node: ksu Reference49929
-Node: Kerberos Glossary50109
+Node: Top109
+Node: Copyright368
+Node: Introduction5408
+Node: What is a Ticket?7275
+Node: What is a Kerberos Principal?8526
+Node: Kerberos V5 Tutorial9973
+Node: Setting Up to Use Kerberos V510761
+Node: Ticket Management11653
+Node: Obtaining Tickets with kinit12710
+Node: Viewing Your Tickets with klist15901
+Node: Destroying Your Tickets with kdestroy20039
+Node: Password Management20935
+Node: Changing Your Password21964
+Node: Password Advice23910
+Node: Granting Access to Your Account26299
+Node: Kerberos V5 Applications28205
+Node: Overview of Additional Features29212
+Node: telnet30479
+Node: rlogin33699
+Node: FTP36489
+Node: rsh38466
+Node: rcp39997
+Node: ksu40810
+Node: Kerberos V5 Reference46474
+Node: kinit Reference48149
+Node: klist Reference48369
+Node: kdestroy Reference48586
+Node: kpasswd Reference48814
+Node: telnet Reference49040
+Node: rlogin Reference49261
+Node: FTP Reference49478
+Node: rsh Reference49683
+Node: rcp Reference49885
+Node: ksu Reference50087
+Node: Kerberos Glossary50267
 
 End Tag Table

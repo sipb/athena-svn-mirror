@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  *
@@ -33,7 +36,12 @@ typedef struct _krb5_db_entry krb5_db_entry;
 #endif	/* KRB5_KDB5__ */
 
 /* Ditto for adm.h */
-#ifndef	KRB5_ADM_H__
+
+/*
+ * XXXX krb5_realm params is defined in two header files!!!!
+ * This really needs to be fixed!!!
+ */
+#if !defined(KRB5_ADM_H__) && !defined(__KADM5_ADMIN_H__)
 struct ___krb5_realm_params;
 typedef struct ___krb5_realm_params krb5_realm_params;
 
@@ -62,7 +70,7 @@ KRB5_DLLIMP void KRB5_CALLCONV krb5_adm_disconnect
 		   krb5_auth_context,
 		   krb5_ccache));
 
-#if !defined(_MSDOS) && !defined(_WIN32) && !defined(_MACINTOSH)
+#if !defined(_MSDOS) && !defined(_WIN32) && !defined(macintosh)
 /* adm_kw_dec.c */
 krb5_error_code krb5_adm_proto_to_dbent
 	KRB5_PROTOTYPE((krb5_context,
@@ -137,6 +145,7 @@ krb5_error_code krb5_klog_init
 		   krb5_boolean));
 void krb5_klog_close KRB5_PROTOTYPE((krb5_context));
 int krb5_klog_syslog KRB5_PROTOTYPE((int, const char *, ...));
+void krb5_klog_reopen KRB5_PROTOTYPE((krb5_context));
 
 /* alt_prof.c */
 krb5_error_code krb5_aprof_init

@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -171,7 +174,7 @@ krb5_dbe_update_mod_princ_data(context, entry, mod_date, mod_princ)
     krb5_context	  context;
     krb5_db_entry	* entry;
     krb5_timestamp	  mod_date;
-    krb5_principal	  mod_princ;
+    krb5_const_principal  mod_princ;
 {
     krb5_tl_data          tl_data;
 
@@ -243,37 +246,34 @@ krb5_dbe_lookup_mod_princ_data(context, entry, mod_time, mod_princ)
 }
 
 krb5_error_code
-krb5_encode_princ_dbmkey(context, key, principal)
+krb5_encode_princ_dbkey(context, key, principal)
     krb5_context context;
-    datum  *key;
-    krb5_principal principal;
+    krb5_data  *key;
+    krb5_const_principal principal;
 {
     char *princ_name;
     krb5_error_code retval;
 
     if (!(retval = krb5_unparse_name(context, principal, &princ_name))) {
         /* need to store the NULL for decoding */
-        key->dsize = strlen(princ_name)+1;	
-        key->dptr = princ_name;
+        key->length = strlen(princ_name)+1;	
+        key->data = princ_name;
     }
     return(retval);
 }
 
 void
-krb5_free_princ_dbmkey(context, key)
+krb5_free_princ_dbkey(context, key)
     krb5_context context;
-    datum  *key;
+    krb5_data  *key;
 {
-    (void) free(key->dptr);
-    key->dsize = 0;
-    key->dptr = 0;
-    return;
+    (void) krb5_free_data_contents(context, key);
 }
 
 krb5_error_code
 krb5_encode_princ_contents(context, content, entry)
     krb5_context 	  context;
-    datum  		* content;
+    krb5_data  		* content;
     krb5_db_entry 	* entry;
 {
     int 		  unparse_princ_size, i, j;
@@ -301,20 +301,20 @@ krb5_encode_princ_contents(context, content, entry)
      * then (4 [type + length] + tl_data_length) bytes per tl_data
      * then (4 + (4 + key_data_length) per key_data_contents) bytes per key_data
      */
-    content->dsize = entry->len + entry->e_length;
+    content->length = entry->len + entry->e_length;
 
     if ((retval = krb5_unparse_name(context, entry->princ, &unparse_princ)))
 	return(retval);
 
     unparse_princ_size = strlen(unparse_princ) + 1;
-    content->dsize += unparse_princ_size;
-    content->dsize += 2;		
+    content->length += unparse_princ_size;
+    content->length += 2;		
 
     i = 0;
     /* tl_data is a linked list */
     for (tl_data = entry->tl_data; tl_data; tl_data = tl_data->tl_data_next) {
-	content->dsize += tl_data->tl_data_length;
-	content->dsize += 4; /* type, length */
+	content->length += tl_data->tl_data_length;
+	content->length += 4; /* type, length */
 	i++;
     }
 
@@ -325,14 +325,14 @@ krb5_encode_princ_contents(context, content, entry)
 
     /* key_data is an array */
     for (i = 0; i < entry->n_key_data; i++) {
-	content->dsize += 4; /* Version, KVNO */
+	content->length += 4; /* Version, KVNO */
 	for (j = 0; j < entry->key_data[i].key_data_ver; j++) {
-	    content->dsize += entry->key_data[i].key_data_length[j];
-	    content->dsize += 4; /* type + length */
+	    content->length += entry->key_data[i].key_data_length[j];
+	    content->length += 4; /* type + length */
 	}
     }
 	
-    if ((content->dptr = malloc(content->dsize)) == NULL) {
+    if ((content->data = malloc(content->length)) == NULL) {
 	retval = ENOMEM;
 	goto epc_error;
     }
@@ -341,7 +341,7 @@ krb5_encode_princ_contents(context, content, entry)
      * Now we go through entry again, this time copying data 
      * These first entries are always saved regaurdless of version
      */
-    nextloc = content->dptr;
+    nextloc = content->data;
 
 	/* Base Length */
     krb5_kdb_encode_int16(entry->len, nextloc);
@@ -450,18 +450,16 @@ epc_error:;
 void
 krb5_free_princ_contents(context, contents)
     krb5_context 	  context;
-    datum *contents;
+    krb5_data *contents;
 {
-    free(contents->dptr);
-    contents->dsize = 0;
-    contents->dptr = 0;
+    krb5_free_data_contents(context, contents);
     return;
 }
 
 krb5_error_code
 krb5_decode_princ_contents(context, content, entry)
     krb5_context 	  context;
-    datum  		* content;
+    krb5_data  		* content;
     krb5_db_entry 	* entry;
 {
     int			  sizeleft, i;
@@ -484,8 +482,8 @@ krb5_decode_princ_contents(context, content, entry)
      */
 
     /* First do the easy stuff */
-    nextloc = content->dptr;
-    sizeleft = content->dsize;
+    nextloc = content->data;
+    sizeleft = content->length;
     if ((sizeleft -= KRB5_KDB_V1_BASE_LENGTH) < 0) 
 	return KRB5_KDB_TRUNCATED_RECORD;
 
@@ -740,40 +738,27 @@ krb5_dbe_search_enctype(kcontext, dbentp, start, ktype, stype, kvno, kdatap)
 	}
     }
 
-    /*
-     * ENCTYPE_DES_CBC_CRC, ENCTYPE_DES_CBC_MD4, ENCTYPE_DES_CBC_MD5,
-     * ENCTYPE_DES_CBC_RAW all use the same key.
-     */
-    switch (ktype) {
-    case ENCTYPE_DES_CBC_MD4:
-    case ENCTYPE_DES_CBC_MD5:
-    case ENCTYPE_DES_CBC_RAW:
-	ktype = ENCTYPE_DES_CBC_CRC;
-	break;
-    default:
-	break;
-    }
-
     maxkvno = -1;
     datap = (krb5_key_data *) NULL;
     for (i = *start; i < dbentp->n_key_data; i++) {
-        krb5_enctype db_ktype;
-        krb5_int32   db_stype;
+        krb5_boolean    similar;
+	krb5_error_code ret;
+        krb5_int32      db_stype;
 
-	switch (db_ktype = dbentp->key_data[i].key_data_type[0]) {
-    	case ENCTYPE_DES_CBC_MD4:
-    	case ENCTYPE_DES_CBC_MD5:
-    	case ENCTYPE_DES_CBC_RAW:
-	    db_ktype = ENCTYPE_DES_CBC_CRC;
-	default:
-	    break;
-	}
 	if (dbentp->key_data[i].key_data_ver > 1) {
 	    db_stype = dbentp->key_data[i].key_data_type[1];
 	} else {
 	    db_stype = KRB5_KDB_SALTTYPE_NORMAL;
 	}
-	if (((db_ktype == (krb5_enctype) ktype) || (ktype < 0)) && 
+	
+	if (ktype >= 0) {
+	    if ((ret = krb5_c_enctype_compare(kcontext, (krb5_enctype) ktype,
+					      dbentp->key_data[i].key_data_type[0],
+					      &similar)))
+		return(ret);
+	}
+
+	if (((ktype < 0) || similar) &&
 	    ((db_stype == stype) || (stype < 0))) {
 	    if (kvno >= 0) {
 		if (kvno == dbentp->key_data[i].key_data_kvno) {

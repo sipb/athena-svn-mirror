@@ -1,7 +1,104 @@
+1999-07-06  Ken Raeburn  <raeburn@mit.edu>
+
+	* kdb5_util.c (main): Do try using com_err in the case that
+	krb5_init_context fails, instead of fprintf of the error number.
+
+1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Set the myfulldir and mydir variables (which are
+		relative to buildtop and thisconfigdir, respectively.)
+
+Tue Nov  3 16:28:23 1998  Tom Yu  <tlyu@mit.edu>
+
+	* dump.c: Fix up to work with new crypto API.
+
+1998-10-27  Marc Horowitz  <marc@mit.edu>
+
+	* dumpv4, loadv4.c, kdb5_create.c, kdb5_stash.c, kdb5_util.c,
+	kadm5_create.c: convert to new crypto api
+
+Wed Sep 30 00:02:01 1998  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* dump.c: Add support for changing the master key for a database
+		as part of creating a dump of the database.
+
+Thu Aug 20 16:50:00 1998  Tom Yu  <tlyu@mit.edu>
+
+	* kdb5_util.c (add_random_key): Fixes to deal with absence of "-e"
+	flag.
+
+Wed Aug 19 14:52:40 1998  Tom Yu  <tlyu@mit.edu>
+
+	* kdb5_util.c (add_random_key): New function to create a new
+ 	random key for a principal while retaining the previous kvno's
+ 	keys.  This is only temporary until a reasonable kadm5 interface
+	is made.
+
+1998-05-06  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* kdb5_stash.c (argv): 
+	* kdb5_destroy.c (kdb5_destroy): 
+	* kdb5_create.c (kdb5_create): POSIX states that getopt returns -1
+		when it is done parsing options, not EOF.
+
+Fri Feb 27 23:32:38 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Changed thisconfigdir to point at the kadmin
+ 		directory, since we've moved all of the configure.in
+		tests to the toplevel kadmin configure.in
+
+Wed Feb 18 15:55:06 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove trailing slash from thisconfigdir.  Fix up
+ 	BUILDTOP for new conventions.
+
+Mon Feb  2 17:02:29 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+Sun Nov  2 19:09:17 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* kdb5_util.c: Add flag indicating that policy db is to be closed.
+  		Change '-f" option to "-sf" to indicate stash file on
+ 		command line.
+
+	* kdb5_stash.c (kdb5_stash): Indicate that policy db should be
+	 	closed, free context when done.
+	
+	* kadm5_create.c (kadm5_create): Fix up memory leaks.
+
+Wed Oct 22 15:39:38 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* tcl_wrapper.c: Include either tcl.h or tcl/tcl.h
+
+Fri Jul 25 15:46:24 1997  Tom Yu  <tlyu@mit.edu>
+
+	* loadv4.c:
+	* kdb5_create.c:
+	* kdb5_destroy.c:
+	* dump.c: Update to new kdb API.
+
+Thu Jul 17 12:25:41 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* dump.c (process_k5beta_record): Change variables from char to
+		krb5_octet to match types in krb5_key_data.
+
+	* ovload.c (process_ov_principal): Change "more" variable to
+		krb5_boolean as argument to krb5_db_get_principal. 
+
 Wed Mar 12 01:19:51 1997  Theodore Y. Ts'o  <tytso@mit.edu>
 
 	* loadv4.c (argv): Check to see if the global_param's stash file
 		is non-NULL before trying to strdup() it.  [PR#341, PR#394]
+
+Tue Feb  4 21:17:09 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in:
+	* configure.in: Update to new program build procedure.
+
+Tue Dec  3 16:04:24 1996  Barry Jaspan  <bjaspan@mit.edu>
+
+	* kdb5_util.c: fix multiply defined globals [krb5-admin/260]
 
 Wed Nov 13 00:06:40 1996  Mark Eichin  <eichin@cygnus.com>
 

@@ -1,10 +1,10 @@
-This is Info file krb5-install.info, produced by Makeinfo-1.55 from the
-input file install.texinfo.
+This is Info file krb5-install.info, produced by Makeinfo version 1.68
+from the input file install.texinfo.
 
 
 File: krb5-install.info,  Node: Top,  Next: Copyright,  Prev: (dir),  Up: (dir)
 
-This file documents how to install the 1.0 release of Kerberos V5.
+This file documents how to install the 1.1 release of Kerberos V5.
 
 * Menu:
 
@@ -23,8 +23,7 @@ File: krb5-install.info,  Node: Copyright,  Next: Introduction,  Prev: Top,  Up:
 Copyright
 *********
 
-Copyright (C) 1990, 1991, 1992, 1993, 1994, 1995, 1996 by the
-Massachusetts Institute of Technology.
+Copyright (C) 1985-1999 by the Massachusetts Institute of Technology.
 
      Export of software employing encryption from the United States of
      America may require a specific license from the United States
@@ -37,9 +36,12 @@ hereby granted, provided that the above copyright notice appear in all
 copies and that both that copyright notice and this permission notice
 appear in supporting documentation, and that the name of M.I.T. not be
 used in advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.  M.I.T. makes no
-representations about the suitability of this software for any purpose.
-It is provided "as is" without express or implied warranty.
+software without specific, written prior permission.  Furthermore if you
+modify this software you must label your software as modified software
+and not distribute it in such a fashion that it might be confused with
+the original MIT software.  M.I.T. makes no representations about the
+suitability of this software for any purpose.  It is provided "as is"
+without express or implied warranty.
 
 The following copyright and permission notice applies to the OpenVision
 Kerberos Administration system located in kadmin/create, kadmin/dbutil,
@@ -314,8 +316,8 @@ section of the `Kerberos V5 System Administrator's Guide'.
 
 ---------- Footnotes ----------
 
-(1)  Kerberos V4 used port 750.  If necessary, you can run on both
-ports for backward compatibility.
+(1) Kerberos V4 used port 750.  If necessary, you can run on both ports
+for backward compatibility.
 
 
 File: krb5-install.info,  Node: Slave KDCs,  Next: Hostnames for the Master and Slave KDCs,  Prev: Ports for the KDC and Admin Services,  Up: Realm Configuration Decisions
@@ -430,16 +432,16 @@ Unpacking the Sources
 
 The first step in each of these build procedures is to unpack the source
 distribution.  The Kerberos V5 distribution comes in two compressed tar
-files.  The first file, which is generally named `krb5-1.0.src.tar.gz',
+files.  The first file, which is generally named `krb5-1.1.src.tar.gz',
 contains the sources for all of Kerberos except for the crypto library,
-which is found in the file `krb5-1.0.crypto.tar.gz'.
+which is found in the file `krb5-1.1.crypto.tar.gz'.
 
 Both files should be unpacked in the same directory, such as
-`/u1/krb5-1.0'.  (In the rest of this document, we will assume that you
+`/u1/krb5-1.1'.  (In the rest of this document, we will assume that you
 have chosen to unpack the Kerberos V5 source distribution in this
 directory.  Note that the tarfiles will by default all unpack into the
-`./krb5-1.0' directory, so that if your current directory is `/u1' when
-you unpack the tarfiles, you will get `/u1/krb5-1.0/src', etc.)
+`./krb5-1.1' directory, so that if your current directory is `/u1' when
+you unpack the tarfiles, you will get `/u1/krb5-1.1/src', etc.)
 
 
 File: krb5-install.info,  Node: Doing the Build,  Next: Testing the Build,  Prev: Unpacking the Sources,  Up: Building Kerberos V5
@@ -471,7 +473,7 @@ Building Within a Single Tree
 If you don't want separate build trees for each architecture, then use
 the following abbreviated procedure.
 
-  1.  `cd /u1/krb5-1.0/src'
+  1.  `cd /u1/krb5-1.1/src'
 
   2.  `./configure'
 
@@ -494,9 +496,9 @@ this, see the next section.
 For example, if you wish to create a build directory for `pmax' binaries
 you might use the following procedure:
 
-  1. `mkdir /u1/krb5-1.0/pmax'
+  1. `mkdir /u1/krb5-1.1/pmax'
 
-  2.  `cd /u1/krb5-1.0/pmax'
+  2.  `cd /u1/krb5-1.1/pmax'
 
   3.  `../src/configure'
 
@@ -516,11 +518,11 @@ trees in your build directory.
 For example, if you wish to create a build directory for solaris
 binaries you might use the following procedure:
 
-  1.  `mkdir /u1/krb5-1.0/solaris'
+  1.  `mkdir /u1/krb5-1.1/solaris'
 
-  2.  `cd /u1/krb5-1.0/solaris'
+  2.  `cd /u1/krb5-1.1/solaris'
 
-  3.  `/u1/krb5-1.0/src/util/lndir `pwd`/../src'
+  3.  `/u1/krb5-1.1/src/util/lndir `pwd`/../src'
 
   4.  `./configure'
 
@@ -581,7 +583,7 @@ exist with DejaGnu 1.3.
 
 ---------- Footnotes ----------
 
-(1)  If you are fortunate enough to have a previous version of Kerberos
+(1) If you are fortunate enough to have a previous version of Kerberos
 V5 or V4 installed, and the Kerberos rlogin is first in your path, you
 can setup `.k5login' or `.klogin' respectively to allow you access.
 
@@ -776,8 +778,8 @@ environment variables when using the programs. Except where noted,
 multiple versions of the libraries may be installed on the same system
 and continue to work.
 
-Currently the supported platforms are: NetBSD 1.0A, AIX 3.2.5, AIX 4.1,
-Solaris 2.4 (aka SunOS 5.4), Alpha OSF/1 >= 2.1, HP-UX >= 9.X.
+Currently the supported platforms are Solaris 2.6 (aka SunOS 5.6) and
+Irix 6.5.
 
 To enable shared libraries on the above platforms, run the configure
 script with the option `--enable-shared'.
@@ -861,11 +863,11 @@ File: krb5-install.info,  Node: HPUX,  Next: Solaris versions 2.0 through 2.3,  
 HPUX
 ----
 
-The native compiler for HPUX currently will not work, because it is not
-a full ANSI C compiler.  The optional compiler (c89) should work as long
-as you give it the `+Olibcalls -D_HPUX_SOURCE' (this has only been
-tested for HPUX 9.0).  At this point, using GCC is probably your best
-bet.
+The native (bundled) compiler for HPUX currently will not work, because
+it is not a full ANSI C compiler.  The optional compiler (c89) should
+work as long as you give it the `+Olibcalls -D_HPUX_SOURCE' (this has
+only been tested for HPUX 9.0).  At this point, using GCC is probably
+your best bet.
 
 
 File: krb5-install.info,  Node: Solaris versions 2.0 through 2.3,  Next: Solaris 2.X,  Prev: HPUX,  Up: OS Incompatibilities
@@ -883,7 +885,7 @@ who try to figure out their own fully qualified domain name.
 Workarounds:
 
   1.    Supply your own resolver library. (such as bind-4.9.3pl1
-     availavle from ftp.vix.com)
+     available from ftp.vix.com)
 
   2.    Upgrade to Solaris 2.4
 
@@ -973,7 +975,7 @@ rebuild any `configure' files which need rebuilding.  If you know that
 you have made a change that will require that all the `configure' files
 need to be rebuilt from scratch, specify the `--force' option:
 
-     % cd /u1/krb5-1.0/src
+     % cd /u1/krb5-1.1/src
      % ./util/reconf --force
 
 The developmental sources are a raw source tree (before it's been
@@ -989,7 +991,7 @@ In order to build from such a source tree, you must do:
 Then follow the instructions for building packaged source trees (above).
 To install the binaries into a binary tree, do:
 
-     % cd /u1/krb5-1.0/src
+     % cd /u1/krb5-1.1/src
      % make all
      % make install DESTDIR=somewhere-else
 
@@ -1119,7 +1121,7 @@ the word "for", and includes the punctuation mark at the end.)
 
 The following is an example of how to create a Kerberos database and
 stash file on the master KDC, using the `kdb5_util' command.  (The line
-that begins with => is a continuation of the previous line.) Replace
+that begins with => is a continuation of the previous line.)  Replace
 ATHENA.MIT.EDU with the name of your Kerberos realm.
 
      shell% /usr/local/sbin/kdb5_util create -r ATHENA.MIT.EDU -s

@@ -1,19 +1,18 @@
 /*
  * Copyright 1993-1994 OpenVision Technologies, Inc., All Rights Reserved.
  * 
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/passwd/kpasswd.c,v 1.1.1.3 1999-02-09 21:04:08 danw Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/passwd/kpasswd.c,v 1.1.1.4 1999-10-05 16:11:35 ghudson Exp $
  *
  *
  */
 
-static char rcsid[] = "$Id: kpasswd.c,v 1.1.1.3 1999-02-09 21:04:08 danw Exp $";
+static char rcsid[] = "$Id: kpasswd.c,v 1.1.1.4 1999-10-05 16:11:35 ghudson Exp $";
 
 #include <kadm5/admin.h>
 #include <krb5.h>
 
 #include "kpasswd_strings.h"
 #define string_text error_message
-#define initialize_kpasswd_strings initialize_kpws_error_table
 
 #include <stdio.h>
 #include <pwd.h>
@@ -95,8 +94,6 @@ kpasswd(context, argc, argv)
       return(7);
       /*NOTREACHED*/
     }
-
-  krb5_init_ets(context);
 
   /************************************
    *  Get principal name to change    * 

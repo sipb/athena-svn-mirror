@@ -12,7 +12,10 @@
  * notice appear in supporting documentation, and that the name of
  * M.I.T. not be used in advertising or publicity pertaining to
  * distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability
  * of this software for any purpose.  It is provided "as is" without
  * express or implied warranty.
  * 
@@ -21,7 +24,7 @@
 #include <sys/types.h>
 #endif
 
-#include <k5-int.h>
+#include <k5-util.h>
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -31,29 +34,47 @@
 #include <stdlib.h>
 #endif
 
-
 #include <errno.h>
 
-int krb5_seteuid( euid_in)
-  int euid_in;
+int krb5_seteuid(euid_in)
+    int euid_in;
 {
-  uid_t euid = (uid_t) euid_in;
-#if defined(_POSIX_SAVED_IDS) && defined(HAVE_SETEUID)
-  return  (seteuid(euid)) ;
+    uid_t euid = (uid_t) euid_in;
+#if defined(HAVE_SETEUID)
+    return (seteuid(euid));
 #else
 #if defined(HAVE_SETRESUID)
-    return (setresuid(getuid(), euid, geteuid())) ;
+    return (setresuid(getuid(), euid, geteuid()));
 #else
 #if defined(HAVE_SETREUID)
     return setreuid(geteuid(), euid); 
 #else /*HAVE_SETREUID*/
     /* You need to add a case to deal with this operating system.*/
     errno = EPERM;
-  return -1;
-  
+    return -1;
 #endif /* HAVE_SETREUID */
 #endif /* HAVE_SETRESUID */
-#endif /* _POSIX_SAVED_IDS */
+#endif /* HAVE_SETEUID */
+}
 
+int krb5_setegid(egid_in)
+    int egid_in;
+{
+    gid_t egid = (gid_t) egid_in;
 
+#ifdef HAVE_SETEGID
+    return (setegid(egid));
+#else
+#ifdef HAVE_SETRESGID
+    return (setresgid(getgid(), egid, getegid()));
+#else
+#ifdef HAVE_SETREGID
+    return (setregid(getegid(), egid));
+#else /* HAVE_SETREGID */
+    /* You need to add a case to deal with this operating system.*/
+    errno = EPERM;
+    return -1;
+#endif /* HAVE_SETREGID */
+#endif /* HAVE_SETRESGID */
+#endif /* HAVE_SETEGID */
 }

@@ -16,13 +16,22 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
  *
  * krb5_aname_to_localname()
  */
+
+/*
+ * We're only to AN_TO_LN rules at this point, and not doing the
+ * database lookup  (moved from configure script)
+ */
+#define AN_TO_LN_RULES
 
 #include "k5-int.h"
 #include <ctype.h>
@@ -92,7 +101,7 @@ db_an_to_ln(context, dbname, aname, lnsize, lname)
     const int lnsize;
     char *lname;
 {
-#if	(!defined(_MSDOS) && !defined(_WIN32) && !defined(_MACINTOSH))
+#if	(!defined(_MSDOS) && !defined(_WIN32) && !defined(macintosh))
     DBM *db;
     krb5_error_code retval;
     datum key, contents;
@@ -682,10 +691,7 @@ krb5_aname_to_localname(context, aname, lnsize, lname)
 		    /* We found one or more explicit mappings. */
 		    for (nvalid=0; mapping_values[nvalid]; nvalid++);
 
-		    /* Free the other ones, just use the last one */
-		    for (i=0; i<nvalid-1; i++)
-			krb5_xfree(mapping_values[i]);
-
+		    /* Just use the last one. */
 		    /* Trim the value. */
 		    cp = &mapping_values[nvalid-1]
 			[strlen(mapping_values[nvalid-1])];
@@ -700,8 +706,7 @@ krb5_aname_to_localname(context, aname, lnsize, lname)
 			kret = KRB5_CONFIG_NOTENUFSPACE;
 
 		    /* Free residue */
-		    krb5_xfree(mapping_values[nvalid-1]);
-		    krb5_xfree(mapping_values);
+		    profile_free_list(mapping_values);
 		}
 		else {
 		    /*
@@ -773,9 +778,7 @@ krb5_aname_to_localname(context, aname, lnsize, lname)
 			}
 
 			/* We're done, clean up the droppings. */
-			for (i=0; mapping_values[i]; i++)
-			    krb5_xfree(mapping_values[i]);
-			krb5_xfree(mapping_values);
+			profile_free_list(mapping_values);
 		    }
 		    else {
 			/*

@@ -1,3 +1,108 @@
+1999-06-13  Geoffrey King  <gjking@mit.edu>
+
+	* Makefile.in:
+	* configure.in: Add new subdirectory keytab/srvtab.
+
+Tue May 18 19:52:56 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Remove - from recursive Win32 make invocation.
+
+Mon May 17 14:09:28 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Make directories for clean-windows target lowercase
+		like everywhere else.
+
+Mon May 10 15:23:34 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Do win32 build in subdir.
+
+1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Set the myfulldir and mydir variables (which are
+		relative to buildtop and thisconfigdir, respectively.)
+
+	* configure.in: Add test for the fcntl.h header file.
+
+Thu Jul 30 13:12:57 1998  Sam Hartman  <hartmans@utwig.mesas.com>
+
+	* configure.in: Test for sa_len so localaddr works on NetBSD.
+
+Sun Jul 26 17:46:47 1998  Sam Hartman  <hartmans@utwig.mesas.com>
+
+	* Makefile.in (LIBMAJOR): bump to 2
+
+Wed Apr 15 18:07:20 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (SHLIB_EXPDEPS): 
+	(SHLIB_EXPLIBS): Rename libcrypto -> libk5crypto.
+
+Fri Feb 27 23:15:28 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (SHLIB_EXPLIBS): Replace @SHLIB_GEN@ with @GEN_LIB@
+
+Fri Feb 27 18:00:15 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* configure.in: Move the regular expression function tests into
+		aclocal.m4, since they also need to be shared by
+		lib/kadm5's configure script.
+
+	* configure.in: Move tests from all of krb5's subdirectories into
+		this configure.in, and make it generate makefiles for all
+		of the subdirectories.
+
+	* Makefile.in: Add a LOCAL_SUBDIRS macro for all subdirectories in
+		the krb5 library.
+
+Wed Feb 18 16:18:18 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove trailing slash from thisconfigdir.  Fix up
+	BUILDTOP for new conventions.
+
+Sat Feb 14 10:37:26 1998  Ezra Peisach  <epeisach@mit.edu>
+
+	* configure.in: Remove USE_ANAME, and the defines for ANAME_DBDEP and
+	        ANAME_DBLIB as they are no longer used.
+
+	* Makefile.in: Remove unused ANAME_DBDEP and ANAME_DBLIB definitions.
+
+Fri Feb 13 15:26:42 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in, configure.in: Remove the free directory from the
+ 		list of subdirectories to be built.  (All functions moved
+ 		into lib/krb5/free/kfree.c)
+
+Mon Feb  2 17:02:29 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* configure.in: Use AC_CONFIG_DIRS instead of CONFIG_DIRS, and
+		remove use of DO_SUBDIRS.
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+Fri Jul 25 15:24:41 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Bump version due to et changes.
+
+Sat Feb 22 01:37:03 1997  Sam Hartman  <hartmans@luminous.MIT.EDU>
+
+	* Makefile.in (LIBMINOR): Bump minor version
+
+Thu Nov 21 11:55:16 EST 1996    Richard Basch   <basch@lehman.com>
+
+        * Makefile.in: win32 build
+
+Fri Feb  7 21:48:10 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Add rule to install libraries.
+
+Fri Jan  3 16:47:59 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in:
+	* configure.in: Update to use new KRB5_BUILD_LIBRARY_WITH_DEPS
+ 	macro.
+
+	* Makefile.in:
+	* configure.in: Update to new library build procedure.
+
 Mon Nov 18 20:42:39 1996  Ezra Peisach  <epeisach@mit.edu>
 
 	* configure.in: Set shared library version to 1.0. [krb5-libs/201]

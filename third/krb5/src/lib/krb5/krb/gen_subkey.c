@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -32,24 +35,21 @@ krb5_generate_subkey(context, key, subkey)
     const krb5_keyblock *key;
     krb5_keyblock **subkey;
 {
-    krb5_pointer random_state;
-    krb5_encrypt_block eblock;
     krb5_error_code retval;
+    krb5_data seed;
 
-    if (!valid_enctype(key->enctype))
-	return KRB5_PROG_ETYPE_NOSUPP;
-
-    krb5_use_enctype(context, &eblock, key->enctype);
-
-    if ((retval = krb5_init_random_key(context, &eblock, key, &random_state)))
+    seed.length = key->length;
+    seed.data = key->contents;
+    if ((retval = krb5_c_random_seed(context, &seed)))
 	return(retval);
-    if ((retval = krb5_random_key(context, &eblock, random_state, subkey))) {
-	(void) krb5_finish_random_key(context, &eblock, &random_state);
-	krb5_xfree(*subkey);
-	return retval;
-    }	
-    /* ignore the error if any, since we've already gotten the key out */
-    (void) krb5_finish_random_key(context, &eblock, &random_state);
-    return 0;
-}
 
+    if ((*subkey = (krb5_keyblock *) malloc(sizeof(krb5_keyblock))) == NULL)
+	return(ENOMEM);
+
+    if ((retval = krb5_c_make_random_key(context, key->enctype, *subkey))) {
+	krb5_xfree(*subkey);
+	return(retval);
+    }
+
+    return(0);
+}

@@ -1,10 +1,10 @@
 <!-- This HTML file has been created by texi2html 1.30
-     from admin.texinfo on 10 May 1999 -->
+     from admin.texinfo on 23 September 1999 -->
 
 <TITLE>Kerberos V5 System Administrator's Guide</TITLE>
 <H1>Kerberos V5 System Administrator's Guide</H1>
 <H1><A NAME="SEC1" HREF="admin_toc.html#SEC1">Copyright</A></H1>
-Copyright (C) 1990, 1991, 1992, 1993, 1994, 1995, 1996 by the Massachusetts Institute of Technology. 
+Copyright (C) 1985-1999 by the Massachusetts Institute of Technology. 
 <P>
 <BLOCKQUOTE>
 Export of software employing encryption from the United States of
@@ -19,9 +19,12 @@ hereby granted, provided that the above copyright notice appear in all
 copies and that both that copyright notice and this permission notice
 appear in supporting documentation, and that the name of M.I.T. not be
 used in advertising or publicity pertaining to distribution of the
-software without specific, written prior permission.  M.I.T. makes no
-representations about the suitability of this software for any purpose.
-It is provided "as is" without express or implied warranty.
+software without specific, written prior permission.  Furthermore if you
+modify this software you must label your software as modified software
+and not distribute it in such a fashion that it might be confused with
+the original MIT software.  M.I.T. makes no representations about the
+suitability of this software for any purpose.  It is provided "as is"
+without express or implied warranty.
 <P>
 @hrule
 <P>
@@ -283,7 +286,7 @@ services that run as root are usually stored in the keytab file
 of the service's password, and must be kept secure.  Data which is meant
 to be read only by the service is encrypted using this key.
 <P>
-<H2><A NAME="SEC14" HREF="admin_toc.html#SEC14">The User--Kerberos Interaction</A></H2>
+<H2><A NAME="SEC14" HREF="admin_toc.html#SEC14">The User/Kerberos Interaction</A></H2>
 <P>
 Suppose that you walk up to a host intending to login to it, and then
 <SAMP>`rlogin'</SAMP> to the machine <SAMP>`laughter'</SAMP>.  Here's what happens:
@@ -862,10 +865,6 @@ in this realm.
 not allowed as passwords.  The default is
 <CODE>/usr/local/var/krb5kdc/kadm5.dict</CODE>.
 <P>
-<DT><B>encryption_type</B>
-<DD>(Encryption type string.)  Specifies the encryption type used for this
-realm.  Only "des-cbc-crc" is supported at this time.
-<P>
 <DT><B>kadmind_port</B>
 <DD>(Port number.)  Specifies the port that the kadmind daemon is to listen
 for this realm.  The assigned port for kadmind is 749.
@@ -898,9 +897,24 @@ valid ticket may be renewed in this realm.
 <P>
 <DT><B>supported_enctypes</B>
 <DD>List of key:salt strings.  Specifies the default key/salt combinations
-of principals for this realm.  Since only the encryption type
-"des-cbc-crc" is supported, you should set this tag to
-<SAMP>`des-cbc-crc:normal'</SAMP>.
+of principals for this realm.  Any principals created through
+<CODE>kadmin</CODE> will have keys of these types.  Since only the encryption
+type "des-cbc-crc" is supported, you should set this tag to
+<SAMP>`des-cbc-crc:normal des-cbc-crc:v4'</SAMP>.
+<P>
+<DT><B>kdc_supported_enctypes</B>
+<DD>List of key:salt strings.  Specifies the permitted key/salt combinations
+of principals for this realm.  You should set this tag to
+<SAMP>`des-cbc-crc:normal des-cbc-crc:v4'</SAMP>.
+<P>
+<B>Note:</B> You may also use <SAMP>`des3-cbc-sha1:normal'</SAMP> before
+<SAMP>`des-cbc-crc:normal'</SAMP> if you wish to support triple-DES service keys
+in addition to DES service keys.  In order to create such service keys,
+you must use the <CODE>-e</CODE> option to <CODE>kadmin.local</CODE>, running on the
+KDC system itself; the remote <CODE>kadmin</CODE> client does not allow this
+option.  We do not currently support the use of triple-DES keys anywhere
+other than for service keys.
+<P>
 </DL>
 <P>
 <H3><A NAME="SEC28" HREF="admin_toc.html#SEC28">Sample kdc.conf File</A></H3>
@@ -917,7 +931,8 @@ Here's an example of a <CODE>kdc.conf</CODE> file:
         max_life = 10h 0m 0s
         max_renewable_life = 7d 0h 0m 0s
         master_key_type = des-cbc-crc
-        supported_enctypes = des-cbc-crc:normal
+        supported_enctypes = des-cbc-crc:normal des-cbc-crc:v4
+        kdc_supported_enctypes = des-cbc-crc:normal des-cbc-crc:v4
     }
 
 [logging]
@@ -1000,6 +1015,16 @@ unauthorized users gain read access to the script.
 <DT><B><B>-q</B> <I>query</I></B>
 <DD>Pass <I>query</I> directly to <CODE>kadmin</CODE>.  This is useful for writing
 scripts that pass specific queries to <CODE>kadmin</CODE>.
+<P>
+<DT><B><B>-e</B> <I>"enctypes ..."</I></B>
+<DD><B>(For <CODE>kadmin.local</CODE> only.)</B>
+Sets the list of cryptosystem and salt types to be used for any new keys
+created.  Available types include <SAMP>`des3-cbc-sha1:normal'</SAMP>,
+<SAMP>`des-cbc-crc:normal'</SAMP>, and <SAMP>`des-cbc-crc:v4'</SAMP>.  In this release,
+the <SAMP>`des3-cbc-sha1:normal'</SAMP> type should only be used when
+registering service principals; for any services that may request
+tickets themselves to initiate some action, it should be combined with
+one or more of the other types.
 </DL>
 <P>
 <H2><A NAME="SEC31" HREF="admin_toc.html#SEC31">Date Format</A></H2>
@@ -1021,10 +1046,13 @@ tomorrow
 now
 "second Monday"
 fortnight
-"3/31/92 10:00:07 PST"
-"January 23, 1987 10:05pm"
+"3/31/1992 10:00:07 PST"
+"January 23, 2007 10:05pm"
 "22:00 GMT"
 </PRE>
+<P>
+Two-digit years are allowed in places, but the use of this form is not
+recommended.
 <P>
 Note that if the date specification contains spaces, you must enclose it
 in double quotes.  Note also that you cannot use a number without a
@@ -1355,7 +1383,11 @@ flag on the principal in the database.
 <P>
 <DT><B>-randkey</B>
 <DD>Sets the key for the principal to a random value (<CODE>add_principal</CODE>
-only).  MIT recommends using this option for host keys.
+only).  MIT recommends using this option for host keys.  You
+may also wish to use the <B>kadmin.local</B> command-line options <B>-e
+"des3-cbc-sha1:normal des-cbc-crc:normal"</B>See section <A HREF="admin.html#SEC30">Kadmin Options</A> on the
+KDC machine itself for host keys and other service keys that are
+security-critical.
 <P>
 <DT><B>-pw <I>password</I></B>
 <DD>Sets the key of the principal to the specified string and does not

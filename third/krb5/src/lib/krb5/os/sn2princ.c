@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -32,13 +35,13 @@
 #include <sys/param.h>
 #endif
 
-krb5_error_code INTERFACE
+KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
 krb5_sname_to_principal(context, hostname, sname, type, ret_princ)
     krb5_context context;
-    const char * hostname;
-    const char * sname;
+    const char FAR * hostname;
+    const char FAR * sname;
     krb5_int32 type;
-    krb5_principal * ret_princ;
+    krb5_principal FAR * ret_princ;
 {
     struct hostent *hp;
     char **hrealms, *realm, *remote_host;
@@ -53,7 +56,7 @@ krb5_sname_to_principal(context, hostname, sname, type, ret_princ)
 	/* if hostname is NULL, use local hostname */
 	if (! hostname) {
 	    if (gethostname(localname, MAXHOSTNAMELEN))
-		return errno;
+		return SOCKET_ERRNO;
 	    hostname = localname;
 	}
 
@@ -98,6 +101,18 @@ krb5_sname_to_principal(context, hostname, sname, type, ret_princ)
 	    for (cp = remote_host; *cp; cp++)
 		if (isupper(*cp))
 		    *cp = tolower(*cp);
+
+	/*
+	 * Windows NT5's broken resolver gratuitously tacks on a
+	 * trailing period to the hostname (at least it does in
+	 * Beta2).  Find and remove it.
+	 */
+	if (remote_host[0]) {
+		cp = remote_host + strlen(remote_host)-1;
+		if (*cp == '.')
+			*cp = 0;
+	}
+	
 
 	if (retval = krb5_get_host_realm(context, remote_host, &hrealms)) {
 	    free(remote_host);

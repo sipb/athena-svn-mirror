@@ -1,7 +1,16 @@
+thisconfigdir=./..
+myfulldir=tests/asn.1
+mydir=asn.1
+BUILDTOP=$(REL)$(U)$(S)$(U)
 CFLAGS = $(CCOPTS) $(DEFS) $(LOCALINCLUDES)
+PROG_LIBPATH=-L$(TOPLIBD)
+PROG_RPATH=$(KRB5_LIBDIR)
+
 RUN_SETUP = @KRB5_RUN_ENV@
 
-COMERRLIB=$(TOPLIBD)/libcom_err.a
+SRCS= $(srcdir)/krb5_encode_test.c $(srcdir)/krb5_encode_test.c \
+	$(srcdir)/ktest.c $(srcdir)/ktest_equal.c $(srcdir)/utility.c \
+	$(srcdir)/trval.c
 
 all:: krb5_encode_test krb5_decode_test trval
 
@@ -9,13 +18,13 @@ LOCALINCLUDES = -I$(srcdir)/../../lib/krb5/asn.1
 
 ENCOBJS = krb5_encode_test.o ktest.o ktest_equal.o utility.o trval.o
 
-krb5_encode_test: $(ENCOBJS) $(DEPLIBS)
-	$(LD) $(LDFLAGS) $(LDARGS) -o krb5_encode_test $(ENCOBJS) $(LIBS)
+krb5_encode_test: $(ENCOBJS) $(KRB5_BASE_DEPLIBS)
+	$(CC_LINK) -o krb5_encode_test $(ENCOBJS) $(KRB5_BASE_LIBS)
 
 DECOBJS = krb5_decode_test.o ktest.o ktest_equal.o utility.o
 
-krb5_decode_test: $(DECOBJS) $(DEPLIBS)
-	$(LD) $(LDFLAGS) $(LDARGS) -o krb5_decode_test $(DECOBJS) $(LIBS)
+krb5_decode_test: $(DECOBJS) $(KRB5_BASE_DEPLIBS)
+	$(CC_LINK) -o krb5_decode_test $(DECOBJS) $(KRB5_BASE_LIBS)
 
 trval: $(srcdir)/trval.c
 	$(CC) -o trval $(CFLAGS) -DSTANDALONE $(srcdir)/trval.c
@@ -44,6 +53,7 @@ clean::
 ################ Dependencies ################
 krb5_decode_test.o: ktest.h utility.h ktest_equal.h debug.h
 krb5_encode_test.o: utility.h ktest.h debug.h
+trval.o: trval.c
 ktest.o: ktest.h utility.h
 ktest_equal.o: ktest_equal.h
 #utility.o: utility.h

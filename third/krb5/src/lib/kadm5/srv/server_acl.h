@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  *
@@ -56,6 +59,7 @@
 #define	ACL_INQUIRE		32
 /* #define ACL_EXTRACT		64 */
 #define	ACL_LIST		128
+#define ACL_SETKEY		256
 #define	ACL_RENAME		(ACL_ADD+ACL_DELETE)
 
 #define	ACL_ALL_MASK		(ACL_ADD	| \
@@ -63,7 +67,8 @@
 				 ACL_MODIFY	| \
 				 ACL_CHANGEPW	| \
 				 ACL_INQUIRE	| \
-				 ACL_LIST)
+				 ACL_LIST	| \
+				 ACL_SETKEY)
 
 krb5_error_code acl_init
 	KRB5_PROTOTYPE((krb5_context,

@@ -10,7 +10,7 @@
 \secentry {The Ticket-Granting Ticket}{2}{5}{4}
 \secentry {Network Services and the Master Database}{2}{6}{4}
 \subsecentry {The Keytab File}{2}{6}{1}{5}
-\secentry {The User--Kerberos Interaction}{2}{7}{5}
+\secentry {The User/Kerberos Interaction}{2}{7}{5}
 \secentry {Definitions}{2}{8}{6}
 \chapentry {Configuration Files}{3}{7}
 \secentry {krb5.conf}{3}{1}{7}
@@ -32,19 +32,19 @@
 \subsecentry {Retrieving Information About a Principal}{4}{3}{1}{19}
 \subsubsecentry {Attributes} {4}{3}{1}{1} {19}
 \subsubsecentry {Retrieving a List of Principals} {4}{3}{1}{2} {20}
-\subsecentry {Privileges}{4}{3}{2}{20}
+\subsecentry {Privileges}{4}{3}{2}{21}
 \subsecentry {Adding or Modifying Principals}{4}{3}{3}{21}
 \subsecentry {Deleting Principals}{4}{3}{4}{25}
 \subsecentry {Changing Passwords}{4}{3}{5}{25}
 \subsecentry {Renaming Principals}{4}{3}{6}{26}
-\secentry {Policies}{4}{4}{26}
-\subsecentry {Retrieving Policies}{4}{4}{1}{26}
+\secentry {Policies}{4}{4}{27}
+\subsecentry {Retrieving Policies}{4}{4}{1}{27}
 \subsecentry {Retrieving the List of Policies}{4}{4}{2}{27}
-\subsecentry {Adding or Modifying Policies}{4}{4}{3}{27}
+\subsecentry {Adding or Modifying Policies}{4}{4}{3}{28}
 \subsecentry {Deleting Policies}{4}{4}{4}{28}
 \secentry {Dumping a Kerberos Database to a File}{4}{5}{29}
 \secentry {Restoring a Kerberos Database from a Dump File}{4}{6}{30}
-\secentry {Creating a Stash File}{4}{7}{30}
+\secentry {Creating a Stash File}{4}{7}{31}
 \secentry {Creating and Destroying a Kerberos Database}{4}{8}{31}
 \chapentry {Application Servers}{5}{33}
 \secentry {Keytabs}{5}{1}{33}

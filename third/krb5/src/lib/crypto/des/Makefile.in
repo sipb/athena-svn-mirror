@@ -1,98 +1,76 @@
+thisconfigdir=./..
+myfulldir=lib/crypto/des
+mydir=des
+BUILDTOP=$(REL)$(U)$(S)$(U)$(S)$(U)
 CFLAGS = $(CCOPTS) $(DEFS)
 
-##DOSBUILDTOP = ..\..\..
-##DOSLIBNAME=..\crypto.lib
+##DOS##BUILDTOP = ..\..\..
+##DOS##PREFIXDIR=des
+##DOS##OBJFILE=..\$(OUTPRE)des.lst
+##WIN16##LIBNAME=..\crypto.lib
 
-COMERRLIB=$(BUILDTOP)/util/et/libcom_err.$(LIBEXT)
+PROG_LIBPATH=-L$(TOPLIBD)
+PROG_RPATH=$(KRB5_LIBDIR)
 
-KLIB = $(TOPLIBD)/libkrb5.$(LIBEXT) $(TOPLIBD)/libcrypto.$(LIBEXT) $(COMERRLIB)
-DEPKLIB = $(TOPLIBD)/libkrb5.$(LIBEXT) $(TOPLIBD)/libcrypto.$(LIBEXT) $(COMERRLIB)
-RUN_SETUP = @KRB5_RUN_ENV@
+RUN_SETUP = @KRB5_RUN_ENV@ KRB5_CONFIG=$(SRCTOP)/config-files/krb5.conf
 
-.c.o:
-	$(CC) $(CFLAGS) -c $(srcdir)/$*.c
-@SHARED_RULE@
+STLIBOBJS=\
+	afsstring2key.o	\
+	d3_cbc.o	\
+	d3_kysched.o	\
+	f_cbc.o 	\
+	f_cksum.o	\
+	f_parity.o 	\
+	f_sched.o 	\
+	f_tables.o	\
+	key_sched.o	\
+	string2key.o	\
+	weak_key.o
 
-OBJS=	afsstring2key.$(OBJEXT) \
-	cbc_cksum.$(OBJEXT)	\
-	finish_key.$(OBJEXT)	\
-	fin_rndkey.$(OBJEXT)	\
-	init_rkey.$(OBJEXT)	\
-	process_ky.$(OBJEXT)	\
-	random_key.$(OBJEXT)	\
-	string2key.$(OBJEXT)	\
-	key_sched.$(OBJEXT)	\
-	weak_key.$(OBJEXT)	\
-	f_cbc.$(OBJEXT) 	\
-	f_cksum.$(OBJEXT) 	\
-	f_sched.$(OBJEXT) 	\
-	f_ecb.$(OBJEXT) 	\
-	f_parity.$(OBJEXT) 	\
-	f_tables.$(OBJEXT)	\
-	d3_cbc.$(OBJEXT) 	\
-	d3_ecb.$(OBJEXT)	\
-	d3_kysched.$(OBJEXT)	\
-	d3_procky.$(OBJEXT) 	\
-	d3_str2ky.$(OBJEXT)	\
-	u_nfold.$(OBJEXT)	\
-	u_rn_key.$(OBJEXT)
+OBJS=	$(OUTPRE)afsstring2key.$(OBJEXT)	\
+	$(OUTPRE)d3_cbc.$(OBJEXT)	\
+	$(OUTPRE)d3_kysched.$(OBJEXT)	\
+	$(OUTPRE)f_cbc.$(OBJEXT) 	\
+	$(OUTPRE)f_cksum.$(OBJEXT)	\
+	$(OUTPRE)f_parity.$(OBJEXT) 	\
+	$(OUTPRE)f_sched.$(OBJEXT) 	\
+	$(OUTPRE)f_tables.$(OBJEXT)	\
+	$(OUTPRE)key_sched.$(OBJEXT)	\
+	$(OUTPRE)string2key.$(OBJEXT)	\
+	$(OUTPRE)weak_key.$(OBJEXT)
 
-SRCS=	$(srcdir)/afsstring2key.c \
-	$(srcdir)/cbc_cksum.c	\
-	$(srcdir)/finish_key.c	\
-	$(srcdir)/fin_rndkey.c	\
-	$(srcdir)/init_rkey.c	\
-	$(srcdir)/process_ky.c	\
-	$(srcdir)/random_key.c	\
-	$(srcdir)/string2key.c	\
+SRCS=	$(srcdir)/afsstring2key.c	\
+	$(srcdir)/d3_cbc.c	\
+	$(srcdir)/d3_kysched.c	\
+	$(srcdir)/f_cbc.c	\
+	$(srcdir)/f_cksum.c	\
+	$(srcdir)/f_parity.c	\
+	$(srcdir)/f_sched.c	\
+	$(srcdir)/f_tables.c	\
 	$(srcdir)/key_sched.c	\
 	$(srcdir)/weak_key.c	\
-	$(srcdir)/f_cbc.c \
-	$(srcdir)/f_cksum.c \
-	$(srcdir)/f_sched.c \
-	$(srcdir)/f_ecb.c \
-	$(srcdir)/f_parity.c \
-	$(srcdir)/f_tables.c \
-	$(srcdir)/d3_cbc.c \
-	$(srcdir)/d3_ecb.c \
-	$(srcdir)/d3_kysched.c \
-	$(srcdir)/d3_procky.c \
-	$(srcdir)/d3_str2ky.c \
-	$(srcdir)/u_nfold.c \
-	$(srcdir)/u_rn_key.c
+	$(srcdir)/string2key.c
 
+##DOS##LIBOBJS = $(OBJS)
 
-all:: $(OBJS)
-
-all-unix:: shared
-all-mac:: shared
-all-windows::
-
-shared:
-	mkdir shared
+all-unix:: all-libobjs
 
 includes:: depend
 
 depend:: $(SRCS)
 
-# FIXME, this is left from the previous DES implementation.
-clean::
-	$(RM) fp.c ip.c key_perm.h odd.h p.c p_table.h s_table.h
+TOBJS = $(OUTPRE)key_sched.$(OBJEXT) $(OUTPRE)f_sched.$(OBJEXT) $(OUTPRE)f_cbc.$(OBJEXT) \
+	$(OUTPRE)f_tables.$(OBJEXT) $(OUTPRE)f_cksum.$(OBJEXT)
 
-verify$(EXEEXT): t_verify.$(OBJEXT) $(DEPKLIB)
-	$(CC) -o $@ t_verify.$(OBJEXT) process_ky.o  key_sched.o \
-	../cryptoconf.o ../des_crc.o $(KLIB) $(LIBS) $(CFLAGS) $(LDFLAGS) 
+verify$(EXEEXT): t_verify.$(OBJEXT) $(TOBJS) f_parity.$(OBJEXT) \
+	$(COM_ERR_DEPLIB)
+	$(CC_LINK) -o $@ t_verify.$(OBJEXT) $(TOBJS) f_parity.$(OBJEXT) \
+		-lcom_err
 
-destest$(EXEEXT): destest.$(OBJEXT) $(DEPKLIB)
-	$(CC) -o $@ destest.$(OBJEXT) process_ky.o key_sched.o \
-	../cryptoconf.o ../des_crc.o  $(KLIB) $(LIBS) $(CFLAGS) $(LDFLAGS) 
+destest$(EXEEXT): destest.$(OBJEXT) $(TOBJS)
+	$(CC_LINK) -o $@ destest.$(OBJEXT) $(TOBJS)
 
-t_random$(EXEEXT): t_random.$(OBJEXT) $(DEPKLIB)
-	$(LD) -o $@ t_random.$(OBJEXT) $(KLIB) $(LIBS) $(CFLAGS) $(LDFLAGS) 
-
-check-mac: check-unix
-
-check-unix:: destest verify
+check-unix:: verify destest
 	$(RUN_SETUP) ./verify -z
 	$(RUN_SETUP) ./verify -m
 	$(RUN_SETUP) ./verify
@@ -102,10 +80,6 @@ check-windows::
 
 clean:: 
 	$(RM) destest$(EXEEXT) verify$(EXEEXT) destest.$(OBJEXT) \
-	t_verify.$(OBJEXT) t_random.$(OBJEXT) t_random$(EXEEXT)
+	t_verify.$(OBJEXT)
 
-clean-unix::
-	$(RM) shared/*
-clean-mac::
-	$(RM) shared/*
-clean-windows::
+clean-unix:: clean-libobjs

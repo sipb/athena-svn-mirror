@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -28,7 +31,7 @@
 #ifndef KRB5_KDB5_DBM__
 #define KRB5_KDB5_DBM__
 
-#if !defined(_MACINTOSH) && !defined(_MSDOS) && !defined(_WIN32)
+#if !defined(macintosh) && !defined(_MSDOS) && !defined(_WIN32)
 	
 /* exclusive or shared lock flags */
 #define	KRB5_DBM_SHARED		0
@@ -82,7 +85,7 @@ krb5_error_code krb5_dbm_db_rename
 		   char * ));
 krb5_error_code krb5_dbm_db_get_principal 
 	KRB5_PROTOTYPE((krb5_context,
-		   krb5_principal,
+		   krb5_const_principal,
 		   krb5_db_entry *,
 		   int *,
 		   krb5_boolean * ));
@@ -90,6 +93,10 @@ void krb5_dbm_db_free_principal
 	KRB5_PROTOTYPE((krb5_context,
 		   krb5_db_entry *,
 		   int ));
+krb5_error_code krb5_dbm_db_delete_principal 
+	KRB5_PROTOTYPE((krb5_context,
+		   krb5_const_principal,
+		   int * ));
 krb5_error_code krb5_dbm_db_put_principal 
 	KRB5_PROTOTYPE((krb5_context,
 		   krb5_db_entry *,
@@ -111,5 +118,5 @@ krb5_error_code krb5_dbm_db_open_database
 krb5_error_code krb5_dbm_db_close_database 
 	KRB5_PROTOTYPE((krb5_context));
 
-#endif /* !defined(_MACINTOSH) && !defined(_MSDOS) && !defined(WIN32) */
+#endif /* !defined(macintosh) && !defined(_MSDOS) && !defined(WIN32) */
 #endif /* KRB5_KDB5_DBM__ */

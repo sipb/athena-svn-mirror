@@ -16,13 +16,42 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
  *
  * Generate (from scratch) a Kerberos V5 KDC database, filling it in with the
  * entries from a V4 database.
+ */
+
+/*
+ * Copyright (C) 1998 by the FundsXpress, INC.
+ * 
+ * All rights reserved.
+ * 
+ * Export of this software from the United States of America may require
+ * a specific license from the United States Government.  It is the
+ * responsibility of any person or organization contemplating export to
+ * obtain such a license before exporting.
+ * 
+ * WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
+ * distribute this software and its documentation for any purpose and
+ * without fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright notice and
+ * this permission notice appear in supporting documentation, and that
+ * the name of FundsXpress. not be used in advertising or publicity pertaining
+ * to distribution of the software without specific, written prior
+ * permission.  FundsXpress makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is" without express
+ * or implied warranty.
+ * 
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
+ * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
 #ifdef KRB5_KRB4_COMPAT
@@ -59,8 +88,7 @@ struct realm_info {
     krb5_deltat max_rlife;
     krb5_timestamp expiration;
     krb5_flags flags;
-    krb5_encrypt_block *eblock;
-    krb5_pointer rseed;
+    krb5_keyblock *key;
 };
 
 static struct realm_info rblock = { /* XXX */
@@ -92,7 +120,6 @@ static int create_local_tgt = 0;
 
 static krb5_keyblock master_keyblock;
 static krb5_principal master_princ;
-static krb5_encrypt_block master_encblock;
 
 static krb5_data tgt_princ_entries[] = {
 	{0, KRB5_TGS_NAME_SIZE, KRB5_TGS_NAME},
@@ -145,10 +172,14 @@ char *argv[];
     kadm5_config_params newparams;
     extern kadm5_config_params global_params;
     long exp_time = 0;
+    krb5_int32 crflags = KRB5_KDB_CREATE_BTREE;
+    krb5_data seed;
 
-    krb5_init_context(&context);
-
-    krb5_init_ets(context);
+    retval = krb5_init_context(&context);
+    if (retval) {
+	fprintf(stderr, "%s: Could not initialize krb5 context.\n", PROGNAME);
+	return;
+    }
 
     if (strrchr(argv[0], '/'))
 	argv[0] = strrchr(argv[0], '/')+1;
@@ -179,6 +210,9 @@ char *argv[];
 		usage();
 	    }
 	}
+	else if (!strcmp(argv[op_ind], "-h")) {
+	    crflags = KRB5_KDB_CREATE_HASH;
+	}
 	else if ((argc - op_ind) >= 1) {
 	    v4dumpfile = argv[op_ind];
 	    op_ind++;
@@ -201,16 +235,16 @@ char *argv[];
 
     if (!v4dumpfile) {
 	usage();
+	krb5_free_context(context);
 	return;
     }
 
     if (!valid_enctype(master_keyblock.enctype)) {
 	com_err(PROGNAME, KRB5_PROG_KEYTYPE_NOSUPP,
 		"while setting up enctype %d", master_keyblock.enctype);
+	krb5_free_context(context);
 	return;
     }
-
-    krb5_use_enctype(context, &master_encblock, master_keyblock.enctype);
 
     /* If the user has not requested locking, don't modify an existing database. */
     if (! tempdb) {
@@ -219,6 +253,7 @@ char *argv[];
 	    fprintf(stderr,
 		    "%s: The v5 database appears to already exist.\n",
 		    PROGNAME);
+	    krb5_free_context(context);
 	    return;
 	}
 	tempdbname = dbname;
@@ -227,18 +262,20 @@ char *argv[];
 	tempdbname = malloc(dbnamelen + 2);
 	if (tempdbname == 0) {
 	    com_err(PROGNAME, ENOMEM, "allocating temporary filename");
+	    krb5_free_context(context);
 	    return;
 	}
 	strcpy(tempdbname, dbname);
 	tempdbname[dbnamelen] = '~';
 	tempdbname[dbnamelen+1] = 0;
-	(void) kdb5_db_destroy(context, tempdbname);
+	(void) krb5_db_destroy(context, tempdbname);
     }
 	
 
     if (!realm) {
 	if (retval = krb5_get_default_realm(context, &defrealm)) {
 	    com_err(PROGNAME, retval, "while retrieving default realm name");
+	    krb5_free_context(context);
 	    return;
 	}	    
 	realm = defrealm;
@@ -249,6 +286,7 @@ char *argv[];
     if (retval = krb5_db_setup_mkey_name(context, mkey_name, realm,
 					 &mkey_fullname, &master_princ)) {
 	com_err(PROGNAME, retval, "while setting up master key name");
+	krb5_free_context(context);
 	return;
     }
 
@@ -269,72 +307,66 @@ master key name '%s'\n",
 	fflush(stdout);
     }
 
-    if (retval = krb5_db_fetch_mkey(context, master_princ, &master_encblock,
+    if (retval = krb5_db_fetch_mkey(context, master_princ,
+				    master_keyblock.enctype,
 				    read_mkey, read_mkey, stash_file, 0, 
 				    &master_keyblock)) {
 	com_err(PROGNAME, retval, "while reading master key");
-	return;
-    }
-    if (retval = krb5_process_key(context, &master_encblock, &master_keyblock)) {
-	com_err(PROGNAME, retval, "while processing master key");
+	krb5_free_context(context);
 	return;
     }
 
-    rblock.eblock = &master_encblock;
-    if (retval = krb5_init_random_key(context, &master_encblock,
-				      &master_keyblock, &rblock.rseed)) {
+    rblock.key = &master_keyblock;
+
+    seed.length = master_keyblock.length;
+    seed.data = master_keyblock.contents;
+
+    if (retval = krb5_c_random_seed(context, &seed)) {
 	com_err(PROGNAME, retval, "while initializing random key generator");
-	(void) krb5_finish_key(context, &master_encblock);
+	krb5_free_context(context);
 	return;
     }
-    if (retval = krb5_db_create(context, tempdbname)) {
-	(void) krb5_finish_key(context, &master_encblock);
-	(void) krb5_finish_random_key(context, &master_encblock, &rblock.rseed);
-	(void) krb5_dbm_db_destroy(context, tempdbname);
+    if (retval = krb5_db_create(context, tempdbname, crflags)) {
 	com_err(PROGNAME, retval, "while creating %sdatabase '%s'",
 		tempdb ? "temporary " : "", tempdbname);
+	krb5_free_context(context);
 	return;
     }
     if (retval = krb5_db_set_name(context, tempdbname)) {
-	(void) krb5_finish_key(context, &master_encblock);
-	(void) krb5_finish_random_key(context, &master_encblock, &rblock.rseed);
-	(void) krb5_dbm_db_destroy(context, tempdbname);
+	(void) krb5_db_destroy(context, tempdbname);
         com_err(PROGNAME, retval, "while setting active database to '%s'",
                 tempdbname);
+	krb5_free_context(context);
         return;
     }
     if (v4init(PROGNAME, v4manual, v4dumpfile)) {
-	(void) krb5_finish_key(context, &master_encblock);
-	(void) krb5_finish_random_key(context, &master_encblock, &rblock.rseed);
-	(void) krb5_dbm_db_destroy(context, tempdbname);
+	(void) krb5_db_destroy(context, tempdbname);
+	krb5_free_context(context);
 	return;
     }
     if ((retval = krb5_db_init(context)) || 
-	(retval = krb5_dbm_db_open_database(context))) {
-	(void) krb5_finish_key(context, &master_encblock);
-	(void) krb5_finish_random_key(context, &master_encblock, &rblock.rseed);
-	(void) krb5_dbm_db_destroy(context, tempdbname);
+	(retval = krb5_db_open_database(context))) {
+	(void) krb5_db_destroy(context, tempdbname);
 	com_err(PROGNAME, retval, "while initializing the database '%s'",
 		tempdbname);
+	krb5_free_context(context);
 	return;
     }
 
     if (retval = add_principal(context, master_princ, MASTER_KEY, &rblock)) {
 	(void) krb5_db_fini(context);
-	(void) krb5_finish_key(context, &master_encblock);
-	(void) krb5_finish_random_key(context, &master_encblock, &rblock.rseed);
-	(void) krb5_dbm_db_destroy(context, tempdbname);
+	(void) krb5_db_destroy(context, tempdbname);
 	com_err(PROGNAME, retval, "while adding K/M to the database");
+	krb5_free_context(context);
 	return;
     }
 
     if (create_local_tgt &&
 	(retval = add_principal(context, &tgt_princ, RANDOM_KEY, &rblock))) {
 	(void) krb5_db_fini(context);
-	(void) krb5_finish_key(context, &master_encblock);
-	(void) krb5_finish_random_key(context, &master_encblock, &rblock.rseed);
-	(void) krb5_dbm_db_destroy(context, tempdbname);
+	(void) krb5_db_destroy(context, tempdbname);
 	com_err(PROGNAME, retval, "while adding TGT service to the database");
+	krb5_free_context(context);
 	return;
     }
 
@@ -355,16 +387,14 @@ master key name '%s'\n",
     if (retval == 0) {
 	if (retval = krb5_db_fini (context))
 	    com_err(PROGNAME, retval, "while shutting down database");
-	else if (tempdb && (retval = krb5_dbm_db_rename(context, tempdbname,
+	else if (tempdb && (retval = krb5_db_rename(context, tempdbname,
 							dbname)))
 	    com_err(PROGNAME, retval, "while renaming temporary database");
     } else {
 	(void) krb5_db_fini (context);
 	if (tempdb)
-		(void) krb5_dbm_db_destroy (context, tempdbname);
+		(void) krb5_db_destroy (context, tempdbname);
     }
-    (void) krb5_finish_key(context, &master_encblock);
-    (void) krb5_finish_random_key(context, &master_encblock, &rblock.rseed);
     memset((char *)master_keyblock.contents, 0, master_keyblock.length);
 
     /*
@@ -378,16 +408,18 @@ master key name '%s'\n",
      * file with policy info.
      */
     if (!tempdb && (retval = osa_adb_create_policy_db(&newparams))) {
-	 com_err(PROGNAME, retval, "while creating policy database");
-	 kadm5_free_config_params(context, &newparams);
-	 return;
+	com_err(PROGNAME, retval, "while creating policy database");
+	kadm5_free_config_params(context, &newparams);
+	krb5_free_context(context);
+	return;
     }
     /*
      * Create the magic principals in the database.
      */
     if (retval = kadm5_create_magic_princs(&newparams, context)) {
-	 com_err(PROGNAME, retval, "while creating KADM5 principals");
-	 return;
+	com_err(PROGNAME, retval, "while creating KADM5 principals");
+	krb5_free_context(context);
+	return;
     }
     
     krb5_free_context(context);
@@ -524,7 +556,7 @@ Principal *princ;
     keysalt.type = KRB5_KDB_SALTTYPE_V4;
     keysalt.data.length = 0;
     keysalt.data.data = (char *) NULL;
-    retval = krb5_dbekd_encrypt_key_data(context, rblock.eblock,
+    retval = krb5_dbekd_encrypt_key_data(context, rblock.key,
 					 &v4v5key, &keysalt, 
 					 princ->key_version,
 					 &entry.key_data[0]);
@@ -569,7 +601,7 @@ struct realm_info *pblock;
 {
     krb5_db_entry entry;
     krb5_error_code retval;
-    krb5_keyblock *rkey;
+    krb5_keyblock rkey;
     int nentries = 1;
     krb5_timestamp mod_time;
     krb5_principal mod_princ;
@@ -596,7 +628,7 @@ struct realm_info *pblock;
     switch (op) {
     case MASTER_KEY:
 	entry.attributes |= KRB5_KDB_DISALLOW_ALL_TIX;
-	if (retval = krb5_dbekd_encrypt_key_data(context, pblock->eblock,
+	if (retval = krb5_dbekd_encrypt_key_data(context, pblock->key,
 						 &master_keyblock,
 						 (krb5_keysalt *) NULL, 1,
 						 &entry.key_data[0])) {
@@ -605,19 +637,19 @@ struct realm_info *pblock;
 	}
 	break;
     case RANDOM_KEY:
-	if (retval = krb5_random_key(context, pblock->eblock, pblock->rseed,
-				     &rkey)) {
+	if (retval = krb5_c_make_random_key(context, pblock->key->enctype,
+					    &rkey)) {
 	    krb5_db_free_principal(context, &entry, 1);
 	    return retval;
 	}
-	if (retval = krb5_dbekd_encrypt_key_data(context, pblock->eblock,
-						 rkey,
+	if (retval = krb5_dbekd_encrypt_key_data(context, pblock->key,
+						 &rkey,
 						 (krb5_keysalt *) NULL, 1,
 						 &entry.key_data[0])) {
 	    krb5_db_free_principal(context, &entry, 1);
 	    return(retval);
 	}
-	krb5_free_keyblock(context, rkey);
+	krb5_free_keyblock_contents(context, &rkey);
 	break;
     case NULL_KEY:
 	return EOPNOTSUPP;

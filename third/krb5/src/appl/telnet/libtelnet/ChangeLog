@@ -1,7 +1,54 @@
+1999-08-31 17:28   Jeffrey Altman <jaltman@columbia.edu>
+
+        * kerberos5.c: Corrections to yesterday's change.
+
+1999-08-30 16:55   Jeffrey Altman <jaltman@columbia.edu>
+
+        * kerberos5.c: Ensure that only "host" service tickets are accepted.
+
 Wed Feb  3 22:59:27 1999  Theodore Y. Ts'o  <tytso@mit.edu>
 
 	* kerberos5.c: Increase size of str_data so that we can accept
 		mongo-gram tickets from Microsoft.  [telnet/686]
+
+1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Set the myfulldir and mydir variables (which are
+		relative to buildtop and thisconfigdir, respectively.)
+
+1998-10-26  Marc Horowitz  <marc@mit.edu>
+
+	* enc_des.c, kerberos.c: the ECB des functions don't exist
+	anymore, but telnet always encrypted/decrypted one block.  Convert
+	to calls to the new crypto api, with des-cbc-raw, using a single
+	block.
+
+Tue Mar  3 14:43:30 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* configure.in: Change test for cgetent to use HAVE_ instead
+		of HAS_, and add a test for gettosbyname().
+
+	* getent.c: Use HAVE_CGETENT instead of HAS_CGETENT
+
+	* parsetos.c: Use HAVE_GETTOSBYNAME instead of HAS_GETTOS
+
+1998-05-06  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* getopt.c (getopt): POSIX states that getopt returns -1 when it
+		is done parsing options, not EOF.
+
+Wed Feb 18 15:37:20 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove trailing slash from thisconfigdir.  Fix up
+	BUILDTOP for new conventions.
+
+Thu Feb 12 10:23:28 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* configure.in: Remove obsolete USE_KRB4_LIBRARY macro
+
+Mon Feb  2 17:02:29 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
 
 Thu Nov 20 17:13:42 1997  Tom Yu  <tlyu@mit.edu>
 
@@ -10,6 +57,19 @@ Thu Nov 20 17:13:42 1997  Tom Yu  <tlyu@mit.edu>
 
 	* kerberos5.c (kerberos5_is): Fix up call to
 	rd_and_store_for_creds. [krb5-appl/502]
+
+Tue Oct 21 10:54:22 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* enc_des.c: Include string.h/strings.h for memcpy prototype
+
+Thu Jul 31 14:57:05 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* Makefile.in (SRCS): Fix typo s/scrdir/srcdir/
+
+Thu Feb  6 00:14:50 1997  Richard Basch  <basch@lehman.com>
+
+	* kerberos5.c (kerberos5_is): First argument to
+		krb5_verify_checksum is a krb5_context!!!
 
 Thu Nov  7 15:29:09 1996  Theodore Ts'o  <tytso@rsts-11.mit.edu>
 
@@ -215,12 +275,12 @@ Fri Jun  9 18:30:02 1995    <tytso@rsx-11.mit.edu>
 	* configure.in: Remove standardized set of autoconf macros, which
 		are now handled by CONFIG_RULES.
 
-Wed May 24 10:29:54 1995  Ezra Peisach  <epeisach@kangaroo.mit.edu>
+Wed May 24 10:29:54 1995  Ezra Peisach  <epeisach@mit.edu>
 
 	* kerberos5.c: Include string.h/strings.h. Include stdlib.h or
 		declare malloc. 
 
-Sun May  7 18:45:09 1995  Ezra Peisach  <epeisach@kangaroo.mit.edu>
+Sun May  7 18:45:09 1995  Ezra Peisach  <epeisach@mit.edu>
 
 	* kerberos5.c (kerberos5_send): Fix improperly closed comment
 			krb5_get_credentials second argument is not 

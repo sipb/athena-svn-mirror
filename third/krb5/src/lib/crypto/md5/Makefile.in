@@ -1,45 +1,46 @@
-CFLAGS = $(CCOPTS) $(DEFS) -I$(srcdir)/../des
+thisconfigdir=./..
+myfulldir=lib/crypto/md5
+mydir=md5
+BUILDTOP=$(REL)$(U)$(S)$(U)$(S)$(U)
+CFLAGS = $(CCOPTS) $(DEFS)
 
-##DOSBUILDTOP = ..\..\..
-##DOSLIBNAME=..\crypto.lib
-RUN_SETUP = @KRB5_RUN_ENV@
-.c.o:
-	$(CC) $(CFLAGS) -c $(srcdir)/$*.c
-@SHARED_RULE@
+##DOS##BUILDTOP = ..\..\..
+##DOS##PREFIXDIR=md5
+##DOS##OBJFILE=..\$(OUTPRE)md5.lst
+##WIN16##LIBNAME=..\crypto.lib
 
-OBJS=	md5.$(OBJEXT) md5glue.$(OBJEXT) md5crypto.$(OBJEXT)
+PROG_LIBPATH=-L$(TOPLIBD)
+PROG_RPATH=$(KRB5_LIBDIR)
 
-SRCS=	$(srcdir)/md5.c $(srcdir)/md5glue.c $(srcdir)/md5crypto.c
+RUN_SETUP = @KRB5_RUN_ENV@ KRB5_CONFIG=$(SRCTOP)/config-files/krb5.conf
 
-all-unix:: shared $(OBJS) 
-all-mac:: shared $(OBJS) 
-all-windows:: $(OBJS)
+STLIBOBJS= md5.o
 
-shared:
-	mkdir shared
+OBJS= $(OUTPRE)md5.$(OBJEXT) 
+
+SRCS= $(srcdir)/md5.c
+
+##DOS##LIBOBJS = $(OBJS)
+
+all-unix:: all-libobjs
+
+includes:: depend
+
+depend:: $(SRCS)
 
 t_mddriver: t_mddriver.o md5.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o t_mddriver t_mddriver.o md5.o
 
-t_mddriver.exe:
-	$(CC) $(CFLAGS2) -o t_mddriver.exe t_mddriver.c md5.c
+$(OUTPRE)t_mddriver.exe: $(OUTPRE)t_mddriver.obj $(OUTPRE)md5.obj
+	link -out:$@ $**
 
-t_cksum: t_cksum.o $(TOPLIBD)/libcrypto.a
-	$(CC) $(CFLAGS) -o t_cksum t_cksum.o $(TOPLIBD)/libcrypto.a $(LIBS)
-
-check-unix:: t_mddriver t_cksum
+check-unix:: t_mddriver
 	$(RUN_SETUP) $(C)t_mddriver -x
-	$(RUN_SETUP)  $(C)t_cksum "this is a test"
 
-check-windows:: t_mddriver$(EXEEXT)
-	$(C)t_mddriver$(EXEEXT) -x
+check-windows:: $(OUTPRE)t_mddriver.exe
+	$(OUTPRE)$(C)t_mddriver.exe -x
 
 clean:: 
-	$(RM) t_mddriver$(EXEEXT) t_mddriver.$(OBJEXT)
-	$(RM) t_cksum$(EXEEXT) t_cksum.$(OBJEXT)
+	$(RM) $(OUTPRE)t_mddriver$(EXEEXT) $(OUTPRE)t_mddriver.$(OBJEXT)
 
-clean-unix::
-	$(RM) shared/*
-clean-mac::
-	$(RM) shared/*
-clean-windows::
+clean-unix:: clean-libobjs

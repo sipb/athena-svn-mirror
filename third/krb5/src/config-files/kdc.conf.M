@@ -12,7 +12,10 @@
 .\" this permission notice appear in supporting documentation, and that
 .\" the name of M.I.T. not be used in advertising or publicity pertaining
 .\" to distribution of the software without specific, written prior
-.\" permission.  M.I.T. makes no representations about the suitability of
+.\" permission.  Furthermore if you modify this software you must label
+.\" your software as modified software and not distribute it in such a
+.\" fashion that it might be confused with the original M.I.T. software.
+.\" M.I.T. makes no representations about the suitability of
 .\" this software for any purpose.  It is provided "as is" without express
 .\" or implied warranty.
 .\"
@@ -50,6 +53,15 @@ This relation lists the ports which the Kerberos server should listen
 on, by default.  This list is a comma separated list of integers.  If
 this relation is not specified, the compiled-in default is usually
 port 88 and port 750.
+
+.IP v4_mode
+This 
+.B string
+specifies how the KDC should respond to Kerberos IV packets. If this
+relation is not specified, the compiled-in default of
+.I nopreauth 
+is used.
+
 .SH REALMS SECTION
 Each tag in the
 .I [realms]

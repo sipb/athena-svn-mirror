@@ -1,11 +1,30 @@
+thisconfigdir=./../..
+myfulldir=lib/krb5/keytab/file
+mydir=keytab/file
+BUILDTOP=$(REL)$(U)$(S)$(U)$(S)$(U)$(S)$(U)
 CFLAGS = $(CCOPTS) $(DEFS)
 
-##DOSBUILDTOP = ..\..\..\..
-##DOSLIBNAME=..\..\krb5.lib
+##DOS##BUILDTOP = ..\..\..\..
+##DOS##PREFIXDIR=keytab\file
+##DOS##OBJFILE=$(OUTPRE)file.lst
+##WIN16##LIBNAME=..\..\krb5.lib
 
-.c.o:
-	$(CC) $(CFLAGS) -c $(srcdir)/$*.c
-@SHARED_RULE@
+STLIBOBJS = \
+	ktf_add.o	\
+	ktf_close.o	\
+	ktf_endget.o	\
+	ktf_g_ent.o	\
+	ktf_g_name.o	\
+	ktf_next.o	\
+	ktf_resolv.o	\
+	ktf_remove.o	\
+	ktf_ssget.o	\
+	ktf_util.o	\
+	ktf_ops.o	\
+	ktf_wops.o	\
+	ktf_wreslv.o	\
+	ktf_defops.o	\
+	ser_ktf.o
 
 SRCS= \
 	$(srcdir)/ktf_add.c \
@@ -25,31 +44,23 @@ SRCS= \
 	$(srcdir)/ser_ktf.c
 
 OBJS = \
-	ktf_add.$(OBJEXT)	\
-	ktf_close.$(OBJEXT)	\
-	ktf_endget.$(OBJEXT)	\
-	ktf_g_ent.$(OBJEXT)	\
-	ktf_g_name.$(OBJEXT)	\
-	ktf_next.$(OBJEXT)	\
-	ktf_resolv.$(OBJEXT)	\
-	ktf_remove.$(OBJEXT)	\
-	ktf_ssget.$(OBJEXT)	\
-	ktf_util.$(OBJEXT)	\
-	ktf_ops.$(OBJEXT)	\
-	ktf_wops.$(OBJEXT)	\
-	ktf_wreslv.$(OBJEXT)	\
-	ktf_defops.$(OBJEXT)	\
-	ser_ktf.$(OBJEXT)
+	$(OUTPRE)ktf_add.$(OBJEXT)	\
+	$(OUTPRE)ktf_close.$(OBJEXT)	\
+	$(OUTPRE)ktf_endget.$(OBJEXT)	\
+	$(OUTPRE)ktf_g_ent.$(OBJEXT)	\
+	$(OUTPRE)ktf_g_name.$(OBJEXT)	\
+	$(OUTPRE)ktf_next.$(OBJEXT)	\
+	$(OUTPRE)ktf_resolv.$(OBJEXT)	\
+	$(OUTPRE)ktf_remove.$(OBJEXT)	\
+	$(OUTPRE)ktf_ssget.$(OBJEXT)	\
+	$(OUTPRE)ktf_util.$(OBJEXT)	\
+	$(OUTPRE)ktf_ops.$(OBJEXT)	\
+	$(OUTPRE)ktf_wops.$(OBJEXT)	\
+	$(OUTPRE)ktf_wreslv.$(OBJEXT)	\
+	$(OUTPRE)ktf_defops.$(OBJEXT)	\
+	$(OUTPRE)ser_ktf.$(OBJEXT)
 
-all-unix:: shared $(OBJS)
-all-mac:: $(OBJS)
-all-windows:: $(OBJS)
+##DOS##LIBOBJS = $(OBJS)
 
-shared:
-	mkdir shared
-
-clean-unix::
-	$(RM) shared/*
-
-clean-mac::
-clean-windows::
+all-unix:: all-libobjs
+clean-unix:: clean-libobjs

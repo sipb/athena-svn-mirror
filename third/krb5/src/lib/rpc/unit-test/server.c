@@ -1,22 +1,22 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved.
  *
- * $Id: server.c,v 1.1.1.3 1999-02-09 20:57:01 danw Exp $
+ * $Id: server.c,v 1.1.1.4 1999-10-05 16:15:20 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/unit-test/server.c,v $
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/unit-test/server.c,v 1.1.1.3 1999-02-09 20:57:01 danw Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/unit-test/server.c,v 1.1.1.4 1999-10-05 16:15:20 ghudson Exp $";
 #endif
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <rpc/rpc.h>
+#include <gssrpc/rpc.h>
 #include <arpa/inet.h>  /* inet_ntoa */
 #include <gssapi/gssapi.h>
 #include <gssapi/gssapi_generic.h>
-#include <rpc/auth_gssapi.h>
+#include <gssrpc/auth_gssapi.h>
 #include <sys/param.h>	/* MAXHOSTNAMELEN */
 #include "rpc_test.h"
 

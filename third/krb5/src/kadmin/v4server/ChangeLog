@@ -1,7 +1,143 @@
+Tue Jan 12 18:26:48 1999  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (CFLAGS): PW_CHECK functionality now in DEFS.
+
+1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Set the myfulldir and mydir variables (which are
+		relative to buildtop and thisconfigdir, respectively.)
+
+1998-10-27  Marc Horowitz  <marc@mit.edu>
+
+	* admin_server.c, kadm_funcs.c, kadm_ser_wrap.c, kadm_server.h:
+	convert to new crypto api
+
+Fri Jul 31 18:17:16 1998  Tom Yu  <tlyu@mit.edu>
+
+	* kadm_ser_wrap.c (kadm_ser_init): Remove references to
+ 	master_encblock, as it's no longer needed in the new crypto API,
+ 	adjusting kdb calls accordingly.  Also punt calls to use_enctype,
+ 	process_key, etc.
+
+	* admin_server.c (clear_secrets): Remove references to
+	master_encblock, due to new crypto API.
+
+Mon Jul 20 11:20:32 1998  Ezra Peisach  <epeisach@mit.edu>
+
+	* acl_files.c: Include stdlib.h if present.
+
+Thu Jul  9 21:52:41 1998  Tom Yu  <tlyu@mit.edu>
+
+	* kadm_server.c (kadm_ser_cpw): Re-enable "old-style" password
+ 	changing.  Yes, it's potentially a problem due to lack of quality
+	checking, but we'll live with that because we can use
+	key-hash-based checks too.
+
+Wed Jul  8 01:32:52 1998  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* kadm_ser_wrap.c (kadm_ser_init): Use krb5_425_conv_principal
+		instead of krb5_build_principal to create the changepw
+		sprinc principal.
+
+Fri Jul  3 18:17:48 1998  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* Makefile.in (build_pwfile): Add rule to build the build_pwfile
+		program.   
+
+	* kadm_server.c (kadm_ser_cpw): Put the call to the
+		kadm_approve_pw in the common code, so it's executed even
+		if KADM5 is defined.  Add appropriate syslogs to the
+		change password processing.
+
+	* kadm_funcs.c (pwstring;): If NDBM_PW_CHECK is defined, then do
+		the NDBM-based dictionary check.   Build kadmind4 using
+		the make option PW_CHECK=-DNDBM_PW_CHECK if this feature
+		is desired.
+
 1998-05-08  Theodore Ts'o  <tytso@rsts-11.mit.edu>
 
 	* kadm_server.c (krb_log): Print the year using 4 digit to avoid
 		Y2K issues.
+
+1998-05-06  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* admin_server.c (argv): POSIX states that getopt returns -1
+		when it is done parsing options, not EOF.
+
+Fri Feb 27 23:32:38 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Changed thisconfigdir to point at the kadmin
+ 		directory, since we've moved all of the configure.in
+		tests to the toplevel kadmin configure.in
+
+Wed Feb 18 16:00:59 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove trailing slash from thisconfigdir.  Fix up
+	BUILDTOP for new conventions.
+
+Mon Feb  2 17:02:29 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+Thu Oct 23 13:07:01 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* kadm_server.h: Declare kadm_context as extern so it will not be
+	 	multiply defined in all source files.
+
+Wed Aug  6 20:27:27 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Add support for compiling with Hesiod.
+
+Fri Jul 25 15:49:58 1997  Tom Yu  <tlyu@mit.edu>
+
+	* kadm_funcs.c: Remove mention of dbm for now.  It should probably
+	be added back later to deal with dbm-hashed passwd files.
+
+Tue Jul  1 02:38:50 1997  Tom Yu  <tlyu@mit.edu>
+
+	* kadm_funcs.c, kadm_server.c, kadm_ser_wrap.c: Reenable mod and
+	check_pw.
+
+	* kadm_funcs.c, kadm_server.c, kadm_ser_wrap.c: Reenable get and
+	add.
+
+Wed Jun 18 18:38:45 1997  Tom Yu  <tlyu@mit.edu>
+
+	* kadm_funcs.c (kadm_chg_srvtab): Remove extraneous macros that
+	were elaborate contortions to avoid using goto.
+
+Mon May 26 22:44:21 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (OBJS): Build kadm_funcs.c again.
+
+	* kadm_funcs.c: Re-enable kadm_chg_srvtab() and update it to use
+	the new kadm5 interface.
+
+	* kadm_ser_wrap.c: Re-enable kadm_ser_stab().
+
+	* kadm_server.c: Re-enable kadm_ser_stab().
+
+Tue May 13 20:21:21 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in:
+	* admin_server.c:
+	* kadm_server.c:
+	* kadm_ser_wrap.c: Convert to use new kadm5 API; this still needs
+	work to remove references to krb5_db and to regain full v4 kadmind
+	functionality (or as much as is possible).
+
+Tue Feb 18 09:59:59 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* acl_files.c: Do not declare malloc() or calloc() if stdlib.h exists.
+
+Thu Feb  6 14:49:45 1997  Tom Yu  <tlyu@voltage-multiplier.mit.edu>
+
+	* Makefile.in (LOCALINCLUDE): Repair lack of -I. and -I$(srcdir)
+
+Tue Feb  4 21:23:16 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in:
+	* configure.in: Update to new program build procedure.
 
 Fri Nov 22 15:49:27 1996  unknown  <bjaspan@mit.edu>
 

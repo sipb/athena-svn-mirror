@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <string.h>
+#if HAVE_TCL_H
 #include <tcl.h>
+#elif HAVE_TCL_TCL_H
+#include <tcl/tcl.h>
+#endif
 #define USE_KADM5_API_VERSION 2
 #include <kadm5/admin.h>
 #include <com_err.h>
@@ -933,7 +937,7 @@ static int parse_tl_data(Tcl_Interp *interp, char *list,
 	       retcode = TCL_ERROR;
 	       goto finished;
 	  }
-	  tl->tl_data_contents = (char *) malloc(tmp+1);
+	  tl->tl_data_contents = (krb5_octet *) malloc(tmp+1);
 	  strcpy(tl->tl_data_contents, argv1[2]);
 
 	  free(argv1);
@@ -2367,7 +2371,7 @@ int tcl_kadm5_free_principal_ent(ClientData clientData,
 	       return TCL_ERROR;
 	  }
 
-	  ent = Tcl_GetHashValue(entry);
+	  ent = (kadm5_principal_ent_t) Tcl_GetHashValue(entry);
 
 	  if (ret = kadm5_free_principal_ent(server_handle, ent)) {
 	      stash_error(interp, ret);
@@ -2423,7 +2427,7 @@ int tcl_kadm5_free_policy_ent(ClientData clientData,
 	       return TCL_ERROR;
 	  }
 
-	  ent = Tcl_GetHashValue(entry);
+	  ent = (kadm5_policy_ent_t) Tcl_GetHashValue(entry);
 
 	  if (ret = kadm5_free_policy_ent(server_handle, ent)) {
 	      stash_error(interp, ret);

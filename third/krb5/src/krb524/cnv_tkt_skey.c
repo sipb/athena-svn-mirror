@@ -24,10 +24,8 @@
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/time.h>
-#include <sys/socket.h>
 #include <netinet/in.h>
 #include <krb.h>
-#include <krb4-proto.h>
 #include "krb524.h"
 
 /* rather than copying the cmu code, these values are derived from
@@ -56,17 +54,21 @@ static long cmu_seconds[] =
  * Convert a v5 ticket for server to a v4 ticket, using service key
  * skey for both.
  */
-int krb524_convert_tkt_skey(context, v5tkt, v4tkt, v5_skey, v4_skey)
+int krb524_convert_tkt_skey(context, v5tkt, v4tkt, v5_skey, v4_skey,
+			    saddr)
      krb5_context context;
      krb5_ticket *v5tkt;
      KTEXT_ST *v4tkt;
      krb5_keyblock *v5_skey, *v4_skey;
+     struct sockaddr_in *saddr;
 {
      char pname[ANAME_SZ], pinst[INST_SZ], prealm[REALM_SZ];
      char sname[ANAME_SZ], sinst[INST_SZ];
      krb5_enc_tkt_part *v5etkt;
      int ret, lifetime, deltatime;
      krb5_timestamp server_time;
+     struct sockaddr_in *sinp = (struct sockaddr_in *)saddr;
+     krb5_address kaddr;
 
      v5tkt->enc_part2 = NULL;
      if ((ret = krb5_decrypt_tkt_part(context, v5_skey, v5tkt))) {
@@ -133,18 +135,18 @@ int krb524_convert_tkt_skey(context, v5tkt, v4tkt, v5_skey, v4_skey)
 	    return KRB5KRB_AP_ERR_TKT_NYV;
      }
 
-     /* XXX perhaps we should use the addr of the client host if */
-     /* v5creds contains more than one addr.  Q: Does V4 support */
-     /* non-INET addresses? */
-     if (!v5etkt->caddrs || !v5etkt->caddrs[0] ||
-	 v5etkt->caddrs[0]->addrtype != ADDRTYPE_INET) {
-	  if (krb524_debug)
-	       fprintf(stderr, "Invalid v5creds address information.\n");
-	  krb5_free_enc_tkt_part(context, v5etkt);
-	  v5tkt->enc_part2 = NULL;
-	  return KRB524_BADADDR;
+     kaddr.addrtype = ADDRTYPE_INET;
+     kaddr.length = sizeof(sinp->sin_addr);
+     kaddr.contents = (krb5_octet *)&sinp->sin_addr;
+
+     if (!krb5_address_search(context, &kaddr, v5etkt->caddrs)) {
+	 if (krb524_debug)
+	     fprintf(stderr, "Invalid v5creds address information.\n");
+	 krb5_free_enc_tkt_part(context, v5etkt);
+	 v5tkt->enc_part2 = NULL;
+	 return KRB524_BADADDR;
      }
-     
+
      if (krb524_debug)
 	printf("startime = %ld, authtime = %ld, lifetime = %ld\n",
 	       (long) v5etkt->times.starttime,
@@ -152,19 +154,39 @@ int krb524_convert_tkt_skey(context, v5tkt, v4tkt, v5_skey, v4_skey)
 	       (long) lifetime);
 
      /* XXX are there V5 flags we should map to V4 equivalents? */
-     ret = krb_create_ticket(v4tkt,
-			     0, /* flags */			     
-			     pname,
-			     pinst,
-			     prealm,
-			     *((unsigned long *)v5etkt->caddrs[0]->contents),
-			     (char *) v5etkt->session->contents,
-			     lifetime,
-			     /* issue_data */
-			     server_time,
-			     sname,
-			     sinst,
-			     v4_skey->contents);
+     if (v4_skey->enctype == ENCTYPE_DES_CBC_CRC) {
+	 ret = krb_create_ticket(v4tkt,
+				 0, /* flags */			     
+				 pname,
+				 pinst,
+				 prealm,
+				 *((unsigned long *)kaddr.contents),
+				 (char *) v5etkt->session->contents,
+				 lifetime,
+				 /* issue_data */
+				 server_time,
+				 sname,
+				 sinst,
+				 v4_skey->contents);
+     } else {
+	 /* Force enctype to be raw if using DES3. */
+	 if (v4_skey->enctype == ENCTYPE_DES3_CBC_SHA1 ||
+	     v4_skey->enctype == ENCTYPE_LOCAL_DES3_HMAC_SHA1)
+	     v4_skey->enctype = ENCTYPE_DES3_CBC_RAW;
+	 ret = krb_cr_tkt_krb5(v4tkt,
+			       0, /* flags */			     
+			       pname,
+			       pinst,
+			       prealm,
+			       *((unsigned long *)kaddr.contents),
+			       (char *) v5etkt->session->contents,
+			       lifetime,
+			       /* issue_data */
+			       server_time,
+			       sname,
+			       sinst,
+			       v4_skey);
+     }
 
      krb5_free_enc_tkt_part(context, v5etkt);
      v5tkt->enc_part2 = NULL;

@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  *
@@ -34,6 +37,7 @@
 #include "adm_proto.h"
 #include "com_err.h"
 #include <stdio.h>
+#include <ctype.h>
 #ifdef	HAVE_SYSLOG_H
 #include <syslog.h>
 #endif	/* HAVE_SYSLOG_H */
@@ -159,8 +163,8 @@ static struct log_entry	def_log_entry;
  */
 #define	DEVICE_OPEN(d, m)	fopen(d, m)
 #define	CONSOLE_OPEN(m)		fopen("/dev/console", m)
-#define	DEVICE_PRINT(f, m)	((fprintf(f, m) >= 0) ? 		\
-				 (fprintf(f, "\r\n"), fflush(f), 0) :	\
+#define	DEVICE_PRINT(f, m)	((fprintf(f, "%s\r\n", m) >= 0) ? 	\
+				 (fflush(f), 0) :			\
 				 -1)
 #define	DEVICE_CLOSE(d)		fclose(d)
 
@@ -276,14 +280,13 @@ klog_com_err_proc(whoami, code, format, ap)
 	    /*
 	     * Files/standard error.
 	     */
-	    if (fprintf(log_control.log_entries[lindex].lfu_filep,
+	    if (fprintf(log_control.log_entries[lindex].lfu_filep, "%s\n",
 			outbuf) < 0) {
 		/* Attempt to report error */
 		fprintf(stderr, log_file_err, whoami,
 			log_control.log_entries[lindex].lfu_fname);
 	    }
 	    else {
-		fprintf(log_control.log_entries[lindex].lfu_filep, "\n");
 		fflush(log_control.log_entries[lindex].lfu_filep);
 	    }
 	    break;
@@ -878,14 +881,13 @@ klog_vsyslog(priority, format, arglist)
 	    /*
 	     * Files/standard error.
 	     */
-	    if (fprintf(log_control.log_entries[lindex].lfu_filep, 
+	    if (fprintf(log_control.log_entries[lindex].lfu_filep, "%s\n",
 			outbuf) < 0) {
 		/* Attempt to report error */
-		fprintf(stderr, log_file_err,
+		fprintf(stderr, log_file_err, log_control.log_whoami,
 			log_control.log_entries[lindex].lfu_fname);
 	    }
 	    else {
-		fprintf(log_control.log_entries[lindex].lfu_filep, "\n");
 		fflush(log_control.log_entries[lindex].lfu_filep);
 	    }
 	    break;
@@ -897,7 +899,7 @@ klog_vsyslog(priority, format, arglist)
 	    if (DEVICE_PRINT(log_control.log_entries[lindex].ldu_filep,
 			     outbuf) < 0) {
 		/* Attempt to report error */
-		fprintf(stderr, log_device_err,
+		fprintf(stderr, log_device_err, log_control.log_whoami,
 			log_control.log_entries[lindex].ldu_devname);
 	    }
 	    break;
@@ -941,4 +943,43 @@ krb5_klog_syslog(priority, format, va_alist)
     va_end(pvar);
     return(retval);
 }
+
+/*
+ * krb5_klog_reopen() - Close and reopen any open (non-syslog) log files.
+ *                      This function is called when a SIGHUP is received
+ *                      so that external log-archival utilities may
+ *                      alert the Kerberos daemons that they should get
+ *                      a new file descriptor for the give filename.
+ */
+void
+krb5_klog_reopen(kcontext)
+krb5_context kcontext;
+{
+    int lindex;
+    FILE *f;
+
+    /*
+     * Only logs which are actually files need to be closed
+     * and reopened in response to a SIGHUP
+     */
+    for (lindex = 0; lindex < log_control.log_nentries; lindex++) {
+	if (log_control.log_entries[lindex].log_type == K_LOG_FILE) {
+	    fclose(log_control.log_entries[lindex].lfu_filep);
+	    /*
+	     * In case the old logfile did not get moved out of the
+	     * way, open for append to prevent squashing the old logs.
+	     */
+	    f = fopen(log_control.log_entries[lindex].lfu_fname, "a+");
+	    if (f) {
+		log_control.log_entries[lindex].lfu_filep = f;
+	    } else {
+		fprintf(stderr, "Couldn't open log file %s: %s\n",
+			log_control.log_entries[lindex].lfu_fname,
+			error_message(errno));
+	    }
+	}
+    }
+}
+
 #endif /* !defined(_MSDOS) */
+

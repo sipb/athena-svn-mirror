@@ -1,12 +1,33 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/server/ovsec_kadmd.c,v 1.1.1.4 1999-03-25 04:32:25 danw Exp $
  */
 
-#if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/server/ovsec_kadmd.c,v 1.1.1.4 1999-03-25 04:32:25 danw Exp $";
-#endif
+/*
+ * Copyright (C) 1998 by the FundsXpress, INC.
+ * 
+ * All rights reserved.
+ * 
+ * Export of this software from the United States of America may require
+ * a specific license from the United States Government.  It is the
+ * responsibility of any person or organization contemplating export to
+ * obtain such a license before exporting.
+ * 
+ * WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
+ * distribute this software and its documentation for any purpose and
+ * without fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright notice and
+ * this permission notice appear in supporting documentation, and that
+ * the name of FundsXpress. not be used in advertising or publicity pertaining
+ * to distribution of the software without specific, written prior
+ * permission.  FundsXpress makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is" without express
+ * or implied warranty.
+ * 
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
+ * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ */
 
 #include    <stdio.h>
 #include    <signal.h>
@@ -21,11 +42,13 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src
 #include    <netinet/in.h>
 #include    <arpa/inet.h>  /* inet_ntoa */
 #include    <netdb.h>
-#include    <rpc/rpc.h>
-#include    <gssapi/gssapi_krb5.h>
-#include    <rpc/auth_gssapi.h>
+#include    <gssrpc/rpc.h>
+#include    <gssapi/gssapi.h>
+#include    <gssrpc/auth_gssapi.h>
 #include    <kadm5/admin.h>
 #include    <kadm5/kadm_rpc.h>
+#include    <kadm5/server_acl.h>
+#include    <krb5/adm_proto.h>
 #include    <string.h>
 
 #ifdef PURIFY
@@ -37,13 +60,19 @@ void	request_pure_report(int);
 void	request_pure_clear(int);
 #endif /* PURIFY */
 
-int	signal_request_exit = 0;
-int	signal_request_reset = 0;
+volatile int	signal_request_exit = 0;
+volatile int	signal_request_hup = 0;
+void    setup_signal_handlers(void);
 void	request_exit(int);
-void	request_reset_db(int);
+void	request_hup(int);
 void	reset_db(void);
 void	sig_pipe(int);
 void	kadm_svc_run(void);
+
+#ifdef POSIX_SIGNALS
+static struct sigaction s_action;
+#endif /* POSIX_SIGNALS */
+
 
 #define	TIMEOUT	15
 
@@ -63,7 +92,7 @@ void *global_server_handle;
  * it also restricts us to linking against the Kv5 GSS-API library.
  * Since this is *k*admind, that shouldn't be a problem.
  */
-extern 	char *krb5_defkeyname;
+extern 	char *krb5_overridekeyname;
 
 char *build_princ_name(char *name, char *realm);
 void log_badauth(OM_uint32 major, OM_uint32 minor,
@@ -77,6 +106,13 @@ void log_badauth_display_status(char *msg, OM_uint32 major, OM_uint32 minor);
 void log_badauth_display_status_1(char *m, OM_uint32 code, int type,
 				  int rec);
 	
+int schpw;
+void do_schpw(int s, kadm5_config_params *params);
+kadm5_config_params params;
+krb5_error_code process_chpw_request(krb5_context context, void *server_handle,
+				     char *realm, int s, krb5_keytab keytab,
+				     struct sockaddr_in *sin,
+				     krb5_data *req, krb5_data *rep);
 
 /*
  * Function: usage
@@ -96,6 +132,58 @@ void usage()
      exit(1);
 }
 
+/*
+ * Function: display_status
+ *
+ * Purpose: displays GSS-API messages
+ *
+ * Arguments:
+ *
+ * 	msg		a string to be displayed with the message
+ * 	maj_stat	the GSS-API major status code
+ * 	min_stat	the GSS-API minor status code
+ *
+ * Effects:
+ *
+ * The GSS-API messages associated with maj_stat and min_stat are
+ * displayed on stderr, each preceeded by "GSS-API error <msg>: " and
+ * followed by a newline.
+ */
+static void display_status_1();
+
+void display_status(msg, maj_stat, min_stat)
+     char *msg;
+     OM_uint32 maj_stat;
+     OM_uint32 min_stat;
+{
+     display_status_1(msg, maj_stat, GSS_C_GSS_CODE);
+     display_status_1(msg, min_stat, GSS_C_MECH_CODE);
+}
+
+static void display_status_1(m, code, type)
+     char *m;
+     OM_uint32 code;
+     int type;
+{
+	OM_uint32 maj_stat, min_stat;
+	gss_buffer_desc msg;
+	OM_uint32 msg_ctx;
+     
+	msg_ctx = 0;
+	while (1) {
+		maj_stat = gss_display_status(&min_stat, code,
+					      type, GSS_C_NULL_OID,
+					      &msg_ctx, &msg);
+		fprintf(stderr, "GSS-API error %s: %s\n", m,
+			(char *)msg.value); 
+		(void) gss_release_buffer(&min_stat, &msg);
+	  
+		if (!msg_ctx)
+			break;
+	}
+}
+
+
 /* XXX yuck.  the signal handlers need this */
 static krb5_context context;
 
@@ -105,21 +193,29 @@ int main(int argc, char *argv[])
      register	SVCXPRT *transp;
      extern	char *optarg;
      extern	int optind, opterr;
-     int ret, rlen, nofork, oldnames = 0;
-     OM_uint32 OMret;
+     int ret, nofork, oldnames = 0;
+     OM_uint32 OMret, major_status, minor_status;
      char *whoami;
-     FILE *acl_file;
      gss_buffer_desc in_buf;
-     struct servent *srv;
      struct sockaddr_in addr;
      int s;
-     short port = 0;
      auth_gssapi_name names[4];
-     kadm5_config_params params;
-
+     gss_buffer_desc gssbuf;
+     gss_OID nt_krb5_name_oid;
+     
+     /* This is OID value the Krb5_Name NameType */
+     gssbuf.value = "{1 2 840 113554 1 2 2 1}";
+     gssbuf.length = strlen(gssbuf.value);
+     major_status = gss_str_to_oid(&minor_status, &gssbuf, &nt_krb5_name_oid);
+     if (major_status != GSS_S_COMPLETE) {
+	     fprintf(stderr, "Couldn't create KRB5 Name NameType OID\n");
+	     display_status("str_to_oid", major_status, minor_status);
+	     exit(1);
+     }
+     
      names[0].name = names[1].name = names[2].name = names[3].name = NULL;
      names[0].type = names[1].type = names[2].type = names[3].type =
-	  gss_nt_krb5_name;
+	     nt_krb5_name_oid;
 
 #ifdef PURIFY
      purify_start_batch();
@@ -159,7 +255,7 @@ int main(int argc, char *argv[])
      if (argc != 0)
 	  usage();
 
-     if (ret = krb5_init_context(&context)) {
+     if ((ret = krb5_init_context(&context))) {
 	  fprintf(stderr, "%s: %s while initializing context, aborting\n",
 		  whoami, error_message(ret));
 	  exit(1);
@@ -177,18 +273,18 @@ int main(int argc, char *argv[])
 		 error_message(ret));
 	  fprintf(stderr, "%s: %s while initializing, aborting\n",
 		  whoami, error_message(ret));
-	  krb5_klog_close();
+	  krb5_klog_close(context);
 	  exit(1);
      }
      
-     if (ret = kadm5_get_config_params(context, NULL, NULL, &params,
-				       &params)) {
+     if ((ret = kadm5_get_config_params(context, NULL, NULL, &params,
+					&params))) {
 	  krb5_klog_syslog(LOG_ERR, "%s: %s while initializing, aborting",
 			   whoami, error_message(ret));
 	  fprintf(stderr, "%s: %s while initializing, aborting\n",
 		  whoami, error_message(ret));
 	  kadm5_destroy(global_server_handle);
-	  krb5_klog_close();
+	  krb5_klog_close(context);
 	  exit(1);
      }
 
@@ -202,7 +298,7 @@ int main(int argc, char *argv[])
 	  fprintf(stderr, "%s: Missing required configuration values "
 		  "(%x) while initializing, aborting\n", whoami,
 		  (params.mask & REQUIRED_PARAMS) ^ REQUIRED_PARAMS);
-	  krb5_klog_close();
+	  krb5_klog_close(context);
 	  kadm5_destroy(global_server_handle);
 	  exit(1);
      }
@@ -218,8 +314,19 @@ int main(int argc, char *argv[])
 	  fprintf(stderr, "Cannot create TCP socket: %s",
 		  error_message(errno));
 	  kadm5_destroy(global_server_handle);
-	  krb5_klog_close();	  
+	  krb5_klog_close(context);	  
 	  exit(1);
+     }
+
+     if ((schpw = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
+	 krb5_klog_syslog(LOG_ERR,
+			   "cannot create simple chpw socket: %s",
+			   error_message(errno));
+	 fprintf(stderr, "Cannot create simple chpw socket: %s",
+		 error_message(errno));
+	 kadm5_destroy(global_server_handle);
+	 krb5_klog_close(context);
+	 exit(1);
      }
 
 #ifdef SO_REUSEADDR
@@ -245,11 +352,28 @@ int main(int argc, char *argv[])
 	     fprintf(stderr, "Cannot set SO_REUSEADDR: %s",
 		     error_message(errno));
 	     kadm5_destroy(global_server_handle);
-	     krb5_klog_close();	  
+	     krb5_klog_close(context);	  
 	     exit(1);
 	 }
+	 if (setsockopt(schpw, SOL_SOCKET, SO_REUSEADDR,
+			(char *) &allowed, sizeof(allowed)) < 0) {
+	     krb5_klog_syslog(LOG_ERR, "main",
+			      "cannot set SO_REUSEADDR on simple chpw socket: %s", 
+			      error_message(errno));
+	     fprintf(stderr,
+		     "Cannot set SO_REUSEADDR on simple chpw socket: %s",
+ 		     error_message(errno));
+ 	     kadm5_destroy(global_server_handle);
+ 	     krb5_klog_close(context);
+	 }
+
      }
 #endif /* SO_REUSEADDR */
+     memset(&addr, 0, sizeof(addr));
+     addr.sin_family = AF_INET;
+     addr.sin_addr.s_addr = INADDR_ANY;
+     addr.sin_port = htons(params.kadmind_port);
+
      if (bind(s, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
 	  int oerrno = errno;
 	  fprintf(stderr, "%s: Cannot bind socket.\n", whoami);
@@ -268,7 +392,7 @@ int main(int argc, char *argv[])
 	       fprintf(stderr,
 "This probably means that another %s process is already\n"
 "running, or that another program is using the server port (number %d)\n"
-"after being assigned it by the RPC portmap deamon.  If another\n"
+"after being assigned it by the RPC portmap daemon.  If another\n"
 "%s is already running, you should kill it before\n"
 "restarting the server.  If, on the other hand, another program is\n"
 "using the server port, you should kill it before running\n"
@@ -280,7 +404,41 @@ int main(int argc, char *argv[])
 		      htons(addr.sin_port));
 	  }
 	  kadm5_destroy(global_server_handle);
-	  krb5_klog_close();	  
+	  krb5_klog_close(context);
+	  exit(1);
+     }
+     memset(&addr, 0, sizeof(addr));
+     addr.sin_family = AF_INET;
+     addr.sin_addr.s_addr = INADDR_ANY;
+     /* XXX */
+     addr.sin_port = htons(params.kpasswd_port);
+
+     if (bind(schpw, (struct sockaddr *)&addr, sizeof(addr)) < 0) {
+	  char portbuf[32];
+	  int oerrno = errno;
+	  fprintf(stderr, "%s: Cannot bind socket.\n", whoami);
+	  fprintf(stderr, "bind: %s\n", error_message(oerrno));
+	  errno = oerrno;
+	  sprintf(portbuf, "%d", ntohs(addr.sin_port));
+	  krb5_klog_syslog(LOG_ERR, "cannot bind simple chpw socket: %s",
+			   error_message(oerrno));
+	  if(oerrno == EADDRINUSE) {
+	       char *w = strrchr(whoami, '/');
+	       if (w) {
+		    w++;
+	       }
+	       else {
+		    w = whoami;
+	       }
+	       fprintf(stderr,
+"This probably means that another %s process is already\n"
+"running, or that another program is using the server port (number %d).\n"
+"If another %s is already running, you should kill it before\n"
+"restarting the server.\n",
+		       w, ntohs(addr.sin_port), w);
+ 	  }
+ 	  kadm5_destroy(global_server_handle);
+ 	  krb5_klog_close(context);
 	  exit(1);
      }
      
@@ -289,14 +447,14 @@ int main(int argc, char *argv[])
 	  fprintf(stderr, "%s: Cannot create RPC service.\n", whoami);
 	  krb5_klog_syslog(LOG_ERR, "Cannot create RPC service: %m");
 	  kadm5_destroy(global_server_handle);
-	  krb5_klog_close();	  
+	  krb5_klog_close(context);	  
 	  exit(1);
      }
      if(!svc_register(transp, KADM, KADMVERS, kadm_1, 0)) {
 	  fprintf(stderr, "%s: Cannot register RPC service.\n", whoami);
 	  krb5_klog_syslog(LOG_ERR, "Cannot register RPC service, failing.");
 	  kadm5_destroy(global_server_handle);
-	  krb5_klog_close();	  
+	  krb5_klog_close(context);	  
 	  exit(1);
      }
 
@@ -307,18 +465,20 @@ int main(int argc, char *argv[])
 				      params.realm); 
      if (names[0].name == NULL || names[1].name == NULL ||
 	 names[2].name == NULL || names[3].name == NULL) {
-	  krb5_klog_syslog(LOG_ERR, "Cannot initialize GSS-API authentication, "
-		 "failing.");
-	  fprintf(stderr, "%s: Cannot initialize GSS-API authentication.\n",
+	  krb5_klog_syslog(LOG_ERR,
+			   "Cannot build GSS-API authentication names, "
+			   "failing.");
+	  fprintf(stderr, "%s: Cannot build GSS-API authentication names.\n",
 		  whoami);
 	  kadm5_destroy(global_server_handle);
-	  krb5_klog_close();	  
+	  krb5_klog_close(context);	  
 	  exit(1);
      }
 
-     /* XXX krb5_defkeyname is an internal library global and should
-        go away */
-     krb5_defkeyname = params.admin_keytab;
+     /* XXX krb5_overridekeyname is an internal library global and should
+        go away.  This is an awful hack. */
+
+     krb5_overridekeyname = params.admin_keytab;
 
      /*
       * Try to acquire creds for the old OV services as well as the
@@ -327,24 +487,26 @@ int main(int argc, char *argv[])
      if (_svcauth_gssapi_set_names(names, 4) == TRUE)
 	  oldnames++;
      if (!oldnames && _svcauth_gssapi_set_names(names, 2) == FALSE) {
-	  krb5_klog_syslog(LOG_ERR, "Cannot initialize GSS-API authentication, "
-		 "failing.");
-	  fprintf(stderr, "%s: Cannot initialize GSS-API authentication.\n",
+	  krb5_klog_syslog(LOG_ERR,
+			   "Cannot set GSS-API authentication names, "
+			   "failing.");
+	  fprintf(stderr, "%s: Cannot set GSS-API authentication names.\n",
 		  whoami);
+	  _svcauth_gssapi_unset_names();
 	  kadm5_destroy(global_server_handle);
-	  krb5_klog_close();	  
+	  krb5_klog_close(context);	  
 	  exit(1);
      }
 
      /* if set_names succeeded, this will too */
      in_buf.value = names[1].name;
      in_buf.length = strlen(names[1].name) + 1;
-     (void) gss_import_name(&OMret, &in_buf, gss_nt_krb5_name,
+     (void) gss_import_name(&OMret, &in_buf, nt_krb5_name_oid,
 			    &gss_changepw_name);
      if (oldnames) {
 	  in_buf.value = names[3].name;
 	  in_buf.length = strlen(names[3].name) + 1;
-	  (void) gss_import_name(&OMret, &in_buf, gss_nt_krb5_name,
+	  (void) gss_import_name(&OMret, &in_buf, nt_krb5_name_oid,
 				 &gss_oldchangepw_name);
      }
 
@@ -352,13 +514,14 @@ int main(int argc, char *argv[])
      _svcauth_gssapi_set_log_badverf_func(log_badverf, NULL);
      _svcauth_gssapi_set_log_miscerr_func(log_miscerr, NULL);
      
-     if (ret = acl_init(context, 0, params.acl_file)) {
+     if ((ret = acl_init(context, 0, params.acl_file))) {
 	  krb5_klog_syslog(LOG_ERR, "Cannot initialize acl file: %s",
 		 error_message(ret));
 	  fprintf(stderr, "%s: Cannot initialize acl file: %s\n",
 		  whoami, error_message(ret));
+	  _svcauth_gssapi_unset_names();
 	  kadm5_destroy(global_server_handle);
-	  krb5_klog_close();
+	  krb5_klog_close(context);
 	  exit(1);
      }
 
@@ -367,28 +530,74 @@ int main(int argc, char *argv[])
 	  krb5_klog_syslog(LOG_ERR, "Cannot detach from tty: %s", error_message(ret));
 	  fprintf(stderr, "%s: Cannot detach from tty: %s\n",
 		  whoami, error_message(ret));
+	  _svcauth_gssapi_unset_names();
 	  kadm5_destroy(global_server_handle);
-	  krb5_klog_close();
+	  krb5_klog_close(context);
 	  exit(1);
      }
      
+     setup_signal_handlers();
+     krb5_klog_syslog(LOG_INFO, "starting");
+     kadm_svc_run();
+     krb5_klog_syslog(LOG_INFO, "finished, exiting");
+
+     /* Clean up memory, etc */
+     _svcauth_gssapi_unset_names();
+     kadm5_destroy(global_server_handle);
+     close(s);
+     acl_finish(context, 0);
+     if(gss_changepw_name) {
+          (void) gss_release_name(&OMret, &gss_changepw_name);
+     }
+     if(gss_oldchangepw_name) {
+          (void) gss_release_name(&OMret, &gss_oldchangepw_name);
+     }
+     for(s = 0 ; s < 4; s++) {
+          if (names[s].name) {
+	        free(names[s].name);
+	  }
+     }
+
+     krb5_klog_close(context);
+     krb5_free_context(context);
+     exit(2);
+}
+
+/*
+ * Function: setup_signal_handlers
+ *
+ * Purpose: Setup signal handling functions using POSIX's sigaction()
+ * if possible, otherwise with System V's signal().
+ */
+
+void setup_signal_handlers(void) {
+#ifdef POSIX_SIGNALS
+     (void) sigemptyset(&s_action.sa_mask);
+     s_action.sa_handler = request_exit;
+     (void) sigaction(SIGINT, &s_action, (struct sigaction *) NULL);
+     (void) sigaction(SIGTERM, &s_action, (struct sigaction *) NULL);
+     (void) sigaction(SIGQUIT, &s_action, (struct sigaction *) NULL);
+     s_action.sa_handler = request_hup;
+     (void) sigaction(SIGHUP, &s_action, (struct sigaction *) NULL);
+     s_action.sa_handler = sig_pipe;
+     (void) sigaction(SIGPIPE, &s_action, (struct sigaction *) NULL);
+#ifdef PURIFY
+     s_action.sa_handler = request_pure_report;
+     (void) sigaction(SIGUSR1, &s_action, (struct sigaction *) NULL);
+     s_action.sa_handler = request_pure_clear;
+     (void) sigaction(SIGUSR2, &s_action, (struct sigaction *) NULL);
+#endif /* PURIFY */
+#else /* POSIX_SIGNALS */
      signal(SIGINT, request_exit);
      signal(SIGTERM, request_exit);
      signal(SIGQUIT, request_exit);
-     signal(SIGHUP, request_reset_db);
+     signal(SIGHUP, request_hup);
      signal(SIGPIPE, sig_pipe);
 #ifdef PURIFY
      signal(SIGUSR1, request_pure_report);
      signal(SIGUSR2, request_pure_clear);
 #endif /* PURIFY */
-     krb5_klog_syslog(LOG_INFO, "starting");
-
-     kadm_svc_run();
-     krb5_klog_syslog(LOG_INFO, "finished, exiting");
-     kadm5_destroy(global_server_handle);
-     close(s);
-     krb5_klog_close();
-     exit(2);
+#endif /* POSIX_SIGNALS */
 }
 
 /*
@@ -406,12 +615,15 @@ int main(int argc, char *argv[])
 void kadm_svc_run(void)
 {
      fd_set	rfd;
-     int	sz = _rpc_dtablesize();
+     int	sz = _gssrpc_rpc_dtablesize();
      struct	timeval	    timeout;
      
      while(signal_request_exit == 0) {
-	  if (signal_request_reset)
-	    reset_db();
+	  if (signal_request_hup) {
+	      reset_db();
+	      krb5_klog_reopen(context);
+	      signal_request_hup = 0;
+	  }
 #ifdef PURIFY
 	  if (signal_pure_report)	/* check to see if a report */
 					/* should be dumped... */
@@ -429,6 +641,7 @@ void kadm_svc_run(void)
 	  timeout.tv_sec = TIMEOUT;
 	  timeout.tv_usec = 0;
 	  rfd = svc_fdset;
+	  FD_SET(schpw, &rfd);
 	  switch(select(sz, (fd_set *) &rfd, NULL, NULL, &timeout)) {
 	  case -1:
 	       if(errno == EINTR)
@@ -439,7 +652,10 @@ void kadm_svc_run(void)
 	       reset_db();
 	       break;
 	  default:
-	       svc_getreqset(&rfd);
+	      if (FD_ISSET(schpw, &rfd))
+		  do_schpw(schpw, &params);
+	      else
+		  svc_getreqset(&rfd);
 	  }
      }
 }
@@ -490,7 +706,7 @@ void request_pure_clear(int signum)
 #endif /* PURIFY */
 
 /*
- * Function: request_reset_db
+ * Function: request_hup
  * 
  * Purpose: sets flag saying the server got a signal and that it should
  *		reset the database files when convenient.
@@ -499,18 +715,17 @@ void request_pure_clear(int signum)
  * Requires:
  * Effects:
  * Modifies:
- *	sets signal_request_reset to one
+ *	sets signal_request_hup to one
  */
 
-void request_reset_db(int signum)
+void request_hup(int signum)
 {
-     krb5_klog_syslog(LOG_DEBUG, "Got signal to request resetting the databases");
-     signal_request_reset = 1;
+     signal_request_hup = 1;
      return;
 }
 
 /*
- * Function: reset-db
+ * Function: reset_db
  * 
  * Purpose: flushes the currently opened database files to disk.
  *
@@ -532,17 +747,16 @@ void reset_db(void)
 	  krb5_klog_syslog(LOG_ERR, "FATAL ERROR!  %s while flushing databases.  "
 		 "Databases may be corrupt!  Aborting.",
 		 error_message(ret));
-	  krb5_klog_close();
+	  krb5_klog_close(context);
 	  exit(3);
      }
 #endif
 
-     signal_request_reset = 0;
      return;
 }
 
 /*
- * Function: request-exit
+ * Function: request_exit
  * 
  * Purpose: sets flags saying the server got a signal and that it
  *	    should exit when convient.
@@ -655,6 +869,8 @@ void log_badverf(gss_name_t client_name, gss_name_t server_name,
 	  {13, "INIT"},
 	  {14, "GET_PRINCS"},
 	  {15, "GET_POLS"},
+	  {16, "SETKEY_PRINCIPAL"},
+	  {17, "SETV4KEY_PRINCIPAL"},
      };
 #define NPROCNAMES (sizeof (proc_names) / sizeof (struct procnames))
      OM_uint32 minor;
@@ -763,7 +979,7 @@ void log_badauth_display_status_1(char *m, OM_uint32 code, int type,
 {
      OM_uint32 gssstat, minor_stat;
      gss_buffer_desc msg;
-     int msg_ctx;
+     OM_uint32 msg_ctx;
 
      msg_ctx = 0;
      while (1) {
@@ -788,3 +1004,106 @@ void log_badauth_display_status_1(char *m, OM_uint32 code, int type,
 	       break;
      }
 }
+
+void do_schpw(int s1, kadm5_config_params *params)
+{
+    krb5_error_code ret;
+    /* XXX buffer = ethernet mtu */
+    char req[1500];
+    int len;
+    struct sockaddr_in from;
+    int fromlen;
+    krb5_keytab kt;
+    krb5_data reqdata, repdata;
+    int s2;
+
+    fromlen = sizeof(from);
+    if ((len = recvfrom(s1, req, sizeof(req), 0, (struct sockaddr *)&from,
+			&fromlen)) < 0) {
+	krb5_klog_syslog(LOG_ERR, "chpw: Couldn't receive request: %s",
+			 error_message(errno));
+	return;
+    }
+
+    if ((ret = krb5_kt_resolve(context, params->admin_keytab, &kt))) {
+	krb5_klog_syslog(LOG_ERR, "chpw: Couldn't open admin keytab %s",
+			 error_message(ret));
+	return;
+    }
+
+    reqdata.length = len;
+    reqdata.data = req;
+
+    /* this is really obscure.  s1 is used for all communications.  it
+       is left unconnected in case the server is multihomed and routes
+       are asymmetric.  s2 is connected to resolve routes and get
+       addresses.  this is the *only* way to get proper addresses for
+       multihomed hosts if routing is asymmetric.  
+
+       A related problem in the server, but not the client, is that
+       many os's have no way to disconnect a connected udp socket, so
+       the s2 socket needs to be closed and recreated for each
+       request.  The s1 socket must not be closed, or else queued
+       requests will be lost.
+
+       A "naive" client implementation (one socket, no connect,
+       hostname resolution to get the local ip addr) will work and
+       interoperate if the client is single-homed. */
+
+    if ((s2 = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
+	krb5_klog_syslog(LOG_ERR, "cannot create connecting socket: %s",
+			 error_message(errno));
+	fprintf(stderr, "Cannot create connecting socket: %s",
+		error_message(errno));
+	_svcauth_gssapi_unset_names();
+	kadm5_destroy(global_server_handle);
+	krb5_klog_close(context);	  
+	exit(1);
+    }
+
+    if (connect(s2, (struct sockaddr *) &from, sizeof(from)) < 0) {
+	krb5_klog_syslog(LOG_ERR, "chpw: Couldn't connect to client: %s",
+			 error_message(errno));
+	goto cleanup;
+    }
+
+    if ((ret = process_chpw_request(context, global_server_handle,
+				    params->realm, s2, kt, &from,
+				    &reqdata, &repdata))) {
+	krb5_klog_syslog(LOG_ERR, "chpw: Error processing request: %s", 
+			 error_message(ret));
+    }
+
+    close(s2);
+
+    if (repdata.length == 0) {
+	/* just return.  This means something really bad happened */
+        goto cleanup;
+    }
+
+    len = sendto(s1, repdata.data, repdata.length, 0,
+		 (struct sockaddr *) &from, sizeof(from));
+
+    if (len < repdata.length) {
+	krb5_xfree(repdata.data);
+
+	krb5_klog_syslog(LOG_ERR, "chpw: Error sending reply: %s", 
+			 error_message(errno));
+	goto cleanup;
+    }
+
+    krb5_xfree(repdata.data);
+
+cleanup:
+    krb5_kt_close(context, kt);
+
+    return;
+}
+
+
+
+
+
+
+
+

@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -24,6 +27,31 @@
  * KDC Database interface definitions.
  */
 
+/*
+ * Copyright (C) 1998 by the FundsXpress, INC.
+ * 
+ * All rights reserved.
+ * 
+ * Export of this software from the United States of America may require
+ * a specific license from the United States Government.  It is the
+ * responsibility of any person or organization contemplating export to
+ * obtain such a license before exporting.
+ * 
+ * WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
+ * distribute this software and its documentation for any purpose and
+ * without fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright notice and
+ * this permission notice appear in supporting documentation, and that
+ * the name of FundsXpress. not be used in advertising or publicity pertaining
+ * to distribution of the software without specific, written prior
+ * permission.  FundsXpress makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is" without express
+ * or implied warranty.
+ * 
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
+ * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ */
 
 #ifndef KRB5_KDB5__
 #define KRB5_KDB5__
@@ -52,7 +80,11 @@
 #define KRB5_KDB_SUPPORT_DESMD5         0x00004000
 #define	KRB5_KDB_NEW_PRINC		0x00008000
 
-#if !defined(_MACINTOSH) && !defined(_MSDOS) && !defined(_WIN32)
+/* Creation flags */
+#define KRB5_KDB_CREATE_BTREE		0x00000001
+#define KRB5_KDB_CREATE_HASH		0x00000002
+
+#if !defined(macintosh) && !defined(_MSDOS) && !defined(_WIN32)
 
 /*
  * Note --- these structures cannot be modified without changing the
@@ -115,6 +147,10 @@ typedef struct _krb5_db_entry_new {
 #define KRB5_TL_MOD_PRINC		0x0002
 #define KRB5_TL_KADM_DATA		0x0003
 #define KRB5_TL_KADM5_E_DATA		0x0004
+#define KRB5_TL_RB1_CHALLENGE		0x0005
+#ifdef SECURID
+#define KRB5_TL_SECURID_STATE           0x0006
+#endif /* SECURID */
     
 /*
  * Determines the number of failed KDC requests before DISALLOW_ALL_TIX is set
@@ -172,14 +208,15 @@ krb5_error_code krb5_db_get_age
 		   time_t * ));
 krb5_error_code krb5_db_create
 	KRB5_PROTOTYPE((krb5_context,
-		   char * ));
+		   char *,
+		   krb5_int32 ));
 krb5_error_code krb5_db_rename
 	KRB5_PROTOTYPE((krb5_context,
 		   char *,
 		   char * ));
 krb5_error_code krb5_db_get_principal
 	KRB5_PROTOTYPE((krb5_context,
-		   krb5_principal ,
+		   krb5_const_principal ,
 		   krb5_db_entry *,
 		   int *,
 		   krb5_boolean * ));
@@ -193,7 +230,7 @@ krb5_error_code krb5_db_put_principal
 		   int * ));
 krb5_error_code krb5_db_delete_principal
 	KRB5_PROTOTYPE((krb5_context,
-		   krb5_principal,
+		   krb5_const_principal,
 		   int * ));
 krb5_error_code krb5_db_iterate
 	KRB5_PROTOTYPE((krb5_context,
@@ -203,8 +240,7 @@ krb5_error_code krb5_db_iterate
 krb5_error_code krb5_db_verify_master_key
 	KRB5_PROTOTYPE((krb5_context,
 		   krb5_principal, 
-		   krb5_keyblock *, 
-		   krb5_encrypt_block *));
+		   krb5_keyblock *));
 krb5_error_code krb5_db_store_mkey 
 	KRB5_PROTOTYPE((krb5_context,
 		   char *,
@@ -217,6 +253,15 @@ krb5_error_code krb5_db_setup_mkey_name
 		   const char *, 
 		   char **, 
 		   krb5_principal *));
+
+krb5_error_code krb5_db_set_mkey
+        KRB5_PROTOTYPE((krb5_context, krb5_keyblock *));
+
+krb5_error_code krb5_db_get_mkey
+        KRB5_PROTOTYPE((krb5_context, krb5_keyblock **));
+krb5_error_code krb5_db_destroy 
+	KRB5_PROTOTYPE((krb5_context,
+		   char * ));
 krb5_error_code krb5_db_lock
 	KRB5_PROTOTYPE((krb5_context,
 		   int ));
@@ -232,23 +277,28 @@ krb5_boolean krb5_db_set_lockmode
 krb5_error_code	krb5_db_fetch_mkey
 	KRB5_PROTOTYPE((krb5_context,
 		   krb5_principal, 
-		   krb5_encrypt_block *, 
+		   krb5_enctype, 
 		   krb5_boolean,
 		   krb5_boolean, 
 		   char *,
 		   krb5_data *, 
 		   krb5_keyblock * ));
 
+krb5_error_code krb5_db_open_database
+	KRB5_PROTOTYPE((krb5_context));
+krb5_error_code krb5_db_close_database
+	KRB5_PROTOTYPE((krb5_context));
+
 krb5_error_code krb5_dbekd_encrypt_key_data
 	KRB5_PROTOTYPE((krb5_context,
-		   krb5_encrypt_block *,
+		   const krb5_keyblock *,
 		   const krb5_keyblock *,
 		   const krb5_keysalt *,
 		   int,
 		   krb5_key_data *));
 krb5_error_code krb5_dbekd_decrypt_key_data
 	KRB5_PROTOTYPE((krb5_context,
-		   krb5_encrypt_block *,
+		   const krb5_keyblock *,
 		   const krb5_key_data *,
 		   krb5_keyblock *,
 		   krb5_keysalt *));
@@ -275,29 +325,29 @@ krb5_error_code krb5_dbe_update_mod_princ_data
 	KRB5_PROTOTYPE((krb5_context,
 			krb5_db_entry *,
 			krb5_timestamp,
-			krb5_principal));
+			krb5_const_principal));
 krb5_error_code krb5_dbe_lookup_mod_princ_data
 	KRB5_PROTOTYPE((krb5_context,
 			krb5_db_entry *,
 			krb5_timestamp *,
 			krb5_principal *));
-int krb5_encode_princ_dbmkey
+int krb5_encode_princ_dbkey
 	KRB5_PROTOTYPE((krb5_context,
-    		   datum  *,
-    		   krb5_principal));
-void krb5_free_princ_dbmkey
+    		   krb5_data  *,
+    		   krb5_const_principal));
+void krb5_free_princ_dbkey
 	KRB5_PROTOTYPE((krb5_context,
-		   datum  *));
+		   krb5_data *));
 krb5_error_code krb5_encode_princ_contents
 	KRB5_PROTOTYPE((krb5_context,
-    		   datum  *,
+    		   krb5_data  *,
     		   krb5_db_entry *));
 void krb5_free_princ_contents
 	KRB5_PROTOTYPE((krb5_context,
-		   datum  *));
+		   krb5_data  *));
 krb5_error_code krb5_decode_princ_contents
 	KRB5_PROTOTYPE((krb5_context,
-    		   datum  *,
+    		   krb5_data  *,
     		   krb5_db_entry *));
 void krb5_dbe_free_contents
 	KRB5_PROTOTYPE((krb5_context,
@@ -324,28 +374,30 @@ struct __krb5_key_salt_tuple;
 
 krb5_error_code krb5_dbe_cpw
         KRB5_PROTOTYPE((krb5_context,
-			krb5_encrypt_block  *,
+			krb5_keyblock  *,
 			struct __krb5_key_salt_tuple *,
 			int,
 			char *,
 			int,
+			krb5_boolean,
 			krb5_db_entry *));
 krb5_error_code krb5_dbe_apw
         KRB5_PROTOTYPE((krb5_context,
-                   krb5_encrypt_block  *,
+                   krb5_keyblock  *,
                    struct __krb5_key_salt_tuple *,
                    int,
                    char *,
                    krb5_db_entry *));
 krb5_error_code krb5_dbe_crk
         KRB5_PROTOTYPE((krb5_context,
-                   krb5_encrypt_block  *,
+                   krb5_keyblock  *,
                    struct __krb5_key_salt_tuple *,
                    int,
+		   krb5_boolean,
                    krb5_db_entry *));
 krb5_error_code krb5_dbe_ark
         KRB5_PROTOTYPE((krb5_context,
-                   krb5_encrypt_block  *,
+                   krb5_keyblock  *,
                    struct __krb5_key_salt_tuple *,
                    int,
                    krb5_db_entry *));
@@ -399,6 +451,8 @@ typedef struct _krb5_db_entry {
 
 #endif	/* OLD_AND_KRUFTY */
 
+/* This is now a structure that is private to the database backend. */
+#ifdef notdef
 #ifdef	KDB5_DISPATCH
 /*
  * Database operation dispatch table.  This table determines the procedures
@@ -426,5 +480,6 @@ krb5_error_code kdb5_db_set_dbops KRB5_PROTOTYPE((krb5_context,
 #else
 typedef	struct _kdb5_dispatch_table kdb5_dispatch_table;
 #endif	/* KDB5_DISPATCH */
-#endif /* !defined(_MACINTOSH) && !defined(_MSDOS) &&!defined(_WIN32) */
+#endif /* notdef */
+#endif /* !defined(macintosh) && !defined(_MSDOS) &&!defined(_WIN32) */
 #endif /* KRB5_KDB5__ */

@@ -23,7 +23,7 @@
 #include "gssapiP_krb5.h"
 
 /*
- * $Id: context_time.c,v 1.1.1.1 1996-09-12 04:44:09 ghudson Exp $
+ * $Id: context_time.c,v 1.1.1.2 1999-10-05 16:12:13 ghudson Exp $
  */
 
 OM_uint32
@@ -54,7 +54,7 @@ krb5_gss_context_time(minor_status, context_handle, time_rec)
       return(GSS_S_NO_CONTEXT);
    }
 
-   if (code = krb5_timeofday(context, &now)) {
+   if ((code = krb5_timeofday(context, &now))) {
       *minor_status = code;
       return(GSS_S_FAILURE);
    }

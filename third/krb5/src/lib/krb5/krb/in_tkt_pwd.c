@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -47,15 +50,9 @@ pwd_keyproc(context, type, salt, keyseed, key)
     krb5_keyblock ** key;
 {
     krb5_error_code retval;
-    krb5_encrypt_block eblock;
     krb5_data * password;
     int pwsize;
 
-    if (!valid_enctype(type))
-	return KRB5_PROG_ETYPE_NOSUPP;
-
-    krb5_use_enctype(context, &eblock, type);
-    
     password = (krb5_data *)keyseed;
 
     if (!password->length) {
@@ -73,8 +70,9 @@ pwd_keyproc(context, type, salt, keyseed, key)
     if (!(*key = (krb5_keyblock *)malloc(sizeof(**key))))
 	return ENOMEM;
 
-    if ((retval = krb5_string_to_key(context, &eblock, *key, password, salt)))
+    if ((retval = krb5_c_string_to_key(context, type, password, salt, *key)))
 	krb5_xfree(*key);
+
     return(retval);
 }
 
@@ -97,18 +95,18 @@ pwd_keyproc(context, type, salt, keyseed, key)
 
  returns system errors, encryption errors
  */
-krb5_error_code INTERFACE
+KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
 krb5_get_in_tkt_with_password(context, options, addrs, ktypes, pre_auth_types, 
 			      password, ccache, creds, ret_as_reply)
     krb5_context context;
     const krb5_flags options;
-    krb5_address * const * addrs;
-    krb5_enctype * ktypes;
-    krb5_preauthtype * pre_auth_types;
-    const char * password;
+    krb5_address FAR * const FAR * addrs;
+    krb5_enctype FAR * ktypes;
+    krb5_preauthtype FAR * pre_auth_types;
+    const char FAR * password;
     krb5_ccache ccache;
-    krb5_creds * creds;
-    krb5_kdc_rep ** ret_as_reply;
+    krb5_creds FAR * creds;
+    krb5_kdc_rep FAR * FAR * ret_as_reply;
 {
     krb5_error_code retval;
     krb5_data data;

@@ -1,25 +1,36 @@
 AC_INIT(configure.in)
 CONFIG_RULES
-CONFIG_DIRS(error_tables asn.1 ccache keytab krb rcache free os posix)
-AC_PROG_ARCHIVE
-AC_PROG_ARCHIVE_ADD
-AC_PROG_RANLIB
 AC_PROG_INSTALL
-DO_SUBDIRS
+AC_PROG_AWK
 dnl
-USE_ANAME
-ANAME_DBDEP="$kaname_dbdep"
-ANAME_DBLIB="$kaname_libs"
-AC_SUBST(ANAME_DBDEP)
-AC_SUBST(ANAME_DBLIB)
+AC_CONST
+AC_TYPE_UID_T
+HAS_ANSI_VOLATILE
+AC_HEADER_STDARG
+AC_CHECK_HEADERS(unistd.h paths.h regex.h regexp.h regexpr.h fcntl.h)
+AC_CHECK_FUNCS(flock fchmod chmod strftime strptime geteuid setenv unsetenv getenv setsid)
+AC_REPLACE_FUNCS(vfprintf vsprintf strdup strcasecmp strerror memmove daemon getuid sscanf syslog)
+KRB5_AC_REGEX_FUNCS
 dnl
-AC_CHECK_LIB(gen,compile,SHLIB_GEN=-lgen,SHLIB_GEN='')
-AC_SUBST(SHLIB_GEN)
+KRB5_SOCKADDR_SA_LEN
+KRB5_BUILD_LIBRARY_WITH_DEPS
+KRB5_BUILD_LIBOBJS
+KRB5_BUILD_PROGRAM
+KRB5_RUN_FLAGS
 dnl
-V5_MAKE_SHARED_LIB(libkrb5,1.0,.., ./krb5)
-CRYPTO_SH_VERS=$krb5_cv_shlib_version_libcrypto
-AC_SUBST(CRYPTO_SH_VERS)
-COMERR_SH_VERS=$krb5_cv_shlib_version_libcom_err
-AC_SUBST(COMERR_SH_VERS)
-AppendRule([all::	all-$(WHAT)])
-V5_AC_OUTPUT_MAKEFILE
+K5_GEN_MAKEFILE(., lib)
+K5_GEN_MAKEFILE(error_tables, libobj)
+K5_GEN_MAKEFILE(asn.1, libobj)
+K5_GEN_MAKEFILE(ccache, libobj)
+K5_GEN_MAKEFILE(ccache/stdio, libobj)
+K5_GEN_MAKEFILE(ccache/file, libobj)
+K5_GEN_MAKEFILE(ccache/memory, libobj)
+K5_GEN_MAKEFILE(keytab, libobj)
+K5_GEN_MAKEFILE(keytab/file, libobj)
+K5_GEN_MAKEFILE(keytab/srvtab, libobj)
+K5_GEN_MAKEFILE(keytab/db, libobj)
+K5_GEN_MAKEFILE(krb, libobj)
+K5_GEN_MAKEFILE(rcache, libobj)
+K5_GEN_MAKEFILE(os, libobj)
+K5_GEN_MAKEFILE(posix, libobj)
+K5_AC_OUTPUT

@@ -17,7 +17,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -26,6 +29,8 @@
  * output as a prompt, and reads a password string without
  * echoing.
  */
+
+#if !defined(_MSDOS)&&!defined(_WIN32)
 
 #include "des.h"
 #include <stdio.h>
@@ -178,3 +183,8 @@ des_read_password/*_v4_compat_crock*/(k,prompt,verify)
     return ok;
 }
 
+#else /* !unix */
+/*
+ * These are all just dummy functions to make the rest of the library happy...
+ */
+#endif /* _WINDOWS */

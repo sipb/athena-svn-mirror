@@ -45,7 +45,7 @@ static char sccsid[] = "@(#)db.c	8.4 (Berkeley) 2/21/94";
 #include "db-int.h"
 
 DB *
-dbopen(fname, flags, mode, type, openinfo)
+kdb2_dbopen(fname, flags, mode, type, openinfo)
 	const char *fname;
 	int flags, mode;
 	DBTYPE type;
@@ -55,7 +55,7 @@ dbopen(fname, flags, mode, type, openinfo)
 #define	DB_FLAGS	(DB_LOCK | DB_SHMEM | DB_TXN)
 #define	USE_OPEN_FLAGS							\
 	(O_CREAT | O_EXCL | O_EXLOCK | O_NONBLOCK | O_RDONLY |		\
-	 O_RDWR | O_SHLOCK | O_TRUNC)
+	 O_RDWR | O_SHLOCK | O_TRUNC | O_BINARY)
 
 	if ((flags & ~(USE_OPEN_FLAGS | DB_FLAGS)) == 0)
 		switch (type) {

@@ -1,27 +1,21 @@
+thisconfigdir=./..
+myfulldir=lib/krb5/posix
+mydir=posix
+BUILDTOP=$(REL)$(U)$(S)$(U)$(S)$(U)
 CFLAGS = $(CCOPTS) $(DEFS)
 
-##DOSBUILDTOP = ..\..\..
-##DOSLIBNAME=..\krb5.lib
+##DOS##BUILDTOP = ..\..\..
+##DOS##PREFIXDIR=posix
+##DOS##OBJFILE=..\$(OUTPRE)$(PREFIXDIR).lst
+##WIN16##LIBNAME=..\krb5.lib
 
-.c.o:
-	$(CC) $(CFLAGS) -c $(srcdir)/$*.c
-@SHARED_RULE@
-
+STLIBOBJS=setenv.o @LIBOBJS@
 MACSRCS = getuid.c strcasecmp.c strdup.c
 
-OBJS = setenv.$(OBJEXT)	@LIBOBJS@
+OBJS = $(OUTPRE)setenv.$(OBJEXT)	@LIBOBJS@
 
-all-unix:: shared $(OBJS)
-all-mac: $(OBJS)
-all-windows:: syslog.obj sscanf.obj
+all-unix:: all-libobjs
+clean-unix:: clean-libobjs
 
-shared:
-	mkdir shared
-
-clean-unix::
-	$(RM) shared/*
-
-clean-mac::
-clean-windows::
-
-
+##WIN16##LIBOBJS = syslog.obj sscanf.obj
+##WIN32##LIBOBJS = $(OUTPRE)syslog.obj

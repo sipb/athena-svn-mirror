@@ -32,12 +32,12 @@
  * The AUTH_MSG_APPL_ERR message format can be found in mk_err.c
  */
 
-int INTERFACE
+KRB5_DLLIMP int KRB5_CALLCONV
 krb_rd_err(in,in_length,code,m_data)
-    u_char *in;                 /* pointer to the msg received */
+    u_char FAR *in;                 /* pointer to the msg received */
     u_long in_length;           /* of in msg */
-    long *code;                 /* received error code */
-    MSG_DAT *m_data;
+    long FAR *code;                 /* received error code */
+    MSG_DAT FAR *m_data;
 {
     register u_char *p;
     int swap_bytes = 0;
@@ -56,7 +56,7 @@ krb_rd_err(in,in_length,code,m_data)
       
       memcpy((char *)&raw_code, (char *)p, sizeof(raw_code));
       if (swap_bytes)
-        swap_u_long(raw_code);
+        raw_code = krb4_swab32(raw_code);
       p += sizeof(raw_code);         /* skip over */
       *code = raw_code;
     }

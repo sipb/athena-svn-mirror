@@ -1,3 +1,90 @@
+Mon Mar 15 15:58:34 1999  Tom Yu  <tlyu@mit.edu>
+
+	* des.h: Fix GSS_DLLIMP.
+
+1998-12-05  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* krb.h: Add prototypes for krb_set_key() and decomp_ticket().
+
+1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Set the myfulldir and mydir variables (which are
+		relative to buildtop and thisconfigdir, respectively.)
+		Add a MY_SUBDIRS macro set to '.' to indicate that there
+		are no subdirectories to be processed by the Makefile.
+
+	* configure.in: Removed and tests moved to parent directory.
+
+	* krb.h: Add a declaration for the global variable
+		krb5__krb4_context, which is used by the krb4 routines
+		that need to call krb5 library routines.
+
+Thu Sep 17 18:23:26 1998  Tom Yu  <tlyu@mit.edu>
+
+	* krb_db.h: ifdef out the declarations for kerb_get_* and
+	kerb_db_* to avoid problems with krb4 compat code in the kdc,
+	which declares some of these static.
+
+Wed Feb 18 15:51:41 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove trailing slash from thisconfigdir.  Fix up
+	BUILDTOP for new conventions.  Fix up usage of $(C) for new
+	conventions.
+
+Mon Feb  2 17:02:29 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+Tue Nov 18 23:37:54 1997  Tom Yu  <tlyu@mit.edu>
+
+	* des.h: Clean up prototypes so they're sane and look a little
+ 	nicer.  The ivec parameter to pcbc_encrypt is now a C_Block FAR *,
+	while the paremeters to quad_cksum have been re-ordered to match
+	reality.
+
+Mon Oct 27 01:04:24 1997  Tom Yu  <tlyu@mit.edu>
+
+	* des.h: Replace KRB_INT32 with DES_INT32 to avoid temptation to
+	misuse.
+
+Mon Oct 20 14:09:45 1997  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* krb.h: If we are using prototypes, add a forward declaration for
+		struct sockaddr_in.
+
+Tue Oct 14 15:39:28 1997  Tom Yu  <tlyu@voltage-multiplier.mit.edu>
+
+	* des.h: Define KRB_INT32 for the purposes of dealing with the key
+ 	schedule.  Also, define the key schedule more sanely.  See related
+ 	comments in lib/crypto/des.
+
+Sat Feb 22 00:49:37 1997  Sam Hartman  <hartmans@tertius.mit.edu>
+
+	* krb.h: Do not depend on unix being defined on Unix systems;
+        treat as the default case except when _WINDOWS defined
+
+Thu Feb 20 17:38:23 1997  Richard Basch  <basch@lehman.com>
+
+	* configure.in: awk is required by the Makefile
+	* Makefile.in: Re-arranged build/install rules because
+		krb_err.h is a generated file.
+
+Mon Feb 17 13:59:41 1997  Richard Basch  <basch@lehman.com>
+
+	* des.h: Added various function prototypes
+	* krb.h: Moved various macros from krb.h to des.h so
+		prototypes could be added to des.h
+
+Sun Feb 16 18:43:24 1997  Richard Basch  <basch@lehman.com>
+
+	* krb.h:
+		Removed INTERFACE declaration
+		Added prototypes for exported V4 functions
+
+Thu Feb  6 00:22:22 1997  Richard Basch  <basch@lehman.com>
+
+	* krb.h: Make sure KRB5_EXPORTVAR is defined
+
 Fri Nov 22 11:34:46 1996  Sam Hartman  <hartmans@mit.edu>
 
 	* Makefile.in:  Install krb_err.h [218]

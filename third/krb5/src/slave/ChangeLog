@@ -1,3 +1,43 @@
+1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Set the myfulldir and mydir variables (which are
+		relative to buildtop and thisconfigdir, respectively.)
+
+	* configure.in, kpropd.c: Removed useless test for KRB5_POSIX, and
+		removed unneeded #include of sgtty.h if POSIX_TERMIOS is
+		not defined.
+	
+1998-10-27  Marc Horowitz  <marc@mit.edu>
+
+	* kpropd.c (authorized_principal): make the acl file contain
+	etypes, and use that in the authorization process.
+
+Wed Feb 18 16:27:28 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (thisconfigdir): Remove trailing slash.
+
+Mon Feb  2 16:59:30 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+Wed Jan 21 15:18:24 1998  Ezra Peisach  <epeisach@mit.edu>
+
+	* kprop.c, kpropd.c (main): returns int, not void. ANSI X3.159-1989
+	2.1.2.2.1 says so, and gcc now warns about it.
+
+Sat Feb 22 19:43:35 1997  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in (kpropd): Build using KDB5_LIBS, not KDB5_LIB.
+
+Tue Feb 18 18:18:44 1997  Richard Basch  <basch@lehman.com>
+
+	* kprop.c kpropd.c: Use krb5_free_data_contents, where appropriate.
+
+Fri Jan 31 19:22:37 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in:
+	* configure.in: Update to new program build procedure.
+
 Thu Dec  5 21:15:27 1996  Tom Yu  <tlyu@mit.edu>
 
 	* kslave_update: Update script for new filename conventions. [PR

@@ -1,3 +1,8 @@
+thisconfigdir=./..
+myfulldir=gen-manpages
+mydir=gen-manpages
+MY_SUBDIRS=.
+BUILDTOP=$(REL)$(U)
 all::
 
 install::

@@ -1,20 +1,20 @@
 AC_INIT(configure.in)
 CONFIG_RULES
-CONFIG_DIRS(generic krb5)
-dnl CONFIG_DIRS(generic krb5 mechglue)
+dnl AC_CONFIG_SUBDIRS(generic krb5)
+dnl AC_CONFIG_SUBDIRS(generic krb5 mechglue)
 AC_PROG_ARCHIVE
 AC_PROG_ARCHIVE_ADD
-AC_PROG_RANLIB
+AC_PROG_AWK
 AC_PROG_INSTALL
-DO_SUBDIRS
-V5_MAKE_SHARED_LIB(libgssapi_krb5,1.0,.., ./gssapi)
-CRYPTO_SH_VERS=$krb5_cv_shlib_version_libcrypto
-AC_SUBST(CRYPTO_SH_VERS)
-COMERR_SH_VERS=$krb5_cv_shlib_version_libcom_err
-AC_SUBST(COMERR_SH_VERS)
-KRB5_SH_VERS=$krb5_cv_shlib_version_libkrb5
-AC_SUBST(KRB5_SH_VERS)
-AppendRule([all:: libgssapi_krb5.a])
-AppendRule([all-unix:: ../libgssapi_krb5.a])
-AppendRule([all::	all-$(WHAT)])
-V5_AC_OUTPUT_MAKEFILE
+AC_PROG_RANLIB
+AC_CHECK_HEADERS(stdlib.h sys/types.h limits.h)
+AC_SIZE_T
+AC_CHECK_SIZEOF(short)
+AC_CHECK_SIZEOF(int)
+AC_CHECK_SIZEOF(long)
+KRB5_BUILD_LIBOBJS
+KRB5_BUILD_LIBRARY_WITH_DEPS
+K5_GEN_MAKEFILE(., lib)
+K5_GEN_MAKEFILE(generic, libobj)
+K5_GEN_MAKEFILE(krb5, libobj)
+K5_AC_OUTPUT

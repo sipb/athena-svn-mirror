@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -42,16 +45,16 @@
  *  returns system errors, encryption errors, replay errors
  */
 
-krb5_error_code
+KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
 krb5_rd_req(context, auth_context, inbuf, server, keytab, 
 	    ap_req_options, ticket)
     krb5_context 	  context;
-    krb5_auth_context   * auth_context;
-    const krb5_data 	* inbuf;
+    krb5_auth_context   FAR * auth_context;
+    const krb5_data 	FAR * inbuf;
     krb5_const_principal  server;	/* XXX do we really need this */
     krb5_keytab		  keytab;
-    krb5_flags		* ap_req_options;
-    krb5_ticket	       ** ticket;
+    krb5_flags		FAR * ap_req_options;
+    krb5_ticket	       FAR *FAR * ticket;
 {
     krb5_error_code 	  retval;
     krb5_ap_req 	* request;

@@ -42,7 +42,7 @@ static char sccsid[] = "@(#)svc_tcp.c 1.21 87/08/11 Copyr 1984 Sun Micro";
  */
 
 #include <stdio.h>
-#include <rpc/rpc.h>
+#include <gssrpc/rpc.h>
 #include <sys/socket.h>
 #include <errno.h>
 #include <stdlib.h>
@@ -140,7 +140,7 @@ svctcp_create(sock, sendsize, recvsize)
 	}
 	memset((char *)&addr, 0, sizeof (addr));
 	addr.sin_family = AF_INET;
-	if (bindresvport(sock, &addr)) {
+	if (gssrpc_bindresvport(sock, &addr)) {
 		addr.sin_port = 0;
 		(void)bind(sock, (struct sockaddr *)&addr, len);
 	}
@@ -174,6 +174,7 @@ svctcp_create(sock, sendsize, recvsize)
 	xprt->xp_ops = &svctcp_rendezvous_op;
 	xprt->xp_port = ntohs(addr.sin_port);
 	xprt->xp_sock = sock;
+	xprt->xp_laddrlen = 0;
 	xprt_register(xprt);
 	return (xprt);
 }
@@ -183,7 +184,7 @@ svctcp_create(sock, sendsize, recvsize)
  * descriptor as its first input.
  */
 SVCXPRT *
-svcfd_create(fd, sendsize, recvsize)
+gssrpc_svcfd_create(fd, sendsize, recvsize)
 	int fd;
 	unsigned int sendsize;
 	unsigned int recvsize;
@@ -220,6 +221,7 @@ makefd_xprt(fd, sendsize, recvsize)
 	xprt->xp_p1 = (caddr_t)cd;
 	xprt->xp_verf.oa_base = cd->verf_body;
 	xprt->xp_addrlen = 0;
+	xprt->xp_laddrlen = 0;
 	xprt->xp_ops = &svctcp_op;  /* truely deals with calls */
 	xprt->xp_port = 0;  /* this is a connection, not a rendezvouser */
 	xprt->xp_sock = fd;
@@ -234,24 +236,29 @@ rendezvous_request(xprt)
 {
 	int sock;
 	struct tcp_rendezvous *r;
-	struct sockaddr_in addr;
-	int len;
+	struct sockaddr_in addr, laddr;
+	int len, llen;
 
 	r = (struct tcp_rendezvous *)xprt->xp_p1;
     again:
-	len = sizeof(struct sockaddr_in);
+	len = llen = sizeof(struct sockaddr_in);
 	if ((sock = accept(xprt->xp_sock, (struct sockaddr *)&addr,
 	    &len)) < 0) {
 		if (errno == EINTR)
 			goto again;
 	       return (FALSE);
 	}
+	if (getsockname(sock, &laddr, &llen) < 0)
+	     return (FALSE);
+	
 	/*
 	 * make a new transporter (re-uses xprt)
 	 */
 	xprt = makefd_xprt(sock, r->sendsize, r->recvsize);
 	xprt->xp_raddr = addr;
 	xprt->xp_addrlen = len;
+	xprt->xp_laddr = laddr;
+	xprt->xp_laddrlen = llen;
 	return (FALSE); /* there is never an rpc msg to be processed */
 }
 
@@ -311,7 +318,7 @@ readtcp(xprt, buf, len)
 #endif /* def FD_SETSIZE */
 	do {
 		readfds = mask;
-		if (select(_rpc_dtablesize(), &readfds, (fd_set*)NULL,
+		if (select(_gssrpc_rpc_dtablesize(), &readfds, (fd_set*)NULL,
 			   (fd_set*)NULL, &wait_per_try) <= 0) {
 			if (errno == EINTR) {
 				continue;

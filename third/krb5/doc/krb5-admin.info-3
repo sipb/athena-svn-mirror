@@ -1,5 +1,5 @@
-This is Info file krb5-admin.info, produced by Makeinfo-1.55 from the
-input file admin.texinfo.
+This is Info file krb5-admin.info, produced by Makeinfo version 1.68
+from the input file admin.texinfo.
 
 
 File: krb5-admin.info,  Node: Kerberos V5 Library Error Codes,  Next: Kerberos V5 Database Library Error Codes,  Prev: Errors,  Up: Errors
@@ -279,8 +279,8 @@ codes start at ERROR_TABLE_BASE_krb5 + 128.
 
 127. KRB5PLACEHOLD_127:  KRB5 error code 127
 
-128. KRB5_ERR_RCSID:  $Id: admin.texinfo,v 1.9.2.6 1996/12/13 23:15:32
-     tlyu Exp $
+128. KRB5_ERR_RCSID:  $Id: admin.texinfo,v 1.10.6.3 1999/09/07 22:21:32
+     raeburn Exp $
 
 129. KRB5_LIBOS_BADLOCKFLAG:  Invalid flag for file lock mode
 
@@ -501,8 +501,8 @@ Kerberos V5 Database Library Error Codes
 
 This is the Kerberos v5 database library error code table.
 
-  0. KRB5_KDB_RCSID:  $Id: admin.texinfo,v 1.9.2.6 1996/12/13 23:15:32
-     tlyu Exp $
+  0. KRB5_KDB_RCSID:  $Id: admin.texinfo,v 1.10.6.3 1999/09/07 22:21:32
+     raeburn Exp $
 
   1. KRB5_KDB_INUSE:  Entry already exists in database
 

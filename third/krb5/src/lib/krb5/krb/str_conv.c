@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  *
@@ -31,17 +34,13 @@
  *
  * String decoding:
  * ----------------
- * krb5_string_to_enctype()	- Convert string to krb5_enctype.
  * krb5_string_to_salttype()	- Convert string to salttype (krb5_int32)
- * krb5_string_to_cksumtype()	- Convert string to krb5_cksumtype;
  * krb5_string_to_timestamp()	- Convert string to krb5_timestamp.
  * krb5_string_to_deltat()	- Convert string to krb5_deltat.
  *
  * String encoding:
  * ----------------
- * krb5_enctype_to_string()	- Convert krb5_enctype to string.
  * krb5_salttype_to_string()	- Convert salttype (krb5_int32) to string.
- * krb5_cksumtype_to_string()	- Convert krb5_cksumtype to string.
  * krb5_timestamp_to_string()	- Convert krb5_timestamp to string.
  * krb5_timestamp_to_sfstring()	- Convert krb5_timestamp to short filled string
  * krb5_deltat_to_string()	- Convert krb5_deltat to string.
@@ -52,22 +51,10 @@
 /*
  * Local data structures.
  */
-struct enctype_lookup_entry {
-    krb5_enctype	ktt_enctype;		/* Keytype		*/
-    const char *	ktt_specifier;		/* How to recognize it	*/
-    const char *	ktt_output;		/* How to spit it out	*/
-};
-
 struct salttype_lookup_entry {
     krb5_int32		stt_enctype;		/* Salt type		*/
     const char *	stt_specifier;		/* How to recognize it	*/
     const char *	stt_output;		/* How to spit it out	*/
-};
-
-struct cksumtype_lookup_entry {
-    krb5_cksumtype	cst_cksumtype;		/* Checksum type	*/
-    const char *	cst_specifier;		/* How to recognize it	*/
-    const char *	cst_output;		/* How to spit it out	*/
 };
 
 struct deltat_match_entry {
@@ -83,21 +70,6 @@ struct deltat_match_entry {
  * Local strings
  */
 
-/* Keytype strings */
-static const char enctype_des_in[]		= "des";
-static const char enctype_null_in[]		= "null";
-static const char enctype_descbccrc_in[]	= "des-cbc-crc";
-static const char enctype_descbcmd4_in[]	= "des-cbc-md4";
-static const char enctype_descbcmd5_in[]	= "des-cbc-md5";
-static const char enctype_des3cbcsha_in[]	= "des3-cbc-sha";
-static const char enctype_descbcraw_in[]	= "des-cbc-raw";
-static const char enctype_null_out[]		= "Null";
-static const char enctype_descbccrc_out[]	= "DES cbc mode with CRC-32";
-static const char enctype_descbcmd4_out[]	= "DES cbc mode with RSA-MD4";
-static const char enctype_descbcmd5_out[]	= "DES cbc mode with RSA-MD5";
-static const char enctype_des3cbcsha_out[]	= "DES-3 cbc mode with NIST-SHA";
-static const char enctype_descbcraw_out[]	= "DES cbc mode raw";
-
 /* Salttype strings */
 static const char stype_v5_in[]		= "normal";
 static const char stype_v4_in[]		= "v4";
@@ -111,24 +83,6 @@ static const char stype_norealm_out[]	= "Version 5 - No Realm";
 static const char stype_olrealm_out[]	= "Version 5 - Realm Only";
 static const char stype_special_out[]	= "Special";
 static const char stype_afs3_out[]	= "AFS version 3";
-
-/* Checksum type strings */
-static const char cstype_crc32_in[]	= "crc32";
-static const char cstype_md4_in[]	= "md4";
-static const char cstype_md4des_in[]	= "md4-des";
-static const char cstype_descbc_in[]	= "des-cbc";
-static const char cstype_md5_in[]	= "md5";
-static const char cstype_md5des_in[]	= "md5-des";
-static const char cstype_sha_in[]	= "sha";
-static const char cstype_hmacsha_in[]	= "hmac-sha";
-static const char cstype_crc32_out[]	= "CRC-32";
-static const char cstype_md4_out[]	= "RSA-MD4";
-static const char cstype_md4des_out[]	= "RSA-MD4 with DES cbc mode";
-static const char cstype_descbc_out[]	= "DES cbc mode";
-static const char cstype_md5_out[]	= "RSA-MD5";
-static const char cstype_md5des_out[]	= "RSA-MD5 with DES cbc mode";
-static const char cstype_sha_out[]	= "NIST-SHA";
-static const char cstype_hmacsha_out[]	= "HMAC-SHA";
 
 /* Absolute time strings */
 static const char atime_full_digits[]	= "%y%m%d%H%M%S";
@@ -184,20 +138,6 @@ static const char dt_output_hms[]	= "%d:%02d:%02d";
  * Lookup tables.
  */
 
-static const struct enctype_lookup_entry enctype_table[] = {
-/* krb5_enctype		input specifier		output string		*/
-/*-------------		-----------------------	------------------------*/
-{ ENCTYPE_NULL,		enctype_null_in,	enctype_null_out	},
-{ ENCTYPE_DES_CBC_MD5,	enctype_des_in,		enctype_descbcmd5_out	},
-{ ENCTYPE_DES_CBC_CRC,	enctype_descbccrc_in,	enctype_descbccrc_out	},
-{ ENCTYPE_DES_CBC_MD4,	enctype_descbcmd4_in,	enctype_descbcmd4_out	},
-{ ENCTYPE_DES_CBC_MD5,	enctype_descbcmd5_in,	enctype_descbcmd5_out	},
-{ ENCTYPE_DES3_CBC_SHA,	enctype_des3cbcsha_in,	enctype_des3cbcsha_out	},
-{ ENCTYPE_DES_CBC_RAW,	enctype_descbcraw_in,	enctype_descbcraw_out	}
-};
-static const int enctype_table_nents = sizeof(enctype_table)/
-				       sizeof(enctype_table[0]);
-
 static const struct salttype_lookup_entry salttype_table[] = {
 /* salt type			input specifier		output string	  */
 /*-----------------------------	-----------------------	------------------*/
@@ -210,21 +150,6 @@ static const struct salttype_lookup_entry salttype_table[] = {
 };
 static const int salttype_table_nents = sizeof(salttype_table)/
 					sizeof(salttype_table[0]);
-
-static const struct cksumtype_lookup_entry cksumtype_table[] = {
-/* krb5_cksumtype         input specifier	output string		*/
-/*----------------------- ---------------------	------------------------*/
-{ CKSUMTYPE_CRC32,        cstype_crc32_in,	cstype_crc32_out	},
-{ CKSUMTYPE_RSA_MD4,      cstype_md4_in,	cstype_md4_out		},
-{ CKSUMTYPE_RSA_MD4_DES,  cstype_md4des_in,	cstype_md4des_out	},
-{ CKSUMTYPE_DESCBC,       cstype_descbc_in,	cstype_descbc_out	},
-{ CKSUMTYPE_RSA_MD5,      cstype_md5_in,	cstype_md5_out		},
-{ CKSUMTYPE_RSA_MD5_DES,  cstype_md5des_in,	cstype_md5des_out	},
-{ CKSUMTYPE_NIST_SHA,     cstype_sha_in,	cstype_sha_out		},
-{ CKSUMTYPE_HMAC_SHA,	  cstype_hmacsha_in,	cstype_hmacsha_out	}
-};
-static const int cksumtype_table_nents = sizeof(cksumtype_table)/
-					 sizeof(cksumtype_table[0]);
 
 static const char * const atime_format_table[] = {
 atime_full_digits_Y,	/* yyyymmddhhmmss		*/
@@ -403,34 +328,10 @@ strptime(buf, format, tm)
 }
 #endif	/* HAVE_STRPTIME */
 
-/*
- * String to internal datatype routines.
- *
- * These routines return 0 for success, EINVAL for invalid entry.
- */
-krb5_error_code
-krb5_string_to_enctype(string, enctypep)
-    char		* string;
-    krb5_enctype	* enctypep;
-{
-    int i;
-    int found;
-
-    found = 0;
-    for (i=0; i<enctype_table_nents; i++) {
-	if (!strcasecmp(string, enctype_table[i].ktt_specifier)) {
-	    found = 1;
-	    *enctypep = enctype_table[i].ktt_enctype;
-	    break;
-	}
-    }
-    return((found) ? 0 : EINVAL);
-}
-
-krb5_error_code
+KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
 krb5_string_to_salttype(string, salttypep)
-    char	* string;
-    krb5_int32	* salttypep;
+    char	FAR * string;
+    krb5_int32	FAR * salttypep;
 {
     int i;
     int found;
@@ -446,29 +347,10 @@ krb5_string_to_salttype(string, salttypep)
     return((found) ? 0 : EINVAL);
 }
 
-krb5_error_code
-krb5_string_to_cksumtype(string, cksumtypep)
-    char		* string;
-    krb5_cksumtype	* cksumtypep;
-{
-    int i;
-    int found;
-
-    found = 0;
-    for (i=0; i<cksumtype_table_nents; i++) {
-	if (!strcasecmp(string, cksumtype_table[i].cst_specifier)) {
-	    found = 1;
-	    *cksumtypep = cksumtype_table[i].cst_cksumtype;
-	    break;
-	}
-    }
-    return((found) ? 0 : EINVAL);
-}
-
-krb5_error_code
+KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
 krb5_string_to_timestamp(string, timestampp)
-    char		* string;
-    krb5_timestamp	* timestampp;
+    char		FAR * string;
+    krb5_timestamp	FAR * timestampp;
 {
     int i;
     struct tm timebuf;
@@ -496,10 +378,10 @@ krb5_string_to_timestamp(string, timestampp)
     return(EINVAL);
 }
 
-krb5_error_code
+KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
 krb5_string_to_deltat(string, deltatp)
-    char	* string;
-    krb5_deltat	* deltatp;
+    char	FAR * string;
+    krb5_deltat	FAR * deltatp;
 {
     int i;
     int found;
@@ -544,37 +426,10 @@ krb5_string_to_deltat(string, deltatp)
  * These routines return 0 for success, EINVAL for invalid parameter, ENOMEM
  * if the supplied buffer/length will not contain the output.
  */
-krb5_error_code
-krb5_enctype_to_string(enctype, buffer, buflen)
-    krb5_enctype	enctype;
-    char		* buffer;
-    size_t		buflen;
-{
-    int i;
-    const char *out;
-
-    out = (char *) NULL;
-    for (i=0; i<enctype_table_nents; i++) {
-	if (enctype ==  enctype_table[i].ktt_enctype) {
-	    out = enctype_table[i].ktt_output;
-	    break;
-	}
-    }
-    if (out) {
-	if (buflen > strlen(out))
-	    strcpy(buffer, out);
-	else
-	    out = (char *) NULL;
-	return((out) ? 0 : ENOMEM);
-    }
-    else
-	return(EINVAL);
-}
-
-krb5_error_code
+KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
 krb5_salttype_to_string(salttype, buffer, buflen)
     krb5_int32	salttype;
-    char	* buffer;
+    char	FAR * buffer;
     size_t	buflen;
 {
     int i;
@@ -598,37 +453,10 @@ krb5_salttype_to_string(salttype, buffer, buflen)
 	return(EINVAL);
 }
 
-krb5_error_code
-krb5_cksumtype_to_string(cksumtype, buffer, buflen)
-    krb5_cksumtype	cksumtype;
-    char		* buffer;
-    size_t		buflen;
-{
-    int i;
-    const char *out;
-
-    out = (char *) NULL;
-    for (i=0; i<cksumtype_table_nents; i++) {
-	if (cksumtype ==  cksumtype_table[i].cst_cksumtype) {
-	    out = cksumtype_table[i].cst_output;
-	    break;
-	}
-    }
-    if (out) {
-	if (buflen > strlen(out))
-	    strcpy(buffer, out);
-	else
-	    out = (char *) NULL;
-	return((out) ? 0 : ENOMEM);
-    }
-    else
-	return(EINVAL);
-}
-
-krb5_error_code
+KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
 krb5_timestamp_to_string(timestamp, buffer, buflen)
     krb5_timestamp	timestamp;
-    char		* buffer;
+    char		FAR * buffer;
     size_t		buflen;
 {
 #if	HAVE_STRFTIME
@@ -652,12 +480,12 @@ krb5_timestamp_to_string(timestamp, buffer, buflen)
 #endif	/* HAVE_STRFTIME */
 }
 
-krb5_error_code
+KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
 krb5_timestamp_to_sfstring(timestamp, buffer, buflen, pad)
     krb5_timestamp	timestamp;
-    char		* buffer;
+    char		FAR * buffer;
     size_t		buflen;
-    char		* pad;
+    char		FAR * pad;
 {
     struct tm	*tmp;
     size_t i;
@@ -675,7 +503,7 @@ krb5_timestamp_to_sfstring(timestamp, buffer, buflen, pad)
 	if (buflen >= sftime_default_len) {
 	    sprintf(buffer, sftime_default_fmt,
 		    tmp->tm_mday, tmp->tm_mon+1, 1900+tmp->tm_year,
-		    tmp->tm_hour, tmp->tm_min, tmp->tm_sec);
+		    tmp->tm_hour, tmp->tm_min);
 	    ndone = strlen(buffer);
 	}
     }
@@ -687,10 +515,10 @@ krb5_timestamp_to_sfstring(timestamp, buffer, buflen, pad)
     return((ndone) ? 0 : ENOMEM);
 }
 
-krb5_error_code
+KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
 krb5_deltat_to_string(deltat, buffer, buflen)
     krb5_deltat	deltat;
-    char	* buffer;
+    char	FAR * buffer;
     size_t	buflen;
 {
     int			days, hours, minutes, seconds;

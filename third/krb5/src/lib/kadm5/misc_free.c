@@ -1,11 +1,11 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/misc_free.c,v 1.1.1.3 1999-02-09 21:00:13 danw Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/misc_free.c,v 1.1.1.4 1999-10-05 16:12:36 ghudson Exp $
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/misc_free.c,v 1.1.1.3 1999-02-09 21:00:13 danw Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/misc_free.c,v 1.1.1.4 1999-10-05 16:12:36 ghudson Exp $";
 #endif
 #include	<kadm5/admin.h>
 #include	<stdlib.h>
@@ -38,7 +38,6 @@ kadm5_ret_t
     return KADM5_OK;
 }
 
-
 /* XXX this ought to be in libkrb5.a, but isn't */
 kadm5_ret_t krb5_free_key_data_contents(context, key)
    krb5_context context;
@@ -53,6 +52,24 @@ kadm5_ret_t krb5_free_key_data_contents(context, key)
 	       free(key->key_data_contents[i]);
 	  }
      }
+     return KADM5_OK;
+}
+
+kadm5_ret_t kadm5_free_key_data(void *server_handle,
+				krb5_int16 *n_key_data,
+				krb5_key_data *key_data)
+{
+     kadm5_server_handle_t	handle = server_handle;
+     int i, nkeys = (int) *n_key_data;
+
+     _KADM5_CHECK_HANDLE(server_handle);
+
+     if (key_data == NULL)
+	  return KADM5_OK;
+     
+     for (i = 0; i < nkeys; i++)
+	  krb5_free_key_data_contents(handle->context, &key_data[i]);
+     free(key_data);
      return KADM5_OK;
 }
 

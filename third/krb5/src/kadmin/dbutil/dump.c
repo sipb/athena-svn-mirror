@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -33,6 +36,16 @@
 #if	HAVE_REGEX_H
 #include <regex.h>
 #endif	/* HAVE_REGEX_H */
+
+/*
+ * Needed for master key conversion.
+ */
+extern krb5_keyblock master_keyblock;
+extern krb5_principal master_princ;
+extern int valid_master_key;
+extern void usage();
+static int			mkey_convert;
+static krb5_keyblock		new_master_keyblock;
 
 /*
  * Use compile(3) if no regcomp present.
@@ -193,6 +206,7 @@ static const char standard_fmt_name[] = "Kerberos version 5 format";
 static const char no_name_mem_fmt[] = "%s: cannot get memory for temporary name\n";
 static const char ctx_err_fmt[] = "%s: cannot initialize Kerberos context\n";
 static const char stdin_name[] = "standard input";
+static const char remaster_err_fmt[] = "while re-encoding keys for principal %s with new master key";
 static const char restfail_fmt[] = "%s: %s restore failed\n";
 static const char close_err_fmt[] = "%s: cannot close database (%s)\n";
 static const char dbinit_err_fmt[] = "%s: cannot initialize database (%s)\n";
@@ -208,8 +222,54 @@ static const char oldoption[] = "-old";
 static const char b6option[] = "-b6";
 static const char verboseoption[] = "-verbose";
 static const char updateoption[] = "-update";
+static const char hashoption[] = "-hash";
 static const char ovoption[] = "-ov";
 static const char dump_tmptrail[] = "~";
+
+/*
+ * Re-encrypt the key_data with the new master key...
+ */
+krb5_error_code master_key_convert(context, db_entry)
+    krb5_context	  context;
+    krb5_db_entry	* db_entry;
+{
+    krb5_error_code	retval;
+    krb5_keyblock 	v5plainkey, *key_ptr;
+    krb5_keysalt 	keysalt;
+    int	      i;
+    krb5_key_data	new_key_data, *key_data;
+    krb5_boolean	is_mkey;
+
+    is_mkey = krb5_principal_compare(context, master_princ, db_entry->princ);
+
+    if (is_mkey && db_entry->n_key_data != 1)
+	    fprintf(stderr,
+		    "Master key db entry has %d keys, expecting only 1!\n",
+		    db_entry->n_key_data);
+    for (i=0; i < db_entry->n_key_data; i++) {
+	key_data = &db_entry->key_data[i];
+	if (key_data->key_data_length == 0)
+	    continue;
+	retval = krb5_dbekd_decrypt_key_data(context, &master_keyblock,
+					     key_data, &v5plainkey,
+					     &keysalt);
+	if (retval)
+		return retval;
+
+	memset(&new_key_data, 0, sizeof(new_key_data));
+	key_ptr = is_mkey ? &new_master_keyblock : &v5plainkey;
+	retval = krb5_dbekd_encrypt_key_data(context, &new_master_keyblock,
+					     key_ptr, &keysalt,
+					     key_data->key_data_kvno,
+					     &new_key_data);
+	if (retval)
+		return retval;
+	krb5_free_keyblock_contents(context, &v5plainkey);
+	free(key_data->key_data_contents);
+	*key_data = new_key_data;
+    }
+    return 0;
+}
 
 /*
  * Update the "ok" file.
@@ -367,7 +427,7 @@ find_enctype(dbentp, enctype, salttype, kentp)
     maxkvno = -1;
     datap = (krb5_key_data *) NULL;
     for (i=0; i<dbentp->n_key_data; i++) {
-	if ((dbentp->key_data[i].key_data_type[0] == enctype) &&
+	if (( (krb5_enctype)dbentp->key_data[i].key_data_type[0] == enctype) &&
 	    ((dbentp->key_data[i].key_data_type[1] == salttype) ||
 	     (salttype < 0))) {
 	    maxkvno = dbentp->key_data[i].key_data_kvno;
@@ -408,7 +468,6 @@ dump_k5beta_iterator(ptr, entry)
     struct dump_args	*arg;
     char		*name, *mod_name;
     krb5_principal	mod_princ;
-    krb5_tl_data	*pwchg;
     krb5_key_data	*pkey, *akey, nullkey;
     krb5_timestamp	mod_date, last_pwd_change;
     int			i;
@@ -429,6 +488,18 @@ dump_k5beta_iterator(ptr, entry)
 		arg->programname, error_message(retval));
 	return(retval);
     }
+
+    /*
+     * Re-encode the keys in the new master key, if necessary.
+     */
+    if (mkey_convert) {
+	retval = master_key_convert(arg->kcontext, entry);
+	if (retval) {
+	    com_err(arg->programname, retval, remaster_err_fmt, name);
+	    return retval;
+	}
+    }
+    
     /*
      * If we don't have any match strings, or if our name matches, then
      * proceed with the dump, otherwise, just forget about it.
@@ -463,9 +534,9 @@ dump_k5beta_iterator(ptr, entry)
 	/*
 	 * Find the last password change record and set it straight.
 	 */
-	if (retval =
-	    krb5_dbe_lookup_last_pwd_change(arg->kcontext, entry,
-					    &last_pwd_change)) {
+	if ((retval =
+	     krb5_dbe_lookup_last_pwd_change(arg->kcontext, entry,
+					     &last_pwd_change))) {
 	    fprintf(stderr, nokeys_err, arg->programname, name);
 	    krb5_xfree(mod_name);
 	    krb5_xfree(name);
@@ -584,6 +655,18 @@ dump_k5beta6_iterator(ptr, entry)
 		arg->programname, error_message(retval));
 	return(retval);
     }
+
+    /*
+     * Re-encode the keys in the new master key, if necessary.
+     */
+    if (mkey_convert) {
+	retval = master_key_convert(arg->kcontext, entry);
+	if (retval) {
+	    com_err(arg->programname, retval, remaster_err_fmt, name);
+	    return retval;
+	}
+    }
+    
     /*
      * If we don't have any match strings, or if our name matches, then
      * proceed with the dump, otherwise, just forget about it.
@@ -882,11 +965,12 @@ dump_db(argc, argv)
     int			error;
     char		*programname;
     char		*ofile;
-    krb5_error_code	kret;
+    krb5_error_code	kret, retval;
     dump_version	*dump;
     int			aindex;
     krb5_boolean	locked;
     extern osa_adb_policy_t policy_db;
+    char		*new_mkey_file = 0;
 	
     /*
      * Parse the arguments.
@@ -898,6 +982,8 @@ dump_db(argc, argv)
     error = 0;
     dump = &beta7_version;
     arglist.verbose = 0;
+    new_mkey_file = 0;
+    mkey_convert = 0;
 
     /*
      * Parse the qualifiers.
@@ -911,7 +997,12 @@ dump_db(argc, argv)
 	     dump = &ov_version;
 	else if (!strcmp(argv[aindex], verboseoption))
 	    arglist.verbose++;
-	else
+	else if (!strcmp(argv[aindex], "-mkey_convert"))
+	    mkey_convert = 1;
+	else if (!strcmp(argv[aindex], "-new_mkey_file")) {
+	    new_mkey_file = argv[++aindex];
+	    mkey_convert = 1;
+        } else
 	    break;
     }
 
@@ -934,6 +1025,47 @@ dump_db(argc, argv)
 	com_err(argv[0], 0, Err_no_database);
 	exit_status++;
 	return;
+    }
+
+    /*
+     * If we're doing a master key conversion, set up for it.
+     */
+    if (mkey_convert) {
+	    if (!valid_master_key) {
+		    /* TRUE here means read the keyboard, but only once */
+		    retval = krb5_db_fetch_mkey(util_context,
+						master_princ,
+						master_keyblock.enctype,
+						TRUE, FALSE,
+						(char *) NULL, 0,
+						&master_keyblock);
+		    if (retval) {
+			    com_err(argv[0], retval,
+				    "while reading master key");
+			    exit(1);
+		    }
+		    retval = krb5_db_verify_master_key(util_context,
+						       master_princ,
+						       &master_keyblock);
+		    if (retval) {
+			    com_err(argv[0], retval,
+				    "while verifying master key");
+			    exit(1);
+		    }
+	    }
+	    new_master_keyblock.enctype = global_params.enctype;
+	    if (new_master_keyblock.enctype == ENCTYPE_UNKNOWN)
+		    new_master_keyblock.enctype = DEFAULT_KDC_ENCTYPE;
+	    if (!new_mkey_file)
+		    printf("Please enter new master key....\n");
+	    if ((retval = krb5_db_fetch_mkey(util_context, master_princ, 
+					     new_master_keyblock.enctype,
+					     !new_mkey_file, TRUE, 
+					     new_mkey_file, 0,
+					     &new_master_keyblock))) { 
+		    com_err(argv[0], retval, "while reading new master key");
+		    exit(1);
+	    }
     }
 
     kret = 0;
@@ -1262,8 +1394,8 @@ process_k5beta_record(fname, kcontext, filep, verbose, linenop, pol_db)
 	      /* this really does look like an old key, so drop and swap */
 	      /* the *new* length is 2 bytes, LSB first, sigh. */
 	      size_t shortlen = pkey->key_data_length[0]-4+2;
-	      char *shortcopy = (krb5_octet *) malloc(shortlen);
-	      char *origdata = pkey->key_data_contents[0];
+	      krb5_octet *shortcopy = (krb5_octet *) malloc(shortlen);
+	      krb5_octet *origdata = pkey->key_data_contents[0];
 	      shortcopy[0] = origdata[3];
 	      shortcopy[1] = origdata[2];
 	      memcpy(shortcopy+2,origdata+4,shortlen-2);
@@ -1332,8 +1464,8 @@ process_k5beta_record(fname, kcontext, filep, verbose, linenop, pol_db)
 	      /* this really does look like an old key, so drop and swap */
 	      /* the *new* length is 2 bytes, LSB first, sigh. */
 	      size_t shortlen = akey->key_data_length[0]-4+2;
-	      char *shortcopy = (krb5_octet *) malloc(shortlen);
-	      char *origdata = akey->key_data_contents[0];
+	      krb5_octet *shortcopy = (krb5_octet *) malloc(shortlen);
+	      krb5_octet *origdata = akey->key_data_contents[0];
 	      shortcopy[0] = origdata[3];
 	      shortcopy[1] = origdata[2];
 	      memcpy(shortcopy+2,origdata+4,shortlen-2);
@@ -1748,9 +1880,9 @@ int process_k5beta7_policy(fname, kcontext, filep, verbose, linenop, pol_db)
 	 return 1;
     }
 
-    if (ret = osa_adb_create_policy(pol_db, &rec)) {
+    if ((ret = osa_adb_create_policy(pol_db, &rec))) {
 	 if (ret == OSA_ADB_DUP &&
-	     (ret = osa_adb_put_policy(pol_db, &rec))) {
+	     ((ret = osa_adb_put_policy(pol_db, &rec)))) {
 	      fprintf(stderr, "cannot create policy on line %d: %s\n",
 		      *linenop, error_message(ret));
 	      return 1;
@@ -1876,7 +2008,7 @@ restore_dump(programname, kcontext, dumpfile, f, verbose, dump, pol_db)
 }
 
 /*
- * Usage: load_db [-old] [-ov] [-b6] [-verbose] [-update] filename
+ * Usage: load_db [-old] [-ov] [-b6] [-verbose] [-update] [-hash] filename
  */
 void
 load_db(argc, argv)
@@ -1897,6 +2029,7 @@ load_db(argc, argv)
     char		buf[BUFSIZ];
     dump_version	*load;
     int			update, verbose;
+    krb5_int32		crflags;
     int			aindex;
 
     /*
@@ -1910,6 +2043,7 @@ load_db(argc, argv)
     load = NULL;
     update = 0;
     verbose = 0;
+    crflags = KRB5_KDB_CREATE_BTREE;
     exit_status = 0;
     dbname_tmp = (char *) NULL;
     tmppol_db = NULL;
@@ -1924,6 +2058,8 @@ load_db(argc, argv)
 	    verbose = 1;
 	else if (!strcmp(argv[aindex], updateoption))
 	    update = 1;
+	else if (!strcmp(argv[aindex], hashoption))
+	    crflags = KRB5_KDB_CREATE_HASH;
 	else
 	    break;
     }
@@ -1951,7 +2087,6 @@ load_db(argc, argv)
 	exit_status++;
 	return;
     }
-    krb5_init_ets(kcontext);
 
     /*
      * Open the dumpfile
@@ -1963,7 +2098,8 @@ load_db(argc, argv)
 	     exit_status++;
 	     return;
 	}
-	if (kret = krb5_lock_file(kcontext, fileno(f), KRB5_LOCKMODE_SHARED)) {
+	if ((kret = krb5_lock_file(kcontext, fileno(f),
+				   KRB5_LOCKMODE_SHARED))) {
 	     fprintf(stderr, "%s: Cannot lock %s: %s\n", programname,
 		     dumpfile, error_message(errno));
 	     exit_status++;
@@ -2019,8 +2155,8 @@ load_db(argc, argv)
 	 newparams.mask |= KADM5_CONFIG_DBNAME;
 	 newparams.dbname = dbname_tmp;
 
-	 if (kret = kadm5_get_config_params(kcontext, NULL, NULL,
-					    &newparams, &newparams)) {
+	 if ((kret = kadm5_get_config_params(kcontext, NULL, NULL,
+					     &newparams, &newparams))) {
 	      com_err(argv[0], kret,
 		      "while retreiving new configuration parameters");
 	      exit_status++;
@@ -2034,7 +2170,7 @@ load_db(argc, argv)
      * with policy info, because they may be loading an old dump
      * intending to use it with the new kadm5 system.
      */
-    if (!update && (kret = krb5_db_create(kcontext, dbname_tmp))) {
+    if (!update && ((kret = krb5_db_create(kcontext, dbname_tmp, crflags)))) {
 	 fprintf(stderr, dbcreaterr_fmt,
 		 programname, dbname_tmp, error_message(kret));
 	 exit_status++;
@@ -2054,15 +2190,15 @@ load_db(argc, argv)
     /*
      * Point ourselves at the new databases.
      */
-    if (kret = krb5_db_set_name(kcontext,
-				(update) ? dbname : dbname_tmp)) {
+    if ((kret = krb5_db_set_name(kcontext,
+				(update) ? dbname : dbname_tmp))) {
 	 fprintf(stderr, dbname_err_fmt,
 		 programname, 
 		 (update) ? dbname : dbname_tmp, error_message(kret));
 	 exit_status++;
 	 goto error;
     }
-    if (kret = osa_adb_open_policy(&tmppol_db, &newparams)) {
+    if ((kret = osa_adb_open_policy(&tmppol_db, &newparams))) {
 	 fprintf(stderr, "%s: %s while opening policy database\n",
 		 programname, error_message(kret));
 	 exit_status++;
@@ -2073,7 +2209,7 @@ load_db(argc, argv)
      * the update fails.
      */
     if (update) {
-	 if (kret = osa_adb_get_lock(tmppol_db, OSA_ADB_PERMANENT)) {
+	 if ((kret = osa_adb_get_lock(tmppol_db, OSA_ADB_PERMANENT))) {
 	      fprintf(stderr, "%s: %s while permanently locking database\n",
 		      programname, error_message(kret));
 	      exit_status++;
@@ -2084,7 +2220,7 @@ load_db(argc, argv)
     /*
      * Initialize the database.
      */
-    if (kret = krb5_db_init(kcontext)) {
+    if ((kret = krb5_db_init(kcontext))) {
 	 fprintf(stderr, dbinit_err_fmt,
 		 programname, error_message(kret));
 	 exit_status++;
@@ -2116,14 +2252,14 @@ load_db(argc, argv)
 		 programname, dbname_tmp, error_message(kret));
 	 exit_status++;
     }
-    if (kret = krb5_db_fini(kcontext)) {
+    if ((kret = krb5_db_fini(kcontext))) {
 	 fprintf(stderr, close_err_fmt,
 		 programname, error_message(kret));
 	 exit_status++;
     }
 
     if (!update && load->create_kadm5 &&
-	(kret = kadm5_create_magic_princs(&newparams, kcontext))) {
+	((kret = kadm5_create_magic_princs(&newparams, kcontext)))) {
 	 /* error message printed by create_magic_princs */
 	 exit_status++;
     }
@@ -2139,12 +2275,12 @@ error:
      */
     if (!update) {
 	 if (exit_status) {
-	      if ((kret = kdb5_db_destroy(kcontext, dbname_tmp))) {
+	      if ((kret = krb5_db_destroy(kcontext, dbname_tmp))) {
 		   fprintf(stderr, dbdelerr_fmt,
 			   programname, dbname_tmp, error_message(kret));
 		   exit_status++;
 	      }
-	      if (kret = osa_adb_destroy_policy_db(&newparams)) {
+	      if ((kret = osa_adb_destroy_policy_db(&newparams))) {
 		   fprintf(stderr, "%s: %s while destroying policy database\n",
 			   programname, error_message(kret));
 		   exit_status++;
@@ -2160,14 +2296,14 @@ error:
 		   exit_status++;
 	      } 
 
-	      if (kret = osa_adb_close_policy(tmppol_db)) {
+	      if ((kret = osa_adb_close_policy(tmppol_db))) {
 		   fprintf(stderr, close_err_fmt,
 			   programname, error_message(kret));
 		   exit_status++;
 	      }
 
-	      if (kret = osa_adb_rename_policy_db(&newparams,
-						  &global_params)) {
+	      if ((kret = osa_adb_rename_policy_db(&newparams,
+						   &global_params))) {
 		   fprintf(stderr,
 			   "%s: %s while renaming policy db %s to %s\n",
 			   programname, error_message(kret),
@@ -2177,13 +2313,13 @@ error:
 	      }
 	 }
     } else /* update */ {
-	 if (! exit_status && (kret = osa_adb_release_lock(tmppol_db))) {
+	 if (! exit_status && ((kret = osa_adb_release_lock(tmppol_db)))) {
 	      fprintf(stderr, "%s: %s while releasing permanent lock\n",
 		      programname, error_message(kret));
 	      exit_status++;
 	 }
 
-	 if(tmppol_db && (kret = osa_adb_close_policy(tmppol_db))) {
+	 if (tmppol_db && ((kret = osa_adb_close_policy(tmppol_db)))) {
 	      fprintf(stderr, close_err_fmt,
 		      programname, error_message(kret));
 	      exit_status++;

@@ -1,8 +1,7 @@
 AC_INIT(getpty.c)
 CONFIG_RULES
 AC_PROG_AWK
-CopySrcHeader(libpty.h,[$](BUILDTOP)/include)
-LinkFileDir([$](TOPLIBD)/libpty.a,libpty.a,../util/pty)
+dnl LinkFileDir([$](TOPLIBD)/libpty.a,libpty.a,../util/pty)
 AC_PROG_INSTALL
 AC_PROG_ARCHIVE
 AC_PROG_RANLIB
@@ -49,8 +48,9 @@ esac
 dnl
 AC_SUBST(LOGINLIBS)
 dnl
+AC_CHECK_LIB(util,openpty, AC_DEFINE(HAVE_OPENPTY) LIBS="$LIBS -lutil")
 AC_TYPE_MODE_T
-AC_CHECK_TYPE(time_t, int)
+AC_CHECK_TYPE(time_t, long)
 AC_FUNC_CHECK(strsave,AC_DEFINE(HAS_STRSAVE))
 AC_HAVE_FUNCS(getutent setreuid gettosbyname setsid ttyname line_push ptsname grantpt openpty logwtmp getutmpx)
 AC_CHECK_HEADERS(unistd.h stdlib.h string.h utmpx.h utmp.h sys/filio.h sys/sockio.h sys/label.h sys/tty.h ttyent.h lastlog.h sys/select.h sys/ptyvar.h)
@@ -61,7 +61,6 @@ KRB5_SIGTYPE
 CHECK_SIGNALS
 CHECK_SETJMP
 CHECK_DIRENT
-CHECK_WAIT_TYPE
 AC_HEADER_CHECK(termios.h,AC_FUNC_CHECK(cfsetispeed,AC_DEFINE(POSIX_TERMIOS)))
 CHECK_UTMP
 dnl
@@ -150,6 +149,6 @@ fi
 dnl
 ADD_DEF(-DKERBEROS)
 AC_CONST
-V5_USE_SHARED_LIB
-SubdirLibraryRule([$(LIBOBJS)])
+KRB5_BUILD_LIBRARY_WITH_DEPS
+KRB5_BUILD_LIBOBJS
 V5_AC_OUTPUT_MAKEFILE

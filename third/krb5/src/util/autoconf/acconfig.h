@@ -67,6 +67,9 @@
 /* Define if you don't have vprintf but do have _doprnt.  */
 #undef HAVE_DOPRNT
 
+/* Define if your system has a working fnmatch function.  */
+#undef HAVE_FNMATCH
+
 /* Define if your system has its own `getloadavg' function.  */
 #undef HAVE_GETLOADAVG
 
@@ -100,6 +103,9 @@
 
 /* Define if you have the strftime function.  */
 #undef HAVE_STRFTIME
+
+/* Define if you have the ANSI # stringizing operator in cpp. */
+#undef HAVE_STRINGIZE
 
 /* Define if you have <sys/wait.h> that is POSIX.1 compatible.  */
 #undef HAVE_SYS_WAIT_H
@@ -163,6 +169,9 @@
 /* Define if your C compiler doesn't accept -c and -o together.  */
 #undef NO_MINUS_C_MINUS_O
 
+/* Define if your Fortran 77 compiler doesn't accept -c and -o together. */
+#undef F77_NO_MINUS_C_MINUS_O
+
 /* Define to `long' if <sys/types.h> doesn't define.  */
 #undef off_t
 
@@ -178,6 +187,18 @@
 
 /* Define as the return type of signal handlers (int or void).  */
 #undef RETSIGTYPE
+
+/* Define to the type of arg1 for select(). */
+#undef SELECT_TYPE_ARG1
+
+/* Define to the type of args 2, 3 and 4 for select(). */
+#undef SELECT_TYPE_ARG234
+
+/* Define to the type of arg5 for select(). */
+#undef SELECT_TYPE_ARG5
+
+/* Define if the `setpgrp' function takes no argument.  */
+#undef SETPGRP_VOID
 
 /* Define if the setvbuf function takes the buffering type as its second
    argument and the buffer pointer as the third, as on System V
@@ -242,6 +263,9 @@
 /* Define if your processor stores words with the most significant
    byte first (like Motorola and SPARC, unlike Intel and VAX).  */
 #undef WORDS_BIGENDIAN
+
+/* Define if the X Window System is missing or not being used.  */
+#undef X_DISPLAY_MISSING
 
 /* Define if lex declares yytext as a char * by default, not a char[].  */
 #undef YYTEXT_POINTER

@@ -14,6 +14,8 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#include "os-proto.h"
+
 void test_get_default_realm(ctx)
 	krb5_context ctx;
 {
@@ -43,6 +45,32 @@ void test_set_default_realm(ctx, realm)
 	printf("krb5_set_default_realm(%s)\n", realm);
 }
 
+void test_get_default_ccname(ctx)
+	krb5_context ctx;
+{
+	const char	*ccname;
+
+	ccname = krb5_cc_default_name(ctx);
+	if (ccname)
+		printf("krb5_cc_default_name() returned '%s'\n", ccname);
+	else
+		printf("krb5_cc_default_name() returned NULL\n");
+}
+
+void test_set_default_ccname(ctx, ccname)
+    krb5_context ctx;
+    char	*ccname;
+{
+	krb5_error_code	retval;
+	
+	retval = krb5_cc_set_default_name(ctx, ccname);
+	if (retval) {
+		com_err("krb5_set_default_ccname", retval, 0);
+		return;
+	}
+	printf("krb5_set_default_ccname(%s)\n", ccname);
+}
+
 void test_get_krbhst(ctx, realm)
 	krb5_context ctx;
 	char	*realm;
@@ -65,14 +93,13 @@ void test_get_krbhst(ctx, realm)
 	}
 	if (hostlist[0] == 0) {
 		printf(" (none)\n");
-		free(hostlist);
+		krb5_free_krbhst(ctx, hostlist);
 		return;
 	}
 	for (cpp = hostlist; *cpp; cpp++) {
 		printf(" '%s'", *cpp);
-		free(*cpp);
 	}
-	free(hostlist);
+	krb5_free_krbhst(ctx, hostlist);
 	printf("\n");
 }
 
@@ -83,12 +110,14 @@ void test_locate_kdc(ctx, realm)
     	struct sockaddr *addrs;
 	struct sockaddr_in *sin;
 	int	i, naddrs;
+	int	master_index, nmasters;
 	krb5_data rlm;
 	krb5_error_code	retval;
 
 	rlm.data = realm;
 	rlm.length = strlen(realm);
-	retval = krb5_locate_kdc(ctx, &rlm, &addrs, &naddrs);
+	retval = krb5_locate_kdc(ctx, &rlm, &addrs, &naddrs,
+				 &master_index, &nmasters);
 	if (retval) {
 		com_err("krb5_get_krbhst", retval, 0);
 		return;
@@ -152,12 +181,12 @@ void test_get_realm_domain(ctx, realm)
 void usage(progname)
 	char	*progname;
 {
-	fprintf(stderr, "%s: Usage: %s [-d] [-k realm] [-r host] [-D realm]\n",
+	fprintf(stderr, "%s: Usage: %s [-dc] [-k realm] [-r host] [-C ccname] [-D realm]\n",
 		progname, progname);
 	exit(1);
 }
 
-main(argc, argv)
+int main(argc, argv)
 	int	argc;
 	char	**argv;
 {
@@ -168,14 +197,16 @@ main(argc, argv)
 
 	retval = krb5_init_context(&ctx);
 	if (retval) {
-		fprintf(stderr, "krb5_init_context returned error %ld\n",
+		fprintf(stderr, "krb5_init_context returned error %u\n",
 			retval);
 		exit(1);
 	}
-	krb5_init_ets(ctx);
 
-	while ((c = getopt(argc, argv, "dk:r:D:l:s:")) != EOF) {
+	while ((c = getopt(argc, argv, "cdk:r:C:D:l:s:")) != -1) {
 	    switch (c) {
+	    case 'c':		/* Get default ccname */
+		test_get_default_ccname(ctx);
+		break;
 	    case 'd': /* Get default realm */
 		test_get_default_realm(ctx);
 		break;
@@ -191,6 +222,9 @@ main(argc, argv)
 	    case 's':
 		test_set_default_realm(ctx, optarg);
 		break;
+	    case 'C':
+		test_set_default_ccname(ctx, optarg);
+		break;
 	    case 'D':
 		test_get_realm_domain(ctx, optarg);
 		break;
@@ -198,5 +232,8 @@ main(argc, argv)
 		usage(argv[0]);
 	    }
 	}
+
+
+	krb5_free_context(ctx);
 	exit(0);
 }

@@ -14,7 +14,10 @@
 .\" this permission notice appear in supporting documentation, and that
 .\" the name of M.I.T. not be used in advertising or publicity pertaining
 .\" to distribution of the software without specific, written prior
-.\" permission.  M.I.T. makes no representations about the suitability of
+.\" permission.  Furthermore if you modify this software you must label
+.\" your software as modified software and not distribute it in such a
+.\" fashion that it might be confused with the original M.I.T. software.
+.\" M.I.T. makes no representations about the suitability of
 .\" this software for any purpose.  It is provided "as is" without express
 .\" or implied warranty.
 .\" "
@@ -36,13 +39,13 @@ krb5kdc \- Kerberos V5 KDC
 .B \-p
 .I portnum
 ] [
-.B \-s
-.I portnum
-] [
 .B \-m
 ] [
 .B \-r
 .I realm
+] [
+.B \-4
+.I v4mode
 ]
 .br
 .SH DESCRIPTION
@@ -87,19 +90,26 @@ If no value is available, then the value in /etc/services for service
 "kerberos" is used.
 .PP
 The
-.B \-s
-.I portnum
-option specifies the default UDP port number which the KDC should listen on for
-Kerberos version 4 requests.  This value is used when no port is specified in
-the kdc profile and when no port is specified in the Kerberos configuration
-file.
-If no value is available, then the value in /etc/services for service
-"kerberos-sec" is used.
-.PP
-The
 .B \-m
 option specifies that the master database password should be fetched
 from the keyboard rather than from a file on disk.
+.PP
+The
+.B \-4
+option specifies how the KDC responds to kerberos IV requests for
+tickets.  The command line option overrides the value in the KDC
+profile.  The possible values are 
+.I none,
+.I disable,
+.I full
+or
+.I nopreauth.
+These instruct the KDC to not respond to V4 packets, to
+respond with a version skew error, to issue tickets for all database
+entries, and to issue tickets for all but preauthentication required
+database entries respectively. The default behaviour is as if 
+.I nopreauth
+was specified.
 .PP
 The KDC may service requests for multiple realms (maximum 32 realms).  The
 realms are listed on the command line.  Per-realm options that can be
@@ -128,7 +138,7 @@ options specified on the command line.  See the
 .I kdc.conf(5)
 description for further details.
 .SH SEE ALSO
-krb5(3), kdb5_create(8), kdb5_stash(8), kdc.conf(5)
+krb5(3), kdb5_util(8), kdc.conf(5)
 .SH BUGS
 
 It should fork and go into the background when it finishes reading the

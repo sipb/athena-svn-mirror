@@ -9,11 +9,42 @@
  *   g_cnffil.c
  */
 
-#include <windows.h>
+#include "krb.h"
+#include "k5-int.h"
 #include <stdio.h>
 #include <assert.h>
 
-#include "krb.h"
+krb5_context krb5__krb4_context = 0;
+
+char *
+krb__get_srvtabname(default_srvtabname)
+	char *default_srvtabname;
+{
+	const char* names[3];
+	char **full_name = 0, **cpp;
+	krb5_error_code retval;
+	char *retname;
+
+	if (!krb5__krb4_context) {
+		retval = krb5_init_context(&krb5__krb4_context);
+		if (!retval)
+			return NULL;
+	}
+	names[0] = "libdefaults";
+	names[1] = "krb4_srvtab";
+	names[2] = 0;
+	retval = profile_get_values(krb5__krb4_context->profile, names, 
+				    &full_name);
+	if (retval == 0 && full_name && full_name[0]) {
+		retname = strdup(full_name[0]);
+		for (cpp = full_name; *cpp; cpp++) 
+			krb5_xfree(*cpp);
+		krb5_xfree(full_name);
+	} else {
+		retname = strdup(default_srvtabname);
+	}
+	return retname;
+}
 
 /*
  * Returns an open file handle to the configuration file.  This
@@ -84,7 +115,7 @@ krb__get_realmsfile()
  * the [DEFAULTS] section of the "kerberos.ini" file located in the
  * Windows directory.
  */
-char FAR * INTERFACE
+KRB5_DLLIMP char FAR * KRB5_CALLCONV
 krb_get_default_user()
 {
 	static char username[ANAME_SZ];
@@ -99,7 +130,7 @@ krb_get_default_user()
 /*
  * Sets the default user name stored in the "kerberos.ini" file.
  */
-int INTERFACE
+KRB5_DLLIMP int KRB5_CALLCONV
 krb_set_default_user(username)
 	char *username;
 {

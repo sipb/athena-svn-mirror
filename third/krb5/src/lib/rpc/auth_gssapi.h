@@ -3,81 +3,7 @@
  * 
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved.
  *
- * $Id: auth_gssapi.h,v 1.1.1.3 1999-02-09 20:56:45 danw Exp $
- * $Source: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/auth_gssapi.h,v $
- * 
- * $Log: not supported by cvs2svn $
- * Revision 1.19  1996/08/14 00:01:34  tlyu
- * 	* getrpcent.c: Add PROTOTYPE and conditionalize function
- * 		prototypes.
- *
- * 	* xdr.h: Add PROTOTYPE and conditionalize function prototypes.
- *
- * 	* svc_auth_gssapi.c: Remove ANSI string concatenation, de-ANSI-fy
- *  		function definitions.
- *
- * 	* auth_gssapi_misc.c (auth_gssapi_display_status_1): Remove ANSI
- * 		string concatenation, de-ANSI-fy function definitions.
- *
- * 	* auth_gssapi.h: Add PROTOTYPE and conditionalize function
- * 		prototypes.
- *
- * 	* auth_gssapi.c (auth_gssapi_create): remove ANSI-ish string
- * 		concatenation, de-ANSI-fy function definitions.
- *
- * Revision 1.18  1996/07/22 20:39:41  marc
- * this commit includes all the changes on the OV_9510_INTEGRATION and
- * OV_MERGE branches.  This includes, but is not limited to, the new openvision
- * admin system, and major changes to gssapi to add functionality, and bring
- * the implementation in line with rfc1964.  before committing, the
- * code was built and tested for netbsd and solaris.
- *
- * Revision 1.17.4.1  1996/07/18 04:18:31  marc
- * merged in changes from OV_9510_BP to OV_9510_FINAL1
- *
- * Revision 1.17.2.1  1996/06/20  23:35:44  marc
- * File added to the repository on a branch
- *
- * Revision 1.17  1996/05/12  06:11:38  marc
- * renamed lots of types: u_foo to unsigned foo, and foo32 to rpc_foo32.  This is to make autoconfiscation less painful.
- *
- * Revision 1.16  1996/01/31  19:16:16  grier
- * [secure/3570]
- * Remove (void *) casts to memcpy() args
- *
- * Revision 1.15  1995/12/28  17:54:34  jik
- * Don't define DEBUG_GSSAPI here.
- *
- * Revision 1.14  1995/12/13  14:03:01  grier
- * Longs to ints for Alpha
- *
- * Revision 1.13  1995/11/07  23:15:26  grier
- * memcpy() casts
- *
- * Revision 1.12  1995/05/25  18:35:59  bjaspan
- * [secure-rpc/3103] log misc errors from RPC
- *
- * Revision 1.11  1994/10/27  12:39:14  jik
- * [secure-rpc/2808: add credential versioning]
- *
- * Sandbox:
- *
- *  [secure-rpc/2808] add version field to client creds
- *
- * Revision 1.11  1994/10/26  20:04:00  bjaspan
- * [secure-rpc/2808] add version field to client creds
- *
- * Revision 1.10  1993/11/12  02:32:50  bjaspan
- * add badauth, don't use const_gss_OID
- *
- * Revision 1.9  1993/11/03  23:46:15  bjaspan
- * new log_badverf format
- *
- * Revision 1.8  1993/11/03  21:21:38  bjaspan
- * added log_badverf
- *
- * Revision 1.7  1993/11/03  01:29:56  bjaspan
- * add const to gss_nt_*
+ * $Id: auth_gssapi.h,v 1.1.1.4 1999-10-05 16:15:00 ghudson Exp $
  *
  */
 
@@ -185,8 +111,10 @@ PROTOTYPE((CLIENT *clnt, char *service_name));
 void auth_gssapi_display_status
 PROTOTYPE((char *msg, OM_uint32 major,
 	   OM_uint32 minor)); 
-bool_t _svcauth_gssapi_set_name
-PROTOTYPE((char *name, gss_OID name_type));
+bool_t _svcauth_gssapi_set_names
+PROTOTYPE((auth_gssapi_name *names, int num));
+void _svcauth_gssapi_unset_names
+PROTOTYPE(());
 
 void _svcauth_set_log_badauth_func
 PROTOTYPE((auth_gssapi_log_badauth_func func,

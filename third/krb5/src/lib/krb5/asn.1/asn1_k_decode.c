@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  */
@@ -56,7 +59,7 @@ if(class != APPLICATION || construction != CONSTRUCTED ||\
 #define get_field_body(var,decoder)\
 retval = decoder(&subbuf,&(var));\
 if(retval) return retval;\
-if(!taglen) next_tag();\
+if(!taglen) { next_tag(); }\
 next_tag()
 
 #define get_field(var,tagexpect,decoder)\
@@ -73,7 +76,7 @@ else var = optvalue
 #define get_lenfield_body(len,var,decoder)\
 retval = decoder(&subbuf,&(len),&(var));\
 if(retval) return retval;\
-if(!taglen) next_tag();\
+if(!taglen) { next_tag(); }\
 next_tag()
 
 #define get_lenfield(len,var,tagexpect,decoder)\
@@ -98,7 +101,8 @@ if(retval) return retval;\
 next_tag()
 
 #define end_structure()\
-asn1buf_sync(buf,&subbuf)
+retval = asn1buf_sync(buf,&subbuf,tagnum,length);\
+if(retval) return retval
 
 #define sequence_of(buf)\
 int size=0;\
@@ -110,7 +114,8 @@ retval = asn1buf_imbed(&seqbuf,buf,length);\
 if(retval) return retval
 
 #define end_sequence_of(buf)\
-asn1buf_sync(buf,&seqbuf)
+retval = asn1buf_sync(buf,&seqbuf,ASN1_TAGNUM_CEILING,length);\
+if(retval) return retval
 
 #define cleanup()\
 return 0

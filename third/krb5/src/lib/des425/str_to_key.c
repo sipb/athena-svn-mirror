@@ -17,7 +17,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -48,10 +51,10 @@ extern int mit_des_debug;
 /*
  * convert an arbitrary length string to a DES key
  */
-int
+KRB5_DLLIMP int KRB5_CALLCONV
 des_string_to_key(str,key)
     char *str;
-    register mit_des_cblock *key;
+    register mit_des_cblock key;
 {
     register char *in_str;
     register unsigned temp;

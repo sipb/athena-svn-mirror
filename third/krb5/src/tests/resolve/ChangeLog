@@ -1,3 +1,40 @@
+1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Set the myfulldir and mydir variables (which are
+		relative to buildtop and thisconfigdir, respectively.)
+
+Mon Mar 30 13:50:15 1998  Ezra Peisach  <epeisach@kangaroo.mit.edu>
+
+	* resolve.c: Include unistd.h if present on system (for
+	        gethostname prototype). 
+
+Wed Feb 18 16:30:37 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove trailing slash from thisconfigdir.  Fix up
+	BUILDTOP for new conventions.
+
+Mon Feb  2 16:44:41 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+Wed Feb 26 23:12:24 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Add $(LIBS) so that compile doesn't blow out under
+	Solaris due to lack of -lnsl -lsocket.
+
+Sat Feb 22 20:28:32 1997  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* resolve.c (main): Make the test for a FQDN be a bit more
+		stringent.
+
+	* Makefile.in (resolve): The resolve program doesn't need to be
+		linked against the Kerberos library.
+
+Sun Feb  9 01:48:01 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in:
+	* configure.in: Update to new program build procedure.
+
 Mon Mar 18 21:49:39 1996  Ezra Peisach  <epeisach@kangaroo.mit.edu>
 
 	* configure.in: Add KRB5_RUN_FLAGS

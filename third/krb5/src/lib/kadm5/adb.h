@@ -2,7 +2,7 @@
  * Data Types for policys, and principal information that
  * exist in the respective databases.
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/adb.h,v 1.1.1.3 1999-02-09 21:00:07 danw Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/adb.h,v 1.1.1.4 1999-10-05 16:12:32 ghudson Exp $
  *
  * This file was originally created with rpcgen.
  * It has been hacked up since then.
@@ -11,7 +11,7 @@
 #ifndef __ADB_H__
 #define __ADB_H__
 #include <sys/types.h>
-#include <rpc/types.h>
+#include <gssrpc/types.h>
 #include "k5-int.h"
 #include <krb5/kdb.h>
 #include <db.h>

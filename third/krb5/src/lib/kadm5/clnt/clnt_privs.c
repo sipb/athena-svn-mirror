@@ -1,10 +1,20 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved.
  *
- * $Id: clnt_privs.c,v 1.1.1.3 1999-02-09 21:00:26 danw Exp $
+ * $Id: clnt_privs.c,v 1.1.1.4 1999-10-05 16:12:40 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/clnt_privs.c,v $
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  1998/02/14 02:32:58  tlyu
+ * 	* client_init.c:
+ * 	* client_principal.c:
+ * 	* client_rpc.c:
+ * 	* clnt_policy.c:
+ * 	* clnt_privs.c: Update header locations.
+ *
+ * 	* Makefile.in (LIBMAJOR): Bump major version to reflect change in
+ * 	rpc library.
+ *
  * Revision 1.1  1996/07/24 22:22:48  tlyu
  * 	* Makefile.in, configure.in: break out client lib into a
  * 		subdirectory
@@ -48,10 +58,10 @@
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/clnt_privs.c,v 1.1.1.3 1999-02-09 21:00:26 danw Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/clnt_privs.c,v 1.1.1.4 1999-10-05 16:12:40 ghudson Exp $";
 #endif
 
-#include    <rpc/rpc.h>
+#include    <gssrpc/rpc.h>
 #include    <kadm5/admin.h>
 #include    <kadm5/kadm_rpc.h>
 #include    "client_internal.h"

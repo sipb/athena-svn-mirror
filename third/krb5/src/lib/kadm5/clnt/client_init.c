@@ -1,11 +1,37 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/client_init.c,v 1.1.1.3 1999-02-09 21:00:23 danw Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/client_init.c,v 1.1.1.4 1999-10-05 16:12:39 ghudson Exp $
+ */
+
+/*
+ * Copyright (C) 1998 by the FundsXpress, INC.
+ * 
+ * All rights reserved.
+ * 
+ * Export of this software from the United States of America may require
+ * a specific license from the United States Government.  It is the
+ * responsibility of any person or organization contemplating export to
+ * obtain such a license before exporting.
+ * 
+ * WITHIN THAT CONSTRAINT, permission to use, copy, modify, and
+ * distribute this software and its documentation for any purpose and
+ * without fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright notice and
+ * this permission notice appear in supporting documentation, and that
+ * the name of FundsXpress. not be used in advertising or publicity pertaining
+ * to distribution of the software without specific, written prior
+ * permission.  FundsXpress makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is" without express
+ * or implied warranty.
+ * 
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR
+ * IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
+ * WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/client_init.c,v 1.1.1.3 1999-02-09 21:00:23 danw Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/clnt/client_init.c,v 1.1.1.4 1999-10-05 16:12:39 ghudson Exp $";
 #endif
 
 #include <stdio.h>
@@ -26,10 +52,10 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src
 #include <kadm5/kadm_rpc.h>
 #include "client_internal.h"
 
-#include <rpc/rpc.h>
+#include <gssrpc/rpc.h>
 #include <gssapi/gssapi.h>
 #include <gssapi/gssapi_krb5.h>
-#include <rpc/auth_gssapi.h>
+#include <gssrpc/auth_gssapi.h>
 
 #define	ADM_CCACHE  "/tmp/ovsec_adm.XXXXXX"
 
@@ -168,7 +194,6 @@ static kadm5_ret_t _kadm5_init_any(char *client_name,
      handle->lhandle->lhandle = handle->lhandle;
 
      krb5_init_context(&handle->context);
-     krb5_init_ets(handle->context);	
 
      if(service_name == NULL || client_name == NULL) {
 	free(handle);
@@ -221,11 +246,11 @@ static kadm5_ret_t _kadm5_init_any(char *client_name,
 	  return KADM5_BAD_CLIENT_PARAMS;
      }
 			
-     if (code = kadm5_get_config_params(handle->context,
+     if ((code = kadm5_get_config_params(handle->context,
 					DEFAULT_PROFILE_PATH,
 					"KRB5_CONFIG",
 					params_in,
-					&handle->params)) {
+					&handle->params))) {
 	  krb5_free_context(handle->context);
 	  free(handle);
 	  return(code);
@@ -404,11 +429,14 @@ static kadm5_ret_t _kadm5_init_any(char *client_name,
       */
 
      /* use the kadm5 cache */
-     ccname_orig = getenv("KRB5CCNAME");
+     gssstat = gss_krb5_ccache_name(&minor_stat, handle->cache_name,
+				    &ccname_orig);
+     if (gssstat != GSS_S_COMPLETE) {
+	 code = KADM5_GSS_ERROR;
+	 goto error;
+     }
      if (ccname_orig)
 	  ccname_orig = strdup(ccname_orig);
-     
-     (void) krb5_setenv("KRB5CCNAME", handle->cache_name, 1);
 
 #ifndef INIT_TEST
      input_name.value = full_service_name;
@@ -441,25 +469,35 @@ static kadm5_ret_t _kadm5_init_any(char *client_name,
      
 #ifndef INIT_TEST
      handle->clnt->cl_auth = auth_gssapi_create(handle->clnt,
-					&gssstat,
-					&minor_stat,
-					gss_client_creds,
-					gss_target,
-					GSS_C_NULL_OID,
-					GSS_C_MUTUAL_FLAG | GSS_C_REPLAY_FLAG,
-					0,
-					NULL,
-					NULL,
-					NULL);
+						&gssstat,
+						&minor_stat,
+						gss_client_creds,
+						gss_target,
+						gss_mech_krb5,
+						GSS_C_MUTUAL_FLAG
+						| GSS_C_REPLAY_FLAG,
+						0,
+						NULL,
+						NULL,
+						NULL);
+
      (void) gss_release_name(&minor_stat, &gss_target);
 #endif /* ! INIT_TEST */
 
      if (ccname_orig) {
-	  (void) krb5_setenv("KRB5CCNAME", ccname_orig, 1);
-	  free(ccname_orig);
-     } else
-	  (void) krb5_unsetenv("KRB5CCNAME");
-
+	 gssstat = gss_krb5_ccache_name(&minor_stat, ccname_orig, NULL);
+	 if (gssstat) {
+	     code = KADM5_GSS_ERROR;
+	     goto error;
+	 }
+	 free(ccname_orig);
+     } else {
+	 gssstat = gss_krb5_ccache_name(&minor_stat, NULL, NULL);
+	 if (gssstat) {
+	     code = KADM5_GSS_ERROR;
+	     goto error;
+	 }
+     }
      
      if (handle->clnt->cl_auth == NULL) {
 	  code = KADM5_GSS_ERROR;
@@ -531,6 +569,11 @@ kadm5_destroy(void *server_handle)
 	  AUTH_DESTROY(handle->clnt->cl_auth);
      if (handle->clnt)
 	  clnt_destroy(handle->clnt);
+     if (handle->lhandle)
+          free (handle->lhandle);
+
+     kadm5_free_config_params(handle->context, &handle->params);
+     krb5_free_context(handle->context);
 
      handle->magic_number = 0;
      free(handle);

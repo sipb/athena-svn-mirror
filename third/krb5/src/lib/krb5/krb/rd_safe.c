@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -59,6 +62,7 @@ krb5_rd_safe_basic(context, inbuf, keyblock, recv_addr, sender_addr,
     krb5_checksum our_cksum, *his_cksum;
     krb5_octet zero_octet = 0;
     krb5_data *scratch;
+    krb5_boolean valid;
 
     if (!krb5_is_krb_safe(inbuf))
 	return KRB5KRB_AP_ERR_MSG_TYPE;
@@ -122,14 +126,14 @@ krb5_rd_safe_basic(context, inbuf, keyblock, recv_addr, sender_addr,
 
     message->checksum = his_cksum;
 			 
-    retval = krb5_verify_checksum(context, his_cksum->checksum_type,
-				  his_cksum, scratch->data, scratch->length,
-				  (krb5_pointer) keyblock->contents,
-				  keyblock->length);
+    retval = krb5_c_verify_checksum(context, keyblock,
+				    KRB5_KEYUSAGE_KRB_SAFE_CKSUM,
+				    scratch, his_cksum, &valid);
+
     (void) memset((char *)scratch->data, 0, scratch->length);
     krb5_free_data(context, scratch);
     
-    if (retval) {
+    if (!valid) {
 	retval = KRB5KRB_AP_ERR_MODIFIED;
 	goto cleanup;
     }
@@ -147,13 +151,13 @@ cleanup:
     return retval;
 }
 
-krb5_error_code
+KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
 krb5_rd_safe(context, auth_context, inbuf, outbuf, outdata)
     krb5_context 	  context;
     krb5_auth_context 	  auth_context;
-    const krb5_data   	* inbuf;
-    krb5_data 	      	* outbuf;
-    krb5_replay_data  	* outdata;
+    const krb5_data   	FAR * inbuf;
+    krb5_data 	      	FAR * outbuf;
+    krb5_replay_data  	FAR * outdata;
 {
     krb5_error_code 	  retval;
     krb5_keyblock	* keyblock;
@@ -170,8 +174,8 @@ krb5_rd_safe(context, auth_context, inbuf, outbuf, outdata)
 	return KRB5_RC_REQUIRED;
 
     /* Get keyblock */
-    if ((keyblock = auth_context->local_subkey) == NULL)
-        if ((keyblock = auth_context->remote_subkey) == NULL)
+    if ((keyblock = auth_context->remote_subkey) == NULL)
+	if ((keyblock = auth_context->local_subkey) == NULL)
             keyblock = auth_context->keyblock;
 
 {

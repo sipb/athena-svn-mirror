@@ -8,19 +8,6 @@
 
 #include "prof_int.h"
 
-#if !defined(_MSDOS) && !defined(_MACINTOSH)
-#include "com_err.h"
-#else
-
-#define initialize_prof_error_table()
-char *error_message (long err) {
-	static char buf[50];
-
-	sprintf (buf, " 0x%lX (%ld)", err, err);
-	return buf;
-}
-#endif
-
 void dump_profile PROTOTYPE((struct profile_node *root, int level));
 
 int main(argc, argv)
@@ -46,16 +33,19 @@ int main(argc, argv)
 	retval = profile_parse_file(f, &root);
 	if (retval) {
 		printf("profile_parse_file error %s\n", error_message(retval));
-		return 0;
+		exit(1);
 	}
 	fclose(f);
 	
 	printf("\n\nDebugging dump.\n");
-#if 0
-	dump_profile(root, 0);
-#else
-	dump_profile_to_file(root, 0, stdout);
-#endif
+	profile_write_tree_file(root, stdout);
+	
+	retval = profile_verify_node(root);
+	if (retval) {
+		printf("profile_verify_node reported an error: %s\n",
+		       error_message(retval));
+		exit(1);
+	}
 
 	profile_free_node(root);
 

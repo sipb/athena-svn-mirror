@@ -1,3 +1,47 @@
+Wed May 19 13:23:16 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Improve rule to create gssapi include dir under
+		windows.
+
+Wed May 19 11:39:05 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Fix windows cleanup to ignore any errors while
+		removing gssapi include dir.
+
+Mon May 10 15:22:12 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Do win32 build in subdir.
+
+Thu Mar 25 22:41:30 1999  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* disp_major_status.c (display_unknown): Fix the length of the
+ 	 	buffer to be the size of the returned string, instead of
+ 	 	something bigger than the returned string.
+
+1999-02-19  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in (DLL_FILE_DEF): Tell the Makefile template that we
+		are building object files for the GSSAPI DLL.
+
+	* gssapi.hin, gssapi_generic.c: Change use of KRB5_DLLIMP to be
+		GSS_DLLIMP.
+
+1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Set the myfulldir and mydir variables (which are
+		relative to buildtop and thisconfigdir, respectively.)
+
+1998-10-27  Marc Horowitz  <marc@mit.edu>
+
+	* gssapi.hin: define GSS_S_DUPLICATE_ELEMENT, GSS_S_NAME_NOT_MN,
+	and GSS_S_GAP_TOKEN as per gss v2 c bindings
+
+1998-06-08  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* oid_ops.c (generic_gss_release_oid): Recognize our own "self"
+		oids so that we don't free static oid's.  (exported_name
+		and nt_service_name_v2).
+
 Sun May 24 22:01:29 1998  Theodore Y. Ts'o  <tytso@mit.edu>
 
 	* util_buffer.c (g_make_string_buffer): Don't include the trailing
@@ -23,10 +67,37 @@ Wed Apr  1 16:33:27 1998  Tom Yu  <tlyu@mit.edu>
 		GSS_S_CONTINUE_NEEDED, per the standard C bindings
 		specification.
 
+Wed Feb 18 16:11:15 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove trailing slash from thisconfigdir.  Fix up
+	BUILDTOP for new conventions.
+
+Mon Feb  2 17:02:29 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+Fri Jun 27 08:44:54 1997  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* gssapi.hin: Add definition of GSS_C_NO_NAME (per
+		draft-ietf-cbind-04.txt)
+
+Wed Nov 19 11:01:27 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* Makefile.in (clean-unix): Remove EXPORTED_BUILT_HEADERS as well.
+
+Sun Aug 17 14:31:26 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* util_token.c (g_verify_token_header): Change local char *
+	 	variable to unsigned char * to match usage.
+
 Tue Jul 29 22:54:40 1997  Theodore Y. Ts'o  <tytso@mit.edu>
 
 	* gssapi_generic.c: Add support for the new OID value for
 		host-based service name.
+
+Tue Jul  8 12:46:17 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* util_ordering.c: Include string.h for prototypes.
 
 Fri Mar 28 03:43:58 1997  Theodore Y. Ts'o  <tytso@mit.edu>
 
@@ -38,6 +109,57 @@ Thu Mar 27 15:36:32 1997  Theodore Ts'o  <tytso@rsts-11.mit.edu>
 	* gssapi.hin: Add the GSS_C_PROT_READY_FLAG and GSS_C_TRANS_FLAG
 		Add prototypes for the V2 functions gss_export_name(),
 		gss_duplicate_name(), and gss_canonicalize_name().
+
+Tue Mar 18 13:52:29 1997  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* gssapi.hin: Add 'extern "C"' for C++ compatibility; also check
+		for __cplusplus since some C++ compilers don't set
+ 		__STDC__
+
+Mon Mar 17 14:42:33 1997  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* gssapi.hin: Fix header file so that winmac.h is #included when
+		compiling on the Macintosh.
+
+Sat Feb 22 18:57:56 1997  Richard Basch  <basch@lehman.com>
+
+	* Makefile.in: Use some of the new library list build rules in
+		win-post.in
+
+Sun Feb  9 11:41:08 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Fix includes generation for unix after
+	libhack_branch merge.
+
+Thu Feb  6 11:11:17 1997  Ezra Peisach  (epeisach@mit.edu)
+
+	* configure.in: Remove the CopyHeader and CopySrcHeader rules as
+		they are handled in Makefile.in
+
+	* Makefile.in: Create include/gssapi on unix. Make clean removes
+		built gssapi.h
+
+Wed Feb  5 23:28:47 1997  Richard Basch  <basch@lehman.com>
+
+	* gssapi.hin: Make sure KRB5_EXPORTVAR is defined.
+
+Tue Feb  4 15:55:11 1997  Richard Basch  <basch@lehman.com>
+
+	* Makefile.in: Only override the object build of the error table
+		under Unix
+
+Thu Nov 21 11:55:16 EST 1996    Richard Basch   <basch@lehman.com>
+
+        * Makefile.in: win32 build
+
+	* gssapi.hin, gssapi_generic.c, gssapi_generic.h:
+	DLL export all public gssapi functions; move windows/mac stuff to
+	win-mac.h
+
+Tue Jan 14 20:16:46 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in:
+	* configure.in: Update to new library build procedure.
 
 Wed Nov 20 13:59:58 1996  Ezra Peisach  <epeisach@mit.edu>
 

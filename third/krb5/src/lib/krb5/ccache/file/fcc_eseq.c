@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -40,7 +43,7 @@
  * and invalidates the cursor (it must never be used after this call).
  */
 /* ARGSUSED */
-krb5_error_code INTERFACE
+krb5_error_code KRB5_CALLCONV
 krb5_fcc_end_seq_get(context, id, cursor)
    krb5_context context;
    krb5_ccache id;

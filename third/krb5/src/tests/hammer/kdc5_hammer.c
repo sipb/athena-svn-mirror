@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -85,10 +88,10 @@ char *who;
 int status;
 {
     fprintf(stderr,
-	    "usage: %s -p prefix -n num_to_check [-d dbpathname] [-r realmname]\n",
+	    "usage: %s -p prefix -n num_to_check [-c cachename] [-r realmname]\n",
 	    who);
     fprintf(stderr, "\t [-D depth] [-k enctype]\n");
-    fprintf(stderr, "\t [-P preauth type] [-R repeat_count]\n");
+    fprintf(stderr, "\t [-P preauth type] [-R repeat_count] [-t] [-b] [-v] \n");
 
     exit(status);
 }
@@ -112,7 +115,7 @@ struct h_timer tgs_req_times = { 0.0, 1000000.0, -1.0, 0 };
 			  (((float) (tend_time.tv_usec -		\
 				     tstart_time.tv_usec))/1000000.0)))
 
-void
+int
 main(argc, argv)
     int argc;
     char **argv;
@@ -131,7 +134,6 @@ main(argc, argv)
     krb5_error_code retval;
 
     krb5_init_context(&test_context);
-    krb5_init_ets(test_context);
 
     if (strrchr(argv[0], '/'))
 	prog = strrchr(argv[0], '/')+1;
@@ -146,7 +148,7 @@ main(argc, argv)
     errors = 0;
     enctypedone = 0;
 
-    while ((option = getopt(argc, argv, "D:p:n:c:R:k:P:e:bvr:t")) != EOF) {
+    while ((option = getopt(argc, argv, "D:p:n:c:R:k:P:e:bvr:t")) != -1) {
 	switch (option) {
 	case 't':
 	    do_timer = 1;
@@ -207,7 +209,7 @@ main(argc, argv)
 	enctype = DEFAULT_KDC_ENCTYPE;
 
     if (!cur_realm) {
-	if (retval = krb5_get_default_realm(test_context, &cur_realm)) {
+	if ((retval = krb5_get_default_realm(test_context, &cur_realm))) {
 	    com_err(prog, retval, "while retrieving default realm name");
 	    exit(1);
 	}	    
@@ -220,7 +222,7 @@ main(argc, argv)
     }
 
     if (ccache == NULL) {
-	if (code = krb5_cc_default(test_context, &ccache)) {
+	if ((code = krb5_cc_default(test_context, &ccache))) {
 	    com_err(prog, code, "while getting default ccache");
 	    exit(1);
 	}
@@ -308,18 +310,18 @@ get_server_key(context, server, enctype, key)
     krb5_data salt;
     krb5_data pwd;
 
-    if (retval = krb5_principal2salt(context, server, &salt))
+    if ((retval = krb5_principal2salt(context, server, &salt)))
 	return retval;
 
-    if (retval = krb5_unparse_name(context, server, &string))
+    if ((retval = krb5_unparse_name(context, server, &string)))
 	goto cleanup_salt;
 
     pwd.data = string;
     pwd.length = strlen(string);
 
-    if (*key = (krb5_keyblock *)malloc(sizeof(krb5_keyblock))) {
+    if ((*key = (krb5_keyblock *)malloc(sizeof(krb5_keyblock)))) {
     	krb5_use_enctype(context, &eblock, enctype);
-    	if (retval = krb5_string_to_key(context, &eblock, *key, &pwd, &salt))
+    	if ((retval = krb5_string_to_key(context, &eblock, *key, &pwd, &salt)))
 	    free(*key);
     } else 
         retval = ENOMEM;
@@ -374,14 +376,14 @@ int verify_cs_pair(context, p_client_str, p_client, service, hostname,
 	return(retval);
 
     /* obtain ticket & session key */
-    if (retval = krb5_cc_get_principal(context, ccache, &creds.client)) {
+    if ((retval = krb5_cc_get_principal(context, ccache, &creds.client))) {
 	com_err(prog, retval, "while getting client princ for %s", hostname);
     	krb5_free_cred_contents(context, &creds);
 	return retval;
     }
 
-    if (retval = krb5_get_credentials(context, 0,
-                                      ccache, &creds, &credsp)) {
+    if ((retval = krb5_get_credentials(context, 0,
+                                      ccache, &creds, &credsp))) {
 	com_err(prog, retval, "while getting creds for %s", hostname);
     	krb5_free_cred_contents(context, &creds);
 	return retval;
@@ -392,8 +394,8 @@ int verify_cs_pair(context, p_client_str, p_client, service, hostname,
     if (do_timer)
 	swatch_on();
 
-    if (retval = krb5_mk_req_extended(context, &auth_context, 0, NULL,
-			            credsp, &request_data)) {
+    if ((retval = krb5_mk_req_extended(context, &auth_context, 0, NULL,
+			            credsp, &request_data))) {
 	com_err(prog, retval, "while preparing AP_REQ for %s", hostname);
         krb5_auth_con_free(context, auth_context);
 	return retval;
@@ -403,8 +405,8 @@ int verify_cs_pair(context, p_client_str, p_client, service, hostname,
     auth_context = NULL;
 
     /* Do server side now */
-    if (retval = get_server_key(context, credsp->server,
-				credsp->keyblock.enctype, &keyblock)) {
+    if ((retval = get_server_key(context, credsp->server,
+				credsp->keyblock.enctype, &keyblock))) {
 	com_err(prog, retval, "while getting server key for %s", hostname);
 	goto cleanup_rdata;
     }
@@ -419,8 +421,8 @@ int verify_cs_pair(context, p_client_str, p_client, service, hostname,
 	goto cleanup_keyblock;
     }
 
-    if (retval = krb5_rd_req(context, &auth_context, &request_data, 
-			     NULL /* server */, 0, NULL, &ticket)) { 
+    if ((retval = krb5_rd_req(context, &auth_context, &request_data, 
+			     NULL /* server */, 0, NULL, &ticket))) { 
 	com_err(prog, retval, "while decoding AP_REQ for %s", hostname); 
         krb5_auth_con_free(context, auth_context);
 	goto cleanup_keyblock;
@@ -440,8 +442,8 @@ int verify_cs_pair(context, p_client_str, p_client, service, hostname,
 
     if (!(krb5_principal_compare(context,ticket->enc_part2->client,p_client))){
     	char *returned_client;
-        if (retval = krb5_unparse_name(context, ticket->enc_part2->client, 
-			       	       &returned_client)) 
+        if ((retval = krb5_unparse_name(context, ticket->enc_part2->client, 
+			       	       &returned_client))) 
 	    com_err (prog, retval, 
 		     "Client not as expected, but cannot unparse client name");
       	else
@@ -458,8 +460,7 @@ cleanup_keyblock:
     krb5_free_keyblock(context, keyblock);
 
 cleanup_rdata:
-    krb5_xfree(request_data.data);
-
+    krb5_free_data_contents(context, &request_data);
     krb5_free_cred_contents(context, credsp);
 
     return retval;
@@ -483,27 +484,27 @@ int get_tgt (context, p_client_str, p_client, ccache)
     if (!brief)
       fprintf(stderr, "\tgetting TGT for %s\n", p_client_str);
 
-    if (code = krb5_timeofday(context, &start)) {
+    if ((code = krb5_timeofday(context, &start))) {
 	com_err(prog, code, "while getting time of day");
 	return(-1);
     }
 
     memset((char *)&my_creds, 0, sizeof(my_creds));
     
-    if (code = krb5_parse_name (context, p_client_str, p_client)) {
+    if ((code = krb5_parse_name (context, p_client_str, p_client))) {
 	com_err (prog, code, "when parsing name %s", p_client_str);
 	return(-1);
     }
 
 
-    if (code = krb5_build_principal_ext(context, &tgt_server,
+    if ((code = krb5_build_principal_ext(context, &tgt_server,
 				krb5_princ_realm(context, *p_client)->length,
 				krb5_princ_realm(context, *p_client)->data,
 				tgtname.length,
 				tgtname.data,
 				krb5_princ_realm(context, *p_client)->length,
 				krb5_princ_realm(context, *p_client)->data,
-				0)) {
+				0))) {
 	com_err(prog, code, "when setting up tgt principal");
 	return(-1);
     }

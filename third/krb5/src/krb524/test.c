@@ -25,13 +25,10 @@
 #include <stdio.h>
 #include <time.h>
 #include <sys/types.h>
-#include <sys/socket.h>
 #include <netinet/in.h>
-#include <netdb.h>
 
 #include <des.h>
 #include <krb.h>
-#include <krb4-proto.h>
 #include "krb524.h"
 #include "com_err.h"
 
@@ -228,12 +225,14 @@ int main(argc, argv)
      while (argc) {
 	  if (strcmp(*argv, "-local") == 0)
 	       local++;
+#if 0
 	  else if (strcmp(*argv, "-remote") == 0) {
 	       argc--; argv++;
 	       if (!argc)
 		    usage();
 	       remote = *argv;
 	  }
+#endif
 	  else
 	       break;
 	  argc--; argv++;
@@ -307,6 +306,7 @@ void do_remote(context, v5creds, server, key)
      printf("\nV5 credentials:\n");
      krb5_print_creds(context, v5creds, key);
 
+#if 0
      if (strcmp(server, "kdc") != 0) {
 	  hp = gethostbyname(server);
 	  if (hp == NULL) {
@@ -324,7 +324,9 @@ void do_remote(context, v5creds, server, key)
 		       server);
 	       exit(1);
 	  }
-     } else {
+     } else
+#endif
+     {
 	  if ((ret = krb524_convert_creds_kdc(context, v5creds, &v4creds))) {
 	       com_err("test", ret, "converting credentials via kdc");
 	       exit(1);

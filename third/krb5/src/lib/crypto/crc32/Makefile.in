@@ -1,38 +1,31 @@
+thisconfigdir=./..
+myfulldir=lib/crypto/crc32
+mydir=crc32
+BUILDTOP=$(REL)$(U)$(S)$(U)$(S)$(U)
 CFLAGS = $(CCOPTS) $(DEFS)
 
-##DOSBUILDTOP = ..\..\..
-##DOSLIBNAME=..\crypto.lib
+##DOS##BUILDTOP = ..\..\..
+##DOS##PREFIXDIR=crc32
+##DOS##OBJFILE=..\$(OUTPRE)crc32.lst
+##WIN16##LIBNAME=..\crypto.lib
 
-.c.o:
-	$(CC) $(CFLAGS) -c $(srcdir)/$*.c
-@SHARED_RULE@
+PROG_LIBPATH=-L$(TOPLIBD)
+PROG_RPATH=$(KRB5_LIBDIR)
 
-OBJS=	crc.$(OBJEXT)
+RUN_SETUP = @KRB5_RUN_ENV@ KRB5_CONFIG=$(SRCTOP)/config-files/krb5.conf
 
-SRCS=	$(srcdir)/crc.c
+STLIBOBJS= crc32.o
 
-all-unix:: shared $(OBJS) 
-all-mac:: shared $(OBJS) 
-all-windows:: $(OBJS)
+OBJS= $(OUTPRE)crc32.$(OBJEXT) 
 
-shared:
-	mkdir shared
+SRCS= $(srcdir)/crc32.c
 
-crctest: crctest.$(OBJEXT) $(OBJS)
-	$(RM) crctest
-	$(CC) -o crctest crctest.$(OBJEXT) $(CFLAGS) $(LDFLAGS) $(OBJS)
+##DOS##LIBOBJS = $(OBJS)
 
-crctest.exe:
-	$(CC) -o crctest.exe $(CFLAGS2) $(SRCS)
+all-unix:: all-libobjs
 
-check:: crctest$(EXEEXT)
-	$(C)crctest$(EXEEXT) < $(srcdir)$(S)crc-test
+includes:: depend
 
-clean:: 
-	$(RM) crctest$(EXEEXT) crctest.$(OBJEXT)
+depend:: $(SRCS)
 
-clean-unix::
-	$(RM) shared/*
-clean-mac::
-	$(RM) shared/*
-clean-windows::
+clean-unix:: clean-libobjs

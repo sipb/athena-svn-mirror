@@ -89,7 +89,6 @@
 
 /* Internal functions */
 #ifdef __STDC__
-void initialize_pty_error_table(void);
 long ptyint_void_association(void);
 long ptyint_open_ctty (char *slave, int *fd);
 long ptyint_update_wtmp (struct utmp *ut, char *host, char *user);
@@ -99,7 +98,6 @@ void ptyint_vhangup(void);
 
 long ptyint_void_association();
 void ptyint_vhangup();
-void initialize_pty_error_table();
 long ptyint_update_wtmp();
 #endif /* __STDC__*/
 

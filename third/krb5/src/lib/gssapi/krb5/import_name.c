@@ -21,7 +21,7 @@
  */
 
 /*
- * $Id: import_name.c,v 1.1.1.2 1999-05-03 21:53:51 danw Exp $
+ * $Id: import_name.c,v 1.1.1.3 1999-10-05 16:12:16 ghudson Exp $
  */
 
 #include "gssapiP_krb5.h"
@@ -30,7 +30,7 @@
 #include <pwd.h>
 #endif
 
-#ifdef USE_STRING_H
+#ifdef HAVE_STRING_H
 #include <string.h>
 #else
 #include <strings.h>

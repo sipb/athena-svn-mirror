@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -28,7 +31,7 @@
 #include "com_err.h"
 
 #include <syslog.h>
-#ifdef KRB5_USE_INET
+#ifdef HAVE_NETINET_IN_H
 #include <sys/types.h>
 #include <netinet/in.h>
 #ifndef hpux
@@ -62,7 +65,6 @@ int	portnum;
 krb5_data **response;			/* filled in with a response packet */
 {
     krb5_keyblock * subkey;
-    krb5_encrypt_block eblock;
     krb5_kdc_req *request = 0;
     krb5_db_entry server;
     krb5_kdc_rep reply;
@@ -75,8 +77,8 @@ krb5_data **response;			/* filled in with a response packet */
     krb5_error_code retval = 0;
     int nprincs = 0;
     krb5_boolean more;
-    krb5_timestamp kdc_time, authtime;
-    krb5_keyblock *session_key = 0;
+    krb5_timestamp kdc_time, authtime=0;
+    krb5_keyblock session_key;
     krb5_timestamp until, rtime;
     krb5_keyblock encrypting_key;
     krb5_key_data  *server_key;
@@ -88,6 +90,8 @@ krb5_data **response;			/* filled in with a response packet */
     register int i;
     int firstpass = 1;
     const char	*status = 0;
+
+    session_key.contents = 0;
     
     retval = decode_krb5_tgs_req(pkt, &request);
     if (retval)
@@ -99,7 +103,7 @@ krb5_data **response;			/* filled in with a response packet */
     if ((retval = setup_server_realm(request->server)))
 	return retval;
 
-#ifdef KRB5_USE_INET
+#ifdef HAVE_NETINET_IN_H
     if (from->address->addrtype == ADDRTYPE_INET)
 	fromstring =
 	    (char *) inet_ntoa(*(struct in_addr *)from->address->contents);
@@ -111,6 +115,7 @@ krb5_data **response;			/* filled in with a response packet */
 	status = "UNPARSING SERVER";
 	goto cleanup;
     }
+    limit_string(sname);
 
    /* errcode = kdc_process_tgs_req(request, from, pkt, &req_authdat); */
     errcode = kdc_process_tgs_req(request, from, pkt, &header_ticket, &subkey);
@@ -123,7 +128,8 @@ krb5_data **response;			/* filled in with a response packet */
 	errcode = errcode2;
 	goto cleanup;
     }
-
+    limit_string(cname);
+    
     if (errcode) {
 	status = "PROCESS_TGS";
 	goto cleanup;
@@ -163,16 +169,20 @@ tgt_again:
 	 * might be a request for a TGT for some other realm; we
 	 * should do our best to find such a TGS in this db
 	 */
-	if (firstpass && krb5_princ_size(kdc_context, request->server) == 2) {
-	    krb5_data *server_1 = krb5_princ_component(kdc_context, request->server, 1);
-	    krb5_data *tgs_1 = krb5_princ_component(kdc_context, tgs_server, 1);
+	if (firstpass && krb5_is_tgs_principal(request->server) == TRUE) {
+	    if (krb5_princ_size(kdc_context, request->server) == 2) {
+		krb5_data *server_1 =
+		    krb5_princ_component(kdc_context, request->server, 1);
+		krb5_data *tgs_1 =
+		    krb5_princ_component(kdc_context, tgs_server, 1);
 
-	    if (server_1->length != tgs_1->length ||
-		memcmp(server_1->data, tgs_1->data, tgs_1->length)) {
-		krb5_db_free_principal(kdc_context, &server, nprincs);
-		find_alternate_tgs(request, &server, &more, &nprincs);
-		firstpass = 0;
-		goto tgt_again;
+		if (server_1->length != tgs_1->length ||
+		    memcmp(server_1->data, tgs_1->data, tgs_1->length)) {
+		    krb5_db_free_principal(kdc_context, &server, nprincs);
+		    find_alternate_tgs(request, &server, &more, &nprincs);
+		    firstpass = 0;
+		    goto tgt_again;
+		}
 	    }
 	}
 	krb5_db_free_principal(kdc_context, &server, nprincs);
@@ -256,10 +266,8 @@ tgt_again:
 	goto cleanup;
     }
     
-    krb5_use_enctype(kdc_context, &eblock, useenctype);
-    errcode = krb5_random_key(kdc_context, &eblock, 
-			     krb5_enctype_array[useenctype]->random_sequence,
-			     &session_key);
+    errcode = krb5_c_make_random_key(kdc_context, useenctype, &session_key);
+
     if (errcode) {
 	/* random key failed */
 	status = "RANDOM_KEY_FAILED";
@@ -402,19 +410,7 @@ tgt_again:
 
     /* assemble any authorization data */
     if (request->authorization_data.ciphertext.data) {
-	krb5_encrypt_block eblock;
 	krb5_data scratch;
-
-	/* decrypt the authdata in the request */
-	if (!valid_enctype(request->authorization_data.enctype)) {
-	    status = "BAD_AUTH_ETYPE";
-	    errcode = KRB5KDC_ERR_ETYPE_NOSUPP;
-	    goto cleanup;
-	}
-	/* put together an eblock for this encryption */
-
-	krb5_use_enctype(kdc_context, &eblock,
-			 request->authorization_data.enctype);
 
 	scratch.length = request->authorization_data.ciphertext.length;
 	if (!(scratch.data =
@@ -423,28 +419,17 @@ tgt_again:
 	    errcode = ENOMEM;
 	    goto cleanup;
 	}
-	/* do any necessary key pre-processing */
-	if ((errcode = krb5_process_key(kdc_context, &eblock,
-				      header_ticket->enc_part2->session))) {
-	    status = "AUTH_PROCESS_KEY";
+
+	if ((errcode = krb5_c_decrypt(kdc_context,
+				      header_ticket->enc_part2->session,
+				      KRB5_KEYUSAGE_TGS_REQ_AD_SESSKEY,
+				      0, &request->authorization_data,
+				      &scratch))) {
+	    status = "AUTH_ENCRYPT_FAIL";
 	    free(scratch.data);
 	    goto cleanup;
 	}
 
-	/* call the encryption routine */
-	if ((errcode = krb5_decrypt(kdc_context, (krb5_pointer) request->authorization_data.ciphertext.data,
-				  (krb5_pointer) scratch.data,
-				  scratch.length, &eblock, 0))) {
-	    status = "AUTH_ENCRYPT_FAIL";
-	    (void) krb5_finish_key(kdc_context, &eblock);
-	    free(scratch.data);
-	    goto cleanup;
-	}
-	if ((errcode = krb5_finish_key(kdc_context, &eblock))) {
-	    status = "AUTH_FINISH_KEY";
-	    free(scratch.data);
-	    goto cleanup;
-	}
 	/* scratch now has the authorization data, so we decode it */
 	errcode = decode_krb5_authdata(&scratch, &(request->unenc_authdata));
 	free(scratch.data);
@@ -464,7 +449,7 @@ tgt_again:
 	enc_tkt_reply.authorization_data =
 	    header_ticket->enc_part2->authorization_data;
 
-    enc_tkt_reply.session = session_key;
+    enc_tkt_reply.session = &session_key;
     enc_tkt_reply.client = header_ticket->enc_part2->client;
     enc_tkt_reply.transited.tr_type = KRB5_DOMAIN_X500_COMPRESS;
     enc_tkt_reply.transited.tr_contents = empty_string; /* equivalent of "" */
@@ -560,7 +545,7 @@ tgt_again:
 	/* convert server.key into a real key (it may be encrypted
 	 *        in the database) */
 	if ((errcode = krb5_dbekd_decrypt_key_data(kdc_context,
-						   &master_encblock, 
+						   &master_keyblock, 
 						   server_key, &encrypting_key,
 						   NULL))) {
 	    status = "DECRYPT_SERVER_KEY";
@@ -569,15 +554,14 @@ tgt_again:
 	if ((encrypting_key.enctype == ENCTYPE_DES_CBC_CRC) &&
 	    (isflagset(server.attributes, KRB5_KDB_SUPPORT_DESMD5)))
 	    encrypting_key.enctype = ENCTYPE_DES_CBC_MD5;
-	ticket_reply.enc_part.kvno = server_key->key_data_kvno;
 	errcode = krb5_encrypt_tkt_part(kdc_context, &encrypting_key,
 					&ticket_reply);
-	memset((char *)encrypting_key.contents, 0, encrypting_key.length);
-	krb5_xfree(encrypting_key.contents);
+	krb5_free_keyblock_contents(kdc_context, &encrypting_key);
 	if (errcode) {
 	    status = "TKT_ENCRYPT";
 	    goto cleanup;
 	}
+	ticket_reply.enc_part.kvno = server_key->key_data_kvno;
     }
 
     /* Start assembling the response */
@@ -587,7 +571,7 @@ tgt_again:
     reply.enc_part.kvno = 0;		/* We are using the session key */
     reply.ticket = &ticket_reply;
 
-    reply_encpart.session = session_key;
+    reply_encpart.session = &session_key;
     reply_encpart.nonce = request->nonce;
 
     /* copy the time fields EXCEPT for authtime; its location
@@ -615,6 +599,7 @@ tgt_again:
     reply.enc_part.enctype = subkey ? subkey->enctype :
 		    header_ticket->enc_part2->session->enctype;
     errcode = krb5_encode_kdc_rep(kdc_context, KRB5_TGS_REP, &reply_encpart, 
+				  subkey ? 1 : 0,
 				  subkey ? subkey :
 				  header_ticket->enc_part2->session,
 				  &reply, response);
@@ -660,8 +645,8 @@ cleanup:
 	free(sname);
     if (nprincs)
 	krb5_db_free_principal(kdc_context, &server, 1);
-    if (session_key)
-	krb5_free_keyblock(kdc_context, session_key);
+    if (session_key.contents)
+	krb5_free_keyblock_contents(kdc_context, &session_key);
     if (newtransited)
 	free(enc_tkt_reply.transited.tr_contents.data); 
 
@@ -729,6 +714,12 @@ int *nprincs;
     *nprincs = 0;
     *more = FALSE;
 
+    /*
+     * Call to krb5_princ_component is normally not safe but is so
+     * here only because find_alternate_tgs() is only called from
+     * somewhere that has already checked the number of components in
+     * the principal.
+     */
     if ((retval = krb5_walk_realm_tree(kdc_context, 
 		      krb5_princ_realm(kdc_context, request->server),
 		      krb5_princ_component(kdc_context, request->server, 1),

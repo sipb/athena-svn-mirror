@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  *
@@ -26,7 +29,10 @@
  * t_ser.c - Test serialization.
  */
 #include "k5-int.h"
+#include "com_err.h"
 #include "auth_con.h"
+
+#include <ctype.h>
 
 static const char stuff[]="You can't take a pointer to a function and convert \
 it to a pointer to char; ANSI doesn't say it'll work, and in fact on the HPPA \
@@ -82,10 +88,13 @@ ser_data(verbose, msg, ctx, dtype)
     krb5_pointer	nctx;
     krb5_octet		*outrep, *ibuf, *outrep2;
     size_t		outlen, ilen, outlen2;
-    int			i, j;
 
     /* Initialize context and initialize all Kerberos serializers */
-    krb5_init_context(&ser_ctx);
+    if ((kret = krb5_init_context(&ser_ctx))) {
+	    printf("Couldn't initialize krb5 library: %s\n",
+		   error_message(kret));
+	    exit(1);
+    }
     krb5_ser_context_init(ser_ctx);
     krb5_ser_db_context_init(ser_ctx);
     krb5_ser_auth_context_init(ser_ctx);
@@ -111,7 +120,8 @@ ser_data(verbose, msg, ctx, dtype)
 				       &ilen);
 	if (!kret) {
 	    if (ilen)
-		printf("%s: %d bytes left over after internalize\n", ilen);
+		printf("%s: %d bytes left over after internalize\n",
+		       msg, ilen);
 	    /* Now attempt to re-externalize it */
 	    kret = krb5_externalize_data(ser_ctx, nctx, &outrep2, &outlen2);
 	    if (!kret) {
@@ -160,8 +170,10 @@ ser_data(verbose, msg, ctx, dtype)
 		    krb5_encrypt_block *eblock;
 
 		    eblock = (krb5_encrypt_block *) nctx;
+#if 0
 		    if (eblock->priv && eblock->priv_size)
 			krb5_xfree(eblock->priv);
+#endif
 		    if (eblock->key)
 			krb5_free_keyblock(ser_ctx, eblock->key);
 		    krb5_xfree(eblock);
@@ -214,7 +226,8 @@ ser_kcontext_test(kcontext, verbose)
 	    if (!(kret = ser_data(verbose, "> Context with default realm",
 				  (krb5_pointer) kcontext,
 				  KV5M_CONTEXT)) &&
-		!(kret = krb5_db_create(kcontext, dbname)) &&
+		!(kret = krb5_db_create(kcontext, dbname,
+					KRB5_KDB_CREATE_BTREE)) &&
 		!(kret = krb5_db_set_name(kcontext, dbname)) &&
 		!(kret = krb5_db_init(kcontext)) &&
 		!(kret = ser_data(verbose, "> Context with open database",
@@ -224,7 +237,7 @@ ser_kcontext_test(kcontext, verbose)
 		!(kret = ser_data(verbose, "> Context with closed database",
 				  (krb5_pointer) kcontext, 
 				  KV5M_CONTEXT))) {
-		kdb5_db_destroy(kcontext, dbname);
+		krb5_db_destroy(kcontext, dbname);
 		if (verbose)
 		    printf("* krb5_context test succeeded\n");
 	    }
@@ -408,7 +421,7 @@ ser_ccache_test(kcontext, verbose)
 	    sprintf(ccname, "STDIO:temp_cc_%d", getpid());
 	    sprintf(princname, "xxx%d/i%d@this.is.a.test",
 		    getpid(), getpid());
-	    if (kret = krb5_cc_resolve(kcontext, ccname, &ccache))
+	    if ((kret = krb5_cc_resolve(kcontext, ccname, &ccache)))
 		kret = krb5_cc_register(kcontext, &krb5_scc_ops, 1);
 	    if (!kret &&
 		!(kret = krb5_cc_resolve(kcontext, ccname, &ccache)) &&
@@ -454,7 +467,7 @@ ser_keytab_test(kcontext, verbose)
 			      (krb5_pointer) keytab, KV5M_KEYTAB)) &&
 	    !(kret = krb5_kt_close(kcontext, keytab))) {
 	    sprintf(ccname, "WRFILE:temp_kt_%d", getpid());
-	    if (kret = krb5_kt_resolve(kcontext, ccname, &keytab))
+	    if ((kret = krb5_kt_resolve(kcontext, ccname, &keytab)))
 		kret = krb5_kt_register(kcontext, &krb5_ktf_writable_ops);
 	    if (!kret &&
 		!(kret = krb5_kt_resolve(kcontext, ccname, &keytab)) &&
@@ -517,8 +530,10 @@ ser_eblock_test(kcontext, verbose)
     krb5_use_enctype(kcontext, &eblock, DEFAULT_KDC_ENCTYPE);
     if (!(kret = ser_data(verbose, "> NULL eblock",
 			  (krb5_pointer) &eblock, KV5M_ENCRYPT_BLOCK))) {
+#if 0
 	eblock.priv = (krb5_pointer) stuff;
 	eblock.priv_size = 8;
+#endif
 	if (!(kret = ser_data(verbose, "> eblock with private data",
 			      (krb5_pointer) &eblock,
 			      KV5M_ENCRYPT_BLOCK))) {
@@ -621,6 +636,7 @@ main(argc, argv)
     int			verbose;
     int			option;
     extern char		*optarg;
+    char		ch_err;
 
     kret = 0;
     verbose = 0;
@@ -632,7 +648,7 @@ main(argc, argv)
     do_ptest = 1;
     do_rtest = 1;
     do_stest = 1;
-    while ((option = getopt(argc, argv, "acekprsxvACEKPRSX")) != EOF) {
+    while ((option = getopt(argc, argv, "acekprsxvACEKPRSX")) != -1) {
 	switch (option) {
 	case 'a':
 	    do_atest = 0;
@@ -667,9 +683,11 @@ main(argc, argv)
 	case 'C':
 	    do_ctest = 1;
 	    break;
+#if 0
 	case 'E':
 	    do_etest = 1;
 	    break;
+#endif
 	case 'K':
 	    do_ktest = 1;
 	    break;
@@ -686,35 +704,72 @@ main(argc, argv)
 	    do_xtest = 1;
 	    break;
 	default:
-	    kret = EINVAL;
+	    fprintf(stderr,
+		    "%s: usage is %s [-acekprsxvACEKPRSX]\n",
+		    argv[0], argv[0]);
+	    exit(1);
 	    break;
 	}
     }
-    if (!kret) {
-	if (!(kret = krb5_init_context(&kcontext))) {
-	    if (!kret && do_xtest)
-		kret = ser_kcontext_test(kcontext, verbose);
-	    if (!kret && do_atest)
-		kret = ser_acontext_test(kcontext, verbose);
-	    if (!kret && do_ctest)
-		kret = ser_ccache_test(kcontext, verbose);
-	    if (!kret && do_ktest)
-		kret = ser_keytab_test(kcontext, verbose);
-	    if (!kret && do_rtest)
-		kret = ser_rcache_test(kcontext, verbose);
-	    if (!kret && do_etest)
-		kret = ser_eblock_test(kcontext, verbose);
-	    if (!kret && do_ptest)
-		kret = ser_princ_test(kcontext, verbose);
-	    if (!kret && do_stest)
-		kret = ser_cksum_test(kcontext, verbose);
-	    krb5_free_context(kcontext);
-	}
+    if ((kret = krb5_init_context(&kcontext))) {
+	    com_err(argv[0], kret, "while initializing krb5");
+	    exit(1);
     }
-    else
-	printf("%s: usage is %s [-acekprsxvACEKPRSX]\n", argv[0], argv[0]);
-    if(kret && verbose) {
-      com_err(argv[0], kret, "-- test failed ---");
+    
+    if (do_xtest) {
+	    ch_err = 'x';
+	    kret = ser_kcontext_test(kcontext, verbose);
+	    if (kret)
+		    goto fail;
     }
-    return((kret) ? 1 : 0);
+    if (do_atest) {
+	    ch_err = 'a';
+	    kret = ser_acontext_test(kcontext, verbose);
+	    if (kret)
+		    goto fail;
+    }
+    if (do_ctest) {
+	    ch_err = 'c';
+	    kret = ser_ccache_test(kcontext, verbose);
+	    if (kret)
+		    goto fail;
+    }
+    if (do_ktest) {
+	    ch_err = 'k';
+	    kret = ser_keytab_test(kcontext, verbose);
+	    if (kret)
+		    goto fail;
+    }
+    if (do_rtest) {
+	    ch_err = 'r';
+	    kret = ser_rcache_test(kcontext, verbose);
+	    if (kret)
+		    goto fail;
+    }
+#if 0 /* code to be tested is currently disabled */
+    if (do_etest) {
+	    ch_err = 'e';
+	    kret = ser_eblock_test(kcontext, verbose);
+	    if (kret)
+		    goto fail;
+    }
+#endif
+    if (do_ptest) {
+	    ch_err = 'p';
+	    kret = ser_princ_test(kcontext, verbose);
+	    if (kret)
+		    goto fail;
+    }
+    if (do_stest) {
+	    ch_err = 's';
+	    kret = ser_cksum_test(kcontext, verbose);
+	    if (kret)
+		    goto fail;
+    }
+    krb5_free_context(kcontext);
+    
+    exit(0);
+fail:
+    com_err(argv[0], kret, "--- test %cfailed", ch_err);
+    exit(1);
 }

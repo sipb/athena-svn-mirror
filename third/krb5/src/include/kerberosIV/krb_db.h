@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -104,11 +107,13 @@ typedef struct {
 }
         Dba;
 
+#if 0
 extern int kerb_get_principal();
 extern int kerb_put_principal();
 extern int kerb_db_get_stat();
 extern int kerb_db_put_stat();
 extern int kerb_get_dba();
 extern int kerb_db_get_dba();
+#endif
 
 #endif /* KRB_DB_DEFS */

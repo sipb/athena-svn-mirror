@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -32,10 +35,12 @@ krb5_error_code krb5_locate_kdc
     PROTOTYPE((krb5_context,
 	       const krb5_data *,
 	       struct sockaddr **,
+	       int *,
+	       int *,
 	       int *));
 #endif
 
-#ifdef KRB5_USE_INET
+#ifdef HAVE_NETINET_IN_H
 krb5_error_code krb5_unpack_full_ipaddr
     PROTOTYPE((krb5_context,
 	       const krb5_address *,
@@ -49,6 +54,6 @@ krb5_error_code krb5_make_full_ipaddr
 					   int */
 	       krb5_address **));
 
-#endif /* KRB5_USE_INET */
+#endif /* HAVE_NETINET_IN_H */
 
 #endif /* KRB5_LIBOS_INT_PROTO__ */

@@ -1,3 +1,8 @@
+thisconfigdir=./..
+myfulldir=util
+mydir=util
+MY_SUBDIRS=et ss profile pty dyn db2 send-pr
+BUILDTOP=$(REL)$(U)
 CFLAGS = $(CCOPTS)
 
 MAC_SUBDIRS = profile et
@@ -9,7 +14,31 @@ SLIBSH=sed -e 's,@''CC''@,$(CC),g' -e 's,@''HOST_TYPE''@,$(HOST_TYPE),g' -e 's,@
 
 all-recurse: libupdate makeshlib
 all-mac::
-all-windows: libupdate
+
+NO_OUTDIR=1
+all-windows::
+	@echo Making in util\windows
+	cd windows
+	$(MAKE) -$(MFLAGS)
+	@echo Making in util\et
+	cd ..\et
+	$(MAKE) -$(MFLAGS) 
+	@echo Making in util\profile
+	cd ..\profile
+	$(MAKE) -$(MFLAGS) 
+	cd ..
+
+clean-windows::
+	@echo Making clean in util\windows
+	cd windows
+	$(MAKE) -$(MFLAGS) clean
+	@echo Making clean in util\et
+	cd ..\et
+	$(MAKE) -$(MFLAGS) clean
+	@echo Making clean in util\profile
+	cd ..\profile
+	$(MAKE) -$(MFLAGS) clean
+	cd ..
 
 # this is necessary because the db2 build, which is intended to be
 # standalone, of course does not know to make symlinks in the right
@@ -31,6 +60,10 @@ all-unix::
 		ln -s $(srcdir)/db2/include/db-ndbm.h ../include; \
 	fi
 
+clean-unix::
+	$(RM) ../include/db.h ../include/db-config.h ../include/db-ndbm.h \
+		../lib/libdb.a
+
 unixmac: libupdate
 
 libupdate: $(srcdir)/libupdate.sh
@@ -41,8 +74,14 @@ makeshlib: $(srcdir)/makeshlib.sh Makefile
 	 $(RM) $@ $@.tmp
 	 $(SLIBSH) $(srcdir)/makeshlib.sh >$@.tmp&&chmod a+x $@.tmp&&mv $@.tmp $@
 
+
+#
+# We only need this for AIX, but we generate it for all systems.
+#
+all-unix:: aix.bincmds
+
 aix.bincmds: Makefile
-	 echo libpath $(KRB5_SHLIBDIR):`pwd`/$(TOPLIBD):/usr/lib:/lib >aix.bincmds
+	 echo libpath $(KRB5_LIBDIR):`pwd`/$(TOPLIBD):/usr/lib:/lib >aix.bincmds
 clean::
 	$(RM) libupdate makeshlib
 

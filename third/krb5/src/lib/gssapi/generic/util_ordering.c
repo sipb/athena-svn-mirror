@@ -21,7 +21,7 @@
  */
 
 /*
- * $Id: util_ordering.c,v 1.1.1.2 1997-01-21 09:24:47 ghudson Exp $
+ * $Id: util_ordering.c,v 1.1.1.3 1999-10-05 16:12:10 ghudson Exp $
  */
 
 /*
@@ -29,6 +29,7 @@
  */
 
 #include "gssapiP_generic.h"
+#include <string.h>
 
 #define QUEUE_LENGTH 20
 
@@ -167,7 +168,6 @@ void
 g_order_free(void **vqueue)
 {
    queue *q;
-   int i;
    
    q = (queue *) (*vqueue);
 

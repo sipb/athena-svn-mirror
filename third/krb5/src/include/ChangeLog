@@ -1,7 +1,375 @@
-Sat Nov 23 00:16:46 1996  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+1999-09-08  Tom Yu  <tlyu@mit.edu>
 
-	* k5-int.h: Remove DES3 and SHA support, since what's there isn't
-		fully correct.  [PR#231]
+	* Makefile.in (install): Install port-sockets.h, needed by
+	kerberosIV/krb.h.
+
+1999-08-31  Jeffrey Altman <jaltman@columbia.edu>
+
+    * k5-int.h:  Add #define ANSI_STDIO for Windows builds so that 
+                 stdio opens files in binary mode instead of text
+                 mode.  This is necessary for Ctrl-Z transparency.
+
+1999-08-30  Ken Raeburn  <raeburn@mit.edu>
+
+	* configure.in: Check for memmove and bcopy.
+
+	* Makefile.in (install): Install profile.h since krb5.h will use
+	it.
+
+1999-08-26  Danilo Almeida  <dalmeida@mit.edu>
+
+	* krb5.hin (krb5_kuserok): Fix calling convention to make it
+	consistent with rest of krb5 exports before we start exporting 
+	this from the Windows DLL.
+
+1999-08-25  Danilo Almeida  <dalmeida@mit.edu>
+
+	* k5-int.h (krb5_cc_retrieve_cred_default): Fix calling convention
+	to make it consistent with actual calling convention.
+
+1999-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* krb5.hin (KRB5_TC_SUPPORTED_KTYPES): New flag.
+	* k5-int.h (krb5_cc_retrieve_cred_default): Declare.
+
+1999-08-18  Tom Yu  <tlyu@mit.edu>
+
+	* krb5.hin: Re-align des3-cbc-sha1 and hmac-sha1-des3 to agree
+	with new number assignments; also rename symbols a little bit.
+
+1999-08-09  Danilo Almeida  <dalmeida@mit.edu>
+
+	* win-mac.h: Define MAXPATHLEN only if not already defined.  This
+	avoids warnings under Windows.
+
+1999-08-04  Danilo Almeida  <dalmeida@mit.edu>
+
+	* k5-int.h: Keep invariant that profile_in_memory member of context
+	is only sensible if KRB5_DNS_LOOKUP is defined.
+
+1999-08-03  Ken Raeburn  <raeburn@mit.edu>
+
+	* krb5.hin: Wrap all declarations in `extern "C"' for C++, not
+	just some.  Move header file inclusions up above extern-C block.
+
+1997-07-26 Miro Jurisic <meeroh@mit.edu>
+	* win-mac.h (size_t): Fixed size_t redefinition on MacOS
+	
+1997-07-26 Miro Jurisic <meeroh@mit.edu>
+
+        * k5-int.h (krb5_get_profile): added krb5_get_profile. It returns
+        a profile handle you can use with the profile layer. It is guaranteed
+        to be initialized with the same config files as the profile of the context
+        passed in. 
+
+1997-07-22 Jeffrey Altman <jaltman@columbia.edu>
+
+        * k5-int.h struct _krb5_context
+                Added profile_in_memory boolean to be used to store
+                whether or not krb5 intentionally requested a profile
+                to be allocated by the profile library without a real
+                file (or list of files) behind it.
+
+1999-07-21  Miro Jurisic  <meeroh@.mit.edu>
+
+	* krb5.hin: #ifdefed out krb5_set_config_files, 
+		krb5_get_default_config_files, and krb5_free_confilg_files
+		on the Mac
+
+1999-06-16  Danilo Almeida  <dalmeida@mit.edu>
+
+	* krb5.hin (krb5_get_default_config_files, krb5_free_config_files): 
+		Add function to get default config files with corresponding 
+		free function.
+
+1999-05-26  Miro Jurisic  <meeroh@.mit.edu>
+
+	* k5-int.h: Remove #define ENOMEM under #ifdef macintosh
+
+Wed May 19 11:33:15 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Remove copying of header files for Win32.  These
+		will be copied only if needed by the components that are
+		responsible for the header files (gssapi, et, and
+		profile).
+
+Tue May 18 19:52:56 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Remove - from recursive Win32 make invocation.
+
+Mon May 17 12:30:58 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Add NO_OUTPRE flag to prevent creation of output
+		directory under win32.
+
+Tue May 11 15:19:12 1999  Ezra Peisach  <epeisach@mit.edu>
+
+	* krb5.hin: Remove unused priv_size from krb5_encrypt_block
+
+1999-04-09  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* k5-int.h: Add new prototypes and #define's provided by Frank
+		Cusack's preauth patch (PR# [krb5-kdc/662])
+
+1999-04-01  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* krb5.hin (krb5_prompter_fct, krb5_prompter_posix): Update
+		function prototypes to reflect new prompter prototype
+		which takes an extra argument for the window titlebar
+		name.  (From Frank Cusack) [krb5-kdc/662]
+
+Mon Mar 15 15:57:41 1999  Tom Yu  <tlyu@mit.edu>
+
+	* k5-int.h: Fix GSS_DLLIMP.
+
+1999-03-14  Miro Jurisic  <meeroh@mit.edu>
+
+	* win-mac.h: Fixed GSS_DLLIMP for the Mac
+
+1999-03-11  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* win-mac.h: Define GSS_DLLIMP to be __declspec(dllimport) or
+		__declspec(dllexport)  depending on whether GSS_DLL_FILE
+		is defined.
+
+1999-02-19  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* win-mac.h: Add definition for GSS_DLLIMP which is set ala
+		KRB5_DLLIMP, but controlled by the #define GSS_DLL_FILE.
+
+Mon Feb  8 21:51:10 1999  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* krb5.hin (krb5_get_realm_domain): Add appropriate modifiers so
+		that this function can get exported in a Windows DLL.
+
+1999-02-01  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* k5-int.h: Add an entry to the os_context to store the default
+		ccache name.
+
+	* krb5.hin (krb5_cc_set_default_name): Add function prototype
+		which sets the defulat ccache name.
+	
+Thu Jan 21 15:23:28 1999  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* krb5.hin: Fix realm iterator prototypes so that they use
+		KRB5_PROTOTYPE, and surround them with extern "C" so
+		things work under C++.
+
+Sun Dec  6 19:45:54 1998  Tom Yu  <tlyu@mit.edu>
+
+	* krb54proto.h: Fix decomp_tkt_krb5 to use KRB4_32, instead of a
+	nonexistent type.
+
+Sat Dec  5 01:08:57 1998  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* krb5.hin: Add KRB5_DLLIMP and KRB5_CALLCONV to the prototypes of
+		valid_enctype, valid_cksumtype, is_coll_proof_cksum, and
+		is_keyed_cksum, which had previously been #defines, but
+		since they are now functions, they needed to be exported
+		by the DLL interface.
+
+1998-12-05  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* krb5.hin: Move krb4 function prototypes to krb54proto.h
+
+1998-12-04  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* krb5.hin: Add function prototypes for the new realm iterator
+		functions.  Also add some krb4 function prototypes to make
+		catching prototype errors easier.
+
+1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Set the myfulldir and mydir variables (which are
+		relative to buildtop and thisconfigdir, respectively.)
+		Add a MY_SUBDIRS definition to control the directories
+		which are recursively descended by the Makefile.
+
+	* configure.in: Folded tests from krb5 and kerberosIV directories
+		into this configure.in file.
+
+1998-10-26  Marc Horowitz  <marc@mit.edu>
+
+	* krb5.hin: add new interfaces for new crypto API and key
+	derivation/key usage.  Add new (krb5_get_permitted_enctypes,
+	krb5_is_permitted_enctype) api for querying permitted etypes from
+	krb5.conf, and new auth_context flag
+	(KRB5_AUTH_CONTEXT_PERMIT_ALL) to override this.  Fix bug in
+	krb5_kt_get_type.
+	
+	* k5-int.h: make changes related to new crypto API and key
+	derivation/key usage
+
+Tue Sep  1 19:32:33 1998  Tom Yu  <tlyu@mit.edu>
+
+	* krb5.hin: Add ENCTYPE_LOCAL_DES3_HMAC_SHA1, in order to deal
+	with marc's current des3 cryptosystem until we figure out what
+	we're actually going to use for a standardized cryptosystem.
+
+Wed Jul  1 19:14:25 1998  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* win-mac.h: Make size_t to be an unsigned long instead of
+		unsigned int.
+
+1998-05-26  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* krb5.hin: Declare krb5_auth_con_setrcache and
+		krb5_get_server_rcache to be exported by the DLL.
+
+Sun Feb 22 19:20:31 1998  Tom Yu  <tlyu@mit.edu>
+
+	* k5-util.h: New file.  Add krb5_seteuid in order to allow
+ 	applications to use it without including k5-int.h.
+
+	* k5-int.h: Remove krb5_seteuid, as it is moving to k5-util.h.
+
+Wed Feb 18 15:50:40 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove trailing slash from thisconfigdir.  Fix up
+	BUILDTOP for new conventions.  Fix up use of $(C) for new
+	conventions.
+
+Mon Feb  2 17:02:29 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* configure.in: Use AC_CONFIG_DIRS instead of CONFIG_DIRS, and
+		remove use of DO_SUBDIRS.
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+Thu Jan 29 20:15:30 1998  Dan Winship  <danw@mit.edu>
+
+	* krb5.hin: fix #define of krb5_cc_gen_new (takes a krb5_ccache *,
+	not a krb5_ccache)
+
+Sat Dec  6 02:20:11 1997  Tom Yu  <tlyu@mit.edu>
+
+	* krb5.hin: Add constants and prototypes for the Cygnus password
+	changing API.  Add krb5_cc_copy_creds.  Add support for Cygnus
+	initial credentials API.
+
+	* k5-int.h: Add additional preauth types.  Add additional
+	parameter to krb5_sendto_kdc for designating whether to use the
+	master.  Add functions to support Cygnus initial credentials API.
+	Add prototypes for sam functions.
+
+Tue Sep 30 18:56:05 1997  Tom Yu  <tlyu@mit.edu>
+
+	* win-mac.h: Replace HAS_STDLIB_H with something more sane.
+
+	* k5-int.h: Replace HAS_STDLIB_H, NO_STDLIB_H with something more
+ 	sane.
+
+Thu Sep 25 21:10:37 1997  Tom Yu  <tlyu@mit.edu>
+
+	* win-mac.h: Replace KRB5_USE_INET with something more sane.
+
+	* k5-int.h: Replace HAS_UNISTD_H with something more sane.
+
+Thu Sep 18 17:52:59 1997  Tom Yu  <tlyu@mit.edu>
+
+	* win-mac.h: Replace USE_STRING_H with something more sane.
+
+	* k5-int.h: Replace USE_STRING_H, HAS_STRDUP, HAS_LABS with
+ 	something more sane.
+
+Mon Sep 15 14:54:55 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* krb5.hin: Add const to prototypes for krb5_cc_resolve,
+	        krb5_cc_default_name, credential cache resolve and keytab
+	        get functions.
+
+Tue Jul 29 23:14:27 1997  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* krb5.hin: For Windows and Macintosh, always include stdlib.h
+
+Fri Jul 25 15:21:26 1997  Tom Yu  <tlyu@mit.edu>
+
+	* k5-int.h: Don't include anything related to dbm.
+
+Tue Jul 15 12:35:41 1997  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* win-mac.h: Remove (probably unneeded) size_t definition.
+
+Tue Mar 18 13:47:26 1997  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* krb5.hin: Add 'extern "C"' for C++ compatibility; also check for
+		__cplusplus since some C++ compilers don't set __STDC__
+
+Tue Feb 25 00:33:52 1997  Richard Basch  <basch@lehman.com>
+
+	* krb5.hin: Export krb5_read_password
+	* win-mac.h: Declare get_lib_instance (win_glue.c)
+
+Fri Feb 21 17:13:19 1997  Sam Hartman  <hartmans@luminous.MIT.EDU>
+
+	* port-sockets.h: Include sys/types.h before netinet/in.h for NetBSD
+	Protect against multiple inclusion
+
+Thu Feb 20 23:28:31 1997  Richard Basch  <basch@lehman.com>
+
+	* port-sockets.h: Define SOCKET_INITIALIZE and SOCKET_CLEANUP
+		as no-ops under Windows, since this is now handled by
+		the DLL entry/exit code.
+
+Wed Feb 19 14:25:32 1997  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* krb5.hin: Added function prototype for krb5_set_principal_realm().
+
+Tue Feb 18 17:43:55 1997  Richard Basch  <basch@lehman.com>
+
+	* krb5.hin:
+		Added prototypes for krb5_free_data, krb5_free_data_contents
+		Moved krb5_xfree definition to k5-int.h
+	* k5-int.h:
+		krb5_xfree is an internal macro
+
+Mon Feb 17 13:58:45 1997  Richard Basch  <basch@lehman.com>
+
+	* win-mac.h: Added KRB4 Windows INI related definitions.
+
+Sat Feb  8 15:01:33 1997  Richard Basch  <basch@lehman.com>
+
+	* krb5.hin: Export krb5_get_credentials_{renew,validate} (win32)
+
+Tue Feb  4 15:57:18 1997  Richard Basch  <basch@lehman.com>
+
+	* k5-int.h: Make sure KRB5_EXPORTVAR is defined
+	* krb5.hin: Do not bother to define INTERFACE or INTERFACE_C
+
+Sun Feb  2 20:58:40 1997  Richard Basch  <basch@lehman.com>
+
+	* k5-int.h: All pointers to KRB5_DLLIMP functions must be declared FAR
+
+Fri Jan 31 23:10:09 1997  Richard Basch  <basch@lehman.com>
+
+	* krb5.hin:
+		Fixed improper declaration of krb5_eblock_enctype;
+		it returns a krb5_enctype, not a krb5_error_code.
+
+Thu Jan 30 21:22:28 1997  Richard Basch  <basch@lehman.com>
+
+	* krb5.hin
+		Functionalized remaining cryptosystem entrypoints
+		Made the cryptosystem structures private
+	* k5-int.h
+		Made the cryptosystem structures private
+	* win-mac.h
+		Win32 - compile with /MD to link with the runtime C library
+	* Makefile.in
+		Remove profile.h in clean-windows
+
+Thu Nov 21 11:55:16 EST 1996    Richard Basch   <basch@lehman.com>
+
+        * Makefile.in: win32 build
+	* krb5.hin: Moved windows/mac stuff to win-mac.h
+		Really, we should have krb5_os.h and utilize that file
+		  even when we don't include krb5.h, such as with the building
+		  of the crypto or util libs.
+		Declared various functions as DLL exports (win16/win32)
+		Major whitespace adjustment for consistency...
+	* k5-int.h: Re-structured accordingly to accomodate win-mac.h
+	* win-mac.h: New file containing the Windows/Mac definitions
 
 Wed Nov 13 14:28:08 1996  Tom Yu  <tlyu@mit.edu>
 

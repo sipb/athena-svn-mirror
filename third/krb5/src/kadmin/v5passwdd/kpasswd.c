@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  *
@@ -35,11 +38,11 @@
 #include "adm_defs.h"
 #include "adm.h"
 
-#ifdef	USE_STRING_H
+#ifdef	HAVE_STRING_H
 #include <string.h>
-#else	/* USE_STRING_H */
+#else	/* HAVE_STRING_H */
 #include <strings.h>
-#endif	/* USE_STRING_H */
+#endif	/* HAVE_STRING_H */
 
 
 /*
@@ -200,7 +203,7 @@ main(argc, argv)
      * Usage is:
      *	kpasswd [-u user] [-l language]
      */
-    while ((option = getopt(argc, argv, kpwd_getoptstring)) != EOF) {
+    while ((option = getopt(argc, argv, kpwd_getoptstring)) != -1) {
 	switch (option) {
 	case 'u':
 	    if ((name = (char *) malloc(strlen(optarg)+1)) == NULL) {
@@ -241,24 +244,29 @@ main(argc, argv)
 	return(error);
     }
 
+    /*
+     * Initialize Kerberos
+     */
+    kret = krb5_init_context(&kcontext);
+    if (kret) {
+	com_err(argv[0], kret, "while initializing krb5");
+	exit(1);
+    }
+
     /* Get space for passwords */
     if (
 	((npassword = (char *) malloc(KRB5_ADM_MAX_PASSWORD_LEN)) 
 	== (char *) NULL) ||
 	((opassword = (char *) malloc(KRB5_ADM_MAX_PASSWORD_LEN)) 
-	== (char *) NULL)) {
+	== (char *) NULL))
+    {
 	fprintf(stderr, kpwd_no_memory_fmt, argv[0], KRB5_ADM_MAX_PASSWORD_LEN,
 		kpwd_password_text);
 	if (npassword)
 	    free(npassword);
+	krb5_free_context(kcontext);
 	return(ENOMEM);
     }
-
-    /*
-     * Initialize Kerberos
-     */
-    krb5_init_context(&kcontext);
-    krb5_init_ets(kcontext);
 
     /* From now on, all error legs via 'goto cleanup' */
 
@@ -525,7 +533,7 @@ main(argc, argv)
     /* Clear and free password storage */
     if (opassword) {
 	memset(opassword, 0, KRB5_ADM_MAX_PASSWORD_LEN);
-	krb5_xfree(opassword);
+	free(opassword);
     }
     if (npassword) {
 	memset(npassword, 0, KRB5_ADM_MAX_PASSWORD_LEN);
@@ -577,6 +585,6 @@ main(argc, argv)
 
  done:
     krb5_adm_disconnect(kcontext, &conn_socket,	auth_context, ccache);
-    krb5_xfree(kcontext);
+    krb5_free_context(kcontext);
     return(error);
 }

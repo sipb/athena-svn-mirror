@@ -49,17 +49,18 @@ krb5_gss_display_status(minor_status, status_value, status_type,
       return(GSS_S_FAILURE);
 
    if ((mech_type != GSS_C_NULL_OID) &&
-       (! g_OID_equal(gss_mech_krb5, mech_type))) {
-      *minor_status = 0;
-      return(GSS_S_BAD_MECH);
-   }
+       !g_OID_equal(gss_mech_krb5_v2, mech_type) &&
+       !g_OID_equal(gss_mech_krb5, mech_type) &&
+       !g_OID_equal(gss_mech_krb5_old, mech_type)) {
+       *minor_status = 0;
+       return(GSS_S_BAD_MECH);
+    }
 
    if (status_type == GSS_C_GSS_CODE) {
       return(g_display_major_status(minor_status, status_value,
 				    message_context, status_string));
    } else if (status_type == GSS_C_MECH_CODE) {
       if (!init_et) {
-	 krb5_init_ets(context);
 	 initialize_k5g_error_table();
 	 init_et = 1;
       }

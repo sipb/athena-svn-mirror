@@ -1,3 +1,74 @@
+1999-01-20  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* listen.c (print_prompt): Replace BSD-style ioctl with termios
+		interface.
+
+Mon Apr  6 19:45:25 1998  Tom Yu  <tlyu@voltage-multiplier.mit.edu>
+
+	* Makefile.in (includes): Don't mkdir unless the directory doesn't
+ 	exist yet.
+
+Mon Mar 30 11:30:00 1998  Ezra Peisach  <epeisach@kangaroo.mit.edu>
+
+	* ss_internal.h: Add ss_pager_create prototype.
+
+	* ss.h: Add ss_list_requests prototype.
+
+	* request_tbl.c (ss_add_request_table, ss_delete_request_table):
+        Declare function types as void.
+
+	* prompt.c (ss_set_prompt): Declare function as void.
+
+	* listen.c (ss_quit): Int function should return a value.
+
+	* list_rqs.c (ss_list_requests): Fix arguments to match proper
+        prototype for a ss type handler.
+
+	* execute_cmd.c (ss_execute_command): Declare as returning int
+
+Wed Feb 18 16:35:55 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove trailing slash from thisconfigdir.  Fix up
+	BUILDTOP for new conventions.
+
+Fri Feb 13 13:35:51 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* configure.in: Add AC_PROG_INSTALL since it's needed to install
+		the libraries and header files.
+
+Wed Jan 28 17:38:29 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* configure.in, Makefile.in: Remove CopySrcHeader and CopyHeader 
+		from configure.in and move equivalent functionality to
+		Makefile.in 
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+	* cmd_tbl.lex.l, ct.y, requests.c, ss.h: Remove #include of
+		<mit-sipb-copyright.h>, since it's not needed.
+
+Tue Nov 18 19:22:34 1997  Tom Yu  <tlyu@mit.edu>
+
+	* configure.in: Update to new library build system.
+
+	* Makefile.in: Update to new library build system.
+
+Thu Sep 18 20:44:03 1997  Tom Yu  <tlyu@mit.edu>
+
+	* utils.c: Replace HAS_STRDUP with something more sane.
+
+	* configure.in: Replace HAS_STRDUP with something more sane.
+
+Sun Aug 17 14:39:56 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* Makefile.in (SRCS): Add $(srcdir) as needed.
+
+Wed Feb  5 22:52:41 1997  Richard Basch  <basch@lehman.com>
+
+	* Makefile.in: Remove the target ct_c.awk before copying over it.
+		If ct_c.awk.in were read-only, ct_c.awk will become
+		read-only and cannot be updated again.
+
 Thu Jun 13 21:43:44 1996  Tom Yu  <tlyu@voltage-multiplier.mit.edu>
 
 	* configure.in: remove ref to SS_RULES, ET_RULES	

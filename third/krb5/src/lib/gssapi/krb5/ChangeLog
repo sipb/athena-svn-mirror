@@ -1,3 +1,36 @@
+1999-08-27  Tom Yu  <tlyu@mit.edu>
+
+	* accept_sec_context.c (krb5_gss_accept_sec_context): Disable
+	krb5-mech2 stuff for now.
+
+	* init_sec_context.c (make_ap_req_v2): Disable krb5-mech2 stuff
+	for now.
+
+Wed May 19 13:21:55 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Improve rule to create gssapi include dir under
+		windows.
+
+Wed May 19 11:40:52 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Add windows build rules for putting header files in
+		include dir.
+
+Mon May 10 15:22:27 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Do win32 build in subdir.
+
+Fri Apr 30 12:27:14 1999  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* set_ccache.c (gss_krb5_ccache_name): Add call to free the
+		default credential changing the ccache name.
+
+Thu Apr 29 18:02:00 1999  Miro Jurisic  <meeroh@mit.edu>
+
+	* gssapi_krb5.h: Remove gssapi_generic.h includes because
+		this header file is public interface and gssapi_generic.h
+		isn't and shouldn't be included by clients.
+
 Fri Apr 23 00:31:17 1999  Theodore Y. Ts'o  <tytso@mit.edu>
 
 	* wrap_size_limit.c (krb5_gss_wrap_size_limit): Fix wrap_size
@@ -5,6 +38,12 @@ Fri Apr 23 00:31:17 1999  Theodore Y. Ts'o  <tytso@mit.edu>
 		underestimates the correct size instead of overestimating
 		it, and not returning zero all the time.  (Which it used
 		to do after the March 25 fix.)
+
+Sat Apr 17 01:23:57 1999  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* gssapi_krb5.h, copy_ccache.c, get_tkt_flags.c, set_ccache.c:
+ 		Make the krb5 extension functions exportable in a Windows
+ 		DLL.
 
 Fri Mar 26 22:17:20 1999  Theodore Y. Ts'o  <tytso@mit.edu>
 
@@ -24,7 +63,7 @@ Thu Mar 25 22:43:54 1999  Theodore Y. Ts'o  <tytso@mit.edu>
 		with a namespace compliant name, since init_sec_context()
 		needs to be able to use this function.
 
-	* indicate_mechs.c (krb5_gss_indicate_mechs): Return the both
+	* indicate_mechs.c (krb5_gss_indicate_mechs): Return the v1v2
 		mechanism set OID, since we should return all the
 		mechanisms that we support.
 
@@ -37,7 +76,103 @@ Thu Mar 25 22:43:54 1999  Theodore Y. Ts'o  <tytso@mit.edu>
 		by one byte, because we weren't passing the right estimate
 		of the wrapped data to g_token_size().
 
+1999-03-14  Miro Jurisic  <meeroh@mit.edu>
+
+	* gssapi_krb5.h: added extern "C" for C++ friendliness
+
+1999-03-14  Miro Jurisic  <meeroh@mit.edu>
+
+	* set_ccache.c (gss_krb5_ccache_name): Now compiles
+
+1999-03-11  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* set_ccache.c (gss_krb5_ccache_name): Added new Krb5 specific
+		interface to set the default credentials cache name.
+
+1999-02-19  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in (DLL_FILE_DEF): Tell the Makefile template that we
+		are building object files for the GSSAPI DLL.
+
+	* krb5_gss_glue.c: Change use of KRB5_DLLIMP to be GSS_DLLIMP.
+
+Mon Dec 21 19:50:04 1998  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* accept_sec_context.c (krb5_gss_accept_sec_context): Eliminate
+ 		double free of ap_req.data, and initialize ctypes to be
+ 		NULL to avoid freeing a pointer to stack garbage when
+ 		doing a V1 mechanism accept_sec_contxt.
+
+	* init_sec_context.c: Re-arrange program logic to simplify and
+		factor out code; fix gss_init_sec_context() so that if the
+		default OID is passed to the init_sec_context, it will use
+		the V1 mechanism if a single DES enctype is used.   Error
+		handling was revamped to make it simpler and cleaner, and
+		to assure that we don't have memory leaks on error returns.
+
+1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Set the myfulldir and mydir variables (which are
+		relative to buildtop and thisconfigdir, respectively.)
+
+Fri Nov  6 09:19:23 1998  Ezra Peisach  <epeisach@mit.edu>
+
+	* k5unseal.c (kg2_unwrap_integ): Handle case of malloc(0)
+	returning NULL.
+
+1998-10-27  Marc Horowitz  <marc@mit.edu>
+
+	* Makefile.in, accept_sec_context.c, acquire_cred.c, canon_name.c,
+	delete_sec_context.c, disp_status.c, gssapiP_krb5.h,
+	gssapi_err_krb5.et, gssapi_krb5.c, gssapi_krb5.h,
+	init_sec_context.c, inq_cred.c, inq_names.c, k5seal.c, k5unseal.c,
+	rel_oid.c, ser_sctx.c, util_cksum.c, util_crypt.c, util_seed.c,
+	util_seqnum.c, wrap_size_limit.c: convert to new crypto api.
+	Implement new krb5 v2 gssapi mechanism.
+
+	* add_cred.c, util_ctxsetup.c: New files needed to implement the
+	krb5 v2 mech.
+
+Mon Sep 21 00:32:28 1998  Tom Yu  <tlyu@mit.edu>
+
+	* accept_sec_context.c (krb5_gss_accept_sec_context): Free authdat
+	even on success to avoid a memory leak.
+
+	* util_cksum.c (kg_checksum_channel_bindings): Fix memory leak by
+ 	not allocating cksum->contents unless we have to return a
+ 	zero-filled one.
+
+	* k5unseal.c (kg_unseal_v1): Fix memorly leak by not allocating
+	md5cksum.contents.
+
+	* k5seal.c (make_seal_token_v1): Fix memory leak by not allocating
+	md5cksum.contents.
+
+	* accept_sec_context.c (krb5_gss_accept_sec_context): Only free
+	ap_req.data if it was allocated by kg2_parse_token(), otherwise we
+	lose very badly trying to free the middle of a potentially
+	malloc()'ed block, possibly coredumping.
+
+Thu Sep  3 19:35:44 1998  Tom Yu  <tlyu@mit.edu>
+
+	* accept_sec_context.c (krb5_gss_accept_sec_context): Fix typo;
+	bash the enctype in ctx->subkey->enctype rather than just
+	"enctype", which nothing checks.
+
+Fri Jul 24 21:13:53 1998  Tom Yu  <tlyu@mit.edu>
+
+	* wrap_size_limit.c (krb5_gss_wrap_size_limit): Fix to round down
+	by 8 even if the req_output_size-ohlen is a multiple of 8, since
+	the wrap token is always padded regardless of whether it's a
+	mutiple of 8 bytes.
+
 1998-06-08  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* k5unseal.c (kg_unseal):  Clean up lint warnings.
+
+	* accept_sec_context.c (krb5_gss_accept_sec_context): Don't return
+		an error token if we can't provide the server name to the
+		KRB5 error structure (because cred isn't initialized).
 
 	* gssapi_krb5.c, gssapi_krb5.h: Export the oid of static
 		arrays as krb5_gss_oid_array since it's needed by
@@ -48,45 +183,71 @@ Thu Mar 25 22:43:54 1999  Theodore Y. Ts'o  <tytso@mit.edu>
 		OID if at all possible.  This is needed since
 		gss_inquire_context() must return a static OID.
 
-Tue Jul 29 22:56:04 1997  Theodore Y. Ts'o  <tytso@mit.edu>
+Sun May 24 21:57:03 1998  Theodore Y. Ts'o  <tytso@mit.edu>
 
-	* inq_names.c (krb5_gss_inquire_names_for_mech): Add the 
- 		the new OID value for the host-based service name and 
- 		the exported name OID to the list of OID's supported by
-		this mechanism.
-	
-	* import_name.c (krb5_gss_import_name): Add support for the new
-		OID value for the host-based service name.
+	* import_name.c (krb5_gss_import_name): Fix typo which caused
+ 		import_name to incorrectly import names produced by
+ 		gss_export_name().
 
-Mon Mar 31 21:22:19 1997  Theodore Y. Ts'o  <tytso@mit.edu>
+1998-05-24  Theodore Ts'o  <tytso@rsts-11.mit.edu>
 
-	* krb5_gss_glue.c: Add GSSAPI V2 calls to the glue layer.
+	* copy_ccache.c (gss_krb5_copy_ccache): Fix bugs in copy_ccache.c,
+		which never compiled cleanly (since it wasn't added to the
+		Makefile correctly originally).
 
-Fri Mar 28 03:52:14 1997  Theodore Y. Ts'o  <tytso@mit.edu>
+	* k5seal.c (make_seal_token): Clean up -Wall flames
 
-	* import_name.c (krb5_gss_import_name): Add support for importing
-		the exported name call
+1998-05-18  Theodore Ts'o  <tytso@rsts-11.mit.edu>
 
-Thu Mar 27 15:52:04 1997  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+	* inq_cred.c (krb5_gss_inquire_cred): 
+	* inq_context.c (krb5_gss_inquire_context): 
+	* import_name.c (krb5_gss_import_name): 
+	* export_name.c (krb5_gss_export_name): 
+	* disp_name.c (krb5_gss_display_name): 
+	* context_time.c (krb5_gss_context_time): 
+	* acquire_cred.c (krb5_gss_acquire_cred): Clean up -Wall flames.
 
-	* Makefile.in: Add canon_name.c, duplicate_name.c, export_name.c
-		to the GSSAPI library.
-	
-	* canon_name.c (krb5_gss_canonicalize_name): New GSSAPI V2 function
+	* indicate_mechs.c (krb5_gss_indicate_mechs): Return a dynamic OID
+		set.
 
-	* duplicate_name.c (krb5_gss_duplicate_name): New GSSAPI V2 function
+Fri Feb 27 18:41:08 1998  Theodore Y. Ts'o  <tytso@mit.edu>
 
-	* export_name.c (krb5_gss_export_name): New GSSAPI V2 function
+	* export_name.c (krb5_gss_export_name): Fix bug in
+ 	 	gss_export_name.  The 2nd length field in the ASN.1 was 2
+ 	 	bytes bigger than it should have been.
 
-	* gssapiP_krb5.h (KG_IMPLFLAGS): Add support for
-		GSS_C_PROT_STATE_READY and GSS_C_TRANS_FLAG
+Wed Feb 18 16:12:14 1998  Tom Yu  <tlyu@mit.edu>
 
-Fri Jul 24 21:13:53 1998  Tom Yu  <tlyu@mit.edu>
+	* Makefile.in: Remove trailing slash from thisconfigdir.  Fix up
+	BUILDTOP for new conventions.
 
-	* wrap_size_limit.c (krb5_gss_wrap_size_limit): Fix to round down
-	by 8 even if the req_output_size-ohlen is a multiple of 8, since
-	the wrap token is always padded regardless of whether it's a
-	mutiple of 8 bytes.
+Fri Feb 13 13:23:18 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* accept_sec_context.c (krb5_gss_accept_sec_context): Don't
+		restrict mechanisms when accepting contexts.  (Allow
+		either pre-RFC or RFC-based mechanisms)
+
+Thu Feb 12 16:38:14 1998  Tom Yu  <tlyu@mit.edu>
+
+	* accept_sec_context.c (krb5_gss_accept_sec_context): Add lots of
+	explicit assignments to major_status to ensure that we actually
+	return an error when we mean to.  This was previously preventing
+	gssrpc authentication with the old ovsec_kadm interface from
+	working because the gssrpc server side functions were failing to
+	loop over a set of supplied credentials.
+
+	* init_sec_context.c: KLUDGE!! Add global variable
+	krb5_gss_dbg_client_expcreds to allow the client library to send
+	expired credentials for testing and debugging purposes.
+
+Mon Feb  2 17:02:29 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+Wed Jan 28 16:57:05 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* configure.in, Makefile.in: Remove use of CopySrcHeader from
+		configure.in and move functionality to Makefile.in
 
 Thu Feb  5 22:39:44 1998  Theodore Y. Ts'o  <tytso@mit.edu>
 
@@ -94,6 +255,36 @@ Thu Feb  5 22:39:44 1998  Theodore Y. Ts'o  <tytso@mit.edu>
 		the output header size is greater than the maximum
 		requested output size, return 0 rather than a very large
 		unsigned number.  :-)
+
+Fri Jan 30 23:07:40 1998  Tom Yu  <tlyu@mit.edu>
+
+	* init_sec_context.c (krb5_gss_init_sec_context): Actually
+	initialize now before calling make_ap_req.
+
+Thu Jan 29 20:08:02 1998  Dan Winship  <danw@mit.edu>
+
+	* accept_sec_context.c (rd_and_store_for_creds): Don't mess with
+	krb5_cc_default--use a new mem-based ccache.
+
+	* Makefile.in: 
+	* gssapi_krb5.h: 
+	* copy_ccache.c (gss_krb5_copy_ccache): Routine to copy a
+	gss_cred_id_t (such as a forwarded creds) into an existing
+	krb5_ccache.
+
+Fri Jun 27 08:37:11 1997  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* accept_sec_context.c (krb5_gss_accept_sec_context): Will now
+ 		obtain default credentials if no credentials are given.
+
+Wed Dec  3 02:16:18 1997  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* init_sec_context.c (make_ap_req): Enforce a stricter requirement
+		on the ticket expiration time of the credentials, since
+		accept_sec_context doesn't use the timeskew fudge for
+		checking ticket expirations.
+		(krb5_gss_init_sec_context): Return GSS_S_NO_CRED when
+		appropriate. 
 
 Wed Jan 21 19:14:09 1998  Tom Yu  <tlyu@mit.edu>
 
@@ -113,11 +304,151 @@ Wed Jan 21 19:14:09 1998  Tom Yu  <tlyu@mit.edu>
 	* rel_cred.c (krb5_gss_release_cred): Properly close the
 	rcache. [krb5-libs/370]
 
+Mon Dec 29 10:30:43 1997  Ezra Peisach  <epeisach@kangaroo.mit.edu>
+
+	* Makefile.in (OBJS): Changed val_cred.$(OBJECT) to
+	        val_cred.$(OBJEXT) for windows building.
+
+Sun Dec  7 10:42:32 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* val_cred.c (krb5_gss_validate_cred): Free principal extracted
+		from credential cache when finished.
+
+Sat Nov 15 20:14:05 1997  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* accept_sec_context.c (krb5_gss_accept_sec_context), 
+	  init_sec_context.c (krb5_gss_init_sec_context),
+	  inq_cred.c (krb5_gss_inquire_cred): Call krb5_gss_validate_cred
+	  	to make sure the credential handle is still valid.
+
+	* val_cred.c (krb5_gss_validate_cred): New file which validates
+		the credential to make sure it is valid, including
+		checking to make sure the credentials cache still points
+		at the same krb5 principal as it did before.
+
+	* accept_sec_context.c (krb5_gss_accept_sec_context): Return
+ 		GSS_S_FAILURE if a non-NULL context handle is passed to
+ 		it.
+
+Thu Sep 18 17:55:09 1997  Tom Yu  <tlyu@mit.edu>
+
+	* acquire_cred.c: Replace USE_STRING_H with something more sane.
+
+	* import_name.c: Replace USE_STRING_H with something more sane.
+
+Tue Jul 29 22:56:04 1997  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* inq_names.c (krb5_gss_inquire_names_for_mech): Add the 
+ 		the new OID value for the host-based service name and 
+ 		the exported name OID to the list of OID's supported by
+		this mechanism.
+	
+	* import_name.c (krb5_gss_import_name): Add support for the new
+		OID value for the host-based service name.
+
+Mon Jul 21 20:32:14 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* accept_sec_context.c (krb5_gss_accept_sec_context): Initialize
+		ctx before referenced in failure cases.
+
+Tue Jul 15 22:05:21 1997  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* init_sec_context.c (krb5_gss_init_sec_context): Always copy the
+		mechtype so that delete_sec_context() can safely release
+		the OID without smashing memory passed in by the application.
+
+Mon Jun 30 14:05:51 1997  Kevin L Mitchell  <klmitch@mit.edu>
+
+	* accept_sec_context.c: added code to return a valid delegated
+		credential handle if credentials were delegated.  The
+		GSS_C_DELEG_FLAG from the client is ignored, and the
+		option is only set if the client actually delegated
+		credentials.
+
+Fri Jun  6 15:26:27 1997  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* accept_sec_context.c (krb5_gss_accept_sec_context): Reorganized
+ 		error handling code to be more compact (and correct!).  If
+ 		an error occurs while we are doing mutual authentication,
+ 		send an KRB_ERROR message back to the client, so that it
+ 		knows what is going on.  (This is specified by RFC 1964;
+ 		we just weren't implementing this previously.)
+           
+	* delete_sec_context.c (krb5_gss_delete_sec_context): Check to
+ 		make sure pointers in the context are non-zero before
+ 		freeing them.
+
+	* init_sec_context.c (krb5_gss_init_sec_context): If the server
+		sends a KRB_ERROR message, decode it and return an
+		appropriate minor status error code.
+
+Mon Mar 31 21:22:19 1997  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* krb5_gss_glue.c: Add GSSAPI V2 calls to the glue layer.
+
+Fri Mar 28 03:52:14 1997  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* import_name.c (krb5_gss_import_name): Add support for importing
+		the exported name call
+
+	* export_name.c (krb5_gss_export_name): Fix export_name emit the token
+		exactly as specified by RFC 2078.
+
+Thu Mar 27 15:52:04 1997  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Add canon_name.c, duplicate_name.c, export_name.c
+		to the GSSAPI library.
+	
+	* canon_name.c (krb5_gss_canonicalize_name): New GSSAPI V2 function
+
+	* duplicate_name.c (krb5_gss_duplicate_name): New GSSAPI V2 function
+
+	* export_name.c (krb5_gss_export_name): New GSSAPI V2 function
+
+	* gssapiP_krb5.h (KG_IMPLFLAGS): Add support for
+		GSS_C_PROT_STATE_READY and GSS_C_TRANS_FLAG
+
 Tue Mar 25 01:00:55 1997  Theodore Y. Ts'o  <tytso@mit.edu>
 
 	* init_sec_context.c (krb5_gss_init_sec_context): A zero-length
 		token should be treated like a GSS_C_NO_BUFFER during the
 		initial context establishment.  [krb5-libs/352]
+
+Sat Feb 22 18:59:42 1997  Richard Basch  <basch@lehman.com>
+
+	* Makefile.in: Use some of the new library list build rules in
+		win-post.in
+
+Wed Feb  5 20:27:50 1997  Richard Basch  <basch@lehman.com>
+
+	* util_crypt.c: Include k5-int.h as we need to dereference
+		the _cryptosystem_entry element of the krb5_encrypt_block.
+
+	* acquire_cred.c (acquire_accept_cred): Removed unused local variable
+
+Tue Feb  4 15:56:01 1997  Richard Basch  <basch@lehman.com>
+
+	* Makefile.in: Only override the object build of the error table
+		under Unix
+
+Tue Jan 14 20:20:10 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in:
+	* configure.in: Update to new library build procedure.
+
+Wed Dec  4 13:06:13 1996  Barry Jaspan  <bjaspan@mit.edu>
+
+	* acquire_cred.c (acquire_accept_cred): use krb5_kt_get_entry
+ 	instead of scanning through keytab to find matching principal
+ 	[krb5-libs/210]
+
+Thu Nov 21 11:55:16 EST 1996    Richard Basch   <basch@lehman.com>
+
+        * Makefile.in: win32 build
+
+	* gssapiP_krb5.h krb5_gss_glue.c:
+	DLL export all public GSSAPI interfaces; adjusted some other
+	declarations accordingly (KRB5_CALLCONV, FAR keywords added)
 
 Wed Nov 20 19:55:29 1996  Marc Horowitz  <marc@cygnus.com>
 

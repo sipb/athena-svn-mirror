@@ -21,7 +21,7 @@
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/appl/gss-sample/gss-server.c,v 1.1.1.4 1999-03-25 04:30:12 danw Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/appl/gss-sample/gss-server.c,v 1.1.1.5 1999-10-05 16:09:59 ghudson Exp $";
 #endif
 
 #include <stdio.h>
@@ -38,7 +38,7 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src
 #include <gssapi/gssapi_generic.h>
 #include "gss-misc.h"
 
-#ifdef USE_STRING_H
+#ifdef HAVE_STRING_H
 #include <string.h>
 #else
 #include <strings.h>
@@ -137,7 +137,7 @@ int server_establish_context(s, server_creds, context, client_name, ret_flags)
      gss_buffer_desc send_tok, recv_tok;
      gss_name_t client;
      gss_OID doid;
-     OM_uint32 maj_stat, min_stat;
+     OM_uint32 maj_stat, min_stat, acc_sec_min_stat;
      gss_buffer_desc	oid_name;
 
      *context = GSS_C_NO_CONTEXT;
@@ -152,7 +152,7 @@ int server_establish_context(s, server_creds, context, client_name, ret_flags)
 	  }
 
 	  maj_stat =
-	       gss_accept_sec_context(&min_stat,
+	       gss_accept_sec_context(&acc_sec_min_stat,
 				      context,
 				      server_creds,
 				      &recv_tok,
@@ -163,12 +163,6 @@ int server_establish_context(s, server_creds, context, client_name, ret_flags)
 				      ret_flags,
 				      NULL, 	/* ignore time_rec */
 				      NULL); 	/* ignore del_cred_handle */
-
-	  if (maj_stat!=GSS_S_COMPLETE && maj_stat!=GSS_S_CONTINUE_NEEDED) {
-	       display_status("accepting context", maj_stat, min_stat);
-	       (void) gss_release_buffer(&min_stat, &recv_tok);
-	       return -1;
-	  }
 
 	  (void) gss_release_buffer(&min_stat, &recv_tok);
 
@@ -186,6 +180,15 @@ int server_establish_context(s, server_creds, context, client_name, ret_flags)
 
 	       (void) gss_release_buffer(&min_stat, &send_tok);
 	  }
+	  if (maj_stat!=GSS_S_COMPLETE && maj_stat!=GSS_S_CONTINUE_NEEDED) {
+	       display_status("accepting context", maj_stat,
+			      acc_sec_min_stat);
+	       if (*context == GSS_C_NO_CONTEXT)
+		       gss_delete_sec_context(&min_stat, context,
+					      GSS_C_NO_BUFFER);
+	       return -1;
+	  }
+
 	  if (verbose && log) {
 	      if (maj_stat == GSS_S_CONTINUE_NEEDED)
 		  fprintf(log, "continue needed...\n");
@@ -312,6 +315,7 @@ int test_import_export_context(context)
 		display_status("importing context", maj_stat, min_stat);
 		return 1;
 	}
+	free(copied_token.value);
 	gettimeofday(&tm1, (struct timezone *)0);
 	if (verbose && log)
 		fprintf(log, "Importing context: %7.4f seconds\n",
@@ -390,9 +394,10 @@ int sign_server(s, server_creds)
 
      fprintf(log, "Received message: ");
      cp = msg_buf.value;
-     if (isprint(cp[0]) && isprint(cp[1]))
-	fprintf(log, "\"%s\"\n", cp);
-     else {
+     if ((isprint(cp[0]) || isspace(cp[0])) &&
+	 (isprint(cp[1]) || isspace(cp[1]))) {
+	fprintf(log, "\"%.*s\"\n", msg_buf.length, msg_buf.value);
+     } else {
 	printf("\n");
 	print_token(&msg_buf);
      }
@@ -485,21 +490,21 @@ main(argc, argv)
      } else {
 	 int stmp;
 
-	 if ((stmp = create_socket(port))) {
+	 if ((stmp = create_socket(port)) >= 0) {
 	     do {
 		 /* Accept a TCP connection */
 		 if ((s = accept(stmp, NULL, 0)) < 0) {
 		     perror("accepting connection");
-		 } else {
-		     /* this return value is not checked, because there's
-			not really anything to do if it fails */
-		     sign_server(s, server_creds);
-		     close(s);
+		     continue;
 		 }
+		 /* this return value is not checked, because there's
+		    not really anything to do if it fails */
+		 sign_server(s, server_creds);
+		 close(s);
 	     } while (!once);
-	 }
 
-	 close(stmp);
+	     close(stmp);
+	 }
      }
 
      (void) gss_release_cred(&min_stat, &server_creds);

@@ -14,7 +14,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  *
@@ -160,6 +163,10 @@ krb5_error_code krb5_obtain_padata(context, preauth_to_use, key_proc,
 
     for (pa = preauth_to_use, size=0; *pa; pa++, size++) {
 	if ((*pa)->pa_type == KRB5_PADATA_ETYPE_INFO) {
+	    /* XXX use the first one.  Is there another way to disambiguate? */
+	    if (etype_info)
+		continue;
+
 	    scratch.length = (*pa)->length;
 	    scratch.data = (char *) (*pa)->contents;
 	    retval = decode_krb5_etype_info(&scratch, &etype_info);
@@ -219,6 +226,8 @@ krb5_error_code krb5_obtain_padata(context, preauth_to_use, key_proc,
     }
 
 cleanup:
+    if (etype_info)
+	krb5_free_etype_info(context, etype_info);
     if (f_salt)
 	krb5_xfree(salt.data);
     if (send_pa_list)
@@ -294,9 +303,6 @@ obtain_enc_ts_padata(context, in_padata, etype_info, def_enc_key,
     krb5_data *			scratch;
     krb5_enc_data 		enc_data;
     krb5_pa_data *		pa;
-    
-
-    enc_data.ciphertext.data = 0;
 
     retval = krb5_us_timeofday(context, &pa_enc.patimestamp, &pa_enc.pausec);
     if (retval)
@@ -305,8 +311,11 @@ obtain_enc_ts_padata(context, in_padata, etype_info, def_enc_key,
     if ((retval = encode_krb5_pa_enc_ts(&pa_enc, &scratch)) != 0)
 	return retval;
 
-    if ((retval = krb5_encrypt_data(context, def_enc_key, 0, scratch,
-				    &enc_data)))
+    enc_data.ciphertext.data = 0;
+
+    if ((retval = krb5_encrypt_helper(context, def_enc_key,
+				      KRB5_KEYUSAGE_AS_REQ_PA_ENC_TS,
+				      scratch, &enc_data)))
 	goto cleanup;
 
     krb5_free_data(context, scratch);
@@ -446,7 +455,12 @@ char *handle_sam_labels(sc)
 	label = "Challenge for Enigma Logic mechanism";
 	break;
       case PA_SAM_TYPE_DIGI_PATH: /*  Digital Pathways */
+      case PA_SAM_TYPE_DIGI_PATH_HEX: /*  Digital Pathways */
 	label = "Challenge for Digital Pathways mechanism";
+	break;
+      case PA_SAM_TYPE_ACTIVCARD_DEC: /*  Digital Pathways */
+      case PA_SAM_TYPE_ACTIVCARD_HEX: /*  Digital Pathways */
+	label = "Challenge for Activcard mechanism";
 	break;
       case PA_SAM_TYPE_SKEY_K0:	/*  S/key where  KDC has key 0 */
 	label = "Challenge for Enhanced S/Key mechanism";
@@ -455,6 +469,9 @@ char *handle_sam_labels(sc)
 	label = "Challenge for Traditional S/Key mechanism";
 	break;
       case PA_SAM_TYPE_SECURID:	/*  Security Dynamics */
+	label = "Challenge for Security Dynamics mechanism";
+	break;
+      case PA_SAM_TYPE_SECURID_PREDICT:	/* predictive Security Dynamics */
 	label = "Challenge for Security Dynamics mechanism";
 	break;
       }

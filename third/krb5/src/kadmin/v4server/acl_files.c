@@ -13,6 +13,9 @@
 
 #include <stdio.h>
 #include <string.h>
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -49,7 +52,10 @@
 
 extern int errno;
 
+#ifndef HAVE_STDLIB_H
 extern char *malloc(), *calloc();
+#endif
+
 extern time_t time();
 
 static int acl_abort();
@@ -326,7 +332,7 @@ char *el;
 
     hv = hashval(el) % h->size;
     while(h->tbl[hv] != NULL && strcmp(h->tbl[hv], el)) hv = (hv+1) % h->size;
-    s = malloc(strlen(el)+1);
+    s = (char *) malloc(strlen(el)+1);
     strcpy(s, el);
     h->tbl[hv] = s;
     h->entries++;

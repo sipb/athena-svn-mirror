@@ -1,12 +1,77 @@
-Fri Apr 30 15:23:39 1999  Tom Yu  <tlyu@mit.edu>
+1999-07-26  Tom Yu  <tlyu@mit.edu>
 
-	* configure.in: Fix to define HAVE_SETUPTERM instead of
-	HAS_SETUPTERM (due to merge botch).
+	* telnet.c (telnet): Fix typo in error message, via
+	schwim@whatmore.Stanford.EDU
 
 1999-04-13    <tytso@rsts-11.mit.edu>
 
 	* configure.in: Check for setupterm() in libncurses in addition to
 		libcurses.  (Will be needed for Linux/Redhat 6.0)
+
+1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Set the myfulldir and mydir variables (which are
+		relative to buildtop and thisconfigdir, respectively.)
+
+1998-10-26  Marc Horowitz  <marc@mit.edu>
+
+	* commands.c: remove calls to setuid(getuid()).  This looks like
+	it was once an attempt to make it safe to run setuid, but it's not
+	safe for a number of other reasons, so there's no reason to
+	pretend.
+
+Sat Oct 10 06:24:55 1998  Geoffrey King  <gjking@mit.edu>
+
+	* telnet.c (telnet): Cosmetic change: Put a newline after "Waiting
+ 	for encryption to be negotiated..." so that the response
+	"[ Kerberos V5 accepts you as ``gjking@ATHENA.MIT.EDU'' ]" doesn't
+ 	run off the end of the line.
+
+Mon Aug 17 04:32:08 1998  Geoffrey King  <gjking@mit.edu>
+
+	* main.c (main): Declare dst_realm_sz as extern int instead of
+ 	extern char, to agree with its definition in libtelnet/kerberos.c.
+	This was causing dst_realm_sz to be zero unexpectedly, and so
+	strncpy was not copying the -k realm argument into dest_realm.
+	[krb5-appl/616]
+	
+Tue May 26 15:27:55 1998  Tom Yu  <tlyu@mit.edu>
+
+	* configure.in: Re-order check for setupterm to avoid lossage if
+	setupterm is defined in libtermcap or libcurses.
+
+1998-05-06  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* main.c (main): POSIX states that getopt returns -1 when it
+		is done parsing options, not EOF.
+
+	* configure.in: Use standard autoconf test names. Change tests
+		to define standard autoconf CPP macro names, not the
+		non-standard HAS_GETTOS, etc.
+
+	* main.c, commands.c: Use HAVE_GETTOSBYNAME instead of HAS_GETTOS
+
+	* ring.c, externs.h: Use HAVE_SYS_FILIO_H instead of FILIO_H
+
+Wed Feb 18 15:38:05 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove trailing slash from thisconfigdir.  Fix up
+	BUILDTOP for new conventions.
+
+Mon Feb  2 17:02:29 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+Wed Feb 12 15:23:36 1997  Tom Yu  <tlyu@voltage-multiplier.mit.edu>
+
+	* configure.in: Fix DES425_LIB... missed this in libhack_branch;
+	prevents --without-krb4 from working for some odd reason, though
+	comments says "fix post beta-6".
+
+Wed Feb  5 22:03:35 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in:
+	* configure.in: Update to new program build procedure.
 
 Tue Nov 26 20:41:31 1996  Tom Yu  <tlyu@voltage-multiplier.mit.edu>
 

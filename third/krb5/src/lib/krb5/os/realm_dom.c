@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -42,15 +45,26 @@
 #include <ctype.h>
 #include <stdio.h>
 
-krb5_error_code
+KRB5_DLLIMP krb5_error_code KRB5_CALLCONV
 krb5_get_realm_domain(context, realm, domain)
     krb5_context context;
     const char *realm;
     char **domain;
 {
     krb5_error_code retval;
+    char *temp_domain = 0;
 
     retval = profile_get_string(context->profile, "realms", realm,
-			       "default_domain", realm, domain);
+			       "default_domain", realm, &temp_domain);
+    if (!retval && temp_domain)
+    {
+        *domain = malloc(strlen(temp_domain) + 1);
+        if (!*domain) {
+            retval = ENOMEM;
+        } else {
+            strcpy(*domain, temp_domain);
+        }
+        profile_release_string(temp_domain);
+    }
     return retval;
 }

@@ -24,13 +24,14 @@
 #else
 #include <time.h>
 #endif
+#include <syslog.h>
 
-#ifdef OVSEC_KADM
+#ifdef KADM5
 #include <com_err.h>
 #include <kadm5/admin.h>
 #include <kadm5/chpass_util_strings.h>
 #include <krb5/kdb.h>
-extern void *ovsec_handle;
+extern void *kadm5_handle;
 #endif
 
 #include <kadm.h>
@@ -39,11 +40,8 @@ extern void *ovsec_handle;
 extern krb5_context kadm_context;
 int fascist_cpw = 0;		/* Be fascist about insecure passwords? */
 
-#ifdef OVSEC_KADM
 char pw_required[] = "The version of kpasswd that you are using is not compatible with the\nOpenV*Secure V4 Administration Server.  Please contact your security\nadministrator.\n\n";
 
-#else /* !OVSEC_KADM */
- 
 char bad_pw_err[] =
 	"\007\007\007ERROR: Insecure password not accepted.  Please choose another.\n\n";
 
@@ -55,8 +53,6 @@ char check_pw_msg[] =
 
 char pw_blurb[] =
 "A good password is something which is easy for you to remember, but that\npeople who know you won't easily guess; so don't use your name, or your\ndog's name, or a word from the dictionary.  Passwords should be at least\n6 characters long, and may contain UPPER- and lower-case letters,\nnumbers, or punctuation.  A good password can be:\n\n   -- some initials, like \"GykoR-66\" for \"Get your kicks on Rte 66.\"\n   -- an easily pronounced nonsense word, like \"slaRooBey\" or \"krang-its\"\n   -- a mis-spelled phrase, like \"2HotPeetzas\" or \"ItzAGurl\"\n\nPlease Note: It is important that you do not tell ANYONE your password,\nincluding your friends, or even people from Athena or Information\nSystems.  Remember, *YOU* are assumed to be responsible for anything\ndone using your password.\n";
-
-#endif /* OVSEC_KADM */
 
 /* from V4 month_sname.c --  was not part of API */
 /*
@@ -143,14 +139,15 @@ int *outlen;
     int status, stvlen = 0;
     int	retval;
     extern int kadm_approve_pw();
-#ifdef OVSEC_KADM
-    ovsec_kadm_principal_ent_t princ_ent;
-    ovsec_kadm_policy_ent_t pol_ent;
+#ifdef KADM5
+    kadm5_principal_ent_rec princ_ent;
+    kadm5_policy_ent_rec pol_ent;
     krb5_principal user_princ;
     char msg_ret[1024], *time_string, *ptr;
     const char *msg_ptr;
     krb5_int32 now;
     time_t until;
+    krb5_keyblock newkb;
 #endif
 
     /* take key off the stream, and change the database */
@@ -172,112 +169,6 @@ int *outlen;
     memcpy((char *)(((krb5_int32 *)newkey) + 1), (char *)&keyhigh, 4);
     memcpy((char *)newkey, (char *)&keylow, 4);
 
-#ifdef OVSEC_KADM
-    /* we don't use the client-provided key itself */
-    keylow = keyhigh = 0;
-    memset(newkey, 0, sizeof(newkey));
-
-    if (no_pword) {
-	 krb_log("Old-style change password request from '%s.%s@%s'!",
-		 ad->pname, ad->pinst, ad->prealm);
-	 *outlen = strlen(pw_required)+1;
-	 if (*datout = (u_char *) malloc(*outlen)) {
-	      strcpy(*datout, pw_required);
-	 } else {
-	      *outlen = 0;
-	 }
-	 return KADM_INSECURE_PW;
-    }
-		     
-    if (krb5_build_principal(kadm_context, &user_princ,
-			     strlen(ad->prealm),
-			     ad->prealm,
-			     ad->pname,
-			     *ad->pinst ? ad->pinst : 0, 0))
-	 /* this should never happen */
-	 return KADM_NOENTRY;
-
-    *outlen = 0;
-
-    if (retval = krb5_timeofday(kadm_context, &now)) {
-	 msg_ptr = error_message(retval);
-	 goto send_response;
-    }
-
-    retval = ovsec_kadm_get_principal(ovsec_handle, user_princ,
-				      &princ_ent);
-    if (retval != 0) {
-	 msg_ptr = error_message(retval);
-	 goto send_response;
-    }
-
-    /*
-     * This daemon necessarily has the modify privilege, so
-     * ovsec_kadm_chpass_principal will allow it to violate the
-     * policy's minimum lifetime.  Since that's A Bad Thing, we need
-     * to enforce it ourselves.  Unfortunately, this means we are
-     * duplicating code from both ovsec_adm_server and
-     * ovsec_kadm_chpass_util().
-     */
-    if (princ_ent->aux_attributes & OVSEC_KADM_POLICY) {
-	 retval = ovsec_kadm_get_policy(ovsec_handle,
-					princ_ent->policy,
-					&pol_ent);
-	 if (retval != 0) {
-	      (void) ovsec_kadm_free_principal_ent(ovsec_handle, princ_ent);
-	      msg_ptr = error_message(retval);
-	      goto send_response;
-	 }
-
-	 /* make "now" a boolean, true == too soon */
-	 now = ((now - princ_ent->last_pwd_change) < pol_ent->pw_min_life);
-
-	 (void) ovsec_kadm_free_policy_ent(ovsec_handle, pol_ent);
-	 
-	 if(now && !(princ_ent->attributes & KRB5_KDB_REQUIRES_PWCHANGE)) {
-	      (void) ovsec_kadm_free_principal_ent(ovsec_handle, princ_ent);
-	      retval = CHPASS_UTIL_PASSWORD_TOO_SOON;
-
-	      until = princ_ent->last_pwd_change + pol_ent->pw_min_life;
-	      time_string = ctime(&until);
-				  
-	      if (*(ptr = &time_string[strlen(time_string)-1]) == '\n')
-		   *ptr = '\0';
-	      
-	      sprintf(msg_ret, error_message(CHPASS_UTIL_PASSWORD_TOO_SOON), 
-		      time_string);
-	      msg_ptr = msg_ret;
-	      
-	      goto send_response;
-	 }
-    }
-
-    (void) ovsec_kadm_free_principal_ent(ovsec_handle, princ_ent);
-
-    retval = ovsec_kadm_chpass_principal_util(ovsec_handle, user_princ,
-					      pword, NULL, msg_ret);
-    msg_ptr = msg_ret;
-    (void) krb5_free_principal(kadm_context, user_princ);
-
-send_response:
-
-    retval = convert_ovsec_to_kadm(retval);
-
-    if (retval) {
-	 /* don't send message on success because kpasswd.v4 will */
-	 /* print "password changed" too */
-	 *outlen = strlen(msg_ptr)+2;
-	 if (*datout = (u_char *) malloc(*outlen)) {
-	      strcpy(*datout, msg_ptr);
-	      strcat(*datout, "\n");
-	 } else
-	      *outlen = 0;
-    }
-    if (retval == KADM_INSECURE_PW) {
-	 krb_log("'%s.%s@%s' tried to use an insecure password in changepw",
-		 ad->pname, ad->pinst, ad->prealm);
-    }
-#else /* OVSEC_KADM */
     if (retval = kadm_approve_pw(ad->pname, ad->pinst, ad->prealm,
 			newkey, no_pword ? 0 : pword)) {
 	    if (retval == KADM_PW_MISMATCH) {
@@ -286,7 +177,7 @@ send_response:
 		     * password which was sent and the DES cblock
 		     * didn't match!
 		     */
-		    (void) krb_log("'%s.%s@%s' sent a password string which didn't match with the DES key?!?",
+		    syslog(LOG_ERR, "'%s.%s@%s' sent a password string which didn't match with the DES key?!?",
 				   ad->pname, ad->pinst, ad->prealm);
 		    return(retval);
 	    }
@@ -297,7 +188,7 @@ send_response:
 			    strcat((char *) *datout, pw_blurb);
 		    } else
 			    *outlen = 0;
-		    (void) krb_log("'%s.%s@%s' tried to use an insecure password in changepw",
+		    syslog(LOG_ERR, "'%s.%s@%s' tried to use an insecure password in changepw",
 				   ad->pname, ad->pinst, ad->prealm);
 #ifdef notdef
 		    /* For debugging only, probably a bad idea */
@@ -312,7 +203,7 @@ send_response:
 			    strcat((char *) *datout, pw_blurb);
 		    } else
 			    *outlen = 0;
-		    (void) krb_log("'%s.%s@%s' used an insecure password in changepw",
+		    syslog(LOG_ERR, "'%s.%s@%s' used an insecure password in changepw",
 				   ad->pname, ad->pinst, ad->prealm);
 	    }
     } else {
@@ -320,15 +211,142 @@ send_response:
 	    *outlen = 0;
     }
 
+#ifdef KADM5
+    if (no_pword)
+	syslog(LOG_WARNING,
+	       "Old-style change password request from '%s.%s@%s'!",
+	       ad->pname, ad->pinst, ad->prealm);
+    else {
+	/*
+	 * We don't use the client-provided key itself, if there is a
+	 * password provided.
+	 */
+	keylow = keyhigh = 0;
+	memset(newkey, 0, sizeof(newkey));
+    }
+
+    syslog(LOG_INFO, "'%s.%s@%s' wants to change its password",
+	   ad->pname, ad->pinst, ad->prealm);
+    if ((krb5_425_conv_principal(kadm_context, ad->pname,
+				 *ad->pinst ? ad->pinst : 0,
+				 ad->prealm, &user_princ))) {
+	/* this should never happen */
+	memset(newkey, 0, sizeof(newkey));
+	return KADM_NOENTRY;
+    }
+
+    *outlen = 0;
+
+    if (retval = krb5_timeofday(kadm_context, &now)) {
+	 msg_ptr = error_message(retval);
+	 goto send_response;
+    }
+
+    /* Use the default mask for now. */
+    retval = kadm5_get_principal(kadm5_handle, user_princ,
+				 &princ_ent,
+				 KADM5_PRINCIPAL_NORMAL_MASK);
+    if (retval != 0) {
+	 msg_ptr = error_message(retval);
+	 goto send_response;
+    }
+
+    /*
+     * This daemon necessarily has the modify privilege, so
+     * kadm5_chpass_principal will allow it to violate the
+     * policy's minimum lifetime.  Since that's A Bad Thing, we need
+     * to enforce it ourselves.  Unfortunately, this means we are
+     * duplicating code from both ovsec_adm_server and
+     * kadm5_chpass_util().
+     */
+    if (princ_ent.aux_attributes & KADM5_POLICY) {
+	 retval = kadm5_get_policy(kadm5_handle,
+				   princ_ent.policy,
+				   &pol_ent);
+	 if (retval != 0) {
+	      (void) kadm5_free_principal_ent(kadm5_handle, &princ_ent);
+	      msg_ptr = error_message(retval);
+	      goto send_response;
+	 }
+
+	 /* make "now" a boolean, true == too soon */
+	 now = ((now - princ_ent.last_pwd_change) < pol_ent.pw_min_life);
+
+	 (void) kadm5_free_policy_ent(kadm5_handle, &pol_ent);
+	 
+	 if(now && !(princ_ent.attributes & KRB5_KDB_REQUIRES_PWCHANGE)) {
+	      (void) kadm5_free_principal_ent(kadm5_handle, &princ_ent);
+	      retval = CHPASS_UTIL_PASSWORD_TOO_SOON;
+
+	      until = princ_ent.last_pwd_change + pol_ent.pw_min_life;
+	      time_string = ctime(&until);
+				  
+	      if (*(ptr = &time_string[strlen(time_string)-1]) == '\n')
+		   *ptr = '\0';
+	      
+	      sprintf(msg_ret, error_message(CHPASS_UTIL_PASSWORD_TOO_SOON), 
+		      time_string);
+	      msg_ptr = msg_ret;
+	      
+	      goto send_response;
+	 }
+    }
+
+    (void) kadm5_free_principal_ent(kadm5_handle, &princ_ent);
+
+    if (no_pword) {
+	newkb.magic = KV5M_KEYBLOCK;
+	if ((newkb.contents = (krb5_octet *)malloc(8)) == NULL) {
+	    retval = KADM_NOMEM;
+	    goto send_response;
+	}
+	newkb.length = 8;
+	newkb.enctype = ENCTYPE_DES_CBC_CRC;
+	memcpy((char *)newkb.contents, newkey, 8);
+	retval = kadm5_setv4key_principal(kadm5_handle, user_princ,
+					  &newkb);
+	memset(newkb.contents, 0, 8);
+	*msg_ret = '\0';
+    } else {
+	retval = kadm5_chpass_principal_util(kadm5_handle, user_princ,
+					     pword, NULL, msg_ret);
+	msg_ptr = msg_ret;
+    }
+    (void) krb5_free_principal(kadm_context, user_princ);
+
+send_response:
+
+    memset(newkey, 0, sizeof(newkey));
+    retval = convert_kadm5_to_kadm(retval);
+
+    if (retval) {
+	 /* don't send message on success because kpasswd.v4 will */
+	 /* print "password changed" too */
+	 *outlen = strlen(msg_ptr)+2;
+	 if (*datout = (u_char *) malloc(*outlen)) {
+	      strcpy(*datout, msg_ptr);
+	      strcat(*datout, "\n");
+	 } else
+	      *outlen = 0;
+    } else {
+         syslog(LOG_INFO,
+		"'%s.%s@%s' password changed.", 
+		ad->pname, ad->pinst, ad->prealm);
+    }
+    if (retval == KADM_INSECURE_PW) {
+          syslog(LOG_ERR, 
+		 "'%s.%s@%s' tried to use an insecure password in changepw",
+		 ad->pname, ad->pinst, ad->prealm);
+    }
+#else /* KADM5 */
     retval = kadm_change(ad->pname, ad->pinst, ad->prealm, newkey);
     keylow = keyhigh = 0;
     memset(newkey, 0, sizeof(newkey));
-#endif /* OVSEC_KADM */
+#endif /* KADM5 */
     
     return retval;
 }
 
-#ifndef OVSEC_KADM
 /*
 kadm_ser_add - the server side of the add_entry routine
   recieves    : KTEXT, {values}
@@ -363,6 +381,7 @@ int *outlen;
   }
 }
 
+#ifndef KADM5
 /*
 kadm_ser_del - the server side of the del_entry routine
   recieves    : KTEXT, {values}
@@ -395,6 +414,8 @@ int *outlen;
       return status;
   }
 }
+
+#endif /* !KADM5 */
 
 /*
 kadm_ser_mod - the server side of the mod_entry routine
@@ -568,4 +589,3 @@ int *outlen;
       return status;
   }
 }
-#endif /* !OVSEC_KADM */

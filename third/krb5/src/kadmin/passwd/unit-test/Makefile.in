@@ -1,3 +1,7 @@
+thisconfigdir=./../..
+myfulldir=kadmin/passwd/unit-test
+mydir=passwd/unit-test
+BUILDTOP=$(REL)$(U)$(S)$(U)$(S)$(U)
 check unit-test:: unit-test-@DO_TEST@
 
 unit-test-:
@@ -12,7 +16,7 @@ unit-test-body::
 	$(ENV_SETUP) $(RUNTEST) --tool kpasswd KPASSWD=../kpasswd \
 		KINIT=$(BUILDTOP)/clients/kinit/kinit \
 		KDESTROY=$(BUILDTOP)/clients/kdestroy/kdestroy
-    
+
 unit-test-setup::
 	$(ENV_SETUP) $(START_SERVERS)
 

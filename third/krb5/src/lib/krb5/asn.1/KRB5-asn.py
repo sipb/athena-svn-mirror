@@ -14,7 +14,10 @@
 -- this permission notice appear in supporting documentation, and that
 -- the name of M.I.T. not be used in advertising or publicity pertaining
 -- to distribution of the software without specific, written prior
--- permission.  M.I.T. makes no representations about the suitability of
+-- permission.  Furthermore if you modify this software you must label
+-- your software as modified software and not distribute it in such a
+-- fashion that it might be confused with the original M.I.T. software.
+-- M.I.T. makes no representations about the suitability of
 -- this software for any purpose.  It is provided "as is" without express
 -- or implied warranty.
 --
@@ -377,10 +380,10 @@ PA-SAM-RESPONSE ::= SEQUENCE {
     sam-flags[1]                SAMFlags,
     sam-track-id[2]             GeneralString OPTIONAL,
     -- sam-enc-key is reserved for future use, so I'm making it OPTIONAL - mwe
-    sam-enc-key[3]              EncryptedData
-                                   -- PA-ENC-SAM-KEY,
-    sam-enc-nonce-or-ts[4]      EncryptedData
-                                   -- PA-ENC-SAM-RESPONSE-ENC,
+    sam-enc-key[3]              EncryptedData,
+                                   -- PA-ENC-SAM-KEY
+    sam-enc-nonce-or-ts[4]      EncryptedData,
+                                   -- PA-ENC-SAM-RESPONSE-ENC
     sam-nonce[5]                INTEGER OPTIONAL,
     sam-patimestamp[6]          KerberosTime OPTIONAL
 }

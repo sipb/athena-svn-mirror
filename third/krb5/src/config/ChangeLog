@@ -1,7 +1,350 @@
-Tue Apr  8 11:09:20 1997  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+1999-09-14  Danilo Almeida  <dalmeida@mit.edu>
 
-	* post.in: Fix recursion rule to make bash 2.x happy.
-		[krb5-build/403]  (for patchlevel 1)
+	* win-pre.in: Fix DNS error messages to wshelper instead of
+	version server.
+
+1999-09-08  Danilo Almeida  <dalmeida@mit.edu>
+
+	* win-pre.in: Fix DNS flags it does not try to depend on mit dir.
+	Define NULL so we can do directory existence checks via the shell
+	under both NT and 9x.
+
+1999-08-23  Ken Raeburn  <raeburn@mit.edu>
+
+	* config.guess: Recognize Rhapsody OS.
+	* config.sub: Recognize OS name "rhapsody*".
+
+1999-08-17  Ken Raeburn  <raeburn@mit.edu>
+
+	* post.in (*-recurse): If an error occurs when using -k, report an
+	error after finishing all the subdirectories.
+
+1999-08-13  Brad Thompson  <yak@mit.edu>
+
+	* config.sub: Now recognizes MacOS 10 as a valid OS.
+
+1999-07-30  Ken Raeburn  <raeburn@mit.edu>
+
+	* config.guess: Add MacOS 10 support.  (Submitted to autoconf
+	maintainers.)
+
+1999-07-22  Tom Yu  <tlyu@mit.edu>
+
+	* mkinstalldirs: New file; from autoconf-2.13.
+
+	* config.guess, config.sub, install-sh: Update from autoconf-2.13.
+
+Tue May 18 20:06:01 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* win-pre.in, win-pre.in: Remove trailing backslash from output
+		dir target in rule so rule is not always invoked if it
+		already exists.  Add MIGNORE option if we really want make
+		to ignore errors from recursive invocations of make.  Move
+		definition of WCONFIG and WCONFIG_EXE into win-pre.in.
+		Add NO_OUTDIR as synonym for NO_OUTPRE.
+
+Mon May 17 20:45:05 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* win-post.in, win-pre.in, windows.in: Rename windows.in to
+		win-pre.in.
+
+Mon May 17 12:26:12 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* windows.in, win-post.in: Remove win16 stuff.  Add
+		Win9x-compatible output directory creation.  Add more
+		thorough cleanup of output files and directories.  Use
+		latest and greatest (MSVC 6.0) debug flag.
+
+Mon May 10 15:03:28 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* windows.in, win-post.in: Build win32 binaries in 
+		obj/$(CPU)/{dbg,rel}.
+
+1999-03-31  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* post.in (Makefile): Don't try to run autoconf with $(SHELL),
+		since this doesn't work if $(AUTOCONF) isn't a path to the
+		built-in autoconf, but just an unqualified pathname to the
+		system autoconf.  [krb5-build/707]
+
+1999-02-19  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* windows.in (DLL_FILE_DEF): Add makefile controls to set either
+		KRB5_DLL_FILE or GSS_DLL_FILE, with the default being
+		KRB5_DLL_FILE.
+
+Mon Feb  8 22:13:23 1999  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* winexclude.sed: Add .dll and .lib files to the list of functions
+ 		which shouldn't get included in the non-binary list of
+ 		files to be added to kerbsrc.zip for the Windows build.
+		(If .dll or .lib files need to be included in the zip
+ 		file, they must be added to the WINBINARYFILES macro in
+ 		the top-level Makefile.in)
+
+1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* post.in (*-recurse): If $(MY_SUBDIRS) is non-NULL use it instead
+		of $(SUBDIRS) to control which directories are iterated
+		over.  (This is needed so we can fold a directory's
+		configure.in scripts into the parent's configure.in
+		without having to move all of its siblings as well into
+		the parent directory's configure.in.  This is because if
+		the parent's configure.in file as a AC_CONFIG_DIRS macro,
+		it gets included into all the $(SUBDIRS) macro of *all*
+		of its generated makefiles, and this is wrong for all
+		but the Makefile.in of the parent directory.  For example,
+		if the configure.in in src/appl contains
+		AC_CONFIG_DIRS(bsd telnet gssftp), and that configure
+		script also generates the Makefile.in for src/appl/sample,
+		then SUBDIRS will contain "bsd telnet gssftp" plus
+		whatever LOCAL_SUBDIRS is defined to contain.  This
+		doesn't work.  So instead of defining LOCAL_SUBDIRS,
+		the Makefile.in in src/appl/sample defines MY_SUBDIRS,
+		which completely overrides the SUBDIRS macro.
+		Eventually, we should replace all of the LOCAL_SUBDIRS
+		definitions in the Makefile.in's with MY_SUBDIRS, and
+		add MY_SUBDIRS definitions into all Makefile.in's that
+		don't currently have then, and depend on
+		AC_CONFIG_SUBDIRS to insert the right magic value into
+		SUBDIRS.  At that point, we can get rid of the SUBDIR
+		definition in pre.in, and remove this test from
+		post.in which tests of MY_SUBDIRS and uses it in
+		preference to SUBDIRS, and simply always use MY_SUBDIRS.)
+
+1998-05-27  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* windows.in: Remove -DLEHMAN, which doesn't do anything.  (A grep
+		through the whole source tree shows no instances of #ifdef
+		LEHMAN)
+
+Sun May 24 21:39:49 1998  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* windows.in (ABS,S,C): Use double backslashes for the path
+		separators to workaround Microsoft NMAKE brain damaging.
+		Sometimes backslashes are treated as a quoting characters,
+		and sometimes not, with no rhyme or reason that I can
+		determine.  Fortunatelly double backslashes in pathanmes
+		don't seem to hurt (for the times when the backslash isn't
+		treated as a quoating character).  Whoever decided Windows
+		should use backslash as a path separator should be shot.
+
+Wed Apr 15 18:01:39 1998  Tom Yu  <tlyu@mit.edu>
+
+	* pre.in (CRYPTO_DEPLIB):
+	(KRB5_BASE_LIBS):
+	(KRB4COMPAT_LIBS): Rename; libcrypto -> libk5crypto.
+
+Sun Mar  1 22:25:34 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* pre.in: Define AUTOCONF and CONFIG_RELTOPDIR from the autoconf
+ 		substitution macros.
+
+	* post.in: Fix the call to autoconf to use $(AUTOCONF) and
+	 	$(CONFIG_RELTOPDIR), so that configure regeneration rule
+	 	works even in a subdirectory below the configure script.
+
+Wed Feb 18 17:31:52 1998  Tom Yu  <tlyu@mit.edu>
+
+	* windows.in: Rewrite some of the directory syntax.
+
+	* pre.in: Rewrite some of the directory syntax.
+
+	* mac-pre.in: Rewrite some of the directory syntax.
+
+Fri Feb 13 22:16:51 1998  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* config.guess, config.sub: Applied lxs's changes to add support
+ 		for Rhapsody DR1.
+
+Mon Feb  2 17:02:29 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* pre.in: SUBDIRS now also includes LOCAL_SUBDIRS, which is
+		defined in the Makefile.in to control the recursive
+		descent through the subdirectories.  This is used so
+		that the subdirectories can be defined in Makefile.in,
+		instead of in the individual configure.in files.
+
+Tue Nov 18 19:20:59 1997  Tom Yu  <tlyu@mit.edu>
+
+	* pre.in: Clean up up .ct.c rule.
+
+	* lib.in (clean-libs): Remove lib$(LIB)$(SHLIBSEXT) as well.
+
+Mon Oct 20 14:27:19 1997  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* pre.in (INSTALL_SETUID): Explicitly set the owner of the files
+		which are installed setuid root.
+
+Wed Aug  6 20:23:32 1997  Tom Yu  <tlyu@mit.edu>
+
+	* pre.in: Add $(HESIOD_LIBS) to KADMSRV_LIBS.
+
+Sun Mar  9 22:28:34 1997  Tom Yu  <tlyu@mit.edu>
+
+	* lib.in: Add provisions for making shared libraries of the same
+	major version number compatible.
+
+Sun Mar  2 19:54:26 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* pre.in (KRB4COMPAT_DEPLIBS): Depends on KRB5_BASE_DEPLIBS (not
+	        KRB5_BASE_DEPLBS)
+
+Sat Mar  1 14:33:21 1997  Tom Yu  <tlyu@mit.edu>
+
+	* libobj.in: Change .c.so and .c.po rules to work better with
+	compilers that insist that $(CC) -fpic -c foo.c -o foo.so is
+	wrong; basically, cheat and do -o foo.so.o, etc.
+
+Thu Feb 27 17:40:51 1997  Tom Yu  <tlyu@mit.edu>
+
+	* pre.in: Add recursion hooks for distclean.
+
+	* post.in: Change recursion rules to skip recursion if NORECURSE
+	is non-null; add distclean support; don't remove config.log,
+	etc. if not doing distclean.
+
+Sat Feb 22 18:42:32 1997  Richard Basch  <basch@lehman.com>
+
+	* win-post.in: Move library list file rule from various
+		Makefile.in files to win-post.in
+
+Mon Feb 17 19:29:27 1997  Richard Basch  <basch@lehman.com>
+
+	* windows.in: Define K4LIB as the krb4 library
+
+Fri Feb 14 22:02:33 1997  Richard Basch  <basch@lehman.com>
+
+	* windows.in: Define CLIB as the ComErr library (now separate lib)
+
+Mon Feb 10 08:39:10 1997  Tom Yu  <tlyu@mit.edu>
+
+	* post.in: Fix recursion rules to deal with Ultrix sh lossage.
+
+	* libobj.in: Remove instances of STAMP.*, since they aren't
+		actually necessary.
+
+Sun Feb  9 13:43:42 1997  Tom Yu  <tlyu@mit.edu>
+
+	* libobj.in (OBJS.*): Work around a gmake optimization where the
+		timestamps of OBJS.* would not get checked after STAMP.* get
+		updated, even though OBJS.* get updated as a side effect.
+
+Sat Feb  8 12:17:17 1997  Richard Basch  <basch@lehman.com>
+
+	* windows.in: Define WLIB (winsock library) for Win16.
+
+Fri Feb  7 08:44:32 1997  Richard Basch  <basch@lehman.com>
+
+	* windows.in: Compile win16 non-DLL objects with /GA to add the
+		appropriate Windows prolog code for protected-mode
+
+Tue Feb  4 15:56:41 1997  Richard Basch  <basch@lehman.com>
+
+	* windows.in: Do not bother to define INTERFACE or INTERFACE_C
+
+Sun Feb  2 23:30:17 1997  Richard Basch  <basch@lehman.com>
+
+	* windows.in:
+		Compile with /Ld to link dynamic libraries (win16)
+		Compile DLL objects with /DKRB5_DLL_FILE (win16)
+
+Thu Jan 30 22:08:42 1997  Richard Basch  <basch@lehman.com>
+
+	* windows.in:
+		Compile with /MD to link against the runtime library (win32)
+
+Thu Feb  6 15:32:46 1997  Tom Yu  <tlyu@mit.edu>
+
+	* pre.in: Add definitions for KDB5_DEPLIBS, KDB5_LIBS for
+	convenience.
+
+Wed Feb  5 23:20:53 1997  Tom Yu  <tlyu@mit.edu>
+
+	* pre.in: Fix up TCL_* variables to work with changes to
+	aclocal.m4
+
+Tue Feb  4 20:23:31 1997  Tom Yu  <tlyu@mit.edu>
+
+	* pre.in: Fix typo in KADMCLNT_DEPLIBS.
+
+	* pre.in: Add more --with-krb4 support (KRB4_LIBPATH and
+	KRB4_INCLUDES).
+
+Mon Feb  3 23:29:02 1997  Tom Yu  <tlyu@mit.edu>
+
+	* pre.in: Add GEN_LIB support (-lgen); also fix --with-krb4 stuff
+	(such as KRB4_LIB).
+
+Fri Jan 31 20:41:34 1997  Tom Yu  <tlyu@mit.edu>
+
+	* pre.in: Fix up GEN_LIB to DTRT
+
+	* pre.in: Add KDB5_LIB, and also fix typo (-lutil -> -lkrb5util)
+
+Mon Jan 27 17:13:15 1997  Tom Yu  <tlyu@mit.edu>
+
+	* pre.in: Add variable to support new program building procedure.
+
+Thu Jan 16 18:58:16 1997  Tom Yu  <tlyu@mit.edu>
+
+	* post.in (Makefiles-prerecurse): Change to use double-colon
+	rule.
+
+	* pre.in (recursion rules): Change *-prerecurse and *-postrecurse
+	targets to be double-colon rules, to allow for multiple targets to
+	be evaluated in sequence.
+
+Fri Jan  3 23:16:31 1997  Tom Yu  <tlyu@mit.edu>
+
+	* lib.in: Change semantics of SHLIB_EXPFLAGS somewhat to sync with
+	new aclocal.m4 changes.
+
+Thu Jan  2 18:19:20 1997  Tom Yu  <tlyu@mit.edu>
+
+	* lib.in: Add facilities for explicit dependencies in libraries.
+
+Mon Dec 30 12:54:23 1996  Ezra Peisach  <epeisach@mit.edu>
+
+	* lib.in: Remove object of symlink before creating.
+
+Sun Dec 29 22:40:14 1996  Tom Yu  <tlyu@mit.edu>
+
+	* pre.in: Add missing Makefiles rules.
+
+Sun Dec 29 21:24:01 1996  Tom Yu  <tlyu@mit.edu>
+
+	* lib.in: fix typo in profiled lib build
+
+	* libobj.in: random bugfixes
+
+Sat Dec 28 21:46:33 1996  Tom Yu  <tlyu@mit.edu>
+
+	* libobj.in: Cause Makefile to depend on config/libobj.in
+	* lib.in: Cause Makefile to depend on config/lib.in
+
+Fri Dec 27 17:06:41 1996  Tom Yu  <tlyu@mit.edu>
+
+	* lib.in: Fix up loops to deal with an OBJS.ST that is in the
+	current directory; add a comment documenting possible make
+	incompatibility if OBJS.ST is specified as ./OBJS.ST.
+
+	* pre.in:
+	* post.in: Fix up recursion to be somewhat saner.
+	* lib.in:
+	* libobj.in: Add these frags for new library build system.
+
+Tue Dec 24 16:43:45 1996  Tom Yu  <tlyu@mit.edu>
+
+	* config.guess:
+	* config.sub: Update from autoconf-2.12.
+
+Thu Nov 21 11:55:16 EST 1996    Richard Basch   <basch@lehman.com>
+
+	* rm.bat: Do the work first; the comments are at the end so as
+		to improve the speed of the script significantly (20%)
+	* windows.in: corrected typo (all-windows) and added win32 support
+	* win-post.in: win16/win32 support
 
 Mon Nov 11 20:53:01 1996  Tom Yu  <tlyu@mit.edu>
 

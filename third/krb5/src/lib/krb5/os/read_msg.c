@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -39,7 +42,7 @@ krb5_read_message(context, fdp, inbuf)
 	krb5_data	*inbuf;
 {
 	krb5_int32	len;
-   int      len2, ilen;
+	int		len2, ilen;
 	char		*buf = NULL;
 	int		fd = *( (int *) fdp);
 	
@@ -47,8 +50,8 @@ krb5_read_message(context, fdp, inbuf)
 		return((len2 < 0) ? errno : ECONNABORTED);
 	len = ntohl(len);
 
-   if ((len & VALID_UINT_BITS) != len)  /* Overflow size_t??? */
-      return ENOMEM;
+	if ((len & VALID_UINT_BITS) != len)  /* Overflow size_t??? */
+		return ENOMEM;
 
 	inbuf->length = ilen = (int) len;
 	if (ilen) {

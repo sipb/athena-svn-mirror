@@ -13,6 +13,8 @@
 #include "krb.h"
 #include "prot.h"
 #include <string.h>
+#include <krb5.h>
+#include <krb54proto.h>
 
 extern int krb_ap_req_debug;
 
@@ -32,6 +34,7 @@ static int st_kvno;		/* version number for this key */
 static char st_rlm[REALM_SZ];	/* server's realm */
 static char st_nam[ANAME_SZ];	/* service name */
 static char st_inst[INST_SZ];	/* server's instance */
+static int krb5_key;		/* whether krb5 key is used for decrypt */
 
 /*
  * This file contains two functions.  krb_set_key() takes a DES
@@ -62,11 +65,17 @@ static char st_inst[INST_SZ];	/* server's instance */
  * krb_rd_req().
  */
 
+static krb5_keyblock srv_k5key;
+
 int
 krb_set_key(key,cvt)
     char *key;
     int cvt;
 {
+    if (krb5_key)
+	/* XXX assumes that context arg is ignored */
+	krb5_free_keyblock_contents(NULL, &srv_k5key);
+    krb5_key = 0;
 #ifdef NOENCRYPTION
     memset(ky, 0, sizeof(ky));
     return KSUCCESS;
@@ -79,6 +88,25 @@ krb_set_key(key,cvt)
 #endif /* NOENCRYPTION */
 }
 
+int
+krb_set_key_krb5(ctx, key)
+    krb5_context ctx;
+    krb5_keyblock *key;
+{
+    if (krb5_key)
+	krb5_free_keyblock_contents(ctx, &srv_k5key);
+    krb5_key = 1;
+    return krb5_copy_keyblock_contents(ctx, key, &srv_k5key);
+}
+
+void
+krb_clear_key_krb5(ctx)
+    krb5_context ctx;
+{
+    if (krb5_key)
+	krb5_free_keyblock_contents(ctx, &srv_k5key);
+    krb5_key = 0;
+}
 
 /*
  * krb_rd_req() takes an AUTH_MSG_APPL_REQUEST or
@@ -121,14 +149,14 @@ krb_set_key(key,cvt)
  * Mutual authentication is not implemented.
  */
 
-int INTERFACE
+KRB5_DLLIMP int KRB5_CALLCONV
 krb_rd_req(authent,service,instance,from_addr,ad,fn)
     register KTEXT authent;	/* The received message */
-    char *service;		/* Service name */
-    char *instance;		/* Service instance */
+    char FAR *service;		/* Service name */
+    char FAR *instance;		/* Service instance */
     unsigned KRB4_32 from_addr; /* Net address of originating host */
-    AUTH_DAT *ad;		/* Structure to be filled in */
-    char *fn;			/* Filename to get keys from */
+    AUTH_DAT FAR *ad;		/* Structure to be filled in */
+    char FAR *fn;		/* Filename to get keys from */
 {
     KTEXT_ST ticket;		/* Temp storage for ticket */
     KTEXT tkt = &ticket;
@@ -153,6 +181,7 @@ krb_rd_req(authent,service,instance,from_addr,ad,fn)
     int mutual;			/* Mutual authentication requested? */
     unsigned char s_kvno;	/* Version number of the server's key
 				   Kerberos used to encrypt ticket */
+    krb5_keyblock keyblock;
     int status;
 
     if (authent->length <= 0)
@@ -207,10 +236,18 @@ krb_rd_req(authent,service,instance,from_addr,ad,fn)
         st_kvno = s_kvno;
 #ifndef NOENCRYPTION
         if (read_service_key(service,instance,realm,(int) s_kvno,
-                            fn,(char *)skey))
-            return(RD_AP_UNDEC);
-        if (status = krb_set_key((char *)skey,0))
-	    return(status);
+			     fn,(char *)skey) == 0) {
+		if ((status = krb_set_key((char *)skey,0)))
+			return(status);
+#ifdef KRB4_USE_KEYTAB
+	} else if (krb54_get_service_keyblock(service,instance,
+		       realm, (int) s_kvno,fn, &keyblock) == 0) {
+		krb_set_key_krb5(krb5__krb4_context, &keyblock);
+		krb5_free_keyblock_contents(krb5__krb4_context, &keyblock);
+#endif
+	} else
+		return(RD_AP_UNDEC);
+	
 #endif /* !NOENCRYPTION */
         (void) strcpy(st_rlm,realm);
         (void) strcpy(st_nam,service);
@@ -234,14 +271,24 @@ krb_rd_req(authent,service,instance,from_addr,ad,fn)
     /* Decrypt and take apart ticket */
 #endif
 
-    if (decomp_ticket(tkt,&ad->k_flags,ad->pname,ad->pinst,ad->prealm,
-                      &(ad->address),ad->session, &(ad->life),
-                      &(ad->time_sec),sname,iname,ky,serv_key)) {
+    if (!krb5_key) {
+	if (decomp_ticket(tkt,&ad->k_flags,ad->pname,ad->pinst,ad->prealm,
+			  &(ad->address),ad->session, &(ad->life),
+			  &(ad->time_sec),sname,iname,ky,serv_key)) {
 #ifdef KRB_CRYPT_DEBUG
-	log("Can't decode ticket");
+	    log("Can't decode ticket");
 #endif
-        return(RD_AP_UNDEC);
+	    return(RD_AP_UNDEC);
+	}
+    } else {
+	if (decomp_tkt_krb5(tkt, &ad->k_flags, ad->pname, ad->pinst,
+			    ad->prealm, &ad->address, ad->session,
+			    &ad->life, &ad->time_sec, sname, iname,
+			    &srv_k5key)) {
+	    return RD_AP_UNDEC;
+	}
     }
+
 
 #ifdef KRB_CRYPT_DEBUG
     if (krb_ap_req_debug) {
@@ -268,7 +315,7 @@ krb_rd_req(authent,service,instance,from_addr,ad,fn)
 #endif
     key_sched(ad->session,seskey_sched);
     pcbc_encrypt((C_Block *)req_id->dat,(C_Block *)req_id->dat,
-                 (long) req_id->length, seskey_sched,ad->session,DES_DECRYPT);
+                 (long) req_id->length, seskey_sched,&ad->session,DES_DECRYPT);
 #ifdef KRB_CRYPT_DEBUG
     if (krb_ap_req_debug) log("Done.");
 #endif
@@ -289,7 +336,7 @@ krb_rd_req(authent,service,instance,from_addr,ad,fn)
     memcpy((char *)&ad->checksum, ptr, 4);	/* Checksum */
     ptr += 4;
     check_ptr();
-    if (swap_bytes) swap_u_long(ad->checksum);
+    if (swap_bytes) ad->checksum = krb4_swab32(ad->checksum);
     r_time_ms = *(ptr++);	/* Time (fine) */
 #ifdef lint
     /* XXX r_time_ms is set but not used.  why??? */
@@ -300,7 +347,7 @@ krb_rd_req(authent,service,instance,from_addr,ad,fn)
     check_ptr();
     /* assume sizeof(r_time_sec) == 4 ?? */
     memcpy((char *)&r_time_sec, ptr, 4); /* Time (coarse) */
-    if (swap_bytes) swap_u_long(r_time_sec);
+    if (swap_bytes) r_time_sec = krb4_swab32(r_time_sec);
 
     /* Check for authenticity of the request */
 #ifdef KRB_CRYPT_DEBUG

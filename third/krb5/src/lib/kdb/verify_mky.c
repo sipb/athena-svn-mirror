@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -29,16 +32,13 @@
 /*
  * Verify that the master key in *mkey matches the database entry
  * for mprinc.
- *
- * eblock points to an encrypt_block used for the realm in question.
  */
 
 krb5_error_code
-krb5_db_verify_master_key(context, mprinc, mkey, eblock)
+krb5_db_verify_master_key(context, mprinc, mkey)
     krb5_context context;
     krb5_principal mprinc;
     krb5_keyblock *mkey;
-    krb5_encrypt_block *eblock;
 {
     krb5_error_code retval;
     krb5_db_entry master_entry;
@@ -60,24 +60,18 @@ krb5_db_verify_master_key(context, mprinc, mkey, eblock)
 	return(KRB5KDC_ERR_PRINCIPAL_NOT_UNIQUE);
     }	
 
-    /* do any necessary key pre-processing */
-    if ((retval = krb5_process_key(context, eblock, mkey))) {
-	krb5_db_free_principal(context, &master_entry, nprinc);
-	return(retval);
-    }
-    if ((retval = krb5_dbekd_decrypt_key_data(context, eblock, 
+    if ((retval = krb5_dbekd_decrypt_key_data(context, mkey, 
 					      &master_entry.key_data[0],
 					      &tempkey, NULL))) {
-	(void) krb5_finish_key(context, eblock);
 	krb5_db_free_principal(context, &master_entry, nprinc);
 	return retval;
     }
+
     if (mkey->length != tempkey.length ||
-	memcmp((char *)mkey->contents, (char *)tempkey.contents,mkey->length)) {
+	memcmp((char *)mkey->contents,
+	       (char *)tempkey.contents,mkey->length)) {
 	retval = KRB5_KDB_BADMASTERKEY;
-	(void) krb5_finish_key(context, eblock);
-    } else
-	retval = krb5_finish_key(context, eblock);
+    }
 
     memset((char *)tempkey.contents, 0, tempkey.length);
     krb5_xfree(tempkey.contents);

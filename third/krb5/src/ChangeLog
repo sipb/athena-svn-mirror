@@ -1,8 +1,494 @@
-Wed Mar 10 00:09:43 1999  Tom Yu  <tlyu@mit.edu>
+1999-09-16  Ken Raeburn  <raeburn@mit.edu>
 
-	* aclocal.m4 (enable_shared): Fix quoting bug that breaks shared
-	libs under HP/UX among others.
+	* aclocal.m4 (KRB5_LIB_PARAMS): For Rhapsody, add "-undefined
+	warning" when building shared libs, and remove "-static" from
+	CC_LINK_STATIC.
 
+1999-09-14  Ken Raeburn  <raeburn@mit.edu>
+
+	* aclocal.m4 (KRB5_LIB_PARAMS): Treat Rhapsody like Mac OS 10.
+
+1999-09-08  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Add install target for windows.  Remove references
+	to unused mit directory.
+
+1999-08-27  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Add some missing dirs needed for generating a proper
+	kerbsrc.zip.  Make krbsrc83.zip obsolete.
+
+1999-08-13  Brad Thompson  <yak@mit.edu>
+
+	* aclocal.m4: Added MacOS X shared library support.
+
+1999-08-09  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Build kpasswd under windows.
+
+1999-07-22  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (install-mkdirs): Use mkinstalldirs rather than
+	mkdir -p for portability reasons.
+
+1999-07-06  Ken Raeburn  <raeburn@mit.edu>
+
+	* configure.in: Delete old and already disabled code relating to
+	shared library support.
+
+1999-06-15  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Create Makefile.in for srvtab keytab code during
+		win32 build.
+
+Tue May 18 19:52:56 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Remove - from recursive Win32 make invocation.
+		Move definition of WCONFIG into config/win-pre.in.  Use
+		symbolic name for output dir dependency when building
+		wconfig.  Remove wconfig clean stuff since we do it
+		automagically in win-post.in.  Build util instead of
+		directly building util/windows, util/et, util/profile.
+
+Mon May 17 20:45:54 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in, wconfig.c: Rename config/windows.in to 
+		config/win-pre.in.
+
+Mon May 17 12:20:43 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Remove win16 support for cleaner win32.  Build
+		wconfig under arch-specific subdirs.  Update clean-windows
+		directories to reflect current all-windows directories.
+		Add distclean-windows target.
+
+Mon May 10 18:56:11 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Back out win16/win32 change.  Does not
+		work from clean.  Must wait until win32-only to
+		remove /AL flag.
+
+Mon May 10 15:07:11 1999  Danilo Almeida  <dalmeida@mit.edu>
+
+	* Makefile.in: Change wconfig build so win16 flags are not used
+		for win32 build.
+
+Mon Feb  8 21:42:44 1999  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* Makefile.in: Change Windows kerbsrc.zip target so this now does
+		what kerbsrc-nt.zip used to do.  We no longer support
+		building krb5 on systems with 8.3 limitations.  Also allow
+		binary files in windows/lib to be included into
+		kerbsrc.zip file.
+
+Wed Jan 27 17:10:18 1999  Tom Yu  <tlyu@mit.edu>
+
+	* configure.in: Fix typo so that lib/crypto actually gets
+ 	configured.
+
+1999-01-27  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in, configure.in: Move the responsibility for
+		generating Makefile files for the following subdirectories
+		to the top-level: util, util/send-pr, util/dyn, lib,
+		config-files, and gen-manpages.  
+
+1999-01-26  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* wconfig.c: Updated to be more featureful.  It will now save the
+		arguments passed to it and emit it as a makefile variable
+		WCONFIG_FLAGS.  This allows the makefile to be able to
+		preserve wconfig options in the future when updating
+		makefile.  Also added the --win32 and --win16 options to
+		force win16 or win32 makefiles.  An option of the form
+		--enable-foo will cause lines that begin ##FOO## to be
+		uncommented in the Makefile.  The program has also been
+		cleaned up so it can be run (for debugging purposes) under
+		Unix.
+
+Sat Dec  5 01:14:23 1998  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* Makefile.in: Updated windows configuration rules to work with
+		the new crypto library.  (Including bundling the correct
+		directories into kerbsrc-nt.zip)
+
+1998-11-14  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* aclocal.m4: Add support for FreeBSD systems using ELF (and not
+		just a.out systems).  Also remove the definition for
+		the KRB5_POSIX_LOCKS test, since it is no longer needed.
+		(See ChangeLog for lib/krb5/os/lock_file.c for more details.)
+
+1998-09-22  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* aclocal.m4 (AC_PROG_LEX): Autoconf "fixed" AC_PROG_LEX long
+		ago.  Our own local version is no longer necessary.
+
+Wed Sep 23 15:24:44 1998  Tom Yu  <tlyu@mit.edu>
+
+	* aclocal.m4 (KRB5_LIB_AUX): Do what Sam originally meant to do by
+	moving the explicit resetting of DEPLIB=$SHLIBEXT and forcing
+	SHLIBEXT=.so-nobuild to avoid duplicate rules on AIX and such.
+
+1998-08-24  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Add support to build the lib/krb5/ccache api
+		directory and include it in the Windows kerbsrc-nt.zip
+		file.
+
+Wed Aug 19 20:14:31 1998  Tom Yu  <tlyu@mit.edu>
+
+	* aclocal.m4 (KRB5_LIB_AUX): Back out Sam's change to reorder the
+ 	"force_static" logic, as it would cause problems where a
+ 	forced-static library is built in the same directory as a
+	program, due to explicit setting of CC_LINK, etc.
+
+Mon Aug 17 18:10:29 1998  Tom Yu  <tlyu@mit.edu>
+
+	* aclocal.m4: Fix Sam's fixes (variable capitalization).
+
+Wed Jul  8 01:10:44 1998  Matthew D Hancher  <mdh@mit.edu>
+
+	* aclocal.m4: Allow shared libraries to build properly under Irix
+ 	6.x with gcc. (This is actually a fix of a previous fix that
+ 	didn't make it into ChangeLog.)
+
+Thu Jul  2 20:41:02 1998  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* Makefile.in: Update commands to build the Macintosh MPW Makefile
+
+1998-07-05    <hartmans@fundsxpress.com>
+
+	* aclocal.m4 (enable_shared): If we aren't building shared, then
+	make sure that SHLIBEXT and friends are not set so that we don't
+	break on AIX and anything else where STLIBEXT == SHLIBEXT
+
+1998-05-27  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Don't depend on $(RM) macro being defined when
+		building kerbsrc-nt.zip
+
+	* Makefile.in: include krb5/ccache/memory and windows/lib in
+		the list of directories built by the Windows build.
+		When building kerbsrc-nt.zip, put a copy of mkbin.bat
+		in the top-level build directory.  Fix bug in
+		kerbsrc-nt.zip building where it wasn't creating the
+		initial Makefile (although the dos-zipfiles target did
+		the right thing).
+
+1998-05-26  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* aclocal.m4 (KRB5_LIB_PARAMS): Remove "untested" comment from
+		freebsd.  Add section for openbsd.
+
+Sun May 24 22:09:12 1998  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* Makefile.in: Remove lib/kadm and lib/krb5/free from the list of
+ 		directories supported by windows (since they have since
+ 		gone away).
+
+	* aclocal.m4: Added suggested changes to improve HP-UX's support
+	 	for shared libraries.
+
+1998-05-06  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* aclocal.m4 (CONFIG_RELTOPDIR): Add support for generic file
+		existence tests (used to simplify some configure.in
+		files.)
+
+Sun Mar  1 22:22:50 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* aclocal.m4: Remove unused variables BUILDTOP and SRCTOP (now
+ 		defined in the individual Makefile.in file.  Define
+ 		@AUTOCONF@ to have the appropriate pathname (either
+ 		internal to our source tree, or in the user's path).  Set
+ 		@CONFIG_RELTOPDIR@ to contain the relative path to the top
+ 		of the build directory from the directory containing the
+		configure script.
+
+Fri Feb 27 21:43:41 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* aclocal.m4 (KRB5_AC_REGEX_FUNCS): Take the regular expression
+		function code from lib/krb5/os/configure.in and turn it
+		into a generalized regular expression function tester.
+
+Wed Feb 18 15:23:08 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in (thisconfigdir): Remove trailing slash from
+	thisconfigdir.
+
+Fri Feb 13 15:10:41 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* aclocal.m4: Rename K5_OUPUT_FILES to K5_AC_OUTPUT, and leave a
+		compatibility macro behind for K5_OUTPUT_FILES.  This is
+		needed because autoreconf greps for AC_OUTPUT.
+
+Mon Feb  2 17:02:29 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* configure.in: Use AC_CONFIG_DIRS instead of CONFIG_DIRS, and
+		remove use of DO_SUBDIRS.
+
+Wed Jan 28 18:09:00 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+	* aclocal.m4: Removed the following (obsolete) functions:
+		LinkFile, LinkFileDir, CopySrcHeader, CopyHeader,
+		Krb5InstallHeaders, AppendRule, AC_PUSH_MAKEFILE,
+		AC_POP_MAKEFILE, CONFIG_DIRS, DO_SUBDIRS, USE_*_LIBRARY
+
+Tue Oct 28 11:49:55 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* aclocal.m4 (WITH_NETLIB): Use AC_LIBRARY_NET.
+	             (AC_LIBRARY_NET): Written by jhawk@mit.edu to 
+		    	better determine if libsocket and libnsl are needed.
+
+Thu Oct 23 12:08:24 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* aclocal.m4 (TCL_WITH): Check for libtcl8.0.
+
+Wed Oct 22 15:03:26 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* aclocal.m4 (AC_KRB5_TCL): Rewritten for clearer
+	 	understanding. Check for libtcl7.6 and tcl/tcl.h.
+
+Mon Oct 13 10:14:06 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* configure.in: Add KRB5_LIB_AUX so configure --help gives info on
+        shared libraries.
+
+Tue Oct  7 08:05:43 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* aclocal.m4 (KRB5_LIB_PARAMS): For the alpha, revert RUN_ENV
+        change as the dejagnu/Makefile.in can now deal with the older
+        quoting scheme and makes this version more readable.
+
+Tue Sep 30 18:56:37 1997  Tom Yu  <tlyu@mit.edu>
+
+	* acconfig.h: Punt HAS_STDLIB_H, NO_STDLIB_H, POSIX_TYPES.
+
+Thu Sep 25 21:06:40 1997  Tom Yu  <tlyu@mit.edu>
+
+	* acconfig.h: Punt HAS_SETVBUF, HAS_UNISTD_H, KRB5_USE_INET.
+
+Thu Sep 18 17:51:39 1997  Tom Yu  <tlyu@mit.edu>
+
+	* acconfig.h: Remove USE_STRING_H, HAS_STRDUP, HAS_LABS
+
+Mon Aug 18 11:28:25 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* aclocal.m4 (KRB5_LIB_PARAMS): For the alpha, RUN_ENV needs to
+ 	have sed expression in single quotes unstead of double to deal
+ 	with a shell quoting bug in the dejagnu test suite.
+
+Tue Aug 12 11:09:30 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* aclocal.m4 (WITH_HESIOD): Fix --with-hesiod support to DTRT if
+	        the option is not specified.
+
+Tue Aug 12 08:58:11 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* Makefile.in (MACFILES): Remove mac/gss/* as it does not exist.
+
+Mon Aug 11 21:16:50 1997  Tom Yu  <tlyu@mit.edu>
+
+	* aclocal.m4 (KRB5_BUILD_LIBRARY_STATIC): Fix up some things so
+	that this macro actually works; it's still necessary to precede a
+	call to KRB5_BUILD_LIBOBJS with a call to
+	KRB5_BUILD_LIBRARY_STATIC, though.  Basically if you AC_DEFUN
+	something that produces shell code and then calls a macro that
+	AC_REQUIREs something else, then all the AC_REQUIREd stuff ends up
+	coming *before* the shell code in the first macro.  I'm not sure
+	there's a reasonable workaround, or whether this can even be
+	considered to be a bug.
+
+Wed Aug  6 20:25:49 1997  Tom Yu  <tlyu@mit.edu>
+
+	* aclocal.m4: Add support for --with-hesiod (and add it to
+	CONFIG_RULES, as it's needed almost everywhere kadm5 gets
+	linked).
+
+Wed Jun 11 16:46:47 1997  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* Makefile.in (MACFILES): Added the mac/gss files to the Macintosh
+		tar file.
+
+Fri Apr 18 11:38:51 1997  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in (CLEANUP): Add MIT files to the windows zip file (if
+		the mit directory exists)
+
+Thu Apr 17 16:15:15 1997  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* wconfig.c (main): Add arguments to allow specification of
+		the --mit, --nomit, --ignore=XXX options.
+
+Fri Mar 28 02:18:20 1997  Tom Yu  <tlyu@mit.edu>
+
+	* aclocal.m4 (KRB5_LIB_AUX): add lib$(LIB)$(SHLIBVEXT) to the list
+	of libraries that get symlinked into $(TOPLIBD).  This allows
+	linkers that look for libfoo.so.maj.min rather than libfoo.so at
+	link time to work, e.g. NetBSD/i386.
+
+Wed Mar 19 15:43:27 1997  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* Makefile.in: Fix up Macintosh and Windows build rules now that
+		the top-level Makefile doesn't exist any more.
+
+Mon Mar 24 13:49:15 1997  Tom Yu  <tlyu@mit.edu>
+
+	* aclocal.m4: (KRB5_LIB_PARAMS): Add support for HP/UX, FreeBSD,
+	and SNI, ported from the old top-level configure.in.  These are
+	not tested yet.
+
+Fri Mar 21 15:12:46 1997  Tom Yu  <chaoself@avalanche-breakdown.mit.edu>
+
+	* aclocal.m4 (KRB5_LIB_PARAMS): Add support for mips-dec-netbsd.
+
+Sun Mar  9 22:29:31 1997  Tom Yu  <tlyu@mit.edu>
+
+	* aclocal.m4: Add provisions to make major version number
+	compatibility work for shared libaries.
+
+Sat Feb 22 20:50:49 1997  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* aclocal.m4 (CC_LINK_STATIC): Added RUN_ENV line for Linux
+
+Fri Feb 21 15:58:55 1997  Sam Hartman  <hartmans@mit.edu>
+
+	* aclocal.m4 (CC_LINK_STATIC): Define appropriate flags to build
+ 	shared libs on AIX.
+
+Fri Feb 21 12:00:53 1997  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* aclocal.m4 (CC_LINK_SHARED): Linux doesn't understand -R; use
+		"-bWl,-rpath -Wl,$(PROG_RPATH)" instead.
+
+
+Sun Feb 16 21:17:11 1997  Richard Basch  <basch@lehman.com>
+
+	* Makefile.in: Build krb4 library under win16/win32
+
+Fri Feb 14 15:52:14 1997  Tom Yu  <tlyu@mit.edu>
+
+	* aclocal.m4: Add shared library support for Irix.
+
+	* configure.in: inactivate the old case statement that determined
+	shared lib parameters; keep it around just for reference, though.
+
+Wed Feb 12 16:17:44 1997  Tom Yu  <tlyu@mit.edu>
+
+	* aclocal.m4: Remove INSTALL_VARIABLE_HACK, as it's no longer
+	needed in autoconf 2.12.
+
+Mon Feb 10 11:30:56 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* aclocal.m4 (KRB5_LIB_PARAMS): Set CC_LINK_STATIC for platforms
+		w/o shared library support.
+		     (KRB5_LIB_AUX); Set CC_LINK if --enable-shared is not
+		specified.
+
+Mon Feb  3 00:11:37 1997  Richard Basch  <basch@lehman.com>
+
+	* Makefile.in:
+		awk-windows-mac: Only rebuild based on what has changed
+
+Mon Dec 30 13:39:46 1996  Ezra Peisach  <epeisach@kangaroo.mit.edu>
+
+	* aclocal.m4: Add AC_PREREQ(2.12) as we now require autoconf 2.12.
+		[krb5-build/289]
+
+Sun Feb  9 01:01:32 1997  Tom Yu  <tlyu@mit.edu>
+
+	* aclocal.m4 (KRB5_LIB_PARAMS): Fix up RUN_ENV for alpha-dec-osf*
+	so that we don't try to set _RLD_ROOT before setting
+	LD_LIBRARY_PATH (which needs to call sed).
+
+Sat Feb  8 15:39:08 1997  Tom Yu  <tlyu@mit.edu>
+
+	* aclocal.m4: Fix up AC_KRB5_TCL somewhat to deal with
+	--with-tcl=pathname properly.
+
+	* aclocal.m4 (KRB5_RUN_FLAGS): Convert to no longer use old cache
+	variable kludge.
+	(KRB5_LIB_AUX): Set CC_LINK to CC_LINK_SHARED or CC_LINK_STATIC,
+	depending on whether we're building with shared libraries.
+
+Wed Feb  5 21:03:41 1997  Tom Yu  <tlyu@mit.edu>
+
+	* aclocal.m4 (AC_KRB5_TCL): Fix up to work better with new program
+	build procedure.
+
+	* aclocal.m4 (WITH_KRB4): Fix up KRB4_INCLUDES to look in the
+	build tree as well.
+
+Mon Feb  3 23:27:57 1997  Tom Yu  <tlyu@mit.edu>
+
+	* aclocal.m4: Check for -lgen properly.
+
+Sat Feb  1 08:27:19 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* aclocal.m4: CC_LINK for alpha changed -R to -Wl,-rpath....
+
+Fri Jan 31 21:48:08 1997  Tom Yu  <tlyu@mit.edu>
+
+	* aclocal.m4: Some WITH_KRB4 tweaks.
+
+Mon Jan 27 17:12:13 1997  Tom Yu  <tlyu@mit.edu>
+
+	* aclocal.m4: Add KRB5_BUILD_PROGRAM and
+	KRB5_BUILD_LIBRARY_STATIC.
+
+Sun Jan 26 22:37:16 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* aclocal.m4:: Remove V5_MAKE_SHARED_LIB, V5_SHARED_LIB_OBJS
+
+Fri Jan  3 22:30:05 1997  Tom Yu  <tlyu@mit.edu>
+
+	* aclocal.m4: Alter conventions for libraries with dependencies;
+	make a separate macro, KRB5_BUILD_LIBRARY_WITH_DEPS, that adds in
+	the flags for explicit library dependencies.
+
+Thu Jan  2 18:21:22 1997  Tom Yu  <tlyu@mit.edu>
+
+	* aclocal.m4: Add SunOS support (untested yet); add support for
+	explicit dependencies in libraries.
+
+Wed Jan  1 23:31:22 1997  Ezra Peisach  <epeisach@mit.edu>
+
+	* aclocal.m4 (KRB5_LIB_PARAMS): Add linux shared library
+		support. Fix Solaris cc soname naming.
+
+Mon Dec 30 12:58:37 1996  Ezra Peisach  <epeisach@mit.edu>
+
+	* aclocal.m4: For alpha*, update the local copy of the
+		so_locations registry.  
+
+Sun Dec 29 21:22:21 1996  Tom Yu  <tlyu@mit.edu>
+
+	* aclocal.m4: Add support for installing libraries.
+
+Fri Dec 27 16:54:41 1996  Tom Yu  <tlyu@mit.edu>
+
+	* aclocal.m4: Fix up solaris shared lib generation flags.
+
+	* aclocal.m4: Many changes.  Add KRB5_LIB_PARAMS,
+	KRB5_BUILD_LIBRARY, KRB5_BUILD_LIBOBJS, which do the obvious
+	things.  Change V5_AC_OUTPUT_MAKEFILE to use $krb5_prepend_frags
+	and $krb5_append_frags to make life easier when we have multiple
+	frags that aren't pre.in or post.in.
+
+Tue Dec 24 16:08:05 1996  Tom Yu  <tlyu@mit.edu>
+
+	* aclocal.m4 (V5_AC_OUTPUT_MAKEFILE): Fix to deal with the
+	autoconf-2.12 syntax for file concatenation.
+
+Tue Dec 17 13:54:48 1996  Theodore Y. Ts'o  <tytso@mit.edu>
+
+	* Makefile.in (kerbsrc.mac.tar): Automatically make the
+ 		mac-bin-dirs target so that the binary directories are
+ 		correctly created.
+	
 Mon Nov 25 19:42:53 1996  Tom Yu  <tlyu@mit.edu>
 
 	* Makefile.in: Comment out distclean and realclean so no one will

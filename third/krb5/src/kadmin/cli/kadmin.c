@@ -14,7 +14,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -55,7 +58,8 @@ static struct pflag flags[] = {
 {"requires_hwauth",	15,	KRB5_KDB_REQUIRES_HW_AUTH,	0},
 {"needchange",		10,	KRB5_KDB_REQUIRES_PWCHANGE,	0},
 {"allow_svr",		9,	KRB5_KDB_DISALLOW_SVR,		1},
-{"password_changing_service",	25,	KRB5_KDB_PWCHANGE_SERVICE,	0 }
+{"password_changing_service",	25,	KRB5_KDB_PWCHANGE_SERVICE,	0 },
+{"support_desmd5",	14,	KRB5_KDB_SUPPORT_DESMD5,	0 }
 };
 
 static char *prflags[] = {
@@ -72,7 +76,9 @@ static char *prflags[] = {
     "UNKNOWN_0x00000400",	/* 0x00000400 */
     "UNKNOWN_0x00000800",	/* 0x00000800 */
     "DISALLOW_SVR",		/* 0x00001000 */
-    "PWCHANGE_SERVICE"		/* 0x00002000 */
+    "PWCHANGE_SERVICE",		/* 0x00002000 */
+    "SUPPORT_DESMD5",		/* 0x00004000 */
+    "NEW_PRINC",		/* 0x00008000 */
 };
 
 char *getenv();
@@ -176,7 +182,6 @@ char *kadmin_startup(argc, argv)
 	 com_err(whoami, retval, "while initializing krb5 library");
 	 exit(1);
     }
-    krb5_init_ets(context);
 		     
     while ((optchar = getopt(argc, argv, "r:p:kq:w:d:s:mc:t:e:")) != EOF) {
 	switch (optchar) {
@@ -284,7 +289,7 @@ char *kadmin_startup(argc, argv)
 	     }
 	     krb5_free_principal(context, princ);
 	     freeprinc++;
-	} else if (use_keytab != NULL) {
+	} else if (use_keytab != 0) {
 	     if (retval = krb5_sname_to_principal(context, NULL,
 						  "host",
 						  KRB5_NT_SRV_HST,
@@ -377,27 +382,34 @@ char *kadmin_startup(argc, argv)
      * Initialize the kadm5 connection.  If we were given a ccache,
      * use it.  Otherwise, use/prompt for the password.
      */
-    if (ccache_name)
+    if (ccache_name) {
+	 printf("Authenticating as principal %s with existing credentials.\n",
+		princstr);
 	 retval = kadm5_init_with_creds(princstr, cc,
 					KADM5_ADMIN_SERVICE, 
 					&params,
 					KADM5_STRUCT_VERSION,
 					KADM5_API_VERSION_2,
 					&handle);
-    else if (use_keytab)
+    } else if (use_keytab) {
+	 printf("Authenticating as principal %s with keytab %s.\n",
+		princstr, keytab_name);
 	 retval = kadm5_init_with_skey(princstr, keytab_name,
 				       KADM5_ADMIN_SERVICE, 
 				       &params,
 				       KADM5_STRUCT_VERSION,
 				       KADM5_API_VERSION_2,
 				       &handle);
-    else
+    } else {
+	 printf("Authenticating as principal %s with password.\n",
+		princstr);
 	 retval = kadm5_init_with_password(princstr, password,
 					   KADM5_ADMIN_SERVICE, 
 					   &params,
 					   KADM5_STRUCT_VERSION,
 					   KADM5_API_VERSION_2,
 					   &handle);
+    }
     if (retval) {
 	com_err(whoami, retval, "while initializing %s interface", whoami);
 	if (retval == KADM5_BAD_CLIENT_PARAMS ||
@@ -443,6 +455,7 @@ int quit()
      }
 
      /* insert more random cleanup here */
+     krb5_free_context(context);
      return 0;
 }
 
@@ -814,11 +827,18 @@ void kadmin_addprinc(argc, argv)
      * unset, since it is never valid for kadm5_create_principal.
      */
     if ((! (mask & KADM5_POLICY)) &&
-	(! (mask & KADM5_POLICY_CLR)) &&
-	(! (retval = kadm5_get_policy(handle, "default", &defpol)))) {
-	 princ.policy = "default";
-	 mask |= KADM5_POLICY;
-	 (void) kadm5_free_policy_ent(handle, &defpol);
+	(! (mask & KADM5_POLICY_CLR))) {
+	 if (! kadm5_get_policy(handle, "default", &defpol)) {
+	      fprintf(stderr,
+		"NOTICE: no policy specified for %s; assigning \"default\"\n",
+		      canon);
+	      princ.policy = "default";
+	      mask |= KADM5_POLICY;
+	      (void) kadm5_free_policy_ent(handle, &defpol);
+	 } else
+	      fprintf(stderr,
+	     "WARNING: no policy specified for %s; defaulting to no policy\n",
+		      canon);
     }
     mask &= ~KADM5_POLICY_CLR;
     

@@ -7,7 +7,6 @@
 #ifndef _ss_h
 #define _ss_h __FILE__
 
-#include <ss/mit-sipb-copyright.h>
 #include <ss/ss_err.h>
 
 extern int errno;
@@ -47,6 +46,7 @@ typedef struct _ss_rp_options {	/* DEFAULT VALUES */
 #define SS_OPT_DONT_SUMMARIZE	0x0002
 
 void ss_help __SS_PROTO;
+void ss_list_requests __SS_PROTO;
 char *ss_current_request();
 char *ss_name();
 #ifdef __STDC__

@@ -15,7 +15,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -56,7 +59,6 @@ typedef struct __kdc_realm_data {
     /*
      * Other per-realm data.
      */
-    krb5_encrypt_block	realm_encblock;	/* Per-realm master encryption block*/
     char		*realm_ports;	/* Per-realm KDC port */
     /*
      * Per-realm parameters.
@@ -79,7 +81,6 @@ extern kdc_realm_t	*kdc_active_realm;
 #define	kdc_context			kdc_active_realm->realm_context
 #define	max_life_for_realm		kdc_active_realm->realm_maxlife
 #define	max_renewable_life_for_realm	kdc_active_realm->realm_maxrlife
-#define	master_encblock			kdc_active_realm->realm_encblock
 #define	master_keyblock			kdc_active_realm->realm_mkey
 #define	master_princ			kdc_active_realm->realm_mprinc
 #define	tgs_key				kdc_active_realm->realm_tgskey
@@ -95,4 +96,5 @@ extern krb5_timestamp 	kdc_infinity;	/* greater than all other timestamps */
 extern krb5_rcache	kdc_rcache;	/* replay cache */
 
 extern volatile int signal_requests_exit;
+extern volatile int signal_requests_hup;
 #endif /* __KRB5_KDC_EXTERN__ */

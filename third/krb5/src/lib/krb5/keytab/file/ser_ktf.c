@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  *
@@ -163,7 +166,7 @@ krb5_ktf_keytab_externalize(kcontext, arg, buffer, lenremain)
 			int	fflags = 0;
 
 			file_is_open = 1;
-#if !defined( _MACINTOSH) && !defined(_MSDOS) && !defined(_WIN32)
+#if !defined( macintosh) && !defined(_MSDOS) && !defined(_WIN32)
 			fflags = fcntl(fileno(ktdata->openf), F_GETFL, 0);
 			if (fflags > 0)
 			    file_is_open |= ((fflags & O_ACCMODE) << 1);
@@ -282,7 +285,7 @@ krb5_ktf_keytab_internalize(kcontext, argp, buffer, lenremain)
 				int 	fmode;
 				long	fpos;
 
-#if !defined( _MACINTOSH) && !defined(_MSDOS) && !defined(_WIN32)
+#if !defined( macintosh) && !defined(_MSDOS) && !defined(_WIN32)
 				fmode = (file_is_open >> 1) & O_ACCMODE;
 #else
 				fmode = 0;

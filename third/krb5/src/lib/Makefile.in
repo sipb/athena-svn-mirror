@@ -1,9 +1,13 @@
+thisconfigdir=./..
+myfulldir=lib
+mydir=lib
+MY_SUBDIRS=crypto krb5 des425 @KRB4@ krb5util kdb gssapi rpc kadm5
+BUILDTOP=$(REL)$(U)
 CFLAGS = $(CCOPTS) $(DEFS)
 
-##DOSBUILDTOP = ..
-##DOSVERS_DIR = \vers
+##DOS##BUILDTOP = ..
 
-MAC_SUBDIRS = crypto krb5 gssapi kadm
+MAC_SUBDIRS = crypto krb5 gssapi
 
 all-unix::
 
@@ -15,89 +19,149 @@ CLEANLIBS = libkrb5.a libkdb5.a libcrypto.a libgssapi_krb5.a libdes425.a \
 	libkrb5.so libcrypto.so libkrb4.so libdes425.so
 
 clean-mac:: clean-unix
-clean-unix::
 	$(RM) $(CLEANLIBS)
+clean-unix::
 
 clean-windows::
-	$(RM) krb5_16.dll krb5_16.lib krb5_16.bak krb5_16.map winsock.lib
-	$(RM) gssapi.dll gssapi.lib gssapi.bak gssapi.map
-#
-# Windows stuff to make krb5_16.dll and krb5_16.lib. Currently it
-# combines crypto, krb5, kadm and the util/et directories.
-#
-ALIB  = kadm\kadm.lib
-CLIB  = crypto\crypto.lib
-KLIB  = krb5\krb5.lib
-GLIB  = gssapi\gssapi.lib
-ETLIB = $(BUILDTOP)\util\et\comerr.lib
-PLIB  = $(BUILDTOP)\util\profile\profile.lib
-WLIB  = .\winsock.lib
-LIBS  = $(ALIB) $(CLIB) $(KLIB) $(GLIB) $(ETLIB) $(PLIB) $(WLIB)
 
-lib-windows: winsock.lib krb5_16.lib gssapi.lib 
+# Windows stuff to make krb5 and gssapi DLLs.
 
-gssapi.lib:: gssapi.dll
-	implib /nologo gssapi.lib gssapi.dll
+##MIT##!if !defined(VS_INC)
+##MIT##!message Must define VS_INC to point to version server include dir!
+##MIT##!error
+##MIT##!endif
+##MIT##!if !defined(VS_LIB)
+##MIT##!message Must define VS_LIB to point to version server library!
+##MIT##!error
+##MIT##!endif
+##MIT##MITLIBS=$(VS_LIB)
+##MIT##MITFLAGS=-I$(VS_INC) /DVERSERV=1
 
-gssapi.dll:: $(GLIB) $(LIBS) gssapi.def win_glue.obj
-	link /co /seg:400 /noe /nod /nol win_glue, gssapi.dll, gssapi.map, \
-	   $(LIBS) ldllcew libw oldnames, gssapi.def
-	rc /nologo /p /k gssapi.dll
+CLIBS = $(BUILDTOP)\util\et\$(OUTPRE)comerr.lib
+PLIBS = $(BUILDTOP)\util\profile\$(OUTPRE)profile.lib
+KLIBS = krb5\$(OUTPRE)krb5.lib crypto\$(OUTPRE)crypto.lib \
+	$(BUILDTOP)\util\profile\$(OUTPRE)profile.lib \
+	des425\$(OUTPRE)des425.lib
+GLIBS = gssapi\$(OUTPRE)gssapi.lib
+K4LIBS = krb4\$(OUTPRE)krb4.lib
 
-krb5_16.lib:: krb5_16.dll
-	implib /nologo krb5_16.lib krb5_16.dll
+CDEF = comerr32.def
+PDEF = xpprof32.def
+KDEF = krb5_32.def
+GDEF = gssapi32.def
+K4DEF = krb4_32.def
 
-krb5_16.dll:: $(LIBS) krb5_16.def win_glue.obj
-	link /co /seg:400 /noe /nod /nol win_glue, krb5_16.dll, krb5_16.map, \
-	   $(LIBS) ldllcew libw oldnames, krb5_16.def
-	rc /nologo /p /k krb5_16.dll
+KRB5RC = krb5.rc
+VERSIONRC = $(BUILDTOP)\windows\version.rc
 
-sap_glue.obj: win_glue.c
-	$(CC) $(CFLAGS) -DSAP_TIMEBOMB -I$(VERS_DIR) /c \
-		/Fosap_glue.obj win_glue.c
+WINLIBS = kernel32.lib wsock32.lib user32.lib shell32.lib oldnames.lib \
+	version.lib advapi32.lib gdi32.lib
+WINDLLFLAGS = $(LINKOPTS) -base:0x1c000000
 
-win_glue.obj: win_glue.c
-	$(CC) $(CFLAGS) /c win_glue.c
+NO_GLUE=$(OUTPRE)no_glue.obj
+K5_GLUE=$(OUTPRE)k5_glue.obj
+K4_GLUE=$(OUTPRE)k4_glue.obj
+GSS_GLUE=$(OUTPRE)gss_glue.obj
 
-sapkrb5.dll:: $(GLIB) $(LIBS) gssapi.def sap_glue.obj
-	link /co /seg:400 /noe /nod /nol sap_glue, sapkrb5.dll, sapkrb5.map, \
-	   $(LIBS) $(VERS_DIR)\vswin.lib ldllcew libw oldnames, sapkrb5.def
-	rc /nologo /p /k sapkrb5.dll
+CGLUE=$(NO_GLUE)
+PGLUE=$(NO_GLUE)
+KGLUE=$(K5_GLUE)
+GGLUE=$(GSS_GLUE)
+K4GLUE=$(K4_GLUE)
 
-winsock.lib:  winsock.def
-	implib /nologo winsock.lib winsock.def
+RCFLAGS=$(CPPFLAGS) -D_WIN32 -D_MSDOS_ -DRES_ONLY
+
+##WIN32##CRES=$(CLIB:.lib=.res)
+##WIN32##PRES=$(PLIB:.lib=.res)
+##WIN32##KRES=$(KLIB:.lib=.res)
+##WIN32##GRES=$(GLIB:.lib=.res)
+##WIN32##K4RES=$(K4LIB:.lib=.res)
+
+##WIN32##$(CRES): $(VERSIONRC)
+##WIN32##	$(RC) $(RCFLAGS) -DCE_LIB -fo $@ -r $**
+##WIN32##$(PRES): $(VERSIONRC)
+##WIN32##	$(RC) $(RCFLAGS) -DPROF_LIB -fo $@ -r $**
+##WIN32##$(KRES): $(KRB5RC)
+##WIN32##	$(RC) $(RCFLAGS) -DKRB5_LIB -fo $@ -r $**
+##WIN32##$(K4RES): $(VERSIONRC)
+##WIN32##	$(RC) $(RCFLAGS) -DKRB4_LIB -fo $@ -r $**
+##WIN32##$(GRES): $(VERSIONRC)
+##WIN32##	$(RC) $(RCFLAGS) -DGSSAPI_LIB -fo $@ -r $**
+##WIN32##$(KRB5RC): $(VERSIONRC)
+
+##WIN32##$(CLIB): $(CDEF) $(CLIBS) $(CGLUE) $(CRES)
+##WIN32##	link $(WINDLLFLAGS) -def:$(CDEF) -out:$*.dll \
+##WIN32##	  $(CLIBS) $(CGLUE) $(CRES) $(WINLIBS)
+
+##WIN32##$(PLIB): $(PDEF) $(PLIBS) $(PGLUE) $(PRES) $(CLIB)
+##WIN32##	link $(WINDLLFLAGS) -def:$(PDEF) -out:$*.dll \
+##WIN32##	  $(PLIBS) $(PGLUE) $(PRES) $(CLIB) $(WINLIBS)
+
+##WIN32##$(KLIB): $(KDEF) $(KLIBS) $(KGLUE) $(KRES) $(CLIB) $(MITLIBS) $(DNSLIBS)
+##WIN32##	link $(WINDLLFLAGS) -def:$(KDEF) -out:$*.dll \
+##WIN32##	  $(KLIBS) $(KGLUE) $(KRES) $(CLIB) $(MITLIBS) $(DNSLIBS) $(WINLIBS)
+
+##WIN32##$(GLIB): $(GDEF) $(GLIBS) $(GGLUE) $(GRES) $(KLIB) $(CLIB)
+##WIN32##	link $(WINDLLFLAGS) -def:$(GDEF) -out:$*.dll \
+##WIN32##	  $(GLIBS) $(GGLUE) $(GRES) $(KLIB) $(CLIB) $(WINLIBS)
+
+##WIN32##$(K4LIB): $(K4DEF) $(K4LIBS) $(K4GLUE) $(K4RES) $(KLIB) $(CLIB) $(PLIB)
+##WIN32##	link $(WINDLLFLAGS) -def:$(K4DEF) -out:$*.dll \
+##WIN32##	  $(K4LIBS) $(K4GLUE) $(K4RES) $(KLIB) $(CLIB) $(PLIB) $(WINLIBS)
+
+$(K5_GLUE): win_glue.c
+	$(CC) $(CFLAGS) $(MITFLAGS) /c /DKRB5=1 /Fo$@ $**
+$(K4_GLUE): win_glue.c
+	$(CC) $(CFLAGS) /c /DKRB4=1 /Fo$@ $**
+$(GSS_GLUE): win_glue.c
+	$(CC) $(CFLAGS) /c /DGSSAPI=1 /Fo$@ $**
+$(NO_GLUE): win_glue.c
+	$(CC) $(CFLAGS) /c /Fo$@ $**
+
+# Build Convenience
+comerr.lib: $(CLIB)
+krb4.lib:   $(K4LIB)
+krb5.lib:   $(KLIB)
+gssapi.lib: $(GLIB)
+profile.lib: $(PLIB)
 
 all-windows:: 
 	@echo Making in lib\crypto
 	cd crypto
-	-$(MAKE) -$(MFLAGS)
-	@echo Making in lib\kadm
-	cd ..\kadm
-	-$(MAKE) -$(MFLAGS) 
+	$(MAKE) -$(MFLAGS)
 	@echo Making in lib\krb5
 	cd ..\krb5
-	-$(MAKE) -$(MFLAGS) 
+	$(MAKE) -$(MFLAGS)
+	@echo Making in lib\des425
+	cd ..\des425
+	$(MAKE) -$(MFLAGS) 
+	@echo Making in lib\krb4
+	cd ..\krb4
+	$(MAKE) -$(MFLAGS) 
 	@echo Making in lib\gssapi
 	cd ..\gssapi
-	-$(MAKE) -$(MFLAGS) 
+	$(MAKE) -$(MFLAGS) 
 	@echo Making in lib
 	cd ..
 
-all-windows:: krb5_16.lib gssapi.lib
+all-windows:: lib-windows
+lib-windows:: krb5.lib gssapi.lib krb4.lib 
 
 clean-windows::
 	@echo Making clean in lib\crypto
 	cd crypto
-	-$(MAKE) -$(MFLAGS) clean
-	@echo Making clean in lib\kadm
-	cd ..\kadm
-	-$(MAKE) -$(MFLAGS) clean
+	$(MAKE) -$(MFLAGS) clean
 	@echo Making clean in lib\krb5
 	cd ..\krb5
-	-$(MAKE) -$(MFLAGS) clean
+	$(MAKE) -$(MFLAGS) clean
+	@echo Making clean in lib\des425
+	cd ..\des425
+	$(MAKE) -$(MFLAGS) clean
+	@echo Making clean in lib\krb4
+	cd ..\krb4
+	$(MAKE) -$(MFLAGS) clean
 	@echo Making clean in lib\gssapi
 	cd ..\gssapi
-	-$(MAKE) -$(MFLAGS) clean
+	$(MAKE) -$(MFLAGS) clean
 	@echo Making clean in lib
 	cd ..
-

@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  *
@@ -27,9 +30,9 @@
  * 	protocol as implemented in lib/krb5/os/adm_conn.c.  Any changes
  *	in one module must be reflected in the other.
  */
-#include <signal.h>
 #define	NEED_SOCKETS
 #include "k5-int.h"
+#include <signal.h>
 #include "com_err.h"
 #include "kadm5_defs.h"
 #include "adm.h"
@@ -819,7 +822,7 @@ proto_serv(kcontext, my_id, cl_sock, sv_p, cl_p)
 	if (!er_kret)
 	    krb5_write_message(kcontext, (krb5_pointer) &cl_sock, &errout);
 	free(errbuf.text.data);
-	krb5_xfree(errout.data);
+	krb5_free_data_contents(kcontext, &errout);
     }
 
  cleanup:
@@ -839,9 +842,9 @@ proto_serv(kcontext, my_id, cl_sock, sv_p, cl_p)
     if (num_args)
 	krb5_free_adm_data(kcontext, num_args, arglist);
     if (in_data.data)
-	krb5_xfree(in_data.data);
+	krb5_free_data_contents(kcontext, &in_data);
     if (out_data.data)
-	krb5_xfree(out_data.data);
+	krb5_free_data_contents(kcontext, &out_data);
     if (local && local->contents)
 	free(local->contents);
     if (remote && remote->contents)

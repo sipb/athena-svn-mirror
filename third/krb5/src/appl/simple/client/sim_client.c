@@ -16,7 +16,10 @@
  * this permission notice appear in supporting documentation, and that
  * the name of M.I.T. not be used in advertising or publicity pertaining
  * to distribution of the software without specific, written prior
- * permission.  M.I.T. makes no representations about the suitability of
+ * permission.  Furthermore if you modify this software you must label
+ * your software as modified software and not distribute it in such a
+ * fashion that it might be confused with the original M.I.T. software.
+ * M.I.T. makes no representations about the suitability of
  * this software for any purpose.  It is provided "as is" without express
  * or implied warranty.
  * 
@@ -108,7 +111,7 @@ main(argc, argv)
      *  
      */
     opterr = 0;
-    while ((ch = getopt(argc, argv, "p:m:h:s:")) != EOF)
+    while ((ch = getopt(argc, argv, "p:m:h:s:")) != -1)
     switch (ch) {
     case 'p':
 	port = atoi(optarg);
@@ -237,7 +240,7 @@ main(argc, argv)
     if ((i = send(sock, (char *)packet.data, packet.length, flags)) < 0) 
 	com_err(progname, errno, "while sending KRB_AP_REQ message");
     printf("Sent authentication data: %d bytes\n", i);
-    krb5_xfree(packet.data);
+    krb5_free_data_contents(context, &packet);
 
     /* PREPARE KRB_SAFE MESSAGE */
 
@@ -305,7 +308,7 @@ main(argc, argv)
     if ((i = send(sock, (char *)packet.data, packet.length, flags)) < 0)
 	com_err(progname, errno, "while sending SAFE message");
     printf("Sent checksummed message: %d bytes\n", i);
-    krb5_xfree(packet.data);
+    krb5_free_data_contents(context, &packet);
 
     /* PREPARE KRB_PRIV MESSAGE */
 
@@ -320,7 +323,7 @@ main(argc, argv)
     if ((i = send(sock, (char *)packet.data, packet.length, flags)) < 0)
 	com_err(progname, errno, "while sending PRIV message");
     printf("Sent encrypted message: %d bytes\n", i);
-    krb5_xfree(packet.data);
+    krb5_free_data_contents(context, &packet);
 
     krb5_auth_con_free(context, auth_context);
     krb5_free_context(context);

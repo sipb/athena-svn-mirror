@@ -1,3 +1,43 @@
+1998-11-13  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Set the myfulldir and mydir variables (which are
+		relative to buildtop and thisconfigdir, respectively.)
+
+Fri Feb 27 23:32:38 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* Makefile.in: Changed thisconfigdir to point at the kadmin
+ 		directory, since we've moved all of the configure.in
+		tests to the toplevel kadmin configure.in
+
+Wed Feb 18 15:56:44 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove trialing slash from thisconfigdir.  Fix up
+	BUILDTOP for new conventions.
+
+Thu Feb 12 10:22:47 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* configure.in: Remove unused NetBSD kludge to prevent use of
+		USE_KDB5_LIBRARY, since these macros are obsolete.
+
+Mon Feb  2 17:02:29 1998  Theodore Ts'o  <tytso@rsts-11.mit.edu>
+
+	* configure.in: Removed use of DO_SUBDIRS.
+
+	* Makefile.in: Define BUILDTOP and thisconfigdir in the Makefile
+
+Fri Jan 30 15:29:28 1998  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in: Remove install rules.
+
+Wed Feb  5 22:59:43 1997  Tom Yu  <tlyu@mit.edu>
+
+	* unit-test/configure.in: Tweak TCL_LIB -> TCL_LIBS.
+
+Tue Feb  4 21:06:23 1997  Tom Yu  <tlyu@mit.edu>
+
+	* Makefile.in:
+	* configure.in: Update to new program build procedure.
+
 Wed Nov 27 13:50:03 1996  Theodore Y. Ts'o  <tytso@mit.edu>
 
 	* configure.in: Link against kdb5 explicitly on all systems except
