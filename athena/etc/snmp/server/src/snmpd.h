@@ -1,7 +1,10 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/snmpd.h,v 1.3 1990-05-26 13:42:27 tom Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/snmpd.h,v 1.4 1990-07-17 14:19:30 tom Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  90/05/26  13:42:27  tom
+ * athena release 7.0e + patch 15
+ * 
  * Revision 1.2  90/04/26  18:02:01  tom
  * *** empty log message ***
  * 
@@ -32,7 +35,7 @@
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/snmpd.h,v 1.3 1990-05-26 13:42:27 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/snmpd.h,v 1.4 1990-07-17 14:19:30 tom Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988
@@ -201,6 +204,7 @@ extern int oidcmp();
 /*
  *  routines specific to SNMPD
  */
+
 extern int quit();
 extern int init_kmem();
 extern int get_my_address();
@@ -228,7 +232,6 @@ extern int pvartree();
 extern int ptreeinfo();
 extern int pr_pkt();
 extern int pr_var_list();
-extern int lu_mail();
 extern struct snmp_tree_node *init_var_tree_node();
 extern struct snmp_tree_node *get_lex_next();
 
@@ -256,11 +259,16 @@ extern int set_intf();
 #ifdef MIT
 extern int lu_kernvers();
 extern int lu_status();
+
+#if !defined(decmips)
 extern int lu_vmstat();
 extern int lu_pstat();
-extern int lu_tuchtime();
 extern int lu_disk();
 extern int lu_ndparts();
+#endif
+
+extern int lu_tuchtime();
+
 #ifdef ATHENA
 extern int lu_rcvar();
 extern int lu_relvers();
@@ -286,4 +294,5 @@ extern int lu_kerberos();
 #ifdef LOGIN
 extern int get_inuse();         /* for trap generation in main   */
 #endif LOGIN
+extern int lu_mail();
 #endif MIT
