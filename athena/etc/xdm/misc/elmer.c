@@ -16,6 +16,8 @@
 
 #include <stdio.h>
 #include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
@@ -37,6 +39,7 @@ main(int argc, char **argv, char **envp)
   char athconsole[64];
   int c, nannyKnows;
   pid_t uid;
+  int fd;
 
   if (argv[0])
     {
@@ -88,12 +91,18 @@ main(int argc, char **argv, char **envp)
 
   if (nannyKnows || uid == ROOT)
     {
-      /* Redirect stdout and stderr to the console window. */
-      if (NULL == freopen(tty, "w", stdout))
-	(void)freopen("/dev/console", "w", stdout);
-
-      if (NULL == freopen(tty, "w", stderr))
-	(void)freopen("/dev/console", "w", stderr);
+      /* Redirect stdout and stderr to the console window.
+	 Don't do any output to stdout or stderr before this point,
+	 or weird things may happen. */
+      if ((fd = open(tty, O_WRONLY)) == -1)
+	fd = open("/dev/console", O_WRONLY);
+      if (fd != -1)
+	{
+	  dup2(fd, STDOUT_FILENO);
+	  dup2(fd, STDERR_FILENO);
+	  if (fd != STDOUT_FILENO && fd != STDERR_FILENO)
+	    close(fd);
+	}
 
       if (env)
 	for (ptr = env; *ptr != NULL; ptr++)
@@ -106,13 +115,10 @@ main(int argc, char **argv, char **envp)
 	{
 	  prelogin = getenv("PRELOGIN");
 	  if (prelogin && !strcmp(prelogin, "true"))
-	    {
-	      execv("/bin/sh", args);
-	    }
+	    execv("/bin/sh", args);
 	  else
-	    {
-	      execl(session, "sh", args[0], args[1], NULL);
-	    }
+	    execl(session, "sh", args[0], args[1], NULL);
+
 	  fprintf(stderr, "%s: Xsession exec failed\n", name);
 	  sleep(DELAY);
 	  exit(1);
