@@ -9,3 +9,5 @@ sgi)
   echo "/etc/inetd.conf"				>> "$CONFCHG"
   ;;
 esac
+
+echo "/var/spool/cron/crontabs/root"			>> "$CONFCHG"
