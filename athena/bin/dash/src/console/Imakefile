@@ -3,7 +3,7 @@
  *  Copyright (c) 1991, Massachusetts Institute of Technology
  *		
  *   $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/console/Imakefile,v $
- *   $Author: cfields $ 
+ *   $Author: vrt $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -30,7 +30,7 @@ OBJS		=	console.o
 XJLIB		=	../lib/libXj.a
 C_LIBS		=	${LOCAL_LIBS} ${XJLIB} ${XLIB} ${M_LIB}
 
-#if (HasPutenv)
+#if (HasPutenv) || defined(AIXArchitecture)
 PUTENV_DEF      =       -DHAS_PUTENV
 #else
 PUTENV_DEF      =
