@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: vte.c,v 1.2 2003-05-06 05:00:38 ghudson Exp $"
+#ident "$Id: vte.c,v 1.2.2.1 2004-01-02 17:25:10 ghudson Exp $"
 #include "../config.h"
 #include <sys/ioctl.h>
 #include <sys/types.h>
@@ -27,7 +27,7 @@
 #include <fcntl.h>
 #include <math.h>
 #include <pwd.h>
-#include <pcreposix.h>
+#include <regex.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -1475,6 +1475,81 @@ vte_terminal_match_add(VteTerminal *terminal, const char *match)
 	return new_regex.tag;
 }
 
+static gboolean find_url(const char *data, int cursor, int *start, int *end)
+{
+	const char *allowed = "-_$.+!*(),;:@&=/?~#%";
+	const char *trim = ".),";
+	const char *starts[] = { "news://", "telnet://", "nttp://", "file://",
+				 "http://", "ftp://", "https://",
+				 "www", "ftp" };
+	const int nstarts = sizeof(starts) / sizeof(*starts);
+	gboolean dot;
+	int i, j;
+
+	/* Back up to just after the most recent non-URL character. */
+	for (i = cursor; i > 0; i--) {
+		if (!isalnum(data[i - 1]) && !strchr(allowed, data[i - 1]))
+			break;
+	}
+
+	/* Find an appropriate beginning. */
+	for (; i <= cursor; i++) {
+		if (!strchr("fhntw", data[i]))
+			continue;
+		for (j = 0; j < nstarts; j++) {
+		  	if (strncmp(data + i, starts[j],
+				    strlen(starts[j])) == 0)
+				break;
+		}
+		if (j < nstarts)
+			break;
+	}
+	if (i > cursor)
+		return FALSE;
+	*start = i;
+	i += strlen(starts[j]);
+
+	/* Find end of domain part.  We must see at least one dot if
+	 * our beginning wasn't a real URL scheme. */
+	dot = FALSE;
+	for (; data[i]; i++) {
+		if (data[i] == '.')
+			dot = TRUE;
+		else if (!isalnum(data[i]) && data[i] != '-')
+			break;
+	}
+	if (!dot && !strchr(starts[j], ':'))
+		return FALSE;
+
+	if (data[i] == ':')
+	  {
+	    i++;
+	    while (isdigit(data[i]))
+	      i++;
+	  }
+
+	/* If we've passed the cursor, then we only want this part. */
+	if (i > cursor) {
+		*end = i;
+		return TRUE;
+	}
+
+	if (data[i++] != '/')
+		return FALSE;
+
+	/* Find the end of the URL. */
+	for (; data[i]; i++) {
+		if (!isalnum(data[i]) && !strchr(allowed, data[i]))
+			break;
+	}
+	if (i <= cursor)
+		return FALSE;
+
+	/* If the last character looks like ending punctuation, trim it. */
+	*end = (strchr(trim, data[i - 1]) != NULL) ? i - 1 : i;
+	return TRUE;
+}
+
 /* Check if a given cell on the screen contains part of a matched string.  If
  * it does, return the string, and store the match tag in the optional tag
  * argument. */
@@ -1483,7 +1558,7 @@ vte_terminal_match_check_internal(VteTerminal *terminal,
 				  long column, glong row,
 				  int *tag, int *start, int *end)
 {
-	int i, j, ret, offset;
+	int i, j, ret, offset, st, en;
 	struct vte_match_regex *regex = NULL;
 	struct vte_char_attributes *attr = NULL;
 	gssize coffset;
@@ -1546,92 +1621,14 @@ vte_terminal_match_check_internal(VteTerminal *terminal,
 		return NULL;
 	}
 
-	/* Now iterate over each regex we need to match against. */
-	for (i = 0; i < terminal->pvt->match_regexes->len; i++) {
-		regex = &g_array_index(terminal->pvt->match_regexes,
-				       struct vte_match_regex,
-				       i);
-		/* Skip holes. */
-		if (regex->tag < 0) {
-			continue;
-		}
-		/* We'll only match the first item in the buffer which
-		 * matches, so we'll have to skip each match until we
-		 * stop getting matches. */
-		coffset = 0;
-		ret = regexec(&regex->reg,
-			      terminal->pvt->match_contents + coffset,
-			      G_N_ELEMENTS(matches),
-			      matches,
-			      VTE_REGEXEC_FLAGS);
-		while (ret == 0) {
-			for (j = 0;
-			     (j < G_N_ELEMENTS(matches)) &&
-			     (matches[j].rm_so != -1);
-			     j++) {
-				/* The offsets should be "sane". */
-				g_assert(matches[j].rm_so + coffset <
-					 terminal->pvt->match_attributes->len);
-				g_assert(matches[j].rm_eo + coffset <=
-					 terminal->pvt->match_attributes->len);
-#ifdef VTE_DEBUG
-				if (_vte_debug_on(VTE_DEBUG_MISC)) {
-					char *match;
-					struct vte_char_attributes *sattr, *eattr;
-					match = g_strndup(terminal->pvt->match_contents + matches[j].rm_so + coffset,
-							  matches[j].rm_eo - matches[j].rm_so);
-					sattr = &g_array_index(terminal->pvt->match_attributes,
-							       struct vte_char_attributes,
-							       matches[j].rm_so + coffset);
-					eattr = &g_array_index(terminal->pvt->match_attributes,
-							       struct vte_char_attributes,
-							       matches[j].rm_eo + coffset - 1);
-					fprintf(stderr, "Match %d `%s' from %d(%ld,%ld) to %d(%ld,%ld) (%d).\n",
-						j, match,
-						matches[j].rm_so + coffset,
-						sattr->column,
-						sattr->row,
-						matches[j].rm_eo + coffset - 1,
-						eattr->column,
-						eattr->row,
-						offset);
-					g_free(match);
-
-				}
-#endif
-				/* Snip off any final newlines. */
-				while ((matches[j].rm_eo > matches[j].rm_so) &&
-				       (terminal->pvt->match_contents[coffset + matches[j].rm_eo - 1] == '\n')) {
-					matches[j].rm_eo--;
-				}
-				/* If the pointer is in this substring,
-				 * then we're done. */
-				if ((offset >= (matches[j].rm_so + coffset)) &&
-				    (offset < (matches[j].rm_eo + coffset))) {
-					if (tag != NULL) {
-						*tag = regex->tag;
-					}
-					if (start != NULL) {
-						*start = coffset +
-							 matches[j].rm_so;
-					}
-					if (end != NULL) {
-						*end = coffset +
-						       matches[j].rm_eo - 1;
-					}
-					return g_strndup(terminal->pvt->match_contents + coffset + matches[j].rm_so,
-							 matches[j].rm_eo - matches[j].rm_so);
-				}
-			}
-			/* Skip past the beginning of this match to
-			 * look for more. */
-			coffset += (matches[0].rm_so + 1);
-			ret = regexec(&regex->reg,
-				      terminal->pvt->match_contents + coffset,
-				      G_N_ELEMENTS(matches),
-				      matches,
-				      VTE_REGEXEC_FLAGS);
-		}
+	if (find_url(terminal->pvt->match_contents, offset, &st, &en)) {
+		if (tag)
+			*tag = 0;
+		if (start)
+			*start = st;
+		if (end)
+			*end = en - 1;
+		return g_strndup(terminal->pvt->match_contents + st, en - st);
 	}
 	return NULL;
 }
