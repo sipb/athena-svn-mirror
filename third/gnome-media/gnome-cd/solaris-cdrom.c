@@ -121,7 +121,7 @@ set_audio_port ()
 	/* Check for AUDIO_CD */
 	if (audio_info.record.avail_ports & AUDIO_CD) {
 		/* Initialise */
-		AUDIO_INITINFO(&audio_info, sizeof (audio_info));
+		AUDIO_INITINFO(&audio_info);
 
 		/* Set the port to AUDIO_CD */
 		audio_info.record.port = AUDIO_CD;
