@@ -1,6 +1,107 @@
-2002-01-24  gettextize  <bug-gnu-utils@gnu.org>
+2002-03-23  gettextize  <bug-gnu-utils@gnu.org>
 
 	* Makefile.in.in: Upgrade to gettext-0.10.40.
+
+2002-03-22  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.40.
+
+2002-03-22  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.40.
+
+2002-03-21  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.40.
+
+2002-03-21  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.40.
+
+2002-03-19  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.40.
+
+2002-03-18  gettextize  <bug-gnu-utils@gnu.org>
+
+	* Makefile.in.in: Upgrade to gettext-0.10.38.
+
+2002-03-12  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation with report from
+	Stéphane Raimbault <stephane.raimbault@deesse.univ-lemans.fr>.
+
+2002-03-11  Valek Filippov  <frob@df.ru>
+
+	* ru.po: updated russian translation.
+
+2002-02-27  Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* sk.po: Updated Slovak translation.
+
+2002-02-24  Carlos Perelló Marín <carlos@gnome-db.org>
+
+	* es.po: Small fix.
+
+2002-02-23  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* pl.po: Updated Polish translation by
+	GNOME PL Team <translators@gnome.pl>.
+
+2002-02-23  Carlos Perelló Marín <carlos@gnome-db.org>
+
+	* es.po: Updated the fuzzy strings and removed obsolete
+	strings (we have them at translation memory).
+
+2002-02-23  Carlos Perelló Marín <carlos@gnome-db.org>
+
+	* es.po: Updated with our memory translation.
+
+2002-02-21  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+
+2002-02-13  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation.
+
+2002-02-12  Akira TAGOH  <tagoh@gnome.gr.jp>
+
+	* ja.po: fixed typo.
+
+2002-02-11  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation.
+
+2002-02-04  Carlos Perelló Marín <carlos@gnome-db.org>
+
+	* es.po: Updated by Eneko Lacunza <enlar@iname.com>
+
+2002-01-31  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* no.po: Updated Norwegian (bokmål) translation.
+
+2002-01-30  Gustavo Maciel Dias Vieira <gdvieira@zaz.com.br>
+
+	* pt_BR.po: Updated Brazilian Portuguese translation.
+
+2002-01-30  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation from work of
+	Frederic Riss <frederic.riss@laposte.net>.
+
+2002-01-30  Roy-Magne Mo <rmo@sunnmore.net>
+
+	* nn.po: Updated Norwegian (nynorsk) translation
+	* ChangeLog: removed gettext-entries
+
+2002-01-29  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation.
+
+2002-01-25  Vincent van Adrighem <V.vanAdrighem@dirck.mine.nu>
+
+	* nl.po: Massive translation update.
 
 2002-01-24  Ettore Perazzoli  <ettore@ximian.com>
 

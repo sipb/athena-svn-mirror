@@ -49,6 +49,20 @@ typedef struct _EMeetingModel        EMeetingModel;
 typedef struct _EMeetingModelPrivate EMeetingModelPrivate;
 typedef struct _EMeetingModelClass   EMeetingModelClass;
 
+typedef enum {
+	E_MEETING_MODEL_ADDRESS_COL,
+	E_MEETING_MODEL_MEMBER_COL,
+	E_MEETING_MODEL_TYPE_COL,
+	E_MEETING_MODEL_ROLE_COL,
+	E_MEETING_MODEL_RSVP_COL,
+	E_MEETING_MODEL_DELTO_COL,
+	E_MEETING_MODEL_DELFROM_COL,
+	E_MEETING_MODEL_STATUS_COL,
+	E_MEETING_MODEL_CN_COL,
+	E_MEETING_MODEL_LANGUAGE_COL,
+	E_MEETING_MODEL_COLUMN_COUNT
+} EMeetingModelColumns;
+
 struct _EMeetingModel {
 	ETableModel parent;
 
@@ -82,16 +96,24 @@ EMeetingAttendee *e_meeting_model_find_attendee_at_row (EMeetingModel *im, gint 
 
 gint e_meeting_model_count_actual_attendees (EMeetingModel *im);
 const GPtrArray *e_meeting_model_get_attendees (EMeetingModel *im);
+
+void e_meeting_model_refresh_all_busy_periods (EMeetingModel *im,
+					       EMeetingTime *start,
+					       EMeetingTime *end,
+					       EMeetingModelRefreshCallback call_back,
+					       gpointer data);
 void e_meeting_model_refresh_busy_periods (EMeetingModel *im,
+					   int row,
 					   EMeetingTime *start,
 					   EMeetingTime *end,
 					   EMeetingModelRefreshCallback call_back,
 					   gpointer data);
 
+
 /* Helpful functions */
 ETableScrolled    *e_meeting_model_etable_from_model (EMeetingModel *im, const gchar *spec_file, const gchar *state_file);
-int e_meeting_model_etable_model_to_view_row (EMeetingModel *im, int model_row);
-int e_meeting_model_etable_view_to_model_row (EMeetingModel *im, int view_row);
+int e_meeting_model_etable_model_to_view_row (ETable *et, EMeetingModel *im, int model_row);
+int e_meeting_model_etable_view_to_model_row (ETable *et, EMeetingModel *im, int view_row);
 
 void e_meeting_model_invite_others_dialog (EMeetingModel *im);
 

@@ -12,16 +12,12 @@
 		value="Evolution component for the executive summary."/>
 	<oaf_attribute name="description-az" type="string"
 		value="&#196;&#176;crac&#196;&#177; m&#195;&#188;nd&#201;&#153;ricat &#195;&#188;&#195;&#167;&#195;&#188;n &#39;Evolution&#39; par&#195;&#167;as&#196;&#177;."/>
-	<oaf_attribute name="description-ca" type="string"
-		value="No es pot inicialitzar el component de resum del correu de l&#39;Evolution."/>
 	<oaf_attribute name="description-da" type="string"
 		value="Evolution-komponent for sammendrag."/>
 	<oaf_attribute name="description-de" type="string"
 		value="Evolution-Komponente f&#252;r die Chefsesselansicht"/>
 	<oaf_attribute name="description-el" type="string"
 		value="&#211;&#244;&#239;&#233;&#247;&#229;&#223;&#239; &#244;&#239;&#245; Evolution &#227;&#233;&#225; &#244;&#231;&#237; &#229;&#234;&#244;&#229;&#235;&#229;&#243;&#244;&#233;&#234;&#222; &#243;&#253;&#237;&#239;&#248;&#231;."/>
-	<oaf_attribute name="description-en_GB" type="string"
-		value="Cannot initialise Evolution&#39;s mail summary component."/>
 	<oaf_attribute name="description-es" type="string"
 		value="Componente Evolution para el resumen de trabajo."/>
 	<oaf_attribute name="description-fr" type="string"
@@ -34,12 +30,10 @@
 		value="Componente di Evolution per il sommario esecutivo."/>
 	<oaf_attribute name="description-ja" type="string"
 		value="&#188;&#194;&#185;&#212;&#165;&#181;&#165;&#222;&#165;&#234;&#164;&#206;&#164;&#191;&#164;&#225;&#164;&#206; Evolution &#165;&#179;&#165;&#243;&#165;&#221;&#161;&#188;&#165;&#205;&#165;&#243;&#165;&#200;"/>
-	<oaf_attribute name="description-lv" type="string"
-		value="komponents."/>
 	<oaf_attribute name="description-nl" type="string"
 		value="Evolution-component voor de samenvatting."/>
 	<oaf_attribute name="description-nn" type="string"
-		value="Kan ikkje initialisera lokale variablar"/>
+		value="Evolutionkomponent for Mitt samandrag"/>
 	<oaf_attribute name="description-no" type="string"
 		value="Evolution-komponent for sammendrag."/>
 	<oaf_attribute name="description-pl" type="string"
@@ -51,7 +45,7 @@
 	<oaf_attribute name="description-ru" type="string"
 		value="&#235;&#207;&#205;&#208;&#207;&#206;&#197;&#206;&#212; Evolution &#196;&#204;&#209; Executive Summary."/>
 	<oaf_attribute name="description-sk" type="string"
-		value="Komponent Evolution pre S&#250;hrn."/>
+		value="Komponent Evolution pre S&#195;&#186;hrn."/>
 	<oaf_attribute name="description-sl" type="string"
 		value="Evolucijina komponenta za povzetke."/>
 	<oaf_attribute name="description-sv" type="string"

@@ -67,6 +67,18 @@ NAME="APX-GLOSS"
 ><DL
 ><DT
 ><A
+NAME="ASSISTANT"
+><B
+>Assistant:</B
+></A
+></DT
+><DD
+><P
+>	See druid
+      </P
+></DD
+><DT
+><A
 NAME="ATTACHMENT"
 ><B
 >Attachment:</B
@@ -87,7 +99,7 @@ NAME="AUTOMATIC-INDEXING"
 ></DT
 ><DD
 ><P
->     Pre-sorting procedure that allows
+>     Pre-fetching procedure that allows
      <SPAN
 CLASS="APPLICATION"
 >Evolution</SPAN
@@ -133,7 +145,7 @@ NAME="CONDUIT"
 ></DT
 ><DD
 ><P
->     A synchronization conduit is a small application which controls
+>     A small application which controls
      the transfer of data between a handheld device and a desktop
      computer.
    </P
@@ -224,11 +236,11 @@ CLASS="FILENAME"
 >.
      The rest of the "branches" spread downwards from the root.  Don't
      confuse the root directory with the root
-     account, or root's home directory,
+     account, or root's home directory, normally
      <TT
 CLASS="FILENAME"
->/home/root</TT
->.b
+>/root</TT
+>.
    </P
 ></DD
 ><DT
@@ -244,7 +256,7 @@ NAME="FILTER"
 CLASS="APPLICATION"
 >Evolution</SPAN
 >, a filter is a method
-    of sorting mail automatically.  You can create filters to perform
+    of sorting mail automatically when it's downloaded.  You can create filters to perform
     one or more actions on a message that meets any (or all) of a wide
     range of criteria.
    </P
@@ -274,7 +286,7 @@ NAME="GROUPWARE"
 >    Groupware is a term describing an application which helps groups
     of people work together.  Typically, a groupware application will
     have several productivity features built into one program,
-    including email, calendar, and addressbook tools.
+    including: email, calendar, and addressbook tools.
    </P
 ></DD
 ><DT
@@ -305,7 +317,7 @@ NAME="HOT-KEY"
 ><DD
 ><P
 >    Hot-keys are keyboard combinations used to do actions on a
-    computer instead of using the mouse to do the same action.
+    computer instead of using the mouse.
     Hot-keys can speed up computer usage.
    </P
 ></DD
@@ -339,8 +351,7 @@ NAME="IMAP"
 ><DD
 ><P
 >    Depending upon whom you ask, IMAP stands for the Internet Mail
-    Access Protocol, or the Interim Mail Access Protocol.  Whatever it
-    stands for, it allows access to email which is typically (although
+    Access Protocol, or the Interim Mail Access Protocol.  It allows access to email which is typically (although
     not always) stored remotely on a server rather than on a local
     hard disk.  Often contrasted with <I
 CLASS="GLOSSTERM"
@@ -391,11 +402,11 @@ NAME="MAIL-CLIENT"
 ></DT
 ><DD
 ><P
->    A mail client is the application with which a person reads and
-    sends e-mail.  Its counterparts are the various types of mail
-    servers, which handle user authentication and direct messages from
-    sender to recipient.
-   </P
+>	A mail client is the application with which a person reads and
+	sends e-mail.  Its counterparts are the various types of mail
+	servers, which handle user authentication and direct messages from
+	sender to recipient.
+      </P
 ></DD
 ><DT
 ><A
@@ -426,7 +437,7 @@ CLASS="APPLICATION"
     manager for <SPAN
 CLASS="ACRONYM"
 >GNOME</SPAN
-> being written by Eazel.
+>.
    </P
 ></DD
 ><DT
@@ -488,7 +499,7 @@ NAME="REGULAR-EXPRESSION"
       example, the statement <TT
 CLASS="USERINPUT"
 ><B
->fly.*so[a|u]p</B
+>fly.*so[au]p</B
 ></TT
 > means
       "any phrase beginning with 'fly' and ending in 'soup' or
@@ -498,7 +509,11 @@ CLASS="USERINPUT"
       for the <B
 CLASS="COMMAND"
 >grep</B
-> command.
+> command by opening a command
+      line and typing in <B
+CLASS="COMMAND"
+>man grep</B
+>.
    </P
 ></DD
 ><DT
@@ -512,8 +527,48 @@ NAME="SCRIPT"
 ><P
 >    A program written in an interpreted (rather than compiled)
     language.  Often used as a synonym for "macro," to denote a series
-    of pre-recorded commands or actions within an application.
+    of pre-recorded commands or actions within an application.  Often
+    times,  accomplish repetitive and tedious tasks, to save the
+    user time.
    </P
+></DD
+><DT
+><A
+NAME="SEARCH-BASE"
+><B
+>Search Base:</B
+></A
+></DT
+><DD
+><P
+>	LDAP can break contact lists into many groups.  The Search
+	Base tells LDAP the top group to use.  How much of the Search
+	Base that is searched is set by the <A
+HREF="apx-gloss.html#SEARCH-SCOPE"
+><I
+CLASS="GLOSSTERM"
+>Search Scope</I
+></A
+> option.
+      </P
+></DD
+><DT
+><A
+NAME="SEARCH-SCOPE"
+><B
+>Search Scope:</B
+></A
+></DT
+><DD
+><P
+>	Search Scope states how much of the <A
+HREF="apx-gloss.html#SEARCH-BASE"
+><I
+CLASS="GLOSSTERM"
+>Search Base</I
+></A
+> to search.
+      </P
 ></DD
 ><DT
 ><A
@@ -524,21 +579,21 @@ NAME="SENDMAIL"
 ></DT
 ><DD
 ><P
->      As its name implies, <SPAN
+>	As its name implies, <SPAN
 CLASS="APPLICATION"
 >sendmail</SPAN
 > is a
-      program which sends mail.  <SPAN
+	program which sends mail.  <SPAN
 CLASS="APPLICATION"
 >Evolution</SPAN
 >
-      can use it instead of <I
+	can use it instead of <I
 CLASS="GLOSSTERM"
 >SMTP:</I
 >; some people
-      prefer it because it offers more flexibility, but is more
-      difficult to set up.
-   </P
+	prefer it because it offers more flexibility, but is more
+	difficult to set up.
+      </P
 ></DD
 ><DT
 ><A
@@ -549,13 +604,13 @@ NAME="SHORTCUT-BAR"
 ></DT
 ><DD
 ><P
->     A portion of <SPAN
+>	A portion of <SPAN
 CLASS="APPLICATION"
 >Evolution</SPAN
 > which offers
-     users fast access to the most frequently used portions of the
-     application.
-   </P
+	users fast access to the most frequently used portions of the
+	application.
+      </P
 ></DD
 ><DT
 ><A
@@ -567,7 +622,7 @@ NAME="SIGNATURE"
 ><DD
 ><P
 >     In email terms, a signature is a piece of text placed at the end
-     of every email sent, like a hand-written signature at the bottom
+     of every email sent, similar to a hand-written signature at the bottom
      of a written letter.  A signature can be anything from a favorite
      quotation to a link to a web page; courtesy dictates that it be
      fewer than four lines long.
@@ -596,10 +651,10 @@ NAME="TOOLTIP"
 ></DT
 ><DD
 ><P
->      A small box of explanatory text which appears when the mouse
-      pointer is held motionless over a button or other interface
-      element.
-   </P
+>	A small box of explanatory text which appears when the mouse
+	pointer is held motionless over a button or other interface
+	element.
+      </P
 ></DD
 ><DT
 ><A
@@ -626,16 +681,16 @@ NAME="VCARD"
 ></DT
 ><DD
 ><P
->    A file format for the exchange of contact information. When you
-    get an address card attached to an email, it's probably in vCard
-    format.  Not to be confused with <A
+>	A file format for the exchange of contact information. When you
+	get an address card attached to an email, it's probably in vCard
+	format.  Not to be confused with <A
 HREF="apx-gloss.html#VFOLDER"
 ><I
 CLASS="GLOSSTERM"
 >vFolder:</I
 ></A
 >.
-   </P
+      </P
 ></DD
 ><DT
 ><A

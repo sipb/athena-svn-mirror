@@ -1,3 +1,44 @@
+2002-03-18  Dan Winship  <danw@ximian.com>
+
+	* Evolution-Composer.idl, evolution-composer.c
+	(impl_Composer_show): "Forward as iCalendar" uses set_body, so we
+	can't make the composer un-showable after doing that. So get rid
+	of the "cannot show" exception.
+
+	* e-msg-composer.c (e_msg_composer_set_body): Prepare the composer
+	to be shown in its weird state: Put an explanatory message in the
+	body, then call disable_editor.
+	(disable_editor): Common editor-disabling code - makes the editor
+	and attachment bar insensitive and disables any menu items that
+	could be used to modify them.
+	
+2002-03-04  Dan Winship  <danw@ximian.com>
+
+	* e-msg-composer.c (build_message): Fix a dumb bug in previous
+	commit that broke iMIP containing 8-bit data.
+
+2002-02-25  Dan Winship  <danw@ximian.com>
+
+	Mailer side of 14705.
+	
+	* Evolution-Composer.idl (setBody): Change setBodyText to setBody
+	and take a MIME type as well.
+	(show): Add an exception.
+
+	* evolution-composer.c (impl_Composer_set_body, etc): Update for
+	IDL change. While I'm here, fix this to DTRT with both plaintext
+	and HTML bodies. (It claimed to take plain text before, but then
+	passed it to the composer as HTML.)
+	(impl_Composer_show): Raise an exception if setBody has been
+	called, since the composer window will not display the real data
+	in that case.
+
+	* e-msg-composer.c (e_msg_composer_set_body): interface for
+	impl_Composer_set_body.
+	(build_message): If e_msg_composer_set_body has been called, use
+	the body and MIME type supplied to it rather than the contents of
+	the HTML editor.
+
 2002-01-07  Jeffrey Stedfast  <fejj@ximian.com>
 
 	* e-msg-composer.c (e_msg_composer_get_message_draft): Set the

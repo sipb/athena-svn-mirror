@@ -34,6 +34,8 @@
 		       value="Gamykla importuoti Outlook Express 4 byloms &#225; Evolution"/>
 	<oaf_attribute name="description-nl" type="string"
 		       value="Fabriek voor het importeren van Outlook Express 4 berichten naar Evolution"/>
+	<oaf_attribute name="description-nn" type="string"
+		       value="Fabrikk for &#229; importere Outlook Express 4 e-postar inn i Evolution"/>
 	<oaf_attribute name="description-no" type="string"
 		       value="Factory for &#229; importere Outlook Express 4-meldinger til Evolution"/>
 	<oaf_attribute name="description-pl" type="string"
@@ -45,7 +47,7 @@
 	<oaf_attribute name="description-ru" type="string"
 		       value="&#230;&#193;&#194;&#210;&#201;&#203;&#193; &#196;&#204;&#209; &#201;&#205;&#208;&#207;&#210;&#212;&#193; &#198;&#193;&#202;&#204;&#207;&#215; Outlook Express 4 &#215; Evolution"/>
 	<oaf_attribute name="description-sk" type="string"
-		       value="Vytv&#225;racie rozhranie pre import s&#250;borov Outlook Express 4 do Evolution"/>
+		       value="Vytv&#195;&#161;racie rozhranie pre import s&#195;&#186;borov Outlook Express 4 do Evolution"/>
 	<oaf_attribute name="description-sl" type="string"
 		       value="Tovarna za uvoz po&#197;&#161;te Outlook Express 4 v Evolucijo"/>
 	<oaf_attribute name="description-sv" type="string"
@@ -92,8 +94,6 @@
 		       value="Importa i file Outlook Express 4 in Evolution"/>
 	<oaf_attribute name="description-ja" type="string"
 		       value="Evolution &#164;&#216; Outlook Express 4 &#165;&#213;&#165;&#161;&#165;&#164;&#165;&#235;&#164;&#242;&#165;&#164;&#165;&#243;&#165;&#221;&#161;&#188;&#165;&#200;"/>
-	<oaf_attribute name="description-ko" type="string"
-		       value="GnomeCard &#198;&#196;&#192;&#207;&#192;&#187; Evolution&#192;&#184;&#183;&#206; &#176;&#161;&#193;&#174;&#191;&#201;&#180;&#207;&#180;&#217;"/>
 	<oaf_attribute name="description-lt" type="string"
 		       value="Importuoja Outlook Express 4 bylas &#225; Evolution"/>
 	<oaf_attribute name="description-lv" type="string"
@@ -101,7 +101,7 @@
 	<oaf_attribute name="description-nl" type="string"
 		       value="Importeert Outlook Express 4 bestanden naar Evolution"/>
 	<oaf_attribute name="description-nn" type="string"
-		       value="Importer Outlook Express 4"/>
+		       value="Import&#233;r Outlook Express 4 filer inn i Evolution"/>
 	<oaf_attribute name="description-no" type="string"
 		       value="Importerer Outlook Express 4-filer til Evolution"/>
 	<oaf_attribute name="description-pl" type="string"
@@ -113,7 +113,7 @@
 	<oaf_attribute name="description-ru" type="string"
 		       value="&#233;&#205;&#208;&#207;&#210;&#212;&#201;&#210;&#213;&#197;&#212; &#198;&#193;&#202;&#204;&#217; Outlook Express 4 &#215; Evolution"/>
 	<oaf_attribute name="description-sk" type="string"
-		       value="Importuje s&#250;bory Outlook Express 4 do Evolution"/>
+		       value="Importuje s&#195;&#186;bory Outlook Express 4 do Evolution"/>
 	<oaf_attribute name="description-sl" type="string"
 		       value="Uvozi datoteke Outlook Express 4 v Evolucijo"/>
 	<oaf_attribute name="description-sv" type="string"

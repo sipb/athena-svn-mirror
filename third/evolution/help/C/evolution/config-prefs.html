@@ -65,7 +65,7 @@ CLASS="CHAPTER"
 ><H1
 ><A
 NAME="CONFIG-PREFS"
->Chapter 9. Advanced Configuration</A
+>Chapter 10. Advanced Configuration</A
 ></H1
 ><DIV
 CLASS="TOC"
@@ -124,7 +124,7 @@ CLASS="INTERFACE"
 >,
         illustrated in <A
 HREF="config-prefs.html#CONFIG-PREFS-MAIL-FIG"
->Figure 9-1</A
+>Figure 10-1</A
 >.  Mail
         preferences are separated into several categories:
         <P
@@ -139,8 +139,8 @@ CLASS="GUILABEL"
 ></DT
 ><DD
 ><P
->		This allows you to create and alter one or more identities for your
-		email.
+>		This allows you to create and alter one or more
+		identities for your email.
 	      </P
 ></DD
 ><DT
@@ -190,7 +190,7 @@ NAME="CONFIG-PREFS-MAIL-FIG"
 ></A
 ><P
 ><B
->Figure 9-1. Mail Preferences Dialog</B
+>Figure 10-1. Account Editor Window</B
 ></P
 ><DIV
 CLASS="MEDIAOBJECT"
@@ -297,21 +297,22 @@ HREF="apx-gloss.html#POP"
 CLASS="GLOSSTERM"
 >POP</I
 ></A
-> or <A
+>), read and keep it on the
+             server (Microsoft Exchange or <A
 HREF="apx-gloss.html#IMAP"
 ><I
 CLASS="GLOSSTERM"
 >IMAP</I
 ></A
->) or access it from files
-             on your local system.  If you use a server, it may permit
-             or require you to use a Secure Socket Layer (SSL)
-             connection.  To turn SSL connections on, just click the
-             <SPAN
+>), or read it from files
+             that already exist on your desktop computer.  If you use
+             a server, it may permit or require you to use a Secure
+             Socket Layer (SSL) connection.  To turn SSL connections
+             on, just click the <SPAN
 CLASS="GUIBUTTON"
->Use Secure Connection (SSL)</SPAN
->
-             button.
+>Use Secure Connection
+             (SSL)</SPAN
+> button.
 
 <DIV
 CLASS="NOTE"
@@ -345,11 +346,160 @@ CLASS="USERINPUT"
 ><DD
 ><P
 >              Here, decide whether you'd like to check for mail
-              automatically, and set other options related to the
-              behavior of your server.  If you use POP mail, you can
-              decide whether to leave mail on the server, and if you
-              use IMAP, you can set folder subscription options here.
+              automatically and how often. 
+
+              <P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>If you chose POP:</DT
+><DD
+><P
+>                   <P
+></P
+><UL
+><LI
+><P
+>Checking for new mail: If you would
+	                     like <SPAN
+CLASS="APPLICATION"
+>Evolution</SPAN
+>
+	                     to check for new mail automatically,
+	                     check the box and select a frequency in
+	                     minutes.
+                           </P
+></LI
+><LI
+><P
+>                             Message Storage: If you'd like to store
+	                      copies of your mail on the server, check
+	                      this option.
+                           </P
+></LI
+></UL
+>
+                      </P
+></DD
+><DT
+>If you chose Microsoft Exchange:</DT
+><DD
+><P
+>&#13;	    <P
+></P
+><UL
+><LI
+><P
+>Checking for new mail: If you would like
+		<SPAN
+CLASS="APPLICATION"
+>Evolution</SPAN
+> to check for new mail
+		automatically, check the box and select a frequency in
+		minutes.
+		</P
+></LI
+><LI
+><P
+>Exchange Server: If your active directory user name
+		is different from your Exchange mail user name, check this
+		box and enter your mail username here.
+		</P
+></LI
+><LI
+><P
+>Create a Global Address List folder: If you would
+		like to have a seperate folder for the Active Directory's
+		Global Address List, leave this box checked. </P
+></LI
+><LI
+><P
+>		  Active Directory Server Name: In most organizations,
+    		  the Active Directory server will be different from
+    		  the Exchange mail server.  If so, check the box and
+    		  enter the Active Directory server name here.
+		</P
+></LI
+><LI
+><P
+>Limit number of Responses: Select a maximum number
+		of results for an address search. A maximum number of
+		results limits the load on your system and on your network.
+		  </P
+></LI
+></UL
+>                       
+                     </P
+></DD
+><DT
+>If you chose IMAP:</DT
+><DD
+><P
+>                      
+         <P
+></P
+><UL
+><LI
+><P
+>Checking for new mail: If you would like
+	    <SPAN
+CLASS="APPLICATION"
+>Evolution</SPAN
+> to check for new mail
+	    automatically, check the box and select a frequency in
+	    minutes.  
             </P
+></LI
+><LI
+><P
+>If you want <SPAN
+CLASS="APPLICATION"
+>Evolution</SPAN
+>
+	    to check for new messages in <I
+CLASS="EMPHASIS"
+>all</I
+> your
+	    IMAP folders, make sure the <SPAN
+CLASS="GUILABEL"
+>Check for new
+	    messages in all folders</SPAN
+> box is selected.</P
+></LI
+><LI
+><P
+>Show only subscribed folders: Check this box if you
+	    have more folders in your IMAP view than you want to
+	    read.</P
+></LI
+><LI
+><P
+>              Override server-supplied namespace: If you like, enter a
+              specific directory where your server stores mail for
+              you.  Typical values are "mail" and "Mail."  For more
+              information about how to use IMAP mail, see <A
+HREF="usage-mail-subscriptions.html"
+>the section called <I
+>Subscription Management</I
+> in Chapter 3</A
+>.</P
+></LI
+><LI
+><P
+>Apply filters to new messages in INBOX on this
+	    server: If you'd like your filters to work on this account
+	    as well as on locally downloaded mail, check this box.</P
+></LI
+></UL
+>
+                     </P
+></DD
+></DL
+></DIV
+>  
+     </P
 ></DD
 ><DT
 >Sending Mail</DT
@@ -362,7 +512,9 @@ HREF="apx-gloss.html#SMTP"
 CLASS="GLOSSTERM"
 >SMTP</I
 ></A
-> or <A
+>, Microsoft Exchange (if
+              you have purchased the Ximian Connector for Microsoft
+              Exchange) or <A
 HREF="apx-gloss.html#SENDMAIL"
 ><I
 CLASS="GLOSSTERM"
@@ -386,7 +538,13 @@ CLASS="GLOSSTERM"
 ><P
 >              In this section, you will set the security options for
               this account. Enter your PGP Key ID and decide how
-              frequently to encrypt and sign your messages.
+              frequently to encrypt and sign your messages. You can
+              learn more about PGP and encryption in <A
+HREF="encryption.html"
+>the section called <I
+>Encryption</I
+> in Chapter 3</A
+>.
             </P
 ></DD
 ></DL

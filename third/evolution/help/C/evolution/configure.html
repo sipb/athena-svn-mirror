@@ -1,0 +1,627 @@
+<HTML
+><HEAD
+><TITLE
+>Configuration</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
+REL="HOME"
+TITLE="A User's Guide to Ximian Evolution"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="The Ximian Connector for Microsoft Exchange"
+HREF="usage-exchange.html"><LINK
+REL="PREVIOUS"
+TITLE="Installing the Connector"
+HREF="install.html"><LINK
+REL="NEXT"
+TITLE="Accessing the Exchange Server"
+HREF="access.html"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A User's Guide to Ximian Evolution</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="install.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Chapter 7. The Ximian Connector for Microsoft Exchange</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="access.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="CONFIGURE"
+>Configuration</A
+></H1
+><P
+>      Once you have installed the Connector, you need to set up access
+      for your <SPAN
+CLASS="APPLICATION"
+>Exchange</SPAN
+> account on both the
+      <SPAN
+CLASS="APPLICATION"
+>Exchange</SPAN
+> server and within
+      Evolution. If you are not sure of the information you need to
+      set up your Exchange account, ask your system administrator, or
+      use the Ximian Connector Tester utility, which is installed
+      alongside the Ximian Connector.  To start it, select
+      <SPAN
+CLASS="GUIMENU"
+>         Programs
+       </SPAN
+>-&gt;<SPAN
+CLASS="GUISUBMENU"
+>         Internet
+      </SPAN
+>-&gt;<SPAN
+CLASS="GUIMENUITEM"
+>         Ximian Connector Tester</SPAN
+> or run the command <B
+CLASS="COMMAND"
+>connect-test</B
+> in a
+terminal window. The utility will help you determine if your Exchange
+server is compatible with the Ximian Connector, and locate your Active
+Directory server. Armed with that information, you'll be ready to set
+up a new account on your Exchange server and get to work.
+    </P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="CONFIG-SERVER"
+>Exchange Server Configuration</A
+></H2
+><P
+>	  Check with your system administrator to ensure that:
+	<P
+></P
+><UL
+><LI
+><P
+> You have a valid account on the
+	      <SPAN
+CLASS="APPLICATION"
+>Exchange</SPAN
+> server.
+	    </P
+></LI
+><LI
+><P
+> You are permitted to access the account with
+	      WebDAV. This is the default setting for the
+	      <SPAN
+CLASS="APPLICATION"
+>Exchange</SPAN
+> server, so unless
+	      your system administrator has specifically turned it
+	      off, no changes should be necessary.
+	    </P
+></LI
+></UL
+>
+      </P
+><P
+>	The Ximian website knowledge base, at <A
+HREF="http://support.ximian.com"
+TARGET="_top"
+>support.ximian.com</A
+>,
+	has additional information about checking to make sure that
+	your <SPAN
+CLASS="APPLICATION"
+>Exchange</SPAN
+> server will accept
+	connections from Ximian Evolution.
+      </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="CONFIG-CLIENT"
+>Evolution Settings for Connecting to an
+      Exchange Server</A
+></H2
+><P
+>	
+	Once you know that your server is ready for you to connect, start
+	Ximian Evolution and select
+	<SPAN
+CLASS="GUIMENU"
+>Tools</SPAN
+>-&gt;<SPAN
+CLASS="GUIMENUITEM"
+>Mail Settings</SPAN
+>
+	from any mail view. 
+     </P
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="CONFIG-EXCHANGE-NEW-ACCOUNT"
+>Creating a New Exchange Account</A
+></H3
+><P
+>	  If you would like to create a new account for your Exchange
+	  server, click the <SPAN
+CLASS="GUIBUTTON"
+>Add</SPAN
+> button in the
+	  accounts list. The account creation assistant will guide you
+	  through the process, which is also described in <A
+HREF="usage-mainwindow-starting.html"
+>the section called <I
+>The First Time you Start Ximian Evolution</I
+> in Chapter 1</A
+>. If you're not sure
+	  about any of the information you need, just ask your system
+	  administrator.
+        </P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Identity</DT
+><DD
+><P
+>Enter your name and email address. If you wish,
+	      you may add your organization and the location of your
+	      signature file. Only your name and email address are
+	      required.
+	      </P
+></DD
+><DT
+>Receiving Mail</DT
+><DD
+><P
+>                In this step, you'll enter information about the way
+                you check mail:
+                 <P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>                      First, select <SPAN
+CLASS="GUILABEL"
+>Microsoft
+                      Exchange</SPAN
+> as your server type.
+                   </P
+></LI
+><LI
+><P
+>                     Enter the name of your Exchange email server, and
+                     the user name you would use to log in to a
+                     Windows workstation in your organization.
+                   </P
+></LI
+><LI
+><P
+>                      If you wish, select the box labelled
+                      <SPAN
+CLASS="GUILABEL"
+>Use secure connection
+                      (SSL)</SPAN
+>, to take advantage of a more
+                      secure connection method. This may allow you to
+                      connect to the server from outside your
+                      firewall.
+                   </P
+></LI
+><LI
+><P
+>                       If you would like
+                       <SPAN
+CLASS="APPLICATION"
+>Evolution</SPAN
+> to
+                       remember your password, check the box labelled
+                       <SPAN
+CLASS="GUILABEL"
+>Remember this password</SPAN
+>.
+                     </P
+></LI
+></OL
+>
+              </P
+></DD
+><DT
+>Receiving Mail, Step Two</DT
+><DD
+><P
+>There are a few additional options in this step:
+               <P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>                       Checking for New Mail: If you would like to
+                       check for new mail automatically, click the
+                       checkbox and enter an interval in minutes.
+                     </P
+></LI
+><LI
+><P
+>                      Exchange Server: If your Exchange mailbox name
+                      is different from your Windows name, enter your
+                      mailbox name here.
+                     </P
+></LI
+><LI
+><P
+>                     Active Directory: If you would like to use the
+    			   Global Address List (GAL), check the box
+    			   labelled <SPAN
+CLASS="GUILABEL"
+>Create a Global Address
+    			   List folder</SPAN
+> and enter the name
+    			   of the directory server.  To avoid strain
+    			   on the server, the maximum number of
+    			   responses to any Active Directory query has
+    			   been set to 500. If you would like to
+    			   change that, you may do so here as well.
+                     </P
+></LI
+></OL
+>
+              </P
+></DD
+><DT
+>Sending Mail</DT
+><DD
+><P
+>Select <SPAN
+CLASS="GUILABEL"
+>Microsoft Exchange</SPAN
+> as
+	      your email sending method. There is nothing else to do
+	      in this step.</P
+></DD
+><DT
+>Account Management</DT
+><DD
+><P
+>Enter a name that you will use to remember this
+	      account.  "Exchange Account" is a good suggestion. Note
+	      that you cannot have two accounts with the same name.
+	      If you'd like to make this your default account for
+	      sending email, check the <SPAN
+CLASS="GUILABEL"
+>Make this my default
+	      account</SPAN
+> box.</P
+></DD
+></DL
+></DIV
+><P
+>          You're done.  Click <SPAN
+CLASS="GUIBUTTON"
+>Finish</SPAN
+> and
+          <SPAN
+CLASS="GUIBUTTON"
+>OK</SPAN
+>, then quit
+          <SPAN
+CLASS="APPLICATION"
+>Evolution</SPAN
+> and start it again. Now
+          you're ready to get to work on the Exchange server.
+        </P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="AEN3102"
+></A
+><P
+><B
+>Figure 7-1. Creating an Exchange Account, Step One: Identity</B
+></P
+><DIV
+CLASS="MEDIAOBJECT"
+><P
+><IMG
+SRC="figures/exchange-identity.png"
+></IMG
+></P
+></DIV
+></DIV
+><DIV
+CLASS="FIGURE"
+><A
+NAME="AEN3109"
+></A
+><P
+><B
+>Figure 7-2. Creating an Exchange Account, Step Two: Receiving Mail</B
+></P
+><DIV
+CLASS="MEDIAOBJECT"
+><P
+><IMG
+SRC="figures/exchange-receive.png"
+></IMG
+></P
+></DIV
+></DIV
+><DIV
+CLASS="FIGURE"
+><A
+NAME="AEN3116"
+></A
+><P
+><B
+>Figure 7-3. Creating an Exchange Account, Step Three: Mail Options</B
+></P
+><DIV
+CLASS="MEDIAOBJECT"
+><P
+><IMG
+SRC="figures/exchange-receive-options.png"
+></IMG
+></P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="CONFIG-EXCHANGE-EXISTING-ACCOUNT"
+>Changing an Existing Account to Work with Exchange</A
+></H3
+><P
+>	    If you have an existing email account, and want to convert it
+	    to use for Exchange, select the account you want to convert
+	    and click the <SPAN
+CLASS="GUIBUTTON"
+>Edit</SPAN
+> button. You'll want
+	    to change settings in the following tabs of the account
+	    dialog:
+	  </P
+><P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Identity</DT
+><DD
+><P
+>		 If your email address will change because you are moving
+		 to a new server, then change it in this tab. Otherwise,
+		 move to the next tab.
+	      </P
+></DD
+><DT
+>Receiving Mail</DT
+><DD
+><P
+>		  Select <SPAN
+CLASS="GUILABEL"
+>Microsoft Exchange</SPAN
+> as your
+		  server type. Enter your name of your server next to
+		  <SPAN
+CLASS="GUILABEL"
+>Host</SPAN
+>, and the user name for your
+		  account next to <SPAN
+CLASS="GUILABEL"
+>Username</SPAN
+>. If your
+		  server supports SSL (Secure Socket Layer) encryption, it
+		  you can check the <SPAN
+CLASS="GUILABEL"
+>Use SSL</SPAN
+> box to
+		  take advantage of more secure data transfers.
+		</P
+></DD
+><DT
+>Receiving Options</DT
+><DD
+><P
+>		    Here, tab, you'll find some additional settings:
+		    <P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Checking for New Mail</DT
+><DD
+><P
+>			    Select whether you would like to check for
+			    mail automatically, and if so, how often.
+			 </P
+></DD
+><DT
+>Exchange Server</DT
+><DD
+><P
+>			   If your Exchange server requires you to use a
+			   different mailbox name from the name you use to
+			   log in, select the second check-box and enter
+			   the mailbox name.  Check with your system
+			   administrator to be sure.
+			 </P
+></DD
+><DT
+>Active Directory</DT
+><DD
+><P
+>			   If you would like to use the Global Address
+			   List (GAL) maintained on your Exchange server,
+			   click the tab labelled <SPAN
+CLASS="GUILABEL"
+>Receiving
+			   Options</SPAN
+> and check the box labelled
+			   <SPAN
+CLASS="GUILABEL"
+>Create a Global Address List
+			   folder</SPAN
+>.  The GAL is maintained by
+			   your system administrator and you cannot add,
+			   change, or remove items from it using Ximian
+			   Evolution. However, you can use it to invite
+			   people to meetings and to look up addresses and
+			   other information. In many organizations, the
+			   GAL is stored on a different server from email.
+			   If this is the case, you should also specify
+			   the directory server name here.
+			 </P
+></DD
+></DL
+></DIV
+>
+		</P
+></DD
+><DT
+>Sending Mail</DT
+><DD
+><P
+>		  If you will use your Exchange server to send as well as
+		  receive mail, select <SPAN
+CLASS="GUILABEL"
+>Microsoft
+		  Exchange</SPAN
+> as your server type, and enter the
+		  server name as the <SPAN
+CLASS="GUILABEL"
+>Host</SPAN
+>. 
+		</P
+></DD
+></DL
+></DIV
+><P
+>&#13;        Once you have made those changes, click the
+        <SPAN
+CLASS="GUIBUTTON"
+>OK</SPAN
+> button.
+      </P
+><P
+>          Then, quit <SPAN
+CLASS="APPLICATION"
+>Evolution</SPAN
+> and start it
+          up again. Changes to the Ximian Connector accounts
+          configuration are not active until you have restarted the
+          application.
+       </P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="install.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="access.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Installing the Connector</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="usage-exchange.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Accessing the Exchange Server</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

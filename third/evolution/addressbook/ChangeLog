@@ -1,3 +1,268 @@
+2002-03-11  Chris Toshok  <toshok@ximian.com>
+
+	* gui/component/select-names/e-select-names.c (update_query):
+	change contains x-evolution-any-field to beginswith on email,
+	full_name, and nickname.  faster, and more applicable to this
+	dialog.
+
+2002-03-09  Chris Toshok  <toshok@ximian.com>
+
+	* gui/widgets/e-addressbook-view.c (jump_to_letter): since I've
+	gone ahead and made the file backend (by way of
+	pas-backend-card-sexp.c) use case insensitive searches for
+	beginswith, there's no need to list upper and lower case here.
+
+	* gui/component/addressbook.c (addressbook_search_option_items):
+	reorder things to put "Any field contains" at the end, since it's
+	the least efficient search.  Also reorder the enum to the same
+	ordering.  Change "Name contains" to "Name begins with" and change
+	"Email contains" to "Email is".
+	(addressbook_search_activated): change FULL_NAME to beginswith,
+	and change EMAIL to is to match the labels.
+
+	* backend/pas/pas-backend-ldap.c (func_beginswith): search both cn
+	and sn for beginswith.
+
+	* backend/pas/pas-backend-card-sexp.c (compare_name): new
+	function, so we can compare both full and family names (so
+	beginswith can operate on them both.)
+	(endswith_helper): use e_utf8_strstrcase here, since all the
+	backends backends use case insensitive searching.
+	(func_endswith): same.
+
+2002-03-06  Chris Toshok  <toshok@ximian.com>
+
+	* backend/pas/pas-backend-ldap.c (ldap_search_handler): only ask
+	for the attributes we can handle.
+	(pas_backend_ldap_destroy): free our list of search attributes.
+	(pas_backend_ldap_init): fill in the search_attr array from
+	prop_info (use the ldap_attrs.)
+
+2002-03-04  Chris Toshok  <toshok@ximian.com>
+
+	[fixes bug #20871]
+	* gui/component/select-names/select-names.glade: add the
+	status-message label.
+
+	* gui/component/select-names/e-select-names.h (struct
+	_ESelectNames): add status_message field.
+
+	* gui/component/select-names/e-select-names.c (status_message):
+	new function, set the label's text from the message.
+	(e_select_names_init): get the status-message label, and if it's
+	valid, connect to the status_message signal of the
+	EAddressbookModel.
+
+2002-02-28  Chris Toshok  <toshok@ximian.com>
+
+	* backend/pas/pas-backend-ldap.c (pas_backend_ldap_search): don't
+	ref the view here, since it keeps the view alive until the search
+	is over, which we don't want.  we want the view's death to cancel
+	the search.  This speeds up starting new searches after one is
+	already active (since switching searches actually creates a new
+	book view and destroys the old one.)
+	(ldap_search_dtor): remove the matching unref here.  The unref as
+	it was was incorrect anyway, and caused a crash (we needed
+	search_op->view, not op->view.)
+
+2002-02-27  Chris Toshok  <toshok@ximian.com>
+
+	[fixes bug #20690]
+	* backend/pas/pas-backend-ldap.c (func_and): the data arg is not
+	GList** anymore, it's PASBackendLDAPSExpData*, so use
+	ldap_data->list instead of *list.
+	(func_or): same.
+	(func_not): same.
+	(func_contains): same.
+	(func_is): same.
+	(func_endswith): same.
+	(func_beginswith): same, but also special case the beginswith
+	"fileAs" query type (the one used by the alphabet buttons on the
+	right hand side, so we can deal with entries that don't have
+	fileAs attributes, and return meaningful responses.)
+	(pas_backend_ldap_build_query): initialize the
+	PASBackendLDAPSExpData struct and pass that instead of &list.
+	Also, take the PASBackendLDAP arg to add to the struct in case we
+	need it at some point in the future.
+	(ldap_search_handler): pass in the PASBackendLDAP.
+
+2002-02-26  Chris Toshok  <toshok@ximian.com>
+
+	* backend/pas/pas-backend-file.c (pas_backend_file_search): move
+	card_count++ inside the if that checks to see if a card matches
+	(and adds the card to the list).
+
+2002-02-24  Chris Toshok  <toshok@ximian.com>
+
+	* gui/component/addressbook.c (addressbook_query_changed): only
+	handle the ESB_ADVANCED case here now.  the actual query work is
+	done in addressbook_search_activated.
+	(addressbook_search_activated): split out all the searching
+	functionality here.
+	(addressbook_factory_new_control): hook up "search_activated" to
+	addressbook_search_activated.
+
+2002-02-23  Chris Toshok  <toshok@ximian.com>
+
+        [ backport fix for bug 16097 from HEAD ]
+        * gui/component/addressbook-config.glade: gui love for the new
+        auth stuff.
+
+        * gui/component/addressbook.c (load_uri_cb): track change to auth,
+        and offer up different prompt strings depending on which method
+        (binddn or email) we're using.
+
+        * gui/component/addressbook-storage.c (ldap_unparse_auth): use the
+        new auth types for ldap.
+        (ldap_parse_auth): same.
+        (addressbook_storage_auth_type_to_string): new function.
+        (load_source_data): get the binddn too.
+        (ldap_source_foreach): store out binddn or emailaddr, depending on
+        the auth type chosen.
+
+        * gui/component/addressbook-storage.h: add the more detailed auth
+        types, add "binddn" to the source structure, and add a prototype
+        for addressbook_storage_auth_type_to_string.
+
+        * gui/component/addressbook-config.c (auth_checkbutton_changed):
+        set the auth stuff  (in)sensitive.
+        (auth_optionmenu_activated): new function.
+        (addressbook_source_dialog_set_source): track UI change.
+        (addressbook_source_dialog_get_source): same.
+        (add_scope_activate_cb): rename add_activate_cb to this to
+        distinguish it from the auth stuff.
+        (add_auth_activate_cb): new function.
+        (addressbook_source_dialog): track change to auth UI stuff.
+        (addressbook_storage_auth_type_to_string): new function.
+
+        * backend/ebook/e-book.h: add auth_method arg to
+        e_book_authenticate_user.
+
+        * backend/ebook/e-book.c (e_book_authenticate_user): track change
+        to prototype - add auth_method arg, and pass it along to the CORBA
+        call.
+
+        * backend/ebook/test-client.c (book_open_cb): track api change -
+        keep this building.
+
+        * backend/pas/pas-book.h: add auth_method slot in PASRequest.
+
+        * backend/pas/pas-book.c (pas_book_queue_authenticate_user): add
+        auth_method arg and add it to the PASRequest.
+        (impl_GNOME_Evolution_Addressbook_Book_authenticateUser): track
+        idl change, add auth_method and pass it along to
+        pas_book_queue_authenticate_user.
+
+        * backend/pas/pas-backend-ldap.c
+        (pas_backend_ldap_process_authenticate_user): support both
+        "ldap/simple-email" and "ldap/simple-binddn" auth methods.
+
+        * backend/idl/addressbook.idl: add "in string authMethod" to
+        authenticateUser.
+
+2002-02-22  Chris Toshok  <toshok@ximian.com>
+
+	[ Fixes bugs 20740, 16680, and god knows what else :) ]
+	* gui/widgets/e-addressbook-model.c (create_card): double the
+	allocated size every time we need more space instead of using a
+	fixed size increment.  this helps huge queries.  Also, remove the
+	gtk_object_get of "file_as", as it was dead code.
+	(book_view_loaded): handle errors here (by popping up a dialog).
+
+	* backend/pas/pas-backend-ldap.c (view_destroy): search_idle ->
+	search_timeout.
+	(build_card_from_entry): comment out some spew, and unref ecard
+	when we're done to plug a memory leak.
+	(send_pending_adds): send along to the client all the cards we've
+	been saving up.
+	(poll_ldap): use a timeout for ldap_result to keep the backend
+	from blocking (and it turns out keep the frontend from hanging
+	waiting on a ref to complete) on large db's with few matches.
+
+	Also, add some fairly smart, self-tuning aggregating of cards.
+	Keep track of the number of cards we've sent the last time through
+	as well as this time, and estimate the number we want to aggregate
+	the next time based on them (we average them at the moment),
+	subject to maximum/minimum number of cards.  also, we have a
+	maximum aggregation time, after which we force a flush if there
+	are pending cards and recalculate our target pending number.
+	there's a minimum wait time to possibly keep outselves from
+	spamming the ui, although it's 0 at the moment.
+
+	Lastly, make sure to only notify the GUI of status messages when
+	we need to.  this results in a *huge* savings.
+	(ldap_search_handler): initialize all the pending card stuff, and
+	use a timeout instead of an idle function for poll_ldap.
+
+	* backend/ebook/e-book-view-listener.c
+	(e_book_view_listener_queue_response): performance optimization
+	for large adds.  If we're a CardAddedEvent and there's an existing
+	CardAddedEvent at the end of the queue, just concat the lists of
+	cards together.  This is to keep the gui from falling further and
+	further behind the ldap backend, which is merrily spewing updates
+	at the gui.
+
+2002-02-20  Chris Toshok  <toshok@ximian.com>
+
+	* backend/pas/pas-backend-file.c (pas_backend_file_load_uri):
+	track change to signature, and (for now) just change all the
+	return FALSE's to _RepositoryOffline (what FALSE used to map to in
+	pas_book_factory_process_request), and change TRUE to _Success.
+
+	* backend/pas/pas-backend-ldap.c (pas_backend_ldap_load_uri):
+	track change to signature, and differentiate between
+	pas_backend_ldap_connect failing (RepositoryOffline), and
+	ldap_url_parse failing (OtherError).
+	
+	* backend/pas/pas-book-factory.c
+	(pas_book_factory_process_request): since pas_backend_load_uri
+	returns status now, use it to nodify the BookListener if there's a
+	failure.
+
+	* backend/pas/pas-backend.c (pas_backend_load_uri): track change
+	to signature.
+
+	* backend/pas/pas-backend.h: change return type of
+	pas_backend_load_uri to
+	GNOME_Evolution_Addressbook_BookListener_CallStatus to allow
+	differentiation between failure types.
+
+	* backend/ebook/e-book-listener.c
+	(e_book_listener_convert_status): handle _AUTHENTICATION_FAILED.
+
+	* backend/ebook/e-book-types.h (EBookStatus): add
+	_AUTHENTICATION_FAILED.
+
+2002-02-18  Chris Toshok  <toshok@ximian.com>
+
+	* backend/pas/pas-book-factory.c
+	(pas_book_factory_process_request): if the load_uri fails, notify
+	the listener that the repository is offline.  (partial fix for bug
+	20347)
+
+2002-02-18  Chris Toshok  <toshok@ximian.com>
+
+	* backend/pas/pas-backend-ldap.c (create_dn_from_ecard): escape
+	commas in the dn, since they're used by ldap to specify the node's
+	placement in the tree. (fixes bug 20089)
+	(rfc2254_escape): just use sprintf and %02X instead.
+
+2002-02-13  Christopher James Lahey  <clahey@ximian.com>
+ 
+	* gui/component/select-names/e-select-names.c (set_book): Make
+	sure to only set the query once when creating a new book and not
+	at all on addressbook model creation.  This prevents an accidental
+	pair of changes from making the addressbook model load a remote
+	addressbook.
+
+	* gui/widgets/e-addressbook-model.c (get_view): If this is the
+	first_get_view and the addressbook is remote, empty the view
+	instead of leaving it in the state it used to be in.  This only
+	occurs if you set the book after the model has existed for a
+	while.
+	(e_addressbook_model_set_arg): When setting the book, set
+	first_get_view to TRUE.
+
 2002-01-22  Chris Toshok  <toshok@ximian.com>
 
 	[ fixes bug # 16864 ]

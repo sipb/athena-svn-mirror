@@ -69,20 +69,20 @@ NAME="USAGE-CONTACT-SHARING"
 >Sharing your Cards</A
 ></H1
 ><P
->       If you keep your cards on a network using an <A
+>      The <A
 HREF="apx-gloss.html#LDAP"
 ><I
 CLASS="GLOSSTERM"
 >LDAP</I
 ></A
-> server, you can share access to
-       them, browse other peoples addressbooks, or maintain a shared set of
-       contact information for your company or your department.  This
-       is the sort of feature you'll want to use if your company has a
-       list of vendors and clients that needs constant updating.  If
-       you share calendars as well as addressbooks, people can avoid
-       duplicating work and keep up to date on developments within
-       their workgroup or across the entire company.
+> protocol was
+      created to let users share contact information over a network.
+      LDAP allows for users to browse other people's addressbooks, or
+      maintain a shared set of contact information for a company or
+      department.  This feature comes in handy if you are in a group
+      where there are lots of people using the same contacts.  Such an
+      example would be the sales department of a company with their
+      client list.
     </P
 ><DIV
 CLASS="EXAMPLE"
@@ -94,7 +94,7 @@ NAME="USAGE-CONTACT-SHARING-EX"
 >Example 5-2. Sharing Address Cards and Calendar Data</B
 ></P
 ><P
->	    Ray wants to schedule a meeting with Company X, so he
+>	    Rich wants to schedule a meeting with Company X, so he
 	    checks the network for the Company X address card so he
 	    knows whom to call there.  Since his company also shares
 	    calendars, he then learns that his co-worker Deanna has
@@ -117,9 +117,9 @@ NAME="USAGE-CONTACT-SHARING-EX"
 HREF="config-prefs-contact.html"
 >the section called <I
 >Managing the Addressbook</I
-> in Chapter 9</A
+> in Chapter 10</A
 >.
-       Once you have a connection, the network contacts folder or
+       Once you have a LDAP connection, the network contacts folder or
        folders will appear inside the <SPAN
 CLASS="GUILABEL"
 >External
@@ -135,8 +135,9 @@ CLASS="GUILABEL"
 >              Network folders are only available when you are
               connected to the network.  If you use a laptop or have a
               modem connection, you may wish to copy or cache the
-              network directory.  You do this by dragging and dropping your desired contacts into the local contacts list.
-	  </P
+              network directory.  You do this by dragging and dropping
+              your desired contacts into the local contacts list.
+	    </P
 ></LI
 ><LI
 ><P
@@ -156,17 +157,39 @@ CLASS="GUILABEL"
 CLASS="INTERFACE"
 >Contact Preferences</SPAN
 > window.
-          </P
+	    </P
 ></LI
 ><LI
 ><P
 >              Your ability to view, change, add, and delete contacts
               depends on the settings of the LDAP server. 
-          </P
+	    </P
 ></LI
 ></UL
 >
-     </P
+    </P
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="USAGE-CONTACT-SHARING-SETUP"
+>Configuring Evolution to use LDAP</A
+></H2
+><P
+>	For information about setting up
+	<SPAN
+CLASS="APPLICATION"
+>Evolution</SPAN
+> to use LDAP, please refer
+	to <A
+HREF="config-prefs-contact.html#CONFIG-PREFS-CONTACT-LDAP-ADD"
+>the section called <I
+>Adding Directory Servers</I
+> in Chapter 10</A
+>&#62;
+      </P
+></DIV
 ></DIV
 ><DIV
 CLASS="NAVFOOTER"

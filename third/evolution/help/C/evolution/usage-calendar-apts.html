@@ -71,7 +71,16 @@ NAME="USAGE-CALENDAR-APTS"
 ><P
 >      Of course, you'll want to use the calendar to do more than find
       out what day it is. This section will tell you how to schedule
-      appointments, set alarms, and determine appointment recurrence.
+      appointments, set alarms, and determine appointment
+      recurrence. If you have installed the Ximian Connector for
+      Microsoft Exchange, you can also read <A
+HREF="full-advantage.html"
+>the section called <I
+>Taking Full Advantage of the Exchange Server When Scheduling Appointments</I
+> in Chapter 7</A
+> to learn about how to take full
+      advantage of the collaborative group scheduling functions
+      available on the Microsoft Exchange Server.
     </P
 ><DIV
 CLASS="SECT2"
@@ -144,7 +153,10 @@ CLASS="GUILABEL"
 >	<SPAN
 CLASS="APPLICATION"
 >Evolution</SPAN
-> supports the use of timezones.  If you share calendar files with friends or co-workers, it is quite possible you will need to configure your timezone.  To configure your timezone:
+> supports the use of
+	timezones.  If you share calendar files with friends or
+	co-workers, it is quite possible you will need to configure
+	your timezone.  To configure your timezone:
 	<P
 ></P
 ><OL
@@ -166,10 +178,12 @@ CLASS="GUIMENUITEM"
 >	      Click the <SPAN
 CLASS="GUIBUTTON"
 >Globe</SPAN
-> button in the <SPAN
+> button in the
+	      <SPAN
 CLASS="GUILABEL"
 >Time</SPAN
-> section, located in the <SPAN
+> section, located in the
+	      <SPAN
 CLASS="GUILABEL"
 >General</SPAN
 > tab.
@@ -187,7 +201,14 @@ CLASS="GUIBUTTON"
 >
       </P
 ><P
->	You can also configure timezone information specific to Start and End time in each appointment.  To do that, simply create a new appointment and click on a globe to customize the timezone that the time exists in.
+>	You can also configure timezone information specific to the
+	Start and End time in each appointment.  To do that, simply
+	create a new appointment and click on a globe to customize the
+	timezone that the time exists in. For example, if you live in
+	New York but have a telephone meeting set for noon with
+	someone in California, you need to make sure that you're not
+	calling each other a few hours off.  Setting time-zones on a
+	per-appointment basis helps avoid that potential confusion.
       </P
 ><DIV
 CLASS="NOTE"
@@ -290,13 +311,18 @@ CLASS="GUILABEL"
 >	<SPAN
 CLASS="APPLICATION"
 >Evolution</SPAN
-> can handle not only time that you're busy, but free time. This can be useful if you're on a network sharing calendar files.  You can easily compare schedules with other people, allowing easy setup of a RSVP.
+> can handle not only time
+	that you're busy, but free time. This can be useful if you're
+	on a network sharing calendar files.  You can easily compare
+	schedules with other people, allowing easy setup of a RSVP.
       </P
 ><P
->	To set your appointment to be free or busy, simply click the box in the <SPAN
+>	To set your appointment to be free or busy, simply click the
+	box in the <SPAN
 CLASS="GUILABEL"
 >Show Time As</SPAN
-> section in the <SPAN
+> section in the
+	<SPAN
 CLASS="GUILABEL"
 >Appointment Editor</SPAN
 >.
@@ -417,6 +443,34 @@ CLASS="APPLICATION"
 	attendee will be sent an email with the appointment
 	information and gives them the option to respond.
       </P
+><DIV
+CLASS="NOTE"
+><BLOCKQUOTE
+CLASS="NOTE"
+><A
+NAME="MEETING-ANNOUNCE"
+></A
+><P
+><B
+>Simple Announcements: </B
+>           If you don't need to collect attendance information when
+           you're scheduling an event, and would rather just announce
+           it, select
+           <SPAN
+CLASS="GUIMENU"
+>Actions</SPAN
+>-&gt;<SPAN
+CLASS="GUIMENUITEM"
+>Forward
+           as iCalendar</SPAN
+>.  That will open a
+           new email message with the event notification attached as
+           an announcement.  Recipients will be able to add the event
+           to their calendars with one click, but won't automatically
+           send you email about whether they'll attend.
+        </P
+></BLOCKQUOTE
+></DIV
 ><P
 >	To schedule a meeting:
 	<P
@@ -526,7 +580,7 @@ CLASS="SECT2"
 ><H2
 CLASS="SECT2"
 ><A
-NAME="RECIEVING-RSVP-RESPONSE"
+NAME="RECEIVING-RSVP-RESPONSE"
 >Getting Responses to Meeting Requests</A
 ></H2
 ><P
@@ -542,6 +596,194 @@ CLASS="GUIBUTTON"
 > to update your attendee
 	list.
       </P
+></DIV
+><DIV
+CLASS="SECT2"
+><H2
+CLASS="SECT2"
+><A
+NAME="USAGE-CALENDAR-FREEBUSY"
+>The Free/Busy View</A
+></H2
+><P
+>	<SPAN
+CLASS="APPLICATION"
+>Evolution</SPAN
+> has a Free/Busy window so
+	that you can view people's schedules together to help you
+	schedule appointments. Read <A
+HREF="full-advantage.html"
+>the section called <I
+>Taking Full Advantage of the Exchange Server When Scheduling Appointments</I
+> in Chapter 7</A
+> to
+	learn about how to use this feature with the Ximian Connector
+	for Microsoft Exchange.
+      </P
+><P
+>	To access the free/busy view:
+	<P
+></P
+><OL
+TYPE="1"
+><LI
+><P
+>	      Open or create an appointment in the
+	      <SPAN
+CLASS="GUILABEL"
+>Calendar</SPAN
+> window.
+	    </P
+></LI
+><LI
+><P
+>	      Click
+	      <SPAN
+CLASS="GUIMENU"
+>Actions</SPAN
+>-&gt;<SPAN
+CLASS="GUIMENUITEM"
+>Schedule Meeting</SPAN
+>
+	    </P
+></LI
+><LI
+><P
+>	      Open the <SPAN
+CLASS="GUILABEL"
+>Scheduling</SPAN
+> tab.
+	    </P
+></LI
+></OL
+>
+      </P
+><DIV
+CLASS="FIGURE"
+><A
+NAME="AEN2794"
+></A
+><P
+><B
+>Figure 6-1. Appointment Scheduling Window</B
+></P
+><DIV
+CLASS="MEDIAOBJECT"
+><P
+><IMG
+SRC="figures/schedule.png"
+></IMG
+></P
+></DIV
+></DIV
+><P
+>	<SPAN
+CLASS="INLINEMEDIAOBJECT"
+><IMG
+SRC="figures/full-1.png"
+></IMG
+></SPAN
+>
+	<SPAN
+CLASS="GUILABEL"
+>Invitee List</SPAN
+>
+      </P
+><P
+>	The <SPAN
+CLASS="GUILABEL"
+>Invitee List</SPAN
+> lists off the people who
+	have been invited to the respective appointment.  It also
+	shows their RSVP status.
+      </P
+><P
+>	<SPAN
+CLASS="INLINEMEDIAOBJECT"
+><IMG
+SRC="figures/full-2.png"
+></IMG
+></SPAN
+>
+	<SPAN
+CLASS="GUILABEL"
+>Schedule Grid</SPAN
+>
+      </P
+><P
+>	The <SPAN
+CLASS="GUILABEL"
+>Schedule Grid</SPAN
+> shows the invitee's
+	published Free/Busy information.  This is where you compare
+	people's schedules to find free time to schedule the
+	appointment.
+      </P
+><P
+>	<SPAN
+CLASS="INLINEMEDIAOBJECT"
+><IMG
+SRC="figures/full-3.png"
+></IMG
+></SPAN
+>
+	<SPAN
+CLASS="GUILABEL"
+>Meeting Scheduler</SPAN
+>
+      </P
+><P
+>	The <SPAN
+CLASS="GUILABEL"
+>Meeting Scheduler</SPAN
+> allows you to
+	schedule the meeting in the <SPAN
+CLASS="GUILABEL"
+>Free/Busy</SPAN
+> window.
+      </P
+><DIV
+CLASS="SECT3"
+><H3
+CLASS="SECT3"
+><A
+NAME="USAGE-CALENDAR-FREEBUSY-SCHEDULING"
+>Scheduling an Appointment</A
+></H3
+><P
+>	  To schedule an appointment, you'll first need people's
+	  free/busy information.  If you're using the Ximian Connector
+	  for Microsoft Exchange, all of the information is already
+	  available to you in the Global Address List. Otherwise, each
+	  person will have to email you their schedule files and you
+	  will have to incorporate them into your calendar.
+        </P
+><P
+>          Regardless of how you get the information, Ximian Evolution
+          will display it in the <SPAN
+CLASS="GUILABEL"
+>Scheduling</SPAN
+> tab.
+          The pending appointment time will appear in white with bold
+          black borders.  Each attendee's free and busy times appear
+          color-coded next to their names in the attendee list.
+	</P
+><P
+>          Adjust the meeting time, either by dragging the meeting
+          borders or by using the <SPAN
+CLASS="GUILABEL"
+>Autopick</SPAN
+>
+          buttons to choose a time automatically, then click
+          <SPAN
+CLASS="GUIBUTTON"
+>Save and Close</SPAN
+>.  Attendees on an
+          Exchange server will have the appointment updated
+          automatically; others will receive email notification of any
+          change in plans.
+        </P
+></DIV
 ></DIV
 ></DIV
 ><DIV
