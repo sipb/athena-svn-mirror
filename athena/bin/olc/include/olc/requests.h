@@ -18,7 +18,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/requests.h,v $
- *	$Id: requests.h,v 1.12 1990-07-24 14:30:42 lwvanels Exp $
+ *	$Id: requests.h,v 1.13 1991-01-01 14:46:14 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -102,11 +102,17 @@ typedef struct tIO_REQUEST
 #define OLC_LIST_ACL         243
 #define OLC_GET_ACCESSES     244
 #define OLC_CHANGE_TOPICS    245
+
+#define OLC_SET_USER_STATUS  246      /* for future use */
+#define OLC_PRIVATE_COMMENT  247
+
 #define OLC_DUMP_REQ_STATS   250      /* debug server */
 #define OLC_DUMP_QUES_STATS  251      /* debug server */
-#define OLC_SET_USER_STATUS  252      /* for future use */
 
-#define OLC_NUM_REQUESTS     45      /* number of possible requests */
+
+
+
+#define OLC_NUM_REQUESTS     51      /* number of possible requests */
 
 /* Return values from daemon requests and functions. */
 
