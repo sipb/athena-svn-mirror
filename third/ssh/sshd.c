@@ -18,8 +18,11 @@ agent connections.
 */
 
 /*
- * $Id: sshd.c,v 1.9 1998-03-01 16:12:59 danw Exp $
+ * $Id: sshd.c,v 1.10 1998-03-12 20:37:12 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.9  1998/03/01 16:12:59  danw
+ * Use xmalloc, not malloc. (pointed out by mhpower)
+ *
  * Revision 1.8  1998/02/28 17:58:31  danw
  * Don't use packet_disconnect for `you are not allowed to log in here'
  *
@@ -1791,7 +1794,7 @@ void do_authentication(char *user, int privileged_port, int cipher_type)
   int authenticated = 0;
   int authentication_type = 0;
   char *password;
-  struct passwd *pw, pwcopy;
+  struct passwd *pw, *pw2, pwcopy;
   char *client_user;
   unsigned int client_host_key_bits;
   MP_INT client_host_key_e, client_host_key_n;
@@ -2396,6 +2399,11 @@ void do_authentication(char *user, int privileged_port, int cipher_type)
 			  &al_warnings);
   if (status != AL_SUCCESS && status != AL_WARNINGS)
     packet_disconnect("%s\n", al_strerror(status, &errmem));
+
+  /* al_acct_create may have given us a temp homedir */
+  pw2 = getpwnam(pw->pw_name);
+  free(pw->pw_dir);
+  pw->pw_dir = xstrdup(pw2->pw_dir);
 
   /* The user has been authenticated and accepted. */
   packet_start(SSH_SMSG_SUCCESS);
