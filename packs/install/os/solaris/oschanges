@@ -1,6 +1,6 @@
 #!/sbin/sh
 # Undo any undesired changes resulting from the installation of OS pkgs.
-# $Id: oschanges,v 1.21 2004-06-24 12:27:05 rbasch Exp $
+# $Id: oschanges,v 1.22 2005-04-05 13:17:42 rbasch Exp $
 
 # Restore various files which belong to the OS, but which are replaced
 # in the Athena release.
@@ -13,10 +13,7 @@ copy_from_srvd() {
 copy_from_srvd /etc/default/cron
 copy_from_srvd /etc/default/init
 copy_from_srvd /etc/default/su
-copy_from_srvd /etc/init.d/inetsvc
-copy_from_srvd /etc/init.d/nfs.client
-copy_from_srvd /etc/init.d/rpc
-copy_from_srvd /etc/inittab && [ ${UPDATE_ROOT:-/} = / ] && /etc/telinit q
+copy_from_srvd /lib/svc/method/console-login
 copy_from_srvd /etc/logindevperm
 copy_from_srvd /etc/name_to_sysnum
 copy_from_srvd /etc/nsswitch.conf
@@ -32,28 +29,19 @@ relink() {
   ln -s $target $UPDATE_ROOT$path
 }
 
-relink /etc/rc0.d/K41rpc ../init.d/rpc
-relink /etc/rc0.d/K42inetsvc ../init.d/inetsvc
-relink /etc/rc1.d/K41rpc ../init.d/rpc
-relink /etc/rc1.d/K42inetsvc ../init.d/inetsvc
-relink /etc/rc2.d/S71rpc ../init.d/rpc
-relink /etc/rc2.d/S72inetsvc ../init.d/inetsvc
-relink /etc/rcS.d/K41rpc ../init.d/rpc
-relink /etc/rcS.d/K42inetsvc ../init.d/inetsvc
 relink /usr/bin/lp /usr/athena/bin/lp
-relink /usr/lib/print/printd /os/usr/bin/lp
+
+# /usr/lib/print/printd is normally a link to /usr/bin/lp, but,
+# since we have just linked the latter to the athena lp, we
+# copy in the real lp from the /os tree instead.
+rm -f $UPDATE_ROOT/usr/lib/print/printd
+cp -p /os/usr/bin/lp $UPDATE_ROOT/usr/lib/print/printd
 
 # removed
-rm -f $UPDATE_ROOT/etc/rc2.d/S25tsaldog
-rm -f $UPDATE_ROOT/etc/rc2.d/S76nscd
-rm -f $UPDATE_ROOT/etc/rc2.d/S85power
-rm -f $UPDATE_ROOT/etc/rc2.d/S88sendmail
 rm -f $UPDATE_ROOT/etc/rc2.d/S89bdconfig
 rm -f $UPDATE_ROOT/etc/rc2.d/S95IIim
 rm -f $UPDATE_ROOT/etc/rc2.d/S99audit
-rm -f $UPDATE_ROOT/etc/rc2.d/S80lp
 rm -f $UPDATE_ROOT/etc/rc2.d/S90wbem
-rm -f $UPDATE_ROOT/etc/rc2.d/S94skiserv
 rm -f $UPDATE_ROOT/etc/rc3.d/S76snmpdx
 rm -f $UPDATE_ROOT/etc/rc3.d/S77dmi
 
