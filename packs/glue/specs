@@ -1,10 +1,12 @@
 addusr		moira
 blanche		moira
+bos		afsuser
 chfn		moira
 chpobox		moira
 chsh		moira
 dcmmaint	moira
 kermit		modem
+klog		afsuser
 listmaint	moira
 mkserv		mkserv
 mailmaint	moira
@@ -13,9 +15,13 @@ mrcheck		moira
 namespace	moira
 olc_answers	olc-stock	olc-browser
 olh		help
+olh_ascii	help
+olh_motif	help
+pts		afsuser
 sis		sis
 techinfo	techinfo
 usermaint	moira
 userreg		moira
+vos		afsuser
 xinfo		xmit
 xtechinfo	techinfo
