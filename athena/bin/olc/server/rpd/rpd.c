@@ -6,7 +6,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/rpd.c,v 1.8 1991-01-01 14:33:24 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/rpd.c,v 1.9 1991-01-15 18:06:46 lwvanels Exp $";
 #endif
 #endif
 
@@ -171,7 +171,6 @@ clean_up(signal)
      int signal;
 {
   close(fd);
-  shutdown(sock,2);
   close(sock);
   syslog(LOG_NOTICE,"rpd shutting down on signal %d",signal);
   exit(0);
