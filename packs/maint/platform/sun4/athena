@@ -315,9 +315,6 @@ echo "done."							>/dev/console
 rm -f /etc/nologin
 echo "Logins now possible."					>/dev/console
 
-/etc/athena/sethnm `uname -n`
-/etc/athena/verify
-
 echo " done!"							>/dev/console
 	;;
 'stop')
