@@ -17,7 +17,7 @@
 
 #ifndef lint
 static char rcsid_zwmnotify_c[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zmailnotify/zmailnotify.c,v 1.13 1991-02-22 21:56:58 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zmailnotify/zmailnotify.c,v 1.14 1991-03-08 11:21:05 raeburn Exp $";
 #endif
 
 #include <sys/uio.h>
@@ -122,8 +122,10 @@ main(argc, argv)
 	}
 
 	lock = fopen(lockfile,"r");
+#ifndef NO_FLOCK
 	if (lock)
 		(void) flock(fileno(lock),LOCK_EX);
+#endif
 	
 	if (pop_init(host) == NOTOK) {
 		fprintf(stderr,"%s: %s\n",prog, Errmsg);
@@ -150,7 +152,9 @@ main(argc, argv)
 
 	if (!nmsgs) {
 		if (lock) {
+#ifndef NO_FLOCK
 			(void) flock(fileno(lock),LOCK_UN);
+#endif
 			(void) fclose(lock);
 		} 
 		(void) unlink(lockfile);
@@ -180,8 +184,10 @@ main(argc, argv)
 	}
 	else {
 		lock = fopen(lockfile,"w");
+#ifndef NO_FLOCK
 		if (lock)
 			(void) flock(fileno(lock),LOCK_EX);
+#endif
 		uselock = 0;
 	}
 	
@@ -204,7 +210,9 @@ main(argc, argv)
 		mail_notify(&maillist[nmsgs-i]);
 	i--;
 	if (lock) {
+#ifndef NO_FLOCK
 		(void) flock(fileno(lock),LOCK_UN);
+#endif
 		(void) fclose(lock);
 	} 
 	lock = fopen(lockfile,"w");
