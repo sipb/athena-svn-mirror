@@ -1039,12 +1039,15 @@ if test -n "$CPP" && test -d "$CPP"; then
   CPP=
 fi
 
-#### Some systems specify a CPP to use unless we are using GCC.
-#### Now that we know whether we are using GCC, we can decide whether
-#### to use that one.
+#### Some systems specify a CPP to use for Makefiles unless we are
+#### using GCC.  Now that we know whether we are using GCC, we can
+#### decide whether to use that one.
 if test "x$NON_GNU_CPP" != x && test x$GCC != xyes && test "x$CPP" = x
 then
-  CPP="$NON_GNU_CPP"
+  makecpp="$NON_GNU_CPP"
+else
+  # We'll just use the output of AC_PROG_CPP.
+  makecpp=
 fi
 
 #### Some systems specify a CC to use unless we are using GCC.
@@ -1085,6 +1088,13 @@ AC_PROG_LN_S
 AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_YACC
+
+# Now default makecpp to the output of AC_PROC_CPP if we didn't set it
+# above.  (Since CPP is a quoted variable reference, we have to eval it.)
+if test "x$makecpp" = x
+then
+  makecpp=`eval "echo $CPP"`
+fi
 
 dnl checks for Unix variants
 AC_AIX
@@ -1346,14 +1356,11 @@ configure___ REAL_CFLAGS=C_DEBUG_SWITCH '${SPECIFIED_CFLAGS}'
 #endif /* not THIS_IS_CONFIGURE */
 ' > ${tempcname}
 
-# The value of CPP is a quoted variable reference, so we need to do this
-# to get its actual value...
-CPP=`eval "echo $CPP"`
 changequote(, )dnl
-eval `${CPP} -Isrc ${tempcname} \
+eval `${makecpp} -Isrc ${tempcname} \
        | sed -n -e 's/^configure___ \([^=]*=\)\(.*\)$/\1"\2"/p'`
 if test "x$SPECIFIED_CFLAGS" = x; then
-  eval `${CPP} -Isrc -DTHIS_IS_CONFIGURE ${tempcname} \
+  eval `${makecpp} -Isrc -DTHIS_IS_CONFIGURE ${tempcname} \
 	 | sed -n -e 's/^configure___ \([^=]*=\)\(.*\)$/\1"\2"/p'`
 else
   REAL_CFLAGS="$CFLAGS"
@@ -1903,7 +1910,7 @@ echo creating lib-src/Makefile
   sed -e '1,/start of cpp stuff/d'\
       -e 's@/\*\*/#\(.*\)$@/* \1 */@' \
       < Makefile.c > junk.c
-  $CPP $undefs -I. -I$top_srcdir/src $CPPFLAGS junk.c | \
+  $makecpp $undefs -I. -I$top_srcdir/src $CPPFLAGS junk.c | \
       sed -e 's/^ /	/' -e '/^#/d' -e '/^[ 	]*$/d' > junk2.c
   cat junk1.c junk2.c > Makefile.new
   rm -f junk.c junk1.c junk2.c
@@ -1919,7 +1926,7 @@ echo creating src/Makefile
   sed -e '1,/start of cpp stuff/d'\
       -e 's@/\*\*/#\(.*\)$@/* \1 */@' \
       < Makefile.c > junk.c
-  $CPP $undefs -I. -I$top_srcdir/src $CPPFLAGS junk.c | \
+  $makecpp $undefs -I. -I$top_srcdir/src $CPPFLAGS junk.c | \
       sed -e 's/^ /	/' -e '/^#/d' -e '/^[ 	]*$/d' > junk2.c
   cat junk1.c junk2.c > Makefile.new
   rm -f junk.c junk1.c junk2.c
@@ -1935,4 +1942,4 @@ fi
 # This is how we know whether to re-run configure in certain cases.
 touch src/config.stamp
 
-], [CPP="$CPP" CPPFLAGS="$CPPFLAGS"])
+], [makecpp="$makecpp" CPPFLAGS="$CPPFLAGS"])
