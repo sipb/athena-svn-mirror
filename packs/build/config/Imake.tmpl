@@ -123,7 +123,7 @@ LD=LdCmd
 AS=AsCmd
 RM=RmCmd
 CFLAGS=CDebugFlags CcFlags $(DEFINES) -I$(ATHINCDIR)
-LDFLAGS=LdFlags -L$(ATHLIBDIR)
+LDFLAGS=LdFlags $(CFLAGS) -L$(ATHLIBDIR)
 LDLIBS=LdLibs
 
 #include "Imake.rules"
