@@ -9,10 +9,6 @@
 #include <fcntl.h>		/* open */
 #include <errno.h>
 
-#if !defined(SOLARIS) && !defined(sgi)
-#define lchown chown
-#endif
-
 #ifdef S_IFMT
 /* S_IFMT exists pretty much everywhere, but is not strictly POSIX. */
 #define PERM(mode) ((mode) & ~S_IFMT)
