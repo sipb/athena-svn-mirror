@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v $
- *	$Author: tytso $
+ *	$Author: probe $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.4 1987-12-14 18:03:02 tytso Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.5 1991-05-26 07:18:02 probe Exp $
  */
 
 #ifndef lint
-static char *rcsid_gettime_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.4 1987-12-14 18:03:02 tytso Exp $";
+static char *rcsid_gettime_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.5 1991-05-26 07:18:02 probe Exp $";
 #endif	lint
 
 #include <sys/types.h>
@@ -134,5 +134,5 @@ main(argc, argv)
 	exit (0);
 }
 hiccup() {
-	longjmp (top_level);
+	longjmp (top_level,0);
 }
