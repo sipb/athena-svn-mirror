@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: machtype_linux.sh,v 1.7 2000-08-11 23:37:27 jweiss Exp $
+# $Id: machtype_linux.sh,v 1.7.6.1 2003-07-30 18:39:33 ghudson Exp $
 
 # We need to support the following options:
 # NOTE: c, v, d, L, and M are needed by olc, and it cares what order
@@ -133,11 +133,7 @@ if [ $cpu ] ; then
 fi
 
 if [ $display ] ; then
-	/etc/X11/X -showconfig 2>&1 | awk '
-		/^XFree86 Version/	{ printf "%s %s ", $1, $3; }
-		/^Configured drivers:$/	{ getline drv;
-					  split(drv, a, "[ :]*");
-					  print a[2]; }'
+        /sbin/lspci | awk -F: '/VGA/ {print $3}'
 	printed=1
 fi
 
