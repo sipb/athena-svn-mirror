@@ -1,16 +1,19 @@
-/* This file is part of the Project Athena Global Message System.
- * Created by: Mark W. Eichin <eichin@athena.mit.edu>
+/* Copyright 1988, 1998 by the Massachusetts Institute of Technology.
  *
- * $Id: put_fallback_file.c,v 1.7 1998-11-30 15:25:16 ghudson Exp $
- *
- *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
- *	For copying and distribution information, see the file
- *	"mit-copyright.h". 
+ * Permission to use, copy, modify, and distribute this
+ * software and its documentation for any purpose and without
+ * fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright
+ * notice and this permission notice appear in supporting
+ * documentation, and that the name of M.I.T. not be used in
+ * advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is"
+ * without express or implied warranty.
  */
-#include <mit-copyright.h>
-#ifndef lint
-static const char rcsid_put_fallback_file_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/put_fallback_file.c,v 1.7 1998-11-30 15:25:16 ghudson Exp $";
-#endif lint
+
+static const char rcsid[] = "$Id: put_fallback_file.c,v 1.8 1998-12-03 19:38:32 ghudson Exp $";
 
 #include "globalmessage.h"
 #include <sys/types.h>
