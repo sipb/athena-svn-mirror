@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: xlock.sh,v 1.1 1998-06-08 14:11:16 ghudson Exp $
+# $Id: xlock.sh,v 1.2 1998-07-31 19:21:43 ghudson Exp $
 
 if [ -r /etc/athena/rc.conf ]; then
 	. /etc/athena/rc.conf
@@ -20,5 +20,5 @@ echo ""
 echo "Press return to read the On-Line Consulting stock answer about"
 echo "screensavers, or press Control-C to go back to the prompt."
 read dummy
-/bin/athena/attachrun infoagents htmlview htmlview \
+/bin/athena/attachandrun infoagents htmlview htmlview \
 	http://web.mit.edu/answers/workstations/other_xscreensaver.html
