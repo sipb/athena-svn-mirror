@@ -196,6 +196,7 @@ static XrmOptionDescRec options [] = {
   { "-nosplash",	   ".splash",		XrmoptionNoArg, "off" },
   { "-idelay",		   ".initialDelay",	XrmoptionSepArg, 0 },
   { "-nice",		   ".nice",		XrmoptionSepArg, 0 },
+  { "-passwd",		   ".passwd",		XrmoptionSepArg, 0 },
 
   /* Actually these are built in to Xt, but just to be sure... */
   { "-synchronous",	   ".synchronous",	XrmoptionNoArg, "on" },
@@ -412,24 +413,16 @@ set_version_string (saver_info *si, int *argc, char **argv)
 }
 
 
-/* Initializations that potentially take place as a priveleged user:
+/* Initializations that potentially take place as a privileged user:
    If the xscreensaver executable is setuid root, then these initializations
    are run as root, before discarding privileges.
  */
 static void
 privileged_initialization (saver_info *si, int *argc, char **argv)
 {
-#ifdef NO_LOCKING
-  si->locking_disabled_p = True;
-  si->nolock_reason = "not compiled with locking support";
-#else /* !NO_LOCKING */
-  si->locking_disabled_p = False;
+#ifndef NO_LOCKING
   /* before hack_uid() for proper permissions */
-  if (! lock_init (*argc, argv, si->prefs.verbose_p))
-    {
-      si->locking_disabled_p = True;
-      si->nolock_reason = "error getting password";
-    }
+  pwent_lock_privileged_init (*argc, argv);
 #endif /* NO_LOCKING */
 
 #ifndef NO_SETUID
@@ -437,6 +430,23 @@ privileged_initialization (saver_info *si, int *argc, char **argv)
 #endif /* NO_SETUID */
 }
 
+/* Figure out what locking mechanisms are supported.
+ */
+static void
+lock_initialization (saver_info *si)
+{
+#ifdef NO_LOCKING
+  si->locking_disabled_p = True;
+  si->nolock_reason = "not compiled with locking support";
+#else /* !NO_LOCKING */
+  si->locking_disabled_p = False;
+  if (! lock_init (&si->prefs))
+    {
+      si->locking_disabled_p = True;
+      si->nolock_reason = "error getting password";
+    }
+#endif /* NO_LOCKING */
+}
 
 /* Open the connection to the X server, and intern our Atoms.
  */
@@ -997,6 +1007,8 @@ main (int argc, char **argv)
       exit (1);
 
   load_init_file (p);
+
+  lock_initialization (si);
 
   if (p->xsync_p) XSynchronize (si->dpy, True);
   blurb_timestamp_p = p->timestamp_p;  /* kludge */

@@ -180,6 +180,7 @@ static const char * const prefs[] = {
   "overlayTextBackground",	/* not saved -- X resources only */
   "overlayTextForeground",	/* not saved -- X resources only */
   "bourneShell",		/* not saved -- X resources only */
+  "passwd",
   0
 };
 
@@ -641,6 +642,7 @@ write_init_file (saver_preferences *p, const char *version_string)
       CHECK("overlayTextBackground") continue;  /* don't save */
       CHECK("overlayTextForeground") continue;  /* don't save */
       CHECK("bourneShell")	continue;
+      CHECK("passwd")		type = pref_str,  s = p->passwd;
       else			abort();
 # undef CHECK
 
@@ -777,6 +779,7 @@ load_init_file (saver_preferences *p)
   p->pointer_timeout = 1000 * get_seconds_resource ("pointerPollTime", "Time");
   p->notice_events_timeout = 1000*get_seconds_resource("windowCreationTimeout",
 						       "Time");
+  p->passwd = get_string_resource ("passwd", "Passwd");
   p->shell = get_string_resource ("bourneShell", "BourneShell");
 
   p->demo_command = get_string_resource("demoCommand", "URL");

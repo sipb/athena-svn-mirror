@@ -40,13 +40,9 @@
 # endif
 #endif /* __bsdi__ */
 
-/* blargh */
-#undef  Bool
-#undef  True
-#undef  False
-#define Bool  int
-#define True  1
-#define False 0
+#include <X11/Xlib.h>
+#include <X11/Xresource.h>
+#include "prefs.h"
 
 /* The user information we need to store */
 static char realm[REALM_SZ];
@@ -74,20 +70,9 @@ static char *tk_file;
    We don't use the arguments we're given, though.
  */
 Bool
-kerberos_lock_init (int argc, char **argv, Bool verbose_p)
+kerberos_lock_init (saver_preferences *p)
 {
     int k_errno;
-    uid_t euid;
-    
-    /* Reading from tk_file will open whatever file is named by
-     * $KRBTKFILE, and as root.  Give up root permissions before doing
-     * this.  Before we leave, call seteuid() with the saved effective
-     * uid to get root permissions back. */
-    euid = geteuid();
-    if (seteuid(getuid())) {
-	perror("xscreensaver");
-	return False;
-    }
     
     memset(name, 0, sizeof(name));
     memset(inst, 0, sizeof(inst));
@@ -98,14 +83,12 @@ kerberos_lock_init (int argc, char **argv, Bool verbose_p)
 
     /* open ticket file or die trying. */
     if ((k_errno = tf_init(tk_file, R_TKT_FIL))) {
-	seteuid(euid);
 	return False;
     }
 
     /* same with principal and instance names */
     if ((k_errno = tf_get_pname(name)) ||
 	(k_errno = tf_get_pinst(inst))) {
-	seteuid(euid);
 	return False;
     }
 
@@ -115,19 +98,16 @@ kerberos_lock_init (int argc, char **argv, Bool verbose_p)
     /* figure out what realm we're authenticated to. this ought
        to be the local realm, but it pays to be sure. */
     if ((k_errno = krb_get_tf_realm(tk_file, realm))) {
-	seteuid(euid);
 	return False;
     }
 
     /* last-minute sanity check on what we got. */
     if ((strlen(name)+strlen(inst)+strlen(realm)+3) >
 	(REALM_SZ + ANAME_SZ + INST_SZ + 3)) {
-	seteuid(euid);
 	return False;
     }
 
     /* success */
-    seteuid(euid);
     return True;
 }
 

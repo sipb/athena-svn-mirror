@@ -71,6 +71,7 @@ struct saver_preferences {
   Bool use_sgi_saver_extension;
   Bool use_proc_interrupts;
 
+  char *passwd;			/* Explicitly-specified (encrypted) password */
   char *shell;			/* where to find /bin/sh */
 
   char *demo_command;		/* How to enter demo mode. */
