@@ -30,7 +30,7 @@
 # may use your version of this file under either the MPL or the
 # GPL.
 #
-MANIFEST_CVS_ID = "@(#) $RCSfile: manifest.mn,v $ $Revision: 1.1.1.5 $ $Date: 2004-06-30 15:32:41 $ $Name: not supported by cvs2svn $"
+MANIFEST_CVS_ID = "@(#) $RCSfile: manifest.mn,v $ $Revision: 1.1.1.6 $ $Date: 2004-08-09 12:33:09 $ $Name: not supported by cvs2svn $"
 
 CORE_DEPTH = ../../..
 
