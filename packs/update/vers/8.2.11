@@ -19,7 +19,7 @@ echo "/etc/athena/inetd.conf"			>> "$CONFCHG"
 # MACHINE is now going to be the output of machtype -c.
 MACHINE=`/bin/athena/machtype -c`
 ed -s /etc/athena/rc.conf << EOS
-/^MACHINE/s/=[^;]*/=$MACHINE/
+/^MACHINE/s|=[^;]*|=$MACHINE|
 w
 q
 EOS
