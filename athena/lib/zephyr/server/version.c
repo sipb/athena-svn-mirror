@@ -20,7 +20,7 @@ char version[] = "Zephyr Server 3.11";
 #endif DEBUG
 #ifndef lint
 #ifndef SABER
-static char rcsid_main_c[] = "$Id: version.c,v 1.1 1989-09-18 13:24:26 jtkohl Exp $";
+static char rcsid_version_c[] = "$Id: version.c,v 1.2 1989-09-18 14:23:11 jtkohl Exp $";
 char copyright[] = "Copyright (c) 1987,1988,1989 Massachusetts Institute of Technology.\n";
 #ifdef CONCURRENT
 char concurrent[] = "Brain-dump concurrency enabled";
