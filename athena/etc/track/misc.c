@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 4.6 1998-07-25 21:03:40 ghudson Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 4.7 1998-12-18 13:33:39 rbasch Exp $
  *
  *	$Log: not supported by cvs2svn $
+ *	Revision 4.6  1998/07/25 21:03:40  ghudson
+ *	Use strerror().
+ *
  *	Revision 4.5  1998/02/18 21:57:41  ghudson
  *	Add the ability to make an entire entry a forced symlink.
  *
@@ -66,7 +69,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 4.6 1998-07-25 21:03:40 ghudson Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 4.7 1998-12-18 13:33:39 rbasch Exp $";
 #endif lint
 
 #include "bellcore-copyright.h"
@@ -85,7 +88,7 @@ printmsg( filep) FILE *filep;
 	if ( filep);
 	else if ( nopullflag) return;
 	else if ( logfile = fopen( logfilepath, "w+")) {
-		(void) fchmod( logfile, 0664);
+		(void) fchmod( fileno(logfile), 0664);
 		filep = logfile;
 	}
 	else {
