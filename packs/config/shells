@@ -2,10 +2,8 @@
 # Ftpd will not allow users to connect who do not have one of these shells
 #
 #	$Source: /afs/dev.mit.edu/source/repository/packs/config/shells,v $
-#	$Header: /afs/dev.mit.edu/source/repository/packs/config/shells,v 1.1 1987-08-09 13:10:55 treese Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/config/shells,v 1.2 1987-08-29 04:42:08 kubitron Exp $
 /bin/sh
 /bin/csh
-/usr/new/csh
-/usr/unsupported/sipb/tcsh
+/bin/tcsh
 /bin/unsupported_tcsh
-
