@@ -328,6 +328,7 @@ extern int32 ubik_nBuffers;
 #define UNOSPC                                   (5408L)
 #define UBADPATH                                 (5409L)
 #define UBADF                                    (5410L)
+#define UREINITIALIZE                            (5411L)
 extern void initialize_u_error_table ();
 #define ERROR_TABLE_BASE_u (5376L)
 
