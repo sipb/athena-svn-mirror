@@ -1,4 +1,4 @@
-/* $Id: gdict-pref.c,v 1.1.1.2 2003-01-04 21:13:28 ghudson Exp $ */
+/* $Id: gdict-pref.c,v 1.1.1.3 2004-10-04 05:06:08 ghudson Exp $ */
 
 /*
  *  Papadimitriou Spiros <spapadim+@cs.cmu.edu>
@@ -75,9 +75,9 @@ smart_changed_cb (GConfClient *client, guint id, GConfEntry *entry, gpointer dat
  */
 
 void 
-gdict_pref_load (void) {
-    gchar *prefix, *server_key, *port_key;
-    gint i;
+gdict_pref_load (void)
+{
+    GError *error = NULL;
 
     gconf_client_add_dir(gdict_get_gconf_client (), "/apps/gnome-dictionary", GCONF_CLIENT_PRELOAD_NONE, NULL);
     
@@ -90,7 +90,13 @@ gdict_pref_load (void) {
     
     gdict_pref.port = gconf_client_get_int (gdict_get_gconf_client (), "/apps/gnome-dictionary/port", NULL);
     
-    gdict_pref.smart = gconf_client_get_bool(gdict_get_gconf_client (), "/apps/gnome-dictionary/smart", NULL);
+    gdict_pref.smart = gconf_client_get_bool(gdict_get_gconf_client (),
+"/apps/gnome-dictionary/smart", &error);
+    if (error) {
+        gdict_pref.smart = TRUE;
+        g_error_free (error);
+    }
+
     gconf_client_notify_add (gdict_get_gconf_client (), "/apps/gnome-dictionary/smart", smart_changed_cb, NULL, NULL, NULL);
     
     gdict_pref.database = gconf_client_get_string (gdict_get_gconf_client (), "/apps/gnome-dictionary/database", NULL);
@@ -105,8 +111,6 @@ gdict_pref_load (void) {
 	gdict_pref.server = g_strdup ("dict.org");
     if (!gdict_pref.port)
 	gdict_pref.port = 2628;
-    if (!gdict_pref.smart)
-	gdict_pref.smart = TRUE;
     if (!gdict_pref.database)
 	gdict_pref.database = "!";
     if (!gdict_pref.dfl_strat)

@@ -32,6 +32,7 @@
 #include <sys/ioctl.h>
 #include <sys/wait.h>
 #include <linux/major.h>
+#include <linux/kdev_t.h>
 #include <string.h>
 
 #ifdef HAVE_LINUX_FD_H
@@ -51,20 +52,12 @@ typedef enum {
 	CMD_MFORMAT	
 } FSCreationCmdType;
 
-static gboolean write_badblocks_file    (GFloppy *floppy, gchar **bb_filename);
-static void     badblocks_check_cleanup (GFloppy *floppy, gchar  *bb_filename);
+static gboolean write_badblocks_file    (GFloppy *floppy, char **bb_filename);
+static void     badblocks_check_cleanup (GFloppy *floppy, char  *bb_filename);
 
 static int      execute_fs_creation_cmd (GFloppy *floppy,
 					 FSCreationCmdType type,
-					 const gchar *bb_filename);
-
-/* keep in sync with fd_print in badblocks */
-static void
-fd_print (GFloppy *floppy, gchar *string)
-{
-	write (floppy->message[1], string, strlen (string));
-	write (floppy->message[1], "\000", 1);
-}
+					 const char *bb_filename);
 
 gint
 floppy_block_size (GFloppySize size)
@@ -99,7 +92,7 @@ static GPtrArray *
 make_mformat_cmd_args (GFloppy *floppy)
 {
 	GPtrArray *args;
-	gchar *geometry_args[4][3] = {
+	char *geometry_args[4][3] = {
 		{ "80", "2", "18" }, /* 1.44 Mo */
 		{ "80", "2", "15" }, /*  1.2 Mo */
 		{ "80", "2",  "9" }, /*  720 Ko */
@@ -117,7 +110,7 @@ make_mformat_cmd_args (GFloppy *floppy)
 		g_ptr_array_add (args, floppy->volume_name);
 	}
 
-	g_ptr_array_add (args, "-c");
+	g_ptr_array_add (args, "-t");
 	g_ptr_array_add (args, geometry_args[floppy->size][0]);
 
 	g_ptr_array_add (args, "-h");
@@ -134,7 +127,7 @@ make_mformat_cmd_args (GFloppy *floppy)
 
 static GPtrArray *
 make_mkdosfs_cmd_args (GFloppy     *floppy,
-		       const gchar *bb_filename)
+		       const char *bb_filename)
 {
 	GPtrArray *args;
 
@@ -159,7 +152,7 @@ make_mkdosfs_cmd_args (GFloppy     *floppy,
 
 static GPtrArray *
 make_mke2fs_cmd_args (GFloppy     *floppy,
-		      const gchar *bb_filename)
+		      const char *bb_filename)
 {
 	GPtrArray *args;
 
@@ -182,8 +175,8 @@ make_mke2fs_cmd_args (GFloppy     *floppy,
 	return args;
 
 #if 0
-	gchar *retval = NULL;
-	gchar *bad_block_flag;
+	char *retval = NULL;
+	char *bad_block_flag;
 
 	if (floppy->quick_format)
 		bad_block_flag = "";
@@ -216,7 +209,7 @@ make_mke2fs_cmd_args (GFloppy     *floppy,
 
 static gboolean
 write_badblocks_file (GFloppy *floppy,
-		      gchar  **bb_filename)
+		      char  **bb_filename)
 {
 	GIOChannel *ioc;
 	GIOStatus status;
@@ -226,14 +219,14 @@ write_badblocks_file (GFloppy *floppy,
 	fd = g_file_open_tmp (NULL, bb_filename, NULL);
 
 	if (fd == -1) {
-		fd_print (floppy, _("EError while creating a unique filename for the bad blocks list file."));
+		fd_print (floppy, MSG_ERROR, _("Error while creating a unique filename for the bad blocks list file."));
 		return FALSE;
 	}
 
 	ioc = g_io_channel_unix_new (fd);
 
 	for (l = floppy->badblocks_list; l; l = l->next) {
-		gchar *buf = g_strdup_printf ("%lu\n", *((unsigned long *) l->data));
+		char *buf = g_strdup_printf ("%lu\n", *((unsigned long *) l->data));
 		status = g_io_channel_write_chars (ioc, buf, strlen (buf), NULL, NULL);
 		g_free (buf);
 	}
@@ -246,7 +239,7 @@ write_badblocks_file (GFloppy *floppy,
 		unlink (*bb_filename);
 		g_free (*bb_filename);
 
-		fd_print (floppy, _("EError while filling the bad blocks list file."));
+		fd_print (floppy, MSG_ERROR, _("Error while filling the bad blocks list file."));
 
 		return FALSE;
 	}
@@ -256,10 +249,8 @@ write_badblocks_file (GFloppy *floppy,
 
 static void
 badblocks_check_cleanup (GFloppy *floppy,
-			 gchar   *bb_filename)
+			 char   *bb_filename)
 {
-	GList *l;
-
 	g_return_if_fail (floppy->formatting_mode == GFLOPPY_FORMAT_THOROUGH);
 	g_return_if_fail (floppy->badblocks_list != NULL);
 
@@ -274,11 +265,12 @@ badblocks_check_cleanup (GFloppy *floppy,
 static int
 execute_fs_creation_cmd (GFloppy           *floppy,
 			 FSCreationCmdType type,
-			 const gchar      *bb_filename)
+			 const char      *bb_filename)
 {
 	GPtrArray *args;
 	GError *error = NULL;
-	gchar *stderr_buf = NULL;
+	char *stdout_buf = NULL;
+	char *stderr_buf = NULL;
 	gint status;
 
 	g_return_val_if_fail (floppy != NULL, -1);
@@ -297,16 +289,21 @@ execute_fs_creation_cmd (GFloppy           *floppy,
 			g_assert_not_reached ();
 	}
 
+	/* Note: the stdout_buf can be thought as unuseful, but it avoids a
+	 *	 race condition: without any output descriptor, g_spawn_*
+	 *	 uses the parent process output descriptor, which is already
+	 *	 closed */
+
 	if (!g_spawn_sync (NULL,
-			   (gchar **) args->pdata, NULL,
+			   (char **) args->pdata, NULL,
 			   G_SPAWN_SEARCH_PATH,
 			   NULL, NULL,
-			   NULL, &stderr_buf,
+			   &stdout_buf, &stderr_buf,
 			   &status, &error)) {
-		gchar *msg;
+		char *msg;
 
-		msg = g_strdup_printf (_("EError while spawning the (%s) command: %s."), args->pdata[0], error->message);
-		fd_print (floppy, msg);
+		msg = g_strdup_printf (_("Error while spawning the (%s) command: %s."), (char *)args->pdata[0], error->message);
+		fd_print (floppy, MSG_ERROR, msg);
 		g_free (msg);
 
 		g_error_free (error);
@@ -316,9 +313,11 @@ execute_fs_creation_cmd (GFloppy           *floppy,
 		return -1;
 	}
 
+	g_free (stdout_buf);
+
 	if (stderr_buf != NULL) {
-		gchar *err_output = stderr_buf;
-		gchar *msg;
+		char *err_output = stderr_buf;
+		char *msg;
 		gboolean has_real_err_output = TRUE;
 
 		/* The first line is skipped for mke2fs because it contains the
@@ -329,7 +328,7 @@ execute_fs_creation_cmd (GFloppy           *floppy,
 			err_output = strstr (stderr_buf, "\n");
 
 			if (!err_output) {
-				fd_print (floppy, _("EUnknown mke2fs starting signature, cancelling."));
+				fd_print (floppy, MSG_ERROR, _("Unknown mke2fs starting signature, cancelling."));
 
 				g_free (stderr_buf);
 				g_ptr_array_free (args, FALSE);
@@ -343,9 +342,9 @@ execute_fs_creation_cmd (GFloppy           *floppy,
 
 		if ((type != CMD_MKE2FS || has_real_err_output) &&
 		     strlen (err_output) > 0) {
-			msg = g_strdup_printf (_("EThe filesystem creation utility (%s) reported the following errors:\n\n%s (%d)"),
-					       args->pdata[0], err_output, strlen (err_output)); // FIXME:
-			fd_print (floppy, msg);
+			msg = g_strdup_printf (_("The filesystem creation utility (%s) reported the following errors:\n\n%s (%d)"),
+					       (char *)args->pdata[0], err_output, strlen (err_output)); // FIXME:
+			fd_print (floppy, MSG_ERROR, msg);
 			g_free (msg);
 
 			g_free (stderr_buf);
@@ -360,7 +359,7 @@ execute_fs_creation_cmd (GFloppy           *floppy,
 	if (WIFEXITED (status))
 		return WEXITSTATUS (status);
 
-	fd_print (floppy, _("EAbnormal child process termination."));
+	fd_print (floppy, MSG_ERROR, _("Abnormal child process termination."));
 
 	return -1;
 }
@@ -369,8 +368,8 @@ static int
 execute_mbadblocks (GFloppy *floppy)
 {
 	GError *error = NULL;
-	gchar *args[3];
-	gchar *stdout_buf = NULL, *stderr_buf = NULL;
+	char *args[3];
+	char *stdout_buf = NULL, *stderr_buf = NULL;
 	gint status;
 
 	args[0] = floppy->badblocks_cmd;
@@ -383,10 +382,10 @@ execute_mbadblocks (GFloppy *floppy)
 			   NULL, NULL,
 			   &stdout_buf, &stderr_buf,
 			   &status, &error)) {
-		gchar *msg;
+		char *msg;
 
-		msg = g_strdup_printf (_("EError while spawning the mbadblocks command: %s."), error->message);
-		fd_print (floppy, msg);
+		msg = g_strdup_printf (_("Error while spawning the mbadblocks command: %s."), error->message);
+		fd_print (floppy, MSG_ERROR, msg);
 		g_free (msg);
 
 		g_error_free (error);
@@ -395,18 +394,18 @@ execute_mbadblocks (GFloppy *floppy)
 	}
 
 	if (stderr_buf != NULL) {
-		gchar *msg;
+		char *msg;
 
-		msg = g_strdup_printf (_("EThe bad blocks checking utility (mbadblocks) reported the following errors:\n%s."), stderr_buf);
-		fd_print (floppy, msg);
+		msg = g_strdup_printf (_("The bad blocks checking utility (mbadblocks) reported the following errors:\n%s."), stderr_buf);
+		fd_print (floppy, MSG_ERROR, msg);
 		g_free (msg);
 
 		g_free (stderr_buf);
 	}
 
 	if (stdout_buf != NULL) {
-		gchar *needle = "Bad cluster ";
-		gchar *p = stdout_buf;
+		char *needle = "Bad cluster ";
+		char *p = stdout_buf;
 		unsigned long cluster;
 
 		while (1) {
@@ -416,14 +415,14 @@ execute_mbadblocks (GFloppy *floppy)
 				break;
 
 			if (sscanf (p + strlen (needle), "%lu", &cluster) == 1) {
-				gchar *msg;
+				char *msg;
 
 				/* we don't add it to the badblocks list since
 				   mformat doesn't accept a list of bad blocks
 				   like the mk*fs tools */
 
-				msg = g_strdup_printf ("B%lu", cluster);
-	                        fd_print (floppy, msg);
+				msg = g_strdup_printf ("%lu", cluster);
+	                        fd_print (floppy, MSG_BADBLOCK, msg);
 	                        g_free (msg);
 			} else
 				g_warning (("Invalid mbadblocks output, trying to continue."));
@@ -440,7 +439,7 @@ execute_mbadblocks (GFloppy *floppy)
 	if (WIFEXITED (status))
 		return WEXITSTATUS (status);
 
-	fd_print (floppy, _("EAbnormal mbadblocks child process termination."));
+	fd_print (floppy, MSG_ERROR, _("Abnormal mbadblocks child process termination."));
 
 	return -1;
 }
@@ -448,9 +447,8 @@ execute_mbadblocks (GFloppy *floppy)
 static int
 format_ext2fs (GFloppy *floppy)
 {
-	gchar *cmd;
 	gint rc = 0;
-	gchar *bb_filename = NULL;
+	char *bb_filename = NULL;
 
 	g_return_val_if_fail (floppy != NULL, -1);
 
@@ -467,7 +465,7 @@ format_ext2fs (GFloppy *floppy)
 	}
 
 	/* make the filesystem */
-	fd_print (floppy, _("MMaking filesystem on disk..."));
+	fd_print (floppy, MSG_MESSAGE, _("Making filesystem on disk..."));
 	rc = execute_fs_creation_cmd (floppy, CMD_MKE2FS, bb_filename);
 
 	if (floppy->formatting_mode == GFLOPPY_FORMAT_THOROUGH &&
@@ -475,12 +473,13 @@ format_ext2fs (GFloppy *floppy)
 		badblocks_check_cleanup (floppy, bb_filename);
 
 	if (rc > 3) {
-		fd_print (floppy, _("EUnable to create filesystem correctly."));
+		fd_print (floppy, MSG_ERROR, _("Unable to create filesystem correctly."));
+
 		return -1;
 	}
 
-	fd_print (floppy, _("MMaking filesystem on disk... Done"));
-	fd_print (floppy, "P100");
+	fd_print (floppy, MSG_MESSAGE, _("Making filesystem on disk... Done"));
+	fd_print (floppy, MSG_PROGRESS, "100");
 
 	return rc;
 }
@@ -488,9 +487,8 @@ format_ext2fs (GFloppy *floppy)
 static int
 format_fat (GFloppy *floppy)
 {
-	gchar *cmd;
 	gint rc = 0;
-	gchar *bb_filename = NULL;
+	char *bb_filename = NULL;
 
 	g_return_val_if_fail (floppy != NULL, -1);
 
@@ -507,7 +505,7 @@ format_fat (GFloppy *floppy)
 	}
 
 	/* make the filesystem */
-	fd_print (floppy, _("MMaking filesystem on disk..."));
+	fd_print (floppy, MSG_MESSAGE, _("Making filesystem on disk..."));
 
 	if (floppy->mkdosfs_backend)
 		rc = execute_fs_creation_cmd (floppy, CMD_MKDOSFS, bb_filename);
@@ -519,27 +517,27 @@ format_fat (GFloppy *floppy)
 	    floppy->badblocks_list)
 		badblocks_check_cleanup (floppy, bb_filename);
 
-	fd_print (floppy, _("MMaking filesystem on disk... Done"));
+	fd_print (floppy, MSG_MESSAGE, _("Making filesystem on disk... Done"));
 
 	/* check for bad blocks if using mbadblocks is reversed */
 	if (!floppy->mkdosfs_backend && /* the mbadblocks command presence is already checked */
 	    floppy->formatting_mode == GFLOPPY_FORMAT_THOROUGH) {
-		fd_print (floppy, _("MChecking for bad blocks... (this might take a while)")); 
+		fd_print (floppy, MSG_MESSAGE, _("Checking for bad blocks... (this might take a while)")); 
 
 		rc = execute_mbadblocks (floppy);
 		
 		if (rc != 0) {
-			fd_print (floppy, _("EError while checking the bad blocks."));
+			fd_print (floppy, MSG_ERROR, _("Error while checking the bad blocks."));
 			return -1;
 		}
 
-		fd_print (floppy, _("MChecking for bad blocks... Done"));
-		fd_print (floppy, "P100");
+		fd_print (floppy, MSG_MESSAGE, _("Checking for bad blocks... Done"));
+		fd_print (floppy, MSG_PROGRESS, "100");
 
 		return 0;
 	}
 
-	fd_print (floppy, "P100");
+	fd_print (floppy, MSG_PROGRESS, "100");
 	
 	return rc;
 }
@@ -549,7 +547,7 @@ format_floppy (GFloppy *floppy)
 {
 	gint rc = 0;
 
-	fd_print (floppy, "P000");
+	fd_print (floppy, MSG_PROGRESS, "000");
 
 	/* low-level format */
 	if (floppy->formatting_mode != GFLOPPY_FORMAT_QUICK) {
@@ -568,7 +566,7 @@ format_floppy (GFloppy *floppy)
 }
 
 GFloppyStatus
-test_floppy_device (gchar *device)
+test_floppy_device (char *device)
 {
 	struct stat s;
         struct floppy_drive_struct ds;

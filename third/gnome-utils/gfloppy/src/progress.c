@@ -120,7 +120,7 @@ read_stdinput (gpointer data,
 	
 			if (floppy->nbadblocks > 0) {
 				dialog_type = GTK_MESSAGE_WARNING;
-				error_label = g_strdup_printf (_("The floppy has been formatted, but <b>%d bad blocks</b> (out of %d) have been found and marked."), floppy->nbadblocks, floppy->nblocks);
+				error_label = g_strdup_printf (ngettext ("The floppy has been formatted, but <b>%d bad block</b> (out of %d) has been found and marked.", "The floppy has been formatted, but <b>%d bad blocks</b> (out of %d) have been found and marked.", floppy->nbadblocks), floppy->nbadblocks, floppy->nblocks);
 			} else {
 				dialog_type = GTK_MESSAGE_INFO;
 				error_label = g_strdup (_("Floppy formatted successfully."));
@@ -134,8 +134,11 @@ read_stdinput (gpointer data,
 
 		error_dialog = gtk_message_dialog_new ((GtkWindow *)progress_dialog, GTK_DIALOG_MODAL,
 						       dialog_type,
-						       GTK_BUTTONS_CLOSE,
+						       GTK_BUTTONS_OK,
 						       error_label);
+
+		gtk_dialog_set_has_separator (GTK_DIALOG(error_dialog), FALSE);
+		gtk_container_set_border_width (GTK_CONTAINER (error_dialog), 5);
 
 		if (rc == 0 && !WIFSIGNALED (status) && floppy->nbadblocks > 0)
                         gtk_label_set_use_markup (GTK_LABEL (GTK_MESSAGE_DIALOG (error_dialog)->label), TRUE);
@@ -169,14 +172,18 @@ setup_progress_and_run (GFloppy *floppy, GtkWidget *parent)
 	GtkWidget *vbox;
 
 	show_error_dialog = FALSE;
-	progress_dialog = gtk_dialog_new_with_buttons (_("Format progress"),
+	progress_dialog = gtk_dialog_new_with_buttons (_("Format Progress"),
 						       GTK_WINDOW (parent),
 						       GTK_DIALOG_MODAL,
 						       GTK_STOCK_CANCEL,
 						       GTK_RESPONSE_CANCEL,
 						       NULL);
-	vbox = gtk_vbox_new (FALSE, 0);
-	gtk_container_set_border_width (GTK_CONTAINER (vbox), 7);
+
+	gtk_container_set_border_width (GTK_CONTAINER (progress_dialog), 5);
+	gtk_dialog_set_has_separator (GTK_DIALOG(progress_dialog), FALSE);
+					       
+	vbox = gtk_vbox_new (FALSE, 6);
+	gtk_container_set_border_width (GTK_CONTAINER (vbox), 5);
 	gtk_box_pack_start (GTK_BOX (GTK_DIALOG (progress_dialog)->vbox), vbox,
 			    TRUE, TRUE, 0);
 

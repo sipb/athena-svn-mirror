@@ -1,4 +1,4 @@
-/* $Id: gdict-about.c,v 1.1.1.3 2003-01-29 20:33:24 ghudson Exp $ */
+/* $Id: gdict-about.c,v 1.1.1.4 2004-10-04 05:06:52 ghudson Exp $ */
 
 /*
  *  Papadimitriou Spiros <spapadim+@cs.cmu.edu>
@@ -24,11 +24,11 @@
 #include "gdict-about.h"
 
 
-static GtkWidget *gdict_about_new (void)
+GtkWidget *gdict_about_new (void)
 {
-    GdkPixbuf   *pixbuf;
+    GdkPixbuf   *pixbuf = NULL;
     GError  	*error = NULL;
-    gchar 	*file;
+    GtkIconInfo *icon_info;
     
     const gchar *authors[] = {
         "Mike Hughes <mfh@psilord.com>",
@@ -40,22 +40,22 @@ static GtkWidget *gdict_about_new (void)
 	    NULL
     };
     /* Translator credits */
-    gchar *translator_credits = _("translator_credits");
+    gchar *translator_credits = _("translator-credits");
     GtkWidget *about;
     
-    file = gnome_program_locate_file (NULL, GNOME_FILE_DOMAIN_PIXMAP, "gdict.png", FALSE, NULL);
-    pixbuf = gdk_pixbuf_new_from_file (file, &error);
-    
-    if (error) {
-    	   g_warning (G_STRLOC ": cannot open %s: %s", file, error->message);
+    icon_info = gtk_icon_theme_lookup_icon (gtk_icon_theme_get_default (), "gdict", 48, 0);
+    if (icon_info) {
+        pixbuf = gtk_icon_info_load_icon (icon_info, &error);
+        
+        if (error) {
+    	   g_warning (G_STRLOC ": cannot open %s: %s", gtk_icon_info_get_filename (icon_info), error->message);
 	   g_error_free (error);	
+        }
     }
     
-    g_free (file);    
-    
-    about = gnome_about_new (_("GNOME Dictionary"), VERSION,
-                            _("Copyright 1999 by Mike Hughes"),
-                            _("Client for MIT dictionary server.\n"),
+    about = gnome_about_new (_("Dictionary"), VERSION,
+                            "Copyright \xc2\xa9 1999-2003 Mike Hughes",
+                            _("A client for the MIT dictionary server."),
 			     (const char **)authors,
 			     (const char **)documenters,
 			     strcmp (translator_credits, "translator_credits") != 0 ? translator_credits : NULL,
@@ -64,17 +64,27 @@ static GtkWidget *gdict_about_new (void)
     	   gdk_pixbuf_unref (pixbuf);
     }
 
-    gnome_window_icon_set_from_file (GTK_WINDOW (about), GNOME_ICONDIR"/gdict.png");				     
-			     
+    gnome_window_icon_set_from_file (GTK_WINDOW (about), gtk_icon_info_get_filename (icon_info));
+    
+    if (icon_info) {
+    	gtk_icon_info_free (icon_info);
+    }
+    
     return about;
 }
 
 void gdict_about (GtkWindow *parent)
 {
-    GtkWidget *about = gdict_about_new();
-    if (parent) {
-      gtk_window_set_transient_for (GTK_WINDOW (about), parent) ;
+    static GtkWidget *about = NULL;
+
+    if (about == NULL) {
+      about = gdict_about_new();
+      g_signal_connect (G_OBJECT (about), "destroy",
+			G_CALLBACK (gtk_widget_destroyed), &about);
+      if (parent) {
+        gtk_window_set_transient_for (GTK_WINDOW (about), parent) ;
+      }
     }
-    gtk_widget_show(about);
+    gtk_window_present (GTK_WINDOW (about));
 }
 

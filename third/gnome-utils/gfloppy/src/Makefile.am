@@ -1,12 +1,11 @@
 ## Process this file with automake to produce Makefile.in
 
-CFLAGS=-g ${LIBGLADE_CFLAGS}
-
 INCLUDES = \
 	-DGNOMELOCALEDIR=\""$(gnomeutilslocaledir)"\"	\
         -DGLADEDIR=\""$(gladedir)"\"           	\
         -DDATADIR=\""$(datadir)"\"		\
-	$(GNOME_UTILS_CFLAGS)
+	$(GNOME_UTILS_CFLAGS)			\
+	$(LIBGLADE_CFLAGS)
 
 bin_PROGRAMS = gfloppy
 

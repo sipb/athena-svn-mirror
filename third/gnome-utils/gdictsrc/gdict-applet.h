@@ -1,7 +1,7 @@
 #ifndef __GDICT_APPLET_H_
 #define __GDICT_APPLET_H_
 
-/* $Id: gdict-applet.h,v 1.1.1.3 2003-01-04 21:13:19 ghudson Exp $ */
+/* $Id: gdict-applet.h,v 1.1.1.4 2004-10-04 05:06:37 ghudson Exp $ */
 
 /*
  *  Papadimitriou Spiros <spapadim@cs.cmu.edu>
@@ -21,10 +21,10 @@
 typedef struct _GDictApplet {
 	GtkWidget *applet_widget;
 	GtkWidget *button_widget;
-	GtkWidget *image;
-	GtkWidget *vbox_widget;
+	GtkWidget *box;
 	GtkWidget *entry_widget;
-	GtkWidget *handlebox_widget;
+	GtkWidget *about_dialog;
+	GtkWidget *tooltip_widget;
 	PanelAppletOrient orient;
 	gboolean handle;
 	gint panel_size;

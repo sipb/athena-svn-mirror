@@ -33,37 +33,8 @@ extern "C" {
 #pragma }
 #endif
 
-#include <gnome.h>
+#define ICON_SIZE 24
 
-#define CDDB_DISCLOSURE_TYPE (cddb_disclosure_get_type ())
-#define CDDB_DISCLOSURE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), CDDB_DISCLOSURE_TYPE, CDDBDisclosure))
-#define CDDB_DISCLOSURE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), CDDB_DISCLOSURE_TYPE, CDDBDisclosureClass))
-#define IS_CDDB_DISCLOSURE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), CDDB_DISCLOSURE_TYPE))
-#define IS_CDDB_DISCLOSURE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), CDDB_DISCLOSURE_TYPE))
-#define ICON_SIZE 24.0
-
-typedef struct _CDDBDisclosure CDDBDisclosure;
-typedef struct _CDDBDisclosureClass CDDBDisclosureClass;
-typedef struct _CDDBDisclosurePrivate CDDBDisclosurePrivate;
-
-struct _CDDBDisclosure {
-	GtkCheckButton parent;
-	CDDBDisclosurePrivate *priv;
-};
-
-struct _CDDBDisclosureClass {
-	GtkCheckButtonClass parent_class;
-};
-
-GType 		
-cddb_disclosure_get_type 	(void);
-
-GtkWidget *
-cddb_disclosure_new 		(const char *shown,
-				 const char *hidden);
-void
-cddb_disclosure_set_container 	(CDDBDisclosure *disclosure,
-				 GtkWidget *container);
 gboolean  	
 is_path_hidden 			(const gchar *path);
 
@@ -72,6 +43,18 @@ is_path_in_home_folder 		(const gchar *path);
 
 gboolean  	
 is_path_in_mount_folder		(const gchar *path);
+
+gboolean  	
+is_path_in_proc_folder		(const gchar *path);
+
+gboolean  	
+is_path_in_dev_folder		(const gchar *path);
+
+gboolean  	
+is_path_in_var_folder		(const gchar *path);
+
+gboolean  	
+is_path_in_tmp_folder		(const gchar *path);
 
 gboolean
 file_extension_is 		(const char *filename, 
@@ -85,23 +68,26 @@ limit_string_to_x_lines		(GString *string,
 gchar *	
 escape_single_quotes 		(const gchar *string);
 
+gchar *	
+backslash_special_characters	(const gchar *string);
+
+gchar *
+remove_mnemonic_character	(const gchar *string);
+
 gint 	 	
 count_of_char_in_string		(const gchar *string, 
 				 const gchar q);
-gchar *    	
-get_date 			(const time_t file_time_raw);
-
 gchar *   	
 get_readable_date 		(const time_t file_time_raw);
 
 gchar *    	
-strdup_strftime 		(const gchar *format, 
+gsearchtool_strdup_strftime	(const gchar *format, 
 				 struct tm *time_pieces); 
-gchar *
-get_file_type_with_mime_type	(const gchar *filename,
+const char *
+get_file_type_for_mime_type	(const gchar *filename,
 				 const gchar *mimetype);
-gchar *
-get_file_icon_with_mime_type 	(const gchar *filename,
+GdkPixbuf *
+get_file_pixbuf_for_mime_type 	(const gchar *filename,
 				 const gchar *mimetype);
 gboolean  	
 is_nautilus_running 		(void);
@@ -118,6 +104,24 @@ open_file_with_application 	(const gchar *filename);
 gboolean
 launch_file 			(const gchar *filename);
 
+gboolean 
+gsearchtool_gconf_get_boolean 	(const gchar *key);
+
+void
+gsearchtool_gconf_set_boolean 	(const gchar *key, 
+				 const gboolean flag);
+
+char *
+gsearchtool_gconf_get_string 	(const gchar *key);
+
+gchar *
+gsearchtool_unique_filename 	(const gchar *dir,
+				 const gchar *suffix);
+			      
+GtkWidget *
+gsearchtool_button_new_with_stock_icon (const gchar *label,
+                                        const gchar *stock_id);
+				 			      
 #ifdef __cplusplus
 }
 #endif

@@ -20,6 +20,9 @@
     ---------------------------------------------------------------------- */
 
 #include <config.h>
+#ifdef __CYGWIN__
+#define timezonevar
+#endif
 #include <gnome.h>
 #include <locale.h>
 #include <errno.h>
@@ -177,7 +180,6 @@ OpenLogFile (char *filename)
    Log *tlog;
    LogLine *line;
    char buffer[1024];
-   int i, j;
 
    /* Check that the file exists and is readable and is a
       logfile */
@@ -233,6 +235,9 @@ OpenLogFile (char *filename)
    if (!tlog->offset_end)
       printf ("Empty file! \n");
 
+   /* initialize date headers hash table */
+   tlog->date_headers = g_hash_table_new_full (
+                NULL, NULL, NULL, (GDestroyNotify) gtk_tree_path_free);
    return tlog;
 
 }
@@ -1098,6 +1103,7 @@ CloseLog (Log * log)
        gtk_tree_path_free (log->expand_paths[i]);
 
    gtk_tree_path_free (log->current_path);
+   g_hash_table_destroy (log->date_headers);
 
    g_free (log);
    return;

@@ -1,14 +1,185 @@
+2004-08-02  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/gfloppy.c: #include <linux/kdev_t.h> to get MAJOR
+	defined on Fedora Core.
+
+2004-07-21  Glynn Foster  <glynn.foster@sun.com>
+
+	* gfloppy.desktop.in, Makefile.am, gfloppy.keys.in,
+	* gfloppy.mime: Update to the new MIME system. Based on
+	patch sent to desktop-devel-list from Ray Strode.
+
+2004-04-29  Glynn Foster  <glynn.foster@sun.com>
+
+	* src/gfloppy.c: Pass through correct parameters. Fixes
+	#139843. Patch from Chris Smith and Kjartan.
+
+2004-04-20  Glynn Foster  <glynn.foster@sun.com>
+
+	* Makefile.am: Fix distcheck.
+
+2004-03-23  Glynn Foster  <glynn.foster@sun.com>
+
+	* src/Makefile.am: Don't override CFLAGS.
+
+2004-03-08  Dennis Cranston  <dennis_cranston at yahoo com>
+
+	* Makefile.am: Revert builddir != srcdir fix because it 
+	breaks 'make distcheck'.
+	
+2004-02-23  Julio M Merino Vidal <jmmv@menta.net>
+
+	* Makefile.am: honour gconf configure option
+
+2004-02-12  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/main.c: (on_help_button_clicked): Update the help
+	links to point to user-guid.xml
+
+2004-01-18  Jason Leach  <leach@wam.umd.edu>
+
+	* Makefile.am: builddir != srcdir fix.
+
+2004-01-07  Stephane Demurget  <stephane.demurget@enst-bretagne.fr>
+
+	Fixes #110918, #123831.
+
+	* main.c (on_format_button_clicked): fixed volume name handling.
+
+	* gfloppy.c (execute_fs_creation_cmd): fixed filesystem creation
+	command spawning: without any output descriptor, g_spawn_* uses
+	the parent process output descriptor, which was previously closed
+	by another instruction.
+
+2004-01-04  Stephane Demurget  <stephane.demurget@enst-bretagne.fr>
+
+	Devfs device names support. Fixes #104327.
+
+	* src/gfloppy.1: updated the man page with a devfs device name.
+
+	* src/main.c (get_mformat_device): impl. helps to convert a devfs
+	device name or a legacy device to a mformat drive, in order to
+	factorize some code.
+	(init_devices): impl. support for devfs device names.
+
+	* src/*.[ch]: s/gchar */char */g
+
+2004-01-04  Stephane Demurget  <stephane.demurget@enst-bretagne.fr>
+
+	* src/gfloppy.h:
+	* src/main.c (set_floppy_extended_device): removed the unused
+	extended_device field of the GFloppy struct.
+
+2003-12-13  Michael Terry <mterry@fastmail.fm>
+
+	* gfloppy.desktop.in: Use gnome-icon-theme instead of built-in icons.
+	Fixes #129283.
+
+2003-12-30  Christian Neumair  <chris@gnome-de.org>
+
+	* src/progress.c: (read_stdinput): Use ngettext for plurals (#106700).
+
+2003-11-28  Balamurali Viswanathan <balamurali.viswanathan@wipro.com>
+
+	* src/main.c (on_help_button_clicked): Use the new help documentation
+	 Fixes #127484
+
+2003-07-25  Stephane Demurget  <stephane.demurget@free.fr>
+
+	* src/gfloppy-config.c (gfloppy_config_load): fixed Dennis checkin for
+	#76496 in order to be sure the DOS format is the default.
+
+Fri Jul 18 11:24:52 2003  George Lebl <jirka@5z.com>
+
+	* src/gfloppy-config.c: When the gconf keys are not writable don't write
+	  down the default values.
+
+2003-07-12 John Fleck <jfleck@inkstain.net>
+
+	* doc/C/gfloppy.xml
+	bump up version number for 2.4 release, looks like the
+	app hasn't really changed so this is it for the docs
+
+2003-06-08  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* gfloppy.schemas.in:  Default to the DOS format as suggested
+	in bug report 76496.
+	
+2003-06-01  Christophe Merlet  <redfox@redfoxcenter.org>
+
+	* gfloppy.desktop.in: Use icon from gnome-icon-theme and not
+	the old one unavailable in new gnome-mime-data package.
+
+2003-05-31  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* src/progress.c:  A few HIG improvements.
+
+2003-05-30  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* src/gfloppy-config.c, src/gfloppy.c, src/main.c:  Many compiler 
+	warning fixes.
+	
+2003-05-30  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* src/gfloppy2.glade:  Header capitalization for window title.
+	
+2003-05-30  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* src/gfloppy2.glade:  HIG improvements (widget padding, etc.)
+	
+	* src/main.c:  HIG improvements.  Also, set mnemonic widget for the
+	device and type labels appropriately.
+	
+2003-05-19  Glynn Foster  <glynn.foster@sun.com>
+
+	* src/gfloppy-config.c: Sanity check, should fix #108950.
+
+2003-03-04  Stephane Demurget  <demurgets@free.fr>
+
+	* src/main.c (main): changed the default_fs test for FAT to be the
+	default, thus lightweighting
+
+2003-03-04  Stephane Demurget  <demurgets@free.fr>
+
+	Fixes #101759, removing all the translated messages begun with
+	either 'E','M','I', or 'B', used to pass messages from one process to
+	the one which have the UI control. Hope it'll help the i18n teams.
+
+	* src/fdformat.[ch] (fd_print): moved here. Added a message type
+	argument and fully handles messages construction.
+
+	* src/gfloppy.c:
+	* src/fdformat.c:
+	* src/badblocks.c: adapted all the fd_print calls using the new
+	prototype.
+
+2003-02-23  Takeshi AIHANA <aihana@gnome.gr.jp>
+
+	* doc/ja/*: added Japanese translations by
+				KAMAGASAKO Masatoshi <emerald@gnome.gr.jp>.
+	* doc/Makefile.am: added ja into SUBDIRS.
+
+Mon Jan 27 08:06:24 MST 2003 John Fleck <jfleck@inkstain.net>
+
+	* doc/C/gfloppy.xml
+	* doc/C/gfloppy-C.omf
+	* doc/C/figures/main.png
+	updated docs from Baris Cicek
+
 2003-01-27  Glynn Foster  <glynn.foster@sun.com>
 
-	* src/main.c: (main): Feel the pain. Free the icon path and
-	not the image.
+	* main.c: Free the icon_path. Should finally fix crash. GAR.
 
 2003-01-25  Dennis Cransotn <dennis_cranston@yahoo.com>
 
+	[MERGED FROM GNOME-2-2 BRANCH]
+
 	* main.c: (main) Define icon_path, so gfloppy can be compiled.  
-	Also, fix two minor compiler warnings.
+	Also, fix two minor compiler warnings. 
 	
 2003-01-22  Glynn Foster  <glynn.foster@sun.com>
+
+	[MERGED FROM GNOME-2-2 BRANCH]
 
 	* main.c, gfloppy-config.c: Fixes for #104078, #104333 crashing on startup,
 	thanks to Victor Soroka, Jonathan Blanford and Frederic Crozat. 
@@ -608,7 +779,7 @@ Sun Jul 16 13:49:31 2000  George Lebl <jirka@5z.com>
 	* src/progress.c (setup_progress_and_run): pass the correct
 	parametrs to gnome_message_box_new()
 
-2000-01-07  Martin Norbäck  <d95mback@dtek.chalmers.se>
+2000-01-07  Martin Norb=E4ck  <d95mback@dtek.chalmers.se>
 
 	* configure.in: Added sv to ALL_LINGUAS
 

@@ -58,11 +58,10 @@ struct _GFloppy {
 
 	gboolean mkdosfs_backend; /* If true, the mkdosfs FAT formatting
 				     will be used */
-	gchar *volume_name;    /* the label to be assigned to the disk */
+	char *volume_name;     /* the label to be assigned to the disk */
 
-	gchar *device;         /* ie. /dev/fd0  can also be /dev/fd0H1440 */
-	gchar *extended_device;/* ie. /dev/fd0H1440 */
-	gchar *mdevice;        /* ie. a: or b: */
+	char *device;          /* ie. /dev/fd0, /dev/fd0H1440 or /dev/floppy/0 (devfs) */
+	char *mdevice;         /* ie. a: or b: */
 
         /* child process which does actual work */
 	gint pid;
@@ -78,10 +77,10 @@ struct _GFloppy {
 	gint message[2];
 
 	/* Our commands */
-	gchar *badblocks_cmd;
-	gchar *mformat_cmd;
-	gchar *mke2fs_cmd;
-	gchar *mkdosfs_cmd;
+	char *badblocks_cmd;
+	char *mformat_cmd;
+	char *mke2fs_cmd;
+	char *mkdosfs_cmd;
 };
 /* This should do the format of the floppy. */
 void format_floppy (GFloppy *floppy);
@@ -95,7 +94,7 @@ typedef enum {
 	GFLOPPY_DEVICE_OK
 } GFloppyStatus;
 
-GFloppyStatus test_floppy_device (gchar *device);
+GFloppyStatus test_floppy_device (char *device);
 gint	      floppy_block_size  (GFloppySize size);
 
 #endif

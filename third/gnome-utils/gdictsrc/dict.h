@@ -1,7 +1,7 @@
 #ifndef __DICT_H_
 #define __DICT_H_
 
-/* $Id: dict.h,v 1.1.1.2 2003-01-04 21:13:09 ghudson Exp $ */
+/* $Id: dict.h,v 1.1.1.3 2004-10-04 05:05:45 ghudson Exp $ */
 
 /*
  *  Bradford Hovinen <hovinen@udel.edu>
@@ -112,8 +112,15 @@ typedef struct _dict_command_t {
     gpointer     user_data;               /* Data to pass along to callbacks */
 } dict_command_t;
 
+gboolean have_ipv6(void);
+
 typedef struct _dict_context_t {
+#ifdef ENABLE_IPV6
+    struct sockaddr_storage sockaddr;
+    struct addrinfo *host6info;
+#else
     struct sockaddr_in sockaddr;
+#endif
     struct hostent *hostinfo;
     char           *hostname;
     

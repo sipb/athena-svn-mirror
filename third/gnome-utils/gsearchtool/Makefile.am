@@ -3,15 +3,23 @@ Utilitiesdir = $(datadir)/applications
 SUBDIRS = help
 
 INCLUDES = 	\
-	$(GNOME_UTILS_CFLAGS)				\
-	$(GNOMEVFS_CFLAGS)				\
+	$(GNOME_UTILS_CFLAGS)					\
+	$(GNOMEVFS_CFLAGS)					\
+	$(GNOMEDESKTOP_CFLAGS)					\
 	-DGNOMELOCALEDIR=\""$(prefix)/$(DATADIRNAME)/locale"\" 	\
-	-DLOCALEDIR=\"$(datadir)/locale\"		\
+	-DLOCALEDIR=\"$(datadir)/locale\"			\
 	-DDATADIR=\""$(datadir)"\"
 
 bin_PROGRAMS = gnome-search-tool
 
+schemadir = $(GCONF_SCHEMA_FILE_DIR)
+schema_DATA = gnome-search-tool.schemas
+
 gnome_search_tool_SOURCES =	\
+	gsearchtool-alert-dialog.c \
+	gsearchtool-alert-dialog.h \
+	gsearchtool-spinner.c \
+	gsearchtool-spinner.h \
 	gsearchtool-support.c   \
 	gsearchtool-support.h   \
 	gsearchtool-callbacks.c \
@@ -19,21 +27,35 @@ gnome_search_tool_SOURCES =	\
 	gsearchtool.c	        \
 	gsearchtool.h
 
-gnome_search_tool_LDADD = \
+gnome_search_tool_LDADD =   \
 	$(GNOME_UTILS_LIBS) \
-	$(GNOMEVFS_LIBS)
+	$(GNOMEVFS_LIBS)    \
+	$(GNOMEDESKTOP_LIBS)
 
 man_MANS = gnome-search-tool.1
-
-pixmapdir = $(datadir)/pixmaps
-pixmap_DATA = gnome-searchtool.png
 
 Utilities_in_files = gnome-search-tool.desktop.in 
 Utilities_DATA = $(Utilities_in_files:.desktop.in=.desktop)
 @INTLTOOL_DESKTOP_RULE@
-
+	
 EXTRA_DIST = \
-	$(pixmap_DATA) \
 	$(Utilities_in_files) \
 	$(Utilities_DATA) \
+	$(schema_DATA) \
 	$(man_MANS)
+
+if GCONF_SCHEMAS_INSTALL
+install-data-local:
+	if test -z "$(DESTDIR)" ; then \
+		for p in $(schema_DATA) ; do \
+		GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(top_builddir)/gsearchtool/$$p ; \
+		done \
+	fi
+else
+install-data-local:
+endif
+
+CLEANFILES = gnome-search-tool.desktop
+
+disthook:
+	cd $(distdir) ; rm -f $(CLEANFILES)

@@ -32,10 +32,10 @@
 #include <gnome.h>
 
 #include <regex.h>
-#include <gconf/gconf.h>
-#include <gconf/gconf-client.h>
+#include <libgnomevfs/gnome-vfs-mime.h>
 #include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs-ops.h> 
+#include <libgnomevfs/gnome-vfs-utils.h>
 #include <bonobo-activation/bonobo-activation.h>
 
 #include "gsearchtool-support.h"
@@ -44,298 +44,20 @@
 
 #define C_STANDARD_STRFTIME_CHARACTERS "aAbBcdHIjmMpSUwWxXyYZ"
 #define C_STANDARD_NUMERIC_STRFTIME_CHARACTERS "dHIjmMSUwWyY"
+#define SUS_EXTENDED_STRFTIME_MODIFIERS "EO"
 #define BINARY_EXEC_MIME_TYPE      "application/x-executable-binary"
 #define ICON_THEME_EXECUTABLE_ICON "gnome-fs-executable"
 #define ICON_THEME_REGULAR_ICON    "gnome-fs-regular"
+#define ICON_THEME_CHAR_DEVICE     "gnome-fs-chardev"
+#define ICON_THEME_BLOCK_DEVICE    "gnome-fs-blockdev"
+#define ICON_THEME_SOCKET          "gnome-fs-socket"
+#define ICON_THEME_FIFO            "gnome-fs-fifo"
+#define MAX_SYMLINKS_FOLLOWED      32
+#define GSEARCH_DATE_FORMAT_LOCALE "locale"
+#define GSEARCH_DATE_FORMAT_ISO    "iso"
 
-/* START OF THE CDDB FUNCTIONS */
-
-static GtkCheckButtonClass *parent_class = NULL;
-
-struct _CDDBDisclosurePrivate {
-	GtkWidget *container;
-	char *shown;
-	char *hidden;
-	
-	guint32 expand_id;
-	GtkExpanderStyle style;
-
-	int expander_size;
-	int direction;
-};
-
-static void
-finalize (GObject *object)
-{
-	CDDBDisclosure *disclosure;
-
-	disclosure = CDDB_DISCLOSURE (object);
-	if (disclosure->priv == NULL) {
-		return;
-	}
-
-	g_free (disclosure->priv->hidden);
-	g_free (disclosure->priv->shown);
-
-	if (disclosure->priv->container != NULL) {
-		g_object_unref (G_OBJECT (disclosure->priv->container));
-	}
-	
-	g_free (disclosure->priv);
-	disclosure->priv = NULL;
-
-	G_OBJECT_CLASS (parent_class)->finalize (object);
-}
-
-static void
-cddb_disclosure_destroy(GtkObject *obj)
-{
-	CDDBDisclosure *disclosure = CDDB_DISCLOSURE (obj);
-
-	if (disclosure->priv->expand_id)
-		g_source_remove (disclosure->priv->expand_id);
-}
-
-static void
-get_x_y (CDDBDisclosure *disclosure,
-	 int *x,
-	 int *y,
-	 GtkStateType *state_type)
-{
-	GtkCheckButton *check_button;
-	int indicator_size, indicator_spacing;
-	int focus_width;
-	int focus_pad;
-	gboolean interior_focus;
-	GtkWidget *widget = GTK_WIDGET (disclosure);
-	GtkBin *bin = GTK_BIN (disclosure);
-	int width;
-	
-	if (GTK_WIDGET_VISIBLE (disclosure) &&
-	    GTK_WIDGET_MAPPED (disclosure)) {
-		check_button = GTK_CHECK_BUTTON (disclosure);
-		
-		gtk_widget_style_get (GTK_WIDGET (check_button),
-				      "indicator_size", &indicator_size,
-				      "indicator_spacing", &indicator_spacing,
-				      NULL);
-
-		gtk_widget_style_get (widget,
-				      "interior_focus", &interior_focus,
-				      "focus-line-width", &focus_width,
-				      "focus-padding", &focus_pad,
-				      NULL);
-		
-		*state_type = GTK_WIDGET_STATE (widget);
-		if ((*state_type != GTK_STATE_NORMAL) &&
-		    (*state_type != GTK_STATE_PRELIGHT)) {
-			*state_type = GTK_STATE_NORMAL;
-		}
-
-		if (bin->child) {
-			width = indicator_spacing * 3 + indicator_size ;
-		} else {
-			width = widget->allocation.width - 2 * GTK_CONTAINER (widget)->border_width;
-		}
-		
-		*x = widget->allocation.x + GTK_CONTAINER (widget)->border_width + (width) / 2;
-		*y = widget->allocation.y + widget->allocation.height / 2;
-
-		if (interior_focus == FALSE) {
-			*x += focus_width + focus_pad;
-		}
-
-		*state_type = GTK_WIDGET_STATE (widget) == GTK_STATE_ACTIVE ? GTK_STATE_NORMAL : GTK_WIDGET_STATE (widget);
-
-		if (gtk_widget_get_direction (widget) == GTK_TEXT_DIR_RTL) {
-			*x = widget->allocation.x + widget->allocation.width - (*x - widget->allocation.x);
-		}
-	} else {
-		*x = 0;
-		*y = 0;
-		*state_type = GTK_STATE_NORMAL;
-	}
-}
-
-static gboolean
-expand_collapse_timeout (gpointer data)
-{
-	GtkWidget *widget = data;
-	CDDBDisclosure *disclosure = data;
-	GtkStateType state_type;
-	int x, y;
-	
-	gdk_window_invalidate_rect (widget->window, &widget->allocation, TRUE);
-	get_x_y (disclosure, &x, &y, &state_type);
-	
-	gtk_paint_expander (widget->style,
-			    widget->window,
-			    state_type,
-			    &widget->allocation,
-			    widget,
-			    "disclosure",
-			    x, y,
-			    disclosure->priv->style);
-
-	disclosure->priv->style += disclosure->priv->direction;
-	if ((int) disclosure->priv->style > (int) GTK_EXPANDER_EXPANDED) {
-		disclosure->priv->style = GTK_EXPANDER_EXPANDED;
-
-		if (disclosure->priv->container != NULL) {
-			gtk_widget_show (disclosure->priv->container);
-		}
-
-		g_object_set (G_OBJECT (disclosure),
-			      "label", disclosure->priv->hidden,
-			      NULL);
-			      
-		constraint_entry_changed_cb (NULL, NULL);	      
-			      
-		return FALSE;
-	} else if ((int) disclosure->priv->style < (int) GTK_EXPANDER_COLLAPSED) {
-		disclosure->priv->style = GTK_EXPANDER_COLLAPSED;
-
-		if (disclosure->priv->container != NULL) {
-			gtk_widget_hide (disclosure->priv->container);
-		}
-
-		g_object_set (G_OBJECT (disclosure),
-			      "label", disclosure->priv->shown,
-			      NULL);
-
-		constraint_entry_changed_cb (NULL, NULL);
-
-		return FALSE;
-	} else {
-		return TRUE;
-	}
-}
-
-static void
-do_animation (CDDBDisclosure *disclosure,
-	      gboolean opening)
-{
-	if (disclosure->priv->expand_id > 0) {
-		g_source_remove (disclosure->priv->expand_id);
-	}
-
-	disclosure->priv->direction = opening ? 1 : -1;
-	disclosure->priv->expand_id = g_timeout_add (50, expand_collapse_timeout, disclosure);
-}
-
-static void
-toggled (GtkToggleButton *tb)
-{
-	CDDBDisclosure *disclosure;
-
-	disclosure = CDDB_DISCLOSURE (tb);
-	do_animation (disclosure, gtk_toggle_button_get_active (tb));
-
-	if (disclosure->priv->container == NULL) {
-		return;
-	}
-}
-
-static void
-draw_indicator (GtkCheckButton *check,
-		GdkRectangle *area)
-{
-	GtkWidget *widget = GTK_WIDGET (check);
-	CDDBDisclosure *disclosure = CDDB_DISCLOSURE (check);
-	GtkStateType state_type;
-	int x, y;
-
-	get_x_y (disclosure, &x, &y, &state_type);
-	gtk_paint_expander (widget->style,
-			    widget->window,
-			    state_type,
-			    area,
-			    widget,
-			    "treeview",
-			    x, y,
-			    disclosure->priv->style);
-}
-
-static void
-class_init (CDDBDisclosureClass *klass)
-{
-	GtkObjectClass *gtk_object_class = (GtkObjectClass *) klass;
-	GObjectClass *object_class;
-	GtkWidgetClass *widget_class;
-	GtkCheckButtonClass *button_class;
-	GtkToggleButtonClass *toggle_class;
-	
-	object_class = G_OBJECT_CLASS (klass);
-	widget_class = GTK_WIDGET_CLASS (klass);
-	button_class = GTK_CHECK_BUTTON_CLASS (klass);
-	toggle_class = GTK_TOGGLE_BUTTON_CLASS (klass);
-	
-	toggle_class->toggled = toggled;
-	button_class->draw_indicator = draw_indicator;
-
-	object_class->finalize = finalize;
-
-	gtk_object_class->destroy = cddb_disclosure_destroy;
-
-	parent_class = g_type_class_peek_parent (klass);
-
-	gtk_widget_class_install_style_property (widget_class,
-						 g_param_spec_int ("expander_size",
-								   _("Expander Size"),
-								   _("Size of the expander arrow"),
-								   0, G_MAXINT,
-								   10, G_PARAM_READABLE));
-}
-
-static void
-init (CDDBDisclosure *disclosure)
-{
-	disclosure->priv = g_new0 (CDDBDisclosurePrivate, 1);
-	disclosure->priv->expander_size = 10;
-}
-
-GType
-cddb_disclosure_get_type (void)
-{
-	static GType type = 0;
-
-	if (type == 0) {
-		GTypeInfo info = {
-			sizeof (CDDBDisclosureClass),
-			NULL, NULL, (GClassInitFunc) class_init, NULL, NULL,
-			sizeof (CDDBDisclosure), 0, (GInstanceInitFunc) init
-		};
-
-		type = g_type_register_static (GTK_TYPE_CHECK_BUTTON, "CDDBDisclosure", &info, 0);
-	}
-
-	return type;
-}
-
-GtkWidget *
-cddb_disclosure_new (const char *shown,
-		     const char *hidden)
-{
-	CDDBDisclosure *disclosure;
-
-	disclosure = g_object_new (cddb_disclosure_get_type (), "label", shown, NULL);
-
-	disclosure->priv->shown = g_strdup (shown);
-	disclosure->priv->hidden = g_strdup (hidden);
-	return GTK_WIDGET (disclosure);
-}
-
-void
-cddb_disclosure_set_container (CDDBDisclosure *disclosure,
-			       GtkWidget *container)
-{
-	g_object_ref (G_OBJECT (container));
-	disclosure->priv->container = container;
-}
 
 /* START OF THE GCONF FUNCTIONS */
-
-static GConfClient *global_gconf_client = NULL;
 
 gboolean
 gsearchtool_gconf_handle_error (GError **error)
@@ -394,17 +116,196 @@ gsearchtool_gconf_get_string (const gchar *key)
 	return result;
 }
 
+gboolean 
+gsearchtool_gconf_get_boolean (const gchar *key)
+{
+	gboolean result;
+	GConfClient *client;
+	GError *error = NULL;
+	
+	g_return_val_if_fail (key != NULL, FALSE);
+	
+	client = gsearchtool_gconf_client_get_global ();
+	g_return_val_if_fail (client != NULL, FALSE);
+	
+	result = gconf_client_get_bool (client, key, &error);
+	
+	if (gsearchtool_gconf_handle_error (&error)) {
+		result = FALSE;
+	}
+	
+	return result;
+}
+
+void
+gsearchtool_gconf_set_boolean (const gchar *key, const gboolean flag)
+{
+	GConfClient *client;
+	GError *error = NULL;
+	
+	g_return_if_fail (key != NULL);
+	
+	client = gsearchtool_gconf_client_get_global ();
+	g_return_if_fail (client != NULL);
+	
+	gconf_client_set_bool (client, key, flag, &error);
+	
+	gsearchtool_gconf_handle_error (&error);
+}
+
+/* START OF THE GNOME-VFS RELATED FUNCTIONS */
+
+GnomeVFSResult
+uri_resolve_all_symlinks_uri (GnomeVFSURI *uri,
+			      GnomeVFSURI **result_uri)
+{
+	GnomeVFSURI *new_uri, *resolved_uri;
+	GnomeVFSFileInfo *info;
+	GnomeVFSResult res;
+	char *p;
+	int n_followed_symlinks;
+
+	/* Ref the original uri so we don't lose it */
+	uri = gnome_vfs_uri_ref (uri);
+
+	*result_uri = NULL;
+
+	info = gnome_vfs_file_info_new ();
+
+	p = uri->text;
+	n_followed_symlinks = 0;
+	while (*p != 0) {
+		while (*p == GNOME_VFS_URI_PATH_CHR)
+			p++;
+		while (*p != 0 && *p != GNOME_VFS_URI_PATH_CHR)
+			p++;
+
+		new_uri = gnome_vfs_uri_dup (uri);
+		g_free (new_uri->text);
+		new_uri->text = g_strndup (uri->text, p - uri->text);
+		
+		gnome_vfs_file_info_clear (info);
+		res = gnome_vfs_get_file_info_uri (new_uri, info, GNOME_VFS_FILE_INFO_DEFAULT);
+		if (res != GNOME_VFS_OK) {
+			gnome_vfs_uri_unref (new_uri);
+			goto out;
+		}
+		if (info->type == GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK &&
+		    info->valid_fields & GNOME_VFS_FILE_INFO_FIELDS_SYMLINK_NAME) {
+			n_followed_symlinks++;
+			if (n_followed_symlinks > MAX_SYMLINKS_FOLLOWED) {
+				res = GNOME_VFS_ERROR_TOO_MANY_LINKS;
+				gnome_vfs_uri_unref (new_uri);
+				goto out;
+			}
+			resolved_uri = gnome_vfs_uri_resolve_relative (new_uri,
+								       info->symlink_name);
+			if (*p != 0) {
+				gnome_vfs_uri_unref (uri);
+				uri = gnome_vfs_uri_append_path (resolved_uri, p);
+				gnome_vfs_uri_unref (resolved_uri);
+			} else {
+				gnome_vfs_uri_unref (uri);
+				uri = resolved_uri;
+			}
+
+			p = uri->text;
+		} 
+		gnome_vfs_uri_unref (new_uri);
+	}
+
+	res = GNOME_VFS_OK;
+	*result_uri = gnome_vfs_uri_dup (uri);
+ out:
+	gnome_vfs_file_info_unref (info);
+	gnome_vfs_uri_unref (uri);
+	return res;
+}
+
+GnomeVFSResult
+uri_resolve_all_symlinks (const char *text_uri,
+	                  char **resolved_text_uri)
+{
+	GnomeVFSURI *uri, *resolved_uri;
+	GnomeVFSResult res;
+
+	*resolved_text_uri = NULL;
+
+	uri = gnome_vfs_uri_new (text_uri);
+	if (uri == NULL || uri->text == NULL) {
+		return GNOME_VFS_ERROR_NOT_SUPPORTED;
+	}
+
+	res = uri_resolve_all_symlinks_uri (uri, &resolved_uri);
+
+	if (res == GNOME_VFS_OK) {
+		*resolved_text_uri = gnome_vfs_uri_to_string (resolved_uri, GNOME_VFS_URI_HIDE_NONE);
+		gnome_vfs_uri_unref (resolved_uri);
+	}
+	return res;
+}
+
 /* START OF GENERIC GNOME-SEARCH-TOOL FUNCTIONS */
 
 gboolean 
 is_path_hidden (const gchar *path)
 {
-	gint results;
+	gint results = FALSE;
+	gchar *sub_str;
 	gchar *hidden_path_substr = g_strconcat (G_DIR_SEPARATOR_S, ".", NULL);
 	
-	results = (g_strstr_len (path, strlen (path), hidden_path_substr) != NULL);
+	sub_str = g_strstr_len (path, strlen (path), hidden_path_substr);
+
+	if (sub_str != NULL) {
+		gchar *gnome_desktop_str = g_strconcat (G_DIR_SEPARATOR_S, ".gnome-desktop", G_DIR_SEPARATOR_S, NULL);
+
+		/* exclude the .gnome-desktop folder */
+		if (strncmp (sub_str, gnome_desktop_str, strlen (gnome_desktop_str)) == 0) {
+			sub_str++;
+			results = (g_strstr_len (sub_str, strlen (sub_str), hidden_path_substr) != NULL);
+		}
+		else {
+			results = TRUE;
+		}
+		
+		g_free (gnome_desktop_str);
+	}
+
 	g_free (hidden_path_substr);
 	return results;
+}
+
+gboolean 
+is_path_in_home_folder (const gchar *path)
+{
+	if (g_strstr_len (path, strlen (g_get_home_dir ()), g_get_home_dir ()) != NULL) {
+		return TRUE;
+	}
+
+	/* See bugzilla report #137404 */
+	if (g_file_test (g_get_home_dir(), G_FILE_TEST_IS_SYMLINK)) {
+
+		GnomeVFSResult res;
+		gchar *uri;
+	
+		res = uri_resolve_all_symlinks (g_get_home_dir (), &uri);
+
+		if (res == GNOME_VFS_OK) {
+	
+			gchar *target;
+			gboolean value;
+		
+			target = (gchar *) gnome_vfs_get_local_path_from_uri (uri);
+			value = (g_strstr_len (path, strlen (target), target) != NULL);
+		
+			g_free (target);
+			g_free (uri);
+		
+			return value;
+		}
+		g_free (uri);
+	}		
+	return FALSE;
 }
 
 gboolean 
@@ -414,9 +315,27 @@ is_path_in_mount_folder (const gchar *path)
 }
 
 gboolean 
-is_path_in_home_folder (const gchar *path)
+is_path_in_proc_folder (const gchar *path)
 {
-	return (g_strstr_len (path, strlen (g_get_home_dir ()), g_get_home_dir ()) != NULL);
+	return (g_strstr_len (path, strlen ("/proc/"), "/proc/") != NULL);
+}
+
+gboolean 
+is_path_in_dev_folder (const gchar *path)
+{
+	return (g_strstr_len (path, strlen ("/dev/"), "/dev/") != NULL);
+}
+
+gboolean 
+is_path_in_var_folder (const gchar *path)
+{
+	return (g_strstr_len (path, strlen ("/var/"), "/var/") != NULL);
+}
+
+gboolean 
+is_path_in_tmp_folder (const gchar *path)
+{
+	return (g_strstr_len (path, strlen ("/tmp/"), "/tmp/") != NULL);
 }
 
 gboolean
@@ -489,6 +408,55 @@ escape_single_quotes (const gchar *string)
 	return g_string_free (gs, FALSE);
 }
 
+gchar *
+backslash_special_characters (const gchar *string)
+{
+	GString *gs;
+
+	if (string == NULL) {
+		return NULL;
+	}
+
+	if ((count_of_char_in_string (string, '\\') == 0) &&
+	    (count_of_char_in_string (string, '-') == 0)) {
+		return g_strdup(string);
+	}
+	gs = g_string_new ("");
+	for(; *string; string++) {
+		if (*string == '\\') {
+			g_string_append(gs, "\\\\");
+		}
+		else if (*string == '-') {
+			g_string_append(gs, "\\-");
+		}
+		else {
+			g_string_append_c(gs, *string);
+		}
+	}
+	return g_string_free (gs, FALSE);
+}
+
+gchar *
+remove_mnemonic_character (const gchar *string)
+{
+	GString *gs;
+	gboolean first_mnemonic = TRUE;
+	
+	if (string == NULL) {
+		return NULL;
+	}
+	
+	gs = g_string_new ("");
+	for(; *string; string++) {
+		if ((first_mnemonic) && (*string == '_')) {
+			first_mnemonic = FALSE;
+			continue;
+		}
+		g_string_append_c(gs, *string);
+	}
+	return g_string_free (gs, FALSE);
+}
+
 gint
 count_of_char_in_string (const gchar *string, 
 			 const gchar q)
@@ -498,16 +466,6 @@ count_of_char_in_string (const gchar *string,
 		if (*string == q) cnt++;
 	}
 	return cnt;
-}
-
-gchar *
-get_date (const time_t file_time_raw)
-{
-	struct tm *file_time;
-	const char *format = _("%Y%m%d%H%M%S");
-
-	file_time = localtime (&file_time_raw);
-	return strdup_strftime (format, file_time);
 }
 
 gchar *
@@ -521,6 +479,16 @@ get_readable_date (const time_t file_time_raw)
 	gchar *readable_date;
 
 	file_time = localtime (&file_time_raw);
+
+	/* Base format of date column on nautilus date_format key */
+	if (search_command.date_format_pref != NULL) {
+		if (strcmp(search_command.date_format_pref, GSEARCH_DATE_FORMAT_LOCALE) == 0) {
+			return gsearchtool_strdup_strftime ("%c", file_time);
+		} else if (strcmp (search_command.date_format_pref, GSEARCH_DATE_FORMAT_ISO) == 0) {
+			return gsearchtool_strdup_strftime ("%Y-%m-%d %H:%M:%S", file_time);
+		}
+	}
+	
 	file_date = g_date_new_dmy (file_time->tm_mday,
 			       file_time->tm_mon + 1,
 			       file_time->tm_year + 1900);
@@ -533,41 +501,50 @@ get_readable_date (const time_t file_time_raw)
 	g_date_free (today);
 	g_date_free (file_date);
 			
-	/* the format varies depending on age of file. */
 	if (file_date_age == 0)	{
+	/* Translators:  Below are the strings displayed in the 'Date Modified'
+	   column of the list view.  The format of this string can vary depending 
+	   on age of a file.  Please modify the format of the timestamp to match
+	   your locale.  For example, to display 24 hour time replace the '%-I' 
+	   with '%-H' and remove the '%p'.  (See bugzilla report #120434.) */
 		format = g_strdup(_("today at %-I:%M %p"));
 	} else if (file_date_age == 1) {
 		format = g_strdup(_("yesterday at %-I:%M %p"));
 	} else if (file_date_age < 7) {
-		format = g_strdup(_("%m/%-d/%y, %-I:%M %p"));
+		format = g_strdup(_("%A, %B %-d %Y at %-I:%M:%S %p"));
 	} else {
-		format = g_strdup(_("%m/%-d/%y, %-I:%M %p"));
+		format = g_strdup(_("%A, %B %-d %Y at %-I:%M:%S %p"));
 	}
 	
-	readable_date = strdup_strftime (format, file_time);
+	readable_date = gsearchtool_strdup_strftime (format, file_time);
 	g_free (format);
 	
 	return readable_date;
 }  
 
 gchar *
-strdup_strftime (const gchar *format, 
-		 struct tm *time_pieces)
+gsearchtool_strdup_strftime (const gchar *format, 
+                             struct tm *time_pieces)
 {
-	/* this function is based on eel */
+	/* This function is borrowed from eel's eel_strdup_strftime() */
 	GString *string;
 	const char *remainder, *percent;
-	char code[3], buffer[512];
+	char code[4], buffer[512];
 	char *piece, *result, *converted;
 	size_t string_length;
 	gboolean strip_leading_zeros, turn_leading_zeros_to_spaces;
+	char modifier;
+	int i;
 
+	/* Format could be translated, and contain UTF-8 chars,
+	 * so convert to locale encoding which strftime uses */
 	converted = g_locale_from_utf8 (format, -1, NULL, NULL, NULL);
 	g_return_val_if_fail (converted != NULL, NULL);
 	
 	string = g_string_new ("");
 	remainder = converted;
 
+	/* Walk from % character to % character. */
 	for (;;) {
 		percent = strchr (remainder, '%');
 		if (percent == NULL) {
@@ -577,6 +554,7 @@ strdup_strftime (const gchar *format,
 		g_string_append_len (string, remainder,
 				     percent - remainder);
 
+		/* Handle the "%" character. */
 		remainder = percent + 1;
 		switch (*remainder) {
 		case '-':
@@ -594,7 +572,7 @@ strdup_strftime (const gchar *format,
 			remainder++;
 			continue;
 		case '\0':
-			g_warning ("Trailing %% passed to strdup_strftime");
+			g_warning ("Trailing %% passed to gsearchtool_strdup_strftime");
 			g_string_append_c (string, '%');
 			continue;
 		default:
@@ -602,26 +580,53 @@ strdup_strftime (const gchar *format,
 			turn_leading_zeros_to_spaces = FALSE;
 			break;
 		}
+
+		modifier = 0;
+		if (strchr (SUS_EXTENDED_STRFTIME_MODIFIERS, *remainder) != NULL) {
+			modifier = *remainder;
+			remainder++;
+
+			if (*remainder == 0) {
+				g_warning ("Unfinished %%%c modifier passed to gsearchtool_strdup_strftime", modifier);
+				break;
+			}
+		} 
 		
 		if (strchr (C_STANDARD_STRFTIME_CHARACTERS, *remainder) == NULL) {
-			g_warning ("strdup_strftime does not support "
+			g_warning ("gsearchtool_strdup_strftime does not support "
 				   "non-standard escape code %%%c",
 				   *remainder);
 		}
 
-		code[0] = '%';
-		code[1] = *remainder;
-		code[2] = '\0';
+		/* Convert code to strftime format. We have a fixed
+		 * limit here that each code can expand to a maximum
+		 * of 512 bytes, which is probably OK. There's no
+		 * limit on the total size of the result string.
+		 */
+		i = 0;
+		code[i++] = '%';
+		if (modifier != 0) {
+#ifdef HAVE_STRFTIME_EXTENSION
+			code[i++] = modifier;
+#endif
+		}
+		code[i++] = *remainder;
+		code[i++] = '\0';
 		string_length = strftime (buffer, sizeof (buffer),
 					  code, time_pieces);
 		if (string_length == 0) {
+			/* We could put a warning here, but there's no
+			 * way to tell a successful conversion to
+			 * empty string from a failure.
+			 */
 			buffer[0] = '\0';
 		}
 
+		/* Strip leading zeros if requested. */
 		piece = buffer;
 		if (strip_leading_zeros || turn_leading_zeros_to_spaces) {
 			if (strchr (C_STANDARD_NUMERIC_STRFTIME_CHARACTERS, *remainder) == NULL) {
-				g_warning ("strdup_strftime does not support "
+				g_warning ("gsearchtool_strdup_strftime does not support "
 					   "modifier for non-numeric escape code %%%c%c",
 					   remainder[-1],
 					   *remainder);
@@ -640,68 +645,96 @@ strdup_strftime (const gchar *format,
 			}
 		}
 		remainder++;
+
+		/* Add this piece. */
 		g_string_append (string, piece);
 	}
 	
+	/* Convert the string back into utf-8. */
 	result = g_locale_to_utf8 (string->str, -1, NULL, NULL, NULL);
+
 	g_string_free (string, TRUE);
 	g_free (converted);
+
 	return result;
 }
 
-gchar *
-get_file_type_with_mime_type (const gchar *filename, 
-			      const gchar *mimetype)
+const char *
+get_file_type_for_mime_type (const gchar *filename, 
+                             const gchar *mimetype)
 {
+	const char *desc;
+	
 	if (filename == NULL || mimetype == NULL) {
-		return (gchar *)gnome_vfs_mime_get_description (GNOME_VFS_MIME_TYPE_UNKNOWN);
+		return gnome_vfs_mime_get_description (GNOME_VFS_MIME_TYPE_UNKNOWN);
 	}
 
-	if (g_file_test (filename, G_FILE_TEST_IS_SYMLINK) == TRUE) {
-		if (g_ascii_strcasecmp (mimetype, GNOME_VFS_MIME_TYPE_UNKNOWN) == 0) {
-			GnomeVFSFileInfo *file_info;
+	desc = gnome_vfs_mime_get_description (mimetype);
+
+	if (g_file_test (filename, G_FILE_TEST_IS_SYMLINK)) {
+	
+		GnomeVFSFileInfo *file_info;
 		
-			file_info = gnome_vfs_file_info_new ();
-			gnome_vfs_get_file_info (filename, file_info, GNOME_VFS_FILE_INFO_DEFAULT);
+		file_info = gnome_vfs_file_info_new ();
+		gnome_vfs_get_file_info (filename, file_info, GNOME_VFS_FILE_INFO_DEFAULT);
 		
-			if (g_file_test (file_info->symlink_name, G_FILE_TEST_EXISTS) != TRUE) {
+		if (g_file_test (file_info->symlink_name, G_FILE_TEST_EXISTS) != TRUE) {
+		
+			if ((g_ascii_strcasecmp (mimetype, "x-special/socket") != 0) && 
+		            (g_ascii_strcasecmp (mimetype, "x-special/fifo") != 0)) {
+			    
 				gnome_vfs_file_info_unref (file_info);
 				return _("link (broken)");
 			}
-			
-			gnome_vfs_file_info_unref (file_info);
 		}
-		return g_strdup_printf (_("link to %s"), 
-			(gchar *)gnome_vfs_mime_get_description (mimetype));
+			
+		gnome_vfs_file_info_unref (file_info);
+		return g_strdup_printf (_("link to %s"), (desc != NULL) ? desc : mimetype);
 	}
-
-	return (gchar *)gnome_vfs_mime_get_description (mimetype);
+	return desc;
 } 
 
-gchar *
-get_file_icon_with_mime_type (const gchar *filename, 
-			      const gchar *mimetype) 
+GdkPixbuf *
+get_file_pixbuf_for_mime_type (const gchar *filename, 
+			       const gchar *mimetype) 
 {
-	const GnomeIconData *icon_data;
-	gchar *icon_name = NULL;	
-	gchar *icon_path = NULL;
-	int base_size;
-
+	GdkPixbuf *pixbuf;
+	gchar *icon_name = NULL;
+	
 	if (filename == NULL || mimetype == NULL) {
 		icon_name = g_strdup (ICON_THEME_REGULAR_ICON);
 	}
-	else if ((g_file_test (filename, G_FILE_TEST_IS_EXECUTABLE) == TRUE) &&
+	else if ((g_file_test (filename, G_FILE_TEST_IS_EXECUTABLE)) &&
 	         (g_ascii_strcasecmp (mimetype, "application/x-executable-binary") == 0)) {
 		icon_name = g_strdup (ICON_THEME_EXECUTABLE_ICON);
 	}
+	else if (g_ascii_strcasecmp (mimetype, "x-special/device-char") == 0) {
+		icon_name = g_strdup (ICON_THEME_CHAR_DEVICE);
+	}
+	else if (g_ascii_strcasecmp (mimetype, "x-special/device-block") == 0) {
+		icon_name = g_strdup (ICON_THEME_BLOCK_DEVICE);
+	}
+	else if (g_ascii_strcasecmp (mimetype, "x-special/socket") == 0) {
+		icon_name = g_strdup (ICON_THEME_SOCKET);
+	}
+	else if (g_ascii_strcasecmp (mimetype, "x-special/fifo") == 0) {
+		icon_name = g_strdup (ICON_THEME_FIFO);
+	}
 	else {
-		icon_name = gnome_icon_lookup (interface.icon_theme, NULL, filename, NULL, 
+		icon_name = gnome_icon_lookup (gtk_icon_theme_get_default (), NULL, filename, NULL, 
 					       NULL, mimetype, 0, NULL);
 	}
-
-	icon_path = gnome_icon_theme_lookup_icon (interface.icon_theme, icon_name, ICON_SIZE, 
-						  &icon_data, &base_size);
-	return icon_path;	
+	
+	pixbuf = (GdkPixbuf *) g_hash_table_lookup (search_command.pixbuf_hash, icon_name);
+	
+	if (pixbuf == NULL) {
+		pixbuf = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (), icon_name, 
+		                                   ICON_SIZE, 0, NULL);
+		g_hash_table_insert (search_command.pixbuf_hash, &icon_name, pixbuf);
+	}
+						  
+	g_free (icon_name);
+	return pixbuf;
 }
 
 gboolean
@@ -726,10 +759,8 @@ is_nautilus_running (void)
 gboolean
 is_component_action_type (const gchar *filename)
 {
-	gchar *mimeType = gnome_vfs_get_mime_type (filename);	
+	const char *mimeType = gnome_vfs_get_file_mime_type (filename, NULL, FALSE);	
 	GnomeVFSMimeActionType actionType = gnome_vfs_mime_get_default_action_type (mimeType);
-	
-	g_free (mimeType);
 	
 	if (actionType == GNOME_VFS_MIME_ACTION_TYPE_COMPONENT) {
 		return TRUE;
@@ -758,10 +789,8 @@ open_file_with_nautilus (const gchar *filename)
 gboolean
 open_file_with_application (const gchar *filename)
 {
-	gchar *mimeType = gnome_vfs_get_mime_type (filename);	
+	const char *mimeType = gnome_vfs_get_file_mime_type (filename, NULL, FALSE);	
 	GnomeVFSMimeApplication *mimeApp = gnome_vfs_mime_get_default_application (mimeType);
-	
-	g_free (mimeType);
 		
 	if (mimeApp) {
 		gint  argc;
@@ -780,7 +809,7 @@ open_file_with_application (const gchar *filename)
 		gnome_execute_async(NULL, argc, argv);	
 		gnome_vfs_mime_application_free(mimeApp);
 		g_free (command_line);	
-		g_free(argv);
+		g_strfreev (argv);
 		return TRUE;
 	}
 	return FALSE;
@@ -789,14 +818,82 @@ open_file_with_application (const gchar *filename)
 gboolean
 launch_file (const gchar *filename)
 {
-	gchar *mime_type = gnome_vfs_get_mime_type (filename);	
+	const char *mime_type = gnome_vfs_get_file_mime_type (filename, NULL, FALSE);	
 	gboolean result = FALSE;
 	
-	if ((g_file_test (filename, G_FILE_TEST_IS_EXECUTABLE) == TRUE) &&
+	if ((g_file_test (filename, G_FILE_TEST_IS_EXECUTABLE)) &&
 	    (g_ascii_strcasecmp (mime_type, BINARY_EXEC_MIME_TYPE) == 0)) { 
 		result = g_spawn_command_line_async (filename, NULL);
 	}
 	
-	g_free (mime_type);
 	return result;
+}
+
+gchar *
+gsearchtool_unique_filename (const gchar *dir,
+                             const gchar *suffix)
+{
+	const gint num_of_words = 12;
+	gchar      *words[] = {
+		    "foo",
+		    "bar",
+		    "blah",
+	   	    "gegl",
+		    "frobate",
+		    "hadjaha",
+		    "greasy",
+		    "hammer",
+		    "eek",
+		    "larry",
+		    "curly",
+		    "moe",
+		    NULL};
+	gchar      *retval = NULL;
+	gboolean   exists = TRUE;
+
+	while (exists) {
+		gchar *filename;
+		gint   rnd;
+		gint   word;
+
+		rnd = rand ();
+		word = rand () % num_of_words;
+
+		filename = g_strdup_printf ("%s-%010x%s",
+					    words [word],
+					    (guint) rnd,
+					    suffix);
+
+		g_free (retval);
+		retval = g_strconcat (dir, "/", filename, NULL);
+		exists = g_file_test (retval, G_FILE_TEST_EXISTS);
+		g_free (filename);
+	}
+	return retval;
+}
+
+GtkWidget *
+gsearchtool_button_new_with_stock_icon (const gchar *label, 
+                                        const gchar *stock_id)
+{
+	GtkWidget *align;
+	GtkWidget *button;
+	GtkWidget *hbox;
+	GtkWidget *image;
+	GtkWidget *l;
+	
+	/* Copied from eel-gtk-extensions. */
+	button = gtk_button_new ();
+	l = gtk_label_new_with_mnemonic (label);
+	gtk_label_set_mnemonic_widget (GTK_LABEL (l), GTK_WIDGET (button));
+	image = gtk_image_new_from_stock (stock_id, GTK_ICON_SIZE_BUTTON);
+	hbox = gtk_hbox_new (FALSE, 2);
+	align = gtk_alignment_new (0.5, 0.5, 0.0, 0.0);
+	gtk_box_pack_start (GTK_BOX (hbox), image, FALSE, FALSE, 0);
+	gtk_box_pack_end (GTK_BOX (hbox), l, FALSE, FALSE, 0);
+	gtk_container_add (GTK_CONTAINER (button), align);
+	gtk_container_add (GTK_CONTAINER (align), hbox);
+	gtk_widget_show_all (align);
+
+	return button;
 }

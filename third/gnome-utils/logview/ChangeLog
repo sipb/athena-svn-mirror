@@ -1,12 +1,188 @@
-2003-01-24  Glynn Foster  <glynn.foster@sun.com>
+2004-08-11  Glynn Foster  <glynn.foster@sun.com>
 
-	* help/C/figures/syslog_window.png:
-	* help/C/gnome-system-log-C.omf:
-	* help/C/gnome-system-log.xml: Updates from the sun docs
-	people for 2.2
+	* about.c: (AboutShowWindow): Should be 'translator-credits'.
+
+2004-08-03  Glynn Foster  <glynn.foster@sun.com>
+
+	* doc/C/logview.sgml, pixmaps/.cvsignore: Remove, old.
+
+2004-07-19  Shakti Sen  <shprasad@novell.com>
+
+	* monitor.c (mon_read_last_page):
+	Fixes the crash if log messages is having less
+	than 5 lines.  Fixes bug #145180
+
+2004-07-19  Shakti Sen  <shprasad@novell.com>
+
+	*monitor.c (monitor_window_destroyed_cb):
+	Remove the timer to fix the crash.
+	Fixes bug #145120
+
+2004-07-19  Glynn Foster  <glynn.foster@sun.com>
+
+	* actions.c: Use g_spawn instead of exec. Patch
+	from James Strandboge and Shakti. Fixes #135869.
+
+2004-05-08  Glynn Foster  <glynn.foster@sun.com>
+
+	* log_repaint.c, zoom.c: Patch from Harsh Jaitly  
+	for #127091 - log viewer detail view picks wrong 
+	entry
+
+2004-05-08  Glynn Foster  <glynn.foster@sun.com>
+
+	* logview.c: Patch from Samuel Stringham to parse
+	/etc/syslog.conf on first start up to see if it
+	can find some logs to open. Fixes #80865.
+
+2004-04-20  Glynn Foster  <glynn.foster@sun.com>
+
+	* Makefile.am: Fix distcheck.
+
+2004-03-08  Dennis Cranston  <dennis_cranston at yahoo com>
+
+	* Makefile.am: Revert builddir != srcdir fix because it 
+	breaks 'make distcheck'.
+	
+2004-02-23  Julio M Merino Vidal <jmmv@menta.net>
+                                                                                
+        * Makefile.am: honour gconf configure option
+                                                                                
+2004-01-18  Jason Leach  <leach@wam.umd.edu>
+
+	* Makefile.am (schema_source_data): builddir != srcdir fix.
+
+2004-01-15  Maxim Dzumanenko <mvd@mylinux.com.ua>
+
+	* actions.c: (mon_edit_actions), (edit_action_entry):
+	* info.c: (RepaintLogInfo): Add some strings for translation.
+
+2003-12-13  Michael Terry  <mterry@fastmail.fm>
+
+       * Makefile.am, about.c, gnome-system-log.desktop.in, logview.c: Use
+       gnome-icon-theme instead of built-in icons.  Fixes #129283.
+
+2003-12-30  Christian Neumair  <chris@gnome-de.org>
+
+	* info.c: (RepaintLogInfo): Use ngettext for plurals (#106700).
+	* zoom.c: Add missing gettext calls.
+
+2003-12-06  Jan Arne Petersen  <jpetersen@uni-bonn.de>
+
+	* logview/logview.c: (FileSelectResponse), (LoadLogMenu): Replace
+	GtkFileSelection with GtkFileChooser.
+
+2003-06-07  Jason Long  <jlong@messiah.edu>
+
+	* logview/logrtns.c (OpenLogFile): create a hash table
+	when log is opened to store paths to date headers
+	* logview/log_repaint.c (DrawLogLines): when a new day
+	is discovered, add an entry to the hash table
+	* logview/calendar.c (calendar_day_selected): use hash
+	table to lookup path to the relevant log entry. Fixes #99676
+
+2003-10-18  Glynn Foster  <glynn.foster@sun.com>
+
+	* gnome-system-log-descript.db: Fix for #124345 from 
+	mkb@mukappabeta.de for erroneous string.
+
+2003-09-02  Glynn Foster  <glynn.foster@sun.com>
+
+	* Makefile.am, calendar.c, info.c, logview.c: Remove some ifdef'd
+	  code.
+	* pixmaps/*: Remove.
+
+Fri Jul 18 12:35:50 2003  George Lebl <jirka@5z.com>
+
+	* logview.c: If gconf is not writable don't write down the logfile
+	  we found.  If the logfile we got is NULL, don't set it to gconf and
+	  don't set the file selection to it to avoid warnings.
+
+	* log_repaint.c: fix user_prefs check to be sane (it's never hit though)
+
+2003-07-18  Evandro Fernandes Giovanini <evandrofg@ig.com.br>
+
+	* gnome-system-log.desktop.in: Use icon from the icon theme.
+
+2003-06-08  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* zoom.c:  Prevent a crash when displaying entry details.
+
+2003-06-06  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* about.c: "GNOME System Log Viewer" -> "System Log Viewer".
+
+2003-05-31  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* actions.c, calendar.c, info.c, logview.c, monitor.c,
+	zoom.c:  HIG related improvements.
+
+2003-05-30  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* actions.c, info.c, log_repaint.c, logrtns.c, logview.c,
+	monitor.c:  Various compiler warning fixes.
+
+2003-05-19  Christian Neumair  <chris@gnome-de.org>
+
+	* about.c: Don't mark copyright string for translation, added
+	hex-escaped copyright character, changed comment to something
+	more meaningful.
+
+2003-05-19  Glynn Foster  <glynn.foster@sun.com>
+
+	* log_repaint.c: Fixed #103481 for large logs crashing.
+
+2003-05-19  Glynn Foster  <glynn.foster@sun.com>
+
+	* Defining timezonevar before including time.h is necessary 
+	for using timezone variable on Cygwin. Patch from Masahiro Sakai.
+	Fixes #111267.
+
+2003-05-19  Glynn Foster  <glynn.foster@sun.com>
+
+	* logview.schemas.in: Fix #102234.
+
+2003-05-19  Glynn Foster  <glynn.foster@sun.com>
+
+	* logview.c: Use gnome-system-log in the gconf key, rather than
+	logview, since that is what the schema is for. Fixes #103484.
+
+2003-05-19  Glynn Foster  <glynn.foster@sun.com>
+
+	* about.c: Fix #101772.
+
+2003-05-19  Glynn Foster  <glynn.foster@sun.com>
+
+	* logview.c: Add check, just in case this fixes #111949.
+
+2003-05-19  Glynn Foster  <glynn.foster@sun.com>
+
+	* logview.c: Avoid double free. Patch from marcus@freebsd.org.
+
+2003-02-23  Takeshi AIHANA <aihana@gnome.gr.jp>
+
+	* help/ja/*: added Japanese translations by
+				KAMAGASAKO Masatoshi <emerald@gnome.gr.jp>.
+	* help/ja/Makefile.am:  added ja into SUBDIRS.
+
+2003-02-16  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* logview.c: Fix a leak.
+	
+2003-02-11  Glynn Foster  <glynn.foster@sun.com>
+
+	* logview.c, monitor.c: Mark some strings for translation.
+	Thanks to Maxim for pointing this out. Fixes #104541.
+
+2003-01-23  Breda McColgan <Breda.McColgan@sun.com>
+
+        * help/C/gnome-system-log.xml: updated for GNOME 2.2
+        * help/C/gnome-system-log-C.omf: updated manual date
+          and version number
+        * help/C/figures/syslog_window.png: updated screenshot
+          of the latest application
 
 2002-01-07 Dennis Cranston <dennis_cranston@yahoo.com>
-
 	* pixmaps/Makefile.am:  removed logview.xpm reference from 
 	pixmaps_DATA & EXTRA_DIST.
 

@@ -1,4 +1,4 @@
-/* $Id: gdict-defbox.c,v 1.1.1.3 2003-01-04 21:13:18 ghudson Exp $ */
+/* $Id: gdict-defbox.c,v 1.1.1.4 2004-10-04 05:06:31 ghudson Exp $ */
 
 /*
  *  Mike Hughes <mfh@psilord.com>
@@ -269,13 +269,9 @@ gdict_defbox_find (GDictDefbox *defbox, const gchar *text, gboolean start) {
     GtkTextIter start_iter, end_iter, iter;
     GtkTextIter match_start, match_end;
     GtkTextMark *mark = NULL;
-    static gchar *lastp = NULL;
-    static gchar *deftext = NULL;
-    gchar *findp;
-    gint i = 0;
 
-    g_return_if_fail (defbox != NULL);
-    g_return_if_fail (IS_GDICT_DEFBOX (defbox));
+    g_return_val_if_fail (defbox != NULL, FALSE);
+    g_return_val_if_fail (IS_GDICT_DEFBOX (defbox), FALSE);
     
     buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (defbox));
     
@@ -484,8 +480,22 @@ insert_text_with_tags (GtkTextBuffer *buffer, GtkTextIter *iter, gchar *p, gint 
 		gtk_text_buffer_apply_tag_by_name (buffer, "italic", &start, iter);
 	if (underline)
 		gtk_text_buffer_apply_tag_by_name (buffer, "underline", &start, iter);
-			       
 }
+
+static void
+insert_link (GtkTextBuffer *buffer, GtkTextIter *iter, gchar *text, gint len)
+{
+	GtkTextTag *tag;
+
+	tag = gtk_text_buffer_create_tag (buffer, NULL,
+					  "foreground", "blue",
+					  "underline", PANGO_UNDERLINE_SINGLE,
+					  NULL);
+	g_object_set_data (G_OBJECT (tag), "page", text);
+
+	gtk_text_buffer_insert_with_tags (buffer, iter, text, len , tag, NULL);
+}
+
 
 /* defbox_add
  *
@@ -495,12 +505,13 @@ insert_text_with_tags (GtkTextBuffer *buffer, GtkTextIter *iter, gchar *p, gint 
 static void 
 defbox_add (GDictDefbox *defbox, gchar *def) {
     GtkTextBuffer *buffer;
-    GtkTextIter iter, prev_iter;
-    gchar *p;
+    GtkTextIter iter;
+    gchar *p, *q, *text;
     gint len;
     GdkFont *font;
     GdkColor *color;
     gboolean italic, bold, underline;
+    int length = 0;
 
     buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (defbox));
     gtk_text_buffer_get_end_iter (buffer, &iter);
@@ -582,11 +593,22 @@ defbox_add (GDictDefbox *defbox, gchar *def) {
         } else if (*p == '{') {
             font = gdict_pref.typefaces[TYPEFACE_EXAMPLE].font;
             color = gdict_pref.typefaces[TYPEFACE_EXAMPLE].color;
-            bold = FALSE;
+            bold = TRUE;
             italic = TRUE;
             underline = FALSE;
-            ++p;
-        } else if ((*p == ']') || (*p == '}')) {
+			q = p;
+			while (*q != '}')
+			{
+				 length++;
+				 q++;
+                        }				
+			len = length;
+			++p;	
+			text = g_strndup (p, len - 1);
+			insert_link (buffer, &iter, text, len - 1);
+			p += length;
+			length = 0;
+        } else if (*p == ']' ) {
             font = gdict_pref.typefaces[TYPEFACE_BODY].font;
             color = gdict_pref.typefaces[TYPEFACE_BODY].color;
             bold = FALSE;
@@ -643,7 +665,7 @@ def_error_cb (dict_command_t *command, DictStatusCode code,
         string = g_strdup_printf (_("Error invoking query: %s"), message);
         dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_DESTROY_WITH_PARENT,
                                   	 GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
-                                  	 "%s", string, NULL); 
+                                  	 "%s", string); 
 	gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
 	

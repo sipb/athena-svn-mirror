@@ -1,57 +1,381 @@
-GNOME Utilities 2.2.0.3         " Good things come in 3s [1]"
+GNOME Utilities 2.7.x - 2.8.0
+
+GNOME Search Tool
+
+	* Fix bug #137404 - Improve handling of failed quick searches
+	* Fix bug #142450 - Results treeview should use GTK_SHADOW_IN
+	* Fix bug #143772 - Wrong error message when file does not exist
+	* Fix bug #144414 - Ctrl+Space does not select all files in table
+	* Fix bug #147410 - Named pipes are not recognised as files
+	* Fix bug #147465 - File size filter issues
+	* Fix bug #147480 - Searching for text with leading dash causes error
+	* HIG fix - put unit labels after text entries
+	* Format Modified date to match Nautilus 2.7.x+
+	* Fix memory leaks found using valgrind
+	* Add new force_quick_search gconf key.
+	* Update documentation
+
+GNOME Dictionary
+
+	* Remove old docs [Glynn]
+	* Use translator-credits string [Glynn]
+	* Fix bug #50907 - Add shadow border [Davyd Madeley]
+	* Italic fixes [cs_is@yahoo.com]
+	* Pass PanelApplet instance to lockdown func [Leena Gunda]
+	* Add tooltip [Vinay M R]
+	* Make sure screenreader only sees text box once [Muktha]
+	* Add hyperlinks [Fernando Herrera, cs_is@yahoo.com]
+	* Present window when it's under something [Dennis Smit]
+	* Update from HIG [Dennis Cranston]
+	* Fix the flags for horizontal panels [Vincent Noel]
 
 GNOME Floppy
+	
+	* Pass through correct parameters [Chris Smith, Kjartan Maraas]
+	* Update to new MIME system [Ray Strode]
+	* Compilation fix for Fedora Core [Kjartan Maraas]
 
-	* Another attempt at fixing the crash (Glynn)
+GNOME Log Viewer
+
+	* Remove old docs [Glynn]
+	* Use translator-credits string [Glynn]	
+	* Parse syslog.conf [Samuel Stringham]
+	* Get correct date on log zoom [Harsh Jaitly]
+	* Use g_spawn [James Strandboge, Shakti Sen]
+	* Remove timer when we're done [Shakti Sen]
+	* Fix crash if log is < 5 lines [Shakti Sen]
+
+Misc
+
+	* Pass distcheck [Glynn]
 
 Translations
+	* Changwoo Ryu [ku]
+	* Adam Weinberger [en_CA]
+	* Gareth Owen, David Lodge [en_GB]
+	* Miloslav Trmac [cs]
+	* Christophe Merlet [fr]
+	* Laurent Dhima [sq]
+	* Francisco Javier F. Serrador [es]
+	* Takeshi AIHANA [ja]
+	* Funda Wang [zh_CN]
+	* Kjartan Maraas [no, nb]
+	* Stanislav Visnovsky, Ivan Noris [sk]
+	* Pawan Chitrakar [ne]
+	* Dinesh Nadarajah [ta]
+	* Alexander Shopov, Peter "Peshka" Slavov,  Vladimir Petkov [bg]
+	* Vincent van Adrighem, Michiel Sikkes [nl]
+	* Artur Flinta [pl]
+	* Christian Rose [sv]
+	* Andras Timar, Laszlo Dvornik, Gabor Kelemen [hu]
+	* Guntupalli Karunakar [hi]
+	* Changwoo Ryu [ko]
+	* Duarte Loreto [pt]
+	* Akagic Amila, Tomasz KÅ~Boczko [bs]
+	* Tommi Vainikainen [fi]
+	* Martin Willemoes Hansen [da]
+	* Christian Neumair, Hendrik Richter [de]
+	* Telsa Gwynne, Dafydd Tomos, Dafydd Harries [cy]
+	* Danilo Å| egan [sr, sr@Latn]
+	* Hasbullah Bin Pit [ms]
+	* Adam Weinberger [en_CA]
+	* Leonid Kanter [ru]
+	* Ankit Patel [gu]
+	* Metin Amiroff [az]
+	* Å½ygimantas BeruÄ~Mka [lt]
+	* Maxim Dziumanenko [uk]
+	* Baris Cicek [tr]	
+	* Ã~Esmund SkjÃ¦veland [nn]
+	* Kostas Papadimas, Nikos Charonitakis [el]
+	* Jordi Mallach [ca]
+	* Mugurel Tudor [ro]
+	* Arafat Medini [ar]
+	* Supranee Thirawatthanasuk [th]
+	* 
+===================================================================
+GNOME Utilities 2.6.1
+
+GNOME Search Tool
+
+	* Update localized online user help [Sun translation team]
+	* Fix compiler warnings [Dennis, Heikki]
+
+Translations
+	* Adam Weinberger [en_CA]
+	* Guntupalli Karunakar [gu]
+	* Andras Timar [hu]	
+	* Robert Sedak [hr]
+	* Jordi Mallach [ca]
+	* Baris Cicek [tr]
+	* IÃ±aki LarraÃ±aga [ba]
+
+===================================================================
+
+GNOME Utilities 2.6.0
+
+GNOME Dictionary
 	
-	* Alessio, Fatih & Dmitry
+	* Build fixes [Dennis]
+	
+GNOME Floppy 
+
+	* Build fixes [Dennis]
+
+
+GNOME Search Tool
+
+	* Updated online user help [Breda]
+
+GNOME System Log
+
+	* Build fixes [Dennis]
+
+Translations
+
+	* Alastair McKinstry (ga)
+	* Ã…smund SkjÃ¦veland (nn)
+	* Christian Neumair (de)
+	* Dafydd Tomos (cy)
+	* Gareth Owen (en_GB)
+	* Isam Bayazidi (ar)
+	* Laurent Dhima (sq)
+	* Leonid Kanter (ru)
+	* Maxim Dziumanenko (uk)
+	* Mugurel Tudor (ro)
+	* Runa Bhattacharjee (bn)
+	* Sanlig Badral (mn)
+	* Vladimir \"Kaladan\" Petkov (bg)
+	* Welther JosÃ© O. Esteves (pt_BR)
 
 Miscellaneous
 
-        * NEWS, README (Glynn)
-
-[1] Otherwise called " I am *SO* not responsible enough to being 
-a maintainer of this thing "
+	* README, NEWS: Update for new release.
 
 ===================================================================
 
-GNOME Utilities 2.2.0.2		" I am an arse "
+GNOME Utilities 2.5.90
 
+GNOME Dictionary
+
+	* Fix bug #128647  Remember smart lookup settings between invocations [Fernando Herrera]   
+	* Fix bug #127292  Remove use of deprecated function [Fernando Herrera]
+	* Fix bug #130457  Add bugzilla information [Fernando Herrera]
+	* Fix bug #129283  Use gnome-icon-theme for window icon [Michael Terry] 
+	* Fix bug #106700  Use ngettext for plurals [Michael Terry] 
+	* Fix bug #124643  Remove unused GtkAlignment [Kjartan Maraas]
+	* Many multihead fixes [Dennis Smit]
+	
+GNOME System Log
+
+	* Fix bug #129283  Use gnome-icon-theme for window icon [Michael Terry]
+	* Fix bug #106700  Use ngettext for plurals [Christian Neumair]
+	* Mark various strings for translation [Maxim Dzumanenko] 
+	* Use the gtk+ 2.4 file chooser
+	
+GNOME Search Tool
+
+	* Fix bug #119720  Add a 'Move to Trash' popup menu item [Cranston]
+	* Fix bug #126525  New default animation  [jimmac] 
+	* Fix bug #132043, #128454, #128378  Accessibility fixes [Padraig Obriain]
+	* Fix bug #136419  Update help documentation for GNOME 2.6 [Breda McColgan]
+	* Fix bug #124656  Various memory leaks fixed [Kjartan Maraas]
+	* Fix bug #123191  AIX portability fixes [Sandie Vanderme]
+	* Fix bug #129283  Fix window icon [Michael Terry]
+	* Fix bug #106700  Use ngettext for plurals [Christian Neumair]
+	* Reduce search results' memory usage
+	* Improve search performance
+	* Add middle button drag and drop support to listview
+	* Animation file is moved to the gnome-icon-theme module
+	* Improve handling of sockets and fifos
+	* Hide backup files by default
+	* Use shared-mime-info database for determining file types
+	* Add support for %e and %O strftime modifiers
+	* Improve HIG compliance of alert dialogs
+	* Use the gtk+ 2.4 file chooser
+	
 GNOME Floppy 
 
-	* Fix compiling issues (Dennis)
+	* Fix bug #110918 & 123831  Fixed volume name handling [Stephane Demurget]
+	* Fix bug #104327  Added devfs device name support [Stephane Demurget]
+	* Fix bug #129283  Use gnome-icon-theme for window icon [Michael Terry]
+	* Fix bug #106700  Use ngettext for plurals [Chrisian Neumair]
+	* Fix bug #127484  Use new help documenation [Balamurali Viswanathan]
+	* Updated help links.	
 
-Translations 
+Translations
 
-	* Gustavo, Christian & Kang
+	* Takeshi Aihana, Ales Nyakhaychyk, Paisa Seeluangsawat,  Christian Rose,
+	  Andras Timar, Funda Wang, Danilo Segan, Ole Laursen, Alessio Frusciante
+	  Pauli Virtanen, Christophe Merlet, Duarte Loreto, Priit Laes, 
+	  Åsmund Skjæveland, Tomasz Kloczko, Guntupalli Karunakar, Nikos Charonitakis,
+	  Alastair McKinstry, Miloslav Trmac, Kostas Papadimas, Changwoo Ryu
+	  Vincent van Adrighem, Laurent Dhima, Alessio Frusciante, Zygimantas Berucka,
+	  Artur Flinta, Ole Laursen, Metin Emirov, Laurent Dhima, Sanlig Badral,
+	  Francisco Javier F. Serrador, and many more...
+	  
 
 Miscellaneous
 
-        * NEWS, README (Glynn)
+	* README, NEWS: Update for new release.
 
 ===================================================================
 
-GNOME Utilities 2.2.0.1 " Macro releases are teh suck "
+GNOME Utilities 2.3.3
+
+GNOME Dictionary
+
+	* Do not mark copyright string for translation (Christian)  
+	* HIG changes (Dennis)
+	* Compiler warning fixes (Dennis)
+	
+GNOME System Log
+
+	* Do not mark copyright string for translation (Christian)
+	* HIG changes (Dennis)
+	* Compiler warning fixes (Dennis)  
+
+GNOME Search Tool
+
+	* Replace disclosure widget with standard check button (Dennis)
+	* Convert the search image into an animation (Dennis)
+	* Remove the status and progress bar (Dennis)
+	* Support SVG icon themes (Dennis)
+	* Adjust sort order of columns to match nautilus (Dennis)
+	* Add gconf key to disable using the locate command (Dennis)
+	* UTF8 fixes (Hidetoshi)
+	* Fix minimum size of window when the additional options are hidden (Dennis)
+	* Add drag and drop support to the animation to create a desktop file 
+	  that starts a search with same options (Dennis)
+	* HIGify alert dialogs (Dennis)
+	* Fix localization of the available options menu (Christian)
 
 GNOME Floppy 
 
-	* Fix crash on startup (Victor, Jonathan, Frederic, Glynn)
-	* Re-add window icon, broken with new nautilus locations (Glynn)
+	* Sanity checks (Glynn)
+	* HIG changes (Dennis)
+	* Compiler warning fixes (Dennis)
+
+Translations
+
+	* Ole, Duarte, Christian Rose,  Christian Myer, Takeshi, Paul, 
+	  Taneem, Miloslav & Christophe
+
+Miscellaneous
+
+	* README, NEWS: Update for new release.
+
+===================================================================
+
+GNOME Utilities 2.3.2.1
+
+GNOME Dictionary
+
+	* Add IPV6 support (Archana)
+
+GNOME System Log
+
+	* Avoid double free (Marcus)
+	* Miscellaneous bugs fixes (Glynn)
+	* Fix up GConf keys (Glynn)
+	* Fix up compilation on cygwin (Masahiro)
+
+Miscellaneous
+
+	* README, NEWS: Update for new release.
+
+===================================================================
+
+GNOME Utilities 2.3.2
+
+GNOME Calculator
+
+	* Dies in preference for gcalctool (Glynn)
+
+GNOME Dictionary
+
+	* Fix portability problem on AMD Opteron (Stanislav)
+
+GNOME Search Tool
+
+	* Fix typo (Dennis)
+	* Convert stuff to UTF8 (Dennis)
+
+GNOME Character Map
+
+	* Dies in preference for gucharmap (Glynn)
+
+Translations
+
+	* Takeshi, Hasbullah, Abel, Pablo & Duarte
+
+Miscellaneous
+
+	* README, NEWS: Update for new release.
+
+===================================================================
+
+GNOME Utilities 2.3.1 
+
+GNOME Calculator
+
+	* Fix factorial stuff (Leena)
+
+GNOME Search Tool
+
+	* Fix resizing issues with Galaxy Theme (Dennis)
+	* Prevent click starting new find after find aborts (Dennis)
+	* HIG updates (Dennis)
+	* Remove some flags for the g_spawn call (Dennis)
 
 Documentation
-
-	* Updates for 2.2 from the Sun doc team (Irene, Pat)
+	* Fix up Search Tool documentation (Dennis)
+	* Add localized documentation (Mike)
 
 Translations
 
-        * Christian Meyer, Christian Neumair, Stanislav, Kjartan, T, 
-	Christian Rose, Dmitry, Marius & Takeshi.
+	* Danilo, Paul, Abel, Changwoo, Miloslav & Pablo
 
 Miscellaneous
 
-        * NEWS, README, HACKING (Glynn)
+        * NEWS, README (Glynn)
+	* Removed stuff from POTFILES.in (Dennis)
+
+===================================================================
+
+GNOME Utilities 2.3.0 
+
+GNOME Calculator
+
+	* Fix handling of parentheses (Kaushal)
+
+GNOME Search Tool
+
+        * Default filename search by substring (Dennis)
+	* Default filename search case insensitive (Dennis)
+	* Include desktop in search results (Dennis)
+	* Include folders in search results (Dennis)
+	* Name Contains entry is optional (Kaushal)
+	* Prevent the escape key from quiting application if a search has just completed (Dennis)
+	* Space or return key open a file (Dennis)
+	* Application remembers previously selected options (Dennis)
+	* Application is fully session aware  (Pasupathi) 
+
+GNOME System Log
+
+        * Fix a memory leak (Kjartan)
+
+Documentation
+ 
+        * Add Japanese documentation (Takeshi)
+
+Translations
+
+        * Metin, Christian, Roozbeh, Dmitry, Sanlig, Pablo, Yuriy, 
+	Christophe, Daniel, Abel, He, Fatih, & Takeshi.
+
+Miscellaneous
+
+        * NEWS, README (Dennis)
 
 ===================================================================
 

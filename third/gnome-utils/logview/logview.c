@@ -30,6 +30,7 @@
 #include <sys/stat.h>
 #include "logview.h"
 #include <libgnomeui/gnome-window-icon.h>
+#include <ctype.h>
 
 /*
  *    -------------------
@@ -50,8 +51,7 @@ void create_zoom_view (void);
 void AboutShowWindow (GtkWidget* widget, gpointer user_data);
 void CloseApp (void);
 void CloseLog (Log *);
-void FileSelectCancel (GtkWidget * w, GtkFileSelection * fs);
-void FileSelectOk (GtkWidget * w, GtkFileSelection * fs);
+void FileSelectResponse (GtkWidget * chooser, gint response, gpointer data);
 void LogInfo (GtkWidget * widget, gpointer user_data);
 void UpdateStatusArea (void);
 void change_log (int dir);
@@ -64,8 +64,9 @@ int read_regexp_db (char *filename, GList **db);
 int read_actions_db (char *filename, GList **db);
 void print_db (GList *gb);
 Log *OpenLogFile (char *);
-GtkWidget *new_pixmap_from_data (char  **, GdkWindow *, GdkColor *);
 void SaveUserPrefs(UserPrefsStruct *prefs);
+char * parse_syslog(gchar * syslog_file);
+
 void close_zoom_view (GtkWidget *widget, gpointer client_data);
 void handle_selection_changed_cb (GtkTreeSelection *selection, gpointer data);
 void handle_row_activation_cb (GtkTreeView *treeview, GtkTreePath *path, 
@@ -179,7 +180,6 @@ GnomeUIInfo main_menu[] = {
  */
 	
 GtkWidget *app = NULL;
-static GtkWidget *viewport;
 GtkLabel *date_label = NULL;
 
 GList *regexp_db = NULL, *descript_db = NULL, *actions_db = NULL;
@@ -249,7 +249,6 @@ static gboolean
 restore_session (void)
 {
    Log *tl;
-   gint i, logcnt = 0;
 
    /* closing the log file opened by default */
    CloseLog (loglist[0]);
@@ -278,6 +277,7 @@ restore_session (void)
             g_free (f);
       }
    } while ((next_opt = poptGetNextOpt (poptCon)) != -1);
+   return TRUE;
 }
 
 static gint
@@ -295,6 +295,7 @@ int
 main (int argc, char *argv[])
 {
    GnomeClient *gclient;
+   GtkIconInfo *icon_info;
 
    bindtextdomain(GETTEXT_PACKAGE, GNOMELOCALEDIR);
    bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
@@ -306,7 +307,11 @@ main (int argc, char *argv[])
    gnome_program_init ("gnome-system-log",VERSION, LIBGNOMEUI_MODULE, argc, argv,
 			   GNOME_PARAM_APP_DATADIR, DATADIR, NULL);
 
-   gnome_window_icon_set_default_from_file (GNOME_ICONDIR"/gnome-log.png");
+   icon_info = gtk_icon_theme_lookup_icon (gtk_icon_theme_get_default (), "logviewer", 48, 0);
+   if (icon_info) {
+       gnome_window_icon_set_default_from_file (gtk_icon_info_get_filename (icon_info));
+       gtk_icon_info_free (icon_info);
+   }
    
    poptCon = poptGetContext ("gnome-system-log", argc, (const gchar **) argv, 
 							 options, 0);  
@@ -374,10 +379,8 @@ InitApp ()
 void
 CreateMainWin ()
 {
-   GtkWidget *w, *vbox, *table, *hbox, *hbox_date;
-   GtkWidget *padding;
+   GtkWidget *vbox, *hbox, *hbox_date;
    GtkLabel *label;
-   GtkObject *adj;
    GtkAllocation req_size;
    GtkTreeStore *tree_store;
    GtkTreeSelection *selection;
@@ -391,14 +394,13 @@ CreateMainWin ()
 
    /* Create App */
 
-   if ((curlog != NULL) && (numlogs))
+   if ((curlog != NULL) && (curlog->name != NULL) && (numlogs))
        window_title = g_strdup_printf ("%s - %s", curlog->name, APP_NAME);
    else
        window_title = g_strdup_printf (APP_NAME);
    app = gnome_app_new ("gnome-system-log", window_title);
    g_free (window_title);
 
-   gtk_container_set_border_width ( GTK_CONTAINER (app), 0);
    gtk_window_set_default_size ( GTK_WINDOW (app), LOG_CANVAS_W, LOG_CANVAS_H);
    req_size.x = req_size.y = 0;
    req_size.width = 400;
@@ -410,7 +412,8 @@ CreateMainWin ()
    /* Create menus */
    gnome_app_create_menus (GNOME_APP (app), main_menu);
 
-   vbox = gtk_vbox_new (FALSE, 0);
+   vbox = gtk_vbox_new (FALSE, 6);
+   gtk_container_set_border_width ( GTK_CONTAINER (vbox), 6);
    gnome_app_set_contents (GNOME_APP (app), vbox);
 
    if (numlogs < 2)
@@ -436,11 +439,11 @@ CreateMainWin ()
    /* Add Tree View Columns */
    for (i = 0; column_titles[i]; i++) {
         renderer = gtk_cell_renderer_text_new ();
-        column = gtk_tree_view_column_new_with_attributes (column_titles[i],
+        column = gtk_tree_view_column_new_with_attributes (_(column_titles[i]),
                     renderer, "text", i, NULL);
         gtk_tree_view_column_set_sizing (column, GTK_TREE_VIEW_COLUMN_AUTOSIZE); 
         gtk_tree_view_column_set_resizable (column, TRUE);
-        gtk_tree_view_column_set_spacing (column, GNOME_PAD_SMALL);
+        gtk_tree_view_column_set_spacing (column, 6);
         gtk_tree_view_append_column (GTK_TREE_VIEW (view), column);
    }
 
@@ -458,15 +461,12 @@ CreateMainWin ()
                      G_CALLBACK (handle_row_activation_cb), NULL);
 
    /* Create status area at bottom */
-   hbox = gtk_hbox_new (FALSE, 2);
-   gtk_container_set_border_width ( GTK_CONTAINER (hbox), 3);
+   hbox = gtk_hbox_new (FALSE, 12);
 
-   hbox_date = gtk_hbox_new (FALSE, 2);
-   gtk_container_set_border_width ( GTK_CONTAINER (hbox_date), 3);
+   hbox_date = gtk_hbox_new (FALSE, 12);
 
    date_label = (GtkLabel *)gtk_label_new ("");
    gtk_widget_show (GTK_WIDGET (date_label));
-   /* gtk_widget_set_size_request (GTK_WIDGET (label), 60, -1); */
    gtk_box_pack_end (GTK_BOX (hbox_date), GTK_WIDGET (date_label), 
 		     TRUE, TRUE, 0);
 
@@ -551,16 +551,21 @@ change_log_menu (GtkWidget * widget, gpointer user_data)
 }
 
 /* ----------------------------------------------------------------------
-   NAME:          FileSelectOk
+   NAME:          FileSelectResponse
    DESCRIPTION:   User selected a file.
    ---------------------------------------------------------------------- */
 
 void
-FileSelectOk (GtkWidget * w, GtkFileSelection * fs)
+FileSelectResponse (GtkWidget * chooser, gint response, gpointer data)
 {
    char *f;
    Log *tl;
    gint i;
+
+   if (response != GTK_RESPONSE_OK) {
+	   gtk_widget_destroy (chooser);
+	   return;
+   }
 
    /* Check that we haven't opened all logfiles allowed    */
    if (numlogs >= MAX_NUM_LOGS)
@@ -569,8 +574,8 @@ FileSelectOk (GtkWidget * w, GtkFileSelection * fs)
        return;
      }
 
-   f = g_strdup (gtk_file_selection_get_filename (GTK_FILE_SELECTION (fs)));
-   gtk_widget_destroy (GTK_WIDGET (fs));
+   f = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (chooser));
+   gtk_widget_destroy (GTK_WIDGET (chooser));
 
    /* Check whether we are opening the already opened log file */ 
    for ( i = 0; i < numlogs; i++)
@@ -635,7 +640,7 @@ FileSelectOk (GtkWidget * w, GtkFileSelection * fs)
 void
 LoadLogMenu (GtkWidget * widget, gpointer user_data)
 {
-   GtkWidget *filesel = NULL;
+   GtkWidget *chooser = NULL;
 
    /*  Cannot open more than MAX_NUM_LOGS */
    if (numlogs == MAX_NUM_LOGS)
@@ -644,7 +649,7 @@ LoadLogMenu (GtkWidget * widget, gpointer user_data)
        return;
      }
    
-   /*  Cannot have more than one fileselect window */
+   /*  Cannot have more than one file chooser window */
    /*  at one time. */
    if (open_file_dialog != NULL) {
 	   gtk_widget_show_now (open_file_dialog);
@@ -653,31 +658,33 @@ LoadLogMenu (GtkWidget * widget, gpointer user_data)
    }
 
 
-   filesel = gtk_file_selection_new (_("Open new logfile"));
-   gtk_window_set_transient_for (GTK_WINDOW (filesel), GTK_WINDOW (app));
-   gnome_window_icon_set_from_default (GTK_WINDOW (filesel));
+   chooser = gtk_file_chooser_dialog_new (_("Open new logfile"),
+					  GTK_WINDOW (app),
+					  GTK_FILE_CHOOSER_ACTION_OPEN,
+					  GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+					  GTK_STOCK_OPEN, GTK_RESPONSE_OK,
+					  NULL);
+   gtk_dialog_set_default_response (GTK_DIALOG (chooser),
+		   		    GTK_RESPONSE_OK);
+   gtk_window_set_default_size (GTK_WINDOW (chooser), 600, 400);
 
    /* Make window modal */
-   gtk_window_set_modal (GTK_WINDOW (filesel), TRUE);
+   gtk_window_set_modal (GTK_WINDOW (chooser), TRUE);
 
-   gtk_file_selection_set_filename (GTK_FILE_SELECTION (filesel), 
-   				    user_prefs->logfile);
+   if (user_prefs->logfile != NULL)
+   	gtk_file_chooser_set_filename (GTK_FILE_CHOOSER (chooser), 
+				       user_prefs->logfile);
 
-   gtk_window_set_position (GTK_WINDOW (filesel), GTK_WIN_POS_MOUSE);
-   gtk_signal_connect (GTK_OBJECT (GTK_FILE_SELECTION (filesel)->ok_button),
-		       "clicked", (GtkSignalFunc) FileSelectOk,
-		       filesel);
-   gtk_signal_connect_object (GTK_OBJECT (GTK_FILE_SELECTION (filesel)->cancel_button),
-			      "clicked", (GtkSignalFunc) gtk_widget_destroy,
-			      GTK_OBJECT (filesel));
+   gtk_window_set_position (GTK_WINDOW (chooser), GTK_WIN_POS_MOUSE);
+   g_signal_connect (G_OBJECT (chooser), "response",
+		     G_CALLBACK (FileSelectResponse), NULL);
 
-   gtk_signal_connect (GTK_OBJECT (filesel),
-		       "destroy", (GtkSignalFunc) gtk_widget_destroyed,
-		       &open_file_dialog);
+   g_signal_connect (G_OBJECT (chooser), "destroy",
+		     G_CALLBACK (gtk_widget_destroyed), &open_file_dialog);
 
-   gtk_widget_show (filesel);
+   gtk_widget_show (chooser);
 
-   open_file_dialog = filesel;
+   open_file_dialog = chooser;
 
 }
 
@@ -866,14 +873,19 @@ void SetDefaultUserPrefs(UserPrefsStruct *prefs)
 	gchar *logfile = NULL;
 	struct stat filestat;
 	
-	logfile = gconf_client_get_string (client, "/apps/logview/logfile", NULL);
+	logfile = gconf_client_get_string (client, "/apps/gnome-system-log/logfile", NULL);
 	if (logfile != NULL && strcmp (logfile, "")) {
 		prefs->logfile = g_strdup (logfile);
 		g_free (logfile);
 	}
 	else {
-		/* First time running logview. Try to find the logfile */
-		if (lstat("/var/adm/messages", &filestat) == 0) 
+
+		/* For first time running, try parsing /etc/syslog.conf */
+		if (lstat("/etc/syslog.conf", &filestat) == 0) {
+			if ((logfile = parse_syslog("/etc/syslog.conf")) == NULL);
+			prefs->logfile = g_strdup (logfile);
+		}
+		else if (lstat("/var/adm/messages", &filestat) == 0) 
 			prefs->logfile = g_strdup ("/var/adm/messages");
 		else if (lstat("/var/log/messages", &filestat) == 0) 
 			prefs->logfile = g_strdup ("/var/log/messages");
@@ -882,12 +894,66 @@ void SetDefaultUserPrefs(UserPrefsStruct *prefs)
 		else
 			prefs->logfile = NULL;
 	}
-	
 }
 
+char * parse_syslog(gchar * syslog_file) {
+/* Most of this stolen from sysklogd sources */
+    char * logfile = NULL;
+    char cbuf[BUFSIZ];
+    char *cline;
+    char *p;
+    FILE * cf;
+    if ((cf = fopen(syslog_file, "r")) == NULL) {
+        fprintf(stderr, "Could not open file: (%s)\n", syslog_file);
+        return NULL;
+    }
+    cline = cbuf;
+    while (fgets(cline, sizeof(cbuf) - (cline - cbuf), cf) != NULL) {
+        for (p = cline; isspace(*p); ++p);
+        if (*p == '\0' || *p == '#')
+            continue;
+        for (;*p && !strchr("\t ", *p); ++p);
+        while (*p == '\t' || *p == ' ')
+            p++;
+        if (*p == '-')
+            p++;
+        if (*p == '/') {
+            logfile = g_strdup (p);
+            /* remove trailing newline */
+            if (logfile[strlen(logfile)-1] == '\n')
+                logfile[strlen(logfile)-1] = '\0';
+            fprintf(stderr, "Found a logfile: (%s)\n", logfile);
+            return logfile;
+        }
+        /* I don't totally understand this code
+           it came from syslogd.c and is supposed
+           to read run-on lines that end with \
+           FIXME?? */
+        /*
+        if (*p == '\\') {
+            if ((p - cbuf) > BUFSIZ - 30) {
+                cline = cbuf;
+            } else {
+                *p = 0;
+                cline = p;
+                continue;
+            }
+        }  else
+            cline = cbuf;
+        *++p = '\0';
+        */
+        
+    }
+    return logfile; 
+}
+
+
+ 
 void SaveUserPrefs(UserPrefsStruct *prefs)
 {
-    gconf_client_set_string (client, "/apps/logview/logfile", prefs->logfile, NULL);
+    if (gconf_client_key_is_writable (client, "/apps/logview/logfile", NULL) &&
+	prefs->logfile != NULL)
+	    gconf_client_set_string (client, "/apps/logview/logfile", prefs->logfile, NULL);
 }
 
 static void 

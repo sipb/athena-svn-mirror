@@ -1,983 +1,350 @@
-# -------------------------------------------------------
-# Copyright (C) 2000 Free Software Foundation, Inc.
+# translation of gnome-utils.HEAD.az.po to Azerbaijani
+# translation of gnome-utils.HEAD.po to Azerbaijani Turkish
+# Copyright (C) 2000,2003, 2004 Free Software Foundation, Inc.
 # Vasif Ismailoglu MD <azerb_linux@hotmail.com>, 2000.
+# Mətin Əmirov <metin@karegen.com>, 2003, 2004.
+# Metin Amiroff <metin@karegen.com>, 2004.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-utils 1.96.0\n"
-"POT-Creation-Date: 2003-01-27 11:32+0000\n"
-"PO-Revision-Date: 2001-12-19 19:34GMT+0200\n"
-"Last-Translator: Vasif İsmayıloğlu MD <azerb_linux@hotmail.com>\n"
-"Language-Team: Azerbaijani Turkic <linuxaz@azerimail.net>\n"
+"Project-Id-Version: gnome-utils.HEAD.az\n"
+"POT-Creation-Date: 2004-08-30 15:48+1200\n"
+"PO-Revision-Date: 2004-08-17 21:21+0300\n"
+"Last-Translator: Metin Amiroff <metin@karegen.com>\n"
+"Language-Team: Azerbaijani <translation-team-az@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.5\n"
-
-#: exe-handler/gnome-exe-handler.c:76
-#, c-format
-msgid ""
-"Executing arbitrary programs that you downloaded from the network might be "
-"dangerous.\n"
-"\n"
-"Are you sure you want to run `%s'?"
-msgstr ""
-"Şəbəkədən endirdiyiniz proqramları icra etmək təhlükəli olar bilər.\n"
-"\n"
-"`%s' icrası mövzusunda ciddisiniz?"
-
-#: exe-handler/gnome-exe-handler.c:83
-msgid "Could not access file permissions"
-msgstr "Fayl səlahiyyətlərinə çata bilmirim"
-
-#: exe-handler/gnome-exe-handler.c:88
-#, c-format
-msgid "Could not execute the file `%s' due to a permission problem"
-msgstr "`%s' faylı səlahiyyət problemlərindən ötrü icra edilə bilmədi"
-
-#: exe-handler/gnome-exe-handler.c:104
-#, c-format
-msgid "Failure at executing `%s'"
-msgstr "`%s' icrası bacarılmadı"
-
-#: exe-handler/gnome-exe-handler.c:123
-#, c-format
-msgid "It was not possible to open the file `%s'"
-msgstr "`%s' faylının açılması mümkün olmadı"
-
-#: exe-handler/gnome-exe-handler.c:132
-#, c-format
-msgid "The file `%s' is empty"
-msgstr "`%s' faylı boşdur"
-
-#: exe-handler/gnome-exe-handler.c:137
-#, c-format
-msgid "There was an error. `%s' is empty"
-msgstr "Xəta oldu. `%s' boşdur"
-
-#: exe-handler/gnome-exe-handler.c:152
-msgid "This is a library and can not be executed"
-msgstr "Bu, bir kitabxanadır və icra edilə bilməz"
-
-#: exe-handler/gnome-exe-handler.c:158
-msgid "The file is a core file and can not be executed"
-msgstr "Fayl çöküntü faylıdır və ona görə də icra edilə bilməz"
-
-#: exe-handler/gnome-exe-handler.c:162 exe-handler/gnome-exe-handler.c:196
-msgid "This is an unknown kind of executable"
-msgstr "Bu, naməlum növdə bir icraçıdır"
-
-#: exe-handler/gnome-exe-handler.c:192
-msgid ""
-"The executable is for a different platform and can not be executed on this "
-"system"
-msgstr "İcraçı başqa platform üçündür və bu sistemdə işlədilə bilməz"
-
-#. Translator credits
-#: gcalc/gcalc.c:42 gcharmap/src/callbacks.c:46 gdictsrc/gdict-about.c:43
-#: logview/about.c:52
-msgid "translator_credits"
-msgstr ""
-
-#: gcalc/gcalc.c:60
-msgid "GNOME Calculator"
-msgstr "GNOME Hesaplayıcı"
-
-#: gcalc/gcalc.c:61
-#, fuzzy
-msgid "(C) 1998 Free Software Foundation, Inc."
-msgstr "Təlif haqqı (C) 1998,2000 the Free Software Foundation"
-
-#: gcalc/gcalc.c:62
-#, fuzzy
-msgid "Simple double precision calculator similar to xcalc"
-msgstr "Balaca bir \"xcalc\" oxşarı hesaplayıcı"
-
-#: gcalc/gcalc.c:140
-#, fuzzy
-msgid "_Calculator"
-msgstr "GNOME Hesaplayıcı"
-
-#: gcalc/gcalc.c:191 gcalc/gnome-calculator.desktop.in.h:1
-#, fuzzy
-msgid "Calculator"
-msgstr "GNOME Hesaplayıcı"
-
-#: gcalc/gnome-calc.c:252
-#, fuzzy
-msgid "inf"
-msgstr "sin"
-
-#: gcalc/gnome-calc.c:478
-msgid "DEG"
-msgstr "DEG"
-
-#: gcalc/gnome-calc.c:480
-msgid "RAD"
-msgstr "RAD"
-
-#: gcalc/gnome-calc.c:482
-msgid "GRAD"
-msgstr "GRAD"
-
-#: gcalc/gnome-calc.c:1255
-msgid "1/x"
-msgstr "1/x"
-
-#: gcalc/gnome-calc.c:1255
-#, fuzzy
-msgid "Inverse"
-msgstr "Aralıqlar"
-
-#: gcalc/gnome-calc.c:1256
-msgid "x<sup>2</sup>"
-msgstr ""
-
-#: gcalc/gnome-calc.c:1256
-#, fuzzy
-msgid "Square"
-msgstr "Qeyd Et"
-
-#: gcalc/gnome-calc.c:1257
-msgid "SQRT"
-msgstr "SQRT"
-
-#: gcalc/gnome-calc.c:1257
-msgid "Square root"
-msgstr ""
-
-#: gcalc/gnome-calc.c:1258
-msgid "CE/C"
-msgstr "CE/C"
-
-#: gcalc/gnome-calc.c:1258
-#, fuzzy
-msgid "Clear"
-msgstr "Təqvim"
-
-#: gcalc/gnome-calc.c:1259
-msgid "AC"
-msgstr "AC"
-
-#: gcalc/gnome-calc.c:1259
-#, fuzzy
-msgid "Reset"
-msgstr "Yeniləmə"
-
-#: gcalc/gnome-calc.c:1261
-msgid "INV"
-msgstr "INV"
-
-#: gcalc/gnome-calc.c:1261
-msgid "Inverse trigonometry/log function"
-msgstr ""
-
-#. inverse button
-#: gcalc/gnome-calc.c:1262
-msgid "sin"
-msgstr "sin"
-
-#: gcalc/gnome-calc.c:1262
-#, fuzzy
-msgid "Sine"
-msgstr "Böyüklük"
-
-#: gcalc/gnome-calc.c:1263
-msgid "cos"
-msgstr "cos"
-
-#: gcalc/gnome-calc.c:1263
-#, fuzzy
-msgid "Cosine"
-msgstr "Qapat"
-
-#: gcalc/gnome-calc.c:1264
-msgid "tan"
-msgstr "tan"
-
-#: gcalc/gnome-calc.c:1264
-msgid "Tangent"
-msgstr ""
-
-#. Ugly hack so that window won't resize when selecting GRAD - there should be a better fix that this
-#: gcalc/gnome-calc.c:1266
-#, fuzzy
-msgid " DEG  "
-msgstr "DEG"
-
-#: gcalc/gnome-calc.c:1266
-msgid "Switch degrees / radians / grad"
-msgstr ""
-
-#: gcalc/gnome-calc.c:1268
-msgid "e"
-msgstr "e"
-
-#: gcalc/gnome-calc.c:1268
-msgid "Base of Natural Logarithm"
-msgstr ""
-
-#: gcalc/gnome-calc.c:1269
-msgid "EE"
-msgstr "EE"
-
-#: gcalc/gnome-calc.c:1269
-msgid "Add digit"
-msgstr ""
-
-#: gcalc/gnome-calc.c:1270
-msgid "log"
-msgstr "log"
-
-#: gcalc/gnome-calc.c:1270
-#, fuzzy
-msgid "Base 10 Logarithm"
-msgstr "Loqaritmalıq"
-
-#: gcalc/gnome-calc.c:1271
-msgid "ln"
-msgstr "ln"
-
-#: gcalc/gnome-calc.c:1271
-#, fuzzy
-msgid "Natural Logarithm"
-msgstr "Loqaritmalıq"
-
-#: gcalc/gnome-calc.c:1272
-msgid "x<sup>y</sup>"
-msgstr ""
-
-#: gcalc/gnome-calc.c:1272
-#, fuzzy
-msgid "Power"
-msgstr "Qapı :"
-
-#: gcalc/gnome-calc.c:1274
-msgid "PI"
-msgstr "PI"
-
-#: gcalc/gnome-calc.c:1275
-msgid "x!"
-msgstr "x!"
-
-#: gcalc/gnome-calc.c:1275
-msgid "Factorial"
-msgstr ""
-
-#: gcalc/gnome-calc.c:1276
-msgid "("
-msgstr "("
-
-#: gcalc/gnome-calc.c:1276
-#, fuzzy
-msgid "Opening Parenthesis"
-msgstr "Paleti aç"
-
-#: gcalc/gnome-calc.c:1277
-msgid ")"
-msgstr ")"
-
-#: gcalc/gnome-calc.c:1277
-#, fuzzy
-msgid "Closing Parenthesis"
-msgstr "sağ mötərizə gözlənilirdi"
-
-#: gcalc/gnome-calc.c:1278
-msgid "/"
-msgstr "/"
-
-#: gcalc/gnome-calc.c:1278
-msgid "Divide by"
-msgstr ""
-
-#: gcalc/gnome-calc.c:1280
-msgid "STO"
-msgstr "STO"
-
-#: gcalc/gnome-calc.c:1280
-msgid ""
-"Store the value in the\n"
-"display field in memory"
-msgstr ""
-
-#: gcalc/gnome-calc.c:1281
-msgid "7"
-msgstr "7"
-
-#: gcalc/gnome-calc.c:1282
-msgid "8"
-msgstr "8"
-
-#: gcalc/gnome-calc.c:1283
-msgid "9"
-msgstr "9"
-
-#: gcalc/gnome-calc.c:1284 gfloppy/src/gfloppy2.glade.h:2
-msgid "*"
-msgstr "*"
-
-#: gcalc/gnome-calc.c:1284
-msgid "Multiply by"
-msgstr ""
-
-#: gcalc/gnome-calc.c:1286
-msgid "RCL"
-msgstr "RCL"
-
-#: gcalc/gnome-calc.c:1286
-msgid ""
-"Display the value in memory\n"
-"in the display field"
-msgstr ""
-
-#: gcalc/gnome-calc.c:1287
-msgid "4"
-msgstr "4"
-
-#: gcalc/gnome-calc.c:1288
-msgid "5"
-msgstr "5"
-
-#: gcalc/gnome-calc.c:1289
-msgid "6"
-msgstr "6"
-
-#: gcalc/gnome-calc.c:1290
-msgid "-"
-msgstr "-"
-
-#: gcalc/gnome-calc.c:1290
-#, fuzzy
-msgid "Subtract"
-msgstr "Başla"
-
-#: gcalc/gnome-calc.c:1292
-msgid "SUM"
-msgstr "SUM"
-
-#: gcalc/gnome-calc.c:1292
-msgid ""
-"Add the value in the display\n"
-"field to the value in memory"
-msgstr ""
-
-#: gcalc/gnome-calc.c:1293
-msgid "1"
-msgstr "1"
-
-#: gcalc/gnome-calc.c:1294
-msgid "2"
-msgstr "2"
-
-#: gcalc/gnome-calc.c:1295
-msgid "3"
-msgstr "3"
-
-#: gcalc/gnome-calc.c:1296
-msgid "+"
-msgstr "+"
-
-#: gcalc/gnome-calc.c:1296
-msgid "Add"
-msgstr "Əlavə Et"
-
-#: gcalc/gnome-calc.c:1298
-msgid "EXC"
-msgstr "EXC"
-
-#: gcalc/gnome-calc.c:1298
-msgid ""
-"Exchange the values in the\n"
-"display field and memory"
-msgstr ""
-
-#: gcalc/gnome-calc.c:1299
-msgid "0"
-msgstr "0"
-
-#: gcalc/gnome-calc.c:1300
-msgid "."
-msgstr "."
-
-#: gcalc/gnome-calc.c:1300
-#, fuzzy
-msgid "Decimal Point"
-msgstr "Onluq ( 8bit )"
-
-#: gcalc/gnome-calc.c:1301
-msgid "+/-"
-msgstr "+/-"
-
-#: gcalc/gnome-calc.c:1301
-msgid "Change sign"
-msgstr ""
-
-#: gcalc/gnome-calc.c:1302
-msgid "="
-msgstr "="
-
-#: gcalc/gnome-calc.c:1302
-#, fuzzy
-msgid "Calculate"
-msgstr "GNOME Hesaplayıcı"
-
-#: gcalc/gnome-calculator.desktop.in.h:2
-msgid "Perform simple calculations"
-msgstr ""
-
-#: gcharmap/gnome-character-map.desktop.in.h:1 gcharmap/src/interface.c:160
-#, fuzzy
-msgid "Character Map"
-msgstr "Gnome hərf xəritəsi"
-
-#: gcharmap/gnome-character-map.desktop.in.h:2
-msgid "Insert special characters into documents"
-msgstr ""
-
-#: gcharmap/src/asciiselect.c:149
-msgid "Select Character"
-msgstr "Hərfi Seç"
-
-#: gcharmap/src/asciiselect.c:152
-#, fuzzy
-msgid "_Insert"
-msgstr "Daxil Et"
-
-#: gcharmap/src/asciiselect.c:155
-#, fuzzy
-msgid "Character c_ode:"
-msgstr "Hərf kodu:"
-
-#: gcharmap/src/asciiselect.c:178
-#, fuzzy
-msgid "Ch_aracter:"
-msgstr "Hərf:"
-
-#: gcharmap/src/asciiselect.c:189
-#, fuzzy
-msgid "Character Code"
-msgstr "Hərf kodu:"
-
-#: gcharmap/src/asciiselect.c:189
-#, fuzzy
-msgid "Select character code"
-msgstr "Hərfi Seç"
-
-#: gcharmap/src/asciiselect.c:190
-#, fuzzy
-msgid "Character"
-msgstr "Hərf:"
-
-#: gcharmap/src/asciiselect.c:190
-#, fuzzy
-msgid "Character to insert"
-msgstr "Hərf kodu:"
-
-#: gcharmap/src/callbacks.c:63
-msgid "GNOME Character Map"
-msgstr "Gnome Hərf Xəritəsi"
-
-#: gcharmap/src/callbacks.c:66
-msgid ""
-"Select, copy and paste characters from your font into other applications"
-msgstr ""
-
-#: gcharmap/src/callbacks.c:130 gcharmap/src/callbacks.c:138
-#, fuzzy, c-format
-msgid "Character code: (Unicode) U%04lX"
-msgstr "Hərf kodu:"
-
-#: gcharmap/src/callbacks.c:134
-#, c-format
-msgid "Character code: (Unicode) U%04lX, (%s) 0x%s"
-msgstr ""
-
-#: gcharmap/src/callbacks.c:192
-msgid "Text copied to clipboard..."
-msgstr "Mətn ara yaddaşa köçürüldü..."
-
-#: gcharmap/src/callbacks.c:209
-msgid "Text cut to clipboard..."
-msgstr "Mətn ara yaddaşa kəsildi ..."
-
-#: gcharmap/src/callbacks.c:259
-msgid "Text pasted from clipboard..."
-msgstr "Mətn ara yaddaşdan alındı ..."
-
-#: gcharmap/src/interface.c:190
-msgid "Action Toolbar"
-msgstr "Gedişat Ləvazimat Çubuğu"
-
-#: gcharmap/src/interface.c:194
-#, fuzzy
-msgid "_Font:"
-msgstr "Yazı növləri"
-
-#. The page selector
-#: gcharmap/src/interface.c:210
-msgid "_Page:"
-msgstr ""
-
-#. end of page selector
-#: gcharmap/src/interface.c:225
-#, fuzzy
-msgid "_Text to copy:"
-msgstr "Köçürüləcək mətn :"
-
-#: gcharmap/src/interface.c:240
-#, fuzzy
-msgid "_Copy"
-msgstr "Köçürt"
-
-#: gcharmap/src/interface.c:262 gcharmap/src/interface.c:263
-#, fuzzy
-msgid "Text to copy"
-msgstr "Köçürüləcək mətn :"
-
-#: gcharmap/src/interface.c:263
-msgid "Entry"
-msgstr "Giriş"
-
-#: gcharmap/src/interface.c:264 gcharmap/src/menus.c:77
-msgid "Copy"
-msgstr "Köçürt"
-
-#: gcharmap/src/interface.c:264
-#, fuzzy
-msgid "Copy the text"
-msgstr "Seçili mətni köçürün"
-
-#: gcharmap/src/menus.c:34
-#, fuzzy
-msgid "_Browse..."
-msgstr "Gəz"
-
-#: gcharmap/src/menus.c:35
-msgid "Insert character(s) by choosing character codes."
-msgstr "Xarakter kodunu seçərək hərfi daxil edin."
-
-#: gcharmap/src/menus.c:63
-#, fuzzy
-msgid "Ch_aracters"
-msgstr "Hərf:"
-
-#. GNOMEUIINFO_ITEM(N_("Insert"), N_("Insert character(s) by choosing character codes"),
-#. cb_insert_char_click, NULL),
-#. GNOMEUIINFO_SEPARATOR,
-#: gcharmap/src/menus.c:75
-msgid "Cut"
-msgstr "Kəs"
-
-#: gcharmap/src/menus.c:75
-msgid "Cut the selection"
-msgstr "Seçili mətni kəs"
-
-#: gcharmap/src/menus.c:77
-msgid "Copy the selection"
-msgstr "Seçili mətni köçürün"
-
-#: gcharmap/src/menus.c:79
-msgid "Paste"
-msgstr "Yapışdır"
-
-#: gcharmap/src/menus.c:79
-msgid "Paste the clipboard"
-msgstr "Mətni arayaddaşa yapışdır."
-
-#: gdialog/guage.c:78
-msgid "Gdialog progressbar"
-msgstr ""
-
-#: gdialog/guage.c:78
-msgid "Indicates the percentage specified at the standard input"
-msgstr ""
-
-#: gdialog/inputbox.c:84
-#, fuzzy
-msgid "GDialog Entry"
-msgstr "Gündəlik Girişi"
-
-#: gdialog/inputbox.c:84
-#, fuzzy
-msgid "Enter the text"
-msgstr "Seçili mətni köçürün"
+"Report-Msgid-Bugs-To: \n"
+"net>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: KBabel 1.3.1\n"
 
 #: gdictsrc/GNOME_GDictApplet.server.in.in.h:1
 msgid "Accessories"
-msgstr ""
+msgstr "Ləvazimatlar"
 
-#: gdictsrc/GNOME_GDictApplet.server.in.in.h:2 gdictsrc/gdict-applet.c:270
+#: gdictsrc/GNOME_GDictApplet.server.in.in.h:2 gdictsrc/gdict-applet.c:144
 msgid "Dictionary Lookup"
-msgstr ""
+msgstr "Lüğətdə Axtarış"
 
-#: gdictsrc/GNOME_GDictApplet.server.in.in.h:3
+#: gdictsrc/GNOME_GDictApplet.server.in.in.h:3 gdictsrc/gdict-applet.c:160
 #: gdictsrc/gnome-dictionary.desktop.in.h:2
-#, fuzzy
 msgid "Lookup words in an online dictionary"
-msgstr "Söz lüğətdə axtarılır"
+msgstr "Sözü internetdəki lüğətdə axtar"
 
 #: gdictsrc/GNOME_GDictApplet.xml.h:1
-#, fuzzy
-msgid "Look Up Selected Text..."
-msgstr "Seçili layihəyi kopyala"
+msgid "_About"
+msgstr "_Haqqında"
 
 #: gdictsrc/GNOME_GDictApplet.xml.h:2
-#, fuzzy
-msgid "_About..."
-msgstr "Haqqında..."
+msgid "_Help"
+msgstr "_Yardım"
 
 #: gdictsrc/GNOME_GDictApplet.xml.h:3
-#, fuzzy
-msgid "_Help"
-msgstr "Kömək"
+msgid "_Look Up Selected Text"
+msgstr "Seçili Sözü _Axtar"
 
 #: gdictsrc/GNOME_GDictApplet.xml.h:4
-#, fuzzy
 msgid "_Preferences"
-msgstr "Seçənəklər"
+msgstr "_Seçimlər"
 
 #: gdictsrc/GNOME_GDictApplet.xml.h:5
-#, fuzzy
-msgid "_Show/Hide Definition Window..."
-msgstr "İzahat pəncərəsini göstər/gizlət ..."
+msgid "_Show Dictionary"
+msgstr "_Lüğəti Göstər"
 
 #. Could not look up search strategies, so just display a
 #. * label; FIXME: Memory leak
 #.
-#: gdictsrc/dict.c:648 gdictsrc/gdict-pref-dialog.c:466
-#: gdictsrc/gdict-pref-dialog.c:517 gdictsrc/gdict-speller.c:463
+#: gdictsrc/dict.c:664 gdictsrc/gdict-pref-dialog.c:460
+#: gdictsrc/gdict-pref-dialog.c:509 gdictsrc/gdict-speller.c:452
 msgid "Cannot connect to server"
 msgstr "Vericiyə bağlana bilmədim"
 
-#: gdictsrc/dict.c:661
+#: gdictsrc/dict.c:677
 msgid ""
 "A serious error occured. Please check that your server and port are correct. "
 "For reference the default server is dict.org and the port 2628"
 msgstr ""
+"Ciddi bir xəta yarandı. Xahiş edirik verici və qapı qurğularını yoxlayın. "
+"Nümunə üçün ön qurğulu verici dict.org, ön qurğulu qapı isə 2628-dir"
 
-#: gdictsrc/gdict-about.c:56
-#, fuzzy
-msgid "GNOME Dictionary"
-msgstr "_Gedişat Ləvazimat Çubuğu"
-
-#: gdictsrc/gdict-about.c:57
-msgid "Copyright 1999 by Mike Hughes"
+#. Translator credits
+#: gdictsrc/gdict-about.c:43 logview/about.c:49
+msgid "translator-credits"
 msgstr ""
+"Vasif İsmailoğlu <linuxaz@azerimail.net>\n"
+"Mətin Əmirov <metin@karegen.com>\n"
+"\n"
+"Tərcümə işləri üzrə yazışma siyahısı ünvanımız:\n"
+"<translation-team-az@lists.sourceforge.net>"
+
+#: gdictsrc/gdict-about.c:56 gdictsrc/gdict-app.c:925
+#: gdictsrc/gnome-dictionary.desktop.in.h:1
+msgid "Dictionary"
+msgstr "Lüğət"
 
 #: gdictsrc/gdict-about.c:58
-#, fuzzy
-msgid "Client for MIT dictionary server.\n"
-msgstr "GNOME üçün RFC 2229 alıcısı-lüğət vericisi"
+msgid "A client for the MIT dictionary server."
+msgstr "MIT lüğət vericisi üçün alıcı."
 
-#: gdictsrc/gdict-app.c:128
+#: gdictsrc/gdict-app.c:127
 msgid "Spell-checking..."
-msgstr "Imla yoxlaması ..."
+msgstr "İmla yoxlaması ..."
 
-#: gdictsrc/gdict-app.c:136
+#: gdictsrc/gdict-app.c:135
 msgid "Spell check done"
-msgstr "Imla yoxlaması edildi"
+msgstr "İmla yoxlaması başa çatdı"
 
-#: gdictsrc/gdict-app.c:144 gdictsrc/gdict-app.c:288
+#: gdictsrc/gdict-app.c:143 gdictsrc/gdict-app.c:290
 msgid "No matches found"
 msgstr "Eynisi tapıla bilmədi"
 
-#: gdictsrc/gdict-app.c:271
+#: gdictsrc/gdict-app.c:273
 msgid "Looking up word..."
-msgstr "Kəlməyi axtarıram..."
+msgstr "Kəlmə axtarılır..."
 
-#: gdictsrc/gdict-app.c:279
+#: gdictsrc/gdict-app.c:281
 msgid "Lookup done"
 msgstr "Axtarış qurtardı"
 
-#: gdictsrc/gdict-app.c:301
+#: gdictsrc/gdict-app.c:303
 msgid "String not found"
 msgstr "Mətn tapıla bilmədi"
 
-#: gdictsrc/gdict-app.c:469
-#, fuzzy
+#: gdictsrc/gdict-app.c:471
 msgid "Find"
-msgstr "Tap :"
+msgstr "Axtar"
 
-#: gdictsrc/gdict-app.c:490
-#, fuzzy
+#: gdictsrc/gdict-app.c:479
+msgid "_Search for:"
+msgstr "Kəlməni _axtar:"
+
+#: gdictsrc/gdict-app.c:492
 msgid "_Find"
-msgstr "Tap :"
+msgstr "_Axtar"
 
-#: gdictsrc/gdict-app.c:540
-#, fuzzy
+#: gdictsrc/gdict-app.c:534
 msgid ""
 "Unable to perform requested operation. \n"
 "Either the server you are using is not available \n"
 "or you are not connected to the Internet."
 msgstr ""
-"Istənilən əməliyyatı edə bilmədim; bu Internetə bağlı olmadığından\n"
-"və ya bağlanmaya cəhd etdiyim vericinin işlaməsindən ötrü\n"
-"ola bilər. Internetə bağlı deyilsən, lütfən indi Internetə bağlan və\n"
-"yenidən sına."
+"İstənilən əməliyyatı edə bilmədim; bu Internetə bağlı olmadığından\n"
+"və ya bağlanmaya cəhd etdiyim vericinin işləməsindən ötrü\n"
+"ola bilər."
 
-#: gdictsrc/gdict-app.c:701 gdictsrc/gdict-app.c:812
-#: gdictsrc/gdict-speller.c:221
-#, fuzzy
+#: gdictsrc/gdict-app.c:697 gdictsrc/gdict-app.c:952
+#: gdictsrc/gdict-speller.c:214
 msgid "_Look Up Word"
-msgstr "_Axtarış"
+msgstr "_Kəlməni Axtar"
 
-#: gdictsrc/gdict-app.c:702
+#: gdictsrc/gdict-app.c:698
 msgid "Lookup word in dictionary"
 msgstr "Söz lüğətdə axtarılır"
 
-#: gdictsrc/gdict-app.c:704 gdictsrc/gdict-speller.c:165
-#, fuzzy
+#: gdictsrc/gdict-app.c:700 gdictsrc/gdict-speller.c:160
 msgid "Check _Spelling"
-msgstr "Kəlmənin imlasını yoxla"
+msgstr "İmlanı _Yoxla"
 
-#: gdictsrc/gdict-app.c:705
+#: gdictsrc/gdict-app.c:701
 msgid "Check word spelling"
 msgstr "Kəlmənin imlasını yoxla"
 
-#: gdictsrc/gdict-app.c:749
-#, fuzzy
+#: gdictsrc/gdict-app.c:745
 msgid "_Dictionary"
-msgstr "_Gedişat Ləvazimat Çubuğu"
+msgstr "_Lüğət"
 
-#: gdictsrc/gdict-app.c:785 gdictsrc/gnome-dictionary.desktop.in.h:1
-msgid "Dictionary"
-msgstr ""
+#: gdictsrc/gdict-app.c:948 gdictsrc/gdict-speller.c:134
+msgid "_Word:"
+msgstr "_Söz:"
 
-#: gdictsrc/gdict-app.c:808
-#, fuzzy
-msgid "_Word: "
-msgstr "Söz:"
-
-#: gdictsrc/gdict-app.c:836 gdictsrc/gdict-speller.c:147
-#, fuzzy
+#: gdictsrc/gdict-app.c:976 gdictsrc/gdict-speller.c:146
 msgid "Word"
-msgstr "Söz:"
+msgstr "Söz"
 
-#: gdictsrc/gdict-app.c:837 gdictsrc/gdict-app.c:838
-#: gdictsrc/gdict-speller.c:148
-#, fuzzy
+#: gdictsrc/gdict-app.c:977 gdictsrc/gdict-app.c:978
+#: gdictsrc/gdict-speller.c:147
 msgid "Word Entry"
-msgstr "Giriş"
+msgstr "Söz Girişi"
 
-#: gdictsrc/gdict-app.c:837
+#: gdictsrc/gdict-app.c:977
 msgid "Enter a Word or select one from the list below"
-msgstr ""
+msgstr "Bir söz girin ya da siyahıdan birini seçin"
 
-#: gdictsrc/gdict-app.c:840
-#, fuzzy
+#: gdictsrc/gdict-app.c:980
 msgid "Look Up for a Word"
-msgstr "_Axtarış"
+msgstr "Kəlməni Axtar"
 
-#: gdictsrc/gdict-applet.c:263
+#: gdictsrc/gdict-applet.c:137
 msgid "_Lookup"
 msgstr "_Axtarış"
 
-#: gdictsrc/gdict-defbox.c:643 gdictsrc/gdict-speller.c:488
+#: gdictsrc/gdict-applet.c:148
+msgid "Dictionary word entry"
+msgstr "Lüğət kəlmə girişi"
+
+#: gdictsrc/gdict-defbox.c:665 gdictsrc/gdict-speller.c:477
 #, c-format
 msgid "Error invoking query: %s"
 msgstr "Sorğulama xətası: %s"
 
-#: gdictsrc/gdict-pref-dialog.c:37
-msgid "Headword:"
-msgstr "Ana kəlmə :"
-
-#: gdictsrc/gdict-pref-dialog.c:38
-msgid "Sub-number:"
-msgstr "Altbölmə :"
-
-#: gdictsrc/gdict-pref-dialog.c:39
-msgid "Pronunciation:"
-msgstr "Imla :"
-
-#: gdictsrc/gdict-pref-dialog.c:40
-msgid "Etymology:"
-msgstr "Kəlmə kökü :"
-
-#: gdictsrc/gdict-pref-dialog.c:41
-msgid "Part of speech:"
-msgstr "Nitqin parçası :"
-
-#: gdictsrc/gdict-pref-dialog.c:42
-msgid "Example:"
-msgstr "Misal:"
-
-#: gdictsrc/gdict-pref-dialog.c:43
-msgid "Main body:"
-msgstr "Ana mətn :"
-
-#: gdictsrc/gdict-pref-dialog.c:44
-msgid "Cross-reference:"
-msgstr "Çarpaz Referens:"
-
-#: gdictsrc/gdict-pref-dialog.c:186
-#, fuzzy
+#: gdictsrc/gdict-pref-dialog.c:158
 msgid "Dictionary Preferences"
-msgstr "Seçənəkləri dəyişdir ..."
+msgstr "Lüğət Seçimləri"
 
-#: gdictsrc/gdict-pref-dialog.c:198
-#, fuzzy
+#: gdictsrc/gdict-pref-dialog.c:171
 msgid "Smart _lookup"
-msgstr "Ağıllı axtarış"
+msgstr "Ağıllı _axtarış"
 
-#: gdictsrc/gdict-pref-dialog.c:211
-#, fuzzy
+#: gdictsrc/gdict-pref-dialog.c:189
 msgid "_Server:"
-msgstr "Verici :"
+msgstr "_Verici:"
 
-#: gdictsrc/gdict-pref-dialog.c:218
-#, fuzzy
+#: gdictsrc/gdict-pref-dialog.c:196
 msgid "De_fault Server"
-msgstr "Əsas taktika :"
+msgstr "Ö_n Qurğulu Verici"
 
-#: gdictsrc/gdict-pref-dialog.c:224
+#: gdictsrc/gdict-pref-dialog.c:205
 msgid "Reset server to default"
-msgstr ""
+msgstr "Vericini ön qurğulara sıfırla"
 
-#: gdictsrc/gdict-pref-dialog.c:226
-#, fuzzy
+#: gdictsrc/gdict-pref-dialog.c:213
 msgid "_Port:"
-msgstr "Qapı :"
+msgstr "_Qapı:"
+
+#: gdictsrc/gdict-pref-dialog.c:229
+msgid "Def_ault Port"
+msgstr "Ö_n Qurğulu Qapı"
+
+#: gdictsrc/gdict-pref-dialog.c:238
+msgid "Reset port to default"
+msgstr "Qapını ön qurğulara sıfırla"
+
+#: gdictsrc/gdict-pref-dialog.c:239
+msgid "Server"
+msgstr "Verici"
 
 #: gdictsrc/gdict-pref-dialog.c:240
-#, fuzzy
-msgid "Def_ault Port"
-msgstr "Əsas"
-
-#: gdictsrc/gdict-pref-dialog.c:247
-msgid "Reset port to default"
-msgstr ""
-
-#: gdictsrc/gdict-pref-dialog.c:248
-#, fuzzy
-msgid "Server"
-msgstr "Verici :"
-
-#: gdictsrc/gdict-pref-dialog.c:249
-#, fuzzy
 msgid "Server Entry"
-msgstr "Verici :"
+msgstr "Verici Girişi"
 
-#: gdictsrc/gdict-pref-dialog.c:249
+#: gdictsrc/gdict-pref-dialog.c:240
 msgid "Enter the Server Name"
-msgstr ""
+msgstr "Verici Adını girin"
+
+#: gdictsrc/gdict-pref-dialog.c:242
+msgid "Port"
+msgstr "Qapı"
+
+#: gdictsrc/gdict-pref-dialog.c:243
+msgid "Port Entry"
+msgstr "Qapı Girişi"
+
+#: gdictsrc/gdict-pref-dialog.c:243
+msgid "Enter the Port Number"
+msgstr "Qapı Nömrəsini girin"
 
 #: gdictsrc/gdict-pref-dialog.c:252
-#, fuzzy
-msgid "Port"
-msgstr "Qapı :"
-
-#: gdictsrc/gdict-pref-dialog.c:253
-#, fuzzy
-msgid "Port Entry"
-msgstr "Giriş"
-
-#: gdictsrc/gdict-pref-dialog.c:253
-msgid "Enter the Port Number"
-msgstr ""
-
-#: gdictsrc/gdict-pref-dialog.c:258
-#, fuzzy
 msgid "_Database:"
-msgstr "Məlumat bankı:"
+msgstr "_Verilənlər Bazası:"
 
-#: gdictsrc/gdict-pref-dialog.c:265
-#, fuzzy
+#: gdictsrc/gdict-pref-dialog.c:259
 msgid "D_efault strategy:"
-msgstr "Əsas taktika :"
+msgstr "Ə_sas Taktika:"
 
-#: gdictsrc/gdict-pref-dialog.c:458
+#: gdictsrc/gdict-pref-dialog.c:452
 msgid "Search all databases"
-msgstr "Bütün bazaları axtar"
+msgstr "Bütün verilənlər bazaları axtar"
 
-#: gdictsrc/gdict-pref-dialog.c:623
-#, fuzzy
+#: gdictsrc/gdict-pref-dialog.c:613
 msgid "Database"
-msgstr "Məlumat bankı:"
+msgstr "Verilənlər Bazası"
 
-#: gdictsrc/gdict-pref-dialog.c:623
-#, fuzzy
+#: gdictsrc/gdict-pref-dialog.c:613
 msgid "Database Name"
-msgstr "Məlumat bankı:"
+msgstr "Verilənlər Bazası Adı"
 
-#: gdictsrc/gdict-pref-dialog.c:635
-#, fuzzy
+#: gdictsrc/gdict-pref-dialog.c:629
 msgid "Default Strategy"
-msgstr "Əsas taktika :"
+msgstr "Ön Qurğulu Taktika"
 
-#: gdictsrc/gdict-speller.c:135
-#, fuzzy
-msgid "_Word:"
-msgstr "Söz:"
-
-#: gdictsrc/gdict-speller.c:148
-msgid "Enter a word to know the spelling"
+#: gdictsrc/gdict-pref-dialog.c:656
+#, c-format
+msgid ""
+"There was an error displaying help: \n"
+"%s"
 msgstr ""
+"Yardım göstərildiyi an xəta yarandı:\n"
+"%s"
+
+#: gdictsrc/gdict-speller.c:147
+msgid "Enter a word to know the spelling"
+msgstr "İmlası bilinəcək sözü yazın"
 
 #: gdictsrc/gdict-speller.c:153
+msgid "Search s_trategy:"
+msgstr "Axtarış s_trategiyası:"
+
+#: gdictsrc/gdict-speller.c:165
 msgid "Click to do the spell check"
-msgstr ""
+msgstr "İmla yoxlaması üçün kliqləyin"
 
-#: gdictsrc/gdict-speller.c:158
-#, fuzzy
-msgid "Search S_trategy:"
-msgstr "Axtarış strategiyası:"
+#: gdictsrc/gdict-speller.c:169
+msgid "Search _results:"
+msgstr "A_xtarış nəticələri:"
 
-#: gdictsrc/gdict-speller.c:174
-#, fuzzy
-msgid "Search _Results"
-msgstr "Axtarış Nəticələri"
-
-#: gdictsrc/gdict-speller.c:236
-#, fuzzy
+#: gdictsrc/gdict-speller.c:229
 msgid "Check Spelling"
-msgstr "Kəlmənin imlasını yoxla"
+msgstr "İmlanı Yoxla"
 
-#: gdictsrc/gdict-speller.c:654
-#, fuzzy
+#: gdictsrc/gdict-speller.c:643
 msgid "Search Strategy"
-msgstr "Axtarış strategiyası:"
+msgstr "Axtarış Taktikası"
 
 #: gdictsrc/gdict.schemas.in.h:1
-#, fuzzy
 msgid "Dictionary server"
-msgstr "Seçənəkləri dəyişdir ..."
+msgstr "Lüğət vericisi"
 
 #: gdictsrc/gdict.schemas.in.h:2
-#, fuzzy
 msgid "Port used to connect to server"
-msgstr "Vericiyə bağlana bilmədim"
+msgstr "Vericiyə bağlanma qapısı"
 
 #: gdictsrc/gdict.schemas.in.h:3
 msgid ""
 "Specify whether to use smart lookup. This key is dependant on whether the "
 "dictionary server supports this option. The default is TRUE"
 msgstr ""
+"Ağıllı axtarışın işlədilməsi. Lüğət vericisinin bu seçimi dəstəkləməsi "
+"lazımdır. Ön qurğulu olaraq bu seçilidir."
 
 #: gdictsrc/gdict.schemas.in.h:4
-#, fuzzy
 msgid "The database to use in the dictionary server."
-msgstr "MİT sözlük vericisi üçün GNOME alıcısı"
+msgstr "Lüğət vericisində istifadə ediləcək verilənlər bazası."
 
 #: gdictsrc/gdict.schemas.in.h:5
 msgid ""
 "The dictionary server to connect to. The default server is dict.org. See "
 "http://www.dict.org for details on other servers"
 msgstr ""
+"Bağlanılacaq lüğət vericisi. Ön qurğulu  verici dict.org-dur. Ətraflı "
+"mə'lumat bə başqa vericilər üçün baxın http://www.dict.org"
 
 #: gdictsrc/gdict.schemas.in.h:6
 msgid ""
 "The name of the individual database to use in the dictionary server. ! "
 "specifies that gnome-dictionary should search all databases in a given server"
 msgstr ""
+"Lüğət vericisində axtarılacaq spesifik verilənlər bazası. ! işarəsi bütün "
+"verilənlər bazalarının axtarılacağı mənasına gəlir"
 
 #: gdictsrc/gdict.schemas.in.h:7
 msgid "The port number to connect to. The default port is 2628."
-msgstr ""
+msgstr "Bağlanılacaq qapı nömrəsi. Ön qurğulu qapı 2628-dir."
 
 #: gdictsrc/gdict.schemas.in.h:8
-#, fuzzy
 msgid "The search strategy to use"
-msgstr "Axtarış strategiyası:"
+msgstr "İşlədiləcək axtarış taktikası"
 
 #: gdictsrc/gdict.schemas.in.h:9
 msgid ""
@@ -985,294 +352,324 @@ msgid ""
 "the dictionary server supports. The default strategy is 'lev' - Match words "
 "within Levenshtein distance one"
 msgstr ""
+"İşlədiləcək axtarış taktikası. Bu vericinin dəstəklədiyi axtarış "
+"taktikalarına bağlıdır. Ön qurğulu taktika 'lev'-dir."
 
 #: gdictsrc/gdict.schemas.in.h:10
-#, fuzzy
 msgid "Use smart lookup"
-msgstr "Ağıllı axtarış"
+msgstr "Ağıllı axtarışı işlət"
 
-#: gfloppy/gfloppy.desktop.in.h:1
-#, fuzzy
+#: gfloppy/gfloppy.desktop.in.h:1 gfloppy/src/gfloppy2.glade.h:11
 msgid "Floppy Formatter"
-msgstr "Floppy şəkillləndirilməsi ləǧv edildi ."
+msgstr "Floppy Şəkillləndiricisi"
 
 #: gfloppy/gfloppy.desktop.in.h:2
 msgid "Format Floppy Disks"
-msgstr "Disketləri şəkilləndirər"
+msgstr "Floppy Diskləri Şəkilləndir"
 
-#: gfloppy/src/badblocks.c:102
-msgid "MInternal Error: Unable to seek to the correct location."
-msgstr "MDaxili Xəta: Düzgün yeri tapa bilmirəm."
+#: gfloppy/gfloppy.schemas.in.h:1
+msgid ""
+"0 for the quick format, 1 for a standard one (adds a low-level format) and "
+"finally 2 for a thorough format (adds a bad blocks scan)."
+msgstr ""
+"0 cəld şəkilləndirmə üçün, 1 standart (alçaq səviyyə şəkilləndirməsini daxil "
+"edir) və 2 dərin şəkilləndirmə üçün (xəsərli blok yoxlamasını daxil edir)."
 
-#: gfloppy/src/badblocks.c:111
+#: gfloppy/gfloppy.schemas.in.h:2
+msgid "ADVANCED USERS ONLY - Default backend for FAT formatting"
+msgstr ""
+"ANCAQ MÜTƏXƏSSİS İSTİFADƏÇİLƏR - FAT şəkilləndirməsi üçün ön qurğulu backend"
+
+#: gfloppy/gfloppy.schemas.in.h:3
+msgid "Default filesystem type"
+msgstr "Ön qurğulu fayl sistemi növü"
+
+#: gfloppy/gfloppy.schemas.in.h:4
+msgid "Default formatting mode"
+msgstr "Ön qurğulu şəkilləndirmə modu"
+
+#: gfloppy/gfloppy.schemas.in.h:5
+msgid ""
+"TRUE to set mkdosfs as the preferred FAT formatting backend or FALSE to set "
+"mtools as the preferred FAT formatting backend."
+msgstr ""
+"Seçili isə seçilən FAT şəkilləndirmə backendi mkdosfs olacaq, deyilsə "
+"seçilən FAT şəkilləndirmə backendi mtools olacaq."
+
+#: gfloppy/gfloppy.schemas.in.h:6
+msgid "ext2 for the linux native filesystem or fat for the DOS filesystem."
+msgstr "Linux doğma fayl sistemi üçün ext2 ya da DOS fayl sistemi üçün fat"
+
+#: gfloppy/src/badblocks.c:94
+msgid "Internal Error: Unable to seek to the correct location."
+msgstr "Daxili Xəta: Düzgün yeri tapa bilmirəm."
+
+#: gfloppy/src/badblocks.c:103
 #, c-format
-msgid "MInternal Error: Weird value (%ld) in do_test\n"
-msgstr "MDaxili Xəta: \"do_test\"də Şübhəli qiymət (%ld)\n"
+msgid "Internal Error: Weird value (%ld) in do_test\n"
+msgstr "Daxili Xəta: \"do_test\"də şübhəli qiymət (%ld)\n"
 
 #. while (!i)
 #. ;
-#: gfloppy/src/badblocks.c:269
-msgid "MChecking for bad blocks..."
-msgstr "MXəsərli bloklar yoxlanır..."
+#: gfloppy/src/badblocks.c:261
+msgid "Checking for bad blocks..."
+msgstr "Xəsərli bloklar yoxlanır..."
 
-#: gfloppy/src/badblocks.c:281
+#: gfloppy/src/badblocks.c:273
 #, c-format
-msgid "MFailed to open device %s for badblock checking\n"
-msgstr "M%s avadanlığı xəsərli bloklar üçün yoxlana bilmədi\n"
+msgid "Failed to open device %s for badblock checking\n"
+msgstr "%s avadanlığı açılıb xəsərli bloklar üçün yoxlana bilmədi\n"
 
-#: gfloppy/src/badblocks.c:301 gfloppy/src/gfloppy.c:536
-msgid "MChecking for bad blocks... Done"
-msgstr "MXəsərli bloklar yoxlanır...Qurtardı"
+#: gfloppy/src/badblocks.c:293 gfloppy/src/gfloppy.c:534
+msgid "Checking for bad blocks... Done"
+msgstr "Xəsərli bloklar yoxlanır... Qurtardı"
 
-#: gfloppy/src/fdformat.c:44
-msgid "MFormatting the disk..."
-msgstr "MDiski şəkilləndirirəm...."
+#: gfloppy/src/fdformat.c:49
+msgid "Formatting the disk..."
+msgstr "Disk şəkilləndirilir...."
 
-#: gfloppy/src/fdformat.c:46
-msgid "EI don't know what this is, but it's very wrong."
-msgstr "EBir yerdə xəta var, amma harda olduǧunu düzü bilmirəm ."
+#: gfloppy/src/fdformat.c:52
+msgid "I don't know what this is, but it's very wrong."
+msgstr "Bir yerdə xəta var, amma harda olduğunu düzü bilmirəm."
 
-#: gfloppy/src/fdformat.c:54 gfloppy/src/fdformat.c:66
+#: gfloppy/src/fdformat.c:60 gfloppy/src/fdformat.c:73
 #, c-format
-msgid "EError formatting track #%d"
-msgstr "E#%d yolunu şəkilləndirirkən xəta oldu"
+msgid "Error formatting track #%d"
+msgstr "#%d yolunu şəkilləndirirkən xəta yarandı"
 
-#: gfloppy/src/fdformat.c:74
-msgid "EError during completion of formatting"
-msgstr "EŞəkilləndimənin sonlandırılmasında xəta oldu"
+#: gfloppy/src/fdformat.c:82
+msgid "Error during completion of formatting"
+msgstr "Şəkilləndimənin sonlandırılmasında xəta yarandı"
 
 #. XXXX - need to tell parent we're finished
-#: gfloppy/src/fdformat.c:78
-msgid "MFormatting the disk... Done"
-msgstr "MDiski Şəkillləndirirəm...Qurtardı"
+#: gfloppy/src/fdformat.c:86
+msgid "Formatting the disk... Done"
+msgstr "Disk şəkillləndirilir... Qurtardı"
 
 #. XXXX - tell parent we're starting verify stage
-#: gfloppy/src/fdformat.c:94
-msgid "MVerifying the format..."
-msgstr "MŞəkilləndirməni Yoxlayıram ..."
+#: gfloppy/src/fdformat.c:102
+msgid "Verifying the format..."
+msgstr "Şəkilləndirmə yoxlanır..."
 
-#: gfloppy/src/fdformat.c:99 gfloppy/src/fdformat.c:174
+#: gfloppy/src/fdformat.c:107 gfloppy/src/fdformat.c:192
 msgid ""
-"EUnable to write to the floppy.\n"
+"Unable to write to the floppy.\n"
 "\n"
 "Please confirm that it is not write-protected."
 msgstr ""
-"EFloppy'yə yaza bilmədim.\n"
+"Floppy'yə yaza bilmədim.\n"
 "\n"
-"Yazma qorumalı olub olmadıgıni Lütfən yoxlayın."
+"Xahiş edirik yazma qorumalı olub olmadığını yoxlayın."
 
-#: gfloppy/src/fdformat.c:102 gfloppy/src/fdformat.c:177
+#: gfloppy/src/fdformat.c:110 gfloppy/src/fdformat.c:195
 #, c-format
-msgid "EInsufficient permissions to open floppy device %s."
-msgstr "EFloppy %s avadanlıǧını açmaq üçün çatışmayan bilgilər."
+msgid "Insufficient permissions to open floppy device %s."
+msgstr "%s floppy avadanlığını açmaq üçün səlahiyyətlər çatışmır."
 
-#: gfloppy/src/fdformat.c:106 gfloppy/src/fdformat.c:181
+#: gfloppy/src/fdformat.c:114 gfloppy/src/fdformat.c:199
 msgid ""
-"EUnable to access the floppy disk.\n"
+"Unable to access the floppy disk.\n"
 "\n"
 "Please confirm that it is in the drive\n"
 "with the drive door shut."
 msgstr ""
-"EFloppy'yə çata bilmədim.\n"
+"Floppy'yə yetişə bilmədim.\n"
 "\n"
-"Lütfən sürücüdə disket olub olmadıǧından əmin olun\n"
-"və qapısını yoxlayın."
+"Xahiş edirik sürücüdə disket olub olmadığından əmin olun\n"
+"və qapısını da yoxlamağı unutmayın."
 
-#: gfloppy/src/fdformat.c:109
+#: gfloppy/src/fdformat.c:117
 #, c-format
 msgid ""
-"EGeneric error accessing floppy device %s.\n"
+"Generic error accessing floppy device %s.\n"
 "\n"
 "Error code %s:%d"
 msgstr ""
-"EÜmumi %s floppy avadanlıǧına yetişmə xətası.\n"
+"%s floppy avadanlığına ümumi yetişmə xətası.\n"
 "\n"
 "Xəta kodu %s:%d"
 
-#: gfloppy/src/fdformat.c:129
+#: gfloppy/src/fdformat.c:140
 #, c-format
 msgid ""
-"ERead Error:\n"
+"Read Error:\n"
 "Problem reading cylinder %d, expected %d, read %d"
 msgstr ""
-"EOxuma xətası :\n"
-"Silindr nömrəsi %d oxunurkən xəta oldu, %d gözlənilirdi, %d oxundu"
+"Oxuma xətası :\n"
+"Silindr %d oxunurkən xəta oldu, %d gözlənilirdi, %d oxundu"
 
-#: gfloppy/src/fdformat.c:132
+#: gfloppy/src/fdformat.c:143
 #, c-format
-msgid "EProblem reading cylinder %d, expected %d, read %d"
-msgstr "ESilindr nömrəsi %d oxunurkən xəta oldu, %d gözlənilirdi, %d oxundu"
+msgid "Problem reading cylinder %d, expected %d, read %d"
+msgstr "Silindri %d oxunurkən xəta oldu, %d gözlənilirdi, %d oxundu"
 
-#: gfloppy/src/fdformat.c:141
+#: gfloppy/src/fdformat.c:154
 #, c-format
-msgid "MBad data in cyl %d.  Continuing... "
-msgstr "MSilindr %d də xəta var . Davam edirəm ..."
+msgid "Bad data in cyl %d.  Continuing... "
+msgstr "Silindr %d də xətalı verilənlər var. Davam edirəm ..."
 
-#: gfloppy/src/fdformat.c:148
+#: gfloppy/src/fdformat.c:163
 #, c-format
-msgid "EError closing device %s"
-msgstr "E%s avadanlıǧı qapatılırkən xəta oldu"
+msgid "Error closing device %s"
+msgstr "%s avadanlığı bağlanırkən xəta oldu"
 
-#: gfloppy/src/fdformat.c:153
-msgid "MVerifying the format... Done"
-msgstr "MŞəkilləndirmə yoxlanır ... Qurtardı"
+#: gfloppy/src/fdformat.c:170
+msgid "Verifying the format... Done"
+msgstr "Şəkilləndirmə yoxlanır... Qurtardı"
 
-#: gfloppy/src/fdformat.c:165
+#: gfloppy/src/fdformat.c:182
 #, c-format
-msgid "EUnable to write to device %s"
-msgstr "E%s avadanlıǧına yaza bilmirəm"
+msgid "Unable to write to device %s"
+msgstr "%s avadanlığına yaza bilmədim"
 
-#: gfloppy/src/fdformat.c:184
+#: gfloppy/src/fdformat.c:202
 #, c-format
 msgid ""
-"EGeneric error accessing floppy device %s.\n"
+"Generic error accessing floppy device %s.\n"
 "\n"
 "Error code %s"
 msgstr ""
-"E%s floppy avadanlıǧına yetişirkən ümumi xəta oldu.\n"
+"%s floppy avadanlığına yetişirkən ümumi xəta oldu.\n"
 "\n"
 "Xəta kodu %s"
 
-#: gfloppy/src/fdformat.c:194
-#, fuzzy
-msgid "ECould not determine current floppy geometry."
-msgstr "EŞəkilləndirmə növü tapıla bilmir"
+#: gfloppy/src/fdformat.c:214
+msgid "Could not determine current floppy geometry."
+msgstr "Hazırkı floppy quruluşunu müəyyən edilə bilmədim."
 
-#: gfloppy/src/gfloppy.c:229
-msgid "EError while creating a unique filename for the bad blocks list file."
-msgstr ""
+#: gfloppy/src/gfloppy.c:222
+msgid "Error while creating a unique filename for the bad blocks list file."
+msgstr "Xəsərli blokun siyahı faylı üçün xüsusi ad yaradırkən xəta."
 
-#: gfloppy/src/gfloppy.c:249
-msgid "EError while filling the bad blocks list file."
-msgstr ""
+#: gfloppy/src/gfloppy.c:242
+msgid "Error while filling the bad blocks list file."
+msgstr "Xəsərli blokun siyahı faylı doldurulurkən xəta."
 
-#: gfloppy/src/gfloppy.c:308
+#: gfloppy/src/gfloppy.c:305
 #, c-format
-msgid "EError while spawning the (%s) command: %s."
-msgstr ""
+msgid "Error while spawning the (%s) command: %s."
+msgstr "(%s) əmri yaradılırkən xəta: %s."
 
-#: gfloppy/src/gfloppy.c:332
-msgid "EUnknown mke2fs starting signature, cancelling."
-msgstr ""
+#: gfloppy/src/gfloppy.c:331
+msgid "Unknown mke2fs starting signature, cancelling."
+msgstr "Na'mə'lum mke2fs başlanğıc imzası, ləğv edirəm."
 
-#: gfloppy/src/gfloppy.c:346
+#: gfloppy/src/gfloppy.c:345
 #, c-format
 msgid ""
-"EThe filesystem creation utility (%s) reported the following errors:\n"
+"The filesystem creation utility (%s) reported the following errors:\n"
 "\n"
 "%s (%d)"
 msgstr ""
+"Fayl sistemi yaradıcı tə'minat (%s) aşağıdakı xətaları bildirdi:\n"
+"\n"
+"%s (%d)"
 
-#: gfloppy/src/gfloppy.c:363
-msgid "EAbnormal child process termination."
-msgstr ""
+#: gfloppy/src/gfloppy.c:362
+msgid "Abnormal child process termination."
+msgstr "Normal olmayan törəmə gedişatı sonlandırılması."
 
-#: gfloppy/src/gfloppy.c:388
+#: gfloppy/src/gfloppy.c:387
 #, c-format
-msgid "EError while spawning the mbadblocks command: %s."
-msgstr ""
+msgid "Error while spawning the mbadblocks command: %s."
+msgstr "mbadblocks əmri yaradılırkən xəta oldu: %s."
 
-#: gfloppy/src/gfloppy.c:400
+#: gfloppy/src/gfloppy.c:399
 #, c-format
 msgid ""
-"EThe bad blocks checking utility (mbadblocks) reported the following "
-"errors:\n"
+"The bad blocks checking utility (mbadblocks) reported the following errors:\n"
 "%s."
 msgstr ""
+"Fayl xəsərli blokları yoxlayan tə'minat (mbadblocks) aşağıdakı xətaları "
+"bildirdi:\n"
+"%s"
 
-#: gfloppy/src/gfloppy.c:443
-msgid "EAbnormal mbadblocks child process termination."
-msgstr ""
+#: gfloppy/src/gfloppy.c:442
+msgid "Abnormal mbadblocks child process termination."
+msgstr "Normal olmayan mbadblocks törəmə gedişatı sonlandırılması."
 
 #. make the filesystem
-#: gfloppy/src/gfloppy.c:470 gfloppy/src/gfloppy.c:510
-msgid "MMaking filesystem on disk..."
-msgstr "MDiski üstündə fayl sistemi yaradılır...."
+#: gfloppy/src/gfloppy.c:468 gfloppy/src/gfloppy.c:508
+msgid "Making filesystem on disk..."
+msgstr "Disk üstündə fayl sistemi yaradılır...."
 
-#: gfloppy/src/gfloppy.c:478
-msgid "EUnable to create filesystem correctly."
-msgstr "EFayl sistem düzgün yaradıla bilmədi."
+#: gfloppy/src/gfloppy.c:476
+msgid "Unable to create filesystem correctly."
+msgstr "Fayl sistemi düzgün yaradıla bilmədi."
 
-#: gfloppy/src/gfloppy.c:482 gfloppy/src/gfloppy.c:522
-msgid "MMaking filesystem on disk... Done"
-msgstr "MDisk üstündə fayl sistem yaradıram...Qurtardı"
+#: gfloppy/src/gfloppy.c:481 gfloppy/src/gfloppy.c:520
+msgid "Making filesystem on disk... Done"
+msgstr "Disk üstündə fayl sistemi yaradılır... Qurtardı"
 
-#: gfloppy/src/gfloppy.c:527
-msgid "MChecking for bad blocks... (this might take a while)"
-msgstr "MXəsərli bloklar yoxlanır...(bu bir az vaxt alar)"
+#: gfloppy/src/gfloppy.c:525
+msgid "Checking for bad blocks... (this might take a while)"
+msgstr "Xəsərli bloklar yoxlanır... (bu biraz vaxt ala bilər)"
 
-#: gfloppy/src/gfloppy.c:532
-#, fuzzy
-msgid "EError while checking the bad blocks."
-msgstr "MXəsərli bloklar yoxlanır..."
+#: gfloppy/src/gfloppy.c:530
+msgid "Error while checking the bad blocks."
+msgstr "Xəsərli bloklar yoxlanırkən xəta."
 
 #: gfloppy/src/gfloppy2.glade.h:1
-#, fuzzy
 msgid "    "
-msgstr "        "
+msgstr "    "
+
+#: gfloppy/src/gfloppy2.glade.h:2
+msgid "*"
+msgstr "*"
 
 #: gfloppy/src/gfloppy2.glade.h:3
 msgid ""
-"<b>Note</b>: The mbadblocks utility isn't installed on this system. It must "
-"be installed in order to make a thorough DOS (fat) formatting."
+"<small><i><b>Note</b>: The mbadblocks utility isn't installed on this "
+"system.  It must be installed in order to perform a thorough DOS (fat) "
+"formatting.</i></small>"
 msgstr ""
+"<small><i><b>Qeyd</b>: mbadblocks tə'minatı sistemdə qurulu deyil.  DOS "
+"(fat) şəkilləndirməsi həyata keçirmək üçün onun sistemdə qurulu olması "
+"məcburidir."
 
 #: gfloppy/src/gfloppy2.glade.h:4
-msgid "<span weight=\"bold\">Filesystem settings</span>"
-msgstr ""
+msgid "<span weight=\"bold\">Filesystem Settings</span>"
+msgstr "<span weight=\"bold\">Fayl Sistemi Qurğuları</span>"
 
 #: gfloppy/src/gfloppy2.glade.h:5
-msgid "<span weight=\"bold\">Formatting mode</span>"
-msgstr ""
+msgid "<span weight=\"bold\">Formatting Mode</span>"
+msgstr "<span weight=\"bold\">Şəkilləndirmə Modu</span>"
 
 #: gfloppy/src/gfloppy2.glade.h:6
-msgid "<span weight=\"bold\">Physical settings</span>"
-msgstr ""
+msgid "<span weight=\"bold\">Physical Settings</span>"
+msgstr "<span weight=\"bold\">Fiziki Qurğular</span>"
 
 #: gfloppy/src/gfloppy2.glade.h:7
-#, fuzzy
 msgid "DOS (FAT)"
-msgstr "Dos (FAT)"
+msgstr "DOS (FAT)"
 
 #: gfloppy/src/gfloppy2.glade.h:8
-#, fuzzy
 msgid "Double Density 3.5\" (720KB)"
-msgstr "Double Density 3.5\" (720 KB)"
+msgstr "İki Qat Sıxlıq 3.5\" (720 KB)"
 
 #: gfloppy/src/gfloppy2.glade.h:9
-#, fuzzy
 msgid "Double Density 5.25\" (360KB)"
-msgstr "Double Density 5.25\" (360 KB)"
+msgstr "İki Qat Sıxlıq 5.25\" (360KB)"
 
 #: gfloppy/src/gfloppy2.glade.h:10
-#, fuzzy
 msgid "File system _type:"
-msgstr "Fayl sistemi növü: "
-
-#: gfloppy/src/gfloppy2.glade.h:11
-#, fuzzy
-msgid "Floppy _density:"
-msgstr "Floppy Sıxlıǧı: "
+msgstr "Fayl sistemi _növü: "
 
 #: gfloppy/src/gfloppy2.glade.h:12
-#, fuzzy
-msgid "Floppy de_vice:"
-msgstr "Floppy Avadanlığı:"
+msgid "Floppy _density:"
+msgstr "Floppy _sıxlığı: "
 
 #: gfloppy/src/gfloppy2.glade.h:13
-#, fuzzy
-msgid "Floppy formatter"
-msgstr "Floppy şəkillləndirilməsi ləǧv edildi ."
+msgid "Floppy de_vice:"
+msgstr "Floppy a_vadanlığı:"
 
 #: gfloppy/src/gfloppy2.glade.h:14
-#, fuzzy
 msgid "High Density 3.5\" (1.44MB)"
-msgstr "High Density 3.5\" (1.44 MB)"
+msgstr "Yüksək Sıxlıq 3.5\" (1.44 MB)"
 
 #: gfloppy/src/gfloppy2.glade.h:15
-#, fuzzy
 msgid "High Density 5.25\" (1.2MB)"
-msgstr "High Density 5.25\" (1.2 MB)"
+msgstr "Yüksək Sıxlıq 5.25\" (1.2 MB)"
 
 #: gfloppy/src/gfloppy2.glade.h:16
 msgid "Linux Native (ext2)"
@@ -1280,40 +677,41 @@ msgstr "Linux (ext2)"
 
 #: gfloppy/src/gfloppy2.glade.h:17
 msgid "Thorou_gh (adds a bad blocks check to the standard mode)"
-msgstr ""
+msgstr "Dərində_n (standart moda xəsərli blox yoxlamasını da əlavə edir)"
 
 #: gfloppy/src/gfloppy2.glade.h:18
-#, fuzzy
 msgid "Volume _name:"
-msgstr "Fayl adı : "
+msgstr "Həcm _adı : "
 
 #: gfloppy/src/gfloppy2.glade.h:19
-#, fuzzy
 msgid "_Format"
-msgstr "Sürüşgən"
+msgstr "_Şəkilləndirmə"
 
 #: gfloppy/src/gfloppy2.glade.h:20
-#, fuzzy
 msgid "_Quick (only creates the filesystem)"
-msgstr "EFayl sistem yaradıla bilmədi."
+msgstr "_Təcili (ancaq fayl sistemini yaradır)"
 
 #: gfloppy/src/gfloppy2.glade.h:21
 msgid "_Standard (adds a low-level format to the quick mode)"
 msgstr ""
+"_Standart (cəld moda alçaq səviyyə şəkilləndirməsini (low-level format) də "
+"əlavə edir)"
 
-#: gfloppy/src/main.c:132
+#: gfloppy/src/main.c:140
 msgid ""
 "Neither the mke2fs nor the mkdosfs/mformat applications are installed. You "
 "can't format a floppy without one of them."
 msgstr ""
+"mke2fs, mkdosfs/mformat tə'minatlarından heç biri qurulu deyil. Bunlardan "
+"biri olmadan floppy'ni şəkilləndirə bilməzsiniz."
 
-#: gfloppy/src/main.c:155 gfloppy/src/main.c:199
+#: gfloppy/src/main.c:164
 #, c-format
 msgid "Unable to open the device %s, formatting cannot continue."
 msgstr ""
 "%s avadanlığı xəsərli bloklara malik olduğu üçün şəkilləndirilə bilməd."
 
-#: gfloppy/src/main.c:158 gfloppy/src/main.c:202
+#: gfloppy/src/main.c:167 gfloppy/src/main.c:219
 #, c-format
 msgid ""
 "The device %s is disconnected.\n"
@@ -1322,7 +720,7 @@ msgstr ""
 "%s avadanlığı bağlantını kəsdi.\n"
 "Davam etmək üçün xahiş edirik avadanlığı taxın."
 
-#: gfloppy/src/main.c:161 gfloppy/src/main.c:205
+#: gfloppy/src/main.c:170 gfloppy/src/main.c:222
 #, c-format
 msgid ""
 "You do not have the proper permissions to write to %s, formatting will not "
@@ -1332,31 +730,49 @@ msgstr ""
 "%s üstündə yazma səlahiyyətiniz yoxdur, şəkilləndirmə mümükün olmayacaq.\n"
 "Sistemdə yazma səlahiyyətlərinizə dair idarəçinizlə görüşün."
 
-#: gfloppy/src/main.c:391
+#: gfloppy/src/main.c:216
+msgid "Unable to open any device, formatting cannot continue."
+msgstr "Heç bir avadanlıq açıla bilmir, şəkilləndirmə davam etməyəcəkdir."
+
+#: gfloppy/src/main.c:219 gfloppy/src/main.c:222
+msgid "/dev/floppy/0 or /dev/fd0"
+msgstr "/dev/floppy/0 ya da /dev/fd0"
+
+#: gfloppy/src/main.c:394
 #, c-format
 msgid ""
 "Could not display help for the floppy formatter.\n"
 "%s"
 msgstr ""
+"Floppy şəkilləndirici üçün yardım göstərilə bilmədi.\n"
+"%s"
 
-#: gfloppy/src/main.c:425
+#: gfloppy/src/main.c:427
 msgid "The volume name can't contain any blank space."
-msgstr ""
+msgstr "Həcmin adında heç bir boşluq ola bilməz."
 
-#: gfloppy/src/main.c:474
+#: gfloppy/src/main.c:477
 msgid "The device to format"
 msgstr "Şəkilləndiriləcək avadanlıq"
 
-#: gfloppy/src/main.c:475
+#: gfloppy/src/main.c:478
 msgid "DEVICE"
 msgstr "AVADANLIQ"
 
 #: gfloppy/src/progress.c:123
 #, c-format
 msgid ""
+"The floppy has been formatted, but <b>%d bad block</b> (out of %d) has been "
+"found and marked."
+msgid_plural ""
 "The floppy has been formatted, but <b>%d bad blocks</b> (out of %d) have "
 "been found and marked."
-msgstr ""
+msgstr[0] ""
+"Disket şəkilləndirildi, ancaq, <b>%d xəsərli blok</b> (toplam %d) tapıldı və "
+"işarə edildi."
+msgstr[1] ""
+"Disket şəkilləndirildi, ancaq, <b>%d xəsərli blok</b> (toplam %d) tapıldı və "
+"işarə edildi."
 
 #: gfloppy/src/progress.c:126
 msgid "Floppy formatted successfully."
@@ -1364,171 +780,359 @@ msgstr "Floppy müvəffəqiyyətlə şəkilləndirildi."
 
 #: gfloppy/src/progress.c:132
 msgid "Floppy formatting cancelled."
-msgstr "Floppy şəkillləndirilməsi ləǧv edildi ."
+msgstr "Floppy şəkillləndirilməsi ləğv edildi ."
 
-#: gfloppy/src/progress.c:172
-#, fuzzy
-msgid "Format progress"
-msgstr "Şəkilləndirlmə gedişatı ."
+#: gfloppy/src/progress.c:175
+msgid "Format Progress"
+msgstr "Şəkilləndirmə Gedişatı"
 
-#: gfloppy/gfloppy.schemas.in.h:1
-msgid ""
-"0 for the quick format, 1 for a standard one (adds a low-level format) and "
-"finally 2 for a thorough format (adds a bad blocks scan)."
-msgstr ""
+#: gsearchtool/gnome-search-tool.desktop.in.h:1
+msgid "Find files, folders, and documents on your computer"
+msgstr "Kompüterinizdəki faylları, qovluqları və sənədləri tapın"
 
-#: gfloppy/gfloppy.schemas.in.h:2
-msgid "ADVANCED USERS ONLY - Default backend for FAT formatting"
-msgstr ""
-
-#: gfloppy/gfloppy.schemas.in.h:3
-#, fuzzy
-msgid "Default filesystem type"
-msgstr "Fayl sistemi növü: "
-
-#: gfloppy/gfloppy.schemas.in.h:4
-#, fuzzy
-msgid "Default formatting mode"
-msgstr "Əsas taktika :"
-
-#: gfloppy/gfloppy.schemas.in.h:5
-msgid ""
-"TRUE to set mkdosfs as the preferred FAT formatting backend or FALSE to set "
-"mtools as the preferred FAT formatting backend."
-msgstr ""
-
-#: gfloppy/gfloppy.schemas.in.h:6
-msgid "ext2 for the linux native filesystem or fat for the DOS filesystem."
-msgstr ""
-
-#: gsearchtool/gnome-search-tool.desktop.in.h:1 gsearchtool/gsearchtool.c:1570
-#, fuzzy
+#: gsearchtool/gnome-search-tool.desktop.in.h:2 gsearchtool/gsearchtool.c:600
+#: gsearchtool/gsearchtool.c:858 gsearchtool/gsearchtool.c:942
+#: gsearchtool/gsearchtool.c:2288 gsearchtool/gsearchtool.c:2313
 msgid "Search for Files"
-msgstr "Axtar"
+msgstr "Faylları Axtar"
 
-#: gsearchtool/gnome-search-tool.desktop.in.h:2
-msgid "Search your disk for files"
+#: gsearchtool/gsearchtool-alert-dialog.c:100
+msgid "Image/label border"
+msgstr "Rəsm/etiket kənarı"
+
+#: gsearchtool/gsearchtool-alert-dialog.c:101
+msgid "Width of border around the label and image in the alert dialog"
+msgstr "Bildiriş dialoqunda rəsmin və etiketinin ətrafındakı kənarın qalınlığı"
+
+#: gsearchtool/gsearchtool-alert-dialog.c:110
+msgid "Alert Type"
+msgstr "Xəbərdarlıq Növü"
+
+#: gsearchtool/gsearchtool-alert-dialog.c:111
+msgid "The type of alert"
+msgstr "Xəbərdarlıq növü"
+
+#: gsearchtool/gsearchtool-alert-dialog.c:119
+msgid "Alert Buttons"
+msgstr "Xəbərdarlıq Düymələri"
+
+#: gsearchtool/gsearchtool-alert-dialog.c:120
+msgid "The buttons shown in the alert dialog"
+msgstr "Xəbərdarlıq dialoqunda göstərilən düymələr"
+
+#: gsearchtool/gsearchtool-alert-dialog.c:172
+msgid "Show more _details"
+msgstr "Daha çox _seçim göstər"
+
+#: gsearchtool/gsearchtool-callbacks.c:50
+msgid "_Open"
+msgstr "_Aç"
+
+#: gsearchtool/gsearchtool-callbacks.c:54
+msgid "O_pen Folder"
+msgstr "Cərgəni _Aç"
+
+#: gsearchtool/gsearchtool-callbacks.c:59
+msgid "Mo_ve to Trash"
+msgstr "_Zibil Qutusuna Daşı"
+
+#: gsearchtool/gsearchtool-callbacks.c:64
+msgid "_Save Results As..."
+msgstr "Nəticələri _Fərqli Qeyd Et..."
+
+#: gsearchtool/gsearchtool-callbacks.c:111
+msgid "Could not open help document."
+msgstr "Yardım sənədi açıla bilmədi."
+
+#: gsearchtool/gsearchtool-callbacks.c:319
+#, c-format
+msgid "Are you sure you want to open %d document?"
+msgid_plural "Are you sure you want to open %d documents?"
+msgstr[0] "Həqiqətən də %d ədəd sənədi açmaq istəyirsiniz?"
+msgstr[1] "Həqiqətən də %d ədəd sənədi açmaq istəyirsiniz?"
+
+#: gsearchtool/gsearchtool-callbacks.c:324
+#: gsearchtool/gsearchtool-callbacks.c:477
+#, c-format
+msgid "This will open %d separate window."
+msgid_plural "This will open %d separate windows."
+msgstr[0] "Bu, %d ayrı pəncərə açacaqdır."
+msgstr[1] "Bu, %d ayrı pəncərə açacaqdır."
+
+#: gsearchtool/gsearchtool-callbacks.c:384
+#: gsearchtool/gsearchtool-callbacks.c:418
+#: gsearchtool/gsearchtool-callbacks.c:967
+#: gsearchtool/gsearchtool-callbacks.c:1001
+#, c-format
+msgid "Could not open document \"%s\"."
+msgstr "\"%s\" sənədi açıla bilmədi."
+
+#: gsearchtool/gsearchtool-callbacks.c:387
+#: gsearchtool/gsearchtool-callbacks.c:643
+#: gsearchtool/gsearchtool-callbacks.c:970
+msgid "The document does not exist."
+msgstr "Sənəd mövcud deyil."
+
+#: gsearchtool/gsearchtool-callbacks.c:421
+#: gsearchtool/gsearchtool-callbacks.c:1004
+msgid "There is no installed viewer capable of displaying the document."
+msgstr "Sənədi nümayiş edə bilən nümaişci quraşdırılmayıb."
+
+#: gsearchtool/gsearchtool-callbacks.c:472
+#, c-format
+msgid "Are you sure you want to open %d folder?"
+msgid_plural "Are you sure you want to open %d folders?"
+msgstr[0] "Həqiqətən də %d pəncərə açmaq istəyirsiniz?"
+msgstr[1] "Həqiqətən də %d pəncərə açmaq istəyirsiniz?"
+
+#: gsearchtool/gsearchtool-callbacks.c:530
+#, c-format
+msgid "Could not open folder \"%s\"."
+msgstr "\"%s\" qovluğu açıla bilmədi."
+
+#: gsearchtool/gsearchtool-callbacks.c:537
+msgid "The nautilus file manager is not running."
+msgstr "Nautilus fayl idarəçisi fəaliyyətdə deyil."
+
+#: gsearchtool/gsearchtool-callbacks.c:640
+#, c-format
+msgid "Could not move \"%s\" to trash."
+msgstr "\"%s\" zibilə daşına bilmədi."
+
+#: gsearchtool/gsearchtool-callbacks.c:680
+#, c-format
+msgid "Could not move \"%s\" to the trash."
+msgstr "\"%s\" zibilə daşına bilmədi."
+
+#: gsearchtool/gsearchtool-callbacks.c:683
+#, c-format
+msgid "Moving \"%s\" failed: %s."
+msgstr "\"%s\" daşına bilmədi: %s."
+
+#: gsearchtool/gsearchtool-callbacks.c:713
+#, c-format
+msgid "Do you want to delete \"%s\" permanently?"
+msgstr "Həqiqətən də \"%s\"-i daimi silmək istəyirsiniz?"
+
+#: gsearchtool/gsearchtool-callbacks.c:716
+#, c-format
+msgid "Trash is unavailable.  Could not move \"%s\" to the trash."
+msgstr "Zibil qabı yoxdur.  \"%s\" zibil qutusuna daşına bilmədi."
+
+#: gsearchtool/gsearchtool-callbacks.c:758
+#, c-format
+msgid "Could not delete \"%s\"."
+msgstr "\"%s\" silinə bilmədi."
+
+#: gsearchtool/gsearchtool-callbacks.c:761
+#, c-format
+msgid "Deleting \"%s\" failed: %s."
+msgstr "\"%s\" silinə bilmədi: %s."
+
+#: gsearchtool/gsearchtool-callbacks.c:1189
+msgid "Save Search Results As..."
+msgstr "Axtarış Nəticələri Fərqli Qeyd Et..."
+
+#: gsearchtool/gsearchtool-callbacks.c:1241
+msgid "Could not save document."
+msgstr "Sənəd qeyd edilə bilmədi."
+
+#: gsearchtool/gsearchtool-callbacks.c:1243
+msgid "You did not select a document name."
+msgstr "Sənəd adını seçmədiniz."
+
+#: gsearchtool/gsearchtool-callbacks.c:1269
+#: gsearchtool/gsearchtool-callbacks.c:1364
+#, c-format
+msgid "Could not save \"%s\" document to \"%s\"."
+msgstr "\"%s\" sənədi \"%s\"-ə qeyd edilə bilmədi."
+
+#: gsearchtool/gsearchtool-callbacks.c:1273
+msgid "The document name you selected is a folder."
+msgstr "Seçdiyiniz sənəd adı bir qovluqdur."
+
+#: gsearchtool/gsearchtool-callbacks.c:1302
+#, c-format
+msgid "The document \"%s\" already exists.  Would you like to replace it?"
+msgstr "\"%s\" sənədi onsuz da mövcuddur. Onu əvəz etmək istəyirsiniz?"
+
+#: gsearchtool/gsearchtool-callbacks.c:1306
+msgid "If you replace an existing file, its contents will be overwritten."
+msgstr "Əgər mövcud faylı əvəz etsəniz, onun məzmunu dəyişdiriləcəkdir."
+
+#: gsearchtool/gsearchtool-callbacks.c:1317
+msgid "_Replace"
+msgstr "Ə_vəz Et"
+
+#: gsearchtool/gsearchtool-callbacks.c:1367
+msgid "You may not have write permissions to the document."
+msgstr "Sənədə yazma səlahiyyətləriniz yoxdur.  Sənəd qeyd edilmədi."
+
+#: gsearchtool/gsearchtool-support.c:68
+#, c-format
+msgid ""
+"GConf error:\n"
+"  %s"
 msgstr ""
+"GConf xətası:\n"
+"  %s"
 
-#: gsearchtool/gsearchtool.c:63
-#, fuzzy
-msgid "Contains the text"
-msgstr "Seçili mətni köçürün"
+#. Translators:  Below are the strings displayed in the 'Date Modified'
+#. column of the list view.  The format of this string can vary depending
+#. on age of a file.  Please modify the format of the timestamp to match
+#. your locale.  For example, to display 24 hour time replace the '%-I'
+#. with '%-H' and remove the '%p'.  (See bugzilla report #120434.)
+#: gsearchtool/gsearchtool-support.c:510
+msgid "today at %-I:%M %p"
+msgstr "bugün %-I:%M %p da(də)"
 
-#: gsearchtool/gsearchtool.c:65
-#, fuzzy
-msgid "Date modified less than (days)"
-msgstr "Dəyişiklik :"
+#: gsearchtool/gsearchtool-support.c:512
+msgid "yesterday at %-I:%M %p"
+msgstr "dünən %-I:%M %p da(də)"
 
-#: gsearchtool/gsearchtool.c:66
-#, fuzzy
-msgid "Date modified more than (days)"
-msgstr "Dəyişiklik :"
+#: gsearchtool/gsearchtool-support.c:514 gsearchtool/gsearchtool-support.c:516
+msgid "%A, %B %-d %Y at %-I:%M:%S %p"
+msgstr "%A, %B %-d %Y at %-I:%M:%S %p"
 
-#: gsearchtool/gsearchtool.c:68
-msgid "Size at least (kilobytes)"
-msgstr ""
+#: gsearchtool/gsearchtool-support.c:687
+msgid "link (broken)"
+msgstr "körpü (qopuqdur)"
 
-#: gsearchtool/gsearchtool.c:69
-msgid "Size at most (kilobytes)"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:70
-#, fuzzy
-msgid "File is empty"
-msgstr "`%s' faylı boşdur"
-
-#: gsearchtool/gsearchtool.c:72
-msgid "Owned by user"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:73
-#, fuzzy
-msgid "Owned by group"
-msgstr "Fayl yiyə dəstəsi"
+#: gsearchtool/gsearchtool-support.c:692
+#, c-format
+msgid "link to %s"
+msgstr "%s -a(ə) körpü"
 
 #: gsearchtool/gsearchtool.c:74
-msgid "Owner is unrecognized"
-msgstr ""
+msgid "Contains the _text"
+msgstr "Mətni _daxil edir"
 
 #: gsearchtool/gsearchtool.c:76
-#, fuzzy
-msgid "File is not named"
-msgstr "Fayl qeyd edilmədi..."
+msgid "_Date modified less than"
+msgstr "Təkmilləşdirmə tarixi bundan ə_vvəl olsun"
+
+#: gsearchtool/gsearchtool.c:76 gsearchtool/gsearchtool.c:77
+msgid "days"
+msgstr "gün"
 
 #: gsearchtool/gsearchtool.c:77
-#, fuzzy
-msgid "File matches regular expression"
-msgstr "İnkişaf etmiş uzantılara görə axtarış"
+msgid "Date modified more than"
+msgstr "Təkmilləşdirmə tarixi bundan _sonra olsun"
 
 #: gsearchtool/gsearchtool.c:79
-msgid "Follow symbolic links"
-msgstr "Yumuşaq bağları təqib et"
+msgid "S_ize at least"
+msgstr "Minimal _böyüklük"
+
+#: gsearchtool/gsearchtool.c:79 gsearchtool/gsearchtool.c:80
+msgid "kilobytes"
+msgstr "kilobayt"
 
 #: gsearchtool/gsearchtool.c:80
-#, fuzzy
+msgid "Si_ze at most"
+msgstr "Maksimal bö_yüklük"
+
+#: gsearchtool/gsearchtool.c:81
+msgid "File is empty"
+msgstr "Fayl boşdur"
+
+#: gsearchtool/gsearchtool.c:83
+msgid "Owned by _user"
+msgstr "_İstifadəçi tərəfindən yiyələnmiş"
+
+#: gsearchtool/gsearchtool.c:84
+msgid "Owned by _group"
+msgstr "_Qrup tərəfindən yiyələnmiş"
+
+#: gsearchtool/gsearchtool.c:85
+msgid "Owner is unrecognized"
+msgstr "Namə'lum yiyə"
+
+#: gsearchtool/gsearchtool.c:87
+msgid "Na_me does not contain"
+msgstr "Ad bunları daxil et_məsin"
+
+#: gsearchtool/gsearchtool.c:88
+msgid "Name matches regular e_xpression"
+msgstr "Fayl adı _qaydalı ifadələrə uyğun gəlsin"
+
+#: gsearchtool/gsearchtool.c:90
+msgid "Show hidden and backup files"
+msgstr "Gizli və ehtiyat fayllarını göstər"
+
+#: gsearchtool/gsearchtool.c:91
+msgid "Follow symbolic links"
+msgstr "Yumuşaq bağları izlə"
+
+#: gsearchtool/gsearchtool.c:92
 msgid "Include other filesystems"
-msgstr "Sonradan bağlanmış fayl sistemlərinde axtarış"
+msgstr "Digər fayl sistemlərini də daxil et"
 
-#: gsearchtool/gsearchtool.c:398 gsearchtool/gsearchtool.c:824
-#, fuzzy
+#: gsearchtool/gsearchtool.c:547 gsearchtool/gsearchtool.c:575
 msgid "No files found"
-msgstr "Eynisi tapıla bilmədi"
+msgstr "Heç bir fayl tapıla bilmədi"
 
-#: gsearchtool/gsearchtool.c:483
+#: gsearchtool/gsearchtool.c:568
+msgid "(stopped)"
+msgstr "(dayandırılıb)"
+
+#: gsearchtool/gsearchtool.c:574
+msgid "No Files Found"
+msgstr "Heç Bir Fayl Tapıla Bilmədi"
+
+#: gsearchtool/gsearchtool.c:579
+#, c-format
+msgid "%d File Found"
+msgid_plural "%d Files Found"
+msgstr[0] "%d Fayl Tapıldı"
+msgstr[1] "%d Fayl Tapıldı"
+
+#: gsearchtool/gsearchtool.c:583
+#, c-format
+msgid "%d file found"
+msgid_plural "%d files found"
+msgstr[0] "%d fayl tapıldı"
+msgstr[1] "%d fayl tapıldı"
+
+#: gsearchtool/gsearchtool.c:689
 msgid "Entry changed called for a non entry option!"
-msgstr "Giriş dəyişdi signalı giriş olmayan bir seçənək üçün verildi !"
+msgstr "Giriş dəyişdi signalı giriş olmayan bir seçim üçün verildi!"
 
-#: gsearchtool/gsearchtool.c:593
-msgid "Set the text of 'file is named'"
-msgstr ""
+#: gsearchtool/gsearchtool.c:942
+msgid "Searching..."
+msgstr "Axtarılır..."
 
-#: gsearchtool/gsearchtool.c:594
-msgid "Set the text of 'look in folder'"
-msgstr ""
+#: gsearchtool/gsearchtool.c:963
+msgid "Set the text of 'Name contains'"
+msgstr "'Faylın adı' mətnini dəyişdir"
 
-#: gsearchtool/gsearchtool.c:595
+#: gsearchtool/gsearchtool.c:964
+msgid "Set the text of 'Look in folder'"
+msgstr "'Bu qovluqda axtar' mətnini dəyişdir"
+
+#: gsearchtool/gsearchtool.c:965
 msgid "Sort files by one of the following: name, folder, size, type, or date"
 msgstr ""
+"Faylları bunlardan birisinı görə sırala: ad, qovluq, böyüklük, növ ya da "
+"tarix"
 
-#: gsearchtool/gsearchtool.c:596
+#: gsearchtool/gsearchtool.c:966
 msgid "Set sort order to descending, the default is ascending"
-msgstr ""
+msgstr "Sıralamanı azalan qaydaya görə et, ön qurğulusu artandır"
 
-#: gsearchtool/gsearchtool.c:597
+#: gsearchtool/gsearchtool.c:967
 msgid "Automatically start a search"
-msgstr ""
+msgstr "Avtomatik olaraq axtarışa başla"
 
-#: gsearchtool/gsearchtool.c:601
-#, fuzzy, c-format
+#: gsearchtool/gsearchtool.c:972
+#, c-format
 msgid "Select the '%s' constraint"
-msgstr "Yumuşaq bağları təqib et"
+msgstr "'%s' məhdudlaşdırmasını seç"
 
-#: gsearchtool/gsearchtool.c:686
+#: gsearchtool/gsearchtool.c:1078
 msgid "Invalid option passed to sortby command line argument."
-msgstr ""
+msgstr "sortby əmri sətir arqumentinə göndərilən hökmsüz seçim."
 
-#: gsearchtool/gsearchtool.c:815
-msgid "(aborted)"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:828
-#, fuzzy
-msgid "One file found"
-msgstr "Eynisi tapıla bilmədi"
-
-#: gsearchtool/gsearchtool.c:831
-#, fuzzy, c-format
-msgid "%d files found"
-msgstr "Eynisi tapıla bilmədi"
-
-#: gsearchtool/gsearchtool.c:927
-msgid ""
-"While searching the following errors were reported.\n"
-"\n"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:931
+#: gsearchtool/gsearchtool.c:1350
 msgid ""
 "\n"
 "... Too many errors to display ..."
@@ -1536,348 +1140,280 @@ msgstr ""
 "\n"
 "... Göstəriləcək həddindən çox xəta vardır ..."
 
-#: gsearchtool/gsearchtool.c:944
-#, fuzzy
-msgid "Search Errors"
-msgstr "Axtar"
-
-#: gsearchtool/gsearchtool.c:982 gsearchtool/gsearchtool.c:1006
-#, fuzzy
-msgid "Search for Files Error"
-msgstr "Axtar"
-
-#: gsearchtool/gsearchtool.c:1090
-msgid "Search Rule Value Entry"
+#: gsearchtool/gsearchtool.c:1359
+msgid ""
+"The search results may be invalid.  There were errors while performing this "
+"search."
 msgstr ""
+"Axtarış nəticələri səhv ola bilər. Axtarış sırasında xətalar baş verdi."
 
-#: gsearchtool/gsearchtool.c:1091
+#: gsearchtool/gsearchtool.c:1380
+msgid ""
+"The search results may be invalid.  Do you want to disable the quick search "
+"feature?"
+msgstr ""
+"Axtarış nəticələri səhv ola bilər. Cəld axtarış xassəsini qeyri-"
+"fəallaşdırmaq istəyirsiniz?"
+
+#: gsearchtool/gsearchtool.c:1388
+msgid "Disable _Quick Search"
+msgstr "Cəld Axtarışı Qeyri-Fəallaşdır"
+
+#: gsearchtool/gsearchtool.c:1432
+msgid "Error parsing the search command."
+msgstr "Axtarış əmri oxunurkən xəta."
+
+#: gsearchtool/gsearchtool.c:1461
+msgid "Error running the search command."
+msgstr "Axtarış əmri icra edilirkən xəta."
+
+#: gsearchtool/gsearchtool.c:1572
+#, c-format
+msgid "'%s' entry"
+msgstr "'%s' girişi"
+
+#: gsearchtool/gsearchtool.c:1573
 msgid "Enter a value for search rule"
-msgstr ""
+msgstr "Axtarış qaydası üçün qiymət girin"
 
-#: gsearchtool/gsearchtool.c:1125
+#: gsearchtool/gsearchtool.c:1620
 #, c-format
 msgid "Click to Remove the '%s' Rule"
-msgstr ""
+msgstr "%s qaydasını silmək üçün basın"
 
-#: gsearchtool/gsearchtool.c:1180
-#, fuzzy
+#: gsearchtool/gsearchtool.c:1675
 msgid "A_vailable options:"
-msgstr "Mövcud görünüşlər"
+msgstr "Mövcud _seçimlər:"
 
-#: gsearchtool/gsearchtool.c:1193
-#, fuzzy
+#: gsearchtool/gsearchtool.c:1688
 msgid "Search Rules Menu"
-msgstr "Axtarış Nəticələri"
+msgstr "Axtarış Qaydaları Menyusu"
 
-#: gsearchtool/gsearchtool.c:1194
-#, fuzzy
+#: gsearchtool/gsearchtool.c:1689
 msgid "Select a search rule from the menu"
-msgstr "Üzvlərdən yeni arxiv yarat"
+msgstr "Menyu üçün axtarış qaydalarını seçin"
 
-#: gsearchtool/gsearchtool.c:1226
-#, fuzzy
-msgid "S_earch Results"
-msgstr "Axtarış Nəticələri"
+#: gsearchtool/gsearchtool.c:1720
+msgid "S_earch results:"
+msgstr "A_xtarış nəticələri:"
 
-#: gsearchtool/gsearchtool.c:1298
+#: gsearchtool/gsearchtool.c:1800
 msgid "Name"
 msgstr "Ad"
 
-#: gsearchtool/gsearchtool.c:1318
-#, fuzzy
+#: gsearchtool/gsearchtool.c:1820
 msgid "Folder"
-msgstr "Tut"
+msgstr "Qovluq"
 
-#: gsearchtool/gsearchtool.c:1329
-#, fuzzy
+#: gsearchtool/gsearchtool.c:1831
 msgid "Size"
-msgstr "Böyüklük :"
+msgstr "Böyüklük"
 
-#: gsearchtool/gsearchtool.c:1339
+#: gsearchtool/gsearchtool.c:1841
 msgid "Type"
 msgstr "Növ"
 
-#: gsearchtool/gsearchtool.c:1349
-#, fuzzy
+#: gsearchtool/gsearchtool.c:1851
 msgid "Date Modified"
-msgstr "Dəyişiklik :"
+msgstr "Təkmilləşdirmə Tarixi"
 
-#: gsearchtool/gsearchtool.c:1386
-#, fuzzy
-msgid "File is _named:"
-msgstr "Fayl adı"
+#: gsearchtool/gsearchtool.c:1909
+msgid "_Name contains:"
+msgstr "_Ad bunları daxil etsin:"
 
-#: gsearchtool/gsearchtool.c:1401 gsearchtool/gsearchtool.c:1402
-#, fuzzy
-msgid "File Name Entry"
-msgstr "Fayl adı :"
-
-#: gsearchtool/gsearchtool.c:1401 gsearchtool/gsearchtool.c:1402
+#: gsearchtool/gsearchtool.c:1924 gsearchtool/gsearchtool.c:1925
 msgid "Enter the file name you want to search"
-msgstr ""
+msgstr "Axtarmaq istədiyini fayl adını girin"
 
-#: gsearchtool/gsearchtool.c:1414
-#, fuzzy
+#: gsearchtool/gsearchtool.c:1925
+msgid "Name Contains Entry"
+msgstr "Adın Daxil Etdiyi Giriş"
+
+#: gsearchtool/gsearchtool.c:1936
 msgid "_Look in folder:"
-msgstr "Mətn tapıla bilmədi"
+msgstr "Bu _cərgədə axtar:"
 
-#: gsearchtool/gsearchtool.c:1420
+#: gsearchtool/gsearchtool.c:1942
 msgid "Browse"
 msgstr "Gəz"
 
-#: gsearchtool/gsearchtool.c:1429 gsearchtool/gsearchtool.c:1430
-#, fuzzy
-msgid "Starting folder entry"
-msgstr "Mətn tapıla bilmədi"
-
-#: gsearchtool/gsearchtool.c:1429 gsearchtool/gsearchtool.c:1430
+#: gsearchtool/gsearchtool.c:1953 gsearchtool/gsearchtool.c:1954
 msgid "Enter the folder name where you want to start the search"
-msgstr ""
+msgstr "Axtarışı başladmaq istədiyiniz cərgə adını girin"
 
-#: gsearchtool/gsearchtool.c:1446 gsearchtool/gsearchtool.c:1447
-#, fuzzy
-msgid "Additional Options"
-msgstr "Göstərmə seçenəkləri"
+#: gsearchtool/gsearchtool.c:1954
+msgid "Look in Folder Entry"
+msgstr "Qovluq Girişində Axtar"
 
-#: gsearchtool/gsearchtool.c:1492
+#: gsearchtool/gsearchtool.c:1972
+msgid "Show more _options"
+msgstr "Daha çox _seçim göstər"
+
+#: gsearchtool/gsearchtool.c:1982
+msgid "Show more options"
+msgstr "Daha çox seçim göstər"
+
+#: gsearchtool/gsearchtool.c:1982
+msgid "Expands or collapses a list of search options."
+msgstr "Axtarış seçimləri siyahısını açar ya da bağlayar"
+
+#: gsearchtool/gsearchtool.c:2029
 msgid "Click to Start the search"
-msgstr ""
+msgstr "Axtarışa başlamaq üçün tıqlayın"
 
-#: gsearchtool/gsearchtool.c:1493
+#: gsearchtool/gsearchtool.c:2030
 msgid "Click to Stop the search"
-msgstr ""
+msgstr "Axtarışı bitirmək üçün tıqlayın"
 
-#: gsearchtool/gsearchtool.c:1566
+#: gsearchtool/gsearchtool.c:2309
 msgid "Cannot initialize bonobo."
-msgstr ""
+msgstr "Bonobo başladıla bilmədi."
 
-#: gsearchtool/gsearchtool-callbacks.c:45
-#, fuzzy
-msgid "_Open"
-msgstr "Aç"
-
-#: gsearchtool/gsearchtool-callbacks.c:49
-#, fuzzy
-msgid "O_pen Folder"
-msgstr "Fayl Aç"
-
-#: gsearchtool/gsearchtool-callbacks.c:54
-#, fuzzy
-msgid "_Save Results As..."
-msgstr "Nəticələri Qeyd Et"
-
-#: gsearchtool/gsearchtool-callbacks.c:107
-msgid "Can't Display Help"
-msgstr ""
-
-#: gsearchtool/gsearchtool-callbacks.c:128
-#, fuzzy
-msgid "Searching..."
-msgstr "Imla yoxlaması ..."
-
-#: gsearchtool/gsearchtool-callbacks.c:299
-#, c-format
-msgid "This will open %d separate files. Are you sure you want to do this?"
-msgstr ""
-
-#: gsearchtool/gsearchtool-callbacks.c:302
-#, fuzzy, c-format
-msgid "Open %d Files?"
-msgstr "Fayl Aç"
-
-#: gsearchtool/gsearchtool-callbacks.c:359
-#: gsearchtool/gsearchtool-callbacks.c:620
-#, c-format
-msgid "There is no installed viewer capable of displaying \"%s\"."
-msgstr ""
-
-#: gsearchtool/gsearchtool-callbacks.c:366
-#: gsearchtool/gsearchtool-callbacks.c:627
-msgid "Can't Display Location"
-msgstr ""
-
-#: gsearchtool/gsearchtool-callbacks.c:404
-#, c-format
-msgid "This will open %d separate folders. Are you sure you want to do this?"
-msgstr ""
-
-#: gsearchtool/gsearchtool-callbacks.c:407
-#, fuzzy, c-format
-msgid "Open %d Folders?"
-msgstr "Fayl Aç"
-
-#: gsearchtool/gsearchtool-callbacks.c:446
-msgid "The nautilus file manager is not running."
-msgstr ""
-
-#: gsearchtool/gsearchtool-callbacks.c:729
-#, fuzzy
-msgid "Save Search Results As..."
-msgstr "Nəticələri Qeyd Et"
-
-#: gsearchtool/gsearchtool-callbacks.c:772
-#, fuzzy, c-format
-msgid ""
-"Cannot save search results.\n"
-"\"%s\" is a folder."
-msgstr "Fayl qeyd edilə bilmir"
-
-#: gsearchtool/gsearchtool-callbacks.c:800
-#, fuzzy, c-format
-msgid "File \"%s\" already exists. Overwrite?"
-msgstr "%s faylı mövcuddur, üstünə yazım?"
-
-#: gsearchtool/gsearchtool-callbacks.c:837
-#, fuzzy, c-format
-msgid "Cannot save search results to the file \"%s\"."
-msgstr "Fayl qeyd edilə bilmir"
-
-#: gsearchtool/gsearchtool-support.c:284
-msgid "Expander Size"
-msgstr ""
-
-#: gsearchtool/gsearchtool-support.c:285
-msgid "Size of the expander arrow"
-msgstr ""
-
-#: gsearchtool/gsearchtool-support.c:346
-#, c-format
-msgid ""
-"GConf error:\n"
-"  %s"
-msgstr ""
-
-#: gsearchtool/gsearchtool-support.c:507
-#, fuzzy
-msgid "%Y%m%d%H%M%S"
-msgstr "%b %d %H:%M:%S"
-
-#: gsearchtool/gsearchtool-support.c:538
-msgid "today at %-I:%M %p"
-msgstr ""
-
-#: gsearchtool/gsearchtool-support.c:540
-msgid "yesterday at %-I:%M %p"
-msgstr ""
-
-#: gsearchtool/gsearchtool-support.c:542 gsearchtool/gsearchtool-support.c:544
-msgid "%m/%-d/%y, %-I:%M %p"
-msgstr ""
-
-#: gsearchtool/gsearchtool-support.c:669
-msgid "link (broken)"
-msgstr ""
-
-#: gsearchtool/gsearchtool-support.c:674
-#, c-format
-msgid "link to %s"
-msgstr ""
-
-#: gsearchtool/help/es/gsearchtool.desktop.in.h:1
-msgid "GNOME Search Tool"
-msgstr "Gnome Axtarış Proqramı"
-
-#: logview/about.c:42
+#. Author needs some sort of dash over the 'e' in Cesar  - U-00E9
+#: logview/about.c:43
 msgid "Cesar Miquel (miquel@df.uba.ar)"
 msgstr "Cesar Miquel ( miquel@df.uba.ar )"
 
-#: logview/about.c:43
-#, fuzzy
-msgid ""
-"This program is part of the GNOME project. Logview comes with ABSOLUTELY NO "
-"WARRANTY. This is free software, and you are welcome to redistribute it "
-"under the conditions of the GNU General Public Licence. The log icon is a "
-"courtesy of Tuomas Kuosmanen (a.k.a tigert)."
-msgstr ""
-"Bu proqram Linux üçün GNOME lahiyasinin bir parçasıdır. Bu uyǧulama heç bir "
-"masuliyyat daşımır. Bu, sərbəst bir yazılımdır və sizin bütün dəyişiklikləri "
-"etməyə haqqınız vardır. Bunu GPL lisenziyası altında daǧıda bilirsiniz. Qeyd "
-"timsalı Tuomas Kuosmanen tərəfindən yaradılmışdır."
+#: logview/about.c:44
+msgid "A system log viewer for GNOME."
+msgstr "GNOME üçün sistem qeyd nümayişcisi."
 
-#: logview/about.c:61
-#, fuzzy
-msgid "GNOME System Log Viewer"
-msgstr "Sistem qeydi göstəricisi"
-
-#: logview/about.c:62
-msgid "Copyright (C) 1998"
-msgstr "Təlif haqqı (C) 1998"
+#: logview/about.c:58
+msgid "System Log Viewer"
+msgstr "Sistem Qeyd Nümayişcisi"
 
 #: logview/actions.c:74
-msgid "Action database"
-msgstr "Əməliyyat bilgi tabanı"
+msgid "Action Database"
+msgstr "Gedişat Verilənlər Bazası"
 
-#: logview/actions.c:84
+#: logview/actions.c:85
 msgid "Actions"
-msgstr "Əməliyyatlar"
+msgstr "Gedişatlar"
 
-#: logview/actions.c:152
-#, fuzzy
+#: logview/actions.c:157
 msgid "_Add"
-msgstr "Əlavə Et"
+msgstr "Ə_lavə et"
 
-#: logview/actions.c:159
-#, fuzzy
+#: logview/actions.c:162
+msgid "Add an action"
+msgstr "Gedişat əlavə et"
+
+#: logview/actions.c:164
 msgid "_Edit"
-msgstr "Düzəlt"
+msgstr "_Düzəlt"
 
-#: logview/actions.c:166
-#, fuzzy
+#: logview/actions.c:169
+msgid "Edit an action"
+msgstr "Gedişatı düzəlt"
+
+#: logview/actions.c:171
 msgid "_Remove"
-msgstr "Sil"
+msgstr "_Sil"
 
-#: logview/actions.c:259
+#: logview/actions.c:176
+msgid "Remove an action"
+msgstr "Gedişatı sil"
+
+#: logview/actions.c:263
 #, c-format
 msgid "Cannot open action data base <%s>! Open failed."
 msgstr "<%s> gedişlər verilənlər bvazası açıla bilmir! Açma bacarılmadı."
 
-#: logview/actions.c:294 logview/actions.c:307 logview/actions.c:318
-#: logview/actions.c:329 logview/actions.c:340 logview/actions.c:351
+#: logview/actions.c:298 logview/actions.c:311 logview/actions.c:322
+#: logview/actions.c:333 logview/actions.c:344 logview/actions.c:355
 msgid "Error parsing actions data base"
 msgstr "Əməliyyat bilgi tabanını oxurkən bir xəta oldu"
 
-#: logview/actions.c:385
+#: logview/actions.c:389
 msgid "Can't write to actions database!"
 msgstr "Əməliyyatları bilgi tabanına yaza bilmədim !"
 
-#: logview/actions.c:485
-msgid "Error while executing specified action"
-msgstr ""
+#: logview/actions.c:487
+#, c-format
+msgid "Error while executing specified action: %s"
+msgstr "Verilən gedişat icra edilərkən xəta yarandı: %s"
 
-#: logview/actions.c:506
+#: logview/actions.c:510
 msgid "<empty>"
 msgstr "<boş>"
 
-#: logview/actions.c:507
-msgid "log name regexp"
-msgstr "ad qaydalı ifadəni qeyd et"
-
-#: logview/actions.c:508
-msgid "process regexp"
-msgstr "əməliyyat uzantıları"
-
-#: logview/actions.c:509
-msgid "message regexp"
-msgstr "xəbər uzantıları"
-
-#: logview/actions.c:510
-msgid "action to execute when regexps are TRUE"
-msgstr "uzantılar tutarsa işə salınacaq əməliyyat"
-
 #: logview/actions.c:511
+msgid "log name regexp"
+msgstr "qeyd adı qaydalı ifadəsi"
+
+#: logview/actions.c:512
+msgid "process regexp"
+msgstr "gedişat qaydalı ifadəsi"
+
+#: logview/actions.c:513
+msgid "message regexp"
+msgstr "ismarış qaydalı ifadəsi"
+
+#: logview/actions.c:514
+msgid "action to execute when regexps are TRUE"
+msgstr "qaydalı ifadələr TRUE isə işə salınacaq gedişat"
+
+#: logview/actions.c:515
 msgid "description"
-msgstr "izah"
+msgstr "izahat"
+
+#: logview/actions.c:651
+msgid "Edit Action"
+msgstr "Gedişatı Düzəlt"
+
+#: logview/actions.c:687
+msgid "_Tag:"
+msgstr "_Taq:"
+
+#: logview/actions.c:696
+msgid "Tag that identifies the log file."
+msgstr "Qeyd faylını tanıdan taq."
+
+#: logview/actions.c:705
+msgid "_Log name:"
+msgstr "_Qeyd adı:"
+
+#: logview/actions.c:714
+msgid "Regular expression that will match the log name."
+msgstr "Qeyd adı ilə uyğun gələn qaydalı ifadə."
+
+#: logview/actions.c:724
+msgid "_Process:"
+msgstr "_Gedişat:"
+
+#: logview/actions.c:733
+msgid "Regular expression that will match process part of message."
+msgstr "İsmarışın gedişat qismi ilə uyğun gələn qaydalı ifadə."
+
+#: logview/actions.c:743
+msgid "_Message:"
+msgstr "_İsmarış:"
+
+#: logview/actions.c:752
+msgid "Regular expression that will match the message."
+msgstr "İsmarış ilə uyğun gələn qaydalı ifadə."
+
+#: logview/actions.c:762
+msgid "_Action:"
+msgstr "_Gedişat:"
 
 #: logview/actions.c:771
-#, fuzzy
-msgid "_Description:"
-msgstr "İzah:"
+msgid ""
+"Action that will be executed if all previous regexps. are matched. This is "
+"executed by a system command: system (action)."
+msgstr ""
+"Gedişat bütün əvvəlki qaydalı ifadələr uyğun gələrsə icra ediləcəkdir. "
+"Busystem əmri ilə icra edilir: system (gedişat)."
 
-#: logview/actions.c:780
+#: logview/actions.c:781
+msgid "_Description:"
+msgstr "_İzahat:"
+
+#: logview/actions.c:790
 msgid "Description of this entry."
 msgstr "Bunun izahı ."
 
-#: logview/actions.c:804
+#: logview/actions.c:814
 #, c-format
 msgid ""
 "tag: [%s]\n"
@@ -1894,7 +1430,7 @@ msgstr ""
 "izah: [%s]\n"
 "əməliyyat : [%s]\n"
 
-#: logview/calendar.c:112
+#: logview/calendar.c:110
 msgid "Calendar"
 msgstr "Təqvim"
 
@@ -1913,54 +1449,51 @@ msgstr "<%s> izahat verilənlər bvazası açıla bilmir! Açma bacarılmadı."
 #. DESCRIPTION:
 #. ----------------------------------------------------------------------
 #: logview/gnome-system-log.desktop.in.h:1
-#, fuzzy
 msgid "System Log"
-msgstr "Sistem qeydi göstəricisi"
+msgstr "Sistem Qeydi"
 
 #: logview/gnome-system-log.desktop.in.h:2
 msgid "View the system log file"
-msgstr ""
+msgstr "Sistem qeyd faylını göstər"
 
-#: logview/info.c:65
-msgid "Log stats"
-msgstr "Qeyd statistikaları"
+#: logview/info.c:62
+msgid "Properties"
+msgstr "Xassələr"
 
-#: logview/info.c:110
+#: logview/info.c:108
 msgid "Size:"
-msgstr "Böyüklük :"
+msgstr "Böyüklük:"
 
-#: logview/info.c:110
+#: logview/info.c:108
 msgid "Modified:"
-msgstr "Dəyişiklik :"
+msgstr "Təkmilləşdirmə:"
 
-#: logview/info.c:111
-#, fuzzy
+#: logview/info.c:109
 msgid "Start Date:"
-msgstr "Başlama tarixi :"
+msgstr "Başlanğıc Tarixi:"
 
-#: logview/info.c:111
-#, fuzzy
+#: logview/info.c:109
 msgid "Last Date:"
-msgstr "Son tarix : "
+msgstr "Son Tarix: "
 
-#: logview/info.c:111
-#, fuzzy
+#: logview/info.c:109
 msgid "Number of Lines:"
-msgstr "Sətir sayısı :"
+msgstr "Sətir Miqdarı:"
 
-#: logview/info.c:137
-#, fuzzy
+#: logview/info.c:134
 msgid "Log Information"
-msgstr "Qeyd məlumatı"
+msgstr "Qeyd Mə'lumatı"
 
-#: logview/info.c:163 logview/zoom.c:157
+#: logview/info.c:160 logview/zoom.c:155
 msgid "<No log loaded>"
-msgstr ""
+msgstr "<Yüklü qeyd faylı yoxdur>"
 
-#: logview/info.c:186
+#: logview/info.c:183
 #, c-format
-msgid "%ld bytes"
-msgstr "%ld bayt"
+msgid "%ld byte"
+msgid_plural "%ld bytes"
+msgstr[0] "%ld bayt"
+msgstr[1] "%ld bayt"
 
 #: logview/log_repaint.c:59
 msgid "January"
@@ -2011,2636 +1544,247 @@ msgid "December"
 msgstr "Dekabr"
 
 #. Translators: Date only format, %x should well do really
-#: logview/log_repaint.c:403
+#: logview/log_repaint.c:394
 #, c-format
 msgid "%x"
 msgstr "%x"
 
 #. Translators: Make sure this is only Month and Day format, year
 #. * will be bogus here
-#: logview/log_repaint.c:458
+#: logview/log_repaint.c:449
 msgid "%B %e"
 msgstr "%B %e"
 
 #. Translators: should be only the time, date could be bogus
-#: logview/log_repaint.c:524
+#: logview/log_repaint.c:521
 #, c-format
 msgid "%X"
 msgstr "%X"
 
-#: logview/logrtns.c:191
+#: logview/logrtns.c:193
 msgid "Not enough memory!\n"
 msgstr "Lazımi yaddaş yoxdur!\n"
 
-#: logview/logrtns.c:202
+#: logview/logrtns.c:204
 msgid "Unable to open logfile!\n"
 msgstr "Qeyd faylını aça bilmədim !\n"
 
-#: logview/logrtns.c:260
+#: logview/logrtns.c:265
 #, c-format
 msgid "%s is not a regular file."
 msgstr "%s normal bir fayl deyildir."
 
-#: logview/logrtns.c:268
+#: logview/logrtns.c:273
 #, c-format
 msgid ""
 "%s is not user readable. Either run the program as root or ask the sysadmin "
 "to change the permissions on the file."
 msgstr ""
 "%s istifadəçilər tərəfindən oxuna bilməz. Böyük bir ehtimalla sadəcə oxuma "
-"haqqı vardır. Lütfən ya uyğulamayı 'root' olaraq başlat ya da bu faylın "
-"haqlarınındəyişdirilməsini isdə."
+"hüququ vardır. Xahiş edirik ya uyğulamanı 'root' olaraq başlat ya da bu "
+"faylın hüquqlarının dəyişdirilməsini istə."
 
-#: logview/logrtns.c:285
+#: logview/logrtns.c:290
 #, c-format
 msgid "%s could not be opened."
 msgstr "%s açıla bilmədi ."
 
-#: logview/logrtns.c:315 logview/logrtns.c:324
+#: logview/logrtns.c:320 logview/logrtns.c:329
 #, c-format
 msgid "%s not a log file."
 msgstr "%s bir qeyd faylı deyildir ."
 
-#: logview/logrtns.c:722 logview/logrtns.c:753 logview/logrtns.c:884
+#: logview/logrtns.c:727 logview/logrtns.c:758 logview/logrtns.c:889
 msgid "ReadLogStats: out of memory"
 msgstr "ReadLogStats : yaddaş çatmır"
 
-#: logview/logview.c:99
-#, fuzzy
-msgid "S_witch Log"
-msgstr "Qeydi dəyişdir"
-
 #: logview/logview.c:100
-msgid "Switch between already opened logs"
-msgstr ""
+msgid "S_witch Log"
+msgstr "Qeydi Də_yişdir"
 
-#: logview/logview.c:106
-#, fuzzy
-msgid "_Monitor..."
-msgstr "Göstər..."
+#: logview/logview.c:101
+msgid "Switch between already opened logs"
+msgstr "Hazırda açıq olan qeyd faylları arasında keçiş et"
 
 #: logview/logview.c:107
-#, fuzzy
-msgid "Monitor Logs"
-msgstr "Qeydi təqib et"
+msgid "_Monitor..."
+msgstr "_İzləmə..."
 
-#: logview/logview.c:115
-#, fuzzy
-msgid "_Properties"
-msgstr "'Xüsüsiyyətləri''i göstər"
+#: logview/logview.c:108
+msgid "Monitor Logs"
+msgstr "İzləmə Qeydləri"
 
 #: logview/logview.c:116
-#, fuzzy
-msgid "Show Log Properties"
-msgstr "'Xüsüsiyyətləri''i göstər"
+msgid "_Properties"
+msgstr "_Xassələr"
 
-#: logview/logview.c:124
-#, fuzzy
-msgid "Clos_e All"
-msgstr "Qeydi qapat"
+#: logview/logview.c:117
+msgid "Show Log Properties"
+msgstr "Qeyd Xassələrini Göstər"
 
 #: logview/logview.c:125
-#, fuzzy
-msgid "Close all Log files"
-msgstr "Qeyd faylı istifadə et"
+msgid "Clos_e All"
+msgstr "Hamısını _Bağıla"
 
-#: logview/logview.c:137
-#, fuzzy
-msgid "_Calendar"
-msgstr "Təqvim"
+#: logview/logview.c:126
+msgid "Close all Log files"
+msgstr "Bütün Qeyd fayllarını bağla"
 
 #: logview/logview.c:138
-#, fuzzy
-msgid "Show Calendar Log"
-msgstr "Təqvim qeydini göstər"
+msgid "_Calendar"
+msgstr "_Təqvim"
 
-#: logview/logview.c:144
-#, fuzzy
-msgid "_Entry Detail"
-msgstr "Başlama Girişi: "
+#: logview/logview.c:139
+msgid "Show Calendar Log"
+msgstr "Təqvim Qeydini Göstər"
 
 #: logview/logview.c:145
-msgid "Show Entry Detail"
-msgstr ""
+msgid "_Entry Detail"
+msgstr "_Giriş Təfsilatı"
 
-#: logview/logview.c:151
-#, fuzzy
-msgid "_Collapse All"
-msgstr "Qeydi qapat"
+#: logview/logview.c:146
+msgid "Show Entry Detail"
+msgstr "Giriş Təfsilatını Göstər"
 
 #: logview/logview.c:152
-msgid "Collapse all the rows"
-msgstr ""
+msgid "_Collapse All"
+msgstr "_Hamısını Aç"
 
-#: logview/logview.c:365
+#: logview/logview.c:153
+msgid "Collapse all the rows"
+msgstr "Bütün sətirləri aç"
+
+#: logview/logview.c:370
 msgid "No log files to open"
 msgstr "Açılacaq qeyd faylı yoxdur"
 
-#: logview/logview.c:389
-#, fuzzy
+#: logview/logview.c:392
 msgid "Date"
-msgstr "Tarix :"
+msgstr "Tarix"
 
-#: logview/logview.c:389
-#, fuzzy
+#: logview/logview.c:392
 msgid "Host Name"
-msgstr "Ad"
+msgstr "Qovşaq adı"
 
-#: logview/logview.c:390
-#, fuzzy
+#: logview/logview.c:393
 msgid "Process"
-msgstr "Gedişat:"
+msgstr "Gedişat"
 
-#: logview/logview.c:390
-#, fuzzy
+#: logview/logview.c:393
 msgid "Message"
-msgstr "İsmarıc:"
+msgstr "İsmarış"
 
 #: logview/logview.c:474
-#, fuzzy
 msgid "Last Modified: "
-msgstr "Dəyişiklik :"
+msgstr "Son Təkmilləşdirmə Tarixi: "
 
-#: logview/logview.c:568 logview/logview.c:643
+#: logview/logview.c:573 logview/logview.c:648
 msgid "Too many open logs. Close one and try again"
 msgstr ""
-"Çox miqdarda qeyd faylı açıqdır. Lütfən bir dənəsini qapat və yenidən sına"
+"Çox miqdarda qeyd faylı açıqdır. Xahiş edirik bir dənəsini bağlayıb yenidən "
+"sınayın"
 
-#: logview/logview.c:580
+#: logview/logview.c:585
 msgid "File already opened"
-msgstr ""
+msgstr "Fayl onsuzda açıqdır"
 
-#: logview/logview.c:656
+#: logview/logview.c:661
 msgid "Open new logfile"
 msgstr "Yeni bir qeyd faylı aç"
 
-#: logview/misc.c:56
-#, c-format
-msgid "Error: [%s]\n"
-msgstr "Xəta : [%s]\n"
-
-#: logview/monitor.c:109
-#, fuzzy
-msgid "Monitor Options"
-msgstr "Göstərmə seçenəkləri"
-
-#: logview/monitor.c:135
-#, fuzzy
-msgid "Choose logs to monitor:"
-msgstr "Təqib ediləcək qeydləri seç"
-
-#: logview/monitor.c:140
-msgid "Currently monitored logs:"
-msgstr ""
-
-#: logview/monitor.c:188
-#, fuzzy
-msgid "Add logs to monitor"
-msgstr "Təqib ediləcək qeydləri seç"
-
-#: logview/monitor.c:197
-#, fuzzy
-msgid "Remove logs from monitor"
-msgstr "Təqib ediləcək qeydləri seç"
-
-#. Check boxes
-#: logview/monitor.c:244
-#, fuzzy
-msgid "_Hide Application"
-msgstr "Bu proqram tə'minatı haqqında məlumat"
-
-#: logview/monitor.c:252
-#, fuzzy
-msgid "_Execute Actions"
-msgstr "İşlətma əməliyyatları"
-
-#: logview/monitor.c:289
-#, fuzzy
-msgid "Too many logs to monitor. Remove one and try again"
-msgstr ""
-"Çox miqdarda qeyd faylı açıqdır. Lütfən bir dənəsini qapat və yenidən sına"
-
-#: logview/monitor.c:297 logview/monitor.c:335
-msgid "tmp_list is NULL\n"
-msgstr "tmp_list NULL oldu\n"
-
-#: logview/monitor.c:457
-msgid "Monitoring logs..."
-msgstr "Qeydləri təqib edirəm..."
-
-#: logview/monitor.c:644
-msgid "TOUCHED!!\n"
-msgstr "DƏYiŞDİ !!\n"
-
-#: logview/zoom.c:63
-msgid "Zoom view"
-msgstr "Böyüdülmüş görünüşü"
-
-#: logview/zoom.c:102
-msgid "Date:"
-msgstr "Tarix :"
-
-#: logview/zoom.c:102
-msgid "Process:"
-msgstr "Gedişat:"
-
-#: logview/zoom.c:103
-msgid "Message:"
-msgstr "İsmarıc:"
-
-#: logview/zoom.c:103
-msgid "Description:"
-msgstr "İzah:"
-
-#: logview/zoom.c:131
-#, fuzzy
-msgid "Log line detail for"
-msgstr "%s üçün qeyd fayl sətri məlumatları"
-
-#. Translators: do not include year, it would be bogus
-#: logview/zoom.c:185
-msgid "%B %e %X"
-msgstr "%B %e %X"
-
 #: logview/logview.schemas.in.h:1
 msgid "Log file to open up on startup"
-msgstr ""
+msgstr "Başlanğıcda açılacaq qyd faylı"
 
 #: logview/logview.schemas.in.h:2
 msgid ""
 "Specifies the log file to open up at startup. The default is either /var/adm/"
-"messages or /var/log/messages, depending on your distribution."
+"messages or /var/log/messages, depending on your operating system."
 msgstr ""
-
-#, fuzzy
-#~ msgid "Select the 'Date modified less than (days)' constraint"
-#~ msgstr "Yumuşaq bağları təqib et"
-
-#, fuzzy
-#~ msgid "Select the 'Date modified more than (days)' constraint"
-#~ msgstr "Yumuşaq bağları təqib et"
-
-#, fuzzy
-#~ msgid "Select the 'Size at most (kilobytes)' constraint"
-#~ msgstr "İnkişaf etmiş uzantılara görə axtarış"
-
-#, fuzzy
-#~ msgid "Select the 'Size at least (kilobytes)' constraint"
-#~ msgstr "İnkişaf etmiş uzantılara görə axtarış"
-
-#, fuzzy
-#~ msgid "Select the 'File matches regular expression' constraint"
-#~ msgstr "İnkişaf etmiş uzantılara görə axtarış"
-
-#, fuzzy
-#~ msgid "Select the 'Include other filesystems' constraint"
-#~ msgstr "İnkişaf etmiş uzantılara görə axtarış"
-
-#, fuzzy
-#~ msgid "No files found %s"
-#~ msgstr "Eynisi tapıla bilmədi"
-
-#~ msgid ""
-#~ "Client for MIT dictionary server.\n"
-#~ "Web: http://gdict.dhs.org/, http://www.psilord.com/code/"
-#~ msgstr ""
-#~ "MIT sözlük vericisi alıcısı.\n"
-#~ "Web səhifələri: http://gdict.dhs.org/, http://www.psilord.com/code/"
-
-#~ msgid "Archive Generator"
-#~ msgstr "Arxiv Yaradıcısı"
-
-#, fuzzy
-#~ msgid ""
-#~ "Number of files: %d\n"
-#~ "Number of folders: %d"
-#~ msgstr ""
-#~ "Fayl miqdarı: %d\n"
-#~ "Qovluqlar: %d"
-
-#~ msgid ""
-#~ "No files or folders, drop files or folders\n"
-#~ "above to add them to the archive"
-#~ msgstr ""
-#~ "Heç fayl ya da qovluq yoxdur, yuxarıdan arxivə əlavə etmək\n"
-#~ "istədiyiniz fayl ya da qovluqları seçin"
-
-#, fuzzy
-#~ msgid "%s removed"
-#~ msgstr "<- Sil"
-
-#, fuzzy
-#~ msgid "Failed to create %s"
-#~ msgstr "EFayl sistem yaradıla bilmədi."
-
-#~ msgid "Archive.tar.gz"
-#~ msgstr "Arxiv.tar.gz"
-
-#~ msgid "GNOME Archive Generator"
-#~ msgstr "GNOME Arxiv Yaradıcısı"
-
-#~ msgid "Drag files in to make archives"
-#~ msgstr "Arxiv yaratmaq üçün faylları sürüklə"
-
-#, fuzzy
-#~ msgid "All files selected"
-#~ msgstr "Fayl adı seçilməyib"
-
-#~ msgid "No filename selected"
-#~ msgstr "Fayl adı seçilməyib"
-
-#~ msgid "File exists, overwrite?"
-#~ msgstr "Fayl mövcuddur, üstünə yazaq?"
-
-#~ msgid "No items to archive"
-#~ msgstr "Arxivlənəcək heç üzv yoxdur"
-
-#~ msgid "Save Results"
-#~ msgstr "Nəticələri Qeyd Et"
-
-#~ msgid "File does not exists"
-#~ msgstr "Fayl mövcud deyil"
-
-#~ msgid "Add file or folder"
-#~ msgstr "Fayl ya da qovluq əlavə et"
-
-#, fuzzy
-#~ msgid "_Add file or folder..."
-#~ msgstr "Fayl ya da qovluq əlavə et..."
-
-#, fuzzy
-#~ msgid "Add a file or folder to archive"
-#~ msgstr "Fayl ya da qovluğu arxivə əlavə et"
-
-#, fuzzy
-#~ msgid "_Create archive..."
-#~ msgstr "Arxav yarat..."
-
-#~ msgid "Create a new archive from the items"
-#~ msgstr "Üzvlərdən yeni arxiv yarat"
-
-#, fuzzy
-#~ msgid "Remove the selected item"
-#~ msgstr "Seçili üzvləri sil"
-
-#, fuzzy
-#~ msgid "R_emove All"
-#~ msgstr "<- Hamısını sil"
-
-#, fuzzy
-#~ msgid "Remove all items"
-#~ msgstr "<- Hamısını sil"
-
-#~ msgid "Drop files here to add them to the archive."
-#~ msgstr "Faylları arxivə əlavə etmək üçün buraya sürükləyin."
-
-#, fuzzy
-#~ msgid "_Create Archive"
-#~ msgstr "Arxav yarat..."
-
-#~ msgid ""
-#~ "Drag this button to the destination where you want the archive to be "
-#~ "created or press it to pop up a file selection dialog."
-#~ msgstr ""
-#~ "Arxiv yaratmaq istədiyiniz yerə tərəf bu düyməni sürükləyin ya da fayl "
-#~ "seçmə dialoqunu meydana çıxartmaq üçün bunu tıqlayın."
-
-#~ msgid "Cannot find proper icons anywhere!"
-#~ msgstr "Uyğun timsallare heç harda tapıla bilmir"
-
-#~ msgid ""
-#~ "Cannot find the archive (tar) program!\n"
-#~ "This is the program used for creating archives."
-#~ msgstr ""
-#~ "Arxiv (tar) proqramı tapıla bilmir!\n"
-#~ "Bu, arxiv yaratmaq üçün işlədilən proqramdır."
-
-#~ msgid "EUnable to create filesystem."
-#~ msgstr "EFayl sistem yaradıla bilmədi."
-
-#, fuzzy
-#~ msgid "Filesystem settings"
-#~ msgstr "Qurğuları qoru"
-
-#, fuzzy
-#~ msgid "Formatting mode"
-#~ msgstr "MDiski şəkilləndirirəm...."
-
-#~ msgid "x^2"
-#~ msgstr "x^2"
-
-#~ msgid "x^y"
-#~ msgstr "x^y"
-
-#~ msgid "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
-#~ msgstr "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
-
-#~ msgid "del"
-#~ msgstr "del"
-
-#~ msgid " %s: Character code %d"
-#~ msgstr "%s : Xarakter kodu %d"
-
-#~ msgid "Gnome Character Map"
-#~ msgstr "Gnome hərf xəritəsi"
-
-#, fuzzy
-#~ msgid "De_fault"
-#~ msgstr "Əsas"
-
-#, fuzzy
-#~ msgid "Default strategy"
-#~ msgstr "Əsas taktika :"
-
-#~ msgid "EBad block at block %lu"
-#~ msgstr "E%lu blokunda Xəsərli blok"
-
-#, fuzzy
-#~ msgid "Format a Floppy"
-#~ msgstr "Bir floppy şəkillləndir"
-
-#~ msgid "_Quick format"
-#~ msgstr "_Sürətli şəkilləndirmə"
-
-#~ msgid "Format another floppy?"
-#~ msgstr "Başqa disket də şəkilləndirilsin mi ?"
-
-#, fuzzy
-#~ msgid "File name is"
-#~ msgstr "Fayl adı :"
-
-#, fuzzy
-#~ msgid "File name is not"
-#~ msgstr "Fayl adı :"
-
-#, fuzzy
-#~ msgid "Process folder contents depth first"
-#~ msgstr "Başlama qovluğu yoxdur"
-
-#~ msgid "Invalid user or group"
-#~ msgstr "Hökmsüz istifadəçi ya da dəstə"
-
-#, fuzzy
-#~ msgid "Last time modified"
-#~ msgstr "Son dəyişiklik vaxtı"
-
-#, fuzzy
-#~ msgid "Start folder does not exist."
-#~ msgstr "Başlama qovluğu yoxdur"
-
-#, fuzzy
-#~ msgid "folder"
-#~ msgstr "Tut"
-
-#, fuzzy
-#~ msgid "program"
-#~ msgstr "Uyğulamadan çıx"
-
-#, fuzzy
-#~ msgid "symbolic link"
-#~ msgstr "Yumuşaq bağları təqib et"
-
-#, fuzzy
-#~ msgid "No Files Found."
-#~ msgstr "Eynisi tapıla bilmədi"
-
-#, fuzzy
-#~ msgid "Start folder does not exist"
-#~ msgstr "Başlama qovluğu yoxdur"
-
-#, fuzzy
-#~ msgid "Search Command Line"
-#~ msgstr "Axtarış əmri"
-
-#, fuzzy
-#~ msgid ""
-#~ "This is the command line that can be used to execute this search\n"
-#~ "from the console.\n"
-#~ "\n"
-#~ "C_ommand:"
-#~ msgstr ""
-#~ "Bu axtarışı əmrlə etmək üçün mümkün olan əmr :\n"
-#~ "( Qeyd: sətir sətir yazdırmak üçün altına bunları əlavə et :\n"
-#~ "\"|tr '\\000' '\\n'\" )"
-
-#, fuzzy
-#~ msgid "Command"
-#~ msgstr "Əmrləri Göstər"
-
-#, fuzzy
-#~ msgid "Command Line Entry"
-#~ msgstr "Axtarış əmri"
-
-#, fuzzy
-#~ msgid "Use this command line to execute the search from console"
-#~ msgstr ""
-#~ "Bu axtarışı əmrlə etmək üçün mümkün olan əmr :\n"
-#~ "( Qeyd: sətir sətir yazdırmak üçün altına bunları əlavə et :\n"
-#~ "\"|tr '\\000' '\\n'\" )"
-
-#, fuzzy
-#~ msgid "No viewer available for this mime type."
-#~ msgstr "Bu MIME növü üçün bağlı bir əmr yoxdur"
-
-#~ msgid "Enabled"
-#~ msgstr "Açıq"
-
-#, fuzzy
-#~ msgid "Simple"
-#~ msgstr "Böyüklük"
-
-#, fuzzy
-#~ msgid "Frontend to the unix find/locate commands"
-#~ msgstr "Unix'in find/grep/locate uyğulamaları üçün bir istifadəçi araüzü"
-
-#, fuzzy
-#~ msgid "S_how Command..."
-#~ msgstr "Əmrləri Göstər"
-
-#, fuzzy
-#~ msgid "Save the search results"
-#~ msgstr "Axtarış Nəticələri"
-
-#, fuzzy
-#~ msgid "Sear_ch"
-#~ msgstr "KYM axtarışı"
-
-#, fuzzy
-#~ msgid "Search Tool"
-#~ msgstr "Gnome axtarış uyğulaması"
-
-#~ msgid "Add..."
-#~ msgstr "Əlavə Et ..."
-
-#~ msgid "Edit..."
-#~ msgstr "Düzəlt..."
-
-#~ msgid "Remove"
-#~ msgstr "Sil"
-
-#~ msgid "description:"
-#~ msgstr "izah :"
-
-#~ msgid "Log:"
-#~ msgstr "Qeyd :"
-
-#~ msgid "Out of memory!\n"
-#~ msgstr "Yaddaş çatmır!\n"
-
-#~ msgid "Switch log"
-#~ msgstr "Qeydi dəyişdir"
-
-#~ msgid "About..."
-#~ msgstr "Haqqında..."
-
-#~ msgid "Info about logview"
-#~ msgstr "logview haqqında məlumat"
-
-#, fuzzy
-#~ msgid "_Log"
-#~ msgstr "Qeyd :"
-
-#~ msgid "System Log Viewer"
-#~ msgstr "Sistem qeydi göstəricisi"
-
-#~ msgid "Filename: "
-#~ msgstr "Fayl adı : "
-
-#~ msgid "Add >>"
-#~ msgstr "Əlavə Et >>"
-
-#~ msgid "Remove <<"
-#~ msgstr "Sil <<"
-
-#~ msgid "Hide app"
-#~ msgstr "Proq. gizlət"
-
-#~ msgid "Actions..."
-#~ msgstr "Əməliyyatlar..."
-
-#~ msgid "hostname column width ( 0 to hide this column ): "
-#~ msgstr "yuva adı sütun genişliyi /0 qiyməti bu sütünu gizlədər)"
-
-#~ msgid "Columns"
-#~ msgstr "Sütunlar"
-
-#~ msgid "Log line detail for <No log loaded>"
-#~ msgstr "<Qeyd faylı yüklənmədi> üçün qeyd fayl sətri məlumatları"
-
-#~ msgid "Find:"
-#~ msgstr "Tap :"
-
-#, fuzzy
-#~ msgid "GNOME System Log"
-#~ msgstr "Sistem qeydi göstəricisi"
-
-#~ msgid "Open log..."
-#~ msgstr "Qeydi aç..."
-
-#~ msgid "Open log"
-#~ msgstr "Qeydi aç"
-
-#~ msgid "Export log..."
-#~ msgstr "Qeydi itxal et..."
-
-#~ msgid "Export log"
-#~ msgstr "Qeydi itxal et"
-
-#~ msgid "Exit"
-#~ msgstr "Çıx"
-
-#~ msgid "Exit program"
-#~ msgstr "Uyğulamadan çıx"
-
-#~ msgid "Show log stats"
-#~ msgstr "Qeyd statistikalarını göstər"
-
-#~ msgid "Zoom"
-#~ msgstr "Yaxınlaşdır"
-
-#~ msgid "Show line info"
-#~ msgstr "Sətir məlumatını göstər"
-
-#~ msgid "Select...               "
-#~ msgstr "Seç ...               "
-
-#~ msgid "Select log events"
-#~ msgstr "Qeyd əməliyyatlarını seç"
-
-#~ msgid "Filter..                "
-#~ msgstr "Süzgəc..               "
-
-#~ msgid "Filter log events"
-#~ msgstr "Qeyd əməliyyatlarını süz"
-
-#~ msgid "Cannot start the archive (tar) program"
-#~ msgstr "Arxiv (tar) proqramı başladıla bilmir"
-
-#~ msgid "Cannot run tar/gtar"
-#~ msgstr "tar/gtar icra edilə bilmir"
-
-#~ msgid "The GNOME Calculator"
-#~ msgstr "GNOME Hesaplayıcısı"
-
-#~ msgid "Run in analog (slide rule) mode"
-#~ msgstr "Analoq modda icra et"
-
-#, fuzzy
-#~ msgid "Store"
-#~ msgstr "Dayan"
-
-#~ msgid ""
-#~ "The Gnome equalivant of Microsoft Windows' Character Map. Warning: might "
-#~ "contain bad English."
-#~ msgstr ""
-#~ "Microsoft Windows'un Hərf Xəritə uyğulamasına oxşayan bir proqram "
-#~ "tə'minatı.\n"
-#~ "İngiliscəmiz bir az zəifdir"
-
-#~ msgid "-*-helvetica-medium-r-normal-*-12-*-*-*-p-*-*-*,*-r-*"
-#~ msgstr "-*-helvetica-medium-r-normal-*-12-*-*-*-p-*-*-*,*-r-*"
-
-#~ msgid "About"
-#~ msgstr "Haqqında"
-
-#~ msgid "-*-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
-#~ msgstr "-*-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
-
-#, fuzzy
-#~ msgid "_Browse Characters..."
-#~ msgstr "Hərfi Daxil Et..."
-
-#~ msgid "_Text Toolbar"
-#~ msgstr "_Mətn Ləvazimat Çubuğu"
-
-#~ msgid "View or hide the text toolbar"
-#~ msgstr "Mətn ləvazimat çubuğunu göstər/gizlə"
-
-#~ msgid "_Statusbar"
-#~ msgstr "_Vəziyyət"
-
-#~ msgid "View or hide the statusbar"
-#~ msgstr "Vəziyyət çubuğunu göstər ya da gizlət"
-
-#~ msgid "_Insert at end"
-#~ msgstr "Axıra _Daxil et"
-
-#~ msgid "Insert every selected character at the end of the text entry"
-#~ msgstr "Seçili hər hərfi mətnin sonuna əlavə et"
-
-#~ msgid "_Focusable Buttons"
-#~ msgstr "_Fokuslana Bilən Düymələr"
-
-#~ msgid "Set the buttons to be focusable or not"
-#~ msgstr "Düymələrin fokuslanıb fokuslanamayacağını bildirin"
-
-#~ msgid "Lookup"
-#~ msgstr "Axtarış"
-
-#~ msgid "Spell"
-#~ msgstr "Imla"
-
-#, fuzzy
-#~ msgid "_Look Up"
-#~ msgstr "_Axtarış"
-
-#, fuzzy
-#~ msgid "Set _Server"
-#~ msgstr "Verici"
-
-#, fuzzy
-#~ msgid "Set _Port"
-#~ msgstr "_Başla"
-
-#~ msgid "The server you specified could not be found."
-#~ msgstr "Seçdiyin verici tapıla bilmədi ."
-
-#, fuzzy
-#~ msgid "The server could not be found on that port."
-#~ msgstr "Seçdiyin verici tapıla bilmədi ."
-
-#, fuzzy
-#~ msgid "_Spell"
-#~ msgstr "Imla"
-
-#~ msgid "Spell checker"
-#~ msgstr "İmla yoxlaması"
-
-#~ msgid "Preferences..."
-#~ msgstr "Seçənəklər..."
-
-#~ msgid "Don't search subdirectories"
-#~ msgstr "Alt qovluqları axtarma"
-
-#, fuzzy
-#~ msgid "Results"
-#~ msgstr "Nəticələri Qeyd Et"
-
-#~ msgid "The Gnome Search Tool"
-#~ msgstr "Gnome Axtarış uyğulaması"
-
-#~ msgid "Logview"
-#~ msgstr "Logview"
-
-#~ msgid "Show user preferences"
-#~ msgstr "İstifadəçi seçənəklərinii göstər"
-
-#~ msgid "Date: "
-#~ msgstr "Tarix : "
-
-#~ msgid "The GNOME Archive Generator"
-#~ msgstr "GNOME Arxiv Yaradıcısı"
-
-#~ msgid "Archive"
-#~ msgstr "Arxiv"
-
-#~ msgid "View or hide the action toolbar"
-#~ msgstr "Gedişat ləvazimat çubuğunu göstər/gizlə"
-
-#~ msgid "Cut to Clipboard"
-#~ msgstr "Ara yaddaşa Kəs"
-
-#~ msgid "Copy to Clipboard"
-#~ msgstr "Ara yaddaşa Köçürt"
-
-#~ msgid "Paste Clipboard Contents"
-#~ msgstr "Ara yaddaş içindəkiləri yapışdır"
-
-#~ msgid "Settings"
-#~ msgstr "Qurğular"
-
-#~ msgid "Server to use, default search strategy, fonts"
-#~ msgstr "İstifadə Ediləcak verici, əsas axtarma taktikası, yazıtipləri"
-
-#, fuzzy
-#~ msgid "Start in directory "
-#~ msgstr "Bu qovluqdan başla :"
-
-#~ msgid "calculator-font.png"
-#~ msgstr "calculator-font.png"
-
-#~ msgid "Character Table's Font..."
-#~ msgstr "Hərf Cədvəlləri Yazı Növü..."
-
-#~ msgid "Set the character table's font."
-#~ msgstr "Hərf cədvəlləri yazı növünü seçin."
-
-#~ msgid "Insert character(s) by choosing character codes"
-#~ msgstr "Hərfləri xarakter kodunu seçərək daxil edin"
-
-#~ msgid "Show Gnome Character Map's manual"
-#~ msgstr "Gnome Hərf Xəritəsi bələdçisini göstər"
-
-#~ msgid "Exit the program"
-#~ msgstr "Proqramdan çıx"
-
-#~ msgid ""
-#~ "Couldn't start the dictionary; most likely, http://www.dict.org could not "
-#~ "be contacted."
-#~ msgstr ""
-#~ "Sözlük axtarıla bilmir; bəldə http://www.dict.org ünvanına bağlanıla "
-#~ "bilmir"
-
-#~ msgid "Spell Check..."
-#~ msgstr "Imla yoxlaması ..."
-
-#~ msgid "Cannot create applet!\n"
-#~ msgstr "Applet yaradıla bilmədi!\n"
-
-#~ msgid "Display handle bar"
-#~ msgstr "İdarə çubuğunu göstər"
-
-#~ msgid ""
-#~ "You have to restart GDict for these\n"
-#~ "settings to become active."
-#~ msgstr ""
-#~ "Bu qurğuların keçərli olması üçün\n"
-#~ "GDict'i yenidən başlatmalısan."
-
-#~ msgid "Applet"
-#~ msgstr "Applet"
-
-#~ msgid "Find Words..."
-#~ msgstr "Kəlmələri Axtar..."
-
-#~ msgid "Lookup Word..."
-#~ msgstr "Söz Axtar..."
-
-#~ msgid "File owner"
-#~ msgstr "Fayl yiyəsi"
-
-#~ msgid "Empty file"
-#~ msgstr "Boş fayl"
-
-#~ msgid "Filenames except"
-#~ msgstr "Fayl adları belə olmasın "
-
-#~ msgid "Simple substring search"
-#~ msgstr "Normal mətn axtarışı"
-
-#~ msgid "Regular expression search"
-#~ msgstr "Uzantılarına görə axtarış"
-
-#~ msgid "grep options found in find list bad bad!"
-#~ msgstr ""
-#~ "tapılış siyahısında olan grep seçənəkləri yaxşı və düzgün deyildir !"
-
-#~ msgid "non-grep option found in grep list, bad bad!"
-#~ msgstr "grep siyahısında grepə ait olmayan seçenəklər tapıldı, al sənə!"
-
-#~ msgid "Search already running on another page"
-#~ msgstr "Axtarış başqa bir səhifədə onsuz da işləyir"
-
-#~ msgid "Enable"
-#~ msgstr "Aç"
-
-#~ msgid "Nothing to locate"
-#~ msgstr "Tapılacaq bir şey yoxdur"
-
-#~ msgid ""
-#~ "This is an interface to locate.  If you type in a simple string it\n"
-#~ "will be matched as a subset of the full path, and if you type\n"
-#~ "in a string with wildcards, it will have to match the full path."
-#~ msgstr ""
-#~ "Bu locate üçün bir istifadəçi araüzüdür. Sırf bir mətn\n"
-#~ "axtararsan bu mətni daxil edan hər fayl tapılacaqdır; \n"
-#~ "amma XYZ'li bir mətn axtarasan sadəcə tam sıralamasına uyğun gələn "
-#~ "fayllar göstəriləcəkdir ."
-
-#~ msgid "Locate file: "
-#~ msgstr "Faylı tap:"
-
-#~ msgid "Full find (find)"
-#~ msgstr "Tam axtarış ( 'find )"
-
-#~ msgid "Quick find (locate)"
-#~ msgstr "Sürətli axtarış ( locate )"
-
-#~ msgid "Command mangled"
-#~ msgstr "Əmr qarışdı"
-
-#~ msgid "no project selected"
-#~ msgstr "hiç bir layihə seçili deyildir"
-
-#~ msgid "00:00"
-#~ msgstr "00:00"
-
-#~ msgid ""
-#~ "Couldn't understand geometry (position and size)\n"
-#~ " specified on command line"
-#~ msgstr ""
-#~ "Əmrdə göstəilən yerləşim metnini başa düşmədim\n"
-#~ " ( yer və böyüklüyünü )  "
-
-#~ msgid "Total"
-#~ msgstr "Toplam"
-
-#~ msgid "Total time spent on this project."
-#~ msgstr "Bu layihəyə xərvlənən toplam vaxt."
-
-#~ msgid "Time spent under the current diary entry."
-#~ msgstr "Hazırkı gündəlik girişi üstündə xərclənən vaxt."
-
-#~ msgid "Today"
-#~ msgstr "Bu gün"
-
-#~ msgid "Time spent on this project today."
-#~ msgstr "Bu gün bu layihə ilə keçirilən vaxt."
-
-#~ msgid "Week"
-#~ msgstr "Həftə"
-
-#~ msgid "Time spent on this project this week."
-#~ msgstr "Bu həftə bu layihə ilə keçirilən vaxt."
-
-#~ msgid "Month"
-#~ msgstr "Ay"
-
-#~ msgid "Time spent on this project this month."
-#~ msgstr "Bu ay bu layihə ilə keçirilən vaxt."
-
-#~ msgid "Year"
-#~ msgstr "İl"
-
-#~ msgid "Time spent on this project this year."
-#~ msgstr "Bu il bu layihə ilə keçirilən vaxt"
-
-#~ msgid "Title"
-#~ msgstr "Başlıq"
-
-#~ msgid "Project Title"
-#~ msgstr "Layihə adı"
-
-#~ msgid "Description"
-#~ msgstr "İzahat"
-
-#~ msgid "The current diary entry"
-#~ msgstr "Hazırkı gündəlik girişi"
-
-#~ msgid "Estimated Project Start Date"
-#~ msgstr "Təxmini Lahiyə Başlama Tarixi"
-
-#~ msgid "End"
-#~ msgstr "Bitiş"
-
-#~ msgid "Estimated Project Completion Date"
-#~ msgstr "Fərzedilən Layihə Bitirmə Tarixi"
-
-#~ msgid "Due"
-#~ msgstr "Keçiş"
-
-#~ msgid ""
-#~ "Due Date: the date by which the project absolutely must be completed by."
-#~ msgstr "Keçış Vaxtı: Layihənin dəqiq qurtarma vaxtı"
-
-#~ msgid "Sizing: How much work it will take to finish this project."
-#~ msgstr "Böyüklük: Bu layihə nə qədər vaxt aparacaq."
-
-#~ msgid "Done"
-#~ msgstr "Oldu"
-
-#~ msgid ""
-#~ "Percent Complete: How much of this project has been finished till now."
-#~ msgstr "Bitirmə Nisbəti: İndiyə qədər layihənin nə qədəri qurtarıb."
-
-#~ msgid "U"
-#~ msgstr "T"
-
-#~ msgid "Urgency: Does this project need to be done soon, done quickly?"
-#~ msgstr "Təciliyyət: Bu layihə tez həll edilməlidir, cəld qurtaraq?"
-
-#~ msgid "Imp"
-#~ msgstr "Əhm"
-
-#~ msgid "Importance: How important is this project?"
-#~ msgstr "Əhəmiyyət: Bu layihə nə qədər əhəmiyyətlidir?"
-
-#~ msgid "Status"
-#~ msgstr "Vəziyyət"
-
-#~ msgid "The current status of this project."
-#~ msgstr "Layihənin hazırkı halı."
-
-#~ msgid "Low"
-#~ msgstr "Alçaq"
-
-#~ msgid "Med"
-#~ msgstr "Orta"
-
-#~ msgid "High"
-#~ msgstr "Yüksək"
-
-#~ msgid "Not Started"
-#~ msgstr "Başlamayıb"
-
-#~ msgid "In Progress"
-#~ msgstr "İşləyir"
-
-#~ msgid "On Hold"
-#~ msgstr "Gözləyir"
-
-#~ msgid "Cancelled"
-#~ msgstr "Ləğv Edilib"
-
-#~ msgid "Completed"
-#~ msgstr "Bitirilib"
-
-#~ msgid "project %t started"
-#~ msgstr "layihə %t başladıldı"
-
-#~ msgid "stopped project %t"
-#~ msgstr "layihə %t dayandırıldı"
-
-#~ msgid "%d:%02d:%02d"
-#~ msgstr "%d:%02d:%02d"
-
-#~ msgid "Elapsed"
-#~ msgstr "Keçilib"
-
-#~ msgid "(empty)"
-#~ msgstr "(boş)"
-
-#~ msgid "Notes"
-#~ msgstr "Qeydlər"
-
-#~ msgid "Task Time"
-#~ msgstr "Vəzifə Vaxtı"
-
-#~ msgid "Bill Status"
-#~ msgstr "Faktura Vəziyyəti"
-
-#~ msgid "Billable"
-#~ msgstr "Fakturalabilən"
-
-#~ msgid "Bill Rate"
-#~ msgstr "Fakturalama nisbəti"
-
-#~ msgid "Value"
-#~ msgstr "Qiymət"
-
-#~ msgid "Billable Value"
-#~ msgstr "Fakturalanabilən Qiymət"
-
-#~ msgid "No Default Value"
-#~ msgstr "Əsas Qiymət Yoxdur"
-
-#~ msgid "Start Time Fuzziness"
-#~ msgstr "Vaxt Qarışıqlığını Başlat"
-
-#~ msgid "Bill"
-#~ msgstr "Faktura"
-
-#~ msgid "Paid"
-#~ msgstr "Ödənmiş"
-
-#~ msgid "Not Billable"
-#~ msgstr "Fakturalandırılmayan"
-
-#~ msgid "No Charge"
-#~ msgstr "Pulsuz"
-
-#~ msgid "Regular"
-#~ msgstr "Sıravi"
-
-#~ msgid "Overtime"
-#~ msgstr "Bütün VAxt Üçün"
-
-#~ msgid "Double Overtime"
-#~ msgstr "Bütün Vaxt Üçün İkiqat"
-
-#~ msgid "Flat Fee"
-#~ msgstr "Nisbət"
-
-#~ msgid "Error - Unknown"
-#~ msgstr "Xəta - Bilinmir"
-
-#~ msgid "unknown token: >>>>"
-#~ msgstr "naməlum bilet: >>>>"
-
-#~ msgid "Error 404 Not Found"
-#~ msgstr "Xəta 404 Tapılmadı"
-
-#~ msgid "The file %s was not found."
-#~ msgstr "%s faylı tapılmadı."
-
-#~ msgid "(null)"
-#~ msgstr "(sıfır)"
-
-#~ msgid "Unkown Error"
-#~ msgstr "Naməlum Xəta"
-
-#~ msgid ""
-#~ "Unable to open the file %s\n"
-#~ "%s"
-#~ msgstr ""
-#~ "%s faylını aça bilmədim\n"
-#~ "%s"
-
-#~ msgid "New Diary Entry"
-#~ msgstr "Yeni Gündəlik Gürüşü"
-
-#~ msgid "Save HTML To File"
-#~ msgstr "HTML-ni Fayla Qeyd Et"
-
-#~ msgid "Cannot open logfile %s for append"
-#~ msgstr "%s qeyd faylı əlavə edilmək üçün açıla bilmir"
-
-#~ msgid "no description"
-#~ msgstr "izahı yoxdur"
-
-#~ msgid "program started"
-#~ msgstr "uyğulama başladıldı"
-
-#~ msgid "program exited"
-#~ msgstr "uyğulama bitdi"
-
-#~ msgid ""
-#~ "There seems to be another GTimeTracker running.\n"
-#~ "Press OK to start GTimeTracker anyway, or press Cancel to quit."
-#~ msgstr ""
-#~ "Sanki başqa bir GTimeTracker işləyir axı.\n"
-#~ "GTimeTracker'i yenə də başlatmaq üçün \"Oldu\"'ya bas, yoxsa \"Ləğv Et"
-#~ "\"'ə bas. "
-
-#~ msgid "Cannot create pid-file!"
-#~ msgstr "pid faylı yaradıla bilmədi"
-
-#~ msgid "Do you want to continue?"
-#~ msgstr "Davam etmək istəyirsiniz?"
-
-#~ msgid "Error"
-#~ msgstr "Xəta"
-
-#~ msgid "Shall I setup a new configuration?"
-#~ msgstr "Yenu quraşdırma seçməliyəm?"
-
-#~ msgid "Specify geometry"
-#~ msgstr "Geometriyasını göstər"
-
-#~ msgid "GEOMETRY"
-#~ msgstr "GEOMETRY"
-
-#~ msgid "Select a project on startup"
-#~ msgstr "Başlarkən bir layihə seç"
-
-#~ msgid "PROJECT"
-#~ msgstr "PROJECT"
-
-#~ msgid "Warning"
-#~ msgstr "Diqqət"
-
-#~ msgid ""
-#~ "GTimeTracker is a combination stop-watch, diary, consultant billing "
-#~ "system and project manager.  You can measure the amount of time you spend "
-#~ "on a task, associate a memo with it, set a billing rate, print an "
-#~ "invoice, as well as track that status of other projects."
-#~ msgstr ""
-#~ "GTimeTracker layihə idarə sistemidir. Vaxtı ölçər və əmək haqqını "
-#~ "hesablamaq üçün fakturalaşdırmanı asandlaşdırar. Vəzifə üçün "
-#~ "xərclədiyiniz vaxtı ölçə, fakturalaşdırmanı apara bilərsiniz."
-
-#~ msgid "New Project..."
-#~ msgstr "Yeni layihə..."
-
-#~ msgid "Reload Configuration File"
-#~ msgstr "Quraşdırma Faylıını Yenidən Yüklə"
-
-#~ msgid "Do you really want to reload the configuration file?"
-#~ msgstr "Quraşdırma faylını yenidən yükləmək istəyiriniz?"
-
-#~ msgid "File cannot be written"
-#~ msgstr "Fayl yazıla bilmir"
-
-#~ msgid "Export Current State"
-#~ msgstr "Hazırkı Halı İdxal Et"
-
-#~ msgid "_New Project..."
-#~ msgstr "_Yeni Layihə..."
-
-#~ msgid "_Reload Configuration File"
-#~ msgstr "_Quraşdırma faylını yenidən yüklə"
-
-#~ msgid "_Save Configuration File"
-#~ msgstr "Quraşdırma faylını _qeyd et"
-
-#~ msgid "_Export Current State"
-#~ msgstr "Cari VƏziyyəti İxrac _Et"
-
-#~ msgid "Clear _Daily Counter"
-#~ msgstr "Günlük _sayğaçı sıfırla"
-
-#~ msgid "Zero out todays timer by deleting todays time logs"
-#~ msgstr "Bugünkü qeydləri silərək bugünkü saatı sıfırla"
-
-#~ msgid "_Journal..."
-#~ msgstr "_Jurnal..."
-
-#~ msgid "Show the timesheet journal for this project"
-#~ msgstr "Bu layihə üçün vaxt jurnalını göster"
-
-#~ msgid "New Diary _Entry"
-#~ msgstr "Yeni Gündəlik _Girişi"
-
-#~ msgid "Change the current task for this project"
-#~ msgstr "Bu layihə üçün cari vəzifəni dəyişdir"
-
-#~ msgid "_All Journal..."
-#~ msgstr "_Bütün Jurnallar..."
-
-#~ msgid "Show the verbose timesheet journal for this project"
-#~ msgstr "Bu layihə üçün ətraflı jurnal göster"
-
-#~ msgid "_Invoice..."
-#~ msgstr "_Sorğu ..."
-
-#~ msgid "Show a sample invoice for this project"
-#~ msgstr "Bu layihə üçün nümunəvi sorğu göster"
-
-#~ msgid "_Primer..."
-#~ msgstr "_Nümunə.."
-
-#~ msgid "Show a sample introductory primer for designing custom reports"
-#~ msgstr "Xüsusi raportlar yazmaq üçün nümunə göstər"
-
-#~ msgid "_New Report..."
-#~ msgstr "_Yeni Raport..."
-
-#~ msgid "Define a path to a new GTT phtml report file"
-#~ msgstr "Yeni GTT phtml raport faylının cığırı bildir"
-
-#~ msgid "Start the timer running"
-#~ msgstr "Saat başlat"
-
-#~ msgid "Sto_p"
-#~ msgstr "_Dayan"
-
-#~ msgid "Stop the timer"
-#~ msgstr "Saatı dayandır"
-
-#~ msgid "_Timer Running"
-#~ msgstr "Saat iş_ləyir"
-
-#~ msgid "_Reports"
-#~ msgstr "_Raportlar"
-
-#~ msgid "_Timer"
-#~ msgstr "S_aat"
-
-#~ msgid "Reports"
-#~ msgstr "Raportlar"
-
-#~ msgid "Reports/<Separator>"
-#~ msgstr "Raportlar/<Separator>"
-
-#~ msgid "Old GTT Tasks"
-#~ msgstr "Köhnə GTT Vəzifələri"
-
-#~ msgid "empty"
-#~ msgstr "boş"
-
-#~ msgid ""
-#~ "The keyboard and mouse have been idle\n"
-#~ "for %d minutes.  The currently running\n"
-#~ "project (%s - %s)\n"
-#~ "has been stopped.\n"
-#~ "Do you want to restart it?"
-#~ msgstr ""
-#~ "Klaviatura və siçan %d dəqiqə idi ki,\n"
-#~ "boş qaldı.  Carı layihə\n"
-#~ "(%s - %s)\n"
-#~ "dayandırıldı.\n"
-#~ "Yenidən başladılmasını istəyirsiniz?"
-
-#~ msgid "System Idle"
-#~ msgstr "Sistem Təmbəlliyi"
-
-#~ msgid "Create a New Project..."
-#~ msgstr "Yeni Layihə Başlat..."
-
-#~ msgid "Save Configuration File"
-#~ msgstr "Quraşdırma faylını qeyd et"
-
-#~ msgid "Cut Selected Project"
-#~ msgstr "Seçili layihəyi kes"
-
-#~ msgid "Paste Project"
-#~ msgstr "Layihəyi yapışdır"
-
-#~ msgid "Journal"
-#~ msgstr "Jurnal"
-
-#~ msgid "View and Edit Timestamp Logs"
-#~ msgstr "Vaxt Möhürü Qeydlərini Göstər və Düzəlt"
-
-#~ msgid "Edit Project Properties..."
-#~ msgstr "Layihə Xassələrini Düzəlt..."
-
-#~ msgid "Timer"
-#~ msgstr "Saat"
-
-#~ msgid "Start/Stop Timer"
-#~ msgstr "Saatı başlat/dayandır"
-
-#~ msgid "View Calendar"
-#~ msgstr "Təqvimi Göstər"
-
-#~ msgid "User's Guide and Manual"
-#~ msgstr "İstifadəçi Bələdçisi"
-
-#~ msgid "Quit Gnome TimeTracker"
-#~ msgstr "GTimeTracker'dən çıx"
-
-#~ msgid "1 Hour"
-#~ msgstr "1 Saat"
-
-#~ msgid "10 Min"
-#~ msgstr "10 Dəq"
-
-#~ msgid "15 Min"
-#~ msgstr "15 Dəq"
-
-#~ msgid "2 Hours"
-#~ msgstr "2 Saat"
-
-#~ msgid "20 Min"
-#~ msgstr "20 Dəq"
-
-#~ msgid "3 Hours"
-#~ msgstr "3 Saat"
-
-#~ msgid "30 Min"
-#~ msgstr "30 Dəq"
-
-#~ msgid "5 Min"
-#~ msgstr "5 Dəq"
-
-#~ msgid "Exact Time"
-#~ msgstr "Dəqiq Vaxt"
-
-#~ msgid "Set how Uncertain the Start Time Is"
-#~ msgstr "Başlanğıc Vaxtının nə qədər Ani olduğunu Qur"
-
-#~ msgid "Start Fuzz"
-#~ msgstr "Qarışıqlığı Başlat"
-
-#~ msgid "Delete Interval"
-#~ msgstr "Aralığı Sil"
-
-#~ msgid "Delete This Interval"
-#~ msgstr "Bu Aralığı Sil"
-
-#~ msgid "Edit Interval"
-#~ msgstr "Aralığı Düzəlt"
-
-#~ msgid "Edit the Start & Stop Times"
-#~ msgstr "Saatı başlat/dayandır-ı düzəlt"
-
-#~ msgid "Insert Diary Entry"
-#~ msgstr "Gündəlik Girişi Daxil et"
-
-#~ msgid "Insert a new diary entry above this time interval."
-#~ msgstr "Bu vaxt aralığı üstündə yeni bir gündəlik girişi daxil et."
-
-#~ msgid "Merge Down"
-#~ msgstr "Aşağı Birləşdir"
-
-#~ msgid "Merge Into Interval Above"
-#~ msgstr "Yuxarıdakı Aralığa Birləşdir"
-
-#~ msgid "Merge Into Interval Below"
-#~ msgstr "Aşağıdakı Aralığa Birləşdir"
-
-#~ msgid "Merge Up"
-#~ msgstr "Yuxarı Birləşdir"
-
-#~ msgid "Paste Diary Entry"
-#~ msgstr "Gündəlik Girişini Yapışdır"
-
-#~ msgid "Paste a previously cut diary entry."
-#~ msgstr "Əvvəlcə kəsili olan gündəlik girişini yapışdır."
-
-#~ msgid "New File"
-#~ msgstr "Yeni Fayl"
-
-#~ msgid "Print"
-#~ msgstr "Çap Et"
-
-#~ msgid "Refresh"
-#~ msgstr "Təzələ"
-
-#~ msgid "Save File"
-#~ msgstr "Fayl Qeyd Et"
-
-#~ msgid "Information"
-#~ msgstr "Məlumat"
-
-#~ msgid "Display"
-#~ msgstr "Ekran"
-
-#~ msgid "Enter a shell command to be executed when no projects are active."
-#~ msgstr "Heç bir layihə fəal olmayanda icra ediləcək qabıq skripti."
-
-#~ msgid "Enter a shell command to be executed whenever projects are switched."
-#~ msgstr "Layihələr keçiləndə icra ediləcək qabıq skripti."
-
-#~ msgid "Entry Stop:"
-#~ msgstr "Bitiş Girişi: "
-
-#~ msgid ""
-#~ "Entry that will be logged when a project starts. Use %t for the project "
-#~ "title, %d for the description, etc. See the manual for more options."
-#~ msgstr ""
-#~ "Layihə başlayanda qeyd ediləcək qiriş. layihə başlığı üçün %t, layihə "
-#~ "izahı üçün %d işlədin. Ətraflı məlumat üçün bələdçiyə baxın."
-
-#~ msgid ""
-#~ "Entry that will be logged when the project stops.  Use %t for the porject "
-#~ "title, %d for the project description, etc. See the manual for more "
-#~ "options."
-#~ msgstr ""
-#~ "Layihə dayananda qeyd ediləcək qiriş. layihə başlığı üçün %t, layihə "
-#~ "izahı üçün %d işlədin. Ətraflı məlumat üçün bələdçiyə baxın."
-
-#~ msgid "Fields"
-#~ msgstr "Girişlər"
-
-#~ msgid "Idle Seconds:"
-#~ msgstr "Təmbəllik Saniyələri:"
-
-#~ msgid "Inactivity Timeout"
-#~ msgstr "Qeyri-fəallıq Vaxt Dolması"
-
-#~ msgid "Logfile"
-#~ msgstr "Qeyd faylı"
-
-#~ msgid "Min Recorded:"
-#~ msgstr "Ən az qeyd:"
-
-#~ msgid "Misc"
-#~ msgstr "Qarışıq"
-
-#~ msgid "No Project Command:"
-#~ msgstr "Layihə Əmri Yoxdur: "
-
-#~ msgid "Project List Display"
-#~ msgstr "Layihə Siyahı Ekranı"
-
-#~ msgid "Shell"
-#~ msgstr "Qabıq"
-
-#~ msgid "Shell Commands"
-#~ msgstr "Qabıq Əmrləri"
-
-#~ msgid "Show Current Diary Entry"
-#~ msgstr "Hazırkı Gündəlik Girişini Göstər"
-
-#~ msgid "Show Estimated Effort"
-#~ msgstr "Təxmini İş Miqdarını Göster"
-
-#~ msgid "Show Percent Complete"
-#~ msgstr "Qurtarmış Faizi Göstər"
-
-#~ msgid "Show Planned Project End Date"
-#~ msgstr "Planlanmış Lahiyə Bitiş Tarixini Göstər"
-
-#~ msgid "Show Planned Project Start Date"
-#~ msgstr "Planlanmış Lahiyə Başlama Tarixini Göstər"
-
-#~ msgid "Show Project Description"
-#~ msgstr "Layihə İzahını Göstər"
-
-#~ msgid "Show Project Due Date"
-#~ msgstr "Layihə Tarixini Göstər"
-
-#~ msgid "Show Project Importance"
-#~ msgstr "Layihə Əhəmiyyətini Göstər"
-
-#~ msgid "Show Project Status"
-#~ msgstr "Layihə Halını Göstər"
-
-#~ msgid "Show Project Urgency"
-#~ msgstr "Lahiyə Təciliyyətini Göstər"
-
-#~ msgid "Show Seconds"
-#~ msgstr "Saniyələri göstər"
-
-#~ msgid "Show Status Bar"
-#~ msgstr "Vəziyyət çubuğunu göstər"
-
-#~ msgid "Show Sub-Projects"
-#~ msgstr "Alt Layihəni Göstər"
-
-#~ msgid "Show Table Header"
-#~ msgstr "Cədvəl Başlığını Göstər"
-
-#~ msgid "Show Time For The Current Diary Entry"
-#~ msgstr "Hazırkı Gündəlik Girişi Vaxtını Göstər"
-
-#~ msgid "Show Time This Month"
-#~ msgstr "Bu Aylıq Vaxtı Göster"
-
-#~ msgid "Show Time This Week"
-#~ msgstr "Bu Həftəlik Vaxt Göster"
-
-#~ msgid "Show Time This Year"
-#~ msgstr "Vaxtı Bu İl Göstər"
-
-#~ msgid "Show Time Today"
-#~ msgstr "Bugünü Göstər"
-
-#~ msgid "Show Toolbar Icons"
-#~ msgstr "Ləvazimat Çubuğunda Timsalları Göstər"
-
-#~ msgid "Show Toolbar Texts"
-#~ msgstr "Ləvazimat Çubuğunda Mətnləri Göstər"
-
-#~ msgid "Show Tooltips"
-#~ msgstr "Balon köməklərini göstər"
-
-#~ msgid "Show Total Time Ever"
-#~ msgstr "Bütün Vaxtı Göstər"
-
-#~ msgid "Show `Cut', `Copy', `Paste'"
-#~ msgstr "`Kəs','Köçürt' və 'Yapışdır''ı göstər"
-
-#~ msgid "Show `Help'"
-#~ msgstr "'Kömək''ı göstər"
-
-#~ msgid "Show `Journal'"
-#~ msgstr "'Jurnal'ı Göstər"
-
-#~ msgid "Show `New'"
-#~ msgstr "`Yeni''yi göstər"
-
-#~ msgid "Show `Preferences'"
-#~ msgstr "'Seçənəkləri''i göstər"
-
-#~ msgid "Show `Quit'"
-#~ msgstr "'Çıx''ı göstər"
-
-#~ msgid "Show `Save', `Reload'"
-#~ msgstr "'Qeyd Et' və 'Yeniden yüklə''yi göstər"
-
-#~ msgid "Show `Timer'"
-#~ msgstr "'Saat''ı göstər"
-
-#~ msgid ""
-#~ "Show the 'szing', that is, the estimated amount of work that it will take "
-#~ "to perform this project."
-#~ msgstr ""
-#~ "'szing' göstərin, bu da layihəyə xərcləyəniz bütün vaxtı təmsil edər."
-
-#~ msgid "Switch Project Command:"
-#~ msgstr "Layihə Əmrini Dəyişdir : "
-
-#~ msgid ""
-#~ "Switches between projects that happen faster than this will not be logged "
-#~ "(enter the number of seconds)"
-#~ msgstr ""
-#~ "Qeyd edilməyəcək şəkildə sürətli layihə arası keçişlər (saniyə olaraq "
-#~ "yazın)"
-
-#~ msgid ""
-#~ "The current active project will be made inactive after there has been no "
-#~ "keyboard/mouse activity after this number of seconds.  Set to -1 to "
-#~ "disable."
-#~ msgstr ""
-#~ "Bu layihədə bəlli vaxtdan sonra heç klaviatura/siçan əməliyyatı "
-#~ "görülmədikdən sonra iş qeyri-fəallaşdırılacaqdır. Bu xüsusiyyəti "
-#~ "istəmirsinizə -1 seçin."
-
-#~ msgid "Toolbar"
-#~ msgstr "Ləvazimat çubuğu"
-
-#~ msgid "Toolbar Segments"
-#~ msgstr "Ləvazimat çubuğu bölmələri"
-
-#~ msgid "View Project Fields"
-#~ msgstr "Layihə Sahələrini Göstər"
-
-#~ msgid "            "
-#~ msgstr "            "
-
-#~ msgid "                        "
-#~ msgstr "                        "
-
-#~ msgid "% Complete"
-#~ msgstr "% Qurtardı"
-
-#~ msgid "A title to assign to this project"
-#~ msgstr "Kayihəyə verilən başlıq"
-
-#~ msgid "Auto-merge Gap:"
-#~ msgstr "Parçacıqları Avtomatik Birləşdir:"
-
-#~ msgid "Auto-merge Interval:"
-#~ msgstr "Aralıqları Avtomatik Birləşdir:"
-
-#~ msgid ""
-#~ "Does this item need immediate attention? Note that some urgent tasks "
-#~ "might not be important.  For example, Bill may want you to answer his "
-#~ "email today, but you may have better things to do today."
-#~ msgstr ""
-#~ "Bu üzv təcili diqqqət istəyir? Unutmayın ki, təcili şeylər heç də "
-#~ "əhəmiyyətli deyildir.  Məsələn, həyat yoldaşınız (sizin yoxdur? mənim "
-#~ "var) sizdən bir telefon zəngi gözləyə bilər. Amma sizin edəcək daha "
-#~ "maraqlı bir işiniz var (incəsənət fakultetindən Aysellə görüş yeri təyin "
-#~ "etmək kimi)."
-
-#~ msgid "Double-Overtime Rate:"
-#~ msgstr "Bütün Vaxt Üçün İkiqat Nisbət:"
-
-#~ msgid "Due Date:"
-#~ msgstr "Keçiş Tarixi:"
-
-#~ msgid "Flat Fee:"
-#~ msgstr "Nisbət:"
-
-#~ msgid "Hours to Finish:"
-#~ msgstr "Bitirməyə qalan Saat:"
-
-#~ msgid ""
-#~ "How important is it to perform this task?  Not everything important is "
-#~ "urgent.  For example, it is important to file a tax return every year, "
-#~ "but you have a lot of time to get ready to do this."
-#~ msgstr ""
-#~ "Bu vəzifə nə qədər təcilidir?  Bütün əhəmiyyətlilər təcili  deyildir.  "
-#~ "Məsələn, vergiləri ildə bir dəfə hesablamaq vacibdir, amma bunun üçün çox "
-#~ "vaxtınız var."
-
-#~ msgid ""
-#~ "If the gap between intervals is smaller than this, the intervals will be "
-#~ "merged together."
-#~ msgstr ""
-#~ "Əgər aralıqlar kiçik parçalar halında olacaqsa, onlar "
-#~ "birləşdiriləcəklərdir."
-
-#~ msgid ""
-#~ "If this project is billed for one price no matter how long it takes, "
-#~ "enter the fee here."
-#~ msgstr ""
-#~ "Əgər bu lahiyə bir gün birinə satılacaqsa, nə qədər vaxt və imkan "
-#~ "xərclədiyinizi buradan tapmaq üçün kursları girin."
-
-#~ msgid "Importance:"
-#~ msgstr "Əhəmiyyət: "
-
-#~ msgid ""
-#~ "Internal notes about the project that will not be printed on an invoice."
-#~ msgstr "Fakturada çap ediləcək layihə haqqında qeydlər."
-
-#~ msgid "Intervals smaller than this will be discarded"
-#~ msgstr "Bundan daha az aralıqlar nəzərə alınmayacaqlardır"
-
-#~ msgid "Medium"
-#~ msgstr "Orta"
-
-#~ msgid "Minimum Interval: "
-#~ msgstr "Ən az aralıq:"
-
-#~ msgid "Not Set"
-#~ msgstr "Seçilməyib"
-
-#~ msgid "Notes:"
-#~ msgstr "Qeydlər:"
-
-#~ msgid "Overtime Rate:"
-#~ msgstr "Bütün zamanlar üçün Nisbət:"
-
-#~ msgid "Planned Finish:"
-#~ msgstr "Planlanmış Bitirmə:"
-
-#~ msgid "Planned Start:"
-#~ msgstr "Planlanmış Başlanğıc:"
-
-#~ msgid "Planning"
-#~ msgstr "Planlama"
-
-#~ msgid "Project"
-#~ msgstr "Layihə"
-
-#~ msgid "Project Description:"
-#~ msgstr "Layihə İzahı : "
-
-#~ msgid "Project Title:"
-#~ msgstr "Layihə Adı: "
-
-#~ msgid "Rates"
-#~ msgstr "Kurslar"
-
-#~ msgid "Regular Rate:"
-#~ msgstr "Sıravi Nisbət:"
-
-#~ msgid "Status:"
-#~ msgstr "Vəziyyət:"
-
-#~ msgid "The dollars per hour charged for overtime work on this project."
-#~ msgstr "Bu layihə üstündə bütün zaman üçün hökmlü saatlıq dollar nisbəti."
-
-#~ msgid "The dollars per hour normally charged for this project."
-#~ msgstr "Bu layihədə saat başına dollar miqdarı."
-
-#~ msgid "The over-overtime rate (overtime on Sundays, etc.)"
-#~ msgstr "Bütün zaman üçün nisbət (bütün Bazarlar vs)"
-
-#~ msgid "Time below which an interval is merged with its neighbors"
-#~ msgstr "Aşağıdakı vaxt qonşularına yapışdırılmış aralıqdır"
-
-#~ msgid "Urgency:"
-#~ msgstr "Təciliyyət:"
-
-#~ msgid "What is the status of this project?"
-#~ msgstr "Layihənin vəziyyəti nə yerdədəri?"
-
-#~ msgid "a short description that will be printed on the invoice."
-#~ msgstr "sorğuda çap ediləcək qısa izahat"
-
-#~ msgid "seconds"
-#~ msgstr "saniyə"
-
-#~ msgid "Delete _Times"
-#~ msgstr "_Vaxtları Sil"
-
-#~ msgid "Delete the diary entry only, keep the time intervals"
-#~ msgstr "Təkcə gündəlik girişini sil, vaxt aralıqlarını saxla"
-
-#~ msgid "Delete the diary entry, and the time intervals below it."
-#~ msgstr "Gündəlik girişini və altındakı aralıqları sil."
-
-#~ msgid "Edit the diary entry and other task properties."
-#~ msgstr "Gündəlik girişi və vəzifə xassələrini düzəlt."
-
-#~ msgid "Insert a new diary entry above this one."
-#~ msgstr "Bunun üstündə yeni gündəlik girişi əlavə et."
-
-#~ msgid "_Delete Diary Entry"
-#~ msgstr "Gündəlik Girişini _Sil"
-
-#~ msgid "_Edit Diary Entry"
-#~ msgstr "Gündəlik Girişini _Düzəlt"
-
-#~ msgid "_New Diary Entry"
-#~ msgstr "_Yeni Gündəlik Girişi"
-
-#~ msgid "_Paste Diary Entry"
-#~ msgstr "Gündəlik Girişini _Yapışdır"
-
-#~ msgid "A set of private notes that will not be printed on an invoice."
-#~ msgstr "Sorğuda çap edilməyəcək xüsusi qeydlər."
-
-#~ msgid "A short description to attach to this block of time."
-#~ msgstr "Bu vaxt blokuna əlavə ediləcək qısa izahat."
-
-#~ msgid "Billable:"
-#~ msgstr "Fakturalandırılabilən:"
-
-#~ msgid "Billing Block:"
-#~ msgstr "Fakturalaşdırma Bloku:"
-
-#~ msgid "Billing Rate:"
-#~ msgstr "Fakturalaşdırma Nisbəti:"
-
-#~ msgid "Billing Status:"
-#~ msgstr "Fakturalaşdırma Vəziyyəti:"
-
-#~ msgid "Diary Entry Properties"
-#~ msgstr "Gündəlik Girişi Xassələri"
-
-#~ msgid "Diary Entry:"
-#~ msgstr "Gündəlik Girişi:"
-
-#~ msgid "Fee rate to be charged for this task."
-#~ msgstr "Bu vəzifənin qiymətləndirmə nisbətləri."
-
-#~ msgid ""
-#~ "How should this task be billed?  \"Billable\" means bill to the customer "
-#~ "in the normal fashion.   \"Not Billable\" means we can't ask for money "
-#~ "for this, don't print on the invoice.   \"No Charge\" means print on the "
-#~ "invoice as 'free/no-charge'."
-#~ msgstr ""
-#~ "Bu vəzifə neçə fakturalaşdırılsın?  \"Fakturalaşdırılabiln\" alıcıya "
-#~ "normal şəkildə fakturalayın mənasına gəlir.   \"Fakturalaşdırıla bilməyən"
-#~ "\" bunun üçün pul istəyə bilmərik deməkdir və bunu sorğuda çap etmə.   "
-#~ "\"Pulsuz\" sorğuda pulsuz deyə çap et."
-
-#~ msgid ""
-#~ "Is this task ready to be billed to the customer? \"Hold\" means maybe, "
-#~ "but not yet, needs review.   \"Bill\" means print this on the next "
-#~ "invoice.   \"Paid\" means that it should no longer be included on "
-#~ "invoices."
-#~ msgstr ""
-#~ "Bu vəzifə satıcıya fakturalaşdırmağa hazırdır? \"Tut\" bəlkə, amma "
-#~ "indideyil, düzəlişlər olacaq mənasına gəlir.   \"Fakturalaşdır\" sonrakı "
-#~ "sorğuda bunu çap et mənasına gəlir.   \"Ödənmiş\" artıq bunun "
-#~ "sorğulanmaması gərəkdiyini bildirir."
-
-#~ msgid "OverOver"
-#~ msgstr "ÜstÜstə"
-
-#~ msgid ""
-#~ "The billed unit of time will be rounded to an integer multiple of this "
-#~ "time."
-#~ msgstr "Fakturalaşdırılan üzv tam sayıya yuvarlaqlanacaqdır."
-
-#~ msgid "minutes"
-#~ msgstr "dəqiqə"
-
-#~ msgid "-b&h-lucidatypewriter-medium-r-normal-*-12-*-*-*-*-*-*-*"
-#~ msgstr "-b&h-lucidatypewriter-medium-r-normal-*-12-*-*-*-*-*-*-*"
-
-#~ msgid "-b&h-lucidatypewriter-bold-r-normal-*-12-*-*-*-*-*-*-*"
-#~ msgstr "-b&h-lucidatypewriter-bold-r-normal-*-12-*-*-*-*-*-*-*"
-
-#~ msgid "-b&h-lucidatypewriter-medium-r-normal-sans-10-*-*-*-*-*-*-*"
-#~ msgstr "-b&h-lucidatypewriter-medium-r-normal-sans-10-*-*-*-*-*-*-*"
-
-#~ msgid "-b&h-lucidatypewriter-bold-r-normal-sans-10-*-*-*-*-*-*-*"
-#~ msgstr "-b&h-lucidatypewriter-bold-r-normal-sans-10-*-*-*-*-*-*-*"
-
-#~ msgid "-adobe-helvetica-medium-r-normal-*-14-*-*-*-*-*-*-*"
-#~ msgstr "-adobe-helvetica-medium-r-normal-*-14-*-*-*-*-*-*-*"
-
-#~ msgid "-adobe-helvetica-bold-r-normal-*-14-*-*-*-*-*-*-*"
-#~ msgstr "-adobe-helvetica-bold-r-normal-*-14-*-*-*-*-*-*-*"
-
-#~ msgid "-adobe-helvetica-medium-r-normal-*-12-*-*-*-*-*-*-*"
-#~ msgstr "-adobe-helvetica-medium-r-normal-*-12-*-*-*-*-*-*-*"
-
-#~ msgid "-adobe-helvetica-bold-r-normal-*-12-*-*-*-*-*-*-*"
-#~ msgstr "-adobe-helvetica-bold-r-normal-*-12-*-*-*-*-*-*-*"
-
-#~ msgid "-adobe-helvetica-medium-r-normal-*-10-*-*-*-*-*-*-*"
-#~ msgstr "-adobe-helvetica-medium-r-normal-*-10-*-*-*-*-*-*-*"
-
-#~ msgid "-adobe-helvetica-bold-r-normal-*-10-*-*-*-*-*-*-*"
-#~ msgstr "-adobe-helvetica-bold-r-normal-*-10-*-*-*-*-*-*-*"
-
-#~ msgid "Do nothing"
-#~ msgstr "Heç bir şey etmə"
-
-#~ msgid "Append it to ->"
-#~ msgstr "Əlavə Et ->"
-
-#~ msgid "Search it in ->"
-#~ msgstr "Axtar->"
-
-#~ msgid "Edit it"
-#~ msgstr "Düzəlt"
-
-#~ msgid "List"
-#~ msgstr "Siyahı"
-
-#~ msgid "Grid"
-#~ msgstr "Tor"
-
-#~ msgid "File"
-#~ msgstr "Fayl"
-
-#~ msgid "Monitor"
-#~ msgstr "Göstər"
-
-#~ msgid "Concat"
-#~ msgstr "Bağla"
-
-#~ msgid "'%s' document has been modified; do you wish to save it ?"
-#~ msgstr "'%s' sənədi dəyişdirildi; onu qeyd etmək istəyirsən mi?"
-
-#~ msgid "GColorsel was unable to paste colors from the clipboard."
-#~ msgstr "GColorsel rəngləri arayaddaşdan ala bilmədi ."
-
-#~ msgid "Please select a file document before."
-#~ msgstr "Lütfən əvvalcə bir sənəd seç."
-
-#~ msgid ""
-#~ "I can't execute this action. Check that :\n"
-#~ "\n"
-#~ "1. You have associated an action with this event.\n"
-#~ "2. The associated document still exists.\n"
-#~ "3. The type of the associated document.\n"
-#~ "\n"
-#~ "Go to preferences, in the edit menu."
-#~ msgstr ""
-#~ "Bu əməliyyatı edə bilmədim. Lütfən, :\n"
-#~ "\n"
-#~ "1. Bu əməliyyata bir cavab-əməliyyatı baǧlayıb bağlamadığını yoxla.\n"
-#~ "2. O sənədin var olub olmadıǧını yoxla.\n"
-#~ "3. O bağlanılan sənədin növünün var olub olmadıǧını yoxla.\n"
-#~ "\n"
-#~ "Bunları \"Düzəlt\" menyusundakı qurğular bölməsiylə edə biləsən."
-
-#~ msgid "GColorsel"
-#~ msgstr "GColorsel"
-
-#~ msgid "Add ->"
-#~ msgstr "Əlavə Et ->"
-
-#~ msgid "Add all ->"
-#~ msgstr "Hamısını əlavə et ->"
-
-#~ msgid "Available documents"
-#~ msgstr "Mövcud sənədlər"
-
-#~ msgid "Connect to"
-#~ msgstr "Bağlan :"
-
-#~ msgid "Create a document"
-#~ msgstr "Bir sənəd yarat"
-
-#~ msgid "Create views"
-#~ msgstr "Görünüşləri yarat"
-
-#~ msgid "Description :"
-#~ msgstr "İzah:"
-
-#~ msgid ""
-#~ "Please, select the type of document to create.\n"
-#~ "You can choose a short name, do not confuse it with the file name."
-#~ msgstr ""
-#~ "Lütfən yaradılacaq sənəd növünü seç.\n"
-#~ "Qısa bir ad seçə bilərsən, amma fayl adıyla qarışdırma ."
-
-#~ msgid "Select source document"
-#~ msgstr "Qaynaq sənədi seç"
-
-#~ msgid "Select type"
-#~ msgstr "Növünü seç"
-
-#~ msgid "Short name : "
-#~ msgstr "Qısa ad :"
-
-#~ msgid ""
-#~ "This document read document from one or more other document. Please, "
-#~ "choose these documents."
-#~ msgstr ""
-#~ "Bu sənəd başqa sənədlərdən məlumatları oxuyar. Lütfən əvvəlcə bu "
-#~ "sənədləri qapat ."
-
-#~ msgid ""
-#~ "You can create one or more views for this document. Note that you have to "
-#~ "create at least one view."
-#~ msgstr ""
-#~ "Bu sənəd üçün bir ya da daha fazla görünüş seçə bilərsən. Amma ən azından "
-#~ "bir görünüşü yaratmaq məcburiyyətində olduğunu unutma ."
-
-#~ msgid "Create a new view"
-#~ msgstr "Yeni bir görünüş yarat"
-
-#~ msgid "Please, select the type of view you want to create."
-#~ msgstr "Lütfən yaratmaq istədiyin görünüş növünü seç ."
-
-#~ msgid "Bottom"
-#~ msgstr "Alt"
-
-#~ msgid "Display documents menu (restart required)."
-#~ msgstr "Sənədlar menyusunu göstər ( yenidən başlamaq lazımdır)."
-
-#~ msgid "Documents"
-#~ msgstr "Sənədlər"
-
-#~ msgid "DoubleClick in previews:"
-#~ msgstr "Nümayişlərdə cüt tıqlamada :"
-
-#~ msgid "DoubleClick in views:"
-#~ msgstr "Görünüşlərdə cüt tıqlamada :"
-
-#~ msgid "Drop:"
-#~ msgstr "Burax:"
-
-#~ msgid "General"
-#~ msgstr "Ümumi"
-
-#~ msgid "Grab:"
-#~ msgstr "Yaxala :"
-
-#~ msgid "Left"
-#~ msgstr "Sol"
-
-#~ msgid "MDI (Multiple Document Interface)"
-#~ msgstr "ÇSS ( Çoxlu Sənəd Səthi MDI)"
-
-#~ msgid "Modal"
-#~ msgstr "Modal"
-
-#~ msgid "Mode:"
-#~ msgstr "Hal:"
-
-#~ msgid "Notebook"
-#~ msgstr "Qeyd dəftəri"
-
-#~ msgid "Notebook Tab position:"
-#~ msgstr "Qeyd dəftərçəsi təb yeri :"
-
-#~ msgid "On ... execute ..."
-#~ msgstr "İşə Salarkən... "
-
-#~ msgid "Right"
-#~ msgstr "Sağ"
-
-#~ msgid "Save session on exit."
-#~ msgstr "İclası çıxışda qeyd et ."
-
-#~ msgid "Session"
-#~ msgstr "İclas"
-
-#~ msgid "Top"
-#~ msgstr "Üst"
-
-#~ msgid "Toplevel"
-#~ msgstr "Ən Üst"
-
-#~ msgid ""
-#~ "Begin\n"
-#~ "Comments :"
-#~ msgstr ""
-#~ "Başlanğıc\n"
-#~ "İzahatlar:"
-
-#~ msgid ""
-#~ "End\n"
-#~ "Comments :"
-#~ msgstr ""
-#~ "Son\n"
-#~ "İzahatlar:"
-
-#~ msgid "Header :"
-#~ msgstr "Başlıq :"
-
-#~ msgid "Special properties"
-#~ msgstr "Xüsusi seçənəklər"
-
-#~ msgid "Common properties"
-#~ msgstr "Ümumi xüsusiyyətlər"
-
-#~ msgid "Name :"
-#~ msgstr "Ad :"
-
-#~ msgid "Blue :"
-#~ msgstr "Mavi : "
-
-#~ msgid "Green :"
-#~ msgstr "Yaşıl : "
-
-#~ msgid "Red :"
-#~ msgstr "Qırmızı : "
-
-#~ msgid "Colors format :"
-#~ msgstr "Rəng şəkli :"
-
-#~ msgid "Display document control (if exists)"
-#~ msgstr "Sənəd yoxlamasını varsa göstər"
-
-#~ msgid "Color height :"
-#~ msgstr "Rəng hündürlüyü :"
-
-#~ msgid "Color width :"
-#~ msgstr "Rəng eni :"
-
-#~ msgid "Draw numbers"
-#~ msgstr "Sayıları boya"
-
-#~ msgid "New Document"
-#~ msgstr "Yeni sənəd"
-
-#~ msgid "Create a new document"
-#~ msgstr "Yeni bir sənəd yarat"
-
-#~ msgid "New View"
-#~ msgstr "Yeni Görünüş"
-
-#~ msgid "Create a new view for a document"
-#~ msgstr "Bir sənəd üçün yeni bir görünüş yarat"
-
-#~ msgid "Close document"
-#~ msgstr "Sənədi qapat"
-
-#~ msgid "Close the current document"
-#~ msgstr "Hazırkı sənədi qapat"
-
-#~ msgid "Close view"
-#~ msgstr "Görünüşü qapat"
-
-#~ msgid "Close the current view"
-#~ msgstr "Hazırkı görünüşü qapat"
-
-#~ msgid "_Open palette..."
-#~ msgstr "Paleti _aç ..."
-
-#~ msgid "Load a palette"
-#~ msgstr "Paleti yüklə"
-
-#~ msgid "_Save palette"
-#~ msgstr "Paleti _qeyd et"
-
-#~ msgid "Save the current palette in a file"
-#~ msgstr "Hazırkı paleti fayla qeyd et"
-
-#~ msgid "Save palette _As..."
-#~ msgstr "Paleti _fərqli qeyd et ..."
-
-#~ msgid "Save the current palette with a different name"
-#~ msgstr "Hazırkı paleti fərqli bir adla qeyd et"
-
-#~ msgid "Insert color"
-#~ msgstr "Rəng daxil et"
-
-#~ msgid "Remove selected colors"
-#~ msgstr "Seçili rəngləri sil"
-
-#~ msgid "Edit selected colors ..."
-#~ msgstr "Seçili rəngləri düzəlt..."
-
-#~ msgid "Document/View properties"
-#~ msgstr "Sənəd/Görünüş xüsusiyyətləri"
-
-#~ msgid ""
-#~ "GColorsel was unable to save the file :\n"
-#~ "\n"
-#~ "%s\n"
-#~ "\n"
-#~ "Make sure that the path you provided exists,\n"
-#~ "and that you have the approprate write permissions.\n"
-#~ "\n"
-#~ "Do you want to retry ?"
-#~ msgstr ""
-#~ "GColorsel faylı qeyd edə bilmədi:\n"
-#~ "\n"
-#~ "%s\n"
-#~ "\n"
-#~ "Lütfən verdiyin yolun var olduğunu yoxla,\n"
-#~ "ve o yolda da yazma haqqının olduğuna bax.\n"
-#~ "\n"
-#~ "Yeniden sınamaq istəyirsən mi?"
-
-#~ msgid ""
-#~ "GColorsel was unable to load the file:\n"
-#~ "\n"
-#~ "%s\n"
-#~ "\n"
-#~ "Make sure that the path you provided exists,\n"
-#~ "and that you have permissions for opening the file."
-#~ msgstr ""
-#~ "GColorsel faylı yükləyə bilmədi :\n"
-#~ "\n"
-#~ "%s\n"
-#~ "\n"
-#~ "Lütfən verdiyin yolun var olduğunu yoxla,\n"
-#~ "ve o faylı açmaq üçün lazımi haqlara sahib olub olmadığına bax."
-
-#~ msgid "Loading file, please wait ..."
-#~ msgstr "Faylı yükləyirəm, bir az gözlə ..."
-
-#~ msgid "Save Palette as"
-#~ msgstr "Paleti fərqli qeyd et"
-
-#~ msgid "File saved ..."
-#~ msgstr "Fayl qeyd edildi..."
-
-#~ msgid ""
-#~ "I'm going to close the last view of '%s'.\n"
-#~ "\n"
-#~ "This document will be closed too, continue ?\n"
-#~ "\n"
-#~ "Please note that %d virtual document use data from this document."
-#~ msgstr ""
-#~ "'%s''nin son görünüşünü də qapadıram.\n"
-#~ "\n"
-#~ "O vaxt bu sənəd də bağlanacaqdır; davam edim mi?\n"
-#~ "\n"
-#~ "Lütfən %d virtual sənədin bu sənədin məlumatlarını istifadə etdiyini "
-#~ "unutma."
-
-#~ msgid ""
-#~ "I'm going to close the last view of '%s'.\n"
-#~ "\n"
-#~ "This document will be closed too, continue ?"
-#~ msgstr ""
-#~ "'%s''nin son görünüşünü də qapadıram.\n"
-#~ "\n"
-#~ "O vaxt bu sənəd də bağlanacaqdır; davam edim mi?"
-
-#~ msgid ""
-#~ "I'm going to close '%s'.\n"
-#~ "\n"
-#~ "Please note that %d views will be destroyed,\n"
-#~ "and that %d virtual document use data from this document.\n"
-#~ "\n"
-#~ "Do you want to continue ?"
-#~ msgstr ""
-#~ "'%s''yi qapadıram .\n"
-#~ "\n"
-#~ "Lütfən o vaxt %d görünüşün silinəcəyini unutma,\n"
-#~ "və %d virtual sənəd də bu sənədin məlumatlarını istifadə edir.\n"
-#~ "\n"
-#~ "Devam edim mi?"
-
-#~ msgid ""
-#~ "I'm going to close '%s'.\n"
-#~ "\n"
-#~ "Please note that %d views will be destroyed.\n"
-#~ "\n"
-#~ "Do you want to continue ?"
-#~ msgstr ""
-#~ "'%s''yi qapadıram .\n"
-#~ "\n"
-#~ "Lütfən o vaxt %d görünüşün silinəcəyini unutma.\n"
-#~ "\n"
-#~ "Devam edim mi?"
-
-#~ msgid "Gnome Color Browser"
-#~ msgstr "Gnome Rəng Səyyahı"
-
-#~ msgid "Small utility to browse available X11 colors."
-#~ msgstr "Mövcud X11 rənglərini gəzmək üçün bir proqram tə'minatı ."
-
-#~ msgid "New Color"
-#~ msgstr "Yeni rəng"
-
-#~ msgid "View properties"
-#~ msgstr "Görünüş xüsusiyyətləri"
-
-#~ msgid "Document properties"
-#~ msgstr "Sənəd xüsusiyyətləri"
-
-#~ msgid "Open a palette"
-#~ msgstr "Bir palet aç"
-
-#~ msgid "Grab"
-#~ msgstr "Yaxala"
-
-#~ msgid "Grab a color on the screen"
-#~ msgstr "Ekrandakı bir rəngi yaxala"
-
-#~ msgid ""
-#~ "Your config file is corrupted.\n"
-#~ "Do you want to create a new session ?"
-#~ msgstr ""
-#~ "Senin qurğu faylında xəsarət var.\n"
-#~ "Yeni bir oturum yaratmaq istəyirsən mi?"
-
-#~ msgid "Loading files, please wait ..."
-#~ msgstr "Faylları yükləyirəm, lütfən gözləyin ..."
-
-#~ msgid ""
-#~ "One or more files can not be restored :\n"
-#~ "\n"
-#~ msgstr ""
-#~ "Bir ya da daha çox fayl geriyə qurula bilmədi :\n"
-#~ "\n"
-
-#~ msgid "System Colors"
-#~ msgstr "Sistem Rəngləri"
-
-#~ msgid "User Colors"
-#~ msgstr "İstifadəçi Rəngləri"
-
-#~ msgid "Decimal 16 bits"
-#~ msgstr "Onluq ( 16bit )"
-
-#~ msgid "Hex 8 bits"
-#~ msgstr "On altılıq ( 8bit )"
-
-#~ msgid "Hex 16 bits"
-#~ msgstr "On altılıq ( 16bit )"
-
-#~ msgid "Color"
-#~ msgstr "Rəng"
-
-#~ msgid "Tolerance :"
-#~ msgstr "Güzəşt sərhədi: "
-
-#~ msgid "Font Selector"
-#~ msgstr "Yazı növü Seçicisi"
-
-#~ msgid "Selection:"
-#~ msgstr "Seçki : "
-
-#~ msgid "Font to load"
-#~ msgstr "Yüklənəcək yazı növü"
-
-#~ msgid "FONTSPEC"
-#~ msgstr "FONTSPEC"
-
-#~ msgid "Print selected font name on exit"
-#~ msgstr "Çıxarkən seçili yazı növünü çap et"
-
-#~ msgid "Inhibit remembering selected font for next run"
-#~ msgstr "Sonrakı əməliyyatda seçili yazı növünü ağlında tutma"
-
-#~ msgid "Inhibit loading of last font"
-#~ msgstr "Son yazı növünün yüklənməsinə mane ol"
-
-#~ msgid "Copyright 1998, under the GNU General Public License."
-#~ msgstr ""
-#~ "Təlif haqqı (C) 1998, GNU General Public License'ə görə nəşr edilmişdir."
-
-#~ msgid "Default 16-bit"
-#~ msgstr "Əsas 16bit"
-
-#~ msgid "32-bit"
-#~ msgstr "32 bit"
-
-#~ msgid "Unknown"
-#~ msgstr "Bilinmir"
-
-#~ msgid "32-bit w/sync"
-#~ msgstr "32 bit, bəabərləşdirilmiş"
-
-#~ msgid "Sleeping"
-#~ msgstr "Yatır"
-
-#~ msgid "Active/Idle"
-#~ msgstr "Fəal/Boşda"
-
-#~ msgid "Standby"
-#~ msgstr "Qapalı"
-
-#~ msgid "Unable to access the drive."
-#~ msgstr "Sürücüyə çata bilmədim."
-
-#~ msgid "The DMA setting for this drive cannot be changed."
-#~ msgstr "Bu sürücünün DMA qurğuları dəyişdirilə bilmir ."
-
-#~ msgid "Disabled"
-#~ msgstr "Qapalı"
-
-#~ msgid "The IRQ unmask setting for this drive cannot be changed."
-#~ msgstr "Bu sürücünün IRQ maskası dəyişdirilə bilmir."
-
-#~ msgid "The drive refused to keep its settings."
-#~ msgstr "Sürücü qurğularını mühafizə etməyi qəbul etmirəm ."
-
-#~ msgid "None"
-#~ msgstr "Heç Biri"
-
-#~ msgid "(1 Sector)"
-#~ msgstr "( 1 sektor )"
-
-#~ msgid "(Dual Port)"
-#~ msgstr "( Cüt Qapı)"
-
-#~ msgid "(Dual Port Cache)"
-#~ msgstr "( Cüt Qapı Kaşesi)"
-
-#~ msgid "No"
-#~ msgstr "Xeyr"
-
-#~ msgid "Yes (%d sector)"
-#~ msgstr "Bəli ( %d sektor )"
-
-#~ msgid "Yes (%d sectors)"
-#~ msgstr "Bəli ( %d sektor )"
-
-#~ msgid "Model"
-#~ msgstr "Model"
-
-#~ msgid "Firmware"
-#~ msgstr "Firmware"
-
-#~ msgid "Serial No."
-#~ msgstr "Serial No:"
-
-#~ msgid "Geometry"
-#~ msgstr "Geometriyası"
-
-#~ msgid "Cache"
-#~ msgstr "Kaşe"
-
-#~ msgid "Legacy MFM/RLL drive"
-#~ msgstr "MFM/RLL sürücüsü"
-
-#~ msgid "DMA Mode"
-#~ msgstr "DMA növü"
-
-#~ msgid "IO Mode"
-#~ msgstr "D/V növü"
-
-#~ msgid "IRQ Unmask"
-#~ msgstr "IRQ maskalaması"
-
-#~ msgid "Multisector"
-#~ msgstr "Çox sektorlu"
-
-#~ msgid "IDE Status"
-#~ msgstr "IDE Vəziyyəti"
-
-#~ msgid "Disk Logo Not Found"
-#~ msgstr "Disk Rəsmini Tapa Bilmədim"
-
-#~ msgid "Only the superuser can use this tool"
-#~ msgstr "Sadəcə 'root' bu uyğulamayı istifadə edə bilər"
-
-#~ msgid "You appear to have no IDE drives"
-#~ msgstr "IDE avadanlığın yoxdur axı dəyəsən"
-
-#~ msgid "Param"
-#~ msgstr "Veri"
-
-#~ msgid "Current"
-#~ msgstr "Hazırkı"
-
-#~ msgid "Scale"
-#~ msgstr "Miqyas"
-
-#~ msgid "Stripchart"
-#~ msgstr "Stripchart"
-
-#~ msgid "Copyright 2000 John Kodis"
-#~ msgstr "Təlif haqqı (C) 2000 John Kodis"
-
-#~ msgid ""
-#~ "The GNOME stripchart program plots various user-specified parameters as a "
-#~ "function of time.  Its main use is to chart system performance parameters "
-#~ "such as CPU load, CPU utilization, network traffic levels, and the like.  "
-#~ "Other more ingenious uses are left as an exercise for the interested user."
-#~ msgstr ""
-#~ "GNOME stripchart uyğulaması istifadəçi tərəfindən göstərilənmüxtəlix "
-#~ "göstərişləri bir funksiya olar çəkar. Bu uyğulamanın ən çox bacardığı iş "
-#~ "işlədici yükünü, işlədici istifadəsini , network trafiyini və buna bənzər "
-#~ "göstərişləri göstərməkdir. Maraqlanan istifadəçi bu qiymətləri dəyişdirib "
-#~ "xüsusiləşdirə bilər."
-
-#~ msgid "Show values"
-#~ msgstr "Qiymətləri göstər"
-
-#~ msgid "Edit Prefs..."
-#~ msgstr "Seçənəkləri Düzəlt ..."
-
-#~ msgid "Edit Params..."
-#~ msgstr "Parametrləri Düzəlt ..."
-
-#~ msgid "no such field: %d"
-#~ msgstr "belə bir vahid yoxdur : %d"
-
-#~ msgid "missing variable identifer"
-#~ msgstr "keçərli qiymət tanıdıcısı əksikdir"
-
-#~ msgid "invalid variable identifer: %s"
-#~ msgstr "keçərsiz qiymət tanıdıcısı : %s"
-
-#~ msgid "number expected"
-#~ msgstr "rəqəm gözlənilirdi"
-
-#~ msgid "extra junk at end: \"%s\""
-#~ msgstr "sonda əlavə prça var: \"%s\""
-
-#~ msgid "Parameter"
-#~ msgstr "Parametr"
-
-#~ msgid "Equation"
-#~ msgstr "Oxşarlıq"
-
-#~ msgid "Filename"
-#~ msgstr "Fayl adı"
-
-#~ msgid "Pattern"
-#~ msgstr "Naxış"
-
-#~ msgid "Min"
-#~ msgstr "ƏnAz"
-
-#~ msgid "Max"
-#~ msgstr "ƏnÇox"
-
-#~ msgid "Linear"
-#~ msgstr "Linear"
-
-#~ msgid "Indicator"
-#~ msgstr "İndikator"
-
-#~ msgid "Line"
-#~ msgstr "Xətt"
-
-#~ msgid "Point"
-#~ msgstr "Nöqtə"
-
-#~ msgid "Solid"
-#~ msgstr "Solid"
-
-#~ msgid "Save As..."
-#~ msgstr "Fərqli qeyd et ..."
-
-#~ msgid "Add Parameter Before"
-#~ msgstr "Parametri Əvvəl Daxil Et"
-
-#~ msgid "Add Parameter After"
-#~ msgstr "Parametri Sonra Daxil Et"
-
-#~ msgid "Apply Parameter Changes"
-#~ msgstr "Parametr Dəyişiklikləri Əlavə Et"
-
-#~ msgid "Delete Parameter"
-#~ msgstr "Parametri Sil"
-
-#~ msgid "Add Color"
-#~ msgstr "Rəng Əlavə Et"
-
-#~ msgid "Delete Color"
-#~ msgstr "Rəngi Sil"
-
-#~ msgid "Info"
-#~ msgstr "İnfo"
-
-#~ msgid "Parameter Editor"
-#~ msgstr "Parametr Editoru"
-
-#~ msgid "Parameters"
-#~ msgstr "Parametrlər"
-
-#~ msgid "Chart"
-#~ msgstr "Cədvəl"
-
-#~ msgid "enabled"
-#~ msgstr "açıq"
-
-#~ msgid "minor"
-#~ msgstr "zəif"
-
-#~ msgid "major"
-#~ msgstr "əsas"
-
-#~ msgid "Update"
-#~ msgstr "Güncəllə"
-
-#~ msgid "Smooth"
-#~ msgstr "Düzgün"
-
-#~ msgid "Ticks"
-#~ msgstr "Tıqqıldamalar"
-
-#~ msgid "Pen"
-#~ msgstr "Qələm"
-
-#~ msgid "Geometry string: WxH+X+Y"
-#~ msgstr "Yerleşim mətni : ENxHÜNDÜRLÜK+X+Y"
-
-#~ msgid "GEO"
-#~ msgstr "GEO"
-
-#~ msgid "Configuration file name"
-#~ msgstr "Quraşdırma faylı adı"
-
-#~ msgid "FILE"
-#~ msgstr "FILE"
-
-#~ msgid "Values"
-#~ msgstr "Qiymətlər"
-
-#~ msgid "Prefs..."
-#~ msgstr "Seçənəklər.."
-
-#~ msgid "Params..."
-#~ msgstr "Parametrlər..."
-
-#~ msgid "gfloppy"
-#~ msgstr "Disketləri şəkilləndirər"
-
-#~ msgid "GDict"
-#~ msgstr "GDict"
-
-#~ msgid "Shows a stripchart plot"
-#~ msgstr "Shows a stripchart plot"
-
-#~ msgid "Stripchart Plotter"
-#~ msgstr "Stripchart veriləri"
-
-#~ msgid "IDE Device Tool"
-#~ msgstr "IDE Avadanlıq Vasitəsi"
-
-#~ msgid "Show and Configure IDE Device Settings"
-#~ msgstr "İDE Avadanlıq Qurğularını Göstər və Quraşdır"
-
-#~ msgid "GNOME Penguin"
-#~ msgstr "GNOME Pinqvin"
-
-#~ msgid "Let a cute pinguin chase your pointer"
-#~ msgstr "Pinqvinimizə sizin işarələyicisnizi seçməyinə icazə verin"
-
-#~ msgid "Select a font for pasting"
-#~ msgstr "Yapışdırılacaq yazı növü seç"
-
-#~ msgid "Browse available X11 colors."
-#~ msgstr "Mövcud X11 rənglərini gəz."
-
-#~ msgid "Color Browser"
-#~ msgstr "Rəng Səyyahı"
-
-#~ msgid "GNOME Archive Generator aka Meat Grinder"
-#~ msgstr "GNOME Archive Generator aka Meat Grinder"
-
-#~ msgid "SysLog tool"
-#~ msgstr "SysLog vasitəsi"
-
-#~ msgid "System log monitor"
-#~ msgstr "Sistem qeyd nümayişçisi"
-
-#~ msgid "Time Tracker tool"
-#~ msgstr "Vaxt İzləyən Vasitə"
-
-#~ msgid "Time tracking tool"
-#~ msgstr "zaman təqib uyğulaması"
-
-#~ msgid "Personal cron manager"
-#~ msgstr "Şəxsi cron idarəçisi"
-
-#~ msgid "Personal crontab manager"
-#~ msgstr "Şəxsi crontab idarəçisi"
+"Başlanğıcda açılacaq qeyd faylını bildirir. Ön qurğulu qiymət əməlliyat "
+"sisteminizə bağlı olaraq ya /var/adm/messages ya da /var/log/messages-dir"
+
+#: logview/misc.c:56
+#, c-format
+msgid "Error: [%s]\n"
+msgstr "Xəta: [%s]\n"
+
+#: logview/monitor.c:111
+msgid "Monitor Options"
+msgstr "İzləmə Seçimləri"
+
+#: logview/monitor.c:114
+msgid "Ac_tions..."
+msgstr "_Gedişatlar..."
+
+#: logview/monitor.c:140
+msgid "_Select logs to monitor:"
+msgstr "İzlənəcək qeydləri _seç:"
+
+#: logview/monitor.c:145
+msgid "Currently _monitored logs:"
+msgstr "Hazırda _izlənən qeydlər:"
+
+#: logview/monitor.c:193
+msgid "Add logs to monitor"
+msgstr "Qeydləri izləməyə al"
+
+#: logview/monitor.c:202
+msgid "Remove logs from monitor"
+msgstr "Qeydləri izləmədən çıxart"
+
+#. Check boxes
+#: logview/monitor.c:249
+msgid "_Hide application"
+msgstr "_Proqramı gizlət"
+
+#: logview/monitor.c:257
+msgid "_Execute actions"
+msgstr "Gedişatları _icra et"
+
+#: logview/monitor.c:293
+msgid "Too many logs to monitor. Remove one and try again"
+msgstr ""
+"İzlənmədə həddindən artıq qeyd faylı var. Xahiş edirik bir dənəsini çıxardıb "
+"yenidən sınayın"
+
+#: logview/monitor.c:301 logview/monitor.c:338
+msgid "tmp_list is NULL\n"
+msgstr "tmp_list NULL'dur\n"
+
+#: logview/monitor.c:475
+msgid "Monitoring Logs..."
+msgstr "İzlənən Qeydlər..."
+
+#: logview/monitor.c:667
+msgid "TOUCHED!!\n"
+msgstr "DƏYİŞDİRİLDİ!!\n"
+
+#: logview/zoom.c:63
+msgid "Entry Detail"
+msgstr "Təfsilat Girişi"
+
+#: logview/zoom.c:101
+msgid "Date:"
+msgstr "Tarix:"
+
+#: logview/zoom.c:101
+msgid "Process:"
+msgstr "Gedişat:"
+
+#: logview/zoom.c:102
+msgid "Message:"
+msgstr "İsmarış:"
+
+#: logview/zoom.c:102
+msgid "Description:"
+msgstr "İzahat:"
+
+#: logview/zoom.c:129
+msgid "Log Line Details"
+msgstr "Qeyd Sətiri Təfsilatları"
+
+#. Translators: do not include year, it would be bogus
+#: logview/zoom.c:187
+msgid "%B %e %X"
+msgstr "%B %e %X"

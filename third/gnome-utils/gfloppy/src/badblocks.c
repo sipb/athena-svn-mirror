@@ -48,33 +48,23 @@
 #include <et/com_err.h>
 #include <ext2fs/ext2_io.h>
 
+#include "fdformat.h"
 #include "gfloppy.h"
-
-
 
 int w_flag = 0;			/* do r/w test */
 static unsigned long currently_testing = 0;
 static unsigned long num_blocks = 0;
 static GFloppy *internal_floppy = NULL;
 
-
-/* keep in sync with fd_print in fd_format */
-static void
-fd_print (GFloppy *floppy, gchar *string)
-{
-	write (floppy->message[1], string, strlen (string));
-	write (floppy->message[1], "\000", 1);
-}
-
 static void
 print_status (void)
 {
-	gchar *msg = NULL;
+	char *msg = NULL;
 	gint val = 0;
 
 	val = CLAMP ( (gint) ((0.67 +  0.33*((gfloat)currently_testing)/num_blocks) * 100), 67, 100);
-	msg = g_strdup_printf ("P%3d", val);
-	fd_print (internal_floppy, msg);
+	msg = g_strdup_printf ("%3d", val);
+	fd_print (internal_floppy, MSG_PROGRESS, msg);
 	g_free (msg);
 }
 
@@ -83,8 +73,10 @@ alarm_intr (int alnum)
 {
 	signal (SIGALRM, alarm_intr);
 	alarm(1);
+
 	if (!num_blocks)
 		return;
+
 	print_status ();
 }
 
@@ -99,7 +91,7 @@ static long do_test (int dev, char * buffer, int try, unsigned long block_size,
 	/* Seek to the correct loc. */
 	if (ext2fs_llseek (dev, (ext2_loff_t) current_block * block_size,
 			   SEEK_SET) != (ext2_loff_t) current_block * block_size)
-		fd_print (internal_floppy, _("MInternal Error: Unable to seek to the correct location."));
+		fd_print (internal_floppy, MSG_MESSAGE, _("Internal Error: Unable to seek to the correct location."));
 
 	/* Try the read */
 	got = read (dev, buffer, try * block_size);
@@ -107,9 +99,9 @@ static long do_test (int dev, char * buffer, int try, unsigned long block_size,
 	if (got < 0)
 		got = 0;	
 	if (got & 511) {
-		gchar *msg;
-		msg = g_strdup_printf (_("MInternal Error: Weird value (%ld) in do_test\n"), got);
-		fd_print (internal_floppy, msg);
+		char *msg;
+		msg = g_strdup_printf (_("Internal Error: Weird value (%ld) in do_test\n"), got);
+		fd_print (internal_floppy, MSG_MESSAGE, msg);
 		g_free (msg);
 	}
 	got /= block_size;
@@ -147,7 +139,7 @@ test_ro (int dev, unsigned long blocks_count,
 	num_blocks = blocks_count;
 	while (currently_testing < blocks_count)
 	{
-		gchar *msg;
+		char *msg;
 
 		print_status ();
 		if (currently_testing + try > blocks_count)
@@ -173,8 +165,8 @@ test_ro (int dev, unsigned long blocks_count,
 
 			internal_floppy->badblocks_list = g_list_append (internal_floppy->badblocks_list, (gpointer) p);
 
-			msg = g_strdup_printf ("B%lu", currently_testing);
-			fd_print (internal_floppy, msg);
+			msg = g_strdup_printf ("%lu", currently_testing);
+			fd_print (internal_floppy, MSG_BADBLOCK, msg);
 			g_free (msg);
 			/*fprintf (out, "%lu\n", currently_testing++);*/
 		}
@@ -262,11 +254,11 @@ check_badblocks (GFloppy *floppy)
 	unsigned long blocks_count;
 	unsigned long from_count;
 	int dev;
-	gchar *msg;
+	char *msg;
 
 /*	while (!i)
 	;*/
-	fd_print (floppy, _("MChecking for bad blocks..."));
+	fd_print (floppy, MSG_MESSAGE, _("Checking for bad blocks..."));
 	internal_floppy = floppy;
 	/* assume read-only test for now */
 	w_flag = 0;
@@ -278,9 +270,9 @@ check_badblocks (GFloppy *floppy)
 
 	dev = open (floppy->device, w_flag ? O_RDWR : O_RDONLY);
 	if (dev < 0) {
-		msg = g_strdup_printf (_("MFailed to open device %s for badblock checking\n"),
+		msg = g_strdup_printf (_("Failed to open device %s for badblock checking\n"),
 			floppy->device);
-		fd_print (floppy, msg);
+		fd_print (floppy, MSG_MESSAGE, msg);
 		g_free (msg);
 		return -1;
 	}
@@ -298,6 +290,6 @@ check_badblocks (GFloppy *floppy)
 	test_ro (dev, blocks_count, block_size, from_count);
 
 	close (dev);
-	fd_print (floppy, _("MChecking for bad blocks... Done"));
+	fd_print (floppy, MSG_MESSAGE, _("Checking for bad blocks... Done"));
 	return 0;
 }

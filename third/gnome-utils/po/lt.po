@@ -2,684 +2,130 @@
 # Copyright (C) 2000-2002 Free Software Foundation, Inc.
 # Gediminas Paulauskas <menesis@delfi.lt>, 2000-2002
 # Mantas Kriauciunas <mantelis@centras.lt>, 2002
-#
+# Tomas Kuliavas <tokul@users.sourceforge.net>, 2003.
+# 
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: gnome-utils 1.108.0\n"
-"POT-Creation-Date: 2003-01-27 11:32+0000\n"
-"PO-Revision-Date: 2002-06-10 10:43+0200\n"
-"Last-Translator: Mantas Kriauciunas <mantelis@centras.lt>\n"
+"Project-Id-Version: gnome-utils HEAD\n"
+"POT-Creation-Date: 2004-08-30 15:48+1200\n"
+"PO-Revision-Date: 2004-08-17 14:05+0300\n"
+"Last-Translator: Žygimantas Beručka <uid0@tuxfamily.org>\n"
 "Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: exe-handler/gnome-exe-handler.c:76
-#, c-format
-msgid ""
-"Executing arbitrary programs that you downloaded from the network might be "
-"dangerous.\n"
-"\n"
-"Are you sure you want to run `%s'?"
-msgstr ""
-"Vykdyti programų, kurias jūs atsisiuntėte iš tinklo ar interneto, yra "
-"pavojinga.\n"
-"\n"
-"Ar jūs tikrai norite paleisti `%s'?"
-
-#: exe-handler/gnome-exe-handler.c:83
-msgid "Could not access file permissions"
-msgstr ""
-
-#: exe-handler/gnome-exe-handler.c:88
-#, c-format
-msgid "Could not execute the file `%s' due to a permission problem"
-msgstr "Negaliu vykdyti bylos `%s' nes nėra reikalingų teisių"
-
-#: exe-handler/gnome-exe-handler.c:104
-#, c-format
-msgid "Failure at executing `%s'"
-msgstr "Klaida vykdant `%s'"
-
-#: exe-handler/gnome-exe-handler.c:123
-#, c-format
-msgid "It was not possible to open the file `%s'"
-msgstr "Nepavyko atidaryti bylos `%s'"
-
-#: exe-handler/gnome-exe-handler.c:132
-#, c-format
-msgid "The file `%s' is empty"
-msgstr "Byla `%s' yra tuščia"
-
-#: exe-handler/gnome-exe-handler.c:137
-#, c-format
-msgid "There was an error. `%s' is empty"
-msgstr "Klaida. `%s' tuščias"
-
-#: exe-handler/gnome-exe-handler.c:152
-msgid "This is a library and can not be executed"
-msgstr "Tai yra biblioteka ir ji negali būti vykdoma"
-
-#: exe-handler/gnome-exe-handler.c:158
-msgid "The file is a core file and can not be executed"
-msgstr ""
-
-#: exe-handler/gnome-exe-handler.c:162 exe-handler/gnome-exe-handler.c:196
-msgid "This is an unknown kind of executable"
-msgstr "Tai yra nežinoma vykdomosius bylos rūšis"
-
-#: exe-handler/gnome-exe-handler.c:192
-msgid ""
-"The executable is for a different platform and can not be executed on this "
-"system"
-msgstr ""
-"Vykdomoji byla yra skirta kitai platformai ir ji negali būti vykdoma jūsų "
-"sistemoje"
-
-#. Translator credits
-#: gcalc/gcalc.c:42 gcharmap/src/callbacks.c:46 gdictsrc/gdict-about.c:43
-#: logview/about.c:52
-msgid "translator_credits"
-msgstr ""
-"Mantas Kriaučiūnas <mantelis@centras.lt>\n"
-"Gediminas Paulauskas <menesis@delfi.lt>"
-
-#: gcalc/gcalc.c:60
-msgid "GNOME Calculator"
-msgstr "GNOME skaičiuotuvas"
-
-#: gcalc/gcalc.c:61
-#, fuzzy
-msgid "(C) 1998 Free Software Foundation, Inc."
-msgstr "(C) 1998,2002 the Free Software Foundation"
-
-#: gcalc/gcalc.c:62
-#, fuzzy
-msgid "Simple double precision calculator similar to xcalc"
-msgstr "Paprastas dvigubo tikslumo skaičiuotuvas, panašus į xcalc"
-
-#: gcalc/gcalc.c:140
-msgid "_Calculator"
-msgstr "_Skaičiuotuvas"
-
-#: gcalc/gcalc.c:191 gcalc/gnome-calculator.desktop.in.h:1
-msgid "Calculator"
-msgstr "Skaičiuotuvas"
-
-#: gcalc/gnome-calc.c:252
-msgid "inf"
-msgstr "beg"
-
-#: gcalc/gnome-calc.c:478
-msgid "DEG"
-msgstr "DEG"
-
-#: gcalc/gnome-calc.c:480
-msgid "RAD"
-msgstr "RAD"
-
-#: gcalc/gnome-calc.c:482
-msgid "GRAD"
-msgstr "GRAD"
-
-#: gcalc/gnome-calc.c:1255
-msgid "1/x"
-msgstr "1/x"
-
-#: gcalc/gnome-calc.c:1255
-msgid "Inverse"
-msgstr "Atvirkštinis"
-
-#: gcalc/gnome-calc.c:1256
-msgid "x<sup>2</sup>"
-msgstr ""
-
-#: gcalc/gnome-calc.c:1256
-msgid "Square"
-msgstr "Kvadratas"
-
-#: gcalc/gnome-calc.c:1257
-msgid "SQRT"
-msgstr "SQRT"
-
-#: gcalc/gnome-calc.c:1257
-msgid "Square root"
-msgstr "Kvadratinė šaknis"
-
-#: gcalc/gnome-calc.c:1258
-msgid "CE/C"
-msgstr "CE/C"
-
-#: gcalc/gnome-calc.c:1258
-msgid "Clear"
-msgstr "Išvalyti"
-
-#: gcalc/gnome-calc.c:1259
-msgid "AC"
-msgstr "AC"
-
-#: gcalc/gnome-calc.c:1259
-msgid "Reset"
-msgstr "Iš naujo"
-
-#: gcalc/gnome-calc.c:1261
-msgid "INV"
-msgstr "INV"
-
-#: gcalc/gnome-calc.c:1261
-msgid "Inverse trigonometry/log function"
-msgstr ""
-
-#. inverse button
-#: gcalc/gnome-calc.c:1262
-msgid "sin"
-msgstr "sin"
-
-#: gcalc/gnome-calc.c:1262
-msgid "Sine"
-msgstr "Sinusas"
-
-#: gcalc/gnome-calc.c:1263
-msgid "cos"
-msgstr "cos"
-
-#: gcalc/gnome-calc.c:1263
-msgid "Cosine"
-msgstr "Kosinusas"
-
-#: gcalc/gnome-calc.c:1264
-msgid "tan"
-msgstr "tan"
-
-#: gcalc/gnome-calc.c:1264
-msgid "Tangent"
-msgstr "Tangentas"
-
-#. Ugly hack so that window won't resize when selecting GRAD - there should be a better fix that this
-#: gcalc/gnome-calc.c:1266
-msgid " DEG  "
-msgstr " DEG  "
-
-#: gcalc/gnome-calc.c:1266
-msgid "Switch degrees / radians / grad"
-msgstr "Perjungti tarp laipsnių / radianų / gradų"
-
-#: gcalc/gnome-calc.c:1268
-msgid "e"
-msgstr "e"
-
-#: gcalc/gnome-calc.c:1268
-msgid "Base of Natural Logarithm"
-msgstr "Natūrinio logaritmo pagrindas"
-
-#: gcalc/gnome-calc.c:1269
-msgid "EE"
-msgstr "EE"
-
-#: gcalc/gnome-calc.c:1269
-msgid "Add digit"
-msgstr "Pridėti skaičių"
-
-#: gcalc/gnome-calc.c:1270
-msgid "log"
-msgstr "log"
-
-#: gcalc/gnome-calc.c:1270
-msgid "Base 10 Logarithm"
-msgstr "Dešimtainis logaritmas"
-
-#: gcalc/gnome-calc.c:1271
-msgid "ln"
-msgstr "ln"
-
-#: gcalc/gnome-calc.c:1271
-msgid "Natural Logarithm"
-msgstr "Naturinis logaritmas"
-
-#: gcalc/gnome-calc.c:1272
-msgid "x<sup>y</sup>"
-msgstr ""
-
-#: gcalc/gnome-calc.c:1272
-msgid "Power"
-msgstr "Laipsnis"
-
-#: gcalc/gnome-calc.c:1274
-msgid "PI"
-msgstr "PI"
-
-#: gcalc/gnome-calc.c:1275
-msgid "x!"
-msgstr "x!"
-
-#: gcalc/gnome-calc.c:1275
-msgid "Factorial"
-msgstr "Faktorialas"
-
-#: gcalc/gnome-calc.c:1276
-msgid "("
-msgstr "("
-
-#: gcalc/gnome-calc.c:1276
-msgid "Opening Parenthesis"
-msgstr "Atidarantis skliaustas"
-
-#: gcalc/gnome-calc.c:1277
-msgid ")"
-msgstr ")"
-
-#: gcalc/gnome-calc.c:1277
-msgid "Closing Parenthesis"
-msgstr "Uždarantis skliaustas"
-
-#: gcalc/gnome-calc.c:1278
-msgid "/"
-msgstr "/"
-
-#: gcalc/gnome-calc.c:1278
-msgid "Divide by"
-msgstr "Dalinti iš"
-
-#: gcalc/gnome-calc.c:1280
-msgid "STO"
-msgstr "STO"
-
-#: gcalc/gnome-calc.c:1280
-msgid ""
-"Store the value in the\n"
-"display field in memory"
-msgstr ""
-"Įrašyti matomą reikšmę\n"
-"į atmintį"
-
-#: gcalc/gnome-calc.c:1281
-msgid "7"
-msgstr "7"
-
-#: gcalc/gnome-calc.c:1282
-msgid "8"
-msgstr "8"
-
-#: gcalc/gnome-calc.c:1283
-msgid "9"
-msgstr "9"
-
-#: gcalc/gnome-calc.c:1284 gfloppy/src/gfloppy2.glade.h:2
-msgid "*"
-msgstr "*"
-
-#: gcalc/gnome-calc.c:1284
-msgid "Multiply by"
-msgstr "Padauginti iš"
-
-#: gcalc/gnome-calc.c:1286
-msgid "RCL"
-msgstr "RCL"
-
-#: gcalc/gnome-calc.c:1286
-msgid ""
-"Display the value in memory\n"
-"in the display field"
-msgstr ""
-"Parodyti reikšmę\n"
-"saugomą atmintyje"
-
-#: gcalc/gnome-calc.c:1287
-msgid "4"
-msgstr "4"
-
-#: gcalc/gnome-calc.c:1288
-msgid "5"
-msgstr "5"
-
-#: gcalc/gnome-calc.c:1289
-msgid "6"
-msgstr "6"
-
-#: gcalc/gnome-calc.c:1290
-msgid "-"
-msgstr "-"
-
-#: gcalc/gnome-calc.c:1290
-msgid "Subtract"
-msgstr "Atimti"
-
-#: gcalc/gnome-calc.c:1292
-msgid "SUM"
-msgstr "SUM"
-
-#: gcalc/gnome-calc.c:1292
-msgid ""
-"Add the value in the display\n"
-"field to the value in memory"
-msgstr ""
-"Pridėti rodomą reikšmę prie\n"
-"atmintyje esančios reikšmės"
-
-#: gcalc/gnome-calc.c:1293
-msgid "1"
-msgstr "1"
-
-#: gcalc/gnome-calc.c:1294
-msgid "2"
-msgstr "2"
-
-#: gcalc/gnome-calc.c:1295
-msgid "3"
-msgstr "3"
-
-#: gcalc/gnome-calc.c:1296
-msgid "+"
-msgstr "+"
-
-#: gcalc/gnome-calc.c:1296
-msgid "Add"
-msgstr "Pridėti"
-
-#: gcalc/gnome-calc.c:1298
-msgid "EXC"
-msgstr "EXC"
-
-#: gcalc/gnome-calc.c:1298
-msgid ""
-"Exchange the values in the\n"
-"display field and memory"
-msgstr ""
-"Sukeisti matomą reikšmę\n"
-"su esančia atmintyje"
-
-#: gcalc/gnome-calc.c:1299
-msgid "0"
-msgstr "0"
-
-#: gcalc/gnome-calc.c:1300
-msgid "."
-msgstr "."
-
-#: gcalc/gnome-calc.c:1300
-msgid "Decimal Point"
-msgstr "Kablelis"
-
-#: gcalc/gnome-calc.c:1301
-msgid "+/-"
-msgstr "+/-"
-
-#: gcalc/gnome-calc.c:1301
-msgid "Change sign"
-msgstr "Pakeisti ženklą"
-
-#: gcalc/gnome-calc.c:1302
-msgid "="
-msgstr "="
-
-#: gcalc/gnome-calc.c:1302
-msgid "Calculate"
-msgstr "Suskaičiuoti"
-
-#: gcalc/gnome-calculator.desktop.in.h:2
-msgid "Perform simple calculations"
-msgstr "Atlikti paprastus skaičiavimus"
-
-#: gcharmap/gnome-character-map.desktop.in.h:1 gcharmap/src/interface.c:160
-msgid "Character Map"
-msgstr "Simbolių rinkinys"
-
-#: gcharmap/gnome-character-map.desktop.in.h:2
-msgid "Insert special characters into documents"
-msgstr "Įterpti specialius simbolius į dokumentus"
-
-#: gcharmap/src/asciiselect.c:149
-msgid "Select Character"
-msgstr "Pasirink simbolį"
-
-#: gcharmap/src/asciiselect.c:152
-msgid "_Insert"
-msgstr "Įterpt_i"
-
-#: gcharmap/src/asciiselect.c:155
-#, fuzzy
-msgid "Character c_ode:"
-msgstr "Simbolio kodas:"
-
-#: gcharmap/src/asciiselect.c:178
-#, fuzzy
-msgid "Ch_aracter:"
-msgstr "Simbolis:"
-
-#: gcharmap/src/asciiselect.c:189
-msgid "Character Code"
-msgstr "Simbolio kodas"
-
-#: gcharmap/src/asciiselect.c:189
-msgid "Select character code"
-msgstr "Pasirink simbolio kodą"
-
-#: gcharmap/src/asciiselect.c:190
-msgid "Character"
-msgstr "Simbolis"
-
-#: gcharmap/src/asciiselect.c:190
-msgid "Character to insert"
-msgstr "Įterpiamas simbolis"
-
-#: gcharmap/src/callbacks.c:63
-msgid "GNOME Character Map"
-msgstr "Gnome simbolių rinkinys"
-
-#: gcharmap/src/callbacks.c:66
-msgid ""
-"Select, copy and paste characters from your font into other applications"
-msgstr ""
-"Pasirinkite, kopijuokite ir įdėkite simbolius iš pasirinkto šrifto į "
-"visokias programas"
-
-#: gcharmap/src/callbacks.c:130 gcharmap/src/callbacks.c:138
-#, fuzzy, c-format
-msgid "Character code: (Unicode) U%04lX"
-msgstr "Simbolio kodas:"
-
-#: gcharmap/src/callbacks.c:134
-#, c-format
-msgid "Character code: (Unicode) U%04lX, (%s) 0x%s"
-msgstr ""
-
-#: gcharmap/src/callbacks.c:192
-msgid "Text copied to clipboard..."
-msgstr "Tekstas nukopijuotas į krepšį..."
-
-#: gcharmap/src/callbacks.c:209
-msgid "Text cut to clipboard..."
-msgstr "Tekstas iškirptas į krepšį..."
-
-#: gcharmap/src/callbacks.c:259
-msgid "Text pasted from clipboard..."
-msgstr "Tekstas įdėtas iš krepšio..."
-
-#: gcharmap/src/interface.c:190
-msgid "Action Toolbar"
-msgstr "Veiksmų įrankinė"
-
-#: gcharmap/src/interface.c:194
-#, fuzzy
-msgid "_Font:"
-msgstr "_Prievadas:"
-
-#. The page selector
-#: gcharmap/src/interface.c:210
-msgid "_Page:"
-msgstr ""
-
-#. end of page selector
-#: gcharmap/src/interface.c:225
-msgid "_Text to copy:"
-msgstr "_Tekstas kopijavimui:"
-
-#: gcharmap/src/interface.c:240
-msgid "_Copy"
-msgstr "_Kopijuoti"
-
-#: gcharmap/src/interface.c:262 gcharmap/src/interface.c:263
-msgid "Text to copy"
-msgstr "Tekstas kopijavimui"
-
-#: gcharmap/src/interface.c:263
-msgid "Entry"
-msgstr "Įvestis"
-
-#: gcharmap/src/interface.c:264 gcharmap/src/menus.c:77
-msgid "Copy"
-msgstr "Kopijuoti"
-
-#: gcharmap/src/interface.c:264
-msgid "Copy the text"
-msgstr "Kopijuoti tekstą"
-
-#: gcharmap/src/menus.c:34
-msgid "_Browse..."
-msgstr "_Naršyti..."
-
-#: gcharmap/src/menus.c:35
-msgid "Insert character(s) by choosing character codes."
-msgstr "Įterpti simbolius pasirenkant simbolių kodus."
-
-#: gcharmap/src/menus.c:63
-#, fuzzy
-msgid "Ch_aracters"
-msgstr "_Simboliai"
-
-#. GNOMEUIINFO_ITEM(N_("Insert"), N_("Insert character(s) by choosing character codes"),
-#. cb_insert_char_click, NULL),
-#. GNOMEUIINFO_SEPARATOR,
-#: gcharmap/src/menus.c:75
-msgid "Cut"
-msgstr "Iškirpti"
-
-#: gcharmap/src/menus.c:75
-msgid "Cut the selection"
-msgstr "Iškirpti pažymėjimą"
-
-#: gcharmap/src/menus.c:77
-msgid "Copy the selection"
-msgstr "Kopijuoti pažymėjimą"
-
-#: gcharmap/src/menus.c:79
-msgid "Paste"
-msgstr "Įdėti"
-
-#: gcharmap/src/menus.c:79
-msgid "Paste the clipboard"
-msgstr "Įdėti tekstą iš krepšio."
-
-#: gdialog/guage.c:78
-msgid "Gdialog progressbar"
-msgstr ""
-
-#: gdialog/guage.c:78
-msgid "Indicates the percentage specified at the standard input"
-msgstr ""
-
-#: gdialog/inputbox.c:84
-msgid "GDialog Entry"
-msgstr ""
-
-#: gdialog/inputbox.c:84
-msgid "Enter the text"
-msgstr "Įvesk tekstą"
+"Report-Msgid-Bugs-To: \n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%"
+"100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: gdictsrc/GNOME_GDictApplet.server.in.in.h:1
 msgid "Accessories"
 msgstr "Priemonės"
 
-#: gdictsrc/GNOME_GDictApplet.server.in.in.h:2 gdictsrc/gdict-applet.c:270
+#: gdictsrc/GNOME_GDictApplet.server.in.in.h:2 gdictsrc/gdict-applet.c:144
 msgid "Dictionary Lookup"
 msgstr "Paieška žodyne"
 
-#: gdictsrc/GNOME_GDictApplet.server.in.in.h:3
+#: gdictsrc/GNOME_GDictApplet.server.in.in.h:3 gdictsrc/gdict-applet.c:160
 #: gdictsrc/gnome-dictionary.desktop.in.h:2
 msgid "Lookup words in an online dictionary"
-msgstr "Ieškoti žodžių internetiniame žodyne"
+msgstr "Ieškoti žodžių tinkliniame žodyne"
 
 #: gdictsrc/GNOME_GDictApplet.xml.h:1
-msgid "Look Up Selected Text..."
-msgstr "Ieškoti pažymėto teksto..."
+msgid "_About"
+msgstr "_Apie"
 
 #: gdictsrc/GNOME_GDictApplet.xml.h:2
-msgid "_About..."
-msgstr "_Apie..."
-
-#: gdictsrc/GNOME_GDictApplet.xml.h:3
 msgid "_Help"
 msgstr "_Pagalba"
 
+#: gdictsrc/GNOME_GDictApplet.xml.h:3
+msgid "_Look Up Selected Text"
+msgstr "_Ieškoti pažymėto teksto"
+
 #: gdictsrc/GNOME_GDictApplet.xml.h:4
 msgid "_Preferences"
-msgstr "_Nuostatos"
+msgstr "_Nustatymai"
 
 #: gdictsrc/GNOME_GDictApplet.xml.h:5
-msgid "_Show/Hide Definition Window..."
-msgstr "Rodyti/_Slėpti apibrėžimo langą..."
+msgid "_Show Dictionary"
+msgstr "_Rodyti žodyną"
 
 #. Could not look up search strategies, so just display a
 #. * label; FIXME: Memory leak
 #.
-#: gdictsrc/dict.c:648 gdictsrc/gdict-pref-dialog.c:466
-#: gdictsrc/gdict-pref-dialog.c:517 gdictsrc/gdict-speller.c:463
+#: gdictsrc/dict.c:664 gdictsrc/gdict-pref-dialog.c:460
+#: gdictsrc/gdict-pref-dialog.c:509 gdictsrc/gdict-speller.c:452
 msgid "Cannot connect to server"
 msgstr "Negaliu prisijungti prie serverio"
 
-#: gdictsrc/dict.c:661
+#: gdictsrc/dict.c:677
 msgid ""
 "A serious error occured. Please check that your server and port are correct. "
 "For reference the default server is dict.org and the port 2628"
 msgstr ""
+"Įvyko rimta klaida. Patikrinkite savo serverio ir prievado nustatymus. "
+"Standartinis serverio vardas yra dict.org, o prievado numeris - 2628"
 
-#: gdictsrc/gdict-about.c:56
-#, fuzzy
-msgid "GNOME Dictionary"
+#. Translator credits
+#: gdictsrc/gdict-about.c:43 logview/about.c:49
+msgid "translator-credits"
+msgstr ""
+"Paskutinis vertėjas:\n"
+"Žygimantas Beručka <uid0@akl.lt>\n"
+"\n"
+"Ankstesni vertėjai:\n"
+"Tomas Kuliavas <tokul@users.sourceforge.net>,\n"
+"Mantas Kriaučiūnas <mantas@akl.lt>,\n"
+"Gediminas Paulauskas <menesis@delfi.lt>"
+
+#: gdictsrc/gdict-about.c:56 gdictsrc/gdict-app.c:925
+#: gdictsrc/gnome-dictionary.desktop.in.h:1
+msgid "Dictionary"
 msgstr "Žodynas"
 
-#: gdictsrc/gdict-about.c:57
-msgid "Copyright 1999 by Mike Hughes"
-msgstr ""
-
 #: gdictsrc/gdict-about.c:58
-#, fuzzy
-msgid "Client for MIT dictionary server.\n"
-msgstr "Žodyno serveris"
+msgid "A client for the MIT dictionary server."
+msgstr "MIT žodyno serverio klientinė programa"
 
-#: gdictsrc/gdict-app.c:128
+#: gdictsrc/gdict-app.c:127
 msgid "Spell-checking..."
 msgstr "Tikrinu rašybą..."
 
-#: gdictsrc/gdict-app.c:136
+#: gdictsrc/gdict-app.c:135
 msgid "Spell check done"
 msgstr "Rašyba patikrinta"
 
-#: gdictsrc/gdict-app.c:144 gdictsrc/gdict-app.c:288
+#: gdictsrc/gdict-app.c:143 gdictsrc/gdict-app.c:290
 msgid "No matches found"
 msgstr "Neradau tinkamų žodžių"
 
-#: gdictsrc/gdict-app.c:271
+#: gdictsrc/gdict-app.c:273
 msgid "Looking up word..."
 msgstr "Ieškau žodžio..."
 
-#: gdictsrc/gdict-app.c:279
+#: gdictsrc/gdict-app.c:281
 msgid "Lookup done"
 msgstr "Paieška baigta"
 
-#: gdictsrc/gdict-app.c:301
+#: gdictsrc/gdict-app.c:303
 msgid "String not found"
 msgstr "Eilutė nerasta"
 
-#: gdictsrc/gdict-app.c:469
+#: gdictsrc/gdict-app.c:471
 msgid "Find"
 msgstr "Rasti"
 
-#: gdictsrc/gdict-app.c:490
+#: gdictsrc/gdict-app.c:479
+msgid "_Search for:"
+msgstr "_Ieškoti:"
+
+#: gdictsrc/gdict-app.c:492
 msgid "_Find"
 msgstr "_Rasti"
 
-#: gdictsrc/gdict-app.c:540
+#: gdictsrc/gdict-app.c:534
 msgid ""
 "Unable to perform requested operation. \n"
 "Either the server you are using is not available \n"
@@ -689,200 +135,171 @@ msgstr ""
 "Arba tavo naudojamas serveris yra nulūžęs,\n"
 "arba tu nesi prisijungęs prie interneto."
 
-#: gdictsrc/gdict-app.c:701 gdictsrc/gdict-app.c:812
-#: gdictsrc/gdict-speller.c:221
+#: gdictsrc/gdict-app.c:697 gdictsrc/gdict-app.c:952
+#: gdictsrc/gdict-speller.c:214
 msgid "_Look Up Word"
 msgstr "_Ieškoti žodžio"
 
-#: gdictsrc/gdict-app.c:702
+#: gdictsrc/gdict-app.c:698
 msgid "Lookup word in dictionary"
 msgstr "Ieškoti žodžio žodyne"
 
-#: gdictsrc/gdict-app.c:704 gdictsrc/gdict-speller.c:165
+#: gdictsrc/gdict-app.c:700 gdictsrc/gdict-speller.c:160
 msgid "Check _Spelling"
 msgstr "Tikrinti _rašybą"
 
-#: gdictsrc/gdict-app.c:705
+#: gdictsrc/gdict-app.c:701
 msgid "Check word spelling"
 msgstr "Tikrinti žodžio rašybą"
 
-#: gdictsrc/gdict-app.c:749
+#: gdictsrc/gdict-app.c:745
 msgid "_Dictionary"
 msgstr "Žo_dynas"
 
-#: gdictsrc/gdict-app.c:785 gdictsrc/gnome-dictionary.desktop.in.h:1
-msgid "Dictionary"
-msgstr "Žodynas"
-
-#: gdictsrc/gdict-app.c:808
-msgid "_Word: "
+#: gdictsrc/gdict-app.c:948 gdictsrc/gdict-speller.c:134
+msgid "_Word:"
 msgstr "Žo_dis:"
 
-#: gdictsrc/gdict-app.c:836 gdictsrc/gdict-speller.c:147
+#: gdictsrc/gdict-app.c:976 gdictsrc/gdict-speller.c:146
 msgid "Word"
 msgstr "Žodis"
 
-#: gdictsrc/gdict-app.c:837 gdictsrc/gdict-app.c:838
-#: gdictsrc/gdict-speller.c:148
+#: gdictsrc/gdict-app.c:977 gdictsrc/gdict-app.c:978
+#: gdictsrc/gdict-speller.c:147
 msgid "Word Entry"
 msgstr "Žodžio įvestis"
 
-#: gdictsrc/gdict-app.c:837
+#: gdictsrc/gdict-app.c:977
 msgid "Enter a Word or select one from the list below"
 msgstr "Įvesk žodį arba pasirink iš žemiau esančio sąrašo"
 
-#: gdictsrc/gdict-app.c:840
+#: gdictsrc/gdict-app.c:980
 msgid "Look Up for a Word"
 msgstr "Ieškoti žodžio"
 
-#: gdictsrc/gdict-applet.c:263
+#: gdictsrc/gdict-applet.c:137
 msgid "_Lookup"
 msgstr "_Ieškoti"
 
-#: gdictsrc/gdict-defbox.c:643 gdictsrc/gdict-speller.c:488
+#: gdictsrc/gdict-applet.c:148
+msgid "Dictionary word entry"
+msgstr "Žodžio žodyne įvedimas"
+
+#: gdictsrc/gdict-defbox.c:665 gdictsrc/gdict-speller.c:477
 #, c-format
 msgid "Error invoking query: %s"
 msgstr "Klaida išsiunčiant užklausą: %s"
 
-#: gdictsrc/gdict-pref-dialog.c:37
-msgid "Headword:"
-msgstr ""
-
-#: gdictsrc/gdict-pref-dialog.c:38
-msgid "Sub-number:"
-msgstr ""
-
-#: gdictsrc/gdict-pref-dialog.c:39
-msgid "Pronunciation:"
-msgstr "Tarimas:"
-
-#: gdictsrc/gdict-pref-dialog.c:40
-msgid "Etymology:"
-msgstr "Etimologija:"
-
-#: gdictsrc/gdict-pref-dialog.c:41
-msgid "Part of speech:"
-msgstr "Kalbos dalis:"
-
-#: gdictsrc/gdict-pref-dialog.c:42
-msgid "Example:"
-msgstr "Pavyzdys:"
-
-#: gdictsrc/gdict-pref-dialog.c:43
-msgid "Main body:"
-msgstr "Pagrindinis kūnas:"
-
-#: gdictsrc/gdict-pref-dialog.c:44
-msgid "Cross-reference:"
-msgstr "Kryžminė nuoroda:"
-
-#: gdictsrc/gdict-pref-dialog.c:186
+#: gdictsrc/gdict-pref-dialog.c:158
 msgid "Dictionary Preferences"
-msgstr "Žodyno parinktys"
+msgstr "Žodyno nustatymai"
 
-#: gdictsrc/gdict-pref-dialog.c:198
+#: gdictsrc/gdict-pref-dialog.c:171
 msgid "Smart _lookup"
 msgstr "Gudri _paieška"
 
-#: gdictsrc/gdict-pref-dialog.c:211
+#: gdictsrc/gdict-pref-dialog.c:189
 msgid "_Server:"
 msgstr "_Serveris:"
 
-#: gdictsrc/gdict-pref-dialog.c:218
-#, fuzzy
+#: gdictsrc/gdict-pref-dialog.c:196
 msgid "De_fault Server"
-msgstr "Įprasta strategija"
+msgstr "Į_prastas serveris"
 
-#: gdictsrc/gdict-pref-dialog.c:224
+#: gdictsrc/gdict-pref-dialog.c:205
 msgid "Reset server to default"
-msgstr ""
+msgstr "Atstatyti įprastą serverį"
 
-#: gdictsrc/gdict-pref-dialog.c:226
+#: gdictsrc/gdict-pref-dialog.c:213
 msgid "_Port:"
 msgstr "_Prievadas:"
 
-#: gdictsrc/gdict-pref-dialog.c:240
-#, fuzzy
+#: gdictsrc/gdict-pref-dialog.c:229
 msgid "Def_ault Port"
-msgstr "Įp_rastas"
+msgstr "Įp_rastas prievadas"
 
-#: gdictsrc/gdict-pref-dialog.c:247
+#: gdictsrc/gdict-pref-dialog.c:238
 msgid "Reset port to default"
-msgstr ""
+msgstr "Atstatyti įprastą prievadą"
 
-#: gdictsrc/gdict-pref-dialog.c:248
+#: gdictsrc/gdict-pref-dialog.c:239
 msgid "Server"
 msgstr "Serveris"
 
-#: gdictsrc/gdict-pref-dialog.c:249
+#: gdictsrc/gdict-pref-dialog.c:240
 msgid "Server Entry"
 msgstr "Serverio įvestis"
 
-#: gdictsrc/gdict-pref-dialog.c:249
+#: gdictsrc/gdict-pref-dialog.c:240
 msgid "Enter the Server Name"
 msgstr "Įvesk serverio vardą"
 
-#: gdictsrc/gdict-pref-dialog.c:252
+#: gdictsrc/gdict-pref-dialog.c:242
 msgid "Port"
 msgstr "Prievadas"
 
-#: gdictsrc/gdict-pref-dialog.c:253
+#: gdictsrc/gdict-pref-dialog.c:243
 msgid "Port Entry"
 msgstr "Prievado įvestis"
 
-#: gdictsrc/gdict-pref-dialog.c:253
+#: gdictsrc/gdict-pref-dialog.c:243
 msgid "Enter the Port Number"
 msgstr "Įvesk privado numerį"
 
-#: gdictsrc/gdict-pref-dialog.c:258
+#: gdictsrc/gdict-pref-dialog.c:252
 msgid "_Database:"
 msgstr "_Duomenų bazė:"
 
-#: gdictsrc/gdict-pref-dialog.c:265
+#: gdictsrc/gdict-pref-dialog.c:259
 msgid "D_efault strategy:"
 msgstr "Įp_rasta strategija:"
 
-#: gdictsrc/gdict-pref-dialog.c:458
+#: gdictsrc/gdict-pref-dialog.c:452
 msgid "Search all databases"
 msgstr "Ieškoti visose duomenų bazėse"
 
-#: gdictsrc/gdict-pref-dialog.c:623
+#: gdictsrc/gdict-pref-dialog.c:613
 msgid "Database"
 msgstr "Duomenų bazė"
 
-#: gdictsrc/gdict-pref-dialog.c:623
+#: gdictsrc/gdict-pref-dialog.c:613
 msgid "Database Name"
 msgstr "Duomenų bazės vardas"
 
-#: gdictsrc/gdict-pref-dialog.c:635
+#: gdictsrc/gdict-pref-dialog.c:629
 msgid "Default Strategy"
 msgstr "Įprasta strategija"
 
-#: gdictsrc/gdict-speller.c:135
-msgid "_Word:"
-msgstr "Žo_dis:"
+#: gdictsrc/gdict-pref-dialog.c:656
+#, c-format
+msgid ""
+"There was an error displaying help: \n"
+"%s"
+msgstr ""
+"Rodant pagalbą įvyko klaida:\n"
+"%s"
 
-#: gdictsrc/gdict-speller.c:148
+#: gdictsrc/gdict-speller.c:147
 msgid "Enter a word to know the spelling"
 msgstr "Įvesk žodį, kurio rašybą nori sužinoti"
 
 #: gdictsrc/gdict-speller.c:153
+msgid "Search s_trategy:"
+msgstr "Paieškos s_trategija:"
+
+#: gdictsrc/gdict-speller.c:165
 msgid "Click to do the spell check"
 msgstr "Paspausk, kad patikrintum rašybą"
 
-#: gdictsrc/gdict-speller.c:158
-msgid "Search S_trategy:"
-msgstr "Paieškos s_trategija:"
+#: gdictsrc/gdict-speller.c:169
+msgid "Search _results:"
+msgstr "Paieškos _rezultatai:"
 
-#: gdictsrc/gdict-speller.c:174
-msgid "Search _Results"
-msgstr "Paieškos _rezultatai"
-
-#: gdictsrc/gdict-speller.c:236
+#: gdictsrc/gdict-speller.c:229
 msgid "Check Spelling"
 msgstr "Tikrinti rašybą"
 
-#: gdictsrc/gdict-speller.c:654
+#: gdictsrc/gdict-speller.c:643
 msgid "Search Strategy"
 msgstr "Paieškos strategija"
 
@@ -898,32 +315,35 @@ msgstr "Privadas, naudojamas jungtis prie serverio"
 msgid ""
 "Specify whether to use smart lookup. This key is dependant on whether the "
 "dictionary server supports this option. The default is TRUE"
-msgstr ""
+msgstr "Nurodykite ar naudoti "
 
 #: gdictsrc/gdict.schemas.in.h:4
 msgid "The database to use in the dictionary server."
-msgstr ""
+msgstr "Naudojama žodynų serverio duomenų bazė"
 
 #: gdictsrc/gdict.schemas.in.h:5
 msgid ""
 "The dictionary server to connect to. The default server is dict.org. See "
 "http://www.dict.org for details on other servers"
 msgstr ""
+"Naudojamas žodyno serveris. Standartinis serveris yra dict.org. Informacijos "
+"apie kitus serverius ieškokite tarp http://www.dict.org"
 
 #: gdictsrc/gdict.schemas.in.h:6
 msgid ""
 "The name of the individual database to use in the dictionary server. ! "
 "specifies that gnome-dictionary should search all databases in a given server"
 msgstr ""
+"Naudojamos žodyno serverio duomenų bazės vardas. ! nurodo, kad gnome-"
+"dictionary vykdytų paiešką visose pasirinkto serverio bazėse "
 
 #: gdictsrc/gdict.schemas.in.h:7
 msgid "The port number to connect to. The default port is 2628."
-msgstr ""
+msgstr "Jungiantis naudojamas prievadas. Paprastai prievado numeris yra 2628."
 
 #: gdictsrc/gdict.schemas.in.h:8
-#, fuzzy
 msgid "The search strategy to use"
-msgstr "Paieškos strategija"
+msgstr "Naudojama paieškos strategija"
 
 #: gdictsrc/gdict.schemas.in.h:9
 msgid ""
@@ -931,12 +351,15 @@ msgid ""
 "the dictionary server supports. The default strategy is 'lev' - Match words "
 "within Levenshtein distance one"
 msgstr ""
+"Naudojama paieškos strategija. Ši reikšmė priklauso nuo to, kokias "
+"strategijas palaiko žodyno serveris. Įprasta reikšmė yra „lev“ - Rasti "
+"sutampančius žodžius su Levenšteino pirmo lygio paklaida"
 
 #: gdictsrc/gdict.schemas.in.h:10
 msgid "Use smart lookup"
 msgstr "Naudoti gudrią paiešką"
 
-#: gfloppy/gfloppy.desktop.in.h:1
+#: gfloppy/gfloppy.desktop.in.h:1 gfloppy/src/gfloppy2.glade.h:11
 msgid "Floppy Formatter"
 msgstr "Diskelių formatavimas"
 
@@ -944,237 +367,278 @@ msgstr "Diskelių formatavimas"
 msgid "Format Floppy Disks"
 msgstr "Diskelių formatavimo įrankis"
 
-#: gfloppy/src/badblocks.c:102
-msgid "MInternal Error: Unable to seek to the correct location."
+#: gfloppy/gfloppy.schemas.in.h:1
+msgid ""
+"0 for the quick format, 1 for a standard one (adds a low-level format) and "
+"finally 2 for a thorough format (adds a bad blocks scan)."
 msgstr ""
+"0 reiškia greitą formatavimą, 1 - standartinį (su žemesnio lygio "
+"formatavimu), o 2 - kruopštų (su blogų sektorių testais)."
 
-#: gfloppy/src/badblocks.c:111
-#, c-format
-msgid "MInternal Error: Weird value (%ld) in do_test\n"
+#: gfloppy/gfloppy.schemas.in.h:2
+msgid "ADVANCED USERS ONLY - Default backend for FAT formatting"
+msgstr "TIK PATYRUSIEMS VARTOTOJAMS - Įprasta FAT formatavimo programa"
+
+#: gfloppy/gfloppy.schemas.in.h:3
+msgid "Default filesystem type"
+msgstr "Įprastas bylų sistemos tipas"
+
+#: gfloppy/gfloppy.schemas.in.h:4
+msgid "Default formatting mode"
+msgstr "Įprastas formatavimo režimas"
+
+#: gfloppy/gfloppy.schemas.in.h:5
+msgid ""
+"TRUE to set mkdosfs as the preferred FAT formatting backend or FALSE to set "
+"mtools as the preferred FAT formatting backend."
 msgstr ""
+"TRUE nustato, kad mkdosfs yra pagrindinis FAT formatavimo įrankis, o FALSE "
+"FAT formatavimui naudos mtools programas."
+
+#: gfloppy/gfloppy.schemas.in.h:6
+msgid "ext2 for the linux native filesystem or fat for the DOS filesystem."
+msgstr "ext2 yra linux bylų sistema, o fat - DOS bylų sistema."
+
+#: gfloppy/src/badblocks.c:94
+msgid "Internal Error: Unable to seek to the correct location."
+msgstr "Vidinė klaida: Nepavyko pereiti į reikiamą padėtį."
+
+#: gfloppy/src/badblocks.c:103
+#, c-format
+msgid "Internal Error: Weird value (%ld) in do_test\n"
+msgstr "Vidinė klaida: Neįprasta do_test reikšmė (%ld)\n"
 
 #. while (!i)
 #. ;
-#: gfloppy/src/badblocks.c:269
-msgid "MChecking for bad blocks..."
-msgstr "MIeškoma blogų blokų..."
+#: gfloppy/src/badblocks.c:261
+msgid "Checking for bad blocks..."
+msgstr "Ieškoma blogų blokų..."
 
-#: gfloppy/src/badblocks.c:281
+#: gfloppy/src/badblocks.c:273
 #, c-format
-msgid "MFailed to open device %s for badblock checking\n"
-msgstr "MNepavyko atidaryti %s įrenginio blogų blokų patikrinimui\n"
+msgid "Failed to open device %s for badblock checking\n"
+msgstr "Nepavyko atidaryti %s įrenginio blogų blokų patikrinimui\n"
 
-#: gfloppy/src/badblocks.c:301 gfloppy/src/gfloppy.c:536
-msgid "MChecking for bad blocks... Done"
-msgstr "MIeškoma blogų blokų... Atlika"
+#: gfloppy/src/badblocks.c:293 gfloppy/src/gfloppy.c:534
+msgid "Checking for bad blocks... Done"
+msgstr "Ieškoma blogų blokų... Atlika"
 
-#: gfloppy/src/fdformat.c:44
-msgid "MFormatting the disk..."
-msgstr "MFormatuoju diskelį..."
+#: gfloppy/src/fdformat.c:49
+msgid "Formatting the disk..."
+msgstr "Formatuojamas diskelis..."
 
-#: gfloppy/src/fdformat.c:46
-msgid "EI don't know what this is, but it's very wrong."
-msgstr "ENežinau kas tai yra, bet tai kažkas labai blogo."
+#: gfloppy/src/fdformat.c:52
+msgid "I don't know what this is, but it's very wrong."
+msgstr "Nežinau kas tai yra, bet tai kažkas labai blogo."
 
-#: gfloppy/src/fdformat.c:54 gfloppy/src/fdformat.c:66
+#: gfloppy/src/fdformat.c:60 gfloppy/src/fdformat.c:73
 #, c-format
-msgid "EError formatting track #%d"
-msgstr "EKlaida formatuojant takelį #%d"
+msgid "Error formatting track #%d"
+msgstr "Klaida formatuojant takelį #%d"
 
-#: gfloppy/src/fdformat.c:74
-msgid "EError during completion of formatting"
-msgstr "EKlaida užbaigiant formatavimą"
+#: gfloppy/src/fdformat.c:82
+msgid "Error during completion of formatting"
+msgstr "Klaida užbaigiant formatavimą"
 
 #. XXXX - need to tell parent we're finished
-#: gfloppy/src/fdformat.c:78
-msgid "MFormatting the disk... Done"
-msgstr "MFormatuoju diskelį... Atlikta"
+#: gfloppy/src/fdformat.c:86
+msgid "Formatting the disk... Done"
+msgstr "Formatuojamas diskelis... Atlikta"
 
 #. XXXX - tell parent we're starting verify stage
-#: gfloppy/src/fdformat.c:94
-msgid "MVerifying the format..."
-msgstr "MTikrinu formatą..."
+#: gfloppy/src/fdformat.c:102
+msgid "Verifying the format..."
+msgstr "Tikrinamas formatas..."
 
-#: gfloppy/src/fdformat.c:99 gfloppy/src/fdformat.c:174
+#: gfloppy/src/fdformat.c:107 gfloppy/src/fdformat.c:192
 msgid ""
-"EUnable to write to the floppy.\n"
+"Unable to write to the floppy.\n"
 "\n"
 "Please confirm that it is not write-protected."
 msgstr ""
-"ENepavyko rašyti į diskelį.\n"
+"Nepavyko rašyti į diskelį.\n"
 "\n"
 "Prašau patvirtinti, kad į jį nėra uždrausta įrašyti."
 
-#: gfloppy/src/fdformat.c:102 gfloppy/src/fdformat.c:177
+#: gfloppy/src/fdformat.c:110 gfloppy/src/fdformat.c:195
 #, c-format
-msgid "EInsufficient permissions to open floppy device %s."
-msgstr "ENepakankamos teisės, kad atidaryčiau diskelio įrenginį %s."
+msgid "Insufficient permissions to open floppy device %s."
+msgstr "Nepakankamos teisės, kad atidaryčiau diskelio įrenginį %s."
 
-#: gfloppy/src/fdformat.c:106 gfloppy/src/fdformat.c:181
+#: gfloppy/src/fdformat.c:114 gfloppy/src/fdformat.c:199
 msgid ""
-"EUnable to access the floppy disk.\n"
+"Unable to access the floppy disk.\n"
 "\n"
 "Please confirm that it is in the drive\n"
 "with the drive door shut."
 msgstr ""
-"ENepavyko pasiekti diskelio.\n"
+"Nepavyko pasiekti diskelio.\n"
 "\n"
 "Prašau patvirtinti, kad jis yraįrenginyje, o durelės uždarytos."
 
-#: gfloppy/src/fdformat.c:109
+#: gfloppy/src/fdformat.c:117
 #, c-format
 msgid ""
-"EGeneric error accessing floppy device %s.\n"
+"Generic error accessing floppy device %s.\n"
 "\n"
 "Error code %s:%d"
 msgstr ""
-"EPaprasta klaida prieinant prie diskelio įrenginio %s.\n"
+"Paprasta klaida prieinant prie diskelio įrenginio %s.\n"
 "\n"
 "Klaidos kodas %s:%d"
 
-#: gfloppy/src/fdformat.c:129
+#: gfloppy/src/fdformat.c:140
 #, c-format
 msgid ""
-"ERead Error:\n"
+"Read Error:\n"
 "Problem reading cylinder %d, expected %d, read %d"
 msgstr ""
-"ESkaitymo klaida:\n"
+"Skaitymo klaida:\n"
 "Problema skaitant cilindrą %d - tikėtasi %d, perskaityta %d"
 
-#: gfloppy/src/fdformat.c:132
+#: gfloppy/src/fdformat.c:143
 #, c-format
-msgid "EProblem reading cylinder %d, expected %d, read %d"
-msgstr "EProblema skaitant cilindrą %d - tikėtasi %d, perskaityta %d"
+msgid "Problem reading cylinder %d, expected %d, read %d"
+msgstr "Problema skaitant cilindrą %d - tikėtasi %d, perskaityta %d"
 
-#: gfloppy/src/fdformat.c:141
+#: gfloppy/src/fdformat.c:154
 #, c-format
-msgid "MBad data in cyl %d.  Continuing... "
-msgstr "MBlogi duomenys cilindre %d. Tęsiame toliau... "
+msgid "Bad data in cyl %d.  Continuing... "
+msgstr "Blogi duomenys cilindre %d. Tęsiame toliau... "
 
-#: gfloppy/src/fdformat.c:148
+#: gfloppy/src/fdformat.c:163
 #, c-format
-msgid "EError closing device %s"
-msgstr "EKlaida uždarant įrenginį %s"
+msgid "Error closing device %s"
+msgstr "Klaida uždarant įrenginį %s"
 
-#: gfloppy/src/fdformat.c:153
-msgid "MVerifying the format... Done"
-msgstr "MTikrinu formatą... Atlikta"
+#: gfloppy/src/fdformat.c:170
+msgid "Verifying the format... Done"
+msgstr "Tikrinamas formatas... Atlikta"
 
-#: gfloppy/src/fdformat.c:165
+#: gfloppy/src/fdformat.c:182
 #, c-format
-msgid "EUnable to write to device %s"
-msgstr "ENegaliu rašyti į įrenginį %s"
+msgid "Unable to write to device %s"
+msgstr "Negalima rašyti į įrenginį %s"
 
-#: gfloppy/src/fdformat.c:184
+#: gfloppy/src/fdformat.c:202
 #, c-format
 msgid ""
-"EGeneric error accessing floppy device %s.\n"
+"Generic error accessing floppy device %s.\n"
 "\n"
 "Error code %s"
 msgstr ""
-"EPaprasta klaida prieinant prie diskelio įrenginio %s.\n"
+"Paprasta klaida prieinant prie diskelio įrenginio %s.\n"
 "\n"
 "Klaidos kodas %s"
 
-#: gfloppy/src/fdformat.c:194
-#, fuzzy
-msgid "ECould not determine current floppy geometry."
-msgstr "ENepavyko sužinoti esamą diskelio tipą"
+#: gfloppy/src/fdformat.c:214
+msgid "Could not determine current floppy geometry."
+msgstr "Nepavyko atpažinti esamo diskelio tipo"
 
-#: gfloppy/src/gfloppy.c:229
-msgid "EError while creating a unique filename for the bad blocks list file."
-msgstr ""
+#: gfloppy/src/gfloppy.c:222
+msgid "Error while creating a unique filename for the bad blocks list file."
+msgstr "Įvyko klaida sukuriant bylą, skirtą blogų blokų sąrašui."
 
-#: gfloppy/src/gfloppy.c:249
-msgid "EError while filling the bad blocks list file."
-msgstr ""
+#: gfloppy/src/gfloppy.c:242
+msgid "Error while filling the bad blocks list file."
+msgstr "Įvyko klaida pildant blogų sektorių bylą."
 
-#: gfloppy/src/gfloppy.c:308
+#: gfloppy/src/gfloppy.c:305
 #, c-format
-msgid "EError while spawning the (%s) command: %s."
-msgstr ""
+msgid "Error while spawning the (%s) command: %s."
+msgstr "Įvyko klaida paleidžiant komandą (%s): %s."
 
-#: gfloppy/src/gfloppy.c:332
-msgid "EUnknown mke2fs starting signature, cancelling."
-msgstr ""
+#: gfloppy/src/gfloppy.c:331
+msgid "Unknown mke2fs starting signature, cancelling."
+msgstr "Nežinomas mke2fs pradžios ženklas, atšaukiama."
 
-#: gfloppy/src/gfloppy.c:346
+#: gfloppy/src/gfloppy.c:345
 #, c-format
 msgid ""
-"EThe filesystem creation utility (%s) reported the following errors:\n"
+"The filesystem creation utility (%s) reported the following errors:\n"
 "\n"
 "%s (%d)"
 msgstr ""
+"Bylų sistemos kūrimo programa (%s) išvedė šias klaidas:\n"
+"\n"
+"%s (%d)"
 
-#: gfloppy/src/gfloppy.c:363
-msgid "EAbnormal child process termination."
-msgstr ""
+#: gfloppy/src/gfloppy.c:362
+msgid "Abnormal child process termination."
+msgstr "Nenormali antrinio proceso pabaiga."
 
-#: gfloppy/src/gfloppy.c:388
+#: gfloppy/src/gfloppy.c:387
 #, c-format
-msgid "EError while spawning the mbadblocks command: %s."
-msgstr ""
+msgid "Error while spawning the mbadblocks command: %s."
+msgstr "Įvyko klaida paleidžiant mbadblocks komandą: %s."
 
-#: gfloppy/src/gfloppy.c:400
+#: gfloppy/src/gfloppy.c:399
 #, c-format
 msgid ""
-"EThe bad blocks checking utility (mbadblocks) reported the following "
-"errors:\n"
+"The bad blocks checking utility (mbadblocks) reported the following errors:\n"
 "%s."
 msgstr ""
+"Sektorių tikrinimo programa (mbadblocks) pranešė apie šias klaidas:\n"
+"%s."
 
-#: gfloppy/src/gfloppy.c:443
-msgid "EAbnormal mbadblocks child process termination."
-msgstr ""
+#: gfloppy/src/gfloppy.c:442
+msgid "Abnormal mbadblocks child process termination."
+msgstr "Nenormali mbadblocks antrinio proceso darbo pabaiga."
 
 #. make the filesystem
-#: gfloppy/src/gfloppy.c:470 gfloppy/src/gfloppy.c:510
-msgid "MMaking filesystem on disk..."
-msgstr "MKuriama bylų sistema diske..."
+#: gfloppy/src/gfloppy.c:468 gfloppy/src/gfloppy.c:508
+msgid "Making filesystem on disk..."
+msgstr "Kuriama bylų sistema diske..."
 
-#: gfloppy/src/gfloppy.c:478
-msgid "EUnable to create filesystem correctly."
-msgstr "ENegalėjau teisingai sukurti bylų sistemos."
+#: gfloppy/src/gfloppy.c:476
+msgid "Unable to create filesystem correctly."
+msgstr "Nepavyko teisingai sukurti bylų sistemos."
 
-#: gfloppy/src/gfloppy.c:482 gfloppy/src/gfloppy.c:522
-msgid "MMaking filesystem on disk... Done"
-msgstr "MKuriama bylų sistema diske... Atlikta"
+#: gfloppy/src/gfloppy.c:481 gfloppy/src/gfloppy.c:520
+msgid "Making filesystem on disk... Done"
+msgstr "Kuriama bylų sistema diske... Atlikta"
 
-#: gfloppy/src/gfloppy.c:527
-msgid "MChecking for bad blocks... (this might take a while)"
-msgstr "MIeškoma blogų blokų... (tai gali šiek tiek užtrukti)"
+#: gfloppy/src/gfloppy.c:525
+msgid "Checking for bad blocks... (this might take a while)"
+msgstr "Ieškoma blogų blokų... (tai gali šiek tiek užtrukti)"
 
-#: gfloppy/src/gfloppy.c:532
-#, fuzzy
-msgid "EError while checking the bad blocks."
-msgstr "MIeškoma blogų blokų..."
+#: gfloppy/src/gfloppy.c:530
+msgid "Error while checking the bad blocks."
+msgstr "Įvyko klaida ieškant blogų blokų."
 
 #: gfloppy/src/gfloppy2.glade.h:1
 msgid "    "
-msgstr ""
+msgstr "    "
+
+#: gfloppy/src/gfloppy2.glade.h:2
+msgid "*"
+msgstr "*"
 
 #: gfloppy/src/gfloppy2.glade.h:3
 msgid ""
-"<b>Note</b>: The mbadblocks utility isn't installed on this system. It must "
-"be installed in order to make a thorough DOS (fat) formatting."
+"<small><i><b>Note</b>: The mbadblocks utility isn't installed on this "
+"system.  It must be installed in order to perform a thorough DOS (fat) "
+"formatting.</i></small>"
 msgstr ""
+"<small><i><b>Pastaba</b>: mbadblocks programa nėra įdiegta šioje sistemoje. "
+"Ši programa yra būtina norint vykdyti kruopštų DOS (fat) bylų sistemos "
+"formatavimą.</i></small>"
 
 #: gfloppy/src/gfloppy2.glade.h:4
-msgid "<span weight=\"bold\">Filesystem settings</span>"
-msgstr ""
+msgid "<span weight=\"bold\">Filesystem Settings</span>"
+msgstr "<span weight=\"bold\">Bylų Sistemos Nustatymai</span>"
 
 #: gfloppy/src/gfloppy2.glade.h:5
-msgid "<span weight=\"bold\">Formatting mode</span>"
-msgstr ""
+msgid "<span weight=\"bold\">Formatting Mode</span>"
+msgstr "<span weight=\"bold\">Formatavimo Režimas</span>"
 
 #: gfloppy/src/gfloppy2.glade.h:6
-msgid "<span weight=\"bold\">Physical settings</span>"
-msgstr ""
+msgid "<span weight=\"bold\">Physical Settings</span>"
+msgstr "<span weight=\"bold\">Fiziniai Nustatymai</span>"
 
 #: gfloppy/src/gfloppy2.glade.h:7
-#, fuzzy
 msgid "DOS (FAT)"
-msgstr "DOS (fat)"
+msgstr "DOS (FAT)"
 
 #: gfloppy/src/gfloppy2.glade.h:8
 msgid "Double Density 3.5\" (720KB)"
@@ -1188,18 +652,13 @@ msgstr "Dvigubo tankumo 5.25\" (360KB)"
 msgid "File system _type:"
 msgstr "Bylų sistemos _tipas:"
 
-#: gfloppy/src/gfloppy2.glade.h:11
+#: gfloppy/src/gfloppy2.glade.h:12
 msgid "Floppy _density:"
 msgstr "Diskelio t_ankumas:"
 
-#: gfloppy/src/gfloppy2.glade.h:12
+#: gfloppy/src/gfloppy2.glade.h:13
 msgid "Floppy de_vice:"
 msgstr "Diskelio į_renginys:"
-
-#: gfloppy/src/gfloppy2.glade.h:13
-#, fuzzy
-msgid "Floppy formatter"
-msgstr "Diskelių formatavimas"
 
 #: gfloppy/src/gfloppy2.glade.h:14
 msgid "High Density 3.5\" (1.44MB)"
@@ -1215,38 +674,40 @@ msgstr "Linux Native (ext2)"
 
 #: gfloppy/src/gfloppy2.glade.h:17
 msgid "Thorou_gh (adds a bad blocks check to the standard mode)"
-msgstr ""
+msgstr "_Kruopštus (prideda blogų sektorių testus)"
 
 #: gfloppy/src/gfloppy2.glade.h:18
-#, fuzzy
 msgid "Volume _name:"
-msgstr "Bylos vardas: "
+msgstr "Tomo vardas: "
 
 #: gfloppy/src/gfloppy2.glade.h:19
 msgid "_Format"
 msgstr "_Formatuoti"
 
 #: gfloppy/src/gfloppy2.glade.h:20
-#, fuzzy
 msgid "_Quick (only creates the filesystem)"
-msgstr "ENegalėjau sukurti bylų sistemos."
+msgstr "_Greitas (tik sukuria bylų sistemą)"
 
 #: gfloppy/src/gfloppy2.glade.h:21
 msgid "_Standard (adds a low-level format to the quick mode)"
 msgstr ""
+"_Standartinis (prie bylų sistemos sužymėjimo prideda žemesnio lygio "
+"formatavimą)"
 
-#: gfloppy/src/main.c:132
+#: gfloppy/src/main.c:140
 msgid ""
 "Neither the mke2fs nor the mkdosfs/mformat applications are installed. You "
 "can't format a floppy without one of them."
 msgstr ""
+"Neįdiegtos nei mke2fs, nei mkdosfs/mformat programos. Jūs negalite "
+"formatuoti diskelių be šių programų."
 
-#: gfloppy/src/main.c:155 gfloppy/src/main.c:199
+#: gfloppy/src/main.c:164
 #, c-format
 msgid "Unable to open the device %s, formatting cannot continue."
 msgstr "Formatuoti negalima - nepavyko atidaryti %s įrenginio."
 
-#: gfloppy/src/main.c:158 gfloppy/src/main.c:202
+#: gfloppy/src/main.c:167 gfloppy/src/main.c:219
 #, c-format
 msgid ""
 "The device %s is disconnected.\n"
@@ -1255,7 +716,7 @@ msgstr ""
 "Įrenginys %s yra atjungtas.\n"
 "Jei neorite tęsti - prijunkite įrenginį."
 
-#: gfloppy/src/main.c:161 gfloppy/src/main.c:205
+#: gfloppy/src/main.c:170 gfloppy/src/main.c:222
 #, c-format
 msgid ""
 "You do not have the proper permissions to write to %s, formatting will not "
@@ -1265,7 +726,15 @@ msgstr ""
 "Formatavimas neįmanomas - jūs neturite reikiamų teisių, kad įrašyti į %s.\n"
 "Susisiekite su sistemos administratoriumi, kad gautumėte rašymo teises."
 
-#: gfloppy/src/main.c:391
+#: gfloppy/src/main.c:216
+msgid "Unable to open any device, formatting cannot continue."
+msgstr "Negaliu atidaryti jokio įrenginio, formatavimas negali būti tęsiamas."
+
+#: gfloppy/src/main.c:219 gfloppy/src/main.c:222
+msgid "/dev/floppy/0 or /dev/fd0"
+msgstr "/dev/floppy/0 arba /dev/fd0"
+
+#: gfloppy/src/main.c:394
 #, c-format
 msgid ""
 "Could not display help for the floppy formatter.\n"
@@ -1274,24 +743,35 @@ msgstr ""
 "Negaliu parodyti pagalbos.\n"
 "%s"
 
-#: gfloppy/src/main.c:425
+#: gfloppy/src/main.c:427
 msgid "The volume name can't contain any blank space."
-msgstr ""
+msgstr "Tomo vardas negali turėti jokių tarpų."
 
-#: gfloppy/src/main.c:474
+#: gfloppy/src/main.c:477
 msgid "The device to format"
 msgstr "Įrenginys, kurį formatuoti"
 
-#: gfloppy/src/main.c:475
+#: gfloppy/src/main.c:478
 msgid "DEVICE"
 msgstr "ĮRENGINYS"
 
 #: gfloppy/src/progress.c:123
 #, c-format
 msgid ""
+"The floppy has been formatted, but <b>%d bad block</b> (out of %d) has been "
+"found and marked."
+msgid_plural ""
 "The floppy has been formatted, but <b>%d bad blocks</b> (out of %d) have "
 "been found and marked."
-msgstr ""
+msgstr[0] ""
+"Diskelis buvo suformatuotas, bet buvo aptiktas ir pažymėtas <b>%d blogas "
+"sektorius</b> (iš viso sektorių yra %d)."
+msgstr[1] ""
+"Diskelis buvo suformatuotas, bet buvo aptikti ir pažymėti <b>%d blogi "
+"sektoriai</b> (iš viso sektorių yra %d)."
+msgstr[2] ""
+"Diskelis buvo suformatuotas, bet buvo aptikta ir pažymėta <b>%d blogų "
+"sektorių</b> (iš viso sektorių yra %d)."
 
 #: gfloppy/src/progress.c:126
 msgid "Floppy formatted successfully."
@@ -1301,165 +781,362 @@ msgstr "Diskelis suformatuotas sėkmingai."
 msgid "Floppy formatting cancelled."
 msgstr "Diskelio formatavimas nutrauktas."
 
-#: gfloppy/src/progress.c:172
-#, fuzzy
-msgid "Format progress"
-msgstr "Formatavimo pažanga."
+#: gfloppy/src/progress.c:175
+msgid "Format Progress"
+msgstr "Formatavimo pažanga"
 
-#: gfloppy/gfloppy.schemas.in.h:1
-msgid ""
-"0 for the quick format, 1 for a standard one (adds a low-level format) and "
-"finally 2 for a thorough format (adds a bad blocks scan)."
-msgstr ""
+#: gsearchtool/gnome-search-tool.desktop.in.h:1
+msgid "Find files, folders, and documents on your computer"
+msgstr "Raskit bylas, aplankus ir dokumentus esančius Jūsų kompiuteryje"
 
-#: gfloppy/gfloppy.schemas.in.h:2
-msgid "ADVANCED USERS ONLY - Default backend for FAT formatting"
-msgstr ""
-
-#: gfloppy/gfloppy.schemas.in.h:3
-#, fuzzy
-msgid "Default filesystem type"
-msgstr "Bylų sistemos _tipas:"
-
-#: gfloppy/gfloppy.schemas.in.h:4
-#, fuzzy
-msgid "Default formatting mode"
-msgstr "Įprasta strategija"
-
-#: gfloppy/gfloppy.schemas.in.h:5
-msgid ""
-"TRUE to set mkdosfs as the preferred FAT formatting backend or FALSE to set "
-"mtools as the preferred FAT formatting backend."
-msgstr ""
-
-#: gfloppy/gfloppy.schemas.in.h:6
-msgid "ext2 for the linux native filesystem or fat for the DOS filesystem."
-msgstr ""
-
-#: gsearchtool/gnome-search-tool.desktop.in.h:1 gsearchtool/gsearchtool.c:1570
+#: gsearchtool/gnome-search-tool.desktop.in.h:2 gsearchtool/gsearchtool.c:600
+#: gsearchtool/gsearchtool.c:858 gsearchtool/gsearchtool.c:942
+#: gsearchtool/gsearchtool.c:2288 gsearchtool/gsearchtool.c:2313
 msgid "Search for Files"
 msgstr "Ieškoti bylų"
 
-#: gsearchtool/gnome-search-tool.desktop.in.h:2
-msgid "Search your disk for files"
-msgstr "Ieškoti bylų diske"
+#: gsearchtool/gsearchtool-alert-dialog.c:100
+msgid "Image/label border"
+msgstr "Paveikslėlio/etiketės rėmelis"
 
-#: gsearchtool/gsearchtool.c:63
-#, fuzzy
-msgid "Contains the text"
-msgstr "Kopijuoti tekstą"
+#: gsearchtool/gsearchtool-alert-dialog.c:101
+msgid "Width of border around the label and image in the alert dialog"
+msgstr "Rėmelio aplink etiketę ir paveikslėlį, aliarmo lange, plotis"
 
-#: gsearchtool/gsearchtool.c:65
-#, fuzzy
-msgid "Date modified less than (days)"
-msgstr "Keitimo data"
+#: gsearchtool/gsearchtool-alert-dialog.c:110
+msgid "Alert Type"
+msgstr "Aliarmo tipas"
 
-#: gsearchtool/gsearchtool.c:66
-#, fuzzy
-msgid "Date modified more than (days)"
-msgstr "Keitimo data"
+#: gsearchtool/gsearchtool-alert-dialog.c:111
+msgid "The type of alert"
+msgstr "Aliarmo tipas"
 
-#: gsearchtool/gsearchtool.c:68
-msgid "Size at least (kilobytes)"
+#: gsearchtool/gsearchtool-alert-dialog.c:119
+msgid "Alert Buttons"
+msgstr "Aliarmo mygtukai"
+
+#: gsearchtool/gsearchtool-alert-dialog.c:120
+msgid "The buttons shown in the alert dialog"
+msgstr "Mygtukai rodomi aliarmo lange"
+
+#: gsearchtool/gsearchtool-alert-dialog.c:172
+msgid "Show more _details"
+msgstr "Ro_dyti daugiau detalių"
+
+#: gsearchtool/gsearchtool-callbacks.c:50
+msgid "_Open"
+msgstr "_Atidaryti"
+
+#: gsearchtool/gsearchtool-callbacks.c:54
+msgid "O_pen Folder"
+msgstr "Atidaryti a_planką"
+
+#: gsearchtool/gsearchtool-callbacks.c:59
+msgid "Mo_ve to Trash"
+msgstr "Per_kelti į Šiukšlinę"
+
+#: gsearchtool/gsearchtool-callbacks.c:64
+msgid "_Save Results As..."
+msgstr "Išsaugoti rezultatus _kaip..."
+
+#: gsearchtool/gsearchtool-callbacks.c:111
+msgid "Could not open help document."
+msgstr "Nepavyko atidaryti pagalbos dokumento."
+
+#: gsearchtool/gsearchtool-callbacks.c:319
+#, c-format
+msgid "Are you sure you want to open %d document?"
+msgid_plural "Are you sure you want to open %d documents?"
+msgstr[0] "Ar Jūs tikrai norite atidaryti %d dokumentą?"
+msgstr[1] "Ar Jūs tikrai norite atidaryti %d dokumentus?"
+msgstr[2] "Ar Jūs tikrai norite atidaryti %d dokumentų?"
+
+#: gsearchtool/gsearchtool-callbacks.c:324
+#: gsearchtool/gsearchtool-callbacks.c:477
+#, c-format
+msgid "This will open %d separate window."
+msgid_plural "This will open %d separate windows."
+msgstr[0] "Tai atidarys %d atskirą langą."
+msgstr[1] "Tai atidarys %d atskirus langus."
+msgstr[2] "Tai atidarys %d atskirų langų."
+
+#: gsearchtool/gsearchtool-callbacks.c:384
+#: gsearchtool/gsearchtool-callbacks.c:418
+#: gsearchtool/gsearchtool-callbacks.c:967
+#: gsearchtool/gsearchtool-callbacks.c:1001
+#, c-format
+msgid "Could not open document \"%s\"."
+msgstr "Nepavyko atidaryti dokumento „%s“."
+
+#: gsearchtool/gsearchtool-callbacks.c:387
+#: gsearchtool/gsearchtool-callbacks.c:643
+#: gsearchtool/gsearchtool-callbacks.c:970
+msgid "The document does not exist."
+msgstr "Toks dokumentas neegzistuoja."
+
+#: gsearchtool/gsearchtool-callbacks.c:421
+#: gsearchtool/gsearchtool-callbacks.c:1004
+msgid "There is no installed viewer capable of displaying the document."
+msgstr "Nėra įdiegta šio tipo dokumentus galinti skaityti programa."
+
+#: gsearchtool/gsearchtool-callbacks.c:472
+#, c-format
+msgid "Are you sure you want to open %d folder?"
+msgid_plural "Are you sure you want to open %d folders?"
+msgstr[0] "Ar tikrai norite atidaryti %d katalogą?"
+msgstr[1] "Ar tikrai norite atidaryti %d katalogus?"
+msgstr[2] "Ar tikrai norite atidaryti %d katalogų?"
+
+#: gsearchtool/gsearchtool-callbacks.c:530
+#, c-format
+msgid "Could not open folder \"%s\"."
+msgstr "Nepavyko atverti aplanko „%s“."
+
+#: gsearchtool/gsearchtool-callbacks.c:537
+msgid "The nautilus file manager is not running."
+msgstr "Nautilus bylų tvarkyklė nepaleista."
+
+#: gsearchtool/gsearchtool-callbacks.c:640
+#, c-format
+msgid "Could not move \"%s\" to trash."
+msgstr "Nepavyko perkelti „%s“ į šiukšlinę."
+
+#: gsearchtool/gsearchtool-callbacks.c:680
+#, c-format
+msgid "Could not move \"%s\" to the trash."
+msgstr "Nepavyko perkelti „%s“ į šiukšlinę."
+
+#: gsearchtool/gsearchtool-callbacks.c:683
+#, c-format
+msgid "Moving \"%s\" failed: %s."
+msgstr "Perkelti „%s“ nepavyko: %s."
+
+#: gsearchtool/gsearchtool-callbacks.c:713
+#, c-format
+msgid "Do you want to delete \"%s\" permanently?"
+msgstr "Ar norite ištrinti „%s“ visam laikui?"
+
+#: gsearchtool/gsearchtool-callbacks.c:716
+#, c-format
+msgid "Trash is unavailable.  Could not move \"%s\" to the trash."
+msgstr "Šiukšlinė neprieinama.  Nepavyko perkelti „%s“ į šiukšlinę."
+
+#: gsearchtool/gsearchtool-callbacks.c:758
+#, c-format
+msgid "Could not delete \"%s\"."
+msgstr "Nepavyko ištrinti „%s“."
+
+#: gsearchtool/gsearchtool-callbacks.c:761
+#, c-format
+msgid "Deleting \"%s\" failed: %s."
+msgstr "Ištrinti „%s“ nepavyko: %s."
+
+#: gsearchtool/gsearchtool-callbacks.c:1189
+msgid "Save Search Results As..."
+msgstr "Išsaugoti paieškos rezultatus kaip..."
+
+#: gsearchtool/gsearchtool-callbacks.c:1241
+msgid "Could not save document."
+msgstr "Nepavyko išsaugoti dokumento."
+
+#: gsearchtool/gsearchtool-callbacks.c:1243
+msgid "You did not select a document name."
+msgstr "Jūs nepasirinkote dokumento vardo."
+
+#: gsearchtool/gsearchtool-callbacks.c:1269
+#: gsearchtool/gsearchtool-callbacks.c:1364
+#, c-format
+msgid "Could not save \"%s\" document to \"%s\"."
+msgstr "Nepavyko išsaugoti „%s“ dokumento „%s“."
+
+#: gsearchtool/gsearchtool-callbacks.c:1273
+msgid "The document name you selected is a folder."
+msgstr "Jūsų pasirinkto dokumento vardas yra aplankas."
+
+#: gsearchtool/gsearchtool-callbacks.c:1302
+#, c-format
+msgid "The document \"%s\" already exists.  Would you like to replace it?"
+msgstr "Dokumentas „%s“ jau egzistuoja.  Ar Jūs norite jį pakeisti?"
+
+#: gsearchtool/gsearchtool-callbacks.c:1306
+msgid "If you replace an existing file, its contents will be overwritten."
 msgstr ""
+"Jeigu Jūs pakeisite jau egzistuojančią bylą, jos turinys bus perrašytas."
 
-#: gsearchtool/gsearchtool.c:69
-msgid "Size at most (kilobytes)"
+#: gsearchtool/gsearchtool-callbacks.c:1317
+msgid "_Replace"
+msgstr "_Pakeisti"
+
+#: gsearchtool/gsearchtool-callbacks.c:1367
+msgid "You may not have write permissions to the document."
+msgstr "Jūs neturite teisės rašyti į šį dokumentą."
+
+#: gsearchtool/gsearchtool-support.c:68
+#, c-format
+msgid ""
+"GConf error:\n"
+"  %s"
 msgstr ""
+"GConf klaida:\n"
+"  %s"
 
-#: gsearchtool/gsearchtool.c:70
+#. Translators:  Below are the strings displayed in the 'Date Modified'
+#. column of the list view.  The format of this string can vary depending
+#. on age of a file.  Please modify the format of the timestamp to match
+#. your locale.  For example, to display 24 hour time replace the '%-I'
+#. with '%-H' and remove the '%p'.  (See bugzilla report #120434.)
+#: gsearchtool/gsearchtool-support.c:510
+msgid "today at %-I:%M %p"
+msgstr "šiandien %-I:%M %p"
+
+#: gsearchtool/gsearchtool-support.c:512
+msgid "yesterday at %-I:%M %p"
+msgstr "vakar %-I:%M %p"
+
+#: gsearchtool/gsearchtool-support.c:514 gsearchtool/gsearchtool-support.c:516
+msgid "%A, %B %-d %Y at %-I:%M:%S %p"
+msgstr "%Y %B %-d, %A  %H:%M:%S"
+
+#: gsearchtool/gsearchtool-support.c:687
+msgid "link (broken)"
+msgstr "nuoroda (neveikianti)"
+
+#: gsearchtool/gsearchtool-support.c:692
+#, c-format
+msgid "link to %s"
+msgstr "nuorodą į %s"
+
+#: gsearchtool/gsearchtool.c:74
+msgid "Contains the _text"
+msgstr "_Turi tekstą"
+
+#: gsearchtool/gsearchtool.c:76
+msgid "_Date modified less than"
+msgstr "Pakeista prieš _mažiau nei"
+
+#: gsearchtool/gsearchtool.c:76 gsearchtool/gsearchtool.c:77
+msgid "days"
+msgstr "dienų"
+
+#: gsearchtool/gsearchtool.c:77
+msgid "Date modified more than"
+msgstr "Pakeista prieš daugiau nei"
+
+#: gsearchtool/gsearchtool.c:79
+msgid "S_ize at least"
+msgstr "Dyd_is nemažesnis kaip"
+
+#: gsearchtool/gsearchtool.c:79 gsearchtool/gsearchtool.c:80
+msgid "kilobytes"
+msgstr "kilobaitų"
+
+#: gsearchtool/gsearchtool.c:80
+msgid "Si_ze at most"
+msgstr "D_ydis nedidesnis kaip"
+
+#: gsearchtool/gsearchtool.c:81
 msgid "File is empty"
 msgstr "Byla yra tuščia"
 
-#: gsearchtool/gsearchtool.c:72
-msgid "Owned by user"
-msgstr "Priklauso vartotojui"
+#: gsearchtool/gsearchtool.c:83
+msgid "Owned by _user"
+msgstr "Prikla_uso vartotojui"
 
-#: gsearchtool/gsearchtool.c:73
-msgid "Owned by group"
-msgstr "Priklauso grupei"
+#: gsearchtool/gsearchtool.c:84
+msgid "Owned by _group"
+msgstr "Priklauso _grupei"
 
-#: gsearchtool/gsearchtool.c:74
+#: gsearchtool/gsearchtool.c:85
 msgid "Owner is unrecognized"
-msgstr ""
+msgstr "Nežinomas savininkas"
 
-#: gsearchtool/gsearchtool.c:76
-#, fuzzy
-msgid "File is not named"
-msgstr "Bylos vardas nėra"
+#: gsearchtool/gsearchtool.c:87
+msgid "Na_me does not contain"
+msgstr "Varde _nėra"
 
-#: gsearchtool/gsearchtool.c:77
-#, fuzzy
-msgid "File matches regular expression"
-msgstr "Tenkina reguliarią išraišką"
+#: gsearchtool/gsearchtool.c:88
+msgid "Name matches regular e_xpression"
+msgstr "Vardas atitinka _reguliarią išraišką"
 
-#: gsearchtool/gsearchtool.c:79
+#: gsearchtool/gsearchtool.c:90
+msgid "Show hidden and backup files"
+msgstr "Rodyti paslėptas ir atsargines bylas"
+
+#: gsearchtool/gsearchtool.c:91
 msgid "Follow symbolic links"
 msgstr "Sekti simboliniais linkais"
 
-#: gsearchtool/gsearchtool.c:80
-#, fuzzy
+#: gsearchtool/gsearchtool.c:92
 msgid "Include other filesystems"
-msgstr "Neieškoti primontuotose bylų sistemose"
+msgstr "Ieškoti ir kitose bylų sistemose"
 
-#: gsearchtool/gsearchtool.c:398 gsearchtool/gsearchtool.c:824
+#: gsearchtool/gsearchtool.c:547 gsearchtool/gsearchtool.c:575
 msgid "No files found"
 msgstr "Bylų nerasta"
 
-#: gsearchtool/gsearchtool.c:483
+#: gsearchtool/gsearchtool.c:568
+msgid "(stopped)"
+msgstr "(sustabdyta)"
+
+#: gsearchtool/gsearchtool.c:574
+msgid "No Files Found"
+msgstr "Bylų nerasta"
+
+#: gsearchtool/gsearchtool.c:579
+#, c-format
+msgid "%d File Found"
+msgid_plural "%d Files Found"
+msgstr[0] "Rasta %d byla"
+msgstr[1] "Rastos %d bylos"
+msgstr[2] "Rasta %d bylų"
+
+#: gsearchtool/gsearchtool.c:583
+#, c-format
+msgid "%d file found"
+msgid_plural "%d files found"
+msgstr[0] "Rasta %d byla"
+msgstr[1] "Rastos %d bylos"
+msgstr[2] "Rasta %d bylų"
+
+#: gsearchtool/gsearchtool.c:689
 msgid "Entry changed called for a non entry option!"
-msgstr ""
+msgstr "Įrašo keitimo funkcija pritaikyta ne įrašo savybėms!"
 
-#: gsearchtool/gsearchtool.c:593
-msgid "Set the text of 'file is named'"
-msgstr ""
+#: gsearchtool/gsearchtool.c:942
+msgid "Searching..."
+msgstr "Ieškau..."
 
-#: gsearchtool/gsearchtool.c:594
-msgid "Set the text of 'look in folder'"
-msgstr ""
+#: gsearchtool/gsearchtool.c:963
+msgid "Set the text of 'Name contains'"
+msgstr "Nustatyti tekstą „Varde yra“ lauke"
 
-#: gsearchtool/gsearchtool.c:595
+#: gsearchtool/gsearchtool.c:964
+msgid "Set the text of 'Look in folder'"
+msgstr "Nustatyti tekstą „Ieškoti aplanke“ lauke"
+
+#: gsearchtool/gsearchtool.c:965
 msgid "Sort files by one of the following: name, folder, size, type, or date"
 msgstr ""
+"Rūšiuoti bylas pagal vieną iš šių požymių: vardą, aplanką, dydį, tipą ar datą"
 
-#: gsearchtool/gsearchtool.c:596
+#: gsearchtool/gsearchtool.c:966
 msgid "Set sort order to descending, the default is ascending"
-msgstr ""
+msgstr "Rūšiuoti mažėjimo tvarka. Pagal nutylėjimą rūšiuojama didėjant"
 
-#: gsearchtool/gsearchtool.c:597
+#: gsearchtool/gsearchtool.c:967
 msgid "Automatically start a search"
-msgstr ""
+msgstr "Automatiškai pradėti paiešką"
 
-#: gsearchtool/gsearchtool.c:601
-#, fuzzy, c-format
+#: gsearchtool/gsearchtool.c:972
+#, c-format
 msgid "Select the '%s' constraint"
-msgstr "Sekti simboliniais linkais"
+msgstr "Pasirinkti '%s' sąlygą"
 
-#: gsearchtool/gsearchtool.c:686
+#: gsearchtool/gsearchtool.c:1078
 msgid "Invalid option passed to sortby command line argument."
-msgstr ""
+msgstr "Netinkamas parametras pateiktas kaip rūšiavimo komandos argumentas."
 
-#: gsearchtool/gsearchtool.c:815
-msgid "(aborted)"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:828
-#, fuzzy
-msgid "One file found"
-msgstr "Rasta viena byla"
-
-#: gsearchtool/gsearchtool.c:831
-#, fuzzy, c-format
-msgid "%d files found"
-msgstr "Rasta %d bylų"
-
-#: gsearchtool/gsearchtool.c:927
-msgid ""
-"While searching the following errors were reported.\n"
-"\n"
-msgstr ""
-
-#: gsearchtool/gsearchtool.c:931
+#: gsearchtool/gsearchtool.c:1350
 msgid ""
 "\n"
 "... Too many errors to display ..."
@@ -1467,333 +1144,280 @@ msgstr ""
 "\n"
 "... Per daug klaidų, kad tilptų ekrane ..."
 
-#: gsearchtool/gsearchtool.c:944
-#, fuzzy
-msgid "Search Errors"
-msgstr "Ieškoti bylų"
+#: gsearchtool/gsearchtool.c:1359
+msgid ""
+"The search results may be invalid.  There were errors while performing this "
+"search."
+msgstr ""
+"Paieškos rezultatai gali būti neteisingi.  Vykdant šią paiešką, įvyko klaidų."
 
-#: gsearchtool/gsearchtool.c:982 gsearchtool/gsearchtool.c:1006
-#, fuzzy
-msgid "Search for Files Error"
-msgstr "Ieškoti bylų"
+#: gsearchtool/gsearchtool.c:1380
+msgid ""
+"The search results may be invalid.  Do you want to disable the quick search "
+"feature?"
+msgstr ""
+"Paieškos rezultatai gali būti neteisingi.  Ar norite atjungti greitos "
+"paieškos galimybę?"
 
-#: gsearchtool/gsearchtool.c:1090
-msgid "Search Rule Value Entry"
-msgstr "Paieškos taisyklės reikšmės elementas"
+#: gsearchtool/gsearchtool.c:1388
+msgid "Disable _Quick Search"
+msgstr "Atjungti _greitą paiešką"
 
-#: gsearchtool/gsearchtool.c:1091
+#: gsearchtool/gsearchtool.c:1432
+msgid "Error parsing the search command."
+msgstr "Įvyko klaida apdorojant paieškos komandą."
+
+#: gsearchtool/gsearchtool.c:1461
+msgid "Error running the search command."
+msgstr "Įvyko klaida paleidžiant paieškos komandą."
+
+#: gsearchtool/gsearchtool.c:1572
+#, c-format
+msgid "'%s' entry"
+msgstr "„%s“ įrašas"
+
+#: gsearchtool/gsearchtool.c:1573
 msgid "Enter a value for search rule"
 msgstr "Įveskite reikšmę paieškos taisyklei"
 
-#: gsearchtool/gsearchtool.c:1125
-#, fuzzy, c-format
+#: gsearchtool/gsearchtool.c:1620
+#, c-format
 msgid "Click to Remove the '%s' Rule"
-msgstr "Spauskite, kad išmesti taisyklę"
+msgstr "Spauskite, kad pašalinti taisyklę '%s'"
 
-#: gsearchtool/gsearchtool.c:1180
+#: gsearchtool/gsearchtool.c:1675
 msgid "A_vailable options:"
-msgstr ""
+msgstr "_Galimi nustatymai:"
 
-#: gsearchtool/gsearchtool.c:1193
+#: gsearchtool/gsearchtool.c:1688
 msgid "Search Rules Menu"
 msgstr "Paieškos taisyklių meniu"
 
-#: gsearchtool/gsearchtool.c:1194
+#: gsearchtool/gsearchtool.c:1689
 msgid "Select a search rule from the menu"
 msgstr "Pasirinkite paieškos taisyklę iš meniu"
 
-#: gsearchtool/gsearchtool.c:1226
-msgid "S_earch Results"
-msgstr "_Paieškos rezultatai"
+#: gsearchtool/gsearchtool.c:1720
+msgid "S_earch results:"
+msgstr "_Paieškos rezultatai:"
 
-#: gsearchtool/gsearchtool.c:1298
+#: gsearchtool/gsearchtool.c:1800
 msgid "Name"
 msgstr "Vardas"
 
-#: gsearchtool/gsearchtool.c:1318
+#: gsearchtool/gsearchtool.c:1820
 msgid "Folder"
 msgstr "Aplankas"
 
-#: gsearchtool/gsearchtool.c:1329
+#: gsearchtool/gsearchtool.c:1831
 msgid "Size"
 msgstr "Dydis"
 
-#: gsearchtool/gsearchtool.c:1339
+#: gsearchtool/gsearchtool.c:1841
 msgid "Type"
 msgstr "Tipas"
 
-#: gsearchtool/gsearchtool.c:1349
+#: gsearchtool/gsearchtool.c:1851
 msgid "Date Modified"
 msgstr "Keitimo data"
 
-#: gsearchtool/gsearchtool.c:1386
-#, fuzzy
-msgid "File is _named:"
-msgstr "Rasti bylas _vardu:"
+#: gsearchtool/gsearchtool.c:1909
+msgid "_Name contains:"
+msgstr "_Varde yra:"
 
-#: gsearchtool/gsearchtool.c:1401 gsearchtool/gsearchtool.c:1402
-msgid "File Name Entry"
-msgstr "Bylos vardo elementas"
-
-#: gsearchtool/gsearchtool.c:1401 gsearchtool/gsearchtool.c:1402
+#: gsearchtool/gsearchtool.c:1924 gsearchtool/gsearchtool.c:1925
 msgid "Enter the file name you want to search"
 msgstr "Įveskite ieškomos bylos vardą"
 
-#: gsearchtool/gsearchtool.c:1414
-#, fuzzy
-msgid "_Look in folder:"
-msgstr "_Pradedant aplanke:"
+#: gsearchtool/gsearchtool.c:1925
+msgid "Name Contains Entry"
+msgstr "Ieškomo Vardo Įrašas"
 
-#: gsearchtool/gsearchtool.c:1420
+#: gsearchtool/gsearchtool.c:1936
+msgid "_Look in folder:"
+msgstr "Ieškoti ap_lanke:"
+
+#: gsearchtool/gsearchtool.c:1942
 msgid "Browse"
 msgstr "Naršyti"
 
-#: gsearchtool/gsearchtool.c:1429 gsearchtool/gsearchtool.c:1430
-msgid "Starting folder entry"
-msgstr "Pradinio aplanko įvestis"
-
-#: gsearchtool/gsearchtool.c:1429 gsearchtool/gsearchtool.c:1430
+#: gsearchtool/gsearchtool.c:1953 gsearchtool/gsearchtool.c:1954
 msgid "Enter the folder name where you want to start the search"
 msgstr "Įveskite aplanko pavadinimą, kuriame norite pradėti paiešką"
 
-#: gsearchtool/gsearchtool.c:1446 gsearchtool/gsearchtool.c:1447
-#, fuzzy
-msgid "Additional Options"
-msgstr "Veiksmų nuostatos"
+#: gsearchtool/gsearchtool.c:1954
+msgid "Look in Folder Entry"
+msgstr "Ieškomo Aplanko Įrašas"
 
-#: gsearchtool/gsearchtool.c:1492
+#: gsearchtool/gsearchtool.c:1972
+msgid "Show more _options"
+msgstr "R_odyti daugiau savybių"
+
+#: gsearchtool/gsearchtool.c:1982
+msgid "Show more options"
+msgstr "Rodyti daugiau savybių"
+
+#: gsearchtool/gsearchtool.c:1982
+msgid "Expands or collapses a list of search options."
+msgstr "Išskleidžia ir sutraukia paieškos parinkčių sąrašą."
+
+#: gsearchtool/gsearchtool.c:2029
 msgid "Click to Start the search"
 msgstr "Spauskite, kad pradėti paiešką"
 
-#: gsearchtool/gsearchtool.c:1493
+#: gsearchtool/gsearchtool.c:2030
 msgid "Click to Stop the search"
 msgstr "Spauskite, kad sustabdyti paiešką"
 
-#: gsearchtool/gsearchtool.c:1566
+#: gsearchtool/gsearchtool.c:2309
 msgid "Cannot initialize bonobo."
 msgstr "Negaliu inicializuoti Bonobo komponentų sistemos."
 
-#: gsearchtool/gsearchtool-callbacks.c:45
-msgid "_Open"
-msgstr ""
-
-#: gsearchtool/gsearchtool-callbacks.c:49
-#, fuzzy
-msgid "O_pen Folder"
-msgstr "Aplankas"
-
-#: gsearchtool/gsearchtool-callbacks.c:54
-#, fuzzy
-msgid "_Save Results As..."
-msgstr "Išsaugoti rezultatus _kaip..."
-
-#: gsearchtool/gsearchtool-callbacks.c:107
-msgid "Can't Display Help"
-msgstr ""
-
-#: gsearchtool/gsearchtool-callbacks.c:128
-msgid "Searching..."
-msgstr "Ieškau..."
-
-#: gsearchtool/gsearchtool-callbacks.c:299
-#, c-format
-msgid "This will open %d separate files. Are you sure you want to do this?"
-msgstr ""
-
-#: gsearchtool/gsearchtool-callbacks.c:302
-#, c-format
-msgid "Open %d Files?"
-msgstr ""
-
-#: gsearchtool/gsearchtool-callbacks.c:359
-#: gsearchtool/gsearchtool-callbacks.c:620
-#, c-format
-msgid "There is no installed viewer capable of displaying \"%s\"."
-msgstr ""
-
-#: gsearchtool/gsearchtool-callbacks.c:366
-#: gsearchtool/gsearchtool-callbacks.c:627
-msgid "Can't Display Location"
-msgstr ""
-
-#: gsearchtool/gsearchtool-callbacks.c:404
-#, c-format
-msgid "This will open %d separate folders. Are you sure you want to do this?"
-msgstr ""
-
-#: gsearchtool/gsearchtool-callbacks.c:407
-#, c-format
-msgid "Open %d Folders?"
-msgstr ""
-
-#: gsearchtool/gsearchtool-callbacks.c:446
-msgid "The nautilus file manager is not running."
-msgstr ""
-
-#: gsearchtool/gsearchtool-callbacks.c:729
-#, fuzzy
-msgid "Save Search Results As..."
-msgstr "Išsaugoti rezultatus _kaip..."
-
-#: gsearchtool/gsearchtool-callbacks.c:772
-#, fuzzy, c-format
-msgid ""
-"Cannot save search results.\n"
-"\"%s\" is a folder."
-msgstr "Negaliu išsaugoti rezultatų bylos."
-
-#: gsearchtool/gsearchtool-callbacks.c:800
-#, fuzzy, c-format
-msgid "File \"%s\" already exists. Overwrite?"
-msgstr "Byla %s jau yra. Rašyti ant viršaus?"
-
-#: gsearchtool/gsearchtool-callbacks.c:837
-#, fuzzy, c-format
-msgid "Cannot save search results to the file \"%s\"."
-msgstr "Negaliu išsaugoti rezultatų bylos."
-
-#: gsearchtool/gsearchtool-support.c:284
-msgid "Expander Size"
-msgstr ""
-
-#: gsearchtool/gsearchtool-support.c:285
-msgid "Size of the expander arrow"
-msgstr ""
-
-#: gsearchtool/gsearchtool-support.c:346
-#, c-format
-msgid ""
-"GConf error:\n"
-"  %s"
-msgstr ""
-
-#: gsearchtool/gsearchtool-support.c:507
-msgid "%Y%m%d%H%M%S"
-msgstr "%Y%m%d%H%M%S"
-
-#: gsearchtool/gsearchtool-support.c:538
-msgid "today at %-I:%M %p"
-msgstr "šiandien %-I:%M %p"
-
-#: gsearchtool/gsearchtool-support.c:540
-msgid "yesterday at %-I:%M %p"
-msgstr "vakar %-I:%M %p"
-
-#: gsearchtool/gsearchtool-support.c:542 gsearchtool/gsearchtool-support.c:544
-msgid "%m/%-d/%y, %-I:%M %p"
-msgstr "%Y-%m-%d %H:%M"
-
-#: gsearchtool/gsearchtool-support.c:669
-msgid "link (broken)"
-msgstr ""
-
-#: gsearchtool/gsearchtool-support.c:674
-#, c-format
-msgid "link to %s"
-msgstr ""
-
-#: gsearchtool/help/es/gsearchtool.desktop.in.h:1
-msgid "GNOME Search Tool"
-msgstr "GNOME Paieška"
-
-#: logview/about.c:42
+#. Author needs some sort of dash over the 'e' in Cesar  - U-00E9
+#: logview/about.c:43
 msgid "Cesar Miquel (miquel@df.uba.ar)"
 msgstr "Cesar Miquel (miquel@df.uba.ar)"
 
-#: logview/about.c:43
-#, fuzzy
-msgid ""
-"This program is part of the GNOME project. Logview comes with ABSOLUTELY NO "
-"WARRANTY. This is free software, and you are welcome to redistribute it "
-"under the conditions of the GNU General Public Licence. The log icon is a "
-"courtesy of Tuomas Kuosmanen (a.k.a tigert)."
-msgstr ""
-"Logview yra log bylų peržiūros įrankis. GNOME projekto dalis. Log ikoną "
-"sukūrė Tuomas Kuosmanen (a.k.a tigert)."
+#: logview/about.c:44
+msgid "A system log viewer for GNOME."
+msgstr "GNOME sisteminių žurnalų peržiūros programa"
 
-#: logview/about.c:61
-msgid "GNOME System Log Viewer"
-msgstr "GNOME sistemos log'ų žiūryklė"
-
-#: logview/about.c:62
-msgid "Copyright (C) 1998"
-msgstr "Copyright (C) 1998"
+#: logview/about.c:58
+msgid "System Log Viewer"
+msgstr "Sistemos log'ų peržiūra"
 
 #: logview/actions.c:74
-msgid "Action database"
-msgstr "Veiksmų duombazė"
+msgid "Action Database"
+msgstr "Veiksmų bazė"
 
-#: logview/actions.c:84
-#, fuzzy
+#: logview/actions.c:85
 msgid "Actions"
-msgstr "Veiksmai..."
+msgstr "Veiksmai"
 
-#: logview/actions.c:152
-#, fuzzy
+#: logview/actions.c:157
 msgid "_Add"
-msgstr "Pridėti"
+msgstr "_Pridėti"
 
-#: logview/actions.c:159
-#, fuzzy
+#: logview/actions.c:162
+msgid "Add an action"
+msgstr "Pridėti veiksmą"
+
+#: logview/actions.c:164
 msgid "_Edit"
-msgstr "Keisti..."
+msgstr "_Keisti"
 
-#: logview/actions.c:166
+#: logview/actions.c:169
+msgid "Edit an action"
+msgstr "Redaguoti veiksmą"
+
+#: logview/actions.c:171
 msgid "_Remove"
 msgstr "_Pašalinti"
 
-#: logview/actions.c:259
+#: logview/actions.c:176
+msgid "Remove an action"
+msgstr "Pašalinti veiksmą"
+
+#: logview/actions.c:263
 #, c-format
 msgid "Cannot open action data base <%s>! Open failed."
-msgstr ""
+msgstr "Nevyko atverti veiksmų bazės <%s>! Operacija nepavyko."
 
-#: logview/actions.c:294 logview/actions.c:307 logview/actions.c:318
-#: logview/actions.c:329 logview/actions.c:340 logview/actions.c:351
+#: logview/actions.c:298 logview/actions.c:311 logview/actions.c:322
+#: logview/actions.c:333 logview/actions.c:344 logview/actions.c:355
 msgid "Error parsing actions data base"
 msgstr "Klaida nagrinėjant veiksmų duomenų bazę"
 
-#: logview/actions.c:385
+#: logview/actions.c:389
 msgid "Can't write to actions database!"
 msgstr "Negaliu įrašyti veiksmų duombazės!"
 
-#: logview/actions.c:485
-msgid "Error while executing specified action"
-msgstr ""
+#: logview/actions.c:487
+#, c-format
+msgid "Error while executing specified action: %s"
+msgstr "Įvyko klaida bandant įvykdyti nurodytą veiksmą: %s"
 
-#: logview/actions.c:506
+#: logview/actions.c:510
 msgid "<empty>"
 msgstr "<tuščia>"
 
-#: logview/actions.c:507
+#: logview/actions.c:511
 msgid "log name regexp"
 msgstr "log vardo regexp'as"
 
-#: logview/actions.c:508
+#: logview/actions.c:512
 msgid "process regexp"
 msgstr "proceso regexp'as:"
 
-#: logview/actions.c:509
+#: logview/actions.c:513
 msgid "message regexp"
 msgstr "žinutės regexp'as"
 
-#: logview/actions.c:510
+#: logview/actions.c:514
 msgid "action to execute when regexps are TRUE"
 msgstr "veiksmas, kurį įvykdyti, kai regexp'ai yra TRUE"
 
-#: logview/actions.c:511
+#: logview/actions.c:515
 msgid "description"
 msgstr "aprašymas"
 
-#: logview/actions.c:771
-#, fuzzy
-msgid "_Description:"
-msgstr "Aprašymas:"
+#: logview/actions.c:651
+msgid "Edit Action"
+msgstr "Redaguoti veiksmą"
 
-#: logview/actions.c:780
+#: logview/actions.c:687
+msgid "_Tag:"
+msgstr "Ž_ymė:"
+
+#: logview/actions.c:696
+msgid "Tag that identifies the log file."
+msgstr "Žymė kuri identifikuoja žurnalo bylą."
+
+#: logview/actions.c:705
+msgid "_Log name:"
+msgstr "Ž_urnalo vardas:"
+
+#: logview/actions.c:714
+msgid "Regular expression that will match the log name."
+msgstr "Reguliari išraiška kuri atitiks žurnalo pavadinimą."
+
+#: logview/actions.c:724
+msgid "_Process:"
+msgstr "_Procesas:"
+
+#: logview/actions.c:733
+msgid "Regular expression that will match process part of message."
+msgstr "Reguliari išraiška, kuri atitiks žinutės proceso dalį."
+
+#: logview/actions.c:743
+msgid "_Message:"
+msgstr "_Žinutė:"
+
+#: logview/actions.c:752
+msgid "Regular expression that will match the message."
+msgstr "Reguliari išraiška, kuri atitiks žinutę."
+
+#: logview/actions.c:762
+msgid "_Action:"
+msgstr "_Veiksmas:"
+
+#: logview/actions.c:771
+msgid ""
+"Action that will be executed if all previous regexps. are matched. This is "
+"executed by a system command: system (action)."
+msgstr ""
+"Veiksmas, kuris bus įvykdytas jeigu tiko visi ankstesni regexp'ai. Šis "
+"veiksmas yra vykdomas naudojant sistemos komandą: system (veiksmas)."
+
+#: logview/actions.c:781
+msgid "_Description:"
+msgstr "_Aprašymas:"
+
+#: logview/actions.c:790
 msgid "Description of this entry."
 msgstr "Šio įrašo aprašymas."
 
-#: logview/actions.c:804
+#: logview/actions.c:814
 #, c-format
 msgid ""
 "tag: [%s]\n"
@@ -1810,19 +1434,19 @@ msgstr ""
 "aprašymas: [%s]\n"
 "veiksmas: [%s]\n"
 
-#: logview/calendar.c:112
+#: logview/calendar.c:110
 msgid "Calendar"
 msgstr "Kalendorius"
 
 #: logview/desc_db.c:37
 #, c-format
 msgid "Cannot open regexp data base <%s>! Open failed."
-msgstr ""
+msgstr "Nepavyko atidaryti regexp bazės <%s>! Operacija nepavyko."
 
 #: logview/desc_db.c:147
 #, c-format
 msgid "Cannot open description data base <%s>! Open failed."
-msgstr ""
+msgstr "Nepavyko atidaryti aprašymų bazės <%s>! Operacija nepavyko."
 
 #. ----------------------------------------------------------------------
 #. NAME:
@@ -1836,46 +1460,45 @@ msgstr "Sistemos log'as"
 msgid "View the system log file"
 msgstr "Peržiūrėti sistemos log'o bylą"
 
-#: logview/info.c:65
-msgid "Log stats"
-msgstr "Log statistika"
+#: logview/info.c:62
+msgid "Properties"
+msgstr "Savybės"
 
-#: logview/info.c:110
+#: logview/info.c:108
 msgid "Size:"
 msgstr "Dydis:"
 
-#: logview/info.c:110
+#: logview/info.c:108
 msgid "Modified:"
 msgstr "Pakeistas:"
 
-#: logview/info.c:111
-#, fuzzy
+#: logview/info.c:109
 msgid "Start Date:"
 msgstr "Pradžios data:"
 
-#: logview/info.c:111
-#, fuzzy
+#: logview/info.c:109
 msgid "Last Date:"
 msgstr "Paskutinė data:"
 
-#: logview/info.c:111
-#, fuzzy
+#: logview/info.c:109
 msgid "Number of Lines:"
-msgstr "Eilučių sk:"
+msgstr "Eilučių skaičius:"
 
-#: logview/info.c:137
-#, fuzzy
+#: logview/info.c:134
 msgid "Log Information"
-msgstr "Log informacija"
+msgstr "Žurnalo informacija"
 
-#: logview/info.c:163 logview/zoom.c:157
+#: logview/info.c:160 logview/zoom.c:155
 msgid "<No log loaded>"
-msgstr ""
+msgstr "<Neatidarytas joks žurnalas>"
 
-#: logview/info.c:186
+#: logview/info.c:183
 #, c-format
-msgid "%ld bytes"
-msgstr "%ld baitų"
+msgid "%ld byte"
+msgid_plural "%ld bytes"
+msgstr[0] "%ld baitas"
+msgstr[1] "%ld baitai"
+msgstr[2] "%ld baitų"
 
 #: logview/log_repaint.c:59
 msgid "January"
@@ -1926,37 +1549,37 @@ msgid "December"
 msgstr "Gruodis"
 
 #. Translators: Date only format, %x should well do really
-#: logview/log_repaint.c:403
+#: logview/log_repaint.c:394
 #, c-format
 msgid "%x"
-msgstr ""
+msgstr "%x"
 
 #. Translators: Make sure this is only Month and Day format, year
 #. * will be bogus here
-#: logview/log_repaint.c:458
+#: logview/log_repaint.c:449
 msgid "%B %e"
-msgstr ""
+msgstr "%B %e"
 
 #. Translators: should be only the time, date could be bogus
-#: logview/log_repaint.c:524
+#: logview/log_repaint.c:521
 #, c-format
 msgid "%X"
-msgstr ""
+msgstr "%X"
 
-#: logview/logrtns.c:191
+#: logview/logrtns.c:193
 msgid "Not enough memory!\n"
 msgstr "Nepakanka atminties!\n"
 
-#: logview/logrtns.c:202
+#: logview/logrtns.c:204
 msgid "Unable to open logfile!\n"
 msgstr "Nepavyko atidaryti log bylos!\n"
 
-#: logview/logrtns.c:260
+#: logview/logrtns.c:265
 #, c-format
 msgid "%s is not a regular file."
 msgstr "%s nėra paprasta byla."
 
-#: logview/logrtns.c:268
+#: logview/logrtns.c:273
 #, c-format
 msgid ""
 "%s is not user readable. Either run the program as root or ask the sysadmin "
@@ -1965,597 +1588,254 @@ msgstr ""
 "%s negali būti vartotojų skaitoma. Arba leisk programą kaip root, arba "
 "paprašyk administratoriaus, kad pakeistų bylos teises."
 
-#: logview/logrtns.c:285
+#: logview/logrtns.c:290
 #, c-format
 msgid "%s could not be opened."
 msgstr "%s negali būti atidaryta."
 
-#: logview/logrtns.c:315 logview/logrtns.c:324
+#: logview/logrtns.c:320 logview/logrtns.c:329
 #, c-format
 msgid "%s not a log file."
 msgstr "%s nėra log byla."
 
-#: logview/logrtns.c:722 logview/logrtns.c:753 logview/logrtns.c:884
+#: logview/logrtns.c:727 logview/logrtns.c:758 logview/logrtns.c:889
 msgid "ReadLogStats: out of memory"
 msgstr "ReadLogStats: baigėsi atmintis"
 
-#: logview/logview.c:99
+#: logview/logview.c:100
 msgid "S_witch Log"
 msgstr "Pa_keisti log'ą"
 
-#: logview/logview.c:100
-#, fuzzy
+#: logview/logview.c:101
 msgid "Switch between already opened logs"
-msgstr "Byla jau atidaryta"
+msgstr "Persijungti tarp jau atidarytų žurnalų"
 
-#: logview/logview.c:106
+#: logview/logview.c:107
 msgid "_Monitor..."
 msgstr "_Stebėti..."
 
-#: logview/logview.c:107
-#, fuzzy
+#: logview/logview.c:108
 msgid "Monitor Logs"
-msgstr "Stebėti log'ą"
+msgstr "Stebėti žurnalus"
 
-#: logview/logview.c:115
+#: logview/logview.c:116
 msgid "_Properties"
 msgstr "_Savybės"
 
-#: logview/logview.c:116
+#: logview/logview.c:117
 msgid "Show Log Properties"
 msgstr "Rodyti log'o savybės"
 
-#: logview/logview.c:124
-msgid "Clos_e All"
-msgstr ""
-
 #: logview/logview.c:125
-msgid "Close all Log files"
-msgstr ""
+msgid "Clos_e All"
+msgstr "_Uždaryti visas"
 
-#: logview/logview.c:137
+#: logview/logview.c:126
+msgid "Close all Log files"
+msgstr "Uždaryti visas žurnalų bylas"
+
+#: logview/logview.c:138
 msgid "_Calendar"
 msgstr "_Kalendorius"
 
-#: logview/logview.c:138
+#: logview/logview.c:139
 msgid "Show Calendar Log"
 msgstr "Rodyti kalendorinį log'ą"
 
-#: logview/logview.c:144
-msgid "_Entry Detail"
-msgstr ""
-
 #: logview/logview.c:145
-msgid "Show Entry Detail"
-msgstr ""
+msgid "_Entry Detail"
+msgstr "Įrašo D_etalės"
 
-#: logview/logview.c:151
-msgid "_Collapse All"
-msgstr ""
+#: logview/logview.c:146
+msgid "Show Entry Detail"
+msgstr "Parodyti įrašo detales"
 
 #: logview/logview.c:152
-msgid "Collapse all the rows"
-msgstr ""
+msgid "_Collapse All"
+msgstr "_Sutraukti Visus"
 
-#: logview/logview.c:365
+#: logview/logview.c:153
+msgid "Collapse all the rows"
+msgstr "Sutraukti visus stulpelius"
+
+#: logview/logview.c:370
 msgid "No log files to open"
 msgstr "Nėra log bylų, kurias galima atidaryti"
 
-#: logview/logview.c:389
-#, fuzzy
+#: logview/logview.c:392
 msgid "Date"
-msgstr "Data:"
+msgstr "Data"
 
-#: logview/logview.c:389
-#, fuzzy
+#: logview/logview.c:392
 msgid "Host Name"
-msgstr "Vardas"
+msgstr "Mašinos vardas"
 
-#: logview/logview.c:390
-#, fuzzy
+#: logview/logview.c:393
 msgid "Process"
-msgstr "Procesas:"
+msgstr "Procesas"
 
-#: logview/logview.c:390
-#, fuzzy
+#: logview/logview.c:393
 msgid "Message"
-msgstr "Žinutė:"
+msgstr "Žinutė"
 
 #: logview/logview.c:474
 msgid "Last Modified: "
 msgstr "Paskutinio pakeitimo data:"
 
-#: logview/logview.c:568 logview/logview.c:643
+#: logview/logview.c:573 logview/logview.c:648
 msgid "Too many open logs. Close one and try again"
 msgstr "Per daug atidarytų log'ų. Uždaryk vieną ir bandyk vėl"
 
-#: logview/logview.c:580
+#: logview/logview.c:585
 msgid "File already opened"
 msgstr "Byla jau atidaryta"
 
-#: logview/logview.c:656
+#: logview/logview.c:661
 msgid "Open new logfile"
 msgstr "Atidaryti naują log bylą"
+
+#: logview/logview.schemas.in.h:1
+msgid "Log file to open up on startup"
+msgstr "Paleidimo metu atidaromas žurnalas"
+
+#: logview/logview.schemas.in.h:2
+msgid ""
+"Specifies the log file to open up at startup. The default is either /var/adm/"
+"messages or /var/log/messages, depending on your operating system."
+msgstr ""
+"Nurodo programos paleidimo metu atidaromą žurnalą. Paprastai tai arba /var/"
+"adm/messages, arba /var/log/messages, priklausomai nuo Jūsų operacinės "
+"sistemos."
 
 #: logview/misc.c:56
 #, c-format
 msgid "Error: [%s]\n"
 msgstr "Klaida: [%s]\n"
 
-#: logview/monitor.c:109
-#, fuzzy
+#: logview/monitor.c:111
 msgid "Monitor Options"
-msgstr "Stebėjimo nuostatos"
+msgstr "Stebėjimo nustatymai"
 
-#: logview/monitor.c:135
-#, fuzzy
-msgid "Choose logs to monitor:"
-msgstr "Pasirink log'us, kuriuos stebėti"
+#: logview/monitor.c:114
+msgid "Ac_tions..."
+msgstr "_Veiksmai..."
 
 #: logview/monitor.c:140
-msgid "Currently monitored logs:"
-msgstr ""
+msgid "_Select logs to monitor:"
+msgstr "_Pasirinkti stebimus žurnalus:"
 
-#: logview/monitor.c:188
-#, fuzzy
+#: logview/monitor.c:145
+msgid "Currently _monitored logs:"
+msgstr "Šiuo metu _stebimi žurnalai:"
+
+#: logview/monitor.c:193
 msgid "Add logs to monitor"
-msgstr "Pasirink log'us, kuriuos stebėti"
+msgstr "Įtraukti žurnalus į stebimų sąrašą"
 
-#: logview/monitor.c:197
-#, fuzzy
+#: logview/monitor.c:202
 msgid "Remove logs from monitor"
-msgstr "Pasirink log'us, kuriuos stebėti"
+msgstr "Pašalinti žurnalus iš stebimų sąrašo"
 
 #. Check boxes
-#: logview/monitor.c:244
-msgid "_Hide Application"
-msgstr ""
+#: logview/monitor.c:249
+msgid "_Hide application"
+msgstr "_Paslėpti programą"
 
-#: logview/monitor.c:252
-#, fuzzy
-msgid "_Execute Actions"
-msgstr "Įvykdyti veiksmus"
+#: logview/monitor.c:257
+msgid "_Execute actions"
+msgstr "Įvykdyti v_eiksmus"
 
-#: logview/monitor.c:289
+#: logview/monitor.c:293
 msgid "Too many logs to monitor. Remove one and try again"
 msgstr "Per daug atidarytų žurnalų. Pašalink vieną ir bandyk vėl"
 
-#: logview/monitor.c:297 logview/monitor.c:335
+#: logview/monitor.c:301 logview/monitor.c:338
 msgid "tmp_list is NULL\n"
 msgstr "tmp_list yra NULL\n"
 
-#: logview/monitor.c:457
-msgid "Monitoring logs..."
-msgstr "Stebimi log'ai..."
+#: logview/monitor.c:475
+msgid "Monitoring Logs..."
+msgstr "Stebimi žurnalai..."
 
-#: logview/monitor.c:644
+#: logview/monitor.c:667
 msgid "TOUCHED!!\n"
 msgstr "PAKEISTAS!\n"
 
 #: logview/zoom.c:63
-msgid "Zoom view"
-msgstr "Platesnis vaizdas"
+msgid "Entry Detail"
+msgstr "Įrašo Detalės"
 
-#: logview/zoom.c:102
+#: logview/zoom.c:101
 msgid "Date:"
 msgstr "Data:"
 
-#: logview/zoom.c:102
+#: logview/zoom.c:101
 msgid "Process:"
 msgstr "Procesas:"
 
-#: logview/zoom.c:103
+#: logview/zoom.c:102
 msgid "Message:"
 msgstr "Žinutė:"
 
-#: logview/zoom.c:103
+#: logview/zoom.c:102
 msgid "Description:"
 msgstr "Aprašymas:"
 
-#: logview/zoom.c:131
-#, fuzzy
-msgid "Log line detail for"
-msgstr "Log eilutės detalės iš %s"
+#: logview/zoom.c:129
+msgid "Log Line Details"
+msgstr "Žurnalo eilutės detalės"
 
 #. Translators: do not include year, it would be bogus
-#: logview/zoom.c:185
+#: logview/zoom.c:187
 msgid "%B %e %X"
-msgstr ""
+msgstr "%B %e %X"
 
-#: logview/logview.schemas.in.h:1
-msgid "Log file to open up on startup"
-msgstr ""
-
-#: logview/logview.schemas.in.h:2
-msgid ""
-"Specifies the log file to open up at startup. The default is either /var/adm/"
-"messages or /var/log/messages, depending on your distribution."
-msgstr ""
-
-#, fuzzy
-#~ msgid "Select the 'Date modified less than (days)' constraint"
-#~ msgstr "Sekti simboliniais linkais"
-
-#, fuzzy
-#~ msgid "Select the 'Date modified more than (days)' constraint"
-#~ msgstr "Sekti simboliniais linkais"
-
-#, fuzzy
-#~ msgid "Select the 'Size at most (kilobytes)' constraint"
-#~ msgstr "Tenkina reguliarią išraišką"
-
-#, fuzzy
-#~ msgid "Select the 'Size at least (kilobytes)' constraint"
-#~ msgstr "Tenkina reguliarią išraišką"
-
-#, fuzzy
-#~ msgid "Select the 'File matches regular expression' constraint"
-#~ msgstr "Tenkina reguliarią išraišką"
-
-#, fuzzy
-#~ msgid "Select the 'Include other filesystems' constraint"
-#~ msgstr "Tenkina reguliarią išraišką"
-
-#, fuzzy
-#~ msgid "No files found %s"
-#~ msgstr "Bylų nerasta"
+#~ msgid "Search your disk for files"
+#~ msgstr "Ieškoti bylų diske"
 
 #~ msgid ""
-#~ "Client for MIT dictionary server.\n"
-#~ "Web: http://gdict.dhs.org/, http://www.psilord.com/code/"
-#~ msgstr ""
-#~ "MIT žodynų serverio klientas.\n"
-#~ "Web: http://gdict.dhs.org/, http://www.psilord.com/code/"
-
-#~ msgid "Archive Generator"
-#~ msgstr "Archyvų generatorius"
-
-#~ msgid "Create compressed archives containing many files"
-#~ msgstr "Sukurti suspaustus archyvus, saugančius daug bylų"
-
-#~ msgid ""
-#~ "Number of files: %d\n"
-#~ "Number of folders: %d"
-#~ msgstr ""
-#~ "Bylų skaičius: %d\n"
-#~ "Aplankų skaičius: %d"
-
-#~ msgid ""
-#~ "No files or folders, drop files or folders\n"
-#~ "above to add them to the archive"
-#~ msgstr ""
-#~ "Nėra bylų nei aplankų, nutempkite čia bylas ar\n"
-#~ "aplankus kad pridėtum juos į archyvą"
-
-#~ msgid "%s removed"
-#~ msgstr "%s pašalinta"
-
-#~ msgid "Failed to create %s"
-#~ msgstr "Nepavyko sukurti %s"
-
-#~ msgid "Archive.tar.gz"
-#~ msgstr "Archyvas.tar.gz"
-
-#~ msgid "GNOME Archive Generator"
-#~ msgstr "GNOME archyvų generatorius"
-
-#~ msgid "Drag files in to make archives"
-#~ msgstr "Nutempkite bylas čia, kad padaryti archyvus"
-
-#~ msgid "All files selected"
-#~ msgstr "Pažymėtos visos bylos"
-
-#~ msgid "All files removed"
-#~ msgstr "Visos bylos išmestos"
-
-#~ msgid "No filename selected"
-#~ msgstr "Nepasirinkta jokia byla"
-
-#~ msgid "File exists, overwrite?"
-#~ msgstr "Byla jau yra. Rašyti ant viršaus?"
-
-#~ msgid "%s created"
-#~ msgstr "%s sukurtas"
-
-#~ msgid "No items to archive"
-#~ msgstr "Archive nieko nėra"
-
-#~ msgid "Save Results"
-#~ msgstr "Išsaugoti rezultatus"
-
-#~ msgid "%s added"
-#~ msgstr "%s įdėtas"
-
-#~ msgid "File does not exists"
-#~ msgstr "Byla neegzistuoja"
-
-#~ msgid "Add file or folder"
-#~ msgstr "Pridėti bylą ar aplanką"
-
-#~ msgid "_Add file or folder..."
-#~ msgstr "_Pridėti bylą ar aplanką..."
-
-#~ msgid "Add a file or folder to archive"
-#~ msgstr "Pridėti bylą ar aplanką į archyvą"
-
-#~ msgid "_Create archive..."
-#~ msgstr "_Sukurti archyvą..."
-
-#~ msgid "Create a new archive from the items"
-#~ msgstr "Sukurti naują archyvą iš elementų"
-
-#~ msgid "Remove the selected item"
-#~ msgstr "Pašalinti pažymėtą elementą"
-
-#~ msgid "R_emove All"
-#~ msgstr "Pašalinti _visus"
-
-#~ msgid "Remove all items"
-#~ msgstr "Pašalinti visus elementus"
-
-#~ msgid "Drop files here to add them to the archive."
-#~ msgstr "Nutempkite bylas čia kad pridėti jas į archyvą."
-
-#~ msgid "_Create Archive"
-#~ msgstr "_Sukurti archyvą"
-
-#~ msgid ""
-#~ "Cannot find the archive (tar) program!\n"
-#~ "This is the program used for creating archives."
-#~ msgstr ""
-#~ "Negaliu rasti archyvavimo programos (tar) !\n"
-#~ "Ši programa naudojama archyvų sukūrimui."
-
-#~ msgid "EUnable to create filesystem."
-#~ msgstr "ENegalėjau sukurti bylų sistemos."
-
-#, fuzzy
-#~ msgid "Filesystem settings"
-#~ msgstr "Bylų sistemos _tipas:"
-
-#, fuzzy
-#~ msgid "Formatting mode"
-#~ msgstr "MFormatuoju diskelį..."
-
-#, fuzzy
-#~ msgid ""
-#~ "Sorry, could not start the search.\n"
-#~ "%s\n"
-#~ msgstr "Spauskite, kad pradėti paiešką"
-
-#~ msgid "x^2"
-#~ msgstr "x^2"
-
-#~ msgid "x^y"
-#~ msgstr "x^y"
-
-#~ msgid "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-*,*-r-*"
-#~ msgstr "-adobe-helvetica-bold-r-normal-*-*-180-*-*-p-*-*-13,*-r-*"
-
-#~ msgid " %s: Character code %d"
-#~ msgstr "%s: Simbolio kodas %d"
-
-#~ msgid "Gnome Character Map"
-#~ msgstr "Gnome simbolių rinkinys"
-
-#~ msgid "De_fault"
-#~ msgstr "Įp_rastas"
-
-#~ msgid "Default strategy"
-#~ msgstr "Įprasta strategija"
-
-#~ msgid "EBad block at block %lu"
-#~ msgstr "EBlogas %lu blokas"
-
-#~ msgid "Format a Floppy"
-#~ msgstr "Formatuoti diskelį"
-
-#~ msgid "_Quick format"
-#~ msgstr "_Greitas formatavimas"
-
-#~ msgid "Format another floppy?"
-#~ msgstr "Formatuoti kitą diskelį?"
-
-#~ msgid "File name is"
-#~ msgstr "Bylos vardas yra"
-
-#~ msgid "Process folder contents depth first"
-#~ msgstr "Pirmiausia ieškoti aplanko vidiniuose aplankuose"
-
-#~ msgid "Invalid user or group"
-#~ msgstr "Nesantis savininkas ar grupė"
-
-#~ msgid "Last time modified"
-#~ msgstr "Paskutinio pakeitimo laikas"
-
-#~ msgid "Start folder does not exist."
-#~ msgstr "Pradinis aplankas neegzistuoja."
-
-#~ msgid "folder"
-#~ msgstr "aplankas"
-
-#~ msgid "program"
-#~ msgstr "programa"
-
-#~ msgid "symbolic link"
-#~ msgstr "simbolinė nuoroda"
-
-#~ msgid "No Files Found."
-#~ msgstr "Bylų nerasta."
-
-#~ msgid ""
-#~ "Cannot perform the search.\n"
-#~ "The Bourne shell was not found\n"
-#~ "It is typically installed as /bin/sh or /usr/bin/sh."
-#~ msgstr ""
-#~ "Negaliu ieškoti.\n"
-#~ "Bourne aplinka (shell) nerasta\n"
-#~ "Ji dažniausiai būna įdiegta kaip /bin/sh ar /usr/bin/sh."
-
-#~ msgid "Cannot perform the search. Please specify a search criteria."
-#~ msgstr "Negaliu ieškoti. Prašau nurodyti paieškos kriterijus."
-
-#~ msgid ""
-#~ "A search is already running.  Please wait for the search to complete or "
-#~ "cancel it."
-#~ msgstr ""
-#~ "Paieška jau vykdoma. Prašau palaukti kol baigs arba nutraukti paiešką."
-
-#~ msgid "Start folder does not exist"
-#~ msgstr "Pradinis aplankas neegzistuoja"
-
-#~ msgid ""
-#~ "Cannot show the search command line. Please specify a search criteria."
-#~ msgstr ""
-#~ "Negaliu parodyti paieškos komandinės eilutės. Prašau nurodyti paieškos "
-#~ "kriterijus."
-
-#~ msgid "Search Command Line"
-#~ msgstr "Paieškos komandinė eilutė"
-
-#~ msgid ""
-#~ "This is the command line that can be used to execute this search\n"
-#~ "from the console.\n"
+#~ "While searching the following errors were reported.\n"
 #~ "\n"
-#~ "C_ommand:"
 #~ msgstr ""
-#~ "Tai yra komandinė eilutė, kuri gali būti naudojama vykdant šią\n"
-#~ "paiešką terminale.\n"
+#~ "Ieškant buvo sutiktos šios klaidos.\n"
 #~ "\n"
-#~ "K_omanda:"
 
-#~ msgid "Command"
-#~ msgstr "Komanda"
+#~ msgid "Error while searching for files."
+#~ msgstr "Įvyko klaida ieškant bylų."
 
-#~ msgid "Command Line Entry"
-#~ msgstr "Komandinės eilutės elementas"
+#~ msgid "Search Rule Value Entry"
+#~ msgstr "Paieškos taisyklės reikšmės elementas"
 
-#~ msgid "Use this command line to execute the search from console"
+#~ msgid "The animation file is missing or invalid: %s"
+#~ msgstr "Animacijos byla neegzistuoja arba yra apgadinta: %s"
+
+#~ msgid "One File Found"
+#~ msgstr "Rasta viena byla"
+
+#~ msgid "One file found"
+#~ msgstr "Rasta viena byla"
+
+#~ msgid "Open %d documents?"
+#~ msgstr "Atidaryti %d dokumentus?"
+
+#~ msgid ""
+#~ "This will open %d separate documents. Are you sure you want to do this?"
 #~ msgstr ""
-#~ "Naudokite šią komandinę eilutę, jei norite vykdyti paiešką iš terminalo"
+#~ "Šis veiksmas atidarys %d atskirus dokumentus. Ar Jūs tikrai norite taip "
+#~ "pasielgti?"
 
-#~ msgid "No viewer available for this mime type."
-#~ msgstr "Šiam MIME tipui nėra peržiūros programos."
+#~ msgid "Open %d folders?"
+#~ msgstr "Atverti %d aplankus?"
 
-#~ msgid "Enabled"
-#~ msgstr "Leidžiamas"
+#~ msgid ""
+#~ "You did not select a document name or the name selected was a folder.  "
+#~ "The document is not saved."
+#~ msgstr ""
+#~ "Jūs nepasirinkote dokumento vardo arba pasirinktas vardas yra aplanko. "
+#~ "Dokumentas negali būti išsaugotas."
 
-#~ msgid "Toggle On/Off to enable/disable the rule"
-#~ msgstr "Perjungkite On/Off kad leistumėte/uždraustumėte taisyklę"
+#~ msgid "The contents of the file \"%s\" will be lost."
+#~ msgstr "Bylos \"%s\" duomenys bus prarasti."
 
-#~ msgid "Rules:"
-#~ msgstr "Taisyklės:"
-
-#~ msgid "A_dd Rule:"
-#~ msgstr "_Pridėti taisyklę:"
-
-#~ msgid "Click to Add a Rule"
-#~ msgstr "Spauskite, kad pridėti taisyklę"
-
-#~ msgid "Click to Start the Search"
-#~ msgstr "Spauskite, kad pradėti paiešką"
-
-#~ msgid "Click to Stop the Search"
-#~ msgstr "Spauskite, kad sustabdyti paiešką"
-
-#~ msgid "Simple"
-#~ msgstr "Paprasta"
-
-#~ msgid "Advanced"
-#~ msgstr "Papildoma"
-
-#~ msgid "Frontend to the unix find/locate commands"
-#~ msgstr "Grafinis apvalkalas UNIX find/grep/locate komandoms"
-
-#~ msgid "S_how Command..."
-#~ msgstr "_Rodyti komandą..."
-
-#~ msgid "Show the command used to perform the search"
-#~ msgstr "Rodyti komandą, naudojamą paieškos vykdymui"
-
-#~ msgid "Save the search results"
-#~ msgstr "Išsaugoti paieškos rezultatus"
-
-#~ msgid "Sear_ch"
-#~ msgstr "_Ieškoti"
-
-#~ msgid "Search Tool"
-#~ msgstr "Paieškos įrankis"
-
-#~ msgid "Add..."
-#~ msgstr "Pridėti..."
-
-#~ msgid "Remove"
-#~ msgstr "Pašalinti"
-
-#~ msgid "description:"
-#~ msgstr "aprašymas:"
-
-#~ msgid "fixed 12"
-#~ msgstr "fixed 12"
-
-#~ msgid "fixed Bold 12"
-#~ msgstr "fixed Bold 12"
-
-#~ msgid "fixed 10"
-#~ msgstr "fixed 10"
-
-#~ msgid "fixed Bold 8"
-#~ msgstr "fixed Bold 8"
-
-#~ msgid "Helvetica 14"
-#~ msgstr "Helvetica 14"
-
-#~ msgid "Helvetica Bold 14"
-#~ msgstr "Helvetica Bold 14"
-
-#~ msgid "Helvetica 12"
-#~ msgstr "Helvetica 12"
-
-#~ msgid "Helvetica Bold 12"
-#~ msgstr "Helvetica Bold 12"
-
-#~ msgid "Helvetica 10"
-#~ msgstr "Helvetica 10"
-
-#~ msgid "Helvetica Bold 10"
-#~ msgstr "Helvetica Bold 10"
-
-#~ msgid "Log:"
-#~ msgstr "Log:"
-
-#~ msgid "Out of memory!\n"
-#~ msgstr "Baigėsi atmintis!\n"
-
-#~ msgid "Switch log"
-#~ msgstr "Pakeisti log'ą"
-
-#~ msgid "About..."
-#~ msgstr "Apie..."
-
-#~ msgid "Info about logview"
-#~ msgstr "Informacija apie logview"
-
-#~ msgid "_Log"
-#~ msgstr "_Žurnalas"
-
-#~ msgid "System Log Viewer"
-#~ msgstr "Sistemos log'ų peržiūra"
-
-#~ msgid "Cannot load required fonts, cannot continue"
-#~ msgstr "Negalima tęsti, nes negaliu užkrauti reikalingų šriftų."
-
-#~ msgid "Add >>"
-#~ msgstr "Pridėti >>"
-
-#~ msgid "Remove <<"
-#~ msgstr "Pašalinti <<"
-
-#~ msgid "Hide app"
-#~ msgstr "Paslėpti programą"
-
-#~ msgid "Columns"
-#~ msgstr "Stulpeliai"
-
-#~ msgid "Log line detail for <No log loaded>"
-#~ msgstr "Log eilutės detalės iš <joks log'as neįkeltas>"
+#~ msgid "Overwrite an existing file?"
+#~ msgstr "Perrašyti esamą bylą?"

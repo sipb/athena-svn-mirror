@@ -1,29 +1,323 @@
-2003-01-27  Glynn Foster <glynn.foster@sun.com>
+2004-09-13  Glynn Foster  <glynn.foster@sun.com>
 
-	* configure.in: release 2.2.0.3 " Good things come in 3s "
-	Okay, I want to wake up tommorrow and completely forget about
-	all of this. Is that possible?
-	* README, NEWS: Updated for the new release.
+	* configure.in: Release 2.8.0
 
-2003-01-24  Glynn Foster <glynn.foster@sun.com>
+2004-08-30  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Post release bump.
+
+2004-08-30  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Release 2.7.91
+
+2004-08-27  Akagic Amila    <bono@linux.org.ba>
+
+        * bs.po: Added Bosnian translation.
+
+2004-08-24  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* configure.in: Add «nb» to ALL_LINGUAS.
+
+2004-08-03  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure: Post release bump.
+
+2004-08-03  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Release 2.7.90
+
+2004-06-02  Pawan Chitrakar  <pawan@nplinux.org>
+
+	* configure.in: Added "ne" (Nepali) to ALL_LINGUAS
+
+2004-05-21  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Release 2.7.0
+
+2004-05-08  Glynn Foster  <glynn.foster@sun.com>
+
+	* HACKING, README: Update.
+
+2004-04-20  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Post release bump.
+
+2004-04-20  Glynn Foster  <glynn.foster@sun.com>
+
+	* NEWS: Update for 2.6.1 release.
+
+2004-04-09  Guntupalli Karunakar  <karunakar@freedomink.org>
+
+        * configure.in: Added "gu" (Gujarati) to ALL_LINGUAS.
+
+2004-03-30  Adam Weinberger  <adamw@gnome.org>
+
+	* configure.in: Added en_CA (Canadian Enligh) to ALL_LINGUAS.
+
+2004-03-23  Glynn Foster  <glynn.foster@sun.com>
+
+	* Makefile.am: Add workaround to scrollkeeper-update not
+	cleaning up after itself. Copied from gnome-panel.
+
+2004-03-23  Glynn Foster  <glynn.foster@sun.com>
 	
-	* configure.in: release 2.2.0.2 " I am an arse "
-	* README, NEWS: Updated for the new release.
+	* configure.in: Post release version bump to 2.6.1
 
-2003-01-24  Glynn Foster <glynn.foster@sun.com>
+2004-03-22  Guntupalli Karunakar  <karunakar@freedomink.org>
 
-	* configure.in: release 2.2.0.1 " Macro releases are teh suck "
-	* README, NEWS, HACKING: Updated for new release.
+        * configure.in: Added "pa" (Punjabi) to ALL_LINGUAS.
+
+2004-03-23  Glynn Foster  <glynn.foster@sun.com>
+
+	* AUTHORS: Update.
+	* BUGS: Split up from the README.
+	* MAINTAINERS: Update.
+	* NEWS: Update.
+	* README: Update.
+	* THANKS: Update for people who rocked for 2.6.0
+	* autogen.sh: Require automake 1.7 now.
+	* configure.in: Bump to 2.6.0 in preparation for the release.
+	* gnome-utils.spec.in: Copy over from JDS - probably a bit
+	closer to reality.
+
+2004-03-22  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Enable zh_HK gsearchtool help docs in the build.
+
+2004-03-08  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* configure.in: Release 2.5.90
+	
+2004-03-07  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* configure.in: Add check for strftime extensions (bug #136419).
+	
+2004-03-06  Paisa Seeluangsawat  <paisa@users.sf.net>
+
+	* configure.in: Added "th" (Thai) to ALL_LINGUAS.
+
+2004-02-09  Tomasz K³oczko <kloczek@pld.org.pl>
+
+	* configure.in: Trivial cleanup: remove AC_SUBST(CFLAGS),
+	  AC_SUBST(CPPFLAGS) and AC_SUBST(LDFLAGS). This variables are
+	  substed by default.
+
+2004-01-13  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Release 2.5.2
+
+2004-01-06  Glynn Foster  <glynn.foster@sun.com>
+
+	* Makefile.am: Back out the intltool changes.
+	* configure.in: Require 0.29
+
+2004-01-04  Stephane Demurget  <stephane.demurget@enst-bretagne.fr>
+
+	* MAINTAINERS: updated my email address.
+
+2004-01-04  Glynn Foster  <glynn.foster@sun.com>
+
+	* Makefile.am: Do the intltool-modules extra dist
+	foo.
+
+2004-01-03  Robert Sedak  <robert.sedak@sk.htnet.hr>
+
+        * configure.in: Added "hr" in ALL_LINGUAS.
+
+2003-12-30  Glynn Foster <glynn.foster@sun.com>
+
+	* configure.in: Release 2.5.1
+
+2003-12-11  Glynn Foster <glynn.foster@sun.com>
+	
+	* configure.in: Patch from Damien Carbery to 
+	fix up the pkg-config macro check.
+
+2003-12-09  Alex Duggan  <aldug@astrolinux.com>
+
+	* configure.in: Require gtk+ 2.3.x
+
+2003-11-10  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Release 2.5.0
+
+2003-11-10  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Patch from Steve Chaplin
+	to fix gfloppy build warnings.
+
+2003-11-09  Glynn Foster  <glynn.foster@sun.com>
+	
+	* configure.in: Bump to 2.5.0
+
+2003-09-08  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Release 2.4.0. 
+
+2003-09-06  Laurent Dhima  <laurenti@alblinux.net>
+
+	* configure.in: Added "sq" to ALL_LINGUAS.
+
+2003-09-02  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Release 2.3.90
+
+2003-09-02  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Remove logview/pixmaps/Makefile stuff
+	from autofoo.
+
+2003-08-07  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Release 2.3.4
+
+2003-07-20  Telsa Gwynne  <hobbit@aloss.ukuu.org.uk>
+
+	* configure.in: Added "cy" (Welsh) to ALL_LINGUAS
+
+2003-06-24  Mohammad DAMT  <mdamt@bisnisweb.com>
+
+	* po/id.po: Added Indonesian translation
+	* configure.in: Added "id" to ALL_LINGUAS
+
+2003-06-01  Dennis Cranston  <dennis_cranston at yahoo com>
+
+	* configure.in: Release 2.3.3
+
+2003-05-29  Dennis Cranston <dennis_cranston at yahoo com>
+
+	* configure.in: Added gnome-desktop-2.2 to module checks
+	  
+2003-05-29  Glynn Foster  <glynn.foster@sun.com>
+
+	* omf-install/*: Remove, we're not using this anymore.
+	* README: Update for gnome-common stuff.
+
+2003-05-29  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in, Makefile.am, gdialog/*, po/POTFILES.in: Remove
+	gdialog - Woohoo!
+
+2003-05-27  Taneem Ahmed  <taneem@eyetap.org>
+
+	* configure.in: Added "bn" to ALL_LINGUAS
+
+2003-05-26 John Fleck <jfleck@inkstain.net>
+
+	* autogen.sh
+	remove 
+	* xmldocs.make, omf.make
+	updating to Malcolm's new docs build system. Latest
+	gnome-common is required for this (2.3.0)
+
+2003-05-19  Greg Merchan  <merchan@phys.lsu.edu>
+
+	* gdictsrc/dict.c, gdictsrc/gdict-applet.c,
+	  gdictsrc/gdict-pref-dialog.c, gfloppy/src/main.c,
+	  gfloppy/src/progress.c,
+	Change GTK_BUTTONS_CLOSE to GTK_BUTTONS_OK for HIG compliance
+	Fixes bug 112204
+
+2003-05-19  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Release 2.3.2.1
+
+2003-05-19 Archana Shah <archana.shah@wipro.com>
+
+	* configure.in:  Placed a check for enabling IPv6 support
+	on the system. It gets enabled only if getaddrinfo() and 
+	structure sockaddr_storage are defined on the system and
+	socket of AF_INET6 family can be created.
+
+	* acconfig.h: Defined ENABLE_IPV6.
+
+2003-05-18  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Release 2.3.2
+
+2003-05-18  Glynn Foster  <glynn.foster@sun.com>
+
+	* Makefile.am: update for deceased modules.
+
+2003-05-18  Glynn Foster  <glynn.foster@sun.com>
+	
+	* gcalc/*: Remove in prepartion for gcalctool.
+	* configure.in, README: Updated for new modules.
+
+2003-05-18  Glynn Foster  <glynn.foster@sun.com>
+
+	* gcharmap/*: Remove in preparation for gucharmap.
+
+2003-05-08  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Release 2.3.1
+
+2003-05-06  Danilo Å egan  <dsegan@gmx.net>
+
+	* configure.in: Added "sr" and "sr@Latn" to ALL_LINGUAS.
+
+2003-04-02  Mike Lei <mike.lei@sun.com>
+
+	* configure.in: add doc support for gcharmap,
+	  gsearchtool,gcalc,logview
+
+	* doc files for above modules
+
+2003-03-25  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Release 2.3.0
+
+2003-03-13  Christian Rose  <menthos@menthos.com>
+
+	* configure.in: Added "ml" to ALL_LINGUAS.
+
+2003-02-10  Roozbeh Pournader  <roozbeh@sharif.edu>
+
+	* configure.in: Added "fa" to ALL_LINGUAS.
+
+2003-03-05  Malcolm Tredinnick <malcolm@commsecure.com.au>
+
+	* configure.in: Fix the build by adding missing files to
+	AC_OUTPUT().
+
+2003-02-01  Gil "Dolfin" Osher <dolfin@rpg.org.il>
+
+	* configure.in:
+	adding "he" back to ALL_LINGUAS - also added he.po to /po
+
+2003-01-31 John Fleck <jfleck@inkstain.net>
+
+	* configure.in:
+	removing "he" from ALL_LINGUAS - when "dolfin" added
+	it recently it broke the build - there is no he.po file
+
+2003-01-22  Glynn Foster <glynn.foster@sun.com>
+
+	* autogen.sh: Fix up build, remove references to gtt.
+	Thanks to Malcolm for this. 
 
 2003-01-22  Christian Rose  <menthos@menthos.com>
 
 	* configure.in: Added "mn" to ALL_LINGUAS.
 
-2003-01-20  Dennis Cranston <dennis_cranston@yahoo.com>
+2003-01-21  Glynn Foster  <glynn.foster@sun.com>
 
-	* README : Version is 2.2.0 not 2.0.0.  Also, removed
-	a reference to this being a beta version.
-	
+	* AUTHORS: Added myself.
+	* MAINTAINERS: Removed myself.
+	* THANKS: Thanked myself.
+	* sgmldocs.make: Removed - we're XML all the way baby.
+
+2003-01-21  Glynn Foster  <glynn.foster@sun.com>
+
+	* configure.in: Bump version up to 2.3.0
+	* meat-grinder/*: cull
+	* stripchart/*: cull
+	* mini-utils/gfontsel/*: cull
+	* mini-utils/gcolorsel/*: cull
+	* exe-handler/*: cull
+	* gtt/*: cull [now at http://linas.org/linux/gtt/gtt.html]
+	* HACKING: Update
+
 2003-01-20  Glynn Foster  <glynn.foster@sun.com>
 
 	* configure.in: release 2.2.0 " Slainte "
@@ -70,7 +364,7 @@
 
 2002-10-14  Glynn Foster  <glynn.foster@sun.com>
 
-	* configure.in: release 2.1.1 " Vid förtäring, uppsök läkarvård omgående "
+	* configure.in: release 2.1.1 " Vid fÃ¶rtÃ¤ring, uppsÃ¶k lÃ¤karvÃ¥rd omgÃ¥ende "
 	* NEWS, README: Updated for new release.
 
 2002-10-09  Glynn Foster  <glynn.foster@sun.com>

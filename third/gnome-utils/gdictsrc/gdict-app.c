@@ -1,4 +1,4 @@
-/* $Id: gdict-app.c,v 1.1.1.4 2003-01-29 20:33:00 ghudson Exp $ */
+/* $Id: gdict-app.c,v 1.1.1.5 2004-10-04 05:06:53 ghudson Exp $ */
 /* -*- mode: c; style: k&r; c-basic-offset: 4 -*- */
 
 /*
@@ -63,20 +63,15 @@ GnomePrinter *gdict_printer = NULL;
 dict_context_t *context;
 
 static void gdict_edit_menu_set_sensitivity (gboolean flag);
+static void follow_if_link (GtkWidget *defbox, GtkTextIter *iter);
 
-static gint
-socket_dialog_close_cb (GtkWidget *widget, gpointer data) 
-{
-    socket_error_dialog = NULL;
-    return FALSE;
-}
 
 static void
 socket_error_cb (GtkWidget *widget, gchar *message, gpointer data) 
 {
     socket_error_dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_DESTROY_WITH_PARENT,
                                   		  GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
-                                  		  "%s", message, NULL); 
+                                  		  "%s", message); 
     gtk_dialog_run (GTK_DIALOG (socket_error_dialog));
     gtk_widget_destroy (socket_error_dialog);
     
@@ -101,6 +96,10 @@ gdict_init_context (void)
     
     defbox->context = context;
 
+#ifdef ENABLE_IPV6
+    if (context->host6info)
+	return 0;
+#endif
     if (context->hostinfo)
 	return 0;
     else
@@ -149,8 +148,11 @@ void
 gdict_open_speller (void) 
 {
     if (!speller) {
-        speller = GDICT_SPELLER (gdict_speller_new (context));
-        
+        speller = GDICT_SPELLER (gdict_speller_new ());
+
+	speller->context = context;
+	gdict_speller_reset_strat (speller);
+
         if (!speller) return;
 
         gtk_signal_connect (GTK_OBJECT (speller), "word_lookup_start",
@@ -208,7 +210,7 @@ gdict_app_do_lookup (gchar *text)
     word_entry_text = gtk_editable_get_chars (GTK_EDITABLE (word_entry), 0, -1);
     if ((word_entry_text == NULL) || (*word_entry_text == 0) || (strcmp (word_entry_text, text) != 0))
     {
-        g_strdown (text);
+        g_utf8_strdown (text, strlen (text));
         gnome_entry_prepend_history (GNOME_ENTRY (gnome_word_entry), 1, text);
         gtk_entry_set_text (GTK_ENTRY (word_entry), text);
     }
@@ -232,7 +234,7 @@ static void
 lookup_entry (void) 
 {
     gchar *text = gtk_editable_get_chars (GTK_EDITABLE (word_entry), 0, -1);
-    g_strdown(text);
+    g_utf8_strdown(text, strlen (text));
     gdict_app_do_lookup (text);
     if (text)
         g_free (text);
@@ -246,7 +248,7 @@ lookup_defbox (void)
     gtk_entry_set_text (GTK_ENTRY (word_entry), "");
     gtk_signal_emit_by_name (GTK_OBJECT (word_entry), "paste_clipboard");
     text = gtk_editable_get_chars (GTK_EDITABLE (word_entry), 0, -1);
-    g_strdown (text);
+    g_utf8_strdown (text, strlen (text));
     gnome_entry_prepend_history (GNOME_ENTRY (gnome_word_entry), 1, text);
     gdict_app_do_lookup (text);
     if (text)
@@ -323,7 +325,7 @@ lookup_button_drag_cb (GtkWidget *widget, GdkDragContext *context, gint x, gint 
 	text = gtk_selection_data_get_text (sd);
 	
 	if (text) {
-		g_strdown (text);
+		g_utf8_strdown (text, strlen (text));
 		gtk_entry_set_text (GTK_ENTRY (word_entry), text);
     		gnome_entry_prepend_history (GNOME_ENTRY (gnome_word_entry), 1, text);
     		gdict_app_do_lookup (text);
@@ -474,7 +476,7 @@ find_cb (GtkMenuItem *menuitem, gpointer user_data)
 					  NULL);
     	hbox = gtk_hbox_new (FALSE, 8);
 	
-    	label = gtk_label_new_with_mnemonic ("_Search for:");
+    	label = gtk_label_new_with_mnemonic (_("_Search for:"));
     
     	entry = gtk_entry_new ();
    	gtk_entry_set_activates_default (GTK_ENTRY (entry), TRUE);
@@ -523,14 +525,6 @@ find_again_cb (GtkMenuItem *menuitem, gpointer user_data)
 	find_cb (NULL, NULL);
 }
 
-static void
-pref_dialog_apply_cb (GtkWidget *widget, gpointer user_data) 
-{
-    gdict_defbox_reset (defbox, context);
-    if (speller) 
-	gdict_speller_reset (speller, context);
-}
-
 void
 gdict_not_online () 
 {
@@ -542,7 +536,7 @@ gdict_not_online ()
     		           "or you are not connected to the Internet."));
     w = gtk_message_dialog_new (NULL, GTK_DIALOG_DESTROY_WITH_PARENT,
                                      GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
-                                     "%s", s, NULL); 
+                                     "%s", s); 
     gtk_dialog_run (GTK_DIALOG (w));
     gtk_widget_destroy (w);
     g_free (s);
@@ -554,6 +548,8 @@ gdict_app_show_preferences (void)
 	
     if (!pref_dialog)
         pref_dialog = gdict_pref_dialog_new (context);
+    else
+	gtk_window_present (GTK_WINDOW (pref_dialog));
 
     gtk_widget_show (pref_dialog);
 }
@@ -763,14 +759,158 @@ enum
   TARGET_TEXT_BUFFER_CONTENTS
 };
 
+
+static gboolean
+event_after (GtkWidget *defbox,
+	     GdkEvent  *ev)
+{
+  GtkTextIter start, end, iter;
+  GtkTextBuffer *buffer;
+  GdkEventButton *event;
+  gint x, y;
+  if (ev->type != GDK_BUTTON_RELEASE)
+    return FALSE;
+
+  event = (GdkEventButton *)ev;
+
+  if (event->button != 1)
+    return FALSE;
+
+  buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (defbox));
+
+  gtk_text_buffer_get_selection_bounds (buffer, &start, &end);
+  if (gtk_text_iter_get_offset (&start) != gtk_text_iter_get_offset (&end))
+    return FALSE;
+
+  gtk_text_view_window_to_buffer_coords (GTK_TEXT_VIEW (defbox), 
+                                         GTK_TEXT_WINDOW_WIDGET,
+                                         event->x, event->y, &x, &y);
+
+  gtk_text_view_get_iter_at_location (GTK_TEXT_VIEW (defbox), &iter, x, y);
+
+  follow_if_link (defbox, &iter);
+
+  return FALSE;
+}
+
+static void
+follow_if_link (GtkWidget   *defbox, 
+		GtkTextIter *iter)
+{
+  GSList *tags = NULL, *tagp = NULL;
+  gchar *str;
+
+  tags = gtk_text_iter_get_tags (iter);
+  for (tagp = tags;  tagp != NULL;  tagp = tagp->next)
+    {
+      GtkTextTag *tag = tagp->data;
+      str = g_object_get_data (G_OBJECT (tag), "page");
+      gdict_defbox_clear (GDICT_DEFBOX (defbox));		
+      gdict_app_do_lookup (str);
+      gtk_widget_grab_focus (word_entry);
+      gtk_editable_set_position (GTK_EDITABLE (word_entry), -1);
+      g_free (str);
+    }
+  if (tags) 
+    g_slist_free (tags);
+}
+
+
+
+gboolean hovering_over_link = FALSE;
+GdkCursor *hand_cursor = NULL;
+GdkCursor *regular_cursor = NULL;
+
+
+static void
+set_cursor_if_appropriate (GtkWidget *defbox,
+                           gint            x,
+                           gint            y)
+{
+  GSList *tags = NULL, *tagp = NULL;
+  GtkTextBuffer *buffer;
+  GtkTextIter iter;
+  gboolean hovering = FALSE;
+	
+   hand_cursor = gdk_cursor_new (GDK_HAND2);
+   regular_cursor = gdk_cursor_new (GDK_XTERM);
+   
+  buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (defbox));
+
+  gtk_text_view_get_iter_at_location (GTK_TEXT_VIEW (defbox), &iter, x, y);
+  
+  tags = gtk_text_iter_get_tags (&iter);
+  for (tagp = tags;  tagp != NULL;  tagp = tagp->next)
+    {
+      GtkTextTag *tag = tagp->data;
+	  gint page = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (tag), "page"));
+      
+      if (page != 0) 
+        {
+          hovering = TRUE;
+          break;
+        }
+    }
+
+  if (hovering != hovering_over_link)
+    {
+      hovering_over_link = hovering;
+
+      if (hovering_over_link)
+        gdk_window_set_cursor (gtk_text_view_get_window (GTK_TEXT_VIEW (defbox), GTK_TEXT_WINDOW_TEXT), hand_cursor);
+      else
+        gdk_window_set_cursor (gtk_text_view_get_window (GTK_TEXT_VIEW (defbox), GTK_TEXT_WINDOW_TEXT), regular_cursor);
+    }
+
+  if (tags) 
+    g_slist_free (tags);
+}
+
+static gboolean
+motion_notify_event ( GtkWidget *defbox,
+		     GdkEventMotion *event)
+{
+  gint x, y;
+  
+  
+  gtk_text_view_window_to_buffer_coords (GTK_TEXT_VIEW (defbox), 
+                                         GTK_TEXT_WINDOW_WIDGET,
+                                         event->x, event->y, &x, &y);
+
+  
+  set_cursor_if_appropriate (defbox, x, y);
+  gdk_window_get_pointer (GTK_WIDGET(defbox)->window, NULL, NULL, NULL);
+  return FALSE;
+}
+
+/* update the cursor image if the window becomes visible */
+ 
+static gboolean
+visibility_notify_event (GtkWidget *defbox,
+			 GdkEventVisibility *event)
+{
+  gint wx, wy, bx, by;
+  
+  
+  gdk_window_get_pointer (GTK_WIDGET(defbox)->window, &wx, &wy, NULL);
+  
+  gtk_text_view_window_to_buffer_coords (GTK_TEXT_VIEW (defbox), 
+                                         GTK_TEXT_WINDOW_WIDGET,
+                                         wx, wy, &bx, &by);
+
+  set_cursor_if_appropriate (defbox, bx, by);
+  return FALSE;
+}
+
+
+
 GtkWidget *gdict_app_create (gboolean applet) {
     GtkWidget *dock;
     GtkWidget *vbox;
     GtkWidget *hbox;
     GtkWidget *button;
-    GtkWidget *label, *word_label;
+    GtkWidget *word_label;
     GtkWidget *scrolled;
-    GtkWidget *defbox_vscrollbar;
     GtkTooltips *tooltips;
     static GtkTargetEntry drop_targets [] = {
     	{ "UTF8_STRING", 0, 0 },
@@ -800,12 +940,12 @@ GtkWidget *gdict_app_create (gboolean applet) {
     gtk_widget_show (vbox);
     gnome_app_set_contents (GNOME_APP (gdict_app), vbox);
     
-    hbox = gtk_hbox_new (FALSE, 6);
+    hbox = gtk_hbox_new (FALSE, 12);
     gtk_container_set_border_width (GTK_CONTAINER (hbox), 6);
     gtk_widget_show (hbox);
     gtk_box_pack_start (GTK_BOX (vbox), hbox, FALSE, FALSE, 0);
     
-    word_label = gtk_label_new_with_mnemonic (_("_Word: "));
+    word_label = gtk_label_new_with_mnemonic (_("_Word:"));
     gtk_widget_show ( GTK_WIDGET(word_label) );
     gtk_box_pack_start (GTK_BOX (hbox), word_label, FALSE, FALSE, 0);
     
@@ -845,7 +985,7 @@ GtkWidget *gdict_app_create (gboolean applet) {
     gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled),
                                         GTK_POLICY_AUTOMATIC,             
 	       				GTK_POLICY_AUTOMATIC);
-    gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolled), GTK_SHADOW_ETCHED_IN);
+    gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolled), GTK_SHADOW_NONE);
 
     gtk_widget_show (scrolled);
   
@@ -865,6 +1005,8 @@ GtkWidget *gdict_app_create (gboolean applet) {
   
     gtk_widget_show (GTK_WIDGET (defbox));
     gtk_text_view_set_editable (GTK_TEXT_VIEW (defbox), FALSE);
+    gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (scrolled),
+		    GTK_SHADOW_ETCHED_IN);
     gtk_container_add (GTK_CONTAINER (scrolled), GTK_WIDGET (defbox));
 
     gtk_box_pack_start (GTK_BOX (vbox), scrolled, TRUE, TRUE, 0);
@@ -876,14 +1018,28 @@ GtkWidget *gdict_app_create (gboolean applet) {
     gtk_widget_show (gdict_appbar);
 
     if (!applet)
-      gtk_signal_connect (GTK_OBJECT (gdict_app), "delete_event",
-                          GTK_SIGNAL_FUNC (gtk_main_quit), NULL);
+      g_signal_connect (gdict_app, "delete_event",
+                        G_CALLBACK (gtk_main_quit), NULL);
     else
-      gtk_signal_connect (GTK_OBJECT (gdict_app), "delete_event",
-                          GTK_SIGNAL_FUNC (gtk_widget_hide), NULL);
+      g_signal_connect (gdict_app, "delete_event",
+                        G_CALLBACK (gtk_widget_hide), NULL);
     
-    gtk_signal_connect (GTK_OBJECT (word_entry), "activate",
-                        GTK_SIGNAL_FUNC(lookup_cb), NULL);
+    g_signal_connect (word_entry, "activate",
+                      G_CALLBACK (lookup_cb), NULL);
+	
+    gtk_widget_realize (GTK_WIDGET (defbox));
+	
+    g_signal_connect (defbox, "event-after", 
+		      G_CALLBACK (event_after), NULL);
+    
+    g_signal_connect (defbox, "motion-notify-event", 
+		      G_CALLBACK (motion_notify_event), NULL);
+    
+    g_signal_connect (defbox, "visibility-notify-event", 
+		      G_CALLBACK (visibility_notify_event), NULL);
+    
+    gtk_widget_show (GTK_WIDGET (defbox));
+	
     return gdict_app;
 }
 

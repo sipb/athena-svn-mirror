@@ -1,7 +1,7 @@
 #ifndef __GDICT_SPELLER_H_
 #define __GDICT_SPELLER_H_
 
-/* $Id: gdict-speller.h,v 1.1.1.2 2003-01-04 21:12:51 ghudson Exp $ */
+/* $Id: gdict-speller.h,v 1.1.1.3 2004-10-04 05:05:55 ghudson Exp $ */
 
 /*
  *  Mike Hughes <mfh@psilord.com>
@@ -61,7 +61,7 @@ struct _GDictSpellerClass {
 
 GType      gdict_speller_get_type    (void);
 
-GtkWidget *gdict_speller_new         (dict_context_t *context);
+GtkWidget *gdict_speller_new         ();
 void       gdict_speller_destroy     (GDictSpeller *speller);
 
 gint       gdict_speller_lookup      (GDictSpeller *speller, gchar *text);

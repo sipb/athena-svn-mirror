@@ -67,7 +67,6 @@ DateMark* find_prev_mark (CalendarData*);
 DateMark* find_next_mark (CalendarData*);
 DateMark* get_mark_from_month (CalendarData *data, gint month, gint year);
 DateMark *get_mark_from_date (CalendarData *, gint, gint, gint);
-GtkWidget *new_pixmap_from_data(char **xpm_data, GdkWindow *w, GdkColor *b);
 void log_repaint (GtkWidget * canvas, GdkRectangle * area);
 
 
@@ -83,7 +82,7 @@ extern GdkGC *gc;
 extern Log *curlog, *loglist[];
 extern int numlogs, curlognum;
 extern char *month[12];
-extern GtkWidget *main_win_scrollbar;
+extern GtkWidget *view;
 extern GnomeUIInfo view_menu[];
 GtkWidget *CalendarDialog = NULL;
 GtkWidget *CalendarWidget;
@@ -99,7 +98,6 @@ void
 CalendarMenu (GtkWidget * widget, gpointer user_data)
 {
    GtkCalendar *calendar;
-   GtkWidget *frame;
    GtkWidget *vbox;
 
    if (curlog == NULL || calendarvisible)
@@ -111,6 +109,9 @@ CalendarMenu (GtkWidget * widget, gpointer user_data)
 
       gtk_window_set_title (GTK_WINDOW (CalendarDialog), _("Calendar"));
       gtk_window_set_resizable (GTK_WINDOW (CalendarDialog), FALSE);
+      gtk_dialog_set_has_separator (GTK_DIALOG(CalendarDialog), FALSE);
+      gtk_container_set_border_width (GTK_CONTAINER (GTK_DIALOG (CalendarDialog)), 5);
+
       gtk_dialog_add_button (GTK_DIALOG (CalendarDialog), 
 			     GTK_STOCK_CLOSE, GTK_RESPONSE_CLOSE);
       g_signal_connect (G_OBJECT (CalendarDialog), "response",
@@ -123,16 +124,11 @@ CalendarMenu (GtkWidget * widget, gpointer user_data)
 			G_CALLBACK (gtk_true),
 			NULL);
 
-      vbox = gtk_vbox_new (FALSE, 2);
+      vbox = gtk_vbox_new (FALSE, 6);
 
       gtk_box_pack_start (GTK_BOX (GTK_DIALOG (CalendarDialog)->vbox), vbox, 
 			  TRUE, TRUE, 0);
-      gtk_container_set_border_width (GTK_CONTAINER (vbox), 4);
-
-      frame = gtk_frame_new (NULL);
-
-      gtk_frame_set_shadow_type (GTK_FRAME (frame), GTK_SHADOW_ETCHED_IN);
-      gtk_container_set_border_width (GTK_CONTAINER (frame), 3);
+      gtk_container_set_border_width (GTK_CONTAINER (vbox), 5);
 
       calendar = (GtkCalendar *)gtk_calendar_new();
 
@@ -145,10 +141,8 @@ CalendarMenu (GtkWidget * widget, gpointer user_data)
       gtk_signal_connect (GTK_OBJECT (calendar), "day_selected_double_click",
 			  GTK_SIGNAL_FUNC (calendar_day_selected_double_click),
 			  NULL);
-      gtk_container_add (GTK_CONTAINER (frame), GTK_WIDGET (calendar));
-      gtk_box_pack_start (GTK_BOX (vbox), frame, TRUE, TRUE, 0);
+      gtk_box_pack_start (GTK_BOX (vbox), GTK_WIDGET (calendar), TRUE, TRUE, 0);
       gtk_widget_show (GTK_WIDGET (calendar));
-      gtk_widget_show (frame);
 
       gtk_dialog_set_default_response (GTK_DIALOG (CalendarDialog), GTK_RESPONSE_CLOSE); 
    
@@ -161,28 +155,6 @@ CalendarMenu (GtkWidget * widget, gpointer user_data)
 
    gtk_widget_show (CalendarDialog);
 
-}
-
-/* ----------------------------------------------------------------------
-   NAME:	new_pixmap_from_data
-   DESCRIPTION:	
-   ---------------------------------------------------------------------- */
-
-GtkWidget *
-new_pixmap_from_data (char      **xpm_data,
-		      GdkWindow *window,
-		      GdkColor  *background)
-{
-  GtkWidget *wpixmap;
-  GdkPixmap *pixmap;
-  GdkBitmap *mask;
-
-  pixmap = gdk_pixmap_create_from_xpm_d (window, &mask,
-					 background,
-					 xpm_data);
-  wpixmap = gtk_pixmap_new (pixmap, mask);
-
-  return wpixmap;
 }
 
 /* ----------------------------------------------------------------------
@@ -296,41 +268,18 @@ calendar_month_changed (GtkWidget *widget, gpointer unused_data)
 void
 calendar_day_selected (GtkWidget *widget, gpointer unused_data)
 {
-#ifdef FIXME
-  /* need to update the calander days with with the ones in logfile */
-
-  GtkCalendar *calendar;
-  CalendarData *data;
+  /* find the selected day in the current logfile */
   gint day, month, year;
+  GtkTreePath *path;
 
-  calendar = GTK_CALENDAR (CalendarWidget);
-  gtk_calendar_get_date (calendar, &year, &month, &day);
-  /* This is Y2K compatible but internally we keep track of years
-     starting from 1900. This is because of Unix and not because 
-     I like it!! */
-  year -= 1900;
-  g_return_if_fail (calendar);
+  gtk_calendar_get_date (GTK_CALENDAR (CalendarWidget), &year, &month, &day);
 
-  data = curlog->caldata;
-  g_return_if_fail (data);
-  
-  /* TODO This is an ugly HACK until I add this function into
-     the widget!!!!!!
-  */
-  /* Dates go from 0-30 in this array!!! I really need to
-     add the function gtk_calendar_day_marked (day) */
-  if (calendar->marked_date[day-1])
+  path = g_hash_table_lookup (curlog->date_headers,
+                DATEHASH (month, day));
+  if (path != NULL)
     {
-      curlog->curmark = get_mark_from_date (data, day, month, year);
-      MoveToMark (curlog);
-      curlog->firstline = 0;
-      curlog->ln = curlog->curmark->ln;
-      gtk_adjustment_set_value ( GTK_RANGE(main_win_scrollbar)->adjustment,
-				 curlog->ln);
-      /* set_scrollbar_size (curlog->lstats.numlines); */
-      log_repaint(NULL, NULL);
+      gtk_tree_view_set_cursor (view, path, NULL, FALSE);
     }
-#endif  
 }
 
 /* ----------------------------------------------------------------------
