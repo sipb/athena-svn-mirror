@@ -1,0 +1,30 @@
+#
+#     Ademola Aderibigbe
+#     MIT Project Athena
+#     7/7/88          
+#
+# This file is sourced by the "remove" command.  When remove is invoked with
+# the subject number, it detaches the subject locker, sources the .detachrc
+# file (if one exists) and kills the window (xterm).
+
+
+  if ($prompt == "${SUBJECT}%") then
+          echo " The $SUBJECT environment is being cleared up"
+          cd /
+          set dir = `/bin/grep -w !:1 /usr/tmp/attachtab | /bin/awk '{print $7}'`
+          if (! $status && -r $dir/.detachrc) then
+               source $dir/.detachrc
+          endif
+          /bin/athena/detach $SUBJECT
+          unset dir
+          kill -9 $PID            
+  else
+          echo " "
+          echo "The remove command (with a subject number) works when issued"
+          echo "from the window created using the setup command (with that"
+          echo "subject number)"
+  endif
+  unsetenv SUBJECT
+
+
+

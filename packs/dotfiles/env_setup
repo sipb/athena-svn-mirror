@@ -1,0 +1,36 @@
+#
+#     Ademola Aderibigbe
+#     MIT Project Athena
+#     7/7/88
+#
+#      This sets up the subject window and its environment.  It is sourced 
+#      by the "setup" command.  When setup is invoked with the subject number,
+#      it creates a new  window (xterm) ,changes the prompt to the subject
+#      number, sources the .attachrc file in the locker (if one exists) and
+#      modifies the path according to the type of machine being used.
+
+
+ set dir = `/bin/athena/attach -p $SUBJECT`
+ if (! $status) then
+        set prompt = "$SUBJECT% "
+        if ( -r $dir/.attachrc) then
+              source $dir/.attachrc
+        else
+
+#          Do this only if no .attachrc (This should encourage instructors
+#          to keep two sets of binaries in the appropriate directories
+#          even if they are not using .attachrc/.detachrc files). 
+
+               set path = ($path $dir/${hosttype}bin)
+        endif  
+  else
+        echo " "
+        echo "There is a problem--the locker may have already been attached,"
+        echo "the server on which the locker resides may be inaccessible"
+        echo "at this time or the locker may not exist (wrong name?). "
+        echo "     If you want to kill this window type exit"   
+  endif
+  unset dir
+  unsetenv SUBJECT
+
+
