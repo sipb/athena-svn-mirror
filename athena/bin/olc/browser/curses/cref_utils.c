@@ -23,8 +23,8 @@
  * utilities.
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v $
- *	$Author: lwvanels $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 2.7 1992-02-04 22:07:10 lwvanels Exp $
+ *	$Author: vrt $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 2.8 1994-03-14 14:58:21 vrt Exp $
  */
 
 #ifndef lint
@@ -39,6 +39,7 @@ static char *rcsid_commands_c = "$Header: ";
 #include <curses.h>			/* Curses package defs. */
 #include <sys/types.h>
 #include <sys/file.h>			/* System file definitions. */
+#include <fcntl.h>
 #include <ctype.h>			/* Character type macros. */
 #include <sys/param.h>			/* System parameters file. */
 
