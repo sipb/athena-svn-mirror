@@ -19,20 +19,20 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_list.c,v $
- *	$Id: t_list.c,v 1.19 1991-04-08 20:45:31 lwvanels Exp $
+ *	$Id: t_list.c,v 1.20 1991-09-10 13:33:56 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_list.c,v 1.19 1991-04-08 20:45:31 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_list.c,v 1.20 1991-09-10 13:33:56 lwvanels Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
 #include <olc/olc.h>
 #include <olc/olc_tty.h>
-#ifdef _AUX_SOURCE
+#if defined(_AUX_SOURCE) || defined(_POSIX_SOURCE)
 #include <time.h>
 #endif
 
