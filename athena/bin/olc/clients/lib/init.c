@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v $
- *	$Id: init.c,v 1.11 1991-02-24 11:32:45 lwvanels Exp $
+ *	$Id: init.c,v 1.12 1991-03-26 13:06:05 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v 1.11 1991-02-24 11:32:45 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v 1.12 1991-03-26 13:06:05 lwvanels Exp $";
 #endif
 #endif
 
@@ -50,9 +50,8 @@ OInitialize()
 
   h = getenv ("OLCD_HOST");
 
-  if (!h) {
-
 #ifdef HESIOD
+  if (!h) {
       char **hp;
 
       if ((hp = hes_resolve(OLC_SERVICE,OLC_SERV_NAME)) == NULL) {	
@@ -70,14 +69,13 @@ OInitialize()
       }
       else
 	  h = *hp;
-
-#endif /* HESIOD */
-
-      if (!h) {
-	  fprintf (stderr, "Can't find OLC server host!\n");
-	  exit (ERROR);
-      }
+    }
+#else
+  if (!h) {
+    fprintf (stderr, "Can't find OLC server host!\n");
+    exit (ERROR);
   }
+#endif /* HESIOD */
 
   strcpy (DaemonHost, h);
 
