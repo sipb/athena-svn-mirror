@@ -28,11 +28,12 @@ WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION,
 ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 SOFTWARE.
 ******************************************************************/
+
 #ifdef KINETICS
 #include "gw.h"
 #endif
 
-#if (defined(unix) && !defined(KINETICS))
+#if !defined(KINETICS)
 #include <sys/types.h>
 #include <netinet/in.h>
 #endif

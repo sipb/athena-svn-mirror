@@ -32,7 +32,7 @@ SOFTWARE.
 #include "fp4/cmdmacro.h"
 #endif
 
-#if (defined(unix) && !defined(KINETICS))
+#if !defined(KINETICS)
 #include <sys/types.h>
 #include <netinet/in.h>
 #ifndef NULL
