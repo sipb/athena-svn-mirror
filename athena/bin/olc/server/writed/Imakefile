@@ -1,24 +1,31 @@
 #
-# $Id: Imakefile,v 1.3 1991-05-08 11:06:57 lwvanels Exp $
+# $Id: Imakefile,v 1.4 1991-05-15 12:35:20 lwvanels Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/writed/Imakefile,v $
 # Copyright (C) 1991 by the Massachusetts Institute of Technology.
 # For copying and distribution information, see the file "mit-copyright.h".
 #
 
-SRCS = writed.c
-OBJS = writed.o
+D_SRCS = writed.c
+D_OBJS = writed.o
+C_SRCS = write.c
+C_OBJS = write.o
 
-NormalProgramTarget(writed,$(OBJS),,,)
-SaberProgramTarget(writed,$(SRCS),$(OBJS),,)
+NormalProgramTarget(writed,$(D_OBJS),,,)
+SaberProgramTarget(writed,$(D_SRCS),$(D_OBJS),,)
+
+NormalProgramTarget(write,$(C_OBJS),,,)
+SaberProgramTarget(write,$(C_SRCS),$(C_OBJS),,)
 
 DependSrcs()
 
 LintTarget()
 
 #ifdef InstallAltLoc
-InstallProgram(writed,$(DESTDIR)/etc/athena)
+InstallProgram(writed,$(DESTDIR)/usr/athena/etc)
+InstallProgramWithFlags(write,$(DESTDIR)/usr/athena/bin,-g tty -m 2755)
 #else
 InstallProgram(writed,$(DESTDIR)/etc)
+InstallProgramWithFlags(write,$(DESTDIR)/bin,-g tty -m 2755)
 #endif
 
-AllTarget(writed)
+AllTarget(writed write)
