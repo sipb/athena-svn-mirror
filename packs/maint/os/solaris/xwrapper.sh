@@ -19,7 +19,7 @@ rm -f /var/athena/x-8-bit
 # Based on the frame buffer and mode, run commands or specify extra
 # options.
 case $framebuf,$mode in
-afb,24|ffb,24|ifb,24)
+afb,24|ffb,24|ifb,24|jfb,24)
 	# With no options, the default visual would be 8-bit.
 	options="-dev /dev/fb defdepth 24"
 	;;
