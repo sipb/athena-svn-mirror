@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: verify.c,v 1.10 2000-02-23 19:33:13 tb Exp $";
+static const char rcsid[] = "$Id: verify.c,v 1.11 2000-04-11 13:38:38 rbasch Exp $";
 
 #include <sys/types.h>
 #include <sys/param.h>
@@ -357,7 +357,7 @@ char *dologin(char *user, char *passwd, int option, char *script,
 	  fprintf(stderr, "Unable to fork to check your mail.\n");
 	  break;
 	case 0:
-	  if (setuid(pwd->pw_uid) != 0)
+	  if (set_uid_and_caps(pwd) != 0)
 	    {
 	      fprintf(stderr, "Unable to set user ID to check your mail.\n");
 	      _exit(-1);
@@ -467,7 +467,7 @@ char *dologin(char *user, char *passwd, int option, char *script,
       fprintf(stderr, "Unable to fork to check your filesystem quota.\n");
       break;
     case 0:
-      if (setuid(pwd->pw_uid) != 0)
+      if (set_uid_and_caps(pwd) != 0)
 	{
 	  fprintf(stderr,
 		  "Unable to set user ID to check your filesystem quota.\n");
@@ -616,7 +616,7 @@ char *dologin(char *user, char *passwd, int option, char *script,
     return(lose("Unable to set your login credentials.\n"));
 #endif
 
-  i = setuid(pwd->pw_uid);
+  i = set_uid_and_caps(pwd);
   if (i)
     return lose("Unable to set your user ID.\n");
 #endif /* not NANNY */

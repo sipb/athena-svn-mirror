@@ -1,4 +1,4 @@
-/* $Id: xlogin.h,v 1.1 1999-12-22 17:27:49 danw Exp $ */
+/* $Id: xlogin.h,v 1.2 2000-04-11 13:38:42 rbasch Exp $ */
 
 /* Copyright 1999 by the Massachusetts Institute of Technology.
  *
@@ -29,3 +29,4 @@ void cleanup(char *user);
 /* from xlogin.c */
 void prompt_user(char *msg, void (*abort_proc)(void *), void *abort_arg);
 char *lose(char *msg);
+int set_uid_and_caps(struct passwd *pw);

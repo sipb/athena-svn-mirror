@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: xlogin.c,v 1.5 1999-12-22 17:27:48 danw Exp $";
+static const char rcsid[] = "$Id: xlogin.c,v 1.6 2000-04-11 13:38:42 rbasch Exp $";
  
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -30,6 +30,11 @@ static const char rcsid[] = "$Id: xlogin.c,v 1.5 1999-12-22 17:27:48 danw Exp $"
 #include <string.h>
 #include <unistd.h>
 #include <utmp.h>
+
+#ifdef sgi
+#include <capability.h>
+#include <sys/capability.h>
+#endif
 
 #include <X11/Intrinsic.h>
 #include <X11/Shell.h>
@@ -120,6 +125,8 @@ static void idleResetCB(Widget w, XtPointer s, XtPointer unused);
 
 static void localErrorHandler(String s);
 static void do_motd(void);
+
+static void ensure_process_capabilities(void);
 
 
 /* Definition of the Application resources structure. */
@@ -577,6 +584,9 @@ int main(int argc, char **argv)
 	}
       XtFree(orig_dpy);
     }
+
+  /* Ensure that we have the proper capabilities. */
+  ensure_process_capabilities();
 
   larv_set_busy(0);
 
@@ -1181,7 +1191,7 @@ static void runACT(Widget w, XEvent *event, String *p, Cardinal *n)
   setgroups(sizeof(def_grplist)/sizeof(gid_t), def_grplist);
 
   setgid(def_grplist[0]);
-  if (setuid(pw->pw_uid))
+  if (set_uid_and_caps(pw) != 0)
     {
       fprintf(stderr, "Unable to set user id.\n");
       return;
@@ -1969,4 +1979,89 @@ static void setFontPath(void)
     }
 
   XSetFontPath(dpy, dirlist, ndirs);
+}
+
+/* Ensure we will be able to set process capabilities after we
+ * setuid().  Currently implemented only on IRIX.
+ */
+static void ensure_process_capabilities(void)
+{
+#ifdef sgi
+  if (cap_envl(0, CAP_SETPCAP, (cap_value_t) 0) == -1)
+    fprintf(stderr, "xlogin: Insufficient privilege\n");
+#endif
+  return;
+}
+
+/* This function sets the user ID and capabilities for the uid and
+ * user name in the given passwd structure.  Capabilities support
+ * is currently implemented only for IRIX.
+ * The function returns 0 for success, -1 upon failure.
+ */
+int set_uid_and_caps(struct passwd *pw)
+{
+#ifdef sgi
+  struct user_cap *user_cap;
+  char *def_cap;
+  cap_t cap = NULL, ocap;
+  cap_value_t capval;
+
+  /* If capabilities are supported, look up the user's default capability
+   * set; use an empty set if no capabilities are defined for the user.
+   */
+  if (sysconf(_SC_CAP) > 0)
+    {
+      user_cap = sgi_getcapabilitybyname(pw->pw_name);
+      def_cap = (user_cap != NULL ? user_cap->ca_default : "all=");
+      cap = cap_from_text(def_cap);
+      if (user_cap != NULL)
+	{
+	  free(user_cap->ca_name);
+	  free(user_cap->ca_default);
+	  free(user_cap->ca_allowed);
+	  free(user_cap);
+	}
+      if (cap == NULL)
+	{
+	  fprintf(stderr,
+		  "Cannot convert user capabilities: %s\n",
+		  strerror(errno));
+	  return -1;
+	}
+    }
+
+  /* Become the user. */
+  if (setuid(pw->pw_uid) != 0)
+    {
+      if (cap != NULL)
+	cap_free(cap);
+      return -1;
+    }
+
+  /* Acquire the privilege to set process capabilities, and set
+   * the user's cap's.  At this point, cap will be non-null if
+   * capabilities are supported.
+   */
+  if (cap != NULL)
+    {
+      capval = CAP_SETPCAP;
+      ocap = cap_acquire(1, &capval);
+      if (cap_set_proc(cap) == -1)
+	{
+	  fprintf(stderr,
+		  "Cannot set process capabilities: %s\n",
+		  strerror(errno));
+	  cap_surrender(ocap);
+	  cap_free(cap);
+	  return -1;
+	}
+      cap_free(cap);
+      cap_free(ocap);
+    }
+
+  return 0;
+
+#else
+  return setuid(pw->pw_uid);
+#endif
 }
