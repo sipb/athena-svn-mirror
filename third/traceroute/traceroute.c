@@ -24,7 +24,7 @@ static const char copyright[] =
     "@(#) Copyright (c) 1988, 1989, 1991, 1994, 1995, 1996, 1997\n\
 The Regents of the University of California.  All rights reserved.\n";
 static const char rcsid[] =
-    "@(#)$Header: /afs/dev.mit.edu/source/repository/third/traceroute/traceroute.c,v 1.1.1.1 1997-09-24 06:24:34 ghudson Exp $ (LBL)";
+    "@(#)$Header: /afs/dev.mit.edu/source/repository/third/traceroute/traceroute.c,v 1.1.1.1.6.1 2000-01-07 22:53:35 ghudson Exp $ (LBL)";
 #endif
 
 /*
@@ -235,7 +235,6 @@ static const char rcsid[] =
 #endif
 
 #include "ifaddrlist.h"
-#include "savestr.h"
 
 /* Maximum number of gateways (include room for one noop) */
 #define NGATEWAYS ((int)((MAX_IPOPTLEN - IPOPT_MINOFF - 1) / sizeof(u_int32_t)))
@@ -428,7 +427,7 @@ main(int argc, char **argv)
 			break;
 
 		case 'w':
-			waittime = str2val(optarg, "wait time", 2, -1);
+			waittime = str2val(optarg, "wait time", 2, 24 * 3600);
 			break;
 
 		default:
@@ -647,7 +646,7 @@ main(int argc, char **argv)
 		    sizeof(on));
 
 	/* Get the interface address list */
-	n = ifaddrlist(&al, errbuf);
+	n = ifaddrlist(&al, errbuf, sizeof errbuf);
 	if (n < 0) {
 		Fprintf(stderr, "%s: ifaddrlist: %s\n", prog, errbuf);
 		exit(1);
@@ -842,6 +841,7 @@ wait_for_reply(register int sock, register struct sockaddr_in *fromp,
 	struct timezone tz;
 	register int cc = 0;
 	int fromlen = sizeof(*fromp);
+	int retval;
 
 	FD_ZERO(&fds);
 	FD_SET(sock, &fds);
@@ -851,9 +851,16 @@ wait_for_reply(register int sock, register struct sockaddr_in *fromp,
 	(void)gettimeofday(&now, &tz);
 	tvsub(&wait, &now);
 
-	if (select(sock + 1, &fds, NULL, NULL, &wait) > 0)
+	retval = select(sock + 1, &fds, NULL, NULL, &wait);
+	if (retval < 0)  {
+		/* If we continue, we probably just flood the remote host. */
+		Fprintf(stderr, "%s: select: %s\n", prog, strerror(errno));
+		exit(1);
+	}
+	if (retval > 0)  {
 		cc = recvfrom(s, (char *)packet, sizeof(packet), 0,
 			    (struct sockaddr *)fromp, &fromlen);
+	}
 
 	return(cc);
 }
@@ -1191,7 +1198,7 @@ gethostinfo(register char *hostname)
 	}
 	addr = inet_addr(hostname);
 	if ((int32_t)addr != -1) {
-		hi->name = savestr(hostname);
+		hi->name = strdup(hostname);
 		hi->n = 1;
 		hi->addrs = calloc(1, sizeof(hi->addrs[0]));
 		if (hi->addrs == NULL) {
@@ -1212,7 +1219,7 @@ gethostinfo(register char *hostname)
 		Fprintf(stderr, "%s: bad host %s\n", prog, hostname);
 		exit(1);
 	}
-	hi->name = savestr(hp->h_name);
+	hi->name = strdup(hp->h_name);
 	for (n = 0, p = hp->h_addr_list; *p != NULL; ++n, ++p)
 		continue;
 	hi->n = n;
