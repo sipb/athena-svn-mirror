@@ -6,7 +6,7 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/common.h,v $
- *	$Id: common.h,v 1.5 1990-11-15 10:43:22 lwvanels Exp $
+ *	$Id: common.h,v 1.6 1990-12-12 15:25:04 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -16,12 +16,18 @@
 #define __olc_common_h
 
 #include <olc/lang.h>
+
+typedef struct tSTATUS
+{
+  int status;
+  char label[LABEL_SIZE];
+} STATUS;
+
 #ifdef __STDC__
 # define        P(s) s
 #else
 # define P(s) ()
 #endif
-
 
 /* io.c */
 int send_dbinfo P((int fd , DBINFO *dbinfo ));
@@ -41,6 +47,10 @@ int swrite P((int fd , char *buf , int nbytes ));
 char *format_time P((char *time_buf , struct tm *time_info ));
 void time_now P((char *time_buf ));
 void perror P((char *msg ));
+
+/* status.c */
+int OGetStatusString P((int status , char *string ));
+int OGetStatusCode P((char *string , int *status ));
 
 /* string_utils.c */
 void uncase P((char *string ));
