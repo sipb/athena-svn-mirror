@@ -134,6 +134,7 @@ EOF
 		cp -p /srvd/etc/shadow.std /etc/shadow.local
 		cp -p /etc/shadow.local /etc/shadow
 		chmod 600 /etc/shadow
+		chmod 666 /dev/audio /dev/audioctl
 		cp -p /srvd/etc/group.std /etc/group.local
 		cp -p /etc/group.local /etc/group
 		cp -p /srvd/etc/syslog.conf /etc/syslog.conf
