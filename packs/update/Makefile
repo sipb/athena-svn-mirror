@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.4 1996-12-27 21:51:16 ghudson Exp $
+# $Id: Makefile,v 1.5 1997-02-11 18:50:32 ghudson Exp $
 
 SHELL=/bin/sh
 UPDATE=/usr/athena/lib/update
@@ -25,6 +25,8 @@ install:
 	rm -f ${DESTDIR}/auto_update
 	ln -s update_ws ${DESTDIR}/auto_update
 	cd platform/${HOSTTYPE} && ${MAKE} $@
+	install -c -m 0555 vers/irix52-53 ${DESTDIR}${UPDATE}
+	install -c -m 0555 vers/solaris24-251 ${DESTDIR}${UPDATE}
 	for i in vers/*.*.*; do \
 		install -c -m 0555 $$i ${DESTDIR}${UPDATE}; \
 	done
