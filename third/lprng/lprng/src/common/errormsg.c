@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: errormsg.c,v 1.1.1.2 1999-05-04 18:07:00 danw Exp $";
+"$Id: errormsg.c,v 1.2 1999-07-03 15:31:51 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -149,6 +149,7 @@ const char * Errormsg ( int err )
         if (Name && *Name) {
 			s = Name;
 		}
+		if (Is_server) s = "lpd";
 		openlog(s, LOG_PID | LOG_NOWAIT, SYSLOG_FACILITY);
         init = 1;
     }
@@ -180,9 +181,7 @@ const char * Errormsg ( int err )
 	stamp_buf[0] = 0;
 
 	if( Is_server || DEBUGL1 ){
-		if( kind > LOG_INFO ){
-			use_syslog(kind, log_buf);
-		}
+		use_syslog(kind, log_buf);
 		n = strlen(stamp_buf); s = stamp_buf+n; n = sizeof(stamp_buf)-n;
 		(void) plp_snprintf( s, n, "%s", Time_str(0,0) );
 		if (ShortHost_FQDN ) {

@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpd_control.c,v 1.1.1.1 1999-05-04 18:06:53 danw Exp $";
+"$Id: lpd_control.c,v 1.2 1999-07-03 15:31:48 mwhitson Exp $";
 
 
 #include "lp.h"
@@ -126,6 +126,14 @@ int Job_control( int *sock, char *input )
 	if( permission == P_REJECT ){
 		goto noperm;
 	}
+
+	/* Keep a record of what everyone's doing with their bits */
+	if( Auth_client_id_DYN )
+		logmsg(LOG_INFO, "%s (auth): lpc %s", Auth_client_id_DYN, 
+		       strstr(input, lpc_command));
+	else
+		logmsg(LOG_INFO, "%s@%s (unauth): lpc %s", user, 
+		       FQDNRemote_FQDN, strstr(input, lpc_command));
 
 	switch( action ){
 		case OP_REREAD:
