@@ -1,4 +1,4 @@
-# $Id: packages,v 1.245 2003-07-02 19:47:04 ghudson Exp $
+# $Id: packages,v 1.246 2003-07-14 01:07:41 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -164,6 +164,7 @@ third/findutils			on solaris
 third/freetype			except linux
 third/gail			except linux requires atk,gtk2,libgnomecanvas
 third/gal			requires gnome-vfs,libglade,gdk-pixbuf
+third/gal2			requires gettext,libiconv,libgnomeprint,libgnomeprintui,libglade2,libgnomeui,libgnomecanvas,libxml2
 third/GConf			requires gtk,oaf,ORBit,libxml,libxml2
 third/GConf2			requires gettext,glib2,libxml2,gtk2,ORBit2,linc
 third/gconf-editor		except linux requires gettext,intltool,GConf2,gtk2
@@ -195,6 +196,7 @@ third/gtk-thinice-engine	except linux requires gtk2
 third/gtk			requires glib,gettext
 third/gtk2			except linux requires glib2,pango,atk,tiff,libpng,jpeg
 third/gtkhtml			requires gnome-print,gdk-pixbuf,gal,bonobo,GConf,control-center
+third/gtkhtml3			requires gettext,libgnomeui,libgnomeprint,libgnomeprintui,libglade2,gal2,libbonoboui,ORBit2,bonobo-activation,libsoup
 third/imlib			requires libpng,libungif,jpeg,gtk
 third/inetd			requires tcp_wrappers
 third/intlfonts			requires emacs
@@ -215,7 +217,7 @@ third/libghttp			except linux
 third/libglade			requires gtk,gnome-libs,libxml
 third/libglade2			except linux requires gtk2,libxml2,atk,gettext
 third/libgnome			except linux requires gettext,audiofile,esound,GConf2,glib2,gnome-vfs2,libbonobo,libxml2,libxslt,popt,bzip2
-third/libgnomecanvas		except linux requires gettext,gtk2,libart_lgpl,pango,libglade2,glib2
+third/libgnomecanvas		requires gettext,gtk2,libart_lgpl,pango,libglade2,glib2
 third/libgnomeprint		except linux requires gettext,glib2,libart_lgpl,pango,libxml2,libbonobo,freetype
 third/libgnomeprintui		except linux requires gettext,libgnomeprint,libgnomecanvas,libglade2
 third/libgnomeui		except linux requires gettext,audiofile,esound,jpeg,libgnome,libgnomecanvas,libbonoboui,GConf2,pango,libglade2,popt,gtk2
@@ -226,6 +228,7 @@ third/libole2			except linux
 third/libpng			except linux
 third/librep			except linux requires gettext,gmp,gdbm,readline,texinfo
 third/librsvg			except linux requires gtk2,glib2,libart_lgpl,libxml2,pango,popt
+third/libsoup			requires glib2,openssl
 third/libungif			except linux
 third/libwnck			except linux requires gettext,startup-notification,gtk2,glib2
 third/libxml
