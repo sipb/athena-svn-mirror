@@ -1,6 +1,4 @@
-# root's sh profile
-#
-# "$Revision: 1.1 $"
+# $Id: root.profile,v 1.2 1997-12-28 17:47:38 ghudson Exp $
 
 # Set the interrupt character to Ctrl-c and do clean backspacing.
 if [ -t 0 ]
@@ -32,14 +30,8 @@ then
     export DISPLAY
 fi
 
-# List files in columns if standard out is a terminal.
-ls()	{ if [ -t ]; then /bin/ls -C $*; else /bin/ls $*; fi }
-
 #
 # Athena tweaks
 #
-echo 'erase ^?, kill ^U, intr ^C'
 PATH=/srvd/patch:/usr/athena/bin:/etc/athena:/bin/athena:/usr/sbin:/usr/bsd:/sbin:/usr/bin:/bin:/etc:/usr/athena/etc:/usr/etc:/usr/bin/X11
 export PATH
-HOME=/
-export HOME
