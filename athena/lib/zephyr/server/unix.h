@@ -5,7 +5,7 @@
  * Created by Ken Raeburn.
  *
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/unix.h,v $
- * $Author: lwvanels $
+ * $Author: ghudson $
  * $Zephyr: unix.h,v 1.3 91/01/28 15:12:57 raeburn Exp $
  *
  * Copyright (c) 1990,1991 by the Massachusetts Institute of Technology.
@@ -101,6 +101,7 @@ extern void acl_cache_reset P((void));
 #define	xinsque(a,b)	insque((struct qelem *)(a), (struct qelem *)(b))
 #define xremque(a)	remque((struct qelem *)(a))
 #define	xmalloc(a)	malloc((unsigned)(a))
+#define	xrealloc(foo,a) realloc((caddr_t) (foo), (unsigned) (a))
 
 #define ZSERVER_UNIX_H__
 #endif
