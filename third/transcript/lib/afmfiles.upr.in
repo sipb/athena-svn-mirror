@@ -1,5 +1,6 @@
 PS-Resources-1.0
 % must begin with the above
+% $Id: afmfiles.upr.in,v 1.1 1996-10-14 04:37:29 ghudson Exp $
 % next is list of resource types described in this file, terminated by a . on 
 % a line.
 FontAFM
@@ -7,7 +8,7 @@ FontAFM
 % if the files are in a directory other than the one containing this file,
 % the path prefix to attach to each file should be next, marked with a '/'
 % at the beginning, as in "//usr/lib/fonts".
-//usr/psres/tsafm
+/@datadir@/ps/afm
 % After that, for each resource types listed above, list the resources.
 % Format is type name on one line, followed by resources, one per line, in
 % the form resourcename=resourcefile.
