@@ -51,3 +51,10 @@ Changes from release 8.0 to release 8.1:
 	  that "~lockername" will work in a pathname in most cases.
 	  (It won't work for users with local passwd information who
 	  don't have their lockers attached.)
+
+	* For improved ease of debugging, many binaries are installed
+	  with symbol tables, and compiled without optimization.
+	  Therefore, the contents of /bin/athena and /usr/athena/bin
+	  may be somewhat larger, and the binaries may consume more
+	  CPU cycles, although it's unlikely that anyone will notice
+	  the speed difference.
