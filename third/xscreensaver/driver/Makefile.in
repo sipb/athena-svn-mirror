@@ -55,7 +55,7 @@ X_EXTRA_LIBS	= @X_EXTRA_LIBS@
 # CMD_LIBS is the link line for "xscreensaver-command".
 
 
-AD_DIR		= @APPDEFAULTS@
+AD_DIR		= @datadir@/X11/app-defaults
 PAM_DIR		= /etc/pam.d
 PAM_CONF	= /etc/pam.conf
 
