@@ -19,4 +19,5 @@ guest:*:998:998:Guest Account:/usr/people/guest:/bin/csh
 nobody:*:60001:60001:SVR4 nobody uid:/dev/null:/dev/null
 noaccess:*:60002:60002:uid no access:/dev/null:/dev/null
 nobody:*:-2:-2:original nobody uid:/dev/null:/dev/null
-pop:*:50:101:Post Office Protocol,,,,:/mit/pop:/bin/csh
+pop:*:50:101:Post Office Protocol,,,,:/var/spool/pop:/dev/null
+discuss:*:32000:101:Discuss System,,,,:/var/spool/discuss:/dev/null
