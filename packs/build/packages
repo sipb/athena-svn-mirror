@@ -1,4 +1,4 @@
-# $Id: packages,v 1.143 2001-11-29 20:00:18 zacheiss Exp $
+# $Id: packages,v 1.144 2002-01-24 21:49:01 mwhitson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -51,6 +51,7 @@ athena/bin/athinfo
 athena/bin/athrun
 athena/bin/attach		requires locker,athena/lib/athdir
 athena/bin/attachandrun		requires athena/lib/athdir
+athena/bin/authwatch		requires krb5,gnome-libs
 athena/bin/bugme		requires Xj
 athena/bin/config_console
 athena/bin/cxref
