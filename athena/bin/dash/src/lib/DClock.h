@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/DClock.h,v $
- * $Author: ghudson $ 
+ * $Author: danw $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -41,9 +41,6 @@ typedef struct {
   int timerid;
   int update;
   char *format[2];
-  char fmts[2][1024];
-  int fmt_type[2][MAX_FMTS];
-  int num_fmts[2];
   int current_fmt;
   Boolean blink_colons;
   Boolean colons_on;
