@@ -1,5 +1,5 @@
 /*
- * $Id: dash.c,v 1.2 1999-01-22 23:08:47 ghudson Exp $
+ * $Id: dash.c,v 1.3 1999-02-22 18:21:33 danw Exp $
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -10,7 +10,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Id: dash.c,v 1.2 1999-01-22 23:08:47 ghudson Exp $";
+"$Id: dash.c,v 1.3 1999-02-22 18:21:33 danw Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -1127,8 +1127,8 @@ int verify(info, foo, data)
   v = (Verify *)XjMalloc((unsigned) sizeof(Verify));
 
   v->me.next = NULL;
-  v->me.argType = argInt;
-  v->me.passInt = (int)v;
+  v->me.argType = argPtr;
+  v->me.passPtr = v;
   v->me.proc = yesorno;
   v->menu = info->menu;
 

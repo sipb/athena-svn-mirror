@@ -1,5 +1,5 @@
 /*
- * $Id: klist.c,v 1.2 1999-01-22 23:08:48 ghudson Exp $
+ * $Id: klist.c,v 1.3 1999-02-22 18:21:34 danw Exp $
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -10,7 +10,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Id: klist.c,v 1.2 1999-01-22 23:08:48 ghudson Exp $";
+"$Id: klist.c,v 1.3 1999-02-22 18:21:34 danw Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -189,8 +189,8 @@ void checkTkts(info, id)
       w = (Warning *)XjMalloc((unsigned) sizeof(Warning));
 
       w->me.next = NULL;
-      w->me.argType = argInt;
-      w->me.passInt = (int)w;
+      w->me.argType = argPtr;
+      w->me.passPtr = w;
       w->me.proc = ok;
 
       w->l1 = XjNewString(line1);
