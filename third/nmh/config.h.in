@@ -154,7 +154,7 @@
  * The prefix which is prepended to the name of messages when they
  * are "removed" by rmm.  This should typically be `,' or `#'
  */
-#define BACKUP_PREFIX ","
+#define BACKUP_PREFIX ".#"
 
 /*
  * Name of link to file to which you are replying.
