@@ -12,18 +12,21 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/list.c,v $
- *	$Id: list.c,v 1.4 1990-07-16 08:15:39 lwvanels Exp $
+ *	$Id: list.c,v 1.5 1990-11-13 18:59:48 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/list.c,v 1.4 1990-07-16 08:15:39 lwvanels Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/list.c,v 1.5 1990-11-13 18:59:48 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>
@@ -84,7 +87,7 @@ OListQueue(Request,list,queues,topics,users,stati)
 
 #ifdef TEST
       printf("reading %d list elements\n",n);
-#endif TEST
+#endif /* TEST */
        
       if(!n)
         {
