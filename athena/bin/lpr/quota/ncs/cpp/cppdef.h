@@ -36,7 +36,7 @@
 #define	SYS_68000		7
 #define SYS_MSDOS		8
 
-#if defined(apple_aux) || defined(_AUX_SOURCE)
+#if defined(apple_aux) || defined(_AUX_SOURCE) || defined(_IBMR2)
 /* since the current apple_aux cpp doesn't predefine anything! */
 #define HOST                    SYS_UNIX
 #endif
@@ -206,6 +206,9 @@
 #endif
 #if defined(AIX) && defined(_I386)
 #define MACHINE		"_AIX", "_I386", "NLS", "AIX", "i386"
+#endif
+#if defined(_IBMR2) && defined(_AIX)
+#define MACHINE		"_AIX", "_IBMR2"
 #endif
 #if defined(apple_aux) || defined(_AUX_SOURCE)
 #define	MACHINE			"M68000", "m68000", "m68k"
