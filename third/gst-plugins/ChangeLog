@@ -1,0 +1,45 @@
+2002-11-25  Colin Walters  <walters@debian.org>
+
+	* ext/gnomevfs/gstgnomevfssrc.c (gst_gnomevfssrc_received_headers_callback):
+	Test for url in correct variable.
+
+2002-11-17  Ken MacLeod  <ken@bitsko.slc.ut.us>
+
+	* gst/modplug/modplug_types.cc: Renamed from
+	gst/modplug/modplug_types.c.  Change GST_BUFFER_DATA(buf) result
+	type from 'gchar' to 'gunit8'.
+
+2002-07-07  Richard Boulton <richard@tartarus.org>
+
+	* LICENSE_readme: Mention that synaesthesia is derived from GPL
+	  code.
+
+2002-06-03  Richard Boulton <richard@tartarus.org>
+
+	* m4/mpeg2dec.m4: Test for cpuaccel library as well as mpeg2dec
+	  library.  Add appropriate includes before test compile of mpeg2.h
+	  so that compilation succeeds.
+
+2002-05-06  Thomas Vander Stichele <thomas@apestaart.org>
+
+  	* GConf stuff : from http://www.gnome.org/projects/gconf/ and eog
+	  - added gstreamer-gconf package
+
+2002-02-06  Thomas Vander Stichele <thomas@apestaart.org>
+
+  	* more build cleanup : merging over changes from gst-player
+
+2002-01-17  Bastien Nocera  <hadess@hadess.net>
+
+	* sys/Makefile.am: make the qcam plugin build only
+	only platforms using NASM, ie. x86
+
+2002-01-06 Rodney Dawes <dobey@free.fr>
+
+	* configure.ac: added -lm to cdparanoia check so it works,
+		fixed a couple typos for the libraw1394 checks
+	
+2001-12-20 Thomas Vander Stichele  <thomas@apestaart.org>
+
+	* opened gst-plugins module
+	* starting with sys plugins
