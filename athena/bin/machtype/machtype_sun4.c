@@ -2,7 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *    $Id: machtype_sun4.c,v 1.13 1995-07-31 19:10:44 cfields Exp $
+ *    $Id: machtype_sun4.c,v 1.14 1995-09-04 00:33:04 cfields Exp $
  *    $Locker:  $
  */
 
@@ -309,7 +309,8 @@ short cpu_type;
           case CPU_SUN4C_50:
             puts(verbose ? "SPARCstation IPX" : "SPARC/IPX");
             break;
-	case 128:
+	  case CPU_SUN4M_50:	/* 114... Sparc20 */
+	  case OBP_ARCH:	/* 128 */
 	    do_cpu_prom(kernel);
 		break;
 
