@@ -15,7 +15,7 @@
 
 #ifndef SABER
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.16 1992-03-16 15:26:35 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.16.1.1 1992-03-16 15:27:04 lwvanels Exp $";
 #endif
 #endif
 
@@ -113,6 +113,7 @@ main(argc, argv)
  *  If opening display was successful, then initialize toolkit, display,
  *  interface, etc.
  */
+  add_converter();
   xolc = XtInitialize("xolc" , "Xolc", NULL, 0, &argc, argv);
 
   ++argv, --argc;
