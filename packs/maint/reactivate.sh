@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.76 2003-10-23 23:16:02 ghudson Exp $
+# $Id: reactivate.sh,v 1.77 2004-04-05 16:40:20 rbasch Exp $
 
 # Ignore various terminating signals.
 trap "" HUP INT QUIT PIPE ALRM TERM USR1 USR2
@@ -178,8 +178,10 @@ fi
 THISVERS=`awk '{a=$5} END{print a}' /etc/athena/version`
 if [ "$HOSTTYPE" = linux -a -n "$SYSPREFIX" ]; then
 	config=$SYSPREFIX/config/$THISVERS
+	pwconfig=$config/etc
 else
 	config=/srvd
+	pwconfig=/afs/athena.mit.edu/system/config/passwd/`machtype -S`
 fi
 
 # We don't want to detach all filesystems on every invocation, so
@@ -246,13 +248,15 @@ fi
 
 # Copy in a few config files
 if [ "$PUBLIC" = true ]; then
-	if [ -d $config ]; then
-		syncupdate -c /etc/passwd.local.new $config/etc/passwd \
+	if [ -d $pwconfig ]; then
+		syncupdate -c /etc/passwd.local.new $pwconfig/passwd \
 			/etc/passwd.local
-		syncupdate -c /etc/shadow.local.new $config/etc/shadow \
+		syncupdate -c /etc/shadow.local.new $pwconfig/shadow \
 			/etc/shadow.local
-		syncupdate -c /etc/group.local.new $config/etc/group \
+		syncupdate -c /etc/group.local.new $pwconfig/group \
 			/etc/group.local
+	fi
+	if [ -d $config ]; then
 		cp -p $config/etc/athena/athinfo.access /etc/athena
 		cp -p $config/etc/athena/local-lockers.conf /etc/athena
 	fi
@@ -324,7 +328,7 @@ if [ "$full" = true ]; then
 		if [ "$NEWVERS" = "$THISVERS" ]; then
 			case "$HOSTTYPE" in
 			sun4)
-				/srvd/usr/athena/lib/update/track-srvd
+				/srvd/usr/athena/lib/update/verify-pkgs
 				;;
 			*)
 				/usr/athena/etc/track -q
