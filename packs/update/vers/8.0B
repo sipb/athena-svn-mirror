@@ -10,6 +10,15 @@ SUN*)
 	# inetd.conf now enables admind so "showrev" works.
 	echo "/etc/inet/inetd.conf"		>> ${CONFCHG}
 
+	# /kernel/sys/semsys has been updated by the Oracle patch.
+	echo "NEWUNIX=true"                     >> ${CONFVARS}
+
+	# Copy in new /var/sadm, since we applied patches.  We should
+	# have a better way of dealing with this.
+	rm -f /var/sadm
+	mkdir /var/sadm
+	(cd /os/var/sadm; tar cf - .) | (cd /var/sadm; tar xf - .)
+
 	# Overwrite ${AUXDEVS} with just D20appletalk.  One of the
 	# 7.7 updates also specified D10audio, which is no longer
 	# necessary.
