@@ -1,4 +1,4 @@
-/* $Id: cleanup.c,v 2.2 1991-08-16 07:47:30 probe Exp $
+/* $Id: cleanup.c,v 2.3 1992-04-30 12:12:29 lwvanels Exp $
  *
  * Cleanup program for stray processes
  *
@@ -34,7 +34,7 @@
 #endif
 #include <nlist.h>
 
-char *version = "$Id: cleanup.c,v 2.2 1991-08-16 07:47:30 probe Exp $";
+char *version = "$Id: cleanup.c,v 2.3 1992-04-30 12:12:29 lwvanels Exp $";
 
 #ifdef _AIX
 extern char     *sys_errlist[];
@@ -261,7 +261,7 @@ int *get_logged_in()
 	/* this should probably completely blow out if this call fails */
 	return(NULL);
     }
-    while((u = getutent()) != NULL && i < MAXUSERS) {
+    while((u = getutent()) != 0 && i < MAXUSERS) {
 	if (u->ut_name[0] == 0)
 	    continue;
         if (u->ut_type != USER_PROCESS)
@@ -456,12 +456,17 @@ char *fn;
 rewrite_passwd(users)
 int *users;
 {
-    int in_passwd[MAXUSERS], user=0;
-    int i, uid, temp;
-    char *usr;
-    char *empty = "\0";
+    int i, uid, count;
+    char *usr, *grp, *ulist;
+    static char *empty = "\0";
     
     setuserdb(S_READ|S_WRITE);
+
+    /* Note: This routine cannot properly track reference counts for
+     * groups because there is no reference count on permanent users.
+     */
+
+    /* Remove any inactive temporary users */
     usr = nextuser(S_LOCAL, NULL);
     while (usr) {
 	if (getuserattr(usr, S_ID, &uid, SEC_INT) == -1)
@@ -469,53 +474,69 @@ int *users;
 #ifdef DEBUG
 	printf("Checking user %s (uid %d)\n", usr, uid);
 #endif
-	/* Only purge temporary accounts */
-	if (getuserattr(usr, "athena_temp", &temp, SEC_INT) == 0) {
+	if (getuserattr(usr, "athena_temp", &count, SEC_INT) == 0) {
 	    for (i = 0; users[i] >= 0; i++)
 		if (users[i] == uid)
 		    break;
-
-	    /* if not supposed to be in passwd file, delete */
 	    if (users[i] < 0 || users[i] != uid) {
 #ifdef DEBUG
 		printf("Deleting user %s from passwd file\n", usr);
 #endif
-		putuserattr(usr, S_GROUPS, &empty, SEC_LIST);
-		putuserattr(usr, (char *)0, (char *)0, SEC_COMMIT);
+		putuserattr(usr, S_GROUPS, (void *)empty, SEC_LIST);
+		putuserattr(usr, (char *)0, (void *)0, SEC_COMMIT);
 		rmufile(usr, 1, USER_TABLE);
-#if 0
-		usr = nextuser(S_LOCAL, NULL);	/* re-scan */
-		continue;
-#endif
 	    }
 	}
 	usr=nextuser(NULL, NULL);
     }
-    enduserdb();
-    clean_groups();
-    return(0);
-}
 
-clean_groups()
-{
-    char *grp, *glist;
-    int grp_status;
-
-    setuserdb(S_READ|S_WRITE);
+    /* Check all temporary groups for inactive users. */
+    /* Remove any empty temporary groups. */
     grp = nextgroup(S_LOCAL, NULL);
     while (grp) {
-	if (getgroupattr(grp, "athena_temp", &grp_status, SEC_BOOL) == 0) {
-	    if ((getgroupattr(grp, S_USERS, &glist, SEC_LIST) == -1) ||
-		*glist == '\0') {
-#ifdef DEBUG
-		printf("Deleting group %s from group file\n", grp);
-#endif
-
+	if (getgroupattr(grp, "athena_temp", (void *)&count, SEC_INT) == 0 ||
+	    getgroupattr(grp, "athena_temp", (void *)&count, SEC_BOOL) == 0) {
+	    if (getgroupattr(grp, S_USERS, (void *)&usr, SEC_LIST)) {
 		rmufile(grp, 0, GROUP_TABLE);
-#if 0
-		grp = nextgroup(S_LOCAL, NULL);
-		continue;
+	    } else {
+		count = 0;
+		ulist = 0;
+		while (*usr) {
+		    if (getuserattr(usr, S_ID, (void *)&uid, SEC_INT) == 0) {
+			for (i=0; users[i]>=0; i++)
+			    if (uid==users[i]) {
+				if (ulist)
+				    ulist = (char *)realloc(ulist,strlen(ulist)+strlen(usr)+1);
+				else {
+				    ulist = (char *)malloc(strlen(usr)+2);
+				    *ulist = 0;
+				}
+				strcat(ulist,usr);
+				strcat(ulist,",");
+				count++;
+				break;
+			    }
+		    }
+		    while (*usr) usr++;
+		    usr++;
+		}
+		if (count) {
+#ifdef DEBUG
+		    printf("Group %s reduced to %s\n", grp, ulist);
 #endif
+		    for (usr=ulist; *usr; usr++)
+			if (*usr==',') *usr=0;
+		    putgroupattr(grp, S_USERS, (void *)ulist, SEC_LIST);
+		    putgroupattr(grp, (char *)0, (void *)0, SEC_COMMIT);
+		    free(ulist);
+		} else {
+#ifdef DEBUG
+		    printf("Deleting group %s\n", grp);
+#endif
+		    putgroupattr(grp, S_USERS, (void *)empty, SEC_LIST);
+		    putgroupattr(grp, (char *)0, (void *)0, SEC_COMMIT);
+		    rmufile(grp, 0, GROUP_TABLE);
+		}
 	    }
 	}
 	grp = nextgroup(NULL, NULL);
