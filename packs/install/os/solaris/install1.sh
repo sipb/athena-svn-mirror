@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Id: install1.sh,v 1.12 2001-05-09 04:03:28 zacheiss Exp $
+### $Id: install1.sh,v 1.13 2001-06-01 17:13:40 miki Exp $
 
 echo "Set some variables"
 PATH=/sbin:/usr/bin:/usr/sbin:/os/usr/bin
@@ -89,12 +89,12 @@ echo "Installing on ${drive}."
 
 case $CUSTOM in
 N)
-  echo "standard installation - 8.4"
-  REV=8.4    
-  ln -s /afs/athena.mit.edu/system/sun4x_57/srvd /tmp/srvd
-  ln -s /afs/athena.mit.edu/system/sun4x_57/os /tmp/os
-  ln -s /afs/athena.mit.edu/system/sun4x_57/install/cdrom /tmp/cdrom
-  ln -s /afs/athena.mit.edu/system/sun4x_57/install/patches /tmp/patches
+  echo "standard installation - 9.0"
+  REV=9.0
+  ln -s /afs/dev.mit.edu/system/sun4x_58/srvd-9.0 /tmp/srvd
+  ln -s /afs/dev.mit.edu/system/sun4x_58/os /tmp/os
+  ln -s /afs/dev.mit.edu/system/sun4x_58/install/cdrom /tmp/cdrom
+  ln -s /afs/dev.mit.edu/system/sun4x_58/install/patches /tmp/patches
   ;;
 
 Y)
@@ -138,6 +138,14 @@ Y)
        ln -s /afs/athena.mit.edu/system/sun4x_57/os /tmp/os
        ln -s /afs/athena.mit.edu/system/sun4x_57/install/cdrom /tmp/cdrom
        ln -s /afs/athena.mit.edu/system/sun4x_57/install/patches /tmp/patches
+       ;;
+    9.0)
+       echo "standard installation - 9.0"
+       REV=9.0
+       ln -s /afs/dev.mit.edu/system/sun4x_58/srvd-9.0 /tmp/srvd
+       ln -s /afs/dev.mit.edu/system/sun4x_58/os /tmp/os
+       ln -s /afs/dev.mit.edu/system/sun4x_58/install/cdrom /tmp/cdrom
+       ln -s /afs/dev.mit.edu/system/sun4x_58/install/patches /tmp/patches
        ;;
     *)
        echo "installing 8.4"
@@ -269,6 +277,7 @@ Y)
        partitioning=one
        cat /util/format.input.ST315320A | \
 		format ${drive} >/dev/null 2>&1
+	;;
     ST320420A)
        echo "formatting ST320420A"
        partitioning=one
