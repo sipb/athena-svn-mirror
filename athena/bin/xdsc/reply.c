@@ -1,20 +1,22 @@
 #include	<stdio.h>
+#include	<ctype.h>
 #include	<X11/Intrinsic.h>
 #include	<X11/StringDefs.h>
-#include	<Xaw/List.h>
-#include	<Xaw/Command.h>
-#include	<Xaw/Box.h>
-#include	<Xaw/Paned.h>
-#include	<Xaw/AsciiText.h>
-#include	<Xaw/Dialog.h>
+#include	<X11/Xaw/List.h>
+#include	<X11/Xaw/Command.h>
+#include	<X11/Xaw/Box.h>
+#include	<X11/Xaw/Paned.h>
+#include	<X11/Xaw/AsciiText.h>
+#include	<X11/Xaw/Dialog.h>
 #include	<X11/Shell.h>
 #include	"xdsc.h"
 
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/reply.c,v 1.9 1991-02-15 13:34:49 sao Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/reply.c,v 1.10 1991-03-12 16:34:52 sao Exp $";
 
 extern char	*strchr();
 extern char     *getenv();
 extern char	*RunCommand();
+extern char	*CurrentMtg();
 extern char	filebase[];
 extern int	topscreen;
 extern Widget	topW, paneW;
@@ -51,6 +53,8 @@ void		TriggerFocusMove();
 static Widget	helpPopupW = 0;
 
 static char *GetDefaultValue();
+
+static Boolean	CompareWithoutWhitespace();
 
 typedef struct {
 	Widget	sendPopupW;
@@ -267,12 +271,6 @@ int	myreplynum;
 			args,
 			n);
 	XtAddCallback (buttonW, XtNcallback, SendCB, data);
-
-/*
-	XtSetKeyboardFocus(topW, data->sendPopupW);
-	XtSetKeyboardFocus(data->sendPopupW, data->subjectTextW);
-*/
-
 	XtPopup(data->sendPopupW, XtGrabNone);
 }
 
@@ -451,11 +449,6 @@ int	current;
 			n);
 
 	XtAddCallback (button, XtNcallback, WriteCB, False);
-
-/*
-	XtSetKeyboardFocus(topW, writePopupW);
-	XtSetKeyboardFocus(writePopupW, writeTextW);
-*/
 	XtPopup(writePopupW, XtGrabNone);
 }
 
@@ -596,10 +589,6 @@ AddMeeting()
 	if (defaultvalue1)
 		myfree (defaultvalue1);
 
-/*
-	XtOverrideTranslations(	addHostTextW,
-				XtParseTranslationTable(specialTranslations));
-*/
 	n = 0;
 	XtSetArg(args[n], XtNborderWidth, 0);			n++;
 	addBox2W = XtCreateManagedWidget(
@@ -638,11 +627,6 @@ AddMeeting()
 	if (defaultvalue2)
 		myfree (defaultvalue2);
 
-/*
-	XtOverrideTranslations(	addPathTextW,
-				XtParseTranslationTable(specialTranslations));
-*/
-
 	n = 0;
 	XtSetArg(args[n], XtNborderWidth, 0);			n++;
 	addBox3W = XtCreateManagedWidget(
@@ -670,13 +654,7 @@ AddMeeting()
 			n);
 
 	XtAddCallback (addButton2W, XtNcallback, AddCB, False);
-
 	XtPopup(addPopupW, XtGrabNone);
-
-/*
-	XtSetKeyboardFocus(topW, addPopupW);
-	XtSetKeyboardFocus(addPopupW, addHostTextW);
-*/
 
 }
 
@@ -706,6 +684,11 @@ XtPointer	call_data;
 		if ( (int) returndata <= 0)
 			return;
 
+/*  This forced an automatic update.  Unfortunately, it erased any list
+    of transaction headers.
+
+		TopSelect(NULL, 2, NULL);
+*/
 		myfree (returndata);
 		myfree (tempstring1);
 		myfree (tempstring2);
@@ -803,10 +786,6 @@ DeleteMeeting()
 			args,
 			n);
 
-/*
-	XtOverrideTranslations(	deleteMtgTextW,
-				XtParseTranslationTable(specialTranslations));
-*/
 	if (defaultvalue)
 		myfree (defaultvalue);
 
@@ -838,10 +817,6 @@ DeleteMeeting()
 	XtAddCallback (deleteButton2W, XtNcallback, DeleteCB, False);
 
 	XtPopup(deletePopupW, XtGrabNone);
-/*
-	XtSetKeyboardFocus(deletePopupW, deleteMtgTextW);
-	XtSetKeyboardFocus(topW, deletePopupW);
-*/
 
 }
 
@@ -864,9 +839,11 @@ XtPointer	call_data;
 		XtSetArg(args[n], XtNstring, &tempstring1);		n++;
 		XtGetValues (deleteMtgTextW, args, n);
 /*
-** Protect us when we remove the current meeting.
+** Protect us when we remove the current meeting.  Watch out for leading
+** and trailing spaces in the text widget's value.
 */
-		if (!strcmp (tempstring1, CurrentMtg(0)))
+		if (	CompareWithoutWhitespace(tempstring1, CurrentMtg(0)) ||
+			CompareWithoutWhitespace(tempstring1, CurrentMtg(1)))
 			SaveMeetingNames("", "");
 
 		sprintf (buffer, "(dm %s)\n", tempstring1);
@@ -875,12 +852,52 @@ XtPointer	call_data;
 		if ( (int) returndata <= 0)
 			return;
 
+/*
+		TopSelect(NULL, 2, NULL);
+*/
 		myfree (returndata);
 		myfree (tempstring1);
 	}
 
 	XtDestroyWidget(deletePopupW);
 	deletePopupW = 0;
+}
+
+static Boolean
+CompareWithoutWhitespace(s, t)
+char	*s, *t;
+{
+	while (isspace(*s))
+		*s++;
+
+	while (isspace(*t))
+		*t++;
+
+	while (*s && *t && (*s++ == *t++))
+		;
+
+	if (!*t && !*s)
+		return (True);
+
+	if (!*t) {
+		while (isspace(*s))
+			s++;
+		if (!*s)
+			return (True);
+		else
+			return (False);
+	}
+
+	if (!*s) {
+		while (isspace(*t))
+			t++;
+		if (!*t)
+			return (True);
+		else
+			return (False);
+	}
+
+	return (False);
 }
 
 PutUpWarning(prefix, message, deathoption)
@@ -1010,43 +1027,6 @@ XtPointer	call_data;
 }
 
 
-static char *helptext1 =
-"                      What the buttons mean:\n\
----------------------------------------------------------------------\n\
-  Down     	Enter the next meeting with unread transactions\n\
-  Up     	Enter the previous meeting with unread transactions\n\
-  update	Check for new transactions\n\
-  configure	Change the list of meetings you attend\n\
-  mode		Choose between listing meetings or transactions\n\
-  show		Choose how many transactions should be listed\n\
-  HELP 		Display this screen\n\
-  QUIT 		Quit\n\
-\n\
-  <downarrow>	Move cursor to the next line\n\
-  <uparrow>	Move cursor to the previous line\n\
-  <return>	Read the meeting or transaction the cursor is on\n\
----------------------------------------------------------------------\n\
-  next		Read the next transaction in the current meeting\n\
-  prev		Read the previous transaction in the current meeting\n\
-  Next in chain	Read the next transaction in this chain\n\
-  Prev in chain	Read the previous transaction in this chain\n\
-  goto		Choose a specific transaction to read\n\
-  enter		Enter a new transaction or reply to the current one\n\
-  write		Save the current transaction to a file or mail it\n\
-\n\
-  <spacebar>	'do the right thing'\n\
-  <backspace>	reverse what space did\n\
----------------------------------------------------------------------\n\
-You can also enter a meeting by doubleclicking on its title.\n\
-\n\
-The keyboard equivalent for clicking on a button is always the first\n\
-character on the button.\n\
-\n\
-If a button is grayed out, this action is not possible at this time.\n\
-For example, the 'enter' button will gray out when you do not have\n\
-permission to enter transactions in a meeting.\n\
-";
-
 void
 PutUpHelp()
 {
@@ -1077,7 +1057,6 @@ PutUpHelp()
 	n = 0;
 	XtSetArg(args[n], XtNeditType, XawtextEdit);		n++;
 	XtSetArg(args[n], XtNwidth, 80 * char_width);		n++;
-	XtSetArg(args[n], XtNstring, helptext1);		n++;
 
 	textW = XtCreateManagedWidget(
 			"helptext",
@@ -1251,12 +1230,6 @@ GetTransactionNum()
 			n);
 
 	XtAddCallback (button, XtNcallback, NumCB, False);
-
-/*
-	XtSetKeyboardFocus(numPopupW, numTextW);
-	XtSetKeyboardFocus(topW, numPopupW);
-*/
-
 	XtPopup(numPopupW, XtGrabNone);
 }
 
@@ -1413,28 +1386,11 @@ int	*num_params;
 	if (*num_params < 1)
 		return;
 
-/*
-	fprintf (	stderr, 
-			"TriggerFocusMove to %s of %s\n", 
-			params[0], XtName(w));
-*/
-
 	for (	shellparent = XtParent(w); 
 		shellparent && !XtIsShell(shellparent);
 		shellparent = XtParent(shellparent))
 		;
 
-/*
-	if ( !shellparent ) {
-		fprintf (	stderr, 
-				"Widget has no parent shell!\n");
-	}
-	else {
-		fprintf (	stderr, 
-				"Parent shell is %s\n", XtName(shellparent));
-	}
-
-*/
 	if (!strcmp (params[0], "Next"))
 		direction = 2;
 	if (!strcmp (params[0], "Prev"))
