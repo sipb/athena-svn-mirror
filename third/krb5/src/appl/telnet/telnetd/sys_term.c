@@ -1203,12 +1203,6 @@ start_login(host, autologin, name)
 	extern char *getenv();
 	register int pid = getpid();
 
-#ifdef SOLARIS
-	char *term;
-	char termbuf[64];
-#endif
-
-
 	/*
 	 * -h : pass on name of host.
 	 *		WARNING:  -h is accepted by login if and only if
@@ -1231,20 +1225,6 @@ start_login(host, autologin, name)
 	{
 		argv = addarg(argv, "-h");
 		argv = addarg(argv, host);
-#ifdef	SOLARIS
-		/*
-		 * SVR4 version of -h takes TERM= as second arg, or -
-		 */
-		term = getenv("TERM");
-		if (term == NULL || term[0] == 0) {
-			term = "-";
-		} else {
-			strcpy(termbuf, "TERM=");
-			strncat(termbuf, term, sizeof(termbuf) - 6);
-			term = termbuf;
-		}
-		argv = addarg(argv, term);
-#endif
 	}
 #endif
 #if	!defined(NO_LOGIN_P)
