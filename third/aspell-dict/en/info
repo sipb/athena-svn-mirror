@@ -1,0 +1,50 @@
+name_english English
+lang en
+author:
+  name  Kevin Atkinson
+  email kevina at gnu org
+copyright Copyrighted
+version 0.51-0
+charset iso8859-1
+special ' -*-
+soundslike phonet
+source-version 5
+url http://wordlist.sourceforge.net/
+alias en_US american
+alias en_GB british
+alias en_CA canadian
+alias en english
+dict:
+  name en_US
+  strip-accents true
+  add en-only
+  add en_US-only
+dict:
+  name en_US-w-accents
+  add en-only
+  add en_US-only
+dict:
+  name en_CA
+  strip-accents true
+  add en-only
+  add en_CA-only
+dict:
+  name en_CA-w-accents
+  add en-only
+  add en_CA-only
+dict:
+  name en_GB
+  strip-accents true
+  add en-only
+  add en_GB-only
+dict:
+  name en_GB-w-accents
+  add en-only
+  add en_GB-only
+dict:
+  name en
+  strip-accents true
+  add en-only
+  add en_US-only
+  add en_GB-only
+
