@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.56 2002-06-14 19:18:41 jweiss Exp $
+# $Id: update_ws.sh,v 1.57 2002-06-26 22:23:15 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -244,37 +244,31 @@ failupdate() {
 case "$HOSTTYPE" in
 sun4)
 
-  # Set required filesystem sizes 9.0 release, and required filesystem
-  # space for the 9.0 update.  Filesystem overhead consumes about 7% of
+  # Set required filesystem sizes 9.1 release, and required filesystem
+  # space for the 9.1 update.  Filesystem overhead consumes about 7% of
   # a partition, so we check for a filesystem size 10% less than the
   # partition size we want.  We get some extra margin from minfree,
   # but we don't deliberately rely on that.
-  case `uname -m` in
-  sun4u)
-    reqrootsize=88473	# 96MB partition; measured use 54839K
-    requsrsize=184320	# 200MB partition; measured use 134646K
-    reqrootspace=30720	# 30MB; measured space increase 25557K
-    requsrspace=61440	# 60MB; measured space increase 51909K
-    ;;
-  *) # Presume sun4m
-    reqrootsize=44236	# 48MB partition; measured use 29993K
-    requsrsize=138240	# 150MB partition; measured use 109238K
-    reqrootspace=10240	# 10MB; measured space increase 5462K
-    requsrspace=30720	# 30MB; measured space increase 26662K
-    ;;
-  esac
+
+  # For the 9.1 release, the size of /usr with sys_rvd.big actually
+  # decreased (due to the use of gnu ld), so there is no special check
+  # for sys_rvd.big machines.
+  reqrootsize=88473	# 96MB partition; measured use 66033K
+  requsrsize=184320	# 200MB partition; measured use 153465K
+  reqrootspace=10240	# 10MB; measured space increase 6837K
+  requsrspace=61440	# 60MB; measured space increase 51909K
 
   # Check filesystem sizes.
   rootsize=`df -k / | awk '{ x = $2; } END { print x; }'`
   usrsize=`df -k /usr | awk '{ x = $2; } END { print x; }'`
   if [ "$reqrootsize" -gt "$rootsize" -o "$requsrsize" -gt "$usrsize" ]; then
-    echo "Your / or /usr partition is not big enough for Athena release 9.0"
+    echo "Your / or /usr partition is not big enough for Athena release 9.1"
     echo "and higher.  You must reinstall to take this update."
     logger -t "$HOST" -p user.notice / or /usr too small to take update
     failupdate
   fi
 
-  # Check free space if this is a full update to 9.0.
+  # Check free space if this is a full update to 9.1.
   case $version in
   8.*)
     rootspace=`df -k / | awk '{ x = $4; } END { print x; }'`
