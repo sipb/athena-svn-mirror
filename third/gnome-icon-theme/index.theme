@@ -1,0 +1,274 @@
+[Icon Theme]
+Name=Gnome
+Name[am]=ኖም
+Name[bg]=Гном
+Name[ca]=Gnome
+Name[cs]=GNOME
+Name[da]=Gnome
+Name[de]=GNOME
+Name[el]=Gnome
+Name[es]=Gnome
+Name[fi]=Gnome
+Name[fr]=Gnome
+Name[he]=Gnome
+Name[hu]=GNOME
+Name[it]=GNOME
+Name[ko]=Gnome
+Name[lv]=Gnome
+Name[mk]=Gnome
+Name[ms]=Gnome
+Name[nl]=Gnome
+Name[no]=GNOME
+Name[pl]=GNOME
+Name[pt_BR]=Gnome
+Name[ro]=Gnome
+Name[ru]=Гном
+Name[sl]=Gnome
+Name[sq]=Gnome
+Name[sv]=Gnome
+Name[tr]=Gnome
+Name[vi]=Gnome
+Name[zh_CN]=GNOME
+Name[zh_TW]=GNOME
+Comment=Default Gnome Theme
+Comment[am]=የነበረው የኖም ጭብጥ
+Comment[bg]=Тема на Гном по подразбиране
+Comment[ca]=Tema de del Gnome per defecte
+Comment[cs]=Výchozí téma GNOME
+Comment[da]=Standardtema til Gnome
+Comment[de]=GNOME-Vorgabethema
+Comment[el]=Εξ ορισμού θέμα του Gnome 
+Comment[es]=Tema predeterminado de Gnome
+Comment[fi]=Gnomen oletusteema
+Comment[fr]=Thème Gnome par défaut
+Comment[he]=ערכת הנושא ברירת המחדל של Gnome
+Comment[hu]=Alapértelmezett GNOME-téma
+Comment[it]=Tema predefinito di GNOME
+Comment[ko]=기본 GNOME 테마
+Comment[lv]=Noklusētā Gnome Tēma
+Comment[mk]=Основна Gnome Тема
+Comment[ms]=Tema Gnome Default
+Comment[nl]=Standaard GNOME-thema
+Comment[no]=Forvalgt GNOME tema
+Comment[pl]=Domyślny motyw GNOME
+Comment[pt_BR]=Tema Padrão do Gnome
+Comment[ro]=Tema Gnome implicită
+Comment[ru]=Стандартная тема среды Гном
+Comment[sl]=Privzeta tema Gnome
+Comment[sq]=Tema default e GNOME
+Comment[sv]=Standardtema för Gnome
+Comment[tr]=Öntanımlı Gnome Teması
+Comment[vi]=Theme Mặc Định của GNOME
+Comment[zh_CN]=默认 GNOME 主题
+Comment[zh_TW]=預設 GNOME 佈景主題
+Directories=192x192/apps,192x192/devices,192x192/emblems,192x192/filesystems,192x192/mimetypes,96x96/apps,96x96/devices,96x96/emblems,96x96/filesystems,96x96/mimetypes,72x72/apps,72x72/devices,72x72/emblems,72x72/filesystems,72x72/mimetypes,48x48/apps,48x48/devices,48x48/emblems,48x48/filesystems,48x48/mimetypes,36x36/apps,36x36/devices,36x36/emblems,36x36/filesystems,36x36/mimetypes,24x24/apps,24x24/devices,24x24/emblems,24x24/filesystems,24x24/mimetypes,12x12/apps,12x12/devices,12x12/emblems,12x12/filesystems,12x12/mimetypes,scalable/apps,scalable/devices,scalable/emblems,scalable/filesystems,scalable/mimetypes
+
+[192x192/apps]
+Size=192
+Context=Applications
+Type=Scalable
+
+[192x192/devices]
+Size=192
+Context=Devices
+Type=Scalable
+
+[192x192/emblems]
+Size=192
+Context=Emblems
+Type=Scalable
+
+[192x192/filesystems]
+Size=192
+Context=FileSystems
+Type=Scalable
+
+[192x192/mimetypes]
+Size=192
+Context=MimeTypes
+Type=Scalable
+
+[96x96/apps]
+Size=96
+Context=Applications
+Type=Scalable
+
+[96x96/devices]
+Size=96
+Context=Devices
+Type=Scalable
+
+[96x96/emblems]
+Size=96
+Context=Emblems
+Type=Scalable
+
+[96x96/filesystems]
+Size=96
+Context=FileSystems
+Type=Scalable
+
+[96x96/mimetypes]
+Size=96
+Context=MimeTypes
+Type=Scalable
+
+[72x72/apps]
+Size=72
+Context=Applications
+Type=Scalable
+
+[72x72/devices]
+Size=72
+Context=Devices
+Type=Scalable
+
+[72x72/emblems]
+Size=72
+Context=Emblems
+Type=Scalable
+
+[72x72/filesystems]
+Size=72
+Context=FileSystems
+Type=Scalable
+
+[72x72/mimetypes]
+Size=72
+Context=MimeTypes
+Type=Scalable
+
+[48x48/apps]
+Size=48
+Context=Applications
+Type=Scalable
+
+[48x48/devices]
+Size=48
+Context=Devices
+Type=Scalable
+
+[48x48/emblems]
+Size=48
+Context=Emblems
+Type=Scalable
+
+[48x48/filesystems]
+Size=48
+Context=FileSystems
+Type=Scalable
+
+[48x48/mimetypes]
+Size=48
+Context=MimeTypes
+Type=Scalable
+
+[36x36/apps]
+Size=36
+Context=Applications
+Type=Scalable
+
+[36x36/devices]
+Size=36
+Context=Devices
+Type=Scalable
+
+[36x36/emblems]
+Size=36
+Context=Emblems
+Type=Scalable
+
+[36x36/filesystems]
+Size=36
+Context=FileSystems
+Type=Scalable
+
+[36x36/mimetypes]
+Size=36
+Context=MimeTypes
+Type=Scalable
+
+[24x24/apps]
+Size=24
+Context=Applications
+Type=Scalable
+
+[24x24/devices]
+Size=24
+Context=Devices
+Type=Scalable
+
+[24x24/emblems]
+Size=24
+Context=Emblems
+Type=Scalable
+
+[24x24/filesystems]
+Size=24
+Context=FileSystems
+Type=Scalable
+
+[24x24/mimetypes]
+Size=24
+Context=MimeTypes
+Type=Scalable
+
+[12x12/apps]
+Size=12
+Context=Applications
+Type=Scalable
+
+[12x12/devices]
+Size=12
+Context=Devices
+Type=Scalable
+
+[12x12/emblems]
+Size=12
+Context=Emblems
+Type=Scalable
+
+[12x12/filesystems]
+Size=12
+Context=FileSystems
+Type=Scalable
+
+[12x12/mimetypes]
+Size=12
+Context=MimeTypes
+Type=Scalable
+
+[scalable/apps]
+Size=48
+MinSize=1
+MaxSize=256
+Context=Applications
+Type=Scalable
+
+[scalable/devices]
+Size=48
+MinSize=1
+MaxSize=256
+Context=Devices
+Type=Scalable
+
+[scalable/emblems]
+Size=48
+MinSize=1
+MaxSize=256
+Context=Emblems
+Type=Scalable
+
+[scalable/filesystems]
+Size=48
+MinSize=1
+MaxSize=256
+Context=FileSystems
+Type=Scalable
+
+[scalable/mimetypes]
+Size=48
+MinSize=1
+MaxSize=256
+Context=MimeTypes
+Type=Scalable
