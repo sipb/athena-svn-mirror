@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v $
- * $Author: jik $
+ * $Author: miki $
  *
  * This program is a replacement for rm.  Instead of actually deleting
  * files, it marks them for deletion by prefixing them with a ".#"
@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.24 1991-06-25 16:15:20 jik Exp $";
+     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.25 1992-11-05 15:29:00 miki Exp $";
 #endif
 
 #include <stdio.h>
@@ -38,6 +38,7 @@ typedef unsigned short uid_t;
 #include <sys/ioctl.h>
 #include <afs/param.h>
 #include <afs/vice.h>
+#include <netinet/in.h>
 #include <afs/venus.h>
 #endif
 #include "delete_errs.h"
