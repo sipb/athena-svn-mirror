@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: offlinehome.sh,v 1.1 2003-10-23 03:16:38 ghudson Exp $
+# $Id: offlinehome.sh,v 1.2 2004-05-16 21:24:09 ghudson Exp $
 
 # offlinehome - Set up an offline homedir.  This differs from a truly
 # local account (which you would create with useradd and mark in
@@ -129,7 +129,7 @@ echo "possible, but it does not have to be."
 echo
 if [ -t 0 ]; then
   echo "(If you want to do this later, just press ^C now and run"
-  echo "'passwd -l $username' when you are ready.)
+  echo "'passwd -l $username' when you are ready.)"
   echo
   passwd -l "$username"
 else
