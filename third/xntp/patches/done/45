@@ -1,0 +1,58 @@
+Replied: Mon, 16 Dec 1996 20:49:08 -0500
+Replied: "schueman@ix.netcom.com "
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa09127;
+          14 Dec 96 5:24 GMT
+Received: from sverige (pas-ca8-24.ix.netcom.com [204.31.230.88]) by dfw-ix5.ix.netcom.com (8.6.13/8.6.12) with SMTP id VAA02986 for <stenn@whimsy.udel.edu>; Fri, 13 Dec 1996 21:24:16 -0800
+Message-ID: <32B23A09.749A@ix.netcom.com>
+Date: Fri, 13 Dec 1996 21:24:25 -0800
+From: Greg Schueman <schueman@ix.netcom.com>
+Reply-To: schueman@ix.netcom.com
+X-Mailer: Mozilla 3.0Gold (Win95; U)
+MIME-Version: 1.0
+To: Harlan Stenn <stenn@whimsy.udel.edu>
+Subject: Re: winnt and umask()?
+References: <9611250149.aa03843@whimsy.udel.edu>
+Content-Type: multipart/mixed; boundary="------------530F74725E30"
+
+This is a multi-part message in MIME format.
+
+--------------530F74725E30
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Harlan Stenn wrote:
+> 
+> Greg,
+> 
+> Does WINNT have a umask() call that works the way I'm expecting it to?
+> 
+> Thanks...
+> 
+> H
+> .
+
+Harlan, 
+
+   I got version 3-5_86_13_2 and I needed to fix a couple things
+for NT as follows:
+
+libntp/libntp.mak - Updated the dependencies
+scripts/wininstall/distrib/ntpog.wri - Updated the text of the Ops Guide
+xntpd/ntpd.c - added #include <io.h> to get the definition of umask()
+
+
+I've included the files mentioned above, tar'd and gzipped.
+
+With these changes, it compiles very smoothly.
+
+-Greg
+
+--------------530F74725E30
+Content-Type: application/x-gzip; name="xntp-upd.tar.gz"
+Content-Transfer-Encoding: base64
+Content-Disposition: inline; filename="xntp-upd.tar.gz"
+
+H4sICGo3sjIAA3hudHAtdXBkLnRhcgDtwQENAAAAwqD3T20ON6AAAAAAAAAAAACANwOa3h0n
+ACgAAA==
+--------------530F74725E30--
+

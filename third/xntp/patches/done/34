@@ -1,0 +1,29 @@
+Replied: Wed, 06 Nov 1996 22:28:53 -0500
+Replied: "Jeffrey C Honig <jch@BSDI.COM> Mills@huey.udel.edu"
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa07795;
+          7 Nov 96 3:27 GMT
+Received: from kismet.bsdi.com (root@kismet.BSDI.COM [207.16.111.10]) by external.BSDI.COM (8.8.2/8.8.2) with ESMTP id UAA12135; Wed, 6 Nov 1996 20:26:52 -0700 (MST)
+Received: from kismet.bsdi.com (jch@localhost.bsdi.com [127.0.0.1]) by kismet.bsdi.com (8.7.6/8.7.3) with ESMTP id WAA15560; Wed, 6 Nov 1996 22:26:50 -0500 (EST)
+Message-Id: <199611070326.WAA15560@kismet.bsdi.com>
+To: Harlan Stenn <stenn@whimsy.udel.edu>
+cc: Mills@huey.udel.edu
+Subject: Re: BSD/OS 3.0 
+In-reply-to: Message from Harlan Stenn <stenn@whimsy.udel.edu> on
+             Wed, 06 Nov 1996 21:30:29 -0500.<9611070230.aa05970@whimsy.udel.edu> 
+References: <9611070230.aa05970@whimsy.udel.edu>
+Organization: Berkeley Software Design, Inc.; Ithaca, NY  USA
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <15554.847337209.1@kismet.bsdi.com>
+Date: Wed, 06 Nov 1996 22:26:50 -0500
+From: Jeffrey C Honig <jch@BSDI.COM>
+
+> OK, we now SLEW_ALWAYS for *-*-bsdi3* (and later).
+
+That is correct at this point.  For 3.1 we will hopefully have a POSIX
+compatible nano-second interface and KERNEL_PLL.  But we'll worry
+about that when the vapor solidifies.
+
+Thanks.
+
+Jeff

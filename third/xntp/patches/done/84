@@ -1,0 +1,49 @@
+Replied: Tue, 11 Feb 1997 02:53:53 -0500
+Replied: "Toralf Foerster <toralf.foerster@io-warnemuende.de> "
+From: Toralf Foerster <toralf.foerster@io-warnemuende.de>
+Subject: xntp3-5.89 Unknown kernel var _tick
+Newsgroups: comp.protocols.time.ntp
+Date: Sun, 09 Feb 1997 15:06:01 +0100
+Organization: Baltic Sea Research Institute
+Message-ID: <32FDD9C9.41C6@io-warnemuende.de>
+X-Mailer: Mozilla 3.01b2 (X11; I; AIX 2)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+NNTP-Posting-Host: 192.124.245.147
+Lines: 33
+Path: news.udel.edu!udel-eecis!netnews.com!news.enteract.com!news.maxwell.syr.edu!nntp.uio.no!news.apfel.de!news-fra1.dfn.de!news-ber1.dfn.de!zrz.TU-Berlin.DE!info4.uni-rostock.de!192.124.245.147
+
+Hi,
+xntp3-5.89 works fine, but I have a question.
+
+The machines are IBM RS/6000 AIX 3.2.4 and AIX 3.2.5
+The logfile shows for xntp3-5.89 for both machines:
+...
+ 9 Feb 12:43:21 xntpd[24535]: logging to file /var/spool/ntp/xntpd.log
+ 9 Feb 12:43:21 xntpd[24535]: xntpd 3-5.89 Sun Feb  9 12:40:06 MET 1997
+(1)
+ 9 Feb 12:43:21 xntpd[24535]: Unknown kernel var _tick
+ 9 Feb 12:43:21 xntpd[24535]: tickadj = 1000, tick = 10000, tvu_maxslew
+= 99000
+ 9 Feb 12:43:21 xntpd[24535]: precision = 20 usec
+...
+
+What's about the message "Unknown kernel var _tick" ?
+
+Thank's for an answer.
+
+--
+toralf
+
+- Baltic Sea Research Institute - Baltic Sea Research Institute -
+
+toralf.foerster@io-warnemuende.de       voice: +49 (381) 5197 373
+finger foerster@x500.io-warnemuende.de  fax  : +49 (381) 5197 352
+
+Toralf Foerster
+INSTITUT FUER OSTSEEFORSCHUNG Warnemuende
+Sektion Marine Geologie
+Seestrasse 15
+D-18119 Rostock
+Germany

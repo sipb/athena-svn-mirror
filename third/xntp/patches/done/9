@@ -1,0 +1,55 @@
+From: Jeremy Cooper <j@broder.com>
+Subject: Possible bug with BSD/OS 2.1 and 3.5f
+Newsgroups: comp.protocols.time.ntp
+Date: Fri, 28 Jun 1996 12:27:37 -0700
+Organization: Broderbund Software
+Path: fred.net!news2.cais.net!news.cais.net!nntp.primenet.com!news.mathworks.com!newsfeed.internetmci.com!in2.uu.net!news.broder.com!usenet-control
+Lines: 40
+Distribution: inet
+Message-ID: <31D43229.41C67EA6@broder.com>
+NNTP-Posting-Host: crayola.broder.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Mailer: Mozilla 2.0 (X11; I; BSD/OS 2.0 i386)
+
+I have found what I believe is a possible bug and a patch for it
+in the xntpd code.
+
+Description:
+------------
+During startup, xntpd determines the addresses of all the interfaces
+on the system.  In BSD/OS version 2.1 the daemon receives a protection
+violation signal while attempting to do this on some systems.
+
+In xntpd/ntp_io.c the new system call, 'getifaddrs', is used to
+obtain information about all of the system network interfaces.
+The description of this function states that some interfaces may
+return a NULL pointer in the 'ifa_addr' member of the interface
+structure if no definite address for that interface exists.
+ntp_io.c does not check for this.
+
+Symptom:
+--------
+xntpd core dumps on startup.
+
+Fix:
+----
+Have the code check to make sure that the 'ifa_addr' member is not NULL
+before attempting to determine its address family ('ifa_addr->sa_family').
+If it is NULL, skip the interface and move to the next one.
+
+In diff -c format the patch is:
+
+*** ntp_io.c    Fri Jun 28 12:17:41 1996
+--- ntp_io.c.new    Fri Jun 28 12:17:46 1996
+***************
+*** 314,319 ****
+--- 314,321 ----
+        for (ifap = ifaddrs, lp = ifap + num_if; ifap < lp; ifap++) {
+                struct sockaddr_in *sin;
+  
++               if (!ifap->ifa_addr)
++                       continue;
+                if (ifap->ifa_addr->sa_family != AF_INET)
+                        continue;

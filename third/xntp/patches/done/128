@@ -1,0 +1,290 @@
+Received: from copland.udel.edu by huey.udel.edu id aa00808; 18 Apr 97 9:57 EDT
+Received: from ramoth.nyc.deshaw.com (root@ramoth.nyc.deshaw.com [149.77.15.102]) by copland.udel.edu (8.8.5/8.7.3) with ESMTP id JAA28999 for <mills@udel.edu>; Fri, 18 Apr 1997 09:56:57 -0400 (EDT)
+Received: from [[UNIX: localhost]] ([[UNIX: localhost]])
+ by ramoth.nyc.deshaw.com (8.8.5/8.7.Alpha.4/1.34.kim) id JAA17710
+ for mills@udel.edu; Fri, 18 Apr 1997 09:56:51 -0400 (EDT)
+Message-Id: <199704181356.JAA17710@ramoth.nyc.deshaw.com>
+From: Christos Zoulas <christos@deshaw.com>
+Date: Fri, 18 Apr 1997 09:56:51 -0400
+Organization: D. E. Shaw & Co.
+X-Address: Tower 45, 120 West 45th St., 39th Floor, New York, N.Y. 10036
+X-Phone: (212) 478 0000
+X-Fax: (212) 478 0101
+X-Face:  %jL.CVv-*"-d?@xSu)#i[QzHK3,c?Qx,G.u#bZ;O'qSg"$LmB})v;&A"6r&;#2NRahSRwYl
+  D9Y8"L97FX^O7oBy?'hA6-1AQA`L(c[yqZySfl/t&4;gHT1|X\ElkgxMV<G<Wl4Bw[Y^/8]X@>NUjM
+  /A)InAN\hPuhymGG{1&&ay2c"[4z_*Gb?{gbnv5+?terjcRFl`(^3vO-^Mw%\Cfk`p{@!a3&/NR#*p
+  <c]7@{DT)R_*g4#M@G98-f$hN#J<pnDfR:xx<ph,7HcR3TeE|G~&}*>fH0rostE1
+X-Mailer: Mail User's Shell (7.2.6 beta(2)+dynamic 2/29/96)
+To: mills@udel.edu
+Subject: xntp3-5.90 patches
+
+
+Hello,
+
+Here's a set of patches to make xntpd compile cleanly on NetBSD.
+We've also converted some html manual pages to mandoc; if you'd like
+a copy, please let me know.
+
+christos
+
+- xntpd/ntp_io.c: Make this compile under gcc; cast away volatile pointers.
+- xntpd/ntp_config.c: Use mkstemp on BSD4_4 systems.
+- libntp/*md5*: Update for the newer version of the md5 interface.
+
+*** ntp_config.c.orig	Fri Apr 18 08:54:55 1997
+--- ntp_config.c	Fri Apr 18 08:59:50 1997
+***************
+*** 3,8 ****
+--- 3,9 ----
+   */
+  #include <stdio.h>
+  #include <ctype.h>
++ #include <sys/param.h>
+  #include <sys/types.h>
+  #include <signal.h>
+  #if !defined(VMS)
+***************
+*** 1877,1884 ****
+--- 1878,1895 ----
+  			(void) strcat(res_file, "xntpdXXXXXX");
+  		}
+  #endif /* SYS_WINNT */
++ #ifdef BSD4_4
++ 		{
++ 			int fd;
++ 
++ 			res_fp = NULL;
++ 			if ((fd = mkstemp(res_file)) != -1)
++ 				res_fp = fdopen(fd, "w");
++ 		}
++ #else
+  		(void) mktemp(res_file);
+  		res_fp = fopen(res_file, "w");
++ #endif
+  		if (res_fp == NULL) {
+  			msyslog(LOG_ERR, "open failed for %s: %m", res_file);
+  			return;
+*** ntp_io.c.orig	Fri Apr 18 08:54:56 1997
+--- ntp_io.c	Fri Apr 18 08:57:06 1997
+***************
+*** 207,213 ****
+    freelist = 0;
+    for (i = 0; i < RECV_INIT; i++)
+      {
+!       initial_bufs[i].next = freelist;
+        freelist = &initial_bufs[i];
+      }
+  
+--- 207,213 ----
+    freelist = 0;
+    for (i = 0; i < RECV_INIT; i++)
+      {
+!       initial_bufs[i].next = (struct recvbuf *) freelist;
+        freelist = &initial_bufs[i];
+      }
+  
+***************
+*** 1124,1130 ****
+    if (debug > 4)
+      printf("getrecvbufs returning %ld buffers\n", full_recvbufs);
+  #endif
+!   rb = beginlist;
+    fulllist = 0;
+    full_recvbufs = 0;
+  
+--- 1124,1130 ----
+    if (debug > 4)
+      printf("getrecvbufs returning %ld buffers\n", full_recvbufs);
+  #endif
+!   rb = (struct recvbuf *) beginlist;
+    fulllist = 0;
+    full_recvbufs = 0;
+  
+***************
+*** 1145,1151 ****
+  	    emalloc(RECV_INC*sizeof(struct recvbuf));
+  	  for (i = 0; i < RECV_INC; i++)
+  	    {
+! 	      buf->next = freelist;
+  	      freelist = buf;
+  	      buf++;
+  	    }
+--- 1145,1151 ----
+  	    emalloc(RECV_INC*sizeof(struct recvbuf));
+  	  for (i = 0; i < RECV_INC; i++)
+  	    {
+! 	      buf->next = (struct recvbuf *) freelist;
+  	      freelist = buf;
+  	      buf++;
+  	    }
+***************
+*** 1172,1178 ****
+       struct recvbuf *rb;
+  {
+    BLOCKIO();
+!   rb->next = freelist;
+    freelist = rb;
+    free_recvbufs++;
+    UNBLOCKIO();
+--- 1172,1178 ----
+       struct recvbuf *rb;
+  {
+    BLOCKIO();
+!   rb->next = (struct recvbuf *) freelist;
+    freelist = rb;
+    free_recvbufs++;
+    UNBLOCKIO();
+***************
+*** 1396,1402 ****
+  #endif
+  			}
+  
+! 		      rb = freelist;
+  		      freelist = rb->next;
+  		      free_recvbufs--;
+  
+--- 1396,1402 ----
+  #endif
+  			}
+  
+! 		      rb = (struct recvbuf *) freelist;
+  		      freelist = rb->next;
+  		      free_recvbufs--;
+  
+***************
+*** 1415,1421 ****
+  		      if (rb->recv_length == -1)
+  			{
+  			  msyslog(LOG_ERR, "clock read fd %d: %m", fd);
+! 			  rb->next = freelist;
+  			  freelist = rb;
+  			  free_recvbufs++;
+  #if 1
+--- 1415,1421 ----
+  		      if (rb->recv_length == -1)
+  			{
+  			  msyslog(LOG_ERR, "clock read fd %d: %m", fd);
+! 			  rb->next = (struct recvbuf *) freelist;
+  			  freelist = rb;
+  			  free_recvbufs++;
+  #if 1
+***************
+*** 1533,1539 ****
+  			    }
+  			}
+  
+! 		      rb = freelist;
+  
+  		      fromlen = sizeof(struct sockaddr_in);
+  		      rb->recv_length = recvfrom(fd,
+--- 1533,1539 ----
+  			    }
+  			}
+  
+! 		      rb = (struct recvbuf *) freelist;
+  
+  		      fromlen = sizeof(struct sockaddr_in);
+  		      rb->recv_length = recvfrom(fd,
+*** a_md512crypt.c.orig	Fri Apr 18 08:54:47 1997
+--- a_md512crypt.c	Fri Apr 18 09:07:31 1997
+***************
+*** 74,79 ****
+--- 74,80 ----
+      u_int32 *pkt;
+      int length;	/* total length of encrypted area */
+  {
++     u_char hash[16];
+      /*
+       *  Don't bother checking the keys.  The first stage would have
+       *  handled that.  Finish up the generation by also including the
+***************
+*** 81,90 ****
+       */
+  
+      MD5Update(&ctx, (unsigned const char *)(pkt) + length - 8, 8);
+!     MD5Final(&ctx);
+  
+      memmove((char *) &pkt[NOCRYPT_int32S + length/sizeof(u_int32)],
+! 	    (char *) ctx.digest,	    
+  	    BLOCK_OCTETS);
+      return (4 + BLOCK_OCTETS);
+  }
+--- 82,91 ----
+       */
+  
+      MD5Update(&ctx, (unsigned const char *)(pkt) + length - 8, 8);
+!     MD5Final(hash, &ctx);
+  
+      memmove((char *) &pkt[NOCRYPT_int32S + length/sizeof(u_int32)],
+! 	    (char *) hash,	    
+  	    BLOCK_OCTETS);
+      return (4 + BLOCK_OCTETS);
+  }
+*** a_md5decrypt.c.orig	Fri Apr 18 08:54:47 1997
+--- a_md5decrypt.c	Fri Apr 18 09:07:32 1997
+***************
+*** 39,44 ****
+--- 39,45 ----
+      int length;		/* length of variable data in octets */
+  {
+      MD5_CTX ctx;
++     char hash[16];
+  
+      authdecryptions++;
+  
+***************
+*** 51,59 ****
+      MD5Init(&ctx);
+      MD5Update(&ctx, (unsigned const char *)cache_key, cache_keylen);
+      MD5Update(&ctx, (unsigned const char *)pkt, length);
+!     MD5Final(&ctx);
+  
+!     return (!memcmp((char *)ctx.digest,
+  		    (char *)pkt + length + 4,
+  		    BLOCK_OCTETS));
+  }
+--- 52,60 ----
+      MD5Init(&ctx);
+      MD5Update(&ctx, (unsigned const char *)cache_key, cache_keylen);
+      MD5Update(&ctx, (unsigned const char *)pkt, length);
+!     MD5Final(hash, &ctx);
+  
+!     return (!memcmp((char *) hash,
+  		    (char *)pkt + length + 4,
+  		    BLOCK_OCTETS));
+  }
+*** a_md5encrypt.c.orig	Fri Apr 18 08:54:47 1997
+--- a_md5encrypt.c	Fri Apr 18 09:07:33 1997
+***************
+*** 44,49 ****
+--- 44,50 ----
+      int length;		/* length of encrypted portion of packet */
+  {
+      MD5_CTX ctx;
++     u_char hash[16];
+      int len;		/* in 4 byte quantities */
+  
+      authencryptions++;
+***************
+*** 64,73 ****
+      MD5Init(&ctx);
+      MD5Update(&ctx, (unsigned const char *)cache_key, cache_keylen);
+      MD5Update(&ctx, (unsigned const char *)pkt, length);
+!     MD5Final(&ctx);
+  
+      memmove((char *)&pkt[NOCRYPT_int32S + len],
+! 	    (char *)ctx.digest,
+  	    BLOCK_OCTETS);
+      return (4 + BLOCK_OCTETS);	/* return size of key and MAC  */
+  }
+--- 65,74 ----
+      MD5Init(&ctx);
+      MD5Update(&ctx, (unsigned const char *)cache_key, cache_keylen);
+      MD5Update(&ctx, (unsigned const char *)pkt, length);
+!     MD5Final(hash, &ctx);
+  
+      memmove((char *)&pkt[NOCRYPT_int32S + len],
+! 	    (char *) hash,
+  	    BLOCK_OCTETS);
+      return (4 + BLOCK_OCTETS);	/* return size of key and MAC  */
+  }

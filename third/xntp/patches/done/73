@@ -1,0 +1,86 @@
+Replied: Mon, 20 Jan 1997 19:38:56 -0500
+Replied: "Darren Nickerson <darren.nickerson@balliol.oxford.ac.uk> "
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa10854;
+          21 Jan 97 0:35 GMT
+Received: from ermine.ox.ac.uk by oxmail4 with SMTP (PP) with ESMTP;
+          Tue, 21 Jan 1997 00:34:29 +0000
+Received: (from dnicker@localhost) by ermine.ox.ac.uk (1.1/8.8.3) id AAA20507;
+          Tue, 21 Jan 1997 00:35:24 GMT
+Date: Tue, 21 Jan 1997 00:35:24 +0000 (GMT)
+From: Darren Nickerson <darren.nickerson@balliol.oxford.ac.uk>
+To: stenn@whimsy.udel.edu
+cc: mills@udel.edu
+Subject: Re: XNTP 3.5a on IRIX6 
+In-Reply-To: <9701201654.aa10512@whimsy.udel.edu>
+Message-ID: <Pine.OSF.3.91.970121002042.24867d-100000@ermine.ox.ac.uk>
+X-confirm-reading-to: dnicker@ermine.ox.ac.uk
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+
+On Mon, 20 Jan 1997 stenn@whimsy.udel.edu wrote:
+
+> 3.5a is kinda Ancient.
+
+OOPS - that's what the Univ. gave me . . 
+
+> Get <ftp://ntp.udel.edu/pub/ntp/testing/xntp3-5.88.1-export.tar.gz>
+> (unless 5.88.2 or later is available).
+> 
+> Harlan
+> 
+
+impact 160# ftp ntp.udel.edu
+Connected to ntp.udel.edu.
+220 snow-white.ee.udel.edu FTP server (Version 4.120 Tue Jan 7 10:21:01 
+EST 1997) ready.
+Name (ntp.udel.edu:darren): ftp
+530 Guest login NOT ok, try ftp.udel.edu
+Login failed.
+Remote system type is UNIX.
+Using binary mode to transfer files.
+ftp> 221 Goodbye.
+
+
+But I got it of course, and did ./configure and make.  I saw some:
+
+        cc -c -DHAVE_CONFIG_H -I. -I. -I.. -I../include  -g -n32 refclock_
+"refclock_acts.c", line 374: warning(1233): explicit type is missing ("int
+          assumed)
+  static day1tab[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+         ^
+
+"refclock_acts.c", line 375: warning(1233): explicit type is missing ("int
+          assumed)
+  static day2tab[] = {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+         ^
+
+
+and then:
+
+        cc -n32 -o xntpd map_vme.o ntp_config.o ntp_control.o ntp_io.o 
+ntp_leap.o  ntp_loopfilter.o ntp_monitor.o ntp_peer.o ntp_proto.o 
+ntp_refclock.o  ntp_request.o ntp_restrict.o ntp_timer.o ntp_unixclock.o 
+ntp_util.o  ntp_intres.o ntp_filegen.o ntpd.o refclock_conf.o 
+refclock_chu.o  refclock_local.o refclock_pst.o refclock_wwvb.o 
+refclock_mx4200.o  refclock_parse.o refclock_as2201.o refclock_bancomm.o 
+refclock_tpro.o  refclock_leitch.o refclock_irig.o refclock_msfees.o 
+refclock_trak.o  refclock_datum.o refclock_acts.o refclock_heath.o 
+refclock_nmea.o  refclock_atom.o refclock_ptbacts.o refclock_usno.o 
+refclock_true.o  refclock_hpgps.o refclock_gpsvme.o refclock_arbiter.o 
+version.o ../libntp/libntp.a  -lsocket 
+ld32: WARNING 84: /usr/lib32/libsocket.so is not used for resolving any 
+symbol.
+ld32: ERROR 33: Unresolved text symbol "nlist" -- 1st referenced by 
+ntp_unixclock.o.
+ld32: INFO 60: Output file removed because of error.
+cc ERROR:  /usr/lib64/cmplrs/ld32 returned non-zero status 1
+*** Error code 1 (bu21)
+*** Error code 1 (bu21)
+*** Error code 1 (bu21)
+
+OUCH!
+
+Anyone good with IRIX?
+
+-D
+

@@ -1,0 +1,78 @@
+Received: from copland.udel.edu by huey.udel.edu id aa02555; 9 Jun 97 4:05 EDT
+Received: from calliope1.fm.intel.com ([132.233.247.10]) by copland.udel.edu (8.8.5/8.7.3) with ESMTP id EAA03658 for <mills@udel.edu>; Mon, 9 Jun 1997 04:04:56 -0400 (EDT)
+Received: from fmmail.fm.intel.com by calliope1.fm.intel.com (8.8.4/10.0i); Mon, 9 Jun 1997 08:04:55 GMT
+Received: (from ccmgate@localhost) by fmmail.fm.intel.com (8.8.5/8.7.3) id BAA00154 for mills@udel.edu; Mon, 9 Jun 1997 01:04:56 -0700 (PDT)
+Received: by ccm.fm.intel.com (ccmgate 3.2 #2) Mon, 09 Jun 97 01:04:56 PDT
+Date: Mon, 09 Jun 97 00:57:00 PDT
+From: Viraj Bais <Viraj_Bais@ccm.fm.intel.com>
+Message-ID: <Mon, 09 Jun 97 01:04:22 PDT_10@ccm.fm.intel.com>
+To: mills@udel.edu
+Subject: Re: Daylight Savings bug in 3-5.90 on NT
+
+Dave,
+
+FYI, the NT port of xntp requires a bug fix. Following is my post in the
+newsgroup explaining the problem.
+
+Regards,
+Viraj Bais
+<viraj_bais@ccm.fm.intel.com>
+
+_______________________________________________________________________________
+
+
+
+Greg Schueman wrote:
+> 
+> I have heard several reports of this problem.  I have not yet found the
+> solution in the code base.  I'm not sure where in NTP the problem is being
+> introduced. I am actively looking into it, but it might be a month as I only 
+> have snippets of time available.
+>
+> -Greg
+
+There is a bug in the NT _ftime() system call (actually in one of the
+Win32 API's that the _ftime() calls, I forget which one but one can
+find out by stepping the code through the debugger) that returns
+incorrect values if your timezone is one that does not adjust for
+daylight's savings. In the xntp3.5f version, we have made some
+changes to the winnt_gettimeofday() routine in lib/machines.c
+file to fix this bug. I have not looked at 3.5-90, it would need
+something similar.
+
+OLD CODE:
+
+int
+winnt_gettimeofday(tv)
+        struct timeval *tv;
+{
+        struct _timeb timebuffer;
+
+        _ftime(timebuffer);
+        tv->tv_sec = (long)timebuffer.time;
+        tv->tv_usec = (long) (1000 * timebuffer.millitm));
+        return 0;
+}
+
+CORRECTED CODE:
+
+// 100ns intervals between 1/1/1601 and 1/1/1970 as reported by
+// SystemTimeToFileTime()
+#define FILETIME_1970 0x019db1ded53e8000
+const BYTE DWLEN = sizeof(DWORD) * 8; //number of bits in DWORD
+
+int
+winnt_gettimeofday(tv)
+        struct timeval *tv;
+{
+        FILETIME ft;
+        __int64 msec;
+
+        GetSystemTimeAsFileTime(&ft); // 100ns intervals since 1/1/1601
+        msec = (__int64)ft.dwHighDateTime << DWLEN | ft.dwLowDateTime;
+        msec = (msec - FILETIME_1970) / 10;
+        tv->tv_sec = (long) (msec / 1000000);
+        tv->tv_usec = (long) (msec % 1000000);
+        return 0;
+}
+

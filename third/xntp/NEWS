@@ -1,0 +1,187 @@
+ (5.91)
+* AIX portability patch
+* Patches to refclock_atom and refclock_parse
+* Patches to ntpq
+ (5.90.4)
+* Clean up distribution
+* NT patches
+* Bugfixes (how a_lastcode was used) to gpsvme, acts, msfees, and
+  bancomm refclocks.
+* renamed the pointer version of "lastcode" to p_lastcode and the array
+  version of lastcode to a_lastcode to make it easier to find problems
+  with its usage
+* bugfix to xntpd's ctl_flushpkt
+* ntpq bugfix
+* ntp_control bugfix
+* refclock_wwvb improvements
+* libntp/caljulian.c bugfix
+* summary.pl bugfix
+* ntptime performance improvements
+* Cranked gcc's warning levels 
+* Lots of "const" cleanup from previous cranking
+* VxWorks cross-compile stuff
+ (5.90.3)
+* backed out a CLOCAL/DSR patch to ntp_refclock.c (5.90)
+* xntpdc bugfixes (fixed traps)
+* Lots of u_long -> u_int32 changes to appease 64 bit crowd
+* Portability patch to libparse/parse.c
+* Portability patches to refclock_parse
+* refclock_arc and doc upgraded
+* scripts/*summary.pl patches
+* ntpq authentication patches
+* VxWorks patches (more are needed)
+* Windows/NT patches
+* Converted to automake-1.2
+* IRIX plock() fixes
+* ntptime cleanup/patches
+* OSF4 cleanup
+* Solaris lint cleanup
+* more cleanup of volatile pointers
+* NetBSD portability patches
+  (5.90.2)
+* struct clockinfo patches
+* loopfilter bugfixes
+* Windows/NT patches for ntpdate
+* MX4200 refclock improvements
+  (5.90.1)
+* Potential bug fixed in ACTS refclock
+* Shared-memory refclock support (Windows/NT only) (28)
+* Arcron MSF refclock support has been added (27)
+* HOPF clock now uses fixed format
+* parse clock cleanup
+* Lint cleanup (Sunos4)
+* Portablilty patches/cleanup (Irix4, Irix5, Solaris2.5, BSD44, Posix,
+  Alpha, Linux, BSDI3)
+* Windows/NT bugfix and cleanup
+* Timecode format 3 support for WWVB
+* clocktime() has been rewritten
+
+New in 5.90
+* Interface name bugfix.
+* FreeBSD TIOCDCDTIMESTAMP support
+* NMEA improvements
+* Endian patches for Trimble TSIP and parse clocks
+* SCO patches
+* Minor bugfixes and cleanup
+* Bugfixes in ntp_loopfilter.
+  (5.89.9)
+* new utility: scripts/ntpver
+* ntptrace bugfix
+* MX4200 improvements
+* FreeBSD improvements
+* xntpd now logs the value read from the drift file at startup
+* FLL bugfix
+* Linux and DomainOS broadcast fixes.
+* DEC OSF improvements
+* tickadj now behaves more like xntpd
+* Less lint
+* HPUX-9 configure improvements
+  (5.89.8)
+* Some lint has been cleaned in the new MX4200 driver
+* Some FreeBSD improvements
+* More changes to ntp_io.c, allowing SIGIO and nonblocking I/O
+* Quiet spurious messages from ntpdate
+  (5.89.7)
+* New MX4200 driver.
+* Quiet compiles under RiscOS 4.
+* Quiet select() timeout message in ntpdate.
+* Quiet more spurious sig*() messages.
+  (5.89.6)
+* NT patches
+* No more spurious sigsuspend() messages.
+* Cleaned up signal code.
+* AIX 3 doesn't have a "tick" variable in the kernel.
+* Even more changes to ntp_io.c.
+* Log if we discover ntp.conf doesn't exist.
+  (5.89.5)
+* Don't use SIGIO under Irix6.
+  (5.89.4)
+* Changes to ntp_io.c in the way we select() file descriptors so we can
+  use signalled I/O without needing non-blocking I/O.
+* Old bug in ntp_loopfilter.c crept back in.  This infinite loop problem
+  is fixed.
+  (5.89.3)
+* sys/timex.h sysctl update for FreeBSD (the OS of Champions!)
+* configure cleanup for -lgen on Univel boxes
+  (5.89.2)
+* Re-enable signalled I/O for those system that can allegedly take it.
+* NT cleanup and patches
+  (5.89.1)
+* Stopped using SA_RESTART - this might fix a runaway problem.
+
+New in 5.89
+* ntpdate works under IRIX6 now
+* Bugfix in ntp_proto.c
+* See if gcc likes -pipe
+* Cleanup NOKMEM logic in configure
+* Don't use signalled I/O right now
+* Serial refclocks now seem to work on the Alpha, if we avoid signalled I/O
+* Distribute a needed NT subdir
+* Compiles cleanly under IRIX64
+* Lint cleanup
+  (5.88.2)
+* Use nonblocking sockets even if we HAVE_SIGNALED_IO
+* HTML and Linux cleanup
+* parse changes/cleanup
+* xntpd now takes the -A option to disable authentication
+* Mips RiscOS/4 now works (does anybody care besides me?)
+* AIX4.2 can't USE_{UDP,TTY}_SIGPOLL
+* Typos fixed in util/ntptime.c for Linux
+* Irix6.2 will default to -n32 for CFLAGS and LDFLAGS.  Small makefile
+  bugfix, too.  Broadcasts don't seem to work for irix6.  Needs GNU make
+  if you want to build outside of the main source tree.
+* FreeBSD patches (UDP_WILDCARD_DELIVERY now enabled)
+* NT Patches
+* Bugfix for HPUX systems (Use hpux-specific FindConfig())
+* More bugfixes for pre-HPUX-10 systems (getting rid of SYS_HPUX)
+* Bugfix for pre-HPUX-10 systems (systime.c and _clear_adjtime())
+
+New in 5.88:
+* Major cleanup and improvements to ntp_loopfilter.c
+* On Vr4 (like Solaris) machines with a working clock_settime(), we do
+  a much better job of synching the clock now.
+* Compiles with less "noise" on more systems
+* Allows KERNEL_PLL in more cases
+* BSDI and refclock_true patches
+* Bugfixes.
+* Portability patches for SCO (syslog is a macro there)
+* Portability patches for NextStep
+* NT patches and documentation cleanup
+
+New in 5.87:
+* Changed some code that used 32-bit arithmetic to 64-bit arithmetic
+  to cope with very broken servers.
+* gcc -O2 -Wall now almost silent for Solaris2.5 and SunOS4.
+* New parse clock and parse clock patches from Frank Kardel
+* Irix6 now does UDP_WILDCARD_ENABLE
+* Convert to autoconf-2.12
+* Xntpd now runs at RTP_PRIO_REALTIME
+* Solaris bugfix
+
+New in 5.86.13:
+* NT patches for recent changes.
+* In xntpd, set the umask to 022 iff the incoming umask is 0.
+* (5.86.12.2)
+* Get ready for cross-compiling.
+* Don't use getclock() until after the rewrite.  Still OK on DEC Alpha.
+* Convert to autoconf-2.11
+
+New in 5.86.12:
+* Clean up getclock() usage (works on the DEC Alpha again).
+
+New in 5.86.11:
+* Change the order in which we look for values of tick and tickadj.
+* Let ntp.conf specify a values for tick and tickadj if we don't find
+  values in the kernel.
+* Bug fixes.
+* Deal with HP-UX 10 issues.
+* NT patches.
+
+New in 5.86.10:
+* Bug fixes.
+* the NEWS file.
+* Improvements for x86-OSF
+
+New in 5.86.9
+* KERNEL_PLL should work for Linux now.
+* Always make tickadj.

@@ -1,0 +1,565 @@
+Replied: Tue, 18 Feb 1997 01:30:00 -0500
+Replied: "Don Lewis <Don.Lewis@tsc.tdk.com> "
+Replied: Mon, 17 Feb 1997 20:23:09 -0500
+Replied: "mills@udel.edu Don Lewis <Don.Lewis@tsc.tdk.com>"
+Replied: Mon, 17 Feb 1997 20:06:58 -0500
+Replied: "Don Lewis <Don.Lewis@tsc.tdk.com>, "Edward J. Huff" <huffe@carbon.chem.nyu.edu> mills@udel.edu"
+Replied: Mon, 17 Feb 1997 19:20:37 -0500
+Replied: "Don Lewis <Don.Lewis@tsc.tdk.com> "
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa17070;
+          17 Feb 97 8:59 GMT
+Received: from sunrise.gv.tsc.tdk.com (root@sunrise.gv.tsc.tdk.com [192.168.241.191])
+          by gatekeeper.tsc.tdk.com (8.8.4/8.8.4) with ESMTP
+	  id AAA20057; Mon, 17 Feb 1997 00:59:28 -0800 (PST)
+Received: from salsa.gv.tsc.tdk.com (salsa.gv.tsc.tdk.com [192.168.241.194])
+          by sunrise.gv.tsc.tdk.com (8.8.4/8.8.4) with ESMTP
+	  id AAA17486; Mon, 17 Feb 1997 00:59:26 -0800 (PST)
+Received: (from gdonl@localhost)
+          by salsa.gv.tsc.tdk.com (8.8.4/8.8.4)
+	  id AAA01617; Mon, 17 Feb 1997 00:59:25 -0800 (PST)
+From: Don Lewis <Don.Lewis@tsc.tdk.com>
+Message-Id: <199702170859.AAA01617@salsa.gv.tsc.tdk.com>
+Date: Mon, 17 Feb 1997 00:59:25 -0800
+In-Reply-To: stenn@whimsy.udel.edu
+       "Re: xntp3-5.89.6 will be available soon" (Feb 14, 11:38pm)
+X-Mailer: Mail User's Shell (7.2.6 alpha(3) 7/19/95)
+To: stenn@whimsy.udel.edu, Don Lewis <Don.Lewis@tsc.tdk.com>
+Subject: Re: xntp3-5.89.6 will be available soon
+Cc: huff@carbon.chem.nyu.edu
+
+On Feb 14, 11:38pm, stenn@whimsy.udel.edu wrote:
+} Subject: Re: xntp3-5.89.6 will be available soon
+} Not a lot of time right now.
+} 
+} I don't recall the failure mode offhand.
+} 
+} My original change to enable both SIGIO and NBIO was to change the code
+} in ntp_io.c from:
+} 
+}  #ifdef HAVE_SIGNALED_IO		(about line 926)
+}    init_socket_sig(fd);
+}  #else /* not HAVE_SIGNALED_IO
+}   ...
+}  #endif /* HAVE_SIGNALED_IO */		(about line 966)
+} 
+} to:
+} 
+}  #ifdef HAVE_SIGNALED_IO		(about line 926)
+}    init_socket_sig(fd);
+}  #else /* not HAVE_SIGNALED_IO
+}  #endif
+}   ...
+}  #if 0
+}  #endif /* HAVE_SIGNALED_IO */		(about line 968)
+
+That would be bad ... the code after init_socket_sig(fd) calls
+fcntl(fd, F_SETFL, ...), which would turn off the FASYNC flag.
+It's somewhat cleaner to do these in the opposite order, but
+there's still once case in init_socket_sig() that has to be
+handled specially.
+
+Here's a patch vs. 3-5.89.7 with the following:
+
+	The SunOS 4.x changes to configure.in for tick and tickadj
+
+	The Solaris 2.x change to configure.in for tickadj
+
+	Removing of the extra logging in ntpdate
+
+	Cleanup of the #ifdef spaghetti for setting nonblocking I/O
+	in open_socket, and async I/O in init_socket_sig()
+
+	The call to init_socket_sig() is moved after nonblocking I/O
+	is turned on, and it can be called in addition to making I/O
+	nonblocking.
+
+	The input_handler() routing is changed back to the 89.6 version
+	with the following changes:
+
+		Edward Huff's change to remove FD_CLR().
+		(Hmn, this could be done in the case where recvfrom()
+		fails because there was nothing for it to grab).
+
+		All three flavors of non-blocking returns from recvfrom()
+		are checked for so they don't cause errors to be logged.
+
+		We don't goto select_again in case of a recvfrom() error.
+
+I've got this running on SunOS 4.1.4, Solaris 2.5.1, HP-UX 9.0.5, and
+FreeBSD 2.1.6.
+
+Weaknesses of my testing are that none of these machines is multihomed
+and we don't use broadcast mode, which is where I suspect the problem
+of one packet setting multiple fd flags in the select() output comes from.
+
+One thing that I'd suggest changing is getting rid of the outer for
+loop in input_handler(), at least in the HAVE_SIGNALED_IO case,
+because any packets that arrive while the handler is running will post
+another signal, and the signal handler will be called again as soon as
+it returns.  This change will reduce the number of times that the handler
+will be called but will find nothing to do, and will save a number of
+extra calls to select().
+
+*** ORIGconfigure.in	Thu Feb 13 18:06:54 1997
+--- configure.in	Mon Feb 17 00:07:44 1997
+***************
+*** 1814,1819 ****
+--- 1814,1822 ----
+        *-*-irix*)
+  	 ans=10000
+  	 ;;
++       *-*-sunos4*)
++ 	 ans=10000
++ 	 ;;
+        *-*-linux*)
+  	 ans=txc.tick
+  	 ;;
+***************
+*** 1848,1853 ****
+--- 1851,1859 ----
+         no) ans=1000 ;;
+        esac
+        ;;
++    *-*-sunos4*)
++       ans='tick/2000'
++       ;;
+     *-*-domainos)	# Skippy: won't be found...
+        case "$ac_cv_var_can_kmem" in
+         no) ans=668 ;;
+***************
+*** 1867,1873 ****
+     *-*-solaris2*)
+        case "$ac_cv_var_adjtime_is_accurate" in
+         yes)
+!           #ans='tick/16'
+  	  ;;
+        esac
+        ;;
+--- 1873,1879 ----
+     *-*-solaris2*)
+        case "$ac_cv_var_adjtime_is_accurate" in
+         yes)
+!           ans='tick/16'
+  	  ;;
+        esac
+        ;;
+*** ntpdate/ORIGntpdate.c	Wed Feb 12 16:50:05 1997
+--- ntpdate/ntpdate.c	Sun Feb 16 22:30:31 1997
+***************
+*** 433,440 ****
+  #endif /* SYS_WINNT */
+  				 ) {
+                                  msyslog(LOG_ERR, "select() error: %m");
+-                         } else {
+- 			  msyslog(LOG_DEBUG, "select(): nfound = %d, error: %m", nfound);
+  			}
+                          if (alarm_flag) {               /* alarmed? */
+                                  was_alarmed = 1;
+--- 433,438 ----
+*** xntpd/ORIGntp_io.c	Wed Feb 12 16:36:42 1997
+--- xntpd/ntp_io.c	Sun Feb 16 23:04:30 1997
+***************
+*** 923,937 ****
+      maxactivefd = fd;
+    FD_SET(fd, &activefds);
+  
+- #ifdef HAVE_SIGNALED_IO
+-   init_socket_sig(fd);
+- #else /* not HAVE_SIGNALED_IO */
+- 
+    /*
+     * set non-blocking,
+     */
+  
+! #if defined(O_NONBLOCK)
+    if (fcntl(fd, F_SETFL, O_NONBLOCK) < 0)
+      {
+        msyslog(LOG_ERR, "fcntl(O_NONBLOCK) fails: %m");
+--- 923,933 ----
+      maxactivefd = fd;
+    FD_SET(fd, &activefds);
+  
+    /*
+     * set non-blocking,
+     */
+  
+! #if defined(O_NONBLOCK) /* POSIX */
+    if (fcntl(fd, F_SETFL, O_NONBLOCK) < 0)
+      {
+        msyslog(LOG_ERR, "fcntl(O_NONBLOCK) fails: %m");
+***************
+*** 938,968 ****
+        exit(1);
+        /*NOTREACHED*/
+      }
+! #else /* O_NONBLOCK */
+! # if defined(FNDELAY)
+    if (fcntl(fd, F_SETFL, FNDELAY) < 0)
+      {
+!       msyslog(LOG_ERR, "fcntl(FNDELAY) fails: %m");
+        exit(1);
+        /*NOTREACHED*/
+      }
+! # else /* FNDELAY */
+! #  if defined(VMS) || defined(SYS_WINNT) /* VMS+UCX or SYS_WINNT */
+! #   ifndef SYS_WINNT
+    if (ioctl(fd,FIONBIO,&1) < 0)
+! #   else
+    if (ioctlsocket(fd,FIONBIO,(u_long *) &on) == SOCKET_ERROR)
+! #   endif /* SYS_WINNT */
+      {
+        msyslog(LOG_ERR, "ioctl(FIONBIO) fails: %m");
+        exit(1);
+      }
+! #  else
+  #   include "Bletch: Need non blocking I/O!"
+! #  endif /* VMS+UCX or SYS_WINNT */
+! # endif /* FNDELAY */
+! #endif /* O_NONBLOCK */
+  
+  #endif /* not HAVE_SIGNALED_IO */
+  
+    /*
+--- 934,979 ----
+        exit(1);
+        /*NOTREACHED*/
+      }
+! #elif defined(FNDELAY)
+    if (fcntl(fd, F_SETFL, FNDELAY) < 0)
+      {
+!       msyslog(LOG_ERR, "fcntl(O_NONBLOCK) fails: %m");
+        exit(1);
+        /*NOTREACHED*/
+      }
+! #elif defined(O_NDELAY) /* generally the same as FNDELAY */
+!   if (fcntl(fd, F_SETFL, O_NDELAY) < 0)
+!     {
+!       msyslog(LOG_ERR, "fcntl(O_NONBLOCK) fails: %m");
+!       exit(1);
+!       /*NOTREACHED*/
+!     }
+! #elif defined(FIONBIO)
+! # if defined(VMS)
+    if (ioctl(fd,FIONBIO,&1) < 0)
+! # elif defined(SYS_WINNT)
+    if (ioctlsocket(fd,FIONBIO,(u_long *) &on) == SOCKET_ERROR)
+! # else
+!   if (ioctl(fd,FIONBIO,&on) < 0)
+! # endif
+      {
+        msyslog(LOG_ERR, "ioctl(FIONBIO) fails: %m");
+        exit(1);
++       /*NOTREACHED*/
+      }
+! #elif defined(FIOSNBIO)
+!   if (ioctl(fd,FIOSNBIO,&on) < 0)
+!     {
+!       msyslog(LOG_ERR, "ioctl(FIOSNBIO) fails: %m");
+!       exit(1);
+!       /*NOTREACHED*/
+!     }
+! #else
+  #   include "Bletch: Need non blocking I/O!"
+! #endif
+  
++ #ifdef HAVE_SIGNALED_IO
++   init_socket_sig(fd);
+  #endif /* not HAVE_SIGNALED_IO */
+  
+    /*
+***************
+*** 1294,1299 ****
+--- 1305,1311 ----
+    return buffer;
+  }
+  
++ 
+  /*
+   * input_handler - receive packets asynchronously
+   */
+***************
+*** 1362,1368 ****
+  		  if (FD_ISSET(fd, &fds))
+  		    {
+  		      n--;
+- 		      FD_CLR(fd, &fds); /* HMS: Added 961211 */
+  		      if (free_recvbufs == 0)
+  			{
+  			  char buf[RX_BUFF_SIZE];
+--- 1374,1379 ----
+***************
+*** 1460,1466 ****
+  		  if (FD_ISSET(fd, &fds))
+  		    {
+  		      n--;
+- 		      FD_CLR(fd, &fds); /* HMS: Added 961211 */
+  
+  		      /*
+  		       * Get a buffer and read the frame.  If we
+--- 1471,1476 ----
+***************
+*** 1519,1526 ****
+  			}
+  
+  		      rb = freelist;
+- 		      freelist = rb->next;
+- 		      free_recvbufs--;
+  
+  		      fromlen = sizeof(struct sockaddr_in);
+  		      rb->recv_length = recvfrom(fd,
+--- 1529,1534 ----
+***************
+*** 1528,1548 ****
+  						 sizeof(rb->recv_space), 0,
+  						 (struct sockaddr *)&rb->recv_srcadr,
+  						 &fromlen);
+! 		      if (rb->recv_length == -1)
+! 			{
+  			  msyslog(LOG_ERR, "recvfrom() fd=%d: %m", fd);
+- 			  rb->next = freelist;
+- 			  freelist = rb;
+- 			  free_recvbufs++;
+  #ifdef DEBUG
+  			  if (debug)
+  			    printf("input_handler: fd=%d dropped (bad recvfrom)\n", fd);
+  #endif
+- #if 1
+- 			  goto select_again;
+- #else
+  			  continue;
+- #endif
+  			}
+  #ifdef DEBUG
+  		      if (debug)
+--- 1536,1563 ----
+  						 sizeof(rb->recv_space), 0,
+  						 (struct sockaddr *)&rb->recv_srcadr,
+  						 &fromlen);
+! 		      if (rb->recv_length > 0)
+! 		        {
+! 		          freelist = rb->next;
+! 		          free_recvbufs--;
+! 		        }
+! 		      else if (rb->recv_length == 0
+! #ifdef EWOULDBLOCK
+! 			       || errno==EWOULDBLOCK
+! #endif
+! #ifdef EAGAIN
+! 			       || errno==EAGAIN
+! #endif
+! 		              )
+! 		        continue;
+! 		      else
+! 		        {
+  			  msyslog(LOG_ERR, "recvfrom() fd=%d: %m", fd);
+  #ifdef DEBUG
+  			  if (debug)
+  			    printf("input_handler: fd=%d dropped (bad recvfrom)\n", fd);
+  #endif
+  			  continue;
+  			}
+  #ifdef DEBUG
+  		      if (debug)
+***************
+*** 1667,1673 ****
+    return;
+  }
+  
+- 
+  /*
+   * findinterface - utility used by other modules to find an interface
+   *		   given an address.
+--- 1682,1687 ----
+***************
+*** 1981,2007 ****
+        exit(1);
+      }
+  }
+! # else
+! /*
+!  * Socket SIGPOLL initialization routines.
+!  * Special cases first!
+!  */
+! /* Was: defined(SYS_HPUX) || defined(SYS_LINUX) */
+! #  if defined(FIOSNBIO) && defined(FIOASYNC)
+! #define SOCKET_DONE
+  {
+!   int pgrp, on = 1;
+  
+!   /*
+!    * Big difference here for HP-UX ... why can't life be easy ?
+!    */
+!   if (ioctl(fd, FIOSNBIO, (char *)&on) == -1)
+!     {
+!       msyslog(LOG_ERR, "ioctl(FIOSNBIO) fails: %m");
+!       exit(1);
+!       /*NOTREACHED*/
+!     }
+! 
+    if (ioctl(fd, FIOASYNC, (char *)&on) == -1)
+      {
+        msyslog(LOG_ERR, "ioctl(FIOASYNC) fails: %m");
+--- 1995,2008 ----
+        exit(1);
+      }
+  }
+! # else /* USE_UDP_SIGPOLL */
+  {
+!   int pgrp;
+! # ifdef FIOASYNC
+!   int on = 1;
+! # endif
+  
+! #  if defined(FIOASYNC)
+    if (ioctl(fd, FIOASYNC, (char *)&on) == -1)
+      {
+        msyslog(LOG_ERR, "ioctl(FIOASYNC) fails: %m");
+***************
+*** 2008,2019 ****
+        exit(1);
+        /*NOTREACHED*/
+      }
+  
+! #   ifdef UDP_BACKWARDS_SETOWN
+    pgrp = -getpid();
+! #   else
+    pgrp = getpid();
+! #   endif
+    if (ioctl(fd, SIOCSPGRP, (char *)&pgrp) == -1)
+      {
+        msyslog(LOG_ERR, "ioctl(SIOCSPGRP) fails: %m");
+--- 2009,2042 ----
+        exit(1);
+        /*NOTREACHED*/
+      }
++ #  elif defined(FASYNC)
++   {
++     int flags;
+  
+!     if ((flags = fcntl(fd, F_GETFL, 0)) == -1)
+!       {
+!         msyslog(LOG_ERR, "fcntl(F_GETFL) fails: %m");
+!         exit(1);
+!         /*NOTREACHED*/
+!       }
+!     if (fcntl(fd, F_SETFL, flags|FASYNC) < 0)
+!       {
+!         msyslog(LOG_ERR, "fcntl(...|FASYNC) fails: %m");
+!         exit(1);
+!         /*NOTREACHED*/
+!       }
+!    }
+! #  else
+! #   include "Bletch: Need asynchronous I/O!"
+! #  endif
+! 
+! #  ifdef UDP_BACKWARDS_SETOWN
+    pgrp = -getpid();
+! #  else
+    pgrp = getpid();
+! #  endif
+! 
+! #  if defined(SIOCSPGRP)
+    if (ioctl(fd, SIOCSPGRP, (char *)&pgrp) == -1)
+      {
+        msyslog(LOG_ERR, "ioctl(SIOCSPGRP) fails: %m");
+***************
+*** 2020,2043 ****
+        exit(1);
+        /*NOTREACHED*/
+      }
+! }
+! #  endif /* SYS_HPUX || SYS_LINUX: FIOSNBIO && FIOASYNC */
+! /* Was:  defined(SYS_AIX) && !defined(_BSD) */
+! #  if !defined(_BSD) && defined(_AIX) && defined(FIOASYNC) && defined(FIOSETOWN)
+! /*
+!  * SYSV compatibility mod under AIX
+!  */
+! #define SOCKET_DONE
+! {
+!   int pgrp, on = 1;
+! 
+!   if (ioctl(fd, FIOASYNC, (char *)&on) == -1)
+!     {
+!       msyslog(LOG_ERR, "ioctl(FIOASYNC) fails: %m");
+!       exit(1);
+!       /*NOTREACHED*/
+!     }
+!   pgrp = -getpid();
+    if (ioctl(fd, FIOSETOWN, (char*)&pgrp) == -1)
+      {
+        msyslog(LOG_ERR, "ioctl(FIOSETOWN) fails: %m");
+--- 2043,2049 ----
+        exit(1);
+        /*NOTREACHED*/
+      }
+! #  elif defined(FIOSETOWN)
+    if (ioctl(fd, FIOSETOWN, (char*)&pgrp) == -1)
+      {
+        msyslog(LOG_ERR, "ioctl(FIOSETOWN) fails: %m");
+***************
+*** 2044,2087 ****
+        exit(1);
+        /*NOTREACHED*/
+      }
+! 
+!   if (fcntl(fd, F_SETFL, FNDELAY|FASYNC) < 0)
+      {
+-       msyslog(LOG_ERR, "fcntl(FNDELAY|FASYNC) fails: %m");
+-       exit(1);
+-       /*NOTREACHED*/
+-     }
+- }
+- #  endif /* AIX && !BSD: !_BSD && FIOASYNC && FIOSETOWN */
+- #  ifndef SOCKET_DONE
+- {
+-   int pid = getpid();
+- 
+- #   if defined(UDP_BACKWARDS_SETOWN)
+-   /*
+-    * The way Sun did it as recently as SunOS 3.5.  Only
+-    * in the case of sockets, of course, just to confuse
+-    * the issue.  Don't they even bother to test the stuff
+-    * they send out?  Ibid for Ultrix 2.0
+-    */
+-   pid = -pid;
+- #   endif /* UDP_BACKWARDS_SETOWN */
+-   if (fcntl(fd, F_SETOWN, pid) == -1)
+-     {
+        msyslog(LOG_ERR, "fcntl(F_SETOWN) fails: %m");
+        exit(1);
+-     }
+-   /*
+-    * set non-blocking, async I/O on the descriptor
+-    */
+-   if (fcntl(fd, F_SETFL, FNDELAY|FASYNC) < 0)
+-     {
+-       msyslog(LOG_ERR, "fcntl(FNDELAY|FASYNC) fails: %m");
+-       exit(1);
+        /*NOTREACHED*/
+      }
+  }
+- #  endif /* SOCKET_DONE */
+  # endif /* USE_UDP_SIGPOLL */
+  
+  
+--- 2050,2066 ----
+        exit(1);
+        /*NOTREACHED*/
+      }
+! #  elif defined(F_SETOWN)
+!   if (fcntl(fd, F_SETOWN, pgrp) == -1)
+      {
+        msyslog(LOG_ERR, "fcntl(F_SETOWN) fails: %m");
+        exit(1);
+        /*NOTREACHED*/
+      }
++ #  else
++ #   include "Bletch: Need to set process(group) to receive SIG(IO|POLL)"
++ #  endif
+  }
+  # endif /* USE_UDP_SIGPOLL */
+  
+  
+
+			---  Truck

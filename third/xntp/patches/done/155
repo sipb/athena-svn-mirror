@@ -1,0 +1,51 @@
+Return-Path: casey@gateway.ccii.co.za 
+Return-Path: <casey@gateway.ccii.co.za>
+Received: from aztec.co.za (aztec.co.za [196.7.70.131])
+	by whimsy.udel.edu (8.8.5/8.8.5) with SMTP id IAA13216
+	for <stenn@whimsy.udel.edu>; Thu, 26 Jun 1997 08:11:43 GMT
+Received: from gateway.ccii.co.za [196.3.249.234] by aztec.co.za with smtp
+	for <stenn@whimsy.udel.edu> envelope to <stenn@whimsy.udel.edu>
+	(Smail3.1.29.1 #2) id m0wh9dK-0007hDC; Thu, 26 Jun 97 10:10 EET
+Received: (from casey@localhost) by gateway.ccii.co.za (8.7.6/8.7.1) id KAA14892 for stenn@whimsy.udel.edu; Thu, 26 Jun 1997 10:20:54 -0400
+From: Casey Crellin <casey@gateway.ccii.co.za>
+Message-Id: <199706261420.KAA14892@gateway.ccii.co.za>
+Subject: configure.in
+To: stenn@whimsy.udel.edu
+Date: Thu, 26 Jun 1997 10:20:54 -0400 (EDT)
+Reply-To: casey@ccii.co.za
+Content-Type: text
+
+
+Hi Harlan,
+
+
+How are things? Did you make sense of all my mail? One minor correction to
+configure.in It is for big endian targets...
+
+In the section  marked ### below is changed to be correct.
+
+#AC_C_BIGENDIAN     dnl CROSS-COMPILE?
+    case "$host" in
+     $target)
+        AC_C_BIG_ENDIAN
+        ;;
+     *) case "$target" in
+         i*86-*-vxworks*)
+           # LITTLEENDIAN
+            ;;
+         *-*-vxworks*)                      # was bigendian_machine     ###
+            AC_DEFINE(WORDS_BIGENDIAN)
+            ;;
+    esac
+
+Let me know what is happening.
+
+Keep well
+
+Casey
+
+--
+casey@ccii.co.za
+
+CCII Systems (Pty) Ltd                        http://www.ccii.co.za
+-------------------------------------------------------------------

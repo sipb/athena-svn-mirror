@@ -1,0 +1,93 @@
+From Nicholas_Briggs.PARC@xerox.com Sun Jun 16 03:33:43 1996
+X-NS-Transport-ID: 0000AA008EE70CC73566
+Date: Sun, 26 May 1996 21:29:36 PDT
+From: Nicholas_Briggs.PARC@xerox.com
+Subject: Re:  bug in ntpq
+In-Reply-to: "Mills@huey.udel:edu:Xerox's message of Sun, 26 May 1996 19:51:17 PDT"
+To: Mills@huey.udel.edu
+cc: Nicholas_Briggs.PARC@xerox.com
+
+See if you agree with this -- it returns a failure if either the variable name
+length or the variable value length exceed their respective limits.
+
+					\nick
+
+*** ntpq/ntpq.c.orig	Fri Mar 29 08:46:12 1996
+--- ntpq/ntpq.c	Sun May 26 21:21:10 1996
+***************
+*** 2411,2416 ****
+--- 2411,2417 ----
+  	register char *cp;
+  	register char *np;
+  	register char *cpend;
++ 	register char *npend;	/* character after last */
+  	int quoted = 0;
+  	static char name[MAXVARLEN];
+  	static char value[MAXVALLEN];
+***************
+*** 2431,2439 ****
+  	 * over any white space and terminate it.
+  	 */
+  	np = name;
+! 	while (cp < cpend && *cp != ',' && *cp != '='
+  	    && *cp != '\r' && *cp != '\n')
+  		*np++ = *cp++;
+  	while (isspace(*(np-1)))
+  		np--;
+  	*np = '\0';
+--- 2432,2449 ----
+  	 * over any white space and terminate it.
+  	 */
+  	np = name;
+! 	npend = &name[MAXVARLEN];
+! 	while (cp < cpend && np < npend && *cp != ',' && *cp != '='
+  	    && *cp != '\r' && *cp != '\n')
+  		*np++ = *cp++;
++ 	/*
++ 	 * Check if we ran out of name space, without reaching the end or a
++ 	 * terminating character
++ 	 */
++ 	if (np == npend && !(cp == cpend || *cp == ',' || *cp == '=' ||
++ 			     *cp == '\r' || *cp == '\n'))
++ 	  return 0;
++
+  	while (isspace(*(np-1)))
+  		np--;
+  	*np = '\0';
+***************
+*** 2458,2468 ****
+  	while (cp < cpend && (isspace(*cp) && *cp != '\r' && *cp != '\n'))
+  		cp++;
+  	np = value;
+! 	while (cp < cpend && ((*cp != ',') || quoted))
+  	  {
+  	    quoted ^= ((*np++ = *cp++) == '"');
+  	  }
+
+  	while (np > value && isspace(*(np-1)))
+  		np--;
+  	*np = '\0';
+--- 2468,2489 ----
+  	while (cp < cpend && (isspace(*cp) && *cp != '\r' && *cp != '\n'))
+  		cp++;
+  	np = value;
+! 	npend = &value[MAXVALLEN];
+! 	while (cp < cpend && np < npend && ((*cp != ',') || quoted))
+  	  {
+  	    quoted ^= ((*np++ = *cp++) == '"');
+  	  }
+
++ 	/*
++ 	 * Check if we overran the value buffer while still in a quoted string
++ 	 * or without finding a comma
++ 	 */
++ 	if (np == npend && (quoted || *cp != ','))
++ 	  return 0;
++
++ 	/*
++ 	 * Trim off any trailing whitespace
++ 	 */
+  	while (np > value && isspace(*(np-1)))
+  		np--;
+  	*np = '\0';
+

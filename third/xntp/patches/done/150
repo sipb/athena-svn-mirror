@@ -1,0 +1,216 @@
+Replied: Sun, 22 Jun 1997 22:16:46 -0400
+Replied: "duwe@lst.de gnats-bugs@gnats.netbsd.org, time@informatik.uni-erlangen.de,
+Replied: christos@NetBSD.org"
+Return-Path: duwe@lst.de 
+Return-Path: <duwe@lst.de>
+Received: from ultralart.osn.de (mail.osn.de [194.231.117.9])
+	by whimsy.udel.edu (8.8.5/8.8.5) with ESMTP id VAA00446
+	for <stenn@whimsy.udel.edu>; Sun, 22 Jun 1997 21:02:36 GMT
+From: duwe@lst.de
+Received: from ns.lst.de (ns.lst.de [194.231.72.1])
+	by ultralart.osn.de (8.8.5/8.8.5) with SMTP id XAA25979;
+	Sun, 22 Jun 1997 23:02:00 +0200 (MET DST)
+Message-Id: <m0wftlW-000iPHC@ns.lst.de>
+Date: Sun, 22 Jun 1997 23:01:42 +0200 (MEST)
+To: gnats-bugs@gnats.netbsd.org
+Subject: xntp2netbsd omits far too many reference clocks
+Cc: time@informatik.uni-erlangen.de, christos@NetBSD.org,
+        stenn@whimsy.udel.edu
+Reply-To: duwe@lst.de
+X-send-pr-version: 3.95
+X-Mailer: Emacs ViewMail 6.16
+
+
+>Submitter-Id:	net
+>Originator:	Torsten Duwe
+>Organization:
+>Confidential:	no
+>Synopsis:	xntp2netbsd omits too many reference clocks
+>Severity:	non-critical
+>Priority:	medium
+>Category:	bin
+>Class:		sw-bug
+>Release:	NetBSD-current 1997-06-22
+>Environment:	all platforms
+
+>Description:
+	The xntp-3.5.90 distribution supports many more clocks than are
+	currently compiled into an xntpd on NetBSD from sources generated
+	by xntp2netbsd. This is probably a workaround for two small bugs
+	in the xntp source which I have appended a fix for. The addition of
+	the refclocks in question has afterwards triggered bugs in the 
+	conversion script itself, resulting in invalid Makefiles and
+	non-working reference clocks. Appended is a patch for both,
+	the configuration changes and the bug fixes.
+>How-To-Repeat:
+	N/A unless you have one of the affected refclocks
+>Fix:
+	first, the fixes to the xntp-current distribution.
+	"Cc:" Frank and Harlan: I have commited these to the Erlangen
+		repository, FYI.
+--- v4/xntpd/ntp_io.c.orig	Sun Apr 13 12:05:30 1997
++++ v4/xntpd/ntp_io.c	Sun Jun 22 17:30:11 1997
+@@ -113,9 +113,9 @@
+ volatile u_long full_recvbufs;		/* number of recvbufs on fulllist */
+ volatile u_long free_recvbufs;		/* number of recvbufs on freelist */
+ 
+-volatile static	struct recvbuf *freelist;	/* free buffers */
+-volatile static	struct recvbuf *fulllist;	/* lifo buffers with data */
+-volatile static	struct recvbuf *beginlist;	/* fifo buffers with data */
++static	struct recvbuf *volatile freelist;	/* free buffers */
++static	struct recvbuf *volatile fulllist;	/* lifo buffers with data */
++static	struct recvbuf *volatile beginlist;	/* fifo buffers with data */
+ 
+ u_long total_recvbufs;		/* total recvbufs currently in use */
+ u_long lowater_additions;	/* number of times we have added memory */
+--- v4/libparse/parse.c.orig	Sun Jan 26 19:12:21 1997
++++ v4/libparse/parse.c	Sun Jun 22 17:02:58 1997
+@@ -54,7 +54,9 @@
+ 
+ #include "ntp_stdlib.h"
+ 
++#ifdef STREAM
+ #include <sys/parsestreams.h>
++#endif
+ 
+ #if defined(PARSESTREAM) && (defined(SYS_SUNOS4) || defined(SYS_SOLARIS)) && defined(STREAM)
+ /*
+
+--------------------------------------------------------------------------
+	And now the patch to christos' script:
+
+--- /usr/src/usr.sbin/xntp/xntp2netbsd	Mon Apr 21 13:29:56 1997
++++ xntp2netbsd	Sun Jun 22 19:18:30 1997
+@@ -31,7 +31,8 @@
+ 	     "ntp_filegen.h", "ntp_fp.h", "ntp_if.h", "ntp_io.h", 
+ 	     "ntp_machine.h", "ntp_malloc.h", "ntp_refclock.h", "ntp_request.h",
+ 	     "ntp_select.h", "ntp_stdlib.h", "ntp_string.h", "ntp_syslog.h",
+-	     "ntp_types.h", "ntp_unixtime.h", "ntpd.h");
++	     "ntp_types.h", "ntp_unixtime.h", "ntpd.h",
++	     "parse.h", "parse_conf.h");
+ 
+ @libntpf = ("a_md512crypt.c", "a_md5decrypt.c", "a_md5encrypt.c",
+ 	    "adjtime.c", "atoint.c", "atolfp.c", "atouint.c", "auth12crypt.c",
+@@ -62,6 +63,11 @@
+ 	   "refclock_ptbacts.c", "refclock_tpro.c", "refclock_trak.c",
+ 	   "refclock_true.c", "refclock_usno.c", "refclock_wwvb.c");
+ 
++@xntpd_pf = ("parse.c", "parse_conf.c", "clk_computime.c",
++	     "clk_dcf7000.c", "clk_hopf6021.c", "clk_meinberg.c",
++	     "clk_rawdcf.c", "clk_rcc8000.c", "clk_schmid.c",
++	     "clk_trimtaip.c", "clk_trimtsip.c");
++
+ @xntpdcf = ("ntpdc.c", "ntpdc.h", "ntpdc_ops.c");
+ 
+ @ntpdatef = ("ntpdate.c", "ntpdate.h");
+@@ -109,9 +115,9 @@
+ 
+     print ODATA "SRCS=\t";
+     $count = 0;
+-    foreach $f (@names) {
++    while ($f = pop(@names)) {
+         print ODATA "$f ";
+-	if ($count == 5) {
++	if ($count == 5 && @names > 0) {
+ 	    print ODATA "\\\n";
+ 	    $count = 0;
+ 	} else {
+@@ -158,6 +164,7 @@
+ 
+ print "Populating the usr.sbin/xntp/xntpd directory.\n";
+ &copyfiles ("$srcdir/xntpd", "$targetdir/usr.sbin/xntp/xntpd", @xntpdf);
++&copyfiles ("$srcdir/libparse", "$targetdir/usr.sbin/xntp/xntpd", @xntpd_pf);
+ 
+ print "Populating the usr.sbin/xntp/xntpdc directory.\n";
+ &copyfiles ("$srcdir/xntpdc", "$targetdir/usr.sbin/xntp/xntpdc", @xntpdcf);
+@@ -195,7 +202,8 @@
+ 		die "Data file must start with a %% file!";
+ 	    }
+ 	    if ($cmd[2] eq "xntpd") {
+-		&dumpsrcs (@xntpdf);
++		&dumpsrcs (@xntpdf, @xntpd_pf);
++		print ODATA "\nLDADD += -lkvm\n";
+ 	    } elsif ($cmd[2] eq "xntpdc") {
+ 		&dumpsrcs (@xntpdcf);
+ 	    } elsif ($cmd[2] eq "ntpq") {
+@@ -409,31 +417,31 @@
+ /* #undef BANC */
+ 
+ /* ELV/DCF7000 clock */
+-/* #undef CLOCK_DCF7000 */
++#define CLOCK_DCF7000
+ 
+ /* HOPF 6021 clock */
+-/* #undef CLOCK_HOPF6021 */
++#define CLOCK_HOPF6021
+ 
+ /* Meinberg clocks */
+-/* #undef CLOCK_MEINBERG */
++#define CLOCK_MEINBERG
+ 
+ /* DCF77 raw time code */
+-/* #undef CLOCK_RAWDCF */
++#define CLOCK_RAWDCF
+ 
+ /* RCC 8000 clock */
+-/* #undef CLOCK_RCC8000 */
++#define CLOCK_RCC8000
+ 
+ /* Schmid DCF77 clock */
+-/* #undef CLOCK_SCHMID */
++#define CLOCK_SCHMID
+ 
+ /* Trimble GPS receiver/TAIP protocol */
+-/* #undef CLOCK_TRIMTAIP */
++#define CLOCK_TRIMTAIP
+ 
+ /* Trimble GPS receiver/TSIP protocol */
+-/* #undef CLOCK_TRIMTSIP */
++#define CLOCK_TRIMTSIP
+ 
+ /* Diems Computime Radio Clock */
+-/* #undef CLOCK_COMPUTIME */
++#define CLOCK_COMPUTIME
+ 
+ /* Datum Programmable Time System */
+ #define DATUM 1
+@@ -460,13 +468,13 @@
+ #define MSFEES 1
+ 
+ /* Magnavox MX4200 GPS receiver */
+-/* #undef MX4200 */
++#define MX4200
+ 
+ /* NMEA GPS receiver */
+ #define NMEA 1
+ 
+ /* PARSE driver interface */
+-/* #undef PARSE */
++#define PARSE
+ 
+ /* PARSE kernel PLL PPS support */
+ /* #undef PPS_SYNC */
+@@ -514,7 +522,7 @@
+ /* #undef NEED_HPUX_FINDCONFIG */
+ 
+ /* canonical system (cpu-vendor-os) string */
+-#define STR_SYSTEM "i386-unknown-netbsd1.2D"
++#define STR_SYSTEM "i386-unknown-netbsd1.3"
+ 
+ /* define if [gs]ettimeofday() only takes 1 argument */
+ /* #undef SYSV_TIMEOFDAY */
+@@ -559,7 +567,7 @@
+ /* #undef UDP_BACKWARDS_SETOWN */
+ 
+ /* must we have a CTTY for fsetown? */
+-/* #undef USE_FSETOWNCTTY */
++#define USE_FSETOWNCTTY
+ 
+ /* can we use SIGIO for tcp and udp IO? */
+ #define HAVE_SIGNALED_IO 1
+
+	(The last Hunk reflects the fact that we on NetBSD still lose
+	when it comes to SIGIO because no-one bothered to implement FSETOWN,
+	see kern_descrip.c, line 250 and sys_generic.c, line 477:
+	FSETOWN is very different from settpgrp ! But that is another
+	problem that is already filed, I think)

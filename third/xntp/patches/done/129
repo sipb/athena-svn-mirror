@@ -1,0 +1,100 @@
+Received: from sys1.nyc.deshaw.com by huey.udel.edu id aa02116;
+          18 Apr 97 21:18 EDT
+Received: (from christos@localhost)
+ by sys1.nyc.deshaw.com (8.6.13/8.7.Alpha.4/1.34.kim) id VAA20907;
+ Fri, 18 Apr 1997 21:18:16 -0400
+Message-Id: <199704190118.VAA20907@sys1.nyc.deshaw.com>
+From: Christos Zoulas <christos@deshaw.com>
+Date: Fri, 18 Apr 1997 21:18:16 -0400
+In-Reply-To: <9704181321.aa01179@huey.udel.edu>
+       from Mills@huey.udel.edu (Apr 18,  1:21pm)
+Organization: D. E. Shaw & Co.
+X-Address: Tower 45, 120 West 45th St., 39th Floor, New York, N.Y. 10036
+X-Phone: (212) 478 0000
+X-Fax: (212) 478 0101
+X-Face:  %jL.CVv-*"-d?@xSu)#i[QzHK3,c?Qx,G.u#bZ;O'qSg"$LmB})v;&A"6r&;#2NRahSRwYl
+  D9Y8"L97FX^O7oBy?'hA6-1AQA`L(c[yqZySfl/t&4;gHT1|X\ElkgxMV<G<Wl4Bw[Y^/8]X@>NUjM
+  /A)InAN\hPuhymGG{1&&ay2c"[4z_*Gb?{gbnv5+?terjcRFl`(^3vO-^Mw%\Cfk`p{@!a3&/NR#*p
+  <c]7@{DT)R_*g4#M@G98-f$hN#J<pnDfR:xx<ph,7HcR3TeE|G~&}*>fH0rostE1
+X-Mailer: Mail User's Shell (7.2.6 beta(2)+dynamic 2/29/96)
+To: Mills@huey.udel.edu
+Subject: Re:  xntp3-5.90 patches
+Cc: mills@udel.edu, stenn@whimsy.udel.edu
+
+On Apr 18,  1:21pm, Mills@huey.udel.edu (Mills@huey.udel.edu) wrote:
+-- Subject: Re:  xntp3-5.90 patches
+
+| Christos,
+| 
+| Thanks for the patches. I have forwarded to our autoconfigure wizard
+| Harlan Stenn.
+
+A couple more to compile on the NetBSD/alpha which has 64 bit longs:
+
+Index: ntp_config.c
+===================================================================
+RCS file: /cvsroot/src/usr.sbin/xntp/xntpd/ntp_config.c,v
+retrieving revision 1.2
+retrieving revision 1.3
+diff -c -r1.2 -r1.3
+*** ntp_config.c	1997/04/18 13:51:44	1.2
+--- ntp_config.c	1997/04/18 21:01:37	1.3
+***************
+*** 1067,1073 ****
+  			peerversion = 0;
+  			peerkey = 0;
+  			errflg = 0;
+! 			maskaddr.sin_addr.s_addr = ~ (u_long) 0;
+  			for (i = 2; i < ntokens; i++) {
+  				switch (matchkey(tokens[i], res_keywords)) {
+  				case CONF_RES_MASK:
+--- 1067,1073 ----
+  			peerversion = 0;
+  			peerkey = 0;
+  			errflg = 0;
+! 			maskaddr.sin_addr.s_addr = (u_int32_t) ~ (u_long) 0;
+  			for (i = 2; i < ntokens; i++) {
+  				switch (matchkey(tokens[i], res_keywords)) {
+  				case CONF_RES_MASK:
+Index: ntp_io.c
+===================================================================
+RCS file: /cvsroot/src/usr.sbin/xntp/xntpd/ntp_io.c,v
+retrieving revision 1.2
+retrieving revision 1.3
+diff -c -r1.2 -r1.3
+*** ntp_io.c	1997/04/18 13:50:40	1.2
+--- ntp_io.c	1997/04/18 21:01:38	1.3
+***************
+*** 287,293 ****
+    inter_list[0].sin.sin_addr.s_addr = htonl(INADDR_ANY);
+    (void) strncpy(inter_list[0].name, "wildcard",
+  		 sizeof(inter_list[0].name));
+!   inter_list[0].mask.sin_addr.s_addr = htonl(~ (u_long)0);
+    inter_list[0].received = 0;
+    inter_list[0].sent = 0;
+    inter_list[0].notsent = 0;
+--- 287,293 ----
+    inter_list[0].sin.sin_addr.s_addr = htonl(INADDR_ANY);
+    (void) strncpy(inter_list[0].name, "wildcard",
+  		 sizeof(inter_list[0].name));
+!   inter_list[0].mask.sin_addr.s_addr = htonl((u_int32_t) ~ (u_long)0);
+    inter_list[0].received = 0;
+    inter_list[0].sent = 0;
+    inter_list[0].notsent = 0;
+***************
+*** 637,643 ****
+    /*
+     * Blacklist all bound interface addresses
+     */
+!   resmask.sin_addr.s_addr = ~ (u_long)0;
+    for (i = 1; i < ninterfaces; i++)
+      restrict(RESTRICT_FLAGS, &inter_list[i].sin, &resmask,
+  	     RESM_NTPONLY|RESM_INTERFACE, RES_IGNORE);
+--- 637,643 ----
+    /*
+     * Blacklist all bound interface addresses
+     */
+!   resmask.sin_addr.s_addr = (u_int32_t) ~ (u_long)0;
+    for (i = 1; i < ninterfaces; i++)
+      restrict(RESTRICT_FLAGS, &inter_list[i].sin, &resmask,
+  	     RESM_NTPONLY|RESM_INTERFACE, RES_IGNORE);

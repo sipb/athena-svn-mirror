@@ -1,0 +1,61 @@
+Replied: Mon, 13 Jan 1997 17:21:01 -0500
+Replied: "borsenkow.msk@sni.de "
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa05897;
+          13 Jan 97 17:06 GMT
+Received: (from nerv@localhost) by nixpbe.pdb.sni.de (8.6.12/8.6.12) id SAA11809 for stenn@whimsy.udel.edu; Mon, 13 Jan 1997 18:05:05 +0100
+Received: from itsrm1.mow.sni.de (itsrm1 [149.202.148.210]) by itsmx1.mow.sni.de (8.8.3/8.8.3) with SMTP id UAA10267 for <stenn@whimsy.udel.edu>; Mon, 13 Jan 1997 20:03:39 +0300 (MSK)
+Date: Mon, 13 Jan 1997 20:03:37 +0300 (MSK)
+From: Andrej Borsenkow <borsenkow.msk@sni.de>
+X-Sender: bor@itsrm1.mow.sni.de
+Reply-To: borsenkow.msk@sni.de
+To: Harlan Stenn <stenn@whimsy.udel.edu>
+Subject: Cosmetic fix to xntp 3-5.88 (ANSI compilation)
+Message-ID: <Pine.SV4.3.95.970113195447.5328K-100000@itsrm1.mow.sni.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+
+Hi!
+
+Here is small fix to last version regarding ANSI copilation. My compiler
+complaints, that in xntpd/refclock_atom.c the function atom_cmpl_fp () has
+prototype int (*)(void *, void *) when it is expecting
+          int (*)(const void *, const void *).
+as defined in qsort():
+extern void qsort(void *, size_t, size_t,int (*)(const void *, const void *))
+
+There seems to be two possibility:
+
+1. check in configure wether qsort needs const
+2. just define atom_cmpl_fp () with const.
+
+I opt for the second; AFAIK the standards (POSIX et al) indeed require
+const void *; also if function expects void *, const void * should be 
+legal as well.
+
+So here is one-line patch. Just to keep fussy compilers happy :-)
+
+thanks for the greate job done!!!
+
+PS. you use patch to automake 1.0. Is it official? I couldn't find it on
+any GNU site.
+
+-------------------------------------------------------------------------
+Andrej Borsenkow 		Fax:   +7 (095) 252 01 05
+SNI ITS Moscow			Tel:   +7 (095) 252 13 88
+
+NERV:  borsenkow.msk		E-Mail: borsenkow.msk@sni.de
+-------------------------------------------------------------------------
+======================= CUT HERE ============================
+--- xntp3-5.88-export/xntpd/refclock_atom.c.org	Fri Jan 10 14:15:07 1997
++++ xntp3-5.88-export/xntpd/refclock_atom.c	Fri Jan 10 14:18:44 1997
+@@ -378,7 +378,7 @@
+  */
+ static int
+ atom_cmpl_fp(p1, p2)
+-	register void *p1, *p2;	/* l_fp to compare */
++	register const void *p1, *p2;	/* l_fp to compare */
+ {
+ 
+ 	if (!L_ISGEQ((l_fp *)p1, (l_fp *)p2))
+
+

@@ -1,0 +1,57 @@
+Return-Path: Ulrich.Windl@rz.uni-regensburg.de 
+Return-Path: <Ulrich.Windl@rz.uni-regensburg.de>
+Received: from rrzs2.rz.uni-regensburg.de (rrzs2.rz.uni-regensburg.de [132.199.1.2])
+	by whimsy.udel.edu (8.8.5/8.8.5) with ESMTP id OAA13500
+	for <stenn@whimsy.udel.edu>; Thu, 26 Jun 1997 14:18:26 GMT
+Received: from ngate.ngate.uni-regensburg.de (ngate.rz.uni-regensburg.de [132.199.3.13])
+	by rrzs2.rz.uni-regensburg.de (8.8.5/8.8.5) with SMTP id QAA06029
+	for <stenn@whimsy.udel.edu>; Thu, 26 Jun 1997 16:18:21 +0200 (MET DST)
+Received: from rz.uni-regensburg.de by ngate.ngate.uni-regensburg.de; Thu, 26 Jun 97 15:18 MET
+Received: from rz.uni-regensburg.de by kgate.ngate.uni-regensburg.de; Thu, 26 Jun 97 14:18 GMT
+Received: from localhost by rkdvmhp1.dvm.klinik.uni-regensburg.de with SMTP
+	(1.40.112.8/16.2-961007-2) id AA172894693; Thu, 26 Jun 1997 16:18:13 +0200
+Date: Thu, 26 Jun 1997 16:18:13 +0200 (MESZ)
+From: Ulrich Windl <@rkdvmhp1.dvm.klinik.uni-regensburg.de>
+Reply-To: Ulrich.Windl@rz.uni-regensburg.de
+To: Harlan Stenn <stenn@whimsy.udel.edu>
+Subject: compiling xntp3-5.90.2 on HP-UX 10.10
+Message-Id: <Pine.HPP.3.96.970626160937.17145A-100000@rkdvmhp1.dvm.klinik.uni-regensburg.de>
+X-Pgp-Key: 1024/E843660D: CF D7 43 A1 5A 49 14 25 7C 04 A0 6E 4C 3A AC 6D
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+
+Harlan,
+
+I have some feedback for you:
+
+>>> The HP-UX-specific function should #include the proper file:
+
+gcc -c -DHAVE_CONFIG_H -I. -I. -I.. -I../include  -g -O2 -Wall -pipe findconfig.c
+findconfig.c: In function `FindConfig':
+findconfig.c:28: warning: implicit declaration of function `gethostname'
+[HMS: Already fixed]
+
+
+>>> The new #defines for BCOPY are not completely working yet:
+
+gcc -c -DHAVE_CONFIG_H -I. -I. -I.. -I../include -I../kernel  -g -O2 -Wall -pipe parse.c
+parse.c: In function `setup_bitmaps':
+parse.c:176: warning: implicit declaration of function `bzero'
+parse.c: In function `parse_ioread':
+parse.c:461: warning: implicit declaration of function `bcopy'
+[HMS: Check with Frank]
+
+>>> "NO_FLAGS" seems to be used elsewhere in HP-UX:
+
+refclock_parse.c:400: warning: `NO_FLAGS' redefined
+/usr/include/machine/vmparam.h:221: warning: this is the location of the previous definition
+In file included from /usr/include/unistd.h:11,
+                 from ../include/ntp_io.h:13,
+                 from refclock_parse.c:144:
+[HMS: fixed]
+
+
+The rest just went fine. Now I'll try the code ;-)
+
+Ulrich
+

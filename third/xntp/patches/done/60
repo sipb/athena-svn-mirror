@@ -1,0 +1,47 @@
+Replied: Tue, 14 Jan 1997 01:17:57 -0500
+Replied: ""Billinghurst, David" <David.Billinghurst@restech.cra.com.au> mills@udel.edu"
+Received: from copland.udel.edu by huey.udel.edu id aa16365; 13 Jan 97 21:57 EST
+Received: from atdgateway.atd.cra.com.au (atdgateway.atd.cra.com.au [131.172.253.129]) by copland.udel.edu (8.8.4/8.7.3) with SMTP id VAA01747 for <mills@udel.edu>; Mon, 13 Jan 1997 21:57:17 -0500 (EST)
+Received: from rtzcramailhub.cra.com.au by atdgateway.atd.cra.com.au with SMTP;
+          Tue, 14 Jan 1997 13:58:24 +1100 (EST)
+Received: by rtzcramailhub.cra.com.au with SMTP (Microsoft Exchange Server Internet Mail Connector Version 4.0.994.63)
+	id <01BC0233.86E36B50@rtzcramailhub.cra.com.au>; Tue, 14 Jan 1997 15:56:38 +1100
+Message-ID: <c=AU%a=_%p=RTZCRA%l=CRCMAIL-970114030440Z-1375@rtzcramailhub.cra.com.au>
+From: "Billinghurst, David" <David.Billinghurst@restech.cra.com.au>
+To: "'mills@udel.edu'" <IMCEAX400-c=AU+3Ba=+20+3Bp=RTZCRA+3Bo=RESTECH+3Bdda+3ASMTP=mills+40udel+2Eedu+3B@rtzcra.com>
+Subject: xntp3-5.88 on SGI Irix 6.2
+Date: Tue, 14 Jan 1997 14:04:40 +1100
+X-Mailer:  Microsoft Exchange Server Internet Mail Connector Version 4.0.994.63
+Encoding: 31 TEXT
+
+ntp3-5.88 on SGI Irix 6.2
+
+I have successfully compiled and run xntp3-5.88 on SGI Irix 6.2
+using the -n32 libraries, so it will run on R4x00, R8000
+and R10000 processors. I'm only using the LOCAL_CLOCK driver
+
+Commands were:
+        env CFLAGS=-n32 LDFLAGS=-n32 ./configure
+        make
+        make install
+
+I needed add $(CFLAGS) to the compilation of version.o in:
+        ./ntpdate/Makefile.in
+        ./ntpq/Makefile.in
+        ./ntptrace/Makefile.in
+        ./xntpd/Makefile.in
+        ./xntpdc/Makefile.in
+
+version.o: $(xntpd_OBJECTS) ../libntp/libntp.a Makefile
+        $(top_srcdir)/scripts/mkversion xntpd @VERSION@
+        $(CC) $(CFLAGS) -c version.c
+              ^^^^^^^^^
+   
+
++++++++++++++++++++++++++++++++++++++++++
+(Mr) David Billinghurst
+Comalco Research Centre
+PO Box 316, Thomastown, Vic, Australia, 3074
+Phone:	+61 3 9469 0642
+FAX:	+61 3 9462 2700
+Email:	David.Billinghurst@restech.cra.com.au

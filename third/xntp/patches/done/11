@@ -1,0 +1,208 @@
+Received: from copland.udel.edu by huey.udel.edu id aa04826; 4 Jul 96 20:31 EDT
+Received: from ell.ee.lbl.gov (ell.ee.lbl.gov [131.243.1.20]) by copland.udel.edu (8.7.5/8.7.3) with ESMTP id UAA07214 for <mills@udel.edu>; Thu, 4 Jul 1996 20:31:31 -0400 (EDT)
+Received: by ell.ee.lbl.gov (8.7.1/1.43r)
+	id RAA17125; Thu, 4 Jul 1996 17:31:30 -0700 (PDT)
+Message-Id: <199607050031.RAA17125@ell.ee.lbl.gov>
+To: Dave Mills <mills@udel.edu>
+Subject: bit printing enhancement to ntptime
+Date: Thu, 04 Jul 96 17:31:30 PDT
+From: Craig Leres <leres@ee.lbl.gov>
+
+The following context diffs add two defines to timex.h and some code to
+ntptime to decode the bit and code values:
+
+    [lbl 4]% ntptime		### OLD OUTPUT
+    ntp_gettime() returns code 0
+      time b586df9b.d47e7000  Fri, Jul  5 1996  0:26:03.830, (.830054),
+      maximum error 1016 us, estimated error 16 us.
+    ntp_adjtime() returns code 0
+      modes 0000, offset 0 us, frequency 27.877 ppm, interval 256 s,
+      maximum error 1016 us, estimated error 16 us,
+      status 0107, time constant 2, precision 1 us, tolerance 100 ppm,
+      pps frequency 27.199 ppm, stability 0.050 ppm, jitter 12 us,
+      intervals 87763, jitter exceeded 285194, stability exceeded 5, errors 85771.
+    [lbl 3]% ./ntptime 		### NEW OUTPUT
+    ld.so: warning: /usr/lib/libc.so.1.6.2 has older revision than expected 9
+    ntp_gettime() returns code OK
+      time b586dee6.10132000  Fri, Jul  5 1996  0:23:02.062, (.062792),
+      maximum error 2132 us, estimated error 32 us.
+    ntp_adjtime() returns code OK
+      modes 0x0 (),
+      offset 11 us, frequency 27.861 ppm, interval 256 s,
+      maximum error 2132 us, estimated error 32 us,
+      status 0x107 (PLL,PPSFREQ,PPSTIME,PPSSIGNAL),
+      time constant 2, precision 1 us, tolerance 100 ppm,
+      pps frequency 27.184 ppm, stability 0.043 ppm, jitter 5 us,
+      intervals 87762, jitter exceeded 285194, stability exceeded 5, errors 85771.
+
+The same changes could be made to xntpdc.
+
+		Craig
+------
+RCS file: RCS/timex.h,v
+retrieving revision 1.1
+diff -c -r1.1 timex.h
+*** /tmp/,RCSt1a02522	Thu Jul  4 17:24:21 1996
+--- timex.h	Thu Jul  4 17:24:16 1996
+***************
+*** 207,212 ****
+--- 207,216 ----
+  #define MOD_CLKB	0x4000	/* set clock B */
+  #define MOD_CLKA	0x8000	/* set clock A */
+  
++ #define TIMEX_MOD_BITS \
++     "\20\1OFFSET\2FREQUENCY\3MAXERROR\4ESTERROR\5STATUS\6TIMECONST\
++ \17CLKB\20CLKA"
++ 
+  /*
+   * Status codes (timex.status)
+   */
+***************
+*** 229,234 ****
+--- 233,242 ----
+  
+  #define STA_RONLY (STA_PPSSIGNAL | STA_PPSJITTER | STA_PPSWANDER | \
+      STA_PPSERROR | STA_CLOCKERR) /* read-only bits */
++ 
++ #define TIMEX_STA_BITS \
++     "\20\1PLL\2PPSFREQ\3PPSTIME\4FLL\5INS\6DEL\7UNSYNC\10FREQHOLD\
++ \11PPSSIGNAL\12PPSJITTER\13PPSWANDER\14PPSERROR\15CLOCKERR"
+  
+  /*
+   * Clock states (time_state)
+
+
+RCS file: RCS/ntptime.c,v
+retrieving revision 1.1
+diff -c -r1.1 ntptime.c
+*** /tmp/,RCSt1a17088	Thu Jul  4 17:29:10 1996
+--- ntptime.c	Thu Jul  4 17:29:08 1996
+***************
+*** 48,53 ****
+--- 48,55 ----
+  #endif /* SYS_NETBSD */
+  #endif /* NTP_SYSCALLS_LIBC */
+  void pll_trap		P((int));
++ char *sprintb		P((u_int, char *));
++ char *timex_state	P((int));
+  
+  static struct sigaction newsigsys;	/* new sigaction status */
+  static struct sigaction sigsys;	/* current sigaction status */
+***************
+*** 198,204 ****
+  	if (status < 0)
+  		perror("ntp_gettime() call fails");
+  	else {
+! 		printf("ntp_gettime() returns code %d\n", status);
+  		TVTOTS(&ntv.time, &ts);
+  		ts.l_uf += TS_ROUNDBIT;		/* guaranteed not to overflow */
+  		ts.l_ui += JAN_1970;
+--- 200,206 ----
+  	if (status < 0)
+  		perror("ntp_gettime() call fails");
+  	else {
+! 		printf("ntp_gettime() returns code %s\n", timex_state(status));
+  		TVTOTS(&ntv.time, &ts);
+  		ts.l_uf += TS_ROUNDBIT;		/* guaranteed not to overflow */
+  		ts.l_ui += JAN_1970;
+***************
+*** 217,233 ****
+  		"Must be root to set kernel values\nntp_adjtime() call fails" :
+  		"ntp_adjtime() call fails");
+  	else {
+! 		printf("ntp_adjtime() returns code %d\n", status);
+  		ftemp = ntx.freq;
+  		ftemp /= (1 << SHIFT_USEC);
+! 		printf("  modes %04x, offset %ld us, frequency %.3f ppm, interval %d s,\n",
+! 		    ntx.modes, ntx.offset, ftemp, 1 << ntx.shift);
+  		printf("  maximum error %ld us, estimated error %ld us,\n",
+  		    ntx.maxerror, ntx.esterror);
+  		ftemp = ntx.tolerance;
+  		ftemp /= (1 << SHIFT_USEC);
+! 		printf("  status %04x, time constant %ld, precision %ld us, tolerance %.0f ppm,\n",
+! 		    ntx.status, ntx.constant, ntx.precision, ftemp);
+  		if (ntx.shift == 0)
+  			return;
+  		ftemp = ntx.ppsfreq;
+--- 219,237 ----
+  		"Must be root to set kernel values\nntp_adjtime() call fails" :
+  		"ntp_adjtime() call fails");
+  	else {
+! 		printf("ntp_adjtime() returns code %s\n", timex_state(status));
+  		ftemp = ntx.freq;
+  		ftemp /= (1 << SHIFT_USEC);
+! 		printf("  modes %s,\n", sprintb(ntx.modes, TIMEX_MOD_BITS));
+! 		printf("  offset %ld us, frequency %.3f ppm, interval %d s,\n",
+! 		    ntx.offset, ftemp, 1 << ntx.shift);
+  		printf("  maximum error %ld us, estimated error %ld us,\n",
+  		    ntx.maxerror, ntx.esterror);
+  		ftemp = ntx.tolerance;
+  		ftemp /= (1 << SHIFT_USEC);
+! 		printf("  status %s,\n", sprintb(ntx.status, TIMEX_STA_BITS));
+! 		printf("  time constant %ld, precision %ld us, tolerance %.0f ppm,\n",
+! 		    ntx.constant, ntx.precision, ftemp);
+  		if (ntx.shift == 0)
+  			return;
+  		ftemp = ntx.ppsfreq;
+***************
+*** 258,261 ****
+--- 262,320 ----
+  	int arg;
+  {
+  	pll_control--;
++ }
++ 
++ /*
++  * Print a value a la the %b format of the kernel's printf
++  */
++ char *
++ sprintb(v, bits)
++ 	register u_int v;
++ 	register char *bits;
++ {
++ 	register char *cp;
++ 	register int i, any = 0;
++ 	register char c;
++ 	static char buf[132];
++ 
++ 	if (bits && *bits == 8)
++ 		(void)sprintf(buf, "0%o", v);
++ 	else
++ 		(void)sprintf(buf, "0x%x", v);
++ 	cp = buf + strlen(buf);
++ 	bits++;
++ 	if (bits) {
++ 		*cp++ = ' ';
++ 		*cp++ = '(';
++ 		while ((i = *bits++) != 0) {
++ 			if (v & (1 << (i-1))) {
++ 				if (any)
++ 					*cp++ = ',';
++ 				any = 1;
++ 				for (; (c = *bits) > 32; bits++)
++ 					*cp++ = c;
++ 			} else
++ 				for (; *bits > 32; bits++)
++ 					continue;
++ 		}
++ 		*cp++ = ')';
++ 	}
++ 	*cp = '\0';
++ 	return (buf);
++ }
++ 
++ char *timex_states[] = {
++ 	"OK", "INS", "DEL", "OOP", "WAIT", "ERROR"
++ };
++ 
++ char *
++ timex_state(s)
++ 	register int s;
++ {
++ 	static buf[32];
++ 
++ 	if (s >= 0 && s <= sizeof(timex_states) / sizeof(timex_states[0]))
++ 		return (timex_states[s]);
++ 	sprintf("TIME-#%d", s);
++ 	return (buf);
+  }

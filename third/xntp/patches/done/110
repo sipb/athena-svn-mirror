@@ -1,0 +1,29 @@
+Replied: Sat, 05 Apr 1997 00:18:55 -0500
+Replied: "Cooper_Steve/ca@denkart.com "
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa19359;
+          4 Apr 97 0:56 GMT
+Received: from  (root@localhost) by bart.denkart.com (8.6.12/8.6.12) with SMTP id QAA31929 for stenn@whimsy.udel.edu; Thu, 3 Apr 1997 16:56:21 -0800
+From: Cooper_Steve/ca@denkart.com
+X-OpenMail-Hops: 1
+Date: Thu, 3 Apr 97 16:56:16 -0800
+Message-Id: <H000006800189bfe@MHS>
+In-Reply-To: <9612192152.aa01292@whimsy.udel.edu>
+Subject: Re: Problems building XNTP3-5.89.9 on HP-UX 10.10
+MIME-Version: 1.0
+TO: stenn@whimsy.udel.edu
+Content-Type: text/plain; charset=US-ASCII; name="Re:"
+Content-Transfer-Encoding: 7bit
+
+Hi Harlan-
+
+I got a syntax error trying to compile 5.89.9 that I did not get when compiling
+5.89.8.  I am on HP-UX 10.10, using the standard HP C compiler (cc).  The error
+occurs while compiling libntp/clocktypes.c, complaining about a line in ntp.h,
+saying that "volatile" is a recursively defined macro.
+
+As always, let me know if you would like more info.
+
+Thanks,
+
+Steve Cooper
+

@@ -1,0 +1,54 @@
+Replied: Sat, 06 Sep 1997 13:50:41 -0400
+Replied: "k2@physik.uni-muenchen.de (Klaus Steinberger) "
+Return-Path: Klaus.Steinberger@physik.uni-muenchen.de 
+Return-Path: <Klaus.Steinberger@physik.uni-muenchen.de>
+Received: from charly.bl.physik.tu-muenchen.de (root@charly.bl.physik.tu-muenchen.de [129.187.41.10])
+	by whimsy.udel.edu (8.8.5/8.8.5) with ESMTP id MAA04632
+	for <stenn@whimsy.udel.edu>; Sat, 6 Sep 1997 12:27:44 GMT
+Received: from mowgli.bl.physik.tu-muenchen.de (k2@mowgli.bl.physik.tu-muenchen.de [129.187.160.14])
+	by charly.bl.physik.tu-muenchen.de (8.8.7/8.8.7) with ESMTP id OAA25703
+	for <stenn@whimsy.udel.edu>; Sat, 6 Sep 1997 14:27:40 +0200 (MDT)
+Received: (from k2@localhost)
+	by mowgli.bl.physik.tu-muenchen.de (8.8.7/8.8.7) id OAA21451;
+	Sat, 6 Sep 1997 14:27:40 +0200
+Date: Sat, 6 Sep 1997 14:27:40 +0200
+Message-Id: <199709061227.OAA21451@mowgli.bl.physik.tu-muenchen.de>
+X-mailer: xrn 8.02
+From: k2@physik.uni-muenchen.de (Klaus Steinberger)
+Subject: Re: xntp3-5.90.4 is available
+To: Harlan Stenn <stenn@whimsy.udel.edu>
+X-Newsgroups: comp.protocols.time.ntp
+In-reply-to: <o467sff7pw.fsf@whimsy.udel.edu>
+
+In article <o467sff7pw.fsf@whimsy.udel.edu>, you write:
+> 	* ntpq/ntpq.c (sendrequest): Use a memcpy to put the keyid into
+> 	qpkt to avoid a possible alignment problem.
+
+This patch seems to have broken compilation of ntpq on IRIX 6.x
+using the system compiler:
+
+make[2]: Entering directory `/a/pigpen/home/distr/net/xntp3-5.90.4-export/ntpq'
+cc -mips3 -n32 -DHAVE_CONFIG_H -I. -I. -I.. -I../include -I/usr/local/include -I/usr/local/include -n32 -c ntpq.c
+"ntpq.c", line 1120: error(1164): argument of type "unsigned int" is
+          incompatible with parameter of type "const void *"
+                        memcpy(&qpkt.data[qsize], keyid, sizeof keyid);
+                                                  ^
+
+"ntpq.c", line 1853: warning(1515): a value of type "const char *" cannot be
+          assigned to an entity of type "char *"
+                                cmdsort[n++] = xcp->keyword;
+                                             ^
+
+"ntpq.c", line 1856: warning(1515): a value of type "const char *" cannot be
+          assigned to an entity of type "char *"
+                        cmdsort[n++] = xcp->keyword;
+                                     ^
+
+1 error detected in the compilation of "ntpq.c".
+
+
+
+Besides that compilation problem xntpd seems to run well.
+
+Sincerly,
+Klaus

@@ -1,0 +1,22 @@
+Replied: Wed, 06 Nov 1996 21:30:30 -0500
+Replied: "Mills@huey.udel.edu Jeffrey C Honig <jch@bsdi.com>"
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa05739;
+          7 Nov 96 1:22 GMT
+Date:     Wed, 6 Nov 96 20:13:09 EST
+From:     Mills@huey.udel.edu
+To:       Harlan Stenn <stenn@whimsy.udel.edu>
+cc:       Jeffrey C Honig <jch@bsdi.com>, Dave Mills <mills@udel.edu>
+Subject:  Re:  BSD/OS 3.0
+Message-ID:  <9611062013.aa05177@huey.udel.edu>
+
+
+H,
+
+For BSDi, default SLEWALWAYS to on and get on with our lives. Left
+off, the daemon will use settimeofday() if the offset is greater
+than 128 ms and if the offset has persisted for 15 minutes. If
+on, settimeofday() is never called. In such cases, best current practice
+is to use ntpdate to slamdunk the time before starting xntpd. That's
+why the FORCE_STEP thing in ntpdate.
+
+Dave

@@ -1,0 +1,64 @@
+Forwarded: Mon, 06 Jan 1997 19:47:01 -0500
+Forwarded: "Greg Schueman <schueman@ix.netcom.com> mills@udel.edu"
+Received: from laforge.toppoint.de by huey.udel.edu id aa02337;
+          3 Jan 97 23:16 EST
+Received: by mail.toppoint.de (Smail3.1.28.1)
+	  from zocki.toppoint.de with cbsmtp
+	  id <m0vgNXZ-000212C>; Sat, 4 Jan 97 05:17 MET
+Received: by zocki.toppoint.de (CrossPoint v3.11 R/C6515);
+	  04 Jan 1997 05:05:31 +0100
+Date: 04 Jan 1997 05:04:00 +0100
+From: Rainer Zocholl <zoc@zocki.toppoint.de>
+To: Mills@huey.udel.edu
+Message-ID: <6OCnM13jNiB@zocki.toppoint.de>
+In-Reply-To: <9701031043.aa00872@huey.udel.edu>
+Subject: Xntp-3-5.87.6 with NT 3.51
+X-Mailer: CrossPoint v3.11 R/C6515
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Organization: private
+
+Hello
+
+Just FYI:
+extracting the archive uner NT always failed because of
+the directory "aux". NT has a device called "aux" so it is
+impossible to generate a directory called "aux".
+Only splitting the extracting in two parts helps.
+
+
+If i rename ntp.conf to some thing other, xntp3-5.87.6 now hangs 
+completely, after the net start commando.
+Net stop can't stop
+net start can't start it any more
+There was the "access violation error" better. 
+(I compiled the debug version this time).
+
+
+
+Rainer
+
+
+
+
+H:\>net start NetworkTimeProtocol
+The NetworkTimeProtocol service is starting......^C
+H:\>net stop NetworkTimeProtocol
+The service could not be controlled in its present state.
+
+More help is available by typing NET HELPMSG 2189.
+
+
+H:\>net start NetworkTimeProtocol
+The requested service has already been started.
+
+More help is available by typing NET HELPMSG 2182.
+
+
+H:\>net stop NetworkTimeProtocol
+The service could not be controlled in its present state.
+
+More help is available by typing NET HELPMSG 2189.
+
+

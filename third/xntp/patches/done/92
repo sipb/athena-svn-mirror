@@ -1,0 +1,59 @@
+Replied: Sun, 16 Feb 1997 18:11:08 -0500
+Replied: "John Hay <jhay@zibbi.mikom.csir.co.za> "
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa15531;
+          16 Feb 97 19:36 GMT
+Received: (from jhay@localhost)
+	by zibbi.mikom.csir.co.za (8.8.5/8.8.5) id VAA10878
+	for stenn@whimsy.udel.edu; Sun, 16 Feb 1997 21:36:51 +0200 (SAT)
+From: John Hay <jhay@zibbi.mikom.csir.co.za>
+Message-Id: <199702161936.VAA10878@zibbi.mikom.csir.co.za>
+Subject: Re: xntp3-5.89.x and FreeBSD
+In-Reply-To:  <9702132136.aa29915@whimsy.udel.edu> from "stenn@whimsy.udel.edu" at "Feb 13, 97 09:36:35 pm"
+To: stenn@whimsy.udel.edu
+Date: Sun, 16 Feb 1997 21:36:51 +0200 (SAT)
+X-Mailer: ELM [version 2.4ME+ PL31 (25)]
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+
+Harlan,
+
+> All I know is that if I compile with HAVE_SIGNALED_IO the
+> fcntl(F_SETOWN) fails and the refclock does not come up.  If I #undef
+> HAVE_SIGNALED_IO the refclock "appears".
+
+I tried 89.7 on both a 3.0-current and a 2.1.6.1 machine and both
+produce the "fcntl(F_SETOWN) fails" message if I configure a local
+clock. By setting USE_FSETOWNCTTY in config.h it fixed it on both
+systems. I attach a patch to configure.in at the end.
+
+Just a note: The 2.1.6.1 machine does not really have a local clock
+attached to it, so I could not verify that it really got time from
+that interface. It is also not using the kernel PLL stuff, but
+apart from that it is looking ok. It haven't crashed or hanged yet.
+(Which I'm happy for because the machine is at work and I would not
+want to drive in on a sunday night. :-))
+
+John
+-- 
+John Hay -- John.Hay@mikom.csir.co.za
+
+
+*** configure.in.org	Fri Feb 14 04:06:54 1997
+--- configure.in	Sun Feb 16 21:09:16 1997
+***************
+*** 487,496 ****
+--- 487,499 ----
+  AC_CACHE_CHECK(if we need a ctty for F_SETOWN, ac_cv_func_ctty_for_f_setown,
+  [case "$target" in
+   *-*-bsdi2*)
+      ans=yes
+      ;;
++  *-*-freebsd*)
++     ans=yes
++     ;;
+   *-*-osf*)
+      ans=yes
+      ;;
+   *) ans=no
+      ;;

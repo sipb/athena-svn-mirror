@@ -1,0 +1,29 @@
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa12367;
+          28 Feb 97 9:01 GMT
+Received: from mumps.pfcs.com (mumps.pfcs.com [192.52.69.11]) by pcpsj.pfcs.com (8.6.12/8.6.9) with SMTP id EAA19797 for <stenn@whimsy.udel.edu>; Fri, 28 Feb 1997 04:01:39 -0500
+Received: from brown.pfcs.com by mumps.pfcs.com with SMTP id AA06858
+  (5.67b/IDA-1.5 for <stenn@whimsy.udel.edu>); Fri, 28 Feb 1997 04:01:38 -0500
+Received: (harlan@localhost) by brown.pfcs.com (8.7.5/8.6.9) id EAA23215 for stenn@whimsy.udel.edu; Fri, 28 Feb 1997 04:01:38 -0500 (EST)
+From: Paolo Zeppegno <paolo@to.sem.it>
+Subject: Re: Multicast/Broadcast problems on Linux
+Newsgroups: comp.protocols.time.ntp
+Date: Mon, 24 Feb 1997 16:19:22 +0100
+Organization: EDS Italia S.p.A.
+Path: news.fred.net!gail.ripco.com!uunet!in1.uu.net!204.71.1.48!newsfeed.internetmci.com!masternews.telia.net!newssrv.ita.tip.net!i2unix!wasp.to.sem.it!nobody
+Lines: 5
+Distribution: inet
+Message-Id: <3311B17A.3023@to.sem.it>
+References: <5eicjt$k59@hobbes.cc.uga.edu>
+Nntp-Posting-Host: wasp-iunet.to.sem.it
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Mailer: Mozilla 3.0Gold (X11; I; HP-UX A.09.05 9000/715)
+Xref: news.fred.net comp.protocols.time.ntp:7798
+Apparently-To: <stenn@whimsy.udel.edu>
+
+ok, it's in the TODO file. Adding SYS_LINUX to config.h fixes it.
+Could be related to the routine io_setbclient???
+
+	paolo zeppegno
+	paolo@to.sem.it

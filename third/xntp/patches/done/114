@@ -1,0 +1,61 @@
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa10420;
+          28 Mar 97 5:00 GMT
+Received: from fang.dsto.defence.gov.au (fang.dsto.defence.gov.au [131.185.2.5]) by digger1.defence.gov.au (8.7.5/8.7.3) with ESMTP id PAA27717; Fri, 28 Mar 1997 15:30:38 +1030 (CST)
+Received: from sibyl.chez-dall.org.au (dall-i.remote.dsto.defence.gov.au [131.185.44.51]) by fang.dsto.defence.gov.au (8.7.6/8.7.6) with ESMTP id PAA10167; Fri, 28 Mar 1997 15:30:14 +1030 (CST)
+Received: (from ian@localhost)
+	by sibyl.chez-dall.org.au (8.8.5/8.8.5) id PAA20983;
+	Fri, 28 Mar 1997 15:30:11 +1030 (CST)
+Date: Fri, 28 Mar 1997 15:30:11 +1030 (CST)
+Message-Id: <199703280500.PAA20983@sibyl.chez-dall.org.au>
+From: Ian Dall <Ian.Dall@dsto.defence.gov.au>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+To: Mills@huey.udel.edu, stenn@whimsy.udel.edu
+Subject: Re:  xntpd gets confused by unreachable networks
+In-Reply-To: <9703252242.aa20070@huey.udel.edu>
+References: <9703252242.aa20070@huey.udel.edu>
+X-Mailer: VM 6.22 under Emacs 19.34.2
+
+OK. I have solved the problem. It is not, as I thought, packets not
+being delivered, but rather, packets not being received. This is fixed
+by configuring with --enable-udp-wildcard=yes. I note from the
+ChangeLog that this became the default for freebsd recently. Perhaps
+it should be the default for netbsd as well.  In fact, from the long
+list of systems in configure.in for this condition, I wonder if it
+should be the default and only list the systems where it *shouldn't*
+be enabled.
+
+On inspection, the code in ntp_io does use sendto. There is some code
+to make sure you don't get swamped by messages. I did add the following
+information message:
+
+--- ntp_io.c~   Thu Mar 13 17:56:27 1997
++++ ntp_io.c    Thu Mar 27 23:03:33 1997
+@@ -1277,8 +1277,10 @@
+       /*
+        * He's not bad any more
+        */
+-      if (slot >= 0)
++      if (slot >= 0) {
++       msyslog(LOG_INFO, "Connection to %s", ntoa(dest));
+        badaddrs[slot].port = 0;
++      }
+     }
+ 
+
+The idea is if you get a message saying there is "no route to xxx"
+it would be nice to get a message when there it becomes reachable
+again. But this is still assymetric the no route to host is
+at LOG_ERR.
+
+This all arises because if ppp is not up when xntpd is started, it
+doesn't recognize the interface, and it sends on the "default"
+interface. If udp-wildcard is not enabled, data arriving on 
+the default interface is dropped.
+
+This interface bit is all pretty contorted and non portable, I would
+have thought it would be easier to specify interfaces in the config
+file (only relevant for broadcast anyway I think).
+
+Ian

@@ -1,0 +1,73 @@
+Received: from samuraj.c3l.tyreso.se by huey.udel.edu id aa09657;
+          12 Mar 97 10:39 EST
+Received: (from juha@localhost)
+	by samuraj.c3l.tyreso.se (8.8.5/8.8.5) id QAA16250;
+	Wed, 12 Mar 1997 16:39:27 +0100
+Date: Wed, 12 Mar 1997 16:39:27 +0100
+From: Juha Sarlin <juha@c3l.tyreso.se>
+Message-Id: <199703121539.QAA16250@samuraj.c3l.tyreso.se>
+To: Mills@huey.udel.edu
+CC: stenn@whimsy.udel.edu
+In-reply-to: <9703121007.aa09523@huey.udel.edu> (Mills@huey.udel.edu)
+Subject: Re: loopfilter fix
+
+> Can I trouble you for the old and new clock discipline constants?
+
+The constants in ntp.h are unchanged:
+
+#define	CLOCK_FREQ	16	/* log2 frequency weight (65536) */
+#define	CLOCK_PHASE	6	/* log2 phase weight (64) */
+
+But I changed the code, like this:
+
+*** ntp_loopfilter.c.orig	Sat Feb  8 16:41:48 1997
+--- ntp_loopfilter.c	Wed Mar 12 16:29:34 1997
+***************
+*** 77,80 ****
+--- 77,81 ----
+  s_fp drift_comp;		/* pll frequency (ppm) */
+  static long clock_adjust;	/* clock adjust (fraction only) */
++ static int time_constant;	/* pll time constant */
+  static s_fp max_comp;		/* max frequency offset (ppm) */
+  int tc_counter;			/* poll-adjust counter */
+***************
+*** 189,193 ****
+  	s_fp stmp;
+  	u_long interval;
+- 	int time_constant;
+  #if defined(KERNEL_PLL)
+  	struct timex ntv;
+--- 190,193 ----
+***************
+*** 437,444 ****
+  			drift_comp += stmp >> CLOCK_G;
+  	}
+! 	if (offset < 0)
+! 		clock_adjust = -(-offset >> time_constant);
+! 	else
+! 		clock_adjust = offset >> time_constant;
+  
+  	/*
+--- 437,441 ----
+  			drift_comp += stmp >> CLOCK_G;
+  	}
+! 	clock_adjust = offset;
+  
+  	/*
+***************
+*** 565,571 ****
+  	adjustment = clock_adjust;
+  	if (adjustment < 0)
+! 		adjustment = -(-adjustment >> CLOCK_PHASE);
+  	else
+! 		adjustment >>= CLOCK_PHASE;
+  	clock_adjust -= adjustment;
+  	if (drift_comp < 0)
+--- 562,568 ----
+  	adjustment = clock_adjust;
+  	if (adjustment < 0)
+! 		adjustment = -(-adjustment >> CLOCK_PHASE + time_constant);
+  	else
+! 		adjustment >>= CLOCK_PHASE + time_constant;
+  	clock_adjust -= adjustment;
+  	if (drift_comp < 0)

@@ -1,0 +1,45 @@
+Date: Fri, 30 Aug 1996 12:22:05 +0100
+From:  Jon Peatfield <J.S.Peatfield@damtp.cam.ac.uk>
+To: Harlan Stenn <stenn@whimsy.udel.edu>
+cc: Mills@huey.udel.edu, Jon Peatfield <J.S.Peatfield@damtp.cam.ac.uk>, 
+    jp107@damtp.cam.ac.uk, jp107@damtp.cam.ac.uk
+Subject: Re: xntp3-5.85 
+Message-Id: <m0uwReI-00024uC%kro.amtp.cam.ac.uk@damtp.cam.ac.uk>
+Content-Length: 1082
+Return-Path: <J.S.Peatfield@damtp.cam.ac.uk>
+X-Mailer: exmh version 1.5.1 12/2/94
+In-reply-to: Your message of "Thu, 29 Aug 1996 23:44:11 EDT."
+             <9608292344.aa00781@whimsy.udel.edu> 
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+
+Very minor buglett in the driftfile handling, if I have an empty (zero length) 
+driftfile when xntpd starts up I get a logged message:
+
+  drift value @w^??^Y invalid
+
+It might be simpler to just use fscanf "%g" rather than reading a string with 
+%s (which will happily return a zero length string), and then using atolfp on 
+it...
+
+Also despite being listed in the comment at the top of xntpd/ntp_config.c as a 
+valid keyword, "authdelay" isn't recognised and it logs:
+
+  configure: keyword "authdelay" unknown, line ignored
+
+Mind you my config file was so old that it still had references to "monitor 
+yes" and "xntpres...".
+
+I've packaged up the changes I needed to make it compile under Linux in case 
+anyone else wants them (I cheated on the kernel_pll by just creating a 
+config.cache with that value off so it never does the test).  It may be 
+helpful to anyone else wanting to build under Linux 'til a new patch comes 
+out...
+
+  ftp://ftp.damtp.cam.ac.uk/pub/linux/xntp3-5.85/
+
+There are also binary and source versions in RPM format in case anyone is 
+interested.
+
+ -- Jon
+

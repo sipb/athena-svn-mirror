@@ -1,0 +1,227 @@
+Replied: Mon, 20 Jan 1997 21:50:58 -0500
+Replied: "Ulrich Windl <ulrich.windl@rz.uni-regensburg.de> "
+Replied: Sat, 18 Jan 1997 03:16:46 -0500
+Replied: "Ulrich Windl <ulrich.windl@rz.uni-regensburg.de> "
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa21342;
+          16 Jan 97 7:05 GMT
+Received: from ngate.ngate.uni-regensburg.de (ngate.rz.uni-regensburg.de) by comsun.rz.uni-regensburg.de with SMTP id AA18132
+  (5.65c/IDA-1.4.4 for <stenn@whimsy.udel.edu>); Thu, 16 Jan 1997 08:02:19 +0100
+Received: from rkdvmks1.ngate.uni-regensburg.de by ngate.ngate.uni-regensburg.de; Thu, 16 Jan 97 08:01 GMT
+Received: from rkdvmks1.ngate.uni-regensburg.de by kgate.ngate.uni-regensburg.de; Thu, 16 Jan 97 07:00 GMT
+Received: from RKDVMKS1/SpoolDir by rkdvmks1.ngate.uni-regensburg.de (Mercury 1.21);
+    16 Jan 97 08:02:07 +0100
+Received: from SpoolDir by RKDVMKS1 (Mercury 1.21); 16 Jan 97 08:02:04 +0100
+From: Ulrich Windl <ulrich.windl@rz.uni-regensburg.de>
+Organization: Universitaet Regensburg, Klinikum
+To: Harlan Stenn <stenn@whimsy.udel.edu>
+Date: Thu, 16 Jan 1997 08:02:01 +0100
+Mime-Version: 1.0
+Content-Length: 7712
+Content-Type: Multipart/Mixed; boundary=Message-Boundary-30966
+Subject: xntp3-5.88
+Priority: normal
+X-Mailer: Pegasus Mail for Windows (v2.23)
+Message-Id: <867B0DE375A@rkdvmks1.ngate.uni-regensburg.de>
+
+
+--Message-Boundary-30966
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+Content-description: Mail message body
+
+Hello,
+
+first of all good news: With my Linux distribution (S.u.S.E. 4.4.0 
+with kernel 2.0.26) the following things worked (after minor work):
+
+- KERNEL PLL
+- POWERING the DCF77 from the RS232
+
+I'll attach another file with some fixes, because this mailing system 
+runs within MS-Windows; who knows what happens with long lines or 
+tabs...
+
+Ulrich
+
+First here are some HTML fixes; some "</code>" were misspelled, "<" 
+has to be "&lt;" even within "<pre> ... </pre>". The file is 
+gzipped and uuencoded.
+
+begin 644 /tmp/xntp3-5.88-HTML-patch.gz
+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
+)OZ@6SE[]$0``
+`
+end
+
+--Message-Boundary-30966
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+Content-description: Text from file 'xntp3-~1.txt'
+
+Harlan,
+
+here are some random notes on the 5.88 release on Linux:
+
+If gcc (GNU C) and gas (GNU assembler) are present it would be worth to
+test option "-pipe" (works then). This increases compilation speed when
+there is some RAM and computing power.
+
+The following was wrong for Linux (i586-pc-linux-gnu):
+	checking for a fallback value for HZ... 66
+The correct value is 100 Hz for Linux on Intel 80x86.
+
+For the DAWDCF driver (DCF77) the following define should be enabled:
+/* Does DTR power the DCF77 (Linux)? */
+#undef RAWDCF_SETDTR
+
+
+Configure command was
+elf:/old/xntp3-5.88 # ./configure --disable-all-clocks --enable-MEINBERG --enable-RAWDCF --enable-LOCAL-CLOCK
+
+I found a bug in xntpd at debugging level 4:
+Output was
+
+	peer_config: addr 127.127.8.1 mode 3 version 3 minpoll 6 maxpoll 10 flags 0 ttl 5 key 0
+
+but the /etc/ntp.conf was
+----
+server 127.127.8.1 mode 5  # generic DCF77 clock on serial port (Conrad DCF77)
+server 127.127.1.0		# local clock
+fudge 127.127.1.0 stratum 10	# run local clock at a low stratum
+driftfile /etc/ntp.drift
+# server xx.xx.xx.xx		# IP address of another server
+logconfig =sysall +syncstatus
+# logfile /dev/null
+----
+The fix is not very easy (need a debugger and a recompile -- not today).
+
+When compiling I got some warnings:
+...
+gcc -c -DHAVE_CONFIG_H -I. -I. -I.. -I../include  -g -O2 -Wall refclock_parse.c
+refclock_parse.c:3136: warning: `parse_leap' defined but not used
+
+parse_leap is a static function.
+...
+make[2]: Entering directory `/old/xntp3-5.88/util'
+gcc -c -DHAVE_CONFIG_H -I. -I. -I.. -I../include  -g -O2 -Wall tickadj.c
+tickadj.c: In function `main':
+tickadj.c:37: warning: implicit declaration of function `atoi'
+
+This might be fixed by #include <stdlib.h> if present. I did not know how
+to do that properly.
+
+And I got an error:
+
+gcc -c -DHAVE_CONFIG_H -I. -I. -I.. -I../include  -g -O2 -Wall ntptime.c
+ntptime.c: In function `main':
+ntptime.c:175: warning: implicit declaration of function `syscall'
+ntptime.c:230: warning: implicit declaration of function `__adjtimed'
+ntptime.c:262: warning: passing arg 1 of `ctime' from incompatible pointer type
+ntptime.c:262: warning: unsigned int format, u_long arg (arg 2)
+ntptime.c:262: warning: unsigned int format, u_long arg (arg 3)
+ntptime.c: In function `pll_trap':
+ntptime.c:317: `env' undeclared (first use this function)
+ntptime.c:317: (Each undeclared identifier is reported only once
+ntptime.c:317: for each function it appears in.)
+make[2]: *** [ntptime.o] Error 1
+
+For line 175 the solution seems to #include <syscall.h> /* Linux 2.0.26 */
+230 is due to a typo (already fixed)
+262 can be eliminated by a cast
+317 needs a #ifdef SIGSYS ... #endif
+
+Finally, a patch:
+
+# The syscall include is ugly and possibly wrong. Please fix it properly.
+--- util/ntptime.c~	Wed Dec 11 05:34:32 1996
++++ util/ntptime.c	Wed Jan 15 22:55:06 1997
+@@ -31,6 +31,7 @@
+ 
+ #ifdef KERNEL_PLL
+ # include <sys/timex.h>
++# include <syscall.h>	/* for Linux 2.0; should <timex.h> include that? */
+ # ifdef NTP_SYSCALLS_STD
+ #  define ntp_gettime(t)  syscall(SYS_ntp_gettime, (t))
+ #  define ntp_adjtime(t)  syscall(SYS_ntp_adjtime, (t))
+@@ -39,7 +40,7 @@
+ #   define ntp_gettime(t)  __ntp_gettime((t))
+ #  endif
+ #  ifdef HAVE___ADJTIMEX
+-#   define ntp_adjtime(t)  __adjtimed((t))
++#   define ntp_adjtime(t)  __adjtimex((t))
+ #  endif
+ # endif /* NOT NTP_SYSCALLS_STD */
+ #endif /* KERNEL_PLL */
+@@ -257,9 +258,10 @@
+ 	   prettydate(&ts), (int) ntv.time.tv_usec);
+     printf("  maximum error %ld us, estimated error %ld us.\n",
+ 	   ntv.maxerror, ntv.esterror);
+-    if (rawtime) printf("  ntptime=%x.%x unixtime=%x.%06d %s",
++    if (rawtime) printf("  ntptime=%lx.%lx unixtime=%x.%06d %s",
+ 			ts.l_ui, ts.l_uf, (int) ntv.time.tv_sec,
+-			(int) ntv.time.tv_usec, ctime(&ntv.time.tv_sec));
++			(int) ntv.time.tv_usec,
++			ctime((time_t *) &ntv.time.tv_sec));
+   }
+   status = ntp_adjtime(&ntx);
+   if (status < 0)
+@@ -306,6 +308,7 @@
+   exit(0);
+ }
+ 
++#ifdef	SIGSYS
+ /*
+  * pll1_trap - trap processor for undefined syscalls
+  */
+@@ -316,6 +319,7 @@
+   pll_control--;
+   siglongjmp(env, 1);
+ }
++#endif
+ 
+ /*
+  * Print a value a la the %b format of the kernel's printf
+
+--Message-Boundary-30966--

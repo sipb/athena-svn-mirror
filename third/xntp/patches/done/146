@@ -1,0 +1,294 @@
+Replied: Wed, 26 Mar 1997 19:23:13 -0500
+Replied: ""Billinghurst, David" <David.Billinghurst@RESTECH.cra.com.au> "
+Received: from snow-white.ee.udel.edu by whimsy.udel.edu id aa08674;
+          26 Mar 97 23:20 GMT
+Received: from gw400.corpmail.cra.com.au by atdgateway.atd.cra.com.au with SMTP;
+          Thu, 27 Mar 1997 10:14:10 +1100 (EST)
+Received: from hubexch03.corpmail.cra.com.au ([203.4.69.25])
+ by gw400.corpmail.cra.com.au (PMDF V5.1-6 #19545)
+ with ESMTP id <01IGZPVTBPSO0009CC@gw400.corpmail.cra.com.au> for
+ stenn@whimsy.udel.edu; Thu, 27 Mar 1997 09:13:46 AEST
+Received: by HUBEXCH03 with Internet Mail Service (5.0.1457.3)
+ id <HTCYNMGN>; Thu, 27 Mar 1997 09:12:09 +1000
+Content-return: allowed
+Date: Thu, 27 Mar 1997 09:13:12 +1000
+From: "Billinghurst, David" <David.Billinghurst@RESTECH.cra.com.au>
+Subject: xntp3-5.89.9 looks OK.  Couple of warnings
+To: 'Harlan Stenn' <stenn@whimsy.udel.edu>
+Message-id: <D54B1932FFB4CF11B5C80000F8018BD26E61B1@CRCMAIL>
+MIME-version: 1.0
+X-Mailer: Internet Mail Service (5.0.1457.3)
+Content-type: text/plain; charset=iso-8859-1
+X-Priority: 3
+
+Harlan,
+
+
+
+I built and installed xntp3-5.89.9 on Ultrix 4.3 and Irix 6.2
+last week.
+
+All seems OK, and the problems I had with 3.59.8 clients
+remaining synced
+
+but drifting many seconds from the correct time seems
+to have gone.
+
+
+
+A couple of compile warnings
+below.
+
+
+
+
+
+###############################################################
+#########
+
+#######                      Ultrix 4.3
+######
+
+#################################################################
+#######
+
+
+
+cfe: Warning: /usr/local/imports/xntp3-5.89.9/xntpd/ntp_io.c,
+line 210: Incompatible pointer type assignment
+
+
+initial_bufs[i].next = freelist;
+
+ ---------------------------^
+
+cfe:
+Warning: /usr/local/imports/xntp3-5.89.9/xntpd/ntp_io.c, line 1126:
+Incompatible pointer type assignment
+
+   rb = beginlist;
+
+ -----^
+
+cfe:
+Warning: /usr/local/imports/xntp3-5.89.9/xntpd/ntp_io.c, line 1147:
+Incompatible pointer type assignment
+
+ 	      buf->next = freelist;
+
+
+----------------^
+
+cfe: Warning:
+/usr/local/imports/xntp3-5.89.9/xntpd/ntp_io.c, line 1174: Incompatible
+pointer type assignment
+
+   rb->next = freelist;
+
+ -----------^
+
+cfe:
+Warning: /usr/local/imports/xntp3-5.89.9/xntpd/ntp_io.c, line 1395:
+Incompatible pointer type assignment
+
+ 		      rb = freelist;
+
+
+---------^
+
+cfe: Warning: /usr/local/imports/xntp3-5.89.9/xntpd/ntp_io.c,
+line 1414: Incompatible pointer type assignment
+
+
+rb->next = freelist;
+
+ 			-----------^
+
+cfe: Warning:
+/usr/local/imports/xntp3-5.89.9/xntpd/ntp_io.c, line 1532: Incompatible
+pointer type assignment
+
+ 		      rb = freelist;
+
+
+---------^
+
+#############################################################
+###########
+
+
+
+cc -c -DHAVE_CONFIG_H -I.
+-I/usr/local/imports/xntp3-5.89.9/xntpd -I..
+-I/usr/local/imports/xntp3-5.89.9/include  -g
+/usr/local/imports/xntp3-5.89.9/xntpd/ntp_util.c
+
+cfe: Warning:
+/usr/local/imports/xntp3-5.89.9/xntpd/ntp_util.c, line 470: prototype
+declaration and non-prototype definition found for record_loop_stats,
+the type of this parameter is not compatible with the type after
+applying default argument promotion
+
+      u_char poll;
+
+
+------------^
+
+
+
+
+
+########################################################
+################
+
+######                       Irix 6.2
+######
+
+#################################################################
+#######
+
+
+
+cc -c -DHAVE_CONFIG_H -I.
+-I/usr/local/imports/xntp3-5.89.9/xntpd -I..
+-I/usr/local/imports/xntp3-5.89.9/include  -g -n32
+/usr/local/imports/xntp3-5.89.9/xntpd/ntp_io.c
+
+"/usr/local/imports/xntp3
+-5.89.9/xntpd/ntp_io.c", line 210: warning(1515): a
+
+          value of
+type "volatile struct recvbuf *" cannot be assigned to an
+
+
+entity of type "struct recvbuf *"
+
+        initial_bufs[i].next =
+freelist;
+
+
+^
+
+
+
+"/usr/local/imports/xntp3-5.89.9/xntpd/ntp_io.c", line 1126:
+warning(1515): a
+
+          value of type "volatile struct recvbuf *"
+cannot be assigned to an
+
+          entity of type "struct recvbuf *"
+
+
+rb = beginlist;
+
+
+^
+
+
+
+"/usr/local/imports/xntp3-5.89.9/xntpd/ntp_io.c", line 1147:
+warning(1515): a
+
+          value of type "volatile struct recvbuf *"
+cannot be assigned to an
+
+          entity of type "struct recvbuf *"
+
+
+buf->next = freelist;
+
+
+^
+
+
+
+"/usr/local/imports/xntp3-5.89.9/xntpd/ntp_io.c", line 1174:
+warning(1515): a
+
+          value of type "volatile struct recvbuf *"
+cannot be assigned to an
+
+          entity of type "struct recvbuf *"
+
+
+rb->next = freelist;
+
+
+^
+
+
+
+"/usr/local/imports/xntp3-5.89.9/xntpd/ntp_io.c", line 1395:
+warning(1515): a
+
+          value of type "volatile struct recvbuf *"
+cannot be assigned to an
+
+          entity of type "struct recvbuf *"
+
+
+rb = freelist;
+
+
+^
+
+
+
+"/usr/local/imports/xntp3-5.89.9/xntpd/ntp_io.c", line 1414:
+warning(1515): a
+
+          value of type "volatile struct recvbuf *"
+cannot be assigned to an
+
+          entity of type "struct recvbuf *"
+
+
+rb->next = freelist;
+
+
+^
+
+
+
+"/usr/local/imports/xntp3-5.89.9/xntpd/ntp_io.c", line 1532:
+warning(1515): a
+
+          value of type "volatile struct recvbuf *"
+cannot be assigned to an
+
+          entity of type "struct recvbuf *"
+
+
+rb = freelist;
+
+
+^
+
+
+
+"/usr/local/imports/xntp3-5.89.9/xntpd/ntp_io.c", line 1681:
+warning(1110): 
+
+          statement is unreachable
+
+    msyslog(LOG_ERR,
+"input_handler: fell out of infinite for(;;) loop!");
+
+
+^
+
+
+
+#####################################################################
+###
+
+
++++++++++++++++++++++++++++++++++++++++++
+(Mr) David Billinghurst
+Comalco Research Centre
+PO Box 316, Thomastown, Vic, Australia, 3074
+Phone:	+61 3 9469 0642
+FAX:	+61 3 9462 2700
+Email:	David.Billinghurst@restech.cra.com.au
+
