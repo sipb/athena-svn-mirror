@@ -11,16 +11,18 @@
  *      MIT Information Systems
  *
  *      Tom Coppeto
+ *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_instance.c,v $
- *      $Author: vanharen $
+ *      $Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_instance.c,v 1.2 1989-12-01 20:59:53 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_instance.c,v 1.3 1991-03-06 15:37:50 lwvanels Exp $";
 #endif
 
 #include "xolc.h"
