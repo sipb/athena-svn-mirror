@@ -19,5 +19,5 @@ Welcome to Project Athena
 - Type:  man <program name>  followed by a carriage return to view
   online manual pages for commands.  For example, type:  man passwd
   to find out how to change your password.  Use man to see the manual
-  pages for other useful commands like:  msgs, apropos, more, and ls.
+  pages for other useful commands like:  emacs, apropos, more, and ls.
 
