@@ -1,7 +1,7 @@
 @node Translation Intro
 @chapter Notes on the Free Translation Project
 
-@set STATUS September 2001
+@set STATUS August 2002
 
 Free software is going international!  The Free Translation Project is
 a way to get maintainers of free software, translators, and users all
@@ -139,6 +139,14 @@ You might think that the country code specification is redundant.  But in
 fact, some languages have dialects in different countries.  For example,
 @samp{de_AT} is used for Austria, and @samp{pt_BR} for Brazil.  The country
 code serves to distinguish the dialects.
+
+The locale naming convention of @samp{@var{ll}_@var{CC}}, with
+@samp{@var{ll}} denoting the language and @samp{@var{CC}} denoting the
+country, is the one use on systems based on GNU libc.  On other systems,
+some variations of this scheme are used, such as @samp{@var{ll}} or
+@samp{@var{ll}_@var{CC}.@var{encoding}}.  You can get the list of
+locales supported by your system for your country by running the command
+@samp{locale -a | grep '^@var{ll}'}.
 
 Not all programs have translations for all languages.  By default, an
 English message is shown in place of a nonexistent translation.  If you

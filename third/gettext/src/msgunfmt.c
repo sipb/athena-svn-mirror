@@ -1,5 +1,5 @@
 /* msgunfmt - converts binary .mo files to Uniforum style .po files
-   Copyright (C) 1995-1998, 2000, 2001 Free Software Foundation, Inc.
+   Copyright (C) 1995-1998, 2000-2002 Free Software Foundation, Inc.
    Written by Ulrich Drepper <drepper@gnu.ai.mit.edu>, April 1995.
 
    This program is free software; you can redistribute it and/or modify
@@ -20,37 +20,40 @@
 # include <config.h>
 #endif
 
-#include <ctype.h>
-#include <errno.h>
 #include <getopt.h>
+#include <limits.h>
+#include <stdbool.h>
 #include <stdio.h>
-#include <sys/param.h>
-#include <sys/types.h>
 #include <stdlib.h>
 #include <locale.h>
 
-#include "hash.h"
-
 #include "error.h"
-#include "getline.h"
-#include "printf.h"
-#include <system.h>
-
-#include "gettext.h"
-#include "hash-string.h"
-#include "libgettext.h"
+#include "progname.h"
+#include "basename.h"
+#include "exit.h"
 #include "message.h"
+#include "msgunfmt.h"
+#include "read-mo.h"
+#include "read-java.h"
+#include "read-tcl.h"
 #include "write-po.h"
+#include "gettext.h"
 
 #define _(str) gettext (str)
 
-#ifndef errno
-extern int errno;
-#endif
 
+/* Be more verbose.  */
+bool verbose;
 
-/* String containing name the program is called with.  */
-const char *program_name;
+/* Java mode input file specification.  */
+static bool java_mode;
+static const char *java_resource_name;
+static const char *java_locale_name;
+
+/* Tcl mode input file specification.  */
+static bool tcl_mode;
+static const char *tcl_locale_name;
+static const char *tcl_base_directory;
 
 /* Force output of PO file even if empty.  */
 static int force_po;
@@ -62,29 +65,25 @@ static const struct option long_options[] =
   { "force-po", no_argument, &force_po, 1 },
   { "help", no_argument, NULL, 'h' },
   { "indent", no_argument, NULL, 'i' },
+  { "java", no_argument, NULL, 'j' },
+  { "locale", required_argument, NULL, 'l' },
   { "no-escape", no_argument, NULL, 'e' },
+  { "no-wrap", no_argument, NULL, CHAR_MAX + 2 },
   { "output-file", required_argument, NULL, 'o' },
+  { "resource", required_argument, NULL, 'r' },
+  { "sort-output", no_argument, NULL, 's' },
   { "strict", no_argument, NULL, 'S' },
+  { "tcl", no_argument, NULL, CHAR_MAX + 1 },
+  { "verbose", no_argument, NULL, 'v' },
   { "version", no_argument, NULL, 'V' },
   { "width", required_argument, NULL, 'w', },
   { NULL, 0, NULL, 0 }
 };
 
 
-/* This defines the byte order within the file.  It needs to be set
-   appropriately once we have the file open.  */
-static enum { MO_LITTLE_ENDIAN, MO_BIG_ENDIAN } endian;
-
-
-/* Prototypes for local functions.  */
-static void usage PARAMS ((int __status));
-static void error_print PARAMS ((void));
-static nls_uint32 read32 PARAMS ((FILE *__fp, const char *__fn));
-static void seek32 PARAMS ((FILE *__fp, const char *__fn, long __offset));
-static char *string32 PARAMS ((FILE *__fp, const char *__fn, long __offset,
-			       size_t *lengthp));
-static message_list_ty *read_mo_file PARAMS ((message_list_ty *__mlp,
-					      const char *__fn));
+/* Prototypes for local functions.  Needed to ensure compiler checking of
+   function argument counts despite of K&R C function definition syntax.  */
+static void usage PARAMS ((int status));
 
 
 int
@@ -93,14 +92,15 @@ main (argc, argv)
      char **argv;
 {
   int optchar;
-  int do_help = 0;
-  int do_version = 0;
+  bool do_help = false;
+  bool do_version = false;
   const char *output_file = "-";
-  message_list_ty *mlp = NULL;
+  msgdomain_list_ty *result;
+  bool sort_by_msgid = false;
 
   /* Set program name for messages.  */
-  program_name = argv[0];
-  error_print_progname = error_print;
+  set_program_name (argv[0]);
+  error_print_progname = maybe_print_progname;
 
 #ifdef HAVE_SETLOCALE
   /* Set locale via LC_ALL.  */
@@ -111,7 +111,8 @@ main (argc, argv)
   bindtextdomain (PACKAGE, LOCALEDIR);
   textdomain (PACKAGE);
 
-  while ((optchar = getopt_long (argc, argv, "eEhio:Vw:", long_options, NULL))
+  while ((optchar = getopt_long (argc, argv, "d:eEhijl:o:r:svVw:",
+				 long_options, NULL))
 	 != EOF)
     switch (optchar)
       {
@@ -119,32 +120,57 @@ main (argc, argv)
 	/* long option */
 	break;
 
+      case 'd':
+	tcl_base_directory = optarg;
+	break;
+
       case 'e':
-	message_print_style_escape (0);
+	message_print_style_escape (false);
 	break;
 
       case 'E':
-	message_print_style_escape (1);
+	message_print_style_escape (true);
 	break;
 
       case 'h':
-	do_help = 1;
+	do_help = true;
 	break;
 
       case 'i':
 	message_print_style_indent ();
 	break;
 
+      case 'j':
+	java_mode = true;
+	break;
+
+      case 'l':
+	java_locale_name = optarg;
+	tcl_locale_name = optarg;
+	break;
+
       case 'o':
 	output_file = optarg;
+	break;
+
+      case 'r':
+	java_resource_name = optarg;
+	break;
+
+      case 's':
+	sort_by_msgid = true;
 	break;
 
       case 'S':
 	message_print_style_uniforum ();
 	break;
 
+      case 'v':
+	verbose = true;
+	break;
+
       case 'V':
-	do_version = 1;
+	do_version = true;
 	break;
 
       case 'w':
@@ -155,6 +181,14 @@ main (argc, argv)
 	  if (endp != optarg)
 	    message_page_width_set (value);
 	}
+	break;
+
+      case CHAR_MAX + 1:
+	tcl_mode = true;
+	break;
+
+      case CHAR_MAX + 2: /* --no-wrap */
+	message_page_width_ignore ();
 	break;
 
       default:
@@ -171,7 +205,7 @@ main (argc, argv)
 This is free software; see the source for copying conditions.  There is NO\n\
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
 "),
-	      "1995-1998, 2000, 2001");
+	      "1995-1998, 2000-2002");
       printf (_("Written by %s.\n"), "Ulrich Drepper");
       exit (EXIT_SUCCESS);
     }
@@ -180,16 +214,91 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
   if (do_help)
     usage (EXIT_SUCCESS);
 
-  /* Read the given .mo file. */
-  if (optind < argc)
-    do
-      mlp = read_mo_file (mlp, argv[optind]);
-    while (++optind < argc);
+  /* Check for contradicting options.  */
+  if (java_mode && tcl_mode)
+    error (EXIT_FAILURE, 0, _("%s and %s are mutually exclusive"),
+	   "--java", "--tcl");
+  if (java_mode)
+    {
+      if (optind < argc)
+	{
+	  error (EXIT_FAILURE, 0,
+		 _("%s and explicit file names are mutually exclusive"),
+		 "--java");
+	}
+    }
+  else if (tcl_mode)
+    {
+      if (optind < argc)
+	{
+	  error (EXIT_FAILURE, 0,
+		 _("%s and explicit file names are mutually exclusive"),
+		 "--tcl");
+	}
+      if (tcl_locale_name == NULL)
+	{
+	  error (EXIT_SUCCESS, 0,
+		 _("%s requires a \"-l locale\" specification"),
+		 "--tcl");
+	  usage (EXIT_FAILURE);
+	}
+      if (tcl_base_directory == NULL)
+	{
+	  error (EXIT_SUCCESS, 0,
+		 _("%s requires a \"-d directory\" specification"),
+		 "--tcl");
+	  usage (EXIT_FAILURE);
+	}
+    }
   else
-    mlp = read_mo_file (NULL, "-");
+    {
+      if (java_resource_name != NULL)
+	{
+	  error (EXIT_SUCCESS, 0, _("%s is only valid with %s"),
+		 "--resource", "--java");
+	  usage (EXIT_FAILURE);
+	}
+      if (java_locale_name != NULL)
+	{
+	  error (EXIT_SUCCESS, 0, _("%s is only valid with %s"),
+		 "--locale", "--java");
+	  usage (EXIT_FAILURE);
+	}
+    }
+
+  /* Read the given .mo file. */
+  if (java_mode)
+    {
+      result = msgdomain_read_java (java_resource_name, java_locale_name);
+    }
+  else if (tcl_mode)
+    {
+      result = msgdomain_read_tcl (tcl_locale_name, tcl_base_directory);
+    }
+  else
+    {
+      message_list_ty *mlp;
+
+      mlp = message_list_alloc (false);
+      if (optind < argc)
+	{
+	  do
+	    read_mo_file (mlp, argv[optind]);
+	  while (++optind < argc);
+	}
+      else
+	read_mo_file (mlp, "-");
+
+      result = msgdomain_list_alloc (false);
+      result->item[0]->messages = mlp;
+    }
+
+  /* Sorting the list of messages.  */
+  if (sort_by_msgid)
+    msgdomain_list_sort_by_msgid (result);
 
   /* Write the resulting message list to the given .po file.  */
-  message_list_print (mlp, output_file, force_po, 0);
+  msgdomain_list_print (result, output_file, force_po, false);
 
   /* No problems.  */
   exit (EXIT_SUCCESS);
@@ -209,213 +318,83 @@ usage (status)
       /* xgettext: no-wrap */
       printf (_("\
 Usage: %s [OPTION] [FILE]...\n\
+"), program_name);
+      printf ("\n");
+      /* xgettext: no-wrap */
+      printf (_("\
+Convert binary message catalog to Uniforum style .po file.\n\
+"));
+      printf ("\n");
+      /* xgettext: no-wrap */
+      printf (_("\
 Mandatory arguments to long options are mandatory for short options too.\n\
+"));
+      printf ("\n");
+      /* xgettext: no-wrap */
+      printf (_("\
+Operation mode:\n\
+  -j, --java               Java mode: input is a Java ResourceBundle class\n\
+      --tcl                Tcl mode: input is a tcl/msgcat .msg file\n\
+"));
+      printf ("\n");
+      /* xgettext: no-wrap */
+      printf (_("\
+Input file location:\n\
+  FILE ...                 input .mo files\n\
+If no input file is given or if it is -, standard input is read.\n\
+"));
+      printf ("\n");
+      /* xgettext: no-wrap */
+      printf (_("\
+Input file location in Java mode:\n\
+  -r, --resource=RESOURCE  resource name\n\
+  -l, --locale=LOCALE      locale name, either language or language_COUNTRY\n\
+The class name is determined by appending the locale name to the resource name,\n\
+separated with an underscore.  The class is located using the CLASSPATH.\n\
+"));
+      printf ("\n");
+      /* xgettext: no-wrap */
+      printf (_("\
+Input file location in Tcl mode:\n\
+  -l, --locale=LOCALE      locale name, either language or language_COUNTRY\n\
+  -d DIRECTORY             base directory of .msg message catalogs\n\
+The -l and -d options are mandatory.  The .msg file is located in the\n\
+specified directory.\n\
+"));
+      printf ("\n");
+      /* xgettext: no-wrap */
+      printf (_("\
+Output file location:\n\
+  -o, --output-file=FILE   write output to specified file\n\
+The results are written to standard output if no output file is specified\n\
+or if it is -.\n\
+"));
+      printf ("\n");
+      /* xgettext: no-wrap */
+      printf (_("\
+Output details:\n\
   -e, --no-escape          do not use C escapes in output (default)\n\
   -E, --escape             use C escapes in output, no extended chars\n\
       --force-po           write PO file even if empty\n\
-  -h, --help               display this help and exit\n\
   -i, --indent             write indented output style\n\
-  -o, --output-file=FILE   write output into FILE instead of standard output\n\
       --strict             write strict uniforum style\n\
-  -V, --version            output version information and exit\n\
-  -w, --width=NUMBER       set output page width\n"),
-	      program_name);
+  -w, --width=NUMBER       set output page width\n\
+      --no-wrap            do not break long message lines, longer than\n\
+                           the output page width, into several lines\n\
+  -s, --sort-output        generate sorted output\n\
+"));
+      printf ("\n");
       /* xgettext: no-wrap */
-      fputs (_("\n\
-Convert binary .mo files to Uniforum style .po files.\n\
-Both little-endian and big-endian .mo files are handled.\n\
-If no input file is given or it is -, standard input is read.\n\
-By default the output is written to standard output.\n"), stdout);
-      fputs (_("Report bugs to <bug-gnu-utils@gnu.org>.\n"),
+      printf (_("\
+Informative output:\n\
+  -h, --help               display this help and exit\n\
+  -V, --version            output version information and exit\n\
+  -v, --verbose            increase verbosity level\n\
+"));
+      printf ("\n");
+      fputs (_("Report bugs to <bug-gnu-gettext@gnu.org>.\n"),
 	     stdout);
     }
 
   exit (status);
-}
-
-
-/* The address of this function will be assigned to the hook in the error
-   functions.  */
-static void
-error_print ()
-{
-  /* We don't want the program name to be printed in messages.  Emacs'
-     compile.el does not like this.  */
-}
-
-
-/* This function reads a 32-bit number from the file, and assembles it
-   according to the current ``endian'' setting.  */
-static nls_uint32
-read32 (fp, fn)
-     FILE *fp;
-     const char *fn;
-{
-  int c1, c2, c3, c4;
-
-  c1 = getc (fp);
-  if (c1 == EOF)
-    {
-    bomb:
-      if (ferror (fp))
-	error (EXIT_FAILURE, errno, _("error while reading \"%s\""), fn);
-      error (EXIT_FAILURE, 0, _("file \"%s\" truncated"), fn);
-    }
-  c2 = getc (fp);
-  if (c2 == EOF)
-    goto bomb;
-  c3 = getc (fp);
-  if (c3 == EOF)
-    goto bomb;
-  c4 = getc (fp);
-  if (c4 == EOF)
-    goto bomb;
-  if (endian == MO_LITTLE_ENDIAN)
-    return (((nls_uint32) c1)
-	    | ((nls_uint32) c2 << 8)
-	    | ((nls_uint32) c3 << 16)
-	    | ((nls_uint32) c4 << 24));
-
-  return (((nls_uint32) c1 << 24)
-	  | ((nls_uint32) c2 << 16)
-	  | ((nls_uint32) c3 << 8)
-	  | ((nls_uint32) c4));
-}
-
-
-static void
-seek32 (fp, fn, offset)
-     FILE *fp;
-     const char *fn;
-     long offset;
-{
-  if (fseek (fp, offset, 0) < 0)
-    error (EXIT_FAILURE, errno, _("seek \"%s\" offset %ld failed"),
-	   fn, offset);
-}
-
-
-static char *
-string32 (fp, fn, offset, lengthp)
-     FILE *fp;
-     const char *fn;
-     long offset;
-     size_t *lengthp;
-{
-  long length;
-  char *buffer;
-  long n;
-
-  /* Read the string_desc structure, describing where in the file to
-     find the string.  */
-  seek32 (fp, fn, offset);
-  length = read32 (fp, fn);
-  offset = read32 (fp, fn);
-
-  /* Allocate memory for the string to be read into.  Leave space for
-     the NUL on the end.  */
-  buffer = xmalloc (length + 1);
-
-  /* Read in the string.  Complain if there is an error or it comes up
-     short.  Add the NUL ourselves.  */
-  seek32 (fp, fn, offset);
-  n = fread (buffer, 1, length + 1, fp);
-  if (n != length + 1)
-    {
-      if (ferror (fp))
-	error (EXIT_FAILURE, errno, _("error while reading \"%s\""), fn);
-      error (EXIT_FAILURE, 0, _("file \"%s\" truncated"), fn);
-    }
-  if (buffer[length] != '\0')
-    {
-      error (EXIT_FAILURE, 0,
-	     _("file \"%s\" contains a not NUL terminated string"), fn);
-    }
-
-  /* Return the string to the caller.  */
-  *lengthp = length + 1;
-  return buffer;
-}
-
-
-/* This function reads an existing .mo file.  Return a message list.  */
-static message_list_ty *
-read_mo_file (mlp, fn)
-     message_list_ty *mlp;
-     const char *fn;
-{
-  FILE *fp;
-  struct mo_file_header header;
-  int j;
-
-  if (strcmp (fn, "-") == 0 || strcmp (fn, "/dev/stdin") == 0)
-    {
-      fp = stdin;
-      SET_BINARY (fileno (fp));
-    }
-  else
-    {
-      fp = fopen (fn, "rb");
-      if (fp == NULL)
-	error (EXIT_FAILURE, errno,
-	       _("error while opening \"%s\" for reading"), fn);
-    }
-
-  /* We must grope the file to determine which endian it is.
-     Perversity of the universe tends towards maximum, so it will
-     probably not match the currently executing architecture.  */
-  endian = MO_BIG_ENDIAN;
-  header.magic = read32 (fp, fn);
-  if (header.magic != _MAGIC)
-    {
-      endian = MO_LITTLE_ENDIAN;
-      seek32 (fp, fn, 0L);
-      header.magic = read32 (fp, fn);
-      if (header.magic != _MAGIC)
-	{
-	unrecognised:
-	  error (EXIT_FAILURE, 0, _("file \"%s\" is not in GNU .mo format"),
-		 fn);
-	}
-    }
-
-  /* Fill the structure describing the header.  */
-  header.revision = read32 (fp, fn);
-  if (header.revision != MO_REVISION_NUMBER)
-    goto unrecognised;
-  header.nstrings = read32 (fp, fn);
-  header.orig_tab_offset = read32 (fp, fn);
-  header.trans_tab_offset = read32 (fp, fn);
-  header.hash_tab_size = read32 (fp, fn);
-  header.hash_tab_offset = read32 (fp, fn);
-
-  if (mlp == NULL)
-    mlp = message_list_alloc ();
-  for (j = 0; j < header.nstrings; ++j)
-    {
-      static lex_pos_ty pos = { __FILE__, __LINE__ };
-      message_ty *mp;
-      char *msgid;
-      size_t msgid_len;
-      char *msgstr;
-      size_t msgstr_len;
-
-      /* Read the msgid.  */
-      msgid = string32 (fp, fn, header.orig_tab_offset + j * 8, &msgid_len);
-
-      /* Read the msgstr.  */
-      msgstr = string32 (fp, fn, header.trans_tab_offset + j * 8, &msgstr_len);
-
-      mp = message_alloc (msgid,
-			  (strlen (msgid) + 1 < msgid_len
-			   ? msgid + strlen (msgid) + 1
-			   : NULL));
-      message_variant_append (mp, MESSAGE_DOMAIN_DEFAULT, msgstr, msgstr_len,
-			      &pos);
-      message_list_append (mlp, mp);
-    }
-
-  if (fp != stdin)
-    fclose (fp);
-  return mlp;
 }

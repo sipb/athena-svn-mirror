@@ -22,7 +22,13 @@
 # include <config.h>
 #endif
 
-#include "system.h"
+/* Specification.  */
+#include "pathname.h"
+
+#include <string.h>
+
+#include "xmalloc.h"
+#include "stpcpy.h"
 
 /* Concatenate a directory pathname, a relative pathname and an optional
    suffix.  The directory may end with the directory separator.  The second

@@ -1,3 +1,468 @@
+2002-08-06  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.11.5 released.
+
+2002-07-25  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.11.4 released.
+
+2002-07-25  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.in (LTV_CURRENT, LTV_REVISION, LTV_AGE): Bump to 4:0:2.
+
+2002-07-23  Bruno Haible  <bruno@clisp.org>
+
+	* loadmsgcat.c (PRI*): Redefine the macros if PRI_MACROS_BROKEN is set.
+
+2002-07-21  Bruno Haible  <bruno@clisp.org>
+
+	* libgnuintl.h (__GNU_GETTEXT_SUPPORTED_REVISION): New macro.
+	* gmo.h (struct mo_file_header): New fields n_sysdep_segments,
+	sysdep_segments_offset, n_sysdep_strings, orig_sysdep_tab_offset,
+	trans_sysdep_tab_offset.
+	(struct sysdep_segment): New type.
+	(struct sysdep_string): New type.
+	(SEGMENTS_END): New macro.
+	* gettextP.h (struct sysdep_string_desc): New type.
+	(struct loaded_domain): New fields malloced, n_sysdep_strings,
+	orig_sysdep_tab, trans_sysdep_tab, must_swap_hash_tab. Make fields
+	orig_tab, trans_tab, hash_tab to const pointers because they point
+	into read-only memory.
+	* loadmsgcat.c: Include stdint.h, inttypes.h, hash-string.h.
+	(PRI*): Define fallback values.
+	(get_sysdep_segment_value): New function.
+	(_nl_load_domain): Distinguish major and minor revision parts. Add
+	support for minor revision 1 with system dependent strings.
+	(_nl_unload_domain): Also free the 'malloced' field.
+	* dcigettext.c (_nl_find_msg): Remove test for domain->hash_size, now
+	done in loadmsgcat.c. Add support for system dependent strings.
+
+2002-07-17  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.11.3 released.
+
+2002-07-16  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.in (LTV_CURRENT, LTV_REVISION, LTV_AGE): Bump to 3:0:1.
+
+2002-07-13  Bruno Haible  <bruno@clisp.org>
+
+	* dcigettext.c (freea): New macro.
+	(FREE_BLOCKS): Free also the registered blocks.
+	(DCIGETTEXT): Free the 'search' variable.
+	Reported by Andreas Fischer <a.fischer@asentics.de>.
+
+2002-06-13  Bruno Haible  <bruno@clisp.org>
+
+	Make absolute pathnames inside $LANGUAGE work.
+	* l10nflist.c (_nl_make_l10nflist): Ignore dirlist if language is an
+	absolute path. Fix sizes passed to malloc. Simplify linked list
+	handling.
+
+2002-06-13  Bruno Haible  <bruno@clisp.org>
+
+	* localename.c [WIN32] (LANG_DIVEHI, LANG_GALICIAN, LANG_KYRGYZ,
+	LANG_MONGOLIAN, LANG_SYRIAC): Provide fallback definitions.
+	(_nl_locale_name): Add Amharic, Burmese, Cambodian, Cherokee, Divehi,
+	Edo, Frisian, Fulfulde, Gaelic, Guarani, Hausa, Hawaiian, Ibibio,
+	Igbo, Inuktitut, Kanuri, Kyrgyz, Lao, Latin, Maltese, Mongolian,
+	Oromo, Papiamentu, Pashto, Rhaeto-Romance, Sami, Sinhalese, Somali,
+	Syriac, Tagalog, Tajik, Tomazight, Tibetan, Tigrinya, Tsonga, Turkmen,
+	Venda, Welsh, Xhosa, Yi, Yiddish, Yoruba, Zulu. Fix Swahili, Tatar.
+
+2002-06-07  Bruno Haible  <bruno@clisp.org>
+
+	* dcigettext.c (INTDIV0_RAISES_SIGFPE): Define a fallback.
+	Include <signal.h>.
+	* eval-plural.h (plural_eval): Let division by zero cause SIGFPE on
+	all platforms.
+
+2002-05-30  Bruno Haible  <bruno@clisp.org>
+
+	* libgnuintl.h (_INTL_REDIRECT_ASM, _INTL_REDIRECT_INLINE,
+	_INTL_REDIRECT_MACROS, _INTL_ASM, _INTL_ASMNAME, _INTL_STRINGIFY):
+	New macros. Use them instead of plain preprocessor level indirection
+	when appropriate.
+	* intl-compat.c: Define _INTL_REDIRECT_MACROS.
+
+2002-05-28  Bruno Haible  <bruno@clisp.org>
+
+	* localename.c (LANG_SORBIAN): Provide a default value, for mingw32.
+	Reported by Michael Opdenacker <m-opdenacker@ti.com>
+	and Rob Leslie <rob@mars.org>.
+
+2002-05-09  Bruno Haible  <bruno@clisp.org>
+
+	* config.charset: Update for newest glibc. Add canonical names
+	ISO-8859-14, KOI8-T, TCVN5712-1, GEORGIAN-PS.
+
+2002-05-09  Bruno Haible  <bruno@clisp.org>
+
+	* localcharset.c (get_charset_aliases): Add more Windows specific
+	aliases.
+
+2002-05-08  Owen Taylor  <otaylor@redhat.com>
+
+	* config.charset: A few additions for Solaris.
+
+2001-12-05  Bruno Haible  <bruno@clisp.org>
+
+	* localcharset.c (locale_charset): Don't return an empty string.
+
+2001-10-23  Bruno Haible  <haible@clisp.cons.org>
+
+	* config.charset: msdos in uk_UA uses CP1125.
+
+2001-08-05  Bruno Haible  <haible@clisp.cons.org>
+
+	Make it possible to build libcharset with CC=gcc CFLAGS="-x c++".
+	* localcharset.c (locale_charset): Declare as extern "C".
+	(get_charset_aliases): Cast malloc and realloc results to 'char *'.
+
+2002-04-30  Bruno Haible  <bruno@clisp.org>
+
+	* loadmsgcat.c (_nl_init_domain_conv): Don't append //TRANSLIT to
+	the encoding if it already has slashes.
+	Reported by Perry Rapp <prapp@erols.com>.
+
+2002-04-27  Bruno Haible  <bruno@clisp.org>
+
+	* libgnuintl.h: Redirect every function to the one prefixed with
+	"libintl_". Remove __OPTIMIZED variants.
+	* gettextP.h: Use prefix "libintl_" instead of suffix "__".
+	* dcigettext.c: Likewise.
+	* dcgettext.c: Likewise.
+	* dgettext.c: Likewise.
+	* gettext.c: Likewise.
+	* dcngettext.c: Likewise.
+	* dngettext.c: Likewise.
+	* ngettext.c: Likewise.
+	* textdomain.c: Likewise.
+	* bindtextdom.c: Likewise.
+	* plural-exp.h: Likewise.
+	* os2compat.c: Likewise.
+	* intl-compat.c: Likewise.
+
+2002-04-24  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.11.2 released.
+
+2002-04-24  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.in (LTV_CURRENT, LTV_REVISION, LTV_AGE): Bump to 2:1:0.
+
+2002-04-19  Bruno Haible  <bruno@clisp.org>
+
+	* gettextP.h (attribute_hidden): Define as empty macro if not
+	already defined.
+
+2002-04-09  Ulrich Drepper  <drepper@redhat.com>
+
+	* dcngettext.c [_LIBC]: Use INTUSE for __dcngettext.
+	* dngettext.c [_LIBC] (DCNGETTEXT): Use INTUSE.
+	* ngettext.c: Likewise.
+	* l10nflist.c [_LIBC]: Use INTUSE for __argz_count and
+	__argz_stringify.
+
+2002-04-08  Ulrich Drepper  <drepper@redhat.com>
+	* dcgettext.c (__dcgettext): Use INTDEF to define alias.
+	* dgettext.c: Call __dcgettext_internal instead of __dcgettext.
+	* gettext.c: Likewise.
+
+2002-03-12  Ulrich Drepper  <drepper@redhat.com>
+
+	* plural-exp.h (attribute_hidden): Define as empty macro if not
+	already defined.
+	(GERMANIC_PLURAL): Declare as hidden.
+	* dcigettext.c (_nl_default_default_domain): Define as hidden.
+	(_nl_current_default_domain): Likewise
+	(_nl_state_lock): Likewise.
+	* textdomain.c (_nl_default_default_domain): Declare as hidden.
+	(_nl_current_default_domain): Likewise
+	(_nl_state_lock): Likewise.
+	* bindtextdom.c (_nl_state_lock): Likewise.
+
+2002-03-15  Andrew Zabolotny  <zap@cobra.ru>
+
+	* os2compat.h: Use prefix _nlos2 instead of _os2, to avoid any
+	possible name clashes.
+	* os2compat.c: Likewise.
+
+2002-03-15  Bruno Haible  <bruno@clisp.org>
+
+	* libgnuintl.h (LC_MESSAGES): Don't define on Solaris 2.5, to avoid
+	a warning.
+	Reported by Stephen Gildea <gildea@stop.mail-abuse.org>.
+
+2002-03-12  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.11.1 released.
+
+2002-02-15  Bruno Haible  <bruno@clisp.org>
+
+	* config.charset [msdosdjgpp]: For Russian, use CP866.
+
+2002-02-14  Andrew Zabolotny  <zap@cobra.ru>
+
+	* os2compat.c (_nl_default_dirname__): Renamed from
+	_nl_default_dirname.
+
+2002-02-10  Bruno Haible  <bruno@clisp.org>
+
+	* localename.c: Change copyright notice from GPL to LGPL.
+	* eval-plural.h: Likewise.
+
+2002-02-11  Bruno Haible  <bruno@clisp.org>
+
+	* config.charset: Add support for NetBSD.
+
+2002-01-31  Bruno Haible  <bruno@clisp.org>
+
+	* gettext-0.11 released.
+
+2002-01-31  Bruno Haible  <bruno@clisp.org>
+
+	* eval-plural.h: Renamed from plural-eval.c.
+	* dcigettext.c: Include eval-plural.h instead of plural-eval.c.
+	* Makefile.in (COMHDRS): Remove plural-eval.c, add eval-plural.h.
+	(DISTFILES.obsolete): Add plural-eval.c.
+
+2002-01-24  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.in (libintl.la): Use @LTLIBICONV@ instead of @LIBICONV@.
+
+2002-01-10  Andrew Zabolotny  <zap@cobra.ru>
+	    Bruno Haible  <bruno@clisp.org>
+
+	* dcigettext.c (_nl_default_dirname): On OS/2, declare, not define.
+	* localcharset.c: Rework OS/2 support.
+	* config.charset: Add OS/2 support.
+	* os2compat.c: Renamed from os2.c.
+	(_nl_default_dirname): Define here.
+	* os2compat.h: Moved here from ../os2/.
+	* osdep.c: Update.
+	* Makefile.in (COMHDRS): Add os2compat.h.
+	(COMSRCS): Add os2compat.c, remove os2.c.
+
+2002-01-05  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.in (libintl.la): Add -lc. Needed on AIX.
+
+2002-01-02  Bruno Haible  <bruno@clisp.org>
+
+	* loadmsgcat.c (_nl_init_domain_conv): Convert extern declaration to
+	K&R syntax.
+
+2002-01-02  Bruno Haible  <bruno@clisp.org>
+
+	* plural.y: Fix %expect count.
+
+2001-12-23  Bruno Haible  <bruno@clisp.org>
+
+	* os2.c (os2_initialize): Use LOCALEDIR_MAX macro.
+
+2001-12-21  Bruno Haible  <bruno@clisp.org>
+
+	* localcharset.c (ISSLASH): Provide definition for DOS-like systems.
+
+2001-12-21  Bruno Haible  <bruno@clisp.org>
+
+	* libgettext.h: Moved to ../lib/gettext.h.
+	* Makefile.in (HEADERS): Remove libgettext.h.
+	(DISTFILES.obsolete): Add libgettext.h.
+
+2001-12-21  Bruno Haible  <bruno@clisp.org>
+
+	* gmo.h: Renamed from gettext.h.
+	* gettext.h: Remove file.
+	* gettextP.h: Update accordingly.
+	* loadmsgcat.c: Likewise.
+	* Makefile.in (COMHDRS): Add gmo.h, remove gettext.h.
+	(DISTFILES.obsolete): Add gettext.h.
+	Update dependencies.
+
+2001-12-18  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.in (LTV_CURRENT, LTV_REVISION, LTV_AGE): Bump to 2:0:0.
+	Used to force an soname of at least libintl.so.2 on Solaris, which
+	already has a different libintl.so.1 in /usr/lib.
+
+2001-12-15  Andrew Zabolotny  <zap@cobra.ru>
+	    Bruno Haible  <bruno@clisp.org>
+
+	* osdep.c: New file.
+	* os2.c: New file.
+	* dcigettext.c (DCIGETTEXT): Add backward compatibility support for
+	OS/2.
+	* localcharset.c: Add OS/2 support.
+	* localealias.c (_nl_expand_alias): Initialize locale_alias_path once,
+	but not statically.
+	* Makefile.in (COMSRCS): Add osdep.c, os2.c.
+	(OBJECTS): Add osdep.$lo.
+
+2001-12-12  Bruno Haible  <bruno@clisp.org>
+
+	* libgettext.h [!ENABLE_NLS]: Cast all function results to
+	'const char *'.
+	Reported by Alexandre Duret-Lutz <duret_g@lrde.epita.fr>.
+
+2001-12-03  Bruno Haible  <bruno@clisp.org>
+
+	* Makefile.in (install-exec): Don't create an empty libdir.
+	(installdirs): Update accordingly.
+
+2001-11-30  Bruno Haible  <bruno@clisp.org>
+
+	* plural-exp.h (plural_eval): Add back declaration.
+	* Makefile.in (OBJECTS): Remove plural-eval.$lo.
+	(COMSRCS): Remove plural-eval.c.
+	(COMHDRS): Add plural-eval.c.
+	(plural-eval.$lo): Remove dependency.
+	(dcigettext.$lo): Depend on plural-eval.c.
+
+2001-11-29  Bruno Haible  <bruno@clisp.org>
+
+	* gettextP.h (_nl_locale_name): Don't declare inside glibc.
+	* localename.c (_nl_locale_name): Remove _LIBC conditional.
+
+2001-11-27  Ulrich Drepper  <drepper@redhat.com>
+
+	* dcigettext.c (guess_category_value): Inside glibc, use setlocale
+	directly, not _nl_locale_name.
+
+2001-11-27  Ulrich Drepper  <drepper@redhat.com>
+
+	* loadmsgcat.c (_nl_init_domain_conv): Modify #if expression.
+
+2001-11-27  Ulrich Drepper  <drepper@redhat.com>
+
+	* plural-eval.c (plural_eval): Rename back from PLURAL_EVAL.
+	* plural-exp.h (PLURAL_EVAL): Remove declaration.
+	* dcigettext.c Include plural-eval.c.
+	(plural_lookup): Call plural_eval instead of PLURAL_EVAL.
+
+2001-11-22  Bruno Haible  <bruno@clisp.org>
+
+	* plural-exp.h (GERMANIC_PLURAL): New declaration.
+	* plural-exp.c (GERMANIC_PLURAL): Renamed from germanic_plural.
+	* loadmsgcat.c (_nl_unload_domain): Update.
+
+2001-07-17  Ulrich Drepper  <drepper@redhat.com>
+
+	* localealias.c (read_alias_file): Disable implicit locking
+	for the stream.  Use _unlocked functions for glibc.
+
+2001-11-11  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.in (dist): Avoid using hard links, because the automake-1.5
+	generated toplevel 'distdir' target chmods all the distributed files.
+
+2001-11-10  Bruno Haible  <haible@clisp.cons.org>
+
+	* libgnuintl.h (_INTL_PARAMS): Renamed from PARAMS, to avoid polluting
+	the user's namespace.
+	Also test for __GNUC__, __SUNPRO_C and __PROTOTYPES because on
+	64-bit Solaris, we need prototypes although __STDC__ is often defined
+	to 0. __GNUC__ covers GCC, __SUNPRO_C covers Sun cc, regardless of
+	compilation flags. __PROTOTYPES covers other compilers when compiling
+	programs using autoconf's AC_C_PROTOTYPES.
+	* gettextP.h (PARAMS): Also test for __SUNPRO_C, because 64-bit Solaris
+	cc needs prototypes although it defines __STDC__ to 0 by default.
+	Also test for __cplusplus and __PROTOTYPES, just for consistency with
+	libgnuintl.h.
+	* hash-string.h (PARAMS): Likewise.
+	* loadinfo.h (PARAMS): Likewise.
+	* plural-exp.h (PARAMS): Likewise.
+
+2001-10-31  Bruno Haible  <haible@clisp.cons.org>
+
+	* plural.y: Include <stddef.h>, needed for NULL with SunOS 4 cc.
+
+2001-10-31  Bruno Haible  <haible@clisp.cons.org>
+
+	* COPYING.LIB-2.0: Renamed from COPYING.LIB-2.
+	* Makefile.in (DISTFILES.gettext, install-data, uninstall): Update.
+	(DISTFILES.obsolete): Add COPYING.LIB-2.
+
+2001-10-09  Bruno Haible  <haible@clisp.cons.org>
+
+	* localcharset.c (getc): Define as getc_unlocked if available.
+
+2001-09-27  Bruno Haible  <haible@clisp.cons.org>
+
+	* Makefile.in (install-strip, installdirs): New rules.
+
+2001-09-24  Bruno Haible  <haible@clisp.cons.org>
+
+	* localename.c: New file, integrating a function from
+	Tor Lillqvist <tml@iki.fi>.
+	* gettextP.h: New declaration.
+	* dcigettext.c (guess_category_value): Call _nl_locale_name.
+	* Makefile.in (COMSRCS): Add localename.c.
+	(OBJECTS): Add localename.$lo.
+
+2001-09-22  Bruno Haible  <haible@clisp.cons.org>
+
+	* plural-eval.c: New file, extracted from dcigettext.c.
+	* plural-exp.h (PLURAL_EVAL): New declaration.
+	* dcigettext.c (plural_eval): Remove function, moved to plural-eval.c.
+	(plural_lookup): Call PLURAL_EVAL instead of plural_eval.
+	* Makefile.in (COMSRCS): Add plural-eval.c.
+	(OBJECTS): Add plural-eval.$lo.
+
+2001-09-22  Bruno Haible  <haible@clisp.cons.org>
+
+	* plural-exp.c (EXTRACT_PLURAL_EXPRESSION): Reject numbers that don't
+	start with a digit; nplurals must be positive.
+
+2001-10-20  Bruno Haible  <haible@clisp.cons.org>
+
+	Assume strchr() exists. (Without it, explodename.c wouldn't link
+	anyway.)
+	* dcigettext.c (strchr): Remove fallback definition; it conflicts with
+	the variable 'index' in plural_lookup.
+	* l10nflist.c (strchr): Likewise.
+	* localealias.c (strchr): Likewise.
+
+2001-09-24  Bruno Haible  <haible@clisp.cons.org>
+
+	* loadmsgcat.c (_nl_init_domain_conv): Also enable transliteration
+	when building on a glibc system but outside glibc.
+
+2001-09-02  Bruno Haible  <haible@clisp.cons.org>
+
+	* plural-exp.h: New file, extracted from gettextP.h.
+	* plural-exp.c: New file, extracted from loadmsgcat.c.
+	* gettextP.h (struct expression, struct parse_args,
+	__gettext_free_exp, __gettextparse): Move to plural-exp.h.
+	* loadmsgcat.c: Include plural-exp.h.
+	(PLURAL_PARSE): Move macro to plural-exp.h.
+	(plvar, plone, germanic_plural, INIT_GERMANIC_PLURAL): Move to
+	plural-exp.c.
+	(_nl_load_domain): Move plural handling code to plural-exp.c. Call
+	EXTRACT_PLURAL_EXPRESSION.
+	* dcigettext.c: Include plural-exp.h.
+	* plural.y: Include plural-exp.h, not gettextP.h.
+	(FREE_EXPRESSION): Move macro to plural-exp.h.
+	* Makefile.in (DEFS): Define IN_LIBINTL.
+	(COMHDRS): Add plural-exp.h.
+	(COMSRCS): Add plural-exp.c.
+	(OBJECTS): Add plural-exp.$lo.
+	Update dependencies.
+
+2001-07-28  Bruno Haible  <haible@clisp.cons.org>
+
+	* l10nflist.c (_nl_normalize_codeset): Cast isalnum, isalpha, isdigit,
+	tolower argument to 'unsigned char'.
+	* loadmsgcat.c (_nl_load_domain): Cast isspace argument to
+	'unsigned char'.
+	* localealias.c (read_alias_file): Cast isspace argument to
+	'unsigned char'.
+
+2001-07-23  Bruno Haible  <haible@clisp.cons.org>
+
+	* gettext.h: Assume <limits.h> exists.
+
 2001-09-13  Bruno Haible  <haible@clisp.cons.org>
 
 	* gettext-0.10.40 released.
@@ -811,7 +1276,7 @@
 	glibc, as in dcgettext.c.
 	Patch by Bruno Haible <haible@ilog.fr>.
 
-	* Makefile.in (CPPFLAGS): New variable.  Reported by Franc,ois
+	* Makefile.in (CPPFLAGS): New variable.  Reported by François
 	Pinard.
 
 Mon Mar 10 06:51:17 1997  Ulrich Drepper  <drepper@cygnus.com>
@@ -848,7 +1313,7 @@ Fri Nov 22 04:01:58 1996  Ulrich Drepper  <drepper@cygnus.com>
 Tue Oct 29 11:10:27 1996  Ulrich Drepper  <drepper@cygnus.com>
 
 	* Makefile.in (libdir): Change to use exec_prefix instead of
- 	prefix.  Reported by Knut-H�vardAksnes <etokna@eto.ericsson.se>.
+ 	prefix.  Reported by Knut-HåvardAksnes <etokna@eto.ericsson.se>.
 
 Sat Aug 31 03:07:09 1996  Ulrich Drepper  <drepper@cygnus.com>
 
@@ -1107,7 +1572,7 @@ Sun Nov 26 18:21:41 1995  Ulrich Drepper  <drepper@myware>
 	* Makefile.in:
 	Add dummy `all' and `dvi' goals.  Reported by Tom Tromey.
 
-Sat Nov 25 16:12:01 1995  Franc,ois Pinard  <pinard@iro.umontreal.ca>
+Sat Nov 25 16:12:01 1995  François Pinard  <pinard@iro.umontreal.ca>
 
 	* hash-string.h: Capitalize arguments of macros.
 
@@ -1191,7 +1656,7 @@ Tue Nov  7 14:21:08 1995  Ulrich Drepper  <drepper@myware>
 	* cat-compat.c: (stpcpy) [!_LIBC && !HAVE_STPCPY]: Define replacement.
 	Generally cleanup using #if instead of #ifndef.
 
-	* Makefile.in: Correct typos in comment.  By Franc,ois Pinard.
+	* Makefile.in: Correct typos in comment.  By François Pinard.
 
 Mon Nov  6 00:27:02 1995  Ulrich Drepper  <drepper@myware>
 
@@ -1201,7 +1666,7 @@ Mon Nov  6 00:27:02 1995  Ulrich Drepper  <drepper@myware>
 Sun Nov  5 22:02:08 1995  Ulrich Drepper  <drepper@myware>
 
 	* libgettext.h: Fix typo: HAVE_CATGETTS -> HAVE_CATGETS.  Reported
-	by Franc,ois Pinard.
+	by François Pinard.
 
 	* libgettext.h: Use #if instead of #ifdef/#ifndef.
 
@@ -1247,7 +1712,7 @@ Thu Nov  2 23:15:51 1995  Ulrich Drepper  <drepper@myware>
 	Reported by Tom Tromey.
 
 	* gettext.c (NULL):
-	Define as (void*)0 instad of 0.  Reported by Franc,ois Pinard.
+	Define as (void*)0 instad of 0.  Reported by François Pinard.
 
 Mon Oct 30 21:28:52 1995  Ulrich Drepper  <drepper@myware>
 
@@ -1646,7 +2111,7 @@ Sun Jul 16 22:33:02 1995  Ulrich Drepper  <drepper@myware>
 
 Sun Jul 16 13:23:27 1995  Ulrich Drepper  <drepper@myware>
 
-	* elisp-comp: Complete new version by Franc,ois: This does not
+	* elisp-comp: Complete new version by François: This does not
  	fail when not compiling in the source directory.
 
 Sun Jul 16 00:12:17 1995  Ulrich Drepper  <drepper@myware>

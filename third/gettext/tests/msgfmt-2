@@ -1,12 +1,5 @@
 #! /bin/sh
 
-TEXTDOMAINDIR=..
-LANGUAGE=tests
-LC_ALL=en
-LC_MESSAGES=
-LANG=
-export TEXTDOMAINDIR LANGUAGE LC_ALL LC_MESSAGES LANG
-
 if (echo "testing\c"; echo 1,2,3) | grep c >/dev/null; then
   # Stardent Vistra SVR4 grep lacks -e, says ghazi@caip.rutgers.edu.
   if (echo -n testing; echo 1,2,3) | sed s/-n/xn/ | grep xn >/dev/null; then
@@ -19,9 +12,10 @@ else
   ac_n= ac_c='\c' ac_t=
 fi
 
+tmpfiles=""
 trap 'rm -fr $tmpfiles' 1 2 3 15
 
-tmpfiles="LC_MESSAGES"
+tmpfiles="$tmpfiles LC_MESSAGES"
 test -d LC_MESSAGES || mkdir LC_MESSAGES
 
 tmpfiles="$tmpfiles module1.po module2.po"
@@ -51,7 +45,7 @@ msgstr	"mesg 4 translation"
 #
 domain	"error_dom"
 msgid	"error 3"
-msgstr	"alternate error 2 translation"
+msgstr	"alternate error 3 translation"
 msgid	"error 5"
 msgstr	"error 5 translation"
 #
@@ -60,12 +54,25 @@ msgid	"window 6"
 msgstr	"window 6 translation"
 EOF
 
+# Without use of msgcat, expect a "duplicate message definition" error.
 : ${MSGFMT=msgfmt}
-${MSGFMT} module1.po module2.po -o LC_MESSAGES/gen.mo
+if ${MSGFMT} module1.po module2.po -o LC_MESSAGES/gen.mo 2> /dev/null; then
+  rm -fr $tmpfiles
+  exit 1
+fi
+
+# With msgcat, it should work.
+tmpfiles="$tmpfiles modules.po"
+: ${MSGCAT=msgcat} ${MSGFMT=msgfmt}
+${MSGCAT} --use-first module1.po module2.po -o modules.po
+test $? = 0 || { rm -fr $tmpfiles; exit 1; }
+${MSGFMT} modules.po -o LC_MESSAGES/gen.mo
+test $? = 0 || { rm -fr $tmpfiles; exit 1; }
 
 tmpfiles="$tmpfiles mf-test2.out"
 : ${GETTEXT=gettext}
-${GETTEXT} gen 'error 3' > mf-test2.out
+TEXTDOMAINDIR=.. LANGUAGE=tests \
+${GETTEXT} --env LC_ALL=en gen 'error 3' > mf-test2.out
 
 tmpfiles="$tmpfiles gtmf-test2.ok"
 echo $ac_n "error 3 translation$ac_c" > gtmf-test2.ok

@@ -1,5 +1,5 @@
 /* Converts Uniforum style .po files to binary .mo files
-   Copyright (C) 1995-1998, 2000, 2001 Free Software Foundation, Inc.
+   Copyright (C) 1995-1998, 2000-2002 Free Software Foundation, Inc.
    Written by Ulrich Drepper <drepper@gnu.ai.mit.edu>, April 1995.
 
    This program is free software; you can redistribute it and/or modify
@@ -21,56 +21,45 @@
 #endif
 
 #include <ctype.h>
-#include <errno.h>
 #include <getopt.h>
+#include <limits.h>
+#include <setjmp.h>
+#include <signal.h>
 #include <stdio.h>
-#include <sys/param.h>
-#include <sys/types.h>
 #include <stdlib.h>
+#include <string.h>
 #include <locale.h>
-
-#include "hash.h"
 
 #include "dir-list.h"
 #include "error.h"
-#include "getline.h"
-#include "printf.h"
-#include <system.h>
+#include "progname.h"
+#include "basename.h"
+#include "xerror.h"
+#include "format.h"
+#include "xmalloc.h"
+#include "plural-exp.h"
+#include "plural-table.h"
+#include "strstr.h"
+#include "stpcpy.h"
+#include "exit.h"
+#include "msgfmt.h"
+#include "write-mo.h"
+#include "write-java.h"
+#include "write-tcl.h"
 
 #include "gettext.h"
-#include "hash-string.h"
-#include "libgettext.h"
 #include "message.h"
 #include "po.h"
 
 #define _(str) gettext (str)
 
-#ifndef errno
-extern int errno;
-#endif
-
 #define SIZEOF(a) (sizeof(a) / sizeof(a[0]))
 
-/* Define the data structure which we need to represent the data to
-   be written out.  */
-struct id_str_pair
-{
-  char *id;
-  size_t id_len;
-  char *id_plural;
-  size_t id_plural_len;
-  char *str;
-  size_t str_len;
-};
-
-/* Contains information about the definition of one translation.  */
-struct hashtable_entry
-{
-  char *msgid_plural;
-  char *msgstr;
-  size_t msgstr_len;
-  lex_pos_ty pos;
-};
+/* We use siginfo to get precise information about the signal.
+   But siginfo doesn't work on Irix 6.5.  */
+#if HAVE_SIGINFO && !defined (__sgi)
+# define USE_SIGINFO 1
+#endif
 
 /* This structure defines a derived class of the po_ty class.  (See
    po.h for an explanation.)  */
@@ -80,52 +69,77 @@ struct msgfmt_class_ty
   /* inherited instance variables, etc */
   PO_BASE_TY
 
-  int is_fuzzy;
-  enum is_c_format is_c_format;
+  bool is_fuzzy;
+  enum is_format is_format[NFORMATS];
   enum is_wrap do_wrap;
 
-  int has_header_entry;
+  bool has_header_entry;
+  bool has_nonfuzzy_header_entry;
 };
-
-/* Alignment of strings in resulting .mo file.  */
-static size_t alignment;
 
 /* Contains exit status for case in which no premature exit occurs.  */
 static int exit_status;
 
-/* If nonzero include even fuzzy translations in output file.  */
-static int include_all;
-
-/* Nonzero if no hash table in .mo is wanted.  */
-static int no_hash_table;
+/* If true include even fuzzy translations in output file.  */
+static bool include_all = false;
 
 /* Specifies name of the output file.  */
 static const char *output_file_name;
 
-/* String containing name the program is called with.  */
-const char *program_name;
+/* Java mode output file specification.  */
+static bool java_mode;
+static bool assume_java2;
+static const char *java_resource_name;
+static const char *java_locale_name;
+static const char *java_class_directory;
+
+/* Tcl mode output file specification.  */
+static bool tcl_mode;
+static const char *tcl_locale_name;
+static const char *tcl_base_directory;
 
 /* We may have more than one input file.  Domains with same names in
    different files have to merged.  So we need a list of tables for
    each output file.  */
 struct msg_domain
 {
-  /* Table for mapping message IDs to message strings.  */
-  hash_table symbol_tab;
+  /* List for mapping message IDs to message strings.  */
+  message_list_ty *mlp;
   /* Name of domain these ID/String pairs are part of.  */
   const char *domain_name;
+  /* Output file name.  */
+  const char *file_name;
   /* Link to the next domain.  */
   struct msg_domain *next;
 };
-static struct msg_domain *domain;
+static struct msg_domain *domain_list;
 static struct msg_domain *current_domain;
 
-/* If not zero list duplicate message identifiers.  */
-static int verbose_level;
+/* Be more verbose.  Use only 'fprintf' and 'multiline_warning' but not
+   'error' or 'multiline_error' to emit verbosity messages, because 'error'
+   and 'multiline_error' during PO file parsing cause the program to exit
+   with EXIT_FAILURE.  See function lex_end().  */
+bool verbose = false;
 
-/* If not zero check strings according to format string rules for the
+/* If true check strings according to format string rules for the
    language.  */
-static int do_check;
+static bool check_format_strings = false;
+
+/* If true check the header entry is present and complete.  */
+static bool check_header = false;
+
+/* Check that domain directives can be satisfied.  */
+static bool check_domain = false;
+
+/* Check that msgfmt's behaviour is semantically compatible with
+   X/Open msgfmt or XView msgfmt.  */
+static bool check_compatibility = false;
+
+/* If true, consider that strings containing an '&' are menu items and
+   the '&' designates a keyboard accelerator, and verify that the translations
+   also have a keyboard accelerator.  */
+static bool check_accelerators = false;
+static char accelerator_char = '&';
 
 /* Counters for statistics on translations for the processed files.  */
 static int msgs_translated;
@@ -139,13 +153,23 @@ static int do_statistics;
 static const struct option long_options[] =
 {
   { "alignment", required_argument, NULL, 'a' },
-  { "check", no_argument, &do_check, 1 },
+  { "check", no_argument, NULL, 'c' },
+  { "check-accelerators", optional_argument, NULL, CHAR_MAX + 1 },
+  { "check-compatibility", no_argument, NULL, 'C' },
+  { "check-domain", no_argument, NULL, CHAR_MAX + 2 },
+  { "check-format", no_argument, NULL, CHAR_MAX + 3 },
+  { "check-header", no_argument, NULL, CHAR_MAX + 4 },
   { "directory", required_argument, NULL, 'D' },
   { "help", no_argument, NULL, 'h' },
-  { "no-hash", no_argument, &no_hash_table, 1 },
+  { "java", no_argument, NULL, 'j' },
+  { "java2", no_argument, NULL, CHAR_MAX + 5 },
+  { "locale", required_argument, NULL, 'l' },
+  { "no-hash", no_argument, NULL, CHAR_MAX + 6 },
   { "output-file", required_argument, NULL, 'o' },
+  { "resource", required_argument, NULL, 'r' },
   { "statistics", no_argument, &do_statistics, 1 },
   { "strict", no_argument, NULL, 'S' },
+  { "tcl", no_argument, NULL, CHAR_MAX + 7 },
   { "use-fuzzy", no_argument, NULL, 'f' },
   { "verbose", no_argument, NULL, 'v' },
   { "version", no_argument, NULL, 'V' },
@@ -153,41 +177,45 @@ static const struct option long_options[] =
 };
 
 
-#ifndef roundup
-# if defined __GNUC__ && __GNUC__ >= 2
-#  define roundup(x, y) ({typeof(x) _x = (x); typeof(y) _y = (y); \
-			  ((_x + _y - 1) / _y) * _y; })
-# else
-#  define roundup(x, y) ((((x)+((y)-1))/(y))*(y))
-# endif	/* GNU CC2  */
-#endif /* roundup  */
-
-/* Prototypes for local functions.  */
+/* Prototypes for local functions.  Needed to ensure compiler checking of
+   function argument counts despite of K&R C function definition syntax.  */
 static void usage PARAMS ((int status))
 #if defined __GNUC__ && ((__GNUC__ == 2 && __GNUC_MINOR__ >= 5) || __GNUC__ > 2)
 	__attribute__ ((noreturn))
 #endif
 ;
-static void error_print PARAMS ((void));
-static void grammar PARAMS ((char *__filename));
-static void format_constructor PARAMS ((po_ty *__that));
-static void format_directive_domain PARAMS ((po_ty *__pop, char *__name));
-static void format_directive_message PARAMS ((po_ty *__pop, char *__msgid,
-					      lex_pos_ty *__msgid_pos,
-					      char *__msgid_plural,
-					      char *__msgstr,
-					      size_t __msgstr_len,
-					      lex_pos_ty *__msgstr_pos));
-static void format_comment_special PARAMS ((po_ty *pop, const char *s));
-static void format_debrief PARAMS ((po_ty *));
-static struct msg_domain *new_domain PARAMS ((const char *name));
-static int compare_id PARAMS ((const void *pval1, const void *pval2));
-static void write_table PARAMS ((FILE *output_file, hash_table *tab));
+static const char *add_mo_suffix PARAMS ((const char *));
+static struct msg_domain *new_domain PARAMS ((const char *name,
+					      const char *file_name));
+static bool is_nonobsolete PARAMS ((const message_ty *mp));
+#if USE_SIGINFO
+static void sigfpe_handler PARAMS ((int sig, siginfo_t *sip, void *scp));
+#else
+static void sigfpe_handler PARAMS ((int sig));
+#endif
+static void install_sigfpe_handler PARAMS ((void));
+static void uninstall_sigfpe_handler PARAMS ((void));
+static void check_plural_eval PARAMS ((struct expression *plural_expr,
+				       unsigned long nplurals_value,
+				       const lex_pos_ty *header_pos));
+static void check_plural PARAMS ((message_list_ty *mlp));
 static void check_pair PARAMS ((const char *msgid, const lex_pos_ty *msgid_pos,
 				const char *msgid_plural,
 				const char *msgstr, size_t msgstr_len,
-				const lex_pos_ty *msgstr_pos, int is_format));
-static const char *add_mo_suffix PARAMS ((const char *));
+				const lex_pos_ty *msgstr_pos,
+				enum is_format is_format[NFORMATS]));
+static void check_header_entry PARAMS ((const char *msgstr_string));
+static void format_constructor PARAMS ((po_ty *that));
+static void format_debrief PARAMS ((po_ty *));
+static void format_directive_domain PARAMS ((po_ty *pop, char *name));
+static void format_directive_message PARAMS ((po_ty *pop, char *msgid,
+					      lex_pos_ty *msgid_pos,
+					      char *msgid_plural,
+					      char *msgstr, size_t msgstr_len,
+					      lex_pos_ty *msgstr_pos,
+					      bool obsolete));
+static void format_comment_special PARAMS ((po_ty *pop, const char *s));
+static void read_po_file PARAMS ((char *filename));
 
 
 int
@@ -196,16 +224,17 @@ main (argc, argv)
      char *argv[];
 {
   int opt;
-  int do_help = 0;
-  int do_version = 0;
-  int strict_uniforum = 0;
+  bool do_help = false;
+  bool do_version = false;
+  bool strict_uniforum = false;
+  struct msg_domain *domain;
 
   /* Set default value for global variables.  */
   alignment = DEFAULT_OUTPUT_ALIGNMENT;
 
   /* Set program name for messages.  */
-  program_name = argv[0];
-  error_print_progname = error_print;
+  set_program_name (argv[0]);
+  error_print_progname = maybe_print_progname;
   error_one_per_line = 1;
   exit_status = EXIT_SUCCESS;
 
@@ -218,7 +247,8 @@ main (argc, argv)
   bindtextdomain (PACKAGE, LOCALEDIR);
   textdomain (PACKAGE);
 
-  while ((opt = getopt_long (argc, argv, "a:cD:fho:vV", long_options, NULL))
+  while ((opt = getopt_long (argc, argv, "a:cCd:D:fhjl:o:r:vV", long_options,
+			     NULL))
 	 != EOF)
     switch (opt)
       {
@@ -234,28 +264,79 @@ main (argc, argv)
 	}
 	break;
       case 'c':
-	do_check = 1;
+	check_domain = true;
+	check_format_strings = true;
+	check_header = true;
+	break;
+      case 'C':
+	check_compatibility = true;
+	break;
+      case 'd':
+	java_class_directory = optarg;
+	tcl_base_directory = optarg;
 	break;
       case 'D':
 	dir_list_append (optarg);
 	break;
       case 'f':
-	include_all = 1;
+	include_all = true;
 	break;
       case 'h':
-	do_help = 1;
+	do_help = true;
+	break;
+      case 'j':
+	java_mode = true;
+	break;
+      case 'l':
+	java_locale_name = optarg;
+	tcl_locale_name = optarg;
 	break;
       case 'o':
 	output_file_name = optarg;
 	break;
+      case 'r':
+	java_resource_name = optarg;
+	break;
       case 'S':
-	strict_uniforum = 1;
+	strict_uniforum = true;
 	break;
       case 'v':
-	++verbose_level;
+	verbose = true;
 	break;
       case 'V':
-	do_version = 1;
+	do_version = true;
+	break;
+      case CHAR_MAX + 1:
+	check_accelerators = true;
+	if (optarg != NULL)
+	  {
+	    if (optarg[0] != '\0' && ispunct ((unsigned char) optarg[0])
+		&& optarg[1] == '\0')
+	      accelerator_char = optarg[0];
+	    else
+	      error (EXIT_FAILURE, 0,
+		     _("the argument to %s should be a single punctuation character"),
+		     "--check-accelerators");
+	  }
+	break;
+      case CHAR_MAX + 2:
+	check_domain = true;
+	break;
+      case CHAR_MAX + 3:
+	check_format_strings = true;
+	break;
+      case CHAR_MAX + 4:
+	check_header = true;
+	break;
+      case CHAR_MAX + 5:
+	java_mode = true;
+	assume_java2 = true;
+	break;
+      case CHAR_MAX + 6:
+	no_hash_table = true;
+	break;
+      case CHAR_MAX + 7:
+	tcl_mode = true;
 	break;
       default:
 	usage (EXIT_FAILURE);
@@ -271,7 +352,7 @@ main (argc, argv)
 This is free software; see the source for copying conditions.  There is NO\n\
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
 "),
-	      "1995-1998, 2000, 2001");
+	      "1995-1998, 2000-2002");
       printf (_("Written by %s.\n"), "Ulrich Drepper");
       exit (EXIT_SUCCESS);
     }
@@ -287,16 +368,81 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
       usage (EXIT_FAILURE);
     }
 
-  /* The -o option determines the name of the domain and therefor
+  /* Check for contradicting options.  */
+  if (java_mode && tcl_mode)
+    error (EXIT_FAILURE, 0, _("%s and %s are mutually exclusive"),
+	   "--java", "--tcl");
+  if (java_mode)
+    {
+      if (output_file_name != NULL)
+	{
+	  error (EXIT_FAILURE, 0, _("%s and %s are mutually exclusive"),
+		 "--java", "--output-file");
+	}
+      if (java_class_directory == NULL)
+	{
+	  error (EXIT_SUCCESS, 0,
+		 _("%s requires a \"-d directory\" specification"),
+		 "--java");
+	  usage (EXIT_FAILURE);
+	}
+    }
+  else if (tcl_mode)
+    {
+      if (output_file_name != NULL)
+	{
+	  error (EXIT_FAILURE, 0, _("%s and %s are mutually exclusive"),
+		 "--tcl", "--output-file");
+	}
+      if (tcl_locale_name == NULL)
+	{
+	  error (EXIT_SUCCESS, 0,
+		 _("%s requires a \"-l locale\" specification"),
+		 "--tcl");
+	  usage (EXIT_FAILURE);
+	}
+      if (tcl_base_directory == NULL)
+	{
+	  error (EXIT_SUCCESS, 0,
+		 _("%s requires a \"-d directory\" specification"),
+		 "--tcl");
+	  usage (EXIT_FAILURE);
+	}
+    }
+  else
+    {
+      if (java_resource_name != NULL)
+	{
+	  error (EXIT_SUCCESS, 0, _("%s is only valid with %s"),
+		 "--resource", "--java");
+	  usage (EXIT_FAILURE);
+	}
+      if (java_locale_name != NULL)
+	{
+	  error (EXIT_SUCCESS, 0, _("%s is only valid with %s or %s"),
+		 "--locale", "--java", "--tcl");
+	  usage (EXIT_FAILURE);
+	}
+      if (java_class_directory != NULL)
+	{
+	  error (EXIT_SUCCESS, 0, _("%s is only valid with %s or %s"),
+		 "-d", "--java", "--tcl");
+	  usage (EXIT_FAILURE);
+	}
+    }
+
+  /* The -o option determines the name of the domain and therefore
      the output file.  */
   if (output_file_name != NULL)
-    current_domain = new_domain (output_file_name);
+    current_domain =
+      new_domain (output_file_name,
+		  strict_uniforum ? add_mo_suffix (output_file_name)
+				  : output_file_name);
 
   /* Prepare PO file reader.  We need to see the comments because inexact
      translations must be reported.  */
-  po_lex_pass_comments (1);
+  po_lex_pass_comments (true);
 
-  /* Now write out all domains.  */
   /* Process all given .po files.  */
   while (argc > optind)
     {
@@ -306,55 +452,50 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
 	current_domain = NULL;
 
       /* And process the input file.  */
-      grammar (argv[optind]);
+      read_po_file (argv[optind]);
 
       ++optind;
     }
 
-  while (domain != NULL)
+  /* Remove obsolete messages.  They were only needed for duplicate
+     checking.  */
+  for (domain = domain_list; domain != NULL; domain = domain->next)
+    message_list_remove_if_not (domain->mlp, is_nonobsolete);
+
+  /* Check the plural expression is present if needed and has valid syntax.  */
+  if (check_header)
+    for (domain = domain_list; domain != NULL; domain = domain->next)
+      check_plural (domain->mlp);
+
+  /* Now write out all domains.  */
+  for (domain = domain_list; domain != NULL; domain = domain->next)
     {
-      FILE *output_file;
-
-      /* If no entry for this domain don't even create the file.  */
-      if (domain->symbol_tab.filled != 0)
+      if (java_mode)
 	{
-	  if (strcmp (domain->domain_name, "-") == 0)
-	    {
-	      output_file = stdout;
-	      SET_BINARY (fileno (output_file));
-	    }
-	  else
-	    {
-	      const char *fname;
-
-	      fname = strict_uniforum ? add_mo_suffix (domain->domain_name)
-				      : domain->domain_name;
-
-	      output_file = fopen (fname, "wb");
-	      if (output_file == NULL)
-		{
-		  error (0, errno,
-			 _("error while opening \"%s\" for writing"), fname);
-		  exit_status = EXIT_FAILURE;
-		}
-
-	      if (strict_uniforum)
-		free ((void *) fname);
-	    }
-
-	  if (output_file != NULL)
-	    {
-	      write_table (output_file, &domain->symbol_tab);
-	      if (output_file != stdout)
-		fclose (output_file);
-	    }
+	  if (msgdomain_write_java (domain->mlp, java_resource_name,
+				    java_locale_name, java_class_directory,
+				    assume_java2))
+	    exit_status = EXIT_FAILURE;
+	}
+      else if (tcl_mode)
+	{
+	  if (msgdomain_write_tcl (domain->mlp,
+				   tcl_locale_name, tcl_base_directory))
+	    exit_status = EXIT_FAILURE;
+	}
+      else
+	{
+	  if (msgdomain_write_mo (domain->mlp, domain->domain_name,
+				  domain->file_name))
+	    exit_status = EXIT_FAILURE;
 	}
 
-      domain = domain->next;
+      /* List is not used anymore.  */
+      message_list_free (domain->mlp);
     }
 
   /* Print statistics if requested.  */
-  if (verbose_level > 0 || do_statistics)
+  if (verbose || do_statistics)
     {
       fprintf (stderr,
 	       ngettext ("%d translated message", "%d translated messages",
@@ -391,64 +532,793 @@ usage (status)
       /* xgettext: no-wrap */
       printf (_("\
 Usage: %s [OPTION] filename.po ...\n\
+"), program_name);
+      printf ("\n");
+      /* xgettext: no-wrap */
+      printf (_("\
 Generate binary message catalog from textual translation description.\n\
-\n\
+"));
+      printf ("\n");
+      /* xgettext: no-wrap */
+      printf (_("\
 Mandatory arguments to long options are mandatory for short options too.\n\
-  -a, --alignment=NUMBER      align strings to NUMBER bytes (default: %d)\n\
-  -c, --check                 perform language dependent checks on strings\n\
+"));
+      printf ("\n");
+      /* xgettext: no-wrap */
+      printf (_("\
+Input file location:\n\
+  filename.po ...             input files\n\
   -D, --directory=DIRECTORY   add DIRECTORY to list for input files search\n\
-  -f, --use-fuzzy             use fuzzy entries in output\n\
-  -h, --help                  display this help and exit\n\
-      --no-hash               binary file will not include the hash table\n\
-  -o, --output-file=FILE      specify output file name as FILE\n\
-      --statistics            print statistics about translations\n\
+If input file is -, standard input is read.\n\
+"));
+      printf ("\n");
+      /* xgettext: no-wrap */
+      printf (_("\
+Operation mode:\n\
+  -j, --java                  Java mode: generate a Java ResourceBundle class\n\
+      --java2                 like --java, and assume Java2 (JDK 1.2 or higher)\n\
+      --tcl                   Tcl mode: generate a tcl/msgcat .msg file\n\
+"));
+      printf ("\n");
+      /* xgettext: no-wrap */
+      printf (_("\
+Output file location:\n\
+  -o, --output-file=FILE      write output to specified file\n\
       --strict                enable strict Uniforum mode\n\
-  -v, --verbose               list input file anomalies\n\
+If output file is -, output is written to standard output.\n\
+"));
+      printf ("\n");
+      /* xgettext: no-wrap */
+      printf (_("\
+Output file location in Java mode:\n\
+  -r, --resource=RESOURCE     resource name\n\
+  -l, --locale=LOCALE         locale name, either language or language_COUNTRY\n\
+  -d DIRECTORY                base directory of classes directory hierarchy\n\
+The class name is determined by appending the locale name to the resource name,\n\
+separated with an underscore.  The -d option is mandatory.  The class is\n\
+written under the specified directory.\n\
+"));
+      printf ("\n");
+      /* xgettext: no-wrap */
+      printf (_("\
+Output file location in Tcl mode:\n\
+  -l, --locale=LOCALE         locale name, either language or language_COUNTRY\n\
+  -d DIRECTORY                base directory of .msg message catalogs\n\
+The -l and -d options are mandatory.  The .msg file is written in the\n\
+specified directory.\n\
+"));
+      printf ("\n");
+      /* xgettext: no-wrap */
+      printf (_("\
+Input file interpretation:\n\
+  -c, --check                 perform all the checks implied by\n\
+                                --check-format, --check-header, --check-domain\n\
+      --check-format          check language dependent format strings\n\
+      --check-header          verify presence and contents of the header entry\n\
+      --check-domain          check for conflicts between domain directives\n\
+                                and the --output-file option\n\
+  -C, --check-compatibility   check that GNU msgfmt behaves like X/Open msgfmt\n\
+      --check-accelerators[=CHAR]  check presence of keyboard accelerators for\n\
+                                menu items\n\
+  -f, --use-fuzzy             use fuzzy entries in output\n\
+"));
+      printf ("\n");
+      /* xgettext: no-wrap */
+      printf (_("\
+Output details:\n\
+  -a, --alignment=NUMBER      align strings to NUMBER bytes (default: %d)\n\
+      --no-hash               binary file will not include the hash table\n\
+"), DEFAULT_OUTPUT_ALIGNMENT);
+      printf ("\n");
+      /* xgettext: no-wrap */
+      printf (_("\
+Informative output:\n\
+  -h, --help                  display this help and exit\n\
   -V, --version               output version information and exit\n\
-\n\
-Giving the -v option more than once increases the verbosity level.\n\
-\n\
-If input file is -, standard input is read.  If output file is -,\n\
-output is written to standard output.\n"),
-	      program_name, DEFAULT_OUTPUT_ALIGNMENT);
-      fputs (_("Report bugs to <bug-gnu-utils@gnu.org>.\n"), stdout);
+      --statistics            print statistics about translations\n\
+  -v, --verbose               increase verbosity level\n\
+"));
+      printf ("\n");
+      fputs (_("Report bugs to <bug-gnu-gettext@gnu.org>.\n"), stdout);
     }
 
   exit (status);
 }
 
 
-static struct msg_domain *
-new_domain (name)
-     const char *name;
+static const char *
+add_mo_suffix (fname)
+     const char *fname;
 {
-  struct msg_domain **p_dom = &domain;
+  size_t len;
+  char *result;
+
+  len = strlen (fname);
+  if (len > 3 && memcmp (fname + len - 3, ".mo", 3) == 0)
+    return fname;
+  if (len > 4 && memcmp (fname + len - 4, ".gmo", 4) == 0)
+    return fname;
+  result = (char *) xmalloc (len + 4);
+  stpcpy (stpcpy (result, fname), ".mo");
+  return result;
+}
+
+
+static struct msg_domain *
+new_domain (name, file_name)
+     const char *name;
+     const char *file_name;
+{
+  struct msg_domain **p_dom = &domain_list;
 
   while (*p_dom != NULL && strcmp (name, (*p_dom)->domain_name) != 0)
     p_dom = &(*p_dom)->next;
 
   if (*p_dom == NULL)
     {
-      *p_dom = (struct msg_domain *) xmalloc (sizeof (**p_dom));
+      struct msg_domain *domain;
 
-      if (init_hash (&(*p_dom)->symbol_tab, 100) != 0)
-	error (EXIT_FAILURE, errno, _("while creating hash table"));
-      (*p_dom)->domain_name = name;
-      (*p_dom)->next = NULL;
+      domain = (struct msg_domain *) xmalloc (sizeof (struct msg_domain));
+      domain->mlp = message_list_alloc (true);
+      domain->domain_name = name;
+      domain->file_name = file_name;
+      domain->next = NULL;
+      *p_dom = domain;
     }
 
   return *p_dom;
 }
 
 
-/* The address of this function will be assigned to the hook in the error
-   functions.  */
-static void
-error_print ()
+static bool
+is_nonobsolete (mp)
+     const message_ty *mp;
 {
-  /* We don't want the program name to be printed in messages.  Emacs'
-     compile.el does not like this.  */
+  return !mp->obsolete;
 }
+
+
+static sigjmp_buf sigfpe_exit;
+
+#if USE_SIGINFO
+
+static int sigfpe_code;
+
+/* Signal handler called in case of arithmetic exception (e.g. division
+   by zero) during plural_eval.  */
+static void
+sigfpe_handler (sig, sip, scp)
+     int sig;
+     siginfo_t *sip;
+     void *scp;
+{
+  sigfpe_code = sip->si_code;
+  siglongjmp (sigfpe_exit, 1);
+}
+
+#else
+
+/* Signal handler called in case of arithmetic exception (e.g. division
+   by zero) during plural_eval.  */
+static void
+sigfpe_handler (sig)
+     int sig;
+{
+  siglongjmp (sigfpe_exit, 1);
+}
+
+#endif
+
+static void
+install_sigfpe_handler ()
+{
+#if USE_SIGINFO
+  struct sigaction action;
+  action.sa_sigaction = sigfpe_handler;
+  action.sa_flags = SA_SIGINFO;
+  sigemptyset (&action.sa_mask);
+  sigaction (SIGFPE, &action, (struct sigaction *) NULL);
+#else
+  signal (SIGFPE, sigfpe_handler);
+#endif
+}
+
+static void
+uninstall_sigfpe_handler ()
+{
+#if USE_SIGINFO
+  struct sigaction action;
+  action.sa_handler = SIG_DFL;
+  action.sa_flags = 0;
+  sigemptyset (&action.sa_mask);
+  sigaction (SIGFPE, &action, (struct sigaction *) NULL);
+#else
+  signal (SIGFPE, SIG_DFL);
+#endif
+}
+
+/* Check the values returned by plural_eval.  */
+static void
+check_plural_eval (plural_expr, nplurals_value, header_pos)
+     struct expression *plural_expr;
+     unsigned long nplurals_value;
+     const lex_pos_ty *header_pos;
+{
+  if (sigsetjmp (sigfpe_exit, 1) == 0)
+    {
+      unsigned long n;
+
+      /* Protect against arithmetic exceptions.  */
+      install_sigfpe_handler ();
+
+      for (n = 0; n <= 1000; n++)
+	{
+	  unsigned long val = plural_eval (plural_expr, n);
+
+	  if ((long) val < 0)
+	    {
+	      /* End of protection against arithmetic exceptions.  */
+	      uninstall_sigfpe_handler ();
+
+	      error_with_progname = false;
+	      error_at_line (0, 0,
+			     header_pos->file_name, header_pos->line_number,
+			     _("plural expression can produce negative values"));
+	      error_with_progname = true;
+	      exit_status = EXIT_FAILURE;
+	      return;
+	    }
+	  else if (val >= nplurals_value)
+	    {
+	      /* End of protection against arithmetic exceptions.  */
+	      uninstall_sigfpe_handler ();
+
+	      error_with_progname = false;
+	      error_at_line (0, 0,
+			     header_pos->file_name, header_pos->line_number,
+			     _("nplurals = %lu but plural expression can produce values as large as %lu"),
+			     nplurals_value, val);
+	      error_with_progname = true;
+	      exit_status = EXIT_FAILURE;
+	      return;
+	    }
+	}
+
+      /* End of protection against arithmetic exceptions.  */
+      uninstall_sigfpe_handler ();
+    }
+  else
+    {
+      /* Caught an arithmetic exception.  */
+      const char *msg;
+
+      /* End of protection against arithmetic exceptions.  */
+      uninstall_sigfpe_handler ();
+
+#if USE_SIGINFO
+      switch (sigfpe_code)
+#endif
+	{
+#if USE_SIGINFO
+# ifdef FPE_INTDIV
+	case FPE_INTDIV:
+	  msg = _("plural expression can produce division by zero");
+	  break;
+# endif
+# ifdef FPE_INTOVF
+	case FPE_INTOVF:
+	  msg = _("plural expression can produce integer overflow");
+	  break;
+# endif
+	default:
+#endif
+	  msg = _("plural expression can produce arithmetic exceptions, possibly division by zero");
+	}
+
+      error_with_progname = false;
+      error_at_line (0, 0, header_pos->file_name, header_pos->line_number, msg);
+      error_with_progname = true;
+      exit_status = EXIT_FAILURE;
+    }
+}
+
+
+/* Perform plural expression checking.  */
+static void
+check_plural (mlp)
+     message_list_ty *mlp;
+{
+  const lex_pos_ty *has_plural;
+  unsigned long min_nplurals;
+  const lex_pos_ty *min_pos;
+  unsigned long max_nplurals;
+  const lex_pos_ty *max_pos;
+  size_t j;
+  message_ty *header;
+
+  /* Determine whether mlp has plural entries.  */
+  has_plural = NULL;
+  min_nplurals = ULONG_MAX;
+  min_pos = NULL;
+  max_nplurals = 0;
+  max_pos = NULL;
+  for (j = 0; j < mlp->nitems; j++)
+    {
+      message_ty *mp = mlp->item[j];
+
+      if (mp->msgid_plural != NULL)
+	{
+	  const char *p;
+	  const char *p_end;
+	  unsigned long n;
+
+	  if (has_plural == NULL)
+	    has_plural = &mp->pos;
+
+	  n = 0;
+	  for (p = mp->msgstr, p_end = p + mp->msgstr_len;
+	       p < p_end;
+	       p += strlen (p) + 1)
+	    n++;
+	  if (min_nplurals > n)
+	    {
+	      min_nplurals = n;
+	      min_pos = &mp->pos;
+	    }
+	  if (max_nplurals > n)
+	    {
+	      max_nplurals = n;
+	      min_pos = &mp->pos;
+	    }
+	}
+    }
+
+  /* Look at the plural entry for this domain.
+     Cf, function extract_plural_expression.  */
+  header = message_list_search (mlp, "");
+  if (header != NULL)
+    {
+      const char *nullentry;
+      const char *plural;
+      const char *nplurals;
+      bool try_to_help = false;
+
+      nullentry = header->msgstr;
+
+      plural = strstr (nullentry, "plural=");
+      nplurals = strstr (nullentry, "nplurals=");
+      if (plural == NULL && has_plural != NULL)
+	{
+	  error_with_progname = false;
+	  error_at_line (0, 0, has_plural->file_name, has_plural->line_number,
+			 _("message catalog has plural form translations..."));
+	  --error_message_count;
+	  error_at_line (0, 0, header->pos.file_name, header->pos.line_number,
+			 _("...but header entry lacks a \"plural=EXPRESSION\" attribute"));
+	  error_with_progname = true;
+	  try_to_help = true;
+	  exit_status = EXIT_FAILURE;
+	}
+      if (nplurals == NULL && has_plural != NULL)
+	{
+	  error_with_progname = false;
+	  error_at_line (0, 0, has_plural->file_name, has_plural->line_number,
+			 _("message catalog has plural form translations..."));
+	  --error_message_count;
+	  error_at_line (0, 0, header->pos.file_name, header->pos.line_number,
+			 _("...but header entry lacks a \"nplurals=INTEGER\" attribute"));
+	  error_with_progname = true;
+	  try_to_help = true;
+	  exit_status = EXIT_FAILURE;
+	}
+      if (plural != NULL && nplurals != NULL)
+	{
+	  const char *endp;
+	  unsigned long int nplurals_value;
+	  struct parse_args args;
+	  struct expression *plural_expr;
+
+	  /* First check the number.  */
+	  nplurals += 9;
+	  while (*nplurals != '\0' && isspace ((unsigned char) *nplurals))
+	    ++nplurals;
+	  endp = nplurals;
+	  nplurals_value = 0;
+	  if (*nplurals >= '0' && *nplurals <= '9')
+	    nplurals_value = strtoul (nplurals, (char **) &endp, 10);
+	  if (nplurals == endp)
+	    {
+	      error_with_progname = false;
+	      error_at_line (0, 0,
+			     header->pos.file_name, header->pos.line_number,
+			     _("invalid nplurals value"));
+	      error_with_progname = true;
+	      try_to_help = true;
+	      exit_status = EXIT_FAILURE;
+	    }
+
+	  /* Then check the expression.  */
+	  plural += 7;
+	  args.cp = plural;
+	  if (parse_plural_expression (&args) != 0)
+	    {
+	      error_with_progname = false;
+	      error_at_line (0, 0,
+			     header->pos.file_name, header->pos.line_number,
+			     _("invalid plural expression"));
+	      error_with_progname = true;
+	      try_to_help = true;
+	      exit_status = EXIT_FAILURE;
+	    }
+	  plural_expr = args.res;
+
+	  /* See whether nplurals and plural fit together.  */
+	  if (exit_status != EXIT_FAILURE)
+	    check_plural_eval (plural_expr, nplurals_value, &header->pos);
+
+	  /* Check the number of plurals of the translations.  */
+	  if (exit_status != EXIT_FAILURE)
+	    {
+	      if (min_nplurals < nplurals_value)
+		{
+		  error_with_progname = false;
+		  error_at_line (0, 0,
+				 header->pos.file_name, header->pos.line_number,
+				 _("nplurals = %lu..."), nplurals_value);
+		  --error_message_count;
+		  error_at_line (0, 0, min_pos->file_name, min_pos->line_number,
+				 ngettext ("...but some messages have only one plural form",
+					   "...but some messages have only %lu plural forms",
+					   min_nplurals),
+				 min_nplurals);
+		  error_with_progname = true;
+		  exit_status = EXIT_FAILURE;
+		}
+	      else if (max_nplurals > nplurals_value)
+		{
+		  error_with_progname = false;
+		  error_at_line (0, 0,
+				 header->pos.file_name, header->pos.line_number,
+				 _("nplurals = %lu..."), nplurals_value);
+		  --error_message_count;
+		  error_at_line (0, 0, max_pos->file_name, max_pos->line_number,
+				 ngettext ("...but some messages have one plural form",
+					   "...but some messages have %lu plural forms",
+					   max_nplurals),
+				 max_nplurals);
+		  error_with_progname = true;
+		  exit_status = EXIT_FAILURE;
+		}
+	      /* The only valid case is max_nplurals <= n <= min_nplurals,
+		 which means either has_plural == NULL or
+		 max_nplurals = n = min_nplurals.  */
+	    }
+	}
+      /* Try to help the translator by looking up the right plural formula
+	 for her.  */
+      if (try_to_help)
+	{
+	  const char *language;
+
+	  language = strstr (nullentry, "Language-Team: ");
+	  if (language != NULL)
+	    {
+	      language += 15;
+	      for (j = 0; j < plural_table_size; j++)
+		if (strncmp (language,
+			     plural_table[j].language,
+			     strlen (plural_table[j].language)) == 0)
+		  {
+		    char *recommended =
+		      xasprintf ("Plural-Forms: %s\\n", plural_table[j].value);
+		    fprintf (stderr,
+			     _("Try using the following, valid for %s:\n"),
+			     plural_table[j].language);
+		    fprintf (stderr, "\"%s\"\n", recommended);
+		    free (recommended);
+		    break;
+		  }
+	    }
+	}
+    }
+  else if (has_plural != NULL)
+    {
+      error_with_progname = false;
+      error_at_line (0, 0, has_plural->file_name, has_plural->line_number,
+		     _("message catalog has plural form translations, but lacks a header entry with \"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\""));
+      error_with_progname = true;
+      exit_status = EXIT_FAILURE;
+    }
+}
+
+
+/* Perform miscellaneous checks on a message.  */
+static void
+check_pair (msgid, msgid_pos, msgid_plural, msgstr, msgstr_len, msgstr_pos,
+	    is_format)
+     const char *msgid;
+     const lex_pos_ty *msgid_pos;
+     const char *msgid_plural;
+     const char *msgstr;
+     size_t msgstr_len;
+     const lex_pos_ty *msgstr_pos;
+     enum is_format is_format[NFORMATS];
+{
+  int has_newline;
+  size_t i;
+  unsigned int j;
+  const char *p;
+
+  /* If the msgid string is empty we have the special entry reserved for
+     information about the translation.  */
+  if (msgid[0] == '\0')
+    return;
+
+  /* Test 1: check whether all or none of the strings begin with a '\n'.  */
+  has_newline = (msgid[0] == '\n');
+#define TEST_NEWLINE(p) (p[0] == '\n')
+  if (msgid_plural != NULL)
+    {
+      if (TEST_NEWLINE(msgid_plural) != has_newline)
+	{
+	  error_with_progname = false;
+	  error_at_line (0, 0, msgid_pos->file_name, msgid_pos->line_number,
+			 _("\
+`msgid' and `msgid_plural' entries do not both begin with '\\n'"));
+	  error_with_progname = true;
+	  exit_status = EXIT_FAILURE;
+	}
+      for (p = msgstr, j = 0; p < msgstr + msgstr_len; p += strlen (p) + 1, j++)
+	if (TEST_NEWLINE(p) != has_newline)
+	  {
+	    error_with_progname = false;
+	    error_at_line (0, 0, msgid_pos->file_name, msgid_pos->line_number,
+			   _("\
+`msgid' and `msgstr[%u]' entries do not both begin with '\\n'"), j);
+	    error_with_progname = true;
+	    exit_status = EXIT_FAILURE;
+	  }
+    }
+  else
+    {
+      if (TEST_NEWLINE(msgstr) != has_newline)
+	{
+	  error_with_progname = false;
+	  error_at_line (0, 0, msgid_pos->file_name, msgid_pos->line_number,
+			 _("\
+`msgid' and `msgstr' entries do not both begin with '\\n'"));
+	  error_with_progname = true;
+	  exit_status = EXIT_FAILURE;
+	}
+    }
+#undef TEST_NEWLINE
+
+  /* Test 2: check whether all or none of the strings end with a '\n'.  */
+  has_newline = (msgid[strlen (msgid) - 1] == '\n');
+#define TEST_NEWLINE(p) (p[0] != '\0' && p[strlen (p) - 1] == '\n')
+  if (msgid_plural != NULL)
+    {
+      if (TEST_NEWLINE(msgid_plural) != has_newline)
+	{
+	  error_with_progname = false;
+	  error_at_line (0, 0, msgid_pos->file_name, msgid_pos->line_number,
+			 _("\
+`msgid' and `msgid_plural' entries do not both end with '\\n'"));
+	  error_with_progname = true;
+	  exit_status = EXIT_FAILURE;
+	}
+      for (p = msgstr, j = 0; p < msgstr + msgstr_len; p += strlen (p) + 1, j++)
+	if (TEST_NEWLINE(p) != has_newline)
+	  {
+	    error_with_progname = false;
+	    error_at_line (0, 0, msgid_pos->file_name, msgid_pos->line_number,
+			   _("\
+`msgid' and `msgstr[%u]' entries do not both end with '\\n'"), j);
+	    error_with_progname = true;
+	    exit_status = EXIT_FAILURE;
+	  }
+    }
+  else
+    {
+      if (TEST_NEWLINE(msgstr) != has_newline)
+	{
+	  error_with_progname = false;
+	  error_at_line (0, 0, msgid_pos->file_name, msgid_pos->line_number,
+			 _("\
+`msgid' and `msgstr' entries do not both end with '\\n'"));
+	  error_with_progname = true;
+	  exit_status = EXIT_FAILURE;
+	}
+    }
+#undef TEST_NEWLINE
+
+  if (check_compatibility && msgid_plural != NULL)
+    {
+      error_with_progname = false;
+      error_at_line (0, 0, msgid_pos->file_name, msgid_pos->line_number,
+		     _("plural handling is a GNU gettext extension"));
+      error_with_progname = true;
+      exit_status = EXIT_FAILURE;
+    }
+
+  if (check_format_strings)
+    /* Test 3: Check whether both formats strings contain the same number
+       of format specifications.
+       We check only those messages for which the msgid's is_format flag
+       is one of 'yes' or 'possible'.  We don't check msgids with is_format
+       'no' or 'impossible', to obey the programmer's order.  We don't check
+       msgids with is_format 'undecided' because that would introduce too
+       many checks, thus forcing the programmer to add "xgettext: no-c-format"
+       anywhere where a translator wishes to use a percent sign.  */
+    for (i = 0; i < NFORMATS; i++)
+      if (possible_format_p (is_format[i]))
+	{
+	  /* At runtime, we can assume the program passes arguments that
+	     fit well for msgid.  We must signal an error if msgstr wants
+	     more arguments that msgid accepts.
+	     If msgstr wants fewer arguments than msgid, it wouldn't lead
+	     to a crash at runtime, but we nevertheless give an error because
+	     1) this situation occurs typically after the programmer has
+		added some arguments to msgid, so we must make the translator
+		specially aware of it (more than just "fuzzy"),
+	     2) it is generally wrong if a translation wants to ignore
+		arguments that are used by other translations.  */
+
+	  struct formatstring_parser *parser = formatstring_parsers[i];
+	  void *msgid_descr =
+	    parser->parse (msgid_plural != NULL ? msgid_plural : msgid);
+
+	  if (msgid_descr != NULL)
+	    {
+	      char buf[18+1];
+	      const char *pretty_msgstr = "msgstr";
+	      const char *p_end = msgstr + msgstr_len;
+	      const char *p;
+
+	      for (p = msgstr, j = 0; p < p_end; p += strlen (p) + 1, j++)
+		{
+		  void *msgstr_descr;
+
+		  if (msgid_plural != NULL)
+		    {
+		      sprintf (buf, "msgstr[%u]", j);
+		      pretty_msgstr = buf;
+		    }
+
+		  msgstr_descr = parser->parse (p);
+
+		  if (msgstr_descr != NULL)
+		    {
+		      if (parser->check (msgid_pos, msgid_descr, msgstr_descr,
+					 msgid_plural == NULL,
+					 true, pretty_msgstr))
+			exit_status = EXIT_FAILURE;
+
+		      parser->free (msgstr_descr);
+		    }
+		  else
+		    {
+		      error_with_progname = false;
+		      error_at_line (0, 0, msgid_pos->file_name,
+				     msgid_pos->line_number,
+				     _("\
+'%s' is not a valid %s format string, unlike 'msgid'"),
+				     pretty_msgstr, format_language_pretty[i]);
+		      error_with_progname = true;
+		      exit_status = EXIT_FAILURE;
+		    }
+		}
+
+	      parser->free (msgid_descr);
+	    }
+	}
+
+  if (check_accelerators && msgid_plural == NULL)
+    /* Test 4: Check that if msgid is a menu item with a keyboard accelerator,
+       the msgstr has an accelerator as well.  A keyboard accelerator is
+       designated by an immediately preceding '&'.  We cannot check whether
+       two accelerators collide, only whether the translator has bothered
+       thinking about them.  */
+    {
+      const char *p;
+
+      /* We are only interested in msgids that contain exactly one '&'.  */
+      p = strchr (msgid, accelerator_char);
+      if (p != NULL && strchr (p + 1, accelerator_char) == NULL)
+	{
+	  /* Count the number of '&' in msgstr, but ignore '&&'.  */
+	  unsigned int count = 0;
+
+	  for (p = msgstr; (p = strchr (p, accelerator_char)) != NULL; p++)
+	    if (p[1] == accelerator_char)
+	      p++;
+	    else
+	      count++;
+
+	  if (count == 0)
+	    {
+	      error_with_progname = false;
+	      error_at_line (0, 0, msgid_pos->file_name, msgid_pos->line_number,
+			     _("msgstr lacks the keyboard accelerator mark '%c'"),
+			     accelerator_char);
+	      error_with_progname = true;
+	    }
+	  else if (count > 1)
+	    {
+	      error_with_progname = false;
+	      error_at_line (0, 0, msgid_pos->file_name, msgid_pos->line_number,
+			     _("msgstr has too many keyboard accelerator marks '%c'"),
+			     accelerator_char);
+	      error_with_progname = true;
+	    }
+	}
+    }
+}
+
+
+/* Perform miscellaneous checks on a header entry.  */
+static void
+check_header_entry (msgstr_string)
+     const char *msgstr_string;
+{
+  static const char *required_fields[] =
+  {
+    "Project-Id-Version", "PO-Revision-Date", "Last-Translator",
+    "Language-Team", "MIME-Version", "Content-Type",
+    "Content-Transfer-Encoding"
+  };
+  static const char *default_values[] =
+  {
+    "PACKAGE VERSION", "YEAR-MO-DA", "FULL NAME", "LANGUAGE", NULL,
+    "text/plain; charset=CHARSET", "ENCODING"
+  };
+  const size_t nfields = SIZEOF (required_fields);
+  int initial = -1;
+  int cnt;
+
+  for (cnt = 0; cnt < nfields; ++cnt)
+    {
+      char *endp = strstr (msgstr_string, required_fields[cnt]);
+
+      if (endp == NULL)
+	multiline_error (xasprintf ("%s: ", gram_pos.file_name),
+			 xasprintf (_("headerfield `%s' missing in header\n"),
+				    required_fields[cnt]));
+      else if (endp != msgstr_string && endp[-1] != '\n')
+	multiline_error (xasprintf ("%s: ", gram_pos.file_name),
+			 xasprintf (_("\
+header field `%s' should start at beginning of line\n"),
+				    required_fields[cnt]));
+      else if (default_values[cnt] != NULL
+	       && strncmp (default_values[cnt],
+			   endp + strlen (required_fields[cnt]) + 2,
+			   strlen (default_values[cnt])) == 0)
+	{
+	  if (initial != -1)
+	    {
+	      multiline_error (xasprintf ("%s: ", gram_pos.file_name),
+			       xstrdup (_("\
+some header fields still have the initial default value\n")));
+	      initial = -1;
+	      break;
+	    }
+	  else
+	    initial = cnt;
+	}
+    }
+
+  if (initial != -1)
+    multiline_error (xasprintf ("%s: ", gram_pos.file_name),
+		     xasprintf (_("\
+field `%s' still has initial default value\n"),
+				required_fields[initial]));
+}
+
+
+/* The rest of the file is similar to read-po.c.  The differences are:
+   - Comments are not stored, they are discarded right away.
+   - The header entry check is performed on-the-fly.
+ */
 
 
 /* Prepare for first message.  */
@@ -457,11 +1327,14 @@ format_constructor (that)
      po_ty *that;
 {
   msgfmt_class_ty *this = (msgfmt_class_ty *) that;
+  size_t i;
 
-  this->is_fuzzy = 0;
-  this->is_c_format = undecided;
+  this->is_fuzzy = false;
+  for (i = 0; i < NFORMATS; i++)
+    this->is_format[i] = undecided;
   this->do_wrap = undecided;
-  this->has_header_entry = 0;
+  this->has_header_entry = false;
+  this->has_nonfuzzy_header_entry = false;
 }
 
 
@@ -472,13 +1345,31 @@ format_debrief (that)
 {
   msgfmt_class_ty *this = (msgfmt_class_ty *) that;
 
-  /* Test whether header entry was found.
-     FIXME: Should do this even if not in verbose mode, because the
-     consequences are not harmless.  But it breaks the test suite.  */
-  if (verbose_level > 0 && this->has_header_entry == 0)
-    error (0, 0, _("%s: warning: PO file header missing, fuzzy, or invalid\n\
-%*s  warning: charset conversion will not work"),
-	   gram_pos.file_name, (int) strlen (gram_pos.file_name), "");
+  /* Test whether header entry was found.  */
+  if (check_header)
+    {
+      if (!this->has_header_entry)
+	{
+	  multiline_error (xasprintf ("%s: ", gram_pos.file_name),
+			   xasprintf (_("\
+warning: PO file header missing or invalid\n")));
+	  multiline_error (NULL,
+			   xasprintf (_("\
+warning: charset conversion will not work\n")));
+	}
+      else if (!this->has_nonfuzzy_header_entry)
+	{
+	  /* Has only a fuzzy header entry.  Since the versions 0.10.xx
+	     ignore a fuzzy header entry and even give an error on it, we
+	     give a warning, to increase operability with these older
+	     msgfmt versions.  This warning can go away in January 2003.  */
+	  multiline_warning (xasprintf ("%s: ", gram_pos.file_name),
+			     xasprintf (_("warning: PO file header fuzzy\n")));
+	  multiline_warning (NULL,
+			     xasprintf (_("\
+warning: older versions of msgfmt will give an error on this\n")));
+	}
+    }
 }
 
 
@@ -490,7 +1381,7 @@ format_directive_domain (pop, name)
 {
   /* If no output file was given, we change it with each `domain'
      directive.  */
-  if (output_file_name == NULL)
+  if (!java_mode && !tcl_mode && output_file_name == NULL)
     {
       size_t correct;
 
@@ -511,13 +1402,11 @@ domain name \"%s\" not suitable as file name: will use prefix"), name);
 	}
 
       /* Set new domain.  */
-      current_domain = new_domain (name);
+      current_domain = new_domain (name, add_mo_suffix (name));
     }
   else
     {
-      if (verbose_level > 0)
-	/* We don't change the exit status here because this is really
-	   only an information.  */
+      if (check_domain)
 	error (0, 0, _("`domain %s' directive ignored"), name);
 
       /* NAME was allocated in po-gram.y but is not used anywhere.  */
@@ -529,7 +1418,7 @@ domain name \"%s\" not suitable as file name: will use prefix"), name);
 /* Process `msgid'/`msgstr' pair from .po file.  */
 static void
 format_directive_message (that, msgid_string, msgid_pos, msgid_plural,
-			  msgstr_string, msgstr_len, msgstr_pos)
+			  msgstr_string, msgstr_len, msgstr_pos, obsolete)
      po_ty *that;
      char *msgid_string;
      lex_pos_ty *msgid_pos;
@@ -537,155 +1426,109 @@ format_directive_message (that, msgid_string, msgid_pos, msgid_plural,
      char *msgstr_string;
      size_t msgstr_len;
      lex_pos_ty *msgstr_pos;
+     bool obsolete;
 {
   msgfmt_class_ty *this = (msgfmt_class_ty *) that;
-  struct hashtable_entry *entry;
+  message_ty *mp;
+  size_t i;
 
-  if (msgstr_string[0] == '\0' || (!include_all && this->is_fuzzy))
-    {
-      if (verbose_level > 1)
-	/* We don't change the exit status here because this is really
-	   only an information.  */
-	error_at_line (0, 0, msgstr_pos->file_name, msgstr_pos->line_number,
-		       (msgstr_string[0] == '\0'
-			? _("empty `msgstr' entry ignored")
-			: _("fuzzy `msgstr' entry ignored")));
-
-      /* Free strings allocated in po-gram.y.  */
-      free (msgstr_string);
-
-      /* Increment counter for fuzzy/untranslated messages.  */
-      if (this->is_fuzzy)
-	++msgs_fuzzy;
-      else
-	++msgs_untranslated;
-
-      goto prepare_next;
-    }
-
-  /* Test for header entry.  */
-  if (msgid_string[0] == '\0')
-    {
-      this->has_header_entry = 1;
-
-      /* Do some more tests on test contents of the header entry.  */
-      if (verbose_level > 0)
-	{
-	  static const char *required_fields[] =
-	  {
-	    "Project-Id-Version", "PO-Revision-Date",
-	    "Last-Translator", "Language-Team", "MIME-Version",
-	    "Content-Type", "Content-Transfer-Encoding"
-	  };
-	  static const char *default_values[] =
-	  {
-	    "PACKAGE VERSION", "YEAR-MO-DA", "FULL NAME", "LANGUAGE",
-	    NULL, "text/plain; charset=CHARSET", "ENCODING"
-	  };
-	  const size_t nfields = SIZEOF (required_fields);
-	  int initial = -1;
-	  int cnt;
-
-	  for (cnt = 0; cnt < nfields; ++cnt)
-	    {
-	      char *endp = strstr (msgstr_string, required_fields[cnt]);
-
-	      if (endp == NULL)
-		error (0, 0, _("headerfield `%s' missing in header"),
-		       required_fields[cnt]);
-	      else if (endp != msgstr_string && endp[-1] != '\n')
-		error (0, 0, _("\
-header field `%s' should start at beginning of line"),
-		       required_fields[cnt]);
-	      else if (default_values[cnt] != NULL
-		       && strncmp (default_values[cnt],
-				   endp + strlen (required_fields[cnt]) + 2,
-				   strlen (default_values[cnt])) == 0)
-		{
-		  if (initial != -1)
-		    {
-		      error (0, 0, _("\
-some header fields still have the initial default value"));
-		      initial = -1;
-		      break;
-		    }
-		  else
-		    initial = cnt;
-		}
-	    }
-
-	  if (initial != -1)
-	    error (0, 0, _("field `%s' still has initial default value"),
-		   required_fields[initial]);
-	}
-    }
-  else
-    /* We don't count the header entry in the statistic so place the
-       counter incrementation here.  */
-    if (this->is_fuzzy)
-      ++msgs_fuzzy;
-    else
-      ++msgs_translated;
-
-  /* We found a valid pair of msgid/msgstr.
-     Construct struct to describe msgstr definition.  */
-  entry = (struct hashtable_entry *) xmalloc (sizeof (*entry));
-
-  entry->msgid_plural = msgid_plural;
-  entry->msgstr = msgstr_string;
-  entry->msgstr_len = msgstr_len;
-  entry->pos = *msgstr_pos;
-
-  /* Do some more checks on both strings.  */
-  check_pair (msgid_string, msgid_pos, msgid_plural,
-	      msgstr_string, msgstr_len, msgstr_pos,
-	      do_check && possible_c_format_p (this->is_c_format));
-
-  /* Check whether already a domain is specified.  If not use default
+  /* Check whether already a domain is specified.  If not, use default
      domain.  */
   if (current_domain == NULL)
-    current_domain = new_domain ("messages");
+    current_domain = new_domain (MESSAGE_DOMAIN_DEFAULT,
+				 add_mo_suffix (MESSAGE_DOMAIN_DEFAULT));
 
-  /* We insert the ID/string pair into the hashing table.  But we have
-     to take care for dublicates.  */
-  if (insert_entry (&current_domain->symbol_tab, msgid_string,
-		    strlen (msgid_string) + 1, entry))
+  /* Duplicate checking.  */
+  mp = message_list_search (current_domain->mlp, msgid_string);
+  if (mp)
     {
-      /* We don't need the just constructed entry.  */
-      free (entry);
-
-      if (verbose_level > 0)
-	{
-	  /* We give a fatal error about this, but only if the
-	     translations are different.  Tell the user the old
-	     definition for reference.  */
-	  find_entry (&current_domain->symbol_tab, msgid_string,
-		      strlen (msgid_string) + 1, (void **) &entry);
-	  if (msgstr_len != entry->msgstr_len
-	      || memcmp (msgstr_string, entry->msgstr, msgstr_len) != 0)
-	    {
-	      po_gram_error_at_line (msgid_pos, _("\
-duplicate message definition"));
-	      po_gram_error_at_line (&entry->pos, _("\
+      /* We give a fatal error about this, regardless whether the
+	 translations are equal or different.  This is for consistency
+	 with msgmerge, msgcat and others.  The user can use the
+	 msguniq program to get rid of duplicates.  */
+      po_gram_error_at_line (msgid_pos, _("duplicate message definition"));
+      po_gram_error_at_line (&mp->pos, _("\
 ...this is the location of the first definition"));
 
-	      /* FIXME Should this be always a reason for an exit status != 0?  */
-	      exit_status = EXIT_FAILURE;
-	    }
-	}
-
-      /* We don't need the just constructed entries'
-         parameter string (allocated in po-gram.y).  */
+      /* We don't need the just constructed entries' parameter string
+	 (allocated in po-gram.y).  */
+      free (msgid_string);
       free (msgstr_string);
     }
+  else
+    {
+      /* Construct message to add to the list.
+	 Non-obsolete messages will be output.
+	 Obsolete message go into the list only for duplicate checking.  */
+      mp = message_alloc (NULL, NULL, msgstr_string, msgstr_len, msgstr_pos);
+      mp->msgid = msgid_string;
+      mp->msgid_plural = msgid_plural;
+      mp->obsolete = obsolete;
+      for (i = 0; i < NFORMATS; i++)
+	mp->is_format[i] = this->is_format[i];
 
-prepare_next:
-  /* We do not need the msgid string in any case.  */
-  free (msgid_string);
+      if (!obsolete)
+	{
+	  /* Don't emit untranslated entries.
+	     Also don't emit fuzzy entries, unless --use-fuzzy was specified.
+	     But ignore fuzziness of the header entry.  */
+	  if (msgstr_string[0] == '\0'
+	      || (!include_all && this->is_fuzzy && msgid_string[0] != '\0'))
+	    {
+	      if (check_compatibility)
+		{
+		  error_with_progname = false;
+		  error_at_line (0, 0, msgstr_pos->file_name,
+				 msgstr_pos->line_number,
+				 (msgstr_string[0] == '\0'
+				  ? _("empty `msgstr' entry ignored")
+				  : _("fuzzy `msgstr' entry ignored")));
+		  error_with_progname = true;
+		}
+
+	      /* Increment counter for fuzzy/untranslated messages.  */
+	      if (msgstr_string[0] == '\0')
+		++msgs_untranslated;
+	      else
+		++msgs_fuzzy;
+
+	      mp->obsolete = true;
+	    }
+	  else
+	    {
+	      /* Test for header entry.  */
+	      if (msgid_string[0] == '\0')
+		{
+		  this->has_header_entry = true;
+		  if (!this->is_fuzzy)
+		    this->has_nonfuzzy_header_entry = true;
+
+		  /* Do some more tests on the contents of the header
+		     entry.  */
+		  if (check_header)
+		    check_header_entry (msgstr_string);
+		}
+	      else
+		/* We don't count the header entry in the statistic so place
+		   the counter incrementation here.  */
+		if (this->is_fuzzy)
+		  ++msgs_fuzzy;
+		else
+		  ++msgs_translated;
+
+	      /* Do some more checks on both strings.  */
+	      check_pair (msgid_string, msgid_pos, msgid_plural,
+			  msgstr_string, msgstr_len, msgstr_pos,
+			  this->is_format);
+	    }
+	}
+      message_list_append (current_domain->mlp, mp);
+    }
 
   /* Prepare for next message.  */
-  this->is_fuzzy = 0;
-  this->is_c_format = undecided;
+  this->is_fuzzy = false;
+  for (i = 0; i < NFORMATS; i++)
+    this->is_format[i] = undecided;
   this->do_wrap = undecided;
 }
 
@@ -697,326 +1540,23 @@ format_comment_special (that, s)
      const char *s;
 {
   msgfmt_class_ty *this = (msgfmt_class_ty *) that;
+  bool fuzzy;
 
-  if (strstr (s, "fuzzy") != NULL)
+  po_parse_comment_special (s, &fuzzy, this->is_format, &this->do_wrap);
+
+  if (fuzzy)
     {
-      static int warned = 0;
+      static bool warned = false;
 
-      if (!include_all && verbose_level > 1 && warned == 0)
+      if (!include_all && check_compatibility && !warned)
 	{
-	  warned = 1;
+	  warned = true;
 	  error (0, 0, _("\
 %s: warning: source file contains fuzzy translation"),
-                 gram_pos.file_name);
+		 gram_pos.file_name);
 	}
 
-      this->is_fuzzy = 1;
-    }
-  this->is_c_format = parse_c_format_description_string (s);
-  this->do_wrap = parse_c_width_description_string (s);
-}
-
-
-static int
-compare_id (pval1, pval2)
-     const void *pval1;
-     const void *pval2;
-{
-  return strcmp (((struct id_str_pair *) pval1)->id,
-		 ((struct id_str_pair *) pval2)->id);
-}
-
-
-static void
-write_table (output_file, tab)
-     FILE *output_file;
-     hash_table *tab;
-{
-  static char null = '\0';
-  /* This should be explained:
-     Each string has an associate hashing value V, computed by a fixed
-     function.  To locate the string we use open addressing with double
-     hashing.  The first index will be V % M, where M is the size of the
-     hashing table.  If no entry is found, iterating with a second,
-     independent hashing function takes place.  This second value will
-     be 1 + V % (M - 2).
-     The approximate number of probes will be
-
-       for unsuccessful search:  (1 - N / M) ^ -1
-       for successful search:    - (N / M) ^ -1 * ln (1 - N / M)
-
-     where N is the number of keys.
-
-     If we now choose M to be the next prime bigger than 4 / 3 * N,
-     we get the values
-			 4   and   1.85  resp.
-     Because unsuccesful searches are unlikely this is a good value.
-     Formulas: [Knuth, The Art of Computer Programming, Volume 3,
-		Sorting and Searching, 1973, Addison Wesley]  */
-  nls_uint32 hash_tab_size = no_hash_table ? 0
-					   : next_prime ((tab->filled * 4)
-							 / 3);
-  nls_uint32 *hash_tab;
-
-  /* Header of the .mo file to be written.  */
-  struct mo_file_header header;
-  struct id_str_pair *msg_arr;
-  void *ptr;
-  size_t cnt;
-  const void *id;
-  size_t id_len;
-  struct hashtable_entry *entry;
-  struct string_desc sd;
-
-  /* Fill the structure describing the header.  */
-  header.magic = _MAGIC;		/* Magic number.  */
-  header.revision = MO_REVISION_NUMBER;	/* Revision number of file format.  */
-  header.nstrings = tab->filled;	/* Number of strings.  */
-  header.orig_tab_offset = sizeof (header);
-			/* Offset of table for original string offsets.  */
-  header.trans_tab_offset = sizeof (header)
-			    + tab->filled * sizeof (struct string_desc);
-			/* Offset of table for translation string offsets.  */
-  header.hash_tab_size = hash_tab_size;	/* Size of used hashing table.  */
-  header.hash_tab_offset =
-	no_hash_table ? 0 : sizeof (header)
-			    + 2 * (tab->filled * sizeof (struct string_desc));
-			/* Offset of hashing table.  */
-
-  /* Write the header out.  */
-  fwrite (&header, sizeof (header), 1, output_file);
-
-  /* Allocate table for the all elements of the hashing table.  */
-  msg_arr = (struct id_str_pair *) alloca (tab->filled * sizeof (msg_arr[0]));
-
-  /* Read values from hashing table into array.  */
-  for (cnt = 0, ptr = NULL;
-       iterate_table (tab, &ptr, &id, &id_len, (void **) &entry) >= 0;
-       ++cnt)
-    {
-      msg_arr[cnt].id = (char *) id;
-      msg_arr[cnt].id_len = id_len;
-      msg_arr[cnt].id_plural = entry->msgid_plural;
-      msg_arr[cnt].id_plural_len =
-	(entry->msgid_plural != NULL ? strlen (entry->msgid_plural) + 1 : 0);
-      msg_arr[cnt].str = entry->msgstr;
-      msg_arr[cnt].str_len = entry->msgstr_len;
-    }
-
-  /* Sort the table according to original string.  */
-  qsort (msg_arr, tab->filled, sizeof (msg_arr[0]), compare_id);
-
-  /* Set offset to first byte after all the tables.  */
-  sd.offset = roundup (sizeof (header)
-		       + tab->filled * sizeof (sd)
-		       + tab->filled * sizeof (sd)
-		       + hash_tab_size * sizeof (nls_uint32),
-		       alignment);
-
-  /* Write out length and starting offset for all original strings.  */
-  for (cnt = 0; cnt < tab->filled; ++cnt)
-    {
-      /* Subtract 1 because of the terminating NUL.  */
-      sd.length = msg_arr[cnt].id_len + msg_arr[cnt].id_plural_len - 1;
-      fwrite (&sd, sizeof (sd), 1, output_file);
-      sd.offset += roundup (sd.length + 1, alignment);
-    }
-
-  /* Write out length and starting offset for all translation strings.  */
-  for (cnt = 0; cnt < tab->filled; ++cnt)
-    {
-      /* Subtract 1 because of the terminating NUL.  */
-      sd.length = msg_arr[cnt].str_len - 1;
-      fwrite (&sd, sizeof (sd), 1, output_file);
-      sd.offset += roundup (sd.length + 1, alignment);
-    }
-
-  /* Skip this part when no hash table is needed.  */
-  if (!no_hash_table)
-    {
-      /* Allocate room for the hashing table to be written out.  */
-      hash_tab = (nls_uint32 *) alloca (hash_tab_size * sizeof (nls_uint32));
-      memset (hash_tab, '\0', hash_tab_size * sizeof (nls_uint32));
-
-      /* Insert all value in the hash table, following the algorithm described
-	 above.  */
-      for (cnt = 0; cnt < tab->filled; ++cnt)
-	{
-	  nls_uint32 hash_val = hash_string (msg_arr[cnt].id);
-	  nls_uint32 idx = hash_val % hash_tab_size;
-
-	  if (hash_tab[idx] != 0)
-	    {
-	      /* We need the second hashing function.  */
-	      nls_uint32 c = 1 + (hash_val % (hash_tab_size - 2));
-
-	      do
-		if (idx >= hash_tab_size - c)
-		  idx -= hash_tab_size - c;
-		else
-		  idx += c;
-	      while (hash_tab[idx] != 0);
-	    }
-
-	  hash_tab[idx] = cnt + 1;
-	}
-
-      /* Write the hash table out.  */
-      fwrite (hash_tab, sizeof (nls_uint32), hash_tab_size, output_file);
-    }
-
-  /* Write bytes to make first string to be aligned.  */
-  cnt = sizeof (header) + 2 * tab->filled * sizeof (sd)
-	+ hash_tab_size * sizeof (nls_uint32);
-  fwrite (&null, 1, roundup (cnt, alignment) - cnt, output_file);
-
-  /* Now write the original strings.  */
-  for (cnt = 0; cnt < tab->filled; ++cnt)
-    {
-      size_t len = msg_arr[cnt].id_len + msg_arr[cnt].id_plural_len;
-
-      fwrite (msg_arr[cnt].id, msg_arr[cnt].id_len, 1, output_file);
-      if (msg_arr[cnt].id_plural_len > 0)
-	fwrite (msg_arr[cnt].id_plural, msg_arr[cnt].id_plural_len, 1,
-		output_file);
-      fwrite (&null, 1, roundup (len, alignment) - len, output_file);
-    }
-
-  /* Now write the translation strings.  */
-  for (cnt = 0; cnt < tab->filled; ++cnt)
-    {
-      size_t len = msg_arr[cnt].str_len;
-
-      fwrite (msg_arr[cnt].str, len, 1, output_file);
-      fwrite (&null, 1, roundup (len, alignment) - len, output_file);
-
-      free (msg_arr[cnt].str);
-    }
-
-  /* Hashing table is not used anmore.  */
-  delete_hash (tab);
-}
-
-
-static void
-check_pair (msgid, msgid_pos, msgid_plural, msgstr, msgstr_len, msgstr_pos,
-	    is_format)
-     const char *msgid;
-     const lex_pos_ty *msgid_pos;
-     const char *msgid_plural;
-     const char *msgstr;
-     size_t msgstr_len;
-     const lex_pos_ty *msgstr_pos;
-     int is_format;
-{
-  int has_newline;
-  unsigned int i;
-  const char *p;
-  size_t nidfmts, nstrfmts;
-
-  /* If the msgid string is empty we have the special entry reserved for
-     information about the translation.  */
-  if (msgid[0] == '\0')
-    return;
-
-  /* Test 1: check whether all or none of the strings begin with a '\n'.  */
-  has_newline = (msgid[0] == '\n');
-#define TEST_NEWLINE(p) (p[0] == '\n')
-  if (msgid_plural != NULL)
-    {
-      if (TEST_NEWLINE(msgid_plural) != has_newline)
-	{
-	  error_at_line (0, 0, msgid_pos->file_name, msgid_pos->line_number,
-			 _("\
-`msgid' and `msgid_plural' entries do not both begin with '\\n'"));
-	  exit_status = EXIT_FAILURE;
-	}
-      for (p = msgstr, i = 0; p < msgstr + msgstr_len; p += strlen (p) + 1, i++)
-	if (TEST_NEWLINE(p) != has_newline)
-	  {
-	    error_at_line (0, 0, msgid_pos->file_name, msgid_pos->line_number,
-			   _("\
-`msgid' and `msgstr[%u]' entries do not both begin with '\\n'"), i);
-	    exit_status = EXIT_FAILURE;
-	  }
-    }
-  else
-    {
-      if (TEST_NEWLINE(msgstr) != has_newline)
-	{
-	  error_at_line (0, 0, msgid_pos->file_name, msgid_pos->line_number,
-			 _("\
-`msgid' and `msgstr' entries do not both begin with '\\n'"));
-	  exit_status = EXIT_FAILURE;
-	}
-    }
-#undef TEST_NEWLINE
-
-  /* Test 2: check whether all or none of the strings end with a '\n'.  */
-  has_newline = (msgid[strlen (msgid) - 1] == '\n');
-#define TEST_NEWLINE(p) (p[0] != '\0' && p[strlen (p) - 1] == '\n')
-  if (msgid_plural != NULL)
-    {
-      if (TEST_NEWLINE(msgid_plural) != has_newline)
-	{
-	  error_at_line (0, 0, msgid_pos->file_name, msgid_pos->line_number,
-			 _("\
-`msgid' and `msgid_plural' entries do not both end with '\\n'"));
-	  exit_status = EXIT_FAILURE;
-	}
-      for (p = msgstr, i = 0; p < msgstr + msgstr_len; p += strlen (p) + 1, i++)
-	if (TEST_NEWLINE(p) != has_newline)
-	  {
-	    error_at_line (0, 0, msgid_pos->file_name, msgid_pos->line_number,
-			   _("\
-`msgid' and `msgstr[%u]' entries do not both end with '\\n'"), i);
-	    exit_status = EXIT_FAILURE;
-	  }
-    }
-  else
-    {
-      if (TEST_NEWLINE(msgstr) != has_newline)
-	{
-	  error_at_line (0, 0, msgid_pos->file_name, msgid_pos->line_number,
-			 _("\
-`msgid' and `msgstr' entries do not both end with '\\n'"));
-	  exit_status = EXIT_FAILURE;
-	}
-    }
-#undef TEST_NEWLINE
-
-  if (is_format != 0 && msgid_plural == NULL)
-    {
-      /* Test 3: check whether both formats strings contain the same
-	 number of format specifications.  */
-      nidfmts = parse_printf_format (msgid, 0, NULL);
-      nstrfmts = parse_printf_format (msgstr, 0, NULL);
-      if (nidfmts != nstrfmts)
-	{
-	  error_at_line (0, 0, msgid_pos->file_name, msgid_pos->line_number,
-			 _("\
-number of format specifications in `msgid' and `msgstr' does not match"));
-	  exit_status = EXIT_FAILURE;
-	}
-      else
-	{
-	  int *id_args = (int *) alloca (nidfmts * sizeof (int));
-	  int *str_args = (int *) alloca (nstrfmts * sizeof (int));
-	  size_t cnt;
-
-	  (void) parse_printf_format (msgid, nidfmts, id_args);
-	  (void) parse_printf_format (msgstr, nstrfmts, str_args);
-
-	  for (cnt = 0; cnt < nidfmts; ++cnt)
-	    if (id_args[cnt] != str_args[cnt])
-	      {
-		error_at_line (0, 0, msgid_pos->file_name,
-			       msgid_pos->line_number, _("\
-format specifications for argument %lu are not the same"),
-			       (unsigned long) (cnt + 1));
-		exit_status = EXIT_FAILURE;
-	      }
-	}
+      this->is_fuzzy = true;
     }
 }
 
@@ -1025,7 +1565,7 @@ format specifications for argument %lu are not the same"),
    use good data hiding and encapsulation practices, an object
    oriented approach has been taken.  An object instance is allocated,
    and all actions resulting from the parse will be through
-   invokations of method functions of that object.  */
+   invocations of method functions of that object.  */
 
 static po_method_ty format_methods =
 {
@@ -1045,30 +1585,13 @@ static po_method_ty format_methods =
 
 /* Read .po file FILENAME and store translation pairs.  */
 static void
-grammar (filename)
+read_po_file (filename)
      char *filename;
 {
   po_ty *pop;
 
   pop = po_alloc (&format_methods);
-  po_scan (pop, filename);
+  po_lex_pass_obsolete_entries (true);
+  po_scan_file (pop, filename);
   po_free (pop);
-}
-
-
-static const char *
-add_mo_suffix (fname)
-     const char *fname;
-{
-  size_t len;
-  char *result;
-
-  len = strlen (fname);
-  if (len > 3 && memcmp (fname + len - 3, ".mo", 3) == 0)
-    return xstrdup (fname);
-  if (len > 4 && memcmp (fname + len - 4, ".gmo", 4) == 0)
-    return xstrdup (fname);
-  result = (char *) xmalloc (len + 4);
-  stpcpy (stpcpy (result, fname), ".mo");
-  return result;
 }

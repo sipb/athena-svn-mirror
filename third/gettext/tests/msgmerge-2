@@ -1,14 +1,9 @@
 #! /bin/sh
 
+tmpfiles=""
 trap 'rm -fr $tmpfiles' 1 2 3 15
 
-LANGUAGE=
-LC_ALL=
-LC_MESSAGES=
-LANG=
-export LANGUAGE LC_ALL LC_MESSAGES LANG
-
-tmpfiles="mm-test2.in1 mm-test2.in2"
+tmpfiles="$tmpfiles mm-test2.in1 mm-test2.in2"
 cat <<EOF > mm-test2.in1
 msgid "2" msgstr "2"
 msgid "3" msgstr "3"
@@ -23,6 +18,7 @@ EOF
 
 tmpfiles="$tmpfiles mm-test2.out"
 : ${MSGMERGE=msgmerge}
+LC_MESSAGES=C LC_ALL= \
 ${MSGMERGE} -q mm-test2.in1 mm-test2.in2 -o /dev/stdout \
   2> mm-test2.out
 
@@ -30,7 +26,7 @@ tmpfiles="$tmpfiles mm-test2.ok"
 cat << EOF > mm-test2.ok
 mm-test2.in1:3: duplicate message definition
 mm-test2.in1:1: ...this is the location of the first definition
-found 1 fatal error
+msgmerge: found 1 fatal error
 EOF
 
 : ${DIFF=diff}

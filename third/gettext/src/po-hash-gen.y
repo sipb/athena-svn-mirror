@@ -19,14 +19,26 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 
 %{
 
+/* The bison generated parser uses alloca.  AIX 3 forces us to put this
+   declaration at the beginning of the file.  The declaration in bison's
+   skeleton file comes too late.  This must come before <config.h>
+   because <config.h> may include arbitrary system headers.  */
+#if defined _AIX && !defined __GNUC__
+ #pragma alloca
+#endif
+
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
 
-#include <stdio.h>
-
-#include <system.h>
+/* Specification.  */
 #include "po-hash.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "xmalloc.h"
 #include "po.h"
 
 /* Remap normal yacc parser interface names (yyparse, yylex, yyerror, etc),
@@ -89,7 +101,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 %union
 {
   char *string;
-  int number;
+  size_t number;
 }
 
 %type <number> NUMBER
@@ -137,6 +149,12 @@ filepos
 		  po_callback_comment_filepos ($1, $3);
 		  free ($1);
 		}
+	| STRING
+		{
+		  /* GNU style, without line number (e.g. from Pascal .rst) */
+		  po_callback_comment_filepos ($1, (size_t)(-1));
+		  free ($1);
+		}
 	| FILE_KEYWORD COLON STRING COMMA LINE_KEYWORD COLON NUMBER
 		{
 		  /* SunOS style */
@@ -166,7 +184,7 @@ yylex ()
   static char *buf;
   static size_t bufmax;
   size_t bufpos;
-  int n;
+  size_t n;
   int c;
 
   for (;;)

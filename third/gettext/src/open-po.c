@@ -1,5 +1,5 @@
 /* open-po - search for .po file along search path list and open for reading
-   Copyright (C) 1995-1996, 2000, 2001 Free Software Foundation, Inc.
+   Copyright (C) 1995-1996, 2000-2002 Free Software Foundation, Inc.
    Written by Ulrich Drepper <drepper@gnu.ai.mit.edu>, April 1995.
 
 This program is free software; you can redistribute it and/or modify
@@ -20,27 +20,20 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
 # include <config.h>
 #endif
 
+/* Specification.  */
+#include "open-po.h"
+
 #include <errno.h>
 #include <stdio.h>
-#include <sys/types.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include "open-po.h"
 #include "dir-list.h"
-#include "error.h"
-#include "system.h"
-
-#include "libgettext.h"
+#include "pathname.h"
+#include "xmalloc.h"
+#include "gettext.h"
 
 #define _(str) gettext (str)
-
-#ifndef errno
-extern int errno;
-#endif
-
-/* Prototypes for helper functions.  */
-extern char *xstrdup PARAMS ((const char *string));
 
 /* This macro is used to determine the number of elements in an erray.  */
 #define SIZEOF(a) (sizeof(a)/sizeof(a[0]))
@@ -48,20 +41,23 @@ extern char *xstrdup PARAMS ((const char *string));
 /* Open the input file with the name INPUT_NAME.  The ending .po is added
    if necessary.  If INPUT_NAME is not an absolute file name and the file is
    not found, the list of directories in "dir-list.h" is searched.  The
-   file's pathname is returned in *FILE_NAME, for error message purposes.  */
+   file's pathname is returned in *REAL_FILE_NAME_P, for error message
+   purposes.  */
 FILE *
-open_po_file (input_name, file_name)
+open_po_file (input_name, real_file_name_p)
      const char *input_name;
-     char **file_name;
+     char **real_file_name_p;
 {
   static const char *extension[] = { "", ".po", ".pot", };
+  char *file_name;
   FILE *ret_val;
-  int j, k;
+  int j;
+  size_t k;
   const char *dir;
 
   if (strcmp (input_name, "-") == 0 || strcmp (input_name, "/dev/stdin") == 0)
     {
-      *file_name = xstrdup (_("<stdin>"));
+      *real_file_name_p = xstrdup (_("<stdin>"));
       return stdin;
     }
 
@@ -71,14 +67,17 @@ open_po_file (input_name, file_name)
     {
       for (k = 0; k < SIZEOF (extension); ++k)
 	{
-	  *file_name = concatenated_pathname ("", input_name, extension[k]);
+	  file_name = concatenated_pathname ("", input_name, extension[k]);
 
-	  ret_val = fopen (*file_name, "r");
+	  ret_val = fopen (file_name, "r");
 	  if (ret_val != NULL || errno != ENOENT)
-	    /* We found the file.  */
-	    return ret_val;
+	    {
+	      /* We found the file.  */
+	      *real_file_name_p = file_name;
+	      return ret_val;
+	    }
 
-	  free (*file_name);
+	  free (file_name);
 	}
     }
   else
@@ -89,18 +88,21 @@ open_po_file (input_name, file_name)
       for (j = 0; (dir = dir_list_nth (j)) != NULL; ++j)
 	for (k = 0; k < SIZEOF (extension); ++k)
 	  {
-	    *file_name = concatenated_pathname (dir, input_name, extension[k]);
+	    file_name = concatenated_pathname (dir, input_name, extension[k]);
 
-	    ret_val = fopen (*file_name, "r");
+	    ret_val = fopen (file_name, "r");
 	    if (ret_val != NULL || errno != ENOENT)
-	      return ret_val;
+	      {
+		*real_file_name_p = file_name;
+		return ret_val;
+	      }
 
-	    free (*file_name);
+	    free (file_name);
 	  }
     }
 
   /* File does not exist.  */
-  *file_name = xstrdup (input_name);
+  *real_file_name_p = xstrdup (input_name);
   errno = ENOENT;
   return NULL;
 }

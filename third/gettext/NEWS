@@ -1,3 +1,111 @@
+Version 0.11.5 - August 2002
+
+* Bug fixes in the gettext.m4 autoconf macros.
+
+Version 0.11.4 - July 2002
+
+* The tools now know about the ISO C 99 <inttypes.h> format string directive
+  macros PRId64, PRIxMAX etc.
+
+Version 0.11.3 - July 2002
+
+* New program:
+    autopoint - copies standard gettext infrastructure
+
+* The documentation makes it clear that 'gettextize' is a wizard and
+  migration tool.
+
+* gettextize has a new option --dry-run.
+
+* Improved portability to Solaris, OSF/1 and Linux/libc5.
+
+* Improved interoperability with GCC 3.1.
+
+* New documentation sections:
+  - mkinstalldirs
+  - config.h.in
+
+Version 0.11.2 - April 2002
+
+* Bug fixes in the gettext.m4 autoconf macros.
+
+* New documentation section:
+  - Preparing Translatable Strings
+
+Version 0.11.1 - March 2002
+
+* xgettext now also supports Python, Tcl, Awk and Glade.
+
+* msgfmt can create (and msgunfmt can dump) Tcl message catalogs.
+
+* msggrep has a new option -C that allows to search for strings in translator
+  comments.
+
+* Bug fixes in the gettext.m4 autoconf macros.
+
+Version 0.11 - January 2002
+
+* New programs:
+    msgattrib - attribute matching and manipulation on message catalog,
+    msgcat - combines several message catalogs,
+    msgconv - character set conversion for message catalog,
+    msgen - create English message catalog,
+    msgexec - process translations of message catalog,
+    msgfilter - edit translations of message catalog,
+    msggrep - pattern matching on message catalog,
+    msginit - initialize a message catalog,
+    msguniq - unify duplicate translations in message catalog.
+
+* msgfmt can create (and msgunfmt can dump) Java ResourceBundles.
+
+* xgettext now also supports Lisp, Emacs Lisp, librep, Java, ObjectPascal,
+  YCP.
+
+* The tools now know about format strings in languages other than C.
+  They recognize new message flags named lisp-format, elisp-format,
+  librep-format, smalltalk-format, java-format, python-format, ycp-format.
+  When such a flag is present, the msgfmt program verifies the consistency
+  of the translated and the untranslated format string.
+
+* The msgfmt command line options have changed.  Option -c now also checks
+  the header entry, a check which was previously activated through -v.
+  Option -C corresponds to the compatibility checks previously activated
+  through -v -v.  Option -v now only increases verbosity and doesn't
+  influence whether msgfmt succeeds or fails.  A new option
+  --check-accelerators is useful for GUI menu item translations.
+
+* msgcomm now writes its results to standard output by default. The options
+  -d/--default-domain and -p/--output-dir have been removed.
+
+* Manual pages for all the programs have been added.
+
+* PO mode changes:
+  - New key bindings for 'po-previous-fuzzy-entry',
+    'po-previous-obsolete-entry', 'po-previous-translated-entry',
+    'po-previous-untranslated', 'po-undo', 'po-other-window', and
+    'po-select-auxiliary'.
+  - Support for merging two message catalogs, based on msgcat and ediff.
+
+* A fuzzy attribute of the header entry of a message catalog is now ignored
+  by the tools, i.e. it is used even if marked fuzzy.
+
+* gettextize has a new option --intl which determines whether a copy of the
+  intl directory is included in the package.
+
+* The Makefile variable @INTLLIBS@ is deprecated. It is replaced with
+  @LIBINTL@ (in projects without libtool) or @LTLIBINTL@ (in projects with
+  libtool).
+
+* New packaging hints for binary package distributors. See file PACKAGING.
+
+* New documentation sections:
+  - Manipulating
+  - po/LINGUAS
+  - po/Makevars
+  - lib/gettext.h
+  - autoconf macros
+  - Other Programming Languages
+
 Version 0.10.40 - September 2001
 
 * The libintl library is now covered by the GNU LGPL.  The tools are still

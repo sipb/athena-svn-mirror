@@ -1,8 +1,9 @@
 #! /bin/sh
 
+tmpfiles=""
 trap 'rm -fr $tmpfiles' 1 2 3 15
 
-tmpfiles="mf-test4.po"
+tmpfiles="$tmpfiles mf-test4.po"
 cat <<EOF >mf-test4.po
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR Free Software Foundation, Inc.
@@ -17,7 +18,7 @@ msgstr ""
 "Language-Team: test <test@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
-"Content-Transfer-Encoding: 8-bit\n"
+"Content-Transfer-Encoding: 8bit\n"
 #
 #, no-c-format
 msgid "no percent"

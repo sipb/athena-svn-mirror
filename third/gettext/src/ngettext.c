@@ -1,5 +1,5 @@
 /* ngettext - retrieve plural form string from message catalog and print it.
-   Copyright (C) 1995-1997, 2000, 2001 Free Software Foundation, Inc.
+   Copyright (C) 1995-1997, 2000-2002 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -22,13 +22,16 @@
 #include <getopt.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <locale.h>
 #include <errno.h>
 
 #include "error.h"
-#include "system.h"
+#include "basename.h"
+#include "xmalloc.h"
+#include "exit.h"
 
-#include "libgettext.h"
+#include "gettext.h"
 
 #define _(str) gettext (str)
 
@@ -48,13 +51,14 @@ static const struct option long_options[] =
   { NULL, 0, NULL, 0 }
 };
 
-/* Prototypes for local functions.  */
-static void usage PARAMS ((int __status))
+/* Prototypes for local functions.  Needed to ensure compiler checking of
+   function argument counts despite of K&R C function definition syntax.  */
+static void usage PARAMS ((int status))
 #if defined __GNUC__ && ((__GNUC__ == 2 && __GNUC_MINOR__ >= 5) || __GNUC__ > 2)
      __attribute__ ((noreturn))
 #endif
 ;
-static const char *expand_escape PARAMS ((const char *__str));
+static const char *expand_escape PARAMS ((const char *str));
 
 int
 main (argc, argv)
@@ -76,6 +80,8 @@ main (argc, argv)
 
   /* Set program name for message texts.  */
   program_name = argv[0];
+  if (strncmp (program_name, "lt-", 3) == 0)
+    program_name += 3;
 
 #ifdef HAVE_SETLOCALE
   /* Set locale via LC_ALL.  */
@@ -121,7 +127,7 @@ main (argc, argv)
 This is free software; see the source for copying conditions.  There is NO\n\
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
 "),
-	      "1995-1997, 2000, 2001");
+	      "1995-1997, 2000-2002");
       printf (_("Written by %s.\n"), "Ulrich Drepper");
       exit (EXIT_SUCCESS);
     }
@@ -208,6 +214,15 @@ usage (status)
       /* xgettext: no-wrap */
       printf (_("\
 Usage: %s [OPTION] [TEXTDOMAIN] MSGID MSGID-PLURAL COUNT\n\
+"), program_name);
+      printf ("\n");
+      /* xgettext: no-wrap */
+      printf (_("\
+Display native language translation of a textual message whose grammatical\n\
+form depends on a number.\n"));
+      printf ("\n");
+      /* xgettext: no-wrap */
+      printf (_("\
   -d, --domain=TEXTDOMAIN   retrieve translated message from TEXTDOMAIN\n\
   -e                        enable expansion of some escape sequences\n\
   -E                        (ignored for compatibility)\n\
@@ -215,17 +230,18 @@ Usage: %s [OPTION] [TEXTDOMAIN] MSGID MSGID-PLURAL COUNT\n\
   -V, --version             display version information and exit\n\
   [TEXTDOMAIN]              retrieve translated message from TEXTDOMAIN\n\
   MSGID MSGID-PLURAL        translate MSGID (singular) / MSGID-PLURAL (plural)\n\
-  COUNT                     choose singular/plural form based on this value\n"),
-	      program_name);
+  COUNT                     choose singular/plural form based on this value\n"));
+      printf ("\n");
       /* xgettext: no-wrap */
       printf (_("\
-\n\
 If the TEXTDOMAIN parameter is not given, the domain is determined from the\n\
 environment variable TEXTDOMAIN.  If the message catalog is not found in the\n\
 regular directory, another location can be specified with the environment\n\
 variable TEXTDOMAINDIR.\n\
-Standard search directory: %s\n"), LOCALEDIR);
-      fputs (_("Report bugs to <bug-gnu-utils@gnu.org>.\n"), stdout);
+Standard search directory: %s\n"),
+	      getenv ("IN_HELP2MAN") == NULL ? LOCALEDIR : "@localedir@");
+      printf ("\n");
+      fputs (_("Report bugs to <bug-gnu-gettext@gnu.org>.\n"), stdout);
     }
 
   exit (status);

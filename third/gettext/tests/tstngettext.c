@@ -1,5 +1,5 @@
 /* ngettext - retrieve plural form strings from message catalog and print them.
-   Copyright (C) 1995-1997, 2000, 2001 Free Software Foundation, Inc.
+   Copyright (C) 1995-1997, 2000-2002 Free Software Foundation, Inc.
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -20,20 +20,19 @@
 #endif
 
 #include <getopt.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
 #include <errno.h>
 
 #include "error.h"
-#include "system.h"
+#include "basename.h"
+#include "exit.h"
+#include "xsetenv.h"
 
 #define HAVE_SETLOCALE 1
 /* Make sure we use the included libintl, not the system's one. */
-#define textdomain textdomain__
-#define bindtextdomain bindtextdomain__
-#define gettext gettext__
-#define dngettext dngettext__
 #undef _LIBINTL_H
 #include "libgnuintl.h"
 
@@ -46,6 +45,7 @@ char *program_name;
 static const struct option long_options[] =
 {
   { "domain", required_argument, NULL, 'd' },
+  { "env", required_argument, NULL, '=' },
   { "help", no_argument, NULL, 'h' },
   { "version", no_argument, NULL, 'V' },
   { NULL, 0, NULL, 0 }
@@ -72,6 +72,7 @@ main (argc, argv)
   /* Default values for command line options.  */
   int do_help = 0;
   int do_version = 0;
+  bool environ_changed = false;
   const char *domain = getenv ("TEXTDOMAIN");
   const char *domaindir = getenv ("TEXTDOMAINDIR");
 
@@ -103,9 +104,28 @@ main (argc, argv)
     case 'V':
       do_version = 1;
       break;
+    case '=':
+      {
+	/* Undocumented option --env sets an environment variable.  */
+	char *separator = strchr (optarg, '=');
+	if (separator != NULL)
+	  {
+	    *separator = '\0';
+	    xsetenv (optarg, separator + 1, 1);
+	    environ_changed = true;
+	    break;
+	  }
+      }
+      /*FALLTHROUGH*/
     default:
       usage (EXIT_FAILURE);
     }
+
+#ifdef HAVE_SETLOCALE
+  if (environ_changed)
+    /* Set locale again via LC_ALL.  */
+    setlocale (LC_ALL, "");
+#endif
 
   /* Version information is requested.  */
   if (do_version)
@@ -116,7 +136,7 @@ main (argc, argv)
 This is free software; see the source for copying conditions.  There is NO\n\
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
 "),
-	      "1995-1997, 2000, 2001");
+	      "1995-1997, 2000-2002");
       printf (_("Written by %s.\n"), "Ulrich Drepper");
       exit (EXIT_SUCCESS);
     }
@@ -201,7 +221,7 @@ environment variable TEXTDOMAIN.  If the message catalog is not found in the\n\
 regular directory, another location can be specified with the environment\n\
 variable TEXTDOMAINDIR.\n\
 Standard search directory: %s\n"), LOCALEDIR);
-      fputs (_("Report bugs to <bug-gnu-utils@gnu.org>.\n"), stdout);
+      fputs (_("Report bugs to <bug-gnu-gettext@gnu.org>.\n"), stdout);
     }
 
   exit (status);

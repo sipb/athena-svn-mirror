@@ -1,5 +1,5 @@
 /* gettext - retrieve text string from message catalog and print it.
-   Copyright (C) 1995-1997, 2000, 2001 Free Software Foundation, Inc.
+   Copyright (C) 1995-1997, 2000-2002 Free Software Foundation, Inc.
    Written by Ulrich Drepper <drepper@gnu.ai.mit.edu>, May 1995.
 
    This program is free software; you can redistribute it and/or modify
@@ -23,23 +23,15 @@
 #include <getopt.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <locale.h>
 
 #include "error.h"
-#include "system.h"
+#include "basename.h"
+#include "xmalloc.h"
+#include "exit.h"
 
-#ifdef TESTS
-# define HAVE_SETLOCALE 1
-/* Make sure we use the included libintl, not the system's one. */
-# define textdomain textdomain__
-# define bindtextdomain bindtextdomain__
-# define gettext gettext__
-# define dgettext dgettext__
-# undef _LIBINTL_H
-# include "libgnuintl.h"
-#else
-# include "libgettext.h"
-#endif
+#include "gettext.h"
 
 #define _(str) gettext (str)
 
@@ -63,13 +55,14 @@ static const struct option long_options[] =
   { NULL, 0, NULL, 0 }
 };
 
-/* Prototypes for local functions.  */
-static void usage PARAMS ((int __status))
+/* Prototypes for local functions.  Needed to ensure compiler checking of
+   function argument counts despite of K&R C function definition syntax.  */
+static void usage PARAMS ((int status))
 #if defined __GNUC__ && ((__GNUC__ == 2 && __GNUC_MINOR__ >= 5) || __GNUC__ > 2)
      __attribute__ ((noreturn))
 #endif
 ;
-static const char *expand_escape PARAMS ((const char *__str));
+static const char *expand_escape PARAMS ((const char *str));
 
 int
 main (argc, argv)
@@ -90,6 +83,8 @@ main (argc, argv)
 
   /* Set program name for message texts.  */
   program_name = argv[0];
+  if (strncmp (program_name, "lt-", 3) == 0)
+    program_name += 3;
 
 #ifdef HAVE_SETLOCALE
   /* Set locale via LC_ALL.  */
@@ -141,7 +136,7 @@ main (argc, argv)
 This is free software; see the source for copying conditions.  There is NO\n\
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\
 "),
-	      "1995-1997, 2000, 2001");
+	      "1995-1997, 2000-2002");
       printf (_("Written by %s.\n"), "Ulrich Drepper");
       exit (EXIT_SUCCESS);
     }
@@ -248,7 +243,16 @@ usage (status)
     {
       /* xgettext: no-wrap */
       printf (_("\
-Usage: %s [OPTION] [[[TEXTDOMAIN] MSGID] | [-s [MSGID]...]]\n\
+Usage: %s [OPTION] [[TEXTDOMAIN] MSGID]\n\
+or:    %s [OPTION] -s [MSGID]...\n\
+"), program_name, program_name);
+      printf ("\n");
+      /* xgettext: no-wrap */
+      printf (_("\
+Display native language translation of a textual message.\n"));
+      printf ("\n");
+      /* xgettext: no-wrap */
+      printf (_("\
   -d, --domain=TEXTDOMAIN   retrieve translated messages from TEXTDOMAIN\n\
   -e                        enable expansion of some escape sequences\n\
   -E                        (ignored for compatibility)\n\
@@ -256,11 +260,10 @@ Usage: %s [OPTION] [[[TEXTDOMAIN] MSGID] | [-s [MSGID]...]]\n\
   -n                        suppress trailing newline\n\
   -V, --version             display version information and exit\n\
   [TEXTDOMAIN] MSGID        retrieve translated message corresponding\n\
-                            to MSGID from TEXTDOMAIN\n"),
-	      program_name);
+                            to MSGID from TEXTDOMAIN\n"));
+      printf ("\n");
       /* xgettext: no-wrap */
       printf (_("\
-\n\
 If the TEXTDOMAIN parameter is not given, the domain is determined from the\n\
 environment variable TEXTDOMAIN.  If the message catalog is not found in the\n\
 regular directory, another location can be specified with the environment\n\
@@ -268,8 +271,10 @@ variable TEXTDOMAINDIR.\n\
 When used with the -s option the program behaves like the `echo' command.\n\
 But it does not simply copy its arguments to stdout.  Instead those messages\n\
 found in the selected catalog are translated.\n\
-Standard search directory: %s\n"), LOCALEDIR);
-      fputs (_("Report bugs to <bug-gnu-utils@gnu.org>.\n"), stdout);
+Standard search directory: %s\n"),
+	      getenv ("IN_HELP2MAN") == NULL ? LOCALEDIR : "@localedir@");
+      printf ("\n");
+      fputs (_("Report bugs to <bug-gnu-gettext@gnu.org>.\n"), stdout);
     }
 
   exit (status);
