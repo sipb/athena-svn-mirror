@@ -2,16 +2,8 @@
    #
    # Copyright (C) 1985,1987 Adobe Systems Incorporated. All rights reserved.
    # GOVERNMENT END USERS: See notice of rights in Notice file in release directory.
-   # RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/Imakefile,v 1.3 1991-02-04 09:25:06 epeisach Exp $
+   # RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/Imakefile,v 1.4 1991-02-04 09:32:34 epeisach Exp $
 */
-
-LPROGS = pscomm #lps40comm
-BPROGS = 
-
-OBJECTS = psbanner.o pscomm.o psrv.o pstext.o \
-	enscript.o ps4014.o ps630.o pscat.o pscatmap.o \
-	psdit.o psplot.o psrev.o \
-	psutil.o
 
 PSLIBDIR=/usr/athena/lib/ps
 PSTEMPDIR=/tmp
@@ -20,38 +12,24 @@ TROFFFONTDIR=$(PSLIBDIR)/troff.font
 
 #if defined(AIX) && defined(_I386)
 OCFLAGS=-D_BSD
-LDFLAGS=-L/usr/athena/lib -lbsd
+LIBS=-lbsd
 #endif
 
 #if defined(_IBMR2)
-LDFLAGS=-L/usr/athena/lib -lbsd
+LIBS=-lbsd
 #endif
 
-CFLAGS = -O -DBSD -DSYSLOG -DZEPHYR ${OCFLAGS}
-
-programs all:	${LPROGS} ${BPROGS}
-
-Makefile: Imakefile
-	-mv -f Makefile Makefile.bak
-	/lib/cpp `../cppflags` Imakefile Makefile 
-
-#ifndef _AUX_SOURCE
-pscomm: pscomm.o psutil.o config.o
-		cc ${CFLAGS} -o pscomm pscomm.o psutil.o config.o \
-			${LDFLAGS} -lzephyr -lcom_err -lkrb -ldes 
-#else
-pscomm: pscomm.o psutil.o config.o
-		cc ${CFLAGS} -o pscomm pscomm.o psutil.o config.o \
-			${LDFLAGS} -lzephyr -lcom_err -lkrb -ldes -lposix
+#if defined(_AUX_SOURCE)
+LIBS=-lposix
 #endif
 
-lps40comm: lps40comm.o psutil.o config.o
-	cc ${CFLAGS} -o lps40comm lps40comm.o psutil.o config.o
+DEFINES=-DBSD -DSYSLOG -DZEPHYR ${OCFLAGS}
 
+programs: all
 
-${OBJECTS}: transcript.h
-pscomm.o: psspool.h
-pscat.o pscatmap.o: action.h 
+SimpleProgram(pscomm,pscomm.o psutil.o config.o,$(LIBS),$(PSLIBDIR))
+install_script(psif,,$(PSLIBDIR)/psint.sh)
+
 
 config.c: config.proto Makefile
 	-rm -f config.c
@@ -62,14 +40,15 @@ config.c: config.proto Makefile
 		config.proto >config.c
 
 config.o: config.c
+pscomm.o psutil.o: transcript.h
+pscomm.o: psspool.h
+pscat.o pscatmap.o: action.h 
 
-install: ${LPROGS} ${BPROGS}
-	-cd $$PSLIBDIR; rm -f ${LPROGS} ${BPROGS}
-	install -c -o root -g staff -s pscomm	$(DESTDIR)$(PSLIBDIR)/
-	install -c -m 755 -o root -g staff psif	$(DESTDIR)$(PSLIBDIR)/psint.sh
+clean::
+	rm -f config.c 
 
-clean:
-	rm -f - *.o config.c ${BPROGS} ${LPROGS} *BAK *CKP .emacs_[0-9]* *~
-
+#if 0
 depend: config.c
-	touch Make.depend ; makedepend -fMake.depend ${CFLAGS} lps40comm.c pscomm.c psutil.c config.c
+	makedepend ${CFLAGS} pscomm.c psutil.c config.c
+
+#endif
