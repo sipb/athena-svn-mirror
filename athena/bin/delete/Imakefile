@@ -5,7 +5,7 @@
 /**/#
 /**/#     $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/Imakefile,v $
 /**/#     $Author: jik $
-/**/#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Imakefile,v 1.3 1991-01-31 18:26:51 jik Exp $
+/**/#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Imakefile,v 1.4 1991-02-18 16:33:44 jik Exp $
 /**/#
 
 DESTDIR=
@@ -29,9 +29,8 @@ DEFINES=	$(AFSDEFINES)
 /**/# These variables apply only if you want this program to recognize
 /**/# Andrew File System mount points.  If you don't want to support AFS,
 /**/# then set all the variables starting with "AFS" to nothing.
-AFSBLD=		bld.3.0
-AFSINC=		/afs/athena.mit.edu/astaff/project/afsdev/sandbox/$(AFSBLD)/dest/include
-AFSLIB=		/afs/athena.mit.edu/astaff/project/afsdev/sandbox/$(AFSBLD)/dest/lib
+AFSINC=		/afs/rel-eng.athena.mit.edu/project/release/7.2/build/$(MACHINE)/third/common/afs/dest/include
+AFSLIB=		/afs/rel-eng.athena.mit.edu/project/release/7.2/build/$(MACHINE)/third/common/afs/dest/lib
 AFSINCS=	-I$(AFSINC)
 AFSLDFLAGS=	-L$(AFSLIB) -L$(AFSLIB)/afs
 AFSLIBS=	-lsys -lrx -llwp $(AFSLIB)/afs/util.a
