@@ -254,7 +254,7 @@ fi;
 
 dnl Kerberos 5
 AC_CHECK_LIB(krb5, krb5_init_context,
-	[LIBS="$LIBS -lkrb5 -lcrypto -lcom_err"], , -lcrypto -lcom_err)
+	[LIBS="$LIBS -lkrb5 -lk5crypto -lcom_err"], , -lk5crypto -lcom_err)
 
 dnl Kerberos 4
 AC_CHECK_LIB(krb4, krb_recvauth,
@@ -270,7 +270,7 @@ case $target_os in
 	 irix* )
 		dnl Kerberos V
 		AC_CHECK_LIB(krb5, krb5_init_context,
-		    [LIBS="$LIBS -lkrb5 -lcrypto -lcom_err"], , -lcrypto -lcom_err)
+		    [LIBS="$LIBS -lkrb5 -lk5crypto -lcom_err"], , -lk5crypto -lcom_err)
 		;;
 esac
 
