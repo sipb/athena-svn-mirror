@@ -21,7 +21,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.15 1990-02-23 19:47:07 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.16 1990-02-27 10:46:25 vanharen Exp $";
 #endif
 
 
@@ -976,7 +976,7 @@ olc_ask(fd, request, auth)
       break;
     }
 
-  if (request->version >= VERSION_5)
+  if (request->version >= VERSION_4)
     write_int_to_fd(fd, target->instance);
 
 #ifdef LOG
