@@ -774,6 +774,12 @@ krb5_seteuid(0); /*So we have some chance of sweeping up*/
 	        exit(1);
       } 			
 
+      {
+	char tkt[MAXPATHLEN];
+	sprintf(tkt, "/tmp/tkt_ksu%u", (unsigned int)getpid());
+	set_env_var( "KRBTKFILE", tkt);
+	unlink(tkt);
+      }
 
 	if (!use_source_cache){	
 
