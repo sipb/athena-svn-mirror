@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: access_off.c,v 1.11 1998-11-06 18:52:16 ghudson Exp $";
+static const char rcsid[] = "$Id: access_off.c,v 1.12 1999-02-09 20:02:40 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -116,7 +116,7 @@ int main(int argc, char **argv)
 	      env = get_boot_environment();
 	      if (!env)
 		env = env_fallback;
-	      execle(PATH_SSHD, PATH_SSHD, (char *) NULL, env);
+	      execle(PATH_SSHD, "sshd", (char *) NULL, env);
 	      perror("Error running sshd");
 	    }
 	}
