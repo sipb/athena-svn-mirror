@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.16 1994-05-05 00:25:16 cfields Exp $
+# $Id: reactivate.sh,v 1.17 1994-06-09 12:54:13 cfields Exp $
 
 trap "" 1 15
 
@@ -32,12 +32,6 @@ else
 	quiet=
 fi
 
-# Sun attach bug workaround.
-if [ "${MACHINE}" = "SUN4" ]; then
-	dflags=""
-	quiet=""
-fi
-
 case "${SYSTEM}" in
 ULTRIX*)
 	cp=/bin/cp
@@ -46,10 +40,15 @@ ULTRIX*)
 	cp="/bin/cp -p"
 esac
 
-
-
 # Flush all NFS uid mappings
 /bin/athena/fsid $quiet -p -a
+
+# Sun attach bug workaround. Attach apparently loses on some options.
+# fsid does not though, so we zap them only after executing fsid.
+if [ "${MACHINE}" = "SUN4" ]; then
+	dflags=""
+	quiet=""
+fi
 
 # Tell the Zephyr hostmanager to reset state
 if [ -f /etc/athena/zhm.pid ] ; then 
