@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v $
- *	$Author: ilham $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.5 1990-07-11 16:23:46 ilham Exp $
+ *	$Author: epeisach $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.6 1990-08-21 20:37:47 epeisach Exp $
  */
 
 /*
@@ -10,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.5 1990-07-11 16:23:46 ilham Exp $";
+static char quota_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota_server.c,v 1.6 1990-08-21 20:37:47 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -176,7 +176,7 @@ quota_return *qret;
 	make_kname(ad.pname, ad.pinst, ad.prealm, name);
 
 	if(is_suser(name)) authuser = 1;
-
+	if (QD && !authuser) return(QDBDOWN);
 	parse_username(qid->username, qprincipal, qinstance, qrealm);
 	strncpy(quotarec.name, qprincipal, ANAME_SZ);
 	strncpy(quotarec.instance, qinstance, INST_SZ);
@@ -238,7 +238,7 @@ quota_value qamount;
 
 	CHECK_PROTECT();
 
-	if (QD) return(QDBDOWN);
+	if (QD && qtype != U_NEW) return(QDBDOWN);
 
 #if 0
 	syslog(LOG_DEBUG, "Quotamodify %s, %s, %d:amt %d, type %d\n", 
