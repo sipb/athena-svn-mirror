@@ -1,4 +1,4 @@
-# $Id: packages,v 1.15 1996-12-16 08:31:01 ghudson Exp $
+# $Id: packages,v 1.16 1997-01-27 13:35:16 ghudson Exp $
 
 # This file gives the list of packages to build for the release, the
 # order they will be built in, and which platforms they will be built
@@ -40,6 +40,7 @@ third/x3270
 third/talk			sun4
 third/look			sgi
 third/whois			sgi
+third/appletalk			sun4
 athena/lib/AL
 athena/lib/acl
 athena/lib/gdb
@@ -53,7 +54,7 @@ athena/etc/ftpd			all,-sgi
 athena/etc/inetd
 athena/etc/listsuidcells
 athena/etc/gettime
-athena/etc/traceroute
+athena/etc/traceroute		all,-sgi
 athena/etc/xdm
 athena/etc/desync
 athena/bin/aklog
