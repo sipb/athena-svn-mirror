@@ -1,7 +1,7 @@
 /* This file is part of the Project Athena Global Message System.
  * Created by: Mark W. Eichin <eichin@athena.mit.edu>
  *
- * $Id: get_fallback_file.c,v 1.2 1991-06-19 15:40:02 probe Exp $
+ * $Id: get_fallback_file.c,v 1.3 1993-04-29 19:13:34 miki Exp $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -9,12 +9,15 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_get_fallback_file_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/get_fallback_file.c,v 1.2 1991-06-19 15:40:02 probe Exp $";
+static char rcsid_get_fallback_file_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/get_fallback_file.c,v 1.3 1993-04-29 19:13:34 miki Exp $";
 #endif lint
 
 #include "globalmessage.h"
 #include <sys/types.h>
 #include <sys/file.h>
+#ifdef SOLARIS
+#include <fcntl.h>
+#endif
 
 Code_t get_fallback_file(ret_data, ret_size, message_filename)
      char **ret_data;
