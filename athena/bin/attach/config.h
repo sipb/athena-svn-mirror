@@ -1,8 +1,8 @@
 /*
  * Contains the local configuration information for attach/detach/nfsid
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v $
- *	$Author: probe $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v 1.6 1991-01-22 16:16:50 probe Exp $
+ *	$Author: epeisach $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/config.h,v 1.7 1991-03-04 10:05:49 epeisach Exp $
  */
 
 /*
@@ -35,12 +35,6 @@
 #define ZEPHYR
 #define HESIOD
 #define KERBEROS
-
-#ifdef AIX
-#define	_BSD
-#define	BSD
-#define	BSD_INCLUDES
-#endif
 
 /*
  * Other external filenames
