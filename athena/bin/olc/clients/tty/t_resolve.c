@@ -12,18 +12,21 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_resolve.c,v $
- *	$Id: t_resolve.c,v 1.10 1990-07-16 08:09:56 lwvanels Exp $
+ *	$Id: t_resolve.c,v 1.11 1990-11-14 14:59:37 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_resolve.c,v 1.10 1990-07-16 08:09:56 lwvanels Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_resolve.c,v 1.11 1990-11-14 14:59:37 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>
@@ -107,8 +110,6 @@ t_done(Request,title)
 	    fprintf(stderr,"You do not have a question to resolve.\n");
 	    return(ERROR);
 	  }
-	  break;
-
 	default:
 	  status = handle_response(status, Request);
 	  if(status != SUCCESS)
@@ -232,7 +233,6 @@ t_cancel(Request,title)
 	fprintf(stderr,"You do not have a question to cancel.\n");
 	return(ERROR);
       }
-      break;
 
     default:
       status = handle_response(status, Request);
