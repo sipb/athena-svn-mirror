@@ -1,12 +1,12 @@
 #!/bin/sh
-# $Id: do.sh,v 1.16 1998-01-08 07:01:07 ghudson Exp $
+# $Id: do.sh,v 1.17 1998-01-17 03:09:47 ghudson Exp $
 
 source="/mit/source"
 srvd="/srvd"
 contained=false
 n=""
 maybe=""
-usage="do [-s srcdir] [-d destdir] [prepare|clean|all|check|install]"
+usage="do [-cn] [-s srcdir] [-d destdir] [prepare|clean|all|check|install]"
 
 while getopts cd:ns: opt; do
 	case "$opt" in
