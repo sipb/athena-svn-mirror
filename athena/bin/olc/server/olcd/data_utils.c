@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v $
- *	$Id: data_utils.c,v 1.35 1991-04-08 21:15:29 lwvanels Exp $
+ *	$Id: data_utils.c,v 1.36 1991-04-09 14:04:19 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.35 1991-04-08 21:15:29 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.36 1991-04-09 14:04:19 lwvanels Exp $";
 #endif
 #endif
 
@@ -1184,8 +1184,9 @@ match_maker(knuckle)
 	case CANCEL:
 	case DONE:
 	    /* shouldn't get here */
-	    log_error (fmt ("unconnected user has status %d in match_maker",
-			    k_status));
+	    sprintf(msgbuf,"unconnected user has status %d in match_maker",
+		    k_status);
+	    log_error(msgbuf);
 	    return ERROR;
 	default:
 	    /* ok */

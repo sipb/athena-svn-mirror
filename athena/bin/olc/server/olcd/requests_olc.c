@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *	$Id: requests_olc.c,v 1.42 1991-04-08 21:11:19 lwvanels Exp $
+ *	$Id: requests_olc.c,v 1.43 1991-04-09 14:04:37 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.42 1991-04-08 21:11:19 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.43 1991-04-09 14:04:37 lwvanels Exp $";
 #endif
 #endif
 
@@ -152,7 +152,8 @@ olc_on(fd, request)
   log_status(msgbuf);
 #endif /* LOG */
 
-  olc_broadcast_message("nol", fmt("%s\n", msgbuf), "on");
+  strcat(msgbuf,"\n");
+  olc_broadcast_message("nol", msgbuf, "on");
 
   if(is_connected(target))
     {
@@ -510,8 +511,8 @@ olc_done(fd, request)
 	  sprintf(msgbuf,"%s %s is done with question.", cap(target->title),
 		  target->user->username);
 	  log_daemon(target,msgbuf);
-	  if (write_message_to_user(target->connected, fmt("%s\n", msgbuf),
-				NULL_FLAG)
+	  strcat(msgbuf,"\n");
+	  if (write_message_to_user(target->connected,  msgbuf, NULL_FLAG)
 	      != SUCCESS)
 	    {
 	      sprintf(target->question->title,
@@ -1281,28 +1282,27 @@ olc_send(fd, request)
   if(target != requester)
     if (write_message_to_user(target,mesg, NULL_FLAG) != SUCCESS)
       if (owns_question(requester)) {
-	  char *msg = fmt ("Unable to contact %s %s [%d].  Forwarding.",
-			   target->title, target->user->username,
-			   target->instance);
-	  log_daemon(requester, msg);
-	  free_new_messages(target);
-	  set_status(requester, PENDING);
-	  disconnect_knuckles(requester, target);
-	  needs_backup = TRUE;
-	  (void) sprintf(mesg,"The %s server could not contact the %s you were connected to.\nLooking for another %s for you....\n",
-			 DaemonInst,DEFAULT_TITLE2,DEFAULT_TITLE2);
-	  (void) write_message_to_user (requester,
-					mesg,
-					NO_RESPOND);
-	  status = match_maker (requester);
-	  if (status != CONNECTED) {
-	      char *msg = fmt ("Question from %s %s [%d] on \"%s\" has been forwarded.",
-			       requester->title,
-			       requester->user->username, requester->instance,
-			       requester->question->topic);
-	      olc_broadcast_message ("forwarded", msg,
-				     requester->question->topic);
-	  }
+	char msg[BUFSIZ];
+
+	sprintf(msg,"Unable to contact %s %s [%d].  Forwarding.",
+		target->title, target->user->username, target->instance);
+	log_daemon(requester, msg);
+	free_new_messages(target);
+	set_status(requester, PENDING);
+	disconnect_knuckles(requester, target);
+	needs_backup = TRUE;
+	(void) sprintf(mesg,"The %s server could not contact the %s you were connected to.\nLooking for another %s for you....\n",
+		       DaemonInst,DEFAULT_TITLE2,DEFAULT_TITLE2);
+	(void) write_message_to_user (requester, mesg, NO_RESPOND);
+	status = match_maker (requester);
+	if (status != CONNECTED) {
+	  sprintf(msg,"Question from %s %s [%d] on \"%s\" has been forwarded.",
+		  requester->title,
+		  requester->user->username, requester->instance,
+		  requester->question->topic);
+	  olc_broadcast_message ("forwarded", msg,
+				 requester->question->topic);
+	}
       }
 
 

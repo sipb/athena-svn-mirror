@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.41 1991-04-08 21:13:30 lwvanels Exp $
+ *	$Id: olcd.c,v 1.42 1991-04-09 14:02:40 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.41 1991-04-08 21:13:30 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.42 1991-04-09 14:02:40 lwvanels Exp $";
 #endif
 #endif
 
@@ -124,6 +124,7 @@ main (argc, argv)
     struct hostent *this_host_entry;	/* Host entry for this host. */
     struct hostent *daemon_host_entry;	/* Entry for daemon host.*/
     char hostname[LINE_SIZE];		/* Name of this host. */
+    char buf[BUFSIZ];			/* for constructing erorr messages */
     int fd;				/* Socket fd. */
     int onoff;				/* Value variable for setsockopt. */
     int n_errs=0;			/* Error count in accept() call */
@@ -375,13 +376,14 @@ restart:
 
     if (!string_eq(hostname, daemon_host_entry->h_name)) {
       /* format message first, because h_name is static buffer */
-      char *msg = fmt("%s != %s", hostname, daemon_host_entry->h_name);
+      sprintf(buf,"%s != %s", hostname, daemon_host_entry->h_name);
+      log_error(buf);
       log_error("error: host information doesn't point here; exiting");
-      log_error(msg);
       return 1;
     }
 
-    log_status (fmt ("%s Daemon startup....", DaemonInst));
+    sprintf(buf,"%s Daemon startup....", DaemonInst);
+    log_status(buf);
 
     load_db();
     load_data();
@@ -414,10 +416,9 @@ restart:
 #ifdef KERBEROS
     get_kerberos_ticket ();
 #endif
-    olc_broadcast_message("syslog",
-		fmt("%s Daemon successfully started.  Waiting for requests.",
+    sprintf(buf,"%s Daemon successfully started.  Waiting for requests.",
 		    DaemonInst),
-		"system");
+    olc_broadcast_message("syslog", buf, "system");
     start_time = time(0);
 
      /*
@@ -500,10 +501,12 @@ restart:
 	    struct sockaddr addr[20];
 	    int len = sizeof (addr);
 	    struct sockaddr_in *in = (struct sockaddr_in *) addr;
-	    if (getpeername (s, addr, &len) == 0)
-		log_debug (fmt ("connect from %s/%d\n",
-				inet_ntoa (in->sin_addr), in->sin_port));
-	}
+	    if (getpeername (s, addr, &len) == 0) {
+	      sprintf(buf,"connect from %s/%d\n", inet_ntoa (in->sin_addr),
+		      in->sin_port);
+	      log_debug(buf);
+	    }
+	  }
 #endif
 	process_request(s, &from);
 	close(s);
@@ -658,24 +661,22 @@ int
 punt(sig)
     int sig;
 {
-    olc_broadcast_message("syslog",
-			  fmt ("%s Daemon shutting down on signal %d.",
-			       DaemonInst, sig),
-			  "system");
+  char buf[BUFSIZ];
 
-    close(listening_fd);
-    if (processing_request)
-    {
-	got_signal = 1;
-	log_status("Caught signal, will exit after finishing request");
-    }
-    else
-    {
-	log_status("Caught signal, exiting...");
-	dump_request_stats(REQ_STATS_LOG);
-	dump_question_stats(QUES_STATS_LOG);
-	exit(1);
-    }
+  sprintf(buf,"%s Daemon shutting down on signal %d.", DaemonInst, sig),
+  olc_broadcast_message("syslog", buf, "system");
+  
+  close(listening_fd);
+  if (processing_request) {
+    got_signal = 1;
+    log_status("Caught signal, will exit after finishing request");
+  }
+  else {
+    log_status("Caught signal, exiting...");
+    dump_request_stats(REQ_STATS_LOG);
+    dump_question_stats(QUES_STATS_LOG);
+    exit(1);
+  }
 }
 
 
@@ -709,8 +710,10 @@ static int
 dump_profile(sig)
      int sig;
 {
-  olc_broadcast_message("syslog", fmt("%s Daemon dumping profiling stats.",
-				      DaemonInst),"system");
+  char buf[BUFSIZ];
+
+  sprintf(buf,"%s Daemon dumping profiling stats.", DaemonInst)
+  olc_broadcast_message("syslog", buf ,"system");
   log_status("Dumping profile..");
   monitor(0);
   moncontrol(0);
@@ -720,8 +723,10 @@ static int
 start_profile(sig)
      int sig;
 {
-  olc_broadcast_message("syslog", fmt("%s Daemon starting profiling.",
-				      DaemonInst),"system");
+  char buf[BUFSIZ];
+
+  sprintf(buf,"%s Daemon starting profiling.", DaemonInst);
+  olc_broadcast_message("syslog", buf, ,"system");
   log_status("Starting profile..");
   moncontrol(1);
 }
@@ -768,34 +773,38 @@ authenticate(request, addr)
 int
 get_kerberos_ticket()
 {
-    int ret;
-    char sinstance[INST_SZ];
-    char principal[ANAME_SZ];
-    char *ptr;
-
-    /* If the ticket time is going to expire in 15 minutes or less, get a */
-    /* new one */
-    if(ticket_time < NOW - ((96L * 5L) - 15L) * 60)
+  int ret;
+  char sinstance[INST_SZ];
+  char principal[ANAME_SZ];
+  char buf[BUFSIZ];
+  char *ptr;
+  
+  /* If the ticket time is going to expire in 15 minutes or less, get a */
+  /* new one */
+  if(ticket_time < NOW - ((96L * 5L) - 15L) * 60)
     {
-	strcpy(principal,K_SERVICE);
-	strcpy(sinstance,DaemonHost);
-	ptr = index(sinstance,'.');
-	if (ptr)
-	  *ptr = '\0';
-	uncase(sinstance);
-	log_status (fmt ("get new tickets: %s %s ", K_SERVICE, sinstance));
-	dest_tkt();
-	ret = krb_get_svc_in_tkt(K_SERVICE, sinstance, SERVER_REALM,
-				 "krbtgt", SERVER_REALM,
-				 96, SRVTAB_FILE);
-	if (ret != KSUCCESS) {
-	    log_error (fmt ("get_tkt: %s", krb_err_txt[ret]));
-	    ticket_time = 0L;
-	    return(ERROR);
-	}
-	else
-	  ticket_time = NOW;
+      strcpy(principal,K_SERVICE);
+      strcpy(sinstance,DaemonHost);
+      ptr = index(sinstance,'.');
+      if (ptr)
+	*ptr = '\0';
+      uncase(sinstance);
+      sprintf(buf,"get new tickets: %s %s ", K_SERVICE, sinstance);
+
+      log_status(buf);
+      dest_tkt();
+      ret = krb_get_svc_in_tkt(K_SERVICE, sinstance, SERVER_REALM,
+			       "krbtgt", SERVER_REALM,
+			       96, SRVTAB_FILE);
+      if (ret != KSUCCESS) {
+	sprintf(buf,"get_tkt: %s", krb_err_txt[ret]);
+	log_error(buf);
+	ticket_time = 0L;
+	return(ERROR);
+      }
+      else
+	ticket_time = NOW;
     }
-    return(SUCCESS);
+  return(SUCCESS);
 }
 #endif /* KERBEROS */

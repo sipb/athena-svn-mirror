@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v $
- *	$Id: notify.c,v 1.31 1991-04-08 21:09:39 lwvanels Exp $
+ *	$Id: notify.c,v 1.32 1991-04-09 14:03:29 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.31 1991-04-08 21:09:39 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.32 1991-04-09 14:03:29 lwvanels Exp $";
 #endif
 #endif
 
@@ -424,6 +424,7 @@ zsend(notice)
 {
   int ret,sigm;
   ZNotice_t retnotice;
+  char buf[BUFSIZ];
 
   signal(SIGALRM, notice_timeout);
   alarm(6 * OLCD_TIMEOUT);	/* Longer timeout than for "write". */
@@ -442,7 +443,8 @@ zsend(notice)
   if ((ret = ZSendNotice(notice, ZAUTH)) != ZERR_NONE)
     {
       /* Some sort of unknown communications error. */
-      log_zephyr_error(fmt("zsend: error %s from ZSendNotice",error_message (ret)));
+      sprintf(buf,"zsend: error %s from ZSendNotice",error_message(ret));
+      log_zephyr_error(buf);
       alarm(0);
       signal(SIGALRM, SIG_IGN);
       return(ERROR);
@@ -469,7 +471,8 @@ zsend(notice)
     {
       /* Server acknowledgement error here. */
       sigsetmask(sigm);
-      log_zephyr_error(fmt("zsend: error %s from ZIfNotice",error_message (ret)));
+      sprintf(buf,"zsend: error %s from ZIfNotice",error_message(ret));
+      log_zephyr_error(buf);
       ZFreeNotice(&retnotice);
       alarm(0);
       signal(SIGALRM, SIG_IGN);
