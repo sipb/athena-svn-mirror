@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.8 1990-08-29 17:17:46 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.9 1990-11-08 10:06:47 epeisach Exp $
  */
 
 /*
@@ -11,7 +11,7 @@
 
 
 #if (!defined(lint) && !defined(SABER))
-static char qmain_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.8 1990-08-29 17:17:46 epeisach Exp $";
+static char qmain_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/qmain.c,v 1.9 1990-11-08 10:06:47 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -31,11 +31,7 @@ static char qmain_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/
 #include "logger_ncs.h"
 #include <signal.h>
 #include <errno.h>
-
-#ifdef V1COMPAT
-#include "quota_ncs_v1.h"
-#include "logger_ncs_v1.h"
-#endif
+#include <sys/time.h>
 
 short KA;    /* Kerberos Authentication */
 short MA;    /* Mutual Authentication   */
@@ -96,11 +92,11 @@ main(argc, argv)
     argv++;
     aclname[0] = saclname[0] = qfilename[0] = gfilename[0] = rfilename[0] 
 	= quota_name[0] = '\0';
-    strcpy(aclname, DEFACLFILE);
-    strcpy(saclname, DEFSACLFILE);
-    strcpy(qfilename, DBM_DEF_FILE);
-    strcpy(gfilename, DBM_GDEF_FILE);
-    strcpy(qcapfilename, DEFCAPFILE);
+    (void) strcpy(aclname, DEFACLFILE);
+    (void) strcpy(saclname, DEFSACLFILE);
+    (void) strcpy(qfilename, DBM_DEF_FILE);
+    (void) strcpy(gfilename, DBM_GDEF_FILE);
+    (void) strcpy(qcapfilename, DEFCAPFILE);
 
     while(--argc) {
 	if(argv[0][0] != '-')
@@ -111,32 +107,32 @@ main(argc, argv)
 	    break;
 	case 'a':
 	    if(!argv[0][2]) argc--, argv++;
-	    if(argc) strcpy(aclname, argv[0]);
+	    if(argc) (void) strcpy(aclname, argv[0]);
 	    else usage();	/* Doesn't return */
 	    break;
 	case 's':
 	    if(!argv[0][2]) argc--, argv++;
-	    if(argc) strcpy(saclname, argv[0]);
+	    if(argc) (void) strcpy(saclname, argv[0]);
 	    else usage();	/* Doesn't return */
 	    break;
 	case 'n':
 	    if(!argv[0][2]) argc--, argv++;
-	    if(argc) strcpy(quota_name, argv[0]);
+	    if(argc) (void) strcpy(quota_name, argv[0]);
 	    else usage();	/* Doesn't return */
 	    break;
 	case 'q':
 	    if(!argv[0][2]) argc--, argv++;
-	    if(argc) strcpy(qfilename, argv[0]);
+	    if(argc) (void) strcpy(qfilename, argv[0]);
 	    else usage();	/* Doesn't return */
 	    break;
 	case 'g':
 	    if(!argv[0][2]) argc--, argv++;
-	    if(argc) strcpy(gfilename, argv[0]);
+	    if(argc) (void) strcpy(gfilename, argv[0]);
 	    else usage();	/* Doesn't return */
 	    break;
 	case 'c':
 	    if(!argv[0][2]) argc--, argv++;
-	    if(argc) strcpy(qcapfilename, argv[0]);
+	    if(argc) (void) strcpy(qcapfilename, argv[0]);
 	    else usage();	/* Doesn't return */
 	    break;
 	}
@@ -177,7 +173,7 @@ main(argc, argv)
 	exit(2);
     }
 
-    setpgrp(0, getpid());
+    (void) setpgrp(0, getpid());
     /* If this fails then we're not root... */
     krb_get_lrealm(my_realm, 1);
     
@@ -225,6 +221,7 @@ read_quotacap()
     register char *cp;
     int status;
     int i = 0;
+    char *qgetstr();
 
     if (quota_name[0] == '\0') {
 	while (getqent(buf) > 0) {
@@ -244,7 +241,7 @@ read_quotacap()
 	    syslog(LOG_ERR, "Configuration file not found");
 	    return(1);
 	}
-	strncpy(quota_name, buf, 256);
+	(void) strncpy(quota_name, buf, 256);
     }
     if ((status = qgetent(buf, quota_name)) < 0) {
 	syslog(LOG_ERR, "Unable to open quotacap file");
@@ -286,7 +283,7 @@ read_quotacap()
     }
     if ((QC = (char *)qgetstr("qc", &bp)) == NULL) {
 	QC = DEFCURRENCY;
-	strcpy(qcurrency, DEFCURRENCY);
+	(void) strcpy(qcurrency, DEFCURRENCY);
     }
     return(0);
 }
@@ -318,7 +315,7 @@ int *fd;
 	sin_c.sin_port = htons(QUOTASERVENT);
     else 
 	sin_c.sin_port = servname->s_port;
-    if (bind(*fd, &sin_c, sizeof(sin_c)) < 0) {
+    if (bind(*fd, (struct sockaddr *) &sin_c, sizeof(sin_c)) < 0) {
 	syslog(LOG_ERR,"Could not bind - FATAL\n");
 	return -1;
     }
@@ -336,7 +333,8 @@ int fd;
     fd_set	fdread;
     char serv[SERV_SZ], princ[ANAME_SZ], inst[INST_SZ], realm[REALM_SZ];
     char name[MAX_K_NAME_SZ];
-    int acct, more, retval, ret;
+    int more, retval, ret;
+    long acct;
     char *service, *set_service();
     quota_rec quotarec;
     gquota_rec gquotarec;
@@ -344,7 +342,8 @@ int fd;
     while(1) {
 	FD_ZERO(&fdread);
 	FD_SET(fd, &fdread);
-	if(select(fd+1, &fdread, 0, 0, NULL) <=0) {
+	if(select(fd+1, &fdread, (fd_set *) 0, (fd_set *) 0, 
+		  (struct timeval *)NULL) <=0) {
 	    syslog(LOG_NOTICE, "Select failed\n");
 	    continue;
 	}
@@ -380,7 +379,7 @@ int fd;
 	/* Start by copying to outbuf whatever can... */
 	/* Copy Protocol, seq #, printer name */
 	bcopy(buf, outbuf, 36);
-	bcopy(buf + 35, &acct, 4);
+	bcopy(buf + 35, (char *) &acct, 4);
 	bcopy(buf + 39, serv, 20);
 	bcopy(buf + 59, princ, ANAME_SZ);
 	bcopy(buf + 59 + ANAME_SZ, inst, INST_SZ);
@@ -395,7 +394,7 @@ int fd;
 	    /* Quota server is marked as down */
 	    /* Allow everyone to print */
 	    ret = ALLOWEDTOPRINT;
-	} else 	if ((acct == (long)0) || (acct > (long) 99999999) ) {
+	} else 	if ((acct == (long)0)) {
 	    /* Now lookup!!! */
 	    retval = quota_db_get_principal(princ, inst,
 					    service,
@@ -445,7 +444,7 @@ int fd;
 	
 Exit()
 {
-    killpg(getpid(), SIGKILL);
+    (void) killpg(getpid(), SIGKILL);
     exit(0);
 }
 
@@ -500,10 +499,10 @@ init_qncs()
 
     register_quota_manager_v2();
 
-    signal(SIGHUP, Exit);
-    signal(SIGINT, Exit);
-    signal(SIGKILL, Exit);
-    signal(SIGTERM, Exit);
+    (void) signal(SIGHUP, Exit);
+    (void) signal(SIGINT, Exit);
+    (void) signal(SIGKILL, Exit);
+    (void) signal(SIGTERM, Exit);
 
 #if notneeded
     rpc_$register (&print_quota_v1$if_spec, print_quota_v1$server_epv, &st);
@@ -522,7 +521,7 @@ init_lncs()
     pfm_$cleanup_rec crec;
     socket_$addr_t loc;
     unsigned long llen = sizeof(loc);
-    void logger_periodic();
+    int logger_periodic();
 
     if(logger_string_set_name(stringFile)) {
 	syslog(LOG_ERR, "Unable to open string file database %s - FATAL", 
