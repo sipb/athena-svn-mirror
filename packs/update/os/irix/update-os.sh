@@ -99,7 +99,9 @@ if [ "$runinst" -ne 0 ]; then
 	if [ "$MINIROOT" = true ]; then
 		sh /srvd/install/tweakdev --root $UPDATE_ROOT/
 	fi
+fi
 
+if [ "$OSCHANGES" = true ]; then
 	sh /srvd/install/oschanges --root $UPDATE_ROOT/
 
 	# Update the OS checker's timestamp.
