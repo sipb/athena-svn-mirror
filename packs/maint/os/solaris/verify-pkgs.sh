@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: verify-pkgs.sh,v 1.1 2004-04-24 14:04:38 rbasch Exp $
+# $Id: verify-pkgs.sh,v 1.2 2004-05-08 20:49:33 rbasch Exp $
 
 # This script verifies the integrity of the MIT-provided packages
 # in the Athena Solaris release.
@@ -18,7 +18,7 @@ fi
 
 root=/
 srvd=/srvd
-checkfiles=os-checkfiles
+checkfiles=/srvd/usr/athena/etc/os-checkfiles
 
 while getopts nr:s:y opt; do
   case "$opt" in
