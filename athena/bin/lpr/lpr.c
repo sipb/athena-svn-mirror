@@ -19,11 +19,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.8 1990-08-25 14:50:48 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.9 1990-08-25 16:36:41 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.8 1990-08-25 14:50:48 epeisach Exp $";
+static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.9 1990-08-25 16:36:41 epeisach Exp $";
 #endif lint
 
 /*
@@ -60,6 +60,7 @@ static char sccsid[] = "@(#)lpr.c	5.2 (Berkeley) 11/17/85";
 #include <signal.h>
 #include <ctype.h>
 #include <netdb.h>
+#include <strings.h>
 #include "lp.local.h"
 #endif SERVER
 	
