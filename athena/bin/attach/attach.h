@@ -26,6 +26,9 @@
 #ifdef NeXT
 #include <nfs/nfs_mount.h>	/* Newer versions of NFS (?) */
 #endif /* NeXT */
+#ifdef _AUX_SOURCE
+#include <nfs/mount.h>
+#endif
 #else /* !NFS */
 #include <netinet/in.h>
 #endif /* NFS */
@@ -45,6 +48,10 @@
 #ifdef AIX
 #include <sys/vmount.h>
 #define	M_RDONLY	MNT_READONLY
+#endif
+
+#if defined(_AUX_SOURCE) || defined(NeXT)
+#define	vfork	fork
 #endif
 
 #define MAXOWNERS 64
