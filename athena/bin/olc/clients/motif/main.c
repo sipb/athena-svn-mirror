@@ -26,7 +26,7 @@
 
 #ifndef SABER
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.9 1991-03-06 15:32:57 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.10 1991-03-24 14:30:37 lwvanels Exp $";
 #endif
 #endif
 
@@ -53,14 +53,13 @@ extern char *LOCAL_REALM;
 extern char *LOCAL_REALMS[];
 #endif
 
-int select_timeout = 600;
+int select_timeout = 300;
 
 int has_question=FALSE;
 int init_screen=FALSE;
 int ask_screen=FALSE;
 int replay_screen=FALSE;
 int OLCR=0, OLC=0;
-int XOLCR=0, XOLC=0;
 
 /*
  *  Function:	main() is the startup for OLC.  It initializes the X display,
@@ -77,11 +76,8 @@ main(argc, argv)
      int argc;
      char *argv[];
 {  
-  struct passwd *getpwuid();   /* Get a password entry based on the user ID.*/
-  struct passwd *pwent;        /* Password entry. */
   char hostname[MAXHOSTNAMELEN];  /* Name of local machine. */
   struct hostent *host;
-  int uid;                     /* User ID number. */
 
   Arg args[10];
   int n = 0;
@@ -99,58 +95,35 @@ main(argc, argv)
   if(string_eq(program,"xolc"))
     {
       OLC = 1;
-      XOLC = 1;
     }
   else
     {
       OLCR = 1;
-      XOLCR = 1;
     }
 
-#ifdef HESIOD
-  if ((hp = hes_resolve(OLC_SERVICE,OLC_SERV_NAME)) == NULL)
-    {
-      fprintf(stderr, "\tUnable to get name of OLC server host from the Hesiod nameserver.\n");
-      fprintf(stderr, "\tThis means that you cannot use OLC at this time. Any problems \n");
-      fprintf(stderr, "\tyou may be experiencing with your workstation may be the result\n");
-      fprintf(stderr, "\tof this problem.\n");
-#ifdef ATHENA
-      fprintf(stderr, "Try again in a few minutes, or call a consultant\n");
-      fprintf(stderr, "\tfor help at 253-4435.\n\n");
-#else
-      fprintf(stderr, "Try again in a few minutes\n\n")
-#endif
-      exit(ERROR);
+
+  ++argv, --argc;
+  while (argc > 0 && argv[0][0] == '-') {
+    if (!strcmp (argv[0], "-server")) {
+      /*
+       * this is a kludge, but the other interface is already
+       * there
+       */
+      (void) setenv ("OLCD_HOST", argv[1], 1);
+      ++argv, --argc;
     }
-  else
-    (void) strcpy(DaemonHost, *hp);
-#endif
-
-
-  uid = getuid();
-  if ((pwent = getpwuid(uid)) == NULL)
-    {
-      fprintf(stderr, "Unable to find you in the password file.  Any problems that you\n");
-      fprintf(stderr, "\tmay have been having may be related to the fact that you are not\n");
-#ifdef ATHENA
-      fprintf(stderr, "\tin the password file.  Try logging out and back in again, or\n");
-      fprintf(stderr, "\tcall a consultant for help at 253-4435.\n\n");
-#else
-      fprintf(stderr, "\tin the password file.  Try logging out and back in again.\n");
-#endif
-      exit(ERROR);
+    else if (!strcmp (argv[0], "-port")) {
+      (void) setenv ("OLCD_PORT", argv[1], 1);
+      ++argv, --argc;
     }
-  (void) strcpy(User.username, pwent->pw_name);
-  (void) strcpy(User.realname, pwent->pw_gecos);
-  if (index(User.realname, ',') != 0)
-    *index(User.realname, ',') = '\0';
-
-  gethostname(hostname, MAXHOSTNAMELEN);
-  host = gethostbyname(hostname);
-  (void) strcpy(User.machine, (host ? host->h_name : hostname));
-  User.uid = uid;
-
-  expand_hostname(DaemonHost,INSTANCE,REALM);
+    else {
+      fprintf (stderr, "%s: unknown control argument %s\n",
+	       program, argv[0]);
+      exit (1);
+    }
+    ++argv;
+    --argc;
+  }
 
 /*
  *  First, try opening display.  If this fails, print a 'nice' error
@@ -182,10 +155,8 @@ main(argc, argv)
 
   MuInitialize(toplevel);
 
-  
   MakeInterface();
   MakeContqForm();
-  MakeNewqForm();
   MakeMotdForm();
   MakeDialogs();
 
@@ -231,7 +202,8 @@ olc_init()
 
   init_screen = TRUE;
 
- init_try_again:
+  OInitialize();
+
   fill_request(&Request);
   Request.request_type = OLC_STARTUP;
   
@@ -246,30 +218,11 @@ olc_init()
   if (status)
     {
       if ((handle_response(status, &Request)) == FAILURE)
-	{
-	  close(fd);
-	  goto init_try_again;
-	}
-      else
-	exit(ERROR);
+	close(fd);
+      exit(ERROR);
     }
-  
   read_response(fd, &response);
   
-  make_temp_name(file);
-
-  switch(x_get_motd(&Request,OLC,file,0))
-    {
-    case FAILURE:
-      unlink(file);
-      goto init_try_again;
-    case ERROR:
-      exit(ERROR);
-    default:
-      break;
-    }
-  unlink(file);
-
   switch(response)
     {
     case USER_NOT_FOUND:
@@ -296,6 +249,15 @@ olc_init()
         exit(ERROR);
     }
 
+  make_temp_name(file);
+  switch(x_get_motd(&Request,OLC,file,0))
+    {
+    case FAILURE:
+    case ERROR:
+      unlink(file);
+      exit(ERROR);
+    }
+  unlink(file);
   (void) close(fd);
   fflush(stdout);
 }
