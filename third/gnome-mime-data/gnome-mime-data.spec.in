@@ -3,12 +3,13 @@
 Name:		gnome-mime-data
 Summary:	The GNOME virtual file-system libraries
 Version:	@VERSION@
-Release:	1_cvs
+Release:	1
 License:	LGPL
 Group:		System Environment/Libraries
 Source:		ftp://ftp.gnome.org/pub/GNOME/stable/sources/%name/%name-%{version}.tar.gz
 URL:		http://www.gnome.org/
 BuildRoot:	%{_tmppath}/%{name}-root
+BuildArch: noarch
 
 %description
 The GNOME MIME database contains a basic set of applications and MIME
@@ -44,7 +45,6 @@ make
 
 %install
 rm -rf $RPM_BUILD_ROOT
-
 make -k sysconfdir=$RPM_BUILD_ROOT%{_sysconfdir} \
     prefix=$RPM_BUILD_ROOT%{_prefix} mandir=$RPM_BUILD_ROOT%{_mandir} \
     libdir=$RPM_BUILD_ROOT%{_libdir} bindir=$RPM_BUILD_ROOT\%{_bindir} \
@@ -64,9 +64,13 @@ rm -rf $RPM_BUILD_ROOT
 %{_datadir}/mime-info/*.keys
 %{_datadir}/mime-info/*.mime
 %{_libdir}/pkgconfig/*.pc
-
+%{_datadir}/man/man5/gnome-vfs-mime.5.gz
 
 %changelog
+* Sat Mar 29 2003 Christian Schaller <Uraeus@gnome.org>
+- Add man page
+- Add noarch flag
+
 * Mon Feb 11 2002 Gregory Leblanc <gleblanc@linuxweasel.com>
 - fixed name
 - disabled double-run of configure (hackish solution)

@@ -1,1338 +1,1468 @@
+# translation of gnome-mime-data.HEAD.po to Slovak
 # translation of sk.po to Slovak
 # Slovak translation of sk.po
 # gnome-mime-data sk.po
 # Copyright (C) 2000-2002,2003 Free Software Foundation, Inc.
 # Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>, 2000-2002,2003.
-# Stanislav Višňovský <visnovsky@nenya.ms.mff.cuni.cz>, 2002
+# Stanislav Višňovský <visnovsky@nenya.ms.mff.cuni.cz>, 2002.
+# Stanislav Visnovsky <visnov@suse.cz>, 2003.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: sk\n"
-"POT-Creation-Date: 2003-02-04 01:07-0800\n"
-"PO-Revision-Date: 2003-01-04 15:29+0100\n"
-"Last-Translator: Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>\n"
-"Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
+"Project-Id-Version: GNOME gnome-mime-data.HEAD\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2003-12-22 19:09+0000\n"
+"PO-Revision-Date: 2003-09-09 17:35+0200\n"
+"Last-Translator: Stanislav Visnovsky <visnov@suse.cz>\n"
+"Language-Team: Slovak <sk-i18n@linux.sk>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.2\n"
 
 #: gnome-vfs.keys.in.h:1
-msgid "3D Studio image"
-msgstr "obrázok 3D Studio"
+msgid "2D chemical structure"
+msgstr ""
 
 #: gnome-vfs.keys.in.h:2
-msgid "AIFC audio"
-msgstr "zvuk AIFC"
+msgid "3D Studio image"
+msgstr "Obrázok 3D Studio"
 
 #: gnome-vfs.keys.in.h:3
-msgid "AIFF audio"
-msgstr "zvuk AIFF"
+msgid "AIFC audio"
+msgstr "Zvuk AIFC"
 
 #: gnome-vfs.keys.in.h:4
-msgid "ANIM animation"
-msgstr "animácia ANIM"
+msgid "AIFF audio"
+msgstr "Zvuk AIFF"
 
 #: gnome-vfs.keys.in.h:5
-msgid "AVI video"
-msgstr "video AVI"
+msgid "ANIM animation"
+msgstr "Animácia ANIM"
 
 #: gnome-vfs.keys.in.h:6
-msgid "AbiWord document"
-msgstr "dokument AbiWord"
+msgid "ARJ archive"
+msgstr "Archív ARJ"
 
 #: gnome-vfs.keys.in.h:7
-msgid "Adobe FrameMaker font"
-msgstr "písmo Adobe FrameMaker"
+msgid "AVI video"
+msgstr "Video AVI"
 
 #: gnome-vfs.keys.in.h:8
-msgid "Adobe font metrics"
-msgstr "metrika písma Adobe"
+msgid "AbiWord document"
+msgstr "Dokument AbiWord"
 
 #: gnome-vfs.keys.in.h:9
+msgid "Active Server page"
+msgstr "Stránka Active Server"
+
+#: gnome-vfs.keys.in.h:10
+msgid "Address card"
+msgstr "Karta adresára"
+
+#: gnome-vfs.keys.in.h:11
+msgid "Adobe FrameMaker font"
+msgstr "Písmo Adobe FrameMaker"
+
+#: gnome-vfs.keys.in.h:12
+msgid "Adobe font metrics"
+msgstr "Metrika písma Adobe"
+
+#: gnome-vfs.keys.in.h:13
 msgid "Andrew Toolkit inset"
 msgstr "Andrew Toolkit inset"
 
-#: gnome-vfs.keys.in.h:10
+#: gnome-vfs.keys.in.h:14
+msgid "Application launcher"
+msgstr "Spúšťanie aplikácie"
+
+#: gnome-vfs.keys.in.h:15
 msgid "ApplixWare Graphics image"
-msgstr "obrázok ApplixWare Graphics"
+msgstr "Obrázok ApplixWare Graphics"
 
-#: gnome-vfs.keys.in.h:11
+#: gnome-vfs.keys.in.h:16
 msgid "Applixware Words document"
-msgstr "dokument Applixware Words"
+msgstr "Dokument Applixware Words"
 
-#: gnome-vfs.keys.in.h:12
+#: gnome-vfs.keys.in.h:17
+msgid "Applixware presentation"
+msgstr "Prezentácia Applixware"
+
+#: gnome-vfs.keys.in.h:18
 msgid "Applixware spreadsheet"
-msgstr "tabuľka Applixware"
+msgstr "Tabuľka Applixware"
 
-#: gnome-vfs.keys.in.h:13
+#: gnome-vfs.keys.in.h:19
+msgid "Ar archive"
+msgstr "Archív ar"
+
+#: gnome-vfs.keys.in.h:20
+msgid "Assembly source code"
+msgstr "Zdrojový kód asembleru"
+
+#: gnome-vfs.keys.in.h:21
 msgid "Audio"
 msgstr "Zvuk"
 
-#: gnome-vfs.keys.in.h:14
-msgid "AutoCAD image"
-msgstr "obrázok AutoCAD"
-
-#: gnome-vfs.keys.in.h:15
-msgid "BCPIO document"
-msgstr "dokument BCPIO"
-
-#: gnome-vfs.keys.in.h:16
-msgid "BDF font"
-msgstr "písmo BDF"
-
-#: gnome-vfs.keys.in.h:17
-msgid "C shell script"
-msgstr "skript C shellu"
-
-#: gnome-vfs.keys.in.h:18
-msgid "C source code"
-msgstr "zdrojový kód C"
-
-#: gnome-vfs.keys.in.h:19
-msgid "C source code header"
-msgstr "hlavičkový zdrojový kód C"
-
-#: gnome-vfs.keys.in.h:20
-msgid "C++ source code"
-msgstr "zdrojový kód C++"
-
-#: gnome-vfs.keys.in.h:21
-msgid "CGI program"
-msgstr "program CGI"
-
 #: gnome-vfs.keys.in.h:22
-msgid "CGM image"
-msgstr "obrázok CGM"
+msgid "Authors list"
+msgstr "Zoznam autorov"
 
 #: gnome-vfs.keys.in.h:23
-msgid "CMU raster image"
-msgstr "rastrový obrázok CMU"
+msgid "AutoCAD image"
+msgstr "Obrázok AutoCAD"
 
 #: gnome-vfs.keys.in.h:24
-msgid "CPIO archive"
-msgstr "archív CPIO"
+msgid "BCPIO document"
+msgstr "Dokument BCPIO"
 
 #: gnome-vfs.keys.in.h:25
-msgid "CPIO archive (gzip-compressed)"
-msgstr "archív CPIO (komprimovaný gzip)"
+msgid "BDF font"
+msgstr "Písmo BDF"
 
 #: gnome-vfs.keys.in.h:26
-msgid "Commodore 64 Audio"
-msgstr "Commodore 64 Audio"
+msgid "Backup file"
+msgstr "Záložný súbor"
 
 #: gnome-vfs.keys.in.h:27
-msgid "DCL script"
-msgstr "skript DCL"
+msgid "Basic audio"
+msgstr "Základné audio"
 
 #: gnome-vfs.keys.in.h:28
-msgid "DOS font"
-msgstr "písmo pre DOS"
+msgid "Bibliography record"
+msgstr "Uáznam bibliografie"
 
 #: gnome-vfs.keys.in.h:29
-msgid "DOS/Windows program"
-msgstr "program pre DOS/Windows"
+msgid "Binary program"
+msgstr "Spustiteľný program"
 
 #: gnome-vfs.keys.in.h:30
-msgid "DSSSL document"
-msgstr "dokument DSSSL"
+#, fuzzy
+msgid "BitTorrent seed file"
+msgstr "Súbor komprimovaný bzip2"
 
 #: gnome-vfs.keys.in.h:31
-msgid "DXF vector graphic"
-msgstr "vektorová grafika DXF"
+msgid "Blender file"
+msgstr "Blender súbor"
 
 #: gnome-vfs.keys.in.h:32
-msgid "Debian package"
-msgstr "balík Debian"
+msgid "Block device"
+msgstr "Blokové zariadenie"
 
 #: gnome-vfs.keys.in.h:33
+msgid "Bzip2 compressed file"
+msgstr "Súbor komprimovaný bzip2"
+
+#: gnome-vfs.keys.in.h:34
+msgid "C shell script"
+msgstr "Skript C shellu"
+
+#: gnome-vfs.keys.in.h:35
+msgid "C source code"
+msgstr "Zdrojový kód C"
+
+#: gnome-vfs.keys.in.h:36
+msgid "C source code header"
+msgstr "Hlavičkový zdrojový kód C"
+
+#: gnome-vfs.keys.in.h:37
+msgid "C++ source code"
+msgstr "Zdrojový kód C++"
+
+#: gnome-vfs.keys.in.h:38
+msgid "CGI program"
+msgstr "Program CGI"
+
+#: gnome-vfs.keys.in.h:39
+msgid "CGM image"
+msgstr "Obrázok CGM"
+
+#: gnome-vfs.keys.in.h:40
+msgid "CMU raster image"
+msgstr "Rastrový obrázok CMU"
+
+#: gnome-vfs.keys.in.h:41
+msgid "CPIO archive"
+msgstr "Archív CPIO"
+
+#: gnome-vfs.keys.in.h:42
+msgid "CPIO archive (Gzip-compressed)"
+msgstr "Archív CPIO (komprimovaný gzip)"
+
+#: gnome-vfs.keys.in.h:43
+msgid "Calendar file"
+msgstr "Kalendárový súbor"
+
+#: gnome-vfs.keys.in.h:44
+msgid "Calendar or event document"
+msgstr "Kokument kalendár alebo udalosť"
+
+#: gnome-vfs.keys.in.h:45
+msgid "Character device"
+msgstr "Znakové zariadenie"
+
+#: gnome-vfs.keys.in.h:46
+msgid "Cinelerra editing sheet"
+msgstr ""
+
+#: gnome-vfs.keys.in.h:47
+msgid "Comma-separated text document"
+msgstr "Textový dokument oddeľovaný čiarkami"
+
+#: gnome-vfs.keys.in.h:48
+msgid "Commodore 64 audio"
+msgstr "Commodore 64 zvuk"
+
+#: gnome-vfs.keys.in.h:49
+msgid "Compound document"
+msgstr "Zložený dokument"
+
+#: gnome-vfs.keys.in.h:50
+msgid "Compress-compressed file"
+msgstr "Komprimovaný súbor compress"
+
+#: gnome-vfs.keys.in.h:51
+msgid "Compressed GIMP document"
+msgstr "Komprimovaný dokument GIMP"
+
+#: gnome-vfs.keys.in.h:52
+msgid "Corel Draw drawing"
+msgstr "Kresba Corel Draw"
+
+#: gnome-vfs.keys.in.h:53
+msgid "Crystalline structure model"
+msgstr ""
+
+#: gnome-vfs.keys.in.h:54
+msgid "DCL script"
+msgstr "Skript DCL"
+
+#: gnome-vfs.keys.in.h:55
+msgid "DOS font"
+msgstr "Písmo pre DOS"
+
+#: gnome-vfs.keys.in.h:56
+msgid "DOS/Windows program"
+msgstr "Program pre DOS/Windows"
+
+#: gnome-vfs.keys.in.h:57
+msgid "DSSSL document"
+msgstr "Dokument DSSSL"
+
+#: gnome-vfs.keys.in.h:58
+#, fuzzy
+msgid "DV video"
+msgstr "Video AVI"
+
+#: gnome-vfs.keys.in.h:59
+msgid "DXF vector graphic"
+msgstr "Vektorová grafika DXF"
+
+#: gnome-vfs.keys.in.h:60
+msgid "Debian package"
+msgstr "Balík Debian"
+
+#: gnome-vfs.keys.in.h:61
 msgid "Device Independant Bitmap"
 msgstr "Device Independant Bitmap"
 
-#: gnome-vfs.keys.in.h:34
+#: gnome-vfs.keys.in.h:62
 msgid "Dia diagram"
-msgstr "diagram Dia"
+msgstr "Diagram Dia"
 
-#: gnome-vfs.keys.in.h:35
+#: gnome-vfs.keys.in.h:63
 msgid "Digital Imaging and Communications in Medicine image"
 msgstr "Obrázok Digital Imaging and Communications in Medicine"
 
-#: gnome-vfs.keys.in.h:36
-msgid "Digital Moving Picture Exchange"
-msgstr "Digital Moving Picture Exchange"
+#: gnome-vfs.keys.in.h:64
+msgid "Digital Moving Picture Exchange image"
+msgstr "Obrázok Digital Moving Picture Exchange"
 
-#: gnome-vfs.keys.in.h:37
+#: gnome-vfs.keys.in.h:65
+msgid "Directory information file"
+msgstr "Súbor s popisom priečinku"
+
+#: gnome-vfs.keys.in.h:66
+#, fuzzy
+msgid "DjVu image"
+msgstr "Obrázok 3D Studio"
+
+#: gnome-vfs.keys.in.h:67
+msgid "Document type definition"
+msgstr "Definícia typu dokumentu"
+
+#: gnome-vfs.keys.in.h:68
 msgid "Documents"
 msgstr "Dokumenty"
 
-#: gnome-vfs.keys.in.h:38
+#: gnome-vfs.keys.in.h:69
 msgid "Documents/Diagram"
 msgstr "Dokumenty/Diagram"
 
-#: gnome-vfs.keys.in.h:39
+#: gnome-vfs.keys.in.h:70
 msgid "Documents/Extended Markup Language (XML)"
 msgstr "Dokumenty/Extended Markup Language (XML)"
 
-#: gnome-vfs.keys.in.h:40
+#: gnome-vfs.keys.in.h:71
 msgid "Documents/Numeric"
 msgstr "Dokumenty/Číselné"
 
-#: gnome-vfs.keys.in.h:41
+#: gnome-vfs.keys.in.h:72
 msgid "Documents/Plain Text"
 msgstr "Dokumenty/Čistý text"
 
-#: gnome-vfs.keys.in.h:42
+#: gnome-vfs.keys.in.h:73
 msgid "Documents/Presentation"
 msgstr "Dokumenty/Prezentácia"
 
-#: gnome-vfs.keys.in.h:43
+#: gnome-vfs.keys.in.h:74
 msgid "Documents/Project Management"
 msgstr "Dokumenty/Správa projektov"
 
-#: gnome-vfs.keys.in.h:44
+#: gnome-vfs.keys.in.h:75
 msgid "Documents/Published Materials"
 msgstr "Dokumenty/Publikované materiály"
 
-#: gnome-vfs.keys.in.h:45
+#: gnome-vfs.keys.in.h:76
 msgid "Documents/Spreadsheet"
 msgstr "Dokumenty/Tabuľka"
 
-#: gnome-vfs.keys.in.h:46
+#: gnome-vfs.keys.in.h:77
 msgid "Documents/TeX"
 msgstr "Dokumenty/TeX"
 
-#: gnome-vfs.keys.in.h:47
+#: gnome-vfs.keys.in.h:78
 msgid "Documents/Text Markup"
 msgstr "Dokumenty/Text so značkami"
 
-#: gnome-vfs.keys.in.h:48
+#: gnome-vfs.keys.in.h:79
 msgid "Documents/Vector Graphics"
 msgstr "Dokumenty/Vektorová grafika"
 
-#: gnome-vfs.keys.in.h:49
+#: gnome-vfs.keys.in.h:80
 msgid "Documents/Word Processor"
 msgstr "Dokumenty/Textový procesor"
 
-#: gnome-vfs.keys.in.h:50
+#: gnome-vfs.keys.in.h:81
 msgid "Documents/World Wide Web"
 msgstr "Dokumenty/WWW"
 
-#: gnome-vfs.keys.in.h:51
+#: gnome-vfs.keys.in.h:82
 msgid "Dolby Digital audio"
-msgstr "zvuk Dolby Digital"
+msgstr "Zvuk Dolby Digital"
 
-#: gnome-vfs.keys.in.h:52
-msgid "Dreamcast rom"
-msgstr "Dreamcast rom"
+#: gnome-vfs.keys.in.h:83
+msgid "Dreamcast ROM"
+msgstr "Dreamcast ROM"
 
-#: gnome-vfs.keys.in.h:53
+#: gnome-vfs.keys.in.h:84
 msgid "Emacs Lisp source code"
-msgstr "zdrojový kód Emacs Lisp"
+msgstr "Zdrojový kód Emacs Lisp"
 
-#: gnome-vfs.keys.in.h:54
+#: gnome-vfs.keys.in.h:85
+msgid "Email headers"
+msgstr "Emailové hlavičky"
+
+#: gnome-vfs.keys.in.h:86
+msgid "Email message/mailbox"
+msgstr "Emailová správa/priečinok"
+
+#: gnome-vfs.keys.in.h:87
+msgid "Encrypted message"
+msgstr "Zašifrovaná správa"
+
+#: gnome-vfs.keys.in.h:88
 msgid "Enlightenment theme"
-msgstr "téma pre Enlightenment"
+msgstr "Téma pre Enlightenment"
 
-#: gnome-vfs.keys.in.h:55
+#: gnome-vfs.keys.in.h:89
+msgid "Enriched text document"
+msgstr "Rozšírený textový dokument"
+
+#: gnome-vfs.keys.in.h:90
+msgid "Epiphany bookmarks file"
+msgstr "Súbor záložiek Epiphany"
+
+#: gnome-vfs.keys.in.h:91
 msgid "FLAC audio"
-msgstr "zvuk FLAC"
+msgstr "Zvuk FLAC"
 
-#: gnome-vfs.keys.in.h:56
+#: gnome-vfs.keys.in.h:92
 msgid "FLC animation"
-msgstr "animácia FLC"
+msgstr "Animácia FLC"
 
-#: gnome-vfs.keys.in.h:57
+#: gnome-vfs.keys.in.h:93
 msgid "FLI animation"
-msgstr "animácia FLI"
+msgstr "Animácia FLI"
 
-#: gnome-vfs.keys.in.h:58
+#: gnome-vfs.keys.in.h:94
 msgid "FastTracker II audio"
-msgstr "zvuk FastTracker II"
+msgstr "Zvuk FastTracker II"
 
-#: gnome-vfs.keys.in.h:59
+#: gnome-vfs.keys.in.h:95
 msgid "FlashPix Image"
 msgstr "Obrázok FlashPix"
 
-#: gnome-vfs.keys.in.h:60
+#: gnome-vfs.keys.in.h:96
 msgid "Flexible Image Transport System"
 msgstr "Flexible Image Transport System"
 
-#: gnome-vfs.keys.in.h:61
+#: gnome-vfs.keys.in.h:97
+msgid "Folder"
+msgstr "Priečinok"
+
+#: gnome-vfs.keys.in.h:98
 msgid "Fortran source code"
-msgstr "zdrojový kód Fortran"
+msgstr "Zdrojový kód Fortran"
 
-#: gnome-vfs.keys.in.h:62
+#: gnome-vfs.keys.in.h:99
 msgid "FrameMaker interchange document"
-msgstr "výmenný dokument FrameMaker"
+msgstr "Výmenný dokument FrameMaker"
 
-#: gnome-vfs.keys.in.h:63
+#: gnome-vfs.keys.in.h:100
 msgid "G3 fax image"
-msgstr "obrázok G3 fax"
+msgstr "Obrázok G3 fax"
 
-#: gnome-vfs.keys.in.h:64
+#: gnome-vfs.keys.in.h:101
 msgid "GIF image"
-msgstr "obrázok GIF"
+msgstr "Obrázok GIF"
 
-#: gnome-vfs.keys.in.h:65
+#: gnome-vfs.keys.in.h:102
 msgid "GIMP document"
-msgstr "dokument GIMP"
+msgstr "Dokument GIMP"
 
-#: gnome-vfs.keys.in.h:66
+#: gnome-vfs.keys.in.h:103
 msgid "GMC link"
-msgstr "odkaz GMC"
+msgstr "Odkaz GMC"
 
-#: gnome-vfs.keys.in.h:67
+#: gnome-vfs.keys.in.h:104
+msgid "GNOME desktop theme"
+msgstr "Téma plochy GNOME"
+
+#: gnome-vfs.keys.in.h:105
 msgid "GNU Oleo Spreadsheet"
-msgstr "tabuľka GNU Oleo"
+msgstr "Tabuľka GNU Oleo"
 
-#: gnome-vfs.keys.in.h:68
+#: gnome-vfs.keys.in.h:106
 msgid "GNU mail message"
-msgstr "e-mailová správa GNU"
+msgstr "Emailová správa GNU"
 
-#: gnome-vfs.keys.in.h:69
+#: gnome-vfs.keys.in.h:107
 msgid "GTK configuration"
-msgstr "nastavenie GTK"
+msgstr "Nastavenie GTK"
 
-#: gnome-vfs.keys.in.h:70
-msgid "Game Boy rom"
-msgstr "Game Boy rom"
+#: gnome-vfs.keys.in.h:108
+msgid "Game Boy ROM"
+msgstr "Game Boy ROM"
 
-#: gnome-vfs.keys.in.h:71
-msgid "Genesis rom"
-msgstr "Genesis rom"
+#: gnome-vfs.keys.in.h:109
+msgid "Genesis ROM"
+msgstr "Genesis ROM"
 
-#: gnome-vfs.keys.in.h:72
+#: gnome-vfs.keys.in.h:110
 msgid "Glade project"
-msgstr "projekt Glade"
+msgstr "Projekt Glade"
 
-#: gnome-vfs.keys.in.h:73
-msgid "GnuCash Workbook"
-msgstr "zošit GnuCash"
+#: gnome-vfs.keys.in.h:111
+msgid "GnuCash workbook"
+msgstr "Zošit GnuCash"
 
-#: gnome-vfs.keys.in.h:74
+#: gnome-vfs.keys.in.h:112
 msgid "Gnumeric spreadsheet"
-msgstr "tabuľka Gnumeric"
+msgstr "Tabuľka Gnumeric"
 
-#: gnome-vfs.keys.in.h:75
+#: gnome-vfs.keys.in.h:113
+msgid "Gtar archive"
+msgstr "Archív gtar"
+
+#: gnome-vfs.keys.in.h:114
 msgid "Gtktalog Catalogue"
-msgstr "katalóg Gtktalog"
+msgstr "Katalóg Gtktalog"
 
-#: gnome-vfs.keys.in.h:76
+#: gnome-vfs.keys.in.h:115
+msgid "Gzip-compressed file"
+msgstr "Súbor komprimovaný gzip"
+
+#: gnome-vfs.keys.in.h:116
 msgid "HDF document"
-msgstr "dokument HDF"
+msgstr "Dokument HDF"
 
-#: gnome-vfs.keys.in.h:77
+#: gnome-vfs.keys.in.h:117
 msgid "HTML page"
-msgstr "stránka HTML"
+msgstr "Stránka HTML"
 
-#: gnome-vfs.keys.in.h:78
+#: gnome-vfs.keys.in.h:118
 msgid "Haskell source code"
-msgstr "zdrojový kód Haskell"
+msgstr "Zdrojový kód Haskell"
 
-#: gnome-vfs.keys.in.h:79
+#: gnome-vfs.keys.in.h:119
+msgid "Help page"
+msgstr "Stránka Pomocníka"
+
+#: gnome-vfs.keys.in.h:120
 msgid "IDL document"
-msgstr "dokument IDL"
+msgstr "Dokument IDL"
 
-#: gnome-vfs.keys.in.h:80
+#: gnome-vfs.keys.in.h:121
 msgid "IEF image"
-msgstr "obrázok IEF"
+msgstr "Obrázok IEF"
 
-#: gnome-vfs.keys.in.h:81
+#: gnome-vfs.keys.in.h:122
 msgid "IFF image"
-msgstr "obrázok IFF"
+msgstr "Obrázok IFF"
 
-#: gnome-vfs.keys.in.h:82
+#: gnome-vfs.keys.in.h:123
 msgid "ILBM image"
-msgstr "obrázok ILMB"
+msgstr "Obrázok ILMB"
 
-#: gnome-vfs.keys.in.h:83
+#: gnome-vfs.keys.in.h:124
 msgid "ISI video"
-msgstr "video ISI"
+msgstr "Video ISI"
 
-#: gnome-vfs.keys.in.h:84
+#: gnome-vfs.keys.in.h:125
 msgid "ISO image"
-msgstr "obraz ISO"
+msgstr "Obraz ISO"
 
-#: gnome-vfs.keys.in.h:85
+#: gnome-vfs.keys.in.h:126
 msgid "Images"
 msgstr "Obrázky"
 
-#: gnome-vfs.keys.in.h:86
+#: gnome-vfs.keys.in.h:127
 msgid "Impulse Tracker audio"
-msgstr "zvuk Impulse Tracker"
+msgstr "Zvuk Impulse Tracker"
 
-#: gnome-vfs.keys.in.h:87
+#: gnome-vfs.keys.in.h:128
 msgid "Information"
 msgstr "Informácie"
 
-#: gnome-vfs.keys.in.h:88
+#: gnome-vfs.keys.in.h:129
 msgid "Information/Calendar"
 msgstr "Informácie/Kalendár"
 
-#: gnome-vfs.keys.in.h:89
+#: gnome-vfs.keys.in.h:130
 msgid "Information/Financial"
 msgstr "Informácie/Finančné"
 
-#: gnome-vfs.keys.in.h:90
+#: gnome-vfs.keys.in.h:131
+msgid "Installed GNOME desktop theme"
+msgstr "Nainštalovaná téma plochy GNOME"
+
+#: gnome-vfs.keys.in.h:132
 msgid "JBuilder Project"
-msgstr "projekt JBuilder"
+msgstr "Projekt JBuilder"
 
-#: gnome-vfs.keys.in.h:91
+#: gnome-vfs.keys.in.h:133
 msgid "JPEG image"
-msgstr "obrázok JPEG"
+msgstr "Obrázok JPEG"
 
-#: gnome-vfs.keys.in.h:92
+#: gnome-vfs.keys.in.h:134
 msgid "Java byte code"
 msgstr "Java bajtkód"
 
-#: gnome-vfs.keys.in.h:93
+#: gnome-vfs.keys.in.h:135
+msgid "Java code archive"
+msgstr "Achív kódu Java"
+
+#: gnome-vfs.keys.in.h:136
 msgid "Java source code"
-msgstr "zdrojový kód Java"
+msgstr "Zdrojový kód Java"
 
-#: gnome-vfs.keys.in.h:94
+#: gnome-vfs.keys.in.h:137
+#, fuzzy
+msgid "JavaScript source code"
+msgstr "Zdrojový kód Java"
+
+#: gnome-vfs.keys.in.h:138
 msgid "KDE application details"
-msgstr "detaily aplikácie KDE"
+msgstr "Detaily aplikácie KDE"
 
-#: gnome-vfs.keys.in.h:95
+#: gnome-vfs.keys.in.h:139
 msgid "KIllustrator document"
-msgstr "dokument KIllustrator"
+msgstr "Dokument KIllustrator"
 
-#: gnome-vfs.keys.in.h:96
+#: gnome-vfs.keys.in.h:140
 msgid "KPresenter presentation"
-msgstr "prezentácia KPresenter"
+msgstr "Prezentácia KPresenter"
 
-#: gnome-vfs.keys.in.h:97
+#: gnome-vfs.keys.in.h:141
 msgid "KSpread spreadsheet"
-msgstr "tabuľka KSpread"
+msgstr "Tabuľka KSpread"
 
-#: gnome-vfs.keys.in.h:98
+#: gnome-vfs.keys.in.h:142
 msgid "KWord document"
-msgstr "dokument KWord"
+msgstr "Dokument KWord"
 
-#: gnome-vfs.keys.in.h:99
+#: gnome-vfs.keys.in.h:143
 msgid "Korn shell script"
-msgstr "skript Korn shellu"
+msgstr "Skript Korn shellu"
 
-#: gnome-vfs.keys.in.h:100
+#: gnome-vfs.keys.in.h:144
 msgid "LHA archive"
-msgstr "archív LHA"
+msgstr "Archív LHA"
 
-#: gnome-vfs.keys.in.h:101
+#: gnome-vfs.keys.in.h:145
 msgid "LHARC archive"
-msgstr "archív LHARC"
+msgstr "Archív LHARC"
 
-#: gnome-vfs.keys.in.h:102
+#: gnome-vfs.keys.in.h:146
 msgid "LIBGRX font"
-msgstr "písmo LIBGRX"
+msgstr "Písmo LIBGRX"
 
-#: gnome-vfs.keys.in.h:103
+#: gnome-vfs.keys.in.h:147
 msgid "LightWave object"
-msgstr "objekt LightWave"
+msgstr "Objekt LightWave"
 
-#: gnome-vfs.keys.in.h:104
+#: gnome-vfs.keys.in.h:148
 msgid "LightWave scene"
-msgstr "scéna LightWave"
+msgstr "Scéna LightWave"
 
-#: gnome-vfs.keys.in.h:105
+#: gnome-vfs.keys.in.h:149
 msgid "Linux PSF console font"
-msgstr "konzolové písmo Linuxu PSF"
+msgstr "Konzolové písmo Linuxu PSF"
 
-#: gnome-vfs.keys.in.h:106
+#: gnome-vfs.keys.in.h:150
 msgid "Literate haskell source code"
-msgstr "zdrojový kód Literate haskell"
+msgstr "Zdrojový kód Literate haskell"
 
-#: gnome-vfs.keys.in.h:107
+#: gnome-vfs.keys.in.h:151
 msgid "Lotus 1-2-3 spreadsheet"
-msgstr "tabuľka Lotus 1-2-3"
+msgstr "Tabuľka Lotus 1-2-3"
 
-#: gnome-vfs.keys.in.h:108
-msgid "LyX Document"
-msgstr "dokument LyX"
+#: gnome-vfs.keys.in.h:152
+msgid "LyX document"
+msgstr "Dokument LyX"
 
-#: gnome-vfs.keys.in.h:109
+#: gnome-vfs.keys.in.h:153
 msgid "MIDI audio"
-msgstr "zvuk MIDI"
+msgstr "Zvuk MIDI"
 
-#: gnome-vfs.keys.in.h:110
+#: gnome-vfs.keys.in.h:154
 msgid "MOD audio"
-msgstr "zvuk MOD"
+msgstr "Zvuk MOD"
 
-#: gnome-vfs.keys.in.h:111
+#: gnome-vfs.keys.in.h:155
 msgid "MP3 audio"
-msgstr "zvuk MP3"
+msgstr "Zvuk MP3"
 
-#: gnome-vfs.keys.in.h:112
+#: gnome-vfs.keys.in.h:156
 msgid "MP3 audio playlist"
-msgstr "zvukový playlist MP3"
+msgstr "Zvukový playlist MP3"
 
-#: gnome-vfs.keys.in.h:113
-msgid "MPEG audio"
-msgstr "Zvuk MPEG"
-
-#: gnome-vfs.keys.in.h:114
+#: gnome-vfs.keys.in.h:157
 msgid "MPEG video"
-msgstr "video MPEG"
+msgstr "Video MPEG"
 
-#: gnome-vfs.keys.in.h:115
+#: gnome-vfs.keys.in.h:158
+#, fuzzy
+msgid "MPEG-4 audio"
+msgstr "Zvuk MP3"
+
+#: gnome-vfs.keys.in.h:159
+#, fuzzy
+msgid "MS ASF audio"
+msgstr "Video MS ASF"
+
+#: gnome-vfs.keys.in.h:160
 msgid "MS ASF video"
-msgstr "video MS ASF"
+msgstr "Video MS ASF"
 
-#: gnome-vfs.keys.in.h:116
+#: gnome-vfs.keys.in.h:161
 msgid "MS video"
-msgstr "video MS"
+msgstr "Video MS"
 
-#: gnome-vfs.keys.in.h:117
-msgid "MSX rom"
-msgstr "MSX rom"
+#: gnome-vfs.keys.in.h:162
+msgid "MSX ROM"
+msgstr "MSX ROM"
 
-#: gnome-vfs.keys.in.h:118
+#: gnome-vfs.keys.in.h:163
 msgid "MacBinary file"
-msgstr "súbor MacBinary"
+msgstr "Súbor MacBinary"
 
-#: gnome-vfs.keys.in.h:119
+#: gnome-vfs.keys.in.h:164
 msgid "Macintosh AppleDouble-encoded file"
-msgstr "súbor kódovaný Macintosh AppleDouble"
+msgstr "Súbor kódovaný Macintosh AppleDouble"
 
-#: gnome-vfs.keys.in.h:120
+#: gnome-vfs.keys.in.h:165
 msgid "Macintosh BinHex-encoded file"
-msgstr "súbor kódovaný Macintosh BinHex"
+msgstr "Súbor kódovaný Macintosh BinHex"
 
-#: gnome-vfs.keys.in.h:121
+#: gnome-vfs.keys.in.h:166
 msgid "Macintosh StuffIt archive"
 msgstr "Macintosh StuffIt archív"
 
-#: gnome-vfs.keys.in.h:122
+#: gnome-vfs.keys.in.h:167
 msgid "Macromedia Flash file"
-msgstr "súbor Macromedia Flash"
+msgstr "Súbor Macromedia Flash"
 
-#: gnome-vfs.keys.in.h:123
+#: gnome-vfs.keys.in.h:168
+msgid "MagicPoint presentation"
+msgstr "Prezentácia MagicPoint"
+
+#: gnome-vfs.keys.in.h:169
 msgid "Magick image format"
 msgstr "Obrázok Magick"
 
-#: gnome-vfs.keys.in.h:124
-msgid "MathML document"
-msgstr "dokument MathML"
+#: gnome-vfs.keys.in.h:170
+msgid "Mail delivery report"
+msgstr "Správa o doručení pošty"
 
-#: gnome-vfs.keys.in.h:125
+#: gnome-vfs.keys.in.h:171
+msgid "Mail disposition report"
+msgstr "Správa o predaní pošty"
+
+#: gnome-vfs.keys.in.h:172
+msgid "Mail system report"
+msgstr "Správa poštového systému"
+
+#: gnome-vfs.keys.in.h:173
+msgid "Makefile"
+msgstr "Makefile"
+
+#: gnome-vfs.keys.in.h:174
+msgid "Manual page"
+msgstr "Manuálová stránka"
+
+#: gnome-vfs.keys.in.h:175
+msgid "Manual page (compressed)"
+msgstr "Manuálová stránka (komprimovaná)"
+
+#: gnome-vfs.keys.in.h:176
+msgid "Master System or Game Gear ROM"
+msgstr "Master System alebo Game Gear ROM"
+
+#: gnome-vfs.keys.in.h:177
+msgid "MathML document"
+msgstr "Dokument MathML"
+
+#: gnome-vfs.keys.in.h:178
+msgid "Memory dump"
+msgstr "Výpis pamäti"
+
+#: gnome-vfs.keys.in.h:179
 msgid "Message"
 msgstr "Správa"
 
-#: gnome-vfs.keys.in.h:126
+#: gnome-vfs.keys.in.h:180
+msgid "Message digest"
+msgstr "Súhrn pošty"
+
+#: gnome-vfs.keys.in.h:181
+msgid "Message in several formats"
+msgstr "Správa vo viacerých formátoch"
+
+#: gnome-vfs.keys.in.h:182
 msgid "Microsoft Excel spreadsheet"
-msgstr "tabuľka Microsoft Excel"
+msgstr "Tabuľka Microsoft Excel"
 
-#: gnome-vfs.keys.in.h:127
+#: gnome-vfs.keys.in.h:183
 msgid "Microsoft PowerPoint document"
-msgstr "dokument Microsoft PowerPoint"
+msgstr "Dokument Microsoft PowerPoint"
 
-#: gnome-vfs.keys.in.h:128
+#: gnome-vfs.keys.in.h:184
+msgid "Microsoft WMV playlist"
+msgstr "Video Microsoft WMV"
+
+#: gnome-vfs.keys.in.h:185
 msgid "Microsoft WMV video"
-msgstr "video Microsoft WMV"
+msgstr "Video Microsoft WMV"
 
-#: gnome-vfs.keys.in.h:129
+#: gnome-vfs.keys.in.h:186
 msgid "Microsoft Word document"
-msgstr "dokument Microsoft Word"
+msgstr "Dokument Microsoft Word"
 
-#: gnome-vfs.keys.in.h:130
+#: gnome-vfs.keys.in.h:187
 msgid "Microsoft video"
-msgstr "video Microsoft"
+msgstr "Video Microsoft"
 
-#: gnome-vfs.keys.in.h:131
-msgid "NES rom"
-msgstr "NES rom"
+#: gnome-vfs.keys.in.h:188
+msgid "Monkey audio"
+msgstr "Zvuk Monkey"
 
-#: gnome-vfs.keys.in.h:132
+#: gnome-vfs.keys.in.h:189
+msgid "Mozilla bookmarks file"
+msgstr "Súbor záložiek Mozilla"
+
+#: gnome-vfs.keys.in.h:190
+msgid "Multi-part message"
+msgstr "Správa s viacerými časťami"
+
+#: gnome-vfs.keys.in.h:191
+msgid "NES ROM"
+msgstr "NES ROM"
+
+#: gnome-vfs.keys.in.h:192
+msgid "Named pipe"
+msgstr "Pomenovaná rúra"
+
+#: gnome-vfs.keys.in.h:193
 msgid "Nautilus link"
-msgstr "odkaz Nautilus"
+msgstr "Odkaz Nautilus"
 
-#: gnome-vfs.keys.in.h:133
-msgid "Nintendo64 rom"
-msgstr "Nintendo64 rom"
+#: gnome-vfs.keys.in.h:194
+msgid "Netscape bookmarks file"
+msgstr "Súbor záložiek Netscape"
 
-#: gnome-vfs.keys.in.h:134
+#: gnome-vfs.keys.in.h:195
+msgid "Nintendo64 ROM"
+msgstr "Nintendo64 ROM"
+
+#: gnome-vfs.keys.in.h:196
+msgid "Nullsoft video"
+msgstr "Video Nullsoft"
+
+#: gnome-vfs.keys.in.h:197
 msgid "ODA document"
-msgstr "dokument ODA"
+msgstr "Dokument ODA"
 
-#: gnome-vfs.keys.in.h:135
+#: gnome-vfs.keys.in.h:198
+msgid "Object code"
+msgstr "Objektový kód"
+
+#: gnome-vfs.keys.in.h:199
+#, fuzzy
+msgid "Objective C source code"
+msgstr "Zdrojový kód C"
+
+#: gnome-vfs.keys.in.h:200
+msgid "Ogg audio"
+msgstr "Zvuk ogg"
+
+#: gnome-vfs.keys.in.h:201
 msgid "OpenOffice.org Impress presentation"
-msgstr "prezentácia OpenOffice.org Impress"
+msgstr "Prezentácia OpenOffice.org Impress"
 
-#: gnome-vfs.keys.in.h:136
+#: gnome-vfs.keys.in.h:202
 msgid "OpenOffice.org Impress presentation template"
-msgstr "šablóna prezentácie OpenOffice.org Impress"
+msgstr "Šablóna prezentácie OpenOffice.org Impress"
 
-#: gnome-vfs.keys.in.h:137
+#: gnome-vfs.keys.in.h:203
 msgid "OpenOffice.org Math document"
-msgstr "dokument OpenOffice.org Math"
+msgstr "Dokument OpenOffice.org Math"
 
-#: gnome-vfs.keys.in.h:138
+#: gnome-vfs.keys.in.h:204
 msgid "OpenOffice.org Writer document"
-msgstr "dokument OpenOffice.org Writer"
+msgstr "Dokument OpenOffice.org Writer"
 
-#: gnome-vfs.keys.in.h:139
+#: gnome-vfs.keys.in.h:205
 msgid "OpenOffice.org Writer global document"
-msgstr "globálny dokument OpenOffice.org Writer"
+msgstr "Globálny dokument OpenOffice.org Writer"
 
-#: gnome-vfs.keys.in.h:140
+#: gnome-vfs.keys.in.h:206
 msgid "OpenOffice.org Writer template"
-msgstr "šablóna OpenOffice.org Writer"
+msgstr "Šablóna OpenOffice.org Writer"
 
-#: gnome-vfs.keys.in.h:141
+#: gnome-vfs.keys.in.h:207
 msgid "OpenOffice.org drawing"
-msgstr "kresba OpenOffice.org"
+msgstr "Kresba OpenOffice.org"
 
-#: gnome-vfs.keys.in.h:142
+#: gnome-vfs.keys.in.h:208
 msgid "OpenOffice.org drawing template"
-msgstr "šablóna kresby OpenOffice.org"
+msgstr "Šablóna kresby OpenOffice.org"
 
-#: gnome-vfs.keys.in.h:143
+#: gnome-vfs.keys.in.h:209
 msgid "OpenOffice.org spreadsheet"
-msgstr "tabuľka OpenOffice.org"
+msgstr "Tabuľka OpenOffice.org"
 
-#: gnome-vfs.keys.in.h:144
+#: gnome-vfs.keys.in.h:210
 msgid "OpenOffice.org spreadsheet template"
-msgstr "šablóna tabuľky OpenOffice.org"
+msgstr "Šablóna tabuľky OpenOffice.org"
 
-#: gnome-vfs.keys.in.h:145
+#: gnome-vfs.keys.in.h:211
 msgid "OpenType font"
-msgstr "písmo OpenType"
+msgstr "Písmo OpenType"
 
-#: gnome-vfs.keys.in.h:146
+#: gnome-vfs.keys.in.h:212
 msgid "PBM image"
-msgstr "obrázok PBM"
+msgstr "Obrázok PBM"
 
-#: gnome-vfs.keys.in.h:147
+#: gnome-vfs.keys.in.h:213
 msgid "PC Paintbrush image"
-msgstr "obrázok PC Paintbrush"
+msgstr "Obrázok PC Paintbrush"
 
-#: gnome-vfs.keys.in.h:148
+#: gnome-vfs.keys.in.h:214
 msgid "PCF font"
-msgstr "písmo PCF"
+msgstr "Písmo PCF"
 
-#: gnome-vfs.keys.in.h:149
+#: gnome-vfs.keys.in.h:215
 msgid "PDF document"
-msgstr "dokument PDF"
+msgstr "Dokument PDF"
 
-#: gnome-vfs.keys.in.h:150
+#: gnome-vfs.keys.in.h:216
 msgid "PEF program"
-msgstr "program PEF"
+msgstr "Program PEF"
 
-#: gnome-vfs.keys.in.h:151
+#: gnome-vfs.keys.in.h:217
 msgid "PGM image"
-msgstr "obrázok PGM"
+msgstr "Obrázok PGM"
 
-#: gnome-vfs.keys.in.h:152
+#: gnome-vfs.keys.in.h:218
 msgid "PGN chess game"
-msgstr "šachová hra PGN"
+msgstr "Šachová hra PGN"
 
-#: gnome-vfs.keys.in.h:153
+#: gnome-vfs.keys.in.h:219
 msgid "PGP keys"
 msgstr "PGP kľúče"
 
-#: gnome-vfs.keys.in.h:154
+#: gnome-vfs.keys.in.h:220
 msgid "PGP message"
 msgstr "PGP správa"
 
-#: gnome-vfs.keys.in.h:155
+#: gnome-vfs.keys.in.h:221
 msgid "PGP signature"
 msgstr "PGP podpis"
 
-#: gnome-vfs.keys.in.h:156
+#: gnome-vfs.keys.in.h:222
 msgid "PGP-encrypted file"
 msgstr "PGP-šifrovaný súbor"
 
-#: gnome-vfs.keys.in.h:157
+#: gnome-vfs.keys.in.h:223
 msgid "PHP script"
-msgstr "skript PHP"
+msgstr "Skript PHP"
 
-#: gnome-vfs.keys.in.h:158
+#: gnome-vfs.keys.in.h:224
 msgid "PICT image"
-msgstr "obrázok PICT"
+msgstr "Obrázok PICT"
 
-#: gnome-vfs.keys.in.h:159
+#: gnome-vfs.keys.in.h:225
 msgid "PNG image"
-msgstr "obrázok PNG"
+msgstr "Obrázok PNG"
 
-#: gnome-vfs.keys.in.h:160
+#: gnome-vfs.keys.in.h:226
 msgid "PNM image"
-msgstr "obrázok PNM"
+msgstr "Obrázok PNM"
 
-#: gnome-vfs.keys.in.h:161
+#: gnome-vfs.keys.in.h:227
 msgid "PPM image"
-msgstr "obrázok PPM"
+msgstr "Obrázok PPM"
 
-#: gnome-vfs.keys.in.h:162
+#: gnome-vfs.keys.in.h:228
 msgid "Packages"
 msgstr "Balíky"
 
-#: gnome-vfs.keys.in.h:163
+#: gnome-vfs.keys.in.h:229
 msgid "Palm OS database"
-msgstr "databáza Palm OS"
+msgstr "Databáza Palm OS"
 
-#: gnome-vfs.keys.in.h:164
+#: gnome-vfs.keys.in.h:230
 msgid "Palm Pixmap image"
 msgstr "Obrázok Palm Pixmap"
 
-#: gnome-vfs.keys.in.h:165
+#: gnome-vfs.keys.in.h:231
+msgid "Partial email message"
+msgstr "Čiastočná e-mailová správa"
+
+#: gnome-vfs.keys.in.h:232
+msgid "Pascal source code"
+msgstr "Zdrojový kód Pascal"
+
+#: gnome-vfs.keys.in.h:233
 msgid "Perl script"
-msgstr "skript Perl"
+msgstr "Skript Perl"
 
-#: gnome-vfs.keys.in.h:166
+#: gnome-vfs.keys.in.h:234
 msgid "Photo CD image"
-msgstr "obrázok Photo CD"
+msgstr "Obrázok Photo CD"
 
-#: gnome-vfs.keys.in.h:167
+#: gnome-vfs.keys.in.h:235
 msgid "Photoshop document"
-msgstr "dokument Photoshop"
+msgstr "Dokument Photoshop"
 
-#: gnome-vfs.keys.in.h:168
+#: gnome-vfs.keys.in.h:236
+msgid "Plain text document"
+msgstr "Textový dokument"
+
+#: gnome-vfs.keys.in.h:237
 msgid "Playlist"
 msgstr "Playlist"
 
-#: gnome-vfs.keys.in.h:169
+#: gnome-vfs.keys.in.h:238
 msgid "PostScript Type 1 font"
-msgstr "písmo PostScript Typ 1"
+msgstr "Písmo PostScript Typ 1"
 
-#: gnome-vfs.keys.in.h:170
+#: gnome-vfs.keys.in.h:239
 msgid "PostScript document"
-msgstr "dokument PostScript"
+msgstr "Dokument PostScript"
 
-#: gnome-vfs.keys.in.h:171
+#: gnome-vfs.keys.in.h:240
+msgid "Profiler results"
+msgstr "Výsledky profilera"
+
+#: gnome-vfs.keys.in.h:241
 msgid "Project Plan"
 msgstr "Project Plan"
 
-#: gnome-vfs.keys.in.h:172
+#: gnome-vfs.keys.in.h:242
+msgid "Python byte code"
+msgstr "Bajtkód Python"
+
+#: gnome-vfs.keys.in.h:243
 msgid "Python source code"
-msgstr "zdrojový kód Python"
+msgstr "Zdrojový kód Python"
 
-#: gnome-vfs.keys.in.h:173
+#: gnome-vfs.keys.in.h:244
 msgid "QuickTime movie"
-msgstr "video QuickTime"
+msgstr "Video QuickTime"
 
-#: gnome-vfs.keys.in.h:174
+#: gnome-vfs.keys.in.h:245
 msgid "Quicken document"
-msgstr "dokument Quicken"
+msgstr "Dokument Quicken"
 
-#: gnome-vfs.keys.in.h:175
+#: gnome-vfs.keys.in.h:246
 msgid "Quicken for Windows document"
-msgstr "dokument Quicken pre Windows"
+msgstr "Dokument Quicken pre Windows"
 
-#: gnome-vfs.keys.in.h:176
+#: gnome-vfs.keys.in.h:247
 msgid "RAR archive"
-msgstr "archív RAR"
+msgstr "Archív RAR"
 
-#: gnome-vfs.keys.in.h:177
+#: gnome-vfs.keys.in.h:248
 msgid "README document"
-msgstr "dokument README"
+msgstr "Dokument README"
 
-#: gnome-vfs.keys.in.h:178
+#: gnome-vfs.keys.in.h:249
 msgid "RGB image"
-msgstr "obrázok RGB"
+msgstr "Obrázok RGB"
 
-#: gnome-vfs.keys.in.h:179
+#: gnome-vfs.keys.in.h:250
 msgid "RIFF audio"
-msgstr "zvuk RIFF"
+msgstr "Zvuk RIFF"
 
-#: gnome-vfs.keys.in.h:180
+#: gnome-vfs.keys.in.h:251
 msgid "RPM package"
-msgstr "balík RPM"
+msgstr "Balík RPM"
 
-#: gnome-vfs.keys.in.h:181
+#: gnome-vfs.keys.in.h:252
 msgid "Raw Gray Sample"
 msgstr "Raw Gray Sample"
 
-#: gnome-vfs.keys.in.h:182
+#: gnome-vfs.keys.in.h:253
 msgid "RealAudio document"
-msgstr "dokument RealAudio"
+msgstr "Dokument RealAudio"
 
-#: gnome-vfs.keys.in.h:183
+#: gnome-vfs.keys.in.h:254
 msgid "RealAudio/Video document"
-msgstr "dokument RealAudio/Video"
+msgstr "Dokument RealAudio/Video"
 
-#: gnome-vfs.keys.in.h:184
+#: gnome-vfs.keys.in.h:255
 msgid "RealVideo video"
-msgstr "video RealVideo"
+msgstr "Video RealVideo"
 
-#: gnome-vfs.keys.in.h:185
+#: gnome-vfs.keys.in.h:256
+msgid "Reference to remote file"
+msgstr "Odkaz na vzdialený súbor"
+
+#: gnome-vfs.keys.in.h:257
+msgid "Rejected patch file"
+msgstr "Odmietnutý súbor patch"
+
+#: gnome-vfs.keys.in.h:258
+msgid "Rich text document"
+msgstr "Bohatý textový dokument"
+
+#: gnome-vfs.keys.in.h:259
 msgid "S/MIME file"
-msgstr "súbor S/MIME"
+msgstr "Súbor S/MIME"
 
-#: gnome-vfs.keys.in.h:186
+#: gnome-vfs.keys.in.h:260
 msgid "S/MIME signature"
-msgstr "podpis S/MIME"
+msgstr "Podpis S/MIME"
 
-#: gnome-vfs.keys.in.h:187
+#: gnome-vfs.keys.in.h:261
 msgid "SGI video"
-msgstr "video SGI"
+msgstr "Video SGI"
 
-#: gnome-vfs.keys.in.h:188
+#: gnome-vfs.keys.in.h:262
 msgid "SGML document"
-msgstr "dokument SGML"
+msgstr "Dokument SGML"
 
-#: gnome-vfs.keys.in.h:189
-msgid "SHOUTcast Playlist"
+#: gnome-vfs.keys.in.h:263
+msgid "SHOUTcast playlist"
 msgstr "Playlist SHOUTcast"
 
-#: gnome-vfs.keys.in.h:190
+#: gnome-vfs.keys.in.h:264
 msgid "SMIL script"
-msgstr "skript SMIL"
+msgstr "Skript SMIL"
 
-#: gnome-vfs.keys.in.h:191
-msgid "SMS or Game Gear rom"
-msgstr "SMS alebo Game Gear rom"
-
-#: gnome-vfs.keys.in.h:192
+#: gnome-vfs.keys.in.h:265
 msgid "SQL code"
-msgstr "kód SQL"
+msgstr "Kód SQL"
 
-#: gnome-vfs.keys.in.h:193
+#: gnome-vfs.keys.in.h:266
 msgid "SUN Rasterfile"
 msgstr "Rastrový obrázok SUN"
 
-#: gnome-vfs.keys.in.h:194
+#: gnome-vfs.keys.in.h:267
 msgid "SV4 CPIO archive"
-msgstr "archív SV4 CPIO"
+msgstr "Archív SV4 CPIO"
 
-#: gnome-vfs.keys.in.h:195
+#: gnome-vfs.keys.in.h:268
 msgid "SV4 CPIP archive (with CRC)"
-msgstr "archív SV4 CPIP (s CRC)"
+msgstr "Archív SV4 CPIP (s CRC)"
 
-#: gnome-vfs.keys.in.h:196
+#: gnome-vfs.keys.in.h:269
 msgid "SVG art"
-msgstr "dielo SVG"
+msgstr "Dielo SVG"
 
-#: gnome-vfs.keys.in.h:197
+#: gnome-vfs.keys.in.h:270
+msgid "Samba share"
+msgstr "Zdieľaný disk Samba"
+
+#: gnome-vfs.keys.in.h:271
 msgid "Scheme source code"
-msgstr "zdrojový kód Scheme"
+msgstr "Zdrojový kód Scheme"
 
-#: gnome-vfs.keys.in.h:198
+#: gnome-vfs.keys.in.h:272
 msgid "Scream Tracker 3 audio"
-msgstr "zvuk Scream Tracker 3"
+msgstr "Zvuk Scream Tracker 3"
 
-#: gnome-vfs.keys.in.h:199
+#: gnome-vfs.keys.in.h:273
 msgid "Scream Tracker audio"
-msgstr "zvuk Scream Tracker"
+msgstr "Zvuk Scream Tracker"
 
-#: gnome-vfs.keys.in.h:200
+#: gnome-vfs.keys.in.h:274
 msgid "Scream Tracker instrument"
-msgstr "nástroj Scream Tracker"
+msgstr "Nástroj Scream Tracker"
 
-#: gnome-vfs.keys.in.h:201
+#: gnome-vfs.keys.in.h:275
+msgid "Search results"
+msgstr "Výsledky hľadania"
+
+#: gnome-vfs.keys.in.h:276
 msgid "Security"
 msgstr "Bezpečnosť"
 
-#: gnome-vfs.keys.in.h:202
+#: gnome-vfs.keys.in.h:277
 msgid "Setext document"
-msgstr "dokument setext"
+msgstr "Dokument setext"
 
-#: gnome-vfs.keys.in.h:203
-msgid "Silicon Graphics Image"
+#: gnome-vfs.keys.in.h:278
+msgid "Shared Printer"
+msgstr "Zdieľaná tlačiareň"
+
+#: gnome-vfs.keys.in.h:279
+msgid "Shared library"
+msgstr "Zdieľaná knižnica"
+
+#: gnome-vfs.keys.in.h:280
+msgid "Shell archive"
+msgstr "Archív shell"
+
+#: gnome-vfs.keys.in.h:281
+msgid "Shell script"
+msgstr "Skript shellu"
+
+#: gnome-vfs.keys.in.h:282
+msgid "Signed message"
+msgstr "Podpísaná správa"
+
+#: gnome-vfs.keys.in.h:283
+msgid "Silicon Graphics image"
 msgstr "Obrázok Silicon Graphics"
 
-#: gnome-vfs.keys.in.h:204
+#: gnome-vfs.keys.in.h:284
+msgid "Socket"
+msgstr "Soket"
+
+#: gnome-vfs.keys.in.h:285
 msgid "Software Development"
 msgstr "Vývoj softvéru"
 
-#: gnome-vfs.keys.in.h:205
+#: gnome-vfs.keys.in.h:286
 msgid "Software Development/ROM Images"
 msgstr "Vývoj softvéru/Obrazy ROM"
 
-#: gnome-vfs.keys.in.h:206
+#: gnome-vfs.keys.in.h:287
 msgid "Software Development/Source Code"
 msgstr "Vývoj softvéru/Zdrojový kód"
 
-#: gnome-vfs.keys.in.h:207
+#: gnome-vfs.keys.in.h:288
+msgid "Software author credits"
+msgstr "Informácie o autorovi softvéru"
+
+#: gnome-vfs.keys.in.h:289
+msgid "Software installation instructions"
+msgstr "Inštalačný návod softvéru"
+
+#: gnome-vfs.keys.in.h:290
+msgid "Software license terms"
+msgstr "Softvérová licencia"
+
+#: gnome-vfs.keys.in.h:291
+msgid "Source code patch"
+msgstr "Patch zdrojového kódu"
+
+#: gnome-vfs.keys.in.h:292
 msgid "Speech document"
-msgstr "dokument Speech"
+msgstr "Dokument Speech"
 
-#: gnome-vfs.keys.in.h:208
+#: gnome-vfs.keys.in.h:293
 msgid "Speedo font"
-msgstr "písmo Speedo"
+msgstr "Písmo Speedo"
 
-#: gnome-vfs.keys.in.h:209
+#: gnome-vfs.keys.in.h:294
 msgid "Spreadsheet Interchange document"
-msgstr "výmenný tabuľkový dokument"
+msgstr "Výmenný tabuľkový dokument"
 
-#: gnome-vfs.keys.in.h:210
+#: gnome-vfs.keys.in.h:295
 msgid "Stampede package"
-msgstr "balík Stampede"
+msgstr "Balík Stampede"
 
-#: gnome-vfs.keys.in.h:211
+#: gnome-vfs.keys.in.h:296
 msgid "StarCalc spreadsheet"
-msgstr "tabuľka StarCalc"
+msgstr "Tabuľka StarCalc"
 
-#: gnome-vfs.keys.in.h:212
+#: gnome-vfs.keys.in.h:297
 msgid "StarChart chart"
-msgstr "graf StarChart"
+msgstr "Graf StarChart"
 
-#: gnome-vfs.keys.in.h:213
+#: gnome-vfs.keys.in.h:298
 msgid "StarDraw drawing"
-msgstr "kresba StarDraw"
+msgstr "Kresba StarDraw"
 
-#: gnome-vfs.keys.in.h:214
+#: gnome-vfs.keys.in.h:299
 msgid "StarImpress presentation"
-msgstr "prezentácia StarImpress"
+msgstr "Prezentácia StarImpress"
 
-#: gnome-vfs.keys.in.h:215
+#: gnome-vfs.keys.in.h:300
 msgid "StarMail file"
-msgstr "súbor StarMail"
+msgstr "Súbor StarMail"
 
-#: gnome-vfs.keys.in.h:216
+#: gnome-vfs.keys.in.h:301
 msgid "StarMath document"
-msgstr "dokument StarMath"
+msgstr "Dokument StarMath"
 
-#: gnome-vfs.keys.in.h:217
+#: gnome-vfs.keys.in.h:302
 msgid "StarOffice extended metafile image"
-msgstr "obrázok Rozšírený meta-súbor StarOffice"
+msgstr "Obrázok Rozšírený meta-súbor StarOffice"
 
-#: gnome-vfs.keys.in.h:218
+#: gnome-vfs.keys.in.h:303
 msgid "StarWriter document"
-msgstr "dokument StarWriter"
+msgstr "Dokument StarWriter"
 
-#: gnome-vfs.keys.in.h:219
+#: gnome-vfs.keys.in.h:304
+msgid "Style sheet"
+msgstr "Style sheet"
+
+#: gnome-vfs.keys.in.h:305
 msgid "Sun mu-law audio"
-msgstr "zvuk Sun ľ-law"
+msgstr "Zvuk Sun ľ-law"
 
-#: gnome-vfs.keys.in.h:220
+#: gnome-vfs.keys.in.h:306
 msgid "SunOS News font"
 msgstr "Písmo SunOS News"
 
-#: gnome-vfs.keys.in.h:221
+#: gnome-vfs.keys.in.h:307
+msgid "Symbolic link"
+msgstr "Symbolický odkaz"
+
+#: gnome-vfs.keys.in.h:308
 msgid "System"
 msgstr "Systém"
 
-#: gnome-vfs.keys.in.h:222
+#: gnome-vfs.keys.in.h:309
 msgid "TIFF image"
-msgstr "obrázok TIFF"
+msgstr "Obrázok TIFF"
 
-#: gnome-vfs.keys.in.h:223
+#: gnome-vfs.keys.in.h:310
+msgid "Tab-separated text document"
+msgstr "Textový dokument oddeľovaný tabulátormi"
+
+#: gnome-vfs.keys.in.h:311
+msgid "Tar archive"
+msgstr "Archív tar"
+
+#: gnome-vfs.keys.in.h:312
+msgid "Tar archive (Bzip2-compressed)"
+msgstr "Archív tar (komprimovaný bzip2)"
+
+#: gnome-vfs.keys.in.h:313
+msgid "Tar archive (Gzip-compressed)"
+msgstr "Archív tar (komprimovaný gzip)"
+
+#: gnome-vfs.keys.in.h:314
 msgid "TarGA image"
-msgstr "obrázok TarGA"
+msgstr "Obrázok TarGA"
 
-#: gnome-vfs.keys.in.h:224
+#: gnome-vfs.keys.in.h:315
 msgid "Tcl script"
-msgstr "skript Tcl"
+msgstr "Skript Tcl"
 
-#: gnome-vfs.keys.in.h:225
+#: gnome-vfs.keys.in.h:316
 msgid "TeX document"
-msgstr "dokument TeX"
+msgstr "Dokument TeX"
 
-#: gnome-vfs.keys.in.h:226
+#: gnome-vfs.keys.in.h:317
 msgid "TeX dvi document"
-msgstr "dokument TeX dvi"
+msgstr "Dokument TeX dvi"
 
-#: gnome-vfs.keys.in.h:227
+#: gnome-vfs.keys.in.h:318
 msgid "TeX font"
-msgstr "písmo TeX"
+msgstr "Písmo TeX"
 
-#: gnome-vfs.keys.in.h:228
+#: gnome-vfs.keys.in.h:319
 msgid "TeX font metrics"
-msgstr "metrika písma TeX"
+msgstr "Metrika písma TeX"
 
-#: gnome-vfs.keys.in.h:229
+#: gnome-vfs.keys.in.h:320
 msgid "TeXInfo document"
-msgstr "dokument TeXInfo"
+msgstr "Dokument TeXInfo"
 
-#: gnome-vfs.keys.in.h:230
+#: gnome-vfs.keys.in.h:321
+msgid "Theme"
+msgstr "Téma"
+
+#: gnome-vfs.keys.in.h:322
 msgid "ToutDoux document"
-msgstr "dokument ToutDoux"
+msgstr "Dokument ToutDoux"
 
-#: gnome-vfs.keys.in.h:231
+#: gnome-vfs.keys.in.h:323
+msgid "Troff document"
+msgstr "Dokument troff"
+
+#: gnome-vfs.keys.in.h:324
+msgid "Troff me input document"
+msgstr "Vstupný dokument me troff"
+
+#: gnome-vfs.keys.in.h:325
+msgid "Troff mm input document"
+msgstr "Vstupný dokument mm troff"
+
+#: gnome-vfs.keys.in.h:326
+msgid "Troff ms input document"
+msgstr "Vstupný dokument ms troff"
+
+#: gnome-vfs.keys.in.h:327
 msgid "TrueType font"
-msgstr "písmo TrueType"
+msgstr "Písmo TrueType"
 
-#: gnome-vfs.keys.in.h:232
+#: gnome-vfs.keys.in.h:328
 msgid "Truevision Targa image"
 msgstr "Obrázok Truevision Targa"
 
-#: gnome-vfs.keys.in.h:233
+#: gnome-vfs.keys.in.h:329
 msgid "USENET news message"
-msgstr "príspevok diskusnej skupiny USENET"
+msgstr "Príspevok diskusnej skupiny USENET"
 
-#: gnome-vfs.keys.in.h:234
+#: gnome-vfs.keys.in.h:330
 msgid "Unidata netCDF document"
-msgstr "dokument Unidata netCDF"
+msgstr "Dokument Unidata netCDF"
 
-#: gnome-vfs.keys.in.h:235
+#: gnome-vfs.keys.in.h:331
+msgid "Unknown type"
+msgstr "Neznámy typ"
+
+#: gnome-vfs.keys.in.h:332
 msgid "User Interface"
 msgstr "Používateľské rozhranie"
 
-#: gnome-vfs.keys.in.h:236
+#: gnome-vfs.keys.in.h:333
 msgid "User Interface/Fonts"
 msgstr "Používateľské rozhranie/Písma"
 
-#: gnome-vfs.keys.in.h:237
+#: gnome-vfs.keys.in.h:334
+msgid "Ustar archive"
+msgstr "Archív ustar"
+
+#: gnome-vfs.keys.in.h:335
 msgid "V font"
-msgstr "písmo V"
+msgstr "Písmo V"
 
-#: gnome-vfs.keys.in.h:238
+#: gnome-vfs.keys.in.h:336
 msgid "VOC audio"
-msgstr "zvuk VOC"
+msgstr "Zvuk VOC"
 
-#: gnome-vfs.keys.in.h:239
+#: gnome-vfs.keys.in.h:337
 msgid "VRML document"
-msgstr "dokument VRML"
+msgstr "Dokument VRML"
 
-#: gnome-vfs.keys.in.h:240
+#: gnome-vfs.keys.in.h:338
 msgid "Video"
 msgstr "Video"
 
-#: gnome-vfs.keys.in.h:241
+#: gnome-vfs.keys.in.h:339
 msgid "Vivo video"
-msgstr "video Vivo"
+msgstr "Video Vivo"
 
-#: gnome-vfs.keys.in.h:242
+#: gnome-vfs.keys.in.h:340
 msgid "WAIS source code"
-msgstr "zdrojový kód WAIS"
+msgstr "Zdrojový kód WAIS"
 
-#: gnome-vfs.keys.in.h:243
+#: gnome-vfs.keys.in.h:341
+msgid "Wave audio"
+msgstr "Zvuk wave"
+
+#: gnome-vfs.keys.in.h:342
 msgid "Wavelet video"
-msgstr "video Wavelet"
+msgstr "Video Wavelet"
 
-#: gnome-vfs.keys.in.h:244
-msgid "Windows bitmap image"
-msgstr "bitmapový obrázok Windows"
-
-#: gnome-vfs.keys.in.h:245
-msgid "Windows icon image"
-msgstr "ikona Windows"
-
-#: gnome-vfs.keys.in.h:246
-msgid "Windows metafile graphics"
-msgstr "grafika Windows metafile"
-
-#: gnome-vfs.keys.in.h:247
-msgid "WordPerfect document"
-msgstr "dokument WordPerfect"
-
-#: gnome-vfs.keys.in.h:248
-msgid "X bitmap image"
-msgstr "bitmapový obrázok X"
-
-#: gnome-vfs.keys.in.h:249
-msgid "X window image"
-msgstr "obrázok X window"
-
-#: gnome-vfs.keys.in.h:250
-msgid "XML document"
-msgstr "dokument XML"
-
-#: gnome-vfs.keys.in.h:251
-msgid "XPM image"
-msgstr "obrázok XPM"
-
-#: gnome-vfs.keys.in.h:252
-msgid "Xbase database"
-msgstr "databáza Xbase"
-
-#: gnome-vfs.keys.in.h:253
-msgid "Z shell script"
-msgstr "skript Z shellu"
-
-#: gnome-vfs.keys.in.h:254
-msgid "active server page"
-msgstr "active server page"
-
-#: gnome-vfs.keys.in.h:255
-msgid "address card"
-msgstr "karta adresára"
-
-#: gnome-vfs.keys.in.h:256
-msgid "application launcher"
-msgstr "spúšťanie aplikácie"
-
-#: gnome-vfs.keys.in.h:257
-msgid "ar archive"
-msgstr "archív ar"
-
-#: gnome-vfs.keys.in.h:258
-msgid "arj archive"
-msgstr "archív arj"
-
-#: gnome-vfs.keys.in.h:259
-msgid "authors list"
-msgstr "zoznam autorov"
-
-#: gnome-vfs.keys.in.h:260
-msgid "backup file"
-msgstr "záložný súbor"
-
-#: gnome-vfs.keys.in.h:261
-msgid "basic audio"
-msgstr "základné audio"
-
-#: gnome-vfs.keys.in.h:262
-msgid "bibliography record"
-msgstr "záznam bibliografie"
-
-#: gnome-vfs.keys.in.h:263
-msgid "binary program"
-msgstr "spustiteľný program"
-
-#: gnome-vfs.keys.in.h:264
-msgid "block device"
-msgstr "blokové zariadenie"
-
-#: gnome-vfs.keys.in.h:265
-msgid "bzip-compressed file"
-msgstr "súbor komprimovaný bzip"
-
-#: gnome-vfs.keys.in.h:266
-msgid "calendar file"
-msgstr "kalendárový súbor"
-
-#: gnome-vfs.keys.in.h:267
-msgid "calendar or event document"
-msgstr "dokument kalendár alebo udalosť"
-
-#: gnome-vfs.keys.in.h:268
-msgid "character device"
-msgstr "znakové zariadenie"
-
-#: gnome-vfs.keys.in.h:269
-msgid "comma-separated text document"
-msgstr "textový dokument oddeľovaný čiarkami"
-
-#: gnome-vfs.keys.in.h:270
-msgid "compound document"
-msgstr "zložený dokument"
-
-#: gnome-vfs.keys.in.h:271
-msgid "compress-compressed file"
-msgstr "komprimovaný súbor compress"
-
-#: gnome-vfs.keys.in.h:272
-msgid "compressed GIMP document"
-msgstr "komprimovaný dokument GIMP"
-
-#: gnome-vfs.keys.in.h:273
-msgid "directory information file"
-msgstr "súbor s popisom priečinku"
-
-#: gnome-vfs.keys.in.h:274
-msgid "document type definition"
-msgstr "definícia typu dokumentu"
-
-#: gnome-vfs.keys.in.h:275
-msgid "email headers"
-msgstr "e-mailové hlavičky"
-
-#: gnome-vfs.keys.in.h:276
-msgid "email message/mailbox"
-msgstr "e-mailová správa/priečinok"
-
-#: gnome-vfs.keys.in.h:277
-msgid "encrypted message"
-msgstr "zašifrovaná správa"
-
-#: gnome-vfs.keys.in.h:278
-msgid "enriched text document"
-msgstr "rozšírený textový dokument"
-
-#: gnome-vfs.keys.in.h:279
-msgid "folder"
-msgstr "priečinok"
-
-#: gnome-vfs.keys.in.h:280
-msgid "gtar archive"
-msgstr "archív gtar"
-
-#: gnome-vfs.keys.in.h:281
-msgid "gzip-compressed file"
-msgstr "súbor komprimovaný gzip"
-
-#: gnome-vfs.keys.in.h:282
-msgid "help page"
-msgstr "stránka Pomocníka"
-
-#: gnome-vfs.keys.in.h:283
-msgid "mail delivery report"
-msgstr "správa o doručení pošty"
-
-#: gnome-vfs.keys.in.h:284
-msgid "mail disposition report"
-msgstr "správa o predaní pošty"
-
-#: gnome-vfs.keys.in.h:285
-msgid "mail system report"
-msgstr "správa poštového systému"
-
-#: gnome-vfs.keys.in.h:286
-msgid "makefile"
-msgstr "makefile"
-
-#: gnome-vfs.keys.in.h:287
-msgid "manual page"
-msgstr "manuálová stránka"
-
-#: gnome-vfs.keys.in.h:288
-msgid "manual page (compressed)"
-msgstr "manuálová stránka (komprimovaná)"
-
-#: gnome-vfs.keys.in.h:289
-msgid "memory dump"
-msgstr "výpis pamäti"
-
-#: gnome-vfs.keys.in.h:290
-msgid "message digest"
-msgstr "súhrn pošty"
-
-#: gnome-vfs.keys.in.h:291
-msgid "message in several formats"
-msgstr "správa vo viacerých formátoch"
-
-#: gnome-vfs.keys.in.h:292
-msgid "multi-part message"
-msgstr "správa s viacerými časťami"
-
-#: gnome-vfs.keys.in.h:293
-msgid "named pipe"
-msgstr "pomenovaná rúra"
-
-#: gnome-vfs.keys.in.h:294
-msgid "object code"
-msgstr "objektový kód"
-
-#: gnome-vfs.keys.in.h:295
-msgid "ogg audio"
-msgstr "zvuk ogg"
-
-#: gnome-vfs.keys.in.h:296
-msgid "partial email message"
-msgstr "čiastočná e-mailová správa"
-
-#: gnome-vfs.keys.in.h:297
-msgid "plain text document"
-msgstr "textový dokument"
-
-#: gnome-vfs.keys.in.h:298
-msgid "profiler results"
-msgstr "výsledky profilera"
-
-#: gnome-vfs.keys.in.h:299
-msgid "python byte code"
-msgstr "bajtkód Python"
-
-#: gnome-vfs.keys.in.h:300
-msgid "reference to remote file"
-msgstr "referencia na vzdialený súbor"
-
-#: gnome-vfs.keys.in.h:301
-msgid "rejected patch file"
-msgstr "odmietnutý súbor patch"
-
-#: gnome-vfs.keys.in.h:302
-msgid "rich text document"
-msgstr "bohatý textový dokument"
-
-#: gnome-vfs.keys.in.h:303
-msgid "search results"
-msgstr "výsledky hľadania"
-
-#: gnome-vfs.keys.in.h:304
-msgid "shared library"
-msgstr "zdieľaná knižnica"
-
-#: gnome-vfs.keys.in.h:305
-msgid "shell archive"
-msgstr "archív shell"
-
-#: gnome-vfs.keys.in.h:306
-msgid "shell script"
-msgstr "skript shellu"
-
-#: gnome-vfs.keys.in.h:307
-msgid "signed message"
-msgstr "podpísaná správa"
-
-#: gnome-vfs.keys.in.h:308
-msgid "socket"
-msgstr "soket"
-
-#: gnome-vfs.keys.in.h:309
-msgid "software author credits"
-msgstr "informácie o autorovi softvéru"
-
-#: gnome-vfs.keys.in.h:310
-msgid "software installation instructions"
-msgstr "inštalačný návod softvéru"
-
-#: gnome-vfs.keys.in.h:311
-msgid "software license terms"
-msgstr "softvérová licencia"
-
-#: gnome-vfs.keys.in.h:312
-msgid "source code patch"
-msgstr "patch zdrojového kódu"
-
-#: gnome-vfs.keys.in.h:313
-msgid "style sheet"
-msgstr "style sheet"
-
-#: gnome-vfs.keys.in.h:314
-msgid "symbolic link"
-msgstr "symbolický odkaz"
-
-#: gnome-vfs.keys.in.h:315
-msgid "tab-separated text document"
-msgstr "textový dokument oddeľovaný tabulátormi"
-
-#: gnome-vfs.keys.in.h:316
-msgid "tar archive"
-msgstr "archív tar"
-
-#: gnome-vfs.keys.in.h:317
-msgid "tar archive (bzip2-compressed)"
-msgstr "archív tar (komprimovaný bzip2)"
-
-#: gnome-vfs.keys.in.h:318
-msgid "tar archive (gzip-compressed)"
-msgstr "archív tar (komprimovaný gzip)"
-
-#: gnome-vfs.keys.in.h:319
-msgid "theme"
-msgstr "téma"
-
-#: gnome-vfs.keys.in.h:320
-msgid "troff document"
-msgstr "dokument troff"
-
-#: gnome-vfs.keys.in.h:321
-msgid "troff me input document"
-msgstr "me vstupný dokument troff"
-
-#: gnome-vfs.keys.in.h:322
-msgid "troff mm input document"
-msgstr "mm vstupný dokument troff"
-
-#: gnome-vfs.keys.in.h:323
-msgid "troff ms input document"
-msgstr "ms vstupný dokument troff"
-
-#: gnome-vfs.keys.in.h:324
-msgid "unknown type"
-msgstr "neznámy typ"
-
-#: gnome-vfs.keys.in.h:325
-msgid "ustar archive"
-msgstr "archív ustar"
-
-#: gnome-vfs.keys.in.h:326
-msgid "wave audio"
-msgstr "zvuk wave"
-
-#: gnome-vfs.keys.in.h:327
-msgid "web folder"
+#: gnome-vfs.keys.in.h:343
+msgid "Web folder"
 msgstr "WWW priečinok"
 
-#: gnome-vfs.keys.in.h:328
+#: gnome-vfs.keys.in.h:344
+msgid "Windows bitmap image"
+msgstr "Bitmapový obrázok Windows"
+
+#: gnome-vfs.keys.in.h:345
+msgid "Windows icon image"
+msgstr "Ikona Windows"
+
+#: gnome-vfs.keys.in.h:346
+msgid "Windows metafile graphics"
+msgstr "Grafika Windows metafile"
+
+#: gnome-vfs.keys.in.h:347
+msgid "WordPerfect document"
+msgstr "Dokument WordPerfect"
+
+#: gnome-vfs.keys.in.h:348
+msgid "X bitmap image"
+msgstr "Bitmapový obrázok X"
+
+#: gnome-vfs.keys.in.h:349
+msgid "X window image"
+msgstr "Obrázok X window"
+
+#: gnome-vfs.keys.in.h:350
+msgid "XBEL bookmarks file"
+msgstr "Súbor záložiek XBEL"
+
+#: gnome-vfs.keys.in.h:351
+msgid "XML document"
+msgstr "Dokument XML"
+
+#: gnome-vfs.keys.in.h:352
+msgid "XPM image"
+msgstr "Obrázok XPM"
+
+#: gnome-vfs.keys.in.h:353
+msgid "Xbase database"
+msgstr "Databáza Xbase"
+
+#: gnome-vfs.keys.in.h:354
+msgid "Yacc grammar source code"
+msgstr "Zdrojový kód gramatiky Yacc"
+
+#: gnome-vfs.keys.in.h:355
+msgid "Z shell script"
+msgstr "Skript Z shellu"
+
+#: gnome-vfs.keys.in.h:356
+msgid "Zip archive"
+msgstr "Archív zip"
+
+#: gnome-vfs.keys.in.h:357
+msgid "Zoo archive"
+msgstr "Archív zoo"
+
+#: gnome-vfs.keys.in.h:358
+msgid "gettext translation"
+msgstr "Preklad gettext"
+
+#: gnome-vfs.keys.in.h:359
+msgid "iPod software"
+msgstr "iPod software"
+
+#: gnome-vfs.keys.in.h:360
 msgid "xfig vector graphic"
-msgstr "vektorová grafika xfig"
-
-#: gnome-vfs.keys.in.h:329
-msgid "zip archive"
-msgstr "archív zip"
-
-#: gnome-vfs.keys.in.h:330
-msgid "zoo archive"
-msgstr "archív zoo"
+msgstr "Vektorová grafika xfig"

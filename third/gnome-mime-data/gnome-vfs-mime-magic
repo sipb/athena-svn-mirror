@@ -53,12 +53,19 @@
 0	string		\xed\xab\xee\xdb			application/x-rpm
 0	string		Rar!					application/x-rar
 0	string		GIF8					image/gif
+4	string		ftypM4A					audio/x-m4a
 4	string		moov					video/quicktime
 4	string		mdat					video/quicktime
 8	string		mp42					video/quicktime
 12	string		mdat					video/quicktime
+36	string		mdat					video/quicktime
+0	belong		0x3026b275				video/x-ms-asf
+0	string		ASF\ 					audio/x-ms-asx
+0	string		\<ASX					audio/x-ms-asx
+0	string		\<asx					audio/x-ms-asx
 0	string		MThd					audio/x-midi
 0	string		IMPM					audio/x-it
+0	string		\x1f\x07\x00\x00 &0xffffff00		video/dv
 2	string		-lh0-					application/x-lha
 2	string		-lh1-					application/x-lha
 2	string		-lz4-					application/x-lha
@@ -96,6 +103,7 @@
 0	belong          0x46506978                              image/x-fpx
 0	belong		0x00000200				image/x-icb
 0	belong		0x53445058				image/x-dpx
+0	string		d8:announce				application/x-bittorrent
 
 # Desktop file support - slightly wrong, since comments can be before
 # the [Desktop Entry] line in the current spec - probably should fix
@@ -114,19 +122,33 @@
 # xpm rule needs to go before text/x-c
 0	string		/*\ XPM\ */				image/x-xpixmap
 
+0:64	string		\<!DOCTYPE\ xbel			application/xbel
+0:192	string		\<xbel					application/xbel
+0:64	string		\<!DOCTYPE\ NETSCAPE-Bookmark-file-1\>	application/x-mozilla-bookmarks
+0:64	string		\<!DOCTYPE\ NETSCAPE-Bookmark-file-1\>	application/x-netscape-bookmarks
+0:64	string		\<ephy_bookmarks			application/x-epiphany-bookmarks
+
 # svg rules need to go before html
-0:256	string		\<!DOCTYPE\ svg				image/svg
-0:64	string		\<svg					image/svg
+0:256	string		\<!DOCTYPE\ svg				image/svg+xml
+0:64	string		\<svg					image/svg+xml
+0:64	string		\<chemistry				application/x-gchempaint
+0:64	string		\<crystal				application/x-gcrystal
 # php rules need to go before html
 0:64	string		\<?php					application/x-php
+0:64	string		\<smil\>				application/x-smil
+0:64    string		\<SMIL\>				application/x-smil
 0:64	string		\<!DOCTYPE\ HTML			text/html
 0:64	string		\<!doctype\ html			text/html
 0:64	string		\<HEAD					text/html
 0:64	string		\<head					text/html
-0:64	string		\<TITLE					text/html
-0:64	string		\<title					text/html
 0:64	string		\<html					text/html
 0:64	string		\<HTML					text/html
+0:64	string		\<dia:diagram				application/x-dia-diagram
+0:64	string		\<abiword				application/x-abiword
+0:64	string		\<\!DOCTYPE\ abiword			application/x-abiword
+0:64	string		gmr:Workbook				application/x-gnumeric
+# text/xml content detection needs to be after all the xml-derived formats
+0:64	string		\<?xml					text/xml
 0	string		{\\rtf					application/rtf
 0	string		#!/bin/sh				text/x-sh
 0	string		#!/bin/bash				text/x-sh
@@ -141,18 +163,22 @@
 1:16	string		/bin/perl				text/x-perl
 0	string		BEGIN:VCARD				text/x-vcard
 0	string		BEGIN:VCALENDAR				text/calendar
+8	string		CDR\ vrsn				application/vnd.corel-draw
 8	string		AVI\ 					video/x-msvideo
 0	string		MOVI					video/x-sgi-movie
 0	string		.snd					audio/basic
 8	string		AIFC					audio/x-aifc
 8	string		AIFF					audio/x-aiff
-0	string		.ra\375					audio/x-real-audio
+0	string		.ra\375					audio/x-pn-realaudio
+0	belong		0x2e7261fd				audio/x-pn-realaudio
+0	string		.RMF					audio/x-pn-realaudio
 8	string		WAVE					audio/x-wav
 8	string		WAV\ 					audio/x-wav
-8	string		CDXA					video/mpeg
+0	string		RIFFxxxxCDXA &0xffffffff00000000ffffffff	video/mpeg
 0	string		RIFF					audio/x-riff
-# The below is set to 'application/x-ogg' at the request of Ogg Vorbis developers
-0	string		OggS					application/x-ogg
+0	string		OggS					application/ogg
+0	string		pnm:\/\/				audio/x-real-audio
+0	string		rtsp:\/\/				audio/x-real-audio
 0	string		SIT! 					application/x-stuffit
 0	string		\312\376\272\276			application/x-java-byte-code
 0	string		Joy!					application/x-pef-executable
@@ -160,9 +186,6 @@
 4       string		\x12\xAF				video/x-flc
 0	string		\x31\xbe\x00\x00			application/msword
 0       string  	PO^Q`           			application/msword
-0:64	string		gmr:Workbook				application/x-gnumeric
-0:64	string		\<abiword				application/x-abiword
-0:64    string          \<\!DOCTYPE\ abiword                    application/x-abiword
 0	string		*BEGIN\ SPREADSHEETS			application/x-applix-spreadsheet
 0	string		\x00\x00\x02\x00			application/vnd.lotus-1-2-3
 0	string		PSID					audio/prs.sid
@@ -201,7 +224,9 @@
 2	string		\000\022				application/x-font-tex-tfm
 0	string		\x36\x04				application/x-font-linux-psf
 0	string		FWS					application/x-shockwave-flash
+0	string		NSVf					video/x-nsv
 0	string		BMxxxx\000\000 &0xffff00000000ffff	image/bmp
+0	string		AT&TFORM				image/vnd.djvu
 0	string		Return-Path:				message/rfc822
 0	string		Path:					message/news
 0	string		Xref:					message/news
@@ -209,9 +234,16 @@
 0	string		Article					message/news
 0	string		Received:				message/rfc822
 0	string		[playlist]				audio/x-scpls
-0	string		fLaC					application/x-flac
+0	string		[Reference]				video/x-ms-asf
+22	string		\<EDL					application/x-cinelerra
 32769	string		CD001					application/x-iso-image
 37633	string		CD001					application/x-iso-image
 32776	string		CDROM					application/x-iso-image
 0       string          OTTO                                    application/x-font-otf
-
+54	string		S\ T\ O\ P				application/x-ipod-firmware
+0:160	string		fLaC					audio/x-flac
+0:160	string		ID3\x20\x00				audio/mpeg
+0:160	string		ID3\x30\x00				audio/mpeg
+0:160	string		ID3\x40\x00				audio/mpeg
+0:512	string		\x00\x00\x01\xba			video/mpeg
+0	string		BLENDER					application/x-blender

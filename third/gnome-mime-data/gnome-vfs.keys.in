@@ -7,7 +7,7 @@
 
 */*
 	can_be_executable=TRUE
-	_description=unknown type
+	_description=Unknown type
 
 application/andrew-inset
 	_category=Documents
@@ -37,21 +37,30 @@ application/msword
 
 application/octet-stream
 	can_be_executable=TRUE
-	_description=unknown type
+	_description=Unknown type
 
 application/oda
 	_description=ODA document
 	_category=Documents
 
+application/ogg
+	_description=Ogg audio
+	default_action_type=application
+	short_list_application_ids_for_novice_user_level=xmms,freeamp
+	short_list_application_ids_for_intermediate_user_level=xmms,freeamp
+	short_list_application_ids_for_advanced_user_level=xmms,freeamp
+	_category=Audio
+	use_category_default=no
+
 application/pdf
 	_description=PDF document
-	default_action_type=application
-	short_list_component_iids_for_novice_user_level=OAFIID:gpdf_component:892f2727-e2ec-423c-91ad-6f7b75fec6c8
-	short_list_component_iids_for_intermediate_user_level=OAFIID:gpdf_component:892f2727-e2ec-423c-91ad-6f7b75fec6c8
-	short_list_component_iids_for_advanced_user_level=OAFIID:gpdf_component:892f2727-e2ec-423c-91ad-6f7b75fec6c8
-	short_list_application_ids_for_novice_user_level=acroread,xpdf,ggv,gv
-	short_list_application_ids_for_intermediate_user_level=acroread,xpdf,ggv,gv
-	short_list_application_ids_for_advanced_user_level=acroread,xpdf,ggv,gv
+	default_action_type=component
+	short_list_component_iids_for_novice_user_level=OAFIID:GNOME_PDF_Control
+	short_list_component_iids_for_intermediate_user_level=OAFIID:GNOME_PDF_Control
+	short_list_component_iids_for_advanced_user_level=OAFIID:GNOME_PDF_Control
+	short_list_application_ids_for_novice_user_level=acroread,gpdf,xpdf,ggv,gv
+	short_list_application_ids_for_intermediate_user_level=acroread,gpdf,xpdf,ggv,gv
+	short_list_application_ids_for_advanced_user_level=acroread,gpdf,xpdf,ggv,gv
 	_category=Documents/Published Materials
 	use_category_default=yes
 
@@ -102,13 +111,17 @@ application/qif
 	use_category_default=yes
 
 application/rtf
-	_description=rich text document
+	_description=Rich text document
 	default_action_type=application
 	short_list_application_ids_for_novice_user_level=abiword,openoffice,staroffice,applix
 	short_list_application_ids_for_intermediate_user_level=abiword,openoffice,staroffice,applix
 	short_list_application_ids_for_advanced_user_level=abiword,openoffice,staroffice,applix
 	_category=Documents/Word Processor
 	use_category_default=yes
+
+application/vnd.corel-draw
+	_description=Corel Draw drawing
+	_category=Documents
 
 application/vnd.lotus-1-2-3
 	_description=Lotus 1-2-3 spreadsheet
@@ -305,8 +318,6 @@ application/vnd.sun.xml.writer.template
 	_category=Documents/Word Processor
 	use_category_default=yes
 
-
-
 # also text/abiword
 application/x-abiword
 	_description=AbiWord document
@@ -315,6 +326,22 @@ application/x-abiword
 	short_list_application_ids_for_intermediate_user_level=abiword,openoffice,staroffice
 	short_list_application_ids_for_advanced_user_level=abiword,openoffice,staroffice
 	_category=Documents/Word Processor
+	use_category_default=yes
+
+application/x-ape
+	_description=Monkey audio
+	default_action_type=application
+	short_list_application_ids_for_intermediate_user_level=gst-player
+	use_category_default=yes
+	_category=Audio
+
+application/x-applix-presents
+	_description=Applixware presentation
+	default_action_type=application
+	short_list_application_ids_for_novice_user_level=applix
+	short_list_application_ids_for_intermediate_user_level=applix
+	short_list_application_ids_for_advanced_user_level=applix
+	_category=Documents/Presentation
 	use_category_default=yes
 
 application/x-applix-spreadsheet
@@ -336,45 +363,64 @@ application/x-applix-word
 	use_category_default=no
 
 application/x-arj
-	_description=arj archive
+	_description=ARJ archive
 	icon_filename=gnome-compressed
 	default_action_type=application
-	short_list_application_ids_for_novice_user_level=file-roller,guitar
-	short_list_application_ids_for_intermediate_user_level=file-roller,guitar
-	short_list_application_ids_for_advanced_user_level=file-roller,guitar
+	short_list_application_ids_for_novice_user_level=file-roller
+	short_list_application_ids_for_intermediate_user_level=file-roller
+	short_list_application_ids_for_advanced_user_level=file-roller
 	_category=Packages
 	use_category_default=yes
 
 application/x-asp
-	_description=active server page
+	_description=Active Server page
 	_category=Software Development/Source Code
 
 application/x-backup
-	_description=backup file
+	_description=Backup file
 	_category=Packages
 
 application/x-bcpio
 	_description=BCPIO document
 	_category=Packages
 
+application/x-bittorrent
+	_description=BitTorrent seed file
+	_category=Documents/World Wide Web
+
+application/x-blender
+	_description=Blender file
+	_category=Images
+
 application/x-bzip
-	_description=bzip-compressed file
+	_description=Bzip2 compressed file
 	vfs_method=bzip2
 	default_action_type=application
-	short_list_application_ids_for_novice_user_level=file-roller,guitar
-	short_list_application_ids_for_intermediate_user_level=file-roller,guitar
-	short_list_application_ids_for_advanced_user_level=file-roller,guitar
+	short_list_application_ids_for_novice_user_level=file-roller
+	short_list_application_ids_for_intermediate_user_level=file-roller
+	short_list_application_ids_for_advanced_user_level=file-roller
 	_category=Packages
 	use_category_default=yes
 
 application/x-bzip-compressed-tar
-	_description=tar archive (bzip2-compressed)
+	_description=Tar archive (Bzip2-compressed)
 	icon_filename=gnome-compressed
 	vfs_method=bzip2
 	default_action_type=application
-	short_list_application_ids_for_novice_user_level=file-roller,guitar
-	short_list_application_ids_for_intermediate_user_level=file-roller,guitar
-	short_list_application_ids_for_advanced_user_level=file-roller,guitar
+	short_list_application_ids_for_novice_user_level=file-roller
+	short_list_application_ids_for_intermediate_user_level=file-roller
+	short_list_application_ids_for_advanced_user_level=file-roller
+	_category=Packages
+	use_category_default=yes
+
+application/x-bzip2
+	_description=Bzip2 compressed file
+	vfs_method=bzip2
+	icon_filename=gnome-compressed
+	default_action_type=application
+	short_list_application_ids_for_novice_user_level=file-roller
+	short_list_application_ids_for_intermediate_user_level=file-roller
+	short_list_application_ids_for_advanced_user_level=file-roller
 	_category=Packages
 	use_category_default=yes
 
@@ -385,6 +431,9 @@ application/x-cgi
 application/x-chess-pgn
 	_description=PGN chess game
 
+application/x-cinelerra
+	_description=Cinelerra editing sheet
+
 # also application/x-java-byte-code
 # this one is deprecated
 application/x-class-file
@@ -393,27 +442,27 @@ application/x-class-file
 
 # we are aware of the crappiness of this description
 application/x-compress
-	_description=compress-compressed file
+	_description=Compress-compressed file
 	icon_filename=gnome-compressed
 	default_action_type=application
-	short_list_application_ids_for_novice_user_level=file-roller,guitar
-	short_list_application_ids_for_intermediate_user_level=file-roller,guitar
-	short_list_application_ids_for_advanced_user_level=file-roller,guitar
+	short_list_application_ids_for_novice_user_level=file-roller
+	short_list_application_ids_for_intermediate_user_level=file-roller
+	short_list_application_ids_for_advanced_user_level=file-roller
 	_category=Packages
 	use_category_default=yes
 
 application/x-compressed-tar
-	_description=tar archive (gzip-compressed)
+	_description=Tar archive (Gzip-compressed)
 	icon_filename=gnome-package
 	default_action_type=application
-	short_list_application_ids_for_novice_user_level=file-roller,guitar
-	short_list_application_ids_for_intermediate_user_level=file-roller,guitar
-	short_list_application_ids_for_advanced_user_level=file-roller,guitar
+	short_list_application_ids_for_novice_user_level=file-roller
+	short_list_application_ids_for_intermediate_user_level=file-roller
+	short_list_application_ids_for_advanced_user_level=file-roller
 	_category=Packages
 	use_category_default=yes
 
 application/x-core-file
-	_description=memory dump
+	_description=Memory dump
 	icon_filename=i-core
 	_category=Software Development
 
@@ -422,7 +471,7 @@ application/x-cpio
 	_category=Packages
 
 application/x-cpio-compressed
-	_description=CPIO archive (gzip-compressed)
+	_description=CPIO archive (Gzip-compressed)
 	icon_filename=gnome-compressed
 	_category=Packages
 
@@ -433,7 +482,7 @@ application/x-csh
 	_category=Software Development/Source Code
 
 application/x-dc-rom
-	_description=Dreamcast rom
+	_description=Dreamcast ROM
 	_category=Software Development/ROM Images
 	use_category_default=yes
 
@@ -459,16 +508,19 @@ application/x-dvi
 	short_list_application_ids_for_novice_user_level=xdvi
 	short_list_application_ids_for_intermediate_user_level=xdvi
 	short_list_application_ids_for_advanced_user_level=xdvi
-	_category=Documents/TeX
+	_category=Documents/Published Materials
 	use_category_default=no
 
 application/x-e-theme
 	_description=Enlightenment theme
 	_category=User Interface
 
+application/x-epiphany-bookmarks
+	_description=Epiphany bookmarks file
+
 application/x-executable-binary
 	can_be_executable=TRUE
-	_description=binary program
+	_description=Binary program
 
 application/x-flac
 	_description=FLAC audio
@@ -543,12 +595,20 @@ application/x-font-vfont
 	_category=User Interface/Fonts
 
 application/x-gameboy-rom
-	_description=Game Boy rom
+	_description=Game Boy ROM
 	_category=Software Development/ROM Images
 	use_category_default=yes
 
+application/x-gchempaint
+	_description=2D chemical structure
+	_category=Documents
+
+application/x-gcrystal
+	_description=Crystalline structure model
+	_category=Documents
+
 application/x-genesis-rom
-	_description=Genesis rom
+	_description=Genesis ROM
 	_category=Software Development/ROM Images
 	use_category_default=yes
 
@@ -566,11 +626,19 @@ application/x-gmc-link
 	_category=User Interface
 
 application/x-gnome-app-info
-	_description=application launcher
+	_description=Application launcher
+	_category=User Interface
+
+application/x-gnome-theme
+	_description=GNOME desktop theme
+	_category=User Interface
+
+application/x-gnome-theme-installed
+	_description=Installed GNOME desktop theme
 	_category=User Interface
 
 application/x-gnucash
-	_description=GnuCash Workbook
+	_description=GnuCash workbook
 	default_action_type=application
 	short_list_application_ids_for_novice_user_level=gnucash
 	short_list_application_ids_for_intermediate_user_level=gnucash
@@ -591,12 +659,12 @@ application/x-gnumeric
 	use_category_default=yes
 
 application/x-gtar
-	_description=gtar archive
+	_description=Gtar archive
 	icon_filename=gnome-package
 	default_action_type=application
-	short_list_application_ids_for_novice_user_level=file-roller,guitar
-	short_list_application_ids_for_intermediate_user_level=file-roller,guitar
-	short_list_application_ids_for_advanced_user_level=file-roller,guitar
+	short_list_application_ids_for_novice_user_level=file-roller
+	short_list_application_ids_for_intermediate_user_level=file-roller
+	short_list_application_ids_for_advanced_user_level=file-roller
 	_category=Packages
 	use_category_default=yes
 
@@ -609,12 +677,12 @@ application/x-gtktalog
 	_category=Packages
 
 application/x-gzip
-	_description=gzip-compressed file
+	_description=Gzip-compressed file
 	vfs_method=gzip
 	default_action_type=application
-	short_list_application_ids_for_novice_user_level=file-roller,guitar
-	short_list_application_ids_for_intermediate_user_level=file-roller,guitar
-	short_list_application_ids_for_advanced_user_level=file-roller,guitar
+	short_list_application_ids_for_novice_user_level=file-roller
+	short_list_application_ids_for_intermediate_user_level=file-roller
+	short_list_application_ids_for_advanced_user_level=file-roller
 	_category=Packages
 	use_category_default=yes
 
@@ -622,8 +690,16 @@ application/x-hdf
 	_description=HDF document
 	_category=Documents/Numeric
 
+application/x-ipod-firmware
+	_description=iPod software
+	_category=Audio
+
 application/x-iso-image
 	_description=ISO image
+
+application/x-java-archive
+	_description=Java code archive
+	_category=Software Development
 
 # also application/x-class-file
 application/x-java-byte-code
@@ -684,9 +760,9 @@ application/x-lha
 	_description=LHARC archive
 	icon_filename=gnome-compressed
 	default_action_type=application
-	short_list_application_ids_for_novice_user_level=file-roller,guitar
-	short_list_application_ids_for_intermediate_user_level=file-roller,guitar
-	short_list_application_ids_for_advanced_user_level=file-roller,guitar
+	short_list_application_ids_for_novice_user_level=file-roller
+	short_list_application_ids_for_intermediate_user_level=file-roller
+	short_list_application_ids_for_advanced_user_level=file-roller
 	_category=Packages
 	use_category_default=yes
 
@@ -694,9 +770,9 @@ application/x-lhz
 	_description=LHA archive
 	icon_filename=gnome-compressed
 	default_action_type=application
-	short_list_application_ids_for_novice_user_level=file-roller,guitar
-	short_list_application_ids_for_intermediate_user_level=file-roller,guitar
-	short_list_application_ids_for_advanced_user_level=file-roller,guitar
+	short_list_application_ids_for_novice_user_level=file-roller
+	short_list_application_ids_for_intermediate_user_level=file-roller
+	short_list_application_ids_for_advanced_user_level=file-roller
 	_category=Packages
 	use_category_default=yes
 
@@ -704,24 +780,40 @@ application/x-macbinary
 	_category=Packages
 	_description=MacBinary file
 
+application/x-magicpoint
+	_description=MagicPoint presentation
+	default_action_type=application
+	short_list_application_ids_for_novice_user_level=mgp
+	short_list_application_ids_for_intermediate_user_level=mgp
+	short_list_application_ids_for_advanced_user_level=mgp
+	_category=Documents/Presentation
+	use_category_default=yes
+
 application/x-mif
 	_description=FrameMaker interchange document
 	_category=Documents/Word Processor
+
+application/x-mozilla-bookmarks
+	_description=Mozilla bookmarks file
 
 application/x-mrproject
 	_description=Project Plan
 	_category=Documents/Project Management
 
 application/x-ms-dos-executable
+	default_action_type=application
 	_description=DOS/Windows program
+	short_list_application_ids_for_novice_user_level=wine
+	short_list_application_ids_for_intermediate_user_level=wine
+	short_list_application_ids_for_advanced_user_level=wine
 
 application/x-msx-rom
-	_description=MSX rom
+	_description=MSX ROM
 	_category=Software Development/ROM Images
 	use_category_default=yes
 
 application/x-n64-rom
-	_description=Nintendo64 rom
+	_description=Nintendo64 ROM
 	_category=Software Development/ROM Images
 	use_category_default=yes
 
@@ -730,7 +822,7 @@ application/x-nautilus-link
 	_category=User Interface
 
 application/x-nes-rom
-	_description=NES rom
+	_description=NES ROM
 	_category=Software Development/ROM Images
 	use_category_default=yes
 
@@ -738,13 +830,16 @@ application/x-netcdf
 	_description=Unidata netCDF document
 	_category=Documents/Numeric
 
+application/x-netscape-bookmarks
+	_description=Netscape bookmarks file
+
 application/x-object-file
-	_description=object code
+	_description=Object code
 	icon_filename=gnome-objectfile
 	_category=Software Development
 
 application/x-ogg
-	_description=ogg audio
+	_description=Ogg audio
 	default_action_type=application
 	short_list_application_ids_for_novice_user_level=xmms,freeamp
 	short_list_application_ids_for_intermediate_user_level=xmms,freeamp
@@ -781,11 +876,11 @@ application/x-php
 	_category=Software Development/Source Code
 
 application/x-profile
-	_description=profiler results
+	_description=Profiler results
 	_category=Software Development
 
 application/x-python-byte-code
-	_description=python byte code
+	_description=Python byte code
 	_category=Software Development
 
 application/x-qw
@@ -801,9 +896,9 @@ application/x-qw
 application/x-rar
 	_description=RAR archive
 	default_action_type=application
-	short_list_application_ids_for_novice_user_level=file-roller,guitar
-	short_list_application_ids_for_intermediate_user_level=file-roller,guitar
-	short_list_application_ids_for_advanced_user_level=file-roller,guitar
+	short_list_application_ids_for_novice_user_level=file-roller
+	short_list_application_ids_for_intermediate_user_level=file-roller
+	short_list_application_ids_for_advanced_user_level=file-roller
 	_category=Packages
 	use_category_default=yes
 
@@ -812,14 +907,14 @@ application/x-rar-compressed
 	_description=RAR archive
 	icon_filename=gnome-package
 	default_action_type=application
-	short_list_application_ids_for_novice_user_level=file-roller,guitar
-	short_list_application_ids_for_intermediate_user_level=file-roller,guitar
-	short_list_application_ids_for_advanced_user_level=file-roller,guitar
+	short_list_application_ids_for_novice_user_level=file-roller
+	short_list_application_ids_for_intermediate_user_level=file-roller
+	short_list_application_ids_for_advanced_user_level=file-roller
 	_category=Packages
 	use_category_default=yes
 
 application/x-reject
-	_description=rejected patch file
+	_description=Rejected patch file
 	_category=Software Development/Source Code
 
 application/x-rpm
@@ -829,16 +924,16 @@ application/x-rpm
 	use_category_default=yes
 
 application/x-shar
-	_description=shell archive
+	_description=Shell archive
 	_category=Packages
 
 application/x-shared-library
-	_description=shared library
+	_description=Shared library
 	icon_filename=gnome-library
 	_category=System
 
 application/x-shared-library-la
-	_description=shared library
+	_description=Shared library
 	icon_filename=gnome-library
 	_category=System
 
@@ -850,12 +945,17 @@ application/x-slp
 	_description=Stampede package
 	_category=Packages
 
+application/x-smb-printer
+	_description=Shared Printer
+	icon_filename=i-printer
+	_category=Information
+
 application/x-smil
 	_description=SMIL script
 	_category=Documents
 
 application/x-sms-rom
-	_description=SMS or Game Gear rom
+	_description=Master System or Game Gear ROM
 	_category=Software Development/ROM Images
 	use_category_default=yes
 
@@ -872,23 +972,23 @@ application/x-sv4crc
 	_category=Packages
 
 application/x-tar
-	_description=tar archive
+	_description=Tar archive
 	icon_filename=gnome-package
 	vfs_method=tar
 	default_action_type=application
-	short_list_application_ids_for_novice_user_level=file-roller,guitar
-	short_list_application_ids_for_intermediate_user_level=file-roller,guitar
-	short_list_application_ids_for_advanced_user_level=file-roller,guitar
+	short_list_application_ids_for_novice_user_level=file-roller
+	short_list_application_ids_for_intermediate_user_level=file-roller
+	short_list_application_ids_for_advanced_user_level=file-roller
 	_category=Packages
 	use_category_default=yes
 
 application/x-tex
 	_description=TeX document
 	icon_filename=gnome-tex
-	_category=Documents/Text Markup
+	_category=Documents/TeX
 
 application/x-theme
-	_description=theme
+	_description=Theme
 	_category=User Interface
 
 application/x-toutdoux
@@ -897,20 +997,20 @@ application/x-toutdoux
 
 # also text/x-troff
 application/x-troff
-	_description=troff document
+	_description=Troff document
 	_category=Documents/Text Markup
 
 application/x-troff-man-compressed
-	_description=manual page (compressed)
+	_description=Manual page (compressed)
 	icon_filename=i-manual
 	_category=Documents/Text Markup
 
 application/x-unix-archive
-	_description=ar archive
+	_description=Ar archive
 	_category=Packages
 
 application/x-ustar
-	_description=ustar archive
+	_description=Ustar archive
 	_category=Packages
 
 application/x-wais-source
@@ -931,18 +1031,43 @@ application/x-xbase
 	_category=Information
 	use_category_default=yes
 
-application/x-zoo
-	_description=zoo archive
-	_category=Packages
-
-application/zip
-	_description=zip archive
+application/x-zip
+	_description=Zip archive
 	icon_filename=gnome-compressed
 	vfs_method=zip
 	default_action_type=application
-	short_list_application_ids_for_novice_user_level=file-roller,guitar
-	short_list_application_ids_for_intermediate_user_level=file-roller,guitar
-	short_list_application_ids_for_advanced_user_level=file-roller,guitar
+	short_list_application_ids_for_novice_user_level=file-roller
+	short_list_application_ids_for_intermediate_user_level=file-roller
+	short_list_application_ids_for_advanced_user_level=file-roller
+	_category=Packages
+	use_category_default=yes
+
+application/x-zip-compressed
+	_description=Zip archive
+	icon_filename=gnome-compressed
+	vfs_method=zip
+	default_action_type=application
+	short_list_application_ids_for_novice_user_level=file-roller
+	short_list_application_ids_for_intermediate_user_level=file-roller
+	short_list_application_ids_for_advanced_user_level=file-roller
+	_category=Packages
+	use_category_default=yes
+
+application/x-zoo
+	_description=Zoo archive
+	_category=Packages
+
+application/xbel
+	_description=XBEL bookmarks file
+
+application/zip
+	_description=Zip archive
+	icon_filename=gnome-compressed
+	vfs_method=zip
+	default_action_type=application
+	short_list_application_ids_for_novice_user_level=file-roller
+	short_list_application_ids_for_intermediate_user_level=file-roller
+	short_list_application_ids_for_advanced_user_level=file-roller
 	_category=Packages
 	use_category_default=yes
 
@@ -956,22 +1081,22 @@ audio/ac3
 	_category=Audio
 
 audio/basic
-	_description=basic audio
+	_description=Basic audio
 	icon_filename=gnome-audio
 	_category=Audio
 
 # also audio/x-mpeg
 audio/mpeg
-	_description=MPEG audio
+	_description=MP3 audio
 	icon_filename=i-music
 	default_action_type=application
-	short_list_application_ids_for_novice_user_level=xmms,freeamp,mpg123
-	short_list_application_ids_for_intermediate_user_level=xmms,freeamp,mpg123
-	short_list_application_ids_for_advanced_user_level=xmms,freeamp,mpg123
+	short_list_application_ids_for_novice_user_level=xmms,freeamp
+	short_list_application_ids_for_intermediate_user_level=xmms,freeamp
+	short_list_application_ids_for_advanced_user_level=xmms,freeamp
 	_category=Audio
 
 audio/prs.sid
-	_description=Commodore 64 Audio
+	_description=Commodore 64 audio
 	icon_filename=i-music
 	_category=Audio
 
@@ -996,9 +1121,23 @@ audio/x-aiffc
 	short_list_application_ids_for_advanced_user_level=grecord
 	_category=Audio
 
+audio/x-flac
+	_description=FLAC audio
+	default_action_type=application
+	short_list_application_ids_for_novice_user_level=gst-player
+	short_list_application_ids_for_intermediate_user_level=gst-player
+	short_list_application_ids_for_advanced_user_level=gst-player
+	_category=Audio
+	use_category_default=yes
+
 audio/x-it
 	_description=Impulse Tracker audio
 	icon_filename=gnome-audio-x-it
+	_category=Audio
+
+audio/x-m4a
+	_description=MPEG-4 audio
+	icon_filename=i-music
 	_category=Audio
 
 audio/x-midi
@@ -1019,9 +1158,9 @@ audio/x-mp3
 	_description=MP3 audio
 	icon_filename=i-music
 	default_action_type=application
-	short_list_application_ids_for_novice_user_level=xmms,freeamp,mpg123
-	short_list_application_ids_for_intermediate_user_level=xmms,freeamp,mpg123
-	short_list_application_ids_for_advanced_user_level=xmms,freeamp,mpg123
+	short_list_application_ids_for_novice_user_level=xmms,freeamp
+	short_list_application_ids_for_intermediate_user_level=xmms,freeamp
+	short_list_application_ids_for_advanced_user_level=xmms,freeamp
 	_category=Audio
 
 audio/x-mp3-playlist
@@ -1035,12 +1174,12 @@ audio/x-mp3-playlist
 
 # also audio/mpeg
 audio/x-mpeg
-	_description=MPEG audio
+	_description=MP3 audio
 	icon_filename=i-music
 	default_action_type=application
-	short_list_application_ids_for_novice_user_level=xmms,freeamp,mpg123
-	short_list_application_ids_for_intermediate_user_level=xmms,freeamp,mpg123
-	short_list_application_ids_for_advanced_user_level=xmms,freeamp,mpg123
+	short_list_application_ids_for_novice_user_level=xmms,freeamp
+	short_list_application_ids_for_intermediate_user_level=xmms,freeamp
+	short_list_application_ids_for_advanced_user_level=xmms,freeamp
 	_category=Audio
 
 audio/x-mpegurl
@@ -1051,7 +1190,15 @@ audio/x-mpegurl
 	short_list_application_ids_for_advanced_user_level=xmms-no-uris,freeamp-no-uris
 	_category=Audio
 
+audio/x-ms-asf
+	_description=MS ASF audio
+	_category=Video
+
 audio/x-ms-asx
+	_description=Playlist
+	_category=Audio
+
+audio/x-ms-wax
 	_description=Playlist
 	_category=Audio
 
@@ -1088,7 +1235,8 @@ audio/x-s3m
 	_category=Audio
 
 audio/x-scpls
-	_description=SHOUTcast Playlist
+	_description=SHOUTcast playlist
+	_category=Audio
 	icon_filename=i-music
 	default_action_type=application
 	short_list_application_ids_for_novice_user_level=xmms-no-uris,freeamp-no-uris
@@ -1117,7 +1265,7 @@ audio/x-voc
 	_category=Audio
 
 audio/x-wav
-	_description=wave audio
+	_description=Wave audio
 	default_action_type=application
 	short_list_application_ids_for_novice_user_level=grecord,xmms,freeamp
 	short_list_application_ids_for_intermediate_user_level=grecord,xmms,freeamp
@@ -1184,6 +1332,32 @@ image/jpeg
 	short_list_application_ids_for_advanced_user_level=eog,electric_eyes,gimp
 	_category=Images
 
+# also image/jpeg
+image/jpg
+	_description=JPEG image
+	default_action_type=component
+	short_list_component_iids=OAFIID:GNOME_EOG_Control
+	short_list_component_iids_for_novice_user_level=OAFIID:GNOME_EOG_Control
+	short_list_component_iids_for_intermediate_user_level=OAFIID:GNOME_EOG_Control
+	short_list_component_iids_for_advanced_user_level=OAFIID:GNOME_EOG_Control
+	short_list_application_ids_for_novice_user_level=eog,electric_eyes,gimp
+	short_list_application_ids_for_intermediate_user_level=eog,electric_eyes,gimp
+	short_list_application_ids_for_advanced_user_level=eog,electric_eyes,gimp
+	_category=Images
+
+# also image/jpeg
+image/pjpeg
+	_description=JPEG image
+	default_action_type=component
+	short_list_component_iids=OAFIID:GNOME_EOG_Control
+	short_list_component_iids_for_novice_user_level=OAFIID:GNOME_EOG_Control
+	short_list_component_iids_for_intermediate_user_level=OAFIID:GNOME_EOG_Control
+	short_list_component_iids_for_advanced_user_level=OAFIID:GNOME_EOG_Control
+	short_list_application_ids_for_novice_user_level=eog,electric_eyes,gimp
+	short_list_application_ids_for_intermediate_user_level=eog,electric_eyes,gimp
+	short_list_application_ids_for_advanced_user_level=eog,electric_eyes,gimp
+	_category=Images
+
 # also image/x-png
 image/png
 	_description=PNG image
@@ -1205,6 +1379,14 @@ image/svg
 	short_list_application_ids_for_advanced_user_level=sodipodi
 	_category=Images
 
+image/svg+xml
+	_description=SVG art
+	default_action_type=application
+	short_list_application_ids_for_novice_user_level=sodipodi
+	short_list_application_ids_for_intermediate_user_level=sodipodi
+	short_list_application_ids_for_advanced_user_level=sodipodi
+	_category=Images
+
 image/tiff
 	_description=TIFF image
 	default_action_type=component
@@ -1215,6 +1397,10 @@ image/tiff
 	short_list_application_ids_for_novice_user_level=eog,electric_eyes,gimp
 	short_list_application_ids_for_intermediate_user_level=eog,electric_eyes,gimp
 	short_list_application_ids_for_advanced_user_level=eog,electric_eyes,gimp
+	_category=Images
+
+image/vnd.djvu
+	_description=DjVu image
 	_category=Images
 
 image/vnd.dwg
@@ -1256,7 +1442,7 @@ image/x-cmu-raster
 	_category=Images
 
 image/x-compressed-xcf
-	_description=compressed GIMP document
+	_description=Compressed GIMP document
 	short_list_application_ids_for_novice_user_level=gimp
 	short_list_application_ids_for_intermediate_user_level=gimp
 	short_list_application_ids_for_advanced_user_level=gimp
@@ -1272,11 +1458,12 @@ image/x-dib
 	_category=Images
 
 image/x-dpx
-	_description=Digital Moving Picture Exchange
+	_description=Digital Moving Picture Exchange image
 	_category=Images
 
 image/x-emf
 	_description=StarOffice extended metafile image
+	_category=Images
 	short_list_application_ids_for_novice_user_level=openoffice,staroffice
 	short_list_application_ids_for_intermediate_user_level=openoffice,staroffice
 	short_list_application_ids_for_advanced_user_level=openoffice,staroffice
@@ -1319,7 +1506,15 @@ image/x-icb
 
 image/x-ico
 	_description=Windows icon image
+	default_action_type=component
 	_category=Images
+	short_list_component_iids=OAFIID:GNOME_EOG_Control
+	short_list_component_iids_for_novice_user_level=OAFIID:GNOME_EOG_Control
+	short_list_component_iids_for_intermediate_user_level=OAFIID:GNOME_EOG_Control
+	short_list_component_iids_for_advanced_user_level=OAFIID:GNOME_EOG_Control
+	short_list_application_ids_for_novice_user_level=eog
+	short_list_application_ids_for_intermediate_user_level=eog
+	short_list_application_ids_for_advanced_user_level=eog
 
 image/x-iff
 	_description=IFF image
@@ -1347,18 +1542,21 @@ image/x-palm
 
 image/x-pcx
 	_description=PC Paintbrush image
+	_category=Images
 	short_list_application_ids_for_novice_user_level=openoffice,staroffice,gimp
 	short_list_application_ids_for_intermediate_user_level=openoffice,staroffice,gimp
 	short_list_application_ids_for_advanced_user_level=openoffice,staroffice,gimp
 
 image/x-photo-cd
 	_description=Photo CD image
+	_category=Images
 	short_list_application_ids_for_novice_user_level=openoffice,staroffice
 	short_list_application_ids_for_intermediate_user_level=openoffice,staroffice
 	short_list_application_ids_for_advanced_user_level=openoffice,staroffice
 
 image/x-pict
 	_description=PICT image
+	_category=Images
 	short_list_application_ids_for_novice_user_level=openoffice,staroffice
 	short_list_application_ids_for_intermediate_user_level=openoffice,staroffice
 	short_list_application_ids_for_advanced_user_level=openoffice,staroffice
@@ -1442,7 +1640,7 @@ image/x-rgb
 	_category=Images
 
 image/x-sgi
-	_description=Silicon Graphics Image
+	_description=Silicon Graphics image
 	default_action_type=application
 	short_list_application_ids_for_novice_user_level=gimp
 	short_list_application_ids_for_intermediate_user_level=gimp
@@ -1520,15 +1718,15 @@ image/x-xwindowdump
 	_category=Images
 
 message/delivery-status
-	_description=mail delivery report
+	_description=Mail delivery report
 	_category=Message
 
 message/disposition-notification
-	_description=mail disposition report
+	_description=Mail disposition report
 	_category=Message
 
 message/external-body
-	_description=reference to remote file
+	_description=Reference to remote file
 	_category=Message
 
 message/news
@@ -1536,11 +1734,11 @@ message/news
 	_category=Message
 
 message/partial
-	_description=partial email message
+	_description=Partial email message
 	_category=Message
 
 message/rfc822
-	_description=email message/mailbox
+	_description=Email message/mailbox
 	_category=Message
 
 message/x-gnu-rmail
@@ -1552,35 +1750,46 @@ model/vrml
 	_category=Documents/Vector Graphics
 
 multipart/alternative
-	_description=message in several formats
+	_description=Message in several formats
 
 multipart/appledouble
 	_description=Macintosh AppleDouble-encoded file
 	_category=Packages
 
 multipart/digest
-	_description=message digest
+	_description=Message digest
 	_category=Message
 
 multipart/encrypted
-	_description=encrypted message
+	_description=Encrypted message
 	_category=Message
 
 multipart/mixed
-	_description=multi-part message
+	_description=Multi-part message
 	_category=Message
 
 multipart/related
-	_description=compound document
+	_description=Compound document
 	_category=Message
 
 multipart/report
-	_description=mail system report
+	_description=Mail system report
 	_category=Message
 
 multipart/signed
-	_description=signed message
+	_description=Signed message
 	_category=Message
+
+multipart/x-zip
+	_description=Zip archive
+	icon_filename=gnome-compressed
+	vfs_method=zip
+	default_action_type=application
+	short_list_application_ids_for_novice_user_level=file-roller
+	short_list_application_ids_for_intermediate_user_level=file-roller
+	short_list_application_ids_for_advanced_user_level=file-roller
+	_category=Packages
+	use_category_default=yes
 
 text/*
 	default_action_type=component
@@ -1590,7 +1799,7 @@ text/*
 	short_list_component_iids_for_advanced_user_level=OAFIID:nautilus_text_view:fa466311-17c1-435c-8231-c9fc434b6437
 	short_list_application_ids_for_novice_user_level=gedit,pico
 	short_list_application_ids_for_intermediate_user_level=xemacs,emacs,nedit,gedit,xfte,pico
-	short_list_application_ids_for_advanced_user_level=xemacs,gvim,emacs,vi,nedit,gedit,xfte,pico
+	short_list_application_ids_for_advanced_user_level=xemacs,gvim,emacs,vim,vi,nedit,gedit,xfte,pico
 	_category=Documents/Plain Text
 
 # also application/x-abiword
@@ -1604,40 +1813,41 @@ text/abiword
 	use_category_default=yes
 
 text/bib
-	_description=bibliography record
+	_description=Bibliography record
 	_category=Documents/Plain Text
 
 text/calendar
-	_description=calendar file
+	_description=Calendar file
 	_category=Information/Calendar
 
 text/css
-	_description=style sheet
+	_description=Style sheet
 	_category=Documents/World Wide Web
 
 text/directory
-	_description=directory information file
+	_description=Directory information file
 	_category=Documents/Plain Text
 
 text/enriched
-	_description=enriched text document
+	_description=Enriched text document
 	_category=Documents/Word Processor
 
 text/html
 	_description=HTML page
 	default_action_type=application
+	default_application_id=epiphany
 	short_list_component_iids=OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1,OAFIID:Nautilus_Text_View
 	short_list_component_iids_for_novice_user_level=OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1,OAFIID:nautilus_text_view:fa466311-17c1-435c-8231-c9fc434b6437
 	short_list_component_iids_for_intermediate_user_level=OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1,OAFIID:nautilus_text_view:fa466311-17c1-435c-8231-c9fc434b6437
 	short_list_component_iids_for_advanced_user_level=OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1,OAFIID:nautilus_text_view:fa466311-17c1-435c-8231-c9fc434b6437
-	short_list_application_ids_for_novice_user_level=mozilla,netscape,galeon
-	short_list_application_ids_for_intermediate_user_level=mozilla,netscape,galeon
-	short_list_application_ids_for_advanced_user_level=mozilla,netscape,lynx,galeon
+	short_list_application_ids_for_novice_user_level=epiphany,galeon,mozilla,netscape
+	short_list_application_ids_for_intermediate_user_level=epiphany,galeon,mozilla,netscape
+	short_list_application_ids_for_advanced_user_level=epiphany,galeon,mozilla,netscape,lynx
 	_category=Documents/World Wide Web
 	use_category_default=yes
 
 text/htmlh
-	_description=help page
+	_description=Help page
 	default_action_type=component
 	short_list_component_iids=OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1
 	short_list_component_iids_for_novice_user_level=OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1
@@ -1652,7 +1862,7 @@ text/mathml
 
 text/plain
 	can_be_executable=TRUE
-	_description=plain text document
+	_description=Plain text document
 	default_action_type=component
 	short_list_component_iids=OAFIID:Nautilus_Text_View
 	short_list_component_iids_for_novice_user_level=OAFIID:nautilus_text_view:fa466311-17c1-435c-8231-c9fc434b6437
@@ -1660,16 +1870,16 @@ text/plain
 	short_list_component_iids_for_advanced_user_level=OAFIID:nautilus_text_view:fa466311-17c1-435c-8231-c9fc434b6437
 	short_list_application_ids_for_novice_user_level=gedit,pico
 	short_list_application_ids_for_intermediate_user_level=xemacs,emacs,nedit,gedit,xfte,pico
-	short_list_application_ids_for_advanced_user_level=xemacs,gvim,emacs,vi,nedit,gedit,xfte,pico
+	short_list_application_ids_for_advanced_user_level=xemacs,gvim,emacs,vim,vi,nedit,gedit,xfte,pico
 	_category=Documents/Plain Text
 	use_category_default=yes
 
 text/rfc822-headers
-	_description=email headers
+	_description=Email headers
 	_category=Message
 
 text/richtext
-	_description=rich text document
+	_description=Rich text document
 	_category=Documents/Word Processor
 
 text/sgml
@@ -1687,7 +1897,7 @@ text/spreadsheet
 	use_category_default=yes
 
 text/tab-separated-values
-	_description=tab-separated text document
+	_description=Tab-separated text document
 	default_action_type=application
 	short_list_application_ids_for_novice_user_level=gnumeric
 	short_list_application_ids_for_intermediate_user_level=gnumeric
@@ -1700,10 +1910,14 @@ text/tab-separated-values
 # mechanism must be returning it (probably a web server)
 text/tex
 	_description=TeX document
-	_category=Documents/Text Markup
+	_category=Documents/TeX
+
+text/x-asm
+	_description=Assembly source code
+	_category=Software Development/Source Code
 
 text/x-authors
-	_description=authors list
+	_description=Authors list
 	_category=Documents/Plain Text
 
 text/x-c
@@ -1719,7 +1933,7 @@ text/x-c-header
 	_description=C source code header
 
 text/x-comma-separated-values
-	_description=comma-separated text document
+	_description=Comma-separated text document
 	icon_filename=i-spreadsheet
 	default_action_type=application
 	short_list_application_ids_for_novice_user_level=gnumeric,kspread
@@ -1729,11 +1943,11 @@ text/x-comma-separated-values
 	use_category_default=yes
 
 text/x-copying
-	_description=software license terms
+	_description=Software license terms
 	_category=Software Development
 
 text/x-credits
-	_description=software author credits
+	_description=Software author credits
 	_category=Software Development
 
 # also application/x-csh
@@ -1751,7 +1965,7 @@ text/x-dsl
 	_category=Documents/Text Markup
 
 text/x-dtd
-	_description=document type definition
+	_description=Document type definition
 	_category=Documents/Extended Markup Language (XML)
 
 text/x-emacs-lisp
@@ -1776,15 +1990,24 @@ text/x-idl
 	_category=Software Development/Source Code
 
 text/x-install
-	_description=software installation instructions
+	_description=Software installation instructions
 	_category=Software Development/Source Code
 
 text/x-java
 	_description=Java source code
 	default_action_type=application
-	short_list_application_ids_for_novice_user_level=jbuilder,javac
-	short_list_application_ids_for_intermediate_user_level=jbuilder,javac
-	short_list_application_ids_for_advanced_user_level=jbuilder,javac
+	short_list_application_ids_for_novice_user_level=anjuta,javac
+	short_list_application_ids_for_intermediate_user_level=anjuta,javac
+	short_list_application_ids_for_advanced_user_level=anjuta,javac
+	_category=Software Development/Source Code
+	use_category_default=yes
+
+text/x-javascript
+	_description=JavaScript source code
+	default_action_type=application
+	short_list_application_ids_for_novice_user_level=anjuta
+	short_list_application_ids_for_intermediate_user_level=anjuta
+	short_list_application_ids_for_advanced_user_level=anjuta
 	_category=Software Development/Source Code
 	use_category_default=yes
 
@@ -1799,7 +2022,7 @@ text/x-literate-haskell
 	_category=Software Development/Source Code
 
 text/x-lyx
-	_description=LyX Document
+	_description=LyX document
 	default_action_type=application
 	short_list_application_ids_for_novice_user_level=lyx
 	short_list_application_ids_for_intermediate_user_level=lyx
@@ -1807,11 +2030,19 @@ text/x-lyx
 	_category=Documents/Word Processor
 
 text/x-makefile
-	_description=makefile
+	_description=Makefile
 	_category=Software Development
 
+text/x-objc
+	_category=Software Development/Source Code
+	_description=Objective C source code
+
+text/x-pascal
+	_description=Pascal source code
+	_category=Software Development/Source Code
+
 text/x-patch
-	_description=source code patch
+	_description=Source code patch
 	_category=Software Development
 
 # also application/x-perl
@@ -1819,6 +2050,10 @@ text/x-perl
 	can_be_executable=TRUE
 	_description=Perl script
 	_category=Software Development/Source Code
+
+text/x-po
+	_description=gettext translation
+	_category=Software Development
 
 text/x-python
 	can_be_executable=TRUE
@@ -1839,7 +2074,7 @@ text/x-setext
 
 text/x-sh
 	can_be_executable=TRUE
-	_description=shell script
+	_description=Shell script
 	_category=Software Development/Source Code
 
 text/x-speech
@@ -1857,38 +2092,38 @@ text/x-tcl
 # also text/tex
 text/x-tex
 	_description=TeX document
-	_category=Documents/Text Markup
+	_category=Documents/TeX
 	icon_filename=gnome-tex
 
 text/x-texinfo
 	_description=TeXInfo document
-	_category=Documents/Text Markup
+	_category=Documents/TeX
 
 # also application/x-troff
 text/x-troff
-	_description=troff document
+	_description=Troff document
 	_category=Documents/Text Markup
 
 text/x-troff-man
-	_description=manual page
+	_description=Manual page
 	icon_filename=i-manual
 	_category=Documents/Text Markup
 
 # the acronym is not capitalized, per common usage
 text/x-troff-me
-	_description=troff me input document
+	_description=Troff me input document
 	_category=Documents/Text Markup
 
 text/x-troff-mm
-	_description=troff mm input document
+	_description=Troff mm input document
 	_category=Documents/Text Markup
 
 text/x-troff-ms
-	_description=troff ms input document
+	_description=Troff ms input document
 	_category=Documents/Text Markup
 
 text/x-vcalendar
-	_description=calendar or event document
+	_description=Calendar or event document
 	default_action_type=application
 	short_list_application_ids_for_novice_user_level=gnomecal
 	short_list_application_ids_for_intermediate_user_level=gnomecal
@@ -1896,12 +2131,16 @@ text/x-vcalendar
 	_category=Information/Calendar
 
 text/x-vcard
-	_description=address card
+	_description=Address card
 	default_action_type=application
 	short_list_application_ids_for_novice_user_level=gnomecard
 	short_list_application_ids_for_intermediate_user_level=gnomecard
 	short_list_application_ids_for_advanced_user_level=gnomecard
 	_category=Information
+
+text/x-yacc
+	_description=Yacc grammar source code
+	_category=Software Development/Source Code
 
 text/x-zsh
 	can_be_executable=TRUE
@@ -1915,11 +2154,15 @@ text/xml
 	short_list_component_iids_for_novice_user_level=OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1,OAFIID:nautilus_text_view:fa466311-17c1-435c-8231-c9fc434b6437
 	short_list_component_iids_for_intermediate_user_level=OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1,OAFIID:nautilus_text_view:fa466311-17c1-435c-8231-c9fc434b6437
 	short_list_component_iids_for_advanced_user_level=OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1,OAFIID:nautilus_text_view:fa466311-17c1-435c-8231-c9fc434b6437
-	short_list_application_ids_for_novice_user_level=mozilla
-	short_list_application_ids_for_intermediate_user_level=mozilla
-	short_list_application_ids_for_advanced_user_level=mozilla
+	short_list_application_ids_for_novice_user_level=epiphany,galeon,mozilla
+	short_list_application_ids_for_intermediate_user_level=epiphany,galeon,mozilla
+	short_list_application_ids_for_advanced_user_level=epiphany,galeon,mozilla
 	_category=Documents/Extended Markup Language (XML)
 	use_category_default=yes
+
+video/dv
+	_description=DV video
+	_category=Video
 
 video/isivideo
 	_description=ISI video
@@ -1936,20 +2179,14 @@ video/mpeg
 video/msvideo
 	_description=MS video
 	icon_filename=gnome-video-x-msvideo
-	short_list_application_ids_for_novice_user_level=xmps,omsomi,gtv,xanim
-	short_list_application_ids_for_intermediate_user_level=xmps,omsomi,gtv,xanim
-	short_list_application_ids_for_advanced_user_level=xmps,omsomi,gtv,xanim
 	_category=Video
 
 video/quicktime
 	_description=QuickTime movie
 	default_action_type=application
-	short_list_application_ids_for_novice_user_level=xanim
-	short_list_application_ids_for_intermediate_user_level=xanim
-	short_list_application_ids_for_advanced_user_level=xanim
 	_category=Video
 
-video/vivo
+video/vnd.vivo
 	_description=Vivo video
 	_category=Video
 
@@ -1960,33 +2197,21 @@ video/wavelet
 video/x-anim
 	_description=ANIM animation
 	default_action_type=application
-	short_list_application_ids_for_novice_user_level=xanim
-	short_list_application_ids_for_intermediate_user_level=xanim
-	short_list_application_ids_for_advanced_user_level=xanim
 	_category=Video
 
 video/x-avi
 	_description=AVI video
 	default_action_type=application
-	short_list_application_ids_for_novice_user_level=xanim
-	short_list_application_ids_for_intermediate_user_level=xanim
-	short_list_application_ids_for_advanced_user_level=xanim
 	_category=Video
 
 video/x-flc
 	_description=FLC animation
 	default_action_type=application
-	short_list_application_ids_for_novice_user_level=xanim
-	short_list_application_ids_for_intermediate_user_level=xanim
-	short_list_application_ids_for_advanced_user_level=xanim
 	_category=Video
 
 video/x-fli
 	_description=FLI animation
 	default_action_type=application
-	short_list_application_ids_for_novice_user_level=xanim
-	short_list_application_ids_for_intermediate_user_level=xanim
-	short_list_application_ids_for_advanced_user_level=xanim
 	_category=Video
 
 video/x-ms-asf
@@ -2000,11 +2225,16 @@ video/x-ms-wmv
 	_description=Microsoft WMV video
 	_category=Video
 
+video/x-ms-wvx
+	_description=Microsoft WMV playlist
+	_category=Video
+
 video/x-msvideo
 	_description=Microsoft video
-	short_list_application_ids_for_novice_user_level=xmps,omsomi,xanim
-	short_list_application_ids_for_intermediate_user_level=xmps,omsomi,xanim
-	short_list_application_ids_for_advanced_user_level=xmps,omsomi,xanim
+	_category=Video
+
+video/x-nsv
+	_description=Nullsoft video
 	_category=Video
 
 video/x-real-video
@@ -2018,13 +2248,27 @@ video/x-real-video
 video/x-sgi-movie
 	_description=SGI video
 	default_action_type=application
-	short_list_application_ids_for_novice_user_level=xanim
-	short_list_application_ids_for_intermediate_user_level=xanim
-	short_list_application_ids_for_advanced_user_level=xanim
 	_category=Video
 
 x-directory/normal
-	_description=folder
+	_description=Folder
+	default_action_type=component
+	short_list_component_iids=OAFIID:Nautilus_File_Manager_Icon_View,OAFIID:Nautilus_File_Manager_List_View,OAFIID:Nautilus_Music_View,OAFIID:GNOME_EOG_CollectionControl
+	short_list_component_iids_for_novice_user_level=OAFIID:nautilus_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058,OAFIID:nautilus_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c,OAFIID:nautilus_music_view:9456b5d2-60a8-407f-a56e-d561e1821391:OAFIID
+	short_list_component_iids_for_intermediate_user_level=OAFIID:nautilus_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058,OAFIID:nautilus_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c,OAFIID:nautilus_music_view:9456b5d2-60a8-407f-a56e-d561e1821391
+	short_list_component_iids_for_advanced_user_level=OAFIID:nautilus_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058,OAFIID:nautilus_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c,OAFIID:nautilus_music_view:9456b5d2-60a8-407f-a56e-d561e1821391
+	_category=Information
+
+x-directory/search
+	_description=Search results
+	default_action_type=component
+	short_list_component_iids=OAFIID:Nautilus_File_Manager_Search_List_View
+	short_list_component_iids_for_novice_user_level=OAFIID:nautilus_file_manager_search_list_view:b186e381-198e-43cf-9c46-60b6bb35db0b
+	short_list_component_iids_for_intermediate_user_level=OAFIID:nautilus_file_manager_search_list_view:b186e381-198e-43cf-9c46-60b6bb35db0b
+	short_list_component_iids_for_advanced_user_level=OAFIID:nautilus_file_manager_search_list_view:b186e381-198e-43cf-9c46-60b6bb35db0b
+
+x-directory/smb-share
+	_description=Samba share
 	default_action_type=component
 	short_list_component_iids=OAFIID:Nautilus_File_Manager_Icon_View,OAFIID:Nautilus_File_Manager_List_View,OAFIID:Nautilus_Music_View
 	short_list_component_iids_for_novice_user_level=OAFIID:nautilus_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058,OAFIID:nautilus_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c,OAFIID:nautilus_music_view:9456b5d2-60a8-407f-a56e-d561e1821391:OAFIID
@@ -2032,17 +2276,8 @@ x-directory/normal
 	short_list_component_iids_for_advanced_user_level=OAFIID:nautilus_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058,OAFIID:nautilus_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c,OAFIID:nautilus_music_view:9456b5d2-60a8-407f-a56e-d561e1821391
 	_category=Information
 
-x-directory/search
-	_description=search results
-	default_action_type=component
-	short_list_component_iids=OAFIID:Nautilus_File_Manager_Search_List_View
-	short_list_component_iids_for_novice_user_level=OAFIID:nautilus_file_manager_search_list_view:b186e381-198e-43cf-9c46-60b6bb35db0b
-	short_list_component_iids_for_intermediate_user_level=OAFIID:nautilus_file_manager_search_list_view:b186e381-198e-43cf-9c46-60b6bb35db0b
-	short_list_component_iids_for_advanced_user_level=OAFIID:nautilus_file_manager_search_list_view:b186e381-198e-43cf-9c46-60b6bb35db0b
-	_category=Information
-
 x-directory/vfolder-desktop
-	_description=folder
+	_description=Folder
 	default_action_type=component
 	short_list_component_iids=OAFIID:Nautilus_File_Manager_Icon_View,OAFIID:Nautilus_File_Manager_List_View,OAFIID:Nautilus_Music_View
 	short_list_component_iids_for_novice_user_level=OAFIID:nautilus_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058,OAFIID:nautilus_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c,OAFIID:nautilus_music_view:9456b5d2-60a8-407f-a56e-d561e1821391:OAFIID
@@ -2050,7 +2285,7 @@ x-directory/vfolder-desktop
 	short_list_component_iids_for_advanced_user_level=OAFIID:nautilus_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058,OAFIID:nautilus_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c,OAFIID:nautilus_music_view:9456b5d2-60a8-407f-a56e-d561e1821391
 
 x-directory/webdav
-	_description=web folder
+	_description=Web folder
 	default_action_type=component
 	short_list_component_iids=OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1,OAFIID:Nautilus_File_Manager_Icon_View,OAFIID:Nautilus_File_Manager_List_View,OAFIID:Nautilus_Music_View,OAFIID:Nautilus_Text_View
 	short_list_component_iids_for_novice_user_level=OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1,OAFIID:nautilus_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058,OAFIID:nautilus_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c,OAFIID:nautilus_music_view:9456b5d2-60a8-407f-a56e-d561e1821391,OAFIID:nautilus_text_view:fa466311-17c1-435c-8231-c9fc434b6437
@@ -2069,7 +2304,7 @@ x-directory/webdav
 #
 
 x-directory/webdav-prefer-directory
-	_description=web folder
+	_description=Web folder
 	default_action_type=component
 	short_list_component_iids=OAFIID:Nautilus_File_Manager_Icon_View,OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1,OAFIID:Nautilus_File_Manager_List_View,OAFIID:Nautilus_Music_View,OAFIID:Nautilus_Text_View
 	short_list_component_iids_for_novice_user_level=OAFIID:nautilus_file_manager_icon_view:42681b21-d5ca-4837-87d2-394d88ecc058,OAFIID:nautilus_mozilla_content_view:1ee70717-57bf-4079-aae5-922abdd576b1,OAFIID:nautilus_file_manager_list_view:521e489d-0662-4ad7-ac3a-832deabe111c,OAFIID:nautilus_music_view:9456b5d2-60a8-407f-a56e-d561e1821391,OAFIID:nautilus_text_view:fa466311-17c1-435c-8231-c9fc434b6437
@@ -2081,25 +2316,25 @@ x-directory/webdav-prefer-directory
 	_category=System
 
 x-special/device-block
-	_description=block device
+	_description=Block device
 	icon_filename=i-harddisk
 	_category=System
 
 x-special/device-char
-	_description=character device
+	_description=Character device
 	icon_filename=i-chardev
 	_category=System
 
 x-special/fifo
-	_description=named pipe
+	_description=Named pipe
 	icon_filename=i-fifo
 	_category=System
 
 x-special/socket
-	_description=socket
+	_description=Socket
 	icon_filename=i-sock
 	_category=System
 
 x-special/symlink
-	_description=symbolic link
+	_description=Symbolic link
 	_category=System
