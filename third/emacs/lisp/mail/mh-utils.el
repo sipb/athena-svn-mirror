@@ -37,13 +37,18 @@
 
 (defvar mh-lib nil
   "Directory containing the MH library.
-This directory contains, among other things,
-the mhl program and the components file.")
+This directory contains the mhl program.")
+
+(defvar mh-etc nil
+  "Directory containing the MH configuration files.
+This directory contains, among other things the components file.")
 
 ;;;###autoload
 (put 'mh-progs 'risky-local-variable t)
 ;;;###autoload
 (put 'mh-lib 'risky-local-variable t)
+;;;###autoload
+(put 'mh-etc 'risky-local-variable t)
 
 ;;; User preferences:
 
@@ -620,6 +625,8 @@ Set the `mh-progs' and `mh-lib' variables to the file names."
 		(mh-path-search '("/usr/local/bin/mh/") "mhl")
 		(mh-path-search exec-path "mhl") ;unlikely
 		)))
+  (unless mh-etc
+    (error "Cannot find the `components' file"))
   (unless (and mh-progs mh-lib)
     (error "Cannot find the commands `inc' and `mhl'")))
 
