@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: build.sh,v 1.24.2.1 1999-06-28 19:31:49 ghudson Exp $
+# $Id: build.sh,v 1.24.2.2 1999-06-30 22:44:41 ghudson Exp $
 
 # This is the script for building the Athena source tree, or pieces of
 # it.  It is less flexible than the do.sh script in this directory.
@@ -109,7 +109,9 @@ for package in $packages; do
 		fi
 
 		# Redo the output redirection command to flush the log file.
-		exec >> "$logfile" 2>&1
+		if [ true = "$log" ]; then
+			exec >> "$logfile" 2>&1
+		fi
 	done
 done
 
