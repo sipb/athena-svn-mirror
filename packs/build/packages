@@ -1,4 +1,4 @@
-# $Id: packages,v 1.112 2000-12-12 15:37:56 ghudson Exp $
+# $Id: packages,v 1.113 2000-12-12 16:36:07 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -142,7 +142,7 @@ third/ksrvutil			requires krb5
 third/lam
 third/libglade			requires gtk,gnome-libs
 third/libpng			except linux requires zlib
-third/librep
+third/librep			requires gmp
 third/libungif			except linux
 third/look			on irix
 third/lprng/athena		package lprng-misc
