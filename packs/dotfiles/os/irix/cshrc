@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.7 1999-05-27 16:05:24 danw Exp $
+# $Id: cshrc,v 1.7.2.1 1999-06-18 21:54:19 ghudson Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -31,9 +31,11 @@ if (! $?HOST) then
 endif
 set host=$HOST
 set autolist=""
-bindkey "^W" backward-delete-word
-bindkey "^Z" complete-word
-bindkey " " magic-space
+if ($?tcsh) then
+	bindkey "^W" backward-delete-word
+	bindkey "^Z" complete-word
+	bindkey " " magic-space
+endif
 
 # Set up standard system/user environment configuration (including setup of
 # environment variables, attachment of lockers, and setting of search path)
@@ -54,6 +56,12 @@ if (! $?ENV_SET) then
 	# Default man pager is ul -b | more -s -f.  Remove the ul -b part
 	# to work around a bug where pager input is read in line mode.
 	setenv MANPAGER "more -s -f"
+
+	# The following set the default error message format to omit the
+	# label and severity components, per the standard IRIX /etc/cshrc.
+	setenv MSGVERB text:action
+	setenv NOMSGLABEL 1
+	setenv NOMSGSEVERITY 1
 
 	setenv ATHENA_SYS `/bin/athena/machtype -S`
 	setenv ATHENA_SYS_COMPAT `/bin/athena/machtype -C`
