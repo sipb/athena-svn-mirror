@@ -360,18 +360,18 @@ AM_PATH_AUDIOFILE(0.1.5,AC_DEFINE(HAVE_LIBAUDIOFILE))
 dnl
 dnl These are for building the appropriate lib*
 dnl
-LIBGNOME_LIBS="$ESD_LIBS $AUDIOFILE_LIBS $DB_LIB $GLIB_LIBS $DL_LIB"
-LIBGNOMEUI_LIBS="$LIBGNOME_LIBS $GDK_IMLIB_LIBS $GTK_LIBS"
-LIBGTKXMHTML_LIBS="$XPM_LIBS $JPEG_LIBS $PNG_LIBS $Z_LIBS $GTK_LIBS"
+LIBGNOME_LIBS="$ESD_LIBS $AUDIOFILE_LIBS $DB_LIB \`glib-config --libs\` $DL_LIB"
+LIBGNOMEUI_LIBS="$LIBGNOME_LIBS $GDK_IMLIB_LIBS -lSM -lICE \`gtk-config $gtk_config_args --libs\`"
+LIBGTKXMHTML_LIBS="$XPM_LIBS $JPEG_LIBS $PNG_LIBS $Z_LIBS -lSM -lICE \`gtk-config $gtk_config_args --libs\`"
 LIBSUPPORT='$(top_builddir)/support/libgnomesupport.la'
 SUPPORTINCS='-DNEED_GNOMESUPPORT_H -I$(top_builddir)/support -I$(top_srcdir)/support'
 
 dnl These are for using lib*
 ART_LIBS="-lart_lgpl"
 GNOME_LIBS="-lgnome -lgnomesupport $LIBGNOME_LIBS"
-GNOMEUI_LIBS="-lgnomeui $ART_LIBS $GDK_IMLIB_LIBS $GTK_LIBS $GNOME_LIBS"
+GNOMEUI_LIBS="-lgnomeui $ART_LIBS $GDK_IMLIB_LIBS -lSM -lICE \`gtk-config $gtk_config_args --libs\` $GNOME_LIBS"
 GTKXMHTML_LIBS="-lgtkxmhtml $LIBGTKXMHTML_LIBS"
-ZVT_LIBS="-lzvt $UTIL_LIBS $GTK_LIBS"
+ZVT_LIBS="-lzvt $UTIL_LIBS -lSM -lICE \`gtk-config $gtk_config_args --libs\`"
 
 dnl These definitions are expanded in make and gnome-config
 GNOME_LIBDIR='-L${libdir}'
