@@ -1,4 +1,0 @@
-2002-05-07  Radek Doulik  <rodo@ximian.com>
-
-	* Makefile.am: fixed .la versioning
-
