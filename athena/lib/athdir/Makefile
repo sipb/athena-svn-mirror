@@ -3,7 +3,7 @@ libdir=/usr/athena/lib
 includedir=/usr/athena/include
 
 LIBOBJS=	athdir.o stringlist.o
-CFLAGS=		-g -DATHSYS=\"${ATHENA_SYS}\"
+CFLAGS=		-g -DATHSYS=\"${ATHENA_SYS}\" -DHOSTTYPE_${HOSTTYPE}
 
 all:		libathdir.a
 

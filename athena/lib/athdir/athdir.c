@@ -15,7 +15,7 @@
 
 /* This file implements the main athdir library calls. */
 
-static char rcsid[] = "$Id: athdir.c,v 1.4 1999-06-23 21:36:43 ghudson Exp $";
+static char rcsid[] = "$Id: athdir.c,v 1.5 1999-07-08 16:49:10 ghudson Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,34 +26,15 @@ static char rcsid[] = "$Id: athdir.c,v 1.4 1999-06-23 21:36:43 ghudson Exp $";
 #include "athdir.h"
 #include "stringlist.h"
 
-#ifdef ultrix
-#define HOSTTYPESET 1
-#define HOSTTYPE "decmips"
-#endif
-
-#ifdef _IBMR2
-#define HOSTTYPESET 1
-#define HOSTTYPE "rsaix"
-#endif
-
-#if defined(__sun__) && defined(__svr4__)
-#define HOSTTYPESET 1
+/* Define HOSTTYPE for the platforms where `machtype`bin has historic
+ * use.  Never add new platforms to this list.
+ */
+#if defined(HOSTTYPE_sun4)
 #define HOSTTYPE "sun4"
-#endif
-
-#ifdef linux
-#define HOSTTYPESET 1
+#elif defined(HOSTTYPE_linux)
 #define HOSTTYPE "linux"
-#endif
-
-/* Don't define HOSTTYPE on platforms for which `machtype`bin was
- * never widely used.
- */
-
-/* This should be passed in as a compile flag.
- */
-#ifndef ATHSYS
-#define ATHSYS "@sys"
+#elif defined(HOSTTYPE_inbsd)
+#define HOSTTYPE "inbsd"
 #endif
 
 #ifdef HOSTTYPE
@@ -62,8 +43,7 @@ char *hosttype = HOSTTYPE;
 char *hosttype = NULL;
 #endif
 
-/* Definition of known conventions and what flavors they are.
- */
+/* Definition of known conventions and what flavors they are.  */
 
 typedef struct {
   char *name;
