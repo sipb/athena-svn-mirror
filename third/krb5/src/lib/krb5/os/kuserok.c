@@ -112,7 +112,8 @@ krb5_kuserok(context, principal, luser)
 	    princname = malloc(MAX_K_NAME_SZ + 1);
 	    if (!princname)
 		return(FALSE);
-	    sprintf(princname, "%s.%s@%s", v4_name, v4_inst, v4_realm);
+	    sprintf(princname, "%s%s%s@%s", v4_name, *v4_inst ? "." : "",
+		    v4_inst, v4_realm);
 	    sprintf(pbuf, "%s/.klogin", pwd->pw_dir);
 	    fp = fopen(pbuf, "r");
 	}
