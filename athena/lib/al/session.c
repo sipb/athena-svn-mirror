@@ -17,7 +17,7 @@
  * functions to get and put the session record.
  */
 
-static const char rcsid[] = "$Id: session.c,v 1.6 1997-11-15 07:30:38 ghudson Exp $";
+static const char rcsid[] = "$Id: session.c,v 1.7 1997-11-17 19:19:31 danw Exp $";
 
 #include <ctype.h>
 #include <sys/types.h>
@@ -213,6 +213,7 @@ int al__get_session_record(const char *username,
     }
 
   retval = AL_SUCCESS;
+  record->exists = 1;
 
 cleanup:
   if (bufsize)
@@ -250,9 +251,7 @@ cleanup:
       sigaction(SIGCHLD, &action, &(record->sigchld_action));
     }
 
-  if (retval == AL_SUCCESS)
-    record->exists = 1;
-  else
+  if (retval != AL_SUCCESS)
     {
       /* On either warning or error, zero out the record. */
       if (record->old_homedir)
