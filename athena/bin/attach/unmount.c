@@ -1,12 +1,12 @@
 /*
- * $Id: unmount.c,v 1.13 1996-12-18 15:00:58 ghudson Exp $
+ * $Id: unmount.c,v 1.14 1997-12-17 18:17:35 ghudson Exp $
  *
  * Copyright (c) 1988,1991 by the Massachusetts Institute of Technology.
  *
  * For redistribution rights, see "mit-copyright.h"
  */
 
-static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/unmount.c,v 1.13 1996-12-18 15:00:58 ghudson Exp $";
+static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/unmount.c,v 1.14 1997-12-17 18:17:35 ghudson Exp $";
 
 #include "attach.h"
 
@@ -100,7 +100,7 @@ unmount_42(errname, mntpt, dev)
 	    return(SUCCESS);
 	} else {
 	    fprintf(stderr, "%s: Unable to unmount %s: %s\n", errname,
-		    mntpt, sys_errlist[errno]);
+		    mntpt, strerror(errno));
 	    return (FAILURE);
 	}
     }
@@ -152,7 +152,7 @@ unmount_42(errname, mntpt, dev)
 			/* Continue on, to flush mtab if necessary */
 		} else {
 			fprintf(stderr, "%s: Unable to unmount %s: %s\n", errname,
-				mntpt, sys_errlist[errno]);
+				mntpt, strerror(errno));
 			return (FAILURE);
 		}
 	}
@@ -184,7 +184,7 @@ unmount_42(errname, mntpt, dev)
 	mnted = setmntent(mtab_fn, "r");
 	if (!mnted) {
 		fprintf(stderr, "Can't open %s for read:%s\n", mtab_fn,
-			sys_errlist[errno]);
+			strerror(errno));
 		exit(ERR_FATAL);
 	}
 	/* Delete filesystem from /etc/mtab */
@@ -196,7 +196,7 @@ unmount_42(errname, mntpt, dev)
 	endmntent(mnted);
 	if (rename(tmpname, mtab_fn) < 0) {
 		fprintf(stderr, "Unable to rename %s to %s: %s\n", tmpname,
-			mtab_fn, sys_errlist[errno]);
+			mtab_fn, strerror(errno));
 		exit(ERR_FATAL);
 	}
 	unlock_mtab();

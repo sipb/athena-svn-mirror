@@ -1,10 +1,10 @@
 /*
- * $Id: afs.c,v 1.15 1997-11-18 01:28:53 ghudson Exp $
+ * $Id: afs.c,v 1.16 1997-12-17 18:17:32 ghudson Exp $
  *
  * Copyright (c) 1990,1992 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid = "$Id: afs.c,v 1.15 1997-11-18 01:28:53 ghudson Exp $";
+static char *rcsid = "$Id: afs.c,v 1.16 1997-12-17 18:17:32 ghudson Exp $";
 
 #include "attach.h"
 
@@ -118,7 +118,7 @@ afs_attach(at, mopt, errorout)
 				{
 					fprintf(stderr,
 	"%s: Couldn't remove existing symlink from %s to %s: %s\n",
-			at->hesiodname, at->mntpt, buf, sys_errlist[errno]);
+			at->hesiodname, at->mntpt, buf, strerror(errno));
 					error_status = ERR_ATTACHINUSE;
 					return(FAILURE);
 				}
@@ -133,7 +133,7 @@ afs_attach(at, mopt, errorout)
 					fprintf(stderr,
 						"%s: Couldn't rmdir %s (%s)\n",
 						at->hesiodname, at->mntpt,
-						sys_errlist[errno]);
+						strerror(errno));
 				error_status = ERR_ATTACHINUSE;
 				return(FAILURE);
 			}
@@ -342,7 +342,7 @@ int afs_detach(at)
 		    return SUCCESS;
 		}
 	    fprintf(stderr, "%s: detach of filesystem %s failed, unable to remove mountpoint\n\terror is %s\n",
-		    progname, at->hesiodname, errstr(errno));
+		    progname, at->hesiodname, strerror(errno));
 	    /* Set error_status? */
 	    return FAILURE;
 	}

@@ -1,7 +1,7 @@
 /*	Created by:	Theodore Ts'o
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/attachtab.c,v $
- *	$Author: miki $
+ *	$Author: ghudson $
  *
  *	Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *
@@ -9,7 +9,7 @@
  */
 
 #ifndef lint
-static char rcsid_attachtab_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attachtab.c,v 1.9 1994-03-25 15:58:05 miki Exp $";
+static char rcsid_attachtab_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/attachtab.c,v 1.10 1997-12-17 18:17:34 ghudson Exp $";
 #endif
 
 #include "attach.h"
@@ -54,7 +54,7 @@ void lock_attachtab()
 			attach_lock_fd = open(lockfn, O_CREAT|O_RDWR, 0644);
 			if (attach_lock_fd < 0) {
 				fprintf(stderr,"Can't open %s: %s\n", lockfn,
-					sys_errlist[errno]);
+					strerror(errno));
 				fprintf(stderr, abort_msg);
 				exit(ERR_FATAL);
 			}
@@ -71,7 +71,7 @@ void lock_attachtab()
 #endif
 		if (status == -1) {
 			fprintf(stderr, "%s: unable to lock attachtab: %s\n",
-				progname, errstr(errno));
+				progname, strerror(errno));
 			fputs(abort_msg, stderr);
 			exit(ERR_FATAL);
 		}
@@ -171,7 +171,7 @@ put_attachtab()
 	(void) strcat(tempfn, ".temp");
 	if (!(f = fopen(tempfn, "w"))) {
 		fprintf(stderr,"Can't open %s for write: %s\n", attachtab_fn,
-			sys_errlist[errno]);
+			strerror(errno));
 		fprintf(stderr, abort_msg);
 		exit(ERR_FATAL);
 	}

@@ -1,12 +1,12 @@
 /*	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v $
- *	$Author: danw $
+ *	$Author: ghudson $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.26 1997-09-11 17:16:05 danw Exp $";
+static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/util.c,v 1.27 1997-12-17 18:17:36 ghudson Exp $";
 
 #include "attach.h"
 
@@ -24,9 +24,6 @@ static char *rcsid_util_c = "$Header: /afs/dev.mit.edu/source/repository/athena/
 #ifdef ultrix
 #define max(a,b) (((a) > (b)) ? (a) : (b))
 #endif
-
-extern int sys_nerr;
-extern char *sys_errlist[];
 
 char exp_hesline[BUFSIZ];	/* Place to store explicit */
 char *exp_hesptr[2];		/* ``hesiod'' entry */
@@ -136,7 +133,7 @@ lock_mtab()
 		mtab_lock_fd = open(lockfn, O_CREAT|O_RDWR, 0644);
 		if (mtab_lock_fd < 0) {
 			fprintf(stderr,"Can't open %s: %s\n", lockfn,
-				sys_errlist[errno]);
+				strerror(errno));
 			fprintf(stderr, abort_msg);
 			exit(ERR_FATAL);
 		}
@@ -422,7 +419,7 @@ int make_mntpt(at)
 	    if (errno == EEXIST)
 		continue;
 	    fprintf(stderr, "%s: Can't create directory %s: %s\n",
-		    at->hesiodname, bfr, sys_errlist[errno]);
+		    at->hesiodname, bfr, strerror(errno));
 	    umask(oldmask);
 	    return (FAILURE);
 	}
@@ -459,7 +456,7 @@ int rm_mntpt(at)
 		fprintf(stderr,
 			"%s: Can't remove directory %s: %s\n",
 			at->hesiodname, ptr,
-			sys_errlist[errno]);
+			strerror(errno));
 		return (FAILURE);
 	    }
 	}
@@ -583,7 +580,7 @@ void mark_in_use(name)
     fd = open(filename, O_CREAT|O_RDWR, 0644);
     if (!fd) {
 	    fprintf(stderr,"Can't open %s: %s\n", filename,
-		    sys_errlist[errno]);
+		    strerror(errno));
 	    fprintf(stderr, abort_msg);
 	    exit(ERR_FATAL);
     }
@@ -1150,14 +1147,4 @@ int parse_groupname(s)
 		exit(1);
 		/* NOTREACHED */
 	}
-}
-
-
-char *errstr(e)
-    int e;
-{
-  if(e < sys_nerr)
-    return sys_errlist[e];
-  else
-    return "Unknown error";
 }

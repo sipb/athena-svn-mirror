@@ -1,5 +1,5 @@
 /*
- * $Id: attach.h,v 1.22 1997-06-02 07:41:45 ghudson Exp $
+ * $Id: attach.h,v 1.23 1997-12-17 18:17:33 ghudson Exp $
  *
  * Copyright (c) 1988,1991 by the Massachusetts Institute of Technology.
  *
@@ -9,6 +9,7 @@
 #include "config.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <ctype.h>
 #include <errno.h>
 #ifdef _AIX
@@ -341,7 +342,6 @@ AUTH	*spoofunix_create_default();
 CLIENT	*rpc_create();
 extern int errno;
 extern unsigned long rvderrno;
-extern char *sys_errlist[];
 extern struct _attachtab *build_hesiod_line();
 extern char **conf_filsys_resolve();
 extern struct _fstypes *get_fs();

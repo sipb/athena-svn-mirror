@@ -1,11 +1,11 @@
 /*	Created by:	Robert French
  *
- *	$Id: mount.c,v 1.10 1996-09-19 22:13:13 ghudson Exp $
+ *	$Id: mount.c,v 1.11 1997-12-17 18:17:34 ghudson Exp $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mount.c,v 1.10 1996-09-19 22:13:13 ghudson Exp $";
+static char *rcsid_mount_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/mount.c,v 1.11 1997-12-17 18:17:34 ghudson Exp $";
 
 #include "attach.h"
 
@@ -73,9 +73,6 @@ struct ufs_args { char *fspec;};
 #define	mount(type,dir,flags,data)	fsmount(type,dir,flags,data)
 #endif
 
-extern int sys_nerr;
-extern char *sys_errlist[];
-
 /*
  * Mount a filesystem
  */
@@ -138,7 +135,7 @@ mountfs(at, fsname, mopt, errorout)
 				fprintf(stderr,
 					"%s: Can't mount %s on %s - %s\n",
 					at->hesiodname, fsname, mnt.mnt_dir,
-					sys_errlist[errno]);
+					strerror(errno));
 			return (FAILURE);
 		} else {
 		  /* We need to get the filesystem's gfs for mtab */
@@ -147,7 +144,7 @@ mountfs(at, fsname, mopt, errorout)
 		    if (errorout)
 		      fprintf(stderr,
 			      "%s: Can't stat %s to verify mount: %s\n",
-			      at->hesiodname, mnt.mnt_dir, sys_errlist[errno]);
+			      at->hesiodname, mnt.mnt_dir, strerror(errno));
 		    return (FAILURE);
 		  } else {
 		    mnt.mnt_gfs = st_buf.dst_gfs;
@@ -176,7 +173,7 @@ mountfs(at, fsname, mopt, errorout)
 			fprintf(stderr,
 				"%s: Can't mount %s on %s - %s\n",
 				at->hesiodname, fsname, mnt.mnt_dir,
-				sys_errlist[errno]);
+				strerror(errno));
 			error_status = ERR_SOMETHING;
 		}
 		return (FAILURE);
@@ -189,7 +186,7 @@ mountfs(at, fsname, mopt, errorout)
 	    if (errorout)
 	      fprintf(stderr,
 		      "%s: Can't stat %s to verify mount: %s\n",
-		      at->hesiodname, mnt.mnt_dir, sys_errlist[errno]);
+		      at->hesiodname, mnt.mnt_dir, strerror(errno));
 	    return (FAILURE);
 	  } else {
 	    mnt.mnt_gfs = st_buf.dst_gfs;
@@ -300,18 +297,13 @@ mount_nfs(at, mopt, args, errorout)
 				"%s: Mount access denied by server %s\n",
 					at->hesiodname, at->host);
 				error_status = ERR_ATTACHNOTALLOWED;
-			} else if (errno < sys_nerr) {
+			} else {
 				error_status = (errno == ENOENT) ? 
 				  ERR_ATTACHNOFILSYS : ERR_ATTACHNOTALLOWED;
 				fprintf(stderr,
 			"%s: Error message returned from server %s: %s\n",
 					at->hesiodname, at->host,
-					sys_errlist[errno]);
-			} else {
-				error_status = ERR_ATTACHNOTALLOWED;
-				fprintf(stderr,
-			"%s: Error status %d returned from server %s\n",
-					at->hesiodname, errno, at->host);
+					strerror(errno));
 			}
 		}
 		return (FAILURE);
@@ -367,7 +359,7 @@ addtomtab(mnt)
     mnted = setmntent(mtab_fn, "r+");
     if (!mnted || addmntent(mnted, mnt)) {
 	    fprintf(stderr, "Can't append to %s: %s\n", mtab_fn,
-		    sys_errlist[errno]);
+		    strerror(errno));
 	    unlock_mtab();
 	    exit(ERR_FATAL);
     }
