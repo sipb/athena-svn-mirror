@@ -22,3 +22,15 @@ lint: llib-lacl.ln
 
 llib-lacl.ln: acl_files.c
 	lint -bh -Cacl acl_files.c
+
+depend: 
+	makedepend ${CFLAGS} acl_files.c
+
+# DO NOT DELETE THIS LINE -- make depend depends on it.
+
+acl_files.o: acl_files.c /usr/include/stdio.h /usr/include/strings.h
+acl_files.o: /usr/include/sys/file.h /usr/include/sys/types.h
+acl_files.o: /usr/include/sys/stat.h /usr/include/sys/errno.h
+acl_files.o: /usr/include/ctype.h /usr/include/krb.h
+acl_files.o: /usr/include/mit-copyright.h /usr/include/des.h
+acl_files.o: /usr/include/des_conf.h
