@@ -33,7 +33,7 @@
 
 #ifndef lint
 static const char rcsid[] =
-    "@(#) $Header: /afs/dev.mit.edu/source/repository/third/traceroute/ifaddrlist.c,v 1.1.1.1 1997-09-24 06:24:33 ghudson Exp $ (LBL)";
+    "@(#) $Header: /afs/dev.mit.edu/source/repository/third/traceroute/ifaddrlist.c,v 1.2 1999-10-19 20:28:31 danw Exp $ (LBL)";
 #endif
 
 #include <sys/param.h>
@@ -83,7 +83,8 @@ struct rtentry;
  * Return the interface list
  */
 int
-ifaddrlist(register struct ifaddrlist **ipaddrp, register char *errbuf)
+ifaddrlist(register struct ifaddrlist **ipaddrp, register char *errbuf,
+	   int buflen)
 {
 	register int fd, nipaddr;
 #ifdef HAVE_SOCKADDR_SA_LEN
@@ -99,7 +100,7 @@ ifaddrlist(register struct ifaddrlist **ipaddrp, register char *errbuf)
 
 	fd = socket(AF_INET, SOCK_DGRAM, 0);
 	if (fd < 0) {
-		(void)sprintf(errbuf, "socket: %s", strerror(errno));
+		(void)snprintf(errbuf, buflen, "socket: %s", strerror(errno));
 		return (-1);
 	}
 	ifc.ifc_len = sizeof(ibuf);
@@ -107,7 +108,7 @@ ifaddrlist(register struct ifaddrlist **ipaddrp, register char *errbuf)
 
 	if (ioctl(fd, SIOCGIFCONF, (char *)&ifc) < 0 ||
 	    ifc.ifc_len < sizeof(struct ifreq)) {
-		(void)sprintf(errbuf, "SIOCGIFCONF: %s", strerror(errno));
+		(void)snprintf(errbuf, buflen, "SIOCGIFCONF: %s", strerror(errno));
 		(void)close(fd);
 		return (-1);
 	}
@@ -139,7 +140,7 @@ ifaddrlist(register struct ifaddrlist **ipaddrp, register char *errbuf)
 		if (ioctl(fd, SIOCGIFFLAGS, (char *)&ifr) < 0) {
 			if (errno == ENXIO)
 				continue;
-			(void)sprintf(errbuf, "SIOCGIFFLAGS: %.*s: %s",
+			(void)snprintf(errbuf, buflen, "SIOCGIFFLAGS: %.*s: %s",
 			    (int)sizeof(ifr.ifr_name), ifr.ifr_name,
 			    strerror(errno));
 			(void)close(fd);
@@ -153,7 +154,7 @@ ifaddrlist(register struct ifaddrlist **ipaddrp, register char *errbuf)
 		(void)strncpy(device, ifr.ifr_name, sizeof(ifr.ifr_name));
 		device[sizeof(device) - 1] = '\0';
 		if (ioctl(fd, SIOCGIFADDR, (char *)&ifr) < 0) {
-			(void)sprintf(errbuf, "SIOCGIFADDR: %s: %s",
+			(void)snprintf(errbuf, buflen, "SIOCGIFADDR: %s: %s",
 			    device, strerror(errno));
 			(void)close(fd);
 			return (-1);
