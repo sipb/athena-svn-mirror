@@ -1,4 +1,4 @@
-dnl $Id: aclocal.m4,v 1.13 1999-10-30 18:47:37 ghudson Exp $
+dnl $Id: aclocal.m4,v 1.14 2000-04-28 14:37:25 ghudson Exp $
 
 dnl Copyright 1996 by the Massachusetts Institute of Technology.
 dnl
@@ -155,10 +155,6 @@ dnl ----- AFS -----
 
 AC_DEFUN(ATHENA_AFS_CHECK,
 [AC_CHECK_FUNC(insque, :, AC_CHECK_LIB(compat, insque))
-AC_CHECK_FUNC(sigvec, :,
-	      AC_CHECK_LIB(ucb, sigvec,
-			   LIBS="$LIBS -L/usr/ucblib -R/usr/ucblib -lc -lucb",
-			   :, -L/usr/ucblib))
 AC_CHECK_FUNC(gethostbyname, :, AC_CHECK_LIB(nsl, gethostbyname))
 AC_CHECK_FUNC(socket, :, AC_CHECK_LIB(socket, socket))
 if test "$afs" != yes; then
