@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v $
- *	$Id: c_io.c,v 1.18 1992-02-04 19:54:45 lwvanels Exp $
+ *	$Id: c_io.c,v 1.19 1992-03-10 23:29:18 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.18 1992-02-04 19:54:45 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.19 1992-03-10 23:29:18 lwvanels Exp $";
 #endif
 #endif
 
@@ -51,6 +51,9 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <signal.h>
 #include <sgtty.h>              /* Terminal param. definitions. */
 #include <setjmp.h>
+#ifdef DEBUG
+#include <syslog.h>
+#endif
 
 #include <olc/olc.h>
 
@@ -619,16 +622,26 @@ int sread(fd, buf, nbytes)
     FD_SET(fd,&read_fds);
     if ((s_val = select(fd+1, &read_fds, NULL, NULL, &tval)) < 1) 
       {
+	if (errno == EINTR)
+	  continue;
+
 	if (s_val == 0)
 	  errno = ETIMEDOUT;
-	
+
+#ifdef DEBUG
+	syslog(LOG_ERR,"sread select: %m");
+#endif
 	olc_perror("sread: select");
 	return(-1);
       }
     
     n_read = read(fd, (char *)(buf + tot_read), nbytes);
-    if (n_read < 0)
-      return(tot_read);
+    if (n_read < 0) {
+#ifdef DEBUG
+      syslog(LOG_ERR,"sread read: %m");
+#endif
+      return(n_read);
+    }
     tot_read += n_read;
     nbytes = nbytes - n_read;
   } while (nbytes != 0);
@@ -672,16 +685,26 @@ int swrite(fd, buf, nbytes)
     FD_SET(fd,&write_fds);
     if ((s_val = select(fd+1, NULL, &write_fds, NULL, &tval)) != 1) 
       {
+	if (errno == EINTR)
+	  continue;
+
 	if (s_val == 0)
 	  errno = ETIMEDOUT;
 	
+#ifdef DEBUG
+	syslog(LOG_ERR,"swrite select: %m");
+#endif
 	olc_perror("swrite: select");
 	return(-1);
       }
     
     n_wrote = write(fd, (char *)(buf + tot_wrote), nbytes);
-    if (n_wrote < 0)
-      return(tot_wrote);
+    if (n_wrote < 0) {
+#ifdef DEBUG
+      syslog(LOG_ERR,"swrite write: %m");
+#endif
+      return(n_wrote);
+    }
     tot_wrote += n_wrote;
     nbytes = nbytes - n_wrote;
   } while (nbytes != 0);
