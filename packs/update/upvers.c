@@ -1,4 +1,9 @@
-#include	<sys/types.h>
+/*
+ * $Header: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v 1.3 1988-06-09 12:23:35 shanzer Exp $
+ * $Source: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v $
+ * $Author: shanzer $
+ */
+ 
 #include	<sys/dir.h>
 #include	<ctype.h>
 
@@ -7,6 +12,10 @@ struct	verfile {
 	int	mnr; 	/* Minor Version Number */
 	int	deg;	/* Version Designation Char */
 } vf[20];
+
+#ifndef lint
+char	rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v 1.3 1988-06-09 12:23:35 shanzer Exp $";
+#endif
 
 main(argc, argv)
 int	argc;
@@ -17,7 +26,7 @@ char	*argv[];
 	int	n = 0, i;
 	int	oldmjr, oldmnr, newmjr, newmnr;
 	int	olddeg, newdeg, start, end, vcmp();
-	char	file[10];
+	char	file[80];
 	extern	int	errno;
 	struct	direct	*dirp;
 
@@ -49,20 +58,24 @@ char	*argv[];
 		}
 	}
 	qsort(vf, n, sizeof(struct verfile), vcmp);
-	for (i = 0; i < n; i++) {
+	for (i = 0; i <= n; i++) {
 		if (vf[i].mjr == oldmjr && vf[i].mnr == oldmnr && vf[i].deg == olddeg) 
 			start = i + 1;
 		if (vf[i].mjr == newmjr && vf[i].mnr == newmnr && vf[i].deg == newdeg) 
 			end = i;
 	}
-	if (end == 0) {
+	if (start > end ) {
+		printf("starting file not found.. \n");
+		start = end;
+	}
+	if (end == 0 && start != 0) {
 		end = i - 1;
 		printf("Warning -- File for version %s not found.. Asuming file %d.%d%c.\n", argv[2], vf[end].mjr, vf[end].mnr, vf[end].deg);
 	}
 	for(i = start; i <= end; i++) {
 		sprintf(file, "%s/%d.%d%c", argv[3], vf[i].mjr, vf[i].mnr, vf[i].deg);
 		printf("Running %s\n", file);
-		system(file);
+		system(file); 
 	}
 }
 		
