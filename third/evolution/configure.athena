@@ -1,1 +1,11 @@
-./configure "$@" --with-krb4=/usr/athena --with-krb5=/usr/athena
+#!/bin/sh
+case $OS in
+irix|solaris)
+  options=--with-db3-includes=/usr/athena/include
+  options="$options --with-db3-libs=/usr/athena/lib"
+  ;;
+*)
+  options=
+  ;;
+esac
+exec ./configure "$@" --with-krb4=/usr/athena --with-krb5=/usr/athena $options
