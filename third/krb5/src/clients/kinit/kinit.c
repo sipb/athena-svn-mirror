@@ -85,6 +85,7 @@ main(argc, argv)
     struct passwd *pw = 0;
     int pwsize;
     char password[255], *client_name, prompt[255];
+    int got_krb4 = 0;
 
     code = krb5_init_context(&kcontext);
     if (code) {
@@ -342,6 +343,9 @@ main(argc, argv)
 	 code = krb5_get_in_tkt_with_password(kcontext, options, addrs,
 					      NULL, preauth, password, 0,
 					      &my_creds, 0);
+#ifdef KRB5_KRB4_COMPAT
+	 got_krb4 = try_krb4(kcontext, me, password, lifetime);
+#endif
 	 memset(password, 0, sizeof(password));
 #ifndef NO_KEYTAB
     } else {
@@ -373,7 +377,8 @@ main(argc, argv)
     }
 
 #ifdef KRB5_KRB4_COMPAT
-    try_convert524(kcontext, ccache, me);
+    if (!got_krb4)
+	try_convert524(kcontext, ccache);
 #endif
 
     /* my_creds is pointing at server */
@@ -453,13 +458,45 @@ cleanup:
 
 
 #ifdef KRB5_KRB4_COMPAT
+int try_krb4(kcontext, me, password, lifetime)
+    krb5_context kcontext;
+    krb5_principal me;
+    char *password;
+    krb5_deltat lifetime;
+{
+    krb5_error_code code;
+    int krbval, kpass_ok = 0;
+    char v4name[ANAME_SZ], v4inst[INST_SZ], v4realm[REALM_SZ], v4key[8];
+    int v4life;
+
+    /* Translate to a Kerberos 4 principal. */
+    code = krb5_524_conv_principal(kcontext, me, v4name, v4inst, v4realm);
+    if (code)
+	return(code);
+
+    v4life = lifetime / (5 * 60);
+    if (v4life < 1)
+	v4life = 1;
+    if (v4life > 255)
+	v4life = 255;
+
+    krbval = krb_get_pw_in_tkt(v4name, v4inst, v4realm, "krbtgt", v4realm,
+			       v4life, password);
+
+    if (krbval != INTK_OK) {
+	fprintf(stderr, "Kerberos 4 error: %s\n",
+		krb_get_err_text(krbval));
+	return 0;
+    }
+    return 1;
+}
+
 /* Convert krb5 tickets to krb4. */
-int try_convert524(kcontext, ccache, me)
+int try_convert524(kcontext, ccache)
      krb5_context kcontext;
      krb5_ccache ccache;
-     krb5_principal me;
 {
-    krb5_principal kpcserver;
+    krb5_principal me, kpcserver;
     krb5_error_code kpccode;
     int kpcval;
     krb5_creds increds, *v5creds;
@@ -467,6 +504,12 @@ int try_convert524(kcontext, ccache, me)
 
     /* or do this directly with krb524_convert_creds_kdc */
     krb524_init_ets(kcontext);
+
+    if ((kpccode = krb5_cc_get_principal(kcontext, ccache, &me))) {
+	com_err(progname, kpccode, "while getting principal name");
+	return 0;
+    }
+
     /* cc->ccache, already set up */
     /* client->me, already set up */
     if ((kpccode = krb5_build_principal(kcontext,
