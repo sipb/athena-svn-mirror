@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/sys_grp.c,v 1.2 1990-05-26 13:41:23 tom Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/sys_grp.c,v 2.0 1992-04-22 01:58:58 tom Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  90/05/26  13:41:23  tom
+ * athena release 7.0e
+ * 
  * Revision 1.1  90/04/26  18:15:05  tom
  * Initial revision
  * 
@@ -27,7 +30,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/sys_grp.c,v 1.2 1990-05-26 13:41:23 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/sys_grp.c,v 2.0 1992-04-22 01:58:58 tom Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -39,6 +42,14 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
 
 #include "include.h"
 
+#ifdef MIT
+static char buf[BUFSIZ]; 
+
+extern char *get_machtype();
+extern char *get_ws_version();
+extern char *get_snmp_version_str();
+#endif MIT
+
 /*
  */
 int
@@ -49,6 +60,7 @@ lu_vers(varnode, repl, instptr, reqflg)
 	int reqflg;
 {
 	time_t sysup;
+	char *c;
 
 #ifdef lint
 	instptr = instptr;	/* makes lint happy */
@@ -78,6 +90,34 @@ lu_vers(varnode, repl, instptr, reqflg)
 	 */
 	switch (varnode->offset) {
 		case N_VERID:
+#ifdef MIT
+	                bzero(buf, sizeof(buf));
+
+			c = get_machtype();
+			if(c && (*c != '\0'))
+			  sprintf(buf, "%s\n", c);
+
+#ifdef ATHENA	                
+			c = get_ws_version(version_file);
+			if(c != (char *) NULL)
+			  {
+			    strcat(buf, c);
+			    strcat(buf, "\n");
+			  }
+#endif ATHENA
+
+			c = get_snmp_version_str();
+			if(c != (char *) NULL)
+			  strcat(buf, c);
+			  
+			if(*supp_sysdescr != '\0')
+			  {
+			    strcat(buf, "\n");
+			    strcat(buf, supp_sysdescr);
+			  }
+			return(make_str(&(repl->val), buf));
+
+#else  MIT
 			repl->val.value.str.str = (char *)malloc((unsigned)strlen(gw_version_id)+1);
 			if (repl->val.value.str.str == NULL) {
 				syslog(LOG_ERR, "lu_vers: malloc: %m.\n");
@@ -87,6 +127,7 @@ lu_vers(varnode, repl, instptr, reqflg)
 			repl->val.value.str.len = strlen(gw_version_id);
 			repl->val.type = STR;
 			break;
+#endif MIT
 		case N_VEREV:
 			bcopy((char *)&sys_obj_id,
 					 (char *)&repl->val.value.obj,
@@ -111,6 +152,7 @@ lu_vers(varnode, repl, instptr, reqflg)
 /*
  * return system uptime in hundreths of a second.
  */
+
 time_t
 get_sysuptime()
 {
