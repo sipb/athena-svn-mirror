@@ -15802,7 +15802,7 @@ sed 's/^/| /' conftest.$ac_ext >&5
 
  echo "$as_me:$LINENO: result: no" >&5
 echo "${ECHO_T}no" >&6
-                                         K5LIBS="-lkrb524 -lkrb4 -ldes425 -lkrb5 -lk5crypto -lcom_err"
+                                         K5LIBS="-lkrb4 -ldes425 -lkrb5 -lk5crypto -lcom_err"
 
 
 fi
