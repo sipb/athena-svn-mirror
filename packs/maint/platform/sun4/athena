@@ -156,6 +156,7 @@ if [ "${PUBLIC}" = "true" ]; then
 			  -e "s/^ADDR=[^;]*/ADDR=${ADDR}/" \
 			  -e "s/^NETDEV=[^;]*/NETDEV=${NETDEV}/" \
 			  -e "s/^MACHINE=[^;]*/MACHINE=${MACHINE}/" \
+			  -e "s/^SYSTEM=[^;]*/SYSTEM=${SYSTEM}/" \
 			  -e p /srvd/etc/athena/rc.conf > /etc/athena/rc.conf
        	        	. /etc/athena/rc.conf
 		fi
