@@ -13,12 +13,14 @@
 ## ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 ## SOFTWARE.
 
-# $Id: Makefile,v 1.1.1.1 1998-05-04 22:23:32 ghudson Exp $
+# $Id: Makefile,v 1.2 1998-05-07 21:50:49 ghudson Exp $
 
 TOP=
 SUBDIRS= include port lib bin
 
 SH=sh
+
+MARGS= DESTDIR="${DESTDIR}"
 
 all clean depend install distclean:: FRC
 	@set -e; \
