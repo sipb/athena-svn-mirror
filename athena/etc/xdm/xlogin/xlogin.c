@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.8 1990-11-28 15:11:07 mar Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.9 1990-12-04 15:23:13 mar Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
@@ -36,6 +36,7 @@ static void move_instructions(), screensave(), unsave(), start_reactivate();
 static void blinkOwl(), initOwl(), catch_child();
 void focusACT(), unfocusACT(), runACT(), runCB(), focusCB(), resetCB();
 void idleReset(), loginACT(), localErrorHandler(), setcorrectfocus();
+void sigconsACT(), sigconsCB(), callbackACT();
 char *malloc();
 
 
@@ -111,6 +112,8 @@ XtActionsRec actions[] = {
     { "login", loginACT },
     { "reset", resetCB },
     { "setCorrectFocus", setcorrectfocus },
+    { "signalConsoleACT", sigconsACT },
+    { "callbackACT", callbackACT },
 };
 
 
@@ -155,7 +158,6 @@ main(argc, argv)
   char hname[64];
   Arg args[1];
   int i;
-  FILE *f;
 
   srandom(time(0) + getpid());
 
@@ -195,6 +197,7 @@ main(argc, argv)
   WcRegisterCallback(app, "runCB", runCB, NULL);
   WcRegisterCallback(app, "setfocusCB", focusCB, NULL);
   WcRegisterCallback(app, "resetCB", resetCB, NULL);
+  WcRegisterCallback(app, "signalConsoleCB", sigconsCB, NULL);
   WcRegisterCallback(app, "idleResetCB", idleReset, NULL);
 
   /*
@@ -203,14 +206,7 @@ main(argc, argv)
   AriRegisterAthena ( app );
 
   /* clear console */
-  f = fopen(CONSOLEPID, "r");
-  if (f) {
-      fgets(hname, sizeof(hname), f);
-      i = atoi(hname);
-      if (i)
-	kill(i, SIGFPE);
-      fclose(f);
-  }
+  sigconsCB(NULL, "clear", NULL);
 
   /*
    *  Create widget tree below toplevel shell using Xrm database
@@ -312,11 +308,9 @@ start_reactivate(data, timerid)
      XtIntervalId  *timerid;
 {
     int in_use = 0;
-    int file, i;
-    char buf[16];
+    int file;
     struct utmp utmp;
     struct timeval now;
-    FILE *f;
 
     gettimeofday(&now, NULL);
     if (now.tv_sec - starttime.tv_sec > resources.restart_timeout) {
@@ -342,14 +336,7 @@ start_reactivate(data, timerid)
     }
 
     /* clear console */
-    f = fopen(CONSOLEPID, "r");
-    if (f) {
-	fgets(buf, sizeof(buf), f);
-	i = atoi(buf);
-	if (i)
-	  kill(i, SIGFPE);
-	fclose(f);
-    }
+    sigconsCB(NULL, "clear", NULL);
 
     activation_state = REACTIVATING;
     activation_pid = fork();
@@ -449,19 +436,8 @@ unsave(w, popdown, event, bool)
      XEvent *event;
      Boolean *bool;
 {
-    char buf[16];
-    FILE *f;
-    int pid;
-
-    /* hide console */
-    f = fopen(CONSOLEPID, "r");
-    if (f) {
-	fgets(buf, sizeof(buf), f);
-	pid = atoi(buf);
-	if (pid)
-	  kill(pid, SIGUSR2);
-	fclose(f);
-    }
+  /* hide console */
+  sigconsCB(NULL, "hide", NULL);
 
   if (popdown)
     {
@@ -485,7 +461,6 @@ unsave(w, popdown, event, bool)
     react_timerid = XtAddTimeOut(resources.activate_timeout * 1000,
 				 stop_activate, NULL);
 }
-
 
 
 void loginACT(w, event, p, n)
@@ -664,6 +639,7 @@ Cardinal *n;
 	fprintf(stderr, "Workstation failed to activate successfully.  Please notify Athena operations.");
 	return;
     }
+    sigconsCB(NULL, "hide", NULL);
 
     execv("/bin/sh", argv);
     fprintf(stderr, "XLogin: unable to exec /bin/sh\n");
@@ -679,6 +655,60 @@ caddr_t unused;
     Cardinal i = 1;
 
     runACT(w, NULL, &s, &i);
+}
+
+
+void sigconsACT(w, event, p, n)
+Widget w;
+XEvent *event;
+char **p;
+Cardinal *n;
+{
+    int sig, pid;
+    FILE *f;
+    char buf[BUFSIZ];
+
+    if (!strcmp(p[0], "clear"))
+      sig = SIGFPE;
+    else if (!strcmp(p[0], "hide"))
+      sig = SIGUSR2;
+    else if (!strcmp(p[0], "show"))
+      sig = SIGUSR1;
+    else if (!strcmp(p[0], "config"))
+      sig = SIGHUP;
+    else
+      sig = atoi(p[0]);
+
+    f = fopen(CONSOLEPID, "r");
+    if (f) {
+	fgets(buf, sizeof(buf), f);
+	pid = atoi(buf);
+	if (pid)
+	  kill(pid, sig);
+	fclose(f);
+    }
+}
+
+
+void sigconsCB(w, s, unused)
+Widget w;
+char *s;
+caddr_t unused;
+{
+    Cardinal i = 1;
+
+    sigconsACT(w, NULL, &s, &i);
+}
+
+
+void callbackACT(w, event, p, n)
+Widget w;
+XEvent *event;
+char **p;
+Cardinal *n;
+{
+    w = WcFullNameToWidget(appShell, p[0]);
+    XtCallCallbacks(w, "callback", p[1]);
 }
 
 
