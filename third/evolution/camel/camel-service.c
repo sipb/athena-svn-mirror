@@ -917,7 +917,6 @@ athena_hesiod_getaddrinfo_wrapper(void *data)
 		fd_set readers, writers;
 		struct timeval tv, *tvp;
 		struct cbargs args;
-		struct hostent *host;
 
 		args.hostname = NULL;
 		if (hesiod_init(&context) != 0)
@@ -930,7 +929,8 @@ athena_hesiod_getaddrinfo_wrapper(void *data)
 			hesiod_free_string(context, domain);
 			goto lose;
 		}
-		ares_query(channel, domain, C_IN, T_TXT, callback, &args);
+		ares_query(channel, domain, C_IN, T_TXT,
+			   athena_hesiod_callback, &args);
 		hesiod_free_string(context, domain);
 		while (1) {
 			FD_ZERO(&readers);
