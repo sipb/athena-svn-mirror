@@ -972,9 +972,9 @@ access_switch(signo)
 	on = signo == SIGUSR1;
 	if (on == access_on)
 		return;
-	access_on = on;
 
 	sigprocmask(SIG_BLOCK, &sig_block, &omask);
+	access_on = on;
 	sepp = &servtab;
 	while (sep = *sepp) {
 		sepp = &sep->se_next;
