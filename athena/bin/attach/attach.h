@@ -1,5 +1,5 @@
 /*
- * $Id: attach.h,v 1.16 1993-05-05 17:04:32 vrt Exp $
+ * $Id: attach.h,v 1.17 1993-06-30 16:52:17 vrt Exp $
  *
  * Copyright (c) 1988,1991 by the Massachusetts Institute of Technology.
  *
@@ -11,6 +11,9 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <errno.h>
+#ifdef _AIX
+#undef geterrno
+#endif
 #include <netdb.h>
 #include <strings.h>
 
