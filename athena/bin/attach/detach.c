@@ -15,7 +15,7 @@
 
 /* This is detach, which is used to detach lockers from workstations. */
 
-static const char rcsid[] = "$Id: detach.c,v 1.19 1999-03-29 17:35:39 danw Exp $";
+static const char rcsid[] = "$Id: detach.c,v 1.20 1999-03-30 18:29:07 danw Exp $";
 
 #include <netdb.h>
 #include <pwd.h>
@@ -189,26 +189,26 @@ int detach_main(int argc, char **argv)
 		  status = locker_detach(context, argv[optind], NULL,
 					 options, &at);
 		}
-	      if (LOCKER_DETACH_SUCCESS(status))
+	      if (status == LOCKER_SUCCESS)
 		{
 		  if (verbose)
 		    printf("%s: %s detached\n", whoami, at->name);
 		  locker_free_attachent(context, at);
 		}
-	      else
+	      else if (!LOCKER_DETACH_SUCCESS(status))
 		estatus = 2;
 	      break;
 
 	    case DETACH_EXPLICIT:
 	      status = locker_detach_explicit(context, type, argv[optind],
 					      NULL, options, &at); 
-	      if (LOCKER_DETACH_SUCCESS(status))
+	      if (status == LOCKER_SUCCESS)
 		{
 		  if (verbose)
 		    printf("%s: %s detached\n", whoami, at->name);
 		  locker_free_attachent(context, at);
 		}
-	      else
+	      else if (!LOCKER_DETACH_SUCCESS(status))
 		estatus = 2;
 	      break;
 
