@@ -30,6 +30,11 @@ XCOMM site:  $XConsortium: site.def,v 1.2 91/07/30 20:26:44 rws Exp $
 #endif
 
 #define	TroffCmd psroff -t
+
+#if defined(RsArchitecture) || defined(SparcArchitecture)
+#define HasSharedLibraries	NO
+#endif
+
 #endif /* BeforeVendorCF */
 
 #ifdef AfterVendorCF
@@ -54,7 +59,7 @@ XCOMM site:  $XConsortium: site.def,v 1.2 91/07/30 20:26:44 rws Exp $
 #endif
 
 #ifdef MipsArchitecture
-#define	ProjectRoot	/mit/x11/ds
+#define	ProjectRoot	/mit/x11/decmips
 #define	UsrLibDir	/mit/x11/decmipslib
 #define	BinDir		/mit/x11/decmipsbin
 /* Build the Xdec server */
@@ -84,7 +89,8 @@ XCOMM site:  $XConsortium: site.def,v 1.2 91/07/30 20:26:44 rws Exp $
 #endif
 
 #ifdef RsArchitecture
-#define	ProjectRoot	/mit/x11/rs
+#define BuildPex	NO
+#define	ProjectRoot	/mit/x11/rsaix
 #define	UsrLibDir	/mit/x11/rsaixlib
 #define	BinDir		/mit/x11/rsaixbin
 #define	CcCmd		xlc -D_ALL_SOURCE
@@ -102,10 +108,13 @@ XCOMM site:  $XConsortium: site.def,v 1.2 91/07/30 20:26:44 rws Exp $
 #endif
 
 #ifdef SparcArchitecture
-#define	ProjectRoot	/mit/x11/sparc
+#define BuildPex	NO
+#define	ProjectRoot	/mit/x11/sun4
 #define	UsrLibDir	/mit/x11/sun4lib
 #define	BinDir		/mit/x11/sun4bin
-#define	CcCmd		gcc2 -pipe
+#define	CcCmd		/usr/gcc/bin/gcc -B/usr/gcc/lib/ -I/usr/gcc/include
+#define ExtraLibraries	-lsocket /usr/athena/lib/libresolv.a -lnsl -lc /usr/ucblib/libucb.a -lelf -ldl
+
 #undef SharedLibraryCcCmd
 #define SharedLibraryCcCmd gcc2 -pipe
 #undef XSunMonoServer
