@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: sendbug.sh,v 1.9 1991-08-10 09:05:48 epeisach Exp $
+# $Id: sendbug.sh,v 1.10 1992-04-17 06:45:00 lwvanels Exp $
 # make sure stuff this script needs is up front
 PATH=/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin/X11:/usr/ucb:/bin:/usr/bin
 bugs_address=bugs@Athena.MIT.EDU
@@ -74,6 +74,7 @@ if [ -r $HOME/.mh_profile ]; then
 	exit 0
 fi
 # not using MH; run the editor, and send, ourselves.
+MH=/dev/null; export MH
 if [ "${EDITOR}" = "" ]; then
 	EDITOR=emacs ; export EDITOR
 fi
