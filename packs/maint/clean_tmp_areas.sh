@@ -25,7 +25,7 @@ set j = 1
 foreach i ($dirs)
 	if ( -d $i ) then
 		cd $i
-		find . $timeout[$j] -exec rm -f {} \; -print
+		find . $timeout[$j] ! -type b ! -type c ! -type s -exec rm -f {} \; -print
 		find . ! -name . -type d -mtime +1 -exec rmdir {} \; -print
 	endif
 @ j++
