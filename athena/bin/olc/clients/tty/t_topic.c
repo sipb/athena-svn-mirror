@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_topic.c,v $
- *	$Id: t_topic.c,v 1.10 1992-01-10 19:57:56 lwvanels Exp $
+ *	$Id: t_topic.c,v 1.11 1992-02-05 16:17:58 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_topic.c,v 1.10 1992-01-10 19:57:56 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_topic.c,v 1.11 1992-02-05 16:17:58 lwvanels Exp $";
 #endif
 #endif
 
@@ -58,7 +58,7 @@ t_input_topic(Request,topic,flags)
     {
       printf("Please type a one-word topic for your question.");
       printf("  Type ? for a list of\n");
-      printf("available topics or ^D to exit.\n\n");
+      printf("available topics or ^C to exit.\n\n");
     }
 
   if(*topic != '\0');
