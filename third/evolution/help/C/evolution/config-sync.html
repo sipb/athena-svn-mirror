@@ -1,0 +1,314 @@
+<HTML
+><HEAD
+><TITLE
+>Setting up your synchronization system</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
+REL="HOME"
+TITLE="A User's Guide to Ximian Evolution"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Configuring and Managing Ximian Evolution"
+HREF="config.html"><LINK
+REL="PREVIOUS"
+TITLE="General Preferences"
+HREF="config-prefs-general.html"><LINK
+REL="NEXT"
+TITLE="Quick Reference"
+HREF="menuref.html"></HEAD
+><BODY
+CLASS="CHAPTER"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>A User's Guide to Ximian Evolution</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="config-prefs-general.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+></TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="menuref.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="CHAPTER"
+><H1
+><A
+NAME="CONFIG-SYNC"
+>Chapter 10. Setting up your synchronization system</A
+></H1
+><P
+>        Synchronization presents you with two issues you'll need to
+        address. 
+        <P
+></P
+><TABLE
+BORDER="0"
+><TBODY
+><TR
+><TD
+>            Your computer needs to recognize and access your handheld.
+            At this time, <SPAN
+CLASS="APPLICATION"
+>Evolution</SPAN
+> only
+            supports Palm-OS devices like the PalmPilot and the
+            Handspring Visor.
+          </TD
+></TR
+><TR
+><TD
+>           You should decide what sort of synchronization behavior you
+           want.
+          </TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+>
+    </P
+><P
+>       If you haven't used a handheld device with your computer
+       before, you'll need to run the GNOME <SPAN
+CLASS="APPLICATION"
+>Control
+       Center</SPAN
+> by selecting
+       <SPAN
+CLASS="GUIMENU"
+>System</SPAN
+>-&gt;<SPAN
+CLASS="GUIMENUITEM"
+>Settings</SPAN
+>,
+       and make sure that <SPAN
+CLASS="APPLICATION"
+>Pilot Link</SPAN
+> is
+       properly configured.
+    </P
+><P
+>        Once your computer and your Palm-OS device are talking happily
+        to each other, select the <A
+HREF="apx-gloss.html#CONDUIT"
+><I
+CLASS="GLOSSTERM"
+>conduits</I
+></A
+> you want under the
+        <SPAN
+CLASS="GUILABEL"
+>Pilot Conduits</SPAN
+> section of the Control
+        Center.  You may use conduits to synchronize data with several
+        applications; the <SPAN
+CLASS="APPLICATION"
+>Ximian Evolution</SPAN
+>
+        conduits are labelled <SPAN
+CLASS="GUILABEL"
+>EAddress</SPAN
+>, for the
+        address cards in your Contact Manager,
+        <SPAN
+CLASS="GUILABEL"
+>ECalendar</SPAN
+>, for your Calendar, and
+        <SPAN
+CLASS="GUILABEL"
+>ETodo</SPAN
+>, for your Task List.
+    </P
+><P
+>      To enable a conduit, click the
+        <SPAN
+CLASS="GUIBUTTON"
+>Enable</SPAN
+> to enable it, and click
+        <SPAN
+CLASS="GUIBUTTON"
+>Settings</SPAN
+> to change what it will do when
+        activated.  Your options may vary depending on the conduit,
+        but typically they will be:
+
+        <P
+></P
+><DIV
+CLASS="VARIABLELIST"
+><DL
+><DT
+>Disabled</DT
+><DD
+><P
+>                  Do nothing.
+               </P
+></DD
+><DT
+>Synchronize</DT
+><DD
+><P
+>                  Copy new data from the computer to the handheld, and
+                  from the handheld to the computer.  Remove items
+                  that were on both systems but have been deleted on
+                  one.
+               </P
+></DD
+><DT
+>Copy From Pilot</DT
+><DD
+><P
+>                  If there is any new data on the the handheld device,
+                  copy it to the computer.
+               </P
+></DD
+><DT
+>Copy To Pilot</DT
+><DD
+><P
+>                 Copy new data from the computer to the handheld. 
+               </P
+></DD
+><DT
+>Merge From Pilot</DT
+><DD
+><P
+>                  Copy new data from the handheld to the computer, and
+                  remove any information from the computer that has
+                  been deleted on the handheld.
+               </P
+></DD
+><DT
+>Merge To Pilot</DT
+><DD
+><P
+>                  Copy new data from the computer to the handheld, and
+                  remove any information from the handheld that has
+                  been deleted on the computer.
+               </P
+></DD
+></DL
+></DIV
+>
+    </P
+><P
+>      Select the behavior you want for each conduit you choose to use.
+      If you're not sure, go ahead and stick with
+      <SPAN
+CLASS="GUILABEL"
+>Synchronize</SPAN
+>.  Then, put your handheld on
+      its cradle and press the HotSync button.
+    </P
+><P
+> 
+         <DIV
+CLASS="TIP"
+><BLOCKQUOTE
+CLASS="TIP"
+><P
+><B
+>Data Loss Prevention: </B
+>	    It's always a good idea to make a backup.  To do that,
+	    make a copy of the <TT
+CLASS="FILENAME"
+>evolution</TT
+>
+	    directory inside your home directory.
+          </P
+></BLOCKQUOTE
+></DIV
+>
+       </P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="config-prefs-general.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="menuref.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>General Preferences</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="config.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Quick Reference</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

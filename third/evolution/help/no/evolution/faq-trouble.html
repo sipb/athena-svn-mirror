@@ -1,0 +1,682 @@
+<HTML
+><HEAD
+><TITLE
+>Troubleshooting</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
+REL="HOME"
+TITLE="En brukers håndbok for Evolution"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Frequently Asked Questions About Ximian Evolution"
+HREF="evolution-faq.html"><LINK
+REL="PREVIOUS"
+TITLE="      Getting and Compiling Evolution
+    "
+HREF="faq-get-and-compile.html"><LINK
+REL="NEXT"
+TITLE="Questions about Bugs and Debugging"
+HREF="faq-debugging.html"></HEAD
+><BODY
+CLASS="SECT1"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="3"
+ALIGN="center"
+>En brukers håndbok for Evolution</TH
+></TR
+><TR
+><TD
+WIDTH="10%"
+ALIGN="left"
+VALIGN="bottom"
+><A
+HREF="faq-get-and-compile.html"
+>Prev</A
+></TD
+><TD
+WIDTH="80%"
+ALIGN="center"
+VALIGN="bottom"
+>Appendix A. Frequently Asked Questions About Ximian Evolution</TD
+><TD
+WIDTH="10%"
+ALIGN="right"
+VALIGN="bottom"
+><A
+HREF="faq-debugging.html"
+>Next</A
+></TD
+></TR
+></TABLE
+><HR
+ALIGN="LEFT"
+WIDTH="100%"></DIV
+><DIV
+CLASS="SECT1"
+><H1
+CLASS="SECT1"
+><A
+NAME="FAQ-TROUBLE"
+>Troubleshooting</A
+></H1
+><DIV
+CLASS="QANDASET"
+><DL
+><DT
+>1. <A
+HREF="faq-trouble.html#AEN3626"
+>	    I get <TT
+CLASS="COMPUTEROUTPUT"
+>Cannot initialize the Evolution
+	    shell</TT
+>.
+	   </A
+></DT
+><DT
+>2. <A
+HREF="faq-trouble.html#AEN3650"
+>            I get <TT
+CLASS="COMPUTEROUTPUT"
+>Cannot open composer window</TT
+>.
+          </A
+></DT
+><DT
+>3. <A
+HREF="faq-trouble.html#AEN3658"
+>            The address suggestion list steals focus from the "To:"
+            entry box when I'm typing. How can I make it keep focus?
+          </A
+></DT
+><DT
+>4. <A
+HREF="faq-trouble.html#AEN3663"
+>            I updated Evolution and now my addressbook information is gone!
+            What should I do?
+          </A
+></DT
+><DT
+>5. <A
+HREF="faq-trouble.html#AEN3693"
+>            Evolution reported an error when trying to retrieve from my
+            local spool in <TT
+CLASS="FILENAME"
+>/var/spool/mail/username</TT
+>.  Why?
+          </A
+></DT
+><DT
+>6. <A
+HREF="faq-trouble.html#AEN3702"
+>            Evolution crashes reporting that it couldn't allocate N
+            billion bytes; how do I fix this?
+          </A
+></DT
+><DT
+>7. <A
+HREF="faq-trouble.html#AEN3708"
+>            What is <B
+CLASS="COMMAND"
+>killev</B
+> and why do I need to use it?
+          </A
+></DT
+><DT
+>8. <A
+HREF="faq-trouble.html#AEN3716"
+>            What is <B
+CLASS="COMMAND"
+>oaf-slay</B
+> and why do I need to use it?
+          </A
+></DT
+></DL
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN3626"
+></A
+><B
+>1. </B
+>	    I get <TT
+CLASS="COMPUTEROUTPUT"
+>Cannot initialize the Evolution
+	    shell</TT
+>.
+	   </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>	    There are a number of things that can cause this error.
+	    Check that:
+	  </P
+><P
+></P
+><UL
+><LI
+><P
+>		  <TT
+CLASS="FILENAME"
+>oafd</TT
+> is listed in your <TT
+CLASS="ENVAR"
+>PATH</TT
+>
+		  environment variable.
+		</P
+></LI
+><LI
+><P
+>		  <TT
+CLASS="FILENAME"
+>GNOME_Evolution_Shell.oaf</TT
+> and
+		  the other      
+		  <TT
+CLASS="FILENAME"
+>GNOME_Evolution_*.oaf</TT
+> files are
+		  readable and installed in
+		  <TT
+CLASS="FILENAME"
+>$prefix/share/oaf</TT
+>, where
+		  <TT
+CLASS="FILENAME"
+>$prefix</TT
+> is one of the prefixes
+		  listed in <TT
+CLASS="ENVAR"
+>GNOME_PATH</TT
+> or
+		  <TT
+CLASS="ENVAR"
+>OAF_INFO_PATH</TT
+>.  (These variables are
+		  supposed to contain $PATH-like colon-separated lists of
+		  paths.  If the installation prefix for Evolution is
+		  different from that). Run `oaf-slay' once before running
+		  `evolution' again if you change $GNOME_PATH or
+		  $OAF_INFO_PATH.
+		</P
+></LI
+><LI
+><P
+>		  <TT
+CLASS="FILENAME"
+>evolution</TT
+>,
+		  <TT
+CLASS="FILENAME"
+>evolution-mail</TT
+> and the other
+		  <TT
+CLASS="FILENAME"
+>evolution-*</TT
+> executables are in your
+		  $PATH.
+		</P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN3650"
+></A
+><B
+>2. </B
+>            I get <TT
+CLASS="COMPUTEROUTPUT"
+>Cannot open composer window</TT
+>.
+          </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>            This actually means that Evolution cannot activate the HTML
+            editor component from GtkHTML.  The comments in the previous
+            answer still apply; also make sure that
+            <B
+CLASS="COMMAND"
+>gnome-gtkhtml-editor</B
+> is in your
+            <TT
+CLASS="ENVAR"
+>PATH</TT
+>.
+          </P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN3658"
+></A
+><B
+>3. </B
+>            The address suggestion list steals focus from the "To:"
+            entry box when I'm typing. How can I make it keep focus?
+          </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>           This is a bug in GTK version 1.2.10. To avoid it, downgrade
+           to GTK version 1.2.9, or install the Ximian version of GTK
+           1.2.10.
+          </P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN3663"
+></A
+><B
+>4. </B
+>            I updated Evolution and now my addressbook information is gone!
+            What should I do?
+          </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>            Evolution uses the <TT
+CLASS="FILENAME"
+>libdb</TT
+> library to
+            handle the addressbook database.  Two versions of
+            <TT
+CLASS="FILENAME"
+>libdb</TT
+> can be used with Evolution: version
+            1.88 and version 2.
+          </P
+><P
+>            Unfortunately, an Evolution executable that is linked against
+            a certain version of <TT
+CLASS="FILENAME"
+>libdb</TT
+> will only be
+            able to read addressbook files written by another Evolution
+            executable that is linked with the same version of the
+            library.  If your addressbook is not readable by Evolution
+            anymore, it probably means that you used to have Evolution
+            linked with a certain version of <TT
+CLASS="FILENAME"
+>libdb</TT
+>,
+            but now it gets linked to a different version.
+          </P
+><P
+>            Because of the way <TT
+CLASS="FILENAME"
+>libdb</TT
+> is designed, it
+            is not easy for Evolution to automatically do the conversion
+            between the two formats.  But, if your Evolution used to be
+            linked against version 1.85 and now is linked to version 2,
+            there is a very simple way to convert the database and recover
+            your data.
+          </P
+><P
+></P
+><UL
+><LI
+><P
+>                First of all, check the format of the database using the
+                <B
+CLASS="COMMAND"
+>file</B
+> command:
+              </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>                file ~/evolution/local/Contacts/addressbook.db
+              </PRE
+></TD
+></TR
+></TABLE
+><P
+>                You want version 1.85 there.  If your version is 2, then
+                your current Evolution is probably linked against
+                version 1.85 and you cannot convert the database to the
+                old format. To do that, follow these instructions:
+              </P
+></LI
+><LI
+><P
+>                Quit Evolution.
+              </P
+></LI
+><LI
+><P
+>                Make a copy of the addressbook database for backup
+                purposes, then move the original out of the way.
+              </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>                cd ~/evolution/local/Contacts
+                cp addressbook.db addressbook.db.backup
+                mv addressbook.db addressbook.db.tmp
+               </PRE
+></TD
+></TR
+></TABLE
+></LI
+><LI
+><P
+>                Convert the contacts to the new format using
+                <B
+CLASS="COMMAND"
+>db_dump185</B
+> and
+                <B
+CLASS="COMMAND"
+>db_load</B
+>:
+              </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="90%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>                db_dump185 addressbook.db.tmp | db_load ~/evolution/local/Contacts/addressbook.db
+              </PRE
+></TD
+></TR
+></TABLE
+></LI
+><LI
+><P
+>                Restart Evolution.
+              </P
+></LI
+></UL
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN3693"
+></A
+><B
+>5. </B
+>            Evolution reported an error when trying to retrieve from my
+            local spool in <TT
+CLASS="FILENAME"
+>/var/spool/mail/username</TT
+>.  Why?
+          </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>            Evolution doesn't have an external helper for moving mail,
+            so <TT
+CLASS="FILENAME"
+>/var/spool/mail/</TT
+> must be writable
+            by you.  Try this:
+          </P
+><TABLE
+BORDER="0"
+BGCOLOR="#E0E0E0"
+WIDTH="100%"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>            chmod 1777 /var/spool/mail
+          </PRE
+></TD
+></TR
+></TABLE
+><P
+>            We're working on a solution to this problem now.
+          </P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN3702"
+></A
+><B
+>6. </B
+>            Evolution crashes reporting that it couldn't allocate N
+            billion bytes; how do I fix this?
+          </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>            This usually happens when a component tries talking a
+            certain version of a CORBA interface to another component
+            that supports a different version.  For example, this can
+            happen when you recompile and install a single component
+            without recompiling/installing the rest of Evolution.
+          </P
+><P
+>            If you run into this problem, make sure all the components
+            are compiled and installed at the same time.  This also
+            applies to GtkHTML upgrades; after upgrading and
+            installing a newer GtkHTML, always re-compile and
+            re-install Evolution against it.
+          </P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN3708"
+></A
+><B
+>7. </B
+>            What is <B
+CLASS="COMMAND"
+>killev</B
+> and why do I need to use it?
+          </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>            Evolution is actually made up of several components that run
+            as separate processes.  Evolution's shell is not very good
+            at cleaning up stale processes, so it is possible that
+            sometimes already-running components cause unexpected and/or
+            broken behavior.
+          </P
+><P
+>            It's always a good idea to run <B
+CLASS="COMMAND"
+>killev</B
+>
+            after a crash in Evolution, especially if the Evolution
+            shell itself crashed.  (If a component crashes instead, you
+            should try to exit the shell cleanly first, so you give a
+            chance to the other components to clean things up properly.)
+          </P
+></DIV
+></DIV
+><DIV
+CLASS="QANDAENTRY"
+><DIV
+CLASS="QUESTION"
+><P
+><A
+NAME="AEN3716"
+></A
+><B
+>8. </B
+>            What is <B
+CLASS="COMMAND"
+>oaf-slay</B
+> and why do I need to use it?
+          </P
+></DIV
+><DIV
+CLASS="ANSWER"
+><P
+><B
+> </B
+>            <B
+CLASS="COMMAND"
+>oaf-slay</B
+> is an utility which comes with
+            OAF, the Object Activation Framework that is used in the
+            GNOME Desktop to activate components.  It will kill the
+            object activation daemon (<B
+CLASS="COMMAND"
+>oafd</B
+>) as well
+            as all the active components on the system.
+          </P
+><P
+>            Using <B
+CLASS="COMMAND"
+>oaf-slay</B
+>
+            <B
+CLASS="COMMAND"
+>oaf-slay</B
+> is quite drastic and can cause
+            problems with other programs that use oaf, especially with
+            <SPAN
+CLASS="APPLICATION"
+>Nautilus</SPAN
+>. To avoid problems, do
+            not run <B
+CLASS="COMMAND"
+>oaf-slay</B
+> while you are in GNOME.
+          </P
+></DIV
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><HR
+ALIGN="LEFT"
+WIDTH="100%"><TABLE
+WIDTH="100%"
+BORDER="0"
+CELLPADDING="0"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+><A
+HREF="faq-get-and-compile.html"
+>Prev</A
+></TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="index.html"
+>Home</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+><A
+HREF="faq-debugging.html"
+>Next</A
+></TD
+></TR
+><TR
+><TD
+WIDTH="33%"
+ALIGN="left"
+VALIGN="top"
+>Getting and Compiling Evolution</TD
+><TD
+WIDTH="34%"
+ALIGN="center"
+VALIGN="top"
+><A
+HREF="evolution-faq.html"
+>Up</A
+></TD
+><TD
+WIDTH="33%"
+ALIGN="right"
+VALIGN="top"
+>Questions about Bugs and Debugging</TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>
