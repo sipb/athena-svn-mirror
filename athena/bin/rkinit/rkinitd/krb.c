@@ -1,5 +1,5 @@
 /* 
- * $Id: krb.c,v 1.12 1997-12-03 22:02:53 ghudson Exp $
+ * $Id: krb.c,v 1.13 1997-12-31 18:16:15 ghudson Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/rkinitd/krb.c,v $
  * $Author: ghudson $
  *
@@ -7,7 +7,7 @@
  */
 
 #if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: krb.c,v 1.12 1997-12-03 22:02:53 ghudson Exp $";
+static char *rcsid = "$Id: krb.c,v 1.13 1997-12-31 18:16:15 ghudson Exp $";
 #endif /* lint || SABER || LOCORE || RCS_HDRS */
 
 #include <stdio.h>
@@ -37,91 +37,6 @@ typedef struct {
 } rkinitd_intkt_info;
 
 static uid_t user_id;
-
-#if defined(_AIX) && defined(_IBMR2)
-
-#include <sys/id.h>
-
-/*
- * The RIOS has bizzarre ideas about changing uids around.  They are
- * such that the seteuid and setruid calls here fail.  For this reason
- * we are replacing the seteuid and setruid calls.
- * 
- * The bizzarre ideas are as follows:
- *
- * The effective ID may be changed only to the current real or
- * saved IDs.
- *
- * The saved uid may be set only if the real and effective
- * uids are being set to the same value.
- *
- * The real uid may be set only if the effective
- * uid is being set to the same value.
- */
-
-#ifdef __STDC__
-static int setruid(uid_t ruid)
-#else
-static int setruid(ruid)
-  uid_t ruid;
-#endif /* __STDC__ */
-{
-    uid_t euid;
-
-    euid = geteuid();
-
-    if (setuidx(ID_REAL | ID_EFFECTIVE, ruid) == -1)
-	return (-1);
-    
-    return (setuidx(ID_EFFECTIVE, euid));
-}
-
-
-#ifdef __STDC__
-static int seteuid(uid_t euid)
-#else
-static int seteuid(euid)
-  uid_t euid;
-#endif /* __STDC__ */
-{
-    uid_t ruid;
-
-    ruid = getuid();
-
-    if (setuidx(ID_SAVED | ID_REAL | ID_EFFECTIVE, euid) == -1)
-	return (-1);
-    
-    return (setruid(ruid));
-}
-
-
-#ifdef __STDC__
-static int setreuid(uid_t ruid, uid_t euid)
-#else
-static int setreuid(ruid, euid)
-  uid_t ruid;
-  uid_t euid;
-#endif /* __STDC__ */
-{
-    if (seteuid(euid) == -1)
-	return (-1);
-
-    return (setruid(ruid));
-}
-
-
-#ifdef __STDC__
-static int setuid(uid_t uid)
-#else
-static int setuid(uid)
-  uid_t uid;
-#endif /* __STDC__ */
-{
-    return (setreuid(uid, uid));
-}
-
-#endif /* RIOS */
-
 
 #ifdef __STDC__
 static void this_phost(char *host, int hostlen)
@@ -241,14 +156,12 @@ static int decrypt_tkt(user, instance, realm, arg, key_proc, cipp)
 	rkinit_errmsg(errbuf);
 	longjmp(rii->env, status);
     }
-#ifdef SOLARIS    
     if (setuid(user_id) < 0) {
 	sprintf(errbuf,	"Failure setting uid to %d: %s\n", user_id,
 		strerror(errno));
 	rkinit_errmsg(errbuf);
 	longjmp(rii->env, RKINIT_DAEMON);
-   }	
-#endif
+    }	
     return(KSUCCESS);
 }
 
@@ -279,32 +192,9 @@ static int validate_user(aname, inst, realm, username, errmsg)
     strcpy(auth_dat.pinst, inst);
     strcpy(auth_dat.prealm, realm);
     user_id = pwnam->pw_uid;
-#ifndef SOLARIS
-    if (seteuid(pwnam->pw_uid) < 0) {
-	sprintf(errmsg, "Failure setting euid to %d: %s\n", pwnam->pw_uid, 
-		strerror(errno));
-	strcpy(errbuf, errmsg);
-	error();
-	return(FAILURE);
-    }
+
     kstatus = kuserok(&auth_dat, username);
-    if (seteuid(0) < 0) {
-	sprintf(errmsg, "Failure setting euid to 0: %s\n", 
-		strerror(errno));
-	strcpy(errbuf, errmsg);
-	error();
-	return(FAILURE);
-    }
-#else
-    /*
-     *
-     *  For Solaris there is not seteuid, but if the e uid is root, the
-     *	process can access the .klogin file           
-     *
-     */
-      kstatus = kuserok(&auth_dat, username);
-#endif
-      if (kstatus != KSUCCESS) {
+    if (kstatus != KSUCCESS) {
 	sprintf(errmsg, "%s has not allowed you to log in with", username);
 	if (strlen(auth_dat.pinst))
 	    sprintf(errmsg, "%s %s.%s", errmsg, auth_dat.pname, 
@@ -313,23 +203,8 @@ static int validate_user(aname, inst, realm, username, errmsg)
 	    sprintf(errmsg, "%s %s", errmsg, auth_dat.pname);
 	sprintf(errmsg, "%s@%s tickets.", errmsg, auth_dat.prealm);
 	return(FAILURE);
-      }
-    
-    /* 
-     * Set real uid to owner of ticket file.  The library takes care
-     * of making the appropriate change. 
-     */
-#ifndef SOLARIS
-    /*  Solaris does not have setruid, but will use setuid after srvtab has
-        been read  */
-    if (setruid(pwnam->pw_uid) < 0) {
-	sprintf(errmsg,	"Failure setting ruid to %d: %s\n", pwnam->pw_uid,
-		strerror(errno));
-	strcpy(errbuf, errmsg);
-	error();
-	return(FAILURE);
     }
-#endif
+    
     return(RKINIT_SUCCESS);
 }
 
