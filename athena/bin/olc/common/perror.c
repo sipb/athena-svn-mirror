@@ -9,14 +9,14 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/perror.c,v $
- *	$Id: perror.c,v 1.5 1992-02-04 19:53:50 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: perror.c,v 1.6 1994-08-14 15:51:36 cfields Exp $
+ *	$Author: cfields $
  */
 
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/perror.c,v 1.5 1992-02-04 19:53:50 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/perror.c,v 1.6 1994-08-14 15:51:36 cfields Exp $";
 #endif
 #endif
 
@@ -28,6 +28,9 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #endif
 
 #include <sys/types.h>
+#ifdef SOLARIS
+#include <unistd.h>
+#endif
 #include <sys/file.h>
 #include <sys/uio.h>
 #include <sys/time.h>           /* System time definitions. */
@@ -147,7 +150,11 @@ olc_perror(msg)
 
 	v->iov_base = "\n";
 	v->iov_len = 1;
+#ifndef SOLARIS
 	(void) lseek(2, 0L, L_XTND);
+#else
+	(void) lseek(2, 0L, SEEK_END);
+#endif
 	(void) writev(2, iov, (v - iov) + 1);
 }
 
