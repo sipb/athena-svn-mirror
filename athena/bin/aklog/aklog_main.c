@@ -1,12 +1,12 @@
 /* 
- * $Id: aklog_main.c,v 1.17 1992-04-30 18:11:12 probe Exp $
+ * $Id: aklog_main.c,v 1.18 1992-05-07 08:33:40 probe Exp $
  *
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_main.c,v 1.17 1992-04-30 18:11:12 probe Exp $";
+static char *rcsid = "$Id: aklog_main.c,v 1.18 1992-05-07 08:33:40 probe Exp $";
 #endif lint || SABER
 
 #include <stdio.h>
@@ -267,34 +267,20 @@ static int auth_to_cell(cell, realm)
 	 * afs style authenticator.
 	 */
 
-	/* Try afs.<cell>@<realm> */
+	/*
+	 * Try to obtain AFS tickets.  Because there are two valid service
+	 * names, we will try both, but trying the more specific first.
+	 *
+	 * 	afs.<cell>@<realm>
+	 * 	afs@<realm>
+	 */
 	if (dflag) {
 	    sprintf(msgbuf, "Getting tickets: %s.%s@%s\n", name, instance, 
 		    realm_of_cell);
 	    params.pstdout(msgbuf);
 	}
 	status = params.get_cred(name, instance, realm_of_cell, &c);
-
-#if 0
-	if (status == KDC_PR_UNKNOWN || status == GC_NOTKT) {
-	    /* Try afs.<cell>@<CELL> */
-	    for (i=0; j=cell_to_use[i]; i++) {
-		if (islower(j)) j=toupper(j);
-		realm_of_cell[i] = j;
-	    }
-	    realm_of_cell[i] = 0;
-
-	    if (dflag) {
-		sprintf(msgbuf, "Getting tickets: %s.%s@%s\n", name, instance, 
-			realm_of_cell);
-		params.pstdout(msgbuf);
-	    }
-	    status = params.get_cred(name, instance, realm_of_cell, &c);
-	}
-#endif
-
 	if (status == KDC_PR_UNKNOWN) {
-	    /* Try afs@<realm> */
 	    if (dflag) {
 		sprintf(msgbuf, "Getting tickets: %s@%s\n", name,
 			realm_of_cell);
