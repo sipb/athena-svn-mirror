@@ -38,7 +38,6 @@
 #include "nsHTMLParts.h"
 #include "nsIContent.h"
 #include "nsIPresContext.h"
-#include "nsIStyleContext.h"
 #include "nsIRenderingContext.h"
 #include "nsHTMLAtoms.h"
 #include "nsLayoutAtoms.h"
@@ -147,6 +146,10 @@ NS_IMETHODIMP nsPageContentFrame::Reflow(nsIPresContext*   aPresContext,
       }
 #endif
     }
+    // Reflow our fixed frames 
+    mFixedContainer.Reflow(this, aPresContext, aReflowState, aReflowState.availableWidth, 
+                           aReflowState.availableHeight);
+
     // Return our desired size
     aDesiredSize.width = aReflowState.availableWidth;
     if (aReflowState.availableHeight != NS_UNCONSTRAINEDSIZE) {

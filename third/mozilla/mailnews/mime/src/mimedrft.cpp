@@ -63,6 +63,8 @@
 #include "nsIMIMEService.h"
 #include "nsIMIMEInfo.h"
 #include "nsIMsgHeaderParser.h"
+#include "nsIMsgAccountManager.h"
+#include "nsMsgBaseCID.h"
 
 //
 // Header strings...
@@ -779,7 +781,7 @@ mime_insert_all_headers(char            **body,
     char *c2 = 0;
 
     // Hack for BSD Mailbox delimiter. 
-    if (i == 0 && head[0] == 'F' && !nsCRT::strncmp(head, "From ", 5))
+    if (i == 0 && head[0] == 'F' && !strncmp(head, "From ", 5))
     {
       colon = head + 4;
       contents = colon + 1;
@@ -1180,6 +1182,7 @@ mime_insert_micro_headers(char            **body,
 
 }
 
+// body has to be encoded in UTF-8
 static void 
 mime_insert_forwarded_message_headers(char            **body, 
                                       MimeHeaders     *headers,
@@ -1191,20 +1194,6 @@ mime_insert_forwarded_message_headers(char            **body,
 
   PRInt32     show_headers = 0;
   nsresult    res;
-  
-  if (*body)
-  {
-    // convert body from mail charset to UTF-8
-    char *utf8 = NULL;
-    nsAutoString ucs2;
-    if (NS_SUCCEEDED(ConvertToUnicode(mailcharset, *body, ucs2))) {
-      utf8 = ToNewUTF8String(ucs2);
-      if (NULL != utf8) {
-        PR_Free(*body);
-        *body = utf8;
-      }
-    }
-  }
 
   nsCOMPtr<nsIPref> prefs(do_GetService(kPrefCID, &res)); 
   if (NS_SUCCEEDED(res) && prefs)
@@ -1252,6 +1241,7 @@ mime_parse_stream_complete (nsMIMESession *stream)
   char *foll = 0;
   char *priority = 0;
   char *draftInfo = 0;
+  char *identityKey = 0;
   
   PRBool xlate_p = PR_FALSE;  /* #### how do we determine this? */
   PRBool sign_p = PR_FALSE;   /* #### how do we determine this? */
@@ -1415,6 +1405,23 @@ mime_parse_stream_complete (nsMIMESession *stream)
       
     }
     
+	// identity to prefer when opening the message in the compose window?
+    identityKey = MimeHeaders_get(mdd->headers, HEADER_X_MOZILLA_IDENTITY_KEY, PR_FALSE, PR_FALSE);
+    if ( identityKey && *identityKey )
+    {
+        nsresult rv = NS_OK;
+        nsCOMPtr< nsIMsgAccountManager > accountManager = 
+                do_GetService( NS_MSGACCOUNTMANAGER_CONTRACTID, &rv );
+        if ( NS_SUCCEEDED(rv) && accountManager )
+        {
+            nsCOMPtr< nsIMsgIdentity > overrulingIdentity;
+            rv = accountManager->GetIdentity( identityKey, getter_AddRefs( overrulingIdentity ) );
+
+            if ( NS_SUCCEEDED(rv) && overrulingIdentity )
+                mdd->identity = overrulingIdentity;
+        }
+    }
+
     if (mdd->messageBody) 
     {
       MSG_ComposeFormat composeFormat = nsIMsgCompFormat::Default;
@@ -1450,6 +1457,29 @@ mime_parse_stream_complete (nsMIMESession *stream)
             inputFile.read(body, bodyLen);
         
           inputFile.close();
+
+          // Convert the body to UTF-8
+          char *mimeCharset = nsnull;
+          // Get a charset from the header if no override is set.
+          if (!charsetOverride)
+            mimeCharset = MimeHeaders_get_parameter (mdd->messageBody->type, "charset", nsnull, nsnull);
+          // If no charset is specified in the header then use the default.
+          char *bodyCharset = mimeCharset ? mimeCharset : mdd->mailcharset;
+          if (bodyCharset)
+          {
+            nsAutoString tempUnicodeString;
+            if (NS_SUCCEEDED(ConvertToUnicode(bodyCharset, body, tempUnicodeString)))
+            {
+              char *newBody = ToNewUTF8String(tempUnicodeString);
+              if (newBody) 
+              {
+                PR_Free(body);
+                body = newBody;
+                bodyLen = strlen(newBody);
+              }
+            }
+          }
+          PR_FREEIF(mimeCharset);
         }
       }
 
@@ -1497,31 +1527,6 @@ mime_parse_stream_complete (nsMIMESession *stream)
       }
       // setting the charset while we are creating the composition fields
       //fields->SetCharacterSet(NS_ConvertASCIItoUCS2(mdd->mailcharset));
-      
-      // Ok, if we are here, then we should look at the charset and convert
-      // to UTF-8...
-      //
-      if (!forward_inline && body)
-      {
-        char *mimeCharset = nsnull;
-        // Get a charset from the header if no override is set.
-        if (!charsetOverride)
-          mimeCharset = MimeHeaders_get_parameter (mdd->messageBody->type, "charset", NULL, NULL);
-        // If no charset is specified in the header then use the default.
-        char *bodyCharset = mimeCharset ? mimeCharset : mdd->mailcharset;
-        if (bodyCharset)
-        {
-          // Now do conversion to Unicode for output
-          nsAutoString tempUnicodeString;
-          if (NS_SUCCEEDED(ConvertToUnicode(bodyCharset, body, tempUnicodeString)))
-            fields->SetBody(tempUnicodeString.get());
-          else
-            fields->SetBody(NS_ConvertASCIItoUCS2(body).get());
-          PR_Free(body);
-          body = nsnull;
-          PR_FREEIF(mimeCharset);
-        }
-      }
 
       // convert from UTF-8 to UCS2
       if (body)
@@ -1657,6 +1662,7 @@ mime_parse_stream_complete (nsMIMESession *stream)
   PR_FREEIF(foll);
   PR_FREEIF(priority);
   PR_FREEIF(draftInfo);
+  PR_Free(identityKey);
 
   mime_free_attach_data(newAttachData);
 }
@@ -1880,7 +1886,7 @@ mime_decompose_file_init_fn ( void *stream_closure, MimeHeaders *headers )
     // the content type may contain a charset. i.e. text/html; ISO-2022-JP...we want to strip off the charset
     // before we ask the mime service for a mime info for this content type.
     nsCAutoString contentType (newAttachment->type);
-    PRInt32 pos = contentType.FindCharInSet(";");
+    PRInt32 pos = contentType.FindChar(';');
     if (pos > 0)
       contentType.Truncate(pos);
     nsresult  rv = NS_OK;
@@ -1944,7 +1950,7 @@ mime_decompose_file_init_fn ( void *stream_closure, MimeHeaders *headers )
     //
     // Initialize a decoder if necessary.
     //
-    if (!newAttachment->encoding || mdd->options->decrypt_p)
+    if (!newAttachment->encoding)
       ;
     else if (!nsCRT::strcasecmp(newAttachment->encoding, ENCODING_BASE64))
       fn = &MimeB64DecoderInit;
@@ -1955,6 +1961,8 @@ mime_decompose_file_init_fn ( void *stream_closure, MimeHeaders *headers )
              !nsCRT::strcasecmp(newAttachment->encoding, ENCODING_UUENCODE3) ||
              !nsCRT::strcasecmp(newAttachment->encoding, ENCODING_UUENCODE4))
       fn = &MimeUUDecoderInit;
+    else if (!nsCRT::strcasecmp(newAttachment->encoding, ENCODING_YENCODE))
+      fn = &MimeYDecoderInit;
     
     if (fn) 
     {

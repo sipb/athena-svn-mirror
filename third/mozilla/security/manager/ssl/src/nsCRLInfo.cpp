@@ -42,6 +42,7 @@
 #include "nsCOMPtr.h"
 #include "nsComponentManagerUtils.h"
 #include "nsReadableUtils.h"
+#include "nsNSSShutDown.h"
 
 #include "nspr.h"
 extern "C" {
@@ -60,14 +61,12 @@ NS_IMPL_ISUPPORTS1(nsCRLInfo, nsICRLInfo)
 
 nsCRLInfo::nsCRLInfo()
 {
-  NS_INIT_ISUPPORTS();
   /* member initializers and constructor code */
 }
 
 nsCRLInfo::nsCRLInfo(CERTSignedCrl *signedCrl)
 {
-  NS_INIT_ISUPPORTS();
-  
+  nsNSSShutDownPreventionLock locker;
   CERTCrl *crl = &(signedCrl->crl);
   nsAutoString org;
   nsAutoString orgUnit;
@@ -136,14 +135,14 @@ nsCRLInfo::~nsCRLInfo()
 }
 
 /* readonly attribute */
-NS_IMETHODIMP nsCRLInfo::GetOrg(nsAString & aOrg)
+NS_IMETHODIMP nsCRLInfo::GetOrganization(nsAString & aOrg)
 {
   aOrg = mOrg;
   return NS_OK;
 }
 
 /* readonly attribute */
-NS_IMETHODIMP nsCRLInfo::GetOrgUnit(nsAString & aOrgUnit)
+NS_IMETHODIMP nsCRLInfo::GetOrganizationalUnit(nsAString & aOrgUnit)
 {
   aOrgUnit = mOrgUnit;
   return NS_OK;

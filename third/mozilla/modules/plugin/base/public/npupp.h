@@ -38,7 +38,7 @@
 
 
 /*
- *  npupp.h $Revision: 1.1.1.1 $
+ *  npupp.h $Revision: 1.1.1.2 $
  *  function call mecahnics needed by platform specific glue code.
  */
 
@@ -930,7 +930,6 @@ typedef void (* NP_LOADDS NPN_ReloadPluginsUPP)(NPBool reloadPages);
 
 #endif
 
-
 /* NPN_GetJavaEnv */
 
 #if _NPUPP_USE_UPP_
@@ -981,7 +980,6 @@ typedef jref (* NP_LOADDS NPN_GetJavaPeerUPP)(NPP instance);
 		(*(FUNC))((ARG1))	
 
 #endif
-
 
 /* NPN_InvalidateRect */
 
@@ -1127,7 +1125,7 @@ typedef struct _NPNetscapeFuncs {
 #endif
 
 
-#ifdef XP_MAC
+#if defined(XP_MAC) || defined(XP_MACOSX)
 /******************************************************************************************
  * Mac platform-specific plugin glue stuff
  *******************************************************************************************/
@@ -1181,9 +1179,9 @@ enum
 
 typedef struct _BPSupportedMIMETypes
 {
- SInt32    structVersion;      // struct version
- Handle    typeStrings;        // STR# formated handle, allocated by plug-in
- Handle    infoStrings;        // STR# formated handle, allocated by plug-in
+ SInt32    structVersion;      /* struct version */
+ Handle    typeStrings;        /* STR# formated handle, allocated by plug-in */
+ Handle    infoStrings;        /* STR# formated handle, allocated by plug-in */
 } BPSupportedMIMETypes;
 OSErr BP_GetSupportedMIMETypes(BPSupportedMIMETypes *mimeInfo, UInt32 flags);
 
@@ -1201,16 +1199,16 @@ enum {
 		(const char *)CallUniversalProc((UniversalProcPtr)(FUNC), (ProcInfoType)uppNP_GetMIMEDescEntryProc)
 
 
-#else  // !_NPUPP_USE_UPP_
+#else  /* !_NPUPP_USE_UPP_ */
 
- // NP_GetMIMEDescription
+ /* NP_GetMIMEDescription */
 #define NP_GETMIMEDESCRIPTION_NAME "NP_GetMIMEDescription"
 typedef const char* (* NP_LOADDS NP_GetMIMEDescriptionUPP)();
 #define NewNP_GetMIMEDescEntryProc(FUNC)		\
 		((NP_GetMIMEDescriptionUPP) (FUNC))
 #define CallNP_GetMIMEDescEntryProc(FUNC)		\
 		(*(FUNC))()
-// BP_GetSupportedMIMETypes
+/* BP_GetSupportedMIMETypes */
 typedef OSErr (* NP_LOADDS BP_GetSupportedMIMETypesUPP)(BPSupportedMIMETypes*, UInt32);
 #define NewBP_GetSupportedMIMETypesEntryProc(FUNC)		\
 		((BP_GetSupportedMIMETypesUPP) (FUNC))
@@ -1282,6 +1280,7 @@ extern "C" {
 char*	NP_GetMIMEDescription(void);
 NPError	NP_Initialize(NPNetscapeFuncs*, NPPluginFuncs*);
 NPError	NP_Shutdown(void);
+NPError NP_GetValue(void *future, NPPVariable aVariable, void *aValue);
 
 #ifdef __cplusplus
 }

@@ -63,6 +63,7 @@ struct nsDOMClassInfoData
     nsDOMClassInfoConstructorFnc mConstructorFptr;
     nsDOMClassInfoExternalConstructorFnc mExternalConstructorFptr;
   } u;
+
   nsIClassInfo *mCachedClassInfo; // low bit is set to 1 if external,
                                   // so be sure to mask if necessary!
   const nsIID *mProtoChainInterface;
@@ -127,6 +128,10 @@ public:
                              jsval *vp);
   static nsresult ThrowJSException(JSContext *cx, nsresult aResult);
 
+  static nsresult InitDOMJSClass(JSContext *cx, JSObject *obj);
+
+  static JSClass sDOMJSClass;
+
 protected:
   const nsDOMClassInfoData* mData;
 
@@ -134,6 +139,8 @@ protected:
   static nsresult RegisterClassName(PRInt32 aDOMClassInfoID);
   static nsresult RegisterClassProtos(PRInt32 aDOMClassInfoID);
   static nsresult RegisterExternalClasses();
+  nsresult ResolveConstructor(JSContext *cx, JSObject *obj,
+                              JSObject **objp);
 
   // Checks if id is a number and returns the number, if aIsNumber is
   // non-null it's set to true if the id is a number and false if it's
@@ -144,6 +151,7 @@ protected:
   static inline PRBool IsReadonlyReplaceable(jsval id)
   {
     return (id == sTop_id          ||
+            id == sParent_id       ||
             id == sScrollbars_id   ||
             id == sContent_id      ||
             id == sSidebar_id      ||
@@ -156,7 +164,11 @@ protected:
             id == sControllers_id  ||
             id == sScrollX_id      ||
             id == sScrollY_id      ||
-            id == sLength_id);
+            id == sScrollMaxX_id   ||
+            id == sScrollMaxY_id   ||
+            id == sLength_id       ||
+            id == sFrames_id       ||
+            id == sSelf_id);
   }
 
   static inline PRBool IsWritableReplaceable(jsval id)
@@ -176,6 +188,7 @@ protected:
                                  PRUint32 accessMode, PRBool isWindow);
 
   static JSClass sDOMConstructorProtoClass;
+  static JSFunctionSpec sDOMJSClass_methods[];
 
   static nsIXPConnect *sXPConnect;
   static nsIScriptSecurityManager *sSecMan;
@@ -186,9 +199,11 @@ protected:
   static PRBool sIsInitialized;
 
   static jsval sTop_id;
+  static jsval sParent_id;
   static jsval sScrollbars_id;
   static jsval sLocation_id;
   static jsval sComponents_id;
+  static jsval sConstructor_id;
   static jsval s_content_id;
   static jsval sContent_id;
   static jsval sSidebar_id;
@@ -211,6 +226,7 @@ protected:
   static jsval sOnmousedown_id;
   static jsval sOnmouseup_id;
   static jsval sOnclick_id;
+  static jsval sOndblclick_id;
   static jsval sOncontextmenu_id;
   static jsval sOnmouseover_id;
   static jsval sOnmouseout_id;
@@ -234,12 +250,16 @@ protected:
   static jsval sScrollIntoView_id;
   static jsval sScrollX_id;
   static jsval sScrollY_id;
+  static jsval sScrollMaxX_id;
+  static jsval sScrollMaxY_id;
   static jsval sOpen_id;
   static jsval sItem_id;
   static jsval sEnumerate_id;
   static jsval sNavigator_id;
   static jsval sDocument_id;
   static jsval sWindow_id;
+  static jsval sFrames_id;
+  static jsval sSelf_id;
 
   static const JSClass *sObjectClass;
 
@@ -309,8 +329,6 @@ protected:
   static nsresult GlobalResolve(nsISupports *aNative, JSContext *cx,
                                 JSObject *obj, JSString *str, PRUint32 flags,
                                 PRBool *did_resolve);
-  static nsresult DefineInterfaceProperty(JSContext *cx, JSObject *obj,
-                                          JSString *str);
 
 public:
   NS_IMETHOD PreCreate(nsISupports *nativeObj, JSContext *cx,
@@ -798,7 +816,8 @@ public:
 class nsHTMLPluginObjElementSH : public nsHTMLAppletElementSH
 {
 protected:
-  nsHTMLPluginObjElementSH(nsDOMClassInfoData* aData) : nsHTMLAppletElementSH(aData)
+  nsHTMLPluginObjElementSH(nsDOMClassInfoData* aData)
+    : nsHTMLAppletElementSH(aData)
   {
   }
 
@@ -823,16 +842,17 @@ public:
 };
 
 
-// HTMLOptionCollection helper
+// HTMLOptionsCollection helper
 
-class nsHTMLOptionCollectionSH : public nsHTMLCollectionSH
+class nsHTMLOptionsCollectionSH : public nsHTMLCollectionSH
 {
 protected:
-  nsHTMLOptionCollectionSH(nsDOMClassInfoData* aData) : nsHTMLCollectionSH(aData)
+  nsHTMLOptionsCollectionSH(nsDOMClassInfoData* aData)
+    : nsHTMLCollectionSH(aData)
   {
   }
 
-  virtual ~nsHTMLOptionCollectionSH()
+  virtual ~nsHTMLOptionsCollectionSH()
   {
   }
 
@@ -842,7 +862,7 @@ public:
 
   static nsIClassInfo *doCreate(nsDOMClassInfoData* aData)
   {
-    return new nsHTMLOptionCollectionSH(aData);
+    return new nsHTMLOptionsCollectionSH(aData);
   }
 };
 
@@ -1124,7 +1144,6 @@ class nsEventListenerThisTranslator : public nsIXPCFunctionThisTranslator
 public:
   nsEventListenerThisTranslator()
   {
-    NS_INIT_ISUPPORTS();
   }
 
   virtual ~nsEventListenerThisTranslator()

@@ -1,7 +1,7 @@
 # Copyright 2002 Microsystems, Inc.  All Rights Reserved.
 # Use is subject to license terms.
 #
-#	$Id: pkgdepend,v 1.1.1.1 2003-02-14 19:55:16 rbasch Exp $
+#	$Id: pkgdepend,v 1.1.1.2 2003-07-08 16:47:17 rbasch Exp $
 #
 # This package information file defines software dependencies associated
 # with the pkg.  You can define three types of pkg dependencies with this file:
@@ -25,4 +25,7 @@ P SUNWcsr	Core Solaris, (Root)
 P SUNWcsu	Core Solaris, (Usr)
 P SUNWcsd	Core Solaris Devices
 P SUNWcsl	Core Solaris Libraries
+P SUNWcarx  Core Architecture, (Root) (64-bit)
+P SUNWcsxu  Core Solaris (Usr) (64-bit)
+P SUNWcslx  Core Solaris Libraries (64-bit)
 P SUNWprx	Netscape Portable Runtime

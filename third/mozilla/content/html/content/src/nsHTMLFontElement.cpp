@@ -42,11 +42,10 @@
 #include "nsGenericHTMLElement.h"
 #include "nsHTMLAtoms.h"
 #include "nsIDeviceContext.h"
-#include "nsIStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
 #include "nsHTMLAttributes.h"
-#include "nsCSSDeclaration.h"
+#include "nsCSSStruct.h"
 #include "nsRuleNode.h"
 
 class nsHTMLFontElement : public nsGenericHTMLContainerElement,
@@ -80,9 +79,6 @@ public:
   NS_IMETHOD GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
                                       nsChangeHint& aHint) const;
   NS_IMETHOD GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRuleFunc) const;
-#ifdef DEBUG
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
-#endif
 };
 
 nsresult
@@ -187,7 +183,7 @@ nsHTMLFontElement::StringToAttribute(nsIAtom* aAttribute,
     }
   }
   else if (aAttribute == nsHTMLAtoms::color) {
-    if (ParseColor(aValue, mDocument, aResult)) {
+    if (aResult.ParseColor(aValue, mDocument)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
@@ -234,7 +230,7 @@ MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
     return;
 
   if (aData->mFontData) {
-    nsCSSFont& font = *(aData->mFontData);
+    nsRuleDataFont& font = *(aData->mFontData);
     nsHTMLValue value;
     
     // face: string list
@@ -243,8 +239,10 @@ MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
       if (value.GetUnit() == eHTMLUnit_String) {
         nsAutoString familyList;
         value.GetStringValue(familyList);
-        if (!familyList.IsEmpty())
+        if (!familyList.IsEmpty()) {
           font.mFamily.SetStringValue(familyList, eCSSUnit_String);
+          font.mFamilyFromHTML = PR_TRUE;
+        }
       }
     }
 
@@ -309,19 +307,22 @@ NS_IMETHODIMP
 nsHTMLFontElement::GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
                                             nsChangeHint& aHint) const
 {
-  if (aAttribute == nsHTMLAtoms::color) {
-    aHint = NS_STYLE_HINT_VISUAL;
-  }
-  else if ((aAttribute == nsHTMLAtoms::face) ||
-           (aAttribute == nsHTMLAtoms::pointSize) ||
-            (aAttribute == nsHTMLAtoms::size) ||
-           (aAttribute == nsHTMLAtoms::fontWeight)) {
-    aHint = NS_STYLE_HINT_REFLOW;
-  }
-  else if (!GetCommonMappedAttributesImpact(aAttribute, aHint)) {
-    aHint = NS_STYLE_HINT_CONTENT;
-  }
+  static const AttributeImpactEntry attributes[] = {
+    { &nsHTMLAtoms::face, NS_STYLE_HINT_REFLOW },
+    { &nsHTMLAtoms::pointSize, NS_STYLE_HINT_REFLOW },
+    { &nsHTMLAtoms::size, NS_STYLE_HINT_REFLOW },
+    { &nsHTMLAtoms::fontWeight, NS_STYLE_HINT_REFLOW },
+    { &nsHTMLAtoms::color, NS_STYLE_HINT_VISUAL },
+    { nsnull, NS_STYLE_HINT_NONE }
+  };
 
+  static const AttributeImpactEntry* const map[] = {
+    attributes,
+    sCommonAttributeMap,
+  };
+
+  FindAttributeImpact(aAttribute, aHint, map, NS_ARRAY_LENGTH(map));
+  
   return NS_OK;
 }
 
@@ -332,13 +333,3 @@ nsHTMLFontElement::GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRu
   aMapRuleFunc = &MapAttributesIntoRule;
   return NS_OK;
 }
-
-#ifdef DEBUG
-NS_IMETHODIMP
-nsHTMLFontElement::SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const
-{
-  *aResult = sizeof(*this) + BaseSizeOf(aSizer);
-
-  return NS_OK;
-}
-#endif

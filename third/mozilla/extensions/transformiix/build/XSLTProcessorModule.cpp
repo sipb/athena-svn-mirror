@@ -26,6 +26,7 @@
 
 #include "nsICategoryManager.h"
 #include "nsIDOMClassInfo.h"
+#include "nsIErrorService.h"
 #include "nsIExceptionService.h"
 #include "nsIGenericFactory.h"
 #include "nsIScriptNameSpaceManager.h"
@@ -42,10 +43,18 @@
 #include "nsCRT.h"
 #include "nsIScriptSecurityManager.h"
 #include "txURIUtils.h"
+#include "txXSLTProcessor.h"
+#include "nsXPath1Scheme.h"
+
+NS_GENERIC_FACTORY_CONSTRUCTOR(nsXPath1SchemeProcessor)
 
 /* 1c1a3c01-14f6-11d6-a7f2-ea502af815dc */
 #define TRANSFORMIIX_DOMCI_EXTENSION_CID   \
 { 0x1c1a3c01, 0x14f6, 0x11d6, {0xa7, 0xf2, 0xea, 0x50, 0x2a, 0xf8, 0x15, 0xdc} }
+
+/* {0C351177-0159-4500-86B0-A219DFDE4258} */
+#define TRANSFORMIIX_XPATH1_SCHEME_CID \
+{ 0xc351177, 0x159, 0x4500, { 0x86, 0xb0, 0xa2, 0x19, 0xdf, 0xde, 0x42, 0x58 } }
 
 #define TRANSFORMIIX_DOMCI_EXTENSION_CONTRACTID \
 "@mozilla.org/transformiix-domci-extender;1"
@@ -171,9 +180,9 @@ RegisterTransformiix(nsIComponentManager *aCompMgr,
     return rv;
 }
 
-TX_LG_IMPL;
 static PRBool gInitialized = PR_FALSE;
-static nsIExceptionProvider *sXPathExceptionProvider = 0;
+static nsIExceptionProvider *gXPathExceptionProvider = 0;
+nsINameSpaceManager *gTxNameSpaceManager = 0;
 
 // Perform our one-time intialization for this module
 PR_STATIC_CALLBACK(nsresult)
@@ -185,17 +194,17 @@ Initialize(nsIModule* aSelf)
 
     gInitialized = PR_TRUE;
 
-    sXPathExceptionProvider = new nsXPathExceptionProvider();
-    if (!sXPathExceptionProvider)
+    gXPathExceptionProvider = new nsXPathExceptionProvider();
+    if (!gXPathExceptionProvider)
         return NS_ERROR_OUT_OF_MEMORY;
-    NS_ADDREF(sXPathExceptionProvider);
+    NS_ADDREF(gXPathExceptionProvider);
     nsCOMPtr<nsIExceptionService> xs =
         do_GetService(NS_EXCEPTIONSERVICE_CONTRACTID);
     if (xs)
-        xs->RegisterExceptionProvider(sXPathExceptionProvider,
+        xs->RegisterExceptionProvider(gXPathExceptionProvider,
                                       NS_ERROR_MODULE_DOM_XPATH);
 
-    if (!txXSLTProcessor::txInit()) {
+    if (!txXSLTProcessor::init()) {
         return NS_ERROR_OUT_OF_MEMORY;
     }
 
@@ -206,7 +215,18 @@ Initialize(nsIModule* aSelf)
         return rv;
     }
 
-    TX_LG_CREATE;
+    rv = CallGetService(NS_NAMESPACEMANAGER_CONTRACTID, &gTxNameSpaceManager);
+    if (NS_FAILED(rv)) {
+        gTxNameSpaceManager = nsnull;
+        return rv;
+    }
+
+    nsCOMPtr<nsIErrorService> errorService =
+        do_GetService(NS_ERRORSERVICE_CONTRACTID);
+    if (errorService) {
+        errorService->RegisterErrorStringBundle(NS_ERROR_MODULE_XSLT,
+                                                XSLT_MSGS_URL);
+    }
 
     return NS_OK;
 }
@@ -220,13 +240,13 @@ Shutdown(nsIModule* aSelf)
         return;
 
     gInitialized = PR_FALSE;
-    if (sXPathExceptionProvider) {
+    if (gXPathExceptionProvider) {
         nsCOMPtr<nsIExceptionService> xs =
             do_GetService(NS_EXCEPTIONSERVICE_CONTRACTID);
         if (xs)
-            xs->UnregisterExceptionProvider(sXPathExceptionProvider,
+            xs->UnregisterExceptionProvider(gXPathExceptionProvider,
                                             NS_ERROR_MODULE_DOM_XPATH);
-        NS_RELEASE(sXPathExceptionProvider);
+        NS_RELEASE(gXPathExceptionProvider);
     }
 
     NS_IF_RELEASE(NS_CLASSINFO_NAME(XSLTProcessor));
@@ -236,11 +256,10 @@ Shutdown(nsIModule* aSelf)
     NS_IF_RELEASE(NS_CLASSINFO_NAME(XPathNSResolver));
     NS_IF_RELEASE(NS_CLASSINFO_NAME(XPathResult));
 
-    txXSLTProcessor::txShutdown();
+    txXSLTProcessor::shutdown();
 
     NS_IF_RELEASE(gTxSecurityManager);
-
-    TX_LG_DELETE;
+    NS_IF_RELEASE(gTxNameSpaceManager);
 }
 
 // Component Table
@@ -257,7 +276,11 @@ static const nsModuleComponentInfo gComponents[] = {
     { "Transformiix DOMCI Extender",
       TRANSFORMIIX_DOMCI_EXTENSION_CID,
       TRANSFORMIIX_DOMCI_EXTENSION_CONTRACTID,
-      NS_DOMCI_EXTENSION_CONSTRUCTOR(Transformiix) }
+      NS_DOMCI_EXTENSION_CONSTRUCTOR(Transformiix) },
+    { "XPath1 XPointer Scheme Processor",
+      TRANSFORMIIX_XPATH1_SCHEME_CID,
+      NS_XPOINTER_SCHEME_PROCESSOR_BASE "xpath1",
+      nsXPath1SchemeProcessorConstructor }
 };
 
 NS_IMPL_NSGETMODULE_WITH_CTOR_DTOR(TransformiixModule, gComponents,

@@ -97,9 +97,6 @@ class nsRDFDOMDataSource : public nsISupports {
   /* void Flush (); */
   NS_IMETHOD Flush() = 0;
 
-  /* nsIEnumerator GetAllCommands (in nsIRDFResource aSource); */
-  NS_IMETHOD GetAllCommands(nsIRDFResource *aSource, nsIEnumerator **_retval) = 0;
-
   /* nsISimpleEnumerator GetAllCmds (in nsIRDFResource aSource); */
   NS_IMETHOD GetAllCmds(nsIRDFResource *aSource, nsISimpleEnumerator **_retval) = 0;
 
@@ -108,6 +105,12 @@ class nsRDFDOMDataSource : public nsISupports {
 
   /* void DoCommand (in nsISupportsArray aSources, in nsIRDFResource aCommand, in nsISupportsArray aArguments); */
   NS_IMETHOD DoCommand(nsISupportsArray * aSources, nsIRDFResource *aCommand, nsISupportsArray * aArguments) = 0;
+
+  /* void beginUpdateBatch (); */
+  NS_IMETHOD BeginUpdateBatch() = 0;
+
+  /* void endUpdateBatch (); */
+  NS_IMETHOD EndUpdateBatch() = 0;
 };
 
 #endif /* __gen_nsRDFDOMDataSource_h__ */

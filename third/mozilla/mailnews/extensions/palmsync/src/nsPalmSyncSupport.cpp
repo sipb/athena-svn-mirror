@@ -105,7 +105,6 @@ nsPalmSyncSupport::nsPalmSyncSupport()
 : m_dwRegister(0),
   m_nsPalmSyncFactory(nsnull)
 {
-   NS_INIT_ISUPPORTS();
 }
 
 nsPalmSyncSupport::~nsPalmSyncSupport()
@@ -162,13 +161,13 @@ nsPalmSyncSupport::ShutdownPalmSyncSupport()
 NS_IMETHODIMP
 nsPalmSyncSupport::RegisterPalmSync()
 {
-    return RegisterServerForPalmSync(CLSID_CPalmSyncImp, "Mozilla PalmSync", "mozMapi", "mozMapi.1");
+    return RegisterServerForPalmSync(CLSID_CPalmSyncImp, "Mozilla PalmSync", "MozillaPalmSync", "MozillaPalmSync.1");
 }
 
 NS_IMETHODIMP
 nsPalmSyncSupport::UnRegisterPalmSync()
 {
-    return UnregisterServerForPalmSync(CLSID_CPalmSyncImp, "mozMapi", "mozMapi.1");
+    return UnregisterServerForPalmSync(CLSID_CPalmSyncImp, "MozillaPalmSync", "MozillaPalmSync.1");
 }
 
 

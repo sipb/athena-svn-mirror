@@ -38,7 +38,6 @@
 #include "nsBlockBandData.h"
 #include "nsIFrame.h"
 #include "nsHTMLReflowState.h"
-#include "nsIStyleContext.h"
 #include "nsIPresContext.h"
 #include "nsIPresShell.h"
 #include "nsIFrameManager.h"
@@ -182,14 +181,12 @@ nsBlockBandData::ComputeAvailSpaceRect()
 #ifdef REALLY_NOISY_COMPUTEAVAILSPACERECT
         printf("band %p checking !Avail trap %p with frame %p\n", this, trapezoid, trapezoid->mFrame);
 #endif
-        const nsStyleDisplay* display;
         if (nsBandTrapezoid::OccupiedMultiple == trapezoid->mState) {
           PRInt32 j, numFrames = trapezoid->mFrames->Count();
           NS_ASSERTION(numFrames > 0, "bad trapezoid frame list");
           for (j = 0; j < numFrames; j++) {
             nsIFrame* f = (nsIFrame*) trapezoid->mFrames->ElementAt(j);
-            f->GetStyleData(eStyleStruct_Display,
-                            (const nsStyleStruct*&)display);
+            const nsStyleDisplay* display = f->GetStyleDisplay();
             if (NS_STYLE_FLOAT_LEFT == display->mFloats) {
               leftFloaters++;
             }
@@ -201,8 +198,7 @@ nsBlockBandData::ComputeAvailSpaceRect()
             }
           }
         } else {
-          trapezoid->mFrame->GetStyleData(eStyleStruct_Display,
-                                    (const nsStyleStruct*&)display);
+          const nsStyleDisplay* display = trapezoid->mFrame->GetStyleDisplay();
           if (NS_STYLE_FLOAT_LEFT == display->mFloats) {
             leftFloaters++;
           }
@@ -234,7 +230,6 @@ nsBlockBandData::ComputeAvailSpaceRect()
   // When there is no available space, we still need a proper X
   // coordinate to place objects that end up here anyway.
   if (nsBandTrapezoid::Available != trapezoid->mState) {
-    const nsStyleDisplay* display;
     if (nsBandTrapezoid::OccupiedMultiple == trapezoid->mState) {
       // It's not clear what coordinate to use when there is no
       // available space and the space is multiply occupied...So: If
@@ -245,8 +240,7 @@ nsBlockBandData::ComputeAvailSpaceRect()
       NS_ASSERTION(numFrames > 0, "bad trapezoid frame list");
       for (j = 0; j < numFrames; j++) {
         nsIFrame* f = (nsIFrame*) trapezoid->mFrames->ElementAt(j);
-        f->GetStyleData(eStyleStruct_Display,
-                        (const nsStyleStruct*&)display);
+        const nsStyleDisplay* display = f->GetStyleDisplay();
         if (NS_STYLE_FLOAT_LEFT == display->mFloats) {
           mAvailSpace.x = mAvailSpace.XMost();
           break;
@@ -254,8 +248,7 @@ nsBlockBandData::ComputeAvailSpaceRect()
       }
     }
     else {
-      trapezoid->mFrame->GetStyleData(eStyleStruct_Display,
-                                     (const nsStyleStruct*&)display);
+      const nsStyleDisplay* display = trapezoid->mFrame->GetStyleDisplay();
       if (NS_STYLE_FLOAT_LEFT == display->mFloats) {
         mAvailSpace.x = mAvailSpace.XMost();
       }
@@ -281,22 +274,18 @@ PRBool
 nsBlockBandData::ShouldClearFrame(nsIFrame* aFrame, PRUint8 aBreakType)
 {
   PRBool result = PR_FALSE;
-  const nsStyleDisplay* display;
-  nsresult rv = aFrame->GetStyleData(eStyleStruct_Display,
-                                     (const nsStyleStruct*&)display);
-  if (NS_SUCCEEDED(rv) && (nsnull != display)) {
-    if (NS_STYLE_CLEAR_LEFT_AND_RIGHT == aBreakType) {
+  const nsStyleDisplay* display = aFrame->GetStyleDisplay();
+  if (NS_STYLE_CLEAR_LEFT_AND_RIGHT == aBreakType) {
+    result = PR_TRUE;
+  }
+  else if (NS_STYLE_FLOAT_LEFT == display->mFloats) {
+    if (NS_STYLE_CLEAR_LEFT == aBreakType) {
       result = PR_TRUE;
     }
-    else if (NS_STYLE_FLOAT_LEFT == display->mFloats) {
-      if (NS_STYLE_CLEAR_LEFT == aBreakType) {
-        result = PR_TRUE;
-      }
-    }
-    else if (NS_STYLE_FLOAT_RIGHT == display->mFloats) {
-      if (NS_STYLE_CLEAR_RIGHT == aBreakType) {
-        result = PR_TRUE;
-      }
+  }
+  else if (NS_STYLE_FLOAT_RIGHT == display->mFloats) {
+    if (NS_STYLE_CLEAR_RIGHT == aBreakType) {
+      result = PR_TRUE;
     }
   }
   return result;
@@ -350,150 +339,6 @@ nsBlockBandData::ClearFloaters(nscoord aY, PRUint8 aBreakType)
     aY = aY + (yMost - aYS);
   }
   return aY;
-}
-
-//----------------------------------------------------------------------
-
-static void
-MaxElementSizePropertyDtor(nsIPresContext* aPresContext,
-                           nsIFrame*       aFrame,
-                           nsIAtom*        aPropertyName,
-                           void*           aPropertyValue)
-{
-  nsSize* size = (nsSize*) aPropertyValue;
-  delete size;
-}
-
-void
-nsBlockBandData::StoreMaxElementSize(nsIPresContext* aPresContext,
-                                     nsIFrame* aFrame,
-                                     const nsSize& aMaxElementSize)
-{
-  nsCOMPtr<nsIPresShell> shell;
-  aPresContext->GetShell(getter_AddRefs(shell));
-  if (shell) {
-    nsCOMPtr<nsIFrameManager> mgr;
-    shell->GetFrameManager(getter_AddRefs(mgr));
-    if (mgr) {
-      nsSize* size = new nsSize(aMaxElementSize);
-      if (size) {
-        mgr->SetFrameProperty(aFrame, nsLayoutAtoms::maxElementSizeProperty,
-                              size, MaxElementSizePropertyDtor);
-      }
-    }
-  }
-}
-
-void
-nsBlockBandData::RecoverMaxElementSize(nsIPresContext* aPresContext,
-                                       nsIFrame* aFrame,
-                                       nsSize* aResult)
-{
-  if (!aResult) return;
-
-  nsSize answer(0, 0);
-  nsCOMPtr<nsIPresShell> shell;
-  aPresContext->GetShell(getter_AddRefs(shell));
-  if (shell) {
-    nsCOMPtr<nsIFrameManager> mgr;
-    shell->GetFrameManager(getter_AddRefs(mgr));
-    if (mgr) {
-      nsSize* size = nsnull;
-      mgr->GetFrameProperty(aFrame, nsLayoutAtoms::maxElementSizeProperty,
-                            0, (void**) &size);
-      if (size) {
-        answer = *size;
-      }
-    }
-  }
-
-  *aResult = answer;
-}
-
-void
-nsBlockBandData::GetMaxElementSize(nsIPresContext* aPresContext,
-                                   nscoord* aWidthResult,
-                                   nscoord* aHeightResult) const
-{
-  nsCOMPtr<nsIFrameManager> mgr;
-  nsCOMPtr<nsIPresShell> shell;
-  aPresContext->GetShell(getter_AddRefs(shell));
-  if (shell) {
-    shell->GetFrameManager(getter_AddRefs(mgr));
-  }
-
-  nsRect r;
-  nscoord maxWidth = 0;
-  nscoord maxHeight = 0;
-  for (PRInt32 i = 0; i < mCount; i++) {
-    const nsBandTrapezoid* trap = &mTrapezoids[i];
-    if (trap->mState != nsBandTrapezoid::Available) {
-
-      // Note: get the total height of the frame to compute the maxHeight,
-      // not just the height that is part of this band.
-
-      if (nsBandTrapezoid::OccupiedMultiple == trap->mState) {
-        PRBool usedBackupValue = PR_FALSE;
-        PRInt32 j, numFrames = trap->mFrames->Count();
-        NS_ASSERTION(numFrames > 0, "bad trapezoid frame list");
-        for (j = 0; j < numFrames; j++) {
-          PRBool useBackupValue = PR_TRUE;
-
-          nsIFrame* f = (nsIFrame*) trap->mFrames->ElementAt(j);
-          if (mgr) {
-            nsSize* maxElementSize = nsnull;
-            mgr->GetFrameProperty(f, nsLayoutAtoms::maxElementSizeProperty,
-                                  0, (void**) &maxElementSize);
-            if (maxElementSize) {
-              useBackupValue = PR_FALSE;
-              if (maxElementSize->width > maxWidth) {
-                maxWidth = maxElementSize->width;
-              }
-              if (maxElementSize->height > maxHeight) {
-                maxHeight = maxElementSize->height;
-              }
-            }
-          }
-          if (useBackupValue) {
-            usedBackupValue = PR_TRUE;
-            f->GetRect(r);
-            if (r.height > maxHeight) maxHeight = r.height;
-          }
-        }
-
-        // Get the width of the impacted area and update the maxWidth
-        if (usedBackupValue) {
-          trap->GetRect(r);
-          if (r.width > maxWidth) maxWidth = r.width;
-        }
-      } else {
-        PRBool useBackupValue = PR_TRUE;
-        if (mgr) {
-          nsSize* maxElementSize = nsnull;
-          mgr->GetFrameProperty(trap->mFrame,
-                                nsLayoutAtoms::maxElementSizeProperty,
-                                0, (void**) &maxElementSize);
-          if (maxElementSize) {
-            useBackupValue = PR_FALSE;
-            if (maxElementSize->width > maxWidth) {
-              maxWidth = maxElementSize->width;
-            }
-            if (maxElementSize->height > maxHeight) {
-              maxHeight = maxElementSize->height;
-            }
-          }
-        }
-        if (useBackupValue) {
-          trap->GetRect(r);
-          if (r.width > maxWidth) maxWidth = r.width;
-          trap->mFrame->GetRect(r);
-          if (r.height > maxHeight) maxHeight = r.height;
-        }
-      }
-    }
-  }
-  *aWidthResult = maxWidth;
-  *aHeightResult = maxHeight;
 }
 
 #ifdef DEBUG

@@ -80,7 +80,7 @@ function setWindowName()
   var cert;
 
   var certDetails = bundle.GetStringFromName('certDetails');
-  if (myName != "_blank") {
+  if (myName != "") {
     windowReference.setAttribute("title",certDetails+'"'+myName+'"');
     //  Get the token
     //  XXX ignore this for now.  NSS will find the cert on a token
@@ -89,8 +89,8 @@ function setWindowName()
     //var pk11db = Components.classes[nsPK11TokenDB].getService(nsIPK11TokenDB);
     //var token = pk11db.findTokenByName(tokenName);
 
-    //var cert = certdb.getCertByNickname(token, myName);
-    cert = certdb.getCertByNickname(null, myName);
+    //var cert = certdb.findCertByNickname(token, myName);
+    cert = certdb.findCertByNickname(null, myName);
   } else {
     var pkiParams = window.arguments[0].QueryInterface(nsIPKIParamBlock);
     var isupport = pkiParams.getISupportAtIndex(1);
@@ -175,7 +175,7 @@ function DisplayGeneralDataFromCert(cert)
   var o1 = {};
   var o2 = {};
   var o3 = {};
-  cert.getUsages(o1, o2, o3);
+  cert.getUsagesArray(false, o1, o2, o3); // do not ignore OCSP when checking
   var verifystate = o1.value;
   var count = o2.value;
   var usageList = o3.value;
@@ -218,9 +218,9 @@ function DisplayGeneralDataFromCert(cert)
   //  MD5 Fingerprint
   addAttributeFromCert('md5fingerprint',cert.md5Fingerprint);
   // Validity start
-  addAttributeFromCert('validitystart', cert.issuedDate);
+  addAttributeFromCert('validitystart', cert.validity.notBeforeLocalDay);
   // Validity end
-  addAttributeFromCert('validityend', cert.expiresDate);
+  addAttributeFromCert('validityend', cert.validity.notAfterLocalDay);
   
   //Now to populate the fields that correspond to the issuer.
   var issuerCommonname, issuerOrg, issuerOrgUnit;
@@ -245,7 +245,7 @@ function updateCertDump()
     var dbKey = item.firstChild.firstChild.getAttribute('display');
     //  Get the cert from the cert database
     var certdb = Components.classes[nsX509CertDB].getService(nsIX509CertDB);
-    var cert = certdb.getCertByDBKey(dbKey,null);
+    var cert = certdb.findCertByDBKey(dbKey,null);
     asn1Tree.loadASN1Structure(cert.ASN1Structure);
   }
   displaySelected();

@@ -40,12 +40,11 @@
 #include "nsIHTMLContent.h"
 #include "nsGenericHTMLElement.h"
 #include "nsHTMLAtoms.h"
-#include "nsIStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
 #include "nsHTMLAttributes.h"
 #include "nsRuleNode.h"
-#include "nsCSSDeclaration.h"
+#include "nsCSSStruct.h"
 
 // XXX wrap, variable, cols, tabstop
 
@@ -79,9 +78,6 @@ public:
   NS_IMETHOD GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
                                       nsChangeHint& aHint) const;
   NS_IMETHOD GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRuleFunc) const;
-#ifdef DEBUG
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
-#endif
 };
 
 nsresult
@@ -170,12 +166,12 @@ nsHTMLPreElement::StringToAttribute(nsIAtom* aAttribute,
                                     nsHTMLValue& aResult)
 {
   if (aAttribute == nsHTMLAtoms::cols) {
-    if (ParseValue(aValue, 0, aResult, eHTMLUnit_Integer)) {
+    if (aResult.ParseIntWithBounds(aValue, eHTMLUnit_Integer, 0)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
   else if (aAttribute == nsHTMLAtoms::width) {
-    if (ParseValue(aValue, 0, aResult, eHTMLUnit_Integer)) {
+    if (aResult.ParseIntWithBounds(aValue, eHTMLUnit_Integer, 0)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
@@ -203,7 +199,7 @@ MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes,
     return;
 
   if (aData->mFontData) {
-    nsCSSFont& font = *(aData->mFontData);
+    nsRuleDataFont& font = *(aData->mFontData);
 
     if (nsnull != aAttributes) {
       nsHTMLValue value;
@@ -259,16 +255,21 @@ NS_IMETHODIMP
 nsHTMLPreElement::GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
                                            nsChangeHint& aHint) const
 {
-  if ((aAttribute == nsHTMLAtoms::variable) || 
-      (aAttribute == nsHTMLAtoms::wrap) ||
-      (aAttribute == nsHTMLAtoms::cols) ||
-      (aAttribute == nsHTMLAtoms::width) ||
-      (aAttribute == nsHTMLAtoms::tabstop)) {
-    aHint = NS_STYLE_HINT_REFLOW;
-  }
-  else if (!GetCommonMappedAttributesImpact(aAttribute, aHint)) {
-    aHint = NS_STYLE_HINT_CONTENT;
-  }
+  static const AttributeImpactEntry attributes[] = {
+    { &nsHTMLAtoms::variable, NS_STYLE_HINT_REFLOW},
+    { &nsHTMLAtoms::wrap, NS_STYLE_HINT_REFLOW},
+    { &nsHTMLAtoms::cols, NS_STYLE_HINT_REFLOW},
+    { &nsHTMLAtoms::width, NS_STYLE_HINT_REFLOW},
+    { &nsHTMLAtoms::tabstop, NS_STYLE_HINT_REFLOW},
+    { nsnull, NS_STYLE_HINT_NONE },
+  };
+  
+  static const AttributeImpactEntry* const map[] = {
+    attributes,
+    sCommonAttributeMap,
+  };
+
+  FindAttributeImpact(aAttribute, aHint, map, NS_ARRAY_LENGTH(map));
 
   return NS_OK;
 }
@@ -281,13 +282,3 @@ nsHTMLPreElement::GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRul
   aMapRuleFunc = &MapAttributesIntoRule;
   return NS_OK;
 }
-
-#ifdef DEBUG
-NS_IMETHODIMP
-nsHTMLPreElement::SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const
-{
-  *aResult = sizeof(*this) + BaseSizeOf(aSizer);
-
-  return NS_OK;
-}
-#endif

@@ -43,19 +43,28 @@ REQUIRES	= xpcom \
 
 CPPSRCS		= \
 		nsHttp.cpp \
-		nsHttpHandler.cpp \
 		nsHttpHeaderArray.cpp \
+		nsHttpConnectionInfo.cpp \
 		nsHttpConnection.cpp \
-		nsHttpTransaction.cpp \
-		nsHttpChannel.cpp \
+		nsHttpConnectionMgr.cpp \
 		nsHttpRequestHead.cpp \
 		nsHttpResponseHead.cpp \
 		nsHttpChunkedDecoder.cpp \
 		nsHttpAuthCache.cpp \
+		nsHttpAuthManager.cpp \
 		nsHttpBasicAuth.cpp \
 		nsHttpDigestAuth.cpp \
+		nsHttpTransaction.cpp \
+		nsHttpHandler.cpp \
+		nsHttpChannel.cpp \
 		nsHttpPipeline.cpp \
 		$(NULL)
+
+ifeq ($(OS_ARCH),WINNT)
+CPPSRCS		+= \
+		nsHttpNTLMAuth.cpp \
+		$(NULL)
+endif
 
 LOCAL_INCLUDES=-I$(srcdir)/../../../base/src
 

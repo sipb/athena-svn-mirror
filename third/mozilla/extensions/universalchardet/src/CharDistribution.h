@@ -59,12 +59,15 @@ public:
     //we only care about 2-bytes character in our distribution analysis
     order = (aCharLen == 2) ? GetOrder(aStr) : -1;
 
-    if (order >= 0 && (PRUint32)order < mTableSize)
+    if (order >= 0)
     {
-      //order is valid
       mTotalChars++;
-      if (512 > mCharToFreqOrder[order])
-        mFreqChars++;
+      //order is valid
+      if ((PRUint32)order < mTableSize)
+      {
+        if (512 > mCharToFreqOrder[order])
+          mFreqChars++;
+      }
     }
   };
 
@@ -103,7 +106,7 @@ protected:
   PRUint32 mTotalChars;
 
   //Mapping table to get frequency order from char order (get from GetOrder())
-  PRInt16  *mCharToFreqOrder;
+  const PRInt16  *mCharToFreqOrder;
 
   //Size of above table
   PRUint32 mTableSize;

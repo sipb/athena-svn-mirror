@@ -77,7 +77,7 @@ int nsIMAPNamespace::MailboxMatchesNamespace(const char *boxname)
 	if (!boxname) return -1;
 
 	// If the namespace is part of the boxname
-    if (PL_strlen(m_prefix) == 0)
+    if (!m_prefix || !*m_prefix)
         return 0;
 
 	if (PL_strstr(boxname, m_prefix) == boxname)
@@ -169,7 +169,15 @@ int nsIMAPNamespaceList::AddNewNamespace(nsIMAPNamespace *ns)
 		for (nodeIndex=m_NamespaceList.Count()-1; nodeIndex >= 0; nodeIndex--)
 		{
 			nsIMAPNamespace *nspace = (nsIMAPNamespace *) m_NamespaceList.ElementAt(nodeIndex);
-			if (nspace && nspace->GetIsNamespaceFromPrefs())
+			// if we find existing namespace(s) that matches the 
+			// new one, we'll just remove the old ones and let the
+			// new one get added when we've finished checking for
+			// matching namespaces or namespaces that came from prefs.
+			if (nspace &&
+                            (nspace->GetIsNamespaceFromPrefs() ||
+                            (!PL_strcmp(ns->GetPrefix(), nspace->GetPrefix()) &&
+			     ns->GetType() == nspace->GetType() &&
+			     ns->GetDelimiter() == nspace->GetDelimiter())))
 			{
 				m_NamespaceList.RemoveElementAt(nodeIndex);
 				delete nspace; 

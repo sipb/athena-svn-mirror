@@ -37,7 +37,7 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nscore.h"
-#include "nsDebugCIID.h"
+#include "nsLayoutDebugCIID.h"
 #include "nsIFactory.h"
 #include "nsISupports.h"
 #include "nsDebugObject.h"
@@ -49,13 +49,13 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsDebugObject)
 
 
 
-static nsModuleComponentInfo components[] =
+static const nsModuleComponentInfo components[] =
 {
   { "nsDebugObject",
-    NS_DEGUG_OBJECT_CID,
-    "@mozilla.org/debug/debugobject;1",
+    NS_FRAME_DEBUG_OBJECT_CID,
+    "@mozilla.org/layout_debug/framedebugobject;1",
     nsDebugObjectConstructor 
   }
 };
 
-NS_IMPL_NSGETMODULE(nsDebugModule, components)
+NS_IMPL_NSGETMODULE(nsLayoutDebugModule, components)

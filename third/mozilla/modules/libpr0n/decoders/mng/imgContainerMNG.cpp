@@ -40,9 +40,12 @@ imgContainerMNG::imgContainerMNG() :
   mObserver(0),
   mDecoder(0),
   mAnimationMode(0),
+  mBuffer(0),
+  image(0),
+  alpha(0),
+  mHandle(0),
   mFrozen(PR_FALSE)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -53,8 +56,10 @@ imgContainerMNG::~imgContainerMNG()
     mTimer = nsnull; 
   }
 
-  mng_display_freeze(mHandle);
-  mng_cleanup(&mHandle);
+  if (mHandle) {
+    mng_display_freeze(mHandle);
+    mng_cleanup(&mHandle);
+  }
   if (alpha)
     nsMemory::Free(alpha);
   if (image)
@@ -180,14 +185,6 @@ imgContainerMNG::DecodingComplete(void)
   return NS_OK;
 }
 
-//****************************************************************************
-/* nsIEnumerator enumerate (); */
-NS_IMETHODIMP
-imgContainerMNG::Enumerate(nsIEnumerator **_retval)
-{
-  return NS_ERROR_NOT_IMPLEMENTED;
-}
-
 /* void clear (); */
 NS_IMETHODIMP
 imgContainerMNG::Clear()
@@ -308,7 +305,7 @@ il_mng_processheader(mng_handle handle, mng_uint32 width, mng_uint32 height)
 
   gfx_format format;
 
-#if defined(XP_PC) || defined(XP_BEOS) || defined(MOZ_WIDGET_PHOTON)
+#if defined(XP_WIN) || defined(XP_OS2) || defined(XP_BEOS) || defined(MOZ_WIDGET_PHOTON)
   if (mng_get_alphadepth(handle)) {
     format = gfxIFormats::BGR_A8;
     mng_set_canvasstyle(handle, MNG_CANVAS_RGB8_A8);
@@ -329,7 +326,7 @@ il_mng_processheader(mng_handle handle, mng_uint32 width, mng_uint32 height)
   nsMNGDecoder* decoder = container->mDecoder;
 
   if (decoder->mObserver)
-    decoder->mObserver->OnStartDecode(nsnull, nsnull);
+    decoder->mObserver->OnStartDecode(nsnull);
 
   if(decoder->mImageContainer)
     decoder->mImageContainer->Init(width, 
@@ -338,7 +335,6 @@ il_mng_processheader(mng_handle handle, mng_uint32 width, mng_uint32 height)
 
   if (decoder->mObserver)
     decoder->mObserver->OnStartContainer(nsnull, 
-                                         nsnull, 
                                          decoder->mImageContainer);
 
   // initalize the frame and append it to the container
@@ -352,7 +348,7 @@ il_mng_processheader(mng_handle handle, mng_uint32 width, mng_uint32 height)
   decoder->mImageContainer->AppendFrame(decoder->mImageFrame);
     
   if (decoder->mObserver)
-    decoder->mObserver->OnStartFrame(nsnull, nsnull, decoder->mImageFrame);
+    decoder->mObserver->OnStartFrame(nsnull, decoder->mImageFrame);
 
   container->mFrame->GetImageBytesPerRow(&container->mByteWidth);
   container->mFrame->GetAlphaBytesPerRow(&container->mByteWidthAlpha);
@@ -399,7 +395,7 @@ il_mng_refresh(mng_handle handle,
   container->mFrame->GetAlphaBytesPerRow(&abpr);
 
 // stupid Mac code that shouldn't be in the image decoders...
-#if defined(XP_MAC) || defined(XP_MACOSX) || defined(XP_PC) || defined(XP_BEOS) || defined(MOZ_WIDGET_PHOTON)
+#if defined(XP_MAC) || defined(XP_MACOSX) || defined(XP_WIN) || defined(XP_OS2) || defined(XP_BEOS) || defined(MOZ_WIDGET_PHOTON)
   PRInt32 iwidth;
   container->mFrame->GetWidth(&iwidth);
   PRUint8 *buf = (PRUint8 *)nsMemory::Alloc(bpr);
@@ -421,7 +417,7 @@ il_mng_refresh(mng_handle handle,
       *cptr++ = *row++;
     }
     container->mFrame->SetImageData(buf, bpr, bpr*y);
-#elif defined(XP_PC) || defined(XP_BEOS) || defined(MOZ_WIDGET_PHOTON)
+#elif defined(XP_WIN) || defined(XP_OS2) || defined(XP_BEOS) || defined(MOZ_WIDGET_PHOTON)
     PRUint8 *cptr = buf;
     PRUint8 *row = container->image+y*container->mByteWidth;
     for (PRUint32 x=0; x<iwidth; x++) {
@@ -438,7 +434,7 @@ il_mng_refresh(mng_handle handle,
 			 bpr*y);
 #endif
   }
-#if defined(XP_MAC) || defined(XP_MACOSX) || defined(XP_PC) || defined(XP_BEOS) || defined(MOZ_WIDGET_PHOTON)
+#if defined(XP_MAC) || defined(XP_MACOSX) || defined(XP_WIN) || defined(XP_OS2) || defined(XP_BEOS) || defined(MOZ_WIDGET_PHOTON)
   nsMemory::Free(buf);
 #endif
 
@@ -447,7 +443,7 @@ il_mng_refresh(mng_handle handle,
   nsCOMPtr<imgIDecoderObserver>
     ob(do_QueryReferent(container->mObserver));
   if (ob)
-    ob->OnDataAvailable(nsnull, nsnull, container->mFrame, &r);
+    ob->OnDataAvailable(nsnull, container->mFrame, &r);
 
   nsCOMPtr<imgIContainerObserver> 
     observer(do_QueryReferent(container->mObserver));
@@ -457,7 +453,7 @@ il_mng_refresh(mng_handle handle,
     container->mFrame->GetRect(dirtyRect);
 
     // do notification to FE to draw this frame
-    observer->FrameChanged(container, nsnull, container->mFrame, &dirtyRect);
+    observer->FrameChanged(container, container->mFrame, &dirtyRect);
   }
 
   return MNG_TRUE;

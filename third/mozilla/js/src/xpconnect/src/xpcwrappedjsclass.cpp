@@ -43,10 +43,17 @@ NS_IMPL_THREADSAFE_ISUPPORTS1(nsXPCWrappedJSClass, nsIXPCWrappedJSClass)
 // the value of this variable is never used - we use its address as a sentinel
 static uint32 zero_methods_descriptor;
 
-JSExceptionState* xpc_DoPreScriptEvaluated(JSContext* cx)
+void AutoScriptEvaluate::StartEvaluating(JSErrorReporter errorReporter)
 {
-    if(JS_GetContextThread(cx))
-        JS_BeginRequest(cx);
+    NS_PRECONDITION(!mEvaluated, "AutoScriptEvaluate::Evaluate should only be called once");
+
+    if(!mJSContext)
+        return;
+    mEvaluated = PR_TRUE;
+    mOldErrorReporter = JS_SetErrorReporter(mJSContext, errorReporter);
+    mContextHasThread = JS_GetContextThread(mJSContext);
+    if (mContextHasThread)
+        JS_BeginRequest(mJSContext);
 
     // Saving the exception state keeps us from interfering with another script
     // that may also be running on this context.  This occurred first with the
@@ -58,24 +65,24 @@ JSExceptionState* xpc_DoPreScriptEvaluated(JSContext* cx)
     // and addroot, we avoid them if possible by returning null (as opposed to
     // a JSExceptionState with no information) when there is no pending
     // exception.
-    if(JS_IsExceptionPending(cx))
+    if(JS_IsExceptionPending(mJSContext))
     {
-        JSExceptionState* state = JS_SaveExceptionState(cx);
-        JS_ClearPendingException(cx);
-        return state;
+        mState = JS_SaveExceptionState(mJSContext);
+        JS_ClearPendingException(mJSContext);
     }
-    return nsnull;
 }
 
-void xpc_DoPostScriptEvaluated(JSContext* cx, JSExceptionState* state)
+AutoScriptEvaluate::~AutoScriptEvaluate()
 {
-    if(state)
-        JS_RestoreExceptionState(cx, state);
+    if(!mJSContext || !mEvaluated)
+        return;
+    if(mState)
+        JS_RestoreExceptionState(mJSContext, mState);
     else
-        JS_ClearPendingException(cx);
+        JS_ClearPendingException(mJSContext);
 
-    if(JS_GetContextThread(cx))
-        JS_EndRequest(cx);
+    if(mContextHasThread)
+        JS_EndRequest(mJSContext);
 
     // If this is a JSContext that has a private context that provides a
     // nsIXPCScriptNotify interface, then notify the object the script has
@@ -85,17 +92,15 @@ void xpc_DoPostScriptEvaluated(JSContext* cx, JSExceptionState* state)
     // private data that points to an nsISupports subclass, it has also set
     // the JSOPTION_PRIVATE_IS_NSISUPPORTS option.
 
-    nsISupports *supports =
-        (JS_GetOptions(cx) & JSOPTION_PRIVATE_IS_NSISUPPORTS)
-        ? NS_STATIC_CAST(nsISupports*, JS_GetContextPrivate(cx))
-        : nsnull;
-    if(supports)
+    if (JS_GetOptions(mJSContext) & JSOPTION_PRIVATE_IS_NSISUPPORTS)
     {
         nsCOMPtr<nsIXPCScriptNotify> scriptNotify = 
-            do_QueryInterface(supports);
+            do_QueryInterface(NS_STATIC_CAST(nsISupports*,
+                                             JS_GetContextPrivate(mJSContext)));
         if(scriptNotify)
             scriptNotify->ScriptExecuted();
     }
+    JS_SetErrorReporter(mJSContext, mOldErrorReporter);
 }
 
 // It turns out that some errors may be not worth reporting. So, this
@@ -160,7 +165,6 @@ nsXPCWrappedJSClass::nsXPCWrappedJSClass(XPCCallContext& ccx, REFNSIID aIID,
       mDescriptors(nsnull)
 {
     NS_ADDREF(mInfo);
-    NS_INIT_ISUPPORTS();
     NS_ADDREF_THIS();
 
     {   // scoped lock
@@ -249,12 +253,12 @@ nsXPCWrappedJSClass::CallQueryInterfaceOnJSObject(XPCCallContext& ccx,
 
     // OK, it looks like we'll be calling into JS code.
 
-    JSExceptionState* saved_exception = xpc_DoPreScriptEvaluated(cx);
+    AutoScriptEvaluate scriptEval(cx);
 
-    // XXX we should install an error reporter that will sent reports to
+    // XXX we should install an error reporter that will send reports to
     // the JS error console service.
+    scriptEval.StartEvaluating();
 
-    JSErrorReporter older = JS_SetErrorReporter(cx, nsnull);
     id = xpc_NewIDObject(cx, jsobj, aIID);
     if(id)
     {
@@ -264,9 +268,6 @@ nsXPCWrappedJSClass::CallQueryInterfaceOnJSObject(XPCCallContext& ccx,
 
     if(success)
         success = JS_ValueToObject(cx, retval, &retObj);
-    JS_SetErrorReporter(cx, older);
-
-    xpc_DoPostScriptEvaluated(cx, saved_exception);
 
     return success ? retObj : nsnull;
 }
@@ -300,14 +301,11 @@ nsXPCWrappedJSClass::GetNamedPropertyAsVariant(XPCCallContext& ccx,
     jsid id;
     nsresult rv;
 
-    JSExceptionState* saved_exception = xpc_DoPreScriptEvaluated(cx);
-    JSErrorReporter older = JS_SetErrorReporter(cx, nsnull);
+    AutoScriptEvaluate scriptEval(cx);
+    scriptEval.StartEvaluating();
 
     ok = JS_ValueToId(cx, aName, &id) && 
          GetNamedPropertyAsVariantRaw(ccx, aJSObj, id, aResult, &rv);
-
-    JS_SetErrorReporter(cx, older);
-    xpc_DoPostScriptEvaluated(cx, saved_exception);
 
     return ok ? NS_OK : NS_FAILED(rv) ? rv : NS_ERROR_FAILURE;
 }
@@ -327,8 +325,8 @@ nsXPCWrappedJSClass::BuildPropertyEnumerator(XPCCallContext& ccx,
     int i;
 
     // Saved state must be restored, all exits through 'out'...
-    JSExceptionState* saved_exception = xpc_DoPreScriptEvaluated(cx);
-    JSErrorReporter older = JS_SetErrorReporter(cx, nsnull);
+    AutoScriptEvaluate scriptEval(cx);
+    scriptEval.StartEvaluating();
 
     idArray = JS_Enumerate(cx, aJSObj);
     if(!idArray)
@@ -379,8 +377,6 @@ out:
     NS_IF_RELEASE(enumerator);
     if(idArray)
         JS_DestroyIdArray(cx, idArray);
-    JS_SetErrorReporter(cx, older);
-    xpc_DoPostScriptEvaluated(cx, saved_exception);
 
     return retval;
 }
@@ -393,7 +389,6 @@ xpcProperty::xpcProperty(const PRUnichar* aName, PRUint32 aNameLen,
                          nsIVariant* aValue)
     : mName(aName, aNameLen), mValue(aValue)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 /* readonly attribute AString name; */
@@ -417,7 +412,6 @@ NS_IMPL_ISUPPORTS1(xpcPropertyBagEnumerator, nsISimpleEnumerator)
 xpcPropertyBagEnumerator::xpcPropertyBagEnumerator(PRUint32 count)
     : mIndex(0), mCount(0)
 {
-    NS_INIT_ISUPPORTS();
     mArray.SizeTo(count);
 }
 
@@ -800,6 +794,150 @@ nsXPCWrappedJSClass::CleanupPointerTypeObject(const nsXPTType& type,
     }
 }
 
+nsresult
+nsXPCWrappedJSClass::CheckForException(XPCCallContext & ccx,
+                                       const char * aPropertyName,
+                                       const char * anInterfaceName)
+{
+    XPCContext * xpcc = ccx.GetXPCContext();
+    JSContext * cx = ccx.GetJSContext();
+    nsCOMPtr<nsIException> xpc_exception;
+    /* this one would be set by our error reporter */
+
+    xpcc->GetException(getter_AddRefs(xpc_exception));
+    if(xpc_exception)
+        xpcc->SetException(nsnull);
+
+    // get this right away in case we do something below to cause JS code
+    // to run on this JSContext
+    nsresult pending_result = xpcc->GetPendingResult();
+
+    jsval js_exception;
+    /* JS might throw an expection whether the reporter was called or not */
+    if(JS_GetPendingException(cx, &js_exception))
+    {
+        if(!xpc_exception)
+            XPCConvert::JSValToXPCException(ccx, js_exception, anInterfaceName,
+                                            aPropertyName, getter_AddRefs(xpc_exception));
+
+        /* cleanup and set failed even if we can't build an exception */
+        if(!xpc_exception)
+        {
+            ccx.GetThreadData()->SetException(nsnull); // XXX necessary?
+        }
+        JS_ClearPendingException(cx);
+    }
+
+    if(xpc_exception)
+    {
+        nsresult e_result;
+        if(NS_SUCCEEDED(xpc_exception->GetResult(&e_result)))
+        {
+            if(xpc_IsReportableErrorCode(e_result))
+            {
+#ifdef DEBUG
+                static const char line[] =
+                    "************************************************************\n";
+                static const char preamble[] =
+                    "* Call to xpconnect wrapped JSObject produced this error:  *\n";
+                static const char cant_get_text[] =
+                    "FAILED TO GET TEXT FROM EXCEPTION\n";
+
+                printf(line);
+                printf(preamble);
+                char* text;
+                if(NS_SUCCEEDED(xpc_exception->ToString(&text)) && text)
+                {
+                    printf(text);
+                    printf("\n");
+                    nsMemory::Free(text);
+                }
+                else
+                    printf(cant_get_text);
+                printf(line);
+#endif
+
+                // Log the exception to the JS Console, so that users can do
+                // something with it.
+                nsCOMPtr<nsIConsoleService> consoleService
+                    (do_GetService(XPC_CONSOLE_CONTRACTID));
+                if(nsnull != consoleService)
+                {
+                    nsresult rv;
+                    nsCOMPtr<nsIScriptError> scriptError;
+                    nsCOMPtr<nsISupports> errorData;
+                    rv = xpc_exception->GetData(getter_AddRefs(errorData));
+                    if(NS_SUCCEEDED(rv))
+                        scriptError = do_QueryInterface(errorData);
+
+                    if(nsnull == scriptError)
+                    {
+                        // No luck getting one from the exception, so
+                        // try to cook one up.
+                        scriptError = do_CreateInstance(XPC_SCRIPT_ERROR_CONTRACTID);
+                        if(nsnull != scriptError)
+                        {
+                            char* exn_string;
+                            rv = xpc_exception->ToString(&exn_string);
+                            if(NS_SUCCEEDED(rv))
+                            {
+                                // use toString on the exception as the message
+                                nsAutoString newMessage;
+                                newMessage.AssignWithConversion(exn_string);
+                                nsMemory::Free((void *) exn_string);
+
+                                // try to get filename, lineno from the first
+                                // stack frame location.
+                                PRUnichar* sourceNameUni = nsnull;
+                                PRInt32 lineNumber = 0;
+                                nsXPIDLCString sourceName;
+
+                                nsCOMPtr<nsIStackFrame> location;
+                                xpc_exception->
+                                    GetLocation(getter_AddRefs(location));
+                                if(location)
+                                {
+                                    // Get line number w/o checking; 0 is ok.
+                                    location->GetLineNumber(&lineNumber);
+
+                                    // get a filename.
+                                    rv = location->GetFilename(getter_Copies(sourceName));
+                                }
+
+                                rv = scriptError->Init(newMessage.get(),
+                                                       NS_ConvertASCIItoUCS2(sourceName).get(),
+                                                       nsnull,
+                                                       lineNumber, 0, 0,
+                                                       "XPConnect JavaScript");
+                                if(NS_FAILED(rv))
+                                    scriptError = nsnull;
+                            }
+                        }
+                    }
+                    if(nsnull != scriptError)
+                        consoleService->LogMessage(scriptError);
+                }
+            }
+            // Whether or not it passes the 'reportable' test, it might
+            // still be an error and we have to do the right thing here...
+            if(NS_FAILED(e_result))
+            {
+                ccx.GetThreadData()->SetException(xpc_exception);
+                return e_result;
+            }
+        }
+    }
+    else
+    {
+        // see if JS code signaled failure result without throwing exception
+        if(NS_FAILED(pending_result))
+        {
+            return pending_result;
+        }
+    }
+    return NS_ERROR_FAILURE;
+}
+
 NS_IMETHODIMP
 nsXPCWrappedJSClass::CallMethod(nsXPCWrappedJS* wrapper, uint16 methodIndex,
                                 const nsXPTMethodInfo* info,
@@ -814,7 +952,6 @@ nsXPCWrappedJSClass::CallMethod(nsXPCWrappedJS* wrapper, uint16 methodIndex,
     uint8 paramCount=0;
     nsresult retval = NS_ERROR_FAILURE;
     nsresult pending_result = NS_OK;
-    JSErrorReporter older;
     JSBool success;
     JSBool readyToDoTheCall = JS_FALSE;
     nsID  param_iid;
@@ -822,14 +959,11 @@ nsXPCWrappedJSClass::CallMethod(nsXPCWrappedJS* wrapper, uint16 methodIndex,
     JSObject* obj;
     const char* name = info->GetName();
     jsval fval;
-    nsCOMPtr<nsIException> xpc_exception;
-    jsval js_exception;
     void* mark;
     JSBool foundDependentParam;
     XPCContext* xpcc;
     JSContext* cx;
     JSObject* thisObj;
-    JSExceptionState* saved_exception = nsnull;
 
     XPCCallContext ccx(NATIVE_CALLER);
     if(ccx.IsValid())
@@ -843,6 +977,7 @@ nsXPCWrappedJSClass::CallMethod(nsXPCWrappedJS* wrapper, uint16 methodIndex,
         cx = nsnull;
     }
 
+    AutoScriptEvaluate scriptEval(cx);
 #ifdef DEBUG_stats_jband
     PRIntervalTime startTime = PR_IntervalNow();
     PRIntervalTime endTime = 0;
@@ -862,13 +997,10 @@ nsXPCWrappedJSClass::CallMethod(nsXPCWrappedJS* wrapper, uint16 methodIndex,
     argc = paramCount -
             (paramCount && info->GetParam(paramCount-1).IsRetval() ? 1 : 0);
 
-    if(cx)
-        older = JS_SetErrorReporter(cx, xpcWrappedJSErrorReporter);
-
     if(!cx || !xpcc || !IsReflectable(methodIndex))
         goto pre_call_clean_up;
 
-    saved_exception = xpc_DoPreScriptEvaluated(cx);
+    scriptEval.StartEvaluating(xpcWrappedJSErrorReporter);
 
     xpcc->SetPendingResult(pending_result);
     xpcc->SetException(nsnull);
@@ -1225,147 +1357,15 @@ pre_call_clean_up:
             xpcc->SetException(e);
             if(sz)
                 JS_smprintf_free(sz);
-        }
-    }
-
-    /* this one would be set by our error reporter */
-
-    xpcc->GetException(getter_AddRefs(xpc_exception));
-    if(xpc_exception)
-        xpcc->SetException(nsnull);
-
-    // get this right away in case we do something below to cause JS code
-    // to run on this JSContext
-    pending_result = xpcc->GetPendingResult();
-
-    /* JS might throw an expection whether the reporter was called or not */
-    if(JS_GetPendingException(cx, &js_exception))
-    {
-        if(!xpc_exception)
-            XPCConvert::JSValToXPCException(ccx, js_exception, GetInterfaceName(),
-                                            name, getter_AddRefs(xpc_exception));
-
-        /* cleanup and set failed even if we can't build an exception */
-        if(!xpc_exception)
-        {
-            ccx.GetThreadData()->SetException(nsnull); // XXX necessary?
-            success = JS_FALSE;
-        }
-        JS_ClearPendingException(cx);
-    }
-
-    if(xpc_exception)
-    {
-        nsresult e_result;
-        if(NS_SUCCEEDED(xpc_exception->GetResult(&e_result)))
-        {
-            if(xpc_IsReportableErrorCode(e_result))
-            {
-#ifdef DEBUG
-                static const char line[] =
-                    "************************************************************\n";
-                static const char preamble[] =
-                    "* Call to xpconnect wrapped JSObject produced this error:  *\n";
-                static const char cant_get_text[] =
-                    "FAILED TO GET TEXT FROM EXCEPTION\n";
-
-                printf(line);
-                printf(preamble);
-                char* text;
-                if(NS_SUCCEEDED(xpc_exception->ToString(&text)) && text)
-                {
-                    printf(text);
-                    printf("\n");
-                    nsMemory::Free(text);
-                }
-                else
-                    printf(cant_get_text);
-                printf(line);
-#endif
-
-                // Log the exception to the JS Console, so that users can do
-                // something with it.
-                nsCOMPtr<nsIConsoleService> consoleService
-                    (do_GetService(XPC_CONSOLE_CONTRACTID));
-                if(nsnull != consoleService)
-                {
-                    nsresult rv;
-                    nsCOMPtr<nsIScriptError> scriptError;
-                    nsCOMPtr<nsISupports> errorData;
-                    rv = xpc_exception->GetData(getter_AddRefs(errorData));
-                    if(NS_SUCCEEDED(rv))
-                        scriptError = do_QueryInterface(errorData);
-
-                    if(nsnull == scriptError)
-                    {
-                        // No luck getting one from the exception, so
-                        // try to cook one up.
-                        scriptError = do_CreateInstance(XPC_SCRIPT_ERROR_CONTRACTID);
-                        if(nsnull != scriptError)
-                        {
-                            char* exn_string;
-                            rv = xpc_exception->ToString(&exn_string);
-                            if(NS_SUCCEEDED(rv))
-                            {
-                                // use toString on the exception as the message
-                                nsAutoString newMessage;
-                                newMessage.AssignWithConversion(exn_string);
-                                nsMemory::Free((void *) exn_string);
-
-                                // try to get filename, lineno from the first
-                                // stack frame location.
-                                PRUnichar* sourceNameUni = nsnull;
-                                PRInt32 lineNumber = 0;
-                                nsXPIDLCString sourceName;
-
-                                nsCOMPtr<nsIStackFrame> location;
-                                xpc_exception->
-                                    GetLocation(getter_AddRefs(location));
-                                if(location)
-                                {
-                                    // Get line number w/o checking; 0 is ok.
-                                    location->GetLineNumber(&lineNumber);
-
-                                    // get a filename.
-                                    rv = location->GetFilename(getter_Copies(sourceName));
-                                }
-
-                                rv = scriptError->Init(newMessage.get(),
-                                                       NS_ConvertASCIItoUCS2(sourceName).get(),
-                                                       nsnull,
-                                                       lineNumber, 0, 0,
-                                                       "XPConnect JavaScript");
-                                if(NS_FAILED(rv))
-                                    scriptError = nsnull;
-                            }
-                        }
-                    }
-                    if(nsnull != scriptError)
-                        consoleService->LogMessage(scriptError);
-                }
-            }
-            // Whether or not it passes the 'reportable' test, it might
-            // still be an error and we have to do the right thing here...
-            if(NS_FAILED(e_result))
-            {
-                ccx.GetThreadData()->SetException(xpc_exception);
-                retval = e_result;
-            }
-        }
-        success = JS_FALSE;
-    }
-    else
-    {
-        // see if JS code signaled failure result without throwing exception
-        if(NS_FAILED(pending_result))
-        {
-            retval = pending_result;
             success = JS_FALSE;
         }
     }
 
-    if(!success)
+    if (!success)
+    {
+        retval = CheckForException(ccx, name, GetInterfaceName());
         goto done;
+    }
 
     ccx.GetThreadData()->SetException(nsnull); // XXX necessary?
 
@@ -1571,12 +1571,6 @@ pre_call_clean_up:
 done:
     if(sp)
         js_FreeStack(cx, mark);
-
-    if(cx)
-    {
-        JS_SetErrorReporter(cx, older);
-        xpc_DoPostScriptEvaluated(cx, saved_exception);
-    }
 
 #ifdef DEBUG_stats_jband
     endTime = PR_IntervalNow();

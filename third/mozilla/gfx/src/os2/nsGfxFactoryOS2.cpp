@@ -57,6 +57,9 @@
 #include "nsPrintSession.h"
 #include "gfxImageFrame.h"
 
+#include "nsOS2Uni.h"
+#include "nsPaletteOS2.h"
+
 // objects that just require generic constructors
 
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsFontMetricsOS2)
@@ -203,6 +206,7 @@ PR_STATIC_CALLBACK(void)
 nsGfxOS2ModuleDtor(nsIModule *self)
 {
   OS2Uni::FreeUconvObjects();
+  nsPaletteOS2::FreeGlobalPalette();
 //  nsRenderingContextOS2::Shutdown();
 }
 

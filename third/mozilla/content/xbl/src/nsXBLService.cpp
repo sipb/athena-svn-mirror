@@ -42,7 +42,6 @@
 #include "nsCOMPtr.h"
 #include "nsNetUtil.h"
 #include "nsXBLService.h"
-#include "nsIXBLPrototypeHandler.h"
 #include "nsXBLWindowKeyHandler.h"
 #include "nsXBLWindowDragHandler.h"
 #include "nsIInputStream.h"
@@ -72,7 +71,7 @@
 #include "nsIDOMNodeList.h"
 #include "nsXBLContentSink.h"
 #include "nsIXBLBinding.h"
-#include "nsIXBLPrototypeBinding.h"
+#include "nsXBLPrototypeBinding.h"
 #include "nsIXBLDocumentInfo.h"
 #include "nsXBLAtoms.h"
 #include "nsXULAtoms.h"
@@ -80,20 +79,22 @@
 #include "nsContentUtils.h"
 #include "nsISyncLoadDOMService.h"
 
-#include "nsIXBLPrototypeHandler.h"
-
-#include "nsIPref.h"
+#include "nsIPrefBranch.h"
+#include "nsIPrefService.h"
 
 #include "nsIPresShell.h"
 #include "nsIDocumentObserver.h"
 #include "nsIFrameManager.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
+#include "nsIScriptSecurityManager.h"
 
+#ifdef MOZ_XUL
 #include "nsIXULPrototypeCache.h"
+#endif
 #include "nsIDOMLoadListener.h"
+#include "nsIDOMEventGroup.h"
 
 // Static IIDs/CIDs. Try to minimize these.
-static NS_DEFINE_CID(kNameSpaceManagerCID,        NS_NAMESPACEMANAGER_CID);
 static NS_DEFINE_CID(kXMLDocumentCID,             NS_XMLDOCUMENT_CID);
 
 static PRBool IsChromeOrResourceURI(nsIURI* aURI)
@@ -173,8 +174,7 @@ public:
         // Check to see if it's in the undisplayed content map.
         nsCOMPtr<nsIFrameManager> frameManager;
         shell->GetFrameManager(getter_AddRefs(frameManager));
-        nsCOMPtr<nsIStyleContext> sc;
-        frameManager->GetUndisplayedContent(mBoundElement, getter_AddRefs(sc));
+        nsStyleContext* sc = frameManager->GetUndisplayedContent(mBoundElement);
         if (!sc) {
           nsCOMPtr<nsIDocumentObserver> obs(do_QueryInterface(shell));
           obs->ContentInserted(doc, parent, mBoundElement, index);
@@ -194,9 +194,7 @@ protected:
 
     gRefCnt++;
     if (gRefCnt == 1) {
-      nsServiceManager::GetService("@mozilla.org/xbl;1",
-                                   NS_GET_IID(nsIXBLService),
-                                   (nsISupports**) &gXBLService);
+      CallGetService("@mozilla.org/xbl;1", &gXBLService);
     }
   }
 
@@ -204,8 +202,7 @@ protected:
   {
     gRefCnt--;
     if (gRefCnt == 0) {
-      nsServiceManager::ReleaseService("@mozilla.org/xbl;1", gXBLService);
-      gXBLService = nsnull;
+      NS_IF_RELEASE(gXBLService);
     }
   }
 
@@ -243,8 +240,10 @@ public:
   NS_IMETHOD Error(nsIDOMEvent* aEvent) { return NS_OK; };
   NS_IMETHOD HandleEvent(nsIDOMEvent* aEvent) { return NS_OK; };
 
+#ifdef MOZ_XUL
   static nsIXULPrototypeCache* gXULCache;
   static PRInt32 gRefCnt;
+#endif
 
   nsXBLStreamListener(nsXBLService* aXBLService, nsIStreamListener* aInner, nsIDocument* aDocument, nsIDocument* aBindingDocument);
   virtual ~nsXBLStreamListener();
@@ -262,8 +261,10 @@ private:
   nsCOMPtr<nsIDocument> mBindingDocument;
 };
 
+#ifdef MOZ_XUL
 nsIXULPrototypeCache* nsXBLStreamListener::gXULCache = nsnull;
 PRInt32 nsXBLStreamListener::gRefCnt = 0;
+#endif
 
 /* Implementation file */
 NS_IMPL_ISUPPORTS4(nsXBLStreamListener, nsIStreamListener, nsIRequestObserver, nsIDOMLoadListener, nsIDOMEventListener)
@@ -272,32 +273,30 @@ nsXBLStreamListener::nsXBLStreamListener(nsXBLService* aXBLService,
                                          nsIStreamListener* aInner, nsIDocument* aDocument,
                                          nsIDocument* aBindingDocument)
 {
-  NS_INIT_ISUPPORTS();
   /* member initializers and constructor code */
   mXBLService = aXBLService;
   mInner = aInner;
   mDocument = getter_AddRefs(NS_GetWeakReference(aDocument));
   mBindingDocument = aBindingDocument;
+#ifdef MOZ_XUL
   gRefCnt++;
   if (gRefCnt == 1) {
-    nsresult rv;
-    rv = nsServiceManager::GetService("@mozilla.org/xul/xul-prototype-cache;1",
-                                      NS_GET_IID(nsIXULPrototypeCache),
-                                      (nsISupports**) &gXULCache);
+    nsresult rv = CallGetService("@mozilla.org/xul/xul-prototype-cache;1",
+                                 &gXULCache);
     if (NS_FAILED(rv)) return;
   }
+#endif
 }
 
 nsXBLStreamListener::~nsXBLStreamListener()
 {
+#ifdef MOZ_XUL
   /* destructor code */
   gRefCnt--;
   if (gRefCnt == 0) {
-    if (gXULCache) {
-      nsServiceManager::ReleaseService("@mozilla.org/xul/xul-prototype-cache;1", gXULCache);
-      gXULCache = nsnull;
-    }
+    NS_IF_RELEASE(gXULCache);
   }
+#endif
 }
 
 NS_IMETHODIMP
@@ -422,6 +421,7 @@ nsXBLStreamListener::Load(nsIDOMEvent* aEvent)
 
     // If the doc is a chrome URI, then we put it into the XUL cache.
     PRBool cached = PR_FALSE;
+#ifdef MOZ_XUL
     if (IsChromeOrResourceURI(uri)) {
       PRBool useXULCache;
       gXULCache->GetEnabled(&useXULCache);
@@ -430,6 +430,7 @@ nsXBLStreamListener::Load(nsIDOMEvent* aEvent)
         gXULCache->PutXBLDocumentInfo(info);
       }
     }
+#endif
   
     if (!cached)
       bindingManager->PutXBLDocumentInfo(info);
@@ -472,18 +473,15 @@ nsXBLStreamListener::Load(nsIDOMEvent* aEvent)
 
 // Static member variable initialization
 PRUint32 nsXBLService::gRefCnt = 0;
+#ifdef MOZ_XUL
 nsIXULPrototypeCache* nsXBLService::gXULCache = nsnull;
- 
-nsINameSpaceManager* nsXBLService::gNameSpaceManager = nsnull;
+#endif
  
 nsHashtable* nsXBLService::gClassTable = nsnull;
 
 JSCList  nsXBLService::gClassLRUList = JS_INIT_STATIC_CLIST(&nsXBLService::gClassLRUList);
 PRUint32 nsXBLService::gClassLRUListLength = 0;
 PRUint32 nsXBLService::gClassLRUListQuota = 64;
-
-nsIAtom* nsXBLService::kEventAtom = nsnull;
-nsIAtom* nsXBLService::kInputAtom = nsnull;
 
 // Enabled by default. Must be over-ridden to disable
 PRBool nsXBLService::gDisableChromeCache = PR_FALSE;
@@ -495,33 +493,20 @@ NS_IMPL_ISUPPORTS3(nsXBLService, nsIXBLService, nsIObserver, nsISupportsWeakRefe
 // Constructors/Destructors
 nsXBLService::nsXBLService(void)
 {
-  NS_INIT_ISUPPORTS();
   mPool.Init("XBL Binding Requests", kBucketSizes, kNumBuckets, kInitialSize);
 
   gRefCnt++;
   if (gRefCnt == 1) {
-    nsresult rv = nsComponentManager::CreateInstance(kNameSpaceManagerCID,
-                                                     nsnull,
-                                                     NS_GET_IID(nsINameSpaceManager),
-                                                     (void**) &gNameSpaceManager);
-    NS_ASSERTION(NS_SUCCEEDED(rv), "unable to create namespace manager");
-    if (NS_FAILED(rv)) return;
-    
-    // Create our atoms
-    kEventAtom = NS_NewAtom("event");
-    kInputAtom = NS_NewAtom("input");
-
-    // Find out if the XUL cache is on or off
-    nsCOMPtr<nsIPref> prefs(do_GetService(NS_PREF_CONTRACTID, &rv));
-    if (NS_SUCCEEDED(rv))
-      prefs->GetBoolPref(kDisableChromeCachePref, &gDisableChromeCache);
-
     gClassTable = new nsHashtable();
 
-    rv = nsServiceManager::GetService("@mozilla.org/xul/xul-prototype-cache;1",
-                                      NS_GET_IID(nsIXULPrototypeCache),
-                                      (nsISupports**) &gXULCache);
-    if (NS_FAILED(rv)) return;
+#ifdef MOZ_XUL
+    // Find out if the XUL cache is on or off
+    nsCOMPtr<nsIPrefBranch> prefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID));
+    if (prefBranch)
+      prefBranch->GetBoolPref(kDisableChromeCachePref, &gDisableChromeCache);
+
+    CallGetService("@mozilla.org/xul/xul-prototype-cache;1", &gXULCache);
+#endif
   }
 }
 
@@ -529,12 +514,6 @@ nsXBLService::~nsXBLService(void)
 {
   gRefCnt--;
   if (gRefCnt == 0) {
-    NS_IF_RELEASE(gNameSpaceManager);
-    
-    // Release our atoms
-    NS_RELEASE(kEventAtom);
-    NS_RELEASE(kInputAtom);
-
     // Walk the LRU list removing and deleting the nsXBLJSClasses.
     FlushMemory();
 
@@ -548,10 +527,9 @@ nsXBLService::~nsXBLService(void)
     delete gClassTable;
     gClassTable = nsnull;
 
-    if (gXULCache) {
-      nsServiceManager::ReleaseService("@mozilla.org/xul/xul-prototype-cache;1", gXULCache);
-      gXULCache = nsnull;
-    }
+#ifdef MOZ_XUL
+    NS_IF_RELEASE(gXULCache);
+#endif
   }
 }
 
@@ -602,6 +580,27 @@ nsXBLService::LoadBindings(nsIContent* aContent, const nsAString& aURL, PRBool a
     }
   }
 
+  // Security check - remote pages can't load local bindings, except from chrome
+  nsCOMPtr<nsIURI> docURI;
+  rv = document->GetDocumentURL(getter_AddRefs(docURI));
+  NS_ENSURE_SUCCESS(rv, rv); //XXX can a document have no URI here?
+  PRBool isChrome = PR_FALSE;
+  rv = docURI->SchemeIs("chrome", &isChrome);
+
+  if (NS_FAILED(rv) || !isChrome) {
+    nsCOMPtr<nsIURI> bindingURI;
+    rv = NS_NewURI(getter_AddRefs(bindingURI), aURL);
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    nsCOMPtr<nsIScriptSecurityManager> secMan(
+      do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &rv));
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    rv = secMan->CheckLoadURI(docURI, bindingURI,
+                              nsIScriptSecurityManager::ALLOW_CHROME);
+    if (NS_FAILED(rv))
+      return rv;
+  }
   nsCOMPtr<nsIXBLBinding> newBinding;
   nsCAutoString url; url.AssignWithConversion(aURL);
   if (NS_FAILED(rv = GetBinding(aContent, url, getter_AddRefs(newBinding)))) {
@@ -665,7 +664,7 @@ nsXBLService::LoadBindings(nsIContent* aContent, const nsAString& aURL, PRBool a
   return NS_OK; 
 }
 
-NS_IMETHODIMP
+nsresult
 nsXBLService::FlushStyleBindings(nsIContent* aContent)
 {
   nsCOMPtr<nsIDocument> document;
@@ -718,11 +717,12 @@ nsXBLService::ResolveTag(nsIContent* aContent, PRInt32* aNameSpaceID, nsIAtom** 
   return NS_OK;
 }
 
-NS_IMETHODIMP
+nsresult
 nsXBLService::GetXBLDocumentInfo(const nsCString& aURLStr, nsIContent* aBoundElement, nsIXBLDocumentInfo** aResult)
 {
   *aResult = nsnull;
 
+#ifdef MOZ_XUL
   PRBool useXULCache;
   gXULCache->GetEnabled(&useXULCache);
   if (useXULCache) {
@@ -731,6 +731,7 @@ nsXBLService::GetXBLDocumentInfo(const nsCString& aURLStr, nsIContent* aBoundEle
     // part of chrome will be reused across all XUL documents.
     gXULCache->GetXBLDocumentInfo(aURLStr, aResult);
   }
+#endif
 
   if (!*aResult) {
     // The second line of defense is the binding manager's document table.
@@ -779,9 +780,16 @@ nsXBLService::AttachGlobalKeyHandler(nsIDOMEventReceiver* aReceiver)
     return NS_ERROR_FAILURE;
 
   // listen to these events
-  rec->AddEventListener(NS_LITERAL_STRING("keydown"), handler, PR_FALSE);
-  rec->AddEventListener(NS_LITERAL_STRING("keyup"), handler, PR_FALSE);
-  rec->AddEventListener(NS_LITERAL_STRING("keypress"), handler, PR_FALSE);
+  nsCOMPtr<nsIDOMEventGroup> systemGroup;
+  rec->GetSystemEventGroup(getter_AddRefs(systemGroup));
+  nsCOMPtr<nsIDOM3EventTarget> target = do_QueryInterface(rec);
+
+  target->AddGroupedEventListener(NS_LITERAL_STRING("keydown"), handler,
+                                  PR_FALSE, systemGroup);
+  target->AddGroupedEventListener(NS_LITERAL_STRING("keyup"), handler, 
+                                  PR_FALSE, systemGroup);
+  target->AddGroupedEventListener(NS_LITERAL_STRING("keypress"), handler, 
+                                  PR_FALSE, systemGroup);
 
   // Release.  Do this so that only the event receiver holds onto the key handler.
   NS_RELEASE(handler);
@@ -805,12 +813,21 @@ nsXBLService::AttachGlobalDragHandler(nsIDOMEventReceiver* aReceiver)
   if (!handler)
     return NS_ERROR_FAILURE;
 
+  nsCOMPtr<nsIDOMEventGroup> systemGroup;
+  aReceiver->GetSystemEventGroup(getter_AddRefs(systemGroup));
+  nsCOMPtr<nsIDOM3EventTarget> target = do_QueryInterface(aReceiver);
+
   // listen to these events
-  aReceiver->AddEventListener(NS_LITERAL_STRING("draggesture"), handler, PR_FALSE);
-  aReceiver->AddEventListener(NS_LITERAL_STRING("dragenter"), handler, PR_FALSE);
-  aReceiver->AddEventListener(NS_LITERAL_STRING("dragexit"), handler, PR_FALSE);
-  aReceiver->AddEventListener(NS_LITERAL_STRING("dragover"), handler, PR_FALSE);
-  aReceiver->AddEventListener(NS_LITERAL_STRING("dragdrop"), handler, PR_FALSE);
+  target->AddGroupedEventListener(NS_LITERAL_STRING("draggesture"), handler,
+                                  PR_FALSE, systemGroup);
+  target->AddGroupedEventListener(NS_LITERAL_STRING("dragenter"), handler,
+                                  PR_FALSE, systemGroup);
+  target->AddGroupedEventListener(NS_LITERAL_STRING("dragexit"), handler,
+                                  PR_FALSE, systemGroup);
+  target->AddGroupedEventListener(NS_LITERAL_STRING("dragover"), handler,
+                                  PR_FALSE, systemGroup);
+  target->AddGroupedEventListener(NS_LITERAL_STRING("dragdrop"), handler,
+                                  PR_FALSE, systemGroup);
 
   // Release.  Do this so that only the event receiver holds onto the handler.
   NS_RELEASE(handler);
@@ -845,7 +862,7 @@ nsXBLService::FlushMemory()
 
 // Internal helper methods ////////////////////////////////////////////////////////////////
 
-NS_IMETHODIMP nsXBLService::GetBinding(nsIContent* aBoundElement, 
+nsresult nsXBLService::GetBinding(nsIContent* aBoundElement, 
                                        const nsCString& aURLStr, 
                                        nsIXBLBinding** aResult)
 {
@@ -885,7 +902,7 @@ NS_IMETHODIMP nsXBLService::GetBindingInternal(nsIContent* aBoundElement,
 
   nsCOMPtr<nsIDocument> boundDocument;
   aBoundElement->GetDocument(*getter_AddRefs(boundDocument));
-    
+
   nsCOMPtr<nsIXBLDocumentInfo> docInfo;
   LoadBindingDocumentInfo(aBoundElement, boundDocument, uri, ref, PR_FALSE, getter_AddRefs(docInfo));
   if (!docInfo)
@@ -897,19 +914,17 @@ NS_IMETHODIMP nsXBLService::GetBindingInternal(nsIContent* aBoundElement,
   PRBool allowScripts;
   docInfo->GetScriptAccess(&allowScripts);
 
-  nsCOMPtr<nsIXBLPrototypeBinding> protoBinding;
-  docInfo->GetPrototypeBinding(ref, getter_AddRefs(protoBinding));
+  nsXBLPrototypeBinding* protoBinding;
+  docInfo->GetPrototypeBinding(ref, &protoBinding);
 
   NS_ASSERTION(protoBinding, "Unable to locate an XBL binding.");
   if (!protoBinding)
     return NS_ERROR_FAILURE;
 
-  nsCOMPtr<nsIContent> child;
-  protoBinding->GetBindingElement(getter_AddRefs(child));
+  nsCOMPtr<nsIContent> child = protoBinding->GetBindingElement();
 
   // Our prototype binding must have all its resources loaded.
-  PRBool ready;
-  protoBinding->LoadResources(&ready);
+  PRBool ready = protoBinding->LoadResources();
   if (!ready) {
     // Add our bound element to the protos list of elts that should
     // be notified when the stylesheets and scripts finish loading.
@@ -919,10 +934,8 @@ NS_IMETHODIMP nsXBLService::GetBindingInternal(nsIContent* aBoundElement,
 
   // If our prototype already has a base, then don't check for an "extends" attribute.
   nsCOMPtr<nsIXBLBinding> baseBinding;
-  nsCOMPtr<nsIXBLPrototypeBinding> baseProto;
-  PRBool hasBase;
-  protoBinding->HasBasePrototype(&hasBase);
-  protoBinding->GetBasePrototype(getter_AddRefs(baseProto));
+  PRBool hasBase = protoBinding->HasBasePrototype();
+  nsXBLPrototypeBinding* baseProto = protoBinding->GetBasePrototype();
   if (baseProto) {
     nsCAutoString url;
     baseProto->GetBindingURI(url);
@@ -964,7 +977,7 @@ NS_IMETHODIMP nsXBLService::GetBindingInternal(nsIContent* aBoundElement,
       nsAutoString nameSpace;
 
       if (!prefix.IsEmpty()) {
-        nsCOMPtr<nsIAtom> prefixAtom = getter_AddRefs(NS_NewAtom(prefix));
+        nsCOMPtr<nsIAtom> prefixAtom = do_GetAtom(prefix);
 
         nsCOMPtr<nsIDOM3Node> node(do_QueryInterface(child));
 
@@ -981,9 +994,10 @@ NS_IMETHODIMP nsXBLService::GetBindingInternal(nsIContent* aBoundElement,
 
             PRInt32 nameSpaceID;
 
-            gNameSpaceManager->GetNameSpaceID(nameSpace, nameSpaceID);
+            nsContentUtils::GetNSManagerWeakRef()->GetNameSpaceID(nameSpace,
+                                                                  nameSpaceID);
 
-            nsCOMPtr<nsIAtom> tagName = getter_AddRefs(NS_NewAtom(display));
+            nsCOMPtr<nsIAtom> tagName = do_GetAtom(display);
             protoBinding->SetBaseTag(nameSpaceID, tagName);
           }
         }
@@ -1001,7 +1015,7 @@ NS_IMETHODIMP nsXBLService::GetBindingInternal(nsIContent* aBoundElement,
           return NS_ERROR_FAILURE; // Binding not yet ready or an error occurred.
         if (!aPeekOnly) {
           // Make sure to set the base prototype.
-          baseBinding->GetPrototypeBinding(getter_AddRefs(baseProto));
+          baseBinding->GetPrototypeBinding(&baseProto);
           protoBinding->SetBasePrototype(baseProto);
           child->UnsetAttr(kNameSpaceID_None, nsXBLAtoms::extends, PR_FALSE);
           child->UnsetAttr(kNameSpaceID_None, nsXBLAtoms::display, PR_FALSE);
@@ -1029,18 +1043,20 @@ nsXBLService::LoadBindingDocumentInfo(nsIContent* aBoundElement, nsIDocument* aB
   nsresult rv = NS_OK;
 
   *aResult = nsnull;
+  nsCOMPtr<nsIXBLDocumentInfo> info;
 
+#ifdef MOZ_XUL
   // We've got a file.  Check our XBL document cache.
   PRBool useXULCache;
   gXULCache->GetEnabled(&useXULCache);
 
-  nsCOMPtr<nsIXBLDocumentInfo> info;
   if (useXULCache) {
     // The first line of defense is the chrome cache.  
     // This cache crosses the entire product, so that any XBL bindings that are
     // part of chrome will be reused across all XUL documents.
     gXULCache->GetXBLDocumentInfo(aURLStr, getter_AddRefs(info));
   }
+#endif
 
   if (!info) {
     // The second line of defense is the binding manager's document table.
@@ -1057,7 +1073,7 @@ nsXBLService::LoadBindingDocumentInfo(nsIContent* aBoundElement, nsIDocument* aB
     if (!info && bindingManager &&
         (tagName != nsXULAtoms::scrollbar) &&
         (tagName != nsXULAtoms::thumb) &&
-        (tagName != kInputAtom) &&
+        (tagName != nsHTMLAtoms::input) &&
         (tagName != nsHTMLAtoms::select) && !aForceSyncLoad) {
       // The third line of defense is to investigate whether or not the
       // document is currently being loaded asynchronously.  If so, there's no
@@ -1088,6 +1104,11 @@ nsXBLService::LoadBindingDocumentInfo(nsIContent* aBoundElement, nsIDocument* aB
       rv = NS_NewURI(getter_AddRefs(uri), aURLStr);
       NS_ASSERTION(NS_SUCCEEDED(rv), "unable to create a url");
 
+      // Always load chrome synchronously
+      PRBool chrome;
+      if (NS_SUCCEEDED(uri->SchemeIs("chrome", &chrome)) && chrome)
+        aForceSyncLoad = PR_TRUE;
+
       nsCOMPtr<nsIDocument> document;
       FetchBindingDocument(aBoundElement, aBoundDocument, uri, aRef, aForceSyncLoad, getter_AddRefs(document));
    
@@ -1103,12 +1124,14 @@ nsXBLService::LoadBindingDocumentInfo(nsIContent* aBoundElement, nsIDocument* aB
 
         // If the doc is a chrome URI, then we put it into the XUL cache.
         PRBool cached = PR_FALSE;
+#ifdef MOZ_XUL
         if (IsChromeOrResourceURI(uri)) {
           if (useXULCache) {
             cached = PR_TRUE;
             gXULCache->PutXBLDocumentInfo(info);
           }
         }
+#endif
         
         if (!cached && bindingManager) {
           // Otherwise we put it in our binding manager's document table.
@@ -1127,34 +1150,7 @@ nsXBLService::LoadBindingDocumentInfo(nsIContent* aBoundElement, nsIDocument* aB
   return NS_OK;
 }
 
-// Helper method for loading an XML doc.
-NS_IMETHODIMP
-nsXBLService::FetchSyncXMLDocument(nsIURI* aURI, nsIDocument** aResult)
-{
-  *aResult = nsnull;
-  nsresult rv = NS_OK;
-  nsCOMPtr<nsIDOMDocument> domDoc;
-  nsCOMPtr<nsISyncLoadDOMService> loader =
-    do_GetService("@mozilla.org/content/syncload-dom-service;1", &rv);
-  NS_ENSURE_SUCCESS(rv, rv);
-
-  nsCOMPtr<nsIChannel> channel;
-  rv = NS_NewChannel(getter_AddRefs(channel), aURI, nsnull, nsnull);
-  NS_ENSURE_SUCCESS(rv, rv);
-
-  rv = loader->LoadLocalDocument(channel, nsnull, getter_AddRefs(domDoc));
-  if (rv == NS_ERROR_FILE_NOT_FOUND) {
-      return NS_OK;
-  }
-  NS_ENSURE_SUCCESS(rv, rv);
-
-  // The document is parsed. We now have a prototype document.
-  // Everything worked, so we can just hand this back now.
-
-  return CallQueryInterface(domDoc, aResult);
-}
-  
-NS_IMETHODIMP
+nsresult
 nsXBLService::FetchBindingDocument(nsIContent* aBoundElement, nsIDocument* aBoundDocument,
                                    nsIURI* aURI, const nsCString& aRef, 
                                    PRBool aForceSyncLoad, nsIDocument** aResult)
@@ -1251,24 +1247,6 @@ nsXBLService::FetchBindingDocument(nsIContent* aBoundElement, nsIDocument* aBoun
   NS_ENSURE_SUCCESS(rv, rv);
 
   return CallQueryInterface(domDoc, aResult);
-}
-
-static void GetImmediateChild(nsIAtom* aTag, nsIContent* aParent, nsIContent** aResult) 
-{
-  *aResult = nsnull;
-  PRInt32 childCount;
-  aParent->ChildCount(childCount);
-  for (PRInt32 i = 0; i < childCount; i++) {
-    nsCOMPtr<nsIContent> child;
-    aParent->ChildAt(i, *getter_AddRefs(child));
-    nsCOMPtr<nsIAtom> tag;
-    child->GetTag(*getter_AddRefs(tag));
-    if (aTag == tag.get()) {
-      *aResult = child;
-      NS_ADDREF(*aResult);
-      return;
-    }
-  }
 }
 
 // Creation Routine ///////////////////////////////////////////////////////////////////////

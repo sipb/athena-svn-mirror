@@ -199,7 +199,6 @@ PRInt32 nsThrobber::gNumThrobbers;
 // Note: operator new zeros our memory
 nsThrobber::nsThrobber()
 {
-  NS_INIT_ISUPPORTS();
   if (0 == gNumThrobbers++) {
     gThrobbers = new nsVoidArray;
   }
@@ -329,16 +328,6 @@ nsThrobber::Tick()
     mWidget->Invalidate(PR_TRUE);
     mCompletedImages = 0;
   }
-
-#ifndef REPEATING_TIMERS
-
-  nsresult rv;
-  mTimer = do_CreateInstance("@mozilla.org/timer;1", &rv);
-  if (NS_OK == rv) {
-    mTimer->InitWithFuncCallback(ThrobTimerCallback, this, 33, 
-                                 nsITimer::TYPE_ONE_SHOT);
-  }
-#endif
 }
 
 nsresult

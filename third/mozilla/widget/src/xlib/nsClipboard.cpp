@@ -46,7 +46,6 @@
 #include "nsClipboard.h"
 
 #include "nsCOMPtr.h"
-#include "nsFileSpec.h"
 #include "nsCRT.h"
 #include "nsISupportsArray.h"
 #include "nsXPCOM.h"
@@ -85,8 +84,6 @@ Display                    *nsClipboard::sDisplay;
 NS_IMPL_ISUPPORTS1(nsClipboard, nsIClipboard)
 
 nsClipboard::nsClipboard() {
-  NS_INIT_ISUPPORTS();
-
   sDisplay = xxlib_rgb_get_display(nsAppShell::GetXlibRgbHandle());
 
   Init();

@@ -38,7 +38,7 @@
 
 #ifdef XP_UNIX
   #include <sys/stat.h>
-#elif defined (XP_PC)
+#elif defined (XP_WIN) || defined(XP_OS2)
   #include <io.h>
 #endif
 
@@ -151,16 +151,16 @@ DeleteManifestEntry(nsHashKey* aKey, void* aData, void* closure)
 // The following initialization makes a guess of 10 entries per jarfile.
 nsJAR::nsJAR(): mManifestData(nsnull, nsnull, DeleteManifestEntry, nsnull, 10),
                 mParsedManifest(PR_FALSE), mGlobalStatus(nsIJAR::NOT_SIGNED),
-                mReleaseTime(PR_INTERVAL_NO_TIMEOUT), mCache(nsnull), mLock(nsnull)
+                mReleaseTime(PR_INTERVAL_NO_TIMEOUT), mCache(nsnull), mLock(nsnull),
+                mTotalItemsInManifest(0)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsJAR::~nsJAR()
 {
   Close();
   if (mLock) 
-	PR_DestroyLock(mLock);
+    PR_DestroyLock(mLock);
 }
 
 NS_IMPL_THREADSAFE_QUERY_INTERFACE2(nsJAR, nsIZipReader, nsIJAR)
@@ -191,21 +191,6 @@ nsrefcnt nsJAR::Release(void)
 // nsIZipReader implementation
 //----------------------------------------------
 
-NS_METHOD
-nsJAR::Create(nsISupports *aOuter, REFNSIID aIID, void **aResult)
-{
-    if (aOuter)
-        return NS_ERROR_NO_AGGREGATION;
-
-    nsJAR* jar = new nsJAR();
-    if (jar == nsnull)
-        return NS_ERROR_OUT_OF_MEMORY;
-    NS_ADDREF(jar);
-    nsresult rv = jar->QueryInterface(aIID, aResult);
-    NS_RELEASE(jar);
-    return rv;
-}
-
 NS_IMETHODIMP
 nsJAR::Init(nsIFile* zipFile)
 {
@@ -229,11 +214,10 @@ nsJAR::Open()
   nsCOMPtr<nsILocalFile> localFile = do_QueryInterface(mZipFile, &rv);
   if (NS_FAILED(rv)) return rv;
 
-  PRFileDesc* fd;
-  rv = localFile->OpenNSPRFileDesc(PR_RDONLY, 0664, &fd);
+  rv = localFile->OpenNSPRFileDesc(PR_RDONLY, 0664, &mFd);
   if (NS_FAILED(rv)) return rv;
 
-  PRInt32 err = mZip.OpenArchiveWithFileDesc(fd);
+  PRInt32 err = mZip.OpenArchiveWithFileDesc(mFd);
   
   return ziperr2nsresult(err);
 }
@@ -241,6 +225,8 @@ nsJAR::Open()
 NS_IMETHODIMP
 nsJAR::Close()
 {
+  // nsZipReadState::CloseArchive closes the file descriptor
+  mFd = nsnull;
   PRInt32 err = mZip.CloseArchive();
   return ziperr2nsresult(err);
 }
@@ -248,7 +234,9 @@ nsJAR::Close()
 NS_IMETHODIMP
 nsJAR::Test(const char *aEntryName)
 {
-  PRInt32 err = mZip.Test(aEntryName);
+  NS_ASSERTION(mFd, "File isn't open!");
+
+  PRInt32 err = mZip.Test(aEntryName, mFd);
   return ziperr2nsresult(err);
 }
 
@@ -268,7 +256,7 @@ nsJAR::Extract(const char *zipEntry, nsIFile* outFile)
   if (NS_FAILED(rv)) return NS_ERROR_FILE_ACCESS_DENIED;
 
   nsZipItem *item = 0;
-  PRInt32 err = mZip.ExtractFileToFileDesc(zipEntry, fd, &item);
+  PRInt32 err = mZip.ExtractFileToFileDesc(zipEntry, fd, &item, mFd);
   PR_Close(fd);
 
   if (err != ZIP_OK)
@@ -337,15 +325,21 @@ nsJAR::GetInputStream(const char* aFilename, nsIInputStream** result)
   nsAutoLock lock(mLock);
 
   NS_ENSURE_ARG_POINTER(result);
-  nsresult rv;
-  nsJARInputStream* jis = nsnull;
-  rv = nsJARInputStream::Create(nsnull, NS_GET_IID(nsIInputStream), (void**)&jis);
+  nsJARInputStream* jis = new nsJARInputStream();
   if (!jis) return NS_ERROR_FAILURE;
 
+  // addref now so we can delete if the Init() fails
+  *result = NS_STATIC_CAST(nsIInputStream*,jis);
+  NS_ADDREF(*result);
+  
+  nsresult rv;
   rv = jis->Init(this, aFilename);
-  if (NS_FAILED(rv)) return NS_ERROR_FAILURE;
+  
+  if (NS_FAILED(rv)) {
+    NS_RELEASE(*result);
+    return NS_ERROR_FAILURE;
+  }
 
-  *result = (nsIInputStream*)jis;
   return NS_OK;
 }
 
@@ -405,6 +399,27 @@ nsJAR::GetCertificatePrincipal(const char* aFilename, nsIPrincipal** aPrincipal)
     NS_IF_ADDREF(*aPrincipal);
   }
   return NS_OK;
+}
+
+NS_IMETHODIMP 
+nsJAR::GetManifestEntriesCount(PRUint32* count)
+{
+  *count = mTotalItemsInManifest;
+  return NS_OK;
+}
+
+PRFileDesc*
+nsJAR::OpenFile()
+{
+  nsresult rv;
+  nsCOMPtr<nsILocalFile> localFile = do_QueryInterface(mZipFile, &rv);
+  if (NS_FAILED(rv)) return nsnull;
+
+  PRFileDesc* fd;
+  rv = localFile->OpenNSPRFileDesc(PR_RDONLY, 0664, &fd);
+  if (NS_FAILED(rv)) return nsnull;
+
+  return fd;
 }
 
 //----------------------------------------------
@@ -565,13 +580,13 @@ nsJAR::ParseManifest(nsISignatureVerifier* verifier)
     mParsedManifest = PR_TRUE;
     return NS_OK;
   }
-  
+
   //-- Verify that the signature file is a valid signature of the SF file
   PRInt32 verifyError;
   rv = verifier->VerifySignature(sigBuffer, sigLen, manifestBuffer, manifestLen, 
                                  &verifyError, getter_AddRefs(mPrincipal));
   if (NS_FAILED(rv)) return rv;
-  if (mPrincipal)
+  if (mPrincipal && verifyError == 0)
     mGlobalStatus = nsIJAR::VALID;
   else if (verifyError == nsISignatureVerifier::VERIFY_ERROR_UNKNOWN_CA)
     mGlobalStatus = nsIJAR::INVALID_UNKNOWN_CA;
@@ -629,6 +644,7 @@ nsJAR::ParseOneFile(nsISignatureVerifier* verifier,
     {
       if (aFileType == JAR_MF)
       {
+        mTotalItemsInManifest++;
         if (curItemMF->mType != JAR_INVALID)
         { 
           //-- Did this section have a name: line?
@@ -945,7 +961,6 @@ nsJAREnumerator::nsJAREnumerator(nsZipFind *aFind)
   mIsCurrStale(PR_TRUE)
 {
     mArchive = mFind->GetArchive();
-    NS_INIT_ISUPPORTS();
 }
 
 nsJAREnumerator::~nsJAREnumerator()
@@ -1026,7 +1041,6 @@ nsJAREnumerator::GetNext(nsISupports** aResult)
 //-------------------------------------------------
 nsJARItem::nsJARItem()
 {
-    NS_INIT_ISUPPORTS();
 }
 
 nsJARItem::~nsJARItem()
@@ -1137,18 +1151,13 @@ nsZipReaderCache::nsZipReaderCache()
     mZipSyncMisses(0)
 #endif
 {
-  NS_INIT_ISUPPORTS();
 }
 
 NS_IMETHODIMP
 nsZipReaderCache::Init(PRUint32 cacheSize)
 {
   nsresult rv;
-#ifdef xDEBUG_warren
-  mCacheSize = 1;//cacheSize;   // XXX hack
-#else
   mCacheSize = cacheSize; 
-#endif
   
 // Register as a memory pressure observer 
   nsCOMPtr<nsIObserverService> os = 
@@ -1183,21 +1192,6 @@ nsZipReaderCache::~nsZipReaderCache()
          (float)mZipCacheHits / mZipCacheLookups, 
          mZipCacheFlushes, mZipSyncMisses);
 #endif
-}
-
-NS_METHOD
-nsZipReaderCache::Create(nsISupports *aOuter, REFNSIID aIID, void **aResult)
-{
-  if (aOuter)
-    return NS_ERROR_NO_AGGREGATION;
-
-  nsZipReaderCache* cache = new nsZipReaderCache();
-  if (cache == nsnull)
-    return NS_ERROR_OUT_OF_MEMORY;
-  NS_ADDREF(cache);
-  nsresult rv = cache->QueryInterface(aIID, aResult);
-  NS_RELEASE(cache);
-  return rv;
 }
 
 NS_IMETHODIMP
@@ -1341,10 +1335,6 @@ nsZipReaderCache::ReleaseZip(nsJAR* zip)
   nsCStringKey key(path);
   PRBool removed = mZips.Remove(&key);  // Releases
   NS_ASSERTION(removed, "botched");
-
-#ifdef xDEBUG_jband
-  printf("dumped %s from the jar cache\n", path.get());
-#endif
 
   return NS_OK;
 }

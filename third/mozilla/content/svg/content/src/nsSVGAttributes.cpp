@@ -95,7 +95,6 @@ nsSVGAttribute::nsSVGAttribute(nsINodeInfo* aNodeInfo,
       mNodeInfo(aNodeInfo),
       mValue(value)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsSVGAttribute::~nsSVGAttribute()
@@ -225,7 +224,7 @@ nsSVGAttribute::SetPrefix(const nsAString& aPrefix)
   nsCOMPtr<nsIAtom> prefix;
   
   if (!aPrefix.IsEmpty()) {
-    prefix = dont_AddRef(NS_NewAtom(aPrefix));
+    prefix = do_GetAtom(aPrefix);
     NS_ENSURE_TRUE(prefix, NS_ERROR_OUT_OF_MEMORY);
   }
   
@@ -346,8 +345,7 @@ nsSVGAttribute::GetOwnerElement(nsIDOMElement** aOwnerElement)
 
   nsIContent *content;
   if (mOwner && (content = mOwner->GetContent())) {
-    return content->QueryInterface(NS_GET_IID(nsIDOMElement),
-                                    (void **)aOwnerElement);
+    return CallQueryInterface(content, aOwnerElement);
   }
 
   return NS_ERROR_FAILURE;
@@ -403,7 +401,6 @@ nsSVGAttribute::GetQualifiedName(nsAString& aQualifiedName)const
 nsSVGAttributes::nsSVGAttributes(nsIContent* aContent)
     : mContent(aContent)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 
@@ -644,13 +641,14 @@ nsSVGAttributes::SetAttr(nsINodeInfo* aNodeInfo,
       mutation.message = NS_MUTATION_ATTRMODIFIED;
       mutation.mTarget = node;
 
-//XXX      mutation.mRelatedNode = do_QueryInterface(attr);
-      attr->QueryInterface(NS_GET_IID(nsIDOMNode), getter_AddRefs(mutation.mRelatedNode));
+      CallQueryInterface(attr,
+                         NS_STATIC_CAST(nsIDOMNode**,
+                                        getter_AddRefs(mutation.mRelatedNode)));
       mutation.mAttrName = name;
       if (!oldValue.IsEmpty())
-        mutation.mPrevAttrValue = getter_AddRefs(NS_NewAtom(oldValue));
+        mutation.mPrevAttrValue = do_GetAtom(oldValue);
       if (!aValue.IsEmpty())
-        mutation.mNewAttrValue = getter_AddRefs(NS_NewAtom(aValue));
+        mutation.mNewAttrValue = do_GetAtom(aValue);
       mutation.mAttrChange = modification ? nsIDOMMutationEvent::MODIFICATION :
                                              nsIDOMMutationEvent::ADDITION;
       nsEventStatus status = nsEventStatus_eIgnore;
@@ -707,13 +705,14 @@ nsSVGAttributes::UnsetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
         mutation.message = NS_MUTATION_ATTRMODIFIED;
         mutation.mTarget = node;
         
-//XXX        mutation.mRelatedNode = do_QueryInterface(attr);
-        attr->QueryInterface(NS_GET_IID(nsIDOMNode), getter_AddRefs(mutation.mRelatedNode));   
+        CallQueryInterface(attr,
+                           NS_STATIC_CAST(nsIDOMNode**,
+                                          getter_AddRefs(mutation.mRelatedNode)));
         mutation.mAttrName = aName;
         nsAutoString str;
         attr->GetValue()->GetValueString(str);
         if (!str.IsEmpty())
-          mutation.mPrevAttrValue = getter_AddRefs(NS_NewAtom(str));
+          mutation.mPrevAttrValue = do_GetAtom(str);
         mutation.mAttrChange = nsIDOMMutationEvent::REMOVAL;
         
         nsEventStatus status = nsEventStatus_eIgnore;
@@ -769,9 +768,10 @@ nsSVGAttributes::NormalizeAttrString(const nsAString& aStr,
                                      nsINodeInfo*& aNodeInfo)
 {
   PRInt32 indx, count = Count();
+  NS_ConvertUCS2toUTF8 utf8String(aStr);
   for (indx = 0; indx < count; indx++) {
     nsSVGAttribute* attr = ElementAt(indx);
-    if (attr->GetNodeInfo()->QualifiedNameEquals(aStr)) {
+    if (attr->GetNodeInfo()->QualifiedNameEquals(utf8String)) {
       aNodeInfo = attr->GetNodeInfo();
       NS_ADDREF(aNodeInfo);
       
@@ -927,14 +927,12 @@ nsSVGAttributes::RemoveNamedItem(const nsAString& aName,
                                  nsIDOMNode** aReturn)
 {
   nsCOMPtr<nsIDOMElement> element( do_QueryInterface(mContent) );
+  *aReturn = nsnull;
   if (element) {
+    // XXX should set aReturn to the element we are about to remove
     return element->RemoveAttribute(aName);
-    *aReturn = nsnull; // XXX should be the element we just removed
-    return NS_OK;
   }
-  else {
-    return NS_ERROR_FAILURE;
-  }
+  return NS_ERROR_FAILURE;
 }
 
 NS_IMETHODIMP

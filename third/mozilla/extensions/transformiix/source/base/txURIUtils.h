@@ -36,10 +36,11 @@
 #ifndef TRANSFRMX_URIUTILS_H
 #define TRANSFRMX_URIUTILS_H
 
-#include "TxString.h"
 #include "baseutils.h"
 #ifdef TX_EXE
 #include <fstream.h>
+#include <iostream.h>
+#include "nsString.h"
 #else
 #include "nsIDOMNode.h"
 
@@ -53,44 +54,37 @@ extern nsIScriptSecurityManager *gTxSecurityManager;
  * Not yet finished, only handles file URI at this point
 **/
 
+#ifdef TX_EXE
+class txParsedURL
+{
+public:
+    void init(const nsAFlatString& aSpec);
+    void resolve(const txParsedURL& aRef, txParsedURL& aDest);
+    const nsDependentConcatenation getFile() const
+    {
+        return mPath + mName;
+    }
+    nsString mPath, mName, mRef;
+};
+#endif
+
 class URIUtils {
-
-
 public:
 
 #ifdef TX_EXE
-    static const String HTTP_PROTOCOL;
-    static const String FILE_PROTOCOL;
-
     /**
      * the path separator for an URI
     **/
     static const char HREF_PATH_SEP;
 
-    /**
-     * The Device separator for an URI
-    **/
-    static const char DEVICE_SEP;
-
-    /**
-     * The Port separator for an URI
-    **/
-    static const char PORT_SEP;
-
-    /**
-     * The Protocal separator for an URI
-    **/
-    static const char PROTOCOL_SEP;
-
-
     static istream* getInputStream
-        (const String& href, String& errMsg);
+        (const nsAString& href, nsAString& errMsg);
 
     /**
      * Returns the document base of the href argument
      * The document base will be appended to the given dest String
     **/
-    static void getDocumentBase(const String& href, String& dest);
+    static void getDocumentBase(const nsAFlatString& href, nsAString& dest);
 
 #else /* TX_EXE */
 
@@ -106,42 +100,8 @@ public:
      * if necessary.
      * The new resolved href will be appended to the given dest String
     **/
-    static void resolveHref(const String& href, const String& base, String& dest);
-
-    /**
-     * Returns the fragment identifier of the given URI, or "" if none exists
-     * frag is cleared before the idetifier is appended
-    **/
-    static void getFragmentIdentifier(const String& href, String& frag);
-
-    /**
-     * Returns the document location of given the URI (ie everything except
-     * fragment). docUri is cleared before the URI is appended
-    **/
-    static void getDocumentURI(const String& href, String& docUri);
-
-
-private:
-
-#ifdef TX_EXE
-    static const short PROTOCOL_MODE;
-    static const short HOST_MODE;
-    static const short PORT_MODE;
-    static const short PATH_MODE;
-
-    struct ParsedURI {
-        MBool  isMalformed;
-        String fragmentIdentifier;
-        String host;
-        String protocol;
-        String port;
-        String path;
-    };
-
-    static istream* openStream(ParsedURI* uri);
-    static ParsedURI* parseURI(const String& uri);
-#endif
-
+    static void resolveHref(const nsAString& href, const nsAString& base,
+                            nsAString& dest);
 }; //-- URIUtils
 
 /* */

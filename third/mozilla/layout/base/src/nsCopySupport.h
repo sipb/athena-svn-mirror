@@ -40,11 +40,34 @@
 
 class nsISelection;
 class nsIDocument;
+class nsIDOMNode;
+class nsIDOMHTMLImageElement;
+class nsIContent;
+class nsIPresContext;
+class nsIPresShell;
+class nsIImageFrame;
+class nsIImage;
+class nsITransferable;
  
 class nsCopySupport
 {
   // class of static helper functions for copy support
   public:
     static nsresult HTMLCopy(nsISelection *aSel, nsIDocument *aDoc, PRInt16 aClipboardID);
+    static nsresult DoHooks(nsIDocument *aDoc, nsITransferable *aTrans,
+                            PRBool *aDoPutOnClipboard);
     static nsresult IsPlainTextContext(nsISelection *aSel, nsIDocument *aDoc, PRBool *aIsPlainTextContext);
+
+    // Get the selection, or entire document, in the format specified by the mime type
+    // (text/html or text/plain). If aSel is non-null, use it, otherwise get the entire
+    // doc.
+    static nsresult GetContents(const nsACString& aMimeType, PRUint32 aFlags, nsISelection *aSel, nsIDocument *aDoc, nsAString& outdata);
+    
+    static nsresult ImageCopy(nsIDOMHTMLImageElement* imageElement, PRInt16 aClipboardID);
+
+  protected:
+  
+    // these are ripped from nsContentAreaDragDrop. This so needs factoring.    
+    static nsresult GetImageFromDOMNode(nsIDOMNode* inNode, nsIImage**outImage);
+
 };

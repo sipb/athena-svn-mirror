@@ -291,7 +291,10 @@ VerifyCertDir(char *dir, char *keyName)
      return;
   }
 
-  sprintf (fn, "%s/cert7.db", dir);
+  /* This code is really broken because it makes underlying assumptions about
+   * how the NSS profile directory is laid out, but these names can change
+   * from release to release. */
+  sprintf (fn, "%s/cert8.db", dir);
 
   if (PR_Access (fn, PR_ACCESS_EXISTS))
     {
@@ -733,7 +736,7 @@ chop(char *str)
 		}
 
 		/* Nip trailing whitespace */
-		if(strlen(start) > 0) {
+		if(*start) {
 			end = start + strlen(start) - 1;
 			while(isspace(*end) && end > start) {
 				end--;

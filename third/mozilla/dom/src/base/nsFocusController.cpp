@@ -48,7 +48,7 @@
 #include "nsIInterfaceRequestorUtils.h"
 #include "nsIServiceManagerUtils.h"
 
-#ifdef INCLUDE_XUL
+#ifdef MOZ_XUL
 #include "nsIDOMXULDocument.h"
 #include "nsIDOMXULElement.h"
 #endif
@@ -61,7 +61,6 @@ nsFocusController::nsFocusController(void)
   mActive(PR_FALSE),
   mUpdateWindowWatcher(PR_FALSE)
 {
-	NS_INIT_ISUPPORTS();
 }
 
 nsFocusController::~nsFocusController(void)
@@ -106,7 +105,11 @@ nsFocusController::GetFocusedWindow(nsIDOMWindowInternal** aWindow)
 NS_IMETHODIMP
 nsFocusController::SetFocusedElement(nsIDOMElement* aElement)
 {
-  mPreviousElement = mCurrentElement;
+  if (mCurrentElement) 
+    mPreviousElement = mCurrentElement;
+  else if (aElement) 
+    mPreviousElement = aElement;
+
   mCurrentElement = aElement;
 
   if (!mSuppressFocus) {
@@ -187,7 +190,7 @@ nsFocusController::GetControllers(nsIControllers** aResult)
   //     so this code would have no special knowledge of what object might have controllers.
   if (mCurrentElement) {
 
-#ifdef INCLUDE_XUL
+#ifdef MOZ_XUL
     nsCOMPtr<nsIDOMXULElement> xulElement(do_QueryInterface(mCurrentElement));
     if (xulElement)
       return xulElement->GetControllers(aResult);
@@ -310,8 +313,10 @@ nsFocusController::Focus(nsIDOMEvent* aEvent)
           nsCOMPtr<nsIDOMDocument> windowDoc;
           mCurrentWindow->GetDocument(getter_AddRefs(windowDoc));
           if (ownerDoc != windowDoc)
-            mCurrentElement = nsnull;
+            mCurrentElement = mPreviousElement = nsnull;
         }
+        else
+          mPreviousElement = nsnull;
 
         if (!mCurrentElement)
           UpdateCommands(NS_LITERAL_STRING("focus"));

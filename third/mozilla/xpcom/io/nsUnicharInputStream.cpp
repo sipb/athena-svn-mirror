@@ -42,6 +42,7 @@
 #include "nsIServiceManager.h"
 #include "nsString.h"
 #include "nsCRT.h"
+#include "nsUTF8Utils.h"
 #include <fcntl.h>
 #if defined(NS_WIN32) || defined(XP_OS2_VACPP)
 #include <io.h>
@@ -57,9 +58,11 @@ public:
   NS_DECL_ISUPPORTS
 
   NS_IMETHOD Read(PRUnichar* aBuf,
-                  PRUint32 aOffset,
                   PRUint32 aCount,
                   PRUint32 *aReadCount);
+  NS_IMETHOD ReadSegments(nsWriteUnicharSegmentFun aWriter,
+                          void* aClosure,
+                          PRUint32 aCount, PRUint32* aReadCount);
   NS_IMETHOD Close();
 
   nsString* mString;
@@ -69,7 +72,6 @@ public:
 
 StringUnicharInputStream::StringUnicharInputStream(nsString* aString)
 {
-  NS_INIT_ISUPPORTS();
   mString = aString;
   mPos = 0;
   mLen = aString->Length();
@@ -82,10 +84,10 @@ StringUnicharInputStream::~StringUnicharInputStream()
   }
 }
 
-nsresult StringUnicharInputStream::Read(PRUnichar* aBuf,
-                                        PRUint32 aOffset,
-                                        PRUint32 aCount,
-                                        PRUint32 *aReadCount)
+NS_IMETHODIMP
+StringUnicharInputStream::Read(PRUnichar* aBuf,
+                               PRUint32 aCount,
+                               PRUint32 *aReadCount)
 {
   if (mPos >= mLen) {
     *aReadCount = 0;
@@ -100,6 +102,36 @@ nsresult StringUnicharInputStream::Read(PRUnichar* aBuf,
   memcpy(aBuf, us + mPos, sizeof(PRUnichar) * amount);
   mPos += amount;
   *aReadCount = amount;
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+StringUnicharInputStream::ReadSegments(nsWriteUnicharSegmentFun aWriter,
+                                       void* aClosure,
+                                       PRUint32 aCount, PRUint32 *aReadCount)
+{
+  PRUint32 bytesWritten;
+  PRUint32 totalBytesWritten = 0;
+
+  nsresult rv;
+  aCount = PR_MIN(mString->Length() - mPos, aCount);
+  
+  while (aCount) {
+    rv = aWriter(this, aClosure, mString->get() + mPos,
+                 totalBytesWritten, aCount, &bytesWritten);
+    
+    if (NS_FAILED(rv)) {
+      // don't propagate errors to the caller
+      break;
+    }
+    
+    aCount -= bytesWritten;
+    totalBytesWritten += bytesWritten;
+    mPos += bytesWritten;
+  }
+  
+  *aReadCount = totalBytesWritten;
+  
   return NS_OK;
 }
 
@@ -138,15 +170,18 @@ NS_NewStringUnicharInputStream(nsIUnicharInputStream** aInstancePtrResult,
 
 class UTF8InputStream : public nsIUnicharInputStream {
 public:
-  UTF8InputStream(nsIInputStream* aStream,
-                  PRUint32 aBufSize);
+  UTF8InputStream();
   virtual ~UTF8InputStream();
+  nsresult Init(nsIInputStream* aStream, PRUint32 aBufSize);
 
   NS_DECL_ISUPPORTS
   NS_IMETHOD Read(PRUnichar* aBuf,
-                  PRUint32 aOffset,
                   PRUint32 aCount,
                   PRUint32 *aReadCount);
+  NS_IMETHOD ReadSegments(nsWriteUnicharSegmentFun aWriter,
+                          void* aClosure,
+                          PRUint32 aCount,
+                          PRUint32 *aReadCount);
   NS_IMETHOD Close();
 
 protected:
@@ -163,22 +198,28 @@ protected:
   PRUint32 mUnicharDataLength;
 };
 
-UTF8InputStream::UTF8InputStream(nsIInputStream* aStream,
-                                 PRUint32 aBufferSize) :
-  mInput(aStream)
+UTF8InputStream::UTF8InputStream() :
+  mByteDataOffset(0),
+  mUnicharDataOffset(0),
+  mUnicharDataLength(0)
 {
-  NS_INIT_ISUPPORTS();
+}
+
+nsresult 
+UTF8InputStream::Init(nsIInputStream* aStream, PRUint32 aBufferSize)
+{
   if (aBufferSize == 0) {
     aBufferSize = 8192;
   }
 
-  // XXX what if these fail?
-  NS_NewByteBuffer(getter_AddRefs(mByteData), nsnull, aBufferSize);
-  NS_NewUnicharBuffer(getter_AddRefs(mUnicharData), nsnull, aBufferSize);
+  nsresult rv = NS_NewByteBuffer(getter_AddRefs(mByteData), nsnull, aBufferSize);
+  if (NS_FAILED(rv)) return rv;
+  rv = NS_NewUnicharBuffer(getter_AddRefs(mUnicharData), nsnull, aBufferSize);
+  if (NS_FAILED(rv)) return rv;
 
-  mByteDataOffset = 0;
-  mUnicharDataOffset = 0;
-  mUnicharDataLength = 0;
+  mInput = aStream;
+
+  return NS_OK;
 }
 
 NS_IMPL_ISUPPORTS1(UTF8InputStream,nsIUnicharInputStream)
@@ -198,7 +239,6 @@ nsresult UTF8InputStream::Close()
 }
 
 nsresult UTF8InputStream::Read(PRUnichar* aBuf,
-                               PRUint32 aOffset,
                                PRUint32 aCount,
                                PRUint32 *aReadCount)
 {
@@ -216,10 +256,53 @@ nsresult UTF8InputStream::Read(PRUnichar* aBuf,
   if (rv > aCount) {
     rv = aCount;
   }
-  memcpy(aBuf + aOffset, mUnicharData->GetBuffer() + mUnicharDataOffset,
+  memcpy(aBuf, mUnicharData->GetBuffer() + mUnicharDataOffset,
          rv * sizeof(PRUnichar));
   mUnicharDataOffset += rv;
   *aReadCount = rv;
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+UTF8InputStream::ReadSegments(nsWriteUnicharSegmentFun aWriter,
+                              void* aClosure,
+                              PRUint32 aCount, PRUint32 *aReadCount)
+{
+  NS_ASSERTION(mUnicharDataLength >= mUnicharDataOffset, "unsigned madness");
+  PRUint32 bytesToWrite = mUnicharDataLength - mUnicharDataOffset;
+  nsresult rv = NS_OK;
+  if (0 == bytesToWrite) {
+    // Fill the unichar buffer
+    bytesToWrite = Fill(&rv);
+    if (bytesToWrite <= 0) {
+      *aReadCount = 0;
+      return rv;
+    }
+  }
+  
+  if (bytesToWrite > aCount)
+    bytesToWrite = aCount;
+  
+  PRUint32 bytesWritten;
+  PRUint32 totalBytesWritten = 0;
+
+  while (bytesToWrite) {
+    rv = aWriter(this, aClosure,
+                 mUnicharData->GetBuffer() + mUnicharDataOffset,
+                 totalBytesWritten, bytesToWrite, &bytesWritten);
+
+    if (NS_FAILED(rv)) {
+      // don't propagate errors to the caller
+      break;
+    }
+    
+    bytesToWrite -= bytesWritten;
+    totalBytesWritten += bytesWritten;
+    mUnicharDataOffset += bytesWritten;
+  }
+
+  *aReadCount = totalBytesWritten;
+  
   return NS_OK;
 }
 
@@ -314,12 +397,15 @@ NS_NewUTF8ConverterStream(nsIUnicharInputStream** aInstancePtrResult,
                           PRInt32 aBufferSize)
 {
   // Create converter input stream
-  UTF8InputStream* it =
-    new UTF8InputStream(aStreamToWrap, aBufferSize);
-  
+  UTF8InputStream* it = new UTF8InputStream();
   if (nsnull == it) {
     return NS_ERROR_OUT_OF_MEMORY;
   }
+
+  nsresult rv = it->Init(aStreamToWrap, aBufferSize);
+  if (NS_FAILED(rv))
+    return rv;
+
   return it->QueryInterface(NS_GET_IID(nsIUnicharInputStream), 
                             (void **) aInstancePtrResult);
 }

@@ -185,6 +185,11 @@ public:
                                        PRInt32 &aOutStartOffset, 
                                        PRInt32 &aEndOffset);
 
+  nsresult InsertTextAt(const nsAString &aStringToInsert,
+                        nsIDOMNode *aDestinationNode,
+                        PRInt32 aDestOffset,
+                        PRBool aDoDeleteSelection);
+
 protected:
 
   NS_IMETHOD  InitRules();
@@ -205,8 +210,6 @@ protected:
     *         an error if some serious error occurs
     */
   NS_IMETHOD GetLayoutObject(nsIDOMNode *aInNode, nsISupports **aOutLayoutObject);
-  NS_IMETHOD GetBodyStyleContext(nsIStyleContext** aStyleContext);
-
   // Helpers for output routines
   NS_IMETHOD GetAndInitDocEncoder(const nsAString& aFormatType,
                                   PRUint32 aFlags,
@@ -227,7 +230,12 @@ protected:
 
   // factored methods for handling insertion of data from transferables (drag&drop or clipboard)
   NS_IMETHOD PrepareTransferable(nsITransferable **transferable);
-  NS_IMETHOD InsertTextFromTransferable(nsITransferable *transferable);
+  NS_IMETHOD InsertTextFromTransferable(nsITransferable *transferable,
+                                        nsIDOMNode *aDestinationNode,
+                                        PRInt32 aDestOffset,
+                                        PRBool aDoDeleteSelection);
+  virtual nsresult SetupDocEncoder(nsIDocumentEncoder **aDocEncoder);
+  virtual nsresult PutDragDataInTransferable(nsITransferable **aTransferable);
 
   /** simple utility to handle any error with event listener allocation or registration */
   void HandleEventListenerError();
@@ -251,7 +259,6 @@ protected:
   nsCOMPtr<nsIDOMEventListener> mCompositionListenerP;
   nsCOMPtr<nsIDOMEventListener> mDragListenerP;
   nsCOMPtr<nsIDOMEventListener> mFocusListenerP;
-  PRBool 	mIsComposing;
   PRBool  mWrapToWindow;
   PRInt32 mWrapColumn;
   PRInt32 mMaxTextLength;

@@ -38,7 +38,6 @@
 // This is processed after unix.js and anything here supercedes unix.js
 // and all the other pref files.
 
-pref("mail.use_movemail", false);
 pref("mail.use_builtin_movemail", false);
 
 pref("helpers.global_mime_types_file", "/sys$manager/netscape/mime.types");
@@ -57,6 +56,6 @@ pref("print.postscript.print_command", "print /delete");
 pref("print.print_command", "print /delete");
 pref("print.print_color", false);
 
-pref("browser.cache.disk.capacity", 4000);
+pref("browser.cache.disk.capacity", 4096);
 pref("plugin.soname.list", "");
 

@@ -42,7 +42,8 @@
 #include "nsMaiObject.h"
 #include "nsMaiUtil.h"
 #include "nsMaiCache.h"
-#include "nsIAccessibleEventListener.h"
+#include "nsIAccessible.h"
+#include "nsIAccessNode.h"
 #include "nsString.h"
 
 #ifdef MAI_LOGGING
@@ -59,6 +60,7 @@ static void finalizeCB(GObject *aObj);
 /* callbacks for AtkObject virtual functions */
 static const gchar*        getNameCB (AtkObject *aObj);
 static const gchar*        getDescriptionCB (AtkObject *aObj);
+static AtkRole             getRoleCB(AtkObject *aObj);
 static AtkObject*          getParentCB(AtkObject *aObj);
 static gint                getChildCountCB(AtkObject *aObj);
 static AtkObject*          refChildCB(AtkObject *aObj, gint aChildIndex);
@@ -172,7 +174,7 @@ MaiObject::GetNSAccessible(void)
  *   GetName x
  *   GetDescription x
  *   GetParent x
- *   GetRole
+ *   GetRole x
  *   GetRelationSet
  *   GetLayer
  */
@@ -233,6 +235,24 @@ MaiObject::GetDescription(void)
     return atkObject->description;
 }
 
+PRUint32
+MaiObject::GetRole(void)
+{
+    g_return_val_if_fail(mAccessible != NULL, ATK_ROLE_INVALID);
+    PRUint32 accRole;
+    nsresult rv = mAccessible->GetAccRole(&accRole);
+
+    if (NS_FAILED(rv))
+        return ATK_ROLE_INVALID;
+
+    //the cross-platform Accessible object returns the same value for
+    //both "ATK_ROLE_MENU_ITEM" and "ATK_ROLE_MENU"
+    if ((accRole == ATK_ROLE_MENU_ITEM) && (GetChildCount()))
+        accRole = ATK_ROLE_MENU;
+
+    return accRole;
+}
+
 gint
 MaiObject::GetChildCount(void)
 {
@@ -273,9 +293,10 @@ GetNSAccessibleUniqueID(nsIAccessible *aObj)
 {
     g_return_val_if_fail(aObj != NULL, 0);
 
-    PRInt32 accId = 0;
-    aObj->GetAccId(&accId);
-    return accId;
+    void* accId = 0;
+    nsCOMPtr<nsIAccessNode> accessNode(do_QueryInterface(aObj));
+    accessNode->GetUniqueID(&accId);
+    return (guint)accId;
 }
 
 /* static functions for ATK callbacks */
@@ -293,6 +314,7 @@ classInitCB(AtkObjectClass *aClass)
     aClass->get_n_children = getChildCountCB;
     aClass->ref_child = refChildCB;
     aClass->get_index_in_parent = getIndexInParentCB;
+    aClass->get_role = getRoleCB;
 
     aClass->initialize = initializeCB;
 
@@ -355,6 +377,21 @@ getDescriptionCB(AtkObject *aObj)
     MaiObject *maiObject = MAI_ATK_OBJECT(aObj)->maiObject;
     return maiObject->GetDescription();
 }
+
+AtkRole
+getRoleCB(AtkObject *aObj)
+{
+    MAI_CHECK_ATK_OBJECT_RETURN_VAL_IF_FAIL(aObj, ATK_ROLE_INVALID);
+
+    if (aObj->role != ATK_ROLE_INVALID)
+        return aObj->role;
+
+    MaiObject *maiObject = MAI_ATK_OBJECT(aObj)->maiObject;
+    AtkRole atkRole = NS_STATIC_CAST(AtkRole, maiObject->GetRole());
+    aObj->role = atkRole;
+
+    return atkRole;
+ }
 
 AtkObject *
 getParentCB(AtkObject *aObj)

@@ -1,4 +1,4 @@
-/* -*- Mode: C++; tab-width: /; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* -*- Mode: C++; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: NPL 1.1/GPL 2.0/LGPL 2.1
  *
@@ -193,7 +193,6 @@ InternetSearchContext::InternetSearchContext(PRUint32 contextType, nsIRDFResourc
 				nsIUnicodeDecoder *aUnicodeDecoder, const PRUnichar *hint)
 	: mContextType(contextType), mParent(aParent), mEngine(aEngine), mUnicodeDecoder(aUnicodeDecoder), mHint(hint)
 {
-	NS_INIT_ISUPPORTS();
 }
 
 
@@ -346,10 +345,9 @@ searchModePrefCallback(const char *pref, void *aClosure)
 
 	if (searchDS->prefs)
 	{
-		PRInt32		searchMode=0;
-		searchDS->prefs->GetIntPref(pref, &searchMode);
+		searchDS->prefs->GetIntPref(pref, &searchDS->gBrowserSearchMode);
 #ifdef	DEBUG
-		printf("searchModePrefCallback: '%s' = %d\n", pref, searchMode);
+		printf("searchModePrefCallback: '%s' = %d\n", pref, searchDS->gBrowserSearchMode);
 #endif
 		searchDS->Assert(searchDS->kNC_LastSearchRoot, searchDS->kNC_LastSearchMode, searchDS->kTrueLiteral, PR_TRUE);
 	}
@@ -359,11 +357,12 @@ searchModePrefCallback(const char *pref, void *aClosure)
 static	nsIRDFService		*gRDFService = nsnull;
 static	nsIRDFContainerUtils	*gRDFC = nsnull;
 PRInt32				InternetSearchDataSource::gRefCnt = 0;
+PRInt32				InternetSearchDataSource::gBrowserSearchMode = 0;
 nsIRDFDataSource		*InternetSearchDataSource::mInner = nsnull;
 nsCOMPtr<nsISupportsArray>	InternetSearchDataSource::mUpdateArray;
 nsCOMPtr<nsIRDFDataSource>	InternetSearchDataSource::mLocalstore;
 nsCOMPtr<nsIRDFDataSource>	InternetSearchDataSource::categoryDataSource;
-PRBool				InternetSearchDataSource::mEngineListBuilt;
+PRBool				InternetSearchDataSource::gEngineListBuilt = PR_FALSE;
 nsCOMPtr<nsILoadGroup>		InternetSearchDataSource::mBackgroundLoadGroup;
 nsCOMPtr<nsILoadGroup>		InternetSearchDataSource::mLoadGroup;
 nsCOMPtr<nsIPref>		InternetSearchDataSource::prefs;
@@ -422,8 +421,6 @@ nsIRDFResource			*InternetSearchDataSource::kNC_SearchCommand_ClearFilters;
 nsIRDFLiteral			*InternetSearchDataSource::kTrueLiteral;
 InternetSearchDataSource::InternetSearchDataSource(void)
 {
-	NS_INIT_ISUPPORTS();
-
 	if (gRefCnt++ == 0)
 	{
 		nsresult rv = nsServiceManager::GetService(kRDFServiceCID,
@@ -436,57 +433,106 @@ InternetSearchDataSource::InternetSearchDataSource(void)
 
 		NS_ASSERTION(NS_SUCCEEDED(rv), "unable to get RDF container utils");
 
-		gRDFService->GetResource(kURINC_SearchEngineRoot,                &kNC_SearchEngineRoot);
-		gRDFService->GetResource(kURINC_LastSearchRoot,                  &kNC_LastSearchRoot);
-		gRDFService->GetResource(kURINC_SearchResultsSitesRoot,          &kNC_SearchResultsSitesRoot);
-		gRDFService->GetResource(kURINC_FilterSearchURLsRoot,            &kNC_FilterSearchURLsRoot);
-		gRDFService->GetResource(kURINC_FilterSearchSitesRoot,           &kNC_FilterSearchSitesRoot);
-		gRDFService->GetResource(kURINC_SearchCategoryRoot,              &kNC_SearchCategoryRoot);
-		gRDFService->GetResource(NC_NAMESPACE_URI "SearchMode",          &kNC_LastSearchMode);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(kURINC_SearchEngineRoot),
+                             &kNC_SearchEngineRoot);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(kURINC_LastSearchRoot),
+                             &kNC_LastSearchRoot);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(kURINC_SearchResultsSitesRoot),
+                             &kNC_SearchResultsSitesRoot);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(kURINC_FilterSearchURLsRoot),
+                             &kNC_FilterSearchURLsRoot);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(kURINC_FilterSearchSitesRoot),
+                             &kNC_FilterSearchSitesRoot);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(kURINC_SearchCategoryRoot),
+                             &kNC_SearchCategoryRoot);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "SearchMode"),
+                             &kNC_LastSearchMode);
 
-		gRDFService->GetResource(NC_NAMESPACE_URI "searchtype",          &kNC_SearchType);
-		gRDFService->GetResource(NC_NAMESPACE_URI "SearchResult",        &kNC_SearchResult);
-		gRDFService->GetResource(NC_NAMESPACE_URI "ref",                 &kNC_Ref);
-		gRDFService->GetResource(NC_NAMESPACE_URI "child",               &kNC_Child);
-		gRDFService->GetResource(NC_NAMESPACE_URI "title",               &kNC_Title);
-		gRDFService->GetResource(NC_NAMESPACE_URI "data",                &kNC_Data);
-		gRDFService->GetResource(NC_NAMESPACE_URI "Name",                &kNC_Name);
-		gRDFService->GetResource(NC_NAMESPACE_URI "Description",         &kNC_Description);
-		gRDFService->GetResource(NC_NAMESPACE_URI "Version",             &kNC_Version);
-		gRDFService->GetResource(NC_NAMESPACE_URI "actionButton",        &kNC_actionButton);
-		gRDFService->GetResource(NC_NAMESPACE_URI "actionBar",           &kNC_actionBar);
-		gRDFService->GetResource(NC_NAMESPACE_URI "searchForm",          &kNC_searchForm);
-		gRDFService->GetResource(NC_NAMESPACE_URI "LastText",            &kNC_LastText);
-		gRDFService->GetResource(NC_NAMESPACE_URI "URL",                 &kNC_URL);
-		gRDFService->GetResource(RDF_NAMESPACE_URI "instanceOf",         &kRDF_InstanceOf);
-		gRDFService->GetResource(RDF_NAMESPACE_URI "type",               &kRDF_type);
-		gRDFService->GetResource(NC_NAMESPACE_URI "loading",             &kNC_loading);
-		gRDFService->GetResource(NC_NAMESPACE_URI "HTML",                &kNC_HTML);
-		gRDFService->GetResource(NC_NAMESPACE_URI "Icon",                &kNC_Icon);
-		gRDFService->GetResource(NC_NAMESPACE_URI "StatusIcon",          &kNC_StatusIcon);
-		gRDFService->GetResource(NC_NAMESPACE_URI "Banner",              &kNC_Banner);
-		gRDFService->GetResource(NC_NAMESPACE_URI "Site",                &kNC_Site);
-		gRDFService->GetResource(NC_NAMESPACE_URI "Relevance",           &kNC_Relevance);
-		gRDFService->GetResource(NC_NAMESPACE_URI "Relevance?sort=true", &kNC_RelevanceSort);
-		gRDFService->GetResource(NC_NAMESPACE_URI "Date",                &kNC_Date);
-		gRDFService->GetResource(NC_NAMESPACE_URI "PageRank",            &kNC_PageRank);
-		gRDFService->GetResource(NC_NAMESPACE_URI "Engine",              &kNC_Engine);
-		gRDFService->GetResource(NC_NAMESPACE_URI "Price",               &kNC_Price);
-		gRDFService->GetResource(NC_NAMESPACE_URI "Price?sort=true",     &kNC_PriceSort);
-		gRDFService->GetResource(NC_NAMESPACE_URI "Availability",        &kNC_Availability);
-		gRDFService->GetResource(NC_NAMESPACE_URI "BookmarkSeparator",   &kNC_BookmarkSeparator);
-		gRDFService->GetResource(NC_NAMESPACE_URI "Update",              &kNC_Update);
-		gRDFService->GetResource(NC_NAMESPACE_URI "UpdateIcon",          &kNC_UpdateIcon);
-		gRDFService->GetResource(NC_NAMESPACE_URI "UpdateCheckDays",     &kNC_UpdateCheckDays);
-		gRDFService->GetResource(WEB_NAMESPACE_URI "LastPingDate",       &kWEB_LastPingDate);
-		gRDFService->GetResource(WEB_NAMESPACE_URI "LastPingModDate",    &kWEB_LastPingModDate);
-		gRDFService->GetResource(WEB_NAMESPACE_URI "LastPingContentLen", &kWEB_LastPingContentLen);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "searchtype"),
+                             &kNC_SearchType);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "SearchResult"),
+                             &kNC_SearchResult);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "ref"),
+                             &kNC_Ref);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "child"),
+                             &kNC_Child);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "title"),
+                             &kNC_Title);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "data"),
+                             &kNC_Data);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "Name"),
+                             &kNC_Name);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "Description"),
+                             &kNC_Description);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "Version"),
+                             &kNC_Version);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "actionButton"),
+                             &kNC_actionButton);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "actionBar"),
+                             &kNC_actionBar);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "searchForm"),
+                             &kNC_searchForm);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "LastText"),
+                             &kNC_LastText);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "URL"),
+                             &kNC_URL);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(RDF_NAMESPACE_URI "instanceOf"),
+                             &kRDF_InstanceOf);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(RDF_NAMESPACE_URI "type"),
+                             &kRDF_type);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "loading"),
+                             &kNC_loading);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "HTML"),
+                             &kNC_HTML);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "Icon"),
+                             &kNC_Icon);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "StatusIcon"),
+                             &kNC_StatusIcon);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "Banner"),
+                             &kNC_Banner);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "Site"),
+                             &kNC_Site);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "Relevance"),
+                             &kNC_Relevance);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "Relevance?sort=true"),
+                             &kNC_RelevanceSort);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "Date"),
+                             &kNC_Date);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "PageRank"),
+                             &kNC_PageRank);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "Engine"),
+                             &kNC_Engine);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "Price"),
+                             &kNC_Price);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "Price?sort=true"),
+                             &kNC_PriceSort);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "Availability"),
+                             &kNC_Availability);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "BookmarkSeparator"),
+                             &kNC_BookmarkSeparator);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "Update"),
+                             &kNC_Update);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "UpdateIcon"),
+                             &kNC_UpdateIcon);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "UpdateCheckDays"),
+                             &kNC_UpdateCheckDays);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(WEB_NAMESPACE_URI "LastPingDate"),
+                             &kWEB_LastPingDate);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(WEB_NAMESPACE_URI "LastPingModDate"),
+                             &kWEB_LastPingModDate);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(WEB_NAMESPACE_URI "LastPingContentLen"),
+                             &kWEB_LastPingContentLen);
 
-		gRDFService->GetResource(NC_NAMESPACE_URI "command?cmd=addtobookmarks", &kNC_SearchCommand_AddToBookmarks);
-		gRDFService->GetResource(NC_NAMESPACE_URI "command?cmd=addquerytobookmarks", &kNC_SearchCommand_AddQueryToBookmarks);
-		gRDFService->GetResource(NC_NAMESPACE_URI "command?cmd=filterresult",   &kNC_SearchCommand_FilterResult);
-		gRDFService->GetResource(NC_NAMESPACE_URI "command?cmd=filtersite",     &kNC_SearchCommand_FilterSite);
-		gRDFService->GetResource(NC_NAMESPACE_URI "command?cmd=clearfilters",   &kNC_SearchCommand_ClearFilters);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "command?cmd=addtobookmarks"),
+                             &kNC_SearchCommand_AddToBookmarks);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "command?cmd=addquerytobookmarks"),
+                             &kNC_SearchCommand_AddQueryToBookmarks);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "command?cmd=filterresult"),
+                             &kNC_SearchCommand_FilterResult);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "command?cmd=filtersite"),
+                             &kNC_SearchCommand_FilterSite);
+		gRDFService->GetResource(NS_LITERAL_CSTRING(NC_NAMESPACE_URI "command?cmd=clearfilters"),
+                             &kNC_SearchCommand_ClearFilters);
 
 		gRDFService->GetLiteral(NS_LITERAL_STRING("true").get(), &kTrueLiteral);
 
@@ -494,6 +540,7 @@ InternetSearchDataSource::InternetSearchDataSource(void)
 		if (NS_SUCCEEDED(rv) && (prefs))
 		{
 			prefs->RegisterCallback("browser.search.mode", searchModePrefCallback, this);
+			prefs->GetIntPref("browser.search.mode", &gBrowserSearchMode);
 		}
 	}
 }
@@ -711,22 +758,6 @@ else
 	printf("    InternetSearchDataSource::FireTimer - busy pinging.\n");
 	}
 #endif
-
-#ifndef	REPEATING_TIMERS
-	if (search->mTimer)
-	{
-		search->mTimer->Cancel();
-		search->mTimer = nsnull;
-	}
-
-	nsresult rv;
-
-	search->mTimer = do_CreateInstance("@mozilla.org/timer;1", &rv);
-	if (NS_FAILED(rv) || (!search->mTimer)) return;
-	search->mTimer->InitWithFuncCallback(InternetSearchDataSource::FireTimer, search,
-                                             SEARCH_UPDATE_TIMEOUT, nsITimer::TYPE_REPEATING_SLACK);
-	// Note: don't addref "this" as we'll cancel the timer in the InternetSearchDataSource destructor
-#endif
 }
 
 
@@ -933,7 +964,7 @@ InternetSearchDataSource::Init()
 		}
 	}
 
-	mEngineListBuilt = PR_FALSE;
+	gEngineListBuilt = PR_FALSE;
 
 	// Register as a profile change obsevrer
   nsCOMPtr<nsIObserverService> observerService = 
@@ -953,9 +984,9 @@ InternetSearchDataSource::DeferredInit()
 {
 	nsresult	rv = NS_OK;
 
-	if (mEngineListBuilt == PR_FALSE)
+	if (gEngineListBuilt == PR_FALSE)
 	{
-		mEngineListBuilt = PR_TRUE;
+		gEngineListBuilt = PR_TRUE;
 
 		// get available search engines
 		nsCOMPtr<nsIFile>			nativeDir;
@@ -1084,7 +1115,7 @@ InternetSearchDataSource::GetTarget(nsIRDFResource *source,
 		nsCOMPtr<nsIRDFResource>	category;
 		nsCAutoString			caturiC;
 		caturiC.AssignWithConversion(catURI);
-		if (NS_FAILED(rv = gRDFService->GetResource(caturiC.get(),
+		if (NS_FAILED(rv = gRDFService->GetResource(caturiC,
 			getter_AddRefs(category))))
 			return(rv);
 
@@ -1203,7 +1234,7 @@ InternetSearchDataSource::GetTargets(nsIRDFResource *source,
 		nsCOMPtr<nsIRDFResource>	category;
 		nsCAutoString			caturiC;
 		caturiC.AssignWithConversion(catURI);
-		if (NS_FAILED(rv = gRDFService->GetResource(caturiC.get(),
+		if (NS_FAILED(rv = gRDFService->GetResource(caturiC,
 			getter_AddRefs(category))))
 			return(rv);
 
@@ -1225,7 +1256,7 @@ InternetSearchDataSource::GetTargets(nsIRDFResource *source,
 	{	
 		// defer search engine discovery until needed; small startup time improvement
 		if (((source == kNC_SearchEngineRoot) || isSearchURI(source)) && (property == kNC_Child)
-			&& (mEngineListBuilt == PR_FALSE))
+			&& (gEngineListBuilt == PR_FALSE))
 		{
 			DeferredInit();
 		}
@@ -1327,7 +1358,7 @@ InternetSearchDataSource::GetCategoryList()
 		categoryStr.AppendWithConversion(catResURI);
 
 		nsCOMPtr<nsIRDFResource>	searchCategoryRes;
-		if (NS_FAILED(rv = gRDFService->GetUnicodeResource(categoryStr.get(),
+		if (NS_FAILED(rv = gRDFService->GetUnicodeResource(categoryStr,
 			getter_AddRefs(searchCategoryRes))))	break;
 
 		nsCOMPtr<nsIRDFContainer> categoryContainer;
@@ -1541,7 +1572,7 @@ InternetSearchDataSource::HasArcOut(nsIRDFResource *source, nsIRDFResource *aArc
 	if (!uri)	return(NS_ERROR_UNEXPECTED);
 
 	nsCOMPtr<nsIRDFResource>	category;
-	if (NS_FAILED(rv = gRDFService->GetResource(uri,
+	if (NS_FAILED(rv = gRDFService->GetResource(nsDependentCString(uri),
 						    getter_AddRefs(category))))
 	    return(rv);
 
@@ -1634,7 +1665,7 @@ InternetSearchDataSource::ArcLabelsOut(nsIRDFResource *source,
 		if (!uri)	return(NS_ERROR_UNEXPECTED);
 
 		nsCOMPtr<nsIRDFResource>	category;
-		if (NS_FAILED(rv = gRDFService->GetResource(uri,
+		if (NS_FAILED(rv = gRDFService->GetResource(nsDependentCString(uri),
 			getter_AddRefs(category))))
 			return(rv);
 
@@ -1708,16 +1739,6 @@ InternetSearchDataSource::RemoveObserver(nsIRDFObserver *aObserver)
 		rv = mInner->RemoveObserver(aObserver);
 	}
 	return(rv);
-}
-
-
-
-NS_IMETHODIMP
-InternetSearchDataSource::GetAllCommands(nsIRDFResource* source,
-                                     nsIEnumerator/*<nsIRDFResource>*/** commands)
-{
-	NS_NOTYETIMPLEMENTED("write me!");
-	return NS_ERROR_NOT_IMPLEMENTED;
 }
 
 
@@ -2323,6 +2344,18 @@ InternetSearchDataSource::DoCommand(nsISupportsArray/*<nsIRDFResource>*/* aSourc
 }
 
 NS_IMETHODIMP
+InternetSearchDataSource::BeginUpdateBatch()
+{
+        return mInner->BeginUpdateBatch();
+}
+
+NS_IMETHODIMP
+InternetSearchDataSource::EndUpdateBatch()
+{
+        return mInner->EndUpdateBatch();
+}
+
+NS_IMETHODIMP
 InternetSearchDataSource::AddSearchEngine(const char *engineURL, const char *iconURL,
 					  const PRUnichar *suggestedTitle, const PRUnichar *suggestedCategory)
 {
@@ -2505,11 +2538,11 @@ InternetSearchDataSource::GetInternetSearchURL(const char *searchEngineURI,
 	*resultURL = nsnull;
 
 	// if we haven't already, load in the engines
-	if (mEngineListBuilt == PR_FALSE)	DeferredInit();
+	if (gEngineListBuilt == PR_FALSE)	DeferredInit();
 
 	nsresult			rv;
 	nsCOMPtr<nsIRDFResource>	engine;
-	if (NS_FAILED(rv = gRDFService->GetResource(searchEngineURI, getter_AddRefs(engine))))
+	if (NS_FAILED(rv = gRDFService->GetResource(nsDependentCString(searchEngineURI), getter_AddRefs(engine))))
 		return(rv);
 	if (!engine)	return(NS_ERROR_UNEXPECTED);
 
@@ -2650,7 +2683,7 @@ InternetSearchDataSource::FindInternetSearchResults(const char *url, PRBool *sea
 	shortURL.Truncate(optionsOffset);
 
 	// if we haven't already, load in the engines
-	if (mEngineListBuilt == PR_FALSE)	DeferredInit();
+	if (gEngineListBuilt == PR_FALSE)	DeferredInit();
 
 	// look in available engines to see if any of them appear
 	// to match this url (minus the GET options)
@@ -2880,8 +2913,8 @@ InternetSearchDataSource::ClearResults(PRBool flushLastSearchRef)
 
 			PRBool hasInArcs = PR_FALSE;
 			nsCOMPtr<nsISimpleEnumerator>	inArcs;
-			if (NS_FAILED(mInner->ArcLabelsIn(child, getter_AddRefs(inArcs)) ||
-				(!inArcs)))
+			if (NS_FAILED(mInner->ArcLabelsIn(child, getter_AddRefs(inArcs))) ||
+				(!inArcs))
 				continue;
 			if (NS_FAILED(inArcs->HasMoreElements(&hasInArcs)) ||
 				(hasInArcs == PR_TRUE))
@@ -2890,8 +2923,8 @@ InternetSearchDataSource::ClearResults(PRBool flushLastSearchRef)
 			// no other references, so also unassert any outgoing arcs
 
 			nsCOMPtr<nsISimpleEnumerator>	outArcs;
-			if (NS_FAILED(mInner->ArcLabelsOut(child, getter_AddRefs(outArcs)) ||
-				(!outArcs)))
+			if (NS_FAILED(mInner->ArcLabelsOut(child, getter_AddRefs(outArcs))) ||
+				(!outArcs))
 				continue;
 			PRBool	hasMoreOutArcs = PR_TRUE;
 			while (hasMoreOutArcs == PR_TRUE)
@@ -3141,7 +3174,7 @@ InternetSearchDataSource::BeginSearchRequest(nsIRDFResource *source, PRBool doNe
 #endif
 
 		nsCOMPtr<nsIRDFResource>	engine;
-		gRDFService->GetResource(baseFilename, getter_AddRefs(engine));
+		gRDFService->GetResource(nsDependentCString(baseFilename), getter_AddRefs(engine));
 		nsCRT::free(baseFilename);
 		baseFilename = nsnull;
 		if (!engine)	continue;
@@ -3904,7 +3937,8 @@ InternetSearchDataSource::DoSearch(nsIRDFResource *source, nsIRDFResource *engin
 			if (httpMultiChannel)
 			{
                 httpMultiChannel->SetRequestHeader(NS_LITERAL_CSTRING("MultiSearch"),
-                                                   NS_LITERAL_CSTRING("true"));
+                                                   NS_LITERAL_CSTRING("true"),
+                                                   PR_FALSE);
 			}
 
 			// get it just from the cache if we can (do not validate)
@@ -3932,7 +3966,7 @@ InternetSearchDataSource::DoSearch(nsIRDFResource *source, nsIRDFResource *engin
 				    {
 					nsCOMPtr<nsIUploadChannel> uploadChannel(do_QueryInterface(httpChannel));
 					NS_ASSERTION(uploadChannel, "http must support nsIUploadChannel");
-					uploadChannel->SetUploadStream(postDataStream, nsnull, -1);
+					uploadChannel->SetUploadStream(postDataStream, NS_LITERAL_CSTRING(""), -1);
 				    }
 				}
 			}
@@ -4048,7 +4082,7 @@ InternetSearchDataSource::SaveEngineInfoIntoGraph(nsIFile *file, nsIFile *icon,
 		searchURL.Append(NS_LITERAL_STRING(".src"));
 	}
 
-	if (NS_FAILED(rv = gRDFService->GetUnicodeResource(searchURL.get(),
+	if (NS_FAILED(rv = gRDFService->GetUnicodeResource(searchURL,
 		getter_AddRefs(searchRes))))	return(rv);
 
 	// save the basename reference
@@ -4056,7 +4090,7 @@ InternetSearchDataSource::SaveEngineInfoIntoGraph(nsIFile *file, nsIFile *icon,
 	{
 		basename.InsertWithConversion(kURINC_SearchCategoryEngineBasenamePrefix, 0);
 
-		if (NS_FAILED(rv = gRDFService->GetUnicodeResource(basename.get(),
+		if (NS_FAILED(rv = gRDFService->GetUnicodeResource(basename,
 			getter_AddRefs(categoryRes))))	return(rv);
 
 		nsCOMPtr<nsIRDFLiteral>	searchLiteral;
@@ -4139,7 +4173,7 @@ InternetSearchDataSource::SaveEngineInfoIntoGraph(nsIFile *file, nsIFile *icon,
 				nsAutoString	catList;
 				catList.AssignWithConversion(kURINC_SearchCategoryPrefix);
 				catList.AppendWithConversion(catURI);
-				gRDFService->GetUnicodeResource(catList.get(), getter_AddRefs(catRes));
+				gRDFService->GetUnicodeResource(catList, getter_AddRefs(catRes));
 			}
 
 			nsCOMPtr<nsIRDFContainer> container;
@@ -5079,7 +5113,7 @@ InternetSearchDataSource::webSearchFinalize(nsIChannel* channel, nsIInternetSear
 	const PRUnichar	*uniBuf = nsnull;
 	if (NS_SUCCEEDED(rv = context->GetBufferConst(&uniBuf)) && (uniBuf))
 	{
-		if (mParent)
+		if (mParent && (gBrowserSearchMode>0))
 		{
 			// save HTML result page for this engine
 			nsCOMPtr<nsIRDFLiteral>	htmlLiteral;
@@ -5349,6 +5383,7 @@ InternetSearchDataSource::ParseHTML(nsIURI *aURL, nsIRDFResource *mParent,
 
 			// forced to use an nsAutoString (which copies)
 			// as CBufDescriptor doesn't guarantee null terminator
+			if (resultItemEnd - resultItemStart - 1 <= 0)    break;
 			nsAutoString resultItem(&htmlPage[resultItemStart],
 				resultItemEnd - resultItemStart - 1);
 
@@ -5489,7 +5524,7 @@ InternetSearchDataSource::ParseHTML(nsIURI *aURL, nsIRDFResource *mParent,
 			
 			// set HTML response chunk
 			const PRUnichar	*htmlResponseUni = resultItem.get();
-			if (htmlResponseUni)
+			if (htmlResponseUni && (gBrowserSearchMode>0))
 			{
 				nsCOMPtr<nsIRDFLiteral>	htmlResponseLiteral;
 				if (NS_SUCCEEDED(rv = gRDFService->GetLiteral(htmlResponseUni, getter_AddRefs(htmlResponseLiteral))))

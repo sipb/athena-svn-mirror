@@ -68,7 +68,8 @@
 
 static PRLogModuleInfo * gMimeEmitterLogModule = nsnull;
 
-#define   MIME_URL      "chrome://messenger/locale/mimeheader.properties"
+#define   MIME_HEADER_URL      "chrome://messenger/locale/mimeheader.properties"
+#define   MIME_URL             "chrome://messenger/locale/mime.properties"
 static    NS_DEFINE_CID(kPrefCID, NS_PREF_CID);
 
 NS_IMPL_THREADSAFE_ADDREF(nsMimeBaseEmitter)
@@ -77,15 +78,11 @@ NS_IMPL_THREADSAFE_RELEASE(nsMimeBaseEmitter)
 NS_INTERFACE_MAP_BEGIN(nsMimeBaseEmitter)
    NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIMimeEmitter)
    NS_INTERFACE_MAP_ENTRY(nsIMimeEmitter)
-   NS_INTERFACE_MAP_ENTRY(nsIInputStreamObserver)
-   NS_INTERFACE_MAP_ENTRY(nsIOutputStreamObserver)
    NS_INTERFACE_MAP_ENTRY(nsIInterfaceRequestor)
 NS_INTERFACE_MAP_END
 
 nsMimeBaseEmitter::nsMimeBaseEmitter()
 {
-  NS_INIT_ISUPPORTS(); 
-
   // Initialize data output vars...
   mFirstHeaders = PR_TRUE;
 
@@ -205,31 +202,70 @@ nsMimeBaseEmitter::CleanupHeaderArray(nsVoidArray *aArray)
   delete aArray;
 }
 
+static PRInt32 MapHeaderNameToID(const char *header)
+{
+  // emitter passes UPPERCASE for header names
+  if (!strcmp(header, "DATE"))
+    return MIME_MHTML_DATE;
+  else if (!strcmp(header, "FROM"))
+    return MIME_MHTML_FROM;
+  else if (!strcmp(header, "SUBJECT"))
+    return MIME_MHTML_SUBJECT;
+  else if (!strcmp(header, "TO"))
+    return MIME_MHTML_TO;
+  else if (!strcmp(header, "SENDER"))
+    return MIME_MHTML_SENDER;
+  else if (!strcmp(header, "RESENT-TO"))
+    return MIME_MHTML_RESENT_TO;
+  else if (!strcmp(header, "RESENT-SENDER"))
+    return MIME_MHTML_RESENT_SENDER;
+  else if (!strcmp(header, "RESENT-FROM"))
+    return MIME_MHTML_RESENT_FROM;
+  else if (!strcmp(header, "RESENT-CC"))
+    return MIME_MHTML_RESENT_CC;
+  else if (!strcmp(header, "REPLY-TO"))
+    return MIME_MHTML_REPLY_TO;
+  else if (!strcmp(header, "REFERENCES"))
+    return MIME_MHTML_REFERENCES;
+  else if (!strcmp(header, "NEWSGROUPS"))
+    return MIME_MHTML_NEWSGROUPS;
+  else if (!strcmp(header, "MESSAGE-ID"))
+    return MIME_MHTML_MESSAGE_ID;
+  else if (!strcmp(header, "FOLLOWUP-TO"))
+    return MIME_MHTML_FOLLOWUP_TO;
+  else if (!strcmp(header, "CC"))
+    return MIME_MHTML_CC;
+  else if (!strcmp(header, "ORGANIZATION"))
+    return MIME_MHTML_ORGANIZATION;
+  else if (!strcmp(header, "BCC"))
+    return MIME_MHTML_BCC;
+
+  return 0;
+}
+
 char *
 nsMimeBaseEmitter::MimeGetStringByName(const char *aHeaderName)
 {
 	nsresult res = NS_OK;
 
-	if (!m_stringBundle)
+	if (!m_headerStringBundle)
 	{
-		static const char propertyURL[] = MIME_URL;
+		static const char propertyURL[] = MIME_HEADER_URL;
 
 		nsCOMPtr<nsIStringBundleService> sBundleService = 
 		         do_GetService(NS_STRINGBUNDLE_CONTRACTID, &res); 
 		if (NS_SUCCEEDED(res) && (nsnull != sBundleService)) 
 		{
-			res = sBundleService->CreateBundle(propertyURL, getter_AddRefs(m_stringBundle));
+			res = sBundleService->CreateBundle(propertyURL, getter_AddRefs(m_headerStringBundle));
 		}
 	}
 
-	if (m_stringBundle)
+	if (m_headerStringBundle)
 	{
-    nsAutoString  v;
-    PRUnichar     *ptrv = nsnull;
-    nsString      uniStr; uniStr.AssignWithConversion(aHeaderName);
+    nsXPIDLString val;
 
-    res = m_stringBundle->GetStringFromName(uniStr.get(), &ptrv);
-    v = ptrv;
+    res = m_headerStringBundle->GetStringFromName(NS_ConvertASCIItoUCS2(aHeaderName).get(), 
+                                                  getter_Copies(val));
 
     if (NS_FAILED(res)) 
       return nsnull;
@@ -238,12 +274,42 @@ nsMimeBaseEmitter::MimeGetStringByName(const char *aHeaderName)
     // This returns a UTF-8 string so the caller needs to perform a conversion 
     // if this is used as UCS-2 (e.g. cannot do nsString(utfStr);
     //
-    return ToNewUTF8String(v);
+    return ToNewUTF8String(val);
 	}
 	else
 	{
     return nsnull;
 	}
+}
+
+char *
+nsMimeBaseEmitter::MimeGetStringByID(PRInt32 aID)
+{
+  nsresult res = NS_OK;
+
+  if (!m_stringBundle)
+  {
+    static const char propertyURL[] = MIME_URL;
+
+    nsCOMPtr<nsIStringBundleService> sBundleService = 
+                            do_GetService(NS_STRINGBUNDLE_CONTRACTID, &res); 
+    if (NS_SUCCEEDED(res)) 
+      res = sBundleService->CreateBundle(propertyURL, getter_AddRefs(m_stringBundle));
+  }
+
+  if (m_stringBundle)
+  {
+    nsXPIDLString val;
+
+    res = m_stringBundle->GetStringFromID(aID, getter_Copies(val));
+
+    if (NS_FAILED(res)) 
+      return nsnull;
+
+    return ToNewUTF8String(val);
+  }
+  else
+    return nsnull;
 }
 
 // 
@@ -255,57 +321,26 @@ nsMimeBaseEmitter::MimeGetStringByName(const char *aHeaderName)
 char *
 nsMimeBaseEmitter::LocalizeHeaderName(const char *aHeaderName, const char *aDefaultName)
 {
-  char *retVal = MimeGetStringByName(aHeaderName);
+  char *retVal = nsnull;
+
+  // prefer to use translated strings if not for quoting
+  if (mFormat != nsMimeOutput::nsMimeMessageQuoting &&
+      mFormat != nsMimeOutput::nsMimeMessageBodyQuoting)
+  {
+    // map name to id and get the translated string
+    PRInt32 id = MapHeaderNameToID(aHeaderName);
+    if (id > 0)
+      retVal = MimeGetStringByID(id);
+  }
+  
+  // get the string from the other bundle (usually not translated)
+  if (!retVal)
+    retVal = MimeGetStringByName(aHeaderName);
 
   if (retVal)
     return retVal;
   else
     return nsCRT::strdup(aDefaultName);
-}
-
-///////////////////////////////////////////////////////////////////////////
-// nsIPipeObserver Interface
-///////////////////////////////////////////////////////////////////////////
-
-NS_IMETHODIMP nsMimeBaseEmitter::OnWrite(nsIOutputStream* out, PRUint32 aCount)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP nsMimeBaseEmitter::OnEmpty(nsIInputStream* in)
-{
-  return NS_OK;
-}
-
-
-NS_IMETHODIMP nsMimeBaseEmitter::OnFull(nsIOutputStream* out)
-{
-  // the pipe is full so we should flush our data to the converter's listener
-  // in order to make more room. 
-
-  // since we only have one pipe per mime emitter, i can ignore the pipe param and use
-  // my outStream object directly (it will be the same thing as what we'd get from aPipe.
-
-  nsresult rv = NS_OK;
-  if (mOutListener && mInputStream)
-  {
-      PRUint32 bytesAvailable = 0;
-      rv = mInputStream->Available(&bytesAvailable);
-      NS_ASSERTION(NS_SUCCEEDED(rv), "Available failed");
-      
-      nsCOMPtr<nsIRequest> request = do_QueryInterface(mChannel);
-      
-      rv = mOutListener->OnDataAvailable(request, mURL, mInputStream, 0, bytesAvailable);
-  }
-  else 
-    rv = NS_ERROR_NULL_POINTER;
-
-  return rv;
-}
-
-NS_IMETHODIMP nsMimeBaseEmitter::OnClose(nsIInputStream* in)
-{
-  return NS_OK;
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -455,8 +490,7 @@ nsMimeBaseEmitter::Write(const char *buf, PRUint32 size, PRUint32 *amountWritten
   // First, handle any old buffer data...
   if (needToWrite > 0)
   {
-    rv = mOutStream->Write(mBufferMgr->GetBuffer(), 
-                            needToWrite, &written);
+    rv = WriteHelper(mBufferMgr->GetBuffer(), needToWrite, &written);
 
     mTotalWritten += written;
     mBufferMgr->ReduceBuffer(written);
@@ -474,13 +508,33 @@ nsMimeBaseEmitter::Write(const char *buf, PRUint32 size, PRUint32 *amountWritten
 
   // if we get here, we are dealing with new data...try to write
   // and then do the right thing...
-  rv = mOutStream->Write(buf, size, &written);
+  rv = WriteHelper(buf, size, &written);
   *amountWritten = written;
   mTotalWritten += written;
 
   if (written < size)
     mBufferMgr->IncreaseBuffer(buf+written, (size-written));
 
+  return rv;
+}
+
+nsresult
+nsMimeBaseEmitter::WriteHelper(const char *buf, PRUint32 count, PRUint32 *countWritten)
+{
+  nsresult rv;
+
+  rv = mOutStream->Write(buf, count, countWritten);
+  if (rv == NS_BASE_STREAM_WOULD_BLOCK) {
+    // pipe is full, push contents of pipe to listener...
+    PRUint32 avail;
+    rv = mInputStream->Available(&avail);
+    if (NS_SUCCEEDED(rv) && avail) {
+      mOutListener->OnDataAvailable(mChannel, mURL, mInputStream, 0, avail);
+
+      // try writing again...
+      rv = mOutStream->Write(buf, count, countWritten);
+    }
+  }
   return rv;
 }
 
@@ -638,7 +692,7 @@ nsMimeBaseEmitter::AddAllHeaders(const char *allheaders,
         msgurl->SetMimeHeaders(mimeHeaders);
     }
   }
-    return NS_OK;
+  return NS_OK;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

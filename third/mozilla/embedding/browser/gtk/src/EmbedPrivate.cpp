@@ -49,7 +49,11 @@
 #include <nsIFocusController.h>
 
 // for profiles
-#include <nsMPFileLocProvider.h>
+#include <nsProfileDirServiceProvider.h>
+
+// app component registration
+#include <nsIGenericFactory.h>
+#include <nsIComponentRegistrar.h>
 
 // all of our local includes
 #include "EmbedPrivate.h"
@@ -59,6 +63,14 @@
 #include "EmbedEventListener.h"
 #include "EmbedWindowCreator.h"
 #include "EmbedStream.h"
+#ifdef MOZ_WIDGET_GTK2
+#include "GtkPromptService.h"
+#endif
+
+#ifdef MOZ_ACCESSIBILITY_ATK
+#include "nsIAccessibilityService.h"
+#include "nsIDOMDocument.h"
+#endif
 
 #ifdef _BUILD_STATIC_BIN
 #include "nsStaticComponent.h"
@@ -78,6 +90,35 @@ nsIPref     *EmbedPrivate::sPrefs       = nsnull;
 GtkWidget   *EmbedPrivate::sOffscreenWindow = 0;
 GtkWidget   *EmbedPrivate::sOffscreenFixed  = 0;
 nsIDirectoryServiceProvider *EmbedPrivate::sAppFileLocProvider = nsnull;
+nsProfileDirServiceProvider *EmbedPrivate::sProfileDirServiceProvider = nsnull;
+
+#define NS_PROMPTSERVICE_CID \
+ {0x95611356, 0xf583, 0x46f5, {0x81, 0xff, 0x4b, 0x3e, 0x01, 0x62, 0xc6, 0x19}}
+
+#ifdef MOZ_WIDGET_GTK2
+NS_GENERIC_FACTORY_CONSTRUCTOR(GtkPromptService)
+#endif
+
+#ifdef MOZ_WIDGET_GTK2
+
+static const nsModuleComponentInfo defaultAppComps[] = {
+  {
+    "Prompt Service",
+    NS_PROMPTSERVICE_CID,
+    "@mozilla.org/embedcomp/prompt-service;1",
+    GtkPromptServiceConstructor
+  }
+};
+
+const nsModuleComponentInfo *EmbedPrivate::sAppComps = defaultAppComps;
+int   EmbedPrivate::sNumAppComps = sizeof(defaultAppComps) / sizeof(nsModuleComponentInfo);
+
+#else
+
+const nsModuleComponentInfo *EmbedPrivate::sAppComps = nsnull;
+int   EmbedPrivate::sNumAppComps = 0;
+
+#endif
 
 EmbedPrivate::EmbedPrivate(void)
 {
@@ -136,7 +177,7 @@ EmbedPrivate::Init(GtkMozEmbed *aOwningWidget)
   // It is assumed that this will be destroyed when we go out of
   // scope.
   mContentListener = new EmbedContentListener();
-  mContentListenerGuard = mContentListener;
+  mContentListenerGuard = NS_STATIC_CAST(nsISupports*, NS_STATIC_CAST(nsIURIContentListener*, mContentListener));
   mContentListener->Init(this);
 
   // Create our key listener object and initialize it.  It is assumed
@@ -325,7 +366,13 @@ EmbedPrivate::Destroy(void)
 void
 EmbedPrivate::SetURI(const char *aURI)
 {
+#ifdef MOZ_WIDGET_GTK
   mURI.AssignWithConversion(aURI);
+#endif
+
+#ifdef MOZ_WIDGET_GTK2
+  mURI.Assign(NS_ConvertUTF8toUCS2(aURI));
+#endif
 }
 
 void
@@ -373,9 +420,10 @@ EmbedPrivate::PushStartup(void)
     }
 
     rv = StartupProfile();
-    if (NS_FAILED(rv))
-      NS_WARNING("Warning: Failed to start up profiles.\n");
-    
+    NS_WARN_IF_FALSE(NS_SUCCEEDED(rv), "Warning: Failed to start up profiles.\n");
+
+    rv = RegisterAppComponents();
+    NS_WARN_IF_FALSE(NS_SUCCEEDED(rv), "Warning: Failed to register app components.\n");
 
     // XXX startup appshell service?
     // XXX create offscreen window for appshell service?
@@ -429,6 +477,15 @@ EmbedPrivate::SetCompPath(char *aPath)
     sCompPath = strdup(aPath);
   else
     sCompPath = nsnull;
+}
+
+/* static */
+void
+EmbedPrivate::SetAppComponents(const nsModuleComponentInfo* aComps,
+                               int aNumComponents)
+{
+  sAppComps = aComps;
+  sNumAppComps = aNumComponents;
 }
 
 /* static */
@@ -776,6 +833,36 @@ EmbedPrivate::GetPIDOMWindow(nsPIDOMWindow **aPIWin)
 
 }
 
+#ifdef MOZ_ACCESSIBILITY_ATK
+void *
+EmbedPrivate::GetAtkObjectForCurrentDocument()
+{
+  if (!mNavigation)
+    return nsnull;
+
+  nsCOMPtr<nsIAccessibilityService> accService =
+    do_GetService("@mozilla.org/accessibilityService;1");
+  if (accService) {
+    //get current document
+    nsCOMPtr<nsIDOMDocument> domDoc;
+    mNavigation->GetDocument(getter_AddRefs(domDoc));
+    NS_ENSURE_TRUE(domDoc, nsnull);
+
+    nsCOMPtr<nsIDOMNode> domNode(do_QueryInterface(domDoc));
+    NS_ENSURE_TRUE(domNode, nsnull);
+
+    nsCOMPtr<nsIAccessible> acc;
+    accService->GetAccessibleFor(domNode, getter_AddRefs(acc));
+    NS_ENSURE_TRUE(acc, nsnull);
+
+    void *atkObj = nsnull;
+    if (NS_SUCCEEDED(acc->GetNativeInterface(&atkObj)))
+      return atkObj;
+  }
+  return nsnull;
+}
+#endif /* MOZ_ACCESSIBILITY_ATK */
+
 /* static */
 nsresult
 EmbedPrivate::StartupProfile(void)
@@ -784,33 +871,26 @@ EmbedPrivate::StartupProfile(void)
   if (sProfileDir && sProfileName) {
     nsresult rv;
     nsCOMPtr<nsILocalFile> profileDir;
-    PRBool exists = PR_FALSE;
-    PRBool isDir = PR_FALSE;
-    profileDir = do_CreateInstance(NS_LOCAL_FILE_CONTRACTID);
-    rv = profileDir->InitWithNativePath(nsDependentCString(sProfileDir));
+    NS_NewNativeLocalFile(nsDependentCString(sProfileDir), PR_TRUE,
+                          getter_AddRefs(profileDir));
+    if (!profileDir)
+      return NS_ERROR_FAILURE;
+    rv = profileDir->AppendNative(nsDependentCString(sProfileName));
     if (NS_FAILED(rv))
       return NS_ERROR_FAILURE;
-    profileDir->Exists(&exists);
-    profileDir->IsDirectory(&isDir);
-    // if it exists and it isn't a directory then give up now.
-    if (!exists) {
-      rv = profileDir->Create(nsIFile::DIRECTORY_TYPE, 0700);
-      if NS_FAILED(rv) {
-	return NS_ERROR_FAILURE;
-      }
-    }
-    else if (exists && !isDir) {
+
+    nsCOMPtr<nsProfileDirServiceProvider> locProvider;
+    NS_NewProfileDirServiceProvider(PR_TRUE, getter_AddRefs(locProvider));
+    if (!locProvider)
       return NS_ERROR_FAILURE;
-    }
-    // actually create the loc provider and initialize prefs.
-    nsMPFileLocProvider *locProvider;
-    // Set up the loc provider.  This has a really strange ownership
-    // model.  When I initialize it it will register itself with the
-    // directory service.  The directory service becomes the owning
-    // reference.  So, when that service is shut down this object will
-    // be destroyed.  It's not leaking here.
-    locProvider = new nsMPFileLocProvider;
-    rv = locProvider->Initialize(profileDir, sProfileName);
+    rv = locProvider->Register();
+    if (NS_FAILED(rv))
+      return rv;
+    rv = locProvider->SetProfileDir(profileDir);
+    if (NS_FAILED(rv))
+      return rv;
+    // Keep a ref so we can shut it down.
+    NS_ADDREF(sProfileDirServiceProvider = locProvider);
 
     // get prefs
     nsCOMPtr<nsIPref> pref;
@@ -819,8 +899,6 @@ EmbedPrivate::StartupProfile(void)
       return NS_ERROR_FAILURE;
     sPrefs = pref.get();
     NS_ADDREF(sPrefs);
-    sPrefs->ResetPrefs();
-    sPrefs->ReadUserPrefs(nsnull);
   }
   return NS_OK;
 }
@@ -829,12 +907,42 @@ EmbedPrivate::StartupProfile(void)
 void
 EmbedPrivate::ShutdownProfile(void)
 {
+  if (sProfileDirServiceProvider) {
+    sProfileDirServiceProvider->Shutdown();
+    NS_RELEASE(sProfileDirServiceProvider);
+    sProfileDirServiceProvider = 0;
+  }
   if (sPrefs) {
     NS_RELEASE(sPrefs);
     sPrefs = 0;
   }
 }
 
+/* static */
+nsresult
+EmbedPrivate::RegisterAppComponents(void)
+{
+  nsCOMPtr<nsIComponentRegistrar> cr;
+  nsresult rv = NS_GetComponentRegistrar(getter_AddRefs(cr));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  for (int i = 0; i < sNumAppComps; ++i) {
+    nsCOMPtr<nsIGenericFactory> componentFactory;
+    rv = NS_NewGenericFactory(getter_AddRefs(componentFactory),
+                              &(sAppComps[i]));
+    if (NS_FAILED(rv)) {
+      NS_WARNING("Unable to create factory for component");
+      continue;  // don't abort registering other components
+    }
+
+    rv = cr->RegisterFactory(sAppComps[i].mCID, sAppComps[i].mDescription,
+                             sAppComps[i].mContractID, componentFactory);
+    NS_ASSERTION(NS_SUCCEEDED(rv), "Unable to register factory for component");
+  }
+
+  return rv;
+}
+			     
 /* static */
 void
 EmbedPrivate::EnsureOffscreenWindow(void)

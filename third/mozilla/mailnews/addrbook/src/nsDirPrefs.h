@@ -185,6 +185,7 @@ typedef enum
 
 
 typedef struct _DIR_ReplicationInfo
+
 {
 	char *description;           /* Human readable description of replica                */
 	char *fileName;              /* File name of replication database                    */
@@ -222,13 +223,13 @@ typedef struct DIR_Server
 	/* Flags */
 	/* TBD: All the PRBool fields should eventually merge into "flags" */
 	PRUint32 flags;               
-	PRBool stopFiltersOnHit;
-	PRBool isOffline;
-	PRBool isSecure;           /* use SSL?                               */
-	PRBool saveResults;    
-	PRBool efficientWildcards; /* server can match substrings            */
-	PRBool enableAuth;			/* AUTH: Use DN/password when binding?    */
-	PRBool savePassword;		/* AUTH: Remember DN and password?        */
+	PRPackedBool stopFiltersOnHit;
+	PRPackedBool isOffline;
+	PRPackedBool isSecure;           /* use SSL?                               */
+	PRPackedBool saveResults;    
+	PRPackedBool efficientWildcards; /* server can match substrings            */
+	PRPackedBool enableAuth;			/* AUTH: Use DN/password when binding?    */
+	PRPackedBool savePassword;		/* AUTH: Remember DN and password?        */
 
 	/* site-configurable attributes and filters */
 	nsVoidArray *customFilters;
@@ -282,7 +283,7 @@ nsVoidArray* DIR_GetDirectories();
 nsresult DIR_GetDirServers();
 nsresult DIR_ShutDown(void);  /* FEs should call this when the app is shutting down. It frees all DIR_Servers regardless of ref count values! */
 
-nsresult DIR_AddNewAddressBook(const PRUnichar *dirName, const char *fileName, PRBool migrating, DirectoryType dirType, DIR_Server** pServer);
+nsresult DIR_AddNewAddressBook(const PRUnichar *dirName, const char *fileName, PRBool migrating, const char * uri, int maxHits, const char * authDn, DirectoryType dirType, DIR_Server** pServer);
 nsresult DIR_ContainsServer(DIR_Server* pServer, PRBool *hasDir);
 
 nsresult DIR_DecrementServerRefCount (DIR_Server *);
@@ -309,7 +310,6 @@ nsresult DIR_DeleteServerList(nsVoidArray *wholeList);
 
 #define DIR_POS_APPEND                     0x80000000
 #define DIR_POS_DELETE                     0x80000001
-PRBool	DIR_SortServersByPosition(nsVoidArray *wholeList);
 PRBool	DIR_SetServerPosition(nsVoidArray *wholeList, DIR_Server *server, PRInt32 position);
 
 /* These two routines should be called to initialize and save 
@@ -337,7 +337,6 @@ PRInt32  DIR_GetDirServerSubsetCount(nsVoidArray *wholeList, PRUint32 flags);
 DIR_DescriptionCode DIR_ValidateDirectoryDescription(nsVoidArray * wholeList, DIR_Server * serverToValidate);
 
 char   *DIR_CreateServerPrefName (DIR_Server *server, char *name);
-void	DIR_GetServerFileName(char** filename, const char* leafName);
 void	DIR_SetServerFileName(DIR_Server* pServer, const char* leafName);
 
 /* APIs for site-configurability of LDAP attribute names and 

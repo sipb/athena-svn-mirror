@@ -13,7 +13,7 @@
         chrome:displayName="Messenger"
         chrome:author="mozilla.org"
         chrome:name="messenger"
-        chrome:localeVersion="1.2"
+        chrome:localeVersion="1.4"
         chrome:skinVersion="1.2">
   </RDF:Description>
 
@@ -67,7 +67,7 @@
 
   <!-- messenger items for Navigator -->
   <RDF:Seq about="chrome://navigator/content/navigatorOverlay.xul">
-    <RDF:li>chrome://messenger/content/mailNavigatorOverlay.xul</RDF:li>
+    <RDF:li>chrome://messenger/content/mailOverlay.xul</RDF:li>
   </RDF:Seq>
 
   <!-- messenger items for Messenger -->

@@ -50,7 +50,6 @@
 #include "BrowserFrm.h"
 #include "EditorFrm.h"
 #include "winEmbedFileLocProvider.h"
-#include "ProfileMgr.h"
 #include "BrowserImpl.h"
 #include "nsIWindowWatcher.h"
 #include "plstr.h"
@@ -58,6 +57,23 @@
 #include "nsCRT.h"
 #include <io.h>
 #include <fcntl.h>
+
+#ifdef USE_PROFILES
+#include "ProfileMgr.h"
+#else
+#include "nsProfileDirServiceProvider.h"
+#endif
+
+#ifdef MOZ_PROFILESHARING
+#include "nsIProfileSharingSetup.h"
+#endif
+
+#ifdef _BUILD_STATIC_BIN
+#include "nsStaticComponent.h"
+nsresult PR_CALLBACK
+app_getModuleInfo(nsStaticModuleInfo **info, PRUint32 *count);
+#endif
+
 
 #ifdef NS_TRACE_MALLOC
 #include "nsTraceMalloc.h"
@@ -71,7 +87,7 @@ static char THIS_FILE[] = __FILE__;
 
 // this is for overriding the Mozilla default PromptService component
 #include "PromptService.h"
-#define kComponentsLibname "mfcEmbedComponents.dll"
+#define kComponentsLibname _T("mfcEmbedComponents.dll")
 #define NS_PROMPTSERVICE_CID \
  {0xa2112d6a, 0x0e28, 0x421f, {0xb4, 0x6a, 0x25, 0xc0, 0xb3, 0x8, 0xcb, 0xd0}}
 static NS_DEFINE_CID(kPromptServiceCID, NS_PROMPTSERVICE_CID);
@@ -128,15 +144,22 @@ public:
     }
 
     // handle flag-based parameters
-    void HandleFlag(const nsACString& flag, const char* param=nsnull)
+#ifdef _UNICODE
+    void HandleFlag(const nsAString& flag, const TCHAR * param = nsnull)
+#else
+    void HandleFlag(const nsACString& flag, const TCHAR * param = nsnull)
+#endif
     {
-        if (flag.Equals("console"))
+        if (flag.Equals(_T("console")))
             DoConsole();
-        else if (flag.Equals("chrome"))
+        else if (flag.Equals(_T("chrome")))
             DoChrome();
 #ifdef NS_TRACE_MALLOC
-        else if (flag.Equals("trace-malloc"))
-            DoTraceMalloc(flag, param);
+        else if (flag.Equals(_T("trace-malloc")))
+        {
+            USES_CONVERSION;
+            DoTraceMalloc(flag, T2CA(param));
+        }
 #endif
         // add new flag handlers here (please add a DoFoo() method below!)
     }
@@ -172,28 +195,37 @@ public:
     
 private:
     // autostring is fine, this is a stack based object anyway
+#ifdef _UNICODE
+    nsAutoString mLastFlag;
+#else
     nsCAutoString mLastFlag;
+#endif
 
     CMfcEmbedApp& mApp;
 };
 
 
 BEGIN_MESSAGE_MAP(CMfcEmbedApp, CWinApp)
-	//{{AFX_MSG_MAP(CMfcEmbedApp)
-	ON_COMMAND(ID_NEW_BROWSER, OnNewBrowser)
-	ON_COMMAND(ID_NEW_EDITORWINDOW, OnNewEditor)
-	ON_COMMAND(ID_MANAGE_PROFILES, OnManageProfiles)
-	ON_COMMAND(ID_APP_ABOUT, OnAppAbout)
+    //{{AFX_MSG_MAP(CMfcEmbedApp)
+    ON_COMMAND(ID_NEW_BROWSER, OnNewBrowser)
+    ON_COMMAND(ID_NEW_EDITORWINDOW, OnNewEditor)
+#ifdef USE_PROFILES
+    ON_COMMAND(ID_MANAGE_PROFILES, OnManageProfiles)
+#endif
+    ON_COMMAND(ID_APP_ABOUT, OnAppAbout)
     ON_COMMAND(ID_EDIT_PREFERENCES, OnEditPreferences)
-	// NOTE - the ClassWizard will add and remove mapping macros here.
-	//    DO NOT EDIT what you see in these blocks of generated code!
-	//}}AFX_MSG_MAP
+    // NOTE - the ClassWizard will add and remove mapping macros here.
+    //    DO NOT EDIT what you see in these blocks of generated code!
+    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
-CMfcEmbedApp::CMfcEmbedApp() :
-    m_ProfileMgr(NULL)
+CMfcEmbedApp::CMfcEmbedApp()
 {
     mRefCnt = 1; // Start at one - nothing is going to addref this object
+
+#ifdef USE_PROFILES
+    m_ProfileMgr = NULL;
+#endif
 
     m_strHomePage = "";
 
@@ -345,33 +377,41 @@ void CMfcEmbedApp::ShowDebugConsole()
 //
 BOOL CMfcEmbedApp::InitInstance()
 {
+#ifdef _BUILD_STATIC_BIN
+    // Initialize XPCOM's module info table
+    NSGetStaticModuleInfo = app_getModuleInfo;
+#endif
+
     
     CMfcEmbedCommandLine cmdLine(*this);
     ParseCommandLine(cmdLine);
     
-	Enable3dControls();
+    Enable3dControls();
 
-	//
-	// 1. Determine the name of the dir from which the GRE based app is being run
-	// from [It's OK to do this even if you're not running in an GRE env]
-	//
-	// 2. Create an nsILocalFile out of it which will passed in to NS_InitEmbedding()
-	//
-	// Please see http://www.mozilla.org/projects/embedding/MRE.html
-	// for more info. on GRE
+    //
+    // 1. Determine the name of the dir from which the GRE based app is being run
+    // from [It's OK to do this even if you're not running in an GRE env]
+    //
+    // 2. Create an nsILocalFile out of it which will passed in to NS_InitEmbedding()
+    //
+    // Please see http://www.mozilla.org/projects/embedding/MRE.html
+    // for more info. on GRE
 
-	char curDir[_MAX_PATH+1];
-	::GetCurrentDirectory(_MAX_PATH, curDir);
-	nsresult rv;
-	nsCOMPtr<nsILocalFile> mreAppDir;
-	rv = NS_NewNativeLocalFile(nsDependentCString(curDir), TRUE, getter_AddRefs(mreAppDir));
-	NS_ASSERTION(NS_SUCCEEDED(rv), "failed to create mreAppDir localfile");
+    TCHAR curDir[_MAX_PATH+1];
+    ::GetCurrentDirectory(_MAX_PATH, curDir);
+    USES_CONVERSION;
+    nsresult rv;
+    nsCOMPtr<nsILocalFile> mreAppDir;
+    rv = NS_NewNativeLocalFile(nsDependentCString(T2A(curDir)), TRUE, getter_AddRefs(mreAppDir));
+    NS_ASSERTION(NS_SUCCEEDED(rv), "failed to create mreAppDir localfile");
 
-	// Take a look at 
-	// http://www.mozilla.org/projects/xpcom/file_locations.html
-	// for more info on File Locations
+    // Take a look at 
+    // http://www.mozilla.org/projects/xpcom/file_locations.html
+    // for more info on File Locations
 
-    winEmbedFileLocProvider *provider = new winEmbedFileLocProvider("MfcEmbed");
+    CString strRes;
+    strRes.LoadString(IDS_PROFILES_FOLDER_NAME);
+    winEmbedFileLocProvider *provider = new winEmbedFileLocProvider(nsDependentCString(strRes));
     if(!provider)
     {
         ASSERT(FALSE);
@@ -400,81 +440,81 @@ BOOL CMfcEmbedApp::InitInstance()
         return FALSE;
     }
 
-	if(!InitializeProfiles())
-	{
+    if(!InitializeProfiles())
+    {
         ASSERT(FALSE);
         NS_TermEmbedding();
-		return FALSE;
-	}
+        return FALSE;
+    }
 
 
     if(!CreateHiddenWindow())
-	{
+    {
         ASSERT(FALSE);
         NS_TermEmbedding();
-		return FALSE;
-	}
+        return FALSE;
+    }
 
-	// Create the first browser frame window
-	OnNewBrowser();
+    // Create the first browser frame window
+    OnNewBrowser();
 
-	return TRUE;
+    return TRUE;
 }
 
 CBrowserFrame* CMfcEmbedApp::CreateNewBrowserFrame(PRUint32 chromeMask,
-												   PRInt32 x, PRInt32 y,
-												   PRInt32 cx, PRInt32 cy,
-												   PRBool bShowWindow,
-												   PRBool bIsEditor
-												   )
+                                                   PRInt32 x, PRInt32 y,
+                                                   PRInt32 cx, PRInt32 cy,
+                                                   PRBool bShowWindow,
+                                                   PRBool bIsEditor
+                                                   )
 {
-	UINT resId = bIsEditor ? IDR_EDITOR : IDR_MAINFRAME;
+    UINT resId = bIsEditor ? IDR_EDITOR : IDR_MAINFRAME;
 
-	// Setup a CRect with the requested window dimensions
-	CRect winSize(x, y, cx, cy);
+    // Setup a CRect with the requested window dimensions
+    CRect winSize(x, y, cx, cy);
 
-	// Use the Windows default if all are specified as -1
-	if(x == -1 && y == -1 && cx == -1 && cy == -1)
-		winSize = CFrameWnd::rectDefault;
+    // Use the Windows default if all are specified as -1
+    if(x == -1 && y == -1 && cx == -1 && cy == -1)
+        winSize = CFrameWnd::rectDefault;
 
-	// Load the window title from the string resource table
-	CString strTitle;
-	strTitle.LoadString(IDR_MAINFRAME);
+    // Load the window title from the string resource table
+    CString strTitle;
+    strTitle.LoadString(IDR_MAINFRAME);
 
-	// Now, create the browser frame
-	CBrowserFrame* pFrame = bIsEditor ? ( new  CEditorFrame(chromeMask) ) :
-					    ( new  CBrowserFrame(chromeMask) );
-	pFrame->SetEditable(bIsEditor);
+    // Now, create the browser frame
+    CBrowserFrame* pFrame = bIsEditor ? ( new  CEditorFrame(chromeMask) ) :
+                        ( new  CBrowserFrame(chromeMask) );
+    pFrame->SetEditable(bIsEditor);
 
-	if (!pFrame->Create(NULL, strTitle, WS_OVERLAPPEDWINDOW, 
-					winSize, NULL, MAKEINTRESOURCE(resId), 0L, NULL))
-	{
-		return NULL;
-	}
+    if (!pFrame->Create(NULL, strTitle, WS_OVERLAPPEDWINDOW, 
+                    winSize, NULL, MAKEINTRESOURCE(resId), 0L, NULL))
+    {
+        return NULL;
+    }
 
-	// load accelerator resource
-	pFrame->LoadAccelTable(MAKEINTRESOURCE(IDR_MAINFRAME));
+    // load accelerator resource
+    pFrame->LoadAccelTable(MAKEINTRESOURCE(IDR_MAINFRAME));
 
-	// Show the window...
-	if(bShowWindow)
-	{
-		pFrame->ShowWindow(SW_SHOW);
-		pFrame->UpdateWindow();
-	}
+    // Show the window...
+    if(bShowWindow)
+    {
+        pFrame->ShowWindow(SW_SHOW);
+        pFrame->UpdateWindow();
+    }
 
-	// Add to the list of BrowserFrame windows
-	m_FrameWndLst.AddHead(pFrame);
+    // Add to the list of BrowserFrame windows
+    m_FrameWndLst.AddHead(pFrame);
 
-	return pFrame;
+    return pFrame;
 }
 
 void CMfcEmbedApp::OnNewBrowser()
 {
-	CBrowserFrame *pBrowserFrame = CreateNewBrowserFrame();
+    CBrowserFrame *pBrowserFrame = CreateNewBrowserFrame();
 
-	//Load the HomePage into the browser view
-	if(pBrowserFrame && (GetStartupPageMode() == 1))
-		pBrowserFrame->m_wndBrowserView.LoadHomePage();
+    //Load the HomePage into the browser view
+    if(pBrowserFrame && (GetStartupPageMode() == 1))
+        pBrowserFrame->m_wndBrowserView.LoadHomePage();
 }
 
 void CMfcEmbedApp::OnNewEditor() 
@@ -484,8 +524,8 @@ void CMfcEmbedApp::OnNewEditor()
                                     PR_TRUE,PR_TRUE);
     if (pEditorFrame)
     {
-        pEditorFrame->m_wndBrowserView.OpenURL("about:blank");
         pEditorFrame->InitEditor();
+        pEditorFrame->m_wndBrowserView.OpenURL("about:blank");
     }
 }
 
@@ -500,60 +540,70 @@ void CMfcEmbedApp::OnNewEditor()
 //
 void CMfcEmbedApp::RemoveFrameFromList(CBrowserFrame* pFrm, BOOL bCloseAppOnLastFrame/*= TRUE*/)
 {
-	POSITION pos = m_FrameWndLst.Find(pFrm);
-	m_FrameWndLst.RemoveAt(pos);
+    POSITION pos = m_FrameWndLst.Find(pFrm);
+    m_FrameWndLst.RemoveAt(pos);
 
-	// Send a WM_QUIT msg. to the hidden window if we've
-	// just closed the last browserframe window and
-	// if the bCloseAppOnLastFrame is TRUE. This be FALSE
-	// only in the case we're switching profiles
-	// Without this the hidden window will stick around
-	// i.e. the app will never die even after all the 
-	// visible windows are gone.
-	if(m_FrameWndLst.GetCount() == 0 && bCloseAppOnLastFrame)
-		m_pMainWnd->PostMessage(WM_QUIT);
+    // Send a WM_QUIT msg. to the hidden window if we've
+    // just closed the last browserframe window and
+    // if the bCloseAppOnLastFrame is TRUE. This be FALSE
+    // only in the case we're switching profiles
+    // Without this the hidden window will stick around
+    // i.e. the app will never die even after all the 
+    // visible windows are gone.
+    if(m_FrameWndLst.GetCount() == 0 && bCloseAppOnLastFrame)
+        m_pMainWnd->PostMessage(WM_QUIT);
 }
 
 int CMfcEmbedApp::ExitInstance()
 {
-	// When File/Exit is chosen and if the user
-	// has opened multiple browser windows shut all
-	// of them down properly before exiting the app
+    // When File/Exit is chosen and if the user
+    // has opened multiple browser windows shut all
+    // of them down properly before exiting the app
 
-	CBrowserFrame* pBrowserFrame = NULL;
+    CBrowserFrame* pBrowserFrame = NULL;
 
-	POSITION pos = m_FrameWndLst.GetHeadPosition();
-	while( pos != NULL )
-	{
-		pBrowserFrame = (CBrowserFrame *) m_FrameWndLst.GetNext(pos);
-		if(pBrowserFrame)
-		{
-			pBrowserFrame->ShowWindow(false);
-			pBrowserFrame->DestroyWindow();
-		}
-	}
-	m_FrameWndLst.RemoveAll();
+    POSITION pos = m_FrameWndLst.GetHeadPosition();
+    while( pos != NULL )
+    {
+        pBrowserFrame = (CBrowserFrame *) m_FrameWndLst.GetNext(pos);
+        if(pBrowserFrame)
+        {
+            pBrowserFrame->ShowWindow(false);
+            pBrowserFrame->DestroyWindow();
+        }
+    }
+    m_FrameWndLst.RemoveAll();
 
     if (m_pMainWnd)
         m_pMainWnd->DestroyWindow();
 
+#ifdef USE_PROFILES
     delete m_ProfileMgr;
+#else
+    if (m_ProfileDirServiceProvider)
+    {
+        m_ProfileDirServiceProvider->Shutdown();
+        NS_RELEASE(m_ProfileDirServiceProvider);
+    }
+#endif
 
-	NS_TermEmbedding();
+    NS_TermEmbedding();
 
-	return 1;
+    return 1;
 }
 
 BOOL CMfcEmbedApp::OnIdle(LONG lCount)
 {
-	CWinApp::OnIdle(lCount);
+    CWinApp::OnIdle(lCount);
 
-	return FALSE;
+    return FALSE;
 }
 
 void CMfcEmbedApp::OnManageProfiles()
 {
+#ifdef USE_PROFILES
     m_ProfileMgr->DoManageProfilesDialog(PR_FALSE);
+#endif
 }
 
 void CMfcEmbedApp::OnEditPreferences()
@@ -574,32 +624,72 @@ void CMfcEmbedApp::OnEditPreferences()
         nsCOMPtr<nsIPref> prefs(do_GetService(NS_PREF_CONTRACTID, &rv));
         if (NS_SUCCEEDED(rv)) 
         {
+            USES_CONVERSION;
             prefs->SetIntPref("browser.startup.page", m_iStartupPage);
-            rv = prefs->SetCharPref("browser.startup.homepage", m_strHomePage);
+            rv = prefs->SetCharPref("browser.startup.homepage", T2CA(m_strHomePage));
             if (NS_SUCCEEDED(rv))
                 rv = prefs->SavePrefFile(nsnull);
         }
         else
-		    NS_ASSERTION(PR_FALSE, "Could not get preferences service");
+            NS_ASSERTION(PR_FALSE, "Could not get preferences service");
     }
 }
 
 BOOL CMfcEmbedApp::InitializeProfiles()
 {
+
+#ifdef MOZ_PROFILESHARING
+    // If we are using profile sharing, get the sharing setup service
+    nsCOMPtr<nsIProfileSharingSetup> sharingSetup =
+        do_GetService("@mozilla.org/embedcomp/profile-sharing-setup;1");
+    if (sharingSetup)
+    {
+        USES_CONVERSION;
+        CString strRes;
+        strRes.LoadString(IDS_PROFILES_NONSHARED_NAME);
+        nsDependentString nonSharedName(T2W(strRes));
+        sharingSetup->EnableSharing(nonSharedName);
+    }
+#endif
+
+    nsCOMPtr<nsIObserverService> observerService = 
+             do_GetService("@mozilla.org/observer-service;1");
+    if (!observerService)
+        return FALSE;
+
+    // Both the profile mgr and standalone nsProfileDirServiceProvider
+    // send this notification.
+    observerService->AddObserver(this, "profile-after-change", PR_TRUE);
+
+#ifdef USE_PROFILES
     m_ProfileMgr = new CProfileMgr;
     if (!m_ProfileMgr)
         return FALSE;
 
-	  nsresult rv;
-    nsCOMPtr<nsIObserverService> observerService = 
-             do_GetService("@mozilla.org/observer-service;1", &rv);
     observerService->AddObserver(this, "profile-approve-change", PR_TRUE);
     observerService->AddObserver(this, "profile-change-teardown", PR_TRUE);
-    observerService->AddObserver(this, "profile-after-change", PR_TRUE);
 
     m_ProfileMgr->StartUp();
+#else
+    nsresult rv;
+    nsCOMPtr<nsIFile> appDataDir;
+    NS_GetSpecialDirectory(NS_APP_APPLICATION_REGISTRY_DIR,
+                                getter_AddRefs(appDataDir));
+    if (!appDataDir)
+        return FALSE;
+    nsCOMPtr<nsProfileDirServiceProvider> profProvider;
+    NS_NewProfileDirServiceProvider(PR_TRUE, getter_AddRefs(profProvider));
+    if (!profProvider)
+        return FALSE;
+    profProvider->Register();    
+    nsCOMPtr<nsILocalFile> localAppDataDir(do_QueryInterface(appDataDir));
+    rv = profProvider->SetProfileDir(localAppDataDir);
+    if (NS_FAILED(rv))
+        return FALSE;
+    NS_ADDREF(m_ProfileDirServiceProvider = profProvider);
+#endif
 
-	return TRUE;
+    return TRUE;
 }
 
 // When the profile switch happens, all open browser windows need to be 
@@ -609,36 +699,37 @@ BOOL CMfcEmbedApp::InitializeProfiles()
 // switches
 BOOL CMfcEmbedApp::CreateHiddenWindow()
 {
-	CFrameWnd *hiddenWnd = new CFrameWnd;
-	if(!hiddenWnd)
-		return FALSE;
+    CFrameWnd *hiddenWnd = new CFrameWnd;
+    if(!hiddenWnd)
+        return FALSE;
 
     RECT bounds = { -10010, -10010, -10000, -10000 };
-    hiddenWnd->Create(NULL, "main", WS_DISABLED, bounds, NULL, NULL, 0, NULL);
+    hiddenWnd->Create(NULL, _T("main"), WS_DISABLED, bounds, NULL, NULL, 0, NULL);
     m_pMainWnd = hiddenWnd;
 
-	return TRUE;
+    return TRUE;
 }
 
 nsresult CMfcEmbedApp::InitializePrefs()
 {
    nsresult rv;
    nsCOMPtr<nsIPref> prefs(do_GetService(NS_PREF_CONTRACTID, &rv));
-   if (NS_SUCCEEDED(rv)) {	  
+   if (NS_SUCCEEDED(rv)) {      
 
-		// We are using the default prefs from mozilla. If you were
-		// disributing your own, this would be done simply by editing
-		// the default pref files.
-		
-		PRBool inited;
-		rv = prefs->GetBoolPref("mfcbrowser.prefs_inited", &inited);
-		if (NS_FAILED(rv) || !inited)
-		{
+        // We are using the default prefs from mozilla. If you were
+        // disributing your own, this would be done simply by editing
+        // the default pref files.
+        
+        PRBool inited;
+        rv = prefs->GetBoolPref("mfcbrowser.prefs_inited", &inited);
+        if (NS_FAILED(rv) || !inited)
+        {
+            USES_CONVERSION;
             m_iStartupPage = 1;
             m_strHomePage = "http://www.mozilla.org/projects/embedding";
 
             prefs->SetIntPref("browser.startup.page", m_iStartupPage);
-            prefs->SetCharPref("browser.startup.homepage", m_strHomePage);
+            prefs->SetCharPref("browser.startup.homepage", T2CA(m_strHomePage));
             prefs->SetIntPref("font.size.variable.x-western", 16);
             prefs->SetIntPref("font.size.fixed.x-western", 13);
             rv = prefs->SetBoolPref("mfcbrowser.prefs_inited", PR_TRUE);
@@ -651,17 +742,22 @@ nsresult CMfcEmbedApp::InitializePrefs()
 
             prefs->GetIntPref("browser.startup.page", &m_iStartupPage);
 
-            CString strBuf;
-            char *pBuf = strBuf.GetBuffer(_MAX_PATH);
-            prefs->CopyCharPref("browser.startup.homepage", &pBuf);
-            strBuf.ReleaseBuffer(-1);
-            if(pBuf)
-                m_strHomePage = pBuf;
+            nsXPIDLCString str;
+            prefs->GetCharPref("browser.startup.homepage", getter_Copies(str));
+            if (!str.IsEmpty())
+            {
+                USES_CONVERSION;
+                m_strHomePage = A2CT(str.get());
+            }
+            else
+            {
+                m_strHomePage.Empty();
+            }
         }       
-	}
-	else
-		NS_ASSERTION(PR_FALSE, "Could not get preferences service");
-		
+    }
+    else
+        NS_ASSERTION(PR_FALSE, "Could not get preferences service");
+        
     return rv;
 }
 
@@ -705,7 +801,9 @@ NS_IMETHODIMP CMfcEmbedApp::Observe(nsISupports *aSubject, const char *aTopic, c
     if (nsCRT::strcmp(aTopic, "profile-approve-change") == 0)
     {
         // Ask the user if they want to
-        int result = MessageBox(NULL, "Do you want to close all windows in order to switch the profile?", "Confirm", MB_YESNO | MB_ICONQUESTION);
+        int result = MessageBox(NULL,
+            _T("Do you want to close all windows in order to switch the profile?"),
+            _T("Confirm"), MB_YESNO | MB_ICONQUESTION);
         if (result != IDYES)
         {
             nsCOMPtr<nsIProfileChangeStatus> status = do_QueryInterface(aSubject);
@@ -718,21 +816,21 @@ NS_IMETHODIMP CMfcEmbedApp::Observe(nsISupports *aSubject, const char *aTopic, c
         // Close all open windows. Alternatively, we could just call CBrowserWindow::Stop()
         // on each. Either way, we have to stop all network activity on this phase.
         
-	    POSITION pos = m_FrameWndLst.GetHeadPosition();
-	    while( pos != NULL )
-	    {
-		    CBrowserFrame *pBrowserFrame = (CBrowserFrame *) m_FrameWndLst.GetNext(pos);
-		    if(pBrowserFrame)
-		    {
-			    pBrowserFrame->ShowWindow(false);
+        POSITION pos = m_FrameWndLst.GetHeadPosition();
+        while( pos != NULL )
+        {
+            CBrowserFrame *pBrowserFrame = (CBrowserFrame *) m_FrameWndLst.GetNext(pos);
+            if(pBrowserFrame)
+            {
+                pBrowserFrame->ShowWindow(false);
 
-				// Passing in FALSE below so that we do not
-				// kill the main app during a profile switch
-				RemoveFrameFromList(pBrowserFrame, FALSE);
+                // Passing in FALSE below so that we do not
+                // kill the main app during a profile switch
+                RemoveFrameFromList(pBrowserFrame, FALSE);
 
-				pBrowserFrame->DestroyWindow();
-		    }
-	    }
+                pBrowserFrame->DestroyWindow();
+            }
+        }
     }
     else if (nsCRT::strcmp(aTopic, "profile-after-change") == 0)
     {
@@ -770,15 +868,15 @@ NS_IMETHODIMP CMfcEmbedApp::CreateChromeWindow(nsIWebBrowserChrome *parent,
 class CAboutDlg : public CDialog
 {
 public:
-	CAboutDlg();
+    CAboutDlg();
 
-	enum { IDD = IDD_ABOUTBOX };
-
-protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    enum { IDD = IDD_ABOUTBOX };
 
 protected:
-	DECLARE_MESSAGE_MAP()
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+
+protected:
+    DECLARE_MESSAGE_MAP()
 };
 
 CAboutDlg::CAboutDlg() : CDialog(CAboutDlg::IDD)
@@ -787,7 +885,7 @@ CAboutDlg::CAboutDlg() : CDialog(CAboutDlg::IDD)
 
 void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialog::DoDataExchange(pDX);
+    CDialog::DoDataExchange(pDX);
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
@@ -796,6 +894,6 @@ END_MESSAGE_MAP()
 // Show the AboutDlg
 void CMfcEmbedApp::OnAppAbout()
 {
-	CAboutDlg aboutDlg;
-	aboutDlg.DoModal();
+    CAboutDlg aboutDlg;
+    aboutDlg.DoModal();
 }

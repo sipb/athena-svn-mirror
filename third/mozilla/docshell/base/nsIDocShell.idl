@@ -46,6 +46,7 @@ interface nsISimpleEnumerator;
 interface nsIInputStream;
 interface nsIRequest;
 interface nsISHEntry;
+interface nsILayoutHistoryState;
 
 [scriptable, uuid(69E5DE00-7B8B-11d3-AF61-00A024FFC08C)]
 interface nsIDocShell : nsISupports
@@ -77,23 +78,23 @@ interface nsIDocShell : nsISupports
    * here however, the URL dispatched will go through its normal process of
    * content loading.
    *
-   * @param aStream      - The input stream that provides access to the data
-   *                       to be loaded.
-   * @param aURI         - The URI representing the stream, or null.
-   * @param aContentType - The type (MIME) of data being loaded.
-   * @param aContentLen  - The length (in bytes) of the stream.  If you don't
-   *                       know the length of the stream this can be -1.
-   * @param aLoadInfo    - This is the extended load info for this load.  This
-   *                       most often will be null, but if you need to do 
-   *                       additional setup for this load you can get a
-   *                       loadInfo object by calling createLoadInfo.  Once
-   *                       you have this object you can set the needed 
-   *                       properties on it and then pass it to loadStream.
+   * @param aStream         - The input stream that provides access to the data
+   *                          to be loaded.  This must be a blocking, threadsafe
+   *                          stream implementation.
+   * @param aURI            - The URI representing the stream, or null.
+   * @param aContentType    - The type (MIME) of data being loaded (empty if unknown).
+   * @param aContentCharset - The charset of the data being loaded (empty if unknown).
+   * @param aLoadInfo       - This is the extended load info for this load.  This
+   *                          most often will be null, but if you need to do 
+   *                          additional setup for this load you can get a
+   *                          loadInfo object by calling createLoadInfo.  Once
+   *                          you have this object you can set the needed 
+   *                          properties on it and then pass it to loadStream.
    */
   [noscript]void loadStream(in nsIInputStream aStream,
                             in nsIURI aURI,
-                            in string aContentType,
-                            in long aContentLen,
+                            in ACString aContentType,
+                            in ACString aContentCharset,
                             in nsIDocShellLoadInfo aLoadInfo);
 
   /**
@@ -242,6 +243,13 @@ interface nsIDocShell : nsISupports
   attribute unsigned long appType;
 
   /**
+   * certain dochshells (like the message pane)
+   * should not throw up auth dialogs
+   * because it can act as a password trojan
+   */
+  attribute boolean allowAuth;
+
+  /**
    * Set/Get the document scale factor.  When setting this attribute, a
    * NS_ERROR_NOT_IMPLEMENTED error may be returned by implementations
    * not supporting zoom.  Implementations not supporting zoom should return
@@ -304,5 +312,14 @@ interface nsIDocShell : nsISupports
    * returns true if the docshell is being destroyed, false otherwise
    */
   boolean isBeingDestroyed();
+
+  /*
+   * Returns true if the docshell is currently executing the onLoad Handler
+   */
+  readonly attribute boolean isExecutingOnLoadHandler;
+
+  attribute nsILayoutHistoryState layoutHistoryState;
+
+  readonly attribute boolean shouldSaveLayoutState;
 };
 

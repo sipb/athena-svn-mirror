@@ -41,12 +41,10 @@
 #include "nsIHTMLContent.h"
 #include "nsGenericHTMLElement.h"
 #include "nsHTMLAtoms.h"
-#include "nsIStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
 #include "nsIForm.h"
 #include "nsIFormControl.h"
-#include "nsISizeOfHandler.h"
 
 
 class nsHTMLLegendElement : public nsGenericHTMLContainerFormElement,
@@ -72,7 +70,7 @@ public:
   NS_DECL_NSIDOMHTMLLEGENDELEMENT
 
   // nsIFormControl
-  NS_IMETHOD GetType(PRInt32* aType);
+  NS_IMETHOD_(PRInt32) GetType() { return NS_FORM_LEGEND; }
   NS_IMETHOD Reset();
   NS_IMETHOD SubmitNamesValues(nsIFormSubmission* aFormSubmission,
                                nsIContent* aSubmitElement);
@@ -84,9 +82,6 @@ public:
   NS_IMETHOD AttributeToString(nsIAtom* aAttribute,
                                const nsHTMLValue& aValue,
                                nsAString& aResult) const;
-#ifdef DEBUG
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
-#endif
 };
 
 nsresult
@@ -172,22 +167,12 @@ nsHTMLLegendElement::GetForm(nsIDOMHTMLFormElement** aForm)
   return nsGenericHTMLContainerFormElement::GetForm(aForm);
 }
 
-// nsIFormControl
-
-NS_IMETHODIMP
-nsHTMLLegendElement::GetType(PRInt32* aType)
-{
-  NS_ASSERTION(aType, "Null pointer bad!");
-  *aType = NS_FORM_LEGEND;
-  return NS_OK;
-}
-
 
 NS_IMPL_STRING_ATTR(nsHTMLLegendElement, AccessKey, accesskey)
 NS_IMPL_STRING_ATTR(nsHTMLLegendElement, Align, align)
 
 // this contains center, because IE4 does
-static nsGenericHTMLElement::EnumTable kAlignTable[] = {
+static nsHTMLValue::EnumTable kAlignTable[] = {
   { "left", NS_STYLE_TEXT_ALIGN_LEFT },
   { "right", NS_STYLE_TEXT_ALIGN_RIGHT },
   { "center", NS_STYLE_TEXT_ALIGN_CENTER },
@@ -202,7 +187,7 @@ nsHTMLLegendElement::StringToAttribute(nsIAtom* aAttribute,
                                        nsHTMLValue& aResult)
 {
   if (aAttribute == nsHTMLAtoms::align) {
-    if (ParseEnumValue(aValue, kAlignTable, aResult)) {
+    if (aResult.ParseEnumValue(aValue, kAlignTable)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
@@ -217,7 +202,7 @@ nsHTMLLegendElement::AttributeToString(nsIAtom* aAttribute,
 {
   if (aAttribute == nsHTMLAtoms::align) {
     if (eHTMLUnit_Enumerated == aValue.GetUnit()) {
-      EnumValueToString(aValue, kAlignTable, aResult);
+      aValue.EnumValueToString(kAlignTable, aResult);
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
@@ -225,16 +210,6 @@ nsHTMLLegendElement::AttributeToString(nsIAtom* aAttribute,
   return nsGenericHTMLContainerFormElement::AttributeToString(aAttribute,
                                                               aValue, aResult);
 }
-
-#ifdef DEBUG
-NS_IMETHODIMP
-nsHTMLLegendElement::SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const
-{
-  *aResult = sizeof(*this) + BaseSizeOf(aSizer);
-
-  return NS_OK;
-}
-#endif
 
 nsresult
 nsHTMLLegendElement::Reset()

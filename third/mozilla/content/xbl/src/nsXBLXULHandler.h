@@ -49,13 +49,14 @@ class nsIContent;
 class nsIDOMUIEvent;
 class nsIAtom;
 class nsIController;
-class nsIXBLPrototypeHandler;
+class nsXBLPrototypeHandler;
 
 class nsXBLXULHandler : public nsIDOMXULListener, 
                         public nsXBLEventHandler
 {
 public:
-  nsXBLXULHandler(nsIDOMEventReceiver* aReceiver, nsIXBLPrototypeHandler* aHandler);
+  nsXBLXULHandler(nsIDOMEventReceiver* aReceiver,
+                  nsXBLPrototypeHandler* aHandler);
   virtual ~nsXBLXULHandler();
   
   // nsIDOMetc.
@@ -74,22 +75,12 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
 protected:
-  static PRUint32 gRefCnt;
-  static nsIAtom* kPopupShowingAtom;
-  static nsIAtom* kPopupShownAtom;
-  static nsIAtom* kPopupHidingAtom;
-  static nsIAtom* kPopupHiddenAtom;
-  static nsIAtom* kCloseAtom;
-  static nsIAtom* kDestroyAtom;
-  static nsIAtom* kCommandUpdateAtom;
-  static nsIAtom* kBroadcastAtom;
-
-protected:
   // Members
 };
 
-extern nsresult
-NS_NewXBLXULHandler(nsIDOMEventReceiver* aEventReceiver, nsIXBLPrototypeHandler* aHandlerElement, 
+nsresult
+NS_NewXBLXULHandler(nsIDOMEventReceiver* aEventReceiver,
+                    nsXBLPrototypeHandler* aHandlerElement,
                     nsXBLXULHandler** aResult);
 
 

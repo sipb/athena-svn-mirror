@@ -33,7 +33,7 @@
 /*
  * certt.h - public data structures for the certificate library
  *
- * $Id: pcertt.h,v 1.1.1.1 2003-02-14 19:25:27 rbasch Exp $
+ * $Id: pcertt.h,v 1.1.1.2 2003-07-08 16:53:15 rbasch Exp $
  */
 #ifndef _PCERTT_H_
 #define _PCERTT_H_
@@ -184,12 +184,9 @@ typedef char * (*NSSLOWCERTDBNameFunc)(void *arg, int dbVersion);
  */
 
 /* version number of certificate database */
-#define CERT_DB_FILE_VERSION		7
-#ifdef USE_NS_ROOTS
-#define CERT_DB_CONTENT_VERSION		28
-#else
+#define CERT_DB_FILE_VERSION		8
+#define CERT_DB_V7_FILE_VERSION		7
 #define CERT_DB_CONTENT_VERSION		2
-#endif
 
 #define SEC_DB_ENTRY_HEADER_LEN		3
 #define SEC_DB_KEY_HEADER_LEN		1
@@ -309,9 +306,10 @@ typedef struct _certDBEntrySubject {
     SECItem derSubject;
     unsigned int ncerts;
     char *nickname;
-    char *emailAddr;
     SECItem *certKeys;
     SECItem *keyIDs;
+    char **emailAddrs;
+    unsigned int nemailAddrs;
 } certDBEntrySubject;
 
 #define DB_SUBJECT_ENTRY_HEADER_LEN 6

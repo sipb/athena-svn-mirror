@@ -54,9 +54,12 @@ public:
   virtual ~imgRequestProxy();
 
   /* additional members */
-  nsresult Init(imgRequest *request, nsILoadGroup *aLoadGroup, imgIDecoderObserver *aObserver, nsISupports *cx);
+  nsresult Init(imgRequest *request, nsILoadGroup *aLoadGroup, imgIDecoderObserver *aObserver);
   nsresult ChangeOwner(imgRequest *aNewOwner); // this will change mOwner.  Do not call this if the previous
                                                // owner has already sent notifications out!
+
+  void AddToLoadGroup();
+  void RemoveFromLoadGroup();
 
 protected:
   friend class imgRequest;
@@ -78,12 +81,11 @@ protected:
   void OnStopRequest(nsIRequest *request, nsISupports *ctxt, nsresult statusCode); 
 
 private:
-  friend class httpValidateChecker;
+  friend class imgCacheValidator;
 
   imgRequest *mOwner;
 
-  nsCOMPtr<imgIDecoderObserver> mListener;
-  nsCOMPtr<nsISupports> mContext;
+  imgIDecoderObserver* mListener;  // Weak ref; see imgILoader.idl
   nsCOMPtr<nsILoadGroup> mLoadGroup;
 
   nsLoadFlags mLoadFlags;

@@ -50,7 +50,9 @@ typedef int PRInt32;
 #include "resource.h"
 #include "zipfile.h"
 
-#define CLASS_NAME_SETUP                "Setup"
+#define DEFAULT_SETUP_WINDOW_NAME       "Setup"
+/* Class name for the invisible window to be created */
+#define CLASS_NAME_SETUP                "MozillaSetup"
 #define CLASS_NAME_SETUP_DLG            "MozillaSetupDlg"
 #define FILE_INI_SETUP                  "setup.ini"
 #define FILE_INI_CONFIG                 "config.ini"
@@ -66,15 +68,69 @@ typedef int PRInt32;
 #define FILE_ALL_JS                     "all-proxy.js"
 #define VR_DEFAULT_PRODUCT_NAME         "Mozilla"
 
-#define LOG_IT                          TRUE
-#define DO_NOT_LOG_IT                   FALSE
+#define FORCE_ADD_TO_UNINSTALL_LOG        TRUE
+#define DO_NOT_FORCE_ADD_TO_UNINSTALL_LOG FALSE
+
+/* defines that indicate whether something should
+ * be logged to the install_wizardX.log or not
+ * for uninstallation purposes.
+ */
+#define ADD_TO_UNINSTALL_LOG            TRUE
+#define DO_NOT_ADD_TO_UNINSTALL_LOG     FALSE
+
+/* defines that indeicate whether an install command
+ * should have '*dnu*' prepended.  '*dnu*' is parsed
+ * by the uninstaller and signals that the specific
+ * install command should _not_ be undone.
+ */
+#define DNU_UNINSTALL                   FALSE
+#define DNU_DO_NOT_UNINSTALL            TRUE
+
+#define WINREG_OVERWRITE_KEY            TRUE
+#define WINREG_DO_NOT_OVERWRITE_KEY     FALSE
+#define WINREG_OVERWRITE_NAME           TRUE
+#define WINREG_DO_NOT_OVERWRITE_NAME    FALSE
+
+#define INCLUDE_INVISIBLE_OBJS          TRUE
+#define SKIP_INVISIBLE_OBJS             FALSE
+
+#define NO_BANNER_IMAGE                 0x00000000
+#define BANNER_IMAGE_DOWNLOAD           0x00000001
+#define BANNER_IMAGE_INSTALLING         0x00000002
+
+#define APPPATH_GRE_PATH_SET            0x00000000
+#define APPPATH_GRE_PATH_NOT_SET        0x00000001
+#define APPPATH_GRE_PATH_ALREADY_SET    0x00000002
 
 #define NEXT_DLG                        1
 #define PREV_DLG                        2
 #define OTHER_DLG_1                     3
 
-#define MAX_CRC_FAILED_DOWNLOAD_RETRIES 3
-#define MAX_FILE_DOWNLOAD_RETRIES       3
+#define MAX_CRC_FAILED_DOWNLOAD_RETRIES 5
+#define MAX_FILE_DOWNLOAD_RETRIES       10
+
+#define STATUS_DISABLED                 0
+#define STATUS_ENABLED                  1
+
+#define GRE_SETUP_DIR_NAME              "Setup GRE"
+
+/* filename which contains this product setup's exit status */
+#define SETUP_EXIT_STATUS_LOG           "%s Setup Exit Status.log"
+
+/* LOCAL GRE defines */
+#define GRE_TYPE_NOT_SET                -1
+#define GRE_SHARED                      0
+#define GRE_LOCAL                       1
+
+/* WS: WinSpawn wait values */
+#define WS_DO_NOT_WAIT                  FALSE
+#define WS_WAIT                         TRUE
+
+#define MAX_KILL_PROCESS_RETRIES        10
+
+/* CI: Check Instance */
+#define CI_FORCE_QUIT_PROCESS           TRUE
+#define CI_CLOSE_PROCESS                FALSE
 
 #define BAR_MARGIN                      1
 #define BAR_SPACING                     0
@@ -166,6 +222,11 @@ typedef int PRInt32;
 #define WIZ_CRC_FAIL                    1028
 #define WIZ_SETUP_ALREADY_RUNNING       1029
 #define WIZ_TOO_MANY_NETWORK_ERRORS     1030
+#define WIZ_ERROR_PARSING_INTERNAL_STR  1031
+#define WIZ_ERROR_REGKEY                1032
+#define WIZ_ERROR_INIT                  1033
+#define WIZ_ERROR_LOADING_RESOURCE_LIB  1034
+#define WIZ_ERROR_CREATE_DIRECTORY      1035
 
 /* E: Errors */
 #define E_REBOOT                        999
@@ -177,8 +238,10 @@ typedef int PRInt32;
 #define FO_ERROR_DESTINATION_CONFLICT   2
 #define FO_ERROR_CHANGE_DIR             3
 #define FO_ERROR_WRITE                  4
+#define FO_ERROR_INCR_EXCEEDS_LIMIT     5
 
 /* Mode of Setup to run in */
+#define NOT_SET                         -1
 #define NORMAL                          0
 #define SILENT                          1
 #define AUTO                            2
@@ -388,7 +451,8 @@ typedef struct dlgReboot
 
 typedef struct setupStruct
 {
-  DWORD     dwMode;
+  int       mode;
+  int       greType;
   DWORD     dwCustomType;
   DWORD     dwNumberOfComponents;
   LPSTR     szPath;
@@ -410,6 +474,8 @@ typedef struct setupStruct
   LPSTR     szAppID;
   LPSTR     szAppPath;
   LPSTR     szRegPath;
+  char      greID[MAX_BUF];
+  char      grePrivateKey[MAX_BUF];
 } setupGen;
 
 typedef struct sinfoSmartDownload
@@ -432,6 +498,7 @@ typedef struct sinfoXpcomFile
   LPSTR       szDestination;
   LPSTR       szMessage;
   BOOL        bCleanup;
+  BOOL        bStatus;
   ULONGLONG   ullInstallSize;
 } siCF;
 
@@ -513,6 +580,7 @@ typedef struct dlgInstall
     char szProgramFolder_[MAX_BUF];
     char szExistingFolder_[MAX_BUF];
     char szSetupMessage[MAX_BUF];
+    char szRestart[MAX_BUF];
     char szYesRestart[MAX_BUF];
     char szNoRestart[MAX_BUF];
     char szAdditionalComponents_[MAX_BUF];
@@ -559,6 +627,8 @@ struct sSysInfo
   DWORD dwMemoryAvailablePhysical;
   DWORD dwScreenX;
   DWORD dwScreenY;
+  DWORD lastWindowPosCenterX;
+  DWORD lastWindowPosCenterY;
   BOOL  bScreenReader;
   BOOL  bRefreshIcons;
 };

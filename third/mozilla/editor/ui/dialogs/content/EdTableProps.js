@@ -87,7 +87,7 @@ var gActiveEditor;
 // dialog initialization code
 function Startup()
 {
-  gActiveEditor = GetCurrentEditor();
+  gActiveEditor = GetCurrentTableEditor();
   if (!gActiveEditor)
   {
     window.close();
@@ -311,12 +311,10 @@ function InitDialog()
   gTableCaptionElement = gTableElement.caption;
   if (gTableCaptionElement)
   {
-    // Note: Other possible values are "left" and "right",
-    //  but "align" is deprecated, so should we even support "botton"?
-    if (GetHTMLOrCSSStyleValue(gTableCaptionElement, "align", "caption-side") == "bottom")
-      gDialog.TableCaptionList.value = "bottom";
-    else
-      gDialog.TableCaptionList.value = "top";
+    var align = GetHTMLOrCSSStyleValue(gTableCaptionElement, "align", "caption-side");
+    if (align != "bottom" && align != "left" && align != "right")
+      align = "top";
+    gDialog.TableCaptionList.value = align;
   }
 
   gTableColor = GetHTMLOrCSSStyleValue(globalTableElement, bgcolor, cssBackgroundColorStr);
@@ -490,7 +488,7 @@ function SetColor(ColorWellID, color)
     if (color)
     {
       globalCellElement.setAttribute(bgcolor, color);
-      gDialog.CellInheritColor.setAttribute("collapsed","true");
+      gDialog.CellInheritColor.collapsed = true;
     }
     else
     {
@@ -498,7 +496,7 @@ function SetColor(ColorWellID, color)
         gActiveEditor.removeAttributeOrEquivalent(globalCellElement, bgcolor, true);
       } catch(e) {}
       // Reveal addition message explaining "default" color
-      gDialog.CellInheritColor.removeAttribute("collapsed");
+      gDialog.CellInheritColor.collapsed = false;
     }
   }
   else
@@ -506,14 +504,14 @@ function SetColor(ColorWellID, color)
     if (color)
     {
       globalTableElement.setAttribute(bgcolor, color);
-      gDialog.TableInheritColor.setAttribute("collapsed","true");
+      gDialog.TableInheritColor.collapsed = true;
     }
     else
     {
       try {
         gActiveEditor.removeAttributeOrEquivalent(globalTableElement, bgcolor, true);
       } catch(e) {}
-      gDialog.TableInheritColor.removeAttribute("collapsed");
+      gDialog.TableInheritColor.collapsed = false;
     }
     SetCheckbox('CellColorCheckbox');
   }
@@ -969,9 +967,9 @@ function CloneAttribute(destElement, srcElement, attr)
   //  we need transaction system for undo
   try {
     if (!value || value.length == 0)
-      gActiveEditor.removeAttribute(destElement, attr);
+      gActiveEditor.removeAttributeOrEquivalent(destElement, attr, false);
     else
-      gActiveEditor.setAttribute(destElement, attr, value);
+      gActiveEditor.setAttributeOrEquivalent(destElement, attr, value, false);
   } catch(e) {}
 }
 

@@ -74,7 +74,6 @@ nsBufferedStream::nsBufferedStream()
       mBufferDisabled(PR_FALSE),
       mGetBufferCount(0)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 nsBufferedStream::~nsBufferedStream()
@@ -111,6 +110,34 @@ nsBufferedStream::Close()
         mBufferStartOffset = 0;
         mCursor = 0;
     }
+#ifdef METERING
+    {
+        static FILE *tfp;
+        if (!tfp) {
+            tfp = fopen("/tmp/bufstats", "w");
+            if (tfp)
+                setvbuf(tfp, NULL, _IOLBF, 0);
+        }
+        if (tfp) {
+            fprintf(tfp, "seeks within buffer:    %u\n",
+                    bufstats.mSeeksWithinBuffer);
+            fprintf(tfp, "seeks outside buffer:   %u\n",
+                    bufstats.mSeeksOutsideBuffer);
+            fprintf(tfp, "buffer read on seek:    %u\n",
+                    bufstats.mBufferReadUponSeek);
+            fprintf(tfp, "buffer unread on seek:  %u\n",
+                    bufstats.mBufferUnreadUponSeek);
+            fprintf(tfp, "bytes read from buffer: %u\n",
+                    bufstats.mBytesReadFromBuffer);
+            for (PRUint32 i = 0; i < bufstats.mBigSeekIndex; i++) {
+                fprintf(tfp, "bigseek[%u] = {old: %u, new: %u}\n",
+                        i,
+                        bufstats.mBigSeek[i].mOldOffset,
+                        bufstats.mBigSeek[i].mNewOffset);
+            }
+        }
+    }
+#endif
     return NS_OK;
 }
 
@@ -303,7 +330,11 @@ nsBufferedInputStream::ReadSegments(nsWriteSegmentFun writer, void * closure, PR
         if (amt > 0) {
             PRUint32 read = 0;
             rv = writer(this, closure, mBuffer + mCursor, mCursor, amt, &read);
-            if (NS_FAILED(rv)) break;
+            if (NS_FAILED(rv)) {
+                // errors returned from the writer end here!
+                rv = NS_OK;
+                break;
+            }
             *result += read;
             count -= read;
             mCursor += read;

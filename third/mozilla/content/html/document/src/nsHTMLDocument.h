@@ -39,29 +39,30 @@
 #define nsHTMLDocument_h___
 
 #include "nsDocument.h"
-#include "nsMarkupDocument.h"
 #include "nsIHTMLDocument.h"
 #include "nsIDOMHTMLDocument.h"
 #include "nsIDOMNSHTMLDocument.h"
 #include "nsIDOMHTMLBodyElement.h"
+#include "nsIDOMHTMLMapElement.h"
+#include "nsIDOMHTMLCollection.h"
 #include "nsIHTMLContentContainer.h"
+#include "nsIParser.h"
 #include "jsapi.h"
 #include "rdf.h"
 #include "nsRDFCID.h"
 #include "nsIRDFService.h"
 #include "pldhash.h"
 #include "nsIHttpChannel.h"
+#include "nsIHTMLCSSStyleSheet.h"
+#include "nsIHTMLStyleSheet.h"
 
 // Document.Write() related
 #include "nsIWyciwygChannel.h"
 #include "nsILoadGroup.h"
 #include "nsNetUtil.h"
 
+#include "nsICommandManager.h"
 
-class nsBaseContentList;
-class nsContentList;
-class nsIHTMLStyleSheet;
-class nsIHTMLCSSStyleSheet;
 class nsIParser;
 class nsICSSLoader;
 class nsIURI;
@@ -69,7 +70,7 @@ class nsIMarkupDocumentViewer;
 class nsIDocumentCharsetInfo;
 class nsICacheEntryDescriptor;
 
-class nsHTMLDocument : public nsMarkupDocument,
+class nsHTMLDocument : public nsDocument,
                        public nsIHTMLDocument,
                        public nsIDOMHTMLDocument,
                        public nsIDOMNSHTMLDocument,
@@ -85,6 +86,7 @@ public:
   NS_IMETHOD_(nsrefcnt) AddRef(void);
   NS_IMETHOD_(nsrefcnt) Release(void);
 
+  NS_IMETHOD Reset(nsIChannel* aChannel, nsILoadGroup* aLoadGroup);
   NS_IMETHOD ResetToURI(nsIURI* aURI, nsILoadGroup* aLoadGroup);
 
   NS_IMETHOD CreateShell(nsIPresContext* aContext,
@@ -108,24 +110,25 @@ public:
 
   NS_IMETHOD RemoveImageMap(nsIDOMHTMLMapElement* aMap);
 
-  NS_IMETHOD GetImageMap(const nsString& aMapName,
+  NS_IMETHOD GetImageMap(const nsAString& aMapName,
                          nsIDOMHTMLMapElement** aResult);
 
   NS_IMETHOD GetAttributeStyleSheet(nsIHTMLStyleSheet** aStyleSheet);
   NS_IMETHOD GetInlineStyleSheet(nsIHTMLCSSStyleSheet** aStyleSheet);
   NS_IMETHOD GetCSSLoader(nsICSSLoader*& aLoader);
 
-  NS_IMETHOD GetBaseURL(nsIURI*& aURL) const;
   NS_IMETHOD GetBaseTarget(nsAString& aTarget);
   NS_IMETHOD SetBaseTarget(const nsAString& aTarget);
 
-  NS_IMETHOD SetLastModified(const nsAString& aLastModified);
   NS_IMETHOD SetReferrer(const nsAString& aReferrer);
 
   NS_IMETHOD GetCompatibilityMode(nsCompatibility& aMode);
   NS_IMETHOD SetCompatibilityMode(nsCompatibility aMode);
 
-  NS_IMETHOD_(PRBool) IsWriting() { return mWriteLevel != PRUint32(0); }
+  NS_IMETHOD_(PRBool) IsWriting()
+  {
+    return mWriteLevel != PRUint32(0);
+  }
 
   NS_IMETHOD ContentAppended(nsIContent* aContainer,
                              PRInt32 aNewIndexInContainer);
@@ -142,7 +145,7 @@ public:
   NS_IMETHOD AttributeChanged(nsIContent* aChild,
                               PRInt32 aNameSpaceID,
                               nsIAtom* aAttribute,
-                              PRInt32 aModType, 
+                              PRInt32 aModType,
                               nsChangeHint aHint);
   NS_IMETHOD AttributeWillChange(nsIContent* aChild,
                                  PRInt32 aNameSpaceID,
@@ -150,6 +153,8 @@ public:
 
   NS_IMETHOD FlushPendingNotifications(PRBool aFlushReflows = PR_TRUE,
                                        PRBool aUpdateViews = PR_FALSE);
+
+  NS_IMETHOD_(PRBool) IsCaseSensitive();
 
   // nsIDOMDocument interface
   NS_DECL_NSIDOMDOCUMENT
@@ -161,7 +166,25 @@ public:
   NS_DECL_NSIDOM3NODE
 
   // nsIDOMHTMLDocument interface
-  NS_DECL_NSIDOMHTMLDOCUMENT
+  NS_IMETHOD GetTitle(nsAString & aTitle);
+  NS_IMETHOD SetTitle(const nsAString & aTitle);
+  NS_IMETHOD GetReferrer(nsAString & aReferrer);
+  NS_IMETHOD GetURL(nsAString & aURL);
+  NS_IMETHOD GetBody(nsIDOMHTMLElement * *aBody);
+  NS_IMETHOD SetBody(nsIDOMHTMLElement * aBody);
+  NS_IMETHOD GetImages(nsIDOMHTMLCollection * *aImages);
+  NS_IMETHOD GetApplets(nsIDOMHTMLCollection * *aApplets);
+  NS_IMETHOD GetLinks(nsIDOMHTMLCollection * *aLinks);
+  NS_IMETHOD GetForms(nsIDOMHTMLCollection * *aForms);
+  NS_IMETHOD GetAnchors(nsIDOMHTMLCollection * *aAnchors);
+  NS_IMETHOD GetCookie(nsAString & aCookie);
+  NS_IMETHOD SetCookie(const nsAString & aCookie);
+  NS_IMETHOD Open(void);
+  NS_IMETHOD Close(void);
+  NS_IMETHOD Write(const nsAString & text);
+  NS_IMETHOD Writeln(const nsAString & text);
+  NS_IMETHOD GetElementsByName(const nsAString & elementName,
+                               nsIDOMNodeList **_retval);
 
   // nsIDOMNSHTMLDocument interface
   NS_DECL_NSIDOMNSHTMLDOCUMENT
@@ -179,6 +202,11 @@ public:
   NS_IMETHOD AddedForm();
   NS_IMETHOD RemovedForm();
   NS_IMETHOD GetNumFormsSynchronous(PRInt32* aNumForms);
+
+  PRBool IsXHTML()
+  {
+    return mDefaultNamespaceID == kNameSpaceID_XHTML;
+  }
 
 protected:
   nsresult GetPixelDimensions(nsIPresShell* aShell,
@@ -203,6 +231,9 @@ protected:
                                      PRUint32 aFlags);
   virtual void InternalInsertStyleSheetAt(nsIStyleSheet* aSheet,
                                           PRInt32 aIndex);
+  virtual already_AddRefed<nsIStyleSheet> InternalGetStyleSheetAt(PRInt32 aIndex);
+  virtual PRInt32 InternalGetNumberOfStyleSheets();
+
   static PRBool MatchLinks(nsIContent *aContent, nsString* aData);
   static PRBool MatchAnchors(nsIContent *aContent, nsString* aData);
   static PRBool MatchLayers(nsIContent *aContent, nsString* aData);
@@ -214,9 +245,9 @@ protected:
   static void DocumentWriteTerminationFunc(nsISupports *aRef);
 
   PRBool GetBodyContent();
-  NS_IMETHOD GetBodyElement(nsIDOMHTMLBodyElement** aBody);
+  void GetBodyElement(nsIDOMHTMLBodyElement** aBody);
 
-  NS_IMETHOD GetDomainURI(nsIURI **uri);
+  void GetDomainURI(nsIURI **uri);
 
   nsresult WriteCommon(const nsAString& aText,
                        PRBool aNewlineTerminate);
@@ -228,69 +259,72 @@ protected:
 
   nsresult BaseResetToURI(nsIURI* aURI);
 
-  nsIHTMLStyleSheet*    mAttrStyleSheet;
-  nsIHTMLCSSStyleSheet* mStyleAttrStyleSheet;
-  nsIURI*     mBaseURL;
-  nsString*   mBaseTarget;
-  nsString*   mLastModified;
-  nsString*   mReferrer;
-  nsCOMPtr<nsIHttpChannel> mHttpChannel;
-  nsCompatibility mCompatMode;
-  nsCOMPtr<nsISupportsArray> mImageMaps;
+  virtual void RetrieveRelevantHeaders(nsIChannel *aChannel);
 
-  nsContentList *mImages;
-  nsContentList *mApplets;
-  nsContentList *mEmbeds;
-  nsContentList *mLinks;
-  nsContentList *mAnchors;
-  nsContentList *mForms;
-  nsContentList *mLayers;
-  
-  nsIParser *mParser;
+  nsCOMPtr<nsIHTMLStyleSheet> mAttrStyleSheet;
+  nsCOMPtr<nsIHTMLCSSStyleSheet> mStyleAttrStyleSheet;
+
+  nsString mBaseTarget;
+  nsString mReferrer;
+
+  nsCOMPtr<nsIChannel>     mChannel;
+  nsCOMPtr<nsIHttpChannel> mHttpChannel;
+
+  nsCompatibility mCompatMode;
+
+  nsCOMArray<nsIDOMHTMLMapElement> mImageMaps;
+
+  nsCOMPtr<nsIDOMHTMLCollection> mImages;
+  nsCOMPtr<nsIDOMHTMLCollection> mApplets;
+  nsCOMPtr<nsIDOMHTMLCollection> mEmbeds;
+  nsCOMPtr<nsIDOMHTMLCollection> mLinks;
+  nsCOMPtr<nsIDOMHTMLCollection> mAnchors;
+  nsCOMPtr<nsIDOMHTMLCollection> mForms;
+
+  nsCOMPtr<nsIParser> mParser;
 
   /** # of forms in the document, synchronously set */
   PRInt32 mNumForms;
 
-//ahmed 12-2
-#ifdef IBMBIDI
+  // ahmed 12-2
   PRInt32  mTexttype;
-#endif
-  
+
   static nsrefcnt gRefCntRDFService;
   static nsIRDFService* gRDF;
-  
+  static PRUint32 gWyciwygSessionCnt;
+
   static PRBool TryHintCharset(nsIMarkupDocumentViewer* aMarkupDV,
-                               PRInt32& aCharsetSource, 
+                               PRInt32& aCharsetSource,
                                nsAString& aCharset);
   static PRBool TryUserForcedCharset(nsIMarkupDocumentViewer* aMarkupDV,
                                      nsIDocumentCharsetInfo*  aDocInfo,
-                                     PRInt32& aCharsetSource, 
+                                     PRInt32& aCharsetSource,
                                      nsAString& aCharset);
-  static PRBool TryCacheCharset(nsICacheEntryDescriptor* aCacheDescriptor, 
-                                PRInt32& aCharsetSource, 
+  static PRBool TryCacheCharset(nsICacheEntryDescriptor* aCacheDescriptor,
+                                PRInt32& aCharsetSource,
                                 nsAString& aCharset);
   static PRBool TryBookmarkCharset(nsAFlatCString* aUrlSpec,
-                                   PRInt32& aCharsetSource, 
+                                   PRInt32& aCharsetSource,
                                    nsAString& aCharset);
   static PRBool TryParentCharset(nsIDocumentCharsetInfo*  aDocInfo,
-                                 PRInt32& charsetSource, 
-                                 nsAString& aCharset);
-  static PRBool UseWeakDocTypeDefault(PRInt32& aCharsetSource, 
+                                 PRInt32& charsetSource, nsAString& aCharset);
+  static PRBool UseWeakDocTypeDefault(PRInt32& aCharsetSource,
                                       nsAString& aCharset);
-  static PRBool TryChannelCharset(nsIChannel *aChannel, 
-                                  PRInt32& aCharsetSource, 
+  static PRBool TryChannelCharset(nsIChannel *aChannel,
+                                  PRInt32& aCharsetSource,
                                   nsAString& aCharset);
   static PRBool TryDefaultCharset(nsIMarkupDocumentViewer* aMarkupDV,
-                                      PRInt32& aCharsetSource, 
-                                      nsAString& aCharset);
+                                  PRInt32& aCharsetSource,
+                                  nsAString& aCharset);
 
-  void StartAutodetection(nsIDocShell *aDocShell, 
-                          nsAString& aCharset,
+  void StartAutodetection(nsIDocShell *aDocShell, nsAString& aCharset,
                           const char* aCommand);
 
   PRUint32 mIsWriting : 1;
   PRUint32 mWriteLevel : 31;
-  PRUint32 mWyciwygSessionCnt;
+
+  // Load flags of the document's channel
+  PRUint32 mLoadFlags;
 
   nsCOMPtr<nsIDOMNode> mBodyContent;
 
@@ -298,11 +332,29 @@ protected:
    * Bug 13871: Frameset spoofing - find out if document.domain was set
    */
   PRPackedBool mDomainWasSet;
-  PRPackedBool mIdAndNameHashIsLive;
 
   PLDHashTable mIdAndNameHashTable;
 
   nsCOMPtr<nsIWyciwygChannel> mWyciwygChannel;
+
+  /* Midas implementation */
+  nsresult   GetMidasCommandManager(nsICommandManager** aCommandManager);
+  PRBool     ConvertToMidasInternalCommand(const nsAString & inCommandID,
+                                           const nsAString & inParam,
+                                           nsACString& outCommandID,
+                                           nsACString& outParam,
+                                           PRBool& isBoolean,
+                                           PRBool& boolValue);
+  nsCOMPtr<nsICommandManager> mMidasCommandManager;
+  PRBool                      mEditingIsOn;
+
+  nsresult   DoClipboardSecurityCheck(PRBool aPaste);
+  static jsval       sCutCopyInternal_id;
+  static jsval       sPasteInternal_id;
+
+  // kNameSpaceID_None for good ol' HTML documents, and
+  // kNameSpaceID_XHTML for spiffy new XHTML documents.
+  PRInt32 mDefaultNamespaceID;
 };
 
 #endif /* nsHTMLDocument_h___ */

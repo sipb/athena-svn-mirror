@@ -31,6 +31,8 @@ SHORT_LIBNAME	= embedcmp
 endif
 IS_COMPONENT	= 1
 MODULE_NAME	= embedcomponents
+GRE_MODULE	= 1
+
 ifdef MOZ_PERF_METRICS
 EXTRA_DSO_LIBS	= mozutil_s
 endif
@@ -57,17 +59,26 @@ REQUIRES	= js \
 		  xuldoc \
 		  $(NULL)
 
+ifdef MOZ_PROFILESHARING
+REQUIRES += profilesharingsetup
+endif
+
 CPPSRCS		= nsModule.cpp
 
 SHARED_LIBRARY_LIBS = \
 	$(DIST)/lib/$(LIB_PREFIX)windowwatcher_s.$(LIB_SUFFIX) \
-	$(DIST)/lib/$(LIB_PREFIX)printingui_s.$(LIB_SUFFIX) \
 	$(DIST)/lib/$(LIB_PREFIX)appstartupnotifier_s.$(LIB_SUFFIX) \
-	$(DIST)/lib/$(LIB_PREFIX)jsconsole_s.$(LIB_SUFFIX) \
 	$(DIST)/lib/$(LIB_PREFIX)find_s.$(LIB_SUFFIX) \
 	$(DIST)/lib/$(LIB_PREFIX)webbrowserpersist_s.$(LIB_SUFFIX) \
 	$(DIST)/lib/$(LIB_PREFIX)commandhandler_s.$(LIB_SUFFIX) \
 	$(NULL)
+
+ifdef MOZ_XUL
+SHARED_LIBRARY_LIBS += \
+	$(DIST)/lib/$(LIB_PREFIX)printingui_s.$(LIB_SUFFIX) \
+	$(DIST)/lib/$(LIB_PREFIX)jsconsole_s.$(LIB_SUFFIX) \
+	$(NULL)
+endif
 
 LOCAL_INCLUDES	= \
 	-I$(srcdir)/../windowwatcher/src  \
@@ -78,17 +89,22 @@ LOCAL_INCLUDES	= \
 	-I$(srcdir)/../commandhandler/src \
 	$(NULL)
 
+ifdef MOZ_PROFILESHARING
+SHARED_LIBRARY_LIBS += $(DIST)/lib/$(LIB_PREFIX)profilesharingsetup_s.$(LIB_SUFFIX)
+LOCAL_INCLUDES += -I$(srcdir)/../profilesharingsetup/src
+endif
+
 ifeq ($(MOZ_GFX_TOOLKIT),os2)
 LOCAL_INCLUDES += -I$(srcdir)/../printingui/src/os2 
 endif
 
-ifneq (,$(filter gtk gtk2 xlib beos qt, $(MOZ_WIDGET_TOOLKIT)))
+ifneq (,$(filter gtk gtk2 xlib beos photon qt, $(MOZ_WIDGET_TOOLKIT)))
 LOCAL_INCLUDES += -I$(srcdir)/../printingui/src/unixshared 
 endif
 
 ifeq ($(MOZ_GFX_TOOLKIT),windows)
 LOCAL_INCLUDES += -I$(srcdir)/../printingui/src/win 
-OS_LIBS += winspool.lib comdlg32.lib
+OS_LIBS	+= $(call EXPAND_LIBNAME,winspool comdlg32)
 endif
 
 ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))

@@ -53,6 +53,12 @@
 #include "nsCOMPtr.h"
 #include "nsString.h"
 
+class nsNativeComponentLoader;
+
+#if defined(DEBUG) && !defined(XP_BEOS)
+#define SHOULD_IMPLEMENT_BREAKAFTERLOAD
+#endif
+
 class nsIModule;
 class nsIServiceManager;
 
@@ -68,36 +74,22 @@ typedef enum nsDllStatus
 class nsDll
 {
 private:
-    char *m_dllName;			// Stores the dllName to load.
-
-    nsCOMPtr<nsIFile> m_dllSpec;	    // Filespec representing the component
-
-	PRLibrary *m_instance;	// Load instance
-	nsDllStatus m_status;	// holds current status
-    nsIModule *m_moduleObject;
-
-    // Cache frequent queries
-    nsCString m_persistentDescriptor;
-    nsCString m_nativePath;
-
-    PRBool m_markForUnload;
-    char *m_registryLocation;
+    nsCOMPtr<nsIFile>         m_dllSpec; 
+    PRLibrary                *m_instance;	
+    nsIModule                *m_moduleObject;
+    nsNativeComponentLoader  *m_loader;
+    PRBool                    m_markForUnload;
 
     void Init(nsIFile *dllSpec);
-    void Init(const char *persistentDescriptor);
 
+#ifdef SHOULD_IMPLEMENT_BREAKAFTERLOAD
     void BreakAfterLoad(const char *nsprPath);
+#endif
 
 public:
  
-	nsDll(nsIFile *dllSpec, const char *registryLocation);
-	nsDll(const char *persistentDescriptor);
-    nsDll(const char *dll, int type /* dummy */);
-
+	nsDll(nsIFile *dllSpec, nsNativeComponentLoader* loader);
 	~nsDll(void);
-
-	// Status checking on operations completed
-	nsDllStatus GetStatus(void) { return (m_status); }
 
 	// Dll Loading
 	PRBool Load(void);
@@ -117,12 +109,8 @@ public:
 	
     PRBool HasChanged(void);
 
-    // WARNING: DONT FREE string returned.
-    const char *GetDisplayPath(void);
-    // WARNING: DONT FREE string returned.
-    const char *GetPersistentDescriptorString(void);
-    // WARNING: DONT FREE string returned.
-    const char *GetRegistryLocation(void) { return m_registryLocation; }
+    void GetDisplayPath(nsACString& string);
+
 	PRLibrary *GetInstance(void) { return (m_instance); }
 
     // NS_RELEASE() is required to be done on objects returned

@@ -48,7 +48,6 @@
 #include "nsMsgCompCID.h"
 
 static NS_DEFINE_CID(kRDFServiceCID, NS_RDFSERVICE_CID);
-static NS_DEFINE_CID(kSmtpServiceCID, NS_SMTPSERVICE_CID);
 
 #define NC_RDF_SMTPSERVERS "NC:smtpservers"
 #define NC_RDF_ISDEFAULT        NC_NAMESPACE_URI "IsDefaultServer"
@@ -71,7 +70,6 @@ NS_IMPL_ISUPPORTS1(nsSmtpDataSource, nsIRDFDataSource)
 
 nsSmtpDataSource::nsSmtpDataSource()
 {
-    NS_INIT_ISUPPORTS();
     gRefCount++;
     if (gRefCount == 1)
         initGlobalObjects();
@@ -89,12 +87,15 @@ nsSmtpDataSource::initGlobalObjects()
     nsCOMPtr<nsIRDFService> rdf = do_GetService(kRDFServiceCID, &rv);
     if (NS_FAILED(rv)) return rv;
 
-    rdf->GetResource(NC_RDF_CHILD, getter_AddRefs(kNC_Child));
-    rdf->GetResource(NC_RDF_NAME, getter_AddRefs(kNC_Name));
-    rdf->GetResource(NC_RDF_KEY, getter_AddRefs(kNC_Key));
-    rdf->GetResource(NC_RDF_SMTPSERVERS, getter_AddRefs(kNC_SmtpServers));
-    rdf->GetResource(NC_RDF_ISDEFAULT, getter_AddRefs(kNC_IsDefaultServer));
-    rdf->GetResource(NC_RDF_ISSESSIONDEFAULT, getter_AddRefs(kNC_IsSessionDefaultServer));
+    rdf->GetResource(NS_LITERAL_CSTRING(NC_RDF_CHILD), getter_AddRefs(kNC_Child));
+    rdf->GetResource(NS_LITERAL_CSTRING(NC_RDF_NAME), getter_AddRefs(kNC_Name));
+    rdf->GetResource(NS_LITERAL_CSTRING(NC_RDF_KEY), getter_AddRefs(kNC_Key));
+    rdf->GetResource(NS_LITERAL_CSTRING(NC_RDF_SMTPSERVERS),
+                     getter_AddRefs(kNC_SmtpServers));
+    rdf->GetResource(NS_LITERAL_CSTRING(NC_RDF_ISDEFAULT),
+                     getter_AddRefs(kNC_IsDefaultServer));
+    rdf->GetResource(NS_LITERAL_CSTRING(NC_RDF_ISSESSIONDEFAULT),
+                     getter_AddRefs(kNC_IsSessionDefaultServer));
 
     nsAutoString trueStr(NS_LITERAL_STRING("true"));
     rdf->GetLiteral(trueStr.get(), getter_AddRefs(kTrueLiteral));
@@ -179,7 +180,7 @@ nsSmtpDataSource::GetTarget(nsIRDFResource *aSource,
              aProperty == kNC_IsSessionDefaultServer.get()) {
 
         nsCOMPtr<nsISmtpService> smtpService =
-            do_GetService(kSmtpServiceCID, &rv);
+            do_GetService(NS_SMTPSERVICE_CONTRACTID, &rv);
 
         NS_ENSURE_SUCCESS(rv, rv);
         
@@ -240,7 +241,7 @@ nsSmtpDataSource::GetSmtpServerTargets(nsISupportsArray **aResultArray)
 {
     nsresult rv;
     nsCOMPtr<nsISmtpService> smtpService =
-        do_GetService(kSmtpServiceCID, &rv);
+        do_GetService(NS_SMTPSERVICE_CONTRACTID, &rv);
     NS_ENSURE_SUCCESS(rv, rv);
 
     nsCOMPtr<nsIRDFService> rdf =
@@ -404,12 +405,6 @@ NS_IMETHODIMP nsSmtpDataSource::GetAllResources(nsISimpleEnumerator **aResult)
     return NS_ERROR_NOT_IMPLEMENTED;
 }
 
-/* nsIEnumerator GetAllCommands (in nsIRDFResource aSource); */
-NS_IMETHODIMP nsSmtpDataSource::GetAllCommands(nsIRDFResource *aSource, nsIEnumerator **aResult)
-{
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
 /* boolean IsCommandEnabled (in nsISupportsArray aSources, in nsIRDFResource aCommand, in nsISupportsArray aArguments); */
 NS_IMETHODIMP nsSmtpDataSource::IsCommandEnabled(nsISupportsArray *aSources, nsIRDFResource *aCommand, nsISupportsArray *aArguments, PRBool *aResult)
 {
@@ -426,4 +421,16 @@ NS_IMETHODIMP nsSmtpDataSource::DoCommand(nsISupportsArray *aSources, nsIRDFReso
 NS_IMETHODIMP nsSmtpDataSource::GetAllCmds(nsIRDFResource *aSource, nsISimpleEnumerator **aResult)
 {
     return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void beginUpdateBatch (); */
+NS_IMETHODIMP nsSmtpDataSource::BeginUpdateBatch()
+{
+    return NS_OK;
+}
+
+/* void endUpdateBatch (); */
+NS_IMETHODIMP nsSmtpDataSource::EndUpdateBatch()
+{
+    return NS_OK;
 }

@@ -41,7 +41,6 @@
 #include "nsIHTMLContent.h"
 #include "nsGenericHTMLElement.h"
 #include "nsHTMLAtoms.h"
-#include "nsIStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
 #include "nsIDocument.h"
@@ -49,7 +48,7 @@
 
 // XXX this is to get around conflicts with windows.h defines
 // introduced through jni.h
-#ifdef XP_PC
+#ifdef XP_WIN
 #undef GetClassName
 #undef GetObject
 #endif
@@ -86,10 +85,6 @@ public:
   NS_IMETHOD GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRuleFunc) const;
   NS_IMETHOD GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
                                       nsChangeHint& aHint) const;
-#ifdef DEBUG
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
-#endif
-
 protected:
   PRBool mReflectedApplet;
 };
@@ -176,10 +171,10 @@ NS_IMPL_STRING_ATTR(nsHTMLAppletElement, Archive, archive)
 NS_IMPL_STRING_ATTR(nsHTMLAppletElement, Code, code)
 NS_IMPL_STRING_ATTR(nsHTMLAppletElement, CodeBase, codebase)
 NS_IMPL_STRING_ATTR(nsHTMLAppletElement, Height, height)
-NS_IMPL_STRING_ATTR(nsHTMLAppletElement, Hspace, hspace)
+NS_IMPL_PIXEL_ATTR(nsHTMLAppletElement, Hspace, hspace)
 NS_IMPL_STRING_ATTR(nsHTMLAppletElement, Name, name)
 NS_IMPL_STRING_ATTR(nsHTMLAppletElement, Object, object)
-NS_IMPL_STRING_ATTR(nsHTMLAppletElement, Vspace, vspace)
+NS_IMPL_PIXEL_ATTR(nsHTMLAppletElement, Vspace, vspace)
 NS_IMPL_STRING_ATTR(nsHTMLAppletElement, Width, width)
 
 NS_IMETHODIMP
@@ -236,15 +231,15 @@ NS_IMETHODIMP
 nsHTMLAppletElement::GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
                                               nsChangeHint& aHint) const
 {
-  if (!GetCommonMappedAttributesImpact(aAttribute, aHint)) {
-    if (!GetImageMappedAttributesImpact(aAttribute, aHint)) {
-      if (!GetImageAlignAttributeImpact(aAttribute, aHint)) {
-        if (!GetImageBorderAttributeImpact(aAttribute, aHint)) {
-          aHint = NS_STYLE_HINT_CONTENT;
-        }
-      }
-    }
-  }
+  static const AttributeImpactEntry* const map[] = {
+    sCommonAttributeMap,
+    sImageAttributeMap,
+    sImageAlignAttributeMap,
+    sImageBorderAttributeMap
+  };
+  
+  FindAttributeImpact(aAttribute, aHint, map, NS_ARRAY_LENGTH(map));
+  
   return NS_OK;
 }
 
@@ -254,13 +249,3 @@ nsHTMLAppletElement::GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMap
   aMapRuleFunc = &MapAttributesIntoRule;
   return NS_OK;
 }
-
-#ifdef DEBUG
-NS_IMETHODIMP
-nsHTMLAppletElement::SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const
-{
-  *aResult = sizeof(*this) + BaseSizeOf(aSizer);
-
-  return NS_OK;
-}
-#endif

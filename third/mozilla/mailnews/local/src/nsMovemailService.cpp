@@ -76,7 +76,6 @@ static NS_DEFINE_CID(kPrefCID,           NS_PREF_CID);
 
 nsMovemailService::nsMovemailService()
 {
-    NS_INIT_ISUPPORTS();
 #ifdef MOVEMAIL_DEBUG
     fprintf(stderr, "*** MURRR, new nsMovemailService\n");
 #endif
@@ -467,7 +466,7 @@ nsMovemailService::GetNewMail(nsIMsgWindow *aMsgWindow,
                                 // then the file mysteriously ended) then abort
                                 // parsing.
                                 if (numlines == 0 &&
-                                    nsCRT::strlen(buffer) == 0 &&
+                                    !*buffer &&
                                     spoolfile->eof()) {
 #ifdef MOVEMAIL_DEBUG
                                     fprintf(stderr, "*** Utterly empty spool file\n");
@@ -619,7 +618,7 @@ nsMovemailService::GetRequiresUsername(PRBool *aRequiresUsername)
         NS_ENSURE_ARG_POINTER(aRequiresUsername);
 
 #ifdef MOVEMAIL_DEBUG
-        fprintf(stderr, ">>> Yah, got asked for info\n");
+        fprintf(stderr, "XXX Yah, got asked for info\n");
 #endif
 
         *aRequiresUsername = PR_FALSE;

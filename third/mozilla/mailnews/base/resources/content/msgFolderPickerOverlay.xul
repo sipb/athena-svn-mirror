@@ -21,7 +21,7 @@ Rights Reserved.
 
 <?xml-stylesheet href="chrome://messenger/skin/folderMenus.css" type="text/css"?>
 
-<!DOCTYPE window SYSTEM "chrome://messenger/locale/msgFolderPickerOverlay.dtd">
+<!DOCTYPE overlay SYSTEM "chrome://messenger/locale/msgFolderPickerOverlay.dtd">
 
 <overlay id="msgFolderPicker"
          xmlns:nc="http://home.netscape.com/NC-rdf#"
@@ -326,7 +326,7 @@ Rights Reserved.
         datasources="rdf:msgaccountmanager rdf:mailnewsfolders" 
         ref="msgaccounts:/">
     <template>
-      <rule nc:IsServer="true" nc:CanCreateFoldersOnServer="true">
+      <rule nc:IsServer="true" nc:CanCreateFoldersOnServer="true" nc:CanSearchMessages="true">
         <menupopup>
           <menuitem uri="..." class="folderMenuItem menuitem-iconic" 
                     label="rdf:http://home.netscape.com/NC-rdf#Name"
@@ -413,6 +413,9 @@ Rights Reserved.
               datasources="rdf:msgaccountmanager rdf:mailnewsfolders"
               ref="msgaccounts:/">
       <template>
+        <rule nc:CanSearchMessages="false">
+          <!-- don't show servers which do not allow message searching -->
+        </rule>
         <rule iscontainer="true" isempty="false" nc:CanSearchMessages="true">
           <menupopup>
             <menu uri="..." 
@@ -456,7 +459,10 @@ Rights Reserved.
               ref="msgaccounts:/">
       <template>
         <rule nc:CanFileMessagesOnServer="false">
-          <!-- don't show servers (nntp & any others) which does not allow message filing -->
+          <!-- don't show servers (nntp & any others) which do not allow message filing -->
+        </rule>
+        <rule nc:CanSearchMessages="false">
+          <!-- don't show servers (nntp & any others) which do not allow search -->
         </rule>
         <rule nc:CanFileMessages="true" iscontainer="true" isempty="false">
           <menupopup>

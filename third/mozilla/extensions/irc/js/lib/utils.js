@@ -56,6 +56,7 @@ jsenv.HAS_JAVA = (typeof java == "object");
 jsenv.HAS_RHINO = (typeof defineClass == "function");
 jsenv.HAS_DOCUMENT = (typeof document == "object");
 jsenv.HAS_NSPR_EVENTQ = jsenv.HAS_DOCUMENT;
+jsenv.HAS_STREAM_PROVIDER = ("nsIStreamProvider" in Components.interfaces);
 
 function dumpObject (o, pfx, sep)
 {
@@ -378,23 +379,23 @@ function stringTrim (s)
 function formatDateOffset (offset, format)
 {
     var seconds = roundTo(offset % 60, 2);
-    var minutes = parseInt(offset / 60);
-    var hours = parseInt(minutes / 60);
+    var minutes = Math.floor(offset / 60);
+    var hours = Math.floor(minutes / 60);
     minutes = minutes % 60;
-    var days = parseInt(hours / 24);
+    var days = Math.floor(hours / 24);
     hours = hours % 24;
 
     if (!format)
     {
         var ary = new Array();
         if (days > 0)
-            ary.push (days + " days");
+            ary.push (getMsg("days", days));
         if (hours > 0)
-            ary.push (hours + " hours");
+            ary.push (getMsg("hours", hours));
         if (minutes > 0)
-            ary.push (minutes + " minutes");
+            ary.push (getMsg("minutes", minutes));
         if (seconds > 0 || offset == 0)
-            ary.push (seconds + " seconds");
+            ary.push (getMsg("seconds", seconds));
 
         format = ary.join(", ");
     }

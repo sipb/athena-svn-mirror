@@ -37,6 +37,10 @@
 
 #use diagnostics;
 require strict;
+my $dir = $0;
+$dir =~ s/[^\/]*$//;
+push(@INC, "$dir");
+require "Moz/Milestone.pm";
 use Getopt::Long;
 use Getopt::Std;
 
@@ -124,10 +128,14 @@ if (!defined($module))
 }
 
 my $productversion = "0,0,0,0";
+my $fileversion = $productversion;
 my $fileos = "VOS__WINDOWS32";
 if ($bits eq "16") { $fileos="VOS__WINDOWS16"; }
 
 my $bufferstr="    ";
+
+my $MILESTONE_FILE = "$topsrcdir/config/milestone.txt";
+my $BUILDID_FILE = "$depth/config/build_number";
 
 #Read module.ver file
 #Version file overrides for WIN32:
@@ -203,40 +211,40 @@ if ($official eq "1") {
 		$fileflags = "VS_FF_PRERELEASE | VS_FF_DEBUG";
 	}
 
-        # Try to grab milestone from milestone.pl
+        # Try to grab milestone.
         # I'd love to put this in the makefiles rather than here,
         # since I could run it once per build rather than once per
         # dll/program, but I can't seem to get backticks working
         # properly in the makefiles =P
         if ($milestone eq "") {
-            $milestone = `perl $topsrcdir/config/milestone.pl --topsrcdir $topsrcdir --getms`;
+            $milestone = Moz::Milestone::getOfficialMilestone($MILESTONE_FILE);
         }
 
-	if ($milestone ne "") {
+	if ($milestone ne "" && $milestone !~ /\+$/) {
 		#its a milestone build
 
 		$mpversion = $milestone;
 
 		$fileflags = "0";
+	      
+		my @mstone = split(/\./,$milestone);
+		$mstone[1] =~s/\D*$//g;
+		$productversion="$mstone[0],$mstone[1],0,0";
 
-		$productversion=$milestone;
-		$productversion=~s/\./,/g;
+	}
 
-	} else {
+	my ($buildid, $buildid_hi, $buildid_lo);
+	open(NUMBER, "<$BUILDID_FILE") || die "No build number file\n";
+	while ( <NUMBER> ) { $buildid = $_ }
+	close (NUMBER);
+	$buildid =~ s/^\s*(.*)\s*$/$1/;
+	$buildid_hi = substr($buildid, 0, 5);
+	$buildid_lo = substr($buildid, 5);
 
-		if (defined $depth) {
-			open(NUMBER, "<${depth}/config/build_number") || die "No build number file\n";
-
-			while ( <NUMBER> ) { $mpversion = $_ }
-			close (NUMBER);
-
-			$mpversion =~ s/^\s*(.*)\s*$/$1/;
-		}
-	} 
-	$mfversion = $mpversion;
+	$mfversion = $mpversion = "$milestone: $buildid";
+	my @pvarray = split(',', $productversion);
+	$fileversion = "$pvarray[0],$pvarray[1],$buildid_hi,$buildid_lo";
 }
-my $fileversion = $productversion;
-
 
 my $copyright = "License: MPL 1.1/GPL 2.0/LGPL 2.1";
 my $company = "Mozilla, Netscape";

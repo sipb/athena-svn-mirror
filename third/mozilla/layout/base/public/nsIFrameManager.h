@@ -41,14 +41,14 @@
 #include "nsIStatefulFrame.h"
 #include "nsString.h"
 #include "nsChangeHint.h"
+#include "nsIFrame.h"
 
 class nsIAtom;
 class nsIContent;
-class nsIFrame;
 class nsIPresContext;
 class nsIPresShell;
 class nsIStyleSet;
-class nsIStyleContext;
+class nsStyleContext;
 class nsILayoutHistoryState;
 class nsStyleChangeList;
 class nsPlaceholderFrame;
@@ -57,23 +57,8 @@ class nsPlaceholderFrame;
 { 0xa6cf9107, 0x15b3, 0x11d2, \
   {0x93, 0x2e, 0x00, 0x80, 0x5f, 0x8a, 0xdd, 0x32} }
   
-// Calback function used to destroy the value associated with a
-// given property. used by RemoveFrameProperty()
-typedef void 
-(*NSFMPropertyDtorFunc)(nsIPresContext* aPresContext,
-                        nsIFrame*       aFrame,
-                        nsIAtom*        aPropertyName,
-                        void*           aPropertyValue);
-
 // Option flags for GetFrameProperty() member function
 #define NS_IFRAME_MGR_REMOVE_PROP   0x0001
-
-// nsresult error codes for frame property functions
-#define NS_IFRAME_MGR_PROP_NOT_THERE \
-  NS_ERROR_GENERATE_SUCCESS(NS_ERROR_MODULE_LAYOUT, 1)
-
-#define NS_IFRAME_MGR_PROP_OVERWRITTEN \
-  NS_ERROR_GENERATE_SUCCESS(NS_ERROR_MODULE_LAYOUT, 2)
 
 /**
  * Frame manager interface. The frame manager serves two purposes:
@@ -122,8 +107,9 @@ public:
   NS_IMETHOD ClearPlaceholderFrameMap() = 0;
 
   // Mapping undisplayed content
-  NS_IMETHOD GetUndisplayedContent(nsIContent* aContent, nsIStyleContext** aStyleContext)=0;
-  NS_IMETHOD SetUndisplayedContent(nsIContent* aContent, nsIStyleContext* aStyleContext) = 0;
+  virtual nsStyleContext* GetUndisplayedContent(nsIContent* aContent) = 0;
+  virtual void SetUndisplayedContent(nsIContent* aContent,
+                                     nsStyleContext* aStyleContext) = 0;
   NS_IMETHOD ClearUndisplayedContentIn(nsIContent* aContent, nsIContent* aParentContent) = 0;
   NS_IMETHOD ClearAllUndisplayedContentIn(nsIContent* aParentContent) = 0;
   NS_IMETHOD ClearUndisplayedContentMap() = 0;
@@ -164,7 +150,7 @@ public:
   // new given parent style context
   NS_IMETHOD ReParentStyleContext(nsIPresContext* aPresContext, 
                                   nsIFrame* aFrame, 
-                                  nsIStyleContext* aNewParentContext) = 0;
+                                  nsStyleContext* aNewParentContext) = 0;
 
   // Re-resolve style contexts for frame tree
   NS_IMETHOD ComputeStyleChangeFor(nsIPresContext* aPresContext,
@@ -176,8 +162,11 @@ public:
                                    nsChangeHint& aTopLevelChange) = 0;
 
   // Determine whether an attribute affects style
-  NS_IMETHOD AttributeAffectsStyle(nsIAtom *aAttribute, nsIContent *aContent,
-                                   PRBool &aAffects) = 0;
+  NS_IMETHOD HasAttributeDependentStyle(nsIPresContext* aPresContext,
+                                        nsIContent *aContent,
+                                        nsIAtom *aAttribute,
+                                        PRInt32 aModType,
+                                        PRBool *aResult) = 0;
 
   /**
    * Capture/restore frame state for the frame subtree rooted at aFrame.
@@ -199,10 +188,6 @@ public:
                                nsIFrame* aFrame,
                                nsILayoutHistoryState* aState,
                                nsIStatefulFrame::SpecialStateID aID = nsIStatefulFrame::eNoID) = 0;
-  NS_IMETHOD GenerateStateKey(nsIContent* aContent,
-                              nsIStatefulFrame::SpecialStateID aID,
-                              nsACString& aString) = 0;
-
 
   /**
    * Gets a property value for a given frame.
@@ -240,10 +225,10 @@ public:
    *          NS_ERROR_INVALID_ARG if the dtor function does not match the
    *            existing dtor function
    */
-  NS_IMETHOD SetFrameProperty(nsIFrame*            aFrame,
-                              nsIAtom*             aPropertyName,
-                              void*                aPropertyValue,
-                              NSFMPropertyDtorFunc aPropertyDtorFunc) = 0;
+  NS_IMETHOD SetFrameProperty(nsIFrame*               aFrame,
+                              nsIAtom*                aPropertyName,
+                              void*                   aPropertyValue,
+                              NSFramePropertyDtorFunc aPropertyDtorFunc) = 0;
 
   /**
    * Removes a property and destroys its property value by calling the dtor
@@ -271,7 +256,7 @@ public:
  * Create a frame manager. Upon success, call Init() before attempting to
  * use it.
  */
-extern NS_EXPORT nsresult
-  NS_NewFrameManager(nsIFrameManager** aInstancePtrResult);
+nsresult
+NS_NewFrameManager(nsIFrameManager** aInstancePtrResult);
 
 #endif /* nsIFrameManager_h___ */

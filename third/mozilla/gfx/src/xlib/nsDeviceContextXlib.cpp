@@ -99,6 +99,8 @@ nsDeviceContextXlib::nsDeviceContextXlib()
   mXlibRgbHandle = xxlib_find_handle(XXLIBRGB_DEFAULT_HANDLE);
   if (!mXlibRgbHandle)
     abort();
+    
+  mContextCounter++;
 }
 
 nsDeviceContextXlib::~nsDeviceContextXlib()
@@ -106,7 +108,21 @@ nsDeviceContextXlib::~nsDeviceContextXlib()
   nsIDrawingSurfaceXlib *surf = NS_STATIC_CAST(nsIDrawingSurfaceXlib *, mSurface);
   NS_IF_RELEASE(surf);
   mSurface = nsnull;
+  
+  mContextCounter--;
+  
+  if (mContextCounter == 0)
+  {
+    DeleteRenderingContextXlibContext(mRCContext);
+    DeleteFontMetricsXlibContext(mFontMetricsContext);
+    mRCContext          = nsnull;
+    mFontMetricsContext = nsnull;
+  }
 }
+
+nsFontMetricsXlibContext      *nsDeviceContextXlib::mFontMetricsContext = nsnull;
+nsRenderingContextXlibContext *nsDeviceContextXlib::mRCContext          = nsnull;
+int                            nsDeviceContextXlib::mContextCounter     = 0;
 
 NS_IMETHODIMP nsDeviceContextXlib::Init(nsNativeWidget aNativeWidget)
 {
@@ -140,14 +156,14 @@ NS_IMETHODIMP nsDeviceContextXlib::Init(nsNativeWidget aNativeWidget)
   }
 #endif /* DEBUG */
 
-  CommonInit();
-
-  return NS_OK;
+  return CommonInit();
 }
 
-void
+nsresult
 nsDeviceContextXlib::CommonInit(void)
 {
+  nsresult rv = NS_OK;;
+
   // FIXME: PeterH
   // This was set to 100 dpi, then later on in the function is was changed
   // to a default of 96dpi IF we had a preference component. We need to 
@@ -186,6 +202,22 @@ nsDeviceContextXlib::CommonInit(void)
   mHeightFloat = (float) XHeightOfScreen(mScreen);
 
   DeviceContextImpl::CommonInit();
+  
+  if (!mFontMetricsContext)
+  {
+    rv = CreateFontMetricsXlibContext(this, PR_FALSE, &mFontMetricsContext);
+    if (NS_FAILED(rv))
+      return rv;
+  }
+
+  if (!mRCContext)
+  {
+    rv = CreateRenderingContextXlibContext(this, &mRCContext);
+    if (NS_FAILED(rv))
+      return rv;
+  }
+   
+  return rv;
 }
 
 NS_IMETHODIMP nsDeviceContextXlib::CreateRenderingContext(nsIRenderingContext *&aContext)
@@ -334,20 +366,6 @@ NS_IMETHODIMP nsDeviceContextXlib::GetSystemFont(nsSystemFontID anID, nsFont *aF
   return NS_OK;
 }
 
-NS_IMETHODIMP nsDeviceContextXlib::GetDrawingSurface(nsIRenderingContext &aContext, nsDrawingSurface &aSurface)
-{
-  PR_LOG(DeviceContextXlibLM, PR_LOG_DEBUG, ("nsDeviceContextXlib::GetDrawingSurface()\n"));
-  if (nsnull == mSurface) {
-    aContext.CreateDrawingSurface(nsnull, 0, mSurface);
-  }
-  aSurface = mSurface;
-  return NS_OK;
-#if 0
-  aContext.CreateDrawingSurface(nsnull, 0, aSurface);
-  return nsnull == aSurface ? NS_ERROR_OUT_OF_MEMORY : NS_OK;
-#endif
-}
-
 NS_IMETHODIMP nsDeviceContextXlib::ConvertPixel(nscolor aColor, PRUint32 & aPixel)
 {
   PR_LOG(DeviceContextXlibLM, PR_LOG_DEBUG, ("nsDeviceContextXlib::ConvertPixel()\n"));
@@ -360,7 +378,7 @@ NS_IMETHODIMP nsDeviceContextXlib::ConvertPixel(nscolor aColor, PRUint32 & aPixe
 
 NS_IMETHODIMP nsDeviceContextXlib::CheckFontExistence(const nsString& aFontName)
 {
-  return nsFontMetricsXlib::FamilyExists(this, aFontName);
+  return nsFontMetricsXlib::FamilyExists(mFontMetricsContext, aFontName);
 }
 
 NS_IMETHODIMP nsDeviceContextXlib::GetDeviceSurfaceDimensions(PRInt32 &aWidth, PRInt32 &aHeight)

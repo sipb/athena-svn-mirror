@@ -40,8 +40,9 @@
 #define nsHTMLContentSerializer_h__
 
 #include "nsXMLContentSerializer.h"
-#include "nsIParserService.h"
 #include "nsIEntityConverter.h"
+#include "nsString.h"
+#include "nsILineBreaker.h"
 
 class nsIContent;
 class nsIAtom;
@@ -81,7 +82,6 @@ class nsHTMLContentSerializer : public nsXMLContentSerializer {
                       PRBool aHasDirtyAttr,
                       nsAString& aStr);
   nsresult GetEntityConverter(nsIEntityConverter** aConverter);
-  nsresult GetParserService(nsIParserService** aParserService);
   void SerializeAttributes(nsIContent* aContent,
                            nsIAtom* aTagName,
                            nsAString& aStr);
@@ -98,6 +98,18 @@ class nsHTMLContentSerializer : public nsXMLContentSerializer {
                               PRBool aIncrColumn = PR_TRUE);
   virtual void AppendToStringConvertLF(const nsAString& aStr,
                                        nsAString& aOutputStr);
+  void AppendWrapped_WhitespaceSequence(
+          nsASingleFragmentString::const_char_iterator &aPos,
+          const nsASingleFragmentString::const_char_iterator aEnd,
+          const nsASingleFragmentString::const_char_iterator aSequenceStart,
+          PRBool &aMayIgnoreStartOfLineWhitespaceSequence,
+          nsAString &aOutputStr);
+  void AppendWrapped_NonWhitespaceSequence(
+          nsASingleFragmentString::const_char_iterator &aPos,
+          const nsASingleFragmentString::const_char_iterator aEnd,
+          const nsASingleFragmentString::const_char_iterator aSequenceStart,
+          PRBool &aMayIgnoreStartOfLineWhitespaceSequence,
+          nsAString &aOutputStr);
   virtual void AppendToStringWrapped(const nsASingleFragmentString& aStr,
                                      nsAString& aOutputStr,
                                      PRBool aTranslateEntities);
@@ -105,7 +117,6 @@ class nsHTMLContentSerializer : public nsXMLContentSerializer {
   nsresult EscapeURI(const nsAString& aURI, nsAString& aEscapedURI);
   PRBool IsJavaScript(nsIAtom* aAttrNameAtom, const nsAString& aAttrValueString);
 
-  nsCOMPtr<nsIParserService> mParserService;
   nsCOMPtr<nsIEntityConverter> mEntityConverter;
 
   PRInt32   mIndent;
@@ -122,6 +133,7 @@ class nsHTMLContentSerializer : public nsXMLContentSerializer {
   // continued on the same line while serializing source.  Otherwise,
   // the newline character acts as the whitespace and no space is needed.
   PRPackedBool  mAddSpace;
+  PRPackedBool  mMayIgnoreLineBreakSequence;
 
   // To keep track of First LI child of OL in selected range 
   PRPackedBool  mIsFirstChildOfOL;
@@ -137,10 +149,11 @@ class nsHTMLContentSerializer : public nsXMLContentSerializer {
    * what so ever.
    */
   PRPackedBool mInCDATA;
-  PRPackedBool mIsLatin1;
+  PRPackedBool mNeedLineBreaker;
+
+  nsCOMPtr<nsILineBreaker> mLineBreaker;
 
   PRInt32   mMaxColumn;
-
   nsString  mLineBreak;
 
   nsCOMPtr<nsIAtom> mCharSet;
@@ -157,6 +170,7 @@ class nsHTMLContentSerializer : public nsXMLContentSerializer {
   nsAutoVoidArray   mOLStateStack;// Stack to store one olState struct per <OL>.
 };
 
-extern nsresult NS_NewHTMLContentSerializer(nsIContentSerializer** aSerializer);
+nsresult
+NS_NewHTMLContentSerializer(nsIContentSerializer** aSerializer);
 
 #endif

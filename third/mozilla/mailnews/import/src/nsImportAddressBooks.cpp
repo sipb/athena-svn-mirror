@@ -54,6 +54,7 @@
 #include "nsNetCID.h"
 
 #include "nsIFileSpec.h"
+#include "nsILocalFile.h"
 
 #include "nsIAddrDatabase.h"
 #include "nsIAddrBookSession.h"
@@ -69,7 +70,6 @@
 #include "ImportDebug.h"
 
 static NS_DEFINE_CID(kAbDirectoryCID, NS_ABDIRECTORY_CID);
-static NS_DEFINE_CID(kStandardUrlCID, NS_STANDARDURL_CID);
 static NS_DEFINE_CID(kRDFServiceCID, NS_RDFSERVICE_CID);
 static NS_DEFINE_CID(kSupportsWStringCID, NS_SUPPORTS_STRING_CID);
 static NS_DEFINE_CID(kProxyObjectManagerCID, NS_PROXYEVENT_MANAGER_CID);
@@ -125,7 +125,7 @@ public:
 private:
 	nsIImportAddressBooks *		m_pInterface;
 	nsISupportsArray *			m_pBooks;
-	nsIFileSpec *				m_pLocation;
+	nsCOMPtr <nsIFileSpec> m_pLocation;
 	nsIImportFieldMap *			m_pFieldMap;
 	PRBool						m_autoFind;
 	PRUnichar *					m_description;
@@ -184,7 +184,6 @@ nsresult NS_NewGenericAddressBooks(nsIImportGeneric** aImportGeneric)
 
 nsImportGenericAddressBooks::nsImportGenericAddressBooks()
 {
-    NS_INIT_ISUPPORTS();
 	m_pInterface = nsnull;
 	m_pBooks = nsnull;
 	m_pSuccessLog = nsnull;
@@ -195,7 +194,6 @@ nsImportGenericAddressBooks::nsImportGenericAddressBooks()
 	m_pDestinationUri = nsnull;
 	m_pFieldMap = nsnull;
 
-	m_pLocation = nsnull;
 	m_autoFind = PR_FALSE;
 	m_description = nsnull;
 	m_gotLocation = PR_FALSE;
@@ -218,7 +216,6 @@ nsImportGenericAddressBooks::~nsImportGenericAddressBooks()
 		nsCRT::free( m_description);
 
 	NS_IF_RELEASE( m_pFieldMap);
-	NS_IF_RELEASE( m_pLocation);
 	NS_IF_RELEASE( m_pInterface);
 	NS_IF_RELEASE( m_pBooks);
 	NS_IF_RELEASE( m_pSuccessLog);
@@ -246,8 +243,7 @@ NS_IMETHODIMP nsImportGenericAddressBooks::GetData(const char *dataId, nsISuppor
 	if (!nsCRT::strcasecmp( dataId, "addressLocation")) {
 		if (!m_pLocation)
 			GetDefaultLocation();
-		*_retval = m_pLocation;
-		NS_IF_ADDREF( m_pLocation);
+		NS_IF_ADDREF(*_retval = m_pLocation);
 	}
 	
 	if (!nsCRT::strcasecmp( dataId, "addressBooks")) {
@@ -261,12 +257,10 @@ NS_IMETHODIMP nsImportGenericAddressBooks::GetData(const char *dataId, nsISuppor
 	
 	if (!nsCRT::strcasecmp( dataId, "addressDestination")) {
 		if (m_pDestinationUri) {
-			nsCOMPtr<nsIURL>	url;
-			rv = nsComponentManager::CreateInstance( kStandardUrlCID, nsnull, NS_GET_IID(nsIURL), getter_AddRefs( url));
-			if (NS_SUCCEEDED( rv)) {
+			nsCOMPtr<nsIURL> url = do_CreateInstance(NS_STANDARDURL_CONTRACTID, &rv);
+			if (NS_SUCCEEDED(rv)) {
 				url->SetSpec( nsDependentCString(m_pDestinationUri));
-				*_retval = url;
-				NS_IF_ADDREF( *_retval);
+				NS_IF_ADDREF(*_retval = url);
 			}
 		}
 	}
@@ -342,11 +336,19 @@ NS_IMETHODIMP nsImportGenericAddressBooks::SetData( const char *dataId, nsISuppo
 	}
 	
 	if (!nsCRT::strcasecmp( dataId, "addressLocation")) {
-		NS_IF_RELEASE( m_pLocation);
-		if (item)
-			item->QueryInterface( NS_GET_IID(nsIFileSpec), (void **) &m_pLocation);
-		if (m_pInterface)
-			m_pInterface->SetSampleLocation( m_pLocation);
+		m_pLocation = nsnull;
+
+    if (item) {
+      nsresult rv;
+      nsCOMPtr <nsILocalFile> location = do_QueryInterface(item, &rv);
+      NS_ENSURE_SUCCESS(rv,rv);
+      
+      rv = NS_NewFileSpecFromIFile(location, getter_AddRefs(m_pLocation));
+      NS_ENSURE_SUCCESS(rv,rv);
+    }
+
+    if (m_pInterface)
+			m_pInterface->SetSampleLocation(m_pLocation);
 	}
 
 	if (!nsCRT::strcasecmp( dataId, "addressDestination")) {
@@ -507,26 +509,22 @@ NS_IMETHODIMP nsImportGenericAddressBooks::WantsProgress(PRBool *_retval)
 	if (m_pBooks) {
 		PRUint32		count = 0;
 		nsresult 		rv = m_pBooks->Count( &count);
-		nsISupports *	pSupports;
 		PRUint32		i;
 		PRBool			import;
 		PRUint32		size;
 		
 		for (i = 0; i < count; i++) {
-			pSupports = m_pBooks->ElementAt( i);
-			if (pSupports) {
-				nsCOMPtr<nsISupports> interface( dont_AddRef( pSupports));
-				nsCOMPtr<nsIImportABDescriptor> book( do_QueryInterface( pSupports));
-				if (book) {
-					import = PR_FALSE;
-					size = 0;
-					rv = book->GetImport( &import);
-					if (import) {
-						rv = book->GetSize( &size);
-						result = PR_TRUE;
-					}
-					totalSize += size;
+			nsCOMPtr<nsIImportABDescriptor> book =
+				do_QueryElementAt(m_pBooks, i);
+			if (book) {
+				import = PR_FALSE;
+				size = 0;
+				rv = book->GetImport( &import);
+				if (import) {
+					rv = book->GetSize( &size);
+					result = PR_TRUE;
 				}
+				totalSize += size;
 			}
 		}
 
@@ -808,7 +806,8 @@ nsIAddrDatabase *GetAddressBook( const PRUnichar *name, PRBool makeNew)
 		NS_WITH_PROXIED_SERVICE(nsIRDFService, rdfService, kRDFServiceCID, NS_UI_THREAD_EVENTQ, &rv);
 		if (NS_SUCCEEDED(rv)) {
 			nsCOMPtr<nsIRDFResource>	parentResource;
-			rv = rdfService->GetResource( kAllDirectoryRoot, getter_AddRefs(parentResource));
+			rv = rdfService->GetResource(NS_LITERAL_CSTRING(kAllDirectoryRoot),
+                                   getter_AddRefs(parentResource));
 			nsCOMPtr<nsIAbDirectory> parentDir;
 			/*
 			 * TODO
@@ -860,7 +859,6 @@ PR_STATIC_CALLBACK( void) ImportAddressThread( void *stuff)
 	PRUint32	count = 0;
 	nsresult 	rv = pData->books->Count( &count);
 	
-	nsISupports *				pSupports;
 	PRUint32					i;
 	PRBool						import;
 	PRUint32					size;
@@ -871,90 +869,87 @@ PR_STATIC_CALLBACK( void) ImportAddressThread( void *stuff)
 	nsString					error;
 
 	for (i = 0; (i < count) && !(pData->abort); i++) {
-		pSupports = pData->books->ElementAt( i);
-		if (pSupports) {
-			nsCOMPtr<nsISupports> interface( dont_AddRef( pSupports));
-			nsCOMPtr<nsIImportABDescriptor> book( do_QueryInterface( pSupports));
-			if (book) {
-				import = PR_FALSE;
-				size = 0;
-				rv = book->GetImport( &import);
-				if (import)
-					rv = book->GetSize( &size);
-				
-				if (size && import) {
-					PRUnichar *pName;
-					book->GetPreferredName( &pName);
-					if (destDB) {
-            pDestDB = destDB;
-					}
-					else {
-						pDestDB = GetAddressBook( pName, PR_TRUE);
-					}
+		nsCOMPtr<nsIImportABDescriptor> book =
+			do_QueryElementAt(pData->books, i);
+		if (book) {
+			import = PR_FALSE;
+			size = 0;
+			rv = book->GetImport( &import);
+			if (import)
+				rv = book->GetSize( &size);
+			
+			if (size && import) {
+				PRUnichar *pName;
+				book->GetPreferredName( &pName);
+				if (destDB) {
+					pDestDB = destDB;
+				}
+				else {
+					pDestDB = GetAddressBook( pName, PR_TRUE);
+				}
 
-          nsCOMPtr<nsIAddrDatabase> proxyAddrDatabase;
-          rv = NS_GetProxyForObject(NS_UI_THREAD_EVENTQ,
-                     NS_GET_IID(nsIAddrDatabase),
-                     pDestDB,
-                     PROXY_SYNC | PROXY_ALWAYS,
-                     getter_AddRefs(proxyAddrDatabase));
-          if (NS_FAILED(rv))
-            return;
+				nsCOMPtr<nsIAddrDatabase> proxyAddrDatabase;
+				rv = NS_GetProxyForObject(NS_UI_THREAD_EVENTQ,
+                                          NS_GET_IID(nsIAddrDatabase),
+                                          pDestDB,
+                                          PROXY_SYNC | PROXY_ALWAYS,
+                                          getter_AddRefs(proxyAddrDatabase));
+				if (NS_FAILED(rv))
+					return;
 
-					PRBool fatalError = PR_FALSE;
-					pData->currentSize = size;
-					if (proxyAddrDatabase) {
-						PRUnichar *pSuccess = nsnull;
-						PRUnichar *pError = nsnull;
+				PRBool fatalError = PR_FALSE;
+				pData->currentSize = size;
+				if (proxyAddrDatabase) {
+					PRUnichar *pSuccess = nsnull;
+					PRUnichar *pError = nsnull;
 
-						/*
-						if (pData->fieldMap) {
-							PRInt32		sz = 0;
-							PRInt32		mapIndex;
-							PRBool		active;
-							pData->fieldMap->GetMapSize( &sz);
-							IMPORT_LOG1( "**** Field Map Size: %d\n", (int) sz);
-							for (PRInt32 i = 0; i < sz; i++) {
-								pData->fieldMap->GetFieldMap( i, &mapIndex);
-								pData->fieldMap->GetFieldActive( i, &active);
-								IMPORT_LOG3( "Field map #%d: index=%d, active=%d\n", (int) i, (int) mapIndex, (int) active);
-							}
-						}
-						*/
-
-						rv = pData->addressImport->ImportAddressBook(	book, 
-																	proxyAddrDatabase, // destination
-																	pData->fieldMap, // fieldmap
-													pData->bAddrLocInput,
-																	&pError,
-																	&pSuccess,
-																	&fatalError);
-						if (pSuccess) {
-							success.Append( pSuccess);
-							nsCRT::free( pSuccess);
-						}
-						if (pError) {
-							error.Append( pError);
-							nsCRT::free( pError);
+					/*
+					if (pData->fieldMap) {
+						PRInt32		sz = 0;
+						PRInt32		mapIndex;
+						PRBool		active;
+						pData->fieldMap->GetMapSize( &sz);
+						IMPORT_LOG1( "**** Field Map Size: %d\n", (int) sz);
+						for (PRInt32 i = 0; i < sz; i++) {
+							pData->fieldMap->GetFieldMap( i, &mapIndex);
+							pData->fieldMap->GetFieldActive( i, &active);
+							IMPORT_LOG3( "Field map #%d: index=%d, active=%d\n", (int) i, (int) mapIndex, (int) active);
 						}
 					}
-					else {
-						nsImportGenericAddressBooks::ReportError( pName, &error);
+					*/
+
+					rv = pData->addressImport->ImportAddressBook(	book, 
+																proxyAddrDatabase, // destination
+																pData->fieldMap, // fieldmap
+																pData->bAddrLocInput,
+																&pError,
+																&pSuccess,
+																&fatalError);
+					if (pSuccess) {
+						success.Append( pSuccess);
+						nsCRT::free( pSuccess);
 					}
+					if (pError) {
+						error.Append( pError);
+						nsCRT::free( pError);
+					}
+				}
+				else {
+					nsImportGenericAddressBooks::ReportError( pName, &error);
+				}
 
-					nsCRT::free( pName);
+				nsCRT::free( pName);
 
-					pData->currentSize = 0;
-					pData->currentTotal += size;
+				pData->currentSize = 0;
+				pData->currentTotal += size;
 					
-					if (!proxyAddrDatabase) {
-						proxyAddrDatabase->Close( PR_TRUE);
-					}
+				if (!proxyAddrDatabase) {
+					proxyAddrDatabase->Close( PR_TRUE);
+				}
 
-					if (fatalError) {
-						pData->fatalError = PR_TRUE;
-						break;
-					}
+				if (fatalError) {
+					pData->fatalError = PR_TRUE;
+					break;
 				}
 			}
 		}

@@ -42,11 +42,12 @@
 #include "nsIMimeConverter.h"
 #include "nsMsgCompFields.h"
 #include "nsIMsgStatusFeedback.h"
-#include "nsIRequest.h"
+#include "nsIChannel.h"
 #include "nsIMsgSend.h"
 #include "nsIFileStreams.h"
+#include "nsIStreamConverter.h"
 
-#ifdef XP_MAC
+#if defined(XP_MAC) || defined(XP_MACOSX)
 
 #include "nsMsgAppleDouble.h"
 
@@ -89,6 +90,9 @@ private:
   PRBool                UseUUEncode_p(void);
   void                  AnalyzeDataChunk (const char *chunk, PRInt32 chunkSize);
   nsresult              LoadDataFromFile(nsFileSpec& fSpec, nsString &sigData, PRBool charsetConversion); //A similar function already exist in nsMsgCompose!
+#if defined(XP_MAC) || defined(XP_MACOSX)
+  PRBool HasResourceFork(FSSpec *fsSpec);
+#endif
 
   //////////////////////////////////////////////////////////////////////
   // Member vars...
@@ -102,7 +106,7 @@ public:
   nsMsgCompFields       *mCompFields;       // Message composition fields for the sender
   PRBool                m_bogus_attachment; // This is to catch problem children...
 
-#ifdef XP_MAC
+#if defined(XP_MAC) || defined(XP_MACOSX)
   nsFileSpec            *mAppleFileSpec;    // The temp file holds the appledouble
                                             // encoding of the file we want to send.
 #endif
@@ -164,6 +168,8 @@ public:
   nsresult              SetMimeDeliveryState(nsIMsgSend* mime_delivery_state);
 private:
   nsCOMPtr<nsIMsgSend>  m_mime_delivery_state;
+  nsCOMPtr<nsIStreamConverter> m_mime_parser;
+  nsCOMPtr<nsIChannel>  m_converter_channel;
 };
 
 

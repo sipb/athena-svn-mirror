@@ -39,21 +39,14 @@
 
 // JBK added for submit move from content frame
 #include "nsIFile.h"
-#include "nsIFileStreams.h"
-#include "nsIFileSpec.h"
 #include "nsDirectoryServiceDefs.h"
 #include "nsIFormProcessor.h"
-static NS_DEFINE_CID(kFormProcessorCID, NS_FORMPROCESSOR_CID);
 #include "nsIURI.h"
 #include "nsNetUtil.h"
-static NS_DEFINE_CID(kIOServiceCID, NS_IOSERVICE_CID);
-#include "nsIPref.h"
-#include "nsSpecialSystemDirectory.h"
+#include "nsIPrefBranch.h"
+#include "nsIPrefService.h"
 #include "nsLinebreakConverter.h"
 #include "nsICharsetConverterManager.h"
-static NS_DEFINE_CID(kCharsetConverterManagerCID,
-                     NS_ICHARSETCONVERTERMANAGER_CID);
-#include "xp_path.h"
 #include "nsICharsetAlias.h"
 #include "nsEscape.h"
 #include "nsUnicharUtils.h"
@@ -64,17 +57,11 @@ static NS_DEFINE_CID(kCharsetConverterManagerCID,
 #include "nsIStringBundle.h"
 
 //BIDI
-#ifdef IBMBIDI
 #include "nsBidiUtils.h"
-#else
-//
-// Make BIDI stuff work when BIDI is off
-//
-#define GET_BIDI_OPTION_CONTROLSTEXTMODE(x) 0
-#define GET_BIDI_OPTION_DIRECTION(x) 0
-#endif
 //end
 
+static NS_DEFINE_CID(kFormProcessorCID, NS_FORMPROCESSOR_CID);
+static NS_DEFINE_CID(kCharsetAliasCID, NS_CHARSETALIAS_CID);
 
 /**
  * Helper superclass implementation of nsIFormSubmission, providing common
@@ -99,7 +86,7 @@ public:
       mEncoder(aEncoder),
       mFormProcessor(aFormProcessor),
       mBidiOptions(aBidiOptions)
-  { NS_INIT_ISUPPORTS(); };
+  { };
   virtual ~nsFormSubmission() { };
 
   NS_DECL_ISUPPORTS
@@ -328,9 +315,7 @@ nsFSURLEncoded::AddNameValuePair(nsIDOMHTMLElement* aSource,
   //
   if (!mWarnedFileControl) {
     nsCOMPtr<nsIFormControl> formControl = do_QueryInterface(aSource);
-    PRInt32 type;
-    formControl->GetType(&type);
-    if (type == NS_FORM_INPUT_FILE) {
+    if (formControl->GetType() == NS_FORM_INPUT_FILE) {
       nsCOMPtr<nsIHTMLContent> content = do_QueryInterface(aSource);
       SendJSWarning(content, NS_LITERAL_STRING("ForgotFileEnctypeWarning"));
       mWarnedFileControl = PR_TRUE;
@@ -682,10 +667,11 @@ nsFSMultipartFormData::nsFSMultipartFormData(const nsAString& aCharset,
 {
   // XXX I can't *believe* we have a pref for this.  ifdef, anyone?
   mBackwardsCompatibleSubmit = PR_FALSE;
-  nsCOMPtr<nsIPref> prefService(do_GetService(NS_PREF_CONTRACTID));
-  if (prefService)
-    prefService->GetBoolPref("browser.forms.submit.backwards_compatible",
-                             &mBackwardsCompatibleSubmit);
+  nsCOMPtr<nsIPrefBranch> prefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID));
+  if (prefBranch) {
+    prefBranch->GetBoolPref("browser.forms.submit.backwards_compatible",
+                            &mBackwardsCompatibleSubmit);
+  }
 }
 
 nsresult
@@ -1154,10 +1140,8 @@ GetSubmissionFromForm(nsIHTMLContent* aForm,
   // Get BIDI options
   PRUint32 bidiOptions = 0;
   PRUint8 ctrlsModAtSubmit = 0;
-#ifdef IBMBIDI
   aPresContext->GetBidi(&bidiOptions);
   ctrlsModAtSubmit = GET_BIDI_OPTION_CONTROLSTEXTMODE(bidiOptions);
-#endif
 
   // Get encoding type (default: urlencoded)
   PRInt32 enctype = NS_FORM_ENCTYPE_URLENCODED;
@@ -1238,11 +1222,8 @@ nsFormSubmission::SubmitTo(nsIURI* aActionURL, const nsAString& aTarget,
   aPresContext->GetLinkHandler(getter_AddRefs(handler));
   NS_ENSURE_TRUE(handler, NS_ERROR_FAILURE);
 
-  nsCAutoString actionURLSpec;
-  aActionURL->GetSpec(actionURLSpec);
-
   return handler->OnLinkClickSync(aSource, eLinkVerb_Replace,
-                                  NS_ConvertUTF8toUCS2(actionURLSpec).get(),
+                                  aActionURL,
                                   PromiseFlatString(aTarget).get(),
                                   postDataStream, nsnull,
                                   aDocShell, aRequest);
@@ -1296,7 +1277,6 @@ nsFormSubmission::GetSubmitCharset(nsIHTMLContent* aForm,
     rv = doc->GetDocumentCharacterSet(oCharset);
   }
 
-#ifdef IBMBIDI
   if (aCtrlsModAtSubmit==IBMBIDI_CONTROLSTEXTMODE_VISUAL
      && oCharset.Equals(NS_LITERAL_STRING("windows-1256"),
                  nsCaseInsensitiveStringComparator())) {
@@ -1319,7 +1299,6 @@ nsFormSubmission::GetSubmitCharset(nsIHTMLContent* aForm,
     oCharset = NS_LITERAL_STRING("IBM864");
   }
 
-#endif
 }
 
 // JBK moved from nsFormFrame - bug 34297
@@ -1358,7 +1337,6 @@ nsFormSubmission::UnicodeToNewBytes(const PRUnichar* aStr, PRUint32 aLen,
 {
   nsresult rv = NS_OK;
 
-#ifdef IBMBIDI
   PRUint8 ctrlsModAtSubmit = GET_BIDI_OPTION_CONTROLSTEXTMODE(mBidiOptions);
   PRUint8 textDirAtSubmit = GET_BIDI_OPTION_DIRECTION(mBidiOptions);
   //ahmed 15-1
@@ -1412,7 +1390,6 @@ nsFormSubmission::UnicodeToNewBytes(const PRUnichar* aStr, PRUint32 aLen,
     }
     aStr = (PRUnichar*)temp.get();
   }
-#endif
 
   
   char* res = nsnull;
@@ -1461,9 +1438,7 @@ nsFormSubmission::ProcessValue(nsIDOMHTMLElement* aSource,
   if (aName == NS_LITERAL_STRING("_charset_")) {
     nsCOMPtr<nsIFormControl> formControl = do_QueryInterface(aSource);
     if (formControl) {
-      PRInt32 type;
-      formControl->GetType(&type);
-      if (type == NS_FORM_INPUT_HIDDEN) {
+      if (formControl->GetType() == NS_FORM_INPUT_HIDDEN) {
         return new nsString(mCharset);
       }
     }
@@ -1478,7 +1453,10 @@ nsFormSubmission::ProcessValue(nsIDOMHTMLElement* aSource,
       return nsnull;
     }
 
-    nsresult rv = mFormProcessor->ProcessValue(aSource, tmpNameStr, *retval);
+#ifdef DEBUG
+    nsresult rv =
+#endif
+    mFormProcessor->ProcessValue(aSource, tmpNameStr, *retval);
     NS_ASSERTION(NS_SUCCEEDED(rv), "Unable to Notify form process observer");
   }
 

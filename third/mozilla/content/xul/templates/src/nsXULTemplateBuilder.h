@@ -44,7 +44,6 @@
 #define nsXULTemplateBuilder_h__
 
 #include "nsIDocumentObserver.h"
-#include "nsINameSpaceManager.h"
 #include "nsIScriptSecurityManager.h"
 #include "nsISecurityCheckedComponent.h"
 #include "nsIRDFCompositeDataSource.h"
@@ -53,7 +52,6 @@
 #include "nsIRDFDataSource.h"
 #include "nsIRDFObserver.h"
 #include "nsIRDFService.h"
-#include "nsITimer.h"
 #include "nsIXULTemplateBuilder.h"
 
 #include "nsConflictSet.h"
@@ -61,6 +59,7 @@
 #include "nsResourceSet.h"
 #include "nsRuleNetwork.h"
 #include "nsVoidArray.h"
+#include "nsCOMArray.h"
 
 #include "prlog.h"
 #ifdef PR_LOGGING
@@ -92,83 +91,13 @@ public:
     NS_DECL_ISUPPORTS
 
     // nsIXULTemplateBuilder interface
-    NS_IMETHOD GetRoot(nsIDOMElement** aResult);
-    NS_IMETHOD GetDatabase(nsIRDFCompositeDataSource** aResult);
-    NS_IMETHOD Rebuild() = 0; // must be implemented by subclasses
-    NS_IMETHOD Init(nsIContent* aElement);
-    NS_IMETHOD CreateContents(nsIContent* aElement);
-
+    NS_DECL_NSIXULTEMPLATEBUILDER
+   
     // nsISecurityCheckedComponent
     NS_DECL_NSISECURITYCHECKEDCOMPONENT
 
     // nsIDocumentObserver
-    NS_IMETHOD BeginUpdate(nsIDocument *aDocument);
-    NS_IMETHOD EndUpdate(nsIDocument *aDocument);
-    NS_IMETHOD BeginLoad(nsIDocument *aDocument);
-    NS_IMETHOD EndLoad(nsIDocument *aDocument);
-    NS_IMETHOD BeginReflow(nsIDocument *aDocument, nsIPresShell* aShell);
-    NS_IMETHOD EndReflow(nsIDocument *aDocument, nsIPresShell* aShell);
-
-    NS_IMETHOD ContentChanged(nsIDocument *aDocument,
-                              nsIContent* aContent,
-                              nsISupports* aSubContent);
-
-    NS_IMETHOD ContentStatesChanged(nsIDocument* aDocument,
-                                    nsIContent* aContent1,
-                                    nsIContent* aContent2,
-                                    PRInt32 aStateMask);
-
-    NS_IMETHOD AttributeChanged(nsIDocument *aDocument,
-                                nsIContent*  aContent,
-                                PRInt32      aNameSpaceID,
-                                nsIAtom*     aAttribute,
-                                PRInt32      aModType, 
-                                nsChangeHint aHint);
-
-    NS_IMETHOD ContentAppended(nsIDocument *aDocument,
-                               nsIContent* aContainer,
-                               PRInt32     aNewIndexInContainer);
-
-    NS_IMETHOD ContentInserted(nsIDocument *aDocument,
-                               nsIContent* aContainer,
-                               nsIContent* aChild,
-                               PRInt32 aIndexInContainer);
-
-    NS_IMETHOD ContentReplaced(nsIDocument *aDocument,
-                               nsIContent* aContainer,
-                               nsIContent* aOldChild,
-                               nsIContent* aNewChild,
-                               PRInt32 aIndexInContainer);
-
-    NS_IMETHOD ContentRemoved(nsIDocument *aDocument,
-                              nsIContent* aContainer,
-                              nsIContent* aChild,
-                              PRInt32 aIndexInContainer);
-
-    NS_IMETHOD StyleSheetAdded(nsIDocument *aDocument,
-                               nsIStyleSheet* aStyleSheet);
-
-    NS_IMETHOD StyleSheetRemoved(nsIDocument *aDocument,
-                                 nsIStyleSheet* aStyleSheet);
-
-    NS_IMETHOD StyleSheetDisabledStateChanged(nsIDocument *aDocument,
-                                              nsIStyleSheet* aStyleSheet,
-                                              PRBool aDisabled);
-
-    NS_IMETHOD StyleRuleChanged(nsIDocument *aDocument,
-                                nsIStyleSheet* aStyleSheet,
-                                nsIStyleRule* aStyleRule,
-                                nsChangeHint aHint);
-
-    NS_IMETHOD StyleRuleAdded(nsIDocument *aDocument,
-                              nsIStyleSheet* aStyleSheet,
-                              nsIStyleRule* aStyleRule);
-
-    NS_IMETHOD StyleRuleRemoved(nsIDocument *aDocument,
-                                nsIStyleSheet* aStyleSheet,
-                                nsIStyleRule* aStyleRule);
-
-    NS_IMETHOD DocumentWillBeDestroyed(nsIDocument *aDocument);
+    NS_DECL_NSIDOCUMENTOBSERVER
 
     // nsIRDFObserver interface
     NS_DECL_NSIRDFOBSERVER
@@ -191,6 +120,9 @@ public:
      */
     virtual nsresult
     InitializeRuleNetworkForSimpleRules(InnerNode** aChildNode) = 0;
+
+    virtual nsresult
+    RebuildAll() = 0; // must be implemented by subclasses
 
     /**
      * Find the <template> tag that applies for this builder
@@ -271,7 +203,7 @@ public:
      * syntax.
      */
     nsresult
-    CompileSimpleRule(nsIContent* aRuleElement, PRInt32 aPriorty, InnerNode* naParentNode);
+    CompileSimpleRule(nsIContent* aRuleElement, PRInt32 aPriorty, InnerNode* aParentNode);
 
     /**
      * Can be overridden by subclasses to handle special attribute conditions
@@ -378,7 +310,8 @@ protected:
     nsCOMPtr<nsIContent> mRoot;
 
     nsCOMPtr<nsIRDFDataSource> mCache;
-    nsCOMPtr<nsITimer> mTimer;
+
+    nsCOMArray<nsIXULBuilderListener> mListeners;
 
     PRInt32     mUpdateBatchNest;
 
@@ -400,12 +333,8 @@ protected:
     static nsrefcnt gRefCnt;
     static nsIRDFService*            gRDFService;
     static nsIRDFContainerUtils*     gRDFContainerUtils;
-    static nsINameSpaceManager*      gNameSpaceManager;
     static nsIScriptSecurityManager* gScriptSecurityManager;
     static nsIPrincipal*             gSystemPrincipal;
-
-    static PRInt32  kNameSpaceID_RDF;
-    static PRInt32  kNameSpaceID_XUL;
 
     enum {
         eDontTestEmpty = (1 << 0)

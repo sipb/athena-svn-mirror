@@ -45,6 +45,9 @@
 #include "nsIScrollPositionListener.h"
 #include "nsISelectionListener.h"
 #include "nsISelectionController.h"
+#include "nsIController.h"
+#include "nsIControllers.h"
+#include "nsIFocusController.h"
 #include "nsIObserver.h"
 #include "nsITimer.h"
 #include "nsUnicharUtils.h"
@@ -62,9 +65,12 @@
 #include "nsITypeAheadFind.h"
 #include "nsIStringBundle.h"
 #include "nsISupportsArray.h"
+#include "nsISound.h"
 
 #define TYPEAHEADFIND_BUNDLE_URL \
         "chrome://navigator/locale/typeaheadfind.properties"
+#define TYPEAHEADFIND_NOTFOUND_WAV_URL \
+        "chrome://global/content/notfound.wav"
 
 enum {
   eRepeatingNone,
@@ -123,23 +129,28 @@ public:
 
   static nsTypeAheadFind *GetInstance();
   static void ReleaseInstance(void);
+  static PRBool IsTargetContentOkay(nsIContent *aContent);
 
 protected:
-  static int PR_CALLBACK PrefsReset(const char* aPrefName, void* instance);
+  nsresult PrefsReset();
 
   // Helper methods
   nsresult HandleChar(PRUnichar aChar);
   PRBool HandleBackspace();
   void SaveFind();
+  void PlayNotFoundSound();
   void GetTopContentPresShell(nsIDocShellTreeItem *aTreeItem, 
                               nsIPresShell **aPresShell);
+  void GetStartWindow(nsIDOMWindow *aWindow, nsIDOMWindow **aStartWindow);
   nsresult GetWebBrowserFind(nsIDOMWindow *aDOMWin,
                              nsIWebBrowserFind **aWebBrowserFind);
   void StartTimeout();
   nsresult Init();
+  void Shutdown();
   nsresult UseInWindow(nsIDOMWindow *aDomWin);
   void SetSelectionLook(nsIPresShell *aPresShell, PRBool aChangeColor, 
                         PRBool aEnabled);
+  void ResetGlobalAutoStart(PRBool aAutoStart);
   void AttachDocListeners(nsIPresShell *aPresShell);
   void RemoveDocListeners();
   void AttachWindowListeners(nsIDOMWindow *aDOMWin);
@@ -181,10 +192,13 @@ protected:
   nsString mFindNextBuffer;
   nsString mIMEString;
 
+  nsCString mNotFoundSoundURL;
+
   // PRBool's are used instead of PRPackedBool's where the address of the
   // boolean variable is getting passed into a method. For example:
   // GetBoolPref("accessibility.typeaheadfind.linksonly", &mLinksOnlyPref);
   PRBool mIsFindAllowedInWindow;
+  PRBool mAutoStartPref;
   PRBool mLinksOnlyPref;
   PRBool mStartLinksOnlyPref;
   PRPackedBool mLinksOnly;
@@ -192,6 +206,9 @@ protected:
   PRBool mCaretBrowsingOn;
   PRPackedBool mLiteralTextSearchOnly;
   PRPackedBool mDontTryExactMatch;
+  // mAllTheSame Char starts out PR_TRUE, becomes false when 
+  // at least 2 different chars typed
+  PRPackedBool mAllTheSameChar;
   // mLinksOnlyManuallySet = PR_TRUE when the user has already 
   // typed / or '. This allows the next / or ' to get searched for.
   PRPackedBool mLinksOnlyManuallySet;
@@ -202,10 +219,17 @@ protected:
   PRPackedBool mIsMenuPopupActive;
   PRPackedBool mIsFirstVisiblePreferred;
   PRPackedBool mIsIMETypeAheadActive;
+  PRPackedBool mIsBackspaceProtectOn; // from accidentally going back in history
   PRInt32 mBadKeysSinceMatch;
+  PRUnichar mLastBadChar; // if taf automatically overwrites an unfound character
   PRInt32 mRepeatingMode;
   PRInt32 mTimeoutLength; // time in ms before find is automatically cancelled
 
+  // Sound is played asynchronously on some platforms.
+  // If we destroy mSoundInterface before sound has played, it won't play
+  nsCOMPtr<nsISound> mSoundInterface;
+  PRBool mIsSoundInitialized;
+  
   static PRInt32 sAccelKey;  // magic value of -1 indicates unitialized state
 
   // where selection was when user started the find
@@ -219,6 +243,7 @@ protected:
   nsCOMPtr<nsIFindService> mFindService;
   nsCOMPtr<nsIStringBundle> mStringBundle;
   nsCOMPtr<nsITimer> mTimer;
+  nsCOMPtr<nsIFocusController> mFocusController;
 
   // The focused content window that we're listening to and it's cached objects
   nsCOMPtr<nsISelection> mFocusedDocSelection;
@@ -230,3 +255,16 @@ protected:
   nsCOMPtr<nsISupportsArray> mManualFindWindows;
 };
 
+
+class nsTypeAheadController : public nsIController
+{
+public:
+  nsTypeAheadController(nsIFocusController *aFocusController);
+  NS_DECL_ISUPPORTS
+  NS_DECL_NSICONTROLLER
+
+private:
+  nsCOMPtr<nsIFocusController> mFocusController;
+  nsresult EnsureContentWindow(nsIDOMWindowInternal *aFocusedWin,
+                               nsIDOMWindow **aStartContentWin);
+};

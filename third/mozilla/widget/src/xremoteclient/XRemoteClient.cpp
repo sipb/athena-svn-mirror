@@ -48,7 +48,6 @@ static PRLogModuleInfo *sRemoteLm = NULL;
 
 XRemoteClient::XRemoteClient()
 {
-  NS_INIT_ISUPPORTS();
   mDisplay = 0;
   mInitialized = PR_FALSE;
   mMozVersionAtom = 0;
@@ -70,7 +69,9 @@ XRemoteClient::~XRemoteClient()
     Shutdown();
 }
 
+#ifndef XREMOTE_STANDALONE
 NS_IMPL_ISUPPORTS1(XRemoteClient, nsIXRemoteClient);
+#endif
 
 NS_IMETHODIMP
 XRemoteClient::Init (void)
@@ -326,7 +327,6 @@ XRemoteClient::GetLock(Window aWindow, PRBool *aDestroyed)
     status = PR_GetSystemInfo(PR_SI_HOSTNAME, sysinfobuf,
 			      SYS_INFO_BUFFER_LENGTH);
     if (status != PR_SUCCESS) {
-      NS_WARNING("failed to get hostname");
       return NS_ERROR_FAILURE;
     }
     

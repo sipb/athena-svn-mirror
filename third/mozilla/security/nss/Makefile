@@ -164,8 +164,5 @@ endif
 
 nss_RelEng_bld: build_coreconf import all
 
-ifeq ($(OS_ARCH),SunOS)
-solarispkg:
-	@echo Making Solaris packages.
-	$(MAKE) -C pkg/solaris publish
-endif
+package:
+	$(MAKE) -C pkg publish

@@ -193,7 +193,7 @@ function Startup()
 
 function FillSiteList()
 {
-  ClearMenulist(gDialog.SiteList);
+  gDialog.SiteList.removeAllItems();
   gDefaultSiteIndex = -1;
 
   // Fill the site lists
@@ -203,7 +203,7 @@ function FillSiteList()
   for (i = 0; i < count; i++)
   {
     var name = gPublishSiteData[i].siteName;
-    var menuitem = AppendStringToMenulist(gDialog.SiteList, name);
+    var menuitem = gDialog.SiteList.appendItem(name);
     // Highlight the default site
     if (name == gDefaultSiteName)
     {
@@ -240,8 +240,8 @@ function SelectSiteList()
   var savePassword = false;
   var publishOtherFiles = true;
 
-  ClearMenulist(gDialog.DocDirList);
-  ClearMenulist(gDialog.OtherDirList);
+  gDialog.DocDirList.removeAllItems();
+  gDialog.OtherDirList.removeAllItems();
 
   if (gPublishSiteData && selectedSiteIndex != -1)
   {
@@ -258,8 +258,8 @@ function SelectSiteList()
     {
       for (var i = 0; i < gPublishSiteData[selectedSiteIndex].dirList.length; i++)
       {
-        AppendStringToMenulist(gDialog.DocDirList, gPublishSiteData[selectedSiteIndex].dirList[i]);
-        AppendStringToMenulist(gDialog.OtherDirList, gPublishSiteData[selectedSiteIndex].dirList[i]);
+        gDialog.DocDirList.appendItem(gPublishSiteData[selectedSiteIndex].dirList[i]);
+        gDialog.OtherDirList.appendItem(gPublishSiteData[selectedSiteIndex].dirList[i]);
       }
     }
     gDialog.DocDirList.value = FormatDirForPublishing(gPublishSiteData[selectedSiteIndex].docDir);

@@ -2,7 +2,7 @@
 
 <?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
 
-<!DOCTYPE window SYSTEM "chrome://messenger/locale/addressbook/pref-addressing.dtd">
+<!DOCTYPE page SYSTEM "chrome://messenger/locale/addressbook/pref-addressing.dtd">
 
 <page xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
       xmlns:nc="http://home.netscape.com/NC-rdf#"
@@ -42,8 +42,11 @@
    <menulist id="localDirectoriesList" flex="1"
                   preftype="string" 
                   prefstring="mail.collect_addressbook">
-     <menupopup id="abPopup-menupopup" ref="moz-abdirectory://"
-        datasources="rdf:addressdirectory">
+     <menupopup id="abPopup-menupopup" ref="moz-abdirectory://" 
+                 datasources="rdf:addressdirectory"
+                 sortActive="true"
+                 sortDirection="ascending"
+                 sortResource="http://home.netscape.com/NC-rdf#DirTreeNameSort">
         <template>
         <rule nc:IsWriteable="false"/>
         <rule nc:IsMailList="false">

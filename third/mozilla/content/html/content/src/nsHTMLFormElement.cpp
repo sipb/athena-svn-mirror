@@ -47,14 +47,12 @@
 #include "nsIHTMLContent.h"
 #include "nsGenericHTMLElement.h"
 #include "nsHTMLAtoms.h"
-#include "nsIStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
 #include "nsIDocument.h"
 #include "nsIPresShell.h"
 #include "nsIFrame.h"
 #include "nsIFormControlFrame.h"
-#include "nsISizeOfHandler.h"
 #include "nsIScriptGlobalObject.h"
 #include "nsDOMError.h"
 #include "nsContentUtils.h"
@@ -120,6 +118,8 @@ public:
     mGeneratingSubmit(PR_FALSE),
     mGeneratingReset(PR_FALSE),
     mIsSubmitting(PR_FALSE),
+    mDeferSubmission(PR_FALSE),
+    mPendingSubmission(nsnull),
     mSubmittingRequest(nsnull) { }
 
 
@@ -161,6 +161,11 @@ public:
                          nsISupports** aReturn);
   NS_IMETHOD IndexOfControl(nsIFormControl* aControl, PRInt32* aIndex);
   NS_IMETHOD GetControlEnumerator(nsISimpleEnumerator** aEnumerator);
+  NS_IMETHOD OnSubmitClickBegin();
+  NS_IMETHOD OnSubmitClickEnd();
+  NS_IMETHOD FlushPendingSubmission();
+  NS_IMETHOD ForgetPendingSubmission();
+  NS_IMETHOD GetActionURL(nsIURI** aActionURL);
 
   // nsIRadioGroupContainer
   NS_IMETHOD SetCurrentRadioButton(const nsAString& aName,
@@ -172,10 +177,6 @@ public:
                              nsIFormControl* aRadio);
   NS_IMETHOD RemoveFromRadioGroup(const nsAString& aName,
                                   nsIFormControl* aRadio);
-
-#ifdef DEBUG
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
-#endif
 
   // nsIContent
   NS_IMETHOD StringToAttribute(nsIAtom* aAttribute,
@@ -228,12 +229,32 @@ protected:
   //
   //
   /**
-   * Actually perform the submit (called by DoSubmitOrReset)
+   * Attempt to submit (submission might be deferred) 
+   * (called by DoSubmitOrReset)
    *
    * @param aPresContext the presentation context
    * @param aEvent the DOM event that was passed to us for the submit
    */
   nsresult DoSubmit(nsIPresContext* aPresContext, nsEvent* aEvent);
+
+  /**
+   * Prepare the submission object (called by DoSubmit)
+   *
+   * @param aPresContext the presentation context
+   * @param aFormSubmission the submission object
+   * @param aEvent the DOM event that was passed to us for the submit
+   */
+  nsresult BuildSubmission(nsIPresContext* aPresContext, 
+                           nsCOMPtr<nsIFormSubmission>& aFormSubmission, 
+                           nsEvent* aEvent);
+  /**
+   * Perform the submission (called by DoSubmit and FlushPendingSubmission)
+   *
+   * @param aPresContext the presentation context
+   * @param aFormSubmission the submission object
+   */
+  nsresult SubmitSubmission(nsIPresContext* aPresContext, 
+                            nsIFormSubmission* aFormSubmission);
   /**
    * Walk over the form elements and call SubmitNamesValues() on them to get
    * their data pumped into the FormSubmitter.
@@ -243,12 +264,7 @@ protected:
    */
   nsresult WalkFormElements(nsIFormSubmission* aFormSubmission,
                             nsIContent* aSubmitElement);
-  /**
-   * Get the full URL to submit to.  Do not submit if the returned URL is null.
-   *
-   * @param aActionURL the full, unadulterated URL you'll be submitting to
-   */
-  nsresult GetActionURL(nsIURI** aActionURL);
+
   /**
    * Notify any submit observsers of the submit.
    *
@@ -271,6 +287,11 @@ protected:
   PRPackedBool mGeneratingReset;
   /** Whether we are submitting currently */
   PRPackedBool mIsSubmitting;
+  /** Whether the submission is to be deferred in case a script triggers it */
+  PRPackedBool mDeferSubmission;
+
+  /** The pending submission object */
+  nsCOMPtr<nsIFormSubmission> mPendingSubmission;
   /** The request currently being submitted */
   nsCOMPtr<nsIRequest> mSubmittingRequest;
   /** The web progress object we are currently listening to */
@@ -318,10 +339,6 @@ public:
   nsresult IndexOfControl(nsIFormControl* aControl,
                           PRInt32* aIndex);
 
-#ifdef DEBUG
-  nsresult SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
-#endif
-
   nsIDOMHTMLFormElement* mForm;  // WEAK - the form owns me
 
   nsAutoVoidArray mElements;  // Holds WEAK references - bug 36639
@@ -347,6 +364,7 @@ protected:
 class nsFormControlEnumerator : public nsISimpleEnumerator {
 public:
   nsFormControlEnumerator(nsHTMLFormElement* aForm);
+  virtual ~nsFormControlEnumerator() { };
 
   NS_DECL_ISUPPORTS
   NS_DECL_NSISIMPLEENUMERATOR
@@ -362,15 +380,11 @@ private:
 static PRBool
 ShouldBeInElements(nsIFormControl* aFormControl)
 {
-  PRInt32 type;
-
-  aFormControl->GetType(&type);
-
   // For backwards compatibility (with 4.x and IE) we must not add
   // <input type=image> elements to the list of form controls in a
   // form.
 
-  switch (type) {
+  switch (aFormControl->GetType()) {
   case NS_FORM_BUTTON_BUTTON :
   case NS_FORM_BUTTON_RESET :
   case NS_FORM_BUTTON_SUBMIT :
@@ -521,6 +535,13 @@ nsHTMLFormElement::SetAttr(PRInt32 aNameSpaceID, nsIAtom* aName,
                            const nsAString& aValue, PRBool aNotify)
 {
   if (aName == nsHTMLAtoms::action || aName == nsHTMLAtoms::target) {
+    if (mPendingSubmission) {
+      // aha, there is a pending submission that means we're in
+      // the script and we need to flush it. let's tell it
+      // that the event was ignored to force the flush.
+      // the second argument is not playing a role at all.
+      FlushPendingSubmission();
+    }
     ForgetCurrentSubmission();
   }
   return nsGenericHTMLContainerElement::SetAttr(aNameSpaceID, aName,
@@ -558,24 +579,15 @@ nsHTMLFormElement::Submit()
   nsCOMPtr<nsIPresContext> presContext;
   GetPresContext(this, getter_AddRefs(presContext));
   if (presContext) {
-    // If we are in quirks mode or someone called form.submit()
-    // from inside the onSubmit handler, just submit synchronously.
-    // (bug 144534, 76694, 155453)
-    if (InNavQuirksMode(mDocument) || mGeneratingSubmit) {
-      rv = DoSubmitOrReset(presContext, nsnull, NS_FORM_SUBMIT);
-    } else {
-      // Send the submit event to submit the form.
-      // Calling HandleDOMEvent() directly so that submit() will work even if
-      // the frame does not exist.  This does not have an effect right now, but
-      // If PresShell::HandleEventWithTarget() ever starts to work for elements
-      // without frames, that should be called instead.
-      nsFormEvent event;
-      event.eventStructType = NS_FORM_EVENT;
-      event.message         = NS_FORM_SUBMIT;
-      event.originator      = nsnull;
-      nsEventStatus status  = nsEventStatus_eIgnore;
-      HandleDOMEvent(presContext, &event, nsnull, NS_EVENT_FLAG_INIT, &status);
+    if (mPendingSubmission) {
+      // aha, we have a pending submission that was not flushed
+      // (this happens when form.submit() is called twice)
+      // we have to delete it and build a new one since values
+      // might have changed inbetween (we emulate IE here, that's all)
+      mPendingSubmission = nsnull;
     }
+
+    rv = DoSubmitOrReset(presContext, nsnull, NS_FORM_SUBMIT);
   }
   return rv;
 }
@@ -602,13 +614,13 @@ nsHTMLFormElement::Reset()
   return rv;
 }
 
-static nsGenericHTMLElement::EnumTable kFormMethodTable[] = {
+static nsHTMLValue::EnumTable kFormMethodTable[] = {
   { "get", NS_FORM_METHOD_GET },
   { "post", NS_FORM_METHOD_POST },
   { 0 }
 };
 
-static nsGenericHTMLElement::EnumTable kFormEnctypeTable[] = {
+static nsHTMLValue::EnumTable kFormEnctypeTable[] = {
   { "multipart/form-data", NS_FORM_ENCTYPE_MULTIPART },
   { "application/x-www-form-urlencoded", NS_FORM_ENCTYPE_URLENCODED },
   { "text/plain", NS_FORM_ENCTYPE_TEXTPLAIN },
@@ -621,12 +633,12 @@ nsHTMLFormElement::StringToAttribute(nsIAtom* aAttribute,
                                      nsHTMLValue& aResult)
 {
   if (aAttribute == nsHTMLAtoms::method) {
-    if (ParseEnumValue(aValue, kFormMethodTable, aResult)) {
+    if (aResult.ParseEnumValue(aValue, kFormMethodTable)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
   else if (aAttribute == nsHTMLAtoms::enctype) {
-    if (ParseEnumValue(aValue, kFormEnctypeTable, aResult)) {
+    if (aResult.ParseEnumValue(aValue, kFormEnctypeTable)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
@@ -640,13 +652,13 @@ nsHTMLFormElement::AttributeToString(nsIAtom* aAttribute,
 {
   if (aAttribute == nsHTMLAtoms::method) {
     if (eHTMLUnit_Enumerated == aValue.GetUnit()) {
-      EnumValueToString(aValue, kFormMethodTable, aResult);
+      aValue.EnumValueToString(kFormMethodTable, aResult);
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
   else if (aAttribute == nsHTMLAtoms::enctype) {
     if (eHTMLUnit_Enumerated == aValue.GetUnit()) {
-      EnumValueToString(aValue, kFormEnctypeTable, aResult);
+      aValue.EnumValueToString(kFormEnctypeTable, aResult);
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
@@ -702,6 +714,11 @@ nsHTMLFormElement::HandleDOMEvent(nsIPresContext* aPresContext,
       return NS_OK;
     }
     mGeneratingSubmit = PR_TRUE;
+
+    // let the form know that it needs to defer the submission,
+    // that means that if there are scripted submissions, the
+    // latest one will be deferred until after the exit point of the handler. 
+    mDeferSubmission = PR_TRUE;
   }
   else if (aEvent->message == NS_FORM_RESET) {
     if (mGeneratingReset) {
@@ -710,22 +727,46 @@ nsHTMLFormElement::HandleDOMEvent(nsIPresContext* aPresContext,
     mGeneratingReset = PR_TRUE;
   }
 
+
   nsresult rv = nsGenericHTMLContainerElement::HandleDOMEvent(aPresContext,
                                                               aEvent,
                                                               aDOMEvent,
                                                               aFlags,
-                                                              aEventStatus);
+                                                              aEventStatus); 
+  if (aEvent->message == NS_FORM_SUBMIT) {
+    // let the form know not to defer subsequent submissions
+    mDeferSubmission = PR_FALSE;
+  }
 
-  if (NS_SUCCEEDED(rv) && (*aEventStatus == nsEventStatus_eIgnore) &&
-      !(aFlags & NS_EVENT_FLAG_CAPTURE)) {
+  if (NS_SUCCEEDED(rv) &&
+      !(aFlags & NS_EVENT_FLAG_CAPTURE) &&
+      !(aFlags & NS_EVENT_FLAG_SYSTEM_EVENT)) {
 
-    switch (aEvent->message) {
-      case NS_FORM_RESET:
-      case NS_FORM_SUBMIT:
-      {
-        rv = DoSubmitOrReset(aPresContext, aEvent, aEvent->message);
+    if (*aEventStatus == nsEventStatus_eIgnore) {
+      switch (aEvent->message) {
+        case NS_FORM_RESET:
+        case NS_FORM_SUBMIT:
+        {
+          if (mPendingSubmission && aEvent->message == NS_FORM_SUBMIT) {
+            // tell the form to forget a possible pending submission.
+            // the reason is that the script returned true (the event was
+            // ignored) so if there is a stored submission, it will miss
+            // the name/value of the submitting element, thus we need
+            // to forget it and the form element will build a new one
+            ForgetPendingSubmission();
+          }
+          rv = DoSubmitOrReset(aPresContext, aEvent, aEvent->message);
+        }
+        break;
       }
-      break;
+    } else {
+      if (aEvent->message == NS_FORM_SUBMIT) {
+        // tell the form to flush a possible pending submission.
+        // the reason is that the script returned false (the event was
+        // not ignored) so if there is a stored submission, it needs to
+        // be submitted immediatelly.
+        FlushPendingSubmission();
+      }
     }
   }
 
@@ -788,7 +829,7 @@ nsHTMLFormElement::DoReset()
     ForgetCurrentSubmission();                                                \
     return rv;                                                                \
   }
-  
+
 nsresult
 nsHTMLFormElement::DoSubmit(nsIPresContext* aPresContext, nsEvent* aEvent)
 {
@@ -803,6 +844,38 @@ nsHTMLFormElement::DoSubmit(nsIPresContext* aPresContext, nsEvent* aEvent)
   mIsSubmitting = PR_TRUE;
   NS_ASSERTION(!mWebProgress && !mSubmittingRequest, "Web progress / submitting request should not exist here!");
 
+  nsCOMPtr<nsIFormSubmission> submission;
+   
+  //
+  // prepare the submission object
+  //
+  BuildSubmission(aPresContext, submission, aEvent); 
+  
+  if(mDeferSubmission) { 
+    // we are in an event handler, JS submitted so we have to
+    // defer this submission. let's remember it and return
+    // without submitting
+    mPendingSubmission = submission;
+    // ensure reentrancy
+    mIsSubmitting = PR_FALSE;
+    return NS_OK; 
+  } 
+  
+  // 
+  // perform the submission
+  //
+  SubmitSubmission(aPresContext, submission); 
+
+  return NS_OK;
+}
+
+nsresult
+nsHTMLFormElement::BuildSubmission(nsIPresContext* aPresContext, 
+                                   nsCOMPtr<nsIFormSubmission>& aFormSubmission, 
+                                   nsEvent* aEvent)
+{
+  NS_ASSERTION(!mPendingSubmission, "tried to build two submissions!");
+
   // Get the originating frame (failure is non-fatal)
   nsIContent *originatingElement = nsnull;
   if (aEvent) {
@@ -811,20 +884,28 @@ nsHTMLFormElement::DoSubmit(nsIPresContext* aPresContext, nsEvent* aEvent)
     }
   }
 
+  nsresult rv;
+
   //
   // Get the submission object
   //
-  nsCOMPtr<nsIFormSubmission> submission;
-  nsresult rv = GetSubmissionFromForm(this, aPresContext,
-                                      getter_AddRefs(submission));
+  rv = GetSubmissionFromForm(this, aPresContext, getter_AddRefs(aFormSubmission));
   NS_ENSURE_SUBMIT_SUCCESS(rv);
 
   //
   // Dump the data into the submission object
   //
-  rv = WalkFormElements(submission, originatingElement);
+  rv = WalkFormElements(aFormSubmission, originatingElement);
   NS_ENSURE_SUBMIT_SUCCESS(rv);
 
+  return NS_OK;
+}
+
+nsresult
+nsHTMLFormElement::SubmitSubmission(nsIPresContext* aPresContext, 
+                                    nsIFormSubmission* aFormSubmission)
+{
+  nsresult rv;
   //
   // Get the action and target
   //
@@ -868,9 +949,9 @@ nsHTMLFormElement::DoSubmit(nsIPresContext* aPresContext, nsEvent* aEvent)
   // Submit
   //
   nsCOMPtr<nsIDocShell> docShell;
-  rv = submission->SubmitTo(actionURI, target, this, aPresContext,
-                            getter_AddRefs(docShell),
-                            getter_AddRefs(mSubmittingRequest));
+  rv = aFormSubmission->SubmitTo(actionURI, target, this, aPresContext,
+                                 getter_AddRefs(docShell),
+                                 getter_AddRefs(mSubmittingRequest));
   NS_ENSURE_SUBMIT_SUCCESS(rv);
 
   // Even if the submit succeeds, it's possible for there to be no docshell
@@ -894,7 +975,6 @@ nsHTMLFormElement::DoSubmit(nsIPresContext* aPresContext, nsEvent* aEvent)
 
   return rv;
 }
-
 
 nsresult
 nsHTMLFormElement::NotifySubmitObservers(nsIURI* aActionURL,
@@ -1029,90 +1109,6 @@ nsHTMLFormElement::WalkFormElements(nsIFormSubmission* aFormSubmission,
   return NS_OK;
 }
 
-nsresult
-nsHTMLFormElement::GetActionURL(nsIURI** aActionURL)
-{
-  nsresult rv = NS_OK;
-
-  *aActionURL = nsnull;
-
-  //
-  // Grab the URL string
-  //
-  nsAutoString action;
-  GetAction(action);
-
-  //
-  // Form the full action URL
-  //
-
-  // Get the document to form the URL.
-  // We'll also need it later to get the DOM window when notifying form submit
-  // observers (bug 33203)
-  if (!mDocument) {
-    return NS_OK; // No doc means don't submit, see Bug 28988
-  }
-
-  // Get base URL
-  nsCOMPtr<nsIURI> baseURL;
-  GetBaseURL(*getter_AddRefs(baseURL));
-  NS_ASSERTION(baseURL, "No Base URL found in Form Submit!\n");
-  if (!baseURL) {
-    return NS_OK; // No base URL -> exit early, see Bug 30721
-  }
-
-  // If an action is not specified and we are inside
-  // a HTML document then reload the URL. This makes us
-  // compatible with 4.x browsers.
-  // If we are in some other type of document such as XML or
-  // XUL, do nothing. This prevents undesirable reloading of
-  // a document inside XUL.
-
-  nsCOMPtr<nsIURI> actionURL;
-  if (action.IsEmpty()) {
-    nsCOMPtr<nsIHTMLDocument> htmlDoc(do_QueryInterface(mDocument));
-    if (!htmlDoc) {
-      // Must be a XML, XUL or other non-HTML document type
-      // so do nothing.
-      return NS_OK;
-    }
-
-    rv = baseURL->Clone(getter_AddRefs(actionURL));
-    NS_ENSURE_SUCCESS(rv, rv);
-  } else {
-    rv = NS_NewURI(getter_AddRefs(actionURL), action, nsnull, baseURL);
-    NS_ENSURE_SUCCESS(rv, rv);
-  }
-
-  //
-  // Verify the URL should be reached
-  //
-  // Get security manager, check to see if access to action URI is allowed.
-  //
-  // XXX This code has not been tested.  mailto: does not work in forms.
-  //
-  nsCOMPtr<nsIScriptSecurityManager> securityManager =
-    do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &rv);
-  NS_ENSURE_SUCCESS(rv, rv);
-
-  nsCOMPtr<nsIURI> docURL;
-  mDocument->GetDocumentURL(getter_AddRefs(docURL));
-  NS_ENSURE_TRUE(docURL, NS_ERROR_UNEXPECTED);
-  
-  rv = securityManager->CheckLoadURI(docURL, actionURL,
-                                     nsIScriptSecurityManager::STANDARD);
-  NS_ENSURE_SUCCESS(rv, rv);
-
-  //
-  // Assign to the output
-  //
-  *aActionURL = actionURL;
-  NS_ADDREF(*aActionURL);
-
-  return rv;
-}
-
-
 // nsIForm
 
 NS_IMETHODIMP
@@ -1149,8 +1145,7 @@ nsHTMLFormElement::AddElement(nsIFormControl* aChild)
   //
   // Notify the radio button it's been added to a group
   //
-  PRInt32 type;
-  aChild->GetType(&type);
+  PRInt32 type = aChild->GetType();
   if (type == NS_FORM_INPUT_RADIO) {
     nsCOMPtr<nsIRadioControlElement> radio = do_QueryInterface(aChild);
     nsresult rv = radio->AddedToRadioGroup();
@@ -1190,9 +1185,7 @@ nsHTMLFormElement::RemoveElement(nsIFormControl* aChild)
   //
   // Remove it from the radio group if it's a radio button
   //
-  PRInt32 type;
-  aChild->GetType(&type);
-  if (type == NS_FORM_INPUT_RADIO) {
+  if (aChild->GetType() == NS_FORM_INPUT_RADIO) {
     nsCOMPtr<nsIRadioControlElement> radio = do_QueryInterface(aChild);
     nsresult rv = radio->WillRemoveFromRadioGroup();
     NS_ENSURE_SUCCESS(rv, rv);
@@ -1223,6 +1216,128 @@ nsHTMLFormElement::ResolveName(const nsAString& aName,
   return mControls->GetNamedObject(aName, aResult);
 }
 
+NS_IMETHODIMP
+nsHTMLFormElement::OnSubmitClickBegin()
+{
+  mDeferSubmission = PR_TRUE;
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsHTMLFormElement::OnSubmitClickEnd()
+{
+  mDeferSubmission = PR_FALSE;
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsHTMLFormElement::FlushPendingSubmission()
+{
+  if (!mPendingSubmission) {
+    return NS_OK;
+  }
+
+  //
+  // preform the submission with the stored pending submission
+  //
+  nsCOMPtr<nsIPresContext> presContext;
+  GetPresContext(this, getter_AddRefs(presContext));
+  SubmitSubmission(presContext, mPendingSubmission);
+
+  // now delete the pending submission object
+  mPendingSubmission = nsnull;
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsHTMLFormElement::ForgetPendingSubmission()
+{
+  // just delete the pending submission
+  mPendingSubmission = nsnull;
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsHTMLFormElement::GetActionURL(nsIURI** aActionURL)
+{
+  nsresult rv = NS_OK;
+
+  *aActionURL = nsnull;
+
+  //
+  // Grab the URL string
+  //
+  nsAutoString action;
+  GetAction(action);
+
+  //
+  // Form the full action URL
+  //
+
+  // Get the document to form the URL.
+  // We'll also need it later to get the DOM window when notifying form submit
+  // observers (bug 33203)
+  if (!mDocument) {
+    return NS_OK; // No doc means don't submit, see Bug 28988
+  }
+
+  // Get base URL
+  nsCOMPtr<nsIURI> docURL;
+  mDocument->GetDocumentURL(getter_AddRefs(docURL));
+  NS_ENSURE_TRUE(docURL, NS_ERROR_UNEXPECTED);
+
+  // If an action is not specified and we are inside
+  // a HTML document then reload the URL. This makes us
+  // compatible with 4.x browsers.
+  // If we are in some other type of document such as XML or
+  // XUL, do nothing. This prevents undesirable reloading of
+  // a document inside XUL.
+
+  nsCOMPtr<nsIURI> actionURL;
+  if (action.IsEmpty()) {
+    nsCOMPtr<nsIHTMLDocument> htmlDoc(do_QueryInterface(mDocument));
+    if (!htmlDoc) {
+      // Must be a XML, XUL or other non-HTML document type
+      // so do nothing.
+      return NS_OK;
+    }
+
+    rv = docURL->Clone(getter_AddRefs(actionURL));
+    NS_ENSURE_SUCCESS(rv, rv);
+  } else {
+    nsCOMPtr<nsIURI> baseURL;
+    GetBaseURL(*getter_AddRefs(baseURL));
+    NS_ASSERTION(baseURL, "No Base URL found in Form Submit!\n");
+    if (!baseURL) {
+      return NS_OK; // No base URL -> exit early, see Bug 30721
+    }
+    rv = NS_NewURI(getter_AddRefs(actionURL), action, nsnull, baseURL);
+    NS_ENSURE_SUCCESS(rv, rv);
+  }
+
+  //
+  // Verify the URL should be reached
+  //
+  // Get security manager, check to see if access to action URI is allowed.
+  //
+  // XXX This code has not been tested.  mailto: does not work in forms.
+  //
+  nsCOMPtr<nsIScriptSecurityManager> securityManager =
+    do_GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, &rv);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  rv = securityManager->CheckLoadURI(docURL, actionURL,
+                                     nsIScriptSecurityManager::STANDARD);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  //
+  // Assign to the output
+  //
+  *aActionURL = actionURL;
+  NS_ADDREF(*aActionURL);
+
+  return rv;
+}
 
 NS_IMETHODIMP
 nsHTMLFormElement::GetEncoding(nsAString& aEncoding)
@@ -1371,9 +1486,7 @@ nsHTMLFormElement::WalkRadioGroup(const nsAString& aName,
     GetElementCount(&len);
     for (PRUint32 i=0; i<len; i++) {
       GetElementAt(i, getter_AddRefs(control));
-      PRInt32 type;
-      control->GetType(&type);
-      if (type == NS_FORM_INPUT_RADIO) {
+      if (control->GetType() == NS_FORM_INPUT_RADIO) {
         nsCOMPtr<nsIContent> controlContent(do_QueryInterface(control));
         if (controlContent) {
           //
@@ -1405,9 +1518,7 @@ nsHTMLFormElement::WalkRadioGroup(const nsAString& aName,
       //
       nsCOMPtr<nsIFormControl> formControl(do_QueryInterface(item));
       if (formControl) {
-        PRInt32 type;
-        formControl->GetType(&type);
-        if (type == NS_FORM_INPUT_RADIO) {
+        if (formControl->GetType() == NS_FORM_INPUT_RADIO) {
           aVisitor->Visit(formControl, &stopIterating);
         }
       } else {
@@ -1420,9 +1531,7 @@ nsHTMLFormElement::WalkRadioGroup(const nsAString& aName,
             nodeList->Item(i, getter_AddRefs(node));
             nsCOMPtr<nsIFormControl> formControl(do_QueryInterface(node));
             if (formControl) {
-              PRInt32 type;
-              formControl->GetType(&type);
-              if (type == NS_FORM_INPUT_RADIO) {
+              if (formControl->GetType() == NS_FORM_INPUT_RADIO) {
                 aVisitor->Visit(formControl, &stopIterating);
                 if (stopIterating) {
                   break;
@@ -1461,7 +1570,6 @@ nsFormControlList::nsFormControlList(nsIDOMHTMLFormElement* aForm)
   : mForm(aForm),
     mNameLookupTable(NS_FORM_CONTROL_LIST_HASHTABLE_SIZE)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsFormControlList::~nsFormControlList()
@@ -1645,9 +1753,7 @@ nsFormControlList::AddElementToTable(nsIFormControl* aChild,
       // Add the new child too
       list->AppendElement(newChild);
 
-      nsCOMPtr<nsISupports> listSupports;
-      list->QueryInterface(NS_GET_IID(nsISupports),
-                           getter_AddRefs(listSupports));
+      nsCOMPtr<nsISupports> listSupports = do_QueryInterface(list);
 
       // Replace the element with the list.
       mNameLookupTable.Put(&key, listSupports);
@@ -1744,34 +1850,12 @@ nsFormControlList::RemoveElementFromTable(nsIFormControl* aChild,
   return NS_OK;
 }
 
-#ifdef DEBUG
-nsresult
-nsFormControlList::SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const
-{
-  if (!aResult) return NS_ERROR_NULL_POINTER;
-  PRUint32 asize;
-  mElements.SizeOf(aSizer, &asize);
-  *aResult = sizeof(*this) - sizeof(mElements) + asize;
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsHTMLFormElement::SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const
-{
-  *aResult = sizeof(*this) + BaseSizeOf(aSizer);
-
-  return NS_OK;
-}
-
-#endif
-
 // nsFormControlEnumerator
 NS_IMPL_ISUPPORTS1(nsFormControlEnumerator, nsISimpleEnumerator);
 
 nsFormControlEnumerator::nsFormControlEnumerator(nsHTMLFormElement* aForm)
   : mForm(aForm), mElementsIndex(0), mNotInElementsIndex(0)
 {
-  NS_INIT_ISUPPORTS();
 
   // Create the sorted mNotInElementsSorted array
   PRInt32 len = aForm->mControls->mNotInElements.Count();

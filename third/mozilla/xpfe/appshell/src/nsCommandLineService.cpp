@@ -42,12 +42,15 @@
 #include "nsILocalFile.h"
 #include "nsString.h"
 #include "plstr.h"
+#include "nsCRT.h"
 #include "nsNetUtil.h"
+#ifdef XP_MACOSX
+#include "nsCommandLineServiceMac.h"
+#endif
 
 nsCmdLineService::nsCmdLineService()
 	:  mArgCount(0), mArgc(0), mArgv(0)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 /*
@@ -94,6 +97,11 @@ nsCmdLineService::Initialize(int aArgc, char ** aArgv)
 
   PRInt32   i=0;
   nsresult  rv = nsnull;
+
+#ifdef XP_MACOSX
+  rv = InitializeMacCommandLine(aArgc, aArgv);
+  NS_ASSERTION(NS_SUCCEEDED(rv), "Initializing AppleEvents failed");
+#endif
 
   // Save aArgc and argv
   mArgc = aArgc;
@@ -234,7 +242,7 @@ PRBool nsCmdLineService::ArgsMatch(const char *lookingFor, const char *userGave)
         if (!PL_strcasecmp(lookingFor+1,userGave+2) && (lookingFor[0] == '-') && (userGave[0] == '-') && (userGave[1] == '-')) return PR_TRUE;
     }
 #endif
-#ifdef XP_PC
+#if defined(XP_WIN) || defined(XP_OS2)
     /* on windows /mail is the same as -mail */
     if (lookingFor && userGave && (lookingFor[0] != '\0') && (userGave[0] != '\0')) {
         if (!PL_strcasecmp(lookingFor+1,userGave+1) && (lookingFor[0] == '-') && (userGave[0] == '/')) return PR_TRUE;
@@ -391,19 +399,4 @@ nsCmdLineService::PrintCmdArgs()
 
 }
 #endif
-
-NS_EXPORT nsresult NS_NewCmdLineService(nsICmdLineService** aResult)
-{
-  if (nsnull == aResult) {
-    return NS_ERROR_NULL_POINTER;
-  }
-
-  *aResult = new nsCmdLineService();
-  if (nsnull == *aResult) {
-    return NS_ERROR_OUT_OF_MEMORY;
-  }
-
-  NS_ADDREF(*aResult);
-  return NS_OK;
-}
 

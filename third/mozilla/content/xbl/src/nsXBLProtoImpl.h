@@ -41,20 +41,22 @@
 #define nsXBLProtoImpl_h__
 
 #include "nsMemory.h"
-#include "nsIXBLPrototypeBinding.h"
-#include "nsIXBLPrototypeHandler.h"
+#include "nsXBLPrototypeHandler.h"
 #include "nsXBLProtoImplMember.h"
+#include "nsXBLPrototypeBinding.h"
 
-MOZ_DECL_CTOR_COUNTER(nsXBLProtoImpl);
+MOZ_DECL_CTOR_COUNTER(nsXBLProtoImpl)
 
 class nsXBLProtoImpl
 {
 public:
   nsXBLProtoImpl() 
-    :mClassObject(nsnull) 
+    : mClassObject(nsnull),
+      mMembers(nsnull),
+      mConstructor(nsnull),
+      mDestructor(nsnull)
   { 
     MOZ_COUNT_CTOR(nsXBLProtoImpl); 
-    mMembers = nsnull; 
   };
   ~nsXBLProtoImpl() 
   { 
@@ -62,13 +64,15 @@ public:
     for (nsXBLProtoImplMember* curr = mMembers; curr; curr=curr->GetNext())
       curr->Destroy(mClassObject != nsnull);
     delete mMembers; 
+    delete mConstructor;
+    delete mDestructor;
   };
   
-  nsresult InstallImplementation(nsIXBLPrototypeBinding* aBinding, nsIContent* aBoundElement);
-  nsresult InitTargetObjects(nsIXBLPrototypeBinding* aBinding, nsIScriptContext* aContext, 
+  nsresult InstallImplementation(nsXBLPrototypeBinding* aBinding, nsIContent* aBoundElement);
+  nsresult InitTargetObjects(nsXBLPrototypeBinding* aBinding, nsIScriptContext* aContext, 
                              nsIContent* aBoundElement, 
                              void** aScriptObject, void** aTargetClassObject);
-  nsresult CompilePrototypeMembers(nsIXBLPrototypeBinding* aBinding);
+  nsresult CompilePrototypeMembers(nsXBLPrototypeBinding* aBinding);
 
   void SetMemberList(nsXBLProtoImplMember* aMemberList) { delete mMembers; mMembers = aMemberList; };
 
@@ -79,12 +83,12 @@ public:
 
   nsXBLProtoImplMember* mMembers; // The members of an implementation are chained in this singly-linked list.
   
-  nsCOMPtr<nsIXBLPrototypeHandler> mConstructor; // Our class constructor.
-  nsCOMPtr<nsIXBLPrototypeHandler> mDestructor;  // Our class destructor.
+  nsXBLPrototypeHandler* mConstructor; // Our class constructor.
+  nsXBLPrototypeHandler* mDestructor;  // Our class destructor.
 };
 
 static nsresult
-NS_NewXBLProtoImpl(nsIXBLPrototypeBinding* aBinding, 
+NS_NewXBLProtoImpl(nsXBLPrototypeBinding* aBinding, 
                    const PRUnichar* aClassName, 
                    nsXBLProtoImpl** aResult) {
   nsXBLProtoImpl* impl = new nsXBLProtoImpl();

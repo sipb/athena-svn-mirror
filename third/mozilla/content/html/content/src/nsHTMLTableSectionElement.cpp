@@ -42,11 +42,11 @@
 #include "nsGenericHTMLElement.h"
 #include "nsHTMLAtoms.h"
 #include "nsHTMLParts.h"
-#include "nsIStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
 #include "GenericElementCollection.h"
 #include "nsRuleNode.h"
+#include "nsDOMError.h"
 
 // you will see the phrases "rowgroup" and "section" used interchangably
 
@@ -81,9 +81,6 @@ public:
   NS_IMETHOD GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRuleFunc) const;
   NS_IMETHOD GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
                                       nsChangeHint& aHint) const;
-#ifdef DEBUG
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
-#endif
 
 protected:
   GenericElementCollection *mRows;
@@ -191,9 +188,7 @@ nsHTMLTableSectionElement::GetRows(nsIDOMHTMLCollection** aValue)
     NS_ADDREF(mRows); // this table's reference, released in the destructor
   }
 
-  mRows->QueryInterface(NS_GET_IID(nsIDOMHTMLCollection), (void **)aValue);
-
-  return NS_OK;
+  return CallQueryInterface(mRows, aValue);
 }
 
 
@@ -203,44 +198,48 @@ nsHTMLTableSectionElement::InsertRow(PRInt32 aIndex,
 {
   *aValue = nsnull;
 
+  if (aIndex < -1) {
+    return NS_ERROR_DOM_INDEX_SIZE_ERR;
+  }
+
   nsCOMPtr<nsIDOMHTMLCollection> rows;
   GetRows(getter_AddRefs(rows));
 
   PRUint32 rowCount;
   rows->GetLength(&rowCount);
 
-  PRBool doInsert = (aIndex < PRInt32(rowCount));
+  if (aIndex > (PRInt32)rowCount) {
+    return NS_ERROR_DOM_INDEX_SIZE_ERR;
+  }
+
+  PRBool doInsert = (aIndex < PRInt32(rowCount)) && (aIndex != -1);
 
   // create the row
-  nsCOMPtr<nsIHTMLContent> rowContent;
   nsCOMPtr<nsINodeInfo> nodeInfo;
-
   mNodeInfo->NameChanged(nsHTMLAtoms::tr, *getter_AddRefs(nodeInfo));
 
+  nsCOMPtr<nsIHTMLContent> rowContent;
   nsresult rv = NS_NewHTMLTableRowElement(getter_AddRefs(rowContent),
                                           nodeInfo);
+  NS_ENSURE_SUCCESS(rv, rv);
 
-  if (NS_SUCCEEDED(rv) && rowContent) {
-    nsCOMPtr<nsIDOMNode> rowNode(do_QueryInterface(rowContent));
+  nsCOMPtr<nsIDOMNode> rowNode(do_QueryInterface(rowContent));
+  NS_ASSERTION(rowNode, "Should implement nsIDOMNode!");
 
-    if (NS_SUCCEEDED(rv) && rowNode) {
-      nsCOMPtr<nsIDOMNode> retChild;
+  nsCOMPtr<nsIDOMNode> retChild;
 
-      if (doInsert) {
-        PRInt32 refIndex = PR_MAX(aIndex, 0);   
-        nsCOMPtr<nsIDOMNode> refRow;
-        rows->Item(refIndex, getter_AddRefs(refRow));
-        rv = InsertBefore(rowNode, refRow, getter_AddRefs(retChild));
-      } else {
-        rv = AppendChild(rowNode, getter_AddRefs(retChild));
-      }
+  if (doInsert) {
+    nsCOMPtr<nsIDOMNode> refRow;
+    rows->Item(aIndex, getter_AddRefs(refRow));
 
-      if (retChild) {
-        retChild->QueryInterface(NS_GET_IID(nsIDOMHTMLElement),
-                                 (void **)aValue);
-      }
-    }
-  } 
+    rv = InsertBefore(rowNode, refRow, getter_AddRefs(retChild));
+  } else {
+    rv = AppendChild(rowNode, getter_AddRefs(retChild));
+  }
+
+  if (retChild) {
+    CallQueryInterface(retChild, aValue);
+  }
 
   return NS_OK;
 }
@@ -248,21 +247,39 @@ nsHTMLTableSectionElement::InsertRow(PRInt32 aIndex,
 NS_IMETHODIMP
 nsHTMLTableSectionElement::DeleteRow(PRInt32 aValue)
 {
-  nsCOMPtr<nsIDOMHTMLCollection> rows;
-
-  GetRows(getter_AddRefs(rows));
-
-  nsCOMPtr<nsIDOMNode> row;
-
-  rows->Item(aValue, getter_AddRefs(row));
-
-  if (row) {
-    nsCOMPtr<nsIDOMNode> retChild;
-
-    RemoveChild(row, getter_AddRefs(retChild));
+  if (aValue < -1) {
+    return NS_ERROR_DOM_INDEX_SIZE_ERR;
   }
 
-  return NS_OK;
+  nsCOMPtr<nsIDOMHTMLCollection> rows;
+  GetRows(getter_AddRefs(rows));
+
+  nsresult rv;
+  PRUint32 refIndex;
+  if (aValue == -1) {
+    rv = rows->GetLength(&refIndex);
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    if (refIndex == 0) {
+      return NS_OK;
+    }
+
+    --refIndex;
+  }
+  else {
+    refIndex = (PRUint32)aValue;
+  }
+
+  nsCOMPtr<nsIDOMNode> row;
+  rv = rows->Item(aValue, getter_AddRefs(row));
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  if (!row) {
+    return NS_ERROR_DOM_INDEX_SIZE_ERR;
+  }
+
+  nsCOMPtr<nsIDOMNode> retChild;
+  return RemoveChild(row, getter_AddRefs(retChild));
 }
 
 NS_IMETHODIMP
@@ -275,14 +292,14 @@ nsHTMLTableSectionElement::StringToAttribute(nsIAtom* aAttribute,
    */
   /* attributes that resolve to integers */
   if (aAttribute == nsHTMLAtoms::charoff) {
-    if (ParseValue(aValue, 0, aResult, eHTMLUnit_Integer)) {
+    if (aResult.ParseIntWithBounds(aValue, eHTMLUnit_Integer, 0)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
   else if (aAttribute == nsHTMLAtoms::height) {
     /* attributes that resolve to integers or percents */
 
-    if (ParseValueOrPercent(aValue, aResult, eHTMLUnit_Pixel)) {
+    if (aResult.ParseSpecialIntValue(aValue, eHTMLUnit_Pixel, PR_TRUE, PR_FALSE)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
@@ -294,7 +311,7 @@ nsHTMLTableSectionElement::StringToAttribute(nsIAtom* aAttribute,
     }
   }
   else if (aAttribute == nsHTMLAtoms::bgcolor) {
-    if (ParseColor(aValue, mDocument, aResult)) {
+    if (aResult.ParseColor(aValue, mDocument)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
@@ -377,17 +394,20 @@ NS_IMETHODIMP
 nsHTMLTableSectionElement::GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
                                                     nsChangeHint& aHint) const
 {
-  if ((aAttribute == nsHTMLAtoms::align) || 
-      (aAttribute == nsHTMLAtoms::valign) ||
-      (aAttribute == nsHTMLAtoms::height)) {
-    aHint = NS_STYLE_HINT_REFLOW;
-  }
-  else if (!GetCommonMappedAttributesImpact(aAttribute, aHint)) {
-    if (!GetBackgroundAttributesImpact(aAttribute, aHint)) {
-      aHint = NS_STYLE_HINT_CONTENT;
-    }
-  }
+  static const AttributeImpactEntry attributes[] = {
+    { &nsHTMLAtoms::align, NS_STYLE_HINT_REFLOW }, 
+    { &nsHTMLAtoms::valign, NS_STYLE_HINT_REFLOW },
+    { &nsHTMLAtoms::height, NS_STYLE_HINT_REFLOW },
+    { nsnull, NS_STYLE_HINT_NONE }
+  };
 
+  static const AttributeImpactEntry* const map[] = {
+    attributes,
+    sCommonAttributeMap,
+    sBackgroundAttributeMap,
+  };
+
+  FindAttributeImpact(aAttribute, aHint, map, NS_ARRAY_LENGTH(map));
   return NS_OK;
 }
 
@@ -398,14 +418,3 @@ nsHTMLTableSectionElement::GetAttributeMappingFunction(nsMapRuleToAttributesFunc
   aMapRuleFunc = &MapAttributesIntoRule;
   return NS_OK;
 }
-
-#ifdef DEBUG
-NS_IMETHODIMP
-nsHTMLTableSectionElement::SizeOf(nsISizeOfHandler* aSizer,
-                                  PRUint32* aResult) const
-{
-  *aResult = sizeof(*this) + BaseSizeOf(aSizer);
-
-  return NS_OK;
-}
-#endif

@@ -60,6 +60,9 @@ extern nsIID Py_nsIID_NULL;
 **************************************************************************
 *************************************************************************/
 
+#define NS_PYXPCOM_NO_SUCH_METHOD \
+  NS_ERROR_GENERATE_SUCCESS(NS_ERROR_MODULE_PYXPCOM, 0)
+
 // The exception object (loaded from the xpcom .py code)
 extern PYXPCOM_EXPORT PyObject *PyXPCOM_Error;
 
@@ -329,7 +332,7 @@ public:
 	virtual PyObject *UnwrapPythonObject(void) = 0;
 };
 
-// This is roughly equivilent to PyGatewayBase in win32com
+// This is roughly equivalent to PyGatewayBase in win32com
 //
 class PYXPCOM_EXPORT PyG_Base : public nsIInternalPython, public nsISupportsWeakReference
 {
@@ -552,16 +555,40 @@ public:
 
 // NEVER new one of these objects - only use on the stack!
 
+extern PYXPCOM_EXPORT void PyXPCOM_MakePendingCalls();
+extern PYXPCOM_EXPORT PRBool PyXPCOM_Globals_Ensure();
+
+// For 2.3, use the PyGILState_ calls
+#if (PY_VERSION_HEX >= 0x02030000)
+#define PYXPCOM_USE_PYGILSTATE
+#endif
+
+#ifdef PYXPCOM_USE_PYGILSTATE
+class CEnterLeavePython {
+public:
+	CEnterLeavePython() {
+		state = PyGILState_Ensure();
+		// See "pending calls" comment below.  We reach into the Python
+		// implementation to see if we are the first call on the stack.
+		if (PyThreadState_Get()->gilstate_counter==1) {
+			PyXPCOM_MakePendingCalls();
+		}
+	}
+	~CEnterLeavePython() {
+		PyGILState_Release(state);
+	}
+	PyGILState_STATE state;
+};
+#else
+
 extern PYXPCOM_EXPORT PyInterpreterState *PyXPCOM_InterpreterState;
 extern PYXPCOM_EXPORT PRBool PyXPCOM_ThreadState_Ensure();
 extern PYXPCOM_EXPORT void PyXPCOM_ThreadState_Free();
 extern PYXPCOM_EXPORT void PyXPCOM_ThreadState_Clear();
 extern PYXPCOM_EXPORT void PyXPCOM_InterpreterLock_Acquire();
 extern PYXPCOM_EXPORT void PyXPCOM_InterpreterLock_Release();
-extern PYXPCOM_EXPORT void PyXPCOM_MakePendingCalls();
 
-extern PYXPCOM_EXPORT PRBool PyXPCOM_Globals_Ensure();
-
+// Pre 2.3 thread-state dances.
 class CEnterLeavePython {
 public:
 	CEnterLeavePython() {
@@ -599,6 +626,7 @@ public:
 private:
 	PRBool created;
 };
+#endif // PYXPCOM_USE_PYGILSTATE
 
 // Our classes.
 // Hrm - So we can't have templates, eh??

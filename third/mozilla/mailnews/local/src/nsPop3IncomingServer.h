@@ -58,17 +58,12 @@ public:
     virtual ~nsPop3IncomingServer();
 
     NS_IMETHOD GetLocalStoreType(char **);
-    NS_IMETHOD PerformBiff();
+    NS_IMETHOD PerformBiff(nsIMsgWindow *aMsgWindow);
     NS_IMETHOD GetDownloadMessagesAtStartup(PRBool *getMessages);
     NS_IMETHOD GetCanBeDefaultServer(PRBool *canBeDefaultServer);
     NS_IMETHOD GetCanSearchMessages(PRBool *canSearchMessages);
     NS_IMETHOD GetOfflineSupportLevel(PRInt32 *aSupportLevel);
-private:
-
-    static nsresult setSubFolderFlag(nsIFolder *aRootFolder,
-                                     PRUnichar *folderName,
-                                     PRUint32 flag);
-    
+private:    
     PRUint32 m_capabilityFlags;
 };
 

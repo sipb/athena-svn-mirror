@@ -27,18 +27,21 @@ VPATH		= @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 MODULE		= xuldoc
+GRE_MODULE	= 1
 
 XPIDLSRCS	= \
 		nsIController.idl \
 		nsIControllers.idl \
 		$(NULL)
 
+ifdef MOZ_XUL
 EXPORTS		= \
 		nsIXULContentSink.h \
 		nsIXULDocument.h \
 		nsIXULPrototypeCache.h \
 		nsIXULPrototypeDocument.h \
 		$(NULL)
+endif
 
 include $(topsrcdir)/config/rules.mk
 

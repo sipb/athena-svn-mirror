@@ -76,7 +76,7 @@ extern JS_PUBLIC_API(JSInt64) JSLL_Zero(void);
 
 #if JS_BYTES_PER_LONG == 8
 #define JSLL_INIT(hi, lo)  ((hi ## L << 32) + lo ## L)
-#elif defined(WIN32) || defined(WIN16)
+#elif (defined(WIN32) || defined(WIN16)) && !defined(__GNUC__)
 #define JSLL_INIT(hi, lo)  ((hi ## i64 << 32) + lo ## i64)
 #else
 #define JSLL_INIT(hi, lo)  ((hi ## LL << 32) + lo ## LL)
@@ -206,10 +206,10 @@ extern JS_PUBLIC_API(JSInt64) JSLL_Zero(void);
 
 #ifdef DEBUG
 #define JSLL_CMP(a, op, b)      (JS_ASSERT((#op)[1] != '='), JSLL_REAL_CMP(a, op, b))
-#define JSLL_CMP(a, op, b)      (JS_ASSERT((#op)[1] != '='), JSLL_REAL_CMP(a, op, b))
+#define JSLL_UCMP(a, op, b)     (JS_ASSERT((#op)[1] != '='), JSLL_REAL_UCMP(a, op, b))
 #else
 #define JSLL_CMP(a, op, b)      JSLL_REAL_CMP(a, op, b)
-#define JSLL_CMP(a, op, b)      JSLL_REAL_CMP(a, op, b)
+#define JSLL_UCMP(a, op, b)     JSLL_REAL_UCMP(a, op, b)
 #endif
 
 #define JSLL_REAL_CMP(a,op,b)   (((JSInt32)(a).hi op (JSInt32)(b).hi) || \

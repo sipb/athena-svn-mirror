@@ -40,14 +40,13 @@
 #include "nsIHTMLContent.h"
 #include "nsGenericHTMLElement.h"
 #include "nsHTMLAtoms.h"
-#include "nsIStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
 #include "nsHTMLAttributes.h"
 #include "nsRuleNode.h"
 
-extern nsGenericHTMLElement::EnumTable kListTypeTable[];
-extern nsGenericHTMLElement::EnumTable kOldListTypeTable[];
+extern nsHTMLValue::EnumTable kListTypeTable[];
+extern nsHTMLValue::EnumTable kOldListTypeTable[];
 
 class nsHTMLUListElement : public nsGenericHTMLContainerElement,
                            public nsIDOMHTMLUListElement
@@ -80,9 +79,6 @@ public:
   NS_IMETHOD GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRuleFunc) const;
   NS_IMETHOD GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
                                       nsChangeHint& aHint) const;
-#ifdef DEBUG
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
-#endif
 };
 
 nsresult
@@ -172,17 +168,17 @@ nsHTMLUListElement::StringToAttribute(nsIAtom* aAttribute,
                                       nsHTMLValue& aResult)
 {
   if (aAttribute == nsHTMLAtoms::type) {
-    if (ParseEnumValue(aValue, kListTypeTable, aResult)) {
+    if (aResult.ParseEnumValue(aValue, kListTypeTable)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
 
-    if (ParseCaseSensitiveEnumValue(aValue, kOldListTypeTable, aResult)) {
+    if (aResult.ParseEnumValue(aValue, kOldListTypeTable, PR_TRUE)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
 
   if (aAttribute == nsHTMLAtoms::start) {
-    if (ParseValue(aValue, 1, aResult, eHTMLUnit_Integer)) {
+    if (aResult.ParseIntWithBounds(aValue, eHTMLUnit_Integer, 1)) {
       return NS_CONTENT_ATTR_HAS_VALUE; 
     }
   }
@@ -202,11 +198,11 @@ nsHTMLUListElement::AttributeToString(nsIAtom* aAttribute,
       case NS_STYLE_LIST_STYLE_OLD_UPPER_ROMAN:
       case NS_STYLE_LIST_STYLE_OLD_LOWER_ALPHA:
       case NS_STYLE_LIST_STYLE_OLD_UPPER_ALPHA:
-        EnumValueToString(aValue, kOldListTypeTable, aResult);
+        aValue.EnumValueToString(kOldListTypeTable, aResult);
 
         break;
       default:
-        EnumValueToString(aValue, kListTypeTable, aResult);
+        aValue.EnumValueToString(kListTypeTable, aResult);
 
         break;
     }
@@ -243,13 +239,18 @@ NS_IMETHODIMP
 nsHTMLUListElement::GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
                                              nsChangeHint& aHint) const
 {
-  if (aAttribute == nsHTMLAtoms::type) {
-    aHint = NS_STYLE_HINT_REFLOW;
-  }
-  else if (!GetCommonMappedAttributesImpact(aAttribute, aHint)) {
-    aHint = NS_STYLE_HINT_CONTENT;
-  }
+  static const AttributeImpactEntry attributes[] = {
+    { &nsHTMLAtoms::type, NS_STYLE_HINT_REFLOW },
+    { nsnull, NS_STYLE_HINT_NONE }
+  };
 
+  static const AttributeImpactEntry* const map[] = {
+    attributes,
+    sCommonAttributeMap,
+  };
+
+  FindAttributeImpact(aAttribute, aHint, map, NS_ARRAY_LENGTH(map));
+  
   return NS_OK;
 }
 
@@ -260,13 +261,3 @@ nsHTMLUListElement::GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapR
   aMapRuleFunc = &MapAttributesIntoRule;
   return NS_OK;
 }
-
-#ifdef DEBUG
-NS_IMETHODIMP
-nsHTMLUListElement::SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const
-{
-  *aResult = sizeof(*this) + BaseSizeOf(aSizer);
-
-  return NS_OK;
-}
-#endif

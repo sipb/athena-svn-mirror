@@ -51,14 +51,14 @@ class nsIDOMKeyEvent;
 class nsIDOMMouseEvent;
 class nsIAtom;
 class nsIController;
-class nsIXBLPrototypeHandler;
+class nsXBLPrototypeHandler;
 
 class nsXBLKeyHandler : public nsIDOMKeyListener, 
                         public nsXBLEventHandler
 {
 public:
   nsXBLKeyHandler(nsIDOMEventReceiver* aReceiver,
-                  nsIXBLPrototypeHandler* aHandler);
+                  nsXBLPrototypeHandler* aHandler);
 
   virtual ~nsXBLKeyHandler();
 
@@ -72,18 +72,12 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
 protected:
-  static PRUint32 gRefCnt;
-  static nsIAtom* kKeyUpAtom;
-  static nsIAtom* kKeyDownAtom;
-  static nsIAtom* kKeyPressAtom;
-
-protected:
   // Members
 };
 
-extern nsresult
+nsresult
 NS_NewXBLKeyHandler(nsIDOMEventReceiver* aEventReceiver,
-                    nsIXBLPrototypeHandler* aHandlerElement, 
+                    nsXBLPrototypeHandler* aHandlerElement,
                     nsXBLKeyHandler** aResult);
 
 

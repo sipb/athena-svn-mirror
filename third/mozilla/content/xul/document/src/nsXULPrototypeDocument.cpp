@@ -21,7 +21,7 @@
  *
  * Contributor(s):
  *   Chris Waterson <waterson@netscape.com>
- *   L. David Baron <dbaron@fas.harvard.edu>
+ *   L. David Baron <dbaron@dbaron.org>
  *   Ben Goodger <ben@netscape.com>
  *
  *
@@ -47,6 +47,7 @@
 */
 
 #include "nsCOMPtr.h"
+#include "nsAString.h"
 #include "nsIObjectInputStream.h"
 #include "nsIObjectOutputStream.h"
 #include "nsIPrincipal.h"
@@ -177,7 +178,8 @@ protected:
     nsresult Init();
 
     friend NS_IMETHODIMP
-    NS_NewXULPrototypeDocument(nsISupports* aOuter, REFNSIID aIID, void** aResult);
+    NS_NewXULPrototypeDocument(nsISupports* aOuter, REFNSIID aIID,
+                               void** aResult);
 };
 
 
@@ -227,7 +229,6 @@ nsXULPrototypeDocument::nsXULPrototypeDocument()
       mGlobalObject(nsnull),
       mLoaded(PR_FALSE)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 
@@ -242,13 +243,10 @@ nsXULPrototypeDocument::Init()
     rv = NS_NewISupportsArray(getter_AddRefs(mOverlayReferences));
     NS_ENSURE_SUCCESS(rv, rv);
 
-    mNodeInfoManager = do_CreateInstance(NS_NODEINFOMANAGER_CONTRACTID, &rv);
+    rv = NS_NewNodeInfoManager(getter_AddRefs(mNodeInfoManager));
     NS_ENSURE_SUCCESS(rv, rv);
 
-    nsCOMPtr<nsINameSpaceManager> nsmgr;
-    rv = NS_NewNameSpaceManager(getter_AddRefs(nsmgr));
-    NS_ENSURE_SUCCESS(rv, rv);
-    rv = mNodeInfoManager->Init(nsnull, nsmgr);
+    rv = mNodeInfoManager->Init(nsnull);
     NS_ENSURE_SUCCESS(rv, rv);
 
     return NS_OK;
@@ -373,10 +371,10 @@ nsXULPrototypeDocument::Read(nsIObjectInputStream* aStream)
     NS_ENSURE_TRUE(nodeInfos, rv);
 
     rv |= aStream->Read32(&referenceCount);
-    nsXPIDLString namespaceURI, qualifiedName;
+    nsAutoString namespaceURI, qualifiedName;
     for (i = 0; i < referenceCount; ++i) {
-        rv |= aStream->ReadWStringZ(getter_Copies(namespaceURI));
-        rv |= aStream->ReadWStringZ(getter_Copies(qualifiedName));
+        rv |= aStream->ReadString(namespaceURI);
+        rv |= aStream->ReadString(qualifiedName);
 
         nsCOMPtr<nsINodeInfo> nodeInfo;
         rv |= mNodeInfoManager->GetNodeInfo(qualifiedName, namespaceURI, *getter_AddRefs(nodeInfo));
@@ -731,7 +729,6 @@ nsXULPDGlobalObject::nsXULPDGlobalObject()
     : mJSObject(nsnull),
       mGlobalObjectOwner(nsnull)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 

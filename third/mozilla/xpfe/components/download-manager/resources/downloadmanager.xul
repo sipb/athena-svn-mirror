@@ -27,9 +27,6 @@
 
 <?xml-stylesheet href="chrome://communicator/skin/"?>
 
-<?xul-overlay href="chrome://communicator/content/tasksOverlay.xul"?>
-<?xul-overlay href="chrome://communicator/content/utilityOverlay.xul"?>
-
 <!DOCTYPE window [
 <!ENTITY % downloadManagerDTD SYSTEM "chrome://communicator/locale/downloadmanager/downloadmanager.dtd">
 %downloadManagerDTD;
@@ -44,18 +41,20 @@
         width="500" height="300" screenX="10" screenY="10"
         persist="width height screenX screenY"
         title="&downloadManager.title;"
-        onload="Startup();"
-        onunload="Shutdown();">
+        onload="DLManagerStartup();"
+        onunload="DLManagerShutdown();">
 
   <script type="application/x-javascript" src="chrome://global/content/globalOverlay.js"/>
 
   <script type="application/x-javascript" src="chrome://communicator/content/downloadmanager/downloadmanager.js"/>
 
-  <stringbundle id="dlMgrBundle"
-                src="chrome://communicator/locale/downloadmanager/downloadmanager.properties"/>
-  <stringbundle id="dlProgressDlgBundle"
-                src="chrome://global/locale/nsProgressDialog.properties"/>
-
+  <stringbundleset id="stringbundleset">
+    <stringbundle id="dlMgrBundle"
+                  src="chrome://communicator/locale/downloadmanager/downloadmanager.properties"/>
+    <stringbundle id="dlProgressDlgBundle"
+                  src="chrome://global/locale/nsProgressDialog.properties"/>
+  </stringbundleset>
+  
   <data id="strings.confirmCancel">&confirmCancel;</data>
   <data id="strings.progressMsgNoRate">&progressMsgNoRate;</data>
   <data id="strings.rateMsg">&rateMsg;</data>
@@ -124,7 +123,8 @@
       <toolbarseparator/>
       <toolbarbutton id="btn_openfile" label="&cmd.openfile.label;" accesskey="&cmd.openfile.accesskey;"
                      command="cmd_openfile"/>
-      <toolbarbutton id="btn_showinshell" command="cmd_showinshell"/>
+      <toolbarbutton id="btn_showinshell" label="&cmd.showinshell.label;" accesskey="&cmd.showinshell.accesskey;"
+                     command="cmd_showinshell"/>
     </toolbar>
   </toolbox>
 
@@ -137,49 +137,49 @@
                    label="&view.header.name.label;"
                    class="sortDirectionIndicator" width="3*" flex="3"
                    resource="http://home.netscape.com/NC-rdf#Name"
-                   persist="width sortActive sortDirection"/>
+                   persist="width sortActive sortDirection ordinal"/>
       <splitter class="tree-splitter"/>
       <treecol id="Progress" type="progressmeter"
                    label="&view.header.progress.label;"
                    class="sortDirectionIndicator" width="3*" flex="3"
                    resource="http://home.netscape.com/NC-rdf#ProgressPercent"
-                   persist="width hidden sortActive sortDirection"/>
+                   persist="width hidden sortActive sortDirection ordinal"/>
       <splitter class="tree-splitter"/>
       <treecol id="ProgressPercent" hidden="true"
                    label="&view.header.progresstext.label;"
                    class="sortDirectionIndicator" width="1*" flex="1"
                    resource="http://home.netscape.com/NC-rdf#ProgressPercent"
-                   persist="width hidden sortActive sortDirection"/>
+                   persist="width hidden sortActive sortDirection ordinal"/>
       <splitter class="tree-splitter"/>
       <treecol id="TimeRemaining"
                    label="&view.header.timeremaining.label;"
                    class="sortDirectionIndicator" width="1*" flex="1"
                    resource="http://home.netscape.com/NC-rdf#TimeRemaining"
-                   persist="width hidden sortActive sortDirection"/>
+                   persist="width hidden sortActive sortDirection ordinal"/>
       <splitter class="tree-splitter"/>
       <treecol id="Transferred"
                    label="&view.header.transferred.label;"
                    class="sortDirectionIndicator" width="1*" flex="1"
                    resource="http://home.netscape.com/NC-rdf#Transferred"
-                   persist="width hidden sortActive sortDirection"/>
+                   persist="width hidden sortActive sortDirection ordinal"/>
       <splitter class="tree-splitter"/>
       <treecol id="TransferRate"
                    label="&view.header.transferrate.label;"
                    class="sortDirectionIndicator" width="1*" flex="1"
                    resource="http://home.netscape.com/NC-rdf#TransferRate"
-                   persist="width hidden sortActive sortDirection"/>
+                   persist="width hidden sortActive sortDirection ordinal"/>
       <splitter class="tree-splitter"/>
       <treecol id="TimeElapsed" hidden="true"
                    label="&view.header.timeelapsed.label;"
                    class="sortDirectionIndicator" width="1*" flex="1"
                    resource="http://home.netscape.com/NC-rdf#TimeElapsed"
-                   persist="width hidden sortActive sortDirection"/>
+                   persist="width hidden sortActive sortDirection ordinal"/>
       <splitter class="tree-splitter"/>
       <treecol id="Source" hidden="true"
                    label="&view.header.source.label;"
                    class="sortDirectionIndicator" width="1*" flex="1"
                    resource="http://home.netscape.com/NC-rdf#URL"
-                   persist="width hidden sortActive sortDirection"/>
+                   persist="width hidden sortActive sortDirection ordinal"/>
     </treecols>
     <template>
       <rule>

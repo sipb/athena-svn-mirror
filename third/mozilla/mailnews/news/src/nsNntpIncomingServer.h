@@ -48,7 +48,7 @@
 #include "plstr.h"
 #include "prprf.h"
 
-#include "nsEnumeratorUtils.h" 
+#include "nsAdapterEnumerator.h" 
 #include "nsIMsgWindow.h"
 #include "nsISubscribableServer.h"
 #include "nsMsgLineBuffer.h"
@@ -84,7 +84,7 @@ public:
     
     NS_IMETHOD GetLocalStoreType(char * *type);
     NS_IMETHOD CloseCachedConnections();
-    NS_IMETHOD PerformBiff();
+    NS_IMETHOD PerformBiff(nsIMsgWindow *aMsgWindow);
     NS_IMETHOD PerformExpand(nsIMsgWindow *aMsgWindow);
     NS_IMETHOD GetFilterList(nsIMsgWindow *aMsgWindow, nsIMsgFilterList **aResult);
     NS_IMETHOD OnUserOrHostNameChanged(const char *oldName, const char *newName);
@@ -109,7 +109,7 @@ protected:
                                              nsIMsgWindow *window);
     PRBool ConnectionTimeOut(nsINNTPProtocol* aNntpConnection);
     nsCOMPtr<nsISupportsArray> m_connectionCache;
-    NS_IMETHOD GetServerRequiresPasswordForBiff(PRBool *_retval);
+    NS_IMETHOD GetServerRequiresPasswordForBiff(PRBool *aServerRequiresPasswordForBiff);
     nsByteArray        mHostInfoInputStream;    
     nsresult SetupNewsrcSaveTimer();
     static void OnNewsrcSaveTimer(nsITimer *timer, void *voidIncomingServer);

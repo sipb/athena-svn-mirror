@@ -53,7 +53,10 @@
 #include "nsNetUtil.h"
 
 #include "nsIServiceManager.h"
-#include "nsIPref.h"
+#include "nsIPrefBranch.h"
+#include "nsIPrefService.h"
+#include "nsIPrefBranchInternal.h"
+#include "nsIObserver.h"
 #include "nsReadableUtils.h"
 
 // XXX This is here because nsCachedStyleData is accessed outside of
@@ -63,11 +66,11 @@
 nsCachedStyleData::StyleStructInfo
 nsCachedStyleData::gInfo[] = {
 
-#define STYLE_STRUCT_INHERITED(name, checkdata_cb) \
+#define STYLE_STRUCT_INHERITED(name, checkdata_cb, ctor_args) \
   { offsetof(nsCachedStyleData, mInheritedData), \
     offsetof(nsInheritedStyleData, m##name##Data), \
     PR_FALSE },
-#define STYLE_STRUCT_RESET(name, checkdata_cb) \
+#define STYLE_STRUCT_RESET(name, checkdata_cb, ctor_args) \
   { offsetof(nsCachedStyleData, mResetData), \
     offsetof(nsResetStyleData, m##name##Data), \
     PR_TRUE },
@@ -79,8 +82,6 @@ nsCachedStyleData::gInfo[] = {
 
   { 0, 0, 0 }
 };
-
-static NS_DEFINE_CID(kPrefCID, NS_PREF_CID);
 
 #define POSITIVE_SCALE_FACTOR 1.10 /* 10% */
 #define NEGATIVE_SCALE_FACTOR .90  /* 10% */
@@ -123,42 +124,72 @@ float nsStyleUtil::GetScalingFactor(PRInt32 aScaler)
 
 
 //------------------------------------------------------------------------------
-//
+// Font Algorithm Code
 //------------------------------------------------------------------------------
 
 static PRBool gNavAlgorithmPref = PR_FALSE;
 
-static int PR_CALLBACK NavAlgorithmPrefChangedCallback(const char * name, void * closure)
+class nsFontAlgorithmPrefObserver : public nsIObserver
 {
-	nsresult rv;
-	nsCOMPtr<nsIPref> prefs(do_GetService(kPrefCID, &rv));
-	if (NS_SUCCEEDED(rv) && prefs) {
-		prefs->GetBoolPref(name, &gNavAlgorithmPref);
-	}
-	return 0;
+public:
+  nsFontAlgorithmPrefObserver();
+  virtual ~nsFontAlgorithmPrefObserver();
+
+  NS_DECL_ISUPPORTS
+  NS_DECL_NSIOBSERVER
+};
+
+NS_IMPL_ISUPPORTS1(nsFontAlgorithmPrefObserver, nsIObserver)
+
+nsFontAlgorithmPrefObserver::nsFontAlgorithmPrefObserver()
+{
 }
 
+nsFontAlgorithmPrefObserver::~nsFontAlgorithmPrefObserver()
+{
+}
 
-//------------------------------------------------------------------------------
-//
-//------------------------------------------------------------------------------
+NS_IMETHODIMP
+nsFontAlgorithmPrefObserver::Observe(nsISupports *aSubject,
+                                     const char *aTopic,
+                                     const PRUnichar *aData)
+{
+  NS_ASSERTION(nsDependentString(aData) ==
+                 NS_LITERAL_STRING("font.size.nav4algorithm"),
+               "This is the wrong pref!");
+  NS_ASSERTION(!nsCRT::strcmp(aTopic, NS_PREFBRANCH_PREFCHANGE_TOPIC_ID),
+               "This observer only handles pref change topics");
+
+  nsCOMPtr<nsIPrefBranch> prefBranch(do_QueryInterface(aSubject));
+  NS_ASSERTION(prefBranch, "Cannot get a pref branch");
+  prefBranch->GetBoolPref("font.size.nav4algorithm", &gNavAlgorithmPref);
+
+  return NS_OK;
+}
 
 static PRBool UseNewFontAlgorithm()
 {
-	static PRBool once = PR_TRUE;
+  static PRBool gotAlgorithm = PR_FALSE;
+  if (gotAlgorithm) {
+    gotAlgorithm = PR_TRUE;
 
-	if (once)
-	{
-		once = PR_FALSE;
+    nsCOMPtr<nsIPrefBranch> prefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID));
+    if (prefBranch) {
+      prefBranch->GetBoolPref("font.size.nav4algorithm", &gNavAlgorithmPref);
+      nsCOMPtr<nsIObserver> observer = new nsFontAlgorithmPrefObserver();
+      if (observer) {
+        nsCOMPtr<nsIPrefBranchInternal> pbi(do_QueryInterface(prefBranch));
+        if (pbi) {
+          pbi->AddObserver("font.size.nav4algorithm", observer, PR_FALSE);
+        }
+      }
+    }
+  }
 
-		nsresult rv;
-		nsCOMPtr<nsIPref> prefs(do_GetService(kPrefCID, &rv));
-		if (NS_SUCCEEDED(rv) && prefs) {
-			prefs->GetBoolPref("font.size.nav4algorithm", &gNavAlgorithmPref);
-			prefs->RegisterCallback("font.size.nav4algorithm", NavAlgorithmPrefChangedCallback, NULL);
-		}
-	}
-	return (gNavAlgorithmPref ? PR_FALSE : PR_TRUE);
+  // The pref is true if we should use the old (nav4) algorithm.
+  // Since our return is whether we should use the new algorithm,
+  // take the inverse of our cached pref value.
+  return !gNavAlgorithmPref;
 }
 
 
@@ -363,7 +394,7 @@ nscoord nsStyleUtil::CalcFontPointSize(PRInt32 aHTMLSize, PRInt32 aBasePointSize
                                        nsFontSizeType aFontSizeType)
 {
 #if DUMP_FONT_SIZES
-	extern void DumpFontSizes(nsIPresContext* aPresContext);
+  void DumpFontSizes(nsIPresContext* aPresContext);
 	DumpFontSizes(aPresContext);
 #endif
 	if (UseNewFontAlgorithm())
@@ -372,20 +403,30 @@ nscoord nsStyleUtil::CalcFontPointSize(PRInt32 aHTMLSize, PRInt32 aBasePointSize
 		return OldCalcFontPointSize(aHTMLSize, aBasePointSize, aScalingFactor);
 }
 
-
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
 
-PRInt32 nsStyleUtil::FindNextSmallerFontSize(nscoord aFontSize, PRInt32 aBasePointSize, 
+nscoord nsStyleUtil::FindNextSmallerFontSize(nscoord aFontSize, PRInt32 aBasePointSize, 
                                              float aScalingFactor, nsIPresContext* aPresContext,
                                              nsFontSizeType aFontSizeType)
 {
   PRInt32 index;
   PRInt32 indexMin;
   PRInt32 indexMax;
-  PRInt32 fontSize = NSTwipsToFloorIntPoints(aFontSize);
-
+  float relativePosition;
+  nscoord smallerSize;
+  nscoord indexFontSize = aFontSize; // XXX initialize to quell a spurious gcc3.2 warning
+  nscoord smallestIndexFontSize;
+  nscoord largestIndexFontSize;
+  nscoord smallerIndexFontSize;
+  nscoord largerIndexFontSize;
+  float p2t;
+  nscoord onePx;
+  
+  aPresContext->GetPixelsToTwips(&p2t);
+  onePx = NSToCoordRound(p2t);
+    
 	if (aFontSizeType == eFontSize_HTML) {
 		indexMin = 1;
 		indexMax = 7;
@@ -393,46 +434,67 @@ PRInt32 nsStyleUtil::FindNextSmallerFontSize(nscoord aFontSize, PRInt32 aBasePoi
 		indexMin = 0;
 		indexMax = 6;
 	}
-
-  if (NSTwipsToFloorIntPoints(CalcFontPointSize(indexMin, aBasePointSize, aScalingFactor, aPresContext, aFontSizeType)) < fontSize) {
-    if (fontSize <= NSTwipsToFloorIntPoints(CalcFontPointSize(indexMax, aBasePointSize, aScalingFactor, aPresContext, aFontSizeType))) { // in HTML table
-      for (index = indexMax; index > indexMin; index--)
-        if (fontSize > NSTwipsToFloorIntPoints(CalcFontPointSize(index, aBasePointSize, aScalingFactor, aPresContext, aFontSizeType)))
+  
+  smallestIndexFontSize = CalcFontPointSize(indexMin, aBasePointSize, aScalingFactor, aPresContext, aFontSizeType);
+  largestIndexFontSize = CalcFontPointSize(indexMax, aBasePointSize, aScalingFactor, aPresContext, aFontSizeType); 
+  if (aFontSize > smallestIndexFontSize) {
+    if (aFontSize < NSToCoordRound(float(largestIndexFontSize) * 1.5)) { // smaller will be in HTML table
+      // find largest index smaller than current
+      for (index = indexMax; index >= indexMin; index--) {
+        indexFontSize = CalcFontPointSize(index, aBasePointSize, aScalingFactor, aPresContext, aFontSizeType);
+        if (indexFontSize < aFontSize)
           break;
+      } 
+      // set up points beyond table for interpolation purposes
+      if (indexFontSize == smallestIndexFontSize) {
+        smallerIndexFontSize = indexFontSize - onePx;
+        largerIndexFontSize = CalcFontPointSize(index+1, aBasePointSize, aScalingFactor, aPresContext, aFontSizeType);
+      } else if (indexFontSize == largestIndexFontSize) {
+        smallerIndexFontSize = CalcFontPointSize(index-1, aBasePointSize, aScalingFactor, aPresContext, aFontSizeType);
+        largerIndexFontSize = NSToCoordRound(float(largestIndexFontSize) * 1.5);
+      } else {
+        smallerIndexFontSize = CalcFontPointSize(index-1, aBasePointSize, aScalingFactor, aPresContext, aFontSizeType);
+        largerIndexFontSize = CalcFontPointSize(index+1, aBasePointSize, aScalingFactor, aPresContext, aFontSizeType);
+      }
+      // compute the relative position of the parent size between the two closest indexed sizes
+      relativePosition = float(aFontSize - indexFontSize) / float(largerIndexFontSize - indexFontSize);            
+      // set the new size to have the same relative position between the next smallest two indexed sizes
+      smallerSize = smallerIndexFontSize + NSToCoordRound(relativePosition * (indexFontSize - smallerIndexFontSize));      
     }
-    else {  // larger than HTML table
-      return indexMax;
-//    for (index = 8; ; index++)
-//      if (fontSize < NSTwipsToFloorIntPoints(CalcFontPointSize(index, aBasePointSize, aScalingFactor, aPresContext))) {
-//        index--;
-//        break;
-//      }
+    else {  // larger than HTML table, drop by 33%
+      smallerSize = NSToCoordRound(float(aFontSize) / 1.5);
     }
   }
-  else { // smaller than HTML table
-    return indexMin;
-//  for (index = 0; -25<index ; index--) //prevent infinite loop (bug 17045)
-//    if (fontSize > NSTwipsToFloorIntPoints(CalcFontPointSize(index, aBasePointSize, aScalingFactor, aPresContext))) {
-//      break;
-//    }
+  else { // smaller than HTML table, drop by 1px
+    smallerSize = PR_MAX(aFontSize - onePx, onePx);
   }
-  return index;
+  return smallerSize;
 }
-
 
 //------------------------------------------------------------------------------
 //
 //------------------------------------------------------------------------------
 
-PRInt32 nsStyleUtil::FindNextLargerFontSize(nscoord aFontSize, PRInt32 aBasePointSize, 
+nscoord nsStyleUtil::FindNextLargerFontSize(nscoord aFontSize, PRInt32 aBasePointSize, 
                                             float aScalingFactor, nsIPresContext* aPresContext,
                                             nsFontSizeType aFontSizeType)
 {
   PRInt32 index;
   PRInt32 indexMin;
   PRInt32 indexMax;
-  PRInt32 fontSize = NSTwipsToFloorIntPoints(aFontSize);
-
+  float relativePosition;
+  nscoord largerSize;
+  nscoord indexFontSize = aFontSize; // XXX initialize to quell a spurious gcc3.2 warning
+  nscoord smallestIndexFontSize;
+  nscoord largestIndexFontSize;
+  nscoord smallerIndexFontSize;
+  nscoord largerIndexFontSize;
+  float p2t;
+  nscoord onePx;
+  
+  aPresContext->GetPixelsToTwips(&p2t);
+  onePx = NSToCoordRound(p2t);
+    
 	if (aFontSizeType == eFontSize_HTML) {
 		indexMin = 1;
 		indexMax = 7;
@@ -440,31 +502,44 @@ PRInt32 nsStyleUtil::FindNextLargerFontSize(nscoord aFontSize, PRInt32 aBasePoin
 		indexMin = 0;
 		indexMax = 6;
 	}
-
-  if (NSTwipsToFloorIntPoints(CalcFontPointSize(indexMin, aBasePointSize, aScalingFactor, aPresContext, aFontSizeType)) <= fontSize) {
-    if (fontSize < NSTwipsToFloorIntPoints(CalcFontPointSize(indexMax, aBasePointSize, aScalingFactor, aPresContext, aFontSizeType))) { // in HTML table
-      for (index = indexMin; index < indexMax; index++)
-        if (fontSize < NSTwipsToFloorIntPoints(CalcFontPointSize(index, aBasePointSize, aScalingFactor, aPresContext, aFontSizeType)))
+  
+  smallestIndexFontSize = CalcFontPointSize(indexMin, aBasePointSize, aScalingFactor, aPresContext, aFontSizeType);
+  largestIndexFontSize = CalcFontPointSize(indexMax, aBasePointSize, aScalingFactor, aPresContext, aFontSizeType); 
+  if (aFontSize > (smallestIndexFontSize - onePx)) {
+    if (aFontSize < largestIndexFontSize) { // larger will be in HTML table
+      // find smallest index larger than current
+      for (index = indexMin; index <= indexMax; index++) { 
+        indexFontSize = CalcFontPointSize(index, aBasePointSize, aScalingFactor, aPresContext, aFontSizeType);
+        if (indexFontSize > aFontSize)
           break;
+      }
+      // set up points beyond table for interpolation purposes
+      if (indexFontSize == smallestIndexFontSize) {
+        smallerIndexFontSize = indexFontSize - onePx;
+        largerIndexFontSize = CalcFontPointSize(index+1, aBasePointSize, aScalingFactor, aPresContext, aFontSizeType);
+      } else if (indexFontSize == largestIndexFontSize) {
+        smallerIndexFontSize = CalcFontPointSize(index-1, aBasePointSize, aScalingFactor, aPresContext, aFontSizeType);
+        largerIndexFontSize = NSToCoordRound(float(largestIndexFontSize) * 1.5);
+      } else {
+        smallerIndexFontSize = CalcFontPointSize(index-1, aBasePointSize, aScalingFactor, aPresContext, aFontSizeType);
+        largerIndexFontSize = CalcFontPointSize(index+1, aBasePointSize, aScalingFactor, aPresContext, aFontSizeType);
+      }
+      // compute the relative position of the parent size between the two closest indexed sizes
+      relativePosition = float(aFontSize - smallerIndexFontSize) / float(indexFontSize - smallerIndexFontSize);
+      // set the new size to have the same relative position between the next largest two indexed sizes
+      largerSize = indexFontSize + NSToCoordRound(relativePosition * (largerIndexFontSize - indexFontSize));      
     }
-    else {  // larger than HTML table
-			return indexMax;
-//    for (index = 8; ; index++)
-//      if (fontSize < NSTwipsToFloorIntPoints(CalcFontPointSize(index, aBasePointSize, aScalingFactor, aPresContext)))
-//        break;
+    else {  // larger than HTML table, increase by 50%
+      largerSize = NSToCoordRound(float(aFontSize) * 1.5);
     }
   }
-  else {  // smaller than HTML table
-    return indexMin;
-//  for (index = 0; -25<index ; index--) //prevent infinite loop (bug 17045)
-//    if (fontSize > NSTwipsToFloorIntPoints(CalcFontPointSize(index, aBasePointSize, aScalingFactor, aPresContext))) {
-//      index++;
-//      break;
-//    }
+  else { // smaller than HTML table, increase by 1px
+    float p2t;
+    aPresContext->GetPixelsToTwips(&p2t);
+    largerSize = aFontSize + NSToCoordRound(p2t); 
   }
-  return index;
+  return largerSize;
 }
-
 
 //------------------------------------------------------------------------------
 //

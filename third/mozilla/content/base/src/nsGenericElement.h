@@ -47,6 +47,7 @@
 #include "nsIDOMNodeList.h"
 #include "nsIDOMLinkStyle.h"
 #include "nsIDOMEventReceiver.h"
+#include "nsIDOM3EventTarget.h"
 #include "nsIStyleSheetLinkingElement.h"
 #include "nsICSSStyleSheet.h"
 #include "nsICSSLoaderObserver.h"
@@ -234,7 +235,6 @@ class nsNode3Tearoff : public nsIDOM3Node
 
   nsNode3Tearoff(nsIContent *aContent) : mContent(aContent)
   {
-    NS_INIT_ISUPPORTS();
   }
   virtual ~nsNode3Tearoff() {};
 
@@ -254,7 +254,8 @@ private:
  * @see nsDOMEventRTTearoff::Create
  */
 
-class nsDOMEventRTTearoff : public nsIDOMEventReceiver
+class nsDOMEventRTTearoff : public nsIDOMEventReceiver,
+                            public nsIDOM3EventTarget
 {
 private:
   // This class uses a caching scheme so we don't let users of this
@@ -276,6 +277,7 @@ private:
   void LastRelease();
 
   nsresult GetEventReceiver(nsIDOMEventReceiver **aReceiver);
+  nsresult GetDOM3EventTarget(nsIDOM3EventTarget **aTarget);
 
 public:
   virtual ~nsDOMEventRTTearoff();
@@ -297,6 +299,9 @@ public:
   // nsIDOMEventTarget
   NS_DECL_NSIDOMEVENTTARGET
 
+  // nsIDOM3EventTarget
+  NS_DECL_NSIDOM3EVENTTARGET
+
   // nsIDOMEventReceiver
   NS_IMETHOD AddEventListenerByIID(nsIDOMEventListener *aListener,
                                    const nsIID& aIID);
@@ -304,6 +309,7 @@ public:
                                       const nsIID& aIID);
   NS_IMETHOD GetListenerManager(nsIEventListenerManager** aResult);
   NS_IMETHOD HandleEvent(nsIDOMEvent *aEvent);
+  NS_IMETHOD GetSystemEventGroup(nsIDOMEventGroup** aGroup);
 
 private:
   /**
@@ -408,14 +414,14 @@ public:
   // nsIStyledContent interface methods
   NS_IMETHOD GetID(nsIAtom*& aResult) const;
   NS_IMETHOD GetClasses(nsVoidArray& aArray) const;
-  NS_IMETHOD HasClass(nsIAtom* aClass, PRBool aCaseSensitive) const;
+  NS_IMETHOD_(PRBool) HasClass(nsIAtom* aClass, PRBool aCaseSensitive) const;
   NS_IMETHOD WalkContentStyleRules(nsRuleWalker* aRuleWalker);
   NS_IMETHOD GetInlineStyleRule(nsIStyleRule** aStyleRule);
   NS_IMETHOD GetMappedAttributeImpact(const nsIAtom* aAttribute,
                                       PRInt32 aModType, nsChangeHint& aHint) const;
 
   // nsIXMLContent interface methods
-  NS_IMETHOD MaybeTriggerAutoLink(nsIWebShell *aShell);
+  NS_IMETHOD MaybeTriggerAutoLink(nsIDocShell *aShell);
   NS_IMETHOD GetXMLBaseURI(nsIURI **aURI);
 
   // nsIHTMLContent interface methods
@@ -530,9 +536,13 @@ public:
   nsresult TriggerLink(nsIPresContext* aPresContext,
                        nsLinkVerb aVerb,
                        nsIURI* aBaseURL,
-                       const nsString& aURLSpec,
-                       const nsString& aTargetSpec,
+                       const nsAString& aURLSpec,
+                       const nsAFlatString& aTargetSpec,
                        PRBool aClick);
+  /**
+   * Do whatever needs to be done when the mouse leaves a link
+   */
+  nsresult LeaveLink(nsIPresContext* aPresContext);
 
   /**
    * Take two text nodes and append the second to the first.
@@ -582,10 +592,6 @@ public:
   static PLDHashTable sRangeListsHash;
 
 protected:
-#ifdef DEBUG
-  virtual PRUint32 BaseSizeOf(nsISizeOfHandler *aSizer) const;
-#endif
-
   PRBool HasDOMSlots() const
   {
     return !(mFlagsOrSlots & GENERIC_ELEMENT_DOESNT_HAVE_DOMSLOTS);
@@ -795,10 +801,6 @@ public:
 #endif
 
 protected:
-#ifdef DEBUG
-  virtual PRUint32 BaseSizeOf(nsISizeOfHandler *aSizer) const;
-#endif
-
   /**
    * The attributes (stored as nsGenericAttribute*)
    * @see nsGenericAttribute

@@ -67,8 +67,6 @@ nsFastLoadService::nsFastLoadService()
     mFastLoadPtrMap(nsnull),
     mDirection(0)
 {
-    NS_INIT_ISUPPORTS();
-
     NS_ASSERTION(gFastLoadService_ == nsnull, "double FastLoadService init?");
     gFastLoadService_ = this;
 }
@@ -231,6 +229,30 @@ nsFastLoadService::GetDirection(PRInt32 *aResult)
 {
     *aResult = mDirection;
     return NS_OK;
+}
+
+NS_IMETHODIMP
+nsFastLoadService::HasMuxedDocument(const char* aURISpec, PRBool *aResult)
+{
+    nsresult rv = NS_ERROR_NOT_AVAILABLE;
+    nsCOMPtr<nsIFastLoadFileControl> control;
+
+    *aResult = PR_FALSE;
+    nsAutoLock lock(mLock);
+
+    if (mInputStream) {
+        control = do_QueryInterface(mInputStream);
+        if (control)
+            rv = control->HasMuxedDocument(aURISpec, aResult);
+    }
+
+    if (! *aResult && mOutputStream) {
+        control = do_QueryInterface(mOutputStream);
+        if (control)
+            rv = control->HasMuxedDocument(aURISpec, aResult);
+    }
+
+    return rv;
 }
 
 NS_IMETHODIMP

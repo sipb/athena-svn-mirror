@@ -44,6 +44,7 @@
 // interface may change, so this comment must be updated accordingly.)
 //
 
+#undef DARWIN
 #import <Cocoa/Cocoa.h>
 
 #include "nsAppShellCocoa.h"
@@ -59,7 +60,6 @@ NS_IMPL_THREADSAFE_ISUPPORTS1(nsAppShellCocoa, nsIAppShell)
 //-------------------------------------------------------------------------
 nsAppShellCocoa::nsAppShellCocoa()
 {
-  NS_INIT_ISUPPORTS();
 }
 
 //-------------------------------------------------------------------------
@@ -112,14 +112,6 @@ nsAppShellCocoa::Exit(void)
 {
   [NSApp stop];
 	return NS_OK;
-}
-
-
-NS_IMETHODIMP
-nsAppShellCocoa::SetDispatchListener(nsDispatchListener* aDispatchListener)
-{
-  // nobody uses this except viewer
-  return NS_OK;
 }
 
 

@@ -28,6 +28,8 @@
 #include <prmem.h>
 
 #include "nsIContentViewer.h"
+#include "nsXPCOMCID.h"
+#include "nsICategoryManager.h"
 
 #include "EmbedStream.h"
 #include "EmbedPrivate.h"
@@ -39,7 +41,7 @@ NS_IMPL_ISUPPORTS1(EmbedStream, nsIInputStream)
 
 EmbedStream::EmbedStream()
 {
-  NS_INIT_ISUPPORTS();
+	NS_INIT_ISUPPORTS();
   mOwner       = nsnull;
   mOffset      = 0;
   mDoingStream = PR_FALSE;
@@ -118,8 +120,7 @@ EmbedStream::OpenStream(const char *aBaseURI, const char *aContentType)
   rv = NS_NewInputStreamChannel(getter_AddRefs(mChannel), uri,
 				NS_STATIC_CAST(nsIInputStream *, this),
 				nsDependentCString(aContentType),
-                NS_LITERAL_CSTRING(""),
-				1024); /* len */
+                NS_LITERAL_CSTRING("") );
   if (NS_FAILED(rv))
     return rv;
 
@@ -128,16 +129,18 @@ EmbedStream::OpenStream(const char *aBaseURI, const char *aContentType)
   if (NS_FAILED(rv))
     return rv;
 
-  // find a document loader for this command plus content type
-  // combination
-
-  nsCAutoString docLoaderContractID;
-  docLoaderContractID  = NS_DOCUMENT_LOADER_FACTORY_CONTRACTID_PREFIX;
-  docLoaderContractID += "view;1?type=";
-  docLoaderContractID += aContentType;
+  // find a document loader for this content type
+  nsXPIDLCString docLoaderContractID;
+  nsCOMPtr<nsICategoryManager> catMan(do_GetService(NS_CATEGORYMANAGER_CONTRACTID, &rv));
+  if (NS_FAILED(rv))
+    return rv;
+  rv = catMan->GetCategoryEntry("Gecko-Content-Viewers", aContentType,
+                                getter_Copies(docLoaderContractID));
+  if (NS_FAILED(rv))
+    return rv;
 
   nsCOMPtr<nsIDocumentLoaderFactory> docLoaderFactory;  
-  docLoaderFactory = do_CreateInstance(docLoaderContractID.get(), &rv);
+  docLoaderFactory = do_GetService(docLoaderContractID.get(), &rv);
   if (NS_FAILED(rv))
     return rv;
 

@@ -40,7 +40,6 @@
 #include "nsIHTMLContent.h"
 #include "nsGenericHTMLElement.h"
 #include "nsHTMLAtoms.h"
-#include "nsIStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
 #include "nsIFrameSetElement.h"
@@ -90,9 +89,6 @@ public:
                                nsAString& aResult) const;
   NS_IMETHOD GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
                                       nsChangeHint& aHint) const;
-#ifdef DEBUG
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
-#endif
 private:
   nsresult ParseRowCol(const nsAString& aValue,
                        PRInt32&         aNumSpecs,
@@ -353,7 +349,7 @@ nsHTMLFrameSetElement::StringToAttribute(nsIAtom* aAttribute,
                                          nsHTMLValue& aResult)
 {
   if (aAttribute == nsHTMLAtoms::bordercolor) {
-    if (nsGenericHTMLElement::ParseColor(aValue, mDocument, aResult)) {
+    if (aResult.ParseColor(aValue, mDocument)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   } 
@@ -363,7 +359,7 @@ nsHTMLFrameSetElement::StringToAttribute(nsIAtom* aAttribute,
     }
   } 
   else if (aAttribute == nsHTMLAtoms::border) {
-    if (nsGenericHTMLElement::ParseValue(aValue, 0, 100, aResult, eHTMLUnit_Pixel)) {
+    if (aResult.ParseIntWithBounds(aValue, eHTMLUnit_Pixel, 0, 100)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
@@ -387,27 +383,22 @@ NS_IMETHODIMP
 nsHTMLFrameSetElement::GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
                                                 nsChangeHint& aHint) const
 {
-  if ((aAttribute == nsHTMLAtoms::rows) ||
-      (aAttribute == nsHTMLAtoms::cols)) {
-    aHint = mCurrentRowColHint;
-  }
-  else if (! nsGenericHTMLElement::GetCommonMappedAttributesImpact(aAttribute, aHint)) {
-    aHint = NS_STYLE_HINT_CONTENT;
-  }
+  // can't be static const because it uses mCurrentRowColHint
+  const AttributeImpactEntry attributes[] = {
+    { &nsHTMLAtoms::rows, mCurrentRowColHint },
+    { &nsHTMLAtoms::cols, mCurrentRowColHint },
+    { nsnull, NS_STYLE_HINT_NONE },
+  };
+
+  const AttributeImpactEntry* const map[] = {
+    attributes,
+    sCommonAttributeMap
+  };
+  
+  FindAttributeImpact(aAttribute, aHint, map, NS_ARRAY_LENGTH(map));
 
   return NS_OK;
 }
-
-#ifdef DEBUG
-NS_IMETHODIMP
-nsHTMLFrameSetElement::SizeOf(nsISizeOfHandler* aSizer,
-                              PRUint32* aResult) const
-{
-  *aResult = sizeof(*this) + BaseSizeOf(aSizer);
-
-  return NS_OK;
-}
-#endif
 
 nsresult
 nsHTMLFrameSetElement::ParseRowCol(const nsAString & aValue,

@@ -38,12 +38,13 @@
 #ifndef __nsCaretAccessible_h__
 #define __nsCaretAccessible_h__
 
-#include "nsAccessible.h"
 #include "nsBaseWidgetAccessible.h"
 #include "nsIWeakReference.h"
 #include "nsIDOMNode.h"
 #include "nsIAccessibleCaret.h"
 #include "nsISelectionListener.h"
+#include "nsRect.h"
+
 /*
  * This special accessibility class is for the caret, which is really the currently focused selection.
  * There is only 1 visible caret per top level window (nsRootAccessible)
@@ -58,7 +59,7 @@ class nsCaretAccessible : public nsLeafAccessible, public nsIAccessibleCaret, pu
 public:
   NS_DECL_ISUPPORTS_INHERITED
 
-  nsCaretAccessible(nsIDOMNode* aDocumentNode, nsIWeakReference* aShell, nsIAccessibleEventListener *aListener);
+  nsCaretAccessible(nsIDOMNode* aDocumentNode, nsIWeakReference* aShell, nsIAccessible *aRootAccessible);
 
   /* ----- nsIAccessible ----- */
   NS_IMETHOD GetAccParent(nsIAccessible **_retval);
@@ -75,13 +76,16 @@ public:
   /* ----- nsISelectionListener ---- */
   NS_IMETHOD NotifySelectionChanged(nsIDOMDocument *aDoc, nsISelection *aSel, short aReason);
 
+  /* ----- nsIAccessNode ----- */
+  NS_IMETHOD Shutdown();
+
 private:
   nsRect mCaretRect;
   PRBool mVisible;
   nsCOMPtr<nsIDOMNode> mCurrentDOMNode;
   // mListener is not a com pointer. It's a copy of the listener in the nsRootAccessible owner. 
   //See nsRootAccessible.h for details of the lifetime if this listener
-  nsIAccessibleEventListener *mListener;
+  nsIAccessible *mRootAccessible;
   nsCOMPtr<nsIWeakReference> mDomSelectionWeak;
 };
 

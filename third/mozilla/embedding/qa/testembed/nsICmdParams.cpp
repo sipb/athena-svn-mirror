@@ -54,13 +54,13 @@ void CnsICmdParams::GetValueTypeTest(const char *aCommand, const char *stateType
 	if (cmdParamObj) {
 		FormatAndPrintOutput("The input command name = ", aCommand, displayMode);
 		FormatAndPrintOutput("The input state type = ", stateType, displayMode);
-		cmdMgrObj = CnsICommandMgr::GetCommandMgrObject(qaWebBrowser);
+		cmdMgrObj = CnsICommandMgr::GetCommandMgrObject(qaWebBrowser, displayMode);
 		if (!cmdMgrObj) {
 			QAOutput("We didn't get nsICommandMgr object. Test fails.", displayMode);
 			return;
 		}
 		else {
-			rv = cmdMgrObj->GetCommandState(aCommand,cmdParamObj);
+			rv = cmdMgrObj->GetCommandState(aCommand, nsnull, cmdParamObj);
 			RvTestResult(rv, "cmdMgrObj->GetCommandState test", displayMode);
 		}
 		rv = cmdParamObj->GetValueType(stateType, &retval);
@@ -79,13 +79,13 @@ void CnsICmdParams::GetBooleanValueTest(const char *aCommand, const char *stateT
 	if (cmdParamObj) {
 		FormatAndPrintOutput("The input command name = ", aCommand, displayMode);
 		FormatAndPrintOutput("The input state type = ", stateType, displayMode);
-		cmdMgrObj = CnsICommandMgr::GetCommandMgrObject(qaWebBrowser);
+		cmdMgrObj = CnsICommandMgr::GetCommandMgrObject(qaWebBrowser, displayMode);
 		if (!cmdMgrObj) {
 			QAOutput("We didn't get nsICommandMgr object. Test fails.", displayMode);
 			return;
 		}
 		else
-			cmdMgrObj->GetCommandState(aCommand, cmdParamObj);
+			cmdMgrObj->GetCommandState(aCommand, nsnull, cmdParamObj);
 
 		rv = cmdParamObj->GetBooleanValue(stateType, &retval);
 		RvTestResult(rv, "GetBooleanValue test", displayMode);
@@ -124,7 +124,7 @@ void CnsICmdParams::GetDoubleValueTest(double value, const char *stateType, int 
 		cmdParamObj->SetDoubleValue(stateType, value);
 		rv = cmdParamObj->GetDoubleValue(stateType, &retval);
 		RvTestResult(rv, "GetDoubleValue test", displayMode);
-		FormatAndPrintOutput("GetLongValue() return double = ", retval, displayMode);
+		FormatAndPrintOutput("GetDoubleValue() return double = ", retval, displayMode);
 	}
 	else
 	    QAOutput("GetDoubleValueTest: We didn't get nsICommandParams object.", 1);
@@ -153,13 +153,13 @@ void CnsICmdParams::GetCStringValueTest(const char *aCommand, const char *stateT
 	if (cmdParamObj) {
 		FormatAndPrintOutput("The input command name = ", aCommand, displayMode);
 		FormatAndPrintOutput("The input state type = ", stateType, displayMode);
-		cmdMgrObj = CnsICommandMgr::GetCommandMgrObject(qaWebBrowser);
+		cmdMgrObj = CnsICommandMgr::GetCommandMgrObject(qaWebBrowser, displayMode);
 		if (!cmdMgrObj) {
 			QAOutput("We didn't get nsICommandMgr object. Test fails.", displayMode);
 			return;
 		}
 		else
-			cmdMgrObj->GetCommandState(aCommand, cmdParamObj);
+			cmdMgrObj->GetCommandState(aCommand, nsnull, cmdParamObj);
 		char *tCstringValue = nsnull;
 		rv = cmdParamObj->GetCStringValue(stateType, &tCstringValue);
 		RvTestResult(rv, "GetCStringValue test", displayMode);

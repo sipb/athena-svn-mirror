@@ -40,7 +40,6 @@
 #include "nsIHTMLContent.h"
 #include "nsGenericHTMLElement.h"
 #include "nsHTMLAtoms.h"
-#include "nsIStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
 
@@ -66,10 +65,6 @@ public:
 
   // nsIDOMHTMLMetaElement
   NS_DECL_NSIDOMHTMLMETAELEMENT
-
-#ifdef DEBUG
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
-#endif
 };
 
 nsresult
@@ -154,14 +149,3 @@ NS_IMPL_STRING_ATTR(nsHTMLMetaElement, Content, content)
 NS_IMPL_STRING_ATTR(nsHTMLMetaElement, HttpEquiv, httpEquiv)
 NS_IMPL_STRING_ATTR(nsHTMLMetaElement, Name, name)
 NS_IMPL_STRING_ATTR(nsHTMLMetaElement, Scheme, scheme)
-
-
-#ifdef DEBUG
-NS_IMETHODIMP
-nsHTMLMetaElement::SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const
-{
-  *aResult = sizeof(*this) + BaseSizeOf(aSizer);
-
-  return NS_OK;
-}
-#endif

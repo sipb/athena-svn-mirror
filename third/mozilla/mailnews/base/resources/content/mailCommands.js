@@ -72,18 +72,6 @@ function GetNewMessages(selectedFolders, compositeDataSource)
 	}
 }
 
-function DeleteMessages(compositeDataSource, srcFolder, messages, reallyDelete)
-{
-    dump("fix or remove this\n");
-    // going away...
-}
-
-function CopyMessages(compositeDataSource, srcFolder, destFolder, messages, isMove)
-{
-    dump("fix or remove this\n");
-    // going away...
-}
-
 function getIdentityForServer(server)
 {
     var identity = null;
@@ -434,25 +422,89 @@ const nsIJunkMailPlugin = Components.interfaces.nsIJunkMailPlugin;
 const nsIMsgDBHdr = Components.interfaces.nsIMsgDBHdr;
 
 var gJunkmailComponent;
+var gJunkKeys = [];
+var gJunkTargetFolder;
+
+function saveJunkMsgForAction(aServer, aMsgURI, aClassification)
+{
+  // we only care when the message gets marked as junk
+  if (aClassification == nsIJunkMailPlugin.GOOD)
+    return;
+ 
+  var spamSettings = aServer.spamSettings
+ 
+  // if the spam feature is disabled,
+  // or if the move functionality is turned off, bail out.
+  // the user could still run the JMC manually,
+  // but let's not move in that scenario
+  if (!spamSettings.level || !spamSettings.moveOnSpam)
+    return;   
+  
+  var msgHdr = messenger.messageServiceFromURI(aMsgURI).messageURIToMsgHdr(aMsgURI);
+  
+  // don't move if we are already in the junk folder
+  if (msgHdr.folder.flags & MSG_FOLDER_FLAG_JUNK)
+    return;
+ 
+  var spamFolderURI = spamSettings.spamFolderURI;
+  if (!spamFolderURI)
+    return;
+  
+  var spamFolder = GetMsgFolderFromUri(spamFolderURI);
+
+  if (spamFolder) 
+  {
+    gJunkKeys[gJunkKeys.length] = msgHdr.messageKey;
+    gJunkTargetFolder = spamFolder;
+  }
+}
+
+function performActionOnJunkMsgs()
+{
+  if (!gJunkKeys.length)
+  {
+    gJunkTargetFolder = [];
+    return;
+  }
+
+  var indices = new Array(gJunkKeys.length);
+  for (var i=0;i<gJunkKeys.length;i++)
+    indices[i] = gDBView.findIndexFromKey(gJunkKeys[i], true /* expand */);
+
+  var treeView = gDBView.QueryInterface(Components.interfaces.nsITreeView);
+  var treeSelection = treeView.selection;
+  treeSelection.clearSelection();
+   
+  // select the messages
+  for (i=0;i<indices.length;i++)
+    treeSelection.rangedSelect(indices[i], indices[i], true /* augment */);
+
+  SetNextMessageAfterDelete();  
+  gDBView.doCommandWithFolder(nsMsgViewCommandType.moveMessages, gJunkTargetFolder);
+  
+  gJunkKeys = [];
+  gJunkTargetFolder = null;
+}
 
 function getJunkmailComponent()
 {
     if (!gJunkmailComponent) {
         gJunkmailComponent = Components.classes[NS_BAYESIANFILTER_CONTRACTID].getService(nsIJunkMailPlugin);
-        // gJunkmailComponent.initComponent();
-        // who calls init method?
     }
 }
 
 function analyze(aMsgHdr, aNextFunction)
 {
     var listener = {
-        onMessageClassified: function(aMsgURL, aClassification)
+        onMessageClassified: function(aMsgURI, aClassification)
         {
-            dump(aMsgURL + ' is ' 
+            // XXX todo
+            // update status bar, or a progress dialog
+            // running junk mail controls manually, on a large folder
+            // can take a while, and the user doesn't know when we are done.
+            dump(aMsgURI + ' is ' 
                  + (aClassification == nsIJunkMailPlugin.JUNK
                     ? 'JUNK' : 'GOOD') + '\n');
-
             // XXX TODO, make the cut off 50, like in nsMsgSearchTerm.cpp
             var score = 
                 aClassification == nsIJunkMailPlugin.JUNK ? "100" : "0";
@@ -464,16 +516,62 @@ function analyze(aMsgHdr, aNextFunction)
             db.setStringProperty(aMsgHdr.messageKey, "junkscore", score);
             db.setStringProperty(aMsgHdr.messageKey, "junkscoreorigin", 
                                  "plugin");
+            saveJunkMsgForAction(aMsgHdr.folder.server, aMsgURI, aClassification);
             aNextFunction();
         }
     };
 
+    // if we are whitelisting, check if the email address is in the whitelist addressbook.
+    var spamSettings = aMsgHdr.folder.server.spamSettings;
+    if (spamSettings.useWhiteList && spamSettings.whiteListAbURI)
+    {
+      var whiteListDirectory = RDF.GetResource(spamSettings.whiteListAbURI).QueryInterface(Components.interfaces.nsIAbMDBDirectory);
+      var headerParser = Components.classes["@mozilla.org/messenger/headerparser;1"].getService(Components.interfaces.nsIMsgHeaderParser);
+      var authorEmailAddress = new Object;
+      headerParser.extractHeaderAddressMailboxes(null, aMsgHdr.author, authorEmailAddress);
+      if (whiteListDirectory.hasCardForEmailAddress(authorEmailAddress.value))
+      {
+        // skip over this message, like we do on incoming mail
+        // the difference is it could be marked as junk from previous analysis
+        // or from being manually marked by the user.
+        aNextFunction();
+        return;
+      }
+    }
+
     var messageURI = aMsgHdr.folder.generateMessageURI(aMsgHdr.messageKey)
         + "?fetchCompleteMessage=true";
-    gJunkmailComponent.classifyMessage(messageURI, listener);
+    gJunkmailComponent.classifyMessage(messageURI, msgWindow, listener);
 }
 
-function analyzeMessages()
+function analyzeFolderForJunk()
+{
+  MsgJunkMailInfo(true);
+  var view = GetDBView();
+
+  // need to expand all threads, so we analyze everything
+  view.doCommand(nsMsgViewCommandType.expandAll);
+
+  var treeView = view.QueryInterface(Components.interfaces.nsITreeView);
+  var count = treeView.rowCount;
+  if (!count)
+    return;
+
+  var messages = new Array(count)
+  for (var i = 0; i < count; i++) {
+    messages[i] = view.getURIForViewIndex(i);
+  }
+  analyzeMessages(messages);
+}
+
+// not used yet, but soon
+function analyzeMessagesForJunk()
+{
+  var messages = GetSelectedMessages();
+  analyzeMessages(messages);
+}
+
+function analyzeMessages(messages)
 {
     function processNext()
     {
@@ -486,11 +584,11 @@ function analyzeMessages()
         else {
             dump('[bayesian filter message analysis complete.]\n');
             gJunkmailComponent.endBatch();
+            performActionOnJunkMsgs();
         }
     }
 
     getJunkmailComponent();
-    var messages = GetSelectedMessages();
     var counter = 0;
     gJunkmailComponent.startBatch();
     dump('[bayesian filter message analysis begins.]\n');
@@ -499,6 +597,60 @@ function analyzeMessages()
 
 function JunkSelectedMessages(setAsJunk)
 {
+    MsgJunkMailInfo(true);
     gDBView.doCommand(setAsJunk ? nsMsgViewCommandType.junk
                       : nsMsgViewCommandType.unjunk);
+}
+
+function deleteJunkInFolder()
+{
+  MsgJunkMailInfo(true);
+  var view = GetDBView();
+
+  // need to expand all threads, so we find everything
+  view.doCommand(nsMsgViewCommandType.expandAll);
+
+  var treeView = view.QueryInterface(Components.interfaces.nsITreeView);
+  var count = treeView.rowCount;
+  if (!count)
+    return;
+
+  var treeSelection = treeView.selection;
+
+  var clearedSelection = false;
+  
+  // select the junk messages
+  for (var i = 0; i < count; i++) 
+  {
+    var messageUri = view.getURIForViewIndex(i);
+    var msgHdr = messenger.messageServiceFromURI(messageUri).messageURIToMsgHdr(messageUri);
+    var junkScore = msgHdr.getStringProperty("junkscore"); 
+    var isJunk = ((junkScore != "") && (junkScore != "0"));
+    // if the message is junk, select it.
+    if (isJunk) 
+    {
+      // only do this once
+      if (!clearedSelection)
+      {
+        // clear the current selection
+        // since we will be deleting all selected messages
+        treeSelection.clearSelection();
+        clearedSelection = true;
+      }
+      treeSelection.rangedSelect(i, i, true /* augment */);
+    }
+  }
+
+  // if we didn't clear the selection
+  // there was no junk, so bail.
+  if (!clearedSelection)
+    return;
+
+  // delete the selected messages
+  //
+  // XXX todo
+  // should we try to set next message after delete 
+  // to the message selected before we did all this, if it was not junk?
+  SetNextMessageAfterDelete();  
+  view.doCommand(nsMsgViewCommandType.deleteMsg);
 }

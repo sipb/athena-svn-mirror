@@ -46,7 +46,6 @@
 
 #include "nsBoxLayoutState.h"
 #include "nsBox.h"
-#include "nsIStyleContext.h"
 #include "nsIPresContext.h"
 #include "nsCOMPtr.h"
 #include "nsIContent.h"
@@ -58,11 +57,9 @@
 
 #include "nsBoxLayoutState.h"
 #include "nsBoxFrame.h"
-#include "nsIStyleContext.h"
 #include "nsIPresContext.h"
 #include "nsCOMPtr.h"
 #include "nsUnitConversion.h"
-#include "nsINameSpaceManager.h"
 #include "nsHTMLAtoms.h"
 #include "nsXULAtoms.h"
 #include "nsIContent.h"
@@ -72,7 +69,6 @@
 #include "nsIPresShell.h"
 #include "nsFrameNavigator.h"
 #include "nsCSSRendering.h"
-#include "nsIPref.h"
 #include "nsIServiceManager.h"
 
 #include "nsContainerBox.h"
@@ -87,6 +83,13 @@ nsContainerBox::nsContainerBox(nsIPresShell* aShell):nsBox(aShell)
 
 nsContainerBox::~nsContainerBox()
 {
+}
+
+void
+nsContainerBox::Destroy(nsBoxLayoutState& aState)
+{
+  SetLayoutManager(nsnull);
+  ClearChildren(aState);
 }
 
 #ifdef DEBUG_LAYOUT

@@ -43,8 +43,12 @@ REQUIRES	= xpcom \
 		  embed_base \
 		  pref \
 		  windowwatcher \
-		  mpfilelocprovider \
+		  profdirserviceprovider \
 		  $(NULL)
+
+ifdef ACCESSIBILITY
+REQUIRES        += accessibility
+endif
 
 CPPSRCS		= \
 		gtkmozembed2.cpp \
@@ -55,6 +59,21 @@ CPPSRCS		= \
 		EmbedEventListener.cpp \
 		EmbedWindowCreator.cpp \
 		EmbedStream.cpp
+
+ifdef MOZ_ENABLE_GTK2
+CSRCS           = \
+		gtkmozembedmarshal.c
+CPPSRCS         += \
+		EmbedPrompter.cpp \
+		GtkPromptService.cpp
+endif
+
+# Force applications to be built non-statically
+# when building the mozcomps meta component
+ifneq (,$(filter mozcomps,$(MOZ_META_COMPONENTS)))
+BUILD_STATIC_LIBS=
+BUILD_SHARED_LIBS=1
+endif
 
 ifdef BUILD_STATIC_LIBS
 # Static build stuff
@@ -81,20 +100,28 @@ endif
 
 SHARED_LIBRARY_LIBS= \
 		$(DIST)/lib/libembed_base_s.$(LIB_SUFFIX) \
-		$(DIST)/lib/libmpfilelocprovider_s.$(LIB_SUFFIX) \
+		$(DIST)/lib/libprofdirserviceprovider_s.$(LIB_SUFFIX) \
 		$(NULL)
 
 EXPORTS		= \
 		gtkmozembed.h \
 		gtkmozembed_internal.h
 
+ifdef MOZ_ENABLE_GTK
 EXTRA_DSO_LDOPTS = \
 		$(MOZ_COMPONENT_LIBS) \
 		$(XPCOM_GLUE_LIBS) \
 		-lgtksuperwin \
 		$(NULL)
+endif
 
-EXTRA_DSO_LDOPTS += $(MOZ_GTK_LDFLAGS)
+ifdef MOZ_ENABLE_GTK2
+EXTRA_DSO_LDOPTS = \
+		$(MOZ_COMPONENT_LIBS) \
+		$(NULL)
+endif
+
+EXTRA_DSO_LDOPTS += $(MOZ_GTK_LDFLAGS) $(MOZ_GTK2_LIBS)
 
 include $(topsrcdir)/config/rules.mk
 
@@ -109,7 +136,8 @@ DEFINES         += -D_TIME_H=1
 endif
 endif
 
-CXXFLAGS        += $(MOZ_GTK_CFLAGS)
+CXXFLAGS        += $(MOZ_GTK_CFLAGS) $(MOZ_GTK2_CFLAGS)
+CFLAGS          += $(MOZ_GTK_CFLAGS) $(MOZ_GTK2_CFLAGS)
 
 ifdef BUILD_STATIC_LIBS
 
@@ -166,4 +194,5 @@ EmbedComponents.cpp: EmbedComponents.cpp.in Makefile Makefile.in $(EMBED_LINK_CO
 
 GARBAGE += EmbedComponents.cpp embed-link-comp-names embed-link-comps components
 endif
+
 

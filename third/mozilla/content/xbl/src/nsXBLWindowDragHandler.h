@@ -48,7 +48,8 @@ class nsIAtom;
 class nsIDOMEventReceiver;
 class nsXBLSpecialDocInfo;
 
-class nsXBLWindowDragHandler : public nsIDOMDragListener, public nsXBLWindowHandler
+class nsXBLWindowDragHandler : public nsIDOMDragListener,
+                               public nsXBLWindowHandler
 {
 public:
   nsXBLWindowDragHandler(nsIDOMEventReceiver* aReceiver);
@@ -68,23 +69,13 @@ protected:
   NS_IMETHOD WalkHandlers(nsIDOMEvent* aKeyEvent, nsIAtom* aEventType);
 
     // check if the given handler cares about the given key event
-  PRBool EventMatched ( nsIXBLPrototypeHandler* inHandler, nsIAtom* inEventType,
-                          nsIDOMEvent* inEvent ) ;
+  PRBool EventMatched(nsXBLPrototypeHandler* inHandler, nsIAtom* inEventType,
+                      nsIDOMEvent* inEvent);
   
-    // We need our own refcount (even though our base class has one) because
-    // we have our own statics that need to be initialized and the creation of
-    // other subclasses would cause us to miss things if we shared the counter.  
-  static PRUint32 gRefCnt;
-  static nsIAtom* kDragGestureAtom;
-  static nsIAtom* kDragOverAtom;
-  static nsIAtom* kDragEnterAtom;
-  static nsIAtom* kDragExitAtom;
-  static nsIAtom* kDragDropAtom;
-
 };
 
-extern nsresult
+nsresult
 NS_NewXBLWindowDragHandler(nsIDOMEventReceiver* aReceiver,
-                            nsXBLWindowDragHandler** aResult);
+                           nsXBLWindowDragHandler** aResult);
 
 #endif

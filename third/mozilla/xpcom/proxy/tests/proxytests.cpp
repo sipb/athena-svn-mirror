@@ -43,7 +43,6 @@
 #include "nsIComponentRegistrar.h"
 #include "nsIServiceManager.h"
 #include "nsCOMPtr.h"
-#include "nsSpecialSystemDirectory.h"    // For exe dir
 
 #include "nscore.h"
 #include "nspr.h"
@@ -73,7 +72,6 @@ class nsTestXPCFoo : public nsITestProxy
 
 nsTestXPCFoo::nsTestXPCFoo()
 {
-    NS_INIT_ISUPPORTS();
     NS_ADDREF_THIS();
 }
 
@@ -134,7 +132,6 @@ class nsTestXPCFoo2 : public nsITestProxy
 
 nsTestXPCFoo2::nsTestXPCFoo2()
 {
-    NS_INIT_ISUPPORTS();
     NS_ADDREF_THIS();
 }
 

@@ -44,7 +44,6 @@
 #include "nsIWidget.h"
 #include "nsLeafFrame.h"
 #include "nsCoord.h"
-#include "nsIStyleContext.h"
 #include "nsIPresContext.h"
 #include "nsCOMPtr.h"
 
@@ -153,7 +152,7 @@ public:
     */
   virtual const nsIID& GetIID(); 
 
-  NS_IMETHOD GetType(PRInt32* aType) const;
+  NS_IMETHOD_(PRInt32) GetType() const;
   NS_IMETHOD GetName(nsAString* aName);
   NS_IMETHOD GetValue(nsAString* aName);
 
@@ -219,11 +218,13 @@ public:
   NS_IMETHOD GetProperty(nsIAtom* aName, nsAString& aValue); 
   // Resize Reflow Optimiaztion Methods
   static void SetupCachedSizes(nsSize& aCacheSize,
-                               nsSize& aCachedMaxElementSize,
+                               nscoord& aCachedAscent,
+                               nscoord& aCachedMaxElementWidth,
                                nsHTMLReflowMetrics& aDesiredSize);
 
   static void SkipResizeReflow(nsSize& aCacheSize,
-                               nsSize& aCachedMaxElementSize,
+                               nscoord& aCachedAscent,
+                               nscoord& aCachedMaxElementWidth,
                                nsSize& aCachedAvailableSize,
                                nsHTMLReflowMetrics& aDesiredSize,
                                const nsHTMLReflowState& aReflowState,
@@ -329,7 +330,8 @@ protected:
 
   // Reflow Optimization
   nsSize       mCacheSize;
-  nsSize       mCachedMaxElementSize;
+  nscoord      mCachedAscent;
+  nscoord      mCachedMaxElementWidth;
 
 private:
   NS_IMETHOD_(nsrefcnt) AddRef() { return NS_OK; }

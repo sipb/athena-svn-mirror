@@ -52,10 +52,12 @@ REQUIRES	= xpcom \
 		  xuldoc \
 		  intl \
 		  windowwatcher \
+		  webbrowserpersist \
 		  imglib2 \
 		  uriloader \
 		  webbrwsr \
 		  debug \
+		  plugin \
 		  $(NULL)
 
 CPPSRCS		= \
@@ -101,6 +103,8 @@ CPPSRCS		= \
 		nsStyleLinkElement.cpp \
 		nsContentAreaDragDrop.cpp \
 		nsFrameLoader.cpp \
+		nsScriptEventManager.cpp \
+		nsImageLoadingContent.cpp \
 		$(NULL)
 
 # we don't want the shared lib, but we want to force the creation of a
@@ -117,4 +121,5 @@ INCLUDES	+= \
 		-I$(srcdir)/../../xul/content/src \
 		-I$(srcdir)/../../html/content/src \
 		-I$(srcdir)/../../base/src \
+		-I$(srcdir)/../../../layout/html/base/src \
 		$(NULL)

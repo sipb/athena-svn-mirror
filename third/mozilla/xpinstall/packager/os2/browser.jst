@@ -26,8 +26,15 @@ function upgradeCleanup()
   deleteThisFile("Components", "nkcache.dll");
   deleteThisFile("Components", "mozbrwsr.dll");
   deleteThisFile("Components", "jsloader.dll");
+  deleteThisFile("Components", "gkcontnt.dll");
+  deleteThisFile("Components", "urildr.dll");
+  deleteThisFile("Components", "jsurl.dll");
+  deleteThisFile("Components", "gkview.dll");
+  deleteThisFile("Components", "shistory.dll");
   deleteThisFile("Chrome",     "chrome.rdf");
   deleteThisFolder("Chrome",   "overlayinfo");
+  deleteThisFile("Components", "gkhtml.dll");
+  deleteThisFile("Components", "regviewr.dll");
 }
 
 // main
@@ -77,8 +84,6 @@ if(verifyDiskSpace(fProgram, srDest))
     registerChrome(CONTENT | DELAYED_CHROME, getFolder("Chrome","comm.jar"),"content/navigator-region/");
     registerChrome(CONTENT | DELAYED_CHROME, getFolder("Chrome","comm.jar"),"content/necko/");
     registerChrome(CONTENT | DELAYED_CHROME, getFolder("Chrome","comm.jar"),"content/mozldap/");
-    registerChrome(CONTENT | DELAYED_CHROME, getFolder("Chrome","forms.jar"),"content/forms/");
-    registerChrome(SKIN | DELAYED_CHROME, getFolder("Chrome","forms.jar"),"skin/classic/forms/");
     registerChrome(SKIN | DELAYED_CHROME, getFolder("Chrome","classic.jar"),"skin/classic/communicator/");
     registerChrome(SKIN | DELAYED_CHROME, getFolder("Chrome","classic.jar"),"skin/classic/editor/");
     registerChrome(SKIN | DELAYED_CHROME, getFolder("Chrome","classic.jar"),"skin/classic/global/");
@@ -93,15 +98,23 @@ if(verifyDiskSpace(fProgram, srDest))
     registerChrome(CONTENT | DELAYED_CHROME, getFolder("Chrome","comm.jar"),"content/xbl-marquee/");
 
     /* Log files that are created after the installer is done, so they can be uninstalled */
+    logComment("Installing: "    + fProgram + ".autoreg");
     logComment("Installing: "    + fProgram + "Xpcs Registry.dat");
     logComment("Installing: "    + fProgram + "xpcom.log");
     logComment("Create Folder: " + fProgram + "components");
     logComment("Installing: "    + fProgram + "components\\xpti.dat");
     logComment("Installing: "    + fProgram + "components\\xptitemp.dat");
+    logComment("Installing: "    + fProgram + "components\\compreg.dat");
     logComment("Create Folder: " + fProgram + "chrome");
     logComment("Installing: "    + fProgram + "chrome\\installed-chrome.txt");
     logComment("Installing: "    + fProgram + "chrome\\chrome.rdf");
     logComment("Create Folder: " + fProgram + "chrome\\overlayinfo");
+    logComment("Create Folder: " + fProgram + "chrome\\overlayinfo\\cookie");
+    logComment("Create Folder: " + fProgram + "chrome\\overlayinfo\\cookie\\content");
+    logComment("Installing: "    + fProgram + "chrome\\overlayinfo\\cookie\\content\\overlays.rdf");
+    logComment("Create Folder: " + fProgram + "chrome\\overlayinfo\\inspector");
+    logComment("Create Folder: " + fProgram + "chrome\\overlayinfo\\inspector\\content");
+    logComment("Installing: "    + fProgram + "chrome\\overlayinfo\\inspector\\content\\overlays.rdf");
     logComment("Create Folder: " + fProgram + "chrome\\overlayinfo\\communicator");
     logComment("Create Folder: " + fProgram + "chrome\\overlayinfo\\communicator\\content");
     logComment("Installing: "    + fProgram + "chrome\\overlayinfo\\communicator\\content\\overlays.rdf");

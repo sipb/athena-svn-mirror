@@ -51,8 +51,6 @@ nsMsgRDFDataSource::nsMsgRDFDataSource():
     mInitialized(PR_FALSE),
     mRDFService(nsnull)
 {
-    NS_INIT_ISUPPORTS();
-
     // do one-time initialization here
     
     NS_NewISupportsArray(getter_AddRefs(mObservers));
@@ -287,15 +285,7 @@ nsMsgRDFDataSource::GetAllResources(nsISimpleEnumerator **_retval)
 }
 
 
-/* nsIEnumerator GetAllCommands (in nsIRDFResource aSource); */
-NS_IMETHODIMP
-nsMsgRDFDataSource::GetAllCommands(nsIRDFResource *aSource, nsIEnumerator **_retval)
-{
-    return NS_RDF_NO_VALUE;
-}
-
-
-/* nsISimpleEnumerator GetAllCommands (in nsIRDFResource aSource); */
+/* nsISimpleEnumerator GetAllCmds (in nsIRDFResource aSource); */
 NS_IMETHODIMP
 nsMsgRDFDataSource::GetAllCmds(nsIRDFResource *aSource, nsISimpleEnumerator **_retval)
 {
@@ -316,6 +306,20 @@ NS_IMETHODIMP
 nsMsgRDFDataSource::DoCommand(nsISupportsArray *aSources, nsIRDFResource *aCommand, nsISupportsArray *aArguments)
 {
     return NS_RDF_NO_VALUE;
+}
+
+/* void BeginUpdateBatch (); */
+NS_IMETHODIMP
+nsMsgRDFDataSource::BeginUpdateBatch()
+{
+    return NS_OK;
+}
+
+/* void EndUpdateBatch (); */
+NS_IMETHODIMP
+nsMsgRDFDataSource::EndUpdateBatch()
+{
+    return NS_OK;
 }
 
 
@@ -447,10 +451,7 @@ nsMsgRDFDataSource::GetTransactionManager(nsISupportsArray *aSources, nsITransac
 
 	if (cnt > 0)
 	{
-		nsCOMPtr<nsISupports> supports;
-
-		supports = getter_AddRefs(aSources->ElementAt(0));
-		transactionManager = do_QueryInterface(supports, &rv);
+		transactionManager = do_QueryElementAt(aSources, 0, &rv);
 		if (NS_SUCCEEDED(rv) && transactionManager)
 		{
 			aSources->RemoveElementAt(0);

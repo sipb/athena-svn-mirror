@@ -64,7 +64,6 @@ CDownload::CDownload() :
     mUserCanceled(false),
     mStatus(NS_OK)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 CDownload::~CDownload()
@@ -225,7 +224,7 @@ NS_IMETHODIMP CDownload::OnProgressChange(nsIWebProgress *aWebProgress, nsIReque
     if (aMaxTotalProgress == -1)
         mPercentComplete = -1;
     else
-        mPercentComplete = ((float)aCurTotalProgress / (float)aMaxTotalProgress) * 100.0;
+        mPercentComplete = (PRInt32)(((float)aCurTotalProgress / (float)aMaxTotalProgress) * 100.0 + 0.5);
     
     MsgOnDLProgressChangeInfo info(this, aCurTotalProgress, aMaxTotalProgress);
     BroadcastMessage(msg_OnDLProgressChange, &info);
@@ -278,7 +277,6 @@ void CDownload::CreateProgressView()
 
 CHelperAppLauncherDialog::CHelperAppLauncherDialog()
 {
-  NS_INIT_ISUPPORTS();
 }
 
 CHelperAppLauncherDialog::~CHelperAppLauncherDialog()

@@ -41,11 +41,9 @@
 #include "nsISupports.h"
 #include "nsCoord.h"
 #include <stdio.h>
+#include "nsIWidget.h"
 
 class nsIViewManager;
-class nsIWidget;
-struct nsWidgetInitData;
-typedef void* nsNativeWidget;
 struct nsRect;
 
 // Enumerated type to indicate the visibility of a layer.
@@ -170,6 +168,12 @@ public:
   NS_IMETHOD  GetParent(nsIView *&aParent) const = 0;
 
   /**
+   * The view's first child is the child which is earliest in document order.
+   * @result first child
+   */
+  NS_IMETHOD  GetFirstChild(nsIView* &aChild) const = 0;
+
+  /**
    * Called to query the next sibling of the view.
    * @result view's next sibling
    */
@@ -223,13 +227,17 @@ public:
    * @param aNative native window that will be used as parent of
    *        aWindowIID. if nsnull, then parent will be derived from
    *        parent view and it's ancestors
+   * @param aWindowType is either content, UI or inherit from parent window.
+   *        This is used to expose what type of window this is to 
+   *        assistive technology like screen readers.
    * @return error status
    */
   NS_IMETHOD CreateWidget(const nsIID &aWindowIID,
                           nsWidgetInitData *aWidgetInitData = nsnull,
         					        nsNativeWidget aNative = nsnull,
                           PRBool aEnableDragDrop = PR_TRUE,
-                          PRBool aResetVisibility = PR_TRUE) = 0;
+                          PRBool aResetVisibility = PR_TRUE,
+                          nsContentType aWindowType = eContentTypeInherit) = 0;
 
   /**
    * In 4.0, the "cutout" nature of a view is queryable.

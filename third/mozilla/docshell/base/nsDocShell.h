@@ -68,6 +68,7 @@
 #include "nsIScriptGlobalObject.h"
 #include "nsIScriptGlobalObjectOwner.h"
 #include "nsISHistory.h"
+#include "nsILayoutHistoryState.h"
 #include "nsIStringBundle.h"
 #include "nsISupportsArray.h"
 #include "nsIWebNavigation.h"
@@ -79,6 +80,7 @@
 #include "nsIURIFixup.h"
 #include "nsIWebBrowserFind.h"
 #include "nsIHttpChannel.h"
+#include "nsDocShellTransferableHooks.h"
 
 
 #define MAKE_LOAD_TYPE(type, flags) ((type) | ((flags) << 16))
@@ -246,6 +248,7 @@ protected:
     NS_IMETHOD EnsureContentListener();
     NS_IMETHOD EnsureScriptEnvironment();
     NS_IMETHOD EnsureEditorData();
+    nsresult   EnsureTransferableHookData();
     NS_IMETHOD EnsureFind();
     NS_IMETHOD RefreshURIFromQueue();
     NS_IMETHOD DisplayLoadError(nsresult aError, nsIURI *aURI, const PRUnichar *aURL);
@@ -318,6 +321,7 @@ protected:
     PRPackedBool               mHasFocus;
     PRPackedBool               mCreatingDocument; // (should be) debugging only
     PRPackedBool               mUseErrorPages;
+    PRPackedBool               mAllowAuth;
 
     PRUint32                   mAppType;
     PRInt32                    mChildOffset;  // Offset in the parent's child list.
@@ -353,8 +357,13 @@ protected:
 
     PRBool                     mIsBeingDestroyed;
 
+    PRPackedBool               mIsExecutingOnLoadHandler;
+
     // Editor stuff
     nsDocShellEditorData*      mEditorData;          // editor data, if any
+
+    // Transferable hooks/callbacks
+    nsCOMPtr<nsIClipboardDragDropHookList>  mTransferableHookData;
 
     // WEAK REFERENCES BELOW HERE.
     // Note these are intentionally not addrefd.  Doing so will create a cycle.
@@ -364,7 +373,7 @@ protected:
     nsIDocShellTreeOwner *     mTreeOwner; // Weak Reference
     nsIChromeEventHandler *    mChromeEventHandler; //Weak Reference
 
-    // Indivates that a DocShell in this "docshell tree" is printing
+    // Indicates that a DocShell in this "docshell tree" is printing
     PRBool mIsPrintingOrPP;
 
 public:

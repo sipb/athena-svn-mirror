@@ -89,18 +89,17 @@ public:
   static const PRInt32 kBackgroundAttachmentKTable[];
   static const PRInt32 kBackgroundClipKTable[];
   static const PRInt32 kBackgroundColorKTable[];
+  static const PRInt32 kBackgroundInlinePolicyKTable[];
   static const PRInt32 kBackgroundOriginKTable[];
   static const PRInt32 kBackgroundRepeatKTable[];
   static const PRInt32 kBorderCollapseKTable[];
   static const PRInt32 kBorderColorKTable[];
   static const PRInt32 kBorderStyleKTable[];
   static const PRInt32 kBorderWidthKTable[];
-#ifdef INCLUDE_XUL
   static const PRInt32 kBoxAlignKTable[];
   static const PRInt32 kBoxDirectionKTable[];
   static const PRInt32 kBoxOrientKTable[];
   static const PRInt32 kBoxPackKTable[];
-#endif
 #ifdef MOZ_SVG
   static const PRInt32 kFillRuleKTable[];
   static const PRInt32 kStrokeLinecapKTable[];

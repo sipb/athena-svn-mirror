@@ -524,6 +524,12 @@ JS_NewNumberValue(JSContext *cx, jsdouble d, jsval *rval);
 extern JS_PUBLIC_API(JSBool)
 JS_AddRoot(JSContext *cx, void *rp);
 
+#ifdef NAME_ALL_GC_ROOTS
+#define JS_DEFINE_TO_TOKEN(def) #def
+#define JS_DEFINE_TO_STRING(def) JS_DEFINE_TO_TOKEN(def)
+#define JS_AddRoot(cx,rp) JS_AddNamedRoot((cx), (rp), (__FILE__ ":" JS_TOKEN_TO_STRING(__LINE__))
+#endif
+
 extern JS_PUBLIC_API(JSBool)
 JS_AddNamedRoot(JSContext *cx, void *rp, const char *name);
 
@@ -715,6 +721,10 @@ struct JSClass {
 #define JSCLASS_NEW_RESOLVE             (1<<2)  /* has JSNewResolveOp hook */
 #define JSCLASS_PRIVATE_IS_NSISUPPORTS  (1<<3)  /* private is (nsISupports *) */
 #define JSCLASS_SHARE_ALL_PROPERTIES    (1<<4)  /* all properties are SHARED */
+#define JSCLASS_NEW_RESOLVE_GETS_START  (1<<5)  /* JSNewResolveOp gets starting
+                                                   object in prototype chain
+                                                   passed in via *objp in/out
+                                                   parameter */
 
 /*
  * To reserve slots fetched and stored via JS_Get/SetReservedSlot, bitwise-or
@@ -886,6 +896,12 @@ JS_GetConstructor(JSContext *cx, JSObject *proto);
 
 extern JS_PUBLIC_API(JSObject *)
 JS_NewObject(JSContext *cx, JSClass *clasp, JSObject *proto, JSObject *parent);
+
+extern JS_PUBLIC_API(JSBool)
+JS_SealObject(JSContext *cx, JSObject *obj, JSBool deep);
+
+extern JS_PUBLIC_API(JSBool)
+JS_UnsealObject(JSContext *cx, JSObject *obj, JSBool deep);
 
 extern JS_PUBLIC_API(JSObject *)
 JS_ConstructObject(JSContext *cx, JSClass *clasp, JSObject *proto,
@@ -1478,7 +1494,7 @@ extern JS_PUBLIC_API(JSString *)
 JS_ConcatStrings(JSContext *cx, JSString *left, JSString *right);
 
 /*
- * Convert a dependent string into an indepenent one.  This function does not
+ * Convert a dependent string into an independent one.  This function does not
  * change the string's mutability, so the thread safety comments above apply.
  */
 extern JS_PUBLIC_API(const jschar *)
@@ -1686,11 +1702,10 @@ JS_ErrorFromException(JSContext *cx, jsval v);
  * indicates that ClearContextThread has been called on this context
  * since the last SetContextThread, or non-0, which indicates the opposite.
  */
-
-extern JS_PUBLIC_API(intN)
+extern JS_PUBLIC_API(jsword)
 JS_GetContextThread(JSContext *cx);
 
-extern JS_PUBLIC_API(intN)
+extern JS_PUBLIC_API(jsword)
 JS_SetContextThread(JSContext *cx);
 
 extern JS_PUBLIC_API(intN)

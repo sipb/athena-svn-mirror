@@ -43,7 +43,6 @@
 #include "nsIHTMLContent.h"
 #include "nsGenericHTMLElement.h"
 #include "nsHTMLAtoms.h"
-#include "nsIStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
 #include "nsIPresShell.h"
@@ -52,7 +51,6 @@
 #include "nsIHTMLStyleSheet.h"
 #include "nsIHTMLCSSStyleSheet.h"
 #include "nsICSSStyleRule.h"
-#include "nsIWebShell.h"
 #include "nsIContentViewer.h"
 #include "nsIMarkupDocumentViewer.h"
 #include "nsHTMLAttributes.h"
@@ -63,7 +61,6 @@
 #include "nsIFrameManager.h"
 #include "nsCOMPtr.h"
 #include "nsIStyleSet.h"
-#include "nsISizeOfHandler.h"
 #include "nsIView.h"
 #include "nsLayoutAtoms.h"
 #include "nsRuleWalker.h"
@@ -87,8 +84,6 @@ public:
 
 #ifdef DEBUG
   NS_IMETHOD List(FILE* out = stdout, PRInt32 aIndent = 0) const;
-
-  virtual void SizeOf(nsISizeOfHandler *aSizeOfHandler, PRUint32 &aSize);
 #endif
 
   nsHTMLBodyElement*  mPart;  // not ref-counted, cleared by content 
@@ -128,9 +123,6 @@ public:
   NS_IMETHOD WalkContentStyleRules(nsRuleWalker* aRuleWalker);
   NS_IMETHOD GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
                                       nsChangeHint& aHint) const;
-#ifdef DEBUG
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
-#endif
 
 protected:
   BodyRule* mContentStyleRule;
@@ -140,7 +132,6 @@ protected:
 
 BodyRule::BodyRule(nsHTMLBodyElement* aPart, nsIHTMLStyleSheet* aSheet)
 {
-  NS_INIT_ISUPPORTS();
   mPart = aPart;
   mSheet = aSheet;
 }
@@ -172,7 +163,9 @@ BodyRule::MapRuleInfoInto(nsRuleData* aData)
   PRInt32 bodyMarginWidth  = -1;
   PRInt32 bodyMarginHeight = -1;
   PRInt32 bodyTopMargin = -1;
+  PRInt32 bodyBottomMargin = -1;
   PRInt32 bodyLeftMargin = -1;
+  PRInt32 bodyRightMargin = -1;
 
   // check the mode (fortunately, the ruleData has a presContext for us to use!)
   nsCompatibility mode;
@@ -215,6 +208,16 @@ BodyRule::MapRuleInfoInto(nsRuleData* aData)
           margin->mTop.SetFloatValue((float)bodyTopMargin, eCSSUnit_Pixel);
       }
 
+      // bottommargin (IE-attribute)
+      mPart->GetHTMLAttribute(nsHTMLAtoms::bottommargin, value);
+      if (eHTMLUnit_Pixel == value.GetUnit()) {
+        bodyBottomMargin = value.GetPixelValue();
+        if (bodyBottomMargin < 0) bodyBottomMargin = 0;
+        nsCSSRect* margin = aData->mMarginData->mMargin;
+        if (margin->mBottom.GetUnit() == eCSSUnit_Null)
+          margin->mBottom.SetFloatValue((float)bodyBottomMargin, eCSSUnit_Pixel);
+      }
+
       // leftmargin (IE-attribute)
       mPart->GetHTMLAttribute(nsHTMLAtoms::leftmargin, value);
       if (eHTMLUnit_Pixel == value.GetUnit()) {
@@ -223,6 +226,16 @@ BodyRule::MapRuleInfoInto(nsRuleData* aData)
         nsCSSRect* margin = aData->mMarginData->mMargin;
         if (margin->mLeft.GetUnit() == eCSSUnit_Null)
           margin->mLeft.SetFloatValue((float)bodyLeftMargin, eCSSUnit_Pixel);
+      }
+
+      // rightmargin (IE-attribute)
+      mPart->GetHTMLAttribute(nsHTMLAtoms::rightmargin, value);
+      if (eHTMLUnit_Pixel == value.GetUnit()) {
+        bodyRightMargin = value.GetPixelValue();
+        if (bodyRightMargin < 0) bodyRightMargin = 0;
+        nsCSSRect* margin = aData->mMarginData->mMargin;
+        if (margin->mRight.GetUnit() == eCSSUnit_Null)
+          margin->mRight.SetFloatValue((float)bodyRightMargin, eCSSUnit_Pixel);
       }
     }
 
@@ -279,45 +292,6 @@ NS_IMETHODIMP
 BodyRule::List(FILE* out, PRInt32 aIndent) const
 {
   return NS_OK;
-}
-
-/******************************************************************************
-* SizeOf method:
-*
-*  Self (reported as BodyRule's size): 
-*    1) sizeof(*this)
-*
-*  Contained / Aggregated data (not reported as BodyRule's size):
-*    1) delegate to mSheet if it exists
-*
-*  Children / siblings / parents:
-*    none
-*    
-******************************************************************************/
-void BodyRule::SizeOf(nsISizeOfHandler *aSizeOfHandler, PRUint32 &aSize)
-{
-  NS_ASSERTION(aSizeOfHandler != nsnull, "SizeOf handler cannot be null");
-
-  // first get the unique items collection
-  UNIQUE_STYLE_ITEMS(uniqueItems);
-  if(! uniqueItems->AddItem((void*)this)){
-    return;
-  }
-
-  PRUint32 localSize=0;
-
-  // create a tag for this instance
-  nsCOMPtr<nsIAtom> tag;
-  tag = getter_AddRefs(NS_NewAtom("BodyRule"));
-  // get the size of an empty instance and add to the sizeof handler
-  aSize = sizeof(*this);
-  aSizeOfHandler->AddSize(tag, aSize);
-
-  if(mSheet){
-    mSheet->SizeOf(aSizeOfHandler, localSize);
-  }
-
-  return;
 }
 #endif
 
@@ -408,124 +382,43 @@ nsHTMLBodyElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
 
 NS_IMPL_STRING_ATTR(nsHTMLBodyElement, Background, background)
 
-
-NS_IMETHODIMP
-nsHTMLBodyElement::GetVLink(nsAString& aVlinkColor)
-{
-  nsresult rv = GetAttr(kNameSpaceID_None, nsHTMLAtoms::vlink, aVlinkColor);
-
-  // If we don't have an attribute, find the default color from the
-  // UA stylesheet.
-  if (rv == NS_CONTENT_ATTR_NOT_THERE) {
-    nsCOMPtr<nsIPresContext> context;
-    GetPresContext(this, getter_AddRefs(context));
-
-    if (context) {
-      nscolor vlinkColor;
-      context->GetDefaultVisitedLinkColor(&vlinkColor);
-
-      nsHTMLValue value(vlinkColor);
-      ColorToString(value, aVlinkColor);
-    }
-  }
-
-  return NS_OK;
+#define NS_IMPL_HTMLBODY_COLOR_ATTR(attr_, func_, default_)         \
+NS_IMETHODIMP                                                       \
+nsHTMLBodyElement::Get##func_(nsAString& aColor)                    \
+{                                                                   \
+  aColor.Truncate();                                                \
+  nsAutoString color;                                               \
+  nscolor attrColor;                                                \
+  if (NS_CONTENT_ATTR_NOT_THERE ==                                  \
+      GetAttr(kNameSpaceID_None, nsHTMLAtoms::attr_, color)) {      \
+                                                                    \
+    nsCOMPtr<nsIPresContext> presContext;                           \
+    GetPresContext(this, getter_AddRefs(presContext));              \
+                                                                    \
+    if (presContext) {                                              \
+      presContext->GetDefault##default_(&attrColor);                \
+      nsHTMLValue(attrColor).ToString(aColor);                      \
+    }                                                               \
+  } else if (NS_ColorNameToRGB(color, &attrColor)) {                \
+    nsHTMLValue(attrColor).ToString(aColor);                        \
+  } else {                                                          \
+    aColor.Assign(color);                                           \
+  }                                                                 \
+  return NS_OK;                                                     \
+}                                                                   \
+NS_IMETHODIMP                                                       \
+nsHTMLBodyElement::Set##func_(const nsAString& aColor)              \
+{                                                                   \
+  return SetAttr(kNameSpaceID_None, nsHTMLAtoms::attr_, aColor,     \
+                 PR_TRUE);                                          \
 }
 
-NS_IMETHODIMP
-nsHTMLBodyElement::SetVLink(const nsAString& aVlinkColor)
-{
-  return SetAttr(kNameSpaceID_None, nsHTMLAtoms::vlink, aVlinkColor, PR_TRUE);
-}
-
-NS_IMETHODIMP
-nsHTMLBodyElement::GetALink(nsAString& aAlinkColor)
-{
-  nsresult rv = GetAttr(kNameSpaceID_None, nsHTMLAtoms::alink, aAlinkColor);
-
-  // If we don't have an attribute, find the default color from the
-  // UA stylesheet.
-  if (rv == NS_CONTENT_ATTR_NOT_THERE) {
-    nsCOMPtr<nsIPresContext> context;
-    GetPresContext(this, getter_AddRefs(context));
-
-    if (context) {
-      // XXX We don't have the backend or the UI to get ALINKs from the
-      // UA stylesheet yet, so we'll piggyback to the default link color like IE.
-      nscolor alinkColor;
-      context->GetDefaultLinkColor(&alinkColor);
-
-      nsHTMLValue value(alinkColor);
-      ColorToString(value, aAlinkColor);
-    }
-  }
-
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsHTMLBodyElement::SetALink(const nsAString& aAlinkColor)
-{
-  return SetAttr(kNameSpaceID_None, nsHTMLAtoms::alink, aAlinkColor, PR_TRUE);
-}
-
-NS_IMETHODIMP
-nsHTMLBodyElement::GetLink(nsAString& aLinkColor)
-{
-  nsresult rv = GetAttr(kNameSpaceID_None, nsHTMLAtoms::link, aLinkColor);
-
-  // If we don't have an attribute, find the default color from the
-  // UA stylesheet.
-  if (rv == NS_CONTENT_ATTR_NOT_THERE) {
-    nsCOMPtr<nsIPresContext> context;
-    GetPresContext(this, getter_AddRefs(context));
-
-    if (context) {
-      nscolor linkColor;
-      context->GetDefaultLinkColor(&linkColor);
-
-      nsHTMLValue value(linkColor);
-      ColorToString(value, aLinkColor);
-    }
-  }
-
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsHTMLBodyElement::SetLink(const nsAString& aLinkColor)
-{
-  return SetAttr(kNameSpaceID_None, nsHTMLAtoms::link, aLinkColor, PR_TRUE);
-}
-
-NS_IMETHODIMP
-nsHTMLBodyElement::GetText(nsAString& aTextColor)
-{
-  nsresult rv = GetAttr(kNameSpaceID_None, nsHTMLAtoms::text, aTextColor);
-
-  // If we don't have an attribute, find the default color from the
-  // UA stylesheet.
-  if (rv == NS_CONTENT_ATTR_NOT_THERE) {
-    nsCOMPtr<nsIPresContext> context;
-    GetPresContext(this, getter_AddRefs(context));
-
-    if (context) {
-      nscolor textColor;
-      context->GetDefaultColor(&textColor);
-
-      nsHTMLValue value(textColor);
-      ColorToString(value, aTextColor);
-    }
-  }
-
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsHTMLBodyElement::SetText(const nsAString& aTextColor)
-{
-  return SetAttr(kNameSpaceID_None, nsHTMLAtoms::text, aTextColor, PR_TRUE);
-}
+NS_IMPL_HTMLBODY_COLOR_ATTR(vlink, VLink, VisitedLinkColor)
+NS_IMPL_HTMLBODY_COLOR_ATTR(alink, ALink, LinkColor)
+NS_IMPL_HTMLBODY_COLOR_ATTR(link, Link, LinkColor)
+// XXX Should text check the body frame's style struct for color,
+// like we do for bgColor?
+NS_IMPL_HTMLBODY_COLOR_ATTR(text, Text, Color)
 
 NS_IMETHODIMP 
 nsHTMLBodyElement::GetBgColor(nsAString& aBgColor)
@@ -559,20 +452,15 @@ nsHTMLBodyElement::GetBgColor(nsAString& aBgColor)
       NS_ENSURE_SUCCESS(rv, rv);
 
       if (frame) {
-        const nsStyleBackground* StyleBackground;
-        rv = frame->GetStyleData(eStyleStruct_Background,
-                                   (const nsStyleStruct*&)StyleBackground);
-        NS_ENSURE_SUCCESS(rv, rv);
-
-        bgcolor = StyleBackground->mBackgroundColor;
-        ColorToString(bgcolor, aBgColor);
+        bgcolor = frame->GetStyleBackground()->mBackgroundColor;
+        nsHTMLValue(bgcolor).ToString(aBgColor);
       }
     }
   }
   else if (NS_ColorNameToRGB(attr, &bgcolor)) {
     // If we have a color name which we can convert to an nscolor,
     // then we should use the hex value instead of the color name.
-    ColorToString(bgcolor, aBgColor);
+    nsHTMLValue(bgcolor).ToString(aBgColor);
   }
   else {
     // Otherwise, just assign whatever the attribute value is.
@@ -598,15 +486,17 @@ nsHTMLBodyElement::StringToAttribute(nsIAtom* aAttribute,
       (aAttribute == nsHTMLAtoms::link) ||
       (aAttribute == nsHTMLAtoms::alink) ||
       (aAttribute == nsHTMLAtoms::vlink)) {
-    if (ParseColor(aValue, mDocument, aResult)) {
+    if (aResult.ParseColor(aValue, mDocument)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
   else if ((aAttribute == nsHTMLAtoms::marginwidth) ||
            (aAttribute == nsHTMLAtoms::marginheight) ||
            (aAttribute == nsHTMLAtoms::topmargin) ||
-           (aAttribute == nsHTMLAtoms::leftmargin)) {
-    if (ParseValue(aValue, 0, aResult, eHTMLUnit_Pixel)) {
+           (aAttribute == nsHTMLAtoms::bottommargin) ||
+           (aAttribute == nsHTMLAtoms::leftmargin) ||
+           (aAttribute == nsHTMLAtoms::rightmargin)) {
+    if (aResult.ParseIntWithBounds(aValue, eHTMLUnit_Pixel, 0)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
@@ -645,11 +535,12 @@ void MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes, nsRuleDat
       nsCOMPtr<nsIDocument> doc;
       presShell->GetDocument(getter_AddRefs(doc));
       if (doc) {
-        nsIHTMLContentContainer*  htmlContainer;
-        if (NS_OK == doc->QueryInterface(NS_GET_IID(nsIHTMLContentContainer),
-                                         (void**)&htmlContainer)) {
-          nsIHTMLStyleSheet* styleSheet;
-          if (NS_OK == htmlContainer->GetAttributeStyleSheet(&styleSheet)) {
+        nsCOMPtr<nsIHTMLContentContainer> htmlContainer =
+          do_QueryInterface(doc);
+        if (htmlContainer) {
+          nsCOMPtr<nsIHTMLStyleSheet> styleSheet;
+          htmlContainer->GetAttributeStyleSheet(getter_AddRefs(styleSheet));
+          if (styleSheet) {
             aAttributes->GetAttribute(nsHTMLAtoms::link, value);
             if ((eHTMLUnit_Color == value.GetUnit()) || 
                 (eHTMLUnit_ColorName == value.GetUnit())) {
@@ -667,10 +558,7 @@ void MapAttributesIntoRule(const nsIHTMLMappedAttributes* aAttributes, nsRuleDat
                 (eHTMLUnit_ColorName == value.GetUnit())) {
               styleSheet->SetVisitedLinkColor(value.GetColorValue());
             }
-
-            NS_RELEASE(styleSheet);
           }
-          NS_RELEASE(htmlContainer);
         }
       }
     }
@@ -739,31 +627,23 @@ NS_IMETHODIMP
 nsHTMLBodyElement::GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
                                             nsChangeHint& aHint) const
 {
-  if ((aAttribute == nsHTMLAtoms::link) ||
-      (aAttribute == nsHTMLAtoms::vlink) ||
-      (aAttribute == nsHTMLAtoms::alink) ||
-      (aAttribute == nsHTMLAtoms::text)) {
-    aHint = NS_STYLE_HINT_VISUAL;
-  }
-  else if ((aAttribute == nsHTMLAtoms::marginwidth) ||
-           (aAttribute == nsHTMLAtoms::marginheight)) {
-    aHint = NS_STYLE_HINT_REFLOW;
-  }
-  else if (!GetCommonMappedAttributesImpact(aAttribute, aHint)) {
-    if (!GetBackgroundAttributesImpact(aAttribute, aHint)) {
-      aHint = NS_STYLE_HINT_CONTENT;
-    }
-  }
+  static const AttributeImpactEntry attributes[] = {
+    { &nsHTMLAtoms::link,  NS_STYLE_HINT_VISUAL },
+    { &nsHTMLAtoms::vlink, NS_STYLE_HINT_VISUAL },
+    { &nsHTMLAtoms::alink, NS_STYLE_HINT_VISUAL },
+    { &nsHTMLAtoms::text,  NS_STYLE_HINT_VISUAL },
+    { &nsHTMLAtoms::marginwidth, NS_STYLE_HINT_REFLOW },
+    { &nsHTMLAtoms::marginheight, NS_STYLE_HINT_REFLOW },
+    { nsnull, NS_STYLE_HINT_NONE },
+  };
+
+  static const AttributeImpactEntry* const map[] = {
+    attributes,
+    sCommonAttributeMap,
+    sBackgroundAttributeMap,
+  };
+
+  FindAttributeImpact(aAttribute, aHint, map, NS_ARRAY_LENGTH(map));
 
   return NS_OK;
 }
-
-#ifdef DEBUG
-NS_IMETHODIMP
-nsHTMLBodyElement::SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const
-{
-  *aResult = sizeof(*this) + BaseSizeOf(aSizer);
-
-  return NS_OK;
-}
-#endif

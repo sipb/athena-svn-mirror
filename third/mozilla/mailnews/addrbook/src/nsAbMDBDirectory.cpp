@@ -110,11 +110,7 @@ nsresult nsAbMDBDirectory::RemoveCardFromAddressList(nsIAbCard* card)
 
   for (i = listTotal - 1; i >= 0; i--)
   {            
-    nsCOMPtr<nsISupports> pSupport = getter_AddRefs(m_AddressList->ElementAt(i));
-    if (!pSupport)
-      continue;
-
-    nsCOMPtr<nsIAbDirectory> listDir(do_QueryInterface(pSupport, &rv));
+    nsCOMPtr<nsIAbDirectory> listDir(do_QueryElementAt(m_AddressList, i, &rv));
     if (listDir)
     {
       nsCOMPtr <nsISupportsArray> pAddressLists;
@@ -125,8 +121,7 @@ nsresult nsAbMDBDirectory::RemoveCardFromAddressList(nsIAbCard* card)
         rv = pAddressLists->Count(&total);
         for (j = total - 1; j >= 0; j--)
         {
-          nsCOMPtr<nsISupports> pSupport = getter_AddRefs(pAddressLists->ElementAt(j));
-          nsCOMPtr<nsIAbCard> cardInList(do_QueryInterface(pSupport, &rv));
+          nsCOMPtr<nsIAbCard> cardInList(do_QueryElementAt(pAddressLists, j, &rv));
           PRBool equals;
           nsresult rv = cardInList->Equals(card, &equals);  // should we checking email?
           if (NS_SUCCEEDED(rv) && equals) {
@@ -138,6 +133,12 @@ nsresult nsAbMDBDirectory::RemoveCardFromAddressList(nsIAbCard* card)
   }
   return NS_OK;
 }
+
+NS_IMETHODIMP nsAbMDBDirectory::ModifyDirectory(nsIAbDirectory *directory, nsIAbDirectoryProperties *aProperties)
+{
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
 
 NS_IMETHODIMP nsAbMDBDirectory::DeleteDirectory(nsIAbDirectory *directory)
 {
@@ -325,7 +326,7 @@ NS_IMETHODIMP nsAbMDBDirectory::AddDirectory(const char *uriName, nsIAbDirectory
   NS_ENSURE_SUCCESS(rv, rv);
   
   nsCOMPtr<nsIRDFResource> res;
-  rv = rdf->GetResource(uriName, getter_AddRefs(res));
+  rv = rdf->GetResource(nsDependentCString(uriName), getter_AddRefs(res));
   NS_ENSURE_SUCCESS(rv, rv);
 
   nsCOMPtr<nsIAbDirectory> directory(do_QueryInterface(res, &rv));
@@ -443,7 +444,7 @@ NS_IMETHODIMP nsAbMDBDirectory::DeleteCards(nsISupportsArray *cards)
     NS_ENSURE_SUCCESS(rv, rv);
 
     nsCOMPtr<nsIRDFResource> resource;
-    rv = gRDFService->GetResource(mURINoQuery.get(), getter_AddRefs(resource));
+    rv = gRDFService->GetResource(mURINoQuery, getter_AddRefs(resource));
     NS_ENSURE_SUCCESS(rv, rv);
     
     nsCOMPtr<nsIAbDirectory> directory = do_QueryInterface(resource, &rv);
@@ -468,11 +469,9 @@ NS_IMETHODIMP nsAbMDBDirectory::DeleteCards(nsISupportsArray *cards)
     NS_ENSURE_SUCCESS(rv, rv);
     for (i = 0; i < cardCount; i++)
     {
-      nsCOMPtr<nsISupports> cardSupports;
       nsCOMPtr<nsIAbCard> card;
       nsCOMPtr<nsIAbMDBCard> dbcard;
-      cardSupports = getter_AddRefs(cards->ElementAt(i));
-      card = do_QueryInterface(cardSupports, &rv);
+      card = do_QueryElementAt(cards, i, &rv);
       NS_ENSURE_SUCCESS(rv, rv);
       dbcard = do_QueryInterface(card, &rv);
       NS_ENSURE_SUCCESS(rv, rv);
@@ -487,11 +486,7 @@ NS_IMETHODIMP nsAbMDBDirectory::DeleteCards(nsISupportsArray *cards)
           rv = m_AddressList->Count(&cardTotal);
           for (i = cardTotal - 1; i >= 0; i--)
           {            
-            nsCOMPtr<nsISupports> pSupport = getter_AddRefs(m_AddressList->ElementAt(i));
-            if (!pSupport)
-              continue;
-
-            nsCOMPtr<nsIAbMDBCard> dbarrayCard(do_QueryInterface(pSupport, &rv));
+            nsCOMPtr<nsIAbMDBCard> dbarrayCard(do_QueryElementAt(m_AddressList, i, &rv));
             if (dbarrayCard)
             {
               PRUint32 tableID, rowID, cardTableID, cardRowID; 
@@ -524,7 +519,8 @@ NS_IMETHODIMP nsAbMDBDirectory::DeleteCards(nsISupportsArray *cards)
               if(NS_SUCCEEDED(rv))
                 {
                 nsCOMPtr<nsIRDFResource> listResource;
-                rv = rdfService->GetResource(listUri, getter_AddRefs(listResource));
+                rv = rdfService->GetResource(nsDependentCString(listUri),
+                                             getter_AddRefs(listResource));
                 nsCOMPtr<nsIAbDirectory> listDir = do_QueryInterface(listResource, &rv);
                 if(NS_SUCCEEDED(rv))
                   {
@@ -746,6 +742,12 @@ NS_IMETHODIMP nsAbMDBDirectory::DropCard(nsIAbCard* aCard, PRBool needToCopyCard
 
   nsresult rv = NS_OK;
 
+  // Don't add the card if it's not a normal one (ie, they can't be added as members).
+  PRBool isNormal;
+  rv = aCard->GetIsANormalCard(&isNormal);
+  if (!isNormal)
+    return NS_OK;
+
   if (mURI && mIsMailingList == -1)
   {
     /* directory URIs are of the form
@@ -943,7 +945,7 @@ NS_IMETHODIMP nsAbMDBDirectory::StartSearch()
 
   // Get the directory without the query
   nsCOMPtr<nsIRDFResource> resource;
-  rv = gRDFService->GetResource (mURINoQuery.get(), getter_AddRefs(resource));
+  rv = gRDFService->GetResource (mURINoQuery, getter_AddRefs(resource));
   NS_ENSURE_SUCCESS(rv, rv);
 
   nsCOMPtr<nsIAbDirectory> directory(do_QueryInterface(resource, &rv));
@@ -1020,9 +1022,21 @@ NS_IMETHODIMP nsAbMDBDirectory::HasCardForEmailAddress(const char * aEmailAddres
     rv = GetAbDatabase();
   NS_ENSURE_SUCCESS(rv, rv);
 
-  nsCOMPtr<nsIAbCard> cardExists; 
-  mDatabase->GetCardFromAttribute(this, kPriEmailColumn, aEmailAddress, PR_FALSE /* retain case */, getter_AddRefs(cardExists));
-  if (cardExists)
+  nsCOMPtr<nsIAbCard> card; 
+  mDatabase->GetCardFromAttribute(this, kLowerPriEmailColumn /* see #196777 */, aEmailAddress, PR_TRUE /* caseInsensitive, see bug #191798 */, getter_AddRefs(card));
+  if (card)
     *aCardExists = PR_TRUE;
+  else 
+  {
+    // fix for bug #187239
+    // didn't find it as the primary email?  try again, with k2ndEmailColumn ("Additional Email")
+    // 
+    // TODO bug #198731
+    // unlike the kPriEmailColumn, we don't have kLower2ndEmailColumn
+    // so we will still suffer from bug #196777 for "additional emails"
+    mDatabase->GetCardFromAttribute(this, k2ndEmailColumn, aEmailAddress, PR_TRUE /* caseInsensitive, see bug #191798 */, getter_AddRefs(card));
+    if (card)
+      *aCardExists = PR_TRUE;
+  }
   return NS_OK;
 }

@@ -71,6 +71,15 @@
 #include "nsISimpleEnumerator.h"
 #include "nsXPIDLString.h"
 #include "nsNetUtil.h"
+#include "prlog.h"
+
+#if defined(PR_LOGGING)
+//
+// set NSPR_LOG_MODULES=Test:5
+//
+static PRLogModuleInfo *gTestLog = nsnull;
+#endif
+#define LOG(args) PR_LOG(gTestLog, PR_LOG_DEBUG, args)
 
 static NS_DEFINE_CID(kEventQueueServiceCID,      NS_EVENTQUEUESERVICE_CID);
 static NS_DEFINE_CID(kIOServiceCID,              NS_IOSERVICE_CID);
@@ -93,7 +102,7 @@ public:
   NS_DECL_ISUPPORTS
   NS_DECL_NSIHTTPHEADERVISITOR
 
-  HeaderVisitor() { NS_INIT_ISUPPORTS(); }
+  HeaderVisitor() { }
   virtual ~HeaderVisitor() {}
 };
 NS_IMPL_ISUPPORTS1(HeaderVisitor, nsIHttpHeaderVisitor)
@@ -101,9 +110,9 @@ NS_IMPL_ISUPPORTS1(HeaderVisitor, nsIHttpHeaderVisitor)
 NS_IMETHODIMP
 HeaderVisitor::VisitHeader(const nsACString &header, const nsACString &value)
 {
-  printf("%s: %s\n",
+  LOG(("  %s: %s\n",
     PromiseFlatCString(header).get(),
-    PromiseFlatCString(value).get());
+    PromiseFlatCString(value).get()));
   return NS_OK;
 }
 
@@ -130,8 +139,6 @@ public:
 
 URLLoadInfo::URLLoadInfo(const char *aUrl) : mURLString(aUrl)
 {
-  NS_INIT_ISUPPORTS();
-
   mBytesRead = 0;
   mConnectTime = mTotalTime = PR_Now();
 }
@@ -159,7 +166,6 @@ public:
 
 TestHttpEventSink::TestHttpEventSink()
 {
-  NS_INIT_ISUPPORTS();
 }
 
 TestHttpEventSink::~TestHttpEventSink()
@@ -169,18 +175,10 @@ TestHttpEventSink::~TestHttpEventSink()
 
 NS_IMPL_ISUPPORTS1(TestHttpEventSink, nsIHttpEventSink);
 
-#if 0
-NS_IMETHODIMP
-TestHTTPEventSink::OnHeadersAvailable(nsISupports* context)
-{
-    return NS_OK;
-}
-#endif
-
 NS_IMETHODIMP
 TestHttpEventSink::OnRedirect(nsIHttpChannel *channel, nsIChannel *newChannel)
 {
-    printf("\n+++ TestHTTPEventSink::OnRedirect +++\n");
+    LOG(("\n+++ TestHTTPEventSink::OnRedirect +++\n"));
     return NS_OK;
 }
 
@@ -202,7 +200,6 @@ public:
 
 InputTestConsumer::InputTestConsumer()
 {
-  NS_INIT_ISUPPORTS();
 }
 
 InputTestConsumer::~InputTestConsumer()
@@ -214,12 +211,14 @@ NS_IMPL_ISUPPORTS2(InputTestConsumer, nsIStreamListener, nsIRequestObserver)
 NS_IMETHODIMP
 InputTestConsumer::OnStartRequest(nsIRequest *request, nsISupports* context)
 {
+  LOG(("InputTestConsumer::OnStartRequest\n"));
+
   URLLoadInfo* info = (URLLoadInfo*)context;
   if (info)
     info->mConnectTime = PR_Now() - info->mConnectTime;
 
   if (gVerbose)
-    printf("\nStarted loading: %s\n", info ? info->Name() : "UNKNOWN URL");
+    LOG(("\nStarted loading: %s\n", info ? info->Name() : "UNKNOWN URL"));
 
   nsCAutoString value;
 
@@ -228,20 +227,27 @@ InputTestConsumer::OnStartRequest(nsIRequest *request, nsISupports* context)
     nsresult status;
     channel->GetStatus(&status);
     if (NS_SUCCEEDED(status)) {
-      printf("Channel Info:\n");
+      LOG(("Channel Info:\n"));
+
+      channel->GetName(value);
+      LOG(("\tName: %s\n", value.get()));
 
       channel->GetContentType(value);
-      printf("\tContent-Type: %s\n", value.get());
+      LOG(("\tContent-Type: %s\n", value.get()));
 
       channel->GetContentCharset(value);
-      printf("\tContent-Charset: %s\n", value.get());
+      LOG(("\tContent-Charset: %s\n", value.get()));
 
       PRInt32 length = -1;
       if (NS_SUCCEEDED(channel->GetContentLength(&length)))
-        printf("\tContent-Length: %d\n", length);
+        LOG(("\tContent-Length: %d\n", length));
       else
-        printf("\tContent-Length: Unknown\n");
+        LOG(("\tContent-Length: Unknown\n"));
     }
+
+    nsCOMPtr<nsISupports> owner;
+    channel->GetOwner(getter_AddRefs(owner));
+    LOG(("\tChannel Owner: %x\n", owner.get()));
   }
 
   nsCOMPtr<nsIHttpChannel> httpChannel(do_QueryInterface(request));
@@ -251,10 +257,10 @@ InputTestConsumer::OnStartRequest(nsIRequest *request, nsISupports* context)
       return NS_ERROR_OUT_OF_MEMORY;
     NS_ADDREF(visitor);
 
-    printf("\nHTTP request headers:\n");
+    LOG(("HTTP request headers:\n"));
     httpChannel->VisitRequestHeaders(visitor);
 
-    printf("\nHTTP response headers:\n");
+    LOG(("HTTP response headers:\n"));
     httpChannel->VisitResponseHeaders(visitor);
 
     NS_RELEASE(visitor);
@@ -262,16 +268,16 @@ InputTestConsumer::OnStartRequest(nsIRequest *request, nsISupports* context)
 
   nsCOMPtr<nsIResumableChannel> resChannel = do_QueryInterface(request);
   if (resChannel) {
-      printf("Resumable entity identification:\n");
+      LOG(("Resumable entity identification:\n"));
       nsCOMPtr<nsIResumableEntityID> entityID;
       nsresult rv = resChannel->GetEntityID(getter_AddRefs(entityID));
       if (NS_SUCCEEDED(rv) && entityID) {
           PRUint32 size;
           if (NS_SUCCEEDED(entityID->GetSize(&size)) &&
               size != PRUint32(-1))
-              printf("\tSize: %d\n", size);
+              LOG(("\tSize: %d\n", size));
           else
-              printf("\tSize: Unknown\n");
+              LOG(("\tSize: Unknown\n"));
           PRTime lastModified;
           if (NS_SUCCEEDED(entityID->GetLastModified(&lastModified)) &&
               lastModified != -1) {
@@ -281,9 +287,9 @@ InputTestConsumer::OnStartRequest(nsIRequest *request, nsISupports* context)
               char buf[100];
               PR_FormatTime(buf, 100, "%c", &exploded);
 
-              printf("\tLast Modified: %s\n", buf);
+              LOG(("\tLast Modified: %s\n", buf));
           } else
-              printf("\tLast Modified: Unknown\n");
+              LOG(("\tLast Modified: Unknown\n"));
       }
   }
 
@@ -297,7 +303,6 @@ InputTestConsumer::OnDataAvailable(nsIRequest *request,
                                    PRUint32 aSourceOffset,
                                    PRUint32 aLength)
 {
-
   char buf[1025];
   PRUint32 amt, size;
   nsresult rv;
@@ -352,6 +357,8 @@ NS_IMETHODIMP
 InputTestConsumer::OnStopRequest(nsIRequest *request, nsISupports* context,
                                  nsresult aStatus)
 {
+  LOG(("InputTestConsumer::OnStopRequest [status=%x]\n", aStatus));
+
   URLLoadInfo* info = (URLLoadInfo*)context;
 
   if (info) {
@@ -371,23 +378,24 @@ InputTestConsumer::OnStopRequest(nsIRequest *request, nsISupports* context,
         bHTTPURL = PR_TRUE;
     }
 
-    printf("\nFinished loading: %s  Status Code: %x\n", info->Name(), aStatus);
+    LOG(("\nFinished loading: %s  Status Code: %x\n", info->Name(), aStatus));
     if (bHTTPURL)
-        printf("\tHTTP Status: %u\n", httpStatus);
-     if (NS_ERROR_UNKNOWN_HOST == aStatus) {
-         printf("\tDNS lookup failed.\n");
+        LOG(("\tHTTP Status: %u\n", httpStatus));
+     if (NS_ERROR_UNKNOWN_HOST == aStatus ||
+         NS_ERROR_UNKNOWN_PROXY_HOST == aStatus) {
+         LOG(("\tDNS lookup failed.\n"));
      }
-    printf("\tTime to connect: %.3f seconds\n", connectTime);
-    printf("\tTime to read: %.3f seconds.\n", readTime);
-    printf("\tRead: %d bytes.\n", info->mBytesRead);
+    LOG(("\tTime to connect: %.3f seconds\n", connectTime));
+    LOG(("\tTime to read: %.3f seconds.\n", readTime));
+    LOG(("\tRead: %d bytes.\n", info->mBytesRead));
     if (!info->mBytesRead) {
     } else if (readTime > 0.0) {
-      printf("\tThroughput: %.0f bps.\n", (info->mBytesRead*8)/readTime);
+      LOG(("\tThroughput: %.0f bps.\n", (info->mBytesRead*8)/readTime));
     } else {
-      printf("\tThroughput: REAL FAST!!\n");
+      LOG(("\tThroughput: REAL FAST!!\n"));
     }
   } else {
-    printf("\nFinished loading: UNKNOWN URL. Status Code: %x\n", aStatus);
+    LOG(("\nFinished loading: UNKNOWN URL. Status Code: %x\n", aStatus));
   }
 
   FireDecrement();
@@ -403,7 +411,6 @@ public:
     NS_DECL_ISUPPORTS
 
     NotificationCallbacks() {
-        NS_INIT_ISUPPORTS();
     }
 
     NS_IMETHOD GetInterface(const nsIID& eventSinkIID, void* *result) {
@@ -439,14 +446,14 @@ nsresult StartLoadingURL(const char* aUrlString)
 
         rv = pService->NewURI(nsDependentCString(aUrlString), nsnull, nsnull, getter_AddRefs(pURL));
         if (NS_FAILED(rv)) {
-            printf("ERROR: NewURI failed for %s\n", aUrlString);
+            LOG(("ERROR: NewURI failed for %s [rv=%x]\n", aUrlString));
             return rv;
         }
         nsCOMPtr<nsIChannel> pChannel;
 
         NotificationCallbacks* callbacks = new NotificationCallbacks();
         if (!callbacks) {
-            NS_ERROR("Failed to create a new consumer!");
+            LOG(("Failed to create a new consumer!"));
             return NS_ERROR_OUT_OF_MEMORY;;
         }
         NS_ADDREF(callbacks);
@@ -457,7 +464,7 @@ nsresult StartLoadingURL(const char* aUrlString)
                            callbacks); // notificationCallbacks
         NS_RELEASE(callbacks);
         if (NS_FAILED(rv)) {
-            printf("ERROR: NS_OpenURI failed for %s\n", aUrlString);
+            LOG(("ERROR: NS_OpenURI failed for %s [rv=%x]\n", aUrlString, rv));
             return rv;
         }
 
@@ -471,7 +478,8 @@ nsresult StartLoadingURL(const char* aUrlString)
         if (pHTTPCon) {
             // Setting a sample header.
             rv = pHTTPCon->SetRequestHeader(NS_LITERAL_CSTRING("sample-header"),
-                                            NS_LITERAL_CSTRING("Sample-Value"));
+                                            NS_LITERAL_CSTRING("Sample-Value"),
+                                            PR_FALSE);
             if (NS_FAILED(rv)) return rv;
         }            
         InputTestConsumer* listener;
@@ -509,6 +517,9 @@ nsresult StartLoadingURL(const char* aUrlString)
         if (NS_SUCCEEDED(rv)) {
             gKeepRunning += 1;
         }
+        else {
+            LOG(("ERROR: AsyncOpen failed [rv=%x]\n", rv));
+        }
         NS_RELEASE(listener);
         NS_RELEASE(info);
     }
@@ -543,7 +554,7 @@ nsresult LoadURLsFromFile(char *aFileName)
 
                 urlString.StripChars("\r");
                 if (urlString.Length()) {
-                    printf("\t%s\n", urlString.get());
+                    LOG(("\t%s\n", urlString.get()));
                     rv = StartLoadingURL(urlString.get());
                 }
             }
@@ -553,7 +564,7 @@ nsresult LoadURLsFromFile(char *aFileName)
     // If anything is left in the fileBuffer, treat it as a URL...
     fileBuffer.StripChars("\r");
     if (fileBuffer.Length()) {
-        printf("\t%s\n", fileBuffer.get());
+        LOG(("\t%s\n", fileBuffer.get()));
         StartLoadingURL(fileBuffer.get());
     }
 
@@ -583,6 +594,10 @@ main(int argc, char* argv[])
         return -1;
     }
 
+#if defined(PR_LOGGING)
+        gTestLog = PR_NewLogModule("Test");
+#endif
+
     /* 
       The following code only deals with XPCOM registration stuff. and setting
       up the event queues. Copied from TestSocketIO.cpp
@@ -600,7 +615,7 @@ main(int argc, char* argv[])
         eventQService->GetThreadEventQueue(NS_CURRENT_THREAD, &gEventQ);
 
         int i;
-        printf("\nTrying to load:\n");
+        LOG(("Trying to load:\n"));
         for (i=1; i<argc; i++) {
             // Turn on verbose printing...
             if (PL_strcasecmp(argv[i], "-verbose") == 0) {
@@ -625,29 +640,14 @@ main(int argc, char* argv[])
                 continue;
             }
 
-            printf("\t%s\n", argv[i]);
+            LOG(("\t%s\n", argv[i]));
             rv = StartLoadingURL(argv[i]);
         }
       // Enter the message pump to allow the URL load to proceed.
         while ( gKeepRunning ) {
-#ifdef WIN32
-            MSG msg;
-
-            if (GetMessage(&msg, NULL, 0, 0)) {
-                TranslateMessage(&msg);
-                DispatchMessage(&msg);
-            } else {
-                gKeepRunning = 0;
-            }
-#else
-#ifdef XP_MAC
-            /* Mac stuff is missing here! */
-#else
             PLEvent *gEvent;
-            rv = gEventQ->WaitForEvent(&gEvent);
-            rv = gEventQ->HandleEvent(gEvent);
-#endif /* XP_UNIX */
-#endif /* !WIN32 */
+            gEventQ->WaitForEvent(&gEvent);
+            gEventQ->HandleEvent(gEvent);
         }
     } // this scopes the nsCOMPtrs
     // no nsCOMPtrs are allowed to be alive when you call NS_ShutdownXPCOM

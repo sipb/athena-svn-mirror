@@ -44,7 +44,6 @@ public:
 protected:
   nsresult FireOnSelectHandler();
   static void SelectCallback(nsITimer *aTimer, void *aClosure);
-  PRBool SingleSelection();
 
 protected:
   // Members
@@ -59,8 +58,7 @@ protected:
   nsCOMPtr<nsITimer> mSelectTimer;
 };
 
-extern nsresult
-NS_NewTreeSelection(nsITreeBoxObject* aTree,
-                        nsITreeSelection** aResult);
+nsresult
+NS_NewTreeSelection(nsITreeBoxObject* aTree, nsITreeSelection** aResult);
 
 #endif

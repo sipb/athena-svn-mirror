@@ -59,7 +59,6 @@
 nsXULControllers::nsXULControllers()
 : mCurControllerID(0)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsXULControllers::~nsXULControllers(void)
@@ -162,7 +161,7 @@ nsXULControllers::GetControllerForCommand(const char *aCommand, nsIController** 
 NS_IMETHODIMP
 nsXULControllers::InsertControllerAt(PRUint32 aIndex, nsIController *controller)
 {
-  nsXULControllerData*  controllerData = new nsXULControllerData(mCurControllerID++, controller);
+  nsXULControllerData*  controllerData = new nsXULControllerData(++mCurControllerID, controller);
   if (!controllerData) return NS_ERROR_OUT_OF_MEMORY;
   PRBool  inserted = mControllers.InsertElementAt((void *)controllerData, aIndex);
   NS_ASSERTION(inserted, "Insertion of controller failed");
@@ -203,7 +202,8 @@ nsXULControllers::GetControllerAt(PRUint32 aIndex, nsIController **_retval)
 NS_IMETHODIMP
 nsXULControllers::AppendController(nsIController *controller)
 {
-  nsXULControllerData*  controllerData = new nsXULControllerData(mCurControllerID++, controller);
+  // This assigns controller IDs starting at 1 so we can use 0 to test if an ID was obtained
+  nsXULControllerData*  controllerData = new nsXULControllerData(++mCurControllerID, controller);
   if (!controllerData) return NS_ERROR_OUT_OF_MEMORY;
   PRBool  appended = mControllers.AppendElement((void *)controllerData);
   NS_ASSERTION(appended, "Appending controller failed");

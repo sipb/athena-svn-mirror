@@ -31,6 +31,7 @@ class Module:
         c = self.components = {}
         for klass in comps:
             c[components.ID(klass._reg_clsid_)] = klass
+        self.klassFactory = factory.Factory
 
     def getClassObject(self, compMgr, clsid, iid):
         # Single retval result.
@@ -39,31 +40,30 @@ class Module:
         except KeyError:
             raise ServerException(nsError.NS_ERROR_FACTORY_NOT_REGISTERED)
         
-        # We can ignore the IID - the auto-wrapp process will automatically QI us.
-        return factory.Factory(klass)
+        # We can ignore the IID - the auto-wrap process will automatically QI us.
+        return self.klassFactory(klass)
 
-    def registerSelf(self, compMgr, location, registryLocation, componentType):
+    def registerSelf(self, compMgr, location, loaderStr, componentType):
         # void function.
+        fname = os.path.basename(location.path)
         for klass in self.components.values():
-            print "Registering: %s" % (klass.__name__,)
             reg_contractid = klass._reg_contractid_
+            print "Registering '%s' (%s)" % (reg_contractid, fname)
             reg_desc = getattr(klass, "_reg_desc_", reg_contractid)
-            compMgr.registerComponentWithType(klass._reg_clsid_,
+            compMgr = compMgr.queryInterface(components.interfaces.nsIComponentRegistrar)
+            compMgr.registerFactoryLocation(klass._reg_clsid_,
                                               reg_desc,
                                               reg_contractid,
                                               location,
-                                              registryLocation,
-                                              1,
-                                              1,
+                                              loaderStr,
                                               componentType)
 
             # See if this class nominates custom register_self
             extra_func = getattr(klass, "_reg_registrar_", (None,None))[0]
             if extra_func is not None:
-                extra_func(klass, compMgr, location, registryLocation, componentType)
-        print "Registered %d Python components in %s" % (len(self.components),os.path.basename(location.path))
+                extra_func(klass, compMgr, location, loaderStr, componentType)
 
-    def unregisterSelf(self, compMgr, location, registryLocation):
+    def unregisterSelf(self, compMgr, location, loaderStr):
         # void function.
         for klass in self.components.values():
             ok = 1
@@ -75,7 +75,7 @@ class Module:
             extra_func = getattr(klass, "_reg_registrar_", (None,None))[1]
             if extra_func is not None:
                 try:
-                    extra_func(klass, compMgr, location, registryLocation)
+                    extra_func(klass, compMgr, location, loaderStr)
                 except Exception:
                     ok = 0
             if ok:

@@ -318,8 +318,6 @@ nsStandardURL::nsStandardURL(PRBool aSupportsFileURL)
 
     LOG(("Creating nsStandardURL @%p\n", this));
 
-    NS_INIT_ISUPPORTS();
-
     if (!gInitialized) {
         gInitialized = PR_TRUE;
         InitGlobalObjects();
@@ -349,6 +347,10 @@ nsStandardURL::InitGlobalObjects()
                 nsCOMPtr<nsIObserver> obs( new nsPrefObserver() );
                 pbi->AddObserver(NS_NET_PREF_ESCAPEUTF8, obs.get(), PR_FALSE); 
                 pbi->AddObserver(NS_NET_PREF_ENABLEIDN, obs.get(), PR_FALSE); 
+                // initialize IDN
+                nsCOMPtr<nsIIDNService> serv(do_GetService(NS_IDNSERVICE_CONTRACTID));
+                if (serv)
+                    NS_ADDREF(gIDNService = serv.get());
             }
         }
     }
@@ -960,12 +962,12 @@ nsStandardURL::GetAsciiHost(nsACString &result)
 
     if (gIDNService) {
         nsresult rv;
-        rv = gIDNService->ConvertUTF8toACE(PromiseFlatCString(Host()).get(), &mHostA);
+        rv = gIDNService->ConvertUTF8toACE(Host(), result);
         if (NS_SUCCEEDED(rv)) {
-            result = mHostA;
+            mHostA = ToNewCString(result);
             return NS_OK;
         }
-        NS_WARNING("UTF8ToIDNHostName failed");
+        NS_WARNING("nsIDNService::ConvertUTF8toACE failed");
     }
 
     // something went wrong... guess all we can do is URL escape :-/
@@ -1089,7 +1091,6 @@ nsStandardURL::SetUserPass(const nsACString &input)
         NS_ERROR("uninitialized");
         return NS_ERROR_NOT_INITIALIZED;
     }
-    NS_ASSERTION(mHost.mLen >= 0, "uninitialized");
 
     InvalidateCache();
 
@@ -1107,6 +1108,8 @@ nsStandardURL::SetUserPass(const nsACString &input)
         }
         return NS_OK;
     }
+
+    NS_ASSERTION(mHost.mLen >= 0, "uninitialized");
 
     nsresult rv;
     PRUint32 usernamePos, passwordPos;
@@ -2272,11 +2275,6 @@ nsStandardURL::Init(PRUint32 urlType,
     if (mOriginCharset.EqualsIgnoreCase("UTF-8"))
         mOriginCharset.Truncate();
 
-    if (spec.IsEmpty()) {
-        Clear();
-        return NS_OK;
-    }
-
     if (baseURI) {
         PRUint32 start, end;
         // pull out the scheme and where it ends
@@ -2325,7 +2323,6 @@ NS_IMETHODIMP
 nsStandardURL::Read(nsIObjectInputStream *stream)
 {
     nsresult rv;
-    nsXPIDLCString buf;
     
     rv = stream->Read32(&mURLType);
     if (NS_FAILED(rv)) return rv;
@@ -2350,9 +2347,8 @@ nsStandardURL::Read(nsIObjectInputStream *stream)
     rv = stream->Read32((PRUint32 *) &mDefaultPort);
     if (NS_FAILED(rv)) return rv;
 
-    rv = NS_ReadOptionalStringZ(stream, getter_Copies(buf));
+    rv = NS_ReadOptionalCString(stream, mSpec);
     if (NS_FAILED(rv)) return rv;
-    mSpec = buf;
 
     rv = ReadSegment(stream, mScheme);
     if (NS_FAILED(rv)) return rv;
@@ -2393,9 +2389,8 @@ nsStandardURL::Read(nsIObjectInputStream *stream)
     rv = ReadSegment(stream, mRef);
     if (NS_FAILED(rv)) return rv;
 
-    rv = NS_ReadOptionalStringZ(stream, getter_Copies(buf));
+    rv = NS_ReadOptionalCString(stream, mOriginCharset);
     if (NS_FAILED(rv)) return rv;
-    mOriginCharset = buf;
 
     return NS_OK;
 }

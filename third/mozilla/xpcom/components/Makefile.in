@@ -29,6 +29,8 @@ include $(DEPTH)/config/autoconf.mk
 MODULE		= xpcom
 XPIDL_MODULE	= xpcom_components
 LIBRARY_NAME	= xpcomcomponents_s
+GRE_MODULE	= 1
+
 REQUIRES	= libreg \
 		  string \
 		  $(NULL)
@@ -38,7 +40,6 @@ CPPSRCS		= \
 		nsComponentManager.cpp \
 		nsComponentManagerObsolete.cpp \
 		nsNativeComponentLoader.cpp \
-		nsRegistry.cpp \
 		nsServiceManagerObsolete.cpp \
 		xcDll.cpp \
 		$(NULL)
@@ -53,10 +54,8 @@ EXPORTS		= \
 		nsCategoryManagerUtils.h \
 		nsComponentManagerUtils.h \
 		nsComponentManagerObsolete.h \
-		nsIRegistryUtils.h \
 		nsIServiceManagerUtils.h \
 		nsIServiceManagerObsolete.h \
-		nsXPComFactory.h \
 		nsNativeComponentLoader.h \
 		nsStaticComponent.h \
 		nsObsoleteModuleLoading.h \
@@ -67,17 +66,17 @@ XPIDLSRCS	= \
 		nsIComponentLoader.idl \
 		nsIComponentLoaderManager.idl \
 		nsIComponentManagerObsolete.idl \
-		nsIRegistry.idl \
+		nsINativeComponentLoader.idl  \
 		$(NULL)
 
 SDK_XPIDLSRCS	= \
-		nsIClassInfo.idl	\
-		nsIComponentRegistrar.idl \
-		nsIFactory.idl		\
-		nsIModule.idl		\
-		nsIServiceManager.idl	\
-		nsIComponentManager.idl \
-		nsICategoryManager.idl \
+		nsIClassInfo.idl	      \
+		nsIComponentRegistrar.idl     \
+		nsIFactory.idl		      \
+		nsIModule.idl		      \
+		nsIServiceManager.idl	      \
+		nsIComponentManager.idl       \
+		nsICategoryManager.idl        \
 		$(NULL)
 
 EXPORTS		:= $(addprefix $(srcdir)/, $(EXPORTS))
@@ -89,7 +88,8 @@ FORCE_STATIC_LIB = 1
 
 # Force use of PIC
 FORCE_USE_PIC	= 1
-
 include $(topsrcdir)/config/rules.mk
-DEFINES	+= -D_IMPL_NS_COM
+
+DEFINES	+= -D_IMPL_NS_COM -DEXPORT_XPTI_API
+
 

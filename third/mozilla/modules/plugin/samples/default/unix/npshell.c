@@ -83,11 +83,13 @@ NPP_Initialize(void)
     return NPERR_NO_ERROR;
 }
 
+#ifdef OJI
 jref
 NPP_GetJavaClass()
 {
     return NULL;
 }
+#endif
 
 void
 NPP_Shutdown(void)
@@ -197,6 +199,7 @@ NPP_SetWindow(NPP instance, NPWindow* window)
 
     ws_info = (NPSetWindowCallbackStruct *)window->ws_info;
 
+#ifdef MOZ_X11
     if (This->window == (Window) window->window) {
         /* The page with the plugin is being resized.
            Save any UI information because the next time
@@ -226,6 +229,8 @@ NPP_SetWindow(NPP instance, NPWindow* window)
       makePixmap(This);
       makeWidget(This);
     }
+#endif  /* #ifdef MOZ_X11 */
+    
     return NPERR_NO_ERROR;
 }
 

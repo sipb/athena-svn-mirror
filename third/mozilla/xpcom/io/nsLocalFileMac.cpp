@@ -813,7 +813,6 @@ class nsDirEnumerator : public nsISimpleEnumerator
 
         nsDirEnumerator()
         {
-            NS_INIT_ISUPPORTS();
         }
 
         nsresult Init(nsILocalFileMac* parent) 
@@ -919,8 +918,6 @@ nsLocalFile::nsLocalFile() :
     mType('TEXT'),
     mCreator(kDefaultCreator)
 {
-    NS_INIT_ISUPPORTS();
-
     ClearFSSpec(mSpec);
     ClearFSSpec(mTargetSpec);
     
@@ -931,7 +928,6 @@ nsLocalFile::nsLocalFile() :
 
 nsLocalFile::nsLocalFile(const nsLocalFile& srcFile)
 {
-    NS_INIT_ISUPPORTS();
     *this = srcFile;
 }
 
@@ -945,8 +941,6 @@ nsLocalFile::nsLocalFile(const FSSpec& aSpec, const nsACString& aAppendedPath) :
     mType('TEXT'),
     mCreator(kDefaultCreator)
 {
-    NS_INIT_ISUPPORTS();
-    
     ClearFSSpec(mTargetSpec);
     
     InitClassStatics();
@@ -3093,6 +3087,45 @@ NS_IMETHODIMP nsLocalFile::InitToAppWithCreatorCode(OSType aAppCreator)
 
     // init with the spec here
     return InitWithFSSpec(&appSpec);
+}
+
+NS_IMETHODIMP nsLocalFile::GetCFURL(CFURLRef *_retval)
+{
+    nsresult rv = NS_ERROR_FAILURE;
+
+#if TARGET_CARBON
+    NS_ENSURE_ARG_POINTER(_retval);
+    *_retval = nsnull;
+    
+    PRBool exists;
+    if (NS_SUCCEEDED(Exists(&exists)) && exists)
+    {
+        FSRef fsRef;
+        FSSpec fsSpec = mFollowLinks ? mTargetSpec : mSpec;
+        if (::FSpMakeFSRef(&fsSpec, &fsRef) == noErr)
+        {
+            *_retval = ::CFURLCreateFromFSRef(NULL, &fsRef);
+            if (*_retval)
+                return NS_OK;    
+        }
+    }
+    else
+    {
+        nsCAutoString tempPath;
+        if (NS_SUCCEEDED(GetNativePath(tempPath)))
+        {
+            CFStringRef pathStrRef = ::CFStringCreateWithCString(NULL, tempPath.get(), kCFStringEncodingMacRoman);
+            if (!pathStrRef)
+                return NS_ERROR_FAILURE;
+            *_retval = ::CFURLCreateWithFileSystemPath(NULL, pathStrRef, kCFURLHFSPathStyle, false);
+            ::CFRelease(pathStrRef);
+            if (*_retval)
+                return NS_OK;    
+        }
+    }
+#endif
+
+    return rv;
 }
 
 NS_IMETHODIMP nsLocalFile::GetFSRef(FSRef *_retval)

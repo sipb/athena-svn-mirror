@@ -109,7 +109,7 @@ js_DisablePropertyCache(JSContext *cx)
 {
     JS_ASSERT(!cx->runtime->propertyCache.disabled);
     cx->runtime->propertyCache.disabled = JS_TRUE;
-}        
+}
 
 void
 js_EnablePropertyCache(JSContext *cx)
@@ -133,11 +133,15 @@ prop_iterator_finalize(JSContext *cx, JSObject *obj)
     /* Protect against stillborn iterators. */
     iter_state = obj->slots[JSSLOT_ITER_STATE];
     iteratee = obj->slots[JSSLOT_PARENT];
-    if (iter_state != JSVAL_NULL && !JSVAL_IS_PRIMITIVE(iteratee)) {
+    if (!JSVAL_IS_NULL(iter_state) && !JSVAL_IS_PRIMITIVE(iteratee)) {
         OBJ_ENUMERATE(cx, JSVAL_TO_OBJECT(iteratee), JSENUMERATE_DESTROY,
                       &iter_state, NULL);
     }
     js_RemoveRoot(cx->runtime, &obj->slots[JSSLOT_PARENT]);
+
+    /* XXX force the GC to restart so we can collect iteratee, if possible,
+           during the current collector activation */
+    cx->runtime->gcLevel++;
 }
 
 static JSClass prop_iterator_class = {
@@ -944,6 +948,37 @@ out:
 }
 
 JSBool
+js_InternalGetOrSet(JSContext *cx, JSObject *obj, jsid id, jsval fval,
+                    JSAccessMode mode, uintN argc, jsval *argv, jsval *rval)
+{
+    /*
+     * Check general (not object-ops/class-specific) access from the running
+     * script to obj.id only if id has a scripted getter or setter that we're
+     * about to invoke.  If we don't check this case, nothing else will -- no
+     * other native code has the chance to check.
+     *
+     * Contrast this non-native (scripted) case with native getter and setter
+     * accesses, where the native itself must do an acess check, if security
+     * policies requires it.  We make a checkAccess or checkObjectAccess call
+     * back to the embedding program only in those cases where we're not going
+     * to call an embedding-defined native function, getter, setter, or class
+     * hook anyway.  Where we do call such a native, there's no need for the
+     * engine to impose a separate access check callback on all embeddings --
+     * many embeddings have no security policy at all.
+     */
+    JS_ASSERT(mode == JSACC_READ || mode == JSACC_WRITE);
+    if (cx->runtime->checkObjectAccess &&
+        JSVAL_IS_FUNCTION(cx, fval) &&
+        ((JSFunction *) JS_GetPrivate(cx, JSVAL_TO_OBJECT(fval)))->script &&
+        !cx->runtime->checkObjectAccess(cx, obj, ID_TO_VALUE(id), mode,
+                                        &fval)) {
+        return JS_FALSE;
+    }
+
+    return js_InternalCall(cx, obj, fval, argc, argv, rval);
+}
+
+JSBool
 js_Execute(JSContext *cx, JSObject *chain, JSScript *script,
            JSStackFrame *down, uintN special, jsval *result)
 {
@@ -1174,10 +1209,13 @@ js_CheckRedeclaration(JSContext *cx, JSObject *obj, jsid id, uintN attrs,
     if (report != JSREPORT_ERROR) {
         /*
          * Allow redeclaration of variables and functions, but insist that the
-         * new value is not a getter or setter -- or if it is, insist that the
-         * property being replaced is not permanent.
+         * new value is not a getter if the old value was, ditto for setters --
+         * unless prop is impermanent (in which case anyone could delete it and
+         * redefine it, willy-nilly).
          */
         if (!(attrs & (JSPROP_GETTER | JSPROP_SETTER)))
+            return JS_TRUE;
+        if ((~(oldAttrs ^ attrs) & (JSPROP_GETTER | JSPROP_SETTER)) == 0)
             return JS_TRUE;
         if (!(oldAttrs & JSPROP_PERMANENT))
             return JS_TRUE;
@@ -1202,10 +1240,12 @@ js_CheckRedeclaration(JSContext *cx, JSObject *obj, jsid id, uintN attrs,
 }
 
 #ifndef MAX_INTERP_LEVEL
-#if !defined XP_PC || !defined _MSC_VER || _MSC_VER > 800
-#define MAX_INTERP_LEVEL 1000
-#else
+#if defined(XP_OS2)
+#define MAX_INTERP_LEVEL 250
+#elif defined _MSC_VER && _MSC_VER <= 800
 #define MAX_INTERP_LEVEL 30
+#else
+#define MAX_INTERP_LEVEL 1000
 #endif
 #endif
 
@@ -1381,6 +1421,7 @@ js_Interpret(JSContext *cx, jsval *result)
 #endif /* JS_HAS_EXCEPTIONS */
               default:;
             }
+            LOAD_INTERRUPT_HANDLER(rt);
         }
 
         switch (op) {
@@ -1456,8 +1497,10 @@ js_Interpret(JSContext *cx, jsval *result)
 
                 if (hookData) {
                     JSInterpreterHook hook = cx->runtime->callHook;
-                    if (hook)
+                    if (hook) {
                         hook(cx, fp, JS_FALSE, &ok, hookData);
+                        LOAD_INTERRUPT_HANDLER(rt);
+                    }
                 }
 #if JS_HAS_ARGS_OBJECT
                 if (fp->argsobj)
@@ -1732,13 +1775,15 @@ js_Interpret(JSContext *cx, jsval *result)
                     ok = JS_FALSE;
                     goto out;
                 }
+                propobj->slots[JSSLOT_ITER_STATE] = JSVAL_NULL;
 
                 /*
                  * Root the parent slot so we can get it even in our finalizer
                  * (otherwise, it would live as long as we do, but it might be
                  * finalized first).
                  */
-                ok = js_AddRoot(cx, &propobj->slots[JSSLOT_PARENT], NULL);
+                ok = js_AddRoot(cx, &propobj->slots[JSSLOT_PARENT],
+                                "propobj->parent");
                 if (!ok)
                     goto out;
 
@@ -1940,10 +1985,12 @@ js_Interpret(JSContext *cx, jsval *result)
         if (!OBJ_IS_NATIVE(obj)) {                                            \
             ok = call;                                                        \
         } else {                                                              \
+            JSScope *scope_;                                                  \
             JS_LOCK_OBJ(cx, obj);                                             \
             PROPERTY_CACHE_TEST(&rt->propertyCache, obj, id, sprop);          \
-            if (sprop && !(sprop->attrs & JSPROP_READONLY)) {                 \
-                JSScope *scope_ = OBJ_SCOPE(obj);                             \
+            if (sprop &&                                                      \
+                !(sprop->attrs & JSPROP_READONLY) &&                          \
+                (scope_ = OBJ_SCOPE(obj), !SCOPE_IS_SEALED(scope_))) {        \
                 JS_UNLOCK_SCOPE(cx, scope_);                                  \
                 ok = SPROP_SET(cx, sprop, obj, obj, &rval);                   \
                 JS_LOCK_SCOPE(cx, scope_);                                    \
@@ -1976,10 +2023,11 @@ js_Interpret(JSContext *cx, jsval *result)
           case JSOP_BINDNAME:
             atom = GET_ATOM(cx, script, pc);
             SAVE_SP(fp);
-            ok = js_FindVariable(cx, (jsid)atom, &obj, &obj2, &prop);
-            if (!ok)
+            obj = js_FindIdentifierBase(cx, (jsid)atom);
+            if (!obj) {
+                ok = JS_FALSE;
                 goto out;
-            OBJ_DROP_PROPERTY(cx, obj2, prop);
+            }
             PUSH_OPND(OBJECT_TO_JSVAL(obj));
             break;
 
@@ -2025,7 +2073,7 @@ js_Interpret(JSContext *cx, jsval *result)
             BITWISE_OP(&);
             break;
 
-#ifdef XP_PC
+#if defined(XP_WIN) || defined(XP_OS2)
 #define COMPARE_DOUBLES(LVAL, OP, RVAL, IFNAN)                                \
     ((JSDOUBLE_IS_NaN(LVAL) || JSDOUBLE_IS_NaN(RVAL))                         \
      ? (IFNAN)                                                                \
@@ -2290,7 +2338,7 @@ js_Interpret(JSContext *cx, jsval *result)
             FETCH_NUMBER(cx, -2, d);
             sp--;
             if (d2 == 0) {
-#ifdef XP_PC
+#if defined(XP_WIN) || defined(XP_OS2)
                 /* XXX MSVC miscompiles such that (NaN == 0) */
                 if (JSDOUBLE_IS_NaN(d2))
                     rval = DOUBLE_TO_JSVAL(rt->jsNaN);
@@ -2316,7 +2364,7 @@ js_Interpret(JSContext *cx, jsval *result)
             if (d2 == 0) {
                 STORE_OPND(-1, DOUBLE_TO_JSVAL(rt->jsNaN));
             } else {
-#ifdef XP_PC
+#if defined(XP_WIN) || defined(XP_OS2)
               /* Workaround MS fmod bug where 42 % (1/0) => NaN, not 42. */
               if (!(JSDOUBLE_IS_FINITE(d) && JSDOUBLE_IS_INFINITE(d2)))
 #endif
@@ -2776,6 +2824,7 @@ js_Interpret(JSContext *cx, jsval *result)
                 if (hook) {
                     newifp->hookData = hook(cx, &newifp->frame, JS_TRUE, 0,
                                             cx->runtime->callHookData);
+                    LOAD_INTERRUPT_HANDLER(rt);
                 }
 
                 /* Switch to new version if currentVersion wasn't overridden. */
@@ -3321,6 +3370,7 @@ js_Interpret(JSContext *cx, jsval *result)
 #endif /* JS_HAS_EXCEPTIONS */
               default:;
             }
+            LOAD_INTERRUPT_HANDLER(rt);
             break;
 
           case JSOP_ARGUMENTS:
@@ -3995,6 +4045,7 @@ js_Interpret(JSContext *cx, jsval *result)
 #endif /* JS_HAS_EXCEPTIONS */
                   default:;
                 }
+                LOAD_INTERRUPT_HANDLER(rt);
             }
             break;
           }
@@ -4068,6 +4119,7 @@ out:
               case JSTRAP_CONTINUE:
               default:;
             }
+            LOAD_INTERRUPT_HANDLER(rt);
         }
 
         /*

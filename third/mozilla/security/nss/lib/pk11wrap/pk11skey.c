@@ -16,8 +16,12 @@
  * Copyright (C) 1994-2000 Netscape Communications Corporation.  All
  * Rights Reserved.
  * 
- * Contributor(s): 
+ * Portions created by Sun Microsystems, Inc. are Copyright (C) 2003
+ * Sun Microsystems, Inc. All Rights Reserved.
+ *
+ * Contributor(s):
  *	Dr Stephen Henson <stephen.henson@gemplus.com>
+ *	Dr Vipul Gupta <vipul.gupta@sun.com>, Sun Microsystems Laboratories
  * 
  * Alternatively, the contents of this file may be used under the
  * terms of the GNU General Public License Version 2 or later (the
@@ -50,6 +54,7 @@
 #include "cert.h"
 #include "secerr.h"
 #include "secpkcs5.h" 
+#include "ec.h"
 
 #define PAIRWISE_SECITEM_TYPE			siBuffer
 #define PAIRWISE_DIGEST_LENGTH			SHA1_LENGTH /* 160-bits */
@@ -572,7 +577,19 @@ PK11_ImportPublicKey(PK11SlotInfo *slot, SECKEYPublicKey *pubKey,
 	    PK11_SETATTRS(attrs, CKA_VALUE,    pubKey->u.dh.publicValue.data, 
 					pubKey->u.dh.publicValue.len); attrs++;
 	    break;
-	/* what about fortezza??? */
+#ifdef NSS_ENABLE_ECC
+        case ecKey:
+	    keyType = CKK_EC;
+	    PK11_SETATTRS(attrs, CKA_VERIFY, &cktrue, sizeof(CK_BBOOL));attrs++;
+	    PK11_SETATTRS(attrs, CKA_DERIVE, &cktrue, sizeof(CK_BBOOL));attrs++;
+ 	    signedattr = attrs;
+	    PK11_SETATTRS(attrs, CKA_EC_PARAMS, 
+		          pubKey->u.ec.DEREncodedParams.data,
+		          pubKey->u.ec.DEREncodedParams.len); attrs++;
+	    PK11_SETATTRS(attrs, CKA_EC_POINT, pubKey->u.ec.publicValue.data,
+			  pubKey->u.ec.publicValue.len); attrs++;
+	    break;
+#endif /* NSS_ENABLE_ECC */
 	default:
 	    PORT_SetError( SEC_ERROR_BAD_KEY );
 	    return CK_INVALID_HANDLE;
@@ -690,16 +707,26 @@ PK11_GetWindow(PK11SymKey *key)
 SECStatus
 PK11_ExtractKeyValue(PK11SymKey *symKey)
 {
+    SECStatus rv;
 
-    if (symKey->data.data != NULL) return SECSuccess;
+    if (symKey->data.data != NULL) {
+	if (symKey->size == 0) {
+	   symKey->size = symKey->data.len;
+	}
+	return SECSuccess;
+    }
 
     if (symKey->slot == NULL) {
 	PORT_SetError( SEC_ERROR_INVALID_KEY );
 	return SECFailure;
     }
 
-    return PK11_ReadAttribute(symKey->slot,symKey->objectID,CKA_VALUE,NULL,
+    rv = PK11_ReadAttribute(symKey->slot,symKey->objectID,CKA_VALUE,NULL,
 				&symKey->data);
+    if (rv == SECSuccess) {
+	symKey->size = symKey->data.len;
+    }
+    return rv;
 }
 
 SECStatus
@@ -757,6 +784,9 @@ PK11_ExtractPublicKey(PK11SlotInfo *slot,KeyType keyType,CK_OBJECT_HANDLE id)
     CK_ATTRIBUTE template[8];
     CK_ATTRIBUTE *attrs= template;
     CK_ATTRIBUTE *modulus,*exponent,*base,*prime,*subprime,*value;
+#ifdef NSS_ENABLE_ECC
+    CK_ATTRIBUTE *ecparams;
+#endif /* NSS_ENABLE_ECC */
 
     /* if we didn't know the key type, get it */
     if (keyType== nullKey) {
@@ -775,6 +805,11 @@ PK11_ExtractPublicKey(PK11SlotInfo *slot,KeyType keyType,CK_OBJECT_HANDLE id)
 	case CKK_DH:
 	    keyType = dhKey;
 	    break;
+#ifdef NSS_ENABLE_ECC
+	case CKK_EC:
+	    keyType = ecKey;
+	    break;
+#endif /* NSS_ENABLE_ECC */
 	default:
 	    PORT_SetError( SEC_ERROR_BAD_KEY );
 	    return NULL;
@@ -879,6 +914,30 @@ PK11_ExtractPublicKey(PK11SlotInfo *slot,KeyType keyType,CK_OBJECT_HANDLE id)
 	crv = pk11_Attr2SecItem(arena,value,&pubKey->u.dh.publicValue);
 	if (crv != CKR_OK) break;
 	break;
+#ifdef NSS_ENABLE_ECC
+    case ecKey:
+	pubKey->u.ec.size = 0;
+	ecparams = attrs;
+	PK11_SETATTRS(attrs, CKA_EC_PARAMS, NULL, 0); attrs++; 
+	value =attrs;
+	PK11_SETATTRS(attrs, CKA_EC_POINT, NULL, 0); attrs++; 
+	templateCount = attrs - template;
+	PR_ASSERT(templateCount <= sizeof(template)/sizeof(CK_ATTRIBUTE));
+	crv = PK11_GetAttributes(tmp_arena,slot,id,template,templateCount);
+	if (crv != CKR_OK) break;
+
+	if ((keyClass != CKO_PUBLIC_KEY) || (pk11KeyType != CKK_EC)) {
+	    crv = CKR_OBJECT_HANDLE_INVALID;
+	    break;
+	} 
+
+	crv = pk11_Attr2SecItem(arena,ecparams,
+	                        &pubKey->u.ec.DEREncodedParams);
+	if (crv != CKR_OK) break;
+	crv = pk11_Attr2SecItem(arena,value,&pubKey->u.ec.publicValue);
+	if (crv != CKR_OK) break;
+	break;
+#endif /* NSS_ENABLE_ECC */
     case fortezzaKey:
     case nullKey:
     default:
@@ -919,6 +978,9 @@ PK11_MakePrivKey(PK11SlotInfo *slot, KeyType keyType,
 	case CKK_DSA: keyType = dsaKey; break;
 	case CKK_DH: keyType = dhKey; break;
 	case CKK_KEA: keyType = fortezzaKey; break;
+#ifdef NSS_ENABLE_ECC
+	case CKK_EC: keyType = ecKey; break;
+#endif /* NSS_ENABLE_ECC */
 	default:
 		break;
 	}
@@ -949,40 +1011,42 @@ PK11_MakePrivKey(PK11SlotInfo *slot, KeyType keyType,
 unsigned int
 PK11_GetKeyLength(PK11SymKey *key)
 {
-   if (key->size != 0) return key->size ;
+    CK_KEY_TYPE keyType;
+
+    if (key->size != 0) return key->size;
+
+    /* First try to figure out the key length from its type */
+    keyType = PK11_ReadULongAttribute(key->slot,key->objectID,CKA_KEY_TYPE);
+    switch (keyType) {
+      case CKK_DES: key->size = 8; break;
+      case CKK_DES2: key->size = 16; break;
+      case CKK_DES3: key->size = 24; break;
+      case CKK_SKIPJACK: key->size = 10; break;
+      case CKK_BATON: key->size = 20; break;
+      case CKK_JUNIPER: key->size = 20; break;
+      case CKK_GENERIC_SECRET:
+	if (key->type == CKM_SSL3_PRE_MASTER_KEY_GEN)  {
+	    key->size=48;
+	}
+	break;
+      default: break;
+    }
+   if( key->size != 0 ) return key->size;
+
    if (key->data.data == NULL) {
 	PK11_ExtractKeyValue(key);
    }
-   /* key is probably secret. Look up it's type and length */
+   /* key is probably secret. Look up its length */
    /*  this is new PKCS #11 version 2.0 functionality. */
    if (key->size == 0) {
 	CK_ULONG keyLength;
 
 	keyLength = PK11_ReadULongAttribute(key->slot,key->objectID,CKA_VALUE_LEN);
-	/* doesn't have a length field, check the known PKCS #11 key types,
-	 * which don't have this field */
-	if (keyLength == CK_UNAVAILABLE_INFORMATION) {
-	    CK_KEY_TYPE keyType;
-	    keyType = PK11_ReadULongAttribute(key->slot,key->objectID,CKA_KEY_TYPE);
-	    switch (keyType) {
-	    case CKK_DES: key->size = 8; break;
-	    case CKK_DES2: key->size = 16; break;
-	    case CKK_DES3: key->size = 24; break;
-	    case CKK_SKIPJACK: key->size = 10; break;
-	    case CKK_BATON: key->size = 20; break;
-	    case CKK_JUNIPER: key->size = 20; break;
-	    case CKK_GENERIC_SECRET:
-		if (key->type == CKM_SSL3_PRE_MASTER_KEY_GEN)  {
-		    key->size=48;
-		}
-		break;
-	    default: break;
-	    }
-	} else {
+	if (keyLength != CK_UNAVAILABLE_INFORMATION) {
 	    key->size = (unsigned int)keyLength;
 	}
     }
-	
+
    return key->size;
 }
 
@@ -1076,6 +1140,10 @@ pk11_mapSignKeyType(KeyType keyType)
     case fortezzaKey:
     case dsaKey:
 	return CKM_DSA;
+#ifdef NSS_ENABLE_ECC
+    case ecKey:
+	return CKM_ECDSA;
+#endif /* NSS_ENABLE_ECC */
     case dhKey:
     default:
 	break;
@@ -1293,7 +1361,7 @@ PK11_TokenKeyGen(PK11SlotInfo *slot, CK_MECHANISM_TYPE type, SECItem *param,
     int keySize, SECItem *keyid, PRBool isToken, void *wincx)
 {
     PK11SymKey *symKey;
-    CK_ATTRIBUTE genTemplate[5];
+    CK_ATTRIBUTE genTemplate[6];
     CK_ATTRIBUTE *attrs = genTemplate;
     int count = sizeof(genTemplate)/sizeof(genTemplate[0]);
     CK_SESSION_HANDLE session;
@@ -1375,6 +1443,7 @@ PK11_TokenKeyGen(PK11SlotInfo *slot, CK_MECHANISM_TYPE type, SECItem *param,
     if (isToken) {
 	PK11_Authenticate(symKey->slot,PR_TRUE,wincx);
         session = PK11_GetRWSession(symKey->slot);  /* Should always be original slot */
+	symKey->owner = PR_FALSE;
     } else {
         session = symKey->session;
         pk11_EnterKeyMonitor(symKey);
@@ -1647,6 +1716,7 @@ pk11_PairwiseConsistencyCheck(SECKEYPublicKey *pubKey,
 	/* 
 	 * We are not doing consistency check for Diffie-Hellman Key - 
 	 * otherwise it would be here
+	 * This is also true for Elliptic Curve Diffie-Hellman keys
 	 */
 
       }
@@ -1863,6 +1933,19 @@ PK11_GenerateKeyPair(PK11SlotInfo *slot,CK_MECHANISM_TYPE type,
       { CKA_VERIFY_RECOVER,  NULL, 0},
       { CKA_ENCRYPT,  NULL, 0},
     };
+#ifdef NSS_ENABLE_ECC
+    CK_ATTRIBUTE ecPubTemplate[] = {
+      { CKA_EC_PARAMS, NULL, 0 }, 
+      { CKA_TOKEN,  NULL, 0},
+      { CKA_DERIVE,  NULL, 0},
+      { CKA_WRAP,  NULL, 0},
+      { CKA_VERIFY,  NULL, 0},
+      { CKA_VERIFY_RECOVER,  NULL, 0},
+      { CKA_ENCRYPT,  NULL, 0},
+    };
+    int ecPubCount = sizeof(ecPubTemplate)/sizeof(ecPubTemplate[0]);
+    SECKEYECParams * ecParams;
+#endif /* NSS_ENABLE_ECC */
 
     int dsaPubCount = sizeof(dsaPubTemplate)/sizeof(dsaPubTemplate[0]);
     /*CK_ULONG key_size = 0;*/
@@ -2006,6 +2089,23 @@ PK11_GenerateKeyPair(PK11SlotInfo *slot,CK_MECHANISM_TYPE type,
         keyType = dhKey;
         test_mech.mechanism = CKM_DH_PKCS_DERIVE;
 	break;
+#ifdef NSS_ENABLE_ECC
+    case CKM_EC_KEY_PAIR_GEN:
+        ecParams = (SECKEYECParams *)param;
+        attrs = ecPubTemplate;
+        PK11_SETATTRS(attrs, CKA_EC_PARAMS, ecParams->data, 
+	              ecParams->len);   attrs++;
+        pubTemplate = ecPubTemplate;
+        pubCount = ecPubCount;
+        keyType = ecKey;
+	/* XXX An EC key can be used for other mechanisms too such
+	 * as CKM_ECDSA and CKM_ECDSA_SHA1. How can we reflect
+	 * that in test_mech.mechanism so the CKA_SIGN, CKA_VERIFY
+	 * attributes are set correctly? 
+	 */
+        test_mech.mechanism = CKM_ECDH1_DERIVE;
+        break;
+#endif /* NSS_ENABLE_ECC */
     default:
 	PORT_SetError( SEC_ERROR_BAD_KEY );
 	return NULL;
@@ -2029,6 +2129,15 @@ PK11_GenerateKeyPair(PK11SlotInfo *slot,CK_MECHANISM_TYPE type,
 	case CKM_DH_PKCS_DERIVE:
 		mechanism_info.flags = CKF_DERIVE;
 		break;
+#ifdef NSS_ENABLE_ECC
+	case CKM_ECDH1_DERIVE:
+		mechanism_info.flags = CKF_DERIVE;
+		break;
+	case CKM_ECDSA:
+	case CKM_ECDSA_SHA1:
+		mechanism_info.flags = CKF_SIGN | CKF_VERIFY;
+		break;
+#endif /* NSS_ENABLE_ECC */
 	default:
 	       break;
 	}
@@ -2124,6 +2233,11 @@ PK11_GenerateKeyPair(PK11SlotInfo *slot,CK_MECHANISM_TYPE type,
     case CKM_DH_PKCS_KEY_PAIR_GEN:
       pubKeyIndex = &(*pubKey)->u.dh.publicValue;
       break;      
+#ifdef NSS_ENABLE_ECC
+    case CKM_EC_KEY_PAIR_GEN:
+      pubKeyIndex = &(*pubKey)->u.ec.publicValue;
+      break;      
+#endif /* NSS_ENABLE_ECC */
     }
     PORT_Assert(pubKeyIndex != NULL);
 
@@ -2682,6 +2796,62 @@ PK11_PubDerive(SECKEYPrivateKey *privKey, SECKEYPublicKey *pubKey,
 	    PORT_SetError( PK11_MapError(crv) );
 	}
 	break;
+#ifdef NSS_ENABLE_ECC
+    case ecKey:
+        {
+	    CK_BBOOL cktrue = CK_TRUE;
+	    CK_OBJECT_CLASS keyClass = CKO_SECRET_KEY;
+	    CK_KEY_TYPE keyType = CKK_GENERIC_SECRET;
+	    CK_ULONG key_size = 0;
+	    CK_ATTRIBUTE keyTemplate[4];
+	    int templateCount;
+	    CK_ATTRIBUTE *attrs = keyTemplate;
+	    CK_ECDH1_DERIVE_PARAMS *mechParams = NULL;
+
+	    if (pubKey->keyType != ecKey) {
+		PORT_SetError(SEC_ERROR_BAD_KEY);
+		break;
+	    }
+
+	    PK11_SETATTRS(attrs, CKA_CLASS, &keyClass, sizeof(keyClass));
+	    attrs++;
+	    PK11_SETATTRS(attrs, CKA_KEY_TYPE, &keyType, sizeof(keyType));
+	    attrs++;
+	    PK11_SETATTRS(attrs, operation, &cktrue, 1); attrs++;
+	    PK11_SETATTRS(attrs, CKA_VALUE_LEN, &key_size, sizeof(key_size)); 
+	    attrs++;
+	    templateCount =  attrs - keyTemplate;
+	    PR_ASSERT(templateCount <= sizeof(keyTemplate)/sizeof(CK_ATTRIBUTE));
+
+	    keyType = PK11_GetKeyType(target,keySize);
+	    key_size = keySize;
+	    symKey->size = keySize;
+	    if (key_size == 0) templateCount--;
+
+	    mechParams = (CK_ECDH1_DERIVE_PARAMS *) 
+		PORT_ZAlloc(sizeof(CK_ECDH1_DERIVE_PARAMS));
+	    mechParams->kdf = CKD_SHA1_KDF;
+	    mechParams->ulSharedDataLen = 0;
+	    mechParams->pSharedData = NULL;
+	    mechParams->ulPublicDataLen =  pubKey->u.ec.publicValue.len;
+	    mechParams->pPublicData =  pubKey->u.ec.publicValue.data;
+
+	    mechanism.mechanism = derive;
+	    mechanism.pParameter = mechParams;
+	    mechanism.ulParameterLen = sizeof(CK_ECDH1_DERIVE_PARAMS);
+
+	    pk11_EnterKeyMonitor(symKey);
+	    crv = PK11_GETTAB(slot)->C_DeriveKey(symKey->session, 
+		&mechanism, privKey->pkcs11ID, keyTemplate, 
+		templateCount, &symKey->objectID);
+	    pk11_ExitKeyMonitor(symKey);
+
+	    PORT_ZFree(mechParams, sizeof(CK_ECDH1_DERIVE_PARAMS));
+
+	    if (crv == CKR_OK) return symKey;
+	    PORT_SetError( PK11_MapError(crv) );
+	}
+#endif /* NSS_ENABLE_ECC */
    }
 
    PK11_FreeSymKey(symKey);
@@ -3812,13 +3982,11 @@ PK11_HashBuf(SECOidTag hashAlg, unsigned char *out, unsigned char *in,
 	return rv;
     }
 
-    /* we need the output length ... maybe this should be table driven...*/
-    switch (hashAlg) {
-    case  SEC_OID_SHA1: max_length = SHA1_LENGTH; break;
-    case  SEC_OID_MD2: max_length = MD2_LENGTH; break;
-    case  SEC_OID_MD5: max_length = MD5_LENGTH; break;
-    default: max_length = 16; break;
-    }
+    /* XXX This really should have been an argument to this function! */
+    max_length = HASH_ResultLenByOidTag(hashAlg);
+    PORT_Assert(max_length);
+    if (!max_length)
+    	max_length = HASH_LENGTH_MAX;
 
     rv = PK11_DigestFinal(context,out,&out_length,max_length);
     PK11_DestroyContext(context, PR_TRUE);
@@ -4123,6 +4291,9 @@ finalize:
     }
 
     if (crv != CKR_OK) {
+	if (buffer != stackBuf) {
+	    PORT_Free(buffer);
+	}
 	if (crv == CKR_OPERATION_NOT_INITIALIZED) {
 	    /* if there's no operation, it is finalized */
 	    return SECSuccess;
@@ -4132,13 +4303,20 @@ finalize:
     }
 
     /* try to finalize the session with a buffer */
-    if (buffer == NULL && count > 0) { 
-	if (count < sizeof stackBuf) {
+    if (buffer == NULL) { 
+	if (count <= sizeof stackBuf) {
 	    buffer = stackBuf;
-	    goto finalize;
 	} else {
-	    return SECFailure;
+	    buffer = PORT_Alloc(count);
+	    if (buffer == NULL) {
+		PORT_SetError(SEC_ERROR_NO_MEMORY);
+		return SECFailure;
+	    }
 	}
+	goto finalize;
+    }
+    if (buffer != stackBuf) {
+	PORT_Free(buffer);
     }
     return SECSuccess;
 }
@@ -5002,8 +5180,23 @@ finish:
 PK11SymKey*
 PK11_CopySymKeyForSigning(PK11SymKey *originalKey, CK_MECHANISM_TYPE mech)
 {
-    return pk11_CopyToSlot(PK11_GetSlotFromKey(originalKey), mech, CKA_SIGN,
-			originalKey);
+    CK_RV crv;
+    CK_ATTRIBUTE setTemplate;
+    CK_BBOOL ckTrue = CK_TRUE; 
+    PK11SlotInfo *slot = originalKey->slot;
+
+    /* first just try to set this key up for signing */
+    PK11_SETATTRS(&setTemplate, CKA_SIGN, &ckTrue, sizeof(ckTrue));
+    pk11_EnterKeyMonitor(originalKey);
+    crv = PK11_GETTAB(slot)-> C_SetAttributeValue(originalKey->session, 
+				originalKey->objectID, &setTemplate, 1);
+    pk11_ExitKeyMonitor(originalKey);
+    if (crv == CKR_OK) {
+	return PK11_ReferenceSymKey(originalKey);
+    }
+
+    /* nope, doesn't like it, use the pk11 copy object command */
+    return pk11_CopyToSlot(slot, mech, CKA_SIGN, originalKey);
 }
 
 char *

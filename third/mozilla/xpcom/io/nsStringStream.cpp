@@ -51,12 +51,24 @@
  */
 
 #include "nsStringStream.h"
-#include "nsIFileStream.h" // for nsIRandomAccessStore
 
 #include "prerror.h"
-#include "nsFileSpec.h"
 #include "plstr.h"
 #include "nsReadableUtils.h"
+#include "nsCRT.h"
+#include "nsISeekableStream.h"
+
+#define NS_FILE_RESULT(x) ns_file_convert_result((PRInt32)x)
+#define NS_FILE_FAILURE NS_FILE_RESULT(-1)
+
+static nsresult ns_file_convert_result(PRInt32 nativeErr)
+{
+    return nativeErr ?
+        NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_FILES,((nativeErr)&0xFFFF))
+        : NS_OK;
+}
+ 
+
 
 //========================================================================================
 class BasicStringImpl
@@ -122,7 +134,6 @@ BasicStringImpl::BasicStringImpl()
 , mLastResult(NS_OK)
 , mEOF(PR_FALSE)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 //----------------------------------------------------------------------------------------
@@ -313,13 +324,18 @@ class ConstCharImpl
                                                      PRUint32 aCount, PRUint32 *result) {
                                             nsresult rv;
                                             PRInt32 maxCount = mLength - mOffset;
+                                            if (maxCount == 0) {
+                                                *result = 0;
+                                                return NS_OK;
+                                            }
                                             if ((PRInt32)aCount > maxCount)
                                                 aCount = maxCount;
                                             rv = writer(this, closure, mConstString + mOffset, 
                                                         0, aCount, result);
                                             if (NS_SUCCEEDED(rv))
                                                 mOffset += *result;
-                                            return rv;
+                                            // errors returned from the writer end here!
+                                            return NS_OK;
                                         }
 
     protected:
@@ -364,9 +380,9 @@ NS_IMPL_THREADSAFE_RELEASE(BasicStringImpl)
 
 NS_IMPL_QUERY_HEAD(BasicStringImpl)
   NS_IMPL_QUERY_BODY(nsISeekableStream)
-  NS_IMPL_QUERY_BODY(nsIRandomAccessStore)
   NS_IMPL_QUERY_BODY(nsIOutputStream)
   NS_IMPL_QUERY_BODY(nsIInputStream)
+  NS_IMPL_QUERY_BODY(nsIRandomAccessStore)
 NS_IMPL_QUERY_TAIL(nsIOutputStream)
 
 //----------------------------------------------------------------------------------------

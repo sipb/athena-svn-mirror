@@ -56,12 +56,9 @@
 #include "nsClipboardHelper.h"
 #include "nsHTMLFormatConverter.h"
 #include "nsDragService.h"
-#include "nsScrollbar.h"
 #include "nsSound.h"
 #include "nsGtkMozRemoteHelper.h"
-#ifdef IBMBIDI
 #include "nsBidiKeyboard.h"
-#endif
 
 #include "nsGtkIMEHelper.h"
 
@@ -81,67 +78,7 @@ NS_GENERIC_FACTORY_CONSTRUCTOR(nsHTMLFormatConverter)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsDragService)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsSound)
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsGtkXRemoteWidgetHelper)
-#ifdef IBMBIDI
 NS_GENERIC_FACTORY_CONSTRUCTOR(nsBidiKeyboard)
-#endif
-
-static nsresult nsHorizScrollbarConstructor (nsISupports *aOuter, REFNSIID aIID, void **aResult)
-{
-  nsresult rv;
-  nsISupports *inst = nsnull;
-
-  if ( NULL == aResult )
-  {
-    rv = NS_ERROR_NULL_POINTER;
-    return rv;
-  }
-  *aResult = NULL;
-  if (NULL != aOuter)
-  {
-    rv = NS_ERROR_NO_AGGREGATION;
-    return rv;
-  }
-  
-  inst = (nsISupports *)(nsBaseWidget *)(nsWidget *)new nsScrollbar(PR_FALSE);
-  if (inst == NULL)
-  {
-    return NS_ERROR_OUT_OF_MEMORY;
-  }
-  NS_ADDREF(inst);
-  rv = inst->QueryInterface(aIID, aResult);
-  NS_RELEASE(inst);
-
-  return rv;
-}
-
-static nsresult nsVertScrollbarConstructor (nsISupports *aOuter, REFNSIID aIID, void **aResult)
-{
-  nsresult rv;
-  nsISupports *inst = nsnull;
-
-  if ( NULL == aResult )
-  {
-    rv = NS_ERROR_NULL_POINTER;
-    return rv;
-  }
-  *aResult = NULL;
-  if (NULL != aOuter)
-  {
-    rv = NS_ERROR_NO_AGGREGATION;
-    return rv;
-  }
-  
-  inst = (nsISupports *)(nsBaseWidget *)(nsWidget *)new nsScrollbar(PR_TRUE);
-  if (inst == NULL)
-  {
-    return NS_ERROR_OUT_OF_MEMORY;
-  }
-  NS_ADDREF(inst);
-  rv = inst->QueryInterface(aIID, aResult);
-  NS_RELEASE(inst);
-
-  return rv;
-}
 
 static const nsModuleComponentInfo components[] =
 {
@@ -161,14 +98,6 @@ static const nsModuleComponentInfo components[] =
     NS_CHECKBUTTON_CID,
     "@mozilla.org/widgets/checkbutton/gtk;1",
     nsCheckButtonConstructor },
-  { "Gtk Horiz Scrollbar",
-    NS_HORZSCROLLBAR_CID,
-    "@mozilla.org/widgets/horizscroll/gtk;1",
-    nsHorizScrollbarConstructor },
-  { "Gtk Vert Scrollbar",
-    NS_VERTSCROLLBAR_CID,
-    "@mozilla.org/widgets/vertscroll/gtk;1",
-    nsVertScrollbarConstructor },
   { "Gtk Text Widget",
     NS_TEXTFIELD_CID,
     "@mozilla.org/widgets/textwidget/gtk;1",
@@ -220,19 +149,18 @@ static const nsModuleComponentInfo components[] =
   { NS_IXREMOTEWIDGETHELPER_CLASSNAME,
     NS_GTKXREMOTEWIDGETHELPER_CID,
     NS_IXREMOTEWIDGETHELPER_CONTRACTID,
-    nsGtkXRemoteWidgetHelperConstructor }
-#ifdef IBMBIDI
-    , { "Gtk Bidi Keyboard",
+    nsGtkXRemoteWidgetHelperConstructor },
+  { "Gtk Bidi Keyboard",
     NS_BIDIKEYBOARD_CID,
     "@mozilla.org/widget/bidikeyboard;1",
     nsBidiKeyboardConstructor }
-#endif // IBMBIDI
 };
 
 PR_STATIC_CALLBACK(void)
 nsWidgetGTKModuleDtor(nsIModule *self)
 {
-  nsWindow::FreeIconCache();
+  nsWindow::ReleaseGlobals();
+  nsAppShell::ReleaseGlobals();
   nsGtkIMEHelper::Shutdown();
 }
 

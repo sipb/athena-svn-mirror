@@ -39,13 +39,14 @@
 #include "nsFTPChannel.h"
 #include "nsIStreamListener.h"
 #include "nsIServiceManager.h"
-#include "nsCExternalHandlerService.h"
 #include "nsIMIMEService.h"
 #include "nsNetUtil.h"
 #include "nsMimeTypes.h"
 #include "nsIProxyObjectManager.h"
 #include "nsReadableUtils.h"
 #include "nsIPref.h"
+#include "nsIStreamConverterService.h"
+#include "nsISocketTransport.h"
 
 #if defined(PR_LOGGING)
 extern PRLogModuleInfo* gFTPLog;
@@ -87,7 +88,6 @@ nsFTPChannel::nsFTPChannel()
       mStatus(NS_OK),
       mCanceled(PR_FALSE)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 nsFTPChannel::~nsFTPChannel()
@@ -144,18 +144,6 @@ nsFTPChannel::Init(nsIURI* uri, nsIProxyInfo* proxyInfo, nsICacheSession* sessio
     return NS_OK;
 }
 
-
-NS_METHOD
-nsFTPChannel::Create(nsISupports* aOuter, const nsIID& aIID, void* *aResult)
-{
-    nsFTPChannel* fc;
-    NS_NEWXPCOM(fc, nsFTPChannel);
-    if (!fc) return NS_ERROR_OUT_OF_MEMORY;
-    NS_ADDREF(fc);
-    nsresult rv = fc->QueryInterface(aIID, aResult);
-    NS_RELEASE(fc);
-    return rv;
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 // nsIRequest methods:
@@ -410,22 +398,13 @@ nsFTPChannel::GetContentType(nsACString &aContentType)
 {
     nsAutoLock lock(mLock);
 
-    aContentType.Truncate();
     if (mContentType.IsEmpty()) {
-        nsresult rv;
-        nsCOMPtr<nsIMIMEService> MIMEService (do_GetService(NS_MIMESERVICE_CONTRACTID, &rv));
-        if (NS_FAILED(rv)) return rv;
-        nsXPIDLCString mimeType;
-        rv = MIMEService->GetTypeFromURI(mURL, getter_Copies(mimeType));
-        if (NS_SUCCEEDED(rv))
-            mContentType = mimeType;
-        else
-            mContentType = NS_LITERAL_CSTRING(UNKNOWN_CONTENT_TYPE);
+        aContentType = NS_LITERAL_CSTRING(UNKNOWN_CONTENT_TYPE);
+    } else {
+        aContentType = mContentType;
     }
 
-    aContentType = mContentType;
-
-    PR_LOG(gFTPLog, PR_LOG_DEBUG, ("nsFTPChannel::GetContentType() returned %s\n", mContentType.get()));
+    PR_LOG(gFTPLog, PR_LOG_DEBUG, ("nsFTPChannel::GetContentType() returned %s\n", PromiseFlatCString(aContentType).get()));
     return NS_OK;
 }
 
@@ -596,11 +575,13 @@ nsFTPChannel::OnStatus(nsIRequest *request, nsISupports *aContext,
         // The state machine needs to know that the data connection
         // was successfully started so that it can issue data commands
         // securely.
-        NS_ASSERTION(mFTPState, "ftp state is null.");
-        (void) mFTPState->DataConnectionEstablished();
+        if (mFTPState)
+            mFTPState->DataConnectionEstablished();
+        else
+            NS_ERROR("ftp state is null.");
     }
 
-    if (!mEventSink)
+    if (!mEventSink || (mLoadFlags & LOAD_BACKGROUND) || !mIsPending || NS_FAILED(mStatus))
         return NS_OK;
 
     return mEventSink->OnStatus(this, mUserContext, aStatus,
@@ -609,8 +590,9 @@ nsFTPChannel::OnStatus(nsIRequest *request, nsISupports *aContext,
 
 NS_IMETHODIMP
 nsFTPChannel::OnProgress(nsIRequest *request, nsISupports* aContext,
-                                  PRUint32 aProgress, PRUint32 aProgressMax) {
-    if (!mEventSink)
+                         PRUint32 aProgress, PRUint32 aProgressMax)
+{
+    if (!mEventSink || (mLoadFlags & LOAD_BACKGROUND) || !mIsPending)
         return NS_OK;
 
     return mEventSink->OnProgress(this, mUserContext, 
@@ -655,6 +637,10 @@ nsFTPChannel::OnStopRequest(nsIRequest *request, nsISupports* aContext,
     if (mUploadStream)
         mUploadStream->Close();
 
+    if (mFTPState) {
+        mFTPState->DataConnectionComplete();
+        NS_RELEASE(mFTPState);
+    }
     mIsPending = PR_FALSE;
     return rv;
 }
@@ -676,6 +662,24 @@ nsFTPChannel::OnStartRequest(nsIRequest *request, nsISupports *aContext)
     
     nsresult rv = NS_OK;
     if (mListener) {
+        if (mContentType.IsEmpty()) {
+            // Time to sniff!
+            nsCOMPtr<nsIStreamConverterService> serv =
+                do_GetService("@mozilla.org/streamConverters;1", &rv);
+            if (NS_SUCCEEDED(rv)) {
+                NS_ConvertASCIItoUCS2 from(UNKNOWN_CONTENT_TYPE);
+                nsCOMPtr<nsIStreamListener> converter;
+                rv = serv->AsyncConvertData(from.get(),
+                                            NS_LITERAL_STRING("*/*").get(),
+                                            mListener,
+                                            mUserContext,
+                                            getter_AddRefs(converter));
+                if (NS_SUCCEEDED(rv)) {
+                    mListener = converter;
+                }
+            }
+        }
+        
         rv = mListener->OnStartRequest(this, mUserContext);
         if (NS_FAILED(rv)) return rv;
     }
@@ -722,26 +726,10 @@ nsFTPChannel::OnCacheEntryAvailable(nsICacheEntryDescriptor *entry,
 }
 
 NS_IMETHODIMP
-nsFTPChannel::SetUploadStream(nsIInputStream *stream, const char *contentType, PRInt32 contentLength)
+nsFTPChannel::SetUploadStream(nsIInputStream *stream, const nsACString &contentType, PRInt32 contentLength)
 {
     mUploadStream = stream;
     return NS_OK;
-}
-
-NS_IMETHODIMP
-nsFTPChannel::SetUploadFile(nsIFile *file, const char *contentType, PRInt32 contentLength)
-{
-    if (!file) return NS_ERROR_NULL_POINTER;
-
-    nsresult rv;
-    // Grab a file input stream
-    nsCOMPtr<nsIInputStream> stream;
-    rv = NS_NewLocalFileInputStream(getter_AddRefs(stream), file);    
-    if (NS_FAILED(rv))
-        return rv;
-
-    // set the stream on ourselves
-    return SetUploadStream(stream, nsnull, -1); 
 }
 
 NS_IMETHODIMP

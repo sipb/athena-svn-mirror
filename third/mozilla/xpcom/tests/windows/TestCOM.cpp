@@ -37,6 +37,7 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include <windows.h>
+#include <unknwn.h>
 #include <iostream.h>
 #include "nsISupports.h"
 #include "nsIFactory.h"
@@ -65,7 +66,6 @@ class nsTestCom: public nsITestCom {
 
 public:
   nsTestCom() {
-    NS_INIT_ISUPPORTS();
   }
   virtual ~nsTestCom() {
     cout << "nsTestCom instance successfully deleted\n";
@@ -102,7 +102,6 @@ class nsTestComFactory: public nsIFactory {
   NS_DECL_ISUPPORTS
 public:
   nsTestComFactory() {
-    NS_INIT_ISUPPORTS();
   }
   
   NS_IMETHOD CreateInstance(nsISupports *aOuter,

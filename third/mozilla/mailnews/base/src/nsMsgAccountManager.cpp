@@ -80,10 +80,6 @@
 #include "nsIImapUrl.h"
 #include "nsIMessengerOSIntegration.h"
 
-#if defined(DEBUG_sspitzer_) || defined(DEBUG_seth_)
-#define DEBUG_ACCOUNTMANAGER 1
-#endif
-
 #define PREF_MAIL_ACCOUNTMANAGER_ACCOUNTS "mail.accountmanager.accounts"
 #define PREF_MAIL_ACCOUNTMANAGER_DEFAULTACCOUNT "mail.accountmanager.defaultaccount"
 #define PREF_MAIL_ACCOUNTMANAGER_LOCALFOLDERSSERVER "mail.accountmanager.localfoldersserver"
@@ -102,7 +98,6 @@ static NS_DEFINE_CID(kPrefServiceCID, NS_PREF_CID);
 static NS_DEFINE_CID(kMsgBiffManagerCID, NS_MSGBIFFMANAGER_CID);
 static NS_DEFINE_CID(kMsgFolderCacheCID, NS_MSGFOLDERCACHE_CID);
 static NS_DEFINE_CID(kEventQueueServiceCID, NS_EVENTQUEUESERVICE_CID);
-static NS_DEFINE_CID(kRDFServiceCID, NS_RDFSERVICE_CID);
 
 // use this to search for all servers with the given hostname/iid and
 // put them in "servers"
@@ -152,7 +147,6 @@ nsMsgAccountManager::nsMsgAccountManager() :
   m_shutdownInProgress(PR_FALSE),
   m_prefs(0)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsMsgAccountManager::~nsMsgAccountManager()
@@ -179,9 +173,6 @@ nsresult nsMsgAccountManager::Init()
   nsresult rv;
 
   rv = NS_NewISupportsArray(getter_AddRefs(m_accounts));
-  if(NS_FAILED(rv)) return rv;
-
-  rv = NS_NewISupportsArray(getter_AddRefs(m_incomingServerListeners));
   if(NS_FAILED(rv)) return rv;
 
   rv = NS_NewISupportsArray(getter_AddRefs(mFolderListeners));
@@ -429,16 +420,13 @@ nsMsgAccountManager::CreateIncomingServer(const char* username,
                                           nsIMsgIncomingServer **_retval)
 {
   NS_ENSURE_ARG_POINTER(_retval);
-  nsresult rv;
 
-  rv = LoadAccounts();
+  nsresult rv = LoadAccounts();
   if (NS_FAILED(rv)) return rv;
 
   nsCAutoString key;
   getUniqueKey(SERVER_PREFIX, &m_incomingServers, key);
-  rv = createKeyedServer(key.get(), username, hostname, type, _retval);
-
-  return rv;
+  return createKeyedServer(key.get(), username, hostname, type, _retval);
 }
 
 nsresult
@@ -519,9 +507,6 @@ nsMsgAccountManager::createKeyedServer(const char* key,
   serverContractID += type;
   
   // finally, create the server
-#ifdef DEBUG_ACCOUNTMANAGER
-  printf("serverContractID = %s\n", serverContractID.get());
-#endif
   nsCOMPtr<nsIMsgIncomingServer> server =
            do_CreateInstance(serverContractID.get(), &rv);
   NS_ENSURE_SUCCESS(rv, rv);
@@ -661,8 +646,7 @@ nsMsgAccountManager::RemoveAccount(nsIMsgAccount *aAccount)
     NS_ENSURE_SUCCESS(rv,rv);
     for (PRUint32 i=0; i< cnt;i++)
     {
-      nsCOMPtr<nsISupports> supports = getter_AddRefs(allDescendents->ElementAt(i));
-      nsCOMPtr<nsIMsgFolder> folder = do_QueryInterface(supports, &rv);
+      nsCOMPtr<nsIMsgFolder> folder = do_QueryElementAt(allDescendents, i, &rv);
       folder->ForceDBClosed();
     }
    
@@ -768,9 +752,6 @@ nsMsgAccountManager::GetDefaultAccount(nsIMsgAccount * *aDefaultAccount)
   PRUint32 count;
   if (!m_defaultAccount) {
     m_accounts->Count(&count);
-#ifdef DEBUG_ACCOUNTMANAGER
-    printf("There are %d accounts\n", count);
-#endif
     if (count == 0) {
       *aDefaultAccount=nsnull;
       return NS_ERROR_FAILURE;
@@ -1014,6 +995,9 @@ PRBool PR_CALLBACK nsMsgAccountManager::cleanupOnExit(nsHashKey *aKey, void *aDa
   PRBool cleanupInboxOnExit = PR_FALSE;
   nsresult rv;
     
+  if (WeAreOffline())
+    return PR_TRUE;
+
   server->GetEmptyTrashOnExit(&emptyTrashOnExit);
   nsCOMPtr <nsIImapIncomingServer> imapserver = do_QueryInterface(server);
   if (imapserver)
@@ -1317,7 +1301,7 @@ nsMsgAccountManager::LoadAccounts()
   if (m_accountsLoaded)
     return NS_OK;
 
-  kDefaultServerAtom = NS_NewAtom("DefaultServer");
+  kDefaultServerAtom = do_GetAtom("DefaultServer");
   
   //Ensure biff service has started
   nsCOMPtr<nsIMsgBiffManager> biffService = 
@@ -1423,19 +1407,13 @@ nsMsgAccountManager::LoadAccounts()
   }
 
   m_accountsLoaded = PR_TRUE;  //It is ok to return null accounts like when we create new profile
+  m_haveShutdown = PR_FALSE;
   
   if (!accountList || !accountList[0]) {
-#ifdef DEBUG_ACCOUNTMANAGER
-    printf("No accounts.\n");
-#endif
     return NS_OK;
   }
   
-    /* parse accountList and run loadAccount on each string, comma-separated */
-#ifdef DEBUG_ACCOUNTMANAGER
-    printf("accountList = %s\n", (const char*)accountList);
-#endif
-   
+    /* parse accountList and run loadAccount on each string, comma-separated */   
     nsCOMPtr<nsIMsgAccount> account;
     char *newStr;
     char *rest = NS_CONST_CAST(char*,(const char*)accountList);
@@ -1447,9 +1425,6 @@ nsMsgAccountManager::LoadAccounts()
       str.StripWhitespace();
       
       if (!str.IsEmpty()) {
-#ifdef DEBUG_ACCOUNTMANAGER
-	  printf("account = %s\n",str.get());
-#endif
           rv = GetAccount(str.get(), getter_AddRefs(account));
       }
 
@@ -1495,13 +1470,15 @@ nsMsgAccountManager::getAccountList(nsISupports *element, void *aData)
 // that the special folders for each identity have the
 // correct special folder flags set, e.g, the Sent folder has
 // the sent flag set.
+//
+// it also goes through all the spam settings for each account
+// and makes sure the folder flags are set there, too
 NS_IMETHODIMP
-nsMsgAccountManager::SetSpecialFoldersForIdentities()
+nsMsgAccountManager::SetSpecialFolders()
 {
-  nsresult rv = NS_OK;
-	nsCOMPtr<nsIRDFService> rdf(do_GetService(kRDFServiceCID, &rv));
-  
-	if(NS_FAILED(rv)) return rv;
+  nsresult rv;
+	nsCOMPtr<nsIRDFService> rdf = do_GetService("@mozilla.org/rdf/rdf-service;1", &rv);
+  NS_ENSURE_SUCCESS(rv,rv); 
 
   nsCOMPtr<nsISupportsArray> identities;
   GetAllIdentities(getter_AddRefs(identities));
@@ -1511,12 +1488,9 @@ nsMsgAccountManager::SetSpecialFoldersForIdentities()
 
   PRUint32 id;
   nsXPIDLCString identityKey;
-
   
   for (id=0; id<idCount; id++) 
   {
-
-    // convert supports->Identity
     nsCOMPtr<nsISupports> thisSupports;
     rv = identities->GetElementAt(id, getter_AddRefs(thisSupports));
     if (NS_FAILED(rv)) continue;
@@ -1562,6 +1536,11 @@ nsMsgAccountManager::SetSpecialFoldersForIdentities()
       }
     }
   }
+
+  // XXX todo
+  // get all servers
+  // get all spam settings for each server
+  // set the JUNK folder flag on the spam folders, right?
   return NS_OK;
 }
 
@@ -1753,29 +1732,24 @@ nsMsgAccountManager::findAccountByKey(nsISupports* element, void *aData)
 
 NS_IMETHODIMP nsMsgAccountManager::AddIncomingServerListener(nsIIncomingServerListener *serverListener)
 {
-   m_incomingServerListeners->AppendElement(serverListener);
+   m_incomingServerListeners.AppendObject(serverListener);
    return NS_OK;
 }
 
 NS_IMETHODIMP nsMsgAccountManager::RemoveIncomingServerListener(nsIIncomingServerListener *serverListener)
 {
-    m_incomingServerListeners->RemoveElement(serverListener);
+    m_incomingServerListeners.RemoveObject(serverListener);
     return NS_OK;
 }
 
 
 NS_IMETHODIMP nsMsgAccountManager::NotifyServerLoaded(nsIMsgIncomingServer *server)
 {
-	nsresult rv;
-	PRUint32 count;
-	rv = m_incomingServerListeners->Count(&count);
-	if (NS_FAILED(rv)) return rv;
-
+	PRInt32 count = m_incomingServerListeners.Count();
 	
-	for(PRUint32 i = 0; i < count; i++)
+	for(PRInt32 i = 0; i < count; i++)
 	{
-		nsCOMPtr<nsIIncomingServerListener> listener = 
-			getter_AddRefs((nsIIncomingServerListener*)m_incomingServerListeners->ElementAt(i));
+		nsIIncomingServerListener* listener = m_incomingServerListeners[i];
 		listener->OnServerLoaded(server);
 	}
 
@@ -1784,17 +1758,12 @@ NS_IMETHODIMP nsMsgAccountManager::NotifyServerLoaded(nsIMsgIncomingServer *serv
 
 NS_IMETHODIMP nsMsgAccountManager::NotifyServerUnloaded(nsIMsgIncomingServer *server)
 {
-	nsresult rv;
-	PRUint32 count;
-  server->SetFilterList(nsnull); // clear this to cut shutdown leaks. we are always passing valid non-null server here. 
-	rv = m_incomingServerListeners->Count(&count);
-	if (NS_FAILED(rv)) return rv;
-
+	PRInt32 count = m_incomingServerListeners.Count();
+	server->SetFilterList(nsnull); // clear this to cut shutdown leaks. we are always passing valid non-null server here. 
 	
-	for(PRUint32 i = 0; i < count; i++)
+	for(PRInt32 i = 0; i < count; i++)
 	{
-		nsCOMPtr<nsIIncomingServerListener> listener = 
-			getter_AddRefs((nsIIncomingServerListener*)m_incomingServerListeners->ElementAt(i));
+		nsIIncomingServerListener* listener = m_incomingServerListeners[i];
 		listener->OnServerUnloaded(server);
 	}
 
@@ -1803,16 +1772,11 @@ NS_IMETHODIMP nsMsgAccountManager::NotifyServerUnloaded(nsIMsgIncomingServer *se
 
 NS_IMETHODIMP nsMsgAccountManager::NotifyServerChanged(nsIMsgIncomingServer *server)
 {
-	nsresult rv;
-	PRUint32 count;
-	rv = m_incomingServerListeners->Count(&count);
-	if (NS_FAILED(rv)) return rv;
-
+	PRInt32 count = m_incomingServerListeners.Count();
 	
-	for(PRUint32 i = 0; i < count; i++)
+	for(PRInt32 i = 0; i < count; i++)
 	{
-		nsCOMPtr<nsIIncomingServerListener> listener = 
-			getter_AddRefs((nsIIncomingServerListener*)m_incomingServerListeners->ElementAt(i));
+		nsIIncomingServerListener* listener = m_incomingServerListeners[i];
 		listener->OnServerChanged(server);
 	}
 
@@ -1828,10 +1792,6 @@ nsMsgAccountManager::InternalFindServer(const char* username,
 {
   nsresult rv;
   nsCOMPtr<nsISupportsArray> servers;
-	
-#ifdef DEBUG_ACCOUNTMANAGER
-  printf("FindServer(%s,%s,%s,??)\n", username,hostname,type);
-#endif
  
   // If 'useRealSetting' is set then we want to scan all existing accounts
   // to make sure there's no duplicate including those whose host and/or
@@ -1840,19 +1800,11 @@ nsMsgAccountManager::InternalFindServer(const char* username,
       (!nsCRT::strcmp((hostname?hostname:""),m_lastFindServerHostName.get())) &&
       (!nsCRT::strcmp((username?username:""),m_lastFindServerUserName.get())) &&
       (!nsCRT::strcmp((type?type:""),m_lastFindServerType.get())) &&
-      m_lastFindServerResult) {
-#ifdef DEBUG_ACCOUNTMANAGER
-    printf("HIT:   FindServer() cache\n");
-#endif
-    *aResult = m_lastFindServerResult;
-    NS_ADDREF(*aResult);
+      m_lastFindServerResult) 
+  {
+    NS_ADDREF(*aResult = m_lastFindServerResult);
     return NS_OK;
   }
-#ifdef DEBUG_ACCOUNTMANAGER
-  else {
-    printf("MISS:  FindServer() cache\n");
-  }
-#endif
 
   rv = GetAllServers(getter_AddRefs(servers));
   if (NS_FAILED(rv)) return rv;

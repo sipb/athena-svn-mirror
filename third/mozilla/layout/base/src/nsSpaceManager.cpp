@@ -45,6 +45,7 @@
 #include "nsString.h"
 #include "nsIPresShell.h"
 #include "nsMemory.h"
+#include "nsHTMLReflowState.h"
 #ifdef DEBUG
 #include "nsIFrameDebug.h"
 #endif
@@ -106,6 +107,8 @@ MOZ_DECL_CTOR_COUNTER(nsSpaceManager)
 
 nsSpaceManager::nsSpaceManager(nsIPresShell* aPresShell, nsIFrame* aFrame)
   : mFrame(aFrame),
+    mXMost(0),
+    mLowestTop(NSCOORD_MIN),
     mFloatDamage(PSArenaAllocCB, PSArenaFreeCB, aPresShell)
 {
   MOZ_COUNT_CTOR(nsSpaceManager);
@@ -195,6 +198,12 @@ void nsSpaceManager::Shutdown()
   sCachedSpaceManagerCount = -1;
 }
 
+PRBool
+nsSpaceManager::XMost(nscoord& aXMost) const
+{
+  aXMost = mXMost;
+  return !mBandList.IsEmpty();
+}
 
 PRBool
 nsSpaceManager::YMost(nscoord& aYMost) const
@@ -806,6 +815,13 @@ nsSpaceManager::AddRectRegion(nsIFrame* aFrame, const nsRect& aUnavailableSpace)
   nsRect  rect(aUnavailableSpace.x + mX, aUnavailableSpace.y + mY,
                aUnavailableSpace.width, aUnavailableSpace.height);
 
+  nscoord xmost = rect.XMost();
+  if (xmost > mXMost)
+    mXMost = xmost;
+
+  if (rect.y > mLowestTop)
+    mLowestTop = rect.y;
+
   // Create a frame info structure
   frameInfo = CreateFrameInfo(aFrame, rect);
   if (nsnull == frameInfo) {
@@ -827,58 +843,6 @@ nsSpaceManager::AddRectRegion(nsIFrame* aFrame, const nsRect& aUnavailableSpace)
   // Insert the band rect
   InsertBandRect(bandRect);
   return NS_OK;
-}
-
-nsresult
-nsSpaceManager::ResizeRectRegion(nsIFrame*    aFrame,
-                                 nscoord      aDeltaWidth,
-                                 nscoord      aDeltaHeight,
-                                 AffectedEdge aEdge)
-{
-  // Get the frame info associated with with aFrame
-  FrameInfo*  frameInfo = GetFrameInfoFor(aFrame);
-
-  if (nsnull == frameInfo) {
-    NS_WARNING("no region associated with aFrame");
-    return NS_ERROR_INVALID_ARG;
-  }
-
-  // Compute new rect
-  nsRect  rect(frameInfo->mRect);
-  rect.SizeBy(aDeltaWidth, aDeltaHeight);
-  if (aEdge == LeftEdge) {
-    rect.x += aDeltaWidth;
-  }
-
-  // For the time being just remove it and add it back in. Because
-  // AddRectRegion() operates relative to the local coordinate space,
-  // translate from world coordinates to the local coordinate space
-  rect.MoveBy(-mX, -mY);
-  RemoveRegion(aFrame);
-  return AddRectRegion(aFrame, rect);
-}
-
-nsresult
-nsSpaceManager::OffsetRegion(nsIFrame* aFrame, nscoord aDx, nscoord aDy)
-{
-  // Get the frame info associated with with aFrame
-  FrameInfo*  frameInfo = GetFrameInfoFor(aFrame);
-
-  if (nsnull == frameInfo) {
-    NS_WARNING("no region associated with aFrame");
-    return NS_ERROR_INVALID_ARG;
-  }
-
-  // Compute new rect
-  nsRect  rect(frameInfo->mRect);
-  rect.MoveBy(aDx, aDy);
-
-  // For the time being just remove it and add it back in. Because
-  // AddRectRegion() operates relative to the local coordinate space,
-  // translate from world coordinates to the local coordinate space
-  rect.MoveBy(-mX, -mY);
-  RemoveRegion(aFrame);
-  return AddRectRegion(aFrame, rect);
 }
 
 nsresult
@@ -990,6 +954,7 @@ nsSpaceManager::ClearRegions()
 {
   ClearFrameInfo();
   mBandList.Clear();
+  mLowestTop = NSCOORD_MIN;
 }
 
 void
@@ -1026,6 +991,8 @@ nsSpaceManager::PushState()
 
   state->mX = mX;
   state->mY = mY;
+  state->mXMost = mXMost;
+  state->mLowestTop = mLowestTop;
 
   if (mFrameInfoMap) {
     state->mLastFrame = mFrameInfoMap->mFrame;
@@ -1069,6 +1036,8 @@ nsSpaceManager::PopState()
 
   mX = mSavedStates->mX;
   mY = mSavedStates->mY;
+  mXMost = mSavedStates->mXMost;
+  mLowestTop = mSavedStates->mLowestTop;
 
   // Now that we've restored our state, pop the topmost
   // state and delete it.
@@ -1076,6 +1045,14 @@ nsSpaceManager::PopState()
   SpaceManagerState *state = mSavedStates;
   mSavedStates = mSavedStates->mNext;
   delete state;
+}
+
+nscoord
+nsSpaceManager::GetLowestRegionTop()
+{
+  if (mLowestTop == NSCOORD_MIN)
+    return mLowestTop;
+  return mLowestTop - mY;
 }
 
 #ifdef DEBUG
@@ -1402,33 +1379,53 @@ nsSpaceManager::BandRect::Length() const
   return len;
 }
 
-#ifdef DEBUG
-void
-nsSpaceManager::SizeOf(nsISizeOfHandler* aHandler, PRUint32* aResult) const
+
+//----------------------------------------------------------------------
+
+nsAutoSpaceManager::~nsAutoSpaceManager()
 {
-  NS_PRECONDITION(aResult, "null OUT parameter pointer");
-  *aResult = sizeof(*this);
+  // Restore the old space manager in the reflow state if necessary.
+  if (mNew) {
+#ifdef NOISY_SPACEMANAGER
+    printf("restoring old space manager %p\n", mOld);
+#endif
 
-  // Add in the size of the band data. Don't count the header which has
-  // already been taken into account
-  if (!mBandList.IsEmpty()) {
-    const BandRect* bandRect = mBandList.Head();
-    do {
-      *aResult += sizeof(*bandRect);
-      if (bandRect->mNumFrames > 1) {
-        PRUint32  voidArraySize;
+    mReflowState.mSpaceManager = mOld;
 
-        bandRect->mFrames->SizeOf(aHandler, &voidArraySize);
-        *aResult += voidArraySize;
-      }
+#ifdef NOISY_SPACEMANAGER
+    if (mOld) {
+      NS_STATIC_CAST(nsFrame *, mReflowState.frame)->ListTag(stdout);
+      printf(": space-manager %p after reflow\n", mOld);
+      mOld->List(stdout);
+    }
+#endif
 
-      bandRect = bandRect->Next();
-    } while (bandRect != &mBandList);
-  }
-
-  // Add in the size of the frame info map
-  for (FrameInfo* info = mFrameInfoMap; info; info = info->mNext) {
-    *aResult += sizeof(*info);
+#ifdef DEBUG
+    if (mOwns)
+#endif
+      delete mNew;
   }
 }
+
+nsresult
+nsAutoSpaceManager::CreateSpaceManagerFor(nsIPresContext *aPresContext, nsIFrame *aFrame)
+{
+  // Create a new space manager and install it in the reflow
+  // state. `Remember' the old space manager so we can restore it
+  // later.
+  nsCOMPtr<nsIPresShell> shell;
+  aPresContext->GetShell(getter_AddRefs(shell));
+  mNew = new nsSpaceManager(shell, aFrame);
+  if (! mNew)
+    return NS_ERROR_OUT_OF_MEMORY;
+
+#ifdef NOISY_SPACEMANAGER
+  printf("constructed new space manager %p (replacing %p)\n",
+         mNew, mReflowState.mSpaceManager);
 #endif
+
+  // Set the space manager in the existing reflow state
+  mOld = mReflowState.mSpaceManager;
+  mReflowState.mSpaceManager = mNew;
+  return NS_OK;
+}

@@ -39,6 +39,7 @@ REQUIRES	= xpcom \
 		  unicharutil \
 		  js \
 		  necko \
+		  mimetype \
 		  webshell \
 		  xul \
 		  htmlparser \
@@ -59,6 +60,7 @@ CPPSRCS		= \
 		nsCSSRule.cpp \
 		nsCSSStyleRule.cpp \
 		nsCSSRules.cpp \
+		nsCSSStruct.cpp \
 		nsCSSStyleSheet.cpp \
 		nsCSSValue.cpp \
 		nsComputedDOMStyle.cpp \
@@ -85,7 +87,7 @@ EXPORTS		= \
 		nsICSSImportRule.h \
 		nsICSSMediaRule.h \
 		nsICSSNameSpaceRule.h \
-		nsCSSDeclaration.h \
+		nsCSSStruct.h \
 		nsICSSOMFactory.h \
 		nsIHTMLCSSStyleSheet.h \
 		nsIInspectorCSSUtils.h \

@@ -59,7 +59,6 @@ NS_IMPL_ISUPPORTS2(nsSound, nsISound, nsIStreamLoaderObserver);
 ////////////////////////////////////////////////////////////////////////
 nsSound::nsSound()
 {
-  NS_INIT_ISUPPORTS();
   mInited = PR_FALSE;
 }
 
@@ -74,7 +73,8 @@ nsSound::~nsSound()
   }
 }
 
-nsresult nsSound::Init()
+NS_IMETHODIMP
+nsSound::Init()
 {
   /* we don't need to do esd_open_sound if we are only going to play files
      but we will if we want to do things like streams, etc

@@ -71,10 +71,14 @@ PhImage_t *MyPiResizeImage(PhImage_t *image,PhRect_t const *bounds,short w,short
 		srcRect.lr.x = image->size.w - 1;
 		srcRect.lr.y = image->size.h - 1;
 	}
-	
+
 	oldRect.ul.x = oldRect.ul.y = 0;
 	oldRect.lr.x = w - 1;
 	oldRect.lr.y = h - 1;
+
+#ifdef DEBUG_Adrian
+printf( "MyPiResizeImage\n" );
+#endif
 			
 	if(!(newImage = PiInitImage(image,(PhRect_t const*)(&oldRect),&newRect,image->type,flags | Pi_USE_COLORS,image->colors)))
 		return(NULL);
@@ -178,7 +182,7 @@ PhImage_t *MyPiResizeImage(PhImage_t *image,PhRect_t const *bounds,short w,short
 
 NS_IMPL_ISUPPORTS1(nsImagePh, nsIImage)
 
-#define IMAGE_SHMEM				0x1
+#define IMAGE_SHMEM							0x1
 #define IMAGE_SHMEM_THRESHOLD	4096
 
 // ----------------------------------------------------------------
@@ -202,8 +206,13 @@ nsImagePh :: nsImagePh()
 	mNaturalHeight = 0;
 	mIsOptimized = PR_FALSE;
 	memset(&mPhImage, 0, sizeof(PhImage_t));
-	mPhImageCache=NULL;
 	mPhImageZoom = NULL;
+	mDecodedY2_when_scaled = 0;
+	mDirtyFlags = 0;
+
+#ifdef ALLOW_PHIMAGE_CACHEING
+	mPhImageCache=NULL;
+#endif
 }
 
 // ----------------------------------------------------------------
@@ -221,11 +230,13 @@ nsImagePh :: ~nsImagePh()
   if (mConvertedBits != nsnull)
 	DestroySRamImage(mConvertedBits);
 
+#ifdef ALLOW_PHIMAGE_CACHEING
   if (mPhImageCache)
   {
 	PhDCRelease(mPhImageCache);
 	mPhImageCache=NULL;
   }
+#endif
 
   if (mAlphaBits != nsnull)
   {
@@ -458,8 +469,11 @@ void nsImagePh::MoveAlphaMask(PRInt32 aX, PRInt32 aY)
 
 void nsImagePh :: ImageUpdated(nsIDeviceContext *aContext, PRUint8 aFlags, nsRect *aUpdateRect)
 {
-	/* does this mean it's dirty? */
-  	mFlags = aFlags; // this should be 0'd out by Draw()
+	PRInt32 y = aUpdateRect->YMost();
+	PRInt32 x = aUpdateRect->XMost();
+	if( y > mDecodedY2 ) mDecodedY2 = y;
+	if( x > mDecodedX2 ) mDecodedX2 = x;
+	mDirtyFlags = aFlags;
 }
 
 /** ----------------------------------------------------------------
@@ -483,6 +497,7 @@ NS_IMETHODIMP nsImagePh :: Draw(nsIRenderingContext &aContext, nsDrawingSurface 
 {
 	PhRect_t clip = { {aDX, aDY}, {aDX + aDWidth-1, aDY + aDHeight-1} };
 	PhPoint_t pos = { aDX - aSX, aDY - aSY};
+	int use_zoom = 0;
 
 	if( !aSWidth || !aSHeight || !aDWidth || !aDHeight ) return NS_OK;
 
@@ -508,31 +523,75 @@ NS_IMETHODIMP nsImagePh :: Draw(nsIRenderingContext &aContext, nsDrawingSurface 
 	else
 #endif
 	{
-	#if 0
-		if( (aSWidth != aDWidth || aSHeight != aDHeight) && 
-		   (mPhImageZoom == NULL || mPhImageZoom->size.w != aDWidth || mPhImageZoom->size.h != aDHeight)) 
-		{
-			if ( mPhImageZoom ) {
-				if ( PgShmemDestroy( mPhImageZoom->image ) == -1 )
-					free(mPhImageZoom->image);
-				free( mPhImageZoom );
-			}
-			PhRect_t bounds = {{aSX, aSY}, {aSX + aSWidth - 1, aSY + aSHeight - 1}};
 
-			if ((aDHeight * mPhImage.bpl) < IMAGE_SHMEM_THRESHOLD)
-				mPhImageZoom = MyPiResizeImage(&mPhImage, &bounds, aDWidth, aDHeight, Pi_USE_COLORS);
-			else
-				mPhImageZoom = MyPiResizeImage(&mPhImage, &bounds, aDWidth, aDHeight, Pi_USE_COLORS|Pi_SHMEM);
-			if ( mPhImageZoom == NULL )
+///* ATENTIE */ printf( "this=%p size=%d,%d  src=(%d %d %d %d) dest=(%d %d %d %d)\n",
+//this, mPhImage.size.w, mPhImage.size.h, aSX, aSY, aSWidth, aSHeight, aDX, aDY, aDWidth, aDHeight );
+
+		if( (aSWidth != aDWidth || aSHeight != aDHeight) ) {
+
+			/* the case below happens frequently - a 1x1 image needs to be stretched, or a line or a column */
+			if( aSWidth == 1 && aSHeight == 1 || aSWidth == 1 && aSHeight == aDHeight || aDHeight == 1 && aSWidth == aDWidth ) {
+				/* you can strech the image by drawing it repeateadly */
+
+				PhPoint_t space = { 0, 0 };
+				PhPoint_t rep = { aDWidth, aDHeight };
+
+    		PgSetMultiClip( 1, &clip );
+    		if ((mAlphaDepth == 1) || (mAlphaDepth == 0))
+    		  PgDrawRepPhImagemx( &mPhImage, 0, &pos, &rep, &space );
+    		else
+    		{
+    		  PgMap_t map;
+    		  map.dim.w = mAlphaWidth;
+    		  map.dim.h = mAlphaHeight;
+    		  map.bpl = mAlphaRowBytes;
+    		  map.bpp = mAlphaDepth;
+    		  map.map = (char *)mAlphaBits;
+    		  PgSetAlphaBlend(&map, 0);
+    		  PgAlphaOn();
+    		  PgDrawRepPhImagemx( &mPhImage, 0, &pos, &rep, &space );
+    		  PgAlphaOff();
+    		}
+    		PgSetMultiClip( 0, NULL );
+
 				return NS_OK;
-			pos.x = aDX;
-			pos.y = aDY;
-		}
-	#endif
+				}
+
+			else {
+
+				/* keeping the proportions, what is the size of mPhImageZoom that can give use the aDWidth and aDHeight? */
+				PRInt32 scaled_w = aDWidth * mPhImage.size.w / aSWidth;
+				PRInt32 scaled_h = aDHeight * mPhImage.size.h / aSHeight;
+				use_zoom = 1;
+				
+				if( mPhImageZoom == NULL || mPhImageZoom->size.w != scaled_w || mPhImageZoom->size.h != scaled_h || mDecodedY2_when_scaled != mDecodedY2 || mDirtyFlags != 0 ) {
+
+					/* we already had a scaled image, but the scaling factor was different from what we need now */
+					mDirtyFlags = 0;
+
+        	if ( mPhImageZoom ) {
+        	  mPhImageZoom->flags = Ph_RELEASE_IMAGE_ALL;
+        	  PhReleaseImage( mPhImageZoom );
+        	  free( mPhImageZoom );
+        	  mPhImageZoom = NULL;
+        	  }
+
+					/* record the mDecodedY1 at the time of scaling */
+					mDecodedY2_when_scaled = mDecodedY2;
+
+					/* this is trying to estimate the image data size of the zoom image */
+					if (( mPhImage.bpl * scaled_w * scaled_h / mPhImage.size.w ) < IMAGE_SHMEM_THRESHOLD)
+						mPhImageZoom = MyPiResizeImage( &mPhImage, NULL, scaled_w, scaled_h, Pi_USE_COLORS);
+					else mPhImageZoom = MyPiResizeImage( &mPhImage, NULL, scaled_w, scaled_h, Pi_USE_COLORS|Pi_SHMEM);
+
+///* ATENTIE */ printf( "\t\t\tzoom from=%d,%d to=%d,%d\n", mPhImage.size.w, mPhImage.size.h, scaled_w, scaled_h );
+					}
+				}
+			}
 
 		PgSetMultiClip( 1, &clip );
 		if ((mAlphaDepth == 1) || (mAlphaDepth == 0))
-			PgDrawPhImagemx( &pos, mPhImageZoom ? mPhImageZoom : &mPhImage, 0 );
+			PgDrawPhImagemx( &pos, use_zoom ? mPhImageZoom : &mPhImage, 0 );
 		else
 		{
 			PgMap_t map;
@@ -544,7 +603,7 @@ NS_IMETHODIMP nsImagePh :: Draw(nsIRenderingContext &aContext, nsDrawingSurface 
 			map.map = (char *)mAlphaBits;
 			PgSetAlphaBlend(&map, 0);
 			PgAlphaOn();
-			PgDrawPhImagemx( &pos, mPhImageZoom ? mPhImageZoom : &mPhImage, 0 );
+			PgDrawPhImagemx( &pos, use_zoom ? mPhImageZoom : &mPhImage, 0 );
 			PgAlphaOff();
 			
 		}
@@ -785,7 +844,6 @@ nsImagePh::SetDecodedRect(PRInt32 x1, PRInt32 y1, PRInt32 x2, PRInt32 y2 )
   	return NS_OK;
 }
 
-#ifdef USE_IMG2
  /**
   * BitBlit the entire (no cropping) nsIImage to another nsImage, the source and dest can be scaled
   * @update - saari 03/08/01
@@ -836,6 +894,7 @@ NS_IMETHODIMP nsImagePh::DrawToImage(nsIImage* aDstImage,
 		darea.pos.y = aDY;
 		darea.size.w = sarea.size.w = aDWidth;
 		darea.size.h = sarea.size.h = aDHeight;
+
 		if ((aDWidth != mPhImage.size.w) || (aDHeight != mPhImage.size.h))
 		{
 			release = 1;
@@ -843,11 +902,12 @@ NS_IMETHODIMP nsImagePh::DrawToImage(nsIImage* aDstImage,
 				pimage = MyPiResizeImage(&mPhImage, NULL, aDWidth, aDHeight, Pi_USE_COLORS);
 			else
 				pimage = MyPiResizeImage(&mPhImage, NULL, aDWidth, aDHeight, Pi_USE_COLORS|Pi_SHMEM);
+			if( !pimage ) pimage = &mPhImage;
 		}
-		else
-			pimage = &mPhImage;
-		if ( pimage == NULL )
-			return NS_OK;
+		else pimage = &mPhImage;
+
+		if( pimage == NULL ) return NS_OK;
+
 		start = (aDY * dest->mPhImage.bpl) + (aDX * mNumBytesPixel);
 		for (y = 0; y < pimage->size.h; y++)
 		{
@@ -869,7 +929,3 @@ NS_IMETHODIMP nsImagePh::DrawToImage(nsIImage* aDstImage,
 	}
 	return NS_OK;
 }
-#endif
-
-
-

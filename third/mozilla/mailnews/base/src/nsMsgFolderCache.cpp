@@ -59,7 +59,6 @@ nsMsgFolderCache::nsMsgFolderCache()
   m_cacheElements = nsnull;
 	m_mdbEnv = nsnull;
 	m_mdbStore = nsnull;
-	NS_INIT_ISUPPORTS();
 	m_mdbAllFoldersTable = nsnull;
 }
 
@@ -222,9 +221,6 @@ nsresult nsMsgFolderCache::OpenMDB(const char *dbName, PRBool exists)
 
 			if (m_mdbEnv)
 				m_mdbEnv->SetAutoClear(PR_TRUE);
-#if defined(XP_PC) || defined(XP_MAC)
-//			UnixToNative(nativeFileName);
-#endif
 			if (exists)
 			{
 				mdbOpenPolicy inOpenPolicy;
@@ -350,7 +346,7 @@ NS_IMETHODIMP nsMsgFolderCache::GetCacheElement(const char *pathKey, PRBool crea
 	if (!result || !pathKey || !m_cacheElements)
 		return NS_ERROR_NULL_POINTER;
 		
-	if (strlen(pathKey) == 0) {
+	if (!*pathKey) {
 		return NS_ERROR_FAILURE;
 	}
 	

@@ -66,21 +66,19 @@
 #include "prlog.h"
 #include "prtime.h"
 #include "rdf.h"
-
+#include "nsContentUtils.h"
 #include "nsIDateTimeFormat.h"
 #include "nsDateTimeFormatCID.h"
 #include "nsIScriptableDateFormat.h"
 
 
 static NS_DEFINE_CID(kDateTimeFormatCID,    NS_DATETIMEFORMAT_CID);
-static NS_DEFINE_CID(kNameSpaceManagerCID,  NS_NAMESPACEMANAGER_CID);
 static NS_DEFINE_CID(kRDFServiceCID,        NS_RDFSERVICE_CID);
 
 //------------------------------------------------------------------------
 
 nsrefcnt nsXULContentUtils::gRefCnt;
 nsIRDFService* nsXULContentUtils::gRDF;
-nsINameSpaceManager* nsXULContentUtils::gNameSpaceManager;
 nsIDateTimeFormat* nsXULContentUtils::gFormat;
 
 #define XUL_RESOURCE(ident, uri) nsIRDFResource* nsXULContentUtils::ident
@@ -97,16 +95,15 @@ nsresult
 nsXULContentUtils::Init()
 {
     if (gRefCnt++ == 0) {
-        nsresult rv;
-        rv = nsServiceManager::GetService(kRDFServiceCID,
-                                          NS_GET_IID(nsIRDFService),
-                                          (nsISupports**) &gRDF);
-        if (NS_FAILED(rv)) return rv;
+        nsresult rv = CallGetService(kRDFServiceCID, &gRDF);
+        if (NS_FAILED(rv)) {
+            return rv;
+        }
 
-#define XUL_RESOURCE(ident, uri)            \
-  PR_BEGIN_MACRO                            \
-   rv = gRDF->GetResource((uri), &(ident)); \
-   if (NS_FAILED(rv)) return rv;            \
+#define XUL_RESOURCE(ident, uri)                              \
+  PR_BEGIN_MACRO                                              \
+   rv = gRDF->GetResource(NS_LITERAL_CSTRING(uri), &(ident)); \
+   if (NS_FAILED(rv)) return rv;                              \
   PR_END_MACRO
 
 #define XUL_LITERAL(ident, val)                                   \
@@ -119,21 +116,13 @@ nsXULContentUtils::Init()
 #undef XUL_RESOURCE
 #undef XUL_LITERAL
 
-        rv = nsComponentManager::CreateInstance(kNameSpaceManagerCID,
-                                                nsnull,
-                                                NS_GET_IID(nsINameSpaceManager),
-                                                (void**) &gNameSpaceManager);
-        if (NS_FAILED(rv)) return rv;
-
-        rv = nsComponentManager::CreateInstance(kDateTimeFormatCID,
-                                                nsnull,
-                                                NS_GET_IID(nsIDateTimeFormat),
-                                                (void**) &gFormat);
-
-        if (NS_FAILED(rv)) return rv;
+        rv = CallCreateInstance(kDateTimeFormatCID, &gFormat);
+        if (NS_FAILED(rv)) {
+            return rv;
+        }
     }
 
-    return gRefCnt;
+    return NS_OK;
 }
 
 
@@ -141,10 +130,7 @@ nsresult
 nsXULContentUtils::Finish()
 {
     if (--gRefCnt == 0) {
-        if (gRDF) {
-            nsServiceManager::ReleaseService(kRDFServiceCID, gRDF);
-            gRDF = nsnull;
-        }
+        NS_IF_RELEASE(gRDF);
 
 #define XUL_RESOURCE(ident, uri) NS_IF_RELEASE(ident)
 #define XUL_LITERAL(ident, val) NS_IF_RELEASE(ident)
@@ -152,11 +138,10 @@ nsXULContentUtils::Finish()
 #undef XUL_RESOURCE
 #undef XUL_LITERAL
 
-        NS_IF_RELEASE(gNameSpaceManager);
         NS_IF_RELEASE(gFormat);
     }
 
-    return gRefCnt;
+    return NS_OK;
 }
 
 
@@ -241,6 +226,7 @@ nsXULContentUtils::GetElementResource(nsIContent* aElement, nsIRDFResource** aRe
 nsresult
 nsXULContentUtils::GetElementRefResource(nsIContent* aElement, nsIRDFResource** aResult)
 {
+    *aResult = nsnull;
     // Perform a reverse mapping from an element in the content model
     // to an RDF resource. Check for a "ref" attribute first, then
     // fallback on an "id" attribute.
@@ -268,7 +254,7 @@ nsXULContentUtils::GetElementRefResource(nsIContent* aElement, nsIRDFResource** 
         // the protocol), uriStr will be untouched.
         NS_MakeAbsoluteURI(uri, uri, url);
 
-        rv = gRDF->GetUnicodeResource(uri.get(), aResult);
+        rv = gRDF->GetUnicodeResource(uri, aResult);
     }
     else {
         rv = GetElementResource(aElement, aResult);
@@ -406,7 +392,7 @@ nsXULContentUtils::MakeElementResource(nsIDocument* aDocument, const nsAString& 
     rv = MakeElementURI(aDocument, aID, uri);
     if (NS_FAILED(rv)) return rv;
 
-    rv = gRDF->GetResource(uri.get(), aResult);
+    rv = gRDF->GetResource(uri, aResult);
     NS_ASSERTION(NS_SUCCEEDED(rv), "unable to create resource");
     if (NS_FAILED(rv)) return rv;
 
@@ -480,7 +466,7 @@ nsXULContentUtils::GetResource(PRInt32 aNameSpaceID, const nsAString& aAttribute
     PRUnichar buf[256];
     nsAutoString uri(CBufDescriptor(buf, PR_TRUE, sizeof(buf) / sizeof(PRUnichar), 0));
     if (aNameSpaceID != kNameSpaceID_Unknown && aNameSpaceID != kNameSpaceID_None) {
-        rv = gNameSpaceManager->GetNameSpaceURI(aNameSpaceID, uri);
+        rv = nsContentUtils::GetNSManagerWeakRef()->GetNameSpaceURI(aNameSpaceID, uri);
         // XXX ignore failure; treat as "no namespace"
     }
 
@@ -490,7 +476,7 @@ nsXULContentUtils::GetResource(PRInt32 aNameSpaceID, const nsAString& aAttribute
 
     uri.Append(aAttribute);
 
-    rv = gRDF->GetUnicodeResource(uri.get(), aResult);
+    rv = gRDF->GetUnicodeResource(uri, aResult);
     NS_ASSERTION(NS_SUCCEEDED(rv), "unable to get resource");
     if (NS_FAILED(rv)) return rv;
 

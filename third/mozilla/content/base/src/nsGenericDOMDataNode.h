@@ -214,10 +214,6 @@ public:
   NS_IMETHOD GetListenerManager(nsIEventListenerManager** aInstancePtrResult);
   NS_IMETHOD DoneCreatingElement();
 
-#ifdef DEBUG
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
-#endif
-
   NS_IMETHOD GetNodeInfo(nsINodeInfo*& aResult) const;
   NS_IMETHOD CanContainChildren(PRBool& aResult) const;
   NS_IMETHOD ChildCount(PRInt32& aResult) const;
@@ -267,9 +263,7 @@ private:
   void LookupListenerManager(nsIEventListenerManager **aListenerManager) const;
   nsVoidArray *LookupRangeList() const;
 
-#ifdef IBMBIDI
   void SetBidiStatus();
-#endif
 
 
   typedef long PtrBits;

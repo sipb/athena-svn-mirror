@@ -118,15 +118,43 @@ void nsUniversalDetector::HandleData(const char* aBuf, PRUint32 aLen)
   if (aLen > 0)
     mGotData = PR_TRUE;
 
-  //If the data start with BOM, we know it is UCS2
+  //If the data starts with BOM, we know it is UTF
   if (mStart)
   {
     mStart = PR_FALSE;
-    if (aLen > 1)
-      if (aBuf[0] == '\376' && aBuf[1] == '\377')
-        mDetectedCharset = "UTF-16BE";
-      else if (aBuf[0] == '\377' && aBuf[1] == '\376')
-        mDetectedCharset = "UTF-16LE";
+    if (aLen > 3)
+      switch (aBuf[0])
+        {
+        case '\xEF':
+          if (('\xBB' == aBuf[1]) && ('\xBF' == aBuf[2]))
+            // EF BB BF  UTF-8 encoded BOM
+            mDetectedCharset = "UTF-8";
+        break;
+        case '\xFE':
+          if (('\xFF' == aBuf[1]) && ('\x00' == aBuf[2]) && ('\x00' == aBuf[3]))
+            // FE FF 00 00  UCS-4, unusual octet order BOM (3412)
+            mDetectedCharset = "X-ISO-10646-UCS-4-3412";
+          else if ('\xFF' == aBuf[1])
+            // FE FF  UTF-16, big endian BOM
+            mDetectedCharset = "UTF-16BE";
+        break;
+        case '\x00':
+          if (('\x00' == aBuf[1]) && ('\xFE' == aBuf[2]) && ('\xFF' == aBuf[3]))
+            // 00 00 FE FF  UTF-32, big-endian BOM
+            mDetectedCharset = "UTF-32BE";
+          else if (('\x00' == aBuf[1]) && ('\xFF' == aBuf[2]) && ('\xFE' == aBuf[3]))
+            // 00 00 FF FE  UCS-4, unusual octet order BOM (2143)
+            mDetectedCharset = "X-ISO-10646-UCS-4-2143";
+        break;
+        case '\xFF':
+          if (('\xFE' == aBuf[1]) && ('\x00' == aBuf[2]) && ('\x00' == aBuf[3]))
+            // FF FE 00 00  UTF-32, little-endian BOM
+            mDetectedCharset = "UTF-32LE";
+          else if ('\xFE' == aBuf[1])
+            // FF FE  UTF-16, little endian BOM
+            mDetectedCharset = "UTF-16LE";
+        break;
+      }  // switch
 
       if (mDetectedCharset)
       {
@@ -139,7 +167,7 @@ void nsUniversalDetector::HandleData(const char* aBuf, PRUint32 aLen)
   for (i = 0; i < aLen; i++)
   {
     //other than 0xa0, if every othe character is ascii, the page is ascii
-    if (aBuf[i] & 0x80 && aBuf[i] != (char)0xA0)  //Since many Ascii only page contains NBSP 
+    if (aBuf[i] & '\x80' && aBuf[i] != '\xA0')  //Since many Ascii only page contains NBSP 
     {
       //we got a non-ascii byte (high-byte)
       if (mInputState != eHighbyte)
@@ -263,7 +291,6 @@ void nsUniversalDetector::DataEnd()
 nsUniversalXPCOMDetector:: nsUniversalXPCOMDetector()
 	     : nsUniversalDetector()
 {
-    NS_INIT_ISUPPORTS();
     mObserver = nsnull;
 }
 //---------------------------------------------------------------------
@@ -335,7 +362,6 @@ void nsUniversalXPCOMDetector::Report(const char* aCharset)
 nsUniversalXPCOMStringDetector:: nsUniversalXPCOMStringDetector()
 	     : nsUniversalDetector()
 {
-    NS_INIT_ISUPPORTS();
 }
 //---------------------------------------------------------------------
 nsUniversalXPCOMStringDetector::~nsUniversalXPCOMStringDetector() 

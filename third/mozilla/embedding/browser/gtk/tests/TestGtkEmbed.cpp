@@ -304,8 +304,19 @@ new_gtk_browser(guint32 chromeMask)
 		     FALSE, // fill
 		     0);    // padding
   // new horiz toolbar with buttons + icons
+#ifdef MOZ_WIDGET_GTK
   browser->toolbar = gtk_toolbar_new(GTK_ORIENTATION_HORIZONTAL,
 				     GTK_TOOLBAR_BOTH);
+#endif /* MOZ_WIDGET_GTK */
+
+#ifdef MOZ_WIDGET_GTK2
+  browser->toolbar = gtk_toolbar_new();
+  gtk_toolbar_set_orientation(GTK_TOOLBAR(browser->toolbar),
+			      GTK_ORIENTATION_HORIZONTAL);
+  gtk_toolbar_set_style(GTK_TOOLBAR(browser->toolbar),
+			GTK_TOOLBAR_BOTH);
+#endif /* MOZ_WIDGET_GTK2 */
+
   // add it to the hbox
   gtk_box_pack_start(GTK_BOX(browser->toolbarHBox), browser->toolbar,
 		   FALSE, // expand
@@ -796,7 +807,7 @@ link_message_cb      (GtkMozEmbed *embed, TestGtkBrowser *browser)
   char *message;
   g_print("link_message_cb\n");
   message = gtk_moz_embed_get_link_message(embed);
-  if (message && (strlen(message) == 0))
+  if (!message || !*message)
     update_temp_message(browser, 0);
   else
     update_temp_message(browser, message);
@@ -810,7 +821,7 @@ js_status_cb (GtkMozEmbed *embed, TestGtkBrowser *browser)
  char *message;
   g_print("js_status_cb\n");
   message = gtk_moz_embed_get_js_status(embed);
-  if (message && (strlen(message) == 0))
+  if (!message || !*message)
     update_temp_message(browser, 0);
   else
     update_temp_message(browser, message);

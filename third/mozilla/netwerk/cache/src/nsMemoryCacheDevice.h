@@ -19,6 +19,7 @@
  * 
  * Contributor(s): 
  *    Gordon Sheridan, 20-February-2001
+ *    Brian Ryner <bryner@netscape.com>
  */
 
 #ifndef _nsMemoryCacheDevice_h_
@@ -50,9 +51,15 @@ public:
     virtual void            DoomEntry( nsCacheEntry * entry );
     virtual nsresult        DeactivateEntry( nsCacheEntry * entry );
 
-    virtual nsresult GetTransportForEntry( nsCacheEntry * entry,
-                                           nsCacheAccessMode mode,
-                                           nsITransport **transport );
+    virtual nsresult OpenInputStreamForEntry(nsCacheEntry *     entry,
+                                             nsCacheAccessMode  mode,
+                                             PRUint32           offset,
+                                             nsIInputStream **  result);
+
+    virtual nsresult OpenOutputStreamForEntry(nsCacheEntry *     entry,
+                                              nsCacheAccessMode  mode,
+                                              PRUint32           offset,
+                                              nsIOutputStream ** result);
 
     virtual nsresult GetFileForEntry( nsCacheEntry *    entry,
                                       nsIFile **        result );
@@ -67,20 +74,28 @@ public:
  
 private:
     friend class nsMemoryCacheDeviceInfo;
+    enum      { DELETE_ENTRY        = PR_TRUE,
+                DO_NOT_DELETE_ENTRY = PR_FALSE };
+
     void      AdjustMemoryLimits( PRInt32  softLimit, PRInt32  hardLimit);
-    void      EvictEntry( nsCacheEntry * entry );
+    void      EvictEntry( nsCacheEntry * entry , PRBool deleteEntry);
     void      EvictEntriesIfNecessary();
     int       EvictionList(nsCacheEntry * entry, PRInt32  deltaSize);
 
+#ifdef DEBUG
+    void      CheckEntryCount();
+#endif
     /*
      *  Data members
      */
-    
-    nsCacheEntryHashTable   mMemCacheEntries;
-    PRBool                  mInitialized;
-    
-    enum { mostLikelyToEvict = 0, leastLikelyToEvict = 1 };   // constants to differentiate eviction lists
-    PRCList                 mEvictionList[2];
+    enum {
+        kQueueCount = 24   // entries > 2^23 (8Mb) start in last queue
+    };
+
+    nsCacheEntryHashTable  mMemCacheEntries;
+    PRBool                 mInitialized;
+
+    PRCList                mEvictionList[kQueueCount];
     PRInt32                mEvictionThreshold;
 
     PRInt32                mHardLimit;
@@ -90,8 +105,8 @@ private:
     PRInt32                mInactiveSize;
 
     PRInt32                mEntryCount;
-
     PRInt32                mMaxEntryCount;
+
     // XXX what other stats do we want to keep?
 };
 
@@ -107,7 +122,6 @@ public:
     nsMemoryCacheDeviceInfo(nsMemoryCacheDevice* device)
         :   mDevice(device)
     {
-        NS_INIT_ISUPPORTS();
     }
 
     virtual ~nsMemoryCacheDeviceInfo() {}

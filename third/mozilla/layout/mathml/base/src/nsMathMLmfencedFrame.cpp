@@ -26,7 +26,7 @@
 #include "nsFrame.h"
 #include "nsIPresContext.h"
 #include "nsUnitConversion.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIRenderingContext.h"
 #include "nsIFontMetrics.h"
@@ -273,10 +273,8 @@ nsMathMLmfencedFrame::doReflow(nsIPresContext*          aPresContext,
     NS_STATIC_CAST(nsMathMLContainerFrame*, aForFrame);
 
   PRInt32 i;
-  const nsStyleFont* font;
-  aForFrame->GetStyleData(eStyleStruct_Font, (const nsStyleStruct *&)font);
   nsCOMPtr<nsIFontMetrics> fm;
-  aReflowState.rendContext->SetFont(font->mFont, nsnull);
+  aReflowState.rendContext->SetFont(aForFrame->GetStyleFont()->mFont, nsnull);
   aReflowState.rendContext->GetFontMetrics(*getter_AddRefs(fm));
   nscoord axisHeight, em;
   GetAxisHeight(*aReflowState.rendContext, fm, axisHeight);
@@ -299,7 +297,7 @@ nsMathMLmfencedFrame::doReflow(nsIPresContext*          aPresContext,
   PRInt32 count = 0;
   nsReflowStatus childStatus;
   nsSize availSize(aReflowState.mComputedWidth, aReflowState.mComputedHeight);
-  nsHTMLReflowMetrics childDesiredSize(aDesiredSize.maxElementSize, 
+  nsHTMLReflowMetrics childDesiredSize(aDesiredSize.mComputeMEW, 
                       aDesiredSize.mFlags | NS_REFLOW_CALC_BOUNDING_METRICS);
   nsIFrame* firstChild;
   aForFrame->FirstChild(aPresContext, nsnull, &firstChild);
@@ -382,6 +380,9 @@ nsMathMLmfencedFrame::doReflow(nsIPresContext*          aPresContext,
                                          STRETCH_CONSIDER_EMBELLISHMENTS,
                                          stretchDir, containerSize);
   }
+  if (aDesiredSize.mComputeMEW) {
+    aDesiredSize.mMaxElementWidth = childDesiredSize.mMaxElementWidth;
+  }
 
   //////////////////////////////////////////
   // Prepare the opening fence, separators, and closing fence, and
@@ -462,9 +463,8 @@ nsMathMLmfencedFrame::doReflow(nsIPresContext*          aPresContext,
   aDesiredSize.width = aDesiredSize.mBoundingMetrics.width;
   aDesiredSize.height = aDesiredSize.ascent + aDesiredSize.descent;
 
-  if (aDesiredSize.maxElementSize) {
-    aDesiredSize.maxElementSize->width = aDesiredSize.width;
-    aDesiredSize.maxElementSize->height = aDesiredSize.height;
+  if (aDesiredSize.mComputeMEW) {
+    aDesiredSize.mMaxElementWidth = aDesiredSize.width;
   }
 
   mathMLFrame->SetBoundingMetrics(aDesiredSize.mBoundingMetrics);
@@ -582,11 +582,9 @@ nsMathMLmfencedFrame::PlaceChar(nsMathMLChar*      aMathMLChar,
 
 // ----------------------
 // the Style System will use these to pass the proper style context to our MathMLChar
-NS_IMETHODIMP
-nsMathMLmfencedFrame::GetAdditionalStyleContext(PRInt32           aIndex, 
-                                                nsIStyleContext** aStyleContext) const
+nsStyleContext*
+nsMathMLmfencedFrame::GetAdditionalStyleContext(PRInt32 aIndex) const
 {
-  NS_PRECONDITION(aStyleContext, "null OUT ptr");
   PRInt32 openIndex = -1;
   PRInt32 closeIndex = -1;
   PRInt32 lastIndex = mSeparatorsCount-1;
@@ -600,25 +598,24 @@ nsMathMLmfencedFrame::GetAdditionalStyleContext(PRInt32           aIndex,
     closeIndex = lastIndex;
   }
   if (aIndex < 0 || aIndex > lastIndex) {
-    return NS_ERROR_INVALID_ARG;
+    return nsnull;
   }
 
-  *aStyleContext = nsnull;
   if (aIndex < mSeparatorsCount) {
-    mSeparatorsChar[aIndex].GetStyleContext(aStyleContext);
+    return mSeparatorsChar[aIndex].GetStyleContext();
   }
   else if (aIndex == openIndex) {
-    mOpenChar->GetStyleContext(aStyleContext);
+    return mOpenChar->GetStyleContext();
   }
   else if (aIndex == closeIndex) {
-    mCloseChar->GetStyleContext(aStyleContext);
+    return mCloseChar->GetStyleContext();
   }
-  return NS_OK;
+  return nsnull;
 }
 
-NS_IMETHODIMP
+void
 nsMathMLmfencedFrame::SetAdditionalStyleContext(PRInt32          aIndex, 
-                                                nsIStyleContext* aStyleContext)
+                                                nsStyleContext*  aStyleContext)
 {
   PRInt32 openIndex = -1;
   PRInt32 closeIndex = -1;
@@ -633,7 +630,7 @@ nsMathMLmfencedFrame::SetAdditionalStyleContext(PRInt32          aIndex,
     closeIndex = lastIndex;
   }
   if (aIndex < 0 || aIndex > lastIndex) {
-    return NS_ERROR_INVALID_ARG;
+    return;
   }
 
   if (aIndex < mSeparatorsCount) {
@@ -645,5 +642,4 @@ nsMathMLmfencedFrame::SetAdditionalStyleContext(PRInt32          aIndex,
   else if (aIndex == closeIndex) {
     mCloseChar->SetStyleContext(aStyleContext);
   }
-  return NS_OK;
 }

@@ -39,11 +39,9 @@
 
 #include "nsCOMPtr.h"
 #include "nsIAtom.h"
-#include "nsIXBLPrototypeBinding.h"
 #include "nsIXBLDocumentInfo.h"
 #include "nsIInputStream.h"
 #include "nsINameSpaceManager.h"
-#include "nsHashtable.h"
 #include "nsIURI.h"
 #include "nsIURL.h"
 #include "nsIDOMEventReceiver.h"
@@ -57,7 +55,6 @@
 #include "nsIContent.h"
 #include "nsIDocument.h"
 #include "nsIXMLContent.h"
-#include "nsIXULContent.h"
 #include "nsIXMLContentSink.h"
 #include "nsContentCID.h"
 #include "nsXMLDocument.h"
@@ -67,7 +64,7 @@
 #include "nsINameSpace.h"
 #include "nsXBLService.h"
 #include "nsXBLBinding.h"
-#include "nsIXBLInsertionPoint.h"
+#include "nsXBLInsertionPoint.h"
 #include "nsXBLPrototypeBinding.h"
 #include "nsFixedSizeAllocator.h"
 #include "xptinfo.h"
@@ -87,35 +84,18 @@
 
 // Helper Classes =====================================================================
 
-// nsIXBLAttributeEntry and helpers.  This class is used to efficiently handle
+// nsXBLAttributeEntry and helpers.  This class is used to efficiently handle
 // attribute changes in anonymous content.
 
-// {A2892B81-CED9-11d3-97FB-00400553EEF0}
-#define NS_IXBLATTR_IID \
-{ 0xa2892b81, 0xced9, 0x11d3, { 0x97, 0xfb, 0x0, 0x40, 0x5, 0x53, 0xee, 0xf0 } }
-
-class nsIXBLAttributeEntry : public nsISupports {
+class nsXBLAttributeEntry {
 public:
-  NS_DEFINE_STATIC_IID_ACCESSOR(NS_IXBLATTR_IID)
-
-  NS_IMETHOD GetSrcAttribute(nsIAtom** aResult) = 0;
-  NS_IMETHOD GetDstAttribute(nsIAtom** aResult) = 0;
-  NS_IMETHOD GetElement(nsIContent** aResult) = 0;
-  NS_IMETHOD GetNext(nsIXBLAttributeEntry** aResult) = 0;
-  NS_IMETHOD SetNext(nsIXBLAttributeEntry* aEntry) = 0;
-};
+  nsIAtom* GetSrcAttribute() { return mSrcAttribute; }
+  nsIAtom* GetDstAttribute() { return mDstAttribute; }
   
-class nsXBLAttributeEntry : public nsIXBLAttributeEntry {
-public:
-  NS_IMETHOD GetSrcAttribute(nsIAtom** aResult) { *aResult = mSrcAttribute; NS_IF_ADDREF(*aResult); return NS_OK; };
-  NS_IMETHOD GetDstAttribute(nsIAtom** aResult) { *aResult = mDstAttribute; NS_IF_ADDREF(*aResult); return NS_OK; };
-  
-  NS_IMETHOD GetElement(nsIContent** aResult) { *aResult = mElement; NS_IF_ADDREF(*aResult); return NS_OK; };
+  nsIContent* GetElement() { return mElement; }
 
-  NS_IMETHOD GetNext(nsIXBLAttributeEntry** aResult) { NS_IF_ADDREF(*aResult = mNext); return NS_OK; }
-  NS_IMETHOD SetNext(nsIXBLAttributeEntry* aEntry) { mNext = aEntry; return NS_OK; }
-
-  nsIContent* mElement;
+  nsXBLAttributeEntry* GetNext() { return mNext; }
+  void SetNext(nsXBLAttributeEntry* aEntry) { mNext = aEntry; }
 
   static nsXBLAttributeEntry*
   Create(nsIAtom* aSrcAtom, nsIAtom* aDstAtom, nsIContent* aContent) {
@@ -129,18 +109,21 @@ public:
     nsXBLPrototypeBinding::kAttrPool->Free(aSelf, sizeof(*aSelf));
   }
 
+protected:
+  nsIContent* mElement;
+
   nsCOMPtr<nsIAtom> mSrcAttribute;
   nsCOMPtr<nsIAtom> mDstAttribute;
-  nsCOMPtr<nsIXBLAttributeEntry> mNext;
+  nsXBLAttributeEntry* mNext;
 
-  NS_DECL_ISUPPORTS
+  nsXBLAttributeEntry(nsIAtom* aSrcAtom, nsIAtom* aDstAtom,
+                      nsIContent* aContent)
+    : mElement(aContent),
+      mSrcAttribute(aSrcAtom),
+      mDstAttribute(aDstAtom),
+      mNext(nsnull) { }
 
-protected:
-  nsXBLAttributeEntry(nsIAtom* aSrcAtom, nsIAtom* aDstAtom, nsIContent* aContent) {
-    NS_INIT_ISUPPORTS(); mSrcAttribute = aSrcAtom; mDstAttribute = aDstAtom; mElement = aContent;
-  }
-
-  virtual ~nsXBLAttributeEntry() {}
+  ~nsXBLAttributeEntry() { delete mNext; }
 
 private:
   // Hide so that only Create() and Destroy() can be used to
@@ -149,48 +132,20 @@ private:
   static void operator delete(void*, size_t) {}
 };
 
-NS_IMPL_ADDREF(nsXBLAttributeEntry)
-NS_IMPL_RELEASE_WITH_DESTROY(nsXBLAttributeEntry, nsXBLAttributeEntry::Destroy(this))
-NS_IMPL_QUERY_INTERFACE1(nsXBLAttributeEntry, nsIXBLAttributeEntry)
-
-// nsIXBLInsertionPointEntry and helpers.  This class stores all the necessary
+// nsXBLInsertionPointEntry and helpers.  This class stores all the necessary
 // info to figure out the position of an insertion point.
+// The same insertion point may be in the insertion point table for multiple
+// keys, so we refcount the entries.
 
-// {76F238AE-5ACB-49e6-B2DE-FD1940637753}
-#define NS_IXBLINS_IID \
-{ 0x76f238ae, 0x5acb, 0x49e6, { 0xb2, 0xde, 0xfd, 0x19, 0x40, 0x63, 0x77, 0x53 } }
-
-class nsIXBLInsertionPointEntry : public nsISupports {
+class nsXBLInsertionPointEntry {
 public:
-  NS_DEFINE_STATIC_IID_ACCESSOR(NS_IXBLINS_IID)
+  nsIContent* GetInsertionParent() { return mInsertionParent; }
+  PRUint32 GetInsertionIndex() { return mInsertionIndex; }
+  void SetInsertionIndex(PRUint32 aIndex) { mInsertionIndex = aIndex; }
 
-  NS_IMETHOD GetInsertionParent(nsIContent** aResult)=0;
+  nsIContent* GetDefaultContent() { return mDefaultContent; }
+  void SetDefaultContent(nsIContent* aChildren) { mDefaultContent = aChildren; }
 
-  NS_IMETHOD GetInsertionIndex(PRUint32* aResult)=0;
-  NS_IMETHOD SetInsertionIndex(PRUint32 aIndex)=0;
-
-  NS_IMETHOD GetDefaultContent(nsIContent** aResult)=0;
-  NS_IMETHOD SetDefaultContent(nsIContent* aChildren)=0;
-};
-  
-class nsXBLInsertionPointEntry : public nsIXBLInsertionPointEntry {
-public:
-  NS_IMETHOD GetInsertionParent(nsIContent** aResult)
-  {
-    *aResult = mInsertionParent;
-    NS_IF_ADDREF(*aResult);
-    return NS_OK;
-  };
-    
-  NS_IMETHOD GetInsertionIndex(PRUint32* aResult) { *aResult = mInsertionIndex; return NS_OK; };
-  NS_IMETHOD SetInsertionIndex(PRUint32 aIndex) { mInsertionIndex = aIndex;  return NS_OK; };
-
-  NS_IMETHOD GetDefaultContent(nsIContent** aResult) { *aResult = mDefaultContent; NS_IF_ADDREF(*aResult); return NS_OK; };
-  NS_IMETHOD SetDefaultContent(nsIContent* aChildren) { mDefaultContent = aChildren; return NS_OK; };
-
-  nsCOMPtr<nsIContent> mInsertionParent;
-  nsCOMPtr<nsIContent> mDefaultContent;
-  PRUint32 mInsertionIndex;
 
   static nsXBLInsertionPointEntry*
   Create(nsIContent* aParent) {
@@ -203,17 +158,33 @@ public:
     aSelf->~nsXBLInsertionPointEntry();
     nsXBLPrototypeBinding::kInsPool->Free(aSelf, sizeof(*aSelf));
   }
-  
-  NS_DECL_ISUPPORTS
+
+  nsrefcnt AddRef() {
+    ++mRefCnt;
+    NS_LOG_ADDREF(this, mRefCnt, "nsXBLInsertionPointEntry", sizeof(nsXBLInsertionPointEntry));
+    return mRefCnt;
+  }
+
+  nsrefcnt Release() {
+    --mRefCnt;
+    NS_LOG_RELEASE(this, mRefCnt, "nsXBLInsertionPointEntry");
+    if (mRefCnt == 0) {
+      Destroy(this);
+      return 0;
+    }
+    return mRefCnt;
+  }
 
 protected:
-  nsXBLInsertionPointEntry(nsIContent* aParent) {
-    NS_INIT_ISUPPORTS();
-    mInsertionIndex = 0;
-    mInsertionParent = aParent;
-  };
+  nsCOMPtr<nsIContent> mInsertionParent;
+  nsCOMPtr<nsIContent> mDefaultContent;
+  PRUint32 mInsertionIndex;
+  nsrefcnt mRefCnt;
 
-  virtual ~nsXBLInsertionPointEntry() {}
+  nsXBLInsertionPointEntry(nsIContent* aParent)
+    : mInsertionParent(aParent),
+      mInsertionIndex(0),
+      mRefCnt(0) { }
 
 private:
   // Hide so that only Create() and Destroy() can be used to
@@ -221,10 +192,6 @@ private:
   static void* operator new(size_t) CPP_THROW_NEW { return 0; }
   static void operator delete(void*, size_t) {}
 };
-
-NS_IMPL_ADDREF(nsXBLInsertionPointEntry)
-NS_IMPL_RELEASE_WITH_DESTROY(nsXBLInsertionPointEntry, nsXBLInsertionPointEntry::Destroy(this))
-NS_IMPL_QUERY_INTERFACE1(nsXBLInsertionPointEntry, nsIXBLInsertionPointEntry)
 
 // =============================================================================
 
@@ -252,13 +219,13 @@ static const PRInt32 kInsInitialSize = (NS_SIZE_IN_HEAP(sizeof(nsXBLInsertionPoi
 
 // Implementation /////////////////////////////////////////////////////////////////
 
-// Implement our nsISupports methods
-NS_IMPL_ISUPPORTS2(nsXBLPrototypeBinding, nsIXBLPrototypeBinding, nsISupportsWeakReference)
-
 // Constructors/Destructors
-nsXBLPrototypeBinding::nsXBLPrototypeBinding(const nsACString& aID, nsIXBLDocumentInfo* aInfo,
+nsXBLPrototypeBinding::nsXBLPrototypeBinding(const nsACString& aID,
+                                             nsIXBLDocumentInfo* aInfo,
                                              nsIContent* aElement)
-: mImplementation(nsnull),
+: mPrototypeHandler(nsnull),
+  mImplementation(nsnull),
+  mBaseBinding(nsnull),
   mInheritStyle(PR_TRUE), 
   mHasBaseProto(PR_TRUE),
   mResources(nsnull),
@@ -266,7 +233,6 @@ nsXBLPrototypeBinding::nsXBLPrototypeBinding(const nsACString& aID, nsIXBLDocume
   mInsertionPointTable(nsnull),
   mInterfaceTable(nsnull)
 {
-  NS_INIT_ISUPPORTS();
   
   mID = ToNewCString(aID);
 
@@ -285,17 +251,14 @@ nsXBLPrototypeBinding::nsXBLPrototypeBinding(const nsACString& aID, nsIXBLDocume
   SetBindingElement(aElement);
 }
 
-NS_IMETHODIMP
+void
 nsXBLPrototypeBinding::Initialize()
 {
-  nsCOMPtr<nsIContent> content;
-  GetImmediateChild(nsXBLAtoms::content, getter_AddRefs(content));
+  nsCOMPtr<nsIContent> content = GetImmediateChild(nsXBLAtoms::content);
   if (content) {
     ConstructAttributeTable(content);
     ConstructInsertionTable(content);
   }
-
-  return NS_OK;
 }
 
 nsXBLPrototypeBinding::~nsXBLPrototypeBinding(void)
@@ -306,6 +269,7 @@ nsXBLPrototypeBinding::~nsXBLPrototypeBinding(void)
   delete mInsertionPointTable;
   delete mInterfaceTable;
   delete mImplementation;
+  delete mPrototypeHandler;
   gRefCnt--;
   if (gRefCnt == 0) {
     delete kAttrPool;
@@ -313,40 +277,29 @@ nsXBLPrototypeBinding::~nsXBLPrototypeBinding(void)
   }
 }
 
-// nsIXBLPrototypeBinding Interface ////////////////////////////////////////////////////////////////
-
-NS_IMETHODIMP
-nsXBLPrototypeBinding::GetBasePrototype(nsIXBLPrototypeBinding** aResult)
+void
+nsXBLPrototypeBinding::SetBasePrototype(nsXBLPrototypeBinding* aBinding)
 {
-  *aResult = mBaseBinding;
-  NS_IF_ADDREF(*aResult);
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsXBLPrototypeBinding::SetBasePrototype(nsIXBLPrototypeBinding* aBinding)
-{
-  if (mBaseBinding.get() == aBinding)
-    return NS_OK;
+  if (mBaseBinding == aBinding)
+    return;
 
   if (mBaseBinding) {
     NS_ERROR("Base XBL prototype binding is already defined!");
-    return NS_OK;
+    return;
   }
 
-  mBaseBinding = aBinding; // Comptr handles rel/add
-  return NS_OK;
+  mBaseBinding = aBinding;
 }
 
-NS_IMETHODIMP
-nsXBLPrototypeBinding::GetBindingElement(nsIContent** aResult)
+already_AddRefed<nsIContent>
+nsXBLPrototypeBinding::GetBindingElement()
 {
-  *aResult = mBinding;
-  NS_IF_ADDREF(*aResult);
-  return NS_OK;
+  nsIContent* result = mBinding;
+  NS_IF_ADDREF(result);
+  return result;
 }
 
-NS_IMETHODIMP
+void
 nsXBLPrototypeBinding::SetBindingElement(nsIContent* aElement)
 {
   mBinding = aElement;
@@ -354,15 +307,12 @@ nsXBLPrototypeBinding::SetBindingElement(nsIContent* aElement)
   mBinding->GetAttr(kNameSpaceID_None, nsXBLAtoms::inheritstyle, inheritStyle);
   if (inheritStyle == NS_LITERAL_STRING("false"))
     mInheritStyle = PR_FALSE;
-
-  return NS_OK;
 }
 
-NS_IMETHODIMP 
+nsresult
 nsXBLPrototypeBinding::GetBindingURI(nsCString& aResult)
 {
-  nsCOMPtr<nsIXBLDocumentInfo> info;
-  GetXBLDocumentInfo(nsnull, getter_AddRefs(info));
+  nsCOMPtr<nsIXBLDocumentInfo> info = GetXBLDocumentInfo(nsnull);
   
   NS_ASSERTION(info, "The prototype binding has somehow lost its XBLDocInfo! Bad bad bad!!!\n");
   if (!info)
@@ -374,11 +324,10 @@ nsXBLPrototypeBinding::GetBindingURI(nsCString& aResult)
   return NS_OK;
 }
 
-NS_IMETHODIMP 
+nsresult
 nsXBLPrototypeBinding::GetDocURI(nsCString& aResult)
 {
-  nsCOMPtr<nsIXBLDocumentInfo> info;
-  GetXBLDocumentInfo(nsnull, getter_AddRefs(info));
+  nsCOMPtr<nsIXBLDocumentInfo> info = GetXBLDocumentInfo(nsnull);
   
   NS_ASSERTION(info, "The prototype binding has somehow lost its XBLDocInfo! Bad bad bad!!!\n");
   if (!info)
@@ -388,32 +337,26 @@ nsXBLPrototypeBinding::GetDocURI(nsCString& aResult)
   return NS_OK;
 }
 
-NS_IMETHODIMP 
-nsXBLPrototypeBinding::GetID(nsCString& aResult)
-{
-  aResult = mID;
-  return NS_OK;
-}
-
-NS_IMETHODIMP
+nsresult
 nsXBLPrototypeBinding::GetAllowScripts(PRBool* aResult)
 {
-  nsCOMPtr<nsIXBLDocumentInfo> info;
-  GetXBLDocumentInfo(nsnull, getter_AddRefs(info));
+  nsCOMPtr<nsIXBLDocumentInfo> info = GetXBLDocumentInfo(nsnull);
   return info->GetScriptAccess(aResult);
 }
 
-NS_IMETHODIMP
-nsXBLPrototypeBinding::LoadResources(PRBool* aResult)
+PRBool
+nsXBLPrototypeBinding::LoadResources()
 {
-  if (mResources)
-    mResources->LoadResources(aResult);
-  else
-    *aResult = PR_TRUE;
-  return NS_OK;
+  if (mResources) {
+    PRBool result;
+    mResources->LoadResources(&result);
+    return result;
+  }
+
+  return PR_TRUE;
 }
 
-NS_IMETHODIMP
+nsresult
 nsXBLPrototypeBinding::AddResource(nsIAtom* aResourceType, const nsAString& aSrc)
 {
   if (!mResources) {
@@ -426,7 +369,7 @@ nsXBLPrototypeBinding::AddResource(nsIAtom* aResourceType, const nsAString& aSrc
   return NS_OK;
 }
 
-NS_IMETHODIMP
+nsresult
 nsXBLPrototypeBinding::FlushSkinSheets()
 {
   if (mResources)
@@ -434,7 +377,7 @@ nsXBLPrototypeBinding::FlushSkinSheets()
   return NS_OK;
 }
 
-NS_IMETHODIMP
+nsresult
 nsXBLPrototypeBinding::BindingAttached(nsIDOMEventReceiver* aReceiver)
 {
   if (mImplementation && mImplementation->mConstructor)
@@ -442,7 +385,7 @@ nsXBLPrototypeBinding::BindingAttached(nsIDOMEventReceiver* aReceiver)
   return NS_OK;
 }
 
-NS_IMETHODIMP
+nsresult
 nsXBLPrototypeBinding::BindingDetached(nsIDOMEventReceiver* aReceiver)
 {
   if (mImplementation && mImplementation->mDestructor)
@@ -450,81 +393,34 @@ nsXBLPrototypeBinding::BindingDetached(nsIDOMEventReceiver* aReceiver)
   return NS_OK;
 }
 
-NS_IMETHODIMP
-nsXBLPrototypeBinding::InheritsStyle(PRBool* aResult)
+already_AddRefed<nsIXBLDocumentInfo>
+nsXBLPrototypeBinding::GetXBLDocumentInfo(nsIContent* aBoundElement)
 {
-  *aResult = mInheritStyle;
-  return NS_OK;
+  nsIXBLDocumentInfo* result = nsnull;
+  CallQueryReferent(mXBLDocInfoWeak.get(), &result);  // addrefs
+  return result;
 }
 
-NS_IMETHODIMP
-nsXBLPrototypeBinding::GetXBLDocumentInfo(nsIContent* aBoundElement, nsIXBLDocumentInfo** aResult)
+nsXBLPrototypeHandler*
+nsXBLPrototypeBinding::GetConstructor()
 {
-  nsCOMPtr<nsIXBLDocumentInfo> info(do_QueryReferent(mXBLDocInfoWeak));
-  if (info) {
-    *aResult = info;
-    NS_ADDREF(*aResult);
-    return NS_OK;
-  }
-  else *aResult=nsnull;
-  return NS_OK;
+  if (mImplementation)
+    return mImplementation->mConstructor;
+
+  return nsnull;
 }
 
-NS_IMETHODIMP
-nsXBLPrototypeBinding::HasBasePrototype(PRBool* aResult)
+nsXBLPrototypeHandler*
+nsXBLPrototypeBinding::GetDestructor()
 {
-  *aResult = mHasBaseProto;
-  return NS_OK;
+  if (mImplementation)
+    return mImplementation->mDestructor;
+
+  return nsnull;
 }
 
-NS_IMETHODIMP
-nsXBLPrototypeBinding::SetHasBasePrototype(PRBool aHasBase)
-{
-  mHasBaseProto = aHasBase;
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsXBLPrototypeBinding::GetPrototypeHandlers(nsIXBLPrototypeHandler** aResult)
-{
-  *aResult = mPrototypeHandler;
-  NS_IF_ADDREF(*aResult);
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsXBLPrototypeBinding::SetPrototypeHandlers(nsIXBLPrototypeHandler* aHandler)
-{
-  mPrototypeHandler = aHandler;
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsXBLPrototypeBinding::GetConstructor(nsIXBLPrototypeHandler** aResult)
-{
-  if (mImplementation && mImplementation->mConstructor) {
-    *aResult = mImplementation->mConstructor; 
-    NS_ADDREF(*aResult);
-  }
-  else
-    *aResult = nsnull;
-  return NS_OK; 
-}
-
-NS_IMETHODIMP
-nsXBLPrototypeBinding::GetDestructor(nsIXBLPrototypeHandler** aResult)
-{
-  if (mImplementation && mImplementation->mDestructor) {
-    *aResult = mImplementation->mDestructor; 
-    NS_ADDREF(*aResult);
-  }
-  else
-    *aResult = nsnull;
-  return NS_OK; 
-}
-
-NS_IMETHODIMP
-nsXBLPrototypeBinding::SetConstructor(nsIXBLPrototypeHandler* aHandler)
+nsresult
+nsXBLPrototypeBinding::SetConstructor(nsXBLPrototypeHandler* aHandler)
 {
   if (!mImplementation)
     return NS_ERROR_FAILURE;
@@ -532,8 +428,8 @@ nsXBLPrototypeBinding::SetConstructor(nsIXBLPrototypeHandler* aHandler)
   return NS_OK;
 }
 
-NS_IMETHODIMP
-nsXBLPrototypeBinding::SetDestructor(nsIXBLPrototypeHandler* aHandler)
+nsresult
+nsXBLPrototypeBinding::SetDestructor(nsXBLPrototypeHandler* aHandler)
 {
   if (!mImplementation)
     return NS_ERROR_FAILURE;
@@ -541,7 +437,7 @@ nsXBLPrototypeBinding::SetDestructor(nsIXBLPrototypeHandler* aHandler)
   return NS_OK;
 }
 
-NS_IMETHODIMP
+nsresult
 nsXBLPrototypeBinding::InstallImplementation(nsIContent* aBoundElement)
 {
   if (mImplementation)
@@ -549,7 +445,7 @@ nsXBLPrototypeBinding::InstallImplementation(nsIContent* aBoundElement)
   return NS_OK;
 }
 
-NS_IMETHODIMP
+void
 nsXBLPrototypeBinding::AttributeChanged(nsIAtom* aAttribute,
                                         PRInt32 aNameSpaceID,
                                         PRBool aRemoveFlag, 
@@ -558,29 +454,24 @@ nsXBLPrototypeBinding::AttributeChanged(nsIAtom* aAttribute,
                                         PRBool aNotify)
 {
   if (!mAttributeTable)
-    return NS_OK;
+    return;
 
   nsISupportsKey key(aAttribute);
-  nsCOMPtr<nsISupports> supports = getter_AddRefs(NS_STATIC_CAST(nsISupports*, 
-                                                                 mAttributeTable->Get(&key)));
-
-  nsCOMPtr<nsIXBLAttributeEntry> xblAttr = do_QueryInterface(supports);
+  nsXBLAttributeEntry* xblAttr = NS_STATIC_CAST(nsXBLAttributeEntry*, mAttributeTable->Get(&key));
   if (!xblAttr)
-    return NS_OK;
+    return;
 
   // Iterate over the elements in the array.
-  nsCOMPtr<nsIContent> content;
-  GetImmediateChild(nsXBLAtoms::content, getter_AddRefs(content));
+  nsCOMPtr<nsIContent> content = GetImmediateChild(nsXBLAtoms::content);
   while (xblAttr) {
-    nsCOMPtr<nsIContent> element;
-    nsCOMPtr<nsIAtom> dstAttr;
-    xblAttr->GetElement(getter_AddRefs(element));
+    nsIContent* element = xblAttr->GetElement();
 
     nsCOMPtr<nsIContent> realElement;
-    LocateInstance(aChangedElement, content, aAnonymousContent, element, getter_AddRefs(realElement));
+    realElement = LocateInstance(aChangedElement, content, aAnonymousContent,
+                                 element);
 
     if (realElement) {
-      xblAttr->GetDstAttribute(getter_AddRefs(dstAttr));
+      nsIAtom* dstAttr = xblAttr->GetDstAttribute();
 
       if (aRemoveFlag)
         realElement->UnsetAttr(aNameSpaceID, dstAttr, aNotify);
@@ -638,11 +529,8 @@ nsXBLPrototypeBinding::AttributeChanged(nsIAtom* aAttribute,
       }
     }
 
-    nsCOMPtr<nsIXBLAttributeEntry> tmpAttr = xblAttr;
-    tmpAttr->GetNext(getter_AddRefs(xblAttr));
+    xblAttr = xblAttr->GetNext();
   }
-
-  return NS_OK;
 }
 
 struct InsertionData {
@@ -656,41 +544,36 @@ struct InsertionData {
 
 PRBool PR_CALLBACK InstantiateInsertionPoint(nsHashKey* aKey, void* aData, void* aClosure)
 {
-  nsIXBLInsertionPointEntry* entry = (nsIXBLInsertionPointEntry*)aData;
-  InsertionData* data = (InsertionData*)aClosure;
+  nsXBLInsertionPointEntry* entry = NS_STATIC_CAST(nsXBLInsertionPointEntry*, aData);
+  InsertionData* data = NS_STATIC_CAST(InsertionData*, aClosure);
   nsIXBLBinding* binding = data->mBinding;
   nsXBLPrototypeBinding* proto = data->mPrototype;
 
   // Get the insertion parent.
-  nsCOMPtr<nsIContent> content;
-  entry->GetInsertionParent(getter_AddRefs(content));
-  PRUint32 index;
-  entry->GetInsertionIndex(&index);
-  nsCOMPtr<nsIContent> defContent;
-  entry->GetDefaultContent(getter_AddRefs(defContent));
-    
+  nsIContent* content = entry->GetInsertionParent();
+  PRUint32 index = entry->GetInsertionIndex();
+  nsIContent* defContent = entry->GetDefaultContent();
+
   // Locate the real content.
   nsCOMPtr<nsIContent> realContent;
   nsCOMPtr<nsIContent> instanceRoot;
   binding->GetAnonymousContent(getter_AddRefs(instanceRoot));
-  nsCOMPtr<nsIContent> templRoot;
-  proto->GetImmediateChild(nsXBLAtoms::content, getter_AddRefs(templRoot));
-  proto->LocateInstance(nsnull, templRoot, instanceRoot, content, getter_AddRefs(realContent));
+  nsCOMPtr<nsIContent> templRoot = proto->GetImmediateChild(nsXBLAtoms::content);
+  realContent = proto->LocateInstance(nsnull, templRoot, instanceRoot, content);
   if (!realContent)
     binding->GetBoundElement(getter_AddRefs(realContent));
 
   // Now that we have the real content, look it up in our table.
-  nsCOMPtr<nsISupportsArray> points;
-  binding->GetInsertionPointsFor(realContent, getter_AddRefs(points));
-  nsCOMPtr<nsIXBLInsertionPoint> insertionPoint;
-  PRUint32 count;
-  points->Count(&count);
-  PRUint32 i = 0;
+  nsVoidArray* points;
+  binding->GetInsertionPointsFor(realContent, &points);
+  nsXBLInsertionPoint* insertionPoint = nsnull;
+  PRInt32 count = points->Count();
+  PRInt32 i = 0;
   PRInt32 currIndex = 0;  
   
   for ( ; i < count; i++) {
-    nsCOMPtr<nsIXBLInsertionPoint> currPoint = getter_AddRefs((nsIXBLInsertionPoint*)points->ElementAt(i));
-    currPoint->GetInsertionIndex(&currIndex);
+    nsXBLInsertionPoint* currPoint = NS_STATIC_CAST(nsXBLInsertionPoint*, points->ElementAt(i));
+    currIndex = currPoint->GetInsertionIndex();
     if (currIndex == (PRInt32)index) {
       // This is a match. Break out of the loop and set our variable.
       insertionPoint = currPoint;
@@ -704,52 +587,52 @@ PRBool PR_CALLBACK InstantiateInsertionPoint(nsHashKey* aKey, void* aData, void*
 
   if (!insertionPoint) {
     // We need to make a new insertion point.
-    NS_NewXBLInsertionPoint(realContent, index, defContent, getter_AddRefs(insertionPoint));
+    insertionPoint = new nsXBLInsertionPoint(realContent, index, defContent);
     points->InsertElementAt(insertionPoint, i);
   }
 
   return PR_TRUE;
 }
 
-NS_IMETHODIMP
+void
 nsXBLPrototypeBinding::InstantiateInsertionPoints(nsIXBLBinding* aBinding)
 {
   InsertionData data(aBinding, this);
   if (mInsertionPointTable)
     mInsertionPointTable->Enumerate(InstantiateInsertionPoint, &data);
-  return NS_OK;
 }
 
-NS_IMETHODIMP
-nsXBLPrototypeBinding::GetInsertionPoint(nsIContent* aBoundElement, nsIContent* aCopyRoot,
-                                         nsIContent* aChild, nsIContent** aResult, PRUint32* aIndex,
+void
+nsXBLPrototypeBinding::GetInsertionPoint(nsIContent* aBoundElement,
+                                         nsIContent* aCopyRoot,
+                                         nsIContent* aChild,
+                                         nsIContent** aResult,
+                                         PRUint32* aIndex,
                                          nsIContent** aDefaultContent)
 {
   if (mInsertionPointTable) {
     nsCOMPtr<nsIAtom> tag;
     aChild->GetTag(*getter_AddRefs(tag));
     nsISupportsKey key(tag);
-    nsCOMPtr<nsIXBLInsertionPointEntry> entry = getter_AddRefs(NS_STATIC_CAST(nsIXBLInsertionPointEntry*, 
-                                                               mInsertionPointTable->Get(&key)));
+    nsXBLInsertionPointEntry* entry = NS_STATIC_CAST(nsXBLInsertionPointEntry*, mInsertionPointTable->Get(&key));
     if (!entry) {
       nsISupportsKey key2(nsXBLAtoms::children);
-      entry = getter_AddRefs(NS_STATIC_CAST(nsIXBLInsertionPointEntry*, mInsertionPointTable->Get(&key2)));
+      entry = NS_STATIC_CAST(nsXBLInsertionPointEntry*, mInsertionPointTable->Get(&key2));
     }
 
     nsCOMPtr<nsIContent> realContent;
     if (entry) {
-      nsCOMPtr<nsIContent> content;
-      entry->GetInsertionParent(getter_AddRefs(content));
-      entry->GetInsertionIndex(aIndex);
-      entry->GetDefaultContent(aDefaultContent); // Addref happens here.
+      nsIContent* content = entry->GetInsertionParent();
+      *aIndex = entry->GetInsertionIndex();
+      NS_IF_ADDREF(*aDefaultContent = entry->GetDefaultContent());
       nsCOMPtr<nsIContent> templContent;
-      GetImmediateChild(nsXBLAtoms::content, getter_AddRefs(templContent));
-      LocateInstance(nsnull, templContent, aCopyRoot, content, getter_AddRefs(realContent));
+      templContent = GetImmediateChild(nsXBLAtoms::content);
+      realContent = LocateInstance(nsnull, templContent, aCopyRoot, content);
     }
     else {
       // We got nothin'.  Bail.
       *aResult = nsnull;
-      return NS_OK;
+      return;
     }
 
     if (realContent)
@@ -759,30 +642,29 @@ nsXBLPrototypeBinding::GetInsertionPoint(nsIContent* aBoundElement, nsIContent* 
 
     NS_IF_ADDREF(*aResult);
   }
-  return NS_OK;  
 }
 
-NS_IMETHODIMP
+void
 nsXBLPrototypeBinding::GetSingleInsertionPoint(nsIContent* aBoundElement,
                                                nsIContent* aCopyRoot,
-                                               nsIContent** aResult, PRUint32* aIndex,
+                                               nsIContent** aResult,
+                                               PRUint32* aIndex,
                                                PRBool* aMultipleInsertionPoints,
                                                nsIContent** aDefaultContent)
 { 
   if (mInsertionPointTable) {
     if(mInsertionPointTable->Count() == 1) {
       nsISupportsKey key(nsXBLAtoms::children);
-      nsCOMPtr<nsIXBLInsertionPointEntry> entry = getter_AddRefs(NS_STATIC_CAST(nsIXBLInsertionPointEntry*, 
-                                                                 mInsertionPointTable->Get(&key)));
+      nsXBLInsertionPointEntry* entry = NS_STATIC_CAST(nsXBLInsertionPointEntry*, mInsertionPointTable->Get(&key));
+
       nsCOMPtr<nsIContent> realContent;
       if (entry) {
-        nsCOMPtr<nsIContent> content;
-        entry->GetInsertionParent(getter_AddRefs(content));
-        entry->GetInsertionIndex(aIndex);
-        entry->GetDefaultContent(aDefaultContent); // Addref happens here.
+        nsIContent* content = entry->GetInsertionParent();
+        *aIndex = entry->GetInsertionIndex();
+        NS_IF_ADDREF(*aDefaultContent = entry->GetDefaultContent());
         nsCOMPtr<nsIContent> templContent;
-        GetImmediateChild(nsXBLAtoms::content, getter_AddRefs(templContent));
-        LocateInstance(nsnull, templContent, aCopyRoot, content, getter_AddRefs(realContent));
+        templContent = GetImmediateChild(nsXBLAtoms::content);
+        realContent = LocateInstance(nsnull, templContent, aCopyRoot, content);
       }
       else {
         // The only insertion point specified was actually a filtered insertion point.
@@ -792,7 +674,7 @@ nsXBLPrototypeBinding::GetSingleInsertionPoint(nsIContent* aBoundElement,
         *aMultipleInsertionPoints = PR_TRUE;
         *aResult = nsnull;
         *aIndex = 0;
-        return NS_OK;
+        return;
       }
 
       *aMultipleInsertionPoints = PR_FALSE;
@@ -806,18 +688,16 @@ nsXBLPrototypeBinding::GetSingleInsertionPoint(nsIContent* aBoundElement,
     else 
       *aMultipleInsertionPoints = PR_TRUE;
   }
-  return NS_OK;  
 }
 
-NS_IMETHODIMP
+void
 nsXBLPrototypeBinding::SetBaseTag(PRInt32 aNamespaceID, nsIAtom* aTag)
 {
   mBaseNameSpaceID = aNamespaceID;
   mBaseTag = aTag;
-  return NS_OK;
 }
 
-NS_IMETHODIMP
+void
 nsXBLPrototypeBinding::GetBaseTag(PRInt32* aNamespaceID, nsIAtom** aResult)
 {
   if (mBaseTag) {
@@ -826,32 +706,27 @@ nsXBLPrototypeBinding::GetBaseTag(PRInt32* aNamespaceID, nsIAtom** aResult)
     *aNamespaceID = mBaseNameSpaceID;
   }
   else *aResult = nsnull;
-  return NS_OK;
 }
 
-NS_IMETHODIMP
-nsXBLPrototypeBinding::ImplementsInterface(REFNSIID aIID, PRBool* aResult)
+PRBool
+nsXBLPrototypeBinding::ImplementsInterface(REFNSIID aIID)
 {
-  // Init the answer to FALSE.
-  *aResult = PR_FALSE;
-
-  // Now check our IID table.
+  // Check our IID table.
   if (mInterfaceTable) {
     nsIIDKey key(aIID);
     nsCOMPtr<nsISupports> supports = getter_AddRefs(NS_STATIC_CAST(nsISupports*, 
                                                                    mInterfaceTable->Get(&key)));
-    *aResult = supports != nsnull;
+    return supports != nsnull;
   }
 
-  return NS_OK;
+  return PR_FALSE;
 }
 
 // Internal helpers ///////////////////////////////////////////////////////////////////////
 
-void
-nsXBLPrototypeBinding::GetImmediateChild(nsIAtom* aTag, nsIContent** aResult) 
+already_AddRefed<nsIContent>
+nsXBLPrototypeBinding::GetImmediateChild(nsIAtom* aTag)
 {
-  *aResult = nsnull;
   PRInt32 childCount;
   mBinding->ChildCount(childCount);
   for (PRInt32 i = 0; i < childCount; i++) {
@@ -860,21 +735,21 @@ nsXBLPrototypeBinding::GetImmediateChild(nsIAtom* aTag, nsIContent** aResult)
     nsCOMPtr<nsIAtom> tag;
     child->GetTag(*getter_AddRefs(tag));
     if (aTag == tag) {
-      *aResult = child;
-      NS_ADDREF(*aResult);
-      return;
+      nsIContent* result = child;
+      NS_ADDREF(result);
+      return result;
     }
   }
 
-  return;
+  return nsnull;
 }
  
-NS_IMETHODIMP
+nsresult
 nsXBLPrototypeBinding::InitClass(const nsCString& aClassName,
                                  nsIScriptContext * aContext,
                                  void * aScriptObject, void ** aClassObject)
 {
-  NS_ENSURE_ARG_POINTER (aClassObject); 
+  NS_ENSURE_ARG_POINTER(aClassObject); 
 
   *aClassObject = nsnull;
 
@@ -885,16 +760,16 @@ nsXBLPrototypeBinding::InitClass(const nsCString& aClassName,
                                      scriptObject, aClassName, aClassObject);
 }
 
-void
-nsXBLPrototypeBinding::LocateInstance(nsIContent* aBoundElement, nsIContent* aTemplRoot, nsIContent* aCopyRoot, 
-                                      nsIContent* aTemplChild, nsIContent** aCopyResult)
+already_AddRefed<nsIContent>
+nsXBLPrototypeBinding::LocateInstance(nsIContent* aBoundElement,
+                                      nsIContent* aTemplRoot,
+                                      nsIContent* aCopyRoot, 
+                                      nsIContent* aTemplChild)
 {
   // XXX We will get in trouble if the binding instantiation deviates from the template
   // in the prototype.
-  if (aTemplChild == aTemplRoot || !aTemplChild) {
-    *aCopyResult = nsnull;
-    return;
-  }
+  if (aTemplChild == aTemplRoot || !aTemplChild)
+    return nsnull;
 
   nsCOMPtr<nsIContent> templParent;
   nsCOMPtr<nsIContent> copyParent;
@@ -911,12 +786,14 @@ nsXBLPrototypeBinding::LocateInstance(nsIContent* aBoundElement, nsIContent* aTe
   }
 
   if (!templParent)
-    return;
+    return nsnull;
+
+  nsIContent* result = nsnull;
 
   if (templParent == aTemplRoot)
     copyParent = aCopyRoot;
   else
-    LocateInstance(aBoundElement, aTemplRoot, aCopyRoot, templParent, getter_AddRefs(copyParent));
+    copyParent = LocateInstance(aBoundElement, aTemplRoot, aCopyRoot, templParent);
   
   if (childPoint && aBoundElement) {
     // First we have to locate this insertion point and use its index and its
@@ -938,25 +815,22 @@ nsXBLPrototypeBinding::LocateInstance(nsIContent* aBoundElement, nsIContent* aTe
       tempBinding->GetBaseBinding(getter_AddRefs(currBinding));
     }
 
-    nsCOMPtr<nsISupportsArray> points;
+    nsVoidArray* points;
     if (anonContent == copyParent)
-      currBinding->GetInsertionPointsFor(aBoundElement, getter_AddRefs(points));
+      currBinding->GetInsertionPointsFor(aBoundElement, &points);
     else
-      currBinding->GetInsertionPointsFor(copyParent, getter_AddRefs(points));
-    nsCOMPtr<nsIXBLInsertionPoint> insertionPoint;
-    PRUint32 count;
-    points->Count(&count);
-    for (PRUint32 i = 0; i < count; i++) {
+      currBinding->GetInsertionPointsFor(copyParent, &points);
+    PRInt32 count = points->Count();
+    for (PRInt32 i = 0; i < count; i++) {
       // Next we have to find the real insertion point for this proto insertion
       // point.  If it does not contain any default content, then we should 
       // return null, since the content is not in the clone.
-      nsCOMPtr<nsIXBLInsertionPoint> currPoint = getter_AddRefs((nsIXBLInsertionPoint*)points->ElementAt(i));
-      nsCOMPtr<nsIContent> defContent;
-      currPoint->GetDefaultContentTemplate(getter_AddRefs(defContent));
+      nsXBLInsertionPoint* currPoint = NS_STATIC_CAST(nsXBLInsertionPoint*, points->ElementAt(i));
+      nsCOMPtr<nsIContent> defContent = currPoint->GetDefaultContentTemplate();
       if (defContent == childPoint) {
         // Now check to see if we even built default content at this
         // insertion point.
-        currPoint->GetDefaultContent(getter_AddRefs(defContent));
+        defContent = currPoint->GetDefaultContent();
         if (defContent) {
           // Find out the index of the template element within the <children> elt.
           PRInt32 index;
@@ -964,7 +838,7 @@ nsXBLPrototypeBinding::LocateInstance(nsIContent* aBoundElement, nsIContent* aTe
           
           // Now we just have to find the corresponding elt underneath the cloned
           // default content.
-          defContent->ChildAt(index, *aCopyResult);
+          defContent->ChildAt(index, result); // addrefs
         } 
         break;
       }
@@ -974,8 +848,10 @@ nsXBLPrototypeBinding::LocateInstance(nsIContent* aBoundElement, nsIContent* aTe
   {
     PRInt32 index;
     templParent->IndexOf(aTemplChild, index);
-    copyParent->ChildAt(index, *aCopyResult); // Addref happens here.
+    copyParent->ChildAt(index, result); // Addref happens here.
   }
+
+  return result;
 }
 
 struct nsXBLAttrChangeData
@@ -992,14 +868,13 @@ struct nsXBLAttrChangeData
 PRBool PR_CALLBACK SetAttrs(nsHashKey* aKey, void* aData, void* aClosure)
 {
   // XXX How to deal with NAMESPACES!!!?
-  nsIXBLAttributeEntry* entry = (nsIXBLAttributeEntry*)aData;
-  nsXBLAttrChangeData* changeData = (nsXBLAttrChangeData*)aClosure;
+  nsXBLAttributeEntry* entry = NS_STATIC_CAST(nsXBLAttributeEntry*, aData);
+  nsXBLAttrChangeData* changeData = NS_STATIC_CAST(nsXBLAttrChangeData*, aClosure);
 
-  nsCOMPtr<nsIAtom> src;
-  entry->GetSrcAttribute(getter_AddRefs(src));
-
+  nsIAtom* src = entry->GetSrcAttribute();
   nsAutoString value;
   PRBool attrPresent = PR_TRUE;
+
   if (src == nsXBLAtoms::xbltext) {
     nsXBLBinding::GetTextData(changeData->mBoundElement, value);
     value.StripChar(PRUnichar('\n'));
@@ -1018,18 +893,18 @@ PRBool PR_CALLBACK SetAttrs(nsHashKey* aKey, void* aData, void* aClosure)
 
   if (attrPresent) {
     nsCOMPtr<nsIContent> content;
-    changeData->mProto->GetImmediateChild(nsXBLAtoms::content, getter_AddRefs(content));
+    content = changeData->mProto->GetImmediateChild(nsXBLAtoms::content);
 
-    nsCOMPtr<nsIXBLAttributeEntry> curr = entry;
+    nsXBLAttributeEntry* curr = entry;
     while (curr) {
-      nsCOMPtr<nsIAtom> dst;
-      nsCOMPtr<nsIContent> element;
-      curr->GetDstAttribute(getter_AddRefs(dst));
-      curr->GetElement(getter_AddRefs(element));
+      nsIAtom* dst = curr->GetDstAttribute();
+      nsIContent* element = curr->GetElement();
 
       nsCOMPtr<nsIContent> realElement;
-      changeData->mProto->LocateInstance(changeData->mBoundElement,
-                                         content, changeData->mContent, element, getter_AddRefs(realElement));
+      realElement = changeData->mProto->LocateInstance(changeData->mBoundElement,
+                                                       content,
+                                                       changeData->mContent,
+                                                       element);
       if (realElement) {
         realElement->SetAttr(kNameSpaceID_None, dst, value, PR_FALSE);
         nsCOMPtr<nsIAtom> tag;
@@ -1047,60 +922,63 @@ PRBool PR_CALLBACK SetAttrs(nsHashKey* aKey, void* aData, void* aClosure)
         }
       }
 
-      nsCOMPtr<nsIXBLAttributeEntry> next = curr;
-      curr->GetNext(getter_AddRefs(next));
-      curr = next;
+      curr = curr->GetNext();
     }
   }
 
   return PR_TRUE;
 }
 
-NS_IMETHODIMP
+void
 nsXBLPrototypeBinding::SetInitialAttributes(nsIContent* aBoundElement, nsIContent* aAnonymousContent)
 {
   if (mAttributeTable) {
     nsXBLAttrChangeData data(this, aBoundElement, aAnonymousContent);
     mAttributeTable->Enumerate(SetAttrs, (void*)&data);
   }
-  return NS_OK;
 }
 
-NS_IMETHODIMP
-nsXBLPrototypeBinding::GetRuleProcessors(nsISupportsArray** aResult)
+already_AddRefed<nsISupportsArray>
+nsXBLPrototypeBinding::GetRuleProcessors()
 {
-  if (mResources)
-    *aResult = mResources->mRuleProcessors;
-  else
-    *aResult = nsnull;
-  NS_IF_ADDREF(*aResult);
-  return NS_OK;
+  nsISupportsArray* result;
+  if (mResources) {
+    result = mResources->mRuleProcessors;
+    NS_IF_ADDREF(result);
+  } else
+    result = nsnull;
+  return result;
 }
 
-NS_IMETHODIMP
-nsXBLPrototypeBinding::GetStyleSheets(nsISupportsArray** aResult)
+already_AddRefed<nsISupportsArray>
+nsXBLPrototypeBinding::GetStyleSheets()
 {
-  if (mResources)
-    *aResult = mResources->mStyleSheetList;
-  else
-    *aResult = nsnull;
-  NS_IF_ADDREF(*aResult);
-  return NS_OK;
+  nsISupportsArray* result;
+  if (mResources) {
+    result = mResources->mStyleSheetList;
+    NS_IF_ADDREF(result);
+  } else
+    result = nsnull;
+  return result;
 }
 
-NS_IMETHODIMP
-nsXBLPrototypeBinding::ShouldBuildChildFrames(PRBool* aResult)
+PRBool
+nsXBLPrototypeBinding::ShouldBuildChildFrames()
 {
-  *aResult = PR_TRUE;
   if (mAttributeTable) {
     nsISupportsKey key(nsXBLAtoms::xbltext);
-    nsCOMPtr<nsISupports> supports = getter_AddRefs(NS_STATIC_CAST(nsISupports*, 
-                                                                   mAttributeTable->Get(&key)));
-
-    *aResult = !supports.get();
+    void* entry = mAttributeTable->Get(&key);
+    return !entry;
   }
 
-  return NS_OK;
+  return PR_TRUE;
+}
+
+static PRBool PR_CALLBACK
+DeleteAttributeEntry(nsHashKey* aKey, void* aData, void* aClosure)
+{
+  nsXBLAttributeEntry::Destroy(NS_STATIC_CAST(nsXBLAttributeEntry*, aData));
+  return PR_TRUE;
 }
 
 void
@@ -1111,7 +989,10 @@ nsXBLPrototypeBinding::ConstructAttributeTable(nsIContent* aElement)
 
   if (!inherits.IsEmpty()) {
     if (!mAttributeTable) {
-      mAttributeTable = new nsSupportsHashtable(4);
+      mAttributeTable = new nsObjectHashtable(nsnull, nsnull,
+                                              DeleteAttributeEntry, nsnull, 4);
+      if (!mAttributeTable)
+        return;
     }
 
     // The user specified at least one attribute.
@@ -1135,12 +1016,13 @@ nsXBLPrototypeBinding::ConstructAttributeTable(nsIContent* aElement)
         attrTok.Left(left, index);
         attrTok.Right(right, attrTok.Length()-index-1);
 
-        atom = getter_AddRefs(NS_NewAtom(right.get()));
-        attribute = getter_AddRefs(NS_NewAtom(left.get()));
+        atom = do_GetAtom(right);
+        attribute = do_GetAtom(left);
       }
       else {
-        nsAutoString tok; tok.AssignWithConversion(token);
-        atom = getter_AddRefs(NS_NewAtom(tok.get()));
+        nsAutoString tok;
+        tok.AssignWithConversion(token);
+        atom = do_GetAtom(tok);
         attribute = atom;
       }
       
@@ -1150,21 +1032,16 @@ nsXBLPrototypeBinding::ConstructAttributeTable(nsIContent* aElement)
       // Now we should see if some element within our anonymous
       // content is already observing this attribute.
       nsISupportsKey key(atom);
-      nsCOMPtr<nsISupports> supports = getter_AddRefs(NS_STATIC_CAST(nsISupports*, 
-                                                                     mAttributeTable->Get(&key)));
-  
-      nsCOMPtr<nsIXBLAttributeEntry> entry = do_QueryInterface(supports);
+      nsXBLAttributeEntry* entry = NS_STATIC_CAST(nsXBLAttributeEntry*, mAttributeTable->Get(&key));
+
       if (!entry) {
         // Put it in the table.
         mAttributeTable->Put(&key, xblAttr);
       } else {
-        nsCOMPtr<nsIXBLAttributeEntry> attr = entry;
-        nsCOMPtr<nsIXBLAttributeEntry> tmpAttr = entry;
-        do {
-          attr = tmpAttr;
-          attr->GetNext(getter_AddRefs(tmpAttr));
-        } while (tmpAttr);
-        attr->SetNext(xblAttr);
+        while (entry->GetNext())
+          entry = entry->GetNext();
+
+        entry->SetNext(xblAttr);
       }
 
       // Now remove the inherits attribute from the element so that it doesn't
@@ -1190,6 +1067,13 @@ nsXBLPrototypeBinding::ConstructAttributeTable(nsIContent* aElement)
   }
 }
 
+static PRBool PR_CALLBACK
+DeleteInsertionPointEntry(nsHashKey* aKey, void* aData, void* aClosure)
+{
+  NS_STATIC_CAST(nsXBLInsertionPointEntry*, aData)->Release();
+  return PR_TRUE;
+}
+
 void 
 nsXBLPrototypeBinding::ConstructInsertionTable(nsIContent* aContent)
 {
@@ -1199,7 +1083,11 @@ nsXBLPrototypeBinding::ConstructInsertionTable(nsIContent* aContent)
   if (!childrenElements)
     return;
 
-  mInsertionPointTable = new nsSupportsHashtable(4);
+  mInsertionPointTable = new nsObjectHashtable(nsnull, nsnull,
+                                               DeleteInsertionPointEntry,
+                                               nsnull, 4);
+  if (!mInsertionPointTable)
+    return;
 
   PRUint32 count;
   childrenElements->Count(&count);
@@ -1219,6 +1107,7 @@ nsXBLPrototypeBinding::ConstructInsertionTable(nsIContent* aContent)
       child->GetAttr(kNameSpaceID_None, nsXBLAtoms::includes, includes);
       if (includes.IsEmpty()) {
         nsISupportsKey key(nsXBLAtoms::children);
+        xblIns->AddRef();
         mInsertionPointTable->Put(&key, xblIns);
       }
       else {
@@ -1230,13 +1119,14 @@ nsXBLPrototypeBinding::ConstructInsertionTable(nsIContent* aContent)
 
         char* token = nsCRT::strtok( str, "| ", &newStr );
         while( token != NULL ) {
+          nsAutoString tok;
+          tok.AssignWithConversion(token);
+
           // Build an atom out of this string.
-          nsCOMPtr<nsIAtom> atom;
-            
-          nsAutoString tok; tok.AssignWithConversion(token);
-          atom = getter_AddRefs(NS_NewAtom(tok.get()));
+          nsCOMPtr<nsIAtom> atom = do_GetAtom(tok);
            
           nsISupportsKey key(atom);
+          xblIns->AddRef();
           mInsertionPointTable->Put(&key, xblIns);
           
           token = nsCRT::strtok( newStr, "| ", &newStr );
@@ -1278,7 +1168,7 @@ nsXBLPrototypeBinding::ConstructInsertionTable(nsIContent* aContent)
   }
 }
 
-NS_IMETHODIMP
+nsresult
 nsXBLPrototypeBinding::ConstructInterfaceTable(const nsAString& aImpls)
 {
   if (!aImpls.IsEmpty()) {
@@ -1293,34 +1183,67 @@ nsXBLPrototypeBinding::ConstructInterfaceTable(const nsAString& aImpls)
       mInterfaceTable = new nsSupportsHashtable(4);
 
     // The user specified at least one attribute.
-    char* str = ToNewCString(aImpls);
+    NS_ConvertUCS2toUTF8 utf8impl(aImpls);
+    char* str = NS_CONST_CAST(char *, utf8impl.get());
     char* newStr;
     // XXX We should use a strtok function that tokenizes PRUnichars
     // so that we don't have to convert from Unicode to ASCII and then back
 
     char* token = nsCRT::strtok( str, ", ", &newStr );
     while( token != NULL ) {
-      // Take the name and try obtain an IID.
-      nsIID* iid = nsnull;
-      infoManager->GetIIDForName(token, &iid);
-      if (iid) {
-        // We found a valid iid.  Add it to our table.
-        nsIIDKey key(*iid);
-        mInterfaceTable->Put(&key, mBinding);
-        nsMemory::Free(iid);
+      // get the InterfaceInfo for the name
+      nsCOMPtr<nsIInterfaceInfo> iinfo;
+      infoManager->GetInfoForName(token, getter_AddRefs(iinfo));
+
+      if (iinfo) {
+        // obtain an IID.
+        nsIID* iid = nsnull;
+        iinfo->GetInterfaceIID(&iid);
+
+        if (iid) {
+          // We found a valid iid.  Add it to our table.
+          nsIIDKey key(*iid);
+          mInterfaceTable->Put(&key, mBinding);
+
+          // this block adds the parent interfaces of each interface
+          // defined in the xbl definition (implements="nsI...")
+          nsCOMPtr<nsIInterfaceInfo> parentInfo;
+          // if it has a parent, add it to the table
+          while (NS_SUCCEEDED(iinfo->GetParent(getter_AddRefs(parentInfo))) && parentInfo) {
+            // free the nsMemory::Clone()ed iid
+            nsMemory::Free(iid);
+
+            // get the iid
+            parentInfo->GetInterfaceIID(&iid);
+
+            // don't add nsISupports to the table
+            if (!iid || iid->Equals(NS_GET_IID(nsISupports)))
+              break;
+
+            // add the iid to the table
+            nsIIDKey parentKey(*iid);
+            mInterfaceTable->Put(&parentKey, mBinding);
+
+            // look for the next parent
+            iinfo = parentInfo;
+          }
+        }
+
+        // free the nsMemory::Clone()ed iid
+        if (iid)
+          nsMemory::Free(iid);
       }
 
       token = nsCRT::strtok( newStr, ", ", &newStr );
     }
-
-    nsMemory::Free(str);
   }
 
   return NS_OK;
 }
 
 void
-nsXBLPrototypeBinding::GetNestedChildren(nsIAtom* aTag, nsIContent* aContent, nsISupportsArray** aList)
+nsXBLPrototypeBinding::GetNestedChildren(nsIAtom* aTag, nsIContent* aContent,
+                                         nsISupportsArray** aList)
 {
   PRInt32 childCount;
   aContent->ChildCount(childCount);
@@ -1339,7 +1262,7 @@ nsXBLPrototypeBinding::GetNestedChildren(nsIAtom* aTag, nsIContent* aContent, ns
   }
 }
 
-NS_IMETHODIMP
+nsresult
 nsXBLPrototypeBinding::AddResourceListener(nsIContent* aBoundElement)
 {
   if (!mResources)
@@ -1349,18 +1272,3 @@ nsXBLPrototypeBinding::AddResourceListener(nsIContent* aBoundElement)
   mResources->AddResourceListener(aBoundElement);
   return NS_OK;
 }
-
-// Creation Routine ///////////////////////////////////////////////////////////////////////
-
-nsresult
-NS_NewXBLPrototypeBinding(const nsACString& aRef, nsIContent* aElement, 
-                          nsIXBLDocumentInfo* aInfo, nsIXBLPrototypeBinding** aResult)
-{
-  nsXBLPrototypeBinding * binding = new nsXBLPrototypeBinding(aRef, aInfo, aElement);
-  if (!binding)
-    return NS_ERROR_OUT_OF_MEMORY;
-  *aResult = binding;
-  NS_ADDREF(*aResult);
-  return NS_OK;
-}
-

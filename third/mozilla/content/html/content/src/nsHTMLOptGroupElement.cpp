@@ -40,7 +40,6 @@
 #include "nsIHTMLContent.h"
 #include "nsGenericHTMLElement.h"
 #include "nsHTMLAtoms.h"
-#include "nsIStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
 #include "nsIFrame.h"
@@ -87,9 +86,6 @@ public:
   NS_IMETHOD HandleDOMEvent(nsIPresContext* aPresContext, nsEvent* aEvent,
                             nsIDOMEvent** aDOMEvent, PRUint32 aFlags,
                             nsEventStatus* aEventStatus);
-#ifdef DEBUG
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
-#endif
 
 protected:
 
@@ -203,9 +199,7 @@ nsHTMLOptGroupElement::HandleDOMEvent(nsIPresContext* aPresContext,
   }
 
   if (formFrame) {
-    const nsStyleUserInterface* uiStyle;
-    formFrame->GetStyleData(eStyleStruct_UserInterface,
-                            (const nsStyleStruct *&)uiStyle);
+    const nsStyleUserInterface* uiStyle = formFrame->GetStyleUserInterface();
     if (uiStyle->mUserInput == NS_STYLE_USER_INPUT_NONE ||
         uiStyle->mUserInput == NS_STYLE_USER_INPUT_DISABLED) {
       return NS_OK;
@@ -216,18 +210,6 @@ nsHTMLOptGroupElement::HandleDOMEvent(nsIPresContext* aPresContext,
                                                        aDOMEvent, aFlags,
                                                        aEventStatus);
 }
-
-#ifdef DEBUG
-NS_IMETHODIMP
-nsHTMLOptGroupElement::SizeOf(nsISizeOfHandler* aSizer,
-                              PRUint32* aResult) const
-{
-  *aResult = sizeof(*this) + BaseSizeOf(aSizer);
-
-  return NS_OK;
-}
-#endif
-
 
 void
 nsHTMLOptGroupElement::GetSelect(nsISelectElement **aSelectElement)

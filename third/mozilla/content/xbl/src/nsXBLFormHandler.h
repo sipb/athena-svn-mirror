@@ -49,13 +49,14 @@ class nsIContent;
 class nsIDOMUIEvent;
 class nsIAtom;
 class nsIController;
-class nsIXBLPrototypeHandler;
+class nsXBLPrototypeHandler;
 
 class nsXBLFormHandler : public nsIDOMFormListener, 
                          public nsXBLEventHandler
 {
 public:
-  nsXBLFormHandler(nsIDOMEventReceiver* aReceiver, nsIXBLPrototypeHandler* aHandler);
+  nsXBLFormHandler(nsIDOMEventReceiver* aReceiver,
+                   nsXBLPrototypeHandler* aHandler);
   virtual ~nsXBLFormHandler();
   
   // nsIDOMetc.
@@ -70,19 +71,12 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
 protected:
-  static PRUint32 gRefCnt;
-  static nsIAtom* kSubmitAtom;
-  static nsIAtom* kResetAtom;
-  static nsIAtom* kChangeAtom;
-  static nsIAtom* kSelectAtom;
-  static nsIAtom* kInputAtom;
-
-protected:
   // Members
 };
 
-extern nsresult
-NS_NewXBLFormHandler(nsIDOMEventReceiver* aEventReceiver, nsIXBLPrototypeHandler* aHandlerElement, 
+nsresult
+NS_NewXBLFormHandler(nsIDOMEventReceiver* aEventReceiver,
+                     nsXBLPrototypeHandler* aHandlerElement,
                      nsXBLFormHandler** aResult);
 
 

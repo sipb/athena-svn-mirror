@@ -34,7 +34,7 @@
 /*
  * Moved from secpkcs7.c
  *
- * $Id: crl.c,v 1.1.1.1 2003-02-14 20:16:10 rbasch Exp $
+ * $Id: crl.c,v 1.1.1.2 2003-07-08 17:26:23 rbasch Exp $
  */
  
 #include "cert.h"
@@ -567,6 +567,7 @@ SEC_FindCrlByKeyOnSlot(PK11SlotInfo *slot, SECItem *crlKey, int type,
     SECItem *derCrl = NULL;
     CK_OBJECT_HANDLE crlHandle = 0;
     char *url = NULL;
+    int nsserror;
 
     PORT_Assert(decoded);
     if (!decoded) {
@@ -580,8 +581,15 @@ SEC_FindCrlByKeyOnSlot(PK11SlotInfo *slot, SECItem *crlKey, int type,
 
     /* XXX it would be really useful to be able to fetch the CRL directly into an
        arena. This would avoid a copy later on in the decode step */
+    PORT_SetError(0);
     derCrl = PK11_FindCrlByName(&slot, &crlHandle, crlKey, type, &url);
     if (derCrl == NULL) {
+	/* if we had a problem other than the CRL just didn't exist, return
+	 * a failure to the upper level */
+	nsserror = PORT_GetError();
+	if ((nsserror != 0) && (nsserror != SEC_ERROR_CRL_NOT_FOUND)) {
+	    rv = SECFailure;
+	}
 	goto loser;
     }
     PORT_Assert(crlHandle != CK_INVALID_HANDLE);
@@ -626,13 +634,12 @@ loser:
 
 SECStatus SEC_DestroyCrl(CERTSignedCrl *crl);
 
-void RefreshIssuer(SECItem* crlKey);
-
 CERTSignedCrl *
 crl_storeCRL (PK11SlotInfo *slot,char *url,
                   CERTSignedCrl *newCrl, SECItem *derCrl, int type)
 {
     CERTSignedCrl *oldCrl = NULL, *crl = NULL;
+    PRBool deleteOldCrl = PR_FALSE;
     CK_OBJECT_HANDLE crlHandle;
 
     PORT_Assert(newCrl);
@@ -680,14 +687,13 @@ crl_storeCRL (PK11SlotInfo *slot,char *url,
 	    url = oldCrl->url;
         }
 
-
         /* really destroy this crl */
         /* first drum it out of the permanment Data base */
-        SEC_DeletePermCRL(oldCrl);
+	deleteOldCrl = PR_TRUE;
     }
 
     /* invalidate CRL cache for this issuer */
-    RefreshIssuer(&newCrl->crl.derName);
+    CERT_CRLCacheRefreshIssuer(NULL, &newCrl->crl.derName);
     /* Write the new entry into the data base */
     crlHandle = PK11_PutCrl(slot, derCrl, &newCrl->crl.derName, url, type);
     if (crlHandle != CK_INVALID_HANDLE) {
@@ -700,7 +706,12 @@ crl_storeCRL (PK11SlotInfo *slot,char *url,
     }
 
 done:
-    if (oldCrl) SEC_DestroyCrl(oldCrl);
+    if (oldCrl) {
+	if (deleteOldCrl && crlHandle != CK_INVALID_HANDLE) {
+	    SEC_DeletePermCRL(oldCrl);
+	}
+	SEC_DestroyCrl(oldCrl);
+    }
 
     return crl;
 }
@@ -914,27 +925,45 @@ PreAllocator* PreAllocator_Create(PRSize size)
 
 static CRLCache crlcache = { NULL, NULL };
 
+static PRBool crlcache_initialized = PR_FALSE;
+
 /* this needs to be called at NSS initialization time */
 
 SECStatus InitCRLCache(void)
 {
-    if (!crlcache.lock)
+    if (PR_FALSE == crlcache_initialized)
     {
+        PR_ASSERT(NULL == crlcache.lock);
         crlcache.lock = PR_NewLock();
         if (!crlcache.lock)
         {
             return SECFailure;
         }
+        PR_ASSERT(NULL == crlcache.issuers);
         crlcache.issuers = PL_NewHashTable(0, SECITEM_Hash, SECITEM_HashCompare,
                                   PL_CompareValues, NULL, NULL);
         if (!crlcache.issuers)
         {
             PR_DestroyLock(crlcache.lock);
-            crlcache.lock = PR_FALSE;
+            crlcache.lock = NULL;
             return SECFailure;
         }
+        crlcache_initialized = PR_TRUE;
+        return SECSuccess;
     }
-    return SECSuccess;
+    else
+    {
+        PR_ASSERT(crlcache.lock);
+        PR_ASSERT(crlcache.issuers);
+        if ( (NULL == crlcache.lock) || (NULL == crlcache.issuers) )
+        {
+            return SECFailure;
+        }
+        else
+        {
+            return SECSuccess;
+        }
+    }
 }
 
 SECStatus DPCache_Destroy(CRLDPCache* cache)
@@ -1035,8 +1064,6 @@ PRIntn PR_CALLBACK FreeIssuer(PLHashEntry *he, PRIntn i, void *arg)
 
 SECStatus ShutdownCRLCache(void)
 {
-    PR_ASSERT(crlcache.lock);
-    PR_ASSERT(crlcache.issuers);
     if (!crlcache.lock || !crlcache.issuers)
     {
         return SECFailure;
@@ -1044,7 +1071,10 @@ SECStatus ShutdownCRLCache(void)
     /* empty the cache */
     PL_HashTableEnumerateEntries(crlcache.issuers, &FreeIssuer, NULL);
     PL_HashTableDestroy(crlcache.issuers);
+    crlcache.issuers = NULL;
     PR_DestroyLock(crlcache.lock);
+    crlcache.lock = NULL;
+    crlcache_initialized = PR_FALSE;
     return SECSuccess;
 }
 
@@ -1827,7 +1857,6 @@ CERT_CheckCRL(CERTCertificate* cert, CERTCertificate* issuer, SECItem* dp,
 {
     PRBool lockedwrite = PR_FALSE;
     SECStatus rv = SECSuccess;
-    SECCertTimeValidity validity;
     CRLDPCache* dpcache = NULL;
     if (!cert || !issuer) {
         return SECFailure;
@@ -1887,12 +1916,14 @@ SEC_FindCrlByName(CERTCertDBHandle *handle, SECItem *crlKey, int type)
     return acrl;
 }
 
-void RefreshIssuer(SECItem* crlKey)
+void CERT_CRLCacheRefreshIssuer(CERTCertDBHandle* dbhandle, SECItem* crlKey)
 {
     CERTSignedCrl* acrl = NULL;
     CRLDPCache* cache = NULL;
     SECStatus rv = SECSuccess;
     PRBool writeLocked = PR_FALSE;
+
+    (void) dbhandle; /* silence compiler warnings */
 
     rv = AcquireDPCache(NULL, crlKey, NULL, 0, NULL, &cache, &writeLocked);
     if (SECSuccess != rv)

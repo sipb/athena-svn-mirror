@@ -53,6 +53,7 @@ static DWORD            dwTotalArchives;
 char                    szStrProcessingFile[MAX_BUF];
 char                    szStrCopyingFile[MAX_BUF];
 char                    szStrInstalling[MAX_BUF];
+static char             gSavedCwd[MAX_BUF];
 
 static void UpdateGaugeFileProgressBar(unsigned value);
 static void UpdateGaugeArchiveProgressBar(unsigned value);
@@ -67,7 +68,7 @@ struct ExtractFilesDlgInfo
 	int		nArchiveBars;		  // current number of bars to display
 } dlgInfo;
 
-HRESULT InitializeXPIStub()
+HRESULT InitializeXPIStub(char *xpinstallPath)
 {
   char szBuf[MAX_BUF];
   char szXPIStubFile[MAX_BUF];
@@ -75,15 +76,13 @@ HRESULT InitializeXPIStub()
   HANDLE hKernel;
 
   hXPIStubInst = NULL;
+  GetCurrentDirectory(sizeof(gSavedCwd), gSavedCwd);
 
   if(!GetPrivateProfileString("Messages", "ERROR_GETPROCADDRESS", "", szEGetProcAddress, sizeof(szEGetProcAddress), szFileIniInstall))
     return(1);
 
   /* change current directory to where xpistub.dll */
-  lstrcpy(szBuf, siCFXpcomFile.szDestination);
-  AppendBackSlash(szBuf, sizeof(szBuf));
-  lstrcat(szBuf, "bin");
-  chdir(szBuf);
+  SetCurrentDirectory(xpinstallPath);
 
   /* Windows XP SP1 changed DLL search path strategy, setting current dir */
   /* is no longer sufficient. Use SetDLLDirectory() if available */
@@ -91,11 +90,11 @@ HRESULT InitializeXPIStub()
   {
     pfnSetDllPath = (SetDllPathProc)GetProcAddress(hKernel, "SetDllDirectoryA");
     if (pfnSetDllPath)
-      pfnSetDllPath(szBuf);
+      pfnSetDllPath(xpinstallPath);
   }
 
   /* build full path to xpistub.dll */
-  lstrcpy(szXPIStubFile, szBuf);
+  lstrcpy(szXPIStubFile, xpinstallPath);
   AppendBackSlash(szXPIStubFile, sizeof(szXPIStubFile));
   lstrcat(szXPIStubFile, "xpistub.dll");
 
@@ -144,6 +143,7 @@ HRESULT DeInitializeXPIStub()
   if (pfnSetDllPath)
     pfnSetDllPath(NULL);
 
+  SetCurrentDirectory(gSavedCwd);
   return(0);
 }
 
@@ -221,6 +221,8 @@ HRESULT SmartUpdateJars()
   char      szArchive[MAX_BUF];
   char      szMsgSmartUpdateStart[MAX_BUF];
   char      szDlgExtractingTitle[MAX_BUF];
+  char      xpinstallPath[MAX_BUF];
+  char      xpiArgs[MAX_BUF];
 
   if(!GetPrivateProfileString("Messages", "MSG_SMARTUPDATE_START", "", szMsgSmartUpdateStart, sizeof(szMsgSmartUpdateStart), szFileIniInstall))
     return(1);
@@ -234,7 +236,8 @@ HRESULT SmartUpdateJars()
     exit(1);
 
   ShowMessage(szMsgSmartUpdateStart, TRUE);
-  if(InitializeXPIStub() == WIZ_OK)
+  GetXpinstallPath(xpinstallPath, sizeof(xpinstallPath));
+  if(InitializeXPIStub(xpinstallPath) == WIZ_OK)
   {
     LogISXPInstall(W_START);
     lstrcpy(szBuf, sgProduct.szPath);
@@ -310,7 +313,22 @@ HRESULT SmartUpdateJars()
         SetDlgItemText(dlgInfo.hWndDlg, IDC_STATUS0, szBuf);
         LogISXPInstallComponent(siCObject->szDescriptionShort);
 
-        hrResult = pfnXpiInstall(szArchive, sgProduct.szRegPath, 0xFFFF);
+        /* XXX fix: we need to better support passing arguments to .xpi files.
+         * This is a temporary hack to get greType passed to browser.xpi so that
+         * it won't delete GRE files if GRE is installed in the mozilla dir.
+         *
+         * What should be done is have the arguments be described in each
+         * component's section in config.ini and have it passed thru here. */
+        *xpiArgs = '\0';
+        if(lstrcmpi(siCObject->szArchiveName, "gre.xpi") == 0)
+          MozCopyStr(sgProduct.szRegPath, xpiArgs, sizeof(xpiArgs));
+        else if((lstrcmpi(siCObject->szArchiveName, "browser.xpi") == 0) &&
+                (sgProduct.greType == GRE_LOCAL))
+          /* passing -greShared to browser.xpi will tell it to cleanup GRE files
+           * from it's directory if they exist. */
+          MozCopyStr("-greLocal", xpiArgs, sizeof(xpiArgs));
+
+        hrResult = pfnXpiInstall(szArchive, xpiArgs, 0xFFFF);
         if(hrResult == E_REBOOT)
           bReboot = TRUE;
         else if((hrResult != WIZ_OK) &&
@@ -382,7 +400,7 @@ void cbXPIProgress(const char* msg, PRInt32 val, PRInt32 max)
   char szStrProcessingFileBuf[MAX_BUF];
   char szStrCopyingFileBuf[MAX_BUF];
 
-  if(sgProduct.dwMode != SILENT)
+  if(sgProduct.mode != SILENT)
   {
     ParsePath((char *)msg, szFilename, sizeof(szFilename), FALSE, PP_FILENAME_ONLY);
 
@@ -424,21 +442,6 @@ void cbXPIFinal(const char *URL, PRInt32 finalStatus)
 /////////////////////////////////////////////////////////////////////////////
 // Progress bar
 
-// Centers the specified window over the desktop. Assumes the window is
-// smaller both horizontally and vertically than the desktop
-static void
-CenterWindow(HWND hWndDlg)
-{
-	RECT	rect;
-	int		iLeft, iTop;
-
-	GetWindowRect(hWndDlg, &rect);
-	iLeft = (GetSystemMetrics(SM_CXSCREEN) - (rect.right - rect.left)) / 2;
-	iTop  = (GetSystemMetrics(SM_CYSCREEN) - (rect.bottom - rect.top)) / 2;
-
-	SetWindowPos(hWndDlg, NULL, iLeft, iTop, -1, -1, SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE);
-}
-
 // Window proc for dialog
 LRESULT CALLBACK
 ProgressDlgProc(HWND hWndDlg, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -447,7 +450,7 @@ ProgressDlgProc(HWND hWndDlg, UINT msg, WPARAM wParam, LPARAM lParam)
   {
 		case WM_INITDIALOG:
       DisableSystemMenuItems(hWndDlg, TRUE);
-			CenterWindow(hWndDlg);
+			RepositionWindow(hWndDlg, BANNER_IMAGE_INSTALLING);
       SendDlgItemMessage (hWndDlg, IDC_STATUS0, WM_SETFONT, (WPARAM)sgInstallGui.definedFont, 0L); 
       SendDlgItemMessage (hWndDlg, IDC_GAUGE_ARCHIVE, WM_SETFONT, (WPARAM)sgInstallGui.definedFont, 0L); 
       SendDlgItemMessage (hWndDlg, IDC_STATUS3, WM_SETFONT, (WPARAM)sgInstallGui.definedFont, 0L); 
@@ -470,7 +473,7 @@ UpdateGaugeFileBarber()
 	HWND	hWndGauge;
 	RECT	rect;
 
-  if(sgProduct.dwMode != SILENT)
+  if(sgProduct.mode != SILENT)
   {
 	  hWndGauge = GetDlgItem(dlgInfo.hWndDlg, IDC_GAUGE_FILE);
     if(dwBarberDirection == BDIR_RIGHT)
@@ -515,7 +518,7 @@ UpdateGaugeFileProgressBar(unsigned value)
 {
 	int	nBars;
 
-  if(sgProduct.dwMode != SILENT)
+  if(sgProduct.mode != SILENT)
   {
     // Figure out how many bars should be displayed
     nBars = dlgInfo.nMaxFileBars * value / 100;
@@ -548,7 +551,7 @@ UpdateGaugeArchiveProgressBar(unsigned value)
 {
 	int	nBars;
 
-  if(sgProduct.dwMode != SILENT)
+  if(sgProduct.mode != SILENT)
   {
     // Figure out how many bars should be displayed
     nBars = dlgInfo.nMaxArchiveBars * value / 100;
@@ -797,7 +800,7 @@ void InitProgressDlg()
 {
 	WNDCLASS	wc;
 
-  if(sgProduct.dwMode != SILENT)
+  if(sgProduct.mode != SILENT)
   {
     memset(&wc, 0, sizeof(wc));
     wc.style          = CS_GLOBALCLASS;
@@ -819,8 +822,9 @@ void InitProgressDlg()
 
 void DeInitProgressDlg()
 {
-  if(sgProduct.dwMode != SILENT)
+  if(sgProduct.mode != SILENT)
   {
+    SaveWindowPosition(dlgInfo.hWndDlg);
     DestroyWindow(dlgInfo.hWndDlg);
     UnregisterClass("GaugeFile", hInst);
     UnregisterClass("GaugeArchive", hInst);

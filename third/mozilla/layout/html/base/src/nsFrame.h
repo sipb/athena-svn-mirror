@@ -112,7 +112,7 @@
 #endif
 
 // handy utilities
-extern void SetFontFromStyle(nsIRenderingContext* aRC, nsIStyleContext* aSC);
+void SetFontFromStyle(nsIRenderingContext* aRC, nsStyleContext* aSC);
 
 //----------------------------------------------------------------------
 
@@ -158,7 +158,7 @@ public:
   NS_IMETHOD  Init(nsIPresContext*  aPresContext,
                    nsIContent*      aContent,
                    nsIFrame*        aParent,
-                   nsIStyleContext* aContext,
+                   nsStyleContext*  aContext,
                    nsIFrame*        asPrevInFlow);
   NS_IMETHOD  SetInitialChildList(nsIPresContext* aPresContext,
                                   nsIAtom*        aListName,
@@ -183,10 +183,9 @@ public:
                            nsIFrame*       aNewFrame);
   NS_IMETHOD  Destroy(nsIPresContext* aPresContext);
   NS_IMETHOD  CalcBorderPadding(nsMargin& aBorderPadding) const;
-  NS_IMETHOD  GetAdditionalStyleContext(PRInt32 aIndex, 
-                                        nsIStyleContext** aStyleContext) const;
-  NS_IMETHOD  SetAdditionalStyleContext(PRInt32 aIndex, 
-                                        nsIStyleContext* aStyleContext);
+  virtual nsStyleContext* GetAdditionalStyleContext(PRInt32 aIndex) const;
+  virtual void SetAdditionalStyleContext(PRInt32 aIndex,
+                                         nsStyleContext* aStyleContext);
   NS_IMETHOD  GetAdditionalChildListName(PRInt32 aIndex, nsIAtom** aListName) const;
   NS_IMETHOD  FirstChild(nsIPresContext* aPresContext,
                          nsIAtom*        aListName,
@@ -256,7 +255,6 @@ public:
   NS_IMETHOD  List(nsIPresContext* aPresContext, FILE* out, PRInt32 aIndent) const;
   NS_IMETHOD  GetFrameName(nsAString& aResult) const;
   NS_IMETHOD  DumpRegressionData(nsIPresContext* aPresContext, FILE* out, PRInt32 aIndent, PRBool aIncludeStyleData);
-  NS_IMETHOD  SizeOf(nsISizeOfHandler* aHandler, PRUint32* aResult) const;
   NS_IMETHOD  VerifyTree() const;
 #endif
 
@@ -383,9 +381,32 @@ public:
   nsresult GetIBSpecialParent(nsIPresContext* aPresContext,
                               nsIFrame** aSpecialParent);
 
+  // Return the previously stored overflow area, if the frame does not 
+  // overflow and a creation is not requested it will return nsnull
+  virtual nsRect* GetOverflowAreaProperty(nsIPresContext* aPresContext,
+                                  PRBool          aCreateIfNecessary = PR_FALSE);
+
+  // Set/unset the NS_FRAME_OUTSIDE_CHILDREN flag and store the overflow area
+  // as a frame property in the frame manager so that it can be retrieved
+  // later without reflowing the frame.
+  void StoreOverflow(nsIPresContext*      aPresContext,
+                     nsHTMLReflowMetrics& aMetrics);
+
   //Mouse Capturing code used by the frames to tell the view to capture all the following events
   NS_IMETHOD CaptureMouse(nsIPresContext* aPresContext, PRBool aGrabMouseEvents);
   PRBool   IsMouseCaptured(nsIPresContext* aPresContext);
+
+  virtual void* GetProperty(nsIPresContext* aPresContext,
+                            nsIAtom*        aPropertyName,
+                            PRBool          aRemoveProperty) const;
+
+  virtual nsresult SetProperty(nsIPresContext*         aPresContext,
+                               nsIAtom*                aPropertyName,
+                               void*                   aPropertyValue,
+                               NSFramePropertyDtorFunc aPropDtorFunc);
+
+  virtual const nsStyleStruct* GetStyleDataExternal(nsStyleStructID aSID) const;
+
 #ifdef IBMBIDI
   NS_IMETHOD GetBidiProperty(nsIPresContext* aPresContext,
                              nsIAtom*        aPropertyName,
@@ -452,12 +473,26 @@ public:
                                  nsHTMLReflowMetrics& aMetrics,
                                  PRUint32             aStatus,
                                  void*                aFrameTreeNode);
+
+  static void DisplayReflowStartup();
+  static void DisplayReflowShutdown();
 #endif
 
 protected:
   // Protected constructor and destructor
   nsFrame();
   virtual ~nsFrame();
+
+  /**
+   * To be called by |Paint| of this class or derived classes to paint
+   * the background, border, and outline, when in the correct layer to
+   * do so.
+   */
+  void PaintSelf(nsIPresContext*      aPresContext,
+                 nsIRenderingContext& aRenderingContext,
+                 const nsRect&        aDirtyRect,
+                 PRIntn               aSkipSides = 0,
+                 PRBool               aUsePrintBackgroundSettings = PR_TRUE);
 
   PRInt16 DisplaySelection(nsIPresContext* aPresContext, PRBool isOkToTurnOn = PR_FALSE);
   

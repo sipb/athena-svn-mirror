@@ -53,6 +53,13 @@ const kDefaultDescending = "descending";
 const kPersonalAddressbookURI = "moz-abmdbdirectory://abook.mab";
 const kCollectedAddressbookURI = "moz-abmdbdirectory://history.mab";
 
+// List/card selections in the results pane.
+const kNothingSelected = 0;
+const kListsAndCards = 1;
+const kMultipleListsOnly = 2;
+const kSingleListOnly = 3;
+const kCardsOnly = 4;
+
 // Controller object for Results Pane
 var ResultsPaneController =
 {
@@ -169,9 +176,9 @@ var DirPaneController =
           if ((selectedDir.indexOf(ldapUrlPrefix, 0)) == 0)
           {
             var prefName = selectedDir.substr(ldapUrlPrefix.length, selectedDir.length);
-			var disable = false;
-	        try {
-	          disable = gPrefs.getBoolPref(prefName + ".disable_delete");
+            var disable = false;
+            try {
+	            disable = gPrefs.getBoolPref(prefName + ".disable_delete");
 	        }
 	        catch(ex){
 	          // if this preference is not set its ok.
@@ -184,14 +191,7 @@ var DirPaneController =
         else
           return false;
       case "button_edit":
-        selectedDir = GetSelectedDirectory();
-        if (selectedDir) {
-          var directory = GetDirectoryFromURI(selectedDir);
-          if ((directory.isMailList) || 
-              (!(directory.operations & directory.opWrite)))
-             return true;
-        }
-        return false;
+        return (GetSelectedDirectory() != null);
       default:
         return false;
     }
@@ -234,22 +234,24 @@ function SendCommandToResultsPane(command)
 function AbEditSelectedDirectory()
 {
   if (dirTree.treeBoxObject.selection.count == 1) {
-    var mailingListUri = GetSelectedDirectory();
-    var directory = GetDirectoryFromURI(mailingListUri);
+    var selecteduri = GetSelectedDirectory();
+    var directory = GetDirectoryFromURI(selecteduri);
     if (directory.isMailList) {
-      var dirUri = GetParentDirectoryFromMailingListURI(mailingListUri);
-      goEditListDialog(dirUri, null, mailingListUri, UpdateCardView);
+      var dirUri = GetParentDirectoryFromMailingListURI(selecteduri);
+      goEditListDialog(dirUri, null, selecteduri, UpdateCardView);
     }
-    else if (!(directory.operations & directory.opWrite))
-    {
-      var ldapUrlPrefix = "moz-abldapdirectory://";
-      if ((mailingListUri.indexOf(ldapUrlPrefix, 0)) == 0)
-      {
+    else {
+      var properties = directory.directoryProperties;
+      if (properties.dirType == kLDAPDirectory) {
+        var ldapUrlPrefix = "moz-abldapdirectory://";
         var args = { selectedDirectory: directory.dirName,
                      selectedDirectoryString: null};
-        args.selectedDirectoryString = mailingListUri.substr(ldapUrlPrefix.length, mailingListUri.length);
+        args.selectedDirectoryString = selecteduri.substr(ldapUrlPrefix.length, selecteduri.length);
         window.openDialog("chrome://messenger/content/addressbook/pref-directory-add.xul",
                       "editDirectory", "chrome,modal=yes,resizable=no,centerscreen", args);
+      }
+      else {
+        AbRenameAddressBook();
       }
     }
   }
@@ -273,7 +275,7 @@ function InitCommonJS()
 {
   dirTree = document.getElementById("dirTree");
   abList = document.getElementById("addressbookList");
-  gAbResultsTree = document.getElementById('abResultsTree');
+  gAbResultsTree = document.getElementById("abResultsTree");
 }
 
 // builds prior to 12-08-2001 did not use an tree for
@@ -315,17 +317,63 @@ function SetupAbCommandUpdateHandlers()
     gAbResultsTree.controllers.appendController(ResultsPaneController);
 }
 
+function GetSelectedCardTypes()
+{
+  var cards = GetSelectedAbCards();
+  if (!cards)
+    return kNothingSelected; // no view
+
+  var count = cards.length;
+  if (!count)
+    return kNothingSelected;  // nothing selected
+
+  var mailingListCnt = 0;
+  var cardCnt = 0;
+  for (var i = 0; i < count; i++) { 
+    if (cards[i].isMailList)
+      mailingListCnt++;
+    else
+      cardCnt++;
+  }
+  if (mailingListCnt && cardCnt)
+    return kListsAndCards;        // lists and cards selected
+  else if (mailingListCnt && !cardCnt) {
+    if (mailingListCnt > 1)
+      return kMultipleListsOnly; // only multiple mailing lists selected
+    else
+      return kSingleListOnly;    // only single mailing list
+  }
+  else if (!mailingListCnt && cardCnt)
+    return kCardsOnly;           // only card(s) selected
+}
+
 function AbDelete()
 {
-  if (gAbView) 
-    gAbView.deleteSelectedCards();
+  var types = GetSelectedCardTypes();
+  if (types == kNothingSelected)
+    return;
+
+  var promptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].getService(Components.interfaces.nsIPromptService);
+  // If at least one mailing list is selected then prompt users for deletion.
+  if (types != kCardsOnly)
+  {
+    var confirmDeleteMessage;
+    if (types == kListsAndCards)
+      confirmDeleteMessage = gAddressBookBundle.getString("confirmDeleteListsAndCards");
+    else if (types == kMultipleListsOnly)
+      confirmDeleteMessage = gAddressBookBundle.getString("confirmDeleteMailingLists");
+    else
+      confirmDeleteMessage = gAddressBookBundle.getString("confirmDeleteMailingList");
+    if (!promptService.confirm(window, null, confirmDeleteMessage))
+      return;
+  }
+
+  gAbView.deleteSelectedCards();
 }
 
 function AbNewCard(abListItem)
 {
-  var selectedAB = GetSelectedAddressBookDirID(abListItem);
-
-  goNewCardDialog(selectedAB);
+  goNewCardDialog(GetSelectedDirectory());
 }
 
 // NOTE, will return -1 if more than one card selected, or no cards selected.
@@ -366,11 +414,15 @@ function AbEditCard(card)
   if (!card)
     return;
 
+  // Not allowing AOL special groups to be edited.
+  if (card.isASpecialGroup)
+    return;
+
   if (card.isMailList) {
-    goEditListDialog(gAbView.URI, card, card.mailListURI, UpdateCardView);
+    goEditListDialog(GetSelectedDirectory(), card, card.mailListURI, UpdateCardView);
   }
   else {
-    goEditCardDialog(gAbView.URI, card, UpdateCardView);
+    goEditCardDialog(GetSelectedDirectory(), card, UpdateCardView);
   }
 }
 
@@ -443,8 +495,8 @@ function GetSelectedAddressesFromDirTree()
   var addresses = "";
 
   if (dirTree.currentIndex >= 0) {
-    var selected = dirTree.contentView.getItemAtIndex(dirTree.currentIndex);
-    var mailingListUri = selected.id;
+    var selectedResource = dirTree.builderView.getResourceAtIndex(dirTree.currentIndex);
+    var mailingListUri = selectedResource.Value;
     var directory = GetDirectoryFromURI(mailingListUri);
     if (directory.isMailList) {
       var listCardsCount = directory.addressLists.Count();
@@ -466,7 +518,7 @@ function GetSelectedAddresses()
   return GetAddressesForCards(selectedCards);
 }
 
-// Generate a comma seperate list of addresses from a given
+// Generate a comma separated list of addresses from a given
 // set of cards.
 function GetAddressesForCards(cards)
 {
@@ -568,17 +620,11 @@ function GetSelectedAbCards()
 
 function SelectFirstAddressBook()
 {
-  // this can fail if the dirTree box is collapsed at startup
-  // and only the results pane (and card view pane) are showing
-  try {
-    dirTree.treeBoxObject.selection.select(0);
+  dirTree.view.selection.select(0);
+
     ChangeDirectoryByURI(GetSelectedDirectory());
-  }
-  catch (ex) {
-    ChangeDirectoryByURI(kPersonalAddressbookURI);
     gAbResultsTree.focus();
   }
-}
 
 function SelectFirstCard()
 {
@@ -658,6 +704,9 @@ function SetAbView(uri, sortColumn, sortDirection)
   
   var boxObject = GetAbResultsBoxObject();
   boxObject.view = gAbView.QueryInterface(Components.interfaces.nsITreeView);
+
+  UpdateSortIndicators(sortColumn, sortDirection);
+  
   return actualSortColumn;
 }
 
@@ -666,6 +715,8 @@ function GetAbView()
   return gAbView;
 }
 
+// this will return the complete search uri if a quick search is currently being 
+// done. to get the uri of the directory only, use GetSelectedDirectory().
 function GetAbViewURI()
 {
   if (gAbView)
@@ -679,12 +730,11 @@ function ChangeDirectoryByURI(uri)
   if (!uri)
     uri = kPersonalAddressbookURI;
 
-  if (gAbView && gAbView.URI == uri)
+  if (gAbView && GetAbViewURI() == uri)
     return;
   
-  var dataNode = document.getElementById(uri);
-  var sortColumn = dataNode ? dataNode.getAttribute("sortColumn") : kDefaultSortColumn;
-  var sortDirection = dataNode ? dataNode.getAttribute("sortDirection") : kDefaultAscending;
+  var sortColumn = gAbResultsTree.getAttribute("sortCol");
+  var sortDirection = document.getElementById(sortColumn).getAttribute("sortDirection");
   
   var actualSortColumn = SetAbView(uri, sortColumn, sortDirection);
 
@@ -703,25 +753,13 @@ function ChangeDirectoryByURI(uri)
 
 function AbSortAscending()
 {
-  var sortColumn = kDefaultSortColumn;
-
-  if (gAbView) {
-    var node = document.getElementById(gAbView.URI);
-    sortColumn = node.getAttribute("sortColumn");
-  }
-
+  var sortColumn = gAbResultsTree.getAttribute("sortCol");
   SortAndUpdateIndicators(sortColumn, kDefaultAscending);
 }
 
 function AbSortDescending()
 {
-  var sortColumn = kDefaultSortColumn;
-
-  if (gAbView) {
-    var node = document.getElementById(gAbView.URI);
-    sortColumn = node.getAttribute("sortColumn");
-  }
-
+  var sortColumn = gAbResultsTree.getAttribute("sortCol");
   SortAndUpdateIndicators(sortColumn, kDefaultDescending);
 }
 
@@ -746,19 +784,6 @@ function SortAndUpdateIndicators(sortColumn, sortDirection)
 
   if (gAbView)
     gAbView.sortBy(sortColumn, sortDirection);
-
-  SaveSortSetting(sortColumn, sortDirection);
-}
-
-function SaveSortSetting(column, direction)
-{
-  if (dirTree && gAbView) {
-    var node = document.getElementById(gAbView.URI);
-    if (node) {
-      node.setAttribute("sortColumn", column);
-      node.setAttribute("sortDirection", direction);
-    }
-  }
 }
 
 function UpdateSortIndicators(colID, sortDirection)
@@ -769,6 +794,7 @@ function UpdateSortIndicators(colID, sortDirection)
     sortedColumn = document.getElementById(colID);
     if (sortedColumn) {
       sortedColumn.setAttribute("sortDirection",sortDirection);
+      gAbResultsTree.setAttribute("sortCol", colID);
     }
   }
 
@@ -790,37 +816,7 @@ function InvalidateResultsPane()
 
 function AbNewList(abListItem)
 {
-  var selectedAB = GetSelectedAddressBookDirID(abListItem);
-
-  goNewListDialog(selectedAB);
-}
-
-function GetSelectedAddressBookDirID(abListItem)
-{
-  var selectedAB;
-  // this can fail if the dirTree box is collapsed at startup
-  // and only the results pane (and card view pane) are showing
-  try {
-    var abDirEntries = document.getElementById(abListItem);
-
-    if (abDirEntries && abDirEntries.localName == "tree" && abDirEntries.currentIndex >= 0) {
-      var selected = abDirEntries.contentView.getItemAtIndex(abDirEntries.currentIndex);
-      selectedAB = selected.id;
-    }
-
-    // request could be coming from the context menu of addressbook panel in sidebar
-    // addressbook dirs are listed as menu item. So, get the selected item id.
-    if (!selectedAB && abDirEntries && abDirEntries.localName == "menulist" && abDirEntries.selectedItem)
-      selectedAB = abDirEntries.selectedItem.getAttribute("id");
-
-    // if we do not have a selected ab still, use personal addressbook
-    if (!selectedAB)
-      selectedAB = kPersonalAddressbookURI;
-  }
-  catch (ex) {
-    selectedAB = kPersonalAddressbookURI;
-  }
-  return selectedAB;
+  goNewListDialog(GetSelectedDirectory());
 }
 
 function goNewListDialog(selectedAB)
@@ -938,17 +934,13 @@ function DirPaneHasFocus()
 
 function GetSelectedDirectory()
 {
-  // this can fail if the dirTree box is collapsed at startup
-  // and only the results pane (and card view pane) are showing
-  try {
+  if (abList)
+    return abList.selectedItem.id;
+  else {
     if (dirTree.currentIndex < 0)
       return null;
-
-    var selected = dirTree.contentView.getItemAtIndex(dirTree.currentIndex);
-    return selected.id;
-  }
-  catch (ex) {
-    return kPersonalAddressbookURI;
+    var selected = dirTree.builderView.getResourceAtIndex(dirTree.currentIndex)
+    return selected.Value;
   }
 }
 
@@ -969,6 +961,7 @@ function onAbSearchInput(returnKeyHit)
   }
 
   if (returnKeyHit) {
+    gSearchInput.select();
     onEnterInSearchBar();
   }
   else {
@@ -992,4 +985,10 @@ function onAbClearSearch()
   if (gSearchInput) 
     gSearchInput.value ="";  //on input does not get fired for some reason
   onAbSearchInput(true);
+}
+
+function AbSwapFirstNameLastName()
+{
+  if (gAbView)
+    gAbView.swapFirstNameLastName();
 }

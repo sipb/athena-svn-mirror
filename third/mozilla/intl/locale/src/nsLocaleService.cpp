@@ -44,6 +44,7 @@
 #include "nsIComponentManager.h"
 #include "nsReadableUtils.h"
 #include "nsCRT.h"
+#include "prprf.h"
 
 #include <ctype.h>
 
@@ -53,7 +54,7 @@
 #  include "unidef.h"
 #  include "nsIOS2Locale.h"
 #elif defined(XP_MAC) || defined(XP_MACOSX)
-#  include <script.h>
+#  include <Script.h>
 #  include "nsIMacLocale.h"
 #elif defined(XP_UNIX) || defined(XP_BEOS)
 #  include <locale.h>
@@ -159,7 +160,6 @@ protected:
 nsLocaleService::nsLocaleService(void)
 :	mSystemLocale(nsnull), mApplicationLocale(nsnull)
 {
-	NS_INIT_ISUPPORTS();
 #if defined(XP_WIN)
     nsresult result;
 	nsCOMPtr<nsIWin32Locale> win32Converter
@@ -433,7 +433,7 @@ nsLocaleService::GetLocaleFromAcceptLanguage(const char *acceptLanguage, nsILoca
       qvalue[countLang] = 1.0f;
       /* add extra parens to get rid of warning */
       if ((cPtr1 = strchr(cPtr,';')) != nsnull) {
-        sscanf(cPtr1,";q=%f",&qvalue[countLang]);
+        PR_sscanf(cPtr1,";q=%f",&qvalue[countLang]);
         *cPtr1 = '\0';
       }
       if (strlen(cPtr)<NSILOCALE_MAX_ACCEPT_LANGUAGE) {     /* ignore if too long */
@@ -459,7 +459,7 @@ nsLocaleService::GetLocaleFromAcceptLanguage(const char *acceptLanguage, nsILoca
       }
     }
     for ( i=0 ; i<countLang ; i++ ) {
-      strcpy(acceptLanguageList[i],ptrLanguage[i]);
+      PL_strncpyz(acceptLanguageList[i],ptrLanguage[i],NSILOCALE_MAX_ACCEPT_LENGTH);
     }
 
   } else {
@@ -468,7 +468,7 @@ nsLocaleService::GetLocaleFromAcceptLanguage(const char *acceptLanguage, nsILoca
     cPtr = nsCRT::strtok(input,",",&cPtr2);
     while (cPtr) {
       if (strlen(cPtr)<NSILOCALE_MAX_ACCEPT_LENGTH) {        /* ignore if too long */
-        strcpy(acceptLanguageList[countLang++],cPtr);
+        PL_strncpyz(acceptLanguageList[countLang++],cPtr,NSILOCALE_MAX_ACCEPT_LENGTH);
         if (countLang>=NSILOCALE_MAX_ACCEPT_LENGTH) break; /* quit if too many */
       }
       cPtr = nsCRT::strtok(cPtr2,",",&cPtr2);
@@ -531,8 +531,6 @@ NS_IMPL_ISUPPORTS1(nsLocaleDefinition,nsILocaleDefinition)
 
 nsLocaleDefinition::nsLocaleDefinition(void)
 {
-	NS_INIT_ISUPPORTS();
-
 	mLocaleDefinition = new nsLocale;
 	if (mLocaleDefinition)
 		mLocaleDefinition->AddRef();

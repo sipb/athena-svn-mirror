@@ -20,6 +20,10 @@
 
 /* This is where functions related to the standalone message window are kept */
 
+// from MailNewsTypes.h
+const nsMsgKey_None = 0xFFFFFFFF;
+const nsMsgViewIndex_None = 0xFFFFFFFF;
+
 /* globals for a particular window */
 
 var compositeDataSourceContractID        = datasourceContractIDPrefix + "composite-datasource";
@@ -30,6 +34,9 @@ var gCurrentFolderUri;
 var gThreadPaneCommandUpdater = null;
 var gCurrentMessageIsDeleted = false;
 var gNextMessageViewIndexAfterDelete = -2;
+var gCurrentFolderToRerootForStandAlone;
+var gRerootOnFolderLoadForStandAlone = false;
+var gNextMessageAfterLoad = null;
 
 // the folderListener object
 var folderListener = {
@@ -37,11 +44,11 @@ var folderListener = {
 
   OnItemRemoved: function(parentItem, item, view) {
     var parentFolderResource = parentItem.QueryInterface(Components.interfaces.nsIRDFResource);
-    if(!parentFolderResource)
+    if (!parentFolderResource)
       return;
 
     var parentURI = parentFolderResource.Value;
-    if(parentURI != gCurrentFolderUri)
+    if (parentURI != gCurrentFolderUri)
       return;
 
     var deletedMessageHdr = item.QueryInterface(Components.interfaces.nsIMsgDBHdr);
@@ -50,37 +57,69 @@ var folderListener = {
   },
 
   OnItemPropertyChanged: function(item, property, oldValue, newValue) {},
-  OnItemIntPropertyChanged: function(item, property, oldValue, newValue) { },
+  OnItemIntPropertyChanged: function(item, property, oldValue, newValue) { 
+    var currentLoadedFolder = GetLoadedMsgFolder();
+    if (!currentLoadedFolder) return;
+    var currentURI = currentLoadedFolder.URI;
+
+    //if we don't have a folder loaded, don't bother.
+    if (currentURI) {
+      if (property.toString() == "TotalMessages" || property.toString() == "TotalUnreadMessages") {
+        var folder = item.QueryInterface(Components.interfaces.nsIMsgFolder);
+        if (folder) {
+          var folderResource = folder.QueryInterface(Components.interfaces.nsIRDFResource); 
+          if (folderResource) {
+            var folderURI = folderResource.Value;
+            if (currentURI == folderURI) {
+              UpdateStandAloneMessageCounts();
+            }
+          }
+        }
+      }      
+    }
+  },
   OnItemBoolPropertyChanged: function(item, property, oldValue, newValue) {},
   OnItemUnicharPropertyChanged: function(item, property, oldValue, newValue){},
   OnItemPropertyFlagChanged: function(item, property, oldFlag, newFlag) {},
 
   OnItemEvent: function(folder, event) {
-    if (event.GetUnicode() == "DeleteOrMoveMsgCompleted") {
+    var eventType = event.toString();
+
+    if (eventType == "DeleteOrMoveMsgCompleted")
       HandleDeleteOrMoveMsgCompleted(folder);
-    }     
-    else if (event.GetUnicode() == "DeleteOrMoveMsgFailed") {
+    else if (eventType == "DeleteOrMoveMsgFailed")
       HandleDeleteOrMoveMsgFailed(folder);
+    else if (eventType == "FolderLoaded") {
+      if (folder) {
+        var uri = folder.URI;
+        if (uri == gCurrentFolderToRerootForStandAlone) {
+          gCurrentFolderToRerootForStandAlone = null;
+          var msgFolder = folder.QueryInterface(Components.interfaces.nsIMsgFolder);
+          if (msgFolder) {
+            msgFolder.endFolderLoading();
+            if (gRerootOnFolderLoadForStandAlone) {
+              RerootFolderForStandAlone(uri);
+            }
+          }   
+        }
+      }
     }
-    else if (event.GetUnicode() == "msgLoaded") {
-      OnMsgLoaded(folder, gCurrentMessageUri);
+    else if (eventType == "JunkStatusChanged") {
+      HandleJunkStatusChanged(folder);
     }
-  }
+  }   
 }
 
 var messagepaneObserver = {
 
-canHandleMultipleItems: false,
+  canHandleMultipleItems: false,
 
   onDrop: function (aEvent, aData, aDragSession)
   {
     var sourceUri = aData.data; 
     if (sourceUri != gCurrentMessageUri)
     {
-      var msgHdr = GetMsgHdrFromUri(sourceUri);
-      var folderUri = msgHdr.folder.URI;
-      if (folderUri != gCurrentFolderUri)
-        UpdateDBView(folderUri);
+      SelectFolder(GetMsgHdrFromUri(sourceUri).folder.URI);
       SelectMessage(sourceUri);
     }
   },
@@ -112,19 +151,6 @@ canHandleMultipleItems: false,
   }
 };
 
-function UpdateDBView(folderUri)
-{
-  var dbview = GetDBView();  //close old folder view
-  if (dbview) {
-    dbview.close(); 
-  }
-
-  SelectFolder(folderUri);
-
-  CreateView(null);   //create new folder view
-} 
-  
-
 function nsMsgDBViewCommandUpdater()
 {}
 
@@ -150,6 +176,12 @@ nsMsgDBViewCommandUpdater.prototype =
     gCurrentMessageUri = gDBView.URIForFirstSelectedMessage;
     UpdateStandAloneMessageCounts();
     SetKeywords(aKeywords);
+    goUpdateCommand("button_junk");
+  },
+
+  updateNextMessageAfterDelete : function()
+  {
+    SetNextMessageAfterDelete();
   },
 
   QueryInterface : function(iid)
@@ -162,26 +194,21 @@ nsMsgDBViewCommandUpdater.prototype =
   }
 }
 
-// from MailNewsTypes.h
-const nsMsgKey_None = 0xFFFFFFFF;
-
 function HandleDeleteOrMoveMsgCompleted(folder)
 {
-	dump("In HandleDeleteOrMoveMsgCompleted\n");
 	var folderResource = folder.QueryInterface(Components.interfaces.nsIRDFResource);
-	if(!folderResource)
+	if (!folderResource)
 		return;
 
-	var folderUri = folderResource.Value;
-	if((folderUri == gCurrentFolderUri) && gCurrentMessageIsDeleted)
+	if ((folderResource.Value == gCurrentFolderUri) && gCurrentMessageIsDeleted)
 	{
     gDBView.onDeleteCompleted(true);
     gCurrentMessageIsDeleted = false;
-    if (gNextMessageViewIndexAfterDelete != nsMsgKey_None) 
+    if (gNextMessageViewIndexAfterDelete != nsMsgViewIndex_None) 
     {
       var nextMstKey = gDBView.getKeyAt(gNextMessageViewIndexAfterDelete);
       if (nextMstKey != nsMsgKey_None) {
-        gDBView.loadMessageByMsgKey(nextMstKey);
+        LoadMessageByMsgKey(nextMstKey);
       }
       else {
         window.close();
@@ -198,15 +225,21 @@ function HandleDeleteOrMoveMsgCompleted(folder)
 function HandleDeleteOrMoveMsgFailed(folder)
 {
   var folderResource = folder.QueryInterface(Components.interfaces.nsIRDFResource);
-  if(!folderResource)
+  if (!folderResource)
      return;
 
-  var folderUri = folderResource.Value;
   gDBView.onDeleteCompleted(false);
-  if((folderUri == gCurrentFolderUri) && gCurrentMessageIsDeleted)
-  {
+  if ((folderResource.Value == gCurrentFolderUri) && gCurrentMessageIsDeleted)
     gCurrentMessageIsDeleted = false;
-  }	
+}
+
+function IsCurrentLoadedFolder(folder)
+{
+  var folderResource = folder.QueryInterface(Components.interfaces.nsIRDFResource);
+  if (!folderResource)
+     return false;
+
+  return (folderResource.Value == gCurrentFolderUri);
 }
 
 function OnLoadMessageWindow()
@@ -228,51 +261,84 @@ function OnLoadMessageWindow()
 
   try {
     var nsIFolderListener = Components.interfaces.nsIFolderListener;
-    var notifyFlags = nsIFolderListener.removed | nsIFolderListener.event;
+    var notifyFlags = nsIFolderListener.removed | nsIFolderListener.event | nsIFolderListener.intPropertyChanged;
     mailSession.AddFolderListener(folderListener, notifyFlags);
   } catch (ex) {
     dump("Error adding to session: " +ex + "\n");
   }
 
   var originalView = null;
+  var folder = null;
+  var messageUri;
+  var loadCustomMessage = false;       //set to true when either loading a message/rfc822 attachment or a .eml file
+  if (window.arguments)
+  {
+    if (window.arguments[0])
+    {
+      try
+      {
+        messageUri = window.arguments[0];
+        if (messageUri instanceof Components.interfaces.nsIURI)
+        {
+          loadCustomMessage = /type=x-message-display/.test(messageUri.spec);
+          gCurrentMessageUri = messageUri.spec;
+          if (messageUri instanceof Components.interfaces.nsIMsgMailNewsUrl)
+            folder = messageUri.folder;
+        }
+      } 
+      catch(ex) 
+      {
+        folder = null;
+        dump("## ex=" + ex + "\n");
+      }
 
-	if(window.arguments)
-	{
-		if(window.arguments[0])
-		{
-			gCurrentMessageUri = window.arguments[0];
-		}
-		else
-		{
-			gCurrentMessageUri = null;
-		}
+      if (!gCurrentMessageUri)
+        gCurrentMessageUri = window.arguments[0];
+    }
+    else
+      gCurrentMessageUri = null;
 
-		if(window.arguments[1])
-		{
-			gCurrentFolderUri = window.arguments[1];
-		}
-		else
-		{
-			gCurrentFolderUri = null;
-		}
+    if (window.arguments[1])
+      gCurrentFolderUri = window.arguments[1];
+    else
+      gCurrentFolderUri = folder ? folder.URI : null;
 
     if (window.arguments[2])
-      originalView = window.arguments[2];      
-	}	
+      originalView = window.arguments[2];
 
-  CreateView(originalView)
- 
-  setTimeout("var msgKey = extractMsgKeyFromURI(gCurrentMessageUri); gDBView.loadMessageByMsgKey(msgKey); gNextMessageViewIndexAfterDelete = gDBView.msgToSelectAfterDelete; UpdateStandAloneMessageCounts();", 0);
-  
+  }
+
+  CreateView(originalView);
+
+  setTimeout(OnLoadMessageWindowDelayed, 0, loadCustomMessage);
+
   SetupCommandUpdateHandlers();
-  var messagePaneFrame = top.frames['messagepane'];
-  if(messagePaneFrame)
-	messagePaneFrame.focus();
+}
+
+function OnLoadMessageWindowDelayed(loadCustomMessage)
+{
+  if (loadCustomMessage)
+    gDBView.loadMessageByUrl(gCurrentMessageUri);
+  else
+  {
+    var msgKey = extractMsgKeyFromURI(gCurrentMessageUri);
+    gDBView.loadMessageByMsgKey(msgKey);
+  }
+  gNextMessageViewIndexAfterDelete = gDBView.msgToSelectAfterDelete; 
+  UpdateStandAloneMessageCounts();
+   
+  // set focus to the message pane
+  window.content.focus();
+
+  // since we just changed the pane with focus we need to update the toolbar to reflect this
+  // XXX TODO
+  // can we optimize
+  // and just update cmd_delete and button_delete?
+  UpdateMailToolbar("focus");
 }
 
 function CreateView(originalView)
 {
-  
   var msgFolder = GetLoadedMsgFolder();
 
   // extract the sort type, the sort order, 
@@ -338,57 +404,68 @@ function extractMsgKeyFromURI()
 function HideMenus()
 {
 	var message_menuitem=document.getElementById('menu_showMessage');
-	if(message_menuitem)
+	if (message_menuitem)
 		message_menuitem.setAttribute("hidden", "true");
 
 	var showSearchToolbar = document.getElementById('menu_showSearchToolbar');
-	if(showSearchToolbar)
+	if (showSearchToolbar)
 		showSearchToolbar.setAttribute("hidden", "true");
 
 	var showSearch_showMessage_Separator = document.getElementById('menu_showSearch_showMessage_Separator');
-	if(showSearch_showMessage_Separator)
+	if (showSearch_showMessage_Separator)
 		showSearch_showMessage_Separator.setAttribute("hidden", "true");
 
 	var expandOrCollapseMenu = document.getElementById('menu_expandOrCollapse');
-	if(expandOrCollapseMenu)
+	if (expandOrCollapseMenu)
 		expandOrCollapseMenu.setAttribute("hidden", "true");
 
 	var renameFolderMenu = document.getElementById('menu_renameFolder');
-	if(renameFolderMenu)
+	if (renameFolderMenu)
 		renameFolderMenu.setAttribute("hidden", "true");
 
 	var viewMessagesMenu = document.getElementById('viewMessagesMenu');
-	if(viewMessagesMenu)
+	if (viewMessagesMenu)
 		viewMessagesMenu.setAttribute("hidden", "true");
 
+	var viewMessageViewMenu = document.getElementById('viewMessageViewMenu');
+	if (viewMessageViewMenu)
+		viewMessageViewMenu.setAttribute("hidden", "true");
+
+	var viewMessagesMenuSeparator = document.getElementById('viewMessagesMenuSeparator');
+	if (viewMessagesMenuSeparator)
+		viewMessagesMenuSeparator.setAttribute("hidden", "true");
+
 	var openMessageMenu = document.getElementById('openMessageWindowMenuitem');
-	if(openMessageMenu)
+	if (openMessageMenu)
 		openMessageMenu.setAttribute("hidden", "true");
 
 	var viewSortMenu = document.getElementById('viewSortMenu');
-	if(viewSortMenu)
+	if (viewSortMenu)
 		viewSortMenu.setAttribute("hidden", "true");
 
-	var viewThreadedMenu = document.getElementById('menu_showThreads');
-	if(viewThreadedMenu)
-		viewThreadedMenu.setAttribute("hidden", "true");
-
 	var emptryTrashMenu = document.getElementById('menu_emptyTrash');
-	if(emptryTrashMenu)
+	if (emptryTrashMenu)
 		emptryTrashMenu.setAttribute("hidden", "true");
 
 	var menuProperties = document.getElementById('menu_properties');
-	if(menuProperties)
+	if (menuProperties)
 		menuProperties.setAttribute("hidden", "true");
 
 	var compactFolderMenu = document.getElementById('menu_compactFolder');
-	if(compactFolderMenu)
+	if (compactFolderMenu)
 		compactFolderMenu.setAttribute("hidden", "true");
 
 	var trashSeparator = document.getElementById('trashMenuSeparator');
-	if(trashSeparator)
+	if (trashSeparator)
 		trashSeparator.setAttribute("hidden", "true");
 
+	var goStartPageSeparator = document.getElementById('goStartPageSeparator');
+	if (goStartPageSeparator)
+		goStartPageSeparator.hidden = true;
+
+  var goStartPage = document.getElementById('goStartPage');
+	if (goStartPage)
+   goStartPage.hidden = true;
 }
 
 function OnUnloadMessageWindow()
@@ -418,10 +495,9 @@ function GetSelectedMsgFolders()
 {
 	var folderArray = new Array(1);
 	var msgFolder = GetLoadedMsgFolder();
-	if(msgFolder)
-	{
+	if (msgFolder)
 		folderArray[0] = msgFolder;	
-	}
+
 	return folderArray;
 }
 
@@ -432,7 +508,7 @@ function GetFirstSelectedMessage()
 
 function GetNumSelectedMessages()
 {
-	if(gCurrentMessageUri)
+	if (gCurrentMessageUri)
 		return 1;
 	else
 		return 0;
@@ -442,9 +518,9 @@ function GetSelectedMessages()
 {
 	var messageArray = new Array(1);
 	var message = GetLoadedMessage();
-	if(message) {
+	if (message)
 		messageArray[0] = message;	
-	}
+
 	return messageArray;
 }
 
@@ -464,16 +540,10 @@ function GetSelectedIndices(dbView)
 
 function GetLoadedMsgFolder()
 {
-	if(gCurrentFolderUri)
-	{
-		var folderResource = RDF.GetResource(gCurrentFolderUri);
-		if(folderResource)
-		{
-			var msgFolder = folderResource.QueryInterface(Components.interfaces.nsIMsgFolder);
-			return msgFolder;
-		}
-	}
-	return null;
+	if (gCurrentFolderUri)
+		return RDF.GetResource(gCurrentFolderUri).QueryInterface(Components.interfaces.nsIMsgFolder);
+	else
+    return null;
 }
 
 function GetLoadedMessage()
@@ -501,8 +571,67 @@ function SetNextMessageAfterDelete()
 
 function SelectFolder(folderUri)
 {
-	gCurrentFolderUri = folderUri;
+  if (folderUri == gCurrentFolderUri)
+    return;
+
+  var msgfolder = RDF.GetResource(folderUri).QueryInterface(Components.interfaces.nsIMsgFolder);
+  if (!msgfolder || msgfolder.isServer)
+    return;
+
+  // close old folder view
+  var dbview = GetDBView();  
+  if (dbview)
+    dbview.close(); 
+
+  gCurrentFolderToRerootForStandAlone = folderUri;
+
+  if (msgfolder.manyHeadersToDownload)
+  {
+    gRerootOnFolderLoadForStandAlone = true;
+    try
+    {
+      msgfolder.startFolderLoading();
+      msgfolder.updateFolder(msgWindow);
+    }
+    catch(ex)
+    {
+      dump("Error loading with many headers to download: " + ex + "\n");
+    }
+  }
+  else
+  {
+    RerootFolderForStandAlone(folderUri);
+    gRerootOnFolderLoadForStandAlone = false;
+    msgfolder.startFolderLoading();
+
+    //Need to do this after rerooting folder.  Otherwise possibility of receiving folder loaded
+    //notification before folder has actually changed.
+    msgfolder.updateFolder(msgWindow);
+  }    
 }
+
+function RerootFolderForStandAlone(uri)
+{
+  gCurrentFolderUri = uri;
+
+  // create new folder view
+  CreateView(null);
+  
+  // now do the work to load the appropriate message
+  if (gNextMessageAfterLoad) {
+    var type = gNextMessageAfterLoad;
+    gNextMessageAfterLoad = null;
+    LoadMessageByNavigationType(type);
+  }
+  
+  SetUpToolbarButtons(gCurrentFolderUri);
+  
+  UpdateMailToolbar("reroot folder in stand alone window");
+  
+  // hook for extra toolbar items
+  var observerService = Components.classes["@mozilla.org/observer-service;1"].getService(Components.interfaces.nsIObserverService);
+  observerService.notifyObservers(window, "mail:setupToolbarItems", uri);
+} 
 
 function GetMsgHdrFromUri(messageUri)
 {
@@ -512,7 +641,7 @@ function GetMsgHdrFromUri(messageUri)
 function SelectMessage(messageUri)
 {
   var msgHdr = GetMsgHdrFromUri(messageUri);
-  gDBView.loadMessageByMsgKey(msgHdr.messageKey);
+  LoadMessageByMsgKey(msgHdr.messageKey);
 }
  
 function ReloadMessage()
@@ -545,54 +674,38 @@ function MsgDeleteMessageFromMessageWindow(reallyDelete, fromToolbar)
 // MessageWindowController object (handles commands when one of the trees does not have focus)
 var MessageWindowController =
 {
-   supportsCommand: function(command)
-	{
-
-		switch ( command )
-		{
-			case "cmd_close":
-			case "cmd_reply":
-			case "button_reply":
-			case "cmd_replySender":
-			case "cmd_replyGroup":
-			case "cmd_replyall":
-			case "button_replyall":
-			case "cmd_forward":
-			case "button_forward":
-			case "cmd_forwardInline":
-			case "cmd_forwardAttachment":
-			case "cmd_editAsNew":
-      case "cmd_createFilterFromPopup":
-      case "cmd_createFilterFromMenu":
-			case "cmd_delete":
+  supportsCommand: function(command)
+  {
+    switch (command)
+    {
+      case "cmd_reply":
+      case "button_reply":
+      case "cmd_replySender":
+      case "cmd_replyGroup":
+      case "cmd_replyall":
+      case "button_replyall":
+      case "cmd_forward":
+      case "button_forward":
+      case "cmd_forwardInline":
+      case "cmd_forwardAttachment":
+      case "cmd_editAsNew":
+      case "cmd_delete":
       case "cmd_undo":
       case "cmd_redo":
       case "cmd_killThread":
       case "cmd_watchThread":
-			case "button_delete":
+      case "button_delete":
       case "button_junk":
-			case "cmd_shiftDelete":
-      case "button_print":
-			case "cmd_print":
-			case "cmd_printpreview":
-		  case "cmd_printSetup":
-			case "cmd_saveAsFile":
-			case "cmd_saveAsTemplate":
-			case "cmd_viewPageSource":
-			case "cmd_reload":
-			case "cmd_getNewMessages":
-      case "button_getNewMessages":
+      case "cmd_shiftDelete":
+      case "cmd_saveAsFile":
+      case "cmd_saveAsTemplate":
+      case "cmd_viewPageSource":
       case "cmd_getMsgsForAuthAccounts":
-			case "cmd_getNextNMessages":
-			case "cmd_find":
-			case "cmd_findAgain":
-			case "cmd_findPrev":
-      case "cmd_search":
       case "button_mark":
-			case "cmd_markAsRead":
-			case "cmd_markAllRead":
-			case "cmd_markThreadAsRead":
-			case "cmd_markAsFlagged":
+      case "cmd_markAsRead":
+      case "cmd_markAllRead":
+      case "cmd_markThreadAsRead":
+      case "cmd_markAsFlagged":
       case "cmd_label0":
       case "cmd_label1":
       case "cmd_label2":
@@ -600,29 +713,50 @@ var MessageWindowController =
       case "cmd_label4":
       case "cmd_label5":
       case "button_file":
-			case "cmd_file":
-			case "cmd_settingsOffline":
-			case "cmd_nextMsg":
-      case "button_next":
-			case "cmd_nextUnreadMsg":
-			case "cmd_nextFlaggedMsg":
-			case "cmd_nextUnreadThread":
-			case "cmd_previousMsg":
-			case "cmd_previousUnreadMsg":
-			case "cmd_previousFlaggedMsg":
-				return true;
+      case "cmd_file":
+      case "cmd_markAsJunk":
+      case "cmd_markAsNotJunk":
+      case "cmd_applyFilters":
+      case "cmd_runJunkControls":
+      case "cmd_deleteJunk":
+      case "cmd_nextMsg":
+      case "button_next": 
+      case "cmd_nextUnreadMsg": 
+      case "cmd_nextFlaggedMsg": 
+      case "cmd_nextUnreadThread": 
+      case "cmd_previousMsg": 
+      case "cmd_previousUnreadMsg": 
+      case "cmd_previousFlaggedMsg":
+        return !(gDBView.keyForFirstSelectedMessage == nsMsgKey_None);
+      case "cmd_getNextNMessages":
+      case "cmd_find":
+      case "cmd_findAgain":
+      case "cmd_findPrev":
+      case "cmd_search":
+      case "cmd_reload":
+      case "cmd_getNewMessages":
+      case "button_getNewMessages":
+      case "button_print":
+      case "cmd_print":
+      case "cmd_printpreview":
+      case "cmd_printSetup":
+      case "cmd_close":
+      case "cmd_settingsOffline":
+      case "cmd_createFilterFromPopup":
+      case "cmd_createFilterFromMenu":
+        return true;
       case "cmd_synchronizeOffline":
-			case "cmd_downloadFlagged":
-			case "cmd_downloadSelected":
+      case "cmd_downloadFlagged":
+      case "cmd_downloadSelected":
         return CheckOnline();
-			default:
-				return false;
-		}
-	},
+      default:
+        return false;
+    }
+  },
 
 	isCommandEnabled: function(command)
 	{
-		switch ( command )
+		switch (command)
 		{
       case "cmd_createFilterFromPopup":
       case "cmd_createFilterFromMenu":
@@ -637,6 +771,11 @@ var MessageWindowController =
         var loadedFolder = GetLoadedMsgFolder();
         return gCurrentMessageUri && loadedFolder && (loadedFolder.canDeleteMessages || isNewsURI(gCurrentFolderUri));
       case "button_junk":
+        UpdateJunkToolbarButton();
+        // fall through
+      case "cmd_markAsJunk":
+			case "cmd_markAsNotJunk":
+        // can't do junk on news yet
         return (!isNewsURI(gCurrentFolderUri));
 			case "cmd_reply":
 			case "button_reply":
@@ -704,7 +843,11 @@ var MessageWindowController =
         return loadedFolder.server.canSearchMessages; 
       case "cmd_undo":
       case "cmd_redo":
-                return SetupUndoRedoCommand(command);
+        return SetupUndoRedoCommand(command);
+      case "cmd_applyFilters":
+      case "cmd_runJunkControls":
+      case "cmd_deleteJunk":
+        return false;
 			default:
 				return false;
 		}
@@ -825,6 +968,12 @@ var MessageWindowController =
 			case "cmd_markAsFlagged":
 				MsgMarkAsFlagged(null);
 				return;
+			case "cmd_markAsJunk":
+        JunkSelectedMessages(true);
+				return;
+			case "cmd_markAsNotJunk":
+        JunkSelectedMessages(false);
+				return;
       case "cmd_label0":
         gDBView.doCommand(nsMsgViewCommandType.label0);
  				return;
@@ -885,26 +1034,38 @@ var MessageWindowController =
 	}
 };
 
-function performNavigation(type)
+function LoadMessageByNavigationType(type)
 {
   var resultId = new Object;
   var resultIndex = new Object;
   var threadIndex = new Object;
 
   gDBView.viewNavigate(type, resultId, resultIndex, threadIndex, true /* wrap */);
-  
+
   // if we found something....display it.
   if ((resultId.value != nsMsgKey_None) && (resultIndex.value != nsMsgKey_None)) 
   {
     // load the message key
-    gDBView.loadMessageByMsgKey(resultId.value);
+    LoadMessageByMsgKey(resultId.value);
     // if we changed folders, the message counts changed.
     UpdateStandAloneMessageCounts();
-    return;
+
+    // new message has been loaded
+    return true;
   }
+
+  // no message found to load
+  return false;
+}
    
-  // we need to span another folder 
-  CrossFolderNavigation(type, false);
+function performNavigation(type)
+{
+  // Try to load a message by navigation type if we can find
+  // the message in the same folder.
+  if (LoadMessageByNavigationType(type))
+    return;
+   
+  CrossFolderNavigation(type);
 }
 
 function SetupCommandUpdateHandlers()
@@ -917,3 +1078,14 @@ function GetDBView()
   return gDBView;
 }
 
+function LoadMessageByMsgKey(messageKey)
+{
+  // we only want to update the toolbar if there was no previous selected message.
+  if (nsMsgKey_None == gDBView.keyForFirstSelectedMessage)
+  {
+    gDBView.loadMessageByMsgKey(messageKey);
+    UpdateMailToolbar("update toolbar for message Window");
+  }
+  else
+    gDBView.loadMessageByMsgKey(messageKey);
+}

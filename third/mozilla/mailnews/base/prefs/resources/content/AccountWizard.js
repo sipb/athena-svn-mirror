@@ -126,6 +126,8 @@ function onAccountWizardLoad() {
     
 function onCancel() 
 {
+  if ("ActivationOnCancel" in this && ActivationOnCancel())
+    return false;
   var firstInvalidAccount = getFirstInvalidAccount();
   var closeWizard = true;
 
@@ -174,7 +176,8 @@ function onCancel()
   return closeWizard;
 }
 
-function FinishAccount() {
+function FinishAccount() 
+{
   try {
     var pageData = GetPageData();
 
@@ -204,6 +207,16 @@ function FinishAccount() {
     if (!serverIsNntp(pageData))
         EnableCheckMailAtStartUpIfNeeded(gCurrentAccount);
 
+    if (!document.getElementById("downloadMsgs").hidden) {
+      if (document.getElementById("downloadMsgs").checked) {
+        window.opener.gNewAccountToLoad = gCurrentAccount; // load messages for new POP account
+      }
+      else if (gCurrentAccount == am.defaultAccount) {
+        // stop check for msgs when this is first account created from new profile
+        window.opener.gLoadStartFolder = false;
+      }
+    }
+
     // in case we crash, force us a save of the prefs file NOW
     try {
       am.saveAccountInfo();
@@ -219,10 +232,10 @@ function FinishAccount() {
         top.okCallback(state);
     }
 }
-  catch(ex) { 
+  catch(ex) {
+    dump("FinishAccount failed, " + ex +"\n");
   }
 }
-
 
 // prepopulate pageData with stuff from accountData
 // use: to prepopulate the wizard with account information
@@ -335,6 +348,8 @@ function PageDataToAccountData(pageData, accountData)
                 pageData.server.smtphostname.value)
                 smtp.hostname = pageData.server.smtphostname.value;
         }
+        if (pageData.identity.smtpServerKey)
+            identity.smtpServerKey = pageData.identity.smtpServerKey.value;
     }
 
     if (pageData.accname) {
@@ -348,12 +363,16 @@ function PageDataToAccountData(pageData, accountData)
 // (but don't fill in any fields, that's for finishAccount()
 function createAccount(accountData)
 {
-
     var server = accountData.incomingServer;
-    dump("am.createIncomingServer(" + server.username + "," +
+    
+    // for news, username is always null
+    var username = (server.type == "nntp") ? null : server.username;
+
+    dump("am.createIncomingServer(" + username + "," +
                                       server.hostName + "," +
                                       server.type + ")\n");
-    var server = am.createIncomingServer(server.username,
+    
+    var server = am.createIncomingServer(username,
                                          server.hostName,
                                          server.type);
     
@@ -375,8 +394,8 @@ function createAccount(accountData)
 
 // given an accountData structure, copy the data into the
 // given account, incoming server, and so forth
-function finishAccount(account, accountData) {
-
+function finishAccount(account, accountData) 
+{
     if (accountData.incomingServer) {
 
         var destServer = account.incomingServer;
@@ -451,27 +470,29 @@ function finishAccount(account, accountData) {
         else
           smtpServer = smtpService.defaultServer;
 
-        dump("Copying smtpServer (" + smtpServer + ") to accountData\n");
-        //set the smtp server to be the default only if it is not a redirectorType
-        if (accountData.smtp.redirectorType == null) 
-        {
-          if ((smtpService.defaultServer.hostname == null) || (smtpService.defaultServer.redirectorType != null))
-            smtpService.defaultServer = smtpServer;
-        }
+        // may not have a smtp server, see bug #138076
+        if (smtpServer) {
+          dump("Copying smtpServer (" + smtpServer + ") to accountData\n");
+          //set the smtp server to be the default only if it is not a redirectorType
+          if (accountData.smtp.redirectorType == null) 
+          {
+            if ((smtpService.defaultServer.hostname == null) || (smtpService.defaultServer.redirectorType != null))
+              smtpService.defaultServer = smtpServer;
+          }
 
-        copyObjectToInterface(smtpServer, accountData.smtp);
+          copyObjectToInterface(smtpServer, accountData.smtp);
 
-        // refer bug#141314
-        // since we clone the default smtpserver with the new account's username
-        // force every account to use the smtp server that was created or assigned to it in the
-        // case of isps using rdf files
-
-        try{
+          // refer bug#141314
+          // since we clone the default smtpserver with the new account's username
+          // force every account to use the smtp server that was created or assigned to it in the
+          // case of isps using rdf files
+          try{
             destIdentity.smtpServerKey = smtpServer.key;
-        }
-        catch(ex)
-        {
-          dump("There is no smtp server assigned to this account: Exception= "+ex+"\n");
+          }
+          catch(ex)
+          {
+            dump("There is no smtp server assigned to this account: Exception= "+ex+"\n");
+          }
         }
      }
 
@@ -496,16 +517,15 @@ function copyObjectToInterface(dest, src) {
         catch (ex) {
             dump("Error copying the " +
                  i + " attribute: " + ex + "\n");
-            dump("(This is ok if this is a ServerType-* attribute)\n");
+            dump("[This is ok if this is a ServerType-* attribute, or if this is a readonly attribute (like receiptHeaderType)]\n");
         }
     }
 }
 
 // check if there already is a "Local Folders"
 // if not, create it.
-function verifyLocalFoldersAccount(account) {
-    
-    dump("Looking for Local Folders.....\n");
+function verifyLocalFoldersAccount(account) 
+{
 	var localMailServer = null;
 	try {
 		localMailServer = am.localFoldersServer;
@@ -842,11 +862,17 @@ function PrefillAccountForIsp(ispName)
 // - anything else?
 function FixupAccountDataForIsp(accountData)
 {
+    // no fixup for news
+    // setting the username does bad things
+    // see bugs #42105 and #154213
+    if (accountData.incomingServer.type == "nntp")
+      return;
+
     var email = accountData.identity.email;
     var username;
 
     if (email) {
-		username = getUsernameFromEmail(email);
+      username = getUsernameFromEmail(email);
     }
     
     // fix up the username
@@ -856,6 +882,12 @@ function FixupAccountDataForIsp(accountData)
 
     if (!accountData.smtp.username &&
         accountData.smtpRequiresUsername) {
+      // fix for bug #107953
+      // if incoming hostname is same as smtp hostname
+      // use the server username (insetad of the email username)
+      if (accountData.smtp.hostname == accountData.incomingServer.hostName)
+        accountData.smtp.username = accountData.incomingServer.username;
+      else
         accountData.smtp.username = username;
     }
 }

@@ -35,12 +35,10 @@
 #include "nsIDOMDocument.h"
 #include "nsIDOMDocumentFragment.h"
 #include "nsIDOMElement.h"
-#include "nsIDOMEntity.h"
-#include "nsIDOMNotation.h"
 #include "nsIDOMProcessingInstruction.h"
-#include "nsIDOMDocumentType.h"
 #include "nsIDOMElement.h"
 #include "nsIDOMText.h"
+#include "nsString.h"
 
 // Need to determine if these are well-chosen.
 #define WRAPPER_INITIAL_SIZE 256
@@ -188,13 +186,6 @@ Document::Document(nsIDOMDocument* aDocument) : Node(aDocument, this)
     if (!success) {
         mAttributeNodes.ops = nsnull;
     }
-
-    nsCOMPtr<nsIDocument> doc(do_QueryInterface(aDocument));
-    NS_ASSERTION(doc,"document doesn't implement nsIDocument");
-    if (doc) {
-        doc->GetNameSpaceManager(*getter_AddRefs(nsNSManager));
-        NS_ASSERTION(nsNSManager, "Unable to get nsINamespaceManager");
-    }
 }
 
 /**
@@ -274,45 +265,13 @@ Element* Document::getDocumentElement()
 }
 
 /**
- * Call nsIDOMDocument::GetDoctype to get the document's DocumentType.
- *
- * @return the DocumentType
- */
-DocumentType* Document::getDoctype()
-{
-    NSI_FROM_TX(Document);
-    nsCOMPtr<nsIDOMDocumentType> docType;
-    nsDocument->GetDoctype(getter_AddRefs(docType));
-    if (!docType) {
-        return nsnull;
-    }
-    return createDocumentType(docType);
-}
-
-/**
- * Call nsIDOMDocument::CreateDocumentFragment to create a DocumentFragment.
- *
- * @return the DocumentFragment
- */
-DocumentFragment* Document::createDocumentFragment()
-{
-    NSI_FROM_TX(Document);
-    nsCOMPtr<nsIDOMDocumentFragment> fragment;
-    nsDocument->CreateDocumentFragment(getter_AddRefs(fragment));
-    if (!fragment) {
-        return nsnull;
-    }
-    return createNode(fragment);
-}
-
-/**
  * Call nsIDOMDocument::GetElementById to get Element with ID.
  *
  * @param aID the name of ID referencing the element
  *
  * @return the Element
  */
-Element* Document::getElementById(const String aID)
+Element* Document::getElementById(const nsAString& aID)
 {
     NSI_FROM_TX(Document);
     nsCOMPtr<nsIDOMElement> element;
@@ -331,27 +290,6 @@ Element* Document::getElementById(const String aID)
  * @return the Element
  */
 IMPL_CREATE_WRAPPER(Element)
-
-/**
- * Call nsIDOMDocument::CreateElementNS to create an Element.
- *
- * @param aNamespaceURI the URI of the namespace for the element
- * @param aTagName the name of the element you want to create
- *
- * @return the Element
- */
-Element* Document::createElementNS(const String& aNamespaceURI,
-                                   const String& aTagName)
-{
-    NSI_FROM_TX(Document);
-    nsCOMPtr<nsIDOMElement> element;
-    nsDocument->CreateElementNS(aNamespaceURI, aTagName,
-                                getter_AddRefs(element));
-    if (!element) {
-        return nsnull;
-    }
-    return createElement(element);
-}
 
 /**
  * Create a wrapper for a nsIDOMAttr, reuses an existing wrapper if possible.
@@ -380,10 +318,9 @@ Attr* Document::createAttribute(nsIDOMAttr* aAttr)
     aAttr->GetNamespaceURI(ns);
     PRInt32 namespaceID = kNameSpaceID_None;
     if (!ns.IsEmpty()) {
-        NS_ASSERTION(nsNSManager,
-                     "owner document lacks namespace manager");
-        if (nsNSManager) {
-            nsNSManager->GetNameSpaceID(ns, namespaceID);
+        NS_ASSERTION(gTxNameSpaceManager, "No namespace manager");
+        if (gTxNameSpaceManager) {
+            gTxNameSpaceManager->GetNameSpaceID(ns, namespaceID);
         }
     }
 
@@ -417,66 +354,6 @@ Attr* Document::createAttribute(nsIDOMAttr* aAttr)
 }
 
 /**
- * Call nsIDOMDocument::CreateTextNode to create a Text node.
- *
- * @param aData the data of the text node you want to create
- *
- * @return the Text node
- */
-Text* Document::createTextNode(const String& aData)
-{
-    NSI_FROM_TX(Document);
-    nsCOMPtr<nsIDOMText> text;
-    nsDocument->CreateTextNode(aData, getter_AddRefs(text));
-    nsCOMPtr<nsIDOMNode> node = do_QueryInterface(text);
-    if (!node) {
-        return nsnull;
-    }
-    return createNode(node);
-}
-
-/**
- * Call nsIDOMDocument::CreateComment to create a Comment node.
- *
- * @param aData the data of the comment node you want to create
- *
- * @return the Comment node
- */
-Comment* Document::createComment(const String& aData)
-{
-    NSI_FROM_TX(Document);
-    nsCOMPtr<nsIDOMComment> comment;
-    nsDocument->CreateComment(aData, getter_AddRefs(comment));
-    nsCOMPtr<nsIDOMNode> node = do_QueryInterface(comment);
-    if (!node) {
-        return nsnull;
-    }
-    return createNode(node);
-}
-
-/**
- * Call nsIDOMDocument::CreateProcessingInstruction to create a
- * ProcessingInstruction.
- *
- * @param aTarget the target of the ProcessingInstruction you want to create
- * @param aData the data of the ProcessingInstruction you want to create
- *
- * @return the ProcessingInstruction node
- */
-ProcessingInstruction* Document::createProcessingInstruction(
-            const String& aTarget, const String& aData)
-{
-    NSI_FROM_TX(Document);
-    nsCOMPtr<nsIDOMProcessingInstruction> pi;
-    nsDocument->CreateProcessingInstruction(aTarget, aData,
-                                            getter_AddRefs(pi));
-    if (!pi) {
-        return nsnull;
-    }
-    return createProcessingInstruction(pi);
-}
-
-/**
  * Create a wrapper for a nsIDOMProcessingInstruction, reuses an existing
  * wrapper if possible.
  *
@@ -487,15 +364,6 @@ ProcessingInstruction* Document::createProcessingInstruction(
 IMPL_CREATE_WRAPPER(ProcessingInstruction)
 
 /**
- * Create a wrapper for a nsIDOMEntity, reuses an existing wrapper if possible.
- *
- * @param aEntity the nsIDOMEntity you want to wrap
- *
- * @return the Entity
- */
-IMPL_CREATE_WRAPPER(Entity)
-
-/**
  * Create a wrapper for a nsIDOMNode, reuses an existing wrapper if possible.
  *
  * @param aNode the nsIDOMNode you want to wrap
@@ -503,36 +371,6 @@ IMPL_CREATE_WRAPPER(Entity)
  * @return the Node
  */
 IMPL_CREATE_WRAPPER(Node)
-
-/**
- * Create a wrapper for a nsIDOMNotation, reuses an existing wrapper if
- * possible.
- *
- * @param aNotation the nsIDOMNotation you want to wrap
- *
- * @return the Notation
- */
-IMPL_CREATE_WRAPPER(Notation)
-
-/**
- * Create a wrapper for a nsIDOMDocumentType, reuses an existing wrapper if
- * possible.
- *
- * @param aDoctype the nsIDOMDocumentType you want to wrap
- *
- * @return the DocumentType
- */
-IMPL_CREATE_WRAPPER(DocumentType)
-
-/**
- * Create a wrapper for a nsIDOMNodeList, reuses an existing wrapper if
- * possible.
- *
- * @param aList the nsIDOMNodeList you want to wrap
- *
- * @return the NodeList
- */
-IMPL_CREATE_WRAPPER(NodeList)
 
 /**
  * Create a wrapper for a nsIDOMNamedNodeMap, reuses an existing wrapper if
@@ -585,7 +423,6 @@ Node* Document::createWrapper(nsIDOMNode* aNode)
             Element* txElement = createElement(element);
             NS_RELEASE(element);
             return txElement;
-            break;
         }
         case nsIDOMNode::ATTRIBUTE_NODE:
         {
@@ -594,25 +431,17 @@ Node* Document::createWrapper(nsIDOMNode* aNode)
             Attr* txAttr = createAttribute(attr);
             NS_RELEASE(attr);
             return txAttr;
-            break;
         }
         case nsIDOMNode::CDATA_SECTION_NODE:
         case nsIDOMNode::COMMENT_NODE:
         case nsIDOMNode::DOCUMENT_FRAGMENT_NODE:
+        case nsIDOMNode::DOCUMENT_TYPE_NODE:
         case nsIDOMNode::ENTITY_REFERENCE_NODE:
+        case nsIDOMNode::ENTITY_NODE:
+        case nsIDOMNode::NOTATION_NODE:
         case nsIDOMNode::TEXT_NODE:
         {
             return createNode(aNode);
-            break;
-        }
-        case nsIDOMNode::ENTITY_NODE:
-        {
-            nsIDOMEntity* entity;
-            CallQueryInterface(aNode, &entity);
-            Entity* txEntity = createEntity(entity);
-            NS_RELEASE(entity);
-            return txEntity;
-            break;
         }
         case nsIDOMNode::PROCESSING_INSTRUCTION_NODE:
         {
@@ -621,7 +450,6 @@ Node* Document::createWrapper(nsIDOMNode* aNode)
             ProcessingInstruction* txPi = createProcessingInstruction(pi);
             NS_RELEASE(pi);
             return txPi;
-            break;
         }
         case nsIDOMNode::DOCUMENT_NODE:
         {
@@ -630,24 +458,6 @@ Node* Document::createWrapper(nsIDOMNode* aNode)
             }
             NS_ASSERTION(0, "We don't support creating new documents.");
             return nsnull;
-            break;
-        }
-        case nsIDOMNode::DOCUMENT_TYPE_NODE:
-        {
-            nsIDOMDocumentType* docType;
-            CallQueryInterface(aNode, &docType);
-            DocumentType* txDocType = createDocumentType(docType);
-            NS_RELEASE(docType);
-            return txDocType;
-            break;
-        }
-        case nsIDOMNode::NOTATION_NODE:
-        {
-            nsIDOMNotation* notation;
-            CallQueryInterface(aNode, &notation);
-            Notation* txNotation = createNotation(notation);
-            NS_RELEASE(notation);
-            return txNotation;
         }
         default:
         {
@@ -657,21 +467,21 @@ Node* Document::createWrapper(nsIDOMNode* aNode)
     }
 }
 
-PRInt32 Document::namespaceURIToID(const String& aNamespaceURI)
+PRInt32 Document::namespaceURIToID(const nsAString& aNamespaceURI)
 {
     PRInt32 namesspaceID = kNameSpaceID_Unknown;
-    if (nsNSManager) {
-        nsNSManager->RegisterNameSpace(aNamespaceURI,
-                                       namesspaceID);
+    if (gTxNameSpaceManager) {
+        gTxNameSpaceManager->RegisterNameSpace(aNamespaceURI,
+                                             namesspaceID);
     }
     return namesspaceID;
 }
 
-void Document::namespaceIDToURI(PRInt32 aNamespaceID, String& aNamespaceURI)
+void Document::namespaceIDToURI(PRInt32 aNamespaceID, nsAString& aNamespaceURI)
 {
-    if (nsNSManager) {
-        nsNSManager->GetNameSpaceURI(aNamespaceID,
-                                     aNamespaceURI);
+    if (gTxNameSpaceManager) {
+        gTxNameSpaceManager->GetNameSpaceURI(aNamespaceID,
+                                           aNamespaceURI);
     }
 }
 

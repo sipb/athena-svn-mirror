@@ -50,6 +50,7 @@
 #include "nsIDOMElement.h"
 #include "nsIDOMXULElement.h"
 #include "nsIDOMNodeList.h"
+#include "nsIDOMDocument.h"
 #include "nsIDOMDocumentXBL.h"
 #include "nsIXULPopupListener.h"
 #include "nsIDOMMouseListener.h"
@@ -76,11 +77,10 @@
 #include "nsIEventStateManager.h"
 
 #include "nsIFrame.h"
-#include "nsIStyleContext.h"
 
 // on win32 and os/2, context menus come up on mouse up. On other platforms,
 // they appear on mouse down. Certain bits of code care about this difference.
-#ifndef XP_PC
+#if !defined(XP_WIN) && !defined(XP_OS2)
 #define NS_CONTEXT_MENU_IS_MOUSEUP 1
 #endif
 
@@ -146,7 +146,6 @@ private:
 XULPopupListenerImpl::XULPopupListenerImpl(void)
   : mElement(nsnull), mPopupContent(nsnull)
 {
-	NS_INIT_ISUPPORTS();	
 }
 
 XULPopupListenerImpl::~XULPopupListenerImpl(void)
@@ -324,8 +323,7 @@ XULPopupListenerImpl::FireFocusOnTargetContent(nsIDOMNode* aTargetNode)
     if (!targetFrame) return NS_ERROR_FAILURE;
       
     PRBool suppressBlur = PR_FALSE;
-    const nsStyleUserInterface* ui;
-    targetFrame->GetStyleData(eStyleStruct_UserInterface, ((const nsStyleStruct*&)ui));
+    const nsStyleUserInterface* ui = targetFrame->GetStyleUserInterface();
     suppressBlur = (ui->mUserFocus == NS_STYLE_USER_FOCUS_IGNORE);
 
     nsCOMPtr<nsIDOMElement> element;
@@ -334,8 +332,7 @@ XULPopupListenerImpl::FireFocusOnTargetContent(nsIDOMNode* aTargetNode)
     nsIFrame* currFrame = targetFrame;
     // Look for the nearest enclosing focusable frame.
     while (currFrame) {
-        const nsStyleUserInterface* ui;
-        currFrame->GetStyleData(eStyleStruct_UserInterface, ((const nsStyleStruct*&)ui));
+        const nsStyleUserInterface* ui = currFrame->GetStyleUserInterface();
         if ((ui->mUserFocus != NS_STYLE_USER_FOCUS_IGNORE) &&
             (ui->mUserFocus != NS_STYLE_USER_FOCUS_NONE)) 
         {
@@ -522,9 +519,9 @@ XULPopupListenerImpl::LaunchPopup(PRInt32 aClientX, PRInt32 aClientY)
     return rv;
   }
 
-  // Turn the document into a XUL document so we can use getElementById
-  nsCOMPtr<nsIDOMXULDocument> xulDocument = do_QueryInterface(document);
-  if (xulDocument == nsnull) {
+  // Turn the document into a DOM document so we can use getElementById
+  nsCOMPtr<nsIDOMDocument> domDocument = do_QueryInterface(document);
+  if (!domDocument) {
     NS_ERROR("Popup attached to an element that isn't in XUL!");
     return NS_ERROR_FAILURE;
   }
@@ -541,7 +538,7 @@ XULPopupListenerImpl::LaunchPopup(PRInt32 aClientX, PRInt32 aClientY)
     if (popup)
       popupContent = do_QueryInterface(popup);
     else {
-      nsCOMPtr<nsIDOMDocumentXBL> nsDoc(do_QueryInterface(xulDocument));
+      nsCOMPtr<nsIDOMDocumentXBL> nsDoc(do_QueryInterface(domDocument));
       nsCOMPtr<nsIDOMNodeList> list;
       nsDoc->GetAnonymousNodes(mElement, getter_AddRefs(list));
       if (list) {
@@ -561,7 +558,8 @@ XULPopupListenerImpl::LaunchPopup(PRInt32 aClientX, PRInt32 aClientY)
       }
     }
   }
-  else if (NS_FAILED(rv = xulDocument->GetElementById(identifier, getter_AddRefs(popupContent)))) {
+  else if (NS_FAILED(rv = domDocument->GetElementById(identifier,
+                                              getter_AddRefs(popupContent)))) {
     // Use getElementById to obtain the popup content and gracefully fail if 
     // we didn't find any popup content in the document. 
     NS_ERROR("GetElementById had some kind of spasm.");

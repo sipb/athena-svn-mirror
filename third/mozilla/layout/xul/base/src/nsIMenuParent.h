@@ -124,8 +124,7 @@ static nsNavigationDirection DirectionFromKeyCode_rl_tb [6] = {
 #define NS_DIRECTION_FROM_KEY_CODE(direction, keycode)           \
   NS_ASSERTION(keycode >= NS_VK_END && keycode <= NS_VK_DOWN,    \
                "Illegal key code");                              \
-  const nsStyleVisibility* vis = (const nsStyleVisibility*)      \
-     mStyleContext->GetStyleData(eStyleStruct_Visibility);       \
+  const nsStyleVisibility* vis = GetStyleVisibility();           \
   if (vis->mDirection == NS_STYLE_DIRECTION_RTL)                 \
     direction = DirectionFromKeyCode_rl_tb[keycode - NS_VK_END]; \
   else                                                           \
@@ -150,6 +149,9 @@ public:
   NS_IMETHOD GetWidget(nsIWidget **aWidget) = 0;
   
   NS_IMETHOD IsMenuBar(PRBool& isMenuBar) = 0;
+  NS_IMETHOD ConsumeOutsideClicks(PRBool& aConsumeOutsideClicks) = 0;
+  NS_IMETHOD ClearRecentlyRolledUp() = 0;
+  NS_IMETHOD RecentlyRolledUp(nsIMenuFrame *aMenuFrame, PRBool *aJustRolledUp) = 0;
 
   NS_IMETHOD DismissChain() = 0;
   NS_IMETHOD HideChain() = 0;

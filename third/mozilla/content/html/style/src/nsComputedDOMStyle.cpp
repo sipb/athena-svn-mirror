@@ -44,7 +44,7 @@
 #include "nsDOMError.h"
 #include "nsIDOMCSS2Properties.h"
 #include "nsIDOMElement.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsIScrollableFrame.h"
 #include "nsContentUtils.h"
 #include "prprf.h"
@@ -97,7 +97,6 @@ NS_NewComputedDOMStyle(nsIComputedDOMStyle** aComputedStyle)
 nsComputedDOMStyle::nsComputedDOMStyle()
   : mInner(nsnull), mPresShellWeak(nsnull), mT2P(0.0f)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 
@@ -205,7 +204,7 @@ nsComputedDOMStyle::Init(nsIDOMElement *aElement,
   }
 
   if (!DOMStringIsNull(aPseudoElt) && !aPseudoElt.IsEmpty()) {
-    mPseudo = dont_AddRef(NS_NewAtom(aPseudoElt));
+    mPseudo = do_GetAtom(aPseudoElt);
     NS_ENSURE_TRUE(mPseudo, NS_ERROR_OUT_OF_MEMORY);
   }
 
@@ -761,6 +760,30 @@ nsComputedDOMStyle::GetBackgroundImage(nsIFrame *aFrame,
   }
 
   return CallQueryInterface(val, aValue);
+}
+
+nsresult
+nsComputedDOMStyle::GetBackgroundInlinePolicy(nsIFrame *aFrame,
+                                              nsIDOMCSSValue** aValue)
+{
+  nsROCSSPrimitiveValue *val = GetROCSSPrimitiveValue();
+  NS_ENSURE_TRUE(val, NS_ERROR_OUT_OF_MEMORY);
+
+  const nsStyleBackground *background = nsnull;
+  GetStyleData(eStyleStruct_Background, (const nsStyleStruct*&)background, aFrame);
+
+  PRUint8 policy = NS_STYLE_BG_INLINE_POLICY_CONTINUOUS;
+  if (background) {
+    policy = background->mBackgroundInlinePolicy;
+  }
+
+  const nsAFlatCString& backgroundPolicy =
+      nsCSSProps::SearchKeywordTable(policy,
+                                     nsCSSProps::kBackgroundInlinePolicyKTable);
+
+  val->SetIdent(backgroundPolicy);
+
+  return CallQueryInterface(val, aValue);  
 }
 
 nsresult
@@ -1734,7 +1757,6 @@ nsComputedDOMStyle::GetUnicodeBidi(nsIFrame *aFrame,
   nsROCSSPrimitiveValue *val = GetROCSSPrimitiveValue();
   NS_ENSURE_TRUE(val, NS_ERROR_OUT_OF_MEMORY);
 
-#ifdef IBMBIDI
   const nsStyleTextReset *text = nsnull;
   GetStyleData(eStyleStruct_TextReset, (const nsStyleStruct*&)text, aFrame);
 
@@ -1746,9 +1768,6 @@ nsComputedDOMStyle::GetUnicodeBidi(nsIFrame *aFrame,
   } else {
     val->SetIdent(NS_LITERAL_STRING("normal"));
   }
-#else // IBMBIDI
-  val->SetIdent(NS_LITERAL_STRING("normal"));
-#endif // IBMBIDI
 
   return CallQueryInterface(val, aValue);
 }
@@ -1808,7 +1827,6 @@ nsComputedDOMStyle::GetAppearance(nsIFrame *aFrame,
 }
 
 
-#ifdef INCLUDE_XUL
 nsresult
 nsComputedDOMStyle::GetBoxAlign(nsIFrame *aFrame,
                                 nsIDOMCSSValue** aValue)
@@ -1940,8 +1958,6 @@ nsComputedDOMStyle::GetBoxPack(nsIFrame *aFrame,
 
   return CallQueryInterface(val, aValue);
 }
-
-#endif // INCLUDE_XUL
 
 nsresult
 nsComputedDOMStyle::GetBoxSizing(nsIFrame *aFrame,
@@ -2856,11 +2872,6 @@ nsComputedDOMStyle::GetRelativeOffset(PRUint8 aSide, nsIFrame* aFrame,
     }
 
     nsIFrame* container = nsnull;
-    const nsStyleBorder* borderData = nsnull;
-    const nsStylePadding* paddingData = nsnull;
-    nsMargin border;
-    nsMargin padding;
-    nsSize size;
     switch(coord.GetUnit()) {
       case eStyleUnit_Coord:
         val->SetTwips(sign * coord.GetCoordValue());
@@ -2868,16 +2879,11 @@ nsComputedDOMStyle::GetRelativeOffset(PRUint8 aSide, nsIFrame* aFrame,
       case eStyleUnit_Percent:
         container = GetContainingBlock(aFrame);
         if (container) {
-          container->GetStyleData(eStyleStruct_Border,
-                                  (const nsStyleStruct*&)borderData);
-          if (borderData) {
-            borderData->CalcBorderFor(container, border);
-          }
-          container->GetStyleData(eStyleStruct_Padding,
-                                  (const nsStyleStruct*&)paddingData);
-          if (paddingData) {
-            paddingData->CalcPaddingFor(container, padding);
-          }
+          nsMargin border;
+          nsMargin padding;
+          nsSize size;
+          container->GetStyleBorder()->CalcBorderFor(container, border);
+          container->GetStylePadding()->CalcPaddingFor(container, padding);
           container->GetSize(size);
           if (aSide == NS_SIDE_LEFT || aSide == NS_SIDE_RIGHT) {
             val->SetTwips(sign * coord.GetPercentValue() *
@@ -3004,7 +3010,7 @@ nsComputedDOMStyle::GetStyleData(nsStyleStructID aID,
                                  nsIFrame* aFrame)
 {
   if (aFrame && !mPseudo) {
-    aFrame->GetStyleData(aID, aStyleStruct);
+    aStyleStruct = aFrame->GetStyleData(aID);
   } else if (mStyleContextHolder) {
     aStyleStruct = mStyleContextHolder->GetStyleData(aID);    
   } else {
@@ -3015,18 +3021,16 @@ nsComputedDOMStyle::GetStyleData(nsStyleStructID aID,
     nsCOMPtr<nsIPresContext> pctx;
     presShell->GetPresContext(getter_AddRefs(pctx));
     if (pctx) {
-      nsCOMPtr<nsIStyleContext> sctx;
+      nsStyleContext* sctx;
       if (!mPseudo) {
-        pctx->ResolveStyleContextFor(mContent, nsnull,
-                                     getter_AddRefs(sctx));
+        sctx = pctx->ResolveStyleContextFor(mContent, nsnull).get();
       } else {
-        pctx->ResolvePseudoStyleContextFor(mContent, mPseudo, nsnull,
-                                           getter_AddRefs(sctx));
+        sctx = pctx->ResolvePseudoStyleContextFor(mContent, mPseudo, nsnull).get();
       }
       if (sctx) {
         aStyleStruct = sctx->GetStyleData(aID);
       }
-      mStyleContextHolder = sctx;
+      mStyleContextHolder = dont_AddRef(sctx);  // transfer ref from sctx
     }
   }
   NS_ASSERTION(aStyleStruct, "Failed to get a style struct");
@@ -3183,19 +3187,22 @@ nsComputedDOMStyle::GetBorderColorsFor(PRUint8 aSide, nsIFrame *aFrame,
 
           return NS_ERROR_OUT_OF_MEMORY;
         }
-        nsDOMCSSRGBColor *rgb = nsnull;
-        rgb = GetDOMCSSRGBColor(borderColors->mColor);
-        if (rgb) {
-          primitive->SetColor(rgb);
+        if (borderColors->mTransparent) {
+          primitive->SetIdent(NS_LITERAL_STRING("transparent"));
         } else {
-          delete valueList;
-          delete primitive;
+          nsDOMCSSRGBColor *rgb = GetDOMCSSRGBColor(borderColors->mColor);
+          if (rgb) {
+            primitive->SetColor(rgb);
+          } else {
+            delete valueList;
+            delete primitive;
 
-          return NS_ERROR_OUT_OF_MEMORY;
+            return NS_ERROR_OUT_OF_MEMORY;
+          }
         }
 
-        nsresult rv = valueList->AppendCSSValue(primitive);
-        if (NS_FAILED(rv)) {
+        PRBool success = valueList->AppendCSSValue(primitive);
+        if (!success) {
           delete valueList;
           delete primitive;
 
@@ -3348,22 +3355,25 @@ nsComputedDOMStyle::GetBorderColorFor(PRUint8 aSide, nsIFrame *aFrame,
     PRBool transparent;
     PRBool foreground;
     border->GetBorderColor(aSide, color, transparent, foreground);
-    if (foreground) {
-      const nsStyleColor* colorStruct = nsnull;
-      GetStyleData(eStyleStruct_Color, (const nsStyleStruct*&)colorStruct,
-                   aFrame);
-      color = colorStruct->mColor;
+    if (transparent) {
+      val->SetIdent(NS_LITERAL_STRING("transparent"));
+    } else {
+      if (foreground) {
+        const nsStyleColor* colorStruct = nsnull;
+        GetStyleData(eStyleStruct_Color, (const nsStyleStruct*&)colorStruct,
+                     aFrame);
+        color = colorStruct->mColor;
+      }
+
+      nsDOMCSSRGBColor *rgb = GetDOMCSSRGBColor(color);
+      if (!rgb) {
+        delete val;
+
+        return NS_ERROR_OUT_OF_MEMORY;
+      }
+
+      val->SetColor(rgb);
     }
-
-    nsDOMCSSRGBColor *rgb = nsnull;
-    rgb = GetDOMCSSRGBColor(color);
-    if (!rgb) {
-      delete val;
-
-      return NS_ERROR_OUT_OF_MEMORY;
-    }
-
-    val->SetColor(rgb);
   } else {
     val->SetString(NS_LITERAL_STRING(""));
   }
@@ -3594,6 +3604,7 @@ nsComputedDOMStyle::GetQueryablePropertyMap(PRUint32* aLength)
 
     COMPUTED_STYLE_MAP_ENTRY(appearance,                    Appearance),
     COMPUTED_STYLE_MAP_ENTRY(_moz_background_clip,          BackgroundClip),
+    COMPUTED_STYLE_MAP_ENTRY(_moz_background_inline_policy, BackgroundInlinePolicy),
     COMPUTED_STYLE_MAP_ENTRY(_moz_background_origin,        BackgroundOrigin),
     COMPUTED_STYLE_MAP_ENTRY(binding,                       Binding),
     COMPUTED_STYLE_MAP_ENTRY(border_bottom_colors,          BorderBottomColors),
@@ -3604,14 +3615,12 @@ nsComputedDOMStyle::GetQueryablePropertyMap(PRUint32* aLength)
     COMPUTED_STYLE_MAP_ENTRY(_moz_border_radius_bottomRight,BorderRadiusBottomRight),
     COMPUTED_STYLE_MAP_ENTRY(_moz_border_radius_topLeft,    BorderRadiusTopLeft),
     COMPUTED_STYLE_MAP_ENTRY(_moz_border_radius_topRight,   BorderRadiusTopRight),
-#ifdef INCLUDE_XUL
     COMPUTED_STYLE_MAP_ENTRY(box_align,                     BoxAlign),
     COMPUTED_STYLE_MAP_ENTRY(box_direction,                 BoxDirection),
     COMPUTED_STYLE_MAP_ENTRY(box_flex,                      BoxFlex),
     COMPUTED_STYLE_MAP_ENTRY(box_ordinal_group,             BoxOrdinalGroup),
     COMPUTED_STYLE_MAP_ENTRY(box_orient,                    BoxOrient),
     COMPUTED_STYLE_MAP_ENTRY(box_pack,                      BoxPack),
-#endif
     COMPUTED_STYLE_MAP_ENTRY(box_sizing,                    BoxSizing),
     COMPUTED_STYLE_MAP_ENTRY(float_edge,                    FloatEdge),
     COMPUTED_STYLE_MAP_ENTRY(opacity,                       Opacity),

@@ -64,15 +64,13 @@ public:
   NS_IMETHOD Init(nsIPresContext*  aPresContext,
                   nsIContent*      aContent,
                   nsIFrame*        aParent,
-                  nsIStyleContext* aContext,
+                  nsStyleContext*  aContext,
                   nsIFrame*        aPrevInFlow);
 
   virtual ~nsGfxScrollFrame();
 
-
-  // Called to set the one and only child frame. Returns NS_ERROR_INVALID_ARG
-  // if the child frame is NULL, and NS_ERROR_UNEXPECTED if the child list
-  // contains more than one frame
+  // Called to set the child frames. We typically have three: the scroll area,
+  // the vertical scrollbar, and the horizontal scrollbar.
   NS_IMETHOD SetInitialChildList(nsIPresContext* aPresContext,
                                  nsIAtom*        aListName,
                                  nsIFrame*       aChildList);
@@ -157,6 +155,10 @@ public:
 
   NS_IMETHOD GetScrollbarBox(PRBool aVertical, nsIBox** aResult);
 
+  NS_IMETHOD CurPosAttributeChanged(nsIPresContext* aPresContext,
+                                    nsIContent* aChild,
+                                    PRInt32 aModType);
+
   NS_IMETHOD GetClipSize(nsIPresContext* aPresContext, 
                          nscoord *aWidth, 
                          nscoord *aHeight) const;
@@ -184,10 +186,23 @@ protected:
   nsGfxScrollFrame(nsIPresShell* aShell, nsIDocument* aDocument, PRBool aIsRoot);
   virtual PRIntn GetSkipSides() const;
 
+  // If a child frame was added or removed, reload our child frame list
+  // We need this if a scrollbar frame is recreated
+  void ReloadChildFrames(nsIPresContext* aPresContext);
+
+  struct ScrollbarStyles {
+    // one of NS_STYLE_OVERFLOW_SCROLL, NS_STYLE_OVERFLOW_HIDDEN,
+    // NS_STYLE_OVERFLOW_VISIBLE, NS_STYLE_OVERFLOW_AUTO
+    PRInt32 mHorizontal;
+    PRInt32 mVertical;
+    ScrollbarStyles(PRInt32 h, PRInt32 v) : mHorizontal(h), mVertical(v) {}
+  };
+  virtual ScrollbarStyles GetScrollbarStyles() const;
+
 private:
   friend class nsGfxScrollFrameInner;
   nsGfxScrollFrameInner* mInner;
   nsIPresContext*        mPresContext;  // weak reference
 };
 
-#endif /* nsScrollFrame_h___ */
+#endif /* nsGfxScrollFrame_h___ */

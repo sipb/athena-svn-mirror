@@ -83,6 +83,7 @@ class nsFontOS2
   ULONG     mHashMe;
   nscoord   mMaxAscent;
   nscoord   mMaxDescent;
+  int       mConvertCodePage;
 };
 
 struct nsMiniFontMetrics
@@ -92,6 +93,7 @@ struct nsMiniFontMetrics
   USHORT  fsType;
   USHORT  fsDefn;
   USHORT  fsSelection;
+  USHORT  usCodePage;
 };
 
 class nsGlobalFont
@@ -198,7 +200,6 @@ class nsFontMetricsOS2 : public nsIFontMetrics
 
   static nsVoidArray*  gGlobalFonts;
   static PLHashTable*  gFamilyNames;
-  static long          gSystemRes;
   static nsICollation* gCollation;
   
   nsStringArray       mFonts;
@@ -212,7 +213,7 @@ class nsFontMetricsOS2 : public nsIFontMetrics
   PRUint8             mTriedAllGenerics;
   PRUint8             mIsUserDefined;
 
-  int                 mCodePage;
+  int                 mConvertCodePage;
 
 
  protected:

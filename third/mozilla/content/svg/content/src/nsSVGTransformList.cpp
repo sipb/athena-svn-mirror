@@ -70,7 +70,6 @@ nsSVGTransformList::Create(nsIDOMSVGTransformList** aResult)
 
 nsSVGTransformList::nsSVGTransformList()
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsSVGTransformList::~nsSVGTransformList()
@@ -204,7 +203,7 @@ nsSVGTransformList::SetValueString(const nsAString& aValue)
       break;
     }
     
-    nsCOMPtr<nsIAtom> keyatom = dont_AddRef(NS_NewAtom(keyword));
+    nsCOMPtr<nsIAtom> keyatom = do_GetAtom(keyword);
     
     if (keyatom == nsSVGAtoms::translate) {
       char* arg1 = nsCRT::strtok(args, delimiters3, &args);

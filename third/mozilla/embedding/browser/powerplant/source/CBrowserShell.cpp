@@ -133,7 +133,6 @@ CBrowserShellProgressListener::CBrowserShellProgressListener(CBrowserShell* itsO
     mLoading(PR_FALSE), mUseRealProgFlag(PR_FALSE),
     mFinishedRequests(0), mTotalRequests(0)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 CBrowserShellProgressListener::~CBrowserShellProgressListener()
@@ -258,9 +257,9 @@ NS_IMETHODIMP CBrowserShellProgressListener::OnSecurityChange(nsIWebProgress *aW
 //*****************************************************************************
 
 CBrowserShell::CBrowserShell() :
+    LDropArea(GetMacWindow()),
     mChromeFlags(nsIWebBrowserChrome::CHROME_DEFAULT), mIsMainContent(true),
-    mContextMenuFlags(nsIContextMenuListener2::CONTEXT_NONE),
-    LDropArea(GetMacWindow())
+    mContextMenuFlags(nsIContextMenuListener2::CONTEXT_NONE)
 {
 	nsresult rv = CommonConstruct();
 	if (rv != NS_OK)
@@ -342,7 +341,7 @@ NS_IMETHODIMP CBrowserShell::CommonConstruct()
 }
 
 /**
- * It is a nescesary evil to create a top level window widget in order to
+ * It is a necessary evil to create a top level window widget in order to
  * have a parent for our nsIBaseWindow. In order to not put that responsibility
  * onto the PowerPlant window which contains us, we do it ourselves here by
  * creating the widget if it does not exist and storing it as a window property.
@@ -357,7 +356,7 @@ NS_IMETHODIMP CBrowserShell::EnsureTopLevelWidget(nsIWidget **aWidget)
     nsresult rv;
     nsIWidget *widget = nsnull;
 
-    err = ::GetWindowProperty(Compat_GetMacWindow(), 'PPMZ', 'WIDG', sizeof(nsIWidget*), nsnull, (void*)&widget);
+    err = ::GetWindowProperty(GetMacWindow(), 'PPMZ', 'WIDG', sizeof(nsIWidget*), nsnull, (void*)&widget);
     if (err == noErr && widget) {
         *aWidget = widget;
         NS_ADDREF(*aWidget);
@@ -378,11 +377,11 @@ NS_IMETHODIMP CBrowserShell::EnsureTopLevelWidget(nsIWidget **aWidget)
     Rect grayRect;
     ::GetRegionBounds(grayRgn, &grayRect);
     nsRect r(0, 0, grayRect.right - grayRect.left, grayRect.bottom - grayRect.top);
-    rv = newWidget->Create(Compat_GetMacWindow(), r, nsnull, nsnull, nsnull, nsnull, nsnull);
+    rv = newWidget->Create(GetMacWindow(), r, nsnull, nsnull, nsnull, nsnull, nsnull);
     NS_ENSURE_SUCCESS(rv, rv);
 
 	widget = newWidget;
-    err = ::SetWindowProperty(Compat_GetMacWindow(), 'PPMZ', 'WIDG', sizeof(nsIWidget*), (void*)&widget);
+    err = ::SetWindowProperty(GetMacWindow(), 'PPMZ', 'WIDG', sizeof(nsIWidget*), (void*)&widget);
     if (err == noErr) {
         *aWidget = newWidget;
         NS_ADDREF(*aWidget);
@@ -940,7 +939,7 @@ NS_METHOD CBrowserShell::SetWebBrowser(nsIWebBrowser* aBrowser)
     FocusDraw();
 
     /*
-    CBrowserWindow *ourWindow = dynamic_cast<CBrowserWindow*>(LWindow::FetchWindowObject(Compat_GetMacWindow()));
+    CBrowserWindow *ourWindow = dynamic_cast<CBrowserWindow*>(LWindow::FetchWindowObject(GetMacWindow()));
     NS_ENSURE_TRUE(ourWindow, NS_ERROR_FAILURE);
 
     nsCOMPtr<nsIWidget>  aWidget;
@@ -1221,7 +1220,7 @@ NS_METHOD CBrowserShell::SaveInternal(nsIURI* inURI, nsIDOMDocument* inDocument,
 
     webPersist->SetProgressListener(sniffer);  // owned
     
-    return webPersist->SaveURI(inURI, nsnull, tmpFile);
+    return webPersist->SaveURI(inURI, nsnull, nsnull, nsnull, nsnull, tmpFile);
 }
 
 
@@ -1302,7 +1301,7 @@ Boolean CBrowserShell::CanFindNext()
     
     nsXPIDLString searchStr;
     rv = finder->GetSearchString(getter_Copies(searchStr));
-    return (NS_SUCCEEDED(rv) && nsCRT::strlen(searchStr) != 0);
+    return (NS_SUCCEEDED(rv) && !searchStr.IsEmpty());
 }
 
 
@@ -1679,7 +1678,9 @@ OSStatus CBrowserShell::HandleUpdateActiveInputArea(
                                                        &err);
   if (noErr != err)
     return err;
-  return NS_FAILED(res) ? eventNotHandledErr : noErr;
+  if (NS_FAILED(res))
+    return eventNotHandledErr;
+  return noErr;
 }
 
 OSStatus CBrowserShell::HandleUnicodeForKeyEvent(
@@ -1699,8 +1700,10 @@ OSStatus CBrowserShell::HandleUnicodeForKeyEvent(
                                                     (void*)keyboardEvent, 
                                                     &err);
   if (noErr != err)
-    return err;
-  return NS_FAILED(res) ? eventNotHandledErr : noErr;
+      return err;
+  if (NS_FAILED(res))
+      return eventNotHandledErr;
+  return noErr;
 }
 
 OSStatus CBrowserShell::HandleOffsetToPos(
@@ -1715,9 +1718,12 @@ OSStatus CBrowserShell::HandleOffsetToPos(
     
   OSStatus err = noErr;
   nsresult res = tieSink->HandleOffsetToPos( offset, pointX, pointY, &err);
+
   if (noErr != err)
-    return err;
-  return NS_FAILED(res) ? eventNotHandledErr : noErr;
+      return err;
+  if (NS_FAILED(res))
+      return eventNotHandledErr;
+  return noErr;
 }
 
 OSStatus CBrowserShell::HandlePosToOffset(
@@ -1736,8 +1742,10 @@ OSStatus CBrowserShell::HandlePosToOffset(
   nsresult res = tieSink->HandlePosToOffset( currentPointX, currentPointY, 
                                              offset, regionClass, &err);
   if (noErr != err)
-    return err;
-  return NS_FAILED(res) ? eventNotHandledErr : noErr;
+      return err;
+  if (NS_FAILED(res))
+      return eventNotHandledErr;
+  return noErr;
 }
 
 OSStatus CBrowserShell::HandleGetSelectedText(nsAString& selectedText)
@@ -1749,8 +1757,11 @@ OSStatus CBrowserShell::HandleGetSelectedText(nsAString& selectedText)
     
   OSStatus err = noErr;
   nsresult res = tieSink->HandleGetSelectedText( selectedText, &err);
+
   if (noErr != err)
-    return err;
-  return NS_FAILED(res) ? eventNotHandledErr : noErr;
+      return err;
+  if (NS_FAILED(res))
+      return eventNotHandledErr;
+  return noErr;
 }
 

@@ -482,6 +482,7 @@ function onRemoveAccount(event) {
 
   var server = account.incomingServer;
   var type = server.type;
+  var prettyName = server.prettyName;
 
   var protocolinfo = Components.classes["@mozilla.org/messenger/protocol/info;1?type=" + type].getService(Components.interfaces.nsIMsgProtocolInfo);
   var canDelete = protocolinfo.canDelete;
@@ -492,9 +493,17 @@ function onRemoveAccount(event) {
     return;
 
   var confirmRemoveAccount =
-    gPrefsBundle.getString("confirmRemoveAccount");
-  if (!window.confirm(confirmRemoveAccount)) 
+    gPrefsBundle.getFormattedString("confirmRemoveAccount", [prettyName]);
+
+  var confirmTitle = gPrefsBundle.getString("confirmRemoveAccountTitle");
+
+  var promptService =
+    Components.classes["@mozilla.org/embedcomp/prompt-service;1"].
+               getService(Components.interfaces.nsIPromptService);
+  if (!promptService ||
+      !promptService.confirm(window, confirmTitle, confirmRemoveAccount)) {
     return;
+  }
 
   try {
     // clear cached data out of the account array
@@ -696,8 +705,8 @@ function onAccountClick(tree) {
 // show the page for the given server:
 // - save the old values
 // - start loading the new page
-function showPage(serverId, pageId) {
-
+function showPage(serverId, pageId) 
+{
   if (pageId == currentPageId &&
       serverId == currentServerId)
     return;
@@ -707,7 +716,7 @@ function showPage(serverId, pageId) {
 
   if (gSmtpHostNameIsIllegal) {
     gSmtpHostNameIsIllegal = false;
-    return false;
+    return;
   }
 
   // save the previous page
@@ -728,7 +737,6 @@ function showPage(serverId, pageId) {
   else if (serverId != currentServerId) {
     restorePage(pageId, serverId);
   }
-
 }
 
 // page has loaded
@@ -809,7 +817,7 @@ function getAccountValue(account, accountValues, type, slot, preftype, isGeneric
     accountValues[type] = new Array;
 
   // fill in the slot from the account if necessary
-  if (!(slot in accountValues[type]) || !accountValues[type][slot]) {
+  if (!(slot in accountValues[type]) || accountValues[type][slot] == undefined) {
     // dump("Array->Form: lazily reading in the " + slot + " from the " + type + "\n");
     var server;
     if (account)

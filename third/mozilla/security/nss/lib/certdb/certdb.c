@@ -34,17 +34,17 @@
 /*
  * Certificate handling code
  *
- * $Id: certdb.c,v 1.1.1.1 2003-02-14 19:55:27 rbasch Exp $
+ * $Id: certdb.c,v 1.1.1.2 2003-07-08 17:52:16 rbasch Exp $
  */
 
 #include "nssilock.h"
 #include "prmon.h"
 #include "prtime.h"
 #include "cert.h"
+#include "certi.h"
 #include "secder.h"
 #include "secoid.h"
 #include "secasn1.h"
-#include "blapi.h"		/* for SHA1_HashBuf */
 #include "genname.h"
 #include "keyhi.h"
 #include "secitem.h"
@@ -523,7 +523,7 @@ findOIDinOIDSeqByTagNum(CERTOidSequence *seq, SECOidTag tagnum)
  * fill in nsCertType field of the cert based on the cert extension
  */
 SECStatus
-CERT_GetCertType(CERTCertificate *cert)
+cert_GetCertType(CERTCertificate *cert)
 {
     SECStatus rv;
     SECItem tmpitem;
@@ -531,6 +531,12 @@ CERT_GetCertType(CERTCertificate *cert)
     CERTOidSequence *extKeyUsage = NULL;
     PRBool basicConstraintPresent = PR_FALSE;
     CERTBasicConstraints basicConstraint;
+    unsigned int nsCertType = 0;
+
+    if (cert->nsCertType) {
+        /* once set, no need to recalculate */
+        return SECSuccess;
+    }
 
     tmpitem.data = NULL;
     CERT_FindNSCertTypeExtension(cert, &tmpitem);
@@ -545,9 +551,9 @@ CERT_GetCertType(CERTCertificate *cert)
     }
     if (tmpitem.data != NULL || extKeyUsage != NULL) {
 	if (tmpitem.data == NULL) {
-	    cert->nsCertType = 0;
+	    nsCertType = 0;
 	} else {
-	    cert->nsCertType = tmpitem.data[0];
+	    nsCertType = tmpitem.data[0];
 	}
 
 	/* free tmpitem data pointer to avoid memory leak */
@@ -558,16 +564,16 @@ CERT_GetCertType(CERTCertificate *cert)
 	 * for this release, we will allow SSL certs with an email address
 	 * to be used for email
 	 */
-	if ( ( cert->nsCertType & NS_CERT_TYPE_SSL_CLIENT ) &&
+	if ( ( nsCertType & NS_CERT_TYPE_SSL_CLIENT ) &&
 	    cert->emailAddr ) {
-	    cert->nsCertType |= NS_CERT_TYPE_EMAIL;
+	    nsCertType |= NS_CERT_TYPE_EMAIL;
 	}
 	/*
 	 * for this release, we will allow SSL intermediate CAs to be
 	 * email intermediate CAs too.
 	 */
-	if ( cert->nsCertType & NS_CERT_TYPE_SSL_CA ) {
-	    cert->nsCertType |= NS_CERT_TYPE_EMAIL_CA;
+	if ( nsCertType & NS_CERT_TYPE_SSL_CA ) {
+	    nsCertType |= NS_CERT_TYPE_EMAIL_CA;
 	}
 	/*
 	 * allow a cert with the extended key usage of EMail Protect
@@ -579,9 +585,9 @@ CERT_GetCertType(CERTCertificate *cert)
 	    SECSuccess) {
 	    if (basicConstraintPresent == PR_TRUE &&
 		(basicConstraint.isCA)) {
-		cert->nsCertType |= NS_CERT_TYPE_EMAIL_CA;
+		nsCertType |= NS_CERT_TYPE_EMAIL_CA;
 	    } else {
-		cert->nsCertType |= NS_CERT_TYPE_EMAIL;
+		nsCertType |= NS_CERT_TYPE_EMAIL;
 	    }
 	}
 	if (findOIDinOIDSeqByTagNum(extKeyUsage, 
@@ -589,9 +595,9 @@ CERT_GetCertType(CERTCertificate *cert)
 	    SECSuccess){
 	    if (basicConstraintPresent == PR_TRUE &&
 		(basicConstraint.isCA)) {
-		cert->nsCertType |= NS_CERT_TYPE_SSL_CA;
+		nsCertType |= NS_CERT_TYPE_SSL_CA;
 	    } else {
-		cert->nsCertType |= NS_CERT_TYPE_SSL_SERVER;
+		nsCertType |= NS_CERT_TYPE_SSL_SERVER;
 	    }
 	}
 	if (findOIDinOIDSeqByTagNum(extKeyUsage,
@@ -599,9 +605,9 @@ CERT_GetCertType(CERTCertificate *cert)
 	    SECSuccess){
 	    if (basicConstraintPresent == PR_TRUE &&
 		(basicConstraint.isCA)) {
-		cert->nsCertType |= NS_CERT_TYPE_SSL_CA;
+		nsCertType |= NS_CERT_TYPE_SSL_CA;
 	    } else {
-		cert->nsCertType |= NS_CERT_TYPE_SSL_CLIENT;
+		nsCertType |= NS_CERT_TYPE_SSL_CLIENT;
 	    }
 	}
 	if (findOIDinOIDSeqByTagNum(extKeyUsage,
@@ -609,43 +615,43 @@ CERT_GetCertType(CERTCertificate *cert)
 	    SECSuccess) {
 	    if (basicConstraintPresent == PR_TRUE &&
 		(basicConstraint.isCA)) {
-		cert->nsCertType |= NS_CERT_TYPE_OBJECT_SIGNING_CA;
+		nsCertType |= NS_CERT_TYPE_OBJECT_SIGNING_CA;
 	    } else {
-		cert->nsCertType |= NS_CERT_TYPE_OBJECT_SIGNING;
+		nsCertType |= NS_CERT_TYPE_OBJECT_SIGNING;
 	    }
 	}
 	if (findOIDinOIDSeqByTagNum(extKeyUsage,
 				    SEC_OID_EXT_KEY_USAGE_TIME_STAMP) ==
 	    SECSuccess) {
-	    cert->nsCertType |= EXT_KEY_USAGE_TIME_STAMP;
+	    nsCertType |= EXT_KEY_USAGE_TIME_STAMP;
 	}
 	if (findOIDinOIDSeqByTagNum(extKeyUsage,
 				    SEC_OID_OCSP_RESPONDER) == 
 	    SECSuccess) {
-	    cert->nsCertType |= EXT_KEY_USAGE_STATUS_RESPONDER;
+	    nsCertType |= EXT_KEY_USAGE_STATUS_RESPONDER;
 	}
     } else {
 	/* if no extension, then allow any ssl or email (no ca or object
 	 * signing)
 	 */
-	cert->nsCertType = NS_CERT_TYPE_SSL_CLIENT | NS_CERT_TYPE_SSL_SERVER |
+	nsCertType = NS_CERT_TYPE_SSL_CLIENT | NS_CERT_TYPE_SSL_SERVER |
 	    NS_CERT_TYPE_EMAIL;
 
 	/* if the basic constraint extension says the cert is a CA, then
 	   allow SSL CA and EMAIL CA and Status Responder */
 	if ((basicConstraintPresent == PR_TRUE)
 	    && (basicConstraint.isCA)) {
-		cert->nsCertType |= NS_CERT_TYPE_SSL_CA;
-		cert->nsCertType |= NS_CERT_TYPE_EMAIL_CA;
-		cert->nsCertType |= EXT_KEY_USAGE_STATUS_RESPONDER;
+		nsCertType |= NS_CERT_TYPE_SSL_CA;
+		nsCertType |= NS_CERT_TYPE_EMAIL_CA;
+		nsCertType |= EXT_KEY_USAGE_STATUS_RESPONDER;
 	} else if (CERT_IsCACert(cert, NULL) == PR_TRUE) {
-		cert->nsCertType |= EXT_KEY_USAGE_STATUS_RESPONDER;
+		nsCertType |= EXT_KEY_USAGE_STATUS_RESPONDER;
 	}
 
 	/* if the cert is a fortezza CA cert, then allow SSL CA and EMAIL CA */
 	if (fortezzaIsCA(cert)) {
-		cert->nsCertType |= NS_CERT_TYPE_SSL_CA;
-		cert->nsCertType |= NS_CERT_TYPE_EMAIL_CA;
+		nsCertType |= NS_CERT_TYPE_SSL_CA;
+		nsCertType |= NS_CERT_TYPE_EMAIL_CA;
 	}
     }
 
@@ -653,6 +659,7 @@ CERT_GetCertType(CERTCertificate *cert)
 	PORT_Free(encodedExtKeyUsage.data);
 	CERT_DestroyOidSequence(extKeyUsage);
     }
+    PR_AtomicSet(&cert->nsCertType, nsCertType);
     return(SECSuccess);
 }
 
@@ -669,7 +676,7 @@ cert_GetKeyID(CERTCertificate *cert)
     cert->subjectKeyID.len = 0;
 
     /* see of the cert has a key identifier extension */
-    rv = CERT_FindSubjectKeyIDExten(cert, &tmpitem);
+    rv = CERT_FindSubjectKeyIDExtension(cert, &tmpitem);
     if ( rv == SECSuccess ) {
 	cert->subjectKeyID.data = (unsigned char*) PORT_ArenaAlloc(cert->arena, tmpitem.len);
 	if ( cert->subjectKeyID.data != NULL ) {
@@ -746,7 +753,7 @@ cert_IsRootCert(CERTCertificate *cert)
 	/* authority key identifier is present */
 	if (cert->authKeyID->keyID.len > 0) {
 	    /* the keyIdentifier field is set, look for subjectKeyID */
-	    rv = CERT_FindSubjectKeyIDExten(cert, &tmpitem);
+	    rv = CERT_FindSubjectKeyIDExtension(cert, &tmpitem);
 	    if (rv == SECSuccess) {
 		PRBool match;
 		/* also present, they MUST match for it to be a root */
@@ -862,7 +869,7 @@ CERT_DecodeDERCertificate(SECItem *derSignedCert, PRBool copyDER,
     }
 
     /* set the email address */
-    cert->emailAddr = CERT_GetCertificateEmailAddress(cert);
+    cert->emailAddr = cert_GetCertificateEmailAddresses(cert);
     
     /* initialize the subjectKeyID */
     rv = cert_GetKeyID(cert);
@@ -877,7 +884,7 @@ CERT_DecodeDERCertificate(SECItem *derSignedCert, PRBool copyDER,
     }
 
     /* initialize the certType */
-    rv = CERT_GetCertType(cert);
+    rv = cert_GetCertType(cert);
     if ( rv != SECSuccess ) {
 	goto loser;
     }
@@ -1200,6 +1207,8 @@ CERT_CheckKeyUsage(CERTCertificate *cert, unsigned int requiredUsage)
      */
     if ( requiredUsage & KU_KEY_AGREEMENT_OR_ENCIPHERMENT ) {
 	key = CERT_ExtractPublicKey(cert);
+	if (!key)
+	    return SECFailure;
 	if ( ( key->keyType == keaKey ) || ( key->keyType == fortezzaKey ) ||
 	     ( key->keyType == dhKey ) ) {
 	    requiredUsage |= KU_KEY_AGREEMENT;
@@ -1857,6 +1866,21 @@ CERT_IsCADERCert(SECItem *derCert, unsigned int *type) {
     isCA = CERT_IsCACert(cert,type);
     CERT_DestroyCertificate (cert);
     return isCA;
+}
+
+PRBool
+CERT_IsRootDERCert(SECItem *derCert)
+{
+    CERTCertificate *cert;
+    PRBool isRoot;
+
+    /* This is okay -- only looks at extensions */
+    cert = CERT_DecodeDERCertificate(derCert, PR_FALSE, NULL);
+    if (cert == NULL) return PR_FALSE;
+
+    isRoot = cert->isRoot;
+    CERT_DestroyCertificate (cert);
+    return isRoot;
 }
 
 
@@ -2735,4 +2759,160 @@ CERT_SetStatusConfig(CERTCertDBHandle *handle, CERTStatusConfig *statusConfig)
 {
   PORT_Assert(handle->statusConfig == NULL);
   handle->statusConfig = statusConfig;
+}
+
+/*
+ * Code for dealing with subjKeyID to cert mappings.
+ */
+
+static PLHashTable *gSubjKeyIDHash = NULL;
+static PRLock      *gSubjKeyIDLock = NULL;
+
+static void *cert_AllocTable(void *pool, PRSize size)
+{
+    return PORT_Alloc(size);
+}
+
+static void cert_FreeTable(void *pool, void *item)
+{
+    PORT_Free(item);
+}
+
+static PLHashEntry* cert_AllocEntry(void *pool, const void *key)
+{
+    return PORT_New(PLHashEntry);
+}
+
+static void cert_FreeEntry(void *pool, PLHashEntry *he, PRUintn flag)
+{
+    SECITEM_FreeItem((SECItem*)(he->value), PR_TRUE);
+    if (flag == HT_FREE_ENTRY) {
+        SECITEM_FreeItem((SECItem*)(he->key), PR_TRUE);
+        PORT_Free(he);
+    }
+}
+
+static PLHashAllocOps cert_AllocOps = {
+    cert_AllocTable, cert_FreeTable, cert_AllocEntry, cert_FreeEntry
+};
+
+SECStatus
+cert_CreateSubjectKeyIDHashTable(void)
+{
+    gSubjKeyIDHash = PL_NewHashTable(0, SECITEM_Hash, SECITEM_HashCompare,
+                                    SECITEM_HashCompare,
+                                    &cert_AllocOps, NULL);
+    if (!gSubjKeyIDHash) {
+        PORT_SetError(SEC_ERROR_NO_MEMORY);
+        return SECFailure;
+    }
+    gSubjKeyIDLock = PR_NewLock();
+    if (!gSubjKeyIDLock) {
+        PL_HashTableDestroy(gSubjKeyIDHash);
+        gSubjKeyIDHash = NULL;
+        PORT_SetError(SEC_ERROR_NO_MEMORY);
+        return SECFailure;
+    }
+    return SECSuccess;
+
+}
+
+SECStatus
+cert_AddSubjectKeyIDMapping(SECItem *subjKeyID, CERTCertificate *cert)
+{
+    SECItem *newKeyID, *oldVal, *newVal;
+    SECStatus rv = SECFailure;
+
+    if (!gSubjKeyIDLock) {
+	/* If one is created, then both are there.  So only check for one. */
+	return SECFailure;
+    }
+
+    newVal = SECITEM_DupItem(&cert->derCert);
+    if (!newVal) {
+        PORT_SetError(SEC_ERROR_NO_MEMORY);
+        goto done;
+    }
+    newKeyID = SECITEM_DupItem(subjKeyID);
+    if (!newKeyID) {
+        SECITEM_FreeItem(newVal, PR_TRUE);
+        PORT_SetError(SEC_ERROR_NO_MEMORY);
+        goto done;
+    }
+
+    PR_Lock(gSubjKeyIDLock);
+    /* The hash table implementation does not free up the memory 
+     * associated with the key of an already existing entry if we add a 
+     * duplicate, so we would wind up leaking the previously allocated 
+     * key if we don't remove before adding.
+     */
+    oldVal = (SECItem*)PL_HashTableLookup(gSubjKeyIDHash, subjKeyID);
+    if (oldVal) {
+        PL_HashTableRemove(gSubjKeyIDHash, subjKeyID);
+    }
+
+    rv = (PL_HashTableAdd(gSubjKeyIDHash, newKeyID, newVal)) ? SECSuccess :
+                                                               SECFailure;
+    PR_Unlock(gSubjKeyIDLock);
+done:
+    return rv;
+}
+
+SECStatus
+cert_RemoveSubjectKeyIDMapping(SECItem *subjKeyID)
+{
+    SECStatus rv;
+    if (!gSubjKeyIDLock)
+        return SECFailure;
+
+    PR_Lock(gSubjKeyIDLock);
+    rv = (PL_HashTableRemove(gSubjKeyIDHash, subjKeyID)) ? SECSuccess :
+                                                           SECFailure;
+    PR_Unlock(gSubjKeyIDLock);
+    return rv;
+}
+
+SECStatus
+cert_DestroySubjectKeyIDHashTable(void)
+{
+    if (gSubjKeyIDHash) {
+        PR_Lock(gSubjKeyIDLock);
+        PL_HashTableDestroy(gSubjKeyIDHash);
+        gSubjKeyIDHash = NULL;
+        PR_Unlock(gSubjKeyIDLock);
+        PR_DestroyLock(gSubjKeyIDLock);
+        gSubjKeyIDLock = NULL;
+    }
+    return SECSuccess;
+}
+
+SECItem*
+cert_FindDERCertBySubjectKeyID(SECItem *subjKeyID)
+{
+    SECItem   *val;
+ 
+    if (!gSubjKeyIDLock)
+        return NULL;
+
+    PR_Lock(gSubjKeyIDLock);
+    val = (SECItem*)PL_HashTableLookup(gSubjKeyIDHash, subjKeyID);
+    if (val) {
+        val = SECITEM_DupItem(val);
+    }
+    PR_Unlock(gSubjKeyIDLock);
+    return val;
+}
+
+CERTCertificate*
+CERT_FindCertBySubjectKeyID(CERTCertDBHandle *handle, SECItem *subjKeyID)
+{
+    CERTCertificate *cert = NULL;
+    SECItem *derCert;
+
+    derCert = cert_FindDERCertBySubjectKeyID(subjKeyID);
+    if (derCert) {
+        cert = CERT_FindCertByDERCert(handle, derCert);
+        SECITEM_FreeItem(derCert, PR_TRUE);
+    }
+    return cert;
 }

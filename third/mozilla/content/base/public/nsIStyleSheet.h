@@ -41,8 +41,6 @@
 #include <stdio.h>
 #include "nsISupports.h"
 
-class nsISizeOfHandler;
-
 class nsIAtom;
 class nsString;
 class nsIURI;
@@ -51,7 +49,6 @@ class nsISupportsArray;
 class nsIPresContext;
 class nsIContent;
 class nsIDocument;
-class nsIStyleContext;
 class nsIStyleRuleProcessor;
 
 // IID for the nsIStyleSheet interface {8c4a80a0-ad6a-11d1-8031-006008159b5a}
@@ -70,8 +67,26 @@ public:
   NS_IMETHOD GetMediumAt(PRInt32 aIndex, nsIAtom*& aMedium) const = 0;
   NS_IMETHOD_(PRBool) UseForMedium(nsIAtom* aMedium) const = 0;
 
-  NS_IMETHOD GetEnabled(PRBool& aEnabled) const = 0;
+  /**
+   * Whether the sheet is applicable.  A sheet that is not applicable
+   * should never be inserted into a style set.  A sheet may not be
+   * applicable for a variety of reasons including being disabled and
+   * being incomplete.
+   *
+   */
+  NS_IMETHOD GetApplicable(PRBool& aApplicable) const = 0;
+
+  /**
+   * Set the stylesheet to be enabled.  This may or may not make it
+   * applicable.
+   */
   NS_IMETHOD SetEnabled(PRBool aEnabled) = 0;
+
+  /**
+   * Whether the sheet is complete.
+   */
+  NS_IMETHOD GetComplete(PRBool& aComplete) const = 0;
+  NS_IMETHOD SetComplete() = 0;
 
   // style sheet owner info
   NS_IMETHOD GetParentSheet(nsIStyleSheet*& aParent) const = 0;  // may be null
@@ -82,19 +97,9 @@ public:
   NS_IMETHOD GetStyleRuleProcessor(nsIStyleRuleProcessor*& aProcessor,
                                    nsIStyleRuleProcessor* aPrevProcessor) = 0;
 
-  // XXX style rule enumerations
-
-  // If changing the given attribute cannot affect style context, aAffects
-  // will be PR_FALSE on return.
-  NS_IMETHOD AttributeAffectsStyle(nsIAtom *aAttribute, nsIContent *aContent,
-                                   PRBool &aAffects) = 0;
-
 #ifdef DEBUG
   virtual void List(FILE* out = stdout, PRInt32 aIndent = 0) const = 0;
-
-  virtual void SizeOf(nsISizeOfHandler *aSizeofHandler, PRUint32 &aSize) = 0;
 #endif
-
 };
 
 #endif /* nsIStyleSheet_h___ */

@@ -49,13 +49,14 @@ class nsIContent;
 class nsIDOMUIEvent;
 class nsIAtom;
 class nsIController;
-class nsIXBLPrototypeHandler;
+class nsXBLPrototypeHandler;
 
 class nsXBLDragHandler : public nsIDOMDragListener, 
                          public nsXBLEventHandler
 {
 public:
-  nsXBLDragHandler(nsIDOMEventReceiver* aReceiver, nsIXBLPrototypeHandler* aHandler);
+  nsXBLDragHandler(nsIDOMEventReceiver* aReceiver,
+                   nsXBLPrototypeHandler* aHandler);
   virtual ~nsXBLDragHandler();
   
   // nsIDOMetc.
@@ -70,19 +71,12 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
 protected:
-  static PRUint32 gRefCnt;
-  static nsIAtom* kDragEnterAtom;
-  static nsIAtom* kDragOverAtom;
-  static nsIAtom* kDragExitAtom;
-  static nsIAtom* kDragDropAtom;
-  static nsIAtom* kDragGestureAtom;
-
-protected:
   // Members
 };
 
-extern nsresult
-NS_NewXBLDragHandler(nsIDOMEventReceiver* aEventReceiver, nsIXBLPrototypeHandler* aHandlerElement, 
+nsresult
+NS_NewXBLDragHandler(nsIDOMEventReceiver* aEventReceiver,
+                     nsXBLPrototypeHandler* aHandlerElement,
                      nsXBLDragHandler** aResult);
 
 

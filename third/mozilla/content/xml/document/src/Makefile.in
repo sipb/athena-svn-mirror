@@ -39,6 +39,7 @@ REQUIRES	= xpcom \
 		  htmlparser \
 		  necko \
 		  view \
+		  imglib2 \
 		  docshell \
 		  webshell \
 		  uriloader \
@@ -57,7 +58,6 @@ CPPSRCS		= \
 		nsXMLContentSink.cpp \
 		nsXMLDocument.cpp \
 		nsXMLPrettyPrinter.cpp \
-		nsFIXptr.cpp \
 		$(NULL)
 
 # we don't want the shared lib, but we want to force the creation of a static lib.

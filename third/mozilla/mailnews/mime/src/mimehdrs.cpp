@@ -372,7 +372,7 @@ MimeHeaders_get (MimeHeaders *hdrs, const char *header_name,
 	  if (!head) continue;
 
 	  /* Quick hack to skip over BSD Mailbox delimiter. */
-	  if (i == 0 && head[0] == 'F' && !nsCRT::strncmp(head, "From ", 5))
+	  if (i == 0 && head[0] == 'F' && !strncmp(head, "From ", 5))
 		continue;
 
 	  /* Find the colon. */
@@ -441,7 +441,7 @@ MimeHeaders_get (MimeHeaders *hdrs, const char *header_name,
 
 			/* Since we are tacking more data onto the end of the header
 			   field, we must make it be a well-formed continuation line,
-			   by seperating the old and new data with CR-LF-TAB.
+                          by separating the old and new data with CR-LF-TAB.
 			 */
 			*s++ = ',';				/* #### only do this for addr headers? */
 			*s++ = MSG_LINEBREAK[0];
@@ -732,7 +732,7 @@ MimeHeaders_write_all_headers (MimeHeaders *hdrs, MimeDisplayOptions *opt, PRBoo
     hdr_value = 0;
     
     /* Hack for BSD Mailbox delimiter. */
-    if (i == 0 && head[0] == 'F' && !nsCRT::strncmp(head, "From ", 5))
+    if (i == 0 && head[0] == 'F' && !strncmp(head, "From ", 5))
     {
       /* For now, we don't really want this header to be output so
          we are going to just continue */

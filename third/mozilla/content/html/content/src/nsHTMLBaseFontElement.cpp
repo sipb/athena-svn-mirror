@@ -40,7 +40,6 @@
 #include "nsIHTMLContent.h"
 #include "nsGenericHTMLElement.h"
 #include "nsHTMLAtoms.h"
-#include "nsIStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
 
@@ -69,9 +68,6 @@ public:
 
   NS_IMETHOD GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
                                       nsChangeHint& aHint) const;
-#ifdef DEBUG
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
-#endif
 };
 
 nsresult
@@ -153,31 +149,78 @@ nsHTMLBaseFontElement::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
 
 NS_IMPL_STRING_ATTR(nsHTMLBaseFontElement, Color, color)
 NS_IMPL_STRING_ATTR(nsHTMLBaseFontElement, Face, face)
-NS_IMPL_STRING_ATTR(nsHTMLBaseFontElement, Size, size)
 
+NS_IMETHODIMP
+nsHTMLBaseFontElement::GetSize(PRInt32 *aSize)
+{
+  *aSize = 3;
+
+  nsHTMLValue value;
+  if (NS_CONTENT_ATTR_HAS_VALUE !=
+      GetHTMLAttribute(nsHTMLAtoms::size, value)) {
+    return NS_OK;
+  }
+
+  if (value.GetUnit() == eHTMLUnit_Integer) {
+    *aSize = value.GetIntValue();
+
+    return NS_OK;
+  }
+
+  if (value.GetUnit() != eHTMLUnit_String) {
+    return NS_OK;
+  }
+
+  nsAutoString stringValue;
+  value.GetStringValue(stringValue);
+  if (stringValue.IsEmpty()) {
+    return NS_OK;
+  }
+
+  PRInt32 ec;
+  PRInt32 intValue;
+  intValue = stringValue.ToInteger(&ec);
+  if (ec != 0) {
+    return NS_ERROR_FAILURE;
+  }
+
+  if (stringValue[0] == PRUnichar('+') ||
+      stringValue[0] == PRUnichar('-')) {
+    *aSize += intValue;
+  }
+  else {
+    *aSize = intValue;
+  }
+
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsHTMLBaseFontElement::SetSize(PRInt32 aSize)
+{
+  nsHTMLValue value(aSize, eHTMLUnit_Integer);
+
+  return SetHTMLAttribute(nsHTMLAtoms::size, value, PR_TRUE);
+}
 
 NS_IMETHODIMP
 nsHTMLBaseFontElement::GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
                                                 nsChangeHint& aHint) const
 {
-  if ((nsHTMLAtoms::color == aAttribute) ||
-      (nsHTMLAtoms::face == aAttribute) ||
-      (nsHTMLAtoms::size == aAttribute)) {
-    aHint = NS_STYLE_HINT_RECONSTRUCT_ALL;  // XXX this seems a bit harsh, perhaps we need a reflow_all?
-  }
-  else if (! nsGenericHTMLElement::GetCommonMappedAttributesImpact(aAttribute, aHint)) {
-    aHint = NS_STYLE_HINT_CONTENT;
-  }
+  static const AttributeImpactEntry attributes[] = {
+    // XXX this seems a bit harsh, perhaps we need a reflow_all?    
+    { &nsHTMLAtoms::color, NS_STYLE_HINT_RECONSTRUCT_ALL },
+    { &nsHTMLAtoms::face, NS_STYLE_HINT_RECONSTRUCT_ALL },
+    { &nsHTMLAtoms::size, NS_STYLE_HINT_RECONSTRUCT_ALL },
+    { nsnull, NS_STYLE_HINT_NONE }
+  };
+
+  static const AttributeImpactEntry* const map[] = {
+    attributes,
+    sCommonAttributeMap,
+  };
+  
+  FindAttributeImpact(aAttribute, aHint, map, NS_ARRAY_LENGTH(map));
+  
   return NS_OK;
 }
-
-#ifdef DEBUG
-NS_IMETHODIMP
-nsHTMLBaseFontElement::SizeOf(nsISizeOfHandler* aSizer,
-                              PRUint32* aResult) const
-{
-  *aResult = sizeof(*this) + BaseSizeOf(aSizer);
-
-  return NS_OK;
-}
-#endif

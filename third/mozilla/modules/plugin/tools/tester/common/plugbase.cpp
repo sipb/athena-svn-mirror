@@ -123,7 +123,7 @@ void CPluginBase::getLogFileName(LPSTR szLogFileName, int iSize)
   getModulePath(szFileName, sizeof(szFileName));
   strcat(szFileName, szINIFile);
   XP_GetPrivateProfileString(SECTION_LOG, KEY_FILE_NAME, "", szLogFileName, (DWORD)iSize, szFileName);
-  if(strlen(szLogFileName) == 0)
+  if(!*szLogFileName)
   {
     strcpy(szLogFileName, m_szScriptCacheFile);
 
@@ -393,4 +393,8 @@ DWORD CPluginBase::makeNPNCall(NPAPI_Action action, DWORD dw1, DWORD dw2, DWORD 
   pLogger->appendToLog(action, dwTickEnter, dwTickReturn, dwRet, dw1, dw2, dw3, dw4, dw5, dw6, dw7);
 
   return dwRet;
+}
+
+void CPluginBase::autoStartScriptIfNeeded()
+{
 }

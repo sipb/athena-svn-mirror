@@ -114,6 +114,10 @@ nsresult nsLookAndFeel::NativeGetColor(const nsColorID aID, nscolor &aColor)
         break;
     case eColor_highlight: // CSS2 color
     case eColor_TextSelectBackground:
+        // XXX can probably just always use GetMacBrushColor here
+#ifdef MOZ_WIDGET_COCOA
+        res = GetMacBrushColor(kThemeBrushPrimaryHighlightColor, aColor, NS_RGB(0x00,0x00,0x00));
+#else
         RGBColor macColor;
         CGrafPtr thePort;
         ::GetPort((GrafPtr*)&thePort);
@@ -124,6 +128,7 @@ nsresult nsLookAndFeel::NativeGetColor(const nsColorID aID, nscolor &aColor)
        	}
        	else
         	aColor = NS_RGB(0x00,0x00,0x00);
+#endif
         break;
     case eColor_highlighttext:  // CSS2 color
     case eColor_TextSelectForeground:
@@ -492,6 +497,10 @@ NS_IMETHODIMP nsLookAndFeel::GetMetric(const nsMetricID aID, PRInt32 & aMetric)
     case eMetric_DragFullWindow:
         aMetric = 1;
         break;        
+    case eMetric_DragThresholdX:
+    case eMetric_DragThresholdY:
+        aMetric = 4;
+        break;
     case eMetric_ScrollArrowStyle:
         ThemeScrollBarArrowStyle arrowStyle;
         ::GetThemeScrollBarArrowStyle ( &arrowStyle );
@@ -501,6 +510,21 @@ NS_IMETHODIMP nsLookAndFeel::GetMetric(const nsMetricID aID, PRInt32 & aMetric)
         ThemeScrollBarThumbStyle thumbStyle;
         ::GetThemeScrollBarThumbStyle ( &thumbStyle );
         aMetric = thumbStyle;
+        break;
+    case eMetric_TreeOpenDelay:
+        aMetric = 1000;
+        break;
+    case eMetric_TreeCloseDelay:
+        aMetric = 1000;
+        break;
+    case eMetric_TreeLazyScrollDelay:
+        aMetric = 150;
+        break;
+    case eMetric_TreeScrollDelay:
+        aMetric = 100;
+        break;
+    case eMetric_TreeScrollLinesMax:
+        aMetric = 3;
         break;
 
     default:

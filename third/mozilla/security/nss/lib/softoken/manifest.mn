@@ -40,7 +40,7 @@ LIBRARY_NAME = softokn
 LIBRARY_VERSION = 3
 MAPFILE = $(OBJDIR)/softokn.def
 
-DEFINES += -DSHLIB_SUFFIX=\"$(DLL_SUFFIX)\"
+DEFINES += -DSHLIB_SUFFIX=\"$(DLL_SUFFIX)\" -DSHLIB_PREFIX=\"$(DLL_PREFIX)\" -DSOFTOKEN_LIB_NAME=\"$(notdir $(SHARED_LIBRARY))\"
 
 
 EXPORTS = \
@@ -62,6 +62,7 @@ CSRCS = \
 	alghmac.c \
 	dbinit.c \
 	dbmshim.c \
+	ecdecode.c \
 	fipstest.c \
 	fipstokn.c \
 	keydb.c    \
@@ -77,4 +78,5 @@ CSRCS = \
 	rawhash.c \
 	rsawrapr.c  \
 	softkver.c  \
+	tlsprf.c   \
 	$(NULL)

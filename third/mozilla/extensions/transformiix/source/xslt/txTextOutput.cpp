@@ -37,7 +37,7 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "txTextOutput.h"
-#include "TxString.h"
+#include "nsString.h"
 
 txTextOutput::txTextOutput(ostream* aOut)
     : mOut(aOut)
@@ -48,23 +48,18 @@ txTextOutput::~txTextOutput()
 {
 }
 
-void txTextOutput::attribute(const String& aName,
+void txTextOutput::attribute(const nsAString& aName,
                              const PRInt32 aNsID,
-                             const String& aValue)
+                             const nsAString& aValue)
 {
 }
 
-void txTextOutput::characters(const String& aData)
+void txTextOutput::characters(const nsAString& aData, PRBool aDOE)
 {
-    *mOut << aData;
+    *mOut << NS_ConvertUCS2toUTF8(aData).get();
 }
 
-void txTextOutput::charactersNoOutputEscaping(const String& aData)
-{
-    characters(aData);
-}
-
-void txTextOutput::comment(const String& aData)
+void txTextOutput::comment(const nsAString& aData)
 {
 }
 
@@ -72,13 +67,13 @@ void txTextOutput::endDocument()
 {
 }
 
-void txTextOutput::endElement(const String& aName,
+void txTextOutput::endElement(const nsAString& aName,
                               const PRInt32 aNsID)
 {
 }
 
-void txTextOutput::processingInstruction(const String& aTarget,
-                                         const String& aData)
+void txTextOutput::processingInstruction(const nsAString& aTarget,
+                                         const nsAString& aData)
 {
 }
 
@@ -86,7 +81,7 @@ void txTextOutput::startDocument()
 {
 }
 
-void txTextOutput::startElement(const String& aName,
+void txTextOutput::startElement(const nsAString& aName,
                                 const PRInt32 aNsID)
 {
 }

@@ -50,6 +50,14 @@
 static NS_DEFINE_CID(kEventQueueServiceCID,      NS_EVENTQUEUESERVICE_CID);
 static NS_DEFINE_CID(kIOServiceCID, NS_IOSERVICE_CID);
 
+#include "prlog.h"
+#if defined(PR_LOGGING)
+//
+// set NSPR_LOG_MODULES=Test:5
+//
+static PRLogModuleInfo *gTestLog = nsnull;
+#endif
+#define LOG(args) PR_LOG(gTestLog, PR_LOG_DEBUG, args)
 
 static int gKeepRunning = 1;
 static nsIEventQueue* gEventQ = nsnull;
@@ -72,7 +80,6 @@ public:
 
 InputTestConsumer::InputTestConsumer()
 {
-  NS_INIT_ISUPPORTS();
 }
 
 InputTestConsumer::~InputTestConsumer()
@@ -84,6 +91,7 @@ NS_IMPL_ISUPPORTS1(InputTestConsumer, nsIStreamListener)
 NS_IMETHODIMP
 InputTestConsumer::OnStartRequest(nsIRequest *request, nsISupports* context)
 {
+  LOG(("InputTestConsumer::OnStartRequest\n"));
   return NS_OK;
 }
 
@@ -116,6 +124,7 @@ NS_IMETHODIMP
 InputTestConsumer::OnStopRequest(nsIRequest *request, nsISupports* context,
                                  nsresult aStatus)
 {
+    LOG(("InputTestConsumer::OnStopRequest [status=%x]\n", aStatus));
     gKeepRunning = PR_FALSE;
     return NS_OK;
 }
@@ -132,6 +141,10 @@ main(int argc, char* argv[])
     }
     char* uriSpec  = argv[1];
     char* fileName = argv[2];
+
+#if defined(PR_LOGGING) 
+    gTestLog = PR_NewLogModule("Test");
+#endif
 
     {
         nsCOMPtr<nsIServiceManager> servMan;
@@ -169,7 +182,7 @@ main(int argc, char* argv[])
 	
         // QI and set the upload stream
         nsCOMPtr<nsIUploadChannel> uploadChannel(do_QueryInterface(channel));
-        uploadChannel->SetUploadStream(uploadStream, nsnull, -1);
+        uploadChannel->SetUploadStream(uploadStream, NS_LITERAL_CSTRING(""), -1);
 
         // create a dummy listener
         InputTestConsumer* listener;
@@ -177,31 +190,16 @@ main(int argc, char* argv[])
         listener = new InputTestConsumer;
         if (!listener) {
             NS_ERROR("Failed to create a new stream listener!");
-            return -1;;
+            return -1;
         }
         NS_ADDREF(listener);
 
         channel->AsyncOpen(listener, nsnull);
 
         while ( gKeepRunning ) {
-#ifdef WIN32
-            MSG msg;
-
-            if (GetMessage(&msg, NULL, 0, 0)) {
-                TranslateMessage(&msg);
-                DispatchMessage(&msg);
-            } else {
-                gKeepRunning = 0;
-            }
-#else
-#ifdef XP_MAC
-            /* Mac stuff is missing here! */
-#else
             PLEvent *gEvent;
-            rv = gEventQ->WaitForEvent(&gEvent);
-            rv = gEventQ->HandleEvent(gEvent);
-#endif /* XP_UNIX */
-#endif /* !WIN32 */
+            gEventQ->WaitForEvent(&gEvent);
+            gEventQ->HandleEvent(gEvent);
         }
     } // this scopes the nsCOMPtrs
     // no nsCOMPtrs are allowed to be alive when you call NS_ShutdownXPCOM

@@ -170,7 +170,7 @@ int XP_GetPrivateProfileInt(LPSTR szSection, LPSTR szKey, int iDefault, LPSTR sz
 #else
   static char szString[80];
   XP_GetPrivateProfileString(szSection, szKey, "", szString, sizeof(szString), szFileName);
-  if(strlen(szString) == 0)
+  if(!*szString)
     return iDefault;
   int iRet = atoi(szString);
   return iRet;
@@ -198,7 +198,7 @@ BOOL XP_WritePrivateProfileString(LPSTR szSection, LPSTR szKey, LPSTR szString, 
 BOOL XP_WritePrivateProfileInt(LPSTR szSection, LPSTR szKey, int iValue, LPSTR szFileName)
 {
   char szString[80];
-  itoa(iValue, szString, 10);
+  _itoa(iValue, szString, 10);
   return XP_WritePrivateProfileString(szSection, szKey, szString, szFileName);
 }
 

@@ -108,7 +108,7 @@ gboolean draw (GtkWidget *widget, GdkEventExpose *event, gpointer data);
  * Windows PlatformInstance
  *----------------------------------------------------------------------------*/
 
-#if defined(XP_PC) && !defined(XP_OS2)          // XXXX OS2TODO
+#if defined(XP_WIN) // XXXX OS2TODO
 typedef struct _PlatformInstance
 {
     HWND		fhWnd;
@@ -288,7 +288,7 @@ public:
     NS_IMETHOD Repaint(void);
 #endif
 
-#if defined(XP_PC) && !defined(XP_OS2)
+#ifdef XP_WIN
     static LRESULT CALLBACK 
     PluginWindowProc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam);
 #endif
@@ -496,8 +496,6 @@ SimplePluginInstance::UnregisterSelf(nsIComponentManager* aCompMgr,
 SimplePluginInstance::SimplePluginInstance(void)
     : fText(NULL), fPeer(NULL), fWindow(NULL), fMode(nsPluginMode_Embedded)
 {
-    NS_INIT_ISUPPORTS();
-
     static const char text[] = "Hello World!";
     fText = (char*) nsMemory::Clone(text, sizeof(text));
 
@@ -704,7 +702,7 @@ NS_IMETHODIMP SimplePluginInstance::SetText(const char * aText)
         if(!fText)
             return NS_ERROR_OUT_OF_MEMORY;
 
-#if defined(XP_PC) && !defined(XP_OS2)
+#ifdef XP_WIN
         if(fPlatform.fhWnd) {
             InvalidateRect( fPlatform.fhWnd, NULL, TRUE );
             UpdateWindow( fPlatform.fhWnd );
@@ -811,7 +809,6 @@ SimplePluginStreamListener::SimplePluginStreamListener(SimplePluginInstance* ins
                                                        const char* msgName)
     : fMessageName(msgName)
 {
-    NS_INIT_ISUPPORTS();
     char msg[256];
     sprintf(msg, "### Creating SimplePluginStreamListener for %s\n", fMessageName);
 }
@@ -1039,7 +1036,7 @@ gboolean draw (GtkWidget *widget, GdkEventExpose *event, gpointer data)
  * Windows Implementations
  *----------------------------------------------------------------------------*/
 
-#elif defined(XP_PC) && !defined(XP_OS2)
+#elif defined(XP_WIN)
 const char* gInstanceLookupString = "instance->pdata";
 
 /*+++++++++++++++++++++++++++++++++++++++++++++++++

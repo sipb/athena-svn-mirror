@@ -42,16 +42,16 @@
 
 #include "baseutils.h"
 #include "List.h"
-#include "txAtom.h"
+#include "nsIAtom.h"
 
 class Element;
 class Expr;
 class Node;
 class NodeSet;
-class ProcessorState;
-class String;
+class txExecutionState;
 class TxObject;
 class txXPathResultComparator;
+class txIEvalContext;
 
 /*
  * Sorts Nodes as specified by the W3C XSLT 1.0 Recommendation
@@ -60,11 +60,13 @@ class txXPathResultComparator;
 class txNodeSorter
 {
 public:
-    txNodeSorter(ProcessorState* aPs);
+    txNodeSorter();
     ~txNodeSorter();
 
-    MBool addSortElement(Element* aSortElement);
-    MBool sortNodeSet(NodeSet* aNodes);
+    nsresult addSortElement(Expr* aSelectExpr, Expr* aLangExpr,
+                            Expr* aDataTypeExpr, Expr* aOrderExpr,
+                            Expr* aCaseOrderExpr, txIEvalContext* aContext);
+    nsresult sortNodeSet(NodeSet* aNodes, txExecutionState* aEs);
 
 private:
     class SortableNode
@@ -83,16 +85,15 @@ private:
     
     int compareNodes(SortableNode* sNode1,
                      SortableNode* sNode2,
-                     NodeSet* aNodes);
+                     NodeSet* aNodes,
+                     txExecutionState* aEs);
 
     MBool getAttrAsAVT(Element* aSortElement,
-                       txAtom* aAttrName,
-                       String& aResult);
+                       nsIAtom* aAttrName,
+                       nsAString& aResult);
 
     txList mSortKeys;
-    ProcessorState* mPs;
     int mNKeys;
-    Expr* mDefaultExpr;
 };
 
 #endif

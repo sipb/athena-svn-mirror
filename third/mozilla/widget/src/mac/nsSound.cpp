@@ -201,7 +201,6 @@ CopyCToPascalString(const char* inString, StringPtr outPString)
 
 nsSound::nsSound()
 {
-  NS_INIT_ISUPPORTS();
 #ifdef SOUND_DEBUG
   printf("%%%%%%%% Made nsSound\n");
 #endif
@@ -220,6 +219,12 @@ NS_METHOD
 nsSound::Beep()
 {
   ::SysBeep(1);
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsSound::Init()
+{
   return NS_OK;
 }
 
@@ -454,7 +459,6 @@ nsSound::GetSoundResourceName(const char* inSoundName, StringPtr outResourceName
 
 nsSoundRequest::nsSoundRequest()
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsSoundRequest::~nsSoundRequest()

@@ -42,7 +42,6 @@
 
 nsStringService::nsStringService()
 {
-  NS_INIT_ISUPPORTS();
 }
 nsStringService::~nsStringService()
 {
@@ -75,20 +74,6 @@ nsStringService::CreateACString(const char *aString, PRInt32 aLength, nsACString
     return NS_ERROR_OUT_OF_MEMORY;
   
   *_retval = string;
-  return NS_OK;
-}
-
-NS_IMETHODIMP 
-nsStringService::DeleteAString(nsAString * aString)
-{
-  delete aString;
-  return NS_OK;
-}
-
-NS_IMETHODIMP 
-nsStringService::DeleteACString(nsACString * aString)
-{
-  delete aString;
   return NS_OK;
 }
 

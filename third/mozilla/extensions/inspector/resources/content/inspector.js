@@ -51,6 +51,7 @@ const kSearchRegURL        = "resource:///res/inspector/search-registry.rdf";
 
 const kWindowDataSourceCID = "@mozilla.org/rdf/datasource;1?name=window-mediator";
 const kClipboardHelperCID  = "@mozilla.org/widget/clipboardhelper;1";
+const kPromptServiceCID    = "@mozilla.org/embedcomp/prompt-service;1";
 const nsIWebNavigation     = Components.interfaces.nsIWebNavigation;
 
 //////////////////////////////////////////////////
@@ -61,7 +62,20 @@ window.addEventListener("unload", InspectorApp_destroy, false);
 function InspectorApp_initialize()
 {
   inspector = new InspectorApp();
-  inspector.initialize(window.arguments && window.arguments.length > 0 ? window.arguments[0] : null);
+
+  // window.arguments may be either a string or a node.
+  // If passed via a command line handler, it will be a uri string.
+  // If passed via navigator hooks, it will be a dom node to inspect.
+  var initNode, initURI;
+  if (window.arguments.length) {
+    if (typeof window.arguments[0] == "string") {
+      initURI = window.arguments[0];
+    }
+    else if (window.arguments[0] instanceof Components.interfaces.nsIDOMNode) {
+      initNode = window.arguments[0];
+    }
+  }
+  inspector.initialize(initNode, initURI);
 }
 
 function InspectorApp_destroy()
@@ -84,12 +98,13 @@ InspectorApp.prototype =
   mSearchService: null,
   mShowBrowser: false,
   mClipboardHelper: null,
+  mPromptService: null,
   
   get document() { return this.mDocPanel.viewer.subject },
   get searchRegistry() { return this.mSearchService },
   get panelset() { return this.mPanelSet; },
   
-  initialize: function(aTarget)
+  initialize: function(aTarget, aURI)
   {
     this.mInitTarget = aTarget;
     
@@ -98,14 +113,19 @@ InspectorApp.prototype =
     var el = document.getElementById("bxBrowser");
     el.addEventListener("load", BrowserLoadListener, true);
 
-    this.toggleBrowser(true, false);
-    //this.toggleSearch(true, false);
+    this.setBrowser(false, true);
+    //this.setSearch(false, true);
 
     this.mClipboardHelper = XPCU.getService(kClipboardHelperCID, "nsIClipboardHelper");
+    this.mPromptService = XPCU.getService(kPromptServiceCID, "nsIPromptService");
 
     this.mPanelSet = document.getElementById("bxPanelSet");
     this.mPanelSet.addObserver("panelsetready", this, false);
     this.mPanelSet.initialize();
+
+    if (aURI) {
+      this.gotoURL(aURI);
+    }
   },
 
   destroy: function()
@@ -158,9 +178,14 @@ InspectorApp.prototype =
   
   showOpenURLDialog: function()
   {
-    var url = prompt("Enter a URL:", "http://");
-    if (url) {
-      this.gotoURL(url);
+    var bundle = this.mPanelSet.stringBundle;
+    var msg = bundle.getString("inspectURL.message");
+    var title = bundle.getString("inspectURL.title");
+    var url = { value: "http://" };
+    var dummy = { value: false };
+    var go = this.mPromptService.prompt(window, title, msg, url, null, dummy);
+    if (go) {
+      this.gotoURL(url.value);
     }
   },
 
@@ -169,6 +194,50 @@ InspectorApp.prototype =
     goPreferences("advancedItem", "chrome://inspector/content/prefs/pref-inspector.xul", "inspector");
   },
   
+  toggleBrowser: function(aToggleSplitter)
+  {
+    this.setBrowser(!this.mShowBrowser, aToggleSplitter)
+  },
+
+  setBrowser: function(aValue, aToggleSplitter)
+  {
+    this.mShowBrowser = aValue;
+    if (aToggleSplitter)
+      this.openSplitter("Browser", aValue);
+    var cmd = document.getElementById("cmdToggleBrowser");
+    cmd.setAttribute("checked", aValue);
+  },
+
+  toggleSearch: function(aToggleSplitter)
+  {
+    this.setSearch(!this.mShowSearch, aToggleSplitter);
+  },
+
+  setSearch: function(aValue, aToggleSplitter)
+  {
+    this.mShowSearch = aValue;
+    if (aToggleSplitter)
+      this.openSplitter("Search", aValue);
+    var cmd = document.getElementById("cmdToggleSearch");
+    cmd.setAttribute("checked", aValue);
+  },
+
+  openSplitter: function(aName, aTruth)
+  {
+    var splitter = document.getElementById("spl" + aName);
+    if (aTruth)
+      splitter.open();
+    else
+      splitter.close();
+  },
+
+/*
+  XXXcaa
+  The following code needs to evaluated.  What does it do?  Why does nobody
+  call it?  If deemed necessary, turn it back on with the right callers,
+  and localize it.
+ */
+/*
   runSearch: function()
   {
     var path = null; // TODO: should persist last path chosen in a pref
@@ -182,37 +251,7 @@ InspectorApp.prototype =
       this.startSearchModule(url);
     }
   },
-  
-  toggleBrowser: function(aExplicit, aValue, aSetOnly)
-  {
-    var val = aExplicit ? aValue : !this.mShowBrowser;
-    this.mShowBrowser = val;
-    if (!aSetOnly)
-      this.openSplitter("Browser", val);
-    var cmd = document.getElementById("cmdToggleBrowser");
-    cmd.setAttribute("checked", val);
-  },
 
-  toggleSearch: function(aExplicit, aValue, aSetOnly)
-  {
-    var val = aExplicit ? aValue : !this.mShowSearch;
-    this.mShowSearch = val;
-    if (!aSetOnly)
-      this.openSplitter("Search", val);
-    var cmd = document.getElementById("cmdToggleSearch");
-    cmd.setAttribute("checked", val);
-  },
-
-  openSplitter: function(aName, aTruth)
-  {
-    var splitter = document.getElementById("spl" + aName);
-    if (aTruth)
-      splitter.open();
-    else
-      splitter.close();
-  },
-
-/*
   viewSearchItem: function()
   {
     if (this.mCurrentSearch.canViewItems)
@@ -238,7 +277,7 @@ InspectorApp.prototype =
       this.viewSearchItem();
     }
   },
-*/
+
   copySearchItemLine: function()
   {
     var mod = this.mSearchService.currentModule;
@@ -247,10 +286,11 @@ InspectorApp.prototype =
     this.mClipboardHelper.copyString(text);
   },
 
+  // XXX what is this?  It doesn't seem to get called from anywhere?
   copySearchItemAll: function()
   {
     var text = this.getAllSearchItemText();
-    this.mClipboardHelper.writeStringToClipboard(text, kGlobalClipboard);
+    this.mClipboardHelper.copyString(text);
   },
 
   saveSearchItemText: function()
@@ -276,6 +316,7 @@ InspectorApp.prototype =
 
     return text;
   },
+*/
 
   exit: function()
   {
@@ -297,12 +338,18 @@ InspectorApp.prototype =
     this.mPendingURL = aURL;
     this.mPendingNoSave = aNoSaveHistory;
     this.browseToURL(aURL);
-    this.toggleBrowser(true, true);
+    this.setBrowser(true, true);
   },
 
   browseToURL: function(aURL)
   {
-    this.webNavigation.loadURI(aURL, nsIWebNavigation.LOAD_FLAGS_NONE, null, null, null);
+    try {
+      this.webNavigation.loadURI(aURL, nsIWebNavigation.LOAD_FLAGS_NONE, null, null, null);
+    }
+    catch(ex) {
+      // nsIWebNavigation.loadURI will spit out an appropriate user prompt, so
+      // we don't need to do anything here.  See nsDocShell::DisplayLoadError()
+    }
   },
 
   goToWindow: function(aMenuitem)
@@ -317,9 +364,13 @@ InspectorApp.prototype =
 
     if (win) {
       this.setTargetWindow(win);
-      this.toggleBrowser(true, false);
-    } else
-      alert("Unable to switch to window.");
+      this.setBrowser(false, true);
+    } else {
+      var bundle = this.mPanelSet.stringBundle;
+      var msg = bundle.getString("inspectWindow.error.message");
+      var title = bundle.getString("inspectWindow.error.title");
+      this.mPromptService.alert(window, title, msg);
+    }
   },
 
   setTargetWindow: function(aWindow)
@@ -350,13 +401,17 @@ InspectorApp.prototype =
   get progress() { return document.getElementById("pmStatus").value; },
   set progress(aPct) { document.getElementById("pmStatus").value = aPct; },
 
+/*
+  XXXcaa -- What is this?
+
+
   get searchTitle(aTitle) { return document.getElementById("splSearch").label; },
   set searchTitle(aTitle)
   {
     var splitter = document.getElementById("splSearch");
     splitter.setAttribute("label", "Search" + (aTitle ? " - " + aTitle : ""));
   },
-
+*/
   ////////////////////////////////////////////////////////////////////////////
   //// Document Loading 
 
@@ -379,7 +434,7 @@ InspectorApp.prototype =
 
   ////////////////////////////////////////////////////////////////////////////
   //// Search 
-  
+/*
   initSearch: function()
   {
     var ss = new inSearchService();
@@ -434,6 +489,8 @@ InspectorApp.prototype =
   {
     alert("Unable to complete this search due to the following error:\n" + aMessage);
   },
+
+*/
 
   ////////////////////////////////////////////////////////////////////////////
   //// History 
@@ -502,9 +559,9 @@ InspectorApp.prototype =
   onSplitterOpen: function(aSplitter)
   {
     if (aSplitter.id == "splBrowser") {
-      this.toggleBrowser(true, aSplitter.isOpened, true);
+      this.setBrowser(aSplitter.isOpened, false);
     } else if (aSplitter.id == "splSearch") {
-      this.toggleSearch(true, aSplitter.isOpened, true);
+      this.setSearch(aSplitter.isOpened, false);
     }
   },
   

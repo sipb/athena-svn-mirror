@@ -43,7 +43,6 @@
 #include "nsIFrameLoader.h"
 #include "nsGenericHTMLElement.h"
 #include "nsHTMLAtoms.h"
-#include "nsIStyleContext.h"
 #include "nsIPresContext.h"
 #include "nsIPresShell.h"
 #include "nsIDocument.h"
@@ -89,6 +88,7 @@ public:
 
   // nsIFrameLoaderOwner
   NS_IMETHOD GetFrameLoader(nsIFrameLoader **aFrameLoader);
+  NS_IMETHOD SetFrameLoader(nsIFrameLoader *aFrameLoader);
 
   // nsIContent
   NS_IMETHOD SetParent(nsIContent *aParent);
@@ -117,9 +117,6 @@ public:
   NS_IMETHOD GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt32 aModType,
                                       nsChangeHint& aHint) const;
   NS_IMETHOD GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRuleFunc) const;
-#ifdef DEBUG
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
-#endif
 
 protected:
   // This doesn't really ensure a frame loade in all cases, only when
@@ -309,6 +306,14 @@ nsHTMLIFrameElement::GetFrameLoader(nsIFrameLoader **aFrameLoader)
   return NS_OK;
 }
 
+NS_IMETHODIMP
+nsHTMLIFrameElement::SetFrameLoader(nsIFrameLoader *aFrameLoader)
+{
+  mFrameLoader = aFrameLoader;
+
+  return NS_OK;
+}
+
 nsresult
 nsHTMLIFrameElement::LoadSrc()
 {
@@ -352,10 +357,20 @@ nsHTMLIFrameElement::SetDocument(nsIDocument *aDocument, PRBool aDeep,
                                                aCompileEventHandlers);
   NS_ENSURE_SUCCESS(rv, rv);
 
+  if (!aDocument && mFrameLoader) {
+    // This iframe is being taken out of the document, destroy the
+    // iframe's frame loader (doing that will tear down the window in
+    // this iframe).
+
+    mFrameLoader->Destroy();
+
+    mFrameLoader = nsnull;
+  }
+
   // When document is being set to null on the element's destruction,
   // or when the document is being set to what the document already
   // is, do not call LoadSrc().
-  if (!mParent || !mDocument || aDocument == old_doc) {
+  if (!mParent || !aDocument || aDocument == old_doc) {
     return NS_OK;
   }
 
@@ -368,22 +383,22 @@ nsHTMLIFrameElement::StringToAttribute(nsIAtom* aAttribute,
                                        nsHTMLValue& aResult)
 {
   if (aAttribute == nsHTMLAtoms::marginwidth) {
-    if (ParseValueOrPercent(aValue, aResult, eHTMLUnit_Pixel)) {
+    if (aResult.ParseSpecialIntValue(aValue, eHTMLUnit_Pixel, PR_TRUE, PR_FALSE)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
   else if (aAttribute == nsHTMLAtoms::marginheight) {
-    if (ParseValueOrPercent(aValue, aResult, eHTMLUnit_Pixel)) {
+    if (aResult.ParseSpecialIntValue(aValue, eHTMLUnit_Pixel, PR_TRUE, PR_FALSE)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
   else if (aAttribute == nsHTMLAtoms::width) {
-    if (ParseValueOrPercent(aValue, aResult, eHTMLUnit_Pixel)) {
+    if (aResult.ParseSpecialIntValue(aValue, eHTMLUnit_Pixel, PR_TRUE, PR_FALSE)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
   else if (aAttribute == nsHTMLAtoms::height) {
-    if (ParseValueOrPercent(aValue, aResult, eHTMLUnit_Pixel)) {
+    if (aResult.ParseSpecialIntValue(aValue, eHTMLUnit_Pixel, PR_TRUE, PR_FALSE)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
@@ -489,19 +504,20 @@ nsHTMLIFrameElement::GetMappedAttributeImpact(const nsIAtom* aAttribute,
                                               PRInt32 aModType,
                                               nsChangeHint& aHint) const
 {
-  if ((aAttribute == nsHTMLAtoms::width) ||
-      (aAttribute == nsHTMLAtoms::height)) {
-    aHint = NS_STYLE_HINT_REFLOW;
-  }
-  else if (aAttribute == nsHTMLAtoms::align) {
-    aHint = NS_STYLE_HINT_FRAMECHANGE;
-  }
-  else if (aAttribute == nsHTMLAtoms::frameborder) {
-    aHint = NS_STYLE_HINT_REFLOW;
-  }
-  else if (!GetCommonMappedAttributesImpact(aAttribute, aHint)) {
-    aHint = NS_STYLE_HINT_CONTENT;
-  }
+  static const AttributeImpactEntry attributes[] = {
+    { &nsHTMLAtoms::width, NS_STYLE_HINT_REFLOW },
+    { &nsHTMLAtoms::height, NS_STYLE_HINT_REFLOW },
+    { &nsHTMLAtoms::align, NS_STYLE_HINT_FRAMECHANGE },
+    { &nsHTMLAtoms::frameborder, NS_STYLE_HINT_REFLOW },
+    { nsnull, NS_STYLE_HINT_NONE },
+  };
+
+  static const AttributeImpactEntry* const map[] = {
+    attributes,
+    sCommonAttributeMap,
+  };
+  
+  FindAttributeImpact(aAttribute, aHint, map, NS_ARRAY_LENGTH(map));
 
   return NS_OK;
 }
@@ -514,16 +530,6 @@ nsHTMLIFrameElement::GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMap
   aMapRuleFunc = &MapAttributesIntoRule;
   return NS_OK;
 }
-
-#ifdef DEBUG
-NS_IMETHODIMP
-nsHTMLIFrameElement::SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const
-{
-  *aResult = sizeof(*this) + BaseSizeOf(aSizer);
-
-  return NS_OK;
-}
-#endif
 
 
 //*****************************************************************************

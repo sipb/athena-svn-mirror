@@ -23,7 +23,7 @@
 #include "nsFrame.h"
 #include "nsIPresContext.h"
 #include "nsUnitConversion.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsINameSpaceManager.h"
 #include "nsIRenderingContext.h"
@@ -44,6 +44,7 @@
 #include "nsIDOMMouseListener.h"
 
 #include "nsMathMLmactionFrame.h"
+#include "nsAutoPtr.h"
 
 //
 // <maction> -- bind actions to a subexpression - implementation
@@ -90,7 +91,7 @@ NS_IMETHODIMP
 nsMathMLmactionFrame::Init(nsIPresContext*  aPresContext,
                            nsIContent*      aContent,
                            nsIFrame*        aParent,
-                           nsIStyleContext* aContext,
+                           nsStyleContext*  aContext,
                            nsIFrame*        aPrevInFlow)
 {
   nsAutoString value, prefix;
@@ -103,6 +104,7 @@ nsMathMLmactionFrame::Init(nsIPresContext*  aPresContext,
   mChildCount = -1; // these will be updated in GetSelectedFrame()
   mSelection = 0;
   mSelectedFrame = nsnull;
+  nsRefPtr<nsStyleContext> newStyleContext;
 
   mActionType = NS_MATHML_ACTION_TYPE_NONE;
   if (NS_CONTENT_ATTR_HAS_VALUE == aContent->GetAttr(kNameSpaceID_None, 
@@ -139,20 +141,16 @@ nsMathMLmactionFrame::Init(nsIPresContext*  aPresContext,
         aContent->UnsetAttr(kNameSpaceID_None, nsMathMLAtoms::actiontype_, notify);
 
         // then, re-resolve our style
-        nsCOMPtr<nsIStyleContext> parentStyleContext;
-        aParent->GetStyleContext(getter_AddRefs(parentStyleContext));
-        nsIStyleContext* newStyleContext;
-        aPresContext->ResolveStyleContextFor(aContent, parentStyleContext,
-                                             &newStyleContext);
+        nsStyleContext* parentStyleContext = aParent->GetStyleContext();
+        newStyleContext = aPresContext->ResolveStyleContextFor(aContent,
+							       parentStyleContext);
         if (!newStyleContext) 
           mRestyle.Truncate();
         else {
           if (newStyleContext != aContext)
             aContext = newStyleContext;
-          else {
-            NS_RELEASE(newStyleContext);
+          else
             mRestyle.Truncate();
-          }
         }
       }
     }
@@ -261,27 +259,8 @@ nsMathMLmactionFrame::Paint(nsIPresContext*      aPresContext,
                             nsFramePaintLayer    aWhichLayer,
                             PRUint32             aFlags)
 {
-  const nsStyleVisibility* visib = NS_STATIC_CAST(const nsStyleVisibility*,
-    mStyleContext->GetStyleData(eStyleStruct_Visibility));
   if (NS_FRAME_PAINT_LAYER_BACKGROUND == aWhichLayer) {
-    if (visib->IsVisible() && mRect.width && mRect.height) {
-      // Paint our background and border
-      PRIntn skipSides = GetSkipSides();
-      const nsStyleBorder* border = (const nsStyleBorder*)
-        mStyleContext->GetStyleData(eStyleStruct_Border);
-      const nsStylePadding* padding = (const nsStylePadding*)
-        mStyleContext->GetStyleData(eStyleStruct_Padding);
-      const nsStyleOutline* outline = (const nsStyleOutline*)
-        mStyleContext->GetStyleData(eStyleStruct_Outline);
-
-      nsRect  rect(0, 0, mRect.width, mRect.height);
-      nsCSSRendering::PaintBackground(aPresContext, aRenderingContext, this,
-                                      aDirtyRect, rect, *border, *padding, 0, 0);
-      nsCSSRendering::PaintBorder(aPresContext, aRenderingContext, this,
-                                  aDirtyRect, rect, *border, mStyleContext, skipSides);
-      nsCSSRendering::PaintOutline(aPresContext, aRenderingContext, this,
-                                   aDirtyRect, rect, *border, *outline, mStyleContext, 0);
-    }
+    PaintSelf(aPresContext, aRenderingContext, aDirtyRect);
   }
 
   nsIFrame* childFrame = GetSelectedFrame();

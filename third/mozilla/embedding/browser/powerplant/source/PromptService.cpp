@@ -66,7 +66,6 @@ NS_IMPL_ISUPPORTS1(CPromptService, nsIPromptService)
 
 CPromptService::CPromptService()
 {
-	NS_INIT_ISUPPORTS();
 }
 
 CPromptService::~CPromptService()
@@ -110,7 +109,7 @@ NS_IMETHODIMP CPromptService::AlertCheck(nsIDOMWindow *parent, const PRUnichar *
 {
     NS_ENSURE_ARG_POINTER(checkValue);
 
-    StDialogHandler	theHandler(dlog_ConfirmCheck, CBrowserChrome::GetLWindowForDOMWindow(parent));
+    StDialogHandler	theHandler(dlog_AlertCheck, CBrowserChrome::GetLWindowForDOMWindow(parent));
     LWindow			 *theDialog = theHandler.GetDialog();
     nsCAutoString    cStr;
     Str255           pStr;
@@ -245,8 +244,6 @@ NS_IMETHODIMP CPromptService::ConfirmEx(nsIDOMWindow *parent, const PRUnichar *d
                                         PRInt32 *buttonPressed)
 {
     NS_ENSURE_ARG_POINTER(buttonPressed);
-
-    nsresult resultErr = NS_OK;
 
     StDialogHandler	theHandler(dlog_ConfirmEx, CBrowserChrome::GetLWindowForDOMWindow(parent));
     LWindow			 *theDialog = theHandler.GetDialog();

@@ -34,7 +34,7 @@
 /*
  * Test program for client-side OCSP.
  *
- * $Id: ocspclnt.c,v 1.1.1.1 2003-02-14 19:05:16 rbasch Exp $
+ * $Id: ocspclnt.c,v 1.1.1.2 2003-07-08 17:43:03 rbasch Exp $
  */
 
 #include "secutil.h"
@@ -1211,7 +1211,9 @@ nssdone:
 	(void) CERT_DisableOCSPChecking (handle);
     }
 
-    NSS_Shutdown ();
+    if (NSS_Shutdown () != SECSuccess) {
+	exit(1);
+    }
 
 prdone:
     PR_Cleanup ();

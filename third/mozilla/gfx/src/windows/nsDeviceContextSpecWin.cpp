@@ -164,8 +164,6 @@ const PRInt32 kNumPaperSizes = 41;
 //----------------------------------------------------------------------------------
 nsDeviceContextSpecWin::nsDeviceContextSpecWin()
 {
-  NS_INIT_ISUPPORTS();
-
   mDriverName    = nsnull;
   mDeviceName    = nsnull;
   mDevMode       = NULL;
@@ -804,7 +802,6 @@ nsDeviceContextSpecWin::SetPrintSettingsFromDevMode(nsIPrintSettings* aPrintSett
 //***********************************************************
 nsPrinterEnumeratorWin::nsPrinterEnumeratorWin()
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsPrinterEnumeratorWin::~nsPrinterEnumeratorWin()
@@ -1089,7 +1086,7 @@ GlobalPrinters::GetDefaultPrinterName(LPTSTR& aDefaultPrinterName)
 }
 
 //----------------------------------------------------------------------------------
-// This goes and gets the list of of avilable printers and puts
+// This goes and gets the list of available printers and puts
 // the default printer at the beginning of the list
 nsresult 
 GlobalPrinters::EnumeratePrinterList()

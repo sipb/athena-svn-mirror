@@ -53,7 +53,8 @@
 #include <gtk/gtkwindow.h>
 
 #ifdef ACCESSIBILITY
-#include "nsAccessibilityInterface.h"
+#include "nsIAccessNode.h"
+#include "nsIAccessible.h"
 #endif
 
 #ifdef USE_XIM
@@ -121,7 +122,7 @@ public:
     virtual void*      GetNativeData(PRUint32 aDataType);
     NS_IMETHOD         SetBorderStyle(nsBorderStyle aBorderStyle);
     NS_IMETHOD         SetTitle(const nsString& aTitle);
-    NS_IMETHOD         SetIcon(const nsAString& anIconSpec);
+    NS_IMETHOD         SetIcon(const nsAString& aIconSpec);
     NS_IMETHOD         SetMenuBar(nsIMenuBar * aMenuBar);
     NS_IMETHOD         ShowMenuBar(PRBool aShow);
     NS_IMETHOD         WidgetToScreen(const nsRect& aOldRect,
@@ -139,9 +140,11 @@ public:
                                            PRBool aDoCapture,
                                            PRBool aConsumeRollupEvent);
     NS_IMETHOD         GetAttention();
+    NS_IMETHOD         HideWindowChrome(PRBool aShouldHide);
 
     // utility methods
     void               LoseFocus();
+    gint               ConvertBorderStyles(nsBorderStyle aStyle);
 
     // event callbacks
     gboolean           OnExposeEvent(GtkWidget *aWidget,
@@ -229,31 +232,40 @@ public:
     void               GrabPointer  (void);
     void               GrabKeyboard (void);
     void               ReleaseGrabs (void);
-    void               SetPluginType(PRBool aIsXembed);
 
-    nsWindow           *mFocusChild;
-    Window              mOldFocusWindow;
+    void               SetPluginType(PRBool aIsXembed);
+    void               SetNonXEmbedPluginFocus(void);
+    void               LoseNonXEmbedPluginFocus(void);
+
+    Window             mOldFocusWindow;
+
+    static guint32     mLastButtonPressTime;
 
 #ifdef USE_XIM
-    void               IMEComposeStart(void);
-    void               IMEComposeText(const PRUnichar *aText,
-                                      const PRInt32 aLen,
-                                      const gchar *aPreeditString,
-                                      const PangoAttrList *aFeedback);
-    void               IMEComposeEnd(void);
+    void               IMEDestroyContext (void);
+    void               IMESetFocus       (void);
+    void               IMELoseFocus      (void);
+    void               IMEComposeStart   (void);
+    void               IMEComposeText    (const PRUnichar *aText,
+                                          const PRInt32 aLen,
+                                          const gchar *aPreeditString,
+                                          const PangoAttrList *aFeedback);
+    void               IMEComposeEnd     (void);
+    GtkIMContext*      IMEGetContext     (void);
+    void               IMECreateContext  (void);
+    PRBool             IMEFilterEvent    (GdkEventKey *aEvent);
 
-    void               IMEGetShellWindow(void);
-    GtkIMContext*      IMEGetContext(void);
-    void               IMECreateContext(GdkWindow* aGdkWindow);
- 
-    nsWindow*          mIMEShellWindow;
-    static PLDHashTable gXICLookupTable;
-    static nsWindow    *gFocusedWindow;
+    GtkIMContext       *mIMContext;
+    PRBool             mComposingText;
+
 #endif
 
 private:
     void               GetToplevelWidget(GtkWidget **aWidget);
+    void               GetContainerWindow(nsWindow  **aWindow);
     void              *SetupPluginPort(void);
+    nsresult           SetWindowIcon(nsCString &aPath);
+    void               SetDefaultIcon(void);
 
     GtkWidget          *mShell;
     MozContainer       *mContainer;
@@ -264,23 +276,23 @@ private:
     PRUint32            mContainerGotFocus : 1,
                         mContainerLostFocus : 1,
                         mContainerBlockFocus : 1,
-                        mHasFocus : 1,
                         mInKeyRepeat : 1,
                         mIsVisible : 1,
                         mRetryPointerGrab : 1,
                         mHasNonXembedPlugin : 1,
+                        mActivatePending : 1,
                         mRetryKeyboardGrab : 1;
     GtkWindow          *mTransientParent;
     PRInt32             mSizeState;
 
 #ifdef ACCESSIBILITY
-    nsCOMPtr<nsIAccessible> mTopLevelAccessible;
-    void                CreateTopLevelAccessible();
+    nsCOMPtr<nsIAccessible> mRootAccessible;
+    void                CreateRootAccessible();
     NS_IMETHOD_(PRBool) DispatchAccessibleEvent(nsIAccessible** aAccessible);
 #endif
 
     // The cursor cache
-    static GdkCursor   *gsGtkCursorCache[eCursor_count_up_down + 1];
+    static GdkCursor   *gsGtkCursorCache[eCursorCount];
 
     // all of our DND stuff
     // this is the last window that had a drag event happen on it.

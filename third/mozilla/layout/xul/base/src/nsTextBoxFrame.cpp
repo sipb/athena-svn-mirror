@@ -53,12 +53,14 @@
 #include "nsXULAtoms.h"
 #include "nsIPresContext.h"
 #include "nsIRenderingContext.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsIContent.h"
 #include "nsINameSpaceManager.h"
 #include "nsBoxLayoutState.h"
 #include "nsMenuBarListener.h"
-#include "nsIPref.h"
+#include "nsIPrefBranch.h"
+#include "nsIPrefService.h"
+#include "nsIPrefLocalizedString.h"
 #include "nsXPIDLString.h"
 #include "nsIServiceManager.h"
 #include "nsIDocument.h"
@@ -165,7 +167,7 @@ NS_IMETHODIMP
 nsTextBoxFrame::Init(nsIPresContext*  aPresContext,
                      nsIContent*      aContent,
                      nsIFrame*        aParent,
-                     nsIStyleContext* aContext,
+                     nsStyleContext*  aContext,
                      nsIFrame*        aPrevInFlow)
 {
     nsresult rv = nsTextBoxFrameSuper::Init(aPresContext, aContent, aParent, aContext, aPrevInFlow);
@@ -197,18 +199,23 @@ nsTextBoxFrame::AlwaysAppendAccessKey()
 {
   if (!gAccessKeyPrefInitialized) 
   {
-    nsCOMPtr<nsIPref> prefs = do_GetService(NS_PREF_CONTRACTID);
     gAccessKeyPrefInitialized = PR_TRUE;
-    if (prefs) 
+
+    nsCOMPtr<nsIPrefBranch> prefBranch =
+      do_GetService(NS_PREFSERVICE_CONTRACTID);
+
+    if (prefBranch) 
     {
-      nsXPIDLString prefValue;
-      nsresult res = prefs->GetLocalizedUnicharPref(
-                               "intl.menuitems.alwaysappendacceskeys", 
-                                getter_Copies(prefValue));
-      if (NS_SUCCEEDED(res)) 
+      nsCOMPtr<nsIPrefLocalizedString> prefValue;
+      prefBranch->GetComplexValue("intl.menuitems.alwaysappendacceskeys",
+                                  NS_GET_IID(nsIPrefLocalizedString),
+                                  getter_AddRefs(prefValue));
+      if (prefValue)
       {
-        gAlwaysAppendAccessKey = nsDependentString(prefValue).Equals(
-                                             NS_LITERAL_STRING("true"));
+        nsXPIDLString prefString;
+        prefValue->ToString(getter_Copies(prefString));
+        gAlwaysAppendAccessKey =
+          nsDependentString(prefString).Equals(NS_LITERAL_STRING("true"));
       }
     }
   }
@@ -284,9 +291,7 @@ nsTextBoxFrame::Paint(nsIPresContext*      aPresContext,
                       nsFramePaintLayer    aWhichLayer,
                       PRUint32             aFlags)
 {
-    const nsStyleVisibility* vis = 
-      (const nsStyleVisibility*)mStyleContext->GetStyleData(eStyleStruct_Visibility);
-    if (!vis->IsVisible())
+    if (!GetStyleVisibility()->IsVisible())
         return NS_OK;
 
     if (NS_FRAME_PAINT_LAYER_FOREGROUND == aWhichLayer) {
@@ -323,8 +328,8 @@ nsTextBoxFrame::PaintTitle(nsIPresContext*      aPresContext,
     textRect.width = mTitleWidth;
 
     // Align our text within the overall rect by checking our text-align property.
-    const nsStyleVisibility* vis = (const nsStyleVisibility*)mStyleContext->GetStyleData(eStyleStruct_Visibility);
-    const nsStyleText* textStyle = (const nsStyleText*)mStyleContext->GetStyleData(eStyleStruct_Text);
+    const nsStyleVisibility* vis = GetStyleVisibility();
+    const nsStyleText* textStyle = GetStyleText();
 
     if (textStyle->mTextAlign == NS_STYLE_TEXT_ALIGN_CENTER)
       textRect.x += (aRect.width - textRect.width)/2;
@@ -345,7 +350,7 @@ nsTextBoxFrame::PaintTitle(nsIPresContext*      aPresContext,
     nscolor overColor;
     nscolor underColor;
     nscolor strikeColor;
-    nsCOMPtr<nsIStyleContext> context = mStyleContext;
+    nsStyleContext* context = mStyleContext;
   
     PRUint8 decorations = NS_STYLE_TEXT_DECORATION_NONE; // Begin with no decorations
     PRUint8 decorMask = NS_STYLE_TEXT_DECORATION_UNDERLINE | NS_STYLE_TEXT_DECORATION_OVERLINE |
@@ -353,25 +358,23 @@ nsTextBoxFrame::PaintTitle(nsIPresContext*      aPresContext,
     PRBool hasDecorations = context->HasTextDecorations();
 
     do {  // find decoration colors
-      const nsStyleTextReset* styleText = 
-        (const nsStyleTextReset*)context->GetStyleData(eStyleStruct_TextReset);
+      const nsStyleTextReset* styleText = context->GetStyleTextReset();
       
       if (decorMask & styleText->mTextDecoration) {  // a decoration defined here
-        const nsStyleColor* styleColor =
-          (const nsStyleColor*)context->GetStyleData(eStyleStruct_Color);
+        nscolor color = context->GetStyleColor()->mColor;
     
         if (NS_STYLE_TEXT_DECORATION_UNDERLINE & decorMask & styleText->mTextDecoration) {
-          underColor = styleColor->mColor;
+          underColor = color;
           decorMask &= ~NS_STYLE_TEXT_DECORATION_UNDERLINE;
           decorations |= NS_STYLE_TEXT_DECORATION_UNDERLINE;
         }
         if (NS_STYLE_TEXT_DECORATION_OVERLINE & decorMask & styleText->mTextDecoration) {
-          overColor = styleColor->mColor;
+          overColor = color;
           decorMask &= ~NS_STYLE_TEXT_DECORATION_OVERLINE;
           decorations |= NS_STYLE_TEXT_DECORATION_OVERLINE;
         }
         if (NS_STYLE_TEXT_DECORATION_LINE_THROUGH & decorMask & styleText->mTextDecoration) {
-          strikeColor = styleColor->mColor;
+          strikeColor = color;
           decorMask &= ~NS_STYLE_TEXT_DECORATION_LINE_THROUGH;
           decorations |= NS_STYLE_TEXT_DECORATION_LINE_THROUGH;
         }
@@ -384,7 +387,7 @@ nsTextBoxFrame::PaintTitle(nsIPresContext*      aPresContext,
       }
     } while (context && hasDecorations && (0 != decorMask));
 
-    nsStyleFont* fontStyle = (nsStyleFont*)mStyleContext->GetStyleData(eStyleStruct_Font);
+    const nsStyleFont* fontStyle = GetStyleFont();
     
     nscoord offset;
     nscoord size;
@@ -416,8 +419,7 @@ nsTextBoxFrame::PaintTitle(nsIPresContext*      aPresContext,
 
     CalculateUnderline(aRenderingContext);
 
-    const nsStyleColor* colorStyle = (const nsStyleColor*)mStyleContext->GetStyleData(eStyleStruct_Color);
-    aRenderingContext.SetColor(colorStyle->mColor);
+    aRenderingContext.SetColor(GetStyleColor()->mColor);
 
 #ifdef IBMBIDI
     nsresult rv = NS_ERROR_FAILURE;
@@ -430,7 +432,7 @@ nsTextBoxFrame::PaintTitle(nsIPresContext*      aPresContext,
       if (bidiUtils) {
         PRUnichar* buffer = ToNewUnicode(mCroppedTitle);
         if (buffer) {
-          const nsStyleVisibility* vis = (const nsStyleVisibility*)mStyleContext->GetStyleData(eStyleStruct_Visibility);
+          const nsStyleVisibility* vis = GetStyleVisibility();
           nsBidiDirection direction =
                                     (NS_STYLE_DIRECTION_RTL == vis->mDirection)
                                     ? NSBIDI_RTL : NSBIDI_LTR;
@@ -510,13 +512,11 @@ nsTextBoxFrame::CalculateTitleForWidth(nsIPresContext*      aPresContext,
     if (mTitle.Length() == 0)
         return;
 
-    const nsStyleFont* fontStyle = (const nsStyleFont*)mStyleContext->GetStyleData(eStyleStruct_Font);
-
     nsCOMPtr<nsIDeviceContext> deviceContext;
     aPresContext->GetDeviceContext(getter_AddRefs(deviceContext));
 
     nsCOMPtr<nsIFontMetrics> fontMet;
-    deviceContext->GetMetricsFor(fontStyle->mFont, *getter_AddRefs(fontMet));
+    deviceContext->GetMetricsFor(GetStyleFont()->mFont, *getter_AddRefs(fontMet));
     aRenderingContext.SetFont(fontMet);
 
     // see if the text will completely fit in the width given
@@ -786,13 +786,11 @@ void
 nsTextBoxFrame::GetTextSize(nsIPresContext* aPresContext, nsIRenderingContext& aRenderingContext,
                                 const nsString& aString, nsSize& aSize, nscoord& aAscent)
 {
-    const nsStyleFont* fontStyle = (const nsStyleFont*)mStyleContext->GetStyleData(eStyleStruct_Font);
-
     nsCOMPtr<nsIDeviceContext> deviceContext;
     aPresContext->GetDeviceContext(getter_AddRefs(deviceContext));
 
     nsCOMPtr<nsIFontMetrics> fontMet;
-    deviceContext->GetMetricsFor(fontStyle->mFont, *getter_AddRefs(fontMet));
+    deviceContext->GetMetricsFor(GetStyleFont()->mFont, *getter_AddRefs(fontMet));
     fontMet->GetHeight(aSize.height);
     aRenderingContext.SetFont(fontMet);
     aRenderingContext.GetWidth(aString, aSize.width);

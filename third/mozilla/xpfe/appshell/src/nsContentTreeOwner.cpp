@@ -75,8 +75,6 @@ nsContentTreeOwner::nsContentTreeOwner(PRBool fPrimary) : mXULWindow(nsnull),
    mPrimary(fPrimary), mContentTitleSetting(PR_FALSE), 
    mChromeFlags(nsIWebBrowserChrome::CHROME_ALL)
 {
-  NS_INIT_ISUPPORTS();
-
   // note if this fails, QI on nsIEmbeddingSiteWindow(2) will simply fail
   mSiteWindow2 = new nsSiteWindow2(this);
 }
@@ -562,6 +560,16 @@ NS_IMETHODIMP nsContentTreeOwner::SetEnabled(PRBool aEnable)
    return mXULWindow->SetEnabled(aEnable);
 }
 
+NS_IMETHODIMP nsContentTreeOwner::GetBlurSuppression(PRBool *aBlurSuppression)
+{
+  return mXULWindow->GetBlurSuppression(aBlurSuppression);
+}
+
+NS_IMETHODIMP nsContentTreeOwner::SetBlurSuppression(PRBool aBlurSuppression)
+{
+  return mXULWindow->SetBlurSuppression(aBlurSuppression);
+}
+
 NS_IMETHODIMP nsContentTreeOwner::GetMainWidget(nsIWidget** aMainWidget)
 {
    NS_ENSURE_ARG_POINTER(aMainWidget);
@@ -728,7 +736,6 @@ nsXULWindow* nsContentTreeOwner::XULWindow()
 
 nsSiteWindow2::nsSiteWindow2(nsContentTreeOwner *aAggregator)
 {
-  NS_INIT_ISUPPORTS();
   mAggregator = aAggregator;
 }
 

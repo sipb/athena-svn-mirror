@@ -44,12 +44,10 @@
 #include "nsIServiceManager.h"
 #include "nsIEventQueueService.h"
 #include "nsIEventQueue.h"
-#ifdef MOZ_AIMM
 // objbase.h must be declared before initguid.h to use the |DEFINE_GUID|'s in aimm.h
 #include <objbase.h>
 #include <initguid.h>
 #include "aimm.h"
-#endif
 
 // unknwn.h is needed to build with WIN32_LEAN_AND_MEAN
 #include <unknwn.h>
@@ -81,10 +79,17 @@ PRBool    nsToolkit::mUseImeApiW  = PR_FALSE;
 PRBool    nsToolkit::mW2KXP_CP936 = PR_FALSE;
 PRBool    nsToolkit::mIsWinXP     = PR_FALSE;
 
-#ifdef MOZ_AIMM
+DEFINE_GUID(IID_IActiveIMMApp, 
+0x08c0e040, 0x62d1, 0x11d1, 0x93, 0x26, 0x0, 0x60, 0xb0, 0x67, 0xb8, 0x6e);
+
+DEFINE_GUID(CLSID_CActiveIMM,
+0x4955DD33, 0xB159, 0x11d0, 0x8F, 0xCF, 0x0, 0xAA, 0x00, 0x6B, 0xCC, 0x59);
+
+DEFINE_GUID(IID_IActiveIMMMessagePumpOwner,
+0xb5cf2cfa, 0x8aeb, 0x11d1, 0x93, 0x64, 0x0, 0x60, 0xb0, 0x67, 0xb8, 0x6e);
+
 IActiveIMMApp* nsToolkit::gAIMMApp   = NULL;
 PRInt32        nsToolkit::gAIMMCount = 0;
-#endif
 
 nsWindow     *MouseTrailer::mCaptureWindow  = NULL;
 nsWindow     *MouseTrailer::mHoldMouse      = NULL;
@@ -96,6 +101,12 @@ PRBool        MouseTrailer::mIsInCaptureMode(PR_FALSE);
 //
 // Dll entry point. Keep the dll instance
 //
+
+#if defined(__GNUC__)
+// If DllMain gets name mangled, it won't be seen.
+extern "C" {
+#endif
+
 BOOL APIENTRY DllMain(  HINSTANCE hModule, 
                         DWORD reason, 
                         LPVOID lpReserved )
@@ -119,6 +130,11 @@ BOOL APIENTRY DllMain(  HINSTANCE hModule,
 
     return TRUE;
 }
+
+#if defined(__GNUC__)
+} // extern "C"
+#endif
+
 #endif
 
 //
@@ -162,13 +178,12 @@ LRESULT CALLBACK DetectWindowMove(int code, WPARAM wParam, LPARAM lParam)
 
 
 
-#ifdef MOZ_UNICODE
 
 #include "nsWindowAPI.h"
 
 #define MAX_CLASS_NAME  128
 #define MAX_MENU_NAME   128
-#define MAX_FILTER_NAME 128
+#define MAX_FILTER_NAME 256
 
 int ConvertAtoW(LPCSTR aStrInA, int aBufferSize, LPWSTR aStrOutW)
 {
@@ -203,7 +218,7 @@ BOOL CallOpenSaveFileNameA(LPOPENFILENAMEW aFileNameW, BOOL aOpen)
 {
   BOOL rtn;
   OPENFILENAMEA ofnA;
-  char filterA[MAX_FILTER_NAME+1];
+  char filterA[MAX_FILTER_NAME+2];
   char customFilterA[MAX_FILTER_NAME+1];
   char fileA[MAX_PATH+1];
   char fileTitleA[MAX_PATH+1];
@@ -217,7 +232,21 @@ BOOL CallOpenSaveFileNameA(LPOPENFILENAMEW aFileNameW, BOOL aOpen)
   ofnA.hwndOwner = aFileNameW->hwndOwner; 
   ofnA.hInstance = aFileNameW->hInstance; 
   if (aFileNameW->lpstrFilter)  {
-    ConvertWtoA(aFileNameW->lpstrFilter, MAX_FILTER_NAME, filterA);
+    // find the true filter length
+    int len = 0;
+    while ((aFileNameW->lpstrFilter[len]) ||
+           (aFileNameW->lpstrFilter[len+1]))
+    {
+      ++len;
+    }
+
+    len = WideCharToMultiByte(CP_ACP, 0,
+                              aFileNameW->lpstrFilter,
+                              len,
+                              filterA,
+                              MAX_FILTER_NAME, NULL, NULL);
+    filterA[len] = '\0';
+    filterA[len+1] = '\0';
     ofnA.lpstrFilter = filterA; 
   }
   if (aFileNameW->lpstrCustomFilter)  {
@@ -271,8 +300,28 @@ BOOL CallOpenSaveFileNameA(LPOPENFILENAMEW aFileNameW, BOOL aOpen)
     return 0;
 
   if (ofnA.lpstrFile) {
-    ConvertAtoW(ofnA.lpstrFile, MAX_PATH, aFileNameW->lpstrFile);
+    if ((ofnA.Flags & OFN_ALLOWMULTISELECT) && (ofnA.Flags & OFN_EXPLORER)) {
+      // lpstrFile contains the directory and file name strings 
+      // which are NULL separated, with an extra NULL character after the last file name. 
+      int lenA = 0;
+      while ((ofnA.lpstrFile[lenA]) || (ofnA.lpstrFile[lenA+1]))
+      {
+        ++lenA;
+      }
+      // get the size of required Wide Char and make sure aFileNameW->lpstrFile has enough space
+      int lenW = MultiByteToWideChar(CP_ACP, 0, ofnA.lpstrFile, lenA, 0, 0);
+      if (aFileNameW->nMaxFile < lenW+2)
+        return 0; // doesn't have enough allocated space
+      MultiByteToWideChar(CP_ACP, 0, ofnA.lpstrFile, lenA, aFileNameW->lpstrFile, aFileNameW->nMaxFile);
+      aFileNameW->lpstrFile[lenW] = '\0';
+      aFileNameW->lpstrFile[lenW+1] = '\0';
+    }
+    else  { 
+      ConvertAtoW(ofnA.lpstrFile, aFileNameW->nMaxFile, aFileNameW->lpstrFile);
+    }
   }
+
+  aFileNameW->nFilterIndex = ofnA.nFilterIndex;
 
   return rtn;
 }
@@ -379,6 +428,17 @@ ATOM WINAPI nsRegisterClass(const WNDCLASSW *aClassW)
   return RegisterClassA(&wClass);
 }
 
+BOOL WINAPI nsUnregisterClass(LPCWSTR aClassW, HINSTANCE aInst)
+{
+  char classA[MAX_PATH+1];
+
+  if (aClassW)  {
+    ConvertWtoA(aClassW, MAX_PATH, classA);
+    return UnregisterClassA((LPCSTR)classA, aInst);
+  }
+  return FALSE;
+}
+
 BOOL WINAPI nsSHGetPathFromIDList(LPCITEMIDLIST aIdList, LPWSTR aPathW)
 {
   char pathA[MAX_PATH+1];
@@ -424,6 +484,7 @@ LPITEMIDLIST WINAPI nsSHBrowseForFolder(LPBROWSEINFOW aBiW)
   return itemIdList;
 }
 
+HMODULE             nsToolkit::mShell32Module = NULL;
 NS_DefWindowProc    nsToolkit::mDefWindowProc = DefWindowProcA;
 NS_CallWindowProc   nsToolkit::mCallWindowProc = CallWindowProcA;
 NS_SetWindowLong    nsToolkit::mSetWindowLong = SetWindowLongA;
@@ -437,21 +498,18 @@ NS_GetSaveFileName  nsToolkit::mGetSaveFileName = nsGetSaveFileName;
 NS_GetClassName     nsToolkit::mGetClassName = nsGetClassName;
 NS_CreateWindowEx   nsToolkit::mCreateWindowEx = nsCreateWindowEx;
 NS_RegisterClass    nsToolkit::mRegisterClass = nsRegisterClass; 
+NS_UnregisterClass  nsToolkit::mUnregisterClass = nsUnregisterClass; 
 NS_SHGetPathFromIDList  nsToolkit::mSHGetPathFromIDList = nsSHGetPathFromIDList; 
 NS_SHBrowseForFolder    nsToolkit::mSHBrowseForFolder = nsSHBrowseForFolder; 
-
-#endif /* MOZ_UNICODE */
 
 void RunPump(void* arg)
 {
     ThreadInitInfo *info = (ThreadInitInfo*)arg;
     ::PR_EnterMonitor(info->monitor);
 
-#ifdef MOZ_AIMM
     // Start Active Input Method Manager on this thread
     if(nsToolkit::gAIMMApp)
         nsToolkit::gAIMMApp->Activate(TRUE);
-#endif
 
     // do registration and creation in this thread
     info->toolkit->CreateInternalWindow(PR_GetCurrentThread());
@@ -465,17 +523,10 @@ void RunPump(void* arg)
 
     // Process messages
     MSG msg;
-#ifdef MOZ_UNICODE
     while (nsToolkit::mGetMessage(&msg, NULL, 0, 0)) {
         TranslateMessage(&msg);
         nsToolkit::mDispatchMessage(&msg);
     }
-#else    
-    while (GetMessage(&msg, NULL, 0, 0)) {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
-    }
-#endif
 }
 
 //-------------------------------------------------------------------------
@@ -485,11 +536,9 @@ void RunPump(void* arg)
 //-------------------------------------------------------------------------
 nsToolkit::nsToolkit()  
 {
-    NS_INIT_ISUPPORTS();
     mGuiThread  = NULL;
     mDispatchWnd = 0;
 
-#ifdef MOZ_AIMM
     //
     // Initialize COM since create Active Input Method Manager object
     //
@@ -500,10 +549,9 @@ nsToolkit::nsToolkit()
       ::CoCreateInstance(CLSID_CActiveIMM, NULL, CLSCTX_INPROC_SERVER, IID_IActiveIMMApp, (void**) &nsToolkit::gAIMMApp);
 
     nsToolkit::gAIMMCount++;
-#endif
 
 #ifdef MOZ_STATIC_COMPONENT_LIBS
-    nsToolkit::Startup(nsnull);
+    nsToolkit::Startup(GetModuleHandle(NULL));
 #endif
 }
 
@@ -517,7 +565,6 @@ nsToolkit::~nsToolkit()
 {
     NS_PRECONDITION(::IsWindow(mDispatchWnd), "Invalid window handle");
 
-#ifdef MOZ_AIMM
     nsToolkit::gAIMMCount--;
 
     if (!nsToolkit::gAIMMCount) {
@@ -528,7 +575,6 @@ nsToolkit::~nsToolkit()
         }
         ::CoUninitialize();
     }
-#endif
 
     // Destroy the Dispatch Window
     ::DestroyWindow(mDispatchWnd);
@@ -578,7 +624,6 @@ nsToolkit::Startup(HMODULE hModule)
 
     nsToolkit::mIsNT = (osversion.dwPlatformId == VER_PLATFORM_WIN32_NT);
     if (nsToolkit::mIsNT)  {
-#ifdef MOZ_UNICODE 
       // For Windows 9x base OS nsFoo is already pointing to A functions
       // However on NT base OS we should point them to respective W functions
       nsToolkit::mDefWindowProc = DefWindowProcW;
@@ -594,18 +639,18 @@ nsToolkit::Startup(HMODULE hModule)
       nsToolkit::mGetClassName = GetClassNameW;
       nsToolkit::mCreateWindowEx = CreateWindowExW;
       nsToolkit::mRegisterClass = RegisterClassW; 
+      nsToolkit::mUnregisterClass = UnregisterClassW; 
       // Explicit call of SHxxxW in Win95 makes moz fails to run (170969)
       // we use GetProcAddress() to hide
-      HMODULE module = ::LoadLibrary("Shell32.dll");
-      if (module) {
-        nsToolkit::mSHGetPathFromIDList = (NS_SHGetPathFromIDList)GetProcAddress(module, "SHGetPathFromIDListW"); 
+      nsToolkit::mShell32Module = ::LoadLibrary("Shell32.dll");
+      if (nsToolkit::mShell32Module) {
+        nsToolkit::mSHGetPathFromIDList = (NS_SHGetPathFromIDList)GetProcAddress(nsToolkit::mShell32Module, "SHGetPathFromIDListW"); 
         if (!nsToolkit::mSHGetPathFromIDList)
           nsToolkit::mSHGetPathFromIDList = &nsSHGetPathFromIDList;
-        nsToolkit::mSHBrowseForFolder = (NS_SHBrowseForFolder)GetProcAddress(module, "SHBrowseForFolderW"); 
+        nsToolkit::mSHBrowseForFolder = (NS_SHBrowseForFolder)GetProcAddress(nsToolkit::mShell32Module, "SHBrowseForFolderW"); 
         if (!nsToolkit::mSHBrowseForFolder)
           nsToolkit::mSHBrowseForFolder = &nsSHBrowseForFolder;
       }
-#endif /* MOZ_UNICODE */ 
       nsToolkit::mUseImeApiW = PR_TRUE;
       // XXX Hack for stopping the crash (125573)
       if (osversion.dwMajorVersion == 5 && (osversion.dwMinorVersion == 0 || osversion.dwMinorVersion == 1))  { 
@@ -622,12 +667,7 @@ nsToolkit::Startup(HMODULE hModule)
     //
     // register the internal window class
     //
-#ifdef MOZ_UNICODE
     WNDCLASSW wc;
-#else
-    WNDCLASS wc;
-#endif /* MOZ_UNICODE */
-
     wc.style            = CS_GLOBALCLASS;
     wc.lpfnWndProc      = nsToolkit::WindowProc;
     wc.cbClsExtra       = 0;
@@ -637,21 +677,19 @@ nsToolkit::Startup(HMODULE hModule)
     wc.hCursor          = NULL;
     wc.hbrBackground    = NULL;
     wc.lpszMenuName     = NULL;
-#ifdef MOZ_UNICODE
     wc.lpszClassName    = L"nsToolkitClass";
     VERIFY(nsToolkit::mRegisterClass(&wc));
-#else
-    wc.lpszClassName    = "nsToolkitClass";
-    VERIFY(::RegisterClass(&wc));
-#endif /* MOZ_UNICODE */
 }
 
 
 void
 nsToolkit::Shutdown()
 {
+    if (nsToolkit::mShell32Module)
+      ::FreeLibrary(nsToolkit::mShell32Module);
+
     //VERIFY(::UnregisterClass("nsToolkitClass", nsToolkit::mDllInstance));
-    ::UnregisterClass("nsToolkitClass", nsToolkit::mDllInstance);
+    nsToolkit::mUnregisterClass(L"nsToolkitClass", nsToolkit::mDllInstance);
 }
 
 nsIEventQueue* 
@@ -695,6 +733,7 @@ void nsToolkit::CreateInternalWindow(PRThread *aThread)
                                        NULL,
                                        nsToolkit::mDllInstance,
                                        NULL);
+
     VERIFY(mDispatchWnd);
 }
 
@@ -743,13 +782,9 @@ NS_METHOD nsToolkit::Init(PRThread *aThread)
     // Store the thread ID of the thread containing the message pump.  
     // If no thread is provided create one
     if (NULL != aThread) {
-
-#ifdef MOZ_AIMM
         // Start Active Input Method Manager on this thread
         if(nsToolkit::gAIMMApp)
             nsToolkit::gAIMMApp->Activate(TRUE);
-#endif
-
         CreateInternalWindow(aThread);
     } else {
         // create a thread where the message pump will run
@@ -802,19 +837,13 @@ LRESULT CALLBACK nsToolkit::WindowProc(HWND hWnd, UINT msg, WPARAM wParam,
 
     }
 
-#ifdef MOZ_AIMM
     if(nsToolkit::gAIMMApp) {
         LRESULT lResult;
         if (nsToolkit::gAIMMApp->OnDefWindowProc(hWnd, msg, wParam, lParam, &lResult) == S_OK)
             return lResult;
     }
-#endif
 
-#ifdef MOZ_UNICODE
     return nsToolkit::mDefWindowProc(hWnd, msg, wParam, lParam);
-#else
-    return ::DefWindowProc(hWnd, msg, wParam, lParam);
-#endif
 }
 
 

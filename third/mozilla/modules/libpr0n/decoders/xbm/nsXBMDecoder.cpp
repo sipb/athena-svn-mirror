@@ -40,20 +40,16 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 #include "nsXBMDecoder.h"
 
 #include "nsIInputStream.h"
 #include "nsIComponentManager.h"
-#include "nsIImage.h"
-#include "nsMemory.h"
-#include "imgIContainerObserver.h"
-#include "nsRect.h"
-#include "nsReadableUtils.h"
 
 #include "imgILoad.h"
 
-#if defined(XP_PC) || defined(XP_BEOS) || defined(MOZ_WIDGET_PHOTON)
+#if defined(XP_WIN) || defined(XP_OS2) || defined(XP_BEOS) || defined(MOZ_WIDGET_PHOTON)
 #define GFXFORMAT gfxIFormats::BGR_A1
 #else
 #define USE_RGB
@@ -64,7 +60,6 @@ NS_IMPL_ISUPPORTS1(nsXBMDecoder, imgIDecoder)
 
 nsXBMDecoder::nsXBMDecoder() : mBuf(nsnull), mPos(nsnull), mRow(nsnull), mAlphaRow(nsnull)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 nsXBMDecoder::~nsXBMDecoder()
@@ -102,8 +97,8 @@ NS_IMETHODIMP nsXBMDecoder::Init(imgILoad *aLoad)
 
 NS_IMETHODIMP nsXBMDecoder::Close()
 {
-    mObserver->OnStopContainer(nsnull, nsnull, mImage);
-    mObserver->OnStopDecode(nsnull, nsnull, NS_OK, nsnull);
+    mObserver->OnStopContainer(nsnull, mImage);
+    mObserver->OnStopDecode(nsnull, NS_OK, nsnull);
     mObserver = nsnull;
     mImage = nsnull;
     mFrame = nsnull;
@@ -164,14 +159,14 @@ nsresult nsXBMDecoder::ProcessData(const char* aData, PRUint32 aCount) {
             return NS_OK;
 
         mImage->Init(mWidth, mHeight, mObserver);
-        mObserver->OnStartContainer(nsnull, nsnull, mImage);
+        mObserver->OnStartContainer(nsnull, mImage);
 
         nsresult rv = mFrame->Init(0, 0, mWidth, mHeight, GFXFORMAT, 24);
         if (NS_FAILED(rv))
           return rv;
 
         mImage->AppendFrame(mFrame);
-        mObserver->OnStartFrame(nsnull, nsnull, mFrame);
+        mObserver->OnStartFrame(nsnull, mFrame);
 
         PRUint32 bpr;
         mFrame->GetImageBytesPerRow(&bpr);
@@ -198,12 +193,6 @@ nsresult nsXBMDecoder::ProcessData(const char* aData, PRUint32 aCount) {
         }
     }
     if (mState == RECV_DATA) {
-#if defined(XP_MAC) || defined(XP_MACOSX)
-// bytes per pixel
-        const PRUint32 bpp = 4;
-#else
-        const PRUint32 bpp = 3;
-#endif
         PRUint32 bpr;
         mFrame->GetImageBytesPerRow(&bpr);
         PRUint32 abpr;
@@ -237,11 +226,11 @@ nsresult nsXBMDecoder::ProcessData(const char* aData, PRUint32 aCount) {
                     mFrame->SetAlphaData(mAlphaRow, abpr, mCurRow * abpr);
                     mFrame->SetImageData(mRow, bpr, mCurRow * bpr);
                     nsRect r(0, (mCurRow + 1), mWidth, 1);
-                    mObserver->OnDataAvailable(nsnull, nsnull, mFrame, &r);
+                    mObserver->OnDataAvailable(nsnull, mFrame, &r);
 
                     if ((mCurRow + 1) == mHeight) {
                         mState = RECV_DONE;
-                        return mObserver->OnStopFrame(nsnull, nsnull, mFrame);
+                        return mObserver->OnStopFrame(nsnull, mFrame);
                     }
                     mCurRow++;
                     mCurCol = 0;

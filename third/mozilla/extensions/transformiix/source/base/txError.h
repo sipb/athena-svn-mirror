@@ -44,46 +44,47 @@
  * See nsError.h for details.
  */
 
-#ifdef TX_EXE
-
-#include "baseutils.h"
-
-typedef PRUint32 nsresult;
-
-#define NS_FAILED(_nsresult) ((_nsresult) & 0x80000000)
-#define NS_SUCCEEDED(_nsresult) (!((_nsresult) & 0x80000000))
-#define NS_OK                              0
-#define NS_ERROR_INVALID_POINTER           ((nsresult) 0x80004003L)
-#define NS_ERROR_NULL_POINTER              NS_ERROR_INVALID_POINTER
-#define NS_ERROR_UNEXPECTED                ((nsresult) 0x8000ffffL)
-#define NS_ERROR_NOT_IMPLEMENTED           ((nsresult) 0x80004001L)
-#define NS_ERROR_FAILURE                   ((nsresult) 0x80004005L)
-#define NS_ERROR_OUT_OF_MEMORY             ((nsresult) 0x8007000eL)
-#define NS_ERROR_ILLEGAL_VALUE             ((nsresult) 0x80070057L)
-#define NS_ERROR_INVALID_ARG               NS_ERROR_ILLEGAL_VALUE
-
-#define NS_ENSURE_TRUE(value, result) \
-    do {                              \
-        if (!(value)) {               \
-            return (result);          \
-        }                             \
-    } while(0)
-
-#define NS_ENSURE_FALSE(value, result) \
-    NS_ENSURE_TRUE(!(value), result)
-
-#define NS_ENSURE_SUCCESS(value, result) \
-    NS_ENSURE_TRUE(NS_SUCCEEDED(value), result)
-
-#else // TX_EXE
-
 #include "nsError.h"
 
-#endif // TX_EXE
-
-#define NS_ERROR_XPATH_EVAL_FAILED         NS_ERROR_FAILURE
-#define NS_ERROR_XPATH_PARSE_FAILED        NS_ERROR_FAILURE
 #define NS_ERROR_XPATH_INVALID_ARG         NS_ERROR_INVALID_ARG
-#define NS_ERROR_XSLT_INVALID_URL          NS_ERROR_INVALID_ARG
+
+#define NS_XSLT_GET_NEW_HANDLER                        \
+    NS_ERROR_GENERATE_SUCCESS(NS_ERROR_MODULE_XSLT, 1)
+
+#define NS_ERROR_XSLT_PARSE_FAILURE                    \
+    NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_XSLT, 1)
+
+#define NS_ERROR_XPATH_PARSE_FAILURE                   \
+    NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_XSLT, 2)
+
+#define NS_ERROR_XSLT_ALREADY_SET                      \
+    NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_XSLT, 3)
+
+#define NS_ERROR_XSLT_EXECUTION_FAILURE                \
+    NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_XSLT, 4)
+
+#define NS_ERROR_XPATH_UNKNOWN_FUNCTION                \
+    NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_XSLT, 5)
+
+#define NS_ERROR_XSLT_BAD_RECURSION                    \
+    NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_XSLT, 6)
+
+#define NS_ERROR_XSLT_BAD_VALUE                        \
+    NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_XSLT, 7)
+
+#define NS_ERROR_XSLT_NODESET_EXPECTED                 \
+    NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_XSLT, 8)
+
+#define NS_ERROR_XSLT_ABORTED                          \
+    NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_XSLT, 9)
+
+#define NS_ERROR_XSLT_NETWORK_ERROR                    \
+    NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_XSLT, 10)
+
+#define NS_ERROR_XSLT_WRONG_MIME_TYPE                  \
+    NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_XSLT, 11)
+
+#define NS_ERROR_XSLT_LOAD_RECURSION                   \
+    NS_ERROR_GENERATE_FAILURE(NS_ERROR_MODULE_XSLT, 12)
 
 #endif // __TX_ERROR

@@ -42,17 +42,25 @@ const JSDPROT_HANDLER_CTRID =
     "@mozilla.org/network/protocol;1?name=x-jsd";
 const JSDPROT_HANDLER_CID =
     Components.ID("{12ec790d-304e-4525-89a9-3e723d489d14}");
+const JSDCNT_HANDLER_CTRID =
+    "@mozilla.org/uriloader/content-handler;1?type=x-application-jsd";
+const JSDCNT_HANDLER_CID =
+    Components.ID("{306670f0-47bb-466b-b53b-613235623bbd}");
 
 /* components used by this file */
 const CATMAN_CTRID = "@mozilla.org/categorymanager;1";
 const STRING_STREAM_CTRID = "@mozilla.org/io/string-input-stream;1";
 const MEDIATOR_CTRID =
     "@mozilla.org/appshell/window-mediator;1";
+const ASS_CONTRACTID =
+    "@mozilla.org/appshell/appShellService;1";
 const SIMPLEURI_CTRID = "@mozilla.org/network/simple-uri;1";
 
 const nsIWindowMediator    = Components.interfaces.nsIWindowMediator;
+const nsIAppShellService   = Components.interfaces.nsIAppShellService;
 const nsICmdLineHandler    = Components.interfaces.nsICmdLineHandler;
 const nsICategoryManager   = Components.interfaces.nsICategoryManager;
+const nsIContentHandler    = Components.interfaces.nsIContentHandler;
 const nsIProtocolHandler   = Components.interfaces.nsIProtocolHandler;
 const nsIURI               = Components.interfaces.nsIURI;
 const nsIURL               = Components.interfaces.nsIURL;
@@ -70,6 +78,28 @@ function findDebuggerWindow ()
     var window = windowManager.getMostRecentWindow("mozapp:venkman");
 
     return window;
+}
+
+function safeHTML(str)
+{
+    function replaceChars(ch)
+    {
+        switch (ch)
+        {
+            case "<":
+                return "&lt;";
+            
+            case ">":
+                return "&gt;";
+                    
+            case "&":
+                return "&amp;";
+        }
+
+        return "?";
+    };
+        
+    return String(str).replace(/[<>&]/g, replaceChars);
 }
 
 /* Command Line handler service */
@@ -198,7 +228,8 @@ function JSDProtocolHandler()
 
 JSDProtocolHandler.prototype.scheme = "x-jsd";
 JSDProtocolHandler.prototype.defaultPort = JSD_DEFAULT_PORT;
-JSDProtocolHandler.prototype.protocolFlags = nsIProtocolHandler.URI_NORELATIVE;
+JSDProtocolHandler.prototype.protocolFlags = nsIProtocolHandler.URI_NORELATIVE ||
+                                             nsIProtocolHandler.URI_NOAUTH;
 
 JSDProtocolHandler.prototype.allowPort =
 function jsdph_allowport (aPort, aScheme)
@@ -261,13 +292,22 @@ function jsdch_aopen (streamListener, context)
 {
     this.streamListener = streamListener;
     this.context = context;
-    if (this.loadGroup)
-        this.loadGroup.addRequest (this, null);
-
+    
+    if (!window && this.URI.spec == "x-jsd:debugger")
+    {
+        this.contentType = "x-application-jsd";
+        this.contentLength = 0;
+        streamListener.onStartRequest(this, context);
+        return;
+    }
+    
     var window = findDebuggerWindow();
     var ary = this.URI.spec.match (/x-jsd:([^:]+)/);
     var exception;
-    
+
+    if (this.loadGroup)
+        this.loadGroup.addRequest (this, null);
+
     if (window && "console" in window && ary)
     {
         try
@@ -280,10 +320,10 @@ function jsdch_aopen (streamListener, context)
             exception = ex;
         }
     }
-    
+
     var str =
         "<html><head><title>Error</title></head><body>Could not load &lt;<b>" +
-        this.URI.spec + "</b>&gt;<br>";
+        safeHTML(this.URI.spec) + "</b>&gt;<br>";
     
     if (!ary)
     {
@@ -291,8 +331,8 @@ function jsdch_aopen (streamListener, context)
     }
     else if (exception)
     {
-        str += "<b>Internal error: " + exception + "</b><br><pre>" + 
-            exception.stack;
+        str += "<b>Internal error: " + safeHTML(exception) + "</b><br><pre>" + 
+            safeHTML(exception.stack);
     }
     else
     {
@@ -361,6 +401,73 @@ function jsdch_notimpl ()
 
 /*****************************************************************************/
 
+/* x-application-jsd content handler */
+function JSDContentHandler ()
+{}
+
+JSDContentHandler.prototype.QueryInterface =
+function jsdh_qi(iid)
+{
+    if (!iid.equals(nsIContentHandler) && !iid.equals(nsISupports))
+        throw Components.results.NS_ERROR_NO_INTERFACE;
+
+    return this;
+}
+
+JSDContentHandler.prototype.handleContent =
+function jsdh_handle(contentType, command, windowTarget, request)
+{
+    var e;
+    var channel = request.QueryInterface(nsIChannel);
+    
+    // prevent someone from invoking the debugger remotely by serving
+    // up any old file with the x-application-jsd content type.
+    if (channel.URI.spec != "x-jsd:debugger")
+    {
+        debug ("Not handling content from unknown location ``" +
+               channel.URI.spec + "''");
+        return;
+    }
+    
+    var window = findDebuggerWindow()
+
+    if (window)
+    {
+        window.focus();
+    }
+    else
+    {
+        var ass =
+            Components.classes[ASS_CONTRACTID].getService(nsIAppShellService);
+        window = ass.hiddenDOMWindow;
+
+        var args = new Object();
+        args.url = channel.URI.spec;
+
+        window.openDialog("chrome://venkman/content/venkman.xul", "_blank",
+                          "chrome,menubar,toolbar,resizable,dialog=no", args);
+    }
+}
+
+/*****************************************************************************/
+
+/* content handler factory object (IRCContentHandler) */
+var JSDContentHandlerFactory = new Object();
+
+JSDContentHandlerFactory.createInstance =
+function jsdhf_create(outer, iid)
+{
+    if (outer != null)
+        throw Components.results.NS_ERROR_NO_AGGREGATION;
+
+    if (!iid.equals(nsIContentHandler) && !iid.equals(nsISupports))
+        throw Components.results.NS_ERROR_INVALID_ARG;
+
+    return new JSDContentHandler();
+}
+
+/*****************************************************************************/
+
 var Module = new Object();
 
 Module.registerSelf =
@@ -387,6 +494,14 @@ function (compMgr, fileSpec, location, type)
     compMgr.registerFactoryLocation(JSDPROT_HANDLER_CID,
                                     "x-jsd protocol handler",
                                     JSDPROT_HANDLER_CTRID, 
+                                    fileSpec, 
+                                    location,
+                                    type);
+
+    debug("*** Registering x-application-jsd content handler.\n");
+    compMgr.registerFactoryLocation(JSDCNT_HANDLER_CID,
+                                    "x-application-jsd content handler",
+                                    JSDCNT_HANDLER_CTRID, 
                                     fileSpec, 
                                     location,
                                     type);
@@ -422,6 +537,9 @@ function (compMgr, cid, iid) {
 
     if (cid.equals(JSDPROT_HANDLER_CID))
         return JSDProtocolHandlerFactory;
+
+    if (cid.equals(JSDCNT_HANDLER_CID))
+        return JSDContentHandlerFactory;
     
     if (!iid.equals(Components.interfaces.nsIFactory))
         throw Components.results.NS_ERROR_NOT_IMPLEMENTED;

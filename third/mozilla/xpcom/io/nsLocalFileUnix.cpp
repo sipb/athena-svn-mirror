@@ -121,7 +121,6 @@ nsDirEnumeratorUnix::nsDirEnumeratorUnix() :
                          mDir(nsnull), 
                          mEntry(nsnull)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 nsDirEnumeratorUnix::~nsDirEnumeratorUnix()
@@ -201,7 +200,6 @@ nsDirEnumeratorUnix::GetNextEntry()
 nsLocalFile::nsLocalFile() :
     mHaveCachedStat(PR_FALSE)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 nsLocalFile::~nsLocalFile()
@@ -1293,6 +1291,7 @@ NS_IMETHODIMP
 nsLocalFile::IsDirectory(PRBool *_retval)
 {
     NS_ENSURE_ARG_POINTER(_retval);
+    *_retval = PR_FALSE;
     VALIDATE_STAT_CACHE();
     *_retval = S_ISDIR(mCachedStat.st_mode);
     return NS_OK;
@@ -1302,6 +1301,7 @@ NS_IMETHODIMP
 nsLocalFile::IsFile(PRBool *_retval)
 {
     NS_ENSURE_ARG_POINTER(_retval);
+    *_retval = PR_FALSE;
     VALIDATE_STAT_CACHE();
     *_retval = S_ISREG(mCachedStat.st_mode);
     return NS_OK;

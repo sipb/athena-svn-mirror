@@ -55,15 +55,15 @@
 #include "nsICookieStorage.h"
 #include "nsPluginsDir.h"
 #include "nsVoidArray.h"  // array for holding "active" streams
-#include "nsIDirectoryService.h"
+#include "nsPluginDirServiceProvider.h"
+#include "nsAutoPtr.h"
 #include "nsWeakPtr.h"
 #include "nsIPrompt.h"
-#include "nsIGenericFactory.h"
 #include "nsISupportsArray.h"
 #include "nsPluginNativeWindow.h"
+#include "nsIPrefBranch.h"
 
 class ns4xPlugin;
-class nsFileSpec;
 class nsIComponentManager;
 class nsIFile;
 class nsIChannel;
@@ -99,6 +99,13 @@ public:
   void TryUnloadPlugin(PRBool aForceShutdown = PR_FALSE);
   void Mark(PRUint32 mask) { mFlags |= mask; }
   PRBool Equals(nsPluginTag* aPluginTag);
+
+  enum nsRegisterType {
+    ePluginRegister,
+    ePluginUnregister
+  };
+  void RegisterWithCategoryManager(PRBool aOverrideInternalTypes,
+                                   nsRegisterType aType = ePluginRegister);
 
   nsPluginTag   *mNext;
   nsPluginHostImpl *mPluginHost;
@@ -387,6 +394,10 @@ public:
                      const char *aHeadersData = nsnull, 
                      PRUint32 aHeadersDataLen = 0);
 
+  nsresult
+  DoURLLoadSecurityCheck(nsIPluginInstance *aInstance,
+                         const char* aURL);
+
   NS_IMETHOD
   AddHeadersToChannel(const char *aHeadersData, PRUint32 aHeadersDataLen, 
                       nsIChannel *aGenericChannel);
@@ -424,9 +435,6 @@ private:
                           nsIPluginInstance* aInstance,
                           nsIURI* aURL, PRBool aDefaultPlugin,
                           nsIPluginInstancePeer *peer);
-
-  nsresult 
-  RegisterPluginMimeTypesWithLayout(nsPluginTag *pluginTag, nsIComponentManager * compManager);
 
   nsresult
   FindPlugins(PRBool aCreatePluginList, PRBool * aPluginsChanged);
@@ -474,6 +482,9 @@ private:
   // one-off hack to include nppl3260.dll from the components folder
   nsresult ScanForRealInComponentsFolder(nsIComponentManager * aCompManager);
 
+  // calls PostPluginUnloadEvent for each library in mUnusedLibraries
+  void UnloadUnusedLibraries();
+
   char        *mPluginPath;
   nsPluginTag *mPlugins;
   nsPluginTag *mCachedPlugins;
@@ -486,11 +497,11 @@ private:
   nsActivePluginList mActivePluginList;
   nsVoidArray mUnusedLibraries;
 
-  nsCOMPtr<nsIFile> mPluginsDir;
-  nsCOMPtr<nsIDirectoryServiceProvider> mPrivateDirServiceProvider;  
+  nsCOMPtr<nsIFile>                    mPluginRegFile;
+  nsCOMPtr<nsIPrefBranch>              mPrefService;
+  nsRefPtr<nsPluginDirServiceProvider> mPrivateDirServiceProvider;
+  
   nsWeakPtr mCurrentDocument; // weak reference, we use it to id document only
-
-  nsCOMPtr<nsIGenericFactory> mFactory;
 };
 
 #endif

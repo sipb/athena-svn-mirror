@@ -19,9 +19,10 @@
  * Portions created by the Initial Developer are Copyright (C) 1998
  * the Initial Developer. All Rights Reserved.
  *
+ * Original Author: Eric Vaughan (evaughan@netscape.com)
  * Contributor(s):
- * Author: Eric Vaughan (evaughan@netscape.com)
- *
+ *   Aaron Leventhal (aaronl@netscape.com)
+ *   Kyle Yuan (kyle.yuan@sun.com)
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -38,19 +39,139 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nsHTMLTextAccessible.h"
+#include "nsIFrame.h"
+#include "nsIPresContext.h"
+#include "nsIPresShell.h"
+#include "nsISelection.h"
+#include "nsISelectionController.h"
 
 nsHTMLTextAccessible::nsHTMLTextAccessible(nsIDOMNode* aDomNode, nsIWeakReference* aShell):
-nsTextAccessible(aDomNode, aShell)
+nsTextAccessibleWrap(aDomNode, aShell)
 { 
 }
 
-/* wstring getAccName (); */
-NS_IMETHODIMP nsHTMLTextAccessible::GetAccName(nsAString& _retval)
+NS_IMETHODIMP nsHTMLTextAccessible::GetAccName(nsAString& aName)
 { 
   nsAutoString accName;
   if (NS_FAILED(mDOMNode->GetNodeValue(accName)))
     return NS_ERROR_FAILURE;
   accName.CompressWhitespace();
-  _retval = accName;
+  aName = accName;
   return NS_OK;
+}
+
+NS_IMETHODIMP nsHTMLTextAccessible::GetAccState(PRUint32 *aState)
+{
+  nsTextAccessible::GetAccState(aState);
+  // Get current selection and find out if current node is in it
+  nsCOMPtr<nsIPresShell> shell(GetPresShell());
+  if (!shell) {
+     return NS_ERROR_FAILURE;  
+  }
+
+  nsCOMPtr<nsIPresContext> context;
+  shell->GetPresContext(getter_AddRefs(context));
+  nsCOMPtr<nsIContent> content(do_QueryInterface(mDOMNode));
+  nsIFrame *frame = nsnull;
+  if (content && NS_SUCCEEDED(shell->GetPrimaryFrameFor(content, &frame)) && frame) {
+    nsCOMPtr<nsISelectionController> selCon;
+    frame->GetSelectionController(context, getter_AddRefs(selCon));
+    if (selCon) {
+      nsCOMPtr<nsISelection> domSel;
+      selCon->GetSelection(nsISelectionController::SELECTION_NORMAL, getter_AddRefs(domSel));
+      if (domSel) {
+        PRBool isSelected = PR_FALSE, isCollapsed = PR_TRUE;
+        domSel->ContainsNode(mDOMNode, PR_TRUE, &isSelected);
+        domSel->GetIsCollapsed(&isCollapsed);
+        if (isSelected && !isCollapsed)
+          *aState |=STATE_SELECTED;
+      }
+    }
+  }
+  *aState |= STATE_SELECTABLE;
+
+  nsCOMPtr<nsIAccessibleDocument> docAccessible(GetDocAccessible());
+  if (docAccessible) {
+    PRBool isEditable;
+    docAccessible->GetIsEditable(&isEditable);
+    if (!isEditable) {
+      *aState |= STATE_READONLY;
+    }
+  }
+
+  return NS_OK;
+}
+
+nsHTMLHRAccessible::nsHTMLHRAccessible(nsIDOMNode* aDomNode, nsIWeakReference* aShell):
+nsLeafAccessible(aDomNode, aShell)
+{ 
+}
+
+NS_IMETHODIMP nsHTMLHRAccessible::GetAccRole(PRUint32 *aRole)
+{
+  *aRole = ROLE_SEPARATOR;
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsHTMLHRAccessible::GetAccState(PRUint32 *aState)
+{
+  nsLeafAccessible::GetAccState(aState);
+  *aState &= ~STATE_FOCUSABLE;
+  return NS_OK;
+}
+
+nsHTMLLabelAccessible::nsHTMLLabelAccessible(nsIDOMNode* aDomNode, nsIWeakReference* aShell):
+nsTextAccessible(aDomNode, aShell)
+{ 
+}
+
+NS_IMETHODIMP nsHTMLLabelAccessible::GetAccName(nsAString& aReturn)
+{ 
+  nsresult rv = NS_ERROR_FAILURE;
+  nsCOMPtr<nsIContent> content(do_QueryInterface(mDOMNode));
+
+  nsAutoString name;
+  if (content)
+    rv = AppendFlatStringFromSubtree(content, &name);
+
+  if (NS_SUCCEEDED(rv)) {
+    // Temp var needed until CompressWhitespace built for nsAString
+    name.CompressWhitespace();
+    aReturn = name;
+  }
+
+  return rv;
+}
+
+NS_IMETHODIMP nsHTMLLabelAccessible::GetAccRole(PRUint32 *aRole)
+{
+  *aRole = ROLE_STATICTEXT;
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsHTMLLabelAccessible::GetAccState(PRUint32 *aState)
+{
+  nsTextAccessible::GetAccState(aState);
+  *aState &= (STATE_LINKED|STATE_TRAVERSED);  // Only use link states
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsHTMLLabelAccessible::GetAccFirstChild(nsIAccessible **aAccFirstChild) 
+{  
+  // A <label> is not necessarily a leaf!
+  return nsAccessible::GetAccFirstChild(aAccFirstChild);
+}
+
+  /* readonly attribute nsIAccessible accFirstChild; */
+NS_IMETHODIMP nsHTMLLabelAccessible::GetAccLastChild(nsIAccessible **aAccLastChild)
+{  
+  // A <label> is not necessarily a leaf!
+  return nsAccessible::GetAccLastChild(aAccLastChild);
+}
+
+/* readonly attribute long accChildCount; */
+NS_IMETHODIMP nsHTMLLabelAccessible::GetAccChildCount(PRInt32 *aAccChildCount) 
+{
+  // A <label> is not necessarily a leaf!
+  return nsAccessible::GetAccChildCount(aAccChildCount);
 }

@@ -32,7 +32,7 @@
  * may use your version of this file under either the MPL or the
  * GPL.
  *
- * $Id: ssl.h,v 1.1.1.1 2003-02-14 19:45:51 rbasch Exp $
+ * $Id: ssl.h,v 1.1.1.2 2003-07-08 17:40:41 rbasch Exp $
  */
 
 #ifndef __ssl_h_
@@ -363,6 +363,11 @@ SSL_IMPORT SECItem *SSL_GetSessionID(PRFileDesc *fd);
 ** Clear out the client's SSL session cache, not the server's session cache.
 */
 SSL_IMPORT void SSL_ClearSessionCache(void);
+
+/*
+** Close the server's SSL session cache.
+*/
+SSL_IMPORT SECStatus SSL_ShutdownServerSessionIDCache(void);
 
 /*
 ** Set peer information so we can correctly look up SSL session later.

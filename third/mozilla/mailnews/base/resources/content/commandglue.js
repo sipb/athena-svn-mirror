@@ -35,16 +35,16 @@ var gBeforeFolderLoadTime;
 var gRDFNamespace = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 
 /* keep in sync with nsMsgFolderFlags.h */
-var MSG_FOLDER_FLAG_TRASH = 0x0100;
-var MSG_FOLDER_FLAG_SENTMAIL = 0x0200;
-var MSG_FOLDER_FLAG_DRAFTS = 0x0400;
-var MSG_FOLDER_FLAG_QUEUE = 0x0800;
-var MSG_FOLDER_FLAG_INBOX = 0x1000;
-var MSG_FOLDER_FLAG_TEMPLATES = 0x400000;
+const MSG_FOLDER_FLAG_TRASH = 0x0100;
+const MSG_FOLDER_FLAG_SENTMAIL = 0x0200;
+const MSG_FOLDER_FLAG_DRAFTS = 0x0400;
+const MSG_FOLDER_FLAG_QUEUE = 0x0800;
+const MSG_FOLDER_FLAG_INBOX = 0x1000;
+const MSG_FOLDER_FLAG_TEMPLATES = 0x400000;
+const MSG_FOLDER_FLAG_JUNK = 0x40000000;
 
 function OpenURL(url)
 {
-  //dump("\n\nOpenURL from XUL\n\n\n");
   messenger.SetWindow(window, msgWindow);
   messenger.OpenURL(url);
 }
@@ -100,44 +100,39 @@ function LoadMessageByUri(uri)
 
 function setTitleFromFolder(msgfolder, subject)
 {
-    if (!msgfolder) return;
+    var title = subject || "";
 
-    var title;
-    var server = msgfolder.server;
+    if (msgfolder)
+    {
+      if (title)
+        title += " - ";
 
-    if (null != subject)
-      title = subject+" - ";
-    else
-      title = "";
+      title += msgfolder.prettyName;
 
-    if (msgfolder.isServer) 
-      title += server.prettyName;
-    else {
+      if (!msgfolder.isServer)
+      {
+        var server = msgfolder.server;
         var middle;
         var end;
         if (server.type == "nntp") {
-            // <folder> on <hostname>
-            middle = gMessengerBundle.getString("titleNewsPreHost");
-            end = server.hostName;
+          // <folder> on <hostname>
+          middle = gMessengerBundle.getString("titleNewsPreHost");
+          end = server.hostName;
         } else {
-            var identity;
-            try {
-                var identities = accountManager.GetIdentitiesForServer(server);
+          var identity;
+          try {
+            var identities = accountManager.GetIdentitiesForServer(server);
 
-                identity = identities.QueryElementAt(0, Components.interfaces.nsIMsgIdentity);
-                // <folder> for <email>
-                middle = gMessengerBundle.getString("titleMailPreHost");
-                end = identity.email;
-            } catch (ex) {
-            }
-
+            identity = identities.QueryElementAt(0, Components.interfaces.nsIMsgIdentity);
+            // <folder> for <email>
+            middle = gMessengerBundle.getString("titleMailPreHost");
+            end = identity.email;
+          } catch (ex) {}
         }
-
-        title += msgfolder.prettyName;
         if (middle) title += " " + middle;
         if (end) title += " " + end;
+      }
     }
-
     title += " - " + gBrandBundle.getString("brandShortName");
     window.title = title;
 }
@@ -173,7 +168,7 @@ function ChangeFolderByURI(uri, viewType, viewFlags, sortType, sortOrder)
   }
 
   //if it's a server, clear the threadpane and don't bother trying to load.
-  if(msgfolder.isServer) {
+  if (msgfolder.isServer) {
     msgWindow.openFolder = null;
 
     ClearThreadPane();
@@ -232,14 +227,15 @@ function ChangeFolderByURI(uri, viewType, viewFlags, sortType, sortOrder)
     gRerootOnFolderLoad = true;
     try
     {
+      ClearThreadPane();
       SetBusyCursor(window, true);
       msgfolder.startFolderLoading();
       msgfolder.updateFolder(msgWindow);
     }
     catch(ex)
     {
-          SetBusyCursor(window, false);
-          dump("Error loading with many headers to download: " + ex + "\n");
+      SetBusyCursor(window, false);
+      dump("Error loading with many headers to download: " + ex + "\n");
     }
   }
   else
@@ -257,18 +253,11 @@ function ChangeFolderByURI(uri, viewType, viewFlags, sortType, sortOrder)
 
 function isNewsURI(uri)
 {
-    if (!uri || uri[0] != 'n') {
-        return false;
-    }
-    else {
-        return ((uri.substring(0,6) == "news:/") || (uri.substring(0,14) == "news-message:/"));
-    }
+  return ((/^news-message:/.test(uri)) || (/^news:/.test(uri)));
 }
 
 function RerootFolder(uri, newFolder, viewType, viewFlags, sortType, sortOrder)
 {
-  //dump("In reroot folder, sortType = " +  sortType + "\n");
-
   // workaround for #39655
   gFolderJustSwitched = true;
 
@@ -329,13 +318,20 @@ function RerootFolder(uri, newFolder, viewType, viewFlags, sortType, sortOrder)
 
   UpdateStatusMessageCounts(newFolder);
   
-  // hook for extra toolbar items
-  var observerService = Components.classes["@mozilla.org/observer-service;1"].getService(Components.interfaces.nsIObserverService);
-  observerService.notifyObservers(window, "mail:updateToolbarItems", null);
+  UpdateMailToolbar("reroot folder in 3 pane");
 }
 
 function SwitchView(command)
 {
+  // when switching thread views, we might be coming out of quick search
+  // or a message view.
+  // first set view picker to all
+  ViewMessagesBy("viewPickerAll");
+
+  // clear the QS text, if we need to
+  ClearQSIfNecessary();
+  
+  // now switch views
   var oldSortType = gDBView ? gDBView.sortType : nsMsgViewSortType.byThread;
   var oldSortOrder = gDBView ? gDBView.sortOrder : nsMsgViewSortOrder.ascending;
   var viewFlags = gCurViewFlags;
@@ -393,11 +389,13 @@ function SetSentFolderColumns(isSentFolder)
   var searchCriteria = document.getElementById("searchCriteria");
   if(isSentFolder)
   {
+    senderOrRecipientColumn.setAttribute("tooltiptext", gMessengerBundle.getString("recipientColumnTooltip"));
     senderOrRecipientColumn.setAttribute("label", gMessengerBundle.getString("recipientColumnHeader"));
     searchCriteria.setAttribute("value", gMessengerBundle.getString("recipientSearchCriteria"));
   }
   else
   {
+    senderOrRecipientColumn.setAttribute("tooltiptext", gMessengerBundle.getString("senderColumnTooltip"));
     senderOrRecipientColumn.setAttribute("label", gMessengerBundle.getString("senderColumnHeader"));
     searchCriteria.setAttribute("value", gMessengerBundle.getString("senderSearchCriteria"));
   }
@@ -408,9 +406,11 @@ function SetNewsFolderColumns(isNewsFolder)
   var sizeColumn = document.getElementById("sizeCol");
 
   if (isNewsFolder) {
+     sizeColumn.setAttribute("tooltiptext",gMessengerBundle.getString("linesColumnTooltip"));
      sizeColumn.setAttribute("label",gMessengerBundle.getString("linesColumnHeader"));
   }
   else {
+     sizeColumn.setAttribute("tooltiptext", gMessengerBundle.getString("sizeColumnTooltip"));
      sizeColumn.setAttribute("label", gMessengerBundle.getString("sizeColumnHeader"));
   }
 }
@@ -481,6 +481,9 @@ function ConvertColumnIDToSortType(columnID)
     case "junkStatusCol":
       sortKey = nsMsgViewSortType.byJunkStatus;
       break;
+    case "idCol":
+      sortKey = nsMsgViewSortType.byId;
+      break;
     default:
       dump("unsupported sort column: " + columnID + "\n");
       sortKey = 0;
@@ -533,8 +536,7 @@ function ConvertSortTypeToColumnID(sortKey)
       columnID = "threadCol";
       break;
     case nsMsgViewSortType.byId:
-      // there is no orderReceivedCol, so return null
-      columnID = null;
+      columnID = "idCol";
       break;
     case nsMsgViewSortType.byJunkStatus:
       columnID = "junkStatusCol";

@@ -65,7 +65,7 @@ nsresult txExpandedNameMap::add(const txExpandedName& aKey, TxObject* aValue)
     for (i = 0; i < mItemCount; ++i) {
         if (mItems[i].mLocalName == aKey.mLocalName &&
             mItems[i].mNamespaceID == aKey.mNamespaceID) {
-            return NS_ERROR_FAILURE;
+            return NS_ERROR_XSLT_ALREADY_SET;
         }
     }
     
@@ -85,7 +85,7 @@ nsresult txExpandedNameMap::add(const txExpandedName& aKey, TxObject* aValue)
     
     mItems[mItemCount].mNamespaceID = aKey.mNamespaceID;
     mItems[mItemCount].mLocalName = aKey.mLocalName;
-    TX_IF_ADDREF_ATOM(mItems[mItemCount].mLocalName);
+    NS_IF_ADDREF(mItems[mItemCount].mLocalName);
     mItems[mItemCount].mValue = aValue;
     ++mItemCount;
     
@@ -130,7 +130,7 @@ nsresult txExpandedNameMap::set(const txExpandedName& aKey, TxObject* aValue)
     
     mItems[mItemCount].mNamespaceID = aKey.mNamespaceID;
     mItems[mItemCount].mLocalName = aKey.mLocalName;
-    TX_IF_ADDREF_ATOM(mItems[mItemCount].mLocalName);
+    NS_IF_ADDREF(mItems[mItemCount].mLocalName);
     mItems[mItemCount].mValue = aValue;
     ++mItemCount;
     
@@ -142,7 +142,7 @@ nsresult txExpandedNameMap::set(const txExpandedName& aKey, TxObject* aValue)
  * @param  aKey  key for item to get
  * @return item with specified key, or null if no such item exists
  */
-TxObject* txExpandedNameMap::get(const txExpandedName& aKey)
+TxObject* txExpandedNameMap::get(const txExpandedName& aKey) const
 {
     int i;
     for (i = 0; i < mItemCount; ++i) {
@@ -167,7 +167,7 @@ TxObject* txExpandedNameMap::remove(const txExpandedName& aKey)
     for (i = 0; i < mItemCount; ++i) {
         if (mItems[i].mLocalName == aKey.mLocalName &&
             mItems[i].mNamespaceID == aKey.mNamespaceID) {
-            TX_IF_RELEASE_ATOM(mItems[i].mLocalName);
+            NS_IF_RELEASE(mItems[i].mLocalName);
             if (mOwnsValues) {
                 delete mItems[i].mValue;
             }
@@ -190,12 +190,13 @@ void txExpandedNameMap::clear()
 {
     int i;
     for (i = 0; i < mItemCount; ++i) {
-        TX_IF_RELEASE_ATOM(mItems[i].mLocalName);
+        NS_IF_RELEASE(mItems[i].mLocalName);
         if (mOwnsValues) {
             delete mItems[i].mValue;
         }
     }
     delete [] mItems;
+    mItems = nsnull;
     mItemCount = 0;
     mBufferCount = 0;
 }

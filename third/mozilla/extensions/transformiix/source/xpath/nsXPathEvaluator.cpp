@@ -49,19 +49,22 @@
 #include "ExprParser.h"
 #include "nsDOMError.h"
 #include "txURIUtils.h"
+#include "nsIDocument.h"
+#include "nsIDOMDocument.h"
 
+extern nsINameSpaceManager* gTxNameSpaceManager;
 
 NS_IMPL_ADDREF(nsXPathEvaluator)
 NS_IMPL_RELEASE(nsXPathEvaluator)
 NS_INTERFACE_MAP_BEGIN(nsXPathEvaluator)
   NS_INTERFACE_MAP_ENTRY(nsIDOMXPathEvaluator)
+  NS_INTERFACE_MAP_ENTRY(nsIXPathEvaluatorInternal)
   NS_INTERFACE_MAP_ENTRY_AMBIGUOUS(nsISupports, nsIDOMXPathEvaluator)
   NS_INTERFACE_MAP_ENTRY_EXTERNAL_DOM_CLASSINFO(XPathEvaluator)
 NS_INTERFACE_MAP_END
 
 nsXPathEvaluator::nsXPathEvaluator()
 {
-    NS_INIT_ISUPPORTS();
 }
 
 nsXPathEvaluator::~nsXPathEvaluator()
@@ -73,9 +76,10 @@ nsXPathEvaluator::CreateExpression(const nsAString & aExpression,
                                    nsIDOMXPathNSResolver *aResolver,
                                    nsIDOMXPathExpression **aResult)
 {
-    String expressionString(aExpression);
-    ParseContextImpl pContext(aResolver);
-    Expr* expression = ExprParser::createExpr(expressionString, &pContext);
+    nsCOMPtr<nsIDocument> doc = do_QueryReferent(mDocument);
+    ParseContextImpl pContext(aResolver, !doc || doc->IsCaseSensitive());
+    Expr* expression = ExprParser::createExpr(PromiseFlatString(aExpression),
+                                              &pContext);
     if (!expression)
         return NS_ERROR_DOM_INVALID_EXPRESSION_ERR;
 
@@ -123,15 +127,21 @@ nsXPathEvaluator::Evaluate(const nsAString & aExpression,
     return expression->Evaluate(aContextNode, aType, aInResult, aResult);
 }
 
+
+NS_IMETHODIMP
+nsXPathEvaluator::SetDocument(nsIDOMDocument* aDocument)
+{
+    mDocument = do_GetWeakReference(aDocument);
+    return NS_OK;
+}
+
 /*
  * Implementation of txIParseContext private to nsXPathEvaluator
  * ParseContextImpl bases on a nsIDOMXPathNSResolver
  */
 
-static NS_DEFINE_CID(kNameSpaceManagerCID,  NS_NAMESPACEMANAGER_CID);
-
 nsresult nsXPathEvaluator::ParseContextImpl::resolveNamespacePrefix
-    (txAtom* aPrefix, PRInt32& aID)
+    (nsIAtom* aPrefix, PRInt32& aID)
 {
     nsAutoString prefix;
     if (aPrefix) {
@@ -153,26 +163,24 @@ nsresult nsXPathEvaluator::ParseContextImpl::resolveNamespacePrefix
         return NS_OK;
     }
 
-    if (!mNSMan) {
-        mNSMan = do_GetService(kNameSpaceManagerCID);
-        if (!mNSMan) {
-            return NS_ERROR_FAILURE;
-        }
-    }
     // get the namespaceID for the URI
-
-    return mNSMan->RegisterNameSpace(ns, aID);
+    return gTxNameSpaceManager->RegisterNameSpace(ns, aID);
 }
 
-nsresult nsXPathEvaluator::ParseContextImpl::resolveFunctionCall(txAtom* aName,
+nsresult nsXPathEvaluator::ParseContextImpl::resolveFunctionCall(nsIAtom* aName,
                                                                  PRInt32 aID,
                                                                  FunctionCall*& aFn)
 {
-    return NS_ERROR_XPATH_PARSE_FAILED;
+    return NS_ERROR_XPATH_PARSE_FAILURE;
 }
 
-void nsXPathEvaluator::ParseContextImpl::receiveError(const String& aMsg,
-                                                       nsresult aRes)
+PRBool nsXPathEvaluator::ParseContextImpl::caseInsensitiveNameTests()
+{
+    return !mIsCaseSensitive;
+}
+
+void nsXPathEvaluator::ParseContextImpl::receiveError(const nsAString& aMsg,
+                                                      nsresult aRes)
 {
     mLastError = aRes;
     // forward aMsg to console service?

@@ -39,21 +39,33 @@
 #include "nsIInputStream.h"
 #include "nsIURL.h"
 
+#include "nsNetCID.h"
+#include "nsCOMPtr.h"
 #include "nsIIOService.h"
 #include "nsIChannel.h"
+#include "nsILocalFile.h"
 static NS_DEFINE_CID(kIOServiceCID, NS_IOSERVICE_CID);
+
+#include "nsIEventQueueService.h"
+static NS_DEFINE_CID(kEventQueueServiceCID, NS_EVENTQUEUESERVICE_CID);
+static nsIEventQueue* gEventQ = nsnull;
 
 #include "nsString.h"
 #include "nsReadableUtils.h"
 #include "nsCRT.h"
 #include "prprf.h"
 
-#ifdef XP_PC
+#ifdef XP_WIN
 #include <windows.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #endif
 #ifdef XP_UNIX
+#include <sys/types.h>
+#include <sys/stat.h>
+#endif
+#ifdef XP_OS2
+#include <os2.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #endif
@@ -67,15 +79,15 @@ public:
   NS_IMETHOD GetBindInfo(nsIURI* aURL);
   NS_IMETHOD OnProgress(nsIURI* aURL, PRInt32 Progress, PRInt32 ProgressMax);
   NS_IMETHOD OnStatus(nsIURI* aURL, const nsString& aMsg);
-  NS_IMETHOD OnStartRequest(nsIURI* aURL, const char *aContentType);
-  NS_IMETHOD OnDataAvailable(nsIURI* aURL, nsIInputStream *pIStream, PRInt32 length);
-  NS_IMETHOD OnStopRequest(nsIURI* aURL, PRInt32 status, const nsString& aMsg);
+  NS_IMETHOD OnStartRequest(nsIRequest* aRequest, nsISupports *);
+  NS_IMETHOD OnDataAvailable(nsIRequest* aRequest, nsISupports *, nsIInputStream *pIStream, PRUint32 aOffset, PRUint32 aCount);
+  NS_IMETHOD OnStopRequest(nsIRequest* aRequest, nsISupports *, PRUint32 status);
 
   PRBool IsDone() const { return mDone; }
   PRBool HaveError() const { return mError; }
 
 protected:
-  ~StreamToFile();
+  virtual ~StreamToFile();
 
   PRBool mDone;
   PRBool mError;
@@ -84,7 +96,6 @@ protected:
 
 StreamToFile::StreamToFile(FILE* fp)
 {
-  NS_INIT_ISUPPORTS();
   mDone = PR_FALSE;
   mError = PR_FALSE;
   mFile = fp;
@@ -118,19 +129,23 @@ StreamToFile::OnStatus(nsIURI* aURL, const nsString& aMsg)
 }
 
 NS_IMETHODIMP
-StreamToFile::OnStartRequest(nsIURI* aURL, const char *aContentType)
+StreamToFile::OnStartRequest(nsIRequest *aRequest, nsISupports *aSomething)
 {
   return 0;
 }
 
 NS_IMETHODIMP
-StreamToFile::OnDataAvailable(nsIURI* aURL, nsIInputStream *pIStream,
-                              PRInt32 length) 
+StreamToFile::OnDataAvailable(
+  nsIRequest* aRequest,
+  nsISupports *,
+  nsIInputStream *pIStream,
+  PRUint32 aOffset,
+  PRUint32 aCount)
 {
   PRUint32 len;
   do {
     char buffer[4000];
-    nsresult err = pIStream->Read(buffer, 0, sizeof(buffer), &len);
+    nsresult err = pIStream->Read(buffer, sizeof(buffer), &len);
     if (NS_SUCCEEDED(err)) {
       if (nsnull != mFile) {
         fwrite(buffer, 1, len, mFile);
@@ -142,7 +157,7 @@ StreamToFile::OnDataAvailable(nsIURI* aURL, nsIInputStream *pIStream,
 
 
 NS_IMETHODIMP
-StreamToFile::OnStopRequest(nsIURI* aURL, PRInt32 status, const nsString& aMsg)
+StreamToFile::OnStopRequest(nsIRequest *aRequest, nsISupports *aSomething, PRUint32 status)
 {
   mDone = PR_TRUE;
   if (0 != status) {
@@ -162,14 +177,14 @@ public:
 
   NS_DECL_AND_IMPL_ZEROING_OPERATOR_NEW
 
-  nsresult Init(const nsString& aDirectory);
+  nsresult Init(nsILocalFile *aDirectory);
 
-  nsresult Grab(const nsString& aURL);
+  nsresult Grab(const nsAFlatCString& aURL);
 
 protected:
-  char* NextFile(const char* aExtension);
+  nsILocalFile* NextFile(const char* aExtension);
 
-  nsString mDirectory;
+  nsILocalFile *mDirectory;
   PRInt32 mFileNum;
 };
 
@@ -182,100 +197,89 @@ PageGrabber::~PageGrabber()
 }
 
 nsresult
-PageGrabber::Init(const nsString& aDirectory)
+PageGrabber::Init(nsILocalFile *aDirectory)
 {
   mDirectory = aDirectory;
-  if (aDirectory.Last() != '/') {
-    mDirectory.Append('/');
-  }
   return NS_OK;
 }
 
-char*
+nsILocalFile*
 PageGrabber::NextFile(const char* aExtension)
 {
-  char* cname = nsnull;
-  nsAutoString name;
-  for (;;) {
-    name.Truncate();
-    name.Append(mDirectory);
-    char fileName[20];
-    PR_snprintf(fileName, sizeof(fileName), "%08d.%s", mFileNum, aExtension);
-    name.Append(fileName);
-
-    // See if file already exists; if it does advance mFileNum by 100 and
-    // try again.
-    cname = ToNewCString(name);
-    struct stat sb;
-    int s = stat(cname, &sb);
-    if (s < 0) {
-      ++mFileNum;
-      break;
-    }
-    else {
-      mFileNum += 100;
-      delete [] cname;
-    }
-  }
-  return cname;
+  nsCAutoString name(NS_LITERAL_CSTRING("grab."));
+  name += nsDependentCString(aExtension);
+  nsIFile *cfile;
+  mDirectory->Clone(&cfile);
+  nsCOMPtr<nsILocalFile> file = do_QueryInterface(cfile);
+  file->AppendRelativeNativePath(name);
+  file->CreateUnique(nsIFile::NORMAL_FILE_TYPE, 0660);
+  return file;
 }
 
 nsresult
-PageGrabber::Grab(const nsString& aURL)
+PageGrabber::Grab(const nsAFlatCString& aURL)
 {
-  char* cname = NextFile("html");
-  if (nsnull == cname) {
-    return NS_ERROR_OUT_OF_MEMORY;
-  }
-  FILE* fp = fopen(cname, "wb");
-  if (nsnull == fp) {
-    return NS_ERROR_OUT_OF_MEMORY;
-  }
-  printf("Copying ");
-  fputs(aURL, stdout);
-  printf(" to %s\n", cname);
-        
-  // Create the URL object...
-  nsIURI* url = NULL;
   nsresult rv;
-
-  rv = nsCOMPtr<nsIIOService> ioService(do_GetService(kIOServiceCID, &rv));
+  // Create the Event Queue for this thread...
+  // Unix needs this
+  nsCOMPtr<nsIEventQueueService> eventQService =
+           do_GetService(kEventQueueServiceCID, &rv);
   if (NS_FAILED(rv)) return rv;
 
+  eventQService->GetThreadEventQueue(NS_CURRENT_THREAD, &gEventQ);
+
+  nsCOMPtr<nsILocalFile> file = NextFile("html");
+  if (!file) {
+    return NS_ERROR_OUT_OF_MEMORY;
+  }
+  FILE* fp;
+  rv = file->OpenANSIFileDesc("wb", &fp);
+  if (NS_FAILED(rv)) {
+    return rv;
+  }
+  printf("Copying ");
+  fputs(aURL.get(), stdout);
+  nsAutoString path;
+  file->GetPath(path);
+  NS_ConvertUCS2toUTF8 cpath(path);
+  printf(" to %s\n", cpath.get());
+
+  // Create the URL object...
+  nsCOMPtr<nsIURI> url;
+
+  nsCOMPtr<nsIIOService> ioService(do_GetService(kIOServiceCID, &rv));
+  if (NS_FAILED(rv)) return rv;
+
+  rv = ioService->NewURI(aURL, nsnull, nsnull, getter_AddRefs(url));
   nsIChannel *channel = nsnull;
-  // XXX NECKO what verb? what eventSinkGetter?
-  rv = ioService->NewChannel("load", aURL, nsnull, nsnull, &channel);
+  rv = ioService->NewChannelFromURI(url, &channel);
   if (NS_FAILED(rv)) return rv;
 
   // Start the URL load...
   StreamToFile* copier = new StreamToFile(fp);
-  if(copier) {
-    NS_ADDREF(copier);
+  if (!copier)
+    return NS_ERROR_OUT_OF_MEMORY;
 
-    rv = channel->AsyncOpen(copier, nsnull);
+  NS_ADDREF(copier);
 
-    if (NS_OK != rv) {
-      NS_RELEASE(copier);
-      NS_RELEASE(url);
-      return rv;
-    }
-        
-    // Enter the message pump to allow the URL load to proceed.
-  #ifdef XP_PC
-    MSG msg;
-    while ( !copier->IsDone() ) {
-      if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
-      }
-    }
-  #endif
+  rv = channel->AsyncOpen(copier, nsnull);
 
-    PRBool error = copier->HaveError();
+  if (NS_FAILED(rv)) {
     NS_RELEASE(copier);
+    return rv;
   }
-  NS_RELEASE(url);
-  return error ? NS_ERROR_OUT_OF_MEMORY : NS_OK;
+    
+  // Enter the message pump to allow the URL load to proceed.
+  while ( !copier->IsDone() ) {
+    PLEvent *gEvent;
+    gEventQ->WaitForEvent(&gEvent);
+    gEventQ->HandleEvent(gEvent);
+  }
+
+  rv = copier->HaveError() ? NS_ERROR_FAILURE : NS_OK;
+  NS_RELEASE(copier);
+
+  return rv;
 }
 
 //----------------------------------------------------------------------
@@ -291,8 +295,13 @@ main(int argc, char **argv)
   }
   PageGrabber* grabber = new PageGrabber();
   if(grabber) {
-    grabber->Init(argv[2]);
-    if (NS_OK != grabber->Grab(argv[1])) {
+    nsCOMPtr <nsILocalFile> directory(do_CreateInstance(NS_LOCAL_FILE_CONTRACTID));;
+    if (NS_FAILED(directory->InitWithNativePath(nsDependentCString(argv[2])))) {
+      fprintf(stderr, "InitWithNativePath failed\n");
+      return -2;
+    }
+    grabber->Init(directory);
+    if (NS_OK != grabber->Grab(nsDependentCString(argv[1]))) {
       return -1;
     }
   }

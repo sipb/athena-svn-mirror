@@ -41,8 +41,7 @@
 
 #include "nsXMLContentSink.h"
 #include "nsXBLDocumentInfo.h"
-#include "nsIXBLPrototypeBinding.h"
-#include "nsIXBLPrototypeHandler.h"
+#include "nsXBLPrototypeHandler.h"
 #include "nsXBLProtoImpl.h"
 #include "nsICSSParser.h"
 #include "nsLayoutCID.h"
@@ -73,6 +72,7 @@ class nsXBLProtoImplMember;
 class nsXBLProtoImplProperty;
 class nsXBLProtoImplMethod;
 class nsXBLProtoImplField;
+class nsXBLPrototypeBinding;
 
 // The XBL content sink overrides the XML content sink to
 // builds its own lightweight data structures for the <resources>,
@@ -85,7 +85,7 @@ public:
 
   nsresult Init(nsIDocument* aDoc,
                 nsIURI* aURL,
-                nsIWebShell* aContainer);
+                nsISupports* aContainer);
 
   // nsIContentSink overrides
   NS_IMETHOD HandleStartElement(const PRUnichar *aName, 
@@ -106,20 +106,19 @@ protected:
                            PRInt32 aNameSpaceID, 
                            nsIAtom* aTagName);
     
-    nsresult CreateElement(const PRUnichar** aAtts, 
-                           PRUint32 aAttsCount, 
-                           PRInt32 aNameSpaceID, 
-                           nsINodeInfo* aNodeInfo, 
-                           nsIContent** aResult);
+    nsresult CreateElement(const PRUnichar** aAtts, PRUint32 aAttsCount,
+                           nsINodeInfo* aNodeInfo, PRUint32 aLineNumber,
+                           nsIContent** aResult, PRBool* aAppendContent);
     
     nsresult AddAttributes(const PRUnichar** aAtts, 
-                           nsIContent* aContent,
-                           PRBool aIsHTML);
-    
+                           nsIContent* aContent);
+
+#ifdef MOZ_XUL    
     nsresult AddAttributesToXULPrototype(const PRUnichar **aAtts, 
                                          PRUint32 aAttsCount, 
                                          nsXULPrototypeElement* aElement);
-      
+#endif
+
     // Our own helpers for constructing XBL prototype objects.
     void ConstructBinding();
     void ConstructHandler(const PRUnichar **aAtts);
@@ -147,8 +146,8 @@ protected:
 
   nsCOMPtr<nsICSSParser> mCSSParser;            // [OWNER]
 
-  nsCOMPtr<nsIXBLPrototypeBinding> mBinding;
-  nsCOMPtr<nsIXBLPrototypeHandler> mHandler;
+  nsXBLPrototypeBinding* mBinding;
+  nsXBLPrototypeHandler* mHandler; // current handler, owned by its PrototypeBinding
   nsXBLProtoImpl* mImplementation;
   nsXBLProtoImplMember* mImplMember;
   nsXBLProtoImplProperty* mProperty;
@@ -161,5 +160,5 @@ nsresult
 NS_NewXBLContentSink(nsIXMLContentSink** aResult,
                      nsIDocument* aDoc,
                      nsIURI* aURL,
-                     nsIWebShell* aWebShell);
+                     nsISupports* aContainer);
 #endif // nsXBLContentSink_h__

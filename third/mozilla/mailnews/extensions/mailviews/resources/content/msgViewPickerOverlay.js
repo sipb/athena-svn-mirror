@@ -17,14 +17,16 @@
  * 
  * Contributors:
  *   Scott MacGregor <mscott@netscape.com>
+ *   Seth Spitzer <sspitzer@netscape.com>
  */
 
 const kPersonalAddressbookURI = "moz-abmdbdirectory://abook.mab";
+const kLabelOffset = 1;  // 1=2-1, from msgViewPickerOveraly.xul, <menuitem value="2" id="labelMenuItem1"/>
+const kLastDefaultViewIndex = 8;  // 8, because 7 + 1, <menuitem id="createCustomView" value="7" label="&viewPickerCustomView.label;"/>
+const kCustomItemValue = "7"; // from msgViewPickerOveraly.xul, <menuitem id="createCustomView" value="7" label="&viewPickerCustomView.label;"/>
 
-var gOnLoadCalled = false; 
 var gMailViewList = null;
-var gLastDefaultViewIndex = 8;
-var gCurrentViewValue = "";
+var gCurrentViewValue = "0"; // initialize to the first view ("All")
 
 var nsMsgSearchScope = Components.interfaces.nsMsgSearchScope;
 var nsMsgSearchAttrib = Components.interfaces.nsMsgSearchAttrib;
@@ -32,14 +34,19 @@ var nsMsgSearchOp = Components.interfaces.nsMsgSearchOp;
 
 // when the item in the list box changes....
 
-function viewChange (aMenuList)
+function viewChange(aMenuList)
 {
   var val = aMenuList.value;
 
-  GetSearchInput();
-  gSearchInput.value = "";  // null out any quick search text
+  if (val == kCustomItemValue) { 
+    // restore to the previous view value, in case they cancel
+    aMenuList.value = gCurrentViewValue;
+    LaunchCustomizeDialog();
+    return;
+  }
 
-  if (val == gCurrentViewValue && val != "7") // don't skip selection of custom view item
+  // bail out early if the user picked the same view
+  if (val == gCurrentViewValue)
     return; 
   gCurrentViewValue = val;
 
@@ -47,38 +54,71 @@ function viewChange (aMenuList)
   {
    case "0": // View All
      gDefaultSearchViewTerms = null;
-     onClearSearch(); 
      break;
    case "1": // Unread
      ViewNewMail();
      break;
-   case "2":
-   case "3":
-   case "4":
-   case "5":
-   case "6":
-     ViewLabel(parseInt(val) - 1);
-     break;
-   case "7":
-     LaunchCustomizeDialog();
+   case "2": // label 1
+   case "3": // label 2
+   case "4": // label 3
+   case "5": // label 4
+   case "6": // label 5
+     ViewLabel(parseInt(val) - kLabelOffset);
      break;
    default:
-     LoadCustomMailView(parseInt(val) - gLastDefaultViewIndex);
+     LoadCustomMailView(parseInt(val) - kLastDefaultViewIndex);
      break;
   } //      
+
+  // store this, to persist across sessions
+  gPrefs.setIntPref("mailnews.view.last", parseInt(val));
+
+  gQSViewIsDirty = true;
+  onEnterInSearchBar();
+}
+
+const kLabelPrefs = "mailnews.labels.description.";
+
+const gLabelPrefListener = {
+  observe: function(subject, topic, prefName)
+  {
+    if (topic != "nsPref:changed")
+      return;
+
+    var index = parseInt(prefName.substring(kLabelPrefs.length));
+    if (index >= 1 && index <= 5)
+      setLabelAttributes(index, "labelMenuItem" + index);
+  }
+};
+
+function AddLabelPrefListener()
+{
+  try {
+    gPrefs.QueryInterface(Components.interfaces.nsIPrefBranchInternal);
+    gPrefs.addObserver(kLabelPrefs, gLabelPrefListener, false);
+  } catch(ex) {
+    dump("Failed to observe prefs: " + ex + "\n");
+  }
+}
+
+function RemoveLabelPrefListener()
+{
+  try {
+    gPrefs.QueryInterface(Components.interfaces.nsIPrefBranchInternal);
+    gPrefs.removeObserver(kLabelPrefs, gLabelPrefListener);
+  } catch(ex) {
+    dump("Failed to remove pref observer: " + ex + "\n");
+  }
 }
 
 function viewPickerOnLoad()
 {
-  if (gOnLoadCalled) return;
+  if (document.getElementById('viewPicker')) {
+    window.addEventListener("unload", RemoveLabelPrefListener, false);
+    
+    AddLabelPrefListener();
 
-  // hide the advanced search button
-  var searchButton = document.getElementById('advancedButton');
-  if (searchButton)
-  {
-    searchButton.setAttribute('collapsed', true);
     FillLabelValues();
-    gOnLoadCalled = true;
 
     refreshCustomMailViews(-1);
   }
@@ -86,29 +126,46 @@ function viewPickerOnLoad()
 
 function LaunchCustomizeDialog()
 {
-  OpenOrFocusWindow({onOkCallback: refreshCustomMailViews}, 'mailnews:mailviewlist', 'chrome://messenger/content/mailViewList.xul');
-  // window.openDialog('chrome://messenger/content/mailViewList.xul', "", 'centerscreen,resizeable,titlebar,chrome', {onOkCallback: refreshCustomMailViews});
+  // made it modal, see bug #191188
+  window.openDialog("chrome://messenger/content/mailViewList.xul", "mailnews:mailviewlist", "chrome,modal,titlebar,resizable,centerscreen", {onCloseCallback: refreshCustomMailViews});
 }
 
 function LoadCustomMailView(index)
 {
   prepareForViewChange();
 
-  var searchTermsArray =  gMailViewList.getMailViewAt(index).searchTerms;
+  var searchTermsArray = gMailViewList.getMailViewAt(index).searchTerms;
   
-  // mark the first node as a group
+  // create a temporary isupports array to store our search terms
+  // since we will be modifying the terms so they work with quick search
+  // and we don't want to write out the modified terms when we save the custom view
+  // (see bug #189890)
+  var searchTermsArrayForQS = Components.classes["@mozilla.org/supports-array;1"].createInstance(Components.interfaces.nsISupportsArray);
+  
   var numEntries = searchTermsArray.Count();
-  var searchTerm; 
-  if (searchTermsArray.Count() > 1)
-  {
-    searchTerm = searchTermsArray.GetElementAt(0).QueryInterface(Components.interfaces.nsIMsgSearchTerm);
-    searchTerm.beginsGrouping = true; 
-    searchTerm.booleanAnd = true; // turn the first term to true to work with quick search...
-    searchTermsArray.GetElementAt(numEntries - 1).QueryInterface(Components.interfaces.nsIMsgSearchTerm).endsGrouping = true;
+  for (var i = 0; i < numEntries; i++) {
+    var searchTerm = searchTermsArray.GetElementAt(i).QueryInterface(Components.interfaces.nsIMsgSearchTerm); 
+
+    // clone the term, since we might be modifying it
+    var searchTermForQS = gSearchSession.createTerm();
+    searchTermForQS.value = searchTerm.value;
+    searchTermForQS.attrib = searchTerm.attrib;
+    searchTermForQS.op = searchTerm.op;
+
+    // mark the first node as a group
+    if (i == 0)
+      searchTermForQS.beginsGrouping = true;
+    else if (i == numEntries - 1)
+      searchTermForQS.endsGrouping = true;
+
+    // turn the first term to true to work with quick search...
+    searchTermForQS.booleanAnd = i ? searchTerm.booleanAnd : true; 
+    
+    searchTermsArrayForQS.AppendElement(searchTermForQS);
   }
 
-  onSearch(searchTermsArray);   
-  gDefaultSearchViewTerms = searchTermsArray;
+  createSearchTermsWithList(searchTermsArrayForQS);
+  gDefaultSearchViewTerms = searchTermsArrayForQS;
 }
 
 function refreshCustomMailViews(aDefaultSelectedIndex)
@@ -142,8 +199,9 @@ function refreshCustomMailViews(aDefaultSelectedIndex)
   {
     newMenuItem = document.createElement('menuitem');
     newMenuItem.setAttribute('label', gMailViewList.getMailViewAt(index).mailViewName);
+    newMenuItem.setAttribute('id', "userdefinedview" + (kLastDefaultViewIndex + index));
     item = menupopupNode.insertBefore(newMenuItem, customNode);
-    item.setAttribute('value',  gLastDefaultViewIndex + index);
+    item.setAttribute('value',  kLastDefaultViewIndex + index);
   }
 
   if (!numItems)
@@ -153,11 +211,15 @@ function refreshCustomMailViews(aDefaultSelectedIndex)
 
   if (aDefaultSelectedIndex >= 0)
   {
-    var viewPicker = document.getElementById('viewPicker');
-    viewPicker.value = gLastDefaultViewIndex + aDefaultSelectedIndex;
-    gCurrentViewValue = viewPicker.value;
-    LoadCustomMailView(aDefaultSelectedIndex);
+    ViewChangeByValue(kLastDefaultViewIndex + aDefaultSelectedIndex);
   }
+}
+
+function ViewChangeByValue(aValue)
+{
+  var viewPicker = document.getElementById('viewPicker');
+  viewPicker.selectedItem = viewPicker.getElementsByAttribute("value", aValue)[0];
+  viewChange(viewPicker);
 }
 
 function FillLabelValues()
@@ -169,7 +231,7 @@ function FillLabelValues()
 function setLabelAttributes(labelID, menuItemID)
 {
   var prefString;
-  prefString = gPrefs.getComplexValue("mailnews.labels.description." + labelID,  Components.interfaces.nsIPrefLocalizedString);
+  prefString = gPrefs.getComplexValue(kLabelPrefs + labelID, Components.interfaces.nsIPrefLocalizedString).data;
   document.getElementById(menuItemID).setAttribute("label", prefString);
 }
 
@@ -197,7 +259,7 @@ function ViewLabel(labelID)
   term.booleanAnd = true;
 
   searchTermsArray.AppendElement(term);
-  onSearch(searchTermsArray);  
+  createSearchTermsWithList(searchTermsArray);
   gDefaultSearchViewTerms = searchTermsArray;
 }
 
@@ -218,12 +280,8 @@ function ViewNewMail()
   term.booleanAnd = true;
 
   searchTermsArray.AppendElement(term);
-  onSearch(searchTermsArray); 
-  
+  createSearchTermsWithList(searchTermsArray);
   gDefaultSearchViewTerms = searchTermsArray;
 }
 
-function UpdateView()
-{
-  viewChange(document.getElementById('viewPicker'));
-}
+window.addEventListener("load", viewPickerOnLoad, false);

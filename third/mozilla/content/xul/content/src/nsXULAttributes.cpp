@@ -159,7 +159,6 @@ nsXULAttribute::nsXULAttribute(nsIContent* aContent,
     : mContent(aContent),
       mNodeInfo(aNodeInfo)
 {
-    NS_INIT_ISUPPORTS();
     NS_IF_ADDREF(aNodeInfo);
     SetValueInternal(aValue);
 }
@@ -309,7 +308,7 @@ nsXULAttribute::SetPrefix(const nsAString& aPrefix)
     nsCOMPtr<nsIAtom> prefix;
 
     if (!aPrefix.IsEmpty()) {
-        prefix = dont_AddRef(NS_NewAtom(aPrefix));
+        prefix = do_GetAtom(aPrefix);
         NS_ENSURE_TRUE(prefix, NS_ERROR_OUT_OF_MEMORY);
     }
 
@@ -400,8 +399,8 @@ nsXULAttribute::GetBaseURI(nsAString &aURI)
 }
 
 NS_IMETHODIMP
-nsXULAttribute::CompareTreePosition(nsIDOMNode* aOther,
-                                    PRUint16* aReturn)
+nsXULAttribute::CompareDocumentPosition(nsIDOMNode* aOther,
+                                        PRUint16* aReturn)
 {
   NS_NOTYETIMPLEMENTED("write me");
   return NS_ERROR_NOT_IMPLEMENTED;
@@ -469,8 +468,7 @@ nsXULAttribute::GetOwnerElement(nsIDOMElement** aOwnerElement)
 {
   NS_ENSURE_ARG_POINTER(aOwnerElement);
 
-  return mContent->QueryInterface(NS_GET_IID(nsIDOMElement),
-                                  (void **)aOwnerElement);
+  return CallQueryInterface(mContent, aOwnerElement);
 }
 
 
@@ -507,7 +505,6 @@ nsXULAttributes::nsXULAttributes(nsIContent* aContent)
       mClassList(nsnull),
       mStyleRule(nsnull)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 
@@ -685,14 +682,12 @@ nsXULAttributes::RemoveNamedItem(const nsAString& aName,
                                  nsIDOMNode** aReturn)
 {
     nsCOMPtr<nsIDOMElement> element( do_QueryInterface(mContent) );
+    *aReturn = nsnull;
     if (element) {
+        // XXX should set aReturn to the element we are about to remove
         return element->RemoveAttribute(aName);
-        *aReturn = nsnull; // XXX should be the element we just removed
-        return NS_OK;
     }
-    else {
-        return NS_ERROR_FAILURE;
-    }
+    return NS_ERROR_FAILURE;
 }
 
 NS_IMETHODIMP
@@ -737,10 +732,10 @@ nsXULAttributes::GetClasses(nsVoidArray& aArray) const
     return nsClassList::GetClasses(mClassList, aArray);
 }
 
-nsresult 
+PRBool 
 nsXULAttributes::HasClass(nsIAtom* aClass) const
 {
-    return nsClassList::HasClass(mClassList, aClass) ? NS_OK : NS_COMFALSE;
+    return nsClassList::HasClass(mClassList, aClass);
 }
 
 nsresult nsXULAttributes::SetClassList(nsClassList* aClassList)

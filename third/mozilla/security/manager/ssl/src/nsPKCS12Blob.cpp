@@ -31,14 +31,15 @@
  * may use your version of this file under either the MPL or the
  * GPL.
  *
- * $Id: nsPKCS12Blob.cpp,v 1.1.1.1 2003-02-14 19:47:54 rbasch Exp $
+ * $Id: nsPKCS12Blob.cpp,v 1.1.1.2 2003-07-08 17:39:02 rbasch Exp $
  */
 
 #include "prmem.h"
 #include "prprf.h"
 
 #include "nsISupportsArray.h"
-#include "nsIFileSpec.h"
+#include "nsIFile.h"
+#include "nsNetUtil.h"
 #include "nsILocalFile.h"
 #include "nsIDirectoryService.h"
 #include "nsIWindowWatcher.h"
@@ -50,7 +51,6 @@
 #include "nsPKCS12Blob.h"
 #include "nsString.h"
 #include "nsReadableUtils.h"
-#include "nsFileStream.h"
 #include "nsXPIDLString.h"
 #include "nsDirectoryServiceDefs.h"
 #include "nsNSSHelper.h"
@@ -58,13 +58,17 @@
 #include "nsKeygenHandler.h" //For GetSlotWithMechanism
 #include "nsPK11TokenDB.h"
 #include "nsICertificateDialogs.h"
-
+#include "nsNSSShutDown.h"
+#include "nsCRT.h"
 #include "pk11func.h"
 #include "secerr.h"
 
 #ifdef PR_LOGGING
 extern PRLogModuleInfo* gPIPNSSLog;
 #endif
+
+#include "nsNSSCleaner.h"
+NSSCleanupAutoPtrClass(CERTCertificate, CERT_DestroyCertificate)
 
 static NS_DEFINE_CID(kNSSComponentCID, NS_NSSCOMPONENT_CID);
 
@@ -95,21 +99,25 @@ nsPKCS12Blob::~nsPKCS12Blob()
 // nsPKCS12Blob::SetToken
 //
 // Set the token to use for import/export
-void 
+nsresult
 nsPKCS12Blob::SetToken(nsIPK11Token *token)
 {
+ nsNSSShutDownPreventionLock locker;
+ nsresult rv = NS_OK;
  if (token) {
    mToken = token;
  } else {
    PK11SlotInfo *slot;
-   nsresult rv = GetSlotWithMechanism(CKM_RSA_PKCS, mUIContext,&slot);
+   rv = GetSlotWithMechanism(CKM_RSA_PKCS, mUIContext,&slot);
    if (NS_FAILED(rv)) {
       mToken = 0;  
    } else {
      mToken = new nsPK11Token(slot);
+     PK11_FreeSlot(slot);
    }
  }
  mTokenSet = PR_TRUE;
+ return rv;
 }
 
 // nsPKCS12Blob::ImportFromFile
@@ -119,16 +127,24 @@ nsPKCS12Blob::SetToken(nsIPK11Token *token)
 nsresult
 nsPKCS12Blob::ImportFromFile(nsILocalFile *file)
 {
-  nsresult rv;
+  nsNSSShutDownPreventionLock locker;
+  nsresult rv = NS_OK;
 
-  if (!mToken && !mTokenSet) {
-    SetToken(NULL); // Ask the user to pick a slot
-  } else if (!mToken && mTokenSet) {
-    // Someone tried setting the token before, but that failed.
-    // Probably because the user canceled.
-    handleError(PIP_PKCS12_USER_CANCELED);
-    return NS_OK;
+  if (!mToken) {
+    if (!mTokenSet) {
+      rv = SetToken(NULL); // Ask the user to pick a slot
+      if (NS_FAILED(rv)) {
+        handleError(PIP_PKCS12_USER_CANCELED);
+        return rv;
+      }
+    }
   }
+
+  if (!mToken) {
+    handleError(PIP_PKCS12_RESTORE_FAILED);
+    return NS_ERROR_NOT_AVAILABLE;
+  }
+
   // init slot
   rv = mToken->Login(PR_TRUE);
   if (NS_FAILED(rv)) return rv;
@@ -146,6 +162,7 @@ nsPKCS12Blob::ImportFromFile(nsILocalFile *file)
 nsresult
 nsPKCS12Blob::ImportFromFileHelper(nsILocalFile *file, PRBool &aWantRetry)
 {
+  nsNSSShutDownPreventionLock locker;
   nsresult rv;
   SECStatus srv = SECSuccess;
   SEC_PKCS12DecoderContext *dcx = NULL;
@@ -220,6 +237,8 @@ finish:
   } else if (NS_FAILED(rv)) { 
     handleError(PIP_PKCS12_RESTORE_FAILED);
   }
+  if (slot)
+    PK11_FreeSlot(slot);
   // finish the decoder
   if (dcx)
     SEC_PKCS12DecoderFinish(dcx);
@@ -254,13 +273,13 @@ nsPKCS12Blob::LoadCerts(const PRUnichar **certNames, int numCerts)
       else continue; /* user may request to keep going */
     }
     nsCOMPtr<nsIX509Cert> cert = new nsNSSCertificate(nssCert);
+    CERT_DestroyCertificate(nssCert);
     if (!cert) {
       if (!handleError())
         return NS_ERROR_OUT_OF_MEMORY;
     } else {
       mCertArray->AppendElement(cert);
     }
-    CERT_DestroyCertificate(nssCert);
   }
   return NS_OK;
 }
@@ -280,6 +299,7 @@ nsresult
 nsPKCS12Blob::ExportToFile(nsILocalFile *file, 
                            nsIX509Cert **certs, int numCerts)
 {
+  nsNSSShutDownPreventionLock locker;
   nsresult rv;
   SECStatus srv = SECSuccess;
   SEC_PKCS12ExportContext *ecx = NULL;
@@ -330,6 +350,7 @@ nsPKCS12Blob::ExportToFile(nsILocalFile *file,
     nsNSSCertificate *cert = (nsNSSCertificate *)certs[i];
     // get it as a CERTCertificate XXX
     CERTCertificate *nssCert = NULL;
+    CERTCertificateCleaner nssCertCleaner(nssCert);
     nssCert = cert->GetCert();
     if (!nssCert) {
       rv = NS_ERROR_FAILURE;
@@ -341,8 +362,6 @@ nsPKCS12Blob::ExportToFile(nsILocalFile *file,
     // shape or form) from the card.  So let's punt if 
     // the cert is not in the internal db.
     if (nssCert->slot && !PK11_IsInternal(nssCert->slot)) {
-      CERT_DestroyCertificate(nssCert);
-
       if (!InformedUserNoSmartcardBackup) {
         InformedUserNoSmartcardBackup = PR_TRUE;
         handleError(PIP_PKCS12_NOSMARTCARD_EXPORT);
@@ -371,7 +390,6 @@ nsPKCS12Blob::ExportToFile(nsILocalFile *file,
                       SEC_OID_PKCS12_V2_PBE_WITH_SHA1_AND_3KEY_TRIPLE_DES_CBC);
     if (srv) goto finish;
     // cert was dup'ed, so release it
-    CERT_DestroyCertificate(nssCert);
     ++numCertsExported;
   }
   
@@ -450,14 +468,22 @@ nsPKCS12Blob::newPKCS12FilePassword(SECItem *unicodePw)
 {
   nsresult rv = NS_OK;
   nsAutoString password;
-  PRBool canceled;
   nsCOMPtr<nsICertificateDialogs> certDialogs;
   rv = ::getNSSDialogs(getter_AddRefs(certDialogs), 
                        NS_GET_IID(nsICertificateDialogs),
                        NS_CERTIFICATEDIALOGS_CONTRACTID);
   if (NS_FAILED(rv)) return rv;
-  rv = certDialogs->SetPKCS12FilePassword(mUIContext, password, &canceled);
-  if (NS_FAILED(rv) || canceled) return rv;
+  PRBool pressedOK;
+  {
+    nsPSMUITracker tracker;
+    if (tracker.isUIForbidden()) {
+      rv = NS_ERROR_NOT_AVAILABLE;
+    }
+    else {
+      rv = certDialogs->SetPKCS12FilePassword(mUIContext, password, &pressedOK);
+    }
+  }
+  if (NS_FAILED(rv) || !pressedOK) return rv;
   unicodeToItem(password.get(), unicodePw);
   return NS_OK;
 }
@@ -471,14 +497,22 @@ nsPKCS12Blob::getPKCS12FilePassword(SECItem *unicodePw)
 {
   nsresult rv = NS_OK;
   nsAutoString password;
-  PRBool canceled;
   nsCOMPtr<nsICertificateDialogs> certDialogs;
   rv = ::getNSSDialogs(getter_AddRefs(certDialogs), 
                        NS_GET_IID(nsICertificateDialogs),
                        NS_CERTIFICATEDIALOGS_CONTRACTID);
   if (NS_FAILED(rv)) return rv;
-  rv = certDialogs->GetPKCS12FilePassword(mUIContext, password, &canceled);
-  if (NS_FAILED(rv) || canceled) return rv;
+  PRBool pressedOK;
+  {
+    nsPSMUITracker tracker;
+    if (tracker.isUIForbidden()) {
+      rv = NS_ERROR_NOT_AVAILABLE;
+    }
+    else {
+      rv = certDialogs->GetPKCS12FilePassword(mUIContext, password, &pressedOK);
+    }
+  }
+  if (NS_FAILED(rv) || !pressedOK) return rv;
   unicodeToItem(password.get(), unicodePw);
   return NS_OK;
 }
@@ -489,34 +523,37 @@ nsPKCS12Blob::getPKCS12FilePassword(SECItem *unicodePw)
 nsresult
 nsPKCS12Blob::inputToDecoder(SEC_PKCS12DecoderContext *dcx, nsILocalFile *file)
 {
+  nsNSSShutDownPreventionLock locker;
   nsresult rv;
   SECStatus srv;
   PRUint32 amount;
-  unsigned char buf[PIP_PKCS12_BUFFER_SIZE];
-  // everybody else is doin' it
-  nsCOMPtr<nsIFileSpec> tempSpec;
-  rv = NS_NewFileSpecFromIFile(file, getter_AddRefs(tempSpec));
-  if (NS_FAILED(rv)) return rv;
-  nsInputFileStream fileStream(tempSpec);
+  char buf[PIP_PKCS12_BUFFER_SIZE];
+
+  nsCOMPtr<nsIInputStream> fileStream;
+  rv = NS_NewLocalFileInputStream(getter_AddRefs(fileStream), file);
+  
+  if (NS_FAILED(rv)) {
+    return rv;
+  }
+
   while (PR_TRUE) {
-    amount = fileStream.read(buf, PIP_PKCS12_BUFFER_SIZE);
-    if (amount < 0) {
-      fileStream.close();
-      return NS_ERROR_FAILURE;
+    rv = fileStream->Read(buf, PIP_PKCS12_BUFFER_SIZE, &amount);
+    if (NS_FAILED(rv)) {
+      return rv;
     }
     // feed the file data into the decoder
-    srv = SEC_PKCS12DecoderUpdate(dcx, buf, amount);
+    srv = SEC_PKCS12DecoderUpdate(dcx, 
+				  (unsigned char*) buf, 
+				  amount);
     if (srv) {
       // don't allow the close call to overwrite our precious error code
       int pr_err = PORT_GetError();
-      fileStream.close();
       PORT_SetError(pr_err);
       return NS_ERROR_ABORT;
     }
     if (amount < PIP_PKCS12_BUFFER_SIZE)
       break;
   }
-  fileStream.close();
   return NS_OK;
 }
 
@@ -624,6 +661,7 @@ nsPKCS12Blob::digest_write(void *arg, unsigned char *buf, unsigned long len)
 SECItem * PR_CALLBACK
 nsPKCS12Blob::nickname_collision(SECItem *oldNick, PRBool *cancel, void *wincx)
 {
+  nsNSSShutDownPreventionLock locker;
   *cancel = PR_FALSE;
   nsresult rv;
   nsCOMPtr<nsINSSComponent> nssComponent(do_GetService(kNSSComponentCID, &rv));
@@ -713,6 +751,11 @@ pip_ucs2_ascii_conversion_fn(PRBool toUnicode,
 PRBool
 nsPKCS12Blob::handleError(int myerr)
 {
+  nsPSMUITracker tracker;
+  if (tracker.isUIForbidden()) {
+    return PR_FALSE;
+  }
+
   nsresult rv;
   PRBool keepGoing = PR_FALSE;
   int prerr = PORT_GetError();

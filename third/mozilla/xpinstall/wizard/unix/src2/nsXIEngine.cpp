@@ -156,8 +156,9 @@ nsXIEngine::Download(int aCustom, nsComponentList *aComps)
                 currURL = currComp->GetURL(i);
                 if (!currURL) break;
                 
-                nsInstallDlg::SetDownloadComp(currComp, i, 
-                    currCompNum, numToDL);
+                if (gCtx->opt->mMode != nsXIOptions::MODE_SILENT)
+                    nsInstallDlg::SetDownloadComp(currComp, i, 
+                        currCompNum, numToDL);
 
                 // restore resume position
                 resPos = currComp->GetResumePos();
@@ -202,8 +203,11 @@ nsXIEngine::Download(int aCustom, nsComponentList *aComps)
                     {
                         sprintf(localPath, "%s/%s", XPI_DIR,
                             currComp->GetArchive());
-                        err = conn->Get(nsInstallDlg::DownloadCB, localPath,
-                                        resPos);
+                        if (gCtx->opt->mMode == nsXIOptions::MODE_SILENT)
+                          err = conn->Get(NULL, localPath, resPos);
+                        else
+                          err = conn->Get(nsInstallDlg::DownloadCB, localPath,
+                                          resPos);
                         conn->Close();
                     }
                     
@@ -237,8 +241,11 @@ nsXIEngine::Download(int aCustom, nsComponentList *aComps)
                     {
                         sprintf(localPath, "%s/%s", XPI_DIR,
                             currComp->GetArchive());
-                        err = conn->Get(nsInstallDlg::DownloadCB, localPath,
-                                        resPos);
+                        if (gCtx->opt->mMode == nsXIOptions::MODE_SILENT)
+                          err = conn->Get(NULL, localPath, resPos);
+                        else
+                          err = conn->Get(nsInstallDlg::DownloadCB, localPath,
+                                          resPos);
                         conn->Close();
                     }
 
@@ -291,8 +298,12 @@ nsXIEngine::Download(int aCustom, nsComponentList *aComps)
                     {
                         sprintf(localPath, "%s/%s", XPI_DIR,
                             currComp->GetArchive());
-                        err = conn->Get(srvPath, localPath, nsFTPConn::BINARY, 
-                            resPos, 1, nsInstallDlg::DownloadCB);
+                        if (gCtx->opt->mMode == nsXIOptions::MODE_SILENT)
+                          err = conn->Get(srvPath, localPath, nsFTPConn::BINARY, 
+                              resPos, 1, NULL);
+                        else
+                          err = conn->Get(srvPath, localPath, nsFTPConn::BINARY, 
+                              resPos, 1, nsInstallDlg::DownloadCB);
                         passCount++;
                     }
 
@@ -339,7 +350,8 @@ nsXIEngine::Download(int aCustom, nsComponentList *aComps)
                     }
                 }
 
-                nsInstallDlg::ClearRateLabel(); // clean after ourselves
+                if (gCtx->opt->mMode != nsXIOptions::MODE_SILENT)
+                    nsInstallDlg::ClearRateLabel(); // clean after ourselves
 
                 if (err == OK) 
                 {
@@ -368,7 +380,8 @@ nsXIEngine::Download(int aCustom, nsComponentList *aComps)
           currCompNum = 1;
         }
         currCompSave = currComp;
-        gCtx->idlg->ReInitUI(); 
+        if (gCtx->opt->mMode != nsXIOptions::MODE_SILENT)
+          gCtx->idlg->ReInitUI(); 
         gCtx->idlg->ShowCRCDlg(); 
         numToDL = TotalToDownload(aCustom, aComps);
       }
@@ -515,8 +528,9 @@ nsXIEngine::Install(int aCustom, nsComponentList *aComps, char *aDestination)
 #endif
                 if (!currComp->IsDownloadOnly())
                 {
-                    nsInstallDlg::MajorProgressCB(currComp->GetDescShort(),
-                        compNum, mTotalComps, nsInstallDlg::ACT_INSTALL);
+                    if (gCtx->opt->mMode != nsXIOptions::MODE_SILENT)
+                        nsInstallDlg::MajorProgressCB(currComp->GetDescShort(),
+                            compNum, mTotalComps, nsInstallDlg::ACT_INSTALL);
                     err = InstallXPI(currComp, &stub);
                     if (err != OK)
                     if (err == E_INSTALL)
@@ -549,15 +563,27 @@ int
 nsXIEngine::MakeUniqueTmpDir()
 {
     int err = E_DIR_CREATE;
-
-    mTmp = tempnam( (const char *) NULL, "xpi" );
-
-    if ( mTmp != (char *) NULL ) {
-      int tmperr;
-      tmperr = mkdir(mTmp, 0755);
-      if ( tmperr != -1 )
-        err = OK;
+    char tmpnam[MAXPATHLEN];
+    char *tmpdir = getenv("TMPDIR");
+    if (!tmpdir) tmpdir = getenv("TMP");
+    if (!tmpdir) tmpdir = getenv("TEMP");
+    if (!tmpdir) tmpdir = P_tmpdir;
+    snprintf(tmpnam, sizeof(tmpnam), "%s/xpi.XXXXXX", tmpdir);
+#ifdef HAVE_MKDTEMP
+    if (mkdtemp(tmpnam)) {
+      mTmp = strdup(tmpnam);
+      if (mTmp) err = OK;
     }
+#else
+    int fd = mkstemp(tmpnam);
+    if (fd < 0) return err;
+    close(fd);
+    if (unlink(tmpnam) < 0) return err;
+    mTmp = strdup(tmpnam);
+    if (!mTmp) return err;
+    if (mkdir(mTmp, 0755) < 0) return err;
+    err = OK;
+#endif
     return err;
 }
 
@@ -579,8 +605,7 @@ nsXIEngine::ParseURL(char *aURL, char **aHost, char **aDir)
     hostTerminator = strchr(host, '/'); 
     if (!hostTerminator) return E_BAD_FTP_URL;
     
-    *aHost = (char *) malloc(sizeof(char) * (hostTerminator - host + 1));
-    memset(*aHost, 0, (hostTerminator - host + 1));
+    *aHost = (char *) calloc(hostTerminator - host + 1, 1);
     strncpy(*aHost, host, hostTerminator - host);
 
     dirTerminator = strrchr(hostTerminator + 1, '/');
@@ -1021,7 +1046,8 @@ nsXIEngine::CRCCheckDownloadedArchives(char *dlPath, short dlPathlen,
     buf[ dlPathlen ] = '\0';
     strcat( buf, "/" );
     strcat( buf, currComp->GetArchive() );
-    nsInstallDlg::MajorProgressCB(buf, i, count, nsInstallDlg::ACT_INSTALL);
+    if (gCtx->opt->mMode != nsXIOptions::MODE_SILENT)
+        nsInstallDlg::MajorProgressCB(buf, i, count, nsInstallDlg::ACT_INSTALL);
     if (((aCustom == TRUE && currComp->IsSelected()) || 
         (aCustom == FALSE)) && IsArchiveFile(buf) == PR_TRUE && 
         VerifyArchive( buf ) != ZIP_OK) {

@@ -49,7 +49,7 @@
 
 class nsIEventListenerManager;
 class nsIURI;
-class nsIWebShell;
+class nsIDocShell;
 
 class nsXMLElement : public nsGenericContainerElement,
                      public nsIDOMElement
@@ -68,7 +68,7 @@ public:
   NS_FORWARD_NSIDOMELEMENT(nsGenericContainerElement::)
 
   // nsIXMLContent
-  NS_IMETHOD MaybeTriggerAutoLink(nsIWebShell *aShell);
+  NS_IMETHOD MaybeTriggerAutoLink(nsIDocShell *aShell);
   NS_IMETHOD GetXMLBaseURI(nsIURI **aURI);
 
   // nsIStyledContent
@@ -86,9 +86,6 @@ public:
                             nsIDOMEvent** aDOMEvent,
                             PRUint32 aFlags,
                             nsEventStatus* aEventStatus);
-#ifdef DEBUG
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
-#endif
 
 protected:
   PRBool mIsLink;

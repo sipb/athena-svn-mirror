@@ -65,7 +65,7 @@
 
 #include "nsBoxLayoutState.h"
 #include "nsBoxFrame.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsIPresContext.h"
 #include "nsCOMPtr.h"
 #include "nsUnitConversion.h"
@@ -80,7 +80,8 @@
 #include "nsIPresShell.h"
 #include "nsFrameNavigator.h"
 #include "nsCSSRendering.h"
-#include "nsIPref.h"
+#include "nsIPrefBranch.h"
+#include "nsIPrefService.h"
 #include "nsIServiceManager.h"
 #include "nsBoxToBlockAdaptor.h"
 #include "nsIBoxLayout.h"
@@ -90,6 +91,7 @@
 #include "nsIScrollableFrame.h"
 #include "nsWidgetsCID.h"
 #include "nsLayoutAtoms.h"
+#include "nsCSSAnonBoxes.h"
 #include "nsViewsCID.h"
 #include "nsIScrollableView.h"
 #include "nsHTMLContainerFrame.h"
@@ -252,7 +254,7 @@ NS_IMETHODIMP
 nsBoxFrame::Init(nsIPresContext*  aPresContext,
                  nsIContent*      aContent,
                  nsIFrame*        aParent,
-                 nsIStyleContext* aContext,
+                 nsStyleContext*  aContext,
                  nsIFrame*        aPrevInFlow)
 {
   SetParent(aParent);
@@ -443,7 +445,7 @@ nsBoxFrame::GetInitialHAlignment(nsBoxFrame::Halignment& aHalign)
   // Now that we've checked for the attribute it's time to check CSS.  For 
   // horizontal boxes we're checking PACK.  For vertical boxes we are checking
   // ALIGN.
-  const nsStyleXUL* boxInfo = (const nsStyleXUL*)mStyleContext->GetStyleData(eStyleStruct_XUL);
+  const nsStyleXUL* boxInfo = GetStyleXUL();
   if (IsHorizontal()) {
     switch (boxInfo->mBoxPack) {
       case NS_STYLE_BOX_PACK_START:
@@ -533,7 +535,7 @@ nsBoxFrame::GetInitialVAlignment(nsBoxFrame::Valignment& aValign)
   // Now that we've checked for the attribute it's time to check CSS.  For 
   // horizontal boxes we're checking ALIGN.  For vertical boxes we are checking
   // PACK.
-  const nsStyleXUL* boxInfo = (const nsStyleXUL*)mStyleContext->GetStyleData(eStyleStruct_XUL);
+  const nsStyleXUL* boxInfo = GetStyleXUL();
   if (IsHorizontal()) {
     switch (boxInfo->mBoxAlign) {
       case NS_STYLE_BOX_ALIGN_START:
@@ -586,9 +588,7 @@ nsBoxFrame::GetInitialOrientation(PRBool& aIsHorizontal)
     return;
 
   // Check the style system first.
-  const nsStyleXUL* boxInfo;
-  GetStyleData(eStyleStruct_XUL,
-               (const nsStyleStruct*&)boxInfo);
+  const nsStyleXUL* boxInfo = GetStyleXUL();
   if (boxInfo->mBoxOrient == NS_STYLE_BOX_ORIENT_HORIZONTAL)
     aIsHorizontal = PR_TRUE;
   else 
@@ -617,18 +617,13 @@ nsBoxFrame::GetInitialDirection(PRBool& aIsNormal)
   if (IsHorizontal()) {
     // For horizontal boxes only, we initialize our value based off the CSS 'direction' property.
     // This means that BiDI users will end up with horizontally inverted chrome.
-    const nsStyleVisibility* vis;
-    GetStyleData(eStyleStruct_Visibility,
-                 (const nsStyleStruct*&)vis);
-    aIsNormal = (vis->mDirection == NS_STYLE_DIRECTION_LTR); // If text runs RTL then so do we.
+    aIsNormal = (GetStyleVisibility()->mDirection == NS_STYLE_DIRECTION_LTR); // If text runs RTL then so do we.
   }
   else
     aIsNormal = PR_TRUE; // Assume a normal direction in the vertical case.
 
   // Now check the style system to see if we should invert aIsNormal.
-  const nsStyleXUL* boxInfo;
-  GetStyleData(eStyleStruct_XUL,
-               (const nsStyleStruct*&)boxInfo);
+  const nsStyleXUL* boxInfo = GetStyleXUL();
   if (boxInfo->mBoxDirection == NS_STYLE_BOX_DIRECTION_REVERSE)
     aIsNormal = !aIsNormal; // Invert our direction.
   
@@ -689,8 +684,7 @@ nsBoxFrame::GetInitialAutoStretch(PRBool& aStretch)
   }
 
   // Check the CSS box-align property.
-  const nsStyleXUL* boxInfo;
-  GetStyleData(eStyleStruct_XUL, (const nsStyleStruct*&)boxInfo);
+  const nsStyleXUL* boxInfo = GetStyleXUL();
   aStretch = (boxInfo->mBoxAlign == NS_STYLE_BOX_ALIGN_STRETCH);
 
   return PR_TRUE;
@@ -923,31 +917,20 @@ nsBoxFrame::Reflow(nsIPresContext*          aPresContext,
 
   // max sure the max element size reflects
   // our min width
-  nsSize* maxElementSize = nsnull;
-  state.GetMaxElementSize(&maxElementSize);
-  if (maxElementSize)
+  nscoord* maxElementWidth = state.GetMaxElementWidth();
+  if (maxElementWidth)
   {
      nsSize minSize(0,0);
      GetMinSize(state,  minSize);
 
      if (mRect.width > minSize.width) {
        if (aReflowState.mComputedWidth == NS_INTRINSICSIZE) {
-         maxElementSize->width = minSize.width;
+         *maxElementWidth = minSize.width;
        } else {
-         maxElementSize->width = mRect.width;
+         *maxElementWidth = mRect.width;
        }
      } else {
-        maxElementSize->width = mRect.width;
-     }
-
-     if (mRect.height > minSize.height) {
-       if (aReflowState.mComputedHeight == NS_INTRINSICSIZE) {
-         maxElementSize->height = minSize.height;
-       } else {
-         maxElementSize->height = mRect.height;
-       }
-     } else {
-        maxElementSize->height = mRect.height;
+        *maxElementWidth = mRect.width;
      }
   }
 #ifdef DO_NOISY_REFLOW
@@ -955,9 +938,9 @@ nsBoxFrame::Reflow(nsIPresContext*          aPresContext,
     printf("%p ** nsBF(done) W:%d H:%d  ", this, aDesiredSize.width, aDesiredSize.height);
 
     if (maxElementSize) {
-      printf("MW:%d MH:%d\n", maxElementSize->width, maxElementSize->height); 
+      printf("MW:%d\n", *maxElementWidth); 
     } else {
-      printf("MW:? MH:?\n"); 
+      printf("MW:?\n"); 
     }
 
   }
@@ -1102,14 +1085,12 @@ nsBoxFrame::DoLayout(nsBoxLayoutState& aState)
 NS_IMETHODIMP
 nsBoxFrame::Destroy(nsIPresContext* aPresContext)
 {
-// if we are root remove 1 from the debug count.
-  if (mState & NS_STATE_IS_ROOT)
-      GetDebugPref(aPresContext);
-
   // unregister access key
   RegUnregAccessKey(aPresContext, PR_FALSE);
 
-  SetLayoutManager(nsnull);
+  // clean up the container box's layout manager and child boxes
+  nsBoxLayoutState state(aPresContext);
+  nsContainerBox::Destroy(state);
 
   return nsContainerFrame::Destroy(aPresContext);
 } 
@@ -1439,9 +1420,9 @@ void
 nsBoxFrame::GetDebugPref(nsIPresContext* aPresContext)
 {
     gDebug = PR_FALSE;
-    nsCOMPtr<nsIPref> pref(do_GetService(NS_PREF_CONTRACTID));
-    if (pref) {
-	    pref->GetBoolPref("xul.debug.box", &gDebug);
+    nsCOMPtr<nsIPrefBranch> prefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID));
+    if (prefBranch) {
+	    prefBranch->GetBoolPref("xul.debug.box", &gDebug);
     }
 }
 
@@ -1452,54 +1433,21 @@ nsBoxFrame::Paint(nsIPresContext*      aPresContext,
                   nsFramePaintLayer    aWhichLayer,
                   PRUint32             aFlags)
 {
-  const nsStyleVisibility* vis = 
-      (const nsStyleVisibility*)mStyleContext->GetStyleData(eStyleStruct_Visibility);
-
   // if collapsed nothing is drawn
-  if (vis->mVisible == NS_STYLE_VISIBILITY_COLLAPSE) 
+  if (GetStyleVisibility()->mVisible == NS_STYLE_VISIBILITY_COLLAPSE) 
     return NS_OK;
 
   if (NS_FRAME_IS_UNFLOWABLE & mState) {
     return NS_OK;
   }
 
-  nsCOMPtr<nsIAtom> frameType;
-  GetFrameType(getter_AddRefs(frameType));
-
   if (NS_FRAME_PAINT_LAYER_BACKGROUND == aWhichLayer) {
-    if (vis->IsVisible() && mRect.width && mRect.height) {
-      // Paint our background and border
-      PRIntn skipSides = GetSkipSides();
-      const nsStyleBorder* border = (const nsStyleBorder*)
-        mStyleContext->GetStyleData(eStyleStruct_Border);
-      const nsStylePadding* padding = (const nsStylePadding*)
-        mStyleContext->GetStyleData(eStyleStruct_Padding);
-      const nsStyleOutline* outline = (const nsStyleOutline*)
-        mStyleContext->GetStyleData(eStyleStruct_Outline);
-
-      nsRect  rect(0, 0, mRect.width, mRect.height);
-      nsCSSRendering::PaintBackground(aPresContext, aRenderingContext, this,
-                                      aDirtyRect, rect, *border, *padding,
-                                      0, 0);
-      nsCSSRendering::PaintBorder(aPresContext, aRenderingContext, this,
-                                  aDirtyRect, rect, *border, mStyleContext, skipSides);
-      nsCSSRendering::PaintOutline(aPresContext, aRenderingContext, this,
-                                  aDirtyRect, rect, *border, *outline, mStyleContext, 0);
-      
-      // The sole purpose of this is to trigger display
-      //  of the selection window for Named Anchors,
-      //  which don't have any children and normally don't
-      //  have any size, but in Editor we use CSS to display
-      //  an image to represent this "hidden" element.
-      if (!mFrames.FirstChild())
-      {
-        nsFrame::Paint(aPresContext,
-                       aRenderingContext, aDirtyRect, aWhichLayer);
-      }
-    }
+    PaintSelf(aPresContext, aRenderingContext, aDirtyRect, 0, PR_FALSE);
   }
 
-  if (frameType.get() == nsLayoutAtoms::rootFrame) {
+  nsCOMPtr<nsIAtom> frameType;
+  GetFrameType(getter_AddRefs(frameType));
+  if (frameType == nsLayoutAtoms::rootFrame) {
     // We are wrapping the root frame of a XUL document. We
     // need to check the pres shell to find out if painting is locked
     // down (because we're still in the early stages of document
@@ -1516,8 +1464,7 @@ nsBoxFrame::Paint(nsIPresContext*      aPresContext,
   // Now paint the kids. Note that child elements have the opportunity to
   // override the visibility property and display even if their parent is
   // hidden.  Don't paint our children if the theme object is a leaf.
-  const nsStyleDisplay* display = 
-      (const nsStyleDisplay*)mStyleContext->GetStyleData(eStyleStruct_Display);
+  const nsStyleDisplay* display = GetStyleDisplay();
   if (!(display->mAppearance && nsBox::gTheme && 
         gTheme->ThemeSupportsWidget(aPresContext, this, display->mAppearance) &&
         !gTheme->WidgetIsContainer(display->mAppearance)))
@@ -1539,11 +1486,8 @@ nsBoxFrame::PaintChild(nsIPresContext*      aPresContext,
                        nsFramePaintLayer    aWhichLayer,
                        PRUint32             aFlags)
 {
-  const nsStyleVisibility* vis;
-  aFrame->GetStyleData(eStyleStruct_Visibility, ((const nsStyleStruct *&)vis));
-
   // if collapsed don't paint the child.
-  if (vis->mVisible == NS_STYLE_VISIBILITY_COLLAPSE) 
+  if (aFrame->GetStyleVisibility()->mVisible == NS_STYLE_VISIBILITY_COLLAPSE)
      return;
 
   nsIView *pView;
@@ -1597,7 +1541,6 @@ nsBoxFrame::PaintChildren(nsIPresContext*      aPresContext,
   nsMargin debugMargin;
   nsMargin debugPadding;
   nsMargin border;
-  nscoord onePixel;
   nsRect inner;
 
   GetBorder(border);
@@ -1605,10 +1548,6 @@ nsBoxFrame::PaintChildren(nsIPresContext*      aPresContext,
   if (mState & NS_STATE_CURRENTLY_IN_DEBUG) 
   {
         PRBool isHorizontal = IsHorizontal();
-
-        float p2t;
-        aPresContext->GetScaledPixelsToTwips(&p2t);
-        onePixel = NSIntPixelsToTwips(1, p2t);
 
         GetDebugBorder(debugBorder);
         PixelMarginToTwips(aPresContext, debugBorder);
@@ -1675,8 +1614,7 @@ nsBoxFrame::PaintChildren(nsIPresContext*      aPresContext,
   }
 
 
-  const nsStyleDisplay* disp = (const nsStyleDisplay*)
-    mStyleContext->GetStyleData(eStyleStruct_Display);
+  const nsStyleDisplay* disp = GetStyleDisplay();
 
   // Child elements have the opportunity to override the visibility property
   // of their parent and display even if the parent is hidden
@@ -1727,6 +1665,10 @@ nsBoxFrame::PaintChildren(nsIPresContext*      aPresContext,
 
   if (mState & NS_STATE_CURRENTLY_IN_DEBUG) 
   {
+    float p2t;
+    aPresContext->GetScaledPixelsToTwips(&p2t);
+    nscoord onePixel = NSIntPixelsToTwips(1, p2t);
+
     GetContentRect(r);
 
     if (NS_STYLE_OVERFLOW_HIDDEN == disp->mOverflow) {
@@ -1877,8 +1819,7 @@ nsBoxFrame::GetFrameForPoint(nsIPresContext*   aPresContext,
   if (!mRect.Contains(aPoint))
     return NS_ERROR_FAILURE;
 
-  const nsStyleVisibility* vis = 
-      (const nsStyleVisibility*)mStyleContext->GetStyleData(eStyleStruct_Visibility);
+  const nsStyleVisibility* vis = GetStyleVisibility();
   if (vis->mVisible == NS_STYLE_VISIBILITY_COLLAPSE)
     return NS_ERROR_FAILURE;
 
@@ -1994,8 +1935,7 @@ nsBoxFrame::GetBoxForFrame(nsIFrame* aFrame, PRBool& aIsAdaptor)
 NS_IMETHODIMP
 nsBoxFrame::GetMouseThrough(PRBool& aMouseThrough)
 {
-   const nsStyleColor* color = (const nsStyleColor*)
-   mStyleContext->GetStyleData(eStyleStruct_Color);
+   const nsStyleBackground* color = GetStyleBackground();
    PRBool transparentBG = NS_STYLE_BG_COLOR_TRANSPARENT ==
                          (color->mBackgroundFlags & NS_STYLE_BG_COLOR_TRANSPARENT);
 
@@ -2521,7 +2461,7 @@ nsBoxFrame::GetFrameSizeWithMargin(nsIBox* aBox, nsSize& aSize)
 nsresult
 nsBoxFrame::CreateViewForFrame(nsIPresContext*  aPresContext,
                                nsIFrame*        aFrame,
-                               nsIStyleContext* aStyleContext,
+                               nsStyleContext*  aStyleContext,
                                PRBool           aForce)
 {
   nsIView* view;
@@ -2536,8 +2476,7 @@ nsBoxFrame::CreateViewForFrame(nsIPresContext*  aPresContext,
     PRBool isCanvas;
     PRBool hasBG =
         nsCSSRendering::FindBackground(aPresContext, aFrame, &bg, &isCanvas);
-    const nsStyleVisibility* vis = (const nsStyleVisibility*)
-      aStyleContext->GetStyleData(eStyleStruct_Visibility);
+    const nsStyleVisibility* vis = aStyleContext->GetStyleVisibility();
 
     if (vis->mOpacity != 1.0f) {
       NS_FRAME_LOG(NS_FRAME_TRACE_CALLS,
@@ -2554,14 +2493,12 @@ nsBoxFrame::CreateViewForFrame(nsIPresContext*  aPresContext,
     
     // See if the frame is a scrolled frame
     if (!aForce) {
-      nsIAtom*  pseudoTag;
-      aStyleContext->GetPseudoType(pseudoTag);
-      if (pseudoTag == nsLayoutAtoms::scrolledContentPseudo) {
+      nsCOMPtr<nsIAtom> pseudoTag = aStyleContext->GetPseudoType();
+      if (pseudoTag == nsCSSAnonBoxes::scrolledContent) {
         NS_FRAME_LOG(NS_FRAME_TRACE_CALLS,
           ("nsBoxFrame::CreateViewForFrame: scrolled frame=%p", aFrame));
         aForce = PR_TRUE;
       }
-      NS_IF_RELEASE(pseudoTag);
     }
 
     if (aForce) {
@@ -2633,14 +2570,14 @@ nsBoxFrame::CreateViewForFrame(nsIPresContext*  aPresContext,
             // object's child elements, we can't tell if it's a leaf by looking
             // at whether the frame has any child frames
             nsCOMPtr<nsIContent> content;
-            PRBool      result = PR_FALSE;
+            PRBool canContainChildren = PR_FALSE;
 
             aFrame->GetContent(getter_AddRefs(content));
             if (content) {
-              content->CanContainChildren(result);
+              content->CanContainChildren(canContainChildren);
             }
 
-            if (result) {
+            if (canContainChildren) {
               // The view needs to be visible, but marked as having transparent
               // content
               viewHasTransparentContent = PR_TRUE;
@@ -2693,6 +2630,7 @@ nsBoxFrame::RegUnregAccessKey(nsIPresContext* aPresContext, PRBool aDoReg)
 
   // only support accesskeys for the following elements
   if (atom != nsXULAtoms::button &&
+      atom != nsXULAtoms::toolbarbutton &&
       atom != nsXULAtoms::checkbox &&
       atom != nsXULAtoms::textbox &&
       atom != nsXULAtoms::tab &&

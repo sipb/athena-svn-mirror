@@ -28,6 +28,14 @@ function upgradeCleanup()
   deleteThisFile("Components", "mozBrowser.shlb");
   deleteThisFile("Components", "Cache.shlb");
   deleteThisFile("Components", "JSLoader.shlb");
+  deleteThisFile("Components", "content.shlb");
+  deleteThisFile("Components", "jsurl.shlb");
+  deleteThisFile("Components", "uriloader.shlb");
+  deleteThisFile("Components", "shistory.shlb");
+  deleteThisFile("Components", "view.shlb");
+  deleteThisFile("Components", "compreg.dat");
+  deleteThisFile("Components", "xpti.dat");
+  deleteThisFile("Components", "xptitemp.dat");
   deleteThisFile("Program",    "defaults/pref/config.js");
   deleteThisFile("Program",    "defaults/pref/initpref.js");
   deleteThisFile("Program",    "defaults/pref/macxprefs.js");
@@ -81,8 +89,6 @@ if (verifyDiskSpace(fProgram, srDest))
     registerChrome(CONTENT | DELAYED_CHROME, getFolder(cf,"comm.jar"),"content/navigator/");
     registerChrome(CONTENT | DELAYED_CHROME, getFolder(cf,"comm.jar"),"content/necko/");
     registerChrome(CONTENT | DELAYED_CHROME, getFolder(cf,"comm.jar"),"content/mozldap/");
-    registerChrome(CONTENT | DELAYED_CHROME, getFolder(cf, "forms.jar"),"content/forms/");
-    registerChrome(SKIN | DELAYED_CHROME, getFolder(cf, "forms.jar"),"skin/classic/forms/");
     registerChrome(SKIN | DELAYED_CHROME, getFolder(cf,"classic.jar"),"skin/classic/communicator/");
     registerChrome(SKIN | DELAYED_CHROME, getFolder(cf,"classic.jar"),"skin/classic/editor/");
     registerChrome(SKIN | DELAYED_CHROME, getFolder(cf,"classic.jar"),"skin/classic/global/");
@@ -97,6 +103,7 @@ if (verifyDiskSpace(fProgram, srDest))
     registerChrome(CONTENT | DELAYED_CHROME, getFolder(cf,"pippki.jar"), "content/pippki/");
     registerChrome(CONTENT | DELAYED_CHROME, getFolder(cf,"pipnss.jar"), "content/pipnss/");
     registerChrome(CONTENT | DELAYED_CHROME, getFolder(cf,"comm.jar"),"content/xbl-marquee/");
+    registerChrome(CONTENT | DELAYED_CHROME, getFolder(cf,"comm.jar"),"content/p3p/");
 
     // make an alias to the browser on the desktop 
     var desktopFolder = getFolder("Mac Desktop");

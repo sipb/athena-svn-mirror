@@ -34,6 +34,7 @@
 
 #ifndef TX_EXE
 #include "nsNetUtil.h"
+#include "nsIAttribute.h"
 #include "nsIScriptSecurityManager.h"
 #include "nsIDocument.h"
 #include "nsIDOMDocument.h"
@@ -50,17 +51,73 @@
 #ifdef TX_EXE
 //- Constants -/
 
-const String URIUtils::HTTP_PROTOCOL("http");
-const String URIUtils::FILE_PROTOCOL("file");
 const char   URIUtils::HREF_PATH_SEP  = '/';
-const char   URIUtils::DEVICE_SEP     = '|';
-const char   URIUtils::PORT_SEP       = ':';
-const char   URIUtils::PROTOCOL_SEP   = ':';
-const short  URIUtils::PROTOCOL_MODE  = 1;
-const short  URIUtils::HOST_MODE      = 2;
-const short  URIUtils::PORT_MODE      = 3;
-const short  URIUtils::PATH_MODE      = 4;
 
+/**
+ * Implementation of utility functions for parsing URLs.
+ * Just file paths for now.
+ */
+void
+txParsedURL::init(const nsAFlatString& aSpec)
+{
+    mPath.Truncate();
+    mName.Truncate();
+    mRef.Truncate();
+    PRUint32 specLength = aSpec.Length();
+    if (!specLength) {
+        return;
+    }
+    const PRUnichar* start = aSpec.get();
+    const PRUnichar* end = start + specLength;
+    const PRUnichar* c = end - 1;
+
+    // check for #ref
+    for (; c >= start; --c) {
+        if (*c == '#') {
+            // we could eventually unescape this, too.
+            mRef = Substring(c + 1, end);
+            end = c;
+            --c;
+            if (c == start) {
+                // we're done,
+                return;
+            }
+            break;
+        }
+    }
+    for (c = end - 1; c >= start; --c) {
+        if (*c == '/') {
+            mName = Substring(c + 1, end);
+            mPath = Substring(start, c + 1);
+            return;
+        }
+    }
+    mName = Substring(start, end);
+}
+
+void
+txParsedURL::resolve(const txParsedURL& aRef, txParsedURL& aDest)
+{
+    /*
+     * No handling of absolute URLs now.
+     * These aren't really URLs yet, anyway, but paths with refs
+     */
+    aDest.mPath = mPath + aRef.mPath;
+
+    if (aRef.mName.IsEmpty() && aRef.mPath.IsEmpty()) {
+        // the relative URL is just a fragment identifier
+        aDest.mName = mName;
+        if (aRef.mRef.IsEmpty()) {
+            // and not even that, keep the base ref
+            aDest.mRef = mRef;
+            return;
+        }
+        aDest.mRef = aRef.mRef;
+        return;
+    }
+    aDest.mName = aRef.mName;
+    aDest.mRef = aRef.mRef;
+}
 
 /**
  * Returns an InputStream for the file represented by the href
@@ -70,56 +127,31 @@ const short  URIUtils::PATH_MODE      = 4;
  * @exception java.io.FileNotFoundException when the file could not be
  * found
 **/
-istream* URIUtils::getInputStream
-    (const String& href, String& errMsg)
+istream* URIUtils::getInputStream(const nsAString& href, nsAString& errMsg)
 {
-
-    istream* inStream = 0;
-
-    ParsedURI* uri = parseURI(href);
-    if ( !uri->isMalformed ) {
-        inStream = openStream(uri);
-    }
-    else {
-        // Try local files
-        inStream = new ifstream(NS_LossyConvertUCS2toASCII(href).get(),
-                                ios::in);
-    }
-    delete uri;
-
-    return inStream;
-
+    return new ifstream(NS_LossyConvertUCS2toASCII(href).get(), ios::in);
 } //-- getInputStream
 
 /**
     * Returns the document base of the href argument
     * @return the document base of the given href
 **/
-void URIUtils::getDocumentBase(const String& href, String& dest) {
-    //-- use temp str so the subString method doesn't destroy dest
-    String docBase("");
-
-    if (!href.isEmpty()) {
-
-        int idx = -1;
-        //-- check for URL
-        ParsedURI* uri = parseURI(href);
-        if ( !uri->isMalformed ) {
-            idx = href.lastIndexOf(HREF_PATH_SEP);
-        }
-        else {
-            //-- The following contains a fix from Shane Hathaway
-            //-- to handle the case when both "\" and "/" appear in filename
-            int idx2 = href.lastIndexOf(HREF_PATH_SEP);
-            //idx = href.lastIndexOf(File.separator);
-            idx = -1; //-- hack change later
-            if (idx2 > idx) idx = idx2;
-        }
-        if (idx >= 0) href.subString(0,idx, docBase);
-        delete uri;
+void URIUtils::getDocumentBase(const nsAFlatString& href, nsAString& dest)
+{
+    if (href.IsEmpty()) {
+        return;
     }
-    dest.append(docBase);
-} //-- getDocumentBase
+
+    nsAFlatString::const_char_iterator temp;
+    href.BeginReading(temp);
+    PRUint32 iter = href.Length();
+    while (iter > 0) {
+        if (temp[--iter] == HREF_PATH_SEP) {
+            dest.Append(Substring(href, 0, iter));
+            break;
+        }
+    }
+}
 #endif
 
 /**
@@ -127,196 +159,41 @@ void URIUtils::getDocumentBase(const String& href, String& dest) {
  * if necessary.
  * The new resolved href will be appended to the given dest String
 **/
-void URIUtils::resolveHref(const String& href, const String& base,
-                           String& dest) {
-    if (base.isEmpty()) {
-        dest.append(href);
+void URIUtils::resolveHref(const nsAString& href, const nsAString& base,
+                           nsAString& dest) {
+    if (base.IsEmpty()) {
+        dest.Append(href);
         return;
     }
-    if (href.isEmpty()) {
-        dest.append(base);
+    if (href.IsEmpty()) {
+        dest.Append(base);
         return;
     }
 
 #ifndef TX_EXE
     nsCOMPtr<nsIURI> pURL;
-    String resultHref;
+    nsAutoString resultHref;
     nsresult result = NS_NewURI(getter_AddRefs(pURL), base);
     if (NS_SUCCEEDED(result)) {
         NS_MakeAbsoluteURI(resultHref, href, pURL);
-        dest.append(resultHref);
+        dest.Append(resultHref);
     }
 #else
-    String documentBase;
-    getDocumentBase(base, documentBase);
-
-    //-- check for URL
-    ParsedURI* uri = parseURI(href);
-    if ( !uri->isMalformed ) {
-        dest.append(href);
-        delete uri;
-        return;
-    }
-
+    nsAutoString documentBase;
+    getDocumentBase(PromiseFlatString(base), documentBase);
 
     //-- join document base + href
-    String xHref;
-    if (!documentBase.isEmpty()) {
-        xHref.append(documentBase);
-        if (documentBase.charAt(documentBase.length()-1) != HREF_PATH_SEP)
-            xHref.append(HREF_PATH_SEP);
+    if (!documentBase.IsEmpty()) {
+        dest.Append(documentBase);
+        if (documentBase.CharAt(documentBase.Length()-1) != HREF_PATH_SEP)
+            dest.Append(PRUnichar(HREF_PATH_SEP));
     }
-    xHref.append(href);
+    dest.Append(href);
 
-    //-- check new href
-    ParsedURI* newUri = parseURI(xHref);
-    if ( !newUri->isMalformed ) {
-        dest.append(xHref);
-    }
-    else {
-        // Try local files
-        ifstream inFile(NS_LossyConvertUCS2toASCII(xHref).get(),
-                        ios::in);
-        if ( inFile ) dest.append(xHref);
-        else dest.append(href);
-        inFile.close();
-    }
-    delete uri;
-    delete newUri;
-    //cout << "\n---\nhref='" << href << "', base='" << base << "'\ndocumentBase='" << documentBase << "', dest='" << dest << "'\n---\n";
 #endif
 } //-- resolveHref
 
-void URIUtils::getFragmentIdentifier(const String& href, String& frag) {
-    PRInt32 pos;
-    pos = href.lastIndexOf('#');
-    if(pos != kNotFound)
-        href.subString(pos+1, frag);
-    else
-        frag.clear();
-} //-- getFragmentIdentifier
-
-void URIUtils::getDocumentURI(const String& href, String& docUri) {
-    PRInt32 pos;
-    pos = href.lastIndexOf('#');
-    if(pos != kNotFound)
-        href.subString(0,pos,docUri);
-    else
-        docUri = href;
-} //-- getDocumentURI
-
-#ifdef TX_EXE
-istream* URIUtils::openStream(ParsedURI* uri) {
-    if ( !uri ) return 0;
-    // check protocol
-
-    istream* inStream = 0;
-    if ( FILE_PROTOCOL.isEqual(uri->protocol) ) {
-        ifstream* inFile =
-            new ifstream(NS_LossyConvertUCS2toASCII(uri->path).get(),
-                         ios::in);
-        inStream = inFile;
-    }
-
-    return inStream;
-} //-- openStream
-
-URIUtils::ParsedURI* URIUtils::parseURI(const String& uri) {
-
-    ParsedURI* uriTokens = new ParsedURI;
-    if (!uriTokens)
-        return NULL;
-    uriTokens->isMalformed = MB_FALSE;
-
-    short mode = PROTOCOL_MODE;
-
-    // look for protocol
-    int totalCount = uri.length();
-    int charCount = 0;
-    UNICODE_CHAR prevCh = '\0';
-    int fslash = 0;
-    String buffer(uri.length());
-    while ( charCount < totalCount ) {
-        UNICODE_CHAR ch = uri.charAt(charCount++);
-        switch(ch) {
-            case '.' :
-                if ( mode == PROTOCOL_MODE ) {
-                    uriTokens->isMalformed = MB_TRUE;
-                    mode = HOST_MODE;
-                }
-                buffer.append(ch);
-                break;
-            case ':' :
-            {
-                switch ( mode ) {
-                    case PROTOCOL_MODE :
-                        uriTokens->protocol = buffer;
-                        buffer.clear();
-                        mode = HOST_MODE;
-                        break;
-                    case HOST_MODE :
-                        uriTokens->host = buffer;
-                        buffer.clear();
-                        mode = PORT_MODE;
-                        break;
-                    default:
-                        break;
-                }
-                break;
-            }
-            case '/' :
-                switch ( mode ) {
-                    case HOST_MODE :
-                        if (!buffer.isEmpty()) {
-                            mode = PATH_MODE;
-                            buffer.append(ch);
-                        }
-                        else if ( fslash == 2 ) mode = PATH_MODE;
-                        else ++fslash;
-                        break;
-                    case PORT_MODE :
-                        mode = PATH_MODE;
-                        uriTokens->port.append(buffer);
-                        buffer.clear();
-                        break;
-                    default:
-                        buffer.append(ch);
-                        break;
-                }
-                break;
-            default:
-                buffer.append(ch);
-        }
-        prevCh = ch;
-    }
-
-    if ( mode == PROTOCOL_MODE ) {
-        uriTokens->isMalformed = MB_TRUE;
-    }
-    //-- finish remaining mode
-    if (!buffer.isEmpty()) {
-        switch ( mode ) {
-            case PROTOCOL_MODE :
-                uriTokens->protocol.append(buffer);
-                break;
-            case HOST_MODE :
-                uriTokens->host.append(buffer);
-                break;
-            case PORT_MODE :
-                uriTokens->port.append(buffer);
-                break;
-            case PATH_MODE :
-                uriTokens->path.append(buffer);
-                break;
-            default:
-                break;
-        }
-    }
-    return uriTokens;
-} //-- parseURI
-
-#else /* TX_EXE */
-
+#ifndef TX_EXE
 
 nsIScriptSecurityManager *gTxSecurityManager = 0;
 
@@ -343,27 +220,38 @@ PRBool URIUtils::CanCallerAccess(nsIDOMNode *aNode)
     // fails we QI to nsIDocument. If both those QI's fail we won't let
     // the caller access this unknown node.
     nsCOMPtr<nsIPrincipal> principal;
-    nsCOMPtr<nsIContent> content(do_QueryInterface(aNode));
+    nsCOMPtr<nsIContent> content = do_QueryInterface(aNode);
+    nsCOMPtr<nsIAttribute> attr;
+    nsCOMPtr<nsIDocument> doc;
 
     if (!content) {
-        nsCOMPtr<nsIDocument> doc = do_QueryInterface(aNode);
+        doc = do_QueryInterface(aNode);
 
         if (!doc) {
-            // aNode is neither a nsIContent nor an nsIDocument, something
-            // weird is going on...
+            attr = do_QueryInterface(aNode);
+            if (!attr) {
+                // aNode is not a nsIContent, a nsIAttribute or a nsIDocument,
+                // something weird is going on...
 
-            NS_ERROR("aNode is neither an nsIContent nor an nsIDocument!");
+                NS_ERROR("aNode is not a nsIContent, a nsIAttribute or a nsIDocument!");
 
-            return PR_FALSE;
+                return PR_FALSE;
+            }
         }
-        doc->GetPrincipal(getter_AddRefs(principal));
     }
-    else {
+
+    if (!doc) {
         nsCOMPtr<nsIDOMDocument> domDoc;
         aNode->GetOwnerDocument(getter_AddRefs(domDoc));
         if (!domDoc) {
             nsCOMPtr<nsINodeInfo> ni;
-            content->GetNodeInfo(*getter_AddRefs(ni));
+            if (content) {
+                content->GetNodeInfo(*getter_AddRefs(ni));
+            }
+            else {
+                attr->GetNodeInfo(*getter_AddRefs(ni));
+            }
+
             if (!ni) {
                 // aNode is not part of a document, let any caller access it.
 
@@ -371,20 +259,28 @@ PRBool URIUtils::CanCallerAccess(nsIDOMNode *aNode)
             }
 
             ni->GetDocumentPrincipal(getter_AddRefs(principal));
+
+            if (!principal) {
+              // we can't get to the principal so we'll give up and give the
+              // caller access
+
+              return PR_TRUE;
+            }
         }
         else {
-            nsCOMPtr<nsIDocument> doc = do_QueryInterface(domDoc);
+            doc = do_QueryInterface(domDoc);
             NS_ASSERTION(doc, "QI to nsIDocument failed");
-            doc->GetPrincipal(getter_AddRefs(principal));
         }
     }
 
     if (!principal) {
-      // We can't get hold of the principal for this node. This should happen
-      // very rarely, like for textnodes out of the tree and <option>s created
-      // using 'new Option'.
-      // If we didn't allow access to nodes like this you wouldn't be able to
-      // insert these nodes into a document.
+        doc->GetPrincipal(getter_AddRefs(principal));
+    }
+
+    if (!principal) {
+        // We can't get hold of the principal for this node. This should happen
+        // very rarely, like for textnodes out of the tree and <option>s created
+        // using 'new Option'.
 
         return PR_TRUE;
     }
@@ -394,6 +290,5 @@ PRBool URIUtils::CanCallerAccess(nsIDOMNode *aNode)
 
     return NS_SUCCEEDED(rv);
 }
-
 
 #endif /* TX_EXE */

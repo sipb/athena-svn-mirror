@@ -41,7 +41,10 @@
 #ifndef TRANSFRMX_TXSTANDALONEXSLTPROCESSOR_H
 #define TRANSFRMX_TXSTANDALONEXSLTPROCESSOR_H
 
-#include "XSLTProcessor.h"
+#include "txStylesheet.h"
+#include "txXSLTProcessor.h"
+#include "ErrorObserver.h"
+
 #ifndef __BORLANDC__
 #include <iostream.h>
 #include <fstream.h>
@@ -93,7 +96,8 @@ public:
      * @param aErr     error observer
      * @result NS_OK if transformation was successful
      */
-    nsresult transform(String& aXMLPath, ostream& aOut, ErrorObserver& aErr);
+    nsresult transform(nsACString& aXMLPath, ostream& aOut,
+                       ErrorObserver& aErr);
 
     /**
      * Transform a XML document given by path with the given
@@ -105,8 +109,8 @@ public:
      * @param aErr     error observer
      * @result NS_OK if transformation was successful
      */
-    nsresult transform(String& aXMLPath, String& aXSLPath, ostream& aOut,
-                       ErrorObserver& aErr);
+    nsresult transform(nsACString& aXMLPath, nsACString& aXSLPath,
+                       ostream& aOut, ErrorObserver& aErr);
 
     /**
      * Transform a XML document.
@@ -129,7 +133,7 @@ public:
      * @param aErr     error observer
      * @result NS_OK if transformation was successful
      */
-    nsresult transform(Document* aXMLDoc, Node* aXSLNode,
+    nsresult transform(Document* aXMLDoc, txStylesheet* aXSLNode,
                        ostream& aOut, ErrorObserver& aErr);
 
 protected:
@@ -140,14 +144,14 @@ protected:
      * added to the given href argument. If multiple text/xsl stylesheet PIs
      * are found, the one closest to the end of the document is used.
      */
-    static void getHrefFromStylesheetPI(Document& xmlDocument, String& href);
+    static void getHrefFromStylesheetPI(Document& xmlDocument, nsAString& href);
 
     /**
      * Parses the contents of data, returns the type and href psuedo attributes
      */
-    static void parseStylesheetPI(String& data,
-                           String& type,
-                           String& href);
+    static void parseStylesheetPI(const nsAFlatString& data,
+                                  nsAString& type,
+                                  nsAString& href);
 
     /**
      * Create a Document from a path.
@@ -156,7 +160,7 @@ protected:
      * @param aErr  ErrorObserver
      * @result Document XML Document, or null on error
      */
-    static Document* parsePath(const String& aPath, ErrorObserver& aErr);
+    static Document* parsePath(const nsACString& aPath, ErrorObserver& aErr);
 };
 
 #endif

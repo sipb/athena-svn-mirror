@@ -33,8 +33,8 @@
  *
  */
 
-const __vnk_version        = "0.9.39";
-const __vnk_requiredLocale = "0.9.x";
+const __vnk_version        = "0.9.75";
+const __vnk_requiredLocale = "0.9.51+";
 var   __vnk_versionSuffix  = "";
 
 const __vnk_counter_url = 
@@ -70,6 +70,8 @@ const LINE_BREAK     = 0x02;
 const LINE_FBREAK    = 0x04;
 
 var console = new Object();
+
+console.initialized = false;
 
 /* |this|less functions */
 
@@ -229,7 +231,7 @@ function dispatch (text, e, flags)
                          MT_ERROR);
                 display (formatException(ex), MT_ERROR);
                 dd (formatException(ex), MT_ERROR);
-                if ("stack" in ex)
+                if (typeof ex == "object" && "stack" in ex)
                     dd (ex.stack);
             }
             break;
@@ -280,6 +282,8 @@ function dispatchCommand (command, e, flags)
                     dd (getMsg(MSN_ERR_INTERNAL_HOOK, h));
                 }
 
+                dd ("Caught exception calling " +
+                    (isBefore ? "before" : "after") + " hook " + h);
                 dd (formatException(ex));
                 if (typeof ex == "object" && "stack" in ex)
                     dd (ex.stack);
@@ -529,10 +533,13 @@ function init()
     };    
 
     disableDebugCommands();
-    
+
     initDebugger();
     initProfiler();
 
+    // read prefs that have not been explicitly created, such as the layout prefs
+    console.prefManager.readPrefs();
+    
     fetchLaunchCount();
     
     console.sourceText = new HelpText();
@@ -548,19 +555,17 @@ function init()
 
     for (i = 0; i < startupMsgs.length; ++i)
         display (startupMsgs[i][0], startupMsgs[i][1]);
-    
+
     display (getMsg(MSN_TIP1_HELP, 
                     console.prefs["sessionView.requireSlash"] ? "/" : ""));
     display (MSG_TIP2_HELP);
     if (console.prefs["sessionView.requireSlash"])
         display (MSG_TIP3_HELP);
 
-    //if (console.prefs["sessionView.requireSlash"])
-    //    display (MSG_SLASH_REQUIRED, MT_ATTENTION);
-    //dispatch ("commands");
-    //dispatch ("help");
-
-    dispatch ("pprint", { toggle: console.prefs["prettyprint"] });
+    if (console.prefs["rememberPrettyprint"])
+        dispatch ("pprint", { toggle: console.prefs["prettyprint"] });
+    else
+        dispatch ("pprint", { toggle: false });
 
     if (MSG_LOCALE_VERSION != __vnk_requiredLocale)
     {
@@ -570,6 +575,13 @@ function init()
     }
 
     console.initialized = true;
+
+    if (console.prefs["saveSettingsOnExit"])
+    {
+        dispatch ("restore-settings",
+                  {settingsFile: console.prefs["settingsFile"]});
+    }
+
     dispatch ("hook-venkman-started");
 
     dd ("}");
@@ -580,11 +592,18 @@ function destroy ()
     if (console.prefs["saveLayoutOnExit"])
         dispatch ("save-layout default");
 
+    if (console.prefs["saveSettingsOnExit"])
+    {
+        dispatch ("save-settings",
+                  {settingsFile: console.prefs["settingsFile"]});
+    }
+
     delete console.currentEvalObject;
     delete console.jsdConsole;
 
     destroyViews();
     destroyHandlers();
+    destroyPrefs();
     detachDebugger();
 }
 
@@ -623,14 +642,16 @@ function fetchLaunchCount()
     {
         var ary = String(r.responseText).match(/(\d+)/);
         if (ary)
+        {
             display (getMsg(MSN_LAUNCH_COUNT,
                             [console.prefs["startupCount"], ary[1]]));
+        }
     };
     
     var r = new XMLHttpRequest();
     r.onload = onLoad;
     r.open ("GET",
-            __vnk_counter_url + "?local=" +  console.prefs["startupCount"] +
+            __vnk_counter_url + "?local=" + console.prefs["startupCount"] +
             "&version=" + __vnk_version);
     r.send (null);
 }
@@ -643,7 +664,6 @@ function con_ua ()
     {
         return ("Venkman " + __vnk_version + __vnk_versionSuffix + 
                 " [Mozilla " + ary[1] + "/" + ary[2] + "]");
-        
     }
 
     return ("Venkman " + __vnk_version + __vnk_versionSuffix + " [" + 
@@ -672,7 +692,7 @@ function hookScriptSealed (e)
     for (var fbp in console.fbreaks)
     {
         if (console.fbreaks[fbp].enabled &&
-            e.scriptInstance.url.search(console.fbreaks[fbp].url) != -1)
+            e.scriptInstance.url.indexOf(console.fbreaks[fbp].url) != -1)
         {
             e.scriptInstance.setBreakpoint(console.fbreaks[fbp].lineNumber,
                                            console.fbreaks[fbp]);
@@ -707,7 +727,7 @@ function hookDebugStop (e)
     enableDebugCommands();
 
     //XXX
-    paintHack();
+    //paintHack();
 }
 
 console.hooks["hook-venkman-query-exit"] =
@@ -938,6 +958,22 @@ function SourceText (scriptInstance)
     this.shortName = abbreviateWord(getFileFromPath (this.url), 30);
 }
 
+SourceText.prototype.noteFutureBreakpoint =
+function st_notefbreak(line, state)
+{
+    if (!ASSERT(!("scriptInstance" in this),
+                "Don't call noteFutureBreakpoint on a SourceText with a " +
+                "scriptInstance, use the scriptManager instead."))
+    {
+        return;
+    }
+    
+    if (state)
+        arrayOrFlag (this.lineMap, line - 1, LINE_FBREAK);
+    else
+        arrayAndFlag (this.lineMap, line - 1, ~LINE_FBREAK);
+}
+
 SourceText.prototype.onMarginClick =
 function st_marginclick (e, line)
 {
@@ -945,7 +981,15 @@ function st_marginclick (e, line)
     
     if (!("scriptInstance" in this))
     {
-        dispatch ("fbreak", { url: this.url, line: line });
+        if (getFutureBreakpoint(this.url, line))
+        {
+            clearFutureBreakpoint(this.url, line);
+        }
+        else
+        {
+            setFutureBreakpoint(this.url, line);
+            //dispatch ("fbreak", { urlPattern: this.url, lineNumber: line });
+        }
     }
     else
     {
@@ -986,13 +1030,14 @@ function st_reloadsrc (cb)
     this.isLoaded = false;
     this.lines = new Array();
     delete this.markup;
+    delete this.charset;
     this.loadSource(reloadCB);
 }
 
 SourceText.prototype.onSourceLoaded =
 function st_oncomplete (data, url, status)
 {
-    dd ("source loaded " + url + ", " + status);
+    //dd ("source loaded " + url + ", " + status);
     
     var sourceText = this;
     
@@ -1017,35 +1062,75 @@ function st_oncomplete (data, url, status)
 
     if (!ASSERT(data, "loadSource succeeded but got no data"))
         data = "";
+
+    var matchResult;
     
-    var ary = data.split(/\r\n|\n|\r/m);
-    for (var i = 0; i < ary.length; ++i)
+    // search for xml charset
+    if (data.substring(0, 5) == "<?xml" && !("charset" in this))
     {
-        /*
-         * The replace() strips control characters, we leave the tabs in
-         * so we can expand them to a per-file width before actually
-         * displaying them.
-         */
-        ary[i] = ary[i].replace(/[\x00-\x08]|[\x0A-\x1F]/g, "?");
-        if (!("charset" in this))
-        {
-            var matchResult =
-                ary[i].match(/meta.*http-equiv.*content-type.*charset=([^\;\"]+)/i);
-            if (matchResult)
-                this.charset = matchResult[1];
-        }
+        var s = data.substring(6, data.indexOf("?>"));
+        matchResult = s.match(/encoding\s*=\s*([\"\'])([^\"\'\s]+)\1/i);
+        if (matchResult)
+            this.charset = matchResult[2];
     }
 
+    // kill control characters, except \t, \r, and \n
+    data = data.replace(/[\x00-\x08]|[\x0B\x0C]|[\x0E-\x1F]/g, "?");
+
+    // check for a html style charset declaration
+    if (!("charset" in this))
+    {
+        matchResult =
+            data.match(/meta\s+http-equiv.*content-type.*charset\s*=\s*([^\;\"\'\s]+)/i);
+        if (matchResult)
+            this.charset = matchResult[1];
+    }
+
+    // look for an emacs mode line
+    matchResult = data.match (/-\*-.*tab-width\:\s*(\d+).*-\*-/);
+    if (matchResult)
+        this.tabWidth = matchResult[1];
+
+    // replace tabs
+    data = data.replace(/\x09/g, leftPadString ("", this.tabWidth, " "));
+    
+    var ary = data.split(/\r\n|\n|\r/m);        
+
+    if (0)
+    {
+        for (var i = 0; i < ary.length; ++i)
+        {
+            /*
+             * The replace() strips control characters, we leave the tabs in
+             * so we can expand them to a per-file width before actually
+             * displaying them.
+             */
+            ary[i] = ary[i].replace(/[\x00-\x08]|[\x0A-\x1F]/g, "?");
+            if (!("charset" in this))
+            {
+                matchResult = ary[i].match(charsetRE);
+                if (matchResult)
+                    this.charset = matchResult[1];
+            }
+        }
+    }
+    
     this.lines = ary;
 
-    ary = ary[0].match (/tab-?width*:\s*(\d+)/i);
-    if (ary)
-        this.tabWidth = ary[1];
-    
     if ("scriptInstance" in this)
     {
         this.scriptInstance.guessFunctionNames(sourceText);
         this.lineMap = this.scriptInstance.lineMap;
+    }
+    else
+    {
+        this.lineMap = new Array();
+        for (var fbp in console.fbreaks)
+        {
+            var fbreak = console.fbreaks[fbp];
+            if (fbreak.url == this.url)
+                arrayOrFlag (this.lineMap, fbreak.lineNumber - 1, LINE_FBREAK);
+        }
     }
 
     this.isLoaded = true;

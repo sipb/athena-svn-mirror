@@ -27,10 +27,12 @@ VPATH		= @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 MODULE		= oji
+GRE_MODULE	= 1
 
 XPIDLSRCS	= \
 		nsIJVMManager.idl \
 		nsIJVMPluginInstance.idl \
+		nsIJVMAuthTools.idl \
 		$(NULL)
 
 EXPORTS		= \

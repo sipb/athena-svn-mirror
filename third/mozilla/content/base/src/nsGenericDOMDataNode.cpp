@@ -69,7 +69,6 @@ nsGenericDOMDataNode::Shutdown()
 nsGenericDOMDataNode::nsGenericDOMDataNode()
   : mText(), mDocument(nsnull), mParentPtrBits(0)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsGenericDOMDataNode::~nsGenericDOMDataNode()
@@ -94,6 +93,11 @@ NS_INTERFACE_MAP_BEGIN(nsGenericDOMDataNode)
   if (aIID.Equals(NS_GET_IID(nsIDOMEventReceiver)) ||
       aIID.Equals(NS_GET_IID(nsIDOMEventTarget))) {
     foundInterface = NS_STATIC_CAST(nsIDOMEventReceiver *,
+                                    nsDOMEventRTTearoff::Create(this));
+    NS_ENSURE_TRUE(foundInterface, NS_ERROR_OUT_OF_MEMORY);
+  } else
+  if (aIID.Equals(NS_GET_IID(nsIDOM3EventTarget))) {
+    foundInterface = NS_STATIC_CAST(nsIDOM3EventTarget *,
                                     nsDOMEventRTTearoff::Create(this));
     NS_ENSURE_TRUE(foundInterface, NS_ERROR_OUT_OF_MEMORY);
   } else
@@ -648,11 +652,9 @@ nsGenericDOMDataNode::SetDocument(nsIDocument* aDocument, PRBool aDeep,
 {
   mDocument = aDocument;
 
-#ifdef IBMBIDI
   if (mDocument && mText.IsBidi()) {
     mDocument->SetBidiEnabled(PR_TRUE);
   }
-#endif
 
   return NS_OK;
 }
@@ -788,21 +790,22 @@ nsGenericDOMDataNode::HandleDOMEvent(nsIPresContext* aPresContext,
       externalDOMEvent = PR_TRUE;
     }
 
-    aEvent->flags = aFlags;
+    aEvent->flags |= aFlags;
     aFlags &= ~(NS_EVENT_FLAG_CANT_BUBBLE | NS_EVENT_FLAG_CANT_CANCEL);
+    aFlags |= NS_EVENT_FLAG_BUBBLE | NS_EVENT_FLAG_CAPTURE;
   }
 
   nsIContent *parent_weak = GetParentWeak();
 
   //Capturing stage evaluation
-  if (NS_EVENT_FLAG_BUBBLE != aFlags) {
+  if (NS_EVENT_FLAG_CAPTURE & aFlags) {
     //Initiate capturing phase.  Special case first call to document
     if (parent_weak) {
       parent_weak->HandleDOMEvent(aPresContext, aEvent, aDOMEvent,
-                                  NS_EVENT_FLAG_CAPTURE, aEventStatus);
+                                  aFlags & NS_EVENT_CAPTURE_MASK, aEventStatus);
     } else if (mDocument) {
       ret = mDocument->HandleDOMEvent(aPresContext, aEvent, aDOMEvent,
-                                      NS_EVENT_FLAG_CAPTURE, aEventStatus);
+                                      aFlags & NS_EVENT_CAPTURE_MASK, aEventStatus);
     }
   }
 
@@ -810,10 +813,12 @@ nsGenericDOMDataNode::HandleDOMEvent(nsIPresContext* aPresContext,
   LookupListenerManager(getter_AddRefs(listener_manager));
 
   //Local handling stage
-  if (listener_manager && !(aEvent->flags & NS_EVENT_FLAG_STOP_DISPATCH) &&
-      !(NS_EVENT_FLAG_BUBBLE & aFlags &&
-        NS_EVENT_FLAG_CANT_BUBBLE & aEvent->flags)
-      && !(aEvent->flags & NS_EVENT_FLAG_NO_CONTENT_DISPATCH)) {
+  //Check for null ELM, check if we're a non-bubbling event in the bubbling state (bubbling state
+  //is indicated by the presence of the NS_EVENT_FLAG_BUBBLE flag and not the NS_EVENT_FLAG_INIT), and check 
+  //if we're a no content dispatch event
+  if (listener_manager &&
+       !(NS_EVENT_FLAG_CANT_BUBBLE & aEvent->flags && NS_EVENT_FLAG_BUBBLE & aFlags && !(NS_EVENT_FLAG_INIT & aFlags)) &&
+       !(aEvent->flags & NS_EVENT_FLAG_NO_CONTENT_DISPATCH)) {
     aEvent->flags |= aFlags;
     listener_manager->HandleEvent(aPresContext, aEvent, aDOMEvent, nsnull,
                                   aFlags, aEventStatus);
@@ -821,9 +826,9 @@ nsGenericDOMDataNode::HandleDOMEvent(nsIPresContext* aPresContext,
   }
 
   //Bubbling stage
-  if (NS_EVENT_FLAG_CAPTURE != aFlags && parent_weak) {
+  if (NS_EVENT_FLAG_BUBBLE & aFlags && parent_weak) {
     ret = parent_weak->HandleDOMEvent(aPresContext, aEvent, aDOMEvent,
-                                      NS_EVENT_FLAG_BUBBLE, aEventStatus);
+                                      aFlags & NS_EVENT_BUBBLE_MASK, aEventStatus);
   }
 
   if (NS_EVENT_FLAG_INIT & aFlags) {
@@ -1062,18 +1067,6 @@ nsGenericDOMDataNode::DumpContent(FILE* out, PRInt32 aIndent,
 {
   return NS_OK;
 }
-
-NS_IMETHODIMP
-nsGenericDOMDataNode::SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const
-{
-  if (!aResult) {
-    return NS_ERROR_NULL_POINTER;
-  }
-  PRUint32 sum = sizeof(*this);
-  sum += mText.GetLength() * (mText.Is2b() ? sizeof(PRUnichar) : sizeof(char));
-  *aResult = sum;
-  return NS_OK;
-}
 #endif
 
 //----------------------------------------------------------------------
@@ -1138,7 +1131,7 @@ nsGenericDOMDataNode::SplitText(PRUint32 aOffset, nsIDOMText** aReturn)
     }
   }
 
-  return newNode->QueryInterface(NS_GET_IID(nsIDOMText), (void**)aReturn);
+  return CallQueryInterface(newNode, aReturn);
 }
 
 //----------------------------------------------------------------------
@@ -1199,9 +1192,7 @@ nsGenericDOMDataNode::SetText(const PRUnichar* aBuffer,
 
   mText.SetTo(aBuffer, aLength);
 
-#ifdef IBMBIDI
   SetBidiStatus();
-#endif // IBMBIDI
 
   if (mDocument && nsGenericElement::HasMutationListeners(this, NS_EVENT_BITS_MUTATION_CHARACTERDATAMODIFIED)) {
     nsCOMPtr<nsIDOMEventTarget> node(do_QueryInterface(this));
@@ -1213,7 +1204,7 @@ nsGenericDOMDataNode::SetText(const PRUnichar* aBuffer,
     // XXX Handle the setting of prevValue!
     nsAutoString newVal(aBuffer);
     if (!newVal.IsEmpty())
-      mutation.mNewAttrValue = getter_AddRefs(NS_NewAtom(newVal));
+      mutation.mNewAttrValue = do_GetAtom(newVal);
     nsEventStatus status = nsEventStatus_eIgnore;
     HandleDOMEvent(nsnull, &mutation, nsnull,
                    NS_EVENT_FLAG_INIT, &status);
@@ -1255,7 +1246,7 @@ nsGenericDOMDataNode::SetText(const char* aBuffer, PRInt32 aLength,
     // XXX Handle the setting of prevValue!
     nsAutoString newVal; newVal.AssignWithConversion(aBuffer);
     if (!newVal.IsEmpty())
-      mutation.mNewAttrValue = getter_AddRefs(NS_NewAtom(newVal));
+      mutation.mNewAttrValue = do_GetAtom(newVal);
     nsEventStatus status = nsEventStatus_eIgnore;
     HandleDOMEvent(nsnull, &mutation, nsnull,
                    NS_EVENT_FLAG_INIT, &status);
@@ -1280,9 +1271,7 @@ nsGenericDOMDataNode::SetText(const nsAString& aStr,
 
   mText = aStr;
 
-#ifdef IBMBIDI
   SetBidiStatus();
-#endif // IBMBIDI
 
   if (mDocument && nsGenericElement::HasMutationListeners(this, NS_EVENT_BITS_MUTATION_CHARACTERDATAMODIFIED)) {
     nsCOMPtr<nsIDOMEventTarget> node(do_QueryInterface(this));
@@ -1294,7 +1283,7 @@ nsGenericDOMDataNode::SetText(const nsAString& aStr,
     // XXX Handle the setting of prevValue!
     nsAutoString newVal(aStr);
     if (!newVal.IsEmpty())
-      mutation.mNewAttrValue = getter_AddRefs(NS_NewAtom(newVal));
+      mutation.mNewAttrValue = do_GetAtom(newVal);
     nsEventStatus status = nsEventStatus_eIgnore;
     HandleDOMEvent(nsnull, &mutation, nsnull,
                    NS_EVENT_FLAG_INIT, &status);
@@ -1397,7 +1386,6 @@ nsGenericDOMDataNode::LookupRangeList() const
   return nsnull;
 }
 
-#ifdef IBMBIDI
 void nsGenericDOMDataNode::SetBidiStatus()
 {
   if (mDocument) {
@@ -1418,4 +1406,3 @@ void nsGenericDOMDataNode::SetBidiStatus()
     mDocument->SetBidiEnabled(PR_TRUE);
   }
 }
-#endif // IBMBIDI

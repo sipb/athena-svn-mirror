@@ -37,29 +37,24 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-#include "nsAccessible.h"
 #include "nsBaseWidgetAccessible.h"
-#include "nsCOMPtr.h"
+#include "nsIAccessibilityService.h"
+#include "nsAccessibleWrap.h"
 #include "nsGUIEvent.h"
-#include "nsIContent.h"
-#include "nsIDOMElement.h"
-#include "nsIDOMEventReceiver.h"
-#include "nsIFrame.h"
 #include "nsILink.h"
 #include "nsIPresContext.h"
 #include "nsIPresShell.h"
-#include "nsISelection.h"
-#include "nsISelectionController.h"
 #include "nsIServiceManager.h"
-#include "nsIAccessibilityService.h"
 
 // ------------
 // nsBlockAccessible
 // ------------
 
-nsBlockAccessible::nsBlockAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell):nsAccessible(aNode, aShell)
+nsBlockAccessible::nsBlockAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell):nsAccessibleWrap(aNode, aShell)
 {
 }
+
+NS_IMPL_ISUPPORTS_INHERITED0(nsBlockAccessible, nsAccessible)
 
 /* nsIAccessible accGetAt (in long x, in long y); */
 NS_IMETHODIMP nsBlockAccessible::AccGetAt(PRInt32 tx, PRInt32 ty, nsIAccessible **_retval)
@@ -120,9 +115,11 @@ NS_IMETHODIMP nsBlockAccessible::AccGetAt(PRInt32 tx, PRInt32 ty, nsIAccessible 
   * nsContainerAccessible
   */
 nsContainerAccessible::nsContainerAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell):
-nsAccessible(aNode, aShell)
+nsAccessibleWrap(aNode, aShell)
 {
 }
+
+NS_IMPL_ISUPPORTS_INHERITED0(nsContainerAccessible, nsAccessible)
 
 /** no actions */
 NS_IMETHODIMP nsContainerAccessible::GetAccNumActions(PRUint8 *_retval)
@@ -168,9 +165,11 @@ NS_IMETHODIMP nsContainerAccessible::GetAccName(nsAString& _retval)
 //-------------
 
 nsLeafAccessible::nsLeafAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell):
-nsAccessible(aNode, aShell)
+nsAccessibleWrap(aNode, aShell)
 {
 }
+
+NS_IMPL_ISUPPORTS_INHERITED0(nsLeafAccessible, nsAccessible)
 
 /* nsIAccessible getAccFirstChild (); */
 NS_IMETHODIMP nsLeafAccessible::GetAccFirstChild(nsIAccessible **_retval)
@@ -198,62 +197,35 @@ NS_IMETHODIMP nsLeafAccessible::GetAccChildCount(PRInt32 *_retval)
 // nsLinkableAccessible
 //----------------
 
-nsLinkableAccessible::nsLinkableAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell):
-nsAccessible(aNode, aShell), mIsALinkCached(PR_FALSE), mLinkContent(nsnull), mIsLinkVisited(PR_FALSE)
+nsLinkableAccessible::nsLinkableAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell) :
+  nsAccessibleWrap(aNode, aShell),
+  mLinkContent(nsnull),
+  mIsALinkCached(PR_FALSE),
+  mIsLinkVisited(PR_FALSE)
 { 
 }
+
+NS_IMPL_ISUPPORTS_INHERITED0(nsLinkableAccessible, nsAccessible)
 
 NS_IMETHODIMP nsLinkableAccessible::AccTakeFocus()
 { 
   if (IsALink()) {
-    nsCOMPtr<nsIPresShell> shell(do_QueryReferent(mPresShell));
-    if (!shell)
-      return NS_ERROR_FAILURE;  
-    nsCOMPtr<nsIPresContext> context;
-    shell->GetPresContext(getter_AddRefs(context));
-    mLinkContent->SetFocus(context);
+    mLinkContent->SetFocus(nsCOMPtr<nsIPresContext>(GetPresContext()));
   }
   
   return NS_OK;
 }
 
 /* long GetAccState (); */
-NS_IMETHODIMP nsLinkableAccessible::GetAccState(PRUint32 *_retval)
+NS_IMETHODIMP nsLinkableAccessible::GetAccState(PRUint32 *aState)
 {
-  nsAccessible::GetAccState(_retval);
-  *_retval |= STATE_READONLY | STATE_SELECTABLE;
+  nsAccessible::GetAccState(aState);
   if (IsALink()) {
-    *_retval |= STATE_LINKED;
+    *aState |= STATE_LINKED;
     if (mIsLinkVisited)
-      *_retval |= STATE_TRAVERSED;
+      *aState |= STATE_TRAVERSED;
   }
   
-  // Get current selection and find out if current node is in it
-  nsCOMPtr<nsIPresShell> shell(do_QueryReferent(mPresShell));
-  if (!shell) {
-     return NS_ERROR_FAILURE;  
-  }
-
-  nsCOMPtr<nsIPresContext> context;
-  shell->GetPresContext(getter_AddRefs(context));
-  nsCOMPtr<nsIContent> content(do_QueryInterface(mDOMNode));
-  nsIFrame *frame = nsnull;
-  if (content && NS_SUCCEEDED(shell->GetPrimaryFrameFor(content, &frame)) && frame) {
-    nsCOMPtr<nsISelectionController> selCon;
-    frame->GetSelectionController(context,getter_AddRefs(selCon));
-    if (selCon) {
-      nsCOMPtr<nsISelection> domSel;
-      selCon->GetSelection(nsISelectionController::SELECTION_NORMAL, getter_AddRefs(domSel));
-      if (domSel) {
-        PRBool isSelected = PR_FALSE, isCollapsed = PR_TRUE;
-        domSel->ContainsNode(mDOMNode, PR_TRUE, &isSelected);
-        domSel->GetIsCollapsed(&isCollapsed);
-        if (isSelected && !isCollapsed)
-          *_retval |=STATE_SELECTED;
-      }
-    }
-  }
-
   if (IsALink()) {
     // Make sure we also include all the states of the parent link, such as focusable, focused, etc.
     PRUint32 role;
@@ -264,11 +236,19 @@ NS_IMETHODIMP nsLinkableAccessible::GetAccState(PRUint32 *_retval)
       if (parentAccessible) {
         PRUint32 orState = 0;
         parentAccessible->GetAccState(&orState);
-        *_retval |= orState;
+        *aState |= orState;
       }
     }
   }
 
+  nsCOMPtr<nsIAccessibleDocument> docAccessible(GetDocAccessible());
+  if (docAccessible) {
+    PRBool isEditable;
+    docAccessible->GetIsEditable(&isEditable);
+    if (isEditable) {
+      *aState &= ~(STATE_FOCUSED | STATE_FOCUSABLE); // Links not focusable in editor
+    }
+  }
   return NS_OK;
 }
 
@@ -277,7 +257,7 @@ NS_IMETHODIMP nsLinkableAccessible::GetAccValue(nsAString& _retval)
 {
   if (IsALink()) {
     nsCOMPtr<nsIDOMNode> linkNode(do_QueryInterface(mLinkContent));
-    nsCOMPtr<nsIPresShell> presShell(do_QueryReferent(mPresShell));
+    nsCOMPtr<nsIPresShell> presShell(do_QueryReferent(mWeakShell));
     if (linkNode && presShell)
       return presShell->GetLinkLocation(linkNode, _retval);
   }
@@ -312,12 +292,7 @@ NS_IMETHODIMP nsLinkableAccessible::AccDoAction(PRUint8 index)
   // Action 0 (default action): Jump to link
   if (index == eAction_Jump) {
     if (IsALink()) {
-      nsCOMPtr<nsIPresShell> shell(do_QueryReferent(mPresShell));
-      if (!shell)
-        return NS_ERROR_FAILURE;  
-
-      nsCOMPtr<nsIPresContext> presContext;
-      shell->GetPresContext(getter_AddRefs(presContext));
+      nsCOMPtr<nsIPresContext> presContext(GetPresContext());
       if (presContext) {
         nsMouseEvent linkClickEvent;
         linkClickEvent.eventStructType = NS_EVENT;
@@ -345,13 +320,18 @@ NS_IMETHODIMP nsLinkableAccessible::AccDoAction(PRUint8 index)
 NS_IMETHODIMP nsLinkableAccessible::GetAccKeyboardShortcut(nsAString& _retval)
 {
   if (IsALink()) {
+    nsresult rv;
     nsCOMPtr<nsIDOMNode> linkNode(do_QueryInterface(mLinkContent));
     if (linkNode && mDOMNode != linkNode) {
       nsCOMPtr<nsIAccessible> linkAccessible;
       nsCOMPtr<nsIAccessibilityService> accService = 
         do_GetService("@mozilla.org/accessibilityService;1");
-      accService->GetAccessibleFor(linkNode, getter_AddRefs(linkAccessible));
-      return linkAccessible->GetAccKeyboardShortcut(_retval);
+      rv = accService->GetAccessibleInWeakShell(linkNode, mWeakShell,
+                                                getter_AddRefs(linkAccessible));
+      if (NS_SUCCEEDED(rv) && linkAccessible)
+        return linkAccessible->GetAccKeyboardShortcut(_retval);
+      else
+        return rv;
     }
   }
   return nsAccessible::GetAccKeyboardShortcut(_retval);;
@@ -384,72 +364,8 @@ PRBool nsLinkableAccessible::IsALink()
   return PR_FALSE;
 }
 
-// ------------
-// nsMenuListenerAccessible
-// ------------
-
-NS_IMPL_ISUPPORTS_INHERITED1(nsMenuListenerAccessible, nsAccessible, nsIDOMXULListener)
-
-nsMenuListenerAccessible::nsMenuListenerAccessible(nsIDOMNode* aDOMNode, nsIWeakReference* aShell):
-nsAccessible(aDOMNode, aShell)
+NS_IMETHODIMP nsLinkableAccessible::Shutdown()
 {
-  mRegistered = PR_FALSE;
-  mOpen = PR_FALSE;
+  mLinkContent = nsnull;
+  return nsAccessibleWrap::Shutdown();
 }
-
-nsMenuListenerAccessible::~nsMenuListenerAccessible()
-{
-  if (mRegistered) {
-     nsCOMPtr<nsIDOMEventReceiver> eventReceiver(do_QueryInterface(mDOMNode));
-     if (eventReceiver) 
-       eventReceiver->RemoveEventListener(NS_LITERAL_STRING("popupshowing"), this, PR_TRUE);   
-  }
-}
-
-NS_IMETHODIMP nsMenuListenerAccessible::PopupShowing(nsIDOMEvent* aEvent)
-{ 
-  mOpen = PR_TRUE;
-
-  /* TBD send state change event */ 
-
-  return NS_OK; 
-}
-
-NS_IMETHODIMP nsMenuListenerAccessible::PopupHiding(nsIDOMEvent* aEvent)
-{ 
-  mOpen = PR_FALSE;
-
-  /* TBD send state change event */ 
-
-  return NS_OK; 
-}
-
-NS_IMETHODIMP nsMenuListenerAccessible::Close(nsIDOMEvent* aEvent)
-{ 
-  mOpen = PR_FALSE;
-
-  /* TBD send state change event */ 
-
-  return NS_OK; 
-}
-
-void
-nsMenuListenerAccessible::SetupMenuListener()
-{
-  // if not already one, register ourselves as a popup listener
-  if (!mRegistered) {
-     nsCOMPtr<nsIDOMEventReceiver> eventReceiver(do_QueryInterface(mDOMNode));
-     if (!eventReceiver) {
-       return;
-     }
-
-     nsresult rv = eventReceiver->AddEventListener(NS_LITERAL_STRING("popupshowing"), this, PR_TRUE);   
-
-     if (NS_FAILED(rv)) {
-       return;
-     }
-
-     mRegistered = PR_TRUE;
-  }
-}
-

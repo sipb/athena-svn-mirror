@@ -44,7 +44,6 @@
 #include "nsICSSImportRule.h"
 
 class nsIAtom;
-class nsString;
 class nsIURI;
 class nsICSSParser;
 class nsICSSStyleSheet;
@@ -77,17 +76,18 @@ public:
                           nsICSSParser** aParser) = 0;
   NS_IMETHOD RecycleParser(nsICSSParser* aParser) = 0;
 
+  // XXX No one uses the aDefaultNameSpaceID params.... do we need them?
+  
   // Load an inline style sheet
   // - if aCompleted is PR_TRUE, the sheet is fully loaded, don't
   //   block for it.
   // - if aCompleted is PR_FALSE, the sheet is still loading and 
-  //   will be inserted in the document when complete
+  //   will be marked complete when complete
   NS_IMETHOD LoadInlineStyle(nsIContent* aElement,
-                             nsIUnicharInputStream* aIn, 
-                             const nsString& aTitle, 
-                             const nsString& aMedia, 
+                             nsIUnicharInputStream* aStream, 
+                             const nsAString& aTitle, 
+                             const nsAString& aMedia, 
                              PRInt32 aDefaultNameSpaceID,
-                             PRInt32 aDocIndex,
                              nsIParser* aParserToUnblock,
                              PRBool& aCompleted,
                              nsICSSLoaderObserver* aObserver) = 0;
@@ -96,13 +96,12 @@ public:
   // - if aCompleted is PR_TRUE, the sheet is fully loaded, don't
   //   block for it.
   // - if aCompleted is PR_FALSE, the sheet is still loading and 
-  //   will be inserted in the document when complete
+  //   will be marked complete when complete
   NS_IMETHOD LoadStyleLink(nsIContent* aElement,
                            nsIURI* aURL, 
-                           const nsString& aTitle, 
-                           const nsString& aMedia, 
+                           const nsAString& aTitle, 
+                           const nsAString& aMedia, 
                            PRInt32 aDefaultNameSpaceID,
-                           PRInt32 aDocIndex,
                            nsIParser* aParserToUnblock,
                            PRBool& aCompleted,
                            nsICSSLoaderObserver* aObserver) = 0;
@@ -110,20 +109,17 @@ public:
   // Load a child style sheet (@import)
   NS_IMETHOD LoadChildSheet(nsICSSStyleSheet* aParentSheet,
                             nsIURI* aURL, 
-                            const nsString& aMedia,
+                            const nsAString& aMedia,
                             PRInt32 aDefaultNameSpaceID,
-                            PRInt32 aSheetIndex,
                             nsICSSImportRule* aRule) = 0;
 
-  // Load a user agent or user sheet immediately
-  // (note that @imports mayl come in asynchronously)
-  // - if aCompleted is PR_TRUE, the sheet is fully loaded
-  // - if aCompleted is PR_FALSE, the sheet is still loading and 
-  //   aCAllback will be called when the sheet is complete
-  NS_IMETHOD LoadAgentSheet(nsIURI* aURL, 
-                            nsICSSStyleSheet*& aSheet,
-                            PRBool& aCompleted,
-                            nsICSSLoaderObserver* aObserver) = 0;
+  // Load a user agent or user sheet.  The sheet is loaded
+  // synchronously, including @imports from it.
+  NS_IMETHOD LoadAgentSheet(nsIURI* aURL, nsICSSStyleSheet** aSheet) = 0;
+
+  // Load a user agent or user sheet.  The sheet is loaded
+  // asynchronously and the observer notified when the load finishes.
+  NS_IMETHOD LoadAgentSheet(nsIURI* aURL, nsICSSLoaderObserver* aObserver) = 0;
 
   // stop loading all sheets
   NS_IMETHOD Stop(void) = 0;
@@ -142,10 +138,10 @@ public:
   NS_IMETHOD SetEnabled(PRBool aEnabled) = 0;
 };
 
-extern NS_EXPORT nsresult 
+nsresult 
 NS_NewCSSLoader(nsIDocument* aDocument, nsICSSLoader** aLoader);
 
-extern NS_EXPORT nsresult 
+nsresult 
 NS_NewCSSLoader(nsICSSLoader** aLoader);
 
 #endif /* nsICSSLoader_h___ */

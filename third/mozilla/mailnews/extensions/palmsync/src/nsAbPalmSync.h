@@ -51,7 +51,7 @@ class nsAbPalmHotSync
 public:
 
     // this class will do HotSync for a specific AB
-    nsAbPalmHotSync(PRBool aIsUnicode, PRUnichar * aAbDescUnicode, char * aAbDesc, PRInt32 aPalmCatID);
+    nsAbPalmHotSync(PRBool aIsUnicode, PRUnichar * aAbDescUnicode, const char * aAbDesc, PRInt32 aPalmCatIndex, PRInt32 aPalmCatId);
     ~nsAbPalmHotSync();
 
     // initialize the object, info for AB for the object, etc
@@ -73,7 +73,16 @@ public:
     nsresult AddAllRecordsInNewAB(PRInt32 aCount, lpnsABCOMCardStruct aPalmRecords);
 
     // this will be called when an AckSyncDone is recieved from the Conduit
-    nsresult Done(PRBool aSuccess, PRInt32 aPalmCatID, PRUint32 aPalmRecIDListCount = 0, unsigned long * aPalmRecordIDList = nsnull);
+    nsresult Done(PRBool aSuccess, PRInt32 aPalmCatIndex, PRUint32 aPalmRecIDListCount = 0, unsigned long * aPalmRecordIDList = nsnull);
+
+    // this will upate AB with new category id and mod time.
+    nsresult UpdateSyncInfo(long aCategoryIndex);
+
+    // this will delete an AB
+    nsresult DeleteAB(long aCategoryIndex, const char * aABUrl);
+
+    // this will rename an AB
+    nsresult RenameAB(long aCategoryIndex, const char * aABUrl);
 
 protected:
 
@@ -86,8 +95,13 @@ protected:
     PRBool   mDBOpen;
     // pref for the AB DB
     nsString     mAbName;
-    DIR_Server * mDirServerInfo;
     PRInt32      mPalmCategoryId;
+    PRInt32      mPalmCategoryIndex;
+    nsCString    mFileName;
+    nsCString    mUri;
+    nsString     mDescription;
+    PRUint32     mDirType;
+    PRUint32     mPalmSyncTimeStamp;
     // cards directory for the AB
     nsCOMPtr<nsIAbDirectory> mDirectory;
 
@@ -127,6 +141,10 @@ protected:
     // utility function
     nsresult AddToListForPalm(nsAbIPCCard & ipcCard);
     void ConvertAssignPalmIDAttrib(PRUint32 id, nsIAbMDBCard * card);
+    nsresult GetABInterface();
+    nsresult UpdateABInfo(PRUint32 modTime, PRInt32 categoryId);
+    nsresult ModifyAB(const char * ABUrl, nsIAbDirectoryProperties *properties);
+    nsresult NewAB(const nsString& aAbName);
 
 };
 

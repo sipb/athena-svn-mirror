@@ -86,7 +86,7 @@ function getReferrer(doc)
   }
 }
 
-function openNewWindowWith(url) 
+function openNewWindowWith(url, sendReferrer) 
 {
   urlSecurityCheck(url, document);
 
@@ -98,20 +98,77 @@ function openNewWindowWith(url)
   if (wintype == "navigator:browser")
     charsetArg = "charset=" + window._content.document.characterSet;
 
-  var referrer = getReferrer(document);
+  var referrer = sendReferrer ? getReferrer(document) : null;
   window.openDialog(getBrowserURL(), "_blank", "chrome,all,dialog=no", url, charsetArg, referrer);
 }
 
-function openNewTabWith(url) 
+function openTopBrowserWith(url)
 {
   urlSecurityCheck(url, document);
-  var browser = getBrowser();
 
-  var referrer = getReferrer(document);
+  var windowMediator = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
+  var browserWin = windowMediator.getMostRecentWindow("navigator:browser");
+
+  // if there's an existing browser window, open this url in one
+  if (browserWin) {
+    browserWin.getBrowser().loadURI(url); // Just do a normal load.
+    browserWin.content.focus();
+  }
+  else
+    window.openDialog(getBrowserURL(), "_blank", "chrome,all,dialog=no", url, null, null);
+}
+
+function openNewTabWith(url, sendReferrer, reverseBackgroundPref) 
+{
+  var browser;
+  try {
+    // if we're running in a browser window, this should work
+    //
+    browser = getBrowser();
+
+  } catch (ex if ex instanceof ReferenceError) {
+
+    // must be running somewhere else (eg mailnews message pane); need to
+    // find a browser window first
+    //
+    var windowMediator =
+      Components.classes["@mozilla.org/appshell/window-mediator;1"]
+      .getService(Components.interfaces.nsIWindowMediator);
+
+    var browserWin = windowMediator.getMostRecentWindow("navigator:browser");
+
+    // if there's no existing browser window, open this url in one, and
+    // return
+    //
+    if (!browserWin) {
+      window.openDialog(getBrowserURL(), "_blank", "chrome,all,dialog=no", 
+                        url, null, referrer);
+      return;
+    }
+
+    // otherwise, get the existing browser object
+    //
+    browser = browserWin.getBrowser();
+  }
+
+  // Get the XUL document that the browser is actually contained in.
+  // This is needed if we are trying to load a URL from a non-navigator
+  // window such as the JS Console.
+  var browserDocument = browser.ownerDocument;
+
+  urlSecurityCheck(url, browserDocument);
+
+  var referrer = sendReferrer ? getReferrer(browserDocument) : null;
+
   var tab = browser.addTab(url, referrer); // open link in new tab
+  if (pref) {
+    var loadInBackground = pref.getBoolPref("browser.tabs.loadInBackground");
+    if (reverseBackgroundPref)
+      loadInBackground = !loadInBackground;
 
-  if (pref && !pref.getBoolPref("browser.tabs.loadInBackground"))
-    browser.selectedTab = tab;
+    if (!loadInBackground)
+      browser.selectedTab = tab;
+  }
 }
 
 function findParentNode(node, parentNode)
@@ -217,8 +274,8 @@ function foundHeaderInfo(aSniffer, aData)
   fp.init(window, bundle.GetStringFromName(titleKey), 
           Components.interfaces.nsIFilePicker.modeSave);
 
-
-  var isDocument = aData.document != null && isDocumentType(contentType);
+  var saveMode = GetSaveModeForContentType(contentType);
+  var isDocument = aData.document != null && saveMode;
   if (!isDocument && !shouldDecode && contentEncodingType) {
     // The data is encoded, we are not going to decode it, and this is not a
     // document save so we won't be doing a "save as, complete" (which would
@@ -227,9 +284,9 @@ function foundHeaderInfo(aSniffer, aData)
     // right.
     contentType = contentEncodingType;
   }
-    
+
   appendFiltersForContentType(fp, contentType,
-                              isDocument ? MODE_COMPLETE : MODE_FILEONLY);  
+                              isDocument ? saveMode : SAVEMODE_FILEONLY);
 
   const prefSvcContractID = "@mozilla.org/preferences-service;1";
   const prefSvcIID = Components.interfaces.nsIPrefService;                              
@@ -262,23 +319,30 @@ function foundHeaderInfo(aSniffer, aData)
   
   if (fp.show() == Components.interfaces.nsIFilePicker.returnCancel || !fp.file)
     return;
-    
+
   if (isDocument) 
     prefs.setIntPref("save_converter_index", fp.filterIndex);
   var directory = fp.file.parent.QueryInterface(nsILocalFile);
   prefs.setComplexValue("dir", nsILocalFile, directory);
-    
+
   fp.file.leafName = validateFileName(fp.file.leafName);
-  
+
+  // XXX We depend on the following holding true in appendFiltersForContentType():
+  // If we should save as a complete page, the filterIndex is 0.
+  // If we should save as text, the filterIndex is 2.
+  var useSaveDocument = isDocument &&
+                        ((saveMode & SAVEMODE_COMPLETE_DOM && fp.filterIndex == 0) ||
+                         (saveMode & SAVEMODE_COMPLETE_TEXT && fp.filterIndex == 2));
+
   // If we're saving a document, and are saving either in complete mode or 
   // as converted text, pass the document to the web browser persist component.
   // If we're just saving the HTML (second option in the list), send only the URI.
-  var source = (isDocument && fp.filterIndex != 1) ? aData.document : aSniffer.uri;
+  var source = useSaveDocument ? aData.document : aSniffer.uri;
   var persistArgs = {
     source      : source,
-    contentType : (isDocument && fp.filterIndex == 2) ? "text/plain" : contentType,
+    contentType : (useSaveDocument && fp.filterIndex == 2) ? "text/plain" : contentType,
     target      : fp.file,
-    postData    : aData.document ? getPostData() : null,
+    postData    : isDocument ? getPostData() : null,
     bypassCache : aData.bypassCache
   };
   
@@ -298,7 +362,7 @@ function foundHeaderInfo(aSniffer, aData)
   // Create download and initiate it (below)
   var dl = Components.classes["@mozilla.org/download;1"].createInstance(Components.interfaces.nsIDownload);
 
-  if (isDocument && fp.filterIndex != 1) {
+  if (useSaveDocument) {
     // Saving a Document, not a URI:
     var filesFolder = null;
     if (persistArgs.contentType != "text/plain") {
@@ -323,14 +387,17 @@ function foundHeaderInfo(aSniffer, aData)
       encodingFlags |= nsIWBP.ENCODE_FLAGS_ABSOLUTE_LINKS;
       encodingFlags |= nsIWBP.ENCODE_FLAGS_NOFRAMES_CONTENT;        
     }
-    
+    else {
+      encodingFlags |= nsIWBP.ENCODE_FLAGS_ENCODE_BASIC_ENTITIES;
+    }
+
     const kWrapColumn = 80;
     dl.init(aSniffer.uri, persistArgs.target, null, null, null, persist);
     persist.saveDocument(persistArgs.source, persistArgs.target, filesFolder, 
                          persistArgs.contentType, encodingFlags, kWrapColumn);
   } else {
     dl.init(source, persistArgs.target, null, null, null, persist);
-    persist.saveURI(source, persistArgs.postData, persistArgs.target);
+    persist.saveURI(source, null, null, persistArgs.postData, null, persistArgs.target);
   }
 }
 
@@ -508,28 +575,55 @@ nsHeaderSniffer.prototype = {
 
 };
 
-const MODE_COMPLETE = 0;
-const MODE_FILEONLY = 1;
+// We have no DOM, and can only save the URL as is.
+const SAVEMODE_FILEONLY      = 0x00;
+// We have a DOM and can save as complete.
+const SAVEMODE_COMPLETE_DOM  = 0x01;
+// We have a DOM which we can serialize as text.
+const SAVEMODE_COMPLETE_TEXT = 0x02;
 
+// If we are able to save a complete DOM, the 'save as complete' filter
+// must be the first filter appended.  The 'save page only' counterpart
+// must be the second filter appended.  And the 'save as complete text'
+// filter must be the third filter appended.
 function appendFiltersForContentType(aFilePicker, aContentType, aSaveMode)
 {
   var bundle = getStringBundle();
-    
+  // The bundle name for saving only a specific content type.
+  var bundleName;
+  // The corresponding filter string for a specific content type.
+  var filterString;
+
+  // XXX all the cases that are handled explicitly here MUST be handled
+  // in GetSaveModeForContentType to return a non-fileonly filter.
   switch (aContentType) {
   case "text/html":
-    if (aSaveMode == MODE_COMPLETE)
-      aFilePicker.appendFilter(bundle.GetStringFromName("WebPageCompleteFilter"), "*.htm; *.html");
-    aFilePicker.appendFilter(bundle.GetStringFromName("WebPageHTMLOnlyFilter"), "*.htm; *.html");
-    if (aSaveMode == MODE_COMPLETE)
-      aFilePicker.appendFilters(Components.interfaces.nsIFilePicker.filterText);
+    bundleName   = "WebPageHTMLOnlyFilter";
+    filterString = "*.htm; *.html";
     break;
+
+  case "application/xhtml+xml":
+    bundleName   = "WebPageXHTMLOnlyFilter";
+    filterString = "*.xht; *.xhtml";
+    break;
+
+  case "text/xml":
+  case "application/xml":
+    bundleName   = "WebPageXMLOnlyFilter";
+    filterString = "*.xml";
+    break;
+
   default:
+    if (aSaveMode != SAVEMODE_FILEONLY) {
+      throw "Invalid save mode for type '" + aContentType + "'";
+    }
+
     var mimeInfo = getMIMEInfoForType(aContentType);
     if (mimeInfo) {
       var extCount = { };
       var extList = { };
       mimeInfo.GetFileExtensions(extCount, extList);
-      
+
       var extString = "";
       for (var i = 0; i < extCount.value; ++i) {
         if (i > 0) 
@@ -539,14 +633,25 @@ function appendFiltersForContentType(aFilePicker, aContentType, aSaveMode)
       
       if (extCount.value > 0) {
         aFilePicker.appendFilter(mimeInfo.Description, extString);
-      } else {
-        aFilePicker.appendFilters(Components.interfaces.nsIFilePicker.filterAll);
-      }        
+      }
     }
-    else
-      aFilePicker.appendFilters(Components.interfaces.nsIFilePicker.filterAll);
+
     break;
   }
+
+  if (aSaveMode & SAVEMODE_COMPLETE_DOM) {
+    aFilePicker.appendFilter(bundle.GetStringFromName("WebPageCompleteFilter"), filterString);
+    // We should always offer a choice to save document only if
+    // we allow saving as complete.
+    aFilePicker.appendFilter(bundle.GetStringFromName(bundleName), filterString);
+  }
+
+  if (aSaveMode & SAVEMODE_COMPLETE_TEXT) {
+    aFilePicker.appendFilters(Components.interfaces.nsIFilePicker.filterText);
+  }
+
+  // Always append the all files (*) filter
+  aFilePicker.appendFilters(Components.interfaces.nsIFilePicker.filterAll);
 } 
 
 function getPostData()
@@ -786,15 +891,19 @@ function getDefaultExtension(aFilename, aURI, aContentType)
   }
 }
 
-function isDocumentType(aContentType)
+function GetSaveModeForContentType(aContentType)
 {
+  var saveMode = SAVEMODE_FILEONLY;
   switch (aContentType) {
   case "text/html":
-    return true;
-  case "text/xml":
   case "application/xhtml+xml":
+    saveMode |= SAVEMODE_COMPLETE_TEXT;
+    // Fall through
+  case "text/xml":
   case "application/xml":
-    return false; // XXX Disables Save As Complete until it works for XML
+    saveMode |= SAVEMODE_COMPLETE_DOM;
+    break;
   }
-  return false;
+
+  return saveMode;
 }

@@ -45,11 +45,11 @@
 #include "nsCOMPtr.h"
 #include "nsString.h"
 #include "nsILineBreaker.h"
-#include "nsIParserService.h"
 #include "nsIContent.h"
 #include "nsIAtom.h"
 #include "nsIHTMLToTextSink.h"
 #include "nsIDocumentEncoder.h"
+#include "nsVoidArray.h"
 
 
 class nsPlainTextSerializer : public nsIContentSerializer,
@@ -96,7 +96,8 @@ public:
   NS_IMETHOD WillResume(void) { return NS_OK; }
   NS_IMETHOD SetParser(nsIParser* aParser) { return NS_OK; }
   NS_IMETHOD OpenContainer(const nsIParserNode& aNode);
-  NS_IMETHOD CloseContainer(const nsIParserNode& aNode);
+  NS_IMETHOD CloseContainer(const nsHTMLTag aTag);
+  NS_IMETHOD AddHeadContent(const nsIParserNode& aNode);
   NS_IMETHOD AddLeaf(const nsIParserNode& aNode);
   NS_IMETHOD AddComment(const nsIParserNode& aNode) { return NS_OK; }
   NS_IMETHOD AddProcessingInstruction(const nsIParserNode& aNode) { return NS_OK; }
@@ -108,21 +109,20 @@ public:
   // nsIHTMLContentSink
   NS_IMETHOD SetTitle(const nsString& aValue) { return NS_OK; }
   NS_IMETHOD OpenHTML(const nsIParserNode& aNode);
-  NS_IMETHOD CloseHTML(const nsIParserNode& aNode);
+  NS_IMETHOD CloseHTML();
   NS_IMETHOD OpenHead(const nsIParserNode& aNode);
-  NS_IMETHOD CloseHead(const nsIParserNode& aNode);
+  NS_IMETHOD CloseHead();
   NS_IMETHOD OpenBody(const nsIParserNode& aNode);
-  NS_IMETHOD CloseBody(const nsIParserNode& aNode);
+  NS_IMETHOD CloseBody();
   NS_IMETHOD OpenForm(const nsIParserNode& aNode);
-  NS_IMETHOD CloseForm(const nsIParserNode& aNode);
+  NS_IMETHOD CloseForm();
   NS_IMETHOD OpenMap(const nsIParserNode& aNode);
-  NS_IMETHOD CloseMap(const nsIParserNode& aNode);
+  NS_IMETHOD CloseMap();
   NS_IMETHOD OpenFrameset(const nsIParserNode& aNode);
-  NS_IMETHOD CloseFrameset(const nsIParserNode& aNode);
-  NS_IMETHOD GetPref(PRInt32 aTag,PRBool& aPref);
+  NS_IMETHOD CloseFrameset();
+  NS_IMETHOD IsEnabled(PRInt32 aTag, PRBool* aReturn);
   NS_IMETHOD_(PRBool) IsFormOnStack() { return PR_FALSE; }
 
-  NS_IMETHOD DoFragment(PRBool aFlag);
   NS_IMETHOD BeginContext(PRInt32 aPosition) { return NS_OK; }
   NS_IMETHOD EndContext(PRInt32 aPosition) { return NS_OK; }
   NS_IMETHOD WillProcessTokens(void) { return NS_OK; }
@@ -135,7 +135,7 @@ public:
                         PRUint32 aFlags, PRUint32 aWrapCol);
 
 protected:
-  nsresult GetAttributeValue(nsIAtom* aName, nsString& aValueRet);
+  nsresult GetAttributeValue(const nsIParserNode* node, nsIAtom* aName, nsString& aValueRet);
   void AddToLine(const PRUnichar* aStringToAdd, PRInt32 aLength);
   void EndLine(PRBool softlinebreak);
   void EnsureVerticalSpace(PRInt32 noOfRows);
@@ -147,12 +147,13 @@ protected:
   PRBool IsContainer(PRInt32 aId);
   PRBool IsInPre();
   PRBool IsInOL();
-  PRBool IsCurrentNodeConverted();
+  PRBool IsCurrentNodeConverted(const nsIParserNode* aNode);
   nsresult GetIdForContent(nsIContent* aContent, PRInt32* aID);
-  nsresult GetParserService(nsIParserService** aParserService);
-  nsresult DoOpenContainer(PRInt32 aTag);
+  nsresult DoOpenContainer(const nsIParserNode* aNode, PRInt32 aTag);
   nsresult DoCloseContainer(PRInt32 aTag);
-  nsresult DoAddLeaf(PRInt32 aTag, const nsAString& aText);
+  nsresult DoAddLeaf(const nsIParserNode* aNode,
+                     PRInt32 aTag,
+                     const nsAString& aText);
 
   // Inlined functions
   inline PRBool MayWrap()
@@ -166,6 +167,12 @@ protected:
   {
     return !mInHead;
   }
+
+  // Stack handling functions
+  PRBool GetLastBool(const nsVoidArray& aStack);
+  void SetLastBool(nsVoidArray& aStack, PRBool aValue);
+  void PushBool(nsVoidArray& aStack, PRBool aValue);
+  PRBool PopBool(nsVoidArray& aStack);
   
 protected:
   nsString         mCurrentLine;
@@ -233,8 +240,15 @@ protected:
                                           mHeaderCounter[1] for <h1> etc. */
 
   nsCOMPtr<nsIContent> mContent;
-  nsIParserNode*       mParserNode;
 
+  // For handling table rows
+  nsAutoVoidArray mHasWrittenCellsForRow; // really an array of bools
+  
+  // Values gotten in OpenContainer that is (also) needed in CloseContainer
+  nsAutoVoidArray     mCurrentNodeIsConverted; // really an array of bools
+  nsAutoVoidArray     mIsInCiteBlockquote; // really an array of bools
+
+  // The output data
   nsAString*            mOutputString;
 
   // The tag stack: the stack of tags we're operating on, so we can nest:
@@ -252,13 +266,13 @@ protected:
 
   nsString                     mLineBreak;
   nsCOMPtr<nsILineBreaker>     mLineBreaker;
-  nsCOMPtr<nsIParserService>   mParserService;
 
   // Conveniance constant. It would be nice to have it as a const static
   // variable, but that causes issues with OpenBSD and module unloading.
   const nsString          kSpace;
 };
 
-extern nsresult NS_NewPlainTextSerializer(nsIContentSerializer** aSerializer);
+nsresult
+NS_NewPlainTextSerializer(nsIContentSerializer** aSerializer);
 
 #endif

@@ -33,7 +33,7 @@ extern "C" {
 /* DLL Entry modifiers... */
 
 /* PC */
-#if defined(XP_PC) || defined(_WINDOWS) || defined(WIN32) || defined(_WIN32)
+#if defined(XP_WIN) || defined(XP_OS2) || defined(_WINDOWS) || defined(WIN32) || defined(_WIN32)
 #	include <windows.h>
 #	if defined(_MSC_VER)
 #		if defined(WIN32) || defined(_WIN32)
@@ -121,7 +121,7 @@ typedef juint			jsize;
 #endif
 
 typedef unsigned char	jbool;
-typedef char			jbyte;
+typedef signed char	jbyte;
 #ifdef IS_64 /* XXX ok for alpha, but not right on all 64-bit architectures */
 typedef unsigned int	juint;
 typedef int				jint;

@@ -44,14 +44,16 @@ const JSD_SERVICE_PPBUFFER = "ppbuffer";
 
 function initJSDURL()
 {   
-    console.addPref ("services.help.css",
-                     "chrome://venkman/skin/venkman-help.css");
-    console.addPref ("services.help.template",
-                     "chrome://venkman/locale/venkman-help.tpl");
-    console.addPref ("services.source.css",
-                     "chrome://venkman/skin/venkman-source.css");
-    console.addPref ("services.source.colorize", true);
-    console.addPref ("services.source.colorizeLimit", 1500);
+    var prefs =
+        [
+         ["services.help.css", "chrome://venkman/skin/venkman-help.css"],
+         ["services.help.template", "chrome://venkman/locale/venkman-help.tpl"],
+         ["services.source.css", "chrome://venkman/skin/venkman-source.css"],
+         ["services.source.colorize", true],
+         ["services.source.colorizeLimit", 1500]
+        ];
+
+    console.prefManager.addPrefs(prefs);
 }
 
 /*
@@ -182,7 +184,7 @@ function asyncOpenJSDURL (channel, streamListener, context)
         {
             response.start();
             response.append(getMsg(MSN_JSDURL_ERRPAGE,
-                                   [url,
+                                   [safeHTML(url),
                                     getMsg(MSN_ERR_JSDURL_TEMPLATE, name)]));
             response.end();
         }
@@ -218,7 +220,8 @@ function asyncOpenJSDURL (channel, streamListener, context)
     if (!parseResult)
     {
         response.start();
-        response.append(getMsg(MSN_JSDURL_ERRPAGE, [url, MSG_ERR_JSDURL_PARSE]));
+        response.append(getMsg(MSN_JSDURL_ERRPAGE, [safeHTML(url),
+                                                    MSG_ERR_JSDURL_PARSE]));
         response.end();
         return;
     }
@@ -237,7 +240,7 @@ console.services["unknown"] =
 function svc_nosource (response, parsedURL)
 {
     response.start();
-    response.append(getMsg(MSN_JSDURL_ERRPAGE, [parsedURL.spec,
+    response.append(getMsg(MSN_JSDURL_ERRPAGE, [safeHTML(parsedURL.spec),
                                                 MSG_ERR_JSDURL_NOSERVICE]));
     response.end();
 }
@@ -246,7 +249,7 @@ console.services["ppbuffer"] =
 function svc_nosource (response)
 {
     response.start();
-    response.append(getMsg(MSN_JSDURL_ERRPAGE, [parsedURL.spec,
+    response.append(getMsg(MSN_JSDURL_ERRPAGE, [safeHTML(parsedURL.spec),
                                                 MSG_ERR_JSDURL_NOSOURCE]));
     response.end();
 }
@@ -308,10 +311,13 @@ function svc_help (response, parsedURL)
                 htmlDesc = htmlDesc.replace (/\*([^\*]+)\*/g, replaceBold);
                 htmlDesc = htmlDesc.replace (/\|([^\|]+)\|/g, replaceCommand);
 
+                // remove trailing access key (non en-US locales) and ...
+                var trimmedLabel = 
+                    command.labelstr.replace(/(\([a-zA-Z]\))?(\.\.\.)?$/, "");
+
                 vars = {
                     "\\$command-name": command.name,
-                    "\\$ui-label-safe": escape(fromUnicode(command.labelstr,
-                                                           MSG_REPORT_CHARSET)),
+                    "\\$ui-label-safe": encodeURIComponent(trimmedLabel),
                     "\\$ui-label": fromUnicode(command.labelstr,
                                                MSG_REPORT_CHARSET),
                     "\\$params": fromUnicode(htmlUsage, MSG_REPORT_CHARSET),
@@ -855,14 +861,15 @@ function con_respondsourcetext (response, sourceText)
 
 console.services["pprint"] =
 function svc_pprint (response, parsedURL)
-{
+{    
     var err;
     
     if (!("scriptWrapper" in parsedURL))
     {
         err = getMsg(MSN_ERR_REQUIRED_PARAM, "scriptWrapper");
         response.start();
-        response.append(getMsg(MSN_JSDURL_ERRPAGE, [parsedURL.spec, err]));
+        response.append(getMsg(MSN_JSDURL_ERRPAGE, [safeHTML(parsedURL.spec),
+                                                    err]));
         response.end();
         return;
     }
@@ -872,7 +879,8 @@ function svc_pprint (response, parsedURL)
         err = getMsg(MSN_ERR_INVALID_PARAM,
                          ["scriptWrapper", parsedURL.scriptWrapper]);
         response.start();
-        response.append(getMsg(MSN_JSDURL_ERRPAGE, [parsedURL.spec, err]));
+        response.append(getMsg(MSN_JSDURL_ERRPAGE, [safeHTML(parsedURL.spec),
+                                                    err]));
         response.end();
         return;
     }
@@ -889,8 +897,8 @@ function svc_source (response, parsedURL)
         if (status != Components.results.NS_OK)
         {
             response.start();
-            response.append(getMsg(MSN_JSDURL_ERRPAGE, [parsedURL.spec,
-                                                        status]));
+            response.append(getMsg(MSN_JSDURL_ERRPAGE,
+                                   [safeHTML(parsedURL.spec), status]));
             response.end();
             display (getMsg (MSN_ERR_SOURCE_LOAD_FAILED,
                              [parsedURL.spec, status]),
@@ -905,7 +913,8 @@ function svc_source (response, parsedURL)
     {
         var err = getMsg(MSN_ERR_REQUIRED_PARAM, "location");
         response.start();
-        response.append(getMsg(MSN_JSDURL_ERRPAGE, [parsedURL.spec, err]));
+        response.append(getMsg(MSN_JSDURL_ERRPAGE, [safeHTML(parsedURL.spec),
+                                                    err]));
         response.end();
         return;
     }
@@ -938,7 +947,7 @@ function svc_source (response, parsedURL)
     if (!sourceText)
     {
         response.start();
-        response.append(getMsg(MSN_JSDURL_ERRPAGE, [parsedURL.spec,
+        response.append(getMsg(MSN_JSDURL_ERRPAGE, [safeHTML(parsedURL.spec),
                                                     MSG_ERR_JSDURL_SOURCETEXT]));
         response.end();
         return;

@@ -76,6 +76,7 @@ public:                                                 \
 // basic editor commands
 NS_DECL_EDITOR_COMMAND(nsUndoCommand)
 NS_DECL_EDITOR_COMMAND(nsRedoCommand)
+NS_DECL_EDITOR_COMMAND(nsClearUndoCommand)
 
 NS_DECL_EDITOR_COMMAND(nsCutCommand)
 NS_DECL_EDITOR_COMMAND(nsCutOrDeleteCommand)
@@ -87,6 +88,9 @@ NS_DECL_EDITOR_COMMAND(nsSelectAllCommand)
 
 NS_DECL_EDITOR_COMMAND(nsSelectionMoveCommands)
 
+// Insert content commands
+NS_DECL_EDITOR_COMMAND(nsInsertPlaintextCommand)
+NS_DECL_EDITOR_COMMAND(nsPasteQuotationCommand)
 
 
 #if 0

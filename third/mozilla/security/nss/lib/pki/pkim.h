@@ -35,7 +35,7 @@
 #define PKIM_H
 
 #ifdef DEBUG
-static const char PKIM_CVS_ID[] = "@(#) $RCSfile: pkim.h,v $ $Revision: 1.1.1.1 $ $Date: 2003-02-14 19:25:09 $ $Name: not supported by cvs2svn $";
+static const char PKIM_CVS_ID[] = "@(#) $RCSfile: pkim.h,v $ $Revision: 1.1.1.2 $ $Date: 2003-07-08 16:48:46 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 #ifndef BASE_H
@@ -593,17 +593,19 @@ nssTrustDomain_AddCertsToCache
 );
 
 NSS_EXTERN void
-nssTrustDomain_RemoveCertFromCache
-(
+nssTrustDomain_RemoveCertFromCacheLOCKED (
   NSSTrustDomain *td,
   NSSCertificate *cert
 );
 
 NSS_EXTERN void
-nssTrustDomain_FlushCache
-(
-  NSSTrustDomain *td,
-  PRFloat64 threshold
+nssTrustDomain_LockCertCache (
+  NSSTrustDomain *td
+);
+
+NSS_EXTERN void
+nssTrustDomain_UnlockCertCache (
+  NSSTrustDomain *td
 );
 
 NSS_IMPLEMENT PRStatus

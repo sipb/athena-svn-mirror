@@ -27,7 +27,7 @@
 #include "nsFrame.h"
 #include "nsIPresContext.h"
 #include "nsUnitConversion.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIRenderingContext.h"
 #include "nsIFontMetrics.h"
@@ -81,7 +81,7 @@ NS_IMETHODIMP
 nsMathMLmrootFrame::Init(nsIPresContext*  aPresContext,
                          nsIContent*      aContent,
                          nsIFrame*        aParent,
-                         nsIStyleContext* aContext,
+                         nsStyleContext*  aContext,
                          nsIFrame*        aPrevInFlow)
 {
   nsresult rv = nsMathMLContainerFrame::Init(aPresContext, aContent, aParent,
@@ -130,10 +130,9 @@ nsMathMLmrootFrame::Paint(nsIPresContext*      aPresContext,
     mSqrChar.Paint(aPresContext, aRenderingContext,
                    aDirtyRect, aWhichLayer, this);
 
-    if (NS_FRAME_PAINT_LAYER_FOREGROUND == aWhichLayer) {
+    if (NS_FRAME_PAINT_LAYER_FOREGROUND == aWhichLayer && !mBarRect.IsEmpty()) {
       // paint the overline bar
-      const nsStyleColor *color = NS_STATIC_CAST(const nsStyleColor*,
-        mStyleContext->GetStyleData(eStyleStruct_Color));
+      const nsStyleColor* color = GetStyleColor();
       aRenderingContext.SetColor(color->mColor);
       aRenderingContext.FillRect(mBarRect);
     }
@@ -168,7 +167,7 @@ nsMathMLmrootFrame::Reflow(nsIPresContext*          aPresContext,
 {
   nsresult rv = NS_OK;
   // ask our children to compute their bounding metrics 
-  nsHTMLReflowMetrics childDesiredSize(aDesiredSize.maxElementSize,
+  nsHTMLReflowMetrics childDesiredSize(aDesiredSize.mComputeMEW,
                       aDesiredSize.mFlags | NS_REFLOW_CALC_BOUNDING_METRICS);
   nsSize availSize(aReflowState.mComputedWidth, aReflowState.mComputedHeight);
   nsReflowStatus childStatus;
@@ -210,6 +209,9 @@ nsMathMLmrootFrame::Reflow(nsIPresContext*          aPresContext,
     count++;
     childFrame->GetNextSibling(&childFrame);
   }
+  if (aDesiredSize.mComputeMEW) {
+    aDesiredSize.mMaxElementWidth = childDesiredSize.mMaxElementWidth;
+  }
   if (2 != count) {
     // report an error, encourage people to get their markups in order
     NS_WARNING("invalid markup");
@@ -219,14 +221,15 @@ nsMathMLmrootFrame::Reflow(nsIPresContext*          aPresContext,
   ////////////
   // Prepare the radical symbol and the overline bar
 
-  const nsStyleFont *font = NS_STATIC_CAST(const nsStyleFont*,
-    mStyleContext->GetStyleData(eStyleStruct_Font));
-  renderingContext.SetFont(font->mFont, nsnull);
+  renderingContext.SetFont(GetStyleFont()->mFont, nsnull);
   nsCOMPtr<nsIFontMetrics> fm;
   renderingContext.GetFontMetrics(*getter_AddRefs(fm));
 
   nscoord ruleThickness, leading, em;
   GetRuleThickness(renderingContext, fm, ruleThickness);
+
+  nsBoundingMetrics bmOne;
+  renderingContext.GetBoundingMetrics(NS_LITERAL_STRING("1").get(), 1, bmOne);
 
   // get the leading to be left at the top of the resulting frame
   // this seems more reliable than using fm->GetLeading() on suspicious fonts               
@@ -241,7 +244,11 @@ nsMathMLmrootFrame::Reflow(nsIPresContext*          aPresContext,
   else
     phi = ruleThickness;
   psi = ruleThickness + phi/4;
-  
+
+  // built-in: adjust clearance psi to emulate \mathstrut using '1' (TexBook, p.131)
+  if (bmOne.ascent > bmBase.ascent)
+    psi += bmOne.ascent - bmBase.ascent;
+
   // Stretch the radical symbol to the appropriate height if it is not big enough.
   nsBoundingMetrics contSize = bmBase;
   contSize.descent = bmBase.ascent + bmBase.descent + psi;
@@ -364,9 +371,8 @@ nsMathMLmrootFrame::Reflow(nsIPresContext*          aPresContext,
   aDesiredSize.width = mBoundingMetrics.width;
   aDesiredSize.mBoundingMetrics = mBoundingMetrics;
 
-  if (nsnull != aDesiredSize.maxElementSize) {
-    aDesiredSize.maxElementSize->width = aDesiredSize.width;
-    aDesiredSize.maxElementSize->height = aDesiredSize.height;
+  if (aDesiredSize.mComputeMEW) {
+    aDesiredSize.mMaxElementWidth = aDesiredSize.width;
   }
   aStatus = NS_FRAME_COMPLETE;
   NS_FRAME_SET_TRUNCATION(aStatus, aReflowState, aDesiredSize);
@@ -376,36 +382,25 @@ nsMathMLmrootFrame::Reflow(nsIPresContext*          aPresContext,
 
 // ----------------------
 // the Style System will use these to pass the proper style context to our MathMLChar
-NS_IMETHODIMP
-nsMathMLmrootFrame::GetAdditionalStyleContext(PRInt32           aIndex, 
-                                              nsIStyleContext** aStyleContext) const
+nsStyleContext*
+nsMathMLmrootFrame::GetAdditionalStyleContext(PRInt32 aIndex) const
 {
-  NS_PRECONDITION(aStyleContext, "null OUT ptr");
-  if (aIndex < 0) {
-    return NS_ERROR_INVALID_ARG;
-  }
-  *aStyleContext = nsnull;
   switch (aIndex) {
   case NS_SQR_CHAR_STYLE_CONTEXT_INDEX:
-    mSqrChar.GetStyleContext(aStyleContext);
+    return mSqrChar.GetStyleContext();
     break;
   default:
-    return NS_ERROR_INVALID_ARG;
+    return nsnull;
   }
-  return NS_OK;
 }
 
-NS_IMETHODIMP
+void
 nsMathMLmrootFrame::SetAdditionalStyleContext(PRInt32          aIndex, 
-                                              nsIStyleContext* aStyleContext)
+                                              nsStyleContext*  aStyleContext)
 {
-  if (aIndex < 0) {
-    return NS_ERROR_INVALID_ARG;
-  }
   switch (aIndex) {
   case NS_SQR_CHAR_STYLE_CONTEXT_INDEX:
     mSqrChar.SetStyleContext(aStyleContext);
     break;
   }
-  return NS_OK;
 }

@@ -56,7 +56,6 @@ nsPNGDecoder::nsPNGDecoder() :
   interlacebuf(nsnull), ibpr(0),
   mError(PR_FALSE)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsPNGDecoder::~nsPNGDecoder()
@@ -203,14 +202,16 @@ info_callback(png_structp png_ptr, png_infop info_ptr)
       png_set_gray_to_rgb(png_ptr);
 
 
-#if defined(XP_PC) || defined(XP_BEOS) || defined(MOZ_WIDGET_PHOTON)
+#if defined(XP_WIN) || defined(XP_OS2) || defined(XP_BEOS) || defined(MOZ_WIDGET_PHOTON)
   // windows likes BGR
   png_set_bgr(png_ptr);
 #endif
 
   if (png_get_gAMA(png_ptr, info_ptr, &aGamma)) {
-      if (aGamma < 0)
+      if ((aGamma <= 0.0) || (aGamma > 21474.83)) {
           aGamma = 0.45455;
+          png_set_gAMA(png_ptr, info_ptr, aGamma);
+      }
       png_set_gamma(png_ptr, 2.2, aGamma);
   }
   else
@@ -254,7 +255,7 @@ info_callback(png_structp png_ptr, png_infop info_ptr)
   nsPNGDecoder *decoder = NS_STATIC_CAST(nsPNGDecoder*, png_get_progressive_ptr(png_ptr));
 
   if (decoder->mObserver)
-    decoder->mObserver->OnStartDecode(nsnull, nsnull);
+    decoder->mObserver->OnStartDecode(nsnull);
 
   decoder->mImage = do_CreateInstance("@mozilla.org/image/container;1");
   if (!decoder->mImage)
@@ -266,7 +267,7 @@ info_callback(png_structp png_ptr, png_infop info_ptr)
   decoder->mImage->Init(width, height, decoder->mObserver);
 
   if (decoder->mObserver)
-    decoder->mObserver->OnStartContainer(nsnull, nsnull, decoder->mImage);
+    decoder->mObserver->OnStartContainer(nsnull, decoder->mImage);
 
   decoder->mFrame = do_CreateInstance("@mozilla.org/gfx/image/frame;2");
   if (!decoder->mFrame)
@@ -284,7 +285,7 @@ info_callback(png_structp png_ptr, png_infop info_ptr)
     }
   }
 
-#if defined(XP_PC) || defined(XP_BEOS) || defined(MOZ_WIDGET_PHOTON)
+#if defined(XP_WIN) || defined(XP_OS2) || defined(XP_BEOS) || defined(MOZ_WIDGET_PHOTON)
   // XXX this works...
   format += 1; // RGB to BGR
 #endif
@@ -297,7 +298,7 @@ info_callback(png_structp png_ptr, png_infop info_ptr)
   decoder->mImage->AppendFrame(decoder->mFrame);
 
   if (decoder->mObserver)
-    decoder->mObserver->OnStartFrame(nsnull, nsnull, decoder->mFrame);
+    decoder->mObserver->OnStartFrame(nsnull, decoder->mFrame);
 
   PRUint32 bpr, abpr;
   decoder->mFrame->GetImageBytesPerRow(&bpr);
@@ -468,7 +469,7 @@ row_callback(png_structp png_ptr, png_bytep new_row,
     }
 
     nsRect r(0, row_num, width, 1);
-    decoder->mObserver->OnDataAvailable(nsnull, nsnull, decoder->mFrame, &r);
+    decoder->mObserver->OnDataAvailable(nsnull, decoder->mFrame, &r);
   }
 }
 
@@ -492,9 +493,9 @@ end_callback(png_structp png_ptr, png_infop info_ptr)
   nsPNGDecoder *decoder = NS_STATIC_CAST(nsPNGDecoder*, png_get_progressive_ptr(png_ptr));
 
   if (decoder->mObserver) {
-    decoder->mObserver->OnStopFrame(nsnull, nsnull, decoder->mFrame);
-    decoder->mObserver->OnStopContainer(nsnull, nsnull, decoder->mImage);
-    decoder->mObserver->OnStopDecode(nsnull, nsnull, NS_OK, nsnull);
+    decoder->mObserver->OnStopFrame(nsnull, decoder->mFrame);
+    decoder->mObserver->OnStopContainer(nsnull, decoder->mImage);
+    decoder->mObserver->OnStopDecode(nsnull, NS_OK, nsnull);
   }
 
   // We are never going to change the data of this frame again.  Let the OS

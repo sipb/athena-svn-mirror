@@ -19,7 +19,7 @@
 
 // pyloader
 //
-// Not part of the main Python _xpcom package, but a seperate, thin DLL.
+// Not part of the main Python _xpcom package, but a separate, thin DLL.
 //
 // The main loader and registrar for Python.  A thin DLL that is designed to live in
 // the xpcom "components" directory.  Simply locates and loads the standard
@@ -37,7 +37,10 @@
 #include "stdlib.h"
 #include "stdarg.h"
 
+#include "nsReadableUtils.h"
+#include "nsCRT.h"
 #include <nsFileStream.h> // For console logging.
+#include "nspr.h" // PR_fprintf
 
 #ifdef HAVE_LONG_LONG
 #undef HAVE_LONG_LONG
@@ -45,10 +48,13 @@
 
 #include "Python.h"
 
+#if (PY_VERSION_HEX >= 0x02030000)
+#define PYXPCOM_USE_PYGILSTATE
+#endif
+
 static char *PyTraceback_AsString(PyObject *exc_tb);
 
 #ifdef XP_WIN
-#define WIN32_LEAN_AND_MEAN
 #include "windows.h"
 #endif
 
@@ -58,6 +64,7 @@ static char *PyTraceback_AsString(PyObject *exc_tb);
 
 #endif
 
+#include "nsITimelineService.h"
 
 typedef nsresult (*pfnPyXPCOM_NSGetModule)(nsIComponentManager *servMgr,
                                           nsIFile* location,
@@ -107,6 +114,7 @@ extern "C" NS_EXPORT nsresult NSGetModule(nsIComponentManager *servMgr,
 #endif
 	PRBool bDidInitPython = !Py_IsInitialized(); // well, I will next line, anyway :-)
 	if (bDidInitPython) {
+		NS_TIMELINE_START_TIMER("PyXPCOM: Python initializing");
 		Py_Initialize();
 		if (!Py_IsInitialized()) {
 			LogError("Python initialization failed!\n");
@@ -117,8 +125,12 @@ extern "C" NS_EXPORT nsresult NSGetModule(nsIComponentManager *servMgr,
 #endif // NS_DEBUG
 		AddStandardPaths();
 		PyEval_InitThreads();
+		NS_TIMELINE_STOP_TIMER("PyXPCOM: Python initializing");
+		NS_TIMELINE_MARK_TIMER("PyXPCOM: Python initializing");
 	}
 	// Get the Python interpreter state
+	NS_TIMELINE_START_TIMER("PyXPCOM: Python threadstate setup");
+#ifndef PYXPCOM_USE_PYGILSTATE
 	PyThreadState *threadStateCreated = NULL;
 	PyThreadState *threadState = PyThreadState_Swap(NULL);
 	if (threadState==NULL) {
@@ -133,7 +145,9 @@ extern "C" NS_EXPORT nsresult NSGetModule(nsIComponentManager *servMgr,
 	}
 	PyEval_ReleaseLock();
 	PyEval_AcquireThread(threadState);
-
+#else
+	PyGILState_STATE state = PyGILState_Ensure();
+#endif // PYXPCOM_USE_PYGILSTATE
 	if (pfnEntryPoint == nsnull) {
 		PyObject *mod = PyImport_ImportModule("xpcom._xpcom");
 		if (mod==NULL) {
@@ -152,7 +166,13 @@ extern "C" NS_EXPORT nsresult NSGetModule(nsIComponentManager *servMgr,
 		LogError("Could not load main Python entry point\n");
 		return NS_ERROR_FAILURE;
 	}
-	
+
+#ifdef MOZ_TIMELINE
+    // If the timeline service is installed, see if we can install our hooks.
+    if (NULL==PyImport_ImportModule("timeline_hook"))
+        PyErr_Clear(); // but don't care if we can't.
+#endif
+#ifndef PYXPCOM_USE_PYGILSTATE
 	// Abandon the thread-lock, as the first thing Python does
 	// is re-establish the lock (the Python thread-state story SUCKS!!!)
 	if (threadStateCreated) {
@@ -164,7 +184,17 @@ extern "C" NS_EXPORT nsresult NSGetModule(nsIComponentManager *servMgr,
 		if (threadStateSave)
 			PyThreadState_Delete(threadStateSave);
 	}
-	return (*pfnEntryPoint)(servMgr, location, result);
+#else
+	PyGILState_Release(state);
+#endif 
+
+	NS_TIMELINE_STOP_TIMER("PyXPCOM: Python threadstate setup");
+	NS_TIMELINE_MARK_TIMER("PyXPCOM: Python threadstate setup");
+	NS_TIMELINE_START_TIMER("PyXPCOM: PyXPCOM NSGetModule entry point");
+	nsresult rc = (*pfnEntryPoint)(servMgr, location, result);
+	NS_TIMELINE_STOP_TIMER("PyXPCOM: PyXPCOM NSGetModule entry point");
+	NS_TIMELINE_MARK_TIMER("PyXPCOM: PyXPCOM NSGetModule entry point");
+	return rc;
 }
 
 // The internal helper that actually moves the
@@ -172,8 +202,14 @@ extern "C" NS_EXPORT nsresult NSGetModule(nsIComponentManager *servMgr,
 
 void LogMessage(const char *prefix, const char *pszMessageText)
 {
-	nsOutputConsoleStream console;
-	console << prefix << pszMessageText;
+	PR_fprintf(PR_STDERR, "%s", pszMessageText);
+}
+
+void LogMessage(const char *prefix, nsACString &text)
+{
+	char *c = ToNewCString(text);
+	LogMessage(prefix, c);
+	nsCRT::free(c);
 }
 
 // A helper for the various logging routines.
@@ -195,36 +231,35 @@ static void LogError(const char *fmt, ...)
 	PyObject *exc_typ = NULL, *exc_val = NULL, *exc_tb = NULL;
 	PyErr_Fetch( &exc_typ, &exc_val, &exc_tb);
 	if (exc_typ) {
-		char *string1 = nsnull;
-	        nsOutputStringStream streamout(string1);
+		nsCAutoString streamout;
 
 		if (exc_tb) {
 			const char *szTraceback = PyTraceback_AsString(exc_tb);
 			if (szTraceback == NULL)
-				streamout << "Can't get the traceback info!";
+				streamout += "Can't get the traceback info!";
 			else {
-				streamout << "Traceback (most recent call last):\n";
-				streamout << szTraceback;
+				streamout += "Traceback (most recent call last):\n";
+				streamout += szTraceback;
 				PyMem_Free((void *)szTraceback);
 			}
 		}
 		PyObject *temp = PyObject_Str(exc_typ);
 		if (temp) {
-			streamout << PyString_AsString(temp);
+			streamout += PyString_AsString(temp);
 			Py_DECREF(temp);
 		} else
-			streamout << "Can convert exception to a string!";
-		streamout << ": ";
+			streamout += "Can convert exception to a string!";
+		streamout += ": ";
 		if (exc_val != NULL) {
 			temp = PyObject_Str(exc_val);
 			if (temp) {
-				streamout << PyString_AsString(temp);
+				streamout += PyString_AsString(temp);
 				Py_DECREF(temp);
 			} else
-				streamout << "Can convert exception value to a string!";
+				streamout += "Can convert exception value to a string!";
 		}
-		streamout << "\n";
-		LogMessage("PyXPCOM Exception:", string1);
+		streamout += "\n";
+		LogMessage("PyXPCOM Exception:", streamout);
 	}
 	PyErr_Restore(exc_typ, exc_val, exc_tb);
 }

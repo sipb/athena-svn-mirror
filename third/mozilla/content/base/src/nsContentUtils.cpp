@@ -38,6 +38,9 @@
 
 #include "jsapi.h"
 #include "nsCOMPtr.h"
+#include "nsAString.h"
+#include "nsPrintfCString.h"
+#include "nsUnicharUtils.h"
 #include "nsIServiceManagerUtils.h"
 #include "nsIScriptGlobalObject.h"
 #include "nsIScriptContext.h"
@@ -50,6 +53,7 @@
 #include "nsINodeInfo.h"
 #include "nsReadableUtils.h"
 #include "nsIDOMDocument.h"
+#include "nsIDOMNodeList.h"
 #include "nsIURI.h"
 #include "nsIScriptSecurityManager.h"
 #include "nsDOMError.h"
@@ -57,13 +61,28 @@
 #include "nsIJSContextStack.h"
 #include "nsIDocShell.h"
 #include "nsIDocShellTreeItem.h"
+#include "nsParserCIID.h"
+#include "nsIParserService.h"
+#include "nsIServiceManager.h"
+#include "nsIAttribute.h"
+#include "nsIContentList.h"
+#include "nsIHTMLDocument.h"
+#include "nsIDOMHTMLDocument.h"
+#include "nsIDOMHTMLCollection.h"
+#include "nsIDOMHTMLFormElement.h"
+#include "nsIForm.h"
+#include "nsIFormControl.h"
+#include "nsHTMLAtoms.h"
 
 static const char *kJSStackContractID = "@mozilla.org/js/xpc/ContextStack;1";
+static NS_DEFINE_IID(kParserServiceCID, NS_PARSERSERVICE_CID);
 
 nsIDOMScriptObjectFactory *nsContentUtils::sDOMScriptObjectFactory = nsnull;
 nsIXPConnect *nsContentUtils::sXPConnect = nsnull;
 nsIScriptSecurityManager *nsContentUtils::sSecurityManager = nsnull;
 nsIThreadJSContextStack *nsContentUtils::sThreadJSContextStack = nsnull;
+nsIParserService *nsContentUtils::sParserService = nsnull;
+nsINameSpaceManager *nsContentUtils::sNameSpaceManager = nsnull;
 
 // static
 nsresult
@@ -77,15 +96,46 @@ nsContentUtils::Init()
   rv = CallGetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID,
                       &sSecurityManager);
   if (NS_FAILED(rv)) {
+    // We can run without a security manager, so don't return early.
     sSecurityManager = nsnull;
   }
 
   rv = CallGetService(kJSStackContractID, &sThreadJSContextStack);
   if (NS_FAILED(rv)) {
     sThreadJSContextStack = nsnull;
+
+    return rv;
   }
 
-  return rv;
+  return NS_GetNameSpaceManager(&sNameSpaceManager);
+}
+
+/**
+ * Access a cached parser service. Don't addref. We need only one
+ * reference to it and this class has that one.
+ */
+/* static */
+nsIParserService*
+nsContentUtils::GetParserServiceWeakRef()
+{
+  // XXX: This isn't accessed from several threads, is it?
+  if (sParserService == nsnull) {
+    // Lock, recheck sCachedParserService and aquire if this should be
+    // safe for multiple threads.
+    nsCOMPtr<nsIServiceManager> mgr;
+    nsresult rv = NS_GetServiceManager(getter_AddRefs(mgr));
+    
+    if (NS_FAILED(rv))
+      return nsnull;
+
+    // This addrefs the service for us and it will be released in
+    // |Shutdown|.
+    mgr->GetService(kParserServiceCID,
+                    NS_GET_IID(nsIParserService),
+                    NS_REINTERPRET_CAST(void**, &sParserService));
+  }
+
+  return sParserService;
 }
 
 // static
@@ -346,6 +396,8 @@ nsContentUtils::Shutdown()
   NS_IF_RELEASE(sXPConnect);
   NS_IF_RELEASE(sSecurityManager);
   NS_IF_RELEASE(sThreadJSContextStack);
+  NS_IF_RELEASE(sNameSpaceManager);
+  NS_IF_RELEASE(sParserService);
 }
 
 // static
@@ -356,9 +408,7 @@ nsContentUtils::GetClassInfoInstance(nsDOMClassInfoID aID)
     static NS_DEFINE_CID(kDOMScriptObjectFactoryCID,
                          NS_DOM_SCRIPT_OBJECT_FACTORY_CID);
 
-    nsServiceManager::GetService(kDOMScriptObjectFactoryCID,
-                                 NS_GET_IID(nsIDOMScriptObjectFactory),
-                                 (nsISupports **)&sDOMScriptObjectFactory);
+    CallGetService(kDOMScriptObjectFactoryCID, &sDOMScriptObjectFactory);
 
     if (!sDOMScriptObjectFactory) {
       return nsnull;
@@ -366,6 +416,79 @@ nsContentUtils::GetClassInfoInstance(nsDOMClassInfoID aID)
   }
 
   return sDOMScriptObjectFactory->GetClassInfoInstance(aID);
+}
+
+// static
+nsresult
+nsContentUtils::GetDocumentAndPrincipal(nsIDOMNode* aNode,
+                                        nsIDocument** aDocument,
+                                        nsIPrincipal** aPrincipal)
+{
+  // For performance reasons it's important to try to QI the node to
+  // nsIContent before trying to QI to nsIDocument since a QI miss on
+  // a node is potentially expensive.
+  nsCOMPtr<nsIContent> content = do_QueryInterface(aNode);
+  nsCOMPtr<nsIAttribute> attr;
+
+  if (!content) {
+    CallQueryInterface(aNode, aDocument);
+
+    if (!*aDocument) {
+      attr = do_QueryInterface(aNode);
+      if (!attr) {
+        // aNode is not a nsIContent, a nsIAttribute or a nsIDocument,
+        // something weird is going on...
+
+        NS_ERROR("aNode is not nsIContent, nsIAttribute or nsIDocument!");
+
+        return NS_ERROR_UNEXPECTED;
+      }
+    }
+  }
+
+  if (!*aDocument) {
+    nsCOMPtr<nsIDOMDocument> domDoc;
+    aNode->GetOwnerDocument(getter_AddRefs(domDoc));
+    if (!domDoc) {
+      // if we can't get a doc then lets try to get principal through nodeinfo
+      // manager
+      nsCOMPtr<nsINodeInfo> ni;
+      if (content) {
+        content->GetNodeInfo(*getter_AddRefs(ni));
+      }
+      else {
+        attr->GetNodeInfo(*getter_AddRefs(ni));
+      }
+
+      if (!ni) {
+        // we can't get to the principal so we'll give up
+
+        return NS_OK;
+      }
+      
+      ni->GetDocumentPrincipal(aPrincipal);
+
+      if (!*aPrincipal) {
+        // we can't get to the principal so we'll give up
+
+        return NS_OK;
+      }
+    }
+    else {
+      CallQueryInterface(domDoc, aDocument);
+      if (!*aDocument) {
+        NS_ERROR("QI to nsIDocument failed");
+      
+        return NS_ERROR_UNEXPECTED;
+      }
+    }
+  }
+
+  if (!*aPrincipal) {
+    (*aDocument)->GetPrincipal(aPrincipal);
+  }
+
+  return NS_OK;
 }
 
 /**
@@ -398,6 +521,7 @@ nsContentUtils::CheckSameOrigin(nsIDOMNode *aTrustedNode,
 #endif
     nsCOMPtr<nsIDOMDocument> domDoc;
     aTrustedNode->GetOwnerDocument(getter_AddRefs(domDoc));
+
     if (!domDoc) {
       // In theory this should never happen. But since theory and reality are
       // different for XUL elements we'll try to get the principal from the
@@ -418,61 +542,28 @@ nsContentUtils::CheckSameOrigin(nsIDOMNode *aTrustedNode,
 
         return NS_ERROR_UNEXPECTED;
       }
-    }
-    else {
+    } else {
       trustedDoc = do_QueryInterface(domDoc);
       NS_ASSERTION(trustedDoc, "QI to nsIDocument failed");
     }
   }
 
-
-  // For performance reasons it's important to try to QI the node to
-  // nsIContent before trying to QI to nsIDocument since a QI miss on
-  // a node is potentially expensive.
-  nsCOMPtr<nsIContent> content = do_QueryInterface(aUnTrustedNode);
-
   nsCOMPtr<nsIDocument> unTrustedDoc;
   nsCOMPtr<nsIPrincipal> unTrustedPrincipal;
 
-  if (!content) {
-    unTrustedDoc = do_QueryInterface(aUnTrustedNode);
+  nsresult rv = GetDocumentAndPrincipal(aUnTrustedNode,
+                                        getter_AddRefs(unTrustedDoc),
+                                        getter_AddRefs(unTrustedPrincipal));
+  NS_ENSURE_SUCCESS(rv, rv);
 
-    if (!unTrustedDoc) {
-      // aUnTrustedNode is neither a nsIContent nor an nsIDocument, something
-      // weird is going on...
+  if (!unTrustedDoc && !unTrustedPrincipal) {
+    // We can't get hold of the principal for this node. This should happen
+    // very rarely, like for textnodes out of the tree and <option>s created
+    // using 'new Option'.
+    // If we didn't allow access to nodes like this you wouldn't be able to
+    // insert these nodes into a document.
 
-      NS_ERROR("aUnTrustedNode is neither an nsIContent nor an nsIDocument!");
-
-      return NS_ERROR_UNEXPECTED;
-    }
-  }
-  else {
-    nsCOMPtr<nsIDOMDocument> domDoc;
-    aUnTrustedNode->GetOwnerDocument(getter_AddRefs(domDoc));
-    if (!domDoc) {
-      // if we can't get a doc then lets try to get principal through nodeinfo
-      // manager
-      nsCOMPtr<nsINodeInfo> ni;
-      content->GetNodeInfo(*getter_AddRefs(ni));
-      if (!ni) {
-        // we can't get to the principal so we'll give up and give the caller
-        // access
-
-        return NS_OK;
-      }
-      
-      ni->GetDocumentPrincipal(getter_AddRefs(unTrustedPrincipal));
-
-      if (!unTrustedPrincipal) {
-        // we can't get to the principal so we'll give up and give the caller access
-
-        return NS_OK;
-      }
-    }
-    else {
-      unTrustedDoc = do_QueryInterface(domDoc);
-      NS_ASSERTION(unTrustedDoc, "QI to nsIDocument failed");
-    }
+    return NS_OK;
   }
 
   /*
@@ -480,28 +571,18 @@ nsContentUtils::CheckSameOrigin(nsIDOMNode *aTrustedNode,
    */
 
   // If they are in the same document then everything is just fine
-  if (trustedDoc == unTrustedDoc && trustedDoc)
+  if (trustedDoc == unTrustedDoc && trustedDoc) {
     return NS_OK;
+  }
 
   if (!trustedPrincipal) {
     trustedDoc->GetPrincipal(getter_AddRefs(trustedPrincipal));
+
     if (!trustedPrincipal) {
-      // If the trusted node doesn't have a principal we can't check security against it
+      // If the trusted node doesn't have a principal we can't check
+      // security against it
 
       return NS_ERROR_DOM_SECURITY_ERR;
-    }
-  }
-
-  if (!unTrustedPrincipal) {
-    unTrustedDoc->GetPrincipal(getter_AddRefs(unTrustedPrincipal));
-    if (!unTrustedDoc) {
-      // We can't get hold of the principal for this node. This should happen
-      // very rarely, like for textnodes out of the tree and <option>s created
-      // using 'new Option'.
-      // If we didn't allow access to nodes like this you wouldn't be able to
-      // insert these nodes into a document.
-
-      return NS_OK;
     }
   }
 
@@ -534,48 +615,15 @@ nsContentUtils::CanCallerAccess(nsIDOMNode *aNode)
     return PR_TRUE;
   }
 
-  // Make sure that this is a real node. We do this by first QI'ing to
-  // nsIContent (which is important performance wise) and if that QI
-  // fails we QI to nsIDocument. If both those QI's fail we won't let
-  // the caller access this unknown node.
+  nsCOMPtr<nsIDocument> document;
   nsCOMPtr<nsIPrincipal> principal;
-  nsCOMPtr<nsIContent> content(do_QueryInterface(aNode));
 
-  if (!content) {
-    nsCOMPtr<nsIDocument> doc = do_QueryInterface(aNode);
+  nsresult rv = GetDocumentAndPrincipal(aNode,
+                                        getter_AddRefs(document),
+                                        getter_AddRefs(principal));
+  NS_ENSURE_SUCCESS(rv, PR_FALSE);
 
-    if (!doc) {
-      // aNode is neither a nsIContent nor an nsIDocument, something
-      // weird is going on...
-
-      NS_ERROR("aNode is neither an nsIContent nor an nsIDocument!");
-
-      return PR_FALSE;
-    }
-    doc->GetPrincipal(getter_AddRefs(principal));
-  }
-  else {
-    nsCOMPtr<nsIDOMDocument> domDoc;
-    aNode->GetOwnerDocument(getter_AddRefs(domDoc));
-    if (!domDoc) {
-      nsCOMPtr<nsINodeInfo> ni;
-      content->GetNodeInfo(*getter_AddRefs(ni));
-      if (!ni) {
-        // aNode is not part of a document, let any caller access it.
-
-        return PR_TRUE;
-      }
-      
-      ni->GetDocumentPrincipal(getter_AddRefs(principal));
-    }
-    else {
-      nsCOMPtr<nsIDocument> doc = do_QueryInterface(domDoc);
-      NS_ASSERTION(doc, "QI to nsIDocument failed");
-      doc->GetPrincipal(getter_AddRefs(principal));
-    }
-  }
-
-  if (!principal) {
+  if (!document && !principal) {
     // We can't get hold of the principal for this node. This should happen
     // very rarely, like for textnodes out of the tree and <option>s created
     // using 'new Option'.
@@ -585,8 +633,8 @@ nsContentUtils::CanCallerAccess(nsIDOMNode *aNode)
     return PR_TRUE;
   }
 
-  nsresult rv = sSecurityManager->CheckSameOriginPrincipal(subjectPrincipal,
-                                                           principal);
+  rv = sSecurityManager->CheckSameOriginPrincipal(subjectPrincipal,
+                                                  principal);
 
   return NS_SUCCEEDED(rv);
 }
@@ -738,7 +786,7 @@ nsContentUtils::ReparentContentWrapper(nsIContent *aContent,
       ni->GetDocument(*getter_AddRefs(old_doc));
     }
 
-    if (!aOldDocument) {
+    if (!old_doc) {
       // If we can't find our old document we don't know what our old
       // scope was so there's no way to find the old wrapper
 
@@ -984,12 +1032,11 @@ nsContentUtils::GetCommonAncestor(nsIDOMNode *aNode,
 {
   *aCommonAncestor = nsnull;
 
-  nsAutoVoidArray nodeArray;
-  nsresult rv = GetFirstDifferentAncestors(aNode, aOther, &nodeArray);
+  nsCOMArray<nsIDOMNode> nodeArray;
+  nsresult rv = GetFirstDifferentAncestors(aNode, aOther, nodeArray);
   NS_ENSURE_SUCCESS(rv, rv);
 
-  nsIDOMNode *common =
-    NS_STATIC_CAST(nsIDOMNode*, nodeArray.ElementAt(0));
+  nsIDOMNode *common = nodeArray[0];
 
   NS_ASSERTION(common, "The common ancestor is null!  Very bad!");
 
@@ -1003,33 +1050,33 @@ nsContentUtils::GetCommonAncestor(nsIDOMNode *aNode,
 nsresult
 nsContentUtils::GetFirstDifferentAncestors(nsIDOMNode *aNode,
                                            nsIDOMNode *aOther,
-                                           nsVoidArray* aDifferentNodes)
+                                           nsCOMArray<nsIDOMNode>& aDifferentNodes)
 {
   NS_ENSURE_ARG_POINTER(aNode);
   NS_ENSURE_ARG_POINTER(aOther);
 
-  if (aDifferentNodes->Count() != 0) {
+  if (aDifferentNodes.Count() != 0) {
     NS_WARNING("The aDifferentNodes array passed in is not empty!");
-    aDifferentNodes->Clear();
+    aDifferentNodes.Clear();
   }
 
   // Test if both are the same node.
   if (aNode == aOther) {
-    aDifferentNodes->AppendElement(NS_STATIC_CAST(void*, aNode));
+    aDifferentNodes.AppendObject(aNode);
     return NS_OK;
   }
 
-  nsAutoVoidArray nodeAncestors;
-  nsAutoVoidArray otherAncestors;
+  nsCOMArray<nsIDOMNode> nodeAncestors;
+  nsCOMArray<nsIDOMNode> otherAncestors;
 
   // Insert all the ancestors of |aNode|
   nsCOMPtr<nsIDOMNode> node(aNode);
   nsCOMPtr<nsIDOMNode> ancestor(node);
   do {
-    nodeAncestors.AppendElement(node.get());
+    nodeAncestors.AppendObject(node);
     node->GetParentNode(getter_AddRefs(ancestor));
     if (ancestor == aOther) {
-      aDifferentNodes->AppendElement(NS_STATIC_CAST(void*, aOther));
+      aDifferentNodes.AppendObject(aOther);
       return NS_OK;
     }
     node = ancestor;
@@ -1039,10 +1086,10 @@ nsContentUtils::GetFirstDifferentAncestors(nsIDOMNode *aNode,
   nsCOMPtr<nsIDOMNode> other(aOther);
   ancestor = other;
   do {
-    otherAncestors.AppendElement(other.get());
+    otherAncestors.AppendObject(other);
     other->GetParentNode(getter_AddRefs(ancestor));
     if (ancestor == aNode) {
-      aDifferentNodes->AppendElement(NS_STATIC_CAST(void*, aNode));
+      aDifferentNodes.AppendObject(aNode);
       return NS_OK;
     }
     other = ancestor;
@@ -1051,7 +1098,7 @@ nsContentUtils::GetFirstDifferentAncestors(nsIDOMNode *aNode,
   PRInt32 nodeIdx  = nodeAncestors.Count() - 1;
   PRInt32 otherIdx = otherAncestors.Count() - 1;
 
-  if (nodeAncestors.ElementAt(nodeIdx) != otherAncestors.ElementAt(otherIdx)) {
+  if (nodeAncestors[nodeIdx] != otherAncestors[otherIdx]) {
     NS_ERROR("This function was called on two disconnected nodes!");
     return NS_ERROR_FAILURE;
   }
@@ -1061,16 +1108,137 @@ nsContentUtils::GetFirstDifferentAncestors(nsIDOMNode *aNode,
   do {
     --nodeIdx;
     --otherIdx;
-  } while (nodeAncestors.ElementAt(nodeIdx) == otherAncestors.ElementAt(otherIdx));
+  } while (nodeAncestors[nodeIdx] == otherAncestors[otherIdx]);
 
   NS_ASSERTION(nodeIdx >= 0 && otherIdx >= 0,
                "Something's wrong: our indices should not be negative here!");
 
-  aDifferentNodes->AppendElement(nodeAncestors.ElementAt(nodeIdx + 1));
-  aDifferentNodes->AppendElement(nodeAncestors.ElementAt(nodeIdx));
-  aDifferentNodes->AppendElement(otherAncestors.ElementAt(otherIdx));
+  aDifferentNodes.AppendObject(nodeAncestors[nodeIdx + 1]);
+  aDifferentNodes.AppendObject(nodeAncestors[nodeIdx]);
+  aDifferentNodes.AppendObject(otherAncestors[otherIdx]);
 
   return NS_OK;
+}
+
+PRUint16
+nsContentUtils::ComparePositionWithAncestors(nsIDOMNode *aNode,
+                                             nsIDOMNode *aOther)
+{
+#ifdef DEBUG
+  PRUint16 nodeType = 0;
+  PRUint16 otherType = 0;
+  aNode->GetNodeType(&nodeType);
+  aOther->GetNodeType(&otherType);
+
+  NS_PRECONDITION(nodeType != nsIDOMNode::ATTRIBUTE_NODE &&
+                  nodeType != nsIDOMNode::DOCUMENT_NODE &&
+                  nodeType != nsIDOMNode::DOCUMENT_FRAGMENT_NODE &&
+                  nodeType != nsIDOMNode::ENTITY_NODE &&
+                  nodeType != nsIDOMNode::NOTATION_NODE &&
+                  otherType != nsIDOMNode::ATTRIBUTE_NODE &&
+                  otherType != nsIDOMNode::DOCUMENT_NODE &&
+                  otherType != nsIDOMNode::DOCUMENT_FRAGMENT_NODE &&
+                  otherType != nsIDOMNode::ENTITY_NODE &&
+                  otherType != nsIDOMNode::NOTATION_NODE,
+                  "Bad.  Go read the documentation in the header!");
+#endif // DEBUG
+
+  PRUint16 mask = 0;
+
+  nsCOMArray<nsIDOMNode> nodeAncestors;
+
+  nsresult rv =
+    nsContentUtils::GetFirstDifferentAncestors(aNode, aOther, nodeAncestors);
+
+  if (NS_FAILED(rv)) {
+    // If there is no common container node, then the order is based upon
+    // order between the root container of each node that is in no container.
+    // In this case, the result is disconnected and implementation-dependent.
+    mask = (nsIDOMNode::DOCUMENT_POSITION_DISCONNECTED |
+            nsIDOMNode::DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC);
+
+    return mask;
+  }
+
+  nsIDOMNode* commonAncestor = nodeAncestors[0];
+
+  if (commonAncestor == aNode) {
+    mask = (nsIDOMNode::DOCUMENT_POSITION_IS_CONTAINED |
+            nsIDOMNode::DOCUMENT_POSITION_FOLLOWING);
+
+    return mask;
+  }
+
+  if (commonAncestor == aOther) {
+    mask |= (nsIDOMNode::DOCUMENT_POSITION_CONTAINS |
+             nsIDOMNode::DOCUMENT_POSITION_PRECEDING);
+
+    return mask;
+  }
+
+  // GetFirstDifferentAncestors should only succeed if one of the
+  // two nodes is the common ancestor, or if we have a common ancestor
+  // and the two first different ancestors.  We checked the case above
+  // where one of the two nodes were the common ancestor, so we must
+  // have three items in our array now.
+  NS_ASSERTION(commonAncestor && nodeAncestors.Count() == 3,
+               "Something's wrong");
+
+  nsIDOMNode* nodeAncestor = nodeAncestors[1];
+  nsIDOMNode* otherAncestor = nodeAncestors[2];
+
+  if (nodeAncestor && otherAncestor) {
+    // Find out which of the two nodes comes first in the document order.
+    // First get the children of the common ancestor.
+    nsCOMPtr<nsIDOMNodeList> children;
+    commonAncestor->GetChildNodes(getter_AddRefs(children));
+    PRUint32 numKids;
+    children->GetLength(&numKids);
+    for (PRUint32 i = 0; i < numKids; ++i) {
+      // Then go through the children one at a time to see which we hit first.
+      nsCOMPtr<nsIDOMNode> childNode;
+      children->Item(i, getter_AddRefs(childNode));
+      if (childNode == nodeAncestor) {
+        mask |= nsIDOMNode::DOCUMENT_POSITION_FOLLOWING;
+        break;
+      }
+
+      if (childNode == otherAncestor) {
+        mask |= nsIDOMNode::DOCUMENT_POSITION_PRECEDING;
+        break;
+      }
+    }
+  }
+
+  return mask;
+}
+
+PRUint16
+nsContentUtils::ReverseDocumentPosition(PRUint16 aDocumentPosition)
+{
+  // Disconnected and implementation-specific flags cannot be reversed.
+  // Keep them.
+  PRUint16 reversedPosition =
+    aDocumentPosition & (nsIDOMNode::DOCUMENT_POSITION_DISCONNECTED |
+                         nsIDOMNode::DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC);
+
+  // Following/preceding
+  if (aDocumentPosition & nsIDOMNode::DOCUMENT_POSITION_FOLLOWING) {
+    reversedPosition |= nsIDOMNode::DOCUMENT_POSITION_PRECEDING;
+  }
+  else if (aDocumentPosition & nsIDOMNode::DOCUMENT_POSITION_PRECEDING) {
+    reversedPosition |= nsIDOMNode::DOCUMENT_POSITION_FOLLOWING;
+  }
+
+  // Is contained/contains.
+  if (aDocumentPosition & nsIDOMNode::DOCUMENT_POSITION_CONTAINS) {
+    reversedPosition |= nsIDOMNode::DOCUMENT_POSITION_IS_CONTAINED;
+  }
+  else if (aDocumentPosition & nsIDOMNode::DOCUMENT_POSITION_IS_CONTAINED) {
+    reversedPosition |= nsIDOMNode::DOCUMENT_POSITION_CONTAINS;
+  }
+
+  return reversedPosition;
 }
 
 inline PRBool
@@ -1090,6 +1258,8 @@ IsCharInSet(const char* aSet,
 /**
  * This method strips leading/trailing chars, in given set, from string.
  */
+
+// static
 const nsDependentSubstring
 nsContentUtils::TrimCharsInSet(const char* aSet,
                                const nsAString& aValue)
@@ -1119,6 +1289,244 @@ nsContentUtils::TrimCharsInSet(const char* aSet,
 
   // valueEnd should point to the char after the last to copy
   return Substring(valueCurrent, valueEnd);
+}
+
+/**
+ * This method strips leading and trailing whitespace from a string.
+ */
+
+// static
+const nsDependentSubstring
+nsContentUtils::TrimWhitespace(const nsAString& aStr, PRBool aTrimTrailing)
+{
+  nsAString::const_iterator start, end;
+
+  aStr.BeginReading(start);
+  aStr.EndReading(end);
+
+  // Skip whitespace charaters in the beginning
+  while (start != end && nsString::IsSpace(*start)) {
+    ++start;
+  }
+
+  if (aTrimTrailing) {
+    // Skip whitespace characters in the end.
+    while (end != start) {
+      --end;
+
+      if (!nsString::IsSpace(*end)) {
+        // Step back to the last non-whitespace character.
+        ++end;
+
+        break;
+      }
+    }
+  }
+
+  // Return a substring for the string w/o leading and/or trailing
+  // whitespace
+
+  return Substring(start, end);
+}
+
+static inline void KeyAppendSep(nsACString& aKey)
+{
+  if (!aKey.IsEmpty()) {
+    aKey.Append('>');
+  }
+}
+
+static inline void KeyAppendString(const nsAString& aString, nsACString& aKey)
+{
+  KeyAppendSep(aKey);
+
+  // Could escape separator here if collisions happen.  > is not a legal char
+  // for a name or type attribute, so we should be safe avoiding that extra work.
+
+  aKey.Append(NS_ConvertUCS2toUTF8(aString));
+}
+
+static inline void KeyAppendString(const nsACString& aString, nsACString& aKey)
+{
+  KeyAppendSep(aKey);
+  
+  // Could escape separator here if collisions happen.  > is not a legal char
+  // for a name or type attribute, so we should be safe avoiding that extra work.
+
+  aKey.Append(aString);
+}
+
+static inline void KeyAppendInt(PRInt32 aInt, nsACString& aKey)
+{
+  KeyAppendSep(aKey);
+
+  aKey.Append(nsPrintfCString("%d", aInt));
+}
+
+static inline void KeyAppendAtom(nsIAtom* aAtom, nsACString& aKey)
+{
+  NS_PRECONDITION(aAtom, "KeyAppendAtom: aAtom can not be null!\n");
+
+  const char* atomString = nsnull;
+  aAtom->GetUTF8String(&atomString);
+
+  KeyAppendString(nsDependentCString(atomString), aKey);
+}
+
+static inline PRBool IsAutocompleteOff(nsIDOMElement* aElement)
+{
+  nsAutoString autocomplete;
+  aElement->GetAttribute(NS_LITERAL_STRING("autocomplete"), autocomplete);
+  return autocomplete.Equals(NS_LITERAL_STRING("off"),
+                             nsCaseInsensitiveStringComparator());
+}
+
+/*static*/ nsresult
+nsContentUtils::GenerateStateKey(nsIContent* aContent,
+                                 nsIStatefulFrame::SpecialStateID aID,
+                                 nsACString& aKey)
+{
+  aKey.Truncate();
+
+  // SpecialStateID case - e.g. scrollbars around the content window
+  // The key in this case is the special state id (always < min(contentID))
+  if (nsIStatefulFrame::eNoID != aID) {
+    KeyAppendInt(aID, aKey);
+    return NS_OK;
+  }
+
+  // We must have content if we're not using a special state id
+  NS_ENSURE_TRUE(aContent, NS_ERROR_FAILURE);
+
+  // Don't capture state for anonymous content
+  PRUint32 contentID;
+  aContent->GetContentID(&contentID);
+  if (!contentID) {
+    return NS_OK;
+  }
+
+  nsCOMPtr<nsIDOMElement> element(do_QueryInterface(aContent));
+  if (element && IsAutocompleteOff(element)) {
+    return NS_OK;
+  }
+
+  nsCOMPtr<nsIDocument> doc;
+  aContent->GetDocument(*getter_AddRefs(doc));
+  nsCOMPtr<nsIHTMLDocument> htmlDocument(do_QueryInterface(doc));
+
+  PRBool generatedUniqueKey = PR_FALSE;
+
+  if (htmlDocument) {
+    nsCOMPtr<nsIDOMHTMLDocument> domHtmlDocument(do_QueryInterface(htmlDocument));
+    nsCOMPtr<nsIDOMHTMLCollection> forms;
+    domHtmlDocument->GetForms(getter_AddRefs(forms));
+    nsCOMPtr<nsIContentList> htmlForms(do_QueryInterface(forms));
+
+    nsCOMPtr<nsIDOMNodeList> formControls;
+    htmlDocument->GetFormControlElements(getter_AddRefs(formControls));
+    nsCOMPtr<nsIContentList> htmlFormControls(do_QueryInterface(formControls));
+
+    // If we have a form control and can calculate form information, use
+    // that as the key - it is more reliable than contentID.
+    // Important to have a unique key, and tag/type/name may not be.
+    //
+    // If the control has a form, the format of the key is:
+    // type>IndOfFormInDoc>IndOfControlInForm>FormName>name
+    // else:
+    // type>IndOfControlInDoc>name
+    //
+    // XXX We don't need to use index if name is there
+    //
+    nsCOMPtr<nsIFormControl> control(do_QueryInterface(aContent));
+    if (control && htmlFormControls && htmlForms) {
+
+      // Append the control type
+      KeyAppendInt(control->GetType(), aKey);
+
+      // If in a form, add form name / index of form / index in form
+      PRInt32 index = -1;
+      nsCOMPtr<nsIDOMHTMLFormElement> formElement;
+      control->GetForm(getter_AddRefs(formElement));
+      if (formElement) {
+
+        if (IsAutocompleteOff(formElement)) {
+          aKey.Truncate();
+          return NS_OK;
+        }
+
+        // Append the index of the form in the document
+        nsCOMPtr<nsIContent> formContent(do_QueryInterface(formElement));
+        htmlForms->IndexOf(formContent, index, PR_FALSE);
+        if (index <= -1) {
+          //
+          // XXX HACK this uses some state that was dumped into the document
+          // specifically to fix bug 138892.  What we are trying to do is *guess*
+          // which form this control's state is found in, with the highly likely
+          // guess that the highest form parsed so far is the one.
+          // This code should not be on trunk, only branch.
+          //
+          htmlDocument->GetNumFormsSynchronous(&index);
+          index--;
+        }
+        if (index > -1) {
+          KeyAppendInt(index, aKey);
+
+          // Append the index of the control in the form
+          nsCOMPtr<nsIForm> form(do_QueryInterface(formElement));
+          form->IndexOfControl(control, &index);
+          NS_ASSERTION(index > -1,
+                       "nsContentUtils::GenerateStateKey didn't find form control index!");
+
+          if (index > -1) {
+            KeyAppendInt(index, aKey);
+            generatedUniqueKey = PR_TRUE;
+          }
+        }
+
+        // Append the form name
+        nsAutoString formName;
+        formElement->GetName(formName);
+        KeyAppendString(formName, aKey);
+
+      } else {
+
+        // If not in a form, add index of control in document
+        // Less desirable than indexing by form info. 
+
+        // Hash by index of control in doc (we are not in a form)
+        // These are important as they are unique, and type/name may not be.
+
+        // We don't refresh the form control list here (passing PR_TRUE
+        // for aFlush), although we really should. Forcing a flush
+        // causes a signficant pageload performance hit. See bug
+        // 166636. Doing this wrong means you will see the assertion
+        // below being hit.
+        htmlFormControls->IndexOf(aContent, index, PR_FALSE);
+        NS_ASSERTION(index > -1,
+                     "nsContentUtils::GenerateStateKey didn't find content "
+                     "by type! See bug 139568");
+
+        if (index > -1) {
+          KeyAppendInt(index, aKey);
+          generatedUniqueKey = PR_TRUE;
+        }
+      }
+
+      // Append the control name
+      nsAutoString name;
+      aContent->GetAttr(kNameSpaceID_None, nsHTMLAtoms::name, name);
+      KeyAppendString(name, aKey);
+    }
+  }
+
+  if (!generatedUniqueKey) {
+
+    // Either we didn't have a form control or we aren't in an HTML document
+    // so we can't figure out form info, hash by content ID instead :(
+    KeyAppendInt(contentID, aKey);
+  }
+
+  return NS_OK;
 }
 
 void

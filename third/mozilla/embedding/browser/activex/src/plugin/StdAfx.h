@@ -21,6 +21,7 @@
  *
  * Contributor(s):
  *
+ *   Adam Lock <adamlock@netscape.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or
@@ -54,6 +55,9 @@
 #define _ATL_STATIC_REGISTRY
 
 #define USE_PLUGIN
+
+// Uncomment if you want to say what is QI'ing for what
+//#define _ATL_DEBUG_QI
 
 // ATL headers
 #include <atlbase.h>

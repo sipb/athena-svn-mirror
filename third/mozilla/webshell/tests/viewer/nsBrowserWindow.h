@@ -47,6 +47,8 @@
 // Interfaces Needed
 #include "nsIBaseWindow.h"
 #include "nsIInterfaceRequestor.h"
+#include "nsIFile.h"
+#include "nsILocalFile.h"
 
 #include "nsIWebBrowser.h"
 #include "nsIStreamListener.h"
@@ -57,7 +59,6 @@
 #include "nsVoidArray.h"
 #include "nsCRT.h"
 #include "prtime.h"
-#include "nsFileSpec.h"
 
 #include "nsIXPBaseWindow.h"
 #include "nsPrintSetupDialog.h"
@@ -191,9 +192,6 @@ public:
   void ToggleVisualEventDebugging();
   void ToggleBoolPrefAndRefresh(const char * aPrefName);
 
-  void ShowContentSize(FILE* out = stdout);
-  void ShowFrameSize(FILE* out = stdout);
-  void ShowStyleSize(FILE* out = stdout);
   void DoDebugSave();
   void DoToggleSelection();
   void DoDebugRobot();

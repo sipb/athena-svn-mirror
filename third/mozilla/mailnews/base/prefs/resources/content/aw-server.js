@@ -105,9 +105,9 @@ function serverPageInit() {
     catch (ex){}
   }
     
-
   // Server type selection (pop3 or imap) is for mail accounts only
-  var isMailAccount = parent.GetPageData().accounttype.mailaccount;
+  var pageData = parent.GetPageData();
+  var isMailAccount = pageData.accounttype.mailaccount;
   if (isMailAccount && isMailAccount.value){
     var serverTypeRadioGroup = document.getElementById("servertype");
     /* 
@@ -129,7 +129,11 @@ function serverPageInit() {
   gPrefsBundle = document.getElementById("bundle_prefs");
   var smtpServer = null;
   try {
-    smtpServer = parent.smtpService.defaultServer;
+    // don't use the default smtp server if it has a redirector type
+    if (!parent.smtpService.defaultServer.redirectorType) {
+      smtpServer = parent.smtpService.defaultServer;
+      setPageData(pageData, "identity", "smtpServerKey", smtpServer.key);
+    }
   }
   catch(ex){}
 

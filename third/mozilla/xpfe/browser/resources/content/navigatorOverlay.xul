@@ -29,6 +29,7 @@
 <?xul-overlay href="chrome://communicator/content/tasksOverlay.xul"?>
 <?xul-overlay href="chrome://global/content/charsetOverlay.xul"?>
 <?xul-overlay href="chrome://navigator/content/platformNavigationBindings.xul"?>
+<?xul-overlay href="chrome://navigator/content/mailNavigatorOverlay.xul"?>
 
 <!DOCTYPE overlay [
 <!ENTITY % navigatorDTD SYSTEM "chrome://navigator/locale/navigator.dtd" >
@@ -85,6 +86,8 @@
     <key id="key_findPrev"   key="&findPrevCmd.commandkey;"       command="Browser:FindPrev"  modifiers="accel,shift"/>
     <key keycode="&findAgainCmd.commandkey2;" command="Browser:FindAgain"/>
     <key keycode="&findPrevCmd.commandkey2;"  command="Browser:FindPrev" modifiers="shift"/>
+    <key id="key_findTypeText"/>
+    <key id="key_findTypeLinks"/>
 
     <!-- Go Menu -->
 
@@ -109,6 +112,8 @@
   <commandset id="commands">
     <command id="cmd_newNavigator"/>
     <command id="cmd_newNavigatorTab" oncommand="BrowserOpenTab();"/>
+    <command id="cmd_newTabWithTarget" oncommand="contentAreaClick(event);"/>
+    <command id="cmd_handleBackspace"  oncommand="BrowserHandleBackspace();" />
 
     <command id="cmd_newEditor"/>
     <!-- NOT IMPLEMENTED
@@ -118,11 +123,12 @@
     <command id="Browser:SavePage" oncommand="saveDocument(window._content.document);"/>
     <command id="Browser:EditPage" oncommand="editPageOrFrame();" observes="isImage"/>
     <command id="Browser:Open" oncommand="BrowserOpenWindow();"/>
-    <command id="Browser:PrintSetup" oncommand="NSPrintSetup();"/>
+    <command id="cmd_printSetup" oncommand="NSPrintSetup();"/>
     <command id="Browser:Print" oncommand="NSPrint();"/>
     <command id="Browser:PrintPreview" oncommand="BrowserPrintPreview();"/>
     <command id="cmd_quit"/>
     <command id="cmd_close" oncommand="BrowserCloseTabOrWindow()"/>
+    <command id="cmd_closeOtherTabs" oncommand="BrowserCloseOtherTabs()"/>
     <command id="cmd_closeWindow" oncommand="BrowserCloseWindow()"/>
 
     <!-- Edit Menu -->
@@ -148,7 +154,9 @@
     <command id="Browser:Find" oncommand="BrowserFind();" observes="isImage"/>
     <command id="Browser:FindAgain" oncommand="BrowserFindAgain(false);" observes="isImage"/>
     <command id="Browser:FindPrev"  oncommand="BrowserFindAgain(true);"  observes="isImage"/>
-  
+    <command id="cmd_findTypeText" observes="isImage"/>
+    <command id="cmd_findTypeLinks" observes="isImage"/>
+
     <!-- Bookmarks Menu -->
     <command id="Browser:AddBookmark" label="&addCurPageCmd.label;" accesskey="&addCurPageCmd.accesskey;" 
              oncommand="BookmarksUtils.addBookmarkForBrowser(document.getElementById('content').webNavigation, false);"/>
@@ -183,11 +191,112 @@
     <broadcaster id="cmd_viewcomponentbar" oncommand="goToggleToolbar('component-bar', 'cmd_viewcomponentbar');" checked="true"/>
     <broadcaster id="isImage"/>
   </broadcasterset>
+         
+  <!-- bookmarks context menu -->
+  <popupset id="bookmarksPopupset">
+    <popup id="bookmarks-context-menu" 
+           onpopupshowing="BookmarksMenu.createContextMenu(event);"
+           onpopuphidden ="BookmarksMenu.destroyContextMenu(event);"/>
+  </popupset>
+
+  <!-- bookmarks toolbar tooltip -->
+  <tooltip id="btTooltip" noautohide="true" 
+           onpopupshowing="return BookmarksToolbar.fillInBTTooltip(document.tooltipNode)">
+    <vbox id="btTooltipTextBox" flex="1">  
+      <label id="btTitleText"/>
+      <label id="btUrlText"/>
+    </vbox>
+  </tooltip>
+
+  <!-- bookmarks template -->
+  <template id="bookmarksMenuTemplate" xmlns:nc="http://home.netscape.com/NC-rdf#">
+    <rule parent="hbox" rdf:type="http://home.netscape.com/NC-rdf#BookmarkSeparator">
+      <toolbarseparator uri="rdf:*"
+                        rdf:type="rdf:http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
+    </rule>
+    <!-- yes, the type attribute is necessary otherwise all leaves are 
+         treated as containers for some reason -->
+    <rule parent="hbox" iscontainer="true"
+          nc:FolderGroup="true">
+      <toolbarbutton class="bookmark-item bookmark-group" uri="rdf:*" xulcontentsgenerated="true" 
+                     group="true"
+                     container="false"
+                     rdf:type="http://home.netscape.com/NC-rdf#Folder"
+                     label="rdf:http://home.netscape.com/NC-rdf#Name"/>
+    </rule>
+    <rule parent="hbox" iscontainer="true" isempty="true"
+          rdf:type="http://home.netscape.com/NC-rdf#Folder">
+      <toolbarbutton type="menu" editable="true" class="bookmark-item"
+                     rdf:type="http://home.netscape.com/NC-rdf#Folder"
+                     uri="rdf:*" label="rdf:http://home.netscape.com/NC-rdf#Name">
+        <menupopup>
+          <menuitem label="&emptyItem.label;" disabled="true"/>
+        </menupopup>
+      </toolbarbutton>
+    </rule>
+    <rule parent="hbox" iscontainer="true">
+      <toolbarbutton type="menu" class="bookmark-item" uri="rdf:*" editable="true"
+                     rdf:type="http://home.netscape.com/NC-rdf#Folder"
+                     label="rdf:http://home.netscape.com/NC-rdf#Name">
+        <menupopup/>
+      </toolbarbutton>
+    </rule>
+    <rule parent="hbox">
+      <toolbarbutton class="bookmark-item" uri="rdf:*" editable="true" 
+                     status="rdf:http://home.netscape.com/WEB-rdf#status"
+                     rdf:type="http://home.netscape.com/NC-rdf#Bookmark"
+                     statustext="rdf:http://home.netscape.com/NC-rdf#URL"
+                     tooltip="btTooltip"
+                     label="rdf:http://home.netscape.com/NC-rdf#Name"/>
+    </rule>
+    <rule nc:FolderGroup="true" iscontainer="true">
+      <menupopup>
+        <menuitem class="menuitem-iconic bookmark-group" 
+                  label="rdf:http://home.netscape.com/NC-rdf#Name"
+                  group="true"
+                  uri="rdf:*"
+                  xulcontentsgenerated="true"/>
+      </menupopup>
+    </rule>
+    <rule iscontainer="true" isempty="true"
+          rdf:type="http://home.netscape.com/NC-rdf#Folder">
+      <menupopup>
+        <menu class="menu-iconic bookmark-item" uri="rdf:*" 
+              type="rdf:http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
+              label="rdf:http://home.netscape.com/NC-rdf#Name">
+          <menupopup>
+            <menuitem label="&emptyItem.label;" disabled="true"/>
+          </menupopup>
+        </menu>
+      </menupopup>
+    </rule>
+    <rule iscontainer="true">
+      <menupopup>
+        <menu class="menu-iconic bookmark-item" uri="rdf:*"
+              label="rdf:http://home.netscape.com/NC-rdf#Name"
+              type="rdf:http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
+          <menupopup />
+        </menu>
+      </menupopup>
+    </rule>
+    <rule rdf:type="http://home.netscape.com/NC-rdf#BookmarkSeparator">
+      <menupopup> 
+        <menuseparator uri="rdf:*" />
+      </menupopup>
+    </rule>
+    <rule>
+      <menupopup>
+        <menuitem class="menuitem-iconic bookmark-item" uri="rdf:*"
+                  label="rdf:http://home.netscape.com/NC-rdf#Name" 
+                  status="rdf:http://home.netscape.com/WEB-rdf#status"/>
+      </menupopup>
+    </rule>
+  </template>
 
   <!-- Menu -->
   <menubar id="main-menubar" class="chromeclass-menubar">
     <menu id="menu_File">
-      <menupopup id="menu_FilePopup" onpopupshowing="getContentAreaFrameCount();">
+      <menupopup id="menu_FilePopup" onpopupshowing="updateCloseItems();getContentAreaFrameCount();">
         <menu id="menu_New">
           <menupopup id="menu_NewPopup">
             <!-- From utilityOverlay.xul -->
@@ -201,14 +310,15 @@
         <menuitem label="&openCmd.label;" accesskey="&openCmd.accesskey;" key="openLocationKb" command="Browser:Open"/>
         <menuitem label="&openFileCmd.label;" accesskey="&openFileCmd.accesskey;" key="openFileKb" command="Browser:OpenFile"/>
         <menuitem id="menu_close"/>
+        <menuitem id="menu_closeOtherTabs" command="cmd_closeOtherTabs" label="&closeOtherTabs.label;"/>
         <menuitem id="menu_closeWindow" hidden="true" command="cmd_closeWindow" key="key_closeWindow" label="&closeWindow.label;"/>
         <menuseparator/>
         <menuitem label="&savePageCmd.label;" accesskey="&savePageCmd.accesskey;" key="key_savePage" command="Browser:SavePage"/>
         <menuitem id="savepage" label="&saveFrameCmd.label;" accesskey="&saveFrameCmd.accesskey;" oncommand="saveFrameDocument();" hidden="true"/>
-        <menuseparator/>
+        <menuseparator id="saveMenuBlockEnd"/>
         <menuitem label="&editPageCmd.label;" accesskey="&editPageCmd.accesskey;" key="key_editPage" command="Browser:EditPage" />
         <menuseparator/>
-        <menuitem id="printSetupMenuItem" label="&printSetupCmd.label;" accesskey="&printSetupCmd.accesskey;" command="Browser:PrintSetup"/>
+        <menuitem id="printSetupMenuItem" label="&printSetupCmd.label;" accesskey="&printSetupCmd.accesskey;" command="cmd_printSetup"/>
         <menuitem id="printPreviewMenuItem" label="&printPreviewCmd.label;" accesskey="&printPreviewCmd.accesskey;" command="Browser:PrintPreview"/>
         <menuitem id="printMenuItem" label="&printCmd.label;" accesskey="&printCmd.accesskey;" key="printKb" command="Browser:Print"/>
         <menuseparator/>
@@ -231,6 +341,10 @@
         <menuitem id="menu_find" label="&findOnCmd.label;" accesskey="&findOnCmd.accesskey;" key="key_find" command="Browser:Find"/>
         <menuitem id="menu_findAgain" label="&findAgainCmd.label;" accesskey="&findAgainCmd.accesskey;" key="key_findAgain" command="Browser:FindAgain"/>
         <menuitem id="menu_findPrev"  label="&findPrevCmd.label;"  accesskey="&findPrevCmd.accesskey;" key="key_findPrev" command="Browser:FindPrev"/>
+        <menuseparator/> 
+        <menuitem id="menu_findTypeLinks"/>
+        <menuitem id="menu_findTypeText"/>
+
         <menuseparator id="menu_PrefsSeparator"/> 
         <menuitem id="menu_preferences" oncommand="goPreferences('navigator', 'chrome://communicator/content/pref/pref-navigator.xul', 'navigator')"/>
       </menupopup>
@@ -300,51 +414,12 @@
     <menu id="BookmarksMenu" label="&bookmarksMenu.label;" accesskey="&bookmarksMenu.accesskey;" 
           datasources="rdf:bookmarks rdf:files rdf:localsearch rdf:internetsearch" 
           ref="NC:BookmarksRoot" flags="dont-test-empty" template="bookmarksMenuTemplate"
-          oncommand="OpenBookmarkURL(event.target, this.database)">
-      <template id="bookmarksMenuTemplate" xmlns:nc="http://home.netscape.com/NC-rdf#">
-        <rule nc:FolderGroup="true" iscontainer="true">
-          <menupopup>
-            <menuitem class="menuitem-iconic bookmark-group" 
-                      label="rdf:http://home.netscape.com/NC-rdf#Name"
-                      group="true"
-                      uri="rdf:*"
-                      xulcontentsgenerated="true"/>
-          </menupopup>
-        </rule>
-        <rule iscontainer="true" isempty="true"
-              rdf:type="http://home.netscape.com/NC-rdf#Folder">
-          <menupopup>
-            <menu class="menu-iconic bookmark-item" uri="rdf:*" 
-                  type="rdf:http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
-                  label="rdf:http://home.netscape.com/NC-rdf#Name">
-              <menupopup>
-                <menuitem label="&emptyItem.label;" disabled="true"/>
-              </menupopup>
-            </menu>
-          </menupopup>
-        </rule>
-        <rule iscontainer="true">
-          <menupopup>
-            <menu class="menu-iconic bookmark-item" uri="rdf:*"
-                  label="rdf:http://home.netscape.com/NC-rdf#Name"
-                  type="rdf:http://www.w3.org/1999/02/22-rdf-syntax-ns#type">
-              <menupopup />
-            </menu>
-          </menupopup>
-        </rule>
-        <rule rdf:type="http://home.netscape.com/NC-rdf#BookmarkSeparator">
-          <menupopup> 
-            <menuseparator uri="rdf:*" />
-          </menupopup>
-        </rule>
-        <rule>
-          <menupopup>
-            <menuitem class="menuitem-iconic bookmark-item" uri="rdf:*"
-                      label="rdf:http://home.netscape.com/NC-rdf#Name" 
-                      status="rdf:http://home.netscape.com/WEB-rdf#status"/>
-          </menupopup>
-        </rule>
-      </template>
+          oncommand="BookmarksMenu.loadBookmark(event.target, this.database)"
+          ondraggesture="nsDragAndDrop.startDrag(event, BookmarksMenuDNDObserver)"
+          ondragdrop="nsDragAndDrop.drop(event, BookmarksMenuDNDObserver); event.preventBubble()"
+          ondragenter="nsDragAndDrop.dragEnter(event, BookmarksMenuDNDObserver); event.preventBubble()"
+          ondragexit="nsDragAndDrop.dragExit(event, BookmarksMenuDNDObserver); event.preventBubble()"
+          ondragover="nsDragAndDrop.dragOver(event, BookmarksMenuDNDObserver); event.preventBubble()">
       <menupopup onpopupshowing="updateGroupmarkMenuitem('bookmarks_groupmark');">
         <!-- for some reason these don't work as command="" -->
         <menuitem key="addBookmarkKb"   observes="Browser:AddBookmark"/>

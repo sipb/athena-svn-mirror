@@ -84,8 +84,10 @@
 #include "prlog.h"
 #include "prthread.h"
 
+#ifdef OJI
 #include "nsIJVMManager.h"
 #include "nsILiveConnectManager.h"
+#endif
 
 const size_t gStackSize = 8192;
 
@@ -118,6 +120,7 @@ static PRBool sDidShutdown = PR_FALSE;
 
 static PRInt32 sContextCount = 0;
 
+static nsIScriptSecurityManager *sSecurityManager = nsnull;
 
 void JS_DLL_CALLBACK
 NS_ScriptErrorReporter(JSContext *cx,
@@ -386,7 +389,6 @@ nsJSContext::JSOptionChangedCallback(const char *pref, void *data)
 
 nsJSContext::nsJSContext(JSRuntime *aRuntime) : mGCOnDestruction(PR_TRUE)
 {
-  NS_INIT_ISUPPORTS();
 
   ++sContextCount;
 
@@ -435,8 +437,6 @@ nsJSContext::nsJSContext(JSRuntime *aRuntime) : mGCOnDestruction(PR_TRUE)
 
 nsJSContext::~nsJSContext()
 {
-  mSecurityManager = nsnull; // Force release
-
   // Cope with JS_NewContext failure in ctor (XXXbe move NewContext to Init?)
   if (!mContext)
     return;
@@ -468,9 +468,12 @@ nsJSContext::~nsJSContext()
 
   if (!sContextCount && sDidShutdown) {
     // The last context is being deleted, and we're already in the
-    // process of shutting down, release the JS runtime service.
+    // process of shutting down, release the JS runtime service, and
+    // the security manager.
 
     NS_IF_RELEASE(sRuntimeService);
+
+    NS_IF_RELEASE(sSecurityManager);
   }
 }
 
@@ -500,7 +503,10 @@ nsJSContext::EvaluateStringWithValue(const nsAString& aScript,
   // Beware that the result is not rooted! Be very careful not to run
   // the GC before rooting the result somehow!
   if (!mScriptsEnabled) {
-    *aIsUndefined = PR_TRUE;
+    if (aIsUndefined) {
+      *aIsUndefined = PR_TRUE;
+    }
+
     return NS_OK;
   }
 
@@ -591,11 +597,16 @@ nsJSContext::EvaluateStringWithValue(const nsAString& aScript,
 
   // If all went well, convert val to a string (XXXbe unless undefined?).
   if (ok) {
-    if (aIsUndefined) *aIsUndefined = JSVAL_IS_VOID(val);
+    if (aIsUndefined) {
+      *aIsUndefined = JSVAL_IS_VOID(val);
+    }
+
     *NS_STATIC_CAST(jsval*, aRetValue) = val;
   }
   else {
-    if (aIsUndefined) *aIsUndefined = PR_TRUE;
+    if (aIsUndefined) {
+      *aIsUndefined = PR_TRUE;
+    }
   }
 
   // Pop here, after JS_ValueToString and any other possible evaluation.
@@ -604,6 +615,61 @@ nsJSContext::EvaluateStringWithValue(const nsAString& aScript,
 
   return rv;
 
+}
+
+// Helper function to convert a jsval to an nsAString, and set
+// exception flags if the conversion fails.
+static nsresult
+JSValueToAString(JSContext *cx, jsval val, nsAString *result,
+                 PRBool *isUndefined)
+{
+  if (isUndefined) {
+    *isUndefined = JSVAL_IS_VOID(val);
+  }
+
+  if (!result) {
+    return NS_OK;
+  }
+
+  JSString* jsstring = ::JS_ValueToString(cx, val);
+  if (jsstring) {
+    result->Assign(NS_REINTERPRET_CAST(const PRUnichar*,
+                                       ::JS_GetStringChars(jsstring)),
+                   ::JS_GetStringLength(jsstring));
+  } else {
+    result->Truncate();
+
+    // We failed to convert val to a string. We're either OOM, or the
+    // security manager denied access to .toString(), or somesuch, on
+    // an object. Treat this case as if the result were undefined.
+
+    if (isUndefined) {
+      *isUndefined = PR_TRUE;
+    }
+
+    if (!::JS_IsExceptionPending(cx)) {
+      // JS_ValueToString() returned null w/o an exception
+      // pending. That means we're OOM.
+
+      return NS_ERROR_OUT_OF_MEMORY;
+    }
+
+    // We've got a pending exception. Tell XPConnect's current native
+    // call context (if any) about this exception so that it doesn't
+    // keep going as if nothing happened.
+
+    nsCOMPtr<nsIXPConnect> xpc(do_GetService(nsIXPConnect::GetCID()));
+
+    if (xpc) {
+      nsCOMPtr<nsIXPCNativeCallContext> nccx;
+      xpc->GetCurrentNativeCallContext(getter_AddRefs(nccx));
+      if (nccx) {
+        nccx->SetExceptionWasThrown(PR_TRUE);
+      }
+    }
+  }
+
+  return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -709,18 +775,13 @@ nsJSContext::EvaluateString(const nsAString& aScript,
 
   // If all went well, convert val to a string (XXXbe unless undefined?).
   if (ok) {
-    if (aIsUndefined) *aIsUndefined = JSVAL_IS_VOID(val);
-    JSString* jsstring = ::JS_ValueToString(mContext, val);
-    if (jsstring) {
-      aRetValue.Assign(NS_REINTERPRET_CAST(const PRUnichar*,
-                                           ::JS_GetStringChars(jsstring)),
-                       ::JS_GetStringLength(jsstring));
-    } else {
-      rv = NS_ERROR_OUT_OF_MEMORY;
-    }
+    rv = JSValueToAString(mContext, val, &aRetValue, aIsUndefined);
   }
   else {
-    if (aIsUndefined) *aIsUndefined = PR_TRUE;
+    if (aIsUndefined) {
+      *aIsUndefined = PR_TRUE;
+    }
+
     aRetValue.Truncate();
   }
 
@@ -811,10 +872,14 @@ nsJSContext::ExecuteScript(void* aScriptObject,
                            PRBool* aIsUndefined)
 {
   if (!mScriptsEnabled) {
-    if (aIsUndefined)
+    if (aIsUndefined) {
       *aIsUndefined = PR_TRUE;
-    if (aRetValue)
+    }
+
+    if (aRetValue) {
       aRetValue->Truncate();
+    }
+
     return NS_OK;
   }
 
@@ -848,23 +913,16 @@ nsJSContext::ExecuteScript(void* aScriptObject,
 
   if (ok) {
     // If all went well, convert val to a string (XXXbe unless undefined?).
-    if (aIsUndefined)
-      *aIsUndefined = JSVAL_IS_VOID(val);
-    if (aRetValue) {
-      JSString* jsstring = ::JS_ValueToString(mContext, val);
-      if (jsstring) {
-        aRetValue->Assign(NS_REINTERPRET_CAST(const PRUnichar*,
-                                              ::JS_GetStringChars(jsstring)),
-                          ::JS_GetStringLength(jsstring));
-      } else {
-        rv = NS_ERROR_OUT_OF_MEMORY;
-      }
-    }
+
+    rv = JSValueToAString(mContext, val, aRetValue, aIsUndefined);
   } else {
-    if (aIsUndefined)
+    if (aIsUndefined) {
       *aIsUndefined = PR_TRUE;
-    if (aRetValue)
+    }
+
+    if (aRetValue) {
       aRetValue->Truncate();
+    }
   }
 
   ScriptEvaluated(PR_TRUE);
@@ -884,14 +942,14 @@ AtomToEventHandlerName(nsIAtom *aName, char *charName, PRUint32 charNameSize)
   // optimized to avoid ns*Str*.h explicit/implicit copying and malloc'ing
   // even nsCAutoString may call an Append that copy-constructs an nsStr from
   // a const PRUnichar*
-  const PRUnichar *name;
-  aName->GetUnicode(&name);
+  const char *name;
+  aName->GetUTF8String(&name);
   char c;
   PRUint32 i = 0;
 
   do {
     NS_ASSERTION(name[i] < 128, "non-ASCII event handler name");
-    c = char(name[i]);
+    c = name[i];
 
     // The HTML content sink must have folded to lowercase already.
     NS_ASSERTION(c == '\0' || isalpha(c), "non-alphabetic event handler name");
@@ -906,25 +964,35 @@ nsJSContext::CompileEventHandler(void *aTarget, nsIAtom *aName,
                                  const nsAString& aBody,
                                  PRBool aShared, void** aHandler)
 {
+  if (!sSecurityManager) {
+    NS_ERROR("Huh, we need a script security manager to compile "
+             "an event handler!");
+
+    return NS_ERROR_UNEXPECTED;
+  }
+
+  JSObject *target = (JSObject*)aTarget;
+
   JSPrincipals *jsprin = nsnull;
 
-  nsCOMPtr<nsIScriptGlobalObject> global;
-  GetGlobalObject(getter_AddRefs(global));
-  if (global) {
-    // XXXbe why the two-step QI? speed up via a new GetGlobalObjectData func?
-    nsCOMPtr<nsIScriptObjectPrincipal> globalData = do_QueryInterface(global);
-    if (globalData) {
-      nsCOMPtr<nsIPrincipal> prin;
-      if (NS_FAILED(globalData->GetPrincipal(getter_AddRefs(prin))))
-        return NS_ERROR_FAILURE;
-      prin->GetJSPrincipals(&jsprin);
-    }
+  if (target) {
+    // Get the principal of the event target (the object principal),
+    // don't get the principal of the global object in this context
+    // since that opens up security exploits with delayed event
+    // handler compilation on stale DOM objects (objects that live in
+    // a document that has already been unloaded).
+    nsCOMPtr<nsIPrincipal> prin;
+    nsresult rv = sSecurityManager->GetObjectPrincipal(mContext, target,
+                                                       getter_AddRefs(prin));
+    NS_ENSURE_SUCCESS(rv, rv);
+
+    prin->GetJSPrincipals(&jsprin);
+    NS_ENSURE_TRUE(jsprin, NS_ERROR_NOT_AVAILABLE);
   }
 
   char charName[64];
   AtomToEventHandlerName(aName, charName, sizeof charName);
 
-  JSObject *target = (JSObject*)aTarget;
   JSFunction* fun =
       ::JS_CompileUCFunctionForPrincipals(mContext, target, jsprin,
                                           charName, 1, gEventArgv,
@@ -933,10 +1001,12 @@ nsJSContext::CompileEventHandler(void *aTarget, nsIAtom *aName,
                                           //XXXbe filename, lineno:
                                           nsnull, 0);
 
-  if (jsprin)
+  if (jsprin) {
     JSPRINCIPALS_DROP(mContext, jsprin);
-  if (!fun)
+  }
+  if (!fun) {
     return NS_ERROR_FAILURE;
+  }
 
   JSObject *handler = ::JS_GetFunctionObject(fun);
   if (aHandler)
@@ -1228,6 +1298,7 @@ nsJSContext::InitializeLiveConnectClasses()
 {
   nsresult rv = NS_OK;
 
+#ifdef OJI
   nsCOMPtr<nsIJVMManager> jvmManager =
     do_GetService(nsIJVMManager::GetCID(), &rv);
 
@@ -1245,6 +1316,7 @@ nsJSContext::InitializeLiveConnectClasses()
       }
     }
   }
+#endif /* OJI */
 
   // return all is well until things are stable.
   return NS_OK;
@@ -1437,6 +1509,9 @@ nsJSContext::InitClasses()
   rv = InitializeLiveConnectClasses();
   NS_ENSURE_SUCCESS(rv, rv);
 
+  rv = nsDOMClassInfo::InitDOMJSClass(mContext, globalObj);
+  NS_ENSURE_SUCCESS(rv, rv);
+
   // Initialize the options object and set default options in mContext
   JSObject *optionsObj = ::JS_DefineObject(mContext, globalObj, "_options",
                                            &OptionsClass, nsnull, 0);
@@ -1493,14 +1568,12 @@ nsJSContext::ScriptEvaluated(PRBool aTerminated)
 NS_IMETHODIMP
 nsJSContext::GetSecurityManager(nsIScriptSecurityManager **aInstancePtr)
 {
-  if (!mSecurityManager) {
-    nsresult rv = NS_OK;
+  *aInstancePtr = sSecurityManager;
 
-    mSecurityManager = do_GetService(kScriptSecurityManagerContractID, &rv);
-    NS_ENSURE_SUCCESS(rv, rv);
+  if (!sSecurityManager) {
+    return NS_ERROR_NOT_AVAILABLE;
   }
 
-  *aInstancePtr = mSecurityManager;
   NS_ADDREF(*aInstancePtr);
 
   return NS_OK;
@@ -1650,9 +1723,7 @@ nsresult nsJSEnvironment::Init()
     return NS_OK;
   }
 
-  nsresult rv = nsServiceManager::GetService(kJSRuntimeServiceContractID,
-                                             NS_GET_IID(nsIJSRuntimeService),
-                                             (nsISupports**)&sRuntimeService);
+  nsresult rv = CallGetService(kJSRuntimeServiceContractID, &sRuntimeService);
   // get the JSRuntime from the runtime svc, if possible
   NS_ENSURE_SUCCESS(rv, rv);
 
@@ -1688,6 +1759,7 @@ nsresult nsJSEnvironment::Init()
     NS_WARNING("Failed to get XPConnect service!");
   }
 
+#ifdef OJI
   // Initialize LiveConnect.  XXXbe use contractid rather than GetCID
   // NOTE: LiveConnect is optional so initialisation will still succeed
   //       even if the service is not present.
@@ -1700,6 +1772,9 @@ nsresult nsJSEnvironment::Init()
     PRBool started = PR_FALSE;
     rv = manager->StartupLiveConnect(sRuntime, started);
   }
+#endif /* OJI */
+
+  rv = CallGetService(kScriptSecurityManagerContractID, &sSecurityManager);
 
   isInitialized = NS_SUCCEEDED(rv);
 
@@ -1723,9 +1798,10 @@ void nsJSEnvironment::ShutDown()
 
   if (!sContextCount) {
     // We're being shutdown, and there are no more contexts
-    // alive, release the JS runtime service.
+    // alive, release the JS runtime service and the security manager.
 
     NS_IF_RELEASE(sRuntimeService);
+    NS_IF_RELEASE(sSecurityManager);
   }
 
   sDidShutdown = PR_TRUE;

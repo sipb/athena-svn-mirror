@@ -76,8 +76,6 @@ static NS_DEFINE_CID(kPrefCID,            NS_PREF_CID);
 //
 nsMsgDraft::nsMsgDraft()
 {
-	NS_INIT_ISUPPORTS();
-
   mURI = nsnull;
   mMessageService = nsnull;
   mOutType = nsMimeOutput::nsMimeMessageDraftOrTemplate;
@@ -93,9 +91,6 @@ nsMsgDraft::~nsMsgDraft()
 
 /* the following macro actually implement addref, release and query interface for our component. */
 NS_IMPL_ISUPPORTS1(nsMsgDraft, nsIMsgDraft)
-
-// stream converter
-static NS_DEFINE_CID(kStreamConverterCID,    NS_MAILNEWS_MIME_STREAM_CONVERTER_CID);
 
 nsresult    
 nsMsgDraft::ProcessDraftOrTemplateOperation(const char *msgURI, nsMimeOutputType aOutType, 
@@ -123,10 +118,8 @@ nsMsgDraft::ProcessDraftOrTemplateOperation(const char *msgURI, nsMimeOutputType
 
   // Now, we can create a mime parser (nsIStreamConverter)!
   nsCOMPtr<nsIStreamConverter> mimeParser;
-  rv = nsComponentManager::CreateInstance(kStreamConverterCID, 
-                                          NULL, NS_GET_IID(nsIStreamConverter), 
-                                          (void **) getter_AddRefs(mimeParser)); 
-  if (NS_FAILED(rv) || !mimeParser)
+  mimeParser = do_CreateInstance(NS_MAILNEWS_MIME_STREAM_CONVERTER_CONTRACTID, &rv);
+  if (NS_FAILED(rv))
   {
     Release();
     mMessageService = nsnull;
@@ -180,8 +173,7 @@ nsMsgDraft::ProcessDraftOrTemplateOperation(const char *msgURI, nsMimeOutputType
   }
 
   nsCOMPtr<nsIChannel> dummyChannel;
-  rv = NS_NewInputStreamChannel(getter_AddRefs(dummyChannel), aURL, nsnull,
-                                NS_LITERAL_CSTRING(""), NS_LITERAL_CSTRING(""), -1);
+  rv = NS_NewInputStreamChannel(getter_AddRefs(dummyChannel), aURL, nsnull);
   if (NS_FAILED(mimeParser->AsyncConvertData(nsnull, nsnull, nsnull, dummyChannel)))
   {
     Release();

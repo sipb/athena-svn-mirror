@@ -42,13 +42,14 @@
 #include "nsIEventStateManager.h"
 #include "nsGUIEvent.h"
 #include "nsIContent.h"
-#include "nsIPref.h"
+#include "nsIPrefBranch.h"
 #include "nsIObserver.h"
 #include "nsWeakReference.h"
 #include "nsHashtable.h"
 #include "nsITimer.h"
+#include "nsIDocument.h"
+#include "nsCOMArray.h"
 
-class nsIDocument;
 class nsIScrollableView;
 class nsIPresShell;
 class nsIFrameSelection;
@@ -73,10 +74,10 @@ class nsEventStateManager : public nsSupportsWeakReference,
 {
   // Tab focus model bit field:
   enum nsTabFocusModel {
-    eTabFocus_unset = 0,                  // unset, check preferences
-    eTabFocus_textControlsMask = (1<<0),  // text elements
+  //eTabFocus_textControlsMask = (1<<0),  // unused - textboxes always tabbable
     eTabFocus_formElementsMask = (1<<1),  // non-text form elements
-    eTabFocus_linksMask = (1<<2)          // links
+    eTabFocus_linksMask = (1<<2),         // links
+    eTabFocus_any = 1 + (1<<1) + (1<<2),  // everything that can be focused
   };
 
   enum nsTextfieldSelectModel {
@@ -130,6 +131,7 @@ public:
   NS_IMETHOD SetContentState(nsIContent *aContent, PRInt32 aState);
   NS_IMETHOD GetFocusedContent(nsIContent **aContent);
   NS_IMETHOD SetFocusedContent(nsIContent* aContent);
+  NS_IMETHOD GetFocusedFrame(nsIFrame **aFrame);
   NS_IMETHOD ContentRemoved(nsIContent* aContent);
   NS_IMETHOD EventStatusOK(nsGUIEvent* aEvent, PRBool *aOK);
 
@@ -147,6 +149,7 @@ public:
 
   NS_IMETHOD ShiftFocus(PRBool aForward, nsIContent* aStart=nsnull);
 
+  NS_IMETHOD GetBrowseWithCaret(PRBool *aBrowseWithCaret);
   NS_IMETHOD ResetBrowseWithCaret(PRBool *aBrowseWithCaret);
 
   NS_IMETHOD MoveFocusToCaret(PRBool aCanFocusDoc, PRBool *aIsSelectionWithFocus);
@@ -154,12 +157,26 @@ public:
 
 protected:
   void UpdateCursor(nsIPresContext* aPresContext, nsEvent* aEvent, nsIFrame* aTargetFrame, nsEventStatus* aStatus);
+  /**
+   * Turn a GUI mouse event into a mouse event targeted at the specified
+   * content and frame.  This will fix the frame if it goes away during the
+   * event, as well.
+   */
+  void DispatchMouseEvent(nsIPresContext* aPresContext,
+                          nsGUIEvent* aEvent, PRUint32 aMessage,
+                          nsIContent* aTargetContent,
+                          nsIFrame*& aTargetFrame,
+                          nsIContent* aRelatedContent);
+  void MaybeDispatchMouseEventToIframe(nsIPresContext* aPresContext, nsGUIEvent* aEvent, PRUint32 aMessage);
   void GenerateMouseEnterExit(nsIPresContext* aPresContext, nsGUIEvent* aEvent);
   void GenerateDragDropEnterExit(nsIPresContext* aPresContext, nsGUIEvent* aEvent);
   nsresult SetClickCount(nsIPresContext* aPresContext, nsMouseEvent *aEvent, nsEventStatus* aStatus);
   nsresult CheckForAndDispatchClick(nsIPresContext* aPresContext, nsMouseEvent *aEvent, nsEventStatus* aStatus);
   PRBool ChangeFocus(nsIContent* aFocus, PRInt32 aFocusedWith);
-  nsresult GetNextTabbableContent(nsIContent* aRootContent, nsIFrame* aFrame, PRBool forward, PRBool ignoreTabIndex, nsIContent** aResult);
+  nsresult GetNextTabbableContent(nsIContent* aRootContent, nsIFrame* aFrame,
+                                  PRBool forward, PRBool ignoreTabIndex,
+                                  nsIContent** aResultNode,
+                                  nsIFrame** aResultFrame);
 
   void TabIndexFrom(nsIContent *aFrom, PRInt32 *aOutIndex);
   PRInt32 GetNextTabIndex(nsIContent* aParent, PRBool foward);
@@ -202,10 +219,10 @@ protected:
                                   nsIPresContext* &presCtxOuter);
   nsresult DoWheelScroll(nsIPresContext* aPresContext,
                          nsIFrame* aTargetFrame,
-                         nsMouseScrollEvent* msEvent, PRInt32 numLines,
-                         PRBool scrollPage, PRBool aUseTargetFrame);
+                         nsMouseScrollEvent* aMSEvent, PRInt32 aNumLines,
+                         PRBool aScrollHorizontal, PRBool aScrollPage, PRBool aUseTargetFrame);
   void ForceViewUpdate(nsIView* aView);
-  nsresult getPrefService();
+  nsresult getPrefBranch();
   nsresult ChangeTextSize(PRInt32 change);
   // end mousewheel functions
 
@@ -226,30 +243,37 @@ protected:
 
   void GetSelection ( nsIFrame* inFrame, nsIPresContext* inPresContext, nsIFrameSelection** outSelection ) ;
 
+  // To be called before and after you fire an event, to update booleans and
+  // such
+  void BeforeDispatchEvent() { ++mDOMEventLevel; }
+  void AfterDispatchEvent();
+
   //Any frames here must be checked for validity in ClearFrameRefs
   nsIFrame* mCurrentTarget;
-  nsIContent* mCurrentTargetContent;
-  nsIContent* mCurrentRelatedContent;
+  nsCOMPtr<nsIContent> mCurrentTargetContent;
+  nsCOMPtr<nsIContent> mCurrentRelatedContent;
   nsIFrame* mLastMouseOverFrame;
-  nsCOMPtr<nsIContent> mLastMouseOverContent;
+  nsCOMPtr<nsIContent> mLastMouseOverElement;
   nsIFrame* mLastDragOverFrame;
 
   // member variables for the d&d gesture state machine
   PRBool mIsTrackingDragGesture;
   nsPoint mGestureDownPoint;
+  nsPoint mGestureDownRefPoint;
   nsIFrame* mGestureDownFrame;
 
-  nsIContent* mLastLeftMouseDownContent;
-  nsIContent* mLastMiddleMouseDownContent;
-  nsIContent* mLastRightMouseDownContent;
+  nsCOMPtr<nsIContent> mLastLeftMouseDownContent;
+  nsCOMPtr<nsIContent> mLastMiddleMouseDownContent;
+  nsCOMPtr<nsIContent> mLastRightMouseDownContent;
 
-  nsIContent* mActiveContent;
-  nsIContent* mHoverContent;
-  nsIContent* mDragOverContent;
-  nsIContent* mCurrentFocus;
+  nsCOMPtr<nsIContent> mActiveContent;
+  nsCOMPtr<nsIContent> mHoverContent;
+  nsCOMPtr<nsIContent> mDragOverContent;
+  nsCOMPtr<nsIContent> mURLTargetContent;
+  nsCOMPtr<nsIContent> mCurrentFocus;
+  nsIFrame* mCurrentFocusFrame;
   PRInt32 mLastFocusedWith;
   PRInt32 mCurrentTabIndex;
-  nsIWidget * mLastWindowToHaveFocus; // last native window to get focus via the evs
   PRBool      mConsumeFocusEvents;
   PRInt32     mLockCursor;
 
@@ -257,13 +281,14 @@ protected:
   nsCOMPtr<nsIContent> mLastContentFocus;
 
   //Anti-recursive stack controls
-  nsIContent* mFirstBlurEvent;
-  nsIContent* mFirstFocusEvent;
-  nsCOMPtr<nsIContent> mFirstMouseOverEventContent;
-  nsCOMPtr<nsIContent> mFirstMouseOutEventContent;
+  nsCOMPtr<nsIContent> mFirstBlurEvent;
+  nsCOMPtr<nsIContent> mFirstFocusEvent;
+  nsCOMPtr<nsIContent> mFirstMouseOverEventElement;
+  nsCOMPtr<nsIContent> mFirstMouseOutEventElement;
 
   nsIPresContext* mPresContext;      // Not refcnted
-  nsIDocument* mDocument;            // [OWNER], but doesn't need to be.
+  nsCOMPtr<nsIDocument> mDocument;   // Doesn't necessarily need to be owner
+
   //Pref for dispatching middle and right clicks to content
   PRBool mLeftClickOnly;
 
@@ -280,19 +305,27 @@ protected:
   static PRInt32 gGeneralAccesskeyModifier;
 
   // For preferences handling
-  nsCOMPtr<nsIPref> mPrefService;
-  PRBool m_haveShutdown;
+  nsCOMPtr<nsIPrefBranch> mPrefBranch;
+  PRPackedBool m_haveShutdown;
+
+  // To inform people that dispatched events that frames have been cleared and
+  // they need to drop frame refs
+  PRPackedBool mClearedFrameRefsDuringEvent;
+
+  // The number of events we are currently nested in (currently just applies to
+  // those handlers that care about clearing frame refs)
+  PRInt32 mDOMEventLevel;
 
   // So we don't have to keep checking accessibility.browsewithcaret pref
   PRBool mBrowseWithCaret;
 
   // Tab focus policy (static, constant across the app):
   // Which types of elements are in the tab order?
-  static PRInt32 sTabFocusModel;
   static PRInt8  sTextfieldSelectModel;
 
   // Recursion guard for tabbing
   PRBool mTabbedThroughDocument;
+  nsCOMArray<nsIDocShell> mTabbingFromDocShells;
 
 #ifdef CLICK_HOLD_CONTEXT_MENUS
   enum { kClickHoldDelay = 500 } ;        // 500ms == 1/2 second
@@ -306,13 +339,14 @@ protected:
     // isn't guaranteed to be there later. We don't want to hold strong refs to
     // things because we're alerted to when they are going away in ClearFrameRefs().
   nsPoint mEventPoint, mEventRefPoint;
-  nsIWidget* mEventDownWidget;
-  nsIPresContext* mEventPresContext;
+  nsIWidget* mEventDownWidget; // [WEAK]
+  nsIPresContext* mEventPresContext; // [WEAK]
   nsCOMPtr<nsITimer> mClickHoldTimer;
 #endif
 
 };
 
-extern nsresult NS_NewEventStateManager(nsIEventStateManager** aInstancePtrResult);
+nsresult
+NS_NewEventStateManager(nsIEventStateManager** aInstancePtrResult);
 
 #endif // nsEventStateManager_h__

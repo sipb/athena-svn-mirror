@@ -30,6 +30,7 @@ MODULE		= addrbook
 LIBRARY_NAME	= addrbook_s
 META_COMPONENT = mail
 REQUIRES	= xpcom \
+		  xpcom_obsolete \
 		  string \
 		  rdf \
 		  rdfutil \
@@ -51,6 +52,7 @@ REQUIRES	= xpcom \
 		  appcomps \
 		  intl \
 		  import \
+		  windowwatcher \
 		  $(NULL)
 
 CPPSRCS		= \
@@ -84,6 +86,7 @@ CPPSRCS		= \
 		$(NULL)
 
 EXPORTS		= \
+		nsAbBaseCID.h \
 		nsAddressBook.h \
 		nsAddrBookSession.h \
 		nsAbRDFDataSource.h \
@@ -112,6 +115,7 @@ EXPORTS		= \
 		$(NULL)
 
 ifeq ($(OS_ARCH),WINNT)
+ifndef GNU_CC
 EXPORTS		+= \
 		nsAbOutlookCard.h \
 		nsAbOutlookDirFactory.h \
@@ -128,11 +132,11 @@ CPPSRCS		+= \
 		$(NULL)
 
 endif
+endif
 
 ifdef MOZ_LDAP_XPCOM
 REQUIRES    += mozldap \
                uriloader \
-               windowwatcher \
                $(NULL)
 
 EXPORTS		+= nsAbLDAPDirectoryQuery.h \

@@ -23,7 +23,7 @@
 
 function BuildJSEAttributeNameList()
 {
-  ClearMenulist(gDialog.AddJSEAttributeNameList);
+  gDialog.AddJSEAttributeNameList.removeAllItems();
   
   // Get events specific to current element
   var elementName = gElement.localName.toLowerCase();
@@ -173,9 +173,10 @@ function UpdateJSEAttributes()
   // remove removed attributes
   for (i = 0; i < JSERAttrs.length; i++)
   {
-    name = JSERAttrs[i];
-    if (gElement.getAttribute(name))
-      doRemoveAttribute(gElement, name);
+    var name = JSERAttrs[i];
+
+    if (gElement.hasAttribute(name))
+      doRemoveAttribute(name);
   }
 
   // Add events

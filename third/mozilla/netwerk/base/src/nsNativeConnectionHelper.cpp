@@ -38,7 +38,6 @@
 
 #include "nsNativeConnectionHelper.h"
 #include "nsAutodialWin.h"
-
 //-----------------------------------------------------------------------------
 // API typically invoked on the socket transport thread
 //-----------------------------------------------------------------------------

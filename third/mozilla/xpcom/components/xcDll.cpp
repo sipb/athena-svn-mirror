@@ -49,6 +49,8 @@
 #include "nsIComponentLoaderManager.h"
 #include "nsIModule.h"
 #include "nsILocalFile.h"
+#include "nsDirectoryServiceDefs.h"
+#include "nsDirectoryServiceUtils.h"
 #include "nsCOMPtr.h"
 #include "nsCRT.h"
 #include "nsString.h"
@@ -62,150 +64,57 @@
 #endif
 #endif /* defined(DEBUG) */
 
+#define UNLOAD_DEPENDENT_LIBS
+#ifdef HPUX
+#undef UNLOAD_DEPENDENT_LIBS
+#endif
+
 #include "nsNativeComponentLoader.h"
 
-nsDll::nsDll(const char *codeDllName, int type)
-  : m_dllName(NULL),
-    m_instance(NULL), m_status(DLL_OK), m_moduleObject(NULL),
-    m_persistentDescriptor(NULL), m_nativePath(NULL),
-    m_markForUnload(PR_FALSE), m_registryLocation(0)
-
+nsDll::nsDll(nsIFile *dllSpec, nsNativeComponentLoader *loader)
+    : m_dllSpec(do_QueryInterface(dllSpec)),
+      m_instance(NULL), 
+      m_moduleObject(NULL),
+      m_loader(loader),
+      m_markForUnload(PR_FALSE)
 {
-    if (!codeDllName || !*codeDllName)
-    {
-        m_status = DLL_INVALID_PARAM;
-        return;
-    }
-    m_dllName = nsCRT::strdup(codeDllName);
-    if (!m_dllName)
-    {
-        m_status = DLL_NO_MEM;
-        return;
-    }
+    NS_ASSERTION(loader, "Null loader when creating a nsDLL");
 }
-
-nsDll::nsDll(nsIFile *dllSpec, const char *registryLocation)
-  : m_dllName(NULL),
-    m_instance(NULL), m_status(DLL_OK), m_moduleObject(NULL),
-    m_persistentDescriptor(NULL), m_nativePath(NULL), m_markForUnload(PR_FALSE)
-
-{
-    m_dllSpec = dllSpec;
-
-    m_registryLocation = nsCRT::strdup(registryLocation);
-    Init(dllSpec);
-}
-
-nsDll::nsDll(const char *libPersistentDescriptor)
-  : m_dllName(NULL),
-    m_instance(NULL), m_status(DLL_OK), m_moduleObject(NULL),
-    m_persistentDescriptor(NULL), m_nativePath(NULL),
-    m_markForUnload(PR_FALSE), m_registryLocation(0)
-
-{
-    Init(libPersistentDescriptor);
-}
-
-void
-nsDll::Init(nsIFile *dllSpec)
-{
-    // Load will fail anyway. So dont bother to stat the file
-
-    m_dllSpec = do_QueryInterface(dllSpec);
-	m_status = DLL_OK;			
-}
-
-void
-nsDll::Init(const char *libPersistentDescriptor)
-{
-    nsresult rv;
-
-	if (libPersistentDescriptor == NULL)
-	{
-		m_status = DLL_INVALID_PARAM;
-		return;
-	}
-
-    // Create a FileSpec from the persistentDescriptor
-    nsCOMPtr<nsILocalFile> dllSpec;
-    
-    nsCID clsid;
-    nsComponentManager::ContractIDToClassID(NS_LOCAL_FILE_CONTRACTID, &clsid);
-    rv = nsComponentManager::CreateInstance(clsid, nsnull, 
-                                            NS_GET_IID(nsILocalFile),
-                                            (void**)getter_AddRefs(dllSpec));
-    if (NS_FAILED(rv))
-    {
-        m_status = DLL_INVALID_PARAM;
-        return;
-    }
-
-    rv = dllSpec->InitWithNativePath(nsDependentCString(libPersistentDescriptor));
-    if (NS_FAILED(rv))
-    {
-        m_status = DLL_INVALID_PARAM;
-        return;
-    }
-
-}
-
 
 nsDll::~nsDll(void)
 {
-#if DEBUG_dougt
+    //#if DEBUG_dougt
     // The dll gets deleted when the dllStore is destroyed. This happens on
     // app shutdown. At that point, unloading dlls can cause crashes if we have
     // - dll dependencies
     // - callbacks
     // - static dtors
     // Hence turn it back on after all the above have been removed.
-    Unload();
-#endif
-    if (m_dllName)
-        nsCRT::free(m_dllName);
-    if (m_registryLocation)
-        nsCRT::free(m_registryLocation);
-
+    //Unload();
+    //#endif
 }
 
-
-const char *
-nsDll::GetDisplayPath()
+void
+nsDll::GetDisplayPath(nsACString& aLeafName)
 {
-    if (m_dllName)
-        return m_dllName;
-    if (!m_nativePath.IsEmpty())
-        return m_nativePath.get();
-    m_dllSpec->GetNativePath(m_nativePath);
-    return m_nativePath.get();
-}
-
-const char *
-nsDll::GetPersistentDescriptorString()
-{
-    if (m_dllName)
-        return m_dllName;
-    if (!m_persistentDescriptor.IsEmpty())
-        return m_persistentDescriptor.get();
-    m_dllSpec->GetNativePath(m_persistentDescriptor);
-    return m_persistentDescriptor.get();
+    m_dllSpec->GetNativeLeafName(aLeafName);
+    
+    if (aLeafName.IsEmpty())
+        aLeafName.Assign(NS_LITERAL_CSTRING("unknown!"));
 }
 
 PRBool
 nsDll::HasChanged()
 {
-    if (m_dllName)
-        return PR_FALSE;
-
-    extern nsresult NS_GetComponentLoaderManager(nsIComponentLoaderManager* *result);
-    nsCOMPtr<nsIComponentLoaderManager> manager;
-    NS_GetComponentLoaderManager(getter_AddRefs(manager));
+    nsCOMPtr<nsIComponentLoaderManager> manager = do_QueryInterface(m_loader->mCompMgr);
     if (!manager)
         return PR_TRUE;
 
     // If mod date has changed, then dll has changed
     PRInt64 currentDate;
     nsresult rv = m_dllSpec->GetLastModifiedTime(&currentDate);
+    if (NS_FAILED(rv))
+        return PR_TRUE;
     PRBool changed = PR_TRUE;
     manager->HasFileChanged(m_dllSpec, nsnull, currentDate, &changed); 
     return changed;
@@ -213,10 +122,6 @@ nsDll::HasChanged()
 
 PRBool nsDll::Load(void)
 {
-	if (m_status != DLL_OK)
-	{
-		return (PR_FALSE);
-	}
 	if (m_instance != NULL)
 	{
 		// Already loaded
@@ -228,47 +133,146 @@ PRBool nsDll::Load(void)
 #ifdef NS_BUILD_REFCNT_LOGGING
         nsTraceRefcnt::SetActivityIsLegal(PR_FALSE);
 #endif
-        nsCOMPtr<nsILocalFile> lf(do_QueryInterface(m_dllSpec));
-        NS_ASSERTION(lf, "nsIFile here must implement a nsILocalFile"); 
-        lf->Load(&m_instance);
         
+    // Load any library dependencies
+    //   The Component Loader Manager may hold onto some extra data
+    //   set by either the native component loader or the native 
+    //   component.  We assume that this data is a space delimited
+    //   listing of dependent libraries which are required to be
+    //   loaded prior to us loading the given component.  Once, the
+    //   component is loaded into memory, we can release our hold 
+    //   on the dependent libraries with the assumption that the 
+    //   component library holds a reference via the OS so loader.
+
+    if (!m_loader->mLoadedDependentLibs) {
+        NS_ERROR("huh?  no dependent libs");
+        return PR_TRUE;
+    }
+
+#if defined(XP_UNIX)
+    nsCOMPtr<nsIComponentLoaderManager> manager = do_QueryInterface(m_loader->mCompMgr);
+    if (!manager)
+        return PR_TRUE;
+
+    nsXPIDLCString extraData;
+    manager->GetOptionalData(m_dllSpec, nsnull, getter_Copies(extraData));
+    
+#ifdef UNLOAD_DEPENDENT_LIBS
+    nsVoidArray dependentLibArray;
+#endif
+
+    // if there was any extra data, treat it as a listing of dependent libs
+    if (extraData != nsnull) 
+    {
+        // all dependent libraries are suppose to be in the "gre" directory.
+        // note that the gre directory is the same as the "bin" directory, 
+        // when there isn't a real "gre" found.
+
+        nsXPIDLCString path;
+        nsCOMPtr<nsIFile> file;
+        NS_GetSpecialDirectory(NS_GRE_DIR, getter_AddRefs(file));
+        
+        if (!file)
+            return NS_ERROR_FAILURE;
+
+        // we are talking about a file in the GRE dir.  Lets append something
+        // stupid right now, so that later we can just set the leaf name.
+        file->AppendNative(NS_LITERAL_CSTRING("dummy"));
+
+        char *buffer = strdup(extraData); 
+        if (!buffer)
+            return NS_ERROR_OUT_OF_MEMORY;
+
+        char* newStr;
+        char *token = nsCRT::strtok(buffer, " ", &newStr);
+        while (token!=nsnull)
+        {
+            nsCStringKey key(token);
+            if (m_loader->mLoadedDependentLibs->Get(&key)) {
+                token = nsCRT::strtok(newStr, " ", &newStr);
+                continue;
+            }
+
+            m_loader->mLoadedDependentLibs->Put(&key, (void*)1);
+
+            nsXPIDLCString libpath;
+            file->SetNativeLeafName(nsDependentCString(token));
+            file->GetNativePath(path);
+            if (!path)
+                return NS_ERROR_FAILURE;
+
+            // Load this dependent library with the global flag and stash 
+            // the result for later so that we can unload it.
+            PRLibSpec libSpec;
+            libSpec.type = PR_LibSpec_Pathname;
+
+            // if the depend library path starts with a / we are 
+            // going to assume that it is a full path and should
+            // be loaded without prepending the gre diretory 
+            // location.  We could have short circuited the 
+            // SetNativeLeafName above, but this is clearer and
+            // the common case is a relative path.
+
+            if (token[0] == '/')
+                libSpec.value.pathname = token;
+            else
+                libSpec.value.pathname = path;
+            
+            PRLibrary* lib = PR_LoadLibraryWithFlags(libSpec, PR_LD_LAZY|PR_LD_GLOBAL);
+            // if we couldn't load the dependent library.  We did the best we
+            // can.  Now just let us fail later if this really was a required
+            // dependency.
+#ifdef UNLOAD_DEPENDENT_LIBS
+            if (lib) 
+                dependentLibArray.AppendElement((void*)lib);
+#endif
+                
+            token = nsCRT::strtok(newStr, " ", &newStr);
+        }
+        free(buffer);
+    }
+#endif
+
+    // load the component
+    nsCOMPtr<nsILocalFile> lf(do_QueryInterface(m_dllSpec));
+    NS_ASSERTION(lf, "nsIFile here must implement a nsILocalFile"); 
+    lf->Load(&m_instance);
+
+#if defined(XP_UNIX)
+    // Unload any of library dependencies we loaded earlier. The assumption  
+    // here is that the component will have a "internal" reference count to
+    // the dependency library we just loaded.  
+    // XXX should we unload later - or even at all?
+
+#ifdef UNLOAD_DEPENDENT_LIBS
+    if (extraData != nsnull)
+    {
+        PRInt32 arrayCount = dependentLibArray.Count();
+        for (PRInt32 index = 0; index < arrayCount; index++)
+            PR_UnloadLibrary((PRLibrary*)dependentLibArray.ElementAt(index));
+    }
+#endif
+#endif
+
 #ifdef NS_BUILD_REFCNT_LOGGING
         nsTraceRefcnt::SetActivityIsLegal(PR_TRUE);
         if (m_instance) {
             // Inform refcnt tracer of new library so that calls through the
             // new library can be traced.
-            nsCAutoString displayPath;
-            m_dllSpec->GetNativePath(displayPath);
+            nsXPIDLCString displayPath;
+            GetDisplayPath(displayPath);
             nsTraceRefcnt::LoadLibrarySymbols(displayPath.get(), m_instance);
         }
 #endif
     }
-    else if (m_dllName)
-    {
-        // if there is not an nsIFile, but there is a dll name, just try to load that..
-#ifdef NS_BUILD_REFCNT_LOGGING
-        nsTraceRefcnt::SetActivityIsLegal(PR_FALSE);
-#endif
-        NS_TIMELINE_START_TIMER("PR_LoadLibrary");
-        m_instance = PR_LoadLibrary(m_dllName);
-        NS_TIMELINE_STOP_TIMER("PR_LoadLibrary");
-        NS_TIMELINE_MARK_TIMER("PR_LoadLibrary");
 
-#ifdef NS_BUILD_REFCNT_LOGGING
-        nsTraceRefcnt::SetActivityIsLegal(PR_TRUE);
-        if (m_instance) {
-            // Inform refcnt tracer of new library so that calls through the
-            // new library can be traced.
-            nsTraceRefcnt::LoadLibrarySymbols(m_dllName, m_instance);
-        }
-#endif    
-    }
-
-#if defined(DEBUG) && defined(XP_UNIX)
+#ifdef SHOULD_IMPLEMENT_BREAKAFTERLOAD
     // Debugging help for components. Component dlls need to have their
     // symbols loaded before we can put a breakpoint in the debugger.
     // This will help figureing out the point when the dll was loaded.
-    BreakAfterLoad(GetDisplayPath());
+    nsXPIDLCString displayPath;
+    GetDisplayPath(displayPath);
+    BreakAfterLoad(displayPath.get());
 #endif
 
     return ((m_instance == NULL) ? PR_FALSE : PR_TRUE);
@@ -276,7 +280,7 @@ PRBool nsDll::Load(void)
 
 PRBool nsDll::Unload(void)
 {
-	if (m_status != DLL_OK || m_instance == NULL)
+	if (m_instance == NULL)
 		return (PR_FALSE);
 
     // Shutdown the dll
@@ -325,10 +329,10 @@ nsresult nsDll::GetDllSpec(nsIFile **fsobj)
 
 nsresult nsDll::GetModule(nsISupports *servMgr, nsIModule **cobj)
 {
-    nsCOMPtr<nsIComponentManager> compMgr;
-    nsresult rv = NS_GetComponentManager(getter_AddRefs(compMgr));
+    // using the backpointer of the loader.
+    nsIComponentManager* compMgr = m_loader->mCompMgr;
     NS_ASSERTION(compMgr, "Global Component Manager is null" );
-    if (NS_FAILED(rv)) return rv;
+    if (!compMgr) return NS_ERROR_UNEXPECTED;
 
     NS_ASSERTION(cobj, "xcDll::GetModule : Null argument" );
 
@@ -342,11 +346,10 @@ nsresult nsDll::GetModule(nsISupports *servMgr, nsIModule **cobj)
 	// If not already loaded, load it now.
 	if (Load() != PR_TRUE) return NS_ERROR_FAILURE;
 
-    // We need a nsIFile for location. If we dont
-    // have one, create one.
-    if (!m_dllSpec && m_dllName)
+    // We need a nsIFile for location
+    if (!m_dllSpec)
     {
-        // Create m_dllSpec from m_dllName
+        return NS_ERROR_FAILURE;
     }
 
     nsGetModuleProc proc =
@@ -355,7 +358,7 @@ nsresult nsDll::GetModule(nsISupports *servMgr, nsIModule **cobj)
     if (proc == NULL)
         return NS_ERROR_FACTORY_NOT_LOADED;
 
-    rv = (*proc) (compMgr, m_dllSpec, &m_moduleObject);
+    nsresult rv = (*proc) (compMgr, m_dllSpec, &m_moduleObject);
     if (NS_SUCCEEDED(rv))
     {
         NS_ADDREF(m_moduleObject);
@@ -364,9 +367,6 @@ nsresult nsDll::GetModule(nsISupports *servMgr, nsIModule **cobj)
     return rv;
 }
 
-#if defined(DEBUG) && !defined(XP_BEOS)
-#define SHOULD_IMPLEMENT_BREAKAFTERLOAD
-#endif
 
 // These are used by BreakAfterLoad, below.
 #ifdef SHOULD_IMPLEMENT_BREAKAFTERLOAD
@@ -394,10 +394,9 @@ nsresult nsDll::Shutdown(void)
     return NS_OK;
 
 }
-
+#ifdef SHOULD_IMPLEMENT_BREAKAFTERLOAD
 void nsDll::BreakAfterLoad(const char *nsprPath)
 {
-#ifdef SHOULD_IMPLEMENT_BREAKAFTERLOAD
     static PRBool firstTime = PR_TRUE;
 
     // return if invalid input
@@ -436,7 +435,7 @@ void nsDll::BreakAfterLoad(const char *nsprPath)
             // Put your breakpoint here
             fprintf(stderr, "...Loading module %s\n", nsprPath);
             // Break in the debugger here.
-#if defined(linux) && defined(__i386)
+#if defined(__i386) && defined(__GNUC__)
             asm("int $3");
 #elif defined(VMS)
             lib$signal(SS$_DEBUG);
@@ -444,6 +443,6 @@ void nsDll::BreakAfterLoad(const char *nsprPath)
             raise(SIGTRAP);
 #endif
         }
-#endif /* SHOULD_IMPLEMENT_BREAKAFTERLOAD */
     return;
 }
+#endif /* SHOULD_IMPLEMENT_BREAKAFTERLOAD */

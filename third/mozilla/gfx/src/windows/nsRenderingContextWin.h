@@ -92,7 +92,7 @@ public:
   NS_IMETHOD Scale(float aSx, float aSy);
   NS_IMETHOD GetCurrentTransform(nsTransform2D *&aTransform);
 
-  NS_IMETHOD CreateDrawingSurface(nsRect *aBounds, PRUint32 aSurfFlags, nsDrawingSurface &aSurface);
+  NS_IMETHOD CreateDrawingSurface(const nsRect& aBounds, PRUint32 aSurfFlags, nsDrawingSurface &aSurface);
   NS_IMETHOD DestroyDrawingSurface(nsDrawingSurface aDS);
 
   NS_IMETHOD DrawLine(nscoord aX0, nscoord aY0, nscoord aX1, nscoord aY1);
@@ -178,12 +178,6 @@ public:
                         PRInt32 aFontID,
                         const nscoord* aSpacing);
 
-  NS_IMETHOD DrawImage(nsIImage *aImage, nscoord aX, nscoord aY);
-  NS_IMETHOD DrawImage(nsIImage *aImage, nscoord aX, nscoord aY,
-                       nscoord aWidth, nscoord aHeight); 
-  NS_IMETHOD DrawImage(nsIImage *aImage, const nsRect& aRect);
-  NS_IMETHOD DrawImage(nsIImage *aImage, const nsRect& aSRect, const nsRect& aDRect);
-
   NS_IMETHOD CopyOffScreenBits(nsDrawingSurface aSrcSurf, PRInt32 aSrcX, PRInt32 aSrcY,
                                const nsRect &aDestBounds, PRUint32 aCopyFlags);
   //~~~
@@ -209,22 +203,12 @@ public:
                      PRInt32*           aFontID);
 #endif
 
-#ifdef IBMBIDI
   NS_IMETHOD SetRightToLeftText(PRBool aIsRTL);
-#endif // IBMBIDI
 
 protected:
   void SetupFontAndColor(void);
 
   ~nsRenderingContextWin();
-
-  /** ---------------------------------------------------
-   *  See documentation in nsIRenderingContextImpl.h
-   *	@update 4/01/00 dwc
-   */
-  virtual PRBool CanTile(nscoord aWidth,nscoord aHeight);
-
-
 
 private:
    // ConditionRect is used to fix a coordinate overflow problem under WIN95. 
@@ -238,9 +222,7 @@ private:
   HPEN SetupDashedPen(void);
   HPEN SetupDottedPen(void);
   void PushClipState(void);
-#ifdef IBMBIDI
   void InitBidiInfo(void);
-#endif // IBMBIDI
 
 friend class nsNativeThemeWin;
 
@@ -277,11 +259,9 @@ protected:
   nsLineStyle       mCurrLineStyle;
 
 #ifdef NS_DEBUG
-  PRBool            mInitialized;
+  PRPackedBool      mInitialized;
 #endif
-#ifdef IBMBIDI
-  PRBool            mRightToLeftText;
-#endif // IBMBIDI
+  PRPackedBool      mRightToLeftText;
 };
 
 #endif /* nsRenderingContextWin_h___ */

@@ -38,7 +38,6 @@
 #include "FixedTableLayoutStrategy.h"
 #include "nsTableFrame.h"
 #include "nsTableCellFrame.h"
-#include "nsIStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsVoidArray.h"
 
@@ -72,8 +71,7 @@ FixedTableLayoutStrategy::AssignNonPctColumnWidths(nsIPresContext*          aPre
                                                    float                    aPixelToTwips)
 {
   // NS_ASSERTION(aComputedWidth != NS_UNCONSTRAINEDSIZE, "bad computed width");
-  const nsStylePosition* tablePosition;
-  mTableFrame->GetStyleData(eStyleStruct_Position, (const nsStyleStruct*&)tablePosition);
+  const nsStylePosition* tablePosition = mTableFrame->GetStylePosition();
   PRBool tableIsFixedWidth = eStyleUnit_Coord   == tablePosition->mWidth.GetUnit() ||
                              eStyleUnit_Percent == tablePosition->mWidth.GetUnit();
 
@@ -99,8 +97,6 @@ FixedTableLayoutStrategy::AssignNonPctColumnWidths(nsIPresContext*          aPre
     delete [] colWidths;
     return PR_FALSE;
   }
-  float p2t;
-  aPresContext->GetScaledPixelsToTwips(&p2t);
 
   memset(propInfo, 0, numCols*sizeof(nscoord));
   nscoord propTotal = 0;
@@ -115,8 +111,7 @@ FixedTableLayoutStrategy::AssignNonPctColumnWidths(nsIPresContext*          aPre
     }
 
     // Get the columns's style
-    const nsStylePosition* colPosition;
-    colFrame->GetStyleData(eStyleStruct_Position, (const nsStyleStruct*&)colPosition);
+    const nsStylePosition* colPosition = colFrame->GetStylePosition();
 
     // get the fixed width if available
     if (eStyleUnit_Coord == colPosition->mWidth.GetUnit()) { 
@@ -141,19 +136,29 @@ FixedTableLayoutStrategy::AssignNonPctColumnWidths(nsIPresContext*          aPre
       nsTableCellFrame* cellFrame = mTableFrame->GetCellFrameAt(0, colX);
       if (nsnull != cellFrame) {
         // Get the cell's style
-        const nsStylePosition* cellPosition;
-        cellFrame->GetStyleData(eStyleStruct_Position, (const nsStyleStruct*&)cellPosition);
+        const nsStylePosition* cellPosition = cellFrame->GetStylePosition();
 
+        nscoord cellWidth = 0;
         PRInt32 colSpan = mTableFrame->GetEffectiveColSpan(*cellFrame);
         // Get fixed cell width if available
         if (eStyleUnit_Coord == cellPosition->mWidth.GetUnit()) {
-          colWidths[colX] = nsTableFrame::RoundToPixel(cellPosition->mWidth.GetCoordValue() / colSpan, p2t);
+          // need to add border and padding into fixed width
+          nsMargin borderPadding = nsTableFrame::GetBorderPadding(nsSize(aReflowState.mComputedWidth, 0),
+                                                                  aPixelToTwips, cellFrame);
+          cellWidth = cellPosition->mWidth.GetCoordValue() + borderPadding.left + borderPadding.right;
+          colWidths[colX] = nsTableFrame::RoundToPixel(NSToCoordRound(((float) cellWidth) / ((float) colSpan)),
+                                                                      aPixelToTwips);
           colFrame->SetWidth(MIN_CON, colWidths[colX]);
         }
         else if ((eStyleUnit_Percent == cellPosition->mWidth.GetUnit()) &&
                  (aComputedWidth != NS_UNCONSTRAINEDSIZE)) {
           float percent = cellPosition->mWidth.GetPercentValue();
-          colWidths[colX] = nsTableFrame::RoundToPixel(NSToCoordRound(percent * (float)availWidth / (float)colSpan), aPixelToTwips); 
+          // need to add border and padding into percent width
+          nsMargin borderPadding = nsTableFrame::GetBorderPadding(nsSize(aReflowState.mComputedWidth, 0),
+                                                                  aPixelToTwips, cellFrame);
+          cellWidth = NSToCoordRound(percent * (float) availWidth) + borderPadding.left + borderPadding.right;
+          colWidths[colX] = nsTableFrame::RoundToPixel(NSToCoordRound(((float) cellWidth) / ((float) colSpan)),
+                                                                      aPixelToTwips); 
           colFrame->SetWidth(PCT, colWidths[colX]);
           percTotal += colWidths[colX];
         }

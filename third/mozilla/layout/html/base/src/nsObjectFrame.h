@@ -43,6 +43,7 @@
 #include "nsIPresShell.h"
 #include "nsIPluginHost.h"
 #include "nsplugin.h"
+#include "nsIWidget.h"
 #include "nsIObjectFrame.h"
 
 #ifdef ACCESSIBILITY
@@ -64,7 +65,7 @@ public:
   NS_IMETHOD Init(nsIPresContext*  aPresContext,
                   nsIContent*      aContent,
                   nsIFrame*        aParent,
-                  nsIStyleContext* aContext,
+                  nsStyleContext*  aContext,
                   nsIFrame*        aPrevInFlow);
   NS_IMETHOD Reflow(nsIPresContext*          aPresContext,
                     nsHTMLReflowMetrics&     aDesiredSize,
@@ -85,6 +86,9 @@ public:
 
   NS_IMETHOD Scrolled(nsIView *aView);
   NS_IMETHOD GetFrameType(nsIAtom** aType) const;
+  
+  virtual PRBool SupportsVisibilityHidden() { return PR_FALSE; }
+
 #ifdef DEBUG
   NS_IMETHOD GetFrameName(nsAString& aResult) const;
 #endif
@@ -119,7 +123,7 @@ public:
                         PRBool aViewOnly);
   nsresult GetFullURL(nsIURI*& aFullURL);
   
-  void IsSupportedImage(nsIContent* aContent, PRBool* aImage);
+  PRBool IsSupportedImage(nsIContent* aContent);
   void IsSupportedDocument(nsIContent* aContent, PRBool* aDoc);
 
   // for a given aRoot, this walks the frame tree looking for the next outFrame
@@ -127,7 +131,8 @@ public:
                               nsIFrame* aRoot,
                               nsIObjectFrame** outFrame);
 
-  nsIPresContext *mPresContext;  // weak ref
+  void FixUpURLS(const nsString &name, nsString &value);
+
 protected:
   // nsISupports
   NS_IMETHOD_(nsrefcnt) AddRef(void);
@@ -137,10 +142,11 @@ protected:
 
   virtual PRIntn GetSkipSides() const;
 
-  virtual void GetDesiredSize(nsIPresContext* aPresContext,
-                              const nsHTMLReflowState& aReflowState,
-                              nsHTMLReflowMetrics& aDesiredSize);
-
+  // NOTE:  This frame class does not inherit from |nsLeafFrame|, so
+  // this is not a virtual method implementation.
+  void GetDesiredSize(nsIPresContext* aPresContext,
+                      const nsHTMLReflowState& aReflowState,
+                      nsHTMLReflowMetrics& aDesiredSize);
 
   nsresult SetFullURL(nsIURI* aURL);
 
@@ -175,11 +181,14 @@ protected:
 
   nsresult GetWindowOriginInPixels(nsIPresContext * aPresContext, PRBool aWindoless, nsPoint* aOrigin);
 
+  friend class nsPluginInstanceOwner;
+  
+  nsIPresContext *mPresContext;  // weak ref
 private:
   nsPluginInstanceOwner *mInstanceOwner;
-  nsIURI                *mFullURL;
+  nsCOMPtr<nsIURI>      mFullURL;
   nsIFrame              *mFirstChild;
-  nsIWidget             *mWidget;
+  nsCOMPtr<nsIWidget>   mWidget;
   nsRect                mWindowlessRect;
 };
 

@@ -56,7 +56,6 @@ nsrefcnt nsRDFResource::gRDFServiceRefCnt = 0;
 nsRDFResource::nsRDFResource(void)
     : mURI(nsnull), mDelegates(nsnull)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 nsRDFResource::~nsRDFResource(void)
@@ -68,15 +67,17 @@ nsRDFResource::~nsRDFResource(void)
         delete doomed;
     }
 
-    gRDFService->UnregisterResource(this);
+    if (mURI) {
+        gRDFService->UnregisterResource(this);
 
-    // N.B. that we need to free the URI *after* we un-cache the resource,
-    // due to the way that the resource manager is implemented.
-    nsCRT::free(mURI);
+        // N.B. that we need to free the URI *after* we un-cache the resource,
+        // due to the way that the resource manager is implemented.
+        nsCRT::free(mURI);
 
-    if (--gRDFServiceRefCnt == 0) {
-        nsServiceManager::ReleaseService(kRDFServiceCID, gRDFService);
-        gRDFService = nsnull;
+        if (--gRDFServiceRefCnt == 0) {
+            nsServiceManager::ReleaseService(kRDFServiceCID, gRDFService);
+            gRDFService = nsnull;
+        }
     }
 }
 

@@ -102,7 +102,7 @@ public:
   NS_IMETHOD Translate(nscoord aX, nscoord aY);
   NS_IMETHOD Scale(float aSx, float aSy);
   NS_IMETHOD GetCurrentTransform(nsTransform2D *&aTransform);
-  NS_IMETHOD CreateDrawingSurface(nsRect *aBounds, PRUint32 aSurfFlags, nsDrawingSurface &aSurface);
+  NS_IMETHOD CreateDrawingSurface(const nsRect& aBounds, PRUint32 aSurfFlags, nsDrawingSurface &aSurface);
   NS_IMETHOD DestroyDrawingSurface(nsDrawingSurface aDS);
   NS_IMETHOD DrawLine(nscoord aX0, nscoord aY0, nscoord aX1, nscoord aY1);
   NS_IMETHOD DrawStdLine(nscoord aX0, nscoord aY0, nscoord aX1, nscoord aY1);
@@ -147,12 +147,6 @@ public:
   NS_IMETHOD GetTextDimensions(const PRUnichar *aString, PRUint32 aLength,
                                nsTextDimensions& aDimensions, PRInt32 *aFontID);
 
-  NS_IMETHOD DrawImage(nsIImage *aImage, nscoord aX, nscoord aY);
-  NS_IMETHOD DrawImage(nsIImage *aImage, nscoord aX, nscoord aY, nscoord aWidth, nscoord aHeight); 
-  NS_IMETHOD DrawImage(nsIImage *aImage, const nsRect& aRect);
-  NS_IMETHOD DrawImage(nsIImage *aImage, const nsRect& aSRect, const nsRect& aDRect);
-  //NS_IMETHOD DrawTile(nsIImage *aImage,nscoord aX0,nscoord aY0,nscoord aX1,nscoord aY1,
-                        //nscoord aWidth,nscoord aHeight);
   NS_IMETHOD CopyOffScreenBits(nsDrawingSurface aSrcSurf, PRInt32 aSrcX, PRInt32 aSrcY,
                                const nsRect &aDestBounds, PRUint32 aCopyFlags);
   NS_IMETHOD RetrieveCurrentNativeGraphicData(PRUint32 * ngd);
@@ -180,19 +174,18 @@ public:
                                 nsBoundingMetrics& aBoundingMetrics,
                                 PRInt32*           aFontID);
 #endif /* MOZ_MATHML */
-#ifdef IBMBIDI
   /**
    * Let the device context know whether we want text reordered with
    * right-to-left base direction
    */
   NS_IMETHOD SetRightToLeftText(PRBool aIsRTL);
-#endif // IBMBIDI
   //locals
   nsresult   SetPortTextState();
   nsresult   Init(nsIDeviceContext* aContext, CGrafPtr aPort);
 
     // useful for determining if we're running on MacOSX
   static PRBool OnMacOSX();
+  static PRBool OnJaguar();
 
 protected:
   enum GraphicStateChanges {
@@ -218,9 +211,7 @@ protected:
     nsUnicodeRenderingToolkit mUnicodeRenderingToolkit;
     nsAutoVoidArray         mGSStack;           // GraphicStates stack, used for PushState/PopState
     PRUint32                mChanges;           // bit mask of attributes that have changed since last Push().
-#ifdef IBMBIDI
     PRBool                  mRightToLeftText;
-#endif
 };
 
 #endif /* nsRenderingContextMac_h___ */

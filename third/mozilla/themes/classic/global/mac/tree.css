@@ -41,13 +41,29 @@ tree {
   color: -moz-DialogText;
 }
 
+/* ::::: tree focusring ::::: */
+
+.focusring > .tree-rows > .tree-bodybox {
+  border: 2px solid transparent;  
+}
+
+.focusring:focus > .tree-rows > .tree-bodybox {
+  border: 2px solid -moz-mac-focusring;
+}
+
 /* ::::: tree rows ::::: */
 
+tree[selstyle="primary"] > treechildren:-moz-tree-row,
 treechildren:-moz-tree-row {
   -moz-appearance: treeitem;
   border-top: 1px solid -moz-Field;
+  background-color: transparent;
   min-height: 18px;
   height: 1.3em;
+}
+
+treechildren:-moz-tree-row(selected) {
+  background-color: -moz-Dialog;
 }
 
 treechildren:-moz-tree-row(selected, focus) {
@@ -60,6 +76,7 @@ treechildren:-moz-tree-cell {
   padding: 0px 2px 0px 2px;
 }
 
+tree[selstyle="primary"] > treechildren:-moz-tree-cell-text,
 treechildren:-moz-tree-cell-text {
   color: inherit;
 }
@@ -68,7 +85,17 @@ treechildren:-moz-tree-cell-text(selected) {
   color: -moz-DialogText;
 }
 
+tree[selstyle="primary"] > treechildren:-moz-tree-cell-text(primary, selected) {
+  background-color: -moz-Dialog;
+  color: -moz-DialogText;
+}
+
 treechildren:-moz-tree-cell-text(selected, focus) {
+  color: HighlightText;
+}
+
+tree[selstyle="primary"] > treechildren:-moz-tree-cell-text(primary, selected, focus) {
+  background-color: Highlight;
   color: HighlightText;
 }
 
@@ -95,6 +122,7 @@ treechildren:-moz-tree-separator {
 
 /* ::::: drop feedback ::::: */
 
+tree[selstyle="primary"] > treechildren:-moz-tree-cell-text(primary, dropOn),
 treechildren:-moz-tree-cell-text(primary, dropOn) {
   background-color: Highlight;
   color: HighlightText;

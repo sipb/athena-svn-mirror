@@ -23,7 +23,7 @@
 #include "nsFrame.h"
 #include "nsIPresContext.h"
 #include "nsUnitConversion.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIRenderingContext.h"
 #include "nsIFontMetrics.h"
@@ -95,7 +95,7 @@ NS_IMETHODIMP
 nsMathMLTokenFrame::Init(nsIPresContext*  aPresContext,
                          nsIContent*      aContent,
                          nsIFrame*        aParent,
-                         nsIStyleContext* aContext,
+                         nsStyleContext*  aContext,
                          nsIFrame*        aPrevInFlow)
 {
   // leading and trailing whitespace doesn't count -- bug 15402
@@ -157,7 +157,7 @@ printf("\n");
   aDesiredSize.mBoundingMetrics.Clear();
 
   // ask our children to compute their bounding metrics
-  nsHTMLReflowMetrics childDesiredSize(aDesiredSize.maxElementSize,
+  nsHTMLReflowMetrics childDesiredSize(aDesiredSize.mComputeMEW,
                       aDesiredSize.mFlags | NS_REFLOW_CALC_BOUNDING_METRICS);
   nsSize availSize(aReflowState.mComputedWidth, aReflowState.mComputedHeight);
   PRInt32 count = 0;
@@ -185,6 +185,10 @@ printf("\n");
     childFrame->GetNextSibling(&childFrame);
   }
 
+  if (aDesiredSize.mComputeMEW) {
+    aDesiredSize.mMaxElementWidth = childDesiredSize.mMaxElementWidth;
+  }
+
   // cache the frame's mBoundingMetrics
   mBoundingMetrics = aDesiredSize.mBoundingMetrics;
 
@@ -203,13 +207,8 @@ nsMathMLTokenFrame::Place(nsIPresContext*      aPresContext,
                           PRBool               aPlaceOrigin,
                           nsHTMLReflowMetrics& aDesiredSize)
 {
-  aDesiredSize.width = aDesiredSize.height = 0;
-  aDesiredSize.ascent = aDesiredSize.descent = 0;
-
-  const nsStyleFont* font;
-  GetStyleData(eStyleStruct_Font, (const nsStyleStruct*&)font);
   nsCOMPtr<nsIFontMetrics> fm;
-  aPresContext->GetMetricsFor(font->mFont, getter_AddRefs(fm));
+  aPresContext->GetMetricsFor(GetStyleFont()->mFont, getter_AddRefs(fm));
   nscoord ascent, descent;
   fm->GetMaxAscent(ascent);
   fm->GetMaxDescent(descent);
@@ -231,8 +230,8 @@ nsMathMLTokenFrame::Place(nsIPresContext*      aPresContext,
       childSize.width = rect.width;
       childSize.height = aDesiredSize.height; //rect.height;
 
-      // place and size the child
-      dy = aDesiredSize.ascent - rect.y;
+      // place and size the child; (dx,0) makes the caret happy - bug 188146
+      dy = rect.IsEmpty() ? 0 : aDesiredSize.ascent - rect.y;
       FinishReflowChild(childFrame, aPresContext, nsnull, childSize, dx, dy, 0);
       dx += rect.width;
       childFrame->GetNextSibling(&childFrame);
@@ -358,6 +357,13 @@ nsMathMLTokenFrame::SetTextStyle(nsIPresContext* aPresContext)
       fm->ComputeStyleChangeFor(aPresContext, this,
                                 kNameSpaceID_None, nsMathMLAtoms::fontstyle,
                                 changeList, minChange, maxChange);
+#ifdef DEBUG
+      // Use the parent frame to make sure we catch in-flows and such
+      nsIFrame* parentFrame;
+      GetParent(&parentFrame);
+      fm->DebugVerifyStyleTree(aPresContext,
+                               parentFrame ? parentFrame : this);
+#endif
     }
   }
 }

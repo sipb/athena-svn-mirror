@@ -40,7 +40,6 @@
 #include "nsTableFrame.h"
 #include "nsTableColFrame.h"
 #include "nsTableCellFrame.h"
-#include "nsIStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsVoidArray.h"
 
@@ -79,8 +78,7 @@ PRBool CanAllocate(PRInt32          aType,
 PRBool
 HasPctValue(nsIFrame* aFrame) 
 {
-  const nsStylePosition* position;
-  aFrame->GetStyleData(eStyleStruct_Position, (const nsStyleStruct *&)position);
+  const nsStylePosition* position = aFrame->GetStylePosition();
   if (eStyleUnit_Percent == position->mWidth.GetUnit()) {
     float percent = position->mWidth.GetPercentValue();
     if (percent > 0.0f) {
@@ -612,12 +610,12 @@ BasicTableLayoutStrategy::ComputeNonPctColspanWidths(const nsHTMLReflowState& aR
         }
         else { // FIX width
           // see if the cell has a style width specified
-          const nsStylePosition* cellPosition;
-          cellFrame->GetStyleData(eStyleStruct_Position, (const nsStyleStruct *&)cellPosition);
+          const nsStylePosition* cellPosition = cellFrame->GetStylePosition();
           if (eStyleUnit_Coord == cellPosition->mWidth.GetUnit()) {
-            // need to add padding into fixed width
-            nsMargin padding = nsTableFrame::GetPadding(nsSize(aReflowState.mComputedWidth, 0), cellFrame);
-            cellWidth = cellPosition->mWidth.GetCoordValue() + padding.left + padding.right;
+            // need to add borde and padding into fixed width
+            nsMargin borderPadding = nsTableFrame::GetBorderPadding(nsSize(aReflowState.mComputedWidth, 0),
+                                                                    aPixelToTwips, cellFrame);
+            cellWidth = cellPosition->mWidth.GetCoordValue() + borderPadding.left + borderPadding.right;
             cellWidth = PR_MAX(cellWidth, cellFrame->GetPass1MaxElementWidth());
           }
         }
@@ -845,8 +843,8 @@ BasicTableLayoutStrategy::ComputeNonPctColspanWidths(PRInt32           aWidthInd
         numeratorAutoDes = desWidth;
       }
 
-      nscoord divisor;
-      nscoord numerator;
+      nscoord divisor = 0;
+      nscoord numerator = 0;
 
       // let pct cols reach their target 
       if (LIMIT_PCT == aLimitType) {
@@ -970,7 +968,6 @@ BasicTableLayoutStrategy::AssignNonPctColumnWidths(nsIPresContext*          aPre
 #ifdef DEBUG_TABLE_STRATEGY
   printf("AssignNonPctColWidths en max=%d count=%d \n", aMaxWidth, gsDebugCount++); mTableFrame->Dump(aPresContext, PR_FALSE, PR_TRUE, PR_FALSE);
 #endif
-  PRBool rv = PR_FALSE;
   PRInt32 numRows = mTableFrame->GetRowCount();
   PRInt32 numCols = mTableFrame->GetColCount();
   nscoord spacingX = mTableFrame->GetCellSpacingX();
@@ -1022,15 +1019,14 @@ BasicTableLayoutStrategy::AssignNonPctColumnWidths(nsIPresContext*          aPre
         desWidth = cellDesWidth;
       }
       // see if the cell has a style width specified
-      const nsStylePosition* cellPosition;
-      cellFrame->GetStyleData(eStyleStruct_Position, (const nsStyleStruct *&)cellPosition);
+      const nsStylePosition* cellPosition = cellFrame->GetStylePosition();
       if (eStyleUnit_Coord == cellPosition->mWidth.GetUnit()) {
         nscoord coordValue = cellPosition->mWidth.GetCoordValue();
         if (coordValue > 0) { // ignore if width == 0
-          // need to add padding into fixed width
+          // need to add border and padding into fixed width
           nsSize percentBase(aReflowState.mComputedWidth, 0);
-          nsMargin padding = nsTableFrame::GetPadding(percentBase, cellFrame);
-          nscoord newFixWidth = coordValue + padding.left + padding.right;
+          nsMargin borderPadding = nsTableFrame::GetBorderPadding(percentBase, aPixelToTwips, cellFrame);
+          nscoord newFixWidth = coordValue + borderPadding.left + borderPadding.right;
           // 2nd part of condition is Nav/IE Quirk like below
           if ((newFixWidth > fixWidth) || ((newFixWidth == fixWidth) && (desContributor == cellFrame))) {
             fixWidth = newFixWidth;
@@ -1226,7 +1222,6 @@ BasicTableLayoutStrategy::CalcPctAdjTableWidth(nsIPresContext&          aPresCon
 
   PRInt32 numRows  = mTableFrame->GetRowCount();
   PRInt32 numCols  = mTableFrame->GetColCount(); // consider cols at end without orig cells 
-  nscoord spacingX = mTableFrame->GetCellSpacingX();
   PRInt32 colX, rowX; 
 
   // For an auto table, determine the potentially new percent adjusted width based 
@@ -1257,8 +1252,7 @@ BasicTableLayoutStrategy::CalcPctAdjTableWidth(nsIPresContext&          aPresCon
       nsTableCellFrame* cellFrame = mTableFrame->GetCellInfoAt(rowX, colX, &originates, &colSpan);
       if (!originates) continue; // skip  cells that don't originate in the col
       // see if the cell has a style percent width specified
-      const nsStylePosition* cellPosition;
-      cellFrame->GetStyleData(eStyleStruct_Position, (const nsStyleStruct *&)cellPosition);
+      const nsStylePosition* cellPosition = cellFrame->GetStylePosition();
       if (eStyleUnit_Percent == cellPosition->mWidth.GetUnit()) {
         float percent = cellPosition->mWidth.GetPercentValue();
         if (percent > 0.0f) {
@@ -1296,7 +1290,6 @@ BasicTableLayoutStrategy::CalcPctAdjTableWidth(nsIPresContext&          aPresCon
   } // end for (colX ..
 
   float   perTotal         = 0.0f; // total of percentage constrained cols and/or cells in cols
-  nscoord fixWidthTotal    = 0;    // total of fixed widths of all cols
   PRInt32 numPerCols       = 0;    // number of colums that have percentage constraints
   nscoord fixDesTotal      = 0;    // total of fix or des widths of cols 
   nscoord fixDesTotalNoPct = 0;    // total of fix or des widths of cols without pct
@@ -1400,8 +1393,7 @@ BasicTableLayoutStrategy::AssignPctColumnWidths(nsIPresContext&          aPresCo
         continue;
       }
       // see if the cell has a style percent width specified
-      const nsStylePosition* cellPosition;
-      cellFrame->GetStyleData(eStyleStruct_Position, (const nsStyleStruct *&)cellPosition);
+      const nsStylePosition* cellPosition = cellFrame->GetStylePosition();
       if (eStyleUnit_Percent == cellPosition->mWidth.GetUnit()) {
         float percent = cellPosition->mWidth.GetPercentValue();
         if (percent > maxColPct) {
@@ -1409,9 +1401,9 @@ BasicTableLayoutStrategy::AssignPctColumnWidths(nsIPresContext&          aPresCo
           maxColPctWidth = nsTableFrame::RoundToPixel(NSToCoordRound( ((float)basis) * maxColPct ), aPixelToTwips);
           percentContributor = cellFrame;
           if (!mIsNavQuirksMode) { 
-            // need to add padding
-            nsMargin padding = nsTableFrame::GetPadding(nsSize(basis, 0), cellFrame);
-            maxColPctWidth += padding.left + padding.right;
+            // need to add border and padding
+            nsMargin borderPadding = nsTableFrame::GetBorderPadding(nsSize(basis, 0), aPixelToTwips, cellFrame);
+            maxColPctWidth += borderPadding.left + borderPadding.right;
           }
         }
       }
@@ -1508,8 +1500,7 @@ BasicTableLayoutStrategy::AssignPctColumnWidths(nsIPresContext&          aPresCo
       colSpan = PR_MIN(colSpan,numEffCols-colX);
       nscoord cellPctWidth = WIDTH_NOT_SET;
       // see if the cell has a style percentage width specified
-      const nsStylePosition* cellPosition;
-      cellFrame->GetStyleData(eStyleStruct_Position, (const nsStyleStruct *&)cellPosition);
+      const nsStylePosition* cellPosition = cellFrame->GetStylePosition();
       float cellPct = 0.0f;
       if (eStyleUnit_Percent == cellPosition->mWidth.GetUnit()) {
         cellPct = cellPosition->mWidth.GetPercentValue();
@@ -1517,9 +1508,9 @@ BasicTableLayoutStrategy::AssignPctColumnWidths(nsIPresContext&          aPresCo
           cellPct = 1.0f; // overwrite spurious percent colspan width's - bug 46944
         cellPctWidth = nsTableFrame::RoundToPixel(NSToCoordRound( ((float)basis) * cellPct ), aPixelToTwips);
         if (!mIsNavQuirksMode) { 
-          // need to add padding 
-          nsMargin padding = nsTableFrame::GetPadding(nsSize(basis, 0), cellFrame);
-          cellPctWidth += padding.left + padding.right;
+          // need to add border and padding 
+          nsMargin borderPadding = nsTableFrame::GetBorderPadding(nsSize(basis, 0), aPixelToTwips, cellFrame);
+          cellPctWidth += borderPadding.left + borderPadding.right;
         }
       }
       if (cellPctWidth > 0) {
@@ -1638,7 +1629,6 @@ void BasicTableLayoutStrategy::CalculateTotals(PRInt32* aTotalCounts,
   }
   a0ProportionalCount = 0;
 
-  nscoord spacingX = mTableFrame->GetCellSpacingX();
   PRInt32 numEffCols = mTableFrame->GetEffectiveColCount();
   PRInt32 colX;
 

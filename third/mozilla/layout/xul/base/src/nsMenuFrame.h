@@ -88,7 +88,7 @@ public:
   NS_IMETHOD Init(nsIPresContext*  aPresContext,
                   nsIContent*      aContent,
                   nsIFrame*        aParent,
-                  nsIStyleContext* aContext,
+                  nsStyleContext*  aContext,
                   nsIFrame*        aPrevInFlow);
 
   NS_IMETHOD SetDebug(nsBoxLayoutState& aState, PRBool aDebug);
@@ -168,7 +168,7 @@ public:
 
   // nsIScrollableViewProvider methods
 
-  NS_IMETHOD GetScrollableView(nsIScrollableView** aView);
+  NS_IMETHOD GetScrollableView(nsIPresContext* aPresContext, nsIScrollableView** aView);
 
   // nsMenuFrame methods 
 

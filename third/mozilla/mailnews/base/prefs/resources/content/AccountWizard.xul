@@ -21,7 +21,7 @@ Rights Reserved.
 
 <?xml-stylesheet href="chrome://messenger/skin/accountWizard.css" type="text/css"?>
 
-<!DOCTYPE window SYSTEM "chrome://messenger/locale/AccountWizard.dtd">
+<!DOCTYPE wizard SYSTEM "chrome://messenger/locale/AccountWizard.dtd">
 
 <wizard id="AccountWizard" title="&windowTitle.label;"
         onwizardcancel="return onCancel();"
@@ -256,6 +256,10 @@ Rights Reserved.
         </rows>
       </grid>
       <separator/>
+      <hbox id="downloadMsgsBox">
+        <checkbox id="downloadMsgs" hidden="true" label="&downloadOnLogin.label;" checked="true"/>
+      </hbox>
+      <spacer flex="1"/>
       <description>&clickFinish.label;</description>
     </vbox>
   </wizardpage>
@@ -271,5 +275,10 @@ Rights Reserved.
   <wizardpage id="ispPage9"/>
   <wizardpage id="ispPage10"/>
   <wizardpage id="ispPage11"/>
+  <wizardpage id="ispPage12"/>
+  <wizardpage id="ispPage13"/>
+  <wizardpage id="ispPage14"/>
+  <wizardpage id="ispPage15"/>
+  <wizardpage id="ispPage16"/>
 
 </wizard>

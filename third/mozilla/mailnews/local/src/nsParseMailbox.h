@@ -55,6 +55,7 @@
 #include "nsFileSpec.h"
 #include "nsIDBChangeListener.h"
 #include "nsIWeakReference.h"
+#include "nsIMsgWindow.h"
 
 #include "nsIMsgFilterList.h"
 #include "nsIMsgFilterHitNotify.h"
@@ -102,7 +103,7 @@ public:
 
 	nsCOMPtr<nsIMsgHeaderParser> m_HeaderAddressParser;
 
-	nsCOMPtr<nsIMsgDBHdr>		m_newMsgHdr;		/* current message header we're building */
+	nsCOMPtr<nsIMsgDBHdr> m_newMsgHdr; /* current message header we're building */
 	nsCOMPtr<nsIMsgDatabase>	m_mailDB;
 
 	nsMailboxParseState m_state;
@@ -178,10 +179,6 @@ public:
 
 	void			SetDB (nsIMsgDatabase *mailDB) {m_mailDB = dont_QueryInterface(mailDB); }
 
-	void			SetIncrementalUpdate(PRBool update) {m_updateAsWeGo = update;}
-	void			SetIgnoreNonMailFolder(PRBool ignoreNonMailFolder) {m_ignoreNonMailFolder = ignoreNonMailFolder;}
-	PRBool			GetIsRealMailFolder() {return m_isRealMailFolder;}
-
 	// message socket libnet callbacks, which come through folder pane
 	virtual int ProcessMailboxInputStream(nsIURI* aURL, nsIInputStream *aIStream, PRUint32 aLength);
 
@@ -213,10 +210,7 @@ protected:
 	char			*m_obuffer;
 	PRInt32			m_graph_progress_total;
 	PRInt32			m_graph_progress_received;
-	PRBool			m_updateAsWeGo;
 	PRBool			m_parsingDone;
-	PRBool			m_ignoreNonMailFolder;
-	PRBool			m_isRealMailFolder;
 	nsTime			m_startTime;
 private:
 		// the following flag is used to determine when a url is currently being run. It is cleared on calls
@@ -232,15 +226,14 @@ class nsParseNewMailState : public nsMsgMailboxParser
 , public nsIMsgFilterHitNotify
 {
 public:
-	nsParseNewMailState();
-	virtual ~nsParseNewMailState();
-	NS_DECL_ISUPPORTS_INHERITED
-    nsresult Init(nsIFolder *rootFolder, nsIMsgFolder *downloadFolder, nsFileSpec &folder, nsIOFileStream *inboxFileStream, nsIMsgWindow *aMsgWindow);
+  nsParseNewMailState();
+  virtual ~nsParseNewMailState();
+  NS_DECL_ISUPPORTS_INHERITED
+  nsresult Init(nsIFolder *rootFolder, nsIMsgFolder *downloadFolder, nsFileSpec &folder, nsIOFileStream *inboxFileStream, nsIMsgWindow *aMsgWindow);
 
-	virtual void	DoneParsingFolder(nsresult status);
-	virtual void	SetUsingTempDB(PRBool usingTempDB, char *tmpDBName);
+  virtual void	DoneParsingFolder(nsresult status);
 
-	void DisableFilters() {m_disableFilters = PR_TRUE;}
+  void DisableFilters() {m_disableFilters = PR_TRUE;}
 
 #ifdef DOING_JSFILTERS
 	// from jsmsg.cpp
@@ -255,110 +248,27 @@ public:
 
 	nsOutputFileStream *GetLogFile();
 	virtual PRInt32	PublishMsgHeader(nsIMsgWindow *msgWindow);
+  void            GetMsgWindow(nsIMsgWindow **aMsgWindow);
 protected:
-	char				*m_tmpdbName;				// Temporary filename of new database
-	PRBool				m_usingTempDB;
 	virtual void	ApplyFilters(PRBool *pMoved, nsIMsgWindow *msgWindow);
 	virtual nsresult GetTrashFolder(nsIMsgFolder **pTrashFolder);
 	virtual nsresult	MoveIncorporatedMessage(nsIMsgDBHdr *mailHdr, 
-											   nsIMsgDatabase *sourceDB, 
-                                                const char *destFolder,
+                                            nsIMsgDatabase *sourceDB, 
+                                            const nsACString& destFolder,
                                             nsIMsgFilter *filter,
                                             nsIMsgWindow *msgWindow);
 	virtual	int			MarkFilteredMessageRead(nsIMsgDBHdr *msgHdr);
   void		LogRuleHit(nsIMsgFilter *filter, nsIMsgDBHdr *msgHdr);
 	nsCOMPtr <nsIMsgFilterList> m_filterList;
 	nsCOMPtr <nsIFolder> m_rootFolder;
+  nsCOMPtr <nsIMsgWindow> m_msgWindow;
 	nsIOFileStream		*m_inboxFileStream;
-	nsFileSpec			m_inboxFileSpec;
-	PRBool				m_disableFilters;
-	PRBool				m_msgMovedByFilter;
-	PRUint32			m_ibuffer_fp;
-	char			*m_ibuffer;
-	PRUint32			m_ibuffer_size;
+	nsFileSpec    m_inboxFileSpec;
+	PRBool        m_disableFilters;
+	PRBool        m_msgMovedByFilter;
+	PRUint32      m_ibuffer_fp;
+	char          *m_ibuffer;
+	PRUint32      m_ibuffer_size;
 };
-
-#ifdef IMAP_NEW_MAIL_HANDLED
-
-
-class ParseIMAPMailboxState : public ParseNewMailState 
-{
-public:
-	ParseIMAPMailboxState(MSG_IMAPHost *host, MSG_FolderInfoMail *folder, MSG_UrlQueue *urlQueue, TImapFlagAndUidState *flagStateAdopted);
-	virtual ~ParseIMAPMailboxState();
-	
-	// close the db
-	virtual void			DoneParsingFolder(nsresult status);
-	
-	virtual void			SetPublishUID(PRInt32 uid);
-	virtual void			SetPublishByteLength(PRUint32 byteLength);
-	virtual void			SetNextSequenceNum(PRInt32 seqNum);
-	
-	const IDArray 			&GetBodyKeys() { return fFetchBodyKeys; }
-	MSG_UrlQueue	*GetFilterUrlQueue() {return fUrlQueue;}
-protected:
-	virtual PRInt32			PublishMsgHeader(nsIMsgWindow *msgWindow);
-	virtual void			FolderTypeSpecificTweakMsgHeader(nsIMsgDBHdr *tweakMe);
-	virtual void			ApplyFilters(PRBool *pMoved, nsIMsgWindow *msgWindow);
-	
-	virtual MSG_FolderInfoMail *GetTrashFolder();
-	virtual nsresult		MoveIncorporatedMessage(nsIMsgDBHdr *mailHdr, 
-											   nsIMsgDatabase *sourceDB, 
-											   char *destFolder,
-											   nsIMsgFilter *filter);
-	virtual	int				MarkFilteredMessageRead(nsIMsgDBHdr *msgHdr);
-private:
-	PRBool fParsingInbox;
-	PRBool	fB2HaveWarnedUserOfOfflineFiltertarget;
-	PRInt32 	fNextMessagePublishUID;
-	PRUint32	fNextMessageByteLength;
-	MSG_UrlQueue *fUrlQueue;
-	TImapFlagAndUidState *fFlagState;
-	nsMsgKeyArray fFetchBodyKeys;
-	PRInt32	fNextSequenceNum;
-	MSG_FolderInfoContainer *m_imapContainer;
-	MSG_IMAPHost	*m_host;
-};
-
-// If m_out_file is set, this parser will also write out the message,
-// adding a mozilla status line if one is not present.
-class ParseOutgoingMessage : public ParseMailMessageState
-{
-public:
-	ParseOutgoingMessage();
-	virtual ~ParseOutgoingMessage();
-	void			SetOutFile(XP_File out_file) {m_out_file = out_file;}
-	XP_File			GetOutFile() {return m_out_file;}
-	void			SetWriteMozillaStatus(PRBool writeMozStatus) 
-						{m_writeMozillaStatus = writeMozStatus;}
-	virtual int		StartNewEnvelope(const char *line, PRUint32 lineLength);
-	virtual void	FinishHeader();
-	virtual PRInt32	ParseFolderLine(const char *line, PRUint32 lineLength);
-	virtual PRInt32	ParseBlock(const char *block, PRUint32 lineLength);
-	virtual void	Clear();
-	void			AdvanceOutPosition(PRUint32 amountToAdvance);
-	void			SetWriteToOutFile(PRBool writeToOutFile) {m_writeToOutFile = writeToOutFile;}
-
-	void			FlushOutputBuffer();
-	PRUint32			m_bytes_written;
-protected:
-	static PRInt32	LineBufferCallback(char *line, PRUint32 lineLength, void *closure);
-	PRBool			m_wroteXMozillaStatus;
-	PRBool			m_writeMozillaStatus;
-	PRBool			m_writeToOutFile;
-	PRBool			m_lastBodyLineEmpty;
-	XP_File			m_out_file;
-	PRUint32			m_ouputBufferSize;
-	char			*m_outputBuffer;
-	PRUint32			m_outputBufferIndex;
-};
-
-#endif /* #ifdef NEW_MAIL_HANDLED */
- 
 
 #endif
-
-
-
-
-

@@ -22,7 +22,6 @@ libplds4.dylib
 ; Javascript:
 ; 
 libmozjs.dylib
-components/libjsloader.dylib
 
 
 ; 
@@ -35,8 +34,9 @@ components/libjsdom.dylib
 ; XPCOM:
 ; 
 libxpcom.dylib 
-
-
+libxpcom_compat.dylib
+components/libxpcom_compat_c.dylib
+components/xpcom_obsolete.xpt
 
 ; 
 ; Components: (need to trim fat)
@@ -82,9 +82,7 @@ components/libeditor.dylib
 components/editor.xpt
 
 ; embedding                   
-components/libmozbrwsr.dylib                 
-components/libwebbrwsr.dylib  ; wtf!  it is needed?!
-components/mozbrwsr.xpt                 
+components/libwebbrwsr.dylib
 components/webBrowser_core.xpt
 components/libembedcomponents.dylib
 components/windowwatcher.xpt
@@ -102,18 +100,16 @@ components/libjar50.dylib
 components/jar.xpt
 
 ; javascript
-components/libjsurl.dylib
 components/jsurl.xpt
 
 ; layout
-components/libgkcontent.dylib
-res/dtd/*
+res/dtd/xhtml11.dtd
 components/libgklayout.dylib                   
 components/libhtmlpars.dylib                 
-components/libgkview.dylib                   
-components/layout_base.xpt              
 components/layout_xul.xpt               
+components/layout_xul_tree.xpt
 components/content_base.xpt
+components/layout_base.xpt              
 
 ; netwerk
 
@@ -132,7 +128,6 @@ components/necko_res.xpt
 components/necko_strconv.xpt            
 
 ; imagelib
-libmozjpeg.dylib
 components/libimglib2.dylib
 components/imglib2.xpt
 
@@ -143,6 +138,14 @@ components/libpref.dylib
 ; profile
 components/libprofile.dylib                  
 components/profile.xpt
+components/mozreg.dylib
+components/mozreg.xpt
+
+; profile sharing - optional
+ipc/modules/liblockmodule.dylib
+ipc/modules/libtransmngr.dylib
+mozipcd
+components/libipcdc.dylib
 
 ; wallet
 ; Optional - only if you need password persistence
@@ -167,6 +170,7 @@ chrome/pipnss.jar
 defaults/pref/security-prefs.js
 libnss3.dylib
 libsmime3.dylib
+libsoftokn3.chk
 libsoftokn3.dylib
 libssl3.dylib
 libnssckbi.dylib
@@ -176,7 +180,6 @@ components/librdf.dylib
 components/rdf.xpt
 
 ; session history
-components/libshistory.dylib
 components/shistory.xpt
 
 ; optional typeaheadfind 
@@ -190,6 +193,7 @@ components/libuconv.dylib
 components/libi18n.dylib
 components/uconv.xpt
 components/unicharutil.xpt
+components/intl.xpt
 
 res/language.properties
 res/langGroups.properties
@@ -204,7 +208,6 @@ defaults/pref/all.js
 defaults/pref/macprefs.js
 
 ; uriloader
-components/liburiloader.dylib
 components/uriloader.xpt
 
 ; widget
@@ -240,16 +243,37 @@ res/quirk.css
 res/viewsource.css
 res/ua.css
 res/forms.css
+res/platform-forms.css
 res/arrow.gif
 res/arrowd.gif
 res/loading-image.gif
 res/broken-image.gif
 res/builtin/*
-res/entityTables/*
-res/fonts/*
+res/entityTables/html40Special.properties
+res/entityTables/htmlEntityVersions.properties
+res/entityTables/html40Latin1.properties
+res/entityTables/html40Symbols.properties
+res/entityTables/transliterate.properties
+res/fonts/fontEncoding.properties
 
 ;
-; MathML
+; Optional for MathML
 ;
-res/mathml.css
-Components/ucvmath.dylib
+;res/mathml.css
+;res/dtd/mathml.dtd
+;res/entityTables/mathml20.properties
+;res/fonts/mathfont.properties
+;res/fonts/mathfontCMEX10.properties
+;res/fonts/mathfontCMSY10.properties
+;res/fonts/mathfontMath1.properties
+;res/fonts/mathfontMath2.properties
+;res/fonts/mathfontMath4.properties
+;res/fonts/mathfontMTExtra.properties
+;res/fonts/mathfontPUA.properties
+;res/fonts/mathfontSymbol.properties
+;Components/ucvmath.dylib
+
+; p3p
+components/libp3p.dylib
+components/p3p.xpt
+

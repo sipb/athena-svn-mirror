@@ -38,12 +38,10 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nsCOMPtr.h"
-#include "nsIXBLPrototypeHandler.h"
+#include "nsXBLPrototypeHandler.h"
+#include "nsXBLAtoms.h"
 #include "nsXBLContextMenuHandler.h"
 #include "nsIContent.h"
-#include "nsIAtom.h"
-#include "nsIDOMMouseEvent.h"
-#include "nsINameSpaceManager.h"
 #include "nsIScriptContext.h"
 #include "nsIScriptObjectOwner.h"
 #include "nsIScriptGlobalObject.h"
@@ -66,55 +64,29 @@
 #include "nsIURI.h"
 #include "nsXPIDLString.h"
 
-PRUint32 nsXBLContextMenuHandler::gRefCnt = 0;
-nsIAtom* nsXBLContextMenuHandler::kContextMenuAtom = nsnull;
-
-nsXBLContextMenuHandler::nsXBLContextMenuHandler(nsIDOMEventReceiver* aReceiver, nsIXBLPrototypeHandler* aHandler)
-:nsXBLEventHandler(aReceiver,aHandler)
+nsXBLContextMenuHandler::nsXBLContextMenuHandler(nsIDOMEventReceiver* aReceiver,
+                                                 nsXBLPrototypeHandler* aHandler)
+  : nsXBLEventHandler(aReceiver, aHandler)
 {
-  gRefCnt++;
-  if (gRefCnt == 1) {
-    kContextMenuAtom = NS_NewAtom("contextmenu");
-  }
 }
 
 nsXBLContextMenuHandler::~nsXBLContextMenuHandler()
 {
-  gRefCnt--;
-  if (gRefCnt == 0) {
-    NS_RELEASE(kContextMenuAtom);
-  }
 }
 
 NS_IMPL_ISUPPORTS_INHERITED1(nsXBLContextMenuHandler, nsXBLEventHandler, nsIDOMContextMenuListener)
 
-static inline nsresult DoContextMenu(nsIAtom* aEventType, nsIXBLPrototypeHandler* aHandler, 
-                                     nsIDOMEvent* aContextMenuEvent,
-                                     nsIDOMEventReceiver* aReceiver)
-{
-  if (!aHandler)
-    return NS_OK;
-
-  PRBool matched = PR_FALSE;
-  nsCOMPtr<nsIDOMMouseEvent> contextMenu(do_QueryInterface(aContextMenuEvent));
-  aHandler->MouseEventMatched(aEventType, contextMenu, &matched);
-
-  if (matched)
-    aHandler->ExecuteHandler(aReceiver, aContextMenuEvent);
-  
-  return NS_OK;
-}
-
 nsresult nsXBLContextMenuHandler::ContextMenu(nsIDOMEvent* aContextMenuEvent)
 {
-  return DoContextMenu(kContextMenuAtom, mProtoHandler, aContextMenuEvent, mEventReceiver);
+  return DoMouse(nsXBLAtoms::contextmenu, aContextMenuEvent);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////
 
 nsresult
-NS_NewXBLContextMenuHandler(nsIDOMEventReceiver* aRec, nsIXBLPrototypeHandler* aHandler,
-                      nsXBLContextMenuHandler** aResult)
+NS_NewXBLContextMenuHandler(nsIDOMEventReceiver* aRec,
+                            nsXBLPrototypeHandler* aHandler,
+                            nsXBLContextMenuHandler** aResult)
 {
   *aResult = new nsXBLContextMenuHandler(aRec, aHandler);
   if (!*aResult)

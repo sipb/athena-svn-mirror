@@ -31,7 +31,7 @@
 # may use your version of this file under either the MPL or the
 # GPL.
 #
-$cvs_id = '@(#) $RCSfile: ckapi.perl,v $ $Revision: 1.1.1.1 $ $Date: 2003-02-14 18:54:53 $ $Name: not supported by cvs2svn $';
+$cvs_id = '@(#) $RCSfile: ckapi.perl,v $ $Revision: 1.1.1.2 $ $Date: 2003-07-08 18:05:10 $ $Name: not supported by cvs2svn $';
 
 $copyright = '/* THIS IS A GENERATED FILE */
 /* 
@@ -489,11 +489,7 @@ __ADJOIN(MODULE_NAME,C_GetFunctionList)
 }
 
 /* This one is always present */
-#ifdef WIN32
-CK_RV _declspec(dllexport)
-#else
 CK_RV CK_ENTRY
-#endif
 C_GetFunctionList
 (
   CK_FUNCTION_LIST_PTR_PTR ppFunctionList

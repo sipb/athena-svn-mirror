@@ -37,12 +37,12 @@ function initRecords()
 {
     var cmdary =
         [/* "real" commands */
-         ["show-functions",  cmdShowFunctions,                      CMD_CONSOLE],
-         ["show-ecmas",      cmdShowECMAs,                          CMD_CONSOLE],
+         ["show-functions",  cmdShowFunctions,                     CMD_CONSOLE],
+         ["show-ecmas",      cmdShowECMAs,                         CMD_CONSOLE],
 
          /* aliases */
-         ["toggle-functions",     "show-functions toggle",                    0],
-         ["toggle-ecmas",         "show-ecma toggle",                         0]
+         ["toggle-functions",     "show-functions toggle",                   0],
+         ["toggle-ecmas",         "show-ecma toggle",                        0]
         ];
 
     console.commandManager.defineCommands (cmdary);
@@ -58,10 +58,27 @@ function initRecords()
     FrameRecord.prototype.property    = atomsvc.getAtom("item-frame");
     FrameRecord.prototype.atomCurrent = atomsvc.getAtom("current-frame-flag");
 
+    ScriptInstanceRecord.prototype.atomUnknown = atomsvc.getAtom("item-unk");
+    ScriptInstanceRecord.prototype.atomHTML    = atomsvc.getAtom("item-html");
+    ScriptInstanceRecord.prototype.atomJS      = atomsvc.getAtom("item-js");
+    ScriptInstanceRecord.prototype.atomXUL     = atomsvc.getAtom("item-xul");
+    ScriptInstanceRecord.prototype.atomXML     = atomsvc.getAtom("item-xml");
+    ScriptInstanceRecord.prototype.atomDisabled = 
+        atomsvc.getAtom("script-disabled");
 
-    console.addPref ("valueRecord.showFunctions", false);
-    console.addPref ("valueRecord.showECMAProps", false);    
-    console.addPref ("valueRecord.brokenObjects", "^JavaPackage$");
+    ScriptRecord.prototype.atomFunction   = atomsvc.getAtom("file-function");
+    ScriptRecord.prototype.atomBreakpoint = atomsvc.getAtom("item-has-bp");
+    ScriptRecord.prototype.atomDisabled   = atomsvc.getAtom("script-disabled");
+
+    var prefs =
+        [
+         ["valueRecord.showFunctions", false],
+         ["valueRecord.showECMAProps", false],
+         ["valueRecord.brokenObjects", "^JavaPackage$"]
+        ];
+
+    console.prefManager.addPrefs(prefs);
+    
     try
     {
         ValueRecord.prototype.brokenObjects = 
@@ -184,8 +201,9 @@ function WindowRecord (win, baseURL)
     else
     {
         this.baseURL = getPathFromURL(this.url);
+        if (this.baseURL.indexOf("file:///") == 0)
+            this.baseURL = "file:/" + this.baseURL.substr(8)
     }
-    
     
     this.reserveChildren(true);
     this.shortName = getFileFromPath (this.url);
@@ -304,7 +322,7 @@ function ScriptInstanceRecord(scriptInstance)
     this.reserveChildren(true);
     this.url = scriptInstance.url;
     var sv = console.views.scripts;
-    this.fileType = sv.atomUnknown;
+    this.fileType = this.atomUnknown;
     this.shortName = this.url;
     this.group = 4;
     this.scriptInstance = scriptInstance;
@@ -318,23 +336,23 @@ function ScriptInstanceRecord(scriptInstance)
         switch (ary[1].toLowerCase())
         {
             case "js":
-                this.fileType = sv.atomJS;
+                this.fileType = this.atomJS;
                 this.group = 0;
                 break;
             
             case "html":
                 this.group = 1;
-                this.fileType = sv.atomHTML;
+                this.fileType = this.atomHTML;
                 break;
             
             case "xul":
                 this.group = 2;
-                this.fileType = sv.atomXUL;
+                this.fileType = this.atomXUL;
                 break;
             
             case "xml":
                 this.group = 3;
-                this.fileType = sv.atomXML;
+                this.fileType = this.atomXML;
                 break;
         }
     }
@@ -359,6 +377,15 @@ function scr_dragstart (e, transferData, dragAction)
                                         "'>" + this.fileName + "</a>");
     return true;
 }    
+
+ScriptInstanceRecord.prototype.getProperties =
+function scr_getprops (properties)
+{
+    properties.AppendElement(this.fileType);
+    
+    if (this.scriptInstance.disabledScripts > 0)
+        properties.AppendElement (this.atomDisabled);
+}
 
 ScriptInstanceRecord.prototype.super_resort = XTRootRecord.prototype.resort;
 
@@ -469,6 +496,21 @@ function sr_dragstart (e, transferData, dragAction)
                                         "<a href='" + fileName +
                                         "'>" + fileName + "</a>");
     return true;
+}
+
+ScriptRecord.prototype.getProperties =
+function sr_getprops (properties)
+{
+    properties.AppendElement (this.atomFunction);
+
+    if (this.scriptWrapper.breakpointCount)
+        properties.AppendElement (this.atomBreakpoint);
+
+    if (this.scriptWrapper.jsdScript.isValid &&
+        this.scriptWrapper.jsdScript.flags & SCRIPT_NODEBUG)
+    {
+        properties.AppendElement (this.atomDisabled);
+    }
 }
 
 /*******************************************************************************
@@ -605,9 +647,13 @@ function vr_refresh ()
         }
         catch (ex)
         {
+            /*
             dd ("caught exception refreshing " + this.displayName);
-            dd (dumpObjectTree(ex));
-
+            if (typeof ex == "object")
+                dd (dumpObjectTree(ex));
+            else
+                dd(ex);
+            */
             if (!(ex instanceof jsdIValue))
                 ex = console.jsds.wrapValue(ex);
             
@@ -772,12 +818,17 @@ function vr_countprops ()
 ValueRecord.prototype.listProperties =
 function vr_listprops ()
 {
+    // the ":" prefix for keys in the propMap avoid collisions with "real"
+    // pseudo-properties, such as __proto__.  If we were to actually assign
+    // to those we would introduce bad side affects.
+
     //dd ("listProperties {");
     var i;
     var jsval = this.value.getWrappedValue();
     var propMap = new Object();
-    
+
     /* get the enumerable properties */
+    
     for (var p in jsval)
     {
         var value;
@@ -786,20 +837,23 @@ function vr_listprops ()
             value = console.jsds.wrapValue(jsval[p]);
             if (this.showFunctions || value.jsType != TYPE_FUNCTION)
             {
-                propMap[p] = { name: p, value: value,
-                               flags: PROP_ENUMERATE | PROP_HINTED };
+                propMap[":" + p] = { name: p, value: value,
+                                     flags: PROP_ENUMERATE | PROP_HINTED };
             }
             else
             {
                 //dd ("not including function " + name);
-                propMap[p] = null;
+                propMap[":" + p] = null;
             }
         }
         catch (ex)
         {
-            propMap[p] = { name: p, value: console.jsds.wrapValue(ex),
-                           flags: PROP_EXCEPTION };
+            propMap[":" + p] = { name: p, value: console.jsds.wrapValue(ex),
+                                 flags: PROP_EXCEPTION };
         }
+
+        //dd ("jsval props: adding " + p + ", " + propMap[":" + p]);
+
     }
     
     /* get the local properties, may or may not be enumerable */
@@ -810,34 +864,33 @@ function vr_listprops ()
     for (i = 0; i < len; ++i)
     {
         var prop = localProps[i];
-        if (!ASSERT(prop, "prop[" + i + "] is null"))
-            continue;
-        
         var name = prop.name.stringValue;
         
-        if (!(name in propMap))
+        if (!((":" + name) in propMap))
         {
             if (this.showFunctions || prop.value.jsType != TYPE_FUNCTION)
             {
                 //dd ("localProps: adding " + name + ", " + prop);
-                propMap[name] = { name: name, value: prop.value,
-                                  flags: prop.flags };
+                propMap[":" + name] = { name: name, value: prop.value,
+                                        flags: prop.flags };
             }
             else
             {
                 //dd ("not including function " + name);
-                propMap[name] = null;
+                propMap[":" + name] = null;
             }
         }
         else
         {
-            if (propMap[name])
-                propMap[name].flags = prop.flags;
+            if (propMap[":" + name])
+                propMap[":" + name].flags = prop.flags;
         }
     }
     
     /* sort the property list */
     var nameList = keys(propMap);
+    //dd ("nameList is " + nameList);
+    
     nameList.sort();
     var propertyList = new Array();
     for (i = 0; i < nameList.length; ++i)
@@ -846,7 +899,7 @@ function vr_listprops ()
         if (propMap[name])
             propertyList.push (propMap[name]);
     }
-
+    
     //dd ("} " + propertyList.length + " properties");
 
     return propertyList;

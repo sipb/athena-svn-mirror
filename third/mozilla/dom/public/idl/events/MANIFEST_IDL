@@ -6,5 +6,10 @@ nsIDOMEventTarget.idl
 nsIDOMKeyEvent.idl
 nsIDOMMouseEvent.idl
 nsIDOMMutationEvent.idl
+nsIDOMPopupBlockedEvent.idl
 nsIDOMUIEvent.idl
 nsIDOMNSUIEvent.idl
+nsIDOM3DocumentEvent.idl
+nsIDOM3EventTarget.idl
+nsIDOMEventGroup.idl
+nsIDOMCustomEvent.idl

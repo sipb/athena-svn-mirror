@@ -29,6 +29,8 @@ include $(DEPTH)/config/autoconf.mk
 MODULE		= xpcom
 XPIDL_MODULE	= xpcom_ds
 LIBRARY_NAME	= xpcomds_s
+GRE_MODULE	= 1
+
 REQUIRES	= \
 		  string \
 		  $(NULL)
@@ -45,7 +47,6 @@ CPPSRCS		= \
 		nsByteBuffer.cpp \
 		nsCheapSets.cpp \
 		nsCRT.cpp \
-		nsConjoiningEnumerator.cpp \
 		nsDeque.cpp \
 		nsEmptyEnumerator.cpp \
 		nsEnumeratorUtils.cpp \
@@ -60,12 +61,14 @@ CPPSRCS		= \
 		nsPersistentProperties.cpp \
 		nsQuickSort.cpp \
 		nsRecyclingAllocator.cpp \
-		nsSizeOfHandler.cpp \
 		nsStaticNameTable.cpp \
 		nsStatistics.cpp \
+		nsStringEnumerator.cpp \
+		nsStringService.cpp \
 		nsSupportsArray.cpp \
 		nsSupportsArrayEnumerator.cpp \
 		nsSupportsPrimitives.cpp \
+		nsTHashtable.cpp \
 		nsUnicharBuffer.cpp \
 		nsVariant.cpp \
 		nsVoidArray.cpp \
@@ -79,28 +82,33 @@ CPPSRCS		= \
 
 EXPORTS		= \
 		nsAtomService.h \
+		nsBaseHashtable.h \
 		nsCheapSets.h \
+		nsClassHashtable.h \
 		nsCppSharedAllocator.h \
 		nsCRT.h \
+		nsDataHashtable.h \
 		nsDeque.h \
 		nsDoubleHashtable.h \
 		nsEnumeratorUtils.h \
 		nsFixedSizeAllocator.h \
 		nsHashSets.h \
+		nsHashKeys.h \
 		nsHashtable.h \
 		nsHashtableEnumerator.h \
 		nsIArena.h \
 		nsIByteBuffer.h \
-		nsISizeOfHandler.h \
 		nsIUnicharBuffer.h \
 		nsInt64.h \
+		nsInterfaceHashtable.h \
 		nsObserverService.h \
 		nsQuickSort.h \
 		nsRecyclingAllocator.h \
 		nsStaticNameTable.h \
-		nsStatistics.h \
+		nsStaticAtom.h \
 		nsSupportsArray.h \
 		nsSupportsPrimitives.h \
+		nsTHashtable.h \
 		nsTime.h \
 		nsUnitConversion.h \
 		nsVariant.h \
@@ -113,6 +121,7 @@ EXPORTS		= \
 		nsArray.h \
 		nsArrayEnumerator.h \
 		nsCOMArray.h \
+		nsStringEnumerator.h \
 		$(NULL)			
 
 XPIDLSRCS	= \
@@ -125,6 +134,8 @@ XPIDLSRCS	= \
 		nsIRecyclingAllocator.idl \
 		nsIVariant.idl \
 		nsISerializable.idl \
+		nsIStringEnumerator.idl \
+		nsIStringService.idl \
 		nsISupportsArray.idl \
 		nsISupportsIterators.idl \
 		nsITimelineService.idl \
@@ -149,5 +160,6 @@ FORCE_STATIC_LIB = 1
 FORCE_USE_PIC	= 1
 
 include $(topsrcdir)/config/rules.mk
+
 
 DEFINES		+= -D_IMPL_NS_COM

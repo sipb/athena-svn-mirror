@@ -27,24 +27,25 @@ VPATH		= @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 MODULE		= editor
+GRE_MODULE	= 1
 
 XPIDLSRCS	= \
 		nsICiter.idl \
 		nsIDocumentStateListener.idl \
 		nsIEditActionListener.idl \
-		nsIEditorController.idl \
 		nsIEditor.idl \
 		nsIEditorIMESupport.idl \
 		nsIEditorLogging.idl \
 		nsIEditorMailSupport.idl \
 		nsIEditorObserver.idl \
-		nsIEditorShell.idl \
 		nsIEditorSpellCheck.idl \
 		nsIEditorStyleSheets.idl \
 		nsIHTMLEditor.idl \
+		nsIHTMLObjectResizer.idl \
 		nsIPlaintextEditor.idl \
 		nsITableEditor.idl \
 		nsIURIRefObject.idl \
+		nsIContentFilter.idl \
 		nsPIEditorTransaction.idl \
 		$(NULL)
 

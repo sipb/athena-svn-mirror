@@ -96,14 +96,16 @@ function init() {
   helpGlossaryPanel = document.getElementById("help-glossary-tree");
   helpBrowser = document.getElementById("help-content");
 
-  var URI = normalizeURI(decodeURIComponent(window.location.search));
-  helpFileURI = URI.helpFileURI;
-  var helpTopic = URI.topic;
-  helpBaseURI = helpFileURI.substring(0, helpFileURI.lastIndexOf("/")+1); // trailing "/" included.
+  var helpTopic = defaultTopic;
+  if ("arguments" in window && window.arguments[0] instanceof Components.interfaces.nsIDialogParamBlock) {
+    helpFileURI = window.arguments[0].GetString(0);
+    helpBaseURI = helpFileURI.substring(0, helpFileURI.lastIndexOf("/")+1); // trailing "/" included.
+    helpTopic = window.arguments[0].GetString(1);
+  }
 
   loadHelpRDF();
 
-  displayTopic(helpTopic);  
+  displayTopic(helpTopic);
 
   // move to right end of screen
   var width = document.documentElement.getAttribute("width");
@@ -119,38 +121,6 @@ function init() {
   var interfaceRequestor = helpBrowser.docShell.QueryInterface(Components.interfaces.nsIInterfaceRequestor);
   var webProgress = interfaceRequestor.getInterface(Components.interfaces.nsIWebProgress);
   webProgress.addProgressListener(window.XULBrowserWindow, Components.interfaces.nsIWebProgress.NOTIFY_ALL);
-}
-
-function normalizeURI(uri) {
-  // uri in format [uri of help rdf file][?initial topic]
-  // if the whole uri or help file uri is omitted then the default help is assumed.
-  // unpack uri
-  var URI = {};
-  URI.helpFileURI = defaultHelpFile;
-  URI.topic = null;
-  // Case: No help uri at all.
-  if (uri) {
-    // remove leading ?
-    if (uri.substr(0,1) == "?") 
-      uri = uri.substr(1);
-    var i = uri.indexOf("?");
-    // Case: Full uri with topic.
-    if ( i != -1) {
-        URI.helpFileURI = uri.substr(0,i);
-        URI.topic = uri.substr(i+1);
-    }
-    else {
-      // Case: uri with no topic.
-      if (uri.substr(0,7) == "chrome:") 
-        URI.helpFileURI = uri;
-      else {
-        // Case: uri with topic only.
-        URI.topic = uri;
-      }  
-    }
-  }  
-  URI.uri = URI.helpFileURI + ((URI.topic)? "?" + URI.topic : "");
-  return URI;
 }
 
 function loadHelpRDF() {
@@ -242,7 +212,7 @@ function getLink(ID) {
   // We have one possible source for an ID for each datasource in the composite datasource.
   // The first ID which matches is returned.
   var tocTree = document.getElementById("help-toc-tree");
-    tocDS = tocTree.database;
+  var tocDS = tocTree.database;
     if (tocDS == null)
       return null;
     var tocDatasources = tocTree.getAttribute("datasources");
@@ -408,15 +378,23 @@ function UpdateBackForwardButtons()
     forwardBroadcaster.setAttribute("disabled", !forwardDisabled);
 }
 
+var gFindInstData;
+function getFindInstData()
+{
+  if (!gFindInstData) {
+    gFindInstData = new nsFindInstData();
+    gFindInstData.browser = helpBrowser;
+    // defaults for rootSearchWindow and currentSearchWindow are fine here
+  }
+  return gFindInstData;
+}
+
 function find(again, reverse)
 {
-  var focusedWindow = document.commandDispatcher.focusedWindow;
-  if (!focusedWindow || focusedWindow == window)
-    focusedWindow = window._content;
   if (again)
-    findAgainInPage(helpBrowser, window._content, focusedWindow, reverse);
+    findAgainInPage(getFindInstData(), reverse);
   else
-    findInPage(helpBrowser, window._content, focusedWindow)
+    findInPage(getFindInstData())
 }
 
 function getMarkupDocumentViewer()
@@ -503,7 +481,7 @@ function onselect_loadURI(tree, columnName) {
 function getPropertyValue(properties, propName) {
   for (var i=0; i< properties.Count(); ++i) {
     var atom = properties.GetElementAt(i).QueryInterface(Components.interfaces.nsIAtom);
-    var atomValue = atom.GetUnicode();
+    var atomValue = atom.toString();
     if (atomValue.substr(0, propName.length) == propName)
       return atomValue.substr(propName.length);
   }
@@ -702,8 +680,6 @@ function log(aText) {
 // open the ones at the top-level (i.e., expose the headings underneath
 // the letters in the list.
 function displayIndex() {
-  if (!helpIndexPanel.view)
-    helpIndexPanel.view = helpIndexPanel.builder;
   var treeview = helpIndexPanel.view;
   var i = treeview.rowCount;
   while (i--)

@@ -32,7 +32,7 @@
  * may use your version of this file under either the MPL or the
  * GPL.
  *
- # $Id: nssinit.c,v 1.1.1.1 2003-02-14 19:58:05 rbasch Exp $
+ # $Id: nssinit.c,v 1.1.1.2 2003-07-08 17:25:41 rbasch Exp $
  */
 
 #include <ctype.h>
@@ -49,9 +49,12 @@
 #include "nss.h"
 #include "secrng.h"
 #include "pk11func.h"
+#include "secerr.h"
+#include "nssbase.h"
 
 #include "pki3hack.h"
 #include "certi.h"
+#include "secmodi.h"
 
 /*
  * On Windows nss3.dll needs to export the symbol 'mktemp' to be
@@ -394,6 +397,8 @@ nss_FindExternalRoot(const char *dbpath, const char* secmodprefix)
 
 static PRBool nss_IsInitted = PR_FALSE;
 
+extern SECStatus secoid_Init(void);
+
 static SECStatus
 nss_Init(const char *configdir, const char *certPrefix, const char *keyPrefix,
 		 const char *secmodName, PRBool readOnly, PRBool noCertDB, 
@@ -463,8 +468,12 @@ loser:
     }
 
     if (rv == SECSuccess) {
-	/* can this function fail?? */
-	STAN_LoadDefaultNSS3TrustDomain();
+	if (secoid_Init() != SECSuccess) {
+	    return SECFailure;
+	}
+	if (STAN_LoadDefaultNSS3TrustDomain() != PR_SUCCESS) {
+	    return SECFailure;
+	}
 	CERT_SetDefaultCertDB((CERTCertDBHandle *)
 				STAN_GetDefaultTrustDomain());
 #ifndef XP_MAC
@@ -476,6 +485,7 @@ loser:
 	}
 #endif
 	pk11sdr_Init();
+	cert_CreateSubjectKeyIDHashTable();
 	nss_IsInitted = PR_TRUE;
     }
     return rv;
@@ -537,16 +547,26 @@ NSS_NoDB_Init(const char * configdir)
 			PR_TRUE,PR_TRUE,PR_TRUE,PR_TRUE,PR_TRUE,PR_TRUE);
 }
 
+extern const NSSError NSS_ERROR_BUSY;
+
 SECStatus
 NSS_Shutdown(void)
 {
     SECStatus rv;
+    PRStatus status;
 
     ShutdownCRLCache();
     SECOID_Shutdown();
-    STAN_Shutdown();
+    status = STAN_Shutdown();
+    cert_DestroySubjectKeyIDHashTable();
     rv = SECMOD_Shutdown();
     pk11sdr_Shutdown();
+    if (status == PR_FAILURE) {
+	if (NSS_GetError() == NSS_ERROR_BUSY) {
+	    PORT_SetError(SEC_ERROR_BUSY);
+	}
+	rv = SECFailure;
+    }
     nss_IsInitted = PR_FALSE;
     return rv;
 }

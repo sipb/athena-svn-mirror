@@ -27,15 +27,13 @@
 
 sil         *InitSilNodes(char *szFileIni);
 void        DeInitSilNodes(sil **silHead);
-void        ParseCommandLine(LPSTR lpszCmdLine);
 HRESULT     FileExists(LPSTR szFile);
 DWORD       Uninstall(sil* silFile);
 void        ParseForFile(LPSTR szString, LPSTR szKey, LPSTR szFile, DWORD dwShortFilenameBufSize);
 void        ParseForCopyFile(LPSTR szString, LPSTR szKeyStr, LPSTR szFile, DWORD dwShortFilenameBufSize);
-void        ParseForWinRegInfo(LPSTR szString, LPSTR szKeyStr, LPSTR szRootKey, DWORD dwRootKeyBufSize, LPSTR szKey, DWORD dwKeyBufSize, LPSTR szName, DWORD dwNameBufSize);
+HRESULT     ParseForWinRegInfo(LPSTR szString, LPSTR szKeyStr, LPSTR szRootKey, DWORD dwRootKeyBufSize, LPSTR szKey, DWORD dwKeyBufSize, LPSTR szName, DWORD dwNameBufSize);
 void        ParseForUninstallCommand(LPSTR szString, LPSTR szKeyStr, LPSTR szFile, DWORD dwFileBufSize, LPSTR szParam, DWORD dwParamBufSize);
 void        DeleteWinRegKey(HKEY hkRootKey, LPSTR szKey, BOOL bAbsoluteDelete);
-void        DeleteWinRegValue(HKEY hkRootKey, LPSTR szKey, LPSTR szName);
 DWORD       GetLogFile(LPSTR szTargetPath, LPSTR szInFilename, LPSTR szOutBuf, DWORD dwOutBufSize);
 void        RemoveUninstaller(LPSTR szUninstallFilename);
 DWORD       DecrementSharedFileCounter(char *file);

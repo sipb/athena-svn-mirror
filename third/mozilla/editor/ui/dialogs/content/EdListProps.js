@@ -86,7 +86,7 @@ function Startup()
     globalElement = gListElement.cloneNode(false);
 
   // Show extra options for changing entire list if we have one already.
-  gDialog.RadioGroup.setAttribute("collapsed", gListElement ? "false" : "true");
+  gDialog.RadioGroup.collapsed = !gListElement;
   if (gListElement)
   {
     // Radio button index is persistant
@@ -188,7 +188,7 @@ function ConvertStartAttrToUserString(startAttr, type)
 
 function BuildBulletStyleList()
 {
-  ClearMenulist(gDialog.BulletStyleList);
+  gDialog.BulletStyleList.removeAllItems();
   var label;
 
   if (gListType == "ul")

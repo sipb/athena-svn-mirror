@@ -59,7 +59,6 @@ static const char *	kNumVisibleMessagesColumnName = "numVisMsgs";
 static const char *	kNumMessagesColumnName ="numMsgs";
 static const char *	kNumNewMessagesColumnName = "numNewMsgs";
 static const char *	kFlagsColumnName = "flags";
-static const char *	kLastMessageLoadedColumnName = "lastMsgLoaded";
 static const char *	kFolderSizeColumnName = "folderSize";
 static const char *	kExpungedBytesColumnName = "expungedBytes";
 static const char *	kFolderDateColumnName = "folderDate";
@@ -92,7 +91,7 @@ public:
   NS_DECL_ISUPPORTS
   NS_DECL_NSIOBSERVER
 
-  nsFolderCharsetObserver() { NS_INIT_ISUPPORTS(); }
+  nsFolderCharsetObserver() { }
   virtual ~nsFolderCharsetObserver() {}
 };
 
@@ -166,12 +165,10 @@ nsDBFolderInfo::QueryInterface(REFNSIID iid, void** result)
 
 nsDBFolderInfo::nsDBFolderInfo(nsMsgDatabase *mdb)
     :     m_flags(0),
-          m_lastMessageLoaded(0),
           m_expiredMark(0),
           m_numVisibleMessagesColumnToken(0),
           m_expiredMarkColumnToken(0)
 {
-  NS_INIT_ISUPPORTS();
   m_mdbTable = NULL;
   m_mdbRow = NULL;
   m_version = 1;			// for upgrading...
@@ -376,7 +373,6 @@ nsresult nsDBFolderInfo::InitMDBInfo()
 		store->StringToToken(env,  kNumMessagesColumnName, &m_numMessagesColumnToken);
 		store->StringToToken(env,  kNumNewMessagesColumnName, &m_numNewMessagesColumnToken);
 		store->StringToToken(env,  kFlagsColumnName, &m_flagsColumnToken);
-		store->StringToToken(env,  kLastMessageLoadedColumnName, &m_lastMessageLoadedColumnToken);
 		store->StringToToken(env,  kFolderSizeColumnName, &m_folderSizeColumnToken);
 		store->StringToToken(env,  kExpungedBytesColumnName, &m_expungedBytesColumnToken);
 		store->StringToToken(env,  kFolderDateColumnName, &m_folderDateColumnToken);
@@ -678,20 +674,6 @@ NS_IMETHODIMP nsDBFolderInfo::SetImapUidValidity(PRInt32 uidValidity)
 	return SetUint32PropertyWithToken(m_imapUidValidityColumnToken, m_ImapUidValidity);
 }
 
-
-
-NS_IMETHODIMP nsDBFolderInfo::GetLastMessageLoaded(nsMsgKey *lastLoaded) 
-{
-	*lastLoaded = m_lastMessageLoaded;
-	return NS_OK;
-}
-
-NS_IMETHODIMP nsDBFolderInfo::SetLastMessageLoaded(nsMsgKey lastLoaded) 
-{
-	m_lastMessageLoaded = lastLoaded;
-	return SetUint32PropertyWithToken(m_lastMessageLoadedColumnToken, m_lastMessageLoaded);
-}
-
 PRBool nsDBFolderInfo::TestFlag(PRInt32 flags)
 {
 	return (m_flags & flags) != 0;
@@ -978,6 +960,15 @@ NS_IMETHODIMP	nsDBFolderInfo::SetBooleanProperty(const char *propertyName, PRBoo
   return m_mdb->SetUint32Property(m_mdbRow, propertyName, propertyValue ? 1 : 0);
 }
 
+NS_IMETHODIMP nsDBFolderInfo::GetFolderName(char **folderName)
+{
+  return GetCharPtrProperty("folderName", folderName);
+}
+
+NS_IMETHODIMP nsDBFolderInfo::SetFolderName(const char *folderName)
+{
+  return SetCharPtrProperty("folderName", folderName);
+}
 
 class nsTransferDBFolderInfo : public nsDBFolderInfo
 {
@@ -993,8 +984,11 @@ public:
   NS_IMETHOD GetSortType(nsMsgViewSortTypeValue *aSortType); 
   NS_IMETHOD SetSortType(nsMsgViewSortTypeValue aSortType); 
   NS_IMETHOD GetSortOrder(nsMsgViewSortOrderValue *aSortOrder); 
-  NS_IMETHOD SetSortOrder(nsMsgViewSortOrderValue aSortOrder); 
+  NS_IMETHOD SetSortOrder(nsMsgViewSortOrderValue aSortOrder);
+  NS_IMETHOD GetFolderName(char **folderName);
+  NS_IMETHOD SetFolderName(const char *folderName);
   nsString  m_boxName;
+  nsCString m_folderName;
   nsMsgViewTypeValue m_viewType;
   nsMsgViewFlagsTypeValue m_viewFlags;
   nsMsgViewSortTypeValue m_sortType;
@@ -1036,6 +1030,25 @@ NS_IMETHODIMP nsDBFolderInfo::GetTransferInfo(nsIDBFolderInfo **transferInfo)
   newInfo->SetViewFlags(viewFlags);
   newInfo->SetSortType(sortType);
   newInfo->SetSortOrder(sortOrder);
+
+  nsXPIDLCString utf8Name;
+  GetFolderName(getter_Copies(utf8Name));
+  newInfo->SetFolderName(utf8Name.get());
+
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsTransferDBFolderInfo::SetFolderName(const char *folderName)
+{
+  NS_ENSURE_ARG_POINTER(folderName);
+  m_folderName = folderName;
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsTransferDBFolderInfo::GetFolderName(char **folderName)
+{
+  NS_ENSURE_ARG_POINTER(folderName);
+  *folderName = ToNewCString(m_folderName);
   return NS_OK;
 }
 
@@ -1067,6 +1080,11 @@ NS_IMETHODIMP nsDBFolderInfo::InitFromTransferInfo(nsIDBFolderInfo *transferInfo
   SetFlags(flags);
   transferInfo->GetMailboxName(&folderNameStr);
   SetMailboxName(&folderNameStr);
+
+  nsXPIDLCString utf8Name;
+  transferInfo->GetFolderName(getter_Copies(utf8Name));
+  SetFolderName(utf8Name.get());
+
   // ### add whatever other fields we want to copy here.
 
   nsMsgViewTypeValue viewType;

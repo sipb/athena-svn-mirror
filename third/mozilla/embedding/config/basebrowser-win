@@ -22,6 +22,12 @@
 mozctl.dll
 mozctlx.dll
 
+;
+; ActiveX plugin
+;
+plugins\npmozax.dll
+components\nsAxSecurityPolicy.js
+
 
 ; 
 ; NSPR:
@@ -39,16 +45,18 @@ js3250.dll
 ; XPCOM:
 ; 
 xpcom.dll
-mozreg.dll
+xpcom_compat.dll
+components\xpcom_compat_c.dll
 components\xpcom_base.xpt
 components\xpcom_components.xpt
 components\xpcom_ds.xpt
-components\xpcom_eventloop_windows.xpt
-components\xpcom_eventloop_xp.xpt
 components\xpcom_io.xpt
 components\xpcom_nativeapp.xpt
 components\xpcom_thread.xpt
 components\xpcom_xpti.xpt
+components\mozreg.dll
+;components\mozreg.xpt
+components\xpcom_obsolete.xpt
 
 ; xpconnect
 components\xpc3250.dll
@@ -62,21 +70,20 @@ components\gkgfxwin.dll
 components\gkwidget.dll   
 components\widget.xpt
 components\gfx.xpt                      
-components\gkview.dll                   
 
 ; layout
 moz_art_lgpl.dll
-components\gkcontent.dll
 components\gklayout.dll                   
 components\gkparser.dll                 
 components\layout_base.xpt              
-components\layout_xul.xpt               
+components\layout_xul.xpt
+components\layout_xul_tree.xpt               
 components\content_base.xpt
 
 ; 
 ; Imaging:
 ; 
-zlib.dll
+mozz.dll
 components\imglib2.dll
 
 ; 
@@ -87,6 +94,7 @@ components\imglib2.dll
 ; see http://www.mozilla.org/projects/ui/accessibility/vendors-win.html
 components\accessibility.dll              
 components\accessibility.xpt                 
+components\accessibility-msaa.xpt
 
 ; caps (JavaScript security)
 components\caps.dll                     
@@ -101,7 +109,6 @@ components\appshell.dll
 components\appshell.xpt                 
 components\docshell.dll                 
 components\docshell_base.xpt            
-components\urildr.dll
 components\uriloader.xpt
 components\chrome.dll                   
 components\chrome.xpt                   
@@ -122,8 +129,13 @@ components\xppref32.dll
 components\profile.dll                  
 components\profile.xpt
 
+; profile sharing - optional
+mozipcd.exe
+ipc\modules\lockmodule.dll
+ipc\modules\transmngr.dll
+components\ipcdc.dll
+
 ; session history
-components\shistory.dll
 components\shistory.xpt
 
 ; optional typeaheadfind 
@@ -159,7 +171,6 @@ components\dom_xbl.xpt
 components\dom_xul.xpt
 
 ; "javascript:" URLs
-components\jsurl.dll
 components\jsurl.xpt
 
 ; editor
@@ -176,6 +187,7 @@ components\necko.xpt
 components\necko_about.xpt              
 components\necko_data.xpt               
 components\necko_dns.xpt                
+components\necko_ftp.xpt
 components\necko_http.xpt               
 components\necko_jar.xpt                
 components\necko_res.xpt                
@@ -184,9 +196,8 @@ components\necko_strconv.xpt
 ; cache
 components\necko_cache.xpt              
 
-; optional for FTP support
-components\necko2.dll
-components\necko_ftp.xpt
+; optional for gopher/viewsource/etc support
+; components\necko2.dll
 
 ; plugins
 ; Optional - only if you need plugin support
@@ -214,6 +225,7 @@ components\pipnss.dll
 components\pipnss.xpt
 nss3.dll
 smime3.dll
+softokn3.chk
 softokn3.dll
 ssl3.dll
 nssckbi.dll
@@ -225,5 +237,8 @@ components\xmlextras.xpt
 ;
 ; MathML, optional for MathML charset conversion
 ;
-components\ucvmath.dll
+; components\ucvmath.dll
 
+; p3p
+components\p3p.dll
+components\p3p.xpt

@@ -39,9 +39,8 @@
  * ***** END LICENSE BLOCK ***** */
 
 #include "nsAccessible.h"
-#include "nsIAccessibilityService.h"
-#include "nsCOMPtr.h"
 #include "nsIDocument.h"
+#include "nsIImageDocument.h"
 #include "nsIPresShell.h"
 #include "nsIPresContext.h"
 #include "nsIContent.h"
@@ -52,13 +51,9 @@
 #include "nsIDOMDocumentView.h"
 #include "nsIDOMAbstractView.h"
 #include "nsIDOMWindowInternal.h"
-#include "nsRootAccessible.h"
 #include "nsPIDOMWindow.h"
 #include "nsIDOMElement.h"
-#include "nsIEventStateManager.h"
-#include "nsHTMLFormControlAccessible.h"
 #include "nsHTMLLinkAccessible.h"
-#include "nsIDOMHTMLAreaElement.h"
 #include "nsISelection.h"
 #include "nsISelectionController.h"
 #include "nsIServiceManager.h"
@@ -66,367 +61,32 @@
 
 #include "nsIDOMComment.h"
 #include "nsITextContent.h"
-#include "nsIEventStateManager.h"
 #include "nsIDOMHTMLImageElement.h"
 #include "nsIDOMHTMLInputElement.h"
 #include "nsIDOMHTMLBRElement.h"
-#include "nsIDOMXULElement.h"
 #include "nsIAtom.h"
-#include "nsHTMLAtoms.h"
-#include "nsLayoutAtoms.h"
-#include "nsINameSpaceManager.h"
+#include "nsAccessibilityAtoms.h"
 #include "nsGUIEvent.h"
 
-#include "nsILink.h"
-#include "nsIStyleContext.h"
-#include "nsStyleConsts.h"
-#include "nsReadableUtils.h"
-#include "nsIBindingManager.h"
-
-#include "nsFormControlAccessible.h"
 #include "nsIDOMHTMLFormElement.h"
 #include "nsIDOMHTMLInputElement.h"
 #include "nsIDOMHTMLLabelElement.h"
 #include "nsIDOMHTMLObjectElement.h"
-#include "nsIDOMNodeList.h"
 #include "nsIDOMXULButtonElement.h"
 #include "nsIDOMXULCheckboxElement.h"
-#include "nsIDOMXULDocument.h"
+#include "nsIDOMDocument.h"
 #include "nsIDOMXULElement.h"
 #include "nsIDOMXULLabelElement.h"
-#include "nsIDOMXULSelectCntrlEl.h"
-#include "nsIDOMXULSelectCntrlItemEl.h"
-#include "nsString.h"
-#include "nsIPref.h"
-
-// IFrame Helpers
-#include "nsIDocShell.h"
-#include "nsIWebShell.h"
+#include "nsIPrefService.h"
+#include "nsIPrefBranch.h"
 #include "nsIScriptGlobalObject.h"
-#include "nsIDOMHTMLIFrameElement.h"
-#include "nsIDOMHTMLFrameElement.h"
-#include "nsIDocShellTreeItem.h"
+#include "nsIFocusController.h"
+#include "nsAccessibleTreeWalker.h"
 
 #ifdef NS_DEBUG
 #include "nsIFrameDebug.h"
 #include "nsIDOMCharacterData.h"
 #endif
-
-static NS_DEFINE_CID(kPrefCID, NS_PREF_CID);
-
-//#define DEBUG_LEAKS
-
-PRUint32 nsAccessible::gInstanceCount = 0;
-nsIStringBundle *nsAccessible::gStringBundle = 0;
-nsIStringBundle *nsAccessible::gKeyStringBundle = 0;
-
-static NS_DEFINE_CID(kStringBundleServiceCID,  NS_STRINGBUNDLESERVICE_CID);
-
-nsAccessibleTreeWalker::nsAccessibleTreeWalker(nsIWeakReference* aPresShell, nsIDOMNode* aNode, PRInt32 aSiblingIndex, nsIDOMNodeList *aSiblingList, PRBool aWalkAnonContent): 
-  mPresShell(aPresShell), mAccService(do_GetService("@mozilla.org/accessibilityService;1"))
-{
-  mState.domNode = aNode;
-  mState.siblingIndex = aSiblingIndex;
-  mState.prevState = nsnull;
-  mState.siblingList = aSiblingList;
-
-  if (mState.siblingIndex < 0)
-    mState.siblingList = nsnull;
-  NS_ASSERTION(mState.siblingList || mState.siblingIndex < 0,
-    "Accessible tree walker initialization error, "
-    "can't have index into null sibling list");
-
-  if (aWalkAnonContent) {
-    nsCOMPtr<nsIPresShell> shell(do_QueryReferent(mPresShell));
-    if (shell) {
-      nsCOMPtr<nsIDocument> doc;
-      shell->GetDocument(getter_AddRefs(doc)); 
-      doc->GetBindingManager(getter_AddRefs(mBindingManager));
-    }
-  }
-  MOZ_COUNT_CTOR(nsAccessibleTreeWalker);
-  mInitialState = mState;  // deep copy
-}
-
-nsAccessibleTreeWalker::~nsAccessibleTreeWalker()
-{
-  // Clear state stack from memory
-  while (NS_SUCCEEDED(PopState()))
-    /* do nothing */ ;
-   MOZ_COUNT_DTOR(nsAccessibleTreeWalker);
-}
-
-// GetFullParentNode gets the parent node in the deep tree
-// This might not be the DOM parent in cases where <children/> was used in an XBL binding.
-// In that case, this returns the parent in the XBL'ized tree.
-
-NS_IMETHODIMP nsAccessibleTreeWalker::GetFullTreeParentNode(nsIDOMNode *aChildNode, nsIDOMNode **aParentNodeOut)
-{
-  nsCOMPtr<nsIContent> childContent(do_QueryInterface(aChildNode));
-  nsCOMPtr<nsIContent> bindingParentContent;
-  nsCOMPtr<nsIDOMNode> parentNode;
-
-  if (mState.prevState) 
-    parentNode = mState.prevState->domNode;
-  else {
-    if (mBindingManager) {
-      mBindingManager->GetInsertionParent(childContent, getter_AddRefs(bindingParentContent));
-      if (bindingParentContent) 
-        parentNode = do_QueryInterface(bindingParentContent);
-    }
-
-    if (!parentNode) 
-      aChildNode->GetParentNode(getter_AddRefs(parentNode));
-  }
-
-  if (parentNode) {
-    *aParentNodeOut = parentNode;
-    NS_ADDREF(*aParentNodeOut);
-    return NS_OK;
-  }
-  return NS_ERROR_FAILURE;
-}
-
-void nsAccessibleTreeWalker::GetKids(nsIDOMNode *aParentNode)
-{
-  nsCOMPtr<nsIContent> content(do_QueryInterface(aParentNode));
-
-  mState.siblingIndex = eSiblingsWalkNormalDOM;  // Default value - indicates no sibling list
-
-  if (content && mBindingManager) {
-    mBindingManager->GetXBLChildNodesFor(content, getter_AddRefs(mState.siblingList)); // returns null if no anon nodes
-    if (mState.siblingList) 
-      mState.siblingIndex = 0;   // Indicates our index into the sibling list
-  }
-}
-
-void nsAccessibleTreeWalker::GetSiblings(nsIDOMNode *aOneOfTheSiblings)
-{
-  nsCOMPtr<nsIDOMNode> node;
-
-  mState.siblingIndex = eSiblingsWalkNormalDOM; // Default value
-
-  if (NS_SUCCEEDED(GetFullTreeParentNode(aOneOfTheSiblings, getter_AddRefs(node)))) {
-    GetKids(node);
-    if (mState.siblingList) {      // Init index by seeing how far we are into list
-      if (mState.domNode == mInitialState.domNode)
-        mInitialState = mState; // deep copy, we'll use sibling info for caching
-      while (NS_SUCCEEDED(mState.siblingList->Item(mState.siblingIndex, getter_AddRefs(node))) && node != mState.domNode) {
-        NS_ASSERTION(node, "Something is terribly wrong - the child is not in it's parent's children!");
-        ++mState.siblingIndex;
-      }
-    }
-  }
-}
-
-NS_IMETHODIMP nsAccessibleTreeWalker::GetParent()
-{
-  nsCOMPtr<nsIDOMNode> parent;
-
-  while (NS_SUCCEEDED(GetFullTreeParentNode(mState.domNode, getter_AddRefs(parent)))) {
-    if (NS_FAILED(PopState())) {
-      ClearState();
-      mState.domNode = parent;
-      GetAccessible();
-    }
-    if (mState.accessible)
-      return NS_OK;
-  }
-
-  return NS_ERROR_FAILURE;
-}
-
-NS_IMETHODIMP nsAccessibleTreeWalker::PopState()
-{
-  if (mState.prevState) {
-    WalkState *toBeDeleted = mState.prevState;
-    mState = *mState.prevState; // deep copy
-    delete toBeDeleted;
-    return NS_OK;
-  }
-  return NS_ERROR_FAILURE;
-}
-
-void nsAccessibleTreeWalker::ClearState()
-{
-  mState.siblingList = nsnull;
-  mState.accessible = nsnull;
-  mState.domNode = nsnull;
-  mState.siblingIndex = eSiblingsUninitialized;
-}
-
-NS_IMETHODIMP nsAccessibleTreeWalker::PushState()
-{
-  // Duplicate mState and put right before end; reset mState; make mState the new end of the stack
-  WalkState* nextToLastState= new WalkState();
-  if (!nextToLastState)
-    return NS_ERROR_OUT_OF_MEMORY;
-  *nextToLastState = mState;  // Deep copy - copy contents of struct to new state that will be added to end of our stack
-  ClearState();
-  mState.prevState = nextToLastState;   // Link to previous state
-  return NS_OK;
-}
-
-NS_IMETHODIMP nsAccessibleTreeWalker::GetNextSibling()
-{
-  // Make sure mState.siblingIndex and mState.siblingList are initialized
-  if (mState.siblingIndex == eSiblingsUninitialized) 
-    GetSiblings(mState.domNode);
-
-  // get next sibling
-  nsCOMPtr<nsIDOMNode> next;
-
-  while (PR_TRUE) {
-    if (mState.siblingIndex == eSiblingsWalkNormalDOM)
-      mState.domNode->GetNextSibling(getter_AddRefs(next));
-    else 
-      mState.siblingList->Item(++mState.siblingIndex, getter_AddRefs(next));
-
-    if (!next) {  // Done with siblings
-      // if no DOM parent or DOM parent is accessible fail
-      nsCOMPtr<nsIDOMNode> parent;
-      if (NS_FAILED(GetFullTreeParentNode(mState.domNode, getter_AddRefs(parent))))
-        break; // Failed - can't get parent node, we're at the top 
-
-      if (NS_FAILED(PopState())) {   // Use parent - go up in stack
-        ClearState();
-        mState.domNode = parent;
-      }
-      if (mState.siblingIndex == eSiblingsUninitialized) 
-        GetSiblings(mState.domNode);
-
-      if (GetAccessible())
-        break; // Failed - anything after this in the tree is in a new group of siblings
-    }
-    else {
-      // if next is accessible, use it 
-      mState.domNode = next;
-      if (IsHidden())
-        continue;
-
-      if (GetAccessible())
-        return NS_OK;
-
-      // otherwise call first on next
-      mState.domNode = next;
-      if (NS_SUCCEEDED(GetFirstChild()))
-        return NS_OK;
-
-      // If no results, keep recursiom going - call next on next
-      mState.domNode = next;
-    }
-  }
-  return NS_ERROR_FAILURE;
-}
-
-PRBool nsAccessibleTreeWalker::IsHidden()
-{
-  PRBool isHidden = PR_FALSE;
-
-  nsCOMPtr<nsIDOMXULElement> xulElt(do_QueryInterface(mState.domNode));
-  if (xulElt) {
-    xulElt->GetHidden(&isHidden);
-    if (!isHidden)
-      xulElt->GetCollapsed(&isHidden);
-  }
-  return isHidden;
-}
-
-NS_IMETHODIMP nsAccessibleTreeWalker::GetFirstChild()
-{
-  if (!mState.domNode)
-    return NS_ERROR_FAILURE;
-
-  nsCOMPtr<nsIDOMNode> next, parent(mState.domNode);
-
-  PushState(); // Save old state
-
-  GetKids(parent); // Side effects change our state
-
-  if (mState.siblingIndex == eSiblingsWalkNormalDOM)  // Indicates we must use normal DOM calls to traverse here
-    parent->GetFirstChild(getter_AddRefs(next));
-  else  // Use the sibling list - there are anonymous content nodes in here
-    mState.siblingList->Item(0, getter_AddRefs(next));
-
-  // Recursive loop: depth first search for first accessible child
-  while (next) {
-    mState.domNode = next;
-    if (!IsHidden() && (GetAccessible() || NS_SUCCEEDED(GetFirstChild())))
-      return NS_OK;
-    if (mState.siblingIndex == eSiblingsWalkNormalDOM)  // Indicates we must use normal DOM calls to traverse here
-      mState.domNode->GetNextSibling(getter_AddRefs(next));
-    else 
-      mState.siblingList->Item(++mState.siblingIndex, getter_AddRefs(next));
-  }
-
-  PopState();  // Return to previous state
-  return NS_ERROR_FAILURE;
-}
-
-NS_IMETHODIMP nsAccessibleTreeWalker::GetChildBefore(nsIDOMNode* aParent, nsIDOMNode* aChild)
-{
-  mState.domNode = aParent;
-
-  if (!mState.domNode || NS_FAILED(GetFirstChild()) || mState.domNode == aChild) 
-    return NS_ERROR_FAILURE;   // if the first child is us, then we fail, because there is no child before the first
-
-  nsCOMPtr<nsIDOMNode> prevDOMNode(mState.domNode);
-  nsCOMPtr<nsIAccessible> prevAccessible(mState.accessible);
-
-  while (mState.domNode && NS_SUCCEEDED(GetNextSibling()) && mState.domNode != aChild) {
-    prevDOMNode = mState.domNode;
-    prevAccessible = mState.accessible;
-  }
-
-  mState.accessible = prevAccessible;
-  mState.domNode = prevDOMNode;
-
-  return NS_OK;
-}
-
-NS_IMETHODIMP nsAccessibleTreeWalker::GetPreviousSibling()
-{
-  nsCOMPtr<nsIDOMNode> child(mState.domNode);
-  nsresult rv = GetParent();
-  if (NS_SUCCEEDED(rv))
-    rv = GetChildBefore(mState.domNode, child);
-  return rv;
-}
-
-NS_IMETHODIMP nsAccessibleTreeWalker::GetLastChild()
-{
-  return GetChildBefore(mState.domNode, nsnull);
-}
-
-PRInt32 nsAccessibleTreeWalker::GetChildCount()
-{
-  PRInt32 count = 0;
-
-  if (NS_SUCCEEDED(GetFirstChild())) {
-    do {
-      ++count;  // This loop always iterates at least once
-    }
-    while (NS_SUCCEEDED(GetNextSibling()));
-  }
-
-  return count;
-}
-
-
-/**
- * If the DOM node's frame has an accessible or the DOMNode
- * itself implements nsIAccessible return it.
- */
-
-PRBool nsAccessibleTreeWalker::GetAccessible()
-{
-  mState.accessible = nsnull;
-
-  return (mAccService &&
-    NS_SUCCEEDED(mAccService->GetAccessibleFor(mState.domNode, getter_AddRefs(mState.accessible))) &&
-    mState.accessible);
-}
-
 
 /*
  * Class nsAccessible
@@ -435,10 +95,11 @@ PRBool nsAccessibleTreeWalker::GetAccessible()
 //-----------------------------------------------------
 // construction 
 //-----------------------------------------------------
-nsAccessible::nsAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell): mDOMNode(aNode), mPresShell(aShell), mSiblingIndex(eSiblingsUninitialized)
-{
-  NS_INIT_ISUPPORTS();
+NS_IMPL_ISUPPORTS_INHERITED1(nsAccessible, nsAccessNode, nsIAccessible)
 
+nsAccessible::nsAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell): nsAccessNodeWrap(aNode, aShell), 
+  mParent(nsnull), mFirstChild(nsnull), mNextSibling(nsnull)
+{
 #ifdef NS_DEBUG_X
    {
      nsCOMPtr<nsIPresShell> shell(do_QueryReferent(aShell));
@@ -456,22 +117,6 @@ nsAccessible::nsAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell): mDOMNod
      printf("\n");
    }
 #endif
-
-   ++gInstanceCount;
-#ifdef DEBUG_LEAKS
-  printf("nsAccessibles=%d\n", gInstanceCount);
-#endif
-
-  if (gInstanceCount == 1) {
-    nsresult rv;
-    nsCOMPtr<nsIStringBundleService> stringBundleService(do_GetService(kStringBundleServiceCID, &rv));
-    if (stringBundleService) {
-      stringBundleService->CreateBundle(ACCESSIBLE_BUNDLE_URL, &gStringBundle);
-      NS_IF_ADDREF(gStringBundle);
-      stringBundleService->CreateBundle(PLATFORM_KEYS_BUNDLE_URL, &gKeyStringBundle);
-      NS_IF_ADDREF(gKeyStringBundle);
-    }
-  }
 }
 
 //-----------------------------------------------------
@@ -479,16 +124,7 @@ nsAccessible::nsAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell): mDOMNod
 //-----------------------------------------------------
 nsAccessible::~nsAccessible()
 {
-  if (--gInstanceCount == 0) {
-    NS_IF_RELEASE(gStringBundle);
-    NS_IF_RELEASE(gKeyStringBundle);
-  }
-
-#ifdef DEBUG_LEAKS
-  printf("nsAccessibles=%d\n", gInstanceCount);
-#endif
 }
-
 
 NS_IMETHODIMP nsAccessible::GetAccName(nsAString& _retval)
 {
@@ -533,12 +169,12 @@ NS_IMETHODIMP nsAccessible::GetAccKeyboardShortcut(nsAString& _retval)
     if (accesskey.IsEmpty())
       return NS_OK;
 
-    if (gGeneralAccesskeyModifier == -1) {  // Need to initialize cached global accesskey pref
+    if (gGeneralAccesskeyModifier == -1) {
+      // Need to initialize cached global accesskey pref
       gGeneralAccesskeyModifier = 0;
-      nsresult result;
-      nsCOMPtr<nsIPref> prefService(do_GetService(kPrefCID, &result));
-      if (NS_SUCCEEDED(result) && prefService)
-        prefService->GetIntPref("ui.key.generalAccessKey", &gGeneralAccesskeyModifier);
+      nsCOMPtr<nsIPrefBranch> prefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID));
+      if (prefBranch)
+        prefBranch->GetIntPref("ui.key.generalAccessKey", &gGeneralAccesskeyModifier);
     }
     nsAutoString propertyKey;
     switch (gGeneralAccesskeyModifier) {
@@ -555,24 +191,55 @@ NS_IMETHODIMP nsAccessible::GetAccKeyboardShortcut(nsAString& _retval)
   return NS_ERROR_FAILURE;
 }
 
-NS_IMETHODIMP nsAccessible::GetAccId(PRInt32 *aAccId)
+NS_IMETHODIMP nsAccessible::SetAccParent(nsIAccessible *aParent)
 {
-  *aAccId = - NS_REINTERPRET_CAST(PRInt32, (mDOMNode.get()));
+  mParent = aParent;
   return NS_OK;
 }
 
-NS_IMETHODIMP nsAccessible::CacheOptimizations(nsIAccessible *aParent, PRInt32 aSiblingIndex, nsIDOMNodeList *aSiblingList)
+NS_IMETHODIMP nsAccessible::SetAccFirstChild(nsIAccessible *aFirstChild)
 {
-  if (aParent)
-    mParent = aParent;
-  if (aSiblingList) 
-    mSiblingList = aSiblingList;
-  mSiblingIndex = aSiblingIndex;
+  mFirstChild = aFirstChild;
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsAccessible::SetAccNextSibling(nsIAccessible *aNextSibling)
+{
+  mNextSibling = aNextSibling? aNextSibling: DEAD_END_ACCESSIBLE;
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsAccessible::Shutdown()
+{
+  // Make sure none of it's children point to this parent
+  if (mFirstChild) {
+    nsCOMPtr<nsIAccessible> current(mFirstChild), next;
+    while (current) {
+      current->SetAccParent(nsnull);
+      current->GetAccNextSibling(getter_AddRefs(next));
+      current = next;
+    }
+  }
+  // Now invalidate the child count and pointers to other accessibles
+  InvalidateChildren();
+  return nsAccessNodeWrap::Shutdown();
+}
+
+NS_IMETHODIMP nsAccessible::InvalidateChildren()
+{
+  // Document has transformed, reset our invalid children and child count
+  mAccChildCount = -1;
+  mFirstChild = mNextSibling = mParent = nsnull;
   return NS_OK;
 }
 
 NS_IMETHODIMP nsAccessible::GetAccParent(nsIAccessible **  aAccParent)
 {
+  if (!mWeakShell) {
+    // This node has been shut down
+    *aAccParent = nsnull;
+    return NS_ERROR_FAILURE;
+  }
   if (mParent) {
     *aAccParent = mParent;
     NS_ADDREF(*aAccParent);
@@ -581,7 +248,7 @@ NS_IMETHODIMP nsAccessible::GetAccParent(nsIAccessible **  aAccParent)
 
   *aAccParent = nsnull;
   // Last argument of PR_TRUE indicates to walk anonymous content
-  nsAccessibleTreeWalker walker(mPresShell, mDOMNode, mSiblingIndex, mSiblingList, PR_TRUE); 
+  nsAccessibleTreeWalker walker(mWeakShell, mDOMNode, PR_TRUE); 
   if (NS_SUCCEEDED(walker.GetParent())) {
     *aAccParent = mParent = walker.mState.accessible;
     NS_ADDREF(*aAccParent);
@@ -593,41 +260,54 @@ NS_IMETHODIMP nsAccessible::GetAccParent(nsIAccessible **  aAccParent)
   /* readonly attribute nsIAccessible accNextSibling; */
 NS_IMETHODIMP nsAccessible::GetAccNextSibling(nsIAccessible * *aAccNextSibling) 
 { 
-  *aAccNextSibling = nsnull;
+  *aAccNextSibling = nsnull; 
+  if (!mWeakShell) {
+    // This node has been shut down
+    return NS_ERROR_FAILURE;
+  }
+  if (mNextSibling || !mParent) {
+    // If no parent, don't try to calculate a new sibling
+    // It either means we're at the root or shutting down the parent
+    if (mNextSibling != DEAD_END_ACCESSIBLE) {
+      NS_IF_ADDREF(*aAccNextSibling = mNextSibling);
+    }
+    return NS_OK;
+  }
 
   // Last argument of PR_TRUE indicates to walk anonymous content
-  nsAccessibleTreeWalker walker(mPresShell, mDOMNode, mSiblingIndex, mSiblingList, PR_TRUE);
+  nsAccessibleTreeWalker walker(mWeakShell, mDOMNode, PR_TRUE);
 
   if (NS_SUCCEEDED(walker.GetNextSibling())) {
     *aAccNextSibling = walker.mState.accessible;
     NS_ADDREF(*aAccNextSibling);
-    // Use last walker state to cache data on next accessible
-    (*aAccNextSibling)->CacheOptimizations(mParent, walker.mState.siblingIndex, 
-                                           walker.mState.siblingList);
-    // Use first walker state to cache data on this accessible
-    CacheOptimizations(mParent, walker.mInitialState.siblingIndex,
-                       walker.mInitialState.siblingList);
+    (*aAccNextSibling)->SetAccParent(mParent);
+
+    mNextSibling = *aAccNextSibling;
   }
+
+  if (!mNextSibling)
+    mNextSibling = DEAD_END_ACCESSIBLE;
 
   return NS_OK;  
 }
 
   /* readonly attribute nsIAccessible accPreviousSibling; */
 NS_IMETHODIMP nsAccessible::GetAccPreviousSibling(nsIAccessible * *aAccPreviousSibling) 
-{  
+{
   *aAccPreviousSibling = nsnull;
 
+  if (!mWeakShell) {
+    // This node has been shut down
+    return NS_ERROR_FAILURE;
+  }
+
   // Last argument of PR_TRUE indicates to walk anonymous content
-  nsAccessibleTreeWalker walker(mPresShell, mDOMNode, mSiblingIndex, mSiblingList, PR_TRUE);
+  nsAccessibleTreeWalker walker(mWeakShell, mDOMNode, PR_TRUE);
   if (NS_SUCCEEDED(walker.GetPreviousSibling())) {
     *aAccPreviousSibling = walker.mState.accessible;
     NS_ADDREF(*aAccPreviousSibling);
     // Use last walker state to cache data on prev accessible
-    (*aAccPreviousSibling)->CacheOptimizations(mParent, walker.mState.siblingIndex, 
-                                           walker.mState.siblingList);
-    // Use first walker state to cache data on this accessible
-    CacheOptimizations(mParent, walker.mInitialState.siblingIndex,
-                       walker.mInitialState.siblingList);
+    (*aAccPreviousSibling)->SetAccParent(mParent);
   }
 
   return NS_OK;  
@@ -636,14 +316,10 @@ NS_IMETHODIMP nsAccessible::GetAccPreviousSibling(nsIAccessible * *aAccPreviousS
   /* readonly attribute nsIAccessible accFirstChild; */
 NS_IMETHODIMP nsAccessible::GetAccFirstChild(nsIAccessible * *aAccFirstChild) 
 {  
-  *aAccFirstChild = nsnull;
+  PRInt32 numChildren;
+  GetAccChildCount(&numChildren);  // Make sure we cache all of the children
 
-  nsAccessibleTreeWalker walker(mPresShell, mDOMNode, mSiblingIndex, mSiblingList, PR_TRUE);
-  if (NS_SUCCEEDED(walker.GetFirstChild())) {
-    *aAccFirstChild = walker.mState.accessible;
-    NS_ADDREF(*aAccFirstChild);
-    (*aAccFirstChild)->CacheOptimizations(this, walker.mState.siblingIndex, walker.mState.siblingList);
-  }
+  NS_IF_ADDREF(*aAccFirstChild = mFirstChild);
 
   return NS_OK;  
 }
@@ -651,24 +327,68 @@ NS_IMETHODIMP nsAccessible::GetAccFirstChild(nsIAccessible * *aAccFirstChild)
   /* readonly attribute nsIAccessible accFirstChild; */
 NS_IMETHODIMP nsAccessible::GetAccLastChild(nsIAccessible * *aAccLastChild)
 {  
-  *aAccLastChild = nsnull;
+  GetChildAt(-1, aAccLastChild);
+  return NS_OK;
+}
 
-  nsAccessibleTreeWalker walker(mPresShell, mDOMNode, mSiblingIndex, mSiblingList, PR_TRUE);
-  if (NS_SUCCEEDED(walker.GetLastChild())) {
-    *aAccLastChild = walker.mState.accessible;
-    NS_ADDREF(*aAccLastChild);
-    (*aAccLastChild)->CacheOptimizations(this, walker.mState.siblingIndex, walker.mState.siblingList);
+NS_IMETHODIMP nsAccessible::GetChildAt(PRInt32 aChildNum, nsIAccessible **aChild)
+{
+  // aChildNum is a zero-based index
+  // If aChildNum is out of range, last child is returned
+
+  PRInt32 numChildren;
+  GetAccChildCount(&numChildren);
+
+  if (aChildNum >= numChildren || !mWeakShell) {
+    *aChild = nsnull;
+    return NS_ERROR_FAILURE;
   }
 
+  nsCOMPtr<nsIAccessible> current(mFirstChild), nextSibling;
+  PRInt32 index = 0;
+
+  while (current) {
+    nextSibling = current;
+    if (++index > aChildNum) {
+      break;
+    }
+    nextSibling->GetAccNextSibling(getter_AddRefs(current));
+  }
+
+  NS_IF_ADDREF(*aChild = nextSibling);
+
   return NS_OK;
+}
+
+void nsAccessible::CacheChildren(PRBool aWalkAnonContent)
+{
+  if (!mWeakShell) {
+    // This node has been shut down
+    mAccChildCount = -1;
+    return;
+  }
+
+  if (mAccChildCount == eChildCountUninitialized) {
+    nsAccessibleTreeWalker walker(mWeakShell, mDOMNode, aWalkAnonContent);
+    nsCOMPtr<nsIAccessible> prevAccessible;
+    mAccChildCount = 0;
+    walker.GetFirstChild();
+    SetAccFirstChild(walker.mState.accessible);
+    while (walker.mState.accessible) {
+      walker.mState.accessible->SetAccParent(this);
+      ++mAccChildCount;
+      prevAccessible = walker.mState.accessible;
+      walker.GetNextSibling();
+      prevAccessible->SetAccNextSibling(walker.mState.accessible);
+    }
+  }
 }
 
 /* readonly attribute long accChildCount; */
 NS_IMETHODIMP nsAccessible::GetAccChildCount(PRInt32 *aAccChildCount) 
 {
-  nsAccessibleTreeWalker walker(mPresShell, mDOMNode, mSiblingIndex, mSiblingList, PR_TRUE);
-  *aAccChildCount = walker.GetChildCount();
-
+  CacheChildren(PR_TRUE);
+  *aAccChildCount = mAccChildCount;
   return NS_OK;  
 }
 
@@ -708,9 +428,8 @@ PRBool nsAccessible::IsPartiallyVisible(PRBool *aIsOffscreen)
   *aIsOffscreen = PR_FALSE;
 
   const PRUint16 kMinPixels  = 12;
-
-  // Set up the variables we need, return false if we can't get at them all
-  nsCOMPtr<nsIPresShell> shell(do_QueryReferent(mPresShell));
+   // Set up the variables we need, return false if we can't get at them all
+  nsCOMPtr<nsIPresShell> shell(GetPresShell());
   if (!shell) 
     return PR_FALSE;
 
@@ -720,8 +439,8 @@ PRBool nsAccessible::IsPartiallyVisible(PRBool *aIsOffscreen)
     return PR_FALSE;
 
   nsCOMPtr<nsIContent> content(do_QueryInterface(mDOMNode));
-  if (!content) 
-    return PR_FALSE;
+  if (!content)   // Null means we are on the document node
+    return PR_TRUE;   // Document itself is visible
 
   nsIFrame *frame = nsnull;
   shell->GetPrimaryFrameFor(content, &frame);
@@ -729,12 +448,8 @@ PRBool nsAccessible::IsPartiallyVisible(PRBool *aIsOffscreen)
     return PR_FALSE;
 
   // If visibility:hidden or visibility:collapsed then mark with STATE_INVISIBLE
-  nsCOMPtr<nsIStyleContext> styleContext;
-  frame->GetStyleContext(getter_AddRefs(styleContext));
-  if (styleContext) {
-    const nsStyleVisibility* vis = 
-      (const nsStyleVisibility*)styleContext->GetStyleData(eStyleStruct_Visibility);
-    if (!vis || !vis->IsVisible())
+  if (!frame->GetStyleVisibility()->IsVisible())
+  {
       return PR_FALSE;
   }
 
@@ -746,6 +461,7 @@ PRBool nsAccessible::IsPartiallyVisible(PRBool *aIsOffscreen)
   // Get the bounds of the current frame, relative to the current view.
   // We don't use the more accurate AccGetBounds, because that is more expensive 
   // and the STATE_OFFSCREEN flag that this is used for only needs to be a rough indicator
+
   nsRect relFrameRect;
   nsIView *containingView = nsnull;
   nsPoint frameOffset;
@@ -861,7 +577,9 @@ NS_IMETHODIMP nsAccessible::GetAccFocused(nsIAccessible **aAccFocused)
   nsCOMPtr<nsIDOMNode> focusedNode;
   if (accService && NS_SUCCEEDED(GetFocusedNode(getter_AddRefs(focusedNode)))) {
     nsCOMPtr<nsIAccessible> accessible;
-    if (NS_SUCCEEDED(accService->GetAccessibleFor(focusedNode, getter_AddRefs(accessible)))) {
+    if (NS_SUCCEEDED(accService->GetAccessibleInWeakShell(focusedNode, 
+                                                          mWeakShell,
+                                                          getter_AddRefs(accessible)))) {
       *aAccFocused = accessible;
       NS_ADDREF(*aAccFocused);
       return NS_OK;
@@ -881,6 +599,10 @@ NS_IMETHODIMP nsAccessible::AccGetAt(PRInt32 tx, PRInt32 ty, nsIAccessible **_re
   {
     nsCOMPtr<nsIAccessible> child;
     nsCOMPtr<nsIAccessible> next;
+
+    PRInt32 numChildren; // Make sure all children cached first
+    GetAccChildCount(&numChildren);
+
     GetAccFirstChild(getter_AddRefs(child));
 
     PRInt32 cx,cy,cw,ch;
@@ -972,7 +694,7 @@ void nsAccessible::GetScreenOrigin(nsIPresContext *aPresContext, nsIFrame *aFram
 
 void nsAccessible::GetScrollOffset(nsRect *aRect)
 {
-  nsCOMPtr<nsIPresShell> shell(do_QueryReferent(mPresShell));
+  nsCOMPtr<nsIPresShell> shell(do_QueryReferent(mWeakShell));
   if (shell) {
     nsCOMPtr<nsIDocument> doc;
     shell->GetDocument(getter_AddRefs(doc));
@@ -1011,9 +733,6 @@ void nsAccessible::GetBounds(nsRect& aTotalBounds, nsIFrame** aBoundingFrame)
   if (!firstFrame)
     return;
 
-  nsCOMPtr<nsIPresContext> presContext;
-  GetPresContext(presContext);
-
   // Find common relative parent
   // This is an ancestor frame that will incompass all frames for this content node.
   // We need the relative parent so we can get absolute screen coordinates
@@ -1023,8 +742,8 @@ void nsAccessible::GetBounds(nsRect& aTotalBounds, nsIFrame** aBoundingFrame)
     *aBoundingFrame = ancestorFrame;
     // If any other frame type, we only need to deal with the primary frame
     // Otherwise, there may be more frames attached to the same content node
-    if (!IsCorrectFrameType(ancestorFrame, nsLayoutAtoms::inlineFrame) &&
-        !IsCorrectFrameType(ancestorFrame, nsLayoutAtoms::textFrame))
+    if (!IsCorrectFrameType(ancestorFrame, nsAccessibilityAtoms::inlineFrame) &&
+        !IsCorrectFrameType(ancestorFrame, nsAccessibilityAtoms::textFrame))
       break;
     ancestorFrame->GetParent(&ancestorFrame); 
   }
@@ -1061,10 +780,11 @@ void nsAccessible::GetBounds(nsRect& aTotalBounds, nsIFrame** aBoundingFrame)
 
     nsIFrame *iterNextFrame = nsnull;
 
-    if (IsCorrectFrameType(iterFrame, nsLayoutAtoms::inlineFrame)) {
+    if (IsCorrectFrameType(iterFrame, nsAccessibilityAtoms::inlineFrame)) {
       // Only do deeper bounds search if we're on an inline frame
       // Inline frames can contain larger frames inside of them
-      iterFrame->FirstChild(presContext, nsnull, &iterNextFrame);
+      iterFrame->FirstChild(nsCOMPtr<nsIPresContext>(GetPresContext()), 
+                            nsnull, &iterNextFrame);
     }
 
     if (iterNextFrame) 
@@ -1102,14 +822,14 @@ NS_IMETHODIMP nsAccessible::AccGetBounds(PRInt32 *x, PRInt32 *y, PRInt32 *width,
   //  Another frame, same node                <- Example
   //  Another frame, same node
 
-  float t2p;
-  nsCOMPtr<nsIPresContext> presContext;
-  GetPresContext(presContext);
+  nsCOMPtr<nsIPresContext> presContext(GetPresContext());
   if (!presContext)
   {
     *x = *y = *width = *height = 0;
     return NS_ERROR_FAILURE;
   }
+
+  float t2p;
   presContext->GetTwipsToPixels(&t2p);   // Get pixels to twips conversion factor
 
   nsRect unionRectTwips;
@@ -1127,15 +847,14 @@ NS_IMETHODIMP nsAccessible::AccGetBounds(PRInt32 *x, PRInt32 *y, PRInt32 *width,
 
   // We have the union of the rectangle, now we need to put it in absolute screen coords
 
-  if (presContext) {
-    nsRect orgRectPixels, pageRectPixels;
-    GetScreenOrigin(presContext, aBoundingFrame, &orgRectPixels);
-    nsCOMPtr<nsIAccessibleEventReceiver> accessibleEventReceiver(do_QueryInterface(this));
-    if (!accessibleEventReceiver)        // Only the root accessible object supports this interface
-      GetScrollOffset(&pageRectPixels);  // Don't add scroll offsets for the root accessible
-    *x += orgRectPixels.x - pageRectPixels.x;
-    *y += orgRectPixels.y - pageRectPixels.y;
-  }
+  nsRect orgRectPixels, pageRectPixels;
+  GetScreenOrigin(presContext, aBoundingFrame, &orgRectPixels);
+  PRUint32 role;
+  GetAccRole(&role);
+  if (role != ROLE_PANE)
+    GetScrollOffset(&pageRectPixels);  // Add scroll offsets if not the document itself
+  *x += orgRectPixels.x - pageRectPixels.x;
+  *y += orgRectPixels.y - pageRectPixels.y;
 
   return NS_OK;
 }
@@ -1164,32 +883,10 @@ nsIFrame* nsAccessible::GetBoundsFrame()
   return GetFrame();
 }
 
-nsIFrame* nsAccessible::GetFrame()
-{
-  nsCOMPtr<nsIPresShell> shell(do_QueryReferent(mPresShell));
-  if (!shell) 
-    return nsnull;  
-
-  nsIFrame* frame = nsnull;
-  nsCOMPtr<nsIContent> content(do_QueryInterface(mDOMNode));
-  shell->GetPrimaryFrameFor(content, &frame);
-  return frame;
-}
-
-void nsAccessible::GetPresContext(nsCOMPtr<nsIPresContext>& aContext)
-{
-  nsCOMPtr<nsIPresShell> shell(do_QueryReferent(mPresShell));
-
-  if (shell) {
-    shell->GetPresContext(getter_AddRefs(aContext));
-  } else
-    aContext = nsnull;
-}
-
 /* void accRemoveSelection (); */
 NS_IMETHODIMP nsAccessible::AccRemoveSelection()
 {
-  nsCOMPtr<nsISelectionController> control(do_QueryReferent(mPresShell));
+  nsCOMPtr<nsISelectionController> control(do_QueryReferent(mWeakShell));
   if (!control) {
      return NS_ERROR_FAILURE;  
   }
@@ -1214,7 +911,7 @@ NS_IMETHODIMP nsAccessible::AccRemoveSelection()
 /* void accTakeSelection (); */
 NS_IMETHODIMP nsAccessible::AccTakeSelection()
 {
-  nsCOMPtr<nsISelectionController> control(do_QueryReferent(mPresShell));
+  nsCOMPtr<nsISelectionController> control(do_QueryReferent(mWeakShell));
   if (!control)
     return NS_ERROR_FAILURE;  
  
@@ -1261,14 +958,11 @@ NS_IMETHODIMP nsAccessible::AccTakeSelection()
 /* void accTakeFocus (); */
 NS_IMETHODIMP nsAccessible::AccTakeFocus()
 { 
-  nsCOMPtr<nsIPresShell> shell(do_QueryReferent(mPresShell));
-  if (!shell)
-    return NS_ERROR_FAILURE;  
-
-  nsCOMPtr<nsIPresContext> context;
-  shell->GetPresContext(getter_AddRefs(context));
   nsCOMPtr<nsIContent> content(do_QueryInterface(mDOMNode));
-  content->SetFocus(context);
+  if (!content) {
+    return NS_ERROR_FAILURE;
+  }
+  content->SetFocus(nsCOMPtr<nsIPresContext>(GetPresContext()));
   
   return NS_OK;
 }
@@ -1315,7 +1009,7 @@ NS_IMETHODIMP nsAccessible::AppendFlatStringFromContentNode(nsIContent *aContent
     if (!commentNode) {
       PRBool isHTMLBlock = PR_FALSE;
       nsIFrame *frame;
-      nsCOMPtr<nsIPresShell> shell(do_QueryReferent(mPresShell));
+      nsCOMPtr<nsIPresShell> shell(do_QueryReferent(mWeakShell));
       if (!shell) {
          return NS_ERROR_FAILURE;  
       }
@@ -1328,15 +1022,13 @@ NS_IMETHODIMP nsAccessible::AppendFlatStringFromContentNode(nsIContent *aContent
           // If this text is inside a block level frame (as opposed to span level), we need to add spaces around that 
           // block's text, so we don't get words jammed together in final name
           // Extra spaces will be trimmed out later
-          nsCOMPtr<nsIStyleContext> styleContext;
-          frame->GetStyleContext(getter_AddRefs(styleContext));
-          if (styleContext) {
-            const nsStyleDisplay* display = (const nsStyleDisplay*)styleContext->GetStyleData(eStyleStruct_Display);
-            if (display->IsBlockLevel() || display->mDisplay == NS_STYLE_DISPLAY_TABLE_CELL) {
+          const nsStyleDisplay* display = frame->GetStyleDisplay();
+          if (display->IsBlockLevel() ||
+              display->mDisplay == NS_STYLE_DISPLAY_TABLE_CELL)
+          {
               isHTMLBlock = PR_TRUE;
               if (!aFlatString->IsEmpty())
                 aFlatString->Append(NS_LITERAL_STRING(" "));
-            }
           }
         }
       }
@@ -1371,8 +1063,20 @@ NS_IMETHODIMP nsAccessible::AppendFlatStringFromContentNode(nsIContent *aContent
     elt->GetAttribute(NS_LITERAL_STRING("alt"), textEquivalent);
     if (textEquivalent.IsEmpty())
       elt->GetAttribute(NS_LITERAL_STRING("title"), textEquivalent);
+    else {
+      // If we're in an image document (an image viewed by itself)
+      // then the image's alt text is generated text,
+      // so that an error shows when the image doesn't load.
+      // We don't want that text.
+
+      nsCOMPtr<nsIDocument> doc;
+      aContent->GetDocument(*getter_AddRefs(doc));
+      nsCOMPtr<nsIImageDocument> imageDoc(do_QueryInterface(doc));
+      if (imageDoc)  // We don't want this faux error text
+        textEquivalent.Truncate();
+    }
     if (textEquivalent.IsEmpty() && imageContent) {
-      nsCOMPtr<nsIPresShell> presShell(do_QueryReferent(mPresShell));
+      nsCOMPtr<nsIPresShell> presShell(do_QueryReferent(mWeakShell));
       nsCOMPtr<nsIDOMNode> imageNode(do_QueryInterface(aContent));
       if (imageNode && presShell)
         presShell->GetImageLocation(imageNode, textEquivalent);
@@ -1492,6 +1196,9 @@ NS_IMETHODIMP nsAccessible::AppendLabelFor(nsIContent *aLookNode, const nsAStrin
   */
 NS_IMETHODIMP nsAccessible::GetHTMLAccName(nsAString& _retval)
 {
+  if (!mWeakShell || !mDOMNode) {
+    return NS_ERROR_FAILURE;
+  }
   nsCOMPtr<nsIContent> walkUpContent(do_QueryInterface(mDOMNode));
   nsCOMPtr<nsIDOMHTMLLabelElement> labelElement;
   nsCOMPtr<nsIDOMHTMLFormElement> formElement;
@@ -1499,20 +1206,25 @@ NS_IMETHODIMP nsAccessible::GetHTMLAccName(nsAString& _retval)
 
   nsAutoString label;
   // go up tree get name of ancestor label if there is one. Don't go up farther than form element
-  while (walkUpContent && label.IsEmpty() && !formElement) {
+  while (label.IsEmpty() && !formElement) {
     labelElement = do_QueryInterface(walkUpContent);
     if (labelElement) 
       rv = AppendFlatStringFromSubtree(walkUpContent, &label);
     formElement = do_QueryInterface(walkUpContent); // reached top ancestor in form
+    if (formElement) {
+      break;
+    }
     nsCOMPtr<nsIContent> nextParent;
     walkUpContent->GetParent(*getter_AddRefs(nextParent));
+    if (!nextParent) {
+      break;
+    }
     walkUpContent = nextParent;
   }
   
 
   // There can be a label targeted at this control using the for="control_id" attribute
   // To save computing time, only look for those inside of a form element
-  walkUpContent = do_QueryInterface(formElement);
   
   if (walkUpContent) {
     nsCOMPtr<nsIDOMElement> elt(do_QueryInterface(mDOMNode));
@@ -1624,3 +1336,159 @@ NS_IMETHODIMP nsAccessible::GetXULAccName(nsAString& _retval)
   _retval.Assign(label);
   return NS_OK;
 }
+
+NS_IMETHODIMP nsAccessible::FireToolkitEvent(PRUint32 aEvent, nsIAccessible *aTarget, void * aData)
+{
+  if (!mWeakShell)
+    return NS_ERROR_FAILURE; // Don't fire event for accessible that has been shut down
+  nsCOMPtr<nsIAccessibleDocument> docAccessible(GetDocAccessible());
+  nsCOMPtr<nsIAccessible> eventHandlingAccessible(do_QueryInterface(docAccessible));
+  if (eventHandlingAccessible) {
+    return eventHandlingAccessible->FireToolkitEvent(aEvent, aTarget, aData);
+  }
+
+  return NS_ERROR_FAILURE;
+}
+
+// Not implemented by this class
+
+/* DOMString getAccValue (); */
+NS_IMETHODIMP nsAccessible::GetAccValue(nsAString& _retval)
+{
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void setAccName (in DOMString name); */
+NS_IMETHODIMP nsAccessible::SetAccName(const nsAString& name)
+{
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* DOMString getKeybinding (); */
+NS_IMETHODIMP nsAccessible::GetAccKeybinding(nsAString& _retval)
+{
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* unsigned long getAccRole (); */
+NS_IMETHODIMP nsAccessible::GetAccRole(PRUint32 *_retval)
+{
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* PRUint8 getAccNumActions (); */
+NS_IMETHODIMP nsAccessible::GetAccNumActions(PRUint8 *_retval)
+{
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* DOMString getAccActionName (in PRUint8 index); */
+NS_IMETHODIMP nsAccessible::GetAccActionName(PRUint8 index, nsAString& _retval)
+{
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void accDoAction (in PRUint8 index); */
+NS_IMETHODIMP nsAccessible::AccDoAction(PRUint8 index)
+{
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* DOMString getAccHelp (); */
+NS_IMETHODIMP nsAccessible::GetAccHelp(nsAString& _retval)
+{
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* nsIAccessible accNavigateRight (); */
+NS_IMETHODIMP nsAccessible::AccNavigateRight(nsIAccessible **_retval)
+{
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* nsIAccessible accNavigateLeft (); */
+NS_IMETHODIMP nsAccessible::AccNavigateLeft(nsIAccessible **_retval)
+{
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* nsIAccessible accNavigateUp (); */
+NS_IMETHODIMP nsAccessible::AccNavigateUp(nsIAccessible **_retval)
+{
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* nsIAccessible accNavigateDown (); */
+NS_IMETHODIMP nsAccessible::AccNavigateDown(nsIAccessible **_retval)
+{
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void accAddSelection (); */
+NS_IMETHODIMP nsAccessible::AccAddSelection()
+{
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* void accExtendSelection (); */
+NS_IMETHODIMP nsAccessible::AccExtendSelection()
+{
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* unsigned long getAccExtState (); */
+NS_IMETHODIMP nsAccessible::GetAccExtState(PRUint32 *_retval)
+{
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+/* [noscript] void getNativeInterface(out voidPtr aOutAccessible); */
+NS_IMETHODIMP nsAccessible::GetNativeInterface(void **aOutAccessible)
+{
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+#ifdef MOZ_ACCESSIBILITY_ATK
+// static helper function
+nsresult nsAccessible::GetParentBlockNode(nsIDOMNode *aCurrentNode, nsIDOMNode **aBlockNode)
+{
+  *aBlockNode = nsnull;
+
+  nsCOMPtr<nsIContent> content(do_QueryInterface(aCurrentNode));
+  if (!content)
+    return NS_ERROR_FAILURE;
+
+  nsCOMPtr<nsIDocument> doc;
+  content->GetDocument(*getter_AddRefs(doc));
+  if (!doc)
+    return NS_ERROR_FAILURE;
+
+  nsCOMPtr<nsIPresShell> presShell;
+  doc->GetShellAt(0, getter_AddRefs(presShell));
+
+  nsIFrame* frame = nsnull;
+  nsCOMPtr<nsIAtom> frameType;
+  presShell->GetPrimaryFrameFor(content, &frame);
+  if (frame)
+    frame->GetFrameType(getter_AddRefs(frameType));
+  while (frame && frameType != nsAccessibilityAtoms::blockFrame) {
+    nsIFrame* parentFrame = nsnull;
+    frame->GetParent(&parentFrame);
+    if (parentFrame)
+      parentFrame->GetFrameType(getter_AddRefs(frameType));
+    frame = parentFrame;
+  }
+
+  if (! frame)
+    return NS_ERROR_FAILURE;
+
+  frame->GetContent(getter_AddRefs(content));
+  nsCOMPtr<nsIDOMNode> domNode(do_QueryInterface(content));
+  *aBlockNode = domNode;
+  NS_IF_ADDREF(*aBlockNode);
+  return NS_OK;
+}
+#endif  //MOZ_ACCESSIBILITY_ATK
+
+
+

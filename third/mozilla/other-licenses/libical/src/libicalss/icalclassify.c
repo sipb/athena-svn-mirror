@@ -3,7 +3,7 @@
     FILE: icalclassify.c
     CREATOR: ebusboom 23 aug 2000
   
-    $Id: icalclassify.c,v 1.1.1.1 2003-02-14 18:39:29 rbasch Exp $
+    $Id: icalclassify.c,v 1.1.1.2 2003-07-08 16:48:54 rbasch Exp $
     $Locker:  $
     
     (C) COPYRIGHT 2000, Eric Busboom, http://www.softwarestudio.org
@@ -32,7 +32,9 @@
 #include <ctype.h>   /* For tolower() */
 #include <string.h> /* for index() */
 #include <stdlib.h> /* for malloc and free */
-
+#ifdef XP_MAC
+#include <extras.h> /* for strdup */
+#endif
 
 
 struct icalclassify_parts {

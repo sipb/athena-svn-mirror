@@ -133,7 +133,7 @@ function CreateMailWindowGlobals()
   // double register the status feedback object as the xul browser window implementation
   window.XULBrowserWindow = window.MsgStatusFeedback;
 
-  statusFeedback           = Components.classes[statusFeedbackContractID].createInstance();
+  statusFeedback = Components.classes[statusFeedbackContractID].createInstance();
   statusFeedback = statusFeedback.QueryInterface(Components.interfaces.nsIMsgStatusFeedback);
 
   /*
@@ -198,11 +198,49 @@ function InitMsgWindow()
   msgWindow.msgHeaderSink = messageHeaderSink;
   msgWindow.SetDOMWindow(window);
   mailSession.AddMsgWindow(msgWindow);
+
+  var messagepane = document.getElementById("messagepane");
+  messagepane.docShell.allowAuth = false;
+  messagepane.addEventListener("click",messagePaneOnClick,true);
+}
+
+function messagePaneOnClick(event)
+{
+  // if this is stand alone mail (no browser)
+  // or this isn't a simple left click, do nothing, and let the normal code execute
+  if (event.button != 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)
+    return;
+
+  // try to determine the href for what you are clicking on.  
+  // for example, it might be "" if you aren't left clicking on a link
+  var href = hrefForClickEvent(event);
+  if (!href) 
+    return;
+
+  // we know that http://, https://, ftp://, file://, chrome://, 
+  // resource://, about:, and gopher:// (as if), 
+  // should load in a browser.  but if we don't have one of those
+  // (examples are mailto, imap, news, mailbox, snews, nntp, ldap, 
+  // and externally handled schemes like aim)
+  // we may or may not want a browser window, in which case we return here
+  // and let the normal code handle it
+  var needABrowser = /(^http(s)?:|^ftp:|^file:|^gopher:|^chrome:|^resource:|^about:)/i;
+  if (href.search(needABrowser) == -1) 
+    return;
+
+  // if you get here, the user did a simple left click on a link
+  // that we know should be in a browser window.
+  // since we are in the message pane, send it to the top most browser window 
+  // (or open one) right away, instead of waiting for us to get some data and
+  // determine the content type, and then open a browser window
+  openTopBrowserWith(href);
+  // we want to preventDefault, so that in
+  // nsGenericHTMLElement::HandleDOMEventForAnchors(), we don't try to handle the click again
+  event.preventDefault();
 }
 
 function AddDataSources()
 {
-
   accountManagerDataSource = accountManagerDataSource.QueryInterface(Components.interfaces.nsIRDFDataSource);
   folderDataSource = folderDataSource.QueryInterface(Components.interfaces.nsIRDFDataSource);
   //to move menu item
@@ -270,8 +308,8 @@ nsMsgStatusFeedback.prototype =
     {
       if (!this.statusTextFld ) this.statusTextFld = document.getElementById("statusText");
       if (!this.statusBar) this.statusBar = document.getElementById("statusbar-icon");
-      if(!this.throbber)   this.throbber = document.getElementById("navigator-throbber");
-      if(!this.stopCmd)   this.stopCmd = document.getElementById("cmd_stop");
+      if (!this.throbber)   this.throbber = document.getElementById("navigator-throbber");
+      if (!this.stopCmd)   this.stopCmd = document.getElementById("cmd_stop");
     },
 
   // nsIXULBrowserWindow implementation
@@ -312,18 +350,20 @@ nsMsgStatusFeedback.prototype =
       // Turn progress meter on.
       this.statusBar.setAttribute("mode","undetermined");
 
-      // turn throbber on
-      this.throbber.setAttribute("busy", true);
+      // start the throbber
+      if (this.throbber)
+        this.throbber.setAttribute("busy", true);
 
       //turn on stop button and menu
-    this.stopCmd.removeAttribute("disabled");
+      if (this.stopCmd)
+        this.stopCmd.removeAttribute("disabled");
     },
   startMeteors : function()
     {
       this.pendingStartRequests++;
       // if we don't already have a start meteor timeout pending
       // and the meteors aren't spinning, then kick off a start
-      if (!this.startTimeoutID && !this.meteorsSpinning)
+      if (!this.startTimeoutID && !this.meteorsSpinning && window.MsgStatusFeedback)
         this.startTimeoutID = setTimeout('window.MsgStatusFeedback._startMeteors();', 500);
 
       // since we are going to start up the throbber no sense in processing
@@ -346,13 +386,16 @@ nsMsgStatusFeedback.prototype =
       this.showStatusString(msg);
       defaultStatus = msg;
 
-      this.throbber.setAttribute("busy", false);
+      // stop the throbber
+      if (this.throbber)
+        this.throbber.setAttribute("busy", false);
 
       // Turn progress meter off.
       this.statusBar.setAttribute("mode","normal");
       this.statusBar.value = 0;  // be sure to clear the progress bar
       this.statusBar.label = "";
-      this.stopCmd.setAttribute("disabled", "true");
+      if (this.stopCmd)
+        this.stopCmd.setAttribute("disabled", "true");
 
       this.meteorsSpinning = false;
       this.stopTimeoutID = null;
@@ -373,7 +416,7 @@ nsMsgStatusFeedback.prototype =
       // AND the meteors are currently running then fire a stop timeout to shut them down.
       if (this.pendingStartRequests == 0 && !this.stopTimeoutID)
       {
-        if (this.meteorsSpinning)
+        if (this.meteorsSpinning && window.MsgStatusFeedback)
           this.stopTimeoutID = setTimeout('window.MsgStatusFeedback._stopMeteors();', 500);
       }
   },
@@ -409,7 +452,6 @@ nsMsgWindowCommands.prototype =
   SelectFolder: function(folderUri)
   {
     SelectFolder(folderUri);
-
   },
   SelectMessage: function(messageUri)
   {
@@ -447,6 +489,9 @@ function StopUrls()
 
 function loadStartPage() {
     try {
+        // collapse the junk bar
+        SetUpJunkBar(null);
+
         var startpageenabled = pref.getBoolPref("mailnews.start_page.enabled");
 
         if (startpageenabled) {
@@ -528,6 +573,10 @@ function HideAccountCentral()
             case 1:
                 window.frames["accountCentralPane"].location = "about:blank";
                 accountCentralBox.setAttribute("collapsed", "true");
+                // XXX todo
+                // the code below that always removes the collapsed attribute
+                // makes it so in this pane config, you can't keep the message pane hidden
+                // see bug #188393
                 var messagePaneBox = document.getElementById("messagepanebox");
                 messagePaneBox.removeAttribute("collapsed");
                 var searchAndThreadPaneBox = document.getElementById("searchAndthreadpaneBox");
@@ -671,3 +720,5 @@ const gMailToolBarPrefListener =
     document.getElementById("button-" + prefName.substr(this.domain.length+1)).hidden = !(pref.getBoolPref(prefName));
   }
 };
+
+

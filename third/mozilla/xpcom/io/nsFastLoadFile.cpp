@@ -14,7 +14,7 @@
  *
  * The Original Code is Mozilla FastLoad code.
  *
- * The Initial Developer of the Original Code is 
+ * The Initial Developer of the Original Code is
  * Netscape Communications Corporation.
  * Portions created by the Initial Developer are Copyright (C) 2001
  * the Initial Developer. All Rights Reserved.
@@ -23,7 +23,7 @@
  *   Brendan Eich <brendan@mozilla.org> (original author)
  *
  * Alternatively, the contents of this file may be used under the terms of
- * either the GNU General Public License Version 2 or later (the "GPL"), or 
+ * either the GNU General Public License Version 2 or later (the "GPL"), or
  * the GNU Lesser General Public License Version 2.1 or later (the "LGPL"),
  * in which case the provisions of the GPL or the LGPL are applicable instead
  * of those above. If you wish to allow use of your version of this file only
@@ -255,7 +255,7 @@ static const char magic[] = MFL_FILE_MAGIC;
 
 nsID nsFastLoadFileReader::nsFastLoadFooter::gDummyID;
 nsFastLoadFileReader::nsObjectMapEntry
-    nsFastLoadFileReader::nsFastLoadFooter::gDummySharpObjectEntry; 
+    nsFastLoadFileReader::nsFastLoadFooter::gDummySharpObjectEntry;
 
 NS_IMPL_ISUPPORTS_INHERITED5(nsFastLoadFileReader,
                              nsBinaryInputStream,
@@ -317,7 +317,11 @@ struct nsDocumentMapEntry : public nsStringMapEntry {
 
 struct nsDocumentMapReadEntry : public nsDocumentMapEntry {
     PRUint32    mNextSegmentOffset;     // offset of URI's next segment to read
-    PRUint32    mBytesLeft;             // bytes remaining in current segment
+    PRUint32    mBytesLeft : 31,        // bytes remaining in current segment
+                mNeedToSeek : 1;        // flag to defer Seek from Select to
+                                        // Read, in case there is no Read before
+                                        // another entry is Selected (to improve
+                                        // input stream buffer utilization)
     PRUint32    mSaveOffset;            // in case demux schedule differs from
                                         // mux schedule
 };
@@ -345,7 +349,7 @@ strmap_ClearEntry(PLDHashTable *aTable, PLDHashEntryHdr *aHdr)
     PL_DHashClearEntryStub(aTable, aHdr);
 }
 
-static PLDHashTableOps strmap_DHashTableOps = {
+static const PLDHashTableOps strmap_DHashTableOps = {
     PL_DHashAllocTable,
     PL_DHashFreeTable,
     PL_DHashGetKeyStub,
@@ -381,7 +385,7 @@ objmap_ClearEntry(PLDHashTable *aTable, PLDHashEntryHdr *aHdr)
     PL_DHashClearEntryStub(aTable, aHdr);
 }
 
-static PLDHashTableOps objmap_DHashTableOps = {
+static const PLDHashTableOps objmap_DHashTableOps = {
     PL_DHashAllocTable,
     PL_DHashFreeTable,
     PL_DHashGetKeyStub,
@@ -392,6 +396,18 @@ static PLDHashTableOps objmap_DHashTableOps = {
     PL_DHashFinalizeStub,
     NULL
 };
+
+NS_IMETHODIMP
+nsFastLoadFileReader::HasMuxedDocument(const char* aURISpec, PRBool *aResult)
+{
+    nsDocumentMapReadEntry* docMapEntry =
+        NS_STATIC_CAST(nsDocumentMapReadEntry*,
+                       PL_DHashTableOperate(&mFooter.mDocumentMap, aURISpec,
+                                            PL_DHASH_LOOKUP));
+
+    *aResult = PL_DHASH_ENTRY_IS_BUSY(docMapEntry);
+    return NS_OK;
+}
 
 NS_IMETHODIMP
 nsFastLoadFileReader::StartMuxedDocument(nsISupports* aURI, const char* aURISpec)
@@ -447,9 +463,13 @@ nsFastLoadFileReader::SelectMuxedDocument(nsISupports* aURI,
         return NS_ERROR_NOT_AVAILABLE;
 
     // If we're interrupting another document's segment, save its offset so
-    // we can seek back when it's reselected.
+    // we can seek back when it's reselected.  If prevDocMapEntry->mNeedToSeek
+    // is set, that means the stream is not positioned for prevDocMapEntry, to
+    // avoid buffer thrashing.  See below in this function for more.
     nsDocumentMapReadEntry* prevDocMapEntry = mCurrentDocumentMapEntry;
-    if (prevDocMapEntry && prevDocMapEntry->mBytesLeft) {
+    if (prevDocMapEntry &&
+        prevDocMapEntry->mBytesLeft &&
+        !prevDocMapEntry->mNeedToSeek) {
         rv = Tell(&prevDocMapEntry->mSaveOffset);
         if (NS_FAILED(rv))
             return rv;
@@ -460,23 +480,22 @@ nsFastLoadFileReader::SelectMuxedDocument(nsISupports* aURI,
     // As more data gets FastLoaded, the number of these useless selects will
     // decline.
     nsDocumentMapReadEntry* docMapEntry = uriMapEntry->mDocMapEntry;
-    if (docMapEntry == mCurrentDocumentMapEntry) {
+    if (docMapEntry == prevDocMapEntry) {
         TRACE_MUX(('r', "select prev %s same as current!\n",
                    docMapEntry->mString));
     }
 
     // Invariant: docMapEntry->mBytesLeft implies docMapEntry->mSaveOffset has
     // been set non-zero by the Tell call above.
-    if (docMapEntry->mBytesLeft) {
+    else if (docMapEntry->mBytesLeft) {
         NS_ASSERTION(docMapEntry->mSaveOffset != 0,
                      "reselecting from multiplex at unsaved offset?");
 
-        // Don't call our Seek wrapper, as it clears mCurrentDocumentMapEntry.
-        nsCOMPtr<nsISeekableStream> seekable(do_QueryInterface(mInputStream));
-        rv = seekable->Seek(nsISeekableStream::NS_SEEK_SET,
-                            docMapEntry->mSaveOffset);
-        if (NS_FAILED(rv))
-            return rv;
+        // Defer Seek till Read, in case of "ping-pong" Selects without any
+        // intervening Reads, to avoid dumping the underlying mInputStream's
+        // input buffer for cases where alternate "pongs" fall in the same
+        // buffer.
+        docMapEntry->mNeedToSeek = PR_TRUE;
     }
 
     *aResult = prevDocMapEntry ? prevDocMapEntry->mURI : nsnull;
@@ -528,15 +547,23 @@ nsFastLoadFileReader::Read(char* aBuffer, PRUint32 aCount, PRUint32 *aBytesRead)
     nsresult rv;
 
     nsDocumentMapReadEntry* entry = mCurrentDocumentMapEntry;
-    if (entry && entry->mBytesLeft == 0) {
+    if (entry) {
         // Don't call our Seek wrapper, as it clears mCurrentDocumentMapEntry.
         nsCOMPtr<nsISeekableStream> seekable(do_QueryInterface(mInputStream));
+        if (entry->mNeedToSeek) {
+            rv = seekable->Seek(nsISeekableStream::NS_SEEK_SET,
+                                entry->mSaveOffset);
+            if (NS_FAILED(rv))
+                return rv;
+
+            entry->mNeedToSeek = PR_FALSE;
+        }
 
         // Loop to handle empty segments, which may be generated by the
         // writer, given Start A; Start B; Select A; Select B; write B data;
         // multiplexing schedules, which do tend to occur given non-blocking
         // i/o with LIFO scheduling.  XXXbe investigate LIFO issues
-        do {
+        while (entry->mBytesLeft == 0) {
             // Check for unexpected end of multiplexed stream.
             NS_ASSERTION(entry->mNextSegmentOffset != 0,
                          "document demuxed from FastLoad file more than once?");
@@ -552,8 +579,11 @@ nsFastLoadFileReader::Read(char* aBuffer, PRUint32 aCount, PRUint32 *aBytesRead)
             mCurrentDocumentMapEntry = nsnull;
 
             rv = Read32(&entry->mNextSegmentOffset);
-            if (NS_SUCCEEDED(rv))
-                rv = Read32(&entry->mBytesLeft);
+            if (NS_SUCCEEDED(rv)) {
+                PRUint32 bytesLeft = 0;
+                rv = Read32(&bytesLeft);
+                entry->mBytesLeft = bytesLeft;
+            }
 
             mCurrentDocumentMapEntry = entry;
             if (NS_FAILED(rv))
@@ -561,14 +591,39 @@ nsFastLoadFileReader::Read(char* aBuffer, PRUint32 aCount, PRUint32 *aBytesRead)
 
             NS_ASSERTION(entry->mBytesLeft >= 8, "demux segment length botch!");
             entry->mBytesLeft -= 8;
-        } while (entry->mBytesLeft == 0);
+        }
     }
 
     rv = mInputStream->Read(aBuffer, aCount, aBytesRead);
 
     if (NS_SUCCEEDED(rv) && entry) {
-        NS_ASSERTION(entry->mBytesLeft >= *aBytesRead, "demux underflow!");
+        NS_ASSERTION(entry->mBytesLeft >= *aBytesRead, "demux Read underflow!");
         entry->mBytesLeft -= *aBytesRead;
+
+#ifdef NS_DEBUG
+        // Invariant: !entry->mBytesLeft implies entry->mSaveOffset == 0.
+        if (entry->mBytesLeft == 0)
+            entry->mSaveOffset = 0;
+#endif
+    }
+    return rv;
+}
+
+NS_IMETHODIMP
+nsFastLoadFileReader::ReadSegments(nsWriteSegmentFun aWriter, void* aClosure,
+                                   PRUint32 aCount, PRUint32 *aResult)
+{
+    nsDocumentMapReadEntry* entry = mCurrentDocumentMapEntry;
+
+    NS_ASSERTION(!entry || (!entry->mNeedToSeek && entry->mBytesLeft != 0),
+                 "ReadSegments called from above nsFastLoadFileReader layer?!");
+
+    nsresult rv = nsBinaryInputStream::ReadSegments(aWriter, aClosure, aCount,
+                                                    aResult);
+    if (NS_SUCCEEDED(rv) && entry) {
+        NS_ASSERTION(entry->mBytesLeft >= *aResult,
+                     "demux ReadSegments underflow!");
+        entry->mBytesLeft -= *aResult;
 
 #ifdef NS_DEBUG
         // Invariant: !entry->mBytesLeft implies entry->mSaveOffset == 0.
@@ -735,6 +790,7 @@ nsFastLoadFileReader::ReadFooter(nsFastLoadFooter *aFooter)
         entry->mInitialSegmentOffset = info.mInitialSegmentOffset;
         entry->mNextSegmentOffset = info.mInitialSegmentOffset;
         entry->mBytesLeft = 0;
+        entry->mNeedToSeek = PR_FALSE;
         entry->mSaveOffset = 0;
     }
 
@@ -743,9 +799,9 @@ nsFastLoadFileReader::ReadFooter(nsFastLoadFooter *aFooter)
     if (NS_FAILED(rv))
         return rv;
 
+    nsCAutoString filename;
     for (i = 0, n = aFooter->mNumDependencies; i < n; i++) {
-        nsXPIDLCString filename;
-        rv = ReadStringZ(getter_Copies(filename));
+        rv = ReadCString(filename);
         if (NS_FAILED(rv))
             return rv;
 
@@ -852,6 +908,9 @@ nsFastLoadFileReader::ReadSharpObjectInfo(nsFastLoadSharpObjectInfo *aInfo)
     if (NS_FAILED(rv))
         return rv;
 
+    NS_ASSERTION(aInfo->mCIDOffset != 0,
+                 "fastload reader: mCIDOffset cannot be zero!");
+
     rv = Read16(&aInfo->mStrongRefCnt);
     if (NS_FAILED(rv))
         return rv;
@@ -868,18 +927,16 @@ nsFastLoadFileReader::ReadMuxedDocumentInfo(nsFastLoadMuxedDocumentInfo *aInfo)
 {
     nsresult rv;
 
-    char *spec;
-    rv = ReadStringZ(&spec);
+    nsCAutoString spec;
+    rv = ReadCString(spec);
     if (NS_FAILED(rv))
         return rv;
 
     rv = Read32(&aInfo->mInitialSegmentOffset);
-    if (NS_FAILED(rv)) {
-        nsMemory::Free((void*) spec);
+    if (NS_FAILED(rv))
         return rv;
-    }
 
-    aInfo->mURISpec = spec;
+    aInfo->mURISpec = ToNewCString(spec);
     return NS_OK;
 }
 
@@ -1026,8 +1083,10 @@ nsFastLoadFileReader::ReadObject(PRBool aIsStrongRef, nsISupports* *aObject)
             if (entry->mCIDOffset != saveOffset) {
                 // We skipped deserialization of this object from its position
                 // earlier in the input stream, presumably due to the reference
-                // there being an nsFastLoadPtr or some such thing.  Seek back
-                // and read it now.
+                // there being an nsFastLoadPtr, or (more likely) because the
+                // object was muxed in another document, and deserialization
+                // order does not match serialization order.  So we must seek
+                // back and read it now.
                 NS_ASSERTION(entry->mCIDOffset < saveOffset,
                              "out of order object?!");
 
@@ -1081,14 +1140,16 @@ nsFastLoadFileReader::ReadObject(PRBool aIsStrongRef, nsISupports* *aObject)
         }
 
         if (aIsStrongRef) {
-            NS_ASSERTION(entry->mStrongRefCnt != 0, "mStrongRefCnt underflow!");
-            entry->mStrongRefCnt--;
+            NS_ASSERTION(entry->mStrongRefCnt != 0,
+                         "mStrongRefCnt underflow!");
+            --entry->mStrongRefCnt;
         } else {
-            NS_ASSERTION(entry->mWeakRefCnt != 0, "mWeakRefCnt underflow!");
-            entry->mWeakRefCnt--;
+            NS_ASSERTION(MFL_GET_WEAK_REFCNT(entry) != 0,
+                         "mWeakRefCnt underflow!");
+            MFL_DROP_WEAK_REFCNT(entry);
         }
 
-        if (entry->mStrongRefCnt == 0 && entry->mWeakRefCnt == 0)
+        if (entry->mStrongRefCnt == 0 && MFL_GET_WEAK_REFCNT(entry) == 0)
             entry->mReadObject = nsnull;
     }
 
@@ -1209,7 +1270,7 @@ idmap_MatchEntry(PLDHashTable *aTable,
     return memcmp(&entry->mSlowID, idp, sizeof(nsID)) == 0;
 }
 
-static PLDHashTableOps idmap_DHashTableOps = {
+static const PLDHashTableOps idmap_DHashTableOps = {
     PL_DHashAllocTable,
     PL_DHashFreeTable,
     idmap_GetKey,
@@ -1302,6 +1363,18 @@ struct nsURIMapWriteEntry : public nsObjectMapEntry {
     PRUint32                 mGeneration;
     const char*              mURISpec;
 };
+
+NS_IMETHODIMP
+nsFastLoadFileWriter::HasMuxedDocument(const char* aURISpec, PRBool *aResult)
+{
+    nsDocumentMapWriteEntry* docMapEntry =
+        NS_STATIC_CAST(nsDocumentMapWriteEntry*,
+                       PL_DHashTableOperate(&mDocumentMap, aURISpec,
+                                            PL_DHASH_LOOKUP));
+
+    *aResult = PL_DHASH_ENTRY_IS_BUSY(docMapEntry);
+    return NS_OK;
+}
 
 NS_IMETHODIMP
 nsFastLoadFileWriter::StartMuxedDocument(nsISupports* aURI,
@@ -1497,8 +1570,14 @@ nsFastLoadFileWriter::EndMuxedDocument(nsISupports* aURI)
     nsURIMapWriteEntry* uriMapEntry =
         NS_STATIC_CAST(nsURIMapWriteEntry*,
                        PL_DHashTableOperate(&mURIMap, key, PL_DHASH_LOOKUP));
-    NS_ASSERTION(uriMapEntry->mDocMapEntry,
-                 "unknown aURI passed to EndMuxedDocument!");
+
+    // If the URI isn't in the map, nsFastLoadFileWriter::StartMuxedDocument
+    // must have been called with a redundant URI, *and* its caller must have
+    // ignored the NS_ERROR_UNEXPECTED it returned in that case.
+    if (PL_DHASH_ENTRY_IS_FREE(uriMapEntry)) {
+        TRACE_MUX(('w', "bad end %p (%p)\n", aURI, key.get()));
+        return NS_ERROR_UNEXPECTED;
+    }
 
     // Drop our ref to the URI object that was passed to StartMuxedDocument,
     // we no longer need it, and we do not want to extend its lifetime.
@@ -1620,6 +1699,9 @@ nsFastLoadFileWriter::WriteSharpObjectInfo(const nsFastLoadSharpObjectInfo& aInf
 {
     nsresult rv;
 
+    NS_ASSERTION(aInfo.mCIDOffset != 0,
+                 "fastload writer: mCIDOffset cannot be zero!");
+
     rv = Write32(aInfo.mCIDOffset);
     if (NS_FAILED(rv))
         return rv;
@@ -1685,16 +1767,7 @@ nsFastLoadFileWriter::ObjectMapEnumerate(PLDHashTable *aTable,
     NS_ASSERTION(index < aTable->entryCount, "bad nsObjectMap index!");
     vector[index] = entry->mInfo;
 
-#ifdef NS_DEBUG
     NS_ASSERTION(entry->mInfo.mStrongRefCnt, "no strong ref in serialization!");
-
-    if ((NS_PTR_TO_INT32(entry->mObject) & MFL_OBJECT_DEF_TAG) == 0) {
-        nsrefcnt rc = entry->mObject->AddRef();
-        NS_ASSERTION(entry->mInfo.mStrongRefCnt <= rc - 2,
-                     "too many strong refs in serialization");
-        entry->mObject->Release();
-    }
-#endif
 
     // Ignore tagged object ids stored as object pointer keys (the updater
     // code does this).
@@ -1779,6 +1852,10 @@ nsFastLoadFileWriter::WriteFooter()
         new nsFastLoadSharpObjectInfo[footerPrefix.mNumSharpObjects];
     if (!objvec)
         return NS_ERROR_OUT_OF_MEMORY;
+#ifdef NS_DEBUG
+    memset(objvec, 0, footerPrefix.mNumSharpObjects *
+                      sizeof(nsFastLoadSharpObjectInfo));
+#endif
 
     count = PL_DHashTableEnumerate(&mObjectMap, ObjectMapEnumerate, objvec);
     NS_ASSERTION(count == footerPrefix.mNumSharpObjects,
@@ -1954,7 +2031,7 @@ nsFastLoadFileWriter::Close()
         PRUint32 checksum = 0;
 
         // Ok, we're finally ready to checksum the FastLoad file we just wrote!
-        while (NS_SUCCEEDED(rv = 
+        while (NS_SUCCEEDED(rv =
                             input->Read(buf + rem, sizeof buf - rem, &len)) &&
                len) {
             len += rem;
@@ -1999,7 +2076,7 @@ nsFastLoadFileWriter::Close()
     return mOutputStream->Close();
 }
 
-// Psuedo-tag used as flag between WriteSingleRefObject and WriteCommon.
+// Psuedo-tag used as flag between WriteSingleRefObject and WriteObjectCommon.
 #define MFL_SINGLE_REF_PSEUDO_TAG       PR_BIT(MFL_OBJECT_TAG_BITS)
 
 nsresult
@@ -2018,6 +2095,7 @@ nsFastLoadFileWriter::WriteObjectCommon(nsISupports* aObject,
     NS_ASSERTION(rc != 0, "bad refcnt when writing aObject!");
 
     NSFastLoadOID oid;
+    nsCOMPtr<nsIClassInfo> classInfo;
 
     if (rc == 2 && (aTags & MFL_SINGLE_REF_PSEUDO_TAG)) {
         // Dull object: only one strong ref and no weak refs in serialization.
@@ -2059,17 +2137,30 @@ nsFastLoadFileWriter::WriteObjectCommon(nsISupports* aObject,
             entry->mInfo.mStrongRefCnt = aIsStrongRef ? 1 : 0;
             entry->mInfo.mWeakRefCnt   = aIsStrongRef ? 0 : 1;
 
+            // Record in oid the fact that we're defining this object in the
+            // stream, and get the object's class info here, so we can take
+            // note of singletons in order to avoid reserializing them when
+            // updating after reading.
             oid |= MFL_OBJECT_DEF_TAG;
+            classInfo = do_QueryInterface(aObject);
+            if (!classInfo)
+                return NS_ERROR_FAILURE;
+
+            PRUint32 flags;
+            if (NS_SUCCEEDED(classInfo->GetFlags(&flags)) &&
+                (flags & nsIClassInfo::SINGLETON)) {
+                MFL_SET_SINGLETON_FLAG(&entry->mInfo);
+            }
         } else {
             // Already serialized, recover oid and update the desired refcnt.
             oid = entry->mOID;
             if (aIsStrongRef) {
-                entry->mInfo.mStrongRefCnt++;
+                ++entry->mInfo.mStrongRefCnt;
                 NS_ASSERTION(entry->mInfo.mStrongRefCnt != 0,
                              "mStrongRefCnt overflow");
             } else {
-                entry->mInfo.mWeakRefCnt++;
-                NS_ASSERTION(entry->mInfo.mWeakRefCnt != 0,
+                MFL_BUMP_WEAK_REFCNT(&entry->mInfo);
+                NS_ASSERTION(MFL_GET_WEAK_REFCNT(&entry->mInfo) != 0,
                              "mWeakRefCnt overflow");
             }
 
@@ -2086,9 +2177,8 @@ nsFastLoadFileWriter::WriteObjectCommon(nsISupports* aObject,
         return rv;
 
     if (oid & MFL_OBJECT_DEF_TAG) {
-        nsCOMPtr<nsIClassInfo> classInfo(do_QueryInterface(aObject));
         nsCOMPtr<nsISerializable> serializable(do_QueryInterface(aObject));
-        if (!classInfo || !serializable)
+        if (!serializable)
             return NS_ERROR_FAILURE;
 
         nsCID slowCID;
@@ -2133,7 +2223,7 @@ nsFastLoadFileWriter::WriteSingleRefObject(nsISupports* aObject)
     nsCOMPtr<nsISupports> rootObject(do_QueryInterface(aObject));
 
     NS_ASSERTION(rootObject.get() == aObject,
-                 "bad call to WriteObject -- call WriteCompoundObject!");
+                 "bad call to WriteSingleRefObject -- call WriteCompoundObject!");
 #endif
 
     return WriteObjectCommon(aObject, PR_TRUE, MFL_SINGLE_REF_PSEUDO_TAG);
@@ -2309,10 +2399,68 @@ nsFastLoadFileUpdater::Open(nsFastLoadFileReader* aReader)
     // object offset and refcnt information in updater.
     nsFastLoadFileReader::nsObjectMapEntry* readObjectMap =
         aReader->mFooter.mObjectMap;
+
+    // Prepare to save aReader state in case we need to seek back and read a
+    // singleton object that might otherwise get written by this updater.
+    nsDocumentMapReadEntry* saveDocMapEntry = nsnull;
+    nsCOMPtr<nsISeekableStream> inputSeekable;
+    PRUint32 saveOffset = 0;
+
     for (i = 0, n = aReader->mFooter.mNumSharpObjects; i < n; i++) {
         nsFastLoadFileReader::nsObjectMapEntry* readEntry = &readObjectMap[i];
 
+        NS_ASSERTION(readEntry->mCIDOffset != 0,
+                     "fastload updater: mCIDOffset cannot be zero!");
+
+        // If the reader didn't read this object but it's a singleton, we must
+        // "deserialize" it now, to discover its one and only root nsISupports
+        // address.  The object already exists in memory if it was created at
+        // startup without resort to the FastLoad file.  The canonical example
+        // is the system principal object held by all XUL JS scripts.
+
         nsISupports* obj = readEntry->mReadObject;
+        if (!obj && MFL_GET_SINGLETON_FLAG(readEntry)) {
+            if (!saveDocMapEntry) {
+                inputSeekable = do_QueryInterface(aReader->mInputStream);
+                rv = inputSeekable->Tell(&saveOffset);
+                if (NS_FAILED(rv))
+                    return rv;
+
+                saveDocMapEntry = aReader->mCurrentDocumentMapEntry;
+                aReader->mCurrentDocumentMapEntry = nsnull;
+            }
+
+            rv = inputSeekable->Seek(nsISeekableStream::NS_SEEK_SET,
+                                     readEntry->mCIDOffset);
+            if (NS_FAILED(rv))
+                return rv;
+
+            rv = aReader
+                 ->DeserializeObject(getter_AddRefs(readEntry->mReadObject));
+            if (NS_FAILED(rv))
+                return rv;
+            obj = readEntry->mReadObject;
+
+            // Don't forget to set mSkipOffset in case someone calls the reader
+            // to "deserialize" (yet again) the object we just read.
+            //
+            // Say the singleton is the system principal, and the FastLoad file
+            // contains data for navigator.xul including scripts and functions.
+            // If we update the FastLoad file to contain data for messenger.xul
+            // in a separate session started via mozilla -mail, *and during the
+            // same FastLoad episode in this session* race to open a navigator
+            // window, we will attempt to read all objects serialized in the
+            // navigator.xul portion of the FastLoad file.
+            //
+            // mSkipOffset must be set in such a case so the reader can skip
+            // the system principal's serialized data, because the updater for
+            // messenger.xul being opened here has already read it.
+
+            rv = inputSeekable->Tell(&readEntry->mSkipOffset);
+            if (NS_FAILED(rv))
+                return rv;
+        }
+
         NSFastLoadOID oid = MFL_SHARP_INDEX_TO_OID(i);
         void* key = obj
                     ? NS_REINTERPRET_CAST(void*, obj)
@@ -2333,6 +2481,15 @@ nsFastLoadFileUpdater::Open(nsFastLoadFileReader* aReader)
         writeEntry->mInfo.mCIDOffset = readEntry->mCIDOffset;
         writeEntry->mInfo.mStrongRefCnt = readEntry->mSaveStrongRefCnt;
         writeEntry->mInfo.mWeakRefCnt = readEntry->mSaveWeakRefCnt;
+    }
+
+    // If we had to read any singletons, restore aReader's saved state.
+    if (saveDocMapEntry) {
+        rv = inputSeekable->Seek(nsISeekableStream::NS_SEEK_SET, saveOffset);
+        if (NS_FAILED(rv))
+            return rv;
+
+        aReader->mCurrentDocumentMapEntry = saveDocMapEntry;
     }
 
     // Copy URI spec string and initial segment offset in FastLoad file from

@@ -57,7 +57,7 @@ public:
   NS_IMETHOD Init(nsIPresContext*  aPresContext,
                   nsIContent*      aContent,
                   nsIFrame*        aParent,
-                  nsIStyleContext* aContext,
+                  nsStyleContext*  aContext,
                   nsIFrame*        aPrevInFlow);
   NS_IMETHOD SetInitialChildList(nsIPresContext* aPresContext,
                                  nsIAtom*        aListName,
@@ -65,6 +65,8 @@ public:
   NS_IMETHOD FirstChild(nsIPresContext* aPresContext,
                         nsIAtom*        aListName,
                         nsIFrame**      aFirstChild) const;
+  NS_IMETHOD GetAdditionalChildListName(PRInt32   aIndex,
+                                        nsIAtom** aListName) const;
   NS_IMETHOD Destroy(nsIPresContext* aPresContext);
   NS_IMETHOD Paint(nsIPresContext*      aPresContext,
                    nsIRenderingContext& aRenderingContext,
@@ -84,7 +86,6 @@ public:
 
 #ifdef DEBUG
   NS_IMETHOD List(nsIPresContext* aPresContext, FILE* out, PRInt32 aIndent) const;
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aHandler, PRUint32* aResult) const;
 #endif  
 
   // nsContainerFrame methods
@@ -118,7 +119,7 @@ public:
   // @param aStyleContext can be null, in which case the frame's style context is used
   static void SyncFrameViewAfterSizeChange(nsIPresContext*  aPresContext,
                                            nsIFrame*        aFrame,
-                                           nsIStyleContext* aStyleContext,
+                                           nsStyleContext*  aStyleContext,
                                            nsIView*         aView,
                                            PRUint32         aFlags = 0);
   
@@ -132,13 +133,13 @@ public:
   // @param aStyleContext can be null, in which case the frame's style context is used
   static void SyncFrameViewProperties(nsIPresContext*  aPresContext,
                                       nsIFrame*        aFrame,
-                                      nsIStyleContext* aStyleContext,
+                                      nsStyleContext*  aStyleContext,
                                       nsIView*         aView,
                                       PRUint32         aFlags = 0);
 
   // Returns PR_TRUE if the frame requires a view
   static PRBool FrameNeedsView(nsIPresContext* aPresContext,
-                               nsIFrame* aFrame, nsIStyleContext* aStyleContext);
+                               nsIFrame* aFrame, nsStyleContext* aStyleContext);
   
   /**
    * Invokes the WillReflow() function, positions the frame and its view (if

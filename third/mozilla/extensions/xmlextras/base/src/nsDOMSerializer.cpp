@@ -38,7 +38,6 @@
 
 #include "nsDOMSerializer.h"
 #include "nsIDOMNode.h"
-#include "nsIDOMRange.h"
 #include "nsIDOMClassInfo.h"
 #include "nsIOutputStream.h"
 #include "nsIDocument.h"
@@ -54,12 +53,8 @@
 #include "nsICodebasePrincipal.h"
 #include "nsIURI.h"
 
-#include "nsLayoutCID.h" // XXX Need range CID
-static NS_DEFINE_CID(kRangeCID,NS_RANGE_CID);
-
 nsDOMSerializer::nsDOMSerializer()
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsDOMSerializer::~nsDOMSerializer()
@@ -100,7 +95,7 @@ static nsresult SetUpEncoder(nsIDOMNode *aRoot, const char* aCharset, nsIDocumen
   }
 
   // This method will fail if no document
-  rv = encoder->Init(document,NS_LITERAL_STRING("text/xml"),nsIDocumentEncoder::OutputEncodeEntities);
+  rv = encoder->Init(document,NS_LITERAL_STRING("text/xml"),nsIDocumentEncoder::OutputEncodeBasicEntities);
   if (NS_FAILED(rv))
     return rv;
 
@@ -118,11 +113,7 @@ static nsresult SetUpEncoder(nsIDOMNode *aRoot, const char* aCharset, nsIDocumen
 
   // If we are working on the entire document we do not need to specify which part to serialize
   if (!entireDocument) {
-    nsCOMPtr<nsIDOMRange> range(do_CreateInstance(kRangeCID));
-    rv = range->SelectNode(aRoot);
-    if (NS_SUCCEEDED(rv)) {
-      rv = encoder->SetRange(range);
-    }
+    rv = encoder->SetNode(aRoot);
   }
 
   if (NS_SUCCEEDED(rv)) {
@@ -189,6 +180,7 @@ nsresult CheckSameOrigin(nsIDOMNode *aRoot)
     }      
   }
 
+  return NS_OK;
 }
 
 NS_IMETHODIMP

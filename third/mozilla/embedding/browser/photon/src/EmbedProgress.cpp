@@ -47,7 +47,7 @@
 
 EmbedProgress::EmbedProgress(void)
 {
-  NS_INIT_ISUPPORTS();
+	NS_INIT_ISUPPORTS();
   mOwner = nsnull;
   mSkipOnState = mDownloadDocument = 0;
 }
@@ -67,11 +67,11 @@ EmbedProgress::Init(EmbedPrivate *aOwner)
   return NS_OK;
 }
 
-NS_IMETHODIMP
-EmbedProgress::OnStateChange(nsIWebProgress *aWebProgress,
-			     nsIRequest     *aRequest,
-			     PRInt32         aStateFlags,
-			     PRUint32        aStatus)
+NS_IMETHODIMP 
+EmbedProgress::OnStateChange(nsIWebProgress *aWebProgress, 
+				 nsIRequest 	*aRequest, 
+				 PRUint32 		aStateFlags, 
+				 nsresult 		aStatus)
 {
 	PtMozillaWidget_t 		*moz = (PtMozillaWidget_t *) mOwner->mOwningWidget;
 	PtCallbackList_t 		*cb = NULL;
@@ -84,6 +84,7 @@ EmbedProgress::OnStateChange(nsIWebProgress *aWebProgress,
 	nsString tmpString;
 	tmpString.AssignWithConversion(uriString);
 
+#if 0
 	if( ( aStateFlags & STATE_IS_NETWORK ) && NS_FAILED( aStatus ) ) 
 	{
 		PtWebErrorCallback_t cbw;
@@ -115,18 +116,15 @@ EmbedProgress::OnStateChange(nsIWebProgress *aWebProgress,
 			case NS_ERROR_CONNECTION_REFUSED:	
 				cbw.reason = -13; 
 				break;
-
-			/* these will not cause the web error */
-			case NS_BINDING_ABORTED:					
-				break;
-
 			default:		
 				cbw.reason = -1; 
 				break;
 		}
-		if( cbw.reason ) PtInvokeCallbackList(cb, (PtWidget_t *)moz, &cbinfo);
+		if( cbw.reason != -1) 
+			PtInvokeCallbackList(cb, (PtWidget_t *)moz, &cbinfo);
 		/* let it check for STATE_STOP */
 	}
+#endif
 
 	memset(&cbinfo, 0, sizeof(cbinfo));
 
@@ -183,7 +181,7 @@ EmbedProgress::OnStateChange(nsIWebProgress *aWebProgress,
 			cbinfo.reason = Pt_CB_MOZ_COMPLETE;
 			cbinfo.cbdata = &cbcomplete;
 			memset( &cbcomplete, 0, sizeof( PtWebCompleteCallback_t ) );
-			strcpy(cbcomplete.url, (const char *)uriString);
+			REMOVE_WHEN_NEW_PT_WEB_strcpy(cbcomplete.url, (const char *)uriString);
 
 			if( ( cb = moz->complete_cb ) )
 				PtInvokeCallbackList(cb, (PtWidget_t *) moz, &cbinfo);
@@ -195,7 +193,8 @@ EmbedProgress::OnStateChange(nsIWebProgress *aWebProgress,
 	cbinfo.cbdata = &state;
 	state.flags = aStateFlags;
 	state.status = aStatus;
-	state.url = (const char *)uriString;
+	//state.url = (const char *)uriString;
+	state.url = NULL;
 	char *statusMessage = "";
 	PRInt32 flags = aStateFlags;
 

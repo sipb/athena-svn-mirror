@@ -35,7 +35,7 @@
    -
    - ***** END LICENSE BLOCK ***** -->
 
-<!DOCTYPE window SYSTEM "chrome://communicator/locale/tasksOverlay.dtd">
+<!DOCTYPE overlay SYSTEM "chrome://communicator/locale/tasksOverlay.dtd">
 
 <overlay id="editorTasksOverlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
@@ -65,7 +65,7 @@
 
   <statusbarpanel id="component-bar">
     <toolbarbutton class="taskbutton" id="mini-comp" command="Tasks:Editor" 
-                   tooltiptext="&taskComposer.tooltip;"/>
+                   tooltiptext="&taskComposer.tooltip;" insertafter="mini-nav"/>
   </statusbarpanel>
   
   <menupopup id="windowPopup">

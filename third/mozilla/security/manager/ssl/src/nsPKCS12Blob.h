@@ -31,7 +31,7 @@
  * may use your version of this file under either the MPL or the
  * GPL.
  *
- * $Id: nsPKCS12Blob.h,v 1.1.1.1 2003-02-14 20:05:16 rbasch Exp $
+ * $Id: nsPKCS12Blob.h,v 1.1.1.2 2003-07-08 17:16:45 rbasch Exp $
  */
 
 #ifndef _NS_PKCS12BLOB_H_
@@ -65,7 +65,7 @@ public:
   virtual ~nsPKCS12Blob();
 
   // Set the token to use (default is internal)
-  void SetToken(nsIPK11Token *token);
+  nsresult SetToken(nsIPK11Token *token);
 
   // PKCS#12 Import
   nsresult ImportFromFile(nsILocalFile *file);

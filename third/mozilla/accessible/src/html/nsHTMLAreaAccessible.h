@@ -41,7 +41,6 @@
 #define _nsHTMLAreaAccessible_H_
 
 #include "nsBaseWidgetAccessible.h"
-#include "nsAccessible.h"
 
 /* Accessible for image map areas - must be child of image
  */
@@ -63,8 +62,7 @@ public:
   NS_IMETHOD AccGetBounds(PRInt32 *x, PRInt32 *y, PRInt32 *width, PRInt32 *height);
 
 protected:
-  nsIAccessible *CreateAreaAccessible(nsIDOMNode *aDOMNode);
-  nsCOMPtr<nsIAccessible> mAccParent;
+  nsIAccessible *GetAreaAccessible(nsIDOMNode *aDOMNode);
 };
 
 #endif  

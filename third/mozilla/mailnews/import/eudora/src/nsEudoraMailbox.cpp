@@ -339,7 +339,7 @@ nsresult nsEudoraMailbox::ImportMailbox( PRUint32 *pBytes, PRBool *pAbort, const
 	return( rv);
 }
 
-#ifdef XP_MAC
+#if defined(XP_MAC) || defined(XP_MACOSX)
 #define kMsgHeaderSize		220
 #define	kMsgFirstOffset		278
 #else
@@ -351,6 +351,7 @@ nsresult nsEudoraMailbox::CompactMailbox( PRUint32 *pBytes, PRBool *pAbort, nsIF
 {
 	PRUint32	mailSize = m_mailSize;
 	PRUint32	tocSize = 0;
+  PRUint32	msgCount = 0;
 	nsresult	rv;
 
 	rv = pToc->GetFileSize( &tocSize);
@@ -416,7 +417,7 @@ nsresult nsEudoraMailbox::CompactMailbox( PRUint32 *pBytes, PRBool *pAbort, nsIF
 				return( rv);
 		}
 		
-		IMPORT_LOG0( ".");
+		IMPORT_LOG1( "  Message #%d processed.", ++msgCount);
 
 		tocOffset += kMsgHeaderSize;
 	}
@@ -1008,8 +1009,12 @@ nsresult nsEudoraMailbox::ExamineAttachment( SimpleBufferTonyRCopiedOnce& data)
 				fileName.Append( pStart, nameLen);
 				fileName.Trim( kWhitespace);
 				if (fileName.Length()) {
+#ifdef XP_MACOSX
+					return NS_OK;
+#else
 					if( AddAttachment( fileName))
 						return( NS_OK);
+#endif
 				}
 			}
 		}

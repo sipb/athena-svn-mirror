@@ -357,14 +357,26 @@ void nsMacEventDispatchHandler::SetDeactivated(nsWindow *aDeactivatedWidget)
       }
     }
       
-	// let the old one know it lost activation
-	if (mActiveWidget)
-	{	
-	    //printf("   nsMacEventDispatchHandler::SetDeactivated sends NS_DEACTIVATE\n");
-		mActiveWidget->RemoveDeleteObserver(this);
-		mActiveWidget = nsnull;
-	}
-	DispatchGuiEvent(aDeactivatedWidget, NS_DEACTIVATE);	
+    // If the deactivated toplevel window contains mActiveWidget, then
+    // clear out mActiveWidget.
+
+    if (mActiveWidget) {
+      nsCOMPtr<nsIWidget> curWin = do_QueryInterface(NS_STATIC_CAST(nsIWidget*, mActiveWidget));
+      for (;;) {
+        nsCOMPtr<nsIWidget> parent = dont_AddRef(curWin->GetParent());
+        if (!parent)
+          break;
+        curWin = parent;
+      }
+
+      if (NS_STATIC_CAST(nsWindow*, NS_STATIC_CAST(nsIWidget*, curWin)) == aDeactivatedWidget) {
+        //printf("   nsMacEventDispatchHandler::SetDeactivated sends NS_DEACTIVATE\n");
+        mActiveWidget->RemoveDeleteObserver(this);
+        mActiveWidget = nsnull;
+      }
+    }
+
+    DispatchGuiEvent(aDeactivatedWidget, NS_DEACTIVATE);	
 }
 
 //-------------------------------------------------------------------------
@@ -435,9 +447,6 @@ void nsMacEventDispatchHandler::SetGlobalPoint(Point inPoint)
 
 #pragma mark -
 
-static PRBool gUseUnicodeAPI = PR_FALSE;
-static PRBool gInitUseUnicodeAPI = PR_FALSE;
- 
 //-------------------------------------------------------------------------
 //
 // nsMacEventHandler constructor/destructor
@@ -973,7 +982,7 @@ void nsMacEventHandler::InitializeKeyEvent(nsKeyEvent& aKeyEvent,
 		{
       if (!aKeyEvent.isMeta)
 			{
-				aKeyEvent.isShift = aKeyEvent.isControl = aKeyEvent.isAlt = aKeyEvent.isMeta = 0;
+				aKeyEvent.isControl = aKeyEvent.isAlt = aKeyEvent.isMeta = 0;
       } // if (!aKeyEvent.isMeta)
     
 			aKeyEvent.keyCode	= 0;
@@ -1165,47 +1174,55 @@ PRBool nsMacEventHandler::HandleKeyEvent(EventRecord& aOSEvent)
 		focusedWidget = mTopLevelWidget;
 	
 	// nsEvent
-	nsKeyEvent	keyEvent;
 	switch (aOSEvent.what)
 	{
 		case keyUp:
-			InitializeKeyEvent(keyEvent,aOSEvent,focusedWidget,NS_KEY_UP);
-			result = focusedWidget->DispatchWindowEvent(keyEvent);
-			break;
-
-		case keyDown:	
-			InitializeKeyEvent(keyEvent,aOSEvent,focusedWidget,NS_KEY_DOWN);
-			result = focusedWidget->DispatchWindowEvent(keyEvent);
-
-			// get the focused widget again in case something happened to it on the previous event
-			checkFocusedWidget = gEventDispatchHandler.GetActive();
-			if (!checkFocusedWidget)
-				checkFocusedWidget = mTopLevelWidget;
-
-			// if this isn't the same widget we had before, we should not send a keypress
-			if (checkFocusedWidget != focusedWidget)
-				return result;
-
-      InitializeKeyEvent(keyEvent,aOSEvent,focusedWidget,NS_KEY_PRESS);
-
-      // before we dispatch this key, check if it's the contextmenu key.
-      // If so, send a context menu event instead.
-      if ( IsContextMenuKey(keyEvent) ) {
-        nsMouseEvent contextMenuEvent;
-        ConvertKeyEventToContextMenuEvent(&keyEvent, &contextMenuEvent);
-        result = focusedWidget->DispatchWindowEvent(contextMenuEvent);
-        NS_ASSERTION(NS_SUCCEEDED(result), "cannot DispatchWindowEvent");
+      {
+        nsKeyEvent keyUpEvent;
+        InitializeKeyEvent(keyUpEvent,aOSEvent,focusedWidget,NS_KEY_UP);
+        result = focusedWidget->DispatchWindowEvent(keyUpEvent);
+        break;
       }
-      else {
-        result = focusedWidget->DispatchWindowEvent(keyEvent);
-        NS_ASSERTION(NS_SUCCEEDED(result), "cannot DispatchWindowEvent");
+
+    case keyDown:	
+      {
+        nsKeyEvent keyDownEvent, keyPressEvent;
+        InitializeKeyEvent(keyDownEvent,aOSEvent,focusedWidget,NS_KEY_DOWN);
+        result = focusedWidget->DispatchWindowEvent(keyDownEvent);
+
+        // get the focused widget again in case something happened to it on the previous event
+        checkFocusedWidget = gEventDispatchHandler.GetActive();
+        if (!checkFocusedWidget)
+          checkFocusedWidget = mTopLevelWidget;
+
+        // if this isn't the same widget we had before, we should not send a keypress
+        if (checkFocusedWidget != focusedWidget)
+          return result;
+
+        InitializeKeyEvent(keyPressEvent,aOSEvent,focusedWidget,NS_KEY_PRESS);
+
+        // before we dispatch this key, check if it's the contextmenu key.
+        // If so, send a context menu event instead.
+        if ( IsContextMenuKey(keyPressEvent) ) {
+          nsMouseEvent contextMenuEvent;
+          ConvertKeyEventToContextMenuEvent(&keyPressEvent, &contextMenuEvent);
+          result = focusedWidget->DispatchWindowEvent(contextMenuEvent);
+          NS_ASSERTION(NS_SUCCEEDED(result), "cannot DispatchWindowEvent");
+        }
+        else {
+          result = focusedWidget->DispatchWindowEvent(keyPressEvent);
+          NS_ASSERTION(NS_SUCCEEDED(result), "cannot DispatchWindowEvent");
+        }
+        break;
       }
-			break;
-		
-		case autoKey:
-			InitializeKeyEvent(keyEvent,aOSEvent,focusedWidget,NS_KEY_PRESS);
-			result = focusedWidget->DispatchWindowEvent(keyEvent);
-			break;
+
+    case autoKey:
+      {
+        nsKeyEvent keyPressEvent;
+        InitializeKeyEvent(keyPressEvent,aOSEvent,focusedWidget,NS_KEY_PRESS);
+        result = focusedWidget->DispatchWindowEvent(keyPressEvent);
+        break;
+      }
 	}
 
 	return result;
@@ -1263,38 +1280,74 @@ PRBool nsMacEventHandler::HandleUKeyEvent(PRUnichar* text, long charCount, Event
   if (!focusedWidget)
     focusedWidget = mTopLevelWidget;
   
-  // nsEvent
-  nsKeyEvent keyEvent;
   PRBool isCharacter = PR_FALSE;
-  InitializeKeyEvent(keyEvent, aOSEvent, focusedWidget, NS_KEY_PRESS, &isCharacter, PR_FALSE);
+
+  // simulate key down event if this isn't an autoKey event
+  if (aOSEvent.what == keyDown)
+  {
+    nsKeyEvent keyDownEvent;
+    InitializeKeyEvent(keyDownEvent, aOSEvent, focusedWidget, NS_KEY_DOWN, &isCharacter, PR_FALSE);
+    result = focusedWidget->DispatchWindowEvent(keyDownEvent);
+    NS_ASSERTION(NS_SUCCEEDED(result), "cannot DispatchWindowEvent keydown");
+
+    // check if focus changed; see also HandleKeyEvent above
+    nsWindow *checkFocusedWidget = gEventDispatchHandler.GetActive();
+    if (!checkFocusedWidget)
+      checkFocusedWidget = mTopLevelWidget;
+    if (checkFocusedWidget != focusedWidget)
+      return result;
+  }
+
+  // simulate key press events
+  nsKeyEvent keyPressEvent;
+  InitializeKeyEvent(keyPressEvent, aOSEvent, focusedWidget, NS_KEY_PRESS, &isCharacter, PR_FALSE);
+
   if (isCharacter) 
   {
     // it is a message with text, send all the unicode characters
-    PRUint32 i;
+    PRInt32 i;
     for (i = 0; i < charCount; i++)
     {
-      keyEvent.charCode = text[i];
-      if (keyEvent.isShift && keyEvent.charCode <= 'z' && keyEvent.charCode >= 'a') 
-        keyEvent.charCode -= 32;
+      keyPressEvent.charCode = text[i];
+
+      // control key is special in that it doesn't give us letters
+      // it generates a charcode of 0x01 for control-a
+      // so we offset to do the right thing for gecko (as in HandleKeyEvent)
+      // this doesn't happen for us in InitializeKeyEvent because we pass
+      // PR_FALSE so no character translation occurs.
+      // I'm guessing we don't want to do the translation there because
+      // translation already occurred for the string passed to this method.
+      if (keyPressEvent.isControl && keyPressEvent.charCode <= 26)
+      {
+        if (keyPressEvent.isShift)
+          keyPressEvent.charCode += 'A' - 1;
+        else
+          keyPressEvent.charCode += 'a' - 1;
+      }
+
+      // this block of code is triggered when user presses
+      // a combination such as command-shift-M
+      if (keyPressEvent.isShift && keyPressEvent.charCode <= 'z' && keyPressEvent.charCode >= 'a') 
+        keyPressEvent.charCode -= 32;
 
       // before we dispatch a key, check if it's the context menu key.
       // If so, send a context menu event instead.
-      if ( IsContextMenuKey(keyEvent) ) {
+      if ( IsContextMenuKey(keyPressEvent) ) {
         nsMouseEvent contextMenuEvent;
-        ConvertKeyEventToContextMenuEvent(&keyEvent, &contextMenuEvent);
+        ConvertKeyEventToContextMenuEvent(&keyPressEvent, &contextMenuEvent);
         result = focusedWidget->DispatchWindowEvent(contextMenuEvent);
         NS_ASSERTION(NS_SUCCEEDED(result), "cannot DispatchWindowEvent");
       }
       else {
         // command / shift keys, etc. only send once
-        result = focusedWidget->DispatchWindowEvent(keyEvent);
+        result = focusedWidget->DispatchWindowEvent(keyPressEvent);
         NS_ASSERTION(NS_SUCCEEDED(result), "cannot DispatchWindowEvent");
       }
     }
   }
   else {
     // command / shift keys, etc. only send once
-    result = focusedWidget->DispatchWindowEvent(keyEvent);
+    result = focusedWidget->DispatchWindowEvent(keyPressEvent);
     NS_ASSERTION(NS_SUCCEEDED(result), "cannot DispatchWindowEvent");
   }
   return result;

@@ -30,6 +30,7 @@ MODULE		= msglocal
 LIBRARY_NAME	= msglocal_s
 META_COMPONENT = mail
 REQUIRES	= xpcom \
+                  xpcom_obsolete \
 		  string \
 		  msgbase \
 		  msgbaseutil \
@@ -43,6 +44,7 @@ REQUIRES	= xpcom \
 		  mime \
 		  rdfutil \
 		  txmgr \
+		  caps \
 		  docshell \
 		  msgimap \
 		  nkcache \
@@ -67,6 +69,7 @@ CPPSRCS		= \
 		$(NULL)
 
 EXPORTS		= \
+		nsMsgLocalCID.h \
 		nsPop3Protocol.h \
 		nsPop3URL.h \
 		nsPop3Sink.h \

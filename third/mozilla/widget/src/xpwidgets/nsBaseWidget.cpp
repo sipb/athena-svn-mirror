@@ -20,6 +20,7 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
+ *   Dean Tessman <dean_tessman@hotmail.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or 
@@ -42,6 +43,9 @@
 #include "nsIEnumerator.h"
 #include "nsGfxCIID.h"
 #include "nsWidgetsCID.h"
+#include "nsIFullScreen.h"
+#include "nsIServiceManagerUtils.h"
+#include "nsIScreenManager.h"
 
 #ifdef DEBUG
 #include "nsIServiceManager.h"
@@ -69,23 +73,25 @@ NS_IMPL_ISUPPORTS2(nsBaseWidget::Enumerator, nsIBidirectionalEnumerator, nsIEnum
 //-------------------------------------------------------------------------
 
 nsBaseWidget::nsBaseWidget()
-:	mClientData(nsnull)
-,	mEventCallback(nsnull)
-,	mContext(nsnull)
-,	mToolkit(nsnull)
-,	mMouseListener(nsnull)
-,	mEventListener(nsnull)
-,	mMenuListener(nsnull)
-,	mCursor(eCursor_standard)
-,	mBorderStyle(eBorderStyle_none)
-,	mIsShiftDown(PR_FALSE)
-,	mIsControlDown(PR_FALSE)
-,	mIsAltDown(PR_FALSE)
-,	mIsDestroying(PR_FALSE)
-,	mOnDestroyCalled(PR_FALSE)
-,	mBounds(0,0,0,0)
-,	mZIndex(0)
-,	mSizeMode(nsSizeMode_Normal)
+: mClientData(nsnull)
+, mEventCallback(nsnull)
+, mContext(nsnull)
+, mToolkit(nsnull)
+, mMouseListener(nsnull)
+, mEventListener(nsnull)
+, mMenuListener(nsnull)
+, mCursor(eCursor_standard)
+, mWindowType(eWindowType_child)
+, mBorderStyle(eBorderStyle_none)
+, mIsShiftDown(PR_FALSE)
+, mIsControlDown(PR_FALSE)
+, mIsAltDown(PR_FALSE)
+, mIsDestroying(PR_FALSE)
+, mOnDestroyCalled(PR_FALSE)
+, mBounds(0,0,0,0)
+, mOriginalBounds(nsnull)
+, mZIndex(0)
+, mSizeMode(nsSizeMode_Normal)
 {
 #ifdef NOISY_WIDGET_LEAKS
   gNumWidgets++;
@@ -97,8 +103,6 @@ nsBaseWidget::nsBaseWidget()
 #endif
 
     NS_NewISupportsArray(getter_AddRefs(mChildren));
-    
-    NS_INIT_ISUPPORTS();
 }
 
 
@@ -117,6 +121,8 @@ nsBaseWidget::~nsBaseWidget()
 	NS_IF_RELEASE(mMenuListener);
 	NS_IF_RELEASE(mToolkit);
 	NS_IF_RELEASE(mContext);
+  if (mOriginalBounds)
+    delete mOriginalBounds;
 }
 
 
@@ -480,12 +486,81 @@ NS_IMETHODIMP nsBaseWidget::SetWindowType(nsWindowType aWindowType)
 
 //-------------------------------------------------------------------------
 //
+// Window transparency methods
+//
+//-------------------------------------------------------------------------
+
+NS_IMETHODIMP nsBaseWidget::SetWindowTranslucency(PRBool aTranslucent) {
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+NS_IMETHODIMP nsBaseWidget::GetWindowTranslucency(PRBool& aTranslucent) {
+  aTranslucent = PR_FALSE;
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsBaseWidget::UpdateTranslucentWindowAlpha(const nsRect& aRect, PRUint8* aAlphas) {
+  NS_ASSERTION(PR_FALSE, "Window is not translucent");
+  return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+//-------------------------------------------------------------------------
+//
 // Hide window borders/decorations for this widget
 //
 //-------------------------------------------------------------------------
 NS_IMETHODIMP nsBaseWidget::HideWindowChrome(PRBool aShouldHide)
 {
   return NS_ERROR_NOT_IMPLEMENTED;
+}
+
+//-------------------------------------------------------------------------
+//
+// Put the window into full-screen mode
+//
+//-------------------------------------------------------------------------
+NS_IMETHODIMP nsBaseWidget::MakeFullScreen(PRBool aFullScreen)
+{
+  HideWindowChrome(aFullScreen);
+  nsCOMPtr<nsIFullScreen> fullScreen = do_GetService("@mozilla.org/browser/fullscreen;1");
+
+  if (aFullScreen) {
+    if (!mOriginalBounds)
+      mOriginalBounds = new nsRect();
+    GetScreenBounds(*mOriginalBounds);
+
+    // Move to top-left corner of screen and size to the screen dimensions
+    nsCOMPtr<nsIScreenManager> screenManager;
+    screenManager = do_GetService("@mozilla.org/gfx/screenmanager;1"); 
+    NS_ASSERTION(screenManager, "Unable to grab screenManager.");
+    if (screenManager) {
+      nsCOMPtr<nsIScreen> screen;
+      screenManager->ScreenForRect(mOriginalBounds->x, mOriginalBounds->y,
+                                   mOriginalBounds->width, mOriginalBounds->height,
+                                   getter_AddRefs(screen));
+      if (screen) {
+        PRInt32 left, top, width, height;
+        if (NS_SUCCEEDED(screen->GetRect(&left, &top, &width, &height))) {
+          SetSizeMode(nsSizeMode_Normal);
+          Resize(left, top, width, height, PR_TRUE);
+    
+          // Hide all of the OS chrome
+          if (fullScreen)
+            fullScreen->HideAllOSChrome();
+        }
+      }
+    }
+
+  } else if (mOriginalBounds) {
+    Resize(mOriginalBounds->x, mOriginalBounds->y, mOriginalBounds->width,
+           mOriginalBounds->height, PR_TRUE);
+
+    // Show all of the OS chrome
+    if (fullScreen)
+      fullScreen->ShowAllOSChrome();
+  }
+
+  return NS_OK;
 }
 
 //-------------------------------------------------------------------------
@@ -1234,7 +1309,6 @@ nsBaseWidget::debug_DumpInvalidate(FILE *                aFileOut,
 nsBaseWidget::Enumerator::Enumerator(nsBaseWidget & inParent)
   : mCurrentPosition(0), mParent(inParent)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 

@@ -21,6 +21,7 @@
  *
  * Contributor(s):
  * Original Author: David W. Hyatt (hyatt@netscape.com)
+ * Alec Flett <alecf@netscape.com>
  *
  *
  * Alternatively, the contents of this file may be used under the terms of
@@ -40,8 +41,8 @@
 #include "nsCOMPtr.h"
 #include "nsIXBLService.h"
 #include "nsIInputStream.h"
-#include "nsINameSpaceManager.h"
 #include "nsHashtable.h"
+#include "nsDoubleHashtable.h"
 #include "nsIURI.h"
 #include "nsIURL.h"
 #include "nsIChannel.h"
@@ -66,8 +67,7 @@
 
 #include "nsIXBLBinding.h"
 #include "nsIXBLDocumentInfo.h"
-#include "nsIXBLBindingAttachedHandler.h"
-#include "nsIXBLInsertionPoint.h"
+#include "nsXBLInsertionPoint.h"
 
 #include "nsIStyleSheet.h"
 #include "nsIHTMLStyleSheet.h"
@@ -76,7 +76,6 @@
 
 #include "nsIStyleRuleProcessor.h"
 #include "nsIStyleSet.h"
-#include "nsIXBLPrototypeBinding.h"
 #include "nsIWeakReference.h"
 
 #include "jsapi.h"
@@ -96,57 +95,45 @@
 // = nsAnonymousContentList 
 // ==================================================================
 
-// {CC949466-626E-4e3b-88EE-967DC5CEF7BF}
-#define NS_IANONYMOUSCONTENTLIST_IID \
-{ 0xcc949466, 0x626e, 0x4e3b, { 0x88, 0xee, 0x96, 0x7d, 0xc5, 0xce, 0xf7, 0xbf } }
-
-class nsIAnonymousContentList : public nsISupports
+class nsAnonymousContentList : public nsGenericDOMNodeList
 {
 public:
-  NS_DEFINE_STATIC_IID_ACCESSOR(NS_IANONYMOUSCONTENTLIST_IID)
-
-   // nsIAnonymousContentList
-  NS_IMETHOD GetInsertionPointCount(PRUint32* aCount)=0;
-  NS_IMETHOD GetInsertionPointAt(PRUint32 i, nsIXBLInsertionPoint** aResult)=0;
-};
-
-class nsAnonymousContentList : public nsGenericDOMNodeList, public nsIAnonymousContentList
-{
-public:
-  nsAnonymousContentList(nsISupportsArray* aElements);
+  nsAnonymousContentList(nsVoidArray* aElements);
   virtual ~nsAnonymousContentList();
-
-  NS_DECL_ISUPPORTS_INHERITED
 
   // nsIDOMNodeList interface
   NS_DECL_NSIDOMNODELIST
 
-  // nsIAnonymousContentList
-  NS_IMETHOD GetInsertionPointCount(PRUint32* aCount);
-  NS_IMETHOD GetInsertionPointAt(PRUint32 i, nsIXBLInsertionPoint** aResult);
-  
+  PRInt32 GetInsertionPointCount() { return mElements->Count(); }
+
+  nsXBLInsertionPoint* GetInsertionPointAt(PRInt32 i) { return NS_STATIC_CAST(nsXBLInsertionPoint*, mElements->ElementAt(i)); }
+
 private:
-  nsISupportsArray* mElements;
+  nsVoidArray* mElements;
 };
 
-MOZ_DECL_CTOR_COUNTER(nsAnonymousContentList);
+MOZ_DECL_CTOR_COUNTER(nsAnonymousContentList)
 
-NS_IMPL_ISUPPORTS_INHERITED1(nsAnonymousContentList, nsGenericDOMNodeList, nsIAnonymousContentList)
-
-nsAnonymousContentList::nsAnonymousContentList(nsISupportsArray* aElements)
+nsAnonymousContentList::nsAnonymousContentList(nsVoidArray* aElements)
+  : mElements(aElements)
 {
   MOZ_COUNT_CTOR(nsAnonymousContentList);
 
   // We don't reference count our Anonymous reference (to avoid circular
   // references). We'll be told when the Anonymous goes away.
-  mElements = aElements;
-  NS_IF_ADDREF(mElements);
 }
- 
+
+static PRBool PR_CALLBACK DeleteInsertionPoint(void* aElement, void* aData)
+{
+  delete NS_STATIC_CAST(nsXBLInsertionPoint*, aElement);
+  return PR_TRUE;
+}
+
 nsAnonymousContentList::~nsAnonymousContentList()
 {
   MOZ_COUNT_DTOR(nsAnonymousContentList);
-  NS_IF_RELEASE(mElements);
+  mElements->EnumerateForwards(DeleteInsertionPoint, nsnull);
+  delete mElements;
 }
 
 NS_IMETHODIMP
@@ -156,17 +143,11 @@ nsAnonymousContentList::GetLength(PRUint32* aLength)
   if (! aLength)
       return NS_ERROR_NULL_POINTER;
 
-  PRUint32 cnt;
-  mElements->Count(&cnt);
+  PRInt32 cnt = mElements->Count();
 
   *aLength = 0;
-  nsCOMPtr<nsIXBLInsertionPoint> point;
-  PRUint32 l;
-  for (PRUint32 i = 0; i < cnt; i++) {
-    point = getter_AddRefs((nsIXBLInsertionPoint*)(mElements->ElementAt(i)));
-    point->ChildCount(&l);
-    *aLength += l;
-  }
+  for (PRInt32 i = 0; i < cnt; i++)
+    *aLength += NS_STATIC_CAST(nsXBLInsertionPoint*, mElements->ElementAt(i))->ChildCount();
 
   return NS_OK;
 }
@@ -174,48 +155,162 @@ nsAnonymousContentList::GetLength(PRUint32* aLength)
 NS_IMETHODIMP    
 nsAnonymousContentList::Item(PRUint32 aIndex, nsIDOMNode** aReturn)
 {
-  PRUint32 cnt;
-  nsresult rv = mElements->Count(&cnt);
-  if (NS_FAILED(rv)) return rv;
-
+  PRInt32 cnt = mElements->Count();
   PRUint32 pointCount = 0;
-  nsCOMPtr<nsIXBLInsertionPoint> point;
-  for (PRUint32 i = 0; i < cnt; i++) {
+
+  for (PRInt32 i = 0; i < cnt; i++) {
     aIndex -= pointCount;
     
-    point = getter_AddRefs((nsIXBLInsertionPoint*)(mElements->ElementAt(i)));
-    point->ChildCount(&pointCount);
+    nsXBLInsertionPoint* point = NS_STATIC_CAST(nsXBLInsertionPoint*, mElements->ElementAt(i));
+    pointCount = point->ChildCount();
 
     if (aIndex < pointCount) {
-      nsCOMPtr<nsIContent> result;
-      rv = point->ChildAt(aIndex, getter_AddRefs(result));
-      if (result && NS_SUCCEEDED(rv))
-        return result->QueryInterface(NS_GET_IID(nsIDOMNode), (void**)aReturn);
-      else return rv;
+      nsCOMPtr<nsIContent> result = point->ChildAt(aIndex);
+      if (result)
+        return CallQueryInterface(result, aReturn);
+      return NS_ERROR_FAILURE;
     }
   }
 
   return NS_ERROR_FAILURE;
 }
 
-NS_IMETHODIMP
-nsAnonymousContentList::GetInsertionPointCount(PRUint32* aCount)
+// nsDoubleHashtable stuff to create a generic string -> nsISupports
+// table
+
+class StringToObjectEntry : public PLDHashCStringEntry {
+public:
+  StringToObjectEntry(const void* aKey) : PLDHashCStringEntry(aKey) {
+    MOZ_COUNT_CTOR(StringToObjectEntry);
+  }
+  ~StringToObjectEntry() {
+    MOZ_COUNT_DTOR(StringToObjectEntry);
+  }
+
+  nsISupports* GetValue() { return mValue; }
+  void SetValue(nsISupports* aValue) { mValue = aValue; }
+
+private:
+  nsCOMPtr<nsISupports> mValue;
+};
+
+DECL_DHASH_WRAPPER(StringToObjectTable, StringToObjectEntry, nsACString&)
+DHASH_WRAPPER(StringToObjectTable, StringToObjectEntry, nsACString&)
+
+//
+// Generic pldhash table stuff for mapping one nsISupports to another
+//
+// These values are never null - a null value implies that this
+// whole key should be removed (See SetOrRemoveObject)
+class ObjectEntry : public PLDHashEntryHdr
 {
-  *aCount = 0;
-  if (mElements)
-    mElements->Count(aCount);
+public:
+
+  // note that these are allocated within the PLDHashTable, but we
+  // want to keep track of them anyway
+  ObjectEntry() { MOZ_COUNT_CTOR(ObjectEntry); }
+  ~ObjectEntry() { MOZ_COUNT_DTOR(ObjectEntry); }
+  
+  nsISupports* GetValue() { return mValue; }
+  nsISupports* GetKey() { return mKey; }
+  void SetValue(nsISupports* aValue) { mValue = aValue; }
+  void SetKey(nsISupports* aKey) { mKey = aKey; }
+  
+private:
+  nsCOMPtr<nsISupports> mKey;
+  nsCOMPtr<nsISupports> mValue;
+};
+
+PR_STATIC_CALLBACK(void)
+ClearObjectEntry(PLDHashTable* table, PLDHashEntryHdr *entry)
+{
+  ObjectEntry* objEntry = NS_STATIC_CAST(ObjectEntry*, entry);
+  objEntry->~ObjectEntry();
+}
+
+PR_STATIC_CALLBACK(void)
+InitObjectEntry(PLDHashTable* table, PLDHashEntryHdr* entry, const void* key)
+{
+  new (entry) ObjectEntry;
+}
+  
+
+
+static PLDHashTableOps ObjectTableOps = {
+  PL_DHashAllocTable,
+  PL_DHashFreeTable,
+  PL_DHashGetKeyStub,
+  PL_DHashVoidPtrKeyStub,
+  PL_DHashMatchEntryStub,
+  PL_DHashMoveEntryStub,
+  ClearObjectEntry,
+  PL_DHashFinalizeStub,
+  InitObjectEntry
+};
+
+// helper routine for adding a new entry
+static nsresult
+AddObjectEntry(PLDHashTable& table, nsISupports* aKey, nsISupports* aValue)
+{
+  NS_ASSERTION(aKey, "key must be non-null");
+  if (!aKey) return NS_ERROR_INVALID_ARG;
+  
+  ObjectEntry *entry =
+    NS_STATIC_CAST(ObjectEntry*,
+                   PL_DHashTableOperate(&table, aKey, PL_DHASH_ADD));
+
+  if (!entry)
+    return NS_ERROR_OUT_OF_MEMORY;
+
+  // only add the key if the entry is new
+  if (!entry->GetKey())
+    entry->SetKey(aKey);
+
+  // now attach the new entry - note that entry->mValue could possibly
+  // have a value already, this will release that.
+  entry->SetValue(aValue);
+  
   return NS_OK;
 }
 
-NS_IMETHODIMP
-nsAnonymousContentList::GetInsertionPointAt(PRUint32 i, nsIXBLInsertionPoint** aResult)
+// helper routine for looking up an existing entry. Note that the
+// return result is NOT addreffed
+static nsISupports*
+LookupObject(PLDHashTable& table, nsISupports* aKey)
 {
-  *aResult = nsnull;
-  if (mElements)
-    *aResult = (nsIXBLInsertionPoint*)mElements->ElementAt(i);
-  return NS_OK;
+  ObjectEntry *entry =
+    NS_STATIC_CAST(ObjectEntry*,
+                   PL_DHashTableOperate(&table, aKey, PL_DHASH_LOOKUP));
+
+  if (PL_DHASH_ENTRY_IS_BUSY(entry))
+    return entry->GetValue();
+
+  return nsnull;
 }
 
+inline void
+RemoveObjectEntry(PLDHashTable& table, nsISupports* aKey)
+{
+  PL_DHashTableOperate(&table, aKey, PL_DHASH_REMOVE);
+}
+
+static nsresult
+SetOrRemoveObject(PLDHashTable& table, nsISupports* aKey, nsISupports* aValue)
+{
+  // lazily create the table, but don't create it just to remove a
+  // non-existent element!
+  if (!table.ops && aValue)
+    PL_DHashTableInit(&table, &ObjectTableOps, nsnull,
+                      sizeof(ObjectEntry), 16);
+
+  if (aValue)
+    return AddObjectEntry(table, aKey, aValue);
+
+  // no value, so remove the key from the table
+  if (table.ops)
+    RemoveObjectEntry(table, aKey);
+  return NS_OK;
+}
 
 ////////////////////////////////////////////////////////////////////////
 
@@ -242,11 +337,11 @@ public:
   NS_IMETHOD ResolveTag(nsIContent* aContent, PRInt32* aNameSpaceID, nsIAtom** aResult);
 
   NS_IMETHOD GetContentListFor(nsIContent* aContent, nsIDOMNodeList** aResult);
-  NS_IMETHOD SetContentListFor(nsIContent* aContent, nsISupportsArray* aList);
+  NS_IMETHOD SetContentListFor(nsIContent* aContent, nsVoidArray* aList);
   NS_IMETHOD HasContentListFor(nsIContent* aContent, PRBool* aResult);
 
   NS_IMETHOD GetAnonymousNodesFor(nsIContent* aContent, nsIDOMNodeList** aResult);
-  NS_IMETHOD SetAnonymousNodesFor(nsIContent* aContent, nsISupportsArray* aList);
+  NS_IMETHOD SetAnonymousNodesFor(nsIContent* aContent, nsVoidArray* aList);
 
   NS_IMETHOD GetXBLChildNodesFor(nsIContent* aContent, nsIDOMNodeList** aResult);
 
@@ -260,7 +355,6 @@ public:
                                  nsIDocument** aResult);
 
   NS_IMETHOD AddToAttachedQueue(nsIXBLBinding* aBinding);
-  NS_IMETHOD AddHandlerToAttachedQueue(nsIXBLBindingAttachedHandler* aHandler);
   NS_IMETHOD ClearAttachedQueue();
   NS_IMETHOD ProcessAttachedQueue();
 
@@ -286,118 +380,73 @@ public:
   NS_IMETHOD WalkRules(nsIStyleSet* aStyleSet, 
                        nsISupportsArrayEnumFunc aFunc,
                        RuleProcessorData* aData);
-  NS_IMETHOD AttributeAffectsStyle(nsISupportsArrayEnumFunc aFunc,
-                                   void* aData, nsIContent* aContent,
-                                   PRBool* aAffects);
 
   // nsIDocumentObserver
-  NS_IMETHOD BeginUpdate(nsIDocument* aDocument) { return NS_OK; }
-  NS_IMETHOD EndUpdate(nsIDocument* aDocument) { return NS_OK; }
-  NS_IMETHOD BeginLoad(nsIDocument* aDocument) { return NS_OK; }
-  NS_IMETHOD EndLoad(nsIDocument* aDocument) { return NS_OK; }
-  NS_IMETHOD BeginReflow(nsIDocument* aDocument,
-			                   nsIPresShell* aShell) { return NS_OK; }
-  NS_IMETHOD EndReflow(nsIDocument* aDocument,
-		                   nsIPresShell* aShell) { return NS_OK; } 
-  NS_IMETHOD ContentChanged(nsIDocument* aDoc, 
-                            nsIContent* aContent,
-                            nsISupports* aSubContent) { return NS_OK; }
-  NS_IMETHOD ContentStatesChanged(nsIDocument* aDocument,
-                                  nsIContent* aContent1,
-                                  nsIContent* aContent2,
-                                  PRInt32 aStateMask) { return NS_OK; }
-  NS_IMETHOD AttributeChanged(nsIDocument* aDocument,
-                              nsIContent*  aContent,
-                              PRInt32      aNameSpaceID,
-                              nsIAtom*     aAttribute,
-                              PRInt32      aModType, 
-                              nsChangeHint aHint) { return NS_OK; }
-  NS_IMETHOD ContentAppended(nsIDocument* aDocument,
-			                       nsIContent* aContainer,
-                             PRInt32     aNewIndexInContainer);
-  NS_IMETHOD ContentInserted(nsIDocument* aDocument,
-			                       nsIContent* aContainer,
-                             nsIContent* aChild,
-                             PRInt32 aIndexInContainer);
-  NS_IMETHOD ContentReplaced(nsIDocument* aDocument,
-			                       nsIContent* aContainer,
-                             nsIContent* aOldChild,
-                             nsIContent* aNewChild,
-                             PRInt32 aIndexInContainer) { return NS_OK; }
-  NS_IMETHOD ContentRemoved(nsIDocument* aDocument,
-                            nsIContent* aContainer,
-                            nsIContent* aChild,
-                            PRInt32 aIndexInContainer);
-  NS_IMETHOD StyleSheetAdded(nsIDocument* aDocument,
-                             nsIStyleSheet* aStyleSheet) { return NS_OK; }
-  NS_IMETHOD StyleSheetRemoved(nsIDocument* aDocument,
-                               nsIStyleSheet* aStyleSheet) { return NS_OK; }
-  NS_IMETHOD StyleSheetDisabledStateChanged(nsIDocument* aDocument,
-                                            nsIStyleSheet* aStyleSheet,
-                                            PRBool aDisabled) { return NS_OK; }
-  NS_IMETHOD StyleRuleChanged(nsIDocument* aDocument,
-                              nsIStyleSheet* aStyleSheet,
-                              nsIStyleRule* aStyleRule,
-                              nsChangeHint aHint) { return NS_OK; }
-  NS_IMETHOD StyleRuleAdded(nsIDocument* aDocument,
-                            nsIStyleSheet* aStyleSheet,
-                            nsIStyleRule* aStyleRule) { return NS_OK; }
-  NS_IMETHOD StyleRuleRemoved(nsIDocument* aDocument,
-                              nsIStyleSheet* aStyleSheet,
-                              nsIStyleRule* aStyleRule) { return NS_OK; }
-  NS_IMETHOD DocumentWillBeDestroyed(nsIDocument* aDocument) { return NS_OK; }
+  NS_DECL_NSIDOCUMENTOBSERVER
 
 protected:
+  nsresult GetXBLChildNodesInternal(nsIContent* aContent,
+                                    nsIDOMNodeList** aResult,
+                                    PRBool* aIsAnonymousContentList);
+  nsresult GetAnonymousNodesInternal(nsIContent* aContent,
+                                     nsIDOMNodeList** aResult,
+                                     PRBool* aIsAnonymousContentList);
+
   void GetEnclosingScope(nsIContent* aContent, nsIContent** aParent);
   void GetOutermostStyleScope(nsIContent* aContent, nsIContent** aParent);
 
   void WalkRules(nsISupportsArrayEnumFunc aFunc, RuleProcessorData* aData,
                  nsIContent* aParent, nsIContent* aCurrContent);
 
-  void AttributeAffectsStyle(nsISupportsArrayEnumFunc aFunc, void* aData,
-                             nsIContent* aParent, nsIContent* aCurrContent, PRBool* aAffects);
-
   nsresult GetNestedInsertionPoint(nsIContent* aParent, nsIContent* aChild, nsIContent** aResult);
 
 // MEMBER VARIABLES
 protected: 
-  // A mapping from nsIContent* to the nsIXBLBinding* that is installed on that element.
-  nsSupportsHashtable* mBindingTable;
+  // A mapping from nsIContent* to the nsIXBLBinding* that is
+  // installed on that element.
+  PLDHashTable mBindingTable;
 
-  // A mapping from nsIContent* to an nsIDOMNodeList* (nsAnonymousContentList*).  
-  // This list contains an accurate reflection of our *explicit* children (once intermingled with
+  // A mapping from nsIContent* to an nsIDOMNodeList*
+  // (nsAnonymousContentList*).  This list contains an accurate
+  // reflection of our *explicit* children (once intermingled with
   // insertion points) in the altered DOM.
-  nsSupportsHashtable* mContentListTable;
+  PLDHashTable mContentListTable;
 
-  // A mapping from nsIContent* to an nsIDOMNodeList* (nsAnonymousContentList*).  
-  // This list contains an accurate reflection of our *anonymous* children (if and only if they are
-  // intermingled with insertion points) in the altered DOM.  This table is not used
-  // if no insertion points were defined directly underneath a <content> tag in a
-  // binding.  The NodeList from the <content> is used instead as a performance
-  // optimization.
-  nsSupportsHashtable* mAnonymousNodesTable;
+  // A mapping from nsIContent* to an nsIDOMNodeList*
+  // (nsAnonymousContentList*).  This list contains an accurate
+  // reflection of our *anonymous* children (if and only if they are
+  // intermingled with insertion points) in the altered DOM.  This
+  // table is not used if no insertion points were defined directly
+  // underneath a <content> tag in a binding.  The NodeList from the
+  // <content> is used instead as a performance optimization.
+  PLDHashTable mAnonymousNodesTable;
 
-  // A mapping from nsIContent* to nsIContent*.  The insertion parent is our one true
-  // parent in the transformed DOM.  This gives us a more-or-less O(1) way of obtaining
-  // our transformed parent.
-  nsSupportsHashtable* mInsertionParentTable;
+  // A mapping from nsIContent* to nsIContent*.  The insertion parent
+  // is our one true parent in the transformed DOM.  This gives us a
+  // more-or-less O(1) way of obtaining our transformed parent.
+  PLDHashTable mInsertionParentTable;
 
-  // A mapping from nsIContent* to nsIXPWrappedJS* (an XPConnect wrapper for JS objects).
-  // For XBL bindings that implement XPIDL interfaces, and that get referred to from C++,
-  // this table caches the XPConnect wrapper for the binding.  By caching it, I control
-  // its lifetime, and I prevent a re-wrap of the same script object (in the case where
-  // multiple bindings in an XBL inheritance chain both implement an XPIDL interface).
-  nsSupportsHashtable* mWrapperTable;
+  // A mapping from nsIContent* to nsIXPWrappedJS* (an XPConnect
+  // wrapper for JS objects).  For XBL bindings that implement XPIDL
+  // interfaces, and that get referred to from C++, this table caches
+  // the XPConnect wrapper for the binding.  By caching it, I control
+  // its lifetime, and I prevent a re-wrap of the same script object
+  // (in the case where multiple bindings in an XBL inheritance chain
+  // both implement an XPIDL interface).
+  PLDHashTable mWrapperTable;
 
-  // A mapping from nsIDocument* to nsIXBLDocumentInfo*.  This table is the cache of
-  // all binding documents that have been loaded by a given bound document.
-  nsSupportsHashtable* mDocumentTable;
+  // A mapping from a URL (a string) to nsIXBLDocumentInfo*.  This table
+  // is the cache of all binding documents that have been loaded by a
+  // given bound document.
+  StringToObjectTable mDocumentTable;
 
-  // The currently loading binding docs.  If they're in this table, they have not yet
-  // finished loading.
-  nsSupportsHashtable* mLoadingDocTable;
+  // A mapping from a URL (a string) to a nsIStreamListener. This
+  // table is the currently loading binding docs.  If they're in this
+  // table, they have not yet finished loading.
+  StringToObjectTable mLoadingDocTable;
 
-  // A queue of binding attached event handlers that are awaiting execution.
+  // A queue of binding attached event handlers that are awaiting
+  // execution.
   nsCOMPtr<nsISupportsArray> mAttachedQueue;
 };
 
@@ -411,78 +460,68 @@ NS_IMPL_ISUPPORTS3(nsBindingManager, nsIBindingManager, nsIStyleRuleSupplier, ns
 // Constructors/Destructors
 nsBindingManager::nsBindingManager(void)
 {
-  NS_INIT_ISUPPORTS();
 
-  mBindingTable = nsnull;
-  mContentListTable = nsnull;
-  mAnonymousNodesTable = nsnull;
-  mInsertionParentTable = nsnull;
-  mWrapperTable = nsnull;
-  mDocumentTable = nsnull;
-  mLoadingDocTable = nsnull;
+  mBindingTable.ops = nsnull;
+  mContentListTable.ops = nsnull;
+  mAnonymousNodesTable.ops = nsnull;
+  mInsertionParentTable.ops = nsnull;
+  mWrapperTable.ops = nsnull;
 
   mAttachedQueue = nsnull;
 }
 
 nsBindingManager::~nsBindingManager(void)
 {
-  delete mBindingTable;
-  delete mContentListTable;
-  delete mAnonymousNodesTable;
-  delete mInsertionParentTable;
-  delete mWrapperTable;
-  delete mDocumentTable;
-  delete mLoadingDocTable;
+  if (mBindingTable.ops)
+    PL_DHashTableFinish(&mBindingTable);
+  if (mContentListTable.ops)
+    PL_DHashTableFinish(&mContentListTable);
+  if (mAnonymousNodesTable.ops)
+    PL_DHashTableFinish(&mAnonymousNodesTable);
+  if (mInsertionParentTable.ops)
+    PL_DHashTableFinish(&mInsertionParentTable);
+  if (mWrapperTable.ops)
+    PL_DHashTableFinish(&mWrapperTable);
 }
 
 NS_IMETHODIMP
 nsBindingManager::GetBinding(nsIContent* aContent, nsIXBLBinding** aResult) 
-{ 
-  if (mBindingTable) {
-    nsISupportsKey key(aContent);
-    *aResult = NS_STATIC_CAST(nsIXBLBinding*, mBindingTable->Get(&key));
+{
+  if (mBindingTable.ops) {
+    *aResult = NS_STATIC_CAST(nsIXBLBinding*,
+                              LookupObject(mBindingTable, aContent));
+    NS_IF_ADDREF(*aResult);
   }
   else {
     *aResult = nsnull;
   }
-
   return NS_OK;
 }
 
 NS_IMETHODIMP
 nsBindingManager::SetBinding(nsIContent* aContent, nsIXBLBinding* aBinding)
 {
-  if (!mBindingTable)
-    mBindingTable = new nsSupportsHashtable;
-
-  nsISupportsKey key(aContent);
-
-  nsCOMPtr<nsISupports> old = getter_AddRefs(mBindingTable->Get(&key));
-  if (old && aBinding)
-    NS_ERROR("Binding already installed!");
-
-  if (aBinding) {
-    mBindingTable->Put(&key, aBinding);
-  }
-  else {
-    mBindingTable->Remove(&key);
-
-    // The death of the bindings means the death of the JS wrapper, and the flushing
-    // of our explicit and anonymous insertion point lists.
+  nsresult rv =
+    SetOrRemoveObject(mBindingTable, aContent, aBinding);
+  if (!aBinding) {
+    // The death of the bindings means the death of the JS wrapper,
+    // and the flushing of our explicit and anonymous insertion point
+    // lists.
     SetWrappedJS(aContent, nsnull);
     SetContentListFor(aContent, nsnull);
     SetAnonymousNodesFor(aContent, nsnull);
   }
 
-  return NS_OK;
+  return rv;
 }
 
 NS_IMETHODIMP
 nsBindingManager::GetInsertionParent(nsIContent* aContent, nsIContent** aResult) 
 { 
-  if (mInsertionParentTable) {
-    nsISupportsKey key(aContent);
-    *aResult = NS_STATIC_CAST(nsIContent*, mInsertionParentTable->Get(&key));
+  if (mInsertionParentTable.ops) {
+    *aResult = NS_STATIC_CAST(nsIContent*,
+                              LookupObject(mInsertionParentTable, aContent));
+    NS_IF_ADDREF(*aResult);
   }
   else {
     *aResult = nsnull;
@@ -494,25 +533,15 @@ nsBindingManager::GetInsertionParent(nsIContent* aContent, nsIContent** aResult)
 NS_IMETHODIMP
 nsBindingManager::SetInsertionParent(nsIContent* aContent, nsIContent* aParent)
 {
-  if (!mInsertionParentTable)
-    mInsertionParentTable = new nsSupportsHashtable;
-
-  nsISupportsKey key(aContent);
-  if (aParent) {
-    mInsertionParentTable->Put(&key, aParent);
-  }
-  else
-    mInsertionParentTable->Remove(&key);
-
-  return NS_OK;
+  return SetOrRemoveObject(mInsertionParentTable, aContent, aParent);
 }
 
 NS_IMETHODIMP
 nsBindingManager::GetWrappedJS(nsIContent* aContent, nsIXPConnectWrappedJS** aResult) 
 { 
-  if (mWrapperTable) {
-    nsISupportsKey key(aContent);
-    *aResult = NS_STATIC_CAST(nsIXPConnectWrappedJS*, mWrapperTable->Get(&key));
+  if (mWrapperTable.ops) {
+    *aResult = NS_STATIC_CAST(nsIXPConnectWrappedJS*, LookupObject(mWrapperTable, aContent));
+    NS_IF_ADDREF(*aResult);
   }
   else {
     *aResult = nsnull;
@@ -524,17 +553,7 @@ nsBindingManager::GetWrappedJS(nsIContent* aContent, nsIXPConnectWrappedJS** aRe
 NS_IMETHODIMP
 nsBindingManager::SetWrappedJS(nsIContent* aContent, nsIXPConnectWrappedJS* aWrappedJS)
 {
-  if (!mWrapperTable)
-    mWrapperTable = new nsSupportsHashtable;
-
-  nsISupportsKey key(aContent);
-  if (aWrappedJS) {
-    mWrapperTable->Put(&key, aWrappedJS);
-  }
-  else
-    mWrapperTable->Remove(&key);
-
-  return NS_OK;
+  return SetOrRemoveObject(mWrapperTable, aContent, aWrappedJS);
 }
 
 NS_IMETHODIMP
@@ -619,9 +638,10 @@ nsBindingManager::GetContentListFor(nsIContent* aContent, nsIDOMNodeList** aResu
   // Locate the primary binding and get its node list of anonymous children.
   *aResult = nsnull;
   
-  if (mContentListTable) {
-    nsISupportsKey key(aContent);
-    *aResult = NS_STATIC_CAST(nsIDOMNodeList*, mContentListTable->Get(&key));
+  if (mContentListTable.ops) {
+    *aResult = NS_STATIC_CAST(nsIDOMNodeList*,
+                              LookupObject(mContentListTable, aContent));
+    NS_IF_ADDREF(*aResult);
   }
   
   if (!*aResult) {
@@ -633,89 +653,85 @@ nsBindingManager::GetContentListFor(nsIContent* aContent, nsIDOMNodeList** aResu
 }
 
 NS_IMETHODIMP
-nsBindingManager::SetContentListFor(nsIContent* aContent, nsISupportsArray* aList)
-{ 
-  if (!mContentListTable) {
-    if (!aList) 
-      return NS_OK;
-    mContentListTable = new nsSupportsHashtable;
-  }
-
-  nsISupportsKey key(aContent);
+nsBindingManager::SetContentListFor(nsIContent* aContent, nsVoidArray* aList)
+{
+  nsIDOMNodeList* contentList = nsnull;
   if (aList) {
-    nsAnonymousContentList* contentList = new nsAnonymousContentList(aList);
-    mContentListTable->Put(&key, (nsIDOMNodeList*)contentList);
+    contentList = new nsAnonymousContentList(aList);
+    if (!contentList) return NS_ERROR_OUT_OF_MEMORY;
   }
-  else
-    mContentListTable->Remove(&key);
 
-  return NS_OK;
+  return SetOrRemoveObject(mContentListTable, aContent, contentList);
 }
 
 NS_IMETHODIMP
 nsBindingManager::HasContentListFor(nsIContent* aContent, PRBool* aResult)
 {
   *aResult = PR_FALSE;
-  if (mContentListTable) {
-    nsISupportsKey key(aContent);
-    nsCOMPtr<nsIDOMNodeList> list =
-      NS_STATIC_CAST(nsIDOMNodeList*, mContentListTable->Get(&key));
-
+  if (mContentListTable.ops) {
+    nsISupports* list = LookupObject(mContentListTable, aContent);
     *aResult = (list != nsnull);
   }
 
   return NS_OK;
 }
 
-NS_IMETHODIMP
-nsBindingManager::GetAnonymousNodesFor(nsIContent* aContent, nsIDOMNodeList** aResult)
+nsresult
+nsBindingManager::GetAnonymousNodesInternal(nsIContent* aContent,
+                                            nsIDOMNodeList** aResult,
+                                            PRBool* aIsAnonymousContentList)
 { 
   // Locate the primary binding and get its node list of anonymous children.
   *aResult = nsnull;
-  if (mAnonymousNodesTable) {
-    nsISupportsKey key(aContent);
-    *aResult = NS_STATIC_CAST(nsIDOMNodeList*, mAnonymousNodesTable->Get(&key));
+  if (mAnonymousNodesTable.ops) {
+    *aResult = NS_STATIC_CAST(nsIDOMNodeList*,
+                              LookupObject(mAnonymousNodesTable, aContent));
+    NS_IF_ADDREF(*aResult);
   }
 
   if (!*aResult) {
+    *aIsAnonymousContentList = PR_FALSE;
     nsCOMPtr<nsIXBLBinding> binding;
     GetBinding(aContent, getter_AddRefs(binding));
     if (binding)
       return binding->GetAnonymousNodes(aResult);
-  }
+  } else
+    *aIsAnonymousContentList = PR_TRUE;
 
   return NS_OK;
 }
 
 NS_IMETHODIMP
-nsBindingManager::SetAnonymousNodesFor(nsIContent* aContent, nsISupportsArray* aList)
-{ 
-  if (!mAnonymousNodesTable) {
-    if (!aList) 
-      return NS_OK;
-    mAnonymousNodesTable = new nsSupportsHashtable;
-  }
+nsBindingManager::GetAnonymousNodesFor(nsIContent* aContent,
+                                       nsIDOMNodeList** aResult)
+{
+  PRBool dummy;
+  return GetAnonymousNodesInternal(aContent, aResult, &dummy);
+}
 
-  nsISupportsKey key(aContent);
+NS_IMETHODIMP
+nsBindingManager::SetAnonymousNodesFor(nsIContent* aContent, nsVoidArray* aList)
+{
+  nsIDOMNodeList* contentList = nsnull;
   if (aList) {
-    nsAnonymousContentList* contentList = new nsAnonymousContentList(aList);
-    mAnonymousNodesTable->Put(&key, (nsIDOMNodeList*)contentList);
+    contentList = new nsAnonymousContentList(aList);
+    if (!contentList) return NS_ERROR_OUT_OF_MEMORY;
   }
-  else
-    mAnonymousNodesTable->Remove(&key);
-
-  return NS_OK;
+  
+  return SetOrRemoveObject(mAnonymousNodesTable, aContent, contentList);
 }
 
-NS_IMETHODIMP
-nsBindingManager::GetXBLChildNodesFor(nsIContent* aContent, nsIDOMNodeList** aResult)
+nsresult
+nsBindingManager::GetXBLChildNodesInternal(nsIContent* aContent,
+                                           nsIDOMNodeList** aResult,
+                                           PRBool* aIsAnonymousContentList)
 {
   *aResult = nsnull;
 
   PRUint32 length;
 
   // Retrieve the anonymous content that we should build.
-  GetAnonymousNodesFor(aContent, aResult);
+  GetAnonymousNodesInternal(aContent, aResult, aIsAnonymousContentList);
   if (*aResult) {
     (*aResult)->GetLength(&length);
     if (length == 0)
@@ -726,12 +742,22 @@ nsBindingManager::GetXBLChildNodesFor(nsIContent* aContent, nsIDOMNodeList** aRe
   // If we don't have any anonymous kids, we next check to see if we have 
   // insertion points.
   if (! *aResult) {
-    if (mContentListTable) {
-      nsISupportsKey key(aContent);
-      *aResult = NS_STATIC_CAST(nsIDOMNodeList*, mContentListTable->Get(&key));
+    if (mContentListTable.ops) {
+      *aResult = NS_STATIC_CAST(nsIDOMNodeList*,
+                                LookupObject(mContentListTable, aContent));
+      NS_IF_ADDREF(*aResult);
+      *aIsAnonymousContentList = PR_TRUE;
     }
   }
+
   return NS_OK;
+}
+
+NS_IMETHODIMP
+nsBindingManager::GetXBLChildNodesFor(nsIContent* aContent, nsIDOMNodeList** aResult)
+{
+  PRBool dummy;
+  return GetXBLChildNodesInternal(aContent, aResult, &dummy);
 }
 
 NS_IMETHODIMP
@@ -903,17 +929,6 @@ nsBindingManager::AddToAttachedQueue(nsIXBLBinding* aBinding)
 }
 
 NS_IMETHODIMP
-nsBindingManager::AddHandlerToAttachedQueue(nsIXBLBindingAttachedHandler* aBinding)
-{
-  if (!mAttachedQueue)
-    NS_NewISupportsArray(getter_AddRefs(mAttachedQueue)); // This call addrefs the array.
-
-  mAttachedQueue->AppendElement(aBinding);
-
-  return NS_OK;
-}
-
-NS_IMETHODIMP
 nsBindingManager::ClearAttachedQueue()
 {
   if (mAttachedQueue)
@@ -937,22 +952,19 @@ nsBindingManager::ProcessAttachedQueue()
     nsCOMPtr<nsIXBLBinding> binding(do_QueryInterface(supp));
     if (binding)
       binding->ExecuteAttachedHandler();
-    else {
-      nsCOMPtr<nsIXBLBindingAttachedHandler> handler(do_QueryInterface(supp));
-      if (handler)
-        handler->OnBindingAttached();
-    }
   }
 
   ClearAttachedQueue();
   return NS_OK;
 }
 
-PRBool PR_CALLBACK ExecuteDetachedHandler(nsHashKey* aKey, void* aData, void* aClosure)
+PR_STATIC_CALLBACK(PLDHashOperator)
+ExecuteDetachedHandler(PLDHashTable* aTable, PLDHashEntryHdr* aHdr, PRUint32 aNumber, void* aClosure)
 {
-  nsIXBLBinding* binding = (nsIXBLBinding*)aData;
+  ObjectEntry* entry = NS_STATIC_CAST(ObjectEntry*, aHdr);
+  nsIXBLBinding* binding = NS_STATIC_CAST(nsIXBLBinding*, entry->GetValue());
   binding->ExecuteDetachedHandler();
-  return PR_TRUE;
+  return PL_DHASH_NEXT;
 }
 
 
@@ -960,16 +972,16 @@ NS_IMETHODIMP
 nsBindingManager::ExecuteDetachedHandlers()
 {
   // Walk our hashtable of bindings.
-  if (mBindingTable)
-    mBindingTable->Enumerate(ExecuteDetachedHandler);
+  if (mBindingTable.ops)
+    PL_DHashTableEnumerate(&mBindingTable, ExecuteDetachedHandler, nsnull);
   return NS_OK;
 }
 
 NS_IMETHODIMP
 nsBindingManager::PutXBLDocumentInfo(nsIXBLDocumentInfo* aDocumentInfo)
 {
-  if (!mDocumentTable)
-    mDocumentTable = new nsSupportsHashtable();
+  if (!mDocumentTable.mHashTable.ops)
+    mDocumentTable.Init(16);
 
   nsCOMPtr<nsIDocument> doc;
   aDocumentInfo->GetDocument(getter_AddRefs(doc));
@@ -978,16 +990,18 @@ nsBindingManager::PutXBLDocumentInfo(nsIXBLDocumentInfo* aDocumentInfo)
   doc->GetDocumentURL(getter_AddRefs(uri));
   nsCAutoString str;
   uri->GetSpec(str);
-  
-  nsCStringKey key(str.get());
-  mDocumentTable->Put(&key, aDocumentInfo);
+
+  StringToObjectEntry* entry = mDocumentTable.AddEntry(str);
+  if (!entry) return NS_ERROR_OUT_OF_MEMORY;
+
+  entry->SetValue(aDocumentInfo);
   return NS_OK;
 }
 
 NS_IMETHODIMP
 nsBindingManager::RemoveXBLDocumentInfo(nsIXBLDocumentInfo* aDocumentInfo)
 {
-  if (!mDocumentTable)
+  if (!mDocumentTable.mHashTable.ops)
     return NS_OK;
 
   nsCOMPtr<nsIDocument> doc;
@@ -997,9 +1011,8 @@ nsBindingManager::RemoveXBLDocumentInfo(nsIXBLDocumentInfo* aDocumentInfo)
   doc->GetDocumentURL(getter_AddRefs(uri));
   nsCAutoString str;
   uri->GetSpec(str);
-  
-  nsCStringKey key(str.get());
-  mDocumentTable->Remove(&key);
+
+  mDocumentTable.Remove(str);
   return NS_OK;
 }
 
@@ -1007,23 +1020,26 @@ NS_IMETHODIMP
 nsBindingManager::GetXBLDocumentInfo(const nsCString& aURL, nsIXBLDocumentInfo** aResult)
 {
   *aResult = nsnull;
-  if (!mDocumentTable)
+  if (!mDocumentTable.mHashTable.ops)
     return NS_OK;
 
-  nsCStringKey key(aURL);
-  *aResult = NS_STATIC_CAST(nsIXBLDocumentInfo*, mDocumentTable->Get(&key)); // Addref happens here.
-
+  StringToObjectEntry *entry = mDocumentTable.GetEntry(aURL);
+  if (entry) {
+    *aResult = NS_STATIC_CAST(nsIXBLDocumentInfo*, entry->GetValue());
+    NS_IF_ADDREF(*aResult);
+  }
   return NS_OK;
 }
 
 NS_IMETHODIMP
 nsBindingManager::PutLoadingDocListener(const nsCString& aURL, nsIStreamListener* aListener)
 {
-  if (!mLoadingDocTable)
-    mLoadingDocTable = new nsSupportsHashtable();
+  if (!mLoadingDocTable.mHashTable.ops)
+    mLoadingDocTable.Init(16);
 
-  nsCStringKey key(aURL);
-  mLoadingDocTable->Put(&key, aListener);
+  StringToObjectEntry* entry = mLoadingDocTable.AddEntry(aURL);
+  if (!entry) return NS_ERROR_OUT_OF_MEMORY;
+  entry->SetValue(aListener);
 
   return NS_OK;
 }
@@ -1032,33 +1048,38 @@ NS_IMETHODIMP
 nsBindingManager::GetLoadingDocListener(const nsCString& aURL, nsIStreamListener** aResult)
 {
   *aResult = nsnull;
-  if (!mLoadingDocTable)
+  if (!mLoadingDocTable.mHashTable.ops)
     return NS_OK;
 
-  nsCStringKey key(aURL);
-  *aResult = NS_STATIC_CAST(nsIStreamListener*, mLoadingDocTable->Get(&key)); // Addref happens here.
+  StringToObjectEntry* entry = mLoadingDocTable.GetEntry(aURL);
+  if (entry) {
+    *aResult = NS_STATIC_CAST(nsIStreamListener*, entry->GetValue());
+    NS_IF_ADDREF(*aResult);
+  }
   return NS_OK;
 }
 
 NS_IMETHODIMP
 nsBindingManager::RemoveLoadingDocListener(const nsCString& aURL)
 {
-  if (!mLoadingDocTable)
+  if (!mLoadingDocTable.mHashTable.ops)
     return NS_OK;
 
-  nsCStringKey key(aURL);
-  mLoadingDocTable->Remove(&key);
+  mLoadingDocTable.Remove(aURL);
 
   return NS_OK;
 }
 
-PRBool PR_CALLBACK MarkForDeath(nsHashKey* aKey, void* aData, void* aClosure)
+PR_STATIC_CALLBACK(PLDHashOperator)
+MarkForDeath(PLDHashTable* aTable, PLDHashEntryHdr* aHdr, PRUint32 aNumber, void* aClosure)
 {
+  ObjectEntry* entry = NS_STATIC_CAST(ObjectEntry*, aHdr);
+  nsIXBLBinding* binding = NS_STATIC_CAST(nsIXBLBinding*, entry->GetValue());
+  
   PRBool marked = PR_FALSE;
-  nsIXBLBinding* binding = (nsIXBLBinding*)aData;
   binding->MarkedForDeath(&marked);
   if (marked)
-    return PR_TRUE; // Already marked for death.
+    return PL_DHASH_NEXT; // Already marked for death.
 
   nsCAutoString uriStr;
   binding->GetDocURI(uriStr);
@@ -1070,14 +1091,14 @@ PRBool PR_CALLBACK MarkForDeath(nsHashKey* aKey, void* aData, void* aClosure)
     if (!strncmp(path.get(), "/skin", 5))
       binding->MarkForDeath();
   }
-  return PR_TRUE;
+  return PL_DHASH_NEXT;
 }
 
 NS_IMETHODIMP
 nsBindingManager::FlushSkinBindings()
 {
-  if (mBindingTable)
-    mBindingTable->Enumerate(MarkForDeath);
+  if (mBindingTable.ops)
+    PL_DHashTableEnumerate(&mBindingTable, MarkForDeath, nsnull);
   return NS_OK;
 }
 
@@ -1102,6 +1123,8 @@ nsBindingManager::GetBindingImplementation(nsIContent* aContent, REFNSIID aIID,
   GetBinding(aContent, getter_AddRefs(binding));
   if (binding) {
     PRBool supportsInterface;
+    // The binding should not be asked for nsISupports
+    NS_ASSERTION(!aIID.Equals(NS_GET_IID(nsISupports)), "Asking a binding for nsISupports");
     binding->ImplementsInterface(aIID, &supportsInterface);
     if (supportsInterface) {
       nsCOMPtr<nsIXPConnectWrappedJS> wrappedJS;
@@ -1331,47 +1354,6 @@ nsBindingManager::WalkRules(nsIStyleSet* aStyleSet,
   return NS_OK;
 }
 
-void
-nsBindingManager::AttributeAffectsStyle(nsISupportsArrayEnumFunc aFunc, void* aData,
-                                        nsIContent* aParent, nsIContent* aCurrContent, PRBool* aAffects)
-{    
-  nsCOMPtr<nsIXBLBinding> binding;
-  GetBinding(aCurrContent, getter_AddRefs(binding));
-  if (binding) {
-    binding->AttributeAffectsStyle(aFunc, aData, aAffects);
-  }
-
-  if (*aAffects)
-    return;
-
-  if (aParent != aCurrContent) {
-    nsCOMPtr<nsIContent> par;
-    GetEnclosingScope(aCurrContent, getter_AddRefs(par));
-    if (par)
-      AttributeAffectsStyle(aFunc, aData, aParent, par, aAffects);
-  }
-}
-
-
-NS_IMETHODIMP
-nsBindingManager::AttributeAffectsStyle(nsISupportsArrayEnumFunc aFunc, void* aData, 
-                                        nsIContent* aContent, PRBool* aAffects)
-{
-  *aAffects = PR_FALSE;
-  if (!aContent)
-    return NS_OK;
-
-  nsCOMPtr<nsIContent> parent;
-  GetOutermostStyleScope(aContent, getter_AddRefs(parent));
-
-  AttributeAffectsStyle(aFunc, aData, parent, aContent, aAffects);
-
-  if (*aAffects)
-    return NS_OK;
-
-  return NS_OK;
-}
-
 NS_IMETHODIMP
 nsBindingManager::ShouldBuildChildFrames(nsIContent* aContent, PRBool* aResult)
 {
@@ -1414,13 +1396,38 @@ nsBindingManager::GetNestedInsertionPoint(nsIContent* aParent, nsIContent* aChil
   return NS_OK;
 }
 
+NS_IMPL_NSIDOCUMENTOBSERVER_CORE_STUB(nsBindingManager)
+NS_IMPL_NSIDOCUMENTOBSERVER_LOAD_STUB(nsBindingManager)
+NS_IMPL_NSIDOCUMENTOBSERVER_REFLOW_STUB(nsBindingManager)
+NS_IMPL_NSIDOCUMENTOBSERVER_STATE_STUB(nsBindingManager)
+NS_IMPL_NSIDOCUMENTOBSERVER_STYLE_STUB(nsBindingManager)
+
+NS_IMETHODIMP
+nsBindingManager::ContentChanged(nsIDocument* aDoc, 
+                            nsIContent* aContent,
+                            nsISupports* aSubContent)
+{
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsBindingManager::AttributeChanged(nsIDocument* aDocument,
+                              nsIContent*  aContent,
+                              PRInt32      aNameSpaceID,
+                              nsIAtom*     aAttribute,
+                              PRInt32      aModType, 
+                              nsChangeHint aHint)
+{
+  return NS_OK;
+}
+
 NS_IMETHODIMP
 nsBindingManager::ContentAppended(nsIDocument* aDocument,
 			                            nsIContent* aContainer,
                                   PRInt32     aNewIndexInContainer)
 {
   // XXX This is hacked and not quite correct. See below.
-  if (aNewIndexInContainer == -1 || !mContentListTable)
+  if (aNewIndexInContainer == -1 || !mContentListTable.ops)
     // It's anonymous.
     return NS_OK;
 
@@ -1434,30 +1441,28 @@ nsBindingManager::ContentAppended(nsIDocument* aDocument,
 
   if (ins) {
     nsCOMPtr<nsIDOMNodeList> nodeList;
-    GetXBLChildNodesFor(ins, getter_AddRefs(nodeList));
+    PRBool isAnonymousContentList;
+    GetXBLChildNodesInternal(ins, getter_AddRefs(nodeList),
+                             &isAnonymousContentList);
 
-    if (nodeList) {
-      nsCOMPtr<nsIAnonymousContentList> contentList(do_QueryInterface(nodeList));
-      if (contentList) {
-        // Find a non-pseudo-insertion point and just jam ourselves in.
-        // This is not 100% correct.  Hack city, baby.
-        PRUint32 count;
-        contentList->GetInsertionPointCount(&count);
-        for (PRUint32 i =0; i < count; i++) {
-          nsCOMPtr<nsIXBLInsertionPoint> point;
-          contentList->GetInsertionPointAt(i, getter_AddRefs(point));
-          PRInt32 index;
-          point->GetInsertionIndex(&index);
-          if (index != -1) {
-            // We're real. Jam all the kids in.
-            // XXX Check the filters to find the correct points.
-            for (PRInt32 j = aNewIndexInContainer; j < childCount; j++) {
-              aContainer->ChildAt(j, *getter_AddRefs(child));
-              point->AddChild(child);
-              SetInsertionParent(child, ins);
-            }
-            break;
+    if (nodeList && isAnonymousContentList) {
+      // Find a non-pseudo-insertion point and just jam ourselves in.
+      // This is not 100% correct.  Hack city, baby.
+      nsAnonymousContentList* contentList = NS_STATIC_CAST(nsAnonymousContentList*, NS_STATIC_CAST(nsIDOMNodeList*, nodeList.get()));
+
+      PRInt32 count = contentList->GetInsertionPointCount();
+      for (PRInt32 i = 0; i < count; i++) {
+        nsXBLInsertionPoint* point = contentList->GetInsertionPointAt(i);
+        PRInt32 index = point->GetInsertionIndex();
+        if (index != -1) {
+          // We're real. Jam all the kids in.
+          // XXX Check the filters to find the correct points.
+          for (PRInt32 j = aNewIndexInContainer; j < childCount; j++) {
+            aContainer->ChildAt(j, *getter_AddRefs(child));
+            point->AddChild(child);
+            SetInsertionParent(child, ins);
           }
+          break;
         }
       }
     }
@@ -1468,12 +1473,12 @@ nsBindingManager::ContentAppended(nsIDocument* aDocument,
 
 NS_IMETHODIMP
 nsBindingManager::ContentInserted(nsIDocument* aDocument,
-			                     nsIContent* aContainer,
-                           nsIContent* aChild,
-                           PRInt32 aIndexInContainer)
+                                  nsIContent* aContainer,
+                                  nsIContent* aChild,
+                                  PRInt32 aIndexInContainer)
 {
 // XXX This is hacked just to make menus work again.
-  if (aIndexInContainer == -1 || !mContentListTable)
+  if (aIndexInContainer == -1 || !mContentListTable.ops)
     // It's anonymous.
     return NS_OK;
  
@@ -1482,32 +1487,39 @@ nsBindingManager::ContentInserted(nsIDocument* aDocument,
 
   if (ins) {
     nsCOMPtr<nsIDOMNodeList> nodeList;
-    GetXBLChildNodesFor(ins, getter_AddRefs(nodeList));
+    PRBool isAnonymousContentList;
+    GetXBLChildNodesInternal(ins, getter_AddRefs(nodeList),
+                             &isAnonymousContentList);
 
-    if (nodeList) {
-      nsCOMPtr<nsIAnonymousContentList> contentList(do_QueryInterface(nodeList));
-      if (contentList) {
-        // Find a non-pseudo-insertion point and just jam ourselves in.
-        // This is not 100% correct.  Hack city, baby.
-        PRUint32 count;
-        contentList->GetInsertionPointCount(&count);
-        for (PRUint32 i =0; i < count; i++) {
-          nsCOMPtr<nsIXBLInsertionPoint> point;
-          contentList->GetInsertionPointAt(i, getter_AddRefs(point));
-          PRInt32 index;
-          point->GetInsertionIndex(&index);
-          if (index != -1) {
-            // We're real. Jam the kid in.
-            // XXX Check the filters to find the correct points.
-            point->InsertChildAt(aIndexInContainer, aChild);
-            SetInsertionParent(aChild, ins);
-            break;
-          }
+    if (nodeList && isAnonymousContentList) {
+      // Find a non-pseudo-insertion point and just jam ourselves in.
+      // This is not 100% correct.  Hack city, baby.
+      nsAnonymousContentList* contentList = NS_STATIC_CAST(nsAnonymousContentList*, NS_STATIC_CAST(nsIDOMNodeList*, nodeList.get()));
+
+      PRInt32 count = contentList->GetInsertionPointCount();
+      for (PRInt32 i = 0; i < count; i++) {
+        nsXBLInsertionPoint* point = contentList->GetInsertionPointAt(i);
+        if (point->GetInsertionIndex() != -1) {
+          // We're real. Jam the kid in.
+          // XXX Check the filters to find the correct points.
+          point->InsertChildAt(aIndexInContainer, aChild);
+          SetInsertionParent(aChild, ins);
+          break;
         }
       }
     }
   }
  
+  return NS_OK;
+}
+
+NS_IMETHODIMP
+nsBindingManager::ContentReplaced(nsIDocument* aDocument,
+                                  nsIContent* aContainer,
+                                  nsIContent* aOldChild,
+                                  nsIContent* aNewChild,
+                                  PRInt32 aIndexInContainer)
+{
   return NS_OK;
 }
 
@@ -1518,7 +1530,7 @@ nsBindingManager::ContentRemoved(nsIDocument* aDocument,
                                  PRInt32 aIndexInContainer)
 
 {
-  if (aIndexInContainer == -1 || !mContentListTable)
+  if (aIndexInContainer == -1 || !mContentListTable.ops)
     // It's anonymous.
     return NS_OK;
  
@@ -1527,22 +1539,18 @@ nsBindingManager::ContentRemoved(nsIDocument* aDocument,
 
   if (point) {
     nsCOMPtr<nsIDOMNodeList> nodeList;
-    GetXBLChildNodesFor(point, getter_AddRefs(nodeList));
+    PRBool isAnonymousContentList;
+    GetXBLChildNodesInternal(point, getter_AddRefs(nodeList),
+                             &isAnonymousContentList);
 
-    if (nodeList) {
-      nsCOMPtr<nsIAnonymousContentList> contentList(do_QueryInterface(nodeList));
-      if (contentList) {
-        // Find a non-pseudo-insertion point and remove ourselves.
-        PRUint32 count;
-        contentList->GetInsertionPointCount(&count);
-        for (PRUint32 i =0; i < count; i++) {
-          nsCOMPtr<nsIXBLInsertionPoint> point;
-          contentList->GetInsertionPointAt(i, getter_AddRefs(point));
-          PRInt32 index;
-          point->GetInsertionIndex(&index);
-          if (index != -1) {
-            point->RemoveChild(aChild);
-          }
+    if (nodeList && isAnonymousContentList) {
+      // Find a non-pseudo-insertion point and remove ourselves.
+      nsAnonymousContentList* contentList = NS_STATIC_CAST(nsAnonymousContentList*, NS_STATIC_CAST(nsIDOMNodeList*, nodeList));
+      PRInt32 count = contentList->GetInsertionPointCount();
+      for (PRInt32 i =0; i < count; i++) {
+        nsXBLInsertionPoint* point = contentList->GetInsertionPointAt(i);
+        if (point->GetInsertionIndex() != -1) {
+          point->RemoveChild(aChild);
         }
       }
     }

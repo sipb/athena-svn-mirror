@@ -101,11 +101,6 @@ const nsMsgBiffState nsMsgBiffState_Unknown = 2; // We dunno whether there is ne
    * URL for this folder
    */
   readonly attribute string folderURL;
-
-  /**
-   * should probably move to the server
-   */
-	attribute boolean deleteIsMoveToTrash;
   
   /**
    * should probably move to the server
@@ -148,9 +143,12 @@ const nsMsgBiffState nsMsgBiffState_Unknown = 2; // We dunno whether there is ne
    */
 	readonly attribute nsIMsgFolder rootFolder;
 
-  /* function to get the filter list on folder's server */
-  nsIMsgFilterList getFilterList( in nsIMsgWindow msgWindow);
-  void setFilterList( in nsIMsgFilterList filterList);
+  /**
+   * function to get the filter list on folder's server 
+   * (or in the case of news, the filter list for this newsgroup)'
+   */
+  nsIMsgFilterList getFilterList(in nsIMsgWindow msgWindow);
+  void setFilterList(in nsIMsgFilterList filterList);
   
 	void ForceDBClosed ();
 	void Delete ();
@@ -268,9 +266,10 @@ const nsMsgBiffState nsMsgBiffState_Unknown = 2; // We dunno whether there is ne
 	readonly attribute string relativePathName;
 
   /**
-   * size of this folder (including headers??) on disk
+   * size of this folder on disk (not including .msf file)
+   * for imap, it's the sum of the size of the messages
    */
-	readonly attribute unsigned long sizeOnDisk;
+	attribute unsigned long sizeOnDisk;
 
   /**
    * set the password for this folder (what is this used for?)
@@ -291,8 +290,6 @@ const nsMsgBiffState nsMsgBiffState_Unknown = 2; // We dunno whether there is ne
   
 	attribute unsigned long flags;
 
-  void RecursiveSetDeleteIsMoveToTrash(in boolean bVal);
-
 	nsIMsgFolder getFoldersWithFlag(in unsigned long flags,
                          in unsigned long resultsize, out unsigned long numFolders);
 
@@ -300,7 +297,7 @@ const nsMsgBiffState nsMsgBiffState_Unknown = 2; // We dunno whether there is ne
 
   string getUriForMsg(in nsIMsgDBHdr msgHdr);
 
-	void deleteMessages(in nsISupportsArray message,
+	void deleteMessages(in nsISupportsArray messages,
                       in nsIMsgWindow msgWindow,
                       in boolean deleteStorage, in boolean isMove,
                       in nsIMsgCopyServiceListener listener, in boolean allowUndo);
@@ -379,7 +376,7 @@ const nsMsgBiffState nsMsgBiffState_Unknown = 2; // We dunno whether there is ne
   boolean shouldStoreMsgOffline(in nsMsgKey msgKey);
   boolean hasMsgOffline(in nsMsgKey msgKey);
 
-  nsITransport getOfflineFileTransport(in nsMsgKey msgKey, out PRUint32 offset, out PRUint32 size);
+  nsIInputStream getOfflineFileStream(in nsMsgKey msgKey, out PRUint32 offset, out PRUint32 size);
   readonly attribute nsIOutputStream offlineStoreOutputStream;
   readonly attribute nsIInputStream offlineStoreInputStream;
   void DownloadMessagesForOffline(in nsISupportsArray messages, in nsIMsgWindow window);        
@@ -403,7 +400,7 @@ const nsMsgBiffState nsMsgBiffState_Unknown = 2; // We dunno whether there is ne
 
   attribute nsIMsgRetentionSettings retentionSettings;
   attribute nsIMsgDownloadSettings downloadSettings;
-  void callFilterPlugins();
+  void callFilterPlugins(in nsIMsgWindow aMsgWindow);
   /**
    * used for order in the folder pane, folder pickers, etc.
    */
@@ -422,4 +419,6 @@ const nsMsgBiffState nsMsgBiffState_Unknown = 2; // We dunno whether there is ne
   string getStringProperty(in string propertyName);
   void setStringProperty(in string propertyName, in string propertyValue);
 
+  /* does not persist across sessions */
+  attribute nsMsgKey lastMessageLoaded;
 };

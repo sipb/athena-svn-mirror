@@ -45,6 +45,7 @@ EXPORT_LIBRARY = 1
 SHORT_LIBNAME	= xpconect
 IS_COMPONENT	= 1
 MODULE_NAME	= xpconnect
+GRE_MODULE	= 1
 ifeq ($(OS_ARCH),WINNT)
 LIBRARY_NAME	= xpc$(MOZ_BITS)$(VERSION_NUMBER)
 SHORT_LIBNAME	= xpc$(MOZ_BITS)$(VERSION_NUMBER)
@@ -82,16 +83,21 @@ CPPSRCS		= \
 		xpcwrappednativeinfo.cpp \
 		xpcwrappednativejsops.cpp \
 		xpcwrappednativeproto.cpp \
-		xpcwrappednativescope.cpp
+		xpcwrappednativescope.cpp \
+		$(NULL)
 ifdef XPC_IDISPATCH_SUPPORT
 CPPSRCS +=	XPCDispObject.cpp	\
 		XPCDispInterface.cpp	\
 		XPCDispConvert.cpp \
 		XPCDispTypeInfo.cpp	\
 		XPCDispTearOff.cpp \
-		XPCIDispatchExtension.cpp
+		XPCIDispatchExtension.cpp \
+		XPCDispParams.cpp \
+		XPCDispParamPropJSClass.cpp \
+		XPCIDispatchClassInfo.cpp \
+		nsDispatchSupport.cpp \
+		$(NULL)
 endif
-CPPSRCS	+=	$(NULL)
 
 include $(topsrcdir)/config/config.mk
 
@@ -104,9 +110,11 @@ EXTRA_DSO_LDOPTS += \
 		$(MOZ_JS_LIBS) \
 		$(NULL)
 
+ifdef MOZ_JSLOADER
 SHARED_LIBRARY_LIBS = \
 		$(DIST)/lib/$(LIB_PREFIX)jsloader_s.$(LIB_SUFFIX) \
 		$(NULL)
+endif
 
 include $(topsrcdir)/config/rules.mk
 
@@ -119,11 +127,18 @@ endif
 
 ifdef XPC_IDISPATCH_SUPPORT
 DEFINES		+= -DXPC_IDISPATCH_SUPPORT
+ifdef XPC_COMOBJECT
+DEFINES		+= -DXPC_COMOBJECT
+endif
+
 endif
 
 ifeq ($(OS_ARCH),WINNT)
+ifndef GNU_CXX
 # use pre-compiled headers
 CXXFLAGS	+= -YX -Fp$(LIBRARY_NAME).pch
 # precompiled headers require write access to .pch which breaks -j builds
 .NOTPARALLEL::
 endif
+endif
+

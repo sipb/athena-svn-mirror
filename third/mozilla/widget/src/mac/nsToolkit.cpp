@@ -114,7 +114,10 @@ void nsMacNSPREventQueueHandler::StartPumping()
 {
   ++mRefCnt;
   NS_LOG_ADDREF(this, mRefCnt, "nsMacNSPREventQueueHandler", sizeof(*this));
+  
+#if !TARGET_CARBON
   StartRepeating();
+#endif
 }
 
 //-------------------------------------------------------------------------
@@ -126,7 +129,9 @@ PRBool nsMacNSPREventQueueHandler::StopPumping()
     --mRefCnt;
     NS_LOG_RELEASE(this, mRefCnt, "nsMacNSPREventQueueHandler");
     if (mRefCnt == 0) {
+#if !TARGET_CARBON
       StopRepeating();
+#endif
       return PR_TRUE;
     }
   }
@@ -195,7 +200,6 @@ static const char* gQuartzRenderingPref = "browser.quartz.enable";
 //-------------------------------------------------------------------------
 nsToolkit::nsToolkit() : mInited(false)
 {
-  NS_INIT_ISUPPORTS();
   if (gEventQueueHandler == nsnull)
     gEventQueueHandler = new nsMacNSPREventQueueHandler;
 }
@@ -205,8 +209,6 @@ nsToolkit::nsToolkit() : mInited(false)
 //-------------------------------------------------------------------------
 nsToolkit::~nsToolkit()
 { 
-  nsWidgetAtoms::ReleaseAtoms();
-  
   /* StopPumping decrements a refcount on gEventQueueHandler; a prelude toward
      stopping event handling. This is not something you want to do unless you've
      bloody well started event handling and incremented the refcount. That's
@@ -231,7 +233,7 @@ NS_IMETHODIMP nsToolkit::Init(PRThread */*aThread*/)
   if (gEventQueueHandler)
     gEventQueueHandler->StartPumping();
 
-  nsWidgetAtoms::AddRefAtoms();
+  nsWidgetAtoms::RegisterAtoms();
 
   mInited = true;
   

@@ -21,7 +21,7 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- *   David Baron <dbaron@fas.harvard.edu>
+ *   David Baron <dbaron@dbaron.org>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or 
@@ -42,10 +42,11 @@
 #include "nsIFontMetrics.h"
 #include "nsIPresContext.h"
 #include "nsIContent.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsHTMLReflowCommand.h"
 #include "nsHTMLContainerFrame.h"
 #include "nsBlockFrame.h"
+#include "nsLineBox.h"
 #include "nsIDOMHTMLTableCellElement.h"
 #include "nsIDOMHTMLBodyElement.h"
 #include "nsLayoutAtoms.h"
@@ -63,12 +64,11 @@
 
 nsBlockReflowContext::nsBlockReflowContext(nsIPresContext* aPresContext,
                                            const nsHTMLReflowState& aParentRS,
-                                           PRBool aComputeMaxElementSize,
+                                           PRBool aComputeMaxElementWidth,
                                            PRBool aComputeMaximumWidth)
   : mPresContext(aPresContext),
     mOuterReflowState(aParentRS),
-    mMetrics(aComputeMaxElementSize ? &mMaxElementSize : nsnull),
-    mMaxElementSize(0, 0),
+    mMetrics(aComputeMaxElementWidth),
     mIsTable(PR_FALSE),
     mComputeMaximumWidth(aComputeMaximumWidth),
     mBlockShouldInvalidateItself(PR_FALSE)
@@ -88,6 +88,10 @@ nsBlockReflowContext::ComputeCollapsedTopMargin(nsIPresContext* aPresContext,
   // Get aFrame's top margin
   aMargin.Include(aRS.mComputedMargin.top);
 
+  // The inclusion of the bottom margin when empty is done by the caller
+  // since it doesn't need to be done by the top-level (non-recursive)
+  // caller.
+
 #ifdef NOISY_VERTICAL_MARGINS
   nsFrame::ListTag(stdout, aRS.frame);
   printf(": %d => %d\n", aRS.mComputedMargin.top, aMargin.get());
@@ -98,23 +102,25 @@ nsBlockReflowContext::ComputeCollapsedTopMargin(nsIPresContext* aPresContext,
   // top-padding then this step is skipped because it will be a margin
   // root.  It is also skipped if the frame is a margin root for other
   // reasons.
-  if (0 == aRS.mComputedBorderPadding.top) {
-    nsFrameState state;
-    aRS.frame->GetFrameState(&state);
-    if (!(state & NS_BLOCK_MARGIN_ROOT)) {
-      nsBlockFrame* bf;
-      if (NS_SUCCEEDED(aRS.frame->QueryInterface(kBlockFrameCID,
-                                         NS_REINTERPRET_CAST(void**, &bf)))) {
-        // Ask the block frame for the top block child that we should
-        // try to collapse the top margin with.
+  nsFrameState state;
+  if (0 == aRS.mComputedBorderPadding.top &&
+      (aRS.frame->GetFrameState(&state), !(state & NS_BLOCK_MARGIN_ROOT))) {
+    nsBlockFrame* bf;
+    if (NS_SUCCEEDED(aRS.frame->QueryInterface(kBlockFrameCID,
+                                       NS_REINTERPRET_CAST(void**, &bf)))) {
+      nsCompatibility compat;
+      aPresContext->GetCompatibilityMode(&compat);
 
-        // XXX If the block is empty, we need to check its bottom margin
-        // and its sibling's top margin (etc.) too!  See XXXldb comment about
-        // emptyness below in PlaceBlock.
+      const nsStyleText* text = bf->GetStyleText();
+      PRBool isPre = NS_STYLE_WHITESPACE_PRE == text->mWhiteSpace ||
+                     NS_STYLE_WHITESPACE_MOZ_PRE_WRAP == text->mWhiteSpace;
 
-        nsIFrame* childFrame = bf->GetTopBlockChild();
-        if (nsnull != childFrame) {
-
+      for (nsBlockFrame::line_iterator line = bf->begin_lines(),
+                                   line_end = bf->end_lines();
+           line != line_end; ++line) {
+        PRBool isEmpty;
+        line->IsEmpty(compat, isPre, &isEmpty);
+        if (line->IsBlock()) {
           // Here is where we recur. Now that we have determined that a
           // generational collapse is required we need to compute the
           // child blocks margin and so in so that we can look into
@@ -123,10 +129,14 @@ nsBlockReflowContext::ComputeCollapsedTopMargin(nsIPresContext* aPresContext,
           // arbitrarily make it a `resize' to avoid the path-plucking
           // behavior if we're in an incremental reflow.
           nsSize availSpace(aRS.mComputedWidth, aRS.mComputedHeight);
-          nsHTMLReflowState reflowState(aPresContext, aRS, childFrame,
+          nsHTMLReflowState reflowState(aPresContext, aRS, line->mFirstChild,
                                         availSpace, eReflowReason_Resize);
           ComputeCollapsedTopMargin(aPresContext, reflowState, aMargin);
+          if (isEmpty)
+            aMargin.Include(reflowState.mComputedMargin.bottom);
         }
+        if (!isEmpty)
+          break;
       }
     }
   }
@@ -363,11 +373,9 @@ nsBlockReflowContext::ReflowBlock(const nsRect&       aSpace,
    * All other blocks proceed normally.
    */
   // XXXldb We should really fix this in nsHTMLReflowState::InitConstraints instead.
-  const nsStylePosition* position;
-  mFrame->GetStyleData(eStyleStruct_Position, (const nsStyleStruct*&)position);
+  const nsStylePosition* position = mFrame->GetStylePosition();
   nsStyleUnit widthUnit = position->mWidth.GetUnit();
-  const nsStyleDisplay* display;
-  mFrame->GetStyleData(eStyleStruct_Display, (const nsStyleStruct*&)display);
+  const nsStyleDisplay* display = mFrame->GetStyleDisplay();
 
   if ((eStyleUnit_Auto == widthUnit) &&
       ((NS_STYLE_FLOAT_LEFT == display->mFloats) ||
@@ -408,8 +416,8 @@ nsBlockReflowContext::ReflowBlock(const nsRect&       aSpace,
     if (NS_UNCONSTRAINEDSIZE != aFrameRS.availableHeight) {
       aFrameRS.availableHeight -= aPrevBottomMargin.get();
     }
+    mTopMargin = aPrevBottomMargin;
   }
-  mTopMargin = aPrevBottomMargin;
 
   // Compute x/y coordinate where reflow will begin. Use the rules
   // from 10.3.3 to determine what to apply. At this point in the
@@ -489,9 +497,8 @@ nsBlockReflowContext::ReflowBlock(const nsRect&       aSpace,
   mMetrics.height = nscoord(0xdeadbeef);
   mMetrics.ascent = nscoord(0xdeadbeef);
   mMetrics.descent = nscoord(0xdeadbeef);
-  if (nsnull != mMetrics.maxElementSize) {
-    mMetrics.maxElementSize->width = nscoord(0xdeadbeef);
-    mMetrics.maxElementSize->height = nscoord(0xdeadbeef);
+  if (mMetrics.mComputeMEW) {
+    mMetrics.mMaxElementWidth = nscoord(0xdeadbeef);
   }
 #endif
 
@@ -543,28 +550,22 @@ nsBlockReflowContext::ReflowBlock(const nsRect&       aSpace,
       nsFrame::ListTag(stdout, mFrame);
       printf(" metrics=%d,%d!\n", mMetrics.width, mMetrics.height);
     }
-    if ((nsnull != mMetrics.maxElementSize) &&
-        ((nscoord(0xdeadbeef) == mMetrics.maxElementSize->width) ||
-         (nscoord(0xdeadbeef) == mMetrics.maxElementSize->height))) {
+    if (mMetrics.mComputeMEW &&
+        (nscoord(0xdeadbeef) == mMetrics.mMaxElementWidth)) {
       printf("nsBlockReflowContext: ");
       nsFrame::ListTag(stdout, mFrame);
       printf(" didn't set max-element-size!\n");
-      mMetrics.maxElementSize->width = 0;
-      mMetrics.maxElementSize->height = 0;
     }
 #ifdef REALLY_NOISY_MAX_ELEMENT_SIZE
     // Note: there are common reflow situations where this *correctly*
     // occurs; so only enable this debug noise when you really need to
     // analyze in detail.
-    if ((nsnull != mMetrics.maxElementSize) &&
-        ((mMetrics.maxElementSize->width > mMetrics.width) ||
-         (mMetrics.maxElementSize->height > mMetrics.height))) {
+    if (mMetrics.mComputeMEW &&
+        (mMetrics.mMaxElementWidth > mMetrics.width)) {
       printf("nsBlockReflowContext: ");
       nsFrame::ListTag(stdout, mFrame);
-      printf(": WARNING: maxElementSize=%d,%d > metrics=%d,%d\n",
-             mMetrics.maxElementSize->width,
-             mMetrics.maxElementSize->height,
-             mMetrics.width, mMetrics.height);
+      printf(": WARNING: maxElementWidth=%d > metrics=%d\n",
+             mMetrics.mMaxElementWidth, mMetrics.width);
     }
 #endif
     if ((mMetrics.width == nscoord(0xdeadbeef)) ||
@@ -580,15 +581,14 @@ nsBlockReflowContext::ReflowBlock(const nsRect&       aSpace,
   }
 #endif
 #ifdef DEBUG
-  if (nsBlockFrame::gNoisyMaxElementSize) {
+  if (nsBlockFrame::gNoisyMaxElementWidth) {
     nsFrame::IndentBy(stdout, nsBlockFrame::gNoiseIndent);
     if (!NS_INLINE_IS_BREAK_BEFORE(aFrameReflowStatus)) {
-      if (nsnull != mMetrics.maxElementSize) {
+      if (mMetrics.mComputeMEW) {
         printf("  ");
         nsFrame::ListTag(stdout, mFrame);
-        printf(": maxElementSize=%d,%d wh=%d,%d\n",
-               mMetrics.maxElementSize->width,
-               mMetrics.maxElementSize->height,
+        printf(": maxElementSize=%d wh=%d,%d\n",
+               mMetrics.mMaxElementWidth,
                mMetrics.width, mMetrics.height);
       }
     }
@@ -719,26 +719,21 @@ nsBlockReflowContext::PlaceBlock(const nsHTMLReflowState& aReflowState,
                             mMetrics.width,
                             mMetrics.height);
 
-
-      // Compute combined-rect in callers coordinate system. The value
-      // returned in the reflow metrics is relative to the child
-      // frame.
-      aCombinedRect.x = mMetrics.mOverflowArea.x + x;
-      aCombinedRect.y = mMetrics.mOverflowArea.y + y;
-      aCombinedRect.width = mMetrics.mOverflowArea.width;
-      aCombinedRect.height = mMetrics.mOverflowArea.height;
-
       // Apply CSS relative positioning to update x,y coordinates
-      // Note that this must be done after changing aCombinedRect
-      // since relatively positioned elements should act as if they
-      // were at their original position.
-      const nsStyleDisplay* styleDisp;
-      mFrame->GetStyleData(eStyleStruct_Display,
-                           (const nsStyleStruct*&)styleDisp);
+      const nsStyleDisplay* styleDisp = mFrame->GetStyleDisplay();
       if (NS_STYLE_POSITION_RELATIVE == styleDisp->mPosition) {
         x += aComputedOffsets.left;
         y += aComputedOffsets.top;
       }
+
+      // Compute combined-rect in callers coordinate system. The value
+      // returned in the reflow metrics is relative to the child
+      // frame.  This includes relative positioning and the result should
+      // be used only for painting and for 'overflow' handling.
+      aCombinedRect.x = mMetrics.mOverflowArea.x + x;
+      aCombinedRect.y = mMetrics.mOverflowArea.y + y;
+      aCombinedRect.width = mMetrics.mOverflowArea.width;
+      aCombinedRect.height = mMetrics.mOverflowArea.height;
 
       // Now place the frame and complete the reflow process
       nsContainerFrame::FinishReflowChild(mFrame, mPresContext, &aReflowState, mMetrics, x, y, 0);
@@ -746,34 +741,26 @@ nsBlockReflowContext::PlaceBlock(const nsHTMLReflowState& aReflowState,
       // Adjust the max-element-size in the metrics to take into
       // account the margins around the block element. Note that we
       // use the collapsed top and bottom margin values.
-      if (nsnull != mMetrics.maxElementSize) {
-        nsSize* m = mMetrics.maxElementSize;
+      if (mMetrics.mComputeMEW) {
         nsMargin maxElemMargin = mMargin;
 
         if (NS_SHRINKWRAPWIDTH == mComputedWidth) {
           nscoord dummyXOffset;
           // Base the margins on the max-element size
-          ComputeShrinkwrapMargins(mStyleMargin, m->width, maxElemMargin, dummyXOffset);
+          ComputeShrinkwrapMargins(mStyleMargin, mMetrics.mMaxElementWidth,
+                                   maxElemMargin, dummyXOffset);
         }
 
         // Do not allow auto margins to impact the max-element size
         // since they are springy and don't really count!
         if ((eStyleUnit_Auto != mStyleMargin->mMargin.GetLeftUnit()) && 
             (eStyleUnit_Null != mStyleMargin->mMargin.GetLeftUnit())) {
-          m->width += maxElemMargin.left;
+          mMetrics.mMaxElementWidth += maxElemMargin.left;
         }
         if ((eStyleUnit_Auto != mStyleMargin->mMargin.GetRightUnit()) &&
             (eStyleUnit_Null != mStyleMargin->mMargin.GetRightUnit())) {
-          m->width += maxElemMargin.right;
+          mMetrics.mMaxElementWidth += maxElemMargin.right;
         }
-
-#if 0 // XXX_fix_me
-        // Margin height should affect the max-element height (since
-        // auto top/bottom margins are always zero)
-
-        // XXXldb Should it?
-        m->height += mTopMargin.get() + mBottomMargin;
-#endif
       }
     }
     else {
@@ -794,14 +781,12 @@ nsStyleUnit
 nsBlockReflowContext::GetRealMarginLeftUnit()
 {
   nsStyleUnit unit = eStyleUnit_Inherit;
-  nsCOMPtr<nsIStyleContext> sc;
-  mFrame->GetStyleContext(getter_AddRefs(sc));
+  nsStyleContext* sc = mFrame->GetStyleContext();
   while (sc && eStyleUnit_Inherit == unit) {
     // Get parent style context
     sc = sc->GetParent();
     if (sc) {
-      const nsStyleMargin* margin = (const nsStyleMargin*)
-        sc->GetStyleData(eStyleStruct_Margin);
+      const nsStyleMargin* margin = sc->GetStyleMargin();
       unit = margin->mMargin.GetLeftUnit();
     }
   }
@@ -815,14 +800,12 @@ nsStyleUnit
 nsBlockReflowContext::GetRealMarginRightUnit()
 {
   nsStyleUnit unit = eStyleUnit_Inherit;
-  nsCOMPtr<nsIStyleContext> sc;
-  mFrame->GetStyleContext(getter_AddRefs(sc));
+  nsStyleContext* sc = mFrame->GetStyleContext();
   while (sc && eStyleUnit_Inherit == unit) {
     // Get parent style context
     sc = sc->GetParent();
     if (sc) {
-      const nsStyleMargin* margin = (const nsStyleMargin*)
-        sc->GetStyleData(eStyleStruct_Margin);
+      const nsStyleMargin* margin = sc->GetStyleMargin();
       unit = margin->mMargin.GetRightUnit();
     }
   }

@@ -94,7 +94,6 @@ ns4xPluginStreamListener::ns4xPluginStreamListener(nsIPluginInstance* inst,
       mCallNotify(PR_FALSE),      
       mStreamInfo(nsnull)
 {
-  NS_INIT_ISUPPORTS();
   mInst = (ns4xPluginInstance*) inst;
   mPosition = 0;
   mStreamBufferSize = 0;
@@ -366,14 +365,9 @@ ns4xPluginStreamListener::OnDataAvailable(nsIPluginStreamInfo* pluginInfo,
   if ((PRInt32)mNPStream.end < streamOffset)
     mNPStream.end = streamOffset;
 
-  PRUint32 bytesToRead = mStreamBufferSize;
-  if (length < mStreamBufferSize) {
-    // do not read more that supplier wants us to read
-    bytesToRead = length;
-  }
-
   do 
   {
+    PRUint32 bytesToRead = PR_MIN(length, mStreamBufferSize);
     PRInt32 amountRead = 0;
     rv = input->Read(mStreamBuffer, bytesToRead, (PRUint32*)&amountRead);
     if (amountRead == 0 || NS_FAILED(rv)) {
@@ -563,8 +557,6 @@ NS_IMPL_ISUPPORTS2(ns4xPluginInstance, nsIPluginInstance, nsIScriptablePlugin)
 ns4xPluginInstance :: ns4xPluginInstance(NPPluginFuncs* callbacks, PRLibrary* aLibrary)
   : fCallbacks(callbacks)
 {
-  NS_INIT_ISUPPORTS();
-
   NS_ASSERTION(fCallbacks != NULL, "null callbacks");
 
   // Initialize the NPP structure.
@@ -740,7 +732,7 @@ nsresult ns4xPluginInstance::InitializePlugin(nsIPluginInstancePeer* peer)
     // nsPluginTagType_Object or Applet may also have PARAM tags
     // Note: The arrays handed back by GetParameters() are
     // crafted specially to be directly behind the arrays from GetAtributes()
-    // with a null entry as a seperator. This is for 4.x backwards compatibility!
+    // with a null entry as a separator. This is for 4.x backwards compatibility!
     // see bug 111008 for details
     if (tagtype != nsPluginTagType_Embed) {
       PRUint16 pcount = 0;
@@ -766,9 +758,26 @@ nsresult ns4xPluginInstance::InitializePlugin(nsIPluginInstancePeer* peer)
   peer->GetMode(&mode);
   peer->GetMIMEType(&mimetype);
 
-#ifdef XP_UNIX
-  // hack swliveconnect argument for flash plugins on unix,
-  // because if it set flash corrupts the stack in NPP_NewProc call (bug 149336)
+  // Some older versions of Flash have a bug in them
+  // that causes the stack to become currupt if we
+  // pass swliveconect=1 in the NPP_NewProc arrays.
+  // See bug 149336 (UNIX), bug 186287 (Mac)
+  //
+  // The code below disables the attribute unless
+  // the environment variable:
+  // MOZILLA_PLUGIN_DISABLE_FLASH_SWLIVECONNECT_HACK
+  // is set.
+  //
+  // It is okay to disable this attribute because
+  // back in 4.x, scripting required liveconnect to
+  // start Java which was slow. Scripting no longer
+  // requires starting Java and is quick plus controled
+  // from the browser, so Flash now ignores this attribute.
+  //
+  // This code can not be put at the time of creating
+  // the array because we may need to examine the
+  // stream header to determine we want Flash.
+
   static const char flashMimeType[] = "application/x-shockwave-flash";
   static const char blockedParam[] = "swliveconnect";
   if (count && !PL_strcasecmp(mimetype, flashMimeType)) {
@@ -798,7 +807,6 @@ nsresult ns4xPluginInstance::InitializePlugin(nsIPluginInstancePeer* peer)
       }
     }
   }
-#endif
 
   // Assign mPeer now and mark this instance as started before calling NPP_New 
   // because the plugin may call other NPAPI functions, like NPN_GetURLNotify,
@@ -923,12 +931,14 @@ NS_IMETHODIMP ns4xPluginInstance::SetWindow(nsPluginWindow* window)
 
     // fill in window info structure 
     ws->type = 0; // OK, that was a guess!!
+#ifdef MOZ_X11
     ws->depth = gdk_window_get_visual(win)->depth;
     ws->display = GTK_XTBIN(mXtBin)->xtdisplay;
     ws->visual = GDK_VISUAL_XVISUAL(gdk_window_get_visual(win));
     ws->colormap = GDK_COLORMAP_XCOLORMAP(gdk_window_get_colormap(win));
 
     XFlush(ws->display);
+#endif
   } // !window->ws_info
 
   if (!mXtBin)
@@ -1024,6 +1034,7 @@ NS_IMETHODIMP ns4xPluginInstance::SetWindow(nsPluginWindow* window)
     // XXX In the old code, we'd just ignore any errors coming
     // back from the plugin's SetWindow(). Is this the correct
     // behavior?!?
+
   }
   return NS_OK;
 }
@@ -1123,12 +1134,11 @@ NS_IMETHODIMP ns4xPluginInstance::HandleEvent(nsPluginEvent* event, PRBool* hand
 
   PRInt16 result = 0;
   
-  if (fCallbacks->event)
-    {
-#ifdef XP_MAC
-      result = CallNPP_HandleEventProc(fCallbacks->event,
-                                    &fNPP,
-                                    (void*) event->event);
+  if (fCallbacks->event) {
+#if defined(XP_MAC) || defined(XP_MACOSX)
+    result = CallNPP_HandleEventProc(fCallbacks->event,
+                                     &fNPP,
+                                     (void*) event->event);
 #endif
 
 #if defined(XP_WIN) || defined(XP_OS2)
@@ -1150,6 +1160,25 @@ NS_IMETHODIMP ns4xPluginInstance::HandleEvent(nsPluginEvent* event, PRBool* hand
     }
 
   return NS_OK;
+}
+
+nsresult ns4xPluginInstance::GetValueInternal(NPPVariable variable, void* value)
+{
+  nsresult  res = NS_OK;
+  if(fCallbacks->getvalue && mStarted) {
+
+    NS_TRY_SAFE_CALL_RETURN(res, 
+                            CallNPP_GetValueProc(fCallbacks->getvalue, 
+                                                 &fNPP, 
+                                                 variable, 
+                                                 value), 
+                                                 fLibrary, this);
+    NPP_PLUGIN_LOG(PLUGIN_LOG_NORMAL,
+    ("NPP GetValue called: this=%p, npp=%p, var=%d, value=%d, return=%d\n", 
+    this, &fNPP, variable, value, res));
+  }
+
+  return res;
 }
 
 
@@ -1177,17 +1206,7 @@ NS_IMETHODIMP ns4xPluginInstance :: GetValue(nsPluginInstanceVariable variable,
       break;
 
     default:
-      if(fCallbacks->getvalue && mStarted) {
-        NS_TRY_SAFE_CALL_RETURN(res, 
-                                CallNPP_GetValueProc(fCallbacks->getvalue, 
-                                                     &fNPP, 
-                                                     (NPPVariable)variable, 
-                                                     value), 
-                                                     fLibrary, this);
-        NPP_PLUGIN_LOG(PLUGIN_LOG_NORMAL,
-        ("NPP GetValue called: this=%p, npp=%p, var=%d, value=%d, return=%d\n", 
-        this, &fNPP, variable, value, res));
-      }
+      res = GetValueInternal((NPPVariable)variable, value);
   }
 
   return res;
@@ -1241,7 +1260,7 @@ NS_IMETHODIMP ns4xPluginInstance :: GetScriptablePeer(void * *aScriptablePeer)
     return NS_ERROR_NULL_POINTER;
 
   *aScriptablePeer = nsnull;
-  return GetValue(nsPluginInstanceVariable_ScriptableInstance, aScriptablePeer);
+  return GetValueInternal(NPPVpluginScriptableInstance, aScriptablePeer);
 }
 
 
@@ -1253,5 +1272,5 @@ NS_IMETHODIMP ns4xPluginInstance :: GetScriptableInterface(nsIID * *aScriptableI
     return NS_ERROR_NULL_POINTER;
 
   *aScriptableInterface = nsnull;
-  return GetValue(nsPluginInstanceVariable_ScriptableIID, (void*)aScriptableInterface);
+  return GetValueInternal(NPPVpluginScriptableIID, (void*)aScriptableInterface);
 }

@@ -36,6 +36,7 @@
 #include "nsIDOMNode.h"
 #include "nsIDOMNodeList.h"
 #include "txAtoms.h"
+#include "nsString.h"
 
 MOZ_DECL_CTOR_COUNTER(Node)
 
@@ -67,11 +68,10 @@ Node::~Node()
  *
  * @return the node's name
  */
-const String& Node::getNodeName()
+nsresult Node::getNodeName(nsAString& aName)
 {
     NSI_FROM_TX(Node);
-    nsNode->GetNodeName(mNodeName);
-    return mNodeName;
+    return nsNode->GetNodeName(aName);
 }
 
 /**
@@ -79,11 +79,10 @@ const String& Node::getNodeName()
  *
  * @return the node's name
  */
-const String& Node::getNodeValue()
+nsresult Node::getNodeValue(nsAString& aValue)
 {
     NSI_FROM_TX(Node);
-    nsNode->GetNodeValue(mNodeValue);
-    return mNodeValue;
+    return nsNode->GetNodeValue(aValue);
 }
 
 /**
@@ -113,22 +112,6 @@ Node* Node::getParentNode()
         return nsnull;
     }
     return mOwnerDocument->createWrapper(tmpParent);
-}
-
-/**
- * Call nsIDOMNode::GetChildNodes to get the node's childnodes.
- *
- * @return the node's children
- */
-NodeList* Node::getChildNodes()
-{
-    NSI_FROM_TX(Node);
-    nsCOMPtr<nsIDOMNodeList> tmpNodeList;
-    nsNode->GetChildNodes(getter_AddRefs(tmpNodeList));
-    if (!tmpNodeList) {
-        return nsnull;
-    }
-    return mOwnerDocument->createNodeList(tmpNodeList);
 }
 
 /**
@@ -261,12 +244,10 @@ MBool Node::hasChildNodes() const
  * uses the Mozilla dom
  * Intoduced in DOM2
  */
-String Node::getNamespaceURI()
+nsresult Node::getNamespaceURI(nsAString& aNSURI)
 {
     NSI_FROM_TX(Node);
-    String uri;
-    nsNode->GetNamespaceURI(uri);
-    return uri;
+    return nsNode->GetNamespaceURI(aNSURI);
 }
 
 /**
@@ -274,7 +255,7 @@ String Node::getNamespaceURI()
  *
  * @return the node's localname atom
  */
-MBool Node::getLocalName(txAtom** aLocalName)
+MBool Node::getLocalName(nsIAtom** aLocalName)
 {
     if (!aLocalName)
         return MB_FALSE;
@@ -310,7 +291,7 @@ Node* Node::getXPathParent()
  * @param prefix atom for prefix to look up
  * @return namespace ID for prefix
  */
-PRInt32 Node::lookupNamespaceID(txAtom* aPrefix)
+PRInt32 Node::lookupNamespaceID(nsIAtom* aPrefix)
 {
     NSI_FROM_TX(Node);
     nsresult rv;
@@ -354,12 +335,11 @@ PRInt32 Node::lookupNamespaceID(txAtom* aPrefix)
         NS_ENSURE_SUCCESS(rv, kNameSpaceID_Unknown);
         if (rv != NS_CONTENT_ATTR_NOT_THERE) {
             PRInt32 nsId;
-            NS_ASSERTION(mOwnerDocument->nsNSManager,
-                         "owner document lacks namespace manager");
-            if (!mOwnerDocument->nsNSManager) {
+            NS_ASSERTION(gTxNameSpaceManager, "No namespace manager");
+            if (!gTxNameSpaceManager) {
                 return kNameSpaceID_Unknown;
             }
-            mOwnerDocument->nsNSManager->RegisterNameSpace(uri, nsId);
+            gTxNameSpaceManager->RegisterNameSpace(uri, nsId);
             return nsId;
         }
 
@@ -383,15 +363,17 @@ PRInt32 Node::lookupNamespaceID(txAtom* aPrefix)
  *
  * @return base URI for the node
  */
-String Node::getBaseURI()
+nsresult Node::getBaseURI(nsAString& aURI)
 {
     NSI_FROM_TX(Node);
     nsCOMPtr<nsIDOM3Node> nsDOM3Node = do_QueryInterface(nsNode);
-    String url;
     if (nsDOM3Node) {
-        nsDOM3Node->GetBaseURI(url);
+        return nsDOM3Node->GetBaseURI(aURI);
     }
-    return url;
+
+    aURI.Truncate();
+
+    return NS_OK;
 }
 
 /**

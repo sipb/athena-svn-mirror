@@ -32,6 +32,8 @@ const nsIInterfaceRequestor = Components.interfaces.nsIInterfaceRequestor;
 const nsIWebNavigation      = Components.interfaces.nsIWebNavigation;
 const nsIDocShellTreeItem   = Components.interfaces.nsIDocShellTreeItem;
 
+var utils = new Object();
+
 if (typeof document == "undefined") /* in xpcshell */
 {
     dumpln = print;
@@ -199,6 +201,69 @@ function dumpObjectTree (o, recurse, compress, level)
     
 }
 
+function safeHTML(str)
+{
+    function replaceChars(ch)
+    {
+        switch (ch)
+        {
+            case "<":
+                return "&lt;";
+            
+            case ">":
+                return "&gt;";
+                    
+            case "&":
+                return "&amp;";
+        }
+
+        return "?";
+    };
+        
+    return String(str).replace(/[<>&]/g, replaceChars);
+}
+
+function alert(msg, parent, title)
+{
+    var PROMPT_CTRID = "@mozilla.org/embedcomp/prompt-service;1";
+    var nsIPromptService = Components.interfaces.nsIPromptService;
+    var ps = Components.classes[PROMPT_CTRID].createInstance(nsIPromptService);
+    if (!parent)
+        parent = window;
+    if (!title)
+        title = MSG_ALERT;
+    ps.alert (parent, title, msg);
+}
+
+function confirm(msg, parent, title)
+{
+    var PROMPT_CTRID = "@mozilla.org/embedcomp/prompt-service;1";
+    var nsIPromptService = Components.interfaces.nsIPromptService;
+    var ps = Components.classes[PROMPT_CTRID].createInstance(nsIPromptService);
+    if (!parent)
+        parent = window;
+    if (!title)
+        title = MSG_CONFIRM;
+    return ps.confirm (parent, title, msg);
+}
+
+function prompt(msg, initial, parent, title)
+{
+    var PROMPT_CTRID = "@mozilla.org/embedcomp/prompt-service;1";
+    var nsIPromptService = Components.interfaces.nsIPromptService;
+    var ps = Components.classes[PROMPT_CTRID].createInstance(nsIPromptService);
+    if (!parent)
+        parent = window;
+    if (!title)
+        title = MSG_PROMPT;
+    rv = { value: initial };
+
+    if (!ps.prompt (parent, title, msg, rv, null, {value: null}))
+        return null;
+
+    return rv.value
+}
+
 function getChildById (element, id)
 {
     var nl = element.getElementsByAttribute("id", id);
@@ -267,15 +332,69 @@ function insertHyphenatedWord (longWord, containerTag)
 function insertLink (matchText, containerTag)
 {
     var href;
+    var linkText;
     
-    if (matchText.indexOf ("://") == -1 && matchText.indexOf("x-jsd") != 0)
-        href = "http://" + matchText;
+    var trailing;
+    ary = matchText.match(/([.,]+)$/);
+    if (ary)
+    {
+        linkText = RegExp.leftContext;
+        trailing = ary[1];
+    }
     else
-        href = matchText;
-    
+    {
+        linkText = matchText;
+    }
+
+    var ary = linkText.match (/^(\w[\w-]+):/);
+    if (ary)
+    {
+        if (!("schemes" in utils))
+        {
+            var pfx = "@mozilla.org/network/protocol;1?name=";
+            var len = pfx.length
+
+            utils.schemes = new Object();
+            for (var c in Components.classes)
+            {
+                if (c.indexOf(pfx) == 0)
+                    utils.schemes[c.substr(len)] = true;
+            }
+        }
+        
+        if (!(ary[1] in utils.schemes))
+        {
+            insertHyphenatedWord(matchText, containerTag);
+            return;
+        }
+
+        href = linkText;
+    }
+    else
+    {
+        href = "http://" + linkText;
+    }
+
     var anchor = htmlVA (null, href, "");
-    insertHyphenatedWord(matchText, anchor);
-    containerTag.appendChild (anchor);    
+    insertHyphenatedWord (linkText, anchor);
+    containerTag.appendChild (anchor);
+    if (trailing)
+        insertHyphenatedWord (trailing, containerTag);
+    
+}
+
+function insertQuote (matchText, containerTag, msgtype)
+{
+    if (msgtype[0] == "#")
+    {
+        containerTag.appendChild(document.createTextNode(matchText));
+        return;
+    }
+    
+    if (matchText == "``")
+        containerTag.appendChild(document.createTextNode("\u201c"));
+    else
+        containerTag.appendChild(document.createTextNode("\u201d"));
 }
 
 /* length should be an even number >= 6 */
@@ -468,6 +587,20 @@ function getBaseWindowFromWindow (win)
     return rv;
 }
 
+function getSpecialDirectory(name)
+{
+    if (!("directoryService" in utils))
+    {
+        const DS_CTR = "@mozilla.org/file/directory_service;1";
+        const nsIProperties = Components.interfaces.nsIProperties;
+    
+        utils.directoryService =
+            Components.classes[DS_CTR].getService(nsIProperties);
+    }
+    
+    return utils.directoryService.get(name, Components.interfaces.nsIFile);
+}
+
 function getPathFromURL (url)
 {
     var ary = url.match(/^(.*\/)([^\/?#]+)(\?|#|$)/);
@@ -496,13 +629,6 @@ function getURLSpecFromFile (file)
 
     const nsIIOService = Components.interfaces.nsIIOService;
     const nsILocalFile = Components.interfaces.nsILocalFile;
-    /* bug 166792 added this interface in Sept. 2002, but we need to work on
-     * older versions too. */
-    var nsIFileProtocolHandler;
-    if ("nsIFileProtocolHandler" in Components.interfaces)
-        nsIFileProtocolHandler = Components.interfaces.nsIFileProtocolHandler;
-    else
-        nsIFileProtocolHandler = null;
     
     if (typeof file == "string")
     {
@@ -513,9 +639,12 @@ function getURLSpecFromFile (file)
     }
     
     var service = Components.classes[IOS_CTRID].getService(nsIIOService);
-    if (!nsIFileProtocolHandler)
+    /* In sept 2002, bug 166792 moved this method to the nsIFileProtocolHandler
+     * interface, but we need to support older versions too. */
+    if ("getURLSpecFromFile" in service)
         return service.getURLSpecFromFile(file);
 
+    var nsIFileProtocolHandler = Components.interfaces.nsIFileProtocolHandler;
     var fileHandler = service.getProtocolHandler("file");
     fileHandler = fileHandler.QueryInterface(nsIFileProtocolHandler);
     return fileHandler.getURLSpecFromFile(file);
@@ -637,12 +766,12 @@ function stringTrim (s)
 
 function formatDateOffset (seconds, format)
 {
-    seconds = parseInt(seconds);
-    var minutes = parseInt(seconds / 60);
+    seconds = Math.floor(seconds);
+    var minutes = Math.floor(seconds / 60);
     seconds = seconds % 60;
-    var hours   = parseInt(minutes / 60);
+    var hours   = Math.floor(minutes / 60);
     minutes = minutes % 60;
-    var days    = parseInt(hours / 24);
+    var days    = Math.floor(hours / 24);
     hours = hours % 24;
 
     if (!format)
@@ -725,14 +854,21 @@ function arrayContains (ary, elem)
     return (arrayIndexOf (ary, elem) != -1);
 }
 
-function arrayIndexOf (ary, elem)
+function arrayIndexOf (ary, elem, start)
 {
     if (!ary)
         return -1;
-    
-    for (var i in ary)
+
+    var len = ary.length;
+
+    if (typeof start == "undefined")
+        start = 0;
+
+    for (var i = start; i < len; ++i)
+    {
         if (ary[i] == elem)
             return i;
+    }
 
     return -1;
 }
@@ -753,7 +889,7 @@ function arrayRemoveAt (ary, i)
 
 function getRandomElement (ary)
 {
-    var i = parseInt (Math.random() * ary.length)
+    var i = Math.floor (Math.random() * ary.length)
 	if (i == ary.length) i = 0;
 
     return ary[i];
@@ -794,7 +930,7 @@ function randomRange (min, max)
     if (typeof max == "undefined")
         max = 1;
 
-    var rv = (parseInt(Math.round((Math.random() * (max - min)) + min )));
+    var rv = (Math.floor(Math.round((Math.random() * (max - min)) + min )));
     
     return rv;
 

@@ -33,7 +33,7 @@
  */
 
 #ifdef DEBUG
-static const char NSSCKAPI_CVS_ID[] = "@(#) $RCSfile: nssck.api,v $ $Revision: 1.1.1.1 $ $Date: 2003-02-14 18:54:40 $ $Name: not supported by cvs2svn $ ; @(#) $RCSfile: nssck.api,v $ $Revision: 1.1.1.1 $ $Date: 2003-02-14 18:54:40 $ $Name: not supported by cvs2svn $";
+static const char NSSCKAPI_CVS_ID[] = "@(#) $RCSfile: nssck.api,v $ $Revision: 1.1.1.2 $ $Date: 2003-07-08 18:05:11 $ $Name: not supported by cvs2svn $ ; @(#) $RCSfile: nssck.api,v $ $Revision: 1.1.1.2 $ $Date: 2003-07-08 18:05:11 $ $Name: not supported by cvs2svn $";
 #endif /* DEBUG */
 
 /*
@@ -1874,11 +1874,7 @@ __ADJOIN(MODULE_NAME,C_GetFunctionList)
 }
 
 /* This one is always present */
-#ifdef WIN32
-CK_RV _declspec(dllexport)
-#else
 CK_RV CK_ENTRY
-#endif
 C_GetFunctionList
 (
   CK_FUNCTION_LIST_PTR_PTR ppFunctionList

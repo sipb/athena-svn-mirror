@@ -59,7 +59,7 @@ nsDownloadProgressListener.prototype = {
     {
       if (aStateFlags & Components.interfaces.nsIWebProgressListener.STATE_STOP)
       {
-        var aDownloadID = aDownload.target.persistentDescriptor;
+        var aDownloadID = aDownload.target.path;
         var elt = this.doc.getElementById(aDownloadID).firstChild.firstChild;
 
         var timeRemainingCol = elt.nextSibling.nextSibling.nextSibling;
@@ -70,6 +70,12 @@ nsDownloadProgressListener.prototype = {
 
         var elapsedCol = speedCol.nextSibling;
         elapsedCol.setAttribute("label", "");
+
+        // Fire an onselect event for the downloadView element
+        // to update menu status
+        var event = this.doc.createEvent('Events');
+        event.initEvent('select', false, true);
+        this.doc.getElementById("downloadView").dispatchEvent(event);
       }
     },
 
@@ -95,7 +101,7 @@ nsDownloadProgressListener.prototype = {
       else
         rate = 0;
 
-      var aDownloadID = aDownload.target.persistentDescriptor;
+      var aDownloadID = aDownload.target.path
       var elt = this.doc.getElementById(aDownloadID).firstChild.firstChild;
       if (this.doc.getElementById("TimeElapsed").getAttribute("hidden") != "true") {
         elapsedCol = elt.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling.nextSibling;

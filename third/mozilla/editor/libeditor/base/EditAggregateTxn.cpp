@@ -44,7 +44,6 @@
 EditAggregateTxn::EditAggregateTxn()
   : EditTxn()
 {
-  // base class does this: NS_INIT_ISUPPORTS();
   nsresult res = NS_NewISupportsArray(getter_AddRefs(mChildren));
   NS_POSTCONDITION(NS_SUCCEEDED(res), "EditAggregateTxn failed in constructor");
 }
@@ -64,8 +63,7 @@ NS_IMETHODIMP EditAggregateTxn::DoTransaction(void)
     mChildren->Count(&count);
     for (i=0; i<((PRInt32)count); i++)
     {
-      nsCOMPtr<nsISupports> isupports = dont_AddRef(mChildren->ElementAt(i));
-      nsCOMPtr<nsITransaction> txn ( do_QueryInterface(isupports) );
+      nsCOMPtr<nsITransaction> txn (do_QueryElementAt(mChildren, i));
       if (!txn) { return NS_ERROR_NULL_POINTER; }
       result = txn->DoTransaction();
       if (NS_FAILED(result))
@@ -86,8 +84,7 @@ NS_IMETHODIMP EditAggregateTxn::UndoTransaction(void)
     // undo goes through children backwards
     for (i=count-1; i>=0; i--)
     {
-      nsCOMPtr<nsISupports> isupports = dont_AddRef(mChildren->ElementAt(i));
-      nsCOMPtr<nsITransaction> txn ( do_QueryInterface(isupports) );
+      nsCOMPtr<nsITransaction> txn (do_QueryElementAt(mChildren, i));
       if (!txn) { return NS_ERROR_NULL_POINTER; }
       result = txn->UndoTransaction();
       if (NS_FAILED(result))
@@ -107,8 +104,7 @@ NS_IMETHODIMP EditAggregateTxn::RedoTransaction(void)
     mChildren->Count(&count);
     for (i=0; i<((PRInt32)count); i++)
     {
-      nsCOMPtr<nsISupports> isupports = dont_AddRef(mChildren->ElementAt(i));
-      nsCOMPtr<nsITransaction> txn ( do_QueryInterface(isupports) );
+      nsCOMPtr<nsITransaction> txn (do_QueryElementAt(mChildren, i));
       if (!txn) { return NS_ERROR_NULL_POINTER; }
       result = txn->RedoTransaction();
       if (NS_FAILED(result))
@@ -138,8 +134,7 @@ NS_IMETHODIMP EditAggregateTxn::Merge(nsITransaction *aTransaction, PRBool *aDid
     NS_ASSERTION(count>0, "bad count");
     if (0<count)
     {
-      nsCOMPtr<nsISupports> isupports = dont_AddRef(mChildren->ElementAt(i));
-      nsCOMPtr<nsITransaction> txn ( do_QueryInterface(isupports) );
+      nsCOMPtr<nsITransaction> txn (do_QueryElementAt(mChildren, i));
       if (!txn) { return NS_ERROR_NULL_POINTER; }
       result = txn->Merge(aTransaction, aDidMerge);
     }
@@ -207,9 +202,8 @@ NS_IMETHODIMP EditAggregateTxn::GetTxnAt(PRInt32 aIndex, EditTxn **aTxn)
   if (0>aIndex || ((PRInt32)txnCount)<=aIndex) {
     return NS_ERROR_UNEXPECTED;
   }
-  nsCOMPtr<nsISupports> isupports = dont_AddRef(mChildren->ElementAt(aIndex));
   // ugh, this is all wrong - what a mess we have with editor transaction interfaces
-  isupports->QueryInterface(EditTxn::GetCID(), (void**)aTxn);
+  mChildren->QueryElementAt(aIndex, EditTxn::GetCID(), (void**)aTxn);
   if (!*aTxn)
     return NS_ERROR_UNEXPECTED;
   return NS_OK;

@@ -277,6 +277,8 @@ typedef void (PR_CALLBACK *nsModuleDestructorProc) (nsIModule *self);
  * @param mCount       : Count of mComponents
  * @param mCtor        : Module user defined constructor
  * @param mDtor        : Module user defined destructor
+ * @param mLibraryDependencies : array of library which this module is 
+ *                               dependent on. 
  *
  **/
 
@@ -287,6 +289,7 @@ struct nsModuleInfo {
     PRUint32                mCount;
     nsModuleConstructorProc mCtor;
     nsModuleDestructorProc  mDtor;
+    const char**            mLibraryDependencies;
 };
 
 /**
@@ -294,7 +297,7 @@ struct nsModuleInfo {
  * binary compatibility. (Ostensibly fix NS_NewGenericModule2() to deal
  * with older rev's at the same time.)
  */
-#define NS_MODULEINFO_VERSION 0x00010000UL // 1.0
+#define NS_MODULEINFO_VERSION 0x00015000UL // 1.5
 
 /**
  * Create a new generic module. Use the NS_IMPL_NSGETMODULE macro, or
@@ -316,8 +319,12 @@ NS_NewGenericModule(const char* moduleName,
 #if defined(XPCOM_TRANSLATE_NSGM_ENTRY_POINT)
 #  define NSMODULEINFO(_name)             _name##_gModuleInfo
 #  define NSGETMODULE_ENTRY_POINT(_info)
+#  define NSDEPENDENT_LIBS(_name)         const char* _name##_gDependlibs[]={DEPENDENT_LIBS "\0"};
+#  define NSDEPENDENT_LIBS_NAME(_name)    _name##_gDependlibs
 #else
 #  define NSMODULEINFO(_name)             gModuleInfo
+#  define NSDEPENDENT_LIBS(_name)         const char* gDependlibs[]={DEPENDENT_LIBS "\0"};
+#  define NSDEPENDENT_LIBS_NAME(_name)    gDependlibs
 #  define NSGETMODULE_ENTRY_POINT(_info)                                      \
 extern "C" NS_EXPORT nsresult                                                 \
 NSGetModule(nsIComponentManager *servMgr,                                     \
@@ -343,6 +350,8 @@ NSGetModule(nsIComponentManager *servMgr,                                     \
 #define NS_IMPL_NSGETMODULE_WITH_DTOR(_name, _components, _dtor)              \
     NS_IMPL_NSGETMODULE_WITH_CTOR_DTOR(_name, _components, nsnull, _dtor)
 
+#ifndef DEPENDENT_LIBS
+
 #define NS_IMPL_NSGETMODULE_WITH_CTOR_DTOR(_name, _components, _ctor, _dtor)  \
 nsModuleInfo NSMODULEINFO(_name) = {                                          \
     NS_MODULEINFO_VERSION,                                                    \
@@ -350,9 +359,27 @@ nsModuleInfo NSMODULEINFO(_name) = {                                          \
     (_components),                                                            \
     (sizeof(_components) / sizeof(_components[0])),                           \
     (_ctor),                                                                  \
-    (_dtor)                                                                   \
+    (_dtor),                                                                  \
+    (nsnull)                                                                  \
 };                                                                            \
 NSGETMODULE_ENTRY_POINT(NSMODULEINFO(_name))
+
+#else // DEPENDENT_LIBS
+
+#define NS_IMPL_NSGETMODULE_WITH_CTOR_DTOR(_name, _components, _ctor, _dtor)  \
+NSDEPENDENT_LIBS(_name)                                                       \
+nsModuleInfo NSMODULEINFO(_name) = {                                          \
+    NS_MODULEINFO_VERSION,                                                    \
+    (#_name),                                                                 \
+    (_components),                                                            \
+    (sizeof(_components) / sizeof(_components[0])),                           \
+    (_ctor),                                                                  \
+    (_dtor),                                                                  \
+    (NSDEPENDENT_LIBS_NAME(_name))                                            \
+};                                                                            \
+NSGETMODULE_ENTRY_POINT(NSMODULEINFO(_name))
+
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 

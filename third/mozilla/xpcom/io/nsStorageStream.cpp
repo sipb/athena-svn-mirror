@@ -57,8 +57,6 @@ nsStorageStream::nsStorageStream()
     : mSegmentedBuffer(0), mSegmentSize(0), mWriteInProgress(PR_FALSE),
       mLastSegmentNum(-1), mWriteCursor(0), mSegmentEnd(0), mLogicalLength(0)
 {
-    NS_INIT_ISUPPORTS();
-
 #if defined(PR_LOGGING)
     //
     // Initialize the global PRLogModule for socket transport logging 
@@ -321,7 +319,6 @@ public:
           mSegmentSize(aSegmentSize), mLogicalCursor(0)
 	{
         NS_ADDREF(mStorageStream);
-	    NS_INIT_ISUPPORTS();
 	}
 
     virtual ~nsStorageInputStream()
@@ -431,6 +428,7 @@ NS_IMETHODIMP
 nsStorageInputStream::ReadSegments(nsWriteSegmentFun writer, void * closure, PRUint32 aCount, PRUint32 *aNumRead)
 {
     PRUint32 count, availableInSegment, remainingCapacity, bytesConsumed;
+    nsresult rv;
 
     remainingCapacity = aCount;
     while (remainingCapacity) {
@@ -446,7 +444,9 @@ nsStorageInputStream::ReadSegments(nsWriteSegmentFun writer, void * closure, PRU
         }
 	
         count = PR_MIN(availableInSegment, remainingCapacity);
-        writer(this, closure, mReadCursor, mLogicalCursor, count, &bytesConsumed);
+        rv = writer(this, closure, mReadCursor, mLogicalCursor, count, &bytesConsumed);
+        if (NS_FAILED(rv) || (bytesConsumed == 0))
+          break;
         remainingCapacity -= bytesConsumed;
         mReadCursor += bytesConsumed;
         mLogicalCursor += bytesConsumed;
@@ -491,6 +491,9 @@ nsStorageInputStream::Seek(PRInt32 aWhence, PRInt32 aOffset)
         NS_NOTREACHED("unexpected whence value");
         return NS_ERROR_UNEXPECTED;
     }
+
+    if (pos == mLogicalCursor)
+        return NS_OK;
 
     return Seek(pos);
 }

@@ -49,7 +49,6 @@
 nsDOMAttributeMap::nsDOMAttributeMap(nsIContent* aContent)
   : mContent(aContent)
 {
-  NS_INIT_ISUPPORTS();
   // We don't add a reference to our content. If it goes away,
   // we'll be told to drop our reference
 }
@@ -104,8 +103,7 @@ nsDOMAttributeMap::GetNamedItem(const nsAString& aAttrName,
       domAttribute = new nsDOMAttribute(mContent, ni, value);
       NS_ENSURE_TRUE(domAttribute, NS_ERROR_OUT_OF_MEMORY);
 
-      rv = domAttribute->QueryInterface(NS_GET_IID(nsIDOMAttr),
-                                        (void **)aAttribute);
+      rv = CallQueryInterface(domAttribute, aAttribute);
     }
   }
 
@@ -159,8 +157,7 @@ nsDOMAttributeMap::SetNamedItem(nsIDOMNode *aNode, nsIDOMNode **aReturn)
         return NS_ERROR_OUT_OF_MEMORY;
       }
 
-      rv = domAttribute->QueryInterface(NS_GET_IID(nsIDOMAttr),
-                                        (void **)aReturn);
+      rv = CallQueryInterface(domAttribute, aReturn);
     }
 
     attribute->GetValue(value);
@@ -204,8 +201,7 @@ nsDOMAttributeMap::RemoveNamedItem(const nsAString& aName,
         return NS_ERROR_OUT_OF_MEMORY;
       }
 
-      rv = domAttribute->QueryInterface(NS_GET_IID(nsIDOMAttr),
-                                        (void **)aReturn);
+      rv = CallQueryInterface(domAttribute, aReturn);
     } else {
       return NS_ERROR_DOM_NOT_FOUND_ERR;
     }
@@ -247,8 +243,7 @@ nsDOMAttributeMap::Item(PRUint32 aIndex, nsIDOMNode** aReturn)
     nsDOMAttribute* domAttribute = new nsDOMAttribute(mContent, ni, value);
     NS_ENSURE_TRUE(domAttribute, NS_ERROR_OUT_OF_MEMORY);
 
-    rv = domAttribute->QueryInterface(NS_GET_IID(nsIDOMAttr),
-                                      (void **)aReturn);
+    rv = CallQueryInterface(domAttribute, aReturn);
   }
   else {
     *aReturn = nsnull;
@@ -284,7 +279,7 @@ nsDOMAttributeMap::GetNamedItemNS(const nsAString& aNamespaceURI,
 
   nsresult rv = NS_OK;
   if (mContent) {
-    nsCOMPtr<nsIAtom> nameAtom(dont_AddRef(NS_NewAtom(aLocalName)));
+    nsCOMPtr<nsIAtom> nameAtom = do_GetAtom(aLocalName);
     PRInt32 nameSpaceID = kNameSpaceID_None;
     nsCOMPtr<nsIAtom> prefix;
 
@@ -297,11 +292,8 @@ nsDOMAttributeMap::GetNamedItemNS(const nsAString& aNamespaceURI,
     NS_ENSURE_TRUE(nimgr, NS_ERROR_FAILURE);
 
     if (aNamespaceURI.Length()) {
-      nsCOMPtr<nsINameSpaceManager> nsmgr;
-      nimgr->GetNamespaceManager(*getter_AddRefs(nsmgr));
-      NS_ENSURE_TRUE(nsmgr, NS_ERROR_FAILURE);
-
-      nsmgr->GetNameSpaceID(aNamespaceURI, nameSpaceID);
+      nsContentUtils::GetNSManagerWeakRef()->GetNameSpaceID(aNamespaceURI,
+                                                            nameSpaceID);
 
       if (nameSpaceID == kNameSpaceID_Unknown)
         return NS_OK;
@@ -321,8 +313,7 @@ nsDOMAttributeMap::GetNamedItemNS(const nsAString& aNamespaceURI,
       domAttribute = new nsDOMAttribute(mContent, ni, value);
       NS_ENSURE_TRUE(domAttribute, NS_ERROR_OUT_OF_MEMORY);
 
-      rv = domAttribute->QueryInterface(NS_GET_IID(nsIDOMAttr),
-                                        (void **)aReturn);
+      rv = CallQueryInterface(domAttribute, aReturn);
     }
   }
 
@@ -380,8 +371,7 @@ nsDOMAttributeMap::SetNamedItemNS(nsIDOMNode* aArg, nsIDOMNode** aReturn)
         return NS_ERROR_OUT_OF_MEMORY;
       }
 
-      rv = domAttribute->QueryInterface(NS_GET_IID(nsIDOMAttr),
-                                        (void **)aReturn);
+      rv = CallQueryInterface(domAttribute, aReturn);
     }
 
     attribute->GetValue(value);
@@ -403,7 +393,7 @@ nsDOMAttributeMap::RemoveNamedItemNS(const nsAString& aNamespaceURI,
   nsresult rv = NS_OK;
 
   if (mContent) {
-    nsCOMPtr<nsIAtom> nameAtom(dont_AddRef(NS_NewAtom(aLocalName)));
+    nsCOMPtr<nsIAtom> nameAtom = do_GetAtom(aLocalName);
     PRInt32 nameSpaceID = kNameSpaceID_None;
     nsCOMPtr<nsIDOMNode> attribute;
     nsCOMPtr<nsIAtom> prefix;
@@ -417,11 +407,8 @@ nsDOMAttributeMap::RemoveNamedItemNS(const nsAString& aNamespaceURI,
     NS_ENSURE_TRUE(nimgr, NS_ERROR_FAILURE);
 
     if (aNamespaceURI.Length()) {
-      nsCOMPtr<nsINameSpaceManager> nsmgr;
-      nimgr->GetNamespaceManager(*getter_AddRefs(nsmgr));
-      NS_ENSURE_TRUE(nsmgr, NS_ERROR_FAILURE);
-
-      nsmgr->GetNameSpaceID(aNamespaceURI, nameSpaceID);
+      nsContentUtils::GetNSManagerWeakRef()->GetNameSpaceID(aNamespaceURI,
+                                                            nameSpaceID);
 
       if (nameSpaceID == kNameSpaceID_Unknown)
         return NS_ERROR_DOM_NOT_FOUND_ERR;
@@ -442,8 +429,7 @@ nsDOMAttributeMap::RemoveNamedItemNS(const nsAString& aNamespaceURI,
         return NS_ERROR_OUT_OF_MEMORY;
       }
 
-      rv = domAttribute->QueryInterface(NS_GET_IID(nsIDOMAttr),
-                                        (void **)aReturn);
+      rv = CallQueryInterface(domAttribute, aReturn);
     } else {
       return NS_ERROR_DOM_NOT_FOUND_ERR;
     }
@@ -453,16 +439,3 @@ nsDOMAttributeMap::RemoveNamedItemNS(const nsAString& aNamespaceURI,
 
   return rv;
 }
-
-
-#ifdef DEBUG
-nsresult
-nsDOMAttributeMap::SizeOfNamedNodeMap(nsIDOMNamedNodeMap* aMap,
-                                      nsISizeOfHandler* aSizer,
-                                      PRUint32* aResult)
-{
-  if (!aResult) return NS_ERROR_NULL_POINTER;
-  *aResult = sizeof(nsDOMAttributeMap);
-  return NS_OK;
-}
-#endif

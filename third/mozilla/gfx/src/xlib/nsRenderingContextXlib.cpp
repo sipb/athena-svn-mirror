@@ -74,7 +74,34 @@ static void Widen8To16AndDraw(Drawable    drawable,
                               int          text_length);
 
 
-nsGCCacheXlib *nsRenderingContextXlib::gcCache = nsnull;
+class nsRenderingContextXlibContext
+{
+public:
+  nsGCCacheXlib mGcCache;
+};
+
+nsresult CreateRenderingContextXlibContext(nsIDeviceContext *aDevice, nsRenderingContextXlibContext **aContext)
+{
+  nsRenderingContextXlibContext *rcctx;
+  
+  *aContext = nsnull;
+  
+  rcctx = new nsRenderingContextXlibContext();
+  if (!rcctx)
+    return NS_ERROR_OUT_OF_MEMORY;
+  
+  /* No |Init()|-function to call (yet) */ 
+  *aContext = rcctx;
+  
+  return NS_OK;
+}
+
+void DeleteRenderingContextXlibContext(nsRenderingContextXlibContext *aContext)
+{
+  if (aContext) {
+    delete aContext;
+  }
+}
 
 class GraphicsState
 {
@@ -120,7 +147,6 @@ nsRenderingContextXlib::nsRenderingContextXlib() :
   mCurrentLineStyle(nsLineStyle_kSolid)
 {
   PR_LOG(RenderingContextXlibLM, PR_LOG_DEBUG, ("nsRenderingContextXlib::nsRenderingContextXlib()\n"));
-  NS_INIT_ISUPPORTS();
 
   PushState();
 }
@@ -141,16 +167,6 @@ nsRenderingContextXlib::~nsRenderingContextXlib()
   
   if (mGC)
     mGC->Release();
-}
-
-/*static*/ nsresult
-nsRenderingContextXlib::Shutdown()
-{
-  if (gcCache) {
-    delete gcCache;
-    gcCache = nsnull;
-  }
-  return NS_OK;
 }
 
 NS_IMETHODIMP
@@ -198,6 +214,7 @@ nsRenderingContextXlib::Init(nsIDeviceContext* aContext, nsDrawingSurface aSurfa
   mDisplay = xxlib_rgb_get_display(mXlibRgbHandle);
 
   mSurface = (nsIDrawingSurfaceXlib *)aSurface;
+  mOffscreenSurface = mSurface;
 
   return CommonInit();
 }
@@ -480,30 +497,42 @@ nsRenderingContextXlib::IsVisibleRect(const nsRect& aRect, PRBool &aVisible)
   return NS_OK;
 }
 
-NS_IMETHODIMP
-nsRenderingContextXlib::SetClipRect(const nsRect& aRect, nsClipCombine aCombine, PRBool &aClipState)
+NS_IMETHODIMP 
+nsRenderingContextXlib::SetClipRect(const nsRect& aRect,
+                                    nsClipCombine aCombine,
+                                    PRBool &aClipEmpty)
 {
   PR_LOG(RenderingContextXlibLM, PR_LOG_DEBUG, ("nsRenderingContextXlib::SetClipRect()\n"));
   nsRect trect = aRect;
   mTranMatrix->TransformCoord(&trect.x, &trect.y,
-                           &trect.width, &trect.height);
-  switch(aCombine) {
-  case nsClipCombine_kIntersect:
-    mClipRegion->Intersect(trect.x,trect.y,trect.width,trect.height);
-    break;
-  case nsClipCombine_kUnion:
-    mClipRegion->Union(trect.x,trect.y,trect.width,trect.height);
-    break;
-  case nsClipCombine_kSubtract:
-    mClipRegion->Subtract(trect.x,trect.y,trect.width,trect.height);
-    break;
-  case nsClipCombine_kReplace:
-    mClipRegion->SetTo(trect.x,trect.y,trect.width,trect.height);
-    break;
-  }
-  aClipState = mClipRegion->IsEmpty();
-
+                              &trect.width, &trect.height);
+  SetClipRectInPixels(trect, aCombine, aClipEmpty);
   return NS_OK;
+}
+
+void nsRenderingContextXlib::SetClipRectInPixels(const nsRect& aRect,
+                                                 nsClipCombine aCombine,
+                                                 PRBool &aClipEmpty)
+{
+  PR_LOG(RenderingContextXlibLM, PR_LOG_DEBUG, ("nsRenderingContextXlib::SetClipRectInPixels()\n"));
+
+  switch(aCombine)
+  {
+    case nsClipCombine_kIntersect:
+      mClipRegion->Intersect(aRect.x,aRect.y,aRect.width,aRect.height);
+      break;
+    case nsClipCombine_kUnion:
+      mClipRegion->Union(aRect.x,aRect.y,aRect.width,aRect.height);
+      break;
+    case nsClipCombine_kSubtract:
+      mClipRegion->Subtract(aRect.x,aRect.y,aRect.width,aRect.height);
+      break;
+    case nsClipCombine_kReplace:
+      mClipRegion->SetTo(aRect.x,aRect.y,aRect.width,aRect.height);
+      break;
+  }
+  
+  aClipEmpty = mClipRegion->IsEmpty();
 }
 
 NS_IMETHODIMP
@@ -605,15 +634,13 @@ void nsRenderingContextXlib::UpdateGC()
    if (mClipRegion) { 
      mClipRegion->GetNativeRegion((void*&)rgn);
    }
- 
-   if (!gcCache) {
-     gcCache = new nsGCCacheXlib();
-     if (!gcCache) 
-       return;
-   }
 
-   mGC = gcCache->GetGC(mDisplay, drawable,
-                        valuesMask, &values, rgn);
+   nsRenderingContextXlibContext *rcContext;
+   nsIDeviceContext *dc = mContext;
+   NS_STATIC_CAST(nsDeviceContextX *, dc)->GetRCContext(rcContext);
+   
+   mGC = rcContext->mGcCache.GetGC(mDisplay, drawable,
+                                  valuesMask, &values, rgn);
 }
 
 NS_IMETHODIMP
@@ -744,7 +771,7 @@ nsRenderingContextXlib::GetCurrentTransform(nsTransform2D *&aTransform)
 }
 
 NS_IMETHODIMP
-nsRenderingContextXlib::CreateDrawingSurface(nsRect *aBounds,
+nsRenderingContextXlib::CreateDrawingSurface(const nsRect& aBounds,
                                              PRUint32 aSurfFlags,
                                              nsDrawingSurface &aSurface)
 {
@@ -755,8 +782,7 @@ nsRenderingContextXlib::CreateDrawingSurface(nsRect *aBounds,
     return NS_ERROR_FAILURE;
   }
 
-  NS_ENSURE_TRUE(aBounds != nsnull, NS_ERROR_FAILURE);
-  NS_ENSURE_TRUE((aBounds->width > 0) && (aBounds->height > 0), NS_ERROR_FAILURE);
+  NS_ENSURE_TRUE((aBounds.width > 0) && (aBounds.height > 0), NS_ERROR_FAILURE);
  
   nsresult rv = NS_ERROR_FAILURE;
   nsDrawingSurfaceXlibImpl *surf = new nsDrawingSurfaceXlibImpl();
@@ -765,7 +791,7 @@ nsRenderingContextXlib::CreateDrawingSurface(nsRect *aBounds,
   {
     NS_ADDREF(surf);
     UpdateGC();
-    rv = surf->Init(mXlibRgbHandle, mGC, aBounds->width, aBounds->height, aSurfFlags);    
+    rv = surf->Init(mXlibRgbHandle, mGC, aBounds.width, aBounds.height, aSurfFlags);    
   }
 
   aSurface = (nsDrawingSurface)surf;
@@ -1654,7 +1680,8 @@ do_BreakGetTextDimensions(const nsFontSwitchXlib *aFontSwitch,
       // Find the nearest place to break that is less than or equal to
       // the estimated break offset
       breakIndex = data->mPrevBreakState_BreakIndex;
-      while (data->mBreaks[breakIndex + 1] <= estimatedBreakOffset) {
+      while (breakIndex + 1 < data->mNumBreaks &&
+             data->mBreaks[breakIndex + 1] <= estimatedBreakOffset) {
         ++breakIndex;
       }
 
@@ -2289,82 +2316,6 @@ nsRenderingContextXlib::DrawString(const nsString& aString,
 {
   return DrawString(aString.get(), aString.Length(),
                     aX, aY, aFontID, aSpacing);
-}
-
-NS_IMETHODIMP
-nsRenderingContextXlib::DrawImage(nsIImage *aImage,
-                                  nscoord aX, nscoord aY)
-{
-  PR_LOG(RenderingContextXlibLM, PR_LOG_DEBUG, ("nsRenderingContextXlib::DrawImage(aImage, aX, aY)\n"));
-
-  nscoord width, height;
-
-  // we have to do this here because we are doing a transform below
-  width = NSToCoordRound(mP2T * aImage->GetWidth());
-  height = NSToCoordRound(mP2T * aImage->GetHeight());
-
-  return DrawImage(aImage, aX, aY, width, height);
-}
-
-NS_IMETHODIMP
-nsRenderingContextXlib::DrawImage(nsIImage *aImage, const nsRect& aRect)
-{
-  PR_LOG(RenderingContextXlibLM, PR_LOG_DEBUG, ("nsRenderingContextXlib::DrawImage(aImage, aRect)\n"));
-  return DrawImage(aImage,
-                   aRect.x,
-                   aRect.y,
-                   aRect.width,
-                   aRect.height);
-}
-
-NS_IMETHODIMP
-nsRenderingContextXlib::DrawImage(nsIImage *aImage,
-                                  nscoord aX, nscoord aY,
-                                  nscoord aWidth, nscoord aHeight)
-{
-  PR_LOG(RenderingContextXlibLM, PR_LOG_DEBUG, ("nsRenderingContextXlib::DrawImage()\n"));
-
-  nscoord x, y, w, h;
-
-  x = aX;
-  y = aY;
-  w = aWidth;
-  h = aHeight;
-
-  mTranMatrix->TransformCoord(&x, &y, &w, &h);
-
-  UpdateGC();
-
-  return aImage->Draw(*this, mSurface,
-                      x, y, w, h);
-}
-
-NS_IMETHODIMP
-nsRenderingContextXlib::DrawImage(nsIImage *aImage,
-                                  const nsRect& aSRect,
-                                  const nsRect& aDRect)
-{
-  PR_LOG(RenderingContextXlibLM, PR_LOG_DEBUG, ("nsRenderingContextXlib::DrawImage()\n"));
-
-  nsRect sr, dr;
-
-  sr = aSRect;
-  mTranMatrix->TransformCoord(&sr.x, &sr.y,
-                            &sr.width, &sr.height);
-  sr.x -= mTranMatrix->GetXTranslationCoord();
-  sr.y -= mTranMatrix->GetYTranslationCoord();
-
-  dr = aDRect;
-  mTranMatrix->TransformCoord(&dr.x, &dr.y,
-                           &dr.width, &dr.height);
-
-  UpdateGC();
-
-  return aImage->Draw(*this, mSurface,
-                      sr.x, sr.y,
-                      sr.width, sr.height,
-                      dr.x, dr.y,
-                      dr.width, dr.height);
 }
 
 NS_IMETHODIMP

@@ -38,9 +38,10 @@
 #include "baseutils.h"
 #include "dom.h"
 #include "List.h"
-#include "txAtom.h"
+#include "nsString.h"
+#include "nsIAtom.h"
 #include "TxObject.h"
-#include "TxString.h"
+#include "nsAutoPtr.h"
 
 /*
   XPath class definitions.
@@ -84,7 +85,7 @@ public:
      * other #toString() methods for Expressions.
      * @return the String representation of this Expr.
     **/
-    virtual void toString(String& str) = 0;
+    virtual void toString(nsAString& str) = 0;
 
 }; //-- Expr
 
@@ -93,11 +94,11 @@ public:
 
 #define TX_DECL_EXPR \
     TX_DECL_EVALUATE; \
-    void toString(String& aDest)
+    void toString(nsAString& aDest)
 
 #define TX_DECL_FUNCTION \
     TX_DECL_EVALUATE; \
-    nsresult getNameAtom(txAtom** aAtom)
+    nsresult getNameAtom(nsIAtom** aAtom)
 
 /**
  * This class represents a FunctionCall as defined by the XPath 1.0
@@ -107,8 +108,8 @@ class FunctionCall : public Expr {
 
 public:
 
-    static const String INVALID_PARAM_COUNT;
-    static const String INVALID_PARAM_VALUE;
+    static const nsString INVALID_PARAM_COUNT;
+    static const nsString INVALID_PARAM_VALUE;
 
     virtual ~FunctionCall();
 
@@ -116,7 +117,7 @@ public:
      * Virtual methods from Expr 
     **/
     virtual ExprResult* evaluate(txIEvalContext* aContext) = 0;
-    void toString(String& aDest);
+    void toString(nsAString& aDest);
 
     /**
      * Adds the given parameter to this FunctionCall's parameter list
@@ -143,7 +144,7 @@ protected:
      * The value is appended to the given destination String
      */
     void evaluateToString(Expr* aExpr, txIEvalContext* aContext,
-                          String& aDest);
+                          nsAString& aDest);
 
     /*
      * Evaluates the given Expression and converts its result to a number.
@@ -164,7 +165,7 @@ protected:
     /*
      * Returns the name of the function as an atom.
      */
-    virtual nsresult getNameAtom(txAtom** aAtom) = 0;
+    virtual nsresult getNameAtom(nsIAtom** aAtom) = 0;
 }; //-- FunctionCall
 
 
@@ -206,13 +207,13 @@ public:
      */
     virtual MBool matches(Node* aNode, txIMatchContext* aContext) = 0;
     virtual double getDefaultPriority() = 0;
-    virtual void toString(String& aDest) = 0;
+    virtual void toString(nsAString& aDest) = 0;
 };
 
 #define TX_DECL_NODE_TEST \
     MBool matches(Node* aNode, txIMatchContext* aContext); \
     double getDefaultPriority(); \
-    void toString(String& aDest)
+    void toString(nsAString& aDest)
 
 /*
  * This class represents a NameTest as defined by the XPath spec
@@ -224,7 +225,7 @@ public:
      * Creates a new txNameTest with the given type and the given
      * principal node type
      */
-    txNameTest(txAtom* aPrefix, txAtom* aLocalName, PRInt32 aNSID,
+    txNameTest(nsIAtom* aPrefix, nsIAtom* aLocalName, PRInt32 aNSID,
                Node::NodeType aNodeType);
 
     ~txNameTest();
@@ -232,8 +233,8 @@ public:
     TX_DECL_NODE_TEST;
 
 private:
-    txAtom* mPrefix;
-    txAtom* mLocalName;
+    nsCOMPtr<nsIAtom> mPrefix;
+    nsCOMPtr<nsIAtom> mLocalName;
     PRInt32 mNamespace;
     Node::NodeType mNodeType;
 };
@@ -261,13 +262,13 @@ public:
     /*
      * Sets the name of the node to match. Only availible for pi nodes
      */
-    void setNodeName(const String& aName);
+    void setNodeName(const nsAString& aName);
 
     TX_DECL_NODE_TEST;
 
 private:
     NodeType mNodeType;
-    txAtom* mNodeName;
+    nsCOMPtr<nsIAtom> mNodeName;
 };
 
 /**
@@ -309,7 +310,7 @@ public:
      * other #toString() methods for Expressions.
      * @return the String representation of this PredicateList.
     **/
-    virtual void toString(String& dest);
+    virtual void toString(nsAString& dest);
 
 protected:
     //-- list of predicates
@@ -343,18 +344,13 @@ public:
      * @param nodeExpr the NodeExpr to use when matching Nodes
      * @param axisIdentifier the Axis Identifier in which to search for nodes
     **/
-    LocationStep(txNodeTest* aNodeTest, LocationStepType aAxisIdentifier);
-
-    /**
-     * Destructor, will delete all predicates and the given NodeExpr
-    **/
-    virtual ~LocationStep();
+    LocationStep(nsAutoPtr<txNodeTest> aNodeTest, LocationStepType aAxisIdentifier);
 
     TX_DECL_EXPR;
 
 private:
 
-    txNodeTest* mNodeTest;
+    nsAutoPtr<txNodeTest> mNodeTest;
     LocationStepType mAxisIdentifier;
 
     void fromDescendants(Node* node, txIMatchContext* aContext,
@@ -408,13 +404,13 @@ class StringExpr : public Expr {
 
 public:
 
-    StringExpr(const String& value);
+    StringExpr(const nsAString& value);
 
     TX_DECL_EXPR;
 
 private:
 
-    String value;
+    nsString value;
 }; //-- StringExpr
 
 
@@ -521,11 +517,8 @@ private:
 class RelationalExpr : public Expr {
 
 public:
-
-    //-- RelationalExpr Types
-    //-- LF, changed from static const short to enum
-    enum _RelationalExprType {
-        EQUAL = 1,
+    enum RelationalExprType {
+        EQUAL,
         NOT_EQUAL,
         LESS_THAN,
         GREATER_THAN,
@@ -533,18 +526,17 @@ public:
         GREATER_OR_EQUAL
     };
 
-     RelationalExpr(Expr* leftExpr, Expr* rightExpr, short op);
-     ~RelationalExpr();
+    RelationalExpr(Expr* aLeftExpr, Expr* aRightExpr, RelationalExprType aOp);
 
     TX_DECL_EXPR;
 
 private:
-    short op;
-    Expr* leftExpr;
-    Expr* rightExpr;
+    PRBool compareResults(ExprResult* aLeft, ExprResult* aRight);
 
-    MBool compareResults(ExprResult* left, ExprResult* right);
-}; //-- RelationalExpr
+    nsAutoPtr<Expr> mLeftExpr;
+    nsAutoPtr<Expr> mRightExpr;
+    RelationalExprType mOp;
+};
 
 /**
  * VariableRefExpr
@@ -554,14 +546,14 @@ class VariableRefExpr : public Expr {
 
 public:
 
-    VariableRefExpr(txAtom* aPrefix, txAtom* aLocalName, PRInt32 aNSID);
+    VariableRefExpr(nsIAtom* aPrefix, nsIAtom* aLocalName, PRInt32 aNSID);
     ~VariableRefExpr();
 
     TX_DECL_EXPR;
 
 private:
-    txAtom* mPrefix;
-    txAtom* mLocalName;
+    nsCOMPtr<nsIAtom> mPrefix;
+    nsCOMPtr<nsIAtom> mLocalName;
     PRInt32 mNamespace;
 };
 
@@ -596,8 +588,6 @@ public:
     TX_DECL_EXPR;
 
 private:
-    static const String RTF_INVALID_OP;
-    static const String NODESET_EXPECTED;
     struct PathExprItem {
         Expr* expr;
         PathOperator pathOp;

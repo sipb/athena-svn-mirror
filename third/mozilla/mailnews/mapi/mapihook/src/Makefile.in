@@ -34,6 +34,7 @@ IS_COMPONENT	= 1
 META_COMPONENT	= mail
 
 REQUIRES	= xpcom \
+		  xpcom_obsolete \
                   string \
 		  MapiProxy \
 		  appshell \
@@ -78,20 +79,29 @@ CPPSRCS		= \
 
 LOBJS		= ../build/msgMapi_i.$(OBJ_SUFFIX)
 
+ifndef MOZ_STATIC_MAIL_BUILD
+
 ifdef USE_SHORT_LIBNAME
 EXTRA_DSO_LIBS	= msgbsutl
 else
 EXTRA_DSO_LIBS	= msgbaseutil
 endif
 
+else
+SHARED_LIBRARY_LIBS = $(DIST)/lib/$(LIB_PREFIX)msgbsutl_s.$(LIB_SUFFIX)
+endif
+
 EXTRA_DSO_LDOPTS= \
 		$(EXTRA_DSO_LIBS) \
-		$(XPCOM_LIBS) \
 		$(MOZ_UNICHARUTIL_LIBS) \
+		$(XPCOM_LIBS) \
+		$(MOZ_XPCOM_OBSOLETE_LIBS) \
 		$(NSPR_LIBS) \
 		$(NULL)
 
 OS_LIBS		+= ole32.lib
+
+SRCS_IN_OBJDIR	= 1
 
 include $(topsrcdir)/config/rules.mk
 

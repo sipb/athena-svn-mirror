@@ -62,10 +62,12 @@
 #include "nsIRDFNode.h"
 #include "nsIRDFObserver.h"
 #include "nsIRDFInMemoryDataSource.h"
+#include "nsIRDFPropagatableDataSource.h"
 #include "nsIRDFPurgeableDataSource.h"
 #include "nsIRDFService.h"
 #include "nsIServiceManager.h"
 #include "nsISupportsArray.h"
+#include "nsCOMArray.h"
 #include "nsAutoLock.h"
 #include "nsEnumeratorUtils.h"
 #include "nsVoidArray.h"  // XXX introduces dependency on raptorbase
@@ -282,6 +284,7 @@ class InMemoryResourceEnumeratorImpl;
 
 class InMemoryDataSource : public nsIRDFDataSource,
                            public nsIRDFInMemoryDataSource,
+                           public nsIRDFPropagatableDataSource,
                            public nsIRDFPurgeableDataSource
 {
 protected:
@@ -295,7 +298,7 @@ protected:
     PLDHashTable mForwardArcs; 
     PLDHashTable mReverseArcs; 
 
-    nsCOMPtr<nsISupportsArray> mObservers;  
+    nsCOMArray<nsIRDFObserver> mObservers;  
     PRUint32                   mNumObservers;
 
     static PLDHashOperator PR_CALLBACK
@@ -337,6 +340,9 @@ public:
 
     // nsIRDFInMemoryDataSource methods
     NS_DECL_NSIRDFINMEMORYDATASOURCE
+
+    // nsIRDFPropagatableDataSource methods
+    NS_DECL_NSIRDFPROPAGATABLEDATASOURCE
 
     // nsIRDFPurgeableDataSource methods
     NS_DECL_NSIRDFPURGEABLEDATASOURCE
@@ -395,6 +401,7 @@ public:
     // This datasource's monitor object.
     PRLock* mLock;
 #endif
+    PRBool  mPropagateChanges;
 };
 
 //----------------------------------------------------------------------
@@ -483,8 +490,6 @@ InMemoryAssertionEnumeratorImpl::InMemoryAssertionEnumeratorImpl(
       mTruthValue(aTruthValue),
       mNextAssertion(nsnull)
 {
-    NS_INIT_ISUPPORTS();
-
     NS_ADDREF(mDataSource);
     NS_IF_ADDREF(mSource);
     NS_ADDREF(mProperty);
@@ -689,7 +694,6 @@ InMemoryArcsEnumeratorImpl::InMemoryArcsEnumeratorImpl(InMemoryDataSource* aData
       mTarget(aTarget),
       mCurrent(nsnull)
 {
-    NS_INIT_ISUPPORTS();
     NS_ADDREF(mDataSource);
     NS_IF_ADDREF(mSource);
     NS_IF_ADDREF(mTarget);
@@ -842,6 +846,7 @@ NS_NewRDFInMemoryDataSource(nsISupports* aOuter, const nsIID& aIID, void** aResu
     NS_PRECONDITION(aResult != nsnull, "null ptr");
     if (! aResult)
         return NS_ERROR_NULL_POINTER;
+    *aResult = nsnull;
 
     if (aOuter && !aIID.Equals(NS_GET_IID(nsISupports))) {
         NS_ERROR("aggregation requires nsISupports");
@@ -851,21 +856,16 @@ NS_NewRDFInMemoryDataSource(nsISupports* aOuter, const nsIID& aIID, void** aResu
     InMemoryDataSource* datasource = new InMemoryDataSource(aOuter);
     if (! datasource)
         return NS_ERROR_OUT_OF_MEMORY;
+    NS_ADDREF(datasource);
 
-    nsresult rv;
-
-    rv = datasource->Init();
+    nsresult rv = datasource->Init();
     if (NS_SUCCEEDED(rv)) {
         datasource->fAggregated.AddRef();
         rv = datasource->AggregatedQueryInterface(aIID, aResult); // This'll AddRef()
         datasource->fAggregated.Release();
-
-        if (NS_SUCCEEDED(rv))
-            return rv;
     }
 
-    delete datasource;
-    *aResult = nsnull;
+    NS_RELEASE(datasource);
     return rv;
 }
 
@@ -891,6 +891,7 @@ InMemoryDataSource::InMemoryDataSource(nsISupports* aOuter)
 #ifdef MOZ_THREADSAFE_RDF
     mLock = nsnull;
 #endif
+    mPropagateChanges = PR_TRUE;
 }
 
 
@@ -908,12 +909,6 @@ InMemoryDataSource::Init()
                       nsnull,
                       sizeof(Entry),
                       PL_DHASH_MIN_SIZE);
-
-    // allocate "mObservers" at Init() time so
-    // don't have to null-check it before usage later
-    nsresult rv;
-    rv = NS_NewISupportsArray(getter_AddRefs(mObservers));
-    if (NS_FAILED(rv)) return rv;
 
 #ifdef MOZ_THREADSAFE_RDF
     mLock = PR_NewLock();
@@ -993,6 +988,9 @@ InMemoryDataSource::AggregatedQueryInterface(REFNSIID aIID, void** aResult)
     }
     else if (aIID.Equals(NS_GET_IID(nsIRDFInMemoryDataSource))) {
         *aResult = NS_STATIC_CAST(nsIRDFInMemoryDataSource*, this);
+    }
+    else if (aIID.Equals(NS_GET_IID(nsIRDFPropagatableDataSource))) {
+        *aResult = NS_STATIC_CAST(nsIRDFPropagatableDataSource*, this);
     }
     else if (aIID.Equals(NS_GET_IID(nsIRDFPurgeableDataSource))) {
         *aResult = NS_STATIC_CAST(nsIRDFPurgeableDataSource*, this);
@@ -1401,16 +1399,15 @@ InMemoryDataSource::Assert(nsIRDFResource* aSource,
     }
 
     // notify observers
-    for (PRInt32 i = (PRInt32)mNumObservers - 1; i >= 0; --i) {
-        nsIRDFObserver* obs = (nsIRDFObserver*) mObservers->ElementAt(i);
+    for (PRInt32 i = (PRInt32)mNumObservers - 1; mPropagateChanges && i >= 0; --i) {
+        nsIRDFObserver* obs = mObservers[i];
 
         // XXX this should never happen, but it does, and we can't figure out why.
-        NS_ASSERTION(obs != nsnull, "observer array corrupted!");
+        NS_ASSERTION(obs, "observer array corrupted!");
         if (! obs)
           continue;
 
         obs->OnAssert(this, aSource, aProperty, aTarget);
-        NS_RELEASE(obs);
         // XXX ignore return value?
     }
 
@@ -1554,16 +1551,15 @@ InMemoryDataSource::Unassert(nsIRDFResource* aSource,
     }
 
     // Notify the world
-    for (PRInt32 i = PRInt32(mNumObservers) - 1; i >= 0; --i) {
-        nsIRDFObserver* obs = (nsIRDFObserver*) mObservers->ElementAt(i);
+    for (PRInt32 i = PRInt32(mNumObservers) - 1; mPropagateChanges && i >= 0; --i) {
+        nsIRDFObserver* obs = mObservers[i];
 
         // XXX this should never happen, but it does, and we can't figure out why.
-        NS_ASSERTION(obs != nsnull, "observer array corrupted!");
+        NS_ASSERTION(obs, "observer array corrupted!");
         if (! obs)
           continue;
 
         obs->OnUnassert(this, aSource, aProperty, aTarget);
-        NS_RELEASE(obs);
         // XXX ignore return value?
     }
 
@@ -1609,16 +1605,15 @@ InMemoryDataSource::Change(nsIRDFResource* aSource,
     }
 
     // Notify the world
-    for (PRInt32 i = PRInt32(mNumObservers) - 1; i >= 0; --i) {
-        nsIRDFObserver* obs = (nsIRDFObserver*) mObservers->ElementAt(i);
+    for (PRInt32 i = PRInt32(mNumObservers) - 1; mPropagateChanges && i >= 0; --i) {
+        nsIRDFObserver* obs = mObservers[i];
 
         // XXX this should never happen, but it does, and we can't figure out why.
-        NS_ASSERTION(obs != nsnull, "observer array corrupted!");
+        NS_ASSERTION(obs, "observer array corrupted!");
         if (! obs)
           continue;
 
         obs->OnChange(this, aSource, aProperty, aOldTarget, aNewTarget);
-        NS_RELEASE(obs);
         // XXX ignore return value?
     }
 
@@ -1664,16 +1659,15 @@ InMemoryDataSource::Move(nsIRDFResource* aOldSource,
     }
 
     // Notify the world
-    for (PRInt32 i = PRInt32(mNumObservers) - 1; i >= 0; --i) {
-        nsIRDFObserver* obs = (nsIRDFObserver*) mObservers->ElementAt(i);
+    for (PRInt32 i = PRInt32(mNumObservers) - 1; mPropagateChanges && i >= 0; --i) {
+        nsIRDFObserver* obs = mObservers[i];
 
         // XXX this should never happen, but it does, and we can't figure out why.
-        NS_ASSERTION(obs != nsnull, "observer array corrupted!");
+        NS_ASSERTION(obs, "observer array corrupted!");
         if (! obs)
           continue;
 
         obs->OnMove(this, aOldSource, aNewSource, aProperty, aTarget);
-        NS_RELEASE(obs);
         // XXX ignore return value?
     }
 
@@ -1689,8 +1683,8 @@ InMemoryDataSource::AddObserver(nsIRDFObserver* aObserver)
         return NS_ERROR_NULL_POINTER;
 
     NS_AUTOLOCK(mLock);
-    mObservers->AppendElement(aObserver);
-    (void)mObservers->Count(&mNumObservers);
+    mObservers.AppendObject(aObserver);
+    mNumObservers = mObservers.Count();
 
     return NS_OK;
 }
@@ -1703,10 +1697,10 @@ InMemoryDataSource::RemoveObserver(nsIRDFObserver* aObserver)
         return NS_ERROR_NULL_POINTER;
 
     NS_AUTOLOCK(mLock);
-    mObservers->RemoveElement(aObserver);
+    mObservers.RemoveObject(aObserver);
     // note: use Count() instead of just decrementing
     // in case aObserver wasn't in list, for example
-    (void)mObservers->Count(&mNumObservers);
+    mNumObservers = mObservers.Count();
 
     return NS_OK;
 }
@@ -1835,14 +1829,6 @@ InMemoryDataSource::GetAllResources(nsISimpleEnumerator** aResult)
 }
 
 NS_IMETHODIMP
-InMemoryDataSource::GetAllCommands(nsIRDFResource* source,
-                                   nsIEnumerator/*<nsIRDFResource>*/** commands)
-{
-    NS_NOTYETIMPLEMENTED("write me!");
-    return NS_ERROR_NOT_IMPLEMENTED;
-}
-
-NS_IMETHODIMP
 InMemoryDataSource::GetAllCmds(nsIRDFResource* source,
                                nsISimpleEnumerator/*<nsIRDFResource>*/** commands)
 {
@@ -1866,6 +1852,27 @@ InMemoryDataSource::DoCommand(nsISupportsArray/*<nsIRDFResource>*/* aSources,
 {
     return NS_OK;
 }
+
+NS_IMETHODIMP
+InMemoryDataSource::BeginUpdateBatch()
+{
+    for (PRInt32 i = PRInt32(mNumObservers) - 1; mPropagateChanges && i >= 0; --i) {
+        nsIRDFObserver* obs = mObservers[i];
+        obs->OnBeginUpdateBatch(this);
+    }
+    return NS_OK;
+}
+
+NS_IMETHODIMP
+InMemoryDataSource::EndUpdateBatch()
+{
+    for (PRInt32 i = PRInt32(mNumObservers) - 1; mPropagateChanges && i >= 0; --i) {
+        nsIRDFObserver* obs = mObservers[i];
+        obs->OnEndUpdateBatch(this);
+    }
+    return NS_OK;
+}
+
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -1920,6 +1927,23 @@ InMemoryDataSource::EnsureFastContainment(nsIRDFResource* aSource)
         first = nextRef;
     }
     return(NS_OK);
+}
+
+
+////////////////////////////////////////////////////////////////////////
+// nsIRDFPropagatableDataSource methods
+NS_IMETHODIMP
+InMemoryDataSource::GetPropagateChanges(PRBool* aPropagateChanges)
+{
+    *aPropagateChanges = mPropagateChanges;
+    return NS_OK;
+}
+
+NS_IMETHODIMP
+InMemoryDataSource::SetPropagateChanges(PRBool aPropagateChanges)
+{
+    mPropagateChanges = aPropagateChanges;
+    return NS_OK;
 }
 
 
@@ -2023,8 +2047,9 @@ InMemoryDataSource::Sweep()
 #endif
         if (!(as->mHashEntry))
         {
-            for (PRInt32 i = PRInt32(mNumObservers) - 1; i >= 0; --i) {
-                nsIRDFObserver* obs = (nsIRDFObserver*) mObservers->ElementAt(i);
+            for (PRInt32 i = PRInt32(mNumObservers) - 1; mPropagateChanges && i >= 0; --i) {
+                nsIRDFObserver* obs = mObservers[i];
+                // XXXbz other loops over mObservers null-check |obs| here!
                 obs->OnUnassert(this, as->mSource, as->u.as.mProperty, as->u.as.mTarget);
                 // XXX ignore return value?
             }

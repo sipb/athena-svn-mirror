@@ -43,10 +43,10 @@ typedef int PRInt32;
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
+#ifdef XP_OS2_VACPP
 #include <direct.h>
-#include <tchar.h>
+#endif
 #include <ctype.h>
-//#include <commctrl.h>
 #include "setuprsc.h"
 #include "resource.h"
 #include "zipfile.h"

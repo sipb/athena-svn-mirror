@@ -105,28 +105,28 @@ CPlugin::CPlugin(HMODULE hInst,
   assert(m_hInst != NULL);
   assert(m_pNPInstance != NULL);
 
-  if((pluginType != NULL) && (strlen((PSZ)pluginType) != 0))
+  if(pluginType && *pluginType)
   {
     m_pNPMIMEType = (NPMIMEType)new char[strlen((PSZ)pluginType) + 1];
     if(m_pNPMIMEType != NULL)
       strcpy((PSZ)m_pNPMIMEType, pluginType);
   }
 
-  if((szPageURL != NULL) && (strlen(szPageURL) != 0))
+  if(szPageURL && *szPageURL)
   {
     m_szPageURL = new char[strlen(szPageURL) + 1];
     if(m_szPageURL != NULL)
       strcpy(m_szPageURL, szPageURL);
   }
   
-  if((szFileURL != NULL) && (strlen(szFileURL) != 0))
+  if(szFileURL && *szFileURL)
   {
     m_szFileURL = new char[strlen(szFileURL) + 1];
     if(m_szFileURL != NULL)
       strcpy(m_szFileURL, szFileURL);
   }
 
-  if((szFileExtension != NULL) && (strlen(szFileExtension) != 0))
+  if(szFileExtension && *szFileExtension)
   {
     m_szFileExtension = new char[strlen(szFileExtension) + 1];
     if(m_szFileExtension != NULL)
@@ -137,7 +137,7 @@ CPlugin::CPlugin(HMODULE hInst,
 
   char szString[1024] = {'\0'};
   WinLoadString((HAB)0, m_hInst, IDS_CLICK_TO_GET, sizeof(szString), szString);
-  if(strlen(szString) != 0)
+  if(*szString)
   {
     m_szCommandMessage = new char[strlen(szString) + 1];
     if(m_szCommandMessage != NULL)
@@ -217,7 +217,7 @@ BOOL CPlugin::init(HWND hWndParent)
                              (PVOID)this,
                              0);
 
-    WinSetPresParam(m_hWnd, PP_FONTNAMESIZE, 10, "9.WarpSans");
+    WinSetPresParam(m_hWnd, PP_FONTNAMESIZE, 10, (PVOID)"9.WarpSans");
 
     assert(m_hWnd != NULL);
     if((m_hWnd == NULL) || (!WinIsWindow((HAB)0, m_hWnd)))
@@ -227,7 +227,7 @@ BOOL CPlugin::init(HWND hWndParent)
     WinShowWindow(m_hWnd, TRUE);
   }
 
-//  if(IsNewMimeType((PSZ)m_pNPMIMEType) || m_bHidden)
+  if(IsNewMimeType((PSZ)m_pNPMIMEType) || m_bHidden)
     showGetPluginDialog();
 
   return TRUE;
@@ -446,7 +446,7 @@ void CPlugin::showGetPluginDialog()
 
   char szString[1024] = {'\0'};
   WinLoadString((HAB)0, m_hInst, IDS_CLICK_WHEN_DONE, sizeof(szString), szString);
-  if(strlen(szString) != 0)
+  if(*szString)
   {
     m_szCommandMessage = new char[strlen(szString) + 1];
     if(m_szCommandMessage != NULL)

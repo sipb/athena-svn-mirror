@@ -39,13 +39,14 @@
 #include "nsHTMLContentSerializer.h"
 
 #include "nsIDOMElement.h"
+#include "nsIDOMText.h"
 #include "nsIContent.h"
 #include "nsIDocument.h"
+#include "nsIDOMDocument.h"
 #include "nsINameSpaceManager.h"
 #include "nsString.h"
 #include "nsUnicharUtils.h"
 #include "nsXPIDLString.h"
-#include "nsParserCIID.h"
 #include "nsIServiceManager.h"
 #include "nsIDocumentEncoder.h"
 #include "nsLayoutAtoms.h"
@@ -56,16 +57,18 @@
 #include "nsITextToSubURI.h"
 #include "nsCRT.h"
 #include "nsIHTMLContent.h"
-
-static NS_DEFINE_CID(kParserServiceCID, NS_PARSERSERVICE_CID);
+#include "nsIParserService.h"
+#include "nsContentUtils.h"
+#include "nsILineBreakerFactory.h"
+#include "nsLWBrkCIID.h"
 
 #define kIndentStr NS_LITERAL_STRING("  ")
 #define kLessThan NS_LITERAL_STRING("<")
 #define kGreaterThan NS_LITERAL_STRING(">")
 #define kEndTag NS_LITERAL_STRING("</")
 
-static const PRUnichar kMozStr[] = {'m', 'o', 'z', 0};
-static const PRInt32 kMozStrLength = 3;
+static const char kMozStr[] = "moz";
+static NS_DEFINE_CID(kLWBrkCID, NS_LWBRK_CID);
 
 static const PRInt32 kLongLineLen = 128;
 
@@ -76,16 +79,18 @@ nsresult NS_NewHTMLContentSerializer(nsIContentSerializer** aSerializer)
     return NS_ERROR_OUT_OF_MEMORY;
   }
 
-  return it->QueryInterface(NS_GET_IID(nsIContentSerializer), (void**)aSerializer);
+  return CallQueryInterface(it, aSerializer);
 }
 
 nsHTMLContentSerializer::nsHTMLContentSerializer()
+: mIndent(0),
+  mColPos(0),
+  mInBody(PR_FALSE),
+  mAddSpace(PR_FALSE),
+  mMayIgnoreLineBreakSequence(PR_FALSE),
+  mInCDATA(PR_FALSE),
+  mNeedLineBreaker(PR_TRUE)
 {
-  mColPos = 0;
-  mIndent = 0;
-  mAddSpace = PR_FALSE;
-  mInBody = PR_FALSE;
-  mInCDATA = PR_FALSE;
 }
 
 nsHTMLContentSerializer::~nsHTMLContentSerializer()
@@ -98,19 +103,6 @@ nsHTMLContentSerializer::~nsHTMLContentSerializer()
       mOLStateStack.RemoveElementAt(i);
     }
   }
-}
-
-nsresult
-nsHTMLContentSerializer::GetParserService(nsIParserService** aParserService)
-{
-  if (!mParserService) {
-    nsresult rv;
-    mParserService = do_GetService(kParserServiceCID, &rv);
-    if (NS_FAILED(rv)) return NS_ERROR_FAILURE;
-  }
-
-  CallQueryInterface(mParserService.get(), aParserService);
-  return NS_OK;
 }
 
 NS_IMETHODIMP 
@@ -149,14 +141,10 @@ nsHTMLContentSerializer::Init(PRUint32 aFlags, PRUint32 aWrapColumn,
   mPreLevel = 0;
 
   mCharSet = aCharSet;
-  mIsLatin1 = PR_FALSE;
-  if (aCharSet) {
-    const PRUnichar *charset;
-    aCharSet->GetUnicode(&charset);
 
-    if (NS_LITERAL_STRING("ISO-8859-1").Equals(charset)) {
-      mIsLatin1 = PR_TRUE;
-    }
+  // set up entity converter if we are going to need it
+  if (mFlags & nsIDocumentEncoder::OutputEncodeW3CEntities) {
+    mEntityConverter = do_CreateInstance(NS_ENTITYCONVERTER_CONTRACTID);
   }
 
   return NS_OK;
@@ -169,6 +157,28 @@ nsHTMLContentSerializer::AppendText(nsIDOMText* aText,
                                     nsAString& aStr)
 {
   NS_ENSURE_ARG(aText);
+
+  if (mNeedLineBreaker) {
+    mNeedLineBreaker = PR_FALSE;
+
+    nsCOMPtr<nsIDOMDocument> domDoc;
+    aText->GetOwnerDocument(getter_AddRefs(domDoc));
+    nsCOMPtr<nsIDocument> document = do_QueryInterface(domDoc);
+    if (document) {
+      document->GetLineBreaker(getter_AddRefs(mLineBreaker));
+    }
+
+    if (!mLineBreaker) {
+      nsresult rv;
+      nsCOMPtr<nsILineBreakerFactory> lf(do_GetService(kLWBrkCID, &rv));
+      if (NS_SUCCEEDED(rv)) {
+        rv = lf->GetBreaker(nsString(), getter_AddRefs(mLineBreaker));
+        // Ignore result value.
+        // If we are unable to obtain a line breaker,
+        // we will use our simple fallback logic.
+      }
+    }
+  }
 
   nsAutoString data;
 
@@ -207,6 +217,236 @@ nsHTMLContentSerializer::AppendText(nsIDOMText* aText,
   return NS_OK;
 }
 
+void nsHTMLContentSerializer::AppendWrapped_WhitespaceSequence(
+                               nsASingleFragmentString::const_char_iterator &aPos,
+                               const nsASingleFragmentString::const_char_iterator aEnd,
+                               const nsASingleFragmentString::const_char_iterator aSequenceStart,
+                               PRBool &aMayIgnoreStartOfLineWhitespaceSequence,
+                               nsAString &aOutputStr)
+{
+  // Handle the complete sequence of whitespace.
+  // Continue to iterate until we find the first non-whitespace char.
+  // Updates "aPos" to point to the first unhandled char.
+  // Also updates the aMayIgnoreStartOfLineWhitespaceSequence flag,
+  // as well as the other "global" state flags.
+
+  PRBool sawBlankOrTab = PR_FALSE;
+  PRBool leaveLoop = PR_FALSE;
+
+  do {
+    switch (*aPos) {
+      case ' ':
+      case '\t':
+        sawBlankOrTab = PR_TRUE;
+        // no break
+      case '\n':
+        ++aPos;
+        // do not increase mColPos,
+        // because we will reduce the whitespace to a single char
+        break;
+      default:
+        leaveLoop = PR_TRUE;
+        break;
+    }
+  } while (!leaveLoop && aPos < aEnd);
+
+  if (mAddSpace) {
+    // if we had previously been asked to add space,
+    // our situation has not changed
+  }
+  else if (!sawBlankOrTab && mMayIgnoreLineBreakSequence) {
+    // nothing to do
+    mMayIgnoreLineBreakSequence = PR_FALSE;
+  }
+  else if (aMayIgnoreStartOfLineWhitespaceSequence) {
+    // nothing to do
+    aMayIgnoreStartOfLineWhitespaceSequence = PR_FALSE;
+  }
+  else {
+    if (sawBlankOrTab) {
+      if (mColPos + 1 >= mMaxColumn) {
+        // no much sense in delaying, we only have one slot left,
+        // let's write a break now
+        aOutputStr.Append(mLineBreak);
+        mColPos = 0;
+      }
+      else {
+        // do not write out yet, we may write out either a space or a linebreak
+        // let's delay writing it out until we know more
+
+        mAddSpace = PR_TRUE;
+        ++mColPos; // eat a slot of available space
+      }
+    }
+    else {
+      // Asian text usually does not contain spaces, therefore we should not
+      // transform a linebreak into a space.
+      // Since we only saw linebreaks, but no spaces or tabs,
+      // let's write a linebreak now.
+      aOutputStr.Append(mLineBreak);
+      mMayIgnoreLineBreakSequence = PR_TRUE;
+      mColPos = 0;
+    }
+  }
+}
+
+void nsHTMLContentSerializer::AppendWrapped_NonWhitespaceSequence(
+                               nsASingleFragmentString::const_char_iterator &aPos,
+                               const nsASingleFragmentString::const_char_iterator aEnd,
+                               const nsASingleFragmentString::const_char_iterator aSequenceStart,
+                               PRBool &aMayIgnoreStartOfLineWhitespaceSequence,
+                               nsAString& aOutputStr)
+{
+  mMayIgnoreLineBreakSequence = PR_FALSE;
+  aMayIgnoreStartOfLineWhitespaceSequence = PR_FALSE;
+
+  // Handle the complete sequence of non-whitespace in this block
+  // Iterate until we find the first whitespace char or an aEnd condition
+  // Updates "aPos" to point to the first unhandled char.
+  // Also updates the aMayIgnoreStartOfLineWhitespaceSequence flag,
+  // as well as the other "global" state flags.
+
+  PRBool thisSequenceStartsAtBeginningOfLine = !mColPos;
+  PRBool onceAgainBecauseWeAddedBreakInFront;
+  PRBool foundWhitespaceInLoop;
+
+  do {
+    onceAgainBecauseWeAddedBreakInFront = PR_FALSE;
+    foundWhitespaceInLoop = PR_FALSE;
+
+    do {
+      if (*aPos == ' ' || *aPos == '\t' || *aPos == '\n') {
+        foundWhitespaceInLoop = PR_TRUE;
+        break;
+      }
+
+      ++aPos;
+      ++mColPos;
+    } while (mColPos < mMaxColumn && aPos < aEnd);
+
+    if (aPos == aEnd || foundWhitespaceInLoop) {
+      // there is enough room for the complete block we found
+
+      if (mAddSpace) {
+        aOutputStr.Append(PRUnichar(' '));
+        mAddSpace = PR_FALSE;
+      }
+
+      aOutputStr.Append(aSequenceStart, aPos - aSequenceStart);
+      // We have not yet reached the max column, we will continue to
+      // fill the current line in the next outer loop iteration.
+    }
+    else { // mColPos == mMaxColumn
+      if (!thisSequenceStartsAtBeginningOfLine && mAddSpace) {
+        // We can avoid to wrap.
+
+        aOutputStr.Append(mLineBreak);
+        mAddSpace = PR_FALSE;
+        aPos = aSequenceStart;
+        mColPos = 0;
+        thisSequenceStartsAtBeginningOfLine = PR_TRUE;
+        onceAgainBecauseWeAddedBreakInFront = PR_TRUE;
+      }
+      else {
+        // we must wrap
+
+        PRBool foundWrapPosition = PR_FALSE;
+
+        if (mLineBreaker) { // we have a line breaker helper object
+          PRUint32 wrapPosition;
+          PRBool needMoreText;
+          nsresult rv;
+
+          rv = mLineBreaker->Prev(aSequenceStart,
+                                  (aEnd - aSequenceStart),
+                                  (aPos - aSequenceStart) + 1,
+                                  &wrapPosition,
+                                  &needMoreText);
+          if (NS_SUCCEEDED(rv) && !needMoreText && wrapPosition > 0) {
+            foundWrapPosition = PR_TRUE;
+          }
+          else {
+            rv = mLineBreaker->Next(aSequenceStart,
+                                    (aEnd - aSequenceStart),
+                                    (aPos - aSequenceStart),
+                                    &wrapPosition,
+                                    &needMoreText);
+            if (NS_SUCCEEDED(rv) && !needMoreText && wrapPosition > 0) {
+              foundWrapPosition = PR_TRUE;
+            }
+          }
+
+          if (foundWrapPosition) {
+            if (mAddSpace) {
+              aOutputStr.Append(PRUnichar(' '));
+              mAddSpace = PR_FALSE;
+            }
+
+            aOutputStr.Append(aSequenceStart, wrapPosition);
+            aOutputStr.Append(mLineBreak);
+            aPos = aSequenceStart + wrapPosition;
+            mColPos = 0;
+            aMayIgnoreStartOfLineWhitespaceSequence = PR_TRUE;
+            mMayIgnoreLineBreakSequence = PR_TRUE;
+          }
+        }
+
+        if (!mLineBreaker || !foundWrapPosition) {
+          // try some simple fallback logic
+          // go forward up to the next whitespace position,
+          // in the worst case this will be all the rest of the data
+
+          do {
+            if (*aPos == ' ' || *aPos == '\t' || *aPos == '\n') {
+              break;
+            }
+
+            ++aPos;
+            ++mColPos;
+          } while (aPos < aEnd);
+
+          if (mAddSpace) {
+            aOutputStr.Append(PRUnichar(' '));
+            mAddSpace = PR_FALSE;
+          }
+
+          aOutputStr.Append(aSequenceStart, aPos - aSequenceStart);
+        }
+      }
+    }
+  } while (onceAgainBecauseWeAddedBreakInFront);
+}
+
+void 
+nsHTMLContentSerializer::AppendToStringWrapped(const nsASingleFragmentString& aStr,
+                                               nsAString& aOutputStr,
+                                               PRBool aTranslateEntities)
+{
+  nsASingleFragmentString::const_char_iterator pos, end, sequenceStart;
+
+  aStr.BeginReading(pos);
+  aStr.EndReading(end);
+
+  // if the current line already has text on it, such as a tag,
+  // leading whitespace is significant
+
+  PRBool mayIgnoreStartOfLineWhitespaceSequence = !mColPos;
+
+  while (pos < end) {
+    sequenceStart = pos;
+
+    // if beginning of a whitespace sequence
+    if (*pos == ' ' || *pos == '\n' || *pos == '\t') {
+      AppendWrapped_WhitespaceSequence(pos, end, sequenceStart, 
+        mayIgnoreStartOfLineWhitespaceSequence, aOutputStr);
+    }
+    else { // any other non-whitespace char
+      AppendWrapped_NonWhitespaceSequence(pos, end, sequenceStart, 
+        mayIgnoreStartOfLineWhitespaceSequence, aOutputStr);
+    }
+  }
+}
+
 NS_IMETHODIMP
 nsHTMLContentSerializer::AppendDocumentStart(nsIDOMDocument *aDocument,
                                              nsAString& aStr)
@@ -217,14 +457,15 @@ nsHTMLContentSerializer::AppendDocumentStart(nsIDOMDocument *aDocument,
 PRBool
 nsHTMLContentSerializer::IsJavaScript(nsIAtom* aAttrNameAtom, const nsAString& aValueString)
 {
-  if (aAttrNameAtom == nsHTMLAtoms::href
-  || aAttrNameAtom == nsHTMLAtoms::src) {
-    // note that there is a problem in that if this value starts with leading spaces we won't do the right thing
-    // this is covered in bug #59604
+  if (aAttrNameAtom == nsHTMLAtoms::href ||
+      aAttrNameAtom == nsHTMLAtoms::src) {
     static const char kJavaScript[] = "javascript";
     PRInt32 pos = aValueString.FindChar(':');
-    const nsAutoString scheme(Substring(aValueString, 0, pos));
-    if ((pos == (PRInt32)(sizeof kJavaScript - 1)) &&
+    if ( pos < (PRInt32)(sizeof kJavaScript - 1) )
+        return PR_FALSE;
+    nsAutoString scheme(Substring(aValueString, 0, pos));
+    scheme.StripWhitespace();
+    if ((scheme.Length() == (sizeof kJavaScript - 1)) &&
         scheme.EqualsIgnoreCase(kJavaScript))
       return PR_TRUE;
     else
@@ -273,9 +514,7 @@ nsHTMLContentSerializer::EscapeURI(const nsAString& aURI, nsAString& aEscapedURI
 
 
   if (mCharSet && !uri.IsASCII()) {
-    const PRUnichar *charset;
-    mCharSet->GetUnicode(&charset);
-    documentCharset.Adopt(ToNewUTF8String(nsDependentString(charset)));
+    mCharSet->ToUTF8String(documentCharset);
     textToSubURI = do_GetService(NS_ITEXTTOSUBURI_CONTRACTID, &rv);
     NS_ENSURE_SUCCESS(rv, rv);
   }
@@ -333,6 +572,8 @@ nsHTMLContentSerializer::SerializeAttributes(nsIContent* aContent,
 
   aContent->GetAttrCount(count);
 
+  NS_NAMED_LITERAL_STRING(mozStr1, "_moz");
+  
   for (index = 0; index < count; index++) {
     aContent->GetAttrNameAt(index, 
                             namespaceID,
@@ -340,13 +581,12 @@ nsHTMLContentSerializer::SerializeAttributes(nsIContent* aContent,
                             *getter_AddRefs(attrPrefix));
 
     // Filter out any attribute starting with [-|_]moz
-    const PRUnichar* sharedName;
-    attrName->GetUnicode(&sharedName);
+    const char* sharedName;
+    attrName->GetUTF8String(&sharedName);
     if ((('_' == *sharedName) || ('-' == *sharedName)) &&
-        !nsCRT::strncmp(sharedName+1, kMozStr, kMozStrLength)) {
+        !nsCRT::strncmp(sharedName+1, kMozStr, PRUint32(sizeof(kMozStr)-1))) {
       continue;
     }
-
     aContent->GetAttr(namespaceID, attrName, valueStr);
 
     // 
@@ -355,8 +595,7 @@ nsHTMLContentSerializer::SerializeAttributes(nsIContent* aContent,
     //
     if ((aTagName == nsHTMLAtoms::br) &&
         (attrName.get() == nsHTMLAtoms::type) &&
-        !valueStr.IsEmpty() && ('_' == valueStr[0]) &&
-        !nsCRT::strncmp(valueStr.get()+1, kMozStr, kMozStrLength)) {
+        (mozStr1.Equals(Substring(valueStr, 0, mozStr1.Length())))) {
       continue;
     }
     
@@ -412,7 +651,10 @@ nsHTMLContentSerializer::SerializeAttributes(nsIContent* aContent,
     * then start the attribute from a new line.
     */
 
-    if (mDoFormat && (mColPos >= mMaxColumn || ((mColPos + nameStr.Length() + valueStr.Length() + 4) > mMaxColumn))) {
+    if (mDoFormat
+        && (mColPos >= mMaxColumn
+            || ((PRInt32)(mColPos + nameStr.Length() +
+                          valueStr.Length() + 4) > mMaxColumn))) {
         aStr.Append(mLineBreak);
         mColPos = 0;
     }
@@ -446,6 +688,7 @@ nsHTMLContentSerializer::AppendElementStart(nsIDOMElement *aElement,
   if (name.get() == nsHTMLAtoms::br && mPreLevel > 0
       && (mFlags & nsIDocumentEncoder::OutputNoFormattingInPre)) {
     AppendToString(mLineBreak, aStr);
+    mMayIgnoreLineBreakSequence = PR_TRUE;
     mColPos = 0;
     return NS_OK;
   }
@@ -456,6 +699,7 @@ nsHTMLContentSerializer::AppendElementStart(nsIDOMElement *aElement,
 
   if (LineBreakBeforeOpen(name, hasDirtyAttr)) {
     AppendToString(mLineBreak, aStr);
+    mMayIgnoreLineBreakSequence = PR_TRUE;
     mColPos = 0;
     mAddSpace = PR_FALSE;
   }
@@ -474,9 +718,9 @@ nsHTMLContentSerializer::AppendElementStart(nsIDOMElement *aElement,
   
   AppendToString(kLessThan, aStr);
 
-  const PRUnichar* sharedName;
-  name->GetUnicode(&sharedName);
-  AppendToString(sharedName, -1, aStr);
+  nsAutoString nameStr;
+  name->ToString(nameStr);
+  AppendToString(nameStr.get(), -1, aStr);
 
   // Need to keep track of OL and LI elements in order to get ordinal number 
   // for the LI.
@@ -518,6 +762,7 @@ nsHTMLContentSerializer::AppendElementStart(nsIDOMElement *aElement,
 
   if (LineBreakAfterOpen(name, hasDirtyAttr)) {
     AppendToString(mLineBreak, aStr);
+    mMayIgnoreLineBreakSequence = PR_TRUE;
     mColPos = 0;
   }
 
@@ -571,14 +816,12 @@ nsHTMLContentSerializer::AppendElementEnd(nsIDOMElement *aElement,
     }
   }
   
-  const PRUnichar* sharedName;
-  name->GetUnicode(&sharedName);
+  nsAutoString nameStr;
+  name->ToString(nameStr);
 
-  nsCOMPtr<nsIParserService> parserService;
-  GetParserService(getter_AddRefs(parserService));
+  nsIParserService* parserService = nsContentUtils::GetParserServiceWeakRef();
 
   if (parserService && (name.get() != nsHTMLAtoms::style)) {
-    nsAutoString nameStr(sharedName);
     PRBool isContainer;
     PRInt32 id;
 
@@ -589,6 +832,7 @@ nsHTMLContentSerializer::AppendElementEnd(nsIDOMElement *aElement,
 
   if (LineBreakBeforeClose(name, hasDirtyAttr)) {
     AppendToString(mLineBreak, aStr);
+    mMayIgnoreLineBreakSequence = PR_TRUE;
     mColPos = 0;
     mAddSpace = PR_FALSE;
   }
@@ -600,11 +844,12 @@ nsHTMLContentSerializer::AppendElementEnd(nsIDOMElement *aElement,
   EndIndentation(name, hasDirtyAttr, aStr);
 
   AppendToString(kEndTag, aStr);
-  AppendToString(sharedName, -1, aStr);
+  AppendToString(nameStr.get(), -1, aStr);
   AppendToString(kGreaterThan, aStr);
 
   if (LineBreakAfterClose(name, hasDirtyAttr)) {
     AppendToString(mLineBreak, aStr);
+    mMayIgnoreLineBreakSequence = PR_TRUE;
     mColPos = 0;
   }
 
@@ -642,150 +887,8 @@ nsHTMLContentSerializer::AppendToString(const PRUnichar aChar,
   aOutputStr.Append(aChar);
 }
 
-void 
-nsHTMLContentSerializer::AppendToStringWrapped(const nsASingleFragmentString& aStr,
-                                               nsAString& aOutputStr,
-                                               PRBool aTranslateEntities)
-{
-  // indicates a space has been seen, position is stored in lastSpace
-  PRBool    spaceSeen = PR_FALSE;
-
-  // indicates non-whitespace has been seen, position is stored in lastChar
-  PRBool    charSeen = PR_FALSE;
-
-  PRBool    addLineBreak = PR_FALSE;
-
-  nsASingleFragmentString::const_char_iterator pos, end, segStart, lastSpace, lastChar;
-
-  aStr.BeginReading(pos);
-  aStr.EndReading(end);
-  if (pos == end) {
-    return;
-  }
-
-  // if the current line already has text on it, such as a tag,
-  // leading whitespace is significant, so add a space back
-  // after skipping over the whitespace
-  if ((mColPos > 0) && (*pos == ' ' || *pos == '\n')) {
-    mAddSpace = PR_TRUE;
-  }
-
-  for (;;) {
-
-    // skip leading spaces
-    while (*pos == ' ' || *pos == '\n') {
-      ++pos;
-      if (pos == end) {
-        return;
-      }
-    }
-    segStart = pos;
-    lastChar = pos;
-    spaceSeen = PR_FALSE;
-    charSeen = PR_TRUE;
-
-    if (addLineBreak) {
-      aOutputStr.Append(mLineBreak);
-      mAddSpace = PR_FALSE;
-      mColPos = 0;
-    }
-
-    while (mColPos < mMaxColumn) {
-      PRUnichar c = *pos;
-
-      if (c == ' ') {
-        lastSpace = pos;
-        spaceSeen = PR_TRUE;
-      }
-      else if (c == '\n') {
-        if (charSeen) {
-          if (mAddSpace) {
-            aOutputStr.Append(PRUnichar(' '));
-          }
-
-          aOutputStr.Append(segStart, lastChar - segStart + 1);
-          charSeen = PR_FALSE;
-        }
-        mAddSpace = PR_TRUE;
-        segStart = pos;
-        spaceSeen = PR_FALSE;
-        ++segStart;
-      }
-      else {
-        lastChar = pos;
-        charSeen = PR_TRUE;
-      }
-
-      ++pos;
-      ++mColPos;
-
-      if (pos == end) {
-        if (!charSeen || pos == segStart) {
-          // nothing to append, or nothing meaningful to append
-          return;
-        }
-        if (mAddSpace) {
-          aOutputStr.Append(PRUnichar(' '));
-          mAddSpace = PR_FALSE;
-        }
-
-        aOutputStr.Append(segStart, lastChar - segStart + 1);
-
-        // if the string ended in whitespace, set mAddSpace to true
-        if (pos != lastChar+1) {
-          mAddSpace = PR_TRUE;
-        }
-        return;
-      }
-    }
-
-    if (spaceSeen) {
-      if (mAddSpace) {
-        aOutputStr.Append(PRUnichar(' '));
-        mAddSpace = PR_FALSE;
-      }
-
-      // write up to the last space encountered
-      aOutputStr.Append(segStart, lastSpace - segStart);
-
-      // back up to that wrapping point for the next run through the loop
-      pos = lastSpace;
-      // add a line break before any more text
-      addLineBreak = PR_TRUE;
-    }
-    else {
-
-      // if we're past the wrapping width with no place to wrap at,
-      // find the next whitespace and wrap there
-      while (pos != end && *pos != ' ' && *pos != '\n') {
-        ++pos;
-      }
-
-      if (mAddSpace) {
-        // whitespace was needed before the next segment, so we can put
-        // a newline instead of a space, and avoid getting a lone line
-        aOutputStr.Append(mLineBreak);
-        addLineBreak = PR_FALSE;
-
-        mColPos = pos - segStart;
-
-        // if the string doesn't end in whitespace, set mAddSpace to false
-        if (pos == end) {
-          mAddSpace = PR_FALSE;
-        }
-      }
-      else {
-        // no choice but to write a long line and wrap immediately after it
-        addLineBreak = PR_TRUE;
-      }
-      aOutputStr.Append(segStart, pos - segStart);
-
-      if (pos == end) {
-        return;
-      }
-    }
-  }
-}
+static PRUint16 kValNBSP = 160;
+static const char* kEntityNBSP = "nbsp";
 
 static PRUint16 kGTVal = 62;
 static const char* kEntities[] = {
@@ -823,9 +926,12 @@ nsHTMLContentSerializer::AppendToString(const nsAString& aStr,
   }
 
   if (aTranslateEntities && !mInCDATA) {
-    if (mFlags & nsIDocumentEncoder::OutputEncodeEntities) {
-      nsCOMPtr<nsIParserService> parserService;
-      GetParserService(getter_AddRefs(parserService));
+    if (mFlags & (nsIDocumentEncoder::OutputEncodeBasicEntities  |
+                  nsIDocumentEncoder::OutputEncodeLatin1Entities |
+                  nsIDocumentEncoder::OutputEncodeHTMLEntities   |
+                  nsIDocumentEncoder::OutputEncodeW3CEntities)) {
+      nsIParserService* parserService =
+        nsContentUtils::GetParserServiceWeakRef();
 
       if (!parserService) {
         NS_ERROR("Can't get parser service");
@@ -850,22 +956,37 @@ nsHTMLContentSerializer::AppendToString(const nsAString& aStr,
         const PRUnichar* fragmentEnd = c + fragmentLength;
         const char* entityText = nsnull;
         nsCAutoString entityReplacement;
+        char* fullEntityText = nsnull;
 
         advanceLength = 0;
         // for each character in this chunk, check if it
         // needs to be replaced
         for (; c < fragmentEnd; c++, advanceLength++) {
           PRUnichar val = *c;
-          if ((val <= kGTVal) && (entityTable[val][0] != 0)) {
+          if (val == kValNBSP) {
+            entityText = kEntityNBSP;
+            break;
+          }
+          else if ((val <= kGTVal) && (entityTable[val][0] != 0)) {
             entityText = entityTable[val];
             break;
-          } else if (mIsLatin1 && val > 127 && val < 256) {
+          } else if (val > 127 &&
+                    ((val < 256 &&
+                      mFlags & nsIDocumentEncoder::OutputEncodeLatin1Entities) ||
+                      mFlags & nsIDocumentEncoder::OutputEncodeHTMLEntities)) {
             parserService->HTMLConvertUnicodeToEntity(val, entityReplacement);
 
             if (!entityReplacement.IsEmpty()) {
               entityText = entityReplacement.get();
               break;
             }
+          }
+          else if (val > 127 && 
+                   mFlags & nsIDocumentEncoder::OutputEncodeW3CEntities &&
+                   mEntityConverter &&
+                   NS_SUCCEEDED(mEntityConverter->ConvertToEntity(val,
+                                nsIEntityConverter::entityW3C, &fullEntityText))) {
+            break;
           }
         }
 
@@ -874,6 +995,12 @@ nsHTMLContentSerializer::AppendToString(const nsAString& aStr,
           aOutputStr.Append(PRUnichar('&'));
           aOutputStr.Append(NS_ConvertASCIItoUCS2(entityText));
           aOutputStr.Append(PRUnichar(';'));
+          advanceLength++;
+        }
+        // if it comes from nsIEntityConverter, it already has '&' and ';'
+        else if (fullEntityText) {
+          aOutputStr.Append(NS_ConvertASCIItoUCS2(fullEntityText));
+          nsMemory::Free(fullEntityText);
           advanceLength++;
         }
       }
@@ -947,8 +1074,8 @@ nsHTMLContentSerializer::LineBreakBeforeOpen(nsIAtom* aName,
     return PR_TRUE;
   }
   else {
-    nsCOMPtr<nsIParserService> parserService;
-    GetParserService(getter_AddRefs(parserService));
+    nsIParserService* parserService =
+      nsContentUtils::GetParserServiceWeakRef();
     
     if (parserService) {
       nsAutoString str;
@@ -1050,8 +1177,8 @@ nsHTMLContentSerializer::LineBreakAfterClose(nsIAtom* aName,
     return PR_TRUE;
   }
   else {
-    nsCOMPtr<nsIParserService> parserService;
-    GetParserService(getter_AddRefs(parserService));
+    nsIParserService* parserService =
+      nsContentUtils::GetParserServiceWeakRef();
     
     if (parserService) {
       nsAutoString str;

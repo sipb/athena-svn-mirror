@@ -25,6 +25,11 @@
   Eudora import mail and addressbook interfaces
 
 */
+#ifdef MOZ_LOGGING
+// sorry, this has to be before the pre-compiled header
+#define FORCE_PR_LOG /* Allow logging in the release build */
+#endif
+
 #include "nscore.h"
 #include "nsCRT.h"
 #include "nsString.h"
@@ -52,16 +57,17 @@
 #include "nsReadableUtils.h"
 
 
-#ifdef XP_PC
+#if defined(XP_WIN) || defined(XP_OS2)
 #include "nsEudoraWin32.h"
 #endif
-#ifdef XP_MAC
+#if defined(XP_MAC) || defined(XP_MACOSX)
 #include "nsEudoraMac.h"
 #endif
 
 #include "EudoraDebugLog.h"
 
 static NS_DEFINE_IID(kISupportsIID,			NS_ISUPPORTS_IID);
+PRLogModuleInfo *EUDORALOGMODULE = nsnull;
 
 class ImportEudoraMailImpl : public nsIImportMail
 {
@@ -99,10 +105,10 @@ private:
 	static void	ReportSuccess( nsString& name, PRInt32 count, nsString *pStream);
 
 private:
-#ifdef XP_PC
+#if defined(XP_WIN) || defined(XP_OS2)
 	nsEudoraWin32	m_eudora;
 #endif
-#ifdef XP_MAC
+#if defined(XP_MAC) || defined(XP_MACOSX)
 	nsEudoraMac		m_eudora;
 #endif
 	PRUint32		m_bytes;
@@ -162,10 +168,10 @@ private:
 	static void	ReportSuccess( nsString& name, nsString *pStream);
 
 private:
-#ifdef XP_PC
+#if defined(XP_WIN) || defined(XP_OS2)
 	nsEudoraWin32	m_eudora;
 #endif
-#ifdef XP_MAC
+#if defined(XP_MAC) || defined(XP_MACOSX)
 	nsEudoraMac		m_eudora;
 #endif
 	PRUint32		m_bytes;
@@ -197,8 +203,9 @@ void ConvertToUnicode(const char *pStr, nsString &dist)
 
 nsEudoraImport::nsEudoraImport()
 {
-    NS_INIT_ISUPPORTS();
-
+  // Init logging module.
+  if (!EUDORALOGMODULE)
+    EUDORALOGMODULE = PR_NewLogModule("IMPORT");
 	IMPORT_LOG0( "nsEudoraImport Module Created\n");
 
 	nsEudoraStringBundle::GetStringBundle();
@@ -352,7 +359,6 @@ nsresult ImportEudoraMailImpl::Create(nsIImportMail** aImport)
 
 ImportEudoraMailImpl::ImportEudoraMailImpl()
 {
-    NS_INIT_ISUPPORTS();
 }
 
 
@@ -570,7 +576,6 @@ nsresult ImportEudoraAddressImpl::Create(nsIImportAddressBooks** aImport)
 
 ImportEudoraAddressImpl::ImportEudoraAddressImpl()
 {
-    NS_INIT_ISUPPORTS();
 }
 
 

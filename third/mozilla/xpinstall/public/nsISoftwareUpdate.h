@@ -29,13 +29,12 @@
 #include "nsISupports.h"
 #include "nsIFactory.h"
 #include "nsString.h"
-#include "nsIFileSpec.h"
 
 #include "nsIXPINotifier.h"
 #include "nsCOMPtr.h"
 #include "nsIModule.h"
 #include "nsIGenericFactory.h"
-
+#include "nsILocalFile.h"
 #include "nsDirectoryServiceUtils.h"
 #include "nsDirectoryServiceDefs.h"
 
@@ -58,6 +57,7 @@
  {0xbc, 0xde, 0x00, 0x80, 0x5f, 0x0e, 0x13, 0x53}\
 }
 
+class nsIPrincipal;
 
 class nsISoftwareUpdate : public nsISupports
 {
@@ -67,6 +67,7 @@ class nsISoftwareUpdate : public nsISupports
             NS_IMETHOD InstallJar(nsIFile* localFile,
                                   const PRUnichar* URL,
                                   const PRUnichar* arguments,
+                                  nsIPrincipal* aPrincipalDisplayed,
                                   PRUint32 flags,
                                   nsIXPIListener* aListener = 0) = 0;
 

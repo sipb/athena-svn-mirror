@@ -21,6 +21,7 @@
  *
  * Contributor(s):
  *   Daniel Glazman <glazman@netscape.com>
+ *   Kathleen Brade <brade@netscape.com>
  *
  *
  * Alternatively, the contents of this file may be used under the terms of
@@ -41,13 +42,14 @@
 #define nsHTMLEditor_h__
 
 #include "nsCOMPtr.h"
-
+#include "nsCOMArray.h"
 #include "nsPlaintextEditor.h"
 #include "nsIEditor.h"
 #include "nsIHTMLEditor.h"
 #include "nsITableEditor.h"
 #include "nsIEditorMailSupport.h"
 #include "nsIEditorStyleSheets.h"
+#include "nsIDocumentObserver.h"
 
 #include "nsEditor.h"
 #include "nsIDOMElement.h"
@@ -59,18 +61,24 @@
 
 #include "nsEditRules.h"
 
-#include "nsIEditProperty.h"
+#include "nsEditProperty.h"
 #include "nsHTMLCSSUtils.h"
 #include "nsIParserService.h"
 
 #include "nsVoidArray.h"
+
+#include "nsHTMLObjectResizer.h"
+
+#include "nsPoint.h"
 
 class nsIDOMKeyEvent;
 class nsITransferable;
 class nsIDOMEventReceiver;
 class nsIDOMNSRange;
 class nsIDocumentEncoder;
+class nsIClipboard;
 class TypeInState;
+class nsIContentFilter;
 
 /**
  * The HTML editor implementation.<br>
@@ -78,6 +86,7 @@ class TypeInState;
  */
 class nsHTMLEditor : public nsPlaintextEditor,
                      public nsIHTMLEditor,
+                     public nsIHTMLObjectResizer,
                      public nsITableEditor,
                      public nsIEditorStyleSheets,
                      public nsICSSLoaderObserver
@@ -101,9 +110,17 @@ public:
     kOpSetTextProperty     = 3010,
     kOpRemoveTextProperty  = 3011,
     kOpHTMLPaste           = 3012,
-    kOpLoadHTML            = 3013
+    kOpLoadHTML            = 3013,
+    kOpResetTextProperties = 3014
   };
 
+  enum ResizingRequestID
+  {
+    kX      = 0,
+    kY      = 1,
+    kWidth  = 2,
+    kHeight = 3
+  };
 
   // see nsIHTMLEditor for documentation
 
@@ -122,12 +139,27 @@ public:
   NS_IMETHOD GetIsDocumentEditable(PRBool *aIsDocumentEditable);
   NS_IMETHODIMP BeginningOfDocument();
 
+  /* ------------ nsIHTMLObjectResizer methods -------------- */
+  NS_DECL_NSIHTMLOBJECTRESIZER
+
   /* ------------ nsIHTMLEditor methods -------------- */
+  NS_IMETHOD UpdateBaseURL();
+
   NS_IMETHOD CopyLastEditableChildStyles(nsIDOMNode *aPreviousBlock, nsIDOMNode *aNewBlock,
                                          nsIDOMNode **aOutBrNode);
 
   NS_IMETHOD ParseStyleAttrIntoCSSRule(const nsAString& aString,
                                        nsIDOMCSSStyleRule **_retval); 
+
+  NS_IMETHOD AddDefaultProperty(nsIAtom *aProperty, 
+                                const nsAString & aAttribute, 
+                                const nsAString & aValue);
+
+  NS_IMETHOD RemoveDefaultProperty(nsIAtom *aProperty, 
+                                   const nsAString & aAttribute, 
+                                   const nsAString & aValue);
+
+  NS_IMETHOD RemoveAllDefaultProperties();
 
   NS_IMETHOD SetCSSInlineProperty(nsIAtom *aProperty, 
                              const nsAString & aAttribute, 
@@ -157,8 +189,14 @@ public:
 
   NS_IMETHOD PasteNoFormatting(PRInt32 aSelectionType);
   NS_IMETHOD InsertHTML(const nsAString &aInputString);
-  NS_IMETHOD InsertHTMLWithCharset(const nsAString& aInputString,
-                                   const nsAString& aCharset);
+  NS_IMETHOD InsertHTMLWithCharsetAndContext(const nsAString & aInputString,
+                                             const nsAString & aCharset,
+                                             const nsAString & aContextStr,
+                                             const nsAString & aInfoStr,
+                                             const nsAString & aFlavor,
+                                             nsIDOMNode *aDestinationNode,
+                                             PRInt32 aDestinationOffset,
+                                             PRBool aDeleteSelection);
 
   NS_IMETHOD LoadHTML(const nsAString &aInputString);
   NS_IMETHOD LoadHTMLWithCharset(const nsAString& aInputString,
@@ -203,6 +241,8 @@ public:
 
   NS_IMETHOD SetIsCSSEnabled(PRBool aIsCSSPrefChecked);
   NS_IMETHOD GetIsCSSEnabled(PRBool *aIsCSSEnabled);
+  NS_IMETHOD AddInsertionListener(nsIContentFilter *aFilter);
+  NS_IMETHOD RemoveInsertionListener(nsIContentFilter *aFilter);
 
   /* ------------ nsIEditorIMESupport overrides -------------- */
   
@@ -341,7 +381,7 @@ public:
     * @param aSections  Allocated storage for the resulting set, stored as nsIDOMRanges.
     */
   static nsresult GetBlockSectionsForRange(nsIDOMRange      *aRange, 
-                                           nsISupportsArray *aSections);
+                                           nsCOMArray<nsIDOMRange>& aSections);
 
   static nsCOMPtr<nsIDOMNode> NextNodeInBlock(nsIDOMNode *aNode, IterDirection aDir);
   nsresult IsNextCharWhitespace(nsIDOMNode *aParentNode, 
@@ -358,6 +398,8 @@ public:
                                 PRInt32 *outOffset = 0);
 
   /* ------------ Overrides of nsEditor interface methods -------------- */
+
+  nsresult EndUpdateViewBatch();
 
   /** prepare the editor for use */
   NS_IMETHOD Init(nsIDOMDocument *aDoc, nsIPresShell *aPresShell,  nsIContent *aRoot, nsISelectionController *aSelCon, PRUint32 aFlags);
@@ -413,6 +455,11 @@ public:
 
   virtual PRBool NodesSameType(nsIDOMNode *aNode1, nsIDOMNode *aNode2);
 
+  NS_IMETHODIMP DeleteNode(nsIDOMNode * aNode);
+  NS_IMETHODIMP DeleteText(nsIDOMCharacterData *aTextNode,
+                           PRUint32             aOffset,
+                           PRUint32             aLength);
+
   /* ------------ nsICSSLoaderObserver -------------- */
   NS_IMETHOD StyleSheetLoaded(nsICSSStyleSheet*aSheet, PRBool aNotify);
 
@@ -422,6 +469,7 @@ public:
                               nsCOMPtr<nsIDOMNode> *ioParent, 
                               PRInt32 *ioOffset, 
                               PRBool aNoEmptyNodes);
+  nsCOMPtr<nsIDOMNode> FindUserSelectAllNode(nsIDOMNode *aNode);
                                 
 
   /** returns the absolute position of the end points of aSelection
@@ -469,7 +517,6 @@ public:
   PRBool   EnableExistingStyleSheet(const nsAString& aURL);
 
   // Dealing with the internal style sheet lists:
-  nsresult EnsureStyleSheetArrays();
   NS_IMETHOD GetStyleSheetForURL(const nsAString &aURL,
                                nsICSSStyleSheet **_retval);
   NS_IMETHOD GetURLForStyleSheet(nsICSSStyleSheet *aStyleSheet, nsAString &aURL);
@@ -610,16 +657,7 @@ protected:
                                           const nsAString   *aValue,
                                           PRBool            &aIsSet,
                                           nsIDOMNode       **aStyleNode,
-                                          nsAString *outValue = nsnull) const;
-
-  /** style-based query returns PR_TRUE if (aProperty, aAttribute) is set in aSC.
-    * WARNING: not well tested yet since we don't do style-based queries anywhere.
-    */
-  virtual void IsTextStyleSet(nsIStyleContext *aSC, 
-                              nsIAtom         *aProperty, 
-                              const nsAString  *aAttributes, 
-                              PRBool          &aIsSet) const;
-
+                                          nsAString *outValue = nsnull);
 
   void ResetTextSelectionForRange(nsIDOMNode *aParent,
                                   PRInt32     aStartOffset,
@@ -644,50 +682,72 @@ protected:
 
   // factored methods for handling insertion of data from transferables (drag&drop or clipboard)
   NS_IMETHOD PrepareTransferable(nsITransferable **transferable);
+  NS_IMETHOD PrepareHTMLTransferable(nsITransferable **transferable, PRBool havePrivFlavor);
+  nsresult   PutDragDataInTransferable(nsITransferable **aTransferable);
   NS_IMETHOD InsertFromTransferable(nsITransferable *transferable, 
                                     const nsAString & aContextStr,
-                                    const nsAString & aInfoStr);
-  nsresult   InsertHTMLWithContext(const nsAString & aInputString, 
-                                   const nsAString & aContextStr, 
-                                   const nsAString & aInfoStr);
-  nsresult   InsertHTMLWithCharsetAndContext(const nsAString & aInputString,
-                                             const nsAString & aCharset,
-                                             const nsAString & aContextStr,
-                                             const nsAString & aInfoStr);
+                                    const nsAString & aInfoStr,
+                                    nsIDOMNode *aDestinationNode,
+                                    PRInt32 aDestinationOffset,
+                                    PRBool aDoDeleteSelection);
+  PRBool HavePrivateHTMLFlavor( nsIClipboard *clipboard );
+  nsresult   ParseCFHTML(nsCString & aCfhtml, PRUnichar **aStuffToPaste, PRUnichar **aCfcontext);
+  nsresult   DoContentFilterCallback(const nsAString &aFlavor,
+                                     PRBool aWillDeleteSelection,
+                                     nsIDOMNode **aFragmentAsNode,      
+                                     nsIDOMNode **aFragStartNode,
+                                     PRInt32 *aFragStartOffset,
+                                     nsIDOMNode **aFragEndNode,
+                                     PRInt32 *aFragEndOffset,
+                                     nsIDOMNode **aTargetNode,       
+                                     PRInt32 *aTargetOffset,   
+                                     PRBool *aDoContinue);
   PRBool     IsInLink(nsIDOMNode *aNode, nsCOMPtr<nsIDOMNode> *outLink = nsnull);
   nsresult   StripFormattingNodes(nsIDOMNode *aNode, PRBool aOnlyList = PR_FALSE);
-  nsresult   CreateDOMFragmentFromPaste(nsIDOMNSRange *aNSRange,
-                                        const nsAString & aInputString,
+  nsresult   CreateDOMFragmentFromPaste(const nsAString & aInputString,
                                         const nsAString & aContextStr,
                                         const nsAString & aInfoStr,
                                         nsCOMPtr<nsIDOMNode> *outFragNode,
                                         PRInt32 *outRangeStartHint,
                                         PRInt32 *outRangeEndHint);
+  nsresult   ParseFragment(const nsAString & aStr, nsVoidArray &aTagStack,
+                           nsIDocument* aTargetDoc,
+                           nsCOMPtr<nsIDOMNode> *outNode);
   nsresult   CreateListOfNodesToPaste(nsIDOMNode  *aFragmentAsNode,
-                                      nsCOMPtr<nsISupportsArray> *outNodeList,
-                                      PRInt32 aRangeStartHint,
-                                      PRInt32 aRangeEndHint);
+                                      nsCOMArray<nsIDOMNode>& outNodeList,
+                                      nsIDOMNode *aStartNode,
+                                      PRInt32 aStartOffset,
+                                      nsIDOMNode *aEndNode,
+                                      PRInt32 aEndOffset);
+  nsresult CreateTagStack(nsVoidArray &aTagStack, nsIDOMNode *aNode);
+  void     FreeTagStackStrings(nsVoidArray &tagStack);
   nsresult GetListAndTableParents( PRBool aEnd, 
-                                   nsISupportsArray *aListOfNodes,
-                                   nsCOMPtr<nsISupportsArray> *outArray);
-  nsresult DiscoverPartialListsAndTables( nsISupportsArray *aPasteNodes,
-                                          nsISupportsArray *aListsAndTables,
-                                          PRInt32 *outHighWaterMark);
+                                   nsCOMArray<nsIDOMNode>& aListOfNodes,
+                                   nsCOMArray<nsIDOMNode>& outArray);
+  nsresult DiscoverPartialListsAndTables(nsCOMArray<nsIDOMNode>& aPasteNodes,
+                                         nsCOMArray<nsIDOMNode>& aListsAndTables,
+                                         PRInt32 *outHighWaterMark);
   nsresult ScanForListAndTableStructure(PRBool aEnd,
-                                        nsISupportsArray *aNodes,
+                                        nsCOMArray<nsIDOMNode>& aNodes,
                                         nsIDOMNode *aListOrTable,
                                         nsCOMPtr<nsIDOMNode> *outReplaceNode);
   nsresult ReplaceOrphanedStructure( PRBool aEnd,
-                                     nsISupportsArray *aNodeArray,
-                                     nsISupportsArray *aListAndTableArray,
+                                     nsCOMArray<nsIDOMNode>& aNodeArray,
+                                     nsCOMArray<nsIDOMNode>& aListAndTableArray,
                                      PRInt32 aHighWaterMark);
-  nsISupports* GetArrayEndpoint(PRBool aEnd, nsISupportsArray *aNodeArray);
+  nsIDOMNode* GetArrayEndpoint(PRBool aEnd, nsCOMArray<nsIDOMNode>& aNodeArray);
 
   /** simple utility to handle any error with event listener allocation or registration */
   void HandleEventListenerError();
 
   /* small utility routine to test if a break node is visible to user */
   PRBool   IsVisBreak(nsIDOMNode *aNode);
+
+  /* utility routine to possibly adjust the insertion position when 
+     inserting a block level element */
+  void NormalizeEOLInsertPosition(nsIDOMNode *firstNodeToInsert,
+                                  nsCOMPtr<nsIDOMNode> *insertParentNode,
+                                  PRInt32 *insertOffset);
 
   /* small utility routine to test the eEditorReadonly bit */
   PRBool IsModifiable();
@@ -732,6 +792,7 @@ protected:
                                 const nsAString *aAttribute,
                                 nsCOMPtr<nsIDOMNode> *outLeftNode = nsnull,
                                 nsCOMPtr<nsIDOMNode> *outRightNode = nsnull);
+  nsresult ApplyDefaultProperties();
   nsresult RemoveStyleInside(nsIDOMNode *aNode, 
                              nsIAtom *aProperty, 
                              const nsAString *aAttribute, 
@@ -775,12 +836,15 @@ protected:
                              PRBool *aFirst, 
                              PRBool *aAny, 
                              PRBool *aAll,
-                             nsAString *outValue);
+                             nsAString *outValue,
+                             PRBool aCheckDefaults = PR_TRUE);
   nsresult HasStyleOrIdOrClass(nsIDOMElement * aElement, PRBool *aHasStyleOrIdOrClass);
   nsresult RemoveElementIfNoStyleOrIdOrClass(nsIDOMElement * aElement, nsIAtom * aTag);
 
 // Data members
 protected:
+
+  nsCOMArray<nsIContentFilter> mContentFilters;
 
   TypeInState*         mTypeInState;
 
@@ -789,8 +853,6 @@ protected:
   nsCOMPtr<nsIAtom>    mUnderlineAtom;
   nsCOMPtr<nsIAtom>    mFontAtom;
   nsCOMPtr<nsIAtom>    mLinkAtom;
-
-  nsCOMPtr<nsIEditProperty> mEditProperty;
 
   nsCOMPtr<nsIDOMNode> mCachedNode;
   
@@ -815,14 +877,78 @@ protected:
 
   // Maintain a list of associated style sheets and their urls.
   nsStringArray mStyleSheetURLs;
-  nsCOMPtr<nsISupportsArray> mStyleSheets;
+  nsCOMArray<nsICSSStyleSheet> mStyleSheets;
   PRInt32 mNumStyleSheets;
+  
+  // an array for holding default style settings
+  nsVoidArray mDefaultStyles;
 
   // Maintain a static parser service ...
   static nsCOMPtr<nsIParserService> sParserService;
   // ... which means that we need an instance count to know when to delete it
   static PRInt32 sInstanceCount;
 
+protected:
+  PRPackedBool mIsImageResizingEnabled;
+  PRPackedBool mIsShowingResizeHandles;
+  PRPackedBool mIsResizing;
+  PRPackedBool mPreserveRatio;
+  PRPackedBool mResizedObjectIsAnImage;
+
+  nsCOMPtr<nsIDOMElement> mTopLeftHandle;
+  nsCOMPtr<nsIDOMElement> mTopHandle;
+  nsCOMPtr<nsIDOMElement> mTopRightHandle;
+  nsCOMPtr<nsIDOMElement> mLeftHandle;
+  nsCOMPtr<nsIDOMElement> mRightHandle;
+  nsCOMPtr<nsIDOMElement> mBottomLeftHandle;
+  nsCOMPtr<nsIDOMElement> mBottomHandle;
+  nsCOMPtr<nsIDOMElement> mBottomRightHandle;
+
+  nsCOMPtr<nsIDOMElement> mResizingShadow;
+  nsCOMPtr<nsIDOMElement> mResizingInfo;
+
+  nsCOMPtr<nsIDOMElement> mResizedObject;
+
+  nsCOMPtr<nsIDOMEventListener>  mMouseMotionListenerP;
+  nsCOMPtr<nsISelectionListener> mSelectionListenerP;
+  nsCOMPtr<nsIDOMEventListener>  mResizeEventListenerP;
+
+  PRInt32 mOriginalX;
+  PRInt32 mOriginalY;
+
+  PRInt32 mResizedObjectX;
+  PRInt32 mResizedObjectY;
+  PRInt32 mResizedObjectWidth;
+  PRInt32 mResizedObjectHeight;
+
+  PRInt32 mXIncrementFactor;
+  PRInt32 mYIncrementFactor;
+  PRInt32 mWidthIncrementFactor;
+  PRInt32 mHeightIncrementFactor;
+
+  nsresult CreateResizer(nsIDOMElement ** aReturn, PRInt16 aLocation, nsISupportsArray * aArray);
+  void     SetResizerPosition(PRInt32 aX, PRInt32 aY, nsIDOMElement *aResizer);
+  nsresult SetAllResizersPosition(nsIDOMElement * aResizedElement, PRInt32 & aX, PRInt32 & aY);
+  nsresult CreateShadow(nsIDOMElement ** aReturn, nsISupportsArray * aArray);
+  nsresult SetShadowPosition(nsIDOMElement *aResizedObject,
+                             PRInt32 aX, PRInt32 aY);
+  nsresult CreateResizingInfo(nsIDOMElement ** aReturn, nsISupportsArray * aArray);
+  nsresult SetResizingInfoPosition(PRInt32 aX, PRInt32 aY,
+                                   PRInt32 aW, PRInt32 aH);
+
+  PRInt32  GetNewResizingIncrement(PRInt32 aX, PRInt32 aY, PRInt32 aID);
+  nsresult StartResizing(nsIDOMElement * aHandle);
+  PRInt32  GetNewResizingX(PRInt32 aX, PRInt32 aY);
+  PRInt32  GetNewResizingY(PRInt32 aX, PRInt32 aY);
+  PRInt32  GetNewResizingWidth(PRInt32 aX, PRInt32 aY);
+  PRInt32  GetNewResizingHeight(PRInt32 aX, PRInt32 aY);
+  void     HideShadowAndInfo();
+  void     SetFinalSize(PRInt32 aX, PRInt32 aY);
+  void     DeleteRefToAnonymousNode(nsIDOMElement* aElement,
+                                    nsIContent * aParentContent,
+                                    nsIDocumentObserver * aDocObserver);
+  void     SetResizeIncrements(PRInt32 aX, PRInt32 aY, PRInt32 aW, PRInt32 aH, PRBool aPreserveRatio);
+  nsresult GetElementOrigin(nsIDOMElement * aElement, PRInt32 & aX, PRInt32 & aY);
 public:
 
 // friends

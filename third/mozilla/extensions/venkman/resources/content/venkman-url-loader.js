@@ -39,6 +39,7 @@ const SIS_CTRID       = "@mozilla.org/scriptableinputstream;1"
 const nsIScriptableInputStream = Components.interfaces.nsIScriptableInputStream;
 const nsIChannel      = Components.interfaces.nsIChannel;
 const nsIInputStream  = Components.interfaces.nsIInputStream;
+const nsIRequest      = Components.interfaces.nsIRequest;
 
 function _getChannelForURL (url)
 {
@@ -53,7 +54,7 @@ function _getChannelForURL (url)
 function loadURLNow (url)
 {
     var chan = _getChannelForURL (url);
-
+    chan.loadFlags |= nsIRequest.LOAD_BYPASS_CACHE;
     var instream = 
         Components.classes[SIS_CTRID].createInstance(nsIScriptableInputStream);
     instream.init (chan.open());
@@ -64,6 +65,7 @@ function loadURLNow (url)
 function loadURLAsync (url, observer)
 {
     var chan = _getChannelForURL (url);
+    chan.loadFlags |= nsIRequest.LOAD_BYPASS_CACHE;
     return chan.asyncOpen (new StreamListener (url, observer), null);
 }
     
@@ -75,29 +77,27 @@ function StreamListener(url, observer)
 }
 
 StreamListener.prototype.onStartRequest =
-function (request, data)
+function (request, context)
 {
     //dd ("onStartRequest()");
 }
 
 StreamListener.prototype.onStopRequest =
-function (request, data, status)
+function (request, context, status)
 {
-    // dd ("onStopRequest(): status: " + status + "\n" /* + this.data*/);
+    //dd ("onStopRequest(): status: " + status /* + "\n"  + this.data*/);
     if (typeof this.observer.onComplete == "function")
         this.observer.onComplete (this.data, this.url, status);
 }
 
 StreamListener.prototype.onDataAvailable =
-function (request, data, inStr, sourceOffset, count)
+function (request, context, inStr, sourceOffset, count)
 {
     //dd ("onDataAvailable(): " + count);
-    if (!this._sis)
-    {
-        this._sis = 
-            Components.classes[SIS_CTRID].createInstance(nsIScriptableInputStream);
-        this._sis.init(inStr);
-    }
-    
-    this.data += this._sis.read(count);
+    // sometimes the inStr changes between onDataAvailable calls, so we
+    // can't cache it.
+    var sis = 
+        Components.classes[SIS_CTRID].createInstance(nsIScriptableInputStream);
+    sis.init(inStr);
+    this.data += sis.read(count);
 }

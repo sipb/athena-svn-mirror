@@ -27,16 +27,34 @@ VPATH		= @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 MODULE		= xpcom
-CPPSRCS		= regExport.cpp regxpcom.cpp
+CPPSRCS		= regxpcom.cpp
+
+DEFINES		+= -DXPCOM_GLUE 
+
 REQUIRES	= string \
-          $(NULL)
+		  embedstring \
+		  xpcom \
+	          $(NULL)
+
+
+LOCAL_INCLUDES	= \
+		-I$(srcdir)/../../build \
+		$(NULL)
 
 SIMPLE_PROGRAMS	= $(CPPSRCS:.cpp=$(BIN_SUFFIX))
 
-LIBS		= \
-		$(XPCOM_LIBS) \
+LIBS            = \
+		$(DIST)/lib/$(LIB_PREFIX)xpcomglue.$(LIB_SUFFIX) \
+		$(DIST)/lib/$(LIB_PREFIX)embedstring.$(LIB_SUFFIX) \
 		$(NSPR_LIBS) \
 		$(NULL)
+
+# Need to link with CoreFoundation on Mac
+ifneq (,$(filter mac cocoa,$(MOZ_WIDGET_TOOLKIT)))
+LIBS            += \
+		$(TK_LIBS) \
+		$(NULL)
+endif
 
 SDK_BINARY     =                    \
 		$(SIMPLE_PROGRAMS)  \

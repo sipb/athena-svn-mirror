@@ -62,7 +62,6 @@ NS_IMPL_ISUPPORTS_INHERITED2(nsNoIncomingServer,
 
 nsNoIncomingServer::nsNoIncomingServer()
 {    
-    NS_INIT_ISUPPORTS();
 }
 
 nsNoIncomingServer::~nsNoIncomingServer()
@@ -95,6 +94,7 @@ nsNoIncomingServer::SetFlagsOnDefaultMailboxes()
                                             MSG_FOLDER_FLAG_DRAFTS |
                                             MSG_FOLDER_FLAG_TEMPLATES |
                                             MSG_FOLDER_FLAG_TRASH |
+                                            MSG_FOLDER_FLAG_JUNK |
                                             MSG_FOLDER_FLAG_QUEUE);
     return NS_OK;
 }	
@@ -240,14 +240,23 @@ NS_IMETHODIMP nsNoIncomingServer::GetNewMail(nsIMsgWindow *aMsgWindow, nsIUrlLis
 NS_IMETHODIMP
 nsNoIncomingServer::GetFilterList(nsIMsgWindow *aMsgWindow, nsIMsgFilterList **aResult)
 {
-    return NS_ERROR_NOT_IMPLEMENTED;
+  return NS_ERROR_NOT_IMPLEMENTED;
 }
 
 NS_IMETHODIMP
 nsNoIncomingServer::GetCanSearchMessages(PRBool *canSearchMessages)
 {
-    NS_ENSURE_ARG_POINTER(canSearchMessages);
-    *canSearchMessages = PR_TRUE;
-    return NS_OK;
+  NS_ENSURE_ARG_POINTER(canSearchMessages);
+  *canSearchMessages = PR_TRUE;
+  return NS_OK;
 }
+
+NS_IMETHODIMP 
+nsNoIncomingServer::GetServerRequiresPasswordForBiff(PRBool *aServerRequiresPasswordForBiff)
+{
+  NS_ENSURE_ARG_POINTER(aServerRequiresPasswordForBiff);
+  *aServerRequiresPasswordForBiff = PR_FALSE;  // for local folders, we don't require a password
+  return NS_OK;
+}
+
 

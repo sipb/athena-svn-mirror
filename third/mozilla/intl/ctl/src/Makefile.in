@@ -31,10 +31,12 @@ include $(DEPTH)/config/autoconf.mk
 
 MODULE		= ctl
 LIBRARY_NAME	= ctl
-EXPORT_LIBRARY = 1
+EXPORT_LIBRARY	= 1
 IS_COMPONENT	= 1
+MODULE_NAME	= nsCtlLEModule
 
-REQUIRES	= xpcom \
+REQUIRES	= xpcom_obsolete \
+		  xpcom \
 		  string \
 		  uconv \
 		  locale \
@@ -46,6 +48,7 @@ CPPSRCS		= \
 	nsULE.cpp \
 	nsUnicodeToTIS620.cpp \
 	nsUnicodeToSunIndic.cpp \
+	nsUnicodeToThaiTTF.cpp \
 	nsCtlLEModule.cpp \
 	$(NULL)
 
@@ -63,6 +66,7 @@ endif
 
 EXTRA_DSO_LDOPTS += \
 	$(MOZ_COMPONENT_LIBS) \
+	$(MOZ_XPCOM_OBSOLETE_LIBS) \
 	-L$(DIST)/lib \
 	$(EXTRA_DSO_LIBS) \
 	$(NULL)

@@ -3,7 +3,7 @@
   FILE: icalvalue.c
   CREATOR: eric 02 May 1999
   
-  $Id: icalvalue.c,v 1.1.1.1 2003-02-14 18:44:25 rbasch Exp $
+  $Id: icalvalue.c,v 1.1.1.2 2003-07-08 17:18:54 rbasch Exp $
 
 
  (C) COPYRIGHT 2000, Eric Busboom, http://www.softwarestudio.org
@@ -713,10 +713,10 @@ char* icalvalue_text_as_ical_string(icalvalue* value) {
 		break;
 	    }
 
-/* 	    case '\\': 
-	    case '"': */
 	    case ';':
-	    case ',':{
+	    case ',':
+	    case '"':
+	    case '\\':{
 		icalmemory_append_char(&str,&str_p,&buf_sz,'\\');
 		icalmemory_append_char(&str,&str_p,&buf_sz,*p);
 		line_length+=3;

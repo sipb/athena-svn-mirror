@@ -39,29 +39,21 @@
 
 // NOTE: alphabetically ordered
 #include "nsFormControlAccessible.h"
-#include "nsIDocument.h"
 #include "nsIDOMHTMLFormElement.h"
 #include "nsIDOMHTMLInputElement.h"
-#include "nsIDOMHTMLLabelElement.h"
-#include "nsIDOMNodeList.h"
-#include "nsIDOMXULButtonElement.h"
-#include "nsIDOMXULCheckboxElement.h"
-#include "nsIDOMXULDocument.h"
 #include "nsIDOMXULElement.h"
-#include "nsIDOMXULLabelElement.h"
-#include "nsIDOMXULSelectCntrlEl.h"
-#include "nsIDOMXULSelectCntrlItemEl.h"
-#include "nsReadableUtils.h"
-#include "nsString.h"
+#include "nsIDOMXULControlElement.h"
 
 /**
   * nsFormControlAccessible
   */
 
 nsFormControlAccessible::nsFormControlAccessible(nsIDOMNode* aNode, nsIWeakReference* aShell):
-nsAccessible(aNode, aShell)
+nsAccessibleWrap(aNode, aShell)
 { 
 }
+
+NS_IMPL_ISUPPORTS_INHERITED0(nsFormControlAccessible, nsAccessible)
 
 /**
   * XUL states: focused, unavailable(disabled), focusable, ?protected?

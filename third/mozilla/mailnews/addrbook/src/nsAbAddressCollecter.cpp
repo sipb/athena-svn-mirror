@@ -60,7 +60,6 @@ NS_IMPL_ISUPPORTS1(nsAbAddressCollecter, nsIAbAddressCollecter)
 
 nsAbAddressCollecter::nsAbAddressCollecter()
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsAbAddressCollecter::~nsAbAddressCollecter()
@@ -84,10 +83,7 @@ NS_IMETHODIMP nsAbAddressCollecter::CollectUnicodeAddress(const PRUnichar * aAdd
 NS_IMETHODIMP nsAbAddressCollecter::GetCardFromAttribute(const char *aName, const char *aValue, nsIAbCard **aCard)
 {
   NS_ENSURE_ARG_POINTER(aCard);
-
-  nsresult rv = m_database->GetCardFromAttribute(m_directory, aName, aValue, PR_FALSE /* retain case */, aCard);
-  NS_ENSURE_SUCCESS(rv,rv);
-  return rv;
+  return m_database->GetCardFromAttribute(m_directory, aName, aValue, PR_FALSE /* retain case */, aCard);
 }
 
 NS_IMETHODIMP nsAbAddressCollecter::CollectAddress(const char *address, PRBool aCreateCard)
@@ -125,7 +121,7 @@ NS_IMETHODIMP nsAbAddressCollecter::CollectAddress(const char *address, PRBool a
       if (NS_SUCCEEDED(rv) && senderCard)
       {
         PRBool modifiedCard;
-        if (curName && strlen(curName) > 0) {
+        if (curName && *curName) {
           rv = SetNamesForCard(senderCard, curName, &modifiedCard);
           NS_ASSERTION(NS_SUCCEEDED(rv), "failed to set names");
         }
@@ -345,7 +341,7 @@ nsresult nsAbAddressCollecter::SetAbURI(const char *aURI)
   NS_ENSURE_SUCCESS(rv, rv);
 
   nsCOMPtr <nsIRDFResource> resource;
-  rv = rdfService->GetResource(m_abURI.get(), getter_AddRefs(resource));
+  rv = rdfService->GetResource(m_abURI, getter_AddRefs(resource));
   NS_ENSURE_SUCCESS(rv, rv);
 
   m_directory = do_QueryInterface(resource, &rv);

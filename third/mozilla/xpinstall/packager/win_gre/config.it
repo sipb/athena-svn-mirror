@@ -12,15 +12,15 @@ Default AppID=$ProductName$User
 
 Company Name=$CompanyName$
 Product Name=$ProductName$
-Product NameInternal=$ProductName$
-User Agent=$UserAgent$
+Product NameInternal=$ProductNameInternal$
+User Agent=$GreUniqueID$
 
 ; Destination Path values:
 ;   PROGRAMFILESDIR
 ;   WINDISK
 ;   WINDIR
 ;   WINSYSDIR
-Path=[PROGRAMFILESDIR]\$CompanyName$\$ProductName$\$XPInstallVersion$
+Path=[COMMONFILESDIR]\$CompanyName$\$ProductName$\$GreUniqueID$
 
 ; Sub Path, when set will indicate to Setup to create a subfolder from
 ; what is offered to the user to change.  It will not be shown to the user
@@ -95,6 +95,9 @@ Default Setup Type=Setup Type 0
 ;   TRUE
 Refresh Icons=FALSE
 
+;*** LOCALIZE ME BABY ***
+GRE Cleanup Orphans Message=Cleaning up orphaned GREs (Gecko Runtime Environments), please wait...
+
 ; This section contains info on how to send error information in case of
 ; either a download or xpinstall error.
 ; By default, this feature is enabled, unless disabled.
@@ -119,20 +122,6 @@ Show Confirmation=TRUE
 Confirmation Message=There was an error encountered during installation of $ProductName$.  The following information will be sent back to us to help us improve the product: %s
 
 
-
-; HKey:              valid decryptable setup key is [Product CurrentVersion] or [Product PreviousVersion]
-; Decrypt HKey:      there are times when '[' and ']' are valid part of windows registry key names.
-; Contains Filename: tells setup that the path contains filename needed to be removed before
-;                    using it as a path.
-; Verify Existence:  FILE or PATH
-;
-[Locate Previous Product Path0]
-HRoot=HKEY_LOCAL_MACHINE
-HKey=SOFTWARE\$CompanyName$\$ProductName$\$UserAgent$\Main
-Name=Install Directory
-Decrypt HKey=TRUE
-Contains Filename=FALSE
-Verify Existence=
 
 [Dialog Welcome]
 Show Dialog=TRUE
@@ -175,8 +164,9 @@ Readme App=notepad.exe
 ; List of components to install/enable for this Setup Type.
 ; All other components not listed here will be disabled if
 ; this Setup Type is selected.
-C0=Component GRE
-C1=Component Uninstaller
+C0=Component XPCOM
+C1=Component GRE
+C2=Component Uninstaller
 
 [Dialog Select Components]
 Show Dialog=FALSE
@@ -205,7 +195,7 @@ Show Dialog=TRUE
 Title=$ProductName$ Setup - Additional Options
 ;*** LOCALIZE ME BABY ***
 Message1=Select the following option if you wish to save downloaded Setup files on your own computer.  This allows you to re-run Setup without downloading the files again.  The Setup files will be saved to the path below.
-Save Installer=
+Save Installer=TRUE
 ; The following settings control whether the Recapture Homepage checkbox is displayed.
 ;    For this option to work the file nsResetPref.js must be installed into the 
 ;    components directory
@@ -286,23 +276,54 @@ exe_param=
 [Check Instance0]
 Class Name=MozillaMessageWindow
 Window Name=
+Process Name=Mozilla.exe
+Pretty Name=Mozilla
 ;*** LOCALIZE ME BABY ***
-Message=Download of $ProductName$ was successful. $ProductNameNoVersion$ must be closed to proceed with installation. Click OK to exit $ProductNameNoVersion$ automatically and to begin installation.
+Message=Download of $ProductName$ was successful. However, Mozilla must be closed to proceed with this installation. Click OK to exit Mozilla automatically and to begin installation.
 ;*** LOCALIZE ME BABY ***
-Message Full Installer=$ProductNameNoVersion$ must be closed to proceed with installation. Click OK to exit $ProductNameNoVersion$ automatically and to begin installation.
+Message Full Installer=Mozilla must be closed to proceed with this installation. Click OK to exit Mozilla automatically and to begin installation.
+;*** LOCALIZE ME BABY ***
+Message wait=Shutting down Mozilla.  Please wait...
 
 ; This key indicates whether or not to close all the windows associated with
 ; the process id of this app instance window found.
 Close All Process Windows=TRUE
 
-;[Component XPCOM]
-;Description Short=Mozilla XPCOM
-;;*** LOCALIZE ME BABY ***
-;Description Long=Install Engine
-;Archive=xpcom.xpi
-;$InstallSize$:xpcom
-;$InstallSizeSystem$
-;$InstallSizeArchive$:xpcom.xpi
+; These keys are not normally necessary for checking instances.  They are
+; set here because Mozilla requires a way to shut down it's turbo mode.
+Extra Cmd0 Reg Key Root=HKEY_LOCAL_MACHINE
+Extra Cmd0 Reg Key=Software\Microsoft\Windows\CurrentVersion\App Paths\Mozilla.exe
+Extra Cmd0 Reg Name=
+Extra Cmd0 Parameter=-kill
+
+[Check Instance1]
+Class Name=Netscape6MessageWindow
+Window Name=
+Process Name=Netscp.exe
+Pretty Name=Netscape
+;*** LOCALIZE ME BABY ***
+Message=Download of $ProductName$ was successful. However, Netscape must be closed to proceed with this installation. Click OK to exit Netscape automatically and to begin installation.
+;*** LOCALIZE ME BABY ***
+Message Full Installer=Netscape must be closed to proceed with this installation. Click OK to exit Netscape automatically and to begin installation.
+;*** LOCALIZE ME BABY ***
+Message wait=Shutting down Netscape.  Please wait...
+
+; This key indicates whether or not to close all the windows associated with
+; the process id of this app instance window found.
+Close All Process Windows=TRUE
+
+; These keys are not normally necessary for checking instances.  They are
+; set here because Netscape 6 requires a way to shut down it's turbo mode.
+; This will stop at the first one that succeeds (key and file found).
+Extra Cmd0 Reg Key Root=HKEY_LOCAL_MACHINE
+Extra Cmd0 Reg Key=Software\Microsoft\Windows\CurrentVersion\App Paths\Netscp6.exe
+Extra Cmd0 Reg Name=
+Extra Cmd0 Parameter=-kill
+
+Extra Cmd1 Reg Key Root=HKEY_LOCAL_MACHINE
+Extra Cmd1 Reg Key=Software\Microsoft\Windows\CurrentVersion\App Paths\Netscp.exe
+Extra Cmd1 Reg Name=
+Extra Cmd1 Parameter=-kill
 
 ;
 ;DependeeX=Component A means
@@ -395,6 +416,15 @@ Close All Process Windows=TRUE
 ;                   is greater than or equal to the SupersedeMinVersion the component
 ;                   will be superseded.
 ;
+
+[Component XPCOM]
+Description Short=Mozilla XPCOM
+;*** LOCALIZE ME BABY ***
+Description Long=Install Engine
+Archive=xpcom.xpi
+$InstallSize$:xpcom
+$InstallSizeSystem$
+$InstallSizeArchive$:xpcom.xpi
 Attributes=SELECTED|INVISIBLE|FORCE_UPGRADE
 Force Upgrade File0=[SETUP PATH]\xpcom.dll
 
@@ -502,11 +532,24 @@ Filename=install_wizard.log
 Source=[SETUP PATH]
 Destination=[SETUP PATH]\Uninstall
 
+[Delete File0]
+Timing=post launchapp
+Destination=[SETUP PATH]\install_wizard.log
+
+; Legal values for the Overwrite Name key are TRUE, FALSE and ENUMERATE.
+;   ENUMERATE is used for shared installs and means:
+;     1) Starting with 01, increment though the NameXX named values in the 
+;        Windows registry (where Name is the value from Name= and XX is 
+;        the integer value being incremented) until a NameXX is found with 
+;        the same value as that in Name Value=.
+;     2) If no NameXX is found with that value, create a new name/value pair
+;        named NameXX where XX is the next unused integer value
+;
 [Windows Registry0]
 Root Key=HKEY_LOCAL_MACHINE
-Key=Software\Microsoft\Windows\CurrentVersion\Uninstall\$ProductName$ ($UserAgentShort$)
+Key=Software\Microsoft\Windows\CurrentVersion\Uninstall\$ProductName$ ($GreUniqueID$)
 Name=DisplayName
-Name Value=Gecko Runtime Environment ($UserAgentShort$)
+Name Value=Gecko Runtime Environment ($GreUniqueID$)
 Type=REG_SZ
 Decrypt Key=FALSE
 Decrypt Name=FALSE
@@ -518,10 +561,10 @@ Condition=DefaultApp
 
 [Windows Registry1]
 Root Key=HKEY_LOCAL_MACHINE
-Key=Software\Microsoft\Windows\CurrentVersion\Uninstall\$ProductName$ ($UserAgentShort$)
+Key=Software\Microsoft\Windows\CurrentVersion\Uninstall\$ProductName$ ($GreUniqueID$)
 Name=UninstallString
 ;*** LOCALIZE ME BABY ***
-Name Value=[WINDIR]\$UninstallFile$ /ua "$UserAgent$" /app $ProductName$User
+Name Value=[WINDIR]\$UninstallFile$ /ua "$GreUniqueID$" /app $ProductName$User
 Type=REG_SZ
 Decrypt Key=FALSE
 Decrypt Name=FALSE
@@ -533,9 +576,8 @@ Condition=DefaultApp
 
 [Windows Registry2]
 Root Key=HKEY_LOCAL_MACHINE
-Key=[REGPATH]\$UserAgentShort$\AppList\[APP_ID]
+Key=[REGPATH]\AppList\[APP_ID]
 Name=Name
-;*** LOCALIZE ME BABY ***
 Name Value=[APP_ID]
 Type=REG_SZ
 Decrypt Key=TRUE
@@ -547,10 +589,23 @@ Timing=post smartupdate
 
 [Windows Registry3]
 Root Key=HKEY_LOCAL_MACHINE
-Key=[REGPATH]\$UserAgentShort$\AppList\[APP_ID]
+Key=[REGPATH]\AppList\[APP_ID]
+Name=PathToExe
+Name Value=[PATH_TO_APP]
+Type=REG_SZ
+Decrypt Key=TRUE
+Decrypt Name=FALSE
+Decrypt Name Value=TRUE
+Overwrite Key=TRUE
+Overwrite Name=ENUMERATE
+Timing=post smartupdate
+
+[Windows Registry4]
+Root Key=HKEY_LOCAL_MACHINE
+Key=[REGPATH]\Installer
 Name=PathToExe
 ;*** LOCALIZE ME BABY ***
-Name Value=[PATH_TO_APP]
+Name Value=[SETUP PATH]\Setup $ProductNameInternal$\setup.exe
 Type=REG_SZ
 Decrypt Key=TRUE
 Decrypt Name=FALSE
@@ -558,6 +613,32 @@ Decrypt Name Value=TRUE
 Overwrite Key=TRUE
 Overwrite Name=TRUE
 Timing=post smartupdate
+
+[Windows Registry5]
+Root Key=HKEY_LOCAL_MACHINE
+Key=[REGPATH]\Uninstall
+Name=Description
+Name Value=$ProductName$ ($UserAgentShort$)
+Type=REG_SZ
+Decrypt Key=TRUE
+Decrypt Name=FALSE
+Decrypt Name Value=FALSE
+Overwrite Key=TRUE
+Overwrite Name=TRUE
+Timing=pre smartupdate
+
+[Windows Registry6]
+Root Key=HKEY_LOCAL_MACHINE
+Key=[REGPATH]\Uninstall
+Name=Uninstall Log Folder
+Name Value=[SETUP PATH]\Uninstall
+Type=REG_SZ
+Decrypt Key=TRUE
+Decrypt Name=FALSE
+Decrypt Name Value=TRUE
+Overwrite Key=TRUE
+Overwrite Name=TRUE
+Timing=pre smartupdate
 
 ; Values for Show Folder:
 ;   HIDE             Hides the window and activates another window.
@@ -666,7 +747,7 @@ Message Cancel Setup AUTO mode=Canceling Setup, please wait...
 ;*** LOCALIZE ME BABY ***
 Error File Uncompress=Error uncompressing file %s: %d
 ;*** LOCALIZE ME BABY ***
-UsageMsg Usage=Usage: %s [options]%s	[options] can be any of the following combination:%s		-h:		This help.%s		-a [path]:		Alternate archive search path.%s		-n [filename]:	Setup's parent's process filename.%s		-ma:		Run setup in Auto mode.%s		-ms:		Run setup in Silent mode.%s		-ira:		Ignore the [RunAppX] sections%s		-ispf:		Ignore the [Program FolderX] sections that show%s				the Start Menu shortcut folder at the end of installation.
+UsageMsg Usage=Usage: %s [options]\n	[options] can be any of the following combination:\n		-h: This help.\n		-a [path]: Alternate archive search path.\n		-app [app id]: ID of application which is launching the installer (shared installs)\n		-app_path [app]: Points to (full path) representative file of application (Shared installs)\n	*	-dd [path]: Suggested install destination directory. (Shared installs)\n	*	-greLocal: Forces GRE to be installed into the application dir.\n	*	-greShared: Forces GRE to be installed into a global, shared dir (normally)\n			c:\program files\common files\mozilla.org\GRE\n		-reg_path [path]: Where to make entries in the Windows registry. (Shared installs)\n		-f: Force install of GRE installer (Shared installs), though it'll work\n			for non GRE installers too.\n		-greForce: Force 'Component GRE' to be downloaded, run, and installed.  This\n			bypasses GRE's logic of determining when to install by running its\n			installer with a '-f' flag.\n		-n [filename]: Setup's parent process filename.\n	*	-ma: Run setup in Auto mode.\n	*	-ms: Run setup in Silent mode.\n		-ira: Ignore the [RunAppX] sections\n		-ispf: Ignore the [Program FolderX] sections that show\n			the Start Menu shortcut folder at the end of installation.\n	*	-showBanner: Show the banner image in the download and install progress dialogs\n	*	-hideBanner: Hide the banner image in the download and install progress dialogs\n\n	* means it will override config.ini
 ;*** LOCALIZE ME BABY ***
 IDC Use FTP=Use &FTP for downloading files
 ;*** LOCALIZE ME BABY ***

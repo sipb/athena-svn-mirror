@@ -49,13 +49,14 @@ class nsIContent;
 class nsIDOMUIEvent;
 class nsIAtom;
 class nsIController;
-class nsIXBLPrototypeHandler;
+class nsXBLPrototypeHandler;
 
 class nsXBLFocusHandler : public nsIDOMFocusListener, 
                           public nsXBLEventHandler
 {
 public:
-  nsXBLFocusHandler(nsIDOMEventReceiver* aReceiver, nsIXBLPrototypeHandler* aHandler);
+  nsXBLFocusHandler(nsIDOMEventReceiver* aReceiver,
+                    nsXBLPrototypeHandler* aHandler);
   virtual ~nsXBLFocusHandler();
   
   // nsIDOMetc.
@@ -67,16 +68,12 @@ public:
   NS_DECL_ISUPPORTS_INHERITED
 
 protected:
-  static PRUint32 gRefCnt;
-  static nsIAtom* kFocusAtom;
-  static nsIAtom* kBlurAtom;
-
-protected:
   // Members
 };
 
-extern nsresult
-NS_NewXBLFocusHandler(nsIDOMEventReceiver* aEventReceiver, nsIXBLPrototypeHandler* aHandlerElement, 
+nsresult
+NS_NewXBLFocusHandler(nsIDOMEventReceiver* aEventReceiver,
+                      nsXBLPrototypeHandler* aHandlerElement,
                       nsXBLFocusHandler** aResult);
 
 

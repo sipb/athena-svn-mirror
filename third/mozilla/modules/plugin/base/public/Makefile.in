@@ -27,6 +27,7 @@ VPATH		= @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 MODULE		= plugin
+GRE_MODULE	= 1
 
 EXPORTS		= \
 		nsplugin.h \
@@ -36,6 +37,11 @@ EXPORTS		= \
 		nsDefaultPlugin.h \
 		nsPluginNativeWindow.h \
 		nsPluginsCID.h \
+		npapi.h \
+		npupp.h \
+		$(NULL)
+
+SDK_HEADERS	 = \
 		npapi.h \
 		npupp.h \
 		$(NULL)
@@ -58,7 +64,6 @@ XPIDLSRCS 	= \
 		nsIScriptablePlugin.idl \
 		nsIPluginTagInfo.idl \
 		nsIPluginTagInfo2.idl \
-		nsIPluginViewer.idl  \
 		nsIJRILiveConnectPIPeer.idl \
 		nsIJRILiveConnectPlugin.idl \
 		nsIPluginInputStream.idl \
@@ -67,6 +72,7 @@ XPIDLSRCS 	= \
 		nsPIPluginHost.idl \
 		nsPIPluginInstancePeer.idl \
 		nsIPluginHost.idl \
+		nsIPluginDocument.idl \
 		$(NULL)
 
 include $(topsrcdir)/config/rules.mk

@@ -60,7 +60,6 @@ static const char s509InternalError[]       = "509 internal error";
 
 XRemoteService::XRemoteService()
 {
-  NS_INIT_ISUPPORTS();
   mNumWindows = 0;
   mRunning = PR_FALSE;
 }
@@ -440,7 +439,7 @@ XRemoteService::CreateProxyWindow(void)
 
   nsWidgetInitData initData;
   initData.mWindowType = eWindowType_toplevel;
-  initData.mContentType = nsIDocShellTreeItem::typeChrome;
+  initData.mContentType = eContentTypeUI;
 
   // create the window as a new toplevel
   nsRect rect(0,0,100,100);
@@ -497,6 +496,38 @@ XRemoteService::BuildResponse(const char *aError, const char *aMessage)
 
   retval = ToNewCString(retvalString);
   return retval;
+}
+
+void
+XRemoteService::FindRestInList(nsCString &aString, nsCString &retString,
+                               PRUint32 *aIndexRet)
+{
+  // init our return
+  *aIndexRet = 0;
+  nsCString tempString;
+  PRInt32   strIndex;
+  // find out if there's a comma from the start of the string
+  strIndex = aString.FindChar(',');
+
+  // give up now if you can
+  if (strIndex == kNotFound)
+    return;
+
+  // cut the string down to the first ,
+  tempString = Substring(aString, strIndex+1, aString.Length());
+
+  // strip off leading + trailing whitespace
+  tempString.Trim(" ", PR_TRUE, PR_TRUE);
+
+  // see if we've reduced it to nothing
+  if (tempString.IsEmpty())
+    return;
+
+  *aIndexRet = strIndex;
+
+  // otherwise, return it as a new C string
+  retString = tempString;
+
 }
 
 void
@@ -588,6 +619,15 @@ XRemoteService::GetMailLocation(char **_retval)
 
   return NS_OK;
   
+}
+
+nsresult
+XRemoteService::GetComposeLocation(const char **_retval)
+{
+  // get the Compose chrome URL
+  *_retval = "chrome://messenger/content/messengercompose/messengercompose.xul";
+
+  return NS_OK;
 }
 
 nsresult
@@ -811,6 +851,22 @@ XRemoteService::XfeDoCommand(nsCString &aArgument,
 			     nsIDOMWindowInternal *aParent)
 {
   nsresult rv = NS_OK;
+  
+  // see if there are any arguments on the end
+  nsCString restArgument;
+  PRUint32  index;
+  FindRestInList(aArgument, restArgument, &index);
+
+  if (!restArgument.IsEmpty())
+    aArgument.Truncate(index);
+  nsCOMPtr<nsISupportsString> arg;
+  arg = do_CreateInstance(NS_SUPPORTS_STRING_CONTRACTID, &rv);
+  
+  if (NS_FAILED(rv))
+    return rv;
+  
+  // pass the second argument as parameter
+  arg->SetData(NS_ConvertUTF8toUCS2(restArgument));
 
   // someone requested opening mail/news
   if (aArgument.EqualsIgnoreCase("openinbox")) {
@@ -839,7 +895,7 @@ XRemoteService::XfeDoCommand(nsCString &aArgument,
 
       nsCOMPtr<nsIDOMWindow> newWindow;
       rv = OpenChromeWindow(0, mailLocation, "chrome,all,dialog=no",
-			    nsnull, getter_AddRefs(newWindow));
+                            arg, getter_AddRefs(newWindow));
     }
   }
 
@@ -852,13 +908,23 @@ XRemoteService::XfeDoCommand(nsCString &aArgument,
     
     nsCOMPtr<nsIDOMWindow> newWindow;
     rv = OpenChromeWindow(0, browserLocation, "chrome,all,dialog=no",
-			  nsnull, getter_AddRefs(newWindow));
+                          arg, getter_AddRefs(newWindow));
   }
 
   // open a new compose window
   else if (aArgument.EqualsIgnoreCase("composemessage")) {
-    nsCString tempString("mailto:");
-    rv = OpenURL(tempString, nsnull, PR_FALSE);
+    /*
+     *  Here we change to OpenChromeWindow instead of OpenURL so as to
+     *  pass argument values to the compose window, especially attachments
+     */
+    const char * composeLocation;
+    rv = GetComposeLocation(&composeLocation);
+    if (rv != NS_OK)
+      return NS_ERROR_FAILURE;
+
+    nsCOMPtr<nsIDOMWindow> newWindow;
+    rv = OpenChromeWindow(0, composeLocation, "chrome,all,dialog=no",
+                          arg, getter_AddRefs(newWindow));
   }
 
   return rv;

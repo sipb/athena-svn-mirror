@@ -64,13 +64,8 @@
 void CBrowserFrame::BrowserFrameGlueObj::UpdateStatusBarText(const PRUnichar *aMessage)
 {
     METHOD_PROLOGUE(CBrowserFrame, BrowserFrameGlueObj)
-
-    nsCString strStatus; 
-
-    if(aMessage)
-        strStatus.AssignWithConversion(aMessage);
-
-    pThis->m_wndStatusBar.SetPaneText(0, strStatus.get());
+    USES_CONVERSION;
+    pThis->m_wndStatusBar.SetPaneText(0, aMessage ? W2CT(aMessage) : _T(""));
 }
 
 void CBrowserFrame::BrowserFrameGlueObj::UpdateProgress(PRInt32 aCurrent, PRInt32 aMax)
@@ -103,10 +98,10 @@ void CBrowserFrame::BrowserFrameGlueObj::UpdateCurrentURI(nsIURI *aLocation)
 
     if(aLocation)
     {
+        USES_CONVERSION;
         nsCAutoString uriString;
         aLocation->GetSpec(uriString);
-
-        pThis->m_wndUrlBar.SetCurrentURL(uriString.get());
+        pThis->m_wndUrlBar.SetCurrentURL(A2CT(uriString.get()));
     }
 }
 
@@ -119,9 +114,9 @@ void CBrowserFrame::BrowserFrameGlueObj::GetBrowserFrameTitle(PRUnichar **aTitle
 
     if(!title.IsEmpty())
     {
+        USES_CONVERSION;
         nsString nsTitle;
-        nsTitle.AssignWithConversion(title.GetBuffer(0));
-
+        nsTitle.Assign(T2CW(title.GetBuffer(0)));
         *aTitle = ToNewUnicode(nsTitle);
     }
 }
@@ -130,21 +125,20 @@ void CBrowserFrame::BrowserFrameGlueObj::SetBrowserFrameTitle(const PRUnichar *a
 {
     METHOD_PROLOGUE(CBrowserFrame, BrowserFrameGlueObj)
 
-    USES_CONVERSION;
-
-    if(W2T(aTitle))
+    CString title;
+    if (aTitle)
     {
-        pThis->SetWindowText(W2T(aTitle));
+        USES_CONVERSION;
+        title = W2CT(aTitle);
     }
     else
     {
         // Use the AppName i.e. mfcembed as the title if we
         // do not get one from GetBrowserWindowTitle()
         //
-        CString cs;
-        cs.LoadString(AFX_IDS_APP_TITLE);
-        pThis->SetWindowText(cs);
+        title.LoadString(AFX_IDS_APP_TITLE);
     }
+    pThis->SetWindowText(title);
 }
 
 void CBrowserFrame::BrowserFrameGlueObj::SetBrowserFrameSize(PRInt32 aCX, PRInt32 aCY)
@@ -331,6 +325,13 @@ void CBrowserFrame::BrowserFrameGlueObj::ShowContextMenu(PRUint32 aContextFlags,
     BOOL bContentHasFrames = FALSE;
     UINT nIDResource = IDR_CTXMENU_DOCUMENT;
 
+    // Reset the values from the last invocation
+    // Clear image src & link url
+    nsAutoString empty;
+    pThis->m_wndBrowserView.SetCtxMenuImageSrc(empty);  
+    pThis->m_wndBrowserView.SetCtxMenuLinkUrl(empty);
+    pThis->m_wndBrowserView.SetCurrentFrameURL(empty);
+
     // Display the Editor context menu if the we're inside
     // an EditorFrm which is hosting an editing session
     //
@@ -342,7 +343,23 @@ void CBrowserFrame::BrowserFrameGlueObj::ShowContextMenu(PRUint32 aContextFlags,
     }
 
     if(aContextFlags & nsIContextMenuListener2::CONTEXT_DOCUMENT)
+    {
         nIDResource = IDR_CTXMENU_DOCUMENT;
+
+        // Background image?
+        if (aContextFlags & nsIContextMenuListener2::CONTEXT_BACKGROUND_IMAGE)
+        {
+            // Get the IMG SRC
+            nsCOMPtr<nsIURI> imgURI;
+            aInfo->GetBackgroundImageSrc(getter_AddRefs(imgURI));
+            if (!imgURI)
+                return; 
+            nsCAutoString uri;
+            imgURI->GetSpec(uri);
+
+            pThis->m_wndBrowserView.SetCtxMenuImageSrc(NS_ConvertUTF8toUCS2(uri)); // Set the new Img Src
+        }
+    }
     else if(aContextFlags & nsIContextMenuListener2::CONTEXT_TEXT)        
         nIDResource = IDR_CTXMENU_TEXT;
     else if(aContextFlags & nsIContextMenuListener2::CONTEXT_LINK)
@@ -356,12 +373,7 @@ void CBrowserFrame::BrowserFrameGlueObj::ShowContextMenu(PRUint32 aContextFlags,
         // BrowserView will be invoked and the value of the URL
         // will be accesible in the view
         
-        // Reset the value from the last invocation
-        // (A new value will be set after we determine it below)
-        //
         nsAutoString strUrlUcs2;
-        pThis->m_wndBrowserView.SetCtxMenuLinkUrl(strUrlUcs2);
-
         nsresult rv = aInfo->GetAssociatedLink(strUrlUcs2);
         if(NS_FAILED(rv))
             return;
@@ -369,13 +381,24 @@ void CBrowserFrame::BrowserFrameGlueObj::ShowContextMenu(PRUint32 aContextFlags,
         // Update the view with the new LinkUrl
         // Note that this string is in UCS2 format
         pThis->m_wndBrowserView.SetCtxMenuLinkUrl(strUrlUcs2);
+
+        // Test if there is an image URL as well
+        nsCOMPtr<nsIURI> imgURI;
+        aInfo->GetImageSrc(getter_AddRefs(imgURI));
+        if(imgURI)
+        {
+            nsCAutoString strImgSrcUtf8;
+            imgURI->GetSpec(strImgSrcUtf8);
+            if(!strImgSrcUtf8.IsEmpty())
+            {
+                // Set the new Img Src
+                pThis->m_wndBrowserView.SetCtxMenuImageSrc(NS_ConvertUTF8toUCS2(strImgSrcUtf8));
+            }
+        }
     }
     else if(aContextFlags & nsIContextMenuListener2::CONTEXT_IMAGE)
     {
         nIDResource = IDR_CTXMENU_IMAGE;
-
-        nsAutoString strImgSrcUcs2;
-        pThis->m_wndBrowserView.SetCtxMenuImageSrc(strImgSrcUcs2); // Clear it
 
         // Get the IMG SRC
         nsCOMPtr<nsIURI> imgURI;
@@ -387,25 +410,8 @@ void CBrowserFrame::BrowserFrameGlueObj::ShowContextMenu(PRUint32 aContextFlags,
         if(strImgSrcUtf8.IsEmpty())
             return;
 
-        strImgSrcUcs2 = NS_ConvertUTF8toUCS2(strImgSrcUtf8);
-        pThis->m_wndBrowserView.SetCtxMenuImageSrc(strImgSrcUcs2); // Set the new Img Src
-    }
-    else if(aContextFlags & nsIContextMenuListener2::CONTEXT_BACKGROUND_IMAGE)
-    {
-        nIDResource = IDR_CTXMENU_IMAGE;
-
-        nsAutoString strImgSrcUcs2;
-        pThis->m_wndBrowserView.SetCtxMenuImageSrc(strImgSrcUcs2); // Clear it
-
-        // Get the IMG SRC
-        nsCOMPtr<nsIURI> imgURI;
-        aInfo->GetBackgroundImageSrc(getter_AddRefs(imgURI));
-        if (!imgURI)
-            return;
-        nsCAutoString uri;
-        imgURI->GetSpec(uri);
-
-        pThis->m_wndBrowserView.SetCtxMenuImageSrc(NS_ConvertUTF8toUCS2(uri)); // Set the new Img Src
+        // Set the new Img Src
+        pThis->m_wndBrowserView.SetCtxMenuImageSrc(NS_ConvertUTF8toUCS2(strImgSrcUtf8));
     }
 
     // Determine if we need to add the Frame related context menu items
@@ -414,9 +420,6 @@ void CBrowserFrame::BrowserFrameGlueObj::ShowContextMenu(PRUint32 aContextFlags,
     if(pThis->m_wndBrowserView.ViewContentContainsFrames())
     {
         bContentHasFrames = TRUE;
-
-        nsAutoString strFrameURL;
-        pThis->m_wndBrowserView.SetCurrentFrameURL(strFrameURL); // Clear it
 
         //Determine the current Frame URL
         //
@@ -435,6 +438,7 @@ void CBrowserFrame::BrowserFrameGlueObj::ShowContextMenu(PRUint32 aContextFlags,
         if(NS_FAILED(rv))
             GOTO_BUILD_CTX_MENU;
 
+        nsAutoString strFrameURL;
         rv = htmlDoc->GetURL(strFrameURL);
         if(NS_FAILED(rv))
             GOTO_BUILD_CTX_MENU;
@@ -482,4 +486,17 @@ void CBrowserFrame::BrowserFrameGlueObj::UpdateSecurityStatus(PRInt32 aState)
     METHOD_PROLOGUE(CBrowserFrame, BrowserFrameGlueObj)
 
     pThis->UpdateSecurityStatus(aState);
+}
+
+void CBrowserFrame::BrowserFrameGlueObj::ShowTooltip(PRInt32 aXCoords, PRInt32 aYCoords, const PRUnichar *aTipText)
+{
+    METHOD_PROLOGUE(CBrowserFrame, BrowserFrameGlueObj)
+    pThis->m_wndTooltip.SetTipText(CString(aTipText));
+    pThis->m_wndTooltip.Show(&pThis->m_wndBrowserView, aXCoords, aYCoords);
+}
+
+void CBrowserFrame::BrowserFrameGlueObj::HideTooltip()
+{
+    METHOD_PROLOGUE(CBrowserFrame, BrowserFrameGlueObj)
+    pThis->m_wndTooltip.Hide();
 }

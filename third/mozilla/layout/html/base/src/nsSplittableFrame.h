@@ -46,16 +46,12 @@ public:
   NS_IMETHOD Init(nsIPresContext*  aPresContext,
                   nsIContent*      aContent,
                   nsIFrame*        aParent,
-                  nsIStyleContext* aContext,
+                  nsStyleContext*  aContext,
                   nsIFrame*        aPrevInFlow);
   
   NS_IMETHOD  IsSplittable(nsSplittableType& aIsSplittable) const;
 
   NS_IMETHOD Destroy(nsIPresContext* aPresContext);
-
-#ifdef DEBUG
-  NS_IMETHOD  SizeOf(nsISizeOfHandler* aHandler, PRUint32* aResult) const;
-#endif
 
   // Flow member functions.
   NS_IMETHOD  GetPrevInFlow(nsIFrame** aPrevInFlow) const;
@@ -66,12 +62,12 @@ public:
   /**
    * Return the first frame in our current flow. 
    */
-  nsIFrame*   GetFirstInFlow() const;
+  virtual nsIFrame* GetFirstInFlow() const;
 
   /**
    * Return the last frame in our current flow.
    */
-  nsIFrame*   GetLastInFlow() const;
+  virtual nsIFrame* GetLastInFlow() const;
 
   // Remove the frame from the flow. Connects the frame's prev-in-flow
   // and its next-in-flow

@@ -701,8 +701,9 @@ call_enumerate(JSContext *cx, JSObject *obj)
     JSStackFrame *fp;
     JSObject *funobj;
     JSScope *scope;
-    JSScopeProperty *sprop;
+    JSScopeProperty *sprop, *cprop;
     JSPropertyOp getter;
+    jsval *vec;
     JSProperty *prop;
 
     fp = (JSStackFrame *) JS_GetPrivate(cx, obj);
@@ -733,13 +734,19 @@ call_enumerate(JSContext *cx, JSObject *obj)
     scope = OBJ_SCOPE(funobj);
     for (sprop = SCOPE_LAST_PROP(scope); sprop; sprop = sprop->parent) {
         getter = sprop->getter;
-        if (getter != js_GetArgument && getter != js_GetLocalVariable)
+        if (getter == js_GetArgument)
+            vec = fp->argv;
+        else if (getter == js_GetLocalVariable)
+            vec = fp->vars;
+        else
             continue;
 
         /* Trigger reflection in call_resolve by doing a lookup. */
         if (!js_LookupProperty(cx, obj, sprop->id, &obj, &prop))
             return JS_FALSE;
         JS_ASSERT(obj && prop);
+        cprop = (JSScopeProperty *)prop;
+        LOCKED_OBJ_SET_SLOT(obj, cprop->slot, vec[sprop->shortid]);
         OBJ_DROP_PROPERTY(cx, obj, prop);
     }
 
@@ -865,7 +872,7 @@ fun_getProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp)
     jsint slot;
     JSFunction *fun;
     JSStackFrame *fp;
-#if defined XP_PC && defined _MSC_VER &&_MSC_VER <= 800
+#if defined _MSC_VER &&_MSC_VER <= 800
     /* MSVC1.5 coredumps */
     jsval bogus = *vp;
 #endif
@@ -927,7 +934,7 @@ fun_getProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp)
             *vp = fp->down->argv[-2];
         else
             *vp = JSVAL_NULL;
-        if (cx->runtime->checkObjectAccess) {
+        if (!JSVAL_IS_PRIMITIVE(*vp) && cx->runtime->checkObjectAccess) {
             id = ATOM_KEY(cx->runtime->atomState.callerAtom);
             if (!cx->runtime->checkObjectAccess(cx, obj, id, JSACC_READ, vp))
                 return JS_FALSE;
@@ -937,7 +944,7 @@ fun_getProperty(JSContext *cx, JSObject *obj, jsval id, jsval *vp)
       default:
         /* XXX fun[0] and fun.arguments[0] are equivalent. */
         if (fp && fp->fun && (uintN)slot < fp->fun->nargs)
-#if defined XP_PC && defined _MSC_VER &&_MSC_VER <= 800
+#if defined _MSC_VER &&_MSC_VER <= 800
           /* MSVC1.5 coredumps */
           if (bogus == *vp)
 #endif
@@ -1074,7 +1081,7 @@ fun_xdrObject(JSXDRState *xdr, JSObject **objp)
     JSString *atomstr;
     char *propname;
     JSScopeProperty *sprop;
-    jsid userid;
+    uint32 userid;              /* NB: holds a signed int-tagged jsval */
     JSAtom *atom;
     uintN i, n, dupflag;
     uint32 type;
@@ -1150,7 +1157,7 @@ fun_xdrObject(JSXDRState *xdr, JSObject **objp)
                 userid = INT_TO_JSVAL(sprop->shortid);
                 propname = ATOM_BYTES((JSAtom *)sprop->id);
                 if (!JS_XDRUint32(xdr, &type) ||
-                    !JS_XDRUint32(xdr, (uint32 *)&userid) ||
+                    !JS_XDRUint32(xdr, &userid) ||
                     !JS_XDRCString(xdr, &propname)) {
                     if (mark)
                         JS_ARENA_RELEASE(&cx->tempPool, mark);
@@ -1166,7 +1173,7 @@ fun_xdrObject(JSXDRState *xdr, JSObject **objp)
                 uintN attrs = JSPROP_ENUMERATE | JSPROP_PERMANENT;
 
                 if (!JS_XDRUint32(xdr, &type) ||
-                    !JS_XDRUint32(xdr, (uint32 *)&userid) ||
+                    !JS_XDRUint32(xdr, &userid) ||
                     !JS_XDRCString(xdr, &propname)) {
                     return JS_FALSE;
                 }
@@ -1355,37 +1362,43 @@ JSClass js_FunctionClass = {
     fun_mark,         0
 };
 
-static JSBool
-fun_toString_sub(JSContext *cx, JSObject *obj, uint32 indent,
-                 uintN argc, jsval *argv, jsval *rval)
+JSBool
+js_fun_toString(JSContext *cx, JSObject *obj, uint32 indent,
+                uintN argc, jsval *argv, jsval *rval)
 {
     jsval fval;
     JSFunction *fun;
     JSString *str;
 
-    fval = argv[-1];
-    if (!JSVAL_IS_FUNCTION(cx, fval)) {
-        /*
-         * If we don't have a function to start off with, try converting the
-         * object to a function.  If that doesn't work, complain.
-         */
-        if (JSVAL_IS_OBJECT(fval)) {
-            obj = JSVAL_TO_OBJECT(fval);
-            if (!OBJ_GET_CLASS(cx, obj)->convert(cx, obj, JSTYPE_FUNCTION,
-                                                 &fval)) {
+    if (!argv) {
+        JS_ASSERT(JS_ObjectIsFunction(cx, obj));
+    } else {
+        fval = argv[-1];
+        if (!JSVAL_IS_FUNCTION(cx, fval)) {
+            /*
+             * If we don't have a function to start off with, try converting
+             * the object to a function.  If that doesn't work, complain.
+             */
+            if (JSVAL_IS_OBJECT(fval)) {
+                obj = JSVAL_TO_OBJECT(fval);
+                if (!OBJ_GET_CLASS(cx, obj)->convert(cx, obj, JSTYPE_FUNCTION,
+                                                     &fval)) {
+                    return JS_FALSE;
+                }
+            }
+            if (!JSVAL_IS_FUNCTION(cx, fval)) {
+                JS_ReportErrorNumber(cx, js_GetErrorMessage, NULL,
+                                     JSMSG_INCOMPATIBLE_PROTO,
+                                     js_Function_str, js_toString_str,
+                                     JS_GetTypeName(cx,
+                                                    JS_TypeOfValue(cx, fval)));
                 return JS_FALSE;
             }
         }
-        if (!JSVAL_IS_FUNCTION(cx, fval)) {
-            JS_ReportErrorNumber(cx, js_GetErrorMessage, NULL,
-                                 JSMSG_INCOMPATIBLE_PROTO,
-                                 js_Function_str, js_toString_str,
-                                 JS_GetTypeName(cx, JS_TypeOfValue(cx, fval)));
-            return JS_FALSE;
-        }
+
+        obj = JSVAL_TO_OBJECT(fval);
     }
 
-    obj = JSVAL_TO_OBJECT(fval);
     fun = (JSFunction *) JS_GetPrivate(cx, obj);
     if (!fun)
         return JS_TRUE;
@@ -1401,14 +1414,14 @@ fun_toString_sub(JSContext *cx, JSObject *obj, uint32 indent,
 static JSBool
 fun_toString(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
 {
-    return fun_toString_sub(cx, obj, 0, argc, argv, rval);
+    return js_fun_toString(cx, obj, 0, argc, argv, rval);
 }
 
 #if JS_HAS_TOSOURCE
 static JSBool
 fun_toSource(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
 {
-    return fun_toString_sub(cx, obj, JS_DONT_PRETTY_PRINT, argc, argv, rval);
+    return js_fun_toString(cx, obj, JS_DONT_PRETTY_PRINT, argc, argv, rval);
 }
 #endif
 

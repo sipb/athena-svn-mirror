@@ -30,6 +30,7 @@ MODULE		= msgbase
 LIBRARY_NAME	= msgbase_s
 META_COMPONENT = mail
 REQUIRES	= xpcom \
+		  xpcom_obsolete \
 		  string \
 		  necko \
 		  dom \
@@ -103,8 +104,15 @@ CPPSRCS		= \
 		nsMsgSearchDBView.cpp \
 		nsMsgOfflineManager.cpp \
 		nsMsgProgress.cpp \
+		nsMessengerContentHandler.cpp \
 		nsSpamSettings.cpp \
+		nsCidProtocolHandler.cpp \
 		$(NULL)
+
+# MacOSX requires the MoreFiles module
+ifneq (,$(filter cocoa mac, $(MOZ_WIDGET_TOOLKIT)))
+REQUIRES += macmorefiles
+endif
 
 ifeq ($(OS_ARCH),WINNT)
 CPPSRCS		+= nsMessengerWinIntegration.cpp 
@@ -115,6 +123,7 @@ CPPSRCS		+= nsMessengerOS2Integration.cpp
 endif
 
 EXPORTS		= \
+        	nsMsgBaseCID.h \
 		nsMessenger.h \
 		nsMessengerBootstrap.h \
 		nsUrlListenerManager.h \
@@ -139,6 +148,7 @@ EXPORTS		= \
 		nsMsgPrintEngine.h \
 		nsStatusBarBiffManager.h \
 		nsMsgProgress.h \
+		nsMessengerContentHandler.h \
 		$(NULL)
 
 # we don't want the shared lib, but we want to force the creation of a static lib.

@@ -32,6 +32,8 @@ LIBRARY_NAME	= gfx_gtk
 EXPORT_LIBRARY = 1
 IS_COMPONENT	= 1
 MODULE_NAME	= nsGfxGTKModule
+GRE_MODULE	= 1
+
 REQUIRES	= xpcom \
 		  string \
 		  widget \
@@ -52,6 +54,10 @@ ifdef SUNCTL
 REQUIRES	+= ctl
 endif
 
+ifdef MOZ_ENABLE_XPRINT
+REQUIRES	+= xprintutil
+endif
+
 NATIVE_THEME_SUPPORT = 1
 
 CSRCS		= nsPrintdGTK.c
@@ -60,7 +66,6 @@ CSRCS		= nsPrintdGTK.c
 X11SHARED_LCPPSRCS = \
 		nsAntiAliasedGlyph.cpp \
 		nsFontFreeType.cpp \
-		nsFreeType.cpp \
 		nsFT2FontNode.cpp \
 		nsFT2FontCatalog.cpp \
 		nsX11AlphaBlend.cpp \
@@ -113,23 +118,27 @@ ifdef MOZ_ENABLE_GTK2
 CPPSRCS		+= \
 		nsRegionGTK2.cpp \
 		$(NULL)
+
+ifdef NATIVE_THEME_SUPPORT
+CSRCS		+= gtk2drawing.c
+CPPSRCS		+= nsNativeThemeGTK.cpp
+DEFINES		+= -DNATIVE_THEME_SUPPORT
 endif
 
-# If not primary toolkit, install in secondary path
-ifneq (gtk,$(MOZ_GFX_TOOLKIT))
-ifneq (gtk2, $(MOZ_GFX_TOOLKIT))
-INACTIVE_COMPONENT = 1
-endif
-endif
-
-ifdef MOZ_ENABLE_XPRINT
-XPU_LCSRCS	 = xprintutil.c
-CSRCS           += $(XPU_LCSRCS)
 endif
 
 GARBAGE         += $(X11SHARED_LCPPSRCS) $(XPU_LCSRCS) $(wildcard *.$(OBJ_SUFFIX))
 
+ifdef MOZ_ENABLE_FREETYPE2
+# the SHARED_LIBRARY_LIBS line must be before the rules.mk include
+SHARED_LIBRARY_LIBS += $(DIST)/lib/$(LIB_PREFIX)gfxft2_s.$(LIB_SUFFIX)
+endif
+
 include $(topsrcdir)/config/rules.mk
+
+ifdef MOZ_ENABLE_XINERAMA
+GFX_XINERAMA_LIBS += $(MOZ_XINERAMA_LIBS)
+endif
 
 ifdef MOZ_ENABLE_GTK
 EXTRA_DSO_LDOPTS += \
@@ -153,16 +162,9 @@ EXTRA_DSO_LDOPTS += $(MOZ_COMPONENT_LIBS) \
 endif
 
 EXTRA_DSO_LDOPTS += $(MOZ_GTK_LDFLAGS) $(MOZ_XFT_LIBS) $(MOZ_GTK2_LIBS)
-CXXFLAGS	+= $(MOZ_XFT_CFLAGS) $(MOZ_GTK_CFLAGS) $(MOZ_GTK2_CFLAGS)
-CFLAGS		+= $(MOZ_XFT_CFLAGS) $(MOZ_GTK_CFLAGS) $(MOZ_GTK2_CFLAGS)
+CXXFLAGS	+= $(MOZ_GTK_CFLAGS) $(MOZ_GTK2_CFLAGS)
+CFLAGS		+= $(MOZ_GTK_CFLAGS) $(MOZ_GTK2_CFLAGS)
 
-ifdef MOZ_ENABLE_XINERAMA
-GFX_XINERAMA_LIBS += $(MOZ_XINERAMA_LIBS)
-endif
-
-ifeq ($(OS_ARCH), Linux)
-DEFINES         += -D_BSD_SOURCE
-endif
 ifeq ($(OS_ARCH), SunOS)
 ifndef GNU_CC
 # When using Sun's WorkShop compiler, including
@@ -174,27 +176,34 @@ DEFINES		+= -D_TIME_H=1
 endif
 endif
 
+ifeq ($(OS_ARCH), OpenVMS)
+DEFINES		+= -DGENERIC_MOTIF_REDEFINES
+OS_CXXFLAGS	+= -Wc,warn=disa=NOSIMPINT 
+endif
+
 ifdef MOZ_ENABLE_POSTSCRIPT
 DEFINES         += -DUSE_POSTSCRIPT
 endif
 
 ifdef MOZ_ENABLE_XPRINT
 DEFINES         += -DUSE_XPRINT -DUSE_MOZILLA_TYPES
-EXTRA_DSO_LDOPTS += $(MOZ_XPRINT_LDFLAGS)
+EXTRA_DSO_LDOPTS += \
+		-lxprintutil \
+		$(MOZ_XPRINT_LDFLAGS)
 endif
 
 LOCAL_INCLUDES	= \
+		-I../.. \
 		-I$(srcdir)/. \
 		-I$(srcdir)/.. \
 		-I$(srcdir)/../shared \
+		-I$(srcdir)/../freetype \
 		-I$(srcdir)/../x11shared \
+		$(MOZ_XFT_CFLAGS) \
 		$(NULL)
 
 ifdef MOZ_ENABLE_FREETYPE2
-DEFINES         += -DMOZ_ENABLE_FREETYPE2
 INCLUDES        += $(FT2_CFLAGS)
-# due to runtime linking with PR_LoadLibrary
-# EXTRA_DSO_LDOPTS does not need $(FT2_LIBS)
 endif
 
 ifdef MOZ_ENABLE_XPRINT

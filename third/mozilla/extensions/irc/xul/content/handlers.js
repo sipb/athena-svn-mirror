@@ -58,7 +58,8 @@ function onTopicKeyPress (e)
     if (e.keyCode == 13)
     {        
         var line = stringTrim(e.target.value);
-        client.currentObject.setTopic (fromUnicode(line));
+        var charset = client.currentObject.charset;
+        client.currentObject.setTopic (fromUnicode(line, charset));
         onTopicEditEnd();
     }
 }
@@ -78,10 +79,20 @@ function onLoad()
 {
     
     initHost(client);
-    readIRCPrefs();
+    initPrefs();
+    readPrefs();
     setClientOutput();
     initStatic();
 
+    if (!CIRCNetwork.prototype.INITIAL_NICK)
+        CIRCNetwork.prototype.INITIAL_NICK = "IRCMonkey";
+
+    if (!CIRCNetwork.prototype.INITIAL_NAME)
+        CIRCNetwork.prototype.INITIAL_NAME = "chatzilla";
+
+    if (!CIRCNetwork.prototype.INITIAL_DESC)
+        CIRCNetwork.prototype.INITIAL_DESC = "New Now Know How";
+    
     client.userScripts = new Array();
     if (client.INITIAL_SCRIPTS)
     {
@@ -94,6 +105,10 @@ function onLoad()
     }
     
     processStartupURLs();
+
+    client.onInputNetworks();
+    client.onInputCommands();
+
     mainStep();
 }
 
@@ -117,7 +132,9 @@ function onClose()
 function onUnload()
 {
     if (client.SAVE_SETTINGS)
-        writeIRCPrefs();
+        writePrefs();
+
+    destroyPrefs();
 }
 
 function onNotImplemented()
@@ -574,13 +591,7 @@ function onClearCurrentView()
 function onSortCol(sortColName)
 {
     const nsIXULSortService = Components.interfaces.nsIXULSortService;
-   /* XXX remove the rdf version once 0.8 is a distant memory
-    * 2/22/2001
-    */
-    const isupports_uri =
-        (Components.classes["@mozilla.org/xul/xul-sort-service;1"]) ?
-         "@mozilla.org/xul/xul-sort-service;1" :
-         "@mozilla.org/rdf/xul-sort-service;1";
+    const isupports_uri = "@mozilla.org/xul/xul-sort-service;1";
     
     var node = document.getElementById(sortColName);
     if (!node)
@@ -588,49 +599,27 @@ function onSortCol(sortColName)
  
     // determine column resource to sort on
     var sortResource = node.getAttribute("resource");
-    var sortDirection = "ascending";
-        //node.setAttribute("sortActive", "true");
-
-    switch (sortColName)
-    {
-        case "usercol-op":
-            document.getElementById("usercol-voice")
-                .setAttribute("sortDirection", "natural");
-            document.getElementById("usercol-nick")
-                .setAttribute("sortDirection", "natural");
-            break;
-        case "usercol-voice":
-            document.getElementById("usercol-op")
-                .setAttribute("sortDirection", "natural");
-            document.getElementById("usercol-nick")
-                .setAttribute("sortDirection", "natural");
-            break;
-        case "usercol-nick":
-            document.getElementById("usercol-voice")
-                .setAttribute("sortDirection", "natural");
-            document.getElementById("usercol-op")
-                .setAttribute("sortDirection", "natural");
-            break;
-    }
+    var sortDirection = node.getAttribute("sortDirection");
     
-    var currentDirection = node.getAttribute("sortDirection");
-    
-    if (currentDirection == "ascending")
+    if (sortDirection == "ascending")
         sortDirection = "descending";
-    else if (currentDirection == "descending")
+    else if (sortDirection == "descending")
         sortDirection = "natural";
     else
         sortDirection = "ascending";
     
-    node.setAttribute ("sortDirection", sortDirection);
- 
     var xulSortService =
         Components.classes[isupports_uri].getService(nsIXULSortService);
     if (!xulSortService)
         return false;
     try
     {
-        xulSortService.sort(node, sortResource, sortDirection);
+        if ("sort" in xulSortService)
+            xulSortService.sort(node, sortResource, sortDirection);
+        else
+            xulSortService.Sort(node, sortResource, sortDirection);
+        document.persist("user-list", "sortResource");
+        document.persist("user-list", "sortDirection");
     }
     catch(ex)
     {
@@ -663,8 +652,7 @@ function onMultilineInputKeyPress (e)
     if ((e.ctrlKey || e.metaKey) && e.keyCode == 13)
     {
         /* meta-enter, execute buffer */
-        e.line = e.target.value;
-        onInputCompleteLine (e);
+        onMultilineSend(e);
     }
     else
     {
@@ -674,6 +662,16 @@ function onMultilineInputKeyPress (e)
             multilineInputMode (false);
         }
     }
+}
+
+function onMultilineSend(e)
+{
+    var multiline = document.getElementById("multiline-input");
+    e.line = multiline.value;
+    if (e.line.search(/\S/) == -1)
+        return;
+    onInputCompleteLine (e);
+    multiline.value = "";
 }
 
 function onToggleMsgCollapse()
@@ -736,12 +734,17 @@ function onInputKeyPress (e)
     
     switch (e.keyCode)
     {        
+        case 9:  /* tab */
+            onTabCompleteRequest(e);
+            e.preventDefault();
+            break;
+
         case 13: /* CR */
-            e.line = stringTrim(e.target.value);
-            if (!e.line)
+            e.line = e.target.value;
+            e.target.value = "";
+            if (e.line.search(/\S/) == -1)
                 return;
             onInputCompleteLine (e);
-            e.target.value = "";            
             break;
 
         case 38: /* up */
@@ -764,6 +767,7 @@ function onInputKeyPress (e)
                         client.inputHistory[++client.lastHistoryReferenced];
                 }
             }
+            e.preventDefault();
             break;
 
         case 40: /* down */
@@ -780,6 +784,7 @@ function onInputKeyPress (e)
                 client.lastHistoryReferenced = -1;
                 e.target.value = client.incompleteLine;
             }
+            e.preventDefault();
             break;
 
         default:
@@ -802,8 +807,6 @@ function onTabCompleteRequest (e)
     if (document.getBindingParent(elem) != singleInput)
         return;
 
-    e.preventDefault();
-    
     var selStart = singleInput.selectionStart;
     var selEnd = singleInput.selectionEnd;            
     var line = singleInput.value;
@@ -939,10 +942,6 @@ function onWindowKeyPress (e)
             e.preventDefault();
             break;
 
-        case 9: /* tab */
-            e.preventDefault();
-            break;
-            
         default:
             
     }
@@ -954,7 +953,7 @@ function onInputCompleteLine(e, simulated)
 
     if (!simulated)
     {
-        if (client.inputHistory[0] != e.line)
+        if (!client.inputHistory.length || client.inputHistory[0] != e.line)
             client.inputHistory.unshift (e.line);
     
         if (client.inputHistory.length > client.MAX_HISTORY)
@@ -981,6 +980,15 @@ function onInputCompleteLine(e, simulated)
     }
     else /* plain text */
     {
+        /* color codes */
+        if (client.COLORCODES)
+        {
+            e.line = e.line.replace(/%U/g, "\x1f");
+            e.line = e.line.replace(/%B/g, "\x02");
+            e.line = e.line.replace(/%O/g, "\x0f");
+            e.line = e.line.replace(/%C/g, "\x03");
+            e.line = e.line.replace(/%R/g, "\x16");
+        }
         client.sayToCurrentTarget (e.line);
     }
 }
@@ -1040,10 +1048,34 @@ function cli_icharset (e)
                                           "ERROR");
             return false;
         }
-	}
+    }
 
-    client.currentObject.display (getMsg("cli_currentCharset", client.CHARSET),
+    client.currentObject.display (getMsg("cli_currentCharset",
+                                         client.CHARSET),
                                   "INFO");
+
+    return true;
+}
+
+client.onInputChannelCharset =
+function cli_ichancharset (e)
+{
+    if (e.inputData)
+    {
+        if(!checkCharset(e.inputData))
+        {
+            client.currentObject.display (getMsg("cli_charsetError",
+                                                 e.inputData),
+                                          "ERROR");
+            return false;
+        }
+        client.currentObject.charset = e.inputData;
+    }
+
+    client.currentObject.display (getMsg("cli_currentCharset",
+                                         client.currentObject.charset),
+                                  "INFO");
+
     return true;
 }
 
@@ -1326,7 +1358,7 @@ function cli_testdisplay (e)
     client.currentObject.display (getMsg("cli_testdisplayMsg5"), "USAGE");
     client.currentObject.display (getMsg("cli_testdisplayMsg6"), "STATUS");
 
-    if (o.server && o.server.me)
+    if ("server" in o && o.server.me)
     {
         var me = o.server.me;
         var viewType = client.currentObject.TYPE;
@@ -1367,6 +1399,8 @@ function cli_testdisplay (e)
         client.currentObject.display (unescape(getMsg("cli_testdisplayMsg20")),
                                       "PRIVMSG", sampleUser, me);
         client.currentObject.display (unescape(getMsg("cli_testdisplayMsg21")),
+                                      "PRIVMSG", sampleUser, me);
+        client.currentObject.display (unescape(getMsg("cli_testdisplayMsg22")),
                                       "PRIVMSG", sampleUser, me);
         
 
@@ -1539,7 +1573,7 @@ function cli_quit (e)
 client.onInputExit =
 function cli_exit (e)
 {
-    client.quit(e.inputData);    
+    client.quit(fromUnicode(e.inputData));    
     window.close();
     return true;
 }
@@ -1592,9 +1626,10 @@ function cli_inames (e)
             return false;
         }
 
-        var encodeName = fromUnicode(e.inputData + " ");
-        encodeName = encodeName.substr(0, encodeName.length -1);
-        chan = encodeName;
+        var encodedName = fromUnicode(e.inputData + " ",
+                                      client.currentObject.charset);
+        encodedName = encodedName.substr(0, encodedName.length -1);
+        chan = encodedName;
 
     }
     else
@@ -1605,7 +1640,7 @@ function cli_inames (e)
             return false;
         }
         
-        chan = e.channel.name;
+        chan = e.channel.encodedName;
     }
     
     client.currentObject.pendingNamesReply = true;
@@ -1734,7 +1769,7 @@ function cli_irlist (e)
         return false;
     }
     o.network.list = new Array();
-    var ary = e.inputData.match (/^\s*("([^"]*)"|([^\s]*))/);
+    var ary = e.inputData.match (/^\s*(\"([^\"]*)\"|([^\s]*))/);
     try
     {
         if (ary[2])
@@ -1804,7 +1839,7 @@ function cli_imsg (e)
 
     var msg = filterOutput(ary[2], "PRIVMSG", "ME!");
     client.currentObject.display (msg, "PRIVMSG", "ME!", usr);
-    usr.say (fromUnicode(ary[2]));
+    usr.say (fromUnicode(ary[2], client.currentObject.charset));
 
     return true;
 
@@ -1862,7 +1897,7 @@ function cli_iquote (e)
         return false;
     }
 
-    e.server.sendData (e.inputData + "\n");
+    e.server.sendData (fromUnicode(e.inputData) + "\n");
     
     return true;
     
@@ -1918,22 +1953,10 @@ function cli_ictcp (e)
     
 }
 
-
 client.onInputJoin =
 function cli_ijoin (e)
 {
-    if (!e.network || !e.network.isConnected())
-    {
-        if (!e.network)
-            client.currentObject.display (getMsg("cli_ijoinMsg"), "ERROR");
-        else
-            client.currentObject.display (getMsg("cli_ijoinMsg2",
-                                                 e.network.name1), "ERROR");
-        return false;
-    }
-    
     var ary = e.inputData.match(/(((\S+), *)*(\S+)) *(\S+)?/);
-    var name;
     var key = "";
     var namelist;
 
@@ -1946,7 +1969,7 @@ function cli_ijoin (e)
     else
     {
         if (client.currentObject.TYPE == "IRCChannel")
-            namelist = [client.currentObject.name];
+            namelist = [client.currentObject.unicodeName];
         else
             return false;
 
@@ -1954,24 +1977,50 @@ function cli_ijoin (e)
             key = client.currentObject.mode.key
     }
 
-    for (i in namelist)
-    {
-        name = namelist[i];
-        if ((name[0] != "#") && (name[0] != "&") && (name[0] != "+") &&
-            (name[0] != "!"))
-            name = "#" + name;
+    return joinChannel(e, namelist, key, client.CHARSET);
+}
 
-        e.channel = e.server.addChannel (name);
-        e.channel.join(key);
-        if (!("messages" in e.channel))
+client.onInputJoinCharset =
+function cli_ijoincharset (e)
+{
+    var ary = e.inputData.match(/(((\S+), *)*(\S+)) *(\S+) *(\S+)?/);
+    var key = "";
+    var namelist;
+    var charset;
+
+    if (ary)
+    {
+        namelist = ary[1].split(/, */);
+        if (5 in ary)
+            charset = ary[5];
+        else
+            return false;
+
+        if (!checkCharset(charset))
         {
-            e.channel.display (getMsg("cli_ijoinMsg3", e.channel.unicodeName),
-                               "INFO");
+            client.currentObject.display (getMsg("cli_charsetError",
+                                                 charset),
+                                      "ERROR");
+            return false;
         }
-        setCurrentObject(e.channel);
+
+        if (6 in ary)
+            key = ary[6];
+    }
+    else
+    {
+        if (client.currentObject.TYPE == "IRCChannel")
+            namelist = [client.currentObject.unicodeName];
+        else
+            return false;
+
+        charset = client.CHARSET;
+
+        if (client.currentObject.mode.key)
+            key = client.currentObject.mode.key
     }
 
-    return true;
+    return joinChannel(e, namelist, key, charset);
 }
 
 client.onInputLeave =
@@ -2068,7 +2117,7 @@ function cli_itopic (e)
     }
     else
     {
-        if (!e.channel.setTopic(fromUnicode(e.inputData)))
+        if (!e.channel.setTopic(fromUnicode(e.inputData, e.channel.charset)))
             client.currentObject.display (getMsg("cli_itopicMsg2"), "ERROR");
     }
 
@@ -2098,7 +2147,7 @@ function cli_iaway (e)
     }
     else
     {
-        e.server.sendData ("AWAY :" + e.inputData + "\n");
+        e.server.sendData ("AWAY :" + fromUnicode(e.inputData) + "\n");
     }
 
     return true;
@@ -2583,11 +2632,14 @@ function my_unknown (e)
     e.params.shift(); /* and the dest. nick (always me) */
         /* if it looks like some kind of "end of foo" code, and we don't
          * already have a mapping for it, make one up */
-    if (!(e.code in client.responseCodeMap) && e.meat.search (/^end of/i) != -1)
+    var length = e.params.length;
+    if (!(e.code in client.responseCodeMap) && 
+        (e.params[length - 1].search (/^end of/i) != -1))
+    {
         client.responseCodeMap[e.code] = "---";
+    }
     
-    this.display (e.params.join(" ") + ": " + e.meat,
-                  e.code.toUpperCase());
+    this.display (e.params.join(" "), e.code.toUpperCase());
 }
 
 CIRCNetwork.prototype.on001 = /* Welcome! */
@@ -2607,7 +2659,7 @@ CIRCNetwork.prototype.on372 = /* MOTD line */
 CIRCNetwork.prototype.on376 = /* end of MOTD */
 function my_showtonet (e)
 {
-    var p = (2 in e.params) ? e.params[2] + " " : "";
+    var p = (3 in e.params) ? e.params[2] + " " : "";
     var str = "";
 
     switch (e.code)
@@ -2635,7 +2687,16 @@ function my_showtonet (e)
                 }
                 delete this.pendingURLs;
             }
-            str = e.meat;
+            for (var v in client.viewsArray)
+            {
+                // reconnect to any existing views
+                var source = client.viewsArray[v].source;
+                var details = getObjectDetails(client.viewsArray[v].source);
+                if ("network" in details && details.network == this)
+                    gotoIRCURL(source.getURL());
+            }
+
+            str = e.params[2];
             break;
             
         case "372":
@@ -2646,7 +2707,8 @@ function my_showtonet (e)
             /* no break */
 
         default:
-            str = e.meat;
+            var length = e.params.length;
+            str = e.params[length - 1];
             break;
     }
 
@@ -2665,13 +2727,13 @@ function my_ctcprunk (e)
 CIRCNetwork.prototype.onNotice = 
 function my_notice (e)
 {
-    this.display (e.meat, "NOTICE", this, e.server.me);
+    this.display (toUnicode(e.params[2]), "NOTICE", this, e.server.me);
 }
 
 CIRCNetwork.prototype.on303 = /* ISON (aka notify) reply */
 function my_303 (e)
 {
-    var onList = stringTrim(e.meat.toLowerCase()).split(/\s+/);
+    var onList = stringTrim(e.params[1].toLowerCase()).split(/\s+/);
     var offList = new Array();
     var newArrivals = new Array();
     var newDepartures = new Array();
@@ -2730,8 +2792,8 @@ function my_303 (e)
     
 }
 
-CIRCNetwork.prototype.on321 = /* LIST reply header */
-function my_321 (e)
+CIRCNetwork.prototype.listInit =
+function my_list_init ()
 {
 
     function checkEndList (network)
@@ -2766,8 +2828,8 @@ function my_321 (e)
         {
             if (list.event323)
             {
-                network.displayHere (list.event323.params.join(" ") + ": " +
-                                     list.event323.meat, "323");
+                var length = list.event323.params.length;
+                network.displayHere (list.event323.params[length - 1], "323");
             }
             network.displayHere (getMsg("my_323", [list.displayed, list.count]),
                                  "INFO");
@@ -2784,7 +2846,6 @@ function my_321 (e)
         this.list = new Array();
         this.list.regexp = null;
     }
-    this.displayHere (e.params[2] + " " + e.meat, "321");
     if (client.currentObject != this)
         client.currentObject.display (getMsg("my_321", this.name), "INFO");
     this.list.lastLength = 0;
@@ -2793,6 +2854,14 @@ function my_321 (e)
     this.list.displayed = 0;
     setTimeout(outputList, 250, this);
     this.list.endTimeout = setTimeout(checkEndList, 1500, this);
+}
+
+CIRCNetwork.prototype.on321 = /* LIST reply header */
+function my_321 (e)
+{
+
+    this.listInit();
+    this.displayHere (e.params[2] + " " + e.params[3], "321");
 }
 
 CIRCNetwork.prototype.on323 = /* end of LIST reply */
@@ -2810,12 +2879,14 @@ function my_323 (e)
 CIRCNetwork.prototype.on322 = /* LIST reply */
 function my_listrply (e)
 {
+    if (!("list" in this))
+        this.listInit();
     ++this.list.count;
     e.params[2] = toUnicode(e.params[2]);
     if (!(this.list.regexp) || e.params[2].match(this.list.regexp)
-                            || e.meat.match(this.list.regexp))
+                            || e.params[4].match(this.list.regexp))
     {
-        this.list.push([e.params[2], e.params[3], e.meat]);
+        this.list.push([e.params[2], e.params[3], toUnicode(e.params[4])]);
     }
 }
 
@@ -2839,7 +2910,8 @@ function my_352 (e)
     //5-irc.mozilla.org 6-rginda 7-H
     var desc;
     var hops = "?";
-    var ary = e.meat.match(/(\d+)\s(.*)/);
+    var length = e.params.length;
+    var ary = e.params[length - 1].match(/(\d+)\s(.*)/);
     if (ary)
     {
         hops = Number(ary[1]);
@@ -2847,7 +2919,7 @@ function my_352 (e)
     }
     else
     {
-        desc = e.meat;
+        desc = e.params[length - 1];
     }
     
     var status = e.params[7];
@@ -2880,17 +2952,18 @@ function my_whoisreply (e)
     {
         case 311:
             text = getMsg("my_whoisreplyMsg",
-                          [nick, e.params[3], e.params[4], e.meat]);
+                          [nick, e.params[3], e.params[4],
+                           toUnicode(e.params[6])]);
             break;
             
         case 319:
-            var ary = stringTrim(e.meat).split(" ");
+            var ary = stringTrim(e.params[3]).split(" ");
             text = getMsg("my_whoisreplyMsg2",[nick, arraySpeak(ary)]);
             break;
             
         case 312:
             text = getMsg("my_whoisreplyMsg3",
-                          [nick, e.params[3], e.meat]);
+                          [nick, e.params[3], e.params[4]]);
             break;
             
         case 317:
@@ -2927,7 +3000,7 @@ CIRCNetwork.prototype.onInvite = /* invite message */
 function my_invite (e)
 {
     this.display (getMsg("my_Invite", [e.user.properNick, e.user.name,
-                                       e.user.host, e.meat]), "INVITE");
+                                       e.user.host, e.params[2]]), "INVITE");
 }
 
 CIRCNetwork.prototype.on433 = /* nickname in use */
@@ -2974,7 +3047,7 @@ function my_neterror (e)
         }
     }
     else
-        msg = e.meat;
+        msg = e.params[e.params.length - 1];
     
     this.display (msg, "ERROR");   
 }
@@ -2985,6 +3058,7 @@ function my_netdisconnect (e)
 {
     var connection = e.server.connection;
     var msg;
+    var reconnect = false;
     
     if (typeof e.disconnectStatus != "undefined")
     {
@@ -3013,6 +3087,7 @@ function my_netdisconnect (e)
             default:
                 msg = getMsg("my_netdisconnectConnectionClosedStatus",
                              [this.name, connection.host, connection.port]);
+                reconnect = true;
                 break;
         }    
     }
@@ -3093,24 +3168,24 @@ CIRCChannel.prototype.onPrivmsg =
 function my_cprivmsg (e)
 {
     
-    this.display (e.meat, "PRIVMSG", e.user, this);
+    this.display (e.params[2], "PRIVMSG", e.user, this);
     
     if ((typeof client.prefix == "string") &&
-        e.meat.indexOf (client.prefix) == 0)
+        e.params[2].indexOf (client.prefix) == 0)
     {
         try
         {
-            var v = eval(e.meat.substring (client.prefix.length,
-                                           e.meat.length));
+            var v = eval(e.params[2].substring (client.prefix.length,
+                                                e.params[2].length));
         }
         catch (ex)
         {
-            this.say (fromUnicode(e.user.nick + ": " + String(ex)));
+            this.say (fromUnicode(e.user.nick + ": " + String(ex), this.charset));
             return false;
         }
         
         if (typeof (v) != "undefined")
-        {						
+        {
             if (v != null)                
                 v = String(v);
             else
@@ -3124,7 +3199,7 @@ function my_cprivmsg (e)
                 rsp += " ";
             
             this.display (rsp + v, "PRIVMSG", e.server.me, this);
-            this.say (fromUnicode(rsp + v));
+            this.say (fromUnicode(rsp + v, this.charset));
         }
     }
 
@@ -3152,10 +3227,10 @@ function my_366 (e)
         /* redisplay the tree */
         client.rdf.setTreeRoot("user-list", this.getGraphResource());
     
-    if ("pendingNamesReply" in e.channel)
-    {       
-        display (e.meat, "366");
-        e.channel.pendingNamesReply = false;
+    if ("pendingNamesReply" in client.currentObject)
+    {
+        display (e.channel.unicodeName + ": " + e.params[3], "366");
+        client.currentObject.pendingNamesReply = false;
     }
 }    
 
@@ -3194,15 +3269,16 @@ function my_topicinfo (e)
 CIRCChannel.prototype.on353 = /* names reply */
 function my_topic (e)
 {
-    if ("pendingNamesReply" in e.channel)
-        e.channel.display (e.meat, "NAMES");
+    if ("pendingNamesReply" in client.currentObject)
+        display (e.channel.unicodeName + ": " + e.params[4], "NAMES");
 }
 
 
 CIRCChannel.prototype.onNotice =
 function my_notice (e)
 {
-    this.display (e.meat, "NOTICE", e.user, this);   
+    this.display (toUnicode(e.params[2], this.charset),
+                  "NOTICE", e.user, this);   
 }
 
 CIRCChannel.prototype.onCTCPAction =
@@ -3234,9 +3310,12 @@ function my_cjoin (e)
         setCurrentObject(this);
     }
     else
+    {
         this.display(getMsg("my_cjoinmsg2", [e.user.properNick, e.user.name,
-                                             e.user.host, e.channel.unicodeName]),
+                                             e.user.host,
+                                             e.channel.unicodeName]),
                      "JOIN", e.user, this);
+    }
 
     this._addUserToGraph (e.user);
     
@@ -3315,9 +3394,14 @@ function my_cmode (e)
 {
 
     if ("user" in e)
+    {
+        var msg = toUnicode(e.params.slice(1).join(" "),
+                            e.channel.charset);
         this.display (getMsg("my_cmodeMsg",
-                             [toUnicode(e.params.slice(1).join(" ")),
+                             //[e.params.slice(1).join(" "),
+                             [msg,
                               e.user.properNick]), "MODE", e.user, this);
+    }
 
     for (var u in e.usersAffected)
         e.usersAffected[u].updateGraphResource();
@@ -3388,7 +3472,7 @@ function my_cprivmsg (e)
                 setCurrentObject(tab);
         }    
     }
-    this.display (e.meat, "PRIVMSG", e.user, e.server.me);
+    this.display (e.params[2], "PRIVMSG", e.user, e.server.me);
 }
 
 CIRCUser.prototype.onNick =
@@ -3398,7 +3482,7 @@ function my_unick (e)
     if (userIsMe(e.user))
     {
         updateNetwork();
-        updateTitle (e.channel);
+        updateTitle();
     }
     
 }
@@ -3406,7 +3490,8 @@ function my_unick (e)
 CIRCUser.prototype.onNotice =
 function my_notice (e)
 {
-    this.display (e.meat, "NOTICE", this, e.server.me);   
+    this.display (toUnicode(e.params[2], this.charset),
+                  "NOTICE", this, e.server.me);   
 }
 
 CIRCUser.prototype.onCTCPAction =

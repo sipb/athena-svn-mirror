@@ -59,7 +59,7 @@ class nsString;
 class nsAString;
 class nsStringArray;
 class nsICaret;
-class nsIStyleContext;
+class nsStyleContext;
 class nsIFrameSelection;
 class nsIFrameManager;
 class nsILayoutHistoryState;
@@ -258,13 +258,6 @@ public:
   NS_IMETHOD GetPrimaryFrameFor(nsIContent* aContent,
                                 nsIFrame**  aPrimaryFrame) const = 0;
 
-  /** Returns the style context associated with the frame.
-    * Used by code outside of layout that can't use nsIFrame methods to get
-    * the style context directly.
-    */
-  NS_IMETHOD GetStyleContextFor(nsIFrame*         aFrame,
-                                nsIStyleContext** aStyleContext) const = 0;
-
   /**
    * Returns a layout object associated with the primary frame for the content object.
    *
@@ -352,10 +345,14 @@ public:
 
 
   /**
-   * Scrolls the view of the document so that the anchor with the specified
-   * name is displayed at the top of the window
+   * Informs the pres shell that the document is now at the anchor with
+   * the given name.  If |aScroll| is true, scrolls the view of the
+   * document so that the anchor with the specified name is displayed at
+   * the top of the window.  If |aAnchorName| is empty, then this informs
+   * the pres shell that there is no current target, and |aScroll| must
+   * be false.
    */
-  NS_IMETHOD GoToAnchor(const nsAString& aAnchorName) = 0;
+  NS_IMETHOD GoToAnchor(const nsAString& aAnchorName, PRBool aScroll) = 0;
 
   /**
    * Scrolls the view of the document so that the frame is displayed at the 
@@ -428,6 +425,11 @@ public:
   NS_IMETHOD DoCopyImageContents(nsIDOMNode* aNode) = 0;
 
   /**
+   * Get the doc or the selection as text or html.
+   */
+  NS_IMETHOD DoGetContents(const nsACString& aMimeType, PRUint32 aFlags, PRBool aSelectionOnly, nsAString& outValue) = 0;
+
+  /**
    * Get the caret, if it exists. AddRefs it.
    */
   NS_IMETHOD GetCaret(nsICaret **aOutCaret) = 0;
@@ -474,12 +476,15 @@ public:
   NS_IMETHOD GetEventTargetFrame(nsIFrame** aFrame) = 0;
 
   /**
+    * Gets the current target event frame from the PresShell
+    */
+  NS_IMETHOD GetEventTargetContent(nsEvent* aEvent, nsIContent** aContent) = 0;
+
+  /**
    * Get and set the history state for the current document 
    */
 
   NS_IMETHOD CaptureHistoryState(nsILayoutHistoryState** aLayoutHistoryState, PRBool aLeavingPage = PR_FALSE) = 0;
-  NS_IMETHOD GetHistoryState(nsILayoutHistoryState** aLayoutHistoryState) = 0;
-  NS_IMETHOD SetHistoryState(nsILayoutHistoryState* aLayoutHistoryState) = 0;
 
   /**
    * Determine if reflow is currently locked
@@ -502,7 +507,9 @@ public:
 
   /**
    * Store the nsIAnonymousContentCreator-generated anonymous
-   * content that's associated with an element.
+   * content that's associated with an element. The new anonymous content
+   * is added to whatever anonymous content might already be associated with
+   * the element.
    * @param aContent the element with which the anonymous
    *   content is to be associated with
    * @param aAnonymousElements an array of nsIContent
@@ -608,7 +615,7 @@ public:
  * Create a new empty presentation shell. Upon success, call Init
  * before attempting to use the shell.
  */
-extern NS_EXPORT nsresult
-  NS_NewPresShell(nsIPresShell** aInstancePtrResult);
+nsresult
+NS_NewPresShell(nsIPresShell** aInstancePtrResult);
 
 #endif /* nsIPresShell_h___ */

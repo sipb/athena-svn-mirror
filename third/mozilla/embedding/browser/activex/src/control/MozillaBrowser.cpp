@@ -20,6 +20,7 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
+ *
  *   Adam Lock <adamlock@netscape.com>
  *
  * Alternatively, the contents of this file may be used under the terms of
@@ -56,7 +57,6 @@
 
 #include "nsCWebBrowser.h"
 #include "nsILocalFile.h"
-#include "nsISelectionController.h"
 #include "nsIWebBrowserPersist.h"
 #include "nsIClipboardCommands.h"
 #include "nsIProfile.h"
@@ -64,9 +64,9 @@
 #include "nsIWebBrowserPrint.h"
 #include "nsIWidget.h"
 #include "nsIWebBrowserFocus.h"
-#include "nsIWindowWatcher.h"
+#include "nsAppDirectoryServiceDefs.h"
 
-#include "nsIDOMWindowInternal.h"
+#include "nsIDOMWindow.h"
 #include "nsIDOMHTMLAnchorElement.h"
 #include "nsIDOMNSDocument.h"
 
@@ -86,23 +86,6 @@ static HANDLE s_hHackedNonReentrancy = NULL;
 static NS_DEFINE_CID(kPromptServiceCID, NS_PROMPTSERVICE_CID);
 static NS_DEFINE_CID(kHelperAppLauncherDialogCID, NS_HELPERAPPLAUNCHERDIALOG_CID);
 
-// Macros to return errors from bad calls to the automation
-// interfaces and sets a descriptive string on IErrorInfo so VB programmers
-// have a clue why the call failed.
-
-static const TCHAR *c_szInvalidArg = _T("Invalid parameter");
-static const TCHAR *c_szUninitialized = _T("Method called while control is uninitialized");
-
-#define RETURN_ERROR(message, hr) \
-    SetErrorInfo(message, hr); \
-    return hr;
-
-#define RETURN_E_INVALIDARG() \
-    RETURN_ERROR(c_szInvalidArg, E_INVALIDARG);
-
-#define RETURN_E_UNEXPECTED() \
-    RETURN_ERROR(c_szUninitialized, E_UNEXPECTED);
-
 class PrintListener : public nsIWebProgressListener
 {
     PRBool mComplete;
@@ -116,15 +99,35 @@ public:
     void WaitForComplete();
 };
 
+class SimpleDirectoryProvider :
+    public nsIDirectoryServiceProvider
+{
+public:
+    SimpleDirectoryProvider();
+    BOOL IsValid() const;
+
+
+    NS_DECL_ISUPPORTS
+    NS_DECL_NSIDIRECTORYSERVICEPROVIDER
+
+protected:
+    virtual ~SimpleDirectoryProvider();
+
+    nsCOMPtr<nsILocalFile> mApplicationRegistryDir;
+    nsCOMPtr<nsILocalFile> mApplicationRegistryFile;
+    nsCOMPtr<nsILocalFile> mUserProfileDir;
+};
 
 // Prefs
 
-static const char *c_szPrefsHomePage = "browser.startup.homepage";
-static const char *c_szDefaultPage   = "data:text/html,<html><body bgcolor=\"#00FF00\"><p>Mozilla Control</p></body></html>";
+static OLECHAR *kDesignModeURL =
+    L"data:text/html,<html><body bgcolor=\"#00FF00\"><p>Mozilla Control</p></body></html>";
 
 // Registry keys and values
 
-static const TCHAR *c_szIEHelperObjectKey = _T("Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Browser Helper Objects");
+static const TCHAR *kBrowserHelperObjectRegKey =
+    _T("Software\\Mozilla\\ActiveX Control\\Browser Helper Objects");
+
 
 // Some recent SDKs define these IOleCommandTarget groups, so they're
 // postfixed with _Moz to prevent linker errors.
@@ -156,14 +159,8 @@ CMozillaBrowser::CMozillaBrowser()
     mWebBrowserAsWin = nsnull;
     mValidBrowserFlag = FALSE;
 
-    // Ready state of control
-    mBrowserReadyState = READYSTATE_UNINITIALIZED;
-    
     // Create the container that handles some things for us
     mWebBrowserContainer = NULL;
-
-    // Controls starts off unbusy
-    mBusyFlag = FALSE;
 
     // Control starts off in non-edit mode
     mEditModeFlag = FALSE;
@@ -374,18 +371,6 @@ HRESULT CMozillaBrowser::SetStartupErrorMessage(UINT nStringID)
     return S_OK;
 }
 
-
-//
-// Sets error information for VB programmers who want to know why
-// something failed.
-//
-HRESULT CMozillaBrowser::SetErrorInfo(LPCTSTR lpszDesc, HRESULT hr)
-{
-    USES_CONVERSION;
-    return AtlSetErrorInfo(GetObjectCLSID(), T2OLE(lpszDesc), 0, NULL, GUID_NULL, hr, NULL);
-}
-
-
 //
 // Tells the container to change focus to the next control in the dialog.
 //
@@ -394,7 +379,7 @@ void CMozillaBrowser::NextDlgControl()
     HWND hwndParent = GetParent();
     if (::IsWindow(hwndParent))
     {
-        ::PostMessage(hwndParent, WM_NEXTDLGCTL, 0, 0);
+      ::PostMessage(hwndParent, WM_NEXTDLGCTL, 0, 0);
     }
 }
 
@@ -407,7 +392,7 @@ void CMozillaBrowser::PrevDlgControl()
     HWND hwndParent = GetParent();
     if (::IsWindow(hwndParent))
     {
-        ::PostMessage(hwndParent, WM_NEXTDLGCTL, 1, 0);
+      ::PostMessage(hwndParent, WM_NEXTDLGCTL, 1, 0);
     }
 }
 
@@ -439,8 +424,7 @@ LRESULT CMozillaBrowser::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL&
     {
         if (!bUserMode)
         {
-            USES_CONVERSION;
-            Navigate(A2OLE(c_szDefaultPage), NULL, NULL, NULL, NULL);
+            Navigate(const_cast<BSTR>(kDesignModeURL), NULL, NULL, NULL, NULL);
         }
     }
 
@@ -544,7 +528,7 @@ HRESULT CMozillaBrowser::OnDraw(ATL_DRAWINFO& di)
 {
     NG_TRACE_METHOD(CMozillaBrowser::OnDraw);
 
-    if (!IsValid())
+    if (!BrowserIsValid())
     {
         RECT& rc = *(RECT*)di.prcBounds;
         DrawText(di.hdcDraw, mStartupErrorMessage.c_str(), -1, &rc, DT_TOP | DT_LEFT | DT_WORDBREAK);
@@ -568,7 +552,7 @@ LRESULT CMozillaBrowser::OnPageSetup(WORD wNotifyCode, WORD wID, HWND hWndCtl, B
 LRESULT CMozillaBrowser::OnPrint(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
 {
     NG_TRACE_METHOD(CMozillaBrowser::OnPrint);
-    if (!IsValid())
+    if (!BrowserIsValid())
     {
         return 0;
     }
@@ -952,15 +936,6 @@ LRESULT CMozillaBrowser::OnLinkProperties(WORD wNotifyCode, WORD wID, HWND hWndC
 
 ///////////////////////////////////////////////////////////////////////////////
 
-
-// Test if the browser is in a valid state
-BOOL CMozillaBrowser::IsValid()
-{
-    NG_TRACE_METHOD(CMozillaBrowser::IsValid);
-    return mValidBrowserFlag;
-}
-
-
 // Initialises the web shell engine
 HRESULT CMozillaBrowser::Initialize()
 {
@@ -995,17 +970,21 @@ HRESULT CMozillaBrowser::Initialize()
         return E_FAIL;
     }
 
-    nsresult rv;
+    // Create a simple directory provider. If this fails because the directories are
+    // invalid or whatever then the control will fallback on the default directory
+    // provider.
 
-    // Create a directory file loc object
-    nsCOMPtr<nsIDirectoryServiceProvider> provider; // nsnull for the moment
-    // TODO put alternative directory service provider here at some point
+    nsCOMPtr<nsIDirectoryServiceProvider> directoryProvider;
+    SimpleDirectoryProvider *pDirectoryProvider = new SimpleDirectoryProvider;
+    if (pDirectoryProvider->IsValid())
+        directoryProvider = do_QueryInterface(pDirectoryProvider);
 
     // Create an object to represent the path
+    nsresult rv;
     nsCOMPtr<nsILocalFile> binDir;
     USES_CONVERSION;
     NS_NewNativeLocalFile(nsDependentCString(T2A(szBinDirPath)), TRUE, getter_AddRefs(binDir));
-    rv = NS_InitEmbedding(binDir, provider);
+    rv = NS_InitEmbedding(binDir, directoryProvider);
 
     // Load preferences service
     mPrefs = do_GetService(kPrefCID, &rv);
@@ -1108,6 +1087,7 @@ HRESULT CMozillaBrowser::Terminate()
     return S_OK;
 }
 
+
 // Create and initialise the web shell
 HRESULT CMozillaBrowser::CreateBrowser() 
 {    
@@ -1117,7 +1097,7 @@ HRESULT CMozillaBrowser::CreateBrowser()
     {
         NG_ASSERT(0);
         NG_TRACE_ALWAYS(_T("CreateBrowser() called more than once!"));
-        RETURN_E_UNEXPECTED();
+        return SetErrorInfo(E_UNEXPECTED);
     }
 
     RECT rcLocation;
@@ -1319,7 +1299,7 @@ HRESULT CMozillaBrowser::GetDOMDocument(nsIDOMDocument **pDocument)
 
     *pDocument = nsnull;
 
-    if (!IsValid())
+    if (!BrowserIsValid())
     {
         NG_ASSERT(0);
         return E_UNEXPECTED;
@@ -1351,7 +1331,7 @@ HRESULT CMozillaBrowser::LoadBrowserHelpers()
     // Search the branch looking for objects to load with the control.
 
     CRegKey cKey;
-    if (cKey.Open(HKEY_LOCAL_MACHINE, c_szIEHelperObjectKey, KEY_ENUMERATE_SUB_KEYS) != ERROR_SUCCESS)
+    if (cKey.Open(HKEY_LOCAL_MACHINE, kBrowserHelperObjectRegKey, KEY_ENUMERATE_SUB_KEYS) != ERROR_SUCCESS)
     {
         NG_TRACE(_T("No browser helper key found\n"));
         return S_FALSE;
@@ -1398,7 +1378,7 @@ HRESULT CMozillaBrowser::LoadBrowserHelpers()
             break;
         }
 
-        NG_TRACE(_T("Reading helper object \"%s\"\n"), szCLSID);
+        NG_TRACE(_T("Reading helper object entry \"%s\"\n"), szCLSID);
 
         // Turn the key into a CLSID
         USES_CONVERSION;
@@ -1490,18 +1470,27 @@ HRESULT CMozillaBrowser::PrintDocument(BOOL promptUser)
     }
 
     // Disable print progress dialog (XUL)
-    mPrefs->SetBoolPref("print.show_print_progress", PR_FALSE);
+    PRBool oldShowPrintProgress = FALSE;
+    const char *kShowPrintProgressPref = "print.show_print_progress";
+    mPrefs->GetBoolPref(kShowPrintProgressPref, &oldShowPrintProgress);
+    mPrefs->SetBoolPref(kShowPrintProgressPref, PR_FALSE);
 
+    // Print
     PrintListener *listener = new PrintListener;
     nsCOMPtr<nsIWebProgressListener> printListener = do_QueryInterface(listener);
-    browserAsPrint->Print(printSettings, printListener);
-    listener->WaitForComplete();
+    nsresult rv = browserAsPrint->Print(printSettings, printListener);
+    if (NS_SUCCEEDED(rv))
+    {
+        listener->WaitForComplete();
+    }
 
+    // Cleanup
     if (printSettings)
     {
         printSettings->SetPrintSilent(oldPrintSilent);
     }
-    
+    mPrefs->SetBoolPref(kShowPrintProgressPref, oldShowPrintProgress);
+
     return S_OK;
 }
 
@@ -1679,7 +1668,7 @@ HRESULT STDMETHODCALLTYPE CMozillaBrowser::GetWebBrowser(/* [out] */ void __RPC_
     if (!NgIsValidAddress(aBrowser, sizeof(void *)))
     {
         NG_ASSERT(0);
-        RETURN_E_INVALIDARG();
+        return SetErrorInfo(E_INVALIDARG);
     }
 
     *aBrowser = NULL;
@@ -1692,362 +1681,48 @@ HRESULT STDMETHODCALLTYPE CMozillaBrowser::GetWebBrowser(/* [out] */ void __RPC_
     return S_OK;
 }
 
-
 /////////////////////////////////////////////////////////////////////////////
-// IWebBrowser
+// IWebBrowserImpl
 
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::GoBack(void)
+nsresult CMozillaBrowser::GetWebNavigation(nsIWebNavigation **aWebNav)
 {
-    NG_TRACE_METHOD(CMozillaBrowser::GoBack);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-    nsCOMPtr<nsIWebNavigation> webNav(do_QueryInterface(mWebBrowser));
-    PRBool aCanGoBack = PR_FALSE;
-    webNav->GetCanGoBack(&aCanGoBack);
-    if (aCanGoBack == PR_TRUE)
-    {
-        webNav->GoBack();
-    }
-
-    return S_OK;
+    NS_ENSURE_ARG_POINTER(aWebNav);
+    if (!mWebBrowser) return NS_ERROR_FAILURE;
+    return mWebBrowser->QueryInterface(NS_GET_IID(nsIWebNavigation), (void **) aWebNav);
 }
 
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::GoForward(void)
+nsresult CMozillaBrowser::GetDOMWindow(nsIDOMWindow **aDOMWindow)
 {
-    NG_TRACE_METHOD(CMozillaBrowser::GoForward);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    nsCOMPtr<nsIWebNavigation> webNav(do_QueryInterface(mWebBrowser));
-    PRBool aCanGoForward = PR_FALSE;
-    webNav->GetCanGoForward(&aCanGoForward);
-    if (aCanGoForward == PR_TRUE)
-    {
-        webNav->GoForward();
-    }
-
-    return S_OK;
+    NS_ENSURE_ARG_POINTER(aDOMWindow);
+    if (!mWebBrowser) return NS_ERROR_FAILURE;
+    return mWebBrowser->GetContentDOMWindow(aDOMWindow);
 }
 
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::GoHome(void)
+nsresult CMozillaBrowser::GetPrefs(nsIPref **aPrefs)
 {
-    NG_TRACE_METHOD(CMozillaBrowser::GoHome);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    nsAutoString sUrl;
-    sUrl.Assign(NS_LITERAL_STRING("http://home.netscape.com"));
-
-    // Find the home page stored in prefs
     if (mPrefs)
-    {
-        nsXPIDLString szBuffer;
-        nsresult rv;
-        rv = mPrefs->GetLocalizedUnicharPref(c_szPrefsHomePage, getter_Copies(szBuffer));
-        if (rv == NS_OK)
-        {
-            sUrl.Assign(szBuffer);
-        }
-    }
-    // Navigate to the home page
-    CComBSTR bstrUrl(sUrl.get());
-    Navigate(bstrUrl , NULL, NULL, NULL, NULL);
-    
-    return S_OK;
+        *aPrefs = mPrefs;
+    NS_IF_ADDREF(*aPrefs);
+    return (*aPrefs) ? NS_OK : NS_ERROR_FAILURE;
 }
 
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::GoSearch(void)
+PRBool CMozillaBrowser::BrowserIsValid()
 {
-    NG_TRACE_METHOD(CMozillaBrowser::GoSearch);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    OLECHAR * sUrl = L"http://search.netscape.com";
-
-    // Find the home page stored in prefs
-    if (mPrefs)
-    {
-        // TODO find and navigate to the search page stored in prefs
-        //      and not this hard coded address
-    }
-    Navigate(sUrl, NULL, NULL, NULL, NULL);
-    
-    return S_OK;
+    NG_TRACE_METHOD(CMozillaBrowser::BrowserIsValid);
+    return mValidBrowserFlag ? PR_TRUE : PR_FALSE;
 }
 
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::Navigate(BSTR URL, VARIANT __RPC_FAR *Flags, VARIANT __RPC_FAR *TargetFrameName, VARIANT __RPC_FAR *PostData, VARIANT __RPC_FAR *Headers)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::Navigate);
-
-    //Make sure browser is valid
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    // Extract the URL parameter
-    if (URL == NULL)
-    {
-        NG_ASSERT(0);
-        RETURN_E_INVALIDARG();
-    }
-
-    nsAutoString sUrl(URL);
-
-    // Check for a view-source op - this is a bit kludgy
-    // TODO
-    if (NS_LossyConvertUCS2toASCII(sUrl).Compare("view-source:", PR_TRUE, 12) == 0)
-     {
-        // Broken code - appears to want to replace view-source: with view: to 
-        // get Mozilla to respond to the IE view-source: protocol.
-///        std::wstring sCommand(L"view");
-//        sUrl.Left(sCommand, 11);
-//         sUrl.Cut(0,12);
-     }
-
-    // Extract the launch flags parameter
-    LONG lFlags = 0;
-    if (Flags &&
-        Flags->vt != VT_ERROR &&
-        Flags->vt != VT_EMPTY &&
-        Flags->vt != VT_NULL)
-    {
-        CComVariant vFlags;
-        if ( vFlags.ChangeType(VT_I4, Flags) != S_OK )
-        {
-            NG_ASSERT(0);
-            RETURN_E_INVALIDARG();
-        }
-        lFlags = vFlags.lVal;
-    }
-
-    // TODO Extract the headers parameter
-    PRBool bModifyHistory = PR_TRUE;
-
-    // Check the navigation flags
-    if (lFlags & navOpenInNewWindow)
-    {
-        CIPtr(IDispatch) spDispNew;
-        VARIANT_BOOL bCancel = VARIANT_FALSE;
-        
-        // Test if the event sink can give us a new window to navigate into
-        Fire_NewWindow2(&spDispNew, &bCancel);
-
-        lFlags &= ~(navOpenInNewWindow);
-        if ((bCancel == VARIANT_FALSE) && spDispNew)
-        {
-            CIPtr(IWebBrowser2) spOther = spDispNew;
-            if (spOther)
-            {
-                CComVariant vURL(URL);
-                CComVariant vFlags(lFlags);
-                return spOther->Navigate2(&vURL, &vFlags, TargetFrameName, PostData, Headers);
-            }
-        }
-        // Can't open a new window without client support
-        return E_NOTIMPL;
-    }
-    // Extract the target frame parameter
-    std::wstring sTargetFrame;
-    if (TargetFrameName && TargetFrameName->vt == VT_BSTR)
-    {
-        sTargetFrame = TargetFrameName->bstrVal;
-    }
-
-    // Extract the post data parameter
-    mLastPostData.Clear();
-    if (PostData)
-    {
-        mLastPostData.Copy(PostData);
-    }
-
-    if (PostData && PostData->vt == VT_BSTR)
-    {
-        USES_CONVERSION;
-        char *szPostData = OLE2A(PostData->bstrVal);
-    }
-    if (lFlags & navNoHistory)
-    {
-        // Disable history
-        bModifyHistory = PR_FALSE;
-    }
-    if (lFlags & navNoReadFromCache)
-    {
-        // TODO disable read from cache
-    }
-    if (lFlags & navNoWriteToCache)
-    {
-        // TODO disable write to cache
-    }
-
-    // TODO find the correct target frame
-
-    // Load the URL    
-    nsresult res = NS_ERROR_FAILURE;
-
-    nsCOMPtr<nsIWebNavigation> spIWebNavigation = do_QueryInterface(mWebBrowser);
-    if (spIWebNavigation)
-    {
-        res = spIWebNavigation->LoadURI(sUrl.get(),
-                                        nsIWebNavigation::LOAD_FLAGS_NONE,
-                                        nsnull,
-                                        nsnull,
-                                        nsnull);
-    }
-
-    return res;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::Refresh(void)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::Refresh);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    // Reload the page
-    CComVariant vRefreshType(REFRESH_NORMAL);
-    return Refresh2(&vRefreshType);
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::Refresh2(VARIANT __RPC_FAR *Level)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::Refresh2);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    NG_ASSERT_NULL_OR_POINTER(Level, VARIANT);
-
-    // Check the requested refresh type
-    OLECMDID_REFRESHFLAG iRefreshLevel = OLECMDIDF_REFRESH_NORMAL;
-    if (Level)
-    {
-        CComVariant vLevelAsInt;
-        if ( vLevelAsInt.ChangeType(VT_I4, Level) != S_OK )
-        {
-            NG_ASSERT(0);
-            RETURN_E_UNEXPECTED();
-        }
-        iRefreshLevel = (OLECMDID_REFRESHFLAG) vLevelAsInt.iVal;
-    }
-
-    // Turn the IE refresh type into the nearest NG equivalent
-    PRUint32 flags = nsIWebNavigation::LOAD_FLAGS_NONE;
-    switch (iRefreshLevel & OLECMDIDF_REFRESH_LEVELMASK)
-    {
-    case OLECMDIDF_REFRESH_NORMAL:
-    case OLECMDIDF_REFRESH_IFEXPIRED:
-    case OLECMDIDF_REFRESH_CONTINUE:
-    case OLECMDIDF_REFRESH_NO_CACHE:
-    case OLECMDIDF_REFRESH_RELOAD:
-        flags = nsIWebNavigation::LOAD_FLAGS_NONE;
-        break;
-    case OLECMDIDF_REFRESH_COMPLETELY:
-        flags = nsIWebNavigation::LOAD_FLAGS_BYPASS_CACHE | nsIWebNavigation::LOAD_FLAGS_BYPASS_PROXY;
-        break;
-    default:
-        // No idea what refresh type this is supposed to be
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    nsCOMPtr<nsIWebNavigation> spIWebNavigation = do_QueryInterface(mWebBrowser);
-    if (spIWebNavigation)
-    {
-        spIWebNavigation->Reload(flags);
-    }
-    
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::Stop()
-{
-    NG_TRACE_METHOD(CMozillaBrowser::Stop);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    nsCOMPtr<nsIWebNavigation> spIWebNavigation = do_QueryInterface(mWebBrowser);
-    if (spIWebNavigation)
-    {
-        spIWebNavigation->Stop(nsIWebNavigation::STOP_ALL);
-    }
-    
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::get_Application(IDispatch __RPC_FAR *__RPC_FAR *ppDisp)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::get_Application);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    if (!NgIsValidAddress(ppDisp, sizeof(IDispatch *)))
-    {
-        NG_ASSERT(0);
-        RETURN_E_INVALIDARG();
-    }
-
-    // Return a pointer to this controls dispatch interface
-    *ppDisp = (IDispatch *) this;
-    (*ppDisp)->AddRef();
-    return S_OK;
-}
-
+// Overrides of IWebBrowser / IWebBrowserApp / IWebBrowser2 methods
 
 HRESULT STDMETHODCALLTYPE CMozillaBrowser::get_Parent(IDispatch __RPC_FAR *__RPC_FAR *ppDisp)
 {
     NG_TRACE_METHOD(CMozillaBrowser::get_Parent);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
+    ENSURE_BROWSER_IS_VALID();
 
     if (!NgIsValidAddress(ppDisp, sizeof(IDispatch *)))
     {
         NG_ASSERT(0);
-        RETURN_E_INVALIDARG();
+        return SetErrorInfo(E_INVALIDARG);
     }
 
     // Attempt to get the parent object of this control
@@ -2060,43 +1735,15 @@ HRESULT STDMETHODCALLTYPE CMozillaBrowser::get_Parent(IDispatch __RPC_FAR *__RPC
     return (SUCCEEDED(hr)) ? S_OK : E_NOINTERFACE;
 }
 
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::get_Container(IDispatch __RPC_FAR *__RPC_FAR *ppDisp)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::get_Container);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    if (!NgIsValidAddress(ppDisp, sizeof(IDispatch *)))
-    {
-        NG_ASSERT(0);
-        RETURN_E_INVALIDARG();
-    }
-
-    //TODO: Implement get_Container: Retrieve a pointer to the IDispatch interface of the container.
-    *ppDisp = NULL;
-    RETURN_E_UNEXPECTED();
-}
-
-
 HRESULT STDMETHODCALLTYPE CMozillaBrowser::get_Document(IDispatch __RPC_FAR *__RPC_FAR *ppDisp)
 {
     NG_TRACE_METHOD(CMozillaBrowser::get_Document);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
+    ENSURE_BROWSER_IS_VALID();
 
     if (!NgIsValidAddress(ppDisp, sizeof(IDispatch *)))
     {
         NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
+        return SetErrorInfo(E_UNEXPECTED);
     }
 
     *ppDisp = NULL;
@@ -2115,13 +1762,13 @@ HRESULT STDMETHODCALLTYPE CMozillaBrowser::get_Document(IDispatch __RPC_FAR *__R
 
         if (!pIDOMDocument)
         {
-            RETURN_ERROR(_T("get_Document: not HTML"), E_FAIL);
+            return SetErrorInfo(E_FAIL, L"get_Document: not HTML");
         }
 
          CIEHtmlDocumentInstance::CreateInstance(&mIERootDocument);
           if (mIERootDocument == NULL)
          {
-            RETURN_ERROR(_T("get_Document: can't create IERootDocument"), E_OUTOFMEMORY);
+            return SetErrorInfo(E_OUTOFMEMORY, L"get_Document: can't create IERootDocument");
          }
          
         // addref it so it doesn't go away on us.
@@ -2140,940 +1787,15 @@ HRESULT STDMETHODCALLTYPE CMozillaBrowser::get_Document(IDispatch __RPC_FAR *__R
     return S_OK;
 }
 
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::get_TopLevelContainer(VARIANT_BOOL __RPC_FAR *pBool)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::get_TopLevelContainer);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    if (!NgIsValidAddress(pBool, sizeof(VARIANT_BOOL)))
-    {
-        NG_ASSERT(0);
-        RETURN_E_INVALIDARG();
-    }
-
-    //TODO:  Implement get_TopLevelContainer
-    *pBool = VARIANT_FALSE;
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::get_Type(BSTR __RPC_FAR *Type)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::get_Type);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    //NOTE:    This code should work in theory, but can't be verified because GetDoctype
-    //        has not been implemented yet.
-#if 0
-    nsIDOMDocument *pIDOMDocument = nsnull;
-    if ( SUCCEEDED(GetDOMDocument(&pIDOMDocument)) )
-    {
-        nsIDOMDocumentType *pIDOMDocumentType = nsnull;
-        if ( SUCCEEDED(pIDOMDocument->GetDoctype(&pIDOMDocumentType)) )
-        {
-            nsAutoString docName;
-            pIDOMDocumentType->GetName(docName);
-            //NG_TRACE("pIDOMDocumentType returns: %s", docName);
-            //Still need to manipulate docName so that it goes into *Type param of this function.
-        }
-    }
-#endif
-
-    //TODO: Implement get_Type
-    RETURN_ERROR(_T("get_Type: failed"), E_FAIL);
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::get_Left(long __RPC_FAR *pl)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::get_Left);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    if (pl == NULL)
-    {
-        NG_ASSERT(0);
-        RETURN_E_INVALIDARG();
-    }
-
-    //TODO: Implement get_Left - Should return the left position of this control.
-    *pl = 0;
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::put_Left(long Left)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::put_Left);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-    
-    //TODO: Implement put_Left - Should set the left position of this control.
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::get_Top(long __RPC_FAR *pl)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::get_Top);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    if (pl == NULL)
-    {
-        NG_ASSERT(0);
-        RETURN_E_INVALIDARG();
-    }
-
-    //TODO: Implement get_Top - Should return the top position of this control.
-    *pl = 0;
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::put_Top(long Top)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::put_Top);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    //TODO: Implement set_Top - Should set the top position of this control.
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::get_Width(long __RPC_FAR *pl)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::get_Width);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    if (pl == NULL)
-    {
-        NG_ASSERT(0);
-        RETURN_E_INVALIDARG();
-    }
-
-    //TODO: Implement get_Width- Should return the width of this control.
-    *pl = 0;
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::put_Width(long Width)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::put_Width);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    //TODO: Implement put_Width - Should set the width of this control.
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::get_Height(long __RPC_FAR *pl)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::get_Height);
-
-    if (!IsValid())
-    {
-        RETURN_E_UNEXPECTED();
-    }
-
-    if (pl == NULL)
-    {
-        RETURN_E_INVALIDARG();
-    }
-
-    //TODO: Implement get_Height - Should return the hieght of this control.
-    *pl = 0;
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::put_Height(long Height)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::put_Height);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    //TODO: Implement put_Height - Should set the height of this control.
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::get_LocationName(BSTR __RPC_FAR *LocationName)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::get_LocationName);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    if (LocationName == NULL)
-    {
-        RETURN_E_INVALIDARG();
-    }
-
-    // Get the url from the web shell
-    nsXPIDLString szLocationName;
-    mWebBrowserAsWin->GetTitle(getter_Copies(szLocationName));
-    if (nsnull == (const PRUnichar *) szLocationName)
-    {
-        RETURN_E_UNEXPECTED();
-    }
-
-    // Convert the string to a BSTR
-    USES_CONVERSION;
-    LPCOLESTR pszConvertedLocationName = W2COLE((const PRUnichar *) szLocationName);
-    *LocationName = SysAllocString(pszConvertedLocationName);
-
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::get_LocationURL(BSTR __RPC_FAR *LocationURL)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::get_LocationURL);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    if (LocationURL == NULL)
-    {
-        NG_ASSERT(0);
-        RETURN_E_INVALIDARG();
-    }
-
-    nsCOMPtr<nsIURI> uri;
-
-    // Get the current url from the browser
-    nsCOMPtr<nsIWebNavigation> browserAsNav = do_QueryInterface(mWebBrowser);
-    if (browserAsNav)
-    {
-        browserAsNav->GetCurrentURI(getter_AddRefs(uri));
-    }
-
-    if (uri)
-    {
-        USES_CONVERSION;
-        nsCAutoString aURI;
-        uri->GetAsciiSpec(aURI);
-        *LocationURL = SysAllocString(A2OLE(aURI.get()));
-    }
-    else
-    {
-        *LocationURL = NULL;
-    }
-
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::get_Busy(VARIANT_BOOL __RPC_FAR *pBool)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::get_Busy);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    if (!NgIsValidAddress(pBool, sizeof(*pBool)))
-    {
-        NG_ASSERT(0);
-        RETURN_E_INVALIDARG();
-    }
-
-    *pBool = (mBusyFlag) ? VARIANT_TRUE : VARIANT_FALSE;
-
-    return S_OK;
-}
-
-
-/////////////////////////////////////////////////////////////////////////////
-// IWebBrowserApp
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::Quit(void)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::Quit);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    //This generates an exception in the IE control.
-    // TODO fire quit event
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::ClientToWindow(int __RPC_FAR *pcx, int __RPC_FAR *pcy)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::ClientToWindow);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    //This generates an exception in the IE control.
-    // TODO convert points to be relative to browser
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::PutProperty(BSTR szProperty, VARIANT vtValue)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::PutProperty);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    if (szProperty == NULL)
-    {
-        RETURN_E_INVALIDARG();
-    }
-    PropertyList::iterator i;
-    for (i = mPropertyList.begin(); i != mPropertyList.end(); i++)
-    {
-        // Is the property already in the list?
-        if (wcscmp((*i).szName, szProperty) == 0)
-        {
-            // Copy the new value
-            (*i).vValue = CComVariant(vtValue);
-            return S_OK;
-        }
-    }
-
-    Property p;
-    p.szName = CComBSTR(szProperty);
-    p.vValue = vtValue;
-
-    mPropertyList.push_back(p);
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::GetProperty(BSTR Property, VARIANT __RPC_FAR *pvtValue)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::GetProperty);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    NG_ASSERT(Property);
-    NG_ASSERT_POINTER(pvtValue, VARIANT);
-    
-    if (Property == NULL || pvtValue == NULL)
-    {
-        RETURN_E_INVALIDARG();
-    }
-    
-    VariantInit(pvtValue);
-    PropertyList::iterator i;
-    for (i = mPropertyList.begin(); i != mPropertyList.end(); i++)
-    {
-        // Is the property already in the list?
-        if (wcscmp((*i).szName, Property) == 0)
-        {
-            // Copy the new value
-            VariantCopy(pvtValue, &(*i).vValue);
-            return S_OK;
-        }
-    }
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::get_Name(BSTR __RPC_FAR *Name)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::get_Name);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    NG_ASSERT_POINTER(Name, BSTR);
-    if (Name == NULL)
-    {
-        RETURN_E_INVALIDARG();
-    }
-
-    // TODO: Implement get_Name (get Mozilla's executable name)
-    *Name = SysAllocString(L"Mozilla Web Browser Control");
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::get_HWND(long __RPC_FAR *pHWND)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::get_HWND);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    NG_ASSERT_POINTER(pHWND, HWND);
-    if (pHWND == NULL)
-    {
-        RETURN_E_INVALIDARG();
-    }
-
-    //This is supposed to return a handle to the IE main window.  Since that doesn't exist
-    //in the control's case, this shouldn't do anything.
-    *pHWND = NULL;
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::get_FullName(BSTR __RPC_FAR *FullName)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::get_FullName);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    NG_ASSERT_POINTER(FullName, BSTR);
-    if (FullName == NULL)
-    {
-        RETURN_E_INVALIDARG();
-    }
-
-    // TODO: Implement get_FullName (Return the full path of the executable containing this control)
-    *FullName = SysAllocString(L""); // TODO get Mozilla's executable name
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::get_Path(BSTR __RPC_FAR *Path)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::get_Path);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    NG_ASSERT_POINTER(Path, BSTR);
-    if (Path == NULL)
-    {
-        RETURN_E_INVALIDARG();
-    }
-
-    // TODO: Implement get_Path (get Mozilla's path)
-    *Path = SysAllocString(L"");
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::get_Visible(VARIANT_BOOL __RPC_FAR *pBool)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::get_Visible);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    NG_ASSERT_POINTER(pBool, VARIANT_BOOL);
-    if (pBool == NULL)
-    {
-        RETURN_E_INVALIDARG();
-    }
-
-    //TODO: Implement get_Visible?
-    *pBool = VARIANT_TRUE;
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::put_Visible(VARIANT_BOOL Value)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::put_Visible);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    //TODO: Implement put_Visible?
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::get_StatusBar(VARIANT_BOOL __RPC_FAR *pBool)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::get_StatusBar);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    NG_ASSERT_POINTER(pBool, int);
-    if (pBool == NULL)
-    {
-        RETURN_E_INVALIDARG();
-    }
-
-    //There is no StatusBar in this control.
-    *pBool = VARIANT_FALSE;
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::put_StatusBar(VARIANT_BOOL Value)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::put_StatusBar);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    //There is no StatusBar in this control.
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::get_StatusText(BSTR __RPC_FAR *StatusText)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::get_StatusText);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    NG_ASSERT_POINTER(StatusText, BSTR);
-    if (StatusText == NULL)
-    {
-        RETURN_E_INVALIDARG();
-    }
-
-    //TODO: Implement get_StatusText
-    //NOTE: This function is related to the MS status bar which doesn't exist in this control.  Needs more
-    //        investigation, but probably doesn't apply.
-    *StatusText = SysAllocString(L"");
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::put_StatusText(BSTR StatusText)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::put_StatusText);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    //TODO: Implement put_StatusText
-    //NOTE: This function is related to the MS status bar which doesn't exist in this control.  Needs more
-    //        investigation, but probably doesn't apply.
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::get_ToolBar(int __RPC_FAR *Value)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::get_ToolBar);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    NG_ASSERT_POINTER(Value, int);
-    if (Value == NULL)
-    {
-        RETURN_E_INVALIDARG();
-    }
-
-    //There is no ToolBar in this control.
-    *Value = FALSE;
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::put_ToolBar(int Value)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::put_ToolBar);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    //There is no ToolBar in this control.
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::get_MenuBar(VARIANT_BOOL __RPC_FAR *Value)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::get_MenuBar);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    NG_ASSERT_POINTER(Value, int);
-    if (Value == NULL)
-    {
-        RETURN_E_INVALIDARG();
-    }
-
-    //There is no MenuBar in this control.
-    *Value = VARIANT_FALSE;
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::put_MenuBar(VARIANT_BOOL Value)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::put_MenuBar);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    //There is no MenuBar in this control.
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::get_FullScreen(VARIANT_BOOL __RPC_FAR *pbFullScreen)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::get_FullScreen);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    NG_ASSERT_POINTER(pbFullScreen, VARIANT_BOOL);
-    if (pbFullScreen == NULL)
-    {
-        RETURN_E_INVALIDARG();
-    }
-
-    //FullScreen mode doesn't really apply to this control.
-    *pbFullScreen = VARIANT_FALSE;
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::put_FullScreen(VARIANT_BOOL bFullScreen)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::put_FullScreen);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    //FullScreen mode doesn't really apply to this control.
-    return S_OK;
-}
-
-
-
-/////////////////////////////////////////////////////////////////////////////
-// IWebBrowser2
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::Navigate2(VARIANT __RPC_FAR *URL, VARIANT __RPC_FAR *Flags, VARIANT __RPC_FAR *TargetFrameName, VARIANT __RPC_FAR *PostData, VARIANT __RPC_FAR *Headers)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::Navigate2);
-
-    CComVariant vURLAsString;
-    if ( vURLAsString.ChangeType(VT_BSTR, URL) != S_OK )
-    {
-        RETURN_E_INVALIDARG();
-    }
-
-    return Navigate(vURLAsString.bstrVal, Flags, TargetFrameName, PostData, Headers);
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::QueryStatusWB(OLECMDID cmdID, OLECMDF __RPC_FAR *pcmdf)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::QueryStatusWB);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    if (pcmdf == NULL)
-    {
-        RETURN_E_INVALIDARG();
-    }
-
-    // Call through to IOleCommandTarget::QueryStatus
-    OLECMD cmd;
-    HRESULT hr;
-    
-    cmd.cmdID = cmdID;
-    cmd.cmdf = 0;
-    hr = QueryStatus(NULL, 1, &cmd, NULL);
-    if (SUCCEEDED(hr))
-    {
-        *pcmdf = (OLECMDF) cmd.cmdf;
-    }
-
-    return hr;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::ExecWB(OLECMDID cmdID, OLECMDEXECOPT cmdexecopt, VARIANT __RPC_FAR *pvaIn, VARIANT __RPC_FAR *pvaOut)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::ExecWB);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    // Call through to IOleCommandTarget::Exec
-    HRESULT hr;
-    hr = Exec(NULL, cmdID, cmdexecopt, pvaIn, pvaOut);
-    return hr;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::ShowBrowserBar(VARIANT __RPC_FAR *pvaClsid, VARIANT __RPC_FAR *pvarShow, VARIANT __RPC_FAR *pvarSize)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::ShowBrowserBar);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::get_ReadyState(READYSTATE __RPC_FAR *plReadyState)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::get_ReadyState);
-
-    if (plReadyState == NULL)
-    {
-        NG_ASSERT(0);
-        RETURN_E_INVALIDARG();
-    }
-
-    *plReadyState = mBrowserReadyState;
-
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::get_Offline(VARIANT_BOOL __RPC_FAR *pbOffline)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::get_Offline);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    if (pbOffline == NULL)
-    {
-        NG_ASSERT(0);
-        RETURN_E_INVALIDARG();
-    }
-
-    //TODO: Implement get_Offline
-    *pbOffline = VARIANT_FALSE;
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::put_Offline(VARIANT_BOOL bOffline)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::put_Offline);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    //TODO: Implement get_Offline
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::get_Silent(VARIANT_BOOL __RPC_FAR *pbSilent)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::get_Silent);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    if (pbSilent == NULL)
-    {
-        RETURN_E_INVALIDARG();
-    }
-
-    //Only really applies to the IE app, not a control
-    *pbSilent = VARIANT_FALSE;
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::put_Silent(VARIANT_BOOL bSilent)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::put_Silent);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    //Only really applies to the IE app, not a control
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::get_RegisterAsBrowser(VARIANT_BOOL __RPC_FAR *pbRegister)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::get_RegisterAsBrowser);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    if (pbRegister == NULL)
-    {
-        NG_ASSERT(0);
-        RETURN_E_INVALIDARG();
-    }
-
-    //TODO: Implement get_RegisterAsBrowser
-    *pbRegister = VARIANT_FALSE;
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::put_RegisterAsBrowser(VARIANT_BOOL bRegister)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::put_RegisterAsBrowser);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    //TODO: Implement put_RegisterAsBrowser
-    return S_OK;
-}
-
-
 HRESULT STDMETHODCALLTYPE CMozillaBrowser::get_RegisterAsDropTarget(VARIANT_BOOL __RPC_FAR *pbRegister)
 {
     NG_TRACE_METHOD(CMozillaBrowser::get_RegisterAsDropTarget);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
+    ENSURE_BROWSER_IS_VALID();
 
     if (pbRegister == NULL)
     {
         NG_ASSERT(0);
-        RETURN_E_INVALIDARG();
+        return SetErrorInfo(E_INVALIDARG);
     }
 
     *pbRegister = mHaveDropTargetFlag ? VARIANT_TRUE : VARIANT_FALSE;
@@ -3092,12 +1814,7 @@ static BOOL CALLBACK EnumChildProc(HWND hwnd, LPARAM lParam)
 HRESULT STDMETHODCALLTYPE CMozillaBrowser::put_RegisterAsDropTarget(VARIANT_BOOL bRegister)
 {
     NG_TRACE_METHOD(CMozillaBrowser::put_RegisterAsDropTarget);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
+    ENSURE_BROWSER_IS_VALID();
 
     // Register the window as a drop target
     if (bRegister == VARIANT_TRUE)
@@ -3152,116 +1869,6 @@ HRESULT STDMETHODCALLTYPE CMozillaBrowser::put_RegisterAsDropTarget(VARIANT_BOOL
 }
 
 
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::get_TheaterMode(VARIANT_BOOL __RPC_FAR *pbRegister)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::get_TheaterMode);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    if (pbRegister == NULL)
-    {
-        NG_ASSERT(0);
-        RETURN_E_INVALIDARG();
-    }
-
-    //TheaterMode doesn't apply to this control.
-    *pbRegister = VARIANT_FALSE;
-
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::put_TheaterMode(VARIANT_BOOL bRegister)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::put_TheaterMode);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    //TheaterMode doesn't apply to this control.
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::get_AddressBar(VARIANT_BOOL __RPC_FAR *Value)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::get_AddressBar);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    if (Value == NULL)
-    {
-        RETURN_E_INVALIDARG();
-    }
-
-    //There is no AddressBar in this control.
-    *Value = VARIANT_FALSE;
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::put_AddressBar(VARIANT_BOOL Value)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::put_AddressBar);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    //There is no AddressBar in this control.
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::get_Resizable(VARIANT_BOOL __RPC_FAR *Value)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::get_Resizable);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    if (Value == NULL)
-    {
-        NG_ASSERT(0);
-        RETURN_E_INVALIDARG();
-    }
-
-    //TODO:  Not sure if this should actually be implemented or not.
-    *Value = VARIANT_FALSE;
-    return S_OK;
-}
-
-
-HRESULT STDMETHODCALLTYPE CMozillaBrowser::put_Resizable(VARIANT_BOOL Value)
-{
-    NG_TRACE_METHOD(CMozillaBrowser::put_Resizable);
-
-    if (!IsValid())
-    {
-        NG_ASSERT(0);
-        RETURN_E_UNEXPECTED();
-    }
-
-    //TODO:  Not sure if this should actually be implemented or not.
-    return S_OK;
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 // Ole Command Handlers
 
@@ -3290,6 +1897,137 @@ HRESULT _stdcall CMozillaBrowser::EditCommandHandler(CMozillaBrowser *pThis, con
 
 
 ///////////////////////////////////////////////////////////////////////////////
+// SimpleDirectoryProvider implementation
+
+SimpleDirectoryProvider::SimpleDirectoryProvider()
+{
+    nsCOMPtr<nsILocalFile> appDataDir;
+
+    // Attempt to fill appDataDir with a meaningful value. Any error in the process
+    // will cause the constructor to return and IsValid() to return FALSE,
+
+    CComPtr<IMalloc> shellMalloc;
+    SHGetMalloc(&shellMalloc);
+    if (shellMalloc)
+    {
+        LPITEMIDLIST pitemidList = NULL;
+        SHGetSpecialFolderLocation(NULL, CSIDL_APPDATA, &pitemidList);
+        if (pitemidList)
+        {
+            TCHAR szBuffer[MAX_PATH + 1];
+            if (SUCCEEDED(SHGetPathFromIDList(pitemidList, szBuffer)))
+            {
+                szBuffer[MAX_PATH] = TCHAR('\0');
+                USES_CONVERSION;
+                NS_NewNativeLocalFile(nsDependentCString(T2A(szBuffer)), TRUE, getter_AddRefs(appDataDir));
+            }
+            shellMalloc->Free(pitemidList);
+        }
+    }
+    if (!appDataDir)
+    {
+        return;
+    }
+
+    // Mozilla control paths are
+    // App data     - {Application Data}/MozillaControl
+    // App registry - {Application Data}/MozillaControl/registry.dat
+    // Profiles     - {Application Data}/MozillaControl/profiles
+
+    nsresult rv;
+
+    // Create the root directory
+    PRBool exists;
+    rv = appDataDir->Exists(&exists);
+    if (NS_FAILED(rv) || !exists) return;
+
+    // MozillaControl application data
+    rv = appDataDir->AppendRelativePath(NS_LITERAL_STRING("MozillaControl"));
+    if (NS_FAILED(rv)) return;
+    rv = appDataDir->Exists(&exists);
+    if (NS_SUCCEEDED(rv) && !exists)
+        rv = appDataDir->Create(nsIFile::DIRECTORY_TYPE, 0775);
+    if (NS_FAILED(rv)) return;
+
+    // Registry.dat file
+    nsCOMPtr<nsIFile> appDataRegAsFile;
+    rv = appDataDir->Clone(getter_AddRefs(appDataRegAsFile));
+    if (NS_FAILED(rv)) return;
+    nsCOMPtr<nsILocalFile> appDataRegistry = do_QueryInterface(appDataRegAsFile, &rv);
+    if (NS_FAILED(rv)) return;
+    appDataRegistry->AppendRelativePath(NS_LITERAL_STRING("registry.dat"));
+
+    // Profiles directory
+    nsCOMPtr<nsIFile> profileDirAsFile;
+    rv = appDataDir->Clone(getter_AddRefs(profileDirAsFile));
+    if (NS_FAILED(rv)) return;
+    nsCOMPtr<nsILocalFile> profileDir = do_QueryInterface(profileDirAsFile, &rv);
+    if (NS_FAILED(rv)) return;
+    profileDir->AppendRelativePath(NS_LITERAL_STRING("profiles"));
+    rv = profileDir->Exists(&exists);
+    if (NS_SUCCEEDED(rv) && !exists)
+        rv = profileDir->Create(nsIFile::DIRECTORY_TYPE, 0775);
+    if (NS_FAILED(rv)) return;
+
+    // Store the member values
+    mApplicationRegistryDir = appDataDir;
+    mApplicationRegistryFile = appDataRegistry;
+    mUserProfileDir = profileDir;
+}
+
+SimpleDirectoryProvider::~SimpleDirectoryProvider()
+{
+}
+
+BOOL
+SimpleDirectoryProvider::IsValid() const
+{
+    return (mApplicationRegistryDir && mApplicationRegistryFile && mUserProfileDir) ?
+        TRUE : FALSE;
+}
+
+NS_IMPL_ISUPPORTS1(SimpleDirectoryProvider, nsIDirectoryServiceProvider)
+
+///////////////////////////////////////////////////////////////////////////////
+// nsIDirectoryServiceProvider
+
+/* nsIFile getFile (in string prop, out PRBool persistent); */
+NS_IMETHODIMP SimpleDirectoryProvider::GetFile(const char *prop, PRBool *persistent, nsIFile **_retval)
+{
+    NS_ENSURE_ARG_POINTER(prop);
+    NS_ENSURE_ARG_POINTER(persistent);
+    NS_ENSURE_ARG_POINTER(_retval);
+
+	*_retval = nsnull;
+	*persistent = PR_TRUE;
+
+    // Only need to support NS_APP_APPLICATION_REGISTRY_DIR, NS_APP_APPLICATION_REGISTRY_FILE, and
+    // NS_APP_USER_PROFILES_ROOT_DIR. Unsupported keys fallback to the default service provider
+    
+    nsCOMPtr<nsILocalFile> localFile;
+	nsresult rv = NS_ERROR_FAILURE;
+
+    if (nsCRT::strcmp(prop, NS_APP_APPLICATION_REGISTRY_DIR) == 0)
+    {
+        localFile = mApplicationRegistryDir;
+    }
+    else if (nsCRT::strcmp(prop, NS_APP_APPLICATION_REGISTRY_FILE) == 0)
+    {
+        localFile = mApplicationRegistryFile;
+    }
+    else if (nsCRT::strcmp(prop, NS_APP_USER_PROFILES_ROOT_DIR) == 0)
+    {
+        localFile = mUserProfileDir;
+    }
+    
+	if (localFile)
+		return localFile->QueryInterface(NS_GET_IID(nsIFile), (void**) _retval);
+		
+	return rv;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
 // PrintListener implementation
 
 
@@ -3297,7 +2035,6 @@ NS_IMPL_ISUPPORTS1(PrintListener, nsIWebProgressListener)
 
 PrintListener::PrintListener() : mComplete(PR_FALSE)
 {
-    NS_INIT_ISUPPORTS();
     /* member initializers and constructor code */
 }
 

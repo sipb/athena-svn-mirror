@@ -54,6 +54,7 @@ public:
   CWinMM(const char* aModuleName="WINMM.DLL") {
     mInstance=::LoadLibrary(aModuleName);  
     mPlay=(mInstance) ? (PlayPtr)GetProcAddress(mInstance,"PlaySound") : 0;
+    sIsInitialized = PR_TRUE;
   }
 
   ~CWinMM() {
@@ -67,16 +68,22 @@ public:
     return (mPlay) ? mPlay(aSoundFile, aModule, aOptions) : FALSE;
   }
 
+  static BOOL IsInitialized() {
+    return sIsInitialized;
+  }
+ 
 private:
   HINSTANCE mInstance;  
   PlayPtr mPlay;
+  static BOOL sIsInitialized;
 };
+
+BOOL CWinMM::sIsInitialized = PR_FALSE;
 
 ////////////////////////////////////////////////////////////////////////
 
 nsSound::nsSound()
 {
-  NS_INIT_ISUPPORTS();
   mLastSound = nsnull;
 }
 
@@ -112,6 +119,7 @@ NS_IMETHODIMP nsSound::OnStreamComplete(nsIStreamLoader *aLoader,
 {
   // print a load error on bad status
   if (NS_FAILED(aStatus)) {
+#ifdef DEBUG
     if (aLoader) {
       nsCOMPtr<nsIRequest> request;
       nsCOMPtr<nsIChannel> channel;
@@ -124,12 +132,12 @@ NS_IMETHODIMP nsSound::OnStreamComplete(nsIStreamLoader *aLoader,
         if (uri) {
           nsCAutoString uriSpec;
           uri->GetSpec(uriSpec);
-#ifdef DEBUG
           printf("Failed to load %s\n", uriSpec.get());
-#endif
         }
       }
     }
+#endif
+    return aStatus;
   }
 
   PurgeLastSound();
@@ -161,6 +169,23 @@ NS_IMETHODIMP nsSound::Play(nsIURL *aURL)
   rv = NS_NewStreamLoader(getter_AddRefs(loader), aURL, this);
 
   return rv;
+}
+
+
+NS_IMETHODIMP nsSound::Init()
+{
+  if (CWinMM::IsInitialized())
+    return NS_OK;
+  CWinMM& theMM = CWinMM::GetModule();
+
+  // This call halts a sound if it was still playing.
+  // We have to use the sound library for something to make sure
+  // it is initialized.
+  // If we wait until the first sound is played, there will
+  // be a time lag as the library gets loaded.
+  theMM.PlaySound(nsnull, nsnull, SND_PURGE); 
+
+  return NS_OK;
 }
 
 

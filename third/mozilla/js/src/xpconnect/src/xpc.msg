@@ -160,4 +160,7 @@ XPC_MSG_DEF(NS_SUCCESS_LOSS_OF_INSIGNIFICANT_DATA   , "Data conversion succeeded
 #ifdef XPC_IDISPATCH_SUPPORT
 XPC_MSG_DEF(NS_ERROR_XPC_COM_UNKNOWN                , "Unknown COM error occured")
 XPC_MSG_DEF(NS_ERROR_XPC_COM_ERROR                  , "COM Error")
+XPC_MSG_DEF(NS_ERROR_XPC_COM_INVALID_CLASS_ID       , "Invalid class ID")
+XPC_MSG_DEF(NS_ERROR_XPC_COM_CREATE_FAILED          , "Unable to create an instance of the desired COM class")
+XPC_MSG_DEF(NS_ERROR_XPC_IDISPATCH_NOT_ENABLED      , "IDispatch support is not enabled")
 #endif

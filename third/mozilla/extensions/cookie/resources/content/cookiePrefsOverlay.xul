@@ -21,7 +21,7 @@
    - Contributor(s):
    -->
 
-<!DOCTYPE window SYSTEM "chrome://cookie/locale/cookiePrefsOverlay.dtd" >
+<!DOCTYPE overlay SYSTEM "chrome://cookie/locale/cookiePrefsOverlay.dtd" >
 
 <overlay id="cookiePrefsOverlay"
          xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
@@ -40,14 +40,12 @@
                       label="&images.label;"/> 
       </treerow>
     </treeitem>
-<!--
-    <treeitem position="3">
+    <treeitem id="popupspref" position="3">
       <treerow>
         <treecell url="chrome://cookie/content/pref-popups.xul"
                       label="&popups.label;"/> 
       </treerow>
     </treeitem>
--->
   </treechildren>
     
 </overlay>

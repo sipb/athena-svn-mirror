@@ -54,7 +54,6 @@ static NS_DEFINE_CID(kCharsetConverterManagerCID, NS_ICHARSETCONVERTERMANAGER_CI
 
 nsTextToSubURI::nsTextToSubURI()
 {
-    NS_INIT_ISUPPORTS();
 }
 nsTextToSubURI::~nsTextToSubURI()
 {
@@ -97,7 +96,14 @@ NS_IMETHODIMP  nsTextToSubURI::ConvertAndEscape(
                 outlen = 255;
                 pBuf = buf;
              }
+             PRInt32 bufLen = outlen;
              if(NS_SUCCEEDED(rv = encoder->Convert(text,&ulen, pBuf, &outlen))) {
+                // put termination characters (e.g. ESC(B of ISO-2022-JP) if necessary
+                PRInt32 finLen = bufLen - outlen;
+                if (finLen > 0) {
+                  if (NS_SUCCEEDED(encoder->Finish((char *)(pBuf+outlen), &finLen)))
+                    outlen += finLen;
+                }
                 pBuf[outlen] = '\0';
                 *_retval = nsEscape(pBuf, url_XPAlphas);
                 if(nsnull == *_retval)
@@ -185,12 +191,14 @@ nsresult nsTextToSubURI::convertURItoUnicode(const nsAFlatCString &aCharset,
   }
 
   if (!isStatefulCharset && aIRI) {
-    NS_ConvertUTF8toUCS2 ucs2(aURI);
-    if (aURI.Equals(NS_ConvertUCS2toUTF8(ucs2))) {
-      _retval.Assign(ucs2);
+    if (IsUTF8(aURI)) {
+      _retval.Assign(NS_ConvertUTF8toUCS2(aURI));
       return rv;
     }
   }
+
+  // empty charset could indicate UTF-8, but aURI turns out not to be UTF-8.
+  NS_ENSURE_FALSE(aCharset.IsEmpty(), NS_ERROR_INVALID_ARG);
 
   nsCOMPtr<nsICharsetConverterManager2> charsetConverterManager;
 

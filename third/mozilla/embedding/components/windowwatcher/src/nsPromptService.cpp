@@ -39,7 +39,6 @@
 #include "nsPromptService.h"
 
 #include "nsDialogParamBlock.h"
-#include "nsXPComFactory.h"
 #include "nsIComponentManager.h"
 #include "nsIDialogParamBlock.h"
 #include "nsIDOMWindow.h"
@@ -49,11 +48,11 @@
 #include "nsIStringBundle.h"
 #include "nsXPIDLString.h"
 
-static const char *kPromptURL="chrome://global/content/commonDialog.xul";
-static const char *kSelectPromptURL="chrome://global/content/selectDialog.xul";
-static const char *kQuestionIconClass ="question-icon";
-static const char *kAlertIconClass ="alert-icon";
-static const char *kWarningIconClass ="message-icon";
+static const char kPromptURL[] = "chrome://global/content/commonDialog.xul";
+static const char kSelectPromptURL[] = "chrome://global/content/selectDialog.xul";
+static const char kQuestionIconClass[] = "question-icon";
+static const char kAlertIconClass[] = "alert-icon";
+static const char kWarningIconClass[] = "message-icon";
 
 static NS_DEFINE_CID(kStringBundleServiceCID, NS_STRINGBUNDLESERVICE_CID);
 
@@ -93,7 +92,6 @@ private:
 NS_IMPL_ISUPPORTS2(nsPromptService, nsIPromptService, nsPIPromptService)
 
 nsPromptService::nsPromptService() {
-  NS_INIT_ISUPPORTS();
 }
 
 nsPromptService::~nsPromptService() {
@@ -339,7 +337,9 @@ nsPromptService::ConfirmEx(nsIDOMWindow *parent,
 
   if (checkMsg && checkValue) {
     block->SetString(eCheckboxMsg, checkMsg);
-    block->SetInt(eCheckboxState, *checkValue);
+    // since we're setting a PRInt32, we have to sanitize the PRBool first.
+    // (myBool != PR_FALSE) is guaranteed to return either 1 or 0.
+    block->SetInt(eCheckboxState, *checkValue != PR_FALSE);
   }
   
   /* perform the dialog */
@@ -353,8 +353,12 @@ nsPromptService::ConfirmEx(nsIDOMWindow *parent,
   if (buttonPressed)
     block->GetInt(eButtonPressed, buttonPressed);
 
-  if (checkMsg && checkValue)
-    block->GetInt(eCheckboxState, checkValue);
+  if (checkMsg && checkValue) {
+    // GetInt returns a PRInt32; we need to sanitize it into PRBool
+    PRInt32 tempValue;
+    block->GetInt(eCheckboxState, &tempValue);
+    *checkValue = (tempValue == 1);
+  }
 
   return rv;
 }

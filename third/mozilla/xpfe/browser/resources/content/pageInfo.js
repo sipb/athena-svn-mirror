@@ -54,7 +54,6 @@ function pageInfoTreeView(columnids, copycol)
   this.selection = null;
   this.sortcol = null;
   this.sortdir = 0;
-  this.initialized = 0; // set this to one once we fill in all the rows
 }
 
 pageInfoTreeView.prototype = {
@@ -97,6 +96,7 @@ pageInfoTreeView.prototype = {
   addRow: function(row)
   {
     this.rows = this.data.push(row);
+    this.rowCountChanged(this.rows - 1, 1);
   },
 
   addRows: function(rows)
@@ -104,6 +104,7 @@ pageInfoTreeView.prototype = {
     var length = rows.length;
     for(var i = 0; i < length; i++)
       this.rows = this.data.push(rows[i]);
+    this.rowCountChanged(this.rows - length, length);
   },
 
   rowCountChanged: function(index, count)
@@ -176,8 +177,10 @@ const COPYCOL_IMAGE_ADDRESS = 0;
 var metaView = new pageInfoTreeView(["meta-name","meta-content"], COPYCOL_META_CONTENT);
 var formView = new pageInfoTreeView(["form-name","form-method","form-action","form-node"], COPYCOL_FORM_ACTION);
 var fieldView = new pageInfoTreeView(["field-label","field-field","field-type","field-value"], COPYCOL_NONE);
-var linkView = new pageInfoTreeView(["link-name","link-address","link-type"], COPYCOL_LINK_ADDRESS);
+var linkView = new pageInfoTreeView(["link-name","link-address","link-type","link-accesskey"], COPYCOL_LINK_ADDRESS);
 var imageView = new pageInfoTreeView(["image-address","image-type","image-alt","image-node", "image-bg"], COPYCOL_IMAGE_ADDRESS);
+
+var intervalID = null;
 
 // localized strings (will be filled in when the document is loaded)
 // this isn't all of them, these are just the ones that would otherwise have been loaded inside a loop
@@ -212,11 +215,33 @@ catch(e)
   // do nothing, later code will handle the error
 }
 
+// interfaces for the different html elements
+const nsIAnchorElement   = Components.interfaces.nsIDOMHTMLAnchorElement
+const nsIImageElement    = Components.interfaces.nsIDOMHTMLImageElement
+const nsIAreaElement     = Components.interfaces.nsIDOMHTMLAreaElement
+const nsILinkElement     = Components.interfaces.nsIDOMHTMLLinkElement
+const nsIInputElement    = Components.interfaces.nsIDOMHTMLInputElement
+const nsIFormElement     = Components.interfaces.nsIDOMHTMLFormElement
+const nsIAppletElement   = Components.interfaces.nsIDOMHTMLAppletElement
+const nsIObjectElement   = Components.interfaces.nsIDOMHTMLObjectElement
+const nsIEmbedElement    = Components.interfaces.nsIDOMHTMLEmbedElement
+const nsIButtonElement   = Components.interfaces.nsIDOMHTMLButtonElement
+const nsISelectElement   = Components.interfaces.nsIDOMHTMLSelectElement
+const nsITextareaElement = Components.interfaces.nsIDOMHTMLTextAreaElement
+
+// Interface for image loading content
+const nsIImageLoadingContent = Components.interfaces.nsIImageLoadingContent;
+
 // namespaces, don't need all of these yet...
-const XLinkNS = "http://www.w3.org/1999/xlink";
-const XULNS   = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
-const XMLNS   = "http://www.w3.org/XML/1998/namespace";
-const XHTMLNS = "http://www.w3.org/1999/xhtml";
+const XLinkNS  = "http://www.w3.org/1999/xlink";
+const XULNS    = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
+const XMLNS    = "http://www.w3.org/XML/1998/namespace";
+const XHTMLNS  = "http://www.w3.org/1999/xhtml";
+const XHTML2NS = "http://www.w3.org/2002/06/xhtml2"
+
+const XHTMLNSre  = "^http\:\/\/www\.w3\.org\/1999\/xhtml$";
+const XHTML2NSre = "^http\:\/\/www\.w3\.org\/2002\/06\/xhtml2$";
+const XHTMLre = RegExp(XHTMLNSre + "|" + XHTML2NSre, "");
 
 /* Overlays register init functions here.
  *   Add functions to call by invoking "onLoadRegistry.append(XXXLoadFunc);"
@@ -254,7 +279,7 @@ function onLoadPageInfo()
   gStrings.mediaInput = theBundle.getString("mediaInput");
 
   var docTitle = "";
-  if("arguments" in window && window.arguments.length >= 1 && window.arguments[0])
+  if ("arguments" in window && window.arguments.length >= 1 && window.arguments[0])
   {
     theWindow = null;
     theDocument = window.arguments[0];
@@ -275,6 +300,9 @@ function onLoadPageInfo()
 
   // do the easy stuff first
   makeGeneralTab();
+
+  // and then the hard stuff
+  makeTabs(theDocument, theWindow);
 
   /* Call registered overlay init functions */
   for (x in onLoadRegistry)
@@ -378,7 +406,7 @@ function makeGeneralTab()
   try
   {
     var cacheEntryDescriptor = httpCacheSession.openCacheEntry(url, Components.interfaces.nsICache.ACCESS_READ, false);
-    if(cacheEntryDescriptor)
+    if (cacheEntryDescriptor)
     { 
       switch(cacheEntryDescriptor.deviceID)
       {
@@ -438,11 +466,13 @@ function makeGeneralTab()
 }
 
 //******** Generic Build-a-tab
+// Assumes the views are empty. Only called once to build the tabs, and
+// does so by farming the task off to another thread via setTimeout().
+// The actual work is done with a TreeWalker that calls doGrab() once for
+// each element node in the document.
+
 function makeTabs(aDocument, aWindow)
 {
-  if (formView.initialized || linkView.initialized || imageView.initialized)
-    return;
-
   if (aWindow && aWindow.frames.length > 0)
   {
     var num = aWindow.frames.length;
@@ -459,22 +489,33 @@ function makeTabs(aDocument, aWindow)
   imageTree.treeBoxObject.view = imageView;
   
   var iterator = aDocument.createTreeWalker(aDocument, NodeFilter.SHOW_ELEMENT, grabAll, true);
-  
-  while (iterator.nextNode())
-    ; // it'll never be executed anyway, since grabAll never 
-      // accepts any nodes
 
-  formView.rowCountChanged(0, formView.rowCount);
-  formView.selection.select(0);
-  formView.initialized = 1;
+  var meter = document.getElementById("piProgress");
 
-  linkView.rowCountChanged(0, linkView.rowCount);
-  linkView.selection.select(0);
-  linkView.initialized = 1;
+  meter.setAttribute("value", 1);
 
-  imageView.rowCountChanged(0, imageView.rowCount);
-  imageView.selection.select(0);
-  imageView.initialized = 1;
+  setTimeout(doGrab, 1, iterator, meter, 0);
+}
+
+function doGrab(iterator, meter, i)
+{
+  if (iterator.nextNode())
+  {
+    setTimeout(doGrab, 1, iterator, meter, i);
+  }
+  else
+  {
+    meter.setAttribute("value", 0);
+    meter.setAttribute("mode", "determined");
+    meter.setAttribute("hidden", "true");
+    document.getElementById("piSpacer").setAttribute("flex", 1);
+  }
+}
+
+function ensureSelection(view)
+{
+  if (view.selection.count == 0) // only select something if nothing is currently selected
+    view.selection.select(0);
 }
 
 function grabAll(elem)
@@ -484,80 +525,74 @@ function grabAll(elem)
   // check for background images, any node may have one
   var url = elem.ownerDocument.defaultView.getComputedStyle(elem, "").getPropertyCSSValue("background-image");
   if (url && url.primitiveType == CSSPrimitiveValue.CSS_URI)
-  {
     imageView.addRow([url.getStringValue(), gStrings.mediaBGImg, gStrings.notSet, elem, true]);
-  }
 
-  // one switch to rule them all
-  // XXX: these tests should use regexes to be a little more lenient wrt whitespace, see bug 177047
-  switch (elem.nodeName.toLowerCase())
+  // one swi^H^H^Hif-else to rule them all
+  if (elem instanceof nsIAnchorElement)
   {
-    // form tab
-    case "form":
-      formView.addRow([elem.name, elem.method, elem.getAttribute("action"), elem]);  // use getAttribute() because of bug 122128
-      break;
-
-    // link tab
-    case "a":
-      linktext = getValueText(elem);
-      linkView.addRow([linktext, elem.href, gStrings.linkAnchor, elem.target]);
-      break;
-    case "area":
-      linkView.addRow([elem.alt, elem.href, gStrings.linkArea, elem.target]);
-      break;
-    case "input":
-      linkView.addRow([elem.value || gStrings.linkSubmit, elem.form.getAttribute("action"), gStrings.linkSubmission, elem.form.getAttribute("target")]); // use getAttribute() due to bug 122128
-      break;
-    case "link":
-      if (elem.rel)
-      {
-        var rel = elem.rel.toLowerCase();
-        if (rel == "icon")
-        {
-          imageView.addRow([elem.href, gStrings.mediaLink, "", elem]);
-          break;
-        }
-        if (rel == "stylesheet" || rel == "alternate stylesheet")
-          linktext = gStrings.linkStylesheet;
-        else
-          linktext = gStrings.linkRel;
-      }
-      else
-        linktext = gStrings.linkRev;
-      linkView.addRow([elem.rel || elem.rev, elem.href, linktext, elem.target]);
-      break;
-
-    // media tab
-    case "img":
-      imageView.addRow([elem.src, gStrings.mediaImg, (elem.hasAttribute("alt")) ? elem.alt : gStrings.notSet, elem]);
-      break;
-    case "input":
-      if (elem.type == "image")
-        imageView.addRow([elem.src, gStrings.mediaInput, (elem.hasAttribute("alt")) ? elem.alt : gStrings.notSet, elem]);
-      break;
-    case "applet":
-      //XXX When Java is enabled, the DOM model for <APPLET> is broken. Bug #59686.
-      // Also, some reports of a crash with Java in Media tab (bug 136535), and mixed
-      // content from two hosts (bug 136539) so just drop applets from Page Info when
-      // Java is on. For the 1.0.1 branch; get a real fix on the trunk.
-      if (!navigator.javaEnabled())
-        imageView.addRow([elem.code || elem.object, gStrings.mediaApplet, "",elem]);
-      break;
-    case "object":
-      imageView.addRow([elem.data, gStrings.mediaObject, getValueText(elem), elem]);
-      break;
-    case "embed":
-      imageView.addRow([elem.src, gStrings.mediaEmbed, "", elem]);
-      break;
-    default:
-      if (elem.hasAttributeNS(XLinkNS, "href"))
-      {
-        linktext = getValueText(elem);
-        linkView.addRow([linktext, elem.href, gStrings.linkX, ""]);
-      }
-      break;
+    linktext = getValueText(elem);
+    linkView.addRow([linktext, getAbsoluteURL(elem.href, elem), gStrings.linkAnchor, elem.target, elem.accessKey]);
   }
-  return NodeFilter.FILTER_SKIP;
+  else if (elem instanceof nsIImageElement)
+  {
+    imageView.addRow([getAbsoluteURL(elem.src, elem), gStrings.mediaImg, (elem.hasAttribute("alt")) ? elem.alt : gStrings.notSet, elem, false]);
+  }
+  else if (elem instanceof nsIAreaElement)
+  {
+    linkView.addRow([elem.alt, getAbsoluteURL(elem.href, elem), gStrings.linkArea, elem.target]);
+  }
+  else if (elem instanceof nsILinkElement)
+  {
+    if (elem.rel)
+    {
+      var rel = elem.rel;
+      if (/\bicon\b/i.test(rel))
+        imageView.addRow([getAbsoluteURL(elem.href, elem), gStrings.mediaLink, "", elem, false]);
+      else if (/\bstylesheet\b/i.test(rel))
+        linkView.addRow([elem.rel, getAbsoluteURL(elem.href, elem), gStrings.linkStylesheet, elem.target]);
+      else
+        linkView.addRow([elem.rel, getAbsoluteURL(elem.href, elem), gStrings.linkRel, elem.target]);
+    }
+    else
+      linkView.addRow([elem.rev, getAbsoluteURL(elem.href, elem), gStrings.linkRev, elem.target]);
+
+  }
+  else if (elem instanceof nsIInputElement)
+  {
+    if (/^image$/i.test(elem.type))
+      imageView.addRow([getAbsoluteURL(elem.src, elem), gStrings.mediaInput, (elem.hasAttribute("alt")) ? elem.alt : gStrings.notSet, elem, false]);
+    else if (/^submit$/i.test(elem.type))
+      linkView.addRow([elem.value || gStrings.linkSubmit, getAbsoluteURL(elem.form.getAttribute("action"), elem), gStrings.linkSubmission, elem.form.getAttribute("target")]); // use getAttribute() due to bug 122128
+  }
+  else if (elem instanceof nsIFormElement)
+  {
+    formView.addRow([elem.name, elem.method, getAbsoluteURL(elem.getAttribute("action"), elem), elem]);  // use getAttribute() because of bug 122128
+  }
+  else if (elem instanceof nsIAppletElement)
+  {
+    //XXX When Java is enabled, the DOM model for <APPLET> is broken. Bug #59686.
+    // Also, some reports of a crash with Java in Media tab (bug 136535), and mixed
+    // content from two hosts (bug 136539) so just drop applets from Page Info when
+    // Java is on. For the 1.0.1 branch; get a real fix on the trunk.
+    if (!navigator.javaEnabled())
+      imageView.addRow([getAbsoluteURL(elem.code || elem.object, elem), gStrings.mediaApplet, "", elem, false]);
+  }
+  else if (elem instanceof nsIObjectElement)
+  {
+    imageView.addRow([getAbsoluteURL(elem.data, elem), gStrings.mediaObject, getValueText(elem), elem, false]);
+  }
+  else if (elem instanceof nsIEmbedElement)
+  {
+    imageView.addRow([getAbsoluteURL(elem.src, elem), gStrings.mediaEmbed, "", elem, false]);
+  }
+  else
+    if (elem.hasAttributeNS(XLinkNS, "href"))
+    {
+      linktext = getValueText(elem);
+      linkView.addRow([linktext, getAbsoluteURL(elem.href, elem), gStrings.linkX, ""]);
+    }
+
+  return NodeFilter.FILTER_ACCEPT;
 }
 
 //******** Form Stuff
@@ -585,7 +620,7 @@ function onFormSelect()
     document.getElementById("formenctype").value = form.encoding || theBundle.getString("default");
     document.getElementById("formtarget").value = form.target || theBundle.getString("formDefaultTarget");
 
-    var formfields = form.elements;
+    var formfields = findFormControls(form);
 
     var length = formfields.length;
     var i = 0;
@@ -595,28 +630,30 @@ function onFormSelect()
 
     for (i = 0; i < length; i++)
     {
-      var elem = formfields[i];
+      var elem = formfields[i], val;
 
-      if(elem.nodeName.toLowerCase() == "button")
-        fieldView.addRow(["", elem.name, elem.type, getValueText(elem)]);
+      if (elem instanceof nsIButtonElement)
+        val = getValueText(elem);
       else
-      {
-        var val = (elem.type == "password") ? theBundle.getString("formPassword") : elem.value;
-        fieldView.addRow(["", elem.name, elem.type, val]);
-      }
+        val = (/^password$/i.test(elem.type)) ? theBundle.getString("formPassword") : elem.value;
+
+      fieldView.addRow(["", elem.id || elem.name, elem.type, val]);
     }
 
     var labels = form.getElementsByTagName("label");
     var llength = labels.length;
+    var label;
 
     for (i = 0; i < llength; i++)
     {
-      var whatfor = labels[i].hasAttribute("for") ?
-        theDocument.getElementById(labels[i].getAttribute("for")) :
-        findFirstControl(labels[i]);
+      label = labels[i];
+      var whatfor = label.hasAttribute("for") ?
+        theDocument.getElementById(label.getAttribute("for")) :
+        findFirstControl(label);
 
-      if (whatfor && (whatfor.form == form)) {
-        var labeltext = getValueText(labels[i]);
+      if (whatfor && (whatfor.form == form)) 
+      {
+        var labeltext = getValueText(label);
         for (var j = 0; j < length; j++)
           if (formfields[j] == whatfor)
             fieldView.setCellText(j, "field-label", labeltext);
@@ -627,26 +664,31 @@ function onFormSelect()
   }
 }
 
+function FormControlFilter(node) 
+{
+  if (node instanceof nsIInputElement || node instanceof nsISelectElement ||
+      node instanceof nsIButtonElement || node instanceof nsITextareaElement ||
+      node instanceof nsIObjectElement)
+      return NodeFilter.FILTER_ACCEPT;
+    return NodeFilter.FILTER_SKIP;
+}
+
 function findFirstControl(node)
 {
-  function FormControlFilter() 
-  {
-    switch (node.nodeName.toLowerCase())
-    {
-      case "input":
-      case "select":
-      case "button":
-      case "textarea":
-      case "object":
-        return NodeFilter.FILTER_ACCEPT;
-      default:
-        return NodeFilter.FILTER_SKIP;
-    }
-  }
-
   var iterator = theDocument.createTreeWalker(node, NodeFilter.SHOW_ELEMENT, FormControlFilter, true);
 
   return iterator.nextNode();
+}
+
+function findFormControls(node)
+{
+  var iterator = theDocument.createTreeWalker(node, NodeFilter.SHOW_ELEMENT, FormControlFilter, true);
+
+  var list = [];
+  while (iterator.nextNode())
+    list.push(iterator.currentNode);
+
+  return list;
 }
 
 //******** Link Stuff
@@ -697,9 +739,9 @@ function onBeginLinkDrag(event,urlField,descField)
 function getSource(item)
 {
   // Return the correct source without strict warnings
-  if (item.href != null)
+  if ("href" in item && item.href)
     return item.href;
-  if (item.src != null)
+  if ("src" in item && item.src)
     return item.src;
   return null;
 }
@@ -758,7 +800,7 @@ function makePreview(row)
   // IMO all text that is not really the value text should go in italics
   // What if somebody has <img alt="Not specified">? =)
   // We can't use textbox.style because of bug 7639
-  if (altText=="") {
+  if (!altText) {
       textbox.value = gStrings.emptyString;
       textbox.setAttribute("style","font-style:italic");
   } else {
@@ -766,15 +808,6 @@ function makePreview(row)
       textbox.setAttribute("style","font-style:inherit");
   }
   document.getElementById("imagelongdesctext").value = ("longDesc" in item && item.longDesc) || gStrings.notSet;
-
-  // find out the mime type
-  var mimeType = gStrings.unknown;
-  if (item.nodeName.toLowerCase() != "input")
-    mimeType = ("type" in item && item.type) ||
-               ("codeType" in item && item.codeType) ||
-               ("contentType" in item && item.contentType) ||
-               gStrings.unknown;
-  document.getElementById("imagetypetext").value = mimeType;
 
   // get cache info
   var sourceText = theBundle.getString("generalNotCached");
@@ -803,12 +836,6 @@ function makePreview(row)
           sourceText = cacheEntryDescriptor.deviceID;
           break;
       }
-
-      pageSize = cacheEntryDescriptor.dataSize;
-      kbSize = pageSize / 1024;
-      sizeText = theBundle.getFormattedString("generalSize", [Math.round(kbSize*100)/100, pageSize]);
-
-      expirationText = formatDate(cacheEntryDescriptor.expirationTime*1000, gStrings.notSet);
     }
   }
   catch(ex)
@@ -830,12 +857,6 @@ function makePreview(row)
             sourceText = cacheEntryDescriptor.deviceID;
             break;
         }
-
-        pageSize = cacheEntryDescriptor.dataSize;
-        kbSize = pageSize / 1024;
-        sizeText = theBundle.getFormattedString("generalSize", [Math.round(kbSize*100)/100, pageSize]);
-
-        expirationText = formatDate(cacheEntryDescriptor.expirationTime*1000, gStrings.notSet);
       }
     }
     catch(ex2)
@@ -843,6 +864,25 @@ function makePreview(row)
       sourceText = theBundle.getString("generalNotCached");
     }
   }
+
+  // find out the file size and expiration date
+  if (cacheEntryDescriptor)
+  {
+    pageSize = cacheEntryDescriptor.dataSize;
+    kbSize = pageSize / 1024;
+    sizeText = theBundle.getFormattedString("generalSize", [Math.round(kbSize*100)/100, pageSize]);
+
+    expirationText = formatDate(cacheEntryDescriptor.expirationTime*1000, gStrings.notSet);
+  }
+
+  var mimeType = ("type" in item && item.type) ||
+                 ("codeType" in item && item.codeType) ||
+                 ("contentType" in item && item.contentType) ||
+                 getContentTypeFromImgRequest(item) ||
+                 getContentTypeFromHeaders(cacheEntryDescriptor) ||
+                 gStrings.unknown;
+
+  document.getElementById("imagetypetext").value = mimeType;
   document.getElementById("imagesourcetext").value = sourceText;
   document.getElementById("imageexpirestext").value = expirationText;
   document.getElementById("imagesizetext").value = sizeText;
@@ -850,16 +890,20 @@ function makePreview(row)
   var imageContainer = document.getElementById("theimagecontainer");
   var oldImage = document.getElementById("thepreviewimage");
 
-  var nn = item.nodeName.toLowerCase();
   var regex = new RegExp("^(https?|ftp|file|gopher)://");
   var absoluteURL = getAbsoluteURL(url, item);
   var isProtocolAllowed = regex.test(absoluteURL); 
   var newImage = new Image();
   newImage.setAttribute("id", "thepreviewimage");
-  if ((nn == "link" || nn == "input" || nn == "img" || isBG) &&
-      isProtocolAllowed) 
+  var physWidth = 0, physHeight = 0;
+
+  if ((item instanceof nsILinkElement || item instanceof nsIInputElement || 
+       item instanceof nsIImageElement || isBG) && isProtocolAllowed)  
   {
     newImage.src = absoluteURL;
+    physWidth = newImage.width;
+    physHeight = newImage.height;
+
     if ("width" in item && item.width)
       newImage.width = item.width;
     if ("height" in item && item.height)
@@ -876,32 +920,79 @@ function makePreview(row)
 
   var width = ("width" in item && item.width) || ("width" in newImage && newImage.width) || "0";
   var height = ("height" in item && item.height) || ("height" in newImage && newImage.height) || "0";
-  document.getElementById("imagewidth").value = theBundle.getFormattedString("mediaWidth", [width]);
-  document.getElementById("imageheight").value = theBundle.getFormattedString("mediaHeight", [height]);
+
+  document.getElementById("imageSize").value = theBundle.getFormattedString("mediaSize", [width, height]);
+
+  if (width != physWidth || height != physHeight)
+  {
+    document.getElementById("physSize").removeAttribute("hidden");
+    document.getElementById("physSize").value = theBundle.getFormattedString("mediaPhysSize", [physWidth, physHeight]);
+  }
+  else
+    document.getElementById("physSize").setAttribute("hidden", "true");
+
 
   imageContainer.removeChild(oldImage);
   imageContainer.appendChild(newImage);
 }
 
+function getContentTypeFromHeaders(cacheEntryDescriptor)
+{
+  var headers, match;
+
+  if (cacheEntryDescriptor)
+  {  
+    headers = cacheEntryDescriptor.getMetaDataElement("response-head");
+    match = /^Content-Type:\s*(.*?)\s*(?:\;|$)/mi.exec(headers);
+    return match[1];
+  }
+}
+
+function getContentTypeFromImgRequest(item)
+{
+  var httpRequest;
+
+  try
+  {
+    var imageItem = item.QueryInterface(nsIImageLoadingContent);
+    var imageRequest = imageItem.getRequest(nsIImageLoadingContent.CURRENT_REQUEST);
+    if (imageRequest) 
+      httpRequest = imageRequest.mimeType;
+  }
+  catch (ex)
+  {
+    // This never happened.  ;)
+  }
+
+  return httpRequest;
+}
 
 //******** Other Misc Stuff
 // Modified from the Links Panel v2.3, http://segment7.net/mozilla/links/links.html
 // parse a node to extract the contents of the node
-// linkNode doesn't really _have_ to be link
-function getValueText(linkNode)
+function getValueText(node)
 {
   var valueText = "";
-  
-  var length = linkNode.childNodes.length;
+
+  // form input elements don't generally contain information that is useful to our callers, so return nothing
+  if (node instanceof nsIInputElement || node instanceof nsISelectElement || node instanceof nsITextareaElement)
+    return valueText;
+
+  // otherwise recurse for each child
+  var length = node.childNodes.length;
   for (var i = 0; i < length; i++)
   {
-    var childNode = linkNode.childNodes[i];
+    var childNode = node.childNodes[i];
     var nodeType = childNode.nodeType;
+
+    // text nodes are where the goods are
     if (nodeType == Node.TEXT_NODE)
       valueText += " " + childNode.nodeValue;
+    // and elements can have more text inside them
     else if (nodeType == Node.ELEMENT_NODE)
     {
-      if (childNode.nodeName.toLowerCase() == "img")
+      // images are special, we want to capture the alt text as if the image weren't there
+      if (childNode instanceof nsIImageElement)
         valueText += " " + getAltText(childNode);
       else
         valueText += " " + getValueText(childNode);
@@ -953,7 +1044,8 @@ function formatDate(datestr, unknown)
  *
  * for node==null or url=="", empty string is returned
  *
- * This is basically just copied from http://lxr.mozilla.org/seamonkey/source/xpfe/browser/resources/content/metadata.js
+ * This is basically just copied from http://lxr.mozilla.org/seamonkey/source/xpfe/browser/resources/content/metadata.js,
+ * though I've modified it so that it doesn't assign to .spec
  */
 
 function getAbsoluteURL(url, node)
@@ -989,7 +1081,14 @@ function getAbsoluteURL(url, node)
 
   for (var i=0; i<urlArr.length; i++) 
   {
-    URL.spec = URL.resolve(urlArr[i]);
+    try
+    {
+      URL = ioService.newURI(urlArr[i], URL.originCharset, URL);
+    }
+    catch (ex)
+    {
+      ; // do nothing
+    }
   }
 
   return URL.spec;
@@ -1008,3 +1107,4 @@ function doCopy(event)
   if (text) 
     gClipboardHelper.copyString(text);
 }
+

@@ -125,7 +125,12 @@ public:
 
   /* Does this device allow to set/change number of copies for an document ? */
   void SetCanChangeNumCopies( PRBool aCanSetNumCopies );
-  
+
+  /* Does this device allow multiple devicecontext instances to be used in
+   * parallel (e.g. print while the device is already in use by print-preview
+   * or printing while another print job is in progress) ? */
+  void SetMultipleConcurrentDeviceContextsSupported( PRBool aCanUseMultipleInstances );
+   
 private:
   /* private helper methods */
   void SetBoolValue( const char *tagname, PRBool value );
@@ -204,6 +209,11 @@ void nsPrinterFeatures::SetCanChangeNumCopies( PRBool aCanSetNumCopies )
   SetBoolValue("can_change_num_copies", aCanSetNumCopies);
 }
 
+void nsPrinterFeatures::SetMultipleConcurrentDeviceContextsSupported( PRBool aCanUseMultipleInstances )
+{
+  SetBoolValue("can_use_multiple_devicecontexts_concurrently", aCanUseMultipleInstances);
+}
+
 #endif /* SET_PRINTER_FEATURES_VIA_PREFS */
 
 //---------------
@@ -216,7 +226,6 @@ int            GlobalPrinters::mGlobalNumPrinters = 0;
 nsDeviceContextSpecXlib::nsDeviceContextSpecXlib()
 {
   DO_PR_DEBUG_LOG(("nsDeviceContextSpecXlib::nsDeviceContextSpecXlib()\n"));
-  NS_INIT_ISUPPORTS();
 }
 
 nsDeviceContextSpecXlib::~nsDeviceContextSpecXlib()
@@ -546,7 +555,6 @@ nsresult CopyPrinterCharPref(nsIPref *pref, const char *modulename, const char *
 //  Printer Enumerator
 nsPrinterEnumeratorXlib::nsPrinterEnumeratorXlib()
 {
-  NS_INIT_ISUPPORTS();
 }
 
 NS_IMPL_ISUPPORTS1(nsPrinterEnumeratorXlib, nsIPrinterEnumerator)
@@ -801,6 +809,10 @@ NS_IMETHODIMP nsPrinterEnumeratorXlib::InitPrintSettingsFromPrinter(const PRUnic
     /* Xprint does not allow the client to set a spooler command. 
      * Job spooling is the job of the server side (=Xprt) */
     printerFeatures.SetCanChangeSpoolerCommand(PR_FALSE);
+
+    /* Mozilla's Xprint support allows multiple nsIDeviceContext instances
+     * be used in parallel */
+    printerFeatures.SetMultipleConcurrentDeviceContextsSupported(PR_TRUE);
 #endif /* SET_PRINTER_FEATURES_VIA_PREFS */
 
     XpuClosePrinterDisplay(pdpy, pcontext);
@@ -943,7 +955,7 @@ nsresult GlobalPrinters::InitializeGlobalPrinters ()
     }
     
     XpuFreePrinterList(plist);
-  }  
+  }
 #endif /* USE_XPRINT */
 
 #ifdef USE_POSTSCRIPT
@@ -998,8 +1010,21 @@ nsresult GlobalPrinters::InitializeGlobalPrinters ()
   }  
 #endif /* USE_POSTSCRIPT */  
       
+  /* If there are no printers available after all checks, return an error */
   if (mGlobalNumPrinters == 0)
-    return NS_ERROR_GFX_PRINTER_NO_PRINTER_AVAILABLE; 
+  {
+    /* Make sure we do not cache an empty printer list */
+    FreeGlobalPrinters();
+
+#ifdef USE_XPRINT
+    /* Check if there are actually any Xprint servers available */
+    if (!XpuXprintServersAvailable()) {
+      return NS_ERROR_GFX_PRINTER_XPRINT_NO_XPRINT_SERVERS_FOUND;
+    }
+#endif /* USE_XPRINT */
+
+    return NS_ERROR_GFX_PRINTER_NO_PRINTER_AVAILABLE;
+  }
 
   return NS_OK;
 }

@@ -34,7 +34,7 @@
 /*
  * p7content -- A command to display pkcs7 content.
  *
- * $Id: p7content.c,v 1.1.1.1 2003-02-14 19:53:13 rbasch Exp $
+ * $Id: p7content.c,v 1.1.1.2 2003-07-08 17:00:16 rbasch Exp $
  */
 
 #include "nspr.h"
@@ -261,6 +261,10 @@ main(int argc, char **argv)
     if (DecodeAndPrintFile(outFile, inFile, progName)) {
 	SECU_PrintError(progName, "problem decoding data");
 	return -1;
+    }
+    
+    if (NSS_Shutdown() != SECSuccess) {
+        exit(1);
     }
 
     return 0;

@@ -43,18 +43,20 @@
 #include "nsGUIEvent.h"
 #include <gdk/gdkevents.h>
 
-#ifdef MOZ_LOGGING
-
 // make sure that logging is enabled before including prlog.h
 #define FORCE_PR_LOG
 
 #include "prlog.h"
 
 extern PRLogModuleInfo *gWidgetLog;
-
-#endif /* MOZ_LOGGING */
+extern PRLogModuleInfo *gWidgetFocusLog;
+extern PRLogModuleInfo *gWidgetIMLog;
+extern PRLogModuleInfo *gWidgetDrawLog;
 
 #define LOG(args) PR_LOG(gWidgetLog, 4, args)
+#define LOGFOCUS(args) PR_LOG(gWidgetFocusLog, 4, args)
+#define LOGIM(args) PR_LOG(gWidgetIMLog, 4, args)
+#define LOGDRAW(args) PR_LOG(gWidgetDrawLog, 4, args)
 
 class nsCommonWidget : public nsBaseWidget {
 public:
@@ -63,7 +65,7 @@ public:
 
     virtual nsIWidget *GetParent(void);
 
-    void CommonCreate(nsIWidget *aParent, nsNativeWidget aNativeParent);
+    void CommonCreate(nsIWidget *aParent, PRBool aListenForResizes);
 
     // event handling code
     void InitPaintEvent(nsPaintEvent &aEvent);
@@ -75,7 +77,6 @@ public:
     void InitMouseScrollEvent(nsMouseScrollEvent &aEvent,
                               GdkEventScroll *aGdkEvent, PRUint32 aMsg);
     void InitKeyEvent(nsKeyEvent &aEvent, GdkEventKey *aGdkEvent, PRUint32 aMsg);
-    void InitScrollbarEvent(nsScrollbarEvent &aEvent, PRUint32 aMsg);
     void InitSizeModeEvent(nsSizeModeEvent &aEvent);
 
 #ifdef ACCESSIBILITY
@@ -143,6 +144,8 @@ protected:
     PRPackedBool        mNeedsShow;
     // is this widget enabled?
     PRBool              mEnabled;
+    // has the native window for this been created yet?
+    PRBool              mCreated;
 
     // Preferred sizes
     PRUint32            mPreferredWidth;

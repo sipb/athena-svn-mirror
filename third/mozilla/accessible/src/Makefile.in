@@ -26,7 +26,21 @@ VPATH = @srcdir@
 
 include $(DEPTH)/config/autoconf.mk
 
-DIRS = \
+ifeq ($(MOZ_WIDGET_TOOLKIT),gtk2)
+DIRS += atk
+else
+ifeq ($(MOZ_WIDGET_TOOLKIT),windows)
+DIRS += msaa
+else
+ifeq ($(MOZ_WIDGET_TOOLKIT),mac)
+DIRS += mac
+else
+DIRS += other
+endif
+endif
+endif
+
+DIRS += \
   base \
   html \
   $(null)

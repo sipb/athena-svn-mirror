@@ -102,9 +102,6 @@ NS_IMPL_THREADSAFE_ISUPPORTS1(nsAppShell, nsIAppShell)
 nsAppShell::nsAppShell()  
 	: is_port_error(false)
 { 
-  NS_INIT_ISUPPORTS();
-  mDispatchListener = 0;
-
   gBAppCount++;
 }
 
@@ -138,13 +135,6 @@ NS_IMETHODIMP nsAppShell::Create(int* argc, char ** argv)
     syncsem = my_find_sem(semname);
   }
 
-  return NS_OK;
-}
-
-//-------------------------------------------------------------------------
-NS_IMETHODIMP nsAppShell::SetDispatchListener(nsDispatchListener* aDispatchListener) 
-{
-  mDispatchListener = aDispatchListener;
   return NS_OK;
 }
 
@@ -204,8 +194,6 @@ NS_IMETHODIMP nsAppShell::Run()
         break;
       }
 
-      if(mDispatchListener)
-        mDispatchListener->AfterDispatch();
       if(id.sync)
         release_sem(syncsem);
 
@@ -402,12 +390,6 @@ NS_IMETHODIMP nsAppShell::DispatchNativeEvent(PRBool aRealEvent, void *aEvent)
 
   } while (!gotMessage);
 
-  // no need to do this?
-  //if(mDispatchListener)
-  //{
-  //	mDispatchListener->AfterDispatch();
-  //}
-  
   return NS_OK;
 }
 

@@ -160,7 +160,7 @@ XBLBindings.prototype =
     window.setTimeout(function(me) {
       // prepare and attach the content DOM datasource
       me.mContentView = XPCU.createInstance(kDOMViewCID, "inIDOMView");
-      me.mContentView.removeFilterByType(Node.TEXT_NODE);
+      me.mContentView.whatToShow &= ~(NodeFilter.SHOW_TEXT);
       me.mContentTree.treeBoxObject.view = me.mContentView;
 
       me.mContentInit = true;
@@ -178,7 +178,7 @@ XBLBindings.prototype =
     
     while (urls.hasMoreElements()) {
       var item = urls.getNext();
-      var url = item.QueryInterface(Components.interfaces.nsIAtom).GetUnicode();
+      var url = item.QueryInterface(Components.interfaces.nsIAtom).toString();
       var menu = document.createElement("menuitem");
       menu.setAttribute("value", url);
       menu.setAttribute("label", url);

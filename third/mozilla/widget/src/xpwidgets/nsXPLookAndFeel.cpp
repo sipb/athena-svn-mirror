@@ -87,8 +87,20 @@ nsLookAndFeelIntPref nsXPLookAndFeel::sIntPrefs[] =
   { "ui.caretWidthTwips", eMetric_SingleLineCaretWidth, PR_FALSE, nsLookAndFeelTypeInt, 0 },
   { "ui.submenuDelay", eMetric_SubmenuDelay, PR_FALSE, nsLookAndFeelTypeInt, 0 },
   { "ui.dragFullWindow", eMetric_DragFullWindow, PR_FALSE, nsLookAndFeelTypeInt, 0 },
+  { "ui.dragThresholdX", eMetric_DragThresholdX, PR_FALSE, nsLookAndFeelTypeInt, 0 },
+  { "ui.dragThresholdY", eMetric_DragThresholdY, PR_FALSE, nsLookAndFeelTypeInt, 0 },
   { "ui.menusCanOverlapOSBar", eMetric_MenusCanOverlapOSBar,
     PR_FALSE, nsLookAndFeelTypeInt, 0 },
+  { "ui.treeOpenDelay",
+    eMetric_TreeOpenDelay, PR_FALSE, nsLookAndFeelTypeInt, 0 },
+  { "ui.treeCloseDelay",
+    eMetric_TreeCloseDelay, PR_FALSE, nsLookAndFeelTypeInt, 0 },
+  { "ui.treeLazyScrollDelay",
+    eMetric_TreeLazyScrollDelay, PR_FALSE, nsLookAndFeelTypeInt, 0 },
+  { "ui.treeScrollDelay",
+    eMetric_TreeScrollDelay, PR_FALSE, nsLookAndFeelTypeInt, 0 },
+  { "ui.treeScrollLinesMax",
+    eMetric_TreeScrollLinesMax, PR_FALSE, nsLookAndFeelTypeInt, 0 },
 };
 
 nsLookAndFeelFloatPref nsXPLookAndFeel::sFloatPrefs[] =
@@ -183,7 +195,6 @@ PRBool nsXPLookAndFeel::sInitialized = PR_FALSE;
 
 nsXPLookAndFeel::nsXPLookAndFeel() : nsILookAndFeel()
 {
-  NS_INIT_ISUPPORTS();
 }
 
 static int PR_CALLBACK intPrefChanged (const char *newpref, void *data)

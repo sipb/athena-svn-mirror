@@ -64,15 +64,15 @@
 
     <!-- instructions -->
     <deck id="prattle">
-      <description id="intro" style="width: 17em;border:1px solid transparent;" flex="1">&introgeneral.label;</description>
+      <description id="intro" style="width: 17em;border:1px solid transparent;" flex="1">""</description>
       <vbox id="manager">
         <description style="width: 17em;" class="label">&pmTextA.label;</description>
         <separator/>
         <hbox>
           <vbox flex="1" id="managebuttons">
-            <button id="newbutton" label="&newButton.label;" oncommand="CreateProfileWizard();"/>
-            <button id="renbutton" label="&renameButton.label;" oncommand="RenameProfile();"/>
-            <button id="delbutton" label="&deleteButton.label;" oncommand="ConfirmDelete();"/>
+            <button id="newbutton" label="&newButton.label;" accesskey="&newButton.accesskey;" oncommand="CreateProfileWizard();"/>
+            <button id="renbutton" label="&renameButton.label;" accesskey="&renameButton.accesskey;" oncommand="RenameProfile();"/>
+            <button id="delbutton" label="&deleteButton.label;" accesskey="&deleteButton.accesskey;" oncommand="ConfirmDelete();"/>
           </vbox>
           <spacer flex="2"/>
         </hbox>
@@ -90,15 +90,16 @@
           <listheader label="&availprofiles.label;"/>
         </listhead>
       </listbox>
-      <hbox align="start">
+      <vbox>
         <checkbox id="offlineState" label="&offlineState.label;" accesskey="&offlineState.accesskey;"/> 
-      </hbox>
+        <checkbox id="autoSelectLastProfile" label="&autoSelectLastProfile.label;" accesskey="&autoSelectLastProfile.accesskey;"/> 
+      </vbox>
     </vbox>
   </hbox>
   
   <hbox class="selection">
     <separator class="thin" orient="vertical"/>
-    <button id="manage" label="&manage.label;" oncommand="SwitchProfileManagerMode();"/>
+    <button id="manage" label="&manage.label;" accesskey="&manage.accesskey;" oncommand="SwitchProfileManagerMode();"/>
     <spacer flex="1"/>
     <hbox id="okCancelButtons"/>
     <separator class="thin" orient="vertical"/>

@@ -21,6 +21,7 @@
    Contributor(s): 
   -->
 <?xml-stylesheet href="chrome://communicator/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://communicator/skin/prefpanels.css" type="text/css"?>
 
 <!DOCTYPE page SYSTEM "chrome://communicator/locale/pref/pref-fonts.dtd" >
 <page xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -63,7 +64,8 @@
           <menuitem value="th" label="&font.langGroup.thai;"/>
           <menuitem value="he" label="&font.langGroup.hebrew;"/>
           <menuitem value="ar" label="&font.langGroup.arabic;"/>
-          <menuitem value="hi-IN" label="&font.langGroup.hi-IN;"/>
+          <menuitem value="x-devanagari" label="&font.langGroup.devanagari;"/>
+          <menuitem value="x-tamil" label="&font.langGroup.tamil;"/>
         </menupopup>
       </menulist>
     </caption>
@@ -118,14 +120,19 @@
               <menuitem value="14" label="14"/>
               <menuitem value="15" label="15"/>
               <menuitem value="16" label="16"/>
+              <menuitem value="17" label="17"/>
               <menuitem value="18" label="18"/>
               <menuitem value="20" label="20"/>
+              <menuitem value="22" label="22"/>
               <menuitem value="24" label="24"/>
               <menuitem value="26" label="26"/>
               <menuitem value="28" label="28"/>
+              <menuitem value="30" label="30"/>
               <menuitem value="32" label="32"/>
+              <menuitem value="34" label="34"/>
               <menuitem value="36" label="36"/>
               <menuitem value="40" label="40"/>
+              <menuitem value="44" label="44"/>
               <menuitem value="48" label="48"/>
               <menuitem value="56" label="56"/>
               <menuitem value="64" label="64"/>
@@ -142,7 +149,7 @@
                    accesskey="&serif.accesskey;" 
                    control="serif"/>
           </hbox>
-          <menulist id="serif" flex="1" style="width: 0px;">
+          <menulist id="serif" class="prefpanel-font-list">
             <menupopup/>
           </menulist>
           <spacer/>
@@ -153,7 +160,7 @@
                    accesskey="&sans-serif.accesskey;" 
                    control="sans-serif"/>
           </hbox>
-          <menulist id="sans-serif" flex="1" style="width: 0px;">
+          <menulist id="sans-serif" class="prefpanel-font-list">
             <menupopup/>
           </menulist>
           <spacer/>
@@ -164,7 +171,7 @@
                    accesskey="&cursive.accesskey;" 
                    control="cursive"/>
           </hbox>
-          <menulist id="cursive">
+          <menulist id="cursive" class="prefpanel-font-list">
             <menupopup/>
           </menulist>
           <spacer/>
@@ -175,7 +182,7 @@
                    accesskey="&fantasy.accesskey;" 
                    control="fantasy"/>
           </hbox>
-          <menulist id="fantasy">
+          <menulist id="fantasy" class="prefpanel-font-list">
             <menupopup/>
           </menulist>
           <spacer/>
@@ -186,8 +193,7 @@
                    accesskey="&monospace.accesskey;" 
                    control="monospace"/>
           </hbox>
-          <menulist id="monospace"
-                    flex="1" style="width: 0px;" crop="right">
+          <menulist id="monospace" class="prefpanel-font-list">
             <menupopup/>
           </menulist>
           <menulist id="sizeMono">
@@ -201,14 +207,19 @@
               <menuitem value="14" label="14"/>
               <menuitem value="15" label="15"/>
               <menuitem value="16" label="16"/>
+              <menuitem value="17" label="17"/>
               <menuitem value="18" label="18"/>
               <menuitem value="20" label="20"/>
+              <menuitem value="22" label="22"/>
               <menuitem value="24" label="24"/>
               <menuitem value="26" label="26"/>
               <menuitem value="28" label="28"/>
+              <menuitem value="30" label="30"/>
               <menuitem value="32" label="32"/>
+              <menuitem value="34" label="34"/>
               <menuitem value="36" label="36"/>
               <menuitem value="40" label="40"/>
+              <menuitem value="44" label="44"/>
               <menuitem value="48" label="48"/>
               <menuitem value="56" label="56"/>
               <menuitem value="64" label="64"/>
@@ -229,9 +240,6 @@
           <menulist id="minSize">
             <menupopup>
               <menuitem value="0" label="&minSize.none;"/>
-              <menuitem value="6" label="6"/>
-              <menuitem value="7" label="7"/>
-              <menuitem value="8" label="8"/>
               <menuitem value="9" label="9"/>
               <menuitem value="10" label="10"/>
               <menuitem value="11" label="11"/>
@@ -240,6 +248,7 @@
               <menuitem value="14" label="14"/>
               <menuitem value="15" label="15"/>
               <menuitem value="16" label="16"/>
+              <menuitem value="17" label="17"/>
               <menuitem value="18" label="18"/>
               <menuitem value="20" label="20"/>
               <menuitem value="22" label="22"/>
@@ -280,9 +289,9 @@
                   label="&resolution.system.label;" 
                   id="systemResolution"
                   hidden="true"/>
-        <menuseparator/>
+        <menuseparator id="resolutionSeparator"/>
         <menuitem id="userResolution" hidden="true"/>
-        <menuitem value="other" label="&resolution.other;"/>
+        <menuitem id="arbitraryResolution" value="other" label="&resolution.other;"/>
       </menupopup>
     </menulist>
 

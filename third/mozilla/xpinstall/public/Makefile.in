@@ -30,6 +30,7 @@ VPATH		= @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 MODULE		= xpinstall
+GRE_MODULE	= 1
 
 XPIDLSRCS	= \
 		nsIXPIDialogService.idl \
@@ -37,6 +38,7 @@ XPIDLSRCS	= \
 		nsIXPINotifier.idl \
 		nsPIXPIProxy.idl \
 		nsPIXPIStubHook.idl \
+		nsPICertNotification.idl \
 		$(NULL)
 
 EXPORTS		= \

@@ -45,7 +45,7 @@
 
 class nsINameSpace;
 class nsINodeInfo;
-class nsIWebShell;
+class nsIDocShell;
 class nsIURI;
 
 #define NS_IXMLCONTENT_IID \
@@ -64,7 +64,7 @@ public:
    * automatically when loaded. If the element was an autoloading link
    * and it was succesfully handled, we will throw special nsresult values.
    *
-   * @param aShell the current web shell (to possibly load the link on)
+   * @param aShell the current doc shell (to possibly load the link on)
    * @throws NS_OK if nothing happened
    * @throws NS_XML_AUTOLINK_EMBED if the caller is loading the link embedded
    * @throws NS_XML_AUTOLINK_NEW if the caller is loading the link in a new
@@ -74,7 +74,7 @@ public:
    * @throws NS_XML_AUTOLINK_UNDEFINED if it is loading in any other way--in
    *         which case, the caller should stop parsing as well.
    */
-  NS_IMETHOD MaybeTriggerAutoLink(nsIWebShell *aShell) = 0;
+  NS_IMETHOD MaybeTriggerAutoLink(nsIDocShell *aShell) = 0;
 
   /**
    * Get the XML Base URI for this element (http://www.w3.org/TR/xmlbase/)
@@ -83,37 +83,27 @@ public:
   NS_IMETHOD GetXMLBaseURI(nsIURI **aURI) = 0;
 };
 
-// Some return values for MaybeTriggerAutoLink
-#define NS_XML_AUTOLINK_EMBED \
-  NS_ERROR_GENERATE_SUCCESS(NS_ERROR_MODULE_LAYOUT, 4)
-#define NS_XML_AUTOLINK_NEW \
-  NS_ERROR_GENERATE_SUCCESS(NS_ERROR_MODULE_LAYOUT, 5)
-#define NS_XML_AUTOLINK_REPLACE \
-  NS_ERROR_GENERATE_SUCCESS(NS_ERROR_MODULE_LAYOUT, 6)
-#define NS_XML_AUTOLINK_UNDEFINED \
-  NS_ERROR_GENERATE_SUCCESS(NS_ERROR_MODULE_LAYOUT, 7)
-
-extern nsresult
+nsresult
 NS_NewXMLElement(nsIContent** aResult, nsINodeInfo* aNodeInfo);
 
 // XXX These belongs elsewhere
-extern nsresult
+nsresult
 NS_NewXMLProcessingInstruction(nsIContent** aInstancePtrResult,
                                const nsAString& aTarget,
                                const nsAString& aData);
 
-extern nsresult
+nsresult
 NS_NewXMLStylesheetProcessingInstruction(nsIContent** aInstancePtrResult,
                                          const nsAString& aData);
 
-extern nsresult
+nsresult
 NS_NewXMLEntity(nsIContent** aInstancePtrResult,
                 const nsAString& aName,
                 const nsAString& aPublicId,
                 const nsAString& aSystemId,
                 const nsAString& aNotationName);
 
-extern nsresult
+nsresult
 NS_NewXMLNotation(nsIContent** aInstancePtrResult,
                   const nsAString& aName,
                   const nsAString& aPublicId,
@@ -121,11 +111,11 @@ NS_NewXMLNotation(nsIContent** aInstancePtrResult,
 
 class nsIDOMNamedNodeMap;
 
-extern nsresult
+nsresult
 NS_NewXMLNamedNodeMap(nsIDOMNamedNodeMap** aInstancePtrResult,
                       nsISupportsArray *aArray);
 
-extern nsresult
+nsresult
 NS_NewXMLCDATASection(nsIContent** aInstancePtrResult);
 
 #endif // nsIXMLContent_h___

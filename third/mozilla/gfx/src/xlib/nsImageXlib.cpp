@@ -66,29 +66,28 @@ XlibRgbHandle *nsImageXlib::mXlibRgbHandle = nsnull;
 Display       *nsImageXlib::mDisplay       = nsnull;
 
 nsImageXlib::nsImageXlib()
+: mImageBits(nsnull)
+, mAlphaBits(nsnull)
+, mWidth(0)
+, mHeight(0)
+, mDepth(0)
+, mRowBytes(0)
+, mSizeImage(0)
+, mNumBytesPixel(0)
+, mImagePixmap(nsnull)
+, mAlphaPixmap(nsnull)
+, mAlphaDepth(0)
+, mAlphaRowBytes(0)
+, mAlphaValid(PR_FALSE)
+, mIsSpacer(PR_TRUE)
+, mGC(nsnull)
+, mPendingUpdate(PR_FALSE)
+, mDecodedX1(PR_INT32_MAX)
+, mDecodedY1(PR_INT32_MAX)
+, mDecodedX2(0)
+, mDecodedY2(0)
 {
   PR_LOG(ImageXlibLM, PR_LOG_DEBUG, ("nsImageXlib::nsImageXlib()\n"));
-  NS_INIT_ISUPPORTS();
-  mImageBits = nsnull;
-  mAlphaBits = nsnull;
-  mWidth = 0;
-  mHeight = 0;
-  mDepth = 0;
-  mRowBytes = 0;
-  mSizeImage = 0;
-  mNumBytesPixel = 0;
-  mImagePixmap = nsnull;
-  mAlphaPixmap = nsnull;
-  mAlphaDepth = 0;
-  mAlphaRowBytes = 0;
-  mAlphaWidth = 0;
-  mAlphaHeight = 0;
-  mAlphaValid = PR_FALSE;
-  mIsSpacer = PR_TRUE;
-  mGC = nsnull;
-  mNaturalWidth = 0;
-  mNaturalHeight = 0;
-  mPendingUpdate = PR_FALSE;
 
   if (!mXlibRgbHandle) {
     mXlibRgbHandle = xxlib_find_handle(XXLIBRGB_DEFAULT_HANDLE);
@@ -160,31 +159,9 @@ NS_IMPL_ISUPPORTS1(nsImageXlib, nsIImage);
 nsresult nsImageXlib::Init(PRInt32 aWidth, PRInt32 aHeight,
                            PRInt32 aDepth, nsMaskRequirements aMaskRequirements)
 {
+  // gfxImageFrame makes sure nsImageXlib::Init gets called only once
   if ((aWidth == 0) || (aHeight == 0))
     return NS_ERROR_FAILURE;
-
-  if (nsnull != mImageBits) {
-    delete[] mImageBits;
-    mImageBits = nsnull;
-  }
-  
-  if (nsnull != mAlphaBits) {
-    delete[] mAlphaBits;
-    mAlphaBits = nsnull;;
-  }
-  if (nsnull != mAlphaPixmap) {
-    XFreePixmap(mDisplay, mAlphaPixmap);
-    mAlphaPixmap = nsnull;
-  }
-
-  SetDecodedRect(0,0,0,0);
-  SetNaturalWidth(0);
-  SetNaturalHeight(0);
-
-  if (nsnull != mImagePixmap) {
-    XFreePixmap(mDisplay, mImagePixmap);
-    mImagePixmap = nsnull;
-  }
 
   if (24 == aDepth) {
     mNumBytesPixel = 3;
@@ -196,7 +173,6 @@ nsresult nsImageXlib::Init(PRInt32 aWidth, PRInt32 aHeight,
   mWidth = aWidth;
   mHeight = aHeight;
   mDepth = aDepth;
-  mIsTopToBottom = PR_TRUE;
 
   // Create the memory for the image
   ComputeMetrics();
@@ -204,12 +180,6 @@ nsresult nsImageXlib::Init(PRInt32 aWidth, PRInt32 aHeight,
   mImageBits = (PRUint8*)new PRUint8[mSizeImage];
 
   switch(aMaskRequirements) {
-    case nsMaskRequirements_kNoMask:
-      mAlphaBits = nsnull;
-      mAlphaWidth = 0;
-      mAlphaHeight = 0;
-      break;
-
     case nsMaskRequirements_kNeeds1Bit:
       mAlphaRowBytes = (aWidth  + 7) / 8;
       mAlphaDepth = 1;
@@ -218,8 +188,6 @@ nsresult nsImageXlib::Init(PRInt32 aWidth, PRInt32 aHeight,
       mAlphaRowBytes = (mAlphaRowBytes + 3) & ~0x3;
 
       mAlphaBits = new unsigned char[mAlphaRowBytes * aHeight];
-      mAlphaWidth = aWidth;
-      mAlphaHeight = aHeight;
       break;
 
     case nsMaskRequirements_kNeeds8Bit:
@@ -229,9 +197,10 @@ nsresult nsImageXlib::Init(PRInt32 aWidth, PRInt32 aHeight,
       // 32-bit align each row
       mAlphaRowBytes = (mAlphaRowBytes + 3) & ~0x3;
       mAlphaBits = new unsigned char[mAlphaRowBytes * aHeight];
-      mAlphaWidth = aWidth;
-      mAlphaHeight = aHeight;
       break;
+
+    default:
+      break; // avoid compiler warning
   }
   return NS_OK;
 }
@@ -268,47 +237,14 @@ nsColorMap *nsImageXlib::GetColorMap()
   return nsnull;
 }
 
-PRBool nsImageXlib::IsOptimized()
-{
-  return PR_TRUE;
-}
-
 PRUint8 *nsImageXlib::GetAlphaBits()
 {
   return mAlphaBits;
 }
 
-PRInt32 nsImageXlib::GetAlphaWidth()
-{
-  return mAlphaWidth;
-}
-
-PRInt32 nsImageXlib::GetAlphaHeight()
-{
-  return mAlphaHeight;
-}
-
 PRInt32 nsImageXlib::GetAlphaLineStride()
 {
   return mAlphaRowBytes;
-}
-
-nsIImage *nsImageXlib::DuplicateImage()
-{
-  return nsnull;
-}
-
-void nsImageXlib::SetAlphaLevel(PRInt32 aAlphaLevel)
-{
-}
-
-PRInt32 nsImageXlib::GetAlphaLevel()
-{
-  return 0;
-}
-
-void nsImageXlib::MoveAlphaMask(PRInt32 aX, PRInt32 aY)
-{
 }
 
 //-----------------------------------------------------------------------
@@ -320,6 +256,14 @@ void nsImageXlib::ImageUpdated(nsIDeviceContext *aContext,
 {
   mPendingUpdate = PR_TRUE;
   mUpdateRegion.Or(mUpdateRegion, *aUpdateRect);
+
+  mDecodedX1 = PR_MIN(mDecodedX1, aUpdateRect->x);
+  mDecodedY1 = PR_MIN(mDecodedY1, aUpdateRect->y);
+
+  if (aUpdateRect->YMost() > mDecodedY2)
+    mDecodedY2 = aUpdateRect->YMost();
+  if (aUpdateRect->XMost() > mDecodedX2)
+    mDecodedX2 = aUpdateRect->XMost();
 }
 
 void nsImageXlib::UpdateCachedImage()
@@ -433,7 +377,7 @@ void nsImageXlib::UpdateCachedImage()
     }
   }
 
-  mUpdateRegion.Empty();
+  mUpdateRegion.SetEmpty();
   mPendingUpdate = PR_FALSE;
   mFlags = nsImageUpdateFlags_kBitsChanged; // this should be 0'd out by Draw()
 }
@@ -454,6 +398,9 @@ nsImageXlib::DrawScaled(nsIRenderingContext &aContext,
     return NS_ERROR_FAILURE;
 
   if (0 == aSWidth || 0 == aDWidth || 0 == aSHeight || 0 == aDHeight)
+    return NS_OK;
+
+  if (mDecodedX2 < mDecodedX1 || mDecodedY2 < mDecodedY1)
     return NS_OK;
 
   // limit the size of the blit to the amount of the image read in
@@ -624,6 +571,9 @@ nsImageXlib::Draw(nsIRenderingContext &aContext, nsDrawingSurface aSurface,
     UpdateCachedImage();
 
   if ((mAlphaDepth == 1) && mIsSpacer)
+    return NS_OK;
+
+  if (mDecodedX2 < mDecodedX1 || mDecodedY2 < mDecodedY1)
     return NS_OK;
 
   if (aSWidth != aDWidth || aSHeight != aDHeight) {
@@ -1270,6 +1220,9 @@ nsImageXlib::Draw(nsIRenderingContext &aContext,
   if (aSurface == nsnull)
     return NS_ERROR_FAILURE;
 
+  if (mDecodedX2 < mDecodedX1 || mDecodedY2 < mDecodedY1)
+    return NS_OK;
+
   if ((mAlphaDepth == 8) && mAlphaValid) {
     DrawComposited(aContext, aSurface,
         0, 0, aWidth, aHeight,
@@ -1390,7 +1343,10 @@ NS_IMETHODIMP nsImageXlib::DrawTile(nsIRenderingContext &aContext,
   if (aTileRect.width <= 0 || aTileRect.height <= 0) {
     return NS_OK;
   }
-  
+
+  if (mDecodedX2 < mDecodedX1 || mDecodedY2 < mDecodedY1)
+    return NS_OK;
+
   nsIDrawingSurfaceXlib *drawing = NS_STATIC_CAST(nsIDrawingSurfaceXlib *, aSurface);
 
   PRBool partial = PR_FALSE;
@@ -1435,9 +1391,9 @@ NS_IMETHODIMP nsImageXlib::DrawTile(nsIRenderingContext &aContext,
     // Set up clipping and call Draw().
     PRBool clipState;
     aContext.PushState();
-    aContext.SetClipRect(aTileRect, nsClipCombine_kIntersect,
-                         clipState);
-
+    ((nsRenderingContextXlib&)aContext).SetClipRectInPixels(
+      aTileRect, nsClipCombine_kIntersect, clipState);
+    ((nsRenderingContextXlib&)aContext).UpdateGC();
     for (PRInt32 y = aY0; y < aY1; y += mHeight)
       for (PRInt32 x = aX0; x < aX1; x += mWidth)
         Draw(aContext,aSurface, x, y,
@@ -1530,19 +1486,6 @@ nsImageXlib::LockImagePixels(PRBool aMaskPixels)
 NS_IMETHODIMP
 nsImageXlib::UnlockImagePixels(PRBool aMaskPixels)
 {
-  return NS_OK;
-}
-
-//---------------------------------------------------------------------
-// Set the decoded dimens of the image
-NS_IMETHODIMP
-nsImageXlib::SetDecodedRect(PRInt32 x1, PRInt32 y1, PRInt32 x2, PRInt32 y2)
-{
-  mDecodedX1 = x1;
-  mDecodedY1 = y1;
-  mDecodedX2 = x2;
-  mDecodedY2 = y2;
-
   return NS_OK;
 }
 

@@ -51,19 +51,28 @@ REQUIRES	= xpcom \
 		  rdf \
 		  chardet \
 		  nkcache \
-		  appcomps \
 		  lwbrk \
 		  imglib2 \
 		  xpconnect \
 		  unicharutil \
+		  commandhandler \
+		  composer \
+		  plugin \
 		  $(NULL)
+
+ifdef MOZ_PHOENIX
+REQUIRES	+= bookmarks
+else
+REQUIRES	+= appcomps
+endif
 
 CPPSRCS		= \
 		nsHTMLContentSink.cpp \
 		nsHTMLFragmentContentSink.cpp \
 		nsHTMLDocument.cpp \
+		nsMediaDocument.cpp \
+		nsPluginDocument.cpp \
 		nsImageDocument.cpp \
-		nsMarkupDocument.cpp \
 		nsWyciwygChannel.cpp \
 		nsWyciwygProtocolHandler.cpp \
 		$(NULL)

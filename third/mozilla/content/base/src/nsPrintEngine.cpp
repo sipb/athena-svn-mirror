@@ -107,7 +107,6 @@ static const char* kPrintingPromptService = "@mozilla.org/embedcomp/printingprom
 #include "nsIDocument.h"
 #include "nsHTMLAtoms.h"
 #include "nsIHTMLContent.h"
-#include "nsINameSpaceManager.h"
 #include "nsIWebShell.h"
 
 // Focus
@@ -134,6 +133,7 @@ static const char* kPrintingPromptService = "@mozilla.org/embedcomp/printingprom
 #include "nsLayoutCID.h"
 #include "nsGenericHTMLElement.h"
 #include "nsIPresShell.h"
+#include "nsLayoutUtils.h"
 
 #include "nsViewsCID.h"
 #include "nsWidgetsCID.h"
@@ -143,10 +143,10 @@ static const char* kPrintingPromptService = "@mozilla.org/embedcomp/printingprom
 #include "nsIViewManager.h"
 #include "nsIView.h"
 
-#include "nsIPref.h"
+#include "nsIPrefService.h"
+#include "nsIPrefBranch.h"
 #include "nsIPageSequenceFrame.h"
 #include "nsIURL.h"
-#include "nsIWebShell.h"
 #include "nsIContentViewerEdit.h"
 #include "nsIContentViewerFile.h"
 #include "nsIMarkupDocumentViewer.h"
@@ -169,7 +169,6 @@ static const char* kPrintingPromptService = "@mozilla.org/embedcomp/printingprom
 #include "nsIDOMHTMLAreaElement.h"
 #include "nsIDOMHTMLLinkElement.h"
 #include "nsIDOMHTMLImageElement.h"
-#include "nsIXULDocument.h"  // Temporary code for Bug 136185
 #include "nsIContentViewerContainer.h"
 #include "nsIContentViewer.h"
 
@@ -273,7 +272,6 @@ nsPrintEngine::nsPrintEngine() :
   mDebugFile(nsnull)
 
 {
-  NS_INIT_ISUPPORTS();
 }
 
 //-------------------------------------------------------
@@ -573,30 +571,17 @@ nsPrintEngine::Print(nsIPrintSettings*       aPrintSettings,
   // need for capturing result on each doc and sub-doc that is printed
   gDumpFileNameCnt   = 0;
   gDumpLOFileNameCnt = 0;
-#if defined(XP_PC)
+#if defined(XP_WIN) || defined(XP_OS2)
   if (kPrintingLogMod && kPrintingLogMod->level == DUMP_LAYOUT_LEVEL) {
     RemoveFilesInDir(".\\");
   }
-#endif // XP_PC
+#endif // XP_WIN || XP_OS2
 #endif // EXTENDED_DEBUG_PRINTING
 
   nsresult rv = NS_ERROR_FAILURE;
 
   nsCOMPtr<nsIDocShell> docShell(do_QueryInterface(mContainer));
   NS_ASSERTION(docShell, "This has to be a docshell");
-
-
-  if (mIsDoingPrintPreview) {
-    PRBool okToPrint = PR_FALSE;
-    nsCOMPtr<nsIPref> prefs(do_GetService(NS_PREF_CONTRACTID));
-    if (prefs) {
-      prefs->GetBoolPref("print.whileInPrintPreview", &okToPrint);
-    }
-    if (!okToPrint) {
-      ShowPrintErrorDialog(NS_ERROR_GFX_PRINTER_PRINT_WHILE_PREVIEW, PR_FALSE);
-      return NS_OK;
-    }
-  }
 
   mPrt = new nsPrintData(nsPrintData::eIsPrinting);
   if (!mPrt) {
@@ -613,13 +598,12 @@ nsPrintEngine::Print(nsIPrintSettings*       aPrintSettings,
   mPrt->mPrintOptions = do_GetService(sPrintOptionsContractID, &rv);
   if (NS_SUCCEEDED(rv) && mPrt->mPrintOptions && mPrt->mPrintSettings) {
     // Get the default printer name and set it into the PrintSettings
-    rv = CheckForPrinters(mPrt->mPrintOptions, mPrt->mPrintSettings, NS_ERROR_GFX_PRINTER_NO_PRINTER_AVAILABLE, PR_TRUE);
+    rv = CheckForPrinters(mPrt->mPrintOptions, mPrt->mPrintSettings);
   } else {
     NS_ASSERTION(mPrt->mPrintSettings, "You can't Print without a PrintSettings!");
     rv = NS_ERROR_FAILURE;
   }
 
-  CHECK_RUNTIME_ERROR_CONDITION(nsIDebugObject::PRT_RUNTIME_CHECKFORPRINTERS, rv, NS_ERROR_GFX_PRINTER_NO_PRINTER_AVAILABLE);
   if (NS_FAILED(rv)) {
     PR_PL(("NS_ERROR_FAILURE - CheckForPrinters for Printers failed"));
     return CleanupOnFailure(rv, PR_FALSE);
@@ -759,10 +743,10 @@ nsPrintEngine::Print(nsIPrintSettings*       aPrintSettings,
     mPrt->mPrintSettings->GetPrintSilent(&printSilently);
 
     // Check prefs for a default setting as to whether we should print silently
-    nsCOMPtr<nsIPref> prefs(do_GetService(NS_PREF_CONTRACTID));
-    if (prefs) {
+    nsCOMPtr<nsIPrefBranch> prefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID));
+    if (prefBranch) {
       PRBool alwaysPrintSilent;
-      if (NS_SUCCEEDED(prefs->GetBoolPref("print.always_print_silent", &alwaysPrintSilent))) {
+      if (NS_SUCCEEDED(prefBranch->GetBoolPref("print.always_print_silent", &alwaysPrintSilent))) {
         printSilently = alwaysPrintSilent;
       }
     }
@@ -1056,7 +1040,7 @@ nsPrintEngine::PrintPreview(nsIPrintSettings* aPrintSettings,
     return NS_ERROR_FAILURE;
   }
 
-#if defined(XP_PC) && defined(EXTENDED_DEBUG_PRINTING)
+#if (defined(XP_WIN) || defined(XP_OS2)) && defined(EXTENDED_DEBUG_PRINTING)
   if (!mIsDoingPrintPreview) {
     if (kPrintingLogMod && kPrintingLogMod->level == DUMP_LAYOUT_LEVEL) {
       RemoveFilesInDir(".\\");
@@ -1109,12 +1093,13 @@ nsPrintEngine::PrintPreview(nsIPrintSettings* aPrintSettings,
   mPrt->mPrintOptions = do_GetService(sPrintOptionsContractID, &rv);
   if (NS_SUCCEEDED(rv) && mPrt->mPrintOptions && mPrt->mPrintSettings) {
     // Get the default printer name and set it into the PrintSettings
-    rv = CheckForPrinters(mPrt->mPrintOptions, mPrt->mPrintSettings, NS_ERROR_GFX_PRINTER_NO_PRINTER_AVAILABLE, PR_TRUE);
+    rv = CheckForPrinters(mPrt->mPrintOptions, mPrt->mPrintSettings);
   } else {
     NS_ASSERTION(mPrt->mPrintSettings, "You can't Print without a PrintSettings!");
     rv = NS_ERROR_FAILURE;
   }
   if (NS_FAILED(rv)) {
+    ShowPrintErrorDialog(rv, PR_TRUE);
     CloseProgressDialog(aWebProgressListener);
     return NS_ERROR_FAILURE;
   }
@@ -1405,7 +1390,7 @@ nsPrintEngine::EnumerateDocumentNames(PRUint32* aCount,
 
     // Use the URL if the doc is empty
     if (!docTitleStr || !*docTitleStr) {
-      if (docURLStr && nsCRT::strlen(docURLStr) > 0) {
+      if (docURLStr && *docURLStr) {
         nsMemory::Free(docTitleStr);
         docTitleStr = docURLStr;
       } else {
@@ -1558,17 +1543,15 @@ nsPrintEngine::Cancel()
 // in the PrintSettings which is then used for Printer Preview
 nsresult
 nsPrintEngine::CheckForPrinters(nsIPrintOptions*  aPrintOptions,
-                                     nsIPrintSettings* aPrintSettings,
-                                     PRUint32          aErrorCode,
-                                     PRBool            aIsPrinting)
+                                nsIPrintSettings* aPrintSettings)
 {
   NS_ENSURE_ARG_POINTER(aPrintOptions);
   NS_ENSURE_ARG_POINTER(aPrintSettings);
 
-  nsresult rv = NS_ERROR_FAILURE;
+  nsresult rv;
 
   nsCOMPtr<nsISimpleEnumerator> simpEnum;
-  aPrintOptions->AvailablePrinters(getter_AddRefs(simpEnum));
+  rv = aPrintOptions->AvailablePrinters(getter_AddRefs(simpEnum));
   if (simpEnum) {
     PRBool fndPrinter = PR_FALSE;
     simpEnum->HasMoreElements(&fndPrinter);
@@ -1593,17 +1576,12 @@ nsPrintEngine::CheckForPrinters(nsIPrintOptions*  aPrintOptions,
         nsMemory::Free(defPrinterName);
       }
       rv = NS_OK;
-    } else {
-      // this means there were no printers
-      ShowPrintErrorDialog(aErrorCode, aIsPrinting);
     }
   } else {
     // this means there were no printers
     // XXX the ifdefs are temporary until they correctly implement Available Printers
 #if defined(XP_MAC) || defined(XP_MACOSX)
     rv = NS_OK;
-#else
-    ShowPrintErrorDialog(aErrorCode, aIsPrinting);
 #endif
   }
   return rv;
@@ -1622,9 +1600,9 @@ nsPrintEngine::CheckDocumentForPPCaching()
   // Only check if it is the first time into PP
   if (!mOldPrtPreview) {
     // First check the Pref
-    nsCOMPtr<nsIPref> prefs (do_GetService(NS_PREF_CONTRACTID));
-    if (prefs) {
-      prefs->GetBoolPref("print.always_cache_old_pres", &cacheOldPres);
+    nsCOMPtr<nsIPrefBranch> prefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID));
+    if (prefBranch) {
+      prefBranch->GetBoolPref("print.always_cache_old_pres", &cacheOldPres);
     }
 
     // Temp fix for FrameSet Print Preview Bugs
@@ -1696,9 +1674,9 @@ nsPrintEngine::ShowPrintProgress(PRBool aIsForPrinting, PRBool& aDoNotify)
   // if it is already being shown then don't bother to find out if it should be
   // so skip this and leave mShowProgressDialog set to FALSE
   if (!mPrt->mProgressDialogIsShown) {
-    nsCOMPtr<nsIPref> prefs (do_GetService(NS_PREF_CONTRACTID));
-    if (prefs) {
-      prefs->GetBoolPref("print.show_print_progress", &mPrt->mShowProgressDialog);
+    nsCOMPtr<nsIPrefBranch> prefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID));
+    if (prefBranch) {
+      prefBranch->GetBoolPref("print.show_print_progress", &mPrt->mShowProgressDialog);
     }
   }
 
@@ -1886,9 +1864,10 @@ nsPrintEngine::GetWebShellTitleAndURL(nsIWebShell* aWebShell,
   *aTitle  = nsnull;
   *aURLStr = nsnull;
 
-  const nsString* docTitle = aDoc->GetDocumentTitle();
-  if (docTitle && !docTitle->IsEmpty()) {
-    *aTitle = ToNewUnicode(*docTitle);
+  nsAutoString docTitle;
+  aDoc->GetDocumentTitle(docTitle);
+  if (!docTitle.IsEmpty()) {
+    *aTitle = ToNewUnicode(docTitle);
   }
 
   nsCOMPtr<nsIURI> url;
@@ -2179,11 +2158,11 @@ nsPrintEngine::GetDisplayTitleAndURL(nsPrintObject*      aPO,
     aPrintSettings->GetTitle(&docTitleStrPS);
     aPrintSettings->GetDocURL(&docURLStrPS);
 
-    if (docTitleStrPS && nsCRT::strlen(docTitleStrPS) > 0) {
+    if (docTitleStrPS && *docTitleStrPS) {
       *aTitle  = docTitleStrPS;
     }
 
-    if (docURLStrPS && nsCRT::strlen(docURLStrPS) > 0) {
+    if (docURLStrPS && *docURLStrPS) {
       *aURLStr  = docURLStrPS;
     }
 
@@ -2329,7 +2308,7 @@ nsPrintEngine::ShowPrintErrorDialog(nsresult aPrintError, PRBool aIsPrinting)
       NS_ERROR_TO_LOCALIZED_PRINT_ERROR_MSG(NS_ERROR_GFX_PRINTER_DOC_WAS_DESTORYED)
       NS_ERROR_TO_LOCALIZED_PRINT_ERROR_MSG(NS_ERROR_GFX_NO_PRINTDIALOG_IN_TOOLKIT)
       NS_ERROR_TO_LOCALIZED_PRINT_ERROR_MSG(NS_ERROR_GFX_NO_PRINTROMPTSERVICE)
-      NS_ERROR_TO_LOCALIZED_PRINT_ERROR_MSG(NS_ERROR_GFX_PRINTER_NO_XUL)   // Temporary code for Bug 136185
+      NS_ERROR_TO_LOCALIZED_PRINT_ERROR_MSG(NS_ERROR_GFX_PRINTER_XPRINT_NO_XPRINT_SERVERS_FOUND)
 
     default:
       NS_ERROR_TO_LOCALIZED_PRINT_ERROR_MSG(NS_ERROR_FAILURE)
@@ -2440,7 +2419,7 @@ nsPrintEngine::SetupToPrintContent(nsIDeviceContext*     aDContext,
         po->DestroyPresentation();
       }
 
-#if defined(XP_PC) && defined(EXTENDED_DEBUG_PRINTING)
+#if (defined(XP_WIN) || defined(XP_OS2)) && defined(EXTENDED_DEBUG_PRINTING)
       // We need to clear all the output files here
       // because they will be re-created with second reflow of the docs
       if (kPrintingLogMod && kPrintingLogMod->level == DUMP_LAYOUT_LEVEL) {
@@ -2600,13 +2579,8 @@ nsPrintEngine::ReflowDocList(nsPrintObject* aPO, PRBool aSetPixelScale, PRBool a
     nsIFrame * frame;
     aPO->mParent->mPresShell->GetPrimaryFrameFor(aPO->mContent, &frame);
     if (frame) {
-      nsCOMPtr<nsIStyleContext> sc;
-      frame->GetStyleContext(getter_AddRefs(sc));
-      if (sc) {
-        const nsStyleVisibility* vis = (const nsStyleVisibility*)sc->GetStyleData(eStyleStruct_Visibility);
-        if (!vis->IsVisible()) {
-          aPO->mDontPrint = PR_TRUE;
-        }
+      if (!frame->GetStyleVisibility()->IsVisible()) {
+        aPO->mDontPrint = PR_TRUE;
       }
     }
   }
@@ -2758,7 +2732,10 @@ nsPrintEngine::ReflowPrintObject(nsPrintObject * aPO, PRBool aDoCalcShrink)
     } else {
       canCreateScrollbars = PR_TRUE;
     }
-    rv = aPO->mRootView->CreateWidget(kWidgetCID, nsnull, widget->GetNativeData(NS_NATIVE_WIDGET));
+    rv = aPO->mRootView->CreateWidget(kWidgetCID, nsnull, 
+                                      widget->GetNativeData(NS_NATIVE_WIDGET),
+                                      PR_TRUE, PR_TRUE, 
+                                      eContentTypeContent);
     aPO->mRootView->GetWidget(*getter_AddRefs(aPO->mWindow));
     aPO->mPresContext->SetPaginatedScrolling(canCreateScrollbars);
   }
@@ -2784,7 +2761,8 @@ nsPrintEngine::ReflowPrintObject(nsPrintObject * aPO, PRBool aDoCalcShrink)
   presShell->CaptureHistoryState(getter_AddRefs(layoutState), PR_TRUE);
 
   // set it on the new pres shell
-  aPO->mPresShell->SetHistoryState(layoutState);
+  nsCOMPtr<nsIDocShell> docShell(do_QueryInterface(aPO->mWebShell));
+  docShell->SetLayoutHistoryState(layoutState);
 
   // turn off animated GIFs
   if (aPO->mPresContext) {
@@ -2831,6 +2809,7 @@ nsPrintEngine::ReflowPrintObject(nsPrintObject * aPO, PRBool aDoCalcShrink)
 
   if (!adjRect.width || !adjRect.height || !width || !height) {
     aPO->mDontPrint = PR_TRUE;
+    aPO->mPresShell->EndObservingDocument();
     return NS_OK;
   }
 
@@ -2898,7 +2877,6 @@ nsPrintEngine::ReflowPrintObject(nsPrintObject * aPO, PRBool aDoCalcShrink)
         } else {
           printf("View is null!\n");
         }
-        nsCOMPtr<nsIDocShell> docShell(do_QueryInterface(aPO->mWebShell));
         if (docShell) {
           fprintf(fd, "--------------- All Views ----------------\n");
           DumpViews(docShell, fd);
@@ -3705,25 +3683,6 @@ nsPrintEngine::DoProgressForSeparateFrames()
 }
 
 /** ---------------------------------------------------
- *  Giving a child frame it searches "up" the tree until it
- *  finds a "Page" frame.
- */
-static nsIFrame * GetPageFrame(nsIFrame * aFrame)
-{
-  nsIFrame * frame = aFrame;
-  while (frame != nsnull) {
-    nsCOMPtr<nsIAtom> type;
-    frame->GetFrameType(getter_AddRefs(type));
-    if (type.get() == nsLayoutAtoms::pageFrame) {
-      return frame;
-    }
-    frame->GetParent(&frame);
-  }
-  return nsnull;
-}
-
-
-/** ---------------------------------------------------
  *  Find by checking content's tag type
  */
 nsIFrame * 
@@ -3772,20 +3731,22 @@ nsPrintEngine::FindFrameByType(nsIPresContext* aPresContext,
 /** ---------------------------------------------------
  *  Find by checking frames type
  */
-static nsresult FindSelectionBounds(nsIPresContext* aPresContext,
-                                    nsIRenderingContext& aRC,
-                                    nsIFrame *      aParentFrame,
-                                    nsRect&         aRect,
-                                    nsIFrame *&     aStartFrame,
-                                    nsRect&         aStartRect,
-                                    nsIFrame *&     aEndFrame,
-                                    nsRect&         aEndRect)
+nsresult 
+nsPrintEngine::FindSelectionBoundsWithList(nsIPresContext* aPresContext,
+                                           nsIRenderingContext& aRC,
+                                           nsIAtom*        aList,
+                                           nsIFrame *      aParentFrame,
+                                           nsRect&         aRect,
+                                           nsIFrame *&     aStartFrame,
+                                           nsRect&         aStartRect,
+                                           nsIFrame *&     aEndFrame,
+                                           nsRect&         aEndRect)
 {
   NS_ASSERTION(aPresContext, "Pointer is null!");
   NS_ASSERTION(aParentFrame, "Pointer is null!");
 
   nsIFrame * child;
-  aParentFrame->FirstChild(aPresContext, nsnull, &child);
+  aParentFrame->FirstChild(aPresContext, aList, &child);
   nsRect rect;
   aParentFrame->GetRect(rect);
   aRect.x += rect.x;
@@ -3819,6 +3780,33 @@ static nsresult FindSelectionBounds(nsIPresContext* aPresContext,
   }
   aRect.x -= rect.x;
   aRect.y -= rect.y;
+  return NS_OK;
+}
+
+//-------------------------------------------------------
+// Find the Frame that is XMost
+nsresult 
+nsPrintEngine::FindSelectionBounds(nsIPresContext* aPresContext,
+                                   nsIRenderingContext& aRC,
+                                   nsIFrame *      aParentFrame,
+                                   nsRect&         aRect,
+                                   nsIFrame *&     aStartFrame,
+                                   nsRect&         aStartRect,
+                                   nsIFrame *&     aEndFrame,
+                                   nsRect&         aEndRect)
+{
+  NS_ASSERTION(aPresContext, "Pointer is null!");
+  NS_ASSERTION(aParentFrame, "Pointer is null!");
+
+  // loop thru named child lists
+  nsIAtom* childListName = nsnull;
+  PRInt32  childListIndex = 0;
+  do {
+    nsresult rv = FindSelectionBoundsWithList(aPresContext, aRC, childListName, aParentFrame, aRect, aStartFrame, aStartRect, aEndFrame, aEndRect);
+    NS_IF_RELEASE(childListName);
+    NS_ENSURE_SUCCESS(rv, rv);
+    aParentFrame->GetAdditionalChildListName(childListIndex++, &childListName);
+  } while (childListName);
   return NS_OK;
 }
 
@@ -3888,12 +3876,12 @@ nsPrintEngine::GetPageRangeForSelection(nsIPresShell *        aPresShell,
       // the FindSelectionBounds step, but walking up to find
       // the parent of a child frame isn't expensive and it makes
       // FindSelectionBounds a little easier to understand
-      startPageFrame = GetPageFrame(startFrame);
+      startPageFrame = nsLayoutUtils::GetPageFrame(startFrame);
       endPageFrame   = startPageFrame;
       aEndRect       = aStartRect;
     } else {
-      startPageFrame = GetPageFrame(startFrame);
-      endPageFrame   = GetPageFrame(endFrame);
+      startPageFrame = nsLayoutUtils::GetPageFrame(startFrame);
+      endPageFrame   = nsLayoutUtils::GetPageFrame(endFrame);
     }
   } else {
     return NS_ERROR_FAILURE;
@@ -4696,7 +4684,7 @@ nsPrintEngine::FirePrintCompletionEvent()
 //-- Debug helper routines
 //---------------------------------------------------------------
 //---------------------------------------------------------------
-#if defined(XP_PC) && defined(EXTENDED_DEBUG_PRINTING)
+#if (defined(XP_WIN) || defined(XP_OS2)) && defined(EXTENDED_DEBUG_PRINTING)
 #include "windows.h"
 #include "process.h"
 #include "direct.h"
@@ -4758,19 +4746,18 @@ int RemoveFilesInDir(const char * aDir)
  */
 static void RootFrameList(nsIPresContext* aPresContext, FILE* out, PRInt32 aIndent)
 {
-  if((nsnull == aPresContext) || (nsnull == out))
+  if (!aPresContext || !out)
     return;
 
   nsCOMPtr<nsIPresShell> shell;
   aPresContext->GetShell(getter_AddRefs(shell));
-  if (nsnull != shell) {
+  if (shell) {
     nsIFrame* frame;
     shell->GetRootFrame(&frame);
-    if(nsnull != frame) {
+    if (frame) {
       nsIFrameDebug* debugFrame;
-      nsresult rv;
-      rv = frame->QueryInterface(NS_GET_IID(nsIFrameDebug), (void**)&debugFrame);
-      if(NS_SUCCEEDED(rv))
+      nsresult rv = CallQueryInterface(frame, &debugFrame);
+      if (NS_SUCCEEDED(rv))
         debugFrame->List(aPresContext, out, aIndent);
     }
   }
@@ -5091,10 +5078,10 @@ PRBool nsPrintEngine::mIsDoingRuntimeTesting = PR_FALSE;
 void 
 nsPrintEngine::InitializeTestRuntimeError()
 {
-  nsCOMPtr<nsIPref> prefs (do_GetService(NS_PREF_CONTRACTID));
-  if (prefs) {
+  nsCOMPtr<nsIPrefBranch> prefBranch(do_GetService(NS_PREFSERVICE_CONTRACTID));
+  if (prefBranch) {
     mIsDoingRuntimeTesting = PR_FALSE;
-    prefs->GetBoolPref("print.doing_runtime_error_checking", &mIsDoingRuntimeTesting);
+    prefBranch->GetBoolPref("print.doing_runtime_error_checking", &mIsDoingRuntimeTesting);
   }
 
   mLayoutDebugObj = do_GetService("@mozilla.org/debug/debugobject;1");

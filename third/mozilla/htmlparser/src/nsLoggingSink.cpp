@@ -49,7 +49,7 @@ static NS_DEFINE_IID(kILoggingSinkIID, NS_ILOGGING_SINK_IID);
 static NS_DEFINE_IID(kISupportsIID, NS_ISUPPORTS_IID);
 
 // list of tags that have skipped content
-static char gSkippedContentTags[] = {
+static const char gSkippedContentTags[] = {
   eHTMLTag_style,
   eHTMLTag_script,
   eHTMLTag_server,
@@ -74,7 +74,6 @@ NS_NewHTMLLoggingSink(nsIContentSink** aInstancePtrResult)
 }
 
 nsLoggingSink::nsLoggingSink() {
-  NS_INIT_ISUPPORTS();
   mOutput = 0;
 	mLevel=-1;
   mSink=0;
@@ -226,11 +225,11 @@ nsLoggingSink::OpenContainer(const nsIParserNode& aNode) {
 }
 
 NS_IMETHODIMP
-nsLoggingSink::CloseContainer(const nsIParserNode& aNode) {
+nsLoggingSink::CloseContainer(const nsHTMLTag aTag) {
 
   nsresult theResult=NS_OK;
 
-  nsHTMLTag nodeType = nsHTMLTag(aNode.GetNodeType());
+  nsHTMLTag nodeType = nsHTMLTag(aTag);
   if ((nodeType >= eHTMLTag_unknown) &&
       (nodeType <= nsHTMLTag(NS_HTML_TAG_MAX))) {
     const PRUnichar* tag = nsHTMLTags::GetStringValue(nodeType);
@@ -240,7 +239,22 @@ nsLoggingSink::CloseContainer(const nsIParserNode& aNode) {
 
   //then proxy the call to the real sink if you have one.
   if(mSink) {
-    theResult=mSink->CloseContainer(aNode);
+    theResult=mSink->CloseContainer(aTag);
+  }
+  
+  return theResult;
+
+}
+
+NS_IMETHODIMP
+nsLoggingSink::AddHeadContent(const nsIParserNode& aNode) {
+  LeafNode(aNode);
+
+  nsresult theResult=NS_OK;
+
+  //then proxy the call to the real sink if you have one.
+  if(mSink) {
+    theResult=mSink->AddHeadContent(aNode);
   }
   
   return theResult;
@@ -379,14 +393,14 @@ nsLoggingSink::OpenHTML(const nsIParserNode& aNode) {
 }
 
 NS_IMETHODIMP
-nsLoggingSink::CloseHTML(const nsIParserNode& aNode) {
+nsLoggingSink::CloseHTML() {
   CloseNode("html");
 
   nsresult theResult=NS_OK;
 
   //then proxy the call to the real sink if you have one.
   if(mSink) {
-    theResult=mSink->CloseHTML(aNode);
+    theResult=mSink->CloseHTML();
   }
   
   return theResult;
@@ -408,14 +422,14 @@ nsLoggingSink::OpenHead(const nsIParserNode& aNode) {
 }
 
 NS_IMETHODIMP
-nsLoggingSink::CloseHead(const nsIParserNode& aNode) {
+nsLoggingSink::CloseHead() {
   CloseNode("head");
 
   nsresult theResult=NS_OK;
 
   //then proxy the call to the real sink if you have one.
   if(mSink) {
-    theResult=mSink->CloseHead(aNode);
+    theResult=mSink->CloseHead();
   }
   
   return theResult;
@@ -436,14 +450,14 @@ nsLoggingSink::OpenBody(const nsIParserNode& aNode) {
 }
 
 NS_IMETHODIMP
-nsLoggingSink::CloseBody(const nsIParserNode& aNode) {
+nsLoggingSink::CloseBody() {
   CloseNode("body");
 
   nsresult theResult=NS_OK;
 
   //then proxy the call to the real sink if you have one.
   if(mSink) {
-    theResult=mSink->CloseBody(aNode);
+    theResult=mSink->CloseBody();
   }
   
   return theResult;
@@ -464,14 +478,14 @@ nsLoggingSink::OpenForm(const nsIParserNode& aNode) {
 }
 
 NS_IMETHODIMP
-nsLoggingSink::CloseForm(const nsIParserNode& aNode) {
+nsLoggingSink::CloseForm() {
   CloseNode("form");
 
   nsresult theResult=NS_OK;
 
   //then proxy the call to the real sink if you have one.
   if(mSink) {
-    theResult=mSink->CloseForm(aNode);
+    theResult=mSink->CloseForm();
   }
   
   return theResult;
@@ -492,14 +506,14 @@ nsLoggingSink::OpenMap(const nsIParserNode& aNode) {
 }
 
 NS_IMETHODIMP
-nsLoggingSink::CloseMap(const nsIParserNode& aNode) {
+nsLoggingSink::CloseMap() {
   CloseNode("map");
 
   nsresult theResult=NS_OK;
 
   //then proxy the call to the real sink if you have one.
   if(mSink) {
-    theResult=mSink->CloseMap(aNode);
+    theResult=mSink->CloseMap();
   }
   
   return theResult;
@@ -520,14 +534,14 @@ nsLoggingSink::OpenFrameset(const nsIParserNode& aNode) {
 }
 
 NS_IMETHODIMP
-nsLoggingSink::CloseFrameset(const nsIParserNode& aNode) {
+nsLoggingSink::CloseFrameset() {
   CloseNode("frameset");
 
   nsresult theResult=NS_OK;
 
   //then proxy the call to the real sink if you have one.
   if(mSink) {
-    theResult=mSink->CloseFrameset(aNode);
+    theResult=mSink->CloseFrameset();
   }
   
   return theResult;
@@ -769,12 +783,6 @@ nsLoggingSink::GetNewCString(const nsAString& aValue, char** aResult)
     }
   }
   return result;
-}
-
-NS_IMETHODIMP
-nsLoggingSink::DoFragment(PRBool aFlag) 
-{
-  return NS_OK; 
 }
 
 /**

@@ -49,11 +49,14 @@
 #include "nsHTMLTokens.h"
 #include "nsIURI.h"
 #include "nsTextFragment.h"
+#ifdef MOZ_XUL
 #include "nsXULElement.h"
+#endif
 #include "nsXULAtoms.h"
 #include "nsXBLProtoImplProperty.h"
 #include "nsXBLProtoImplMethod.h"
 #include "nsXBLProtoImplField.h"
+#include "nsXBLPrototypeBinding.h"
 #include "nsIConsoleService.h"
 #include "nsIScriptError.h"
 
@@ -61,32 +64,34 @@ nsresult
 NS_NewXBLContentSink(nsIXMLContentSink** aResult,
                      nsIDocument* aDoc,
                      nsIURI* aURL,
-                     nsIWebShell* aWebShell)
+                     nsISupports* aContainer)
 {
-  NS_PRECONDITION(nsnull != aResult, "null ptr");
-  if (!aResult)
-    return NS_ERROR_NULL_POINTER;
+  NS_ENSURE_ARG_POINTER(aResult);
+
   nsXBLContentSink* it;
   NS_NEWXPCOM(it, nsXBLContentSink);
-  if (!it)
-    return NS_ERROR_OUT_OF_MEMORY;
-  nsresult rv = it->Init(aDoc, aURL, aWebShell);
-  if (NS_FAILED(rv))
-    return rv;
-  return it->QueryInterface(NS_GET_IID(nsIXMLContentSink), (void **)aResult);
+  NS_ENSURE_TRUE(it, NS_ERROR_OUT_OF_MEMORY);
+
+  nsCOMPtr<nsIXMLContentSink> kungFuDeathGrip = it;
+  nsresult rv = it->Init(aDoc, aURL, aContainer);
+  NS_ENSURE_SUCCESS(rv, rv);
+
+  return CallQueryInterface(it, aResult);
 }
 
 nsXBLContentSink::nsXBLContentSink()
+  : mState(eXBL_InDocument),
+    mSecondaryState(eXBL_None),
+    mDocInfo(nsnull),
+    mIsChromeOrResource(PR_FALSE),
+    mBinding(nsnull),
+    mHandler(nsnull),
+    mImplementation(nsnull),
+    mImplMember(nsnull),
+    mProperty(nsnull),
+    mMethod(nsnull),
+    mField(nsnull)
 {
-  mState = eXBL_InDocument;
-  mSecondaryState = eXBL_None;
-  mDocInfo = nsnull;
-  mIsChromeOrResource = PR_FALSE;
-  mImplementation = nsnull;
-  mImplMember = nsnull;
-  mProperty = nsnull;
-  mMethod = nsnull;
-  mField = nsnull;
   mPrettyPrintXML = PR_FALSE;
 }
 
@@ -97,7 +102,7 @@ nsXBLContentSink::~nsXBLContentSink()
 nsresult
 nsXBLContentSink::Init(nsIDocument* aDoc,
                        nsIURI* aURL,
-                       nsIWebShell* aContainer)
+                       nsISupports* aContainer)
 {
   nsresult rv;
   rv = nsXMLContentSink::Init(aDoc, aURL, aContainer, nsnull);
@@ -132,11 +137,11 @@ nsXBLContentSink::FlushText(PRBool aCreateTextNode,
       // BindingAttached and BindingDetached, and they're still implemented
       // using handlers.  At some point, we need to change these to just
       // be special functions on the class instead.
-      nsCOMPtr<nsIXBLPrototypeHandler> handler;
+      nsXBLPrototypeHandler* handler;
       if (mSecondaryState == eXBL_InConstructor)
-        mBinding->GetConstructor(getter_AddRefs(handler));
+        handler = mBinding->GetConstructor();
       else
-        mBinding->GetDestructor(getter_AddRefs(handler));
+        handler = mBinding->GetDestructor();
 
       // Get the text and add it to the constructor/destructor.
       handler->AppendHandlerText(text);
@@ -377,19 +382,19 @@ nsXBLContentSink::OnOpenContainer(const PRUnichar **aAtts,
     else if (mState == eXBL_InImplementation) {
       if (aTagName == nsXBLAtoms::constructor) {
         mSecondaryState = eXBL_InConstructor;
-        nsCOMPtr<nsIXBLPrototypeHandler> newHandler;
-        NS_NewXBLPrototypeHandler(nsnull, nsnull, nsnull, nsnull, nsnull,
-                                  nsnull, nsnull, nsnull, nsnull, nsnull,
-                                  getter_AddRefs(newHandler));
+        nsXBLPrototypeHandler* newHandler;
+        newHandler = new nsXBLPrototypeHandler(nsnull, nsnull, nsnull, nsnull,
+                                               nsnull, nsnull, nsnull, nsnull,
+                                               nsnull, nsnull);
         newHandler->SetEventName(nsXBLAtoms::constructor);
         mBinding->SetConstructor(newHandler);
       }
       else if (aTagName == nsXBLAtoms::destructor) {
         mSecondaryState = eXBL_InDestructor;
-        nsCOMPtr<nsIXBLPrototypeHandler> newHandler;
-        NS_NewXBLPrototypeHandler(nsnull, nsnull, nsnull, nsnull, nsnull,
-                                  nsnull, nsnull, nsnull, nsnull, nsnull,
-                                  getter_AddRefs(newHandler));
+        nsXBLPrototypeHandler* newHandler;
+        newHandler = new nsXBLPrototypeHandler(nsnull, nsnull, nsnull, nsnull,
+                                               nsnull, nsnull, nsnull, nsnull,
+                                               nsnull, nsnull);
         newHandler->SetEventName(nsXBLAtoms::destructor);
         mBinding->SetDestructor(newHandler);
       }
@@ -430,7 +435,7 @@ nsXBLContentSink::ConstructBinding()
   nsCAutoString cid; cid.AssignWithConversion(id);
 
   if (!cid.IsEmpty()) {
-    NS_NewXBLPrototypeBinding(cid, binding, mDocInfo, getter_AddRefs(mBinding));
+    mBinding = new nsXBLPrototypeBinding(cid, mDocInfo, binding);
     mDocInfo->SetPrototypeBinding(cid, mBinding);
     binding->UnsetAttr(kNameSpaceID_None, nsHTMLAtoms::id, PR_FALSE);
   }
@@ -496,11 +501,11 @@ nsXBLContentSink::ConstructHandler(const PRUnichar **aAtts)
 
   // All of our pointers are now filled in.  Construct our handler with all of these
   // parameters.
-  nsCOMPtr<nsIXBLPrototypeHandler> newHandler;
-  NS_NewXBLPrototypeHandler(event, phase, action, command, 
-                            keycode, charcode, modifiers, button,
-                            clickcount, preventdefault,
-                            getter_AddRefs(newHandler));
+  nsXBLPrototypeHandler* newHandler;
+  newHandler = new nsXBLPrototypeHandler(event, phase, action, command,
+                                         keycode, charcode, modifiers, button,
+                                         clickcount, preventdefault);
+
   if (newHandler) {
     // Add this handler to our chain of handlers.
     if (mHandler)
@@ -720,48 +725,50 @@ nsXBLContentSink::ConstructParameter(const PRUnichar **aAtts)
 }
 
 nsresult
-nsXBLContentSink::CreateElement(const PRUnichar** aAtts, 
-                                PRUint32 aAttsCount, 
-                                PRInt32 aNameSpaceID, 
-                                nsINodeInfo* aNodeInfo, 
-                                nsIContent** aResult)
+nsXBLContentSink::CreateElement(const PRUnichar** aAtts, PRUint32 aAttsCount,
+                                nsINodeInfo* aNodeInfo, PRUint32 aLineNumber,
+                                nsIContent** aResult, PRBool* aAppendContent)
 {
-  if (aNameSpaceID == nsXULAtoms::nameSpaceID) {
-    nsXULPrototypeElement* prototype = new nsXULPrototypeElement();
-    if (!prototype)
-      return NS_ERROR_OUT_OF_MEMORY;
-    
-    prototype->mNodeInfo = aNodeInfo;
-
-    // Reset the refcnt to 0.  Normally XUL prototype elements get a refcnt of 1
-    // to represent ownership by the XUL prototype document.  In our case we have
-    // no prototype document, and our initial ref count of 1 will come from being
-    // wrapped by a real XUL element in the Create call below.
-    prototype->mRefCnt = 0;
-
-    AddAttributesToXULPrototype(aAtts, aAttsCount, prototype);
-
-    // Following this function call, the prototype's ref count will be 1.
-    nsresult rv = nsXULElement::Create(prototype, mDocument, PR_FALSE, aResult);
-
-    if (NS_FAILED(rv)) return rv;
-    return NS_OK;
+#ifdef MOZ_XUL
+  if (!aNodeInfo->NamespaceEquals(kNameSpaceID_XUL)) {
+#endif
+    return nsXMLContentSink::CreateElement(aAtts, aAttsCount, aNodeInfo,
+                                           aLineNumber, aResult,
+                                           aAppendContent);
+#ifdef MOZ_XUL
   }
-  else
-    return nsXMLContentSink::CreateElement(aAtts, aAttsCount, aNameSpaceID, aNodeInfo, aResult);
+
+  *aAppendContent = PR_TRUE;
+  nsXULPrototypeElement* prototype = new nsXULPrototypeElement();
+  if (!prototype)
+    return NS_ERROR_OUT_OF_MEMORY;
+
+  prototype->mNodeInfo = aNodeInfo;
+
+  // Reset the refcnt to 0.  Normally XUL prototype elements get a refcnt of 1
+  // to represent ownership by the XUL prototype document.  In our case we have
+  // no prototype document, and our initial ref count of 1 will come from being
+  // wrapped by a real XUL element in the Create call below.
+  prototype->mRefCnt = 0;
+
+  AddAttributesToXULPrototype(aAtts, aAttsCount, prototype);
+
+  // Following this function call, the prototype's ref count will be 1.
+  return nsXULElement::Create(prototype, mDocument, PR_FALSE, aResult);
+#endif
 }
 
 nsresult 
 nsXBLContentSink::AddAttributes(const PRUnichar** aAtts,
-                                nsIContent* aContent,
-                                PRBool aIsHTML)
+                                nsIContent* aContent)
 {
   if (aContent->IsContentOfType(nsIContent::eXUL))
     return NS_OK; // Nothing to do, since the proto already has the attrs.
-  else 
-    return nsXMLContentSink::AddAttributes(aAtts, aContent, aIsHTML);
+
+  return nsXMLContentSink::AddAttributes(aAtts, aContent);
 }
 
+#ifdef MOZ_XUL
 nsresult
 nsXBLContentSink::AddAttributesToXULPrototype(const PRUnichar **aAtts, 
                                               PRUint32 aAttsCount, 
@@ -803,7 +810,7 @@ nsXBLContentSink::AddAttributesToXULPrototype(const PRUnichar **aAtts,
 
     if (kNameSpaceID_Unknown == nameSpaceID) {
       nameSpaceID = kNameSpaceID_None;
-      nameAtom = dont_AddRef(NS_NewAtom(key));
+      nameAtom = do_GetAtom(key);
       nameSpacePrefix = nsnull;
     } 
 
@@ -816,7 +823,7 @@ nsXBLContentSink::AddAttributesToXULPrototype(const PRUnichar **aAtts,
 
   // XUL elements may require some additional work to compute
   // derived information.
-  if (aElement->mNodeInfo->NamespaceEquals(nsXULAtoms::nameSpaceID)) {
+  if (aElement->mNodeInfo->NamespaceEquals(kNameSpaceID_XUL)) {
     nsAutoString value;
 
     // Compute the element's class list if the element has a 'class' attribute.
@@ -834,12 +841,8 @@ nsXBLContentSink::AddAttributesToXULPrototype(const PRUnichar **aAtts,
 
     if (rv == NS_CONTENT_ATTR_HAS_VALUE) {
       if (!mCSSParser) {
-          rv = nsComponentManager::CreateInstance(kCSSParserCID,
-                                                  nsnull,
-                                                  NS_GET_IID(nsICSSParser),
-                                                  getter_AddRefs(mCSSParser));
-
-          if (NS_FAILED(rv)) return rv;
+          mCSSParser = do_CreateInstance(kCSSParserCID, &rv);
+          NS_ENSURE_SUCCESS(rv, rv);
       }
 
       rv = mCSSParser->ParseStyleAttribute(value, mDocumentURL,
@@ -852,3 +855,4 @@ nsXBLContentSink::AddAttributesToXULPrototype(const PRUnichar **aAtts,
 
   return NS_OK;
 }
+#endif

@@ -131,7 +131,7 @@ GlobalNameHashInitEntry(PLDHashTable *table, PLDHashEntryHdr *entry,
   const nsAString *keyStr = NS_STATIC_CAST(const nsAString *, key);
 
   // Initialize the key in the entry with placement new
-  nsString *str = new (&e->mKey) nsString(*keyStr);
+  new (&e->mKey) nsString(*keyStr);
 
   // This will set e->mGlobalName.mType to
   // nsGlobalNameStruct::eTypeNotInitialized
@@ -307,16 +307,17 @@ nsScriptNameSpaceManager::FillHashWithDOMInterfaces()
   PRBool found_old;
   nsCOMPtr<nsIInterfaceInfo> if_info;
   nsXPIDLCString if_name;
+  const nsIID *iid;
 
-  for ( ; domInterfaces->IsDone() == NS_COMFALSE; domInterfaces->Next()) {
+  for ( ; domInterfaces->IsDone() == NS_ENUMERATOR_FALSE; domInterfaces->Next()) {
     rv = domInterfaces->CurrentItem(getter_AddRefs(entry));
     NS_ENSURE_SUCCESS(rv, rv);
 
     nsCOMPtr<nsIInterfaceInfo> if_info(do_QueryInterface(entry));
     if_info->GetName(getter_Copies(if_name));
-    rv = RegisterInterface(if_info,
-                           if_name.get() + sizeof(NS_DOM_INTERFACE_PREFIX) - 1,
-                           &found_old);
+    if_info->GetIIDShared(&iid);
+    rv = RegisterInterface(if_name.get() + sizeof(NS_DOM_INTERFACE_PREFIX) - 1,
+                           iid, &found_old);
 
 #ifdef DEBUG
     NS_ASSERTION(!found_old,
@@ -406,7 +407,7 @@ nsScriptNameSpaceManager::RegisterExternalInterfaces(PRBool aAsProto)
       if (aAsProto) {
         RegisterClassProto(name, iid, &found_old);
       } else {
-        RegisterInterface(if_info, name, &found_old);
+        RegisterInterface(name, iid, &found_old);
       }
 
       if (found_old) {
@@ -422,52 +423,24 @@ nsScriptNameSpaceManager::RegisterExternalInterfaces(PRBool aAsProto)
 }
 
 nsresult
-nsScriptNameSpaceManager::RegisterInterface(nsIInterfaceInfo* aIfInfo,
-                                            const char* aIfName,
+nsScriptNameSpaceManager::RegisterInterface(const char* aIfName,
+                                            const nsIID *aIfIID,
                                             PRBool* aFoundOld)
 {
-  NS_ASSERTION(aIfInfo, "Interface info not an nsIInterfaceInfo!");
-
-  // With the InterfaceInfo system it is actually cheaper to get the 
-  // interface name than to get the count of constants. The former is 
-  // always cached. The latter might require loading an xpt file!
-
-  PRUint16 constant_count = 0;
   *aFoundOld = PR_FALSE;
 
-  nsresult rv = aIfInfo->GetConstantCount(&constant_count);
-  if (NS_FAILED(rv)) {
-    NS_ERROR("can't get constant count");
-    return rv;
+  nsGlobalNameStruct *s = AddToHash(NS_ConvertASCIItoUCS2(aIfName));
+  NS_ENSURE_TRUE(s, NS_ERROR_OUT_OF_MEMORY);
+
+  if (s->mType != nsGlobalNameStruct::eTypeNotInitialized) {
+    *aFoundOld = PR_TRUE;
+
+    return NS_OK;
   }
 
-  if (constant_count) {
-    PRUint16 parent_constant_count = 0;
+  s->mType = nsGlobalNameStruct::eTypeInterface;
+  s->mIID = *aIfIID;
 
-    nsCOMPtr<nsIInterfaceInfo> parent_info;
-
-    aIfInfo->GetParent(getter_AddRefs(parent_info));
-
-    if (parent_info) {
-      rv = parent_info->GetConstantCount(&parent_constant_count);
-      if (NS_FAILED(rv)) {
-        NS_ERROR("can't get constant count");
-        return rv;
-      }
-    }
-
-    if (constant_count != parent_constant_count) {
-      nsGlobalNameStruct *s = AddToHash(NS_ConvertASCIItoUCS2(aIfName));
-      NS_ENSURE_TRUE(s, NS_ERROR_OUT_OF_MEMORY);
-
-      if (s->mType != nsGlobalNameStruct::eTypeNotInitialized) {
-          *aFoundOld = PR_TRUE;
-          return NS_OK;
-      }
-
-      s->mType = nsGlobalNameStruct::eTypeInterface;
-    }
-  }
   return NS_OK;
 }
 
@@ -549,7 +522,8 @@ nsScriptNameSpaceManager::InitForContext(nsIScriptContext *aContext)
 
 nsresult
 nsScriptNameSpaceManager::LookupName(const nsAString& aName,
-                                     const nsGlobalNameStruct **aNameStruct)
+                                     const nsGlobalNameStruct **aNameStruct,
+                                     const PRUnichar **aClassName)
 {
   GlobalNameMapEntry *entry =
     NS_STATIC_CAST(GlobalNameMapEntry *,
@@ -558,8 +532,14 @@ nsScriptNameSpaceManager::LookupName(const nsAString& aName,
 
   if (PL_DHASH_ENTRY_IS_BUSY(entry)) {
     *aNameStruct = &entry->mGlobalName;
+    if (aClassName) {
+      *aClassName = entry->mKey.get();
+    }
   } else {
     *aNameStruct = nsnull;
+    if (aClassName) {
+      *aClassName = nsnull;
+    }
   }
 
   return NS_OK;

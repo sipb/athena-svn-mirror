@@ -44,7 +44,6 @@
 #include "nsIURL.h"
 #include "nsIServiceManager.h"
 #include "nsNetUtil.h"
-#include "nsISizeOfHandler.h"
 #include "nsTextFragment.h"
 #include "nsIContent.h"
 #include "nsIDOMHTMLElement.h"
@@ -73,44 +72,35 @@ static NS_DEFINE_CID(kCStringBundleServiceCID, NS_STRINGBUNDLESERVICE_CID);
 
 class Area {
 public:
-  Area(nsIContent* aArea, PRBool aSuppress, PRBool aHasURL);
+  Area(nsIContent* aArea, PRBool aHasURL);
   virtual ~Area();
 
-  virtual void ParseCoords(const nsString& aSpec);
+  virtual void ParseCoords(const nsAString& aSpec);
 
-  virtual PRBool IsInside(nscoord x, nscoord y) = 0;
+  virtual PRBool IsInside(nscoord x, nscoord y) const = 0;
   virtual void Draw(nsIPresContext* aCX,
                     nsIRenderingContext& aRC) = 0;
   virtual void GetRect(nsIPresContext* aCX, nsRect& aRect) = 0;
-  virtual void GetShapeName(nsString& aResult) const = 0;
 
-  void ToHTML(nsString& aResult);
   void HasFocus(PRBool aHasFocus);
 
-  void GetHREF(nsString& aHref) const;
-  void GetTarget(nsString& aTarget) const;
-  void GetAltText(nsString& aAltText) const;
-  PRBool GetSuppress() const { return mSuppressFeedback; }
+  void GetHREF(nsAString& aHref) const;
+  void GetTarget(nsAString& aTarget) const;
+  void GetAltText(nsAString& aAltText) const;
   PRBool GetHasURL() const { return mHasURL; }
   void GetArea(nsIContent** aArea) const;
-
-#ifdef DEBUG
-  virtual void SizeOf(nsISizeOfHandler* aHandler, PRUint32* aResult) const;
-#endif
 
   nsCOMPtr<nsIContent> mArea;
   nscoord* mCoords;
   PRInt32 mNumCoords;
-  PRPackedBool mSuppressFeedback;
   PRPackedBool mHasURL;
   PRPackedBool mHasFocus;
 };
 
 MOZ_DECL_CTOR_COUNTER(Area)
 
-Area::Area(nsIContent* aArea,
-           PRBool aSuppress, PRBool aHasURL)
-  : mArea(aArea), mSuppressFeedback(aSuppress), mHasURL(aHasURL)
+Area::Area(nsIContent* aArea, PRBool aHasURL)
+  : mArea(aArea), mHasURL(aHasURL)
 {
   MOZ_COUNT_CTOR(Area);
   mCoords = nsnull;
@@ -125,7 +115,7 @@ Area::~Area()
 }
 
 void 
-Area::GetHREF(nsString& aHref) const
+Area::GetHREF(nsAString& aHref) const
 {
   aHref.Truncate();
   if (mArea) {
@@ -134,7 +124,7 @@ Area::GetHREF(nsString& aHref) const
 }
  
 void 
-Area::GetTarget(nsString& aTarget) const
+Area::GetTarget(nsAString& aTarget) const
 {
   aTarget.Truncate();
   if (mArea) {
@@ -143,7 +133,7 @@ Area::GetTarget(nsString& aTarget) const
 }
  
 void 
-Area::GetAltText(nsString& aAltText) const
+Area::GetAltText(nsAString& aAltText) const
 {
   aAltText.Truncate();
   if (mArea) {
@@ -157,18 +147,6 @@ Area::GetArea(nsIContent** aArea) const
   *aArea = mArea;
   NS_IF_ADDREF(*aArea);
 }
-
-#ifdef DEBUG
-void
-Area::SizeOf(nsISizeOfHandler* aHandler, PRUint32* aResult) const
-{
-  if (aResult) {
-    PRUint32 sum = sizeof(*this);
-    sum += mNumCoords * sizeof(nscoord);
-    *aResult = sum;
-  }
-}
-#endif
 
 #include <stdlib.h>
 
@@ -337,57 +315,13 @@ static nscoord* lo_parse_coord_list(char *str, PRInt32* value_cnt)
   return value_list;
 }
 
-void Area::ParseCoords(const nsString& aSpec)
+void Area::ParseCoords(const nsAString& aSpec)
 {
   char* cp = ToNewCString(aSpec);
   if (cp) {
     mCoords = lo_parse_coord_list(cp, &mNumCoords);
     nsCRT::free(cp);
   }
-}
-
-void Area::ToHTML(nsString& aResult)
-{
-  nsAutoString href, target, altText;
-
-  if (mArea) {
-    mArea->GetAttr(kNameSpaceID_None, nsHTMLAtoms::href, href);
-    mArea->GetAttr(kNameSpaceID_None, nsHTMLAtoms::target, target);
-    mArea->GetAttr(kNameSpaceID_None, nsHTMLAtoms::alt, altText);
-  }
-
-  aResult.Truncate();
-  aResult.Append(NS_LITERAL_STRING("<AREA SHAPE="));
-  nsAutoString shape;
-  GetShapeName(shape);
-  aResult.Append(shape);
-  aResult.Append(NS_LITERAL_STRING(" COORDS=\""));
-  if (nsnull != mCoords) {
-    PRInt32 i, n = mNumCoords;
-    for (i = 0; i < n; i++) {
-      aResult.AppendInt(mCoords[i], 10);
-      if (i < n - 1) {
-        aResult.Append(PRUnichar(','));
-      }
-    }
-  }
-  aResult.Append(NS_LITERAL_STRING("\" HREF=\""));
-  aResult.Append(href);
-  aResult.Append(NS_LITERAL_STRING("\""));
-  if (0 < target.Length()) {
-    aResult.Append(NS_LITERAL_STRING(" TARGET=\""));
-    aResult.Append(target);
-    aResult.Append(NS_LITERAL_STRING("\""));
-  }
-  if (0 < altText.Length()) {
-    aResult.Append(NS_LITERAL_STRING(" ALT=\""));
-    aResult.Append(altText);
-    aResult.Append(NS_LITERAL_STRING("\""));
-  }
-  if (mSuppressFeedback) {
-    aResult.Append(NS_LITERAL_STRING(" SUPPRESS"));
-  }
-  aResult.Append(PRUnichar('>'));
 }
 
 void Area::HasFocus(PRBool aHasFocus)
@@ -399,18 +333,17 @@ void Area::HasFocus(PRBool aHasFocus)
 
 class DefaultArea : public Area {
 public:
-  DefaultArea(nsIContent* aArea, PRBool aSuppress, PRBool aHasURL);
+  DefaultArea(nsIContent* aArea, PRBool aHasURL);
   ~DefaultArea();
 
-  virtual PRBool IsInside(nscoord x, nscoord y);
+  virtual PRBool IsInside(nscoord x, nscoord y) const;
   virtual void Draw(nsIPresContext* aCX,
                     nsIRenderingContext& aRC);
   virtual void GetRect(nsIPresContext* aCX, nsRect& aRect);
-  virtual void GetShapeName(nsString& aResult) const;
 };
 
-DefaultArea::DefaultArea(nsIContent* aArea, PRBool aSuppress, PRBool aHasURL)
-  : Area(aArea, aSuppress, aHasURL)
+DefaultArea::DefaultArea(nsIContent* aArea, PRBool aHasURL)
+  : Area(aArea, aHasURL)
 {
 }
 
@@ -418,7 +351,7 @@ DefaultArea::~DefaultArea()
 {
 }
 
-PRBool DefaultArea::IsInside(nscoord x, nscoord y)
+PRBool DefaultArea::IsInside(nscoord x, nscoord y) const
 {
   return PR_TRUE;
 }
@@ -431,28 +364,22 @@ void DefaultArea::GetRect(nsIPresContext* aCX, nsRect& aRect)
 {
 }
 
-void DefaultArea::GetShapeName(nsString& aResult) const
-{
-  aResult.Append(NS_LITERAL_STRING("default"));
-}
-
 //----------------------------------------------------------------------
 
 class RectArea : public Area {
 public:
-  RectArea(nsIContent* aArea, PRBool aSuppress, PRBool aHasURL);
+  RectArea(nsIContent* aArea, PRBool aHasURL);
   ~RectArea();
 
-  virtual void ParseCoords(const nsString& aSpec);
-  virtual PRBool IsInside(nscoord x, nscoord y);
+  virtual void ParseCoords(const nsAString& aSpec);
+  virtual PRBool IsInside(nscoord x, nscoord y) const;
   virtual void Draw(nsIPresContext* aCX,
                     nsIRenderingContext& aRC);
   virtual void GetRect(nsIPresContext* aCX, nsRect& aRect);
-  virtual void GetShapeName(nsString& aResult) const;
 };
 
-RectArea::RectArea(nsIContent* aArea, PRBool aSuppress, PRBool aHasURL)
-  : Area(aArea, aSuppress, aHasURL)
+RectArea::RectArea(nsIContent* aArea, PRBool aHasURL)
+  : Area(aArea, aHasURL)
 {
 }
 
@@ -460,7 +387,7 @@ RectArea::~RectArea()
 {
 }
 
-void RectArea::ParseCoords(const nsString& aSpec)
+void RectArea::ParseCoords(const nsAString& aSpec)
 {
   Area::ParseCoords(aSpec);
 
@@ -537,7 +464,7 @@ void RectArea::ParseCoords(const nsString& aSpec)
     }
     rv = errorObject->Init(errorText.get(),
                            NS_ConvertUTF8toUCS2(urlSpec).get(), /* file name */
-                           aSpec.get(), /* source line */
+                           PromiseFlatString(aSpec).get(), /* source line */
                            0, /* line number */
                            0, /* column number */
                            flag,
@@ -549,7 +476,7 @@ void RectArea::ParseCoords(const nsString& aSpec)
   }
 }
 
-PRBool RectArea::IsInside(nscoord x, nscoord y)
+PRBool RectArea::IsInside(nscoord x, nscoord y) const
 {
   if (mNumCoords >= 4) {       // Note: > is for nav compatabilty
     nscoord x1 = mCoords[0];
@@ -597,32 +524,25 @@ void RectArea::GetRect(nsIPresContext* aCX, nsRect& aRect)
     NS_ASSERTION(x1 <= x2 && y1 <= y2,
                  "Someone screwed up RectArea::ParseCoords");
 
-    nsRect tmp(x1, y1, x2, y2);
-    aRect = tmp;
+    aRect.SetRect(x1, y1, x2, y2);
   }
-}
-
-void RectArea::GetShapeName(nsString& aResult) const
-{
-  aResult.Append(NS_LITERAL_STRING("rect"));
 }
 
 //----------------------------------------------------------------------
 
 class PolyArea : public Area {
 public:
-  PolyArea(nsIContent* aArea, PRBool aSuppress, PRBool aHasURL);
+  PolyArea(nsIContent* aArea, PRBool aHasURL);
   ~PolyArea();
 
-  virtual PRBool IsInside(nscoord x, nscoord y);
+  virtual PRBool IsInside(nscoord x, nscoord y) const;
   virtual void Draw(nsIPresContext* aCX,
                     nsIRenderingContext& aRC);
   virtual void GetRect(nsIPresContext* aCX, nsRect& aRect);
-  virtual void GetShapeName(nsString& aResult) const;
 };
 
-PolyArea::PolyArea(nsIContent* aArea, PRBool aSuppress, PRBool aHasURL)
-  : Area(aArea, aSuppress, aHasURL)
+PolyArea::PolyArea(nsIContent* aArea, PRBool aHasURL)
+  : Area(aArea, aHasURL)
 {
 }
 
@@ -630,7 +550,7 @@ PolyArea::~PolyArea()
 {
 }
 
-PRBool PolyArea::IsInside(nscoord x, nscoord y)
+PRBool PolyArea::IsInside(nscoord x, nscoord y) const
 {
   if (mNumCoords >= 6) {
     PRInt32 intersects = 0;
@@ -732,32 +652,25 @@ void PolyArea::GetRect(nsIPresContext* aCX, nsRect& aRect)
       y2 = y2 > ytmp ? y2 : ytmp;
     }
 
-    nsRect tmp(x1, y1, x2, y2);
-    aRect = tmp;
+    aRect.SetRect(x1, y1, x2, y2);
   }
-}
-
-void PolyArea::GetShapeName(nsString& aResult) const
-{
-  aResult.Append(NS_LITERAL_STRING("polygon"));
 }
 
 //----------------------------------------------------------------------
 
 class CircleArea : public Area {
 public:
-  CircleArea(nsIContent* aArea, PRBool aSuppress, PRBool aHasURL);
+  CircleArea(nsIContent* aArea, PRBool aHasURL);
   ~CircleArea();
 
-  virtual PRBool IsInside(nscoord x, nscoord y);
+  virtual PRBool IsInside(nscoord x, nscoord y) const;
   virtual void Draw(nsIPresContext* aCX,
                     nsIRenderingContext& aRC);
   virtual void GetRect(nsIPresContext* aCX, nsRect& aRect);
-  virtual void GetShapeName(nsString& aResult) const;
 };
 
-CircleArea::CircleArea(nsIContent* aArea, PRBool aSuppress, PRBool aHasURL)
-  : Area(aArea, aSuppress, aHasURL)
+CircleArea::CircleArea(nsIContent* aArea, PRBool aHasURL)
+  : Area(aArea, aHasURL)
 {
 }
 
@@ -765,7 +678,7 @@ CircleArea::~CircleArea()
 {
 }
 
-PRBool CircleArea::IsInside(nscoord x, nscoord y)
+PRBool CircleArea::IsInside(nscoord x, nscoord y) const
 {
   // Note: > is for nav compatabilty
   if (mNumCoords >= 3) {
@@ -817,14 +730,8 @@ void CircleArea::GetRect(nsIPresContext* aCX, nsRect& aRect)
       return;
     }
 
-    nsRect tmp(x1 - radius, y1 - radius, x1 + radius, y1 + radius);
-    aRect = tmp;
+    aRect.SetRect(x1 - radius, y1 - radius, x1 + radius, y1 + radius);
   }
-}
-
-void CircleArea::GetShapeName(nsString& aResult) const
-{
-  aResult.Append(NS_LITERAL_STRING("circle"));
 }
 
 //----------------------------------------------------------------------
@@ -832,9 +739,6 @@ void CircleArea::GetShapeName(nsString& aResult) const
 
 nsImageMap::nsImageMap()
 {
-  NS_INIT_ISUPPORTS();
-  mMap = nsnull;
-  mDomMap = nsnull;
   mDocument = nsnull;
   mContainsBlockContents = PR_FALSE;
 }
@@ -859,37 +763,13 @@ nsImageMap::~nsImageMap()
   if (nsnull != mDocument) {
     mDocument->RemoveObserver(NS_STATIC_CAST(nsIDocumentObserver*, this));
   }
-  NS_IF_RELEASE(mMap);
 }
 
-NS_IMPL_ADDREF(nsImageMap)
-NS_IMPL_RELEASE(nsImageMap)
-
-NS_IMETHODIMP
-nsImageMap::QueryInterface(REFNSIID iid, void** result)
-{
-  if (! result)
-    return NS_ERROR_NULL_POINTER;
-
-  *result = nsnull;
-  if (iid.Equals(NS_GET_IID(nsISupports)) ||
-      iid.Equals(NS_GET_IID(nsIDocumentObserver))) {
-    *result = NS_STATIC_CAST(nsIDocumentObserver*, this);
-  }
-  else if (iid.Equals(NS_GET_IID(nsIDOMFocusListener)) ||
-           iid.Equals(NS_GET_IID(nsIDOMEventListener))) {
-    *result = NS_STATIC_CAST(nsIDOMFocusListener*, this);
-  }
-  else if (iid.Equals(NS_GET_IID(nsIImageMap))) {
-    *result = NS_STATIC_CAST(nsIImageMap*, this);
-  }
-  else {
-    return NS_NOINTERFACE;
-  }
-
-  NS_ADDREF_THIS();
-  return NS_OK;
-}
+NS_IMPL_ISUPPORTS4(nsImageMap,
+                   nsIDocumentObserver,
+                   nsIDOMFocusListener,
+                   nsIDOMEventListener,
+                   nsIImageMap);
 
 NS_IMETHODIMP
 nsImageMap::GetBoundsForAreaContent(nsIContent *aContent, 
@@ -932,17 +812,16 @@ nsImageMap::Init(nsIPresShell* aPresShell, nsIFrame* aImageFrame, nsIDOMHTMLMapE
   }
   mPresShell = aPresShell;
   mImageFrame = aImageFrame;
-  mDomMap = aMap;
 
-  nsresult rv = aMap->QueryInterface(NS_GET_IID(nsIContent), (void**) &mMap);
-  if (NS_SUCCEEDED(rv)) {
-    rv = mMap->GetDocument(mDocument);
-    if (NS_SUCCEEDED(rv) && (nsnull != mDocument)) {
-      mDocument->AddObserver(NS_STATIC_CAST(nsIDocumentObserver*, this));
-      // mDocument is a weak reference, so release the reference we got
-      nsIDocument *temp = mDocument;
-      NS_RELEASE(temp);
-    }
+  nsresult rv;
+  mMap = do_QueryInterface(aMap, &rv);
+  NS_ASSERTION(mMap, "aMap is not an nsIHTMLContent!");
+  rv = mMap->GetDocument(mDocument);
+  if (NS_SUCCEEDED(rv) && (nsnull != mDocument)) {
+    mDocument->AddObserver(NS_STATIC_CAST(nsIDocumentObserver*, this));
+    // mDocument is a weak reference, so release the reference we got
+    nsIDocument *temp = mDocument;
+    NS_RELEASE(temp);
   }
 
   // "Compile" the areas in the map into faster access versions
@@ -955,23 +834,20 @@ nsresult
 nsImageMap::UpdateAreasForBlock(nsIContent* aParent, PRBool* aFoundAnchor)
 {
   nsresult rv = NS_OK;
-  nsIContent* child;
   PRInt32 i, n;
   aParent->ChildCount(n);
   for (i = 0; (i < n) && NS_SUCCEEDED(rv); i++) {
-    rv = aParent->ChildAt(i, child);
+    nsCOMPtr<nsIContent> child;
+    rv = aParent->ChildAt(i, *getter_AddRefs(child));
     if (NS_SUCCEEDED(rv)) {
-      nsIDOMHTMLAnchorElement* area;
-      rv = child->QueryInterface(NS_GET_IID(nsIDOMHTMLAnchorElement), (void**) &area);
+      nsCOMPtr<nsIDOMHTMLAnchorElement> area = do_QueryInterface(child, &rv);
       if (NS_SUCCEEDED(rv)) {
         *aFoundAnchor = PR_TRUE;
         rv = AddArea(child);
-        NS_RELEASE(area);
       }
       else {
         rv = UpdateAreasForBlock(child, aFoundAnchor);
       }
-      NS_RELEASE(child);
     }
   }
   
@@ -1028,7 +904,6 @@ nsImageMap::AddArea(nsIContent* aArea)
   aArea->GetAttr(kNameSpaceID_None, nsHTMLAtoms::shape, shape);
   aArea->GetAttr(kNameSpaceID_None, nsHTMLAtoms::coords, coords);
   PRBool hasURL = (PRBool)(NS_CONTENT_ATTR_HAS_VALUE != aArea->GetAttr(kNameSpaceID_None, nsHTMLAtoms::nohref, noHref));
-  PRBool suppress = PR_FALSE;/* XXX */
 
   //Add focus listener to track area focus changes
   nsCOMPtr<nsIDOMEventReceiver> rec(do_QueryInterface(aArea));
@@ -1044,18 +919,18 @@ nsImageMap::AddArea(nsIContent* aArea)
   if ((0 == shape.Length()) ||
       shape.EqualsIgnoreCase("rect") ||
       shape.EqualsIgnoreCase("rectangle")) {
-    area = new RectArea(aArea, suppress, hasURL);
+    area = new RectArea(aArea, hasURL);
   }
   else if (shape.EqualsIgnoreCase("poly") ||
            shape.EqualsIgnoreCase("polygon")) {
-    area = new PolyArea(aArea, suppress, hasURL);
+    area = new PolyArea(aArea, hasURL);
   }
   else if (shape.EqualsIgnoreCase("circle") ||
            shape.EqualsIgnoreCase("circ")) {
-    area = new CircleArea(aArea, suppress, hasURL);
+    area = new CircleArea(aArea, hasURL);
   }
   else if (shape.EqualsIgnoreCase("default")) {
-    area = new DefaultArea(aArea, suppress, hasURL);
+    area = new DefaultArea(aArea, hasURL);
   }
   else {
     // Unknown area type; bail
@@ -1071,11 +946,11 @@ nsImageMap::AddArea(nsIContent* aArea)
 PRBool
 nsImageMap::IsInside(nscoord aX, nscoord aY,
                      nsIContent** aContent,
-                     nsString& aAbsURL,
-                     nsString& aTarget,
-                     nsString& aAltText,
-                     PRBool* aSuppress)
+                     nsAString& aAbsURL,
+                     nsAString& aTarget,
+                     nsAString& aAltText) const
 {
+  NS_ASSERTION(mMap, "Not initialized");
   PRInt32 i, n = mAreas.Count();
   for (i = 0; i < n; i++) {
     Area* area = (Area*) mAreas.ElementAt(i);
@@ -1084,21 +959,7 @@ nsImageMap::IsInside(nscoord aX, nscoord aY,
         // Set the image loader's source URL and base URL
         nsCOMPtr<nsIURI> baseUri;
 
-        if (mMap) {
-          nsCOMPtr<nsIHTMLContent> htmlContent(do_QueryInterface(mMap));
-          if (htmlContent) {
-            htmlContent->GetBaseURL(*getter_AddRefs(baseUri));
-          }
-          else {
-            nsCOMPtr<nsIDocument> doc;
-            mMap->GetDocument(*getter_AddRefs(doc));
-
-            if (doc) {
-              // Could just use mDocument here...
-              doc->GetBaseURL(*getter_AddRefs(baseUri));
-            }
-          }
-        }
+        mMap->GetBaseURL(*getter_AddRefs(baseUri));
 
         if (!baseUri) {
           return PR_FALSE;
@@ -1110,16 +971,10 @@ nsImageMap::IsInside(nscoord aX, nscoord aY,
       }
 
       area->GetTarget(aTarget);
-      if (mMap && (aTarget.Length() == 0)) {
-        nsCOMPtr<nsIHTMLContent> content(do_QueryInterface(mMap));
-
-        if (content) {
-          content->GetBaseTarget(aTarget);
-        }
-      }
+      if (aTarget.IsEmpty())
+        mMap->GetBaseTarget(aTarget);
 
       area->GetAltText(aAltText);
-      *aSuppress = area->mSuppressFeedback;
 
       area->GetArea(aContent);
 
@@ -1131,7 +986,7 @@ nsImageMap::IsInside(nscoord aX, nscoord aY,
 }
 
 PRBool
-nsImageMap::IsInside(nscoord aX, nscoord aY)
+nsImageMap::IsInside(nscoord aX, nscoord aY) const
 {
   PRInt32 i, n = mAreas.Count();
   for (i = 0; i < n; i++) {
@@ -1161,58 +1016,22 @@ nsImageMap::Draw(nsIPresContext* aCX, nsIRenderingContext& aRC)
   }
 }
 
-NS_IMETHODIMP
-nsImageMap::BeginUpdate(nsIDocument *aDocument)
-{
-  return NS_OK;
-}
+NS_IMPL_NSIDOCUMENTOBSERVER_CORE_STUB(nsImageMap)
+NS_IMPL_NSIDOCUMENTOBSERVER_LOAD_STUB(nsImageMap)
+NS_IMPL_NSIDOCUMENTOBSERVER_REFLOW_STUB(nsImageMap)
+NS_IMPL_NSIDOCUMENTOBSERVER_STATE_STUB(nsImageMap)
+NS_IMPL_NSIDOCUMENTOBSERVER_STYLE_STUB(nsImageMap)
 
-NS_IMETHODIMP
-nsImageMap::EndUpdate(nsIDocument *aDocument)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsImageMap::BeginLoad(nsIDocument *aDocument)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsImageMap::EndLoad(nsIDocument *aDocument)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsImageMap::BeginReflow(nsIDocument *aDocument, nsIPresShell* aShell)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsImageMap::EndReflow(nsIDocument *aDocument, nsIPresShell* aShell)
-{
-  return NS_OK;
-}
 
 PRBool
 nsImageMap::IsAncestorOf(nsIContent* aContent,
                          nsIContent* aAncestorContent)
 {
-  nsIContent* parent;
-  nsresult rv = aContent->GetParent(parent);
-  if (NS_SUCCEEDED(rv) && (nsnull != parent)) {
-    PRBool rBool;
-    if (parent == aAncestorContent) {
-      rBool = PR_TRUE;
-    }
-    else {
-      rBool = IsAncestorOf(parent, aAncestorContent);
-    }
-    NS_RELEASE(parent);
-    return rBool;
+  nsCOMPtr<nsIContent> parent;
+  aContent->GetParent(*getter_AddRefs(parent));
+  if (parent) {
+    return parent == aAncestorContent ||
+           IsAncestorOf(parent, aAncestorContent);
   }
 
   return PR_FALSE;
@@ -1225,27 +1044,16 @@ nsImageMap::ContentChanged(nsIDocument *aDocument,
 {
   // If the parent of the changing content node is our map then update
   // the map.
-  nsIContent* parent;
-  nsresult rv = aContent->GetParent(parent);
+  nsCOMPtr<nsIContent> parent;
+  nsresult rv = aContent->GetParent(*getter_AddRefs(parent));
   if (NS_SUCCEEDED(rv) && (nsnull != parent)) {
     if ((parent == mMap) || 
         (mContainsBlockContents && IsAncestorOf(parent, mMap))) {
       UpdateAreas();
     }
-    NS_RELEASE(parent);
   }
   return NS_OK;
 }
-
-NS_IMETHODIMP
-nsImageMap::ContentStatesChanged(nsIDocument* aDocument,
-                                 nsIContent* aContent1,
-                                 nsIContent* aContent2,
-                                 PRInt32 aStateMask)
-{
-  return NS_OK;
-}
-
 
 NS_IMETHODIMP
 nsImageMap::AttributeChanged(nsIDocument *aDocument,
@@ -1257,14 +1065,11 @@ nsImageMap::AttributeChanged(nsIDocument *aDocument,
 {
   // If the parent of the changing content node is our map then update
   // the map.
-  nsIContent* parent;
-  nsresult rv = aContent->GetParent(parent);
-  if (NS_SUCCEEDED(rv) && (nsnull != parent)) {
-    if ((parent == mMap) || 
-        (mContainsBlockContents && IsAncestorOf(parent, mMap))) {
-      UpdateAreas();
-    }
-    NS_RELEASE(parent);
+  nsCOMPtr<nsIContent> parent;
+  aContent->GetParent(*getter_AddRefs(parent));
+  if ((parent == mMap) || 
+      (mContainsBlockContents && IsAncestorOf(parent, mMap))) {
+    UpdateAreas();
   }
   return NS_OK;
 }
@@ -1318,59 +1123,6 @@ nsImageMap::ContentRemoved(nsIDocument *aDocument,
       (mContainsBlockContents && IsAncestorOf(aContainer, mMap))) {
     UpdateAreas();
   }
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsImageMap::StyleSheetAdded(nsIDocument *aDocument,
-                            nsIStyleSheet* aStyleSheet)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsImageMap::StyleSheetRemoved(nsIDocument *aDocument,
-                              nsIStyleSheet* aStyleSheet)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsImageMap::StyleSheetDisabledStateChanged(nsIDocument *aDocument,
-                                           nsIStyleSheet* aStyleSheet,
-                                           PRBool aDisabled)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsImageMap::StyleRuleChanged(nsIDocument *aDocument,
-                             nsIStyleSheet* aStyleSheet,
-                             nsIStyleRule* aStyleRule,
-                             nsChangeHint aHint)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsImageMap::StyleRuleAdded(nsIDocument *aDocument,
-                           nsIStyleSheet* aStyleSheet,
-                           nsIStyleRule* aStyleRule)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsImageMap::StyleRuleRemoved(nsIDocument *aDocument,
-                             nsIStyleSheet* aStyleSheet,
-                             nsIStyleRule* aStyleRule)
-{
-  return NS_OK;
-}
-
-NS_IMETHODIMP
-nsImageMap::DocumentWillBeDestroyed(nsIDocument *aDocument)
-{
   return NS_OK;
 }
 
@@ -1477,21 +1229,3 @@ nsImageMap::Destroy(void)
     }
   }
 }
-
-#ifdef DEBUG
-void
-nsImageMap::SizeOf(nsISizeOfHandler* aHandler, PRUint32* aResult) const
-{
-  if (aResult) {
-    PRUint32 sum = sizeof(*this);
-    PRInt32 i, n = mAreas.Count();
-    for (i = 0; i < n; i++) {
-      Area* area = (Area*) mAreas.ElementAt(i);
-      PRUint32 areaSize;
-      area->SizeOf(aHandler, &areaSize);
-      sum += areaSize;
-    }
-    *aResult = sum;
-  }
-}
-#endif

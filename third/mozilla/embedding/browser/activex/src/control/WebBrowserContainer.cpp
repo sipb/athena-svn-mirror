@@ -53,7 +53,6 @@ CWebBrowserContainer::CWebBrowserContainer(CMozillaBrowser *pOwner) :
     mEvents2(mOwner),
     mVisible(PR_TRUE)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 
@@ -87,9 +86,18 @@ NS_INTERFACE_MAP_END
 ///////////////////////////////////////////////////////////////////////////////
 // nsIInterfaceRequestor
 
-NS_IMETHODIMP CWebBrowserContainer::GetInterface(const nsIID & uuid, void * *result)
+NS_IMETHODIMP CWebBrowserContainer::GetInterface(const nsIID & aIID, void * *result)
 {
-    return QueryInterface(uuid, result);
+    *result = 0;
+    if (aIID.Equals(NS_GET_IID(nsIDOMWindow)))
+    {
+        if (mOwner && mOwner->mWebBrowser)
+        {
+            return mOwner->mWebBrowser->GetContentDOMWindow((nsIDOMWindow **) result);
+        }
+        return NS_ERROR_NOT_INITIALIZED;
+    }
+    return QueryInterface(aIID, result);
 }
 
 
@@ -393,11 +401,14 @@ NS_IMETHODIMP CWebBrowserContainer::IsPreferred(const char *aContentType, char *
 /* boolean canHandleContent (in string aContentType, in PRBool aIsContentPreferred, out string aDesiredContentType); */
 NS_IMETHODIMP CWebBrowserContainer::CanHandleContent(const char *aContentType, PRBool aIsContentPreferred, char **aDesiredContentType, PRBool *_retval)
 {
+    *_retval = PR_FALSE;
+    
     if (aContentType)
     {
         nsCOMPtr<nsICategoryManager> catMgr;
         nsresult rv;
         catMgr = do_GetService(NS_CATEGORYMANAGER_CONTRACTID, &rv);
+        NS_ENSURE_SUCCESS(rv, rv);
         nsXPIDLCString value;
         rv = catMgr->GetCategoryEntry("Gecko-Content-Viewers",
             aContentType, 

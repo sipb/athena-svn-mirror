@@ -41,6 +41,7 @@ RESFILE		= testembed.res
 MODULE = testEmbed
 
 REQUIRES = \
+	xpcom_obsolete \
 	xpcom \
 	string \
 	necko \
@@ -71,9 +72,12 @@ REQUIRES = \
 	$(NULL)
 
 CPPSRCS		= \
+	    nsIHttpChannelTests.cpp \
+	    nsIChannelTests.cpp \
 	    TestEmbed.cpp     \
 	    BrowserFrm.cpp   \
 	    BrowserFrameGlue.cpp   \
+		BrowserToolTip.cpp \
 	    BrowserView.cpp \
 	    BrowserImpl.cpp \
 	    BrowserImplWebPrgrsLstnr.cpp \
@@ -142,7 +146,7 @@ LDFLAGS += /HEAP:0x40000
 
 include $(topsrcdir)/config/rules.mk
 
-CXXFLAGS	+= /D "_AFXDLL" /D "USE_SINGLE_SIGN_ON"
+CXXFLAGS	+= /D "_AFXDLL" /D "USE_SINGLE_SIGN_ON" -DMOZILLA_VERSION=\"$(MOZILLA_VERSION)\"
 LDFLAGS		+= -SUBSYSTEM:windows
 
 libs:: testembed.htm

@@ -53,6 +53,7 @@
 #include "nsIFrame.h"
 #include "nsCOMPtr.h"
 #include "nsWeakReference.h"
+#include "nsAutoPtr.h"
 
 class nsComputedDOMStyle : public nsIComputedDOMStyle
 {
@@ -141,14 +142,12 @@ private:
   nsresult GetAppearance(nsIFrame *aFrame, nsIDOMCSSValue** aValue);
 
   /* Box properties */
-#ifdef INCLUDE_XUL
   nsresult GetBoxAlign(nsIFrame *aFrame, nsIDOMCSSValue** aValue);
   nsresult GetBoxDirection(nsIFrame *aFrame, nsIDOMCSSValue** aValue);
   nsresult GetBoxFlex(nsIFrame *aFrame, nsIDOMCSSValue** aValue);
   nsresult GetBoxOrdinalGroup(nsIFrame *aFrame, nsIDOMCSSValue** aValue);
   nsresult GetBoxOrient(nsIFrame *aFrame, nsIDOMCSSValue** aValue);
   nsresult GetBoxPack(nsIFrame *aFrame, nsIDOMCSSValue** aValue);
-#endif // INCLUDE_XUL
   nsresult GetBoxSizing(nsIFrame *aFrame, nsIDOMCSSValue** aValue);
 
   nsresult GetWidth(nsIFrame *aFrame, nsIDOMCSSValue** aValue);
@@ -177,6 +176,7 @@ private:
   nsresult GetBackgroundImage(nsIFrame *aFrame, nsIDOMCSSValue** aValue);
   nsresult GetBackgroundRepeat(nsIFrame *aFrame, nsIDOMCSSValue** aValue);
   nsresult GetBackgroundClip(nsIFrame *aFrame, nsIDOMCSSValue** aValue);
+  nsresult GetBackgroundInlinePolicy(nsIFrame *aFrame, nsIDOMCSSValue** aValue);
   nsresult GetBackgroundOrigin(nsIFrame *aFrame, nsIDOMCSSValue** aValue);
 
   /* Padding properties */
@@ -301,7 +301,7 @@ private:
    * When a frame is unavailable, strong reference to the
    * style context while we're accessing the data from in.
    */
-  nsCOMPtr<nsIStyleContext> mStyleContextHolder;
+  nsRefPtr<nsStyleContext> mStyleContextHolder;
   nsCOMPtr<nsIAtom> mPseudo;
 
   float mT2P; /* For unit conversions */

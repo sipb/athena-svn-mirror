@@ -83,21 +83,21 @@
 #include <sys/wait.h>
 #endif
 
-#ifdef XP_PC
+#if defined(XP_WIN) || defined(XP_OS2)
 #include <io.h>     /* for isatty() */
 #endif
 
 #define EXITCODE_RUNTIME_ERROR 3
 #define EXITCODE_FILE_NOT_FOUND 4
 
-
 size_t gStackChunkSize = 8192;
 int gExitCode = 0;
+JSBool gQuitting = JS_FALSE;
 FILE *gErrFile = NULL;
 FILE *gOutFile = NULL;
 
 #ifdef XP_MAC
-#ifdef MAC_TEST_HACK
+#if defined(MAC_TEST_HACK) || defined(XP_MAC_MPW)
 /* this is the data file that all Print strings will be echoed into */
 FILE *gTestResultFile = NULL;
 #define isatty(f) 0
@@ -272,6 +272,7 @@ GetLine(JSContext *cx, char *bufp, FILE *file, const char *prompt) {
     {
         char line[256];
         fprintf(gOutFile, prompt);
+        fflush(gOutFile);
 #ifdef XP_MAC_MPW
         /* Print a CR after the prompt because MPW grabs the entire line when entering an interactive command */
         fputc('\n', gOutFile);
@@ -376,7 +377,7 @@ Process(JSContext *cx, JSObject *obj, char *filename)
             }
             JS_DestroyScript(cx, script);
         }
-    } while (!hitEOF);
+    } while (!hitEOF && !gQuitting);
     fprintf(gOutFile, "\n");
     return;
 }
@@ -648,15 +649,13 @@ Help(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval);
 static JSBool
 Quit(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
 {
-    int r = 0;
-
 #ifdef LIVECONNECT
     JSJ_SimpleShutdown();
 #endif
 
-    JS_ConvertArguments(cx, argc, argv,"/ i", &r);
+    JS_ConvertArguments(cx, argc, argv,"/ i", &gExitCode);
 
-    exit(r);
+    gQuitting = JS_TRUE;
     return JS_FALSE;
 }
 
@@ -1416,6 +1415,32 @@ Clone(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
     return JS_TRUE;
 }
 
+static JSBool
+Seal(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
+{
+    JSObject *target;
+    JSBool deep = JS_FALSE;
+
+    if (!JS_ConvertArguments(cx, argc, argv, "o/b", &target, &deep))
+        return JS_FALSE;
+    if (!target)
+        return JS_TRUE;
+    return JS_SealObject(cx, target, deep);
+}
+
+static JSBool
+Unseal(JSContext *cx, JSObject *obj, uintN argc, jsval *argv, jsval *rval)
+{
+    JSObject *target;
+    JSBool deep = JS_FALSE;
+
+    if (!JS_ConvertArguments(cx, argc, argv, "o/b", &target, &deep))
+        return JS_FALSE;
+    if (!target)
+        return JS_TRUE;
+    return JS_UnsealObject(cx, target, deep);
+}
+
 static JSFunctionSpec shell_functions[] = {
     {"version",         Version,        0},
     {"options",         Options,        0},
@@ -1445,6 +1470,8 @@ static JSFunctionSpec shell_functions[] = {
     {"clear",           Clear,          0},
     {"intern",          Intern,         1},
     {"clone",           Clone,          1},
+    {"seal",            Seal,           1, 0, 1},
+    {"unseal",          Unseal,         1, 0, 1},
     {0}
 };
 
@@ -1479,6 +1506,8 @@ static char *shell_help_messages[] = {
     "clear([obj])           Clear properties of object",
     "intern(str)            Internalize str in the atom table",
     "clone(fun[, scope])    Clone function object",
+    "seal(obj[, deep])      Seal object, or object graph if deep",
+    "unseal(obj[, deep])    Unseal object, or object graph if deep",
     0
 };
 

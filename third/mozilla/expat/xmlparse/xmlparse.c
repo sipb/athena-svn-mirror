@@ -900,6 +900,12 @@ int XML_Parse(XML_Parser parser, const char *s, int len, int isFinal)
     errorCode = processor(parser, bufferPtr, parseEndPtr = bufferEnd, 0);
     if (errorCode == XML_ERROR_NONE)
       return 1;
+    if (errorCode == XML_ERROR_PARSER_BLOCKED) {
+      bufferPtr = eventPtr;
+      parseEndPtr = eventEndPtr;
+      XmlUpdatePosition(encoding, positionPtr, eventEndPtr, &position);
+      return 0;
+    }
     eventEndPtr = eventPtr;
     processor = errorProcessor;
     return 0;
@@ -2707,7 +2713,7 @@ doProlog(XML_Parser parser,
 	  dtd.complete = 0;
 	  entity->open = 1;
 	  if (!externalEntityRefHandler(externalEntityRefHandlerArg,
-					0,
+					entity->name, /* Mozilla bug 191482 */
 					entity->base,
 					entity->systemId,
 					entity->publicId)) {

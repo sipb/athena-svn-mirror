@@ -40,7 +40,6 @@
 #include "nsIDOMNSHTMLTextAreaElement.h"
 #include "nsITextControlElement.h"
 #include "nsIControllers.h"
-#include "nsIEditorController.h"
 #include "nsContentCID.h"
 #include "nsCOMPtr.h"
 #include "nsIComponentManager.h"
@@ -52,14 +51,12 @@
 #include "nsIHTMLContent.h"
 #include "nsGenericHTMLElement.h"
 #include "nsHTMLAtoms.h"
-#include "nsIStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
 #include "nsHTMLAttributes.h"
 #include "nsIFormControlFrame.h"
 #include "nsITextControlFrame.h"
 #include "nsIEventStateManager.h"
-#include "nsISizeOfHandler.h"
 #include "nsLinebreakConverter.h"
 #include "nsIDocument.h"
 #include "nsIPresShell.h"
@@ -109,15 +106,15 @@ public:
   NS_DECL_NSITEXTAREAELEMENT
 
   // nsIFormControl
-  NS_IMETHOD GetType(PRInt32* aType);
+  NS_IMETHOD_(PRInt32) GetType() { return NS_FORM_TEXTAREA; }
   NS_IMETHOD Reset();
   NS_IMETHOD SubmitNamesValues(nsIFormSubmission* aFormSubmission,
                                nsIContent* aSubmitElement);
   NS_IMETHOD SaveState();
   NS_IMETHOD RestoreState(nsIPresState* aState);
 
-  // nsITextControlElement
-  NS_IMETHOD SetValueGuaranteed(const nsAString& aValue, nsITextControlFrame* aFrame);
+  // nsITextControlElemet
+  NS_IMETHOD TakeTextFrameValue(const nsAString& aValue);
   NS_IMETHOD SetValueChanged(PRBool aValueChanged);
 
   // nsIContent
@@ -143,16 +140,14 @@ public:
   nsresult GetInnerHTML(nsAString& aInnerHTML);
   nsresult SetInnerHTML(const nsAString& aInnerHTML);
 
-#ifdef DEBUG
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
-#endif
-
 protected:
   nsCOMPtr<nsIControllers> mControllers;
   /** The current value.  This is null if the frame owns the value. */
   char*                    mValue;
   /** Whether or not the value has changed since its default value was given. */
   PRPackedBool             mValueChanged;
+  /** Whether or not we are already handling select event. */
+  PRPackedBool             mHandlingSelect;
 
   NS_IMETHOD SelectAll(nsIPresContext* aPresContext);
   /**
@@ -163,6 +158,10 @@ protected:
    *        wrap=hard.
    */
   void GetValueInternal(nsAString& aValue, PRBool aIgnoreWrap);
+
+  nsresult SetValueInternal(const nsAString& aValue,
+                            nsITextControlFrame* aFrame);
+  nsresult GetSelectionRange(PRInt32* aSelectionStart, PRInt32* aSelectionEnd);
 };
 
 nsresult
@@ -193,13 +192,17 @@ NS_NewHTMLTextAreaElement(nsIHTMLContent** aInstancePtrResult,
 
 
 nsHTMLTextAreaElement::nsHTMLTextAreaElement()
+  : mValue(nsnull),
+    mValueChanged(PR_FALSE),
+    mHandlingSelect(PR_FALSE)
 {
-  mValue = nsnull;
-  mValueChanged = PR_FALSE;
 }
 
 nsHTMLTextAreaElement::~nsHTMLTextAreaElement()
 {
+  if (mValue) {
+    nsMemory::Free(mValue);
+  }
 }
 
 
@@ -454,10 +457,20 @@ nsHTMLTextAreaElement::GetValueInternal(nsAString& aValue, PRBool aIgnoreWrap)
   }
 }
 
-
 NS_IMETHODIMP
-nsHTMLTextAreaElement::SetValueGuaranteed(const nsAString& aValue,
-                                          nsITextControlFrame* aFrame)
+nsHTMLTextAreaElement::TakeTextFrameValue(const nsAString& aValue)
+{
+  if (mValue) {
+    nsMemory::Free(mValue);
+  }
+  mValue = ToNewUTF8String(aValue);
+  SetValueChanged(PR_TRUE);
+  return NS_OK;
+}
+
+nsresult
+nsHTMLTextAreaElement::SetValueInternal(const nsAString& aValue,
+                                        nsITextControlFrame* aFrame)
 {
   nsITextControlFrame* textControlFrame = aFrame;
   nsIFormControlFrame* formControlFrame = textControlFrame;
@@ -497,7 +510,7 @@ nsHTMLTextAreaElement::SetValueGuaranteed(const nsAString& aValue,
 NS_IMETHODIMP 
 nsHTMLTextAreaElement::SetValue(const nsAString& aValue)
 {
-  return SetValueGuaranteed(aValue, nsnull);
+  return SetValueInternal(aValue, nsnull);
 }
 
 
@@ -584,7 +597,7 @@ nsHTMLTextAreaElement::StringToAttribute(nsIAtom* aAttribute,
     return NS_CONTENT_ATTR_HAS_VALUE;
   }
   else if (aAttribute == nsHTMLAtoms::cols) {
-    if (ParseValue(aValue, 0, aResult, eHTMLUnit_Integer)) {
+    if (aResult.ParseIntWithBounds(aValue, eHTMLUnit_Integer, 0)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
@@ -593,12 +606,12 @@ nsHTMLTextAreaElement::StringToAttribute(nsIAtom* aAttribute,
     return NS_CONTENT_ATTR_HAS_VALUE;
   }
   else if (aAttribute == nsHTMLAtoms::rows) {
-    if (ParseValue(aValue, 0, aResult, eHTMLUnit_Integer)) {
+    if (aResult.ParseIntWithBounds(aValue, eHTMLUnit_Integer, 0)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
   else if (aAttribute == nsHTMLAtoms::tabindex) {
-    if (ParseValue(aValue, 0, aResult, eHTMLUnit_Integer)) {
+    if (aResult.ParseIntWithBounds(aValue, eHTMLUnit_Integer, 0)) {
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   }
@@ -625,15 +638,19 @@ nsHTMLTextAreaElement::GetMappedAttributeImpact(const nsIAtom* aAttribute, PRInt
   // rows and cols and why the AttributeChanged method in
   // nsTextControlFrame does take care of the entire problem, but
   // it doesn't and this makes things better
-  if (aAttribute == nsHTMLAtoms::align ||
-      aAttribute == nsHTMLAtoms::rows ||
-      aAttribute == nsHTMLAtoms::cols) {
-    aHint = NS_STYLE_HINT_REFLOW;
-  }
-  else if (!GetCommonMappedAttributesImpact(aAttribute, aHint)) {
-    aHint = NS_STYLE_HINT_CONTENT;
-  }
+  static const AttributeImpactEntry attributes[] = {
+    { &nsHTMLAtoms::align, NS_STYLE_HINT_REFLOW },
+    { &nsHTMLAtoms::rows, NS_STYLE_HINT_REFLOW },
+    { &nsHTMLAtoms::cols, NS_STYLE_HINT_REFLOW },
+    { nsnull, NS_STYLE_HINT_NONE }
+  };
 
+  static const AttributeImpactEntry* const map[] = {
+    attributes,
+    sCommonAttributeMap,
+  };
+
+  FindAttributeImpact(aAttribute, aHint, map, NS_ARRAY_LENGTH(map));
   return NS_OK;
 }
 
@@ -663,17 +680,21 @@ nsHTMLTextAreaElement::HandleDOMEvent(nsIPresContext* aPresContext,
   nsIFrame* formFrame = nsnull;
 
   if (formControlFrame &&
-      NS_SUCCEEDED(formControlFrame->QueryInterface(NS_GET_IID(nsIFrame),
-                                                    (void **)&formFrame)) &&
+      NS_SUCCEEDED(CallQueryInterface(formControlFrame, &formFrame)) &&
       formFrame) {
-    const nsStyleUserInterface* uiStyle;
-    formFrame->GetStyleData(eStyleStruct_UserInterface,
-                            (const nsStyleStruct *&)uiStyle);
+    const nsStyleUserInterface* uiStyle = formFrame->GetStyleUserInterface();
 
     if (uiStyle->mUserInput == NS_STYLE_USER_INPUT_NONE ||
         uiStyle->mUserInput == NS_STYLE_USER_INPUT_DISABLED) {
       return NS_OK;
     }
+  }
+
+  PRBool isSelectEvent = (aEvent->message == NS_FORM_SELECTED);
+  // Don't dispatch a second select event if we are already handling
+  // one.
+  if (isSelectEvent && mHandlingSelect) {
+    return NS_OK;
   }
 
   // We have anonymous content underneath
@@ -726,9 +747,17 @@ nsHTMLTextAreaElement::HandleDOMEvent(nsIPresContext* aPresContext,
     aEvent->flags &= ~NS_EVENT_FLAG_NO_CONTENT_DISPATCH;
   }
 
+  if (isSelectEvent) {
+    mHandlingSelect = PR_TRUE;
+  }
+
   rv = nsGenericHTMLContainerFormElement::HandleDOMEvent(aPresContext, aEvent,
                                                          aDOMEvent,
                                                          aFlags, aEventStatus);
+
+  if (isSelectEvent) {
+    mHandlingSelect = PR_FALSE;
+  }
 
   // Reset the flag for other content besides this text field
   aEvent->flags |= noContentDispatch ? NS_EVENT_FLAG_NO_CONTENT_DISPATCH : NS_EVENT_FLAG_NONE;
@@ -761,15 +790,6 @@ nsHTMLTextAreaElement::DoneAddingChildren()
   return NS_OK;
 }
 
-// nsIFormControl
-
-NS_IMETHODIMP
-nsHTMLTextAreaElement::GetType(PRInt32* aType)
-{
-  NS_ASSERTION(aType, "Null pointer bad!");
-  *aType = NS_FORM_TEXTAREA;
-  return NS_OK;
-}
 
 nsresult
 nsHTMLTextAreaElement::GetInnerHTML(nsAString& aInnerHTML)
@@ -783,19 +803,6 @@ nsHTMLTextAreaElement::SetInnerHTML(const nsAString& aInnerHTML)
   return ReplaceContentsWithText(aInnerHTML, PR_TRUE);
 }
 
-
-#ifdef DEBUG
-NS_IMETHODIMP
-nsHTMLTextAreaElement::SizeOf(nsISizeOfHandler* aSizer,
-                              PRUint32* aResult) const
-{
-  *aResult = sizeof(*this) + BaseSizeOf(aSizer);
-
-  return NS_OK;
-}
-#endif
-
-
 // Controllers Methods
 
 NS_IMETHODIMP
@@ -805,24 +812,11 @@ nsHTMLTextAreaElement::GetControllers(nsIControllers** aResult)
 
   if (!mControllers)
   {
-    NS_ENSURE_SUCCESS (
-      nsComponentManager::CreateInstance(kXULControllersCID,
-                                         nsnull,
-                                         NS_GET_IID(nsIControllers),
-                                         getter_AddRefs(mControllers)),
-      NS_ERROR_FAILURE);
-    if (!mControllers) { return NS_ERROR_NULL_POINTER; }
-
     nsresult rv;
+    mControllers = do_CreateInstance(kXULControllersCID, &rv);
+    NS_ENSURE_SUCCESS(rv, rv);
+
     nsCOMPtr<nsIController> controller = do_CreateInstance("@mozilla.org/editor/editorcontroller;1", &rv);
-    if (NS_FAILED(rv))
-      return rv;
-
-    nsCOMPtr<nsIEditorController> editorController = do_QueryInterface(controller, &rv);
-    if (NS_FAILED(rv))
-      return rv;
-
-    rv = editorController->Init(nsnull);
     if (NS_FAILED(rv))
       return rv;
 
@@ -850,63 +844,88 @@ NS_IMETHODIMP
 nsHTMLTextAreaElement::GetSelectionStart(PRInt32 *aSelectionStart)
 {
   NS_ENSURE_ARG_POINTER(aSelectionStart);
-  nsCOMPtr<nsIFormControlFrame> formControlFrame = getter_AddRefs(GetFormControlFrame(PR_TRUE));
-
-  nsCOMPtr<nsITextControlFrame>
-    textControlFrame(do_QueryInterface(formControlFrame));
-    
-  if (textControlFrame) {
-    PRInt32 selectionEnd;
-    return textControlFrame->GetSelectionRange(aSelectionStart, &selectionEnd);
-  }
-
-  return NS_OK;
+  
+  PRInt32 selEnd;
+  return GetSelectionRange(aSelectionStart, &selEnd);
 }
 
 NS_IMETHODIMP
 nsHTMLTextAreaElement::SetSelectionStart(PRInt32 aSelectionStart)
 {
-  nsCOMPtr<nsIFormControlFrame> formControlFrame = getter_AddRefs(GetFormControlFrame(PR_TRUE));
+  nsresult rv = NS_ERROR_FAILURE;
+  nsIFormControlFrame* formControlFrame = GetFormControlFrame(PR_TRUE);
 
-  nsCOMPtr<nsITextControlFrame>
-    textControlFrame(do_QueryInterface(formControlFrame));
+  if (formControlFrame){
+    nsITextControlFrame* textControlFrame = nsnull;
+    CallQueryInterface(formControlFrame, &textControlFrame);
 
-  if (textControlFrame)
-    textControlFrame->SetSelectionStart(aSelectionStart);
+    if (textControlFrame)
+      rv = textControlFrame->SetSelectionStart(aSelectionStart);
+  }
 
-  return NS_OK;
+  return rv;
 }
 
 NS_IMETHODIMP
 nsHTMLTextAreaElement::GetSelectionEnd(PRInt32 *aSelectionEnd)
 {
   NS_ENSURE_ARG_POINTER(aSelectionEnd);
-  nsCOMPtr<nsIFormControlFrame> formControlFrame = getter_AddRefs(GetFormControlFrame(PR_TRUE));
-
-  nsCOMPtr<nsITextControlFrame>
-    textControlFrame(do_QueryInterface(formControlFrame));
-    
-  if (textControlFrame) {
-    PRInt32 selectionStart;
-    return textControlFrame->GetSelectionRange(&selectionStart, aSelectionEnd);
-  }
-
-  return NS_OK;
+  
+  PRInt32 selStart;
+  return GetSelectionRange(&selStart, aSelectionEnd);
 }
 
 NS_IMETHODIMP
 nsHTMLTextAreaElement::SetSelectionEnd(PRInt32 aSelectionEnd)
 {
-  nsCOMPtr<nsIFormControlFrame> formControlFrame = getter_AddRefs(GetFormControlFrame(PR_TRUE));
+  nsresult rv = NS_ERROR_FAILURE;
+  nsIFormControlFrame* formControlFrame = GetFormControlFrame(PR_TRUE);
 
-  nsCOMPtr<nsITextControlFrame>
-    textControlFrame(do_QueryInterface(formControlFrame));
+  if (formControlFrame) {
+    nsITextControlFrame* textControlFrame = nsnull;
+    CallQueryInterface(formControlFrame, &textControlFrame);
 
-  if (textControlFrame)
-    textControlFrame->SetSelectionEnd(aSelectionEnd);
+    if (textControlFrame)
+      rv = textControlFrame->SetSelectionEnd(aSelectionEnd);
+  }
 
-  return NS_OK;
+  return rv;
 }
+
+nsresult
+nsHTMLTextAreaElement::GetSelectionRange(PRInt32* aSelectionStart,
+                                      PRInt32* aSelectionEnd)
+{
+  nsresult rv = NS_ERROR_FAILURE;
+  nsIFormControlFrame* formControlFrame = GetFormControlFrame(PR_TRUE);
+
+  if (formControlFrame) {
+    nsITextControlFrame* textControlFrame = nsnull;
+    CallQueryInterface(formControlFrame, &textControlFrame);
+
+    if (textControlFrame)
+      rv = textControlFrame->GetSelectionRange(aSelectionStart, aSelectionEnd);
+  }
+
+  return rv;
+}
+
+NS_IMETHODIMP
+nsHTMLTextAreaElement::SetSelectionRange(PRInt32 aSelectionStart, PRInt32 aSelectionEnd)
+{ 
+  nsresult rv = NS_ERROR_FAILURE;
+  nsIFormControlFrame* formControlFrame = GetFormControlFrame(PR_TRUE);
+
+  if (formControlFrame) {
+    nsITextControlFrame* textControlFrame = nsnull;
+    CallQueryInterface(formControlFrame, &textControlFrame);
+
+    if (textControlFrame)
+      rv = textControlFrame->SetSelectionRange(aSelectionStart, aSelectionEnd);
+  }
+
+  return rv;
+} 
 
 nsresult
 nsHTMLTextAreaElement::Reset()

@@ -34,7 +34,7 @@
 #include "nsIPresContext.h"
 #include "nsIPresShell.h"
 #include "nsIStyleSet.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsStyleChangeList.h"
 #include "nsIEventQueueService.h"
 #include "nsIServiceManager.h"
@@ -44,6 +44,8 @@
 #include "pldhash.h"
 #include "nsPlaceholderFrame.h"
 #include "nsLayoutAtoms.h"
+#include "nsCSSAnonBoxes.h"
+#include "nsCSSPseudoElements.h"
 #include "nsHTMLAtoms.h"
 #ifdef NS_DEBUG
 #include "nsISupportsArray.h"
@@ -69,10 +71,14 @@
 #include "nsIDOMHTMLFormElement.h"
 #include "nsIForm.h"
 #include "nsIContentList.h"
+#include "nsContentUtils.h"
 #include "nsReadableUtils.h"
 #include "nsUnicharUtils.h"
 #include "nsPrintfCString.h"
 #include "nsDummyLayoutRequest.h"
+#include "nsLayoutErrors.h"
+#include "nsLayoutUtils.h"
+#include "nsAutoPtr.h"
 
   #ifdef DEBUG
     //#define NOISY_DEBUG
@@ -195,26 +201,23 @@ MOZ_DECL_CTOR_COUNTER(UndisplayedNode)
 
 class UndisplayedNode {
 public:
-  UndisplayedNode(nsIContent* aContent, nsIStyleContext* aStyle)
+  UndisplayedNode(nsIContent* aContent, nsStyleContext* aStyle)
+    : mContent(aContent),
+      mStyle(aStyle),
+      mNext(nsnull)
   {
     MOZ_COUNT_CTOR(UndisplayedNode);
-    mContent = aContent;
-    mStyle = aStyle;
-    NS_ADDREF(mStyle);
-    mNext = nsnull;
-  }
-  ~UndisplayedNode(void)
-  {
-    MOZ_COUNT_DTOR(UndisplayedNode);
-    NS_RELEASE(mStyle);
-    if (mNext) {
-      delete mNext;
-    }
   }
 
-  nsIContent*       mContent;
-  nsIStyleContext*  mStyle;
-  UndisplayedNode*  mNext;
+  ~UndisplayedNode()
+  {
+    MOZ_COUNT_DTOR(UndisplayedNode);
+    delete mNext;
+  }
+
+  nsCOMPtr<nsIContent>      mContent;
+  nsRefPtr<nsStyleContext>  mStyle;
+  UndisplayedNode*          mNext;
 };
 
 class UndisplayedMap {
@@ -224,7 +227,7 @@ public:
 
   UndisplayedNode* GetFirstNode(nsIContent* aParentContent);
 
-  nsresult AddNodeFor(nsIContent* aParentContent, nsIContent* aChild, nsIStyleContext* aStyle);
+  nsresult AddNodeFor(nsIContent* aParentContent, nsIContent* aChild, nsStyleContext* aStyle);
 
   nsresult RemoveNodeFor(nsIContent* aParentContent, UndisplayedNode* aNode);
   nsresult RemoveNodesFor(nsIContent* aParentContent);
@@ -251,6 +254,9 @@ class FrameManager;
 struct CantRenderReplacedElementEvent : public PLEvent {
   CantRenderReplacedElementEvent(FrameManager* aFrameManager, nsIFrame* aFrame, nsIPresShell* aPresShell);
   ~CantRenderReplacedElementEvent();
+  // XXXldb Should the pres shell maintain a reference count on a single
+  // dummy layout request instead of doing creation of a separate one
+  // here (and per-event!)?
   nsresult AddLoadGroupRequest(nsIPresShell* aPresShell);
   nsresult RemoveLoadGroupRequest();
 
@@ -296,8 +302,8 @@ public:
   NS_IMETHOD ClearPlaceholderFrameMap();
 
   // Undisplayed content functions
-  NS_IMETHOD GetUndisplayedContent(nsIContent* aContent, nsIStyleContext** aStyleContext);
-  NS_IMETHOD SetUndisplayedContent(nsIContent* aContent, nsIStyleContext* aStyleContext);
+  virtual nsStyleContext* GetUndisplayedContent(nsIContent* aContent);
+  virtual void SetUndisplayedContent(nsIContent* aContent, nsStyleContext* aStyleContext);
   NS_IMETHOD ClearUndisplayedContentIn(nsIContent* aContent, nsIContent* aParentContent);
   NS_IMETHOD ClearAllUndisplayedContentIn(nsIContent* aParentContent);
   NS_IMETHOD ClearUndisplayedContentMap();
@@ -333,7 +339,7 @@ public:
 
   NS_IMETHOD ReParentStyleContext(nsIPresContext* aPresContext,
                                   nsIFrame* aFrame, 
-                                  nsIStyleContext* aNewParentContext);
+                                  nsStyleContext* aNewParentContext);
   NS_IMETHOD ComputeStyleChangeFor(nsIPresContext* aPresContext,
                                    nsIFrame* aFrame, 
                                    PRInt32 aAttrNameSpaceID,
@@ -341,8 +347,11 @@ public:
                                    nsStyleChangeList& aChangeList,
                                    nsChangeHint aMinChange,
                                    nsChangeHint& aTopLevelChange);
-  NS_IMETHOD AttributeAffectsStyle(nsIAtom *aAttribute, nsIContent *aContent,
-                                   PRBool &aAffects);
+  NS_IMETHOD HasAttributeDependentStyle(nsIPresContext *aPresContext,
+                                        nsIContent *aContent,
+                                        nsIAtom *aAttribute,
+                                        PRInt32 aModType,
+                                        PRBool *aResult);
 
   // Capture state from the entire frame heirarchy and store in aState
   NS_IMETHOD CaptureFrameState(nsIPresContext*        aPresContext,
@@ -360,19 +369,15 @@ public:
                                nsIFrame*              aFrame,
                                nsILayoutHistoryState* aState,
                                nsIStatefulFrame::SpecialStateID aID = nsIStatefulFrame::eNoID);
-  NS_IMETHOD GenerateStateKey(nsIContent* aContent,
-                              nsIStatefulFrame::SpecialStateID aID,
-                              nsACString& aString);
-
   // Gets and sets properties on a given frame
   NS_IMETHOD GetFrameProperty(nsIFrame* aFrame,
                               nsIAtom*  aPropertyName,
                               PRUint32  aOptions,
                               void**    aPropertyValue);
-  NS_IMETHOD SetFrameProperty(nsIFrame*            aFrame,
-                              nsIAtom*             aPropertyName,
-                              void*                aPropertyValue,
-                              NSFMPropertyDtorFunc aPropDtorFunc);
+  NS_IMETHOD SetFrameProperty(nsIFrame*               aFrame,
+                              nsIAtom*                aPropertyName,
+                              void*                   aPropertyValue,
+                              NSFramePropertyDtorFunc aPropDtorFunc);
   NS_IMETHOD RemoveFrameProperty(nsIFrame* aFrame,
                                  nsIAtom*  aPropertyName);
 
@@ -381,13 +386,13 @@ public:
 #endif
 
   struct PropertyList {
-    nsCOMPtr<nsIAtom>    mName;          // property name
-    PLDHashTable         mFrameValueMap; // map of frame/value pairs
-    NSFMPropertyDtorFunc mDtorFunc;      // property specific value dtor function
-    PropertyList*        mNext;
+    nsCOMPtr<nsIAtom>       mName;          // property name
+    PLDHashTable            mFrameValueMap; // map of frame/value pairs
+    NSFramePropertyDtorFunc mDtorFunc;      // property specific value dtor function
+    PropertyList*           mNext;
 
-    PropertyList(nsIAtom*             aName,
-                 NSFMPropertyDtorFunc aDtorFunc);
+    PropertyList(nsIAtom*                aName,
+                 NSFramePropertyDtorFunc aDtorFunc);
     ~PropertyList();
 
     // Removes the property associated with the given frame, and destroys
@@ -407,8 +412,6 @@ private:
   UndisplayedMap*                 mUndisplayedMap;
   CantRenderReplacedElementEvent* mPostedEvents;
   PropertyList*                   mPropertyList;
-  nsCOMPtr<nsIContentList>        mHTMLForms;
-  nsCOMPtr<nsIContentList>        mHTMLFormControls;
   PRBool                          mIsDestroyingFrames;
 
   void ReResolveStyleContext(nsIPresContext* aPresContext,
@@ -434,7 +437,7 @@ private:
 
 //----------------------------------------------------------------------
 
-NS_EXPORT nsresult
+nsresult
 NS_NewFrameManager(nsIFrameManager** aInstancePtrResult)
 {
   NS_ENSURE_ARG_POINTER(aInstancePtrResult);
@@ -450,7 +453,6 @@ NS_NewFrameManager(nsIFrameManager** aInstancePtrResult)
 
 FrameManager::FrameManager()
 {
-  NS_INIT_ISUPPORTS();
 }
 
 FrameManager::~FrameManager()
@@ -469,23 +471,6 @@ FrameManager::Init(nsIPresShell* aPresShell,
 
   mPresShell = aPresShell;
   mStyleSet = aStyleSet;
-
-  // Force the forms and form control content lists to be added as
-  // document observers *before* us (pres shell) so they will be
-  // up to date when we try to use them.
-  nsCOMPtr<nsIDocument> document;
-  mPresShell->GetDocument(getter_AddRefs(document));
-  nsCOMPtr<nsIHTMLDocument> htmlDocument(do_QueryInterface(document));
-  nsCOMPtr<nsIDOMHTMLDocument> domHtmlDocument(do_QueryInterface(htmlDocument));
-  if (domHtmlDocument) {
-    nsCOMPtr<nsIDOMHTMLCollection> forms;
-    domHtmlDocument->GetForms(getter_AddRefs(forms));
-    mHTMLForms = do_QueryInterface(forms);
-
-    nsCOMPtr<nsIDOMNodeList> formControls;
-    htmlDocument->GetFormControlElements(getter_AddRefs(formControls));
-    mHTMLFormControls = do_QueryInterface(formControls);
-  }
 
   return NS_OK;
 }
@@ -783,6 +768,8 @@ FrameManager::RegisterPlaceholderFrame(nsPlaceholderFrame* aPlaceholderFrame)
                               PL_DHASH_ADD));
   if (!entry)
     return NS_ERROR_OUT_OF_MEMORY;
+
+  NS_ASSERTION(!entry->placeholderFrame, "Registering a placeholder for a frame that already has a placeholder!");
   entry->placeholderFrame = aPlaceholderFrame;
   return NS_OK;
 }
@@ -829,36 +816,32 @@ FrameManager::ClearPlaceholderFrameMap()
 
 //----------------------------------------------------------------------
 
-NS_IMETHODIMP
-FrameManager::GetUndisplayedContent(nsIContent* aContent, nsIStyleContext** aResult)
+nsStyleContext*
+FrameManager::GetUndisplayedContent(nsIContent* aContent)
 {
-  NS_ENSURE_ARG_POINTER(aContent);
-  *aResult = nsnull;  // initialize out param
-
-  if (!mUndisplayedMap)
-    return NS_OK;
+  if (!aContent || !mUndisplayedMap)
+    return nsnull;
 
   nsCOMPtr<nsIContent> parent;
   aContent->GetParent(*getter_AddRefs(parent));
   if (!parent)
-    return NS_OK;
+    return nsnull;
 
   for (UndisplayedNode* node = mUndisplayedMap->GetFirstNode(parent);
          node; node = node->mNext) {
-    if (node->mContent == aContent) {
-      *aResult = node->mStyle;
-      NS_ADDREF(*aResult);
-      return NS_OK;
-    }
+    if (node->mContent == aContent)
+      return node->mStyle;
   }
-  return NS_OK;
+
+  return nsnull;
 }
   
-NS_IMETHODIMP
+void
 FrameManager::SetUndisplayedContent(nsIContent* aContent, 
-                                    nsIStyleContext* aStyleContext)
+                                    nsStyleContext* aStyleContext)
 {
-  NS_ENSURE_TRUE(mPresShell, NS_ERROR_NOT_AVAILABLE);
+  if (!mPresShell)
+    return;
   
 #ifdef DEBUG_UNDISPLAYED_MAP
    static int i = 0;
@@ -869,17 +852,14 @@ FrameManager::SetUndisplayedContent(nsIContent* aContent,
     mUndisplayedMap = new UndisplayedMap;
   }
   if (mUndisplayedMap) {
-    nsresult result = NS_OK;
     nsIContent* parent = nsnull;
     aContent->GetParent(parent);
     NS_ASSERTION(parent, "undisplayed content must have a parent");
     if (parent) {
-      result = mUndisplayedMap->AddNodeFor(parent, aContent, aStyleContext);
+      mUndisplayedMap->AddNodeFor(parent, aContent, aStyleContext);
       NS_RELEASE(parent);
     }
-    return result;
   }
-  return NS_ERROR_OUT_OF_MEMORY;
 }
 
 NS_IMETHODIMP
@@ -903,8 +883,7 @@ FrameManager::ClearUndisplayedContentIn(nsIContent* aContent, nsIContent* aParen
 #endif
 #ifdef DEBUG
         // make sure that there are no more entries for the same content
-        nsIStyleContext *context = nsnull;
-        GetUndisplayedContent(aContent, &context);
+        nsStyleContext *context = GetUndisplayedContent(aContent);
         NS_ASSERTION(context == nsnull, "Found more undisplayed content data after removal");
 #endif
         return rv;
@@ -1136,8 +1115,9 @@ FrameManager::DequeuePostedEventFor(nsIFrame* aFrame)
         NS_ASSERTION(plqueue,
             "will crash soon due to event holding dangling pointer to frame");
         if (plqueue) {
-          // Removes the event and destroys it
+          // Remove the event and then destroy it
           PL_DequeueEvent(tmp, plqueue);
+          PL_DestroyEvent(tmp);
         }
       }
     }
@@ -1301,7 +1281,7 @@ FrameManager::CantRenderReplacedElement(nsIPresContext* aPresContext,
 
 #ifdef NS_DEBUG
 static void
-DumpContext(nsIFrame* aFrame, nsIStyleContext* aContext)
+DumpContext(nsIFrame* aFrame, nsStyleContext* aContext)
 {
   if (aFrame) {
     fputs("frame: ", stdout);
@@ -1317,14 +1297,12 @@ DumpContext(nsIFrame* aFrame, nsIStyleContext* aContext)
   if (aContext) {
     fprintf(stdout, " style: %p ", NS_STATIC_CAST(void*, aContext));
 
-    nsIAtom* pseudoTag;
-    aContext->GetPseudoType(pseudoTag);
+    nsCOMPtr<nsIAtom> pseudoTag = aContext->GetPseudoType();
     if (pseudoTag) {
       nsAutoString  buffer;
       pseudoTag->ToString(buffer);
       fputs(NS_LossyConvertUCS2toASCII(buffer).get(), stdout);
       fputs(" ", stdout);
-      NS_RELEASE(pseudoTag);
     }
 
 /* XXXdwh fix debugging here.  Need to add a List method to nsRuleNode
@@ -1351,11 +1329,11 @@ DumpContext(nsIFrame* aFrame, nsIStyleContext* aContext)
 }
 
 static void
-VerifySameTree(nsIStyleContext* aContext1, nsIStyleContext* aContext2)
+VerifySameTree(nsStyleContext* aContext1, nsStyleContext* aContext2)
 {
-  nsCOMPtr<nsIStyleContext> top1 = aContext1;
-  nsCOMPtr<nsIStyleContext> top2 = aContext2;
-  nsCOMPtr<nsIStyleContext> parent;
+  nsStyleContext* top1 = aContext1;
+  nsStyleContext* top2 = aContext2;
+  nsStyleContext* parent;
   for (;;) {
     parent = top1->GetParent();
     if (!parent)
@@ -1374,14 +1352,11 @@ VerifySameTree(nsIStyleContext* aContext1, nsIStyleContext* aContext2)
 
 static void
 VerifyContextParent(nsIPresContext* aPresContext, nsIFrame* aFrame, 
-                    nsIStyleContext* aContext, nsIStyleContext* aParentContext)
+                    nsStyleContext* aContext, nsStyleContext* aParentContext)
 {
   // get the contexts not provided
   if (!aContext) {
-    aFrame->GetStyleContext(&aContext);
-  } else {
-    // addref here so we can release at end
-    NS_ADDREF(aContext);
+    aContext = aFrame->GetStyleContext();
   }
 
   if (!aParentContext) {
@@ -1395,15 +1370,12 @@ VerifyContextParent(nsIPresContext* aPresContext, nsIFrame* aFrame,
     aFrame->GetParentStyleContextFrame(aPresContext,
                                        &providerFrame, &providerIsChild);
     if (providerFrame)
-      providerFrame->GetStyleContext(&aParentContext);
+      aParentContext = providerFrame->GetStyleContext();
     // aParentContext could still be null
-  } else {
-    // addref the parent context so we can release it at end
-    NS_ADDREF(aParentContext);
   }
 
   NS_ASSERTION(aContext, "Failure to get required contexts");
-  nsCOMPtr<nsIStyleContext> actualParentContext = aContext->GetParent();
+  nsStyleContext* actualParentContext = aContext->GetParent();
 
   if (aParentContext) {
     if (aParentContext != actualParentContext) {
@@ -1429,17 +1401,12 @@ VerifyContextParent(nsIPresContext* aPresContext, nsIFrame* aFrame,
       fputs("Should be null\n\n", stdout);
     }
   }
-
-  NS_IF_RELEASE(aParentContext);
-  NS_IF_RELEASE(aContext);
 }
 
 static void
-VerifyStyleTree(nsIPresContext* aPresContext, nsIFrame* aFrame, nsIStyleContext* aParentContext)
+VerifyStyleTree(nsIPresContext* aPresContext, nsIFrame* aFrame, nsStyleContext* aParentContext)
 {
-  nsIStyleContext*  context;
-  aFrame->GetStyleContext(&context);
-
+  nsStyleContext*  context = aFrame->GetStyleContext();
   VerifyContextParent(aPresContext, aFrame, context, nsnull);
 
   PRInt32 listIndex = 0;
@@ -1483,18 +1450,15 @@ VerifyStyleTree(nsIPresContext* aPresContext, nsIFrame* aFrame, nsIStyleContext*
   
   // do additional contexts 
   PRInt32 contextIndex = -1;
-  while (1 == 1) {
-    nsIStyleContext* extraContext = nsnull;
-    aFrame->GetAdditionalStyleContext(++contextIndex, &extraContext);
+  while (1) {
+    nsStyleContext* extraContext = aFrame->GetAdditionalStyleContext(++contextIndex);
     if (extraContext) {
       VerifyContextParent(aPresContext, aFrame, extraContext, context);
-      NS_RELEASE(extraContext);
     }
     else {
       break;
     }
   }
-  NS_RELEASE(context);
 }
 
 NS_IMETHODIMP
@@ -1502,9 +1466,8 @@ FrameManager::DebugVerifyStyleTree(nsIPresContext* aPresContext, nsIFrame* aFram
 {
   NS_ENSURE_TRUE(mPresShell, NS_ERROR_NOT_AVAILABLE);
   if (aFrame) {
-    nsCOMPtr<nsIStyleContext> context;
-    aFrame->GetStyleContext(getter_AddRefs(context));
-    nsCOMPtr<nsIStyleContext> parentContext = context->GetParent();
+    nsStyleContext* context = aFrame->GetStyleContext();
+    nsStyleContext* parentContext = context->GetParent();
     VerifyStyleTree(aPresContext, aFrame, parentContext);
   }
   return NS_OK;
@@ -1515,7 +1478,7 @@ FrameManager::DebugVerifyStyleTree(nsIPresContext* aPresContext, nsIFrame* aFram
 NS_IMETHODIMP
 FrameManager::ReParentStyleContext(nsIPresContext* aPresContext,
                                    nsIFrame* aFrame, 
-                                   nsIStyleContext* aNewParentContext)
+                                   nsStyleContext* aNewParentContext)
 {
   NS_ENSURE_TRUE(mPresShell, NS_ERROR_NOT_AVAILABLE);
   nsresult result = NS_ERROR_NULL_POINTER;
@@ -1524,15 +1487,13 @@ FrameManager::ReParentStyleContext(nsIPresContext* aPresContext,
     DebugVerifyStyleTree(aPresContext, aFrame);
 #endif
 
-    nsIStyleContext* oldContext = nsnull;
-    aFrame->GetStyleContext(&oldContext);
-
+    nsStyleContext* oldContext = aFrame->GetStyleContext();
     if (oldContext) {
-      nsIStyleContext* newContext = nsnull;
-      result = mStyleSet->ReParentStyleContext(aPresContext, 
-                                               oldContext, aNewParentContext,
-                                               &newContext);
-      if (NS_SUCCEEDED(result) && newContext) {
+      nsRefPtr<nsStyleContext> newContext;
+      result = NS_OK;
+      newContext = mStyleSet->ReParentStyleContext(aPresContext, oldContext,
+                                                   aNewParentContext);
+      if (newContext) {
         if (newContext != oldContext) {
           PRInt32 listIndex = 0;
           nsIAtom* childList = nsnull;
@@ -1556,10 +1517,8 @@ FrameManager::ReParentStyleContext(nsIPresContext* aPresContext,
                   result = ReParentStyleContext(aPresContext, outOfFlowFrame, newContext);
 
                   // reparent placeholder's context under out of flow frame
-                  nsIStyleContext*  outOfFlowContext;
-                  outOfFlowFrame->GetStyleContext(&outOfFlowContext);
+                  nsStyleContext* outOfFlowContext = outOfFlowFrame->GetStyleContext();
                   ReParentStyleContext(aPresContext, child, outOfFlowContext);
-                  NS_RELEASE(outOfFlowContext);
                 }
                 else { // regular frame
                   result = ReParentStyleContext(aPresContext, child, newContext);
@@ -1578,20 +1537,15 @@ FrameManager::ReParentStyleContext(nsIPresContext* aPresContext,
 
           // do additional contexts 
           PRInt32 contextIndex = -1;
-          while (1 == 1) {
-            nsIStyleContext* oldExtraContext = nsnull;
-            result = aFrame->GetAdditionalStyleContext(++contextIndex, &oldExtraContext);
-            if (NS_SUCCEEDED(result)) {
-              if (oldExtraContext) {
-                nsIStyleContext* newExtraContext = nsnull;
-                result = mStyleSet->ReParentStyleContext(aPresContext,
-                                                         oldExtraContext, newContext,
-                                                         &newExtraContext);
-                if (NS_SUCCEEDED(result) && newExtraContext) {
-                  aFrame->SetAdditionalStyleContext(contextIndex, newExtraContext);
-                  NS_RELEASE(newExtraContext);
-                }
-                NS_RELEASE(oldExtraContext);
+          while (1) {
+            nsStyleContext* oldExtraContext = aFrame->GetAdditionalStyleContext(++contextIndex);
+            if (oldExtraContext) {
+              nsRefPtr<nsStyleContext> newExtraContext;
+              newExtraContext = mStyleSet->ReParentStyleContext(aPresContext,
+                                                                oldExtraContext,
+                                                                newContext);
+              if (newExtraContext) {
+                aFrame->SetAdditionalStyleContext(contextIndex, newExtraContext);
               }
             }
             else {
@@ -1603,22 +1557,20 @@ FrameManager::ReParentStyleContext(nsIPresContext* aPresContext,
           VerifyStyleTree(aPresContext, aFrame, aNewParentContext);
 #endif
         }
-        NS_RELEASE(newContext);
       }
-      NS_RELEASE(oldContext);
     }
   }
   return result;
 }
 
 static PRBool
-HasAttributeContent(nsIStyleContext* aStyleContext, 
+HasAttributeContent(nsStyleContext* aStyleContext, 
                     PRInt32 aNameSpaceID,
                     nsIAtom* aAttribute)
 {
   PRBool  result = PR_FALSE;
   if (aStyleContext) {
-    const nsStyleContent* content = (const nsStyleContent*)aStyleContext->GetStyleData(eStyleStruct_Content);
+    const nsStyleContent* content = aStyleContext->GetStyleContent();
     PRUint32 count = content->ContentCount();
     while ((0 < count) && (! result)) {
       nsStyleContentType  contentType;
@@ -1654,12 +1606,12 @@ HasAttributeContent(nsIStyleContext* aStyleContext,
 }
 
 static nsChangeHint
-CaptureChange(nsIStyleContext* aOldContext, nsIStyleContext* aNewContext,
+CaptureChange(nsStyleContext* aOldContext, nsStyleContext* aNewContext,
               nsIFrame* aFrame, nsIContent* aContent,
               nsStyleChangeList& aChangeList, nsChangeHint aMinChange)
 {
   nsChangeHint ourChange = NS_STYLE_HINT_NONE;
-  aOldContext->CalcStyleDifference(aNewContext, ourChange);
+  ourChange = aOldContext->CalcStyleDifference(aNewContext);
   if (NS_UpdateHint(aMinChange, ourChange)) {
     aChangeList.AppendChange(aFrame, aContent, ourChange);
   }
@@ -1680,11 +1632,16 @@ FrameManager::ReResolveStyleContext(nsIPresContext* aPresContext,
   // duplication.  (Or should we just let |GetContext| handle that?)
   // Getting the hint would be nice too, but that's harder.
 
-  nsIStyleContext* oldContext = nsnull; 
-  nsresult result = aFrame->GetStyleContext(&oldContext);
-  if (NS_SUCCEEDED(result) && oldContext) {
-    nsIAtom* pseudoTag = nsnull;
-    oldContext->GetPseudoType(pseudoTag);
+  // XXXbryner we may be able to avoid some of the refcounting goop here.
+  // We do need a reference to oldContext for the lifetime of this function, and it's possible
+  // that the frame has the last reference to it, so AddRef it here.
+
+  nsStyleContext* oldContext = aFrame->GetStyleContext();
+  nsresult result = NS_OK;
+
+  if (oldContext) {
+    oldContext->AddRef();
+    nsCOMPtr<nsIAtom> pseudoTag = oldContext->GetPseudoType();
     nsIContent* localContent = nsnull;
     nsIContent* content = nsnull;
     result = aFrame->GetContent(&localContent);
@@ -1702,7 +1659,7 @@ FrameManager::ReResolveStyleContext(nsIPresContext* aPresContext,
       }
     }
 
-    nsCOMPtr<nsIStyleContext> parentContext; 
+    nsStyleContext* parentContext;
     nsIFrame* resolvedChild = nsnull;
     // Get the frame providing the parent style context.  If it is a
     // child, then resolve the provider first.
@@ -1712,7 +1669,9 @@ FrameManager::ReResolveStyleContext(nsIPresContext* aPresContext,
                                        &providerFrame, &providerIsChild); 
     if (!providerIsChild) {
       if (providerFrame)
-        providerFrame->GetStyleContext(getter_AddRefs(parentContext));  
+        parentContext = providerFrame->GetStyleContext();
+      else
+        parentContext = nsnull;
     }
     else {
       // resolve the provider here (before aFrame below)
@@ -1721,33 +1680,47 @@ FrameManager::ReResolveStyleContext(nsIPresContext* aPresContext,
                             aMinChange, aResultChange);
       // The provider's new context becomes the parent context of
       // aFrame's context.
-      providerFrame->GetStyleContext(getter_AddRefs(parentContext)); 
+      parentContext = providerFrame->GetStyleContext();
       // Set |resolvedChild| so we don't bother resolving the
       // provider again.
       resolvedChild = providerFrame;
     }
     
     // do primary context
-    nsIStyleContext* newContext = nsnull;
-    if (pseudoTag == nsHTMLAtoms::mozNonElementPseudo) {
+    nsStyleContext* newContext = nsnull;
+    if (pseudoTag == nsCSSAnonBoxes::mozNonElement) {
       NS_ASSERTION(localContent,
                    "non pseudo-element frame without content node");
-      aPresContext->ResolveStyleContextForNonElement(parentContext,
-                                                     &newContext);
+      newContext = aPresContext->ResolveStyleContextForNonElement(parentContext).get();
     }
     else if (pseudoTag) {
       nsIContent* pseudoContent =
           aParentContent ? aParentContent : localContent;
-      aPresContext->ResolvePseudoStyleContextFor(pseudoContent, pseudoTag,
-                                                 parentContext, 
-                                                 &newContext);
-      NS_RELEASE(pseudoTag);
+      if (pseudoTag == nsCSSPseudoElements::before ||
+          pseudoTag == nsCSSPseudoElements::after) {
+        // XXX what other pseudos do we need to treat like this?
+        newContext = aPresContext->ProbePseudoStyleContextFor(pseudoContent,
+                                                              pseudoTag,
+                                                              parentContext).get();
+        if (!newContext) {
+          // This pseudo should no longer exist; gotta reframe
+          NS_UpdateHint(aMinChange, nsChangeHint_ReconstructFrame);
+          aChangeList.AppendChange(aFrame, pseudoContent,
+                                   nsChangeHint_ReconstructFrame);
+          // We're reframing anyway; just keep the same context
+          newContext = oldContext;
+          newContext->AddRef();
+        }
+      } else {
+        newContext = aPresContext->ResolvePseudoStyleContextFor(pseudoContent,
+                                                                pseudoTag,
+                                                                parentContext).get();
+      }
     }
     else {
       NS_ASSERTION(localContent,
                    "non pseudo-element frame without content node");
-      aPresContext->ResolveStyleContextFor(content, parentContext,
-                                           &newContext);
+      newContext = aPresContext->ResolveStyleContextFor(content, parentContext).get();
     }
     NS_ASSERTION(newContext, "failed to get new style context");
     if (newContext) {
@@ -1761,9 +1734,9 @@ FrameManager::ReResolveStyleContext(nsIPresContext* aPresContext,
           // we can use FindChildWithRules to keep a lot of the old
           // style contexts around.  However, we need to start from the
           // same root.
-          NS_RELEASE(newContext);
+          newContext->Release();
           newContext = oldContext;
-          NS_ADDREF(newContext);
+          newContext->AddRef();
         }
       }
 
@@ -1775,17 +1748,17 @@ FrameManager::ReResolveStyleContext(nsIPresContext* aPresContext,
         }
         // if old context had image and new context does not have the same image, 
         // stop the image load for the frame
-        const nsStyleBackground* oldColor = (const nsStyleBackground*)oldContext->GetStyleData(eStyleStruct_Background); 
-        const nsStyleBackground* newColor = (const nsStyleBackground*)newContext->GetStyleData(eStyleStruct_Background);
+        const nsStyleBackground* oldColor = oldContext->GetStyleBackground();
+        const nsStyleBackground* newColor = newContext->GetStyleBackground();
 
-        if(oldColor->mBackgroundImage.Length() > 0 &&
-          oldColor->mBackgroundImage != newColor->mBackgroundImage ){
+        if (oldColor->mBackgroundImage.Length() > 0 &&
+            oldColor->mBackgroundImage != newColor->mBackgroundImage) {
           // stop the image loading for the frame, the image has changed
           aPresContext->StopImagesFor(aFrame);
         }
       }
       else {
-        if (pseudoTag && pseudoTag != nsHTMLAtoms::mozNonElementPseudo &&
+        if (pseudoTag && pseudoTag != nsCSSAnonBoxes::mozNonElement &&
             aAttribute &&
             (!(aMinChange &
                (nsChangeHint_ReflowFrame | nsChangeHint_ReconstructFrame
@@ -1794,7 +1767,7 @@ FrameManager::ReResolveStyleContext(nsIPresContext* aPresContext,
           aChangeList.AppendChange(aFrame, content, NS_STYLE_HINT_REFLOW);
         }
       }
-      NS_RELEASE(oldContext);
+      oldContext->Release();
     }
     else {
       NS_ERROR("resolve style context failed");
@@ -1805,40 +1778,37 @@ FrameManager::ReResolveStyleContext(nsIPresContext* aPresContext,
     // do additional contexts 
     PRInt32 contextIndex = -1;
     while (1 == 1) {
-      nsIStyleContext* oldExtraContext = nsnull;
-      result = aFrame->GetAdditionalStyleContext(++contextIndex, &oldExtraContext);
-      if (NS_SUCCEEDED(result)) {
-        if (oldExtraContext) {
-          nsIStyleContext* newExtraContext = nsnull;
-          oldExtraContext->GetPseudoType(pseudoTag);
-          NS_ASSERTION(pseudoTag &&
-                       pseudoTag != nsHTMLAtoms::mozNonElementPseudo,
-                       "extra style context is not pseudo element");
-          result = aPresContext->ResolvePseudoStyleContextFor(content, pseudoTag, newContext,
-                                                              &newExtraContext);
-          NS_RELEASE(pseudoTag);
-          if (NS_SUCCEEDED(result) && newExtraContext) {
-            if (oldExtraContext != newExtraContext) {
-              aMinChange = CaptureChange(oldExtraContext, newExtraContext, aFrame, 
-                                         content, aChangeList, aMinChange);
-              if (!(aMinChange & (nsChangeHint_ReconstructFrame | nsChangeHint_ReconstructDoc))) {
-                aFrame->SetAdditionalStyleContext(contextIndex, newExtraContext);
-              }
+      nsStyleContext* oldExtraContext = nsnull;
+      oldExtraContext = aFrame->GetAdditionalStyleContext(++contextIndex);
+      if (oldExtraContext) {
+        nsStyleContext* newExtraContext = nsnull;
+        pseudoTag = oldExtraContext->GetPseudoType();
+        NS_ASSERTION(pseudoTag &&
+                     pseudoTag != nsCSSAnonBoxes::mozNonElement,
+                     "extra style context is not pseudo element");
+        newExtraContext = aPresContext->ResolvePseudoStyleContextFor(content,
+                                                                     pseudoTag,
+                                                                     newContext).get();
+        if (newExtraContext) {
+          if (oldExtraContext != newExtraContext) {
+            aMinChange = CaptureChange(oldExtraContext, newExtraContext, aFrame, 
+                                       content, aChangeList, aMinChange);
+            if (!(aMinChange & (nsChangeHint_ReconstructFrame | nsChangeHint_ReconstructDoc))) {
+              aFrame->SetAdditionalStyleContext(contextIndex, newExtraContext);
             }
-            else {
-#if 0
-              // XXXldb |oldContext| is null by this point, so this will
-              // never do anything.
-              if (pseudoTag && pseudoTag != nsHTMLAtoms::mozNonElementPseudo &&
-                  aAttribute && (aMinChange < NS_STYLE_HINT_REFLOW) &&
-                  HasAttributeContent(oldContext, aAttrNameSpaceID, aAttribute)) {
-                aChangeList.AppendChange(aFrame, content, NS_STYLE_HINT_REFLOW);
-              }
-#endif
-            }
-            NS_RELEASE(newExtraContext);
           }
-          NS_RELEASE(oldExtraContext);
+          else {
+#if 0
+            // XXXldb |oldContext| is null by this point, so this will
+            // never do anything.
+            if (pseudoTag && pseudoTag != nsCSSAnonBoxes::mozNonElement &&
+                aAttribute && (aMinChange < NS_STYLE_HINT_REFLOW) &&
+                HasAttributeContent(oldContext, aAttrNameSpaceID, aAttribute)) {
+              aChangeList.AppendChange(aFrame, content, NS_STYLE_HINT_REFLOW);
+            }
+#endif
+          }
+          newExtraContext->Release();
         }
       }
       else {
@@ -1848,49 +1818,100 @@ FrameManager::ReResolveStyleContext(nsIPresContext* aPresContext,
 
     // now look for undisplayed child content and pseudos
     if (localContent && mUndisplayedMap) {
-      UndisplayedNode* undisplayed = mUndisplayedMap->GetFirstNode(localContent);
-      while (undisplayed) {
-        nsIStyleContext* undisplayedContext = nsnull;
-        undisplayed->mStyle->GetPseudoType(pseudoTag);
+      for (UndisplayedNode* undisplayed =
+                                   mUndisplayedMap->GetFirstNode(localContent);
+           undisplayed; undisplayed = undisplayed->mNext) {
+        nsRefPtr<nsStyleContext> undisplayedContext;
+        pseudoTag = undisplayed->mStyle->GetPseudoType();
         if (pseudoTag == nsnull) {  // child content
-          aPresContext->ResolveStyleContextFor(undisplayed->mContent,
-                                               newContext, 
-                                               &undisplayedContext);
+          undisplayedContext = aPresContext->ResolveStyleContextFor(undisplayed->mContent,
+                                                                    newContext);
         }
-        else if (pseudoTag == nsHTMLAtoms::mozNonElementPseudo) {
-          aPresContext->ResolveStyleContextForNonElement(newContext, 
-                                                         &undisplayedContext);
+        else if (pseudoTag == nsCSSAnonBoxes::mozNonElement) {
+          undisplayedContext = aPresContext->ResolveStyleContextForNonElement(newContext);
         }
         else {  // pseudo element
           NS_NOTREACHED("no pseudo elements in undisplayed map");
           NS_ASSERTION(pseudoTag, "pseudo element without tag");
-          aPresContext->ResolvePseudoStyleContextFor(localContent, pseudoTag,
-                                                     newContext,
-                                                     &undisplayedContext);
+          undisplayedContext = aPresContext->ResolvePseudoStyleContextFor(localContent,
+                                                                          pseudoTag,
+                                                                          newContext);
         }
-        NS_IF_RELEASE(pseudoTag);
         if (undisplayedContext) {
-          const nsStyleDisplay* display = 
-                (const nsStyleDisplay*)undisplayedContext->GetStyleData(eStyleStruct_Display);
+          const nsStyleDisplay* display = undisplayedContext->GetStyleDisplay();
           if (display->mDisplay != NS_STYLE_DISPLAY_NONE) {
-            aChangeList.AppendChange(nsnull, ((undisplayed->mContent) ? undisplayed->mContent : localContent), 
+            aChangeList.AppendChange(nsnull,
+                                     undisplayed->mContent
+                                       ? NS_STATIC_CAST(nsIContent*,
+                                                        undisplayed->mContent)
+                                       : localContent, 
                                      NS_STYLE_HINT_FRAMECHANGE);
             // The node should be removed from the undisplayed map when
             // we reframe it.
-            NS_RELEASE(undisplayedContext);
           } else {
             // update the undisplayed node with the new context
-            NS_RELEASE(undisplayed->mStyle);
             undisplayed->mStyle = undisplayedContext;
           }
         }
-        undisplayed = undisplayed->mNext;
       }
     }
 
     aResultChange = aMinChange;
 
     if (!(aMinChange & (nsChangeHint_ReconstructFrame | nsChangeHint_ReconstructDoc))) {
+      // Make sure not to do this for pseudo-frames -- those can't have :before
+      // or :after content.
+      if (!pseudoTag && localContent &&
+          localContent->IsContentOfType(nsIContent::eELEMENT)) {
+        // Check for a new :before pseudo and an existing :before
+        // frame, but only if the frame is the first-in-flow.
+        nsIFrame* prevInFlow = nsnull;
+        aFrame->GetPrevInFlow(&prevInFlow);
+        if (!prevInFlow) {
+          // Checking for a :before frame is cheaper than getting the
+          // :before style context.
+          if (!nsLayoutUtils::GetBeforeFrame(aFrame, aPresContext) &&
+              nsLayoutUtils::HasPseudoStyle(localContent, newContext,
+                                            nsCSSPseudoElements::before,
+                                            aPresContext)) {
+            // Have to create the new :before frame
+            NS_UpdateHint(aMinChange, nsChangeHint_ReconstructFrame);
+            aChangeList.AppendChange(aFrame, content,
+                                     nsChangeHint_ReconstructFrame);
+          }
+        }
+      }
+    }
+
+    
+    if (!(aMinChange & (nsChangeHint_ReconstructFrame | nsChangeHint_ReconstructDoc))) {
+      // Make sure not to do this for pseudo-frames -- those can't have :before
+      // or :after content.
+      if (!pseudoTag && localContent &&
+          localContent->IsContentOfType(nsIContent::eELEMENT)) {
+        // Check for new :after content, but only if the frame is the
+        // first-in-flow.
+        nsIFrame* nextInFlow = nsnull;
+        aFrame->GetNextInFlow(&nextInFlow);
+
+        if (!nextInFlow) {
+          // Getting the :after frame is more expensive than getting the pseudo
+          // context, so get the pseudo context first.
+          if (nsLayoutUtils::HasPseudoStyle(localContent, newContext,
+                                            nsCSSPseudoElements::after,
+                                            aPresContext) &&
+              !nsLayoutUtils::GetAfterFrame(aFrame, aPresContext)) {
+            // have to create the new :after frame
+            NS_UpdateHint(aMinChange, nsChangeHint_ReconstructFrame);
+            aChangeList.AppendChange(aFrame, content,
+                                     nsChangeHint_ReconstructFrame);
+          }
+        }      
+      }
+    }
+    
+    if (!(aMinChange & (nsChangeHint_ReconstructFrame | nsChangeHint_ReconstructDoc))) {
+      
       // There is no need to waste time crawling into a frame's children on a frame change.
       // The act of reconstructing frames will force new style contexts to be resolved on all
       // of this frame's descendants anyway, so we want to avoid wasting time processing
@@ -1950,7 +1971,7 @@ FrameManager::ReResolveStyleContext(nsIPresContext* aPresContext,
       // XXX need to do overflow frames???
     }
 
-    NS_RELEASE(newContext);
+    newContext->Release();
     NS_IF_RELEASE(localContent);
   }
 }
@@ -1965,7 +1986,7 @@ FrameManager::ComputeStyleChangeFor(nsIPresContext* aPresContext,
                                     nsChangeHint& aTopLevelChange)
 {
   NS_ENSURE_TRUE(mPresShell, NS_ERROR_NOT_AVAILABLE);
-  aTopLevelChange = NS_STYLE_HINT_NONE;
+  aTopLevelChange = aMinChange;
   nsIFrame* frame = aFrame;
   nsIFrame* frame2 = aFrame;
 
@@ -1988,10 +2009,7 @@ FrameManager::ComputeStyleChangeFor(nsIPresContext* aPresContext,
       nsChangeHint frameChange;
       ReResolveStyleContext(aPresContext, frame, nsnull,
                             aAttrNameSpaceID, aAttribute,
-                            aChangeList, aMinChange, frameChange);
-#ifdef NS_DEBUG
-      VerifyStyleTree(aPresContext, frame, nsnull);
-#endif
+                            aChangeList, aTopLevelChange, frameChange);
       NS_UpdateHint(aTopLevelChange, frameChange);
 
       if (aTopLevelChange & (nsChangeHint_ReconstructDoc | nsChangeHint_ReconstructFrame)) {
@@ -2025,31 +2043,25 @@ FrameManager::ComputeStyleChangeFor(nsIPresContext* aPresContext,
 
 
 NS_IMETHODIMP
-FrameManager::AttributeAffectsStyle(nsIAtom *aAttribute, nsIContent *aContent,
-                                    PRBool &aAffects)
+FrameManager::HasAttributeDependentStyle(nsIPresContext *aPresContext,
+                                         nsIContent *aContent,
+                                         nsIAtom *aAttribute,
+                                         PRInt32 aModType,
+                                         PRBool *aResult)
 {
-  nsresult rv = NS_OK;
   NS_ENSURE_TRUE(mPresShell, NS_ERROR_NOT_AVAILABLE);
 
   if (aAttribute == nsHTMLAtoms::style) {
     // Perhaps should check that it's XUL, SVG, (or HTML) namespace, but
-    // it doesn't really matter.
-    aAffects = PR_TRUE;
+    // it doesn't really matter.  Or we could even let
+    // HTMLCSSStyleSheetImpl::HasAttributeDependentStyle handle it.
+    *aResult = PR_TRUE;
     return NS_OK;
   }
 
-  nsCOMPtr<nsIXMLContent> xml(do_QueryInterface(aContent));
-  if (xml) {
-    rv = mStyleSet->AttributeAffectsStyle(aAttribute, aContent, aAffects);
-  } else {
-    // not an XML element, so assume it is an HTML element and further assume that
-    // any attribute may affect style
-    // NOTE: we could list all of the presentation-hint attributes and check them,
-    //       but there are a lot of them and this is safer.
-    aAffects = PR_TRUE;
-    rv = NS_OK;
-  }
-  return rv;
+  return mStyleSet->HasAttributeDependentStyle(aPresContext, aContent,
+                                               aAttribute, aModType,
+                                               aResult);
 }
 
 // Capture state for a given frame.
@@ -2083,7 +2095,7 @@ FrameManager::CaptureFrameStateFor(nsIPresContext* aPresContext,
   rv = aFrame->GetContent(getter_AddRefs(content));
 
   nsCAutoString stateKey;
-  rv = GenerateStateKey(content, aID, stateKey);
+  rv = nsContentUtils::GenerateStateKey(content, aID, stateKey);
   if(NS_FAILED(rv) || stateKey.IsEmpty()) {
     return rv;
   }
@@ -2147,7 +2159,7 @@ FrameManager::RestoreFrameStateFor(nsIPresContext* aPresContext, nsIFrame* aFram
   }
 
   nsCAutoString stateKey;
-  rv = GenerateStateKey(content, aID, stateKey);
+  rv = nsContentUtils::GenerateStateKey(content, aID, stateKey);
   if (NS_FAILED(rv) || stateKey.IsEmpty()) {
     return rv;
   }
@@ -2192,180 +2204,6 @@ FrameManager::RestoreFrameState(nsIPresContext* aPresContext, nsIFrame* aFrame, 
   } while (childListName);
 
   return rv;
-}
-
-
-static inline void KeyAppendSep(nsACString& aKey)
-{
-  if (!aKey.IsEmpty()) {
-    aKey.Append('>');
-  }
-}
-
-static inline void KeyAppendString(const nsAString& aString, nsACString& aKey)
-{
-  KeyAppendSep(aKey);
-
-  // Could escape separator here if collisions happen.  > is not a legal char
-  // for a name or type attribute, so we should be safe avoiding that extra work.
-
-  aKey.Append(NS_ConvertUCS2toUTF8(aString));
-}
-
-static inline void KeyAppendInt(PRInt32 aInt, nsACString& aKey)
-{
-  KeyAppendSep(aKey);
-
-  aKey.Append(nsPrintfCString("%d", aInt));
-}
-
-static inline void KeyAppendAtom(nsIAtom* aAtom, nsACString& aKey)
-{
-  NS_PRECONDITION(aAtom, "KeyAppendAtom: aAtom can not be null!\n");
-
-  const PRUnichar* atomString = nsnull;
-  aAtom->GetUnicode(&atomString);
-
-  KeyAppendString(nsDependentString(atomString), aKey);
-}
-
-static inline PRBool IsAutocompleteOff(nsIDOMElement* aElement)
-{
-  nsAutoString autocomplete;
-  aElement->GetAttribute(NS_LITERAL_STRING("autocomplete"), autocomplete);
-  ToLowerCase(autocomplete);
-  return autocomplete.Equals(NS_LITERAL_STRING("off"));
-}
-
-NS_IMETHODIMP
-FrameManager::GenerateStateKey(nsIContent* aContent,
-                               nsIStatefulFrame::SpecialStateID aID,
-                               nsACString& aKey)
-{
-  aKey.Truncate();
-
-  // SpecialStateID case - e.g. scrollbars around the content window
-  // The key in this case is the special state id (always < min(contentID))
-  if (nsIStatefulFrame::eNoID != aID) {
-    KeyAppendInt(aID, aKey);
-    return NS_OK;
-  }
-
-  // We must have content if we're not using a special state id
-  NS_ENSURE_TRUE(aContent, NS_ERROR_FAILURE);
-
-  // Don't capture state for anonymous content
-  PRUint32 contentID;
-  aContent->GetContentID(&contentID);
-  if (!contentID) {
-    return NS_OK;
-  }
-
-  nsCOMPtr<nsIDOMElement> element(do_QueryInterface(aContent));
-  if (element && IsAutocompleteOff(element)) {
-    return NS_OK;
-  }
-
-  // If we have a form control and can calculate form information, use
-  // that as the key - it is more reliable than contentID.
-  // Important to have a unique key, and tag/type/name may not be.
-  //
-  // If the control has a form, the format of the key is:
-  // type>IndOfFormInDoc>IndOfControlInForm>FormName>name
-  // else:
-  // type>IndOfControlInDoc>name
-  //
-  // XXX We don't need to use index if name is there
-  //
-  nsCOMPtr<nsIFormControl> control(do_QueryInterface(aContent));
-  PRBool generatedUniqueKey = PR_FALSE;
-  if (control && mHTMLFormControls && mHTMLForms) {
-
-    // Append the control type
-    PRInt32 type;
-    control->GetType(&type);
-    KeyAppendInt(type, aKey);
-
-    // If in a form, add form name / index of form / index in form
-    PRInt32 index = -1;
-    nsCOMPtr<nsIDOMHTMLFormElement> formElement;
-    control->GetForm(getter_AddRefs(formElement));
-    if (formElement) {
-
-      if (IsAutocompleteOff(formElement)) {
-        aKey.Truncate();
-        return NS_OK;
-      }
-
-      // Append the index of the form in the document
-      nsCOMPtr<nsIContent> formContent(do_QueryInterface(formElement));
-      mHTMLForms->IndexOf(formContent, index, PR_FALSE);
-      if (index <= -1) {
-        //
-        // XXX HACK this uses some state that was dumped into the document
-        // specifically to fix bug 138892.  What we are trying to do is *guess*
-        // which form this control's state is found in, with the highly likely
-        // guess that the highest form parsed so far is the one.
-        // This code should not be on trunk, only branch.
-        //
-        nsCOMPtr<nsIDocument> doc;
-        formContent->GetDocument(*getter_AddRefs(doc));
-        nsCOMPtr<nsIHTMLDocument> htmlDoc = do_QueryInterface(doc);
-        if (htmlDoc) {
-          htmlDoc->GetNumFormsSynchronous(&index);
-          index--;
-        }
-      }
-      if (index > -1) {
-        KeyAppendInt(index, aKey);
-
-        // Append the index of the control in the form
-        nsCOMPtr<nsIForm> form(do_QueryInterface(formElement));
-        form->IndexOfControl(control, &index);
-        NS_ASSERTION(index > -1,
-                     "nsFrameManager::GenerateStateKey didn't find form control index!");
-
-        if (index > -1) {
-          KeyAppendInt(index, aKey);
-          generatedUniqueKey = PR_TRUE;
-        }
-      }
-
-      // Append the form name
-      nsAutoString formName;
-      formElement->GetName(formName);
-      KeyAppendString(formName, aKey);
-
-    } else {
-
-      // If not in a form, add index of control in document
-      // Less desirable than indexing by form info. 
-
-      // Hash by index of control in doc (we are not in a form)
-      // These are important as they are unique, and type/name may not be.
-      mHTMLFormControls->IndexOf(aContent, index, PR_FALSE);
-      NS_ASSERTION(index > -1,
-                   "nsFrameManager::GenerateStateKey didn't find content by type!");
-      if (index > -1) {
-        KeyAppendInt(index, aKey);
-        generatedUniqueKey = PR_TRUE;
-      }
-    }
-
-    // Append the control name
-    nsAutoString name;
-    aContent->GetAttr(kNameSpaceID_None, nsHTMLAtoms::name, name);
-    KeyAppendString(name, aKey);
-  }
-
-  if (!generatedUniqueKey) {
-
-    // Either we didn't have a form control or we aren't in an HTML document
-    // so we can't figure out form info, hash by content ID instead :(
-    KeyAppendInt(contentID, aKey);
-  }
-
-  return NS_OK;
 }
 
 //----------------------------------------------------------------------
@@ -2448,10 +2286,10 @@ FrameManager::GetFrameProperty(nsIFrame* aFrame,
 }
 
 NS_IMETHODIMP
-FrameManager::SetFrameProperty(nsIFrame*            aFrame,
-                               nsIAtom*             aPropertyName,
-                               void*                aPropertyValue,
-                               NSFMPropertyDtorFunc aPropDtorFunc)
+FrameManager::SetFrameProperty(nsIFrame*               aFrame,
+                               nsIAtom*                aPropertyName,
+                               void*                   aPropertyValue,
+                               NSFramePropertyDtorFunc aPropDtorFunc)
 {
   NS_ENSURE_TRUE(mPresShell, NS_ERROR_NOT_AVAILABLE);
   NS_PRECONDITION(aPropertyName && aFrame, "unexpected null param");
@@ -2589,7 +2427,7 @@ UndisplayedMap::AppendNodeFor(UndisplayedNode* aNode, nsIContent* aParentContent
 
 nsresult 
 UndisplayedMap::AddNodeFor(nsIContent* aParentContent, nsIContent* aChild, 
-                           nsIStyleContext* aStyle)
+                           nsStyleContext* aStyle)
 {
   UndisplayedNode*  node = new UndisplayedNode(aChild, aStyle);
   if (! node) {
@@ -2663,8 +2501,8 @@ UndisplayedMap::Clear(void)
 
 //----------------------------------------------------------------------
     
-FrameManager::PropertyList::PropertyList(nsIAtom*             aName,
-                                         NSFMPropertyDtorFunc aDtorFunc)
+FrameManager::PropertyList::PropertyList(nsIAtom*                aName,
+                                         NSFramePropertyDtorFunc aDtorFunc)
   : mName(aName), mDtorFunc(aDtorFunc), mNext(nsnull)
 {
   PL_DHashTableInit(&mFrameValueMap, PL_DHashGetStubOps(), this,

@@ -46,7 +46,7 @@ NS_DEFINE_CID(kHankakuToZenkakuCID, NS_HANKAKUTOZENKAKU_CID);
 
 // Basic mapping from Hankaku to Zenkaku
 // Nigori and Maru is take care out side this basic mapping
-static PRUnichar gBasicMapping[0x40] =
+static const PRUnichar gBasicMapping[0x40] =
 {
 // 0xff60
 0xff60,0x3002,0x300c,0x300d,0x3001,0x30fb,0x30f2,0x30a1,        
@@ -90,6 +90,10 @@ void HankakuToZenkaku (
 {
 
     PRInt32 i,j;
+    if ( aLen == 0) {
+      *oLen = 0;
+      return;
+    }
     // loop from the first to the last char except the last one.
     for(i = j = 0; i < (aLen-1); i++,j++,aSrc++, aDest++)
     {
@@ -145,7 +149,6 @@ NS_IMPL_ISUPPORTS1(nsHankakuToZenkaku, nsITextTransform)
 
 nsHankakuToZenkaku::nsHankakuToZenkaku()
 {
-  NS_INIT_ISUPPORTS();
 }
 nsHankakuToZenkaku::~nsHankakuToZenkaku()
 {

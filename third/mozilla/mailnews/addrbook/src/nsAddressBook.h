@@ -51,6 +51,7 @@ class nsILocalFile;
 class nsIAbDirectory;
 
 #define NC_RDF_NEWABCARD			"http://home.netscape.com/NC-rdf#NewCard"
+#define NC_RDF_MODIFY				"http://home.netscape.com/NC-rdf#Modify"
 #define NC_RDF_DELETE				"http://home.netscape.com/NC-rdf#Delete"
 #define NC_RDF_DELETECARD			"http://home.netscape.com/NC-rdf#DeleteCards"
 #define NC_RDF_NEWDIRECTORY			"http://home.netscape.com/NC-rdf#NewDirectory"
@@ -147,7 +148,7 @@ public:
   CMDLINEHANDLER_REGISTERPROC_DECLS
     
 protected:
-	nsresult DoCommand(nsIRDFDataSource *db, const char * command,
+	nsresult DoCommand(nsIRDFDataSource *db, const nsACString& command,
                      nsISupportsArray *srcArray, nsISupportsArray *arguments);
 	nsresult GetAbDatabaseFromFile(char* pDbFile, nsIAddrDatabase **db);
 

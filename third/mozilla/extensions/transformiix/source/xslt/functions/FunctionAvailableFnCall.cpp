@@ -41,6 +41,7 @@
 #include "txAtoms.h"
 #include "XMLUtils.h"
 #include "XSLTFunctions.h"
+#include "ExprResult.h"
 
 /*
   Implementation of XSLT 1.0 extension function: function-available
@@ -49,8 +50,8 @@
 /**
  * Creates a new function-available function call
 **/
-FunctionAvailableFunctionCall::FunctionAvailableFunctionCall(Node* aQNameResolveNode)
-    : mQNameResolveNode(aQNameResolveNode)
+FunctionAvailableFunctionCall::FunctionAvailableFunctionCall(txNamespaceMap* aMappings)
+    : mMappings(aMappings)
 {
 }
 
@@ -64,7 +65,7 @@ FunctionAvailableFunctionCall::FunctionAvailableFunctionCall(Node* aQNameResolve
 **/
 ExprResult* FunctionAvailableFunctionCall::evaluate(txIEvalContext* aContext)
 {
-    ExprResult* result = NULL;
+    ExprResult* result = nsnull;
 
     if (requireParams(1, 1, aContext)) {
         txListIterator iter(&params);
@@ -72,10 +73,10 @@ ExprResult* FunctionAvailableFunctionCall::evaluate(txIEvalContext* aContext)
         ExprResult* exprResult = param->evaluate(aContext);
         if (exprResult &&
             exprResult->getResultType() == ExprResult::STRING) {
-            String property;
+            nsAutoString property;
             exprResult->stringValue(property);
             txExpandedName qname;
-            nsresult rv = qname.init(property, mQNameResolveNode, MB_FALSE);
+            nsresult rv = qname.init(property, mMappings, MB_FALSE);
             if (NS_SUCCEEDED(rv) &&
                 qname.mNamespaceID == kNameSpaceID_None &&
                 (qname.mLocalName == txXPathAtoms::boolean ||
@@ -118,7 +119,7 @@ ExprResult* FunctionAvailableFunctionCall::evaluate(txIEvalContext* aContext)
             }
         }
         else {
-            String err("Invalid argument passed to function-available, expecting String");
+            NS_NAMED_LITERAL_STRING(err, "Invalid argument passed to function-available, expecting String");
             aContext->receiveError(err, NS_ERROR_XPATH_INVALID_ARG);
             result = new StringResult(err);
         }
@@ -132,9 +133,9 @@ ExprResult* FunctionAvailableFunctionCall::evaluate(txIEvalContext* aContext)
     return result;
 }
 
-nsresult FunctionAvailableFunctionCall::getNameAtom(txAtom** aAtom)
+nsresult FunctionAvailableFunctionCall::getNameAtom(nsIAtom** aAtom)
 {
     *aAtom = txXSLTAtoms::functionAvailable;
-    TX_ADDREF_ATOM(*aAtom);
+    NS_ADDREF(*aAtom);
     return NS_OK;
 }

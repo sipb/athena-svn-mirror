@@ -42,7 +42,9 @@
 
 #include "nsIDOMEventReceiver.h"
 #include "nsCOMPtr.h"
-#include "nsIXBLPrototypeHandler.h"
+#include "nsXBLPrototypeHandler.h"
+#include "nsIDOMKeyEvent.h"
+#include "nsIDOMMouseEvent.h"
 #include "nsIDOMEventReceiver.h"
 
 class nsIXBLBinding;
@@ -59,7 +61,8 @@ class nsIController;
 class nsXBLEventHandler : public nsISupports
 {
 public:
-  nsXBLEventHandler(nsIDOMEventReceiver* aReceiver, nsIXBLPrototypeHandler* aHandler);
+  nsXBLEventHandler(nsIDOMEventReceiver* aReceiver,
+                    nsXBLPrototypeHandler* aHandler);
   virtual ~nsXBLEventHandler();
   
   NS_DECL_ISUPPORTS
@@ -79,12 +82,76 @@ public:
 
 protected:
   nsCOMPtr<nsIDOMEventReceiver> mEventReceiver;
-  nsCOMPtr<nsIXBLPrototypeHandler> mProtoHandler;
+  nsXBLPrototypeHandler* mProtoHandler;
 
   nsXBLEventHandler* mNextHandler; // Handlers are chained for easy unloading later.
+
+  inline nsresult DoGeneric(nsIAtom* aEventType, nsIDOMEvent* aEvent)
+  {
+    if (!mProtoHandler)
+      return NS_ERROR_FAILURE;
+
+    PRUint8 phase = mProtoHandler->GetPhase();
+    if (phase == NS_PHASE_TARGET) {
+      PRUint16 eventPhase;
+      aEvent->GetEventPhase(&eventPhase);
+      if (eventPhase != nsIDOMEvent::AT_TARGET)
+        return NS_OK;
+    }
+
+    if (aEventType) {
+      nsCOMPtr<nsIAtom> eventName = mProtoHandler->GetEventName();
+      if (eventName != aEventType)
+        return NS_OK;
+    }
+
+    mProtoHandler->ExecuteHandler(mEventReceiver, aEvent);
+    return NS_OK;
+  }
+
+  inline nsresult DoKey(nsIAtom* aEventType, nsIDOMEvent* aKeyEvent)
+  {
+    if (!mProtoHandler)
+      return NS_ERROR_FAILURE;
+
+    PRUint8 phase = mProtoHandler->GetPhase();
+    if (phase == NS_PHASE_TARGET) {
+      PRUint16 eventPhase;
+      aKeyEvent->GetEventPhase(&eventPhase);
+      if (eventPhase != nsIDOMEvent::AT_TARGET)
+        return NS_OK;
+    }
+
+    nsCOMPtr<nsIDOMKeyEvent> key(do_QueryInterface(aKeyEvent));
+    if (mProtoHandler->KeyEventMatched(aEventType, key))
+      mProtoHandler->ExecuteHandler(mEventReceiver, aKeyEvent);
+
+    return NS_OK;
+  }
+
+  inline nsresult DoMouse(nsIAtom* aEventType, nsIDOMEvent* aMouseEvent)
+  {
+    if (!mProtoHandler)
+      return NS_ERROR_FAILURE;
+
+    PRUint8 phase = mProtoHandler->GetPhase();
+    if (phase == NS_PHASE_TARGET) {
+      PRUint16 eventPhase;
+      aMouseEvent->GetEventPhase(&eventPhase);
+      if (eventPhase != nsIDOMEvent::AT_TARGET)
+        return NS_OK;
+    }
+
+    nsCOMPtr<nsIDOMMouseEvent> mouse(do_QueryInterface(aMouseEvent));
+    if (mProtoHandler->MouseEventMatched(aEventType, mouse))
+      mProtoHandler->ExecuteHandler(mEventReceiver, aMouseEvent);
+
+    return NS_OK;
+  }
 };
 
-extern nsresult
-NS_NewXBLEventHandler(nsIDOMEventReceiver* aEventReceiver, nsIXBLPrototypeHandler* aHandlerElement, 
+nsresult
+NS_NewXBLEventHandler(nsIDOMEventReceiver* aEventReceiver,
+                      nsXBLPrototypeHandler* aHandlerElement,
                       nsXBLEventHandler** aResult);
 #endif

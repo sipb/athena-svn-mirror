@@ -216,7 +216,8 @@ XPCWrappedNative::GetNewOrUsed(XPCCallContext& ccx,
     // in a pointer that hasn't been QI'd to IDispatch properly this could
     // create multiple wrappers for the same object, creating a fair bit of
     // confusion.
-    if(!nsXPConnect::IsIDispatchEnabled() && Interface->GetIID()->Equals(NSID_IDISPATCH))
+    PRBool isIDispatch = Interface->GetIID()->Equals(NSID_IDISPATCH);
+    if(isIDispatch)
         identity = Object;
     else
 #endif
@@ -267,6 +268,14 @@ XPCWrappedNative::GetNewOrUsed(XPCCallContext& ccx,
     // to this same function but with a different scope.
 
     nsCOMPtr<nsIClassInfo> info(do_QueryInterface(identity));
+#ifdef XPC_IDISPATCH_SUPPORT
+    // If this is an IDispatch wrapper and it didn't give us a class info
+    // we'll provide a default one
+    if(isIDispatch && !info)
+    {
+        info = already_AddRefed<nsIClassInfo>(XPCIDispatchClassInfo::GetSingleton());
+    }
+#endif
 
     // If we are making a wrapper for the nsIClassInfo interface then
     // We *don't* want to have it use the prototype meant for instances
@@ -435,7 +444,7 @@ XPCWrappedNative::GetUsedOnly(XPCCallContext& ccx,
     nsCOMPtr<nsISupports> identity;
 #ifdef XPC_IDISPATCH_SUPPORT
     // XXX See GetNewOrUsed for more info on this
-    if(!nsXPConnect::IsIDispatchEnabled() && Interface->GetIID()->Equals(NSID_IDISPATCH))
+    if(Interface->GetIID()->Equals(NSID_IDISPATCH))
         identity = Object;
     else
 #endif
@@ -482,7 +491,6 @@ XPCWrappedNative::XPCWrappedNative(nsISupports* aIdentity,
       mFlatJSObject((JSObject*)JSVAL_ONE), // non-null to pass IsValid() test
       mScriptableInfo(nsnull)
 {
-    NS_INIT_ISUPPORTS();
     NS_ADDREF(mIdentity);
 
     NS_ASSERTION(mMaybeProto, "bad ctor param");
@@ -502,7 +510,6 @@ XPCWrappedNative::XPCWrappedNative(nsISupports* aIdentity,
       mFlatJSObject((JSObject*)JSVAL_ONE), // non-null to pass IsValid() test
       mScriptableInfo(nsnull)
 {
-    NS_INIT_ISUPPORTS();
     NS_ADDREF(mIdentity);
 
     NS_ASSERTION(aScope, "bad ctor param");
@@ -937,6 +944,10 @@ XPCWrappedNative::SystemIsBeingShutDown(XPCCallContext& ccx)
             if(to->GetJSObject())
             {
                 JS_SetPrivate(ccx, to->GetJSObject(), nsnull);
+#ifdef XPC_IDISPATCH_SUPPORT
+                if(to->IsIDispatch())
+                    delete to->GetIDispatchInfo();
+#endif
                 to->SetJSObject(nsnull);
             }
             // We leak the tearoff mNative
@@ -1439,7 +1450,7 @@ XPCWrappedNative::InitTearOff(XPCCallContext& ccx,
     aTearOff->SetNative(obj);
 #ifdef XPC_IDISPATCH_SUPPORT
     // Are we building a tearoff for IDispatch?
-    if(ccx.GetXPConnect()->IsIDispatchEnabled() && iid->Equals(NSID_IDISPATCH))
+    if(iid->Equals(NSID_IDISPATCH))
     {
         aTearOff->SetIDispatch(ccx);
     }  
@@ -2473,7 +2484,7 @@ XPCWrappedNative::HandlePossibleNameCaseError(XPCCallContext& ccx,
     PRUnichar* oldStr;
     PRUnichar* newStr;
     XPCNativeMember* member;
-    XPCNativeInterface* interface;
+    XPCNativeInterface* localIface;
 
     /* PRUnichar->char->PRUnichar hack is to avoid pulling in i18n code. */
     if(JSVAL_IS_STRING(name) &&
@@ -2488,11 +2499,11 @@ XPCWrappedNative::HandlePossibleNameCaseError(XPCCallContext& ccx,
         newJSStr = JS_NewUCStringCopyZ(ccx, (const jschar*)newStr);
         nsCRT::free(newStr);
         if(newJSStr && (set ?
-             set->FindMember(STRING_TO_JSVAL(newJSStr), &member, &interface) :
+             set->FindMember(STRING_TO_JSVAL(newJSStr), &member, &localIface) :
                         (JSBool)NS_PTR_TO_INT32(iface->FindMember(STRING_TO_JSVAL(newJSStr)))))
         {
             // found it!
-            const char* ifaceName = interface->GetNameString();
+            const char* ifaceName = localIface->GetNameString();
             const char* goodName = JS_GetStringBytes(newJSStr);
             const char* badName = JS_GetStringBytes(oldJSStr);
             char* locationStr = nsnull;
@@ -2707,7 +2718,7 @@ static JSBool MembersAreTheSame(XPCNativeInterface* iface1,
     PRUint16 index1 = member1->GetIndex();
     PRUint16 index2 = member2->GetIndex();
 
-    // If they are both constants, then we'll just be sure that are equivelent.
+    // If they are both constants, then we'll just be sure that they are equivalent.
 
     if(member1->IsConstant())
     {
@@ -2781,7 +2792,9 @@ void DEBUG_ReportShadowedMembers(XPCNativeSet* set,
         static const char* skipClasses[] = {
             "Window",
             "HTMLDocument",
+            "HTMLCollection",
             "Event",
+            "ChromeWindow",
             nsnull
         };
 
@@ -2972,7 +2985,6 @@ XPCJSObjectHolder::GetJSObject(JSObject** aJSObj)
 XPCJSObjectHolder::XPCJSObjectHolder(JSContext* cx, JSObject* obj)
     : mRuntime(JS_GetRuntime(cx)), mJSObj(obj)
 {
-    NS_INIT_ISUPPORTS();
     JS_AddNamedRoot(cx, &mJSObj, "XPCJSObjectHolder::mJSObj");
 }
 

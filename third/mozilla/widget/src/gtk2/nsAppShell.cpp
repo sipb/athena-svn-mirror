@@ -47,16 +47,15 @@
 
 #include <gtk/gtkmain.h>
 
-#ifdef ACCESSIBILITY
-#include "nsAccessibilityInterface.h"
-#endif
-
 static PRBool sInitialized = PR_FALSE;
 static PLHashTable *sQueueHashTable = nsnull;
 static PLHashTable *sCountHashTable = nsnull;
 
 #ifdef PR_LOGGING
 PRLogModuleInfo *gWidgetLog = nsnull;
+PRLogModuleInfo *gWidgetFocusLog = nsnull;
+PRLogModuleInfo *gWidgetIMLog = nsnull;
+PRLogModuleInfo *gWidgetDrawLog = nsnull;
 #endif
 
 static gboolean event_processor_callback (GIOChannel *source,
@@ -81,11 +80,15 @@ IntHashKey(PRInt32 key)
 
 nsAppShell::nsAppShell(void)
 {
-    NS_INIT_ISUPPORTS();
-
 #ifdef PR_LOGGING
     if (!gWidgetLog)
         gWidgetLog = PR_NewLogModule("Widget");
+    if (!gWidgetFocusLog)
+        gWidgetFocusLog = PR_NewLogModule("WidgetFocus");
+    if (!gWidgetIMLog)
+        gWidgetIMLog = PR_NewLogModule("WidgetIM");
+    if (!gWidgetDrawLog)
+        gWidgetDrawLog = PR_NewLogModule("WidgetDraw");
 #endif
 }
 
@@ -105,11 +108,6 @@ nsAppShell::Create(int *argc, char **argv)
 
     // XXX add all of the command line handling
 
-    gtk_init(argc, &argv);
-
-#ifdef ACCESSIBILITY
-    nsAccessibilityInterface::Init();
-#endif
 
     if (PR_GetEnv("MOZ_DEBUG_PAINTS")) {
         gdk_window_set_debug_updates(TRUE);
@@ -265,12 +263,6 @@ nsAppShell::DispatchNativeEvent(PRBool aRealEvent, void *aEvent)
 
     g_main_context_iteration(NULL, TRUE);
 
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsAppShell::SetDispatchListener(nsDispatchListener *aDispatchListener)
-{
     return NS_OK;
 }
 

@@ -164,9 +164,17 @@ public:
     eMetric_SubmenuDelay,                                 // delay before submenus open
     eMetric_MenusCanOverlapOSBar,                         // can popups overlap menu/task bar?
     eMetric_DragFullWindow,                               // show window contents while dragging?
-    
+    eMetric_DragThresholdX,                               // begin a drag if the mouse is moved further than the threshold while the button is down
+    eMetric_DragThresholdY,
+
     eMetric_ScrollArrowStyle,                             // position of scroll arrows in a scrollbar
-    eMetric_ScrollSliderStyle                             // is scroll thumb proportional or fixed?
+    eMetric_ScrollSliderStyle,                            // is scroll thumb proportional or fixed?
+
+    eMetric_TreeOpenDelay,                                // delay for opening spring loaded folders
+    eMetric_TreeCloseDelay,                               // delay for closing spring loaded folders
+    eMetric_TreeLazyScrollDelay,                          // delay for triggering the tree scrolling
+    eMetric_TreeScrollDelay,                              // delay for scrolling the tree
+    eMetric_TreeScrollLinesMax                            // the maximum number of lines to be scrolled at ones
   } nsMetricID;
 
   enum {

@@ -69,7 +69,7 @@
 #include "nsIContent.h"
 #include "nsIDOMElement.h"
 #include "nsIDOMNode.h"
-#include "nsIDOMXULDocument.h"
+#include "nsIDOMDocument.h"
 #include "nsIDOMXULElement.h"
 #include "nsIDocument.h"
 #include "nsIBindingManager.h"
@@ -81,6 +81,7 @@
 #include "nsIRDFContainerUtils.h" 
 #include "nsIXULDocument.h"
 #include "nsIXULTemplateBuilder.h"
+#include "nsIXULBuilderListener.h"
 #include "nsIRDFNode.h"
 #include "nsIRDFObserver.h"
 #include "nsIRDFRemoteDataSource.h"
@@ -125,7 +126,6 @@
 
 //----------------------------------------------------------------------
 
-static NS_DEFINE_CID(kNameSpaceManagerCID,       NS_NAMESPACEMANAGER_CID);
 static NS_DEFINE_CID(kRDFContainerUtilsCID,      NS_RDFCONTAINERUTILS_CID);
 static NS_DEFINE_CID(kRDFServiceCID,             NS_RDFSERVICE_CID);
 
@@ -135,11 +135,8 @@ static NS_DEFINE_CID(kRDFServiceCID,             NS_RDFSERVICE_CID);
 //
 
 nsrefcnt                  nsXULTemplateBuilder::gRefCnt = 0;
-PRInt32                   nsXULTemplateBuilder::kNameSpaceID_RDF;
-PRInt32                   nsXULTemplateBuilder::kNameSpaceID_XUL;
 nsIRDFService*            nsXULTemplateBuilder::gRDFService;
 nsIRDFContainerUtils*     nsXULTemplateBuilder::gRDFContainerUtils;
-nsINameSpaceManager*      nsXULTemplateBuilder::gNameSpaceManager;
 nsIScriptSecurityManager* nsXULTemplateBuilder::gScriptSecurityManager;
 nsIPrincipal*             nsXULTemplateBuilder::gSystemPrincipal;
 
@@ -155,36 +152,20 @@ PRLogModuleInfo* gXULTemplateLog;
 nsXULTemplateBuilder::nsXULTemplateBuilder(void)
     : mDB(nsnull),
       mRoot(nsnull),
-      mTimer(nsnull),
       mUpdateBatchNest(0),
       mRulesCompiled(PR_FALSE),
       mFlags(0),
       mTop(nsnull)
 {
-    NS_INIT_ISUPPORTS();
 }
 
 nsXULTemplateBuilder::~nsXULTemplateBuilder(void)
 {
     if (--gRefCnt == 0) {
-        if (gRDFService) {
-            nsServiceManager::ReleaseService(kRDFServiceCID, gRDFService);
-            gRDFService = nsnull;
-        }
-
-        if (gRDFContainerUtils) {
-            nsServiceManager::ReleaseService(kRDFContainerUtilsCID, gRDFContainerUtils);
-            gRDFContainerUtils = nsnull;
-        }
-
-        NS_RELEASE(gNameSpaceManager);
-
+        NS_IF_RELEASE(gRDFService);
+        NS_IF_RELEASE(gRDFContainerUtils);
         NS_IF_RELEASE(gSystemPrincipal);
-
-        if (gScriptSecurityManager) {
-            nsServiceManager::ReleaseService(NS_SCRIPTSECURITYMANAGER_CONTRACTID, gScriptSecurityManager);
-            gScriptSecurityManager = nsnull;
-        }
+        NS_IF_RELEASE(gScriptSecurityManager);
     }
 }
 
@@ -195,49 +176,24 @@ nsXULTemplateBuilder::Init()
     if (gRefCnt++ == 0) {
         nsresult rv;
 
-        // Register the XUL and RDF namespaces: these'll just retrieve
-        // the IDs if they've already been registered by someone else.
-        rv = nsComponentManager::CreateInstance(kNameSpaceManagerCID,
-                                                nsnull,
-                                                NS_GET_IID(nsINameSpaceManager),
-                                                (void**) &gNameSpaceManager);
-        NS_ASSERTION(NS_SUCCEEDED(rv), "unable to create namespace manager");
-        if (NS_FAILED(rv)) return rv;
-
-        // XXX This is sure to change. Copied from mozilla/layout/xul/content/src/nsXULAtoms.cpp
-        static const char kXULNameSpaceURI[]
-            = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
-
-        static const char kRDFNameSpaceURI[]
-            = RDF_NAMESPACE_URI;
-
-        rv = gNameSpaceManager->RegisterNameSpace(NS_ConvertASCIItoUCS2(kXULNameSpaceURI), kNameSpaceID_XUL);
-        NS_ASSERTION(NS_SUCCEEDED(rv), "unable to register XUL namespace");
-        if (NS_FAILED(rv)) return rv;
-
-        rv = gNameSpaceManager->RegisterNameSpace(NS_ConvertASCIItoUCS2(kRDFNameSpaceURI), kNameSpaceID_RDF);
-        NS_ASSERTION(NS_SUCCEEDED(rv), "unable to register RDF namespace");
-        if (NS_FAILED(rv)) return rv;
-
         // Initialize the global shared reference to the service
         // manager and get some shared resource objects.
-        rv = nsServiceManager::GetService(kRDFServiceCID,
-                                          NS_GET_IID(nsIRDFService),
-                                          (nsISupports**) &gRDFService);
-        if (NS_FAILED(rv)) return rv;
+        rv = CallGetService(kRDFServiceCID, &gRDFService);
+        if (NS_FAILED(rv))
+            return rv;
 
-        rv = nsServiceManager::GetService(kRDFContainerUtilsCID,
-                                          NS_GET_IID(nsIRDFContainerUtils),
-                                          (nsISupports**) &gRDFContainerUtils);
-        if (NS_FAILED(rv)) return rv;
+        rv = CallGetService(kRDFContainerUtilsCID, &gRDFContainerUtils);
+        if (NS_FAILED(rv))
+            return rv;
 
-        rv = nsServiceManager::GetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID,
-                                          NS_GET_IID(nsIScriptSecurityManager),
-                                          (nsISupports**) &gScriptSecurityManager);
-        if (NS_FAILED(rv)) return rv;
+        rv = CallGetService(NS_SCRIPTSECURITYMANAGER_CONTRACTID,
+                            &gScriptSecurityManager);
+        if (NS_FAILED(rv))
+            return rv;
 
         rv = gScriptSecurityManager->GetSystemPrincipal(&gSystemPrincipal);
-        if (NS_FAILED(rv)) return rv;
+        if (NS_FAILED(rv))
+            return rv;
     }
 
 #ifdef PR_LOGGING
@@ -272,6 +228,24 @@ nsXULTemplateBuilder::GetDatabase(nsIRDFCompositeDataSource** aResult)
 }
 
 NS_IMETHODIMP
+nsXULTemplateBuilder::Rebuild()
+{
+    PRInt32 i;
+
+    for (i = mListeners.Count() - 1; i >= 0; --i) {
+        mListeners[i]->WillRebuild(this);
+    }
+
+    nsresult rv = RebuildAll();
+
+    for (i = mListeners.Count() - 1; i >= 0; --i) {
+        mListeners[i]->DidRebuild(this);
+    }
+
+    return rv;
+}
+
+NS_IMETHODIMP
 nsXULTemplateBuilder::Init(nsIContent* aElement)
 {
     NS_PRECONDITION(aElement, "null ptr");
@@ -285,10 +259,35 @@ nsXULTemplateBuilder::CreateContents(nsIContent* aElement)
     return NS_OK;
 }
 
+NS_IMETHODIMP
+nsXULTemplateBuilder::AddListener(nsIXULBuilderListener* aListener)
+{
+    NS_ENSURE_ARG(aListener);
+
+    mListeners.AppendObject(aListener);
+
+    return NS_OK;
+}
+
+NS_IMETHODIMP
+nsXULTemplateBuilder::RemoveListener(nsIXULBuilderListener* aListener)
+{
+    NS_ENSURE_ARG(aListener);
+
+    mListeners.RemoveObject(aListener);
+
+    return NS_OK;
+}
+
 //----------------------------------------------------------------------
 //
 // nsIDocumentOberver interface
 //
+
+NS_IMPL_NSIDOCUMENTOBSERVER_LOAD_STUB(nsXULTemplateBuilder)
+NS_IMPL_NSIDOCUMENTOBSERVER_REFLOW_STUB(nsXULTemplateBuilder)
+NS_IMPL_NSIDOCUMENTOBSERVER_STATE_STUB(nsXULTemplateBuilder)
+NS_IMPL_NSIDOCUMENTOBSERVER_STYLE_STUB(nsXULTemplateBuilder)
 
 NS_IMETHODIMP
 nsXULTemplateBuilder::BeginUpdate(nsIDocument *aDocument)
@@ -303,42 +302,9 @@ nsXULTemplateBuilder::EndUpdate(nsIDocument *aDocument)
 }
 
 NS_IMETHODIMP
-nsXULTemplateBuilder::BeginLoad(nsIDocument *aDocument)
-{
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsXULTemplateBuilder::EndLoad(nsIDocument *aDocument)
-{
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsXULTemplateBuilder::BeginReflow(nsIDocument *aDocument, nsIPresShell* aShell)
-{
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsXULTemplateBuilder::EndReflow(nsIDocument *aDocument, nsIPresShell* aShell)
-{
-    return NS_OK;
-}
-
-NS_IMETHODIMP
 nsXULTemplateBuilder::ContentChanged(nsIDocument *aDocument,
                                      nsIContent* aContent,
                                      nsISupports* aSubContent)
-{
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsXULTemplateBuilder::ContentStatesChanged(nsIDocument* aDocument,
-                                           nsIContent* aContent1,
-                                           nsIContent* aContent2,
-                                           PRInt32 aStateMask)
 {
     return NS_OK;
 }
@@ -392,53 +358,6 @@ nsXULTemplateBuilder::ContentRemoved(nsIDocument *aDocument,
                                      nsIContent* aContainer,
                                      nsIContent* aChild,
                                      PRInt32 aIndexInContainer)
-{
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsXULTemplateBuilder::StyleSheetAdded(nsIDocument *aDocument,
-                                      nsIStyleSheet* aStyleSheet)
-{
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsXULTemplateBuilder::StyleSheetRemoved(nsIDocument *aDocument,
-                                        nsIStyleSheet* aStyleSheet)
-{
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsXULTemplateBuilder::StyleSheetDisabledStateChanged(nsIDocument *aDocument,
-                                                     nsIStyleSheet* aStyleSheet,
-                                                     PRBool aDisabled)
-{
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsXULTemplateBuilder::StyleRuleChanged(nsIDocument *aDocument,
-                                       nsIStyleSheet* aStyleSheet,
-                                       nsIStyleRule* aStyleRule,
-                                       nsChangeHint aHint)
-{
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsXULTemplateBuilder::StyleRuleAdded(nsIDocument *aDocument,
-                                     nsIStyleSheet* aStyleSheet,
-                                     nsIStyleRule* aStyleRule)
-{
-    return NS_OK;
-}
-
-NS_IMETHODIMP
-nsXULTemplateBuilder::StyleRuleRemoved(nsIDocument *aDocument,
-                                       nsIStyleSheet* aStyleSheet,
-                                       nsIStyleRule* aStyleRule)
 {
     return NS_OK;
 }
@@ -623,14 +542,19 @@ nsXULTemplateBuilder::Retract(nsIRDFResource* aSource,
                 ReplaceMatch(VALUE_TO_IRDFRESOURCE(memberval), match.operator->(), nsnull);
             }
         }
-
+#if 0
         // Now fire any newly revealed rules
         {
             nsTemplateMatchSet::ConstIterator last = firings.Last();
             for (nsTemplateMatchSet::ConstIterator match = firings.First(); match != last; ++match) {
                 // XXXwaterson yo. write me.
+                // The intent here is to handle any rules that might be
+                // "revealed" by the removal of an assertion from the datasource.
+                // Waterson doesn't think we support negated conditions in a rule.
+                // Nor is he sure that this is currently useful.
             }
         }
+#endif
     }
 
     return NS_OK;
@@ -727,7 +651,7 @@ nsXULTemplateBuilder::OnMove(nsIRDFDataSource* aDataSource,
 
 
 NS_IMETHODIMP
-nsXULTemplateBuilder::BeginUpdateBatch(nsIRDFDataSource* aDataSource)
+nsXULTemplateBuilder::OnBeginUpdateBatch(nsIRDFDataSource* aDataSource)
 {
     mUpdateBatchNest++;
     return NS_OK;
@@ -735,10 +659,12 @@ nsXULTemplateBuilder::BeginUpdateBatch(nsIRDFDataSource* aDataSource)
 
 
 NS_IMETHODIMP
-nsXULTemplateBuilder::EndUpdateBatch(nsIRDFDataSource* aDataSource)
+nsXULTemplateBuilder::OnEndUpdateBatch(nsIRDFDataSource* aDataSource)
 {
-    if (mUpdateBatchNest > 0)
-        --mUpdateBatchNest;
+    NS_ASSERTION(mUpdateBatchNest > 0, "badly nested update batch");
+    if (--mUpdateBatchNest == 0) {
+        Rebuild();
+    }
 
     return NS_OK;
 }
@@ -920,7 +846,7 @@ nsXULTemplateBuilder::LoadDataSources()
 nsresult
 nsXULTemplateBuilder::InitHTMLTemplateRoot()
 {
-    // Use XPConnect and the JS APIs to whack aDatabase as the
+    // Use XPConnect and the JS APIs to whack mDB and this as the
     // 'database' and 'builder' properties onto aElement.
     nsresult rv;
 
@@ -1431,7 +1357,7 @@ nsXULTemplateBuilder::ComputeContainmentProperties()
         containment.Mid(propertyStr, offset, end - offset);
 
         nsCOMPtr<nsIRDFResource> property;
-        rv = gRDFService->GetUnicodeResource(propertyStr.get(), getter_AddRefs(property));
+        rv = gRDFService->GetUnicodeResource(propertyStr, getter_AddRefs(property));
         if (NS_FAILED(rv)) return rv;
 
         rv = mContainmentProperties.Add(property);
@@ -1458,7 +1384,7 @@ nsXULTemplateBuilder::IsTemplateElement(nsIContent* aContent)
     PRInt32 nameSpaceID;
     aContent->GetNameSpaceID(nameSpaceID);
 
-    if (nameSpaceID == nsXULTemplateBuilder::kNameSpaceID_XUL) {
+    if (nameSpaceID == kNameSpaceID_XUL) {
         nsCOMPtr<nsIAtom> tag;
         aContent->GetTag(*getter_AddRefs(tag));
 
@@ -1522,13 +1448,13 @@ nsXULTemplateBuilder::GetTemplateRoot(nsIContent** aResult)
         if (! doc)
             return NS_ERROR_FAILURE;
 
-        nsCOMPtr<nsIDOMXULDocument> xulDoc = do_QueryInterface(doc);
-        NS_ASSERTION(xulDoc != nsnull, "expected a XUL document");
-        if (! xulDoc)
+        nsCOMPtr<nsIDOMDocument> domDoc = do_QueryInterface(doc);
+        NS_ASSERTION(domDoc, "expected a XUL document");
+        if (! domDoc)
             return NS_ERROR_FAILURE;
 
         nsCOMPtr<nsIDOMElement> domElement;
-        xulDoc->GetElementById(templateID, getter_AddRefs(domElement));
+        domDoc->GetElementById(templateID, getter_AddRefs(domElement));
 
         if (domElement)
             return CallQueryInterface(domElement, aResult);
@@ -1911,7 +1837,7 @@ nsXULTemplateBuilder::CompileTripleCondition(nsTemplateRule* aRule,
     if (subject[0] == PRUnichar('?'))
         svar = mRules.LookupSymbol(subject.get(), PR_TRUE);
     else
-        gRDFService->GetUnicodeResource(subject.get(), getter_AddRefs(sres));
+        gRDFService->GetUnicodeResource(subject, getter_AddRefs(sres));
 
     // predicate
     nsAutoString predicate;
@@ -1925,7 +1851,7 @@ nsXULTemplateBuilder::CompileTripleCondition(nsTemplateRule* aRule,
         return NS_OK;
     }
     else {
-        gRDFService->GetUnicodeResource(predicate.get(), getter_AddRefs(pres));
+        gRDFService->GetUnicodeResource(predicate, getter_AddRefs(pres));
     }
 
     // object
@@ -1940,7 +1866,7 @@ nsXULTemplateBuilder::CompileTripleCondition(nsTemplateRule* aRule,
     else if (object.FindChar(':') != -1) { // XXXwaterson evil.
         // treat as resource
         nsCOMPtr<nsIRDFResource> resource;
-        gRDFService->GetUnicodeResource(object.get(), getter_AddRefs(resource));
+        gRDFService->GetUnicodeResource(object, getter_AddRefs(resource));
         onode = do_QueryInterface(resource);
     }
     else {
@@ -2124,7 +2050,7 @@ nsXULTemplateBuilder::CompileBinding(nsTemplateRule* aRule,
         return NS_OK;
     }
     else {
-        gRDFService->GetUnicodeResource(predicate.get(), getter_AddRefs(pred));
+        gRDFService->GetUnicodeResource(predicate, getter_AddRefs(pred));
     }
 
     // object
@@ -2258,7 +2184,7 @@ nsXULTemplateBuilder::CompileSimpleRule(nsIContent* aRuleElement,
             nsCOMPtr<nsIRDFNode> target;
             if (value.FindChar(':') != -1) { // XXXwaterson WRONG WRONG WRONG!
                 nsCOMPtr<nsIRDFResource> resource;
-                rv = gRDFService->GetUnicodeResource(value.get(), getter_AddRefs(resource));
+                rv = gRDFService->GetUnicodeResource(value, getter_AddRefs(resource));
                 if (NS_FAILED(rv)) return rv;
 
                 target = do_QueryInterface(resource);
@@ -2399,7 +2325,7 @@ nsXULTemplateBuilder::AddBindingsFor(nsXULTemplateBuilder* aThis,
     const nsAString& propertyStr = Substring(aVariable, PRUint32(4), aVariable.Length() - 4);
 
     nsCOMPtr<nsIRDFResource> property;
-    gRDFService->GetUnicodeResource(nsAutoString(propertyStr).get(), getter_AddRefs(property));
+    gRDFService->GetUnicodeResource(propertyStr, getter_AddRefs(property));
 
     if (! rule->HasBinding(aThis->mMemberVar, property, var))
         // In the simple syntax, the binding is always from the

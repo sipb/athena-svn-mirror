@@ -132,10 +132,8 @@ public:
 //   NS_IMETHOD GetBindingParent(nsIContent** aContent);
 //   NS_IMETHOD SetBindingParent(nsIContent* aParent);
 
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;  
-
   // nsIXMLContent
-//   NS_IMETHOD MaybeTriggerAutoLink(nsIWebShell *aShell);
+//   NS_IMETHOD MaybeTriggerAutoLink(nsIDocShell *aShell);
 
   // nsIStyledContent
   NS_IMETHOD GetID(nsIAtom*& aResult) const;

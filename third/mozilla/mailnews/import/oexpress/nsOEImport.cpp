@@ -42,6 +42,11 @@
   Outlook Express (Win32) import mail and addressbook interfaces
 
 */
+#ifdef MOZ_LOGGING
+// sorry, this has to be before the pre-compiled header
+#define FORCE_PR_LOG /* Allow logging in the release build */
+#endif
+
 #include "nscore.h"
 #include "nsCRT.h"
 #include "nsString.h"
@@ -74,6 +79,7 @@
 #include "OEDebugLog.h"
 
 static NS_DEFINE_IID(kISupportsIID,			NS_ISUPPORTS_IID);
+PRLogModuleInfo *OELOGMODULE = nsnull;
 
 class ImportOEMailImpl : public nsIImportMail
 {
@@ -177,8 +183,9 @@ private:
 
 nsOEImport::nsOEImport()
 {
-    NS_INIT_ISUPPORTS();
-
+  // Init logging module.
+  if (!OELOGMODULE)
+    OELOGMODULE = PR_NewLogModule("IMPORT");
 	IMPORT_LOG0( "nsOEImport Module Created\n");
 
 	nsOEStringBundle::GetStringBundle();
@@ -332,7 +339,6 @@ nsresult ImportOEMailImpl::Create(nsIImportMail** aImport)
 
 ImportOEMailImpl::ImportOEMailImpl()
 {
-    NS_INIT_ISUPPORTS();
 }
 
 
@@ -481,12 +487,9 @@ NS_IMETHODIMP ImportOEMailImpl::ImportMailbox(	nsIImportMailboxDescriptor *pSour
     	return( NS_ERROR_FAILURE);
     }
 
-#ifdef IMPORT_DEBUG
-	char *pPath;
-	inFile->GetNativePath( &pPath);    
-	IMPORT_LOG1( "Impot mailbox: %s\n", pPath);
-	nsCRT::free( pPath);
-#endif
+  nsXPIDLCString pPath; 
+  inFile->GetNativePath(getter_Copies(pPath));
+	IMPORT_LOG1( "Importing Outlook Express mailbox: %s\n", pPath.get());
     
 	m_bytesDone = 0;
 	PRUint32	msgCount = 0;
@@ -547,7 +550,6 @@ nsresult ImportOEAddressImpl::Create(nsIImportAddressBooks** aImport)
 
 ImportOEAddressImpl::ImportOEAddressImpl()
 {
-    NS_INIT_ISUPPORTS();
 	m_pWab = nsnull;
 }
 

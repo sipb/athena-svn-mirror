@@ -46,7 +46,7 @@
 #include "nsMimeStringResources.h"
 #include "nsMimeTypes.h"
 
-#ifdef XP_MAC
+#if defined(XP_MAC) || defined(XP_MACOSX)
   extern MimeObjectClass mimeMultipartAppleDoubleClass;
 #endif
 
@@ -277,13 +277,8 @@ MimeMultipart_parse_line (char *line, PRInt32 length, MimeObject *obj)
              {
                 mimeEmitterUpdateCharacterSet(obj->options, cset);
                 if (!(obj->options->override_charset))
-                {
                   // Also set this charset to msgWindow
-                  if (!nsCRT::strcasecmp(cset, "us-ascii"))
-                    SetMailCharacterSetToMsgWindow(obj, NS_LITERAL_STRING("ISO-8859-1").get());
-                  else
-                    SetMailCharacterSetToMsgWindow(obj, NS_ConvertASCIItoUCS2(cset).get());
-                }
+                  SetMailCharacterSetToMsgWindow(obj, cset);
               }
 
               PR_FREEIF(ct);
@@ -374,7 +369,7 @@ MimeMultipart_check_boundary(MimeObject *obj, const char *line, PRInt32 length)
   if (term_p)
     length -= 2;
 
-  if (blen == length-2 && !nsCRT::strncmp(line+2, mult->boundary, length-2))
+  if (blen == length-2 && !strncmp(line+2, mult->boundary, length-2))
 	  return (term_p
 			? MimeMultipartBoundaryTypeTerminator
 			: MimeMultipartBoundaryTypeSeparator);
@@ -454,14 +449,16 @@ MimeMultipart_create_child(MimeObject *obj)
 	{  
 	  status = body->clazz->parse_begin(body);
 
-#ifdef XP_MAC
+#if defined(XP_MAC) || defined(XP_MACOSX)
     /* if we are saving an apple double attachment, we need to set correctly the conten type of the channel */
     if (mime_typep(obj, (MimeObjectClass *) &mimeMultipartAppleDoubleClass))
     {
       struct mime_stream_data *msd = (struct mime_stream_data *)body->options->stream_closure;
       if (!body->options->write_html_p && body->content_type && !nsCRT::strcasecmp(body->content_type, APPLICATION_APPLEFILE))
+      {
 				if (msd && msd->channel)
         	msd->channel->SetContentType(NS_LITERAL_CSTRING(APPLICATION_APPLEFILE));
+      }
     }
 #endif
 

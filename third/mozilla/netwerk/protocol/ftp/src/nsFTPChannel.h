@@ -70,10 +70,10 @@
 #include "nsICacheSession.h"
 
 #define FTP_COMMAND_CHANNEL_SEG_SIZE 64
-#define FTP_COMMAND_CHANNEL_MAX_SIZE 512
+#define FTP_COMMAND_CHANNEL_SEG_COUNT 8
 
-#define FTP_DATA_CHANNEL_SEG_SIZE (4*1024)
-#define FTP_DATA_CHANNEL_MAX_SIZE (8 * FTP_DATA_CHANNEL_SEG_SIZE)
+#define FTP_DATA_CHANNEL_SEG_SIZE  (4*1024)
+#define FTP_DATA_CHANNEL_SEG_COUNT 8
 
 #define FTP_CACHE_CONTROL_CONNECTION 1
 
@@ -103,10 +103,6 @@ public:
     // nsFTPChannel methods:
     nsFTPChannel();
     virtual ~nsFTPChannel();
-
-    // Define a Create method to be used with a factory:
-    static NS_METHOD
-    Create(nsISupports* aOuter, const nsIID& aIID, void* *aResult);
     
     // initializes the channel. 
     nsresult Init(nsIURI* uri,

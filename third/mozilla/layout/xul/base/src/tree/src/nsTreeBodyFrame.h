@@ -51,6 +51,8 @@
 #include "nsHashtable.h"
 #include "nsITimer.h"
 #include "nsIReflowCallback.h"
+#include "nsILookAndFeel.h"
+#include "nsValueArray.h"
 
 #include "imgIDecoderObserver.h"
 
@@ -112,13 +114,16 @@ public:
 
   void Clear() { delete mTransitionTable; mTransitionTable = nsnull; delete mCache; mCache = nsnull; mNextState = 0; };
 
-  nsresult GetStyleContext(nsICSSPseudoComparator* aComparator, nsIPresContext* aPresContext, 
-                           nsIContent* aContent, 
-                           nsIStyleContext* aContext, nsIAtom* aPseudoElement,
-                           nsISupportsArray* aInputWord,
-                           nsIStyleContext** aResult);
+  nsStyleContext* GetStyleContext(nsICSSPseudoComparator* aComparator,
+                                  nsIPresContext* aPresContext, 
+                                  nsIContent* aContent, 
+                                  nsStyleContext* aContext,
+                                  nsIAtom* aPseudoElement,
+                                  nsISupportsArray* aInputWord);
 
   static PRBool PR_CALLBACK DeleteDFAState(nsHashKey *aKey, void *aData, void *closure);
+
+  static PRBool PR_CALLBACK ReleaseStyleContext(nsHashKey *aKey, void *aData, void *closure);
 
 protected:
   // A transition table for a deterministic finite automaton.  The DFA
@@ -139,7 +144,7 @@ protected:
 
   // The cache of all active style contexts.  This is a hash from 
   // a final state in the DFA, Sf, to the resultant style context.
-  nsSupportsHashtable* mCache;
+  nsObjectHashtable* mCache;
 
   // An integer counter that is used when we need to make new states in the
   // DFA.
@@ -243,7 +248,7 @@ public:
   NS_DECL_NSITREEBOXOBJECT
 
   // nsIBox
-  NS_IMETHOD GetPrefSize(nsBoxLayoutState& aBoxLayoutState, nsSize& aSize);
+  NS_IMETHOD GetMinSize(nsBoxLayoutState& aBoxLayoutState, nsSize& aSize);
   NS_IMETHOD SetBounds(nsBoxLayoutState& aBoxLayoutState, const nsRect& aRect);
 
   // nsIReflowCallback
@@ -259,7 +264,7 @@ public:
 
   // Overridden from nsIFrame to cache our pres context.
   NS_IMETHOD Init(nsIPresContext* aPresContext, nsIContent* aContent,
-                  nsIFrame* aParent, nsIStyleContext* aContext, nsIFrame* aPrevInFlow);
+                  nsIFrame* aParent, nsStyleContext* aContext, nsIFrame* aPrevInFlow);
   NS_IMETHOD Destroy(nsIPresContext* aPresContext);
 
   // Painting methods.
@@ -272,90 +277,86 @@ public:
                    PRUint32             aFlags = 0);
 
   // This method paints a specific column background of the tree.
-  NS_IMETHOD PaintColumn(nsTreeColumn*        aColumn,
-                         const nsRect&        aColumnRect,
-                         nsIPresContext*      aPresContext,
-                         nsIRenderingContext& aRenderingContext,
-                         const nsRect&        aDirtyRect,
-                         nsFramePaintLayer    aWhichLayer);
+  nsresult PaintColumn(nsTreeColumn*        aColumn,
+                       const nsRect&        aColumnRect,
+                       nsIPresContext*      aPresContext,
+                       nsIRenderingContext& aRenderingContext,
+                       const nsRect&        aDirtyRect);
 
   // This method paints a single row in the tree.
-  NS_IMETHOD PaintRow(PRInt32              aRowIndex,
-                      const nsRect&        aRowRect,
+  nsresult PaintRow(PRInt32              aRowIndex,
+                    const nsRect&        aRowRect,
+                    nsIPresContext*      aPresContext,
+                    nsIRenderingContext& aRenderingContext,
+                    const nsRect&        aDirtyRect);
+
+  // This method paints a specific cell in a given row of the tree.
+  nsresult PaintCell(PRInt32              aRowIndex, 
+                     nsTreeColumn*        aColumn,
+                     const nsRect&        aCellRect,
+                     nsIPresContext*      aPresContext,
+                     nsIRenderingContext& aRenderingContext,
+                     const nsRect&        aDirtyRect,
+                     nscoord&             aCurrX);
+
+  // This method paints the twisty inside a cell in the primary column of an tree.
+  nsresult PaintTwisty(PRInt32              aRowIndex,
+                       nsTreeColumn*        aColumn,
+                       const nsRect&        aTwistyRect,
+                       nsIPresContext*      aPresContext,
+                       nsIRenderingContext& aRenderingContext,
+                       const nsRect&        aDirtyRect,
+                       nscoord&             aRemainingWidth,
+                       nscoord&             aCurrX);
+
+  // This method paints the image inside the cell of an tree.
+  nsresult PaintImage(PRInt32              aRowIndex,
+                      nsTreeColumn*        aColumn,
+                      const nsRect&        aImageRect,
                       nsIPresContext*      aPresContext,
                       nsIRenderingContext& aRenderingContext,
                       const nsRect&        aDirtyRect,
-                      nsFramePaintLayer    aWhichLayer);
-
-  // This method paints a specific cell in a given row of the tree.
-  NS_IMETHOD PaintCell(PRInt32              aRowIndex, 
-                       nsTreeColumn*        aColumn,
-                       const nsRect&        aCellRect,
-                       nsIPresContext*      aPresContext,
-                       nsIRenderingContext& aRenderingContext,
-                       const nsRect&        aDirtyRect,
-                       nsFramePaintLayer    aWhichLayer);
-
-  // This method paints the twisty inside a cell in the primary column of an tree.
-  NS_IMETHOD PaintTwisty(PRInt32              aRowIndex,
-                         nsTreeColumn*        aColumn,
-                         const nsRect&        aTwistyRect,
-                         nsIPresContext*      aPresContext,
-                         nsIRenderingContext& aRenderingContext,
-                         const nsRect&        aDirtyRect,
-                         nsFramePaintLayer    aWhichLayer,
-                         nscoord&             aRemainingWidth,
-                         nscoord&             aCurrX);
-
-  // This method paints the image inside the cell of an tree.
-  NS_IMETHOD PaintImage(PRInt32              aRowIndex,
-                        nsTreeColumn*        aColumn,
-                        const nsRect&        aImageRect,
-                        nsIPresContext*      aPresContext,
-                        nsIRenderingContext& aRenderingContext,
-                        const nsRect&        aDirtyRect,
-                        nsFramePaintLayer    aWhichLayer,
-                        nscoord&             aRemainingWidth,
-                        nscoord&             aCurrX);
+                      nscoord&             aRemainingWidth,
+                      nscoord&             aCurrX);
 
   // This method paints the text string inside a particular cell of the tree.
-  NS_IMETHOD PaintText(PRInt32              aRowIndex, 
-                       nsTreeColumn*        aColumn,
-                       const nsRect&        aTextRect,
-                       nsIPresContext*      aPresContext,
-                       nsIRenderingContext& aRenderingContext,
-                       const nsRect&        aDirtyRect,
-                       nsFramePaintLayer    aWhichLayer);
+  nsresult PaintText(PRInt32              aRowIndex, 
+                     nsTreeColumn*        aColumn,
+                     const nsRect&        aTextRect,
+                     nsIPresContext*      aPresContext,
+                     nsIRenderingContext& aRenderingContext,
+                     const nsRect&        aDirtyRect,
+                     nscoord&             aCurrX);
 
   // This method paints the checkbox inside a particular cell of the tree.
-  NS_IMETHOD PaintCheckbox(PRInt32              aRowIndex, 
-                           nsTreeColumn*        aColumn,
-                           const nsRect&        aCheckboxRect,
-                           nsIPresContext*      aPresContext,
-                           nsIRenderingContext& aRenderingContext,
-                           const nsRect&        aDirtyRect,
-                           nsFramePaintLayer    aWhichLayer);
+  nsresult PaintCheckbox(PRInt32              aRowIndex, 
+                         nsTreeColumn*        aColumn,
+                         const nsRect&        aCheckboxRect,
+                         nsIPresContext*      aPresContext,
+                         nsIRenderingContext& aRenderingContext,
+                         const nsRect&        aDirtyRect);
 
   // This method paints the progress meter inside a particular cell of the tree.
-  NS_IMETHOD PaintProgressMeter(PRInt32              aRowIndex, 
-                                nsTreeColumn*    aColumn,
-                                const nsRect&        aProgressMeterRect,
-                                nsIPresContext*      aPresContext,
-                                nsIRenderingContext& aRenderingContext,
-                                const nsRect&        aDirtyRect,
-                                nsFramePaintLayer    aWhichLayer);
+  nsresult PaintProgressMeter(PRInt32              aRowIndex, 
+                              nsTreeColumn*        aColumn,
+                              const nsRect&        aProgressMeterRect,
+                              nsIPresContext*      aPresContext,
+                              nsIRenderingContext& aRenderingContext,
+                              const nsRect&        aDirtyRect);
 
   // This method paints a drop feedback of the tree.
-  NS_IMETHOD PaintDropFeedback(nsIPresContext*      aPresContext,
-                               nsIRenderingContext& aRenderingContext,
-                               const nsRect&        aDirtyRect,
-                               nsFramePaintLayer    aWhichLayer);
+  nsresult PaintDropFeedback(const nsRect&        aDropFeedbackRect, 
+                             nsIPresContext*      aPresContext,
+                             nsIRenderingContext& aRenderingContext,
+                             const nsRect&        aDirtyRect);
 
   // This method is called with a specific style context and rect to
   // paint the background rect as if it were a full-blown frame.
-  NS_IMETHOD PaintBackgroundLayer(nsIStyleContext* aStyleContext, nsIPresContext* aPresContext, 
-                                  nsIRenderingContext& aRenderingContext, 
-                                  const nsRect& aRect, const nsRect& aDirtyRect);
+  nsresult PaintBackgroundLayer(nsStyleContext*      aStyleContext,
+                                nsIPresContext*      aPresContext, 
+                                nsIRenderingContext& aRenderingContext, 
+                                const nsRect&        aRect,
+                                const nsRect&        aDirtyRect);
 
   // This method is called whenever an treecol is added or removed and
   // the column cache needs to be rebuilt.
@@ -379,11 +380,11 @@ protected:
 
   // Fetch an image from the image cache.
   nsresult GetImage(PRInt32 aRowIndex, const PRUnichar* aColID, PRBool aUseContext,
-                    nsIStyleContext* aStyleContext, PRBool& aAllowImageRegions, imgIContainer** aResult);
+                    nsStyleContext* aStyleContext, PRBool& aAllowImageRegions, imgIContainer** aResult);
 
   // Returns the size of a given image.   This size *includes* border and
   // padding.  It does not include margins.
-  nsRect GetImageSize(PRInt32 aRowIndex, const PRUnichar* aColID, PRBool aUseContext, nsIStyleContext* aStyleContext);
+  nsRect GetImageSize(PRInt32 aRowIndex, const PRUnichar* aColID, PRBool aUseContext, nsStyleContext* aStyleContext);
 
   // Returns the height of rows in the tree.
   PRInt32 GetRowHeight();
@@ -391,12 +392,12 @@ protected:
   // Returns our indentation width.
   PRInt32 GetIndentation();
 
-  // Returns our width/height once border and padding have been removed.
-  nsRect GetInnerBox();
+  // Calculates our width/height once border and padding have been removed.
+  void CalcInnerBox();
 
   // Looks up a style context in the style cache.  On a cache miss we resolve
   // the pseudo-styles passed in and place them into the cache.
-  nsresult GetPseudoStyleContext(nsIAtom* aPseudoElement, nsIStyleContext** aResult);
+  nsStyleContext* GetPseudoStyleContext(nsIAtom* aPseudoElement);
 
   // Builds our cache of column info.
   void EnsureColumns();
@@ -448,7 +449,19 @@ protected:
   // Mark ourselves dirty if we're a select widget
   void MarkDirtyIfSelect();
 
+  // Create a new timer. This method is used to delay various actions like
+  // opening/closing folders or tree scrolling.
+  // aID is type of the action, aFunc is the function to be called when
+  // the timer fires and aType is type of timer - one shot or repeating.
+  nsresult CreateTimer(const nsILookAndFeel::nsMetricID aID,
+                       nsTimerCallbackFunc aFunc, PRInt32 aType,
+                       nsITimer** aTimer);
+
   static void OpenCallback(nsITimer *aTimer, void *aClosure);
+
+  static void CloseCallback(nsITimer *aTimer, void *aClosure);
+
+  static void LazyScrollCallback(nsITimer *aTimer, void *aClosure);
 
   static void ScrollCallback(nsITimer *aTimer, void *aClosure);
 
@@ -513,6 +526,8 @@ protected: // Data Members
 
   PRPackedBool mVerticalOverflow;
 
+  PRInt16 mUpdateBatchNest;
+
   // A guard that prevents us from recursive painting.
   PRPackedBool mImageGuard;
 
@@ -529,7 +544,12 @@ protected: // Data Members
 
   nsCOMPtr<nsIDragSession> mDragSession;
 
-  // Timer for opening spring-loaded folders or scrolling the tree.
+  // Timer for opening/closing spring loaded folders or scrolling the tree.
   nsCOMPtr<nsITimer> mTimer;
+
+  // A value array used to keep track of all spring loaded folders.
+  nsValueArray mValueArray;
+
+  PRInt32 mCountBeforeUpdate;
 
 }; // class nsTreeBodyFrame

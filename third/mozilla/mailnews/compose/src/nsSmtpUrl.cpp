@@ -55,8 +55,7 @@ static NS_DEFINE_CID(kSimpleURICID, NS_SIMPLEURI_CID);
 /////////////////////////////////////////////////////////////////////////////////////
 nsMailtoUrl::nsMailtoUrl()
 {
-  NS_INIT_ISUPPORTS();
-  m_htmlBody = PR_FALSE;
+  mFormat = nsIMsgCompFormat::Default;
   nsComponentManager::CreateInstance(kSimpleURICID, nsnull, 
                                      NS_GET_IID(nsIURI), 
                                      (void **) getter_AddRefs(m_baseURL));
@@ -142,10 +141,12 @@ nsresult nsMailtoUrl::ParseMailtoUrl(char * searchPart)
 						m_fromPart = value;
 					break;
         case 'H':
-				  if (!nsCRT::strcasecmp(token, "html-part"))
-						  m_htmlPart = value;
-					else if (!nsCRT::strcasecmp (token, "html-body"))
-						m_htmlBody = PR_TRUE;
+          if (!nsCRT::strcasecmp(token, "html-part") || !nsCRT::strcasecmp (token, "html-body"))
+          {
+            // m_htmlPart holds the body for both html-part and html-body.
+            m_htmlPart = value;
+            mFormat = nsIMsgCompFormat::HTML;
+          }
           break;
 				case 'N':
 					if (!nsCRT::strcasecmp (token, "newsgroups"))
@@ -318,7 +319,7 @@ NS_IMETHODIMP nsMailtoUrl::GetMessageContents(char ** aToPart, char ** aCcPart, 
 		char ** aFromPart, char ** aFollowUpToPart, char ** aOrganizationPart, 
 		char ** aReplyToPart, char ** aSubjectPart, char ** aBodyPart, char ** aHtmlPart, 
 		char ** aReferencePart, char ** aAttachmentPart, char ** aPriorityPart, 
-		char ** aNewsgroupPart, char ** aNewsHostPart, PRBool * aHTMLBody)
+		char ** aNewsgroupPart, char ** aNewsHostPart, MSG_ComposeFormat * aFormat)
 {
 	if (aToPart)
 		*aToPart = ToNewCString(m_toPart);
@@ -350,8 +351,8 @@ NS_IMETHODIMP nsMailtoUrl::GetMessageContents(char ** aToPart, char ** aCcPart, 
 		*aNewsgroupPart = ToNewCString(m_newsgroupPart);
 	if (aNewsHostPart)
 		*aNewsHostPart = ToNewCString(m_newsHostPart);
-	if (aHTMLBody)
-		*aHTMLBody = m_htmlBody;
+	if (aFormat)
+		*aFormat = mFormat;
 	return NS_OK;
 }
 
@@ -377,7 +378,8 @@ NS_IMETHODIMP nsMailtoUrl::GetScheme(nsACString &aScheme)
 
 NS_IMETHODIMP nsMailtoUrl::SetScheme(const nsACString &aScheme)
 {
-	return m_baseURL->SetScheme(aScheme);
+	m_baseURL->SetScheme(aScheme);
+	return ParseUrl();
 }
 
 NS_IMETHODIMP nsMailtoUrl::GetUserPass(nsACString &aUserPass)
@@ -387,7 +389,8 @@ NS_IMETHODIMP nsMailtoUrl::GetUserPass(nsACString &aUserPass)
 
 NS_IMETHODIMP nsMailtoUrl::SetUserPass(const nsACString &aUserPass)
 {
-	return m_baseURL->SetUserPass(aUserPass);
+	m_baseURL->SetUserPass(aUserPass);
+	return ParseUrl();
 }
 
 NS_IMETHODIMP nsMailtoUrl::GetUsername(nsACString &aUsername)
@@ -397,7 +400,8 @@ NS_IMETHODIMP nsMailtoUrl::GetUsername(nsACString &aUsername)
 
 NS_IMETHODIMP nsMailtoUrl::SetUsername(const nsACString &aUsername)
 {
-	return m_baseURL->SetUsername(aUsername);
+	m_baseURL->SetUsername(aUsername);
+	return ParseUrl();
 }
 
 NS_IMETHODIMP nsMailtoUrl::GetPassword(nsACString &aPassword)
@@ -407,7 +411,8 @@ NS_IMETHODIMP nsMailtoUrl::GetPassword(nsACString &aPassword)
 
 NS_IMETHODIMP nsMailtoUrl::SetPassword(const nsACString &aPassword)
 {
-	return m_baseURL->SetPassword(aPassword);
+	m_baseURL->SetPassword(aPassword);
+	return ParseUrl();
 }
 
 NS_IMETHODIMP nsMailtoUrl::GetHostPort(nsACString &aHostPort)
@@ -417,7 +422,8 @@ NS_IMETHODIMP nsMailtoUrl::GetHostPort(nsACString &aHostPort)
 
 NS_IMETHODIMP nsMailtoUrl::SetHostPort(const nsACString &aHostPort)
 {
-	return m_baseURL->SetHost(aHostPort);
+	m_baseURL->SetHost(aHostPort);
+	return ParseUrl();
 }
 
 NS_IMETHODIMP nsMailtoUrl::GetHost(nsACString &aHost)
@@ -427,7 +433,8 @@ NS_IMETHODIMP nsMailtoUrl::GetHost(nsACString &aHost)
 
 NS_IMETHODIMP nsMailtoUrl::SetHost(const nsACString &aHost)
 {
-	return m_baseURL->SetHost(aHost);
+	m_baseURL->SetHost(aHost);
+	return ParseUrl();
 }
 
 NS_IMETHODIMP nsMailtoUrl::GetPort(PRInt32 *aPort)
@@ -437,7 +444,8 @@ NS_IMETHODIMP nsMailtoUrl::GetPort(PRInt32 *aPort)
 
 NS_IMETHODIMP nsMailtoUrl::SetPort(PRInt32 aPort)
 {
-	return m_baseURL->SetPort(aPort);
+	m_baseURL->SetPort(aPort);
+	return ParseUrl();
 }
 
 NS_IMETHODIMP nsMailtoUrl::GetPath(nsACString &aPath)
@@ -447,7 +455,8 @@ NS_IMETHODIMP nsMailtoUrl::GetPath(nsACString &aPath)
 
 NS_IMETHODIMP nsMailtoUrl::SetPath(const nsACString &aPath)
 {
-	return m_baseURL->SetPath(aPath);
+	m_baseURL->SetPath(aPath);
+	return ParseUrl();
 }
 
 NS_IMETHODIMP nsMailtoUrl::GetAsciiHost(nsACString &aHostA)

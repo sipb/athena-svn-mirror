@@ -198,7 +198,6 @@ jar:resource:///chrome/modern.jar!/skin/modern/communicator/toolbar/toolbarBindi
 jar:resource:///chrome/toolkit.jar!/content/global/bindings/tabbox.xml
 jar:resource:///chrome/toolkit.jar!/content/global/bindings/browser.xml
 jar:resource:///chrome/toolkit.jar!/content/global/bindings/button.xml
-jar:resource:///chrome/modern.jar!/skin/modern/navigator/navigatorBindings.xml
 jar:resource:///chrome/modern.jar!/skin/modern/communicator/brand/brandBindings.xml
 jar:resource:///chrome/comm.jar!/content/navigator/urlbarBindings.xml
 jar:resource:///chrome/toolkit.jar!/content/global/autocomplete.xml
@@ -207,7 +206,7 @@ jar:resource:///chrome/toolkit.jar!/content/global/bindings/outliner.xml
 jar:resource:///chrome/en-US.jar!/locale/en-US/navigator/navigator.properties
 jar:resource:///chrome/en-win.jar!/locale/en-US/navigator-platform/navigator.properties
 jar:resource:///chrome/en-US.jar!/locale/en-US/necko/necko.properties
-jar:resource:///chrome/en-US.jar!/locale/en-US/communicator/bookmarks/bookmark.properties
+jar:resource:///chrome/en-US.jar!/locale/en-US/communicator/bookmarks/bookmarks.properties
 jar:resource:///chrome/en-win.jar!/locale/en-US/global-platform/platformKeys.properties
 jar:resource:///chrome/en-US.jar!/locale/en-US/communicator/utilityOverlay.properties
 jar:resource:///chrome/US.jar!/locale/US/navigator-region/region.properties

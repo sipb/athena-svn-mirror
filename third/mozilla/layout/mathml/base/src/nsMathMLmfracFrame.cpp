@@ -26,7 +26,7 @@
 #include "nsFrame.h"
 #include "nsIPresContext.h"
 #include "nsUnitConversion.h"
-#include "nsIStyleContext.h"
+#include "nsStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIRenderingContext.h"
 #include "nsIFontMetrics.h"
@@ -99,7 +99,7 @@ NS_IMETHODIMP
 nsMathMLmfracFrame::Init(nsIPresContext*  aPresContext,
                          nsIContent*      aContent,
                          nsIFrame*        aParent,
-                         nsIStyleContext* aContext,
+                         nsStyleContext*  aContext,
                          nsIFrame*        aPrevInFlow)
 {
   nsresult rv = nsMathMLContainerFrame::Init(aPresContext, aContent, aParent, aContext, aPrevInFlow);
@@ -152,7 +152,7 @@ nsMathMLmfracFrame::TransmitAutomaticData(nsIPresContext* aPresContext)
 
 nscoord 
 nsMathMLmfracFrame::CalcLineThickness(nsIPresContext*  aPresContext,
-                                      nsIStyleContext* aStyleContext,
+                                      nsStyleContext*  aStyleContext,
                                       nsString&        aThicknessAttribute,
                                       nscoord          onePixel,
                                       nscoord          aDefaultRuleThickness)
@@ -220,9 +220,7 @@ nsMathMLmfracFrame::Paint(nsIPresContext*      aPresContext,
            !NS_MATHML_HAS_ERROR(mPresentationData.flags) &&
            !mLineRect.IsEmpty()) {
     // paint the fraction line with the current text color
-    const nsStyleColor *color = NS_STATIC_CAST(const nsStyleColor*,
-      mStyleContext->GetStyleData(eStyleStruct_Color));
-    aRenderingContext.SetColor(color->mColor);
+    aRenderingContext.SetColor(GetStyleColor()->mColor);
     aRenderingContext.FillRect(mLineRect.x, mLineRect.y, 
                                mLineRect.width, mLineRect.height);
   }
@@ -282,9 +280,7 @@ nsMathMLmfracFrame::Place(nsIPresContext*      aPresContext,
   aPresContext->GetScaledPixelsToTwips(&p2t);
   nscoord onePixel = NSIntPixelsToTwips(1, p2t);
 
-  const nsStyleFont *font = NS_STATIC_CAST(const nsStyleFont*,
-    mStyleContext->GetStyleData(eStyleStruct_Font));
-  aRenderingContext.SetFont(font->mFont, nsnull);
+  aRenderingContext.SetFont(GetStyleFont()->mFont, nsnull);
   nsCOMPtr<nsIFontMetrics> fm;
   aRenderingContext.GetFontMetrics(*getter_AddRefs(fm));
 
@@ -548,36 +544,31 @@ nsMathMLmfracFrame::UpdatePresentationDataFromChildAt(nsIPresContext* aPresConte
 
 // ----------------------
 // the Style System will use these to pass the proper style context to our MathMLChar
-NS_IMETHODIMP
-nsMathMLmfracFrame::GetAdditionalStyleContext(PRInt32           aIndex, 
-                                              nsIStyleContext** aStyleContext) const
+nsStyleContext*
+nsMathMLmfracFrame::GetAdditionalStyleContext(PRInt32 aIndex) const
 {
-  NS_PRECONDITION(aStyleContext, "null OUT ptr");
-  if (!mSlashChar || aIndex < 0) {
-    return NS_ERROR_INVALID_ARG;
+  if (!mSlashChar) {
+    return nsnull;
   }
-  *aStyleContext = nsnull;
   switch (aIndex) {
   case NS_SLASH_CHAR_STYLE_CONTEXT_INDEX:
-    mSlashChar->GetStyleContext(aStyleContext);
+    return mSlashChar->GetStyleContext();
     break;
   default:
-    return NS_ERROR_INVALID_ARG;
+    return nsnull;
   }
-  return NS_OK;
 }
 
-NS_IMETHODIMP
+void
 nsMathMLmfracFrame::SetAdditionalStyleContext(PRInt32          aIndex, 
-                                              nsIStyleContext* aStyleContext)
+                                              nsStyleContext*  aStyleContext)
 {
-  if (!mSlashChar || aIndex < 0) {
-    return NS_ERROR_INVALID_ARG;
+  if (!mSlashChar) {
+    return;
   }
   switch (aIndex) {
   case NS_SLASH_CHAR_STYLE_CONTEXT_INDEX:
     mSlashChar->SetStyleContext(aStyleContext);
     break;
   }
-  return NS_OK;
 }

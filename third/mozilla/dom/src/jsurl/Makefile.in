@@ -27,10 +27,11 @@ VPATH		= @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 MODULE		= jsurl
-LIBRARY_NAME	= jsurl
-EXPORT_LIBRARY = 1
-IS_COMPONENT	= 1
+LIBRARY_NAME	= jsurl_s
+FORCE_STATIC_LIB = 1
 MODULE_NAME	= javascript__protocol
+GRE_MODULE	= 1
+
 REQUIRES	= xpcom \
 		  string \
 		  js \
@@ -42,6 +43,7 @@ REQUIRES	= xpcom \
 		  xpconnect \
 		  jsconsole \
 		  uconv \
+		  docshell \
 		  $(NULL)
 
 XPIDLSRCS	= \

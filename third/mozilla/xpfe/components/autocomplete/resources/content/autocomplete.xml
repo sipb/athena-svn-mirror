@@ -39,6 +39,11 @@
     <implementation implements="nsIDOMXULMenuListElement, nsIAccessibleProvider">
 
       <constructor><![CDATA[
+        // XXX bug 90337 band-aid until we figure out what's going on here
+        if (this.value != this.mInputElt.value)
+          this.mInputElt.value = this.value;
+        delete this.value;
+
         // set default property values
         this.ifSetAttribute("timeout", 50);
         this.ifSetAttribute("maxrows", 5);
@@ -55,6 +60,7 @@
       ]]></constructor>
 
       <destructor><![CDATA[
+        this.clearResults(false);
       ]]></destructor>
       
       <!-- =================== PUBLIC PROPERTIES =================== -->
@@ -313,7 +319,7 @@
         <body><![CDATA[
           var obj = this.convertIndexToSession(aIndex);
           if (obj && this.mLastResults[obj.session]) {
-            var nsIAutoCompleteItem = Components.interfaces.nsIAutoCompleteItem;
+            const nsIAutoCompleteItem = Components.interfaces.nsIAutoCompleteItem;
             if (obj.index >= 0) {
               var item = this.mLastResults[obj.session].items.QueryElementAt(obj.index, nsIAutoCompleteItem);
               return item;
@@ -707,6 +713,9 @@
               }
             }
 
+            if (!this.noMatch)
+              this.autoComplete();
+
             this.closeResultPopup();
           }
           
@@ -738,6 +747,9 @@
                                              this.resultsPopup.selectedIndex);
             }
           }
+
+          if (!this.noMatch)
+            this.autoComplete();
 
           this.mNeedToFinish = false;
           this.mNeedToComplete = false;
@@ -864,6 +876,7 @@
   
             case KeyEvent.DOM_VK_LEFT:
             case KeyEvent.DOM_VK_RIGHT:
+              this.finishAutoComplete(false, false, aEvent);
               this.clearTimer();
               this.closeResultPopup();
               break;
@@ -917,6 +930,7 @@
           {
             // up/down keys while menu is closed will open menu
             if (!this.mMenuOpen && (this.view.rowCount > 0 || this.alwaysOpenPopup)) {
+              this.mNeedToFinish = true;
               this.openResultPopup();
               return;
             }
@@ -1057,8 +1071,19 @@
       <!--  -->
       <method name="clearResultData">
         <body><![CDATA[
+          const nsIAutoCompleteItem =
+            Components.interfaces.nsIAutoCompleteItem;
           for (var name in this.mSessions) {
-            this.mLastResults[name] = null;
+            // clearing out mLastResults[name] does not guarantee that
+            // each result will go away right now (it might be gc'ed later)
+            // so we have to clear the 'param' element manually
+            var session = this.mLastResults[name];
+            if (session) {
+              const resultCount = session.items.Count();
+              for (var i=0; i<resultCount; i++)
+                  session.items.QueryElementAt(i, nsIAutoCompleteItem).param = null;
+              this.mLastResults[name] = null;
+            }
             this.mLastStatus[name] = null;
           }
         ]]></body>
@@ -1273,6 +1298,9 @@
 
       <handler event="blur" phase="capturing"
                action="if ( !(this.ignoreBlurWhileSearching &amp;&amp; this.isSearching) ) {this.userAction = 'none'; this.finishAutoComplete(false, false, event);}"/>
+
+      <handler event="mousedown" phase="capturing"
+               action="if ( !this.mMenuOpen ) this.finishAutoComplete(false, false, event);"/>
     </handlers>
   </binding> 
 
@@ -1548,7 +1576,7 @@
         <body><![CDATA[
           var textbox = document.getBindingParent(this);
           var kids = textbox.getElementsByTagName("menupopup");
-          if (kids.length) {
+          if (kids.item(0)) {   // Open history popup
             kids[0].showPopup(textbox, -1, -1, "popup", "bottomleft", "topleft");
             textbox.setAttribute("open", true);
           }

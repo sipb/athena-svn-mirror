@@ -42,7 +42,6 @@
 #include "nsIPresContext.h"
 #include "nsIWidget.h"
 #include "nsIButton.h"
-#include "nsIScrollbar.h"
 #include "nsGUIEvent.h"
 #include "nsIDeviceContext.h"
 #include "nsIComponentManager.h"
@@ -100,11 +99,21 @@ nsView::nsView()
   mChildRemoved = PR_FALSE;
 }
 
+void nsView::DropMouseGrabbing() {
+  // check to see if we are grabbing events
+  if (mViewManager->GetMouseEventGrabber() == this) {
+    // we are grabbing events. Move the grab to the parent if we can.
+    PRBool boolResult; //not used
+    // if GetParent() returns null, then we release the grab, which is the best we can do
+    mViewManager->GrabMouseEvents(GetParent(), boolResult);
+  }
+}
+
 nsView::~nsView()
 {
   MOZ_COUNT_DTOR(nsView);
 
-  while (GetFirstChild() != nsnull)
+  while (GetFirstChild())
   {
     nsView* child = GetFirstChild();
     if (child->GetViewManager() == mViewManager) {
@@ -115,14 +124,16 @@ nsView::~nsView()
     }
   }
 
-  if (nsnull != mViewManager)
+  DropMouseGrabbing();
+  
+  if (mViewManager)
   {
     nsView *rootView = mViewManager->GetRootView();
     
-    if (nsnull != rootView)
+    if (rootView)
     {
       // Root views can have parents!
-      if (nsnull != mParent)
+      if (mParent)
       {
         mViewManager->RemoveChild(this);
       }
@@ -133,33 +144,26 @@ nsView::~nsView()
         mViewManager->SetRootView(nsnull);
       }
     }
-    else if (nsnull != mParent)
+    else if (mParent)
     {
       mParent->RemoveChild(this);
     }
     
-    nsView* grabbingView = mViewManager->GetMouseEventGrabber(); //check to see if we are capturing!!!
-    if (grabbingView == this)
-    {
-      PRBool boolResult;//not used
-      mViewManager->GrabMouseEvents(nsnull,boolResult);
-    }
-
     mViewManager = nsnull;
   }
-  else if (nsnull != mParent)
+  else if (mParent)
   {
     mParent->RemoveChild(this);
   }
 
-  if (nsnull != mZParent)
+  if (mZParent)
   {
     mZParent->RemoveReparentedView();
     mZParent->Destroy();
   }
 
   // Destroy and release the widget
-  if (nsnull != mWindow)
+  if (mWindow)
   {
     mWindow->SetClientData(nsnull);
     mWindow->Destroy();
@@ -317,18 +321,6 @@ NS_IMETHODIMP nsView::IgnoreSetPosition(PRBool aShouldIgnore)
 
 void nsView::SetPosition(nscoord aX, nscoord aY)
 {
-  nscoord x = aX;
-  nscoord y = aY;
-  if (IsRoot()) {
-    // Add view manager's coordinate offset to the root view
-    // This allows the view manager to offset it's coordinate space
-    // while allowing layout to assume it's coordinate space origin is (0,0)
-    nscoord offsetX;
-    nscoord offsetY;
-    mViewManager->GetWindowOffset(&offsetX, &offsetY);
-    x += offsetX;
-    y += offsetY;
-  }
   mDimBounds.x += aX - mPosX;
   mDimBounds.y += aY - mPosY;
   mPosX = aX;
@@ -472,12 +464,9 @@ NS_IMETHODIMP nsView::GetPosition(nscoord *x, nscoord *y) const
     *x = *y = 0;
   else
   {
-
     *x = mPosX;
     *y = mPosY;
-
   }
-
 
   return NS_OK;
 }
@@ -555,13 +544,7 @@ NS_IMETHODIMP nsView::SetVisibility(nsViewVisibility aVisibility)
 
   if (aVisibility == nsViewVisibility_kHide)
   {
-    nsView* grabbingView = mViewManager->GetMouseEventGrabber(); //check to see if we are grabbing events
-    if (grabbingView == this)
-    {
-      //if yes then we must release them before we become hidden and can't get them
-      PRBool boolResult;//not used
-      mViewManager->GrabMouseEvents(nsnull,boolResult);
-    }
+    DropMouseGrabbing();
   }
 
   if (nsnull != mWindow)
@@ -619,6 +602,12 @@ NS_IMETHODIMP nsView::GetFloating(PRBool &aFloatingView) const
 NS_IMETHODIMP nsView::GetParent(nsIView *&aParent) const
 {
   aParent = mParent;
+  return NS_OK;
+}
+
+NS_IMETHODIMP nsView::GetFirstChild(nsIView *&aChild) const
+{
+  aChild = mFirstChild;
   return NS_OK;
 }
 
@@ -737,10 +726,11 @@ NS_IMETHODIMP nsView::GetClientData(void *&aData) const
 }
 
 NS_IMETHODIMP nsView::CreateWidget(const nsIID &aWindowIID,
-                                     nsWidgetInitData *aWidgetInitData,
-                                     nsNativeWidget aNative,
-                                     PRBool aEnableDragDrop,
-                                     PRBool aResetVisibility)
+                                   nsWidgetInitData *aWidgetInitData,
+                                   nsNativeWidget aNative,
+                                   PRBool aEnableDragDrop,
+                                   PRBool aResetVisibility,
+                                   nsContentType aContentType)
 {
   nsIDeviceContext  *dx;
   nsRect            trect = mDimBounds;
@@ -761,17 +751,24 @@ NS_IMETHODIMP nsView::CreateWidget(const nsIID &aWindowIID,
 
     if (PR_TRUE == usewidgets)
     {
+      PRBool initDataPassedIn = PR_TRUE;
+      nsWidgetInitData initData;
+      if (!aWidgetInitData) {
+        // No initData, we're a child window
+        // Create initData to pass in params
+        initDataPassedIn = PR_FALSE;
+        initData.clipChildren = PR_TRUE; // Clip child window's children
+        aWidgetInitData = &initData;
+      }
+      aWidgetInitData->mContentType = aContentType;
+
       if (aNative)
         mWindow->Create(aNative, trect, ::HandleEvent, dx, nsnull, nsnull, aWidgetInitData);
       else
       {
-        nsWidgetInitData initData;
-        if (nsnull == aWidgetInitData && nsnull != GetParent()) {
-          if (GetParent()->GetViewManager() != mViewManager) {
-            initData.mListenForResizes = PR_TRUE;
-            aWidgetInitData = &initData;
-          }
-        }
+        if (!initDataPassedIn && GetParent() && 
+          GetParent()->GetViewManager() != mViewManager)
+          initData.mListenForResizes = PR_TRUE;
 
         nsIWidget *parent;
         GetOffsetFromWidget(nsnull, nsnull, parent);
@@ -795,7 +792,7 @@ NS_IMETHODIMP nsView::CreateWidget(const nsIID &aWindowIID,
     
     GetVisibility(vis);
     SetVisibility(vis);
-    }
+  }
 
   NS_RELEASE(dx);
 
@@ -836,8 +833,8 @@ NS_IMETHODIMP nsView::GetWidget(nsIWidget *&aWidget) const
 
 NS_IMETHODIMP nsView::HasWidget(PRBool *aHasWidget) const
 {
-	*aHasWidget = (mWindow != nsnull);
-	return NS_OK;
+  *aHasWidget = (mWindow != nsnull);
+  return NS_OK;
 }
 
 //
@@ -907,13 +904,13 @@ NS_IMETHODIMP nsView::GetOffsetFromWidget(nscoord *aDx, nscoord *aDy, nsIWidget 
   while (nsnull != ancestor)
   {
     ancestor->GetWidget(aWidget);
-	  if (nsnull != aWidget) {
+    if (nsnull != aWidget) {
       // the widget's (0,0) is at the top left of the view's bounds, NOT its position
       nsRect r;
       ancestor->GetDimensions(r);
       aDx -= r.x;
       aDy -= r.y;
-	    return NS_OK;
+      return NS_OK;
     }
 
     if ((nsnull != aDx) && (nsnull != aDy))
@@ -921,13 +918,12 @@ NS_IMETHODIMP nsView::GetOffsetFromWidget(nscoord *aDx, nscoord *aDy, nsIWidget 
       ancestor->ConvertToParentCoords(aDx, aDy);
     }
 
-	  ancestor = ancestor->GetParent();
+    ancestor = ancestor->GetParent();
   }
 
-  
   if (nsnull == aWidget) {
-       // The root view doesn't have a widget
-       // but maybe the view manager does.
+    // The root view doesn't have a widget
+    // but maybe the view manager does.
     GetViewManager()->GetWidget(&aWidget);
   }
 
@@ -1036,17 +1032,23 @@ NS_IMETHODIMP nsView::GetClippedRect(nsRect& aClippedRect, PRBool& aIsClipped, P
     }
 
     if (parentView->GetClipChildren()) {
-      aIsClipped = PR_TRUE;
       // Adjust for clip specified by ancestor
       nsRect clipRect;
       parentView->GetChildClip(clipRect);
       //Offset the cliprect by the amount the child offsets from the parent
       clipRect.x -= ancestorX;
       clipRect.y -= ancestorY;
+
+      nsRect oldClippedRect = aClippedRect;
       PRBool overlap = aClippedRect.IntersectRect(clipRect, aClippedRect);
       if (!overlap) {
+        aIsClipped = PR_TRUE;
         aEmpty = PR_TRUE; // Does not intersect so the rect is empty.
         return NS_OK;
+      }
+
+      if (oldClippedRect != aClippedRect) {
+        aIsClipped = PR_TRUE;
       }
     }
 

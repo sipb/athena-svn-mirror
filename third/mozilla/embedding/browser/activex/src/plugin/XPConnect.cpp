@@ -42,6 +42,7 @@
 #include "nsXPCOMGlue.h"
 #include "nsCOMPtr.h"
 #include "nsComponentManagerUtils.h"
+#include "nsIServiceManagerUtils.h"
 
 #include "nsIMozAxPlugin.h"
 #include "nsIClassInfo.h"
@@ -55,12 +56,24 @@
 #include "nsIDOMNodeList.h"
 #include "nsIDOMElement.h"
 #include "nsIDOMEventReceiver.h"
+#include "nsIDOMWindow.h"
 
+#include "nsIInterfaceRequestorUtils.h"
 #include "nsIEventListenerManager.h"
-#include "nsGUIEvent.h"
+
+#include "nsIScriptEventManager.h"
+#include "jsapi.h"
 
 #include "LegacyPlugin.h"
 #include "XPConnect.h"
+
+#ifdef XPC_IDISPATCH_SUPPORT
+#include "nsIDOMWindowInternal.h"
+#include "nsIDOMLocation.h"
+#include "nsNetUtil.h"
+#include "nsEmbedString.h"
+#include "nsIURI.h"
+#endif
 
 static NS_DEFINE_IID(kIClassInfoIID, NS_ICLASSINFO_IID);
 static NS_DEFINE_IID(kISupportsIID, NS_ISUPPORTS_IID);
@@ -71,15 +84,14 @@ static NS_DEFINE_IID(kISupportsIID, NS_ISUPPORTS_IID);
 nsScriptablePeer::nsScriptablePeer() :
     mTearOff(new nsScriptablePeerTearOff(this))
 {
-    NS_INIT_ISUPPORTS();
     NS_ASSERTION(mTearOff, "can't create tearoff");
-    xpc_AddRef();
+    MozAxPlugin::AddRef();
 }
 
 nsScriptablePeer::~nsScriptablePeer()
 {
     delete mTearOff;
-    xpc_Release();
+    MozAxPlugin::Release();
 }
 
 NS_IMPL_ADDREF(nsScriptablePeer)
@@ -371,7 +383,8 @@ nsScriptablePeer::ConvertVariants(VARIANT *aIn, nsIVariant **aOut)
                 if (pManager)
                 {
                     rv = pManager->CreateInstanceByContractID("@mozilla.org/variant;1",
-                        nsnull, NS_GET_IID(nsIWritableVariant), (void **) &v);
+                        nsnull, NS_GET_IID(nsIWritableVariant),
+                        getter_AddRefs(v));
                     pManager->Release();
                 }
             }
@@ -626,6 +639,7 @@ nsScriptablePeer::SetProperty(const char *propertyName, nsIVariant *propertyValu
 
 ///////////////////////////////////////////////////////////////////////////////
 
+#ifdef XPC_IDISPATCH_SUPPORT
 HRESULT
 nsEventSink::InternalInvoke(DISPID dispIdMember, REFIID riid, LCID lcid, WORD wFlags, DISPPARAMS *pDispParams, VARIANT *pVarResult, EXCEPINFO *pExcepInfo, UINT *puArgErr)
 {
@@ -730,12 +744,15 @@ nsEventSink::InternalInvoke(DISPID dispIdMember, REFIID riid, LCID lcid, WORD wF
         ATLTRACE(_T(");\n"));
     }
 #endif
+    m_spEventSinkTypeInfo->ReleaseFuncDesc(pFuncDesc);
+    pFuncDesc = NULL;
 
     nsCOMPtr<nsIDOMElement> element;
-    NPN_GetValue(mPlugin->pPluginInstance, NPNVDOMElement, (void *) &element);
+    NPN_GetValue(mPlugin->pPluginInstance, NPNVDOMElement, 
+        NS_STATIC_CAST(nsIDOMElement **, getter_AddRefs(element)));
     if (!element)
     {
-        NS_ASSERTION(element, "can't get the object element");
+        NS_ERROR("can't get the object element");
         return S_OK;
     }
     nsAutoString id;
@@ -746,80 +763,66 @@ nsEventSink::InternalInvoke(DISPID dispIdMember, REFIID riid, LCID lcid, WORD wF
         return S_OK;
     }
 
-    nsAutoString eventName(bstrName.m_str);
+    nsDependentString eventName(bstrName.m_str);
 
-    // TODO Turn VARIANT args into js objects
-    // Fire event to DOM 2 event listeners
+    // Fire the script event handler...
+    nsCOMPtr<nsIDOMWindow> window;
+    NPN_GetValue(mPlugin->pPluginInstance, NPNVDOMWindow, 
+        NS_STATIC_CAST(nsIDOMWindow **, getter_AddRefs(window)));
+    
+    nsCOMPtr<nsIScriptEventManager> eventManager(do_GetInterface(window));
+    if (!eventManager) return S_OK;
 
-    nsCOMPtr<nsIDOMEventReceiver> eventReceiver = do_QueryInterface(element);
-    if (eventReceiver)
+    nsCOMPtr<nsISupports> handler;
+
+    eventManager->FindEventHandler(id, eventName, pDispParams->cArgs, getter_AddRefs(handler));
+    if (!handler)
     {
-        // Get the event manager
-        nsCOMPtr<nsIEventListenerManager> eventManager;
-        eventReceiver->GetListenerManager(getter_AddRefs(eventManager));
-        if (eventManager)
-        {
-            nsStringKey key(eventName);
-            nsEvent event;
-            event.message = NS_USER_DEFINED_EVENT;
-            event.userType = &key;
+        return S_OK;
+    }
 
-            // Fire the event!
-            nsCOMPtr<nsIDOMEvent> domEvent;
-            nsEventStatus eventStatus;
-            nsresult rv = eventManager->HandleEvent(nsnull, &event, getter_AddRefs(domEvent),
-                eventReceiver, NS_EVENT_FLAG_INIT, &eventStatus);
+    // Create a list of arguments to pass along
+    //
+    // This array is created on the stack if the number of arguments
+    // less than kMaxArgsOnStack.  Otherwise, the array is heap
+    // allocated.
+    //
+    const int kMaxArgsOnStack = 10;
+
+    PRUint32 argc = pDispParams->cArgs;
+    jsval *args = nsnull;
+    jsval stackArgs[kMaxArgsOnStack];
+
+    // Heap allocate the jsval array if it is too big to fit on
+    // the stack (ie. more than kMaxArgsOnStack arguments)
+    if (argc > kMaxArgsOnStack)
+    {
+        args = new jsval[argc];
+        if (!args) return S_OK;
+    }
+    else if (argc)
+    {
+        // Use the jsval array on the stack...
+        args = stackArgs;
+    }
+
+    if (argc)
+    {
+        nsCOMPtr<nsIDispatchSupport> disp(do_GetService("@mozilla.org/nsdispatchsupport;1"));
+        for (UINT i = 0; i < argc; i++)
+        {
+            // Arguments are listed backwards, intentionally, in rgvarg
+            disp->COMVariant2JSVal(&pDispParams->rgvarg[argc - 1 - i], &args[i]);
         }
     }
 
-    // Loop through all script tags looking for event handlers
+    // Fire the Event.
+    eventManager->InvokeEventHandler(handler, element, args, argc);
 
-    nsCOMPtr<nsIDOMDocument> doc;
-    NPN_GetValue(mPlugin->pPluginInstance, NPNVDOMDocument, (void *)&doc);
-    if (doc)
+    // Free the jsvals if they were heap allocated...
+    if (args != stackArgs)
     {
-        nsCOMPtr<nsIDOMNodeList> scriptList;
-        doc->GetElementsByTagName(NS_LITERAL_STRING("script"), getter_AddRefs(scriptList));
-        if (scriptList)
-        {
-            PRUint32 length = 0;
-            scriptList->GetLength(&length);
-            for (PRUint32 i = 0; i < length; i++)
-            {
-                nsCOMPtr<nsIDOMNode> node;
-                scriptList->Item(i, getter_AddRefs(node));
-                if (!node)
-                {
-                    continue;
-                }
-                nsCOMPtr<nsIDOMElement> element = do_QueryInterface(node);
-                if (!element)
-                {
-                    continue;
-                }
-
-                // Get the <script FOR="foo" EVENT="bar"> attributes
-                nsAutoString forAttr;
-                nsAutoString eventAttr;
-                if (NS_FAILED(element->GetAttribute(NS_LITERAL_STRING("for"), forAttr)) ||
-                    forAttr.IsEmpty() ||
-                    NS_FAILED(element->GetAttribute(NS_LITERAL_STRING("event"), eventAttr)) ||
-                    eventAttr.IsEmpty())
-                {
-                    continue;
-                }
-
-                if (!forAttr.Equals(id) ||
-                    !eventAttr.Equals(eventName)) // TODO compare no case?
-                {
-                    // Somebody elses event
-                    continue;
-                }
-
-                // TODO fire the event
-
-            }
-        }
+        delete [] args;
     }
 
     // TODO Turn js objects for out params back into VARIANTS
@@ -833,10 +836,9 @@ nsEventSink::InternalInvoke(DISPID dispIdMember, REFIID riid, LCID lcid, WORD wF
         pExcepInfo->wCode = 0;
     }
 
-    m_spEventSinkTypeInfo->ReleaseFuncDesc(pFuncDesc);
-
     return S_OK;
 }
+#endif
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -921,20 +923,58 @@ HRESULT STDMETHODCALLTYPE nsScriptablePeerTearOff::Invoke(DISPID dispIdMember, R
 
 static PRUint32 gInstances = 0;
 
-void xpc_AddRef()
+void MozAxPlugin::AddRef()
 {
     if (gInstances == 0)
-      XPCOMGlueStartup(nsnull);
+    {
+        XPCOMGlueStartup(nsnull);
+        MozAxPlugin::PrefGetHostingFlags(); // Initial call to set it up
+    }
     gInstances++;
 }
 
-void xpc_Release()
+void MozAxPlugin::Release()
 {
     if (--gInstances == 0)
-      XPCOMGlueShutdown();
+    {
+#ifdef XPC_IDISPATCH_SUPPORT
+        MozAxPlugin::ReleasePrefObserver();
+#endif
+        XPCOMGlueShutdown();
+    }
 }
 
-CLSID xpc_GetCLSIDForType(const char *mimeType)
+#ifdef XPC_IDISPATCH_SUPPORT
+nsresult MozAxPlugin::GetCurrentLocation(NPP instance, nsIURI **aLocation)
+{
+    NS_ENSURE_ARG_POINTER(aLocation);
+    *aLocation = nsnull;
+    nsCOMPtr<nsIDOMWindow> domWindow;
+    NPN_GetValue(instance, NPNVDOMWindow, (void *) &domWindow);
+    if (!domWindow)
+    {
+        return NS_ERROR_FAILURE;
+    }
+    nsCOMPtr<nsIDOMWindowInternal> windowInternal = do_QueryInterface(domWindow);
+    if (!windowInternal)
+    {
+        return NS_ERROR_FAILURE;
+    }
+
+    nsCOMPtr<nsIDOMLocation> location;
+    nsEmbedString href;
+    windowInternal->GetLocation(getter_AddRefs(location));
+    if (!location ||
+        NS_FAILED(location->GetHref(href)))
+    {
+        return NS_ERROR_FAILURE;
+    }
+
+    return NS_NewURI(aLocation, href);
+}
+#endif
+
+CLSID MozAxPlugin::GetCLSIDForType(const char *mimeType)
 {
     if (mimeType == NULL)
     {
@@ -955,7 +995,7 @@ CLSID xpc_GetCLSIDForType(const char *mimeType)
 	        ULONG nCount = (sizeof(szGUID) / sizeof(szGUID[0])) - 1;
 
             GUID guidValue = GUID_NULL;
-            if (keyMimeType.QueryValue(_T("CLSID"), szGUID, &nCount) == ERROR_SUCCESS &&
+            if (keyMimeType.QueryValue(szGUID, _T("CLSID"), &nCount) == ERROR_SUCCESS &&
                 SUCCEEDED(::CLSIDFromString(T2OLE(szGUID), &guidValue)))
             {
                 return guidValue;
@@ -965,52 +1005,26 @@ CLSID xpc_GetCLSIDForType(const char *mimeType)
     return CLSID_NULL;
 }
 
-// TODO remove me
-#ifdef MOZ_ACTIVEX_PLUGIN_WMPSUPPORT
-#include "XPCMediaPlayer.h"
-const CLSID kWindowsMediaPlayer = {
-    0x6BF52A52, 0x394A, 0x11d3, { 0xB1, 0x53, 0x00, 0xC0, 0x4F, 0x79, 0xFA, 0xA6 } };
-#endif
 
 nsScriptablePeer *
-xpc_GetPeerForCLSID(const CLSID &clsid)
+MozAxPlugin::GetPeerForCLSID(const CLSID &clsid)
 {
-#ifdef XPC_IDISPATCH_SUPPORT
     return new nsScriptablePeer();
-#else
-// TODO remove me
-#ifdef MOZ_ACTIVEX_PLUGIN_WMPSUPPORT
-    if (::IsEqualCLSID(clsid, kWindowsMediaPlayer))
-    {
-        return new nsWMPScriptablePeer();
-    }
-#endif
-    return new nsScriptablePeer();
-#endif
 }
 
-nsIID
-xpc_GetIIDForCLSID(const CLSID &clsid)
+void
+MozAxPlugin::GetIIDForCLSID(const CLSID &clsid, nsIID &iid)
 {
 #ifdef XPC_IDISPATCH_SUPPORT
-    nsIID iid;
-    memcpy(&iid, &_uuidof(IDispatch), sizeof(iid));
-    return iid;
+    memcpy(&iid, &__uuidof(IDispatch), sizeof(iid));
 #else
-// TODO remove me
-#ifdef MOZ_ACTIVEX_PLUGIN_WMPSUPPORT
-    if (::IsEqualCLSID(clsid, kWindowsMediaPlayer))
-    {
-        return NS_GET_IID(nsIWMPPlayer2);
-    }
-#endif
-    return NS_GET_IID(nsIMozAxPlugin);
+    iid = NS_GET_IID(nsIMozAxPlugin);
 #endif
 }
 
 // Called by NPP_GetValue to provide the scripting values
 NPError
-xpc_GetValue(NPP instance, NPPVariable variable, void *value)
+MozAxPlugin::GetValue(NPP instance, NPPVariable variable, void *value)
 {
     if (instance == NULL)
     {
@@ -1018,6 +1032,61 @@ xpc_GetValue(NPP instance, NPPVariable variable, void *value)
     }
 
     PluginInstanceData *pData = (PluginInstanceData *) instance->pdata;
+    if (!pData ||
+        !pData->pControlSite ||
+        !pData->pControlSite->IsObjectValid())
+    {
+        return NPERR_GENERIC_ERROR;
+    }
+
+    // Test if the object is allowed to be scripted
+
+#ifdef XPC_IDISPATCH_SUPPORT
+    PRUint32 hostingFlags = MozAxPlugin::PrefGetHostingFlags();
+    if (hostingFlags & nsIActiveXSecurityPolicy::HOSTING_FLAGS_SCRIPT_SAFE_OBJECTS &&
+        !(hostingFlags & nsIActiveXSecurityPolicy::HOSTING_FLAGS_SCRIPT_ALL_OBJECTS))
+    {
+        // Ensure the object is safe for scripting on the specified interface
+        nsCOMPtr<nsIDispatchSupport> dispSupport = do_GetService(NS_IDISPATCH_SUPPORT_CONTRACTID);
+        if (!dispSupport) return NPERR_GENERIC_ERROR;
+        
+        PRBool isScriptable = PR_FALSE;
+
+        // Test if the object says its safe for scripting on IDispatch
+        nsIID iid;
+        memcpy(&iid, &__uuidof(IDispatch), sizeof(iid));
+        CComPtr<IUnknown> controlUnk;
+        pData->pControlSite->GetControlUnknown(&controlUnk);
+        dispSupport->IsObjectSafeForScripting(reinterpret_cast<void *>(controlUnk.p), iid, &isScriptable);
+
+        // Test if the class id says safe for scripting
+        if (!isScriptable)
+        {
+            PRBool classExists = PR_FALSE;
+            nsCID cid;
+            memcpy(&cid, &pData->clsid, sizeof(cid));
+            dispSupport->IsClassMarkedSafeForScripting(cid, &classExists, &isScriptable);
+        }
+        if (!isScriptable)
+        {
+            return NPERR_GENERIC_ERROR;
+        }
+    }
+    else if (hostingFlags & nsIActiveXSecurityPolicy::HOSTING_FLAGS_SCRIPT_ALL_OBJECTS)
+    {
+        // Drop through since all objects are scriptable
+    }
+    else
+    {
+        return NPERR_GENERIC_ERROR;
+    }
+#else
+    // Object *must* be safe
+    if (!pData->pControlSite->IsObjectSafeForScripting(__uuidof(IDispatch)))
+    {
+        return NPERR_GENERIC_ERROR;
+    }
+#endif
 
     // Happy happy fun fun - redefine some NPPVariable values that we might
     // be asked for but not defined by every PluginSDK 
@@ -1029,10 +1098,13 @@ xpc_GetValue(NPP instance, NPPVariable variable, void *value)
     {
         if (!pData->pScriptingPeer)
         {
-            nsScriptablePeer *peer  = xpc_GetPeerForCLSID(pData->clsid);
-            peer->AddRef();
-            pData->pScriptingPeer = (nsIMozAxPlugin *) peer;
-            peer->mPlugin = pData;
+            nsScriptablePeer *peer = MozAxPlugin::GetPeerForCLSID(pData->clsid);
+            if (peer)
+            {
+                peer->AddRef();
+                pData->pScriptingPeer = (nsIMozAxPlugin *) peer;
+                peer->mPlugin = pData;
+            }
         }
         if (pData->pScriptingPeer)
         {
@@ -1044,7 +1116,7 @@ xpc_GetValue(NPP instance, NPPVariable variable, void *value)
     else if (variable == kVarScriptableIID)
     {
         nsIID *piid = (nsIID *) NPN_MemAlloc(sizeof(nsIID));
-        *piid = xpc_GetIIDForCLSID(pData->clsid);
+        GetIIDForCLSID(pData->clsid, *piid);
         *((nsIID **) value) = piid;
         return NPERR_NO_ERROR;
     }

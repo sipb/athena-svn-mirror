@@ -77,7 +77,6 @@ nsDOMDocumentType::nsDOMDocumentType(const nsAString& aName,
   mSystemId(aSystemId),
   mInternalSubset(aInternalSubset)
 {
-  NS_INIT_ISUPPORTS();
 
   mEntities = aEntities;
   mNotations = aNotations;
@@ -198,42 +197,9 @@ nsDOMDocumentType::CloneNode(PRBool aDeep, nsIDOMNode** aReturn)
                                                 mPublicId,
                                                 mSystemId,
                                                 mInternalSubset);
-  if (nsnull == it) {
+  if (!it) {
     return NS_ERROR_OUT_OF_MEMORY;
   }
-  return it->QueryInterface(NS_GET_IID(nsIDOMNode), (void**) aReturn);
+
+  return CallQueryInterface(it, aReturn);
 }
-
-#ifdef DEBUG
-NS_IMETHODIMP
-nsDOMDocumentType::SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const
-{
-  NS_ENSURE_ARG_POINTER(aResult);
-
-  PRUint32 sum;
-  nsGenericDOMDataNode::SizeOf(aSizer, &sum);
-  PRUint32 ssize;
-  mName.SizeOf(aSizer, &ssize);
-  sum = sum - sizeof(mName) + ssize;
-  if (mEntities) {
-    PRBool recorded;
-    aSizer->RecordObject((void*) mEntities, &recorded);
-    if (!recorded) {
-      PRUint32 size;
-      nsDOMAttributeMap::SizeOfNamedNodeMap(mEntities, aSizer, &size);
-      aSizer->AddSize(nsLayoutAtoms::xml_document_entities, size);
-    }
-  }
-  if (mNotations) {
-    PRBool recorded;
-    aSizer->RecordObject((void*) mNotations, &recorded);
-    if (!recorded) {
-      PRUint32 size;
-      nsDOMAttributeMap::SizeOfNamedNodeMap(mNotations, aSizer, &size);
-      aSizer->AddSize(nsLayoutAtoms::xml_document_notations, size);
-    }
-  }
-  return NS_OK;
-}
-#endif
-

@@ -22,6 +22,7 @@
  * Contributor(s):
  *   Robert O'Callahan <roc+moz@cs.cmu.edu>
  *   Dean Tessman <dean_tessman@hotmail.com>
+ *   Makoto Kato  <m_kato@ga2.so-net.ne.jp>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or 
@@ -54,15 +55,16 @@
 
 #include "nsVoidArray.h"
 
+#include <imm.h>
+
 class nsNativeDragTarget;
 class nsIRollupListener;
 
 class nsIMenuBar;
 
 #ifdef ACCESSIBILITY
-struct IAccessible;
+#include "OLEACC.H"
 #include "nsIAccessible.h"
-#include "nsIAccessibleEventListener.h"
 #endif
 
 #define IME_MAX_CHAR_POS       64
@@ -400,6 +402,9 @@ public:
 
     void InitEvent(nsGUIEvent& event, PRUint32 aEventType, nsPoint* aPoint = nsnull);
 
+    void                    SuppressBlurEvents(PRBool aSuppress);
+    PRBool                  BlurEventsSuppressed();
+
 protected:
     // special callback hook methods for pop ups
     static LRESULT CALLBACK MozSpecialMsgFilter(int code, WPARAM wParam, LPARAM lParam);
@@ -426,10 +431,8 @@ protected:
      // Allow Derived classes to modify the height that is passed
      // when the window is created or resized.
     virtual PRInt32         GetHeight(PRInt32 aProposedHeight);
-#ifdef MOZ_UNICODE
     virtual LPCWSTR         WindowClassW();
     virtual LPCWSTR         WindowPopupClassW();
-#endif
     virtual LPCTSTR         WindowClass();
     virtual LPCTSTR         WindowPopupClass();
     virtual DWORD           WindowStyle();
@@ -439,7 +442,7 @@ protected:
 
     virtual void            OnDestroy();
     virtual PRBool          OnMove(PRInt32 aX, PRInt32 aY);
-    virtual PRBool          OnPaint();
+    virtual PRBool          OnPaint(HDC aDC = nsnull);
     virtual PRBool          OnResize(nsRect &aWindowRect);
 
     BOOL                    OnChar(UINT mbcsCharCode, UINT virtualKeyCode, bool isMultibyte);
@@ -472,13 +475,12 @@ protected:
                                         UINT msg,
                                         WPARAM wParam,
                                         LPARAM lParam);
-#ifdef MOZ_AIMM
     static LRESULT CALLBACK DefaultWindowProc(HWND hWns, UINT msg, WPARAM wParam, LPARAM lParam);
-#endif
 
     static PRBool ConvertStatus(nsEventStatus aStatus);
 
     PRBool DispatchStandardEvent(PRUint32 aMsg);
+    PRBool DispatchAppCommandEvent(PRUint32 aEventCommand);
     void RelayMouseEvent(UINT aMsg, WPARAM wParam, LPARAM lParam);
 
     void GetNonClientBounds(nsRect &aRect);
@@ -488,6 +490,7 @@ protected:
     void MapDBCSAtrributeArrayToUnicodeOffsets(PRUint32* textRangeListLengthResult, nsTextRangeArray* textRangeListResult);
 
     void ConstrainZLevel(HWND *aAfter);
+    PRBool SetWin32ContentType();
 
 private:
 
@@ -520,8 +523,11 @@ protected:
     PRPackedBool  mIMEIsStatusChanged;
     PRPackedBool  mIsInMouseCapture;
     PRPackedBool  mIsInMouseWheelProcessing;
+    PRPackedBool  mUnicodeWidget;
 
     char        mLeadByte;
+    PRUint32    mBlurEventSuppressionLevel;
+    nsContentType mContentType;
 
     // XXX Temporary, should not be caching the font
     nsFont *    mFont;
@@ -584,8 +590,11 @@ protected:
     static UINT uWM_HEAP_DUMP;       // Dump heap to a file
 
 #ifdef ACCESSIBILITY
-    IAccessible* mRootAccessible;
+    nsIAccessible* mRootAccessible;
     static BOOL gIsAccessibilityOn;
+    static HINSTANCE gmAccLib;
+    static LPFNLRESULTFROMOBJECT gmLresultFromObject;
+    static STDMETHODIMP_(LRESULT) LresultFromObject(REFIID riid,WPARAM wParam,LPUNKNOWN pAcc);
 #endif
 
    static BOOL CALLBACK BroadcastMsgToChildren(HWND aWnd, LPARAM aMsg);

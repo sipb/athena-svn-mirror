@@ -39,6 +39,7 @@
 #include "nsReadableUtils.h"
 #include "nsUnicharUtils.h"
 #include "nsCRT.h"
+#include "nsIExternalProtocolHandler.h"
 
 static NS_DEFINE_CID(kIOServiceCID, NS_IOSERVICE_CID);
 
@@ -48,6 +49,14 @@ static NS_DEFINE_CID(kIOServiceCID, NS_IOSERVICE_CID);
 #endif
 
 const PRFloat64 growthRate = 1.2;
+
+// Bug 183111, editor now replaces multiple spaces with leading
+// 0xA0's and a single ending space, so need to treat 0xA0's as spaces.
+// 0xA0 is the Latin1/Unicode character for "non-breaking space (nbsp)"
+static inline PRBool IsSpace(const PRUnichar aChar)
+{
+  return (nsCRT::IsAsciiSpace(aChar) || aChar == 0xA0);
+}
 
 // Escape Char will take ch, escape it and append the result to 
 // aStringToAppendTo
@@ -152,6 +161,10 @@ void
 mozTXTToHTMLConv::CompleteAbbreviatedURL(const PRUnichar * aInString, PRInt32 aInLength, 
                                          const PRUint32 pos, nsString& aOutString)
 {
+  NS_ASSERTION(pos < aInLength, "bad args to CompleteAbbreviatedURL, see bug #190851");
+  if (pos >= aInLength)
+    return;
+
   if (aInString[pos] == '@')
   {
     // only pre-pend a mailto url if the string contains a .domain in it..
@@ -231,6 +244,9 @@ mozTXTToHTMLConv::FindURLStart(const PRUnichar * aInString, PRInt32 aInLength,
   case abbreviated:
   {
     PRInt32 i = pos - 1;
+    // This disallows non-ascii-characters for email.
+    // Currently correct, but revisit later after standards changed.
+    PRBool isEmail = aInString[pos] == (PRUnichar)'@';
     for (; i >= 0
              && aInString[PRUint32(i)] != '>' && aInString[PRUint32(i)] != '<'
              && aInString[PRUint32(i)] != '"' && aInString[PRUint32(i)] != '\''
@@ -238,7 +254,8 @@ mozTXTToHTMLConv::FindURLStart(const PRUnichar * aInString, PRInt32 aInLength,
              && aInString[PRUint32(i)] != '{' && aInString[PRUint32(i)] != '['
              && aInString[PRUint32(i)] != '(' && aInString[PRUint32(i)] != '|'
              && aInString[PRUint32(i)] != '\\'
-             && !nsCRT::IsAsciiSpace(aInString[PRUint32(i)])
+             && !IsSpace(aInString[PRUint32(i)])
+             && (!isEmail || nsCRT::IsAscii(aInString[PRUint32(i)]))
          ; i--)
       ;
     if
@@ -287,13 +304,17 @@ mozTXTToHTMLConv::FindURLEnd(const PRUnichar * aInString, PRInt32 aInStringLengt
   case abbreviated:
   {
     PRUint32 i = pos + 1;
+    // This disallows non-ascii-characters for email.
+    // Currently correct, but revisit later after standards changed.
+    PRBool isEmail = aInString[pos] == (PRUnichar)'@';
     for (; PRInt32(i) < aInStringLength
              && aInString[i] != '>' && aInString[i] != '<'
              && aInString[i] != '"' && aInString[i] != '\''
              && aInString[i] != '`'
              && aInString[i] != '}' && aInString[i] != ']'
              && aInString[i] != ')' && aInString[i] != '|'
-             && !nsCRT::IsAsciiSpace(aInString[i])
+             && !IsSpace(aInString[i])
+             && (!isEmail || nsCRT::IsAscii(aInString[i]))
          ; i++)
       ;
     while (--i > pos && (
@@ -358,6 +379,33 @@ mozTXTToHTMLConv::CalculateURLBoundaries(const PRUnichar * aInString, PRInt32 aI
   return;
 }
 
+PRBool mozTXTToHTMLConv::ShouldLinkify(const nsCString& aURL)
+{
+  if (!mIOService)
+    return PR_FALSE;
+
+  nsCAutoString scheme;
+  nsresult rv = mIOService->ExtractScheme(aURL, scheme);
+  if(NS_FAILED(rv))
+    return PR_FALSE;
+
+  // Get the handler for this scheme.
+  nsCOMPtr<nsIProtocolHandler> handler;    
+  rv = mIOService->GetProtocolHandler(scheme.get(), getter_AddRefs(handler));
+  if(NS_FAILED(rv))
+    return PR_FALSE;
+
+  // Is it an external protocol handler? If not, linkify it.
+  nsCOMPtr<nsIExternalProtocolHandler> externalHandler = do_QueryInterface(handler, &rv);
+  if (!externalHandler)
+   return PR_TRUE; // handler is built-in, linkify it!
+
+  // If external app exists for the scheme then linkify it.
+  PRBool exists;
+  rv = externalHandler->ExternalAppExistsForScheme(scheme, &exists);
+  return(NS_SUCCEEDED(rv) && exists);
+}
+
 PRBool
 mozTXTToHTMLConv::CheckURLAndCreateHTML(
      const nsString& txtURL, const nsString& desc, const modetype mode,
@@ -372,9 +420,14 @@ mozTXTToHTMLConv::CheckURLAndCreateHTML(
   if (NS_FAILED(rv) || !mIOService)
     return PR_FALSE;
 
+  // See if the url should be linkified.
+  NS_ConvertUCS2toUTF8 utf8URL(txtURL);
+  if (!ShouldLinkify(utf8URL))
+    return PR_FALSE;
+
   // it would be faster if we could just check to see if there is a protocol
   // handler for the url and return instead of actually trying to create a url...
-  rv = mIOService->NewURI(NS_ConvertUCS2toUTF8(txtURL), nsnull, nsnull, getter_AddRefs(uri));
+  rv = mIOService->NewURI(utf8URL, nsnull, nsnull, getter_AddRefs(uri));
 
   // Real work
   if (NS_SUCCEEDED(rv) && uri)
@@ -622,52 +675,60 @@ mozTXTToHTMLConv::StructPhraseHit(const PRUnichar * aInString, PRInt32 aInString
   return PR_FALSE;
 }
 
+
 PRBool
 mozTXTToHTMLConv::SmilyHit(const PRUnichar * aInString, PRInt32 aLength, PRBool col0,
-         const PRUnichar* tagTXT, PRInt32 aTagTxtLength, const char* tagHTML,
+         const char* tagTXT, const char* imageName,
          nsString& outputHTML, PRInt32& glyphTextLen)
 {
-  PRInt32  tagLen = nsCRT::strlen(tagTXT);
+  if ( !aInString || !tagTXT || !imageName )
+      return PR_FALSE;
 
+  PRInt32  tagLen = nsCRT::strlen(tagTXT);
+ 
   PRUint32 delim = (col0 ? 0 : 1) + tagLen;
+
   if
     (
-      (col0 || nsCRT::IsAsciiSpace(aInString[0]))
+      (col0 || IsSpace(aInString[0]))
         &&
         (
           aLength <= PRInt32(delim) ||
-          nsCRT::IsAsciiSpace(aInString[delim]) ||
+          IsSpace(aInString[delim]) ||
           aLength > PRInt32(delim + 1)
             &&
             (
               aInString[delim] == '.' ||
               aInString[delim] == ',' ||
               aInString[delim] == ';' ||
+              aInString[delim] == '8' ||
+              aInString[delim] == '>' ||
               aInString[delim] == '!' ||
               aInString[delim] == '?'
             )
-            && nsCRT::IsAsciiSpace(aInString[delim + 1])
+            && IsSpace(aInString[delim + 1])
         )
-        && ItMatchesDelimited(aInString, aLength, tagTXT, aTagTxtLength, 
+        && ItMatchesDelimited(aInString, aLength, NS_ConvertASCIItoUCS2(tagTXT).get(), tagLen, 
                               col0 ? LT_IGNORE : LT_DELIMITER, LT_IGNORE)
 	        // Note: tests at different pos for LT_IGNORE and LT_DELIMITER
     )
   {
-    if (col0)
-    {
-      outputHTML.AssignWithConversion(tagHTML);
-    }
-    else
+    if (!col0)
     {
       outputHTML.Truncate();
       outputHTML.Append(PRUnichar(' '));
-      outputHTML.AppendWithConversion(tagHTML);
     }
+
+    outputHTML += NS_LITERAL_STRING("<img src=\"chrome://editor/content/images/") 
+        + NS_ConvertASCIItoUCS2(imageName) 
+        + NS_LITERAL_STRING("\" alt=\"") 
+        + NS_ConvertASCIItoUCS2(tagTXT) 
+        + NS_LITERAL_STRING("\" class=\"moz-txt-smily\"height=19 width=19 align=ABSCENTER>");
     glyphTextLen = (col0 ? 0 : 1) + tagLen;
     return PR_TRUE;
   }
-  else
-    return PR_FALSE;
+
+  return PR_FALSE;
 }
 
 // the glyph is appended to aOutputString instead of the original string...
@@ -679,144 +740,144 @@ mozTXTToHTMLConv::GlyphHit(const PRUnichar * aInString, PRInt32 aInLength, PRBoo
 
   PRUnichar text0 = aInString[0]; 
   PRUnichar text1 = aInString[1];
+  PRUnichar firstChar = (col0 ? text0 : text1);
 
   // temporary variable used to store the glyph html text
   nsAutoString outputHTML;
+  PRBool bTestSmilie;
+  PRBool bArg;
+  int i;
 
-  if
-    (
-      (  // Performance increase
-        (col0 ? text0 : text1) == ':' ||
-        (col0 ? text0 : text1) == ';'
-      )
-      &&
-        (
-          SmilyHit(aInString, aInLength, col0,
-                   NS_LITERAL_STRING(":-)").get(),  3,
-                   "<img src=\"chrome://editor/content/images/smile_n.gif\" alt=\":-)\" class=\"moz-txt-smily\" height=19 width=19 align=ABSCENTER>",
-                   outputHTML, glyphTextLen)       ||
-          
-          SmilyHit(aInString, aInLength, col0,
-                   NS_LITERAL_STRING(":)").get(),   2,
-                   "<img src=\"chrome://editor/content/images/smile_n.gif\" alt=\":)\" class=\"moz-txt-smily\" height=19 width=19 align=ABSCENTER>",
-                   outputHTML, glyphTextLen)        ||
-          
-          SmilyHit(aInString, aInLength, col0,
-                   NS_LITERAL_STRING(":-D").get(),  3,
-                   "<img src=\"chrome://editor/content/images/laughing_n.gif\" alt=\":-D\" class=\"moz-txt-smily\" height=19 width=19 align=ABSCENTER>",
-                   outputHTML, glyphTextLen)    ||
-          
-          SmilyHit(aInString, aInLength, col0,
-                   NS_LITERAL_STRING(":-(").get(),  3,
-                   "<img src=\"chrome://editor/content/images/frown_n.gif\" alt=\":-(\" class=\"moz-txt-smily\" height=19 width=19 align=ABSCENTER>",
-                   outputHTML, glyphTextLen)       ||
-          
-          SmilyHit(aInString, aInLength, col0,
-                   NS_LITERAL_STRING(":(").get(),   2,
-                   "<img src=\"chrome://editor/content/images/frown_n.gif\" alt=\":(\" class=\"moz-txt-smily\" height=19 width=19 align=ABSCENTER>",
-                   outputHTML, glyphTextLen)        ||
-          
-          SmilyHit(aInString, aInLength, col0,
-                   NS_LITERAL_STRING(":-[").get(),  3,
-                   "<img src=\"chrome://editor/content/images/embarrassed_n.gif\" alt=\":-[\" class=\"moz-txt-smily\" height=19 width=19 align=ABSCENTER>",
+  // refactor some of this mess to avoid code duplication and speed execution a bit
+  // there are two cases that need to be tried one after another. To avoid a lot of
+  // duplicate code, rolling into a loop
+
+  i = 0;
+  while ( i < 2 )
+  {
+    bTestSmilie = PR_FALSE;
+    if ( !i && (firstChar == ':' || firstChar == ';' || firstChar == '=' || firstChar == '>' || firstChar == '8' || firstChar == 'O'))
+    {
+        // first test passed
+
+        bTestSmilie = PR_TRUE;
+        bArg = col0;
+    }
+    if ( i && col0 && ( text1 == ':' || text1 == ';' || text1 == '=' || text1 == '>' || text1 == '8' || text1 == 'O' ) )
+    {
+        // second test passed
+
+        bTestSmilie = PR_TRUE;
+        bArg = PR_FALSE;
+    }
+    if ( bTestSmilie && (
+          SmilyHit(aInString, aInLength, bArg,
+                   ":-)",
+                   "smile_n.gif",
+                   outputHTML, glyphTextLen) ||
+  
+          SmilyHit(aInString, aInLength, bArg,
+                   ":)",
+                   "smile_n.gif",
                    outputHTML, glyphTextLen) ||
           
-          SmilyHit(aInString, aInLength, col0,
-                   NS_LITERAL_STRING(";-)").get(),  3,
-                   "<img src=\"chrome://editor/content/images/wink_n.gif\" alt=\";-)\" class=\"moz-txt-smily\" height=19 width=19 align=ABSCENTER>",
-                   outputHTML, glyphTextLen)        ||
-          SmilyHit(aInString, aInLength, col0,
-                   NS_LITERAL_STRING(";)").get(),   2,
-                   "<img src=\"chrome://editor/content/images/wink_n.gif\" alt=\";)\" class=\"moz-txt-smily\" height=19 width=19 align=ABSCENTER>",
-                   outputHTML, glyphTextLen)         ||
-          
-          SmilyHit(aInString, aInLength, col0,
-                   NS_LITERAL_STRING(":-\\").get(), 3,
-                   "<img src=\"chrome://editor/content/images/undecided_n.gif\" alt=\":-\\\" class=\"moz-txt-smily\" height=19 width=19 align=ABSCENTER>",
-                   outputHTML, glyphTextLen)  ||
-          
-          SmilyHit(aInString, aInLength, col0,
-                   NS_LITERAL_STRING(":-P").get(),  3,
-                   "<img src=\"chrome://editor/content/images/tongue_n.gif\" alt=\":-P\" class=\"moz-txt-smily\" height=19 width=19 align=ABSCENTER>",
-                   outputHTML, glyphTextLen)
-          
-
-        )
-    )
-  {
-    aOutputString.Append(outputHTML);
-    MOZ_TIMER_STOP(mGlyphHitTimer);
-    return PR_TRUE;
-  }
-  if   // XXX Hotfix
-    (
-      (  // Performance increase
-        col0
-          &&
-          (
-            text1 == ':' ||
-            text1 == ';'
-          )
-      )
-      &&
-        (
-          SmilyHit(aInString, aInLength, PR_FALSE,
-                   NS_LITERAL_STRING(":-)").get(),  3,
-                   "<img src=\"chrome://editor/content/images/smile_n.gif\" alt=\":-)\" class=\"moz-txt-smily\" height=19 width=19 align=ABSCENTER>",
-                   outputHTML, glyphTextLen)       ||
-          
-          SmilyHit(aInString, aInLength, PR_FALSE,
-                   NS_LITERAL_STRING(":)").get(),   2,
-                   "<img src=\"chrome://editor/content/images/smile_n.gif\" alt=\":)\" class=\"moz-txt-smily\" height=19 width=19 align=ABSCENTER>",
-                   outputHTML, glyphTextLen)        ||
-          
-          SmilyHit(aInString, aInLength, PR_FALSE,
-                   NS_LITERAL_STRING(":-D").get(),  3,
-                   "<img src=\"chrome://editor/content/images/laughing_n.gif\" alt=\":-D\" class=\"moz-txt-smily\" height=19 width=19 align=ABSCENTER>",
-                   outputHTML, glyphTextLen)    ||
-          
-          SmilyHit(aInString, aInLength, PR_FALSE,
-                   NS_LITERAL_STRING(":-(").get(),  3,
-                   "<img src=\"chrome://editor/content/images/frown_n.gif\" alt=\":-(\" class=\"moz-txt-smily\" height=19 width=19 align=ABSCENTER>",
-                   outputHTML, glyphTextLen)       ||
-          
-          SmilyHit(aInString, aInLength, PR_FALSE,
-                   NS_LITERAL_STRING(":(").get(),   2,
-                   "<img src=\"chrome://editor/content/images/frown_n.gif\" alt=\":(\" class=\"moz-txt-smily\" height=19 width=19 align=ABSCENTER>",
-                   outputHTML, glyphTextLen)        ||
-          
-          SmilyHit(aInString, aInLength, PR_FALSE,
-                   NS_LITERAL_STRING(":-[").get(),  3,
-                   "<img src=\"chrome://editor/content/images/embarrassed_n.gif\" alt=\":-[\" class=\"moz-txt-smily\" height=19 width=19 align=ABSCENTER>",
+          SmilyHit(aInString, aInLength, bArg,
+                   ":-D",
+                   "laughing_n.gif",
                    outputHTML, glyphTextLen) ||
           
-          SmilyHit(aInString, aInLength, PR_FALSE,
-                   NS_LITERAL_STRING(";-)").get(),  3,
-                   "<img src=\"chrome://editor/content/images/wink_n.gif\" alt=\";-)\" class=\"moz-txt-smily\" height=19 width=19 align=ABSCENTER>",
-                   outputHTML, glyphTextLen)        ||
+          SmilyHit(aInString, aInLength, bArg,
+                   ":-(",
+                   "frown_n.gif",
+                   outputHTML, glyphTextLen) ||
           
-          SmilyHit(aInString, aInLength, PR_FALSE,
-                   NS_LITERAL_STRING(";)").get(),   2,
-                   "<img src=\"chrome://editor/content/images/wink_n.gif\" alt=\";)\" class=\"moz-txt-smily\" height=19 width=19 align=ABSCENTER>",
-                   outputHTML, glyphTextLen)         ||
+          SmilyHit(aInString, aInLength, bArg,
+                   ":(",
+                   "frown_n.gif",
+                   outputHTML, glyphTextLen) ||
           
-          SmilyHit(aInString, aInLength, PR_FALSE,
-                   NS_LITERAL_STRING(":-\\").get(), 3,
-                   "<img src=\"chrome://editor/content/images/undecided_n.gif\" alt=\":-\\\" class=\"moz-txt-smily\" height=19 width=19 align=ABSCENTER>",
-                   outputHTML, glyphTextLen)  ||
+          SmilyHit(aInString, aInLength, bArg,
+                   ":-[",
+                   "embarrassed_n.gif",
+                   outputHTML, glyphTextLen) ||
           
-          SmilyHit(aInString, aInLength, PR_FALSE,
-                   NS_LITERAL_STRING(":-P").get(),  3,
-                   "<img src=\"chrome://editor/content/images/tongue_n.gif\" alt=\":-P\" class=\"moz-txt-smily\" height=19 width=19 align=ABSCENTER>",
-                   outputHTML, glyphTextLen)
-          
+          SmilyHit(aInString, aInLength, bArg,
+                   ";-)",
+                   "wink_n.gif",
+                   outputHTML, glyphTextLen) ||
 
+          SmilyHit(aInString, aInLength, col0,
+                   ";)",
+                   "wink_n.gif",
+                   outputHTML, glyphTextLen) ||
+          
+          SmilyHit(aInString, aInLength, bArg,
+                   ":-\\",
+                   "undecided_n.gif",
+                   outputHTML, glyphTextLen) ||
+          
+          SmilyHit(aInString, aInLength, bArg,
+                   ":-P",
+                   "tongue_n.gif",
+                   outputHTML, glyphTextLen) ||         
+         
+          SmilyHit(aInString, aInLength, bArg,
+                   "=-O",
+                   "surprise_n.gif",
+                   outputHTML, glyphTextLen) ||
+         
+          SmilyHit(aInString, aInLength, bArg,
+                   ":-*",
+                   "kiss_n.gif",
+                   outputHTML, glyphTextLen) ||
+         
+          SmilyHit(aInString, aInLength, bArg,
+                   ">:o",
+                   "yell_n.gif",
+                   outputHTML, glyphTextLen) ||
+          
+          SmilyHit(aInString, aInLength, bArg,
+                   ">:-o",
+                   "yell_n.gif",
+                   outputHTML, glyphTextLen) ||
+        
+          SmilyHit(aInString, aInLength, bArg,
+                   "8-)",
+                   "cool_n.gif",
+                   outputHTML, glyphTextLen) ||
+         
+          SmilyHit(aInString, aInLength, bArg,
+                   ":-$",
+                   "money_n.gif",
+                   outputHTML, glyphTextLen) ||
+         
+          SmilyHit(aInString, aInLength, bArg,
+                   ":-!",
+                   "foot_n.gif",
+                   outputHTML, glyphTextLen) ||
+         
+          SmilyHit(aInString, aInLength, bArg,
+                   "O:-)",
+                   "innocent_n.gif",
+                   outputHTML, glyphTextLen) ||
+         
+          SmilyHit(aInString, aInLength, bArg,
+                   ":'(",
+                   "cry_n.gif",
+                   outputHTML, glyphTextLen) ||
+         
+          SmilyHit(aInString, aInLength, bArg,
+                   ":-X",
+                   "sealed_n.gif",
+                   outputHTML, glyphTextLen) 
         )
     )
-  {
-    aOutputString.Append(outputHTML);
-    MOZ_TIMER_STOP(mGlyphHitTimer);    
-    return PR_TRUE;
+    {
+        aOutputString.Append(outputHTML);
+        MOZ_TIMER_STOP(mGlyphHitTimer);
+        return PR_TRUE;
+    }
+    i++;
   }
   if (text0 == '+' || text1 == '+')
   {
@@ -906,7 +967,6 @@ mozTXTToHTMLConv::GlyphHit(const PRUnichar * aInString, PRInt32 aInLength, PRBoo
 
 mozTXTToHTMLConv::mozTXTToHTMLConv()
 {
-  NS_INIT_ISUPPORTS();
   MOZ_TIMER_RESET(mScanTXTTimer);
   MOZ_TIMER_RESET(mGlyphHitTimer);
   MOZ_TIMER_RESET(mTotalMimeTime);
@@ -955,7 +1015,7 @@ mozTXTToHTMLConv::CiteLevelTXT(const PRUnichar *line,
     PRUint32 i = logLineStart;
 
 #ifdef QUOTE_RECOGNITION_AGGRESSIVE
-    for (; PRInt32(i) < lineLength && nsCRT::IsAsciiSpace(line[i]); i++)
+    for (; PRInt32(i) < lineLength && IsSpace(line[i]); i++)
       ;
     for (; PRInt32(i) < lineLength && nsCRT::IsAsciiAlpha(line[i])
                                    && nsCRT::IsUpper(line[i])   ; i++)

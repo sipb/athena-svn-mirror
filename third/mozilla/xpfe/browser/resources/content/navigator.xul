@@ -1,4 +1,4 @@
-<?xml version="1.0"?> <!-- -*- Mode: HTML -*- --> 
+<?xml version="1.0"?> <!-- -*- Mode: HTML; indent-tabs-mode: nil -*- --> 
 
 <!-- The contents of this file are subject to the Netscape Public
 License Version 1.1 (the "License"); you may not use this file
@@ -73,8 +73,8 @@ Contributor(s):
   <script type="application/x-javascript" src="chrome://communicator/content/printing.js"/>
 
   <!-- Shared Bookmarks Utility Library -->
-  <script type="application/x-javascript" src="chrome://communicator/content/bookmarks/bookmarksOverlay.js"/>
-  <script type="application/x-javascript" src="chrome://navigator/content/personalToolbar.js"/>
+  <script type="application/x-javascript" src="chrome://communicator/content/bookmarks/bookmarks.js"/>
+  <script type="application/x-javascript" src="chrome://communicator/content/bookmarks/bookmarksMenu.js"/>
   
   <!-- Navigator -->
   <script type="application/x-javascript" src="chrome://navigator/content/browser.js"/>
@@ -92,6 +92,7 @@ Contributor(s):
   </stringbundleset>
 
   <commandset id="commands">    
+    <commandset id="findTypeMenuItems"/>
     <commandset id="globalEditMenuItems"/>
     <commandset id="selectEditMenuItems"/>
     <commandset id="undoEditMenuItems"/>
@@ -114,19 +115,17 @@ Contributor(s):
   <popup id="sidebarPopup"/>
 
   <popupset id="bookmarksPopupset"/>
+  <tooltip  id="btTooltip"/>
+  <template id="bookmarksMenuTemplate"/>
  
   <!-- context menu -->
   <popupset id="contentAreaContextSet"/>
 
-  <script type="application/x-javascript">
-    var gBookmarkPopup = null;
-  </script>
-
   <toolbox id="navigator-toolbox" class="toolbox-top" deferattached="true">
     <!-- Menu -->
-    <menubar id="main-menubar" grippytooltiptext="&menuBar.tooltip;"/>
+    <menubar id="main-menubar" persist="collapsed" grippytooltiptext="&menuBar.tooltip;"/>
 
-    <toolbar class="toolbar-primary chromeclass-toolbar" id="nav-bar"
+    <toolbar class="toolbar-primary chromeclass-toolbar" id="nav-bar" persist="collapsed" 
              grippytooltiptext="&navigationToolbar.tooltip;"
              tbalign="stretch" fullscreentoolbar="true">
       <hbox id="nav-bar-buttons">
@@ -158,6 +157,7 @@ Contributor(s):
       </hbox>
  
       <hbox id="nav-bar-inner" flex="1">
+        <observes element="nav-bar" attribute="buttonstyle"/>
         <textbox id="urlbar" class="chromeclass-location uri-element" flex="1"
                  type="autocomplete" searchSessions="history" 
                  timeout="50" maxrows="6" alwaysopenpopup="true"
@@ -165,13 +165,13 @@ Contributor(s):
                  defaultSearchEngine="true" tabScrolling="true"
                  showCommentColumn="true"
                  inputtooltiptext="&locationBar.tooltip;"
-                 oninput="window.XULBrowserWindow.userTyped.value=true;"
+                 oninput="gBrowser.userTypedValue = this.value;"
                  ontextcommand="return handleURLBarCommand(eventParam, domEvent);"
                  ontextrevert="return handleURLBarRevert();"
                  onfocus="URLBarFocusHandler(event);"
                  onmousedown="URLBarMouseDownHandler(event);"
                  onclick="URLBarClickHandler(event);">
-          <deck id="page-proxy-deck">
+          <deck id="page-proxy-deck" onclick="handlePageProxyClick(event);">
             <image id="page-proxy-button"
                    ondraggesture="PageProxyDragGesture(event);"
                    tooltiptext="&proxyIcon.tooltip;"/>
@@ -215,7 +215,7 @@ Contributor(s):
         <menupopup id="printMenu">
           <menuitem id="printMenuItemToolbar" label="&printCmd.label;" accesskey="&printCmd.accesskey;"
                     default="true" oncommand="NSPrint()"/>
-          <menuitem label="&printPreviewCmd.label;" accesskey="&printPreviewCmd.accesskey;"
+          <menuitem id="printPreviewMenuItemToolbar" label="&printPreviewCmd.label;" accesskey="&printPreviewCmd.accesskey;"
                     oncommand="setTimeout(BrowserPrintPreview, 0);"/>
         </menupopup>
       </toolbarbutton>
@@ -237,13 +237,13 @@ Contributor(s):
       </hbox>
     </toolbar>
   
-    <toolbar id="PersonalToolbar" class="chromeclass-directories"
+    <toolbar id="PersonalToolbar" class="chromeclass-directories" persist="collapsed" 
              grippytooltiptext="&personalToolbar.tooltip;" tbalign="stretch"
-             ondraggesture="nsDragAndDrop.startDrag(event, personalToolbarDNDObserver)"
-             ondragdrop="nsDragAndDrop.drop(event, personalToolbarDNDObserver); event.preventBubble()"
-             ondragenter="nsDragAndDrop.dragEnter(event, personalToolbarDNDObserver); event.preventBubble()"
-             ondragexit="nsDragAndDrop.dragExit(event, personalToolbarDNDObserver); event.preventBubble()"
-             ondragover="nsDragAndDrop.dragOver(event, personalToolbarDNDObserver); event.preventBubble()">
+             ondraggesture="nsDragAndDrop.startDrag(event, BookmarksMenuDNDObserver)"
+             ondragdrop="nsDragAndDrop.drop(event, BookmarksMenuDNDObserver); event.preventBubble()"
+             ondragenter="nsDragAndDrop.dragEnter(event, BookmarksMenuDNDObserver); event.preventBubble()"
+             ondragexit="nsDragAndDrop.dragExit(event, BookmarksMenuDNDObserver); event.preventBubble()"
+             ondragover="nsDragAndDrop.dragOver(event, BookmarksMenuDNDObserver); event.preventBubble()">
 
       <tooltip id="home-button-tooltip" noautohide="true">
         <vbox id="home-button-tooltip-inner" flex="1"/>
@@ -265,10 +265,10 @@ Contributor(s):
                      persist="hidden" label="&bookmarksButton.label;"
                      datasources="rdf:bookmarks rdf:files rdf:localsearch rdf:internetsearch"
                      ref="NC:BookmarksRoot" container="true" flags="dont-test-empty"
-                     oncommand="OpenBookmarkURL(event.target, this.database)" 
+                     oncommand="BookmarksMenu.loadBookmark(event.target, this.database)" 
                      template="bookmarksMenuTemplate"
                      ondraggesture="if (event.target.id=='bookmarks-button') event.preventBubble()">
-        <menupopup onpopupshowing="checkBookmarksMenuTemplateBuilder(); updateGroupmarkMenuitem('PT_bookmarks_groupmark');">
+        <menupopup onpopupshowing="updateGroupmarkMenuitem('PT_bookmarks_groupmark');">
           <menuitem accesskey="&addCurPageCmd.accesskey;" key="addBookmarkKb" observes="Browser:AddBookmark"/>
           <menuitem accesskey="&addCurPageAsCmd.accesskey;" key="addBookmarkAsKb" observes="Browser:AddBookmarkAs"/>
           <menuitem id="PT_bookmarks_groupmark" observes="Browser:AddGroupmarkAs"/>
@@ -279,107 +279,23 @@ Contributor(s):
       </toolbarbutton>
 
       <!-- Personal toolbar items -->
-      <hbox id="NC:PersonalToolbarFolder" flex="1" style="min-width: 1px;" context="bmContext" 
-           datasources="rdf:bookmarks rdf:files rdf:localsearch rdf:internetsearch"
-           ref="NC:PersonalToolbarFolder" flags="dont-test-empty"
-           oncommand="OpenBookmarkURL(event.target, this.database)"
-           rdf:type="http://home.netscape.com/NC-rdf#Folder">
-        <tooltip id="ptTooltip" noautohide="true" onpopupshowing="return FillInPTTooltip(document.tooltipNode)">
-          <vbox id="ptTooltipTextBox" flex="1">  
-            <label id="ptTitleText" />
-            <label id="ptUrlText" />
-          </vbox>
-        </tooltip>
-        <template xmlns:nc="http://home.netscape.com/NC-rdf#">
-          <rule parent="hbox" rdf:type="http://home.netscape.com/NC-rdf#BookmarkSeparator">
-            <toolbarseparator uri="rdf:*"
-                              rdf:type="rdf:http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
-          </rule>
-
-          <!-- yes, the type attribute is necessary otherwise all leaves are 
-               treated as containers for some reason -->
-          <rule parent="hbox" iscontainer="true"
-                nc:FolderGroup="true">
-            <toolbarbutton class="bookmark-item bookmark-group" uri="rdf:*" xulcontentsgenerated="true" 
-                           group="true"
-                           container="false"
-                           rdf:type="http://home.netscape.com/NC-rdf#Folder"
-                           label="rdf:http://home.netscape.com/NC-rdf#Name"/>
-          </rule>
-
-          <rule parent="hbox" iscontainer="true" isempty="true"
-                rdf:type="http://home.netscape.com/NC-rdf#Folder">
-            <toolbarbutton type="menu" editable="true" class="bookmark-item"
-                           rdf:type="http://home.netscape.com/NC-rdf#Folder"
-                           uri="rdf:*" label="rdf:http://home.netscape.com/NC-rdf#Name">
-              <menupopup>
-                <menuitem label="&emptyItem.label;" disabled="true"/>
-              </menupopup>
-            </toolbarbutton>
-          </rule>
-
-          <rule parent="hbox" iscontainer="true">
-            <toolbarbutton type="menu" class="bookmark-item" uri="rdf:*" editable="true"
-                           rdf:type="http://home.netscape.com/NC-rdf#Folder"
-                           label="rdf:http://home.netscape.com/NC-rdf#Name">
-              <menupopup/>
-            </toolbarbutton>
-          </rule>
-
-          <rule parent="hbox">
-            <toolbarbutton class="bookmark-item" uri="rdf:*" editable="true" 
-                           status="rdf:http://home.netscape.com/WEB-rdf#status"
-                           rdf:type="http://home.netscape.com/NC-rdf#Bookmark"
-                           statustext="rdf:http://home.netscape.com/NC-rdf#URL"
-                           tooltip="ptTooltip"
-                           label="rdf:http://home.netscape.com/NC-rdf#Name"/>
-          </rule>
-
-          <rule nc:FolderGroup="true" iscontainer="true">
-            <menupopup>
-              <menuitem class="menuitem-iconic bookmark-group" 
-                        label="rdf:http://home.netscape.com/NC-rdf#Name"
-                        group="true"
-                        uri="rdf:*"
-                        xulcontentsgenerated="true"/>
-            </menupopup>
-          </rule>
-
-          <rule iscontainer="true" isempty="true" rdf:type="http://home.netscape.com/NC-rdf#Folder">
-            <menupopup>
-              <menu class="menu-iconic bookmark-item" uri="rdf:*" 
-                  type="rdf:http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
-                  label="rdf:http://home.netscape.com/NC-rdf#Name">
-                <menupopup>
-                  <menuitem label="&emptyItem.label;" disabled="true"/>
-                </menupopup>
-              </menu>
-            </menupopup>
-          </rule>
-
-          <rule iscontainer="true">
-            <menupopup>
-              <menu class="menu-iconic bookmark-item" uri="rdf:*"
-                    type="rdf:http://www.w3.org/1999/02/22-rdf-syntax-ns#type"
-                    label="rdf:http://home.netscape.com/NC-rdf#Name">
-                <menupopup/>
-              </menu>
-            </menupopup>
-          </rule>
-
-          <rule rdf:type="http://home.netscape.com/NC-rdf#BookmarkSeparator">
-            <menupopup>
-              <menuseparator uri="rdf:*"
-                             type="rdf:http://www.w3.org/1999/02/22-rdf-syntax-ns#type"/>
-            </menupopup>
-          </rule>
-          <rule>
-            <menupopup>
-              <menuitem class="menuitem-iconic bookmark-item" uri="rdf:*"
-                        label="rdf:http://home.netscape.com/NC-rdf#Name"/>
-            </menupopup>
-          </rule>
-        </template>
+      <hbox id="bookmarks-ptf" flex="1" style="min-width: 1px;"
+            context="bookmarks-context-menu" template="bookmarksMenuTemplate"
+            datasources="rdf:bookmarks rdf:files rdf:localsearch rdf:internetsearch"
+            ref="NC:PersonalToolbarFolder" flags="dont-test-empty"
+            oncommand="BookmarksMenu.loadBookmark(event.target, this.database)"
+            rdf:type="http://home.netscape.com/NC-rdf#Folder">
+      </hbox>
+      <hbox class="bookmarks-toolbar-overflow-items" mousethrough="always">
+        <hbox mousethrough="always" id="overflow-padder" flex="1"/>
+        <toolbarbutton id="bookmarks-chevron" type="menu" class="chevron"
+                       mousethrough="never" collapsed="true" 
+                       datasources="rdf:bookmarks rdf:files rdf:localsearch rdf:internetsearch"
+                       template="bookmarksMenuTemplate" 
+                       ref="NC:PersonalToolbarFolder" flags="dont-test-empty"
+                       oncommand="BookmarksUtils.loadBookmarkBrowser(event, event.target, this.database)">
+          <menupopup onpopupshowing="if (event.target == this) BookmarksToolbar.updateOverflowMenu(this);"/>
+        </toolbarbutton>
       </hbox>
     </toolbar>
 
@@ -400,6 +316,7 @@ Contributor(s):
                     flex="1" contenttooltip="aHTMLTooltip"
                     contentcontextmenu="contentAreaContextMenu"
                     onnewtab="BrowserOpenTab();"
+                    onbookmarkgroup="addGroupmarkAs();"
                     onclick="return contentAreaClick(event);"/>
       </hbox>
     </vbox>  
@@ -412,6 +329,7 @@ Contributor(s):
     <statusbarpanel class="statusbarpanel-progress">
       <progressmeter class="progressmeter-statusbar" id="statusbar-icon" mode="normal" value="0"/>
     </statusbarpanel>
+    <statusbarpanel id="popupIcon" class="statusbarpanel-iconic" hidden="true" oncommand="StatusbarViewPopupManager()" tooltiptext="&popupIcon.tooltiptext;"/>
     <statusbarpanel class="statusbarpanel-iconic" id="offline-status"/>
     <statusbarpanel class="statusbarpanel-iconic" id="security-button"
                     onclick="BrowserPageInfo(null, 'securityTab')"/>

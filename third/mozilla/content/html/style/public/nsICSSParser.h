@@ -63,10 +63,6 @@ class nsICSSParser : public nsISupports {
 public:
   NS_DEFINE_STATIC_IID_ACCESSOR(NS_ICSS_PARSER_IID)
 
-  // Return a mask of the various css standards that this parser
-  // supports.
-  NS_IMETHOD GetInfoMask(PRUint32& aResult) = 0;
-
   // Set a style sheet for the parser to fill in. The style sheet must
   // implement the nsICSSStyleSheet interface
   NS_IMETHOD SetStyleSheet(nsICSSStyleSheet* aSheet) = 0;
@@ -108,17 +104,7 @@ public:
                            nsChangeHint* aHint) = 0;
 };
 
-// Values or'd in the GetInfoMask; other bits are reserved
-#define NS_CSS_GETINFO_CSS1         ((PRUint32) 0x00000001L)
-#define NS_CSS_GETINFO_CSSP         ((PRUint32) 0x00000002L)
-#define NS_CSS_GETINFO_CSS2         ((PRUint32) 0x00000004L)
-#define NS_CSS_GETINFO_CSS_FROSTING ((PRUint32) 0x00000008L)
-
-// Success code that can be returned from ParseAndAppendDeclaration()
-#define NS_CSS_PARSER_DROP_DECLARATION \
-  NS_ERROR_GENERATE_SUCCESS(NS_ERROR_MODULE_LAYOUT,1)
-
-extern NS_EXPORT nsresult
-  NS_NewCSSParser(nsICSSParser** aInstancePtrResult);
+nsresult
+NS_NewCSSParser(nsICSSParser** aInstancePtrResult);
 
 #endif /* nsCSS1Parser_h___ */

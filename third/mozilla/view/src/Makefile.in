@@ -27,10 +27,11 @@ VPATH		= @srcdir@
 include $(DEPTH)/config/autoconf.mk
 
 MODULE		= view
-LIBRARY_NAME	= gkview
-EXPORT_LIBRARY = 1
-IS_COMPONENT    = 1
+LIBRARY_NAME	= gkview_s
+FORCE_STATIC_LIB = 1
 MODULE_NAME	= nsViewModule
+GRE_MODULE	= 1
+
 REQUIRES	= xpcom \
 		  string \
 		  gfx \
@@ -47,17 +48,9 @@ EXTRA_DSO_LIBS = gkgfx
 
 CPPSRCS		= \
 		nsView.cpp \
-		nsScrollingView.cpp \
 		nsScrollPortView.cpp \
 		nsViewManager.cpp \
-		nsViewFactory.cpp \
 		$(NULL)
 
-
-EXTRA_DSO_LDOPTS = \
-		$(LIBS_DIR) \
-		$(EXTRA_DSO_LIBS) \
-		$(MOZ_COMPONENT_LIBS) \
-		$(NULL)
 
 include $(topsrcdir)/config/rules.mk

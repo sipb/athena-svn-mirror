@@ -20,7 +20,7 @@
  * the Initial Developer. All Rights Reserved.
  *
  * Contributor(s):
- *   L. David Baron <dbaron@fas.harvard.edu>
+ *   L. David Baron <dbaron@dbaron.org>
  *   Daniel Glazman <glazman@netscape.com>
  *
  *
@@ -134,12 +134,8 @@ nsCSSToken::AppendToString(nsString& aBuffer)
       }
       break;
     case eCSSToken_Percentage:
-      if (mIntegerValid) {
-        aBuffer.AppendInt(mInteger, 10);
-      }
-      else {
-        aBuffer.AppendFloat(mNumber);
-      }
+      NS_ASSERTION(!mIntegerValid, "How did a percentage token get this set?");
+      aBuffer.AppendFloat(mNumber * 100.0f);
       aBuffer.Append(PRUnichar('%')); // STRING USE WARNING: technically, this should be |AppendWithConversion|
       break;
     case eCSSToken_Dimension:
@@ -227,6 +223,10 @@ void nsCSSScanner::Init(nsIUnicharInputStream* aInput, nsIURI* aURI)
 
 #ifdef CSS_REPORT_PARSE_ERRORS
 
+// @see REPORT_UNEXPECTED_EOF in nsCSSParser.cpp
+#define REPORT_UNEXPECTED_EOF(err_) \
+  AddToError(NS_LITERAL_STRING("Unexpected end of file while searching for ") + err_ + NS_LITERAL_STRING("."))
+
 void nsCSSScanner::AddToError(const nsAString& aErrorText)
 {
   if (mError.IsEmpty()) {
@@ -276,7 +276,8 @@ void nsCSSScanner::OutputError()
   }
   ClearError();
 }
-
+#else
+#define REPORT_UNEXPECTED_EOF(err_)
 #endif // CSS_REPORT_PARSE_ERRORS
 
 PRUint32 nsCSSScanner::GetLineNumber()
@@ -305,7 +306,7 @@ PRInt32 nsCSSScanner::Read(PRInt32& aErrorCode)
     }
     if (mOffset == mCount) {
       mOffset = 0;
-      aErrorCode = mInput->Read(mBuffer, 0, BUFFER_SIZE, (PRUint32*)&mCount);
+      aErrorCode = mInput->Read(mBuffer, BUFFER_SIZE, (PRUint32*)&mCount);
       if (NS_FAILED(aErrorCode) || mCount == 0) {
         mCount = 0;
         return -1;
@@ -497,10 +498,17 @@ PRBool nsCSSScanner::Next(PRInt32& aErrorCode, nsCSSToken& aToken)
       PRInt32 nextChar = Peek(aErrorCode);
       if (nextChar == '*') {
         (void) Read(aErrorCode);
+#if 0
+        // If we change our storage data structures such that comments are
+        // stored (for Editor), we should reenable this code, condition it
+        // on being in editor mode, and apply glazou's patch from bug
+        // 60290.
         aToken.mIdent.SetCapacity(2);
         aToken.mIdent.Assign(PRUnichar(ch));
         aToken.mIdent.Append(PRUnichar(nextChar));
         return ParseCComment(aErrorCode, aToken);
+#endif
+        return SkipCComment(aErrorCode) && Next(aErrorCode, aToken);
       }
     }
     if (ch == '<') {  // consume HTML comment tags
@@ -585,10 +593,17 @@ PRBool nsCSSScanner::NextURL(PRInt32& aErrorCode, nsCSSToken& aToken)
       PRInt32 nextChar = Peek(aErrorCode);
       if (nextChar == '*') {
         (void) Read(aErrorCode);
+#if 0
+        // If we change our storage data structures such that comments are
+        // stored (for Editor), we should reenable this code, condition it
+        // on being in editor mode, and apply glazou's patch from bug
+        // 60290.
         aToken.mIdent.SetCapacity(2);
         aToken.mIdent.Assign(PRUnichar(ch));
         aToken.mIdent.Append(PRUnichar(nextChar));
         return ParseCComment(aErrorCode, aToken);
+#endif
+        return SkipCComment(aErrorCode) && Next(aErrorCode, aToken);
       }
     }
 
@@ -607,7 +622,8 @@ PRBool nsCSSScanner::NextURL(PRInt32& aErrorCode, nsCSSToken& aToken)
 
     if (ch == ')') {
       Pushback(ch);
-      // empty url spec: this is invalid
+      // empty url spec; just get out of here
+      aToken.mType = eCSSToken_URL;
     } else {
       // start of a non-quoted url
       Pushback(ch);
@@ -858,6 +874,23 @@ PRBool nsCSSScanner::ParseNumber(PRInt32& aErrorCode, PRInt32 c,
   return PR_TRUE;
 }
 
+PRBool nsCSSScanner::SkipCComment(PRInt32& aErrorCode)
+{
+  for (;;) {
+    PRInt32 ch = Read(aErrorCode);
+    if (ch < 0) break;
+    if (ch == '*') {
+      if (LookAhead(aErrorCode, '/')) {
+        return PR_TRUE;
+      }
+    }
+  }
+
+  REPORT_UNEXPECTED_EOF(NS_LITERAL_STRING("end of comment"));
+  return PR_FALSE;
+}
+
+#if 0
 PRBool nsCSSScanner::ParseCComment(PRInt32& aErrorCode, nsCSSToken& aToken)
 {
   nsString& ident = aToken.mIdent;
@@ -878,6 +911,7 @@ PRBool nsCSSScanner::ParseCComment(PRInt32& aErrorCode, nsCSSToken& aToken)
   aToken.mType = eCSSToken_WhiteSpace;
   return PR_TRUE;
 }
+#endif
 
 #if 0
 PRBool nsCSSScanner::ParseEOLComment(PRInt32& aErrorCode, nsCSSToken& aToken)

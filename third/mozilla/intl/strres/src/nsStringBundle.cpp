@@ -38,7 +38,6 @@
 
 #include "nsStringBundle.h"
 #include "nsID.h"
-#include "nsFileSpec.h"
 #include "nsString.h"
 #include "nsReadableUtils.h"
 #include "nsIStringBundle.h"
@@ -80,6 +79,7 @@
 #include "nsIEventQueueService.h"
 
 #include "prenv.h"
+#include "nsCRT.h"
 
 static NS_DEFINE_CID(kErrorServiceCID, NS_ERRORSERVICE_CID);
 static NS_DEFINE_CID(kPersistentPropertiesCID, NS_IPERSISTENTPROPERTIES_CID);
@@ -95,7 +95,6 @@ nsStringBundle::nsStringBundle(const char* aURLSpec,
   mAttemptedLoad(PR_FALSE),
   mLoaded(PR_FALSE)
 {
-  NS_INIT_ISUPPORTS();
 }
 
 nsresult
@@ -121,10 +120,18 @@ nsStringBundle::LoadProperties()
   rv = NS_NewURI(getter_AddRefs(uri), mPropertiesURL);
   if (NS_FAILED(rv)) return rv;
 
-  nsCOMPtr<nsIInputStream> in;
-  rv = NS_OpenURI(getter_AddRefs(in), uri);
+  // We don't use NS_OpenURI because we want to tweak the channel
+  nsCOMPtr<nsIChannel> channel;
+  rv = NS_NewChannel(getter_AddRefs(channel), uri);
   if (NS_FAILED(rv)) return rv;
-    
+
+  nsCOMPtr<nsIInputStream> in;
+  rv = channel->Open(getter_AddRefs(in));
+  if (NS_FAILED(rv)) return rv;
+
+  // It's a string bundle.  We know what MIME type it is!
+  channel->SetContentType(NS_LITERAL_CSTRING("text/plain"));
+  
   NS_TIMELINE_MARK_FUNCTION("loading properties");
 
   NS_ASSERTION(NS_SUCCEEDED(rv) && in, "Error in OpenBlockingStream");
@@ -375,8 +382,6 @@ NS_IMPL_ISUPPORTS1(nsExtensibleStringBundle, nsIStringBundle)
 
 nsExtensibleStringBundle::nsExtensibleStringBundle()
 {
-  NS_INIT_ISUPPORTS();
-
   mLoaded = PR_FALSE;
 }
 
@@ -513,7 +518,6 @@ nsStringBundleService::nsStringBundleService() :
 #ifdef DEBUG_tao_
   printf("\n++ nsStringBundleService::nsStringBundleService ++\n");
 #endif
-  NS_INIT_ISUPPORTS();
 
   PR_INIT_CLIST(&mBundleCache);
   PL_InitArenaPool(&mCacheEntryPool, "srEntries",
@@ -835,5 +839,4 @@ done:
   }
   return rv;
 }
-
 

@@ -32,6 +32,8 @@
 #include "nsIServiceManager.h"
 #include "nsUnicharUtils.h"
 
+#include "nsOS2Uni.h"
+
 PRINTDLG nsDeviceContextSpecOS2::PrnDlg;
 
 //----------------------------------------------------------------------------------
@@ -74,7 +76,6 @@ int            GlobalPrinters::mGlobalNumPrinters = 0;
  */
 nsDeviceContextSpecOS2 :: nsDeviceContextSpecOS2()
 {
-  NS_INIT_ISUPPORTS();
   mQueue = nsnull;
 }
 
@@ -379,7 +380,6 @@ nsresult nsDeviceContextSpecOS2::GetPRTQUEUE( PRTQUEUE *&p)
 //  Printer Enumerator
 nsPrinterEnumeratorOS2::nsPrinterEnumeratorOS2()
 {
-  NS_INIT_ISUPPORTS();
 }
 
 NS_IMPL_ISUPPORTS1(nsPrinterEnumeratorOS2, nsIPrinterEnumerator)
@@ -698,10 +698,10 @@ int PRINTDLG::GetDefaultPrinter ()
    return mDefaultQueue;
 }
 
-PRINTDLG::GetPrinter (int numPrinter, char** printerName)
+void PRINTDLG::GetPrinter (int numPrinter, char** printerName)
 {
    if (numPrinter > mQueueCount)
-      return NULL;
+      return;
  
    nsCAutoString pName(mPQBuf [numPrinter]->QueueName());
  
@@ -790,7 +790,7 @@ BOOL PRINTDLG::ShowProperties (int index)
     if (buflen != mPQBuf[Ind]->PQI3().pDriverData->cb)
     {
         if (DosAllocMem((PPVOID)&pNewDrivData,buflen,fALLOC))
-            return(DPDM_ERROR);
+            return(FALSE); // DPDM_ERROR
     
 /* copy over old data so driver can use old job */
 /* properties as base for job properties dialog */
@@ -835,7 +835,7 @@ HDC PrnOpenDC( PRTQUEUE *pInfo, PSZ pszApplicationName, int copies, int destinat
       else
          dcType = OD_QUEUED;
    } else {
-      if (file && strlen(file) != 0) 
+      if (file && *file)
          pszLogAddress = (PSZ) file;
       else    
          pszLogAddress = "FILE";

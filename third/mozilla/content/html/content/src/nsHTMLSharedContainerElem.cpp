@@ -44,7 +44,6 @@
 #include "nsIDOMHTMLQuoteElement.h"
 #include "nsIDOMHTMLTableCaptionElem.h"
 #include "nsHTMLAtoms.h"
-#include "nsIStyleContext.h"
 #include "nsStyleConsts.h"
 #include "nsIPresContext.h"
 #include "nsHTMLAttributes.h"
@@ -100,10 +99,6 @@ public:
                                       PRInt32 aModType,
                                       PRInt32& aHint) const;
   NS_IMETHOD GetAttributeMappingFunction(nsMapRuleToAttributesFunc& aMapRuleFunc) const;
-
-#ifdef DEBUG
-  NS_IMETHOD SizeOf(nsISizeOfHandler* aSizer, PRUint32* aResult) const;
-#endif
 };
 
 nsresult
@@ -215,7 +210,7 @@ NS_IMPL_STRING_ATTR(nsHTMLSharedContainerElement, Type, type)
 NS_IMPL_STRING_ATTR(nsHTMLSharedContainerElement, Align, align)
 
 
-nsGenericHTMLElement::EnumTable kListTypeTable[] = {
+nsHTMLValue::EnumTable kListTypeTable[] = {
   { "none", NS_STYLE_LIST_STYLE_NONE },
   { "disc", NS_STYLE_LIST_STYLE_DISC },
   { "circle", NS_STYLE_LIST_STYLE_CIRCLE },
@@ -229,7 +224,7 @@ nsGenericHTMLElement::EnumTable kListTypeTable[] = {
   { 0 }
 };
 
-nsGenericHTMLElement::EnumTable kOldListTypeTable[] = {
+nsHTMLValue::EnumTable kOldListTypeTable[] = {
   { "1", NS_STYLE_LIST_STYLE_OLD_DECIMAL },
   { "A", NS_STYLE_LIST_STYLE_OLD_UPPER_ALPHA },
   { "a", NS_STYLE_LIST_STYLE_OLD_LOWER_ALPHA },
@@ -238,7 +233,7 @@ nsGenericHTMLElement::EnumTable kOldListTypeTable[] = {
   { 0 }
 };
 
-static nsGenericHTMLElement::EnumTable kCaptionAlignTable[] = {
+static nsHTMLValue::EnumTable kCaptionAlignTable[] = {
   { "left",  NS_SIDE_LEFT },
   { "right", NS_SIDE_RIGHT },
   { "top",   NS_SIDE_TOP},
@@ -256,17 +251,17 @@ nsHTMLSharedContainerElement::StringToAttribute(nsIAtom* aAttribute,
       mNodeInfo->Equals(nsHTMLAtoms::menu) ||
       mNodeInfo->Equals(nsHTMLAtoms::ol)) {
     if (aAttribute == nsHTMLAtoms::type) {
-      if (ParseEnumValue(aValue, kListTypeTable, aResult)) {
+      if (aResult.ParseEnumValue(aValue, kListTypeTable)) {
         return NS_CONTENT_ATTR_HAS_VALUE;
       }
 
       if (mNodeInfo->Equals(nsHTMLAtoms::ol)) {
-        if (ParseCaseSensitiveEnumValue(aValue, kOldListTypeTable, aResult)) {
+        if (aResult.ParseEnumValue(aValue, kOldListTypeTable, PR_TRUE)) {
           return NS_CONTENT_ATTR_HAS_VALUE;
         }
       }
     } else if (aAttribute == nsHTMLAtoms::start) {
-      if (ParseValue(aValue, 1, aResult, eHTMLUnit_Integer)) {
+      if (aResult.ParseIntWithBounds(aValue, eHTMLUnit_Integer, 1)) {
         return NS_CONTENT_ATTR_HAS_VALUE;
       }
     } else if (mNodeInfo->Equals(nsHTMLAtoms::dir) &&
@@ -276,7 +271,7 @@ nsHTMLSharedContainerElement::StringToAttribute(nsIAtom* aAttribute,
     }
   } else if (mNodeInfo->Equals(nsHTMLAtoms::caption)) {
     if (aAttribute == nsHTMLAtoms::align) {
-      if (ParseEnumValue(aValue, kCaptionAlignTable, aResult)) {
+      if (aResult.ParseEnumValue(aValue, kCaptionAlignTable)) {
         return NS_CONTENT_ATTR_HAS_VALUE;
       }
     }
@@ -294,7 +289,7 @@ nsHTMLSharedContainerElement::AttributeToString(nsIAtom* aAttribute,
   if (mNodeInfo->Equals(nsHTMLAtoms::dir) ||
       mNodeInfo->Equals(nsHTMLAtoms::menu)) {
     if (aAttribute == nsHTMLAtoms::type) {
-      EnumValueToString(aValue, kListTypeTable, aResult);
+      aValue.EnumValueToString(kListTypeTable, aResult);
       return NS_CONTENT_ATTR_HAS_VALUE;
     }
   } else if (mNodeInfo->Equals(nsHTMLAtoms::ol)) {
@@ -306,10 +301,10 @@ nsHTMLSharedContainerElement::AttributeToString(nsIAtom* aAttribute,
         case NS_STYLE_LIST_STYLE_OLD_UPPER_ROMAN:
         case NS_STYLE_LIST_STYLE_OLD_LOWER_ALPHA:
         case NS_STYLE_LIST_STYLE_OLD_UPPER_ALPHA:
-          EnumValueToString(aValue, kOldListTypeTable, aResult);
+          aValue.EnumValueToString(kOldListTypeTable, aResult);
           break;
         default:
-          EnumValueToString(aValue, kListTypeTable, aResult);
+          aValue.EnumValueToString(kListTypeTable, aResult);
           break;
       }
 
@@ -318,7 +313,7 @@ nsHTMLSharedContainerElement::AttributeToString(nsIAtom* aAttribute,
   } else if (mNodeInfo->Equals(nsHTMLAtoms::caption)) {
     if (aAttribute == nsHTMLAtoms::align) {
       if (eHTMLUnit_Enumerated == aValue.GetUnit()) {
-        EnumValueToString(aValue, kCaptionAlignTable, aResult);
+        aValue.EnumValueToString(kCaptionAlignTable, aResult);
 
         return NS_CONTENT_ATTR_HAS_VALUE;
       }
@@ -449,15 +444,3 @@ nsHTMLSharedContainerElement::GetAttributeMappingFunction(nsMapRuleToAttributesF
   return
     nsGenericHTMLContainerElement::GetAttributeMappingFunction(aMapRuleFunc);
 }
-
-
-#ifdef DEBUG
-NS_IMETHODIMP
-nsHTMLSharedContainerElement::SizeOf(nsISizeOfHandler* aSizer,
-                                     PRUint32* aResult) const
-{
-  *aResult = sizeof(*this) + BaseSizeOf(aSizer);
-
-  return NS_OK;
-}
-#endif

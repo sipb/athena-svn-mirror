@@ -28,6 +28,7 @@
  *   Pierre Phaneuf <pp@ludusdesign.com>
  *   Robert O'Callahan <roc+moz@cs.cmu.edu>
  *   Roy Yokoyama <yokoyama@netscape.com>
+ *   Makoto Kato  <m_kato@ga2.so-net.ne.jp>
  *
  * Alternatively, the contents of this file may be used under the terms of
  * either the GNU General Public License Version 2 or later (the "GPL"), or 
@@ -81,14 +82,18 @@
 #include "nsIImage.h"
 
 #ifdef ACCESSIBILITY
+#include "OLEIDL.H"
+#include "winable.h"
 #include "nsIAccessible.h"
-#include "Accessible.h"
+#include "nsIAccessibleDocument.h"
+#include "nsIAccessNode.h"
+#ifndef WM_GETOBJECT
+#define WM_GETOBJECT 0x03d
+#endif
 #endif
 
 #include <imm.h>
-#ifdef MOZ_AIMM
 #include "aimm.h"
-#endif // MOZ_AIMM
 
 #include "nsNativeDragTarget.h"
 #include "nsIRollupListener.h"
@@ -108,7 +113,8 @@
 #include "nsITheme.h"
 
 // For SetIcon
-#include "nsSpecialSystemDirectory.h"
+#include "nsILocalFile.h"
+#include "nsCRT.h"
 #include "nsAppDirectoryServiceDefs.h"
 #include "nsXPIDLString.h"
 #include "nsIFile.h"
@@ -261,8 +267,6 @@ static PRBool is_vk_down(int vk)
 // Macro for Active Input Method Manager (AIMM) support.
 // Use AIMM method instead of Win32 Imm APIs.
 //
-#ifdef MOZ_AIMM
-
 #define NS_IMM_GETCOMPOSITIONSTRING(hIMC, dwIndex, pBuf, dwBufLen, compStrLen) \
 { \
   compStrLen = 0; \
@@ -431,99 +435,6 @@ static PRBool is_vk_down(int vk)
     } \
   }
 
-#else /* !MOZ_AIMM */
-
-#define NS_IMM_GETCOMPOSITIONSTRING(hIMC, dwIndex, pBuf, dwBufLen, compStrLen) \
-  { \
-    nsIMM &theIMM = nsIMM::LoadModule(); \
-    compStrLen = theIMM.GetCompositionStringA(hIMC, dwIndex, pBuf, dwBufLen); \
-  }
-
-#define NS_IMM_GETCOMPOSITIONSTRINGW(hIMC, dwIndex, pBuf, dwBufLen, compStrLen) \
-  { \
-    nsIMM &theIMM = nsIMM::LoadModule(); \
-    compStrLen = theIMM.GetCompositionStringW(hIMC, dwIndex, pBuf, dwBufLen); \
-  }
-
-#define NS_IMM_GETCONTEXT(hWnd, hIMC) \
-  { \
-    nsIMM &theIMM = nsIMM::LoadModule(); \
-    hIMC = theIMM.GetContext(hWnd); \
-  }
-
-#define NS_IMM_GETCONVERSIONSTATUS(hIMC, lpfdwConversion, lpfdwSentence) \
-  { \
-    nsIMM &theIMM = nsIMM::LoadModule(); \
-    theIMM.GetConversionStatus(hIMC, (lpfdwConversion), (lpfdwSentence)); \
-  }
-
-#define NS_IMM_RELEASECONTEXT(hWnd, hIMC) \
-  { \
-    nsIMM &theIMM = nsIMM::LoadModule(); \
-    theIMM.ReleaseContext(hWnd, hIMC); \
-  }
-
-#define NS_IMM_NOTIFYIME(hIMC, dwAction, dwIndex, dwValue) \
-  { \
-    nsIMM &theIMM = nsIMM::LoadModule(); \
-    theIMM.NotifyIME(hIMC, dwAction, dwIndex, dwValue); \
-  }
-
-#define NS_IMM_SETCANDIDATEWINDOW(hIMC, candForm) \
-  { \
-    nsIMM &theIMM = nsIMM::LoadModule(); \
-    theIMM.SetCandidateWindow(hIMC, candForm); \
-  }
-
-#define NS_IMM_SETCOMPOSITIONWINDOW(hIMC, compForm) \
-  { \
-    nsIMM &theIMM = nsIMM::LoadModule(); \
-    theIMM.SetCompositionWindow(hIMC, compForm); \
-  }
-
-#define NS_IMM_GETCOMPOSITIONFONT(hIMC, lf) \
-  { \
-    nsIMM &theIMM = nsIMM::LoadModule(); \
-    theIMM.GetCompositionFont(hIMC, lf); \
-  }
-
-#define NS_IMM_GETCOMPOSITIONFONTW(hIMC, lf) \
-  { \
-    nsIMM &theIMM = nsIMM::LoadModule(); \
-    theIMM.GetCompositionFontW(hIMC, lf); \
-  }
-
-#define NS_IMM_SETCOMPOSITIONFONT(hIMC, lf) \
-  { \
-    nsIMM &theIMM = nsIMM::LoadModule(); \
-    theIMM.SetCompositionFont(hIMC, lf); \
-  }
-
-#define NS_IMM_SETCOMPOSITIONFONTW(hIMC, lf) \
-  { \
-    nsIMM &theIMM = nsIMM::LoadModule(); \
-    theIMM.SetCompositionFontW(hIMC, lf); \
-  }
-
-#define NS_IMM_SETCONVERSIONSTATUS(hIMC, lpfdwConversion, lpfdwSentence) \
-  { \
-    nsIMM &theIMM = nsIMM::LoadModule(); \
-    theIMM.SetConversionStatus(hIMC, (lpfdwConversion), (lpfdwSentence)); \
-  }
-
-#define NS_IMM_GETPROPERTY(hKL, dwIndex, dwProp) \
-  { \
-    nsIMM& theIMM = nsIMM::LoadModule(); \
-    dwProp = (DWORD)theIMM.GetProperty(hKL, dwIndex);  \
-  }
-
-#define NS_IMM_GETDEFAULTIMEWND(hWnd, phDefWnd) \ 
-  { \
-    nsIMM& theIMM = nsIMM::LoadModule(); \
-    *(phDefWnd) = theIMM.GetDefaultIMEWnd(hWnd);  \
-  }
-#endif /* MOZ_AIMM */
-
 //
 // for reconversion define
 //
@@ -559,6 +470,51 @@ typedef struct tagRECONVERTSTRING {
 // from http://www.justsystem.co.jp/tech/atok/api12_04.html#4_11
 #define MSGNAME_ATOK_RECONVERT TEXT("Atok Message for ReconvertString")
 
+//
+// App Command messages for IntelliMouse and Natural Keyboard Pro
+//
+// These messages are not included in Visual C++ 6.0, but are in 7.0
+//
+#ifndef WM_APPCOMMAND
+#define WM_APPCOMMAND  0x0319
+
+#define APPCOMMAND_BROWSER_BACKWARD       1
+#define APPCOMMAND_BROWSER_FORWARD        2
+#define APPCOMMAND_BROWSER_REFRESH        3
+#define APPCOMMAND_BROWSER_STOP           4
+// keep these around in case we want them later
+//#define APPCOMMAND_BROWSER_SEARCH         5
+//#define APPCOMMAND_BROWSER_FAVORITES      6
+//#define APPCOMMAND_BROWSER_HOME           7
+//#define APPCOMMAND_VOLUME_MUTE            8
+//#define APPCOMMAND_VOLUME_DOWN            9
+//#define APPCOMMAND_VOLUME_UP              10
+//#define APPCOMMAND_MEDIA_NEXTTRACK        11
+//#define APPCOMMAND_MEDIA_PREVIOUSTRACK    12
+//#define APPCOMMAND_MEDIA_STOP             13
+//#define APPCOMMAND_MEDIA_PLAY_PAUSE       14
+//#define APPCOMMAND_LAUNCH_MAIL            15
+//#define APPCOMMAND_LAUNCH_MEDIA_SELECT    16
+//#define APPCOMMAND_LAUNCH_APP1            17
+//#define APPCOMMAND_LAUNCH_APP2            18
+//#define APPCOMMAND_BASS_DOWN              19
+//#define APPCOMMAND_BASS_BOOST             20
+//#define APPCOMMAND_BASS_UP                21
+//#define APPCOMMAND_TREBLE_DOWN            22
+//#define APPCOMMAND_TREBLE_UP              23
+
+//#define FAPPCOMMAND_MOUSE 0x8000
+//#define FAPPCOMMAND_KEY   0
+//#define FAPPCOMMAND_OEM   0x1000
+#define FAPPCOMMAND_MASK  0xF000
+
+#define GET_APPCOMMAND_LPARAM(lParam) ((short)(HIWORD(lParam) & ~FAPPCOMMAND_MASK))
+//#define GET_DEVICE_LPARAM(lParam)     ((WORD)(HIWORD(lParam) & FAPPCOMMAND_MASK))
+//#define GET_MOUSEORKEY_LPARAM         GET_DEVICE_LPARAM
+//#define GET_FLAGS_LPARAM(lParam)      (LOWORD(lParam))
+//#define GET_KEYSTATE_LPARAM(lParam)   GET_FLAGS_LPARAM(lParam)
+
+#endif  // #ifndef WM_APPCOMMAND
 
 static PRBool LangIDToCP(WORD aLangID, UINT& oCP)
 {
@@ -691,21 +647,12 @@ static nsAttentionTimerMonitor *gAttentionTimerMonitor = 0;
 
 BOOL CALLBACK nsWindow::BroadcastMsgToChildren(HWND aWnd, LPARAM aMsg) 
 {
-#ifdef MOZ_UNICODE 
   LONG proc = nsToolkit::mGetWindowLong(aWnd, GWL_WNDPROC); 
   if (proc == (LONG)&nsWindow::WindowProc) { 
     // its one of our windows so go ahead and send a message to it 
     WNDPROC winProc = (WNDPROC)nsToolkit::mGetWindowLong(aWnd, GWL_WNDPROC); 
     nsToolkit::mCallWindowProc(winProc, aWnd, aMsg, 0, 0); 
   } 
-#else 
-  LONG proc = ::GetWindowLong(aWnd, GWL_WNDPROC); 
-  if (proc == (LONG)&nsWindow::WindowProc) { 
-    // its one of our windows so go ahead and send a message to it 
-    WNDPROC winProc = (WNDPROC)GetWindowLong(aWnd, GWL_WNDPROC); 
-    ::CallWindowProc(winProc, aWnd, aMsg, 0, 0); 
-  } 
-#endif 
   return TRUE;
 }
 
@@ -741,9 +688,6 @@ void nsWindow::GlobalMsgWindowProc(HWND hWnd, UINT msg,
 
 // End of the methods to dispatch global messages
 
-
-PRBool gIsDestroyingAny = PR_FALSE;
-
 //-------------------------------------------------------------------------
 //
 // nsISupport stuff
@@ -777,7 +721,6 @@ nsWindow::nsWindow() : nsBaseWidget(), mRootAccessible(NULL)
 nsWindow::nsWindow() : nsBaseWidget()
 #endif
 {
-    NS_INIT_ISUPPORTS();
     mWnd                = 0;
     mPrevWndProc        = NULL;
     mBackground         = ::GetSysColor(COLOR_BTNFACE);
@@ -799,6 +742,7 @@ nsWindow::nsWindow() : nsBaseWidget()
     mWindowType         = eWindowType_child;
     mBorderStyle        = eBorderStyle_default;
     mBorderlessParent   = 0;
+    mUnicodeWidget      = PR_TRUE;
     mIsInMouseCapture   = PR_FALSE;
     mIsInMouseWheelProcessing = PR_FALSE;
     mLastSize.width = 0;
@@ -817,8 +761,10 @@ nsWindow::nsWindow() : nsBaseWidget()
     mIMECompClauseString = NULL;
     mIMECompClauseStringSize = 0;
     mIMECompClauseStringLength = 0;
+    mIMECursorPosition = 0;
     mIMEReconvertUnicode = NULL;
     mLeadByte = '\0';
+    mBlurEventSuppressionLevel = 0;
     mIMECompCharPos = nsnull;
 
   static BOOL gbInitGlobalValue = FALSE;
@@ -852,9 +798,11 @@ nsWindow::nsWindow() : nsBaseWidget()
 
   mNativeDragTarget = nsnull;
   mIsTopWidgetWindow = PR_FALSE;
- 
+
+#ifndef __MINGW32__ 
   if (!nsWindow::uMSH_MOUSEWHEEL)
     nsWindow::uMSH_MOUSEWHEEL = RegisterWindowMessage(MSH_MOUSEWHEEL);
+#endif
 }
 
 
@@ -870,6 +818,10 @@ nsWindow::~nsWindow()
 {
 #ifdef ACCESSIBILITY
   if (mRootAccessible) {
+    nsCOMPtr<nsIAccessibleDocument> accessDoc(do_QueryInterface(mRootAccessible));
+    if (accessDoc) {
+      accessDoc->Destroy();
+    }
     mRootAccessible->Release();
     mRootAccessible = nsnull;
   }
@@ -909,7 +861,6 @@ nsWindow::~nsWindow()
     nsMemory::Free(mIMEReconvertUnicode);
 
   NS_IF_RELEASE(mNativeDragTarget);
-
 }
 
 
@@ -1047,6 +998,35 @@ void nsWindow::InitEvent(nsGUIEvent& event, PRUint32 aEventType, nsPoint* aPoint
     mLastPoint.y = event.point.y;
 }
 
+/* In some circumstances (opening dependent windows) it makes more sense
+   (and fixes a crash bug) to not blur the parent window. */
+void nsWindow::SuppressBlurEvents(PRBool aSuppress)
+{
+  if (aSuppress)
+    ++mBlurEventSuppressionLevel; // for this widget
+  else {
+    NS_ASSERTION(mBlurEventSuppressionLevel > 0, "unbalanced blur event suppression");
+    if (mBlurEventSuppressionLevel > 0)
+      --mBlurEventSuppressionLevel;
+  }
+}
+
+PRBool nsWindow::BlurEventsSuppressed()
+{
+  // are they suppressed in this window?
+  if (mBlurEventSuppressionLevel > 0)
+    return PR_TRUE;
+
+  // are they suppressed by any container widget?
+  HWND parentWnd = ::GetParent(mWnd);
+  if (parentWnd) {
+    nsWindow *parent = GetNSWindowPtr(parentWnd);
+    if (parent)
+      return parent->BlurEventsSuppressed();
+  }
+  return PR_FALSE;
+}
+
 //-------------------------------------------------------------------------
 //
 // Invokes callback and  ProcessEvent method on Event Listener object
@@ -1064,7 +1044,12 @@ NS_IMETHODIMP nsWindow::DispatchEvent(nsGUIEvent* event, nsEventStatus & aStatus
 #endif // NS_DEBUG
 
   aStatus = nsEventStatus_eIgnore;
- 
+
+  // skip processing of suppressed blur events
+  if ((event->message == NS_DEACTIVATE || event->message == NS_LOSTFOCUS) &&
+      BlurEventsSuppressed())
+    return NS_OK;
+
   if (nsnull != mEventCallback) {
     aStatus = (*mEventCallback)(event);
   }
@@ -1110,6 +1095,24 @@ PRBool nsWindow::DispatchStandardEvent(PRUint32 aMsg)
   PRBool result = DispatchWindowEvent(&event);
   NS_RELEASE(event.widget);
   return result;
+}
+
+//-------------------------------------------------------------------------
+//
+// Dispatch app command event
+//
+//-------------------------------------------------------------------------
+PRBool nsWindow::DispatchAppCommandEvent(PRUint32 aEventCommand)
+{
+  nsAppCommandEvent event;
+
+  InitEvent(event, NS_APPCOMMAND_START);
+  event.appCommand = NS_APPCOMMAND_START + aEventCommand;
+
+  DispatchWindowEvent(&event);
+  NS_RELEASE(event.widget);
+
+  return NS_OK;
 }
 
 //-------------------------------------------------------------------------
@@ -1310,11 +1313,7 @@ LRESULT CALLBACK nsWindow::WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM
     // why we are hitting this assert
     if (nsnull == someWindow) {
       NS_ASSERTION(someWindow, "someWindow is null, cannot call any CallWindowProc");      
-#ifdef MOZ_UNICODE
       return nsToolkit::mDefWindowProc(hWnd, msg, wParam, lParam);
-#else
-      return ::DefWindowProc(hWnd, msg, wParam, lParam);
-#endif
     }
 
     // hold on to the window for the life of this method, in case it gets
@@ -1341,25 +1340,14 @@ LRESULT CALLBACK nsWindow::WindowProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM
     }
 
 #if defined(STRICT)
-  #ifdef MOZ_UNICODE
     return nsToolkit::mCallWindowProc((WNDPROC)someWindow->GetPrevWindowProc(), hWnd, 
                             msg, wParam, lParam);
-  #else
-    return ::CallWindowProc((WNDPROC)someWindow->GetPrevWindowProc(), hWnd, 
-                            msg, wParam, lParam);
-  #endif
 #else
-  #ifdef MOZ_UNICODE
     return nsToolkit::mCallWindowProc((FARPROC)someWindow->GetPrevWindowProc(), hWnd, 
                             msg, wParam, lParam);
-  #else
-    return ::CallWindowProc((FARPROC)someWindow->GetPrevWindowProc(), hWnd, 
-                            msg, wParam, lParam);
-  #endif
 #endif
 }
 
-#ifdef MOZ_AIMM
 //
 // Default Window proceduer for AIMM support.
 //
@@ -1371,13 +1359,8 @@ LRESULT CALLBACK nsWindow::DefaultWindowProc(HWND hWnd, UINT msg, WPARAM wParam,
     if (nsToolkit::gAIMMApp->OnDefWindowProc(hWnd, msg, wParam, lParam, &lResult) == S_OK)
       return lResult;
   }
-#ifdef MOZ_UNICODE
   return nsToolkit::mDefWindowProc(hWnd, msg, wParam, lParam);
-#else
-  return ::DefWindowProc(hWnd, msg, wParam, lParam);
-#endif
 }
-#endif
 
 static BOOL CALLBACK DummyDialogProc(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
   return FALSE;
@@ -1498,7 +1481,6 @@ nsresult nsWindow::StandardWindowCreate(nsIWidget *aParent,
                                          (DLGPROC)DummyDialogProc,
                                          NULL);
     } else {
-#ifdef MOZ_UNICODE
       mWnd = nsToolkit::mCreateWindowEx(extendedStyle, 
                               aInitData && aInitData->mDropShadow ? 
                               WindowPopupClassW() : WindowClassW(),
@@ -1512,21 +1494,6 @@ nsresult nsWindow::StandardWindowCreate(nsIWidget *aParent,
                               NULL,
                               nsToolkit::mDllInstance,
                               NULL);
-#else
-      mWnd = ::CreateWindowEx(extendedStyle,
-                              aInitData && aInitData->mDropShadow ? 
-                                WindowPopupClass() : WindowClass(),
-                              "",
-                              style,
-                              aRect.x,
-                              aRect.y,
-                              aRect.width,
-                              GetHeight(aRect.height),
-                              parent,
-                              NULL,
-                              nsToolkit::mDllInstance,
-                              NULL);
-#endif
     }
    
     VERIFY(mWnd);
@@ -1541,17 +1508,8 @@ nsresult nsWindow::StandardWindowCreate(nsIWidget *aParent,
      }
    }*/
 
-    // Show nsIDocShellTreeItem::contentType in GWL_ID
-    // This way 3rd part apps can check if a window is chrome (0) or content (1)
-#ifdef MOZ_UNICODE
-    LONG contentType = aInitData? aInitData->mContentType: (parent? nsToolkit::mGetWindowLong(parent, GWL_ID): -1);
-    LONG isContent = (contentType == 1 || contentType == 2);
-    nsToolkit::mSetWindowLong(mWnd, GWL_ID, isContent);
-#else
-    LONG contentType = aInitData? aInitData->mContentType: (parent? ::GetWindowLong(parent, GWL_ID): -1);
-    LONG isContent = (contentType == 1 || contentType == 2);
-    ::SetWindowLong(mWnd, GWL_ID, isContent);
-#endif
+    mContentType = aInitData? aInitData->mContentType: eContentTypeInherit;
+    SetWin32ContentType();
 
     // call the event callback to notify about creation
 
@@ -1559,6 +1517,27 @@ nsresult nsWindow::StandardWindowCreate(nsIWidget *aParent,
     SubclassWindow(TRUE);
 
     return(NS_OK);
+}
+
+PRBool nsWindow::SetWin32ContentType()
+{
+  // Show mContentType in GWL_ID
+  // This way 3rd part apps can check if a window is UI (0) or content (1)
+  // Return true if control id changed
+
+  nsContentType newContentType = mContentType;
+
+  if (newContentType == eContentTypeInherit) {
+    HWND parentWnd = mWnd;
+    newContentType = eContentTypeUI; // default if we're the root
+    if ((parentWnd = ::GetParent(parentWnd)) != 0) {
+      newContentType = (nsContentType)nsToolkit::mGetWindowLong(parentWnd, GWL_ID);
+    }
+  }
+  nsContentType oldContentType = (nsContentType)nsToolkit::mGetWindowLong(mWnd, GWL_ID);
+  nsToolkit::mSetWindowLong(mWnd, GWL_ID, (PRInt32)newContentType);
+
+  return oldContentType != newContentType;
 }
 
 //-------------------------------------------------------------------------
@@ -1574,6 +1553,8 @@ NS_METHOD nsWindow::Create(nsIWidget *aParent,
                       nsIToolkit *aToolkit,
                       nsWidgetInitData *aInitData)
 {
+    if (aInitData)
+      mUnicodeWidget = aInitData->mUnicode;
     return(StandardWindowCreate(aParent, aRect, aHandleEventFunction,
                          aContext, aAppShell, aToolkit, aInitData,
                          nsnull));
@@ -1594,6 +1575,8 @@ NS_METHOD nsWindow::Create(nsNativeWidget aParent,
                          nsIToolkit *aToolkit,
                          nsWidgetInitData *aInitData)
 {
+    if (aInitData)
+      mUnicodeWidget = aInitData->mUnicode;
     return(StandardWindowCreate(nsnull, aRect, aHandleEventFunction,
                          aContext, aAppShell, aToolkit, aInitData,
                          aParent));
@@ -1638,9 +1621,7 @@ NS_METHOD nsWindow::Destroy()
     if (gAttentionTimerMonitor)
       gAttentionTimerMonitor->KillTimer(mWnd);
 
-    gIsDestroyingAny = PR_TRUE;
     VERIFY(::DestroyWindow(mWnd));
-    gIsDestroyingAny = PR_FALSE;
 
     mWnd = NULL;
     //our windows can be subclassed by
@@ -1661,6 +1642,9 @@ NS_IMETHODIMP nsWindow::SetParent(nsIWidget *aNewParent)
     HWND newParent = (HWND)aNewParent->GetNativeData(NS_NATIVE_WINDOW);
     NS_ASSERTION(newParent, "Parent widget has a null native window handle");
     ::SetParent(mWnd, newParent);
+    PRBool isChanged = mContentType == eContentTypeInherit && SetWin32ContentType();
+    NS_ASSERTION(!isChanged, "SetParent won't expose a new content type when decendents use eContentTypeInherit.");
+
     return NS_OK;
   }
   NS_WARNING("Null aNewParent passed to SetParent");
@@ -1746,10 +1730,17 @@ NS_METHOD nsWindow::Show(PRBool bState)
           ::SetWindowPos(mWnd, HWND_TOP, 0, 0, 0, 0, flags);
         }
       }
-    } else
-      ::ShowWindow(mWnd, SW_HIDE);
+    } else {
+      if (mWindowType != eWindowType_dialog) {
+        ::ShowWindow(mWnd, SW_HIDE);
+      } else {
+        ::SetWindowPos(mWnd, 0, 0, 0, 0, 0, SWP_HIDEWINDOW | SWP_NOSIZE | SWP_NOMOVE | 
+          SWP_NOZORDER | SWP_NOACTIVATE);
+      }
+    }
   }
   mIsVisible = bState;
+
   return NS_OK;
 }
 
@@ -1857,11 +1848,7 @@ NS_METHOD nsWindow::ModalEventFilter(PRBool aRealEvent, void *aEvent,
          // if not, accept events for any window that hasn't been
          // disabled.
          if (!acceptEvent) {
-#ifdef MOZ_UNICODE
            LONG proc = nsToolkit::mGetWindowLong(msgWindow, GWL_WNDPROC);
-#else
-           LONG proc = ::GetWindowLong(msgWindow, GWL_WNDPROC);
-#endif /* MOZ_UNICODE */
            if (proc == (LONG)&nsWindow::WindowProc) {
              nsWindow *msgWin = GetNSWindowPtr(msgWindow);
              msgWin->IsEnabled(&acceptEvent);
@@ -1961,30 +1948,26 @@ NS_METHOD nsWindow::ConstrainPosition(PRBool aAllowSlop,
 //-------------------------------------------------------------------------
 NS_METHOD nsWindow::Move(PRInt32 aX, PRInt32 aY)
 {
-   // Check to see if window needs to be removed first
-   // to avoid a costly call to SetWindowPos. This check
-   // can not be moved to the calling code in nsView, because 
-   // some platforms do not position child windows correctly
+  // Check to see if window needs to be moved first
+  // to avoid a costly call to SetWindowPos. This check
+  // can not be moved to the calling code in nsView, because 
+  // some platforms do not position child windows correctly
 
-  nsRect currentRect;
-  GetBounds(currentRect); 
+  // Only perform this check for non-popup windows, since the positioning can
+  // in fact change even when the x/y do not.  We always need to perform the
+  // check. See bug #97805 for details.
+  if (mWindowType != eWindowType_popup && (mBounds.x == aX) && (mBounds.y == aY))
   {
-   // Only perform this check for non-popup windows, since the positioning can
-   // in fact change even when the x/y do not.  We always need to perform the
-   // check. See bug #97805 for details.
-   if (mWindowType != eWindowType_popup && (currentRect.x == aX) && (currentRect.y == aY))
-   {
-      // Nothing to do, since it is already positioned correctly.
-     return NS_OK;    
-   }
+    // Nothing to do, since it is already positioned correctly.
+    return NS_OK;    
   }
 
-   // When moving a borderless top-level window the window
-   // must be placed relative to its parent. WIN32 wants to
-   // place it relative to the screen, so we used the cached parent
-   // to calculate the parent's location then add the x,y passed to
-   // the move to get the screen coordinate for the borderless top-level
-   // window.
+  // When moving a borderless top-level window the window
+  // must be placed relative to its parent. WIN32 wants to
+  // place it relative to the screen, so we used the cached parent
+  // to calculate the parent's location then add the x,y passed to
+  // the move to get the screen coordinate for the borderless top-level
+  // window.
   if (mWindowType == eWindowType_popup) {
     HWND parent = mBorderlessParent;
     if (parent) { 
@@ -2334,11 +2317,7 @@ NS_METHOD nsWindow::SetFont(const nsFont &aFont)
   HFONT hfont = (HFONT)fontHandle;
 
     // Draw in the new font
-#ifdef MOZ_UNICODE
   nsToolkit::mSendMessage(mWnd, WM_SETFONT, (WPARAM)hfont, (LPARAM)0); 
-#else
-  ::SendMessage(mWnd, WM_SETFONT, (WPARAM)hfont, (LPARAM)0); 
-#endif
   NS_RELEASE(metrics);
 
   return NS_OK;
@@ -2474,6 +2453,14 @@ NS_METHOD nsWindow::SetCursor(nsCursor aCursor)
     case eCursor_count_up_down:
       break;
 
+    case eCursor_zoom_in:
+      newCursor = ::LoadCursor(nsToolkit::mDllInstance, MAKEINTRESOURCE(IDC_ZOOMIN));
+      break;
+
+    case eCursor_zoom_out:
+      newCursor = ::LoadCursor(nsToolkit::mDllInstance, MAKEINTRESOURCE(IDC_ZOOMOUT));
+      break;
+
     default:
       NS_ASSERTION(0, "Invalid cursor type");
       break;
@@ -2500,13 +2487,8 @@ NS_IMETHODIMP nsWindow::HideWindowChrome(PRBool aShouldHide)
 
   DWORD style, exStyle;
   if (aShouldHide) {
-#ifdef MOZ_UNICODE
     DWORD tempStyle = nsToolkit::mGetWindowLong(hwnd, GWL_STYLE);
     DWORD tempExStyle = nsToolkit::mGetWindowLong(hwnd, GWL_EXSTYLE);
-#else
-    DWORD tempStyle = ::GetWindowLong(hwnd, GWL_STYLE);
-    DWORD tempExStyle = ::GetWindowLong(hwnd, GWL_EXSTYLE);
-#endif /* MOZ_UNICODE */
 
     style = WS_SYSMENU | WS_MAXIMIZEBOX | WS_MINIMIZEBOX;
     exStyle = 0;
@@ -2516,26 +2498,16 @@ NS_IMETHODIMP nsWindow::HideWindowChrome(PRBool aShouldHide)
   }
   else {
     if (!mOldStyle || !mOldExStyle) {
-#ifdef MOZ_UNICODE
       mOldStyle = nsToolkit::mGetWindowLong(hwnd, GWL_STYLE);
       mOldExStyle = nsToolkit::mGetWindowLong(hwnd, GWL_EXSTYLE);
-#else
-      mOldStyle = ::GetWindowLong(hwnd, GWL_STYLE);
-      mOldExStyle = ::GetWindowLong(hwnd, GWL_EXSTYLE);
-#endif /* MOZ_UNICODE */
     }
 
     style = mOldStyle;
     exStyle = mOldExStyle;
   }
 
-#ifdef MOZ_UNICODE
   nsToolkit::mSetWindowLong(hwnd, GWL_STYLE, style);
   nsToolkit::mSetWindowLong(hwnd, GWL_EXSTYLE, exStyle);
-#else
-  ::SetWindowLong(hwnd, GWL_STYLE, style);
-  ::SetWindowLong(hwnd, GWL_EXSTYLE, exStyle);
-#endif
 
   return NS_OK;
 }
@@ -3086,23 +3058,17 @@ BOOL nsWindow::OnChar( UINT mbcsCharCode, UINT virtualKeyCode, bool isMultiByte 
   }
   else 
   { // 0x20 - SPACE, 0x3D - EQUALS
-#ifdef MOZ_UNICODE
     if(mbcsCharCode < 0x20 || (virtualKeyCode == 0x3D && mIsControlDown)) 
-#else
-    if(virtualKeyCode < 0x20 || (virtualKeyCode == 0x3D && mIsControlDown)) 
-#endif  /* MOZ_UNICODE */
     {
       uniChar = 0;
     } 
     else 
     {
-#ifdef MOZ_UNICODE
       if (nsToolkit::mIsNT)  { 
         uniChar = mbcsCharCode; 
       } 
       else   
       { 
-#endif  /* MOZ_UNICODE */
         char    charToConvert[3]; 
         size_t  length; 
  
@@ -3131,11 +3097,8 @@ BOOL nsWindow::OnChar( UINT mbcsCharCode, UINT virtualKeyCode, bool isMultiByte 
         }   
         ::MultiByteToWideChar(gCurrentKeyboardCP,MB_PRECOMPOSED,charToConvert,length, 
           &uniChar, 1); 
-#ifdef MOZ_UNICODE
       } 
-#endif  /* MOZ_UNICODE */
       virtualKeyCode = 0;
-      mIsShiftDown = PR_FALSE;
     }
   }
   return DispatchKeyEvent(NS_KEY_PRESS, uniChar, virtualKeyCode, 0);
@@ -3617,11 +3580,7 @@ static nsresult HeapDump(const char *filename, const char *heading)
 
 BOOL CALLBACK nsWindow::DispatchStarvedPaints(HWND aWnd, LPARAM aMsg) 
 {
-#ifdef MOZ_UNICODE
   LONG proc = nsToolkit::mGetWindowLong(aWnd, GWL_WNDPROC);
-#else
-  LONG proc = ::GetWindowLong(aWnd, GWL_WNDPROC);
-#endif /* MOZ_UNICODE */
   if (proc == (LONG)&nsWindow::WindowProc) {
     // its one of our windows so check to see if it has a 
     // invalidated rect. If it does. Dispatch a synchronous
@@ -3803,6 +3762,11 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT 
         case WM_PAINT:
             result = OnPaint();
             break;
+
+        case WM_PRINTCLIENT:
+            result = OnPaint((HDC) wParam);
+            break;
+			
 	case WM_SYSCHAR:
 	case WM_CHAR: 
         {
@@ -4070,6 +4034,26 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT 
             result = DispatchMouseEvent(NS_MOUSE_RIGHT_DOUBLECLICK, wParam);
             break;
 
+        case WM_APPCOMMAND:
+          {
+            PRUint32 appCommand = GET_APPCOMMAND_LPARAM(lParam);
+
+            switch (appCommand)
+            {
+              case APPCOMMAND_BROWSER_BACKWARD:
+              case APPCOMMAND_BROWSER_FORWARD:
+              case APPCOMMAND_BROWSER_REFRESH:
+              case APPCOMMAND_BROWSER_STOP:
+                DispatchAppCommandEvent(appCommand);
+                // tell the driver that we handled the event
+                *aRetValue = 1;
+                result = PR_TRUE;
+                break;
+            }
+            // default = PR_FALSE - tell the driver that the event was not handled
+            break;
+          }
+
         case WM_HSCROLL:
         case WM_VSCROLL: 
 	          // check for the incoming nsWindow handle to be null in which case
@@ -4143,8 +4127,6 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT 
         }
 
       case WM_SETFOCUS:
-
-        if(!gIsDestroyingAny) { 
         result = DispatchFocus(NS_GOTFOCUS, isMozWindowTakingFocus);
         if(gJustGotActivate) {
           gJustGotActivate = PR_FALSE;
@@ -4152,28 +4134,17 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT 
           result = DispatchFocus(NS_ACTIVATE, isMozWindowTakingFocus);
         }
 #ifdef ACCESSIBILITY
-        if (nsWindow::gIsAccessibilityOn && !mRootAccessible && mIsTopWidgetWindow) 
+        if (nsWindow::gIsAccessibilityOn && !mRootAccessible &&
+            mIsTopWidgetWindow)
           CreateRootAccessible();
 #endif
-        } else {
-          nsToolkit *toolkit = NS_STATIC_CAST(nsToolkit *, mToolkit);
-          VERIFY(::PostMessage(toolkit->GetDispatchWindow(), WM_SETFOCUS,
-                     wParam, lParam));
-        }
         break;
 
       case WM_KILLFOCUS:
-#ifdef MOZ_UNICODE
         WCHAR className[19];
         nsToolkit::mGetClassName((HWND)wParam, className, 19);
         if(wcscmp(className, WindowClassW()))
           isMozWindowTakingFocus = PR_FALSE;
-#else
-        char className[19];
-        ::GetClassName((HWND)wParam, className, 19);
-        if(strcmp(className, WindowClass()))
-          isMozWindowTakingFocus = PR_FALSE;
-#endif
         if(gJustGotDeactivate) {
           gJustGotDeactivate = PR_FALSE;
           result = DispatchFocus(NS_DEACTIVATE, isMozWindowTakingFocus);
@@ -4274,18 +4245,10 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT 
 
               if (pl.showCmd == SW_SHOWMINIMIZED) {
                 // Deactivate
-#ifdef MOZ_UNICODE
 				WCHAR className[19];
 				nsToolkit::mGetClassName((HWND)wParam, className, 19);
 				if(wcscmp(className, WindowClassW()))
 				  isMozWindowTakingFocus = PR_FALSE;
-#else
-                char className[19];
-                ::GetClassName((HWND)wParam, className, 19);
-                if(strcmp(className, WindowClass()))
-                  isMozWindowTakingFocus = PR_FALSE;
-#endif
-
                 gJustGotDeactivate = PR_FALSE;
                 result = DispatchFocus(NS_DEACTIVATE, isMozWindowTakingFocus);
               } else if (pl.showCmd == SW_SHOWNORMAL){
@@ -4421,24 +4384,24 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT 
         if (mIsTopWidgetWindow && !mRootAccessible) 
           CreateRootAccessible();
         if (mRootAccessible) {
-          if (lParam == OBJID_CLIENT)  // oleacc.dll will be loaded dynamically
-            lAcc = Accessible::LresultFromObject(IID_IAccessible, wParam, mRootAccessible); // does an addref          
-          if (lParam == OBJID_CARET) {  // each root accessible owns a caret accessible
-            VARIANT variant;
-            VariantInit(&variant);
-            variant.vt = VT_I4;
-            variant.lVal = UNIQUE_ID_CARET;
-            IDispatch *dispatch = nsnull;
-            mRootAccessible->get_accChild(variant, &dispatch);  // does an addref
-            if (dispatch) {
-              IAccessible *accessible = nsnull;
-              dispatch->QueryInterface(IID_IAccessible, (void**)&accessible); // does an addref
-              dispatch->Release();
-              if (accessible) {
-                lAcc = Accessible::LresultFromObject(IID_IAccessible, wParam, accessible); // does an addref
-                accessible->Release();
+          IAccessible *msaaAccessible = NULL;
+          if (lParam == OBJID_CLIENT) { // oleacc.dll will be loaded dynamically
+            mRootAccessible->GetNativeInterface((void**)&msaaAccessible); // does an addref
+          }
+          else if (lParam == OBJID_CARET) {  // each root accessible owns a caret accessible
+            nsCOMPtr<nsIAccessibleDocument> accDoc(do_QueryInterface(mRootAccessible));
+            if (accDoc) { 
+              nsCOMPtr<nsIAccessibleCaret> accessibleCaret;
+              accDoc->GetCaretAccessible(getter_AddRefs(accessibleCaret));
+              nsCOMPtr<nsIAccessible> xpAccessible(do_QueryInterface(accessibleCaret));
+              if (xpAccessible) {
+                xpAccessible->GetNativeInterface((void**)&msaaAccessible);
               }
             }
+          }
+          if (msaaAccessible) {
+            lAcc = LresultFromObject(IID_IAccessible, wParam, msaaAccessible); // does an addref
+            msaaAccessible->Release(); // release extra addref
           }
         }
         return (*aRetValue = lAcc) != 0;
@@ -4468,6 +4431,7 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT 
                 (osversion.dwMajorVersion == 4) &&
                 (osversion.dwMinorVersion == 0))
               {
+#ifndef __MINGW32__
                 // This is the Windows 95 case
                 HWND hdlMsWheel = FindWindow(MSH_WHEELMODULE_CLASS,
                                              MSH_WHEELMODULE_TITLE);
@@ -4479,6 +4443,7 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT 
                                                       0);
                   }
                 }
+#endif
               }
             else if (osversion.dwMajorVersion >= 4) {
               // This is the Win98/NT4/Win2K case
@@ -4535,11 +4500,7 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT 
             break;
           }
           
-#ifdef MOZ_UNICODE          
           LONG proc = nsToolkit::mGetWindowLong(destWnd, GWL_WNDPROC);
-#else
-          LONG proc = ::GetWindowLong(destWnd, GWL_WNDPROC);
-#endif /* MOZ_UNICODE */
           if (proc != (LONG)&nsWindow::WindowProc)  {
             // Some other app, or a plugin window.
             // Windows directs WM_MOUSEWHEEL to the focused window.
@@ -4658,7 +4619,6 @@ PRBool nsWindow::ProcessMessage(UINT msg, WPARAM wParam, LPARAM lParam, LRESULT 
 
 #define CS_XP_DROPSHADOW       0x00020000
 
-#ifdef MOZ_UNICODE
 LPCWSTR nsWindow::WindowClassW()
 {
     const LPCWSTR className = L"MozillaWindowClass";
@@ -4668,11 +4628,7 @@ LPCWSTR nsWindow::WindowClassW()
 
 //        wc.style            = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
         wc.style            = CS_DBLCLKS;
-#ifdef MOZ_AIMM
         wc.lpfnWndProc      = nsWindow::DefaultWindowProc;
-#else
-        wc.lpfnWndProc      = nsToolkit::nsDefWindowProc;
-#endif
         wc.cbClsExtra       = 0;
         wc.cbWndExtra       = 0;
         wc.hInstance        = nsToolkit::mDllInstance;
@@ -4683,11 +4639,9 @@ LPCWSTR nsWindow::WindowClassW()
         wc.lpszClassName    = className;
     
         nsWindow::sIsRegistered = nsToolkit::mRegisterClass(&wc);
-#ifdef MOZ_AIMM
         // Call FilterClientWindows method since it enables ActiveIME on CJK Windows
         if(nsToolkit::gAIMMApp)
           nsToolkit::gAIMMApp->FilterClientWindows((ATOM*)&nsWindow::sIsRegistered,1);
-#endif // MOZ_AIMM
     }
     
     return className;
@@ -4700,11 +4654,7 @@ LPCWSTR nsWindow::WindowPopupClassW()
     if (!nsWindow::sIsPopupClassRegistered) {
         WNDCLASSW wc;
         wc.style            = CS_DBLCLKS | CS_XP_DROPSHADOW;
-#ifdef MOZ_AIMM
         wc.lpfnWndProc      = nsWindow::DefaultWindowProc;
-#else
-        wc.lpfnWndProc      = nsToolkit::nsDefWindowProc;
-#endif
         wc.cbClsExtra       = 0;
         wc.cbWndExtra       = 0;
         wc.hInstance        = nsToolkit::mDllInstance;
@@ -4728,82 +4678,25 @@ LPCWSTR nsWindow::WindowPopupClassW()
 
 LPCTSTR nsWindow::WindowClass()
 {
-  return (NS_ConvertUCS2toUTF8(WindowClassW()).get());
+  // Call into the wide version to make sure things get
+  // registered properly.
+  WindowClassW();
+
+  // XXX: The class name used here must be kept in sync with
+  //      the classname used in WindowClassW();
+  return "MozillaWindowClass";
 }
 
 LPCTSTR nsWindow::WindowPopupClass()
 {
-  return (NS_ConvertUCS2toUTF8(WindowPopupClassW()).get());
+  // Call into the wide version to make sure things get
+  // registered properly.
+  WindowPopupClassW();
+
+  // XXX: The class name used here must be kept in sync with
+  //      the classname used in WindowPopupClassW();
+  return "MozillaDropShadowWindowClass";
 }
-
-#else
-LPCTSTR nsWindow::WindowClass()
-{
-    const LPCTSTR className = "MozillaWindowClass";
-    
-    if (!nsWindow::sIsRegistered) {
-        WNDCLASS wc;
-
-//        wc.style            = CS_HREDRAW | CS_VREDRAW | CS_DBLCLKS;
-        wc.style            = CS_DBLCLKS;
-#ifdef MOZ_AIMM
-        wc.lpfnWndProc      = nsWindow::DefaultWindowProc;
-#else
-        wc.lpfnWndProc      = ::DefWindowProc;
-#endif
-        wc.cbClsExtra       = 0;
-        wc.cbWndExtra       = 0;
-        wc.hInstance        = nsToolkit::mDllInstance;
-        wc.hIcon            = ::LoadIcon(::GetModuleHandle(NULL), IDI_APPLICATION);
-        wc.hCursor          = NULL;
-        wc.hbrBackground    = mBrush;
-        wc.lpszMenuName     = NULL;
-        wc.lpszClassName    = className;
-    
-        nsWindow::sIsRegistered = ::RegisterClass(&wc);
-#ifdef MOZ_AIMM
-        // Call FilterClientWindows method since it enables ActiveIME on CJK Windows
-        if(nsToolkit::gAIMMApp)
-          nsToolkit::gAIMMApp->FilterClientWindows((ATOM*)&nsWindow::sIsRegistered,1);
-#endif // MOZ_AIMM
-    }
-    
-    return className;
-}
-
-LPCTSTR nsWindow::WindowPopupClass()
-{
-    const LPCTSTR className = "MozillaDropShadowWindowClass";
-
-    if (!nsWindow::sIsPopupClassRegistered) {
-        WNDCLASS wc;
-        wc.style            = CS_DBLCLKS | CS_XP_DROPSHADOW;
-#ifdef MOZ_AIMM
-        wc.lpfnWndProc      = nsWindow::DefaultWindowProc;
-#else
-        wc.lpfnWndProc      = ::DefWindowProc;
-#endif
-        wc.cbClsExtra       = 0;
-        wc.cbWndExtra       = 0;
-        wc.hInstance        = nsToolkit::mDllInstance;
-        wc.hIcon            = ::LoadIcon(::GetModuleHandle(NULL), IDI_APPLICATION);
-        wc.hCursor          = NULL;
-        wc.hbrBackground    = mBrush;
-        wc.lpszMenuName     = NULL;
-        wc.lpszClassName    = className;
-    
-        nsWindow::sIsPopupClassRegistered = ::RegisterClass(&wc);
-        if (!nsWindow::sIsPopupClassRegistered) {
-          // For older versions of Win32 (i.e., not XP), the registration will
-          // fail, so we have to re-register without the CS_XP_DROPSHADOW flag.
-          wc.style = CS_DBLCLKS;
-          nsWindow::sIsPopupClassRegistered = ::RegisterClass(&wc);
-        }
-    }
-
-    return className;
-}
-#endif
 
 //-------------------------------------------------------------------------
 //
@@ -4921,23 +4814,21 @@ void nsWindow::SubclassWindow(BOOL bState)
     
     if (bState) {
         // change the nsWindow proc
-#ifdef MOZ_UNICODE
-        mPrevWndProc = (WNDPROC)nsToolkit::mSetWindowLong(mWnd, GWL_WNDPROC, 
+        if (mUnicodeWidget)
+          mPrevWndProc = (WNDPROC)nsToolkit::mSetWindowLong(mWnd, GWL_WNDPROC, 
                                                  (LONG)nsWindow::WindowProc);
-#else
-        mPrevWndProc = (WNDPROC)::SetWindowLong(mWnd, GWL_WNDPROC, 
+        else
+          mPrevWndProc = (WNDPROC)::SetWindowLong(mWnd, GWL_WNDPROC, 
                                                  (LONG)nsWindow::WindowProc);
-#endif
         NS_ASSERTION(mPrevWndProc, "Null standard window procedure");
         // connect the this pointer to the nsWindow handle
         SetNSWindowPtr(mWnd, this);
     } 
     else {
-#ifdef MOZ_UNICODE
-        nsToolkit::mSetWindowLong(mWnd, GWL_WNDPROC, (LONG)mPrevWndProc);
-#else
-        ::SetWindowLong(mWnd, GWL_WNDPROC, (LONG)mPrevWndProc);
-#endif
+        if (mUnicodeWidget)
+          nsToolkit::mSetWindowLong(mWnd, GWL_WNDPROC, (LONG)mPrevWndProc);
+        else
+          ::SetWindowLong(mWnd, GWL_WNDPROC, (LONG)mPrevWndProc);
         SetNSWindowPtr(mWnd, NULL);
         mPrevWndProc = NULL;
     }
@@ -5014,7 +4905,7 @@ PRBool nsWindow::OnMove(PRInt32 aX, PRInt32 aY)
 // Paint
 //
 //-------------------------------------------------------------------------
-PRBool nsWindow::OnPaint()
+PRBool nsWindow::OnPaint(HDC aDC)
 {
     nsRect    bounds;
     PRBool result = PR_TRUE;
@@ -5033,11 +4924,17 @@ PRBool nsWindow::OnPaint()
     }
 #endif // NS_DEBUG
 
-    HDC hDC = ::BeginPaint(mWnd, &ps);
-
-    // XXX What is this check doing? If it's trying to check for an empty
-    // paint rect then use the IsRectEmpty() function...
-    if (ps.rcPaint.left || ps.rcPaint.right || ps.rcPaint.top || ps.rcPaint.bottom) {
+    HDC hDC = aDC ? aDC : (::BeginPaint(mWnd, &ps));
+    RECT paintRect;
+    if (aDC) {
+      ::GetClientRect(mWnd, &paintRect);
+    }
+    else {
+      paintRect = ps.rcPaint;
+    }
+			
+    if (!IsRectEmpty(&paintRect))
+    {
         // call the event callback 
         if (mEventCallback) 
         {
@@ -5046,12 +4943,15 @@ PRBool nsWindow::OnPaint()
 
             InitEvent(event, NS_PAINT);
 
-            nsRect rect(ps.rcPaint.left, 
-                        ps.rcPaint.top, 
-                        ps.rcPaint.right - ps.rcPaint.left, 
-                        ps.rcPaint.bottom - ps.rcPaint.top);
-            event.rect = &rect;
+            nsRect rect(paintRect.left, 
+                        paintRect.top, 
+                        paintRect.right - paintRect.left, 
+                        paintRect.bottom - paintRect.top);
             event.eventStructType = NS_PAINT_EVENT;
+            event.region = nsnull;
+            event.rect = &rect;
+            // Should probably pass in a real region here, using GetRandomRgn
+            // http://msdn.microsoft.com/library/default.asp?url=/library/en-us/gdi/clipping_4q0e.asp
 
 #ifdef NS_DEBUG
           debug_DumpPaintEvent(stdout,
@@ -5093,7 +4993,9 @@ PRBool nsWindow::OnPaint()
         }
     }
 
-    ::EndPaint(mWnd, &ps);
+    if (!aDC) {
+      ::EndPaint(mWnd, &ps);
+    }
 
 #ifdef NS_DEBUG
     if (debug_WantPaintFlashing())
@@ -5160,7 +5062,12 @@ PRBool nsWindow::DispatchMouseEvent(PRUint32 aEventType, WPARAM wParam, nsPoint*
   }
 
   nsMouseEvent event;
-  InitEvent(event, aEventType, aPoint);
+  if (aEventType == NS_CONTEXTMENU_KEY) {
+    nsPoint zero(0, 0);
+    InitEvent(event, aEventType, &zero);
+  } else {
+    InitEvent(event, aEventType, aPoint);
+  }
 
   event.isShift   = IS_VK_DOWN(NS_VK_SHIFT);
   event.isControl = IS_VK_DOWN(NS_VK_CONTROL);
@@ -5568,11 +5475,7 @@ NS_METHOD nsWindow::SetTitle(const nsString& aTitle)
 {
   char* title = GetACPString(aTitle);
   if (title) {
-#ifdef MOZ_UNICODE
     nsToolkit::mSendMessage(mWnd, WM_SETTEXT, (WPARAM)0, (LPARAM)(LPCWSTR)PromiseFlatString(aTitle).get());
-#else
-    ::SendMessage(mWnd, WM_SETTEXT, (WPARAM)0, (LPARAM)(LPCTSTR)title);
-#endif
     delete [] title;
   }
   return NS_OK;
@@ -5612,13 +5515,13 @@ NS_METHOD nsWindow::SetIcon(const nsAString& anIconSpec)
                                        IMAGE_ICON,
                                        ::GetSystemMetrics(SM_CXICON),
                                        ::GetSystemMetrics(SM_CYICON),
-                                       LR_LOADFROMFILE | LR_SHARED );
+                                       LR_LOADFROMFILE );
   HICON smallIcon = (HICON)::LoadImageW( NULL,
                                          (LPCWSTR)iconPath.get(),
                                          IMAGE_ICON,
                                          ::GetSystemMetrics(SM_CXSMICON),
                                          ::GetSystemMetrics(SM_CYSMICON),
-                                         LR_LOADFROMFILE | LR_SHARED );
+                                         LR_LOADFROMFILE );
 
   // See if unicode API not implemented and if not, try ascii version
   if ( ::GetLastError() == ERROR_CALL_NOT_IMPLEMENTED ) {
@@ -5646,11 +5549,7 @@ NS_METHOD nsWindow::SetIcon(const nsAString& anIconSpec)
 
   if ( bigIcon ) {
       LRESULT rv = 0;
-#ifdef MOZ_UNICODE
       rv = nsToolkit::mSendMessage(mWnd, WM_SETICON, (WPARAM)ICON_BIG, (LPARAM)bigIcon);
-#else
-      rv = ::SendMessage(mWnd, WM_SETICON, (WPARAM)ICON_BIG, (LPARAM)bigIcon);
-#endif
   }
 #ifdef DEBUG_law
   else {
@@ -5660,11 +5559,7 @@ NS_METHOD nsWindow::SetIcon(const nsAString& anIconSpec)
 #endif
   if ( smallIcon ) {
       LRESULT rv = 0;
-#ifdef MOZ_UNICODE
       rv = nsToolkit::mSendMessage(mWnd, WM_SETICON, (WPARAM)ICON_SMALL, (LPARAM)smallIcon);
-#else
-      rv = ::SendMessage(mWnd, WM_SETICON, (WPARAM)ICON_SMALL, (LPARAM)smallIcon);
-#endif
   }
 #ifdef DEBUG_law
   else {
@@ -6068,12 +5963,10 @@ BOOL nsWindow::OnIMEChar(BYTE aByte1, BYTE aByte2, LPARAM aKeyState)
   size_t  length;
   int err = 0;
 
-#ifdef MOZ_UNICODE
   if (nsToolkit::mIsNT) { 
     uniChar = MAKEWORD(aByte2, aByte1); 
   } 
   else  { 
-#endif /* MOZ_UNICODE */
     if (aByte1) {
       charToConvert[0] = aByte1;
       charToConvert[1] = aByte2;
@@ -6085,9 +5978,7 @@ BOOL nsWindow::OnIMEChar(BYTE aByte1, BYTE aByte2, LPARAM aKeyState)
     }
     err = ::MultiByteToWideChar(gCurrentKeyboardCP, MB_PRECOMPOSED, charToConvert, length,
       &uniChar, 1);
-#ifdef MOZ_UNICODE
   } 
-#endif /* MOZ_UNICODE */
 
 #ifdef DEBUG_IME
   if (!err) {
@@ -6675,7 +6566,7 @@ nsWindow::IMEMouseHandling(PRUint32 aEventType, PRInt32 aAction, LPARAM lParam)
     HWND parentWnd = ::GetParent(mWnd);
     if (parentWnd) {
       nsWindow* parentWidget = GetNSWindowPtr(parentWnd);
-      if (parentWidget->mIMEIsComposing && nsWindow::uWM_MSIME_MOUSE) {
+      if (parentWidget && parentWidget->mIMEIsComposing && nsWindow::uWM_MSIME_MOUSE) {
         if (parentWidget->IMECompositionHitTest(aEventType, &ptPos))
           if (parentWidget->HandleMouseActionOfIME(aAction, &ptPos))
             return PR_TRUE;
@@ -6720,11 +6611,7 @@ nsWindow::HandleMouseActionOfIME(int aAction, POINT *ptPos)
       // send MS_MSIME_MOUSE message to default IME window.
       HWND imeWnd;
       NS_IMM_GETDEFAULTIMEWND(mWnd, &imeWnd);
-#ifdef MOZ_UNICODE
       if (nsToolkit::mSendMessage(imeWnd, nsWindow::uWM_MSIME_MOUSE, MAKELONG(MAKEWORD(aAction, positioning), offset), (LPARAM) hIMC) == 1)
-#else
-      if (::SendMessage(imeWnd, nsWindow::uWM_MSIME_MOUSE, MAKELONG(MAKEWORD(aAction, positioning), offset), (LPARAM) hIMC) == 1)
-#endif
         IsHandle = PR_TRUE;
       }
     NS_IMM_RELEASECONTEXT(mWnd, hIMC);
@@ -7121,14 +7008,29 @@ void nsWindow::CreateRootAccessible()
   // We need it to be created early so it can generate accessibility events right away
 
   if (!mRootAccessible) {
-    nsCOMPtr<nsIAccessible> acc;
-    DispatchAccessibleEvent(NS_GETACCESSIBLE, getter_AddRefs(acc));
-    // create the COM accessible object
-    if (acc) {
-       HWND wnd = GetWindowHandle();
-       mRootAccessible = new RootAccessible(acc, wnd); // ref is 0       
-       mRootAccessible->AddRef();
-    }
+    DispatchAccessibleEvent(NS_GETACCESSIBLE, &mRootAccessible);
   }
+}
+
+HINSTANCE nsWindow::gmAccLib = 0;
+LPFNLRESULTFROMOBJECT nsWindow::gmLresultFromObject = 0;
+
+STDMETHODIMP_(LRESULT) nsWindow::LresultFromObject(REFIID riid,
+                                                   WPARAM wParam,
+                                                   LPUNKNOWN pAcc)
+{
+  // open the dll dynamically
+  if (!gmAccLib) 
+    gmAccLib =::LoadLibrary("OLEACC.DLL");  
+
+  if (gmAccLib) {
+    if (!gmLresultFromObject)
+      gmLresultFromObject = (LPFNLRESULTFROMOBJECT)GetProcAddress(gmAccLib,"LresultFromObject");
+
+    if (gmLresultFromObject)
+      return gmLresultFromObject(riid,wParam,pAcc);
+  }
+
+  return 0;
 }
 #endif
