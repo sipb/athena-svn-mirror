@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.29 1992-06-08 17:41:05 lwvanels Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.30 1992-06-09 18:06:57 lwvanels Exp $
  */
 
 #include <stdio.h>
@@ -447,6 +447,7 @@ char *display;
     newargv[1] = errbuf;
     newargv[2] = script;
     newargv[3] = NULL;
+    setpcred(pwd->pw_name,NULL);
     setpenv(pwd->pw_name,PENV_KLEEN|PENV_INIT|PENV_ARGV,
 	    environment,(char *)newargv);
 #else
