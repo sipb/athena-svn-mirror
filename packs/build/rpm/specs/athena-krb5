@@ -71,7 +71,8 @@ fi
 
 %triggerin -- initscripts
 # Force use of getty instead of mingetty
-sed -e s/mingetty/getty/ < /etc/inittab > /etc/inittab.new
+sed -e 's/mingetty/getty/' -e 's/getty\(  *[^ ][^ ]*\)$/getty\1 VC linux/' \
+	< /etc/inittab > /etc/inittab.new
 mv /etc/inittab.new /etc/inittab
 kill -1 1
 
@@ -79,4 +80,4 @@ kill -1 1
 %preun
 [ $1 = 0 ] || exit 0
 sed -e '\,/usr/athena/etc/login.krb5,d' /etc/conf.getty > /etc/conf.getty.new
-mv /etc/conf.getty.new/sedout /etc/conf.getty
+mv /etc/conf.getty.new /etc/conf.getty
