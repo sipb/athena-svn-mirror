@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_queue_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/queue.c,v 1.18 1997-09-23 06:01:22 ghudson Exp $";
+static char rcsid_queue_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/queue.c,v 1.19 1998-02-02 22:24:33 ghudson Exp $";
 #endif /* SABER */
 #endif /* lint */
 
@@ -220,6 +220,7 @@ static void queue_timeout(arg)
     Queue *entry = (Queue *) arg;
     Code_t ret;
 
+    entry->timer = NULL;
     ret = ZSetDestAddr(&serv_sin);
     if (ret != ZERR_NONE) {
 	Zperr(ret);
