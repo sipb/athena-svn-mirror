@@ -1,9 +1,9 @@
-# $Id: Makefile.athena,v 1.1 2001-02-14 02:00:30 ghudson Exp $
+# $Id: Makefile.athena,v 1.2 2001-02-21 22:01:26 ghudson Exp $
 
 dist:
 
 prepare:
-	./config --prefix=/usr/athena
+	PERL=/usr/athena/bin/perl ./config --prefix=/usr/athena
 
 clean:
 	${MAKE} clean
