@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: lpr.c,v 1.12 2001-03-07 21:23:11 ghudson Exp $";
+"$Id: lpr.c,v 1.13 2001-03-09 19:41:47 ghudson Exp $";
 
 
 #include "lp.h"
@@ -578,7 +578,7 @@ void Get_parms(int argc, char *argv[] )
  -k          - non seKure filter operation, create temp file for input\n\
  -K copies, -# copies   - number of copies\n\
  -m mailaddr - mail error status to mailaddr\n\
- -N          - Disable zephyr notification of completed jobs
+ -N          - Disable zephyr notification of completed jobs\n\
  -Pprinter[@host] - printer on host (default environment variable PRINTER)\n\
  -r          - remove named files after spooling\n\
  -w width    - width to use\n\
