@@ -1,0 +1,16 @@
+FFmpeg README
+-------------
+
+1) Documentation
+----------------
+
+* Read the documentation in the doc/ directory.
+
+2) Licensing
+------------
+
+* Read the file COPYING. ffmpeg and the associated libraries EXCEPT
+  liba52 are licensed under the Lesser GNU General Public
+  License. liba52 is distributed under the GNU General Public License.
+
+Fabrice Bellard.

@@ -1,0 +1,329 @@
+/* config.h.in.  Generated from configure.ac by autoheader.  */
+
+/* defined if cdda headers are in a cdda/ directory */
+#undef CDPARANOIA_HEADERS_IN_DIR
+
+/* Define if GSM header in gsm/ subdir */
+#undef GSM_HEADER_IN_SUBDIR
+
+/* Define if debugging messages should be colorized */
+#undef GST_DEBUG_COLOR
+
+/* Define if DEBUG statements should be compiled in */
+#undef GST_DEBUG_ENABLED
+
+/* Define if INFO statements should be compiled in */
+#undef GST_INFO_ENABLED
+
+/* Define the version */
+#undef GST_PLUGINS_VERSION
+
+/* Define the release version */
+#undef GST_PLUGINS_VERSION_RELEASE
+
+/* support for features: a52dec */
+#undef HAVE_A52DEC
+
+/* support for features: aasink */
+#undef HAVE_AALIB
+
+/* support for features: gstalsa */
+#undef HAVE_ALSA
+
+/* support for features: arts */
+#undef HAVE_ARTS
+
+/* support for features: artsdsink */
+#undef HAVE_ARTSC
+
+/* Define if atomic.h header file is available */
+#undef HAVE_ATOMIC_H
+
+/* support for features: afsink afsrc */
+#undef HAVE_AUDIOFILE
+
+/* support for features: winenc windec */
+#undef HAVE_AVIFILE
+
+/* support for features: */
+#undef HAVE_BROKEN
+
+/* support for features: cdparanoia */
+#undef HAVE_CDPARANOIA
+
+/* support for features: cdrom */
+#undef HAVE_CDROM
+
+/* Define if cdrom access is in BSD style */
+#undef HAVE_CDROM_BSD
+
+/* Define if cdrom access uses Darwin variant */
+#undef HAVE_CDROM_BSD_DARWIN
+
+/* Define if cdrom access uses NetBSD variant */
+#undef HAVE_CDROM_BSD_NETBSD
+
+/* Define if cdrom access is in Solaris style */
+#undef HAVE_CDROM_SOLARIS
+
+/* Define if the target CPU is an Alpha */
+#undef HAVE_CPU_ALPHA
+
+/* Define if the target CPU is an ARM */
+#undef HAVE_CPU_ARM
+
+/* Define if the target CPU is a HPPA */
+#undef HAVE_CPU_HPPA
+
+/* Define if the target CPU is an x86 */
+#undef HAVE_CPU_I386
+
+/* Define if the target CPU is a MIPS */
+#undef HAVE_CPU_MIPS
+
+/* Define if the target CPU is a PPC */
+#undef HAVE_CPU_PPC
+
+/* Define if the target CPU is a PPC */
+#undef HAVE_CPU_SPARC
+
+/* Define to 1 if you have the <dlfcn.h> header file. */
+#undef HAVE_DLFCN_H
+
+/* support for features: dvdnavsrc */
+#undef HAVE_DVDNAV
+
+/* support for features: dvdreadsrc */
+#undef HAVE_DVDREAD
+
+/* support for features: dxr3videosink */
+#undef HAVE_DXR3
+
+/* support for features: esdsink esdmon */
+#undef HAVE_ESD
+
+/* support for features: */
+#undef HAVE_EXPERIMENTAL
+
+/* support for features: */
+#undef HAVE_EXTERNAL
+
+/* support for features: ffmpeg */
+#undef HAVE_FFMPEG
+
+/* defined if we use uninstalled ffmpeg */
+#undef HAVE_FFMPEG_UNINSTALLED
+
+/* support for features: flacenc flacdec */
+#undef HAVE_FLAC
+
+/* support for features: */
+#undef HAVE_GCONF
+
+/* support for features: */
+#undef HAVE_GCONFTOOL
+
+/* support for features: gnomevfssrc */
+#undef HAVE_GNOME_VFS
+
+/* support for features: gsmenc gsmdec */
+#undef HAVE_GSM
+
+/* support for features: colorspace */
+#undef HAVE_HERMES
+
+/* support for features: gsthttpsrc */
+#undef HAVE_HTTP
+
+/* Define to 1 if you have the <inttypes.h> header file. */
+#undef HAVE_INTTYPES_H
+
+/* support for features: jack */
+#undef HAVE_JACK
+
+/* support for features: jpegenc jpegdec */
+#undef HAVE_JPEG
+
+/* support for features: ladspa */
+#undef HAVE_LADSPA
+
+/* support for features: lame */
+#undef HAVE_LAME
+
+/* support for features: lcs */
+#undef HAVE_LCS
+
+/* Define to 1 if you have the `asound' library (-lasound). */
+#undef HAVE_LIBASOUND
+
+/* Define to 1 if you have the `audiofile' library (-laudiofile). */
+#undef HAVE_LIBAUDIOFILE
+
+/* support for features: dvdec */
+#undef HAVE_LIBDV
+
+/* support for features: libfame */
+#undef HAVE_LIBFAME
+
+/* Define if libmmx is available */
+#undef HAVE_LIBMMX
+
+/* support for features: snapshot */
+#undef HAVE_LIBPNG
+
+/* Define to 1 if you have the <linux/cdrom.h> header file. */
+#undef HAVE_LINUX_CDROM_H
+
+/* Define if you have C99's lrint function. */
+#undef HAVE_LRINT
+
+/* Define if you have C99's lrintf function. */
+#undef HAVE_LRINTF
+
+/* support for features: mad */
+#undef HAVE_MAD
+
+/* Define to 1 if you have the <memory.h> header file. */
+#undef HAVE_MEMORY_H
+
+/* support for features: mikmod */
+#undef HAVE_MIKMOD
+
+/* support for features: jpegmmxenc jpegmmxdec */
+#undef HAVE_MJPEGTOOLS
+
+/* support for features: mpeg2dec */
+#undef HAVE_MPEG2DEC
+
+/* Define if NASM, the netwide assembler, is available */
+#undef HAVE_NASM
+
+/* support for features: quicktime_parser quicktime_decoder quicktime_demux */
+#undef HAVE_OPENQUICKTIME
+
+/* support for features: osssrc osssink */
+#undef HAVE_OSS
+
+/* support for features: qcamsrc */
+#undef HAVE_QCAM
+
+/* support for features: dv1394src */
+#undef HAVE_RAW1394
+
+/* Define if RDTSC is available */
+#undef HAVE_RDTSC
+
+/* support for features: rtpenc rtpdec */
+#undef HAVE_RTP
+
+/* support for features: sdlvideosink */
+#undef HAVE_SDL
+
+/* support for features: icecastsend */
+#undef HAVE_SHOUT
+
+/* support for features: shout2send */
+#undef HAVE_SHOUT2
+
+/* support for features: sidplay */
+#undef HAVE_SIDPLAY
+
+/* support for features: smoothwave */
+#undef HAVE_SMOOTHWAVE
+
+/* Define to 1 if you have the <stdbool.h> header file. */
+#undef HAVE_STDBOOL_H
+
+/* Define to 1 if you have the <stdint.h> header file. */
+#undef HAVE_STDINT_H
+
+/* Define to 1 if you have the <stdlib.h> header file. */
+#undef HAVE_STDLIB_H
+
+/* Define to 1 if you have the <strings.h> header file. */
+#undef HAVE_STRINGS_H
+
+/* Define to 1 if you have the <string.h> header file. */
+#undef HAVE_STRING_H
+
+/* support for features: swfdec */
+#undef HAVE_SWFDEC
+
+/* Define to 1 if you have the <sys/cdio.h> header file. */
+#undef HAVE_SYS_CDIO_H
+
+/* Define to 1 if you have the <sys/stat.h> header file. */
+#undef HAVE_SYS_STAT_H
+
+/* Define to 1 if you have the <sys/types.h> header file. */
+#undef HAVE_SYS_TYPES_H
+
+/* support for features: tarkin */
+#undef HAVE_TARKIN
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#undef HAVE_UNISTD_H
+
+/* support for features: v4lsrc v4lmjpegsrc v4lmjpegsink */
+#undef HAVE_V4L
+
+/* support for features: v4l2src */
+#undef HAVE_V4L2
+
+/* support for features: vcdsrc */
+#undef HAVE_VCD
+
+/* support for features: vgavideosink */
+#undef HAVE_VGA
+
+/* support for features: vorbisenc vorbisdec */
+#undef HAVE_VORBIS
+
+/* support for features: xmms */
+#undef HAVE_XMMS
+
+/* support for features: xvideosink videosink */
+#undef HAVE_XVIDEO
+
+/* Name of package */
+#undef PACKAGE
+
+/* Define to the address where bug reports for this package should be sent. */
+#undef PACKAGE_BUGREPORT
+
+/* Define to the full name of this package. */
+#undef PACKAGE_NAME
+
+/* Define to the full name and version of this package. */
+#undef PACKAGE_STRING
+
+/* Define to the one symbol short name of this package. */
+#undef PACKAGE_TARNAME
+
+/* Define to the version of this package. */
+#undef PACKAGE_VERSION
+
+/* A printf type definition for 64 bit integers */
+#undef PRID64_STRING_FORMAT
+
+/* The size of a `int', as computed by sizeof. */
+#undef SIZEOF_INT
+
+/* The size of a `long', as computed by sizeof. */
+#undef SIZEOF_LONG
+
+/* The size of a `long long', as computed by sizeof. */
+#undef SIZEOF_LONG_LONG
+
+/* Define to 1 if you have the ANSI C header files. */
+#undef STDC_HEADERS
+
+/* Version number of package */
+#undef VERSION
+
+/* Define to 1 if your processor stores words with the most significant byte
+   first (like Motorola and SPARC, unlike Intel and VAX). */
+#undef WORDS_BIGENDIAN
+
+/* Define to 1 if the X Window System is missing or not being used. */
+#undef X_DISPLAY_MISSING
