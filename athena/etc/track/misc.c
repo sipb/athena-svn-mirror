@@ -1,8 +1,14 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 2.1 1987-12-01 16:44:49 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 2.2 1987-12-03 17:34:00 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 2.1  87/12/01  16:44:49  don
+ * fixed bugs in readstat's traversal of entries] and statfile:
+ * cur_ent is no longer global, but is now part of get_next_match's
+ * state. also, last_match() was causing entries[]'s last element to be
+ * skipped.
+ * 
  * Revision 2.0  87/11/30  15:19:30  don
  * general rewrite; got rid of stamp data-type, with its attendant garbage,
  * cleaned up pathname-handling. readstat & writestat now sort overything
@@ -18,7 +24,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 2.1 1987-12-01 16:44:49 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/misc.c,v 2.2 1987-12-03 17:34:00 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -51,24 +57,6 @@ do_panic()
 	printmsg();
 	clearlocks();
 	exit(1);
-}
-
-/*
- * parser / lexer support routines:
- */
-
-skipword(theptr)
-char **theptr;
-{
-	while((**theptr != '\0') && isprint(**theptr) && (!isspace(**theptr)))
-		(*theptr)++;
-}
-
-skipspace(theptr)
-char **theptr;
-{
-	while((**theptr != '\0') && isspace(**theptr))
-		(*theptr)++;
 }
 
 /*
@@ -107,9 +95,7 @@ clear_ent()
 savestr(to,from)
 char **to, *from;
 {
-	extern char *malloc();
-
-	if (!(*to = malloc(strlen(from)+1))) {
+	if (!(*to = malloc(( unsigned) strlen( from)+1))) {
 		sprintf(errmsg,"ran out of memory during parse");
 		do_panic();
 	}

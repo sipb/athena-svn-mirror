@@ -1,8 +1,20 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 2.1 1987-12-01 16:41:36 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 2.2 1987-12-03 17:33:54 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 2.2  87/12/01  20:22:31  don
+ * fixed a bug in match(): it was usually compiling exception-names,
+ * even if they weren't regexp's. this seems to have led to some bogus
+ * matches. at least, "track -w" doesn't miss files anymore.
+ * this bug was created during the rewrite.
+ * 
+ * Revision 2.1  87/12/01  16:41:36  don
+ * fixed bugs in readstat's traversal of entries] and statfile:
+ * cur_ent is no longer global, but is now part of get_next_match's
+ * state. also, last_match() was causing entries[]'s last element to be
+ * skipped.
+ * 
  * Revision 2.0  87/11/30  15:19:17  don
  * general rewrite; got rid of stamp data-type, with its attendant garbage,
  * cleaned up pathname-handling. readstat & writestat now sort overything
@@ -15,7 +27,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 2.1 1987-12-01 16:41:36 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 2.2 1987-12-03 17:33:54 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -83,15 +95,20 @@ match( p, fname) char *p, *fname;
 	/* all our regexp's begin with ^,
 	 * because re_conv() makes them.
 	 */
-	if ( *p != '^' && !strcmp( p, fname))
-		return(1);
-
+	if ( *p != '^') return( ! strcmp( p, fname));
 	if ( re_comp( p)) {
-		sprintf(errmsg, "%s bad regular expression\n", p);
+		sprintf(errmsg, "%s bad regular expression\n", re_comp( p));
 		do_panic();
 	}
-	if ( re_exec( fname)) return(1) ;
-	return( 0);
+	switch( re_exec( fname)) {
+	case 0: return( 0);
+	case 1: return( 1);
+	case -1: sprintf( errmsg, "%s bad regexp\n", p);
+		 do_panic();
+	}
+	sprintf( errmsg, "bad value from re_exec\n");
+	do_panic();
+	return( -1);
 }
 
 file_pat( ptr)

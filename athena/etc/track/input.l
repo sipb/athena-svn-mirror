@@ -4,7 +4,7 @@ GLOBAL		{
 			char * patt;
 			while ( patt = next_def_except())
 				strcpy( wordbuf[ wordcnt++], patt); /* XXX */
-			strcat(linebuf,yytext,yyleng);
+			strncat(linebuf,yytext,yyleng);
 			return(GEXCEPT);
 		}
 \\[\t ]*#[\t\40-\176]*\n	

@@ -1,15 +1,21 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 2.0 1987-11-30 15:19:24 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 2.1 1987-12-03 17:33:39 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 2.0  87/11/30  15:19:24  don
+ * general rewrite; got rid of stamp data-type, with its attendant garbage,
+ * cleaned up pathname-handling. readstat & writestat now sort overything
+ * by pathname, which simplifies traversals/lookup. should be comprehensible
+ * now.
+ * 
  * Revision 1.1  87/02/12  21:14:49  rfrench
  * Initial revision
  * 
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 2.0 1987-11-30 15:19:24 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/files.c,v 2.1 1987-12-03 17:33:39 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -261,7 +267,7 @@ struct stat *s;
 int
 removeit(name, type)
 char *name;
-unsigned int type;
+int type;
 {
 	struct direct *next;
 	DIR *dirp;

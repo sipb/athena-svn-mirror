@@ -1,8 +1,20 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 2.0 1987-11-30 15:19:35 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 2.1 1987-12-03 17:33:18 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 2.1  87/12/01  20:56:26  don
+ * robustified file-updating, so that more failure-checking is done,
+ * and so that if either utimes() or  set_prots() fails, the other will
+ * still run.  made double-sure that protections & time don't
+ * change, unless copy-file succeeds.
+ * 
+ * Revision 2.0  87/11/30  15:19:35  don
+ * general rewrite; got rid of stamp data-type, with its attendant garbage,
+ * cleaned up pathname-handling. readstat & writestat now sort overything
+ * by pathname, which simplifies traversals/lookup. should be comprehensible
+ * now.
+ * 
  * Revision 1.2  87/09/02  17:44:20  shanzer
  * Aborts if We get a write error when copying a file.. 
  * 
@@ -13,7 +25,7 @@
 
 #ifndef lint
 static char
-*rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 2.0 1987-11-30 15:19:35 don Exp $";
+*rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 2.1 1987-12-03 17:33:18 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -28,6 +40,7 @@ char *remlink, *loclink, *remotename, *localname;
 {
 	int exists, oumask;
 	int diff, type_diff;
+	struct timeval *timevec;
 
 	diff =  UID( *r)  != UID( *l) ||
 		GID( *r)  != GID( *l) ||
@@ -89,13 +102,18 @@ char *remlink, *loclink, *remotename, *localname;
 	switch ( TYPE( *r)) {
 
 	case S_IFREG:
-		(*r).st_atime = TIME( *r);
-		/*
-		 * it's important to call utimes before set_prots:
+		/* the stat structure happens to contain
+		 * a timevec structure, becuse of the spare integers
+		 * that follow each of the time fields:
 		 */
-		return( copy_file( remotename, localname) ||
-			utimes(	   localname, &(*r).st_atime) ||
-			set_prots( localname, r));
+		(*r).st_atime = TIME( *r);
+		timevec = (struct timeval *) &(*r).st_atime; /* XXX */
+
+		/* it's important to call utimes before set_prots:
+		 */
+		if ( copy_file( remotename, localname)) return( -1);
+		else    utimes(  localname, timevec);
+		return( set_prots( localname, r));
 
 	case S_IFDIR:
 		return( exists	? set_prots( localname, r)
@@ -103,7 +121,8 @@ char *remlink, *loclink, *remotename, *localname;
 
 	case S_IFBLK:		/* XXX: stat.st_mode != MODE() macro */
 	case S_IFCHR:
-		if ( !exists && mknod( localname, (*r).st_mode, DEV( *r))) {
+		if ( !exists &&
+		     mknod( localname, MODE( *r), DEV( *r))) {
 			sprintf(errmsg,"can't make device %s\n",localname);
 			do_gripe();
 			return(-1);
@@ -133,6 +152,7 @@ char *name;
 struct stat *r;
 {
 	struct stat sbuf;
+	int error = 0;
 
 	if ( lstat( name, &sbuf)) {
 		sprintf( errmsg, "can't lstat file &s\n", name);
@@ -144,14 +164,14 @@ struct stat *r;
 		sprintf( errmsg, "can't chown file %s %d %d\n",
 			 name, UID( *r), GID( *r));
 		do_gripe();
-		return(-1);
+		error = 1;
 	}
 	if ( MODE( sbuf) != MODE( *r) && chmod( name,  MODE( *r)) ) {
 		sprintf( errmsg, "can't chmod file %s %o\n", name, MODE( *r));
 		do_gripe();
-		return(-1);
+		error = 1;
 	}
-	return(0);
+	return( error);
 } 
 
 copy_file(from,to)
@@ -197,7 +217,10 @@ char *from,*to;
 	}
 	close(fdf);
 	close(fdt);
-	rename(temp,to); /* atomic! */ 
+	if ( rename( temp, to)) { /* atomic! */ 
+		sprintf( errmsg, "rename( %s, %s) failed!\n", temp, to);
+		do_panic();
+	}
 	return (0);
 }
 
