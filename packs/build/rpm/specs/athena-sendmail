@@ -23,7 +23,7 @@ cp authinfo $RPM_BUILD_ROOT/etc/mail/authinfo
 cp sendmail-noauth.cf $RPM_BUILD_ROOT/etc/mail/sendmail-noauth.cf
 cp sendmail.cf $RPM_BUILD_ROOT/etc/mail/sendmail.cf
 cp sendmail-relay-select $RPM_BUILD_ROOT/etc/athena/sendmail-relay-select
-cp sendmail.sh $RPM_BUILD_ROOT/usr/lib/sendmail
+cp sendmail.sh $RPM_BUILD_ROOT/usr/sbin/sendmail
 mkdir -p $RPM_BUILD_ROOT/var/spool/mqueue
 %ifos linux
 ln -s ../sbin/sendmail $RPM_BUILD_ROOT/usr/lib/sendmail
