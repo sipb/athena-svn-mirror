@@ -14,7 +14,7 @@
 #include	<Xaw/Label.h>
 #include	"xdsc.h"
 
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/xdsc.c,v 1.4 1990-12-11 16:38:15 sao Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/xdsc.c,v 1.5 1990-12-12 14:28:22 sao Exp $";
 
 /*
 ** Globals
@@ -1112,7 +1112,7 @@ ParseMeetingsFile()
 myfree(ptr)
 char	*ptr;
 {
-	if (ptr) {
+	if (ptr > 0) {
 		if (debug) fprintf (stderr, "Freeing %x\n",ptr);
 		free(ptr);
 	}
