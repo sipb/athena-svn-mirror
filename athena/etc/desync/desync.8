@@ -1,4 +1,4 @@
-.\" $Id: desync.8,v 1.2 2000-09-23 19:54:35 ghudson Exp $
+.\" $Id: desync.8,v 1.3 2000-09-30 21:08:29 rbasch Exp $
 .\"
 .\" Copyright 1995, 1996, 1997 by the Massachusetts Institute of Technology.
 .\"
@@ -43,6 +43,25 @@ in a crontab file.
 This optional range specifies, in seconds, the maximum value for the
 randomly selected sleep time.  The default value is 3600.
 .TP 8
+.B \-h name
+Use
+.I name
+to seed the random number generator, instead of using the current host
+name.  This option is generally only useful in conjunction with the
+.B \-n
+option.
+.TP 8
+.B \-n
+Instead of sleeping, this option causes
+.I desync
+to write the number of seconds it would sleep to standard output, or,
+if the
+.B \-t
+option is also specified, the number of seconds remaining until the
+timer in
+.I timefile
+expires.
+.TP 8
 .B \-t timefile
 This option changes the behavior of
 .I desync
@@ -80,16 +99,6 @@ the following form:
 	fi
 .fi
 
-.SH DIAGNOSTICS
-If
-.I desync
-fails to acquire the machine's IP address from
-.IR rc.conf ,
-it returns an exit status of 2 and does not sleep.
-.SH FILES
-.TP 25
-.B /etc/athena/rc.conf
-Athena startup configuration file
 .SH SEE ALSO
 cron(1)
 .SH AUTHOR

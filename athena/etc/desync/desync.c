@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: desync.c,v 1.8 2000-09-21 14:22:14 ghudson Exp $";
+static const char rcsid[] = "$Id: desync.c,v 1.9 2000-09-30 21:08:32 rbasch Exp $";
 
 /*
  * desync - desynchronize cron jobs on networks
@@ -40,27 +40,37 @@ extern char *optarg;
 
 static char *progname;
 
-static unsigned long get_hostname_hash(void);
+static unsigned long get_hash(const char *str);
+
+static void usage(void);
 
 int main(int argc, char **argv)
 {
-  const char *timefile = NULL;
-  int range, interval, c;
-  unsigned long tval, seed;
+  const char *timefile = NULL, *hostname = NULL;
+  char buf[128];
+  int range, interval, c, noop = 0;
+  unsigned long tval;
+  time_t timenow;
   FILE *fp;
 
   /* Save the program name. */
   progname = argv[0];
 
   /* Parse command-line flags. */
-  while ((c = getopt(argc, argv, "t:")) != -1)
+  while ((c = getopt(argc, argv, "h:nt:")) != -1)
     {
       switch (c) {
+      case 'h':
+	hostname = optarg;
+	break;
+      case 'n':
+	noop = 1;
+	break;
       case 't':
 	timefile = optarg;
 	break;
       default:
-	fprintf(stderr, "Usage: %s [-t timefile] [interval]\n", progname);
+	usage();
 	return 2;
       }
     }
@@ -69,16 +79,34 @@ int main(int argc, char **argv)
   argc -= optind;
   argv += optind;
   range = (argc == 1) ? atoi(argv[0]) : 3600;
+  if (range == 0)
+    {
+      fprintf(stderr, "%s: Invalid range value\n", progname);
+      usage();
+      return 2;
+    }
 
-  seed = get_hostname_hash();
-  if (seed == 0)
-    return 2;
-
-  srand(seed);
+  /* Get a random number in the given range as the interval.  Seed the
+   * random number generator with a hash of the current host name, or
+   * the name given via the -h option.
+   */
+  if (hostname == NULL)
+    {
+      if (gethostname(buf, sizeof(buf)) != 0)
+	{
+	  fprintf(stderr, "%s: Unable to obtain hostname: %s\n",
+		  progname, strerror(errno));
+	  return 2;
+	}
+      buf[sizeof(buf) - 1] = '\0';
+      hostname = buf;
+    }
+  srand(get_hash(hostname));
   interval = rand() % range;
 
   if (timefile)
     {
+      time(&timenow);
       fp = fopen(timefile, "r");
       if (fp)
 	{
@@ -89,13 +117,27 @@ int main(int argc, char **argv)
 	      return 2;
 	    }
 	  fclose(fp);
-	  if (time(NULL) >= tval)
+	  if (timenow >= tval)
 	    {
-	      unlink(timefile);
+	      if (noop)
+		puts("0");
+	      else
+		unlink(timefile);
 	      return 0;
 	    }
 	  else
-	    return 1;
+	    {
+	      if (noop)
+		printf("%lu\n", (unsigned long) (tval - timenow));
+	      return 1;
+	    }
+	}
+      else if (noop)
+	{
+	  fprintf(stderr, "%s: Warning: Cannot open %s (%s)\n", progname,
+		  timefile, strerror(errno));
+	  printf("%lu\n", (unsigned long) (interval));
+	  return (interval == 0 ? 0 : 1);
 	}
       else
 	{
@@ -108,31 +150,25 @@ int main(int argc, char **argv)
 		      progname, timefile, strerror(errno));
 	      return 2;
 	    }
-	  fprintf(fp, "%lu\n", (unsigned long)(time(NULL) + interval));
+	  fprintf(fp, "%lu\n", (unsigned long)(timenow + interval));
 	  fclose(fp);
 	  return 1;
 	}
     }
+  else if (noop)
+    printf("%lu\n", (unsigned long) interval);
   else
     sleep(interval);
 
   return 0;
 }
 
-static unsigned long get_hostname_hash(void)
+static unsigned long get_hash(const char *str)
 {
-  char buf[128], *p;
+  const char *p;
   unsigned long g, hashval = 0;
 
-  if (gethostname(buf, sizeof(buf)) < 0)
-    {
-      fprintf(stderr, "%s: Unable to obtain hostname: %s\n",
-	      progname, strerror(errno));
-      return 0;
-    }
-  buf[sizeof(buf) - 1] = '\0';
-
-  for (p = buf; *p; p++)
+  for (p = str; *p; p++)
     {
       hashval = (hashval << 4) + *p;
       g = hashval & 0xf0000000;
@@ -146,4 +182,11 @@ static unsigned long get_hostname_hash(void)
     hashval = 1;
 
   return hashval;
+}
+
+static void usage()
+{
+  fprintf(stderr,
+	  "Usage: %s [-h name] [-n] [-t timefile] [range]\n",
+	  progname);
 }
