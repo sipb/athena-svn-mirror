@@ -3,11 +3,11 @@
  * For copying and distribution information, see the file
  * "mit-copyright.h".
  *
- * $Id: finger.c,v 1.26 1996-05-26 03:38:47 ghudson Exp $
+ * $Id: finger.c,v 1.27 1996-06-24 05:24:48 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Id: finger.c,v 1.26 1996-05-26 03:38:47 ghudson Exp $";
+static char *rcsid_finger_c = "$Id: finger.c,v 1.27 1996-06-24 05:24:48 ghudson Exp $";
 #endif /*lint*/
 
 /*
@@ -642,13 +642,10 @@ print(personn)
 				else {
 					printf("Plan:\n");
 					while ((c = getc(fp)) != EOF) {
-						if (i < MMLEN) {
+						if (i < MMLEN && okay) {
 							if (c != MM[i]) {
-								if (okay) {
-									for (j = 0; j < i; j++) {
-										(void) putchar(MM[j]);
-									}
-								}
+								for (j = 0; j < i; j++)
+									(void) putchar(MM[j]);
 								if (isprint(c) || isspace(c))
 									(void) putchar(c);
 								else
