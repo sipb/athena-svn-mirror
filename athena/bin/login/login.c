@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.11 1987-08-21 14:29:43 rfrench Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.12 1987-08-23 00:23:15 treese Exp $
  */
 
 #ifndef lint
-static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.11 1987-08-21 14:29:43 rfrench Exp $";
+static char *rcsid_login_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.12 1987-08-23 00:23:15 treese Exp $";
 #endif	lint
 
 /*
@@ -105,7 +105,7 @@ char	maildir[30] =	"/usr/spool/mail/";
 char	lastlog[] =	"/usr/adm/lastlog";
 char	inhibit[] =	"/etc/nocreate";
 char	noattach[] =	"/etc/noattach";
-char	go_register[] =	"/etc/athena/go_register";
+char	go_register[] =	"/usr/etc/go_register";
 
 /* uid, gid, etc. used to be -1; guess what setreuid does with that --asp */
 struct	passwd nouser = {"", "nope", -2, -2, -2, "", "", "", "" };
