@@ -1,6 +1,6 @@
 XCOMM -------------------------------------------------------------------------
 XCOMM Imake rules for building libraries, programs, scripts, and data files
-XCOMM rules:  $XConsortium: Imake.rules,v 1.125 91/12/26 14:19:50 rws Exp $
+XCOMM rules:  $XConsortium: Imake.rules,v 1.126 91/12/30 20:14:35 rws Exp $
 
 /*
  *		   MACHINE-INDEPENDENT RULES; DO NOT MODIFY
@@ -102,7 +102,6 @@ XCOMM rules:  $XConsortium: Imake.rules,v 1.125 91/12/26 14:19:50 rws Exp $
  * LintSubdirs			(dirs)
  * MakeLintLibSubdirs		(dirs)
  * MakeMakeSubdirs		(dirs,target)
- * MakeNsubdirMakefiles		()
  * MakefileSubdirs		(dirs)
  * CppScriptTarget		(dst,src,defs,deplist)
  * MakeScriptFromCpp		(name,defs)
@@ -1237,66 +1236,46 @@ MakeLintSubdirs(dirs,lintlib,lintlib)
 #define MakeMakeSubdirs(dirs,target)					@@\
 target::								@@\
 	@case '${MFLAGS}' in *[ik]*) set +e;; esac; \			@@\
+	case '${MFLAGS}' in *n*) executeit="no";; esac; \		@@\
 	for i in dirs ;\						@@\
 	do \								@@\
 		echo "making Makefiles in $(CURRENT_DIR)/$$i..."; \	@@\
 		case "$$i" in \						@@\
-		./?*/?*/?*/?*) newtop=../../../../ sub=subsubsubsub;; \	@@\
-		./?*/?*/?*) newtop=../../../ sub=subsubsub;; \		@@\
-		./?*/?*)    newtop=../../ sub=subsub;; \		@@\
-		./?*)       newtop=../ sub=sub;; \			@@\
-		*/?*/?*/?*)    newtop=../../../../ sub=subsubsubsub;; \	@@\
-		*/?*/?*)    newtop=../../../ sub=subsubsub;; \		@@\
-		*/?*)       newtop=../../ sub=subsub;; \		@@\
-		*)	    newtop=../ sub=sub;; \			@@\
+		./?*/?*/?*/?*)	newtop=../../../../;; \			@@\
+		./?*/?*/?*)	newtop=../../../;; \			@@\
+		./?*/?*)	newtop=../../;; \			@@\
+		./?*)		newtop=../;; \				@@\
+		*/?*/?*/?*)	newtop=../../../../;; \			@@\
+		*/?*/?*)	newtop=../../../;; \			@@\
+		*/?*)		newtop=../../;; \			@@\
+		*)		newtop=../;; \				@@\
 		esac; \							@@\
 		case "$(TOP)" in \					@@\
-		/?*) newtop=  upprefix=  ;; \				@@\
-		*) upprefix=../ ;; \					@@\
+		/?*) imaketop=  ;; \					@@\
+		*) imaketop=$$newtop ;; \				@@\
 		esac; \							@@\
-		$(MAKE) $${sub}dirMakefiles UPPREFIX=$$upprefix NEWTOP=$$newtop \		@@\
-		MAKEFILE_SUBDIR=$$i NEW_CURRENT_DIR=$(CURRENT_DIR)/$$i;\ @@\
+		cd $$i; \						@@\
+		$(RM) Makefile.bak; \					@@\
+		if [ -f Makefile ]; then \				@@\
+			echo "	$(MV) Makefile Makefile.bak"; \		@@\
+			if [ "$$executeit" != "no" ]; then \		@@\
+				$(MV) Makefile Makefile.bak; \		@@\
+			fi; \						@@\
+		fi; \							@@\
+		if [ "$$executeit" != "no" ]; then \			@@\
+			ImakeSubCmdHelper -DTOPDIR=$$imaketop$(TOP) -DCURDIR=$(CURRENT_DIR)/$$i; \ @@\
+		fi; \							@@\
+		$(MAKE) $(MFLAGS) Makefiles; \				@@\
+		cd $$newtop; \						@@\
 	done
+
+#ifdef UseInstalled
+#define ImakeSubCmdHelper $(IMAKE_CMD)
+#else
+#define ImakeSubCmdHelper $$imaketop$(NEWTOP)$(IMAKE) -I$$imaketop$(NEWTOP)$(IRULESRC) $(IMAKE_DEFINES)
+#endif
+
 #endif /* MakeMakeSubdirs */
-
-
-/*
- * MakeNsubdirMakefiles - generate rules to create sub Makefiles.
- */
-#ifndef MakeNsubdirMakefiles
-#define MakeNsubdirMakefiles()						@@\
-subdirMakefiles:							@@\
-	$(RM) $(MAKEFILE_SUBDIR)/Makefile.bak				@@\
-	-@if [ -f $(MAKEFILE_SUBDIR)/Makefile ]; then set -x; \		@@\
-	$(MV) $(MAKEFILE_SUBDIR)/Makefile $(MAKEFILE_SUBDIR)/Makefile.bak; \ @@\
-	else exit 0; fi							@@\
-	cd $(MAKEFILE_SUBDIR); $(IMAKE_CMD) -DTOPDIR=$(UPPREFIX)$(TOP) -DCURDIR=$(NEW_CURRENT_DIR); \	@@\
-	$(MAKE) $(MFLAGS) Makefiles 					@@\
-									@@\
-subsubdirMakefiles:							@@\
-	$(RM) $(MAKEFILE_SUBDIR)/Makefile.bak				@@\
-	-@if [ -f $(MAKEFILE_SUBDIR)/Makefile ]; then set -x; \		@@\
-	$(MV) $(MAKEFILE_SUBDIR)/Makefile $(MAKEFILE_SUBDIR)/Makefile.bak; \ @@\
-	else exit 0; fi							@@\
-	cd $(MAKEFILE_SUBDIR); $(IMAKE_CMD) -DTOPDIR=$(UPPREFIX)$(UPPREFIX)$(TOP) -DCURDIR=$(NEW_CURRENT_DIR); \	@@\
-	$(MAKE) $(MFLAGS) Makefiles 					@@\
-									@@\
-subsubsubdirMakefiles:							@@\
-	$(RM) $(MAKEFILE_SUBDIR)/Makefile.bak				@@\
-	-@if [ -f $(MAKEFILE_SUBDIR)/Makefile ]; then set -x; \		@@\
-	$(MV) $(MAKEFILE_SUBDIR)/Makefile $(MAKEFILE_SUBDIR)/Makefile.bak; \ @@\
-	else exit 0; fi @@\
-	cd $(MAKEFILE_SUBDIR); $(IMAKE_CMD) -DTOPDIR=$(UPPREFIX)$(UPPREFIX)$(UPPREFIX)$(TOP) -DCURDIR=$(NEW_CURRENT_DIR); \	@@\
-	$(MAKE) $(MFLAGS) Makefiles 					@@\
-									@@\
-subsubsubsubdirMakefiles:						@@\
-	$(RM) $(MAKEFILE_SUBDIR)/Makefile.bak				@@\
-	-@if [ -f $(MAKEFILE_SUBDIR)/Makefile ]; then set -x; \		@@\
-	$(MV) $(MAKEFILE_SUBDIR)/Makefile $(MAKEFILE_SUBDIR)/Makefile.bak; \ @@\
-	else exit 0; fi 						@@\
-	cd $(MAKEFILE_SUBDIR); $(IMAKE_CMD) -DTOPDIR=$(UPPREFIX)$(UPPREFIX)$(UPPREFIX)$(UPPREFIX)$(TOP) -DCURDIR=$(NEW_CURRENT_DIR); \	@@\
-	$(MAKE) $(MFLAGS) Makefiles
-#endif /* MakeNsubdirMakefiles */
 
 
 /*
@@ -1304,9 +1283,7 @@ subsubsubsubdirMakefiles:						@@\
  */
 #ifndef MakefileSubdirs
 #define MakefileSubdirs(dirs)						@@\
-MakeMakeSubdirs(dirs,Makefiles)						@@\
-									@@\
-MakeNsubdirMakefiles()
+MakeMakeSubdirs(dirs,Makefiles)
 #endif /* MakefileSubdirs */
 
 /*
