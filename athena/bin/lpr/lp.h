@@ -1,5 +1,5 @@
 /*
- *	$Id: lp.h,v 1.17 1999-01-22 23:10:37 ghudson Exp $
+ *	$Id: lp.h,v 1.18 1999-01-25 19:08:05 ghudson Exp $
  */
 
 /*
@@ -51,6 +51,9 @@
 #include <ctype.h>
 #include <errno.h>
 #include <string.h>
+#ifdef __linux__
+#include <sys/ioctl.h>
+#endif
 #include "lp.local.h"
 
 
