@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.93 1998-06-23 19:29:16 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.93.2.1 1998-07-15 18:54:27 ghudson Exp $ */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -48,7 +48,7 @@
 #define TRUE (!FALSE)
 #endif
 
-#define LOGIN_TKT_DEFAULT_LIFETIME DEFAULT_TKT_LIFE /* from krb.h */
+#define LOGIN_TKT_DEFAULT_LIFETIME 120 /* Ten hours */
 #define PASSWORD_LEN 14
 #define MAXENVIRON 32
 
