@@ -23,20 +23,21 @@ mkdir $RPM_BUILD_ROOT
 
 #Extra stuff
 mkdir -p $RPM_BUILD_ROOT/{/usr/athena/man,/etc/athena,/etc/cron.d}
+mkdir -p $RPM_BUILD_ROOT/usr/X11R6/lib/X11/app-defaults
 cp masks $RPM_BUILD_ROOT/etc/athena/masks
 cp passwd.fallback $RPM_BUILD_ROOT/etc/passwd.fallback
 cp syslog.conf $RPM_BUILD_ROOT/etc/syslog.conf.athena
 cp update_ws.sh $RPM_BUILD_ROOT/etc/athena/update_ws
 cp athena.cron $RPM_BUILD_ROOT/etc/cron.d/athena
+cp XTerm $RPM_BUILD_ROOT/usr/X11R6/lib/X11/app-defaults/XTerm.athena
 chmod +x $RPM_BUILD_ROOT/etc/athena/update_ws
 
 # This file actually goes in the athena-afs package.
 rm $RPM_BUILD_ROOT/etc/athena/config_afs
 
 %post
-cp XTerm /usr/X11R6/lib/X11/app-defaults/XTerm
-
 cp /etc/syslog.conf.athena /etc/syslog.conf
+cp /usr/X11R6/lib/X11/app-defaults/XTerm.athena /usr/X11R6/lib/X11/app-defaults/XTerm
 chkconfig --add athena-ws
 
 # Add warnings on disabled consoles pointing people at tty7.
