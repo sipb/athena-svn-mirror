@@ -1,6 +1,6 @@
 #!/bin/athena/tcsh
 
-# $Revision: 1.25 $
+# $Revision: 1.26 $
 
 umask 2
 
@@ -39,7 +39,7 @@ set third="third/supported/afs third/supported/X11R5 third/supported/X11R4 third
 
 switch ( $machine )
   case decmips
-    set machthird="third/unsupported/ditroff third/unsupported/transcript-v2.1"
+    set machthird="third/unsupported/ditroff third/unsupported/transcript-v2.1 third/supported/saber-3.0.1"
     breaksw
 
   case sun4
@@ -297,6 +297,7 @@ endif # installonly
 	breaksw
 		
 	case third/supported/tex
+	case third/supported/mh.6.8
 # Same as complex, no depend.
 
 if ( $installonly == "0" ) then
