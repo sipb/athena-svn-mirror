@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.6 1999-06-16 16:28:46 danw Exp $
+# $Id: Makefile.athena,v 1.7 1999-09-17 15:09:26 danw Exp $
 
 SHELL=/bin/sh
 BUILD=`pwd`/BuildTools/bin/Build
@@ -10,7 +10,7 @@ clean:
 	${MAKE} BUILD=$(BUILD) clean
 
 all:
-	${MAKE} BUILD=$(BUILD) CC=$$COMPILER MAKE=$(MAKE) all
+	${MAKE} BUILD=$(BUILD) CC=$$COMPILER all
 
 check:
 
