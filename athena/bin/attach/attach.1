@@ -1,4 +1,4 @@
-.\" $Id: attach.1,v 1.14 2000-08-24 13:24:56 zacheiss Exp $
+.\" $Id: attach.1,v 1.14.4.1 2002-12-09 22:14:26 ghudson Exp $
 .\"
 .\" Copyright 1997 by the Massachusetts Institute of Technology.
 .\"
@@ -119,9 +119,18 @@ Overrides the default access mode for the next filesystem.
 .I --mountpoint \fImount-point\fP (-m \fImount-point\fP)
 Overrides the default mount point for the next filesystem.
 .TP 8
+.I --master (-M)
+Attach the master copy of the locker even if a local copy of the
+locker exists.  Without this option, if a symlink exists in
+.B /var/athena/local-validated
+(or the value of local-dir in
+.BR attach.conf (5)
+if set) with the name of the locker, that symlink is copied to the
+mountpoint in place of attaching the locker.
+.TP 8
 .I --noexplicit (-x)
 Tell \fIattach\fP to interpret the \fIfilesystem\fP as a Hesiod name.
-This if the default.
+This is the default.
 .TP 8
 .I --explicit (-e)
 Change the behavior of \fIattach\fP such that the \fIfilesystem\fP is
@@ -199,6 +208,8 @@ command line, but eventually exit with status 2.
 /etc/athena/attach.conf
 .br
 /var/athena/attachtab/
+.br
+/var/athena/local-validated/
 
 .SH "SEE ALSO"
 add(1), detach(1), nfsid(1), zinit(1), attach.conf(5)
