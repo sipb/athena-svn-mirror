@@ -3,41 +3,64 @@
 
 case ${MACH} in
 SUN*)
-	# Fix host line in /etc/athena/rc.conf if necessary.
-	realhost="`uname -n | tr a-z A-Z`"
-	rchost="`echo "$HOST" | tr a-z A-Z`"
-	if [ "$realhost" != "$rchost" -o \
-	     "`grep -c 'export host' /etc/athena/rc.conf`" -eq 1 ]; then
-		if [ "$realhost" != "$rchost" ]; then HOST="$realhost"; fi
-		ed -s /etc/athena/rc.conf << EOM
-/^HOST=/c
-HOST=$HOST;	export HOST		# name of machine
-.
-w
-q
-EOM
-		echo "Corrected HOST line in /etc/athena/rc.conf."
-	fi
-
-	# Fix address line in /etc/athena/rc.conf if necessary.
-	if [ "`ifconfig -a | grep -c "$ADDR"`" -eq 0 ]; then
-		# Resolving $HOST might be better, but we don't have name
-		# service during an update.  If someone's using an interface
-		# other than le0, this will bite them, but only if their
-		# rc.conf file is wrong in the first place.
-		ADDR="`ifconfig le0 | awk '/^	inet/ { print $2 }'`"
-		ed -s /etc/athena/rc.conf << EOM
-/^ADDR=/c
-ADDR=$ADDR;	export ADDR		# address of machine
-.
-w
-q
-EOM
-		echo "Corrected ADDR line in /etc/athena/rc.conf."
-	fi
-
 	# Remove more obsolete symlinks.
 	rm -f /SUNWcg12 /SUNWdiag /SUNWgt /SUNWits
+
+	# Fix HOST if it doesn't match the system's hostname.
+	realhost="`uname -n | tr [a-z] [A-Z]`"
+	rchost="`echo "$HOST" | tr [a-z] [A-Z]`"
+	if [ "$realhost" != "$rchost" ]; then
+		HOST="$realhost"
+	fi
+
+	# Fix ADDR if it doesn't match the system's address.
+	if [ -z "$ADDR" -o "`ifconfig -a | grep -c "inet $ADDR"`" -eq 0 ]; then
+		ADDR="`ifconfig -a | awk '/^	inet/ \
+			{ if ($2 != "127.0.0.1") { print $2; exit } }'`"
+	fi
+
+	# Now rewrite /etc/athena/rc.conf.
+	echo "Fixing rc.conf; old version in /etc/athena/rc.conf.old."
+	cat > /etc/athena/rc.conf.new << EOCONF
+#!/bin/sh -
+#
+# \$Id: rc.conf,v 1.9 1996/06/27 19:37:55 ghudson Exp $
+
+# Set up configuration variables.
+
+HOST=$HOST;		export HOST		# Hostname
+ADDR=$ADDR;	export ADDR		# Internet address
+MACHINE=$MACHINE;		export MACHINE		# Type of machine
+PUBLIC=$PUBLIC;		export PUBLIC		# Public workstation?
+TIMESRV=$TIMESRV;		export TIMESRV		# Time server?
+TIMECLIENT=$TIMECLIENT;	export TIMECLIENT	# Timed client?
+TIMEHUB=$TIMEHUB;	export TIMEHUB		# Authoritative time source
+RVDCLIENT=$RVDCLIENT;		export RVDCLIENT	# RVD client?
+AFSSRV=$AFSSRV;		export AFSSRV		# AFS server?
+AFSCLIENT=$AFSCLIENT;		export AFSCLIENT	# AFS client?
+AFSADJUST=$AFSADJUST;		export AFSADJUST	# Adjust AFS cache-size?
+NFSSRV=$NFSSRV;		export NFSSRV		# NFS server?
+NFSCLIENT=$NFSCLIENT;		export NFSCLIENT	# NFS client?
+NEWMAILCF=$NEWMAILCF;		export NEWMAILCF	# Update sendmail.cf?
+SENDMAIL=$SENDMAIL;		export SENDMAIL		# Sendmail daemon?
+SNMP=$SNMP;		export SNMP		# SNMP daemon?
+LPD=$LPD;		export LPD		# Run line printer daemon?
+OLC=$OLC;		export OLC		# OLC daemon?
+KNETD=$KNETD;		export KNETD		# Kerberos remote services?
+KRBSRV=$KRBSRV;		export KRBSRV		# Kerberos server
+KADMSRV=$KADMSRV;		export KADMSRV		# Kerberos Admin server
+ZCLIENT=$ZCLIENT;		export ZCLIENT		# Zephyr client
+ZSERVER=$ZSERVER;		export ZSERVER		# Zephyr server
+MRUPDATE=$MRUPDATE;		export MRUPDATE		# Moira update daemon
+NOCREATE=$NOCREATE;		export NOCREATE		# Disallow the public to login?
+NOATTACH=$NOATTACH;		export NOATTACH		# Disallow attaching homedirs?
+NOREMOTE=$NOREMOTE;		export NOREMOTE		# Deny access to remote users not in /etc/passwd
+AUTOUPDATE=$AUTOUPDATE;	export AUTOUPDATE	# Automatically update?
+EOCONF
+
+	rm -f /etc/athena/rc.conf.old
+	mv /etc/athena/rc.conf /etc/athena/rc.conf.old
+	mv /etc/athena/rc.conf.new /etc/athena/rc.conf
 
 	;;
 
