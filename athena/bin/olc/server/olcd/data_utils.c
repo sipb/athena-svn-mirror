@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v $
- *	$Id: data_utils.c,v 1.39 1991-11-05 13:54:32 lwvanels Exp $
+ *	$Id: data_utils.c,v 1.40 1992-08-17 17:00:09 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.39 1991-11-05 13:54:32 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.40 1992-08-17 17:00:09 lwvanels Exp $";
 #endif
 #endif
 
@@ -1423,6 +1423,23 @@ owns_question(knuckle)
     return(FALSE);
 }
 
+
+int
+is_specialty(u,topic)
+     USER *u;
+     int topic;
+{
+  int i;
+
+  if (u->no_specialties == 0)
+    return FALSE;
+
+  for (i=0;i<u->no_specialties;i++) {
+    if (u->specialties[i] == topic)
+      return TRUE;
+  }
+  return FALSE;
+}
 
 int
 is_topic(topics,code)
