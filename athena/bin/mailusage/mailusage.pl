@@ -1,6 +1,6 @@
 #!/usr/athena/bin/perl -w
 
-# $Id: mailusage.pl,v 1.3 2004-07-29 19:11:52 rbasch Exp $
+# $Id: mailusage.pl,v 1.3.2.1 2004-10-27 01:21:16 ghudson Exp $
 
 # Get the total size of, and number of messages in, mailboxes on an
 # IMAP server.
@@ -12,7 +12,7 @@ use Getopt::Std;
 
 sub usage(;$);
 sub get_usage($);
-sub send_command($);
+sub send_command(@);
 sub list_callback(@);
 sub fetch_callback(@);
 sub number_callback(@);
@@ -67,11 +67,11 @@ $client->addcallback({-trigger => $list_cmd,
 		      -rock => \%mailboxes});
 
 # First list the given mailbox.
-send_command $list_cmd . ' "" ' . $mbox;
+send_command("$list_cmd %s %s", '', $mbox);
 
 # If recursing, also list all descendents of the mailbox, unless the
 # given name contains a trailing wildcard.
-send_command $list_cmd . ' "" ' . $mbox . $mailboxes{$mbox}{delimiter} . '*'
+send_command("$list_cmd %s %s%s*", '', $mbox, $mailboxes{$mbox}{delimiter})
     if ($recurse && $mailboxes{$mbox} && $mailboxes{$mbox}{delimiter} &&
 	$mbox !~ m/\*$/o);
 
@@ -107,7 +107,7 @@ sub get_usage($) {
 			  -callback => \&number_callback,
 			  -rock => \$exists});
     # Select the mailbox for read-only operations.
-    send_command "EXAMINE \"$mbox\"";
+    send_command("EXAMINE %s", $mbox);
     # If this mailbox has messages, fetch their size.
     if ($exists) {
 	# The fetch callback will update the values for totalsize and
@@ -115,7 +115,7 @@ sub get_usage($) {
 	$client->addcallback({-trigger => 'FETCH', -flags => $cb_numbered,
 			      -callback => \&fetch_callback,
 			      -rock => \%usage});
-	send_command "FETCH 1:* RFC822.SIZE";
+	send_command("FETCH 1:* RFC822.SIZE");
     }
     return ($usage{totalsize}, $usage{msgcount});
 }
@@ -123,9 +123,10 @@ sub get_usage($) {
 # Subroutine to send a command to the IMAP server, and wait for the
 # response; any defined callbacks for the response are invoked.
 # If the server response indicates failure, we error out.
-sub send_command($) {
-    print "Sending: $_[0]\n" if $debug;
-    my ($status, $text) = $client->send('', '', $_[0]);
+sub send_command(@) {
+    my ($fmt, @args) = @_;
+    printf("Sending: $fmt\n", @args) if $debug;
+    my ($status, $text) = $client->send('', '', $fmt, @args);
     print "Response: status $status, text $text\n" if $debug;
     errorout "Premature end-of-file on IMAP connection to $host"
 	if $status eq 'EOF';
