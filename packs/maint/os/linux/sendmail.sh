@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: sendmail.sh,v 1.1 2003-07-25 05:16:56 zacheiss Exp $
+# $Id: sendmail.sh,v 1.1 2003-10-23 22:58:04 ghudson Exp $
 
 # If we don't have tickets, we must do direct delivery and not do
 # authentication.
@@ -18,4 +18,4 @@ if [ "$MAILRELAY" != "default" -o -n "$DIRECT_DELIVERY" ]; then
   auth="-U"
 fi
 
-exec /usr/lib/sendmail.real $auth "$@"
+exec /usr/sbin/sendmail.real $auth "$@"
