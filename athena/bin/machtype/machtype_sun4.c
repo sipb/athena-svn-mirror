@@ -2,7 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *    $Id: machtype_sun4.c,v 1.12 1995-06-27 19:45:15 cfields Exp $
+ *    $Id: machtype_sun4.c,v 1.13 1995-07-31 19:10:44 cfields Exp $
  *    $Locker:  $
  */
 
@@ -16,6 +16,9 @@
 #include <sys/types.h>
 #include <sys/file.h>
 #include <sys/cpu.h>
+#include <ctype.h>
+/* OpenPROM stuff */
+#include <sys/promif.h>
 
 int verbose =0;
 char mydisk[128];
@@ -27,6 +30,8 @@ struct nlist nl[] = {
       { "maxmem" },
 #define X_physmem 2
       { "physmem" },
+#define X_topnode 3
+      { "top_devinfo" },
       { "" }
 };
 
@@ -213,6 +218,66 @@ char *name;
     exit(1);
 }
 
+void do_cpu_prom(kvm_t *kernel)
+{
+  unsigned long   ptop;
+  struct dev_info top;
+  char            buf[BUFSIZ];
+
+  char*           cpustr;
+
+  /* read device name of the top node of the OpenPROM */
+
+  if (   (! nl[X_topnode].n_value)
+      || (kvm_read(kernel, (unsigned long) nl[X_topnode].n_value,
+		            (char*) &ptop, sizeof(ptop)) != sizeof(ptop))
+      || (! ptop)
+      || (kvm_read(kernel, (unsigned long) ptop,
+		            (char*) &top, sizeof(top)) != sizeof(top))
+      || (! top.devi_name)
+      || (kvm_read(kernel, (unsigned long) top.devi_name,
+		            (char*) &buf, sizeof(buf)) != sizeof(buf))
+      || (! buf[0]) ) {
+    fprintf(stderr, "Can't get CPU information from the kernel\n");
+    exit(2);
+  }
+  buf[BUFSIZ-1] = '\0';
+
+  /* now, return a string identifying the CPU */
+
+  if (verbose) {
+    /* "verbose" returns the kernel information directly */
+    puts(buf);
+
+  } else {
+
+    /* skip the initial "SUNW," */
+    if (cpustr = strchr(buf, ','))
+      cpustr++;
+    else
+      cpustr = buf;
+
+    /* reformat the result to look like "SPARC/Classic" or "SPARC/5" */
+    if (! strncmp(cpustr, "SPARC", sizeof("SPARC")-1)) {
+      cpustr += sizeof("SPARC")-1;
+
+      if (! strncmp(cpustr, "station-", sizeof("station-")-1))
+	cpustr += sizeof("station-")-1;
+      else
+	if (! strcmp(cpustr, "classic")) /* backwards compat - cap classic */
+	  (*cpustr) = toupper(*cpustr);
+
+      printf("SPARC/%s\n", cpustr);
+
+    } else {
+      /* if it didn't start with "SPARC", just leave it be... */
+      puts(cpustr);
+    }
+  }
+
+  return;
+}
+
 do_cpu(kernel, mf)
 kvm_t *kernel;
 int mf;
@@ -245,7 +310,7 @@ short cpu_type;
             puts(verbose ? "SPARCstation IPX" : "SPARC/IPX");
             break;
 	case 128:
-	puts(verbose ? "SPARCstation Classic" : "SPARC/Classic");
+	    do_cpu_prom(kernel);
 		break;
 
          default:
