@@ -1,4 +1,4 @@
-;; $Id: site-init.jl,v 1.13 2001-07-11 21:26:56 ghudson Exp $
+;; $Id: site-init.jl,v 1.14 2001-07-16 14:45:08 ghudson Exp $
 ;; Site initialization for Athena
 
 ;; Pick a nice readable default font.
@@ -27,7 +27,8 @@
 (bind-keys window-keymap "Button1-Click1" 'raise-window-and-pass-through-click
 			 "M-Button2-Click1" 'raise-lower-window
 			 "M-Button3-Click1" 'popup-window-menu)
-(unbind-keys title-keymap "Button1-Click2" "Button2-Move" "Button3-Off")
+(unbind-keys title-keymap "Button2-Move" "Button3-Off")
+(bind-keys title-keymap "Button1-Click2" 'maximize-window-toggle)
 (bind-keys title-keymap "Button3-Click1" 'popup-window-menu)
 (unbind-keys global-keymap "W-Left" "W-Right")
 
