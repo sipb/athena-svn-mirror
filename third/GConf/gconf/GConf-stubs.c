@@ -1741,6 +1741,8 @@ ConfigDatabase_add_listener(ConfigDatabase _obj, const CORBA_char * where,
 	 add_listener(_obj->servant, where, who, ev);
       return _ORBIT_retval;
    }
+   if (0)
+      return *(&_ORBIT_retval);
    _cnx = ORBit_object_get_connection(_obj);
  _ORBIT_retry_request:
    _ORBIT_send_buffer = NULL;
@@ -1992,6 +1994,8 @@ ConfigDatabase_lookup(ConfigDatabase _obj, const CORBA_char * key,
 	 lookup(_obj->servant, key, ev);
       return _ORBIT_retval;
    }
+   if (0)
+      return *(&_ORBIT_retval);
    _cnx = ORBit_object_get_connection(_obj);
  _ORBIT_retry_request:
    _ORBIT_send_buffer = NULL;
@@ -2191,6 +2195,7 @@ GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	       ((guint32 *) & ((*_ORBIT_retval)._u.list_value.seq._length))) =
 	     GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	      _ORBIT_curptr += 4;
+	      (*_ORBIT_retval)._u.list_value.seq._maximum = (*_ORBIT_retval)._u.list_value.seq._length;
 	      
 		 (*_ORBIT_retval)._u.list_value.seq._buffer =
 		 CORBA_sequence_ConfigBasicValue_allocbuf((*_ORBIT_retval)._u.
@@ -2413,6 +2418,7 @@ GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr)); _ORBIT_curptr += 4;
 		 (*((guint32 *) & ((*_ORBIT_retval)._u.pair_value._length))) =
 		 GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	      _ORBIT_curptr += 4;
+	      (*_ORBIT_retval)._u.pair_value._maximum = (*_ORBIT_retval)._u.pair_value._length;
 	      
 		 (*_ORBIT_retval)._u.pair_value._buffer =
 		 CORBA_sequence_ConfigBasicValue_allocbuf((*_ORBIT_retval)._u.
@@ -2735,6 +2741,7 @@ GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr)); _ORBIT_curptr += 4;
 		 (*_ORBIT_retval)._u.list_value.seq._length =
 		 *((CORBA_unsigned_long *) _ORBIT_curptr);
 	      _ORBIT_curptr += 4;
+	      (*_ORBIT_retval)._u.list_value.seq._maximum = (*_ORBIT_retval)._u.list_value.seq._length;
 	      
 		 (*_ORBIT_retval)._u.list_value.seq._buffer =
 		 CORBA_sequence_ConfigBasicValue_allocbuf((*_ORBIT_retval)._u.
@@ -2940,6 +2947,7 @@ GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr)); _ORBIT_curptr += 4;
 		 (*_ORBIT_retval)._u.pair_value._length =
 		 *((CORBA_unsigned_long *) _ORBIT_curptr);
 	      _ORBIT_curptr += 4;
+	      (*_ORBIT_retval)._u.pair_value._maximum = (*_ORBIT_retval)._u.pair_value._length;
 	      
 		 (*_ORBIT_retval)._u.pair_value._buffer =
 		 CORBA_sequence_ConfigBasicValue_allocbuf((*_ORBIT_retval)._u.
@@ -3229,6 +3237,8 @@ ConfigDatabase_lookup_with_locale(ConfigDatabase _obj, const CORBA_char * key,
 			    value_is_default, value_is_writable, ev);
       return _ORBIT_retval;
    }
+   if (0)
+      return *(&_ORBIT_retval);
    _cnx = ORBit_object_get_connection(_obj);
  _ORBIT_retry_request:
    _ORBIT_send_buffer = NULL;
@@ -3453,6 +3463,7 @@ GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	       ((guint32 *) & ((*_ORBIT_retval)._u.list_value.seq._length))) =
 	     GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	      _ORBIT_curptr += 4;
+	      (*_ORBIT_retval)._u.list_value.seq._maximum = (*_ORBIT_retval)._u.list_value.seq._length;
 	      
 		 (*_ORBIT_retval)._u.list_value.seq._buffer =
 		 CORBA_sequence_ConfigBasicValue_allocbuf((*_ORBIT_retval)._u.
@@ -3676,6 +3687,7 @@ GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr)); _ORBIT_curptr += 4;
 		 (*((guint32 *) & ((*_ORBIT_retval)._u.pair_value._length))) =
 		 GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	      _ORBIT_curptr += 4;
+	      (*_ORBIT_retval)._u.pair_value._maximum = (*_ORBIT_retval)._u.pair_value._length;
 	      
 		 (*_ORBIT_retval)._u.pair_value._buffer =
 		 CORBA_sequence_ConfigBasicValue_allocbuf((*_ORBIT_retval)._u.
@@ -4006,6 +4018,7 @@ GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr)); _ORBIT_curptr += 4;
 		 (*_ORBIT_retval)._u.list_value.seq._length =
 		 *((CORBA_unsigned_long *) _ORBIT_curptr);
 	      _ORBIT_curptr += 4;
+	      (*_ORBIT_retval)._u.list_value.seq._maximum = (*_ORBIT_retval)._u.list_value.seq._length;
 	      
 		 (*_ORBIT_retval)._u.list_value.seq._buffer =
 		 CORBA_sequence_ConfigBasicValue_allocbuf((*_ORBIT_retval)._u.
@@ -4212,6 +4225,7 @@ GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr)); _ORBIT_curptr += 4;
 		 (*_ORBIT_retval)._u.pair_value._length =
 		 *((CORBA_unsigned_long *) _ORBIT_curptr);
 	      _ORBIT_curptr += 4;
+	      (*_ORBIT_retval)._u.pair_value._maximum = (*_ORBIT_retval)._u.pair_value._length;
 	      
 		 (*_ORBIT_retval)._u.pair_value._buffer =
 		 CORBA_sequence_ConfigBasicValue_allocbuf((*_ORBIT_retval)._u.
@@ -4502,6 +4516,8 @@ ConfigDatabase_lookup_default_value(ConfigDatabase _obj,
 	 lookup_default_value(_obj->servant, key, locale, ev);
       return _ORBIT_retval;
    }
+   if (0)
+      return *(&_ORBIT_retval);
    _cnx = ORBit_object_get_connection(_obj);
  _ORBIT_retry_request:
    _ORBIT_send_buffer = NULL;
@@ -4719,6 +4735,7 @@ GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	       ((guint32 *) & ((*_ORBIT_retval)._u.list_value.seq._length))) =
 	     GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	      _ORBIT_curptr += 4;
+	      (*_ORBIT_retval)._u.list_value.seq._maximum = (*_ORBIT_retval)._u.list_value.seq._length;
 	      
 		 (*_ORBIT_retval)._u.list_value.seq._buffer =
 		 CORBA_sequence_ConfigBasicValue_allocbuf((*_ORBIT_retval)._u.
@@ -4941,6 +4958,7 @@ GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr)); _ORBIT_curptr += 4;
 		 (*((guint32 *) & ((*_ORBIT_retval)._u.pair_value._length))) =
 		 GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	      _ORBIT_curptr += 4;
+	      (*_ORBIT_retval)._u.pair_value._maximum = (*_ORBIT_retval)._u.pair_value._length;
 	      
 		 (*_ORBIT_retval)._u.pair_value._buffer =
 		 CORBA_sequence_ConfigBasicValue_allocbuf((*_ORBIT_retval)._u.
@@ -5263,6 +5281,7 @@ GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr)); _ORBIT_curptr += 4;
 		 (*_ORBIT_retval)._u.list_value.seq._length =
 		 *((CORBA_unsigned_long *) _ORBIT_curptr);
 	      _ORBIT_curptr += 4;
+	      (*_ORBIT_retval)._u.list_value.seq._maximum = (*_ORBIT_retval)._u.list_value.seq._length;
 	      
 		 (*_ORBIT_retval)._u.list_value.seq._buffer =
 		 CORBA_sequence_ConfigBasicValue_allocbuf((*_ORBIT_retval)._u.
@@ -5468,6 +5487,7 @@ GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr)); _ORBIT_curptr += 4;
 		 (*_ORBIT_retval)._u.pair_value._length =
 		 *((CORBA_unsigned_long *) _ORBIT_curptr);
 	      _ORBIT_curptr += 4;
+	      (*_ORBIT_retval)._u.pair_value._maximum = (*_ORBIT_retval)._u.pair_value._length;
 	      
 		 (*_ORBIT_retval)._u.pair_value._buffer =
 		 CORBA_sequence_ConfigBasicValue_allocbuf((*_ORBIT_retval)._u.
@@ -5879,6 +5899,7 @@ ConfigDatabase_batch_lookup(ConfigDatabase _obj,
 	    (*((guint32 *) & (((**values))._length))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
+	 ((**values))._maximum = ((**values))._length;
 	 
 	    ((**values))._buffer =
 	    CORBA_sequence_ConfigValue_allocbuf(((**values))._length);
@@ -6057,6 +6078,10 @@ ConfigDatabase_batch_lookup(ConfigDatabase _obj,
 		(((**values))._buffer[_ORBIT_tmpvar_46]._u.list_value.seq.
 		 _length))) =
    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr)); _ORBIT_curptr += 4;
+		 ((**values))._buffer[_ORBIT_tmpvar_46]._u.list_value.seq.
+		    _maximum =
+		    ((**values))._buffer[_ORBIT_tmpvar_46]._u.list_value.seq.
+		    _length;
 		 ((**values))._buffer[_ORBIT_tmpvar_46]._u.list_value.seq.
 		    _buffer =
 		    CORBA_sequence_ConfigBasicValue_allocbuf(((**values)).
@@ -6314,6 +6339,10 @@ ConfigDatabase_batch_lookup(ConfigDatabase _obj,
 		 _length))) =
    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr)); _ORBIT_curptr += 4;
 		 ((**values))._buffer[_ORBIT_tmpvar_46]._u.pair_value.
+		    _maximum =
+		    ((**values))._buffer[_ORBIT_tmpvar_46]._u.pair_value.
+		    _length;
+		 ((**values))._buffer[_ORBIT_tmpvar_46]._u.pair_value.
 		    _buffer =
 		    CORBA_sequence_ConfigBasicValue_allocbuf(((**values)).
 							     _buffer
@@ -6564,6 +6593,7 @@ ConfigDatabase_batch_lookup(ConfigDatabase _obj,
 	    (*((guint32 *) & (((**is_defaults))._length))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
+	 ((**is_defaults))._maximum = ((**is_defaults))._length;
 	 
 	    ((**is_defaults))._buffer =
 	    CORBA_sequence_CORBA_boolean_allocbuf(((**is_defaults))._length);
@@ -6579,6 +6609,7 @@ ConfigDatabase_batch_lookup(ConfigDatabase _obj,
 	    (*((guint32 *) & (((**is_writables))._length))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
+	 ((**is_writables))._maximum = ((**is_writables))._length;
 	 
 	    ((**is_writables))._buffer =
 	    CORBA_sequence_CORBA_boolean_allocbuf(((**is_writables))._length);
@@ -6593,6 +6624,7 @@ ConfigDatabase_batch_lookup(ConfigDatabase _obj,
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 ((**values))._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
+	 ((**values))._maximum = ((**values))._length;
 	 
 	    ((**values))._buffer =
 	    CORBA_sequence_ConfigValue_allocbuf(((**values))._length);
@@ -6744,6 +6776,10 @@ ConfigDatabase_batch_lookup(ConfigDatabase _obj,
 		 _ORBIT_curptr += 4;
 		 
 		    ((**values))._buffer[_ORBIT_tmpvar_46]._u.list_value.seq.
+		    _maximum =
+		    ((**values))._buffer[_ORBIT_tmpvar_46]._u.list_value.seq.
+		    _length;
+		 ((**values))._buffer[_ORBIT_tmpvar_46]._u.list_value.seq.
 		    _buffer =
 		    CORBA_sequence_ConfigBasicValue_allocbuf(((**values)).
 							     _buffer
@@ -6977,6 +7013,10 @@ ConfigDatabase_batch_lookup(ConfigDatabase _obj,
 		 _ORBIT_curptr += 4;
 		 
 		    ((**values))._buffer[_ORBIT_tmpvar_46]._u.pair_value.
+		    _maximum =
+		    ((**values))._buffer[_ORBIT_tmpvar_46]._u.pair_value.
+		    _length;
+		 ((**values))._buffer[_ORBIT_tmpvar_46]._u.pair_value.
 		    _buffer =
 		    CORBA_sequence_ConfigBasicValue_allocbuf(((**values)).
 							     _buffer
@@ -7205,6 +7245,7 @@ ConfigDatabase_batch_lookup(ConfigDatabase _obj,
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 ((**is_defaults))._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
+	 ((**is_defaults))._maximum = ((**is_defaults))._length;
 	 
 	    ((**is_defaults))._buffer =
 	    CORBA_sequence_CORBA_boolean_allocbuf(((**is_defaults))._length);
@@ -7218,6 +7259,7 @@ ConfigDatabase_batch_lookup(ConfigDatabase _obj,
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 ((**is_writables))._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
+	 ((**is_writables))._maximum = ((**is_writables))._length;
 	 
 	    ((**is_writables))._buffer =
 	    CORBA_sequence_CORBA_boolean_allocbuf(((**is_writables))._length);
@@ -10800,6 +10842,8 @@ ConfigDatabase_dir_exists(ConfigDatabase _obj, const CORBA_char * dir,
 	 dir_exists(_obj->servant, dir, ev);
       return _ORBIT_retval;
    }
+   if (0)
+      return *(&_ORBIT_retval);
    _cnx = ORBit_object_get_connection(_obj);
  _ORBIT_retry_request:
    _ORBIT_send_buffer = NULL;
@@ -11168,6 +11212,7 @@ ConfigDatabase_all_entries(ConfigDatabase _obj, const CORBA_char * dir,
 	    (*((guint32 *) & (((**keys))._length))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
+	 ((**keys))._maximum = ((**keys))._length;
 	 ((**keys))._buffer = CORBA_sequence_CORBA_string_allocbuf(((**keys))._length);
 	 ((**keys))._release = CORBA_TRUE;
 	 for (_ORBIT_tmpvar_48 = 0; _ORBIT_tmpvar_48 < ((**keys))._length;
@@ -11193,6 +11238,7 @@ ConfigDatabase_all_entries(ConfigDatabase _obj, const CORBA_char * dir,
 	    (*((guint32 *) & (((**values))._length))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
+	 ((**values))._maximum = ((**values))._length;
 	 
 	    ((**values))._buffer =
 	    CORBA_sequence_ConfigValue_allocbuf(((**values))._length);
@@ -11371,6 +11417,10 @@ ConfigDatabase_all_entries(ConfigDatabase _obj, const CORBA_char * dir,
 		(((**values))._buffer[_ORBIT_tmpvar_51]._u.list_value.seq.
 		 _length))) =
    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr)); _ORBIT_curptr += 4;
+		 ((**values))._buffer[_ORBIT_tmpvar_51]._u.list_value.seq.
+		    _maximum =
+		    ((**values))._buffer[_ORBIT_tmpvar_51]._u.list_value.seq.
+		    _length;
 		 ((**values))._buffer[_ORBIT_tmpvar_51]._u.list_value.seq.
 		    _buffer =
 		    CORBA_sequence_ConfigBasicValue_allocbuf(((**values)).
@@ -11628,6 +11678,10 @@ ConfigDatabase_all_entries(ConfigDatabase _obj, const CORBA_char * dir,
 		 _length))) =
    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr)); _ORBIT_curptr += 4;
 		 ((**values))._buffer[_ORBIT_tmpvar_51]._u.pair_value.
+		    _maximum =
+		    ((**values))._buffer[_ORBIT_tmpvar_51]._u.pair_value.
+		    _length;
+		 ((**values))._buffer[_ORBIT_tmpvar_51]._u.pair_value.
 		    _buffer =
 		    CORBA_sequence_ConfigBasicValue_allocbuf(((**values)).
 							     _buffer
@@ -11878,6 +11932,7 @@ ConfigDatabase_all_entries(ConfigDatabase _obj, const CORBA_char * dir,
 	    (*((guint32 *) & (((**is_defaults))._length))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
+	 ((**is_defaults))._maximum = ((**is_defaults))._length;
 	 
 	    ((**is_defaults))._buffer =
 	    CORBA_sequence_CORBA_boolean_allocbuf(((**is_defaults))._length);
@@ -11893,6 +11948,7 @@ ConfigDatabase_all_entries(ConfigDatabase _obj, const CORBA_char * dir,
 	    (*((guint32 *) & (((**is_writables))._length))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
+	 ((**is_writables))._maximum = ((**is_writables))._length;
 	 
 	    ((**is_writables))._buffer =
 	    CORBA_sequence_CORBA_boolean_allocbuf(((**is_writables))._length);
@@ -11907,6 +11963,7 @@ ConfigDatabase_all_entries(ConfigDatabase _obj, const CORBA_char * dir,
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 ((**keys))._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
+	 ((**keys))._maximum = ((**keys))._length;
 	 ((**keys))._buffer = CORBA_sequence_CORBA_string_allocbuf(((**keys))._length);
 	 ((**keys))._release = CORBA_TRUE;
 	 for (_ORBIT_tmpvar_48 = 0; _ORBIT_tmpvar_48 < ((**keys))._length;
@@ -11928,6 +11985,7 @@ ConfigDatabase_all_entries(ConfigDatabase _obj, const CORBA_char * dir,
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 ((**values))._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
+	 ((**values))._maximum = ((**values))._length;
 	 
 	    ((**values))._buffer =
 	    CORBA_sequence_ConfigValue_allocbuf(((**values))._length);
@@ -12079,6 +12137,10 @@ ConfigDatabase_all_entries(ConfigDatabase _obj, const CORBA_char * dir,
 		 _ORBIT_curptr += 4;
 		 
 		    ((**values))._buffer[_ORBIT_tmpvar_51]._u.list_value.seq.
+		    _maximum =
+		    ((**values))._buffer[_ORBIT_tmpvar_51]._u.list_value.seq.
+		    _length;
+		 ((**values))._buffer[_ORBIT_tmpvar_51]._u.list_value.seq.
 		    _buffer =
 		    CORBA_sequence_ConfigBasicValue_allocbuf(((**values)).
 							     _buffer
@@ -12312,6 +12374,10 @@ ConfigDatabase_all_entries(ConfigDatabase _obj, const CORBA_char * dir,
 		 _ORBIT_curptr += 4;
 		 
 		    ((**values))._buffer[_ORBIT_tmpvar_51]._u.pair_value.
+		    _maximum =
+		    ((**values))._buffer[_ORBIT_tmpvar_51]._u.pair_value.
+		    _length;
+		 ((**values))._buffer[_ORBIT_tmpvar_51]._u.pair_value.
 		    _buffer =
 		    CORBA_sequence_ConfigBasicValue_allocbuf(((**values)).
 							     _buffer
@@ -12540,6 +12606,7 @@ ConfigDatabase_all_entries(ConfigDatabase _obj, const CORBA_char * dir,
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 ((**is_defaults))._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
+	 ((**is_defaults))._maximum = ((**is_defaults))._length;
 	 
 	    ((**is_defaults))._buffer =
 	    CORBA_sequence_CORBA_boolean_allocbuf(((**is_defaults))._length);
@@ -12553,6 +12620,7 @@ ConfigDatabase_all_entries(ConfigDatabase _obj, const CORBA_char * dir,
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 ((**is_writables))._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
+	 ((**is_writables))._maximum = ((**is_writables))._length;
 	 
 	    ((**is_writables))._buffer =
 	    CORBA_sequence_CORBA_boolean_allocbuf(((**is_writables))._length);
@@ -12685,6 +12753,7 @@ ConfigDatabase_all_dirs(ConfigDatabase _obj, const CORBA_char * dir,
 	    (*((guint32 *) & (((**subdirs))._length))) =
 	    GUINT32_SWAP_LE_BE(*((guint32 *) _ORBIT_curptr));
 	 _ORBIT_curptr += 4;
+	 ((**subdirs))._maximum = ((**subdirs))._length;
 	 
 	    ((**subdirs))._buffer =
 	    CORBA_sequence_CORBA_string_allocbuf(((**subdirs))._length);
@@ -12711,6 +12780,7 @@ ConfigDatabase_all_dirs(ConfigDatabase _obj, const CORBA_char * dir,
 	 _ORBIT_curptr = ALIGN_ADDRESS(_ORBIT_curptr, 4);
 	 ((**subdirs))._length = *((CORBA_unsigned_long *) _ORBIT_curptr);
 	 _ORBIT_curptr += 4;
+	 ((**subdirs))._maximum = ((**subdirs))._length;
 	 
 	    ((**subdirs))._buffer =
 	    CORBA_sequence_CORBA_string_allocbuf(((**subdirs))._length);
@@ -13183,6 +13253,8 @@ ConfigServer_get_default_database(ConfigServer _obj, CORBA_Environment * ev)
 	 get_default_database(_obj->servant, ev);
       return _ORBIT_retval;
    }
+   if (0)
+      return *(&_ORBIT_retval);
    _cnx = ORBit_object_get_connection(_obj);
  _ORBIT_retry_request:
    _ORBIT_send_buffer = NULL;
@@ -13285,6 +13357,8 @@ ConfigServer_get_database(ConfigServer _obj, const CORBA_char * address,
 	 get_database(_obj->servant, address, ev);
       return _ORBIT_retval;
    }
+   if (0)
+      return *(&_ORBIT_retval);
    _cnx = ORBit_object_get_connection(_obj);
  _ORBIT_retry_request:
    _ORBIT_send_buffer = NULL;
@@ -13584,6 +13658,8 @@ ConfigServer_ping(ConfigServer _obj, CORBA_Environment * ev)
 	 ping(_obj->servant, ev);
       return _ORBIT_retval;
    }
+   if (0)
+      return *(&_ORBIT_retval);
    _cnx = ORBit_object_get_connection(_obj);
  _ORBIT_retry_request:
    _ORBIT_send_buffer = NULL;

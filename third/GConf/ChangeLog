@@ -1,3 +1,135 @@
+2001-03-11  Havoc Pennington  <hp@redhat.com>
+
+	* configure.in: 1.0.0, woo-hoo!
+
+2001-03-06  Havoc Pennington  <hp@redhat.com>
+
+	* configure.in: bump version to 0.51
+	
+	* gconf/gconfd.c (gconf_main): change the periodic timeout to 15
+	minutes, to be a bit more aggressive about cleanup.
+	(open_append_handle): add a timeout to close the 
+	saved_state filehandle after a short time, to avoid keeping
+	descriptors open.
+	(gconfd_need_log_cleanup): new internal function used to control 
+	whether the periodic cleanup function needs to save a log file
+	
+2001-02-27  Havoc Pennington  <hp@redhat.com>
+
+	* gconf.spec.in: %define prefix %{_prefix} instead of @prefix@
+
+2001-02-27  Havoc Pennington  <hp@redhat.com>
+
+	* configure.in: bump version to 0.50
+
+	* gconf/gconfd.c (main): Close stdin/stdout/stderr. Also, set the
+	log handler, so we don't need stdout/stderr to see GLib messages,
+	they go to syslog.
+
+	* configure.in: Turn off debugging by default
+
+	* gconf/Makefile.am (INCLUDES): set the log domain
+
+	* gconf/gconftool.c (recurse_subdir_list): the list contains full
+	directory paths to start with, fix from Colm
+
+	* gconf/gconfd.c (register_database): bugfix from Colm
+
+	* gconf/gconf.c (lookup_engine): fix from Colm to check that we
+	have an engines hash
+	(gconf_engine_get_for_address): improve warning message, fix from
+	Colm
+	(gconf_engine_remove_dir): new function from Colm, this was
+	implemented on the server side but somehow never exported.
+
+	* gconf/gconf-database.c (gconf_database_get_persistent_name): Fix
+	from Colm to handle the case of empty databases (no sources).
+
+2001-02-12  Stanislav Visnovsky  <visnovsky@nenya.ms.mff.cuni.cz>
+
+	* configure.in: Added sk to ALL_LINGUAS.
+
+2001-02-05  Havoc Pennington  <hp@redhat.com>
+
+        File permissions fixes, problem pointed out by Steve Fox.
+	
+	* backends/xml-dir.c (dir_sync): chmod() the XML file after
+	xmlSaveFile creates it
+
+	* gconf/gconfd.c (main): following Stevens advice for daemons, we
+	were calling umask(0), change to umask(022). We need a predictable
+	umask, but a safer one would be good since this is a per-user
+	daemon not a system daemon.
+	
+	* backends/dir-utils.c (mode_t_to_mode): make this more portable,
+	for paranoia
+
+	* backends/xml-dir.c (dir_load): We were getting directory
+	permissions from the %gconf.xml file, instead of from the XML root
+	directory. Fix.
+	
+2001-02-01  Szabolcs Ban <shooby@gnome.hu>
+
+	* configure.in: Added lang Hungarian.
+	* po/hu.po: Added.
+
+2001-01-21  Havoc Pennington  <hp@pobox.com>
+
+	* backends/xml-entry.c (schema_subnode_extract_data): don't warn
+	about <local_schema> with no locale field, because that's normal 
+	for the default case
+	(schema_node_extract_value): use <local_schema> with no locale
+	if it exists and we don't find anything better
+
+	* tests/testschemas.c (check_schema_use): fix indentation and mem
+	leaks
+
+	* gconf/gconftool.c (do_get): print default value from schema
+
+	* configure.in: Bump version to 0.12
+
+Fri Dec 01 00:54:33 2000  George Lebl <jirka@5z.com>
+
+	* gconf/gconf-locale.c (gconf_split_locale):  When inserting "C"
+	  into a list, dup it first to avoid a possible crash later.
+
+2000-11-30  Havoc Pennington  <hp@redhat.com>
+
+	* gconf/gconf.c (gconf_engine_unset): Fix dereference of NULL GError**
+
+2000-11-20  Havoc Pennington  <hp@redhat.com>
+
+	* doc/gconf/Makefile.am: Fix "make scan" to actually work, so 
+	you can build the docs
+
+2000-11-11  Havoc Pennington  <hp@pobox.com>
+
+	* gconf/gconf-value.c (gconf_entry_set_is_writable): Add this
+	function
+
+2000-11-05  Havoc Pennington  <hp@pobox.com>
+
+	* gconf/gconf-glib.c, gconf/gconf-glib-private.h: Remove the 
+	GMarkup and Unicode stuff, turned out to be unnecessary.
+	Left only GError.
+
+2000-11-05  Havoc Pennington  <hp@pobox.com>
+
+	* gconf/gconfd.c (parse_listener_entry): fix strtoul error
+	checking
+
+	* gconf/gconf-internals.c (gconf_string_to_gulong): Fix error
+	checking on strtoul
+
+2000-11-05  Havoc Pennington  <hp@pobox.com>
+
+	* gconf/gconf-glib.c (g_propagate_error): Sync from GLib,
+	should fix one very minor memory leak in GConf
+
+2000-10-31  Almer S. Tigelaar  <almer1@dds.nl>
+
+	* configure.in: Add 'nl' to ALL_LINGUAS
+
 2000-10-26  Havoc Pennington  <hp@pobox.com>
 
 	* configure.in: Bump version to 0.11
