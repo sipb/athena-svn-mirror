@@ -22,21 +22,28 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v $
  *	$Author: lwvanels $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 2.4 1991-04-10 22:00:51 lwvanels Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 2.5 1991-04-14 17:25:27 lwvanels Exp $
  */
 
 #ifndef lint
-static char *rcsid_cref_utils_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 2.4 1991-04-10 22:00:51 lwvanels Exp $";
+static char *rcsid_cref_utils_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/cref_utils.c,v 2.5 1991-04-14 17:25:27 lwvanels Exp $";
 #endif	lint
 
 #include <mit-copyright.h>
 
 #include <stdio.h>			/* Standard I/O definitions. */
 #include <curses.h>			/* Curses package defs. */
+#include <sys/types.h>
 #include <sys/file.h>			/* System file definitions. */
 #include <ctype.h>			/* Character type macros. */
 #include <sys/param.h>			/* System parameters file. */
-#include <sgtty.h>			/* TTY definitions. */
+
+#ifdef TERMIO
+#include <sys/termio.h>
+#else
+#include <sgtty.h>
+#endif
+
 #include <grp.h>			/* System group defs. */
 #include <sys/time.h>
 
@@ -143,14 +150,22 @@ call_program(program, argument)
 get_input(buffer)
      char *buffer;
 {
+#ifdef TERMIO
+  struct termio tty;			/* Terminal description structure. */
+#else
   struct sgttyb tty;			/* Terminal description structure. */
+#endif
   char c;				/* Input character. */
   int x,y;				/* X,Y coordinates. */
   int x_start;				/* Starting X coordinate. */
   int length;				/* Length of input string.  */
   char *ptr;				/* Current character in buffer. */
   
+#ifdef TERMIO
+  if ( ioctl(fileno(stdin), TCGETA, &tty) < 0 )
+#else
   if ( ioctl(fileno(stdin), TIOCGETP, &tty) < 0 )
+#endif
     {
       message(1, "Cannot access terminal.");
       *buffer = (char) NULL;
@@ -166,7 +181,11 @@ get_input(buffer)
   refresh();
   while ( (c = getch()) != '\n')
     {
+#ifdef TERMIO
+      if (c == tty.c_cc[VERASE])
+#else
       if (c == tty.sg_erase)
+#endif
 	{
 	  if (x > x_start)
 	    {
@@ -185,7 +204,11 @@ get_input(buffer)
 	      *ptr = (char) NULL;
 	    }
 	}
+#ifdef TERMIO
+      else if (c == tty.c_cc[VKILL])
+#else
       else if (c == tty.sg_kill)
+#endif
 	{
 	  x = x_start;
 	  move(y,x);
