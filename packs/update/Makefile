@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.5 1997-02-11 18:50:32 ghudson Exp $
+# $Id: Makefile,v 1.5.2.1 1998-02-26 23:31:15 cfields Exp $
 
 SHELL=/bin/sh
 UPDATE=/usr/athena/lib/update
@@ -20,6 +20,8 @@ install:
 	-mkdir -p ${DESTDIR}${UPDATE}
 	install -c -m 0555 do-update.sh ${DESTDIR}${UPDATE}/do-update
 	install -c -m 0555 finish-update.sh ${DESTDIR}${UPDATE}/finish-update
+	install -c -m 0555 update-environment.sh \
+				${DESTDIR}${UPDATE}/update-environment
 	install -c -m 0555 update_ws.sh ${DESTDIR}/update_ws
 	install -c -m 0555 upvers ${DESTDIR}${UPDATE}
 	rm -f ${DESTDIR}/auto_update
