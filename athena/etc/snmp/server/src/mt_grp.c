@@ -1,8 +1,33 @@
-/* Copyright MIT */
+/*
+ * This is the MIT supplement to the PSI/NYSERNet implementation of SNMP.
+ * This file describes the hardware (machtype) portion of the mib.
+ *
+ * Copyright 1990 by the Massachusetts Institute of Technology.
+ *
+ * For copying and distribution information, please see the file
+ * <mit-copyright.h>.
+ *
+ * Tom Coppeto
+ * MIT Network Services
+ * 15 April 1990
+ *
+ *    $Source: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/mt_grp.c,v $
+ *    $Author: tom $
+ *    $Locker:  $
+ *    $Log: not supported by cvs2svn $
+ *
+ */
+
+#ifndef lint
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/mt_grp.c,v 1.2 1990-04-26 17:28:46 tom Exp $";
+#endif
+
 
 #include "include.h"
+#include <mit-copyright.h>
 
-#define MACH_REPLY_SIZE 64
+#ifdef MIT
+#ifdef ATHENA
 
 /*
  * machtype is such a gross hack we'll just use it
@@ -13,6 +38,7 @@
 #define MACH_DISPOPT "-d"
 #define MACH_DROPT   "-r"
 #define MACH_MOPT    "-M"
+
 /*
  * This will have to do for now
  */
@@ -29,6 +55,28 @@ int  ndisplays = -1;
 int  ndisks = -1;
 int  memory = -1;
 
+static void mt_machtype();
+static void mt_display();
+static void mt_disks();
+static void mt_memory();
+
+/* 
+ * Function:    lu_machtype()
+ * Description: Top level callback for machtype info. Suuports:
+ *                    N_MACHTYPE:     (STR) machine type
+ *                    N_MACHNDISPLAY: (INT) number of displays
+ *                    N_MACHDISPLAY:  (STR) display
+ *                    N_MACHNDISK:    (INT) number of disks
+ *                    N_MACHDISK:     (STR) disk
+ *                    N_MACHMEMORY:   (INT) amount of emmory
+ *              Information is retrieved from /bin/athena/machtype once
+ *              and stored permenantly. Warning! You must restart snmpd if you 
+ *              change machine types!
+ * Returns:     BUILD_SUCCESS/BUILD_ERR
+ */
+
+
+int
 lu_machtype(varnode, repl, instptr, reqflg)
      struct snmp_tree_node *varnode;
      varbind *repl;
@@ -160,6 +208,12 @@ lu_machtype(varnode, repl, instptr, reqflg)
 
 
 
+/* 
+ * Function:    mt_machtype()
+ * Description: call machtype and get string
+ */
+
+static void
 mt_machtype(string,size)
      char *string;
      int size;
@@ -177,6 +231,12 @@ mt_machtype(string,size)
 
 
 
+/* 
+ * Function:    mt_display()
+ * Description: call machtype and display list
+ */
+
+static void
 mt_display(string,size)
      char *string;
      int size;
@@ -207,7 +267,12 @@ mt_display(string,size)
 }
 
 
+/* 
+ * Function:    mt_disks()
+ * Description: call machtype and get disk list
+ */
 
+static void
 mt_disks(string,size)
      char *string;
      int size;
@@ -243,7 +308,12 @@ mt_disks(string,size)
 }
   
 
+/* 
+ * Function:    mt_machtype()
+ * Description: call machtype and get memory
+ */
 
+static void
 mt_memory()
 {
   char buf[BUFSIZ];
