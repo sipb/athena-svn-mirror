@@ -1,45 +1,209 @@
-2002-11-18  Mikael Hallendal  <micke@codefactory.se>
+2003-01-20  Mikael Hallendal  <micke@codefactory.se>
 
-	* Release 1.0.7
+	* Release 2.2.0
 
-	* NEWS: Updated to 1.0.7
+	* configure.in: Bumped version to 2.2.0
 
-	* configure.in: Bumped to 1.0.7
+	* NEWS: Update for 2.2.0
+	
+2003-01-15  Pablo Saratxaga  <pablo@mandrakesoft.com>
 
-2002-11-11  Fatih Demir <kabalak@gtranslator.org>
+	* configure.in: Added Vietnamese (vi), Arabic (ar),
+	Finnish (fi) and Macedonian (mk) to ALL_LINGUAS.
+
+2003-01-13  Richard Hult  <rhult@codefactory.se>
+
+	* Release 2.1.5.
+
+	* NEWS: Update for 2.1.5.
+	
+	* configure.in: Bump version to 2.1.5.
+
+2003-01-10  Fatih Demir <kabalak@gtranslator.org>
 
 	* configure.in: Added "ta" (Tamil) to the languages' list.
+
+2002-01-09  Richard Hult  <rhult@codefactory.se>
+
+	* data/ui/yelp.glade: Hide unimplemented options in the find
+	dialog for now.
+	
+2002-01-09  Padraig O'Briain  <padraig.obriain@sun.com>
+
+	* stylesheets/yelp-customization.xsl:
+	Add entry for body tag attributes so that the colour of the text is 
+	obtained from the GTK theme. Addresses issue raised in bug #95190.
+
+2002-01-07  Naba Kumar  <naba@gnome.org>
+
+	* configure.in: Added hi (hindi) in ALL_LINGUAS
+	
+2003-01-06  Richard Hult  <rhult@codefactory.se>
+
+	* Release 2.1.4.
+
+	* NEWS: Updated for 2.1.4.
+
+	* configure.in: Bumped to 2.1.4.
+
+2002-12-16  Richard Hult  <rhult@codefactory.se>
+
+	* Release 2.1.3
+	
+	* NEWS: Updated for 2.1.3
+	
+	* configure.in: Bumped to 2.1.3
+
+	* src/yelp-main.c: Fix warning.
+
+2002-11-18  Fernando Herrera <fherrera@onirica.com>
+
+	* yelp.desktop.in: add X-GNOME-BUGZILLA stuff
+
+2002-11-08  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/yelp-main.c: (main): register yelp with
+	bonobo-activation server on a per-display basis
+	so that we get a new instace per display/screen.
+	Fixes #91983.
 
 2002-11-03  Dmitry G. Mastrukov  <dmitry@taurussoft.org>
 
 	* configure.in: Added Belarusian to ALL_LINGUAS
 
-2002-10-21  jacob berkman  <jacob@ximian.com>
+2002-11-01  Mikael Hallendal  <micke@codefactory.se>
 
-	* src/yelp-reader.c (yelp_reader_start): fix build (move str_uri
-	decl. to right function)
+	* Release 2.1.2
+
+	* NEWS: Updated for 2.1.2
+
+	* configure.in: 
+	- Bumped to 2.1.2
+	- Require gtkhtml2 2.1.2
+
+2002-10-29  Richard Hult  <rhult@codefactory.se>
+
+	* src/yelp-html-gtkhtml2.c (yelp_html_find): Implement find
+	backward.
+
+	* src/yelp-window.c (window_find_response_cb)
+	(window_find_delete_event_cb, window_find_cb): Use the find
+	dialog.
+	(window_find_again_cb): Implement.
+
+	* src/yelp-html-gtkhtml2.c (yelp_html_find): Implement find
+	forward.
+
+	* data/ui/yelp.glade: Steal galeons find dialog.
+
+	* configure.in: Add libglade dependency.
+
+2002-10-27  Richard Hult  <rhult@codefactory.se>
+
+	* src/yelp-pregenerate.c (main): Don't create GNodes with g_new,
+	use g_node_new. Fixes a crash.
+	(parse_section): Initialize variables and break out of loop when
+	we have a match.
+
+2002-10-26  Mikael Hallendal  <micke@codefactory.se>
+
+	* src/yelp-base.c: removed unused struct type.
+
+2002-10-21  Mikael Hallendal  <micke@codefactory.se>
+
+	* Released 2.1.1
+
+	* NEWS: updated for 2.1.1
+
+	* configure.in: 
+	- bumped version to 2.1.1
+	- depend on gtkhtml2 2.1.1
+
+2002-10-21  Richard Hult  <rhult@codefactory.se>
+
+	* src/yelp-view-content.c (content_show_uri): Ditto.
+
+	* src/yelp-view-index.c (index_show_uri): Put head tag around meta
+	and title tags.
+
+	* src/yelp-main.c (main): Remove unused variable.
+	Include string.h to avoid warnings.
+
+	* src/yelp-view-content.c (content_show_uri): Don't try to set
+	focus on view, use view->widget.
+
+	* src/yelp-view-toc.c (toc_get_html):
+	* src/yelp-view-index.c (index_get_html):
+	* src/yelp-view.c (yelp_view_get_html): Implement
+	YelpView::get_html.
+
+	* src/yelp-view.h: Add virtual function get_html that returns the
+	YelpHtml used by the view.
+
+	* src/yelp-html-gtkhtml2.c (yelp_html_find_next): Implement.
+
+	* src/yelp-html.h (yelp_html_find_next): Add virtual function
+	find_next.
+
+	* src/yelp-window.c (window_find_cb): The start of find
+	functionality, needs more work.
+	(window_init): Remove unused view_current variable.
+
+2002-10-19  Mikael Hallendal  <micke@codefactory.se>
+
+	* src/yelp-db2html.c (main): trying to fix #93814 by checking the
+	  return value from g_path_get_dirname.
+
+	* src/Makefile.am (yelp_LDADD): link with POPT_LIBS. 
+
+	* configure.in: Check for popt, fixes #96168
+
+	* src/yelp-uri.c (yelp_uri_no_path): added, support to easy check
+	  if URI is of type 'index:' without any path.
+
+	* src/yelp-view-index.c (index_show_uri): Don't try loading if URI
+	  is just 'index:'. Fixes #95877
 
 2002-10-19  Mikael Hallendal  <micke@codefactory.se>
 
 	* src/yelp-reader.c:
 	(reader_start): no need to check for YELP_URI_TYPE_GHELP_OTHER
- 	  since it will never get here with that URI type.
+	  since it will never get here with that URI type.
 	(yelp_reader_start): Check for file, unknown and ghelp_other and
 	  display it with gnome_uri_show, fixes #95181, thanks Paolo for
 	  investigating this.
 
-2002-10-14  Sander Vesik <sander.vesik@sun.com>
+2002-10-08  Paolo Maggi <maggi@athena.polito.it>
 
-	* stylesheets/yelp-customization.xsl,
-	  stylesheets/yelp-custom.xsl:
+	* src/yelp-window.[ch]: YelpWindow is now inherited from GnomeApp.
+	  The window title is now "title - Help Browser", instead of  
+	  "Help Browser:title", in this way you can see in the tasklist
+	  applet the name of the loaded page. Removed the gconf stuff
+	  since is no more needed. Note that Yelp still does not monitor
+	  menus_have_icons gconf key 
 
-	merge fixes from HEAD to gnome-2-0
+	* src/yelp-view-content.c (content_show_uri): set the loading page
+	  title to "Loading...", instead of ".."
+
+	* src/yelp-view-index.c:
+	(index_show_uri): ditto
+	(set_relation): removed since no more needed
+	(yelp_view_index_new): add an accellerator to "Search for:"
 
 2002-10-04  Marius Andreiana <mandreiana@yahoo.com>
 
 	* stylesheets/yelp-customization.xsl: made translatable the
-	following strings: Next/Previous/Contents/About This Document
-	* stylesheets/l10n.xml: added strings Next/Previous/Contents
+	  following strings: Next,Previous,Contents,About This Document
+	* stylesheets/l10n.xml: added strings Next,Previous,Contents
+	
+2002-10-04  Mikael Hallendal  <micke@codefactory.se>
+
+	* NEWS: updated for 2.1.0
+
+	* configure.in: bumped version to 2.1.0, did a large jump here to
+	  reach GNOME version numbers.
+
+	* autogen.sh: don't use gnome-common
 
 2002-09-23  Mikael Hallendal  <micke@codefactory.se>
 
@@ -50,18 +214,69 @@
 	* src/Makefile.am (test_uri_LDADD): use special LIBS for
 	  yelp-db2html.
 
-2002-09-18  Padraig O'Briain  <padraig.obriain@sun.com>
+2002-09-23  Sander Vesik <sander.vesik@sun.com>
 
+	* stylesheets/yelp-customization.xsl:
+	- fix some cases of 'next' not leading anywhere on the TOC page
+	- fix user guide documents occasionaly having the 'Previous' link
+	  point to nowhere in the chunk "following" TOC
+
+2002-09-20  Mikael Hallendal  <micke@codefactory.se>
+
+	* src/yelp-window.c: changed to reflect changes in the views.
+
+	* src/yelp-view.[ch]:
+	- added
+	- new super class of the views.
+	
+	* src/yelp-view-content.[ch]: 
+	* src/yelp-view-index.[ch]: 
+	* src/yelp-view-toc.[ch]: 
+	- removed signals
+	- cleaning up and making it a YelpView subclass.
+
+	* src/yelp-view-content.c: 
+	- removed signals
+	- cleaning up and making it a YelpView subclass.
+
+	* src/Makefile.am (yelp_SOURCES): added yelp-view.[ch]
+
+2002-09-03  Padraig O'Briain  <padraig.obriain@sun.com>
+ 
 	* src/yelp-view-content.c (content_reader_finished_cb):
- 	- Remove redundant call to gtk_tree_path_copy().
+ 	- Remove redundant call to gtk_tree_path_copy(). 
  	- Add casts to fix compiler warnings on Solaris.
  	- Do not focus HtmlView widget if we have a row in the content
-	  tree. 
-	- Fixes #91708.
+	  tree. (Fixes #91708)
 
-2002-09-08  Yanko Kaneti  <yaneti@declera.com>
+2002-09-17  Narayana Pattipati  <narayana.pattipati@wipro.com>
 
-	* configure.in: Added Hebrew (he) to ALL_LINGUAS
+	* src/yelp-pregenerate.c (main): added an error message.
+
+2002-09-16  Sander Vesik <sander.vesik@sun.com>
+
+	* stylesheets/yelp-customization.xsl:
+	- initial support for <appendix>
+
+2002-09-16  Sander Vesik <sander.vesik@sun.com>
+
+	* stylesheets/yelp-customization.xsl:
+	- unindent copyright
+	- leave space inbetween the 'Copyright' header and copyright
+	  holders
+	- emulate 'fine print' on licence text
+	- make <TT> use monospaced font (should go into gtkhtml2)
+	- give <variablelist>-s back internal spacing that was
+	  originaly lost due to both <variablelist> and table of
+	  contents resulting in the same html tags
+	- change nested ordered lists to use "lower-alpha" instead of
+	  "lower-roman" 
+	- yet more fighting with table borders
+	- make tables be consistently top aligned
+	- leave space before figures and figure titles inside lists
+
+	* stylesheets/yelp-custom.xsl:
+	- wrap legalnotice in <div class="legalnotice">...</div>
 
 2002-09-04  Mikael Hallendal  <micke@codefactory.se>
 
@@ -70,10 +285,6 @@
 	* NEWS: udpated for 1.0.6
 
 	* configure.in: 1.0.6
-
-2002-09-03  Stanislav Brabec  <utx@penguin.cz>
-
-	* configure.in: Added cs to ALL_LINGUAS.
 
 2002-09-01  Marius Andreiana <mandreiana@yahoo.com>
 
@@ -127,17 +338,7 @@
  
 	* yelp.desktop.in: 
 	- Fix the desktop file so that it validates correctly.
-
-2002-08-20  Mikael Hallendal  <micke@codefactory.se>
-
-	* src/yelp-view-toc.c (toc_page_end): removed a new line before
-	  the gnome2 logo.
-
-2002-08-19  Sander Vesik <sander.vesik@sun.com>
-
-	* stylesheets/yelp-customization.xsl:
-	- make more table borders show up in the user guide
-
+	
 2002-08-16  Padraig O'Briain  <padraig.obriain@sun.com>
 
 	* src/yelp-html-gtkhtml1.c
@@ -154,32 +355,38 @@
 	* configure.in: Bumped to 1.0.3
 
 	* NEWS: Updated for 1.0.3
-	
-2002-08-13  Mikael Hallendal  <micke@codefactory.se>
 
+2002-08-13  Mikael Hallendal  <micke@codefactory.se>
+ 
 	* src/yelp-man.c:
 	(yelp_man_remove_duplicates_from_manpath): 
 	- return a GSList instead
-	- Hopefully fixed #90385
+ 	- Hopefully fixed #90385
 	(yelp_man_init): using a GSList for manpathes instead of gchar **.
+	
+2002-08-07  Mikael Hallendal  <micke@codefactory.se>
+
+	* src/yelp-view-toc.c: 
+	- Removed the GNOME icon in the bottom
+	- Removed the text in the bottom.
+	- Removed the blue sidebar.
+
+2002-08-07  Narayana Pattipati <narayana.pattipati@wipro.com>
+
+	* src/yelp-reader.c (yelp_reader_start): Made changes to make yelp
+          read the cached HTML files. Fixes #85258
+	* src/yelp-pregenerate.c: new file. Creates yelp-pregenerate utility
+          which pre-generates HTML files from XML files.
+	* src/yelp-pregenerate.h: new file
+	* src/yelp-reader.h: Added prototype for look_for_html_help_file
 
 2002-08-05  Sander Vesik <sander.vesik@sun.com>
-
 	* stylesheets/yelp-customization.xsl:
-        - apply bold formating to guibuttons
-        - apply mono formating to commands
-        - fix left-margin instead of margin-left
-        - relief from table formating quirks
-        - leave space after inline media objects
-        - make <b> create a consistent result
-        - make bulleted and numbered list items align consistently
-
-	* src/yelp-db2html.c:
-        - include quotes around stylesheet path so its correctly passed in
-
-	* stylesheets/yelp-custom.xsl:
-        - move parameterisation of admonition graphics to
-	  yelp-customization.xsl 
+	- apply bold formating to guibuttons
+	- apply mono formating to commands
+	- fix left-margin instead of margin-left
+	- relief from table formating quirks
+	- leave space after inline media objects
 
 2002-08-05  Mikael Hallendal  <micke@codefactory.se>
 
@@ -191,6 +398,18 @@
 	- Version updated to 1.0.2
 	- Requirement on libgnome to 2.0.2
 	- Requirement on gtkhtml2 to 1.99.10
+
+2002-08-05  Sander Vesik <sander.vesik@sun.com>
+	* src/yelp-db2html.c:
+	- include quotes around stylesheet path so its correctly passed in
+
+	* stylesheets/yelp-custom.xsl:
+	- move parameterisation of admonition graphics to
+	  yelp-customization.xsl 
+
+	* stylesheets/yelp-customization.xsl:
+	- make <b> create a consistent result
+	- make bulleted and numbered list items align consistently
 
 2002-08-04  Mikael Hallendal  <micke@codefactory.se>
 
@@ -223,8 +442,8 @@
 2002-08-04  Yogeesh MB <yogeeshappa.mathighatta@wipro.com> 
 
 	* src/yelp-man.c: added function which removes multiple 
- 	  man pathes, fixes bug #75728
-
+ 	man pathes, fixes bug #75728
+ 
 2002-08-02  Sander Vesik <sander.vesik@sun.com>
 	* stylesheets/yelp-customization.xsl:
 	- make list items have some space around them
@@ -521,18 +740,6 @@
 	* src/yelp-view-content.c (yelp_view_content_show_uri): 
 	- don't set "Loading..." if the doc is cached. It will only result
 	  in flicker.
-
-	* src/Makefile.am (yelp_LDADD): link with POPT_LIBS. 
-
-	* configure.in: Check for popt, fixes #96168
-
-	* src/yelp-uri.c (yelp_uri_no_path): added, support to easy check
-	  if URI is of type 'index:' without any path.
-
-	* src/yelp-view-index.c (index_show_uri): Don't try loading if URI
-	  is just 'index:'. Fixes #95877
-
-2002-10-19  Mikael Hallendal  <micke@codefactory.se>
 
 	* src/yelp-reader.c:
 	(reader_man_info_start):

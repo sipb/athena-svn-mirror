@@ -10,7 +10,8 @@ INCLUDES =								\
 	-DGNOMELOCALEDIR=\""$(yelplocaledir)"\"				\
 	-DLIBGNOME_MAN2HTML=\"$(LIBGNOME_MAN2HTML)\"			\
 	-DLIBGNOME_INFO2HTML=\"$(LIBGNOME_INFO2HTML)\"			\
-	-DSERVERDIR=\"$(libexecdir)\"
+	-DSERVERDIR=\"$(libexecdir)\"					\
+	-DBINDIR=\""$(bindir)"\"
 
 
 if HTML_WIDGET_GTKHTML1
@@ -20,7 +21,7 @@ html_widget_impl=yelp-html-gtkhtml2.c
 endif
 
 libexec_PROGRAMS = yelp-db2html
-bin_PROGRAMS = yelp
+bin_PROGRAMS = yelp yelp-pregenerate
 
 noinst_PROGRAMS = test-uri test-reader
 
@@ -48,6 +49,7 @@ test_reader_LDADD = 							\
 install-exec-local:
 	rm -f $(DESTDIR)$(bindir)/gnome-help
 	ln -s yelp $(DESTDIR)$(bindir)/gnome-help
+	ln -sf yelp $(DESTDIR)$(bindir)/gman
 
 yelp-marshal.h: yelp-marshal.list
 	cd $(srcdir) && \
@@ -66,8 +68,14 @@ yelp-marshal-main.c: yelp-marshal.c
 yelp_db2html_SOURCES =							\
 	yelp-db2html.c
 
+yelp_pregenerate_SOURCES =						\
+	yelp-pregenerate.c      yelp-pregenerate.h
+
 yelp_db2html_LDADD =							\
 	@DB2HTML_LIBS@
+
+yelp_pregenerate_LDADD =						\
+	@YELP_LIBS@
 
 yelp_SOURCES =								\
 	$(gnome_yelp_idl_sources)					\
@@ -85,6 +93,7 @@ yelp_SOURCES =								\
 	yelp-section.c		yelp-section.h				\
 	yelp-scrollkeeper.c	yelp-scrollkeeper.h			\
 	yelp-util.c		yelp-util.h				\
+	yelp-view.c		yelp-view.h				\
 	yelp-view-content.c	yelp-view-content.h			\
 	yelp-view-index.c	yelp-view-index.h			\
 	yelp-view-toc.c		yelp-view-toc.h				\
@@ -99,7 +108,6 @@ yelp_LDADD =								\
 gnome_yelp_idl_sources =						\
 	GNOME_Yelp-stubs.c						\
 	GNOME_Yelp-skels.c						\
-	GNOME_Yelp.in							\
 	GNOME_Yelp-common.c						\
 	GNOME_Yelp.h
 

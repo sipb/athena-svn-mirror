@@ -35,6 +35,7 @@
 #include <libgnomeui/gnome-ui-init.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libgnomeui/gnome-client.h>
+#include <string.h>
 #include <stdlib.h>
 
 #include "GNOME_Yelp.h"
@@ -58,7 +59,9 @@ struct poptOption options[] = {
 		NULL,
 		NULL,
 	},
-	NULL
+	{
+		NULL
+	}
 };
 
 static BonoboObject * main_base_factory       (BonoboGenericFactory *factory,
@@ -270,8 +273,11 @@ main (int argc, char **argv)
         bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain(GETTEXT_PACKAGE);
 	g_thread_init (NULL);
-	
-	if (argc >= 2) {
+
+	if (strcmp (argv[0], "gman") == 0) {
+		url = g_strdup ("toc:man");
+	}
+	else if (argc >= 2) {
 		url = g_strdup (argv[1]);
 	} else {
 		url = g_strdup ("");
@@ -305,13 +311,17 @@ main (int argc, char **argv)
 		flag = TRUE;
         }
 
-	if (!factory) {
-		BonoboGenericFactory   *factory;
-		/* Not started, start now */
+	if (!factory) { /* Not started, start now */ 
+		BonoboGenericFactory *factory;
+		char                 *registration_id;
 
-		factory = bonobo_generic_factory_new (YELP_FACTORY_OAFIID,
+		registration_id = bonobo_activation_make_registration_id (
+					YELP_FACTORY_OAFIID,
+					gdk_display_get_name (gdk_display_get_default ()));
+		factory = bonobo_generic_factory_new (registration_id,
 						      main_base_factory,
 						      NULL);
+		g_free (registration_id);
 
 		bonobo_running_context_auto_exit_unref (BONOBO_OBJECT (factory));
         

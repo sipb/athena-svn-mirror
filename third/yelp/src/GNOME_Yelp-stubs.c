@@ -15,15 +15,16 @@ GNOME_Yelp_newWindow(GNOME_Yelp _obj, const CORBA_char * url,
    if (ORBit_small_flags & ORBIT_SMALL_FAST_LOCALS &&
        ORBIT_STUB_IsBypass(_obj, GNOME_Yelp__classid) &&
        (_ORBIT_epv =
-	ORBIT_STUB_GetEpv(_obj, GNOME_Yelp__classid))->newWindow) {
+	(POA_GNOME_Yelp__epv *) ORBIT_STUB_GetEpv(_obj,
+						  GNOME_Yelp__classid))->
+       newWindow) {
       ORBIT_STUB_PreCall(_obj);
       _ORBIT_epv->newWindow(ORBIT_STUB_GetServant(_obj), url, ev);
       ORBIT_STUB_PostCall(_obj);
    } else {			/* remote marshal */
-      gpointer _args[] = {
-	 (gpointer) & url
-      };
+      gpointer _args[1];
 
+      _args[0] = (gpointer) & url;
       ORBit_small_invoke_stub_n(_obj, &GNOME_Yelp__iinterface.methods, 0,
 				NULL, _args, NULL, ev);
 
@@ -38,7 +39,9 @@ GNOME_Yelp_getWindows(GNOME_Yelp _obj, CORBA_Environment * ev)
    if (ORBit_small_flags & ORBIT_SMALL_FAST_LOCALS &&
        ORBIT_STUB_IsBypass(_obj, GNOME_Yelp__classid) &&
        (_ORBIT_epv =
-	ORBIT_STUB_GetEpv(_obj, GNOME_Yelp__classid))->getWindows) {
+	(POA_GNOME_Yelp__epv *) ORBIT_STUB_GetEpv(_obj,
+						  GNOME_Yelp__classid))->
+       getWindows) {
       ORBIT_STUB_PreCall(_obj);
       _ORBIT_retval = _ORBIT_epv->getWindows(ORBIT_STUB_GetServant(_obj), ev);
       ORBIT_STUB_PostCall(_obj);

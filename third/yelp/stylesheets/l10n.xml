@@ -96,10 +96,6 @@
   <l:gentext key="Email" text="Email"/>  
   <l:gentext key="Publisher" text="Editore"/>
   <l:gentext key="Date" text="Data"/>
-  <l:gentext key="Next" text="Urm&#259;torul"/>
-  <l:gentext key="Previous" text="Precedentul"/>
-  <l:gentext key="Contents" text="Cuprins"/>
-
   <l:context name="title">
    <l:template name="bookinfo" text="Informazioni su questo documento"/>
    <l:template name="articleinfo" text="Informazioni su questo documento"/>
@@ -121,19 +117,23 @@
   </l:context>
 </l:l10n>
  
-<!-- ************ Norwegian ******************* -->
-<l:l10n xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" language="nb">
-  <l:gentext key="Title" text="Tittel"/>  
-  <l:gentext key="Author" text="Forfatter"/>
-  <l:gentext key="Authors" text="Forfattere"/>
-  <l:gentext key="Affiliation" text="Organisasjon"/>  
-  <l:gentext key="Email" text="E-post"/>  
-  <l:gentext key="Publisher" text="Utgiver"/>
-  <l:gentext key="Date" text="Dato"/>
+<!-- *************** Romanian ***************** -->
+<l:l10n xmlns:l="http://docbook.sourceforge.net/xmlns/l10n/1.0" language="ro">
+  <l:gentext key="Title" text="Titlu"/>
+  <l:gentext key="Author" text="Autor"/>
+  <l:gentext key="Authors" text="Autori"/>
+  <l:gentext key="Affiliation" text="Organiza&#355;ie"/>  
+  <l:gentext key="Email" text="Email"/>  
+  <l:gentext key="Publisher" text="Editor"/>
+  <l:gentext key="Date" text="Data"/>
+  <l:gentext key="Next" text="Urm&#259;torul"/>
+  <l:gentext key="Previous" text="Precedentul"/>
+  <l:gentext key="Contents" text="Cuprins"/>
+
   <l:context name="title">
-    <l:template name="bookinfo" text="Om dette dokumentet"/>
-    <l:template name="articleinfo" text="Om dette dokumentet"/>
+   <l:template name="bookinfo" text="Informa&#355;ii despre acest document"/>
+   <l:template name="articleinfo" text="Informa&#355;ii despre acest document"/>
   </l:context>
-</l:l10n>
+ </l:l10n>
 
 </i18n>

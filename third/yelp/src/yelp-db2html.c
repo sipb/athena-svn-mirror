@@ -1,3 +1,4 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
  * gnome-db2html3 - by John Fleck - based on Daniel Veillard's
  * xsltproc: user program for the XSL Transformation engine
@@ -105,7 +106,7 @@ main (gint argc, gchar **argv)
 	/* retrieve path component of filename passed in at
 	   command line */
 	pathname = g_path_get_dirname (docpath);
-        
+
 	/* set params to be passed to stylesheet */
 	params[0] = "gdb_docname";
 	params[1] = g_strconcat("\"", docpath, "\"", NULL) ;

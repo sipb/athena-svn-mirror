@@ -1,14 +1,12 @@
 AC_INIT(src/yelp-main.c)
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(yelp, 1.0.7)
+AM_INIT_AUTOMAKE(yelp, 2.2.0)
 
 AC_PROG_INTLTOOL
 
 AC_ARG_WITH(html-widget, [  --with-html-widget=[gtkhtml1/gtkhtml2] html widget to use])
 
 AM_MAINTAINER_MODE
-GNOME_COMMON_INIT
-GNOME_COMPILE_WARNINGS(error)
 
 AC_PROG_CC
 AC_ISC_POSIX
@@ -30,7 +28,7 @@ GETTEXT_PACKAGE=yelp
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE")
 
-ALL_LINGUAS="am ar az be bg ca cs da de el es et fr gl he hu it ja ko lv ms nl nn no pl pt pt_BR ro ru sk sl sq sv ta tr uk vi wa zh_CN zh_TW"
+ALL_LINGUAS="am ar az be bg ca cs da de el es et fi fr gl he hi hu it ja ko lv mk ms nl nn no pl pt pt_BR ro ru sk sl sq sv ta tr uk vi wa zh_CN zh_TW"
 AM_GLIB_GNU_GETTEXT
 
 # AM_GLIB_GNU_GETTEXT above substs $DATADIRNAME
@@ -58,15 +56,22 @@ else
 fi
 AC_DEFINE_UNQUOTED(GNOMELOCALEDIR, "$GNOMELOCALEDIR")
 
-PKG_CHECK_MODULES(DB2HTML, glib-2.0 >= 2.0.6		\
-			   libxslt >= 1.0.15)
+PKG_CHECK_MODULES(DB2HTML,
+[
+	glib-2.0 >= 2.0.6
+	libxslt >= 1.0.15
+])
 
-PKG_CHECK_MODULES(YELP, gnome-vfs-2.0 >= 1.1		\
-			libgnome-2.0 >= 2.0.2		\
-			libgnomeui-2.0 >= 1.103.0	\
-			libbonobo-2.0 >= 1.108.0	\
-			libxslt >= 1.0.15		\
-			gconf-2.0)
+PKG_CHECK_MODULES(YELP,
+[
+	gnome-vfs-2.0 >= 1.1
+	libgnome-2.0 >= 2.0.2
+	libgnomeui-2.0 >= 1.103.0
+	libbonobo-2.0 >= 1.108.0
+	libxslt >= 1.0.15
+	libglade-2.0 >= 2.0.0
+	gconf-2.0
+])
 
 CFLAGS="$YELP_CFLAGS $CFLAGS"
 
@@ -94,7 +99,7 @@ AC_SUBST(POPT_LIBS)
 if test x$with_html_widget = xgtkhtml1; then
 	PKG_CHECK_MODULES(HTML_WIDGET, libgtkhtml-3.0 >= 3.0)
 else
-	PKG_CHECK_MODULES(HTML_WIDGET, libgtkhtml-2.0 >= 2.0.2)
+	PKG_CHECK_MODULES(HTML_WIDGET, libgtkhtml-2.0 >= 2.1.2)
 fi
 	
 CFLAGS="$HTML_WIDGET_CFLAGS $CFLAGS"
@@ -115,5 +120,6 @@ stylesheets/docbook/catalog
 stylesheets/docbook/dtd/Makefile
 data/Makefile
 data/images/Makefile
+data/ui/Makefile
 po/Makefile.in
 ])

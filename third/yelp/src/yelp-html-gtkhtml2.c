@@ -28,6 +28,10 @@
 #include <libgnomevfs/gnome-vfs-mime-utils.h>
 #include <libgnome/gnome-i18n.h>
 #include <libgtkhtml/gtkhtml.h>
+#include <libgtkhtml/dom/traversal/dom-nodeiterator.h>
+#include <libgtkhtml/dom/traversal/dom-documenttraversal.h>
+#include <libgtkhtml/view/htmlselection.h>
+#include <libgtkhtml/layout/htmlboxtext.h>
 
 #include <string.h>
 #include <stdio.h>
@@ -41,10 +45,14 @@
 #define d(x)
 
 struct _YelpHtmlPriv {
-	HtmlView     *view;
+	HtmlView        *view;
 
-        HtmlDocument *doc;
-	YelpURI      *base_uri;
+        HtmlDocument    *doc;
+	YelpURI         *base_uri;
+
+	DomNodeIterator *find_iter;
+	DomNode         *find_node;
+	gint             find_offset;
 };
 
 
@@ -65,7 +73,7 @@ static void      html_link_clicked_cb    (HtmlDocument       *doc,
 static void      html_title_changed_cb   (HtmlDocument       *doc,
 					  const gchar        *new_title,
 					  YelpHtml           *html);
-
+static void      html_clear_find_data    (YelpHtml           *html);
 
 #define BUFFER_SIZE 16384
 
@@ -82,8 +90,7 @@ yelp_html_get_type (void)
 {
         static GType view_type = 0;
 
-        if (!view_type)
-        {
+        if (!view_type) {
                 static const GTypeInfo view_info =
                         {
                                 sizeof (YelpHtmlClass),
@@ -172,6 +179,9 @@ html_url_requested_cb (HtmlDocument *doc,
 	
         html = YELP_HTML (data);
 	priv = html->priv;
+
+	/* Reset find data when we load a new page. */
+	html_clear_find_data (html);
 	
 	html_stream_set_cancel_func (stream, html_cancel_stream, html);
 
@@ -238,6 +248,9 @@ html_link_clicked_cb (HtmlDocument *doc, const gchar *url, YelpHtml *html)
 			handled = TRUE;
 		}
 	}
+
+	/* Reset find data when we load a new page. */
+	html_clear_find_data (html);
 
 	g_signal_emit (html, signals[URI_SELECTED], 0, uri, handled);
 
@@ -368,3 +381,182 @@ yelp_html_get_widget (YelpHtml *html)
 	
 	return GTK_WIDGET (html->priv->view);
 }
+
+static void
+html_clear_find_data (YelpHtml *html)
+{
+	YelpHtmlPriv *priv;
+
+	priv = html->priv;
+	
+	/* Reset find data when we load a new page. */
+	if (priv->find_iter) {
+		g_object_unref (priv->find_iter);
+		priv->find_iter = NULL;
+	}
+}
+
+/* This code is really ugly, need to clean up. */
+void
+yelp_html_find (YelpHtml    *html,
+		const gchar *find_string,
+		gboolean     match_case,
+		gboolean     wrap,
+		gboolean     forward)
+{
+	YelpHtmlPriv    *priv;
+	DomNode         *root;
+	DomNode         *tmp_node;
+	DomNode         *node;
+	DomNodeIterator *iter;
+	gchar           *str;
+	gchar           *hit;
+	gchar           *haystack;
+
+	HtmlBox         *box;
+	gchar           *box_text;
+	gint             len;
+ 
+	g_return_if_fail (YELP_IS_HTML (html));
+	g_return_if_fail (find_string != NULL);
+
+	priv = html->priv;
+
+	if (!priv->find_iter) {
+		iter = dom_DocumentTraversal_createNodeIterator (
+			DOM_DOCUMENT_TRAVERSAL (priv->doc->dom_document),
+			DOM_NODE (priv->doc->dom_document),
+			DOM_SHOW_ALL,
+			NULL,
+			FALSE,
+			NULL);
+
+		root = NULL;
+		while ((node = dom_NodeIterator_nextNode (iter, NULL))) {
+			if (!g_ascii_strcasecmp (dom_Node__get_nodeName (node), "body")) {
+				root = node;
+				break;
+			}
+		}
+		
+		g_object_unref (iter);
+		iter = NULL;
+	
+		if (!root) {
+			g_warning ("html_find(): Couldn't find html body.");
+			return;
+		}
+		
+		priv->find_iter = dom_DocumentTraversal_createNodeIterator (
+			DOM_DOCUMENT_TRAVERSAL (priv->doc->dom_document),
+			root,
+			DOM_SHOW_TEXT,
+			NULL,
+			FALSE,
+			NULL);
+
+		if (forward) {
+			priv->find_node = dom_NodeIterator_nextNode (priv->find_iter, NULL);
+			priv->find_offset = 0;
+		} else {
+			do {
+				tmp_node = priv->find_node;
+				priv->find_node = dom_NodeIterator_nextNode (priv->find_iter, NULL);
+			} while (priv->find_node);
+
+			priv->find_node = tmp_node;
+
+			if (priv->find_node) {
+				box = html_view_find_layout_box (priv->view, priv->find_node, FALSE);
+				box_text = html_box_text_get_text (HTML_BOX_TEXT (box), &len);
+				priv->find_offset = len;
+			}
+		}
+	}
+	
+	while (priv->find_node) {
+		box = html_view_find_layout_box (priv->view, priv->find_node, FALSE);
+
+		/* We get the text from the layout box instead from the DOM node
+		 * directly, since the text in the box is canonicalized
+		 * (whitespace stripped in places etc).
+		 */
+		box_text = html_box_text_get_text (HTML_BOX_TEXT (box), &len);
+		if (len) {
+			str = g_new (gchar, len + 1);
+			memcpy (str, box_text, sizeof (gchar) * len);
+			str[len] = 0;
+		} else {
+			str = g_strdup ("");
+		}
+
+		if (!match_case) {
+			if (forward) {
+				haystack = g_utf8_casefold (str + priv->find_offset, len - priv->find_offset);
+			} else {
+				haystack = g_utf8_casefold (str, priv->find_offset);
+			}
+		} else {
+			if (forward) {
+				haystack = g_strdup (str + priv->find_offset);
+			} else {
+				haystack = g_strndup (str, priv->find_offset);
+			}
+		}
+
+		if (forward) {
+			hit = strstr (haystack, find_string);
+		} else {
+			hit = g_strrstr_len (haystack,
+					     priv->find_offset,
+					     find_string);
+		}
+
+		if (hit) {
+			if (forward) {
+				html_selection_set (priv->view,
+						    priv->find_node,
+						    hit - haystack + priv->find_offset,
+						    strlen (find_string));
+				priv->find_offset += hit - haystack + strlen (find_string);
+			} else {
+				html_selection_set (priv->view,
+						    priv->find_node,
+						    hit - haystack,
+						    strlen (find_string));
+				priv->find_offset = hit - haystack;
+			}
+				
+			html_view_scroll_to_node (priv->view,
+						  priv->find_node,
+						  HTML_VIEW_SCROLL_TO_TOP);
+		}
+
+		g_free (str);
+		g_free (haystack);
+		
+		if (hit) {
+			break;
+		}
+		
+		if (forward) {
+			priv->find_node = dom_NodeIterator_nextNode (priv->find_iter, NULL);
+			priv->find_offset = 0;
+		} else {
+			priv->find_node = dom_NodeIterator_previousNode (priv->find_iter, NULL);
+			if (priv->find_node) {
+				box = html_view_find_layout_box (priv->view, priv->find_node, FALSE);
+				box_text = html_box_text_get_text (HTML_BOX_TEXT (box), &len);
+				priv->find_offset = len;
+			}
+		}			
+	}
+
+	if (!priv->find_node) {
+		g_object_unref (priv->find_iter);
+		priv->find_iter = NULL;
+		priv->find_offset = 0;
+		html_selection_clear (priv->view);
+	}
+}
+

@@ -1,21 +1,53 @@
-# translation of yelp.gnome-2-0.he.po to Hebrew
-# translation of yelp.gnome-2-0.po to Hebrew
+# translation of yelp.HEAD.he.po to Hebrew
+# translation of yelp.HEAD.po to Hebrew
 # This file is distributed under the same license as the PACKAGE package.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# Gil Osher <dolfin@rpg.org.il>, 2002
-# Gil 'Dolfin' Osher <dolfin@rpg.org.il>, 2002
+# Gil 'Dolfin' Osher <dolfin@rpg.org.il>, 2002,2003
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: yelp.gnome-2-0.he\n"
-"POT-Creation-Date: 2002-11-18 23:28+0100\n"
-"PO-Revision-Date: 2002-10-14 20:20+0200\n"
+"Project-Id-Version: yelp.HEAD.he\n"
+"POT-Creation-Date: 2003-01-20 21:54+0100\n"
+"PO-Revision-Date: 2003-01-14 13:18+0200\n"
 "Last-Translator: Gil 'Dolfin' Osher <dolfin@rpg.org.il>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.0beta2\n"
+"X-Generator: KBabel 1.0\n"
+
+#: data/ui/yelp.glade.h:1
+msgid "*"
+msgstr "*"
+
+#: data/ui/yelp.glade.h:2
+msgid "<b>Find text in the document:</b>"
+msgstr "<b>מצא מלל במסמך:</b>"
+
+# he.po: To check!
+#: data/ui/yelp.glade.h:3
+msgid "Automatically _wrap around"
+msgstr "_גלוש סביב באופן אוטומטי"
+
+#: data/ui/yelp.glade.h:4
+msgid "Find text..."
+msgstr "מצא מלל..."
+
+#: data/ui/yelp.glade.h:5
+msgid "Match _entire word"
+msgstr "התאם מילה _שלמה"
+
+#: data/ui/yelp.glade.h:6
+msgid "_Match upper/lower case"
+msgstr "ה_תאם אותיות גדולות/קטנות"
+
+#: data/ui/yelp.glade.h:7
+msgid "_Next"
+msgstr "ה_בא"
+
+#: data/ui/yelp.glade.h:8
+msgid "_Previous"
+msgstr "ה_קודם"
 
 #: src/GNOME_Yelp.server.in.h:1
 msgid "Yelp"
@@ -23,14 +55,14 @@ msgstr "Yelp"
 
 #: src/GNOME_Yelp.server.in.h:2
 msgid "Yelp Factory"
-msgstr "מפעל Yelp"
+msgstr ""
 
-#: src/yelp-main.c:114
+#: src/yelp-main.c:117
 #, c-format
 msgid "Could not activate Yelp: '%s'"
-msgstr "לא הצלחתי להפעיל את Yelp: '%s'"
+msgstr "לא ניתן להפעיל את Yelp: '%s'"
 
-#: src/yelp-main.c:133
+#: src/yelp-main.c:136
 msgid "Could not open new window."
 msgstr "לא ניתן לפתוח חלון חדש."
 
@@ -69,11 +101,11 @@ msgstr "קריאות מערכת"
 
 #: src/yelp-man.c:369
 msgid "Library Functions"
-msgstr "פונקציות ספרייה"
+msgstr "פונקציות סיפרייה"
 
 #: src/yelp-man.c:374
 msgid "Kernel Routines"
-msgstr "שיגרות גרעין"
+msgstr "שגרות גרעין"
 
 #: src/yelp-man.c:429
 msgid "Applications"
@@ -97,122 +129,133 @@ msgstr "משחקים"
 
 #: src/yelp-man.c:454
 msgid "Overviews"
-msgstr "סקירות כלליות"
+msgstr "סקירות"
 
 #: src/yelp-man.c:459
 msgid "System Administration"
 msgstr "ניהול מערכת"
 
-#: src/yelp-view-content.c:422 src/yelp-view-index.c:498
-msgid "Section"
-msgstr "חלק"
-
-#: src/yelp-view-content.c:567 src/yelp-view-index.c:566
+#: src/yelp-view-content.c:502 src/yelp-view-index.c:423
 msgid "Loading..."
 msgstr "טוען..."
 
-#: src/yelp-view-index.c:461
-msgid "Search for:"
-msgstr "חפש עבור:"
+#: src/yelp-view-content.c:543 src/yelp-view-index.c:517
+msgid "Section"
+msgstr "חלק"
+
+#: src/yelp-view-index.c:480
+msgid "_Search for:"
+msgstr "_חפש:"
 
 #. GList           *seriesids;
-#: src/yelp-view-toc.c:183
+#: src/yelp-view-toc.c:165
 msgid "Help Contents"
-msgstr "תוכן העזרה"
+msgstr "תכני עזרה"
 
-#: src/yelp-view-toc.c:184
+#: src/yelp-view-toc.c:166
 msgid "GNOME - Desktop"
-msgstr "שולחן העבודה של GNOME"
+msgstr "GNOME - שולחן העבודה"
 
-#: src/yelp-view-toc.c:185
+#: src/yelp-view-toc.c:167
 msgid "Additional documents"
 msgstr "מסמכים נוספים"
 
-#: src/yelp-view-toc.c:186 src/yelp-view-toc.c:511
+#: src/yelp-view-toc.c:168 src/yelp-view-toc.c:493
 msgid "Manual Pages"
 msgstr "דפי מדריך"
 
-#: src/yelp-view-toc.c:187 src/yelp-view-toc.c:567
+#: src/yelp-view-toc.c:169 src/yelp-view-toc.c:549
 msgid "Info Pages"
 msgstr "דפי מידע"
 
-#: src/yelp-view-toc.c:384 src/yelp-view-toc.c:568 src/yelp-view-toc.c:792
+#: src/yelp-view-toc.c:366 src/yelp-view-toc.c:550 src/yelp-view-toc.c:749
 msgid "Documents"
 msgstr "מסמכים"
 
-#: src/yelp-view-toc.c:385 src/yelp-view-toc.c:512 src/yelp-view-toc.c:793
+#: src/yelp-view-toc.c:367 src/yelp-view-toc.c:494 src/yelp-view-toc.c:750
 msgid "Categories"
 msgstr "קטגוריות"
 
-#: src/yelp-view-toc.c:466
+#: src/yelp-view-toc.c:448
 msgid "Manual pages"
 msgstr "דפי מדריך"
 
-#: src/yelp-view-toc.c:731
+#: src/yelp-view-toc.c:712
 msgid "GNOME is"
 msgstr "GNOME זה"
 
-#: src/yelp-view-toc.c:732
+#: src/yelp-view-toc.c:713
 msgid "Free Software"
 msgstr "תוכנה חופשית"
 
-#: src/yelp-view-toc.c:733
+#: src/yelp-view-toc.c:714
 msgid "(C)"
 msgstr "(C)"
 
-#: src/yelp-window.c:159
+#: src/yelp-window.c:163
 msgid "/_File"
 msgstr "/_קובץ"
 
-#: src/yelp-window.c:160
+#: src/yelp-window.c:164
 msgid "/File/_New window"
-msgstr "/קובץ/_חלון חדש"
+msgstr "/קובץ/חלון _חדש"
 
-#: src/yelp-window.c:161
+#: src/yelp-window.c:165
 msgid "/File/_Close window"
 msgstr "/קובץ/_סגור חלון"
 
-#. {N_("/File/_Quit"),         NULL,         window_exit_cb,         0,                           "<StockItem>", GTK_STOCK_QUIT    },
-#: src/yelp-window.c:163
+#: src/yelp-window.c:167
+msgid "/_Edit"
+msgstr "/_עריכה"
+
+#: src/yelp-window.c:168
+msgid "/Edit/_Find in page..."
+msgstr "/עריכה/_מצא בעמוד..."
+
+#: src/yelp-window.c:169
+msgid "/Edit/_Find again"
+msgstr "/עריכה/_מצא שוב"
+
+#: src/yelp-window.c:171
 msgid "/_Go"
 msgstr "/_מעבר"
 
-#: src/yelp-window.c:164
+#: src/yelp-window.c:172
 msgid "/Go/_Back"
-msgstr "/מעבר/א_חורה"
+msgstr "/מעבר/_אחורה"
 
-#: src/yelp-window.c:165
+#: src/yelp-window.c:173
 msgid "/Go/_Forward"
 msgstr "/מעבר/_קדימה"
 
-#: src/yelp-window.c:166
+#: src/yelp-window.c:174
 msgid "/Go/_Home"
-msgstr "/מעבר/_בית"
+msgstr "/מעבר/_הביתה"
 
-#: src/yelp-window.c:167
+#: src/yelp-window.c:175
 msgid "/Go/_Index"
 msgstr "/מעבר/_אינדקס"
 
-#: src/yelp-window.c:168
+#: src/yelp-window.c:177
 msgid "/_Help"
 msgstr "/_עזרה"
 
-#: src/yelp-window.c:169
+#: src/yelp-window.c:178
 msgid "/Help/_About"
 msgstr "/עזרה/_אודות"
 
-#: src/yelp-window.c:227 src/yelp-window.c:429
+#: src/yelp-window.c:238 src/yelp-window.c:438
 msgid "Help Browser"
 msgstr "דפדפן עזרה"
 
-#: src/yelp-window.c:339
+#: src/yelp-window.c:351
 #, c-format
 msgid "The document '%s' does not exist"
 msgstr "המסמך '%s' אינו קיים"
 
 #. Note to translators: put here your name (and address) so it
 #. * will shop up in the "about" box
-#: src/yelp-window.c:598
+#: src/yelp-window.c:675
 msgid "translator_credits"
 msgstr ""
 "גיל אשר\n"
@@ -221,41 +264,41 @@ msgstr ""
 "פרוייקט linBrew\n"
 "http://linbrew.sourceforge.net"
 
-#: src/yelp-window.c:602
+#: src/yelp-window.c:679
 msgid "Help Browser for GNOME 2.0"
-msgstr "דפדפן עזרה עבור GNOME 2.0"
+msgstr "דפדפן עזרה ל GNOME 2.0"
 
-#: src/yelp-window.c:657
+#: src/yelp-window.c:788
 msgid "Back"
 msgstr "אחורה"
 
-#: src/yelp-window.c:658
+#: src/yelp-window.c:789
 msgid "Show previous page in history"
-msgstr "הצג את העמוד הקודם בהיסטוריה"
+msgstr "מציג עמודים קודמים בהיסטוריה"
 
-#: src/yelp-window.c:669
+#: src/yelp-window.c:800
 msgid "Forward"
 msgstr "קדימה"
 
-#: src/yelp-window.c:670
+#: src/yelp-window.c:801
 msgid "Show next page in history"
-msgstr "הצג את העמוד הבא בהיסטוריה"
+msgstr "מציג את העמודים הבאים בהיסטוריה"
 
-#: src/yelp-window.c:683
+#: src/yelp-window.c:814
 msgid "Home"
 msgstr "בית"
 
-#: src/yelp-window.c:684
+#: src/yelp-window.c:815
 msgid "Go to home view"
 msgstr "לך לתצוגת בית"
 
-#: src/yelp-window.c:694
+#: src/yelp-window.c:825
 msgid "Index"
 msgstr "אינדקס"
 
-#: src/yelp-window.c:695
+#: src/yelp-window.c:826
 msgid "Search in the index"
-msgstr "חפש באינדקס"
+msgstr "חיפוש באינדקס"
 
 #: yelp.desktop.in.h:1
 msgid "Get help with GNOME"
