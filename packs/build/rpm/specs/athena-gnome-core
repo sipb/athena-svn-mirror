@@ -3,7 +3,7 @@ Summary: The core programs for the GNOME GUI desktop environment, for Athena
 Copyright: GPL
 Group: User Interface/Desktops
 
-Requires: athena-gnomelibs, athena-control-center, athena-gdk-pixbuf
+Requires: athena-gnome-libs, athena-control-center, athena-gdk-pixbuf
 
 %description
 GNOME (GNU Network Object Model Environment) is a user-friendly set of
