@@ -1,0 +1,17 @@
+#
+# $Id: Imakefile,v 1.1 1996-05-23 06:19:02 cfields Exp $
+#
+
+CONFDIR=	/etc/athena/login/xdm
+XCONFIGS=	Xlogin Xreset
+CONFIGS=	xdm-config
+
+install::
+	$(MKDIRHIER) $(DESTDIR)$(CONFDIR)
+	-for i in $(CONFIGS); do \
+		$(INSTALL) -m 0644 $$i $(DESTDIR)$(CONFDIR)/; \
+		done
+	-for i in $(XCONFIGS); do \
+		$(INSTALL) -m 0755 $$i $(DESTDIR)$(CONFDIR)/; \
+		done
+	$(INSTALL) -m 0755 xdm $(DESTDIR)$(ATHRETCDIR)/axdm
