@@ -11,7 +11,7 @@
 ### modified, every installation floppy and tape need not be
 ### rewritten.
 
-### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.1 1993-10-12 05:03:48 probe Exp $
+### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.2 1993-12-29 17:35:08 miki Exp $
 ### $Locker:  $
 
 echo "Set some variables"
@@ -91,6 +91,8 @@ mkdir /root/dev
 mkdir /root/devices
 find /devices -depth -print | cpio -pdm /root 2> /dev/null
 find /dev -depth -print | cpio -pdm /root 2> /dev/null
+chmod 755 /root/dev
+chmod 755 /root/devices
 cat </etc/path_to_inst >/root/etc/path_to_inst
 cp /dev/null /root/reconfigure
 if [ ${MACH}X = 4cX ]
