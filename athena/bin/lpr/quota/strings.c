@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/strings.c,v 1.3 1990-07-03 16:17:42 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/strings.c,v 1.4 1990-11-08 15:41:33 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/strings.c,v $ */
 /* $Author: epeisach $ */
 
@@ -37,6 +37,8 @@ static int dbfd = 0;
 static FILE *dbfno = NULL;
 
 char *malloc(), *realloc();
+off_t lseek();
+
 /* Internal description of the database.  Strings will be allocated
    and pointers stored in one table. As it is inefficient to add strings
    one at a time in terms of realloc, we cheat and have a concept of the
@@ -101,7 +103,7 @@ logger_read_strings()
 
     if(fscanf(dbfno, "%5.5d\n", &num) < 1) {
 	/* Either end of file or something */
-	close_database();
+	(void) close_database();
 	return -1;
     }
 
@@ -111,17 +113,17 @@ logger_read_strings()
     /* Allocate space in our table... */
     if (set_maxnum_entries(num + 10)) {
 	/* No mem or something */
-	close_database();
+	(void) close_database();
 	return -1;
     }
 	
 
     for(i=1; i <= num; i++) {
 	if(fscanf(dbfno, "%s\n", buf) < 1) {
-	    close_database();
+	    (void) close_database();
 	    return -1;
 	}
-	if ( !((*string)[i] = malloc(strlen(buf) + 1))) /* Enomem... */
+	if ( !((*string)[i] = malloc((unsigned) strlen(buf) + 1))) /* Enomem... */
 	    {
 		errno = ENOMEM;
 		return 0;
@@ -260,7 +262,7 @@ char *str;
     
     /* First add the entry to the end of the file. If we can't do that, we 
        are screwed */
-    if ( lseek(dbfd, 0, L_XTND) < 0) {
+    if ( lseek(dbfd, (off_t) 0, L_XTND) < 0) {
 	(void) close_database();
 	return(0); /* Error seeking to the end */
     }
@@ -274,7 +276,7 @@ char *str;
 	return(0); /* Error writing string */
     }
 
-    if ( lseek(dbfd, 0, L_SET) < 0) {
+    if ( lseek(dbfd, (off_t) 0, L_SET) < 0) {
 	(void) close_database();
 	UNPROTECT();
 	return(0); /* Error going to beginning */
@@ -304,7 +306,7 @@ char *str;
 
     /* Now allocate the new space */   
 
-    if ( !((*string)[++numstrings] = malloc(strlen(str) + 1))) /* Enomem... */
+    if ( !((*string)[++numstrings] = malloc((unsigned) strlen(str) + 1))) /* Enomem... */
 	    {
 
 		errno = ENOMEM;

@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/uid_strings.c,v 1.1 1990-09-10 14:51:57 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/uid_strings.c,v 1.2 1990-11-08 15:43:10 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/uid_strings.c,v $ */
 /* $Author: epeisach $ */
 
@@ -36,6 +36,7 @@ static int dbfd = 0;
 static FILE *dbfno = NULL;
 
 char *malloc(), *realloc();
+off_t lseek();
 
 /* Internal description of the database.  Strings will be allocated
    and pointers stored in one table. As it is inefficient to add strings
@@ -97,7 +98,7 @@ uid_read_strings()
 
     if(fscanf(dbfno, "%5.5d\n", &num) < 1) {
 	/* Either end of file or something */
-	uid_close_database();
+	(void) uid_close_database();
 	return -1;
     }
 
@@ -106,16 +107,16 @@ uid_read_strings()
     /* Allocate space in our table... */
     if (uid_set_maxnum_entries(num + 10)) {
 	/* No mem or something */
-	uid_close_database();
+	(void) uid_close_database();
 	return -1;
     }
 
     for(i = 1; i <= num; i++) {
 	if(fscanf(dbfno, "%s\n", buf) < 1) {
-	    uid_close_database();
+	    (void) uid_close_database();
 	    return -1;
 	}
-	if ( !((*string)[i] = malloc(strlen(buf) + 1))) /* Enomem... */
+	if ( !((*string)[i] = malloc((unsigned) strlen(buf) + 1))) /* Enomem... */
 	    {
 		errno = ENOMEM;
 		return 0;
@@ -190,14 +191,14 @@ Uid_num num;
 
     if (num <= maxstrings) return(0); /* Can't go down in size */
     if (maxstrings == 0) {
-	if(!(new = malloc((num + 1) * sizeof(char*)))) {
+	if(!(new = malloc((unsigned) (num + 1) * sizeof(char*)))) {
 	    errno = ENOMEM;
 	    return(-1);
 	}
     }
     else {
 	
-	if(!(new = realloc(*string, (num + 1) * sizeof(char *)))) {
+	if(!(new = realloc((char *) *string, (unsigned) (num + 1) * sizeof(char *)))) {
 	    /* We are in big trouble. We are out of memory. We have
 	       possibly corrupted the string table - we better abort, but
 	       we leave it to upper layers to decide */
@@ -255,7 +256,7 @@ char *str;
     
     /* First add the entry to the end of the file. If we can't do that, we 
        are screwed */
-    if ( lseek(dbfd, 0, L_XTND) < 0) {
+    if ( lseek(dbfd, (off_t) 0, L_XTND) < 0) {
 	(void) uid_close_database();
 	return(0); /* Error seeking to the end */
     }
@@ -269,7 +270,7 @@ char *str;
 	return(0); /* Error writing string */
     }
 
-    if ( lseek(dbfd, 0, L_SET) < 0) {
+    if ( lseek(dbfd, (off_t) 0, L_SET) < 0) {
 	(void) uid_close_database();
 	UNPROTECT();
 	return(0); /* Error going to beginning */
@@ -299,7 +300,7 @@ char *str;
 
     /* Now allocate the new space */   
 
-    if ( !((*string)[++numstrings] = malloc(strlen(str) + 1))) /* Enomem... */
+    if ( !((*string)[++numstrings] = malloc((unsigned) strlen(str) + 1))) /* Enomem... */
 	    {
 
 		errno = ENOMEM;
