@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_col_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/col.c,v 1.4 1989-10-23 13:47:23 jik Exp $";
+     static char rcsid_col_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/col.c,v 1.5 1989-11-07 18:53:53 jik Exp $";
 #endif
 
 /*
@@ -28,7 +28,7 @@
 #include "mit-copyright.h"
 
 
-static int calc_string_width();
+static int calc_string_width(), calc_widths(), num_width();
 static void trim_strings();
 extern char *malloc();
 
