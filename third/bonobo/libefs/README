@@ -1,3 +1,0 @@
-This is a first approach to implement a file-system-inside-a-file. The
-library is called libefs (EFS = Embedded File System).
-
