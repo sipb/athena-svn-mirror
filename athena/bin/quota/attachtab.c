@@ -1,5 +1,5 @@
 /*
- * $Id: attachtab.c,v 1.10 1998-01-09 00:31:33 ghudson Exp $
+ * $Id: attachtab.c,v 1.11 1998-09-29 19:52:04 danw Exp $
  *
  * Copyright (c) 1989,1991 by the Massachusetts Institute of Technology.
  *
@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_attachtab_c[] = "$Id: attachtab.c,v 1.10 1998-01-09 00:31:33 ghudson Exp $";
+static char rcsid_attachtab_c[] = "$Id: attachtab.c,v 1.11 1998-09-29 19:52:04 danw Exp $";
 #endif lint
 
 #include "attach.h"
@@ -15,6 +15,7 @@ static char rcsid_attachtab_c[] = "$Id: attachtab.c,v 1.10 1998-01-09 00:31:33 g
 #include <sys/file.h>
 #include <pwd.h>
 #include <string.h>
+#include <signal.h>
 
 #define TOKSEP " \t\r\n"
 
@@ -25,6 +26,7 @@ struct	_attachtab	*attachtab_first, *attachtab_last;
 static int debug_flag = 0;
 static char attachtab_fn[512];
 static char *abort_msg = "quota: aborting\n";
+static sigset_t omask;
 
 /*
  * LOCK the attachtab - wait for it if it's already locked
@@ -42,6 +44,7 @@ void lock_attachtab()
 #ifdef POSIX
     struct flock fl;
 #endif
+    sigset_t blocked;
 
     if (!initd) {
 	if (fp = fopen("/etc/athena/attach.conf","r")) {
@@ -59,6 +62,10 @@ void lock_attachtab()
 	}
     }
     
+    sigemptyset(&blocked);
+    sigaddset(&blocked, SIGTSTP);
+    sigprocmask(SIG_BLOCK, &blocked, &omask);
+
     if (debug_flag)
 	printf("Locking attachtab....");
     if (attach_lock_count == 0) {
@@ -115,6 +122,8 @@ void unlock_attachtab()
 	fprintf(stderr,
 		"Programming botch!  Tried to unlock unlocked attachtab\n");
     }
+
+    sigprocmask(SIG_SETMASK, &omask, NULL);
 }
 
 /*
