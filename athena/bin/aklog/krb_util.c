@@ -1,8 +1,9 @@
 /*
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/aklog/krb_util.c,v $
- * $Author: probe $
- *
- * Copyright 1987, 1988 by the Massachusetts Institute of Technology.
+ * This file replaces some of the routines in the Kerberos utilities.
+ * It is based on the Kerberos library modules:
+ * 	send_to_kdc.c
+ * 
+ * Copyright 1987, 1988, 1992 by the Massachusetts Institute of Technology.
  *
  * For copying and distribution information, please see the file
  * <mit-copyright.h>.
@@ -10,14 +11,12 @@
 
 #ifndef lint
 static char rcsid_send_to_kdc_c[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/aklog/krb_util.c,v 1.1 1992-12-06 17:52:15 probe Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/aklog/krb_util.c,v 1.2 1992-12-11 13:26:12 probe Exp $";
 #endif /* lint */
 
 #include <mit-copyright.h>
 
 #include <krb.h>
-#include <prot.h>
-
 #include <stdio.h>
 #include <errno.h>
 #include <sys/time.h>
@@ -29,6 +28,9 @@ static char rcsid_send_to_kdc_c[] =
 #include <netinet/in.h>
 #include <netdb.h>
 #include <strings.h>
+
+#include <afs/param.h>
+#include <afs/cellconfig.h>
 
 #define S_AD_SZ sizeof(struct sockaddr_in)
 
@@ -193,24 +195,31 @@ send_to_kdc(pkt,rpkt,realm)
             (void) fflush(stdout);
         }
     }
-    if (no_host) {
-	if (krb_debug)
-	    fprintf(stderr, "%s: can't find any Kerberos host.\n",
-		    prog);
-        retval = SKDC_CANT;
-        goto rtn;
-    }
     /* retry each host in sequence */
     for (retry = 0; retry < CLIENT_KRB_RETRY; ++retry) {
-        for (host = hostlist; host->h_name != (char *)NULL; host++) {
-            to.sin_family = host->h_addrtype;
-            bcopy(host->h_addr, (char *)&to.sin_addr,
-                  host->h_length);
-            if (send_recv(pkt, rpkt, f, &to, hostlist)) {
-                retval = KSUCCESS;
-                goto rtn;
-            }
-        }
+	extern struct afsconf_cell cellconfig;
+
+	if (!no_host) {
+	    for (host = hostlist; host->h_name != (char *)NULL; host++) {
+		to.sin_family = host->h_addrtype;
+		bcopy(host->h_addr, (char *)&to.sin_addr,
+		      host->h_length);
+		if (send_recv(pkt, rpkt, f, &to, hostlist)) {
+		    retval = KSUCCESS;
+		    goto rtn;
+		}
+	    }
+	} else {
+	    for (i=0; i<cellconfig.numServers; i++) {
+		to.sin_family = cellconfig.hostAddr[i].sin_family;
+		to.sin_addr   = cellconfig.hostAddr[i].sin_addr;
+		to.sin_port   = krb_udp_port;
+		if (send_recv(pkt, rpkt, f, &to, (struct hostent *)0)) {
+		    retval = KSUCCESS;
+		    goto rtn;
+		}
+	    }
+	}
     }
     retval = SKDC_RETRY;
 rtn:
@@ -300,22 +309,36 @@ static send_recv(pkt,rpkt,f,_to,addrs)
         printf("received packet from %s\n", inet_ntoa(from.sin_addr));
         fflush(stdout);
     }
-    for (hp = addrs; hp->h_name != (char *)NULL; hp++) {
-        if (!bcmp(hp->h_addr, (char *)&from.sin_addr.s_addr,
-                  hp->h_length)) {
-            if (krb_debug) {
-                printf("Received it\n");
-                (void) fflush(stdout);
-            }
-            return 1;
-        }
-        if (krb_debug)
-            fprintf(stderr,
-                    "packet not from %x\n",
-                    hp->h_addr);
+    if (addrs) {
+	for (hp = addrs; hp->h_name != (char *)NULL; hp++) {
+	    if (!bcmp(hp->h_addr, (char *)&from.sin_addr.s_addr,
+		      hp->h_length)) {
+		if (krb_debug) {
+		    printf("Received it\n");
+		    (void) fflush(stdout);
+		}
+		return 1;
+	    }
+	    if (krb_debug)
+		fprintf(stderr,
+			"packet not from %x\n",
+			hp->h_addr);
+	}
+    } else {
+	/* Only permit a response from the host we sent the packet to,
+	 * since we have not specified any alternate addresses. */
+	if (!bcmp(&from.sin_addr.s_addr, &_to->sin_addr.s_addr,
+		  sizeof(from.sin_addr.s_addr))) {
+	    if (krb_debug) {
+		printf("Received it\n");
+		(void) fflush(stdout);
+	    }
+	    return 1;
+	}
     }
     if (krb_debug)
-        fprintf(stderr, "%s: received packet from wrong host! (%x)\n",
-                "send_to_kdc(send_rcv)", from.sin_addr.s_addr);
+	fprintf(stderr, "%s: received packet from wrong host! (%x)\n",
+		"send_to_kdc(send_rcv)", from.sin_addr.s_addr);
+	
     return 0;
 }
