@@ -2,7 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *    $Id: machtype_sun4.c,v 1.17 1996-12-11 21:24:45 ghudson Exp $
+ *    $Id: machtype_sun4.c,v 1.18 1998-03-06 04:38:51 jweiss Exp $
  *    $Locker:  $
  */
 
@@ -12,8 +12,7 @@
 #include <kvm.h>
 #include <nlist.h>
 #include <fcntl.h>
-#undef NBPP
-#define NBPP 4
+#include <unistd.h>
 #include <sys/types.h>
 #include <sys/file.h>
 #include <sys/cpu.h>
@@ -363,16 +362,17 @@ do_memory (kernel, mf)
 kvm_t *kernel;
 int mf;
 {
-  int pos, mem;
+   int pos, mem, nbpp;
 
-   kvm_read(kernel,nl[X_maxmem].n_value,&mem, sizeof(mem));
+   nbpp = getpagesize() / 1024;
+   kvm_read(kernel, nl[X_maxmem].n_value, &mem, sizeof(mem));
    if(verbose)
-      printf("%d user, ",mem * NBPP);
-   kvm_read(kernel,nl[X_physmem].n_value,&mem, sizeof(mem));
+      printf("%d user, ", mem * nbpp);
+   kvm_read(kernel, nl[X_physmem].n_value, &mem, sizeof(mem));
    if(verbose)
-      printf("%d (%d M) total\n",mem * NBPP ,(mem * NBPP + 916)/1024 );
-    else
-      printf("%d\n", mem * NBPP + 916);
+      printf("%d (%d M) total\n", mem * nbpp, (mem * nbpp + 916) / 1024);
+   else
+      printf("%d\n", mem * nbpp + 916);
    return;
 }
 
