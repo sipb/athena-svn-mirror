@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v $
- *	$Id: olc_stock.c,v 1.21 1992-02-14 21:23:15 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: olc_stock.c,v 1.22 1997-04-30 17:50:14 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v 1.21 1992-02-14 21:23:15 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v 1.22 1997-04-30 17:50:14 ghudson Exp $";
 #endif
 #endif
 
@@ -36,10 +36,6 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/file.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-
-#define STOCK_DIR "/mit/olc-stock/stock_answers"
-#define BROWSER "/mit/olc-stock/browser"
-#define MAGIC  "/mit/olc-stock/MAGIC"
 
 /*
  * Function:  do_olcr_stock() allows a consultant to examine the
@@ -61,20 +57,19 @@ do_olc_stock(arguments)
   char dtopic[TOPIC_SIZE];	/* default topic */
   int status;			/* Status returned by whatnow */
   int find_topic=0;
-  
+  char **cmd;
+
   dtopic[0] = '\0';
 
-  if (stat(MAGIC, &statbuf) < 0) 
+  if (stat(client_SA_magic_file(), &statbuf) < 0) 
     {
-#ifdef ATHENA
-      call_program("/bin/athena/attach","olc-stock");
-#else
-      /* Do whatever's appropriate on your system to mount the stock */
-      /* answers.. */
-#endif
-      if (stat(MAGIC, &statbuf) < 0)
+      /* Run all commands in the list from client_SA_attach_commands() */
+      for (cmd = client_SA_attach_commands() ; cmd && *cmd ; cmd++)
+	system(*cmd);
+
+      if (stat(client_SA_magic_file(), &statbuf) < 0)
 	{
-	  fprintf(stderr,"Unable to attach olc-stock file system.\n");
+	  fprintf(stderr,"Unable to attach the stock answers.\n");
 	  return(ERROR);
 	}
     }
@@ -147,10 +142,11 @@ do_olc_stock(arguments)
       return(ERROR);
     case 0:                 /* child */
       if (topic[0] != '\0')
-	execlp(BROWSER, BROWSER, "-s", file, "-r", STOCK_DIR, "-f", topic,
-	       0);
+	execlp(client_SA_browser_program(), client_SA_browser_program(),
+	          "-s", file, "-r", client_SA_directory(), "-f", topic, 0);
       else
-	execlp(BROWSER, BROWSER, "-s", file, "-r", STOCK_DIR, 0);
+	execlp(client_SA_browser_program(), client_SA_browser_program(),
+	          "-s", file, "-r", client_SA_directory(), 0);
       olc_perror("stock: execlp");
       fprintf(stderr, "stock: could not exec stock answer browser\n");
       _exit(ERROR);
@@ -158,13 +154,12 @@ do_olc_stock(arguments)
       (void) wait(0);
     }
  
-  if(OLC)
+  if(client_is_user_client())
      return(SUCCESS);
  
   if (stat(file, &statbuf) < 0) 
     {
-      if(!OLC)
-	printf("No stock answer to send.\n");
+      printf("No stock answer to send.\n");
       return(SUCCESS);
     }
 
@@ -185,14 +180,14 @@ do_olc_stock(arguments)
       if(string_eq(Request.target.username, Request.requester.username))
 	{
 	  printf("You are not connected to a %s but the next one\n",
-		 DEFAULT_CONSULTANT_TITLE);
+		 client_default_consultant_title());
 	  printf("to answer your question will receive your message.\n");
 	}
       else
 	{
 	  printf("%s [%d] is not connected to a %s but the next one\n",
 		 Request.target.username,Request.target.instance,
-		 DEFAULT_CONSULTANT_TITLE); 
+		 client_default_consultant_title()); 
 	  printf("to answer %s's question will receive your message.\n",
 		 Request.target.username);
 	}
