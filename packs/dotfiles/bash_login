@@ -1,8 +1,11 @@
 # Prototype global .bash_login file
-# $Id: bash_login,v 1.9 2003-10-14 15:47:40 rbasch Exp $
+# $Id: bash_login,v 1.10 2004-10-24 18:14:44 ghudson Exp $
 
 # This file is sourced by default user file ~/.bash_login
 
+# Unlike tcsh, bash does not source .bashrc in a login shell.  Since
+# we rely on the environment setup performed by bashrc, source it
+# explicitly.
 . ~/.bashrc
 
 # SGI xwsh runs shells as login shells. We don't want this.
@@ -119,7 +122,7 @@ fi
 # Run standard system/user startup activities
 
 # Run default system startup activities.  To skip these, put the command
-# "set skip_tty_startup" in your ~/.bash_environment file.
+# "skip_tty_startup=t" in your ~/.bash_environment file.
 
 if [ "${ZEPHYR_CLIENT+set}" != set ]; then
 	export ZEPHYR_CLIENT
@@ -132,7 +135,7 @@ if [ "${skip_tty_startup+set}" != set ]; then
 	fi
 	IGNOREEOF=			# ^D won't log you out
 	$ZEPHYR_CLIENT			# Start Zephyr client
-	get_message -login		# Display current motd
+	get_message -new -login		# Display current motd
 	mailquota -n			# Check quota on post office server
 	from -t -n			# Check for mail
 	(olc who &) > /dev/null 2>&1	# Ping the OLC server
@@ -151,7 +154,7 @@ fi
 
 
 # Run notification system, lert. To skip this (a generally bad idea unless
-# you plan to run it yourself), put the commend "set skip_lert" in your
+# you plan to run it yourself), put the command "skip_lert=t" in your
 # ~/.bash_environment file.
 
 if [ "${skip_lert+set}" != set ]; then
