@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.25 2002-01-30 00:50:33 rbasch Exp $
+# $Id: Makefile.athena,v 1.26 2002-06-02 20:55:33 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -10,8 +10,9 @@ prepare:
 	cd src && CONFIG_SITE=`pwd`/../config.site.athena CPPFLAGS=" " \
 		./configure --without-hesiod \
 		--enable-shared \
-		--with-ccopts=-I${ATHTOOLROOT}/usr/athena/include \
-		--with-ldopts=-L${ATHTOOLROOT}/usr/athena/lib
+		--with-cppopts=-D_REENTRANT \
+		--with-ccopts="-g -I/usr/athena/include" \
+		--with-ldopts=-L/usr/athena/lib
 
 clean:
 	cd src && ${MAKE} clean
