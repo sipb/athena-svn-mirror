@@ -16,6 +16,7 @@
  *
  * SimpleLibrary(base,objs,destdir)	- Build/install a library    (simple)
  * build_library(base,objs)		- Build a library
+ * install_library(base,objs)		- Install a library
  *
  * SimpleLint(base,srcs)		- Build/install a lint library
  *
@@ -136,8 +137,7 @@ all-shared::	lib/**/base/**/_s.a					@@\
 lib/**/base/**/_s.a:	objs						@@\
 	$(MKSHLIB) $@ objs
 
-#define SimpleLibrary(base,objs,dir)					@@\
-build_library(base,objs)						@@\
+#define install_library(base)						@@\
 install::								@@\
 	$(RM) $(DESTDIR)dir/lib/**/base.a				@@\
 	$(INSTALL) -m 0644 lib/**/base.a $(DESTDIR)dir			@@\
@@ -150,6 +150,11 @@ inst-shared::								@@\
 	$(RM) $(DESTDIR)dir/lib/**/base/**/$(SHLIB_EXT).a		@@\
 	$(INSTALL) -m 0644 lib/**/base/**/_s.a $(DESTDIR)dir/$(SHLIB_DIR)lib/**/base/**/$(SHLIB_EXT).a @@\
 	$(RANLIB) $(DESTDIR)dir/lib/**/base/**/$(SHLIB_EXT).a
+
+#define SimpleLibrary(base,objs,dir)					@@\
+build_library(base,objs)						@@\
+install_library(base)
+
 
 #ifdef NOLINT
 #define SimpleLint(base,srcs)
