@@ -1562,7 +1562,7 @@ fi
 
 # Define the identity of the package.
  PACKAGE=gnome-utils
- VERSION=2.8.0
+ VERSION=2.8.1
 
 
 cat >>confdefs.h <<_ACEOF
