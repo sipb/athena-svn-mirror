@@ -17,10 +17,11 @@
  * the main loop.
  */
 
-static const char rcsid[] = "$Id: larvnetd.c,v 1.1 1998-09-01 20:57:44 ghudson Exp $";
+static const char rcsid[] = "$Id: larvnetd.c,v 1.2 1998-09-17 23:17:55 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/time.h>
 #include <sys/socket.h>
 #include <stdio.h>
 #include <stdlib.h>
