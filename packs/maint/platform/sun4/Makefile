@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.3 1997-02-15 20:02:45 ghudson Exp $
+# $Id: Makefile,v 1.4 1997-04-11 20:16:04 ghudson Exp $
 
 INITD=/etc/init.d
 RC0=/etc/rc0.d
@@ -13,6 +13,7 @@ install:
 	mkdir -p ${DESTDIR}${RC0}
 	mkdir -p ${DESTDIR}${RC2}
 	install -c -m 0755 athena ${DESTDIR}${INITD}
+	install -c -m 0755 athena.config ${DESTDIR}${INITD}
 	install -c -m 0755 finish-update ${DESTDIR}${INITD}
 	install -c -m 0755 nfs.client ${DESTDIR}${INITD}
 	install -c -m 0755 rpc ${DESTDIR}${INITD}
