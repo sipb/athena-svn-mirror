@@ -1,9 +1,9 @@
 /*
- * $Id: except.c,v 4.8 1997-11-11 19:31:57 ghudson Exp $
+ * $Id: except.c,v 4.9 1997-11-19 03:05:16 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 4.8 1997-11-11 19:31:57 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/except.c,v 4.9 1997-11-19 03:05:16 ghudson Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -298,6 +298,7 @@ int match(pattern, string)
 	char *p, *q, c;
 
 	q = string;
+	p = pattern;
 	for (; *p;) {
 		c = *p++;
 		switch (c) {
