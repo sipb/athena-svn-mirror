@@ -525,7 +525,7 @@ load_config (char *class)
 #endif
 	/* Default colors in the case the color set is the custom one */
 	fore_color = gnome_config_get_string ("foreground=black");
-	back_color = gnome_config_get_string ("background=#fffff7");
+	back_color = gnome_config_get_string ("background=#ebecf0");
 	cfg->color_set = gnome_config_get_int ("color_set=4");
 
 	cfg->menubar_hidden = !gnome_config_get_bool ("menubar=true");
