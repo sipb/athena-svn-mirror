@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.8 2000-04-28 14:33:27 ghudson Exp $
+# $Id: Makefile,v 1.9 2003-04-02 15:34:56 ghudson Exp $
 
 SHELL=/bin/sh
 ATHETCDIR=/usr/athena/etc
@@ -36,6 +36,8 @@ install:
 		esac \
 	done
 	catman -M ${DESTDIR}${ATHMANDIR}
+	rm -f ${DESTDIR}/core
+	ln -s dev/null ${DESTDIR}/core
 
 clean:
 
