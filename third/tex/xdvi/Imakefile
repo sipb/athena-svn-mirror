@@ -2,14 +2,20 @@
  * Imakefile for dvi previewer.
  */
 
-XCOMM The following seven lines are the crucial ones.
+XCOMM The following four lines are the most crucial ones.
 OSDEFS=-DMSBITFIRST
 OPTIONDEFS=-DUSE_PK -DBUTTONS -DGREY
-DEFAULT_FONT_PATH=/usr/local/tex/fonts
-DEFAULT_VF_PATH=/usr/local/tex/fonts/vf
+DEFAULT_TEXMF_PATH=/usr/local/tex/texmf
 DEFAULT_FONT_SIZES=$(SIZES300)
-DEFAULT_FIG_PATH=/usr/local/tex/inputs
-DEFAULT_HEADER_PATH=/usr/local/tex/ps
+
+XCOMM It may also be necessary to change the following.
+DEFAULT_FONT_PATH=.:%S
+DEFAULT_VF_PATH=.:%S
+DEFAULT_FIG_PATH=.:%S
+DEFAULT_HEADER_PATH=.:%S
+
+/* You may need to uncomment this for Solaris 2.x */
+/* LOCAL_LDFLAGS=-R$(USRLIBDIR) */
 
 LOCAL_LIBRARIES_TOOL=$(VARLIBS) XawClientLibs
 DEPLIBS_TOOL=$(VARDEPLIBS) XawClientDepLibs
@@ -24,15 +30,15 @@ MATHLIB=-lm
 SYS_LIBRARIES=$(MATHLIB)
 
 DEFS=$(OSDEFS) $(OPTIONDEFS)
-DEFINES=$(DEFS) -DDEFAULT_FONT_PATH=\"$(DEFAULT_FONT_PATH)\" \
-  -DDEFAULT_VF_PATH=\"$(DEFAULT_VF_PATH)\" \
+DEFINES=$(DEFS) -DDEFAULT_TEXMF_PATH=\"$(DEFAULT_TEXMF_PATH)\" \
   -DDEFAULT_FONT_SIZES=\"$(DEFAULT_FONT_SIZES)\" \
-  -DDEFAULT_SUBDIR_PATH=\"$(DEFAULT_SUBDIR_PATH)\" \
+  -DDEFAULT_FONT_PATH=\"$(DEFAULT_FONT_PATH)\" \
+  -DDEFAULT_VF_PATH=\"$(DEFAULT_VF_PATH)\" \
   -DDEFAULT_FIG_PATH=\"$(DEFAULT_FIG_PATH)\" \
   -DDEFAULT_HEADER_PATH=\"$(DEFAULT_HEADER_PATH)\"
 
 /*
- * Nothing below this line should need to be changed by the user.
+ * No changes beyond this point should be necessary.
  */
 
 /* Sizes for magstephalf and magsteps 0..5. */
@@ -53,10 +59,10 @@ Makefile.cfg: Imakefile mkconfig
 
 include Makefile.cfg
 
-SRCS=xdvi.c events.c dvi_init.c dvi_draw.c special.c font_open.c vf.c util.c \
-  $(VARSRCS)
-OBJS=xdvi.o events.o dvi_init.o dvi_draw.o special.o font_open.o vf.o util.o \
-  $(VAROBJS)
+SRCS=xdvi.c events.c dvi_init.c dvi_draw.c special.c font_open.c filefind.c \
+  vf.c util.c $(VARSRCS)
+OBJS=xdvi.o events.o dvi_init.o dvi_draw.o special.o font_open.o filefind.o \
+  vf.o util.o $(VAROBJS)
 
 ComplexProgramTarget(xdvi)
 
@@ -68,9 +74,10 @@ squeeze:	squeeze.c
 
 xdvi.man: xdvi_man.sed mksedscript
 	chmod u+x mksedscript
-	./mksedscript "$(DEFAULT_FONT_PATH)" $(DEFAULT_FONT_SIZES) \
-		"$(DEFAULT_VF_PATH)" "$(DEFAULT_FIG_PATH)" \
-		"$(DEFAULT_HEADER_PATH)" $(DEFS) > sedscript
+	./mksedscript "$(DEFAULT_TEXMF_PATH)" $(DEFAULT_FONT_SIZES) \
+		"$(DEFAULT_FONT_PATH)" "$(DEFAULT_VF_PATH)" \
+		"$(DEFAULT_FIG_PATH)" "$(DEFAULT_HEADER_PATH)" $(DEFS) \
+		> sedscript
 	sed -f sedscript < xdvi_man.sed > xdvi.man
 
 uninstall:

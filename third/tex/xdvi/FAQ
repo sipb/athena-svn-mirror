@@ -6,9 +6,14 @@ This file answers the following questions about installing xdvi:
 	virtual fonts (such as helv.vf or phvr.vf) with xdvi.  Why not?
     4.	I am trying to display PostScript specials with -DPS_GS, but
 	instead I get the message `gs: gs: Malformed ghostview color property.'
-    5.	I am using gs 3.3.3 to render PostScript figures, but find that it
+    5.	I am using gs 3.33 to render PostScript figures, but find that it
 	cuts some off below or to the right of a certain point, and others
 	are omitted entirely.
+    6.	What is this "_get_wmShellWidgetClass undefined" error?
+
+Last modified:  16 February 1996
+A current copy of this file can be viewed on the WWW at the URL
+http://math.berkeley.edu/~vojta/xdvi_faq.txt
 
 ----------
 
@@ -45,7 +50,7 @@ As further explanation, let me begin by pointing out:
 
 Virtual fonts are recipes for building fonts from other fonts.
 In the case of PostScript fonts, those other fonts reside on
-your printer.  Which is fine for dvi-to-PostScript programs
+your printer.  This is fine for dvi-to-PostScript programs
 such as dvips, but it presents a problem for xdvi since it cannot
 access your printer.
 
@@ -81,7 +86,7 @@ xdvi will also run with version 3 of ghostscript, but see question #5.
 
 ----------
 
-5.  I am using gs 3.3.3 to render PostScript figures, but find that it
+5.  I am using gs 3.33 to render PostScript figures, but find that it
     cuts some off below or to the right of a certain point, and others
     are omitted entirely.
 
@@ -89,10 +94,10 @@ You should apply the following patch.  This will also fix similar errors
 with ghostview.  This patch supersedes a previous patch I have suggested
 to some people.
 
-*** gdevxini.c.orig	Tue May  2 14:12:52 1995
---- gdevxini.c	Tue May  2 14:13:57 1995
+*** gdevxini.c.orig	Sun Nov  6 13:46:42 1994
+--- gdevxini.c	Mon Jun  5 15:40:18 1995
 ***************
-*** 320,345 ****
+*** 319,344 ****
   
   	    /* The following sets the imageable area according to the */
   	    /* bounding box and margins sent by ghostview.            */
@@ -119,7 +124,7 @@ to some people.
   	} else if (xdev->pwin == (Window)None) {
   	    eprintf("gs: Cannot get ghostview property.\n");
   	    exit(1);
---- 320,330 ----
+--- 319,329 ----
   
   	    /* The following sets the imageable area according to the */
   	    /* bounding box and margins sent by ghostview.            */
@@ -131,3 +136,31 @@ to some people.
   	} else if (xdev->pwin == (Window)None) {
   	    eprintf("gs: Cannot get ghostview property.\n");
   	    exit(1);
+
+----------
+
+6.  What is this "_get_wmShellWidgetClass undefined" error?
+
+	In SunOS 4.1.2 Sun fixed a shared-library bug in ld which conflicts
+with the way X builds the shared Xmu library, causing these symbols, notably,
+to be undefined when building some X11 clients on SunOS 4.1.[23]:
+	_get_wmShellWidgetClass
+	_get_applicationShellWidgetClass
+Compiling "-Bstatic -lXmu -Bdynamic" is overkill; be sure to set
+OSTeenyVersion correctly in the config/sun.cf file and rebuild X11R5.
+
+To solve the problem if you are using OpenWindows 3.0 (X11R4-based Xt), please
+contact your local Sun office and request the following patches:
+
+Patch i.d.      Description
+100512-02       4.1.x OpenWindows 3.0 libXt Jumbo patch
+100573-04       OpenWindows 3.0: xstdcmap fails to set XStandardColomap for
+		24-bit machines [this also fixes bug 1087332, "With patched
+		ld and libc, customer is getting undefined symbols"]
+
+[Greg Earle, earle@Sun.COM; 7/92]
+
+A source patch for use with the X11R4 libraries was developed by Conrad
+Kimball (cek@sdc.boeing.com); it retrofits into R4 some fixes made in R5 to
+get around this problem. The patch is on ftp.x.org in [1/93]
+	contrib/X11R4_sunos4.1.2_patch_version3.Z

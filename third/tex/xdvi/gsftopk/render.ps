@@ -1,7 +1,7 @@
 % render.ps - write font bitmaps and metric information to standard output.
-% Version 1.9.
+% Version 1.11.
 
-% Copyright (c) 1994 Paul Vojta.  All rights reserved.
+% Copyright (c) 1994 Paul Vojta.
 %
 % Redistribution and use in source and binary forms, with or without
 % modification, are permitted provided that the following conditions
@@ -42,8 +42,22 @@
 % Standard file definitions
 
 /.stdin  where { pop } { /.stdin  (%stdin)  (r) file def } ifelse
-/.stdout where { pop } { /.stdout (%stdout) (w) file def } ifelse
-/.stderr where { pop } { /.stderr (%stderr) (w) file def } ifelse
+
+/bad-stdout false def
+/.stdout where
+  { pop }
+  { { /.stdout (%stdout) (w) file def } stopped 
+    { /bad-stdout true def }
+    if
+  } ifelse
+
+/bad-stderr false def
+/.stderr where
+  { pop }
+  { { /.stderr (%stderr) (w) file def } stopped
+    { /bad-stderr true def }
+    if
+  } ifelse
 
 %%
 %
@@ -53,10 +67,16 @@
 %	Print string to stderr and quit.
 
 /fatal
-  {
+  bad-stderr
+  {{
+    (render.ps: ) exch concatstrings
+    print flush 1 .quit
+  }}
+  {{
     (render.ps: ) exch concatstrings
     .stderr exch writestring .stderr flushfile 1 .quit
-  }
+  }}
+  ifelse
 bind def
 
 % (string) brun -
@@ -69,8 +89,8 @@ bind def
 bind def
 
 % (exec) getbbox -
-%	Get bounding box of the executable object.
-%	It also makes a device just a few pixels larger on each side.
+%	Get bounding box of the executable object and save it in char-urx,
+%	char-ury, etc.
 
 /getbbox
   {
@@ -85,6 +105,36 @@ bind def
       /char-lly exch floor cvi def
       /char-llx exch floor cvi def
     grestore
+  }
+bind def
+
+% - drawfontbbox -
+%	Draw the font's bbox.
+
+/drawfontbbox
+  {
+    currentfont /FontBBox get
+    dup dup 0 get exch 1 get currentfont /FontMatrix get transform moveto
+    dup dup 0 get exch 3 get currentfont /FontMatrix get transform lineto
+    dup dup 2 get exch 1 get currentfont /FontMatrix get transform lineto
+    dup     2 get exch 3 get currentfont /FontMatrix get transform lineto
+  }
+bind def
+
+% (exec) mkbboxdev -
+%	Get bounding box of the executable object and make a device a few
+%	pixels larger on each side.  If pathbbox fails for the object,
+%	then use the font's bbox.
+
+/mkbboxdev
+  {
+    getbbox
+
+    char-llx char-urx sub round 0 eq char-lly char-ury sub round 0 eq or
+      {
+	{drawfontbbox} getbbox
+      }
+    if
 
       matrix
       char-urx char-llx sub 4 add % width
@@ -113,33 +163,35 @@ bind def
   newdict exch /Encoding exch put
   /OurFont newdict definefont /TargetFont exch def} def
 
-% Define writeppmfile, if it's not provided.
+% Define writeppmfile, if it's not provided, or if the symbol .stdout is not
+% available.
 
-systemdict /writeppmfile known not
-  {
-    /writeppmfile
-    {
-      pop % always use currentdevice
+/our-writeppmfile
 
-      dup (P4\n) writestring
-      dup width =string cvs writestring
-      dup ( ) writestring
-      dup height =string cvs writestring
-      dup (\n) writestring
+  bad-stdout
+  systemdict /writeppmfile known not
+  or
+  {{
+    (P4\n) print
+    width =string cvs print
+    ( ) print
+    height =string cvs print
+    (\n) print
 
-      width 7 add 8 div cvi string
-      0 1 height 1 sub
-	{
-	  currentdevice exch 2 index copyscanlines
-	  2 index exch writestring
-	}
-      for
-      pop % discard string
-      pop % discard file
-    }
-    def
-  }
-if
+    width 7 add 8 div cvi string
+    0 1 height 1 sub
+      {
+	currentdevice exch 2 index copyscanlines
+	print
+      }
+    for
+    pop % discard string
+  }}
+  {{
+    .stdout currentdevice writeppmfile
+  }}
+  ifelse
+def
 
 
 %%
@@ -190,8 +242,8 @@ def
 % Define the font, and make it current.
 
 /TargetFont fontname cvlit findfont def
-  TargetFont
   [ font-size 0 specinfo cvx exec 0 exch font-size 0 0 ]
+  TargetFont exch
 makefont setfont
 
 % If the font's bounding box is zero, then do not use it.
@@ -207,13 +259,7 @@ if
 
 usefontbbox
   {
-    { currentfont /FontBBox get
-      dup dup 0 get exch 1 get currentfont /FontMatrix get transform moveto
-      dup dup 0 get exch 3 get currentfont /FontMatrix get transform lineto
-      dup dup 2 get exch 1 get currentfont /FontMatrix get transform lineto
-      dup     2 get exch 3 get currentfont /FontMatrix get transform lineto
-    }
-    getbbox
+    {drawfontbbox} mkbboxdev
   }
 if
 
@@ -227,7 +273,7 @@ if
     % Get the character's bounding box.  This also makes the device.
     usefontbbox not
       {
-	{ 0 0 moveto charstring true charpath } getbbox
+	{ 0 0 moveto charstring true charpath } mkbboxdev
       }
     if
 
@@ -249,6 +295,6 @@ if
     % Now write the bitmap.
     erasepage 0 0 moveto
     charstring show
-    .stdout currentdevice writeppmfile
+    our-writeppmfile
   }
 forall

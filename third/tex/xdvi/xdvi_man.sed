@@ -1,4 +1,4 @@
-.\" Copyright (c) 1994 Paul Vojta.  All rights reserved.
+.\" Copyright (c) 1996 Paul Vojta.  All rights reserved.
 .\"
 .\" Redistribution and use in source and binary forms, with or without
 .\" modification, are permitted provided that the following conditions
@@ -27,7 +27,7 @@
 .de SB
 \&\fB\s-1\&\\$1 \\$2\s0\fR
 ..
-.TH XDVI 1 "28 April 1995" "X Version 11"
+.TH XDVI 1 "20 September 1996" "X Version 11"
 .SH NAME
 xdvi \- DVI Previewer for the X Window System
 .SH SYNOPSIS
@@ -51,6 +51,7 @@ xdvi \- DVI Previewer for the X Window System
 [\fB\-rv\fP]
 #ifbuttons
 [\fB\-expert\fP]
+[\fB\-shrinkbutton\fP\fIn\fP \fIshrink\fP]
 #endif
 [\fB\-mgs\fP[\fIn\fP] \fIsize\fP]
 [\fB\-hush\fP]
@@ -265,7 +266,7 @@ Sets the font for use in the buttons.
 .BI \-gamma " gamma"
 .RB ( .gamma )
 Controls the interpolation of colors in the greyscale anti-aliasing color
-palette.  Default value is 1.0.  For 0 < 
+palette.  Default value is 1.0.  For 0 <
 .I gamma
 < 1, the fonts will be lighter (more like the background), and for
 .I gamma
@@ -387,6 +388,7 @@ It is also passed to
 .B metafont
 during automatic creation of fonts.
 #endif
+By default, it is %%mfmode%%.
 .TP
 .BI \-mgs " size"
 Same as
@@ -599,7 +601,7 @@ instead of vice versa.
 .TP
 .BI \-s " shrink"
 .RB ( .shrinkFactor )
-Defines the initial shrink factor.  The default value is 3.
+Defines the initial shrink factor.  The default value is %%shrink%%.
 .TP
 .BI \-S " density"
 .RB ( .densityPercent )
@@ -629,6 +631,20 @@ and
 In the present case, this option is accepted but has no effect, since
 .B xdvi
 has been compiled without support for PostScript specials.
+#endif
+#ifbuttons
+.TP
+.BI \-shrinkbutton "n shrink"
+.RB ( .shrinkButton\fIn\fP )
+Specifies that the
+.IR n th
+button changing shrink factors shall change to shrink factor
+.IR factor .
+This is useful, e.g., when using 600 dpi fonts, since in that case shrinking
+by a factor of 4 is still not enough.  Here
+.I n
+may be a number from 1 to 4.
+[Note:  this option is likely to change in the future.]
 #endif
 .TP
 .BI \-sidemargin " dimen"
@@ -842,41 +858,422 @@ and optionally drags it;
 pushing Button 1 moves the image up or right by an amount equal to the distance
 from the button press to the upper left-hand corner of the window; pushing
 Button 3 moves the image down or left by the same amount.
+.SH SIGNALS
+When
+.B xdvi
+receives a
+.SB SIGUSR1
+signal, it rereads the
+.I dvi
+file.
 .SH ENVIRONMENT
-The environment variable
+.TP
 .SB DISPLAY
-specifies which bit map display terminal to use.
+Which bit map display terminal to use.
+#ifconfig
+.TP
+.SB TEXMFCNF
+Indicates a (colon-separated) list of directories to search for files named
+.BR texmf.cnf ,
+which are to be interpreted as configuration files.  An extra colon anywhere
+in the list incorporates the compiled-in default value at that point.
+See the section CONFIGURATION FILES for more details on configuration files,
+how
+.B xdvi
+searches for them, and what they should contain.
+#endif
+.TP
+.SB TEXMF
+Indicates the top directory of \*(Te\& Directory Structure (TDS) trees to use
+when searching for files.  It should be a list of directories, separated by
+colons.  An extra colon anywhere in the variable incorporates the compiled-in
+default value at that point.
+See the section on FILE SEARCHING for more details.
+.TP
+.SB XDVISIZES
+Indicates which sizes of fonts are available.
+It should consist of a list of numbers separated by colons.
+If the list begins with a colon, the system default sizes are used, as well.
+Sizes are expressed in dots per inch and must be integers.
+The current default set of sizes is %%DEFAULT_FONT_SIZES%%.
+.B xdvi
+will also try the actual size of the font before trying any of the given sizes.
+.TP
+.SB XDVIFONTS
+Determines the path(s) searched for
+.I pk
+and
+.I gf
+font pixel files.  See the section on FILE SEARCHING for more details.
+#iftexfonts
+.TP
+.SB PKFONTS
+Determines the path(s) searched for
+.I pk
+and
+.I gf
+font pixel files if
+.SB XDVIFONTS
+is not set.
+.TP
+.SB TEXPKS
+Determines the path(s) searched for
+.I pk
+and
+.I gf
+font pixel files if neither
+.SB XDVIFONTS
+nor
+.SB PKFONTS
+is set.
+.TP
+.SB TEXFONTS
+Determines the path(s) searched for
+.I pk
+and
+.I gf
+font pixel files if none of
+.SB XDVIFONTS,
+.SB PKFONTS,
+and
+.SB TEXPKS
+are set.  If this is used, it should not contain any
+.RB ` % '
+signs, since
+.B xdvi
+interprets this as a special character, but other applications do not.
+#endif
+.TP
+.SB XDVIVFS
+Determines the path(s) searched for virtual fonts
+.RI ( vf
+files).  See the section on FILE SEARCHING for more details.
+#iftexfonts
+.TP
+.SB VFFONTS
+Determines the path(s) searched for
+.I vf
+fonts if
+.SB XDVIVFS
+is not set.  If this is used, it should not contain any
+.RB ` % '
+signs, since
+.B xdvi
+interprets this as a special character, but other applications do not.
+#endif
+#ifps
+.TP
+.SB XDVIFIGS
+Determines the path(s) searched for PostScript figure files.
+See the section on FILE SEARCHING for more details.
+.TP
+.SB PSFIGURES
+Determines the path(s) searched for PostScript figure files if
+.SB XDVIFIGS
+is not set.
+.TP
+.SB TEXINPUTS
+Determines the path(s) searched for PostScript figure files if neither
+.SB XDVIFIGS
+nor
+.SB XDVIFIGS
+is set.
+.TP
+.SB XDVIHEADERS
+Determines the path(s) searched for PostScript header files.
+See the section on FILE SEARCHING for more details.
+.TP
+.SB TEXPSHEADERS
+Determines the path(s) searched for PostScript header files if
+.SB XDVIHEADERS
+is not set.
+.TP
+.SB PSHEADERS
+Determines the path(s) searched for PostScript header files if neither
+.SB XDVIHEADERS
+nor
+.SB TEXPSHEADERS
+is set.
+#endif
+#ifmakepk
+.TP
+.SB XDVIMAKEPK
+Address of the program (and, optionally, the order of its arguments) to
+be called when
+.B xdvi
+attempts to create a
+.I gf
+or
+.I pk
+font file.  See the section on CREATING FONT FILES for more details.
+#endif
+#ifps
+.TP
+.SB TMPDIR
+The directory to use for storing temporary files created when uncompressing
+PostScript files.
+#endif
+#ifconfig
+.TP
+.SB XDVIDEBUG
+The initial (and default) value of the
+.B \-debug
+command line option.  Setting this option via the environment is the only way
+to debug configuration file processing, which occurs before the command line
+is processed.
+#endif
+.SH FILE SEARCHING
+In order to accommodate the wide variety of ways in which fonts are stored
+on various sites,
+.B xdvi
+has a fairly elaborate mechanism for indicating where to look for font files.
+For other types of files, the mechanism is similar, but simpler.  The method
+for looking for font pixel files will be described first; other file types will
+then be described.  This section is quite technical; on first reading, it
+would probably be better to skip to the section on EXAMPLES OF FONT SEARCHING.
 .PP
 The environment variable
 .SB XDVIFONTS
-determines the path(s) searched for
-fonts in the following manner.  The string consists of one or more strings
-separated by colons.  In each such string, the substring
+(or
+.SB PKFONTS,
+etc., if
+.SB XDVIFONTS
+is not set) contains a list of specifiers, separated by colons.  An extra
+colon anywhere in that list causes the compiled-in default value to be
+substituted at that point.  Or, if no such environment variable is used,
+the compiled-in default is also used instead.
+#ifconfig
+(However, see the section on CONFIGURATION FILES to see how they change the
+situation concerning defaults.)
+#endif
+.PP
+In each specifier, the following substitutions are first made:
+.TP
 .B %f
-is changed to the font name;
+Replaced by the font name.
+.TP
+.B %F
+Replaced by the font name (but without side effects; see below).
+.TP
 .B %d
-is changed to the magnification; and
+Replaced by the size of the font (in dots per inch).
+.TP
+.B %b
+Replaced by the base resolution; i.e., the value of the
+.B \-p
+parameter or the
+.B .pixelsPerInch
+resource.
+.TP
 .B %p
-is changed to the font file format
+Replaced by the font file format
 .RB (`` pk ''
 or
 .RB `` gf '').
+.TP
+.B %m
+Replaced by the
+.IR mode-def ,
+as given in the
+.B \-mfmode
+argument or the
+.B .mfMode
+resource.
+.TP
+.B %t
+Replaced, sequentially, by the directories given by the
+.B TEXMF
+environment variable (or its compiled-in default).  This may only be used
+at the beginning of a specifier.
+.TP
+.B %s
+Replaced by
+.RB `` %qfonts/%p/{%m,gsftopk,ps2pk}// ''.
+This is compatible with the \*(Te\& Directory Structure (TDS) standard.
+This string may only be used at the end of a specifier.
+.TP
+.B %S
+Replaced by
+.RB `` %t/%s ''.
+.TP
+.B %q
+Replaced by the empty string.  This has the side effect of enabling the
+``quick find'' feature, which is described below.
+.TP
+.B %Q
+Replaced by the empty string.  Like
+.BR %q ,
+this enables the ``quick find'' feature.  It also inhibits searching for the
+file by normal means if ``quick find'' is not available.
+.TP
+.B %%
+Replaced by a single percent sign.  Likewise,
+.BR %: ,
+.BR %* ,
+etc. can be used to insert those special characters into the destination
+string.
+.PP
 If no
-.B %f
-appears in the string, then the string
+.RB `` %f ''
+appears in the specifier, then the string
 .RB `` /%f.%d%p ''
-is added on the end.  For example, if the string is
-.RB `` /usr/local/tex/fonts ''
-and the font is
-.B cmr10
-at 300 dots per inch, then it searches for
-.B /usr/local/tex/fonts/cmr10.300pk
+is added on the end.
+.PP
+The characters
+.BR * ,
+.BR ? ,
+.BR [ ,
+.BR ] ,
+.BR { ,
 and
-.BR /usr/local/tex/fonts/cmr10.300gf ,
-in that order.  An extra colon anywhere in
+.B }
+are interpreted as wild cards, as in the C-shell
+.RB ( csh ).
+(This is here to pave the way for
+.I fli
+files, which have not been implemented yet.)
+In addition, a double slash
+.RB (`` // '')
+in the specifier indicates that any number of subdirectories may be inserted
+at that point.
+.PP
+There is an exception to the above procedure.  If the font name begins
+with a slash
+.RB ( / ),
+then the font name is treated as an absolute path:  the single specifier
+.RB `` %f.%d%p ''
+is used instead of the specifier(s) given by
+.SB XDVIFONTS.
+.PP
+The recursive search over subdirectories triggered by a double slash often
+causes a severe performance penalty; therefore,
+.B xdvi
+implements a speedup called ``quick find.''  This is triggered by the presence
+of a
+.RB `` %q ''
+or
+.RB `` %Q ''
+in the specifier.  The location of such a string indicates that a file named
+.B ls-R
+should exist in that directory; that file should be the output of a
+.B ls -R
+or
+.B ls -LR
+command executed while in that directory.  If such a file exists, then
+.B xdvi
+will search that file instead of searching through the directory tree.
+If such a file does not exist, and if
+.RB `` %Q ''
+was used, then
+.B xdvi
+will skip the specifier entirely.
+.PP
+In order for ``quick find'' to work,
+a few conditions must be met.  First of all, the
+.RB `` %q ''
+or
+.RB `` %Q ''
+must occur immediately after a slash, and no later than immediately following
+the double slash.  Secondly, there must be exactly one double slash in the
+specifier (having more than one double slash requires more complicated
+code in
+.BR xdvi ;
+if there are no double slashes then there is no need for ``quick find'').
+Third, there may be no wild cards other than
+.B {
+and
+.B }
+in the specifier.  Finally,
+.BR %f ,
+.BR %F ,
+and
+.B %d
+may not occur in the specifier prior to the double slash.  These conditions
+are all satisfied in the case of the \*(Te\& Directory Structure (TDS) standard.
+.PP
+An additional exception is that if a specifier or one of the alternatives in the
+.SB TEXMF
+environment variable begins with two exclamation points
+.RB (`` !! ''),
+then those characters are stripped off, and any subordinate search that
+could use an
+.B ls-R
+file, will be skipped if the
+.B ls-R
+file does not exist.  In other words, any
+.RB `` %q ''
+strings are treated as
+.RB `` %Q ''.
+This feature has been included for compatibility with the
+.B kpathsea
+library.
+.PP
+Finally, if a specifier or one of the alternatives in the
+.SB TEXMF
+environment variable begins with a tilde
+.RB ( ~ )
+(after the
+.RB `` !! '',
+if any), then
+.B xdvi
+will attempt to replace a string of the form
+.BI ~ username
+with the home directory of
+.IR username .
+The
+.I username
+is taken to be everything up through the next slash or the end of the string;
+if it is empty, then the current user's home directory is substituted instead.
+If the username does not exist, then the string is left unchanged.
+.SH SEARCHING FOR FONTS
+When
+.B xdvi
+searches for a font, the first thing it does is to look for a
+.I pk
+or
+.I gf
+file, at the size required for the
+.I dvi
+file, using the strategy mentioned in the above subheading.
+#ifdosnames
+If that fails, it will try again, but for specifiers lacking a string
+.RB `` %f '',
+it will add the string
+.RB `` /dpi%d/%f.%p ''
+at the end (instead of
+.RB `` /%f.%d%p '').
+#endif
+It will also try a slightly different size, in case of rounding errors.
+.PP
+If no such bitmap file is found, it then searches for a virtual font.
+(A virtual font is a recipe for creating a font from characters in other fonts
+and from rectangles.)  This uses the procedure described under FILE SEARCHING,
+except that:  (1) the environment variable
+.SB XDVIVFS
+or its associated defaults is used in place of the environment variable
 .SB XDVIFONTS
-causes the system default paths to be tried at that point.  If the font is not
-found in the desired size, then
+or its associated defaults;
+(2)
+.RB `` %d '',
+.RB `` %b '',
+.RB `` %p '',
+and
+.RB `` %m ''
+are not substituted;
+(3)
+.RB `` %s ''
+is replaced by
+.RB `` %qfonts/vf// '';
+(4) if no
+.RB `` %f ''
+appears in a specifier, then
+.RB `` /%f.vf ''
+is added at the end; and finally
+(5) if the file name begins with a slash, then
+.RB `` %f.vf ''
+replaces all the specifiers.
+.PP
+If no virtual font is found, then
 .B xdvi
 will
 #ifmakepk
@@ -887,53 +1284,76 @@ If the font cannot be found at all, then
 .B xdvi
 will try to vary the point size of the font (within a certain range),
 and if this fails, then it will use the font specified as the alternate
-font (cf.
+font (see
 .BR \-altfont ).
+.SH EXAMPLES OF FONT SEARCHING
+As a first example, if the specifier is
+.RB `` /usr/local/tex/fonts ''
+and the font is
+.B cmr10
+at 300 dots per inch, then
+.B xdvi
+searches for
+.B /usr/local/tex/fonts/cmr10.300pk
+and
+.BR /usr/local/tex/fonts/cmr10.300gf ,
+in that order (provided that
+.B xdvi
+is compiled to accept both
+.I pk
+and
+.I gf
+files, which is not necessarily the case).
 .PP
-In addition, a
-.B %F
-specifier is available; it is a synonym for
-.BR %f ,
-but it does not inhibit putting the string
-.RB `` /%f.%d%p ''
-at the end.  A
-.B %b
-specifier is available; it is converted to the current resolution being used
-.RI ( i.e. ,
-the value of the
-.B \-p
-parameter or the
-.B .pixelsperinch
-resource).  And finally, the string
-.B %m
-will be changed to the
-.I mode-def
-specified in the
-.B \-mfmode
-argument or the
-.B .mfMode
-resource.
+For sites using the \*(Te\& Directory Structure (TDS) standard,
+.SB XDVIFONTS
+(or, better yet, its compiled-in default) should be set to
+.RB `` .:%S '';
+in that case, if
+.SB TEXMF
+(or, again, its compiled-in default) is set to
+.RB `` /usr/local/texmf '',
+then
+.B xdvi
+will look within that directory for the font file, in accordance with the
+TDS standard.
+.PP
+There may be several such TDS trees.
+.PP
+A common situation is one in which a user wishes to augment the set of fonts
+provided by the system.  It is possible to do this without having to know
+or remember what the defaults are.  For example, if the user has a small
+number of fonts, and keeps them all in one directory, say
+.BR /home/user/fonts ,
+then setting
+.SB XDVIFONTS
+to
+.RB `` /home/user/fonts: ''
+will cause
+.B xdvi
+to check that directory for font files before checking its default list.
+Similarly, setting
+.SB XDVIFONTS
+to
+.RB `` :/home/user/fonts ''
+will cause
+.B xdvi
+to check that directory
+.I after
+checking its default locations.  This is true even if the system uses a TDS
+tree.
 #iftexfonts
 .PP
-For compatibility with \*(Te\&, you may also use
+If that directory also contains
+.I tfm
+files, then it is possible to set
 .SB TEXFONTS
-in place of
-.SB XDVIFONTS,
-although in that case the variable should not include any
-.RB `` % ''
-specifiers.  The reason for recognizing
-.SB TEXFONTS
-is that certain versions of \*(Te\& also support the convention regarding
-an extra colon in the font path; therefore, users who create their own fonts
-can put both their
-.RI . tfm
-and raster files in the same directory and do
-.RB `` "setenv TEXFONTS :MFdir" ''
-or
-.RB `` "setenv TEXFONTS MFdir:" ''
-in order to get both \*(Te\& and
-.B xdvi
-to search their directory in addition to the system standard directories.  The
+instead of
+.SB XDVIFONTS;
+in that case, \*(Te\& will also look for the
+.I tfm
+files in that directory.  This feature depends on which implementation
+of \*(Te\& is in use.  The
 .SB XDVIFONTS
 variable overrides the
 .SB TEXFONTS
@@ -941,62 +1361,99 @@ variable, so that on those sites where
 .SB TEXFONTS
 must be set explicitly, and therefore this feature is not useful, the
 .SB XDVIFONTS
-variable may be set to an empty string
-.RI ( i.e. ,
+variable may be set to an empty string (i.e.,
 .RB  `` "setenv XDVIFONTS" '')
 to cause
 .B xdvi
 to ignore
 .SB TEXFONTS.
-.PP
-.B xdvi
-also recognizes the
-.SB PKFONTS
-and
-.SB TEXPKS
-variables, which are checked after
-.SB XDVIFONTS
-but before
-.SB TEXFONTS.
 #endif
-#ifmakepk
 .PP
-The script used to create fonts may be controlled by the environment
-variable
+If the user has a large number of fonts and wishes to keep them in a TDS
+tree, then that is also possible with
+.BR xdvi :
+if, for example, the TDS tree is
+.BR /home/user/texmf ,
+then setting
+.SB TEXMF
+to
+.RB `` /home/user/texmf: ''
+will cause
+.B xdvi
+to check that TDS tree before its default actions.  This assumes, however,
+that the site uses a TDS tree also (since
+.SB TEXMF
+is not used unless
+.RB `` %t ''
+or
+.RB `` %S ''
+occurs in a specifier somewhere).  If the site does not use a TDS tree,
+then it would be best to set
+.SB XDVIFONTS
+to
+.RB `` /home/user/texmf/%s: '',
+instead.
+#ifmakepk
+.SH CREATING FONT FILES
+.PP
+When
+.B xdvi
+reaches a point where it cannot find a font in the correct size, it calls
+a program to create such a font file.  The name of this program (usually
+a shell script) may be controlled by the environment variable
 .SB XDVIMAKEPK.
 Usually this variable would be set to the name of the script.
 In that case the script is called with the following options:
 (1) the font name, (2) the requested resolution in dots per inch,
-(3) the base resolution in dots per inch, and (4) a (possibly more accurate)
-indication of the magnification using magsteps (if possible).
-Optionally, the variable may include specifiers
+(3) the base resolution in dots per inch, (4) a (possibly more accurate)
+indication of the magnification using magsteps (if possible), (5) the
+.I mode-def
+that Metafont is to use when creating the font file, (6) an empty string,
+and (7) a string of the form
+.BI ``>& digit '',
+enclosed in single quotes, where
+.I digit
+indicates a file number on which the program is to write the full path of the
+font file that it has created.  Arguments (6) and (7) may be omitted, depending
+on how
+.B xdvi
+was compiled.
+.PP
+The
+.I mode-def
+(argument (5)) used is the one given by the
+.B \-mfmode
+argument on the command line, the
+.B mfMode
+resource, or the compiled-in default (if any).  If none of these are given,
+the string
+.B default
+is used.
+.PP
+Optionally, the
+.SB XDVIMAKEPK
+variable may include specifiers
 .RB `` %n ,''
 .RB `` %d ,''
 .RB `` %b ,''
+.RB `` %m ,''
+.RB `` %o ,''
 and
-.RB `` %m ''
-to indicate each of the above arguments, respectively.
-It is possible to specify the
+.RB `` %r ''
+to indicate arguments (1)\-(5), and (7), respectively.  In that case, if a
 .I mode-def
-that Metafont is to use when creating the fonts.  This is specified by the
-.B \-mfmode
-argument on the command line, or the
-.B mfMode
-resource.  If a
+was given, but no
 .RB `` %o ''
 specifier appears in the
 .SB XDVIMAKEPK
-string, it will be changed to the given
-.I mode-def
-name, or to the string
-.B default
-if no
-.I mode-def
-was given.  If no
-.RB `` %o ''
-specifier appears and a
-.I mode-def
-was given, then the mode will be appended to the end of the string.
+string, then the mode will be appended to the end of the string.
+Also, if no
+.RB `` %r ''
+appears, then
+.B xdvi
+expects the program to write the full path of the font file on its standard
+output.
+.PP
 This is compatible with the font creation mechanism used in
 .BR dvips (1).
 By default,
@@ -1004,101 +1461,56 @@ By default,
 equals
 .BR %%mkpk%% .
 #endif
-#ifsubdir
-.PP
-You can also enable recursive searching in the font path by using the
-.RB `` * ''
-and
-.RB `` ** ''
-specifiers.  At this point in the path,
-.B xdvi
-will recursively
-search subdirectories of the given directory in order to find font files.
-A single asterisk limits the search to one level; a double asterisk will search
-through an arbitrary number of levels.  Also, the variable
-.SB TEXFONTS_SUBDIR
-can be used to give a colon-separated list of directories to recursively search.
-This is equivalent to including the specifiers with a
-.RB `` * ''
-after each; the usual conventions regarding extra colons applies here, too,
-relative to a default subdirectory path.  Asterisks may not be preceded by a
-.RB `` % ''
-specifier in any path component.
-#endif
-.PP
-The
-.SB XDVISIZES
-variable may be set to indicate which sizes of fonts are available.
-It should consist of a list of numbers separated by colons.  If
-the list begins with a colon, the system default sizes are used, as well.
-Sizes are expressed in dots per inch and must be integers.
-The current default set of sizes is %%DEFAULT_FONT_SIZES%%.
-.B xdvi
-will also try the actual size of the font before trying any of the given sizes.
-.PP
-Virtual fonts are also supported, although
-.B xdvi
-does not have any built-in fonts to which they can refer.  The search path for
-.RB . vf
-files can be specified with the environment variable
-.SB XDVIVFS
-in a similar manner to that for the
-.SB XDVIFONTS
-variable.
-#iftexfonts
-.B xdvi
-will also check the
-.SB VFFONTS
-variable if the
-.SB XDVIFONTS
-variable is not set.
-#endif
-Virtual fonts are searched for immediately after looking for the font
-as a normal font in the exact size specified.
 #ifps
-.PP
-The
-.SB XDVIFIGS
-and
-.SB XDVIHEADERS
-variables determine the search strategy for PostScript figure files and
-header files, respectively.  First
+.SH SEARCHING FOR POSTSCRIPT FILES
+PostScript figure files and header files are searched for using a modification
+of the procedure used for font files.
+First, if the file name does not begin with a slash, then
 .B xdvi
 will look in the directory containing the
 .I dvi
-file.  If no file is found, then it will look in the directories given by
-the
+file.  If it is not found there, then the
 .SB XDVIFIGS
-or
+and
 .SB XDVIHEADERS
-environment variable, for PostScript figure files and header files,
-respectively.  These variables should contain lists of directories separated
-by colons.  As usual, an extra colon anywhere in either of these paths
-causes the default compiled-in list to be checked at that point in the
-path list.  Customarily,
+environment variables determine the search strategy for PostScript
+figure files and header files, respectively.  This is the same procedure as
+for font files, except that:
+(1)
+.RB `` %f ''
+and
+.RB `` %F ''
+refer to the file name, not the font name;
+(2)
+.RB `` %d '',
+.RB `` %b '',
+.RB `` %p '',
+and
+.RB `` %m ''
+are not substituted;
+(3)
+.RB `` %s ''
+is replaced by
+.RB `` {dvips,%Qtex//} ''
+for figure files or
+.RB `` dvips ''
+for header files;
+(4) if no
+.RB `` %f ''
+appears in a specifier, then
+.RB `` /%f ''
+is added at the end; and finally
+(5) if the file name begins with a slash, then
+.RB `` %f ''
+replaces all the specifiers.
+Customarily,
 .SB XDVIFIGS
 will be the same as the \*(Te\& input directory.
-If
-.SB XDVIFIGS
-or
-.SB XDVIHEADERS
-is not set, then
-.B xdvi
-will also check the
-.SB TEXINPUTS
-or
-.SB HEADERPATH
-environment variables; this is for compatibility with
-.BR dvips (1).
 .PP
-There are two exceptions to the above strategy.  First, if the file name
-begins with a slash
-.RB ( / ),
-then the file name is treated as an absolute path, and is searched for as
-given, without using the above strategy.  Or, if the file name begins
-with a backtick
+There is an additional exception to the above strategy.
+If the file name begins with a backtick
 .RB ( ` ),
-then the following characters give a shell command (often
+then the remaining characters in the file name give a shell command (often
 .BR zcat )
 which is executed; its standard output is then sent to be interpreted as
 PostScript.  Note that there is some potential for security problems here;
@@ -1108,9 +1520,9 @@ command-line option.  It is better to use compressed files directly (see below).
 .PP
 If a file name is given (as opposed to a shell command),
 if that file name ends in
-.B .Z
+.RB `` .Z ''
 or
-.BR .gz ,
+.RB `` .gz '',
 and if the first two bytes of the file indicate that it was compressed with
 .BR compress (1)
 or
@@ -1124,12 +1536,240 @@ directly, since you do not have to specify
 .B \-allowshell
 and since it allows for path searching.
 #endif
+#ifconfig
+.SH CONFIGURATION FILES
+.B xdvi
+allows for any number of configuration files; these provide additional levels
+of defaults for file paths.  For example, when searching for font pixel files,
+the hierarchy of defaults is as follows:
+.TP
+First
+The value of the
+.SB XDVIFONTS,
+.SB PKFONTS,
+.SB TEXPKS,
+or
+.SB TEXFONTS
+environment variable (if any).
+.TP
+ .
+The value of
+.SB PKFONTS
+given in the first config file searched.
+.TP
+ .
+ ...
+.TP
+ .
+The value of
+.SB PKFONTS
+given in the last config file searched.
+.TP
+Last
+The compiled-in default value.
+.PP
+The first of these in the list that is given is used; if an extra colon is
+present in that string, then the next in the list is used.  Additional extra
+colons are ignored; if no extra colon is present, then the remainder of the
+list is ignored.  Note that, unlike the situation with environment variables,
+only one name may be used in the config file.  Additionally, if a config file
+defines a variable such as
+.SB PKFONTS
+more than once, only the first value is used.
+.PP
+Other special config file variables are:
+.TP 12
+.SB TEXMF
+Directories to substitute for
+.BR %t .
+But, see the caution below.
+.TP
+.SB VFFONTS
+Search specifiers for virtual fonts.
+#endif
+#ifconfigps
+.TP
+.SB PSFIGURES
+Search specifiers for PostScript figure files.
+.TP
+.SB PSHEADERS
+Search specifiers for PostScript header files.
+#endif
+#ifconfig
+.PP
+The configuration file may also define other variables; these (as well as
+.SB PKFONTS
+and the other variables listed above) will be substituted whenever they are
+referred to, using either the syntax
+.BI $ variable\fR,\fP
+in which
+.I variable
+consists of the longest string consisting of letters, digits, and underscores
+following the dollar sign, or the syntax
+.BI ${ variable }\fR,\fP
+which is interpreted without matching the braces.  These substitutions occur
+before brace expansions, which in turn occur before tilde expansions.
+Substitutions of this sort are global:  only the first definition of a
+variable is used, even if there are multiple configuration files.
+This holds also when variables such as
+.SB PKFONTS
+are substituted via
+.B $PKFONTS
+instead of the hierarchy of defaults mentioned earlier.
+Also, an environment variable will override a corresponding configuration
+file variable.  Undefined variables are replaced with the empty string.
+.PP
+.B Note:
+Some configuration files define a variable
+.SB TEXMF
+and access it via
+.BR $TEXMF .
+When using such files with
+.BR xdvi ,
+it may be necessary to avoid using
+.B %t
+and
+.B $S
+if the definition is incompatible with how that special symbol is used by
+.BR xdvi .
+For example,
+.B xdvi
+does not support brace expansion within
+.SB TEXMF
+when it is used in the context of
+.BR %t ,
+so if a configuration file defines
+.SB TEXMF
+as a string involving braces, then
+.B $TEXMF/%s
+should be used instead of
+.BR %S .
+#endif
+#ifselfauto
+.PP
+When starting up,
+.B xdvi
+will determine where its executable file is located, and will define two
+special configuration file variables based on that information.  
+It defines
+.SB SELFAUTODIR
+to be the parent of the directory containing the binary, and
+.SB SELFAUTOPARENT
+to be the parent of that directory.  For example, if
+.B xdvi
+is in the executable file
+.BR /usr/local/tex/texmf/bin/sunos4/xdvi ,
+then the value of
+.SB SELFAUTODIR
+will be
+.BR /usr/local/tex/texmf/bin ,
+and
+.SB SELFAUTOPARENT
+will be
+.BR /usr/local/tex/texmf .
+These two variables are special:  they cannot be defined in a configuration
+file or in the environment.
+#endif
+#ifcfg2res
+.PP
+Finally,
+.B xdvi
+allows the default values of certain resources to be set via the configuration
+file.  The variables
+.SB MFMODE,
+.SB PIXELSPERINCH,
+.SB SHRINKFACTOR,
+#endif
+#ifcfg2resbuttons
+.SB SHRINKBUTTON1,
+.SB SHRINKBUTTON2,
+.SB SHRINKBUTTON3,
+.SB SHRINKBUTTON4,
+#endif
+#ifcfg2res
+and
+.SB PAPER
+define the default values for the
+.BR mfMode ,
+.BR pixelsPerInch ,
+.BR shrinkFactor ,
+#endif
+#ifcfg2resbuttons
+.BR shrinkButton1 ,
+.BR shrinkButton2 ,
+.BR shrinkButton3 ,
+.BR shrinkButton4 ,
+#endif
+#ifcfg2res
+and
+.B paper
+resources, respectively.  These defaults are overriden by any values given
+in the app-defaults file, the resources obtained from the X server, and
+the command line.
+#endif
+#ifconfig
+.PP 
+The syntax of configuration files is as follows.  Blank lines, and lines
+in which the first non-white character is
+.B #
+or
+.BR % ,
+are assumed to be comment lines, and are ignored.  
+All other lines must be of the form
+.IB variable = value\fR,\fP
+in which
+.I variable
+is either a variable name or a qualified variable name (discussed below), and
+.I value
+is the value to be assigned to the variable.  A qualified variable name
+is a variable name, followed by a period and the name of a program.
+If the name of the program is not the last part of the file name of the
+executable file for
+.B xdvi
+(usually ``xdvi''), then that definition will be ignored.  
+Since only the first definition of a variable will have any effect, an
+unqualified definition should be placed after all qualified definitions
+of that same variable.
+.PP
+There may be several configuration files.  They are located as follows.
+Initially, an environment variable
+.SB TEXMFCNF
+is used; it should contain a colon-separated list of directories.
+All of those directories will be searched for files named
+.BR texmf.cnf ,
+and those files will all be read.  Those files may also define variables
+.SB TEXMFCNF;
+if so, then those variables are taken to be colon-separated lists of
+directories.  This defines the data structure of a tree; this tree is
+read in the obvious depth-first order.  Duplicate directories are skipped
+in order to avoid infinite loops.  Finally, an extra colon anywhere in any
+of these lists causes the compiled-in default to be substituted at that
+point.  In addition, if
+.SB TEXMFCNF
+is not defined in the environment, then the search starts with the compiled-in
+default (it is expected that this will usually be the case).
+.PP
+If there are more than one
+.B texmf
+tree, then it is expected that each of them will have its own configuration
+file; the easiest way to combine them is to link them together in a chain
+(a vertical tree).  The last file in the chain can be set up as if it were
+the only configuration file, and all others could contain a definition of
+.SB TEXMFCNF
+pointing to the directory of the next configuration file in the chain,
+and definitions for
+.SB TEXMF
+or
+.SB PKFONTS,
+etc., with extra colons at the end so that the values from configuration
+files lower in the chain are also used.
+#endif
 #ifps
 .SH LIMITATIONS
 .B xdvi
 accepts many but not all types of PostScript specials accepted by
 .BR dvips .
-It does accept most specials generated by
+It accepts most specials generated by
 .B epsf
 and
 .BR psfig ,
@@ -1145,19 +1785,24 @@ La\*(Te\&2e color and rotation specials are not currently supported.
 #endif
 .SH FILES
 .PD 0
+#ifconfig
+%%DEFAULT_CONFIG_PATH%%   Directories to be searched for configuration files.
+#endif
+%%DEFAULT_TEXMF_PATH%%   \*(Te\& Directory Structure (TDS) directories.
 .TP 40
 %%DEFAULT_FONT_PATH%%   Font pixel files.
 %%DEFAULT_VF_PATH%%   Virtual font files.
 #ifps
+.TP
 %%DEFAULT_FIG_PATH%%   Directories containing PostScript figures.
+.TP
 %%DEFAULT_HEADER_PATH%%   Directories containing PostScript header files.
 #endif
 .PD
-.SH "SEE ALSO"
+.SH SEE ALSO
 .BR X (1).
 .SH AUTHORS
 Eric Cooper, CMU, did a version for direct output to a QVSS.
-Modified for X by
-Bob Scheifler, MIT Laboratory for Computer Science.
+Modified for X by Bob Scheifler, MIT Laboratory for Computer Science.
 Modified for X11 by Mark Eichin, MIT SIPB.
-Additional enhancements by many others.
+Maintained and enhanced since 1988 by Paul Vojta, UC Berkeley, and many others.

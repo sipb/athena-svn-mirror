@@ -2,6 +2,9 @@
  *	Written by Eric C. Cooper, CMU
  */
 
+#ifndef	XDVI_H
+#define	XDVI_H
+
 /********************************
  *	The C environment	*
  *******************************/
@@ -19,16 +22,24 @@
 #endif
 
 #ifndef	NOTOOL
+
 #include <X11/Intrinsic.h>
+#if	(defined(VMS) && (XtSpecificationRelease <= 4)) || defined(lint)
+#include <X11/IntrinsicP.h>
+#endif
 #define	TOOLKIT
-#else
+
+#else	/* ! NOTOOL */
+
 #define	XtNumber(arr)	(sizeof(arr)/sizeof(arr[0]))
 typedef	unsigned long	Pixel;
 typedef	char		Boolean;
 typedef	unsigned int	Dimension;
 #undef	TOOLKIT
 #undef	BUTTONS
-#endif
+#undef	CFG2RES
+
+#endif	/* ! NOTOOL */
 
 typedef	char		Bool3;		/* Yes/No/Maybe */
 
@@ -68,22 +79,20 @@ typedef	char		Bool3;		/* Yes/No/Maybe */
 #include <stdio.h>
 #include <setjmp.h>
 
-#ifndef	OPEN_MODE
-#ifndef	VMS
-#define	OPEN_MODE	"r"
-#else	/* VMS */
-#define	OPEN_MODE	"r", "ctx=stm"
-#endif	/* VMS */
-#endif	/* OPEN_MODE */
-
-#ifndef	VMS
-#define	OPEN_MODE_ARGS	_Xconst char *
+#if	defined(SYSV) || defined(_POSIX_SOURCE)
+#include <dirent.h>
 #else
-#define	OPEN_MODE_ARGS	_Xconst char *, _Xconst char *
+#include <sys/dir.h>
+#define	dirent	direct		/* change struct direct to struct dirent */
 #endif
 
 #ifndef	HAS_SIGIO
 #define	HAS_SIGIO	BSD
+#endif
+
+#ifdef	STRMS2		/* STRMS2 implies HAS_SIGIO */
+#undef	HAS_SIGIO
+#define	HAS_SIGIO	1
 #endif
 
 #ifndef	NeedFunctionPrototypes
@@ -137,13 +146,24 @@ typedef	char		Bool3;		/* Yes/No/Maybe */
 #endif
 #endif
 
-#ifndef	_Xsigned
-#if	__STDC__
-#define	_Xsigned signed
-#else	/* STDC */
-#define	_Xsigned
-#endif	/* STDC */
-#endif	/* _Xsigned */
+#if	defined(__long64) || defined(__alpha) || (_MIPS_SZLONG == 64)
+#undef	LONG64
+#define	LONG64
+#endif
+
+#ifndef	OPEN_MODE
+#ifndef	VMS
+#define	OPEN_MODE	"r"
+#else	/* VMS */
+#define	OPEN_MODE	"r", "ctx=stm"
+#endif	/* VMS */
+#endif	/* OPEN_MODE */
+
+#ifndef	VMS
+#define	OPEN_MODE_ARGS	_Xconst char *
+#else
+#define	OPEN_MODE_ARGS	_Xconst char *, _Xconst char *
+#endif
 
 #define	Printf	(void) printf
 #define	Puts	(void) puts
@@ -170,7 +190,7 @@ typedef	char		Bool3;		/* Yes/No/Maybe */
 
 #define	MAXDIM		32767
 
-typedef	unsigned char ubyte;
+typedef	unsigned char	ubyte;
 
 #if	NeedWidePrototypes
 typedef	unsigned int	wide_ubyte;
@@ -182,7 +202,7 @@ typedef	Boolean		wide_bool;
 #define	WIDENINT
 #endif
 
-#ifdef	MAKEPKCMD
+#if	defined(MAKEPKCMD) || defined(MKPK_REDIRECT)
 #undef	MAKEPK
 #define	MAKEPK
 #endif
@@ -210,11 +230,11 @@ typedef	Boolean		wide_bool;
 #define	BYTES_PER_BMUNIT	2
 #else	/* !BMSHORT */
 #define	BMLONG
-#ifdef	__alpha
+#ifdef	LONG64
 #define	BMUNIT			unsigned int
 #else
 #define	BMUNIT			unsigned long
-#endif	/* if __alpha */
+#endif	/* if LONG64 */
 #define	BITS_PER_BMUNIT		32
 #define	BYTES_PER_BMUNIT	4
 #endif	/* !BMSHORT */
@@ -233,19 +253,11 @@ struct frame {
 	struct frame *next, *prev;
 };
 
-#if	NeedFunctionPrototypes
 #ifndef	TEXXET
-typedef	long	(*set_char_proc)(wide_ubyte);
-#else	/* TEXXET */
-typedef	void	(*set_char_proc)(wide_ubyte, wide_ubyte);
-#endif	/* TEXXET */
-#else	/* NeedFunctionPrototypes */
-#ifndef	TEXXET
-typedef	long	(*set_char_proc)();
-#else	/* TEXXET */
-typedef	void	(*set_char_proc)();
-#endif	/* TEXXET */
-#endif	/* NeedFunctionPrototypes */
+typedef	long	(*set_char_proc) ARGS((wide_ubyte));
+#else
+typedef	void	(*set_char_proc) ARGS((wide_ubyte, wide_ubyte));
+#endif
 
 struct drawinf {	/* this information is saved when using virtual fonts */
 	struct framedata data;
@@ -344,6 +356,7 @@ struct glyph {
 #ifdef	GREY
 	XImage *image2;
 	char *pixmap2;
+	char *pixmap2_t;
 #endif
 	struct bitmap bitmap2;	/* shrunken bitmap for character */
 };
@@ -374,11 +387,7 @@ struct macro {
 
 #define	NOMAGSTP (-29999)
 
-#if	NeedFunctionPrototypes
-typedef	void (*read_char_proc)(register struct font *, wide_ubyte);
-#else
-typedef	void (*read_char_proc)();
-#endif
+typedef	void (*read_char_proc) ARGS((register struct font *, wide_ubyte));
 
 struct font {
 	struct font *next;		/* link to next font info block */
@@ -425,91 +434,78 @@ EXTERN	ubyte		maxchar;
 EXTERN	unsigned short	current_timestamp INIT(0);
 
 /*
- *	Struct used for finding files.
- */
-
-#if	PS
-struct findrec {
-	_Xconst char	*mainpath;
-	_Xconst char	*auxpath;
-};
-
-extern	struct findrec	figfind;
-extern	struct findrec	headerfind;
-#endif	/* PS */
-
-/*
  *	Command line flags.
  */
 
 extern	struct _resource {
 #ifdef	TOOLKIT
-	int	shrinkfactor;
+	int		shrinkfactor;
 #endif
-	int	_density;
+	int		_density;
 #ifdef	GREY
-	float	_gamma;
+	float		_gamma;
 #endif
-	int	_pixels_per_inch;
-	char	*sidemargin;
-	char	*topmargin;
-	char	*xoffset;
-	char	*yoffset;
-	_Xconst char	*paper;
-	char	*_alt_font;
+	int		_pixels_per_inch;
+	_Xconst	char	*sidemargin;
+	_Xconst	char	*topmargin;
+	_Xconst	char	*xoffset;
+	_Xconst	char	*yoffset;
+	_Xconst	char	*paper;
+	_Xconst	char	*_alt_font;
 #ifdef	MAKEPK
-	Boolean	makepk;
+	Boolean		makepk;
 #endif
-	char	*mfmode;
-	Boolean	_list_fonts;
-	Boolean	reverse;
-	Boolean	_hush_spec;
-	Boolean	_hush_chars;
-	Boolean	_hush_chk;
-	Boolean	safer;
-	char	*fore_color;
-	char	*back_color;
-	char	*brdr_color;
-	char	*high_color;
-	char	*curs_color;
-	Pixel	_fore_Pixel;
-	Pixel	_back_Pixel;
+	_Xconst	char	*mfmode;
+	Boolean		_list_fonts;
+	Boolean		reverse;
+	Boolean		_hush_spec;
+	Boolean		_hush_chars;
+	Boolean		_hush_chk;
+	Boolean		safer;
+	_Xconst	char	*fore_color;
+	_Xconst	char	*back_color;
+	_Xconst	char	*brdr_color;
+	_Xconst	char	*high_color;
+	_Xconst	char	*curs_color;
+	Pixel		_fore_Pixel;
+	Pixel		_back_Pixel;
 #ifdef	TOOLKIT
-	Pixel	_brdr_Pixel;
-	Pixel	_hl_Pixel;
-	Pixel	_cr_Pixel;
+	Pixel		_brdr_Pixel;
+	Pixel		_hl_Pixel;
+	Pixel		_cr_Pixel;
 #endif
-	char	*icon_geometry;
-	Boolean	keep_flag;
-	Bool3	copy;
-	Boolean	thorough;
+	_Xconst	char	*icon_geometry;
+	Boolean		keep_flag;
+	Bool3		copy;
+	Boolean		thorough;
 #if	PS
 	/* default is to use DPS, then NEWS, then GhostScript;
 	 * we will figure out later on which one we will use */
-	Boolean	_postscript;
-	Boolean	prescan;
-	Boolean	allow_shell;
+	Boolean		_postscript;
+	Boolean		prescan;
+	Boolean		allow_shell;
 #ifdef	PS_DPS
-	Boolean	useDPS;
+	Boolean		useDPS;
 #endif
 #ifdef	PS_NEWS
-	Boolean	useNeWS;
+	Boolean		useNeWS;
 #endif
 #ifdef	PS_GS
-	Boolean	useGS;
-	char	*gs_path;
-	Boolean	gs_safer;
-	char	*gs_palette;
+	Boolean		useGS;
+	_Xconst	char	*gs_path;
+	Boolean		gs_safer;
+	_Xconst	char	*gs_palette;
 #endif
 #endif	/* PS */
-	char	*debug_arg;
-	Boolean	version_flag;
+	_Xconst	char	*debug_arg;
+	Boolean		version_flag;
 #ifdef	BUTTONS
-	Boolean	expert;
+	Boolean		expert;
+	int		shrinkbutton[4];
 #endif
-	char	*mg_arg[5];
+	_Xconst	char	*mg_arg[5];
 #ifdef	GREY
-	Boolean	_use_grey;
+	Boolean		_use_grey;
 #endif
 } resource;
 
@@ -549,10 +545,6 @@ EXTERN	int	debug	INIT(0);
 #define	DBG_PS		64
 #define	DBG_ALL		(~DBG_BATCH)
 
-#ifndef	BDPI
-#define	BDPI	300
-#endif
-
 EXTERN	int		offset_x, offset_y;
 EXTERN	unsigned int	unshrunk_paper_w, unshrunk_paper_h;
 EXTERN	unsigned int	unshrunk_page_w, unshrunk_page_h;
@@ -576,19 +568,13 @@ EXTERN	Bool3	copy;
 EXTERN	Cursor	redraw_cursor, ready_cursor;
 
 #ifdef	GREY
-EXTERN	unsigned long	palette[17];
-EXTERN	unsigned long	*pixeltbl;
+EXTERN	Pixel	*pixeltbl;
+EXTERN	Pixel	*pixeltbl_t;
 #endif	/* GREY */
 
 EXTERN	Boolean	canit		INIT(False);
 EXTERN	jmp_buf	canit_env;
 EXTERN	VOLATILE short	event_counter	INIT(0);
-
-#if	PS
-EXTERN	Boolean	allow_can	INIT(True);
-#else
-#define	allow_can		0xff
-#endif
 
 struct	WindowRec {
 	Window		win;
@@ -616,8 +602,38 @@ EXTERN	Window	top_level;
 #define	BAR_THICK	15	/* gross amount removed */
 #endif	/* TOOLKIT */
 
-EXTERN	jmp_buf	dvi_env;	/* mechanism to communicate dvi file errors */
-EXTERN	char	*dvi_oops_msg;	/* error message */
+EXTERN	jmp_buf		dvi_env;	/* mechanism to relay dvi file errors */
+EXTERN	_Xconst	char	*dvi_oops_msg;	/* error message */
+
+#undef	CFGFILE				/* no cheating */
+
+#ifdef	DEFAULT_CONFIG_PATH
+#define	CFGFILE	1
+#else
+#ifdef	SELFAUTO
+#define	CFGFILE	1
+#define	DEFAULT_CONFIG_PATH	"$SELFAUTODIR:$SELFAUTOPARENT"
+#else	/* !SELFAUTO */
+#define	CFGFILE	0
+#endif	/* !SELFAUTO */
+#endif	/* DEFAULT_CONFIG_PATH */
+
+EXTERN	char	*ffline	INIT(NULL);	/* an array used by filefind to store */
+					/* the file name being formed.  */
+					/* It expands as needed. */
+EXTERN	int	ffline_len INIT(0);	/* current length of ffline[] */
+
+#ifdef	SELFAUTO
+EXTERN	_Xconst	char	*argv0;		/* argv[0] */
+#endif
+
+#ifdef	CFG2RES
+struct cfg2res {
+	_Xconst	char	*cfgname;	/* name in config file */
+	_Xconst	char	*resname;	/* name of resource */
+	Boolean		numeric;	/* if numeric */
+};
+#endif
 
 #if	PS
 
@@ -626,10 +642,10 @@ extern	struct psprocs	{
 	void	(*destroy) ARGS((void));
 	void	(*interrupt) ARGS((void));
 	void	(*endpage) ARGS((void));
-	void	(*drawbegin) ARGS((int, int, char *));
-	void	(*drawraw) ARGS((char *));
+	void	(*drawbegin) ARGS((int, int, _Xconst char *));
+	void	(*drawraw) ARGS((_Xconst char *));
 	void	(*drawfile) ARGS((_Xconst char *, FILE *));
-	void	(*drawend) ARGS((char *));
+	void	(*drawend) ARGS((_Xconst char *));
 	void	(*beginheader) ARGS((void));
 	void	(*endheader) ARGS((void));
 	void	(*newdoc) ARGS((void));
@@ -658,7 +674,12 @@ extern	void	handle_release ARGS((Widget, XtPointer, XEvent *, Boolean *));
 extern	void	handle_exp ARGS((Widget, XtPointer, XEvent *, Boolean *));
 #endif
 extern	void	showmessage ARGS((_Xconst char *));
+#if	PS
+extern	void	ps_read_events ARGS((wide_bool, wide_bool));
+#define	read_events(wait)	ps_read_events(wait, True)
+#else
 extern	void	read_events ARGS((wide_bool));
+#endif
 extern	void	redraw_page ARGS((void));
 extern	void	do_pages ARGS((void));
 extern	void	reset_fonts ARGS((void));
@@ -682,6 +703,14 @@ extern	void	load_n_set_char ARGS((wide_ubyte, wide_ubyte));
 extern	void	set_vf_char ARGS((wide_ubyte, wide_ubyte));
 #endif
 extern	void	draw_page ARGS((void));
+#if	CFGFILE
+#ifndef	CFG2RES
+extern	void	readconfig ARGS((void));
+#else
+extern	void	readconfig ARGS((_Xconst struct cfg2res *,
+		  _Xconst struct cfg2res *, XtResource *, XtResource *));
+#endif	/* CFG2RES */
+#endif	/* CFGFILE */
 extern	void	init_font_open ARGS((void));
 extern	FILE	*font_open ARGS((_Xconst char *, char **, double, int *, int,
 			char **));
@@ -699,12 +728,15 @@ extern	NORETURN void	oops(_Xconst char *, ...);
 extern	NORETURN void	oops();
 #endif
 extern	char	*xmalloc ARGS((unsigned, _Xconst char *));
+extern	char	*xrealloc ARGS((char *, unsigned, _Xconst char *));
+extern	char	*newstring ARGS((_Xconst char *, int));
+extern	void	expandline ARGS((int));
 extern	void	alloc_bitmap ARGS((struct bitmap *));
 extern	int	memicmp ARGS((_Xconst char *, _Xconst char *, size_t));
 extern	FILE	*xfopen ARGS((_Xconst char *, OPEN_MODE_ARGS));
-#ifdef	PS_GS
 extern	int	xpipe ARGS((int *));
-#endif
+extern	DIR	*xopendir ARGS((_Xconst char *));
+extern	_Xconst	struct passwd *ff_getpw ARGS((_Xconst char **, _Xconst char *));
 extern	unsigned long	num ARGS((FILE *, int));
 extern	long	snum ARGS((FILE *, int));
 extern	void	read_PK_index ARGS((struct font *, wide_bool));
@@ -712,7 +744,7 @@ extern	void	read_GF_index ARGS((struct font *, wide_bool));
 extern	void	read_VF_index ARGS((struct font *, wide_bool));
 
 #if	PS
-extern	void	drawbegin_none ARGS((int, int, char *));
+extern	void	drawbegin_none ARGS((int, int, _Xconst char *));
 extern	void	draw_bbox ARGS((void));
 extern	void	NullProc ARGS((void));
 #ifdef	PS_DPS
@@ -734,3 +766,5 @@ _XFUNCPROTOEND
 #define stwo(fp)	snum(fp, 2)
 #define four(fp)	num (fp, 4)
 #define sfour(fp)	snum(fp, 4)
+
+#endif	/* XDVI_H */

@@ -105,10 +105,10 @@ static	void	toggleDPS ARGS((void));
 static	void	destroyDPS ARGS((void));
 static	void	interruptDPS ARGS((void));
 static	void	endpageDPS ARGS((void));
-static	void	drawbeginDPS ARGS((int, int, char *));
-static	void	drawrawDPS ARGS((char *));
+static	void	drawbeginDPS ARGS((int, int, _Xconst char *));
+static	void	drawrawDPS ARGS((_Xconst char *));
 static	void	drawfileDPS ARGS((_Xconst char *, FILE *));
-static	void	drawendDPS ARGS((char *));
+static	void	drawendDPS ARGS((_Xconst char *));
 static	void	beginheaderDPS ARGS((void));
 static	void	endheaderDPS ARGS((void));
 static	void	newdocDPS ARGS((void));
@@ -144,7 +144,9 @@ static	void	DPSErrorProcHandler();
 
 
 static	char	ackstr[]	= "xdvi$Ack\n";
+#ifdef	SUNHACK
 static	char	intstr[]	= "xdvi$Int\n";
+#endif
 
 #define	LINELEN	81
 #define	BUFLEN	(LINELEN + sizeof(ackstr))
@@ -238,9 +240,7 @@ waitack()
 {
 	while (DPS_pending > 0) {
 	    (void) XEventsQueued(DISP, QueuedAfterFlush);
-	    allow_can = False;
-	    read_events(False);
-	    allow_can = True;
+	    ps_read_events(False, False);
 	    if (DPS_ctx == NULL) break;	/* if interrupt occurred */
 	}
 }
@@ -442,7 +442,7 @@ endpageDPS()
 static	void
 drawbeginDPS(xul, yul, cp)
   int xul, yul;
-  char *cp;
+  _Xconst char *cp;
 {
   /* static char faulty_display_vs[]
    * ="DECWINDOWS DigitalEquipmentCorporation UWS4.2LA"; */
@@ -508,7 +508,7 @@ end stop\n%%%%xdvimark\n",
 
 static	void
 drawrawDPS(cp)
-  char *cp;
+  _Xconst char *cp;
 {
   if (!DPS_active)
     return;
@@ -550,9 +550,8 @@ drawfileDPS(cp, psfile)
 
   if (debug & DBG_PS)
     Printf("sending file %s\n", cp);
-  allow_can = False;
   for (;;) {
-    read_events(False);
+    ps_read_events(False, False);
     if (canit || !DPS_active) break;	/* alt_canit is not a factor here */
     blen = fread(buffer, sizeof(char), 1024, psfile);
     if (blen == 0) break;
@@ -560,7 +559,6 @@ drawfileDPS(cp, psfile)
   }
   Fclose(psfile);
   ++n_files_left;
-  allow_can = True;
   if (canit) {
     interruptDPS();
     longjmp(canit_env, 1);
@@ -582,7 +580,7 @@ drawfileDPS(cp, psfile)
 
 static	void
 drawendDPS(cp)
-  char *cp;
+  _Xconst char *cp;
 {
   if (!DPS_active)
     return;
@@ -642,8 +640,6 @@ beginheaderDPS()
 static	void
 endheaderDPS()
 {
-  static	_Xconst	char	str[]	= "";
-
   if (debug & DBG_PS) Puts("Running endheaderDPS()");
 
   if (DPS_active) {

@@ -28,6 +28,7 @@
 
 #include <memory.h>
 #include <signal.h>
+#include <sys/file.h>	/* this defines FASYNC */
 
 /* if POSIX O_NONBLOCK is not available, use O_NDELAY */
 #if !defined(O_NONBLOCK) && defined(O_NDELAY)
@@ -64,7 +65,7 @@ extern	int	errno;
 #include <poll.h>
 #endif
 
-#if	HAS_SIGIO
+#if	HAS_SIGIO && !defined(STRMS2)
 #include <signal.h>
 #ifndef	FASYNC
 #undef	HAS_SIGIO
@@ -102,10 +103,10 @@ static	void	toggle_gs ARGS((void));
 static	void	destroy_gs ARGS((void));
 static	void	interrupt_gs ARGS((void));
 static	void	endpage_gs ARGS((void));
-static	void	drawbegin_gs ARGS((int, int, char *));
-static	void	drawraw_gs ARGS((char *));
+static	void	drawbegin_gs ARGS((int, int, _Xconst char *));
+static	void	drawraw_gs ARGS((_Xconst char *));
 static	void	drawfile_gs ARGS((_Xconst char *, FILE *));
-static	void	drawend_gs ARGS((char *));
+static	void	drawend_gs ARGS((_Xconst char *));
 static	void	beginheader_gs ARGS((void));
 static	void	endheader_gs ARGS((void));
 static	void	newdoc_gs ARGS((void));
@@ -133,9 +134,11 @@ static	int	std_out[2];
 static	char	arg4[]	= "-dDEVICEWIDTH=xxxxxxxxxx";
 static	char	arg5[]	= "-dDEVICEHEIGHT=xxxxxxxxxx";
 
-static	char	*argv[]	= {NULL, "-sDEVICE=x11", "-dNOPAUSE", "-q", arg4, arg5,
-			   "-dDEVICEXRESOLUTION=72", "-dDEVICEYRESOLUTION=72",
-			   NULL, NULL, NULL};
+static	_Xconst	char	*argv[]	= {NULL, "-sDEVICE=x11", "-dNOPAUSE", "-q",
+				   arg4, arg5,
+				   "-dDEVICEXRESOLUTION=72",
+				   "-dDEVICEYRESOLUTION=72",
+				   NULL, NULL, NULL};
 
 static	pid_t		GS_pid;
 static	unsigned int	GS_page_w;	/* how big our current page is */
@@ -144,10 +147,13 @@ static	int		GS_mag;		/* magnification currently in use */
 static	int		GS_shrink;	/* shrink factor currently in use */
 static	Boolean		GS_active;	/* if we've started a page yet */
 static	int		GS_pending;	/* number of ack's we're expecting */
-static	Boolean		GS_sending;	/* if we're in the middle of send() */
+static	_Xconst char	*GS_send_byte;	/* next byte to send to gs */
+static	_Xconst char	*GS_send_end;	/* last + 1 byte to send to gs */
 static	Boolean		GS_in_header;	/* if we're sending a header */
-static	Boolean		GS_in_doc;	/* if we've send header information */
-static	Boolean		GS_pending_int;	/* if interrupt rec'd while in send() */
+static	Boolean		GS_in_doc;	/* if we've sent header information */
+static	Boolean		GS_pending_int;	/* if interrupt rec'd while in gs_io()*/
+static	Boolean		GS_timeout_set;	/* if there's a timeout set */
+static	struct timeval	GS_timeout;	/* when to time out */
 static	Boolean		GS_old;		/* if we're using gs 2.xx */
 
 static	Atom		gs_atom;
@@ -188,13 +194,10 @@ _setenv(var, str)
 		return;
 	    }
 	len1 = linep - environ;
-	if (malloced) {
-	    environ = (char **) realloc((char *) environ,
-		(unsigned int) (len1 + 2) * sizeof(char *));
-	    if (environ == NULL)
-		oops("! Cannot allocate %d bytes for string list in _setenv.\n",
-		    (len1 + 2) * sizeof(char *));
-	}
+	if (malloced)
+	    environ = (char **) xrealloc((char *) environ,
+		(unsigned int) (len1 + 2) * sizeof(char *),
+		"string list in _setenv");
 	else {
 	    linep = (char **) xmalloc((unsigned int)(len1 + 2) * sizeof(char *),
 		"string list in _setenv");
@@ -221,7 +224,7 @@ static	fd_set		readfds;
 static	fd_set		writefds;
 #define	XDVI_ISSET(a, b, c)	FD_ISSET(a, b)
 #else	/* STREAMSCONN */
-struct pollfd		fds[3] = {{0, POLLOUT, 0},
+static	struct pollfd	fds[3] = {{0, POLLOUT, 0},
 				  {0, POLLIN, 0},
 				  {0, POLLIN, 0}};
 #define	XDVI_ISSET(a, b, c)	(fds[c].revents)
@@ -297,8 +300,8 @@ read_from_gs() {
 	if (linepos >= line + LINELEN) {
 	    p = line + LINELEN;
 	    if ((*--p != '\347' && *--p != '\347' && *--p != '\347')
-		    || (memcmp(p, ackstr, line + LINELEN - p) != 0)
-		    && (memcmp(p, oldstr, line + LINELEN - p) != 0))
+		    || (memcmp(p, ackstr, line + LINELEN - p) != 0
+		    && memcmp(p, oldstr, line + LINELEN - p) != 0))
 		p = line + LINELEN;
 	    *p = '\0';
 	    Printf("gs: %s\n", line);
@@ -309,7 +312,7 @@ read_from_gs() {
 }
 
 /*
- *	For handling of SIGPIPE signals from send()
+ *	For handling of SIGPIPE signals from gs_io()
  */
 
 static	Boolean	sigpipe_error = False;
@@ -331,14 +334,12 @@ static	struct sigaction sigpipe_handler_struct;
 #endif
 
 /*
- *	Clean up after send()
+ *	Clean up after gs_io()
  */
 
 static	void
 post_send()
 {
-	GS_sending = False;
-
 	if (sigpipe_error) {
 	    Fputs("ghostscript died unexpectedly.\n", stderr);
 	    destroy_gs();
@@ -352,152 +353,80 @@ post_send()
 }
 
 /*
- *	This actually sends the bytes to ghostscript.
+ *	This routine does two things.  It either sends a string of bytes to
+ *	the GS interpreter, or waits for acknowledgement from GS.
  */
 
+#define	waitack()	gs_io(NULL, 0)
+
 static	void
-send(cp, len)
+gs_io(cp, len)
 	_Xconst	char	*cp;
 	int		len;
 {
-	int	bytes;
+	int		bytes;
 #ifdef	_POSIX_SOURCE
 	struct sigaction orig;
 #else
 	void		(*orig)();
 #endif
-#ifdef	STREAMSCONN
-	int	retval;
-#endif
-
-	if (GS_pid < 0) return;
-#ifdef	_POSIX_SOURCE
-	(void) sigaction(SIGPIPE, &sigpipe_handler_struct, &orig);
-#else
-	orig = signal(SIGPIPE, gs_sigpipe_handler);
-#endif
-	sigpipe_error = False;
-	GS_sending = True;
-
-#if	HAS_SIGIO
-	(void) fcntl(ConnectionNumber(DISP), F_SETFL,
-	    fcntl(ConnectionNumber(DISP), F_GETFL, 0) & ~FASYNC);
-#endif
-
-#ifndef	STREAMSCONN
-	FD_ZERO(&readfds);
-	FD_ZERO(&writefds);
-#endif
-
-	for (;;) {
-
-#ifndef	STREAMSCONN
-	    FD_SET(ConnectionNumber(DISP), &readfds);
-	    FD_SET(GS_in, &writefds);
-	    FD_SET(GS_out, &readfds);
-
-	    if (select(numfds, &readfds, &writefds, (fd_set *) NULL,
-		    (struct timeval *) NULL) < 0 && errno != EINTR) {
-		perror("select (xdvi gs_send)");
-		break;
-	    }
-#else	/* STREAMSCONN */
-	    for (;;) {
-		retval = poll(fds, XtNumber(fds), -1);
-		if (retval >= 0 || errno != EAGAIN) break;
-	    }
-	    if (retval < 0) {
-		perror("poll (xdvi gs_send)");
-		break;
-	    }
-#endif	/* STREAMSCONN */
-
-	    if (XDVI_ISSET(GS_out, &readfds, 1))
-		read_from_gs();
-	    if (XDVI_ISSET(GS_in, &writefds, 0)) {
-		bytes = write(GS_in, cp, len);
-		if (bytes == -1) {
-		    if (!AGAIN_CONDITION) perror("xdvi gs_send");
-		}
-		else {
-		    cp += bytes;
-		    len -= bytes;
-		    if (len == 0) break;
-		}
-		if (sigpipe_error) break;
-	    }
-	    if (XDVI_ISSET(ConnectionNumber(DISP), &readfds, 2)) {
-		allow_can = False;
-		read_events(False);
-		allow_can = True;
-		if (GS_pid < 0) break;	/* if timeout occurred */
-	    }
-	}
-
-#if	HAS_SIGIO
-	(void) fcntl(ConnectionNumber(DISP), F_SETFL,
-	    fcntl(ConnectionNumber(DISP), F_GETFL, 0) | FASYNC);
-#endif
-
-	/* put back generic handler for SIGPIPE */
-#ifdef	_POSIX_SOURCE
-	(void) sigaction(SIGPIPE, &orig, (struct sigaction *) NULL);
-#else
-	(void) signal(SIGPIPE, orig);
-#endif
-	if (!GS_in_header) post_send();
-}
-
-/*
- *	Wait for acknowledgement from gs.
- */
-
-static	void
-waitack(waittime)
-	int	waittime;
-{
 	struct timeval	tv;
-	struct timeval	tv2;
 #ifndef	STREAMSCONN
 	struct timeval	*timeout = (struct timeval *) NULL;
 #else
 	int		timeout	= -1;
 	int		retval;
+	int		offset	= 0;
 #endif
-#if	HAS_SIGIO
+#if	HAS_SIGIO && defined(FASYNC)
 	int		oldflags;
 #endif
 
-	if (GS_pending == 0) return;
-#if	HAS_SIGIO
+	if (GS_pid < 0)
+	    return;
+
+	if (cp != NULL) {	/* if sending bytes */
+#ifdef	_POSIX_SOURCE
+	    (void) sigaction(SIGPIPE, &sigpipe_handler_struct, &orig);
+#else
+	    orig = signal(SIGPIPE, gs_sigpipe_handler);
+#endif
+	    sigpipe_error = False;
+	    GS_send_byte = cp;
+	    GS_send_end = cp + len;
+	}
+	else {		/* if waiting for acknowledgement */
+	    if (GS_pending == 0)
+		return;
+#ifdef	STREAMSCONN
+	    offset = 1;
+#endif
+	}
+
+#if	HAS_SIGIO && defined(FASYNC)
 	oldflags = fcntl(ConnectionNumber(DISP), F_GETFL, 0);
 	(void) fcntl(ConnectionNumber(DISP), F_SETFL, oldflags & ~FASYNC);
 #endif
-	if (waittime != 0) {
-	    (void) X_GETTIMEOFDAY(&tv);
-	    tv.tv_sec += waittime;
+
+	for (;;) {
+
+	    /* Handle timeout. */
+
+	    if (GS_timeout_set) {
+		(void) X_GETTIMEOFDAY(&tv);
 #ifndef	STREAMSCONN
-	    timeout = &tv2;
-#endif
-	}
-#ifndef	STREAMSCONN
-	FD_ZERO(&readfds);
-#endif
-	while (GS_pending > 0) {
-	    if (waittime != 0) {
-		(void) X_GETTIMEOFDAY(&tv2);
-#ifndef	STREAMSCONN
-		if (!timercmp(&tv2, &tv, <)) {
+		if (!timercmp(&tv, &GS_timeout, <)) {
 		    destroy_gs();
 		    break;
 		}
-		tv2.tv_sec = tv.tv_sec - tv2.tv_sec;
-		tv2.tv_usec = tv.tv_usec + 1000000 - tv2.tv_usec;
-		if (tv2.tv_usec >= 1000000) tv2.tv_usec -= 1000000;
-		else --tv2.tv_sec;
+		tv.tv_sec = GS_timeout.tv_sec - tv.tv_sec;
+		tv.tv_usec = GS_timeout.tv_usec + 1000000 - tv.tv_usec;
+		if (tv.tv_usec >= 1000000) tv.tv_usec -= 1000000;
+		else --tv.tv_sec;
+		timeout = &tv;
 #else
-		timeout = 1000 * (int) (tv.tv_sec - tv2.tv_sec)
-		    + ((long) tv.tv_usec - (long) tv2.tv_usec) / 1000;
+		timeout = 1000 * (int) (GS_timeout.tv_sec - tv.tv_sec)
+		    + ((long) GS_timeout.tv_usec - (long) tv.tv_usec) / 1000;
 		if (timeout <= 0) {
 		    destroy_gs();
 		    break;
@@ -506,36 +435,75 @@ waitack(waittime)
 	    }
 
 #ifndef	STREAMSCONN
+	    FD_ZERO(&readfds);
 	    FD_SET(ConnectionNumber(DISP), &readfds);
 	    FD_SET(GS_out, &readfds);
-	    if (select(numfds, &readfds, (fd_set *) NULL, (fd_set *) NULL,
-		    timeout) < 0 && errno != EINTR) {
-		perror("select (xdvi gs_waitack)");
+
+	    FD_ZERO(&writefds);
+	    if (GS_send_byte != NULL) FD_SET(GS_in, &writefds);
+
+	    if (select(numfds, &readfds, &writefds, (fd_set *) NULL, timeout)
+		    < 0 && errno != EINTR) {
+		perror("select (xdvi gs_io)");
 		break;
 	    }
 #else	/* STREAMSCONN */
+	    fds[0].revents = 0;
 	    for (;;) {
-		retval = poll(fds + 1, XtNumber(fds) - 1, timeout);
+		retval = poll(fds + offset, XtNumber(fds) - offset, timeout);
 		if (retval >= 0 || errno != EAGAIN) break;
 	    }
 	    if (retval < 0) {
-		perror("poll (xdvi gs_waitack)");
+		perror("poll (xdvi gs_io)");
 		break;
 	    }
 #endif	/* STREAMSCONN */
 
-	    if (XDVI_ISSET(GS_out, &readfds, 1))
+	    if (XDVI_ISSET(GS_out, &readfds, 1)) {
 		read_from_gs();
+		if (GS_pending <= 0) {
+		    GS_timeout_set = False;
+		    break;
+		}
+	    }
+	    if (XDVI_ISSET(GS_in, &writefds, 0)) {
+		bytes = write(GS_in, GS_send_byte, GS_send_end - GS_send_byte);
+		if (bytes == -1) {
+		    if (!AGAIN_CONDITION) perror("xdvi gs_io");
+		}
+		else {
+		    GS_send_byte += bytes;
+		    if (GS_send_byte == GS_send_end) {
+			GS_send_byte = NULL;
+			break;
+		    }
+		}
+		if (sigpipe_error) break;
+	    }
 	    if (XDVI_ISSET(ConnectionNumber(DISP), &readfds, 2)) {
-		allow_can = False;
-		read_events(False);
-		allow_can = True;
+		ps_read_events(False, False);
+		if (GS_pid < 0) break;	/* if timeout occurred */
+		if (GS_pending <= 0) {
+		    GS_timeout_set = False;
+		    break;
+		}
 	    }
 	}
-#if	HAS_SIGIO
+
+#if	HAS_SIGIO && defined(FASYNC)
 	(void) fcntl(ConnectionNumber(DISP), F_SETFL, oldflags);
 #endif
-	/* If you bail out here, change the call in interrupt_gs(). */
+
+	if (cp != NULL) {
+	    /* put back generic handler for SIGPIPE */
+#ifdef	_POSIX_SOURCE
+	    (void) sigaction(SIGPIPE, &orig, (struct sigaction *) NULL);
+#else
+	    (void) signal(SIGPIPE, orig);
+#endif
+	    if (!GS_in_header)
+		post_send();
+	}
 }
 
 /*
@@ -561,7 +529,8 @@ initGS()
 		 * `execute' is unique to ghostscript.
 		 */
 	static	_Xconst	char	str1[]	= "\
-/xdvi$run {{currentfile cvx execute} stopped pop} def \
+/xdvi$run {$error /newerror false put {currentfile cvx execute} stopped pop} \
+  def \
 /xdvi$ack (\347\310\376) def \
 /xdvi$dslen countdictstack def \
 {currentfile read pop 72 eq \
@@ -570,7 +539,7 @@ initGS()
       clear countdictstack xdvi$dslen sub {end} repeat xdvi$sav restore} \
   ifelse \
   {(%%xdvimark) currentfile =string {readline} stopped \
-    {clear $error /newerror false put} {pop eq {exit} if} ifelse }loop \
+    {clear} {pop eq {exit} if} ifelse }loop \
   flushpage xdvi$ack print flush \
 }loop\nH";
 	static	_Xconst	char	str2[]	= "[0 1 1 0 0 0] concat\n\
@@ -600,7 +569,7 @@ stop\n%%xdvimark\n";
 	Fflush(stderr);		/* to avoid double flushing */
 	GS_pid = vfork();
 	if (GS_pid == 0) {		/* child */
-	    char **argvp = argv + 8;
+	    _Xconst char **argvp = argv + 8;
 
 	    Sprintf(arg4 + 14, "%u", GS_page_w);
 	    Sprintf(arg5 + 15, "%u", GS_page_h);
@@ -616,7 +585,7 @@ stop\n%%xdvimark\n";
 	    (void) dup2(std_out[1], 1);
 	    (void) dup2(std_out[1], 2);
 	    (void) close(std_out[1]);
-	    (void) execvp(argv[0] = resource.gs_path, argv);
+	    (void) execvp(argv[0] = resource.gs_path, (char * _Xconst *) argv);
 	    Fprintf(stderr, "Execvp of %s failed.\n", argv[0]);
 	    Fflush(stderr);
 	    _exit(1);
@@ -649,17 +618,18 @@ stop\n%%xdvimark\n";
 #endif	/* STREAMSCONN */
 
 	psp = gs_procs;
-	GS_active = GS_sending = GS_pending_int = False;
+	GS_active = GS_pending_int = GS_timeout_set = False;
+	GS_send_byte = NULL;
 	GS_in_header = True;
 	GS_pending = 1;
 	GS_mag = GS_shrink = -1;
 
-	send(str1, sizeof(str1) - 1);
-	send(psheader, psheaderlen);
-	send(str2, sizeof(str2) - 1);
+	gs_io(str1, sizeof(str1) - 1);
+	gs_io(psheader, psheaderlen);
+	gs_io(str2, sizeof(str2) - 1);
 	GS_in_header = False;
 	post_send();
-	waitack(0);
+	waitack();
 
 	if (GS_pid < 0) {		/* if something happened */
 	    destroy_gs();
@@ -702,7 +672,8 @@ destroy_gs()
 	}
 	(void) close(GS_in);
 	(void) close(GS_out);
-	GS_active = GS_sending = GS_pending_int = GS_in_doc = False;
+	GS_active = GS_pending_int = GS_timeout_set = GS_in_doc = False;
+	GS_send_byte = NULL;
 	GS_pending = 0;
 }
 
@@ -712,7 +683,12 @@ interrupt_gs()
 	static	_Xconst	char	str[]	= " stop\n%%xdvimark\n";
 
 	if (debug & DBG_PS) Puts("Running interrupt_gs()");
-	if (GS_sending) GS_pending_int = True;
+	if (GS_pending <= 0) return;	/* nothing to do */
+	if (GS_timeout_set) return;	/* we've done this already */
+	(void) X_GETTIMEOFDAY(&GS_timeout);	/* set timeout */
+	GS_timeout.tv_sec += 5;
+	GS_timeout_set = True;
+	if (GS_send_byte != NULL) GS_pending_int = True;
 	else {
 	    if (GS_active) {
 		/*
@@ -720,11 +696,11 @@ interrupt_gs()
 		 * the interrupt routine in errordict.  But so far (gs 2.6.1)
 		 * that has not been implemented in ghostscript.
 		 */
-		send(str, sizeof(str) - 1);
+		gs_io(str, sizeof(str) - 1);
 		GS_active = False;
 	    }
 	    psp.interrupt = NullProc;	/* prevent deep recursion in waitack */
-	    waitack(5);
+	    waitack();
 	    psp.interrupt = interrupt_gs;
 	}
 }
@@ -736,9 +712,9 @@ endpage_gs()
 
 	if (debug & DBG_PS) Puts("Running endpage_gs()");
 	if (GS_active) {
-	    send(str, sizeof(str) - 1);
+	    gs_io(str, sizeof(str) - 1);
 	    GS_active = False;
-	    waitack(0);
+	    waitack();
 	}
 }
 
@@ -762,12 +738,12 @@ checkgs(in_header)
 	if (!GS_active) {
 	    /* check whether page_w or page_h have increased */
 	    if (page_w > GS_page_w || page_h > GS_page_h) {
+		++GS_pending;
 		Sprintf(buf, "H mark /HWSize [%d %d] /ImagingBBox [0 0 %d %d] \
 currentdevice putdeviceprops pop\n\
 initgraphics [0 1 1 0 0 0] concat stop\n%%%%xdvimark\n",
 		    GS_page_w = page_w, GS_page_h = page_h, page_h, page_w);
-		send(buf, strlen(buf));
-		++GS_pending;
+		gs_io(buf, strlen(buf));
 		if (!in_header) {
 		    canit = True;		/* ||| redraw the page */
 		    longjmp(canit_env, 1);
@@ -775,29 +751,29 @@ initgraphics [0 1 1 0 0 0] concat stop\n%%%%xdvimark\n",
 	    }
 
 	    if (magnification != GS_mag) {
+		++GS_pending;
 		Sprintf(buf, "H TeXDict begin /DVImag %d 1000 div def \
 end stop\n%%%%xdvimark\n",
 		    GS_mag = magnification);
-		send(buf, strlen(buf));
-		++GS_pending;
+		gs_io(buf, strlen(buf));
 	    }
 
 	    if (mane.shrinkfactor != GS_shrink) {
+		++GS_pending;
 		Sprintf(buf,
 		    "H TeXDict begin %d %d div dup \
 /Resolution X /VResolution X \
 end stop\n%%%%xdvimark\n",
 		    pixels_per_inch, GS_shrink = mane.shrinkfactor);
-		send(buf, strlen(buf));
-		++GS_pending;
+		gs_io(buf, strlen(buf));
 	    }
 	}
 }
 
 static	void
 drawbegin_gs(xul, yul, cp)
-	int	xul, yul;
-	char	*cp;
+	int		xul, yul;
+	_Xconst	char	*cp;
 {
 	char	buf[32];
 	static	_Xconst	char	str[]	= " TeXDict begin\n";
@@ -805,37 +781,35 @@ drawbegin_gs(xul, yul, cp)
 	checkgs(False);
 
 	if (!GS_active) {
-	    send(str, sizeof(str) - 1);
-	    GS_active = True;
 	    ++GS_pending;
+	    gs_io(str, sizeof(str) - 1);
+	    GS_active = True;
 	}
 
 	/* This allows the X side to clear the page */
 	XSync(DISP, False);
 
 	Sprintf(buf, "%d %d moveto\n", xul, yul);
-	send(buf, strlen(buf));
+	gs_io(buf, strlen(buf));
 	if (debug & DBG_PS)
 	    Printf("drawbegin at %d,%d:  sending `%s'\n", xul, yul, cp);
-	send(cp, strlen(cp));
+	gs_io(cp, strlen(cp));
 }
 
 static	void
 drawraw_gs(cp)
-	char	*cp;
+	_Xconst	char	*cp;
 {
-	int	len	= strlen(cp);
-
 	if (!GS_active)
 	    return;
 	if (debug & DBG_PS) Printf("raw ps sent to context: %s\n", cp);
-	cp[len] = '\n';
-	send(cp, len + 1);
+	gs_io(cp, strlen(cp));
+	gs_io("\n", 1);
 }
 
 static	void
 drawfile_gs(cp, f)
-	_Xconst char	*cp;
+	_Xconst	char	*cp;
 	FILE		*f;
 {
 	char	buf[PATH_MAX + 7];
@@ -848,18 +822,18 @@ drawfile_gs(cp, f)
 
 	if (debug & DBG_PS) Printf("printing file %s\n", cp);
 	Sprintf(buf, "(%s)run\n", cp);
-	send(buf, strlen(buf));
+	gs_io(buf, strlen(buf));
 }
 
 static	void
 drawend_gs(cp)
-	char	*cp;
+	_Xconst	char	*cp;
 {
 	if (!GS_active)
 	    return;
 	if (debug & DBG_PS) Printf("end ps: %s\n", cp);
-	send(cp, strlen(cp));
-	send("\n", 1);
+	gs_io(cp, strlen(cp));
+	gs_io("\n", 1);
 }
 
 static	void
@@ -878,14 +852,14 @@ beginheader_gs()
 	}
 
 	GS_in_header = True;
+	++GS_pending;
 	if (GS_in_doc)
-	    send("H", 1);
+	    gs_io("H", 1);
 	else {
-	    send(str, sizeof(str) - 1);
+	    gs_io(str, sizeof(str) - 1);
 	    GS_in_doc = True;
 	}
 	GS_active = True;
-	++GS_pending;
 }
 
 static	void
@@ -896,11 +870,11 @@ endheader_gs()
 	if (debug & DBG_PS) Puts("Running endheader_gs()");
 
 	if (GS_active) {
-	    send(str, sizeof(str) - 1);
+	    gs_io(str, sizeof(str) - 1);
 	    GS_active = False;
 	    GS_in_header = False;
 	    post_send();
-	    waitack(0);
+	    waitack();
 	}
 }
 
@@ -913,8 +887,8 @@ newdoc_gs()
 	if (debug & DBG_PS) Puts("Running newdoc_gs()");
 
 	if (GS_in_doc) {
-	    send(str, sizeof(str) - 1);
 	    ++GS_pending;
+	    gs_io(str, sizeof(str) - 1);
 	    GS_mag = GS_shrink = -1;
 	    GS_in_doc = False;
 	}

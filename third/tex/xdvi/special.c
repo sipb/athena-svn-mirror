@@ -61,6 +61,7 @@
 #include "xdvi.h"
 
 extern	char	*strtok ARGS((char *, _Xconst char *));
+extern	char	*tempnam ARGS((_Xconst char *, _Xconst char *));
 
 #ifdef	X_NOT_STDC_ENV
 #ifndef	atof
@@ -91,8 +92,11 @@ extern	char	*getenv ARGS((_Xconst char *));
 #endif
 
 #include <sys/stat.h>
-#include <sys/wait.h>
 #include <errno.h>
+
+#if	!defined(X_NOT_POSIX) || BSD
+#include <sys/wait.h>
+#endif
 
 #ifdef	X_NOT_STDC_ENV
 extern	int	errno;
@@ -516,11 +520,78 @@ blacken_last()
 
 #if	PS
 
-static	void	ps_startup ARGS((int, int, char *));
+/*
+ *	Information on how to search for PS header and figure files.
+ */
+
+#include "filf_app.h"		/* application-related defs, etc. */
+#include "filefind.h"
+
+static	_Xconst	char	no_f_str_ps[]	= "/%f";
+
+static	struct findrec			search_header	= {
+	/* path1	*/	NULL,
+#if	CFGFILE
+	/* envptr	*/	NULL,
+#endif
+	/* path2	*/	DEFAULT_HEADER_PATH,
+	/* type		*/	"PS header",
+	/* fF_etc	*/	"fF",
+	/* x_var_char	*/	'f',
+	/* n_var_opts	*/	2,
+	/* no_f_str	*/	no_f_str_ps,
+	/* no_f_str_end	*/	no_f_str_ps + sizeof(no_f_str_ps) - 1,
+	/* abs_str	*/	"%f",
+#ifdef	PK_AND_GF
+	/* no_f_str_flags */	F_FILE_USED,
+	/* abs_str_flags */	F_FILE_USED,
+	/* pk_opt_char	*/	'f',
+	/* pk_gf_addr	*/	NULL,
+#endif
+	/* pct_s_str	*/	"%qdvips//",
+	{
+	  /* v.stephead		*/	NULL,
+	  /* v.pct_s_head	*/	NULL,
+	  /* v.pct_s_count	*/	0,
+	  /* v.pct_s_atom	*/	NULL,
+	  /* v.rootp		*/	NULL,
+	}
+};
+
+static	struct findrec			search_fig	= {
+	/* path1	*/	NULL,
+#if	CFGFILE
+	/* envptr	*/	NULL,
+#endif
+	/* path2	*/	DEFAULT_FIG_PATH,
+	/* type		*/	"PS",
+	/* fF_etc	*/	"fF",
+	/* x_var_char	*/	'f',
+	/* n_var_opts	*/	2,
+	/* no_f_str	*/	no_f_str_ps,
+	/* no_f_str_end	*/	no_f_str_ps + sizeof(no_f_str_ps) - 1,
+	/* abs_str	*/	"%f",
+#ifdef	PK_AND_GF
+	/* no_f_str_flags */	F_FILE_USED,
+	/* abs_str_flags */	F_FILE_USED,
+	/* pk_opt_char	*/	'f',
+	/* pk_gf_addr	*/	NULL,
+#endif
+	/* pct_s_str	*/	"%qdvips//:%qtex//",
+	{
+	  /* v.stephead		*/	NULL,
+	  /* v.pct_s_head	*/	NULL,
+	  /* v.pct_s_count	*/	0,
+	  /* v.pct_s_atom	*/	NULL,
+	  /* v.rootp		*/	NULL,
+	}
+};
+
+static	void	ps_startup ARGS((int, int, _Xconst char *));
 static	void	ps_startup2 ARGS((void));
 void	NullProc ARGS((void)) {}
 /* ARGSUSED */
-static	void	NullProc2 ARGS((char *));
+static	void	NullProc2 ARGS((_Xconst char *));
 
 struct psprocs	psp = {		/* used for lazy startup of the ps machinery */
 	/* toggle */		NullProc,
@@ -572,31 +643,55 @@ draw_bbox()
 static	void
 actual_startup()
 {
-	char	*p;
 
 	/*
 	 * First sort out the paths.
 	 */
-	p = getenv("XDVIFIGS");
-	if (p == NULL) p = getenv("TEXINPUTS");
-	if (p != NULL) {
-	    figfind.auxpath = figfind.mainpath;
-	    figfind.mainpath = p;
+
+#if	CFGFILE
+
+	if ((search_header.path1 = getenv("XDVIHEADERS")) == NULL
+	  && (search_header.path1 = getenv("TEXPSHEADERS")) == NULL)
+	    search_header.path1 = getenv("PSHEADERS");
+	search_header.envptr = ffgetenv("PSHEADERS");
+	/* clear it if it's a getenv() placeholder */
+	if (search_header.envptr != NULL && search_header.envptr->value == NULL)
+            search_header.envptr = NULL;
+
+	if ((search_fig.path1 = getenv("XDVIFIGS")) == NULL
+	  && (search_fig.path1 = getenv("PSFIGURES")) == NULL)
+	    search_fig.path1 = getenv("TEXINPUTS");
+	search_fig.envptr = ffgetenv("PSFIGURES");
+	/* clear it if it's a getenv() placeholder */
+	if (search_fig.envptr != NULL && search_fig.envptr->value == NULL)
+            search_fig.envptr = NULL;
+
+#else	/* !CFGFILE */
+
+	if ((search_header.path1 = getenv("XDVIHEADERS")) == NULL
+		&& (search_header.path1 = getenv("TEXPSHEADERS")) == NULL
+		&& (search_header.path1 = getenv("PSHEADERS")) == NULL
+		) {
+	    search_header.path1 = search_header.path2;
+	    search_header.path2 = NULL;
 	}
 
-	p = getenv("XDVIHEADERS");
-	if (p == NULL) p = getenv("HEADERPATH");
-	if (p != NULL) {
-	    headerfind.auxpath = headerfind.mainpath;
-	    headerfind.mainpath = p;
+	if ((search_fig.path1 = getenv("XDVIFIGS")) == NULL
+		&& (search_fig.path1 = getenv("PSFIGURES")) == NULL
+		&& (search_fig.path1 = getenv("TEXINPUTS")) == NULL
+		) {
+	    search_fig.path1 = search_fig.path2;
+	    search_fig.path2 = NULL;
 	}
+
+#endif	/* CFGFILE */
 
 	/*
 	 * Figure out what we want to use to display postscript figures
 	 * and set at most one of the following to True:
 	 * resource.useGS, resource.useDPS, resource.useNeWS
 	 *
-	 * Choose DPS then NEWS then GhostScript if they are available
+	 * Choose DPS then NEWS then Ghostscript if they are available
 	 */
 	if (!(
 #ifdef	PS_DPS
@@ -623,8 +718,8 @@ actual_startup()
 
 static	void
 ps_startup(xul, yul, cp)
-	int	xul, yul;
-	char	*cp;
+	int		xul, yul;
+	_Xconst	char	*cp;
 {
 	if (!resource._postscript) {
 	    psp.toggle = actual_startup;
@@ -645,68 +740,20 @@ ps_startup2()
 /* ARGSUSED */
 static	void
 NullProc2(cp)
-	char	*cp;
+	_Xconst	char	*cp;
 {}
 
 /* ARGSUSED */
 void
 #if	NeedFunctionPrototypes
-drawbegin_none(int xul, int yul, char *cp)
+drawbegin_none(int xul, int yul, _Xconst char *cp)
 #else	/* !NeedFunctionPrototypes */
 drawbegin_none(xul, yul, cp)
-	int	xul, yul;
-	char	*cp;
+	int		xul, yul;
+	_Xconst	char	*cp;
 #endif	/* NeedFunctionPrototypes */
 {
 	draw_bbox();
-}
-
-
-/* |||
- *	This routine is just a stopgap measure.  My next major project for
- *	xdvi is to upgrade the file searching routines so that they conform
- *	to the standard TeX Directory Structure (TDS).
- */
-
-#ifndef	VMS
-#define	PATH_SEP	':'
-#else	/* VMS */
-#define	PATH_SEP	'/'
-#endif	/* VMS */
-
-static	FILE *
-pathfopen(filename, buffer, pathlist1, pathlist2)
-	_Xconst char	*filename;
-	char		*buffer;
-	_Xconst char	*pathlist1;
-	_Xconst char	*pathlist2;
-{
-	FILE		*f;
-	_Xconst char	*p;
-	char		*q;
-
-	for (;;) {
-	    p = index(pathlist1, PATH_SEP);
-	    if (p == NULL) p = pathlist1 + strlen(pathlist1);
-	    if (p == pathlist1) {
-		f = NULL;
-		if (pathlist2 != NULL) {
-		    f = pathfopen(filename, buffer, pathlist2, NULL);
-		    pathlist2 = NULL;
-		}
-	    }
-	    else {
-		bcopy(pathlist1, buffer, p - pathlist1);
-		q = buffer + (p - pathlist1);
-		*q++ = '/';
-		Strcpy(q, filename);
-		if (debug & DBG_OPEN) Printf("Trying PS file %s\n", buffer);
-		f = xfopen(buffer, OPEN_MODE);
-	    }
-	    if (f != NULL) return f;
-	    if (*p == '\0') return NULL;
-	    pathlist1 = p + 1;
-	}
 }
 
 
@@ -756,7 +803,7 @@ cachetick(filename, pathinfo, fp)
 		    tikp->pageno = -1;
 		    if (tikp->tmpname == NULL) {
 			Fputs("Cannot create temporary file.\n", stderr);
-			free(tikp);
+			free((char *) tikp);
 			return NULL;
 		    }
 		    ++nticks;
@@ -778,7 +825,7 @@ cachetick(filename, pathinfo, fp)
 	}
 	tikp->next = tickhead;		/* link it in */
 	tickhead = tikp;
-	tikp->pageno = pathinfo != &headerfind ? current_page : -1;
+	tikp->pageno = pathinfo != &search_header ? current_page : -1;
 	return tikp;
 }
 
@@ -796,7 +843,6 @@ sendfile(filename, pathinfo)
 	struct findrec	*pathinfo;
 {
 	FILE		*f;
-	char		buffer[FILENAMESIZE];
 	static _Xconst char *argv[]	= {NULL, "-c", NULL, NULL};
 	_Xconst char	*bufp;
 	struct tickrec	*tikp;
@@ -804,7 +850,7 @@ sendfile(filename, pathinfo)
 	int		len;
 	char		magic2;
 
-	if (psp.drawfile == NULL) return;
+	if (psp.drawfile == NULL || !resource._postscript) return;
 
 	if (filename[0] == '`') {
 	    if (!resource.allow_shell) {
@@ -819,8 +865,11 @@ sendfile(filename, pathinfo)
 	    if (tikp == NULL)
 		return;
 	    if (f == NULL) {
-		Sprintf(buffer, "%s > %s", filename + 1, tikp->tmpname);
-		(void) system(buffer);
+		len = strlen(filename) + strlen(tikp->tmpname) + (4 - 1);
+		if (len > ffline_len)
+		    expandline(len);
+		Sprintf(ffline, "%s > %s", filename + 1, tikp->tmpname);
+		(void) system(ffline);
 		f = xfopen(tikp->tmpname, OPEN_MODE);
 		if (f == NULL) {
 		    perror(tikp->tmpname);
@@ -830,30 +879,28 @@ sendfile(filename, pathinfo)
 	    bufp = tikp->tmpname;
 	}
 	else {
-	    if (filename[0] == '/') {
-		if (debug & DBG_OPEN) Printf("Trying PS file %s\n", filename);
-		f = xfopen(filename, OPEN_MODE);
-		bufp = filename;
-	    }
-	    else {
+	    f = NULL;
 		/* first try the same path as the dvi file */
+	    if (filename[0] != '/') {
 		p = rindex(dvi_name, '/');
 		if (p == NULL) bufp = filename;
 		else {
-		    bcopy(dvi_name, buffer, ++p - dvi_name);
-		    p = buffer + (p - dvi_name);
-		    Strcpy(p, filename);
-		    bufp = buffer;
+		    int len1, len2;
+
+		    len1 = ++p - dvi_name;
+		    len2 = strlen(filename) + 1;
+		    if (len1 + len2 > ffline_len)
+			expandline(len1 + len2);
+		    bcopy(dvi_name, ffline, len1);
+		    bcopy(filename, ffline + len1, len2);
+		    bufp = ffline;
 		}
 		if (debug & DBG_OPEN) Printf("Trying PS file %s\n", bufp);
 		f = xfopen(bufp, OPEN_MODE);
-
-		/* if no luck, try a search over the paths */
-		if (f == NULL) {
-		    f = pathfopen(filename, buffer, pathinfo->mainpath,
-			pathinfo->auxpath);
-		    bufp = buffer;
-		}
+	    }
+	    if (f == NULL) {
+		f = filefind(filename, pathinfo, (_Xconst char **) NULL);
+		bufp = ffline;
 	    }
 
 	    /* if still no luck, complain */
@@ -901,7 +948,21 @@ sendfile(filename, pathinfo)
 			}
 			(void) close(handle);
 			for (;;) {
+#if	X_NOT_POSIX
+#if	!BSD
+			    int retval;
+
+			    retval = wait(&status);
+			    if (retval == pid) break;
+			    if (retval != -1) continue;
+#else	/* BSD */
+			    if (wait4(pid, &status, 0, (struct rusage *) NULL)
+				    != -1)
+				break;
+#endif	/* BSD */
+#else	/* POSIX */
 			    if (waitpid(pid, &status, 0) != -1) break;
+#endif	/* POSIX */
 			    if (errno == EINTR) continue;
 			    perror("[xdvi] waitpid");
 			    return;
@@ -979,7 +1040,7 @@ psfig_special(cp)
 	    for (filename = cp; !isspace(*cp); ++cp);
 	    *cp = '\0';
 #if	PS
-	    if (currwin.win == mane.win) sendfile(filename, &figfind);
+	    if (currwin.win == mane.win) sendfile(filename, &search_fig);
 #endif
 	} else if (strncmp(cp, ":[end]", 6) == 0) {
 	    cp += 6;
@@ -1012,20 +1073,20 @@ psfig_special(cp)
 
 /*	Keys for epsf specials */
 
-static	char	*keytab[]	= {"clip",
-				   "llx",
-				   "lly",
-				   "urx",
-				   "ury",
-				   "rwi",
-				   "rhi",
-				   "hsize",
-				   "vsize",
-				   "hoffset",
-				   "voffset",
-				   "hscale",
-				   "vscale",
-				   "angle"};
+static	_Xconst	char	*keytab[]	= {"clip",
+					   "llx",
+					   "lly",
+					   "urx",
+					   "ury",
+					   "rwi",
+					   "rhi",
+					   "hsize",
+					   "vsize",
+					   "hoffset",
+					   "voffset",
+					   "hscale",
+					   "vscale",
+					   "angle"};
 
 #define	KEY_LLX	keyval[0]
 #define	KEY_LLY	keyval[1]
@@ -1123,7 +1184,7 @@ epsf_special(cp)
 	    psp.drawbegin(PXL_H - currwin.base_x, PXL_V - currwin.base_y,
 		buffer);
 	    /* talk directly with the DPSHandler here */
-	    sendfile(filename, &figfind);
+	    sendfile(filename, &search_fig);
 	    psp.drawend(" @endspecial");
 #else
 	    draw_bbox();
@@ -1169,7 +1230,7 @@ scan_header(cp)
 	}
 
 	psp.beginheader();
-	sendfile(filename, &headerfind);
+	sendfile(filename, &search_header);
 }
 
 static	void
@@ -1243,8 +1304,8 @@ applicationDoSpecial(cp)
 	/* these should have been scanned */
 
 	if (*cp == '!'
-		|| memicmp(cp, "header", 6) == 0
-		&& endofcommand(cp + 6) != NULL) {
+		|| (memicmp(cp, "header", 6) == 0
+		&& endofcommand(cp + 6) != NULL)) {
 #if	PS
 	    if (resource._postscript && scanned_page_reset >= 0) {
 		/* turn on scanning and redraw the page */
