@@ -94,6 +94,7 @@ gf      str     NULL    graph data filter (plot (3X) format)
 hl      bool    false   print the burst header page last
 ic      bool    false   driver supports (non-standard) ioctl to indent printout
 if      str     NULL    name of text filter which does accounting
+ka      bool    0       whether kerberos authtication is required
 lf      str     ``/dev/console''        error logging file name
 lo      str     ``lock''        name of lock file
 lp      str     ``/dev/lp''     device name to open for output
@@ -110,6 +111,7 @@ rf      str     NULL    filter for printing FORTRAN style text files
 rg      str     NULL    restricted group. Only members of group allowed access
 rm      str     NULL    machine name for remote printer
 rp      str     ``lp''  remote printer name argument
+rq      str     NULL    remote quota server name
 rs      bool    false   restrict remote users to those with local accounts
 rw      bool    false   open the printer device for reading and writing
 sb      bool    false   short banner (one line only)
@@ -157,7 +159,7 @@ The
 filter is invoked with arguments:
 .PP
         \fIif\fP [ \fB\-c\fP ] \fB\-w\fPwidth \fB\-l\fPlength \fB\-i\fPindent \f
-B\-n\fP login \fB\-h\fP host acct-file
+B\-n\fP login \fB\-h\fP host acct-file \fB\-a\fP acct number \fB\-m\fP mediacost
 .PP
 The
 .B \-c
@@ -212,7 +214,7 @@ flags.
 All other filters are called as:
 .PP
         \fIfilter\fP \fB\-x\fPwidth \fB\-y\fPlength \fB\-n\fP login \fB\-h\fP ho
-st acct-file
+st acct-file \fB\-a\fP acct number \fB\-m\fP mediacost
 .PP
 where
 .I width
