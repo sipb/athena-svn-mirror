@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc.h,v $
- *	$Id: olc.h,v 1.23 1992-02-04 19:55:03 lwvanels Exp $
+ *	$Id: olc.h,v 1.24 1992-02-14 21:24:44 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -78,6 +78,8 @@ struct tREQUEST;
 
 #define OLC_PROMPT	"olc> "		      /* Default OLC prompt */
 #define OLCR_PROMPT	"olcr> "	      /* Default OLCR prompt */
+
+#define DEFAULT_CONSULTANT_TITLE "consultant"
 
 #define OLC_HELP_DIR	"/usr/athena/lib/olc/olc_help"
 #define OLC_HELP_EXT	".help"
