@@ -1,11 +1,9 @@
 #!/bin/sh
 
-debug=1
-
 CONFIG=/etc/config
 SETCONFIG="/sbin/chkconfig -f"
-RCCONF="/etc/athena/rc.conf"
-RCTIME="/etc/athena/.rc.conf.sync"
+RCCONF=/etc/athena/rc.conf
+RCSYNC=/etc/athena/.rc.conf.sync
 
 configbool()
 {
@@ -27,17 +25,11 @@ configopt()
 
 syncvar()
 {
-    case "$2" {
-  true|on)
-      configbool "$1" on
-      ;;
-  false|off)
-      configbool "$1" off
-      ;;
-  *)
-      configopt "$1" "$2"
-      ;;
-    }
+  case "$2" {
+      true|on)  configbool "$1" on ;;
+    false|off)  configbool "$1" off ;;
+            *)  configopt "$1" "$2" ;;
+  }
 }
 
 remove()
@@ -79,45 +71,55 @@ append()
 usage()
 {
   echo "Usage: syncconf\c"
-  for k in $USAGE; do
+  for k in $ALL; do
     echo " [$k]\c"
   done
   echo ""
 }
 
+debug=1
+
 if [ $debug = 1 ]; then
   RCCONF=/tmp/rc.conf
-  RCTIME=/tmp/rc.conf.sync
+  RCSYNC=/tmp/rc.conf.sync
 fi
 
-# ALL="TIMECLIENT TIMESRV AFSCLIENT NFSSRV SENDMAIL SNMP SAVECORE ACCOUNT QUOTAS HOST"
-ALL="timeclient timesrv afsclient nfssrv sendmail snmp savecore account quotas host"
-USAGE="timeclient|timehub timesrv afsclient nfssrv|nfsclient sendmail snmp savecore account quotas host|addr"
-
-if test -f $RCTIME; then
-  update=`find $RCTIME -newer $RCCONF -print`
-fi
-
-if test $update; then
-  exit
-fi
+ALL="timeclient timehub timesrv afsclient nfssrv nfsclient sendmail snmp savecore account quotas host addr"
 
 . $RCCONF
 
-j="$*"
-
-if test "$j" = ""; then
-  j=$ALL
+if test -f $RCSYNC; then
+  . $RCSYNC
+else
+  CHANGES="$ALL"
 fi
 
+if [ "$CHANGES" = "" -a "$*" = "" ]; then
+  echo "No changes to synchronize."
+  exit
+fi
+
+j="$*"
+
+if [ "$j" = "" ]; then
+  j=$CHANGES
+fi
+
+echo "Synchronizing configuration... \c"
 for i in $j; do
+  echo "$i \c"
+
   case "$i" in
-  TIMECLIENT|timeclient|TIMEHUB|timehub)
+  TIMECLIENT|timeclient)
+    # gettime and AFS time synchronization
     syncvar timeclient ${TIMECLIENT}
+    ;;
+
+  TIMEHUB|timehub)
     syncvar timeclient.options ${TIMEHUB}
     ;;
+
   TIMESRV|timesrv)
-    # gettime and AFS time synchronization
     syncvar timed $TIMESRV
     ;;
 
@@ -127,15 +129,16 @@ for i in $j; do
       syncvar afsml true
       syncvar afsclient true
 
-      if [ "${AFSCLIENT}" = "true" ]; then
-        AFSCLIENT=4
+      AFSCLIENTNUM=4
+      if [ "${AFSCLIENT}" != "true" ]; then
+        AFSCLIENTNUM=${AFSCLIENT}
       fi
 
       if [ "${TIMECLIENT}" = "false" ]; then
-        AFSTIME = "-nosettime"
+        AFSTIME = "-nosettime "
       fi
 
-      syncvar afsd.options "$AFSTIME -stat 2000 -dcache 800 -daemons $AFSCLIENT -volumes 70"
+      syncvar afsd.options "${AFSTIME}-stat 2000 -dcache 800 -daemons $AFSCLIENTNUM -volumes 70"
     else
       syncvar afsml false
       syncvar afsclient false
@@ -143,21 +146,25 @@ for i in $j; do
     ;;
 
   NFSSRV|nfssrv|NFSCLIENT|nfsclient)
-    if [ "${NFSSRV}" != "false" -o "${NFSCLIENT}" != "false" ]; then
-      syncvar nfs true
+    if [ "$nfs_done" -ne 1 ]; then
+      if [ "${NFSSRV}" != "false" -o "${NFSCLIENT}" != "false" ]; then
+        syncvar nfs true
 
-      case "${NFSCLIENT}" {
-        true|false)  remove $CONFIG/biod.options ;;
-                 *)  syncvar biod.options "${NFSCLIENT}" ;;
-      }
+        case "${NFSCLIENT}" {
+          true|false)  remove $CONFIG/biod.options ;;
+                   *)  syncvar biod.options "${NFSCLIENT}" ;;
+        }
 
-      case "${NFSSRV}" {
-              true)  remove $CONFIG/nfsd.options ;;
-             false)  syncvar nfsd.options 0 ;;
-                 *)  syncvar nfsd.options "${NFSSRV}" ;;
-      }
-    else
-      syncvar nfs false
+        case "${NFSSRV}" {
+                true)  remove $CONFIG/nfsd.options ;;
+               false)  syncvar nfsd.options 0 ;;
+                   *)  syncvar nfsd.options "${NFSSRV}" ;;
+        }
+      else
+        syncvar nfs false
+      fi
+
+      nfs_done=1;
     fi
     ;;
 
@@ -192,24 +199,28 @@ for i in $j; do
     ;;
 
   HOST|host|ADDR|addr)
-    move /etc/sys_id /etc/sys_id.saved
-    move /etc/hosts /etc/hosts.saved
-    move $CONFIG/staticroute.options $CONFIG/staticroute.options.saved
-    move $CONFIG/ifconfig-1.options $CONFIG/ifconfig-1.options.saved
+    if [ "$ip_done" -ne 1 ]; then
+      move /etc/sys_id /etc/sys_id.saved
+      move /etc/hosts /etc/hosts.saved
+      move $CONFIG/staticroute.options $CONFIG/staticroute.options.saved
+      move $CONFIG/ifconfig-1.options $CONFIG/ifconfig-1.options.saved
 
-    NET=`echo $ADDR | awk -F. '{ print $1 "." $2 }'`
-    GATEWAY=$NET.0.1
-    BROADCAST=$NET.255.255
+      NET=`echo $ADDR | awk -F. '{ print $1 "." $2 }'`
+      GATEWAY=$NET.0.1
+      BROADCAST=$NET.255.255
 
-    put    /etc/sys_id $HOST
-    put    $CONFIG/staticroute.options $GATEWAY
-    put    $CONFIG/ifconfig-1.options "netmask 0xffff0000"
-    append $CONFIG/ifconfig-1.options "broadcast $BROADCAST"
-    put    /etc/hosts "#"
-    append /etc/hosts "# Internet host table"
-    append /etc/hosts "#"
-    append /etc/hosts "127.0.0.1  localhost"
-    append /etc/hosts "$ADDR  $HOST.MIT.EDU $HOST"
+      put    /etc/sys_id $HOST
+      put    $CONFIG/staticroute.options $GATEWAY
+      put    $CONFIG/ifconfig-1.options "netmask 0xffff0000"
+      append $CONFIG/ifconfig-1.options "broadcast $BROADCAST"
+      put    /etc/hosts "#"
+      append /etc/hosts "# Internet host table"
+      append /etc/hosts "#"
+      append /etc/hosts "127.0.0.1  localhost"
+      append /etc/hosts "$ADDR  $HOST.MIT.EDU $HOST"
+
+      ip_done=1;
+    fi
     ;;
 
   *)
@@ -217,6 +228,22 @@ for i in $j; do
     exit
   esac
 
-touch $RCTIME
-
 done
+
+echo ""
+
+cat > $RCSYNC << EOF
+if [ \$TIMECLIENT != $TIMECLIENT ]; then CHANGES="\$CHANGES TIMECLIENT"; fi
+if [ \$TIMEHUB != $TIMEHUB ]; then CHANGES="\$CHANGES TIMEHUB"; fi
+if [ \$TIMESRV != $TIMESRV ]; then CHANGES="\$CHANGES TIMESRV"; fi
+if [ \$AFSCLIENT != $AFSCLIENT ]; then CHANGES="\$CHANGES AFSCLIENT"; fi
+if [ \$NFSSRV != $NFSSRV ]; then CHANGES="\$CHANGES NFSSRV"; fi
+if [ \$NFSCLIENT != $NFSCLIENT ]; then CHANGES="\$CHANGES NFSCLIENT"; fi
+if [ \$SENDMAIL != $SENDMAIL ]; then CHANGES="\$CHANGES SENDMAIL"; fi
+if [ \$SNMP != $SNMP ]; then CHANGES="\$CHANGES SNMP"; fi
+if [ \$SAVECORE != $SAVECORE ]; then CHANGES="\$CHANGES SAVECORE"; fi
+if [ \$ACCOUNT != $ACCOUNT ]; then CHANGES="\$CHANGES ACCOUNT"; fi
+if [ \$QUOTAS != $QUOTAS ]; then CHANGES="\$CHANGES QUOTAS"; fi
+if [ \$HOST != $HOST ]; then CHANGES="\$CHANGES HOST"; fi
+if [ \$ADDR != $ADDR ]; then CHANGES="\$CHANGES ADDR"; fi
+EOF
