@@ -20,13 +20,13 @@
 /* This file is part of the CREF finder.  It contains functions for executing
  * CREF commands.
  *
- *	$Source:
- *	$Author:
- *      $Header:
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/commands.c,v $
+ *	$Author: ghudson $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/commands.c,v 2.11 1997-04-30 17:25:59 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_commands_c = "$Header: ";
+static char *rcsid_commands_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/commands.c,v 2.11 1997-04-30 17:25:59 ghudson Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -40,8 +40,8 @@ static char *rcsid_commands_c = "$Header: ";
 #include <errno.h>			/* System error codes. */
 #include <fcntl.h>
 
-#include "cref.h"			/* CREF finder defs. */
-#include "globals.h"			/* Global state variable defs. */
+#include <browser/cref.h>		/* CREF finder defs. */
+#include <browser/cur_globals.h>	/* Global state variable defs. */
 
 /* Function:	print_help() prints help information for CREF commands.
  * Arguments:	None.
@@ -56,7 +56,8 @@ print_help()
   char filename[100];
 
   sprintf(filename, "/tmp/cref.help.%d", getpid());
-  if ((file = fopen(filename, "w")) == NULL)
+  file = fopen(filename, "w");
+  if (file == NULL)
     message(2, "Unable to create help file, sorry.");
   
   fprintf(file, "Commands are:\n");
@@ -72,7 +73,10 @@ print_help()
   fclose(file);
   clear();
   refresh();
+  reset_shell_mode();
   call_program("more", filename);
+  reset_prog_mode();
+  refresh();
   wait_for_key();
   unlink(filename);
   clear();
@@ -104,7 +108,8 @@ prev_entry()
 {
   int new_ind;				/* New entry index. */
   
-  if ( (new_ind = Current_Ind - 1) < 1)
+  new_ind = Current_Ind - 1;
+  if (new_ind < 1)
     messages("", "Beginning of entries.");
   else
     display_entry(new_ind);
@@ -120,7 +125,8 @@ next_entry()
 {
   int new_ind;				/* New entry index. */
   
-  if ( (new_ind = Current_Ind + 1) > Entry_Count)
+  new_ind = Current_Ind + 1;
+  if (new_ind > Entry_Count)
     messages("", "No more entries.");
   else
     display_entry(new_ind);
@@ -174,7 +180,8 @@ save_to_file()
   if (inbuf[0] == (char) NULL)
     return;
   save_ind = atoi(inbuf);
-  if ( (save_entry = get_entry(save_ind)) == NULL)
+  save_entry = get_entry(save_ind);
+  if (save_entry == NULL)
     {
       messages("", "Invalid entry number.");
       return;
@@ -184,7 +191,8 @@ save_to_file()
       messages("", "Can't save directory entry.");
       return;
     }
-  if ( (fd = open(save_entry->filename, O_RDONLY, 0)) < 0)
+  fd = open(save_entry->filename, O_RDONLY, 0);
+  if (fd < 0)
     {
       if (errno == EPERM)
 	sprintf(error,"You are not allowed to read this file");
@@ -327,7 +335,8 @@ add_abbrev()
   int i;				/* Abbrev count variable*/
 
 
-  if ( (fp = fopen(Abbrev_File, "a")) == (FILE *) NULL)
+  fp = fopen(Abbrev_File, "a");
+  if (fp == NULL)
       {
 	sprintf(error, "Unable to open abbreviation file %s", Abbrev_File);
 	message(1, error);
@@ -339,7 +348,8 @@ add_abbrev()
   if (inbuf[0] == (char) NULL)
     return;
   ind = atoi(inbuf);
-  if ( (entry = get_entry(ind)) == NULL)
+  entry = get_entry(ind);
+  if (entry == NULL)
     {
       message(2, "Invalid entry number.");
       return;
@@ -451,7 +461,8 @@ insert_entry()
       get_input(inbuf);
       if (inbuf[0] == (char) NULL)
 	return;
-      if ( (fp = fopen(inbuf,"a")) == NULL)
+      fp = fopen(inbuf,"a");
+      if (fp == NULL)
 	{
 	  sprintf(line1, "Unable to open: %s",inbuf);
 	  sprintf(line2, "Check the pathname and try again.");
@@ -569,7 +580,8 @@ insert_entry()
 
   if (ind > Entry_Count)
     {
-      if ( (fp = fopen(contents, "a")) == (FILE *) NULL)
+      fp = fopen(contents, "a");
+      if (fp == NULL)
 	{
 	  sprintf(line1, "Unable to open:%s", contents);
 	  if (type == CREF_FILE)
@@ -590,49 +602,50 @@ insert_entry()
 	      title, CONTENTS_DELIM, filename, CONTENTS_DELIM, formatter,
 	      CONTENTS_DELIM, maintainer);
     }
-else
-  {
-    if ( (fp = fopen(contents, "w")) == (FILE *) NULL)
-      {
-	sprintf(line1, "Unable to open:%s", contents);
-	if (type == CREF_FILE)
-	  {
-	    if (unlink(newfile) < 0)
-	      sprintf(line2, "Unable to remove:%s",newfile);
-	  }
-	else if (type == CREF_DIR)
-	  {
-	    if (rmdir(newdir) < 0)
-	      sprintf(line2, "Unable to rmdir:%s",newdir);
-	  }
-	messages(line1,line2);
-	make_display();
-	return;
-      }
-    
-    i = 0;
-    while (i < Entry_Count)
-      {
-	if (i == (ind - 1))
-	  {
-	    fprintf(fp, "%s%c%s%c%s%c%s%c%s\n", type_name, CONTENTS_DELIM,
-		    title, CONTENTS_DELIM, filename, CONTENTS_DELIM, formatter,
-		    CONTENTS_DELIM, maintainer);
-	  }
-	if (Entry_Table[i].type == CREF_FILE)
-	  strcpy(curr_type, CREF_ENTRY);
-	else
-	  strcpy(curr_type, CREF_SUBDIR);
-	fullpath=Entry_Table[i].filename;
-	ptail=tail;
-	extract_tail(fullpath,ptail);
-	fprintf(fp, "%s%c%s%c%s%c%s%c%s\n", curr_type, CONTENTS_DELIM,
-		Entry_Table[i].title,CONTENTS_DELIM, tail,
-		CONTENTS_DELIM, Entry_Table[i].formatter,
-		CONTENTS_DELIM, Entry_Table[i].maintainer);
-	i++;
-      }
-  }
+  else
+    {
+      fp = fopen(contents, "w");
+      if (fp == NULL)
+	{
+	  sprintf(line1, "Unable to open:%s", contents);
+	  if (type == CREF_FILE)
+	    {
+	      if (unlink(newfile) < 0)
+		sprintf(line2, "Unable to remove:%s",newfile);
+	    }
+	  else if (type == CREF_DIR)
+	    {
+	      if (rmdir(newdir) < 0)
+		sprintf(line2, "Unable to rmdir:%s",newdir);
+	    }
+	  messages(line1,line2);
+	  make_display();
+	  return;
+	}
+
+      i = 0;
+      while (i < Entry_Count)
+	{
+	  if (i == (ind - 1))
+	    {
+	      fprintf(fp, "%s%c%s%c%s%c%s%c%s\n", type_name, CONTENTS_DELIM,
+		      title, CONTENTS_DELIM, filename, CONTENTS_DELIM,
+		      formatter, CONTENTS_DELIM, maintainer);
+	    }
+	  if (Entry_Table[i].type == CREF_FILE)
+	    strcpy(curr_type, CREF_ENTRY);
+	  else
+	    strcpy(curr_type, CREF_SUBDIR);
+	  fullpath=Entry_Table[i].filename;
+	  ptail=tail;
+	  extract_tail(fullpath,ptail);
+	  fprintf(fp, "%s%c%s%c%s%c%s%c%s\n", curr_type, CONTENTS_DELIM,
+		  Entry_Table[i].title,CONTENTS_DELIM, tail,
+		  CONTENTS_DELIM, Entry_Table[i].formatter,
+		  CONTENTS_DELIM, Entry_Table[i].maintainer);
+	  i++;
+	}
+    }
   fclose(fp);
 
 #ifdef POSIX
@@ -690,7 +703,8 @@ delete_entry()
       get_input(inbuf);
       if (inbuf[0] == (char) NULL)
 	return;
-      if ( (fp = fopen(inbuf,"a")) == NULL)
+      fp = fopen(inbuf,"a");
+      if (fp == NULL)
 	{
 	  sprintf(line1, "Unable to open: %s",inbuf);
 	  sprintf(line2, "Check the pathname and try again.");
@@ -710,7 +724,8 @@ delete_entry()
   if (inbuf[0] == (char) NULL)
     return;
   ind = atoi(inbuf);
-  if ( (entry = get_entry(ind)) == (ENTRY *) NULL )
+  entry = get_entry(ind);
+  if (entry == NULL)
     {
       message(2, "Invalid entry number.");
       return;
@@ -722,7 +737,8 @@ delete_entry()
     }
 
 
-  if ( (fp = fopen(contents, "w")) == (FILE *) NULL)
+  fp = fopen(contents, "w");
+  if (fp == NULL)
     {
       message(1, "Unable to open contents file.");
       make_display();
@@ -793,7 +809,10 @@ contents_file()
   make_path(Current_Dir,CONTENTS,contents_path);
   clear();
   refresh();
+  reset_shell_mode();
   call_program("more",contents_path);
+  reset_prog_mode();
+  refresh();
   wait_for_key();
   clear();
   make_display();
