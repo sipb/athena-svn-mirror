@@ -29,6 +29,7 @@
 
 #define __GP_TRANSPORT_CUSTOM_C__
 
+#include "config.h"
 #include <libgnomeprint/gnome-print.h>
 #include "gp-transport-custom.h"
 
@@ -126,7 +127,7 @@ gp_transport_custom_construct (GnomePrintTransport *transport)
 		tcustom->command = value;
 	}
 
-	return GNOME_PRINT_ERROR_UNKNOWN;
+	return GNOME_PRINT_OK;
 }
 
 static gint

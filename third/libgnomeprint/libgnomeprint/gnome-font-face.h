@@ -24,7 +24,7 @@
  *    Michael Meeks <michael@ximian.com>
  *    Morten Welinder <terra@diku.dk>
  *
- *  Copyright (C) 2000-2001 Ximian Inc. and authors
+ *  Copyright (C) 2000-2003 Ximian Inc. and authors
  *
  */
 
@@ -35,8 +35,8 @@
 
 G_BEGIN_DECLS
 
-#define GNOME_TYPE_FONT_FACE (gnome_font_face_get_type ())
-#define GNOME_FONT_FACE(o) (G_TYPE_CHECK_INSTANCE_CAST ((o), GNOME_TYPE_FONT_FACE, GnomeFontFace))
+#define GNOME_TYPE_FONT_FACE  (gnome_font_face_get_type ())
+#define GNOME_FONT_FACE(o)    (G_TYPE_CHECK_INSTANCE_CAST ((o), GNOME_TYPE_FONT_FACE, GnomeFontFace))
 #define GNOME_IS_FONT_FACE(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), GNOME_TYPE_FONT_FACE))
 
 #include <libart_lgpl/art_rect.h>
@@ -44,7 +44,7 @@ G_BEGIN_DECLS
 #include <pango/pango-font.h>
 #include <libgnomeprint/gnome-font.h>
 
-#define gnome_font_face_ref(f) g_object_ref (G_OBJECT (f))
+#define gnome_font_face_ref(f)   g_object_ref (G_OBJECT (f))
 #define gnome_font_face_unref(f) g_object_unref (G_OBJECT (f))
 
 GType gnome_font_face_get_type (void);
@@ -52,11 +52,10 @@ GType gnome_font_face_get_type (void);
 /*
  * Finding
  */
-
-GnomeFontFace *gnome_font_face_find (const guchar *name);
+GnomeFontFace *gnome_font_face_find         (const guchar *name);
 GnomeFontFace *gnome_font_face_find_closest (const guchar *name);
 GnomeFontFace *gnome_font_face_find_closest_from_weight_slant (const guchar *family, GnomeFontWeight weight, gboolean italic);
-GnomeFontFace *gnome_font_face_find_closest_from_pango_font (PangoFont *pfont);
+GnomeFontFace *gnome_font_face_find_closest_from_pango_font        (PangoFont *pfont);
 GnomeFontFace *gnome_font_face_find_closest_from_pango_description (const PangoFontDescription *desc);
 GnomeFontFace *gnome_font_face_find_from_family_and_style (const guchar *family, const guchar *style);
 
@@ -68,7 +67,6 @@ GnomeFontFace *gnome_font_face_find_from_family_and_style (const guchar *family,
  * resolution is not known, get_font_default should give reasonably well-
  * looking font for most occasions
  */
-
 GnomeFont *gnome_font_face_get_font (GnomeFontFace *face, gdouble size, gdouble xres, gdouble yres);
 GnomeFont *gnome_font_face_get_font_default (GnomeFontFace *face, gdouble size);
 
@@ -79,17 +77,10 @@ GnomeFont *gnome_font_face_get_font_default (GnomeFontFace *face, gdouble size);
  * does not have to be its PostScript name.
  * In future those names can be possibly localized (except ps_name)
  */
-
-const guchar * gnome_font_face_get_name (const GnomeFontFace *face);
-const guchar * gnome_font_face_get_family_name (const GnomeFontFace *face);
+const guchar * gnome_font_face_get_name         (const GnomeFontFace *face);
+const guchar * gnome_font_face_get_ps_name      (const GnomeFontFace *face);
+const guchar * gnome_font_face_get_family_name  (const GnomeFontFace *face);
 const guchar * gnome_font_face_get_species_name (const GnomeFontFace *face);
-const guchar * gnome_font_face_get_ps_name (const GnomeFontFace *face);
-
-/*
- * General information
- */
-
-gint gnome_font_face_get_num_glyphs (GnomeFontFace *face);
 
 /*
  * Get glyph number from unicode char
@@ -98,8 +89,8 @@ gint gnome_font_face_get_num_glyphs (GnomeFontFace *face);
  * character mappings per font (for different languages), current function
  * uses the default one :)
  */
-
 gint gnome_font_face_lookup_default (GnomeFontFace *face, gint unicode);
+
 
 /*
  * Metrics
@@ -110,38 +101,38 @@ gint gnome_font_face_lookup_default (GnomeFontFace *face, gint unicode);
  * be defined as "default"
  * All face metrics are given in 0.001 em units
  */
-
 const ArtDRect *gnome_font_face_get_stdbbox (GnomeFontFace *face);
 ArtDRect       *gnome_font_face_get_glyph_stdbbox (GnomeFontFace *face, gint glyph, ArtDRect * bbox);
 ArtPoint       *gnome_font_face_get_glyph_stdadvance (GnomeFontFace *face, gint glyph, ArtPoint * advance);
 const ArtBpath *gnome_font_face_get_glyph_stdoutline (GnomeFontFace *face, gint glyph);
 ArtPoint       *gnome_font_face_get_glyph_stdkerning (GnomeFontFace *face, gint glyph0, gint glyph1, ArtPoint *kerning);
 
+
 /*
  * Give (possibly localized) demonstration text for given face
  * Most usually this tells about quick fox and lazy dog...
  */
+const guchar * gnome_font_face_get_sample (GnomeFontFace *face);
 
-const guchar *gnome_font_face_get_sample (GnomeFontFace *face);
 
 /*
  * Convenience methods
  * NB! Unlike in gnome 1, descender is negative for "normal" fonts (like in afm)
  * Use with caution for international fonts
  */
-
 GnomeFontWeight gnome_font_face_get_weight_code (GnomeFontFace *face);
-gboolean        gnome_font_face_is_italic (GnomeFontFace *face);
-gboolean        gnome_font_face_is_fixed_width (GnomeFontFace *face);
+gboolean        gnome_font_face_is_italic       (GnomeFontFace *face);
+gboolean        gnome_font_face_is_fixed_width  (GnomeFontFace *face);
 
-gdouble         gnome_font_face_get_ascender (GnomeFontFace *face);
+gdouble         gnome_font_face_get_ascender  (GnomeFontFace *face);
 gdouble         gnome_font_face_get_descender (GnomeFontFace *face);
-gdouble         gnome_font_face_get_underline_position (GnomeFontFace *face);
+gdouble         gnome_font_face_get_underline_position  (GnomeFontFace *face);
 gdouble         gnome_font_face_get_underline_thickness (GnomeFontFace *face);
 
-gdouble         gnome_font_face_get_glyph_width (GnomeFontFace *face, gint glyph);
-gdouble         gnome_font_face_get_glyph_kerning (GnomeFontFace *face, gint glyph1, gint glyph2);
+gint            gnome_font_face_get_num_glyphs    (GnomeFontFace *face);
 
+gdouble         gnome_font_face_get_glyph_width   (GnomeFontFace *face, gint glyph);
+gdouble         gnome_font_face_get_glyph_kerning (GnomeFontFace *face, gint glyph1, gint glyph2);
 const guchar   *gnome_font_face_get_glyph_ps_name (GnomeFontFace *face, gint glyph);
 
 G_END_DECLS

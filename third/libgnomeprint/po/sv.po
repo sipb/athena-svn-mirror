@@ -2,197 +2,118 @@
 # Copyright (C) 2001, 2002 Free Software Foundation, Inc.
 # Christian Rose <menthos@menthos.com>, 2001, 2002.
 #
-# $Id: sv.po,v 1.1.1.1 2003-01-04 19:44:41 ghudson Exp $
+# $Id: sv.po,v 1.1.1.2 2003-01-29 20:21:37 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomeprint\n"
-"POT-Creation-Date: 2002-12-27 21:30-0500\n"
-"PO-Revision-Date: 2002-05-19 04:29+0200\n"
+"POT-Creation-Date: 2003-01-20 22:11-0500\n"
+"PO-Revision-Date: 2002-12-29 15:04+0100\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: installer/gnome-font-install.c:141
-msgid "Print out debugging information"
-msgstr "Skriv ut felsökningsinformation"
-
-#: installer/gnome-font-install.c:143
-msgid "Tries to do everything automatically"
-msgstr "Försöker att göra allting automatiskt"
-
-#: installer/gnome-font-install.c:145
-msgid "Search directories recursively for font files"
-msgstr "Sök efter typsnittsfiler rekursivt i kataloger"
-
-#: installer/gnome-font-install.c:147
-msgid "Start from zero fontmap, instead of parsing old one"
-msgstr "Starta från tom typsnittstabell istället för att tolka den gamla"
-
-#: installer/gnome-font-install.c:149
-msgid "Reverifies all font files, even for fontmaps of same version"
-msgstr ""
-"Omverifierar alla typsnittsfiler, även för typsnittstabeller med samma "
-"version"
-
-#: installer/gnome-font-install.c:151
-msgid "Include font notice field (Copyright data) into fontmap"
-msgstr "Inkludera typsnittskommentarfält (Copyright-data) i typsnittstabell"
-
-#: installer/gnome-font-install.c:153
-msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
-msgstr "Skapa $HOME/.gnome/fonts/gnome-print.fontmap"
-
-#: installer/gnome-font-install.c:155 installer/gnome-font-install.c:157
-msgid "Create "
-msgstr "Skapa "
-
-#: installer/gnome-font-install.c:155 installer/gnome-font-install.c:157
-msgid "/gnome-print.fontmap"
-msgstr "/gnome-print.fontmap"
-
-#: installer/gnome-font-install.c:159
-msgid "Write output fontmap to specified file (- for stdout)"
-msgstr "Skriv utdatatypnittstabell till angiven fil (- för standard ut)"
-
-#: installer/gnome-font-install.c:161
-msgid ""
-"Return the $FONTMAPDIR_STATIC and $FONTMAPDIR_DYNAMIC used for this gnome-"
-"print installation)"
-msgstr ""
-"Returnera det $FONTMAPDIR_STATIC och $FONTMAPDIR_DYNAMIC som används för "
-"denna installation av gnome-print)"
-
-#: installer/gnome-font-install.c:164
-msgid "File describing known aliases"
-msgstr "Fil som beskriver kända alias"
-
-#: installer/gnome-font-install.c:164 tests/testprint.c:71
-#: tests/testprint.c:73 tests/testprint.c:75
-msgid "PATH"
-msgstr "SÖKVÄG"
-
-#: installer/gnome-font-install.c:167
-msgid "Specify default font(s) for any locale"
-msgstr "Ange standardtypsnitt för alla lokaler"
-
-#: installer/gnome-font-install.c:167
-msgid "[LOCALE[,LOCALE]:fontname]"
-msgstr "[LOKAL[,LOKAL]:typsnittsnamn]"
-
-#: libgnomeprint/gnome-font-face.c:446
+#: libgnomeprint/gnome-font-face.c:490
 msgid "The quick brown fox jumps over the lazy dog."
 msgstr "Flygande bäckasiner söka strax hwila på mjuka tuvor."
 
-#. fixme: fill in all papers and units
-#. fixme: load papers from file
-#. fixme: use some fancy unit program
+#. FIXME: fill in all papers and units. (Lauris)
+#. FIXME: load papers from file (Lauris)
+#. FIXME: use some fancy unit program (Lauris)
 #.
 #. * WARNING! Do not mess up with that - we use hardcoded numbers for base units!
 #.
-#: libgnomeprint/gnome-print-paper.c:44
+#: libgnomeprint/gnome-print-paper.c:43 data/globals.xml.in.h:13
 msgid "A4"
 msgstr "A4"
 
 #. Do not insert any elements before/between first 4
-#: libgnomeprint/gnome-print-unit.c:33
+#: libgnomeprint/gnome-print-unit.c:34
 msgid "Unit"
 msgstr "Enhet"
 
-#: libgnomeprint/gnome-print-unit.c:33
+#: libgnomeprint/gnome-print-unit.c:34
 msgid "Units"
 msgstr "Enheter"
 
-#: libgnomeprint/gnome-print-unit.c:34
+#: libgnomeprint/gnome-print-unit.c:35
 msgid "Point"
 msgstr "Punkt"
 
-#: libgnomeprint/gnome-print-unit.c:34
+#: libgnomeprint/gnome-print-unit.c:35
 msgid "Pt"
 msgstr "Pt"
 
-#: libgnomeprint/gnome-print-unit.c:34
+#: libgnomeprint/gnome-print-unit.c:35
 msgid "Points"
 msgstr "Punkter"
 
-#: libgnomeprint/gnome-print-unit.c:34
+#: libgnomeprint/gnome-print-unit.c:35
 msgid "Pts"
 msgstr "Ptr"
 
-#: libgnomeprint/gnome-print-unit.c:35
+#: libgnomeprint/gnome-print-unit.c:36
 msgid "Userspace unit"
 msgstr "Användarlägesenhet"
 
-#: libgnomeprint/gnome-print-unit.c:35
+#: libgnomeprint/gnome-print-unit.c:36
 msgid "User"
 msgstr "Användare"
 
-#: libgnomeprint/gnome-print-unit.c:35
+#: libgnomeprint/gnome-print-unit.c:36
 msgid "Userspace units"
 msgstr "Användarlägesenheter"
 
-#: libgnomeprint/gnome-print-unit.c:36
+#: libgnomeprint/gnome-print-unit.c:37
 msgid "Pixel"
 msgstr "Bildpunkt"
 
-#: libgnomeprint/gnome-print-unit.c:36
+#: libgnomeprint/gnome-print-unit.c:37
 msgid "Px"
 msgstr "Bp"
 
-#: libgnomeprint/gnome-print-unit.c:36
+#: libgnomeprint/gnome-print-unit.c:37
 msgid "Pixels"
 msgstr "Bildpunkter"
 
 #. You can add new elements from this point forward
-#: libgnomeprint/gnome-print-unit.c:38
+#: libgnomeprint/gnome-print-unit.c:39
 msgid "Percent"
 msgstr "Procent"
 
-#: libgnomeprint/gnome-print-unit.c:38
+#: libgnomeprint/gnome-print-unit.c:39
 msgid "%"
 msgstr "%"
 
-#: libgnomeprint/gnome-print-unit.c:38
+#: libgnomeprint/gnome-print-unit.c:39
 msgid "Percents"
 msgstr "Procent"
 
-#: libgnomeprint/gnome-print-unit.c:39
+#: libgnomeprint/gnome-print-unit.c:40
 msgid "Millimeter"
 msgstr "Millimeter"
 
-#: libgnomeprint/gnome-print-unit.c:39
+#: libgnomeprint/gnome-print-unit.c:40
 msgid "mm"
 msgstr "mm"
 
-#: libgnomeprint/gnome-print-unit.c:39
+#: libgnomeprint/gnome-print-unit.c:40
 msgid "Millimeters"
 msgstr "millimeter"
 
-#: libgnomeprint/gnome-print-unit.c:40
+#: libgnomeprint/gnome-print-unit.c:41
 msgid "Centimeter"
 msgstr "centimeter"
 
-#: libgnomeprint/gnome-print-unit.c:40
+#: libgnomeprint/gnome-print-unit.c:41
 msgid "cm"
 msgstr "cm"
 
-#: libgnomeprint/gnome-print-unit.c:40
+#: libgnomeprint/gnome-print-unit.c:41
 msgid "Centimeters"
 msgstr "centimeter"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "Meter"
-msgstr "meter"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "m"
-msgstr "m"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "Meters"
-msgstr "meter"
 
 #: libgnomeprint/gnome-print-unit.c:42
 msgid "Inch"
@@ -206,85 +127,338 @@ msgstr "tum"
 msgid "Inches"
 msgstr "tum"
 
-#: libgnomeprint/gpa/gpa-media.c:246
+#: data/globals.xml.in.h:1
+msgid "1/3 A4"
+msgstr "1/3 A4"
+
+#: data/globals.xml.in.h:2
+msgid "1/3 A5"
+msgstr "1/3 A5"
+
+#: data/globals.xml.in.h:3
+msgid "1/4 A3"
+msgstr "¼ A3"
+
+#: data/globals.xml.in.h:4
+msgid "1/4 A4"
+msgstr "¼ A4"
+
+#: data/globals.xml.in.h:5
+msgid "1/8 A4"
+msgstr "1/8 A4"
+
+#: data/globals.xml.in.h:6
+msgid "2 pages to 1"
+msgstr "2 sidor på 1"
+
+#: data/globals.xml.in.h:7
+msgid "4 pages to 1"
+msgstr "4 sidor på 1"
+
+#: data/globals.xml.in.h:8
+msgid "A0"
+msgstr "A0"
+
+#: data/globals.xml.in.h:9
+msgid "A1"
+msgstr "A1"
+
+#: data/globals.xml.in.h:10
+msgid "A10"
+msgstr "A10"
+
+#: data/globals.xml.in.h:11
+msgid "A2"
+msgstr "A2"
+
+#: data/globals.xml.in.h:12
+msgid "A3"
+msgstr "A3"
+
+#: data/globals.xml.in.h:14
+msgid "A5"
+msgstr "A5"
+
+#: data/globals.xml.in.h:15
+msgid "A6"
+msgstr "A6"
+
+#: data/globals.xml.in.h:16
+msgid "A7"
+msgstr "A7"
+
+#: data/globals.xml.in.h:17
+msgid "A8"
+msgstr "A8"
+
+#: data/globals.xml.in.h:18
+msgid "A9"
+msgstr "A9"
+
+#: data/globals.xml.in.h:19
+msgid "B0"
+msgstr "B0"
+
+#: data/globals.xml.in.h:20
+msgid "B1"
+msgstr "B1"
+
+#: data/globals.xml.in.h:21
+msgid "B10"
+msgstr "B10"
+
+#: data/globals.xml.in.h:22
+msgid "B2"
+msgstr "B2"
+
+#: data/globals.xml.in.h:23
+msgid "B3"
+msgstr "B3"
+
+#: data/globals.xml.in.h:24
+msgid "B4"
+msgstr "B4"
+
+#: data/globals.xml.in.h:25
+msgid "B5"
+msgstr "B5"
+
+#: data/globals.xml.in.h:26
+msgid "B6"
+msgstr "B6"
+
+#: data/globals.xml.in.h:27
+msgid "B7"
+msgstr "B7"
+
+#: data/globals.xml.in.h:28
+msgid "B8"
+msgstr "B8"
+
+#: data/globals.xml.in.h:29
+msgid "B9"
+msgstr "B9"
+
+#: data/globals.xml.in.h:30
+msgid "C0"
+msgstr "C0"
+
+#: data/globals.xml.in.h:31
+msgid "C1"
+msgstr "C1"
+
+#: data/globals.xml.in.h:32
+msgid "C10"
+msgstr "C10"
+
+#: data/globals.xml.in.h:33
+msgid "C2"
+msgstr "C2"
+
+#: data/globals.xml.in.h:34
+msgid "C3"
+msgstr "C3"
+
+#: data/globals.xml.in.h:35
+msgid "C4"
+msgstr "C4"
+
+#: data/globals.xml.in.h:36
+msgid "C5"
+msgstr "C5"
+
+#: data/globals.xml.in.h:37
+msgid "C6"
+msgstr "C6"
+
+#: data/globals.xml.in.h:38
+msgid "C6/C5 Envelope"
+msgstr "C6/C5-kuvert"
+
+#: data/globals.xml.in.h:39
+msgid "C7"
+msgstr "C7"
+
+#: data/globals.xml.in.h:40
+msgid "C8"
+msgstr "C8"
+
+#: data/globals.xml.in.h:41
+msgid "C9"
+msgstr "C9"
+
+#: data/globals.xml.in.h:42
 msgid "Custom"
 msgstr "Egen"
 
-#: libgnomeprint/gpa/gpa-media.c:268
-msgid "Straight"
-msgstr "Rak"
+#: data/globals.xml.in.h:43
+msgid "DL Envelope"
+msgstr "DL-kuvert"
 
-#: libgnomeprint/gpa/gpa-media.c:275
-msgid "Rotated 90 degrees"
-msgstr "Roterad 90°"
+#: data/globals.xml.in.h:44
+msgid "Divided"
+msgstr "Delad"
 
-#: libgnomeprint/gpa/gpa-media.c:282
-msgid "Rotated 180 degrees"
-msgstr "Roterad 180°"
+#: data/globals.xml.in.h:45
+msgid "Envelope 6x9"
+msgstr "Kuvert 6×9"
 
-#: libgnomeprint/gpa/gpa-media.c:289
-msgid "Rotated 270 degrees"
-msgstr "Roterad 270°"
+#: data/globals.xml.in.h:46
+msgid "Envelope No10"
+msgstr "Kuvert No10"
 
-#: libgnomeprint/gpa/gpa-media.c:308
-msgid "Portrait"
-msgstr "Stående"
+#: data/globals.xml.in.h:47
+msgid "Folded"
+msgstr "Vikt"
 
-#: libgnomeprint/gpa/gpa-media.c:315
+#: data/globals.xml.in.h:48
 msgid "Landscape"
 msgstr "Liggande"
 
-#: libgnomeprint/gpa/gpa-media.c:322
-msgid "Upside down portrait"
-msgstr "Stående upp-och-ner"
-
-#: libgnomeprint/gpa/gpa-media.c:329
-msgid "Upside down landscape"
-msgstr "Liggande upp-och-ner"
-
-#: libgnomeprint/gpa/gpa-media.c:348
+#: data/globals.xml.in.h:49
 msgid "Plain"
 msgstr "Enkel"
 
-#: tests/testprint.c:69
-msgid "Print Paper database"
-msgstr "Skriv ut pappersdatabas"
+#: data/globals.xml.in.h:50
+msgid "Portrait"
+msgstr "Stående"
 
-#: tests/testprint.c:70
-msgid "Describe GPA Tree"
-msgstr "Beskriv GPA-träd"
+#: data/globals.xml.in.h:51
+msgid "Rotated 180 degrees"
+msgstr "Roterad 180°"
 
-#: tests/testprint.c:71
-msgid "Print text file"
-msgstr "Skriv ut textfil"
+#: data/globals.xml.in.h:52
+msgid "Rotated 270 degrees"
+msgstr "Roterad 270°"
 
-#: tests/testprint.c:72
-msgid "Use GnomePrintMaster for printing"
-msgstr "Använd GnomePrintMaster för utskrift"
+#: data/globals.xml.in.h:53
+msgid "Rotated 90 degrees"
+msgstr "Roterad 90°"
 
-#: tests/testprint.c:73
-msgid "Dump printout to metafile ('-' for stdout)"
-msgstr "Dumpa utskrift till metafil (\"-\" för standard ut)"
+#: data/globals.xml.in.h:54
+msgid "Straight"
+msgstr "Rak"
 
-#: tests/testprint.c:74
-msgid "Split job between bonobo"
-msgstr "Dela jobb mellan bonobo"
+#: data/globals.xml.in.h:55
+msgid "US Executive"
+msgstr "US Executive"
 
-#: tests/testprint.c:75
-msgid "Render from metafile"
-msgstr "Rendera från metafil"
+#: data/globals.xml.in.h:56
+msgid "US Legal"
+msgstr "US Legal"
 
-#: tests/testprint.c:156
-msgid "Gnome-print test page, rotated"
-msgstr "Testsida för gnome-print, roterad"
+#: data/globals.xml.in.h:57
+msgid "US Letter"
+msgstr "US Letter"
 
-#: tests/testprint.c:173
-msgid "Gnome-print test page, slanted"
-msgstr "Testsida för gnome-print, lutad"
+#: data/globals.xml.in.h:58
+msgid "Upside down landscape"
+msgstr "Liggande upp-och-ner"
 
-#: tests/testprint.c:181
-msgid "Gnome-print test page, slanted. Small"
-msgstr "Testsida för gnome-print, lutad. Liten"
+#: data/globals.xml.in.h:59
+msgid "Upside down portrait"
+msgstr "Stående upp-och-ner"
+
+#: data/printers/GENERIC.xml.in.h:1
+msgid "Generic Postscript"
+msgstr "Generisk Postscript"
+
+#: data/printers/PDF-WRITER.xml.in.h:1
+msgid "Create a PDF document"
+msgstr "Skapa ett PDF-dokument"
+
+#~ msgid "Executive"
+#~ msgstr "Executive"
+
+#~ msgid "Create a PDF"
+#~ msgstr "Skapa en PDF"
+
+#~ msgid "Print out debugging information"
+#~ msgstr "Skriv ut felsökningsinformation"
+
+#~ msgid "Tries to do everything automatically"
+#~ msgstr "Försöker att göra allting automatiskt"
+
+#~ msgid "Search directories recursively for font files"
+#~ msgstr "Sök efter typsnittsfiler rekursivt i kataloger"
+
+#~ msgid "Start from zero fontmap, instead of parsing old one"
+#~ msgstr "Starta från tom typsnittstabell istället för att tolka den gamla"
+
+#~ msgid "Reverifies all font files, even for fontmaps of same version"
+#~ msgstr ""
+#~ "Omverifierar alla typsnittsfiler, även för typsnittstabeller med samma "
+#~ "version"
+
+#~ msgid "Include font notice field (Copyright data) into fontmap"
+#~ msgstr "Inkludera typsnittskommentarfält (Copyright-data) i typsnittstabell"
+
+#~ msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
+#~ msgstr "Skapa $HOME/.gnome/fonts/gnome-print.fontmap"
+
+#~ msgid "/gnome-print.fontmap"
+#~ msgstr "/gnome-print.fontmap"
+
+#~ msgid "Write output fontmap to specified file (- for stdout)"
+#~ msgstr "Skriv utdatatypnittstabell till angiven fil (- för standard ut)"
+
+#~ msgid ""
+#~ "Return the $FONTMAPDIR_STATIC and $FONTMAPDIR_DYNAMIC used for this gnome-"
+#~ "print installation)"
+#~ msgstr ""
+#~ "Returnera det $FONTMAPDIR_STATIC och $FONTMAPDIR_DYNAMIC som används för "
+#~ "denna installation av gnome-print)"
+
+#~ msgid "File describing known aliases"
+#~ msgstr "Fil som beskriver kända alias"
+
+#~ msgid "PATH"
+#~ msgstr "SÖKVÄG"
+
+#~ msgid "Specify default font(s) for any locale"
+#~ msgstr "Ange standardtypsnitt för alla lokaler"
+
+#~ msgid "[LOCALE[,LOCALE]:fontname]"
+#~ msgstr "[LOKAL[,LOKAL]:typsnittsnamn]"
+
+#~ msgid "Print Paper database"
+#~ msgstr "Skriv ut pappersdatabas"
+
+#~ msgid "Describe GPA Tree"
+#~ msgstr "Beskriv GPA-träd"
+
+#~ msgid "Print text file"
+#~ msgstr "Skriv ut textfil"
+
+#~ msgid "Use GnomePrintJob for printing"
+#~ msgstr "Använd GnomePrintJob för utskrift"
+
+#~ msgid "Dump printout to metafile ('-' for stdout)"
+#~ msgstr "Dumpa utskrift till metafil (\"-\" för standard ut)"
+
+#~ msgid "Split job between bonobo"
+#~ msgstr "Dela jobb mellan bonobo"
+
+#~ msgid "Render from metafile"
+#~ msgstr "Rendera från metafil"
+
+#~ msgid "Gnome-print test page, rotated"
+#~ msgstr "Testsida för gnome-print, roterad"
+
+#~ msgid "Gnome-print test page, slanted"
+#~ msgstr "Testsida för gnome-print, lutad"
+
+#~ msgid "Gnome-print test page, slanted. Small"
+#~ msgstr "Testsida för gnome-print, lutad. Liten"
+
+#~ msgid "Meter"
+#~ msgstr "meter"
+
+#~ msgid "m"
+#~ msgstr "m"
+
+#~ msgid "Meters"
+#~ msgstr "meter"
 
 #~ msgid "meters"
 #~ msgstr "meter"

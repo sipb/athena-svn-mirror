@@ -188,6 +188,134 @@ else
   $1_FALSE=
 fi])
 
+
+dnl AC_PROG_INTLTOOL([MINIMUM-VERSION])
+# serial 1 AC_PROG_INTLTOOL
+AC_DEFUN(AC_PROG_INTLTOOL,
+[
+
+if test -n "$1"; then
+    AC_MSG_CHECKING(for intltool >= $1)
+
+    INTLTOOL_REQUIRED_VERSION_AS_INT=`echo $1 | awk -F. '{ printf "%d", $[1] * 100 + $[2]; }'`
+    INTLTOOL_APPLIED_VERSION=`awk -F\" '/\\$VERSION / { printf $[2]; }'  < ${srcdir}/intltool-update.in`
+    changequote({{,}})
+    INTLTOOL_APPLIED_VERSION_AS_INT=`awk -F\" '/\\$VERSION / { split(${{2}}, VERSION, "."); printf "%d\n", VERSION[1] * 100 + VERSION[2];}' < ${srcdir}/intltool-update.in`
+    changequote([,])
+
+    if test "$INTLTOOL_APPLIED_VERSION_AS_INT" -ge "$INTLTOOL_REQUIRED_VERSION_AS_INT"; then
+	AC_MSG_RESULT([$INTLTOOL_APPLIED_VERSION found])
+    else
+	AC_MSG_RESULT([$INTLTOOL_APPLIED_VERSION found. Your intltool is too old.  You need intltool $1 or later.])
+	exit 1
+    fi
+fi
+
+  INTLTOOL_DESKTOP_RULE='%.desktop:   %.desktop.in   $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(INTLTOOL_MERGE) $(top_srcdir)/po $< [$]@ -d -u -c $(top_builddir)/po/.intltool-merge-cache'
+INTLTOOL_DIRECTORY_RULE='%.directory: %.directory.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(INTLTOOL_MERGE) $(top_srcdir)/po $< [$]@ -d -u -c $(top_builddir)/po/.intltool-merge-cache'
+     INTLTOOL_KEYS_RULE='%.keys:      %.keys.in      $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(INTLTOOL_MERGE) $(top_srcdir)/po $< [$]@ -k -u -c $(top_builddir)/po/.intltool-merge-cache'
+     INTLTOOL_PROP_RULE='%.prop:      %.prop.in      $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(INTLTOOL_MERGE) $(top_srcdir)/po $< [$]@ -d -u -c $(top_builddir)/po/.intltool-merge-cache'
+      INTLTOOL_OAF_RULE='%.oaf:       %.oaf.in       $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(INTLTOOL_MERGE) $(top_srcdir)/po $< [$]@ -o -p'
+     INTLTOOL_PONG_RULE='%.pong:      %.pong.in      $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(INTLTOOL_MERGE) $(top_srcdir)/po $< [$]@ -x -u -c $(top_builddir)/po/.intltool-merge-cache'
+   INTLTOOL_SERVER_RULE='%.server:    %.server.in    $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(INTLTOOL_MERGE) $(top_srcdir)/po $< [$]@ -o -u -c $(top_builddir)/po/.intltool-merge-cache'
+    INTLTOOL_SHEET_RULE='%.sheet:     %.sheet.in     $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(INTLTOOL_MERGE) $(top_srcdir)/po $< [$]@ -x -u -c $(top_builddir)/po/.intltool-merge-cache'
+INTLTOOL_SOUNDLIST_RULE='%.soundlist: %.soundlist.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(INTLTOOL_MERGE) $(top_srcdir)/po $< [$]@ -d -u -c $(top_builddir)/po/.intltool-merge-cache'
+       INTLTOOL_UI_RULE='%.ui:        %.ui.in        $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(INTLTOOL_MERGE) $(top_srcdir)/po $< [$]@ -x -u -c $(top_builddir)/po/.intltool-merge-cache'
+      INTLTOOL_XML_RULE='%.xml:       %.xml.in       $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(INTLTOOL_MERGE) $(top_srcdir)/po $< [$]@ -x -u -c $(top_builddir)/po/.intltool-merge-cache'
+    INTLTOOL_CAVES_RULE='%.caves:     %.caves.in     $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(INTLTOOL_MERGE) $(top_srcdir)/po $< [$]@ -d -u -c $(top_builddir)/po/.intltool-merge-cache'
+  INTLTOOL_SCHEMAS_RULE='%.schemas:   %.schemas.in   $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(INTLTOOL_MERGE) $(top_srcdir)/po $< [$]@ -s -u -c $(top_builddir)/po/.intltool-merge-cache'
+    INTLTOOL_THEME_RULE='%.theme:     %.theme.in     $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; $(INTLTOOL_MERGE) $(top_srcdir)/po $< [$]@ -d -u -c $(top_builddir)/po/.intltool-merge-cache'
+
+AC_SUBST(INTLTOOL_DESKTOP_RULE)
+AC_SUBST(INTLTOOL_DIRECTORY_RULE)
+AC_SUBST(INTLTOOL_KEYS_RULE)
+AC_SUBST(INTLTOOL_PROP_RULE)
+AC_SUBST(INTLTOOL_OAF_RULE)
+AC_SUBST(INTLTOOL_PONG_RULE)
+AC_SUBST(INTLTOOL_SERVER_RULE)
+AC_SUBST(INTLTOOL_SHEET_RULE)
+AC_SUBST(INTLTOOL_SOUNDLIST_RULE)
+AC_SUBST(INTLTOOL_UI_RULE)
+AC_SUBST(INTLTOOL_XML_RULE)
+AC_SUBST(INTLTOOL_CAVES_RULE)
+AC_SUBST(INTLTOOL_SCHEMAS_RULE)
+AC_SUBST(INTLTOOL_THEME_RULE)
+
+# Use the tools built into the package, not the ones that are installed.
+
+INTLTOOL_EXTRACT='$(top_builddir)/intltool-extract'
+INTLTOOL_MERGE='$(top_builddir)/intltool-merge'
+INTLTOOL_UPDATE='$(top_builddir)/intltool-update'
+
+AC_SUBST(INTLTOOL_EXTRACT)
+AC_SUBST(INTLTOOL_MERGE)
+AC_SUBST(INTLTOOL_UPDATE)
+
+AC_PATH_PROG(INTLTOOL_PERL, perl)
+if test -z "$INTLTOOL_PERL"; then
+   AC_MSG_ERROR([perl not found; required for intltool])
+fi
+if test -z "`$INTLTOOL_PERL -v | fgrep '5.' 2> /dev/null`"; then
+   AC_MSG_ERROR([perl 5.x required for intltool])
+fi
+
+# Remove file type tags (using []) from po/POTFILES.
+
+ifdef([AC_DIVERSION_ICMDS],[
+  AC_DIVERT_PUSH(AC_DIVERSION_ICMDS)
+      changequote(,)
+      mv -f po/POTFILES po/POTFILES.tmp
+      sed -e 's/\[.*\] *//' < po/POTFILES.tmp > po/POTFILES
+      rm -f po/POTFILES.tmp
+      changequote([,])
+  AC_DIVERT_POP()
+],[
+  ifdef([AC_CONFIG_COMMANDS_PRE],[
+    AC_CONFIG_COMMANDS_PRE([
+        changequote(,)
+        mv -f po/POTFILES po/POTFILES.tmp
+        sed -e 's/\[.*\] *//' < po/POTFILES.tmp > po/POTFILES
+        rm -f po/POTFILES.tmp
+        changequote([,])
+    ])
+  ])
+])
+
+# Manually sed perl in so people don't have to put the intltool scripts in AC_OUTPUT.
+
+AC_OUTPUT_COMMANDS([
+
+sed -e "s:@INTLTOOL_PERL@:${INTLTOOL_PERL}:;" < ${srcdir}/intltool-extract.in > intltool-extract.out
+if cmp -s intltool-extract intltool-extract.out 2>/dev/null; then
+  rm -f intltool-extract.out
+else
+  mv -f intltool-extract.out intltool-extract
+fi
+chmod ugo+x intltool-extract
+chmod u+w intltool-extract
+
+sed -e "s:@INTLTOOL_PERL@:${INTLTOOL_PERL}:;" < ${srcdir}/intltool-merge.in > intltool-merge.out
+if cmp -s intltool-merge intltool-merge.out 2>/dev/null; then
+  rm -f intltool-merge.out
+else
+  mv -f intltool-merge.out intltool-merge
+fi
+chmod ugo+x intltool-merge
+chmod u+w intltool-merge
+
+sed -e "s:@INTLTOOL_PERL@:${INTLTOOL_PERL}:;" < ${srcdir}/intltool-update.in > intltool-update.out
+if cmp -s intltool-update intltool-update.out 2>/dev/null; then
+  rm -f intltool-update.out
+else
+  mv -f intltool-update.out intltool-update
+fi
+chmod ugo+x intltool-update
+chmod u+w intltool-update
+
+], INTLTOOL_PERL=${INTLTOOL_PERL})
+
+])
+
 # isc-posix.m4 serial 2 (gettext-0.11.2)
 dnl Copyright (C) 1995-2002 Free Software Foundation, Inc.
 dnl This file is free software, distributed under the terms of the GNU
@@ -3986,21 +4114,37 @@ AC_DEFUN([GNOME_CXX_WARNINGS],[
 # Modified to never use included libintl. 
 # Owen Taylor <otaylor@redhat.com>, 12/15/1998
 #
+# Major rework to remove unused code
+# Owen Taylor <otaylor@redhat.com>, 12/11/2002
 #
 # This file can be copied and used freely without restrictions.  It can
 # be used in projects which are not available under the GNU Public License
 # but which still want to provide support for the GNU gettext functionality.
-# Please note that the actual code is *not* freely available.
-#
-#
-# If you make changes to this file, you MUST update the copy in
-# acinclude.m4. [ aclocal dies on duplicate macros, so if
-# we run 'aclocal -I macros/' then we'll run into problems
-# once we've installed glib-gettext.m4 :-( ]
 #
 
-AC_DEFUN([AM_GLIB_LC_MESSAGES],
-  [if test $ac_cv_header_locale_h = yes; then
+#
+# We need this here as well, since someone might use autoconf-2.5x
+# to configure GLib then an older version to configure a package
+# using AM_GLIB_GNU_GETTEXT
+AC_PREREQ(2.53)
+
+dnl
+dnl We go to great lengths to make sure that aclocal won't 
+dnl try to pull in the installed version of these macros
+dnl when running aclocal in the glib directory.
+dnl
+m4_copy([AC_DEFUN],[glib_DEFUN])
+m4_copy([AC_REQUIRE],[glib_REQUIRE])
+dnl
+dnl At the end, if we're not within glib, we'll define the public
+dnl definitions in terms of our private definitions.
+dnl
+
+# GLIB_LC_MESSAGES
+#--------------------
+glib_DEFUN([GLIB_LC_MESSAGES],
+  [AC_CHECK_HEADERS([locale.h])
+    if test $ac_cv_header_locale_h = yes; then
     AC_CACHE_CHECK([for LC_MESSAGES], am_cv_val_LC_MESSAGES,
       [AC_TRY_LINK([#include <locale.h>], [return LC_MESSAGES],
        am_cv_val_LC_MESSAGES=yes, am_cv_val_LC_MESSAGES=no)])
@@ -4010,9 +4154,11 @@ AC_DEFUN([AM_GLIB_LC_MESSAGES],
     fi
   fi])
 
-dnl AM_GLIB_PATH_PROG_WITH_TEST(VARIABLE, PROG-TO-CHECK-FOR,
+# GLIB_PATH_PROG_WITH_TEST
+#----------------------------
+dnl GLIB_PATH_PROG_WITH_TEST(VARIABLE, PROG-TO-CHECK-FOR,
 dnl   TEST-PERFORMED-ON-FOUND_PROGRAM [, VALUE-IF-NOT-FOUND [, PATH]])
-AC_DEFUN([AM_GLIB_PATH_PROG_WITH_TEST],
+glib_DEFUN([GLIB_PATH_PROG_WITH_TEST],
 [# Extract the first word of "$2", so it can be a program name with args.
 set dummy $2; ac_word=[$]2
 AC_MSG_CHECKING([for $ac_word])
@@ -4048,101 +4194,118 @@ fi
 AC_SUBST($1)dnl
 ])
 
-# serial 5
-
-AC_DEFUN(AM_GLIB_WITH_NLS,
+# GLIB_WITH_NLS
+#-----------------
+glib_DEFUN([GLIB_WITH_NLS],
   dnl NLS is obligatory
   [USE_NLS=yes
     AC_SUBST(USE_NLS)
 
-    dnl Figure out what method
-    nls_cv_force_use_gnu_gettext="no"
+    gt_cv_have_gettext=no
 
-    nls_cv_use_gnu_gettext="$nls_cv_force_use_gnu_gettext"
-    if test "$nls_cv_force_use_gnu_gettext" != "yes"; then
-      dnl User does not insist on using GNU NLS library.  Figure out what
-      dnl to use.  If gettext or catgets are available (in this order) we
-      dnl use this.  Else we have to fall back to GNU NLS library.
-      dnl catgets is only used if permitted by option --with-catgets.
-      nls_cv_header_intl=
-      nls_cv_header_libgt=
-      CATOBJEXT=NONE
-      XGETTEXT=:
+    CATOBJEXT=NONE
+    XGETTEXT=:
+    INTLLIBS=
 
-      AC_CHECK_HEADER(libintl.h,
-        [AC_CACHE_CHECK([for dgettext in libc], gt_cv_func_dgettext_libc,
-	  [AC_TRY_LINK([#include <libintl.h>], [return (int) dgettext ("","")],
-	    gt_cv_func_dgettext_libc=yes, gt_cv_func_dgettext_libc=no)])
+    AC_CHECK_HEADER(libintl.h,
+     [gt_cv_func_dgettext_libintl="no"
+      libintl_extra_libs=""
 
-          gt_cv_func_dgettext_libintl="no"
-          libintl_extra_libs=""
+      #
+      # First check in libc
+      #
+      AC_CACHE_CHECK([for dgettext in libc], gt_cv_func_dgettext_libc,
+        [AC_TRY_LINK([
+#include <libintl.h>
+],
+          [return (int) dgettext ("","")],
+	  gt_cv_func_dgettext_libc=yes,
+          gt_cv_func_dgettext_libc=no)
+        ])
+  
+      if test "$gt_cv_func_dgettext_libc" = "yes" ; then
+        AC_CHECK_FUNCS(bind_textdomain_codeset)
+      fi
 
-	  if test "$gt_cv_func_dgettext_libc" != "yes" ; then
-	    AC_CHECK_LIB(intl, bindtextdomain,
-              [AC_CHECK_LIB(intl, dgettext,
-                            gt_cv_func_dgettext_libintl=yes)])
+      #
+      # If we don't have everything we want, check in libintl
+      #
+      if test "$gt_cv_func_dgettext_libc" != "yes" \
+         || test "$ac_cv_func_bind_textdomain_codeset" != "yes" ; then
+        
+        AC_CHECK_LIB(intl, bindtextdomain,
+	    [AC_CHECK_LIB(intl, dgettext,
+		          gt_cv_func_dgettext_libintl=yes)])
 
-	    if test "$gt_cv_func_dgettext_libc" != "yes" ; then
-              AC_MSG_CHECKING([if -liconv is needed to use gettext])
-              AC_MSG_RESULT([])
-              AC_CHECK_LIB(intl, dcgettext,
-                           [gt_cv_func_dgettext_libintl=yes
-                            libintl_extra_libs=-liconv],
-                           :,-liconv)
+	if test "$gt_cv_func_dgettext_libintl" != "yes" ; then
+	  AC_MSG_CHECKING([if -liconv is needed to use gettext])
+	  AC_MSG_RESULT([])
+          AC_CHECK_LIB(intl, dcgettext,
+		       [gt_cv_func_dgettext_libintl=yes
+			libintl_extra_libs=-liconv],
+			:,-liconv)
+        fi
+
+        #
+        # If we found libintl, then check in it for bind_textdomain_codeset();
+        # we'll prefer libc if neither have bind_textdomain_codeset(),
+        # and both have dgettext
+        #
+        if test "$gt_cv_func_dgettext_libintl" = "yes" ; then
+          glib_save_LIBS="$LIBS"
+          LIBS="$LIBS -lintl $libintl_extra_libs"
+          unset ac_cv_func_bind_textdomain_codeset
+          AC_CHECK_FUNCS(bind_textdomain_codeset)
+          LIBS="$glib_save_LIBS"
+
+          if test "$ac_cv_func_bind_textdomain_codeset" = "yes" ; then
+            gt_cv_func_dgettext_libc=no
+          else
+            if test "$gt_cv_func_dgettext_libc" = "yes"; then
+              gt_cv_func_dgettext_libintl=no
             fi
           fi
-
-          if test "$gt_cv_func_dgettext_libintl" = "yes"; then
-	    LIBS="$LIBS -lintl $libintl_extra_libs";
-          fi
-
-	  if test "$gt_cv_func_dgettext_libc" = "yes" \
-	    || test "$gt_cv_func_dgettext_libintl" = "yes"; then
-	    AC_DEFINE(HAVE_GETTEXT,1,
-              [Define if the GNU gettext() function is already present or preinstalled.])
-	    AM_GLIB_PATH_PROG_WITH_TEST(MSGFMT, msgfmt,
- 	      [test -z "`$ac_dir/$ac_word -h 2>&1 | grep 'dv '`"], no)dnl
-	    if test "$MSGFMT" != "no"; then
-	      AC_CHECK_FUNCS(dcgettext)
-	      AC_PATH_PROG(GMSGFMT, gmsgfmt, $MSGFMT)
-	      AM_GLIB_PATH_PROG_WITH_TEST(XGETTEXT, xgettext,
-	        [test -z "`$ac_dir/$ac_word -h 2>&1 | grep '(HELP)'`"], :)
-	      AC_TRY_LINK(, [extern int _nl_msg_cat_cntr;
-		 	     return _nl_msg_cat_cntr],
-	        [CATOBJEXT=.gmo
-	         DATADIRNAME=share],
-	        [CATOBJEXT=.mo
-	         DATADIRNAME=lib])
-	      INSTOBJEXT=.mo
-	    fi
-	  fi
-
-	  # Added by Martin Baulig 12/15/98 for libc5 systems
-	  if test "$gt_cv_func_dgettext_libc" != "yes" \
-	    && test "$gt_cv_func_dgettext_libintl" = "yes"; then
-	    INTLLIBS="-lintl $libintl_extra_libs"
-	    LIBS=`echo $LIBS | sed -e 's/-lintl//'`
-	  fi
-      ])
-
-      if test "$CATOBJEXT" = "NONE"; then
-        dnl Neither gettext nor catgets in included in the C library.
-        dnl Fall back on GNU gettext library.
-        nls_cv_use_gnu_gettext=yes
+        fi
       fi
-    fi
 
-    if test "$nls_cv_use_gnu_gettext" != "yes"; then
+      if test "$gt_cv_func_dgettext_libc" = "yes" \
+	|| test "$gt_cv_func_dgettext_libintl" = "yes"; then
+        gt_cv_have_gettext=yes
+      fi
+  
+      if test "$gt_cv_func_dgettext_libintl" = "yes"; then
+        INTLLIBS="-lintl $libintl_extra_libs"
+      fi
+  
+      if test "$gt_cv_have_gettext" = "yes"; then
+	AC_DEFINE(HAVE_GETTEXT,1,
+	  [Define if the GNU gettext() function is already present or preinstalled.])
+	GLIB_PATH_PROG_WITH_TEST(MSGFMT, msgfmt,
+	  [test -z "`$ac_dir/$ac_word -h 2>&1 | grep 'dv '`"], no)dnl
+	if test "$MSGFMT" != "no"; then
+	  AC_CHECK_FUNCS(dcgettext)
+	  AC_PATH_PROG(GMSGFMT, gmsgfmt, $MSGFMT)
+	  GLIB_PATH_PROG_WITH_TEST(XGETTEXT, xgettext,
+	    [test -z "`$ac_dir/$ac_word -h 2>&1 | grep '(HELP)'`"], :)
+	  AC_TRY_LINK(, [extern int _nl_msg_cat_cntr;
+			 return _nl_msg_cat_cntr],
+	    [CATOBJEXT=.gmo 
+             DATADIRNAME=share],
+	    [CATOBJEXT=.mo
+             DATADIRNAME=lib])
+	  INSTOBJEXT=.mo
+	fi
+      fi
+    ])
+
+    if test "$gt_cv_have_gettext" = "yes" ; then
       AC_DEFINE(ENABLE_NLS, 1,
         [always defined to indicate that i18n is enabled])
-    else
-      dnl Unset this variable since we use the non-zero value as a flag.
-      CATOBJEXT=
     fi
 
     dnl Test whether we really found GNU xgettext.
     if test "$XGETTEXT" != ":"; then
-      dnl If it is no GNU xgettext we define it as : so that the
+      dnl If it is not GNU xgettext we define it as : so that the
       dnl Makefiles still can work.
       if $XGETTEXT --omit-header /dev/null 2> /dev/null; then
         : ;
@@ -4175,34 +4338,31 @@ AC_DEFUN(AM_GLIB_WITH_NLS,
     AC_SUBST(DATADIRNAME)
     AC_SUBST(GMOFILES)
     AC_SUBST(INSTOBJEXT)
-    AC_SUBST(INTLDEPS)
     AC_SUBST(INTLLIBS)
-    AC_SUBST(INTLOBJS)
+    AC_SUBST(PO_IN_DATADIR_TRUE)
+    AC_SUBST(PO_IN_DATADIR_FALSE)
     AC_SUBST(POFILES)
     AC_SUBST(POSUB)
   ])
 
-AC_DEFUN(AM_GLIB_GNU_GETTEXT,
-  [AC_REQUIRE([AC_PROG_MAKE_SET])dnl
-   AC_REQUIRE([AC_PROG_CC])dnl
-   AC_REQUIRE([AC_PROG_RANLIB])dnl
+# AM_GLIB_GNU_GETTEXT
+# -------------------
+# Do checks necessary for use of gettext. If a suitable implementation 
+# of gettext is found in either in libintl or in the C library,
+# it will set INTLLIBS to the libraries needed for use of gettext
+# and AC_DEFINE() HAVE_GETTEXT and ENABLE_NLS. (The shell variable
+# gt_cv_have_gettext will be set to "yes".) It will also call AC_SUBST()
+# on various variables needed by the Makefile.in.in installed by 
+# glib-gettextize.
+dnl
+glib_DEFUN(GLIB_GNU_GETTEXT,
+  [AC_REQUIRE([AC_PROG_CC])dnl
    AC_REQUIRE([AC_HEADER_STDC])dnl
-   AC_REQUIRE([AC_C_CONST])dnl
-   AC_REQUIRE([AC_C_INLINE])dnl
-   AC_REQUIRE([AC_TYPE_OFF_T])dnl
-   AC_REQUIRE([AC_TYPE_SIZE_T])dnl
-   AC_REQUIRE([AC_FUNC_ALLOCA])dnl
-   AC_REQUIRE([AC_FUNC_MMAP])dnl
+   
+   GLIB_LC_MESSAGES
+   GLIB_WITH_NLS
 
-   AC_CHECK_HEADERS([argz.h limits.h locale.h nl_types.h malloc.h string.h \
-unistd.h sys/param.h])
-   AC_CHECK_FUNCS([getcwd munmap putenv setenv setlocale strchr strcasecmp \
-strdup __argz_count __argz_stringify __argz_next])
-
-   AM_GLIB_LC_MESSAGES
-   AM_GLIB_WITH_NLS
-
-   if test "x$CATOBJEXT" != "x"; then
+   if test "$gt_cv_have_gettext" = "yes"; then
      if test "x$ALL_LINGUAS" = "x"; then
        LINGUAS=
      else
@@ -4221,18 +4381,6 @@ strdup __argz_count __argz_stringify __argz_next])
      if test -n "$LINGUAS"; then
        for lang in $LINGUAS; do CATALOGS="$CATALOGS $lang$CATOBJEXT"; done
      fi
-   fi
-
-   dnl Determine which catalog format we have (if any is needed)
-   dnl For now we know about two different formats:
-   dnl   Linux libc-5 and the normal X/Open format
-   test -d po || mkdir po
-   if test "$CATOBJEXT" = ".cat"; then
-     AC_CHECK_HEADER(linux/version.h, msgformat=linux, msgformat=xopen)
-
-     dnl Transform the SED scripts while copying because some dumb SEDs
-     dnl cannot handle comments.
-     sed -e '/^#/d' $srcdir/po/$msgformat-msg.sed > po/po2msg.sed
    fi
 
    dnl If the AC_CONFIG_AUX_DIR macro for autoconf is used we possibly
@@ -4264,6 +4412,31 @@ strdup __argz_count __argz_stringify __argz_next])
 	< $srcdir/po/POTFILES.in > po/POTFILES
   ])
 
+# AM_GLIB_DEFINE_LOCALEDIR(VARIABLE)
+# -------------------------------
+# Define VARIABLE to the location where catalog files will
+# be installed by po/Makefile.
+glib_DEFUN(GLIB_DEFINE_LOCALEDIR,
+[glib_REQUIRE([GLIB_GNU_GETTEXT])dnl
+glib_save_prefix="$prefix"
+test "x$prefix" = xNONE && prefix=$ac_default_prefix
+if test "x$CATOBJEXT" = "x.mo" ; then
+  localedir=`eval echo "${libdir}/locale"`
+else
+  localedir=`eval echo "${datadir}/locale"`
+fi
+prefix="$glib_save_prefix"
+AC_DEFINE_UNQUOTED($1, "$localedir",
+  [Define the location where the catalogs will be installed])
+])
+
+dnl
+dnl Now the definitions that aclocal will find
+dnl
+ifdef(glib_configure_in,[],[
+AC_DEFUN(AM_GLIB_GNU_GETTEXT,[GLIB_GNU_GETTEXT($@)])
+AC_DEFUN(AM_GLIB_DEFINE_LOCALEDIR,[GLIB_DEFINE_LOCALEDIR($@)])
+])dnl
 
 
 dnl PKG_CHECK_MODULES(GSTUFF, gtk+-2.0 >= 1.3 glib = 1.3.4, action-if, action-not)
@@ -4322,4 +4495,379 @@ AC_DEFUN(PKG_CHECK_MODULES, [
 ])
 
 
+
+
+# serial 5 AC_LIB_LTDL
+
+# AC_WITH_LTDL
+# ------------
+# Clients of libltdl can use this macro to allow the installer to
+# choose between a shipped copy of the ltdl sources or a preinstalled
+# version of the library.
+AC_DEFUN([AC_WITH_LTDL],
+[AC_REQUIRE([AC_LIB_LTDL])
+AC_SUBST([LIBLTDL])
+AC_SUBST([INCLTDL])
+
+# Unless the user asks us to check, assume no installed ltdl exists.
+use_installed_libltdl=no
+
+AC_ARG_WITH([included_ltdl],
+    [  --with-included-ltdl    use the GNU ltdl sources included here])
+
+if test "x$with_included_ltdl" != xyes; then
+  # We are not being forced to use the included libltdl sources, so
+  # decide whether there is a useful installed version we can use.
+  AC_CHECK_HEADER([ltdl.h],
+      [AC_CHECK_LIB([ltdl], [lt_dlcaller_register],
+          [with_included_ltdl=no],
+          [with_included_ltdl=yes])
+  ])
+fi
+
+if test "x$enable_ltdl_install" != xyes; then
+  # If the user did not specify an installable libltdl, then default
+  # to a convenience lib.
+  AC_LIBLTDL_CONVENIENCE
+fi
+
+if test "x$with_included_ltdl" = xno; then
+  # If the included ltdl is not to be used. then Use the
+  # preinstalled libltdl we found.
+  AC_DEFINE([HAVE_LTDL], 1,
+    [Define this if a modern libltdl is already installed])
+  LIBLTDL=-lltdl
+fi
+
+# Report our decision...
+AC_MSG_CHECKING([whether to use included libltdl])
+AC_MSG_RESULT([$with_included_ltdl])
+
+AC_CONFIG_SUBDIRS([libltdl])
+])# AC_WITH_LTDL
+
+
+# AC_LIB_LTDL
+# -----------
+# Perform all the checks necessary for compilation of the ltdl objects
+#  -- including compiler checks and header checks.
+AC_DEFUN([AC_LIB_LTDL],
+[AC_PREREQ(2.13)
+AC_REQUIRE([AC_PROG_CC])
+AC_REQUIRE([AC_C_CONST])
+AC_REQUIRE([AC_HEADER_STDC])
+AC_REQUIRE([AC_HEADER_DIRENT])
+AC_REQUIRE([AC_LIBTOOL_HEADER_ASSERT])
+AC_REQUIRE([_LT_AC_CHECK_DLFCN])
+AC_REQUIRE([AC_LTDL_ENABLE_INSTALL])
+AC_REQUIRE([AC_LTDL_SHLIBEXT])
+AC_REQUIRE([AC_LTDL_SHLIBPATH])
+AC_REQUIRE([AC_LTDL_SYSSEARCHPATH])
+AC_REQUIRE([AC_LTDL_OBJDIR])
+AC_REQUIRE([AC_LTDL_DLPREOPEN])
+AC_REQUIRE([AC_LTDL_DLLIB])
+AC_REQUIRE([AC_LTDL_SYMBOL_USCORE])
+AC_REQUIRE([AC_LTDL_DLSYM_USCORE])
+AC_REQUIRE([AC_LTDL_SYS_DLOPEN_DEPLIBS])
+AC_REQUIRE([AC_LTDL_FUNC_ARGZ])
+
+AC_CHECK_HEADERS([errno.h malloc.h memory.h stdlib.h stdio.h ctype.h unistd.h])
+AC_CHECK_HEADERS([dl.h sys/dl.h dld.h])
+AC_CHECK_HEADERS([string.h strings.h], break)
+
+AC_CHECK_FUNCS([strchr index], break)
+AC_CHECK_FUNCS([strrchr rindex], break)
+AC_CHECK_FUNCS([memcpy bcopy], break)
+AC_CHECK_FUNCS([memmove strcmp])
+
+])# AC_LIB_LTDL
+
+# AC_LTDL_ENABLE_INSTALL
+# ----------------------
+AC_DEFUN([AC_LTDL_ENABLE_INSTALL],
+[AC_ARG_ENABLE(ltdl-install,
+[  --enable-ltdl-install   install libltdl])
+
+AM_CONDITIONAL(INSTALL_LTDL, test x"${enable_ltdl_install-no}" != xno)
+AM_CONDITIONAL(CONVENIENCE_LTDL, test x"${enable_ltdl_convenience-no}" != xno)
+])])# AC_LTDL_ENABLE_INSTALL
+
+# AC_LTDL_SYS_DLOPEN_DEPLIBS
+# --------------------------
+AC_DEFUN([AC_LTDL_SYS_DLOPEN_DEPLIBS],
+[AC_REQUIRE([AC_CANONICAL_HOST])
+AC_CACHE_CHECK([whether deplibs are loaded by dlopen],
+	libltdl_cv_sys_dlopen_deplibs, [dnl
+	# PORTME does your system automatically load deplibs for dlopen()?
+	libltdl_cv_sys_dlopen_deplibs=unknown
+	case "$host_os" in
+        hpux10*|hpux11*)
+          libltdl_cv_sys_dlopen_deplibs=yes
+          ;;
+	linux*)
+	  libltdl_cv_sys_dlopen_deplibs=yes
+	  ;;
+	netbsd*)
+	  libltdl_cv_sys_dlopen_deplibs=yes
+	  ;;
+	openbsd*)
+	  libltdl_cv_sys_dlopen_deplibs=yes
+	  ;;
+	solaris*)
+	  libltdl_cv_sys_dlopen_deplibs=yes
+	  ;;
+	esac
+])
+if test "$libltdl_cv_sys_dlopen_deplibs" != yes; then
+ AC_DEFINE(LTDL_DLOPEN_DEPLIBS, 1,
+    [Define if the OS needs help to load dependent libraries for dlopen(). ])
+fi
+])# AC_LTDL_SYS_DLOPEN_DEPLIBS
+
+# AC_LTDL_SHLIBEXT
+# ----------------
+AC_DEFUN([AC_LTDL_SHLIBEXT],
+[AC_REQUIRE([_LT_AC_LTCONFIG_HACK])
+AC_CACHE_CHECK([which extension is used for shared libraries],
+  libltdl_cv_shlibext,
+[ac_last=
+  for ac_spec in $library_names_spec; do
+    ac_last="$ac_spec"
+  done
+  echo "$ac_last" | [sed 's/\[.*\]//;s/^[^.]*//;s/\$.*$//;s/\.$//'] > conftest
+libltdl_cv_shlibext=`cat conftest`
+rm -f conftest
+])
+if test -n "$libltdl_cv_shlibext"; then
+  AC_DEFINE_UNQUOTED(LTDL_SHLIB_EXT, "$libltdl_cv_shlibext",
+    [Define to the extension used for shared libraries, say, ".so". ])
+fi
+])# AC_LTDL_SHLIBEXT
+
+# AC_LTDL_SHLIBPATH
+# -----------------
+AC_DEFUN([AC_LTDL_SHLIBPATH],
+[AC_REQUIRE([_LT_AC_LTCONFIG_HACK])
+AC_CACHE_CHECK([which variable specifies run-time library path],
+  libltdl_cv_shlibpath_var, [libltdl_cv_shlibpath_var="$shlibpath_var"])
+if test -n "$libltdl_cv_shlibpath_var"; then
+  AC_DEFINE_UNQUOTED(LTDL_SHLIBPATH_VAR, "$libltdl_cv_shlibpath_var",
+    [Define to the name of the environment variable that determines the dynamic library search path. ])
+fi
+])# AC_LTDL_SHLIBPATH
+
+# AC_LTDL_SYSSEARCHPATH
+# ---------------------
+AC_DEFUN([AC_LTDL_SYSSEARCHPATH],
+[AC_REQUIRE([_LT_AC_LTCONFIG_HACK])
+AC_CACHE_CHECK([for the default library search path],
+  libltdl_cv_sys_search_path, [libltdl_cv_sys_search_path="$sys_lib_dlsearch_path_spec"])
+if test -n "$libltdl_cv_sys_search_path"; then
+  case "$host" in
+  *-*-mingw*) pathsep=";" ;;
+  *) pathsep=":" ;;
+  esac
+  sys_search_path=
+  for dir in $libltdl_cv_sys_search_path; do
+    if test -z "$sys_search_path"; then
+      sys_search_path="$dir"
+    else
+      sys_search_path="$sys_search_path$pathsep$dir"
+    fi
+  done
+  AC_DEFINE_UNQUOTED(LTDL_SYSSEARCHPATH, "$sys_search_path",
+    [Define to the system default library search path. ])
+fi
+])# AC_LTDL_SYSSEARCHPATH
+
+# AC_LTDL_OBJDIR
+# --------------
+AC_DEFUN([AC_LTDL_OBJDIR],
+[AC_CACHE_CHECK([for objdir],
+  libltdl_cv_objdir, [libltdl_cv_objdir="$objdir"
+if test -n "$objdir"; then
+  :
+else
+  rm -f .libs 2>/dev/null
+  mkdir .libs 2>/dev/null
+  if test -d .libs; then
+    libltdl_cv_objdir=.libs
+  else
+    # MS-DOS does not allow filenames that begin with a dot.
+    libltdl_cv_objdir=_libs
+  fi
+rmdir .libs 2>/dev/null
+fi])
+AC_DEFINE_UNQUOTED(LTDL_OBJDIR, "$libltdl_cv_objdir/",
+  [Define to the sub-directory in which libtool stores uninstalled libraries. ])
+])# AC_LTDL_OBJDIR
+
+# AC_LTDL_DLPREOPEN
+# -----------------
+AC_DEFUN([AC_LTDL_DLPREOPEN],
+[AC_REQUIRE([AC_LIBTOOL_SYS_GLOBAL_SYMBOL_PIPE])dnl
+AC_CACHE_CHECK([whether libtool supports -dlopen/-dlpreopen],
+       libltdl_cv_preloaded_symbols, [dnl
+  if test -n "$global_symbol_pipe"; then
+    libltdl_cv_preloaded_symbols=yes
+  else
+    libltdl_cv_preloaded_symbols=no
+  fi
+])
+if test x"$libltdl_cv_preloaded_symbols" = x"yes"; then
+  AC_DEFINE(HAVE_PRELOADED_SYMBOLS, 1,
+    [Define if libtool can extract symbol lists from object files. ])
+fi
+])# AC_LTDL_DLPREOPEN
+
+# AC_LTDL_DLLIB
+# -------------
+AC_DEFUN([AC_LTDL_DLLIB],
+[LIBADD_DL=
+AC_SUBST(LIBADD_DL)
+
+AC_CHECK_FUNC([shl_load],
+      [AC_DEFINE([HAVE_SHL_LOAD], [1],
+		 [Define if you have the shl_load function.])],
+  [AC_CHECK_LIB([dld], [shl_load],
+	[AC_DEFINE([HAVE_SHL_LOAD], [1],
+		   [Define if you have the shl_load function.])
+	LIBADD_DL="$LIBADD_DL -ldld"],
+    [AC_CHECK_LIB([dl], [dlopen],
+	  [AC_DEFINE([HAVE_LIBDL], [1],
+		     [Define if you have the libdl library or equivalent.])
+	  LIBADD_DL="-ldl"],
+      [AC_TRY_LINK([#if HAVE_DLFCN_H
+#  include <dlfcn.h>
+#endif
+      ],
+	[dlopen(0, 0);],
+	    [AC_DEFINE([HAVE_LIBDL], [1],
+		       [Define if you have the libdl library or equivalent.])],
+	[AC_CHECK_LIB([svld], [dlopen],
+	      [AC_DEFINE([HAVE_LIBDL], [1],
+			 [Define if you have the libdl library or equivalent.])
+	      LIBADD_DL="-lsvld"],
+	  [AC_CHECK_LIB([dld], [dld_link],
+	        [AC_DEFINE([HAVE_DLD], [1],
+			   [Define if you have the GNU dld library.])
+	 	LIBADD_DL="$LIBADD_DL -ldld"
+          ])
+        ])
+      ])
+    ])
+  ])
+])
+
+if test "x$ac_cv_func_dlopen" = xyes || test "x$ac_cv_lib_dl_dlopen" = xyes; then
+ LIBS_SAVE="$LIBS"
+ LIBS="$LIBS $LIBADD_DL"
+ AC_CHECK_FUNCS(dlerror)
+ LIBS="$LIBS_SAVE"
+fi
+])# AC_LTDL_DLLIB
+
+# AC_LTDL_SYMBOL_USCORE
+# ---------------------
+AC_DEFUN([AC_LTDL_SYMBOL_USCORE],
+[dnl does the compiler prefix global symbols with an underscore?
+AC_REQUIRE([AC_LIBTOOL_SYS_GLOBAL_SYMBOL_PIPE])dnl
+AC_MSG_CHECKING([for _ prefix in compiled symbols])
+AC_CACHE_VAL(ac_cv_sys_symbol_underscore,
+[ac_cv_sys_symbol_underscore=no
+cat > conftest.$ac_ext <<EOF
+void nm_test_func(){}
+int main(){nm_test_func;return 0;}
+EOF
+if AC_TRY_EVAL(ac_compile); then
+  # Now try to grab the symbols.
+  ac_nlist=conftest.nm
+  if AC_TRY_EVAL(NM conftest.$ac_objext \| $global_symbol_pipe \> $ac_nlist) && test -s "$ac_nlist"; then
+    # See whether the symbols have a leading underscore.
+    if egrep '^. _nm_test_func' "$ac_nlist" >/dev/null; then
+      ac_cv_sys_symbol_underscore=yes
+    else
+      if egrep '^. nm_test_func ' "$ac_nlist" >/dev/null; then
+	:
+      else
+	echo "configure: cannot find nm_test_func in $ac_nlist" >&AC_FD_CC
+      fi
+    fi
+  else
+    echo "configure: cannot run $global_symbol_pipe" >&AC_FD_CC
+  fi
+else
+  echo "configure: failed program was:" >&AC_FD_CC
+  cat conftest.c >&AC_FD_CC
+fi
+rm -rf conftest*
+])
+AC_MSG_RESULT($ac_cv_sys_symbol_underscore)
+])# AC_LTDL_SYMBOL_USCORE
+
+
+# AC_LTDL_DLSYM_USCORE
+# --------------------
+AC_DEFUN([AC_LTDL_DLSYM_USCORE],
+[AC_REQUIRE([AC_LTDL_SYMBOL_USCORE])dnl
+if test x"$ac_cv_sys_symbol_underscore" = xyes; then
+  if test x"$ac_cv_func_dlopen" = xyes ||
+     test x"$ac_cv_lib_dl_dlopen" = xyes ; then
+	AC_CACHE_CHECK([whether we have to add an underscore for dlsym],
+		libltdl_cv_need_uscore, [dnl
+		libltdl_cv_need_uscore=unknown
+                save_LIBS="$LIBS"
+                LIBS="$LIBS $LIBADD_DL"
+		_LT_AC_TRY_DLOPEN_SELF(
+		  libltdl_cv_need_uscore=no, libltdl_cv_need_uscore=yes,
+		  [],			     libltdl_cv_need_uscore=cross)
+		LIBS="$save_LIBS"
+	])
+  fi
+fi
+
+if test x"$libltdl_cv_need_uscore" = xyes; then
+  AC_DEFINE(NEED_USCORE, 1,
+    [Define if dlsym() requires a leading underscore in symbol names. ])
+fi
+])# AC_LTDL_DLSYM_USCORE
+
+
+# AC_CHECK_TYPES(TYPES, [ACTION-IF-FOUND], [ACTION-IF-NOT-FOUND],
+#                [INCLUDES])
+# ---------------------------------------------------------------
+# This macro did not exist in Autoconf 2.13, which we do still support
+ifdef([AC_CHECK_TYPES], [],
+[define([AC_CHECK_TYPES],
+  [AC_CACHE_CHECK([for $1], ac_Type,
+    [AC_TRY_LINK([$4],
+	[if (($1 *) 0)
+	  return 0;
+	if (sizeof ($1))
+	  return 0;],
+	[ac_Type=yes],
+	[ac_Type=no])])
+  if test "x$ac_Type" = xyes; then
+    ifelse([$2], [], [:], [$2])
+  else
+    ifelse([$3], [], [:], [$3])
+  fi])
+])# AC_CHECK_TYPES
+
+
+# AC_LTDL_FUNC_ARGZ
+# -----------------
+AC_DEFUN([AC_LTDL_FUNC_ARGZ],
+[AC_CHECK_HEADERS([argz.h])
+
+AC_CHECK_TYPES([error_t],
+  [],
+  [AC_DEFINE([error_t], [int],
+    [Define to a type to use for \`error_t' if it is not otherwise available.])],
+  [#if HAVE_ARGZ_H
+#  include <argz.h>
+#endif])
+
+AC_CHECK_FUNCS([argz_append argz_create_sep argz_insert argz_next argz_stringify])
+])# AC_LTDL_FUNC_ARGZ
 

@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- *  gnome-print-unit.c: Unit utility functio
+ *  gnome-print-unit.h: Unit utility functios
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public License
@@ -22,13 +22,13 @@
  *    Lauris Kaplinski <lauris@ximian.com>
  *
  *  Copyright (C) 1998 The Free Software Foundation and 2001-2202 Ximian, Inc.
- *
  */
 
 #ifndef __GNOME_PRINT_UNIT_H__
 #define __GNOME_PRINT_UNIT_H__
 
 #include <glib.h>
+#include <glib-object.h>
 
 G_BEGIN_DECLS
 
@@ -58,9 +58,9 @@ typedef struct _GnomePrintUnit GnomePrintUnit;
 
 typedef enum {
 	GNOME_PRINT_UNIT_DIMENSIONLESS = (1 << 0), /* For percentages and like */
-	GNOME_PRINT_UNIT_ABSOLUTE = (1 << 1), /* Real world distances - i.e. mm, cm... */
-	GNOME_PRINT_UNIT_DEVICE = (1 << 2), /* Semi-real device-dependent distances i.e. pixels */
-	GNOME_PRINT_UNIT_USERSPACE = (1 << 3) /* Mathematical coordinates */
+	GNOME_PRINT_UNIT_ABSOLUTE = (1 << 1),      /* Real world distances - i.e. mm, cm... */
+	GNOME_PRINT_UNIT_DEVICE = (1 << 2),        /* Semi-real device-dependent distances i.e. pixels */
+	GNOME_PRINT_UNIT_USERSPACE = (1 << 3)      /* Mathematical coordinates */
 } GnomePrintUnitBase;
 
 /*
@@ -84,26 +84,25 @@ struct _GnomePrintUnit {
 
 /* Base units are the ones used by gnome-print and paper descriptions */
 
-#define GNOME_PRINT_PS_UNIT (gnome_print_unit_get_identity (GNOME_PRINT_UNIT_ABSOLUTE))
+#define GNOME_TYPE_PRINT_UNIT (gnome_print_unit_get_type ())
+#define GNOME_PRINT_PS_UNIT   (gnome_print_unit_get_identity (GNOME_PRINT_UNIT_ABSOLUTE))
 #define GNOME_PRINT_UNITS_ALL (GNOME_PRINT_UNIT_DIMENSIONLESS | GNOME_PRINT_UNIT_ABSOLUTE | GNOME_PRINT_UNIT_DEVICE | GNOME_PRINT_UNIT_USERSPACE)
+
+GType                 gnome_print_unit_get_type (void);
 
 const GnomePrintUnit *gnome_print_unit_get_identity (guint base);
 const GnomePrintUnit *gnome_print_unit_get_default (void);
 const GnomePrintUnit *gnome_print_unit_get_by_name (const guchar *name);
 const GnomePrintUnit *gnome_print_unit_get_by_abbreviation (const guchar *abbreviation);
 
-GList *gnome_print_unit_get_list (guint bases);
-void gnome_print_unit_free_list (GList *units);
+GList * gnome_print_unit_get_list (guint bases);
+void    gnome_print_unit_free_list (GList *units);
 
-/* These are pure utility */
-/* Return TRUE if conversion is possible, FALSE if unit bases differ */
-gboolean gnome_print_convert_distance (gdouble *distance, const GnomePrintUnit *from, const GnomePrintUnit *to);
-
-/* ctmscale is userspace->absolute, devicescale is device->absolute */
-/* If either one is NULL, transconverting to/from that base fails */
+/* Utility */
+gboolean gnome_print_convert_distance      (gdouble *distance, const GnomePrintUnit *from, const GnomePrintUnit *to);
 gboolean gnome_print_convert_distance_full (gdouble *distance, const GnomePrintUnit *from, const GnomePrintUnit *to,
 					    gdouble ctmscale, gdouble devicescale);
 
 G_END_DECLS
 
-#endif 
+#endif /* __GNOME_PRINT_UNIT_H__ */

@@ -18,23 +18,87 @@
  *
  *  Authors:
  *    Lauris Kaplinski <lauris@helixcode.com>
+ *    Chema Celorio <chema@ximian.com>
  *
- *  Copyright 2001 Ximian, Inc.
- *
+ *  Copyright 2001-2003 Ximian, Inc.
  */
 
-#define __GNOME_PRINT_CONFIG_C__
-
+#include <config.h>
 #include <ctype.h>
 #include <stdlib.h>
 #include <locale.h>
-#include "gpa/gpa-node-private.h"
-#include "gnome-print-config.h"
+
+#include <libgnomeprint/gpa/gpa-config.h>
+#include <libgnomeprint/gnome-print-config.h>
+#include <libgnomeprint/gnome-print-config-private.h>
+#include <libgnomeprint/gnome-print-job.h>
+
+typedef struct _GnomePrintConfigClass GnomePrintConfigClass;
 
 struct _GnomePrintConfig {
-	gint refcount;
+	GObject parent;
 	GPANode *node;
 };
+
+struct _GnomePrintConfigClass {
+	GObjectClass parent_class;
+};
+
+static void gnome_print_config_class_init (GnomePrintConfigClass *klass);
+static void gnome_print_config_init (GnomePrintConfig *pc);
+static void gnome_print_config_finalize (GObject *object);
+
+static GObjectClass *parent_class = NULL;
+
+GType
+gnome_print_config_get_type (void)
+{
+	static GType type;
+	if (!type) {
+		static const GTypeInfo info = {
+			sizeof (GnomePrintConfigClass),
+			NULL, NULL,
+			(GClassInitFunc) gnome_print_config_class_init,
+			NULL, NULL,
+			sizeof (GnomePrintConfig),
+			0,
+			(GInstanceInitFunc) gnome_print_config_init
+		};
+		type = g_type_register_static (G_TYPE_OBJECT, "GnomePrintConfig", &info, 0);
+	}
+	return type;
+}
+
+static void
+gnome_print_config_class_init (GnomePrintConfigClass *klass)
+{
+	GObjectClass *object_class;
+
+	object_class = (GObjectClass*) klass;
+
+	parent_class = g_type_class_peek_parent (klass);
+
+	object_class->finalize = gnome_print_config_finalize;
+}
+
+static void
+gnome_print_config_init (GnomePrintConfig *config)
+{
+	config->node = NULL;	
+}
+
+static void
+gnome_print_config_finalize (GObject *object)
+{
+	GnomePrintConfig *config;
+
+	config = GNOME_PRINT_CONFIG (object);
+
+	config->node = gpa_node_unref (config->node);
+	
+	G_OBJECT_CLASS (parent_class)->finalize (object);
+}
+
 
 GPANode *
 gnome_print_config_get_node (GnomePrintConfig *config)
@@ -49,10 +113,8 @@ gnome_print_config_default (void)
 {
 	GnomePrintConfig *config;
 
-	config = g_new (GnomePrintConfig, 1);
-
-	config->refcount = 1;
-	config->node = gpa_defaults ();
+	config = g_object_new (GNOME_TYPE_PRINT_CONFIG, NULL);
+	config->node = (GPANode *) gpa_config_new ();
 
 	return config;
 }
@@ -61,8 +123,9 @@ GnomePrintConfig *
 gnome_print_config_ref (GnomePrintConfig *config)
 {
 	g_return_val_if_fail (config != NULL, NULL);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONFIG (config), NULL);
 
-	config->refcount += 1;
+	g_object_ref (G_OBJECT (config));
 
 	return config;
 }
@@ -71,14 +134,10 @@ GnomePrintConfig *
 gnome_print_config_unref (GnomePrintConfig *config)
 {
 	g_return_val_if_fail (config != NULL, NULL);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONFIG (config), NULL);
 
-	config->refcount -= 1;
-
-	if (config->refcount < 1) {
-		config->node = gpa_node_unref (config->node);
-		g_free (config);
-	}
-
+	g_object_unref (G_OBJECT (config));
+	
 	return NULL;
 }
 
@@ -89,9 +148,8 @@ gnome_print_config_dup (GnomePrintConfig *old_config)
 
 	g_return_val_if_fail (old_config != NULL, NULL);
 
-	config = g_new (GnomePrintConfig, 1);
-
-	config->refcount = 1;
+	config = g_object_new (GNOME_TYPE_PRINT_CONFIG, NULL);
+	
 	config->node = gpa_node_duplicate (old_config->node);
 
 	return config;
@@ -232,12 +290,14 @@ gnome_print_config_get_length (GnomePrintConfig *config, const guchar *key, gdou
 			g_free (v);
 			return FALSE;
 		}
-		while (*e && !isalnum (*e)) e++;
+		while (*e && !isalnum (*e))
+			e++;
 		if (!*e) {
 			c_unit = GNOME_PRINT_PS_UNIT;
 		} else {
 			c_unit = gnome_print_unit_get_by_abbreviation (e);
-			if (!c_unit) c_unit = gnome_print_unit_get_by_name (e);
+			if (!c_unit)
+				c_unit = gnome_print_unit_get_by_name (e);
 		}
 		g_free (v);
 		if (c_unit == NULL)
@@ -322,10 +382,65 @@ gnome_print_config_set_length (GnomePrintConfig *config, const guchar *key, gdou
 }
 
 
+gchar *
+gnome_print_config_to_string (GnomePrintConfig *config, guint flags)
+{
+	g_return_val_if_fail (config != NULL, NULL);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONFIG (config), NULL);
+
+	return gpa_config_to_string (GPA_CONFIG (config->node), flags);
+}
+
+GnomePrintConfig *
+gnome_print_config_from_string (const gchar *str,
+				guint flags)
+{
+	GnomePrintConfig *config;
+
+	g_return_val_if_fail (str != NULL, NULL);
+
+	config = g_object_new (GNOME_TYPE_PRINT_CONFIG, NULL);
+	config->node = (GPANode *) gpa_config_from_string (str, flags);
+
+	return config;
+}
+
 void
 gnome_print_config_dump (GnomePrintConfig *config)
 {
 	g_return_if_fail (config != NULL);
+	g_return_if_fail (GNOME_IS_PRINT_CONFIG (config));
 
-	gpa_utils_dump_tree (config->node);
+	gpa_utils_dump_tree (config->node, 1);
+}
+
+/**
+ * gnome_print_config_get_page_size
+ * @config: 
+ * @width: 
+ * @height: 
+ * 
+ * Get imaging area size available to the application for printing
+ * after margins and layouts are applied. Sizes are given in PS
+ * points (GNOME_PRINT_PS_UNIT)
+ * 
+ * Return Value: TRUE on success, FALSE on error
+ **/
+gboolean
+gnome_print_config_get_page_size (GnomePrintConfig *config, gdouble *width, gdouble *height)
+{
+	GnomePrintJob *job;
+
+	g_return_val_if_fail (config != NULL, FALSE);
+	g_return_val_if_fail (GNOME_IS_PRINT_CONFIG (config), FALSE);
+	g_return_val_if_fail (width != NULL, FALSE);
+	g_return_val_if_fail (height != NULL, FALSE);
+
+	job = gnome_print_job_new (config);
+
+	gnome_print_job_get_page_size (job, width, height);
+
+	g_object_unref (G_OBJECT (job));
+
+	return TRUE;
 }

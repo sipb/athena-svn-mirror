@@ -16,14 +16,15 @@
  *  License along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  Authors :
+ *  Authors:
+ *    Chema Celorio <chema@ximian.com>
  *    Lauris Kaplinski <lauris@ximian.com>
  *
- *  Copyright (C) 2000-2001 Ximian, Inc.
+ *  Copyright (C) 2000-2003 Ximian, Inc.
  *
  */
 
-#define __GPA_CONFIG_C__
+#include <config.h>
 
 #include <string.h>
 #include "gpa-utils.h"
@@ -32,24 +33,20 @@
 #include "gpa-settings.h"
 #include "gpa-root.h"
 #include "gpa-config.h"
+#include "gpa-key.h"
 
-/* GPAConfig */
+typedef struct _GPAConfigClass GPAConfigClass;
+struct _GPAConfigClass {
+	GPANodeClass node_class;
+};
 
 static void gpa_config_class_init (GPAConfigClass *klass);
 static void gpa_config_init (GPAConfig *config);
 
 static void gpa_config_finalize (GObject *object);
 
-static GPANode *gpa_config_duplicate (GPANode *node);
-static gboolean gpa_config_verify (GPANode *node);
-static guchar *gpa_config_get_value (GPANode *node);
-static GPANode *gpa_config_get_child (GPANode *node, GPANode *ref);
-static GPANode *gpa_config_lookup (GPANode *node, const guchar *path);
-static void gpa_config_modified (GPANode *node, guint flags);
-
-/* Helpers */
-
-static gboolean gpa_config_printer_set_value (GPAReference *reference, const guchar *value, gpointer data);
+static gboolean  gpa_config_verify (GPANode *node);
+static GPANode * gpa_config_duplicate (GPANode *node);
 
 static GPANodeClass *parent_class;
 
@@ -86,19 +83,52 @@ gpa_config_class_init (GPAConfigClass *klass)
 	object_class->finalize = gpa_config_finalize;
 
 	node_class->duplicate = gpa_config_duplicate;
-	node_class->verify = gpa_config_verify;
-	node_class->get_value = gpa_config_get_value;
-	node_class->get_child = gpa_config_get_child;
-	node_class->lookup = gpa_config_lookup;
-	node_class->modified = gpa_config_modified;
+	node_class->verify    = gpa_config_verify;
+}
+
+/**
+ * gpa_config_printer_modified:
+ * @node: 
+ * 
+ * A different ->printer has been set, update ->settings since
+ * the old ->settings where for the previous printer
+ **/
+static void
+gpa_config_printer_modified (GPANode *node)
+{
+	GPANode *settings;
+	GPANode *printer;
+	GPAConfig *config;
+
+	g_return_if_fail (GPA_IS_REFERENCE (node));
+	g_return_if_fail (GPA_IS_CONFIG (node->parent));
+
+	config = GPA_CONFIG (node->parent);
+	printer = GPA_REFERENCE_REFERENCE (config->printer);
+	
+	if (printer == GPA_REFERENCE_REFERENCE (GPA_SETTINGS (GPA_REFERENCE_REFERENCE (config->settings))->printer)) {
+		return;
+	}
+
+	settings = gpa_printer_get_default_settings (GPA_PRINTER (printer));
+	gpa_reference_set_reference (GPA_REFERENCE (config->settings),
+				     settings);
+	gpa_node_emit_modified (GPA_NODE (config));
 }
 
 static void
 gpa_config_init (GPAConfig *config)
 {
-	config->globals = NULL;
-	config->printer = NULL;
-	config->settings = NULL;
+	GPANode *p, *s;
+
+	p = GPA_NODE (gpa_reference_new_emtpy ("Printer"));
+	s = GPA_NODE (gpa_reference_new_emtpy ("Settings"));
+
+	config->printer  = gpa_node_attach (GPA_NODE (config), p);
+	config->settings = gpa_node_attach (GPA_NODE (config), s);
+
+	g_signal_connect (G_OBJECT (p), "modified", (GCallback)
+			  gpa_config_printer_modified, NULL);
 }
 
 static void
@@ -108,9 +138,8 @@ gpa_config_finalize (GObject *object)
 
 	config = (GPAConfig *) object;
 
-	config->globals = gpa_node_detach_unref (GPA_NODE (config), GPA_NODE (config->globals));
-	config->printer = gpa_node_detach_unref (GPA_NODE (config), GPA_NODE (config->printer));
-	config->settings = gpa_node_detach_unref (GPA_NODE (config), GPA_NODE (config->settings));
+	config->printer  = gpa_node_detach_unref (GPA_NODE (config->printer));
+	config->settings = gpa_node_detach_unref (GPA_NODE (config->settings));
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -122,170 +151,68 @@ gpa_config_verify (GPANode *node)
 
 	config = GPA_CONFIG (node);
 
-	if (!config->globals)
-		return FALSE;
-	if (!gpa_node_verify (config->globals))
-		return FALSE;
-	if (!config->printer)
-		return FALSE;
-	if (!gpa_node_verify (config->printer))
-		return FALSE;
-	if (!config->settings)
-		return FALSE;
-	if (!gpa_node_verify (GPA_NODE (config->settings)))
-		return FALSE;
+	gpa_return_false_if_fail (config->printer);
+	gpa_return_false_if_fail (gpa_node_verify (config->printer));
+	gpa_return_false_if_fail (config->settings);
+	gpa_return_false_if_fail (gpa_node_verify (config->settings));
 
 	return TRUE;
 }
 
-static guchar *
-gpa_config_get_value (GPANode *node)
+GPAConfig *
+gpa_config_new_full (GPAPrinter *printer, GPASettings * settings)
 {
-	GPAConfig *config;
+	GPAConfig * config;
 
-	config = GPA_CONFIG (node);
+	g_return_val_if_fail (GPA_IS_PRINTER (printer), NULL);
+	g_return_val_if_fail (GPA_IS_SETTINGS (settings), NULL);
+	
+	config = (GPAConfig *) gpa_node_new (GPA_TYPE_CONFIG, "GpaConfigRootNode");
 
-	return NULL;
+	gpa_reference_set_reference (GPA_REFERENCE (config->printer),  GPA_NODE (printer));
+	gpa_reference_set_reference (GPA_REFERENCE (config->settings), GPA_NODE (settings));
+	
+	gpa_node_reverse_children (GPA_NODE (config));
+
+	return config;
 }
 
-static GPANode *
-gpa_config_get_child (GPANode *node, GPANode *ref)
-{
-	GPAConfig *config;
-	GPANode *child;
-
-	config = GPA_CONFIG (node);
-
-	child = NULL;
-	if (ref == NULL) {
-		child = config->globals;
-	} else if (ref == config->globals) {
-		child = GPA_NODE (config->printer);
-	} else if (ref == GPA_NODE (config->printer)) {
-		child = GPA_NODE (config->settings);
-	}
-
-	if (child)
-		gpa_node_ref (child);
-
-	return child;
-}
-
-static GPANode *
-gpa_config_lookup (GPANode *node, const guchar *path)
-{
-	GPAConfig *config;
-	GPANode *child;
-
-	config = GPA_CONFIG (node);
-
-	child = NULL;
-
-	if (gpa_node_lookup_ref (&child, GPA_NODE (config->globals), path, "Globals"))
-		return child;
-	if (gpa_node_lookup_ref (&child, GPA_NODE (config->printer), path, "Printer"))
-		return child;
-	if (gpa_node_lookup_ref (&child, GPA_NODE (config->settings), path, "Settings"))
-		return child;
-
-	return NULL;
-}
-
-static void
-gpa_config_modified (GPANode *node, guint flags)
-{
-	GPAConfig *config;
-
-	config = GPA_CONFIG (node);
-
-	if (config->globals && (GPA_NODE_FLAGS (config->globals) & GPA_MODIFIED_FLAG)) {
-		gpa_node_emit_modified (config->globals, 0);
-	}
-	if (config->printer && (GPA_NODE_FLAGS (config->printer) & GPA_MODIFIED_FLAG)) {
-		gpa_node_emit_modified (config->printer, 0);
-	}
-	if (config->settings && (GPA_NODE_FLAGS (config->settings) & GPA_MODIFIED_FLAG)) {
-		gpa_node_emit_modified (GPA_NODE (config->settings), 0);
-	}
-}
-
-GPANode *
+GPAConfig *
 gpa_config_new (void)
 {
-	GPAConfig *config;
-	GPANode *globals;
+	GPAConfig *config = NULL;
 	GPANode *printer;
-	GPANode *settings;
+	GPANode *settings = NULL;
+	GPANode *def;
 
-	globals = GPA_NODE (gpa_root_get ());
-	if (!globals) {
-		g_warning ("Cannot read global configuration data");
-		return NULL;
-	}
-
+	gpa_init ();
+	
 	printer = gpa_printer_get_default ();
-	if (printer) {
-		GPANode *def;
-		def = gpa_node_get_path_node (printer, "Settings.Default");
-		if (def) {
-			/* fixme: */
-			settings = gpa_node_duplicate (GPA_REFERENCE_REFERENCE (def));
-			gpa_node_unref (def);
-		} else {
-			settings = NULL;
-		}
-	} else {
-		printer = gpa_reference_new_empty ();
-		settings = gpa_settings_new_empty ("Default");
+	if (printer == NULL) {
+		g_warning ("Could not get the default printer");
+		goto gpa_config_new_error;
 	}
 
-	if (printer && settings) {
-		config = (GPAConfig *) gpa_node_new (GPA_TYPE_CONFIG, NULL);
-		config->globals = gpa_reference_new (globals);
-		config->globals->parent = GPA_NODE (config);
-		gpa_node_unref (globals);
-		config->printer = gpa_reference_new (printer);
-		g_signal_connect (G_OBJECT (config->printer), "set_value",
-				  (GCallback) gpa_config_printer_set_value, config);
-		config->printer->parent = GPA_NODE (config);
+	def = gpa_printer_get_default_settings (GPA_PRINTER (printer));
+	if (def == NULL) {
+		g_warning ("Could not get default settings for %s\n",
+			   gpa_node_id (printer));
+		goto gpa_config_new_error;
+	}
+
+	settings = gpa_node_duplicate (def);
+	if (!settings) {
+		g_warning ("Could not duplicate default settings");
+		goto gpa_config_new_error;
+	}
+
+	config = gpa_config_new_full (GPA_PRINTER (printer), GPA_SETTINGS (settings));
+
+gpa_config_new_error:
+	if (printer)
 		gpa_node_unref (printer);
-		config->settings = settings;
-		config->settings->parent = GPA_NODE (config);
-	} else {
-		config = NULL;
-		if (globals)
-			gpa_node_unref (globals);
-		if (printer)
-			gpa_node_unref (printer);
-		if (settings)
-			gpa_node_unref (settings);
-	}
-
-	return GPA_NODE (config);
-}
-
-static gboolean
-gpa_config_printer_set_value (GPAReference *reference, const guchar *value, gpointer data)
-{
-	GPAConfig *config;
-	GPANode *printer;
-
-	config = GPA_CONFIG (data);
-
-	printer = gpa_printer_get_by_id (value);
-	if (printer) {
-		GPANode *def;
-		def = gpa_printer_get_default_settings (GPA_PRINTER (printer));
-		if (def) {
-			gpa_reference_set_reference (GPA_REFERENCE (config->printer), printer);
-			gpa_settings_copy (GPA_SETTINGS (config->settings), GPA_SETTINGS (def));
-			gpa_node_unref (def);
-		}
-		gpa_node_unref (printer);
-		return TRUE;
-	}
-
-	return FALSE;
+	
+	return config;
 }
 
 static GPANode *
@@ -295,11 +222,8 @@ gpa_config_duplicate (GPANode *node)
 
 	config = GPA_CONFIG (node);
 
-	new = (GPAConfig *) gpa_node_new (GPA_TYPE_CONFIG, GPA_NODE_ID (node));
+	new = (GPAConfig *) gpa_node_new (GPA_TYPE_CONFIG, gpa_node_id (node));
 
-	if (config->globals)
-		new->globals = gpa_node_attach (GPA_NODE (new), 
-						gpa_node_duplicate (config->globals));
 	if (config->printer)
 		new->printer = gpa_node_attach (GPA_NODE (new), 
 						gpa_node_duplicate (config->printer));
@@ -310,3 +234,191 @@ gpa_config_duplicate (GPANode *node)
 	return GPA_NODE (new);
 }
 
+
+gchar *
+gpa_config_to_string (GPAConfig *config, guint flags)
+{
+	GPANode *printer;
+	GPANode *settings;
+	xmlDocPtr doc;
+	xmlNodePtr root, node;
+	xmlChar *xml_str;
+	gchar *str;
+	gint size;
+
+	g_return_val_if_fail (config != NULL, NULL);
+	g_return_val_if_fail (GPA_IS_CONFIG (config), NULL);
+	g_return_val_if_fail (config->printer != NULL, NULL);
+	g_return_val_if_fail (config->settings != NULL, NULL);
+
+	printer  = GPA_REFERENCE_REFERENCE (config->printer);
+	settings = GPA_REFERENCE_REFERENCE (config->settings);
+
+	g_return_val_if_fail (GPA_IS_PRINTER  (printer),  NULL);
+	g_return_val_if_fail (GPA_IS_SETTINGS (settings), NULL);
+
+	doc = xmlNewDoc ("1.0");
+	root = xmlNewDocNode (doc, NULL, "GnomePrintConfig", NULL);
+	xmlSetProp (root, "Version", "2.1");
+	xmlSetProp (root, "LibgnomeprintVersion", VERSION);
+	xmlSetProp (root, "SelectedSettings", gpa_node_id (settings));
+	xmlDocSetRootElement (doc, root);
+
+	node = gpa_settings_to_tree (GPA_SETTINGS (settings));
+
+	xmlAddChild (root, node);
+
+	xmlDocDumpFormatMemory	(doc, &xml_str, &size, TRUE);
+	str = g_strndup (xml_str, size);
+	xmlFree (xml_str);
+
+	xmlFreeDoc (doc);
+
+	return str;
+}
+
+GPAConfig *
+gpa_config_from_string (const gchar *str, guint flags)
+{
+	GPASettings *new_settings = NULL;
+	GPASettings *settings = NULL;
+	GPAPrinter *printer = NULL;
+	GPAConfig *config = NULL;
+	GPAModel *model = NULL;
+	GPANode *child;
+	xmlDocPtr doc = NULL;
+	xmlNodePtr tree, node;
+	xmlChar *version, *settings_id, *printer_id, *model_id;
+
+	version = settings_id = printer_id = model_id = NULL;
+
+	gpa_init ();
+
+	if (!str || !str[0])
+		goto config_from_string_done;
+	
+	doc = xmlParseDoc ((char*) str);
+	if (!doc) {
+		g_warning ("Could not parse GPAConfig from string");
+		goto config_from_string_done;
+	}
+
+	tree = doc->xmlRootNode;
+	if (strcmp (tree->name, "GnomePrintConfig")) {
+		g_warning ("Root node should be <GnomePrintConfig>, node found is <%s>", tree->name);
+		goto config_from_string_done;
+	}
+	
+	version = xmlGetProp (tree, "Version");
+	if (!version || strcmp (version, "2.1")) {
+		g_warning ("Invalid GnomePrintConfig version");
+		goto config_from_string_done;
+	}
+
+	settings_id = xmlGetProp (tree, "SelectedSettings");
+        if (!settings_id) {
+		g_warning ("Settings ID not found, invalid GnomePrintConfig");
+		goto config_from_string_done;
+	}
+
+	node = tree->xmlChildrenNode;
+	for (;node != NULL; node = node->next) {
+		xmlChar *child_id;
+		
+		if (!node->name)
+			continue;
+		
+		if (strcmp (node->name, "Settings"))
+			continue;
+
+		child_id = xmlGetProp (node, "Id");
+
+		if (!child_id)
+			continue;
+
+		if (strcmp (child_id, settings_id)) {
+			my_xmlFree (child_id);
+			continue;
+		}
+
+		my_xmlFree (child_id);
+		break;
+	}
+	if (!node) {
+		g_print ("not node\n");
+		goto config_from_string_done;
+	}
+
+	model_id   = xmlGetProp (node, "Model");
+	printer_id = xmlGetProp (node, "Printer");
+	if (!model_id || !printer_id || !model_id[0] || !printer_id[0]) {
+		g_warning ("Model or Printer id missing or invalid from GnomePrintConfig");
+		goto config_from_string_done;
+	}
+	
+	model = (GPAModel *) gpa_model_hash_lookup (model_id);
+	if (!model) {
+		/* Right now we just drop the old config, this will happen when a printer
+		 * is removed from the system or if we are loading a seralized GnomePrintConfig
+		 * from another box (embedded in a file for example), so settings will not
+		 * survive a printer or host change. However, we be a lot smarter about this
+		 * in the future (Chema)
+		 */
+		g_print ("Model not found, discarding config\n");
+		goto config_from_string_done;
+	}
+
+	printer = (GPAPrinter *) gpa_printer_get_by_id (printer_id);
+	if (!printer) {
+		/* ditto (Chema)
+		 */
+		g_print ("Printer not found, discarding config\n");
+		goto config_from_string_done;
+	}
+	
+	new_settings = (GPASettings *) gpa_settings_new_from_model_and_tree (GPA_NODE (model), node);
+	if (!new_settings) {
+		g_print ("Could not create settings\n");
+		goto config_from_string_done;
+	}
+
+	settings = (GPASettings *) gpa_printer_get_settings_by_id (printer, gpa_node_id (GPA_NODE (new_settings)));
+	if (!settings)
+		settings = (GPASettings *) gpa_printer_get_default_settings (printer);
+	
+	child = gpa_node_get_child (GPA_NODE (settings), NULL);
+	while (child) {
+		GPANode *key;
+		key = gpa_node_lookup (GPA_NODE (new_settings), gpa_node_id (child));
+		if (key) {
+			gpa_key_merge_from_key (GPA_KEY (child), GPA_KEY (key));
+			gpa_node_unref (key);
+		}
+		child = child->next;
+	}
+		
+	config = gpa_config_new_full (printer, settings);
+
+	gpa_node_unref (GPA_NODE (new_settings));
+	gpa_node_unref (GPA_NODE (printer));
+	gpa_node_unref (GPA_NODE (settings));
+	new_settings = NULL;
+	settings     = NULL;
+	printer      = NULL;
+	
+config_from_string_done:
+	my_xmlFree (version);
+	my_xmlFree (settings_id);
+	my_xmlFree (model_id);
+	my_xmlFree (printer_id);
+	my_xmlFreeDoc (doc);
+
+	if (!config) {
+		my_gpa_node_unref (GPA_NODE (printer));
+		my_gpa_node_unref (GPA_NODE (model));
+		my_gpa_node_unref (GPA_NODE (settings));
+		config = gpa_config_new ();
+	}
+
+	return config;
+}

@@ -24,14 +24,14 @@
  *    Michael Meeks <michael@ximian.com>
  *    Morten Welinder <terra@diku.dk>
  *
- *  Copyright (C) 2000-2001 Ximian Inc. and authors
+ *  Copyright (C) 2000-2003 Ximian Inc. and authors
  */
 
-#define __GNOME_FONT_C__
-
+#include <config.h>
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
+
 #include <libart_lgpl/art_affine.h>
 #include <libgnomeprint/gnome-font-private.h>
 
@@ -662,8 +662,15 @@ gnome_font_get_pango_description (const GnomeFont *font, gdouble dpi)
 	return desc;
 }
 
-/* Get the glyph number corresponding to a given unicode, or -1 if it
-   is not mapped. */
+/**
+ * gnome_font_lookup_default:
+ * @font: 
+ * @unicode: 
+ *
+ * Get the glyph number corresponding to a given unicode
+ * 
+ * Return Value: glyph number, -1 if it is not mapped
+ **/
 gint
 gnome_font_lookup_default (GnomeFont *font, gint unicode)
 {

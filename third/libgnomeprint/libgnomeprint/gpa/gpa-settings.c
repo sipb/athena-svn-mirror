@@ -20,33 +20,35 @@
  *    Jose M. Celorio <chema@ximian.com>
  *    Lauris Kaplinski <lauris@ximian.com>
  *
- *  Copyright (C) 2000-2001 Ximian, Inc. and Jose M. Celorio
+ *  Copyright (C) 2000-2003 Ximian, Inc.
  *
  */
 
-#define __GPA_SETTINGS_C__
-
+#include "config.h"
 #include <string.h>
 #include <libxml/globals.h>
 #include "gpa-utils.h"
-#include "gpa-value.h"
 #include "gpa-reference.h"
 #include "gpa-model.h"
 #include "gpa-option.h"
 #include "gpa-key.h"
 #include "gpa-settings.h"
+#include "gpa-printer.h"
+#include "gpa-root.h"
+
+typedef struct _GPASettingsClass GPASettingsClass;
+
+struct _GPASettingsClass {
+	GPANodeClass node_class;
+};
 
 static void gpa_settings_class_init (GPASettingsClass *klass);
 static void gpa_settings_init (GPASettings *settings);
-
 static void gpa_settings_finalize (GObject *object);
 
-static GPANode *gpa_settings_duplicate (GPANode *node);
-static gboolean gpa_settings_verify (GPANode *node);
-static guchar *gpa_settings_get_value (GPANode *node);
-static GPANode *gpa_settings_get_child (GPANode *node, GPANode *ref);
-static GPANode *gpa_settings_lookup (GPANode *node, const guchar *path);
-static void gpa_settings_modified (GPANode *node, guint flags);
+static GPANode * gpa_settings_duplicate (GPANode *node);
+static gboolean  gpa_settings_verify    (GPANode *node);
+static guchar *  gpa_settings_get_value (GPANode *node);
 
 static GPANodeClass *parent_class = NULL;
 
@@ -83,36 +85,46 @@ gpa_settings_class_init (GPASettingsClass *klass)
 	object_class->finalize = gpa_settings_finalize;
 
 	node_class->duplicate = gpa_settings_duplicate;
-	node_class->verify = gpa_settings_verify;
+	node_class->verify    = gpa_settings_verify;
 	node_class->get_value = gpa_settings_get_value;
-	node_class->get_child = gpa_settings_get_child;
-	node_class->lookup = gpa_settings_lookup;
-	node_class->modified = gpa_settings_modified;
 }
 
 static void
 gpa_settings_init (GPASettings *settings)
 {
-	settings->name = NULL;
-	settings->model = NULL;
-	settings->keys = NULL;
+	settings->name    = NULL;
+	settings->printer = NULL;
+	settings->model   = NULL;
 }
 
 static void
 gpa_settings_finalize (GObject *object)
 {
 	GPASettings *settings;
+	GPANode *node;
+	GPANode *child;
 
 	settings = GPA_SETTINGS (object);
+	node = GPA_NODE (settings);
 
-	settings->name = gpa_node_detach_unref (GPA_NODE (settings), GPA_NODE (settings->name));
-	settings->model = gpa_node_detach_unref (GPA_NODE (settings), GPA_NODE (settings->model));
+	my_gpa_node_unref (GPA_NODE (settings->printer));
+	gpa_node_unref (GPA_NODE (settings->model));
+	settings->printer = NULL;
+	settings->model   = NULL;
 
-	while (settings->keys) {
-		if (G_OBJECT (settings->keys)->ref_count > 1) {
-			g_warning ("GPASettings: Child %s has refcount %d\n", GPA_NODE_ID (settings->keys), G_OBJECT (settings->keys)->ref_count);
+	g_free (settings->name);
+	settings->name = NULL;
+
+	child = GPA_NODE (settings)->children;
+	while (child) {
+		GPANode *next;
+		if (G_OBJECT (child)->ref_count > 1) {
+			g_warning ("GPASettings: Child %s has refcount %d\n",
+				   GPA_NODE_ID (child), G_OBJECT (child)->ref_count);
 		}
-		settings->keys = gpa_node_detach_unref_next (GPA_NODE (settings), GPA_NODE (settings->keys));
+		next = child->next;
+		gpa_node_detach_unref (child);
+		child = next;
 	}
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
@@ -123,43 +135,37 @@ gpa_settings_duplicate (GPANode *node)
 {
 	GPASettings *settings, *new;
 	GPANode *child;
-	GSList *l;
 
 	settings = GPA_SETTINGS (node);
 
-	new = (GPASettings *) gpa_node_new (GPA_TYPE_SETTINGS, GPA_NODE_ID (node));
+	new = (GPASettings *) gpa_node_new (GPA_TYPE_SETTINGS, gpa_node_id (node));
 
-	if (settings->name) {
-		new->name = gpa_node_attach (GPA_NODE (new), gpa_node_duplicate (settings->name));
+	g_assert (settings->name);
+	g_assert (settings->model);
+	g_assert (settings->printer);
+
+	new->name    = g_strdup (settings->name);
+	new->model   = (GPAReference *) gpa_node_duplicate (GPA_NODE (settings->model));
+	new->printer = (GPAReference *) gpa_node_duplicate (GPA_NODE (settings->printer));
+
+	child = GPA_NODE (settings)->children;
+	while (child) {
+		gpa_node_attach (GPA_NODE (new),
+				 gpa_node_duplicate (child));
+		child = child->next;
 	}
+	gpa_node_reverse_children (GPA_NODE (new));
 
-	if (settings->model) {
-		new->model = gpa_node_attach (GPA_NODE (new), gpa_node_duplicate (settings->model));
-	}
-
-	l = NULL;
-	for (child = settings->keys; child != NULL; child = child->next) {
-		GPANode *newchild;
-		newchild = gpa_node_duplicate (child);
-		if (newchild) l = g_slist_prepend (l, newchild);
-	}
-
-	while (l) {
-		GPANode *newchild;
-		newchild = GPA_NODE (l->data);
-		l = g_slist_remove (l, newchild);
-		newchild->parent = GPA_NODE (new);
-		newchild->next = new->keys;
-		new->keys = newchild;
-	}
-
-	return GPA_NODE (new);
+	return (GPANode *) new;
 }
 
 static gboolean
 gpa_settings_verify (GPANode *node)
 {
-	/* fixme: Verify on option */
+	if (gpa_node_id (node) == NULL) {
+		g_print ("Settings needs to have an ID\n");
+		return FALSE;
+	}
 
 	return TRUE;
 }
@@ -167,148 +173,17 @@ gpa_settings_verify (GPANode *node)
 static guchar *
 gpa_settings_get_value (GPANode *node)
 {
-	/* fixme: */
-
-	return NULL;
-}
-
-static GPANode *
-gpa_settings_get_child (GPANode *node, GPANode *ref)
-{
-	GPASettings *settings;
-	GPANode *child;
-
-	settings = GPA_SETTINGS (node);
-
-	child = NULL;
-	if (!ref) {
-		child = settings->name;
-	} else if (ref == settings->name) {
-		child = settings->model;
-	} else if (ref == settings->model) {
-		child = settings->keys;
-	} else {
-		if (ref->next) child = ref->next;
-	}
-
-	if (child) gpa_node_ref (child);
-
-	return child;
-}
-
-static GPANode *
-gpa_settings_lookup (GPANode *node, const guchar *path)
-{
-	GPASettings *settings;
-	GPANode *child;
-	const guchar *dot, *next;
-	gint len;
-
-	settings = GPA_SETTINGS (node);
-
-	child = NULL;
-
-	if (gpa_node_lookup_ref (&child, GPA_NODE (settings->name), path, "Name")) return child;
-	if (gpa_node_lookup_ref (&child, GPA_NODE (settings->model), path, "Model")) return child;
-
-	dot = strchr (path, '.');
-	if (dot != NULL) {
-		len = dot - path;
-		next = dot + 1;
-	} else {
-		len = strlen (path);
-		next = path + len;
-	}
-
-	for (child = settings->keys; child != NULL; child = child->next) {
-		const guchar *cid;
-		g_assert (GPA_IS_KEY (child));
-		cid = GPA_NODE_ID (child);
-		if (cid && strlen (cid) == len && !strncmp (cid, path, len)) {
-			if (!next) {
-				gpa_node_ref (child);
-				return child;
-			} else {
-				return gpa_node_lookup (child, next);
-			}
-		}
-	}
-
-	return NULL;
-}
-
-static void
-gpa_settings_modified (GPANode *node, guint flags)
-{
-	GPASettings *settings;
-	GPANode *child;
-
-	settings = GPA_SETTINGS (node);
-
-	if (settings->name && GPA_NODE_FLAGS (settings->name) & GPA_MODIFIED_FLAG) {
-		gpa_node_emit_modified (settings->name, 0);
-	}
-	if (settings->model && GPA_NODE_FLAGS (settings->model) & GPA_MODIFIED_FLAG) {
-		gpa_node_emit_modified (settings->model, 0);
-	}
-
-	child = settings->keys;
-	while (child) {
-		GPANode *next;
-		next = child->next;
-		if (GPA_NODE_FLAGS (child) & GPA_MODIFIED_FLAG) {
-			gpa_node_ref (child);
-			gpa_node_emit_modified (child, 0);
-			gpa_node_unref (child);
-		}
-		child = next;
-	}
+	return g_strdup (GPA_SETTINGS (node)->name);
 }
 
 GPANode *
-gpa_settings_new_empty (const guchar *name)
+gpa_settings_new (GPAModel *model, const guchar *name, const guchar *id)
 {
 	GPASettings *settings;
-
-	g_return_val_if_fail (name != NULL, NULL);
-	g_return_val_if_fail (*name != '\0', NULL);
-
-	settings = (GPASettings *) gpa_node_new (GPA_TYPE_SETTINGS, NULL);
-
-	settings->name = gpa_value_new ("Name", name);
-	settings->name->parent = GPA_NODE (settings);
-	settings->model = gpa_reference_new_empty ();
-	settings->model->parent = GPA_NODE (settings);
-
-	return GPA_NODE (settings);
-}
-
-GPANode *
-gpa_settings_new_from_model (GPANode *model, const guchar *name)
-{
-	GPASettings *settings;
-	guchar *id;
-
-	g_return_val_if_fail (model != NULL, NULL);
-	g_return_val_if_fail (GPA_IS_MODEL (model), NULL);
-	g_return_val_if_fail (name != NULL, NULL);
-	g_return_val_if_fail (*name != '\0', NULL);
-	g_return_val_if_fail (gpa_node_verify (model), NULL);
-	g_return_val_if_fail (GPA_MODEL_ENSURE_LOADED (model), NULL);
-
-	id = gpa_id_new ("SETTINGS");
-	settings = (GPASettings *) gpa_settings_new_from_model_full (model, id, name);
-	g_free (id);
-
-	return (GPANode *) settings;
-}
-
-GPANode *
-gpa_settings_new_from_model_full (GPANode *model, const guchar *id, const guchar *name)
-{
-	GPASettings *settings;
+	GPANode *document;
 	GPANode *child;
-	GSList *l;
+	GPANode *key;
+	GSList *list;
 
 	g_return_val_if_fail (model != NULL, NULL);
 	g_return_val_if_fail (GPA_IS_MODEL (model), NULL);
@@ -316,29 +191,32 @@ gpa_settings_new_from_model_full (GPANode *model, const guchar *id, const guchar
 	g_return_val_if_fail (*id != '\0', NULL);
 	g_return_val_if_fail (name != NULL, NULL);
 	g_return_val_if_fail (*name != '\0', NULL);
-	g_return_val_if_fail (gpa_node_verify (GPA_NODE (model)), NULL);
-	g_return_val_if_fail (GPA_MODEL_ENSURE_LOADED (model), NULL);
+	g_return_val_if_fail (model->options, NULL);
+	g_return_val_if_fail (model->options->children, NULL);
 
 	settings = (GPASettings *) gpa_node_new (GPA_TYPE_SETTINGS, id);
 
-	settings->name = gpa_node_attach (GPA_NODE (settings), gpa_value_new ("Name", name));
-	settings->model = gpa_node_attach (GPA_NODE (settings), gpa_reference_new (model));
+	settings->name  = g_strdup (name);
+	settings->model = gpa_reference_new (GPA_NODE (model), "Model");
+	settings->printer = NULL; /* This is set by gpa_printer_new () */
 
-	l = NULL;
-	for (child = GPA_LIST (GPA_MODEL (model)->options)->children; child != NULL; child = child->next) {
-		GPANode *key;
-		key = gpa_key_new_from_option (child);
-		if (key) l = g_slist_prepend (l, key);
+	list = NULL;
+	child = model->options->children;
+	while (child) {
+		key = gpa_option_create_key (GPA_OPTION (child),
+					     GPA_NODE (settings));
+		if (key)
+			gpa_node_attach (GPA_NODE (settings), key);
+		child = child->next;
 	}
 
-	while (l) {
-		GPANode *key;
-		key = GPA_NODE (l->data);
-		l = g_slist_remove (l, key);
-		key->parent = GPA_NODE (settings);
-		key->next = settings->keys;
-		settings->keys = key;
-	}
+	document = gpa_node_lookup (NULL, "Globals.Document");
+	key = gpa_option_create_key (GPA_OPTION (document),
+				     GPA_NODE (settings));
+	g_assert (key);
+	gpa_node_attach (GPA_NODE (settings), key);
+
+	gpa_node_reverse_children (GPA_NODE (settings));
 
 	return (GPANode *) settings;
 }
@@ -347,73 +225,95 @@ GPANode *
 gpa_settings_new_from_model_and_tree (GPANode *model, xmlNodePtr tree)
 {
 	GPASettings *settings;
-	xmlChar *xmlid;
-	xmlNodePtr xmlc;
+	xmlChar *settings_id;
+	xmlNodePtr xml_node;
 
 	g_return_val_if_fail (model != NULL, NULL);
 	g_return_val_if_fail (GPA_IS_MODEL (model), NULL);
 	g_return_val_if_fail (tree != NULL, NULL);
-	g_return_val_if_fail (gpa_node_verify (GPA_NODE (model)), NULL);
-	g_return_val_if_fail (GPA_MODEL_ENSURE_LOADED (model), NULL);
 	g_return_val_if_fail (!strcmp (tree->name, "Settings"), NULL);
 
-	xmlid = xmlGetProp (tree, "Id");
-	g_return_val_if_fail (xmlid != NULL, NULL);
+	settings_id = xmlGetProp (tree, "Id");
+	g_return_val_if_fail (settings_id != NULL, NULL);
 
 	settings = NULL;
-	for (xmlc = tree->xmlChildrenNode; xmlc != NULL; xmlc = xmlc->next) {
-		if (!strcmp (xmlc->name, "Name")) {
-			xmlChar *content;
-			content = xmlNodeGetContent (xmlc);
-			if (content && *content) {
-				settings = (GPASettings *) gpa_settings_new_from_model_full (model, xmlid, content);
-				xmlFree (content);
+	for (xml_node = tree->xmlChildrenNode; xml_node != NULL; xml_node = xml_node->next) {
+		
+		/* <Name> */
+		if (strcmp (xml_node->name, "Name") == 0) {
+			xmlChar *settings_name;
+			settings_name = xmlNodeGetContent (xml_node);
+			if (!settings_name || !*settings_name) {
+				g_warning ("Settings do not contain a valid <Name>\n");
+				continue;
 			}
-		} else if (!strcmp (xmlc->name, "Key") && settings) {
-			xmlChar *keyid;
-			keyid = xmlGetProp (xmlc, "Id");
-			if (keyid) {
-				GPANode *key;
-				for (key = settings->keys; key != NULL; key = key->next) {
-					if (GPA_NODE_ID_COMPARE (key, keyid)) {
-						gpa_key_merge_from_tree (key, xmlc);
-						break;
-					}
+			settings = (GPASettings *) gpa_settings_new (GPA_MODEL (model), settings_name, settings_id);
+			xmlFree (settings_name);
+			continue;
+		}
+
+		/* <Key> */
+		if (strcmp (xml_node->name, "Key") == 0) {
+			xmlChar *key_id;
+			GPANode *key;
+			
+			if (!settings) {
+				g_print ("Can't have <Key> before <Name> in settings\n");
+				continue;
+			}
+			
+			key_id = xmlGetProp (xml_node, "Id");
+
+			if (!key_id || !*key_id) {
+				g_warning ("Invalid Key id while parsing settings %s\n", settings_id);
+				xmlFree (key_id);
+				continue;
+			}
+
+			key = GPA_NODE (settings)->children;
+			while (key) {
+				if (GPA_NODE_ID_COMPARE (key, key_id)) {
+					gpa_key_merge_from_tree (key, xml_node);
+					break;
 				}
-				xmlFree (keyid);
+				key = key->next;
 			}
+			xmlFree (key_id);
 		}
 	}
 
-	xmlFree (xmlid);
-
 	if (!settings) {
-		g_warning ("Settings node does not have valid <Name> tag");
+		g_warning ("Could not create the \"%s\" settings.\n", settings_id);
 	}
+	xmlFree (settings_id);
 
 	return (GPANode *) settings;
 }
 
 xmlNodePtr
-gpa_settings_write (xmlDocPtr doc, GPANode *node)
+gpa_settings_to_tree (GPASettings *settings)
 {
-	GPASettings *settings;
-	xmlNodePtr xmln, xmlc;
 	GPANode *child;
+	xmlNodePtr node, key;
 
-	settings = GPA_SETTINGS (node);
+	g_return_val_if_fail (settings != NULL, NULL);
+	g_return_val_if_fail (GPA_IS_SETTINGS (settings), NULL);
 
-	xmln = xmlNewDocNode (doc, NULL, "Settings", NULL);
-	xmlSetProp (xmln, "Id", GPA_NODE_ID (node));
+	node = xmlNewNode (NULL, "Settings");
+	xmlSetProp  (node, "Id", GPA_NODE_ID (settings));
+	xmlSetProp  (node, "Model",   GPA_NODE_ID (GPA_REFERENCE_REFERENCE (settings->model)));
+	xmlSetProp  (node, "Printer", GPA_NODE_ID (GPA_REFERENCE_REFERENCE (settings->printer)));
+	xmlNewChild (node, NULL, "Name",    settings->name);
 
-	xmlc = xmlNewChild (xmln, NULL, "Name", GPA_VALUE (settings->name)->value);
-
-	for (child = settings->keys; child != NULL; child = child->next) {
-		xmlc = gpa_key_write (doc, child);
-		if (xmlc) xmlAddChild (xmln, xmlc);
+	child = GPA_NODE (settings)->children;
+	while (child) {
+		key = gpa_key_to_tree (GPA_KEY (child));
+		if (key)
+			xmlAddChild (node, key);
+		child = child->next;
 	}
-
-	return xmln;
+	
+	return node;
 }
 
 gboolean
@@ -427,37 +327,39 @@ gpa_settings_copy (GPASettings *dst, GPASettings *src)
 	g_return_val_if_fail (src != NULL, FALSE);
 	g_return_val_if_fail (GPA_IS_SETTINGS (src), FALSE);
 
-	g_return_val_if_fail (GPA_VALUE_VALUE (src->name), FALSE);
-	g_return_val_if_fail (GPA_VALUE_VALUE (dst->name), FALSE);
-
+	g_return_val_if_fail (src->printer != NULL, FALSE);
+	g_return_val_if_fail (dst->printer != NULL, FALSE);
 	g_return_val_if_fail (src->model != NULL, FALSE);
 	g_return_val_if_fail (dst->model != NULL, FALSE);
 
-	gpa_value_set_value_forced (GPA_VALUE (dst->name), GPA_VALUE_VALUE (src->name));
-
-	gpa_reference_set_reference (GPA_REFERENCE (dst->model), GPA_REFERENCE_REFERENCE (src->model));
+	dst->name = g_strdup (src->name);
+	
+	gpa_reference_set_reference (GPA_REFERENCE (dst->printer), GPA_REFERENCE_REFERENCE (src->printer));
+	gpa_reference_set_reference (GPA_REFERENCE (dst->model),   GPA_REFERENCE_REFERENCE (src->model));
 
 	dl = NULL;
-	while (dst->keys) {
-		dl = g_slist_prepend (dl, dst->keys);
-		dst->keys = gpa_node_detach_next (GPA_NODE (dst), dst->keys);
+	child = GPA_NODE (dst)->children;
+	while (child) {
+		dl = g_slist_prepend (dl, child);
+		gpa_node_detach (child);
+		child = child->next;
 	}
 
 	sl = NULL;
-	for (child = src->keys; child != NULL; child = child->next) {
+	child = GPA_NODE (src)->children;
+	while (child) {
 		sl = g_slist_prepend (sl, child);
+		child = child->next;
 	}
 
 	while (sl) {
 		GSList *l;
 		for (l = dl; l != NULL; l = l->next) {
-			if (GPA_NODE (l->data)->qid && (GPA_NODE (l->data)->qid == GPA_NODE (sl->data)->qid)) {
+			if (GPA_NODE_ID_COMPARE (l->data, sl->data)) {
 				/* We are in original too */
 				child = GPA_NODE (l->data);
 				dl = g_slist_remove (dl, l->data);
-				child->parent = GPA_NODE (dst);
-				child->next = dst->keys;
-				dst->keys = child;
+				gpa_node_attach (GPA_NODE (dst), child);
 				gpa_key_merge_from_key (GPA_KEY (child), GPA_KEY (sl->data));
 				break;
 			}
@@ -465,9 +367,7 @@ gpa_settings_copy (GPASettings *dst, GPASettings *src)
 		if (!l) {
 			/* Create new child */
 			child = gpa_node_duplicate (GPA_NODE (sl->data));
-			child->parent = GPA_NODE (dst);
-			child->next = dst->keys;
-			dst->keys = child;
+			gpa_node_attach (GPA_NODE (dst), child);
 		}
 		sl = g_slist_remove (sl, sl->data);
 	}
@@ -476,8 +376,6 @@ gpa_settings_copy (GPASettings *dst, GPASettings *src)
 		gpa_node_unref (GPA_NODE (dl->data));
 		dl = g_slist_remove (dl, dl->data);
 	}
-
-	gpa_node_request_modified (GPA_NODE (dst), 0);
 
 	return TRUE;
 }

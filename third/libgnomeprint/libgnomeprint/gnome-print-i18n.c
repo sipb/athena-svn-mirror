@@ -25,7 +25,8 @@
 
 
 #include <config.h>
-#include "gnome-print-i18n.h"
+#include <glib.h>
+#include <libgnomeprint/gnome-print-i18n.h>
 
 char *
 libgnomeprint_gettext (const char *msgid)

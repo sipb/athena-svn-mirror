@@ -1,4 +1,4 @@
-SUBDIRS = gpa drivers transports
+SUBDIRS = gpa . transports modules
 
 temp_sources = \
 	art_rgb_affine_private.h \
@@ -8,7 +8,7 @@ temp_sources = \
 	art_rgba_svp.h
 
 font_sources = \
-	gp-fontmap.c gp-fontmap.h \
+	gnome-fontmap.c gnome-fontmap.h \
 	gnome-font.c \
 	gnome-font-face.c \
 	gnome-rfont.c \
@@ -25,17 +25,21 @@ font_private_headers = \
 	gnome-font-private.h 
 
 nox_sources = \
-	gnome-print-private.h		\
+	gnome-print-private.h	\
 	gnome-print.c 			\
-	gnome-print-bonobo.h   gnome-print-bonobo-client.h \
 	gnome-print-stdapi.c \
-	gnome-print-config.c \
-	gnome-print-meta.c 	    gnome-print-meta.h \
-	gnome-print-master.c    gnome-print-master-private.h \
+	gnome-print-config.c    gnome-print-config.h gnome-print-config-private.h \
+	gnome-print-meta.c      gnome-print-meta.h \
+	gnome-print-job.c       gnome-print-job-private.h \
 	gnome-print-multipage.c gnome-print-multipage.h \
 	gnome-print-ps2.c       gnome-print-ps2.h \
+	gnome-print-pdf.c       gnome-print-pdf.h 	gnome-print-pdf-private.h \
+	gnome-print-pdf-t1.c	\
+	gnome-print-pdf-tt.c	\
+	\
+	gnome-print-module.h \
+	\
 	gnome-print-rbuf.c      gnome-print-rbuf.h \
-	gnome-print-rbuf-private.h	\
 	gnome-print-frgba.c     gnome-print-frgba.h \
 	gnome-print-rgbp.c      gnome-print-rgbp.h \
 	gnome-print-transport.c gnome-print-transport.h \
@@ -44,13 +48,9 @@ nox_sources = \
 	gp-path.h			       	\
 	gp-gc.c                       \
 	gnome-glyphlist.c		  	\
-	gnome-glyphlist-private.h  		\
 	gnome-pgl.c gnome-pgl-private.h \
 	gnome-print-encode.c gnome-print-encode.h \
-	gnome-print-encode-private.h		\
-	libgnomeprint-marshal-main.c		\
-	gnome-print-bonobo-client.c		\
-	gnome-print-bonobo.c \
+	libgnomeprint-enum-types.c		\
 	gnome-print-unit.c \
 	gnome-print-paper.c
 
@@ -58,19 +58,19 @@ nox_headers = \
 	gnome-print-config.h \
 	gnome-print.h \
 	gp-gc.h \
-	gnome-print-master.h \
+	gnome-print-job.h \
 	gnome-glyphlist.h \
 	gnome-pgl.h \
 	gnome-print-paper.h \
 	gnome-print-unit.h
 
 nox_private_headers = \
+	gnome-glyphlist-private.h \
 	gnome-print-private.h \
+	gnome-print-config-private.h \
 	gp-gc-private.h
 
-lib_LTLIBRARIES = libgnomeprint-2.la
-
-AM_CPPFLAGS = "-DGNOME_PRINT_LIBDIR=\"$(libdir)/gnome-print-2.0\""
+lib_LTLIBRARIES = libgnomeprint-2-2.la
 
 #LDFLAGS = -version-info $(GNOMEPRINT_CURRENT):$(GNOMEPRINT_REVISION):$(GNOMEPRINT_AGE)
 
@@ -78,52 +78,98 @@ INCLUDES = \
 	-I$(top_srcdir) \
 	$(LIBGNOMEPRINT_CFLAGS) \
 	-DG_LOG_DOMAIN=\"GnomePrint\" \
-	-DWE_ARE_LIBGNOMEPRINT_UI \
 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
 	-DBINDIR=\""$(bindir)"\" \
 	-DDATADIR=\""$(datadir)"\" \
-	-DFONTMAPDIR_STATIC=\"$(FONTMAPDIR_STATIC)\" \
-	-DFONTMAPDIR_DYNAMIC=\"$(FONTMAPDIR_DYNAMIC)\"
+     -DGNOME_PRINT_MODULES_DIR=\""$(GNOME_PRINT_MODULES_DIR)"\" \
+	\
+	-DG_DISABLE_DEPRECATED				\
+	-DGDK_DISABLE_DEPRECATED				\
+	-DGTK_DISABLE_DEPRECATED				\
+	-DGDK_PIXBUF_DISABLE_DEPRECATED		\
+	-DGNOME_DISABLE_DEPRECATED
 
-libgnomeprint_2_la_LIBADD = \
+marshal_sources = \
+	libgnomeprint-marshal.c		\
+	libgnomeprint-marshal.h
+
+enum_sources = \
+	libgnomeprint-enum-types.c	\
+	libgnomeprint-enum-types.h
+
+$(libgnomeprint_2_2_la_OBJECTS): $(marshal_sources) $(enum_sources)
+
+libgnomeprint_2_2_la_LIBADD = \
 	gpa/libgpa.la \
 	$(LIBGNOMEPRINT_LIBS)
 
-libgnomeprint_2_la_SOURCES = \
+libgnomeprint_2_2_la_SOURCES = \
 	$(nox_sources) \
 	$(font_sources) \
 	$(temp_sources)
 
-$(libgnomeprint_2_la_OBJECTS): $(marshal_sources)
-
-libgnomeprintincdir = $(includedir)/libgnomeprint-2.0/libgnomeprint
+libgnomeprintincdir = $(includedir)/libgnomeprint-2.2/libgnomeprint
 libgnomeprintinc_HEADERS = \
 	$(nox_headers) \
-	$(font_headers)
+	$(font_headers) \
+	libgnomeprint-enum-types.h
 
 libgnomeprintprivateincdir = $(libgnomeprintincdir)/private
 libgnomeprintprivateinc_HEADERS = \
 	$(nox_private_headers) \
 	$(font_private_headers)
 
-EXTRA_DIST = libgnomeprint-2.0.pc.in libgnomeprint-marshal.list
+EXTRA_DIST = \
+	libgnomeprint-2.2.pc.in \
+	libgnomeprint-marshal.list
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = libgnomeprint-2.0.pc
+pkgconfig_DATA = libgnomeprint-2.2.pc
 
-marshal_sources = \
-	libgnomeprint-marshal.c		\
-	libgnomeprint-marshal.h
+CLEANFILES = \
+	$(marshal_sources) \
+	$(enum_sources) \
+	s-enum-types-h s-enum-types-c
+
+DONT_DIST_SOURCE = $(marshal_sources) $(enum_sources)
 
 libgnomeprint-marshal.h: libgnomeprint-marshal.list $(GLIB_GENMARSHAL)
 	$(GLIB_GENMARSHAL) $< --header --prefix=libgnomeprint_marshal > $@
+
 libgnomeprint-marshal.c: libgnomeprint-marshal.list $(GLIB_GENMARSHAL)
 	$(GLIB_GENMARSHAL) $< --body --prefix=libgnomeprint_marshal > $@
-
-CLEANFILES = $(marshal_sources)
-DONT_DIST_SOURCE = $(marshal_sources)
 
 dist-hook:
 	for file in $(DONT_DIST_SOURCE) ; do \
 	    rm -f $(distdir)/$$file ; \
 	done
+
+
+libgnomeprint-enum-types.h: s-enum-types-h
+	@true
+
+s-enum-types-h: $(nox_headers) Makefile
+	( cd $(srcdir) && glib-mkenums \
+			--fhead "#ifndef __LIBGNOMEPRINT_ENUM_TYPES_H__\n#define __LIBGNOMEPRINT_ENUM_TYPES_H__\n\n#include <glib-object.h>\n\nG_BEGIN_DECLS\n" \
+			--fprod "/* enumerations from \"@filename@\" */\n" \
+			--vhead "GType @enum_name@_get_type (void);\n#define GNOME_TYPE_PRINT_@ENUMSHORT@ (@enum_name@_get_type())\n" 	\
+			--ftail "G_END_DECLS\n\n#endif /* __LIBGNOMEPRINT_ENUM_TYPES_H__ */" \
+		$(nox_headers) ) > tmp-libgnomeprint-enum-types.h \
+	&& (cmp -s tmp-libgnomeprint-enum-types.h libgnomeprint-enum-types.h || cp tmp-libgnomeprint-enum-types.h libgnomeprint-enum-types.h ) \
+	&& rm -f tmp-libgnomeprint-enum-types.h	\
+	&& echo timestamp > $(@F)
+
+libgnomeprint-enum-types.c: s-enum-types-c
+	@true
+
+s-enum-types-c: $(nox_headers) Makefile
+	( cd $(srcdir) && glib-mkenums \
+			--fhead "#include \"libgnomeprint-enum-types.h\"\n#include \"gnome-print.h\"" \
+			--fprod "\n/* enumerations from \"@filename@\" */" \
+			--vhead "GType\n@enum_name@_get_type (void)\n{\n  static GType etype = 0;\n  if (etype == 0) {\n    static const G@Type@Value values[] = {" 	\
+			--vprod "      { @VALUENAME@, \"@VALUENAME@\", \"@valuenick@\" }," \
+			--vtail "      { 0, NULL, NULL }\n    };\n    etype = g_@type@_register_static (\"@EnumName@\", values);\n  }\n  return etype;\n}\n" \
+		$(nox_headers) ) > tmp-libgnomeprint-enum-types.c \
+	&& (cmp -s tmp-libgnomeprint-enum-types.c libgnomeprint-enum-types.c || cp tmp-libgnomeprint-enum-types.c libgnomeprint-enum-types.c ) \
+	&& rm -f tmp-libgnomeprint-enum-types.c \
+	&& echo timestamp > $(@F)

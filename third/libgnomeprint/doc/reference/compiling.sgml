@@ -1,0 +1,46 @@
+<refentry id="libgnomeprint-compiling" revision="2 Jun 2002">
+<refmeta>
+<refentrytitle>Compiling GNOME Print Applications</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GNOME Print Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>Compiling GNOME Print Applications</refname>
+<refpurpose>
+How to compile your GNOME Print application
+</refpurpose>
+</refnamediv>
+
+<refsect1>
+<title>Compiling GNOME Print Applications on UNIX</title>
+
+<para>
+To compile a GNOME Print application, you need to tell the compiler where to 
+find the GNOME Print header files and libraries. This is done with the
+<literal>pkg-config</literal> utility.
+</para>
+<para>
+The following interactive shell session demonstrates how
+<literal>pkg-config</literal> is used:
+<programlisting>
+$ pkg-config --cflags libgnomeprint-2.2
+-I/home/chema/cvs/gnome2/include/libgnomeprint-2.2 -I/home/chema/cvs/gnome2/include/libart-2.0 -I/home/chema/cvs/gnome2/include/glib-2.0 -I/home/chema/cvs/gnome2/lib/glib-2.0/include -I/home/chema/cvs/gnome2/include/libxml2 -I/home/chema/cvs/gnome2/include/pango-1.0
+$ pkg-config --libs libgnomeprint-2.2
+-Wl,--export-dynamic -L/home/chema/cvs/gnome2/lib -lgnomeprint-2-2 -lart_lgpl_2 -lxml2 -lz -lm -lpango-1.0 -lgobject-2.0 -lgmodule-2.0 -ldl -lglib-2.0
+</programlisting>
+</para>
+<para>
+The simplest way to compile a program is to use the "backticks"
+feature of the shell. If you enclose a command in backticks
+(<emphasis>not single quotes</emphasis>), then its output will be
+substituted into the command line before execution. So to compile 
+a simple libgnomeprint program, you would type the following:
+<programlisting>
+$ cc `pkg-config --cflags --libs libgnomeprint-2.2` gnome-print-sample.c -o gnome-print-sample
+</programlisting>
+</para>
+
+</refsect1>
+
+</refentry>

@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- *  gnome-print-config.c: And frontend abstraction to whatever config system we eventually have
+ *  gnome-print-config.h: And frontend abstraction to whatever config system we eventually have
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public License
@@ -18,9 +18,9 @@
  *
  *  Authors:
  *    Lauris Kaplinski <lauris@helixcode.com>
+ *    Chema Celorio <chema@ximian.com>
  *
- *  Copyright 2001 Ximian, Inc.
- *
+ *  Copyright 2001-2003 Ximian, Inc.
  */
 
 #ifndef __GNOME_PRINT_CONFIG_H__
@@ -43,7 +43,7 @@
  * along with this library; see the file COPYING.LIB.  If not, write to
  * the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
- *
+*
  * Authors:
  *   Lauris Kaplinski <lauris@helixcode.com>
  *
@@ -128,17 +128,23 @@ G_BEGIN_DECLS
 
 typedef struct _GnomePrintConfig GnomePrintConfig;
 
+#include <glib-object.h>
 #include <libgnomeprint/gnome-print-unit.h>
 
-/*
- * Get default print config objects
- */
+#define GNOME_TYPE_PRINT_CONFIG         (gnome_print_config_get_type ())
+#define GNOME_PRINT_CONFIG(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), GNOME_TYPE_PRINT_CONFIG, GnomePrintConfig))
+#define GNOME_IS_PRINT_CONFIG(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), GNOME_TYPE_PRINT_CONFIG))
+
+GType             gnome_print_config_get_type (void);
 
 GnomePrintConfig *gnome_print_config_default (void);
 
-GnomePrintConfig *gnome_print_config_ref (GnomePrintConfig *config);
+GnomePrintConfig *gnome_print_config_ref   (GnomePrintConfig *config);
 GnomePrintConfig *gnome_print_config_unref (GnomePrintConfig *config);
-GnomePrintConfig *gnome_print_config_dup (GnomePrintConfig *config);
+GnomePrintConfig *gnome_print_config_dup   (GnomePrintConfig *config);
+
+gchar *           gnome_print_config_to_string (GnomePrintConfig *gpc, guint flags);
+GnomePrintConfig *gnome_print_config_from_string (const gchar *str, guint flags);
 
 /*
  * Get/Set key value pairs
@@ -148,29 +154,29 @@ GnomePrintConfig *gnome_print_config_dup (GnomePrintConfig *config);
  * gnome_print_config_get just returns NULL, if given key does not exist.
  *
  */
-
-guchar  *gnome_print_config_get (GnomePrintConfig *config, const guchar *key);
-gboolean gnome_print_config_set (GnomePrintConfig *config, const guchar *key, const guchar *value);
+guchar  *gnome_print_config_get         (GnomePrintConfig *config, const guchar *key);
+gboolean gnome_print_config_set         (GnomePrintConfig *config, const guchar *key, const guchar *value);
 
 gboolean gnome_print_config_get_boolean (GnomePrintConfig *config, const guchar *key, gboolean *val);
-gboolean gnome_print_config_get_int (GnomePrintConfig *config, const guchar *key, gint *val);
-gboolean gnome_print_config_get_double (GnomePrintConfig *config, const guchar *key, gdouble *val);
-gboolean gnome_print_config_get_length (GnomePrintConfig *config, const guchar *key, gdouble *val, const GnomePrintUnit **unit);
+gboolean gnome_print_config_get_int     (GnomePrintConfig *config, const guchar *key, gint *val);
+gboolean gnome_print_config_get_double  (GnomePrintConfig *config, const guchar *key, gdouble *val);
+gboolean gnome_print_config_get_length  (GnomePrintConfig *config, const guchar *key, gdouble *val, const GnomePrintUnit **unit);
 
 gboolean gnome_print_config_set_boolean (GnomePrintConfig *config, const guchar *key, gboolean val);
-gboolean gnome_print_config_set_int (GnomePrintConfig *config, const guchar *key, gint val);
-gboolean gnome_print_config_set_double (GnomePrintConfig *config, const guchar *key, gdouble val);
-gboolean gnome_print_config_set_length (GnomePrintConfig *config, const guchar *key, gdouble val, const GnomePrintUnit *unit);
+gboolean gnome_print_config_set_int     (GnomePrintConfig *config, const guchar *key, gint val);
+gboolean gnome_print_config_set_double  (GnomePrintConfig *config, const guchar *key, gdouble val);
+gboolean gnome_print_config_set_length  (GnomePrintConfig *config, const guchar *key, gdouble val, const GnomePrintUnit *unit);
+
+/*
+ * Convenience
+ */
+gboolean  gnome_print_config_get_page_size (GnomePrintConfig *config, gdouble *width, gdouble *height);
 
 /*
  * Debugging
  */
-
 void gnome_print_config_dump (GnomePrintConfig *gpc);
 
-/*
- * Convenience keys
- */
 
 /*
  * Paper size
@@ -181,64 +187,57 @@ void gnome_print_config_dump (GnomePrintConfig *gpc);
  *
  */
 
-#define GNOME_PRINT_KEY_PAPER_SIZE "Settings.Output.Media.PhysicalSize" /* Paper name, such as A4 or Letter */
-#define GNOME_PRINT_KEY_PAPER_WIDTH "Settings.Output.Media.PhysicalSize.Width" /* Arbitrary units - use conversion */
-#define GNOME_PRINT_KEY_PAPER_HEIGHT "Settings.Output.Media.PhysicalSize.Height" /* Arbitrary units - use conversion */
-#define GNOME_PRINT_KEY_PAPER_HEIGHT "Settings.Output.Media.PhysicalSize.Height" /* Arbitrary units - use conversion */
-#define GNOME_PRINT_KEY_PAPER_ORIENTATION "Settings.Output.Media.PhysicalOrientation" /* R0, R90, R180, R270 */
+/*
+ * Convenience keys
+ */
+#define GNOME_PRINT_KEY_PAPER_SIZE               "Settings.Output.Media.PhysicalSize" /* Paper name, such as A4 or Letter */
+#define GNOME_PRINT_KEY_PAPER_WIDTH              "Settings.Output.Media.PhysicalSize.Width" /* Arbitrary units - use conversion */
+#define GNOME_PRINT_KEY_PAPER_HEIGHT             "Settings.Output.Media.PhysicalSize.Height" /* Arbitrary units - use conversion */
+#define GNOME_PRINT_KEY_PAPER_HEIGHT             "Settings.Output.Media.PhysicalSize.Height" /* Arbitrary units - use conversion */
+#define GNOME_PRINT_KEY_PAPER_ORIENTATION        "Settings.Output.Media.PhysicalOrientation" /* R0, R90, R180, R270 */
 #define GNOME_PRINT_KEY_PAPER_ORIENTATION_MATRIX "Settings.Output.Media.PhysicalOrientation.Paper2PrinterTransform" /* 3x2 abstract matrix */
 
-#define GNOME_PRINT_KEY_PAGE_ORIENTATION "Settings.Document.Page.LogicalOrientation" /* R0, R90, R180, R270 */
+#define GNOME_PRINT_KEY_PAGE_ORIENTATION        "Settings.Document.Page.LogicalOrientation" /* R0, R90, R180, R270 */
 #define GNOME_PRINT_KEY_PAGE_ORIENTATION_MATRIX "Settings.Document.Page.LogicalOrientation.Page2LayoutTransform" /* 3x2 abstract matrix */
 
 /* Just a reminder - application is only interested in logical orientation */
 #define GNOME_PRINT_KEY_ORIENTATION GNOME_PRINT_KEY_PAGE_ORIENTATION
 
-#define GNOME_PRINT_KEY_LAYOUT "Settings.Document.Page.Layout" /* Id of layout ('Plain' is always no-special-layout) */
-#define GNOME_PRINT_KEY_LAYOUT_WIDTH "Settings.Document.Page.Layout.Width" /* Double value */
+#define GNOME_PRINT_KEY_LAYOUT        "Settings.Document.Page.Layout"        /* Id of layout ('Plain' is always no-special-layout) */
+#define GNOME_PRINT_KEY_LAYOUT_WIDTH  "Settings.Document.Page.Layout.Width"  /* Double value */
 #define GNOME_PRINT_KEY_LAYOUT_HEIGHT "Settings.Document.Page.Layout.Height" /* Double value */
 
 /* Master resolution, i.e. ink dots for color printer RGB resolution is usually smaller */
-#define GNOME_PRINT_KEY_RESOLUTION "Settings.Output.Resolution" /* String value, like 300x300 or 300dpi */
-#define GNOME_PRINT_KEY_RESOLUTION_DPI "Settings.Output.Resolution.DPI" /* Numeric value, like 300, if meaningful */
+#define GNOME_PRINT_KEY_RESOLUTION       "Settings.Output.Resolution"       /* String value, like 300x300 or 300dpi */
+#define GNOME_PRINT_KEY_RESOLUTION_DPI   "Settings.Output.Resolution.DPI"   /* Numeric value, like 300, if meaningful */
 #define GNOME_PRINT_KEY_RESOLUTION_DPI_X "Settings.Output.Resolution.DPI.X" /* Numeric value */
 #define GNOME_PRINT_KEY_RESOLUTION_DPI_Y "Settings.Output.Resolution.DPI.Y" /* Numeric value */
 
 /* These belong to 'Output' because PGL may implement multiple copies itself */
 #define GNOME_PRINT_KEY_NUM_COPIES "Settings.Output.Job.NumCopies" /* Number of copies */
-#define GNOME_PRINT_KEY_COLLATE "Settings.Output.Job.Collate" /* Boolean (true|yes|1 false|no|0) */
+#define GNOME_PRINT_KEY_COLLATE    "Settings.Output.Job.Collate"   /* Boolean (true|yes|1 false|no|0) */
 
 /* These are ignored by libgnomeprint, but you may want to get/set/inspect these */
 /* Libgnomeprintui uses these for displaying margin symbols */
-#define GNOME_PRINT_KEY_PAGE_MARGIN_LEFT "Settings.Document.Page.Margins.Left" /* Length, i.e. use conversion */
-#define GNOME_PRINT_KEY_PAGE_MARGIN_RIGHT "Settings.Document.Page.Margins.Right" /* Length, i.e. use conversion */
-#define GNOME_PRINT_KEY_PAGE_MARGIN_TOP "Settings.Document.Page.Margins.Top" /* Length, i.e. use conversion */
+#define GNOME_PRINT_KEY_PAGE_MARGIN_LEFT   "Settings.Document.Page.Margins.Left"   /* Length, i.e. use conversion */
+#define GNOME_PRINT_KEY_PAGE_MARGIN_RIGHT  "Settings.Document.Page.Margins.Right"  /* Length, i.e. use conversion */
+#define GNOME_PRINT_KEY_PAGE_MARGIN_TOP    "Settings.Document.Page.Margins.Top"    /* Length, i.e. use conversion */
 #define GNOME_PRINT_KEY_PAGE_MARGIN_BOTTOM "Settings.Document.Page.Margins.Bottom" /* Length, i.e. use conversion */
 
 /* These are ignored by libgnomeprint, and you most probably cannot change these too */
 /* Also - these are relative to ACTUAL PAGE IN PRINTER - not physicalpage */
 /* Libgnomeprintui uses these for displaying margin symbols */
-#define GNOME_PRINT_KEY_PAPER_MARGIN_LEFT "Settings.Output.Media.Margins.Left" /* Length, i.e. use conversion */
-#define GNOME_PRINT_KEY_PAPER_MARGIN_RIGHT "Settings.Output.Media.Margins.Right" /* Length, i.e. use conversion */
-#define GNOME_PRINT_KEY_PAPER_MARGIN_TOP "Settings.Output.Media.Margins.Top" /* Length, i.e. use conversion */
+#define GNOME_PRINT_KEY_PAPER_MARGIN_LEFT   "Settings.Output.Media.Margins.Left"   /* Length, i.e. use conversion */
+#define GNOME_PRINT_KEY_PAPER_MARGIN_RIGHT  "Settings.Output.Media.Margins.Right"  /* Length, i.e. use conversion */
+#define GNOME_PRINT_KEY_PAPER_MARGIN_TOP    "Settings.Output.Media.Margins.Top"    /* Length, i.e. use conversion */
 #define GNOME_PRINT_KEY_PAPER_MARGIN_BOTTOM "Settings.Output.Media.Margins.Bottom" /* Length, i.e. use conversion */
 
 /* More handy keys */
-#define GNOME_PRINT_KEY_OUTPUT_FILENAME "Settings.Transport.Backend.FileName" /* Filename used when printing to file. Don't assume that if
-																 it isn't NULL printing to file is disabled it can contain
-																 a filename and not print to file	
-															    */
-#define GNOME_PRINT_KEY_DOCUMENT_NAME  "Settings.Document.Name" /* The name of the document 'Cash flow 2002', `Grandma cockie recipies',
-													* 'Untitled 1', etc.
-													*/
-#define GNOME_PRINT_KEY_PREFERED_UNIT "Settings.Document.PreferedUnit" /* Abbreviation for the preferred unit cm, in,... */
+#define GNOME_PRINT_KEY_OUTPUT_FILENAME "Settings.Transport.Backend.FileName" /* Filename used when printing to file. */
+#define GNOME_PRINT_KEY_DOCUMENT_NAME "Settings.Document.Name"                /* The name of the document 'Cash flow 2002', `Grandma cookie recipies' */
+#define GNOME_PRINT_KEY_PREFERED_UNIT "Settings.Document.PreferedUnit"        /* Abbreviation for the preferred unit cm, in,... */
 
 G_END_DECLS
 
-#endif
-
-
-
-
-
+#endif /* __GNOME_PRINT_CONFIG_H__ */
 

@@ -432,43 +432,6 @@ gnome-print
 @Returns: 
 
 
-<!-- ##### USER_FUNCTION GnomePrintPageCallback ##### -->
-<para>
-
-</para>
-
-@ctx: 
-@pagedata: 
-@docdata: 
-@Returns: 
-
-
-<!-- ##### FUNCTION gnome_print_page_callback ##### -->
-<para>
-
-</para>
-
-@ctx: 
-@callback: 
-@name: 
-@pagedata: 
-@docdata: 
-@Returns: 
-
-
-<!-- ##### FUNCTION gnome_print_page_callback_closure ##### -->
-<para>
-
-</para>
-
-@ctx: 
-@name: 
-@pagedata: 
-@docdata: 
-@closure: 
-@Returns: 
-
-
 <!-- ##### FUNCTION gnome_print_line_stroked ##### -->
 <para>
 

@@ -19,8 +19,7 @@
  *  Authors:
  *    Lauris Kaplinski <lauris@ximian.com>
  *
- *  Copyright (C) 2000-2002 Ximian, Inc. and authors
- *
+ *  Copyright (C) 2000-2003 Ximian, Inc. and authors
  */
  
 /*
@@ -30,8 +29,6 @@
  * - how is dash size calcualted?
  *
  */
-
-#define _GP_FONTMAP_C_
 
 #include <config.h>
 #include <math.h>
@@ -50,9 +47,9 @@
 #include <libart_lgpl/art_vpath_svp.h>
 #include <libart_lgpl/art_svp_vpath_stroke.h>
 
-#include "gp-path.h"
-#include "gp-gc.h"
-#include "gp-gc-private.h"
+#include <libgnomeprint/gp-path.h>
+#include <libgnomeprint/gp-gc.h>
+#include <libgnomeprint/gp-gc-private.h>
 
 #define GP_GC_EPSILON 1e-18
 #define GP_GC_EQ(a,b) (fabs (a - b) < GP_GC_EPSILON)
@@ -494,7 +491,8 @@ gp_gc_set_dash (GPGC * gc, int num_values, const gdouble * values, gdouble offse
 
 	ctx = (GPCtx *) gc->ctx->data;
 
-	if ((ctx->dash.dash) && (ctx->privatedash)) g_free (ctx->dash.dash);
+	if ((ctx->dash.dash) && (ctx->privatedash))
+		g_free (ctx->dash.dash);
 	ctx->dash.n_dash = num_values;
 	ctx->dash.offset = offset;
 	if (values != NULL) {
@@ -914,7 +912,7 @@ gp_ctx_new (void)
 	ctx->dash_flag = GP_GC_FLAG_UNSET;
 	ctx->privatedash = FALSE;
 
-	ctx->font = gnome_font_find_closest ("Helvetica", 12.0);
+	ctx->font = gnome_font_find_closest ("Sans Regular", 12.0);
 	ctx->font_flag = GP_GC_FLAG_UNSET;
 
 	g_return_val_if_fail (ctx->font != NULL, NULL);
@@ -1032,7 +1030,8 @@ gp_ctx_clip (GPCtx * ctx, ArtWindRule wind)
 		svp2 = art_svp_intersect (ctx->clipsvp, svp1);
 		g_assert (svp2 != NULL);
 		art_svp_free (svp1);
-		if (ctx->privateclip) art_svp_free (ctx->clipsvp);
+		if (ctx->privateclip)
+			art_svp_free (ctx->clipsvp);
 		ctx->clipsvp = svp2;
 		ctx->privateclip = TRUE;
 	} else {
@@ -1072,7 +1071,8 @@ gp_gc_matrix_equal (const gdouble * a, const gdouble * b)
 	gint i;
 
 	for (i = 0; i < 6; i++) {
-		if (fabs (a[i] - b[i]) > GP_GC_EPSILON) return FALSE;
+		if (fabs (a[i] - b[i]) > GP_GC_EPSILON)
+			return FALSE;
 	}
 
 	return TRUE;

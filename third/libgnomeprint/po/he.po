@@ -1,196 +1,122 @@
+# translation of libgnomeprint.HEAD.he.po to Hebrew
 # translation of libgnomeprint.gnome-2-0.he.po to Hebrew
 # Copyright (C) 2002 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # Eyal Ben-Simon <eyalben@surfree.net.il>, 2002.
 # Gil Osher <dolfin@rpg.org.il>, 2002
+# Gil 'Dolfin' Osher <dolfin@rpg.org.il>, 2002
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libgnomeprint.gnome-2-0.he\n"
-"POT-Creation-Date: 2002-12-27 21:30-0500\n"
-"PO-Revision-Date: 2002-09-08 12:59+0300\n"
-"Last-Translator: Gil Osher <dolfin@rpg.org.il>\n"
+"Project-Id-Version: libgnomeprint.HEAD.he\n"
+"POT-Creation-Date: 2003-01-20 22:11-0500\n"
+"PO-Revision-Date: 2002-12-30 13:32+0200\n"
+"Last-Translator: Gil 'Dolfin' Osher <dolfin@rpg.org.il>\n"
 "Language-Team: Hebrew <he@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.0\n"
 
-#: installer/gnome-font-install.c:141
-msgid "Print out debugging information"
-msgstr "הדפס פרטי ניפוי"
-
-#: installer/gnome-font-install.c:143
-msgid "Tries to do everything automatically"
-msgstr "מנסה לעשות הכל אוטומטית"
-
-#: installer/gnome-font-install.c:145
-msgid "Search directories recursively for font files"
-msgstr "חפש בספריות רקורסיבית לקבצי גופנים"
-
-#: installer/gnome-font-install.c:147
-msgid "Start from zero fontmap, instead of parsing old one"
-msgstr "התחל מתחילת מפת הגופן, במקום לנתח אחד ישן"
-
-#: installer/gnome-font-install.c:149
-msgid "Reverifies all font files, even for fontmaps of same version"
-msgstr "בדוק שוב את כל קבצי הגופנים, אפילו מפות גופנים של אותה גרסה"
-
-#: installer/gnome-font-install.c:151
-msgid "Include font notice field (Copyright data) into fontmap"
-msgstr "צרף הערות גופן (זכויות יוצרים) למפת הגופנים"
-
-#: installer/gnome-font-install.c:153
-msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
-msgstr "צור $HOME/.gnome/fonts/gnome-print.fontmap"
-
-#: installer/gnome-font-install.c:155 installer/gnome-font-install.c:157
-msgid "Create "
-msgstr "צור "
-
-#: installer/gnome-font-install.c:155 installer/gnome-font-install.c:157
-msgid "/gnome-print.fontmap"
-msgstr "/gnome-print.fontmap"
-
-#: installer/gnome-font-install.c:159
-msgid "Write output fontmap to specified file (- for stdout)"
-msgstr "פלוט מפת פונטים לפונט מסוים (- ל stdout)"
-
-#: installer/gnome-font-install.c:161
-msgid ""
-"Return the $FONTMAPDIR_STATIC and $FONTMAPDIR_DYNAMIC used for this gnome-"
-"print installation)"
-msgstr ""
-"החזר את $FONTMAPDIR_STATIC ואת $FONTMAPDIR_DYNAMIC ששומשו להתקנת ההדפסה של ה "
-"GNOME הזה)"
-
-#: installer/gnome-font-install.c:164
-msgid "File describing known aliases"
-msgstr "הקובץ מתאר כינויים ידועים"
-
-#: installer/gnome-font-install.c:164 tests/testprint.c:71
-#: tests/testprint.c:73 tests/testprint.c:75
-msgid "PATH"
-msgstr "PATH"
-
-#: installer/gnome-font-install.c:167
-msgid "Specify default font(s) for any locale"
-msgstr "הגדר גופן(ים) ברירת מחדל עבור כל סביבת שפה"
-
-#: installer/gnome-font-install.c:167
-msgid "[LOCALE[,LOCALE]:fontname]"
-msgstr "[LOCALE[,LOCALE]:fontname]"
-
-#: libgnomeprint/gnome-font-face.c:446
+#: libgnomeprint/gnome-font-face.c:490
 msgid "The quick brown fox jumps over the lazy dog."
 msgstr "השועל החום המהיר קפץ מעל הכלב העצלן"
 
-#. fixme: fill in all papers and units
-#. fixme: load papers from file
-#. fixme: use some fancy unit program
+#. FIXME: fill in all papers and units. (Lauris)
+#. FIXME: load papers from file (Lauris)
+#. FIXME: use some fancy unit program (Lauris)
 #.
 #. * WARNING! Do not mess up with that - we use hardcoded numbers for base units!
 #.
-#: libgnomeprint/gnome-print-paper.c:44
+#: libgnomeprint/gnome-print-paper.c:43 data/globals.xml.in.h:13
 msgid "A4"
 msgstr "A4"
 
 #. Do not insert any elements before/between first 4
-#: libgnomeprint/gnome-print-unit.c:33
+#: libgnomeprint/gnome-print-unit.c:34
 msgid "Unit"
 msgstr "יחידה"
 
-#: libgnomeprint/gnome-print-unit.c:33
+#: libgnomeprint/gnome-print-unit.c:34
 msgid "Units"
 msgstr "יחידות"
 
-#: libgnomeprint/gnome-print-unit.c:34
+#: libgnomeprint/gnome-print-unit.c:35
 msgid "Point"
 msgstr "נקודה"
 
-#: libgnomeprint/gnome-print-unit.c:34
+#: libgnomeprint/gnome-print-unit.c:35
 msgid "Pt"
 msgstr "נק'"
 
-#: libgnomeprint/gnome-print-unit.c:34
+#: libgnomeprint/gnome-print-unit.c:35
 msgid "Points"
 msgstr "נקודות"
 
-#: libgnomeprint/gnome-print-unit.c:34
+#: libgnomeprint/gnome-print-unit.c:35
 msgid "Pts"
 msgstr "נק'"
 
-#: libgnomeprint/gnome-print-unit.c:35
+#: libgnomeprint/gnome-print-unit.c:36
 msgid "Userspace unit"
 msgstr "יחידת מקום-משתמש"
 
-#: libgnomeprint/gnome-print-unit.c:35
+#: libgnomeprint/gnome-print-unit.c:36
 msgid "User"
 msgstr "משתמש"
 
-#: libgnomeprint/gnome-print-unit.c:35
+#: libgnomeprint/gnome-print-unit.c:36
 msgid "Userspace units"
 msgstr "יחידות מקום-משתמש"
 
-#: libgnomeprint/gnome-print-unit.c:36
+#: libgnomeprint/gnome-print-unit.c:37
 msgid "Pixel"
 msgstr "פיקסל"
 
-#: libgnomeprint/gnome-print-unit.c:36
+#: libgnomeprint/gnome-print-unit.c:37
 msgid "Px"
 msgstr "פיקסל"
 
-#: libgnomeprint/gnome-print-unit.c:36
+#: libgnomeprint/gnome-print-unit.c:37
 msgid "Pixels"
 msgstr "פיקסלים"
 
 #. You can add new elements from this point forward
-#: libgnomeprint/gnome-print-unit.c:38
+#: libgnomeprint/gnome-print-unit.c:39
 msgid "Percent"
 msgstr "אחוז"
 
-#: libgnomeprint/gnome-print-unit.c:38
+#: libgnomeprint/gnome-print-unit.c:39
 msgid "%"
 msgstr "%"
 
-#: libgnomeprint/gnome-print-unit.c:38
+#: libgnomeprint/gnome-print-unit.c:39
 msgid "Percents"
 msgstr "אחוזים"
 
-#: libgnomeprint/gnome-print-unit.c:39
+#: libgnomeprint/gnome-print-unit.c:40
 msgid "Millimeter"
 msgstr "מילימטר"
 
-#: libgnomeprint/gnome-print-unit.c:39
+#: libgnomeprint/gnome-print-unit.c:40
 msgid "mm"
 msgstr "מ\"מ"
 
-#: libgnomeprint/gnome-print-unit.c:39
+#: libgnomeprint/gnome-print-unit.c:40
 msgid "Millimeters"
 msgstr "מילימטרים"
 
-#: libgnomeprint/gnome-print-unit.c:40
+#: libgnomeprint/gnome-print-unit.c:41
 msgid "Centimeter"
 msgstr "סנטימטר"
 
-#: libgnomeprint/gnome-print-unit.c:40
+#: libgnomeprint/gnome-print-unit.c:41
 msgid "cm"
 msgstr "ס\"מ"
 
-#: libgnomeprint/gnome-print-unit.c:40
+#: libgnomeprint/gnome-print-unit.c:41
 msgid "Centimeters"
 msgstr "סנטימטרים"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "Meter"
-msgstr "מטר"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "m"
-msgstr "מטר"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "Meters"
-msgstr "מטרים"
 
 #: libgnomeprint/gnome-print-unit.c:42
 msgid "Inch"
@@ -204,82 +130,330 @@ msgstr "אינץ'"
 msgid "Inches"
 msgstr "אינצ'ים"
 
-#: libgnomeprint/gpa/gpa-media.c:246
+#: data/globals.xml.in.h:1
+msgid "1/3 A4"
+msgstr "1/3 A4"
+
+#: data/globals.xml.in.h:2
+msgid "1/3 A5"
+msgstr "1/3 A5"
+
+#: data/globals.xml.in.h:3
+msgid "1/4 A3"
+msgstr "1/4 A3"
+
+#: data/globals.xml.in.h:4
+msgid "1/4 A4"
+msgstr "1/4 A4"
+
+#: data/globals.xml.in.h:5
+msgid "1/8 A4"
+msgstr "1/8 A4"
+
+#: data/globals.xml.in.h:6
+msgid "2 pages to 1"
+msgstr "2 עמודים ב 1"
+
+#: data/globals.xml.in.h:7
+msgid "4 pages to 1"
+msgstr "4 עמודים ב 1"
+
+#: data/globals.xml.in.h:8
+msgid "A0"
+msgstr "A0"
+
+#: data/globals.xml.in.h:9
+msgid "A1"
+msgstr "A1"
+
+#: data/globals.xml.in.h:10
+msgid "A10"
+msgstr "A10"
+
+#: data/globals.xml.in.h:11
+msgid "A2"
+msgstr "A2"
+
+#: data/globals.xml.in.h:12
+msgid "A3"
+msgstr "A3"
+
+#: data/globals.xml.in.h:14
+msgid "A5"
+msgstr "A5"
+
+#: data/globals.xml.in.h:15
+msgid "A6"
+msgstr "A6"
+
+#: data/globals.xml.in.h:16
+msgid "A7"
+msgstr "A7"
+
+#: data/globals.xml.in.h:17
+msgid "A8"
+msgstr "A8"
+
+#: data/globals.xml.in.h:18
+msgid "A9"
+msgstr "A9"
+
+#: data/globals.xml.in.h:19
+msgid "B0"
+msgstr "B0"
+
+#: data/globals.xml.in.h:20
+msgid "B1"
+msgstr "B1"
+
+#: data/globals.xml.in.h:21
+msgid "B10"
+msgstr "B10"
+
+#: data/globals.xml.in.h:22
+msgid "B2"
+msgstr "B2"
+
+#: data/globals.xml.in.h:23
+msgid "B3"
+msgstr "B3"
+
+#: data/globals.xml.in.h:24
+msgid "B4"
+msgstr "B4"
+
+#: data/globals.xml.in.h:25
+msgid "B5"
+msgstr "B5"
+
+#: data/globals.xml.in.h:26
+msgid "B6"
+msgstr "B6"
+
+#: data/globals.xml.in.h:27
+msgid "B7"
+msgstr "B7"
+
+#: data/globals.xml.in.h:28
+msgid "B8"
+msgstr "B8"
+
+#: data/globals.xml.in.h:29
+msgid "B9"
+msgstr "B9"
+
+#: data/globals.xml.in.h:30
+msgid "C0"
+msgstr "C0"
+
+#: data/globals.xml.in.h:31
+msgid "C1"
+msgstr "C1"
+
+#: data/globals.xml.in.h:32
+msgid "C10"
+msgstr "C10"
+
+#: data/globals.xml.in.h:33
+msgid "C2"
+msgstr "C2"
+
+#: data/globals.xml.in.h:34
+msgid "C3"
+msgstr "C3"
+
+#: data/globals.xml.in.h:35
+msgid "C4"
+msgstr "C4"
+
+#: data/globals.xml.in.h:36
+msgid "C5"
+msgstr "C5"
+
+#: data/globals.xml.in.h:37
+msgid "C6"
+msgstr "C6"
+
+#: data/globals.xml.in.h:38
+msgid "C6/C5 Envelope"
+msgstr "מעטפה C6/C5"
+
+#: data/globals.xml.in.h:39
+msgid "C7"
+msgstr "C7"
+
+#: data/globals.xml.in.h:40
+msgid "C8"
+msgstr "C8"
+
+#: data/globals.xml.in.h:41
+msgid "C9"
+msgstr "C9"
+
+#: data/globals.xml.in.h:42
 msgid "Custom"
 msgstr "מותאם אישית"
 
-#: libgnomeprint/gpa/gpa-media.c:268
-msgid "Straight"
-msgstr "ישר"
+#: data/globals.xml.in.h:43
+msgid "DL Envelope"
+msgstr "מעטפה DL"
 
-#: libgnomeprint/gpa/gpa-media.c:275
-msgid "Rotated 90 degrees"
-msgstr "סובב 90 מעלות"
+#: data/globals.xml.in.h:44
+msgid "Divided"
+msgstr "מחולק"
 
-#: libgnomeprint/gpa/gpa-media.c:282
-msgid "Rotated 180 degrees"
-msgstr "סובב 180 מעלות"
+#: data/globals.xml.in.h:45
+msgid "Envelope 6x9"
+msgstr "מעטפה 6x9"
 
-#: libgnomeprint/gpa/gpa-media.c:289
-msgid "Rotated 270 degrees"
-msgstr "סובב 270 מעלות"
+#: data/globals.xml.in.h:46
+msgid "Envelope No10"
+msgstr "מעטפה מספר 10"
 
-#: libgnomeprint/gpa/gpa-media.c:308
-msgid "Portrait"
-msgstr "תסדיר אנכי"
+#: data/globals.xml.in.h:47
+msgid "Folded"
+msgstr "מתוייק"
 
-#: libgnomeprint/gpa/gpa-media.c:315
+#: data/globals.xml.in.h:48
 msgid "Landscape"
 msgstr "תסדיר אופקי"
 
-#: libgnomeprint/gpa/gpa-media.c:322
-msgid "Upside down portrait"
-msgstr "תסדיר אנכי הפוך"
+#: data/globals.xml.in.h:49
+msgid "Plain"
+msgstr "פשוט"
 
-#: libgnomeprint/gpa/gpa-media.c:329
+#: data/globals.xml.in.h:50
+msgid "Portrait"
+msgstr "תסדיר אנכי"
+
+#: data/globals.xml.in.h:51
+msgid "Rotated 180 degrees"
+msgstr "סובב 180 מעלות"
+
+#: data/globals.xml.in.h:52
+msgid "Rotated 270 degrees"
+msgstr "סובב 270 מעלות"
+
+#: data/globals.xml.in.h:53
+msgid "Rotated 90 degrees"
+msgstr "סובב 90 מעלות"
+
+#: data/globals.xml.in.h:54
+msgid "Straight"
+msgstr "ישר"
+
+#: data/globals.xml.in.h:55
+msgid "US Executive"
+msgstr "ארה\"ב מנהלי"
+
+#: data/globals.xml.in.h:56
+msgid "US Legal"
+msgstr "ארה\"ב חוקי"
+
+#: data/globals.xml.in.h:57
+msgid "US Letter"
+msgstr "ארה\"ב מכתב"
+
+#: data/globals.xml.in.h:58
 msgid "Upside down landscape"
 msgstr "תסדיר אופקי הפוך"
 
-#: libgnomeprint/gpa/gpa-media.c:348
-msgid "Plain"
-msgstr "טקסט רגיל"
+#: data/globals.xml.in.h:59
+msgid "Upside down portrait"
+msgstr "תסדיר אנכי הפוך"
 
-#: tests/testprint.c:69
-msgid "Print Paper database"
-msgstr "הדפס מסד נתוני נייר"
+#: data/printers/GENERIC.xml.in.h:1
+msgid "Generic Postscript"
+msgstr "Postscript כללי"
 
-#: tests/testprint.c:70
-msgid "Describe GPA Tree"
-msgstr "תיאור עץ GPA"
+#: data/printers/PDF-WRITER.xml.in.h:1
+msgid "Create a PDF document"
+msgstr "צור מסמך PDF"
 
-#: tests/testprint.c:71
-msgid "Print text file"
-msgstr "הדפס קובץ טקסט"
+#~ msgid "Print out debugging information"
+#~ msgstr "הדפס פרטי ניפוי"
 
-#: tests/testprint.c:72
-msgid "Use GnomePrintMaster for printing"
-msgstr "השמתמש בGnomePrintMaster עבור הדפסה"
+#~ msgid "Tries to do everything automatically"
+#~ msgstr "מנסה לעשות הכל אוטומטית"
 
-#: tests/testprint.c:73
-msgid "Dump printout to metafile ('-' for stdout)"
-msgstr "צבור הדפסות למטא-קובץ ('-' ל stdout)"
+#~ msgid "Search directories recursively for font files"
+#~ msgstr "חפש בספריות רקורסיבית לקבצי גופנים"
 
-#: tests/testprint.c:74
-msgid "Split job between bonobo"
-msgstr "חלק עבודה בין Bonobo"
+#~ msgid "Start from zero fontmap, instead of parsing old one"
+#~ msgstr "התחל מתחילת מפת הגופן, במקום לנתח אחד ישן"
 
-#: tests/testprint.c:75
-msgid "Render from metafile"
-msgstr "בצע ממטא-קובץ"
+#~ msgid "Reverifies all font files, even for fontmaps of same version"
+#~ msgstr "בדוק שוב את כל קבצי הגופנים, אפילו מפות גופנים של אותה גרסה"
 
-#: tests/testprint.c:156
-msgid "Gnome-print test page, rotated"
-msgstr "דף דוגמה של Gnome-print, מסובב"
+#~ msgid "Include font notice field (Copyright data) into fontmap"
+#~ msgstr "צרף הערות גופן (זכויות יוצרים) למפת הגופנים"
 
-#: tests/testprint.c:173
-msgid "Gnome-print test page, slanted"
-msgstr "דף דוגמה של Gnome-print, מוטה"
+#~ msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
+#~ msgstr "צור $HOME/.gnome/fonts/gnome-print.fontmap"
 
-#: tests/testprint.c:181
-msgid "Gnome-print test page, slanted. Small"
-msgstr "דף דוגמה של Gnome-print, מוטה, קטן"
+#~ msgid "Create "
+#~ msgstr "צור "
+
+#~ msgid "/gnome-print.fontmap"
+#~ msgstr "/gnome-print.fontmap"
+
+#~ msgid "Write output fontmap to specified file (- for stdout)"
+#~ msgstr "פלוט מפת פונטים לפונט מסוים (- ל stdout)"
+
+#~ msgid ""
+#~ "Return the $FONTMAPDIR_STATIC and $FONTMAPDIR_DYNAMIC used for this gnome-"
+#~ "print installation)"
+#~ msgstr ""
+#~ "החזר את $FONTMAPDIR_STATIC ואת $FONTMAPDIR_DYNAMIC ששומשו להתקנת ההדפסה "
+#~ "של ה GNOME הזה)"
+
+#~ msgid "File describing known aliases"
+#~ msgstr "הקובץ מתאר כינויים ידועים"
+
+#~ msgid "PATH"
+#~ msgstr "PATH"
+
+#~ msgid "Specify default font(s) for any locale"
+#~ msgstr "הגדר גופן(ים) ברירת מחדל לכל סביבת שפה"
+
+#~ msgid "[LOCALE[,LOCALE]:fontname]"
+#~ msgstr "[LOCALE[,LOCALE]:fontname]"
+
+#~ msgid "Meter"
+#~ msgstr "מטר"
+
+#~ msgid "m"
+#~ msgstr "מטר"
+
+#~ msgid "Meters"
+#~ msgstr "מטרים"
+
+#~ msgid "Print Paper database"
+#~ msgstr "הדפס מסד נתוני נייר"
+
+#~ msgid "Describe GPA Tree"
+#~ msgstr "תיאור עץ GPA"
+
+#~ msgid "Print text file"
+#~ msgstr "הדפס קובץ טקסט"
+
+#~ msgid "Use GnomePrintJob for printing"
+#~ msgstr "השמתמש ב GnomePrintJob להדפסה"
+
+#~ msgid "Dump printout to metafile ('-' for stdout)"
+#~ msgstr "צבור הדפסות למטא-קובץ ('-' ל stdout)"
+
+#~ msgid "Split job between bonobo"
+#~ msgstr "חלק עבודה בין Bonobo"
+
+#~ msgid "Render from metafile"
+#~ msgstr "בצע ממטא-קובץ"
+
+#~ msgid "Gnome-print test page, rotated"
+#~ msgstr "דף דוגמה של Gnome-print, מסובב"
+
+#~ msgid "Gnome-print test page, slanted"
+#~ msgstr "דף דוגמה של Gnome-print, מוטה"
+
+#~ msgid "Gnome-print test page, slanted. Small"
+#~ msgstr "דף דוגמה של Gnome-print, מוטה, קטן"

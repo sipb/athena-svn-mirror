@@ -19,12 +19,10 @@
  *  Authors:
  *    Chris Lahey <clahey@helixcode.com>
  *
- *  Copyright (C) 1999-2001 Ximian Inc. and authors
- *
+ *  Copyright (C) 1999-2003 Ximian Inc.
  */
 
-#define __GNOME_PRINT_MULTIPAGE_C__
-
+#include <config.h>
 #include <string.h>
 #include <math.h>
 #include <ctype.h>
@@ -104,11 +102,11 @@ gnome_print_multipage_class_init (GnomePrintMultipageClass *klass)
 	pc_class->beginpage = gnome_print_multipage_beginpage;
 	pc_class->showpage = gnome_print_multipage_showpage;
 
-	pc_class->gsave = gnome_print_multipage_gsave;
+	pc_class->gsave    = gnome_print_multipage_gsave;
 	pc_class->grestore = gnome_print_multipage_grestore;
 
-	pc_class->clip = gnome_print_multipage_clip;
-	pc_class->fill = gnome_print_multipage_fill;
+	pc_class->clip   = gnome_print_multipage_clip;
+	pc_class->fill   = gnome_print_multipage_fill;
 	pc_class->stroke = gnome_print_multipage_stroke;
 
 	pc_class->image = gnome_print_multipage_image;
@@ -211,16 +209,15 @@ gnome_print_multipage_stroke (GnomePrintContext *pc, const ArtBpath *bpath)
 
 	mp = GNOME_PRINT_MULTIPAGE (pc);
 	dash = gp_gc_get_dash (pc->gc);
-
 	p = art_bpath_affine_transform (bpath, mp->subpage->data);
 
-	gnome_print_setrgbcolor (mp->subpc, gp_gc_get_red (pc->gc), gp_gc_get_green (pc->gc), gp_gc_get_blue (pc->gc));
-	gnome_print_setopacity (mp->subpc, gp_gc_get_opacity (pc->gc));
-	gnome_print_setlinewidth (mp->subpc, gp_gc_get_linewidth (pc->gc));
+	gnome_print_setrgbcolor   (mp->subpc, gp_gc_get_red (pc->gc), gp_gc_get_green (pc->gc), gp_gc_get_blue (pc->gc));
+	gnome_print_setopacity    (mp->subpc, gp_gc_get_opacity    (pc->gc));
+	gnome_print_setlinewidth  (mp->subpc, gp_gc_get_linewidth  (pc->gc));
 	gnome_print_setmiterlimit (mp->subpc, gp_gc_get_miterlimit (pc->gc));
-	gnome_print_setlinejoin (mp->subpc, gp_gc_get_linejoin (pc->gc));
-	gnome_print_setlinecap (mp->subpc, gp_gc_get_linecap (pc->gc));
-	gnome_print_setdash (mp->subpc, dash->n_dash, dash->dash, dash->offset);
+	gnome_print_setlinejoin   (mp->subpc, gp_gc_get_linejoin   (pc->gc));
+	gnome_print_setlinecap    (mp->subpc, gp_gc_get_linecap    (pc->gc));
+	gnome_print_setdash       (mp->subpc, dash->n_dash, dash->dash, dash->offset);
 
 	ret = gnome_print_stroke_bpath (mp->subpc, p);
 
@@ -255,9 +252,17 @@ gnome_print_multipage_glyphlist (GnomePrintContext *pc, const gdouble *affine, G
 	return gnome_print_glyphlist_transform (mp->subpc, a, gl);
 }
 
-/* Not so easy wrappers */
-
-/* Finishes half-filled page, NOP otherwise */
+/**
+ * gnome_print_multipage_finish_page:
+ * @mp: 
+ *
+ * Finishes a half-filled page, NOP otherwise
+ * This allows you to flush all pages, without closing the
+ * multipage context. Closing the multipage context calls
+ * this implicitly
+ * 
+ * Return Value: GNOME_PRINT_OK on success, a different value otherwise
+ **/
 gint
 gnome_print_multipage_finish_page (GnomePrintMultipage *mp)
 {
@@ -315,14 +320,15 @@ gnome_print_multipage_showpage (GnomePrintContext *pc)
 	gint ret;
 
 	mp = GNOME_PRINT_MULTIPAGE (pc);
-
-	/* restore subpage matrix */
 	ret = gnome_print_grestore (mp->subpc);
+
 	g_return_val_if_fail (ret == GNOME_PRINT_OK, ret);
 
 	mp->subpage = mp->subpage->next;
 	if (mp->subpage == NULL) {
-		/* Finished global page, start from beginning and show it */
+		/* Finished global page, start from the
+		 * beginning and show it 
+		 */
 		mp->subpage = mp->affines;
 		ret = gnome_print_showpage (mp->subpc);
 		g_return_val_if_fail (ret == GNOME_PRINT_OK, ret);
@@ -355,7 +361,9 @@ gnome_print_multipage_affine_list_duplicate(GList *affines)
 /**
  * gnome_print_multipage_new:
  * @subpc: Where do we print
- * @affines: List of positions for pages.  There must be at least one item in this list.
+ * @affines: List of positions for pages.  There must be
+ *           at least one item in this list, childs are of
+ *           type double[6]
  *
  * Creates a new Postscript printing context
  *
@@ -380,88 +388,3 @@ gnome_print_multipage_new (GnomePrintContext *subpc, GList *affines /* Of type d
 
 	return (GnomePrintContext *) multipage;
 }
-
-
-/**
- * gnome_print_multipage_new_from_sizes:
- * @subpc: Where do we print
- * @paper_width: Width of paper to print on.
- * @paper_height: Height of paper to print on.
- * @page_width: Width of page to print.
- * @page_height: Height of page to print.
- *
- * Creates a new Postscript printing context
- *
- * Returns: a new GnomePrintMultipage object in which you can issue GnomePrint commands.
- */
-GnomePrintContext *
-gnome_print_multipage_new_from_sizes (GnomePrintContext *subpc, gdouble paper_width, gdouble paper_height, gdouble page_width, gdouble page_height)
-{
-	GnomePrintMultipage *multipage;
-	gint same_count, opposite_count;
-	gdouble start_affine[6];
-	gdouble x_affine[6];
-	gdouble y_affine[6];
-	gdouble current_affine[6];
-	int x_count;
-	int y_count;
-	int x;
-	int y;
-	gint error_code;
-
-	g_return_val_if_fail(subpc != NULL, NULL);
-
-	same_count = ((int)(paper_width / page_width)) * ((int)(paper_height / page_height));
-	opposite_count = ((int)(paper_width / page_height)) * ((int)(paper_height / page_width));
-
-	if (same_count >= opposite_count) {
-		art_affine_translate(start_affine, 0, paper_height - page_height);
-		art_affine_translate(x_affine, page_width, 0);
-		art_affine_translate(y_affine, 0, -page_height);
-		x_count = ((int)(paper_width / page_width));
-		y_count = ((int)(paper_height / page_height));
-	} else {
-		gdouble translation[6];
-		art_affine_rotate(start_affine, -90);
-		art_affine_translate(translation, paper_width - page_height, paper_height);
-		art_affine_multiply(start_affine, start_affine, translation);
-		art_affine_translate(x_affine, 0, -page_width);
-		art_affine_translate(y_affine, -page_height, 0);
-		x_count = ((int)(paper_width / page_height));
-		y_count = ((int)(paper_height / page_width));
-	}
-
-	multipage = g_object_new (GNOME_TYPE_PRINT_MULTIPAGE, NULL);
-
-	multipage->subpc = subpc;
-	for ( x = 0; x < x_count; x++ )
-	{
-		memcpy(current_affine, start_affine, 6 * sizeof(gdouble));
-		for ( y = 0; y < y_count; y++ ) 
-		{
-			gdouble *affine;
-			affine = g_new(gdouble, 6);
-			memcpy(affine, current_affine, 6 * sizeof(gdouble));
-			multipage->affines = g_list_append(multipage->affines, affine);
-			art_affine_multiply(current_affine, current_affine, x_affine);
-		}
-		art_affine_multiply(start_affine, start_affine, y_affine);
-	}
-	multipage->subpage = multipage->affines;
-
-	g_object_ref (G_OBJECT(subpc));
-
-	error_code = gnome_print_gsave(multipage->subpc);
-	if ( error_code ) {
-		g_object_unref (G_OBJECT(multipage));
-		return NULL;
-	}
-	error_code = gnome_print_concat(multipage->subpc, multipage->subpage->data);
-	if ( error_code ) {
-		g_object_unref (G_OBJECT(multipage));
-		return NULL;
-	}
-  
-	return (GnomePrintContext *) multipage;
-}
-

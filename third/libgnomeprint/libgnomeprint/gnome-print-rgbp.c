@@ -20,14 +20,13 @@
  *    Miguel de Icaza <miguel@gnu.org>
  *    Lauris Kaplinski <lauris@ximian.com>
  *
- *  Copyright (C) 2000-2001 Ximian Inc. and authors
- *
+ *  Copyright (C) 2000-2003 Ximian Inc.
  */
 
-#define __GNOME_PRINT_RGBP_C__
-
+#include <config.h>
 #include <string.h>
 #include <math.h>
+
 #include <libart_lgpl/art_rect.h>
 #include <libgnomeprint/gnome-print-private.h>
 #include <libgnomeprint/gp-gc-private.h>
@@ -137,7 +136,7 @@ rgbp_beginpage (GnomePrintContext *pc, const guchar *name)
 	rgbp = GNOME_PRINT_RGBP (pc);
 	g_return_val_if_fail (rgbp->meta == NULL, GNOME_PRINT_ERROR_UNKNOWN);
 
-	rgbp->meta = (GnomePrintContext *) gnome_print_meta_new_local ();
+	rgbp->meta = (GnomePrintContext *) gnome_print_meta_new ();
 	gnome_print_beginpage (rgbp->meta, name);
 
 	return GNOME_PRINT_OK;
@@ -192,10 +191,10 @@ rgbp_showpage (GnomePrintContext *pc)
 
 		memset (b, 0xff, width * bh * 3);
 		rbuf = gnome_print_rbuf_new (b, width, rect.y1 - rect.y0, width * 3, t, FALSE);
-
+#ifdef VERBOSE
 		g_print ("\nrgbp: %g %g %g %g %g %g\n", t[0], t[1], t[2], t[3], t[4], t[5]);
 		g_print ("rgbp: %d %d %d %d\n\n", rect.x0, rect.y0, rect.x1, rect.y1);
-
+#endif
 		gnome_print_meta_render_data (rbuf,
 					      gnome_print_meta_get_buffer (GNOME_PRINT_META (rgbp->meta)),
 					      gnome_print_meta_get_length (GNOME_PRINT_META (rgbp->meta)));

@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- *  gnome-print-unit.c: Unit utility functio
+ *  gnome-print-unit.c: Unit utility functions
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public License
@@ -17,14 +17,15 @@
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *  Authors:
+ *    Dirk Luetjens <dirk@luedi.oche.de>
+ *    Yves Arrouye <Yves.Arrouye@marin.fdn.fr>
  *    Lauris Kaplinski <lauris@ximian.com>
  *
- *  Copyright (C) 2001-2202 Ximian, Inc.
- *
+ *  Copyright (C) 1998 The Free Software Foundation and 2001-2202 Ximian, Inc.
  */
 
 #include <config.h>
-#include <gpa/gpa-node.h>
+
 #include <libgnomeprint/gnome-print-unit.h>
 #include <libgnomeprint/gnome-print-i18n.h>
 
@@ -38,11 +39,37 @@ static const GnomePrintUnit gp_units[] = {
 	{0, GNOME_PRINT_UNIT_DIMENSIONLESS, 0.01, N_("Percent"), N_("%"), N_("Percents"), N_("%")},
 	{0, GNOME_PRINT_UNIT_ABSOLUTE, (72.0 / 25.4), N_("Millimeter"), N_("mm"), N_("Millimeters"), N_("mm")},
 	{0, GNOME_PRINT_UNIT_ABSOLUTE, (72.0 / 2.54), N_("Centimeter"), N_("cm"), N_("Centimeters"), N_("cm")},
-	{0, GNOME_PRINT_UNIT_ABSOLUTE, (72.0 / 0.0254), N_("Meter"), N_("m"), N_("Meters"), N_("m")},
 	{0, GNOME_PRINT_UNIT_ABSOLUTE, (72.0), N_("Inch"), N_("in"), N_("Inches"), N_("in")},
 };
 
 #define gp_num_units (sizeof (gp_units) / sizeof (gp_units[0]))
+
+static GnomePrintUnit *
+gnome_print_unit_copy (GnomePrintUnit *unit)
+{
+	return unit;
+}
+
+static void
+gnome_print_unit_free (GnomePrintUnit *unit)
+{
+     /* Empty */
+}
+
+GType
+gnome_print_unit_get_type (void)
+{
+	static GType type = 0;
+	
+	if (type == 0) {
+		type = g_boxed_type_register_static
+			("GnomePrintUnit",
+			 (GBoxedCopyFunc) gnome_print_unit_copy,
+			 (GBoxedFreeFunc) gnome_print_unit_free);
+	}
+
+	return type;
+}
 
 /**
  * gnome_print_unit_get_identity:
@@ -75,7 +102,9 @@ gnome_print_unit_get_identity (guint base)
 	}
 }
 
-/* fixme: */
+/* FIXME: return a gettexted default unit so that translators can
+ *        set the default unit on a per locale basis (Chema)
+ */
 const GnomePrintUnit *
 gnome_print_unit_get_default (void)
 {
@@ -151,8 +180,17 @@ gnome_print_unit_free_list (GList *units)
 	g_list_free (units);
 }
 
-/* These are pure utility */
-/* Return TRUE if conversion is possible */
+/**
+ * gnome_print_convert_distance:
+ * @distance: 
+ * @from: 
+ * @to: 
+ * 
+ * Check wether a conversion between @from and @to can be made
+ * 
+ * Return Value: TRUE if the conversion is possible, FALSE if
+ *               it is not or on error
+ **/
 gboolean
 gnome_print_convert_distance (gdouble *distance, const GnomePrintUnit *from, const GnomePrintUnit *to)
 {
@@ -172,6 +210,19 @@ gnome_print_convert_distance (gdouble *distance, const GnomePrintUnit *from, con
 }
 
 /* ctm is for userspace, devicetransform is for device units */
+
+/**
+ * gnome_print_convert_distance_full:
+ * @distance: 
+ * @from: 
+ * @to: 
+ * @ctmscale: 
+ * @devicescale: 
+ * 
+ * ctmscale is userspace->absolute, devicescale is device->absolute
+ * 
+ * Return Value: 
+ **/
 gboolean
 gnome_print_convert_distance_full (gdouble *distance, const GnomePrintUnit *from, const GnomePrintUnit *to,
 				   gdouble ctmscale, gdouble devicescale)
@@ -182,7 +233,8 @@ gnome_print_convert_distance_full (gdouble *distance, const GnomePrintUnit *from
 	g_return_val_if_fail (from != NULL, FALSE);
 	g_return_val_if_fail (to != NULL, FALSE);
 
-	if (from->base == to->base) return gnome_print_convert_distance (distance, from, to);
+	if (from->base == to->base)
+		return gnome_print_convert_distance (distance, from, to);
 
 	if ((from->base == GNOME_PRINT_UNIT_DIMENSIONLESS) || (to->base == GNOME_PRINT_UNIT_DIMENSIONLESS)) {
 		*distance = *distance * from->unittobase / to->unittobase;

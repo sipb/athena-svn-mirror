@@ -24,31 +24,26 @@
  *    Michael Meeks <michael@ximian.com>
  *    Morten Welinder <terra@diku.dk>
  *
- *  Copyright (C) 2000-2001 Ximian Inc. and authors
- *
+ *  Copyright (C) 2000-2003 Ximian Inc. and authors
  */
-
-#define __GNOME_FONT_FACE_C__
 
 #include <config.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/mman.h>
-#include <unistd.h>
-#include <fcntl.h>
 #include <stdarg.h>
 #include <locale.h>
-#include <libgnomeprint/gnome-font-private.h>
-#include "gnome-print-i18n.h"
-#include "gp-fontmap.h"
-#include "gp-truetype-utils.h"
-#include "gp-tt-t1.h"
-#include "gnome-font-family.h"
 
 #include <freetype/ftoutln.h>
+
+#include <libgnomeprint/gnome-print-private.h>
+#include <libgnomeprint/gnome-font-private.h>
+#include <libgnomeprint/gnome-print-i18n.h>
+#include <libgnomeprint/gnome-fontmap.h>
+#include <libgnomeprint/gp-truetype-utils.h>
+#include <libgnomeprint/gp-tt-t1.h>
+#include <libgnomeprint/gnome-font-family.h>
+#include <libgnomeprint/gnome-print-encode.h>
 
 enum {
 	PROP_0,
@@ -76,15 +71,12 @@ static void gnome_font_face_get_prop (GObject *o, guint id, GValue *value, GPara
 static void gff_load_metrics (GnomeFontFace *face, gint glyph);
 static void gff_load_outline (GnomeFontFace *face, gint glyph);
 
-GFPSObject *gff_pso_from_type1 (const GnomeFontFace * face, GPFontEntry *entry);
-GFPSObject *gff_pso_from_truetype (const GnomeFontFace *face, GPFontEntry *entry);
-GFPSObject *gff_empty_pso (const GnomeFontFace *face, GPFontEntry *entry);
-static void gf_pso_sprintf (GFPSObject * pso, const gchar * format, ...);
-static void gf_pso_ensure_space (GFPSObject * pso, gint size);
+static void gf_pso_print_sized (GnomeFontPsObject *pso, const guchar *text, gint size);
+static void gf_pso_sprintf (GnomeFontPsObject * pso, const gchar * format, ...);
+static void gnome_font_face_ps_embed_ensure_size (GnomeFontPsObject * pso, gint size);
 
-#define GFE_IS_T1_A(e) (((e)->type == GP_FONT_ENTRY_TYPE1) || ((e)->type == GP_FONT_ENTRY_TYPE1_ALIAS))
+#define GFE_IS_T1(e) ((e)->type == GP_FONT_ENTRY_TYPE1)
 #define GFE_IS_TT(e) ((e)->type == GP_FONT_ENTRY_TRUETYPE)
-#define GFE_IS_S(e) ((e)->type == GP_FONT_ENTRY_SPECIAL)
 
 static GObjectClass * parent_class;
 
@@ -177,7 +169,8 @@ gnome_font_face_finalize (GObject * object)
 	if (face->glyphs) {
 		gint i;
 		for (i = 0; i < face->num_glyphs; i++) {
-			if (face->glyphs[i].bpath) g_free (face->glyphs[i].bpath);
+			if (face->glyphs[i].bpath)
+				g_free (face->glyphs[i].bpath);
 		}
 		g_free (face->glyphs);
 		face->glyphs = NULL;
@@ -186,6 +179,11 @@ gnome_font_face_finalize (GObject * object)
 	if (face->ft_face) {
 		FT_Done_Face (face->ft_face);
 		face->ft_face = NULL;
+	}
+
+	if (face->psname) {
+		g_free (face->psname);
+		face->psname = NULL;
 	}
 
 	/* Fonts should reference us */
@@ -205,7 +203,7 @@ gnome_font_face_get_prop (GObject *o, guint id, GValue *value, GParamSpec *pspec
 
 	switch (id) {
 	case PROP_FONTNAME:
-		g_value_set_string (value, face->entry->psname);
+		g_value_set_string (value, face->psname);
 		break;
 	case PROP_FULLNAME:
 		g_value_set_string (value, face->entry->name);
@@ -217,11 +215,11 @@ gnome_font_face_get_prop (GObject *o, guint id, GValue *value, GParamSpec *pspec
 		g_value_set_string (value, face->entry->weight);
 		break;
 	case PROP_ITALICANGLE:
-		/* fixme: implement */
+		/* FIXME: implement (Lauris) */
 		g_value_set_double (value, gnome_font_face_is_italic (face) ? -20.0 : 0.0);
 		break;
 	case PROP_ISFIXEDPITCH:
-		/* fixme: implement */
+		/* FIXME: implement (Lauris) */
 		g_value_set_boolean (value, FALSE);
 		break;
 	case PROP_FONTBBOX:
@@ -241,11 +239,11 @@ gnome_font_face_get_prop (GObject *o, guint id, GValue *value, GParamSpec *pspec
 		g_value_set_string (value, "0.0");
 		break;
 	case PROP_CAPHEIGHT:
-		/* fixme: implement */
+		/* FIXME: implement (Lauris) */
 		g_value_set_double (value, 900.0);
 		break;
 	case PROP_XHEIGHT:
-		/* fixme: implement */
+		/* FIXME: implement (Lauris) */
 		g_value_set_double (value, 600.0);
 		break;
 	case PROP_ASCENDER:
@@ -268,6 +266,16 @@ gnome_font_face_get_prop (GObject *o, guint id, GValue *value, GParamSpec *pspec
  * In future those names can be possibly localized (except ps_name)
  */
 
+
+
+/**
+ * gnome_font_face_get_name:
+ * @face: 
+ * 
+ * Return the name of the Font
+ * 
+ * Return Value: a const pointer to the name, NULL on error
+ **/
 const guchar *
 gnome_font_face_get_name (const GnomeFontFace * face)
 {
@@ -277,6 +285,14 @@ gnome_font_face_get_name (const GnomeFontFace * face)
 	return face->entry->name;
 }
 
+/**
+ * gnome_font_face_get_family_name:
+ * @face: 
+ * 
+ * Get the family name
+ * 
+ * Return Value: a const pointer to the family name, NULL on error
+ **/
 const guchar *
 gnome_font_face_get_family_name (const GnomeFontFace * face)
 {
@@ -286,6 +302,14 @@ gnome_font_face_get_family_name (const GnomeFontFace * face)
 	return face->entry->familyname;
 }
 
+/**
+ * gnome_font_face_get_species_name:
+ * @face: 
+ * 
+ * Get the species name of the font
+ * 
+ * Return Value: a const pointer to the species name, NULL on error
+ **/
 const guchar *
 gnome_font_face_get_species_name (const GnomeFontFace * face)
 {
@@ -295,19 +319,32 @@ gnome_font_face_get_species_name (const GnomeFontFace * face)
 	return face->entry->speciesname;
 }
 
+/**
+ * gnome_font_face_get_ps_name:
+ * @face: 
+ * 
+ * The postscript name of the font. This is the name with which
+ * the font is embeded inside Postscript/PDF jobs.
+ * 
+ * Return Value: a const pointer to the name, NULL on error
+ **/
 const guchar *
 gnome_font_face_get_ps_name (const GnomeFontFace * face)
 {
 	g_return_val_if_fail (face != NULL, NULL);
 	g_return_val_if_fail (GNOME_IS_FONT_FACE (face), NULL);
 
-	return face->entry->psname;
+	return face->psname;
 }
 
-/*
- * Returns number of defined glyphs in typeface
- */
-
+/**
+ * gnome_font_face_get_num_glyphs:
+ * @face: 
+ * 
+ * Returns the number of glyphs in the font
+ * 
+ * Return Value: number of glyphs, 0 on error
+ **/
 gint
 gnome_font_face_get_num_glyphs (GnomeFontFace * face)
 {
@@ -315,7 +352,7 @@ gnome_font_face_get_num_glyphs (GnomeFontFace * face)
 	g_return_val_if_fail (GNOME_IS_FONT_FACE (face), 0);
 
 	if (!GFF_LOADED (face)) {
-		g_warning ("file %s: line %d: Face %s: Cannot load face", __FILE__, __LINE__, face->entry->name);
+		g_warning ("Could not load FACE %s, inside _get_num_glyphs", face->entry->name);
 		return 0;
 	}
 
@@ -358,9 +395,11 @@ gnome_font_face_get_glyph_stdadvance (GnomeFontFace * face, gint glyph, ArtPoint
 		return NULL;
 	}
 
-	if ((glyph < 0) || (glyph >= face->num_glyphs)) glyph = 0;
+	if ((glyph < 0) || (glyph >= face->num_glyphs))
+		glyph = 0;
 
-	if (!face->glyphs[glyph].metrics) gff_load_metrics ((GnomeFontFace *) face, glyph);
+	if (!face->glyphs[glyph].metrics)
+		gff_load_metrics ((GnomeFontFace *) face, glyph);
 
 	*advance = face->glyphs[glyph].advance;
 
@@ -379,9 +418,11 @@ gnome_font_face_get_glyph_stdbbox (GnomeFontFace * face, gint glyph, ArtDRect * 
 		return NULL;
 	}
 
-	if ((glyph < 0) || (glyph >= face->num_glyphs)) glyph = 0;
+	if ((glyph < 0) || (glyph >= face->num_glyphs))
+		glyph = 0;
 
-	if (!face->glyphs[glyph].metrics) gff_load_metrics ((GnomeFontFace *) face, glyph);
+	if (!face->glyphs[glyph].metrics)
+		gff_load_metrics ((GnomeFontFace *) face, glyph);
 
 	*bbox = face->glyphs[glyph].bbox;
 
@@ -399,9 +440,11 @@ gnome_font_face_get_glyph_stdoutline (GnomeFontFace * face, gint glyph)
 		return NULL;
 	}
 
-	if ((glyph < 0) || (glyph >= face->num_glyphs)) glyph = 0;
+	if ((glyph < 0) || (glyph >= face->num_glyphs))
+		glyph = 0;
 
-	if (!face->glyphs[glyph].bpath) gff_load_outline ((GnomeFontFace *) face, glyph);
+	if (!face->glyphs[glyph].bpath)
+		gff_load_outline ((GnomeFontFace *) face, glyph);
 
 	return face->glyphs[glyph].bpath;
 }
@@ -418,8 +461,10 @@ gnome_font_face_get_glyph_stdkerning (GnomeFontFace *face, gint glyph0, gint gly
 		return NULL;
 	}
 
-	if ((glyph0 < 0) || (glyph0 >= face->num_glyphs)) glyph0 = 0;
-	if ((glyph1 < 0) || (glyph1 >= face->num_glyphs)) glyph1 = 0;
+	if ((glyph0 < 0) || (glyph0 >= face->num_glyphs))
+		glyph0 = 0;
+	if ((glyph1 < 0) || (glyph1 >= face->num_glyphs))
+		glyph1 = 0;
 
 	if (!FT_HAS_KERNING (face->ft_face)) {
 		kerning->x = kerning->y = 0.0;
@@ -436,10 +481,9 @@ gnome_font_face_get_glyph_stdkerning (GnomeFontFace *face, gint glyph0, gint gly
 }
 
 /*
- * Give (possibly localized) demonstration text for given face
+ * Give (possibly localized) demonstration text for a given face
  * Most usually this tells about quick fox and lazy dog...
  */
-
 const guchar *
 gnome_font_face_get_sample (GnomeFontFace * face)
 {
@@ -449,7 +493,6 @@ gnome_font_face_get_sample (GnomeFontFace * face)
 /*
  * Creates new face and creates link with FontEntry
  */
-
 static void
 gff_face_from_entry (GPFontEntry *e)
 {
@@ -506,33 +549,9 @@ gnome_font_face_find_closest (const guchar *name)
 
 	map = gp_fontmap_get ();
 
-	if (name) face = gnome_font_face_find (name);
+	if (name)
+		face = gnome_font_face_find (name);
 
-	if (!face) {
-		/* No match, try default */
-		guchar *locale, *p;
-		guchar c[128];
-		GPFontEntry *e;
-		locale = g_strdup (setlocale (LC_ALL, NULL));
-		if (!locale)
-			locale = g_strdup ("C");
-		strncpy (c, locale, 127);
-		c[127] = '\0';
-		p = c;
-		while (isalpha (*p) || (*p == '_')) p += 1;
-		if (*p) *p = '\0';
-		e = g_hash_table_lookup (map->defaultsdict, c);
-		if (!e) e = g_hash_table_lookup (map->defaultsdict, "C");
-		if (e) {
-			if (e->face) {
-				gnome_font_face_ref (e->face);
-			} else {
-				gff_face_from_entry (e);
-			}
-			face = e->face;
-		}
-		g_free (locale);
-	}
 	if (!face && map->fonts) {
 		/* No face, no default, load whatever font is first */
 		GPFontEntry *e;
@@ -577,9 +596,10 @@ gnome_font_face_find_closest_from_weight_slant (const guchar *family, GnomeFontW
 	for (l = map->fonts; l != NULL; l = l->next) {
 		entry = (GPFontEntry *) l->data;
 		if (!strcasecmp (family, entry->familyname)) {
-			if (entry->type == GP_FONT_ENTRY_ALIAS) entry = ((GPFontEntryAlias *) entry)->ref;
+			if (entry->type == GP_FONT_ENTRY_ALIAS)
+				entry = ((GPFontEntryAlias *) entry)->ref;
 			dist = abs (weight - entry->Weight) +
-				100 * (italic != (entry->ItalicAngle != 0));
+				100 * (italic != (entry->italic_angle != 0));
 			if (dist < best_dist) {
 				best_dist = dist;
 				best = entry;
@@ -587,12 +607,14 @@ gnome_font_face_find_closest_from_weight_slant (const guchar *family, GnomeFontW
 		}
 	}
 
-	if (best) face = gnome_font_face_find (best->name);
+	if (best)
+		face = gnome_font_face_find (best->name);
 
 	gp_fontmap_release (map);
 
 	/* If nothing found, go with default */
-	if (!face) return gnome_font_face_find (NULL);
+	if (!face)
+		return gnome_font_face_find (NULL);
 
 	return face;
 }
@@ -608,10 +630,12 @@ gnome_font_face_find_from_family_and_style (const guchar *family, const guchar *
 	g_return_val_if_fail (style != NULL, NULL);
 
 	gff = gnome_font_family_new (family);
-	if (!gff) return gnome_font_face_find (NULL);
+	if (!gff)
+		return gnome_font_face_find (NULL);
 	face = gnome_font_family_get_face_by_stylename (gff, style);
 	gnome_font_family_unref (gff);
-	if (!face) return gnome_font_face_find (NULL);
+	if (!face)
+		return gnome_font_face_find (NULL);
 
 	return face;
 }
@@ -732,7 +756,8 @@ gnome_font_face_lookup_default (GnomeFontFace * face, gint unicode)
 	}
 
 	/* fixme: Nobody should ask mapping of 0 */
-	if (unicode < 1) return 0;
+	if (unicode < 1)
+		return 0;
 
 	return FT_Get_Char_Index (face->ft_face, unicode);
 }
@@ -744,6 +769,12 @@ gff_load (GnomeFontFace *face)
 	FT_Error ft_result;
 	static FT_Library ft_library = NULL;
 	GPFontEntry *entry;
+	FT_CharMap found = 0;
+	FT_CharMap charmap;
+	FT_CharMap appleRoman = 0;
+	FT_CharMap symbol = 0;
+	const guchar *psname;
+	int n;
 
 	if (!ft_library) {
 		ft_result = FT_Init_FreeType (&ft_library);
@@ -756,44 +787,59 @@ gff_load (GnomeFontFace *face)
 		entry = face->entry;
 	}
 
-	if (GFE_IS_T1_A (entry)) {
-		GPFontEntryT1 *t1;
-		t1 = (GPFontEntryT1 *) entry;
-		ft_result = FT_New_Face (ft_library, t1->pfb.name, 0, &ft_face);
-		g_return_val_if_fail (ft_result == FT_Err_Ok, FALSE);
-		if (t1->afm.name) {
-			ft_result = FT_Attach_File (ft_face, t1->afm.name);
-			if (ft_result != FT_Err_Ok) {
-				g_warning ("file %s: line %d: face %s: Cannot attach file %s", __FILE__, __LINE__, face->entry->name, t1->afm.name);
-			}
-		}
-	} else if (GFE_IS_TT (entry)) {
-		GPFontEntryTT *tt;
-		tt = (GPFontEntryTT *) entry;
-		ft_result = FT_New_Face (ft_library, tt->ttf.name, tt->facenum, &ft_face);
-		g_return_val_if_fail (ft_result == FT_Err_Ok, FALSE);
-	} else if (GFE_IS_S (entry)) {
-		GPFontEntrySpecial *s;
-		GSList *l;
-		s = (GPFontEntrySpecial *) entry;
-		ft_result = FT_New_Face (ft_library, s->file.name, 0, &ft_face);
-		g_return_val_if_fail (ft_result == FT_Err_Ok, FALSE);
-		for (l = s->additional; l != NULL; l = l->next) {
-			ft_result = FT_Attach_File (ft_face, (gchar *) l->data);
-			if (ft_result != FT_Err_Ok) {
-				g_warning ("file %s: line %d: face %s: Cannot attach file %s",
-					   __FILE__, __LINE__, face->entry->name, (gchar *) l->data);
-			}
-		}
-	} else {
-		g_assert_not_reached ();
-	}
+	ft_result = FT_New_Face (ft_library, entry->file, 0, &ft_face);
+	g_return_val_if_fail (ft_result == FT_Err_Ok, FALSE);
 
-	/* fixme: scalability */
-	/* fixme: glyph names */
+	psname = FT_Get_Postscript_Name (ft_face);
+	if (psname == NULL) {
+		g_warning ("PS name is NULL, for \"%s\" using fallback", entry->file);
+		face->psname = g_strdup ("Helvetica");
+	} else {
+		face->psname = g_strdup (psname);
+	}
+	
+	/* FIXME: scalability (Lauris) */
+	/* FIXME: glyph names (Lauris) */
 
 	face->ft_face = ft_face;
 
+	/* Microsoft symbol and Adobe fontspecific take priority over unicode
+ 	 * so that non lingual fonts work [#80409]
+	 */
+ 	for (n = 0; n < ft_face->num_charmaps; n++) {
+ 		charmap = ft_face->charmaps[n];
+ 
+ 		if ((charmap->platform_id == 7) &&  (charmap->encoding_id == 2))
+ 		{
+ 			found = charmap;
+ 			break;
+ 		}
+ 		else if ((charmap->platform_id == 3) &&  (charmap->encoding_id == 0))
+ 			symbol = charmap;
+ 		else if ((charmap->platform_id == 1) &&  (charmap->encoding_id == 0))
+ 			appleRoman = charmap;
+ 		else if ((charmap->platform_id == 3) &&  (charmap->encoding_id == 1))
+ 			found = charmap;
+ 	}
+ 
+ 	/* If we have no Unicode or AdobeFontspecific, will try Apple roman first,
+	 * followed by symbol.  For TT symbol fonts, apple roman works better?
+	 */
+ 	if ((!found) && (appleRoman))
+		found = appleRoman;
+ 	if ((!found) && (symbol))
+		found = symbol;
+ 
+ 	/* Hope for the best with whatever is the default */
+ 	if (!found) {
+ 		g_warning ("file %s: line %d: Face %s does not have a recognized charmap", __FILE__, __LINE__, entry->name);
+ 	} else {
+ 		ft_result = FT_Set_Charmap (ft_face, found);
+ 		if (ft_result != FT_Err_Ok) {
+ 			g_warning ("file %s: line %d: Face %s could not set charmap", __FILE__, __LINE__, entry->name);
+ 		}
+	}
+	
 	ft_result = FT_Select_Charmap (ft_face, ft_encoding_unicode);
 	if (ft_result != FT_Err_Ok) {
 		g_warning ("file %s: line %d: Face %s does not have unicode charmap", __FILE__, __LINE__, face->entry->name);
@@ -805,7 +851,7 @@ gff_load (GnomeFontFace *face)
 
 	face->ft2ps = 1000.0 / ft_face->units_per_EM;
 
-	face->bbox.x0 = ft_face->bbox.xMin * face->ft2ps;
+	face->bbox.x0 = ft_face->bbox.xMin / face->ft2ps;
 	face->bbox.y0 = ft_face->bbox.yMin * face->ft2ps;
 	face->bbox.x1 = ft_face->bbox.xMax * face->ft2ps;
 	face->bbox.y1 = ft_face->bbox.yMax * face->ft2ps;
@@ -847,9 +893,7 @@ gff_load_outline (GnomeFontFace *face, gint glyph)
 	g_assert (face->ft_face);
 	g_assert (!face->glyphs[glyph].bpath);
 
-	FT_Load_Glyph (face->ft_face, glyph,
-		       FT_LOAD_NO_SCALE | FT_LOAD_NO_HINTING |
-		       FT_LOAD_NO_BITMAP | FT_LOAD_IGNORE_TRANSFORM);
+	FT_Load_Glyph (face->ft_face, glyph, FT_LOAD_NO_SCALE | FT_LOAD_NO_HINTING | FT_LOAD_NO_BITMAP);
 
 	a[0] = a[3] = face->ft2ps;
 	a[1] = a[2] = a[4] = a[5] = 0.0;
@@ -988,30 +1032,31 @@ gff_ol2bp (FT_Outline * ol, gdouble transform[])
 
 /* PSO (PostScriptObject stuff */
 
-static void gff_pso_ensure_buffer_t1 (GFPSObject *pso);
-static void gff_pso_ensure_buffer_tt (GFPSObject *pso);
-static void gff_pso_ensure_buffer_empty (GFPSObject *pso);
-static void gf_pso_sprintf (GFPSObject * pso, const gchar * format, ...);
-static void gf_pso_ensure_space (GFPSObject *pso, gint size);
+static void gnome_font_face_ps_embed_t1 (GnomeFontPsObject *pso);
+static void gnome_font_face_ps_embed_tt (GnomeFontPsObject *pso);
+static void gnome_font_face_ps_embed_empty (GnomeFontPsObject *pso);
+static void gf_pso_sprintf (GnomeFontPsObject * pso, const gchar * format, ...);
+static void gnome_font_face_ps_embed_ensure_size (GnomeFontPsObject *pso, gint size);
 
 /*
  * Generates intial PSObject
  */
 
-GFPSObject *
+GnomeFontPsObject *
 gnome_font_face_pso_new (GnomeFontFace *face, guchar *residentname)
 {
-	GFPSObject *pso;
+	GnomeFontPsObject *pso;
 
 	g_return_val_if_fail (face != NULL, NULL);
 	g_return_val_if_fail (GNOME_IS_FONT_FACE (face), NULL);
 
-	pso = g_new0 (GFPSObject, 1);
+	pso = g_new0 (GnomeFontPsObject, 1);
 
 	pso->face = face;
 	g_object_ref (G_OBJECT (face));
-	if (residentname) pso->residentname = g_strdup (residentname);
-	pso->encodedname = g_strdup_printf ("GnomeUni-%s", face->entry->psname);
+	if (residentname)
+		pso->residentname = g_strdup (residentname);
+	pso->encodedname = g_strdup_printf ("GnomeUni-%s", face->psname);
 	pso->bufsize = 0;
 	pso->length = 0;
 	pso->buf = NULL;
@@ -1024,7 +1069,7 @@ gnome_font_face_pso_new (GnomeFontFace *face, guchar *residentname)
 		pso->encodedbytes = 1;
 		pso->num_glyphs = 1;
 		pso->glyphs = NULL;
-		gff_pso_ensure_buffer_empty (pso);
+		gnome_font_face_ps_embed_empty (pso);
 	}
 
 	return pso;
@@ -1033,11 +1078,12 @@ gnome_font_face_pso_new (GnomeFontFace *face, guchar *residentname)
 #define PSO_GLYPH_MARKED(pso,g) (pso->glyphs[(g) >> 5] & (1 << ((g) & 0x1f)))
 
 void
-gnome_font_face_pso_mark_glyph (GFPSObject *pso, gint glyph)
+gnome_font_face_pso_mark_glyph (GnomeFontPsObject *pso, gint glyph)
 {
 	g_return_if_fail (pso != NULL);
 
-	if (!pso->glyphs) return;
+	if (!pso->glyphs)
+		return;
 
 	glyph = CLAMP (glyph, 0, pso->num_glyphs);
 
@@ -1045,35 +1091,40 @@ gnome_font_face_pso_mark_glyph (GFPSObject *pso, gint glyph)
 }
 
 void
-gnome_font_face_pso_free (GFPSObject *pso)
+gnome_font_face_pso_free (GnomeFontPsObject *pso)
 {
 	g_return_if_fail (pso != NULL);
 
-	if (pso->face) g_object_unref (G_OBJECT (pso->face));
-	if (pso->residentname) g_free (pso->residentname);
-	if (pso->encodedname) g_free (pso->encodedname);
-	if (pso->glyphs) g_free (pso->glyphs);
-	if (pso->buf) g_free (pso->buf);
+	if (pso->face)
+		g_object_unref (G_OBJECT (pso->face));
+	if (pso->residentname)
+		g_free (pso->residentname);
+	if (pso->encodedname)
+		g_free (pso->encodedname);
+	if (pso->glyphs)
+		g_free (pso->glyphs);
+	if (pso->buf)
+		g_free (pso->buf);
+	
 	g_free (pso);
 }
 
 void
-gnome_font_face_pso_ensure_buffer (GFPSObject *pso)
+gnome_font_face_ps_embed (GnomeFontPsObject *pso)
 {
 	g_return_if_fail (pso != NULL);
 
 	switch (pso->face->entry->type) {
 	case GP_FONT_ENTRY_TYPE1:
-	case GP_FONT_ENTRY_TYPE1_ALIAS:
-		gff_pso_ensure_buffer_t1 (pso);
+		gnome_font_face_ps_embed_t1 (pso);
 		break;
 	case GP_FONT_ENTRY_TRUETYPE:
-		gff_pso_ensure_buffer_tt (pso);
+		gnome_font_face_ps_embed_tt (pso);
 		break;
 	default:
 		g_warning ("file %s: line %d: Unknown face entry type %s:%d",
 			   __FILE__, __LINE__, pso->face->entry->name, pso->face->entry->type);
-		gff_pso_ensure_buffer_empty (pso);
+		gnome_font_face_ps_embed_empty (pso);
 		break;
 	}
 }
@@ -1081,48 +1132,30 @@ gnome_font_face_pso_ensure_buffer (GFPSObject *pso)
 #define INT32_LSB(q) ((q)[0] + ((q)[1] << 8) + ((q)[2] << 16) + ((q)[3] << 24))
 
 static void
-gff_pso_ensure_buffer_t1 (GFPSObject *pso)
+gnome_font_face_ps_embed_t1 (GnomeFontPsObject *pso)
 {
-	GPFontEntryT1 *t1;
-	struct stat st;
+	GnomePrintBuffer b;
 	guchar * fbuf;
-	gint fh;
+	const gchar *file_name;
 	const gchar *embeddedname;
 
-	t1 = (GPFontEntryT1 *) pso->face->entry;
-
-	if (pso->face->entry->type == GP_FONT_ENTRY_TYPE1) {
-		embeddedname = pso->face->entry->psname;
-	} else {
-		embeddedname = ((GPFontEntryT1Alias *) pso->face->entry)->alias;
-	}
+	g_return_if_fail (pso->face->entry->type == GP_FONT_ENTRY_TYPE1);
+	file_name = pso->face->entry->file;	
+	embeddedname = pso->face->psname;
 
 	if (!GFF_LOADED (pso->face)) {
 		g_warning ("file %s: line %d: Face: %s: Cannot load face", __FILE__, __LINE__, pso->face->entry->name);
-		gff_pso_ensure_buffer_empty (pso);
+		gnome_font_face_ps_embed_empty (pso);
 		return;
 	}
 
-	/* Step 0: mmap pfb file */
-	fh = open (t1->pfb.name, O_RDONLY);
-	if (fh < 0) {
-		g_warning ("file %s: line %d: Cannot open font file %s", __FILE__, __LINE__, t1->pfb.name);
-		gff_pso_ensure_buffer_empty (pso);
-		return;
-	}
-	if (fstat (fh, &st) != 0) {
-		g_warning ("file %s: line %d: Cannot fstat font file %s", __FILE__, __LINE__, t1->pfb.name);
-		gff_pso_ensure_buffer_empty (pso);
-		return;
-	}
-	fbuf = mmap (NULL, st.st_size, PROT_READ, MAP_SHARED, fh, 0);
-	close (fh);
-	if ((fbuf == NULL) || (fbuf == (guchar *) -1)) {
-		g_warning ("file %s: line %d: Cannot open font file %s", __FILE__, __LINE__, t1->pfb.name);
-		gff_pso_ensure_buffer_empty (pso);
+	if (GNOME_PRINT_OK != gnome_print_buffer_mmap (&b, file_name)) {
+		g_warning ("file %s: line %d: Cannot open font file %s", __FILE__, __LINE__, file_name);
+		gnome_font_face_ps_embed_empty (pso);
 		return;
 	}
 
+	fbuf = b.buf;
 	/* Step 1: */	   
 	if (*fbuf == 0x80) {
 		const char hextab[16] = "0123456789abcdef";
@@ -1132,17 +1165,17 @@ gff_pso_ensure_buffer_t1 (GFPSObject *pso)
 		 * Language Fonts", page 9
 		 */
 		idx = 0;
-		while (idx < st.st_size) {
+		while (idx < b.buf_size) {
 			gint length, i;
 			if (fbuf[idx] != 0x80) {
-				g_warning ("file %s: line %d: Corrupt %s", __FILE__, __LINE__, t1->pfb.name);
-				gff_pso_ensure_buffer_empty (pso);
+				g_warning ("file %s: line %d: Corrupt %s", __FILE__, __LINE__, file_name);
+				gnome_font_face_ps_embed_empty (pso);
 				return;
 			}
 			switch (fbuf[idx + 1]) {
 			case 1:
 				length = INT32_LSB (fbuf + idx + 2);
-				gf_pso_ensure_space (pso, length);
+				gnome_font_face_ps_embed_ensure_size (pso, length);
 				idx += 6;
 				memcpy (pso->buf + pso->length, fbuf + idx, length);
 				pso->length += length;
@@ -1150,36 +1183,36 @@ gff_pso_ensure_buffer_t1 (GFPSObject *pso)
 				break;
 			case 2:
 				length = INT32_LSB (fbuf + idx + 2);
-				gf_pso_ensure_space (pso, length * 3);
+				gnome_font_face_ps_embed_ensure_size (pso, length * 3);
 				idx += 6;
 				for (i = 0; i < length; i++) {
 					pso->buf[pso->length++] = hextab[fbuf[idx] >> 4];
 					pso->buf[pso->length++] = hextab[fbuf[idx] & 15];
 					idx += 1;
-					if ((i & 31) == 31 || i == length - 1) pso->buf[pso->length++] = '\n';
+					if ((i & 31) == 31 || i == length - 1)
+						pso->buf[pso->length++] = '\n';
 				}
 				break;
 			case 3:
 				/* Finished */
-				gf_pso_ensure_space (pso, 1);
+				gnome_font_face_ps_embed_ensure_size (pso, 1);
 				pso->buf[pso->length++] = '\n';
-				idx = st.st_size;
+				idx = b.buf_size;
 				break;
 			default:
-				g_warning ("file %s: line %d: Corrupt %s", __FILE__, __LINE__, t1->pfb.name);
-				gff_pso_ensure_buffer_empty (pso);
+				g_warning ("file %s: line %d: Corrupt %s", __FILE__, __LINE__, file_name);
+				gnome_font_face_ps_embed_empty (pso);
 				return;
 			}
 		}
 	} else {
-		gf_pso_ensure_space (pso, st.st_size);
-		memcpy (pso->buf, fbuf, st.st_size);
-		pso->buf[st.st_size] = '\0';
-		pso->length = st.st_size;
+		gnome_font_face_ps_embed_ensure_size (pso, b.buf_size + 1);
+		memcpy (pso->buf, fbuf, b.buf_size);
+		pso->buf[b.buf_size] = '\0';
+		pso->length = b.buf_size;
 	}
 
-	/* Unmap file */
-	munmap (fbuf, st.st_size);
+	gnome_print_buffer_munmap (&b);
 
 	if (pso->encodedbytes == 1) {
 		gint glyph;
@@ -1194,7 +1227,7 @@ gff_pso_ensure_buffer_t1 (GFPSObject *pso)
 			g = (glyph < pso->face->num_glyphs) ? glyph : 0;
 			status = FT_Get_Glyph_Name (pso->face->ft_face, g, c, 256);
 			if (status != FT_Err_Ok) {
-				g_warning ("file %s: line %d: Glyph %d has no name in %s", __FILE__, __LINE__, g, t1->pfb.name);
+				g_warning ("file %s: line %d: Glyph %d has no name in %s", __FILE__, __LINE__, g, file_name);
 				g_snprintf (c, 256, ".notdef");
 			}
 			gf_pso_sprintf (pso, ((glyph & 0xf) == 0xf) ? "/%s\n" : "/%s ", c);
@@ -1228,10 +1261,11 @@ gff_pso_ensure_buffer_t1 (GFPSObject *pso)
 				gchar c[256];
 				FT_Error status;
 				glyph = 256 * i + j;
-				if (glyph >= nglyphs) glyph = 0;
+				if (glyph >= nglyphs)
+					glyph = 0;
 				status = FT_Get_Glyph_Name (pso->face->ft_face, glyph, c, 256);
 				if (status != FT_Err_Ok) {
-					g_warning ("file %s: line %d: Glyph %d has no name in %s", __FILE__, __LINE__, glyph, t1->pfb.name);
+					g_warning ("file %s: line %d: Glyph %d has no name in %s", __FILE__, __LINE__, glyph, file_name);
 					g_snprintf (c, 256, ".notdef");
 				}
 				gf_pso_sprintf (pso, ((j & 0xf) == 0xf) ? "/%s\n" : "/%s ", c);
@@ -1258,44 +1292,34 @@ gff_pso_ensure_buffer_t1 (GFPSObject *pso)
  * Adobe Inc., The Type42 Font Format Specification, 1998 <http://partners.adobe.com/asn/developer/PDFS/TN/5012.Type42_Spec.pdf>
  */
 
+#define TT_BLOCK_SIZE 1024
+
 static void
-gff_pso_ensure_buffer_tt (GFPSObject *pso)
+gnome_font_face_ps_embed_tt (GnomeFontPsObject *pso)
 {
-	GPFontEntryTT *tt;
-	struct stat st;
+	GnomePrintBuffer b;
+	const gchar *file_name;
 	guchar *fbuf;
-	gint fh;
 	GSList *strings;
 	const gchar * embeddedname;
 	gdouble TTVersion, MfrRevision;
 	const ArtDRect *bbox;
 	gint i;
+	gchar *line;
+	gint line_length;
 
-	tt = (GPFontEntryTT *) pso->face->entry;
+	g_return_if_fail (pso->face->entry->type == GP_FONT_ENTRY_TRUETYPE);
+ 	file_name = pso->face->entry->file;
 
-	/* mmap file */
-	fh = open (tt->ttf.name, O_RDONLY);
-	if (fh < 0) {
-		g_warning ("file %s: line %d: Cannot open font file %s", __FILE__, __LINE__, tt->ttf.name);
-		gff_pso_ensure_buffer_empty (pso);
+	if (GNOME_PRINT_OK != gnome_print_buffer_mmap (&b, file_name)) {
+		gnome_font_face_ps_embed_empty (pso);
 		return;
 	}
-	if (fstat (fh, &st) != 0) {
-		g_warning ("file %s: line %d: Face: %s: Cannot fstat face", __FILE__, __LINE__, tt->ttf.name);
-		gff_pso_ensure_buffer_empty (pso);
-		return;
-	}
-	fbuf = mmap (NULL, st.st_size, PROT_READ, MAP_SHARED, fh, 0);
-	close (fh);
-	if ((fbuf == NULL) || (fbuf == (guchar *) -1)) {
-		g_warning ("file %s: line %d: Cannot open font file %s", __FILE__, __LINE__, tt->ttf.name);
-		gff_pso_ensure_buffer_empty (pso);
-		return;
-	}
+	
+	embeddedname = pso->face->psname;
 
-	embeddedname = pso->face->entry->psname;
-
-	strings = gp_tt_split_file (fbuf, st.st_size);
+	fbuf = b.buf;
+	strings = gp_tt_split_file (fbuf, b.buf_size);
 	if (strings) {
 		/* Relatively easy - just embed TTF into PS stream */
 		/* Download master font */
@@ -1316,23 +1340,27 @@ gff_pso_ensure_buffer_tt (GFPSObject *pso)
 		/* fixme: XUID */
 		/* fixme: Be more intelligent */
 		gf_pso_sprintf (pso, "/sfnts [\n");
+		line_length = gnome_print_encode_hex_wcs (TT_BLOCK_SIZE);
+		line = g_malloc (line_length);
 		while (strings) {
-			guint start, next, size, i;
+			guint start, next;
+			guchar *s, *e;
 			start = GPOINTER_TO_UINT (strings->data);
 			strings = g_slist_remove (strings, strings->data);
-			next = strings ? GPOINTER_TO_UINT (strings->data) : st.st_size;
-			size = next - start;
+			next = strings ? GPOINTER_TO_UINT (strings->data) : b.buf_size;
 			gf_pso_sprintf (pso, "<\n");
-			for (i = start; i < next; i+= 32) {
-				gint e, j;
-				e = MIN (i + 32, next);
-				for (j = i; j < e; j++) {
-					gf_pso_sprintf (pso, "%.2x", *(fbuf + j));
-				}
-				gf_pso_sprintf (pso, "\n");
+			s = b.buf + start;
+			e = b.buf + next;
+			while (s < e) {
+				gint block_size, len;
+				block_size = MIN (TT_BLOCK_SIZE, e - s);
+				len = gnome_print_encode_hex (s, line, block_size);
+				gf_pso_print_sized (pso, line, len);
+				s += block_size;
 			}
 			gf_pso_sprintf (pso, strings ? ">\n" : "00>\n");
 		}
+		g_free (line);
 		gf_pso_sprintf (pso, "] def\n");
 		/* fixme: Use CID or something */
 		gf_pso_sprintf (pso, "/CharStrings %d dict dup begin\n", pso->face->num_glyphs);
@@ -1347,9 +1375,9 @@ gff_pso_ensure_buffer_tt (GFPSObject *pso)
 		/* This is somewhat experimental - convert TTF to Type1 */
 		afm = ttf2pfa (pso->face->ft_face, embeddedname, pso->glyphs);
 		if (!afm) {
-			munmap (fbuf, st.st_size);
-			g_warning ("file %s: line %d: Cannot convert TTF %s to Type1", __FILE__, __LINE__, tt->ttf.name);
-			gff_pso_ensure_buffer_empty (pso);
+			gnome_print_buffer_munmap (&b);
+			g_warning ("file %s: line %d: Cannot convert TTF %s to Type1", __FILE__, __LINE__, file_name);
+			gnome_font_face_ps_embed_empty (pso);
 			return;
 		}
 		/* We take over ownership of afm here (be careful) */
@@ -1358,8 +1386,7 @@ gff_pso_ensure_buffer_tt (GFPSObject *pso)
 		pso->length = pso->bufsize;
 	}
 
-	/* Unmap font file */
-	munmap (fbuf, st.st_size);
+	gnome_print_buffer_munmap (&b);
 
 	/*
 	 * We have font downloaded (hopefully)
@@ -1414,7 +1441,8 @@ gff_pso_ensure_buffer_tt (GFPSObject *pso)
 			for (j = 0; j < 256; j++) {
 				gint glyph;
 				glyph = 256 * i + j;
-				if (glyph >= nglyphs) glyph = 0;
+				if (glyph >= nglyphs)
+					glyph = 0;
 				if ((glyph == 0) || !PSO_GLYPH_MARKED (pso, glyph)) {
 					gf_pso_sprintf (pso, ((j & 0xf) == 0xf) ? "/.notdef\n" : "/.notdef ");
 				} else {
@@ -1437,8 +1465,15 @@ gff_pso_ensure_buffer_tt (GFPSObject *pso)
 	}
 }
 
+/**
+ * gnome_font_face_ps_embed_empty:
+ * @pso: 
+ * 
+ * We use this function when something goes wrong but we still want to
+ * get some output printed.
+ **/
 static void
-gff_pso_ensure_buffer_empty (GFPSObject *pso)
+gnome_font_face_ps_embed_empty (GnomeFontPsObject *pso)
 {
 	pso->length = 0;
 
@@ -1468,7 +1503,15 @@ gff_pso_ensure_buffer_empty (GFPSObject *pso)
 }
 
 static void
-gf_pso_sprintf (GFPSObject * pso, const gchar * format, ...)
+gf_pso_print_sized (GnomeFontPsObject *pso, const guchar *text, gint size)
+{
+	gnome_font_face_ps_embed_ensure_size (pso, size);
+	memcpy (pso->buf + pso->length, text, size);
+	pso->length += size;
+}
+
+static void
+gf_pso_sprintf (GnomeFontPsObject *pso, const gchar * format, ...)
 {
 	va_list arguments;
 	gchar *oldlocale;
@@ -1483,9 +1526,7 @@ gf_pso_sprintf (GFPSObject * pso, const gchar * format, ...)
 	va_end (arguments);
 
 	len = strlen (text);
-	gf_pso_ensure_space (pso, len);
-	memcpy (pso->buf + pso->length, text, len);
-	pso->length += len;
+	gf_pso_print_sized (pso, text, len);
 	g_free (text);
 
 	setlocale (LC_NUMERIC, oldlocale);
@@ -1493,14 +1534,17 @@ gf_pso_sprintf (GFPSObject * pso, const gchar * format, ...)
 }
 
 static void
-gf_pso_ensure_space (GFPSObject *pso, gint size)
+gnome_font_face_ps_embed_ensure_size (GnomeFontPsObject *pso, gint size)
 {
-	if (pso->length + size > pso->bufsize) {
+	gint need = pso->length + size;
+
+	if (need > pso->bufsize) {
 		if (pso->bufsize < 1) {
 			pso->bufsize = MAX (size, 1024);
 			pso->buf = g_new (guchar, pso->bufsize);
 		} else {
-			while (pso->length + size > pso->bufsize) pso->bufsize <<= 1;
+			while (need > pso->bufsize)
+				pso->bufsize <<= 1;
 			pso->buf = g_renew (guchar, pso->buf, pso->bufsize);
 		}
 	}
@@ -1596,9 +1640,7 @@ gnome_font_face_is_italic (GnomeFontFace * face)
 		e = face->entry;
 	}
 
-	return e->ItalicAngle;
-
-	return FALSE;
+	return (e->italic_angle = 0.0 ? TRUE : FALSE);
 }
 
 gboolean
@@ -1634,12 +1676,15 @@ gnome_font_face_get_glyph_ps_name (GnomeFontFace *face, gint glyph)
 		return ".notdef";
 	}
 
-	if (!sgd) sgd = g_hash_table_new (g_str_hash, g_str_equal);
+	if (!sgd)
+		sgd = g_hash_table_new (g_str_hash, g_str_equal);
 
-	if ((glyph < 0) || (glyph >= face->num_glyphs)) glyph = 0;
+	if ((glyph < 0) || (glyph >= face->num_glyphs))
+		glyph = 0;
 
 	status = FT_Get_Glyph_Name (face->ft_face, glyph, c, 256);
-	if (status != FT_Err_Ok) return ".notdef";
+	if (status != FT_Err_Ok)
+		return ".notdef";
 
 	name = g_hash_table_lookup (sgd, c);
 	if (!name) {

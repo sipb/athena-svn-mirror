@@ -1,83 +1,67 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
+/*
+ *  gpa-utils.h:
+ *
+ *  This program is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Library General Public License
+ *  as published by the Free Software Foundation; either version 2 of
+ *  the License, or (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU Library General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Library General Public
+ *  License along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ *  Authors :
+ *    Jose M. Celorio <chema@ximian.com>
+ *    Lauris Kaplinski <lauris@ximian.com>
+ *
+ *  Copyright (C) 2000-2003 Ximian, Inc.
+ *
+ */
 
 #ifndef __GPA_UTILS_H__
 #define __GPA_UTILS_H__
 
-/*
- * This file is part of libgnomeprint 2
- *
- * Libgnomeprint is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public License as
- * published by the Free Software Foundation; either version 2 of the
- * License, or (at your option) any later version.
- *
- * Libgnomeprint is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public
- * License along with the libgnomeprint; see the file COPYING.LIB.  If not,
- * write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- *
- * Authors :
- *   Jose M. Celorio <chema@ximian.com>
- *   Lauris Kaplinski <lauris@ximian.com>
- *
- * Copyright (C) 2000-2001 Ximian, Inc. and Jose M. Celorio
- *
- * Contains pieces of code from glib, Copyright GLib Team and
- * others 1997-2000.
- *
- */
-
-#include <glib/gmacros.h>
+#include <glib.h>
 
 G_BEGIN_DECLS
 
 #include <libxml/tree.h>
 #include "gpa-node.h"
 
-guchar *gpa_id_new (const guchar *key);
+/* Lazy.. */
+#define my_xmlFreeDoc(d) if(d) xmlFreeDoc(d)
+#define my_xmlFree(x) if(x) xmlFree(x)
+#define my_g_free(x)  if(x) g_free(x)
+#define my_gpa_node_unref(n) if(n)gpa_node_unref (GPA_NODE (n))
 
-/* Attach and detach */
-
-GPANode *gpa_node_attach (GPANode *parent, GPANode *child);
-GPANode *gpa_node_attach_ref (GPANode *parent, GPANode *child);
-
-GPANode *gpa_node_detach (GPANode *parent, GPANode *child);
-GPANode *gpa_node_detach_unref (GPANode *parent, GPANode *child);
-
-GPANode *gpa_node_detach_next (GPANode *parent, GPANode *child);
-GPANode *gpa_node_detach_unref_next (GPANode *parent, GPANode *child);
-
-/* Lookup */
-
-const guchar *gpa_node_lookup_check (const guchar *path, const guchar *key);
-gboolean gpa_node_lookup_ref (GPANode **child, GPANode *node, const guchar *path, const guchar *key);
-
-/* XML helpers */
-
-xmlChar *gpa_xml_node_get_name (xmlNodePtr node);
-xmlNodePtr gpa_xml_node_get_child (xmlNodePtr node, const guchar *name);
-
-/* Cache */
-
-GPANode *gpa_node_cache (GPANode *node);
+xmlChar *   gpa_xml_node_get_name (xmlNodePtr node);
+xmlNodePtr  gpa_xml_node_get_child (xmlNodePtr node, const guchar *name);
 
 /* Dumps the node and all nodes below it to the console */
-void gpa_utils_dump_tree (GPANode *node);
+void gpa_utils_dump_tree (GPANode *node, gint follow_references);
 
-/* Private quarks */
+#ifndef __GNUC__
+#define __FUNCTION__   ""
+#define __PRETTY_FUNCTION__ ""
+#endif
 
-typedef guint GPAQuark;
-
-GPAQuark gpa_quark_try_string (const guchar *string);
-GPAQuark gpa_quark_from_string (const guchar *string);
-GPAQuark gpa_quark_from_static_string (const guchar *string);
-const guchar *gpa_quark_to_string (GPAQuark quark);
-
-G_END_DECLS
+#define gpa_return_false_if_fail(expr)	G_STMT_START{			\
+     if (expr) { } else							\
+       {								\
+	 g_log (G_LOG_DOMAIN,						\
+		G_LOG_LEVEL_CRITICAL,					\
+		"file %s: line %d (%s): assertion `%s' failed",		\
+		__FILE__,						\
+		__LINE__,						\
+		__PRETTY_FUNCTION__,					\
+		#expr);							\
+	 return (FALSE);						\
+       };				}G_STMT_END
 
 #endif /* __GPA_UTILS_H__ */

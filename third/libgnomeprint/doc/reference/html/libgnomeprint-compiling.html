@@ -151,10 +151,10 @@ CLASS="LITERAL"
 > is used:
 <PRE
 CLASS="PROGRAMLISTING"
->$ pkg-config --cflags libgnomeprint-2.0
- -I/usr/include/libart-2.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/libxml2 -I/usr/include/libbonobo-2.0 -I/usr/include/pango-1.0 -I/usr/include/bonobo-activation-2.0 -I/usr/include/libgnomeprint-2.0 -I/usr/include/orbit-2.0 -I/usr/include/linc-1.0
-$ pkg-config --libs libgnomeprint-2.0
- -lart_lgpl_2 -lbonobo-2 -lpango-1.0 -lbonobo-activation -lxml2 -lz -lgnomeprint-2 -lORBit-2 -lgthread-2.0 -lpthread -lgobject-2.0 -lgmodule-2.0 -ldl -lglib-2.0 -lm -llinc</PRE
+>$ pkg-config --cflags libgnomeprint-2.2
+-I/home/chema/cvs/gnome2/include/libgnomeprint-2.2 -I/home/chema/cvs/gnome2/include/libart-2.0 -I/home/chema/cvs/gnome2/include/glib-2.0 -I/home/chema/cvs/gnome2/lib/glib-2.0/include -I/home/chema/cvs/gnome2/include/libxml2 -I/home/chema/cvs/gnome2/include/pango-1.0
+$ pkg-config --libs libgnomeprint-2.2
+-Wl,--export-dynamic -L/home/chema/cvs/gnome2/lib -lgnomeprint-2-2 -lart_lgpl_2 -lxml2 -lz -lm -lpango-1.0 -lgobject-2.0 -lgmodule-2.0 -ldl -lglib-2.0</PRE
 ></P
 ><P
 >The simplest way to compile a program is to use the "backticks"
@@ -170,7 +170,7 @@ substituted into the command line before execution. So to compile
 a simple libgnomeprint program, you would type the following:
 <PRE
 CLASS="PROGRAMLISTING"
->$ cc `pkg-config --cflags --libs libgnomeprint-2.0` gnome-print-sample.c -o gnome-print-sample</PRE
+>$ cc `pkg-config --cflags --libs libgnomeprint-2.2` gnome-print-sample.c -o gnome-print-sample</PRE
 ></P
 ></DIV
 ><TABLE

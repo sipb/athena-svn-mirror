@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: libgnomeprint\n"
-"POT-Creation-Date: 2002-12-27 21:30-0500\n"
+"POT-Creation-Date: 2003-01-20 22:11-0500\n"
 "PO-Revision-Date: 2002-05-15 11:44+0300\n"
 "Last-Translator: Sayed Jaffer Al-Mosawi <mosawi@arabeyes.org>\n"
 "Language-Team: Arabic <contact@arabeyes.org>\n"
@@ -15,182 +15,105 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.0beta1\n"
 
-#: installer/gnome-font-install.c:141
-msgid "Print out debugging information"
-msgstr "اطبع معلومات اكتشاف العيوب"
-
-#: installer/gnome-font-install.c:143
-msgid "Tries to do everything automatically"
-msgstr "تحاول أن تفعل كل شيء آليا"
-
-#: installer/gnome-font-install.c:145
-msgid "Search directories recursively for font files"
-msgstr "البحث عن ملفات الخطوط في المجلدات تتابعيا"
-
-#: installer/gnome-font-install.c:147
-msgid "Start from zero fontmap, instead of parsing old one"
-msgstr "ابدأ من من خريطة خط صفر بدلا من ترجمة القديم"
-
-#: installer/gnome-font-install.c:149
-msgid "Reverifies all font files, even for fontmaps of same version"
-msgstr "إعادة التأكد من ملفات الخطوط كلها حتى خرائط الخطوط من نفس اﻹصدارة"
-
-#: installer/gnome-font-install.c:151
-msgid "Include font notice field (Copyright data) into fontmap"
-msgstr "ضمّن حقل التنبيه للخط (معلومات حقوق النشر) في خريطة الخط"
-
-#: installer/gnome-font-install.c:153
-msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
-msgstr "أنشيء $HOME/.gnome/fonts/gnome-print.fontmap"
-
-#: installer/gnome-font-install.c:155 installer/gnome-font-install.c:157
-msgid "Create "
-msgstr "انشيء"
-
-#: installer/gnome-font-install.c:155 installer/gnome-font-install.c:157
-msgid "/gnome-print.fontmap"
-msgstr "/gnome-print.fontmap"
-
-#: installer/gnome-font-install.c:159
-msgid "Write output fontmap to specified file (- for stdout)"
-msgstr "اكتب خريطة خط الإخراج في الملف المحدد (- لأداة اﻹخراج القياسية)"
-
-#: installer/gnome-font-install.c:161
-msgid ""
-"Return the $FONTMAPDIR_STATIC and $FONTMAPDIR_DYNAMIC used for this gnome-"
-"print installation)"
-msgstr ""
-"ترجع the $FONTMAPDIR_STATIC و $FONTMAPDIR_DYNAMIC المستخدم إلى تنصيب gnome-"
-"print)"
-
-#: installer/gnome-font-install.c:164
-msgid "File describing known aliases"
-msgstr "ملف لوصف الترادفات المعروفة"
-
-#: installer/gnome-font-install.c:164 tests/testprint.c:71
-#: tests/testprint.c:73 tests/testprint.c:75
-msgid "PATH"
-msgstr "المسار"
-
-#: installer/gnome-font-install.c:167
-msgid "Specify default font(s) for any locale"
-msgstr "حدد الخط (الخطوط) الافتراضي ﻷي محلي"
-
-#: installer/gnome-font-install.c:167
-msgid "[LOCALE[,LOCALE]:fontname]"
-msgstr "[LOCALE[,LOCALE]:fontname]"
-
-#: libgnomeprint/gnome-font-face.c:446
+#: libgnomeprint/gnome-font-face.c:490
 msgid "The quick brown fox jumps over the lazy dog."
 msgstr "The quick brown fox jumps over the lazy dog."
 
-#. fixme: fill in all papers and units
-#. fixme: load papers from file
-#. fixme: use some fancy unit program
+#. FIXME: fill in all papers and units. (Lauris)
+#. FIXME: load papers from file (Lauris)
+#. FIXME: use some fancy unit program (Lauris)
 #.
 #. * WARNING! Do not mess up with that - we use hardcoded numbers for base units!
 #.
-#: libgnomeprint/gnome-print-paper.c:44
+#: libgnomeprint/gnome-print-paper.c:43 data/globals.xml.in.h:13
 msgid "A4"
 msgstr "A4"
 
 #. Do not insert any elements before/between first 4
-#: libgnomeprint/gnome-print-unit.c:33
+#: libgnomeprint/gnome-print-unit.c:34
 msgid "Unit"
 msgstr "وحدة"
 
-#: libgnomeprint/gnome-print-unit.c:33
+#: libgnomeprint/gnome-print-unit.c:34
 msgid "Units"
 msgstr "وحدات"
 
-#: libgnomeprint/gnome-print-unit.c:34
+#: libgnomeprint/gnome-print-unit.c:35
 msgid "Point"
 msgstr "نقطة"
 
-#: libgnomeprint/gnome-print-unit.c:34
+#: libgnomeprint/gnome-print-unit.c:35
 msgid "Pt"
 msgstr "Pt"
 
-#: libgnomeprint/gnome-print-unit.c:34
+#: libgnomeprint/gnome-print-unit.c:35
 msgid "Points"
 msgstr "نقاط"
 
-#: libgnomeprint/gnome-print-unit.c:34
+#: libgnomeprint/gnome-print-unit.c:35
 msgid "Pts"
 msgstr "Pts"
 
-#: libgnomeprint/gnome-print-unit.c:35
+#: libgnomeprint/gnome-print-unit.c:36
 msgid "Userspace unit"
 msgstr "وحدة لمساحة المستخدم"
 
-#: libgnomeprint/gnome-print-unit.c:35
+#: libgnomeprint/gnome-print-unit.c:36
 msgid "User"
 msgstr "المستخدم"
 
-#: libgnomeprint/gnome-print-unit.c:35
+#: libgnomeprint/gnome-print-unit.c:36
 msgid "Userspace units"
 msgstr "وحدات لمساحة المستخدم"
 
-#: libgnomeprint/gnome-print-unit.c:36
+#: libgnomeprint/gnome-print-unit.c:37
 msgid "Pixel"
 msgstr "بيكسل"
 
-#: libgnomeprint/gnome-print-unit.c:36
+#: libgnomeprint/gnome-print-unit.c:37
 msgid "Px"
 msgstr "Px"
 
-#: libgnomeprint/gnome-print-unit.c:36
+#: libgnomeprint/gnome-print-unit.c:37
 msgid "Pixels"
 msgstr "بكسلات"
 
 #. You can add new elements from this point forward
-#: libgnomeprint/gnome-print-unit.c:38
+#: libgnomeprint/gnome-print-unit.c:39
 msgid "Percent"
 msgstr "مئوي"
 
-#: libgnomeprint/gnome-print-unit.c:38
+#: libgnomeprint/gnome-print-unit.c:39
 msgid "%"
 msgstr "%"
 
-#: libgnomeprint/gnome-print-unit.c:38
+#: libgnomeprint/gnome-print-unit.c:39
 msgid "Percents"
 msgstr "بالمائة"
 
-#: libgnomeprint/gnome-print-unit.c:39
+#: libgnomeprint/gnome-print-unit.c:40
 msgid "Millimeter"
 msgstr "ملليميتر"
 
-#: libgnomeprint/gnome-print-unit.c:39
+#: libgnomeprint/gnome-print-unit.c:40
 msgid "mm"
 msgstr "مم"
 
-#: libgnomeprint/gnome-print-unit.c:39
+#: libgnomeprint/gnome-print-unit.c:40
 msgid "Millimeters"
 msgstr "ملليميترات"
 
-#: libgnomeprint/gnome-print-unit.c:40
+#: libgnomeprint/gnome-print-unit.c:41
 msgid "Centimeter"
 msgstr "سنتمتر"
 
-#: libgnomeprint/gnome-print-unit.c:40
+#: libgnomeprint/gnome-print-unit.c:41
 msgid "cm"
 msgstr "سم"
 
-#: libgnomeprint/gnome-print-unit.c:40
+#: libgnomeprint/gnome-print-unit.c:41
 msgid "Centimeters"
 msgstr "سنتيمترات"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "Meter"
-msgstr "متر"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "m"
-msgstr "م"
-
-#: libgnomeprint/gnome-print-unit.c:41
-msgid "Meters"
-msgstr "أمتار"
 
 #: libgnomeprint/gnome-print-unit.c:42
 msgid "Inch"
@@ -204,85 +127,333 @@ msgstr "بوصة"
 msgid "Inches"
 msgstr "بوصات"
 
-#: libgnomeprint/gpa/gpa-media.c:246
+#: data/globals.xml.in.h:1
+msgid "1/3 A4"
+msgstr ""
+
+#: data/globals.xml.in.h:2
+msgid "1/3 A5"
+msgstr ""
+
+#: data/globals.xml.in.h:3
+msgid "1/4 A3"
+msgstr ""
+
+#: data/globals.xml.in.h:4
+msgid "1/4 A4"
+msgstr ""
+
+#: data/globals.xml.in.h:5
+msgid "1/8 A4"
+msgstr ""
+
+#: data/globals.xml.in.h:6
+msgid "2 pages to 1"
+msgstr ""
+
+#: data/globals.xml.in.h:7
+msgid "4 pages to 1"
+msgstr ""
+
+#: data/globals.xml.in.h:8
+msgid "A0"
+msgstr ""
+
+#: data/globals.xml.in.h:9
+msgid "A1"
+msgstr ""
+
+#: data/globals.xml.in.h:10
+msgid "A10"
+msgstr ""
+
+#: data/globals.xml.in.h:11
+msgid "A2"
+msgstr ""
+
+#: data/globals.xml.in.h:12
+msgid "A3"
+msgstr ""
+
+#: data/globals.xml.in.h:14
+msgid "A5"
+msgstr ""
+
+#: data/globals.xml.in.h:15
+msgid "A6"
+msgstr ""
+
+#: data/globals.xml.in.h:16
+msgid "A7"
+msgstr ""
+
+#: data/globals.xml.in.h:17
+msgid "A8"
+msgstr ""
+
+#: data/globals.xml.in.h:18
+msgid "A9"
+msgstr ""
+
+#: data/globals.xml.in.h:19
+msgid "B0"
+msgstr ""
+
+#: data/globals.xml.in.h:20
+msgid "B1"
+msgstr ""
+
+#: data/globals.xml.in.h:21
+msgid "B10"
+msgstr ""
+
+#: data/globals.xml.in.h:22
+msgid "B2"
+msgstr ""
+
+#: data/globals.xml.in.h:23
+msgid "B3"
+msgstr ""
+
+#: data/globals.xml.in.h:24
+msgid "B4"
+msgstr ""
+
+#: data/globals.xml.in.h:25
+msgid "B5"
+msgstr ""
+
+#: data/globals.xml.in.h:26
+msgid "B6"
+msgstr ""
+
+#: data/globals.xml.in.h:27
+msgid "B7"
+msgstr ""
+
+#: data/globals.xml.in.h:28
+msgid "B8"
+msgstr ""
+
+#: data/globals.xml.in.h:29
+msgid "B9"
+msgstr ""
+
+#: data/globals.xml.in.h:30
+msgid "C0"
+msgstr ""
+
+#: data/globals.xml.in.h:31
+msgid "C1"
+msgstr ""
+
+#: data/globals.xml.in.h:32
+msgid "C10"
+msgstr ""
+
+#: data/globals.xml.in.h:33
+msgid "C2"
+msgstr ""
+
+#: data/globals.xml.in.h:34
+msgid "C3"
+msgstr ""
+
+#: data/globals.xml.in.h:35
+msgid "C4"
+msgstr ""
+
+#: data/globals.xml.in.h:36
+msgid "C5"
+msgstr ""
+
+#: data/globals.xml.in.h:37
+msgid "C6"
+msgstr ""
+
+#: data/globals.xml.in.h:38
+msgid "C6/C5 Envelope"
+msgstr ""
+
+#: data/globals.xml.in.h:39
+msgid "C7"
+msgstr ""
+
+#: data/globals.xml.in.h:40
+msgid "C8"
+msgstr ""
+
+#: data/globals.xml.in.h:41
+msgid "C9"
+msgstr ""
+
+#: data/globals.xml.in.h:42
 msgid "Custom"
 msgstr "مخصص"
 
-#: libgnomeprint/gpa/gpa-media.c:268
-msgid "Straight"
-msgstr "مستقيم"
+#: data/globals.xml.in.h:43
+msgid "DL Envelope"
+msgstr ""
 
-#: libgnomeprint/gpa/gpa-media.c:275
-msgid "Rotated 90 degrees"
-msgstr "مدوّر 90 درجة"
+#: data/globals.xml.in.h:44
+msgid "Divided"
+msgstr ""
 
-#: libgnomeprint/gpa/gpa-media.c:282
-msgid "Rotated 180 degrees"
-msgstr "مدوّر 180 درجة"
+#: data/globals.xml.in.h:45
+msgid "Envelope 6x9"
+msgstr ""
 
-#: libgnomeprint/gpa/gpa-media.c:289
-msgid "Rotated 270 degrees"
-msgstr "مدوّر 270 درجة"
+#: data/globals.xml.in.h:46
+msgid "Envelope No10"
+msgstr ""
 
-#: libgnomeprint/gpa/gpa-media.c:308
-msgid "Portrait"
-msgstr "طولي"
+#: data/globals.xml.in.h:47
+msgid "Folded"
+msgstr ""
 
-#: libgnomeprint/gpa/gpa-media.c:315
+#: data/globals.xml.in.h:48
 msgid "Landscape"
 msgstr "عرضي"
 
-#: libgnomeprint/gpa/gpa-media.c:322
-msgid "Upside down portrait"
-msgstr "طولي مقلوب"
-
-#: libgnomeprint/gpa/gpa-media.c:329
-msgid "Upside down landscape"
-msgstr "عرضي مقلوب"
-
-#: libgnomeprint/gpa/gpa-media.c:348
+#: data/globals.xml.in.h:49
 msgid "Plain"
 msgstr "عادي"
 
-#: tests/testprint.c:69
-msgid "Print Paper database"
-msgstr "قاعدة بيانات ورق الطباعة"
+#: data/globals.xml.in.h:50
+msgid "Portrait"
+msgstr "طولي"
 
-#: tests/testprint.c:70
-msgid "Describe GPA Tree"
-msgstr "وصف شجرة GPA"
+#: data/globals.xml.in.h:51
+msgid "Rotated 180 degrees"
+msgstr "مدوّر 180 درجة"
 
-#: tests/testprint.c:71
-msgid "Print text file"
-msgstr "اطبع ملف نص"
+#: data/globals.xml.in.h:52
+msgid "Rotated 270 degrees"
+msgstr "مدوّر 270 درجة"
 
-#: tests/testprint.c:72
-msgid "Use GnomePrintMaster for printing"
-msgstr "استخدم 'GnomePrintMaster' للطباعة"
+#: data/globals.xml.in.h:53
+msgid "Rotated 90 degrees"
+msgstr "مدوّر 90 درجة"
 
-#: tests/testprint.c:73
-msgid "Dump printout to metafile ('-' for stdout)"
-msgstr "حفظ ﻹخراج الطباعة في ملف عن ملفات ('-' لأداة اﻹخراج القياسية)"
+#: data/globals.xml.in.h:54
+msgid "Straight"
+msgstr "مستقيم"
 
-#: tests/testprint.c:74
-msgid "Split job between bonobo"
-msgstr "قسم الوظيفة إلى بونوبو"
+#: data/globals.xml.in.h:55
+msgid "US Executive"
+msgstr ""
 
-#: tests/testprint.c:75
-msgid "Render from metafile"
-msgstr "نرجمة من ملف عن ملفات"
+#: data/globals.xml.in.h:56
+msgid "US Legal"
+msgstr ""
 
-#: tests/testprint.c:156
-msgid "Gnome-print test page, rotated"
-msgstr "صفحة Gnome-print تجريبية، معكوسة"
+#: data/globals.xml.in.h:57
+msgid "US Letter"
+msgstr ""
 
-#: tests/testprint.c:173
-msgid "Gnome-print test page, slanted"
-msgstr "صفحة Gnome-print تجريبية، مائلة"
+#: data/globals.xml.in.h:58
+msgid "Upside down landscape"
+msgstr "عرضي مقلوب"
 
-#: tests/testprint.c:181
-msgid "Gnome-print test page, slanted. Small"
-msgstr "صفحة Gnome-print تجريبية، مائلة. صغيرة"
+#: data/globals.xml.in.h:59
+msgid "Upside down portrait"
+msgstr "طولي مقلوب"
+
+#: data/printers/GENERIC.xml.in.h:1
+msgid "Generic Postscript"
+msgstr ""
+
+#: data/printers/PDF-WRITER.xml.in.h:1
+msgid "Create a PDF document"
+msgstr ""
+
+#~ msgid "Print out debugging information"
+#~ msgstr "اطبع معلومات اكتشاف العيوب"
+
+#~ msgid "Tries to do everything automatically"
+#~ msgstr "تحاول أن تفعل كل شيء آليا"
+
+#~ msgid "Search directories recursively for font files"
+#~ msgstr "البحث عن ملفات الخطوط في المجلدات تتابعيا"
+
+#~ msgid "Start from zero fontmap, instead of parsing old one"
+#~ msgstr "ابدأ من من خريطة خط صفر بدلا من ترجمة القديم"
+
+#~ msgid "Reverifies all font files, even for fontmaps of same version"
+#~ msgstr "إعادة التأكد من ملفات الخطوط كلها حتى خرائط الخطوط من نفس اﻹصدارة"
+
+#~ msgid "Include font notice field (Copyright data) into fontmap"
+#~ msgstr "ضمّن حقل التنبيه للخط (معلومات حقوق النشر) في خريطة الخط"
+
+#~ msgid "Create $HOME/.gnome/fonts/gnome-print.fontmap"
+#~ msgstr "أنشيء $HOME/.gnome/fonts/gnome-print.fontmap"
+
+#~ msgid "Create "
+#~ msgstr "انشيء"
+
+#~ msgid "/gnome-print.fontmap"
+#~ msgstr "/gnome-print.fontmap"
+
+#~ msgid "Write output fontmap to specified file (- for stdout)"
+#~ msgstr "اكتب خريطة خط الإخراج في الملف المحدد (- لأداة اﻹخراج القياسية)"
+
+#~ msgid ""
+#~ "Return the $FONTMAPDIR_STATIC and $FONTMAPDIR_DYNAMIC used for this gnome-"
+#~ "print installation)"
+#~ msgstr ""
+#~ "ترجع the $FONTMAPDIR_STATIC و $FONTMAPDIR_DYNAMIC المستخدم إلى تنصيب "
+#~ "gnome-print)"
+
+#~ msgid "File describing known aliases"
+#~ msgstr "ملف لوصف الترادفات المعروفة"
+
+#~ msgid "PATH"
+#~ msgstr "المسار"
+
+#~ msgid "Specify default font(s) for any locale"
+#~ msgstr "حدد الخط (الخطوط) الافتراضي ﻷي محلي"
+
+#~ msgid "[LOCALE[,LOCALE]:fontname]"
+#~ msgstr "[LOCALE[,LOCALE]:fontname]"
+
+#~ msgid "Meter"
+#~ msgstr "متر"
+
+#~ msgid "m"
+#~ msgstr "م"
+
+#~ msgid "Meters"
+#~ msgstr "أمتار"
+
+#~ msgid "Print Paper database"
+#~ msgstr "قاعدة بيانات ورق الطباعة"
+
+#~ msgid "Describe GPA Tree"
+#~ msgstr "وصف شجرة GPA"
+
+#~ msgid "Print text file"
+#~ msgstr "اطبع ملف نص"
+
+#~ msgid "Use GnomePrintMaster for printing"
+#~ msgstr "استخدم 'GnomePrintMaster' للطباعة"
+
+#~ msgid "Dump printout to metafile ('-' for stdout)"
+#~ msgstr "حفظ ﻹخراج الطباعة في ملف عن ملفات ('-' لأداة اﻹخراج القياسية)"
+
+#~ msgid "Split job between bonobo"
+#~ msgstr "قسم الوظيفة إلى بونوبو"
+
+#~ msgid "Render from metafile"
+#~ msgstr "نرجمة من ملف عن ملفات"
+
+#~ msgid "Gnome-print test page, rotated"
+#~ msgstr "صفحة Gnome-print تجريبية، معكوسة"
+
+#~ msgid "Gnome-print test page, slanted"
+#~ msgstr "صفحة Gnome-print تجريبية، مائلة"
+
+#~ msgid "Gnome-print test page, slanted. Small"
+#~ msgstr "صفحة Gnome-print تجريبية، مائلة. صغيرة"
 
 #~ msgid "meters"
 #~ msgstr "أمتار"

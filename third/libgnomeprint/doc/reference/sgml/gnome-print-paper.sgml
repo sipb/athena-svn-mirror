@@ -51,9 +51,9 @@ void        <link linkend="gnome-print-paper-free-list">gnome_print_paper_free_l
 <title><anchor id="GnomePrintPaper">struct GnomePrintPaper</title>
 <programlisting>struct GnomePrintPaper {
 
-	guint version : 8; /* Has to be 0 at moment */
-	guchar *name; /* Name such as A4 */
-	gdouble width, height;
+	   guint version : 8; /* Has to be 0 at moment */
+	   guchar *name;      /* Name such as A4 */
+	   gdouble width, height;
 };
 </programlisting>
 <para>

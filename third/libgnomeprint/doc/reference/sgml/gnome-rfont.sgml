@@ -18,7 +18,7 @@
 struct      <link linkend="GnomeRFont">GnomeRFont</link>;
 struct      <link linkend="GnomeRFontClass">GnomeRFontClass</link>;
 <link linkend="GnomeRFont">GnomeRFont</link>* <link linkend="gnome-font-get-rfont">gnome_font_get_rfont</link>            (<link linkend="GnomeFont">GnomeFont</link> *font,
-                                             const <link linkend="gdouble">gdouble</link> *transform);
+                                             const <link linkend="gdouble">gdouble</link> *t);
 #define     <link linkend="gnome-rfont-ref">gnome_rfont_ref</link>                 (o)
 #define     <link linkend="gnome-rfont-unref">gnome_rfont_unref</link>               (o)
 #define     <link linkend="gnome-rfont-render-pgl-rgb8">gnome_rfont_render_pgl_rgb8</link>
@@ -83,19 +83,22 @@ const <link linkend="ArtSVP">ArtSVP</link>* <link linkend="gnome-rfont-get-glyph
 <refsect2>
 <title><anchor id="gnome-font-get-rfont">gnome_font_get_rfont ()</title>
 <programlisting><link linkend="GnomeRFont">GnomeRFont</link>* gnome_font_get_rfont            (<link linkend="GnomeFont">GnomeFont</link> *font,
-                                             const <link linkend="gdouble">gdouble</link> *transform);</programlisting>
+                                             const <link linkend="gdouble">gdouble</link> *t);</programlisting>
+<para>
+Creates a new RFont from <parameter>font</parameter> and font->raster affine matrix
+Matrix can be 2x2, although if read, all 2x3 values are
+retrieved. RFont is referenced, so you have to unref it
+somewhere</para>
 <para>
 
 </para><variablelist role="params">
 <varlistentry><term><parameter>font</parameter>&nbsp;:</term>
-<listitem><simpara>
+<listitem><simpara> 
 </simpara></listitem></varlistentry>
-<varlistentry><term><parameter>transform</parameter>&nbsp;:</term>
-<listitem><simpara>
+<varlistentry><term><parameter>t</parameter>&nbsp;:</term>
+<listitem><simpara> 
 </simpara></listitem></varlistentry>
-<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara>
-
-
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the font created, NULL on error.
 </simpara></listitem></varlistentry>
 </variablelist></refsect2>
 <refsect2>

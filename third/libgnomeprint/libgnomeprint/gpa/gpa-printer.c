@@ -20,42 +20,41 @@
  *    Jose M. Celorio <chema@ximian.com>
  *    Lauris Kaplinski <lauris@ximian.com>
  *
- *  Copyright (C) 2000-2001 Ximian, Inc. and Jose M. Celorio
+ *  Copyright (C) 2000-2003 Ximian, Inc.
  *
  */
 
-#define __GPA_PRINTER_C__
-#define noGPA_PRINTER_DEBUG
+#include "config.h"
 
+#include <locale.h>
 #include <string.h>
 #include <sys/types.h>
-#include <dirent.h> /* For the DIR structure stuff */
-#include <libxml/xmlmemory.h>
+#include <dirent.h>
+
+#include <gmodule.h>
 #include <libxml/parser.h>
+#include <libxml/xmlmemory.h>
 
 #include "gpa-utils.h"
-#include "gpa-value.h"
 #include "gpa-reference.h"
 #include "gpa-settings.h"
 #include "gpa-model.h"
 #include "gpa-printer.h"
+#include "gpa-root.h"
 
-/* GPAPrinter */
+typedef struct _GPAPrinterClass GPAPrinterClass;
+struct _GPAPrinterClass {
+	GPANodeClass node_class;
+};
 
 static void gpa_printer_class_init (GPAPrinterClass *klass);
 static void gpa_printer_init (GPAPrinter *printer);
 
 static void gpa_printer_finalize (GObject *object);
 
-static gboolean gpa_printer_verify (GPANode *node);
-static guchar *gpa_printer_get_value (GPANode *node);
-static GPANode *gpa_printer_get_child (GPANode *node, GPANode *ref);
-static GPANode *gpa_printer_lookup (GPANode *node, const guchar *path);
-static void gpa_printer_modified (GPANode *node, guint flags);
-
-static GPANode *gpa_printer_new_from_file (const gchar *filename);
-
-static GHashTable *namedict = NULL;
+static gboolean  gpa_printer_verify    (GPANode *node);
+static guchar  * gpa_printer_get_value (GPANode *node);
+static GPANode * gpa_printer_new_from_file (const gchar *file);
 
 static GPANodeClass *parent_class = NULL;
 
@@ -90,19 +89,16 @@ gpa_printer_class_init (GPAPrinterClass *klass)
 
 	object_class->finalize = gpa_printer_finalize;
 
-	node_class->verify = gpa_printer_verify;
+	node_class->verify    = gpa_printer_verify;
 	node_class->get_value = gpa_printer_get_value;
-	node_class->get_child = gpa_printer_get_child;
-	node_class->lookup = gpa_printer_lookup;
-	node_class->modified = gpa_printer_modified;
 }
 
 static void
 gpa_printer_init (GPAPrinter *printer)
 {
-	printer->name = NULL;
+	printer->name     = NULL;
+	printer->model    = NULL;
 	printer->settings = NULL;
-	printer->model = NULL;
 }
 
 static void
@@ -112,16 +108,12 @@ gpa_printer_finalize (GObject *object)
 
 	printer = GPA_PRINTER (object);
 
-	if (printer->name) {
-		g_assert (namedict != NULL);
-		if (printer == g_hash_table_lookup (namedict, GPA_VALUE (printer->name)->value)) {
-			g_hash_table_remove (namedict, GPA_VALUE (printer->name)->value);
-		}
-	}
-
-	printer->name = gpa_node_detach_unref (GPA_NODE (printer), GPA_NODE (printer->name));
-	printer->settings = (GPAList *) gpa_node_detach_unref (GPA_NODE (printer), GPA_NODE (printer->settings));
-	printer->model = gpa_node_detach_unref (GPA_NODE (printer), GPA_NODE (printer->model));
+	my_g_free (printer->name);
+	gpa_node_detach_unref (printer->settings);
+	gpa_node_detach_unref (printer->model);
+	printer->name     = NULL;
+	printer->settings = NULL;
+	printer->model    = NULL;
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -133,488 +125,504 @@ gpa_printer_verify (GPANode *node)
 
 	printer = GPA_PRINTER (node);
 
-	if (GPA_NODE_ID_EXISTS (node))
+	gpa_return_false_if_fail (printer->name);
+	gpa_return_false_if_fail (printer->settings);
+	gpa_return_false_if_fail (gpa_node_verify (printer->settings));
+	gpa_return_false_if_fail (printer->model);
+	gpa_return_false_if_fail (gpa_node_verify (printer->model));
+	
+	return TRUE;
+}
+
+guchar *
+gpa_printer_get_value (GPANode *node)
+{
+	g_return_val_if_fail (node != NULL, NULL);
+	g_return_val_if_fail (GPA_IS_PRINTER (node), NULL);
+
+	return g_strdup (GPA_PRINTER (node)->name);
+}
+
+/**
+ * gpa_printer_new_from_tree:
+ * @tree: The xml tree where to create the printer from
+ * 
+ * Create a GPAPrinter form an xml tree.
+ * 
+ * Return Value: a newly created GPAPrinter or NULL on error
+ **/
+static GPANode *
+gpa_printer_new_from_tree (xmlNodePtr tree)
+{
+	xmlNodePtr node;
+	GPANode *settings, *printer, *model;
+	xmlChar *name, *id, *version;
+	const gchar *lang;
+
+	g_return_val_if_fail (tree != NULL, NULL);
+	g_return_val_if_fail (tree->name != NULL, NULL);
+
+	settings = printer = model = NULL;
+	name = id = version = NULL;
+	
+	if (strcmp (tree->name, "Printer")) {
+		g_warning ("Base node is <%s>, should be <Printer>", tree->name);
+		goto gpa_printer_new_from_tree_error;
+	}
+	
+	id = xmlGetProp (tree, "Id");
+	if (!id) {
+		g_warning ("Printer node does not have Id, could not load printer");
+		goto gpa_printer_new_from_tree_error;
+	}
+
+	version = xmlGetProp (tree, "Version");
+	if (!version || strcmp (version, "1.0")) {
+		g_warning ("Wrong printer version \"%s\" should be \"1.0\" "
+			   "for printer \"%s\"", version, id);
+		goto gpa_printer_new_from_tree_error;
+	}
+
+	lang = setlocale (LC_MESSAGES, NULL);
+	node = tree->xmlChildrenNode;
+	for (; node != NULL; node = node->next) {
+
+		if (strcmp (node->name, "Name") == 0) {
+			xmlChar *node_lang;
+			node_lang = xmlNodeGetLang (node);
+			if (node_lang && lang && !strcmp (lang, node_lang)) {
+				my_xmlFree (name);
+				name = xmlNodeGetContent (node);
+			}
+			if (node_lang == NULL && name == NULL) {
+				name = xmlNodeGetContent (node);
+			}
+			xmlFree (node_lang);
+			continue;
+		}
+
+		if (strcmp (node->name, "Model") == 0) {
+			xmlChar *model_id = xmlNodeGetContent (node);
+			model = gpa_model_get_by_id (model_id, FALSE);
+			my_xmlFree (model_id);
+			continue;
+		}
+		
+		if (strcmp (node->name, "Settings") == 0) {
+			/* We don't support multiple settings per printer yet */
+			g_assert (settings == NULL);
+			if (!model) {
+				g_warning ("<Model> node should come before <Settings> (\"%s\")", id);
+				continue;
+			}
+			settings = gpa_settings_new_from_model_and_tree (model, node);
+			continue;
+		}
+
+	}
+
+	if (!name || !name[0]) {
+		g_warning ("Invalid or missing <Name> for printer \"%s\"", id);
+		goto gpa_printer_new_from_tree_error;
+	}
+	if (!model) {
+		g_warning ("Invalid or missing <Model> for printer \"%s\"\n", id);
+		goto gpa_printer_new_from_tree_error;
+	}
+	if (!settings) {
+		g_warning ("Invalid or missing <Settings> for printer \"%s\"\n", id);
+		goto gpa_printer_new_from_tree_error;
+	}
+
+	printer = gpa_printer_new (id, name, GPA_MODEL (model), GPA_SETTINGS (settings));
+
+gpa_printer_new_from_tree_error:
+	my_xmlFree (name);
+	my_xmlFree (id);
+	my_xmlFree (version);
+
+	if (!printer) {
+		my_gpa_node_unref (settings);
+		my_gpa_node_unref (model);
+	}
+	
+	return printer;
+}
+
+/**
+ * gpa_printer_new_from_file:
+ * @file: 
+ * 
+ * Load a new printer from @filename, file should contain a XML description
+ * 
+ * Return Value: 
+ **/
+static GPANode *
+gpa_printer_new_from_file (const gchar *file)
+{
+	GPANode *printer = NULL;
+	xmlDocPtr doc;
+	xmlNodePtr node;
+
+	doc = xmlParseFile (file);
+	if (!doc) {
+		g_warning ("Could not parse %s\n", file);
+		return NULL;
+	}
+
+	node = doc->xmlRootNode;
+	printer = gpa_printer_new_from_tree (node);
+	xmlFreeDoc (doc);
+
+	if (!printer || !gpa_node_verify (printer)) {
+		g_warning ("Could not load printer from %s", file);
+		printer = NULL;
+	}
+	
+	return printer;
+}
+
+typedef struct _GpaModuleInfo GpaModuleInfo;
+struct _GpaModuleInfo {
+	GPAList *  (*printer_list_append) (GPAList *printers);
+};
+
+/**
+ * gpa_printer_list_load_from_module:
+ * @path: 
+ * 
+ * Load printers from a module
+ **/
+static gboolean
+gpa_printer_list_load_from_module (GPAList *printers, const gchar *path)
+{
+	GpaModuleInfo info;
+	GModule *handle;
+	gboolean (*init) (GpaModuleInfo *info);
+	gint retval = FALSE;
+
+	handle = g_module_open (path, G_MODULE_BIND_LAZY);
+	if (!handle) {
+		g_warning ("Can't g_module_open %s\n", path);
+		goto module_error;
+	}
+
+	if (!g_module_symbol (handle, "gpa_module_init", (gpointer*) &init)) {
+		g_warning ("Error. Module %s does not contains an init function\n", path);
+		goto module_error;
+	}
+	
+	if (!(init) (&info)) {
+		g_warning ("Could not initialize module %s\n", path);
+		goto module_error;
+	}
+
+	(info.printer_list_append) (printers);
+	retval = TRUE;
+	
+module_error:
+	g_module_close (handle);
+
+	return retval;
+}
+
+/**
+ * gpa_printer_list_load_from_module_dir:
+ * @list: 
+ * @dir_path: 
+ * 
+ * Loads the printers from the gnome-print-modules. We load the module and find
+ * for the gpa_printer_append symbol. If found, we asume this module is ok and we
+ * call the function so that we get the printers from it. Modules append to
+ * the list of printers passed to them the printers, they can steal the default
+ * priner themselves, at this point we've set the default printer from the GNOME
+ * as GENERIC postscript
+ **/
+static gboolean
+gpa_printer_list_load_from_module_dir (GPAList *printers, const gchar *dir_path)
+{
+	struct dirent *entry;
+	DIR *dir;
+	gint ext_len = strlen (LTDL_SHLIB_EXT);
+	g_assert (ext_len > 0);
+
+	if (!g_module_supported ()) {
+		g_warning ("g_module is not supported on this platform an thus we can't "
+			   "load dynamic printers\n");
 		return FALSE;
-	if (!printer->name)
+	}
+	
+	dir = opendir (dir_path);
+	if (!dir) {
+		/* Not an error. since modules are optional */
+		return TRUE;
+	}
+
+	while ((entry = readdir (dir)) != NULL) {
+		gchar *path;
+		gint len;
+
+		len = strlen (entry->d_name);
+		
+		if (len < ext_len + 2) /* 2 = one char + 1 for '.'*/
+			continue;
+
+		if (strcmp (entry->d_name + len - ext_len, LTDL_SHLIB_EXT))
+			continue;
+		
+		path = g_build_filename (dir_path, entry->d_name, NULL);
+		gpa_printer_list_load_from_module (printers, path);
+		g_free (path);
+	}
+	closedir (dir);
+	
+	return TRUE;
+}
+
+/**
+ * gpa_printer_list_load_from_dir:
+ * @printers: 
+ * @dir_name: The path where to load printers from
+ * 
+ * Loads printers from xml files inside @dir_name
+ * 
+ * Return Value: FALSE on error
+ **/
+static gboolean
+gpa_printer_list_load_from_dir (GPAList *printers, const gchar *dir_name)
+{
+	struct dirent *entry;
+	DIR *dir;
+
+	dir = opendir (dir_name);
+	if (!dir)
 		return FALSE;
-	if (!gpa_node_verify (printer->name))
-		return FALSE;
-	if (!printer->settings)
-		return FALSE;
-	if (!gpa_node_verify (GPA_NODE (printer->settings)))
-		return FALSE;
-	if (!printer->model)
-		return FALSE;
-	if (!gpa_node_verify (printer->model))
-		return FALSE;
+
+	while ((entry = readdir (dir))) {
+		GPANode *printer;
+		gchar *file;
+		gint len;
+
+		len = strlen (entry->d_name);
+		if (len < 5)
+			continue;
+		
+		if (strcmp (entry->d_name + len - 4, ".xml"))
+			continue;
+
+		file = g_build_filename (dir_name, entry->d_name, NULL);
+		printer = gpa_printer_new_from_file (file);
+		g_free (file);
+
+		if (!printer)
+			continue;
+
+		gpa_list_prepend (printers, printer);
+
+		if (strcmp (GPA_NODE_ID (printer), "GENERIC") == 0)
+		    gpa_list_set_default (printers, printer);
+	}
+	closedir (dir);
 
 	return TRUE;
 }
 
-static guchar *
-gpa_printer_get_value (GPANode *node)
-{
-	GPAPrinter *printer;
 
-	printer = GPA_PRINTER (node);
-
-	if (GPA_NODE_ID_EXISTS (node))
-		return g_strdup (GPA_NODE_ID (node));
-
-	return NULL;
-}
-
-static GPANode *
-gpa_printer_get_child (GPANode *node, GPANode *ref)
-{
-	GPAPrinter *printer;
-	GPANode *child;
-
-	printer = GPA_PRINTER (node);
-
-	g_return_val_if_fail (printer->settings != NULL, NULL);
-	g_return_val_if_fail (printer->model != NULL, NULL);
-	/* Model is reference */
-
-	child = NULL;
-	if (ref == NULL) {
-		child = printer->name;
-	} else if (ref == printer->name) {
-		child = GPA_NODE (printer->settings);
-	} else if (ref == GPA_NODE (printer->settings)) {
-		child = printer->model;
-	}
-
-	if (child)
-		gpa_node_ref (child);
-
-	return child;
-}
-
-static GPANode *
-gpa_printer_lookup (GPANode *node, const guchar *path)
-{
-	GPAPrinter *printer;
-	GPANode *child;
-
-	printer = GPA_PRINTER (node);
-
-	child = NULL;
-
-	if (gpa_node_lookup_ref (&child, GPA_NODE (printer->name), path, "Name"))
-		return child;
-	if (gpa_node_lookup_ref (&child, GPA_NODE (printer->settings), path, "Settings"))
-		return child;
-	if (gpa_node_lookup_ref (&child, GPA_NODE (printer->model), path, "Model"))
-		return child;
-
-	return NULL;
-}
-
-static void
-gpa_printer_modified (GPANode *node, guint flags)
-{
-	GPAPrinter *printer;
-
-	printer = GPA_PRINTER (node);
-
-	if (printer->name && (GPA_NODE_FLAGS (printer->name) & GPA_MODIFIED_FLAG)) {
-		gpa_node_emit_modified (printer->name, 0);
-	}
-	if (printer->model && (GPA_NODE_FLAGS (printer->model) & GPA_MODIFIED_FLAG)) {
-		gpa_node_emit_modified (printer->model, 0);
-	}
-	if (printer->settings && (GPA_NODE_FLAGS (printer->settings) & GPA_MODIFIED_FLAG)) {
-		gpa_node_emit_modified (GPA_NODE (printer->settings), 0);
-	}
-}
-
-/* Public methods */
-
-GPANode *
-gpa_printer_new_from_tree (xmlNodePtr tree)
-{
-	GPAPrinter *printer;
-	xmlChar *xmlid, *xmlver;
-	xmlNodePtr xmlc;
-	GPANode *name;
-	GPANode *model;
-	GSList *l;
-
-	g_return_val_if_fail (tree != NULL, NULL);
-
-	/* Check that tree is <Printer> */
-	if (strcmp (tree->name, "Printer")) {
-		g_warning ("file %s: line %d: Base node is <%s>, should be <Printer>", __FILE__, __LINE__, tree->name);
-		return NULL;
-	}
-	/* Check that printer has Id */
-	xmlid = xmlGetProp (tree, "Id");
-	if (!xmlid) {
-		g_warning ("file %s: line %d: Printer node does not have Id", __FILE__, __LINE__);
-		return NULL;
-	}
-
-	/* Check Printer definition version */
-	xmlver = xmlGetProp (tree, "Version");
-	if (!xmlver || strcmp (xmlver, "1.0")) {
-		g_warning ("file %s: line %d: Wrong printer version %s, should be 1.0", __FILE__, __LINE__, xmlver);
-		xmlFree (xmlid);
-		if (xmlver) xmlFree (xmlver);
-		return NULL;
-	}
-	xmlFree (xmlver);
-
-	if (!namedict)
-		namedict = g_hash_table_new (g_str_hash, g_str_equal);
-
-	printer = NULL;
-	name = NULL;
-	model = NULL;
-	l = NULL;
-
-	for (xmlc = tree->xmlChildrenNode; xmlc != NULL; xmlc = xmlc->next) {
-		if (!strcmp (xmlc->name, "Name")) {
-			xmlChar *content;
-			content = xmlNodeGetContent (xmlc);
-			if (content && *content) {
-#if 0
-				if (!g_hash_table_lookup (namedict, content)) {
-					name = gpa_value_new ("Name", content);
-				}
-#else
-				name = gpa_value_new ("Name", content);
-#endif
-				xmlFree (content);
-			}
-		} else if (!strcmp (xmlc->name, "Settings")) {
-			if (model) {
-				GPANode *settings;
-				settings = gpa_settings_new_from_model_and_tree (model, xmlc);
-				if (settings) l = g_slist_prepend (l, settings);
-			} else {
-				g_warning ("Settings without model in printer definition");
-			}
-		} else if (!strcmp (xmlc->name, "Model")) {
-			xmlChar *content;
-			content = xmlNodeGetContent (xmlc);
-			if (content && *content) {
-				model = gpa_model_get_by_id (content);
-				xmlFree (content);
-			}
-		}
-	}
-
-	if (name && model && l) {
-		printer = (GPAPrinter *) gpa_node_new (GPA_TYPE_PRINTER, xmlid);
-		/* Name */
-		printer->name = name;
-		name->parent = GPA_NODE (printer);
-#if 0
-		g_assert (!g_hash_table_lookup (namedict, GPA_VALUE (name)->value));
-#endif
-		g_hash_table_insert (namedict, GPA_VALUE (name)->value, printer);
-		/* Settings */
-		/* fixme: here are defaults again... */
-		printer->settings = GPA_LIST (gpa_list_new (GPA_TYPE_SETTINGS, TRUE));
-		GPA_NODE (printer->settings)->parent = GPA_NODE (printer);
-		while (l) {
-			GPANode *settings;
-			settings = GPA_NODE (l->data);
-			l = g_slist_remove (l, settings);
-			settings->parent = GPA_NODE (printer->settings);
-			settings->next = printer->settings->children;
-			printer->settings->children = settings;
-		}
-		/* fixme: */
-		if (printer->settings->children)
-			gpa_list_set_default (printer->settings, printer->settings->children);
-		/* Model */
-		printer->model = gpa_reference_new (model);
-		printer->model->parent = GPA_NODE (printer);
-		gpa_node_unref (GPA_NODE (model));
-	} else {
-		if (name)
-			gpa_node_unref (name);
-		if (model)
-			gpa_node_unref (model);
-		while (l) {
-			gpa_node_unref (GPA_NODE (l->data));
-			l = g_slist_remove (l, l->data);
-		}
-	}
-
-	xmlFree (xmlid);
-
-	return (GPANode *) printer;
-}
-
-static GPANode *
-gpa_printer_new_from_file (const gchar *filename)
-{
-	GPANode *printer;
-	xmlDocPtr doc;
-	xmlNodePtr root;
-
-	doc = xmlParseFile (filename);
-	if (!doc)
-		return NULL;
-	root = doc->xmlRootNode;
-	printer = NULL;
-	if (!strcmp (root->name, "Printer")) {
-		printer = gpa_printer_new_from_tree (root);
-	}
-	xmlFreeDoc (doc);
-	return printer;
-}
-
-/* GPAPrinterList */
-
-static void gpa_printer_list_load_from_dir (GPAList *printers, const gchar *dirname);
-
-static GPAList *printers = NULL;
-
-static void
-gpa_printers_gone (gpointer data, GObject *gone)
-{
-#ifdef GPA_PRINTER_DEBUG
-	g_print ("GPAPrinter: Printer list %p has gone\n", gone);
-#endif
-
-	printers = NULL;
-}
-
+/**
+ * gpa_printer_list_load:
+ * @void: 
+ * 
+ * Loads the configured printers, should only be called once per
+ * process. Use gpa_root_get_printers to get the list of printers.
+ * 
+ * Return Value: a GPAList node with childs of type GPAPrinter
+ **/
 GPAList *
 gpa_printer_list_load (void)
 {
-	gchar *dirname;
+	GPAList *printers;
 
-	if (printers) {
-		return (GPAList *) gpa_node_ref (GPA_NODE (printers));
+	if (printers_list != NULL) {
+		g_warning ("gpa_printer_list_load should only be called once");
+		return NULL;
 	}
 
-	printers = GPA_LIST (gpa_node_new (GPA_TYPE_LIST, "Printers"));
-	gpa_list_construct (GPA_LIST (printers), GPA_TYPE_PRINTER, TRUE);
-	g_object_weak_ref (G_OBJECT (printers), gpa_printers_gone, &printers);
+	printers = gpa_list_new (GPA_TYPE_PRINTER, "Printers", TRUE);
 
-	dirname = g_strdup_printf ("%s/%s", g_get_home_dir (), ".gnome/printers");
-	gpa_printer_list_load_from_dir (printers, dirname);
-	g_free (dirname);
-	/* fixme: */
-	gpa_printer_list_load_from_dir (printers, DATADIR "/gnome-print-2.0/printers");
+	gpa_printer_list_load_from_dir        (printers, GPA_DATA_DIR "/printers");
+	gpa_printer_list_load_from_module_dir (printers, GPA_MODULES_DIR);
 
-	/* fixme: During parsing, please */
-	if (printers->children) {
-		gpa_node_set_path_value (GPA_NODE (printers), "Default", GPA_NODE_ID (printers->children));
+	if (GPA_NODE (printers)->children == NULL) {
+		g_warning ("Could not load any Printer. Check your libgnomeprint installation\n");
+		gpa_node_unref (GPA_NODE (printers));
+		return NULL;
 	}
+
+	gpa_list_reverse (printers);
+	printers_list = printers;
 
 	return printers;
 }
 
-static void
-gpa_printer_list_load_from_dir (GPAList *printers, const gchar *dirname)
-{
-	DIR *dir;
-	struct dirent *dent;
-	GHashTable *iddict;
-	GSList *l;
 
-	dir = opendir (dirname);
-	if (!dir)
-		return;
-
-	l = NULL;
-	iddict = g_hash_table_new (g_str_hash, g_str_equal);
-	while ((dent = readdir (dir))) {
-		gint len;
-		gchar *filename;
-		GPANode *printer;
-		len = strlen (dent->d_name);
-		if (len < 9)
-			continue;
-		if (strcmp (dent->d_name + len - 8, ".printer"))
-			continue;
-		filename = g_strdup_printf ("%s/%s", dirname, dent->d_name);
-		printer = gpa_printer_new_from_file (filename);
-		g_free (filename);
-		if (printer) {
-			if (g_hash_table_lookup (iddict, GPA_NODE_ID (printer))) {
-				gpa_node_unref (printer);
-			} else {
-				g_hash_table_insert (iddict, (gpointer) GPA_NODE_ID (printer), printer);
-				l = g_slist_prepend (l, printer);
-			}
-		}
-	}
-	g_hash_table_destroy (iddict);
-	closedir (dir);
-
-	while (l) {
-		/* fixme: ordering */
-		GPANode *printer;
-		printer = GPA_NODE (l->data);
-		l = g_slist_remove (l, printer);
-		printer->next = printers->children;
-		printers->children = printer;
-		printer->parent = GPA_NODE (printers);
-	}
-}
-
-
-/* Deprecated */
-
+/**
+ * gpa_printer_get_default:
+ * @void: 
+ * 
+ * Get the default printer on the system. If no defaults are
+ * set, the sets it to the first printer on the list.
+ * 
+ * Return Value: a refcounted default printer, NULL on error or
+ *               if no printers are loaded
+ **/
 GPANode *
 gpa_printer_get_default (void)
 {
-	GPAList *printers;
-	GPANode *def;
-
-	printers = gpa_printer_list_load ();
-
-	if (printers->def) {
-		def = GPA_REFERENCE_REFERENCE (printers->def);
-	} else {
-		def = printers->children;
+	if (!printers_list || !GPA_NODE (printers_list)->children) {
+		g_warning ("Global printer list not loaded");
+		return NULL;
 	}
 
-	if (def)
-		gpa_node_ref (def);
-
-	gpa_node_unref (gpa_node_cache (GPA_NODE (printers)));
-
-	return def;
+	return gpa_list_get_defalt (printers_list);
 }
 
+/**
+ * gpa_printer_get_by_id:
+ * @id: 
+ * 
+ * Get a printer from the global printer list by id
+ * 
+ * Return Value: a refcounted printer node, NULL if the printer
+ *               was not found or error
+ **/
 GPANode *
 gpa_printer_get_by_id (const guchar *id)
 {
-	GPAList *printers;
-	GPANode *child;
+	GPANode *child = NULL;
 
 	g_return_val_if_fail (id != NULL, NULL);
 	g_return_val_if_fail (*id != '\0', NULL);
 
-	printers = gpa_printer_list_load ();
+	if (!printers_list)
+		return NULL;
 
-	child = NULL;
-
-	if (printers) {
-		for (child = printers->children; child != NULL; child = child->next) {
-			g_assert (GPA_IS_PRINTER (child));
-			if (GPA_NODE_ID_COMPARE (child, id))
-				break;
-		}
+	child = GPA_NODE (printers_list)->children;
+	for (; child != NULL; child = child->next) {
+		if (GPA_NODE_ID_COMPARE (child, id))
+			break;
 	}
 
 	if (child)
 		gpa_node_ref (child);
 
-	gpa_node_unref (gpa_node_cache (GPA_NODE (printers)));
+	return child;
+}
+
+/**
+ * gpa_printer_get_default_settings:
+ * @printer: 
+ * 
+ * Returns a refcounted GPANode * of the default settings of @printer
+ * 
+ * Return Value: 
+ **/
+GPANode *
+gpa_printer_get_default_settings (GPAPrinter *printer)
+{
+	GPANode *child;
+	
+	g_return_val_if_fail (printer != NULL, NULL);
+	g_return_val_if_fail (GPA_IS_PRINTER (printer), NULL);
+
+	child = gpa_list_get_defalt (GPA_LIST (printer->settings));
 
 	return child;
 }
 
+/**
+ * gpa_printer_new:
+ * @id: 
+ * @name: 
+ * @model: 
+ * @settings: 
+ *
+ * Create a new printer node and set it up
+ * We consume the refcount of @model & @setting so if you need
+ * them, you should ref them before calling this function
+ * 
+ * Return Value: the newly created printer, NULL on error
+ **/
 GPANode *
-gpa_printer_get_default_settings (GPAPrinter *printer)
+gpa_printer_new (const gchar *id, const gchar *name, GPAModel *model, GPASettings *settings)
 {
-	g_return_val_if_fail (printer != NULL, NULL);
-	g_return_val_if_fail (GPA_IS_PRINTER (printer), NULL);
-
-	if (printer->settings && printer->settings->children) {
-		g_assert (GPA_IS_SETTINGS (printer->settings->children));
-		gpa_node_ref (printer->settings->children);
-		return printer->settings->children;
-	}
-
-	return NULL;
-}
-
-/* fixme: Thorough check */
-
-GPANode *
-gpa_printer_new_from_model (GPAModel *model, const guchar *name)
-{
-	GPAList *printers;
 	GPAPrinter *printer;
-	GPANode *settings;
-	guchar *id;
+	GPANode *check;
+	GPAList *list;
 
+	g_return_val_if_fail (id && id[0], NULL);
+	g_return_val_if_fail (name && name[0], NULL);
 	g_return_val_if_fail (model != NULL, NULL);
 	g_return_val_if_fail (GPA_IS_MODEL (model), NULL);
-	g_return_val_if_fail (name != NULL, NULL);
-	g_return_val_if_fail (*name != '\0', NULL);
+	g_return_val_if_fail (settings != NULL, NULL);
+	g_return_val_if_fail (GPA_IS_SETTINGS (settings), NULL);
+	g_return_val_if_fail (gpa_initialized, NULL);
 
-	if (!namedict)
-		namedict = g_hash_table_new (g_str_hash, g_str_equal);
-#if 0
-	g_return_val_if_fail (!g_hash_table_lookup (namedict, name), NULL);
-#endif
+	check = gpa_printer_get_by_id (id);
+	if (check) {
+		g_warning ("Can't create printer \"%s\" because the id \"%s\" is already used", name, id);
+		gpa_node_unref (check);
+		return NULL;
+	}
 
-	printers = gpa_printer_list_load ();
+	list = gpa_list_new (GPA_TYPE_SETTINGS, "Settings", TRUE);
 
-	id = gpa_id_new (GPA_NODE_ID (model));
 	printer = (GPAPrinter *) gpa_node_new (GPA_TYPE_PRINTER, id);
-	g_free (id);
+	printer->name     = g_strdup (name);
+	printer->model    = gpa_node_attach (GPA_NODE (printer),
+					     GPA_NODE (gpa_reference_new (GPA_NODE (model), "Model")));
+	printer->settings = gpa_node_attach (GPA_NODE (printer),
+					     GPA_NODE (list));
 
-	/* Name */
-	printer->name = gpa_node_attach (GPA_NODE (printer), gpa_value_new ("Name", name));
-	g_hash_table_insert (namedict, GPA_VALUE (printer->name)->value, printer);
+	gpa_node_reverse_children (GPA_NODE (printer));
 
-	/* Settings */
-	/* fixme: Implement helper */
-	/* fixme: defaults again */
-	printer->settings = GPA_LIST (gpa_node_attach (GPA_NODE (printer), gpa_list_new (GPA_TYPE_SETTINGS, TRUE)));
-	settings = gpa_settings_new_from_model (GPA_NODE (model), "Default");
-	gpa_list_add_child (printer->settings, settings, NULL);
-	gpa_node_unref (settings);
-	/* fixme: */
-	gpa_list_set_default (printer->settings, settings);
+	gpa_list_prepend     (list, GPA_NODE (settings));
+	gpa_list_set_default (list, GPA_NODE (settings));
 
-	/* Model */
-	printer->model = gpa_node_attach (GPA_NODE (printer), gpa_reference_new (GPA_NODE (model)));
+	settings->printer = gpa_reference_new (GPA_NODE (printer), "Printer");
+	/* We sink the model reference because we have a GPAReference to it
+	 * we take ownership of the settings, so we don't unref them
+	 */
+	gpa_node_unref (GPA_NODE (model));
 
-	gpa_list_add_child (printers, GPA_NODE (printer), NULL);
-
-	gpa_node_unref (gpa_node_cache (GPA_NODE (printers)));
-
+	if (!gpa_printer_verify ((GPANode *) printer)) {
+		g_warning ("The newly created printer %s could not be verified", id);
+		gpa_node_unref ((GPANode *) printer);
+		printer = NULL;
+		return NULL;
+	}
+	
 	return (GPANode *) printer;
 }
 
-gboolean
-gpa_printer_save (GPAPrinter *printer)
+
+GPANode *
+gpa_printer_get_settings_by_id (GPAPrinter *printer, const guchar *id)
 {
-	xmlDocPtr doc;
-	xmlNodePtr root, xmln;
 	GPANode *child;
-	guchar *filename;
 
-	g_return_val_if_fail (printer != NULL, FALSE);
-	g_return_val_if_fail (GPA_IS_PRINTER (printer), FALSE);
+	g_return_val_if_fail (printer != NULL, NULL);
+	g_return_val_if_fail (GPA_IS_PRINTER (printer), NULL);
+	g_return_val_if_fail (id && id[0], NULL);
 
-	g_return_val_if_fail (gpa_node_verify (GPA_NODE (printer)), FALSE);
-
-	doc = xmlNewDoc ("1.0");
-	root = xmlNewDocNode (doc, NULL, "Printer", NULL);
-	xmlSetProp (root, "Version", "1.0");
-	xmlSetProp (root, "Id", GPA_NODE_ID (printer));
-	xmlDocSetRootElement (doc, root);
-
-	xmln = xmlNewChild (root, NULL, "Name", GPA_VALUE (printer->name)->value);
-
-	xmln = xmlNewChild (root, NULL, "Model", GPA_NODE_ID (GPA_REFERENCE (printer->model)->ref));
-
-	for (child = printer->settings->children; child != NULL; child = child->next) {
-		xmln = gpa_settings_write (doc, child);
-		if (xmln)
-			xmlAddChild (root, xmln);
+	g_assert (printer->settings);
+	child = printer->settings->children;
+	while (child) {
+		if (GPA_NODE_ID_COMPARE (child, id))
+			break;
+		child = gpa_node_get_child (child, NULL);
 	}
-
-	filename = g_strdup_printf ("%s/.gnome/printers/%s.printer", g_get_home_dir (), GPA_NODE_ID (printer));
-	xmlSaveFile (filename, doc);
-	g_free (filename);
-
-	xmlFreeDoc (doc);
-
-	return TRUE;
+	if (child)
+		gpa_node_ref (child);
+	
+	return child;
 }
-

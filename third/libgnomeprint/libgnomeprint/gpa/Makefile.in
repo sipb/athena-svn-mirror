@@ -64,43 +64,67 @@ CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 CPP = @CPP@
+CUPS_CFLAGS = @CUPS_CFLAGS@
+CUPS_LIBS = @CUPS_LIBS@
 CXX = @CXX@
 DATADIRNAME = @DATADIRNAME@
 DB2HTML = @DB2HTML@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
 EXEEXT = @EXEEXT@
-FONTMAPDIR_DYNAMIC = @FONTMAPDIR_DYNAMIC@
-FONTMAPDIR_STATIC = @FONTMAPDIR_STATIC@
 FREETYPE_CONFIG = @FREETYPE_CONFIG@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
+GNOME_PRINT_DATA_DIR = @GNOME_PRINT_DATA_DIR@
+GNOME_PRINT_MODULES_DIR = @GNOME_PRINT_MODULES_DIR@
 GTKDOC = @GTKDOC@
 HAVE_GTK_DOC = @HAVE_GTK_DOC@
 HTML_DIR = @HTML_DIR@
+INCLTDL = @INCLTDL@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
+INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
+LIBADD_DL = @LIBADD_DL@
 LIBGNOMEPRINT_CFLAGS = @LIBGNOMEPRINT_CFLAGS@
 LIBGNOMEPRINT_LIBS = @LIBGNOMEPRINT_LIBS@
+LIBLTDL = @LIBLTDL@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
+LTDL_SHLIBEXT = @LTDL_SHLIBEXT@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
-OMNI_CFLAGS = @OMNI_CFLAGS@
-OMNI_LIBDIR = @OMNI_LIBDIR@
 PACKAGE = @PACKAGE@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
 STRIP = @STRIP@
+TOOLS_CFLAGS = @TOOLS_CFLAGS@
+TOOLS_LIBS = @TOOLS_LIBS@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
@@ -108,18 +132,16 @@ cxxflags_set = @cxxflags_set@
 
 noinst_LTLIBRARIES = libgpa.la
 
-CPPFLAGS =  	-DWE_ARE_LIBGNOMEPRINT_UI 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	-DBINDIR=\""$(bindir)"\" 	-DDATADIR=\""$(datadir)"\" 
+INCLUDES =  	-I$(top_srcdir) 	-I$(top_srcdir)/libgnomeprint 	$(LIBGNOMEPRINT_CFLAGS) 	-DBINDIR=\""$(bindir)"\" 	-DDATADIR=\""$(datadir)"\"      -DGPA_MODULES_DIR=\""$(GNOME_PRINT_MODULES_DIR)"\"      -DGPA_DATA_DIR=\""$(GNOME_PRINT_DATA_DIR)"\" 		-DG_DISABLE_DEPRECATED					-DGDK_DISABLE_DEPRECATED					-DGTK_DISABLE_DEPRECATED					-DGDK_PIXBUF_DISABLE_DEPRECATED			-DGNOME_DISABLE_DEPRECATED
 
 
-INCLUDES =  	-I$(top_srcdir) 	$(LIBGNOMEPRINT_CFLAGS)
+libgpa_la_SOURCES =  	gpa-node.c      gpa-node.h gpa-node-private.h 	gpa-list.c      	gpa-reference.c 		gpa-model.c   	gpa-option.c  	gpa-printer.c 		gpa-root.c     	gpa-config.c   	gpa-key.c      	gpa-settings.c 		gpa-utils.c    gpa-utils.h
 
 
-libgpa_la_SOURCES =  	gpa-node.c gpa-node.h gpa-node-private.h 	gpa-value.c gpa-value.h 	gpa-list.c gpa-list.h 	gpa-reference.c gpa-reference.h 		gpa-vendor.c gpa-vendor.h 	gpa-model.c gpa-model.h 	gpa-option.c gpa-option.h 	gpa-printer.c gpa-printer.h 	gpa-media.c gpa-media.h 		gpa-root.c gpa-root.h 	gpa-config.c gpa-config.h 	gpa-key.c gpa-key.h 	gpa-settings.c gpa-settings.h 		gpa-utils.c gpa-utils.h
+libgpaincdir = $(includedir)/libgnomeprint-2.2/libgnomeprint/private
 
+libgpainc_HEADERS =  	gpa-node.h 	gpa-utils.h 	gpa-printer.h 	gpa-key.h 	gpa-option.h 	gpa-node-private.h 	gpa-list.h 	gpa-model.h 	gpa-settings.h 	gpa-reference.h 	gpa-root.h 	gpa-config.h
 
-libgpaincdir = $(includedir)/libgnomeprint-2.0/libgnomeprint/private
-
-libgpainc_HEADERS = gpa-private.h
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
 CONFIG_CLEAN_FILES = 
@@ -127,14 +149,14 @@ LTLIBRARIES =  $(noinst_LTLIBRARIES)
 
 
 DEFS = @DEFS@ -I. -I$(srcdir) -I../..
+CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 libgpa_la_LDFLAGS = 
 libgpa_la_LIBADD = 
-libgpa_la_OBJECTS =  gpa-node.lo gpa-value.lo gpa-list.lo \
-gpa-reference.lo gpa-vendor.lo gpa-model.lo gpa-option.lo \
-gpa-printer.lo gpa-media.lo gpa-root.lo gpa-config.lo gpa-key.lo \
-gpa-settings.lo gpa-utils.lo
+libgpa_la_OBJECTS =  gpa-node.lo gpa-list.lo gpa-reference.lo \
+gpa-model.lo gpa-option.lo gpa-printer.lo gpa-root.lo gpa-config.lo \
+gpa-key.lo gpa-settings.lo gpa-utils.lo
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -142,7 +164,7 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(LDFLAGS) -o $@
 HEADERS =  $(libgpainc_HEADERS)
 
-DIST_COMMON =  README ChangeLog Makefile.am Makefile.in
+DIST_COMMON =  README Makefile.am Makefile.in
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -278,62 +300,40 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-gpa-config.lo gpa-config.o : gpa-config.c gpa-utils.h gpa-node.h \
-	gpa-private.h ../gnome-print-config.h \
-	../../libgnomeprint/gnome-print-unit.h gpa-reference.h \
-	gpa-node-private.h gpa-printer.h gpa-list.h gpa-model.h \
-	gpa-settings.h gpa-root.h gpa-config.h
-gpa-key.lo gpa-key.o : gpa-key.c gpa-utils.h gpa-node.h gpa-private.h \
-	../gnome-print-config.h ../../libgnomeprint/gnome-print-unit.h \
-	gpa-reference.h gpa-node-private.h gpa-option.h gpa-list.h \
+gpa-config.lo gpa-config.o : gpa-config.c ../../config.h gpa-utils.h \
+	gpa-node.h gpa-reference.h gpa-node-private.h gpa-printer.h \
+	gpa-model.h gpa-list.h gpa-settings.h gpa-root.h gpa-config.h \
 	gpa-key.h
-gpa-list.lo gpa-list.o : gpa-list.c gpa-utils.h gpa-node.h gpa-private.h \
-	../gnome-print-config.h ../../libgnomeprint/gnome-print-unit.h \
-	gpa-reference.h gpa-node-private.h gpa-list.h
-gpa-media.lo gpa-media.o : gpa-media.c ../../config.h \
-	../gnome-print-i18n.h gpa-utils.h gpa-node.h gpa-private.h \
-	../gnome-print-config.h ../../libgnomeprint/gnome-print-unit.h \
-	gpa-option.h gpa-list.h gpa-node-private.h gpa-media.h
-gpa-model.lo gpa-model.o : gpa-model.c gpa-utils.h gpa-node.h \
-	gpa-private.h ../gnome-print-config.h \
-	../../libgnomeprint/gnome-print-unit.h gpa-value.h \
-	gpa-node-private.h gpa-reference.h gpa-vendor.h gpa-list.h \
-	gpa-option.h gpa-model.h
-gpa-node.lo gpa-node.o : gpa-node.c gpa-utils.h gpa-node.h gpa-private.h \
-	../gnome-print-config.h ../../libgnomeprint/gnome-print-unit.h \
-	gpa-config.h gpa-list.h gpa-node-private.h
-gpa-option.lo gpa-option.o : gpa-option.c gpa-utils.h gpa-node.h \
-	gpa-private.h ../gnome-print-config.h \
-	../../libgnomeprint/gnome-print-unit.h gpa-value.h \
-	gpa-node-private.h gpa-key.h gpa-list.h gpa-option.h
-gpa-printer.lo gpa-printer.o : gpa-printer.c gpa-utils.h gpa-node.h \
-	gpa-private.h ../gnome-print-config.h \
-	../../libgnomeprint/gnome-print-unit.h gpa-value.h \
-	gpa-node-private.h gpa-reference.h gpa-settings.h gpa-list.h \
-	gpa-model.h gpa-printer.h
-gpa-reference.lo gpa-reference.o : gpa-reference.c gpa-reference.h \
-	gpa-node-private.h gpa-utils.h gpa-node.h gpa-private.h \
-	../gnome-print-config.h ../../libgnomeprint/gnome-print-unit.h
-gpa-root.lo gpa-root.o : gpa-root.c gpa-utils.h gpa-node.h gpa-private.h \
-	../gnome-print-config.h ../../libgnomeprint/gnome-print-unit.h \
-	gpa-vendor.h gpa-list.h gpa-node-private.h gpa-printer.h \
-	gpa-model.h gpa-media.h gpa-root.h
-gpa-settings.lo gpa-settings.o : gpa-settings.c gpa-utils.h gpa-node.h \
-	gpa-private.h ../gnome-print-config.h \
-	../../libgnomeprint/gnome-print-unit.h gpa-value.h \
-	gpa-node-private.h gpa-reference.h gpa-model.h gpa-list.h \
-	gpa-option.h gpa-key.h gpa-settings.h
-gpa-utils.lo gpa-utils.o : gpa-utils.c gpa-node-private.h gpa-utils.h \
-	gpa-node.h gpa-private.h ../gnome-print-config.h \
-	../../libgnomeprint/gnome-print-unit.h gpa-value.h \
-	gpa-reference.h
-gpa-value.lo gpa-value.o : gpa-value.c ../../config.h gpa-value.h \
-	gpa-node-private.h gpa-utils.h gpa-node.h gpa-private.h \
-	../gnome-print-config.h ../../libgnomeprint/gnome-print-unit.h
-gpa-vendor.lo gpa-vendor.o : gpa-vendor.c gpa-utils.h gpa-node.h \
-	gpa-private.h ../gnome-print-config.h \
-	../../libgnomeprint/gnome-print-unit.h gpa-value.h \
-	gpa-node-private.h gpa-model.h gpa-list.h gpa-vendor.h
+gpa-key.lo gpa-key.o : gpa-key.c ../../config.h gpa-utils.h gpa-node.h \
+	gpa-reference.h gpa-node-private.h gpa-option.h gpa-key.h
+gpa-list.lo gpa-list.o : gpa-list.c ../../config.h gpa-utils.h \
+	gpa-node.h gpa-reference.h gpa-node-private.h gpa-list.h
+gpa-model.lo gpa-model.o : gpa-model.c ../../config.h gpa-utils.h \
+	gpa-node.h gpa-reference.h gpa-node-private.h gpa-option.h \
+	gpa-model.h gpa-list.h gpa-root.h
+gpa-node.lo gpa-node.o : gpa-node.c ../../config.h gpa-root.h gpa-list.h \
+	gpa-node-private.h gpa-utils.h gpa-node.h gpa-reference.h \
+	gpa-config.h gpa-printer.h gpa-model.h gpa-settings.h
+gpa-option.lo gpa-option.o : gpa-option.c ../../config.h gpa-node.h \
+	gpa-node-private.h gpa-utils.h gpa-key.h gpa-option.h \
+	gpa-root.h gpa-list.h gpa-reference.h
+gpa-printer.lo gpa-printer.o : gpa-printer.c ../../config.h gpa-utils.h \
+	gpa-node.h gpa-reference.h gpa-node-private.h gpa-settings.h \
+	gpa-model.h gpa-list.h gpa-printer.h gpa-root.h
+gpa-reference.lo gpa-reference.o : gpa-reference.c ../../config.h \
+	gpa-reference.h gpa-node-private.h gpa-utils.h gpa-node.h \
+	gpa-list.h
+gpa-root.lo gpa-root.o : gpa-root.c ../../config.h gpa-utils.h \
+	gpa-node.h gpa-printer.h gpa-model.h gpa-list.h \
+	gpa-node-private.h gpa-reference.h gpa-settings.h gpa-option.h \
+	gpa-root.h
+gpa-settings.lo gpa-settings.o : gpa-settings.c ../../config.h \
+	gpa-utils.h gpa-node.h gpa-reference.h gpa-node-private.h \
+	gpa-model.h gpa-list.h gpa-option.h gpa-key.h gpa-settings.h \
+	gpa-printer.h gpa-root.h
+gpa-utils.lo gpa-utils.o : gpa-utils.c ../../config.h gpa-node-private.h \
+	gpa-utils.h gpa-node.h gpa-reference.h gpa-list.h gpa-key.h \
+	gpa-option.h
 
 info-am:
 info: info-am

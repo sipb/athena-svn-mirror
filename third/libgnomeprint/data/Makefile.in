@@ -64,43 +64,67 @@ CATALOGS = @CATALOGS@
 CATOBJEXT = @CATOBJEXT@
 CC = @CC@
 CPP = @CPP@
+CUPS_CFLAGS = @CUPS_CFLAGS@
+CUPS_LIBS = @CUPS_LIBS@
 CXX = @CXX@
 DATADIRNAME = @DATADIRNAME@
 DB2HTML = @DB2HTML@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
 EXEEXT = @EXEEXT@
-FONTMAPDIR_DYNAMIC = @FONTMAPDIR_DYNAMIC@
-FONTMAPDIR_STATIC = @FONTMAPDIR_STATIC@
 FREETYPE_CONFIG = @FREETYPE_CONFIG@
 GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GLIB_GENMARSHAL = @GLIB_GENMARSHAL@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
+GNOME_PRINT_DATA_DIR = @GNOME_PRINT_DATA_DIR@
+GNOME_PRINT_MODULES_DIR = @GNOME_PRINT_MODULES_DIR@
 GTKDOC = @GTKDOC@
 HAVE_GTK_DOC = @HAVE_GTK_DOC@
 HTML_DIR = @HTML_DIR@
+INCLTDL = @INCLTDL@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
+INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
+INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
+INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
+INTLTOOL_EXTRACT = @INTLTOOL_EXTRACT@
+INTLTOOL_KEYS_RULE = @INTLTOOL_KEYS_RULE@
+INTLTOOL_MERGE = @INTLTOOL_MERGE@
+INTLTOOL_OAF_RULE = @INTLTOOL_OAF_RULE@
+INTLTOOL_PERL = @INTLTOOL_PERL@
+INTLTOOL_PONG_RULE = @INTLTOOL_PONG_RULE@
+INTLTOOL_PROP_RULE = @INTLTOOL_PROP_RULE@
+INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
+INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
+INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
+INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
+INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
+INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
+INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
+LIBADD_DL = @LIBADD_DL@
 LIBGNOMEPRINT_CFLAGS = @LIBGNOMEPRINT_CFLAGS@
 LIBGNOMEPRINT_LIBS = @LIBGNOMEPRINT_LIBS@
+LIBLTDL = @LIBLTDL@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
+LTDL_SHLIBEXT = @LTDL_SHLIBEXT@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
-OMNI_CFLAGS = @OMNI_CFLAGS@
-OMNI_LIBDIR = @OMNI_LIBDIR@
 PACKAGE = @PACKAGE@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 RANLIB = @RANLIB@
 STRIP = @STRIP@
+TOOLS_CFLAGS = @TOOLS_CFLAGS@
+TOOLS_LIBS = @TOOLS_LIBS@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
@@ -108,22 +132,15 @@ cxxflags_set = @cxxflags_set@
 
 SUBDIRS = models printers
 
-EXTRA_DIST =  	EPSON.vendor 	GNOME.vendor 	HP.vendor 	media.xml
+globalsdir = $(GNOME_PRINT_DATA_DIR)
+globals_in_files = globals.xml.in
+globals_DATA = $(globals_in_files:.xml.in=.xml)
 
-
-vendordir = $(datadir)/gnome-print-2.0/vendors
-
-vendor_DATA =  	EPSON.vendor 	GNOME.vendor 	HP.vendor
-
-
-mediadir = $(datadir)/gnome-print-2.0/media
-
-media_DATA =  	media.xml
-
+EXTRA_DIST = $(globals_DATA)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
 CONFIG_CLEAN_FILES = 
-DATA =  $(media_DATA) $(vendor_DATA)
+DATA =  $(globals_DATA)
 
 DIST_COMMON =  Makefile.am Makefile.in
 
@@ -142,42 +159,23 @@ Makefile: $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 
-install-mediaDATA: $(media_DATA)
+install-globalsDATA: $(globals_DATA)
 	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(mediadir)
-	@list='$(media_DATA)'; for p in $$list; do \
+	$(mkinstalldirs) $(DESTDIR)$(globalsdir)
+	@list='$(globals_DATA)'; for p in $$list; do \
 	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(mediadir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(mediadir)/$$p; \
+	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(globalsdir)/$$p"; \
+	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(globalsdir)/$$p; \
 	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(mediadir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(mediadir)/$$p; \
+	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(globalsdir)/$$p"; \
+	    $(INSTALL_DATA) $$p $(DESTDIR)$(globalsdir)/$$p; \
 	  fi; fi; \
 	done
 
-uninstall-mediaDATA:
+uninstall-globalsDATA:
 	@$(NORMAL_UNINSTALL)
-	list='$(media_DATA)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(mediadir)/$$p; \
-	done
-
-install-vendorDATA: $(vendor_DATA)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(vendordir)
-	@list='$(vendor_DATA)'; for p in $$list; do \
-	  if test -f $(srcdir)/$$p; then \
-	    echo " $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(vendordir)/$$p"; \
-	    $(INSTALL_DATA) $(srcdir)/$$p $(DESTDIR)$(vendordir)/$$p; \
-	  else if test -f $$p; then \
-	    echo " $(INSTALL_DATA) $$p $(DESTDIR)$(vendordir)/$$p"; \
-	    $(INSTALL_DATA) $$p $(DESTDIR)$(vendordir)/$$p; \
-	  fi; fi; \
-	done
-
-uninstall-vendorDATA:
-	@$(NORMAL_UNINSTALL)
-	list='$(vendor_DATA)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(vendordir)/$$p; \
+	list='$(globals_DATA)'; for p in $$list; do \
+	  rm -f $(DESTDIR)$(globalsdir)/$$p; \
 	done
 
 # This directory's subdirectories are mostly independent; you can cd
@@ -305,13 +303,13 @@ installcheck: installcheck-recursive
 install-exec-am:
 install-exec: install-exec-recursive
 
-install-data-am: install-mediaDATA install-vendorDATA
+install-data-am: install-globalsDATA
 install-data: install-data-recursive
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 install: install-recursive
-uninstall-am: uninstall-mediaDATA uninstall-vendorDATA
+uninstall-am: uninstall-globalsDATA
 uninstall: uninstall-recursive
 all-am: Makefile $(DATA)
 all-redirect: all-recursive
@@ -319,7 +317,7 @@ install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
 installdirs: installdirs-recursive
 installdirs-am:
-	$(mkinstalldirs)  $(DESTDIR)$(mediadir) $(DESTDIR)$(vendordir)
+	$(mkinstalldirs)  $(DESTDIR)$(globalsdir)
 
 
 mostlyclean-generic:
@@ -351,12 +349,11 @@ maintainer-clean-am:  maintainer-clean-tags maintainer-clean-generic \
 
 maintainer-clean: maintainer-clean-recursive
 
-.PHONY: uninstall-mediaDATA install-mediaDATA uninstall-vendorDATA \
-install-vendorDATA install-data-recursive uninstall-data-recursive \
-install-exec-recursive uninstall-exec-recursive installdirs-recursive \
-uninstalldirs-recursive all-recursive check-recursive \
-installcheck-recursive info-recursive dvi-recursive \
-mostlyclean-recursive distclean-recursive clean-recursive \
+.PHONY: uninstall-globalsDATA install-globalsDATA install-data-recursive \
+uninstall-data-recursive install-exec-recursive \
+uninstall-exec-recursive installdirs-recursive uninstalldirs-recursive \
+all-recursive check-recursive installcheck-recursive info-recursive \
+dvi-recursive mostlyclean-recursive distclean-recursive clean-recursive \
 maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
 distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
 dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
@@ -365,6 +362,8 @@ uninstall-am uninstall all-redirect all-am all installdirs-am \
 installdirs mostlyclean-generic distclean-generic clean-generic \
 maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
+
+@INTLTOOL_XML_RULE@
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

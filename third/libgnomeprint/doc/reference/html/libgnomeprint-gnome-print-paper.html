@@ -13,8 +13,8 @@ REL="UP"
 TITLE="API Reference"
 HREF="libgnomeprintunsorted.html"><LINK
 REL="PREVIOUS"
-TITLE="gnome-print-master"
-HREF="libgnomeprint-gnome-print-master.html"><LINK
+TITLE="gnome-print-job"
+HREF="libgnomeprint-gnome-print-job.html"><LINK
 REL="NEXT"
 TITLE="gnome-print"
 HREF="libgnomeprint-gnome-print.html"><META
@@ -69,7 +69,7 @@ VALIGN="middle"
 ><TD
 ><A
 ACCESSKEY="p"
-HREF="libgnomeprint-gnome-print-master.html"
+HREF="libgnomeprint-gnome-print-job.html"
 ><IMG
 SRC="left.png"
 WIDTH="24"
@@ -124,7 +124,7 @@ NAME="LIBGNOMEPRINT-GNOME-PRINT-PAPER"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN3640"
+NAME="AEN3609"
 ></A
 ><H2
 >Name</H2
@@ -132,7 +132,7 @@ NAME="AEN3640"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN3643"
+NAME="AEN3612"
 ></A
 ><H2
 >Synopsis</H2
@@ -191,7 +191,7 @@ HREF="libgnomeprint-gnome-print-paper.html#GNOME-PRINT-PAPER-FREE-LIST"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN3665"
+NAME="AEN3634"
 ></A
 ><H2
 >Description</H2
@@ -201,14 +201,14 @@ NAME="AEN3665"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN3668"
+NAME="AEN3637"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3670"
+NAME="AEN3639"
 ></A
 ><H3
 ><A
@@ -219,9 +219,9 @@ NAME="GNOMEPRINTPAPER"
 CLASS="PROGRAMLISTING"
 >struct GnomePrintPaper {
 
-	guint version : 8; /* Has to be 0 at moment */
-	guchar *name; /* Name such as A4 */
-	gdouble width, height;
+	   guint version : 8; /* Has to be 0 at moment */
+	   guchar *name;      /* Name such as A4 */
+	   gdouble width, height;
 };</PRE
 ><P
 ></P
@@ -229,7 +229,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3675"
+NAME="AEN3644"
 ></A
 ><H3
 ><A
@@ -258,7 +258,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3682"><SPAN
+NAME="AEN3651"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -281,7 +281,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3687"
+NAME="AEN3656"
 ></A
 ><H3
 ><A
@@ -310,7 +310,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3695"><SPAN
+NAME="AEN3664"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -331,7 +331,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3700"><SPAN
+NAME="AEN3669"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -354,7 +354,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3705"
+NAME="AEN3674"
 ></A
 ><H3
 ><A
@@ -384,7 +384,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3714"><SPAN
+NAME="AEN3683"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -405,7 +405,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3719"><SPAN
+NAME="AEN3688"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -426,7 +426,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3724"><SPAN
+NAME="AEN3693"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -449,7 +449,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3729"
+NAME="AEN3698"
 ></A
 ><H3
 ><A
@@ -480,7 +480,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3739"><SPAN
+NAME="AEN3708"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -501,7 +501,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3744"><SPAN
+NAME="AEN3713"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -522,7 +522,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3749"><SPAN
+NAME="AEN3718"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -543,7 +543,7 @@ VALIGN="TOP"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3754"><SPAN
+NAME="AEN3723"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -566,7 +566,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3759"
+NAME="AEN3728"
 ></A
 ><H3
 ><A
@@ -591,7 +591,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3766"><SPAN
+NAME="AEN3735"><SPAN
 STYLE="white-space: nowrap"
 ><SPAN
 CLASS="emphasis"
@@ -614,7 +614,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN3771"
+NAME="AEN3740"
 ></A
 ><H3
 ><A
@@ -639,7 +639,7 @@ CELLPADDING="4"
 ALIGN="LEFT"
 VALIGN="TOP"
 ><A
-NAME="AEN3778"><SPAN
+NAME="AEN3747"><SPAN
 STYLE="white-space: nowrap"
 ><TT
 CLASS="PARAMETER"
@@ -671,9 +671,9 @@ VALIGN="middle"
 ALIGN="left"
 ><A
 ACCESSKEY="p"
-HREF="libgnomeprint-gnome-print-master.html"
+HREF="libgnomeprint-gnome-print-job.html"
 ><B
->&lt;&lt;&lt;&nbsp;gnome-print-master</B
+>&lt;&lt;&lt;&nbsp;gnome-print-job</B
 ></A
 ></TD
 ><TD

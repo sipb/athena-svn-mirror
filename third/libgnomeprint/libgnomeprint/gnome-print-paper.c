@@ -22,20 +22,19 @@
  *    Lauris Kaplinski <lauris@ximian.com>
  *
  *  Copyright (C) 1998 the Free Software Foundation and 2001-2202 Ximian, Inc.
- *
  */
-
-#define __GNOME_PRINT_PAPER_C__
 
 #include <config.h>
 #include <math.h>
-#include "gpa/gpa-node.h"
-#include "gnome-print-i18n.h"
-#include "gnome-print-paper.h"
 
-/* fixme: fill in all papers and units */
-/* fixme: load papers from file */
-/* fixme: use some fancy unit program */
+#include <libgnomeprint/gpa/gpa-node.h>
+#include <libgnomeprint/gpa/gpa-config.h>
+#include <libgnomeprint/gnome-print-i18n.h>
+#include <libgnomeprint/gnome-print-paper.h>
+
+/* FIXME: fill in all papers and units. (Lauris) */
+/* FIXME: load papers from file (Lauris) */
+/* FIXME: use some fancy unit program (Lauris) */
 
 /*
  * WARNING! Do not mess up with that - we use hardcoded numbers for base units!
@@ -50,13 +49,13 @@ GList *gp_papers = NULL;
 static void
 gnome_print_papers_load (void)
 {
-	GPANode *globals;
+	GPANode *config;
 
-	globals = gpa_defaults ();
+	config = GPA_NODE (gpa_config_new ());
 
-	if (globals) {
+	if (config) {
 		GPANode *papers;
-		papers = gpa_node_get_path_node (globals, "Globals.Media.PhysicalSizes");
+		papers = gpa_node_get_child_from_path (config, "Globals.Media.PhysicalSizes");
 		if (papers) {
 			GPANode *paper;
 			for (paper = gpa_node_get_child (papers, NULL); paper != NULL; paper = gpa_node_get_child (papers, paper)) {
@@ -81,7 +80,7 @@ gnome_print_papers_load (void)
 			gp_papers = g_list_reverse (gp_papers);
 			gpa_node_unref (papers);
 		}
-		gpa_node_unref (globals);
+		gpa_node_unref (config);
 	}
 
 	if (!gp_papers) {

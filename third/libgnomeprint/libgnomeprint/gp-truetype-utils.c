@@ -19,13 +19,11 @@
  *  Authors:
  *    Lauris Kaplinski <lauris@ariman.ee>
  *
- *  Copyright (C) 1999-2002 Ximian, Inc. and authors
- *
+ *  Copyright (C) 1999-2002 Ximian, Inc.
  */
 
-#define __GP_TRUETYPE_UTILS_C__
-
-#include "gp-truetype-utils.h"
+#include <config.h>
+#include <libgnomeprint/gp-truetype-utils.h>
 
 #define GPTT_STRING_MAX 0xffff
 
@@ -58,13 +56,14 @@ gp_tt_split_file (const guchar *buf, guint len)
 	/* Font Directory */
 	/* Offset Subtable */
 
-	scaler_type = GUINT32FROMPTR (b);
-	numTables = GUINT16FROMPTR (b + 4);
-	searchRange = GUINT16FROMPTR (b + 6);
+	scaler_type   = GUINT32FROMPTR (b);
+	numTables     = GUINT16FROMPTR (b + 4);
+	searchRange   = GUINT16FROMPTR (b + 6);
 	entrySelector = GUINT16FROMPTR (b + 8);
-	rangeShift = GUINT16FROMPTR (b + 10);
+	rangeShift    = GUINT16FROMPTR (b + 10);
 
-	if ((scaler_type != 0x74727565) && (scaler_type != 0x00010000)) return NULL;
+	if ((scaler_type != 0x74727565) && (scaler_type != 0x00010000))
+		return NULL;
 
 	/* Table Directory */
 	b = buf + 12;
@@ -78,14 +77,21 @@ gp_tt_split_file (const guchar *buf, guint len)
 		guint32 checkSum;
 		guint32 offset;
 		guint32 length;
-		tag = GUINT32FROMPTR (b);
+
+		tag      = GUINT32FROMPTR (b);
 		checkSum = GUINT32FROMPTR (b + 4);
-		offset = GUINT32FROMPTR (b + 8);
-		length = GUINT32FROMPTR (b + 12);
-		if (tag == GUINT32FROMPTR ("glyf")) glyf = offset;
-		if (tag == GUINT32FROMPTR ("loca")) loca = offset;
-		if (tag == GUINT32FROMPTR ("head")) head = offset;
-		if (tag == GUINT32FROMPTR ("maxp")) maxp = offset;
+		offset   = GUINT32FROMPTR (b + 8);
+		length   = GUINT32FROMPTR (b + 12);
+
+		if (tag == GUINT32FROMPTR ("glyf"))
+			glyf = offset;
+		if (tag == GUINT32FROMPTR ("loca"))
+			loca = offset;
+		if (tag == GUINT32FROMPTR ("head"))
+			head = offset;
+		if (tag == GUINT32FROMPTR ("maxp"))
+			maxp = offset;
+
 		tables = g_slist_prepend (tables, GUINT_TO_POINTER (offset));
 		b += 16;
 	}
@@ -223,8 +229,10 @@ gp_tt_split_glyf (const guchar *buf, guint glyf, guint next, guint loca, guint h
 static gint
 gp_tt_offset_compare (gconstpointer a, gconstpointer b)
 {
-	if (GPOINTER_TO_UINT (a) < GPOINTER_TO_UINT (b)) return -1;
-	if (GPOINTER_TO_UINT (a) > GPOINTER_TO_UINT (b)) return 1;
+	if (GPOINTER_TO_UINT (a) < GPOINTER_TO_UINT (b))
+		return -1;
+	if (GPOINTER_TO_UINT (a) > GPOINTER_TO_UINT (b))
+		return 1;
 	return 0;
 }
 

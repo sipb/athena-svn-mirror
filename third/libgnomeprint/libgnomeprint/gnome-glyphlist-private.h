@@ -1,13 +1,6 @@
-#ifndef _GNOME_GLYPHLIST_PRIVATE_H_
-#define _GNOME_GLYPHLIST_PRIVATE_H_
-
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- *  Copyright (C) 2000-2001 Ximian Inc. and authors
- *
- *  Authors:
- *    Lauris Kaplinski <lauris@ximian.com>
- *
- *  Experimental device independent rich text representation system
+ *  gnome-glyphlist-private.h: device independent rich text representation system
  *
  *  This program is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public License
@@ -22,7 +15,15 @@
  *  You should have received a copy of the GNU Library General Public
  *  License along with this program; if not, write to the Free Software
  *  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ *  Authors:
+ *    Lauris Kaplinski <lauris@ximian.com>
+ *
+ *  Copyright 2000-2003 Ximian, Inc. and authors
  */
+
+#ifndef __GNOME_GLYPHLIST_PRIVATE_H__
+#define __GNOME_GLYPHLIST_PRIVATE_H__
 
 #include <glib.h>
 
@@ -30,12 +31,8 @@ G_BEGIN_DECLS
 
 #include <libgnomeprint/gnome-glyphlist.h>
 
-/*
- * We are dealing with lists at moment - although arrays are probably better
- */
-
 #define GGL_GLYPH_BLOCK_SIZE 32
-#define GGL_RULE_BLOCK_SIZE 4
+#define GGL_RULE_BLOCK_SIZE  4
 
 typedef struct _GGLRule GGLRule;
 
@@ -49,14 +46,13 @@ struct _GnomeGlyphList {
 
 typedef enum {
 	GGL_POSITION,     /* Glyph position for following rules */
+
 	/* Absolute positioning */
 	GGL_MOVETOX,      /* Set pen to absolute X */
 	GGL_MOVETOY,      /* Set pen to absolute Y */
 	GGL_RMOVETOX,     /* Advance pen X by distance */
 	GGL_RMOVETOY,     /* Advance pen Y by distance */
-	/* Stack manipulation */
-	GGL_PUSHCP,       /* Push pen position to stack */
-	GGL_POPCP,        /* Pop pen position from stack */
+
 	/* Typesetting rules */
 	GGL_ADVANCE,      /* Forces glyph to advance pen by stdadvance */
 	GGL_LETTERSPACE,  /* Forces given point distance to be added for every advance */
@@ -78,4 +74,4 @@ struct _GGLRule {
 
 G_END_DECLS
 
-#endif
+#endif /* __GNOME_GLYPHLIST_PRIVATE_H__ */

@@ -20,14 +20,13 @@
  *    Lauris Kaplinski <lauris@ximian.com>
  *
  *  Copyright (C) 2000-2001 Ximian Inc. and authors
- *
  */
 
-#define __GNOME_RFONT_C__
-
+#include <config.h>
 #include <math.h>
 #include <string.h>
 #include <ctype.h>
+
 #include <freetype/freetype.h>
 #include <freetype/ftglyph.h>
 #include <freetype/ftbbox.h>
@@ -42,8 +41,8 @@
 #include <libart_lgpl/art_gray_svp.h>
 #include <libart_lgpl/art_rgb_svp.h>
 #include <libart_lgpl/art_svp_wind.h>
-#include "gnome-font-private.h"
-#include "gnome-rfont.h"
+#include <libgnomeprint/gnome-font-private.h>
+#include <libgnomeprint/gnome-rfont.h>
 
 #define noGRF_VERBOSE
 #define noGRF_DEBUG
@@ -225,6 +224,18 @@ gnome_rfont_finalize (GObject * object)
 #define PRINT_AFFINE(s,a)
 #endif
 
+/**
+ * gnome_font_get_rfont:
+ * @font: 
+ * @t: 
+ * 
+ * Creates a new RFont from @font and font->raster affine matrix
+ * Matrix can be 2x2, although if read, all 2x3 values are
+ * retrieved. RFont is referenced, so you have to unref it
+ * somewhere
+ * 
+ * Return Value: the font created, NULL on error.
+ **/
 GnomeRFont *
 gnome_font_get_rfont (GnomeFont * font, const gdouble *t)
 {
@@ -303,13 +314,12 @@ gnome_font_get_rfont (GnomeFont * font, const gdouble *t)
 #ifdef GRF_VERBOSE
 	g_print ("RFont pixel dimensions: %d %d\n", rfont->pixel_width, rfont->pixel_height);
 #endif
-	/* fixme: Use font bbox here */
+	/* FIXME: Use font bbox here (Lauris) */
 	rfont->vector = ((rfont->pixel_width > GRF_MAX_GLYPH_SIZE) ||
 			 (rfont->pixel_height > GRF_MAX_GLYPH_SIZE) ||
 			 (rfont->pixel_width * rfont->pixel_height > GRF_MAX_GLYPH_AREA));
-#ifdef __GNUC__
-#warning Find the reason for having ->vector, I am setting it to TRUE to fix http://bugzilla.gnome.org/show_bug.cgi?id=81792
-#endif	
+        /* FIXME: Find the reason for having ->vector, I am setting it to TRUE to fix
+	 * http://bugzilla.gnome.org/show_bug.cgi?id=81792 (Chema) */
 	rfont->vector = TRUE;
 	rfont->greek = ((rfont->pixel_width <= GRF_GREEK_TRESHOLD) ||
 			(rfont->pixel_height <= GRF_GREEK_TRESHOLD));
@@ -442,7 +452,7 @@ grf_ensure_slot_bbox (GnomeRFont *rfont, gint glyph)
 		ArtDRect dbox;
 
 		/* Empty slot */
-		/* fixme: I'll write the real thing on holiday, honestly (Lauris) */
+		/* FIXME: I'll write the real thing on holiday, honestly (Lauris) */
 		svp = (ArtSVP *) gnome_rfont_get_glyph_svp (rfont, glyph);
 		art_drect_svp (&dbox, svp);
 		slot->x0 = GRF_COORD_FROM_FLOAT_LOWER (dbox.x0);
@@ -463,18 +473,19 @@ grf_ensure_slot_bbox (GnomeRFont *rfont, gint glyph)
 		status = FT_Outline_Get_BBox (&ol->outline, &bbox);
 		g_return_val_if_fail (status == FT_Err_Ok, slot);
 
-		/* fixme: This is correct only if we do scaled glyphs (always?) */
+		/* FIXME: This is correct only if we do scaled glyphs (always?) (Lauris) */
 		if (!rfont->flipy) {
 			slot->x0 = bbox.xMin;
 			slot->y0 = bbox.yMin;
 			slot->x1 = bbox.xMax + 1;
 			slot->y1 = bbox.yMax + 1;
 		} else {
-			slot->x0 = bbox.xMin;
+			slot->x0 =  bbox.xMin;
 			slot->y0 = -bbox.yMax;
-			slot->x1 = bbox.xMax + 1;
+			slot->x1 =  bbox.xMax + 1;
 			slot->y1 = -bbox.yMin + 1;
 		}
+		FT_Done_Glyph ((FT_Glyph) ol);
 #ifdef GRF_VERBOSE
 		g_print ("RFont FT size: %d %d %d %d\n", slot->x0, slot->y0, slot->x1, slot->y1);
 #endif

@@ -28,11 +28,13 @@
 
 #define __GP_TRANSPORT_FILE_C__
 
+#include "config.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <libgnomeprint/gnome-print.h>
+
 #include "gp-transport-file.h"
 
 static void gp_transport_file_class_init (GPTransportFileClass *klass);
@@ -101,7 +103,7 @@ gp_transport_file_finalize (GObject *object)
 
 	tf = GP_TRANSPORT_FILE (object);
 
-	if (tf->fd) {
+	if (tf->fd != -1) {
 		g_warning ("Destroying GPTransportFile with open file descriptor");
 	}
 
@@ -123,14 +125,14 @@ gp_transport_file_construct (GnomePrintTransport *transport)
 
 	value = gnome_print_config_get (transport->config, "Settings.Transport.Backend.FileName");
 
-	if (value) {
-		tf->name = value;
-		return GNOME_PRINT_OK;
+	if (!value) {
+		g_warning ("Configuration does not specify filename");
+		return GNOME_PRINT_ERROR_UNKNOWN;
 	}
+		
+	tf->name = value;
 
-	g_warning ("Configuration does not specify filename");
-
-	return GNOME_PRINT_ERROR_UNKNOWN;
+	return GNOME_PRINT_OK;
 }
 
 static gint
@@ -162,10 +164,10 @@ gp_transport_file_close (GnomePrintTransport *transport)
 	g_return_val_if_fail (tf->fd >= 0, GNOME_PRINT_ERROR_UNKNOWN);
 
 	if (close (tf->fd) < 0) {
-		g_warning ("Closing output file failed");
+		g_warning ("Closing output file failed [%s]", tf->name);
+		tf->fd = -1;
 		return GNOME_PRINT_ERROR_UNKNOWN;
 	}
-
 	tf->fd = -1;
 
 	return GNOME_PRINT_OK;

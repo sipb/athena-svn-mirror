@@ -397,14 +397,14 @@ void        <link linkend="gnome-print-config-dump">gnome_print_config_dump</lin
 </variablelist></refsect2>
 <refsect2>
 <title><anchor id="GNOME-PRINT-KEY-PAPER-SIZE-CAPS">GNOME_PRINT_KEY_PAPER_SIZE</title>
-<programlisting>#define GNOME_PRINT_KEY_PAPER_SIZE "Settings.Output.Media.PhysicalSize" /* Paper name, such as A4 or Letter */
+<programlisting>#define GNOME_PRINT_KEY_PAPER_SIZE               "Settings.Output.Media.PhysicalSize" /* Paper name, such as A4 or Letter */
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-PRINT-KEY-PAPER-WIDTH-CAPS">GNOME_PRINT_KEY_PAPER_WIDTH</title>
-<programlisting>#define GNOME_PRINT_KEY_PAPER_WIDTH "Settings.Output.Media.PhysicalSize.Width" /* Arbitrary units - use conversion */
+<programlisting>#define GNOME_PRINT_KEY_PAPER_WIDTH              "Settings.Output.Media.PhysicalSize.Width" /* Arbitrary units - use conversion */
 </programlisting>
 <para>
 
@@ -417,7 +417,7 @@ void        <link linkend="gnome-print-config-dump">gnome_print_config_dump</lin
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-PRINT-KEY-PAPER-ORIENTATION-CAPS">GNOME_PRINT_KEY_PAPER_ORIENTATION</title>
-<programlisting>#define GNOME_PRINT_KEY_PAPER_ORIENTATION "Settings.Output.Media.PhysicalOrientation" /* R0, R90, R180, R270 */
+<programlisting>#define GNOME_PRINT_KEY_PAPER_ORIENTATION        "Settings.Output.Media.PhysicalOrientation" /* R0, R90, R180, R270 */
 </programlisting>
 <para>
 
@@ -431,7 +431,7 @@ void        <link linkend="gnome-print-config-dump">gnome_print_config_dump</lin
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-PRINT-KEY-PAGE-ORIENTATION-CAPS">GNOME_PRINT_KEY_PAGE_ORIENTATION</title>
-<programlisting>#define GNOME_PRINT_KEY_PAGE_ORIENTATION "Settings.Document.Page.LogicalOrientation" /* R0, R90, R180, R270 */
+<programlisting>#define GNOME_PRINT_KEY_PAGE_ORIENTATION        "Settings.Document.Page.LogicalOrientation" /* R0, R90, R180, R270 */
 </programlisting>
 <para>
 
@@ -452,14 +452,14 @@ void        <link linkend="gnome-print-config-dump">gnome_print_config_dump</lin
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-PRINT-KEY-LAYOUT-CAPS">GNOME_PRINT_KEY_LAYOUT</title>
-<programlisting>#define GNOME_PRINT_KEY_LAYOUT "Settings.Document.Page.Layout" /* Id of layout ('Plain' is always no-special-layout) */
+<programlisting>#define GNOME_PRINT_KEY_LAYOUT        "Settings.Document.Page.Layout"        /* Id of layout ('Plain' is always no-special-layout) */
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-PRINT-KEY-LAYOUT-WIDTH-CAPS">GNOME_PRINT_KEY_LAYOUT_WIDTH</title>
-<programlisting>#define GNOME_PRINT_KEY_LAYOUT_WIDTH "Settings.Document.Page.Layout.Width" /* Double value */
+<programlisting>#define GNOME_PRINT_KEY_LAYOUT_WIDTH  "Settings.Document.Page.Layout.Width"  /* Double value */
 </programlisting>
 <para>
 
@@ -473,14 +473,14 @@ void        <link linkend="gnome-print-config-dump">gnome_print_config_dump</lin
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-PRINT-KEY-RESOLUTION-CAPS">GNOME_PRINT_KEY_RESOLUTION</title>
-<programlisting>#define GNOME_PRINT_KEY_RESOLUTION "Settings.Output.Resolution" /* String value, like 300x300 or 300dpi */
+<programlisting>#define GNOME_PRINT_KEY_RESOLUTION       "Settings.Output.Resolution"       /* String value, like 300x300 or 300dpi */
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-PRINT-KEY-RESOLUTION-DPI-CAPS">GNOME_PRINT_KEY_RESOLUTION_DPI</title>
-<programlisting>#define GNOME_PRINT_KEY_RESOLUTION_DPI "Settings.Output.Resolution.DPI" /* Numeric value, like 300, if meaningful */
+<programlisting>#define GNOME_PRINT_KEY_RESOLUTION_DPI   "Settings.Output.Resolution.DPI"   /* Numeric value, like 300, if meaningful */
 </programlisting>
 <para>
 
@@ -508,28 +508,28 @@ void        <link linkend="gnome-print-config-dump">gnome_print_config_dump</lin
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-PRINT-KEY-COLLATE-CAPS">GNOME_PRINT_KEY_COLLATE</title>
-<programlisting>#define GNOME_PRINT_KEY_COLLATE "Settings.Output.Job.Collate" /* Boolean (true|yes|1 false|no|0) */
+<programlisting>#define GNOME_PRINT_KEY_COLLATE    "Settings.Output.Job.Collate"   /* Boolean (true|yes|1 false|no|0) */
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-PRINT-KEY-PAGE-MARGIN-LEFT-CAPS">GNOME_PRINT_KEY_PAGE_MARGIN_LEFT</title>
-<programlisting>#define GNOME_PRINT_KEY_PAGE_MARGIN_LEFT "Settings.Document.Page.Margins.Left" /* Length, i.e. use conversion */
+<programlisting>#define GNOME_PRINT_KEY_PAGE_MARGIN_LEFT   "Settings.Document.Page.Margins.Left"   /* Length, i.e. use conversion */
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-PRINT-KEY-PAGE-MARGIN-RIGHT-CAPS">GNOME_PRINT_KEY_PAGE_MARGIN_RIGHT</title>
-<programlisting>#define GNOME_PRINT_KEY_PAGE_MARGIN_RIGHT "Settings.Document.Page.Margins.Right" /* Length, i.e. use conversion */
+<programlisting>#define GNOME_PRINT_KEY_PAGE_MARGIN_RIGHT  "Settings.Document.Page.Margins.Right"  /* Length, i.e. use conversion */
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-PRINT-KEY-PAGE-MARGIN-TOP-CAPS">GNOME_PRINT_KEY_PAGE_MARGIN_TOP</title>
-<programlisting>#define GNOME_PRINT_KEY_PAGE_MARGIN_TOP "Settings.Document.Page.Margins.Top" /* Length, i.e. use conversion */
+<programlisting>#define GNOME_PRINT_KEY_PAGE_MARGIN_TOP    "Settings.Document.Page.Margins.Top"    /* Length, i.e. use conversion */
 </programlisting>
 <para>
 
@@ -543,21 +543,21 @@ void        <link linkend="gnome-print-config-dump">gnome_print_config_dump</lin
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-PRINT-KEY-PAPER-MARGIN-LEFT-CAPS">GNOME_PRINT_KEY_PAPER_MARGIN_LEFT</title>
-<programlisting>#define GNOME_PRINT_KEY_PAPER_MARGIN_LEFT "Settings.Output.Media.Margins.Left" /* Length, i.e. use conversion */
+<programlisting>#define GNOME_PRINT_KEY_PAPER_MARGIN_LEFT   "Settings.Output.Media.Margins.Left"   /* Length, i.e. use conversion */
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-PRINT-KEY-PAPER-MARGIN-RIGHT-CAPS">GNOME_PRINT_KEY_PAPER_MARGIN_RIGHT</title>
-<programlisting>#define GNOME_PRINT_KEY_PAPER_MARGIN_RIGHT "Settings.Output.Media.Margins.Right" /* Length, i.e. use conversion */
+<programlisting>#define GNOME_PRINT_KEY_PAPER_MARGIN_RIGHT  "Settings.Output.Media.Margins.Right"  /* Length, i.e. use conversion */
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-PRINT-KEY-PAPER-MARGIN-TOP-CAPS">GNOME_PRINT_KEY_PAPER_MARGIN_TOP</title>
-<programlisting>#define GNOME_PRINT_KEY_PAPER_MARGIN_TOP "Settings.Output.Media.Margins.Top" /* Length, i.e. use conversion */
+<programlisting>#define GNOME_PRINT_KEY_PAPER_MARGIN_TOP    "Settings.Output.Media.Margins.Top"    /* Length, i.e. use conversion */
 </programlisting>
 <para>
 
@@ -571,21 +571,21 @@ void        <link linkend="gnome-print-config-dump">gnome_print_config_dump</lin
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-PRINT-KEY-OUTPUT-FILENAME-CAPS">GNOME_PRINT_KEY_OUTPUT_FILENAME</title>
-<programlisting>#define GNOME_PRINT_KEY_OUTPUT_FILENAME "Settings.Transport.Backend.FileName" /* Filename used when printing to file. Don't assume that if
+<programlisting>#define GNOME_PRINT_KEY_OUTPUT_FILENAME "Settings.Transport.Backend.FileName" /* Filename used when printing to file. */
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-PRINT-KEY-DOCUMENT-NAME-CAPS">GNOME_PRINT_KEY_DOCUMENT_NAME</title>
-<programlisting>#define GNOME_PRINT_KEY_DOCUMENT_NAME  "Settings.Document.Name" /* The name of the document 'Cash flow 2002', `Grandma cockie recipies',
+<programlisting>#define GNOME_PRINT_KEY_DOCUMENT_NAME "Settings.Document.Name"                /* The name of the document 'Cash flow 2002', `Grandma cookie recipies' */
 </programlisting>
 <para>
 
 </para></refsect2>
 <refsect2>
 <title><anchor id="GNOME-PRINT-KEY-PREFERED-UNIT-CAPS">GNOME_PRINT_KEY_PREFERED_UNIT</title>
-<programlisting>#define GNOME_PRINT_KEY_PREFERED_UNIT "Settings.Document.PreferedUnit" /* Abbreviation for the preferred unit cm, in,... */
+<programlisting>#define GNOME_PRINT_KEY_PREFERED_UNIT "Settings.Document.PreferedUnit"        /* Abbreviation for the preferred unit cm, in,... */
 </programlisting>
 <para>
 

@@ -14,5 +14,4 @@ art_rgba_svp_alpha (const ArtSVP *svp,
                   art_u8 *buf, int rowstride,
                   ArtAlphaGamma *alphagamma);
 
-#endif
-
+#endif /* SP_ART_RGBA_SVP_H */

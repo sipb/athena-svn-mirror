@@ -23,8 +23,6 @@
  *
  */
 
-#define __GNOME_PRINT_RBUF_C__
-
 /*
  * TODO
  *
@@ -35,6 +33,7 @@
  *
  */
 
+#include <config.h>
 #include <math.h>
 #include <string.h>
 
@@ -55,12 +54,11 @@
 #include <libart_lgpl/art_rgb_rgba_affine.h>
 
 #include <libgnomeprint/gp-gc.h>
-#include "art_rgba_svp.h"
-#include "art_rgba_rgba_affine.h"
+#include <libgnomeprint/art_rgba_svp.h>
+#include <libgnomeprint/art_rgba_rgba_affine.h>
 
 #include <libgnomeprint/gnome-print-private.h>
 #include <libgnomeprint/gnome-print-rbuf.h>
-#include <libgnomeprint/gnome-print-rbuf-private.h>
 #include <libgnomeprint/gnome-rfont.h>
 #include <libgnomeprint/gnome-font-private.h>
 #include <libgnomeprint/gnome-pgl.h>
@@ -70,6 +68,18 @@
 /*
  * Private structures
  */
+typedef struct _GnomePrintRBufPrivate GnomePrintRBufPrivate;
+typedef struct _GnomePrintRBufClass GnomePrintRBufClass;
+
+struct _GnomePrintRBuf {
+	GnomePrintContext pc;
+
+	GnomePrintRBufPrivate * private;
+};
+
+struct _GnomePrintRBufClass {
+	GnomePrintContextClass parent_class;
+};
 
 struct _GnomePrintRBufPrivate {
 	guchar * pixels;
@@ -215,10 +225,7 @@ gpb_showpage (GnomePrintContext * pc)
 static gint
 gpb_clip (GnomePrintContext * pc, const ArtBpath *bpath, ArtWindRule rule)
 {
-#ifdef __GNUC__
-#warning Why is are we not clipping?
-#endif
-	
+	/* FIXME: Why are we not clipping? (Chema) */
 #if 0
 	GnomePrintRBuf * rbuf;
 
@@ -383,12 +390,12 @@ gpb_close (GnomePrintContext * pc)
 
 static GnomePrintRBuf *
 gnome_print_rbuf_construct (GnomePrintRBuf * rbuf,
-	guchar * pixels,
-	gint width,
-	gint height,
-	gint rowstride,
-	gdouble page2buf[6],
-	gboolean alpha)
+			    guchar * pixels,
+			    gint width,
+			    gint height,
+			    gint rowstride,
+			    gdouble page2buf[6],
+			    gboolean alpha)
 {
 	g_return_val_if_fail (rbuf != NULL, NULL);
 	g_return_val_if_fail (GNOME_IS_PRINT_RBUF (rbuf), NULL);

@@ -1,34 +1,48 @@
 noinst_LTLIBRARIES = libgpa.la
 
-CPPFLAGS = \
-	-DWE_ARE_LIBGNOMEPRINT_UI \
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" \
-	-DBINDIR=\""$(bindir)"\" \
-	-DDATADIR=\""$(datadir)"\" 
-
 INCLUDES = \
 	-I$(top_srcdir) \
-	$(LIBGNOMEPRINT_CFLAGS)
+	-I$(top_srcdir)/libgnomeprint \
+	$(LIBGNOMEPRINT_CFLAGS) \
+	-DBINDIR=\""$(bindir)"\" \
+	-DDATADIR=\""$(datadir)"\" \
+     -DGPA_MODULES_DIR=\""$(GNOME_PRINT_MODULES_DIR)"\" \
+     -DGPA_DATA_DIR=\""$(GNOME_PRINT_DATA_DIR)"\" \
+	\
+	-DG_DISABLE_DEPRECATED				\
+	-DGDK_DISABLE_DEPRECATED				\
+	-DGTK_DISABLE_DEPRECATED				\
+	-DGDK_PIXBUF_DISABLE_DEPRECATED		\
+	-DGNOME_DISABLE_DEPRECATED
 
 libgpa_la_SOURCES = \
-	gpa-node.c gpa-node.h gpa-node-private.h \
-	gpa-value.c gpa-value.h \
-	gpa-list.c gpa-list.h \
-	gpa-reference.c gpa-reference.h \
+	gpa-node.c      gpa-node.h gpa-node-private.h \
+	gpa-list.c      \
+	gpa-reference.c \
 	\
-	gpa-vendor.c gpa-vendor.h \
-	gpa-model.c gpa-model.h \
-	gpa-option.c gpa-option.h \
-	gpa-printer.c gpa-printer.h \
-	gpa-media.c gpa-media.h \
+	gpa-model.c   \
+	gpa-option.c  \
+	gpa-printer.c \
 	\
-	gpa-root.c gpa-root.h \
-	gpa-config.c gpa-config.h \
-	gpa-key.c gpa-key.h \
-	gpa-settings.c gpa-settings.h \
+	gpa-root.c     \
+	gpa-config.c   \
+	gpa-key.c      \
+	gpa-settings.c \
 	\
-	gpa-utils.c gpa-utils.h
+	gpa-utils.c    gpa-utils.h
 
-libgpaincdir = $(includedir)/libgnomeprint-2.0/libgnomeprint/private
+libgpaincdir = $(includedir)/libgnomeprint-2.2/libgnomeprint/private
 
-libgpainc_HEADERS = gpa-private.h
+libgpainc_HEADERS = \
+	gpa-node.h \
+	gpa-utils.h \
+	gpa-printer.h \
+	gpa-key.h \
+	gpa-option.h \
+	gpa-node-private.h \
+	gpa-list.h \
+	gpa-model.h \
+	gpa-settings.h \
+	gpa-reference.h \
+	gpa-root.h \
+	gpa-config.h

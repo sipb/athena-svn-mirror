@@ -18,16 +18,17 @@
  *
  *  Authors :
  *    Lauris Kaplinski <lauris@ximian.com>
- *    Jose M. Celorio <chema@ximian.com>
+ *    Chema Celorio <chema@ximian.com>
  *
- *  Copyright (C) 2000-2001 Ximian, Inc. and Jose M. Celorio
+ *  Copyright (C) 2000-2003 Ximian, Inc.
  *
  */
 
-#define __GPA_KEY_C__
+#include <config.h>
 
 #include <string.h>
 #include <libxml/globals.h>
+
 #include "gpa-utils.h"
 #include "gpa-reference.h"
 #include "gpa-option.h"
@@ -38,16 +39,12 @@ static void gpa_key_init (GPAKey *key);
 
 static void gpa_key_finalize (GObject *object);
 
-static GPANode *gpa_key_duplicate (GPANode *node);
-static gboolean gpa_key_verify (GPANode *node);
-static guchar *gpa_key_get_value (GPANode *node);
-static gboolean gpa_key_set_value (GPANode *node, const guchar *value);
-static GPANode *gpa_key_get_child (GPANode *node, GPANode *ref);
-static GPANode *gpa_key_lookup (GPANode *node, const guchar *path);
-static void gpa_key_modified (GPANode *node, guint flags);
+static GPANode * gpa_key_duplicate (GPANode *node);
+static gboolean  gpa_key_verify    (GPANode *node);
+static guchar *  gpa_key_get_value (GPANode *node);
+static gboolean  gpa_key_set_value (GPANode *node, const guchar *value);
 
 static gboolean gpa_key_merge_children_from_key (GPAKey *dst, GPAKey *src);
-
 static gboolean gpa_key_merge_from_option (GPAKey *key, GPAOption *option);
 static gboolean gpa_key_merge_children_from_option (GPAKey *key, GPAOption *option);
 
@@ -86,45 +83,47 @@ gpa_key_class_init (GPAKeyClass *klass)
 	object_class->finalize = gpa_key_finalize;
 
 	node_class->duplicate = gpa_key_duplicate;
-	node_class->verify = gpa_key_verify;
+	node_class->verify    = gpa_key_verify;
 	node_class->get_value = gpa_key_get_value;
 	node_class->set_value = gpa_key_set_value;
-	node_class->get_child = gpa_key_get_child;
-	node_class->lookup = gpa_key_lookup;
-	node_class->modified = gpa_key_modified;
 }
 
 static void
 gpa_key_init (GPAKey *key)
 {
-	key->children = NULL;
-	key->option = NULL;
-	key->value = NULL;
+	key->option   = NULL;
+	key->value    = NULL;
 }
 
 static void
 gpa_key_finalize (GObject *object)
 {
+	GPANode *child;
+	GPANode *node;
 	GPAKey *key;
 
 	key = GPA_KEY (object);
+	node = GPA_NODE (key);
 
-	while (key->children) {
-		if (G_OBJECT (key->children)->ref_count > 1) {
-			g_warning ("GPAKey: Child %s has refcount %d\n", GPA_NODE_ID (key->children), G_OBJECT (key->children)->ref_count);
+	child = node->children;
+	while (child) {
+		GPANode *next;
+		if (G_OBJECT (child)->ref_count > 1) {
+			g_warning ("GPAKey: Child %s has refcount %d\n",
+				   gpa_node_id (child), G_OBJECT (child)->ref_count);
 		}
-		key->children = gpa_node_detach_unref_next (GPA_NODE (key), key->children);
+		next = child->next;
+		gpa_node_detach_unref (child);
+		child = next;
 	}
+	node->children = NULL;
 
-	if (key->option) {
-		gpa_node_unref (key->option);
-		key->option = NULL;
-	}
-
-	if (key->value) {
+	gpa_node_unref (key->option);
+	if (key->value)
 		g_free (key->value);
-		key->value = NULL;
-	}
+
+	key->value = NULL;
+	key->option = NULL;
 
 	G_OBJECT_CLASS (parent_class)->finalize (object);
 }
@@ -134,34 +133,23 @@ gpa_key_duplicate (GPANode *node)
 {
 	GPAKey *key, *new;
 	GPANode *child;
-	GSList *l;
 
 	key = GPA_KEY (node);
 
-	new = (GPAKey *) gpa_node_new (GPA_TYPE_KEY, GPA_NODE_ID (node));
+	new = (GPAKey *) gpa_node_new (GPA_TYPE_KEY, gpa_node_id (node));
 
-	if (key->value) new->value = g_strdup (key->value);
+	if (key->value)
+		new->value = g_strdup (key->value);
+	new->option = gpa_node_ref (key->option);
 
-	if (key->option) {
-		new->option = key->option;
-		gpa_node_ref (new->option);
+	child = GPA_NODE (key)->children;
+	while (child) {
+		gpa_node_attach (GPA_NODE (new),
+				 gpa_node_duplicate (child));
+		child = child->next;
 	}
 
-	l = NULL;
-	for (child = key->children; child != NULL; child = child->next) {
-		GPANode *newchild;
-		newchild = gpa_node_duplicate (child);
-		if (newchild) l = g_slist_prepend (l, newchild);
-	}
-
-	while (l) {
-		GPANode *newchild;
-		newchild = GPA_NODE (l->data);
-		l = g_slist_remove (l, newchild);
-		newchild->parent = GPA_NODE (new);
-		newchild->next = new->children;
-		new->children = newchild;
-	}
+	gpa_node_reverse_children (GPA_NODE (new));
 
 	return GPA_NODE (new);
 }
@@ -169,7 +157,8 @@ gpa_key_duplicate (GPANode *node)
 static gboolean
 gpa_key_verify (GPANode *node)
 {
-	/* fixme: Verify on option */
+	gpa_return_false_if_fail (GPA_IS_KEY (node));
+	gpa_return_false_if_fail (GPA_IS_OPTION (GPA_KEY (node)->option));
 
 	return TRUE;
 }
@@ -190,227 +179,118 @@ gpa_key_get_value (GPANode *node)
 static gboolean
 gpa_key_set_value (GPANode *node, const guchar *value)
 {
-	GPAKey *key;
 	GPAOption *option;
+	GPANode *child;
+	GPAKey *key;
 
-	key = GPA_KEY (node);
-
-	/* fixme: Is that clever? */
+	g_return_val_if_fail (node != NULL, FALSE);
+	g_return_val_if_fail (GPA_IS_KEY (node), FALSE);
 	g_return_val_if_fail (value != NULL, FALSE);
-	g_return_val_if_fail (key->value != NULL, FALSE);
+	g_return_val_if_fail (GPA_KEY (node)->value != NULL, FALSE);
 
-	if (key->value && !strcmp (key->value, value))
-		return TRUE;
-
+	key    = GPA_KEY (node);
 	option = GPA_KEY_OPTION (key);
-	g_return_val_if_fail (option != NULL, FALSE);
 
-	if (GPA_OPTION_IS_LIST (option)) {
-		GPAOption *child;
+	if (strcmp (key->value, value) == 0)
+		return FALSE;
+
+	switch (option->type) {
+	case GPA_OPTION_TYPE_LIST:
 		child = gpa_option_get_child_by_id (option, value);
-		if (child) {
-			/* Everything is legal */
-			g_free (key->value);
-			key->value = g_strdup (value);
-			gpa_key_merge_children_from_option (key, child);
-			gpa_node_unref (GPA_NODE (child));
-			gpa_node_request_modified (node, 0);
-			return TRUE;
+		if (!child) {
+			g_warning ("Could not set value of \"%s\" to \"%s\"", GPA_NODE_ID (option), value);
+			return FALSE;
 		}
-	} else if (GPA_OPTION_IS_STRING (option)) {
-		if (!value)
-			value = option->value;
-		if (value && key->value && !strcmp (value, key->value))
-			return TRUE;
-		if (key->value)
-			g_free (key->value);
+		g_free (key->value);
 		key->value = g_strdup (value);
-		gpa_node_request_modified (node, 0);
-		return TRUE;
-	}
-
-	return FALSE;
-}
-
-static GPANode *
-gpa_key_get_child (GPANode *node, GPANode *ref)
-{
-	GPAKey *key;
-
-	key = GPA_KEY (node);
-
-	if (!ref) {
-		if (key->children)
-			gpa_node_ref (key->children);
-		return key->children;
-	}
-
-	if (ref->next)
-		gpa_node_ref (ref->next);
-
-	return ref->next;
-}
-
-static GPANode *
-gpa_key_lookup (GPANode *node, const guchar *path)
-{
-	GPAKey *key;
-	GPANode *child;
-	const guchar *dot, *next;
-	gint len;
-
-	key = GPA_KEY (node);
-
-	child = NULL;
-	if (gpa_node_lookup_ref (&child, GPA_NODE (key->option), path, "Option"))
-		return child;
-
-	dot = strchr (path, '.');
-	if (dot != NULL) {
-		len = dot - path;
-		next = dot + 1;
-	} else {
-		len = strlen (path);
-		next = path + len;
-	}
-
-	for (child = key->children; child != NULL; child = child->next) {
-		const guchar *cid;
-		g_assert (GPA_IS_KEY (child));
-		cid = GPA_NODE_ID (child);
-		if (cid && strlen (cid) == len && !strncmp (cid, path, len)) {
-			if (!next) {
-				gpa_node_ref (child);
-				return child;
-			} else {
-				return gpa_node_lookup (child, next);
-			}
-		}
-	}
-
-	return NULL;
-}
-
-static void
-gpa_key_modified (GPANode *node, guint flags)
-{
-	GPAKey *key;
-	GPANode *child;
-
-	key = GPA_KEY (node);
-
-	child = key->children;
-	while (child) {
-		GPANode *next;
-		next = child->next;
-		if (GPA_NODE_FLAGS (child) & GPA_MODIFIED_FLAG) {
-			gpa_node_ref (child);
-			gpa_node_emit_modified (child, 0);
-			gpa_node_unref (child);
-		}
-		child = next;
-	}
-
-	if (key->option && GPA_NODE_FLAGS (key->option) & GPA_NODE_MODIFIED_FLAG) {
-		gpa_node_emit_modified (key->option, 0);
-	}
-}
-
-GPANode *
-gpa_key_new_from_option (GPANode *node)
-{
-	return gpa_option_create_key (GPA_OPTION (node));
-}
-
-xmlNodePtr
-gpa_key_write (xmlDocPtr doc, GPANode *node)
-{
-	GPAKey *key;
-	GPAOption *option;
-	xmlNodePtr xmln, xmlc;
-	GPANode *child;
-
-	g_return_val_if_fail (doc != NULL, NULL);
-	g_return_val_if_fail (node != NULL, NULL);
-	g_return_val_if_fail (GPA_IS_KEY (node), NULL);
-	g_return_val_if_fail (GPA_KEY_HAS_OPTION (node), NULL);
-
-	key = GPA_KEY (node);
-
-	option = GPA_KEY_OPTION (key);
-
-	if (option->type != GPA_OPTION_TYPE_KEY) {
-		xmln = xmlNewDocNode (doc, NULL, "Key", NULL);
-		xmlSetProp (xmln, "Id", GPA_NODE_ID (node));
-		if (key->value) xmlSetProp (xmln, "Value", key->value);
-
-		for (child = key->children; child != NULL; child = child->next) {
-			xmlc = gpa_key_write (doc, child);
-			if (xmlc)
-				xmlAddChild (xmln, xmlc);
-		}
-	} else {
-		xmln = NULL;
-	}
-
-	return xmln;
-}
-
-gboolean
-gpa_key_merge_from_tree (GPANode *key, xmlNodePtr tree)
-{
-	xmlChar *xmlid, *xmlval;
-	xmlNodePtr xmlc;
-
-	g_return_val_if_fail (key != NULL, FALSE);
-	g_return_val_if_fail (GPA_IS_KEY (key), FALSE);
-	g_return_val_if_fail (tree != NULL, FALSE);
-	g_return_val_if_fail (!strcmp (tree->name, "Key"), FALSE);
-
-	xmlid = xmlGetProp (tree, "Id");
-	g_assert (xmlid);
-	g_assert (GPA_NODE_ID_COMPARE (key, xmlid));
-	xmlFree (xmlid);
-
-	xmlval = xmlGetProp (tree, "Value");
-	if (xmlval) {
-		gpa_node_set_value (key, xmlval);
-		xmlFree (xmlval);
-	}
-
-	for (xmlc = tree->xmlChildrenNode; xmlc != NULL; xmlc = xmlc->next) {
-		if (!strcmp (xmlc->name, "Key")) {
-			xmlChar *keyid;
-			keyid = xmlGetProp (xmlc, "Id");
-			if (keyid) {
-				GPANode *kch;
-				for (kch = GPA_KEY (key)->children; kch != NULL; kch = kch->next) {
-					if (GPA_NODE_ID_COMPARE (kch, keyid)) {
-						gpa_key_merge_from_tree (kch, xmlc);
-						break;
-					}
-				}
-				xmlFree (keyid);
-			}
-		}
+		gpa_key_merge_children_from_option (key, GPA_OPTION (child));
+		gpa_node_unref (child);
+		break;
+	case GPA_OPTION_TYPE_STRING:
+	case GPA_OPTION_TYPE_KEY:
+		g_free (key->value);
+		key->value = g_strdup (value);
+		break;
+	default:
+		g_warning ("Cant set value of %s to %s, set value for type not set. Current val:%s (%d)",
+			   gpa_node_id (node), value, key->value, option->type);
+		return FALSE;
 	}
 
 	return TRUE;
 }
 
-gboolean
-gpa_key_copy (GPANode *dst, GPANode *src)
+xmlNodePtr
+gpa_key_to_tree (GPAKey *key)
 {
-	gboolean modified;
+	xmlNodePtr node = NULL;
+	GPANode *child;
 
-	g_return_val_if_fail (dst != NULL, FALSE);
-	g_return_val_if_fail (GPA_IS_KEY (dst), FALSE);
-	g_return_val_if_fail (src != NULL, FALSE);
-	g_return_val_if_fail (GPA_IS_KEY (src), FALSE);
+	g_return_val_if_fail (GPA_IS_KEY (key), NULL);
+	
+	node = xmlNewNode (NULL, "Key");
+	xmlSetProp (node, "Id", GPA_NODE_ID (key));
+	if (key->value)
+		xmlSetProp (node, "Value", key->value);
 
-	modified = FALSE;
+	child = GPA_NODE (key)->children;
+	while (child) {
+		xmlAddChild (node,
+			     gpa_key_to_tree (GPA_KEY (child)));
+		child = child->next;
+	}
 
-	return FALSE;
+	return node;
+}
+
+gboolean
+gpa_key_merge_from_tree (GPANode *key, xmlNodePtr tree)
+{
+	xmlNodePtr node;
+	xmlChar *value;
+	xmlChar *id;
+
+	g_return_val_if_fail (key != NULL, FALSE);
+	g_return_val_if_fail (GPA_IS_KEY (key), FALSE);
+	g_return_val_if_fail (tree != NULL, FALSE);
+	g_return_val_if_fail (strcmp (tree->name, "Key") == 0, FALSE);
+
+	id = xmlGetProp (tree, "Id");
+	g_assert (id);
+	g_assert (GPA_NODE_ID_COMPARE (key, id));
+	xmlFree (id);
+
+	value = xmlGetProp (tree, "Value");
+	if (value) {
+		gpa_node_set_value (key, value);
+		xmlFree (value);
+	}
+
+	for (node = tree->xmlChildrenNode; node != NULL; node = node->next) {
+		GPANode *child;
+		xmlChar *child_id;
+		
+		if (strcmp (node->name, "Key"))
+			continue;
+		
+		child_id = xmlGetProp (node, "Id");
+		if (!child_id || !child_id[0]) {
+			g_warning ("Invalid or missing key id while loading a GPAKey [%s]\n",
+				   gpa_node_id (key));
+			continue;
+		}
+		child = key->children;
+		while (child) {
+			if (GPA_NODE_ID_COMPARE (child, child_id)) {
+				gpa_key_merge_from_tree (child, node);
+				break;
+			}
+			child = child->next;
+		}
+		xmlFree (child_id);
+	}
+
+	return TRUE;
 }
 
 static gboolean
@@ -420,46 +300,47 @@ gpa_key_merge_children_from_key (GPAKey *dst, GPAKey *src)
 	GSList *dl, *sl;
 
 	dl = NULL;
-	while (dst->children) {
-		dl = g_slist_prepend (dl, dst->children);
-		dst->children = gpa_node_detach_next (GPA_NODE (dst), dst->children);
+	child = GPA_NODE (dst)->children;
+	while (child) {
+		GPANode *next;
+		dl = g_slist_prepend (dl, child);
+		next = child->next;
+		gpa_node_detach (child);
+		child = next;
 	}
+	g_assert (GPA_NODE (dst)->children == NULL);
 
 	sl = NULL;
-	for (child = src->children; child != NULL; child = child->next) {
+	for (child = GPA_NODE (src)->children; child != NULL; child = child->next) {
 		sl = g_slist_prepend (sl, child);
 	}
 
 	while (sl) {
 		GSList *l;
 		for (l = dl; l != NULL; l = l->next) {
-			if (GPA_NODE (l->data)->qid && (GPA_NODE (l->data)->qid == GPA_NODE (sl->data)->qid)) {
-				/* We are in original too */
-				child = GPA_NODE (l->data);
-				dl = g_slist_remove (dl, l->data);
-				child->parent = GPA_NODE (dst);
-				child->next = dst->children;
-				dst->children = child;
-				gpa_key_merge_from_key (GPA_KEY (child), GPA_KEY (sl->data));
-				break;
-			}
+			if (GPA_NODE (l->data)->qid != GPA_NODE (sl->data)->qid)
+				continue;
+
+			/* present in both src and dst, merge */
+			child = GPA_NODE (l->data);
+			dl = g_slist_remove (dl, l->data);
+			gpa_node_attach (GPA_NODE (dst), child);
+			gpa_key_merge_from_key (GPA_KEY (child), GPA_KEY (sl->data));
+			break;
 		}
+		/* present in src but not dest, add */
 		if (!l) {
-			/* Create new child */
 			child = gpa_node_duplicate (GPA_NODE (sl->data));
-			child->parent = GPA_NODE (dst);
-			child->next = dst->children;
-			dst->children = child;
+			gpa_node_attach (GPA_NODE (dst), child);
 		}
 		sl = g_slist_remove (sl, sl->data);
 	}
 
 	while (dl) {
+		/* present in dest but not src, delete */
 		gpa_node_unref (GPA_NODE (dl->data));
 		dl = g_slist_remove (dl, dl->data);
 	}
-
-	gpa_node_request_modified (GPA_NODE (dst), 0);
 
 	return TRUE;
 }
@@ -471,7 +352,6 @@ gpa_key_merge_from_key (GPAKey *dst, GPAKey *src)
 	g_return_val_if_fail (GPA_IS_KEY (dst), FALSE);
 	g_return_val_if_fail (src != NULL, FALSE);
 	g_return_val_if_fail (GPA_IS_KEY (src), FALSE);
-
 	g_return_val_if_fail (src->option != NULL, FALSE);
 
 	if (dst->value)
@@ -480,12 +360,9 @@ gpa_key_merge_from_key (GPAKey *dst, GPAKey *src)
 
 	if (dst->option)
 		gpa_node_unref (dst->option);
-	dst->option = src->option;
-	gpa_node_ref (dst->option);
+	dst->option = gpa_node_ref (src->option);
 
 	gpa_key_merge_children_from_key (dst, src);
-
-	gpa_node_request_modified (GPA_NODE (dst), 0);
 
 	return TRUE;
 }
@@ -494,49 +371,85 @@ static gboolean
 gpa_key_merge_children_from_option (GPAKey *key, GPAOption *option)
 {
 	GPANode *child;
-	GSList *kl, *ol;
+	GSList *keys = NULL, *keys2;
+	GSList *options = NULL;
 
-	kl = NULL;
-	while (key->children) {
-		kl = g_slist_prepend (kl, key->children);
-		key->children = gpa_node_detach_next (GPA_NODE (key), key->children);
+	child = GPA_NODE (key)->children;
+	while (child) {
+		keys = g_slist_prepend (keys, child);
+		child = child->next;
 	}
 
-	ol = NULL;
-	for (child = option->children; child != NULL; child = child->next) {
-		ol = g_slist_prepend (ol, child);
+	child = GPA_NODE (option)->children;
+	while (child) {
+		options = g_slist_prepend (options, child);
+		child = child->next;
 	}
-
-	while (ol) {
+#ifdef DEBUG
+{
+	GSList *l;
+	l = keys;
+	g_print ("Keys List:\n");
+	while (l) {
+		g_print ("  %s\n", gpa_node_id (l->data));
+		l = l->next;
+	}
+	l = options;
+	g_print ("Options List:\n");
+	while (l) {
+		g_print ("  %s\n", gpa_node_id (l->data));
+		l = l->next;
+	}
+	g_print ("\n");
+}
+#endif
+	keys2 = g_slist_copy (keys);
+	while (options) {
 		GSList *l;
-		for (l = kl; l != NULL; l = l->next) {
-			if (GPA_NODE (l->data)->qid && (GPA_NODE (l->data)->qid == GPA_NODE (ol->data)->qid)) {
-				/* We are in original too */
-				child = GPA_NODE (l->data);
-				kl = g_slist_remove (kl, l->data);
-				child->parent = GPA_NODE (key);
-				child->next = key->children;
-				key->children = child;
-				gpa_key_merge_from_option (GPA_KEY (child), GPA_OPTION (ol->data));
+		l = keys2;
+		while (l) {
+			if (GPA_NODE (options->data)->qid == GPA_NODE (l->data)->qid) {
+				GPAKey *key = l->data;
+#ifdef DEBUG	
+				g_print ("IS IN BOTH %s\n", gpa_node_id (l->data));
+#endif
+				if (key->value == NULL)
+					g_warning ("merge key from option, key->value is NULL, should not happen");
+				else
+					g_free (GPA_KEY (l->data)->value);
+				key->value = g_strdup (GPA_OPTION (options->data)->value);
+				if (GPA_NODE (options->data)->children) {
+					gpa_key_merge_from_option (GPA_KEY (l->data),
+								   GPA_OPTION (options->data));
+				}
+
+				keys = g_slist_remove (keys, l->data);
 				break;
 			}
+			l = l->next;
 		}
-		if (!l) {
-			/* Create from option */
-			child = gpa_key_new_from_option (GPA_NODE (ol->data));
-			child->parent = GPA_NODE (key);
-			child->next = key->children;
-			key->children = child;
+		if (l == NULL) {
+#ifdef DEBUG
+			g_print ("IS ONLY IN option, add: %s\n", gpa_node_id (options->data));
+#endif
+			/* Is only in new */
+			gpa_node_attach (GPA_NODE (key),
+					 gpa_option_create_key (options->data,
+								GPA_NODE (key)));
 		}
-		ol = g_slist_remove (ol, ol->data);
+		options = options->next;
 	}
-
-	while (kl) {
-		gpa_node_unref (GPA_NODE (kl->data));
-		kl = g_slist_remove (kl, kl->data);
+	g_slist_free (keys2);
+	while (keys) {
+#ifdef DEBUG
+		g_print ("IS ONLY IN keys, remove %s\n", gpa_node_id (keys->data));
+#endif
+		/* Is only in old */
+		gpa_node_detach_unref (GPA_NODE (keys->data));
+		keys = g_slist_remove (keys, keys->data);
 	}
-
-	gpa_node_request_modified (GPA_NODE (key), 0);
+	
+	g_slist_free (options);
 
 	return TRUE;
 }
@@ -544,52 +457,50 @@ gpa_key_merge_children_from_option (GPAKey *key, GPAOption *option)
 static gboolean
 gpa_key_merge_from_option (GPAKey *key, GPAOption *option)
 {
-	GPAOption *och;
+	GPANode *och = NULL;
 
 	gpa_node_unref (key->option);
 	gpa_node_ref (GPA_NODE (option));
 	key->option = GPA_NODE (option);
 
-	switch (option->type) {
-	case GPA_OPTION_TYPE_NODE:
-	case GPA_OPTION_TYPE_KEY:
-	case GPA_OPTION_TYPE_STRING:
+	if (option->type == GPA_OPTION_TYPE_ITEM)
+		return TRUE;
+
+	if (key->value)
+		g_free (key->value);
+	key->value = NULL;
+
+	if (option->type != GPA_OPTION_TYPE_LIST) {
 		if (key->value) {
 			g_free (key->value);
 			key->value = NULL;
 		}
-		if (option->value) key->value = g_strdup (option->value);
-		gpa_key_merge_children_from_option (key, option);
-		break;
-	case GPA_OPTION_TYPE_LIST:
-		och = NULL;
-		if (key->value) och = gpa_option_get_child_by_id (option, key->value);
-		if (och) {
-			gpa_key_merge_children_from_option (key, och);
-			gpa_node_unref (GPA_NODE (och));
-		} else {
-			if (key->value) g_free (key->value);
+		if (option->value)
 			key->value = g_strdup (option->value);
-			och = gpa_option_get_child_by_id (option, key->value);
-			if (och) {
-				gpa_key_merge_children_from_option (key, och);
-				gpa_node_unref (GPA_NODE (och));
-			} else {
-				g_warning ("List does not contain default item");
-			}
-		}
-		break;
-	case GPA_OPTION_TYPE_ITEM:
-		/* No key for item */
-		break;
-	default:
-		g_assert_not_reached ();
-		break;
+		gpa_key_merge_children_from_option (key, option);
+		return TRUE;
+	}
+	
+	if (key->value)
+		och = gpa_option_get_child_by_id (option, key->value);
+	if (och) {
+		gpa_key_merge_children_from_option (key, GPA_OPTION (och));
+		gpa_node_unref (och);
+		return TRUE;
 	}
 
-	gpa_node_request_modified (GPA_NODE (key), 0);
+	if (key->value)
+		g_free (key->value);
+	key->value = g_strdup (option->value);
+	och = gpa_option_get_child_by_id (option, key->value);
+	if (!och) {
+		g_warning ("List does not contain default item %s", key->value);
+		/* FIXME. set one child as value ? (Chema)*/
+		return FALSE;
+	}
+		
+	gpa_key_merge_children_from_option (key, GPA_OPTION (och));
+	gpa_node_unref (och);
 
 	return TRUE;
-
 }
-

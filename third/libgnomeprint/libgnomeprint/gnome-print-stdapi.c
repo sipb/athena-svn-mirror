@@ -22,12 +22,10 @@
  *    Lauris Kaplinski <lauris@ximian.com>
  *    Chema Celorio <chema@celorio.com>
  *
- *  Copyright (C) 1999-2001 Ximian Inc. and authors
- *
+ *  Copyright (C) 1999-2003 Ximian Inc. and authors
  */
 
-#define __GNOME_PRINT_STDAPI_C__
-
+#include <config.h>
 #include <math.h>
 #include <string.h>
 
@@ -59,16 +57,7 @@ gnome_print_clip (GnomePrintContext *pc)
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
-
 	g_return_val_if_fail (gp_gc_has_currentpath (pc->gc), GNOME_PRINT_ERROR_NOCURRENTPATH);
 
 	gp_gc_close_all (pc->gc);
@@ -101,16 +90,7 @@ gnome_print_eoclip (GnomePrintContext *pc)
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
-
 	g_return_val_if_fail (gp_gc_has_currentpath (pc->gc), GNOME_PRINT_ERROR_NOCURRENTPATH);
 
 	gp_gc_close_all (pc->gc);
@@ -143,16 +123,7 @@ gnome_print_fill (GnomePrintContext *pc)
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
-
 	g_return_val_if_fail (gp_gc_has_currentpath (pc->gc), GNOME_PRINT_ERROR_NOCURRENTPATH);
 
 	gp_gc_close_all (pc->gc);
@@ -185,16 +156,7 @@ gnome_print_eofill (GnomePrintContext *pc)
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
-
 	g_return_val_if_fail (gp_gc_has_currentpath (pc->gc), GNOME_PRINT_ERROR_NOCURRENTPATH);
 
 	gp_gc_close_all (pc->gc);
@@ -225,16 +187,7 @@ gnome_print_stroke (GnomePrintContext *pc)
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
-
 	g_return_val_if_fail (gp_gc_has_currentpath (pc->gc), GNOME_PRINT_ERROR_NOCURRENTPATH);
 
 	ret = gnome_print_stroke_bpath (pc, gp_gc_get_currentpath (pc->gc));
@@ -265,16 +218,7 @@ gnome_print_grayimage (GnomePrintContext *pc, const guchar *data, int width, int
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
-
 	g_return_val_if_fail (data != NULL, GNOME_PRINT_ERROR_BADVALUE);
 	g_return_val_if_fail (width > 0, GNOME_PRINT_ERROR_BADVALUE);
 	g_return_val_if_fail (height > 0, GNOME_PRINT_ERROR_BADVALUE);
@@ -305,16 +249,7 @@ gnome_print_rgbimage (GnomePrintContext *pc, const guchar *data, int width, int 
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
-
 	g_return_val_if_fail (data != NULL, GNOME_PRINT_ERROR_BADVALUE);
 	g_return_val_if_fail (width > 0, GNOME_PRINT_ERROR_BADVALUE);
 	g_return_val_if_fail (height > 0, GNOME_PRINT_ERROR_BADVALUE);
@@ -346,16 +281,7 @@ gnome_print_rgbaimage (GnomePrintContext *pc, const guchar *data, int width, int
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
-
 	g_return_val_if_fail (data != NULL, GNOME_PRINT_ERROR_BADVALUE);
 	g_return_val_if_fail (width > 0, GNOME_PRINT_ERROR_BADVALUE);
 	g_return_val_if_fail (height > 0, GNOME_PRINT_ERROR_BADVALUE);
@@ -386,16 +312,7 @@ gnome_print_concat (GnomePrintContext *pc, const gdouble *matrix)
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
-
 	g_return_val_if_fail (matrix != NULL, GNOME_PRINT_ERROR_BADVALUE);
 
 	gp_gc_concat (pc->gc, matrix);
@@ -419,15 +336,7 @@ gnome_print_newpath (GnomePrintContext *pc)
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
 
 	gp_gc_newpath (pc->gc);
 
@@ -452,15 +361,7 @@ gnome_print_moveto (GnomePrintContext *pc, double x, double y)
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
 
 	gp_gc_moveto (pc->gc, x, y);
 
@@ -486,16 +387,7 @@ gnome_print_lineto (GnomePrintContext *pc, double x, double y)
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
-
 	g_return_val_if_fail (gp_gc_has_currentpoint (pc->gc), GNOME_PRINT_ERROR_NOCURRENTPOINT);
 
 	gp_gc_lineto (pc->gc, x, y);
@@ -527,16 +419,7 @@ gnome_print_curveto (GnomePrintContext *pc, double x1, double y1, double x2, dou
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
-
 	g_return_val_if_fail (gp_gc_has_currentpoint (pc->gc), GNOME_PRINT_ERROR_NOCURRENTPOINT);
 
 	gp_gc_curveto (pc->gc, x1, y1, x2, y2, x3, y3);
@@ -562,16 +445,7 @@ gnome_print_closepath (GnomePrintContext *pc)
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
-
 	g_return_val_if_fail (gp_gc_has_currentpath (pc->gc), GNOME_PRINT_ERROR_NOCURRENTPATH);
 
 	gp_gc_closepath (pc->gc);
@@ -602,21 +476,13 @@ gnome_print_bpath (GnomePrintContext *pc, const ArtBpath *bpath, gboolean append
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
-
 	g_return_val_if_fail (bpath != NULL, GNOME_PRINT_ERROR_BADVALUE);
 
 	if (!append) {
 		gp_gc_newpath (pc->gc);
-		if (bpath->code == ART_END) return GNOME_PRINT_OK;
+		if (bpath->code == ART_END)
+			return GNOME_PRINT_OK;
 		g_return_val_if_fail ((bpath->code == ART_MOVETO) || (bpath->code == ART_MOVETO_OPEN), GNOME_PRINT_ERROR_BADVALUE);
 	}
 
@@ -626,7 +492,8 @@ gnome_print_bpath (GnomePrintContext *pc, const ArtBpath *bpath, gboolean append
 		switch (bpath->code) {
 		case ART_MOVETO:
 		case ART_MOVETO_OPEN:
-			if (closed) gp_gc_closepath (pc->gc);
+			if (closed)
+				gp_gc_closepath (pc->gc);
 			closed = (bpath->code == ART_MOVETO);
 			gp_gc_moveto (pc->gc, bpath->x3, bpath->y3);
 			break;
@@ -644,7 +511,8 @@ gnome_print_bpath (GnomePrintContext *pc, const ArtBpath *bpath, gboolean append
 		bpath += 1;
 	}
 
-	if (closed) gp_gc_closepath (pc->gc);
+	if (closed)
+		gp_gc_closepath (pc->gc);
 
 	return GNOME_PRINT_OK;
 }
@@ -672,16 +540,7 @@ gnome_print_vpath (GnomePrintContext *pc, const ArtVpath *vpath, gboolean append
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
-
 	g_return_val_if_fail (vpath != NULL, GNOME_PRINT_ERROR_BADVALUE);
 
 	if (!append) {
@@ -696,7 +555,8 @@ gnome_print_vpath (GnomePrintContext *pc, const ArtVpath *vpath, gboolean append
 		switch (vpath->code) {
 		case ART_MOVETO:
 		case ART_MOVETO_OPEN:
-			if (closed) gp_gc_closepath (pc->gc);
+			if (closed)
+				gp_gc_closepath (pc->gc);
 			closed = (vpath->code == ART_MOVETO);
 			gp_gc_moveto (pc->gc, vpath->x, vpath->y);
 			break;
@@ -711,7 +571,8 @@ gnome_print_vpath (GnomePrintContext *pc, const ArtVpath *vpath, gboolean append
 		vpath += 1;
 	}
 
-	if (closed) gp_gc_closepath (pc->gc);
+	if (closed)
+		gp_gc_closepath (pc->gc);
 
 	return GNOME_PRINT_OK;
 }
@@ -721,18 +582,18 @@ gnome_print_vpath (GnomePrintContext *pc, const ArtVpath *vpath, gboolean append
  * @pc: A #GnomePrintContextx
  * @x: X position of control point in user coordinates
  * @y: Y position of control point in user coordinates
- * @r: the radius of the arc
+ * @radius: the radius of the arc
  * @angle1: start angle in degrees
  * @angle2: end angle in degrees
  * @direction: direction of movement, 0 counterclockwise 1 clockwise
  * 
- * Adds an arc with control points @x and @y with a radius @r and from
+ * Adds an arc with control points @x and @y with a radius @radius and from
  * @angle1 to @andgle2 in degrees. @direction 1 is clockwise 0 counterclockwise
  * 
  * Return Value: GNOME_PRINT_OK or postive value on success, a negative value otherwise
  **/
 gint
-gnome_print_arcto (GnomePrintContext *pc, gdouble x, gdouble y, gdouble r, gdouble angle1, gdouble angle2, gint direction)
+gnome_print_arcto (GnomePrintContext *pc, gdouble x, gdouble y, gdouble radius, gdouble angle1, gdouble angle2, gint direction)
 {
 	gdouble a;
 
@@ -740,40 +601,34 @@ gnome_print_arcto (GnomePrintContext *pc, gdouble x, gdouble y, gdouble r, gdoub
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail ((direction == 0) || (direction == 1), GNOME_PRINT_ERROR_BADVALUE);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
 
 	/* Find modulo 360 */
 	angle1 = fmod (angle1, 360.0);
 	angle2 = fmod (angle2, 360.0);
 
 	if (!gp_gc_has_currentpoint (pc->gc)) {
-		gp_gc_moveto (pc->gc, x + r * cos (angle1 * M_PI / 180.0), y + r * sin (angle1 * M_PI / 180.0));
+		gp_gc_moveto (pc->gc, x + radius * cos (angle1 * M_PI / 180.0), y + radius * sin (angle1 * M_PI / 180.0));
 	}
 
-	/* fixme: really use curveto's here */
+	/* FIXME: really use curveto's here (Lauris) */
 	if (!direction) {
 		/* CCW */
-		if (angle1 > angle2) angle2 += 360.0;
+		if (angle1 > angle2)
+			angle2 += 360.0;
 		for (a = angle1; a < angle2; a += 1.0) {
-			gp_gc_lineto (pc->gc, x + r * cos (a * M_PI / 180.0), y + r * sin (a * M_PI / 180.0));
+			gp_gc_lineto (pc->gc, x + radius * cos (a * M_PI / 180.0), y + radius * sin (a * M_PI / 180.0));
 		}
 	} else {
 		/* CW */
-		if (angle2 > angle1) angle2 -= 360.0;
+		if (angle2 > angle1)
+			angle2 -= 360.0;
 		for (a = angle1; a > angle2; a -= 1.0) {
-			gp_gc_lineto (pc->gc, x + r * cos (a * M_PI / 180.0), y + r * sin (a * M_PI / 180.0));
+			gp_gc_lineto (pc->gc, x + radius * cos (a * M_PI / 180.0), y + radius * sin (a * M_PI / 180.0));
 		}
 	}
 
-	gp_gc_lineto (pc->gc, x + r * cos (angle2 * M_PI / 180.0), y + r * sin (angle2 * M_PI / 180.0));
+	gp_gc_lineto (pc->gc, x + radius * cos (angle2 * M_PI / 180.0), y + radius * sin (angle2 * M_PI / 180.0));
 
 	return GNOME_PRINT_OK;
 }
@@ -797,16 +652,7 @@ gnome_print_strokepath (GnomePrintContext *pc)
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
-
 	g_return_val_if_fail (gp_gc_has_currentpath (pc->gc), GNOME_PRINT_ERROR_NOCURRENTPATH);
 
 	gp_gc_strokepath (pc->gc);
@@ -834,15 +680,7 @@ gnome_print_setrgbcolor (GnomePrintContext *pc, double r, double g, double b)
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
 
 	gp_gc_set_rgbcolor (pc->gc, r, g, b);
 
@@ -867,15 +705,7 @@ gnome_print_setopacity (GnomePrintContext *pc, double opacity)
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
 
 	gp_gc_set_opacity (pc->gc, opacity);
 
@@ -903,15 +733,7 @@ gnome_print_setlinewidth (GnomePrintContext *pc, double width)
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
 
 	gp_gc_set_linewidth (pc->gc, width);
 
@@ -936,15 +758,7 @@ gnome_print_setmiterlimit (GnomePrintContext *pc, double limit)
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
 
 	gp_gc_set_miterlimit (pc->gc, limit);
 
@@ -971,15 +785,7 @@ gnome_print_setlinejoin (GnomePrintContext *pc, int jointype)
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
 
 	gp_gc_set_linejoin (pc->gc, jointype);
 
@@ -1006,15 +812,7 @@ gnome_print_setlinecap (GnomePrintContext *pc, int captype)
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
 
 	gp_gc_set_linecap (pc->gc, captype);
 
@@ -1047,16 +845,7 @@ gnome_print_setdash (GnomePrintContext *pc, int n_values, const double *values, 
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
-
 	g_return_val_if_fail ((n_values == 0) || (values != NULL), GNOME_PRINT_ERROR_BADVALUE);
 
 	gp_gc_set_dash (pc->gc, n_values, values, offset);
@@ -1082,16 +871,7 @@ gnome_print_setfont (GnomePrintContext *pc, const GnomeFont *font)
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
-
 	g_return_val_if_fail (font != NULL, GNOME_PRINT_ERROR_BADVALUE);
 	g_return_val_if_fail (GNOME_IS_FONT (font), GNOME_PRINT_ERROR_BADVALUE);
 
@@ -1124,16 +904,7 @@ gnome_print_glyphlist (GnomePrintContext *pc, GnomeGlyphList * glyphlist)
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
-
 	g_return_val_if_fail (gp_gc_has_currentpoint (pc->gc), GNOME_PRINT_ERROR_NOCURRENTPOINT);
 	g_return_val_if_fail (glyphlist != NULL, GNOME_PRINT_ERROR_BADVALUE);
 	g_return_val_if_fail (GNOME_IS_GLYPHLIST (glyphlist), GNOME_PRINT_ERROR_BADVALUE);
@@ -1175,16 +946,7 @@ gnome_print_show (GnomePrintContext *pc, const guchar *text)
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
-
 	g_return_val_if_fail (text != NULL, GNOME_PRINT_ERROR_BADVALUE);
 
 	return gnome_print_show_sized (pc, text, strlen (text));
@@ -1216,21 +978,13 @@ gnome_print_show_sized (GnomePrintContext *pc, const guchar *text, int bytes)
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
-
 	g_return_val_if_fail (gp_gc_has_currentpoint (pc->gc), GNOME_PRINT_ERROR_NOCURRENTPOINT);
 	g_return_val_if_fail (text != NULL, GNOME_PRINT_ERROR_BADVALUE);
 	g_return_val_if_fail (bytes >= 0, GNOME_PRINT_ERROR_BADVALUE);
 
-	if (bytes < 1) return GNOME_PRINT_OK;
+	if (bytes < 1)
+		return GNOME_PRINT_OK;
 
 	g_return_val_if_fail (g_utf8_validate (text, bytes, &invalid), GNOME_PRINT_ERROR_TEXTCORRUPT);
 
@@ -1265,15 +1019,7 @@ gnome_print_scale (GnomePrintContext *pc, double sx, double sy)
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
 
 	art_affine_scale (dst, sx, sy);
 
@@ -1298,15 +1044,7 @@ gnome_print_rotate (GnomePrintContext *pc, gdouble theta)
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
 
 	art_affine_rotate (dst, theta);
 
@@ -1332,15 +1070,7 @@ gnome_print_translate (GnomePrintContext *pc, double x, double y)
 	g_return_val_if_fail (pc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (GNOME_IS_PRINT_CONTEXT (pc), GNOME_PRINT_ERROR_BADCONTEXT);
 	g_return_val_if_fail (pc->gc != NULL, GNOME_PRINT_ERROR_BADCONTEXT);
-
-#ifdef ALLOW_BROKEN_PGL
-	if (!pc->haspage) {
-		g_warning ("file %s: line %d: Missing beginpage in print job", __FILE__, __LINE__);
-		gnome_print_beginpage (pc, "Unnamed");
-	}
-#else
 	g_return_val_if_fail (pc->haspage, GNOME_PRINT_ERROR_NOPAGE);
-#endif
 
 	art_affine_identity (dst);
 	dst[4] = x;

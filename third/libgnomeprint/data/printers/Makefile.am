@@ -1,6 +1,10 @@
-printer_DATA= \
-	GENERIC.printer
 
-printerdir=$(datadir)/gnome-print-2.0/printers
+printersdir=$(GNOME_PRINT_DATA_DIR)/printers
+printers_in_files = \
+	GENERIC.xml.in \
+	PDF-WRITER.xml.in
+printers_DATA=$(printers_in_files:.xml.in=.xml)
 
-EXTRA_DIST=$(printer_DATA)
+@INTLTOOL_XML_RULE@
+
+EXTRA_DIST=$(printers_DATA)

@@ -20,190 +20,21 @@
  *    Jose M. Celorio <chema@ximian.com>
  *    Lauris Kaplinski <lauris@ximian.com>
  *
- *  Copyright (C) 2000-2001 Ximian, Inc. and Jose M. Celorio
- *  Contains pieces of code from glib, Copyright GLib Team and others 1997-2000.
+ *  Copyright (C) 2000-2003 Ximian, Inc.
  *
  */
 
-#define __GPA_UTILS_C__
+#include <config.h>
 
 #include <string.h>
-#include <unistd.h>
-#include <time.h>
 #include <libxml/parser.h>
+
 #include "gpa-node-private.h"
 #include "gpa-utils.h"
-#include "gpa-value.h"
 #include "gpa-reference.h"
-
-#define noGPA_CACHE_DEBUG
-#define noGPA_QUARK_DEBUG
-
-guchar *
-gpa_id_new (const guchar *key)
-{
-	static gint counter = 0;
-	guchar *id;
-
-	/* fixme: This is not very intelligent (Lauris) */
-	id = g_strdup_printf ("%s-%.12d%.6d%.6d", key, (gint) time (NULL), getpid (), counter++);
-
-	return id;
-}
-
-GPANode *
-gpa_node_attach (GPANode *parent, GPANode *child)
-{
-	g_return_val_if_fail (parent != NULL, NULL);
-	g_return_val_if_fail (GPA_IS_NODE (parent), NULL);
-	g_return_val_if_fail (child != NULL, NULL);
-	g_return_val_if_fail (GPA_IS_NODE (child), NULL);
-	g_return_val_if_fail (child->parent == NULL, NULL);
-	g_return_val_if_fail (child->next == NULL, NULL);
-
-	child->parent = parent;
-
-	return child;
-}
-
-GPANode *
-gpa_node_attach_ref (GPANode *parent, GPANode *child)
-{
-	g_return_val_if_fail (parent != NULL, NULL);
-	g_return_val_if_fail (GPA_IS_NODE (parent), NULL);
-	g_return_val_if_fail (child != NULL, NULL);
-	g_return_val_if_fail (GPA_IS_NODE (child), NULL);
-	g_return_val_if_fail (child->parent == NULL, NULL);
-	g_return_val_if_fail (child->next == NULL, NULL);
-
-	gpa_node_ref (child);
-
-	child->parent = parent;
-
-	return child;
-}
-
-GPANode *
-gpa_node_detach (GPANode *parent, GPANode *child)
-{
-	g_return_val_if_fail (parent != NULL, child);
-	g_return_val_if_fail (GPA_IS_NODE (parent), child);
-	g_return_val_if_fail (child != NULL, child);
-	g_return_val_if_fail (GPA_IS_NODE (child), child);
-	g_return_val_if_fail (child->parent == parent, child);
-
-	child->parent = NULL;
-	child->next = NULL;
-
-	return NULL;
-}
-
-GPANode *
-gpa_node_detach_unref (GPANode *parent, GPANode *child)
-{
-	g_return_val_if_fail (parent != NULL, child);
-	g_return_val_if_fail (GPA_IS_NODE (parent), child);
-	g_return_val_if_fail (child != NULL, child);
-	g_return_val_if_fail (GPA_IS_NODE (child), child);
-	g_return_val_if_fail (child->parent == parent, child);
-
-	child->parent = NULL;
-	child->next = NULL;
-
-	gpa_node_unref (child);
-
-	return NULL;
-}
-
-GPANode *
-gpa_node_detach_next (GPANode *parent, GPANode *child)
-{
-	GPANode *next;
-
-	g_return_val_if_fail (parent != NULL, child);
-	g_return_val_if_fail (GPA_IS_NODE (parent), child);
-	g_return_val_if_fail (child != NULL, child);
-	g_return_val_if_fail (GPA_IS_NODE (child), child);
-	g_return_val_if_fail (child->parent == parent, child);
-
-	next = child->next;
-	child->parent = NULL;
-	child->next = NULL;
-
-	return next;
-}
-
-GPANode *
-gpa_node_detach_unref_next (GPANode *parent, GPANode *child)
-{
-	GPANode *next;
-
-	g_return_val_if_fail (parent != NULL, child);
-	g_return_val_if_fail (GPA_IS_NODE (parent), child);
-	g_return_val_if_fail (child != NULL, child);
-	g_return_val_if_fail (GPA_IS_NODE (child), child);
-	g_return_val_if_fail (child->parent == parent, child);
-
-	next = child->next;
-	child->parent = NULL;
-	child->next = NULL;
-
-	gpa_node_unref (child);
-
-	return next;
-}
-
-const guchar *
-gpa_node_lookup_check (const guchar *path, const guchar *key)
-{
-	gint len;
-
-	g_return_val_if_fail (path != NULL, NULL);
-	g_return_val_if_fail (*path != '\0', NULL);
-	g_return_val_if_fail (key != NULL, NULL);
-	g_return_val_if_fail (*key != '\0', NULL);
-
-	len = strlen (key);
-
-	if (!strncmp (path, key, len)) {
-		if (!path[len]) return path + len;
-		if (path[len] == '.') return path + len + 1;
-	}
-
-	return NULL;
-}
-
-gboolean
-gpa_node_lookup_ref (GPANode **child, GPANode *node, const guchar *path, const guchar *key)
-{
-	gint len;
-
-	g_return_val_if_fail (*child == NULL, TRUE);
-	g_return_val_if_fail (node != NULL, TRUE);
-	g_return_val_if_fail (GPA_IS_NODE (node), TRUE);
-	g_return_val_if_fail (path != NULL, TRUE);
-	g_return_val_if_fail (*path != '\0', TRUE);
-	g_return_val_if_fail (key != NULL, TRUE);
-	g_return_val_if_fail (*key != '\0', TRUE);
-
-	len = strlen (key);
-
-	if (!strncmp (path, key, len)) {
-		if (!path[len]) {
-			gpa_node_ref (node);
-			*child = node;
-			return TRUE;
-		} else {
-			if (path[len] != '.') return FALSE;
-			*child = gpa_node_lookup (node, path + len + 1);
-			return TRUE;
-		}
-	}
-
-	return FALSE;
-}
-
-/* XML helpers */
+#include "gpa-list.h"
+#include "gpa-key.h"
+#include "gpa-option.h"
 
 xmlChar *
 gpa_xml_node_get_name (xmlNodePtr node)
@@ -229,125 +60,9 @@ gpa_xml_node_get_child (xmlNodePtr node, const guchar *name)
 	g_return_val_if_fail (node != NULL, NULL);
 	g_return_val_if_fail (name != NULL, NULL);
 
-	for (child = node->xmlChildrenNode; child != NULL; child = child->next) {
-		if (!strcmp (child->name, name)) return child;
-	}
-
-	return NULL;
-}
-
-static gboolean
-gpa_node_cache_timeout (gpointer data)
-{
-#ifdef GPA_CACHE_DEBUG
-	g_print ("GPACache: Dropping reference from %p\n", data);
-#endif
-	g_object_set_data (G_OBJECT (data), "gpa_cache_timeout", NULL);
-
-	gpa_node_unref (GPA_NODE (data));
-
-	return FALSE;
-}
-
-GPANode *
-gpa_node_cache (GPANode *node)
-{
-	gint id;
-
-	g_return_val_if_fail (node != NULL, NULL);
-	g_return_val_if_fail (GPA_IS_NODE (node), NULL);
-
-	id = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (node), "gpa_cache_timeout"));
-
-	if (id) {
-		g_source_remove (id);
-	} else {
-		gpa_node_ref (node);
-	}
-
-	id = g_timeout_add (10000, gpa_node_cache_timeout, node);
-
-	g_object_set_data (G_OBJECT (node), "gpa_cache_timeout", GUINT_TO_POINTER (id));
-
-	return node;
-}
-
-/* Private quarks */
-
-#define GPA_QUARK_BLOCK_SIZE 128
-static GHashTable *qdict = NULL;
-static const guchar **qarray = NULL;
-static GQuark qseq = 0;
-
-static GPAQuark
-gpa_quark_new (const guchar *string)
-{
-	if ((qseq % GPA_QUARK_BLOCK_SIZE) == 0) {
-		qarray = g_renew (const guchar *, qarray, qseq + GPA_QUARK_BLOCK_SIZE);
-#ifdef GPA_QUARK_DEBUG
-		g_print ("GPAQuark: Increasing buffer, now %d\n", qseq + GPA_QUARK_BLOCK_SIZE);
-#endif
-	}
-
-	qarray[qseq++] = string;
-
-	g_hash_table_insert (qdict, (gpointer) string, GUINT_TO_POINTER (qseq));
-
-#ifdef GPA_QUARK_DEBUG
-	g_print ("GPAQuark: New quark %d:%s\n", qseq, string);
-#endif
-
-	return qseq;
-}
-
-GPAQuark
-gpa_quark_try_string (const guchar *string)
-{
-	GPAQuark q;
-
-	g_return_val_if_fail (string != NULL, 0);
-
-	q = (qdict) ? GPOINTER_TO_INT (g_hash_table_lookup (qdict, string)) : 0;
-
-	return q;
-}
-
-GPAQuark
-gpa_quark_from_string (const guchar *string)
-{
-	GPAQuark q;
-
-	g_return_val_if_fail (string != NULL, 0);
-
-	if (!qdict) qdict = g_hash_table_new (g_str_hash, g_str_equal);
-
-	q = GPOINTER_TO_INT (g_hash_table_lookup (qdict, string));
-
-	if (!q) q = gpa_quark_new (g_strdup (string));
-
-	return q;
-}
-
-GPAQuark
-gpa_quark_from_static_string (const guchar *string)
-{
-	GPAQuark q;
-
-	g_return_val_if_fail (string != NULL, 0);
-
-	if (!qdict) qdict = g_hash_table_new (g_str_hash, g_str_equal);
-
-	q = GPOINTER_TO_INT (g_hash_table_lookup (qdict, string));
-
-	if (!q) q = gpa_quark_new (string);
-
-	return q;
-}
-
-const guchar *
-gpa_quark_to_string (GPAQuark quark)
-{
-	if ((quark > 0) && (quark <= qseq)) return qarray[quark - 1];
+	for (child = node->xmlChildrenNode; child != NULL; child = child->next)
+		if (!strcmp (child->name, name))
+			return child;
 
 	return NULL;
 }
@@ -357,62 +72,117 @@ gpa_quark_to_string (GPAQuark quark)
  * @node: The node to dump its contents
  * @level: How deep we are in the tree, used so that we know how many spaces to print
  *         so that it really looks like a tree
+ * @follow_references: How deep in the tree do we dump info for the refrences
  * 
  * Recursively prints a node and it childs.
  **/
 static void
-gpa_utils_dump_tree_with_level (GPANode *node, gint level)
+gpa_utils_dump_tree_with_level (GPANode *node, gint level, gint follow_references)
 {
-	GPANode *ref = NULL;
+	GPANode *previous_child = NULL;
 	GPANode *child;
 	int i;
+	gboolean address = FALSE;
 
+	if (level > 20) {
+		g_error ("Level too deep. Aborting\n");
+	}
+	
+	g_print ("[%2d]", level);
 	/* Print this leave indentation */
-	for (i = 0; i < level; i++)
+	for (i = 0; i < level; i++) {
 		g_print ("   ");
+	}
 
 	/* Print the object itself */
 	g_print ("%s [%s] (%d)", gpa_node_id (node),
-		 G_OBJECT_TYPE_NAME (node), GPOINTER_TO_INT (node));
+		 G_OBJECT_TYPE_NAME (node), (address ? GPOINTER_TO_INT (node) : 0));
 
 	if (strcmp (G_OBJECT_TYPE_NAME (node), "GPAReference") == 0) {
 		GPANode *tmp = GPA_REFERENCE (node)->ref;
 		g_print ("****");
 		if (tmp)
 			g_print ("     reference to a:%s\n", G_OBJECT_TYPE_NAME (tmp));
+		else
+			g_print ("     empty reference\n");
 
-		if (level > 1)   /* We follow references only on level 0 & 1 so that we */
-			return; /* see Global & Printer objects */
-	} else {
-		if (strcmp (G_OBJECT_TYPE_NAME (node), "GPAValue") == 0)
-			g_print ("{%s}", ((GPAValue *) node)->value);
-		g_print ("\n");
+		if (level <= follow_references) {
+			gpa_utils_dump_tree_with_level (GPA_REFERENCE (node)->ref,
+							level + 1, follow_references);
+		}
+		return;
 	}
 
-	ref = NULL;
+	if (strcmp (G_OBJECT_TYPE_NAME (node), "GPAKey") == 0)
+		g_print (" {%s}", ((GPAKey *) node)->value);
+	if (strcmp (G_OBJECT_TYPE_NAME (node), "GPAOption") == 0) {
+		GPAOption *option;
+		option = GPA_OPTION (node);
+		g_print (" {OptionType ");
+		switch (option->type) {
+		case GPA_OPTION_TYPE_STRING:
+			g_print ("string [%s]", option->value);
+			break;
+		case GPA_OPTION_TYPE_LIST:
+			g_print ("list [%s]", option->value);
+			break;
+		case GPA_OPTION_TYPE_KEY:
+			g_print ("key [%s]", option->value);
+			break;
+		case GPA_OPTION_TYPE_NODE:
+			g_print ("node");
+			break;
+		case GPA_OPTION_TYPE_ITEM:
+			g_print ("item");
+			break;
+		case GPA_OPTION_TYPE_ROOT:
+			g_print ("root");
+			break;
+		case GPA_OPTION_TYPE_NONE:
+			default:
+				g_assert_not_reached ();
+		}
+		g_print ("}");
+	}
+	if (strcmp (G_OBJECT_TYPE_NAME (node), "GPAList") == 0) {
+		g_print (" {CanHaveDefault:%s}", GPA_LIST (node)->can_have_default ?
+			 "Yes" : "No");
+	}
+	g_print ("\n");
+
+	previous_child = NULL;
 	while (TRUE) {
-		child = gpa_node_get_child (node, ref);
+		child = gpa_node_get_child (node, previous_child);
+		if (child == node) {
+			g_error ("Error: child is the same as parent. Aborting.\n");
+		}
 		if (!child)
 			break;
-		ref = child;
-		gpa_utils_dump_tree_with_level (child, level + 1);
+		previous_child = child;
+		gpa_utils_dump_tree_with_level (child, level + 1, follow_references);
+		gpa_node_unref (GPA_NODE (child));
 	}
 }
 
 /**
  * gpa_utils_dump_tree:
- * @node: 
+ * @node:
+ * @follow_references: How deep in the tree do we follow references
  * 
  * Dump the tree pointed by @node to the console. Used for debuging purposeses
  **/
 void
-gpa_utils_dump_tree (GPANode *node)
+gpa_utils_dump_tree (GPANode *node, gint follow_references)
 {
+	g_return_if_fail (node != NULL);
+	g_return_if_fail (GPA_IS_NODE (node));
+	
 	g_print ("\n"
 		 "-------------\n"
 		 "Dumping a tree\n\n");
 
-	gpa_utils_dump_tree_with_level (node, 0);
-	
+	gpa_utils_dump_tree_with_level (node, 0, follow_references);
+
 	g_print ("-------------\n");
 }
+

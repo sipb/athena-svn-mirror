@@ -114,28 +114,23 @@ GNOME_IS_GLYPHLIST
 </SECTION>
 
 <SECTION>
-<FILE>gnome-print-master</FILE>
-GnomePrintMaster
-GnomePrintMasterClass
-gnome_print_master_new
-gnome_print_master_new_from_config
-gnome_print_master_get_config
-gnome_print_master_get_context
-gnome_print_master_close
-gnome_print_master_print
-gnome_print_master_render
-gnome_print_master_render_page
-gnome_print_master_get_pages
-gnome_print_master_get_page_size_from_config
-gnome_print_master_print_to_file
+<FILE>gnome-print-job</FILE>
+GnomePrintJob
+gnome_print_job_new
+gnome_print_job_get_config
+gnome_print_job_get_context
+gnome_print_job_close
+gnome_print_job_print
+gnome_print_job_render
+gnome_print_job_render_page
+gnome_print_job_get_pages
+gnome_print_job_get_page_size_from_config
+gnome_print_job_print_to_file
 <SUBSECTION Standard>
-GNOME_PRINT_MASTER
-GNOME_IS_PRINT_MASTER
-GNOME_TYPE_PRINT_MASTER
-gnome_print_master_get_type
-GNOME_PRINT_MASTER_CLASS
-GNOME_IS_PRINT_MASTER_CLASS
-GNOME_PRINT_MASTER_GET_CLASS
+GNOME_PRINT_JOB
+GNOME_IS_PRINT_JOB
+GNOME_TYPE_PRINT_JOB
+gnome_print_job_get_type
 </SECTION>
 
 <SECTION>
@@ -180,9 +175,6 @@ gnome_print_rgbimage
 gnome_print_rgbaimage
 gnome_print_beginpage
 gnome_print_showpage
-GnomePrintPageCallback
-gnome_print_page_callback
-gnome_print_page_callback_closure
 gnome_print_line_stroked
 gnome_print_rect_stroked
 gnome_print_rect_filled

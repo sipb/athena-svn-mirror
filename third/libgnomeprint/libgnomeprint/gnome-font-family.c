@@ -23,12 +23,12 @@
  *
  */
 
-#define __GNOME_FONT_FAMILY_C__
-
+#include <config.h>
 #include <string.h>
-#include "gp-fontmap.h"
-#include "gnome-font-private.h"
-#include "gnome-font-family.h"
+
+#include <libgnomeprint/gnome-fontmap.h>
+#include <libgnomeprint/gnome-font-private.h>
+#include <libgnomeprint/gnome-font-family.h>
 
 struct _GnomeFontFamily {
 	GObject object;
@@ -144,6 +144,8 @@ gnome_font_family_style_list (GnomeFontFamily * family)
 		for (l = f->fonts; l != NULL; l = l->next) {
 			GPFontEntry * e;
 			e = (GPFontEntry *) l->data;
+			if (e->is_alias)
+				continue;
 			list = g_list_prepend (list, g_strdup (e->speciesname));
 		}
 		list = g_list_reverse (list);
