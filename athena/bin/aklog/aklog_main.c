@@ -1,12 +1,12 @@
 /* 
- * $Id: aklog_main.c,v 1.15 1991-08-24 20:55:18 probe Exp $
+ * $Id: aklog_main.c,v 1.16 1992-02-03 09:30:25 probe Exp $
  *
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_main.c,v 1.15 1991-08-24 20:55:18 probe Exp $";
+static char *rcsid = "$Id: aklog_main.c,v 1.16 1992-02-03 09:30:25 probe Exp $";
 #endif lint || SABER
 
 #include <stdio.h>
@@ -115,15 +115,15 @@ static char *copy_string(string)
 
 
 #ifdef __STDC__
-static int get_cellconfig(char *cell, struct afsconf_cell *cellconfig)
+static int get_cellconfig(char *cell, struct afsconf_cell *cellconfig, char *local_cell)
 #else
-static int get_cellconfig(cell, cellconfig)
-  char *cell;
-  struct afsconf_cell *cellconfig;
+static int get_cellconfig(cell, cellconfig, local_cell)
+    char *cell;
+    struct afsconf_cell *cellconfig;
+    char *local_cell;
 #endif /* __STDC__ */
 {
     int status = AKLOG_SUCCESS;
-    char local_cell[MAXCELLCHARS + 1];
     struct afsconf_dir *configdir;
 
     bzero(local_cell, sizeof(local_cell));
@@ -137,14 +137,14 @@ static int get_cellconfig(cell, cellconfig)
 	params.exitprog(AKLOG_AFS);
     }
 
-    if ((cell == NULL) || (cell[0] == 0)) {
-	if (afsconf_GetLocalCell(configdir, local_cell, MAXCELLCHARS)) {
-	    sprintf(msgbuf, "%s: can't determine local cell.\n", progname);
-	    params.pstderr(msgbuf);
-	    params.exitprog(AKLOG_AFS);
-	}
-	cell = local_cell;
+    if (afsconf_GetLocalCell(configdir, local_cell, MAXCELLCHARS)) {
+	sprintf(msgbuf, "%s: can't determine local cell.\n", progname);
+	params.pstderr(msgbuf);
+	params.exitprog(AKLOG_AFS);
     }
+
+    if ((cell == NULL) || (cell[0] == 0))
+	cell = local_cell;
 
     if (afsconf_GetCellInfo(configdir, cell, NULL, cellconfig)) {
 	sprintf(msgbuf, "%s: Can't get information about cell %s.\n",
@@ -184,6 +184,7 @@ static int auth_to_cell(cell, realm)
     char instance[INST_SZ];	/* Instance of afs key */
     char realm_of_user[REALM_SZ]; /* Kerberos realm of user */
     char realm_of_cell[REALM_SZ]; /* Kerberos realm of cell */
+    char local_cell[MAXCELLCHARS+1];
 
     CREDENTIALS c;
     struct ktc_principal aserver;
@@ -198,7 +199,7 @@ static int auth_to_cell(cell, realm)
     bzero(realm_of_cell, sizeof(realm_of_cell));
 
     /* NULL or empty cell returns information on local cell */
-    if (status = get_cellconfig(cell, &cellconfig))
+    if (status = get_cellconfig(cell, &cellconfig, local_cell))
 	return(status);
 
     cell_to_use = cellconfig.name;
@@ -228,8 +229,15 @@ static int auth_to_cell(cell, realm)
      */
     if (ll_string(&zsublist, ll_s_add, cell_to_use) == LL_FAILURE) {
 	sprintf(msgbuf, 
-		"%s: failure adding cell to zephyr subscriptions list.\n",
-		progname);
+		"%s: failure adding cell %s to zephyr subscriptions list.\n",
+		progname, cell_to_use);
+	params.pstderr(msgbuf);
+	params.exitprog(AKLOG_MISC);
+    }
+    if (ll_string(&zsublist, ll_s_add, local_cell) == LL_FAILURE) {
+	sprintf(msgbuf, 
+		"%s: failure adding cell %s to zephyr subscriptions list.\n",
+		progname, local_cell);
 	params.pstderr(msgbuf);
 	params.exitprog(AKLOG_MISC);
     }
@@ -676,7 +684,7 @@ static int auth_to_path(path)
 		}
 	    }
 	}
-	else
+	else {
 	    if (params.isdir(pathtocheck, &isdir) < 0) {
 		/*
 		 * If we've logged and still can't stat, there's
@@ -694,7 +702,9 @@ static int auth_to_path(path)
 		params.pstderr(msgbuf);
 		return(AKLOG_BADPATH);
 	    }
+	}
     }
+    
 
     return(status);
 }
