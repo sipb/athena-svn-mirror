@@ -107,6 +107,7 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -129,6 +130,8 @@ PERL_PATH = @PERL_PATH@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PS_PATH = @PS_PATH@
 RANLIB = @RANLIB@
 SERVER_CFLAGS = @SERVER_CFLAGS@
@@ -560,7 +563,7 @@ empty-server.o: empty-server.c ../bonobo-activation/bonobo-activation.h \
 	../bonobo-activation/bonobo-activation-async.h empty.h
 empty-skels.o: empty-skels.c empty.h
 empty-stubs.o: empty-stubs.c empty.h
-plugin-common.lo plugin-common.o : plugin-common.c plugin.h
+plugin-common.o: plugin-common.c plugin.h
 plugin-skels.lo plugin-skels.o : plugin-skels.c plugin.h
 plugin-stubs.o: plugin-stubs.c plugin.h
 test-performance.o: test-performance.c \

@@ -1,0 +1,261 @@
+# translation of bonobo-activation.HEAD.he.po to Hebrew
+# This file is distributed under the same license as the PACKAGE package.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# Gil Osher <dolfin@rpg.org.il>, 2002
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: bonobo-activation.HEAD.he\n"
+"POT-Creation-Date: 2003-01-20 15:45+0000\n"
+"PO-Revision-Date: 2002-09-12 23:44+0300\n"
+"Last-Translator: Gil Osher <dolfin@rpg.org.il>\n"
+"Language-Team: Hebrew <he@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:102
+msgid "Child process did not give an error message, unknown failure occurred"
+msgstr "תהליך הילד לא החזיר הודעת שגיאה, שגיאה לא ידועה ארעה!"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:174
+#, c-format
+msgid "Failed to read from child process: %s\n"
+msgstr "הקריאה מתהליך הילד נכשלה: %s\n"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:296
+msgid "Couldn't fork a new process"
+msgstr "לא יכול להעתיק תהליך חדש"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:319
+#, c-format
+msgid "Child received signal %u (%s)"
+msgstr "תהליך הילד קיבל אות %u (%s)"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:324
+#, c-format
+msgid "Unknown non-exit error (status is %u)"
+msgstr "שגיאה לא ידועה (המצב %u)"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:387
+#, c-format
+msgid "bonobo-activation failed to set process group of %s: %s\n"
+msgstr "bonobo-activation נכשל לקבוע את קבוצתו של התהליך %s: %s\n"
+
+#: bonobo-activation/bonobo-activation-fork-server.c:399
+#, c-format
+msgid "Failed to execute %s: %d (%s)\n"
+msgstr "כשל בהפעלת %s: %d (%s)\n"
+
+#: bonobo-activation/bonobo-activation-init.c:243
+msgid "File descriptor to print IOR on"
+msgstr "מתאר הקובץ להדפסת IOR"
+
+#: bonobo-activation/bonobo-activation-init.c:243
+#: server/activation-server-main.c:73
+msgid "FD"
+msgstr "FD"
+
+#: bonobo-activation/bonobo-activation-init.c:245
+msgid "IID to activate"
+msgstr "IID כדי להפעיל"
+
+#: bonobo-activation/bonobo-activation-init.c:247
+msgid "Prevent registering of server with OAF"
+msgstr "מנע הרשמות שרת עם OAF"
+
+#: bonobo-activation/bonobo-activation-init.c:334
+msgid "Bonobo activation options"
+msgstr "אפשרויות הפעלה של Bonobo"
+
+#: bonobo-activation/bonobo-activation-shlib.c:101
+#, c-format
+msgid "g_module_open of `%s' failed with `%s'"
+msgstr "g_module_open of '%s' נכשלה עם '%s'"
+
+#: bonobo-activation/bonobo-activation-shlib.c:119
+#: bonobo-activation/bonobo-activation-shlib.c:155
+#, c-format
+msgid "Can't find symbol Bonobo_Plugin_info in `%s'"
+msgstr "לא יכול למצוא סמל Bonobo_Plugin_info ב '%s'"
+
+#: bonobo-activation/bonobo-activation-shlib.c:203
+#, c-format
+msgid "Factory `%s' returned NIL for `%s'"
+msgstr "'%s' החזיר NIL עבור '%s'"
+
+#: bonobo-activation/bonobo-activation-shlib.c:220
+#, c-format
+msgid "Shlib `%s' didn't contain `%s'"
+msgstr "Shlib `%s' לא כללה `%s'"
+
+#: bonobo-activation/bonobo-activation-get-language-list.c:87
+msgid "Too many alias levels for a locale, may indicate a loop"
+msgstr ""
+
+#: server/activation-context-corba.c:621
+msgid "Couldn't find which child the server was listed in"
+msgstr "לא יכול למצוא איזה ילד היה רשום אצל השרת"
+
+#: server/activation-context-corba.c:919
+msgid "Not a valid Activation ID"
+msgstr ""
+
+#: server/activation-server-main.c:66
+msgid "Directory to read .server files from"
+msgstr "ספרייה לקריאת קבצי .server"
+
+#: server/activation-server-main.c:66
+msgid "DIRECTORY"
+msgstr "ספרייה"
+
+#: server/activation-server-main.c:69
+msgid "Serve as an ActivationContext (default is as an ObjectDirectory only)"
+msgstr "שרת כ ActivationContext (ברירת המחדל הוא כ ObjectDirectory בלבד)"
+
+#: server/activation-server-main.c:73
+msgid "File descriptor to write IOR to"
+msgstr "מתאר הקובץ לכתיבת IOR"
+
+#: server/activation-server-main.c:81
+msgid "Query expression to evaluate"
+msgstr "ביטוי השאילתה להערכה"
+
+#: server/activation-server-main.c:81
+msgid "EXPRESSION"
+msgstr "ביטוי"
+
+#: server/Bonobo_CosNaming_NamingContext.server.in.in.h:1
+msgid "CORBA CosNaming service."
+msgstr "שירות COBRA CosNaming"
+
+#: server/Bonobo_CosNaming_NamingContext.server.in.in.h:2
+msgid "Name service"
+msgstr "שירות שמות"
+
+#: server/object-directory-activate.c:185
+msgid "We don't handle activating shlib objects in a remote process yet"
+msgstr "איננו מטפלים בהפעלת אובייקטי shlib בתהליך מרוחק כרגע"
+
+#: server/object-directory-config-file.c:47
+#, c-format
+msgid ""
+"The Bonobo Activation configuration file was not read successfully. Please, "
+"check it is valid in: %s"
+msgstr ""
+"קובץ ההגדרות של Bonobo Activation לא נקרא בהצלחה. אנא, בדוק אם הוא תקין ב: %s"
+
+#: server/object-directory-load.c:94
+msgid "a NULL iid is not valid"
+msgstr "NULL iid אינו תקין"
+
+#: server/object-directory-load.c:98
+#, c-format
+msgid "iid %s has a NULL type"
+msgstr "iid %s כולל טיפוס NULL"
+
+#: server/object-directory-load.c:102
+#, c-format
+msgid "iid %s has a NULL location"
+msgstr "iid %s כולל מיקום NULL"
+
+#: server/object-directory-load.c:111
+#, c-format
+msgid "invalid character '%c' in iid '%s'"
+msgstr "אות בלתי מובנת '%c' ב iid '%s'"
+
+#: server/object-directory-load.c:306
+#, c-format
+msgid "Property '%s' has no value"
+msgstr "התכונה '%s' אינה כוללת ערך"
+
+#.
+#. * If this exception blows ( which it will only do with a multi-object )
+#. * factory, you need to ensure you register the object you were activated
+#. * for [use const char *bonobo_activation_iid_get (void); ] is registered
+#. * with bonobo_activation_active_server_register - _after_ any other
+#. * servers are registered.
+#.
+#: server/object-directory-corba.c:886
+#, c-format
+msgid "Race condition activating server '%s'"
+msgstr ""
+
+#: utils/bonobo-activation-sysconf.c:62
+msgid "Could not save configuration file.\n"
+msgstr "איני יכול לשמור את קובץ ההגדרות.\n"
+
+#: utils/bonobo-activation-sysconf.c:63
+#, c-format
+msgid "Please, make sure you have permissions to write to '%s'.\n"
+msgstr "אנא וודא שבידך הרשאות לכתיבה ל '%s'.\n"
+
+#: utils/bonobo-activation-sysconf.c:66
+msgid "Successfully wrote configuration file.\n"
+msgstr "קובץ ההגדרות נכתב בהצלחה.\n"
+
+#: utils/bonobo-activation-sysconf.c:80
+#, c-format
+msgid ""
+"configuration file is:\n"
+"    %s\n"
+msgstr ""
+"קובץ ההגדרות הוא:\n"
+"     %s\n"
+
+#: utils/bonobo-activation-sysconf.c:118
+#, c-format
+msgid "%s already in configuration file\n"
+msgstr "%s כבר קיים בקובץ ההגדרות\n"
+
+#: utils/bonobo-activation-sysconf.c:138
+msgid "there is not a properly structured configuration file\n"
+msgstr "קובץ ההגדרות אינו בנוי כראוי\n"
+
+#: utils/bonobo-activation-sysconf.c:201
+msgid "Bonobo-activation configuration file contains:\n"
+msgstr "קובץ ההגדרות של Bonobo-activation מכיל:\n"
+
+#: utils/bonobo-activation-sysconf.c:233
+msgid "Directory to remove from configuration file"
+msgstr "ספרייה להסרה מקובץ ההגדרות"
+
+#: utils/bonobo-activation-sysconf.c:233 utils/bonobo-activation-sysconf.c:236
+msgid "directory path"
+msgstr "נתיב הספרייה"
+
+#: utils/bonobo-activation-sysconf.c:236
+msgid "Directory to add to configuration file"
+msgstr "ספרייה להוספה לקובץ ההגדרות"
+
+#: utils/bonobo-activation-sysconf.c:239
+msgid "Display directories in configuration file"
+msgstr "הצג ספריות בקובץ ההגדרות"
+
+#: utils/bonobo-activation-sysconf.c:242
+msgid "Display path to configuration file"
+msgstr "הצג נתיב לקובץ ההגדרות"
+
+#~ msgid "No server corresponding to your query"
+#~ msgstr "אין שרת מתאים לבקשתך"
+
+#~ msgid "Query failed: "
+#~ msgstr "שאילתה נכלשה: "
+
+#~ msgid "Activation failed: "
+#~ msgstr "הפעלה נכשלה: "
+
+#~ msgid "Could not parse AID"
+#~ msgstr "לא יכול לנתח AID"
+
+#~ msgid "Could not parse context: "
+#~ msgstr "לא יכול לפענח את הקשר: "
+
+#~ msgid "Could not activate server: "
+#~ msgstr "לא יכול להפעיל את השרת: "
+
+#~ msgid "Domain of ObjectDirectory"
+#~ msgstr "התחום של ObjectDirectory"
+
+#~ msgid "DOMAIN"
+#~ msgstr "תחום"

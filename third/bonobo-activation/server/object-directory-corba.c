@@ -35,6 +35,7 @@
 #include "server.h"
 
 #include "bonobo-activation/bonobo-activation-i18n.h"
+#include "bonobo-activation/bonobo-activation-private.h"
 #include "activation-server-corba-extensions.h"
 
 /*
@@ -54,10 +55,9 @@ typedef struct {
 	Bonobo_ServerInfoList attr_servers;
 	Bonobo_CacheTime      time_list_changed;
 
-	CORBA_char           *attr_domain;
-
         /* CORBA Object tracking */
-	GHashTable      *active_servers;
+	GHashTable      *active_server_lists;
+	guint            n_active_servers;
         guint            no_servers_timeout;
 	Bonobo_CacheTime time_active_changed;
 
@@ -68,6 +68,15 @@ typedef struct {
 
 	CORBA_Object self;
 } impl_POA_Bonobo_ObjectDirectory;
+
+typedef struct {
+	char *iid;
+	int   n_servers;
+	struct {
+		Bonobo_ActivationEnvironment environment;
+		CORBA_Object                 server;
+	} servers [1]; /* flexible array */
+} ActiveServerList;
 
 /*
  * DON'T FIXME: this smells, here we vandalise the oh so
@@ -206,8 +215,7 @@ update_registry (impl_POA_Bonobo_ObjectDirectory *servant, gboolean force_reload
                 bonobo_server_info_load (servant->registry_source_directories,
                                          &servant->attr_servers,
                                          &servant->by_iid,
-                                         bonobo_activation_hostname_get (),
-                                         servant->attr_domain);
+                                         bonobo_activation_hostname_get ());
                 servant->time_did_stat = servant->time_list_changed = time (NULL);
 
 #ifdef BONOBO_ACTIVATION_DEBUG
@@ -266,11 +274,12 @@ split_path_unique (const char *colon_delimited_path)
 
 static Bonobo_ServerInfoListCache *
 impl_Bonobo_ObjectDirectory__get_servers (
-        impl_POA_Bonobo_ObjectDirectory *servant,
+        PortableServer_Servant           _servant,
         Bonobo_CacheTime                 only_if_newer,
         CORBA_Environment               *ev)
 {
-	Bonobo_ServerInfoListCache *retval;
+	impl_POA_Bonobo_ObjectDirectory *servant = _servant;
+	Bonobo_ServerInfoListCache      *retval;
 
         update_registry (servant, FALSE);
 
@@ -299,11 +308,12 @@ collate_active_server (char *key, gpointer value, StateCollectionInfo *sci)
 
 static Bonobo_ServerStateCache *
 impl_Bonobo_ObjectDirectory_get_active_servers (
-        impl_POA_Bonobo_ObjectDirectory *servant,
+        PortableServer_Servant           _servant,
         Bonobo_CacheTime                 only_if_newer,
         CORBA_Environment               *ev)
 {
-	Bonobo_ServerStateCache *retval;
+	impl_POA_Bonobo_ObjectDirectory *servant = _servant;
+	Bonobo_ServerStateCache         *retval;
 
 	retval = Bonobo_ServerStateCache__alloc ();
 
@@ -312,13 +322,13 @@ impl_Bonobo_ObjectDirectory_get_active_servers (
 		StateCollectionInfo sci;
 
 		retval->_u.active_servers._length =
-			g_hash_table_size (servant->active_servers);
+			g_hash_table_size (servant->active_server_lists);
 		retval->_u.active_servers._buffer = sci.seq =
 			CORBA_sequence_Bonobo_ImplementationID_allocbuf
 			(retval->_u.active_servers._length);
 		sci.last_used = 0;
 
-		g_hash_table_foreach (servant->active_servers,
+		g_hash_table_foreach (servant->active_server_lists,
 				      (GHFunc) collate_active_server, &sci);
 		CORBA_sequence_set_release (&(retval->_u.active_servers),
 					    CORBA_TRUE);
@@ -328,55 +338,50 @@ impl_Bonobo_ObjectDirectory_get_active_servers (
 }
 
 static CORBA_Object 
-od_get_active_server (impl_POA_Bonobo_ObjectDirectory *servant,
-                      Bonobo_ImplementationID          iid,
-                      CORBA_Context                    ctx,
-                      CORBA_Environment               *ev)
+od_get_active_server (impl_POA_Bonobo_ObjectDirectory    *servant,
+		      const char                         *iid,
+		      const Bonobo_ActivationEnvironment *environment)
 {
-	CORBA_Object retval;
-        char *display;
-        char *display_iid;
+	ActiveServerList *servers;
+	CORBA_Object      retval;
+	int               i;
 
-        display = activation_server_CORBA_Context_get_value (
-                ctx, "display", NULL, ev);
-        
-        if (display != NULL) {
-                display_iid = g_strconcat (display, ",", iid, NULL);
-                
-                retval = g_hash_table_lookup (servant->active_servers, display_iid);
+	servers = g_hash_table_lookup (servant->active_server_lists, iid);
+	if (!servers)
+		return CORBA_OBJECT_NIL;
 
-		g_free (display);
-                g_free (display_iid);
-                
-                if (retval != CORBA_OBJECT_NIL &&
-                    !CORBA_Object_non_existent (retval, ev))
-                        return CORBA_Object_duplicate (retval, ev);
-        }
+	retval = CORBA_OBJECT_NIL;
 
-        retval = g_hash_table_lookup (servant->active_servers, iid);
-        
-        if (retval != CORBA_OBJECT_NIL &&
-            !CORBA_Object_non_existent (retval, ev))
-                return CORBA_Object_duplicate (retval, ev);
+	for (i = 0; i < servers->n_servers; i++)
+		if (Bonobo_ActivationEnvironment_match (
+				&servers->servers [i].environment,
+				environment)) {
+			retval = servers->servers [i].server;
+		}
 
-        return CORBA_OBJECT_NIL;
+	if (retval != CORBA_OBJECT_NIL &&
+	    !CORBA_Object_non_existent (retval, NULL))
+		return CORBA_Object_duplicate (retval, NULL);
+
+	return CORBA_OBJECT_NIL;
 }
 
 static CORBA_Object
 impl_Bonobo_ObjectDirectory_activate (
-        impl_POA_Bonobo_ObjectDirectory *servant,
-        Bonobo_ImplementationID          iid,
-        Bonobo_ActivationContext         ac,
-        Bonobo_ActivationFlags           flags,
-        CORBA_Context                    ctx,
-        CORBA_Environment               *ev)
+	PortableServer_Servant              _servant,
+	const CORBA_char                   *iid,
+	const Bonobo_ActivationContext      ac,
+	const Bonobo_ActivationEnvironment *environment,
+	const Bonobo_ActivationFlags        flags,
+	CORBA_Context                       ctx,
+	CORBA_Environment                  *ev)
 {
-	CORBA_Object retval;
-	Bonobo_ServerInfo *si;
-	ODActivationInfo ai;
-        CORBA_Environment retry_ev;
+	impl_POA_Bonobo_ObjectDirectory *servant = _servant;
+	CORBA_Object                     retval;
+	Bonobo_ServerInfo               *si;
+	ODActivationInfo                 ai;
 #ifdef BONOBO_ACTIVATION_DEBUG
-        static int depth = 0;
+	static int                       depth = 0;
 #endif
 
 	retval = CORBA_OBJECT_NIL;
@@ -384,7 +389,7 @@ impl_Bonobo_ObjectDirectory_activate (
         update_registry (servant, FALSE);
 
         if (!(flags & Bonobo_ACTIVATION_FLAG_PRIVATE)) {
-                retval = od_get_active_server (servant, iid, ctx, ev);
+                retval = od_get_active_server (servant, iid, environment);
 
                 if (retval != CORBA_OBJECT_NIL)
                         return retval;
@@ -412,7 +417,7 @@ impl_Bonobo_ObjectDirectory_activate (
 
 	if (si) {
 		retval = od_server_activate (
-                        si, &ai, servant->self, ev);
+				si, &ai, servant->self, environment, ev);
 
                 /* If we failed to activate - it may be because our
                  * request re-entered _during_ the activation
@@ -430,12 +435,8 @@ impl_Bonobo_ObjectDirectory_activate (
                 /* FIXME: this path is theoretically redundant now */
                 if (ev->_major != CORBA_NO_EXCEPTION ||
                     retval == CORBA_OBJECT_NIL) {
-                        CORBA_exception_init (&retry_ev);
+                        retval = od_get_active_server (servant, iid, environment);
 
-                        retval = od_get_active_server (servant, iid, ctx, &retry_ev);
-
-                        CORBA_exception_free (&retry_ev);
-                        
                         if (retval != CORBA_OBJECT_NIL)
                                 CORBA_exception_free (ev);
                 }
@@ -464,7 +465,7 @@ quit_server_timeout (gpointer user_data)
 #endif
 
         if (!main_dir ||
-            g_hash_table_size (main_dir->active_servers) > RESIDUAL_SERVERS ||
+            main_dir->n_active_servers > RESIDUAL_SERVERS ||
             !activation_clients_is_empty_scan ())
                 g_warning ("Serious error handling server count, not quitting");
         else
@@ -485,7 +486,7 @@ check_quit (void)
                 g_source_remove (servant->no_servers_timeout);
         servant->no_servers_timeout = 0;
 
-        if (g_hash_table_size (servant->active_servers) <= RESIDUAL_SERVERS &&
+        if (servant->n_active_servers <= RESIDUAL_SERVERS &&
             activation_clients_is_empty_scan ())
                 servant->no_servers_timeout = g_timeout_add (
                         SERVER_IDLE_QUIT_TIMEOUT, quit_server_timeout, NULL);
@@ -493,24 +494,82 @@ check_quit (void)
 	servant->time_active_changed = time (NULL);
 }
 
+static void
+remove_active_server_entry (ActiveServerList *servers,
+			    int               index)
+{
+	CORBA_Object_release (servers->servers [index].server, NULL);
+	CORBA_free (servers->servers [index].environment._buffer);
+
+	if (index != servers->n_servers - 1)
+		memcpy (servers->servers [index].server,
+			servers->servers [servers->n_servers - 1].server,
+			sizeof (servers->servers [index].server));
+
+	servers->n_servers--;
+}
+
+static ActiveServerList *
+add_active_server_entry (ActiveServerList                   *servers,
+			 const Bonobo_ActivationEnvironment *environment,
+			 CORBA_Object                        object)
+{
+	int index, i;
+
+	index = servers->n_servers - 1;
+
+	if (index != 0)
+		servers = g_realloc (servers,
+				     sizeof (*servers) + sizeof (servers->servers [0]) * index);
+
+	servers->servers [index].server = CORBA_Object_duplicate (object, NULL);
+
+	servers->servers [index].environment._length  = environment->_length;
+	servers->servers [index].environment._maximum = environment->_maximum;
+	servers->servers [index].environment._buffer  =
+				Bonobo_ActivationEnvironment_allocbuf (environment->_length);
+	servers->servers [index].environment._release = TRUE;
+
+	for (i = 0; i < environment->_length; i++)
+		Bonobo_ActivationEnvValue_copy (
+			&servers->servers [index].environment._buffer [i],
+			&environment->_buffer [i]);
+
+	return servers;
+}
+
 static gboolean
 prune_dead_servers (gpointer key,
                     gpointer value,
                     gpointer user_data)
 {
-        gboolean dead;
-        ORBitConnectionStatus status;
+	impl_POA_Bonobo_ObjectDirectory *servant = user_data;
+	ActiveServerList                *servers = value;
+	int                              i;
 
-        status = ORBit_small_get_connection_status (value);
+	for (i = 0; i < servers->n_servers; i++) {
+		ORBitConnectionStatus  status;
+		gboolean               dead;
 
-        dead = (status == ORBIT_CONNECTION_DISCONNECTED);
+		status = ORBit_small_get_connection_status (
+					servers->servers [i].server);
+
+		dead = (status == ORBIT_CONNECTION_DISCONNECTED);
 
 #ifdef BONOBO_ACTIVATION_DEBUG
-        fprintf (stderr, "IID '%20s', %s\n", (char *) key,
-                 dead ? "dead" : "alive");
+		fprintf (stderr, "IID '%20s' (%p), %s \n",
+			 (char *) key, servers->servers [i].server,
+			 dead ? "dead" : "alive");
 #endif
+		if (dead) {
+			remove_active_server_entry (servers, i);
+
+			servant->n_active_servers--;
+			i--;
+		}
+	}
         
-        return dead;
+        return !servers->n_servers;
 }
 
 static void
@@ -523,23 +582,24 @@ active_server_cnx_broken (ORBitConnection *cnx,
         if (!servant) /* shutting down */
                 return;
 
-        g_hash_table_foreach_remove (servant->active_servers,
+        g_hash_table_foreach_remove (servant->active_server_lists,
                                      prune_dead_servers, servant);
 #ifdef BONOBO_ACTIVATION_DEBUG
         g_warning ("After prune: %d live servers",
-                   g_hash_table_size (
-                           servant->active_servers) - RESIDUAL_SERVERS);
+                   servant->n_active_servers - RESIDUAL_SERVERS);
 #endif
 
         check_quit ();
 }
 
 static void
-add_active_server (impl_POA_Bonobo_ObjectDirectory *servant,
-                   const char                      *iid,
-                   CORBA_Object                     object)
+add_active_server (impl_POA_Bonobo_ObjectDirectory    *servant,
+		   const char                         *iid,
+		   const Bonobo_ActivationEnvironment *environment,
+		   CORBA_Object                       object)
 {
-        ORBitConnection *cnx;
+	ActiveServerList *servers;
+        ORBitConnection  *cnx;
 
         cnx = ORBit_small_get_connection (object);
         if (cnx) {
@@ -555,99 +615,134 @@ add_active_server (impl_POA_Bonobo_ObjectDirectory *servant,
         } else
                 g_assert (!strcmp (iid, NAMING_CONTEXT_IID));
 
-	g_hash_table_replace (servant->active_servers,
-                              g_strdup (iid),
-                              CORBA_Object_duplicate (object, NULL));
+	servers = g_hash_table_lookup (servant->active_server_lists, iid);
+	if (!servers) {
+		servers = g_new0 (ActiveServerList, 1);
+
+		servers->iid       = g_strdup (iid);
+		servers->n_servers = 1;
+
+		servers = add_active_server_entry (
+				servers, environment, object);
+
+		g_hash_table_insert (
+			servant->active_server_lists, servers->iid, servers);
+	} else {
+		ActiveServerList *new_servers;
+
+		g_assert (servers->n_servers > 0);
+
+		servers->n_servers++;
+
+		new_servers = add_active_server_entry (
+					servers, environment, object);
+
+		if (new_servers != servers) { /* Need to reset the pointer */
+			g_hash_table_steal (servant->active_server_lists, servers->iid);
+
+			g_hash_table_insert (
+				servant->active_server_lists, servers->iid, new_servers);
+		}
+	}
+
+	servant->n_active_servers++;
 
         if (cnx)
                 check_quit ();
 }
 
 static void
-active_server_free (gpointer active_server)
+active_server_list_free (gpointer data)
 {
-        CORBA_Object_release (active_server, NULL);
+	ActiveServerList *servers = data;
+	int               i;
+
+	for (i = 0; i < servers->n_servers; i++) {
+		CORBA_Object_release (servers->servers [i].server, NULL);
+		CORBA_free (servers->servers [i].environment._buffer);
+	}
+
+	g_free (servers);
 }
 
-static void
+static gboolean
 remove_active_server (impl_POA_Bonobo_ObjectDirectory *servant,
                       const char                      *iid,
                       CORBA_Object                     object)
 {
-	g_hash_table_remove (servant->active_servers, iid);
+	ActiveServerList *servers;
+	gboolean          removed = FALSE;
+	int               i;
+
+	servers = g_hash_table_lookup (servant->active_server_lists, iid);
+        g_return_val_if_fail (servers != NULL, FALSE);
+
+	for (i = 0; i < servers->n_servers; i++)
+		/* ORBit2 ensures reference uniqueness */
+		if (CORBA_Object_is_equivalent (
+				servers->servers [i].server, object, NULL)) {
+			remove_active_server_entry (servers, i);
+			removed = TRUE;
+			break;
+		}
+
+	servant->n_active_servers--;
+
+	if (servers->n_servers == 0)
+		g_hash_table_remove (servant->active_server_lists, iid);
 
         check_quit ();
+
+	return removed;
 }
 
 static Bonobo_RegistrationResult
 impl_Bonobo_ObjectDirectory_register_new (
-        impl_POA_Bonobo_ObjectDirectory *servant,
-        Bonobo_ImplementationID          iid,
-        CORBA_Object                     obj,
-        CORBA_Environment               *ev)
+	PortableServer_Servant              _servant,
+	const CORBA_char                   *iid,
+	const Bonobo_ActivationEnvironment *environment,
+	const CORBA_Object                  obj,
+	CORBA_Environment                  *ev)
 {
-	CORBA_Object oldobj;
-        Bonobo_ImplementationID actual_iid;
+	impl_POA_Bonobo_ObjectDirectory *servant = _servant;
+	CORBA_Object                     oldobj;
 
-	oldobj = g_hash_table_lookup (servant->active_servers, iid);
+	oldobj = od_get_active_server (servant, iid, environment);
 
 	if (oldobj != CORBA_OBJECT_NIL) {
+		CORBA_Object_release (oldobj, NULL);
 		if (!CORBA_Object_non_existent (oldobj, ev))
 			return Bonobo_ACTIVATION_REG_ALREADY_ACTIVE;
 	}
 
-        actual_iid = strrchr (iid, ',');
-        if (actual_iid == NULL) {
-                actual_iid = iid;
-        } else {
-                actual_iid++;
-        }
-
-	if (!g_hash_table_lookup (servant->by_iid, actual_iid))
+	if (!g_hash_table_lookup (servant->by_iid, iid))
 		return Bonobo_ACTIVATION_REG_NOT_LISTED;
 
 #ifdef BONOBO_ACTIVATION_DEBUG
         g_warning ("Server register. '%s' : %p", iid, obj);
 #endif
 
-        add_active_server (servant, iid, obj);
+        add_active_server (servant, iid, environment, obj);
 
 	return Bonobo_ACTIVATION_REG_SUCCESS;
 }
 
 static void
 impl_Bonobo_ObjectDirectory_unregister (
-        impl_POA_Bonobo_ObjectDirectory      *servant,
-        Bonobo_ImplementationID               iid,
-        CORBA_Object                          obj,
-        CORBA_Environment                    *ev)
+	PortableServer_Servant  _servant,
+	const CORBA_char       *iid,
+	const CORBA_Object      obj,
+	CORBA_Environment      *ev)
 {
-	CORBA_Object orig_object;
-
-        orig_object = g_hash_table_lookup (servant->active_servers, iid);
-        
-        if (orig_object == CORBA_OBJECT_NIL ||
-	    !CORBA_Object_is_equivalent (orig_object, obj, ev)) {
+        if (!remove_active_server (_servant, iid, obj))
                 CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
                                      ex_Bonobo_ObjectDirectory_NotRegistered,
                                      NULL);
-                return;
-        }
-
-        remove_active_server (servant, iid, obj);
-}
-
-static CORBA_char *
-impl_Bonobo_ObjectDirectory__get_domain (
-        impl_POA_Bonobo_ObjectDirectory *servant,
-        CORBA_Environment               *ev)
-{
-	return CORBA_string_dup (servant->attr_domain);
 }
 
 static CORBA_char *
 impl_Bonobo_ObjectDirectory__get_hostID (
-        impl_POA_Bonobo_ObjectDirectory *servant,
+        PortableServer_Servant           _servant,
         CORBA_Environment               *ev)
 {
         return CORBA_string_dup (bonobo_activation_hostname_get ());
@@ -655,7 +750,7 @@ impl_Bonobo_ObjectDirectory__get_hostID (
 
 static CORBA_char *
 impl_Bonobo_ObjectDirectory__get_username (
-        impl_POA_Bonobo_ObjectDirectory *servant,
+        PortableServer_Servant           _servant,
         CORBA_Environment               *ev)
 {
 	return CORBA_string_dup (g_get_user_name ());
@@ -679,14 +774,13 @@ static POA_Bonobo_Unknown__epv impl_Bonobo_Unknown_epv = {
 
 static POA_Bonobo_ObjectDirectory__epv impl_Bonobo_ObjectDirectory_epv = {
 	NULL,			/* _private */
-	(gpointer) &impl_Bonobo_ObjectDirectory__get_servers,
-	(gpointer) &impl_Bonobo_ObjectDirectory_get_active_servers,
-	(gpointer) &impl_Bonobo_ObjectDirectory__get_username,
-	(gpointer) &impl_Bonobo_ObjectDirectory__get_hostID,
-	(gpointer) &impl_Bonobo_ObjectDirectory__get_domain,
-	(gpointer) &impl_Bonobo_ObjectDirectory_activate,
-	(gpointer) &impl_Bonobo_ObjectDirectory_register_new,
-	(gpointer) &impl_Bonobo_ObjectDirectory_unregister
+	impl_Bonobo_ObjectDirectory__get_servers,
+	impl_Bonobo_ObjectDirectory_get_active_servers,
+	impl_Bonobo_ObjectDirectory__get_username,
+	impl_Bonobo_ObjectDirectory__get_hostID,
+	impl_Bonobo_ObjectDirectory_activate,
+	impl_Bonobo_ObjectDirectory_register_new,
+	impl_Bonobo_ObjectDirectory_unregister
 };
 
 /*** vepv structures ***/
@@ -708,7 +802,6 @@ bonobo_object_directory_get (void)
 
 void
 bonobo_object_directory_init (PortableServer_POA poa,
-                              const char        *domain,
                               const char        *registry_path,
                               CORBA_Environment *ev)
 {
@@ -729,7 +822,6 @@ bonobo_object_directory_init (PortableServer_POA poa,
 	servant->self =
 		PortableServer_POA_servant_to_reference (poa, servant, ev);
 
-	servant->attr_domain = g_strdup (domain);
 	servant->by_iid = NULL;
 
         servant->registry_source_directories = split_path_unique (registry_path);
@@ -737,9 +829,9 @@ bonobo_object_directory_init (PortableServer_POA poa,
 
         update_registry (servant, FALSE);
 
-        servant->active_servers =
+        servant->active_server_lists =
                 g_hash_table_new_full (g_str_hash, g_str_equal,
-                                       g_free, active_server_free);
+                                       g_free, active_server_list_free);
         servant->no_servers_timeout = 0;
 }
 
@@ -757,8 +849,8 @@ bonobo_object_directory_shutdown (PortableServer_POA poa,
         main_dir = NULL;
 
         CORBA_Object_release (servant->self, ev);
-        g_hash_table_destroy (servant->active_servers);
-        servant->active_servers = NULL;
+        g_hash_table_destroy (servant->active_server_lists);
+        servant->active_server_lists = NULL;
         g_hash_table_destroy (servant->registry_directory_mtimes);
         servant->registry_directory_mtimes = NULL;
         g_strfreev (servant->registry_source_directories);
@@ -767,16 +859,15 @@ bonobo_object_directory_shutdown (PortableServer_POA poa,
 }
 
 CORBA_Object
-bonobo_object_directory_re_check_fn (const char        *display,
-                                     const char        *act_iid,
-                                     gpointer           user_data,
-                                     CORBA_Environment *ev)
+bonobo_object_directory_re_check_fn (const Bonobo_ActivationEnvironment *environment,
+				     const char                         *act_iid,
+				     gpointer                            user_data,
+				     CORBA_Environment                  *ev)
 {
         CORBA_Object retval;
-        ODActivationInfo *info = user_data;
 
         retval = od_get_active_server (
-                main_dir, (Bonobo_ImplementationID) act_iid, info->ctx, ev);
+                main_dir, (Bonobo_ImplementationID) act_iid, environment);
 
         if (ev->_major != CORBA_NO_EXCEPTION ||
             retval == CORBA_OBJECT_NIL) {

@@ -40,6 +40,14 @@ module Bonobo {
         const ActivationFlags ACTIVATION_FLAG_PRIVATE = 1<<1; // start a new server and don't register it
         const ActivationFlags ACTIVATION_FLAG_EXISTING_ONLY = 1<<2; // don't start the server if not started
 
+	struct ActivationEnvValue {
+		string  name;
+		string  value;
+		boolean unset;
+	};
+
+	typedef sequence<ActivationEnvValue> ActivationEnvironment;
+
         /* ActivationResult */
         enum ActivationResultType { 
                 ACTIVATION_RESULT_OBJECT, 

@@ -23,6 +23,7 @@
 
 #include <config.h>
 #include <bonobo-activation/bonobo-activation.h>
+#include <bonobo-activation/bonobo-activation-private.h>
 #include <bonobo-activation/bonobo-activation-client.h>
 #include <bonobo-activation/Bonobo_ActivationContext.h>
 
@@ -142,59 +143,30 @@ bonobo_activation_release_corba_client (void)
         client = CORBA_OBJECT_NIL;
 }
 
-
 static char *
 get_lang_list (void)
 {
         static char *result = NULL;
         static gboolean result_set = FALSE;
-        const char *tmp;
-        char *tmp2, *lang, *lang_with_locale, *equal_char;
         GString *str;
         gboolean add_comma = FALSE;
-        
-        lang_with_locale = NULL;
+	const GList *language_list;
+	const GList *l;
         
         if (result_set)
                 return result;
         
-        tmp = g_getenv ("LANGUAGE");
-
-        if (!tmp)
-                tmp = g_getenv ("LANG");
-        
-        lang = g_strdup (tmp);
-        tmp2 = lang;
-
         str = g_string_new (NULL);
-        
-        if (lang) {
-                /* envs can be in NAME=VALUE form */
-		equal_char = strchr (lang, '=');
-		if (equal_char)
-			lang = equal_char + 1;
+	language_list = bonobo_activation_i18n_get_language_list ("LANG");
+	for (l = language_list; l; l = l->next) {
+		if (add_comma)
+			g_string_append (str, ",");
+		else
+			add_comma = TRUE;
+		g_string_append (str, l->data);
+	}
 
-                /* check if the locale has a _ */
-                equal_char = strchr (lang, '_');
-                if (equal_char != NULL) {
-                        lang_with_locale = g_strdup (lang);
-                        *equal_char = 0;
-                }
-
-                if (lang_with_locale && strcmp (lang_with_locale, "")) {
-                        g_string_append (str, lang_with_locale);
-                        add_comma = TRUE;
-                }
-                if (lang && strcmp (lang, "")) {
-                        if (add_comma)
-                                g_string_append (str, ",");
-                        g_string_append (str, lang);
-                }
-
-        }
         result_set = TRUE;
-        g_free (tmp2);
-        g_free (lang_with_locale);
         
         result = str->str ? str->str : "";
         g_string_free (str, FALSE);

@@ -77,12 +77,28 @@ Random misc utilities to manipulate Bonobo_ServerInfo structures.
 @actinfo: 
 
 
-<!-- ##### FUNCTION Bonobo_ServerInfo_duplicate ##### -->
+<!-- ##### FUNCTION bonobo_activation_add_reset_notify ##### -->
 <para>
 
 </para>
 
-@original: 
+@fn: 
+
+
+<!-- ##### FUNCTION bonobo_server_info_prop_lookup ##### -->
+<para>
+
+</para>
+
+@server: 
+@prop_name: 
+@i18n_languages: 
 @Returns: 
+
+
+<!-- ##### TYPEDEF Bonobo_ServerInfoList ##### -->
+<para>
+
+</para>
 
 

@@ -27,7 +27,7 @@ extern "C"
 #define TC_IMPL_TC_Plugin_3 'g'
 #define TC_IMPL_TC_Plugin_4 'i'
 #define TC_IMPL_TC_Plugin_5 'n'
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_plugin
    static
 #else
    extern
@@ -78,18 +78,16 @@ extern "C"
 
 /** stub prototypes **/
    void Plugin_doPluginTest(Plugin _obj, CORBA_Environment * ev);
-
-/** more internals **/
 #include <orbit/orb-core/orbit-interface.h>
 
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_plugin
    static
 #else
    extern
 #endif
    ORBit_IInterface Plugin__iinterface;
 #define Plugin_IMETHODS_LEN 1
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_plugin
    static
 #else
    extern

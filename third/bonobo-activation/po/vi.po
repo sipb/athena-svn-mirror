@@ -5,69 +5,65 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: bonobo-activation VERSION\n"
-"POT-Creation-Date: 2002-10-29 10:55+0000\n"
-"PO-Revision-Date: 2002-09-19 21:43+0700\n"
+"POT-Creation-Date: 2003-01-20 15:45+0000\n"
+"PO-Revision-Date: 2003-01-10 22:33+0700\n"
 "Last-Translator: pclouds <pclouds@gmx.net>\n"
 "Language-Team: GnomeVI <gnomevi-list@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: bonobo-activation/bonobo-activation-async-callback.c:119
-msgid "No server corresponding to your query"
-msgstr "Không có server tương ứng với truy vấn của bạn"
-
-#: bonobo-activation/bonobo-activation-fork-server.c:101
+#: bonobo-activation/bonobo-activation-fork-server.c:102
 msgid "Child process did not give an error message, unknown failure occurred"
 msgstr "Tiến trình con không đưa ra thông báo lỗi, lỗi lạ, đã xảy ra"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:171
+#: bonobo-activation/bonobo-activation-fork-server.c:174
 #, c-format
 msgid "Failed to read from child process: %s\n"
 msgstr "Lỗi khi đọc từ tiến trình con: %s\n"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:328
+#: bonobo-activation/bonobo-activation-fork-server.c:296
 msgid "Couldn't fork a new process"
 msgstr "Không thể tạo tiến trình"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:351
+#: bonobo-activation/bonobo-activation-fork-server.c:319
 #, c-format
 msgid "Child received signal %u (%s)"
 msgstr "Tiến trình con đã nhận tín hiệu %u (%s)"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:356
+#: bonobo-activation/bonobo-activation-fork-server.c:324
 #, c-format
 msgid "Unknown non-exit error (status is %u)"
 msgstr "Mã lỗi thoát lạ (trạng thái là %u)"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:424
+#: bonobo-activation/bonobo-activation-fork-server.c:387
 #, c-format
 msgid "bonobo-activation failed to set process group of %s: %s\n"
 msgstr "bonobo-activation thất bại khi thiết lập nhóm tiến trình của %s: %s\n"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:436
+#: bonobo-activation/bonobo-activation-fork-server.c:399
 #, c-format
 msgid "Failed to execute %s: %d (%s)\n"
 msgstr "Lỗi khi thực thi %s: %d (%s)\n"
 
-#: bonobo-activation/bonobo-activation-init.c:246
+#: bonobo-activation/bonobo-activation-init.c:243
 msgid "File descriptor to print IOR on"
 msgstr "Bộ mô tả tập tin để ghi IOR"
 
-#: bonobo-activation/bonobo-activation-init.c:246
-#: server/activation-server-main.c:77
+#: bonobo-activation/bonobo-activation-init.c:243
+#: server/activation-server-main.c:73
 msgid "FD"
 msgstr "FD"
 
-#: bonobo-activation/bonobo-activation-init.c:248
+#: bonobo-activation/bonobo-activation-init.c:245
 msgid "IID to activate"
 msgstr "IID cần kích hoạt"
 
-#: bonobo-activation/bonobo-activation-init.c:250
+#: bonobo-activation/bonobo-activation-init.c:247
 msgid "Prevent registering of server with OAF"
 msgstr "Tránh đăng ký server với OAF"
 
-#: bonobo-activation/bonobo-activation-init.c:337
+#: bonobo-activation/bonobo-activation-init.c:334
 msgid "Bonobo activation options"
 msgstr "Tùy chọn bonobo activation"
 
@@ -92,59 +88,39 @@ msgstr "Factory `%s' trả về NIL cho `%s'"
 msgid "Shlib `%s' didn't contain `%s'"
 msgstr "Shlib `%s' không chứa `%s'"
 
-#: server/activation-context-corba.c:628
+#: bonobo-activation/bonobo-activation-get-language-list.c:87
+msgid "Too many alias levels for a locale, may indicate a loop"
+msgstr "Có quá nhiều bí danh cho locale, có thể do bị lặp"
+
+#: server/activation-context-corba.c:621
 msgid "Couldn't find which child the server was listed in"
 msgstr "Không thể tìm tiến trình con được liệt kê"
 
-#: server/activation-context-corba.c:809
-msgid "Query failed: "
-msgstr "Truy vấn thất bại: "
+#: server/activation-context-corba.c:919
+msgid "Not a valid Activation ID"
+msgstr "Activation ID không hợp lệ"
 
-#: server/activation-context-corba.c:836
-msgid "Activation failed: "
-msgstr "Kích hoạt thất bại: "
-
-#: server/activation-context-corba.c:1093
-msgid "Could not parse AID"
-msgstr "Không thể phân tích AID"
-
-#: server/activation-context-corba.c:1103
-msgid "Could not parse context: "
-msgstr "Không thể phân tích ngữ cảnh: "
-
-#: server/activation-context-corba.c:1125
-msgid "Could not activate server: "
-msgstr "Không thể kích hoạt server: "
-
-#: server/activation-server-main.c:67
+#: server/activation-server-main.c:66
 msgid "Directory to read .server files from"
 msgstr "Thư mục chứa tập tin .server cần đoc"
 
-#: server/activation-server-main.c:67
+#: server/activation-server-main.c:66
 msgid "DIRECTORY"
 msgstr "THƯ MỤC"
 
-#: server/activation-server-main.c:70
-msgid "Domain of ObjectDirectory"
-msgstr "Vùng của ObjectDirectory"
-
-#: server/activation-server-main.c:70
-msgid "DOMAIN"
-msgstr "VÙNG"
-
-#: server/activation-server-main.c:73
+#: server/activation-server-main.c:69
 msgid "Serve as an ActivationContext (default is as an ObjectDirectory only)"
 msgstr "Phục vụ như là ActivationContext (mặc định chỉ là ObjectDirectory)"
 
-#: server/activation-server-main.c:77
+#: server/activation-server-main.c:73
 msgid "File descriptor to write IOR to"
 msgstr "Bộ mô tả tập tin để ghi IOR"
 
-#: server/activation-server-main.c:85
+#: server/activation-server-main.c:81
 msgid "Query expression to evaluate"
 msgstr "Biểu thức truy vấn cần xử lý"
 
-#: server/activation-server-main.c:85
+#: server/activation-server-main.c:81
 msgid "EXPRESSION"
 msgstr "BIỂU THỨC"
 
@@ -156,7 +132,7 @@ msgstr "Dịch vụ CORBA CosNaming."
 msgid "Name service"
 msgstr "Dịch vụ tên"
 
-#: server/object-directory-activate.c:174
+#: server/object-directory-activate.c:185
 msgid "We don't handle activating shlib objects in a remote process yet"
 msgstr "Chưa thể xử lý kích hoạt shlib object trong các tiến trình từ xa"
 
@@ -188,7 +164,7 @@ msgstr "IID %s có vị trí NULL"
 msgid "invalid character '%c' in iid '%s'"
 msgstr "ký tự không hợp lệ '%c' trong iid '%s'"
 
-#: server/object-directory-load.c:345
+#: server/object-directory-load.c:306
 #, c-format
 msgid "Property '%s' has no value"
 msgstr "Thuộc tính '%s' không có giá trị"
@@ -200,7 +176,7 @@ msgstr "Thuộc tính '%s' không có giá trị"
 #. * with bonobo_activation_active_server_register - _after_ any other
 #. * servers are registered.
 #.
-#: server/object-directory-corba.c:795
+#: server/object-directory-corba.c:886
 #, c-format
 msgid "Race condition activating server '%s'"
 msgstr "Lỗi race condition khi kích hoạt server '%s'"
@@ -259,6 +235,30 @@ msgstr "Hiện các thư mục trong tập tin cấu hình"
 #: utils/bonobo-activation-sysconf.c:242
 msgid "Display path to configuration file"
 msgstr "Hiện đường dẫn trong tập tin cấu hình"
+
+#~ msgid "No server corresponding to your query"
+#~ msgstr "Không có server tương ứng với truy vấn của bạn"
+
+#~ msgid "Query failed: "
+#~ msgstr "Truy vấn thất bại: "
+
+#~ msgid "Activation failed: "
+#~ msgstr "Kích hoạt thất bại: "
+
+#~ msgid "Could not parse AID"
+#~ msgstr "Không thể phân tích AID"
+
+#~ msgid "Could not parse context: "
+#~ msgstr "Không thể phân tích ngữ cảnh: "
+
+#~ msgid "Could not activate server: "
+#~ msgstr "Không thể kích hoạt server: "
+
+#~ msgid "Domain of ObjectDirectory"
+#~ msgstr "Vùng của ObjectDirectory"
+
+#~ msgid "DOMAIN"
+#~ msgstr "VÙNG"
 
 #~ msgid "Object directory to use when registering servers"
 #~ msgstr "Thư mục đối tượng cần dùng khi đăng ký server"

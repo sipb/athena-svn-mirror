@@ -225,7 +225,7 @@ const char *bonobo_activation_od_cmd[] =
 struct SysServerInstance
 {
 	CORBA_Object already_running;
-	char *username, *hostname, *domain;
+	char *username, *hostname;
 };
 
 struct SysServer
@@ -256,13 +256,8 @@ existing_check (const BonoboActivationBaseService *base_service, struct SysServe
 		    (!ssi->username
 		     || STRMATCH (ssi->username, base_service->username))
 		    && (!ssi->hostname
-			|| STRMATCH (ssi->hostname, base_service->hostname))
-		    && (!ssi->domain
-			|| STRMATCH (ssi->domain,
-				     base_service->
-				     domain))) {
+			|| STRMATCH (ssi->hostname, base_service->hostname)))
                         return ssi->already_running;
-                }
 	}
 
 	return CORBA_OBJECT_NIL;
@@ -286,7 +281,6 @@ bonobo_activation_base_service_debug_shutdown (CORBA_Environment *ev)
                         CORBA_Object_release (ssi->already_running, ev);
                         g_free (ssi->username);
                         g_free (ssi->hostname);
-                        g_free (ssi->domain);
                         g_free (ssi);
                 }
                 g_slist_free (instances);
@@ -308,9 +302,7 @@ bonobo_activation_existing_set (const BonoboActivationBaseService *base_service,
 		    (!ssi->username
 		     || STRMATCH (ssi->username, base_service->username))
 		    && (!ssi->hostname
-			|| STRMATCH (ssi->hostname, base_service->hostname))
-		    && (!ssi->domain
-			|| STRMATCH (ssi->domain, base_service->domain))) break;
+			|| STRMATCH (ssi->hostname, base_service->hostname))) break;
 	}
 
 	if (link == NULL) {
@@ -320,8 +312,6 @@ bonobo_activation_existing_set (const BonoboActivationBaseService *base_service,
 			base_service->username ? g_strdup (base_service->username) : NULL;
 		ssi->hostname =
 			base_service->hostname ? g_strdup (base_service->hostname) : NULL;
-		ssi->domain =
-			base_service->domain ? g_strdup (base_service->domain) : NULL;
                 ss->instances = g_slist_prepend (ss->instances, ssi);
 	} else {
 		CORBA_Object_release (ssi->already_running, ev);
@@ -660,10 +650,10 @@ static const BonoboActivationBaseServiceRegistry rloc_file = {
 #define STRMATCH(x, y) ((!x && !y) || (x && y && !strcmp(x, y)))
 
 static CORBA_Object
-local_re_check_fn (const char        *display,
-                   const char        *act_iid,
-                   gpointer           user_data,
-                   CORBA_Environment *ev)
+local_re_check_fn (const Bonobo_ActivationEnvironment *environment,
+                   const char                         *act_iid,
+                   gpointer                            user_data,
+                   CORBA_Environment                  *ev)
 {
         return bonobo_activation_internal_service_get_extended (
                 user_data, TRUE, ev);
@@ -679,9 +669,7 @@ local_activator (const BonoboActivationBaseService *base_service,
 	    (!base_service->username
 	     || STRMATCH (base_service->username, g_get_user_name ()))
 	    && (!base_service->hostname
-		|| STRMATCH (base_service->hostname, bonobo_activation_hostname_get ()))
-	    && (!base_service->domain
-		|| STRMATCH (base_service->domain, bonobo_activation_domain_get ()))) {
+		|| STRMATCH (base_service->hostname, bonobo_activation_hostname_get ()))) {
 		return bonobo_activation_server_by_forking (
                         cmd, FALSE, fd_arg, NULL, NULL, base_service->name,
                         local_re_check_fn, (gpointer)base_service, ev);

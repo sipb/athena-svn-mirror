@@ -6,72 +6,69 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: bonobo-activation\n"
-"POT-Creation-Date: 2002-10-29 10:55+0000\n"
-"PO-Revision-Date: 2002-06-05 04:50+2000\n"
-"Last-Translator: Alexander Shopov <al_shopov@web.bg>\n"
+"POT-Creation-Date: 2003-01-20 15:45+0000\n"
+"PO-Revision-Date: 2002-12-22 21:53+0200\n"
+"Last-Translator: Alexander Shopov <al_shopov@yahoo.com>\n"
 "Language-Team: Bulgarian <dict@linux.zonebg.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.6\n"
 
-#: bonobo-activation/bonobo-activation-async-callback.c:119
-msgid "No server corresponding to your query"
-msgstr "Никой сървър не отговаря на запитването ви"
-
-#: bonobo-activation/bonobo-activation-fork-server.c:101
+#: bonobo-activation/bonobo-activation-fork-server.c:102
 msgid "Child process did not give an error message, unknown failure occurred"
 msgstr ""
 "Дъщерният процес не генерира съобщение за грешка, получи се неизвестен "
 "проблем"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:171
+#: bonobo-activation/bonobo-activation-fork-server.c:174
 #, c-format
 msgid "Failed to read from child process: %s\n"
 msgstr "Неуспешно четене от дъщерен процес: %s\n"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:328
+#: bonobo-activation/bonobo-activation-fork-server.c:296
 msgid "Couldn't fork a new process"
 msgstr "Не можах да отделя нов процес"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:351
+#: bonobo-activation/bonobo-activation-fork-server.c:319
 #, c-format
 msgid "Child received signal %u (%s)"
 msgstr "Дъщерният процес получи сигнал %u (%s)"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:356
+#: bonobo-activation/bonobo-activation-fork-server.c:324
 #, c-format
 msgid "Unknown non-exit error (status is %u)"
 msgstr "Неизвестна грешка, не е при излизане (статус %u)"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:424
+#: bonobo-activation/bonobo-activation-fork-server.c:387
 #, c-format
 msgid "bonobo-activation failed to set process group of %s: %s\n"
 msgstr ""
 "активирането на бонобо не успя да установи групата на процес на %s: %s\n"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:436
+#: bonobo-activation/bonobo-activation-fork-server.c:399
 #, c-format
 msgid "Failed to execute %s: %d (%s)\n"
 msgstr "Не успях да изпълня %s: %d (%s)\n"
 
-#: bonobo-activation/bonobo-activation-init.c:246
+#: bonobo-activation/bonobo-activation-init.c:243
 msgid "File descriptor to print IOR on"
 msgstr "Файловят дескриптор, на който да се отпечатва IOR"
 
-#: bonobo-activation/bonobo-activation-init.c:246
-#: server/activation-server-main.c:77
+#: bonobo-activation/bonobo-activation-init.c:243
+#: server/activation-server-main.c:73
 msgid "FD"
 msgstr "FD"
 
-#: bonobo-activation/bonobo-activation-init.c:248
+#: bonobo-activation/bonobo-activation-init.c:245
 msgid "IID to activate"
 msgstr "IID за активиране"
 
-#: bonobo-activation/bonobo-activation-init.c:250
+#: bonobo-activation/bonobo-activation-init.c:247
 msgid "Prevent registering of server with OAF"
 msgstr "Предотврати регистрирането на сървър към OAF"
 
-#: bonobo-activation/bonobo-activation-init.c:337
+#: bonobo-activation/bonobo-activation-init.c:334
 msgid "Bonobo activation options"
 msgstr "Настройки на активирането на бонобо"
 
@@ -96,61 +93,41 @@ msgstr "Фабриката `%s' върна NIL за `%s'"
 msgid "Shlib `%s' didn't contain `%s'"
 msgstr "Shlib `%s' не съдържа `%s'"
 
-#: server/activation-context-corba.c:628
+#: bonobo-activation/bonobo-activation-get-language-list.c:87
+msgid "Too many alias levels for a locale, may indicate a loop"
+msgstr "Прекалено много синонимни нива за локал, може да е зацикляне"
+
+#: server/activation-context-corba.c:621
 msgid "Couldn't find which child the server was listed in"
 msgstr "Не успях да разбера в кой дъщерен процес е записан сървъра"
 
-#: server/activation-context-corba.c:809
-msgid "Query failed: "
-msgstr "Запитването се провали: "
+#: server/activation-context-corba.c:919
+msgid "Not a valid Activation ID"
+msgstr "Невалидно ID за активиране"
 
-#: server/activation-context-corba.c:836
-msgid "Activation failed: "
-msgstr "Активирането се провали: "
-
-#: server/activation-context-corba.c:1093
-msgid "Could not parse AID"
-msgstr "Не можах да анализирам AID"
-
-#: server/activation-context-corba.c:1103
-msgid "Could not parse context: "
-msgstr "Не можах да анализирам контекста: "
-
-#: server/activation-context-corba.c:1125
-msgid "Could not activate server: "
-msgstr "Не можах да активирам сървъра: "
-
-#: server/activation-server-main.c:67
+#: server/activation-server-main.c:66
 msgid "Directory to read .server files from"
 msgstr "Директория, от която да се прочетат .server файловете"
 
-#: server/activation-server-main.c:67
+#: server/activation-server-main.c:66
 msgid "DIRECTORY"
 msgstr "ДИРЕКТОРИЯ"
 
-#: server/activation-server-main.c:70
-msgid "Domain of ObjectDirectory"
-msgstr "Област на директорията на обектите"
-
-#: server/activation-server-main.c:70
-msgid "DOMAIN"
-msgstr "ОБЛАСТ"
-
-#: server/activation-server-main.c:73
+#: server/activation-server-main.c:69
 msgid "Serve as an ActivationContext (default is as an ObjectDirectory only)"
 msgstr ""
 "Да служи като контекст на активиране (по подразбиране е само директория на "
 "обектите)"
 
-#: server/activation-server-main.c:77
+#: server/activation-server-main.c:73
 msgid "File descriptor to write IOR to"
 msgstr "Файлов дескриптор, на който да се запизва IOR"
 
-#: server/activation-server-main.c:85
+#: server/activation-server-main.c:81
 msgid "Query expression to evaluate"
 msgstr "Израз-запитване, което да се оцени"
 
-#: server/activation-server-main.c:85
+#: server/activation-server-main.c:81
 msgid "EXPRESSION"
 msgstr "ИЗРАЗ"
 
@@ -162,7 +139,7 @@ msgstr "Услуга за CORBA CosNaming."
 msgid "Name service"
 msgstr "Услуга за имената"
 
-#: server/object-directory-activate.c:174
+#: server/object-directory-activate.c:185
 msgid "We don't handle activating shlib objects in a remote process yet"
 msgstr "Все още е невъзможно активирането на shlib обекти в отдалечени процеси"
 
@@ -194,7 +171,7 @@ msgstr "iid %s има за място NULL"
 msgid "invalid character '%c' in iid '%s'"
 msgstr "невалиден символ '%c' в iid '%s'"
 
-#: server/object-directory-load.c:345
+#: server/object-directory-load.c:306
 #, c-format
 msgid "Property '%s' has no value"
 msgstr "Свойството '%s' няма стойност"
@@ -206,7 +183,7 @@ msgstr "Свойството '%s' няма стойност"
 #. * with bonobo_activation_active_server_register - _after_ any other
 #. * servers are registered.
 #.
-#: server/object-directory-corba.c:795
+#: server/object-directory-corba.c:886
 #, c-format
 msgid "Race condition activating server '%s'"
 msgstr "Състезание при активирането на сървър '%s'"
@@ -265,6 +242,30 @@ msgstr "Покажи директориите във конфигурацион�
 #: utils/bonobo-activation-sysconf.c:242
 msgid "Display path to configuration file"
 msgstr "Покажи пътя до конфигурационния файл"
+
+#~ msgid "No server corresponding to your query"
+#~ msgstr "Никой сървър не отговаря на запитването ви"
+
+#~ msgid "Query failed: "
+#~ msgstr "Запитването се провали: "
+
+#~ msgid "Activation failed: "
+#~ msgstr "Активирането се провали: "
+
+#~ msgid "Could not parse AID"
+#~ msgstr "Не можах да анализирам AID"
+
+#~ msgid "Could not parse context: "
+#~ msgstr "Не можах да анализирам контекста: "
+
+#~ msgid "Could not activate server: "
+#~ msgstr "Не можах да активирам сървъра: "
+
+#~ msgid "Domain of ObjectDirectory"
+#~ msgstr "Област на директорията на обектите"
+
+#~ msgid "DOMAIN"
+#~ msgstr "ОБЛАСТ"
 
 #~ msgid "Object directory to use when registering servers"
 #~ msgstr ""

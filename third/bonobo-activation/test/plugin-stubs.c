@@ -14,7 +14,9 @@ Plugin_doPluginTest(Plugin _obj, CORBA_Environment * ev)
    if (ORBit_small_flags & ORBIT_SMALL_FAST_LOCALS &&
        ORBIT_STUB_IsBypass(_obj, Plugin__classid) &&
        (_ORBIT_epv =
-	ORBIT_STUB_GetEpv(_obj, Plugin__classid))->doPluginTest) {
+	(POA_Plugin__epv *) ORBIT_STUB_GetEpv(_obj,
+					      Plugin__classid))->
+       doPluginTest) {
       ORBIT_STUB_PreCall(_obj);
       _ORBIT_epv->doPluginTest(ORBIT_STUB_GetServant(_obj), ev);
       ORBIT_STUB_PostCall(_obj);

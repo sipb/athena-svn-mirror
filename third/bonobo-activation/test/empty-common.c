@@ -17,7 +17,7 @@ static const CORBA_unsigned_long ORBit_zero_int = 0;
 && (TC_IMPL_TC_Empty_4 == 'y') \
 ) && !defined(TC_DEF_TC_Empty)
 #define TC_DEF_TC_Empty 1
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_empty
 static
 #endif
 const struct CORBA_TypeCode_struct TC_Empty_struct = {
@@ -25,7 +25,7 @@ const struct CORBA_TypeCode_struct TC_Empty_struct = {
    CORBA_tk_objref,
    0,
    0,
-   4,
+   ORBIT_ALIGNOF_CORBA_POINTER,
    0,
    0,
    NULL,
@@ -40,13 +40,13 @@ const struct CORBA_TypeCode_struct TC_Empty_struct = {
 };
 #endif
 
-#ifndef ORBIT_IDL_C_IMODULE
+#ifndef ORBIT_IDL_C_IMODULE_empty
 CORBA_unsigned_long Empty__classid = 0;
 #endif
 
 /* Interface type data */
 
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_empty
 static
 #endif
 ORBit_IMethod Empty__imethods[] = {
@@ -54,14 +54,14 @@ ORBit_IMethod Empty__imethods[] = {
     {0, 0, NULL, FALSE},
     {0, 0, NULL, FALSE},
     {0, 0, NULL, FALSE},
-    CORBA_OBJECT_NIL, "doNothing", 9,
+    TC_void, "doNothing", 9,
     0}
 };
 static CORBA_string Empty__base_itypes[] = {
    "IDL:omg.org/CORBA/Object:1.0"
 };
 
-#ifdef ORBIT_IDL_C_IMODULE
+#ifdef ORBIT_IDL_C_IMODULE_empty
 static
 #endif
 ORBit_IInterface Empty__iinterface = {

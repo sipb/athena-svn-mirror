@@ -107,6 +107,7 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -129,6 +130,8 @@ PERL_PATH = @PERL_PATH@
 PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PS_PATH = @PS_PATH@
 RANLIB = @RANLIB@
 SERVER_CFLAGS = @SERVER_CFLAGS@
@@ -631,24 +634,26 @@ object-directory-corba.o: object-directory-corba.c ../config.h server.h \
 	../bonobo-activation/Bonobo_ActivationContext.h \
 	../bonobo-activation/Bonobo_ObjectDirectory.h \
 	../bonobo-activation/bonobo-activation-i18n.h \
+	../bonobo-activation/bonobo-activation-private.h \
 	activation-server-corba-extensions.h
 object-directory-load.o: object-directory-load.c ../config.h \
-	../bonobo-activation/bonobo-activation-i18n.h server.h \
-	../bonobo-activation/bonobo-activation.h \
+	../bonobo-activation/bonobo-activation-i18n.h \
+	../bonobo-activation/bonobo-activation-private.h \
+	../bonobo-activation/bonobo-activation-base-service.h \
+	../bonobo-activation/Bonobo_ActivationContext.h \
 	../bonobo-activation/Bonobo_Unknown.h \
-	../bonobo-activation/Bonobo_GenericFactory.h \
 	../bonobo-activation/Bonobo_Activation_types.h \
+	../bonobo-activation/Bonobo_ObjectDirectory.h server.h \
+	../bonobo-activation/bonobo-activation.h \
+	../bonobo-activation/Bonobo_GenericFactory.h \
 	../bonobo-activation/bonobo-activation-version.h \
 	../bonobo-activation/bonobo-activation-activate.h \
 	../bonobo-activation/bonobo-activation-server-info.h \
 	../bonobo-activation/bonobo-activation-init.h \
-	../bonobo-activation/bonobo-activation-base-service.h \
 	../bonobo-activation/bonobo-activation-id.h \
 	../bonobo-activation/bonobo-activation-shlib.h \
 	../bonobo-activation/bonobo-activation-register.h \
-	../bonobo-activation/bonobo-activation-async.h \
-	../bonobo-activation/Bonobo_ActivationContext.h \
-	../bonobo-activation/Bonobo_ObjectDirectory.h
+	../bonobo-activation/bonobo-activation-async.h
 qsort_ex.o: qsort_ex.c ../config.h qsort_ex.h
 test-performance.o: test-performance.c ../config.h server.h \
 	../bonobo-activation/bonobo-activation.h \

@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: bonobo-activation\n"
-"POT-Creation-Date: 2002-10-29 10:55+0000\n"
+"POT-Creation-Date: 2003-01-20 15:45+0000\n"
 "PO-Revision-Date: 2002-04-28 04:18+0200\n"
 "Last-Translator: Ömer Fadıl USTA <omer_fad@hotmail.com>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -15,61 +15,57 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: bonobo-activation/bonobo-activation-async-callback.c:119
-msgid "No server corresponding to your query"
-msgstr "Sorgunuzla ilişkilendirilebilecek bir sunucu yok."
-
-#: bonobo-activation/bonobo-activation-fork-server.c:101
+#: bonobo-activation/bonobo-activation-fork-server.c:102
 msgid "Child process did not give an error message, unknown failure occurred"
 msgstr "Ast süreç bir hata iletisi vermedi, başarısızlık sebebi bilinmiyor"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:171
+#: bonobo-activation/bonobo-activation-fork-server.c:174
 #, c-format
 msgid "Failed to read from child process: %s\n"
 msgstr "Ast süreçten okuma başarısız: %s\n"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:328
+#: bonobo-activation/bonobo-activation-fork-server.c:296
 msgid "Couldn't fork a new process"
 msgstr "Yeni bir süreç ayrıştırılamadı"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:351
+#: bonobo-activation/bonobo-activation-fork-server.c:319
 #, c-format
 msgid "Child received signal %u (%s)"
 msgstr "Alt süreç %u sinyali aldı (%s)"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:356
+#: bonobo-activation/bonobo-activation-fork-server.c:324
 #, c-format
 msgid "Unknown non-exit error (status is %u)"
 msgstr "Bilinmeyen çıkış engelleme hatası (durum %u)"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:424
+#: bonobo-activation/bonobo-activation-fork-server.c:387
 #, c-format
 msgid "bonobo-activation failed to set process group of %s: %s\n"
 msgstr "Bonobo-etkinleştirme %s süreç grubunu belirleyemedi: %s\n"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:436
+#: bonobo-activation/bonobo-activation-fork-server.c:399
 #, c-format
 msgid "Failed to execute %s: %d (%s)\n"
 msgstr "Çalıştırılamadı: %s: %d (%s)\n"
 
-#: bonobo-activation/bonobo-activation-init.c:246
+#: bonobo-activation/bonobo-activation-init.c:243
 msgid "File descriptor to print IOR on"
 msgstr "IOR'un üstüne yazdıracağı dosya tanımlayıcı"
 
-#: bonobo-activation/bonobo-activation-init.c:246
-#: server/activation-server-main.c:77
+#: bonobo-activation/bonobo-activation-init.c:243
+#: server/activation-server-main.c:73
 msgid "FD"
 msgstr "FD"
 
-#: bonobo-activation/bonobo-activation-init.c:248
+#: bonobo-activation/bonobo-activation-init.c:245
 msgid "IID to activate"
 msgstr "Etkinleştirilecek IID"
 
-#: bonobo-activation/bonobo-activation-init.c:250
+#: bonobo-activation/bonobo-activation-init.c:247
 msgid "Prevent registering of server with OAF"
 msgstr "Sunucunun OAF ile kaydedilmesini engeller"
 
-#: bonobo-activation/bonobo-activation-init.c:337
+#: bonobo-activation/bonobo-activation-init.c:334
 msgid "Bonobo activation options"
 msgstr "Bonobo etkinleştirme seçenekleri"
 
@@ -94,61 +90,41 @@ msgstr "`%s' `%s' için NIL ile döndü"
 msgid "Shlib `%s' didn't contain `%s'"
 msgstr "Shlib `%s' `%s' içermiyor"
 
-#: server/activation-context-corba.c:628
+#: bonobo-activation/bonobo-activation-get-language-list.c:87
+msgid "Too many alias levels for a locale, may indicate a loop"
+msgstr ""
+
+#: server/activation-context-corba.c:621
 msgid "Couldn't find which child the server was listed in"
 msgstr "Sunucuyu listeleyen alt süreç bulunamadı"
 
-#: server/activation-context-corba.c:809
-msgid "Query failed: "
-msgstr "Sorgulama başarısız: "
+#: server/activation-context-corba.c:919
+msgid "Not a valid Activation ID"
+msgstr ""
 
-#: server/activation-context-corba.c:836
-msgid "Activation failed: "
-msgstr "Etkinleştirme başarısız: "
-
-#: server/activation-context-corba.c:1093
-msgid "Could not parse AID"
-msgstr "AID çözümlenemedi"
-
-#: server/activation-context-corba.c:1103
-msgid "Could not parse context: "
-msgstr "Bağlam çözümlenemedi: "
-
-#: server/activation-context-corba.c:1125
-msgid "Could not activate server: "
-msgstr "Sunucu etkinleştirilemedi: "
-
-#: server/activation-server-main.c:67
+#: server/activation-server-main.c:66
 msgid "Directory to read .server files from"
 msgstr ".server dosyalarının okunacağı dizin"
 
-#: server/activation-server-main.c:67
+#: server/activation-server-main.c:66
 msgid "DIRECTORY"
 msgstr "DİZİN"
 
-#: server/activation-server-main.c:70
-msgid "Domain of ObjectDirectory"
-msgstr "NesneDizini Alanı"
-
-#: server/activation-server-main.c:70
-msgid "DOMAIN"
-msgstr "BÖLGE"
-
-#: server/activation-server-main.c:73
+#: server/activation-server-main.c:69
 msgid "Serve as an ActivationContext (default is as an ObjectDirectory only)"
 msgstr ""
 "Bir EtkinlikBağlamı olarak sunuluyor (sadece bir NesneDizini olarak "
 "öntanımlı)"
 
-#: server/activation-server-main.c:77
+#: server/activation-server-main.c:73
 msgid "File descriptor to write IOR to"
 msgstr "IOR'un üzerine yazacağı dosya tanımlayıcı"
 
-#: server/activation-server-main.c:85
+#: server/activation-server-main.c:81
 msgid "Query expression to evaluate"
 msgstr "Değerlendirilecek sorgu ifadesi"
 
-#: server/activation-server-main.c:85
+#: server/activation-server-main.c:81
 msgid "EXPRESSION"
 msgstr "İFADE"
 
@@ -160,7 +136,7 @@ msgstr "CORBA CosNaming Servisi."
 msgid "Name service"
 msgstr "Servis Adı"
 
-#: server/object-directory-activate.c:174
+#: server/object-directory-activate.c:185
 msgid "We don't handle activating shlib objects in a remote process yet"
 msgstr "Henüz bir uzak süreçteki shlib nesneleri etkinleştirilemiyor"
 
@@ -192,7 +168,7 @@ msgstr "IID %s bir NULL konuma sahip"
 msgid "invalid character '%c' in iid '%s'"
 msgstr "'%c' karakteri IID '%s' içinde kullanılamaz"
 
-#: server/object-directory-load.c:345
+#: server/object-directory-load.c:306
 #, c-format
 msgid "Property '%s' has no value"
 msgstr "'%s' özelliğine değer atanmamış"
@@ -204,7 +180,7 @@ msgstr "'%s' özelliğine değer atanmamış"
 #. * with bonobo_activation_active_server_register - _after_ any other
 #. * servers are registered.
 #.
-#: server/object-directory-corba.c:795
+#: server/object-directory-corba.c:886
 #, c-format
 msgid "Race condition activating server '%s'"
 msgstr ""
@@ -263,6 +239,30 @@ msgstr "Dizinleri yapılandırma dosyasında gösterir"
 #: utils/bonobo-activation-sysconf.c:242
 msgid "Display path to configuration file"
 msgstr "Dosya yolunu yapılandırma dosyasında gösterir"
+
+#~ msgid "No server corresponding to your query"
+#~ msgstr "Sorgunuzla ilişkilendirilebilecek bir sunucu yok."
+
+#~ msgid "Query failed: "
+#~ msgstr "Sorgulama başarısız: "
+
+#~ msgid "Activation failed: "
+#~ msgstr "Etkinleştirme başarısız: "
+
+#~ msgid "Could not parse AID"
+#~ msgstr "AID çözümlenemedi"
+
+#~ msgid "Could not parse context: "
+#~ msgstr "Bağlam çözümlenemedi: "
+
+#~ msgid "Could not activate server: "
+#~ msgstr "Sunucu etkinleştirilemedi: "
+
+#~ msgid "Domain of ObjectDirectory"
+#~ msgstr "NesneDizini Alanı"
+
+#~ msgid "DOMAIN"
+#~ msgstr "BÖLGE"
 
 #~ msgid "Object directory to use when registering servers"
 #~ msgstr "Sunucuları kaydederken kullanılacak nesne dizini"

@@ -45,6 +45,7 @@ CORBA_Context  bonobo_activation_context_get      (void);
 
 const char    *bonobo_activation_hostname_get     (void);
 const char    *bonobo_activation_session_name_get (void);
+/* FIXME: unused - remove ? */
 const char    *bonobo_activation_domain_get       (void);
 #define bonobo_activation_username_get() g_get_user_name()
 

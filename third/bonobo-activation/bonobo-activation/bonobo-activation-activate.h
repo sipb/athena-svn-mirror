@@ -44,7 +44,8 @@ CORBA_Object bonobo_activation_activate_from_id  (const Bonobo_ActivationID aid,
                                                   Bonobo_ActivationID * ret_aid,
                                                   CORBA_Environment * ev);
 
-
+void         bonobo_activation_set_activation_env_value (const char *name,
+							 const char *value);
 
 /* debugging functions. */
 void         bonobo_activation_set_test_components_enabled (gboolean val);
@@ -53,17 +54,3 @@ gboolean     bonobo_activation_get_test_components_enabled (void);
 G_END_DECLS
 
 #endif /* BONOBO_ACTIVATION_ACTIVATE_H */
-
-
-
-
-
-
-
-
-
-
-
-
-
-

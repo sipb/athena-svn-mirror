@@ -57,7 +57,7 @@ bonobo_server_info_prop_find (Bonobo_ServerInfo *server,
 /**
  * bonobo_server_info_prop_lookup:
  * @server: 
- * @propname:
+ * @prop_name:
  * @i18n_languages:
  *
  *
@@ -72,7 +72,6 @@ bonobo_server_info_prop_lookup (Bonobo_ServerInfo *server,
 	Bonobo_ActivationProperty *prop;
         const char *retval;
         char *prop_name_buf;
-        char short_lang[3];
                      
 	if (i18n_languages) {
 		for (cur = i18n_languages; cur; cur = cur->next) {
@@ -80,15 +79,6 @@ bonobo_server_info_prop_lookup (Bonobo_ServerInfo *server,
 
 			retval = bonobo_server_info_prop_lookup (server, prop_name_buf, NULL);
                         g_free (prop_name_buf);
-
-                        if (!retval) {
-                                if (strlen ((char *) cur->data) > 2) {
-                                        strncpy (short_lang, (char *) cur->data, 2);
-                                        prop_name_buf = g_strdup_printf ("%s-%s", prop_name, short_lang);
-                                        retval = bonobo_server_info_prop_lookup (server, prop_name_buf, NULL);
-                                        g_free (prop_name_buf);
-                                }
-                        }
 
 			if (retval)
 				return retval;
@@ -173,12 +163,13 @@ CORBA_sequence_Bonobo_ActivationProperty_copy (
 void
 Bonobo_ServerInfo_copy (Bonobo_ServerInfo *copy, const Bonobo_ServerInfo *original)
 {
-	copy->iid = CORBA_string_dup (original->iid);
-	copy->server_type = CORBA_string_dup (original->server_type);
+	copy->iid           = CORBA_string_dup (original->iid);
+	copy->server_type   = CORBA_string_dup (original->server_type);
 	copy->location_info = CORBA_string_dup (original->location_info);
-	copy->username = CORBA_string_dup (original->username);
-	copy->hostname = CORBA_string_dup (original->hostname);
-	copy->domain = CORBA_string_dup (original->domain);
+	copy->username      = CORBA_string_dup (original->username);
+	copy->hostname      = CORBA_string_dup (original->hostname);
+	copy->domain        = CORBA_string_dup (original->domain);
+
 	CORBA_sequence_Bonobo_ActivationProperty_copy (&copy->props, &original->props);
 }
 

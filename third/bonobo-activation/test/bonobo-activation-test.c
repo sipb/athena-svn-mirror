@@ -127,10 +127,11 @@ race_base_init (void)
 {
         g_idle_add (idle_base_activation, NULL);
         /* to race with the activation context get in the same process */
-        bonobo_activation_object_directory_get (NULL, NULL, NULL);
+        bonobo_activation_object_directory_get (NULL, NULL);
 }
 
 int passed = 0;
+int failed = 0;
 int async_done = 0;
 
 static void
@@ -139,14 +140,24 @@ empty_activation_cb (CORBA_Object   obj,
                      gpointer       user_data)
 {
         CORBA_Environment ev;
+	gboolean          ret = FALSE;
+	char             *repo_id = user_data;
 
         CORBA_exception_init (&ev);
 
         if (error_reason)
-                g_warning ("Async activation error '%s'", error_reason);
+                g_warning ("Async activation error activating '%s' : '%s'", repo_id, error_reason);
 
         else if (test_object (obj, &ev, "by async query"))
-                passed += test_empty (obj, &ev, "by async query");
+                ret = test_empty (obj, &ev, "by async query");
+
+	if (ret) {
+		passed++;
+		fprintf (stderr, "PASSED %d of %d: async activation\n", passed + failed, TOTAL_TEST_SCORE);
+	} else {
+		failed++;
+		fprintf (stderr, "FAILED %d of %d: async activation\n", passed + failed, TOTAL_TEST_SCORE);
+	}
 
         CORBA_exception_free (&ev);
 
@@ -158,12 +169,12 @@ race_empty (CORBA_Environment *ev)
 {
 	bonobo_activation_activate_async (
                 "repo_ids.has('IDL:Empty2:1.0')", NULL,
-                0, empty_activation_cb, NULL, ev);
+                0, empty_activation_cb, "IDL:Empty2:1.0", ev);
         g_assert (ev->_major == CORBA_NO_EXCEPTION);
 
 	bonobo_activation_activate_async (
                 "repo_ids.has('IDL:Empty:1.0')", NULL,
-                0, empty_activation_cb, NULL, ev);
+                0, empty_activation_cb, "IDL:Empty:1.0", ev);
         g_assert (ev->_major == CORBA_NO_EXCEPTION);
 
         while (async_done < 2)
@@ -186,8 +197,7 @@ main (int argc, char *argv[])
 
         bonobo_activation_object_directory_get (
                 bonobo_activation_username_get (),
-                bonobo_activation_hostname_get (),
-                NULL);
+                bonobo_activation_hostname_get ());
 
 	bonobo_activation_init (argc, argv);
 /*      putenv("Bonobo_BARRIER_INIT=1"); */
@@ -250,8 +260,13 @@ main (int argc, char *argv[])
 
         fprintf (stderr, "Time to query '%g'\n", g_timer_elapsed (timer, NULL));
         if (ev._major == CORBA_NO_EXCEPTION) {
-                passed++;
-        }
+		passed++;
+		fprintf (stderr, "PASSED %d of %d: timed query\n", passed + failed, TOTAL_TEST_SCORE);
+        } else {
+		failed++;
+		fprintf (stderr, "FAILED %d of %d: timed query\n", passed + failed, TOTAL_TEST_SCORE);
+                CORBA_exception_free (&ev);
+	}
 
         /*
          *    We wait to see if the server (sever)
@@ -266,108 +281,133 @@ main (int argc, char *argv[])
         race_empty (&ev);
 
 	obj = bonobo_activation_activate_from_id ("OAFIID:Empty:19991025", 0, NULL, &ev);
-        if (test_object (obj, &ev, "from id")) {
-                passed += test_empty (obj, &ev, "from id");
-        }
-
-	obj = bonobo_activation_activate_from_id ("OAFAID:[OAFIID:Empty:19991025]", 0, NULL, &ev);
-        if (test_object (obj, &ev, "from aid")) {
-                passed += test_empty (obj, &ev, "from aid");
-        }
-
-	obj = bonobo_activation_activate_from_id ("OAFAID:[OAFIID:Plugin:20010713]",  0, NULL, &ev);
-	if (test_object (obj, &ev, "from aid")) {
-		passed += test_plugin (obj, &ev, "from aid");
+        if (test_object (obj, &ev, "from id") && test_empty (obj, &ev, "from id")) {
+		passed++;
+		fprintf (stderr, "PASSED %d of %d: IID activation\n", passed + failed, TOTAL_TEST_SCORE);
+        } else {
+		failed++;
+		fprintf (stderr, "FAILED %d of %d: IID activation\n", passed + failed, TOTAL_TEST_SCORE);
 	}
 
-        fprintf (stderr, "Broken link test ");
+	obj = bonobo_activation_activate_from_id ("OAFAID:[OAFIID:Empty:19991025]", 0, NULL, &ev);
+        if (test_object (obj, &ev, "from aid") && test_empty (obj, &ev, "from aid")) {
+		passed++;
+		fprintf (stderr, "PASSED %d of %d: AID activation\n", passed + failed, TOTAL_TEST_SCORE);
+        } else {
+		failed++;
+		fprintf (stderr, "FAILED %d of %d: AID activation\n", passed + failed, TOTAL_TEST_SCORE);
+	}
+
+	obj = bonobo_activation_activate_from_id ("OAFAID:[OAFIID:Plugin:20010713]",  0, NULL, &ev);
+	if (test_object (obj, &ev, "from aid") && test_plugin (obj, &ev, "from aid")) {
+		passed++;
+		fprintf (stderr, "PASSED %d of %d: plugin activation\n", passed + failed, TOTAL_TEST_SCORE);
+        } else {
+		failed++;
+		fprintf (stderr, "FAILED %d of %d: plugin activation\n", passed + failed, TOTAL_TEST_SCORE);
+	}
+
         obj = bonobo_activation_activate_from_id ("OAFIID:Bogus:20000526", 0, NULL, &ev);
-        if (ev._major == CORBA_NO_EXCEPTION) {
-                fprintf (stderr, "failed 1");
-        } else {
-                fprintf (stderr, "passed 1 ('%s')", bonobo_activation_exception_id (&ev));
+        if (ev._major != CORBA_NO_EXCEPTION) {
+		passed++;
+		fprintf (stderr, "PASSED %d of %d: Broken link test : %s\n",
+			 passed + failed, TOTAL_TEST_SCORE, bonobo_activation_exception_id (&ev));
                 CORBA_exception_free (&ev);
-                passed++;
-        }
-        if (test_bonobo_activation_server (&ev, "with broken factory link")) {
-                fprintf (stderr, ", passed 2");
-                passed++;
         } else {
-                fprintf (stderr, ", failed 2");
-        }
-        fprintf (stderr, "\n");
+		failed++;
+		fprintf (stderr, "FAILED %d of %d: Broken link test\n", passed + failed, TOTAL_TEST_SCORE);
+	}
+
+        if (test_bonobo_activation_server (&ev, "with broken factory link")) {
+		passed++;
+		fprintf (stderr, "PASSED %d of %d: activation server okay\n", passed + failed, TOTAL_TEST_SCORE);
+        } else {
+		failed++;
+		fprintf (stderr, "FAILED %d of %d: activation server okay\n", passed + failed, TOTAL_TEST_SCORE);
+	}
 
         fprintf (stderr, "Broken exe test ");
         obj = bonobo_activation_activate_from_id ("OAFIID:Broken:20000530", 0, NULL, &ev);
-        if (ev._major == CORBA_NO_EXCEPTION) {
-                fprintf (stderr, "failed 1");
-        } else {
-                fprintf (stderr, "passed 1 ('%s')", bonobo_activation_exception_id (&ev));
+        if (ev._major != CORBA_NO_EXCEPTION) {
+		passed++;
+		fprintf (stderr, "PASSED %d of %d: Broken exe test : %s\n",
+			 passed + failed, TOTAL_TEST_SCORE, bonobo_activation_exception_id (&ev));
                 CORBA_exception_free (&ev);
-                passed++;
-        }
-        if (test_bonobo_activation_server (&ev, "with broken factory link")) {
-                fprintf (stderr, ", passed 2");
-                passed++;
         } else {
-                fprintf (stderr, ", failed 2");
-        }
-        fprintf (stderr, "\n");
+		failed++;
+		fprintf (stderr, "FAILED %d of %d: Broken exe test\n", passed + failed, TOTAL_TEST_SCORE);
+	}
 
+        if (test_bonobo_activation_server (&ev, "with broken factory link")) {
+		passed++;
+		fprintf (stderr, "PASSED %d of %d: activation server okay\n", passed + failed, TOTAL_TEST_SCORE);
+        } else {
+		failed++;
+		fprintf (stderr, "FAILED %d of %d: activation server okay\n", passed + failed, TOTAL_TEST_SCORE);
+	}
 
-        fprintf (stderr, "Circular link test ");
         obj = bonobo_activation_activate_from_id ("OAFIID:Circular:20000530", 0, NULL, &ev);
-        if (ev._major == CORBA_NO_EXCEPTION)
-                fprintf (stderr, "failed 1");
-        else {
-                fprintf (stderr, "passed 1 ('%s')", bonobo_activation_exception_id (&ev));
+        if (ev._major != CORBA_NO_EXCEPTION) {
+		passed++;
+		fprintf (stderr, "PASSED %d of %d: Circular link test : %s\n",
+			 passed + failed, TOTAL_TEST_SCORE, bonobo_activation_exception_id (&ev));
                 CORBA_exception_free (&ev);
-                passed++;
-        }
+        } else {
+		failed++;
+		fprintf (stderr, "FAILED %d of %d: Circular link test\n", passed + failed, TOTAL_TEST_SCORE);
+	}
+
         if (test_bonobo_activation_server (&ev, "with broken factory link")) {
-                fprintf (stderr, ", passed 2");
-                passed++;
+		passed++;
+		fprintf (stderr, "PASSED %d of %d: activation server okay\n", passed + failed, TOTAL_TEST_SCORE);
         } else {
-                fprintf (stderr, ", failed 2");
-        }
-        fprintf (stderr, "\n");
+		failed++;
+		fprintf (stderr, "FAILED %d of %d: activation server okay\n", passed + failed, TOTAL_TEST_SCORE);
+	}
 
-
-        fprintf (stderr, "Server that doesn't register IID test ");
         obj = bonobo_activation_activate_from_id ("OAFIID:NotInServer:20000717", 0, NULL, &ev);
-        if (ev._major == CORBA_NO_EXCEPTION) {
-                fprintf (stderr, "failed 1");
-        } else {
-                fprintf (stderr, "passed 1 ('%s')", bonobo_activation_exception_id (&ev));
+        if (ev._major != CORBA_NO_EXCEPTION) {
+		passed++;
+		fprintf (stderr, "PASSED %d of %d: Server that doesn't register IID test : %s\n",
+			 passed + failed, TOTAL_TEST_SCORE, bonobo_activation_exception_id (&ev));
                 CORBA_exception_free (&ev);
-                passed++;
-        }
-        if (test_bonobo_activation_server (&ev, "with non-registering server")) {
-                fprintf (stderr, ", passed 2");
-                passed++;
         } else {
-                fprintf (stderr, ", failed 2");
-        }
-        fprintf (stderr, "\n");
+		failed++;
+		fprintf (stderr, "FAILED %d of %d: Server that doesn't register IID test\n",
+			 passed + failed, TOTAL_TEST_SCORE);
+	}
 
-        fprintf (stderr, "Server with IID but no type or location ");
+        if (test_bonobo_activation_server (&ev, "with non-registering server")) {
+		passed++;
+		fprintf (stderr, "PASSED %d of %d: activation server okay\n", passed + failed, TOTAL_TEST_SCORE);
+        } else {
+		failed++;
+		fprintf (stderr, "FAILED %d of %d: activation server okay\n", passed + failed, TOTAL_TEST_SCORE);
+	}
+
         obj = bonobo_activation_activate_from_id ("OAFIID:BrokenNoType:20000808", 0, NULL, &ev);
         if (ev._major != CORBA_NO_EXCEPTION) {
-                fprintf (stderr, "failed (except) 1");
+		failed++;
+		fprintf (stderr, "FAILED %d of %d: Server with IID but no type or location : %s\n",
+			 passed + failed, TOTAL_TEST_SCORE, bonobo_activation_exception_id (&ev));
                 CORBA_exception_free (&ev);
         } else if (obj) {
-                fprintf (stderr, "failed (obj) 1");
+		failed++;
+		fprintf (stderr, "FAILED %d of %d: Server with IID but no type or location\n",
+			 passed + failed, TOTAL_TEST_SCORE);
         } else {
-                fprintf (stderr, "passed 1");
                 passed++;
+		fprintf (stderr, "PASSED %d of %d: Server with IID but no type or location\n",
+			 passed + failed, TOTAL_TEST_SCORE);
         }
+
         if (test_bonobo_activation_server (&ev, "with no-type/loc server")) {
-                fprintf (stderr, ", passed 2");
-                passed++;
+		passed++;
+		fprintf (stderr, "PASSED %d of %d: activation server okay\n", passed + failed, TOTAL_TEST_SCORE);
         } else {
-                fprintf (stderr, ", failed 2");
-        }
-        fprintf (stderr, "\n");
+		failed++;
+		fprintf (stderr, "FAILED %d of %d: activation server okay\n", passed + failed, TOTAL_TEST_SCORE);
+	}
 
         fprintf (stderr, "\n%d of %d tests passed (%s)\n", passed,
                  TOTAL_TEST_SCORE,

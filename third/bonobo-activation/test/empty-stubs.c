@@ -13,7 +13,9 @@ Empty_doNothing(Empty _obj, CORBA_Environment * ev)
 
    if (ORBit_small_flags & ORBIT_SMALL_FAST_LOCALS &&
        ORBIT_STUB_IsBypass(_obj, Empty__classid) &&
-       (_ORBIT_epv = ORBIT_STUB_GetEpv(_obj, Empty__classid))->doNothing) {
+       (_ORBIT_epv =
+	(POA_Empty__epv *) ORBIT_STUB_GetEpv(_obj,
+					     Empty__classid))->doNothing) {
       ORBIT_STUB_PreCall(_obj);
       _ORBIT_epv->doNothing(ORBIT_STUB_GetServant(_obj), ev);
       ORBIT_STUB_PostCall(_obj);

@@ -1,152 +1,133 @@
-# German translation for bonobo-activation.
+# German bonobo-activation translation
 # Copyright (C) 2000 Free Software Foundation, Inc.
 # Christian Meyer <chrisime@gnome.org>, 2002.
+# Christian Neumair <chris@gnome-de.org>, 2002, 2003.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: bonobo-activation\n"
-"POT-Creation-Date: 2002-10-29 10:55+0000\n"
-"PO-Revision-Date: 2002-03-11 23:38+0100\n"
-"Last-Translator: Christian Meyer <chrisime@gnome.org>\n"
+"POT-Creation-Date: 2003-01-20 15:45+0000\n"
+"PO-Revision-Date: 2003-01-19 22:31+0100\n"
+"Last-Translator: Christian Neumair <chris@gnome-de.org>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: bonobo-activation/bonobo-activation-async-callback.c:119
-msgid "No server corresponding to your query"
-msgstr "Kein Server, der Ihrer Anfrage entspricht"
-
-#: bonobo-activation/bonobo-activation-fork-server.c:101
+#: bonobo-activation/bonobo-activation-fork-server.c:102
 msgid "Child process did not give an error message, unknown failure occurred"
 msgstr "Kindprozess gab keine Fehlermeldung aus. Unbekannter Störfall trat auf"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:171
+#: bonobo-activation/bonobo-activation-fork-server.c:174
 #, c-format
 msgid "Failed to read from child process: %s\n"
 msgstr "Vom Kindprozess konnte nicht gelesen werden: %s\n"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:328
+#: bonobo-activation/bonobo-activation-fork-server.c:296
 msgid "Couldn't fork a new process"
-msgstr "Neuer Prozess konnte nicht abgespalten werden"
+msgstr "Es konnte kein neuer Prozess abgespalten werden"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:351
+#: bonobo-activation/bonobo-activation-fork-server.c:319
 #, c-format
 msgid "Child received signal %u (%s)"
 msgstr "Kindprozess erhielt Signal %u (%s)"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:356
+#: bonobo-activation/bonobo-activation-fork-server.c:324
 #, c-format
 msgid "Unknown non-exit error (status is %u)"
 msgstr "Unbekannter non-exit Fehler (Status ist %u)"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:424
+#: bonobo-activation/bonobo-activation-fork-server.c:387
 #, c-format
 msgid "bonobo-activation failed to set process group of %s: %s\n"
 msgstr "bonobo-activation konnte die Prozessgruppe von %s nicht setzen: %s\n"
 
-#: bonobo-activation/bonobo-activation-fork-server.c:436
+#: bonobo-activation/bonobo-activation-fork-server.c:399
 #, c-format
 msgid "Failed to execute %s: %d (%s)\n"
 msgstr "%s konnte nicht ausgeführt werden: %d (%s)\n"
 
-#: bonobo-activation/bonobo-activation-init.c:246
+#: bonobo-activation/bonobo-activation-init.c:243
 msgid "File descriptor to print IOR on"
 msgstr "Dateibeschreibung, in die IOR geschrieben wird"
 
-#: bonobo-activation/bonobo-activation-init.c:246
-#: server/activation-server-main.c:77
+#: bonobo-activation/bonobo-activation-init.c:243
+#: server/activation-server-main.c:73
 msgid "FD"
 msgstr "FD"
 
-#: bonobo-activation/bonobo-activation-init.c:248
+#: bonobo-activation/bonobo-activation-init.c:245
 msgid "IID to activate"
 msgstr "Zu aktivierende IID"
 
-#: bonobo-activation/bonobo-activation-init.c:250
+#: bonobo-activation/bonobo-activation-init.c:247
 msgid "Prevent registering of server with OAF"
 msgstr "Registrieren von Servern mit OAF vermeiden"
 
-#: bonobo-activation/bonobo-activation-init.c:337
+#: bonobo-activation/bonobo-activation-init.c:334
 msgid "Bonobo activation options"
-msgstr "Optionen von bonobo-activation"
+msgstr "Optionen von Bonobo-Activation"
 
-# CHECK
 #: bonobo-activation/bonobo-activation-shlib.c:101
 #, c-format
 msgid "g_module_open of `%s' failed with `%s'"
-msgstr "g_module_open von »%s« ist fehlgeschlagen mit »%s«"
+msgstr ""
+"Das Öffnen des Moduls „%s” mittels „g_module_open” ist fehlgeschlagen mit „%"
+"s”"
 
 #: bonobo-activation/bonobo-activation-shlib.c:119
 #: bonobo-activation/bonobo-activation-shlib.c:155
 #, c-format
 msgid "Can't find symbol Bonobo_Plugin_info in `%s'"
-msgstr "Symbol Bonobo_Plugin_info in »%s« kann nicht gefunden werden"
+msgstr "Symbol Bonobo_Plugin_info konnte nicht in „%s” gefunden werden"
 
 #: bonobo-activation/bonobo-activation-shlib.c:203
 #, c-format
 msgid "Factory `%s' returned NIL for `%s'"
-msgstr "Fabrik »%s« gab für »%s« NIL zurück"
+msgstr "Fabrik „%s” gab für „%s” NIL zurück"
 
 #: bonobo-activation/bonobo-activation-shlib.c:220
 #, c-format
 msgid "Shlib `%s' didn't contain `%s'"
-msgstr "Shlib »%s« enthielt »%s« nicht"
+msgstr "Shlib „%s” enthielt „%s” nicht"
 
-#: server/activation-context-corba.c:628
+# CHECK
+#: bonobo-activation/bonobo-activation-get-language-list.c:87
+msgid "Too many alias levels for a locale, may indicate a loop"
+msgstr ""
+"Für einen Satz Standorteinstellungen sind zu viele Aliase vergeben.Dies "
+"deutet auf eine kreisförmige Abhängigkeit hin."
+
+#: server/activation-context-corba.c:621
 msgid "Couldn't find which child the server was listed in"
 msgstr "Keine Informationen, in welchem Kindprozess der Server gelistet war"
 
-#: server/activation-context-corba.c:809
-msgid "Query failed: "
-msgstr "Anfrage fehlgeschlagen:"
+#: server/activation-context-corba.c:919
+msgid "Not a valid Activation ID"
+msgstr "Keine gültige Aktivierungskennung"
 
-#: server/activation-context-corba.c:836
-msgid "Activation failed: "
-msgstr "Aktivierung fehlgeschlagen:"
-
-#: server/activation-context-corba.c:1093
-msgid "Could not parse AID"
-msgstr "Die AID konnte nicht geparst werden"
-
-#: server/activation-context-corba.c:1103
-msgid "Could not parse context: "
-msgstr "Der Kontext konnte nicht geparst werden:"
-
-#: server/activation-context-corba.c:1125
-msgid "Could not activate server: "
-msgstr "Der Server konnte nicht aktiviert werden:"
-
-#: server/activation-server-main.c:67
+#: server/activation-server-main.c:66
 msgid "Directory to read .server files from"
 msgstr "Verzeichnis, in dem die .server-Datei gelesen werden soll"
 
-#: server/activation-server-main.c:67
+#: server/activation-server-main.c:66
 msgid "DIRECTORY"
 msgstr "VERZEICHNIS"
 
-#: server/activation-server-main.c:70
-msgid "Domain of ObjectDirectory"
-msgstr "Domäne von ObjektVerzeichnis"
-
-#: server/activation-server-main.c:70
-msgid "DOMAIN"
-msgstr "DOMÄNE"
-
-#: server/activation-server-main.c:73
+#: server/activation-server-main.c:69
 msgid "Serve as an ActivationContext (default is as an ObjectDirectory only)"
 msgstr ""
 "Als ActivationContext fungieren (Voreinstellung ist nur ObjektVerzeichnis)"
 
-#: server/activation-server-main.c:77
+#: server/activation-server-main.c:73
 msgid "File descriptor to write IOR to"
 msgstr "Datei-Deskriptor, in dem IOR geschrieben wird"
 
-#: server/activation-server-main.c:85
+#: server/activation-server-main.c:81
 msgid "Query expression to evaluate"
 msgstr "Ausdruck der untersucht werden soll"
 
-#: server/activation-server-main.c:85
+#: server/activation-server-main.c:81
 msgid "EXPRESSION"
 msgstr "AUSDRUCK"
 
@@ -159,7 +140,7 @@ msgstr "CORBA-CosNaming-Dienst."
 msgid "Name service"
 msgstr "Namensdienst"
 
-#: server/object-directory-activate.c:174
+#: server/object-directory-activate.c:185
 msgid "We don't handle activating shlib objects in a remote process yet"
 msgstr ""
 "Es können noch keine shlib-Objekte in einem fernen Prozess aktiviert werden"
@@ -180,22 +161,22 @@ msgstr "eine NULL iid ist nicht gültig"
 #: server/object-directory-load.c:98
 #, c-format
 msgid "iid %s has a NULL type"
-msgstr "iid %s hat einen NULL Typ"
+msgstr "IID %s hat den Typ NULL"
 
 #: server/object-directory-load.c:102
 #, c-format
 msgid "iid %s has a NULL location"
-msgstr "iid %s hat einen NULL Ort"
+msgstr "IID %s hat den Ort NULL"
 
 #: server/object-directory-load.c:111
 #, c-format
 msgid "invalid character '%c' in iid '%s'"
-msgstr "ungültige Zeichen »%c« in iid »%s«"
+msgstr "ungültige Zeichen „%c” in iid „%s”"
 
-#: server/object-directory-load.c:345
+#: server/object-directory-load.c:306
 #, c-format
 msgid "Property '%s' has no value"
-msgstr "Attribut »%s« hat keinen Wert"
+msgstr "Attribut „%s” hat keinen Wert"
 
 #.
 #. * If this exception blows ( which it will only do with a multi-object )
@@ -204,21 +185,20 @@ msgstr "Attribut »%s« hat keinen Wert"
 #. * with bonobo_activation_active_server_register - _after_ any other
 #. * servers are registered.
 #.
-#: server/object-directory-corba.c:795
+#: server/object-directory-corba.c:886
 #, c-format
 msgid "Race condition activating server '%s'"
-msgstr "»Race condition« beim Aktivieren des Servers »%s«"
+msgstr "„Race condition” beim Aktivieren des Servers „%s”"
 
 #: utils/bonobo-activation-sysconf.c:62
 msgid "Could not save configuration file.\n"
 msgstr "Die Konfigurationsdatei konnte nicht gespeichert werden.\n"
 
-# CHECK
 #: utils/bonobo-activation-sysconf.c:63
 #, c-format
 msgid "Please, make sure you have permissions to write to '%s'.\n"
 msgstr ""
-"Bitte stellen Sie sicher, das Sie die Rechte haben, um auf »%s« zu "
+"Stellen Sie sicher, dass Sie die nötige Berechtigung haben, um auf „%s” zu "
 "schreiben.\n"
 
 #: utils/bonobo-activation-sysconf.c:66
@@ -237,7 +217,7 @@ msgstr ""
 #: utils/bonobo-activation-sysconf.c:118
 #, c-format
 msgid "%s already in configuration file\n"
-msgstr "%s ist schon in der Konfigurationsdatei\n"
+msgstr "%s ist bereits in der Konfigurationsdatei\n"
 
 #: utils/bonobo-activation-sysconf.c:138
 msgid "there is not a properly structured configuration file\n"
@@ -245,7 +225,7 @@ msgstr "es gibt keine richtig struktierte Konfigurationsdatei\n"
 
 #: utils/bonobo-activation-sysconf.c:201
 msgid "Bonobo-activation configuration file contains:\n"
-msgstr "Bonobo-Activation-Konfigurationsdatei beinhaltet:\n"
+msgstr "Bonobo-Activation-Konfigurationsdatei enthält:\n"
 
 #: utils/bonobo-activation-sysconf.c:233
 msgid "Directory to remove from configuration file"
@@ -266,7 +246,3 @@ msgstr "Verzeichnisse in der Konfigurationsdatei anzeigen"
 #: utils/bonobo-activation-sysconf.c:242
 msgid "Display path to configuration file"
 msgstr "Pfad zur Konfigurationsdatei anzeigen"
-
-#~ msgid "Object directory to use when registering servers"
-#~ msgstr ""
-#~ "Objektverzeichtnis, das genutzt wird, wenn Server registriert werden"

@@ -20,8 +20,7 @@ test_server_info_load (void)
 	g_timer_start (timer);
 	for (i = 0; i < 10; i++)
 		bonobo_server_info_load (dirs, &servers, &hash,
-					 bonobo_activation_hostname_get (),
-					 bonobo_activation_domain_get ());
+					 bonobo_activation_hostname_get ());
 
 	fprintf (stderr, " %g(ms)\n",
 		 g_timer_elapsed (timer, NULL) * 1000.0 / 10);

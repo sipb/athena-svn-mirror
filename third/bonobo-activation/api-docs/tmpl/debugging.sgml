@@ -30,3 +30,19 @@ Debugging
 @val: 
 
 
+<!-- ##### FUNCTION bonobo_activation_debug_shutdown ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_activation_base_service_debug_shutdown ##### -->
+<para>
+
+</para>
+
+@ev: 
+
+

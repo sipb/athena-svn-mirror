@@ -16,6 +16,27 @@ it is not started.
 
 </para>
 
+<!-- ##### MACRO BONOBO_ACTIVATION_MAJOR_VERSION ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO BONOBO_ACTIVATION_MINOR_VERSION ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO BONOBO_ACTIVATION_MICRO_VERSION ##### -->
+<para>
+
+</para>
+
+
+
 <!-- ##### FUNCTION bonobo_activation_is_initialized ##### -->
 <para>
 
@@ -25,6 +46,34 @@ it is not started.
 
 
 <!-- ##### FUNCTION bonobo_activation_init ##### -->
+<para>
+
+</para>
+
+@argc: 
+@argv: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_activation_postinit ##### -->
+<para>
+
+</para>
+
+@app: 
+@mod_info: 
+
+
+<!-- ##### FUNCTION bonobo_activation_preinit ##### -->
+<para>
+
+</para>
+
+@app: 
+@mod_info: 
+
+
+<!-- ##### FUNCTION bonobo_activation_orb_init ##### -->
 <para>
 
 </para>
@@ -48,6 +97,53 @@ it is not started.
 </para>
 
 @ev: 
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_activation_get_popt_table_name ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_activation_hostname_get ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_activation_domain_get ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### MACRO bonobo_activation_username_get ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION bonobo_activation_context_get ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION bonobo_activation_session_name_get ##### -->
+<para>
+
+</para>
+
 @Returns: 
 
 

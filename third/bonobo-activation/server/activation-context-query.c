@@ -853,8 +853,6 @@ qexp_evaluate_id (Bonobo_ServerInfo * si, QueryExpr * e, QueryContext * qctx)
 			retval.u.v_string = si->username;
 		else if (!g_ascii_strcasecmp (e->u.id_value, "hostname"))
 			retval.u.v_string = si->hostname;
-		else if (!g_ascii_strcasecmp (e->u.id_value, "domain"))
-			retval.u.v_string = si->domain;
 		else {
 			int i;
 			for (i = 0; i < si->props._length; i++) {

@@ -61,7 +61,6 @@ bonobo_activation_servinfo_to_actinfo (const Bonobo_ServerInfo * servinfo)
 	retval->iid = g_strdup (servinfo->iid);
 	retval->user = g_strdup (servinfo->username);
 	retval->host = g_strdup (servinfo->hostname);
-	retval->domain = g_strdup (servinfo->domain);
 
 	return retval;
 }
@@ -80,7 +79,6 @@ bonobo_activation_info_free (BonoboActivationInfo * actinfo)
 	g_free (actinfo->iid);
 	g_free (actinfo->user);
 	g_free (actinfo->host);
-	g_free (actinfo->domain);
 	g_free (actinfo);
 }
 
@@ -121,7 +119,6 @@ bonobo_activation_id_parse (const CORBA_char *actid)
 	parts[0] = &(retval->iid);
 	parts[1] = &(retval->user);
 	parts[2] = &(retval->host);
-	parts[3] = &(retval->domain);
 	for (partnum = bracket_count = 0, ctmp = ctmp2 = splitme;
 	     bracket_count >= 0 && *ctmp && partnum < nparts; ctmp++) {
 
@@ -175,10 +172,5 @@ bonobo_activation_info_stringify (const BonoboActivationInfo * actinfo)
 			    actinfo->user ? actinfo->user : "",
 			    ",",
 			    actinfo->host ? actinfo->host : "",
-			    ",",
-			    actinfo->domain ? actinfo->domain : "",
 			    "]", NULL);
 }
-
-
-
