@@ -18,7 +18,7 @@
     License along with this library; if not, write to the Free
     Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-    $Id: util.c,v 1.1.1.1 2002-12-26 17:10:40 ghudson Exp $
+    $Id: util.c,v 1.1.1.2 2004-09-22 23:38:50 ghudson Exp $
 
 ***************************************************************************/
 #include <assert.h>
@@ -28,7 +28,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <errno.h>
-#ifndef _WIN32
+#ifdef HAVE_UNISTD_H
 #  include <unistd.h>
 #endif
 #include "rename.h"
@@ -247,7 +247,7 @@ int IDL_parse_filename (const char *filename, const char *cpp_args,
 		return -1;
 	}
 
-#ifndef NO_ACCESS
+#ifdef HAVE_ACCESS
 	if (access (filename, R_OK))
 		return -1;
 #endif
@@ -304,7 +304,7 @@ int IDL_parse_filename (const char *filename, const char *cpp_args,
 	}
 	strcpy (tmpfilename, s);
 	strcat (tmpfilename, ".c");
-#ifndef NO_SYMLINK
+#ifdef HAVE_SYMLINK
 	if (symlink (linkto, tmpfilename) < 0) {
 		g_free (linkto);
 		g_free (tmpfilename);
@@ -328,7 +328,11 @@ int IDL_parse_filename (const char *filename, const char *cpp_args,
 		    cwd, cpp_args ? cpp_args : "", tmpfilename, cpperrs);
 #endif
 
-#ifndef NO_POPEN
+       /* Many versions of cpp do evil translating internal
+        * strings, producing bogus output, so clobber LC_ALL */
+       putenv ("LC_ALL=C");
+
+#ifdef HAVE_POPEN
 	input = popen (cmd, "r");
 #else
 	input = fopen (cmd, "r");
@@ -364,7 +368,7 @@ int IDL_parse_filename (const char *filename, const char *cpp_args,
 #ifndef HAVE_CPP_PIPE_STDIN
 	__IDL_tmp_filename = NULL;
 #endif
-#ifndef NO_POPEN
+#ifdef HAVE_POPEN
 	pclose (input);
 #else
 	fclose (input);
@@ -2767,6 +2771,8 @@ static gboolean IDL_emit_IDL_ident_real (IDL_tree_func_data *tfd, IDL_output_dat
 	assert (IDL_NODE_TYPE (tfd->tree) == IDLN_IDENT);
 
 	if (!up_real || data->flags & IDLF_OUTPUT_NO_QUALIFY_IDENTS) {
+		/* TODO: If the IDENT is also a keyword, escape it by
+		   prepending an underscore. */
 		dataf (data, "%s", IDL_IDENT (tfd->tree).str);
 	} else {
 		if ( up_path == 0 ) {

@@ -18,7 +18,7 @@
     License along with this library; if not, write to the Free
     Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
-    $Id: util.h,v 1.1.1.1 2002-12-26 17:11:04 ghudson Exp $
+    $Id: util.h,v 1.1.1.2 2004-09-22 23:38:51 ghudson Exp $
 
 ***************************************************************************/
 #ifndef __UTIL_H
@@ -33,20 +33,7 @@
 #  include <wcstr.h>
 #endif
 #include <glib.h>
-#include "IDL.h"
-
-#ifdef _WIN32
-#  define alloca
-#  define NO_ACCESS
-#endif
-
-#ifdef XP_MAC
-#  include <alloca.h>
-#  define alloca
-#  define NO_ACCESS
-#  define NO_SYMLINK
-#  define NO_POPEN
-#endif
+#include <libIDL/IDL.h>
 
 /* Internal parse flags */
 #define IDLFP_PROPERTIES	(1UL << 0)

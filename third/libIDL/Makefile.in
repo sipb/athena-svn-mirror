@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p5 from Makefile.am
+# Makefile.in generated automatically by automake 1.4-p6 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999, 2001 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -64,16 +64,27 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 host_alias = @host_alias@
 host_triplet = @host@
+AR = @AR@
 AS = @AS@
 CC = @CC@
 CPP = @CPP@
+CXX = @CXX@
+CXXCPP = @CXXCPP@
 DLLTOOL = @DLLTOOL@
 ECHO = @ECHO@
+EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+F77 = @F77@
+GCJ = @GCJ@
+GCJFLAGS = @GCJFLAGS@
+HAVE_LIB = @HAVE_LIB@
 HAVE_WCHAR_H = @HAVE_WCHAR_H@
 HAVE_WCSTR_H = @HAVE_WCSTR_H@
+HAVE_YACC = @HAVE_YACC@
+IDL_LL = @IDL_LL@
 LEX = @LEX@
 LFLAGS = @LFLAGS@
+LIB = @LIB@
 LIBIDL_CFLAGS = @LIBIDL_CFLAGS@
 LIBIDL_LIBS = @LIBIDL_LIBS@
 LIBIDL_MAJOR_VERSION = @LIBIDL_MAJOR_VERSION@
@@ -82,6 +93,7 @@ LIBIDL_MINOR_VERSION = @LIBIDL_MINOR_VERSION@
 LIBIDL_VERSION = @LIBIDL_VERSION@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
+LTLIB = @LTLIB@
 LT_VERSION = @LT_VERSION@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
@@ -90,45 +102,46 @@ OBJEXT = @OBJEXT@
 PACKAGE = @PACKAGE@
 PKG_CONFIG = @PKG_CONFIG@
 RANLIB = @RANLIB@
+RC = @RC@
 STRIP = @STRIP@
 VERSION = @VERSION@
 WARN_CFLAGS = @WARN_CFLAGS@
 YACC = @YACC@
 
-INCLUDES =  	-DYYDEBUG=1                    	-DYYERROR_VERBOSE=1            	-DIDL_LIBRARY                  	$(LIBIDL_CFLAGS)               	-DG_LOG_DOMAIN=\"libIDL\"      	$(WARN_CFLAGS)
+SUBDIRS = include
+INCLUDES =  	-DYYDEBUG=1                    	-DYYERROR_VERBOSE=1            	$(LIBIDL_CFLAGS)               	-I$(top_builddir)/include      	-DG_LOG_DOMAIN=\"libIDL\"      	$(WARN_CFLAGS)
 
 
 YFLAGS = -d -v 2>/dev/null
 
 MOSTLYCLEANFILES = parser.output y.output
-DISTCLEANFILES = IDL.h
 
 EXTRA_DIST = BUGS parser.y lexer.l 			  Makefile.msc README.win32 			  libIDL.def libIDL.spec 			  HACKING MAINTAINERS
 
 
 info_TEXINFOS = libIDL2.texi
-libIDLincludedir = $(includedir)/libIDL-2.0/libIDL
-libIDLinclude_HEADERS = IDL.h
 lib_LTLIBRARIES = libIDL-2.la
 noinst_PROGRAMS = tstidl
 
 bin_SCRIPTS = libIDL-config-2
 
-BUILT_SOURCES = lexer.c parser.c parser.h IDL.h stamp-parser
+BUILT_SOURCES = lexer.c parser.c parser.h stamp-parser
 
 libIDL_2_la_SOURCES = parser.c parser.h lexer.c 			  ns.c util.c util.h rename.h
 
-libIDL_2_la_LDFLAGS = -version-info $(LT_VERSION) $(LIBIDL_LIBS)
+libIDL_2_la_LDFLAGS = -version-info $(LT_VERSION) $(LIBIDL_LIBS) -no-undefined
 
 tstidl_SOURCES = tstidl.c
 tstidl_LDADD = libIDL-2.la $(LIBIDL_LIBS)
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libIDL-2.0.pc
+
+CLEANFILES = $(BUILT_SOURCES)
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
-CONFIG_CLEAN_FILES =  Makefile.msc libIDL-config libIDL.m4 libIDL.spec \
-libIDL-2.0.pc IDL.h.new
+CONFIG_CLEAN_FILES =  Makefile.msc libIDL-config-2 libIDL.m4 libIDL.spec \
+libIDL-2.0.pc libIDL-2.0-uninstalled.pc
 LTLIBRARIES =  $(lib_LTLIBRARIES)
 
 
@@ -157,13 +170,11 @@ DVIS = libIDL2.dvi
 TEXINFOS = libIDL2.texi
 DATA =  $(pkgconfig_DATA)
 
-HEADERS =  $(libIDLinclude_HEADERS)
-
-DIST_COMMON =  README AUTHORS COPYING ChangeLog IDL.h.new.in INSTALL \
-Makefile.am Makefile.in Makefile.msc.in NEWS acinclude.m4 aclocal.m4 \
-config.guess config.sub configure configure.in install-sh \
-libIDL-2.0.pc.in libIDL-config.in libIDL.m4.in libIDL.spec.in ltmain.sh \
-missing mkinstalldirs texinfo.tex
+DIST_COMMON =  README AUTHORS COPYING ChangeLog INSTALL Makefile.am \
+Makefile.in Makefile.msc.in NEWS acinclude.m4 aclocal.m4 config.guess \
+config.sub configure configure.in install-sh \
+libIDL-2.0-uninstalled.pc.in libIDL-2.0.pc.in libIDL-config-2.in \
+libIDL.m4.in libIDL.spec.in ltmain.sh missing mkinstalldirs texinfo.tex
 
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
@@ -192,7 +203,7 @@ $(srcdir)/configure: @MAINTAINER_MODE_TRUE@$(srcdir)/configure.in $(ACLOCAL_M4) 
 	cd $(srcdir) && $(AUTOCONF)
 Makefile.msc: $(top_builddir)/config.status Makefile.msc.in
 	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
-libIDL-config: $(top_builddir)/config.status libIDL-config.in
+libIDL-config-2: $(top_builddir)/config.status libIDL-config-2.in
 	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 libIDL.m4: $(top_builddir)/config.status libIDL.m4.in
 	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
@@ -200,7 +211,7 @@ libIDL.spec: $(top_builddir)/config.status libIDL.spec.in
 	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 libIDL-2.0.pc: $(top_builddir)/config.status libIDL-2.0.pc.in
 	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
-IDL.h.new: $(top_builddir)/config.status IDL.h.new.in
+libIDL-2.0-uninstalled.pc: $(top_builddir)/config.status libIDL-2.0-uninstalled.pc.in
 	cd $(top_builddir) && CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
 
 mostlyclean-libLTLIBRARIES:
@@ -443,19 +454,59 @@ uninstall-pkgconfigDATA:
 	  rm -f $(DESTDIR)$(pkgconfigdir)/$$p; \
 	done
 
-install-libIDLincludeHEADERS: $(libIDLinclude_HEADERS)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(libIDLincludedir)
-	@list='$(libIDLinclude_HEADERS)'; for p in $$list; do \
-	  if test -f "$$p"; then d= ; else d="$(srcdir)/"; fi; \
-	  echo " $(INSTALL_DATA) $$d$$p $(DESTDIR)$(libIDLincludedir)/$$p"; \
-	  $(INSTALL_DATA) $$d$$p $(DESTDIR)$(libIDLincludedir)/$$p; \
-	done
+# This directory's subdirectories are mostly independent; you can cd
+# into them and run `make' without going through this Makefile.
+# To change the values of `make' variables: instead of editing Makefiles,
+# (1) if the variable is set in `config.status', edit `config.status'
+#     (which will cause the Makefiles to be regenerated when you run `make');
+# (2) otherwise, pass the desired values on the `make' command line.
 
-uninstall-libIDLincludeHEADERS:
-	@$(NORMAL_UNINSTALL)
-	list='$(libIDLinclude_HEADERS)'; for p in $$list; do \
-	  rm -f $(DESTDIR)$(libIDLincludedir)/$$p; \
+@SET_MAKE@
+
+all-recursive install-data-recursive install-exec-recursive \
+installdirs-recursive install-recursive uninstall-recursive  \
+check-recursive installcheck-recursive info-recursive dvi-recursive:
+	@set fnord $(MAKEFLAGS); amf=$$2; \
+	dot_seen=no; \
+	target=`echo $@ | sed s/-recursive//`; \
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+	  echo "Making $$target in $$subdir"; \
+	  if test "$$subdir" = "."; then \
+	    dot_seen=yes; \
+	    local_target="$$target-am"; \
+	  else \
+	    local_target="$$target"; \
+	  fi; \
+	  (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
+	   || case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
+	done; \
+	if test "$$dot_seen" = "no"; then \
+	  $(MAKE) $(AM_MAKEFLAGS) "$$target-am" || exit 1; \
+	fi; test -z "$$fail"
+
+mostlyclean-recursive clean-recursive distclean-recursive \
+maintainer-clean-recursive:
+	@set fnord $(MAKEFLAGS); amf=$$2; \
+	dot_seen=no; \
+	rev=''; list='$(SUBDIRS)'; for subdir in $$list; do \
+	  rev="$$subdir $$rev"; \
+	  test "$$subdir" != "." || dot_seen=yes; \
+	done; \
+	test "$$dot_seen" = "no" && rev=". $$rev"; \
+	target=`echo $@ | sed s/-recursive//`; \
+	for subdir in $$rev; do \
+	  echo "Making $$target in $$subdir"; \
+	  if test "$$subdir" = "."; then \
+	    local_target="$$target-am"; \
+	  else \
+	    local_target="$$target"; \
+	  fi; \
+	  (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
+	   || case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
+	done && test -z "$$fail"
+tags-recursive:
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+	  test "$$subdir" = . || (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) tags); \
 	done
 
 tags: TAGS
@@ -468,9 +519,14 @@ ID: $(HEADERS) $(SOURCES) $(LISP)
 	here=`pwd` && cd $(srcdir) \
 	  && mkid -f$$here/ID $$unique $(LISP)
 
-TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
+TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	tags=; \
 	here=`pwd`; \
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+   if test "$$subdir" = .; then :; else \
+	    test -f $$subdir/TAGS && tags="$$tags -i $$here/$$subdir/TAGS"; \
+   fi; \
+	done; \
 	list='$(SOURCES) $(HEADERS)'; \
 	unique=`for i in $$list; do echo $$i; done | \
 	  awk '    { files[$$0] = 1; } \
@@ -535,55 +591,64 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+	for subdir in $(SUBDIRS); do \
+	  if test "$$subdir" = .; then :; else \
+	    test -d $(distdir)/$$subdir \
+	    || mkdir $(distdir)/$$subdir \
+	    || exit 1; \
+	    chmod 777 $(distdir)/$$subdir; \
+	    (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) top_distdir=../$(distdir) distdir=../$(distdir)/$$subdir distdir) \
+	      || exit 1; \
+	  fi; \
+	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-info
-lexer.lo lexer.o : lexer.c rename.h util.h IDL.h parser.h
-ns.lo ns.o : ns.c rename.h util.h IDL.h
-parser.lo parser.o : parser.c rename.h util.h IDL.h
-tstidl.o: tstidl.c IDL.h
-util.lo util.o : util.c rename.h util.h IDL.h
+	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
+lexer.lo lexer.o : lexer.c rename.h util.h include/libIDL/IDL.h parser.h
+ns.lo ns.o : ns.c rename.h util.h include/libIDL/IDL.h
+parser.lo parser.o : parser.c rename.h util.h include/libIDL/IDL.h
+tstidl.o: tstidl.c include/libIDL/IDL.h
+util.lo util.o : util.c rename.h util.h include/libIDL/IDL.h
 
 info-am: $(INFO_DEPS)
-info: info-am
+info: info-recursive
 dvi-am: $(DVIS)
-dvi: dvi-am
+dvi: dvi-recursive
 check-am: all-am
-check: check-am
+check: check-recursive
 installcheck-am:
-installcheck: installcheck-am
+installcheck: installcheck-recursive
 install-exec-am: install-libLTLIBRARIES install-binSCRIPTS
-install-exec: install-exec-am
+install-exec: install-exec-recursive
 
-install-data-am: install-info-am install-pkgconfigDATA \
-		install-libIDLincludeHEADERS
-install-data: install-data-am
+install-data-am: install-info-am install-pkgconfigDATA
+install-data: install-data-recursive
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
-install: install-am
+install: install-recursive
 uninstall-am: uninstall-libLTLIBRARIES uninstall-binSCRIPTS \
-		uninstall-info uninstall-pkgconfigDATA \
-		uninstall-libIDLincludeHEADERS
-uninstall: uninstall-am
+		uninstall-info uninstall-pkgconfigDATA
+uninstall: uninstall-recursive
 all-am: Makefile $(INFO_DEPS) $(LTLIBRARIES) $(PROGRAMS) $(SCRIPTS) \
-		$(DATA) $(HEADERS)
-all-redirect: all-am
+		$(DATA)
+all-redirect: all-recursive
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) AM_INSTALL_PROGRAM_FLAGS=-s install
-installdirs:
+installdirs: installdirs-recursive
+installdirs-am:
 	$(mkinstalldirs)  $(DESTDIR)$(libdir) $(DESTDIR)$(bindir) \
-		$(DESTDIR)$(infodir) $(DESTDIR)$(pkgconfigdir) \
-		$(DESTDIR)$(libIDLincludedir)
+		$(DESTDIR)$(infodir) $(DESTDIR)$(pkgconfigdir)
 
 
 mostlyclean-generic:
 	-test -z "$(MOSTLYCLEANFILES)" || rm -f $(MOSTLYCLEANFILES)
 
 clean-generic:
+	-test -z "$(CLEANFILES)" || rm -f $(CLEANFILES)
 
 distclean-generic:
 	-rm -f Makefile $(CONFIG_CLEAN_FILES)
 	-rm -f config.cache config.log stamp-h stamp-h[0-9]*
-	-test -z "$(DISTCLEANFILES)" || rm -f $(DISTCLEANFILES)
 
 maintainer-clean-generic:
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
@@ -591,13 +656,13 @@ mostlyclean-am:  mostlyclean-libLTLIBRARIES mostlyclean-compile \
 		mostlyclean-libtool mostlyclean-noinstPROGRAMS \
 		mostlyclean-aminfo mostlyclean-tags mostlyclean-generic
 
-mostlyclean: mostlyclean-am
+mostlyclean: mostlyclean-recursive
 
 clean-am:  clean-libLTLIBRARIES clean-compile clean-libtool \
 		clean-noinstPROGRAMS clean-aminfo clean-tags \
 		clean-generic mostlyclean-am
 
-clean: clean-am
+clean: clean-recursive
 
 distclean-am:  distclean-libLTLIBRARIES distclean-compile \
 		distclean-libtool distclean-noinstPROGRAMS \
@@ -605,7 +670,7 @@ distclean-am:  distclean-libLTLIBRARIES distclean-compile \
 		clean-am
 	-rm -f libtool
 
-distclean: distclean-am
+distclean: distclean-recursive
 	-rm -f config.status
 
 maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
@@ -616,7 +681,7 @@ maintainer-clean-am:  maintainer-clean-libLTLIBRARIES \
 	@echo "This command is intended for maintainers to use;"
 	@echo "it deletes files that may require special tools to rebuild."
 
-maintainer-clean: maintainer-clean-am
+maintainer-clean: maintainer-clean-recursive
 	-rm -f config.status
 
 .PHONY: mostlyclean-libLTLIBRARIES distclean-libLTLIBRARIES \
@@ -629,14 +694,18 @@ distclean-noinstPROGRAMS clean-noinstPROGRAMS \
 maintainer-clean-noinstPROGRAMS uninstall-binSCRIPTS install-binSCRIPTS \
 install-info-am uninstall-info mostlyclean-aminfo distclean-aminfo \
 clean-aminfo maintainer-clean-aminfo uninstall-pkgconfigDATA \
-install-pkgconfigDATA uninstall-libIDLincludeHEADERS \
-install-libIDLincludeHEADERS tags mostlyclean-tags distclean-tags \
-clean-tags maintainer-clean-tags distdir info-am info dvi-am dvi check \
-check-am installcheck-am installcheck install-exec-am install-exec \
-install-data-am install-data install-am install uninstall-am uninstall \
-all-redirect all-am all installdirs mostlyclean-generic \
-distclean-generic clean-generic maintainer-clean-generic clean \
-mostlyclean distclean maintainer-clean
+install-pkgconfigDATA install-data-recursive uninstall-data-recursive \
+install-exec-recursive uninstall-exec-recursive installdirs-recursive \
+uninstalldirs-recursive all-recursive check-recursive \
+installcheck-recursive info-recursive dvi-recursive \
+mostlyclean-recursive distclean-recursive clean-recursive \
+maintainer-clean-recursive tags tags-recursive mostlyclean-tags \
+distclean-tags clean-tags maintainer-clean-tags distdir info-am info \
+dvi-am dvi check check-am installcheck-am installcheck install-exec-am \
+install-exec install-data-am install-data install-am install \
+uninstall-am uninstall all-redirect all-am all installdirs-am \
+installdirs mostlyclean-generic distclean-generic clean-generic \
+maintainer-clean-generic clean mostlyclean distclean maintainer-clean
 
 
 lexer.c: $(srcdir)/lexer.l parser.h
@@ -653,11 +722,8 @@ parser.c: stamp-parser
 parser.h: stamp-parser
 	test -f y.tab.h && mv -f y.tab.h parser.h || touch $@
 
-IDL.h: IDL.h.new
-	@:
-
-libIDL-config-2: libIDL-config
-	cp -f libIDL-config libIDL-config-2
+dist-hook:
+	cd $(distdir) ; rm -f $(CLEANFILES)
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
