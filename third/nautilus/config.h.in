@@ -139,6 +139,9 @@
 /* Define if you have the <fam.h> header file.  */
 #undef HAVE_FAM_H
 
+/* Define if you have the <fstab.h> header file.  */
+#undef HAVE_FSTAB_H
+
 /* Define if you have the <limits.h> header file.  */
 #undef HAVE_LIMITS_H
 
