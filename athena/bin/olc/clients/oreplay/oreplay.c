@@ -11,7 +11,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.24 1991-04-18 21:53:34 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.25 1991-10-30 16:21:45 lwvanels Exp $";
 #endif
 #endif
 
@@ -59,6 +59,7 @@ main(argc,argv)
   int instance, tinstance;
   int c;
   char **olc_servers;
+  char *inst = "OLC";
   char *buf;
   int bufsiz;
   char filename[128];
@@ -97,6 +98,9 @@ main(argc,argv)
 	perror("oreplay: opening file");
 	exit(1);
       }
+      break;
+    case 'i':
+      inst = optarg;
       break;
     case 's':
       if ((hp = gethostbyname(optarg)) == NULL) {
@@ -163,7 +167,7 @@ main(argc,argv)
 
   if (hp == NULL) {
 #ifdef HESIOD
-    if ((olc_servers = hes_resolve("OLC","SLOC")) == NULL) {
+    if ((olc_servers = hes_resolve(inst,"SLOC")) == NULL) {
       fprintf(stderr,"%s: Unable to get hesiod information for OLC/SLOC\n",
 	      argv[0]);
       punt(output_fd,filename);
