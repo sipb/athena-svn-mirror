@@ -1,4 +1,4 @@
- /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.48 1996-05-25 22:39:31 cfields Exp $ */
+ /* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.49 1996-05-26 19:34:02 cfields Exp $ */
  
 #ifdef POSIX
 #include <unistd.h>
@@ -1747,7 +1747,8 @@ static Boolean conditionsMet()
 
 static short auxconditions[] =
 {
-  1424, 1427, 1428, 1429, 1430, 1718, 1719, 1720, 1721, 1722
+  1424, 1427, 1428, 1429, 1430, 1718, 1719, 1720, 1721, 1722,
+  2448, 2449, 2450, 2451, 2452, 2739, 2740, 2741, 2742, 2743
 };
 
 static Boolean auxConditions()
