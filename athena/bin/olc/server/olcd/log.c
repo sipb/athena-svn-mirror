@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v $
- *	$Id: log.c,v 1.40 1991-04-11 13:42:49 lwvanels Exp $
+ *	$Id: log.c,v 1.41 1991-04-14 17:32:24 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.40 1991-04-11 13:42:49 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/log.c,v 1.41 1991-04-14 17:32:24 lwvanels Exp $";
 #endif
 #endif
 
@@ -592,7 +592,7 @@ char *os;
       log_error("trans_m_i: could not open translation file %m");
     else {
       fscanf(trans_file,"%d\n",&n_mach);
-      mach = (char *) calloc(n_mach,sizeof(TRANS));
+      mach = (TRANS *) calloc(n_mach,sizeof(TRANS));
       if (mach == NULL) {
 	log_error("trans_m_i: calloc failed");
 	return(stuff);
@@ -604,7 +604,7 @@ char *os;
 	mach[i].trans[size-1] = '\0';
       }
       fscanf(trans_file,"%d\n",&n_disp);
-      disp = (char *) calloc(n_disp,sizeof(TRANS));
+      disp = (TRANS *) calloc(n_disp,sizeof(TRANS));
       for (i=0;i<n_disp;i++) {
 	fgets(disp[i].orig,80,trans_file);
 	fgets(disp[i].trans,80,trans_file);
