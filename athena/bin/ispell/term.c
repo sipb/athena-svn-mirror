@@ -5,6 +5,9 @@
  */
 
 #include <stdio.h>
+#ifdef SYSV 
+#define USG
+#endif
 #ifdef USG
 #include <termio.h>
 #else
