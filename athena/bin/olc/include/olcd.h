@@ -16,7 +16,7 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
- *      $Author: tjcoppet $
+ *      $Author: raeburn $
  */
 
 /* Important files. */
@@ -228,6 +228,8 @@ void init_user();
 QUEUE_STATUS *get_status_info();
 
 extern char *get_next_word();
+
+extern char *fmt ();
 
 /* System functions. */
 
