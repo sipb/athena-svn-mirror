@@ -1,0 +1,13 @@
+#!/bin/sh
+
+inaugurate() {
+  file=$1
+  pkg=$2
+
+  if [ ! -f "$file.athena" ]; then
+    cp -p /srvd/pkg/9.3.0/$pkg/reloc$file $file.athena
+  fi
+}
+
+inaugurate /etc/athena/athinfo.access MIT-athinfod
+inaugurate /etc/athena/local-lockers.conf MIT-ws
