@@ -1,6 +1,6 @@
 GLOBAL : *.CKP *.local *.pid *.unstripped :
 ## Major subscription list for workstations
-## $Id: sys_rvd,v 1.8 1998-04-16 22:32:55 ghudson Exp $
+## $Id: sys_rvd,v 1.9 1998-11-02 15:15:20 ghudson Exp $
 ##
 ##	MIT Project Athena
 ##
@@ -9,6 +9,7 @@ GLOBAL : *.CKP *.local *.pid *.unstripped :
 		ftpusers
 		inetd.conf
 		group
+		named.conf
 		ntp.conf
 		passwd
 		passwd.fallback
@@ -22,6 +23,8 @@ GLOBAL : *.CKP *.local *.pid *.unstripped :
 		shells
 		:
 	/etc/athena:::
+		athinfo.access
+		athinfo.defs
 		attach.conf
 		inetd.conf
 		newsyslog.conf

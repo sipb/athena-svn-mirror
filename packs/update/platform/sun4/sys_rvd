@@ -1,6 +1,6 @@
 GLOBAL : *.CKP *.local *.pid *.unstripped :
 ## Major subscription list for workstations
-## $Id: sys_rvd,v 1.34 1998-09-29 20:17:01 ghudson Exp $
+## $Id: sys_rvd,v 1.35 1998-11-02 15:15:25 ghudson Exp $
 ##
 ##	MIT Project Athena
 ##
@@ -18,6 +18,7 @@ GLOBAL : *.CKP *.local *.pid *.unstripped :
 		inet/services
 		minor_perm.*
 		name_to_major.*
+		named.conf
 		netspy
 		ntp.conf
 		passwd
@@ -34,6 +35,8 @@ GLOBAL : *.CKP *.local *.pid *.unstripped :
 		sendmail.cf
 		:
 	/etc/athena:::
+		athinfo.access
+		athinfo.defs
 		attach.conf
                 inetd.conf
 		newsyslog.conf
