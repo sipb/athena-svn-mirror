@@ -1,4 +1,4 @@
-# $Id: Imakefile,v 1.5 1991-06-26 11:10:17 probe Exp $
+# $Id: Imakefile,v 1.6 1991-06-26 11:11:32 probe Exp $
 
 POPUPSCRIPTS=library lucy mitvma moira register techinfo xcluster \
 	xinfo machine
@@ -14,7 +14,7 @@ install::
 		$(INSTALL) -m 0555 $$i $(DESTDIR)/usr/athena/lib/login/$$i; \
 		done
 
-#if defined(vax) && !defined(ultrix) || defined(ibm032)
+#if defined(vax) || defined(ibm032) || defined(ultrix)
 FONTS75=courR18 ncenB12 ncenB14 ncenB18 ncenB24 ncenR12
 FONTSM=	6x13 cursor 9x15
 BITMAPS=menu16
