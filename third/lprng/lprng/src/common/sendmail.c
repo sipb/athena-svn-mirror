@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: sendmail.c,v 1.7 1999-10-27 22:31:38 mwhitson Exp $";
+"$Id: sendmail.c,v 1.8 2000-03-01 21:47:17 ghudson Exp $";
 
 #include "lp.h"
 #include "errorcodes.h"
@@ -157,7 +157,7 @@ void Sendmail_to_user( int retval, struct job *job )
 
 	default:
 		plp_snprintf(buffer+len,sizeof(buffer)-len,
-		_(" died a horrible death.\n"));
+		_(" failed. Make sure that\nthe printer is turned on and has a working network connection.\n"));
 		break;
 	}
 
