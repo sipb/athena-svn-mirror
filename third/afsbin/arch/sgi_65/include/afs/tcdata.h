@@ -88,8 +88,9 @@ struct deviceSyncNode{
 */
 #define TC_TRAILERBEGIN		"+=!@#$%><%$#@!=+"	/*indicates that trailer follows */
 #define	TC_MAXTAPENAMELEN 100	/*dont know how to estimate these numbers */
-#define TC_DEVICEINUSE 0x1000  	/* used to indicate use of device by somebody *
-/
+#define TC_DEVICEINUSE 0x1000  	/* used to indicate use of device by somebody */
+#define TC_NULLTAPENAME  "<NULL>"   /* default tape name */
+#define TC_QUOTEDNULLTAPENAME "\"<NULL>\""  /* null tapename in quotes */
 
 /* for user prompt generation */
 #define READOPCODE  	0			/* read tape - for restore */

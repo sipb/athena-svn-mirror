@@ -1,8 +1,11 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/venus.h,v 1.1.1.1 1999-03-13 21:23:44 rbasch Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/venus.h,v 1.1.1.2 1999-12-22 20:05:01 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/venus.h,v $ */
 
+#ifndef AFS_VENUS_H
+#define AFS_VENUS_H
+
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsiduvenus = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/venus.h,v 1.1.1.1 1999-03-13 21:23:44 rbasch Exp $";
+static char *rcsiduvenus = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/venus.h,v 1.1.1.2 1999-12-22 20:05:01 ghudson Exp $";
 #endif
 
 /*
@@ -14,6 +17,9 @@ static char *rcsiduvenus = "$Header: /afs/dev.mit.edu/source/repository/third/af
 
 Definitions of Venus-specific ioctls for Venus 2.
  */
+
+#if !defined(UKERNEL)
+
 #ifndef _IOW
 #include <sys/ioctl.h>
 #endif
@@ -88,6 +94,26 @@ struct sbstruct {
   int sb_thisfile;
   int sb_default;
 };
+ 
+/* CM inititialization parameters. What CM actually used after calculations
+ * based on passed in arguments.
+ */
+#define CMI_VERSION 1 /* increment when adding new fields. */
+struct cm_initparams {
+    int cmi_version;
+    int cmi_nChunkFiles;
+    int cmi_nStatCaches;
+    int cmi_nDataCaches;
+    int cmi_nVolumeCaches;
+    int cmi_firstChunkSize;
+    int cmi_otherChunkSize;
+    int cmi_cacheSize;	/* The original cache size, in 1K blocks. */
+    unsigned cmi_setTime:1;
+    unsigned cmi_memCache:1;
+    int spare[16-9]; /* size of struct is 16 * 4 = 64 bytes */
+};
+
+#endif /* !defined(UKERNEL) */
 		
 /* IOCTLS to Venus.  Apply these to open file decriptors. */
 #define	VIOCCLOSEWAIT		_VICEIOCTL(1)	/* Force close to wait for store */
@@ -141,5 +167,12 @@ struct sbstruct {
 #define VIOC_GAG    	        _VICEIOCTL(44)	/* silence CM */
 #define VIOC_TWIDDLE    	_VICEIOCTL(45)	/* adjust RX knobs */
 #define VIOC_SETSPREFS  	_VICEIOCTL(46)	/* Set server ranks */
-#define VIOC_GCPAGS           _VICEIOCTL(48) 
 #define VIOC_STORBEHIND  	_VICEIOCTL(47)	/* adjust store asynchrony */
+#define VIOC_GCPAGS		_VICEIOCTL(48)  /* disable automatic pag gc-ing */
+#define VIOC_GETINITPARAMS	_VICEIOCTL(49)	/* get initial cm params */
+#define VIOC_GETCPREFS  	_VICEIOCTL(50)	/* Get client interface */
+#define VIOC_SETCPREFS  	_VICEIOCTL(51)	/* Set client interface */
+#define VIOC_AFS_FLUSHMOUNT	_VICEIOCTL(52)  /* Flush mount symlink data */
+
+
+#endif /* AFS_VENUS_H */

@@ -10,7 +10,7 @@
  */
 #ifdef	KERNEL
 #include "param.h"
-#include "osi.h"
+#include "afs_osi.h"
 #include "lock.h"
 #include "afs_trace.h"
 #else
@@ -216,21 +216,12 @@ extern int afs_icl_sizeofLong;
 #define lock_ReleaseWrite	ReleaseWriteLock
 
 #ifdef	KERNEL
-#undef	osi_copyout
-#define osi_copyout		copyout
-#if	(defined(AFS_AUX_ENV) || defined(AFS_AIX22_ENV))
-#define osi_copyinstr		bcopyin
-#else
-#define osi_copyinstr		copyinstr
-#endif
 extern struct afs_icl_set *afs_iclSetp; /* standard icl trace */
 /* A separate icl set to collect long term debugging info. */
 extern struct afs_icl_set *afs_iclLongTermSetp;
 #else
 #define	osi_Alloc		malloc
 #define	osi_Free(a,b)		free(a)
-#define	osi_ThreadUnique()	9999	/*XXX */
-#define	PRIVATE			static
 
 #define ICL_RPC_MAX_SETS (64)
 #define ICL_RPC_MAX_LOGS (64)

@@ -275,14 +275,14 @@ struct fs_stats_xferData {
 {                                                            \
     if (t2.tv_sec > 0)                                       \
       {                                                      \
-       t1.tv_sec += t2.tv_sec * t2.tv_sec                    \
-                    + (0.000002 * t2.tv_sec) * t2.tv_usec ;  \
-       t1.tv_usec += (2 * t2.tv_sec * t2.tv_usec) % 1000000  \
-                    + (0.000001 * t2.tv_usec) * t2.tv_usec;  \
+       t1.tv_sec += (int) (t2.tv_sec * t2.tv_sec                    \
+                    + (0.000002 * t2.tv_sec) * t2.tv_usec) ;  \
+       t1.tv_usec += (int) ((2 * t2.tv_sec * t2.tv_usec) % 1000000  \
+                    + (0.000001 * t2.tv_usec) * t2.tv_usec);  \
       }                                                      \
     else                                                     \
       {                                                      \
-       t1.tv_usec += (0.000001 * t2.tv_usec) * t2.tv_usec;   \
+       t1.tv_usec += (int) ((0.000001 * t2.tv_usec) * t2.tv_usec);   \
       }                                                      \
     if (t1.tv_usec > 1000000) {                              \
         t1.tv_usec -= 1000000;                               \

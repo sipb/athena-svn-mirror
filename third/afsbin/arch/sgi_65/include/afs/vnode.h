@@ -1,8 +1,8 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/vnode.h,v 1.1.1.1 1999-03-13 21:23:45 rbasch Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/vnode.h,v 1.1.1.2 1999-12-22 20:05:29 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/vnode.h,v $ */
 
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsidvnode = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/vnode.h,v 1.1.1.1 1999-03-13 21:23:45 rbasch Exp $";
+static char *rcsidvnode = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/vnode.h,v 1.1.1.2 1999-12-22 20:05:29 ghudson Exp $";
 #endif
 
 /*
@@ -74,12 +74,12 @@ extern struct VnodeClassInfo VnodeClassInfo[nVNODECLASSES];
 #define vnodeIsDirectory(vnodeNumber) (vnodeIdToClass(vnodeNumber) == vLarge)
 
 typedef struct VnodeDiskObject {
-    VnodeType	  type:3;	/* Vnode is file, directory, symbolic link
+    unsigned int  type:3;	/* Vnode is file, directory, symbolic link
     				   or not allocated */
-    unsigned	  cloned:1;	/* This vnode was cloned--therefore the inode
+    unsigned int  cloned:1;	/* This vnode was cloned--therefore the inode
     				   is copy-on-write; only set for directories*/
-    unsigned	  modeBits:12;	/* Unix mode bits */
-    bit16	  linkCount;	/* Number of directory references to vnode
+    unsigned int  modeBits:12;	/* Unix mode bits */
+    signed int    linkCount:16;	/* Number of directory references to vnode
     				   (from single directory only!) */
     bit32	  length;	/* Number of bytes in this file */
     Unique	  uniquifier;	/* Uniquifier for the vnode; assigned
@@ -130,7 +130,6 @@ typedef struct Vnode {
     unsigned	changed_oldTime:1; /* 1 changed, don't update time. */
     unsigned	delete:1;	/* 1 if the vnode should be deleted; in
     				   this case, changed must also be 1 */
-    unsigned	inode_64:1;	/* inode is 64 bits. */
 #else
     byte	changed_newTime:1;	/* 1 if vnode changed, write time */
     byte	changed_oldTime:1; /* 1 changed, don't update time. */
@@ -144,7 +143,12 @@ typedef struct Vnode {
     bit16	cacheCheck;	/* Must equal the value in the volume Header
     				   for the cache entry to be valid */
     struct	Lock lock;	/* Internal lock */
+#ifdef AFS_PTHREAD_ENV
+    pthread_t	writer;		/* thread holding write lock */
+#else /* AFS_PTHREAD_ENV */
     PROCESS	writer;		/* Process id having write lock */
+#endif /* AFS_PTHREAD_ENV */
+    IHandle_t	*handle;
     VnodeDiskObject disk;	/* The actual disk data for the vnode */
 } Vnode;
 
@@ -157,17 +161,17 @@ typedef struct Vnode {
 			       ((V)->disk.vn_ino_hi ? \
 				(((Inode)(V)->disk.vn_ino_hi)<<32) : 0)))
 
-#define VN_SET_INO(V, I) ((V)->disk.vn_ino_lo = ((I)&0xffffffff), \
+#define VN_SET_INO(V, I) ((V)->disk.vn_ino_lo = (int)((I)&0xffffffff), \
 			   ((V)->disk.vn_ino_hi = (I) ? \
-			    (((I)>>32)&0xffffffff) : 0))
+			    (int)(((I)>>32)&0xffffffff) : 0))
 
 #define VNDISK_GET_INO(V) ((Inode)((V)->vn_ino_lo | \
 				   ((V)->vn_ino_hi ? \
 				    (((Inode)(V)->vn_ino_hi)<<32) : 0)))
 
-#define VNDISK_SET_INO(V, I) ((V)->vn_ino_lo = (I&0xffffffff), \
+#define VNDISK_SET_INO(V, I) ((V)->vn_ino_lo = (int)(I&0xffffffff), \
 			      ((V)->vn_ino_hi = (I) ? \
-			       (((I)>>32)&0xffffffff) : 0))
+			       (int)(((I)>>32)&0xffffffff) : 0))
 #else
 #define VN_GET_INO(V) ((V)->disk.vn_ino_lo)
 #define VN_SET_INO(V, I) ((V)->disk.vn_ino_lo = (I))
@@ -186,8 +190,16 @@ typedef struct Vnode {
 #define VAclSize(vnp)		(SIZEOF_LARGEDISKVNODE - SIZEOF_SMALLDISKVNODE)
 #define VAclDiskSize(v)		(SIZEOF_LARGEDISKVNODE - SIZEOF_SMALLDISKVNODE)
 extern int VolumeHashOffset();
+extern int VolumeHashOffset_r();
 extern VInitVnodes();
+extern VInitVnodes_r();
 extern Vnode *VGetVnode();
+extern Vnode *VGetVnode_r();
 extern VputVnode();
+extern VputVnode_r();
+extern VVnodeWriteToRead();
+extern VVnodeWriteToRead_r();
 extern Vnode *VAllocVnode();
+extern Vnode *VAllocVnode_r();
 extern VFreeVnode();
+extern VFreeVnode_r();

@@ -5,7 +5,7 @@
 /* Including cellconfig.p.h at beginning of cellconfig.h file. */
 
 /*
- * P_R_P_Q_# (C) COPYRIGHT IBM CORPORATION 1987, 1989
+ * P_R_P_Q_# (C) COPYRIGHT IBM CORPORATION 1987, 1998
  * LICENSED MATERIALS - PROPERTY OF IBM
  * REFER TO COPYRIGHT INSTRUCTIONS FORM NUMBER G120-2083
  */
@@ -39,8 +39,12 @@ Creation date:
 
 #ifndef IPPROTO_MAX
 	/* get sockaddr_in */
+#ifdef AFS_NT40_ENV
+#include <winsock2.h>
+#else
 #include <sys/types.h>
 #include <netinet/in.h>
+#endif
 #endif
 
 #define	MAXCELLCHARS	64
@@ -73,16 +77,6 @@ struct afsconf_cell {
     char *linkedCell;				/* Linked cell name, if any */
 };
 
-#define AFSCONF_CELL_FLAGS_TRIEDNAMES		1	/* did a name lookup pass */
-
-/* convenient dir names */
-#define	AFSCONF_CLIENTNAME  "/usr/vice/etc"	/* client side */
-#define	AFSCONF_SERVERNAME  "/usr/afs/etc"	/* server side */
-#define	AFSCONF_SERVERBIN   "/usr/afs/bin"
-#define	AFSCONF_SERVERLOCAL "/usr/afs/local"
-#define	AFSCONF_SERVERDB    "/usr/afs/db"
-#define	AFSCONF_SERVERCORES "/usr/afs/cores"
-
 struct afsconf_entry {
     struct afsconf_entry *next;	/* next guy in afsconf_dir */
     struct afsconf_cell	cellInfo;	/* info for this cell */
@@ -94,7 +88,6 @@ struct afsconf_dir {
     struct afsconf_entry *entries; /* list of cell entries */
     struct afsconf_keys	*keystr;    /* structure containing keys */
     int32 timeRead;		    /* time stamp of file last read */
-    char noAuthFlag;		    /* true if running in noauth mode */
 };
 
 extern struct afsconf_dir *afsconf_Open();
@@ -104,6 +97,7 @@ struct afsconf_servPair {
     char *name;
     int port;
 };
+
 
 /* some well-known ports and their names; new additions to table in cellconfig.c, too */
 #define	AFSCONF_FILESERVICE		"afs"

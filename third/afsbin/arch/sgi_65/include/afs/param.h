@@ -19,15 +19,18 @@
 /* AFS_SGI_SHORTSTACK not required since we have a 16K stack. */	
 
 #define RXK_LISTENER_ENV	1	/* Use an rx listener daemon */
+#define AFS_GCPAGS		0       /* if nonzero, garbage collect PAGs */
 
 #define _ANSI_C_SOURCE		1	/* rx_user.h */
 
 #define AFS_64BIT_ENV		1	/* Defines int32 as int, not long. */
 #define AFS_64BITPOINTER_ENV	1	/* pointers are 64 bits. */
 #define AFS_HAVE_FFS		1	/* Use system's ffs. */
-#define AFS_NEW_CI_MAGIC	1	/* Use new CacheItems magic. */
+#define AFS_HAVE_STATVFS	1	/* System supports statvfs */
 
 #include <afs/afs_sysnames.h>
+
+#define AFS_GLOBAL_SUNLOCK 1
 
 #define AFS_PIOCTL	64+1000
 #define AFS_SETPAG	65+1000
@@ -62,12 +65,7 @@
 #define SYS_NAME	"sgi_65"
 #define SYS_NAME_ID	SYS_NAME_ID_sgi_65
 #define AFSBIG_ENDIAN	1
-
-/* Following on pattern layed down by Alpha ports. Gee, there really should
- * be a better place for this. Need these for both kernel and user mode.
- */
-#define xdr_int32 xdr_int 
-#define xdr_u_int32 xdr_u_int
+#define AFS_VM_RDWR_ENV	1
 
 /* Extra kernel definitions (from kdefs file) */
 #ifdef KERNEL

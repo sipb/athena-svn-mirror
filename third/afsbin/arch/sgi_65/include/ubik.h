@@ -4,14 +4,14 @@
  */
 /* Including ubik.p.h at beginning of ubik.h file. */
 
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/ubik.h,v 1.1.1.1 1999-03-13 21:23:38 rbasch Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/ubik.h,v 1.1.1.2 1999-12-22 20:05:00 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/ubik.h,v $ */
 
 #ifndef UBIK_H
 #define UBIK_H
 
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsidlock = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/ubik.h,v 1.1.1.1 1999-03-13 21:23:38 rbasch Exp $";
+static char *rcsidlock = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/ubik.h,v 1.1.1.2 1999-12-22 20:05:00 ghudson Exp $";
 #endif
 
 /*
@@ -44,6 +44,12 @@ static char *rcsidlock = "$Header: /afs/dev.mit.edu/source/repository/third/afsb
 
 #endif
 
+#if defined(UKERNEL)
+#include "../afsint/ubik_int.h"
+#else /* defined(UKERNEL) */
+#include <ubik_int.h>
+#endif /* defined(UKERNEL) */
+
 /* ubik_trans types */
 #define	UBIK_READTRANS	    0
 #define	UBIK_WRITETRANS	    1
@@ -51,6 +57,7 @@ static char *rcsidlock = "$Header: /afs/dev.mit.edu/source/repository/third/afsb
 /* ubik_lock types */
 #define	LOCKREAD	    1
 #define	LOCKWRITE	    2
+#define	LOCKWAIT	    3
 
 /* ubik client flags */
 #define UPUBIKONLY 	    1    /* only check servers presumed functional */
@@ -71,12 +78,29 @@ static char *rcsidlock = "$Header: /afs/dev.mit.edu/source/repository/third/afsb
 /* ubik_client state bits */
 #define	CFLastFailed	    1		/* last call failed to this guy (to detect down hosts) */
 
+#ifdef AFS_PTHREAD_ENV
+#include <pthread.h>
+#include <assert.h>
+#endif
+
 /* per-client structure for ubik */
 struct ubik_client {
     short initializationState;		/* ubik client init state */
     short states[MAXSERVERS];		/* state bits */
     struct rx_connection *conns[MAXSERVERS];
+    int32  syncSite;
+#ifdef AFS_PTHREAD_ENV
+    pthread_mutex_t cm;
+#endif
 };
+
+#ifdef AFS_PTHREAD_ENV
+#define LOCK_UBIK_CLIENT(client) assert(pthread_mutex_lock(&client->cm)==0);
+#define UNLOCK_UBIK_CLIENT(client) assert(pthread_mutex_unlock(&client->cm)==0);
+#else
+#define LOCK_UBIK_CLIENT(client)
+#define UNLOCK_UBIK_CLIENT(client)
+#endif
 
 #define	ubik_GetRPCConn(astr,aindex)	((aindex) >= MAXSERVERS? 0 : (astr)->conns[aindex])
 #define	ubik_GetRPCHost(astr,aindex)	((aindex) >= MAXSERVERS? 0 : (astr)->hosts[aindex])
@@ -105,7 +129,7 @@ struct ubik_hdr {
 struct ubik_trans {
     struct ubik_dbase *dbase;	    /* corresponding database */
     struct ubik_trans *next;	    /* in the list */
-    struct ubik_lock *activeLocks;
+    int32 locktype;                 /* transaction lock */
     struct ubik_trunc *activeTruncs;/* queued truncates */
     struct ubik_tid tid;	    /* transaction id of this trans (if write trans.) */
     int32 minCommitTime;		    /* time before which this trans can't commit */
@@ -113,6 +137,8 @@ struct ubik_trans {
     int32 seekPos;		    /* seek ptr: offset therein */
     short flags;		    /* trans flag bits */
     char type;			    /* type of trans */
+    iovec_wrt iovec_info;
+    iovec_buf iovec_data;
 };
 
 /* representation of a truncation operation */
@@ -122,21 +148,16 @@ struct ubik_trunc {
     int32 length;		    /* new size */
 };
 
-/* representation of ubik byte-range lock */
-struct ubik_lock {
-    struct ubik_lock *next;	/* next lock same trans */
-    int32 start;			/* byte range */
-    int32 length;
-    char type;			/* read or write lock */
-    char flags;			/* useful flags */
-};
-
 struct ubik_stat {
     int32 size;
     int32 mtime;
 };
 
+#if defined(UKERNEL)
+#include "../afs/lock.h"
+#else /* defined(UKERNEL) */
 #include <lock.h>			/* just to make sure we've go this */
+#endif /* defined(UKERNEL) */
 
 /* representation of a ubik database.  Contains info on low-level disk access routines
     for use by disk transaction module.
@@ -145,7 +166,11 @@ struct ubik_dbase {
     char *pathName;		    /* root name for dbase */
     struct ubik_trans *activeTrans; /* active transaction list */
     struct ubik_version	version;    /* version number */
+#if defined(UKERNEL)
+    struct afs_lock versionLock;    /* lock on version number */
+#else /* defined(UKERNEL) */
     struct Lock versionLock;	    /* lock on version number */
+#endif /* defined(UKERNEL) */
     int32 tidCounter;                /* last RW or RO trans tid counter */
     int32 writeTidCounter;           /* last write trans tid counter */
     int32 flags;			    /* flags */
@@ -174,6 +199,9 @@ extern char *ubik_CheckRXSecurityRock;
 
 #ifdef UBIK_INTERNALS
 /* some ubik parameters */
+#ifdef	PAGESIZE
+#undef	PAGESIZE
+#endif
 #define	PAGESIZE	    1024	/* fits in current r packet */
 #define	LOGPAGESIZE	    10		/* base 2 log thereof */
 #define	NBUFFERS	    20		/* number of 1K buffers */
@@ -217,7 +245,7 @@ extern char *ubik_CheckRXSecurityRock;
 /* the per-server state, used by the sync site to keep track of its charges */
 struct ubik_server {
     struct ubik_server *next;		/* next ptr */
-    int32 addr;				/* network order host addr */
+    u_int32 addr[UBIK_MAX_INTERFACE_ADDR];/* network order, addr[0] is primary*/
     int32 lastVoteTime;			/* last time yes vote received */
     int32 lastBeaconSent;		/* last time beacon attempted */
     struct ubik_version	version;	/* version, only used during recovery */
@@ -252,7 +280,7 @@ extern short ubik_callPortal;
 
 extern int32 ubik_quorum;			/* min hosts in quorum */
 extern struct ubik_dbase *ubik_dbase;		/* the database handled by this server */
-extern int32 ubik_host;				/* this host addr, in net order */
+extern u_int32 ubik_host[UBIK_MAX_INTERFACE_ADDR];/* this host addr, in net order */
 extern int ubik_amSyncSite;			/* sleep on this waiting to be sync site */
 extern struct ubik_stats {		    	/* random stats */
     int32 escapes;
@@ -262,6 +290,7 @@ extern int32 urecovery_state;			/* sync site recovery process state */
 extern struct ubik_trans *ubik_currentTrans;	/* current trans */
 extern struct ubik_version ubik_dbVersion;	/* sync site's dbase version */
 extern int32 ubik_debugFlag;			/* ubik debug flag */
+extern int ubikPrimaryAddrOnly;			/* use only primary address */
 
 /* this extern gives the sync site's db version, with epoch of 0 if none yet */
 
@@ -269,7 +298,10 @@ extern int uphys_read();
 extern int uphys_write();
 extern int uphys_truncate();
 extern int uphys_sync();
+/*
+ * This is static.
 extern int uphys_open();
+ */
 extern int uphys_stat();
 extern int uphys_getlabel();
 extern int uphys_setlabel();
@@ -284,10 +316,36 @@ extern int DISK_ReleaseLocks();
 extern int DISK_Commit();
 extern int DISK_Lock();
 extern int DISK_Write();
+extern int DISK_WriteV();
 extern int DISK_Truncate();
+extern int DISK_SetVersion();
 #endif /* UBIK_INTERNALS */
 
 extern int32 ubik_nBuffers;
+
+/*
+ * Public function prototypes
+ */
+
+extern int ubik_ParseClientList(
+  int argc,
+  char **argv,
+  int32 *aothers
+);
+
+extern unsigned int afs_random(
+  void
+);
+
+extern int ubik_ClientInit(
+  register struct rx_connection **serverconns,
+  struct ubik_client **aclient
+);
+
+extern int32 ubik_ClientDestroy(
+    struct ubik_client *aclient
+);
+
 
 #endif /* UBIK_H */
 
@@ -329,6 +387,8 @@ extern int32 ubik_nBuffers;
 #define UBADPATH                                 (5409L)
 #define UBADF                                    (5410L)
 #define UREINITIALIZE                            (5411L)
+#define UMUTEXINIT                               (5412L)
+#define UMUTEXDESTROY                            (5413L)
 extern void initialize_u_error_table ();
 #define ERROR_TABLE_BASE_u (5376L)
 

@@ -6,6 +6,11 @@
 #ifdef	KERNEL
 /* The following 'ifndefs' are not a good solution to the vendor's omission of surrounding all system includes with 'ifndef's since it requires that this file is included after the system includes...*/
 #include "../afs/param.h"
+#ifdef	UKERNEL
+#include "../afs/sysincludes.h"
+#include "../rx/xdr.h"
+#include "../rx/rx.h"
+#else	/* UKERNEL */
 #include "../h/types.h"
 #ifndef	SOCK_DGRAM  /* XXXXX */
 #include "../h/socket.h"
@@ -14,7 +19,9 @@
 #ifdef AFS_DEC_ENV
 #include "../h/smp_lock.h"
 #endif
+#ifndef AFS_LINUX22_ENV
 #include "../h/file.h"
+#endif
 #endif
 #ifndef	S_IFMT  /* XXXXX */
 #include "../h/stat.h"
@@ -25,19 +32,42 @@
 #ifndef	DST_USA  /* XXXXX */
 #include "../h/time.h"
 #endif
+#ifndef AFS_LINUX22_ENV
 #include "../rpc/types.h"
+#endif /* AFS_LINUX22_ENV */
 #ifndef	XDR_GETLONG /* XXXXX */
-#include "../rpc/xdr.h"
+#ifdef AFS_LINUX22_ENV
+#ifndef quad_t
+#define quad_t __quad_t
+#define u_quad_t __u_quad_t
 #endif
+#endif
+#ifdef AFS_LINUX22_ENV
+#include "../rx/xdr.h"
+#else /* AFS_LINUX22_ENV */
+#include "../rpc/xdr.h"
+#endif /* AFS_LINUX22_ENV */
+#endif /* XDR_GETLONG */
+#endif   /* UKERNEL */
 #include "../afsint/rxgen_consts.h"
-#include "../afs/osi.h"
+#include "../afs/afs_osi.h"
 #include "../rx/rx.h"
 #else	/* KERNEL */
+#include <afs/param.h>
+#include <afs/stds.h>
 #include <sys/types.h>
 #include <rx/xdr.h>
 #include <rx/rx.h>
 #include <afs/rxgen_consts.h>
 #endif	/* KERNEL */
+
+#ifdef AFS_NT40_ENV
+#ifndef AFS_RXGEN_EXPORT
+#define AFS_RXGEN_EXPORT __declspec(dllimport)
+#endif /* AFS_RXGEN_EXPORT */
+#else /* AFS_NT40_ENV */
+#define AFS_RXGEN_EXPORT
+#endif /* AFS_NT40_ENV */
 
 #ifndef NEVERDATE
 #define NEVERDATE 037777777777		/* a date that will never come */
@@ -80,14 +110,14 @@ bool_t xdr_budb_tapeSet();
 struct budb_dumpEntry {
 	u_int32 id;
 	u_int32 parent;
-	int level;
+	int32 level;
 	int32 flags;
 	char volumeSetName[32];
 	char dumpPath[256];
 	char name[32];
 	u_int32 created;
 	u_int32 incTime;
-	int nVolumes;
+	int32 nVolumes;
 	struct budb_tapeSet tapes;
 	struct budb_principal dumper;
 	u_int32 initialDumpID;
@@ -110,10 +140,10 @@ struct budb_tapeEntry {
 	u_int32 nMBytes;
 	u_int32 nBytes;
 	int32 nFiles;
-	int nVolumes;
-	int seq;
+	int32 nVolumes;
+	int32 seq;
 	int32 labelpos;
-	int useCount;
+	int32 useCount;
 	int32 useKBytes;
 	u_int32 dump;
 };
@@ -133,13 +163,13 @@ struct budb_volumeEntry {
 	int32 id;
 	char server[32];
 	int32 partition;
-	int tapeSeq;
+	int32 tapeSeq;
 	int32 position;
 	u_int32 clone;
 	u_int32 incTime;
 	int32 startByte;
 	u_int32 nBytes;
-	int seq;
+	int32 seq;
 	u_int32 dump;
 	char tape[32];
 };
@@ -239,7 +269,7 @@ bool_t xdr_structDumpHeader();
 
 /* Opcode-related useful stats for package: BUDB_ */
 #define BUDB_LOWEST_OPCODE   0
-#define BUDB_HIGHEST_OPCODE	28
-#define BUDB_NUMBER_OPCODES	29
+#define BUDB_HIGHEST_OPCODE	29
+#define BUDB_NUMBER_OPCODES	30
 
 #endif	/* _RXGEN_BUDB_ */

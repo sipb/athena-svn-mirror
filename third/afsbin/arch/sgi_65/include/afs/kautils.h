@@ -11,7 +11,7 @@
  * REFER TO COPYRIGHT INSTRUCTIONS FORM NUMBER G120-2083
  */
 
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/kautils.h,v 1.1.1.1 1999-03-13 21:23:45 rbasch Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/kautils.h,v 1.1.1.2 1999-12-22 20:05:22 ghudson Exp $ */
 
 /* $Log: not supported by cvs2svn $
  * Revision 2.2  1990/09/27  13:51:37  ota
@@ -26,6 +26,7 @@
 #ifndef __KAUTILS__
 #define __KAUTILS__
 
+#if !defined(UKERNEL)
 #include <des.h>
 #include <afs/auth.h>
 
@@ -41,20 +42,274 @@
 
 #endif
 
-#ifndef INADDR_LOOPBACK
-#define INADDR_LOOPBACK 0x7f000001	/* in host order */
-#endif
+#include <ubik.h>
+#include <afs/cellconfig.h>
+#include <afs/afsutil.h>
 
-extern char *ka_LocalCell();
-extern char *ka_timestr();
-extern char *ucstring();
-extern char *lcstring();
+#else
+#include "../afs/ubik.h"
+#include "../afs/auth.h"
+#include "../afs/cellconfig.h"
+#endif /* !defined(UKERNEL) */
 
+
+#define KA_TIMESTR_LEN 30
+
+/*
+ * Public function prototypes
+ */
+
+extern int32 ka_GetAuthToken (
+  char *name,
+  char *instance,
+  char *cell,
+  struct ktc_encryptionKey *key,
+  int32  lifetime,
+  int32  *pwexpires
+);
+
+extern int32 ka_GetServerToken (
+  char *name,
+  char *instance,
+  char *cell,
+  Date  lifetime,
+  struct ktc_token *token,
+  int   newer,
+  int   dosetpag
+);
+
+extern int32 ka_GetAdminToken (
+  char *name,
+  char *instance,
+  char *cell,
+  struct ktc_encryptionKey *key,
+  int32  lifetime,
+  struct ktc_token *token,
+  int   newer
+);
+
+extern int32 ka_VerifyUserToken(
+  char *name,
+  char *instance,
+  char *cell,
+  struct ktc_encryptionKey *key
+);
+
+extern void ka_ExplicitCell (
+  char *cell,
+  int32 serverList[]
+);
+
+extern int32 ka_GetServers (
+  char *cell,
+  struct afsconf_cell *cellinfo
+);
+
+extern int32 ka_GetSecurity (
+  int   service,
+  struct ktc_token *token,
+  struct rx_securityClass **scP,
+  int  *siP
+);
+
+extern int32 ka_SingleServerConn (
+  char *cell,
+  char *server,
+  int   service,
+  struct ktc_token *token,
+  struct ubik_client **conn
+);
+
+extern int32 ka_AuthSpecificServersConn (
+  int                  service,
+  struct ktc_token    *token,
+  struct afsconf_cell *cellinfo,
+  struct ubik_client **conn
+);
+
+extern int32 ka_AuthServerConn (
+  char                *cell,
+  int                  service,
+  struct ktc_token    *token,
+  struct ubik_client **conn
+);
+
+extern int32 ka_Authenticate (
+  char *name,
+  char *instance,
+  char *cell,
+  struct ubik_client *conn,
+  int   service,
+  struct ktc_encryptionKey *key,
+  Date  start,
+  Date end,
+  struct ktc_token *token,
+  int32 *pwexpires
+);
+
+extern int32 ka_GetToken (
+  char               *name,
+  char               *instance,
+  char               *cell,
+  char               *cname,
+  char               *cinst,
+  struct ubik_client *conn,
+  Date                start,
+  Date                end,
+  struct ktc_token   *auth_token,
+  char               *auth_domain,
+  struct ktc_token   *token
+);
+
+extern int32 ka_ChangePassword (
+  char               *name,
+  char               *instance,
+  struct ubik_client *conn,
+  struct ktc_encryptionKey *oldkey,
+  struct ktc_encryptionKey *newkey
+);
+
+extern void ka_StringToKey (
+  char          *str,
+  char          *cell,
+  struct ktc_encryptionKey *key
+);
+
+extern int32 ka_ReadPassword (
+  char          *prompt,
+  int            verify,
+  char          *cell,
+  struct ktc_encryptionKey *key
+);
+
+extern int32 ka_ParseLoginName (
+  char *login,
+  char  name[MAXKTCNAMELEN],
+  char  inst[MAXKTCNAMELEN],
+  char  cell[MAXKTCREALMLEN]
+);
+
+extern int32 ka_Init(
+  int flags
+);
+
+extern int ka_CellConfig (
+  char *dir
+);
+
+extern char *ka_LocalCell (
+  void
+);
+
+extern int ka_ExpandCell (
+  char *cell,
+  char *fullCell,
+  int  *alocal
+);
+
+extern int ka_CellToRealm (
+  char *cell,
+  char *realm,
+  int  *local
+);
+
+extern void ka_PrintUserID (
+  char *prefix,
+  char *name,
+  char *instance,
+  char *postfix
+);
+
+extern void ka_PrintBytes (
+  char bs[],
+  int  bl
+);
+
+extern int ka_ConvertBytes (
+  char *ascii,
+  int   alen,
+  char  bs[],
+  int   bl
+);
+
+extern int ka_ReadBytes (
+  char *ascii,
+  char *binary,
+  int   blen
+);
+
+extern int umin (
+  u_int32 a,
+  u_int32 b
+);
+
+extern int32 ka_KeyCheckSum (
+  char *key,
+  u_int32 *cksumP
+);
+
+extern int ka_KeyIsZero(
+  register char *akey,
+  register int alen
+);
+
+extern void ka_timestr (
+  int32 time,
+  char *tstr,
+  int32 tlen
+);
+
+extern int32 ka_GetAFSTicket (
+  char *name,
+  char *instance,
+  char *realm,
+  Date lifetime,
+  int32 flags
+);
+
+extern int32 ka_UserAuthenticateGeneral (
+  int32 flags,
+  char *name,
+  char *instance,
+  char *realm,
+  char *password,
+  Date lifetime,
+  int32 *password_expires,
+  int32 spare2,
+  char **reasonP
+);
+
+extern int32 ka_UserAuthenticate (
+  char *name,
+  char *instance,
+  char *realm,
+  char *password,
+  int   doSetPAG,
+  char **reasonP
+);
+
+extern int32 ka_UserReadPassword (
+  char *prompt,
+  char *password,
+  int   plen,
+  char **reasonP
+);
+
+extern int32 ka_VerifyUserPassword(
+     int32 version,
+     char *name,
+     char *instance,
+     char *realm,
+     char *password,
+     int spare,
+     char **reasonP
+);
 #define KA_USERAUTH_VERSION 1
 #define KA_USERAUTH_VERSION_MASK	0x00ffff
 #define KA_USERAUTH_DOSETPAG		0x010000
 #define KA_USERAUTH_DOSETPAG2		0x020000
 #define KA_USERAUTH_ONLY_VERIFY		0x040000
+#define KA_USERAUTH_AUTHENT_LOGON	0x100000
 #define ka_UserAuthenticate(n,i,r,p,d,rP) \
     ka_UserAuthenticateGeneral \
         (KA_USERAUTH_VERSION + ((d) ? KA_USERAUTH_DOSETPAG : 0), \
@@ -173,17 +428,11 @@ struct ka_getTicketAnswer {
     char ticket[MAXKTCTICKETLEN];
 };
 
-#if 1
 #ifndef ERROR_TABLE_BASE_ka
 #define ka_ErrorString error_message
 #undef  KAMINERROR
 #define KAMINERROR ERROR_TABLE_BASE_ka
 #define KAMAXERROR (KAMINERROR+255)
-#endif
-
-#else
-/* begin error table */
-/* end error table */
 #endif
 
 #endif

@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/ptclient.h,v 1.1.1.1 1999-03-13 21:23:41 rbasch Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/ptclient.h,v 1.1.1.2 1999-12-22 20:05:15 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/ptclient.h,v $ */
 
 
@@ -14,11 +14,17 @@
        November, 1988
 */
 
-
+#if defined(UKERNEL)
+#include "../afs/lock.h"
+#include "../afs/ubik.h"
+#include "../afsint/ptint.h"
+#include "../afs/ptserver.h"
+#else /* defined(UKERNEL) */
 #include <lock.h>
 #include <ubik.h>
 #include "ptint.h"
 #include "ptserver.h"
+#endif /* defined(UKERNEL) */
 
 
 extern int PR_INewEntry();
@@ -34,6 +40,7 @@ extern int PR_NewEntry();
 extern int PR_ListMax();
 extern int PR_SetMax();
 extern int PR_ListEntry();
+extern int PR_ListEntries();
 extern int PR_ChangeEntry();
 extern int PR_ListElements();
 extern int PR_IsAMemberOf();

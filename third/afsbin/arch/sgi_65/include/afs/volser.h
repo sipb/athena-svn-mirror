@@ -126,9 +126,6 @@ extern struct volser_trans *QI_GlobalWriteTrans;
 #define VOLSER_OLDMAXVOLNAME 32
 #define	VOLMAXPARTS	255
 
-int32 VldbServer; /* temporary hack */
-char T_servername[80]; /*temporary hack */
-
 /*flags used for interfacing with the  backup system */
 struct volDescription {    /*used for interfacing with the backup system */
     char volName[VOLSER_MAXVOLNAME];/* should be VNAMESIZE as defined in volume.h*/

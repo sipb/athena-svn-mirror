@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/ptserver.h,v 1.1.1.1 1999-03-13 21:23:40 rbasch Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/ptserver.h,v 1.1.1.2 1999-12-22 20:05:15 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sgi_65/include/afs/ptserver.h,v $ */
 
 /* Copyright (C) 1989 Transarc Corporation - All rights reserved */
@@ -15,7 +15,11 @@
        November, 1988
 */
 
+#if defined(UKERNEL)
+#include "../afsint/ptint.h"
+#else /* defined(UKERNEL) */
 #include "ptint.h"
+#endif /* defined(UKERNEL) */
 
 #define	PRSRV		73
 
@@ -137,4 +141,6 @@ struct contentry {			/* continuation of entry */
     int32 entries[COSIZE];
 };
 
-#define	CROSS_CELL	1		/* Enable it by default */
+/* The following are flags for PR_ListEntries() */
+#define PRUSERS  0x1
+#define PRGROUPS 0x2

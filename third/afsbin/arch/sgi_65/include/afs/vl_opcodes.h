@@ -39,7 +39,4 @@
 #define	VLLINKEDLISTU		531
 #define	VLREGADDR		532
 #define	VLGETADDRSU		533
-
-
-
-
+#define VLLISTATTRIBUTESN2      534

@@ -149,6 +149,7 @@ typedef	dlqlinkT	*dlqlinkP;
 #define DLQ_FINISHTAPE	11
 #define DLQ_USETAPE	12
 #define DLQ_FINISHDUMP  13
+#define DLQ_USEDUMP     14
 
 /* simple assertion - for testing, don't halt processing */
 
