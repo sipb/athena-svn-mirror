@@ -35,6 +35,14 @@
 #define PID_ENV_NAME "XALF_LAUNCH_PID"
 #define SAVED_PRELOAD_NAME "XALF_SAVED_PRELOAD"
 
+#ifdef RLD_LIST
+#define PRELOAD_VARIABLE RLD_LIST
+#define UNSET_VALUE "DEFAULT"
+#else
+#define PRELOAD_VARIABLE "LD_PRELOAD"
+#define UNSET_VALUE ""
+#endif
+
 /* Prototypes */
 static void restore_env();
 static long int launch_pid = 0;
@@ -45,7 +53,10 @@ static long int launch_pid = 0;
 static void _init(void) __attribute__ ((section (".init")));
 #endif /* __FreeBSD__ */
 
-#if defined __GNUC__ && ( ( __GNUC__ == 2 ) && ( __GNUC_MINOR__ >= 96) || ( __GNUC__ >= 3) )
+/* Athena mod -- force use of _init, since __attribute__ ((constructor))
+ * extension does not seem to work for shared libraries.
+ */
+#if 0 && defined __GNUC__ && ( ( __GNUC__ == 2 ) && ( __GNUC_MINOR__ >= 96) || ( __GNUC__ >= 3) )
 void initialize (void) __attribute__ ((constructor));
 void initialize (void)
 #else
@@ -191,14 +202,14 @@ XMapRaised (Display* display, Window w)
 
 
 #ifdef HAVE_UNSETENV
- #define PRELOAD_UNSETTER unsetenv ("LD_PRELOAD");
+ #define PRELOAD_UNSETTER unsetenv (PRELOAD_VARIABLE);
  #define SAVED_PRELOAD_UNSETTER unsetenv (SAVED_PRELOAD_NAME);
  #define PID_UNSETTER unsetenv (PID_ENV_NAME);
 
 #else
  #define PRELOAD_UNSETTER \
-     if (putenv ("LD_PRELOAD=")) \
-         fprintf (stderr, "libxalflaunch: unsetting LD_PRELOAD failed\n");
+     if (putenv (PRELOAD_VARIABLE "=" UNSET_VALUE)) \
+         fprintf (stderr, "libxalflaunch: unsetting %s failed\n", PRELOAD_VARIABLE);
  #define SAVED_PRELOAD_UNSETTER \
      if (putenv (SAVED_PRELOAD_NAME"=")) \
          fprintf (stderr, "libxalflaunch: unsetting "SAVED_PRELOAD_NAME" failed\n");
@@ -220,9 +231,9 @@ static void restore_env()
     if (saved_preload)
 	/* LD_PRELOAD was set before Xalf was called. Restore it. */
 	{
-	    DPRINTF ((stderr, "libxalflaunch: Restoring LD_PRELOAD=%s\n", saved_preload));
-	    /* LD_PRELOAD= is 11 characters, and one more for \0 */
-	    new_preload = malloc (strlen (saved_preload) + 12);
+	    DPRINTF ((stderr, "libxalflaunch: Restoring %s=%s\n", PRELOAD_VARIABLE, saved_preload));
+	    /* Allocate space for the variable, =, value, and \0 */
+	    new_preload = malloc (strlen (PRELOAD_VARIABLE) + strlen (saved_preload) + 2);
 	    if (new_preload == NULL)
 		/* Malloc failed. */
 		{
@@ -230,7 +241,7 @@ static void restore_env()
 		}
 	    else 
 		{
-		    strcpy (new_preload, "LD_PRELOAD=");
+		    strcpy (new_preload, PRELOAD_VARIABLE"=");
 		    strcat (new_preload, saved_preload);
 		    /* Note: saved_preload+11 becomes a part of the new environment, 
 		       and should not be free:d. */
@@ -243,7 +254,7 @@ static void restore_env()
 	}
     else
 	{
-	    DPRINTF ((stderr, "libxalflaunch: Unsetting LD_PRELOAD\n"));
+	    DPRINTF ((stderr, "libxalflaunch: Unsetting %s\n", PRELOAD_VARIABLE));
 	    PRELOAD_UNSETTER;
 	}
     

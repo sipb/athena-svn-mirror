@@ -65,7 +65,7 @@
 
 #define PID_ENV_NAME "XALF_LAUNCH_PID"
 #define SAVED_PRELOAD_NAME "XALF_SAVED_PRELOAD"
-#define PRELOAD_LIBRARY LIBDIR"/libxalflaunch.so.0"
+#define PRELOAD_LIBRARY LIBDIR"/libxalflaunch.so"
 #define USAGE "\
 Usage: %s [options] command\n\
 options:\n\
@@ -252,7 +252,7 @@ static int
 forced_mappingmode(char **argv) {
     int mappingmode_opt = FALSE;
     
-#ifndef MULTI_PRELOAD
+#if !defined(MULTI_PRELOAD) && !defined(RLD_LIST)
     {
         char *preload_env;
         /* If LD_PRELOAD is alread set and this system does not support 
@@ -344,6 +344,18 @@ launch_application (int mappingmode_opt, char **argv)
     char *saved_preload_env = NULL;
     
     /* Set up preload_string */
+#ifdef RLD_LIST
+    saved_preload = getenv(RLD_LIST);
+    if (saved_preload != NULL)
+        {
+            preload_string = g_strconcat (RLD_LIST"=", PRELOAD_LIBRARY,
+                                          ":", saved_preload, NULL);
+            saved_preload_env = g_strconcat (SAVED_PRELOAD_NAME"=", saved_preload, NULL);
+        }
+    else
+        preload_string = g_strconcat (RLD_LIST"=", PRELOAD_LIBRARY,
+                                      ":DEFAULT", NULL);
+#else
 #ifdef MULTI_PRELOAD
     saved_preload = getenv("LD_PRELOAD");
     if (saved_preload != NULL)
@@ -356,6 +368,7 @@ launch_application (int mappingmode_opt, char **argv)
 #else 
     preload_string = g_strconcat ("LD_PRELOAD=", PRELOAD_LIBRARY, NULL);    
 #endif /* MULTI_PRELOAD */
+#endif /* RLD_LIST */
 
     /* Make sure that the file descriptor is not passed to the client. */
     if (fcntl (ConnectionNumber (dpy), F_SETFD, 1L) == -1) {
@@ -502,10 +515,7 @@ main (int argc, char **argv)
 	}
     
     if (!invisiblewindow_opt && !splash_opt && !cursor_opt && !anim_opt) 
-        {
-            invisiblewindow_opt = TRUE;
-            pending_mapevents++;
-        }
+        cursor_opt = TRUE;
 	
     if (noxalf_opt)
 	execvp (argv[optind], argv+optind); 
