@@ -72,7 +72,7 @@ static XtResource resources[] =
     sizeof(String),
     XtOffsetOf(AppData, xscreensaver),
     XtRString,
-    BINDIR "xss -no-splash"
+    BINDIR "xss -no-splash -no-start-locked"
   },
   {
     XtNactivateCommand,
@@ -90,7 +90,7 @@ static XtResource resources[] =
     sizeof(String),
     XtOffsetOf(AppData, prefs_command),
     XtRString,
-    BINDIR "xss-demo"
+    BINDIR "xss-command -prefs"
   },
   {
     XtNxrogerWidth,
@@ -277,7 +277,7 @@ Widget create_menu(Widget toplevel)
   XtAddCallback(item, "callback", callback_activate, NULL);
 
   item = XtVaCreateManagedWidget("prefs", smeBSBObjectClass, menu,
-				 XtNlabel, "Preferences",
+				 XtNlabel, "Demo / Preferences",
 				 NULL);
   XtAddCallback(item, "callback", callback_prefs, NULL);
 
