@@ -87,7 +87,7 @@ echo "==== prepare sources"
 rm -rf $destdir/BUILD/$source_name
 mkdir $destdir/BUILD/$source_name
 cd $destdir/BUILD
-(cd $sourcedir/$athena_dir; tar cf - .) | (cd $source_name; tar xfp -)
+(cd $sourcedir/$athena_dir; tar cf - .) | (cd $source_name; tar xfpo -)
 
 
 echo "==== build package objects from source"
