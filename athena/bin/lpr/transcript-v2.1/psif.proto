@@ -4,7 +4,7 @@
 # Copyright (c) 1985,1987 Adobe Systems Incorporated. All Rights Reserved. 
 # GOVERNMENT END USERS: See Notice file in TranScript library directory
 # -- probably /usr/lib/ps/Notice
-# RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/psif.proto,v 1.3 1993-10-09 19:04:50 probe Exp $
+# RCSID: $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/psif.proto,v 1.4 1993-10-09 19:42:01 probe Exp $
 
 PATH=/bin:/usr/bin:/usr/ucb
 export PATH
@@ -21,7 +21,7 @@ pname=`basename $cwd`
 # configuration options, these may be overridden by
 # real printer-specific options in the .options file
 
-PSLIBDIR=/usr/athena/lib/ps
+PSLIBDIR=XPSLIBDIRX
 REVERSE=
 VERBOSELOG=1
 BANNERFIRST=1
@@ -78,8 +78,8 @@ comm="$PSCOMM -P $pname $args $afile"
 
 prog=`basename $prog`
 case $prog in
-	psif|psiflps40) exec $comm ;;
-	psof|psoflps40) exec $PSBANNER $pname ; exit 0 ;;
+	psif) exec $comm ;;
+	psof) exec $PSBANNER $pname ; exit 0 ;;
 	psnf) psdit | $comm ;;
 	pstf) pscat | $comm ;;
 	psgf) psplot | $comm ;;
