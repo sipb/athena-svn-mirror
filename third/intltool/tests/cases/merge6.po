@@ -15,7 +15,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: po/merge6.sheet.h:1
-msgid "This is a \" test"
+msgid "This is a &quot; test"
 msgstr "This is a \" test --> is this a success ?"
 
 #: po/merge6.sheet.h:2

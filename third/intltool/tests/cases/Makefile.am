@@ -9,6 +9,7 @@ EXTRA_DIST =					\
 	extract8.glade				\
 	extract9.xml				\
 	extract10.templates_			\
+	extract-comments.xml			\
 	fr.po					\
 	fr_BE.po				\
 	fr_FR.po				\

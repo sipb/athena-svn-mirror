@@ -7,9 +7,9 @@
         <owner>clock-applet</owner>
         <type>int</type>
         <locale name="C">
-          <default>[default value for /schemas/apps/clock_applet/prefs/hour_format  
+          <default><!-- default value for /schemas/apps/clock_applet/prefs/hour_format  
                     The translation should only include the localized default
-                    eg. 12 or 24 ]24</default>
+                    eg. 12 or 24 -->24</default>
           <short>Hour format</short>
           <long>Sets the hour format, may be either 12 or 24</long>
         </locale>
