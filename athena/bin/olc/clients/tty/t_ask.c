@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v $
- *	$Id: t_ask.c,v 1.15 1991-03-29 02:16:27 lwvanels Exp $
+ *	$Id: t_ask.c,v 1.16 1991-04-08 14:53:27 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v 1.15 1991-03-29 02:16:27 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v 1.16 1991-04-08 14:53:27 lwvanels Exp $";
 #endif
 #endif
 
@@ -174,12 +174,6 @@ t_ask(Request,topic,q_file)
     case NOT_CONNECTED:
       printf("Your question will be forwarded to the first available ");
       printf("consultant.\n");
-#ifdef BETH
-      printf("\nIf you would like to see answers to common questions,");
-      printf(" please type\n\"answers\" at the olc> prompt.  If you find");
-      printf(" the answer to your question, type\n\"cancel\" at the olc> ");
-      printf("prompt.\n");
-#endif /* BETH */
       status = SUCCESS;
       break;
     case CONNECTED:
