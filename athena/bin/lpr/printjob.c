@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v $
- *	$Author: ilham $
+ *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.7 1990-06-01 18:20:50 ilham Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.8 1990-06-26 13:48:25 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.7 1990-06-01 18:20:50 ilham Exp $";
+static char *rcsid_printjob_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/printjob.c,v 1.8 1990-06-26 13:48:25 epeisach Exp $";
 #endif lint
 
 /*
@@ -102,7 +102,7 @@ char	pxwidth[10] = "-x";	/* page width in pixels */
 char	pxlength[10] = "-y";	/* page length in pixels */
 char	indent[10] = "-i0";	/* indentation size in characters */
 char	cost[10] = "-m";		/* Cost/page option */
-char	tmpfile[] = "errsXXXXXX"; /* file name for filter output */
+char	tempfile[] = "errsXXXXXX"; /* file name for filter output */
 int 	lflag;			/* Log info flag */
 
 printjob()
@@ -126,7 +126,7 @@ printjob()
 	 signal(SIGQUIT, abortpr);
 	 signal(SIGTERM, abortpr);
 
-	 (void) mktemp(tmpfile);
+	 (void) mktemp(tempfile);
 
 	 /*
 	  * uses short form file names
@@ -256,7 +256,7 @@ again:
 			if (TR != NULL)		/* output trailer */
 				(void) write(ofd, TR, strlen(TR));
 		}
-		(void) UNLINK(tmpfile);
+		(void) UNLINK(tempfile);
 		exit(0);
 	}
 	goto again;
@@ -354,7 +354,7 @@ printit(file)
 	 *
 	 *      Additions:  (Ilham)
 	 *              Z -- send zephyr message to user
-	 *              A -- Account number for quota management
+	 *              Q -- Account number for quota management
 	 *      getline reads a line and expands tabs to blanks
 	 */
 
@@ -679,7 +679,7 @@ start:
 	if ((child = dofork(DORETURN)) == 0) {	/* child */
 		dup2(fi, 0);
 		dup2(fo, 1);
-		n = open(tmpfile, O_WRONLY|O_CREAT|O_TRUNC, 0664);
+		n = open(tempfile, O_WRONLY|O_CREAT|O_TRUNC, 0664);
 		if (n >= 0)
 			dup2(n, 2);
 		for (n = 3; n < NOFILE; n++)
@@ -1082,8 +1082,8 @@ sendmail(user, bombed)
 			printf("\ncould not be printed without an account on %s\n", host);
 			break;
 		case FILTERERR:
-			if (stat(tmpfile, &stb) < 0 || stb.st_size == 0 ||
-			    (fp = fopen(tmpfile, "r")) == NULL) {
+			if (stat(tempfile, &stb) < 0 || stb.st_size == 0 ||
+			    (fp = fopen(tempfile, "r")) == NULL) {
 				printf("\nwas printed but had some errors\n");
 				break;
 			}
@@ -1186,7 +1186,7 @@ abortpr()
 	/* Drop lock on lock file as well */
 	if (lfd > 0)
 		(void) close(lfd);
-	(void) UNLINK(tmpfile);
+	(void) UNLINK(tempfile);
 	kill(0, SIGINT);
 	if (ofilter > 0)
 		kill(ofilter, SIGCONT);
