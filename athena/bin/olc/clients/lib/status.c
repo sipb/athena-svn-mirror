@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/status.c,v 1.8 1990-01-30 17:08:41 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/status.c,v 1.9 1990-02-14 13:03:08 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -125,16 +125,22 @@ OGetStatusCode(string,status)
      char *string;
      int *status;
 {
-  int index = 0;
-  
-  while  (!(string_eq(Status_Table[index].label,string))
-          && (Status_Table[index].status != UNKNOWN_STATUS))
-    index++;
+  int index;
 
-  if(Status_Table[index].status ==  UNKNOWN_STATUS)
-    *status = 0;
-  else
-    *status = Status_Table[index].status;
+  *status = -2;
+
+  for (index = 0; Status_Table[index].status != UNKNOWN_STATUS; index++)
+    {
+      if (string_equiv(string, Status_Table[index].label,
+		       strlen(string)))
+	if (*status == -2)
+	  *status = Status_Table[index].status;
+	else
+	  *status = -1;
+    }
+
+  if ((*status == UNKNOWN_STATUS) || (*status == -2))
+    *status = -1;
 }
 
 
