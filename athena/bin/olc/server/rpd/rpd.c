@@ -6,7 +6,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/rpd.c,v 1.11 1991-01-25 13:38:26 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/rpd.c,v 1.12 1991-04-08 21:19:36 lwvanels Exp $";
 #endif
 #endif
 
@@ -67,11 +67,19 @@ main(argc, argv)
   signal(SIGUSR2, start_profile); /* Start profiling */
 #endif /* PROFILE */
 
-#ifdef mips
-  openlog("rpd",LOG_PID);  /* Broken ultrix syslog.. */
+#if defined(ultrix)
+#ifdef LOG_CONS
+	openlog ("rpd", LOG_CONS | LOG_PID);
 #else
-  openlog("rpd",LOG_CONS | LOG_PID,SYSLOG_FACILITY);
-#endif
+	openlog ("rpd", LOG_PID);
+#endif /* LOG_CONS */
+#else
+#ifdef LOG_CONS
+	openlog ("rpd", LOG_CONS | LOG_PID,SYSLOG_FACILITY);
+#else
+	openlog ("rpd", LOG_PID, SYSLOG_FACILITY);
+#endif /* LOG_CONS */
+#endif /* ultrix */
 
 #ifndef SABER
   if (!nofork) {
