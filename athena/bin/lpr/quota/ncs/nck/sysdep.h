@@ -34,7 +34,7 @@
      * Motorola 680x0, Apollo PRISM, MIPS (not DEC/Ultrix), Ridge, Sun SPARC
      */
 
-#if defined(m68000) || _ISP__A88K || (defined(mips) && !defined(ultrix)) || defined(ridge) || defined(sparc) || defined(ibm032) 
+#if defined(m68000) || _ISP__A88K || (defined(mips) && !defined(ultrix)) || defined(ridge) || defined(sparc) || defined(ibm032) || defined(_IBMR2)
 #define INT_REP     rpc_$drep_int_big_endian
 #define FLOAT_REP   rpc_$drep_float_ieee
 #define CHAR_REP    rpc_$drep_char_ascii
