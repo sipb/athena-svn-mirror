@@ -1,10 +1,10 @@
-# $Id: Makefile.athena,v 1.8 1999-04-02 00:23:32 ghudson Exp $
+# $Id: Makefile.athena,v 1.8.4.1 1999-11-29 14:55:21 tb Exp $
 
 SHELL=/bin/sh
 
 prepare:
 	rm -f config.cache
-	./configure --disable-suid-ssh \
+	PERL=/usr/athena/bin/perl ./configure --disable-suid-ssh \
 		--with-kerberos5=${ATHTOOLROOT}/usr/athena \
 		--enable-kerberos-tgt-passing \
 		--with-libwrap=${ATHTOOLROOT}/usr/athena/lib \
