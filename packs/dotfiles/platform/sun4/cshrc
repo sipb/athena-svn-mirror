@@ -1,6 +1,6 @@
 # Global cshrc file
 #
-# $Id: cshrc,v 1.7 1993-08-17 10:34:58 vrt Exp $
+# $Id: cshrc,v 1.8 1993-08-19 18:15:43 cfields Exp $
 
 # This file is sourced by default user file ~/.cshrc
 
@@ -132,7 +132,6 @@ if ($?prompt) then		# For interactive shells only (i.e., NOT rsh):
     set history = 20		#   Number of commands saved as history
     set cdpath = (~)		#   Path to search for directory changes
     set interactive		#   Provide shell variable for compatability
-    /usr/bin/stty erase  >& /dev/null #  Set erase to be ^H. This is for a work around to the Type 5 Sun keyboards
 endif
 
 
