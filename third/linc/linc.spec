@@ -2,7 +2,7 @@
 %define __spec_install_post /usr/lib/rpm/brp-compress
 Summary:          Library for writing network programs
 Name:             linc
-Version:          0.7.0
+Version:          1.0.1
 Release:          1
 Source:           ftp://ftp.gnome.org/pub/GNOME/pre-gnome2/sources/linc/%{name}-%{version}.tar.gz
 Group:            System Environment/Libraries
