@@ -42,6 +42,7 @@ LIBS=	ifdef(`confLIBS', `confLIBS')
 
 # location of makemap binary (usually /usr/sbin or /usr/etc)
 SBINDIR=${DESTDIR}ifdef(`confSBINDIR', `confSBINDIR', `/usr/sbin')
+ATHSBINDIR=athSBINDIR
 
 # additional .o files needed
 OBJADD=	ifdef(`confOBJADD', `confOBJADD')
@@ -95,7 +96,10 @@ makemap.${MAN8SRC}: makemap.8
 install: install-makemap install-docs
 
 install-makemap: makemap
-	${INSTALL} -c -o ${BINOWN} -g ${BINGRP} -m ${BINMODE} makemap ${SBINDIR}
+	mkdir -p ${DESTDIR}${ATHSBINDIR}
+	mkdir -p ${SBINDIR}
+	${INSTALL} -c -o ${BINOWN} -g ${BINGRP} -m ${BINMODE} makemap ${DESTDIR}${ATHSBINDIR}
+	ln -s ${ATHSBINDIR}/makemap ${SBINDIR}/makemap
 
 install-docs: makemap.${MAN8SRC}
 ifdef(`confNO_MAN_INSTALL', `dnl',

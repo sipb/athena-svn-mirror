@@ -35,6 +35,7 @@ LIBS=	ifdef(`confLIBS', `confLIBS')
 
 # location of mailstats binary (usually /usr/sbin or /usr/etc)
 SBINDIR=${DESTDIR}ifdef(`confSBINDIR', `confSBINDIR', `/usr/sbin')
+ATHSBINDIR=athSBINDIR
 
 # additional .o files needed
 OBJADD=	ifdef(`confOBJADD', `confOBJADD')
@@ -82,7 +83,10 @@ mailstats.${MAN8SRC}: mailstats.8
 install: install-mailstats install-docs
 
 install-mailstats: mailstats
-	${INSTALL} -c -o ${BINOWN} -g ${BINGRP} -m ${BINMODE} mailstats ${SBINDIR}
+	mkdir -p ${DESTDIR}${ATHSBINDIR}
+	mkdir -p ${SBINDIR}
+	${INSTALL} -c -o ${BINOWN} -g ${BINGRP} -m ${BINMODE} mailstats ${DESTDIR}${ATHSBINDIR}
+	ln -s ${ATHSBINDIR}/mailstats ${SBINDIR}/mailstats
 
 install-docs: mailstats.${MAN8SRC}
 ifdef(`confNO_MAN_INSTALL', `dnl',
