@@ -1,4 +1,4 @@
-# $Id: athena,v 1.64 1998-10-26 18:57:39 ghudson Exp $
+# $Id: athena,v 1.65 1998-10-30 19:32:46 ghudson Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.
@@ -19,6 +19,17 @@ panic=`dmesg | awk '
 	/UNIX\(R\)/	{ if (++boots == 2) panic = ""; }
 	END		{ print panic; }'`
 logger -p user.notice "Booting$panic"
+
+# Syslog partition information for release planning purposes.
+rootdev=`mount | sed -n '/^\/ /s#^/ on \(/dev/dsk/[^ ]*\).*$#\1#p'`
+prtvtoc "$rootdev" | awk '
+	BEGIN				{ printf "Partition info: "; }
+	/ sectors\/cylinder$/		{ scyl = $2; }
+	/ accessible cylinders$/	{ printf "total %d", $2 * scyl; }
+	$7 == "/"			{ printf " root %d", $5; }
+	$7 == "/usr"			{ printf " usr %d", $5; }
+	$7 == "/var"			{ printf " var %d", $5; }
+	END				{ print ""; }' | logger -p user.notice
 
 # We load a kernel module misc/obpsym to enable symbolic prom
 # debugging.  This module also sets the obpdebug kernel variable when
