@@ -35,7 +35,7 @@
 #define  MOTD_FORM	20
 #define  MOTD_SCRL	21
 
-Widget				/* Widget ID's */
+extern Widget			/* Widget ID's */
   w_newq_btn,
   w_contq_btn,
   w_stock_btn,
