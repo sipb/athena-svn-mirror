@@ -1585,8 +1585,6 @@ compiler."
 	    convenience="$convenience $ladir/$objdir/$old_library"
 	    old_convenience="$old_convenience $ladir/$objdir/$old_library"
 	    tmp_libs=
-	    # PKGW 
-	    dependency_libs=
 	    for deplib in $dependency_libs; do
 	      deplibs="$deplib $deplibs"
               if test "X$duplicate_deps" = "Xyes" ; then
@@ -1704,8 +1702,6 @@ compiler."
 	  fi
 
 	  tmp_libs=
-	  #PKGW
-	  dependency_libs=
 	  for deplib in $dependency_libs; do
 	    case $deplib in
 	    -L*) newlib_search_path="$newlib_search_path "`$echo "X$deplib" | $Xsed -e 's/^-L//'`;; ### testsuite: skip nested quoting test
