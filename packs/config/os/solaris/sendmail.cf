@@ -1,4 +1,4 @@
-# $Id: sendmail.cf,v 1.17 2000-06-08 18:56:54 jweiss Exp $
+# $Id: sendmail.cf,v 1.18 2000-06-18 00:50:18 jweiss Exp $
 #
 # Athena Workstation Sendmail configuration file
 #
@@ -176,7 +176,7 @@ R$*<@$j>$*		$#local$:$1
 
 # Resolve name (so our CNAMES work)
 R$*<$*.LOCAL>$*		$:$1<$2.$D>$3			Rewrite .LOCAL
-R$*<@$+.$D>$*		$:$1<@$[$2$]>$3			@something.mit.edu
+R$*<@$+.$D>$*		$:$1<@$[$2.$D$]>$3		@something.mit.edu
 R$*<@mit>$*		$:$1<@$D>$2			avoid mit.MIT.EDU
 R$*<@$->$*		$:$1<@$[$2$]>$3			@something [no .s]
 R$*<@$*.>$*		$:$1<@$2>$3			remove trailing .
