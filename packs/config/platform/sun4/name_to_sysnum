@@ -52,13 +52,12 @@ ioctl			54
 uadmin			55
 uexch			56
 utssys			57
-fsync			58
+fdsync			58
 exece			59
 umask			60
 chroot			61
 fcntl			62
 ulimit			63
-rfs			78
 rmdir			79
 mkdir			80
 getdents		81
@@ -145,3 +144,6 @@ llseek			175
 
 inst_sync		176
 c2audit			186
+processor_bind		187
+processor_info		188
+p_online		189
