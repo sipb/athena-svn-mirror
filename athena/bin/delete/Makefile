@@ -5,7 +5,7 @@
 #
 #     $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v $
 #     $Author: jik $
-#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.9 1989-05-04 14:05:48 jik Exp $
+#     $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/Makefile,v 1.10 1989-06-11 18:58:05 jik Exp $
 #
 
 DESTDIR =
@@ -17,9 +17,10 @@ SRCS = delete.c undelete.c directories.c pattern.c util.c expunge.c \
 	lsdel.c col.c
 INCS = col.h delete.h directories.h expunge.h lsdel.h mit-copyright.h\
 	pattern.h undelete.h util.h
-MANS = man1 man1/delete.1 man1/expunge.1 man1/lsdel.1 man1/purge.1\
+MANS = man1/delete.1 man1/expunge.1 man1/lsdel.1 man1/purge.1\
 	man1/undelete.1
 ARCHIVE = README Makefile MANIFEST PATCHLEVEL $(SRCS) $(INCS) $(MANS)
+ARCHIVEDIRS = man1
 
 all: $(TARGETS)
 
@@ -91,7 +92,7 @@ shar: $(ARCHIVE)
 	fi ; \
 	exit 0; \
 	done
-	makekit -oMANIFEST -h2 MANIFEST $(ARCHIVE)
+	makekit -oMANIFEST -h2 MANIFEST $(ARCHIVEDIRS) $(ARCHIVE)
 
 patch: $(ARCHIVE)
 	@echo "Checking to see if everything's checked in...."
