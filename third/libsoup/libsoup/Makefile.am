@@ -1,97 +1,105 @@
 ## Process this file with automake to produce Makefile.in
 
 INCLUDES = 				\
-	-DG_LOG_DOMAIN=\"SOUP\" 	\
-	-DSYSCONFDIR=\"$(sysconfdir)\" 	\
-	-DLIBEXECDIR=\"$(libexecdir)\"	\
+	-DG_LOG_DOMAIN=\"libsoup\" 	\
 	-I$(top_srcdir)			\
 	$(SOUP_DEBUG_FLAGS)		\
 	$(GLIB_CFLAGS)			\
-	$(GNUTLS_CFLAGS)		\
-	$(OPENSSL_CFLAGS)
+	$(XML_CFLAGS)			\
+	$(LIBGNUTLS_CFLAGS)
 
-EXTRA_DIST =	\
-	soup-openssl.c	\
-	soup-openssl.h \
-	soup-ssl-proxy.c
+MARSHAL_GENERATED = soup-marshal.c soup-marshal.h
 
-libsoupincludedir = $(includedir)/soup-2.0/libsoup
+soup-marshal.h: soup-marshal.list
+	( @GLIB_GENMARSHAL@ --prefix=soup_marshal $(srcdir)/soup-marshal.list --header > soup-marshal.tmp \
+	&& mv soup-marshal.tmp soup-marshal.h ) \
+	|| ( rm -f soup-marshal.tmp && exit 1 )
+
+soup-marshal.c: soup-marshal.h
+	( (echo '#include "soup-marshal.h"'; @GLIB_GENMARSHAL@ --prefix=soup_marshal $(srcdir)/soup-marshal.list --body) > soup-marshal.tmp \
+	&& mv soup-marshal.tmp soup-marshal.c ) \
+	|| ( rm -f soup-marshal.tmp && exit 1 )
+
+BUILT_SOURCES = $(MARSHAL_GENERATED)
+
+CLEANFILES = $(MARSHAL_GENERATED)
+
+libsoupincludedir = $(includedir)/libsoup-2.2/libsoup
 
 libsoupinclude_HEADERS =	\
 	soup.h			\
 	soup-address.h		\
-	soup-context.h		\
-	soup-error.h		\
+	soup-connection.h	\
 	soup-headers.h		\
 	soup-message.h		\
+	soup-message-filter.h	\
+	soup-message-queue.h	\
 	soup-method.h		\
 	soup-misc.h     	\
-	soup-ntlm.h		\
 	soup-server-auth.h	\
+	soup-server-message.h	\
 	soup-server.h		\
+	soup-session.h		\
+	soup-session-async.h	\
+	soup-session-sync.h	\
+	soup-soap-message.h	\
+	soup-soap-response.h	\
 	soup-socket.h		\
+	soup-status.h		\
+	soup-types.h		\
 	soup-uri.h
 
-lib_LTLIBRARIES = libsoup-2.0.la
+lib_LTLIBRARIES = libsoup-2.2.la
 
-libsoup_2_0_la_LDFLAGS =	\
+libsoup_2_2_la_LDFLAGS =	\
 	-version-info $(SOUP_CURRENT):$(SOUP_REVISION):$(SOUP_AGE)
 
-libsoup_2_0_la_LIBADD =		\
-	$(GLIB_LIBS)		\
-	$(GNUTLS_LIBS)
+libsoup_2_2_la_LIBADD =			\
+	$(GLIB_LIBS)			\
+	$(XML_LIBS)			\
+	$(LIBGNUTLS_LIBS_STATIC)	\
+	$(LIBGNUTLS_LIBS)
 
-libsoup_2_0_la_SOURCES =	\
-	md5-utils.h		\
-	md5-utils.c		\
-	soup-address.c		\
-	soup-auth.h		\
-	soup-auth.c		\
-	soup-context.c		\
-	soup-error.c		\
-	soup-gnutls.h		\
-	soup-gnutls.c		\
-	soup-headers.c		\
-	soup-message.c		\
-	soup-method.c		\
-	soup-misc.c     	\
-	soup-ntlm.c     	\
-	soup-private.h     	\
-	soup-queue.h		\
-	soup-queue.c		\
-	soup-server.c		\
-	soup-server-auth.c	\
-	soup-socket.c		\
-	soup-socks.h		\
-	soup-socks.c		\
-	soup-ssl.h		\
-	soup-ssl.c		\
-	soup-transfer.h		\
-	soup-transfer.c		\
+libsoup_2_2_la_SOURCES =		\
+	$(MARSHAL_GENERATED)		\
+	soup-address.c			\
+	soup-auth.h			\
+	soup-auth.c			\
+	soup-auth-basic.h		\
+	soup-auth-basic.c		\
+	soup-auth-digest.h		\
+	soup-auth-digest.c		\
+	soup-connection.c		\
+	soup-connection-ntlm.h		\
+	soup-connection-ntlm.c		\
+	soup-dns.h			\
+	soup-dns.c			\
+	soup-gnutls.c			\
+	soup-headers.c			\
+	soup-md5-utils.h		\
+	soup-md5-utils.c		\
+	soup-message.c			\
+	soup-message-client-io.c	\
+	soup-message-filter.c		\
+	soup-message-handlers.c		\
+	soup-message-io.c		\
+	soup-message-private.h		\
+	soup-message-queue.c		\
+	soup-message-server-io.c	\
+	soup-method.c			\
+	soup-misc.c     		\
+	soup-nossl.c     		\
+	soup-server.c			\
+	soup-server-auth.c		\
+	soup-server-message.c		\
+	soup-session.c			\
+	soup-session-async.c		\
+	soup-session-sync.c		\
+	soup-soap-message.c		\
+	soup-soap-response.c		\
+	soup-socket.c			\
+	soup-ssl.h			\
+	soup-status.c			\
 	soup-uri.c
 
-if BUILD_PROXY
-noinst_PROGRAMS = libsoup-ssl-proxy
-
-# workaround for libtool flag re-ordering
-libsoup-ssl-proxy$(EXEEXT): $(libsoup_ssl_proxy_OBJECTS) $(libsoup_ssl_proxy_DEPENDENCIES)
-	@rm -f libsoup-ssl-proxy$(EXEEXT)
-	$(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@ $(libsoup_ssl_proxy_LDFLAGS) $(libsoup_ssl_proxy_OBJECTS) $(libsoup_ssl_proxy_LDADD) $(LIBS)
-
-libsoup_ssl_proxy_LDADD =	\
-	$(LINK_STATIC)		\
-	$(OPENSSL_LIBS)		\
-	$(GLIB_LIBS)		\
-	$(LINK_DYNAMIC)
-
-libsoup_ssl_proxy_SOURCES =	\
-	soup-openssl.h		\
-	soup-openssl.c		\
-	soup-ssl-proxy.c
-
-install-exec-hook:
-	$(mkinstalldirs) $(DESTDIR)$(libexecdir)
-	$(INSTALL_PROGRAM) libsoup-ssl-proxy $(DESTDIR)$(libexecdir)/$(SSL_PROXY_NAME)
-else
-install-exec-hook:
-endif
+EXTRA_DIST= soup-marshal.list

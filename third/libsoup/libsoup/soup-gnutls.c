@@ -12,7 +12,7 @@
 #include <config.h>
 #endif
 
-#ifdef HAVE_GNUTLS_GNUTLS_H
+#ifdef HAVE_SSL
 
 #include <stdlib.h>
 #include <string.h>
@@ -20,53 +20,35 @@
 #include <glib.h>
 
 #include <gnutls/gnutls.h>
+#include <gnutls/x509.h>
 
-#include "soup-gnutls.h"
+#include "soup-ssl.h"
+#include "soup-misc.h"
+
+gboolean soup_ssl_supported = TRUE;
 
 #define DH_BITS 1024
 
 typedef struct {
 	gnutls_certificate_credentials cred;
-	guint ref_count;
+	gboolean have_ca_file;
 } SoupGNUTLSCred;
-
-static void
-soup_gnutls_cred_ref (SoupGNUTLSCred *cred)
-{
-	cred->ref_count++;
-}
-
-static void
-soup_gnutls_cred_unref (SoupGNUTLSCred *cred)
-{
-	cred->ref_count--;
-	if (!cred->ref_count) {
-		gnutls_certificate_free_credentials (cred->cred);
-		g_free (cred);
-	}
-}
-
-static SoupGNUTLSCred *client_cred = NULL;
-static char *ca_file = NULL;
-static SoupGNUTLSCred *server_cred = NULL;
 
 typedef struct {
 	GIOChannel channel;
-	gint fd;
+	int fd;
 	GIOChannel *real_sock;
 	gnutls_session session;
 	SoupGNUTLSCred *cred;
+	char *hostname;
 	gboolean established;
 	SoupSSLType type;
 } SoupGNUTLSChannel;
 
 static gboolean
-verify_certificate (gnutls_session session, const char* hostname)
+verify_certificate (gnutls_session session, const char *hostname)
 {
 	int status;
-
-	if (!soup_get_ssl_ca_file ())
-		return TRUE;
 
 	status = gnutls_certificate_verify_peers (session);
 
@@ -77,7 +59,6 @@ verify_certificate (gnutls_session session, const char* hostname)
 
 	if (status & GNUTLS_CERT_INVALID ||
 	    status & GNUTLS_CERT_NOT_TRUSTED ||
-	    status & GNUTLS_CERT_CORRUPTED ||
 	    status & GNUTLS_CERT_REVOKED)
 	{
 		g_warning ("The certificate is not trusted.");
@@ -97,26 +78,31 @@ verify_certificate (gnutls_session session, const char* hostname)
 	if (gnutls_certificate_type_get (session) == GNUTLS_CRT_X509) {
 		const gnutls_datum* cert_list;
 		int cert_list_size;
+		gnutls_x509_crt cert;
+
+		if (gnutls_x509_crt_init (&cert) < 0) {
+			g_warning ("Error initializing certificate.");
+			return FALSE;
+		}
       
 		cert_list = gnutls_certificate_get_peers (
 			session, &cert_list_size);
+
 		if (cert_list == NULL) {
 			g_warning ("No certificate was found.");
 			return FALSE;
 		}
-#if 0
-                /* Due to the Soup design, we don't have enough
-		 * information to check the certificate vs. the
-		 * hostname at this point.  This should really be
-		 * fixed, but I don't think we intend to keep Soup
-		 * around long enough to make it worthwhile. */
-		if (!gnutls_x509_check_certificates_hostname(
-			    &cert_list[0], hostname))
-		{
+
+		if (gnutls_x509_crt_import (cert, &cert_list[0],
+					    GNUTLS_X509_FMT_DER) < 0) {
+			g_warning ("The certificate could not be parsed.");
+			return FALSE;
+		}
+
+		if (!gnutls_x509_crt_check_hostname (cert, hostname)) {
 			g_warning ("The certificate does not match hostname.");
 			return FALSE;
 		}
-#endif
 	}
    
 	return TRUE;
@@ -130,8 +116,14 @@ do_handshake (SoupGNUTLSChannel *chan, GError **err)
 	result = gnutls_handshake (chan->session);
 
 	if (result == GNUTLS_E_AGAIN ||
-	    result == GNUTLS_E_INTERRUPTED)
+	    result == GNUTLS_E_INTERRUPTED) {
+		g_set_error (err, SOUP_SSL_ERROR,
+			     (gnutls_record_get_direction (chan->session) ?
+			      SOUP_SSL_ERROR_HANDSHAKE_NEEDS_WRITE :
+			      SOUP_SSL_ERROR_HANDSHAKE_NEEDS_READ),
+			     "Handshaking...");
 		return G_IO_STATUS_AGAIN;
+	}
 
 	if (result < 0) {
 		g_set_error (err, G_IO_CHANNEL_ERROR,
@@ -140,13 +132,15 @@ do_handshake (SoupGNUTLSChannel *chan, GError **err)
 		return G_IO_STATUS_ERROR;
 	}
 
-	if (chan->type == SOUP_SSL_TYPE_CLIENT)
-		if (!verify_certificate (chan->session, NULL)) {
+	if (chan->type == SOUP_SSL_TYPE_CLIENT &&
+	    chan->cred->have_ca_file) {
+		if (!verify_certificate (chan->session, chan->hostname)) {
 			g_set_error (err, G_IO_CHANNEL_ERROR,
 				     G_IO_CHANNEL_ERROR_FAILED,
 				     "Unable to verify certificate");
 			return G_IO_STATUS_ERROR;
 		}
+	}
 
 	return G_IO_STATUS_NORMAL;
 }
@@ -260,18 +254,11 @@ soup_gnutls_close (GIOChannel  *channel,
 		int ret;
 
 		do {
-			ret = gnutls_bye (chan->session, GNUTLS_SHUT_RDWR);
-		} while (ret == GNUTLS_E_INTERRUPTED ||
-			 ret == GNUTLS_E_AGAIN);
+			ret = gnutls_bye (chan->session, GNUTLS_SHUT_WR);
+		} while (ret == GNUTLS_E_INTERRUPTED);
 	}
 
-#if 0
-	/* gnutls_bye closes the fd itself, so we shouldn't do this.
-	 * All of this GIOChannel abuse makes me a little sick. */
 	return chan->real_sock->funcs->io_close (channel, err);
-#else
-	return TRUE;
-#endif
 }
 
 static GSource *
@@ -290,7 +277,6 @@ soup_gnutls_free (GIOChannel *channel)
 	SoupGNUTLSChannel *chan = (SoupGNUTLSChannel *) channel;
 	g_io_channel_unref (chan->real_sock);
 	gnutls_deinit (chan->session);
-	soup_gnutls_cred_unref (chan->cred);
 	g_free (chan);
 }
 
@@ -328,117 +314,49 @@ static gnutls_dh_params dh_params = NULL;
 static gboolean
 init_dh_params (void)
 {
-	gnutls_datum prime, generator;
-
 	if (gnutls_dh_params_init (&dh_params) != 0)
 		goto THROW_CREATE_ERROR;
 
-	if (gnutls_dh_params_generate (&prime, &generator, DH_BITS) != 0)
+	if (gnutls_dh_params_generate2 (dh_params, DH_BITS) != 0)
 		goto THROW_CREATE_ERROR;
-
-	if (gnutls_dh_params_set (dh_params, prime, generator, DH_BITS) != 0)
-		goto THROW_CREATE_ERROR;
-
-	free (prime.data);
-	free (generator.data);
 
 	return TRUE;
 
-    THROW_CREATE_ERROR:
+THROW_CREATE_ERROR:
 	if (dh_params) {
 		gnutls_dh_params_deinit (dh_params);
 		dh_params = NULL;
 	}
-	if (prime.data)
-		free (prime.data);
-	if (generator.data)
-		free (generator.data);
+
 	return FALSE;
 }
 
-static SoupGNUTLSCred *
-get_credentials (SoupSSLType type)
-{
-	gnutls_certificate_credentials cred;
-	SoupGNUTLSCred *scred;
-
-	gnutls_certificate_allocate_credentials (&cred);
-
-	if (type == SOUP_SSL_TYPE_CLIENT) {
-		if (soup_get_ssl_ca_file ())
-			if (gnutls_certificate_set_x509_trust_file (
-				    cred, soup_get_ssl_ca_file (),
-				    GNUTLS_X509_FMT_PEM) < 0)
-			{
-				g_warning ("Failed to set SSL trust file "
-					   "(%s).", soup_get_ssl_ca_file ());
-				goto THROW_CREATE_ERROR;
-			}
-
-		if (soup_get_ssl_ca_dir ())
-			g_warning ("CA directory not supported.");
-	} else {
-		const char *cert_file, *key_file;
-
-		soup_get_ssl_cert_files (&cert_file, &key_file);
-
-		if (cert_file) {
-			if (!key_file) {
-				g_warning ("SSL certificate file specified "
-					   "without key file.");
-				goto THROW_CREATE_ERROR;
-			}
-
-			if (gnutls_certificate_set_x509_key_file (
-				    cred, cert_file, key_file,
-				    GNUTLS_X509_FMT_PEM) != 0)
-			{
-				g_warning ("Failed to set SSL certificate "
-					   "and key files (%s, %s).",
-					   cert_file, key_file);
-				goto THROW_CREATE_ERROR;
-			}
-		} else if (key_file) {
-			g_warning ("SSL key file specified without "
-				   "certificate file.");
-			goto THROW_CREATE_ERROR;
-		}
-	
-		if (!dh_params)
-			if (!init_dh_params ())
-				goto THROW_CREATE_ERROR;
-
-		gnutls_certificate_set_dh_params (cred, dh_params);
-	}
-
-	scred = g_new0 (SoupGNUTLSCred, 1);
-	scred->cred = cred;
-	scred->ref_count = 1;
-
-	return scred;
-
-    THROW_CREATE_ERROR:
-	gnutls_certificate_free_credentials (cred);
-	return NULL;
-}
-
+/**
+ * soup_ssl_wrap_iochannel:
+ * @sock: a #GIOChannel wrapping a TCP socket.
+ * @type: whether this is a client or server socket
+ * @hostname: the hostname of the remote machine
+ * @cred_pointer: a client or server credentials structure
+ *
+ * This attempts to wrap a new #GIOChannel around @sock that
+ * will SSL-encrypt/decrypt all traffic through it.
+ *
+ * Return value: an SSL-encrypting #GIOChannel, or %NULL on
+ * failure.
+ **/
 GIOChannel *
-soup_gnutls_get_iochannel (GIOChannel *sock, SoupSSLType type)
+soup_ssl_wrap_iochannel (GIOChannel *sock, SoupSSLType type,
+			 const char *hostname, gpointer cred_pointer)
 {
-	static gboolean initialized = FALSE;
 	SoupGNUTLSChannel *chan = NULL;
 	GIOChannel *gchan = NULL;
 	gnutls_session session = NULL;
-	SoupGNUTLSCred *cred;
+	SoupGNUTLSCred *cred = cred_pointer;
 	int sockfd;
 	int ret;
 
 	g_return_val_if_fail (sock != NULL, NULL);
-
-	if (!initialized) {
-		gnutls_global_init ();
-		initialized = TRUE;
-	}
+	g_return_val_if_fail (cred_pointer != NULL, NULL);
 
 	sockfd = g_io_channel_unix_get_fd (sock);
 	if (!sockfd) {
@@ -448,38 +366,8 @@ soup_gnutls_get_iochannel (GIOChannel *sock, SoupSSLType type)
 
 	chan = g_new0 (SoupGNUTLSChannel, 1);
 
-	if (type == SOUP_SSL_TYPE_CLIENT) {
-		const char *new_ca_file = soup_get_ssl_ca_file ();
-
-		if ((new_ca_file && !ca_file) ||
-		    (ca_file && !new_ca_file) ||
-		    (ca_file && strcmp (ca_file, new_ca_file)))
-		{
-			if (client_cred)
-				soup_gnutls_cred_unref (client_cred);
-			client_cred = NULL;
-			g_free (ca_file);
-			ca_file = g_strdup (new_ca_file);
-		}
-
-		if (!client_cred)
-			client_cred = get_credentials (type);
-		if (!client_cred)
-			goto THROW_CREATE_ERROR;
-
-		cred = client_cred;
-
-		ret = gnutls_init (&session, GNUTLS_CLIENT);
-	} else {
-		if (!server_cred)
-			server_cred = get_credentials (type);
-		if (!server_cred)
-			goto THROW_CREATE_ERROR;
-
-		cred = server_cred;
-
-		ret = gnutls_init (&session, GNUTLS_SERVER);
-	}
+	ret = gnutls_init (&session,
+			   (type == SOUP_SSL_TYPE_CLIENT) ? GNUTLS_CLIENT : GNUTLS_SERVER);
 	if (ret)
 		goto THROW_CREATE_ERROR;
 
@@ -489,21 +377,17 @@ soup_gnutls_get_iochannel (GIOChannel *sock, SoupSSLType type)
 	if (gnutls_credentials_set (session, GNUTLS_CRD_CERTIFICATE,
 				    cred->cred) != 0)
 		goto THROW_CREATE_ERROR;
-	soup_gnutls_cred_ref (cred);
 
-	if (type == SOUP_SSL_TYPE_SERVER) {
-		gnutls_certificate_server_set_request (
-			session, GNUTLS_CERT_REQUEST);
-
+	if (type == SOUP_SSL_TYPE_SERVER)
 		gnutls_dh_set_prime_bits (session, DH_BITS);
-	}
 
-	gnutls_transport_set_ptr (session, sockfd);
+	gnutls_transport_set_ptr (session, GINT_TO_POINTER (sockfd));
 
 	chan->fd = sockfd;
 	chan->real_sock = sock;
 	chan->session = session;
 	chan->cred = cred;
+	chan->hostname = g_strdup (hostname);
 	chan->type = type;
 	g_io_channel_ref (sock);
 
@@ -511,6 +395,8 @@ soup_gnutls_get_iochannel (GIOChannel *sock, SoupSSLType type)
 	gchan->funcs = &soup_gnutls_channel_funcs;
 	g_io_channel_init (gchan);
 	g_io_channel_set_close_on_unref (gchan, TRUE);
+	gchan->is_readable = gchan->is_writeable = TRUE;
+	gchan->use_buffer = FALSE;
 
 	return gchan;
 
@@ -520,17 +406,120 @@ soup_gnutls_get_iochannel (GIOChannel *sock, SoupSSLType type)
 	return NULL;
 }
 
-void
-soup_gnutls_set_security_policy (SoupSecurityPolicy policy)
+/**
+ * soup_ssl_get_client_credentials:
+ * @ca_file: path to a file containing X509-encoded Certificate
+ * Authority certificates.
+ *
+ * Creates an opaque client credentials object which can later be
+ * passed to soup_ssl_wrap_iochannel().
+ *
+ * If @ca_file is non-%NULL, any certificate received from a server
+ * must be signed by one of the CAs in the file, or an error will
+ * be returned.
+ *
+ * Return value: the client credentials, which must be freed with
+ * soup_ssl_free_client_credentials().
+ **/
+gpointer
+soup_ssl_get_client_credentials (const char *ca_file)
 {
-	switch (policy) {
-	case SOUP_SECURITY_DOMESTIC:
-		break;
-	case SOUP_SECURITY_EXPORT:
-		break;
-	case SOUP_SECURITY_FRANCE:
-		break;
+	SoupGNUTLSCred *cred;
+	int status;
+
+	gnutls_global_init ();
+
+	cred = g_new0 (SoupGNUTLSCred, 1);
+	gnutls_certificate_allocate_credentials (&cred->cred);
+
+	if (ca_file) {
+		cred->have_ca_file = TRUE;
+		status = gnutls_certificate_set_x509_trust_file (
+			cred->cred, ca_file, GNUTLS_X509_FMT_PEM);
+		if (status < 0) {
+			g_warning ("Failed to set SSL trust file (%s).",
+				   ca_file);
+			/* Since we set have_ca_file though, this just
+			 * means that no certs will validate, so we're
+			 * ok securitywise if we just return these
+			 * creds to the caller.
+			 */
+		}
 	}
+
+	return cred;
 }
 
-#endif /* HAVE_GNUTLS_GNUTLS_H */
+/**
+ * soup_ssl_free_client_credentials:
+ * @client_creds: a client credentials structure returned by
+ * soup_ssl_get_client_credentials().
+ *
+ * Frees @client_creds.
+ **/
+void
+soup_ssl_free_client_credentials (gpointer client_creds)
+{
+	SoupGNUTLSCred *cred = client_creds;
+
+	gnutls_certificate_free_credentials (cred->cred);
+	g_free (cred);
+}
+
+/**
+ * soup_ssl_get_server_credentials:
+ * @cert_file: path to a file containing an X509-encoded server
+ * certificate
+ * @key_file: path to a file containing an X509-encoded key for
+ * @cert_file.
+ *
+ * Creates an opaque server credentials object which can later be
+ * passed to soup_ssl_wrap_iochannel().
+ *
+ * Return value: the server credentials, which must be freed with
+ * soup_ssl_free_server_credentials().
+ **/
+gpointer
+soup_ssl_get_server_credentials (const char *cert_file, const char *key_file)
+{
+	SoupGNUTLSCred *cred;
+
+	gnutls_global_init ();
+	if (!dh_params) {
+		if (!init_dh_params ())
+			return NULL;
+	}
+
+	cred = g_new0 (SoupGNUTLSCred, 1);
+	gnutls_certificate_allocate_credentials (&cred->cred);
+
+	if (gnutls_certificate_set_x509_key_file (cred->cred,
+						  cert_file, key_file,
+						  GNUTLS_X509_FMT_PEM) != 0) {
+		g_warning ("Failed to set SSL certificate and key files "
+			   "(%s, %s).", cert_file, key_file);
+		soup_ssl_free_server_credentials (cred);
+		return NULL;
+	}
+
+	gnutls_certificate_set_dh_params (cred->cred, dh_params);
+	return cred;
+}
+
+/**
+ * soup_ssl_free_server_credentials:
+ * @server_creds: a server credentials structure returned by
+ * soup_ssl_get_server_credentials().
+ *
+ * Frees @server_creds.
+ **/
+void
+soup_ssl_free_server_credentials (gpointer server_creds)
+{
+	SoupGNUTLSCred *cred = server_creds;
+
+	gnutls_certificate_free_credentials (cred->cred);
+	g_free (cred);
+}
+
+#endif /* HAVE_SSL */

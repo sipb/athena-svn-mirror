@@ -1,0 +1,108 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>soup-ssl</title><meta name="generator" content="DocBook XSL Stylesheets V1.64.1"><link rel="home" href="index.html" title="libsoup Reference Manual"><link rel="up" href="ch01.html" title="libsoup"><link rel="previous" href="SoupSocket.html" title="SoupSocket"><link rel="next" href="libsoup-soup-status.html" title="soup-status"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="SoupSocket.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">libsoup Reference Manual</th><td><a accesskey="n" href="libsoup-soup-status.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libsoup-soup-ssl"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">soup-ssl</span></h2><p>soup-ssl &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+enum        <a href="libsoup-soup-ssl.html#SoupSSLType">SoupSSLType</a>;
+gpointer    <a href="libsoup-soup-ssl.html#soup-ssl-get-client-credentials">soup_ssl_get_client_credentials</a> (const char *ca_file);
+void        <a href="libsoup-soup-ssl.html#soup-ssl-free-client-credentials">soup_ssl_free_client_credentials</a>
+                                            (gpointer creds);
+gpointer    <a href="libsoup-soup-ssl.html#soup-ssl-get-server-credentials">soup_ssl_get_server_credentials</a> (const char *cert_file,
+                                             const char *key_file);
+void        <a href="libsoup-soup-ssl.html#soup-ssl-free-server-credentials">soup_ssl_free_server_credentials</a>
+                                            (gpointer creds);
+GIOChannel* <a href="libsoup-soup-ssl.html#soup-ssl-wrap-iochannel">soup_ssl_wrap_iochannel</a>         (GIOChannel *sock,
+                                             <a href="libsoup-soup-ssl.html#SoupSSLType">SoupSSLType</a> type,
+                                             const char *remote_host,
+                                             gpointer credentials);
+</pre></div><div class="refsect1" lang="en"><a name="id2582089"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2582099"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2582104"></a><h3><a name="SoupSSLType"></a>enum SoupSSLType</h3><a class="indexterm" name="id2582113"></a><pre class="programlisting">typedef enum {
+	SOUP_SSL_TYPE_CLIENT = 0,
+	SOUP_SSL_TYPE_SERVER
+} SoupSSLType;
+</pre><p>
+What kind of SSL connection this is.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">SOUP_SSL_TYPE_CLIENT</tt></span></td><td>the client side of an SSL connection
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_SSL_TYPE_SERVER</tt></span></td><td>the server side of an SSL connection
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2588839"></a><h3><a name="soup-ssl-get-client-credentials"></a>soup_ssl_get_client_credentials ()</h3><a class="indexterm" name="id2588850"></a><pre class="programlisting">gpointer    soup_ssl_get_client_credentials (const char *ca_file);</pre><p>
+Creates an opaque client credentials object which can later be
+passed to <a href="libsoup-soup-ssl.html#soup-ssl-wrap-iochannel"><tt class="function">soup_ssl_wrap_iochannel()</tt></a>.
+</p><p>
+If <i class="parameter"><tt>ca_file</tt></i> is non-<tt class="literal">NULL</tt>, any certificate received from a server
+must be signed by one of the CAs in the file, or an error will
+be returned.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ca_file</tt></i> :</span></td><td> path to a file containing X509-encoded Certificate
+Authority certificates.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the client credentials, which must be freed with
+<a href="libsoup-soup-ssl.html#soup-ssl-free-client-credentials"><tt class="function">soup_ssl_free_client_credentials()</tt></a>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2588927"></a><h3><a name="soup-ssl-free-client-credentials"></a>soup_ssl_free_client_credentials ()</h3><a class="indexterm" name="id2588938"></a><pre class="programlisting">void        soup_ssl_free_client_credentials
+                                            (gpointer creds);</pre><p>
+Frees <i class="parameter"><tt>client_creds</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>creds</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2597205"></a><h3><a name="soup-ssl-get-server-credentials"></a>soup_ssl_get_server_credentials ()</h3><a class="indexterm" name="id2597215"></a><pre class="programlisting">gpointer    soup_ssl_get_server_credentials (const char *cert_file,
+                                             const char *key_file);</pre><p>
+Creates an opaque server credentials object which can later be
+passed to <a href="libsoup-soup-ssl.html#soup-ssl-wrap-iochannel"><tt class="function">soup_ssl_wrap_iochannel()</tt></a>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>cert_file</tt></i> :</span></td><td> path to a file containing an X509-encoded server
+certificate
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>key_file</tt></i> :</span></td><td> path to a file containing an X509-encoded key for
+<i class="parameter"><tt>cert_file</tt></i>.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the server credentials, which must be freed with
+<a href="libsoup-soup-ssl.html#soup-ssl-free-server-credentials"><tt class="function">soup_ssl_free_server_credentials()</tt></a>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2597301"></a><h3><a name="soup-ssl-free-server-credentials"></a>soup_ssl_free_server_credentials ()</h3><a class="indexterm" name="id2597312"></a><pre class="programlisting">void        soup_ssl_free_server_credentials
+                                            (gpointer creds);</pre><p>
+Frees <i class="parameter"><tt>server_creds</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>creds</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2597354"></a><h3><a name="soup-ssl-wrap-iochannel"></a>soup_ssl_wrap_iochannel ()</h3><a class="indexterm" name="id2597362"></a><pre class="programlisting">GIOChannel* soup_ssl_wrap_iochannel         (GIOChannel *sock,
+                                             <a href="libsoup-soup-ssl.html#SoupSSLType">SoupSSLType</a> type,
+                                             const char *remote_host,
+                                             gpointer credentials);</pre><p>
+This attempts to wrap a new <span class="type">GIOChannel</span> around <i class="parameter"><tt>sock</tt></i> that
+will SSL-encrypt/decrypt all traffic through it.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>sock</tt></i> :</span></td><td> a <span class="type">GIOChannel</span> wrapping a TCP socket.
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>type</tt></i> :</span></td><td> whether this is a client or server socket
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>remote_host</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>credentials</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> an SSL-encrypting <span class="type">GIOChannel</span>, or <tt class="literal">NULL</tt> on
+failure.
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="SoupSocket.html"><b>&lt;&lt; SoupSocket</b></a></td><td align="right"><a accesskey="n" href="libsoup-soup-status.html"><b>soup-status &gt;&gt;</b></a></td></tr></table></body></html>

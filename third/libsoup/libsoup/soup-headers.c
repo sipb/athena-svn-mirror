@@ -1,11 +1,8 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
- * soup-headers.c: Asyncronous Callback-based HTTP Request Queue.
+ * soup-headers.c: HTTP message header parsing
  *
- * Authors:
- *      Alex Graveley (alex@ximian.com)
- *
- * Copyright (C) 2001-2002, Ximian, Inc.
+ * Copyright (C) 2001-2003, Ximian, Inc.
  */
 
 #include <string.h>
@@ -13,7 +10,7 @@
 #include <ctype.h>
 
 #include "soup-headers.h"
-#include "soup-private.h"
+#include "soup-misc.h"
 
 /*
  * "HTTP/1.1 200 OK\r\nContent-Length: 1234\r\n          567\r\n\r\n"
@@ -26,12 +23,12 @@
  * val: "1234, 567"
  */
 static gboolean
-soup_headers_parse (gchar      *str, 
-		    gint        len, 
+soup_headers_parse (char       *str, 
+		    int         len, 
 		    GHashTable *dest)
 {
-	gchar *key = NULL, *val = NULL, *end = NULL;
-	gint offset = 0, lws = 0;
+	char *key = NULL, *val = NULL, *end = NULL;
+	int offset = 0, lws = 0;
 
 	key = strstr (str, "\r\n");
 	key += 2;
@@ -41,8 +38,8 @@ soup_headers_parse (gchar      *str,
 		key += 2;
 		offset = key - str;
 
-		/* pointing at another \r means end of header */
-		if (*key == '\r') break;
+		if (!*key)
+			break;
 
 		/* check if first character on the line is whitespace */
 		if (*key == ' ' || *key == '\t') {
@@ -75,13 +72,13 @@ soup_headers_parse (gchar      *str,
                 key [0] = '\0';
 		key += 2;
 
-		/* pointing at another \r means end of header */
-		if (*key == '\r') break;
+		if (!*key)
+			break;
 
                 val = strchr (key, ':'); /* find start of val */
 
 		if (!val || val > strchr (key, '\r'))
-			goto THROW_MALFORMED_HEADER;
+			return FALSE;
 
 		/* set end of key */
 		val [0] = '\0';
@@ -92,7 +89,7 @@ soup_headers_parse (gchar      *str,
 		/* find the end of the value */
 		end = strstr (val, "\r\n");
 		if (!end)
-			goto THROW_MALFORMED_HEADER;
+			return FALSE;
 
 		exist_hdrs = g_hash_table_lookup (dest, key);
 		exist_hdrs = g_slist_append (exist_hdrs, 
@@ -105,24 +102,21 @@ soup_headers_parse (gchar      *str,
         }
 
 	return TRUE;
-
- THROW_MALFORMED_HEADER:
-	return FALSE;
 }
 
 gboolean
-soup_headers_parse_request (gchar            *str, 
-			    gint              len, 
+soup_headers_parse_request (char             *str, 
+			    int               len, 
 			    GHashTable       *dest, 
-			    gchar           **req_method,
-			    gchar           **req_path,
+			    char            **req_method,
+			    char            **req_path,
 			    SoupHttpVersion  *ver) 
 {
 	guint http_major, http_minor;
-	gchar method[16], path[1024];
+	char method[16], path[1024];
 
-	if (!str || !*str || len < sizeof ("GET / HTTP/0.0\r\n\r\n") - 1)
-		goto THROW_MALFORMED_HEADER;
+	if (!str || !*str)
+		return FALSE;
 
 	if (sscanf (str, 
 		    "%16s %1024s HTTP/%1u.%1u", 
@@ -130,10 +124,10 @@ soup_headers_parse_request (gchar            *str,
 		    path,
 		    &http_major,
 		    &http_minor) < 4)
-		goto THROW_MALFORMED_HEADER;
+		return FALSE;
 
 	if (!soup_headers_parse (str, len, dest)) 
-		goto THROW_MALFORMED_HEADER;
+		return FALSE;
 
 	*req_method = g_strdup (method);
 	*req_path = g_strdup (path);
@@ -146,16 +140,13 @@ soup_headers_parse_request (gchar            *str,
 	}
 
 	return TRUE;
-
- THROW_MALFORMED_HEADER:
-	return FALSE;
 }
 
 gboolean
 soup_headers_parse_status_line (const char       *status_line,
 				SoupHttpVersion  *ver,
 				guint            *status_code,
-				gchar           **status_phrase)
+				char            **status_phrase)
 {
 	guint http_major, http_minor, code;
 	guint phrase_start = 0;
@@ -185,29 +176,26 @@ soup_headers_parse_status_line (const char       *status_line,
 }
 
 gboolean
-soup_headers_parse_response (gchar            *str, 
-			     gint              len, 
+soup_headers_parse_response (char             *str, 
+			     int               len, 
 			     GHashTable       *dest,
 			     SoupHttpVersion  *ver,
 			     guint            *status_code,
-			     gchar           **status_phrase)
+			     char            **status_phrase)
 {
 	if (!str || !*str || len < sizeof ("HTTP/0.0 000 A\r\n\r\n"))
-		goto THROW_MALFORMED_HEADER;
+		return FALSE;
 
 	if (!soup_headers_parse (str, len, dest)) 
-		goto THROW_MALFORMED_HEADER;
+		return FALSE;
 
 	if (!soup_headers_parse_status_line (str, 
 					     ver, 
 					     status_code, 
 					     status_phrase))
-		goto THROW_MALFORMED_HEADER;
+		return FALSE;
 
 	return TRUE;
-
- THROW_MALFORMED_HEADER:
-	return FALSE;
 }
 
 

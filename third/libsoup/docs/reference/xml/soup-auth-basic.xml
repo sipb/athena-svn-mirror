@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="SoupAuthBasic">
+<refmeta>
+<refentrytitle>SoupAuthBasic</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBSOUP Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>SoupAuthBasic</refname><refpurpose>HTTP Basic Authentication</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+struct      <link linkend="SoupAuthBasic-struct">SoupAuthBasic</link>;
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----<link linkend="SoupAuth">SoupAuth</link>
+         +----SoupAuthBasic
+</synopsis>
+
+</refsect1>
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+This implements the Basic HTTP Authentication mechanism, as described
+in RFC 2617.
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="SoupAuthBasic-struct"/>struct SoupAuthBasic</title>
+<indexterm><primary>SoupAuthBasic</primary></indexterm><programlisting>struct SoupAuthBasic;</programlisting>
+<para>
+
+</para></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

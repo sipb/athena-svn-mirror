@@ -1,0 +1,198 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>SoupServer</title><meta name="generator" content="DocBook XSL Stylesheets V1.64.1"><link rel="home" href="index.html" title="libsoup Reference Manual"><link rel="up" href="ch01.html" title="libsoup"><link rel="previous" href="SoupServerMessage.html" title="SoupServerMessage"><link rel="next" href="SoupSession.html" title="SoupSession"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="SoupServerMessage.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">libsoup Reference Manual</th><td><a accesskey="n" href="SoupSession.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="SoupServer"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">SoupServer</span></h2><p>SoupServer &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+struct      <a href="SoupServer.html#SoupServerContext">SoupServerContext</a>;
+void        (<a href="SoupServer.html#SoupServerCallbackFn">*SoupServerCallbackFn</a>)         (<a href="SoupServer.html#SoupServerContext">SoupServerContext</a> *context,
+                                             <a href="SoupMessage.html" title="SoupMessage">SoupMessage</a> *msg,
+                                             gpointer user_data);
+void        (<a href="SoupServer.html#SoupServerUnregisterFn">*SoupServerUnregisterFn</a>)       (<a href="SoupServer.html" title="SoupServer">SoupServer</a> *server,
+                                             SoupServerHandler *handler,
+                                             gpointer user_data);
+#define     <a href="SoupServer.html#SOUP-SERVER-PORT-CAPS">SOUP_SERVER_PORT</a>
+#define     <a href="SoupServer.html#SOUP-SERVER-INTERFACE-CAPS">SOUP_SERVER_INTERFACE</a>
+#define     <a href="SoupServer.html#SOUP-SERVER-SSL-CERT-FILE-CAPS">SOUP_SERVER_SSL_CERT_FILE</a>
+#define     <a href="SoupServer.html#SOUP-SERVER-SSL-KEY-FILE-CAPS">SOUP_SERVER_SSL_KEY_FILE</a>
+<a href="SoupServer.html" title="SoupServer">SoupServer</a>* <a href="SoupServer.html#soup-server-new">soup_server_new</a>                 (const char *optname1,
+                                             ...);
+<a href="libsoup-soup-uri.html#SoupProtocol">SoupProtocol</a> <a href="SoupServer.html#soup-server-get-protocol">soup_server_get_protocol</a>       (<a href="SoupServer.html" title="SoupServer">SoupServer</a> *serv);
+guint       <a href="SoupServer.html#soup-server-get-port">soup_server_get_port</a>            (<a href="SoupServer.html" title="SoupServer">SoupServer</a> *serv);
+void        <a href="SoupServer.html#soup-server-run">soup_server_run</a>                 (<a href="SoupServer.html" title="SoupServer">SoupServer</a> *serv);
+void        <a href="SoupServer.html#soup-server-run-async">soup_server_run_async</a>           (<a href="SoupServer.html" title="SoupServer">SoupServer</a> *serv);
+void        <a href="SoupServer.html#soup-server-quit">soup_server_quit</a>                (<a href="SoupServer.html" title="SoupServer">SoupServer</a> *serv);
+void        <a href="SoupServer.html#soup-server-add-handler">soup_server_add_handler</a>         (<a href="SoupServer.html" title="SoupServer">SoupServer</a> *serv,
+                                             const char *path,
+                                             SoupServerAuthContext *auth_ctx,
+                                             <a href="SoupServer.html#SoupServerCallbackFn">SoupServerCallbackFn</a> callback,
+                                             <a href="SoupServer.html#SoupServerUnregisterFn">SoupServerUnregisterFn</a> unreg,
+                                             gpointer data);
+void        <a href="SoupServer.html#soup-server-remove-handler">soup_server_remove_handler</a>      (<a href="SoupServer.html" title="SoupServer">SoupServer</a> *serv,
+                                             const char *path);
+SoupServerHandler* <a href="SoupServer.html#soup-server-get-handler">soup_server_get_handler</a>  (<a href="SoupServer.html" title="SoupServer">SoupServer</a> *serv,
+                                             const char *path);
+GSList*     <a href="SoupServer.html#soup-server-list-handlers">soup_server_list_handlers</a>       (<a href="SoupServer.html" title="SoupServer">SoupServer</a> *serv);
+<a href="SoupAddress.html" title="SoupAddress">SoupAddress</a>* <a href="SoupServer.html#soup-server-context-get-client-address">soup_server_context_get_client_address</a>
+                                            (<a href="SoupServer.html#SoupServerContext">SoupServerContext</a> *ctx);
+const char* <a href="SoupServer.html#soup-server-context-get-client-host">soup_server_context_get_client_host</a>
+                                            (<a href="SoupServer.html#SoupServerContext">SoupServerContext</a> *ctx);
+
+</pre></div><div class="refsect1" lang="en"><a name="id2582192"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2582202"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2582207"></a><h3><a name="SoupServerContext"></a>struct SoupServerContext</h3><a class="indexterm" name="id2582216"></a><pre class="programlisting">struct SoupServerContext {
+
+	SoupMessage       *msg;
+	char              *path;
+	SoupMethodId       method_id;
+	SoupServerAuth    *auth;
+	SoupServer        *server;
+	SoupServerHandler *handler;
+	SoupSocket        *sock;
+};
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2582229"></a><h3><a name="SoupServerCallbackFn"></a>SoupServerCallbackFn ()</h3><a class="indexterm" name="id2582238"></a><pre class="programlisting">void        (*SoupServerCallbackFn)         (<a href="SoupServer.html#SoupServerContext">SoupServerContext</a> *context,
+                                             <a href="SoupMessage.html" title="SoupMessage">SoupMessage</a> *msg,
+                                             gpointer user_data);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>context</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>msg</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2582305"></a><h3><a name="SoupServerUnregisterFn"></a>SoupServerUnregisterFn ()</h3><a class="indexterm" name="id2582314"></a><pre class="programlisting">void        (*SoupServerUnregisterFn)       (<a href="SoupServer.html" title="SoupServer">SoupServer</a> *server,
+                                             SoupServerHandler *handler,
+                                             gpointer user_data);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>server</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>handler</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>user_data</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2582381"></a><h3><a name="SOUP-SERVER-PORT-CAPS"></a>SOUP_SERVER_PORT</h3><a class="indexterm" name="id2582390"></a><pre class="programlisting">#define SOUP_SERVER_PORT          "port"
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2582399"></a><h3><a name="SOUP-SERVER-INTERFACE-CAPS"></a>SOUP_SERVER_INTERFACE</h3><a class="indexterm" name="id2582408"></a><pre class="programlisting">#define SOUP_SERVER_INTERFACE     "interface"
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2582418"></a><h3><a name="SOUP-SERVER-SSL-CERT-FILE-CAPS"></a>SOUP_SERVER_SSL_CERT_FILE</h3><a class="indexterm" name="id2582427"></a><pre class="programlisting">#define SOUP_SERVER_SSL_CERT_FILE "ssl-cert-file"
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2579398"></a><h3><a name="SOUP-SERVER-SSL-KEY-FILE-CAPS"></a>SOUP_SERVER_SSL_KEY_FILE</h3><a class="indexterm" name="id2579408"></a><pre class="programlisting">#define SOUP_SERVER_SSL_KEY_FILE  "ssl-key-file"
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2579419"></a><h3><a name="soup-server-new"></a>soup_server_new ()</h3><a class="indexterm" name="id2579427"></a><pre class="programlisting"><a href="SoupServer.html" title="SoupServer">SoupServer</a>* soup_server_new                 (const char *optname1,
+                                             ...);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>optname1</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>...</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2579483"></a><h3><a name="soup-server-get-protocol"></a>soup_server_get_protocol ()</h3><a class="indexterm" name="id2579491"></a><pre class="programlisting"><a href="libsoup-soup-uri.html#SoupProtocol">SoupProtocol</a> soup_server_get_protocol       (<a href="SoupServer.html" title="SoupServer">SoupServer</a> *serv);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>serv</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2579535"></a><h3><a name="soup-server-get-port"></a>soup_server_get_port ()</h3><a class="indexterm" name="id2579543"></a><pre class="programlisting">guint       soup_server_get_port            (<a href="SoupServer.html" title="SoupServer">SoupServer</a> *serv);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>serv</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2579587"></a><h3><a name="soup-server-run"></a>soup_server_run ()</h3><a class="indexterm" name="id2579596"></a><pre class="programlisting">void        soup_server_run                 (<a href="SoupServer.html" title="SoupServer">SoupServer</a> *serv);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>serv</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2579630"></a><h3><a name="soup-server-run-async"></a>soup_server_run_async ()</h3><a class="indexterm" name="id2579639"></a><pre class="programlisting">void        soup_server_run_async           (<a href="SoupServer.html" title="SoupServer">SoupServer</a> *serv);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>serv</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2589167"></a><h3><a name="soup-server-quit"></a>soup_server_quit ()</h3><a class="indexterm" name="id2589175"></a><pre class="programlisting">void        soup_server_quit                (<a href="SoupServer.html" title="SoupServer">SoupServer</a> *serv);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>serv</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2589210"></a><h3><a name="soup-server-add-handler"></a>soup_server_add_handler ()</h3><a class="indexterm" name="id2589218"></a><pre class="programlisting">void        soup_server_add_handler         (<a href="SoupServer.html" title="SoupServer">SoupServer</a> *serv,
+                                             const char *path,
+                                             SoupServerAuthContext *auth_ctx,
+                                             <a href="SoupServer.html#SoupServerCallbackFn">SoupServerCallbackFn</a> callback,
+                                             <a href="SoupServer.html#SoupServerUnregisterFn">SoupServerUnregisterFn</a> unreg,
+                                             gpointer data);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>serv</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>path</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>auth_ctx</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>callback</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>unreg</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>data</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2589337"></a><h3><a name="soup-server-remove-handler"></a>soup_server_remove_handler ()</h3><a class="indexterm" name="id2589346"></a><pre class="programlisting">void        soup_server_remove_handler      (<a href="SoupServer.html" title="SoupServer">SoupServer</a> *serv,
+                                             const char *path);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>serv</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>path</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2589398"></a><h3><a name="soup-server-get-handler"></a>soup_server_get_handler ()</h3><a class="indexterm" name="id2589406"></a><pre class="programlisting">SoupServerHandler* soup_server_get_handler  (<a href="SoupServer.html" title="SoupServer">SoupServer</a> *serv,
+                                             const char *path);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>serv</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>path</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2589467"></a><h3><a name="soup-server-list-handlers"></a>soup_server_list_handlers ()</h3><a class="indexterm" name="id2589476"></a><pre class="programlisting">GSList*     soup_server_list_handlers       (<a href="SoupServer.html" title="SoupServer">SoupServer</a> *serv);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>serv</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2589520"></a><h3><a name="soup-server-context-get-client-address"></a>soup_server_context_get_client_address ()</h3><a class="indexterm" name="id2589532"></a><pre class="programlisting"><a href="SoupAddress.html" title="SoupAddress">SoupAddress</a>* soup_server_context_get_client_address
+                                            (<a href="SoupServer.html#SoupServerContext">SoupServerContext</a> *ctx);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ctx</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2589578"></a><h3><a name="soup-server-context-get-client-host"></a>soup_server_context_get_client_host ()</h3><a class="indexterm" name="id2589590"></a><pre class="programlisting">const char* soup_server_context_get_client_host
+                                            (<a href="SoupServer.html#SoupServerContext">SoupServerContext</a> *ctx);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ctx</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="SoupServerMessage.html"><b>&lt;&lt; SoupServerMessage</b></a></td><td align="right"><a accesskey="n" href="SoupSession.html"><b>SoupSession &gt;&gt;</b></a></td></tr></table></body></html>

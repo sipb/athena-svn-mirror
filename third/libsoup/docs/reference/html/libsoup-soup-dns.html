@@ -1,0 +1,100 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>soup-dns</title><meta name="generator" content="DocBook XSL Stylesheets V1.64.1"><link rel="home" href="index.html" title="libsoup Reference Manual"><link rel="up" href="ch01.html" title="libsoup"><link rel="previous" href="ch01.html" title="libsoup"><link rel="next" href="SoupAddress.html" title="SoupAddress"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="ch01.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">libsoup Reference Manual</th><td><a accesskey="n" href="SoupAddress.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libsoup-soup-dns"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">soup-dns</span></h2><p>soup-dns &#8212; Low-level DNS routines</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+SoupDNSEntry* <a href="libsoup-soup-dns.html#soup-dns-entry-from-name">soup_dns_entry_from_name</a>      (const char *name);
+SoupDNSEntry* <a href="libsoup-soup-dns.html#soup-dns-entry-from-addr">soup_dns_entry_from_addr</a>      (gconstpointer addr,
+                                             int family);
+gboolean    <a href="libsoup-soup-dns.html#soup-dns-entry-check-lookup">soup_dns_entry_check_lookup</a>     (SoupDNSEntry *entry);
+void        <a href="libsoup-soup-dns.html#soup-dns-entry-cancel-lookup">soup_dns_entry_cancel_lookup</a>    (SoupDNSEntry *entry);
+void        <a href="libsoup-soup-dns.html#soup-dns-free-hostent">soup_dns_free_hostent</a>           (struct hostent *h);
+char*       <a href="libsoup-soup-dns.html#soup-dns-ntop">soup_dns_ntop</a>                   (gconstpointer addr,
+                                             int family);
+</pre></div><div class="refsect1" lang="en"><a name="id2502636"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2502646"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2502651"></a><h3><a name="soup-dns-entry-from-name"></a>soup_dns_entry_from_name ()</h3><a class="indexterm" name="id2502660"></a><pre class="programlisting">SoupDNSEntry* soup_dns_entry_from_name      (const char *name);</pre><p>
+Begins asynchronous resolution of <i class="parameter"><tt>name</tt></i>. The caller should
+periodically call <a href="libsoup-soup-dns.html#soup-dns-entry-check-lookup"><tt class="function">soup_dns_entry_check_lookup()</tt></a> to see if it is
+done, and call <tt class="function">soup_dns_entry_get_hostent()</tt> when
+<a href="libsoup-soup-dns.html#soup-dns-entry-check-lookup"><tt class="function">soup_dns_entry_check_lookup()</tt></a> returns <tt class="literal">TRUE</tt>.
+</p><p>
+Currently, this routine forks and does the lookup, which can cause
+some problems. In general, this will work ok for most programs most
+of the time. It will be slow or even fail when using operating
+systems that copy the entire process when forking.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>name</tt></i> :</span></td><td> a nice name (eg, mofo.eecs.umich.edu) or a dotted decimal name
+  (eg, 141.213.8.59).
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a <span class="type">SoupDNSEntry</span>, which will be freed when you call
+<tt class="function">soup_dns_entry_get_hostent()</tt> or <a href="libsoup-soup-dns.html#soup-dns-entry-cancel-lookup"><tt class="function">soup_dns_entry_cancel_lookup()</tt></a>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2483714"></a><h3><a name="soup-dns-entry-from-addr"></a>soup_dns_entry_from_addr ()</h3><a class="indexterm" name="id2483722"></a><pre class="programlisting">SoupDNSEntry* soup_dns_entry_from_addr      (gconstpointer addr,
+                                             int family);</pre><p>
+Begins asynchronous resolution of <i class="parameter"><tt>addr</tt></i>. The caller should
+periodically call <a href="libsoup-soup-dns.html#soup-dns-entry-check-lookup"><tt class="function">soup_dns_entry_check_lookup()</tt></a> to see if it is
+done, and call <tt class="function">soup_dns_entry_get_hostent()</tt> when
+<a href="libsoup-soup-dns.html#soup-dns-entry-check-lookup"><tt class="function">soup_dns_entry_check_lookup()</tt></a> returns <tt class="literal">TRUE</tt>.
+</p><p>
+Currently, this routine forks and does the lookup, which can cause
+some problems. In general, this will work ok for most programs most
+of the time. It will be slow or even fail when using operating
+systems that copy the entire process when forking.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>addr</tt></i> :</span></td><td> pointer to address data (eg, an <span class="type">in_addr_t</span>)
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>family</tt></i> :</span></td><td> address family of <i class="parameter"><tt>addr</tt></i>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a <span class="type">SoupDNSEntry</span>, which will be freed when you call
+<tt class="function">soup_dns_entry_get_hostent()</tt> or <a href="libsoup-soup-dns.html#soup-dns-entry-cancel-lookup"><tt class="function">soup_dns_entry_cancel_lookup()</tt></a>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2537808"></a><h3><a name="soup-dns-entry-check-lookup"></a>soup_dns_entry_check_lookup ()</h3><a class="indexterm" name="id2537817"></a><pre class="programlisting">gboolean    soup_dns_entry_check_lookup     (SoupDNSEntry *entry);</pre><p>
+Checks if <i class="parameter"><tt>entry</tt></i> has finished resolving</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>entry</tt></i> :</span></td><td> a <span class="type">SoupDNSEntry</span>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> if <i class="parameter"><tt>entry</tt></i> has finished resolving (either
+successfully or not)
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2537882"></a><h3><a name="soup-dns-entry-cancel-lookup"></a>soup_dns_entry_cancel_lookup ()</h3><a class="indexterm" name="id2537893"></a><pre class="programlisting">void        soup_dns_entry_cancel_lookup    (SoupDNSEntry *entry);</pre><p>
+Cancels the lookup for <i class="parameter"><tt>entry</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>entry</tt></i> :</span></td><td> a <span class="type">SoupDNSEntry</span>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2537940"></a><h3><a name="soup-dns-free-hostent"></a>soup_dns_free_hostent ()</h3><a class="indexterm" name="id2537949"></a><pre class="programlisting">void        soup_dns_free_hostent           (struct hostent *h);</pre><p>
+Frees <i class="parameter"><tt>h</tt></i>. Use this to free the return value from
+<tt class="function">soup_dns_entry_get_hostent()</tt>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>h</tt></i> :</span></td><td> a <span class="type">hostent</span>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2458217"></a><h3><a name="soup-dns-ntop"></a>soup_dns_ntop ()</h3><a class="indexterm" name="id2458226"></a><pre class="programlisting">char*       soup_dns_ntop                   (gconstpointer addr,
+                                             int family);</pre><p>
+Converts <i class="parameter"><tt>addr</tt></i> into textual form (eg, "141.213.8.59"), like the
+standard library function <tt class="function">inet_ntop()</tt>, except that the returned
+string must be freed.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>addr</tt></i> :</span></td><td> pointer to address data (eg, an <span class="type">in_addr_t</span>)
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>family</tt></i> :</span></td><td> address family of <i class="parameter"><tt>addr</tt></i> 
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the text form or <i class="parameter"><tt>addr</tt></i>, which must be freed.
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="ch01.html"><b>&lt;&lt; libsoup</b></a></td><td align="right"><a accesskey="n" href="SoupAddress.html"><b>SoupAddress &gt;&gt;</b></a></td></tr></table></body></html>

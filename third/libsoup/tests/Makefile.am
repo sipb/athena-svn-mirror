@@ -1,13 +1,27 @@
 INCLUDES =		\
 	-I$(top_srcdir)	\
+	$(XML_CFLAGS)	\
 	$(GLIB_CFLAGS)
 
-noinst_PROGRAMS = get #timeserver
+LIBS = $(top_builddir)/libsoup/libsoup-$(SOUP_API_VERSION).la
 
+noinst_PROGRAMS =	\
+	auth-test	\
+	dict		\
+	dns		\
+	get		\
+	revserver	\
+	simple-httpd	\
+	simple-proxy	\
+	uri-parsing
+
+auth_test_SOURCES = auth-test.c
+dict_SOURCES = dict.c
+dns_SOURCES = dns.c
 get_SOURCES = get.c
+revserver_SOURCES = revserver.c
+simple_httpd_SOURCES = simple-httpd.c
+simple_proxy_SOURCES = simple-proxy.c
+uri_parsing_SOURCES = uri-parsing.c
 
-get_LDADD = $(top_builddir)/libsoup/libsoup-2.0.la
-
-#timeserver_SOURCES = timeserver.c
-
-#timeserver_LDADD = $(top_builddir)/libsoup/libsoup-2.0.la
+EXTRA_DIST = libsoup.supp test-cert.pem test-key.pem

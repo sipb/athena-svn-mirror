@@ -1,0 +1,126 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>SoupAuth</title><meta name="generator" content="DocBook XSL Stylesheets V1.64.1"><link rel="home" href="index.html" title="libsoup Reference Manual"><link rel="up" href="ch01.html" title="libsoup"><link rel="previous" href="SoupAddress.html" title="SoupAddress"><link rel="next" href="SoupAuthBasic.html" title="SoupAuthBasic"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="SoupAddress.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">libsoup Reference Manual</th><td><a accesskey="n" href="SoupAuthBasic.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="SoupAuth"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">SoupAuth</span></h2><p>SoupAuth &#8212; HTTP Authentication support</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+struct      <a href="SoupAuth.html#SoupAuth-struct">SoupAuth</a>;
+<a href="SoupAuth.html" title="SoupAuth">SoupAuth</a>*   <a href="SoupAuth.html#soup-auth-new-from-header-list">soup_auth_new_from_header_list</a>  (const GSList *header);
+const char* <a href="SoupAuth.html#soup-auth-get-scheme-name">soup_auth_get_scheme_name</a>       (<a href="SoupAuth.html" title="SoupAuth">SoupAuth</a> *auth);
+const char* <a href="SoupAuth.html#soup-auth-get-realm">soup_auth_get_realm</a>             (<a href="SoupAuth.html" title="SoupAuth">SoupAuth</a> *auth);
+void        <a href="SoupAuth.html#soup-auth-authenticate">soup_auth_authenticate</a>          (<a href="SoupAuth.html" title="SoupAuth">SoupAuth</a> *auth,
+                                             const char *username,
+                                             const char *password);
+gboolean    <a href="SoupAuth.html#soup-auth-is-authenticated">soup_auth_is_authenticated</a>      (<a href="SoupAuth.html" title="SoupAuth">SoupAuth</a> *auth);
+char*       <a href="SoupAuth.html#soup-auth-get-authorization">soup_auth_get_authorization</a>     (<a href="SoupAuth.html" title="SoupAuth">SoupAuth</a> *auth,
+                                             <a href="SoupMessage.html" title="SoupMessage">SoupMessage</a> *msg);
+GSList*     <a href="SoupAuth.html#soup-auth-get-protection-space">soup_auth_get_protection_space</a>  (<a href="SoupAuth.html" title="SoupAuth">SoupAuth</a> *auth,
+                                             const SoupUri *source_uri);
+void        <a href="SoupAuth.html#soup-auth-free-protection-space">soup_auth_free_protection_space</a> (<a href="SoupAuth.html" title="SoupAuth">SoupAuth</a> *auth,
+                                             GSList *space);
+
+</pre></div><div class="refsect1" lang="en"><a name="id2567720"></a><h2>Object Hierarchy</h2><pre class="synopsis">
+
+  GObject
+   +----SoupAuth
+         +----<a href="SoupAuthBasic.html" title="SoupAuthBasic">SoupAuthBasic</a>
+         +----<a href="SoupAuthDigest.html" title="SoupAuthDigest">SoupAuthDigest</a>
+</pre></div><div class="refsect1" lang="en"><a name="id2567746"></a><h2>Description</h2><p>
+<a href="SoupAuth.html" title="SoupAuth"><span class="type">SoupAuth</span></a> objects store the authentication data associated with a
+given bit of webspace. They are created and maintained automatically
+by <a href="SoupSession.html" title="SoupSession"><span class="type">SoupSession</span></a>.
+</p><p>
+<a href="SoupAuth.html" title="SoupAuth"><span class="type">SoupAuth</span></a> itself is an abstract class. Specific HTTP Authentication
+mechanisms are implemented by its subclasses. (NTLM authentication,
+which works quite differently from normal HTTP authentication, is
+handled by <a href="SoupConnectionNTLM.html" title="SoupConnectionNTLM"><span class="type">SoupConnectionNTLM</span></a>.)
+</p></div><div class="refsect1" lang="en"><a name="id2567790"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2567795"></a><h3><a name="SoupAuth-struct"></a>struct SoupAuth</h3><a class="indexterm" name="id2567803"></a><pre class="programlisting">struct SoupAuth;</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2567813"></a><h3><a name="soup-auth-new-from-header-list"></a>soup_auth_new_from_header_list ()</h3><a class="indexterm" name="id2567824"></a><pre class="programlisting"><a href="SoupAuth.html" title="SoupAuth">SoupAuth</a>*   soup_auth_new_from_header_list  (const GSList *header);</pre><p>
+Creates a <a href="SoupAuth.html" title="SoupAuth"><span class="type">SoupAuth</span></a> value based on the strongest available
+supported auth type in <i class="parameter"><tt>vals</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>header</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the new <a href="SoupAuth.html" title="SoupAuth"><span class="type">SoupAuth</span></a>, or <tt class="literal">NULL</tt> if none could be created.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2556379"></a><h3><a name="soup-auth-get-scheme-name"></a>soup_auth_get_scheme_name ()</h3><a class="indexterm" name="id2556388"></a><pre class="programlisting">const char* soup_auth_get_scheme_name       (<a href="SoupAuth.html" title="SoupAuth">SoupAuth</a> *auth);</pre><p>
+Returns <i class="parameter"><tt>auth</tt></i>'s scheme name. (Eg, "Basic")</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>auth</tt></i> :</span></td><td> a <a href="SoupAuth.html" title="SoupAuth"><span class="type">SoupAuth</span></a>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the scheme name
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2556446"></a><h3><a name="soup-auth-get-realm"></a>soup_auth_get_realm ()</h3><a class="indexterm" name="id2556454"></a><pre class="programlisting">const char* soup_auth_get_realm             (<a href="SoupAuth.html" title="SoupAuth">SoupAuth</a> *auth);</pre><p>
+Returns <i class="parameter"><tt>auth</tt></i>'s realm, if any.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>auth</tt></i> :</span></td><td> a <a href="SoupAuth.html" title="SoupAuth"><span class="type">SoupAuth</span></a>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the realm name
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2556512"></a><h3><a name="soup-auth-authenticate"></a>soup_auth_authenticate ()</h3><a class="indexterm" name="id2556521"></a><pre class="programlisting">void        soup_auth_authenticate          (<a href="SoupAuth.html" title="SoupAuth">SoupAuth</a> *auth,
+                                             const char *username,
+                                             const char *password);</pre><p>
+This is called by the session after requesting a username and
+password from the application. <i class="parameter"><tt>auth</tt></i> should take the information
+and do whatever scheme-specific processing is needed.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>auth</tt></i> :</span></td><td> a <a href="SoupAuth.html" title="SoupAuth"><span class="type">SoupAuth</span></a>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>username</tt></i> :</span></td><td> the username provided by the user or client
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>password</tt></i> :</span></td><td> the password provided by the user or client
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2525893"></a><h3><a name="soup-auth-is-authenticated"></a>soup_auth_is_authenticated ()</h3><a class="indexterm" name="id2525902"></a><pre class="programlisting">gboolean    soup_auth_is_authenticated      (<a href="SoupAuth.html" title="SoupAuth">SoupAuth</a> *auth);</pre><p>
+Tests if <i class="parameter"><tt>auth</tt></i> has been given a username and password</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>auth</tt></i> :</span></td><td> a <a href="SoupAuth.html" title="SoupAuth"><span class="type">SoupAuth</span></a>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> if <i class="parameter"><tt>auth</tt></i> has been given a username and password
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2525965"></a><h3><a name="soup-auth-get-authorization"></a>soup_auth_get_authorization ()</h3><a class="indexterm" name="id2525974"></a><pre class="programlisting">char*       soup_auth_get_authorization     (<a href="SoupAuth.html" title="SoupAuth">SoupAuth</a> *auth,
+                                             <a href="SoupMessage.html" title="SoupMessage">SoupMessage</a> *msg);</pre><p>
+Generates an appropriate "Authorization" header for <i class="parameter"><tt>msg</tt></i>. (This
+will only be called if <a href="SoupAuth.html#soup-auth-is-authenticated"><tt class="function">soup_auth_is_authenticated()</tt></a> returns <tt class="literal">TRUE</tt>.)</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>auth</tt></i> :</span></td><td> a <a href="SoupAuth.html" title="SoupAuth"><span class="type">SoupAuth</span></a>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>msg</tt></i> :</span></td><td> the <a href="SoupMessage.html" title="SoupMessage"><span class="type">SoupMessage</span></a> to be authorized
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the "Authorization" header, which must be freed.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2526066"></a><h3><a name="soup-auth-get-protection-space"></a>soup_auth_get_protection_space ()</h3><a class="indexterm" name="id2526077"></a><pre class="programlisting">GSList*     soup_auth_get_protection_space  (<a href="SoupAuth.html" title="SoupAuth">SoupAuth</a> *auth,
+                                             const SoupUri *source_uri);</pre><p>
+Returns a list of paths on the server which <i class="parameter"><tt>auth</tt></i> extends over.
+(All subdirectories of these paths are also assumed to be part
+of <i class="parameter"><tt>auth</tt></i>'s protection space, unless otherwise discovered not to
+be.)</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>auth</tt></i> :</span></td><td> a <a href="SoupAuth.html" title="SoupAuth"><span class="type">SoupAuth</span></a>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>source_uri</tt></i> :</span></td><td> the URI of the request that <i class="parameter"><tt>auth</tt></i> was generated in
+response to.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the list of paths, which must be freed with
+<a href="SoupAuth.html#soup-auth-free-protection-space"><tt class="function">soup_auth_free_protection_space()</tt></a>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2570856"></a><h3><a name="soup-auth-free-protection-space"></a>soup_auth_free_protection_space ()</h3><a class="indexterm" name="id2570867"></a><pre class="programlisting">void        soup_auth_free_protection_space (<a href="SoupAuth.html" title="SoupAuth">SoupAuth</a> *auth,
+                                             GSList *space);</pre><p>
+Frees <i class="parameter"><tt>space</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>auth</tt></i> :</span></td><td> a <a href="SoupAuth.html" title="SoupAuth"><span class="type">SoupAuth</span></a>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>space</tt></i> :</span></td><td> the return value from <a href="SoupAuth.html#soup-auth-get-protection-space"><tt class="function">soup_auth_get_protection_space()</tt></a>
+</td></tr></tbody></table></div></div></div><div class="refsect1" lang="en"><a name="id2570940"></a><h2>See Also</h2><p>
+SoupAuthBasic, SoupAuthDigest, SoupSession, SoupConnectionNTLM
+</p></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="SoupAddress.html"><b>&lt;&lt; SoupAddress</b></a></td><td align="right"><a accesskey="n" href="SoupAuthBasic.html"><b>SoupAuthBasic &gt;&gt;</b></a></td></tr></table></body></html>

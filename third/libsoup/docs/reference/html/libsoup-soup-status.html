@@ -1,0 +1,247 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>soup-status</title><meta name="generator" content="DocBook XSL Stylesheets V1.64.1"><link rel="home" href="index.html" title="libsoup Reference Manual"><link rel="up" href="ch01.html" title="libsoup"><link rel="previous" href="libsoup-soup-ssl.html" title="soup-ssl"><link rel="next" href="libsoup-soup-uri.html" title="soup-uri"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libsoup-soup-ssl.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">libsoup Reference Manual</th><td><a accesskey="n" href="libsoup-soup-uri.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libsoup-soup-status"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">soup-status</span></h2><p>soup-status &#8212; HTTP and Soup status codes</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+enum        <a href="libsoup-soup-status.html#SoupStatusClass">SoupStatusClass</a>;
+#define     <a href="libsoup-soup-status.html#SOUP-STATUS-IS-INFORMATIONAL-CAPS">SOUP_STATUS_IS_INFORMATIONAL</a>    (status)
+#define     <a href="libsoup-soup-status.html#SOUP-STATUS-IS-SUCCESSFUL-CAPS">SOUP_STATUS_IS_SUCCESSFUL</a>       (status)
+#define     <a href="libsoup-soup-status.html#SOUP-STATUS-IS-REDIRECTION-CAPS">SOUP_STATUS_IS_REDIRECTION</a>      (status)
+#define     <a href="libsoup-soup-status.html#SOUP-STATUS-IS-CLIENT-ERROR-CAPS">SOUP_STATUS_IS_CLIENT_ERROR</a>     (status)
+#define     <a href="libsoup-soup-status.html#SOUP-STATUS-IS-SERVER-ERROR-CAPS">SOUP_STATUS_IS_SERVER_ERROR</a>     (status)
+enum        <a href="libsoup-soup-status.html#SoupKnownStatusCode">SoupKnownStatusCode</a>;
+const char* <a href="libsoup-soup-status.html#soup-status-get-phrase">soup_status_get_phrase</a>          (guint status_code);
+
+</pre></div><div class="refsect1" lang="en"><a name="id2593415"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2593425"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2593430"></a><h3><a name="SoupStatusClass"></a>enum SoupStatusClass</h3><a class="indexterm" name="id2593438"></a><pre class="programlisting">typedef enum {
+	SOUP_STATUS_CLASS_TRANSPORT_ERROR = 0,
+	SOUP_STATUS_CLASS_INFORMATIONAL,
+	SOUP_STATUS_CLASS_SUCCESS,
+	SOUP_STATUS_CLASS_REDIRECT,
+	SOUP_STATUS_CLASS_CLIENT_ERROR,
+	SOUP_STATUS_CLASS_SERVER_ERROR
+} SoupStatusClass;
+</pre><p>
+The classes of HTTP and Soup status codes
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">SOUP_STATUS_CLASS_TRANSPORT_ERROR</tt></span></td><td>Network or Soup-level error
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_CLASS_INFORMATIONAL</tt></span></td><td>HTTP 1xx response providing partial
+information about the state of a request
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_CLASS_SUCCESS</tt></span></td><td>HTTP 2xx successful response
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_CLASS_REDIRECT</tt></span></td><td>HTTP 3xx redirection response
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_CLASS_CLIENT_ERROR</tt></span></td><td>HTTP 4xx client error response
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_CLASS_SERVER_ERROR</tt></span></td><td>HTTP 5xx server error response
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2581536"></a><h3><a name="SOUP-STATUS-IS-INFORMATIONAL-CAPS"></a>SOUP_STATUS_IS_INFORMATIONAL()</h3><a class="indexterm" name="id2581547"></a><pre class="programlisting">#define SOUP_STATUS_IS_INFORMATIONAL(status)   ((status) &gt;= 100 &amp;&amp; (status) &lt; 200)
+</pre><p>
+Tests if <i class="parameter"><tt>status</tt></i> is an Informational (1xx) response.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>status</tt></i> :</span></td><td>an HTTP status code
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><tt class="literal">TRUE</tt> if <i class="parameter"><tt>status</tt></i> is an Information (1xx) response.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2581592"></a><h3><a name="SOUP-STATUS-IS-SUCCESSFUL-CAPS"></a>SOUP_STATUS_IS_SUCCESSFUL()</h3><a class="indexterm" name="id2581603"></a><pre class="programlisting">#define SOUP_STATUS_IS_SUCCESSFUL(status)      ((status) &gt;= 200 &amp;&amp; (status) &lt; 300)
+</pre><p>
+Tests if <i class="parameter"><tt>status</tt></i> is a Successful (2xx) response.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>status</tt></i> :</span></td><td>an HTTP status code
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><tt class="literal">TRUE</tt> if <i class="parameter"><tt>status</tt></i> is a Successful (2xx) response.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2581648"></a><h3><a name="SOUP-STATUS-IS-REDIRECTION-CAPS"></a>SOUP_STATUS_IS_REDIRECTION()</h3><a class="indexterm" name="id2581659"></a><pre class="programlisting">#define SOUP_STATUS_IS_REDIRECTION(status)     ((status) &gt;= 300 &amp;&amp; (status) &lt; 400)
+</pre><p>
+Tests if <i class="parameter"><tt>status</tt></i> is a Redirection (3xx) response.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>status</tt></i> :</span></td><td>an HTTP status code
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><tt class="literal">TRUE</tt> if <i class="parameter"><tt>status</tt></i> is a Redirection (3xx) response.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2593921"></a><h3><a name="SOUP-STATUS-IS-CLIENT-ERROR-CAPS"></a>SOUP_STATUS_IS_CLIENT_ERROR()</h3><a class="indexterm" name="id2593932"></a><pre class="programlisting">#define SOUP_STATUS_IS_CLIENT_ERROR(status)    ((status) &gt;= 400 &amp;&amp; (status) &lt; 500)
+</pre><p>
+Tests if <i class="parameter"><tt>status</tt></i> is a Client Error (4xx) response.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>status</tt></i> :</span></td><td>an HTTP status code
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><tt class="literal">TRUE</tt> if <i class="parameter"><tt>status</tt></i> is a Client Error (4xx) response.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2593977"></a><h3><a name="SOUP-STATUS-IS-SERVER-ERROR-CAPS"></a>SOUP_STATUS_IS_SERVER_ERROR()</h3><a class="indexterm" name="id2593988"></a><pre class="programlisting">#define SOUP_STATUS_IS_SERVER_ERROR(status)    ((status) &gt;= 500 &amp;&amp; (status) &lt; 600)
+</pre><p>
+Tests if <i class="parameter"><tt>status</tt></i> is a Server Error (5xx) response.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>status</tt></i> :</span></td><td>an HTTP status code
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td><tt class="literal">TRUE</tt> if <i class="parameter"><tt>status</tt></i> is a Server Error (5xx) response.
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2594034"></a><h3><a name="SoupKnownStatusCode"></a>enum SoupKnownStatusCode</h3><a class="indexterm" name="id2594042"></a><pre class="programlisting">typedef enum {
+	SOUP_STATUS_NONE,
+
+	/* Transport Errors */
+	SOUP_STATUS_CANCELLED                       = 1,
+	SOUP_STATUS_CANT_RESOLVE,
+	SOUP_STATUS_CANT_RESOLVE_PROXY,
+	SOUP_STATUS_CANT_CONNECT,
+	SOUP_STATUS_CANT_CONNECT_PROXY,
+	SOUP_STATUS_SSL_FAILED,
+	SOUP_STATUS_IO_ERROR,
+	SOUP_STATUS_MALFORMED,
+	SOUP_STATUS_TRY_AGAIN,
+
+	/* HTTP Status Codes */
+	SOUP_STATUS_CONTINUE                        = 100,
+	SOUP_STATUS_SWITCHING_PROTOCOLS             = 101,
+	SOUP_STATUS_PROCESSING                      = 102, /* WebDAV */
+
+	SOUP_STATUS_OK                              = 200,
+	SOUP_STATUS_CREATED                         = 201,
+	SOUP_STATUS_ACCEPTED                        = 202,
+	SOUP_STATUS_NON_AUTHORITATIVE               = 203,
+	SOUP_STATUS_NO_CONTENT                      = 204,
+	SOUP_STATUS_RESET_CONTENT                   = 205,
+	SOUP_STATUS_PARTIAL_CONTENT                 = 206,
+	SOUP_STATUS_MULTI_STATUS                    = 207, /* WebDAV */
+
+	SOUP_STATUS_MULTIPLE_CHOICES                = 300,
+	SOUP_STATUS_MOVED_PERMANENTLY               = 301,
+	SOUP_STATUS_FOUND                           = 302,
+	SOUP_STATUS_MOVED_TEMPORARILY               = 302, /* RFC 2068 */
+	SOUP_STATUS_SEE_OTHER                       = 303,
+	SOUP_STATUS_NOT_MODIFIED                    = 304,
+	SOUP_STATUS_USE_PROXY                       = 305,
+	SOUP_STATUS_NOT_APPEARING_IN_THIS_PROTOCOL  = 306, /* (reserved) */
+	SOUP_STATUS_TEMPORARY_REDIRECT              = 307,
+
+	SOUP_STATUS_BAD_REQUEST                     = 400,
+	SOUP_STATUS_UNAUTHORIZED                    = 401,
+	SOUP_STATUS_PAYMENT_REQUIRED                = 402, /* (reserved) */
+	SOUP_STATUS_FORBIDDEN                       = 403,
+	SOUP_STATUS_NOT_FOUND                       = 404,
+	SOUP_STATUS_METHOD_NOT_ALLOWED              = 405,
+	SOUP_STATUS_NOT_ACCEPTABLE                  = 406,
+	SOUP_STATUS_PROXY_AUTHENTICATION_REQUIRED   = 407,
+	SOUP_STATUS_PROXY_UNAUTHORIZED              = SOUP_STATUS_PROXY_AUTHENTICATION_REQUIRED,
+	SOUP_STATUS_REQUEST_TIMEOUT                 = 408,
+	SOUP_STATUS_CONFLICT                        = 409,
+	SOUP_STATUS_GONE                            = 410,
+	SOUP_STATUS_LENGTH_REQUIRED                 = 411,
+	SOUP_STATUS_PRECONDITION_FAILED             = 412,
+	SOUP_STATUS_REQUEST_ENTITY_TOO_LARGE        = 413,
+	SOUP_STATUS_REQUEST_URI_TOO_LONG            = 414,
+	SOUP_STATUS_UNSUPPORTED_MEDIA_TYPE          = 415,
+	SOUP_STATUS_REQUESTED_RANGE_NOT_SATISFIABLE = 416,
+	SOUP_STATUS_INVALID_RANGE                   = SOUP_STATUS_REQUESTED_RANGE_NOT_SATISFIABLE,
+	SOUP_STATUS_EXPECTATION_FAILED              = 417,
+	SOUP_STATUS_UNPROCESSABLE_ENTITY            = 422, /* WebDAV */
+	SOUP_STATUS_LOCKED                          = 423, /* WebDAV */
+	SOUP_STATUS_FAILED_DEPENDENCY               = 424, /* WebDAV */
+
+	SOUP_STATUS_INTERNAL_SERVER_ERROR           = 500,
+	SOUP_STATUS_NOT_IMPLEMENTED                 = 501,
+	SOUP_STATUS_BAD_GATEWAY                     = 502,
+	SOUP_STATUS_SERVICE_UNAVAILABLE             = 503,
+	SOUP_STATUS_GATEWAY_TIMEOUT                 = 504,
+	SOUP_STATUS_HTTP_VERSION_NOT_SUPPORTED      = 505,
+	SOUP_STATUS_INSUFFICIENT_STORAGE            = 507, /* WebDAV search */
+	SOUP_STATUS_NOT_EXTENDED                    = 510  /* RFC 2774 */
+} SoupKnownStatusCode;
+</pre><p>
+These represent the known HTTP status code values, plus various
+network and internal errors.
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><tt class="literal">SOUP_STATUS_NONE</tt></span></td><td>No status available. (Eg, the message has not been
+sent yet)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_CANCELLED</tt></span></td><td>Message was cancelled locally
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_CANT_RESOLVE</tt></span></td><td>Unable to resolve destination host name
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_CANT_RESOLVE_PROXY</tt></span></td><td>Unable to resolve proxy host name
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_CANT_CONNECT</tt></span></td><td>Unable to connect to remote host
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_CANT_CONNECT_PROXY</tt></span></td><td>Unable to connect to proxy
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_SSL_FAILED</tt></span></td><td>SSL negotiation failed
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_IO_ERROR</tt></span></td><td>A network error occurred, or the other end
+closed the connection unexpectedly
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_MALFORMED</tt></span></td><td>Malformed data (usually a programmer error)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_TRY_AGAIN</tt></span></td><td>Try again. (Only returned in certain
+specifically documented cases)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_CONTINUE</tt></span></td><td>100 Continue (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_SWITCHING_PROTOCOLS</tt></span></td><td>101 Switching Protocols (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_PROCESSING</tt></span></td><td>102 Processing (WebDAV)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_OK</tt></span></td><td>200 Success (HTTP). Also used by many lower-level
+soup routines to indicate success.
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_CREATED</tt></span></td><td>201 Created (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_ACCEPTED</tt></span></td><td>202 Accepted (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_NON_AUTHORITATIVE</tt></span></td><td>203 Non-Authoritative Information (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_NO_CONTENT</tt></span></td><td>204 No Content (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_RESET_CONTENT</tt></span></td><td>205 Reset Content (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_PARTIAL_CONTENT</tt></span></td><td>206 Partial Content (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_MULTI_STATUS</tt></span></td><td>207 Multi-Status (WebDAV)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_MULTIPLE_CHOICES</tt></span></td><td>300 Multiple Choices (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_MOVED_PERMANENTLY</tt></span></td><td>301 Moved Permanently (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_FOUND</tt></span></td><td>302 Found (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_MOVED_TEMPORARILY</tt></span></td><td>302 Moved Temporarily (old name, RFC 2068)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_SEE_OTHER</tt></span></td><td>303 See Other (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_NOT_MODIFIED</tt></span></td><td>304 Not Modified (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_USE_PROXY</tt></span></td><td>305 Use Proxy (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_NOT_APPEARING_IN_THIS_PROTOCOL</tt></span></td><td>306 [Unused] (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_TEMPORARY_REDIRECT</tt></span></td><td>307 Temporary Redirect (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_BAD_REQUEST</tt></span></td><td>400 Bad Request (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_UNAUTHORIZED</tt></span></td><td>401 Unauthorized (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_PAYMENT_REQUIRED</tt></span></td><td>402 Payment Required (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_FORBIDDEN</tt></span></td><td>403 Forbidden (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_NOT_FOUND</tt></span></td><td>404 Not Found (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_METHOD_NOT_ALLOWED</tt></span></td><td>405 Method Not Allowed (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_NOT_ACCEPTABLE</tt></span></td><td>406 Not Acceptable (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_PROXY_AUTHENTICATION_REQUIRED</tt></span></td><td>407 Proxy Authentication
+Required (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_PROXY_UNAUTHORIZED</tt></span></td><td>shorter alias for <tt class="literal">SOUP_STATUS_PROXY_AUTHENTICATION_REQUIRED</tt>
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_REQUEST_TIMEOUT</tt></span></td><td>408 Request Timeout (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_CONFLICT</tt></span></td><td>409 Conflict (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_GONE</tt></span></td><td>410 Gone (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_LENGTH_REQUIRED</tt></span></td><td>411 Length Required (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_PRECONDITION_FAILED</tt></span></td><td>412 Precondition Failed (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_REQUEST_ENTITY_TOO_LARGE</tt></span></td><td>413 Request Entity Too Large (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_REQUEST_URI_TOO_LONG</tt></span></td><td>414 Request-URI Too Long (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_UNSUPPORTED_MEDIA_TYPE</tt></span></td><td>415 Unsupported Media Type (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_REQUESTED_RANGE_NOT_SATISFIABLE</tt></span></td><td>416 Requested Range Not
+Satisfiable (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_INVALID_RANGE</tt></span></td><td>shorter alias for <tt class="literal">SOUP_STATUS_REQUESTED_RANGE_NOT_SATISFIABLE</tt>
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_EXPECTATION_FAILED</tt></span></td><td>417 Expectation Failed (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_UNPROCESSABLE_ENTITY</tt></span></td><td>422 Unprocessable Entity (WebDAV)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_LOCKED</tt></span></td><td>423 Locked (WebDAV)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_FAILED_DEPENDENCY</tt></span></td><td>424 Failed Dependency (WebDAV)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_INTERNAL_SERVER_ERROR</tt></span></td><td>500 Internal Server Error (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_NOT_IMPLEMENTED</tt></span></td><td>501 Not Implemented (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_BAD_GATEWAY</tt></span></td><td>502 Bad Gateway (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_SERVICE_UNAVAILABLE</tt></span></td><td>503 Service Unavailable (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_GATEWAY_TIMEOUT</tt></span></td><td>504 Gateway Timeout (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_HTTP_VERSION_NOT_SUPPORTED</tt></span></td><td>505 HTTP Version Not
+Supported (HTTP)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_INSUFFICIENT_STORAGE</tt></span></td><td>507 Insufficient Storage (WebDAV)
+</td></tr><tr><td><span class="term"><tt class="literal">SOUP_STATUS_NOT_EXTENDED</tt></span></td><td>510 Not Extended (RFC 2774)
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2600541"></a><h3><a name="soup-status-get-phrase"></a>soup_status_get_phrase ()</h3><a class="indexterm" name="id2600548"></a><pre class="programlisting">const char* soup_status_get_phrase          (guint status_code);</pre><p>
+Looks up the stock HTTP description of <i class="parameter"><tt>status_code</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>status_code</tt></i> :</span></td><td> an HTTP status code
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the (English) description of <i class="parameter"><tt>status_code</tt></i>
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libsoup-soup-ssl.html"><b>&lt;&lt; soup-ssl</b></a></td><td align="right"><a accesskey="n" href="libsoup-soup-uri.html"><b>soup-uri &gt;&gt;</b></a></td></tr></table></body></html>

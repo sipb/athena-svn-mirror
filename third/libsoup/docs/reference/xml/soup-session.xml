@@ -1,0 +1,181 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="SoupSession">
+<refmeta>
+<refentrytitle>SoupSession</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBSOUP Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>SoupSession</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+#define     <link linkend="SOUP-SESSION-PROXY-URI-CAPS">SOUP_SESSION_PROXY_URI</link>
+#define     <link linkend="SOUP-SESSION-MAX-CONNS-CAPS">SOUP_SESSION_MAX_CONNS</link>
+#define     <link linkend="SOUP-SESSION-MAX-CONNS-PER-HOST-CAPS">SOUP_SESSION_MAX_CONNS_PER_HOST</link>
+#define     <link linkend="SOUP-SESSION-USE-NTLM-CAPS">SOUP_SESSION_USE_NTLM</link>
+#define     <link linkend="SOUP-SESSION-SSL-CA-FILE-CAPS">SOUP_SESSION_SSL_CA_FILE</link>
+<link linkend="void">void</link>        <link linkend="soup-session-queue-message">soup_session_queue_message</link>      (<link linkend="SoupSession">SoupSession</link> *session,
+                                             <link linkend="SoupMessage">SoupMessage</link> *msg,
+                                             <link linkend="SoupMessageCallbackFn">SoupMessageCallbackFn</link> callback,
+                                             <link linkend="gpointer">gpointer</link> user_data);
+<link linkend="void">void</link>        <link linkend="soup-session-requeue-message">soup_session_requeue_message</link>    (<link linkend="SoupSession">SoupSession</link> *session,
+                                             <link linkend="SoupMessage">SoupMessage</link> *msg);
+<link linkend="guint">guint</link>       <link linkend="soup-session-send-message">soup_session_send_message</link>       (<link linkend="SoupSession">SoupSession</link> *session,
+                                             <link linkend="SoupMessage">SoupMessage</link> *msg);
+<link linkend="void">void</link>        <link linkend="soup-session-abort">soup_session_abort</link>              (<link linkend="SoupSession">SoupSession</link> *session);
+
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="SOUP-SESSION-PROXY-URI-CAPS"/>SOUP_SESSION_PROXY_URI</title>
+<indexterm><primary>SOUP_SESSION_PROXY_URI</primary></indexterm><programlisting>#define SOUP_SESSION_PROXY_URI          "proxy-uri"
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="SOUP-SESSION-MAX-CONNS-CAPS"/>SOUP_SESSION_MAX_CONNS</title>
+<indexterm><primary>SOUP_SESSION_MAX_CONNS</primary></indexterm><programlisting>#define SOUP_SESSION_MAX_CONNS          "max-conns"
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="SOUP-SESSION-MAX-CONNS-PER-HOST-CAPS"/>SOUP_SESSION_MAX_CONNS_PER_HOST</title>
+<indexterm><primary>SOUP_SESSION_MAX_CONNS_PER_HOST</primary></indexterm><programlisting>#define SOUP_SESSION_MAX_CONNS_PER_HOST "max-conns-per-host"
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="SOUP-SESSION-USE-NTLM-CAPS"/>SOUP_SESSION_USE_NTLM</title>
+<indexterm><primary>SOUP_SESSION_USE_NTLM</primary></indexterm><programlisting>#define SOUP_SESSION_USE_NTLM           "use-ntlm"
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="SOUP-SESSION-SSL-CA-FILE-CAPS"/>SOUP_SESSION_SSL_CA_FILE</title>
+<indexterm><primary>SOUP_SESSION_SSL_CA_FILE</primary></indexterm><programlisting>#define SOUP_SESSION_SSL_CA_FILE        "ssl-ca-file"
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="soup-session-queue-message"/>soup_session_queue_message ()</title>
+<indexterm><primary>soup_session_queue_message</primary></indexterm><programlisting><link linkend="void">void</link>        soup_session_queue_message      (<link linkend="SoupSession">SoupSession</link> *session,
+                                             <link linkend="SoupMessage">SoupMessage</link> *msg,
+                                             <link linkend="SoupMessageCallbackFn">SoupMessageCallbackFn</link> callback,
+                                             <link linkend="gpointer">gpointer</link> user_data);</programlisting>
+<para>
+Queues the message <parameter>msg</parameter> for sending. All messages are processed
+while the glib main loop runs. If <parameter>msg</parameter> has been processed before,
+any resources related to the time it was last sent are freed.
+</para>
+<para>
+Upon message completion, the callback specified in <parameter>callback</parameter> will
+be invoked. If after returning from this callback the message has
+not been requeued, <parameter>msg</parameter> will be unreffed.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>session</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupSession"><type>SoupSession</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the message to queue
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>callback</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupMessageCallbackFn"><type>SoupMessageCallbackFn</type></link> which will be called after the
+message completes or when an unrecoverable error occurs.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>user_data</parameter>&nbsp;:</term>
+<listitem><simpara> a pointer passed to <parameter>callback</parameter>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-session-requeue-message"/>soup_session_requeue_message ()</title>
+<indexterm><primary>soup_session_requeue_message</primary></indexterm><programlisting><link linkend="void">void</link>        soup_session_requeue_message    (<link linkend="SoupSession">SoupSession</link> *session,
+                                             <link linkend="SoupMessage">SoupMessage</link> *msg);</programlisting>
+<para>
+This causes <parameter>msg</parameter> to be placed back on the queue to be attempted
+again.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>session</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupSession"><type>SoupSession</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the message to requeue
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-session-send-message"/>soup_session_send_message ()</title>
+<indexterm><primary>soup_session_send_message</primary></indexterm><programlisting><link linkend="guint">guint</link>       soup_session_send_message       (<link linkend="SoupSession">SoupSession</link> *session,
+                                             <link linkend="SoupMessage">SoupMessage</link> *msg);</programlisting>
+<para>
+Synchronously send <parameter>msg</parameter>. This call will not return until the
+transfer is finished successfully or there is an unrecoverable
+error.
+</para>
+<para>
+<parameter>msg</parameter> is not freed upon return.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>session</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupSession"><type>SoupSession</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the message to send
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the HTTP status code of the response
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-session-abort"/>soup_session_abort ()</title>
+<indexterm><primary>soup_session_abort</primary></indexterm><programlisting><link linkend="void">void</link>        soup_session_abort              (<link linkend="SoupSession">SoupSession</link> *session);</programlisting>
+<para>
+Cancels all pending requests in <parameter>session</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>session</parameter>&nbsp;:</term>
+<listitem><simpara> the session
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

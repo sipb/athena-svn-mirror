@@ -1,0 +1,127 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>soup-uri</title><meta name="generator" content="DocBook XSL Stylesheets V1.64.1"><link rel="home" href="index.html" title="libsoup Reference Manual"><link rel="up" href="ch01.html" title="libsoup"><link rel="previous" href="libsoup-soup-status.html" title="soup-status"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libsoup-soup-status.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">libsoup Reference Manual</th></tr></table><div class="refentry" lang="en"><a name="libsoup-soup-uri"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">soup-uri</span></h2><p>soup-uri &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+typedef     <a href="libsoup-soup-uri.html#SoupProtocol">SoupProtocol</a>;
+#define     <a href="libsoup-soup-uri.html#SOUP-PROTOCOL-HTTP-CAPS">SOUP_PROTOCOL_HTTP</a>
+#define     <a href="libsoup-soup-uri.html#SOUP-PROTOCOL-HTTPS-CAPS">SOUP_PROTOCOL_HTTPS</a>
+SoupUri*    <a href="libsoup-soup-uri.html#soup-uri-new-with-base">soup_uri_new_with_base</a>          (const SoupUri *base,
+                                             const char *uri_string);
+SoupUri*    <a href="libsoup-soup-uri.html#soup-uri-new">soup_uri_new</a>                    (const char *uri_string);
+char*       <a href="libsoup-soup-uri.html#soup-uri-to-string">soup_uri_to_string</a>              (const SoupUri *uri,
+                                             gboolean just_path);
+SoupUri*    <a href="libsoup-soup-uri.html#soup-uri-copy">soup_uri_copy</a>                   (const SoupUri *uri);
+SoupUri*    <a href="libsoup-soup-uri.html#soup-uri-copy-root">soup_uri_copy_root</a>              (const SoupUri *uri);
+gboolean    <a href="libsoup-soup-uri.html#soup-uri-equal">soup_uri_equal</a>                  (const SoupUri *uri1,
+                                             const SoupUri *uri2);
+void        <a href="libsoup-soup-uri.html#soup-uri-free">soup_uri_free</a>                   (SoupUri *uri);
+char*       <a href="libsoup-soup-uri.html#soup-uri-encode">soup_uri_encode</a>                 (const char *part,
+                                             const char *escape_extra);
+void        <a href="libsoup-soup-uri.html#soup-uri-decode">soup_uri_decode</a>                 (char *part);
+gboolean    <a href="libsoup-soup-uri.html#soup-uri-uses-default-port">soup_uri_uses_default_port</a>      (const SoupUri *uri);
+</pre></div><div class="refsect1" lang="en"><a name="id2597020"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2597030"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2597035"></a><h3><a name="SoupProtocol"></a>SoupProtocol</h3><a class="indexterm" name="id2597044"></a><pre class="programlisting">typedef GQuark SoupProtocol;
+</pre><p>
+<span class="type">GQuark</span> is used for SoupProtocol so that the protocol of a <span class="type">SoupUri</span>
+can be tested quickly.
+</p></div><hr><div class="refsect2" lang="en"><a name="id2597067"></a><h3><a name="SOUP-PROTOCOL-HTTP-CAPS"></a>SOUP_PROTOCOL_HTTP</h3><a class="indexterm" name="id2597075"></a><pre class="programlisting">#define SOUP_PROTOCOL_HTTP (g_quark_from_static_string ("http"))
+</pre><p>
+This returns the <a href="libsoup-soup-uri.html#SoupProtocol"><span class="type">SoupProtocol</span></a> value for "http".
+</p></div><hr><div class="refsect2" lang="en"><a name="id2597092"></a><h3><a name="SOUP-PROTOCOL-HTTPS-CAPS"></a>SOUP_PROTOCOL_HTTPS</h3><a class="indexterm" name="id2597101"></a><pre class="programlisting">#define SOUP_PROTOCOL_HTTPS (g_quark_from_static_string ("https"))
+</pre><p>
+This returns the <a href="libsoup-soup-uri.html#SoupProtocol"><span class="type">SoupProtocol</span></a> value for "https".
+</p></div><hr><div class="refsect2" lang="en"><a name="id2597118"></a><h3><a name="soup-uri-new-with-base"></a>soup_uri_new_with_base ()</h3><a class="indexterm" name="id2599743"></a><pre class="programlisting">SoupUri*    soup_uri_new_with_base          (const SoupUri *base,
+                                             const char *uri_string);</pre><p>
+Parses <i class="parameter"><tt>uri_string</tt></i> relative to <i class="parameter"><tt>base</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>base</tt></i> :</span></td><td> a base URI
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>uri_string</tt></i> :</span></td><td> the URI
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a parsed <span class="type">SoupUri</span>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2599820"></a><h3><a name="soup-uri-new"></a>soup_uri_new ()</h3><a class="indexterm" name="id2599828"></a><pre class="programlisting">SoupUri*    soup_uri_new                    (const char *uri_string);</pre><p>
+Parses an absolute URI.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri_string</tt></i> :</span></td><td> a URI
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a <span class="type">SoupUri</span>, or <tt class="literal">NULL</tt>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2599885"></a><h3><a name="soup-uri-to-string"></a>soup_uri_to_string ()</h3><a class="indexterm" name="id2599893"></a><pre class="programlisting">char*       soup_uri_to_string              (const SoupUri *uri,
+                                             gboolean just_path);</pre><p>
+Returns a string representing <i class="parameter"><tt>uri</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> a <span class="type">SoupUri</span>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>just_path</tt></i> :</span></td><td> if <tt class="literal">TRUE</tt>, output just the path and query portions
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a string representing <i class="parameter"><tt>uri</tt></i>, which the caller must free.
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2599974"></a><h3><a name="soup-uri-copy"></a>soup_uri_copy ()</h3><a class="indexterm" name="id2599982"></a><pre class="programlisting">SoupUri*    soup_uri_copy                   (const SoupUri *uri);</pre><p>
+Copies <i class="parameter"><tt>uri</tt></i></p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> a <span class="type">SoupUri</span>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a copy of <i class="parameter"><tt>uri</tt></i>, which must be freed with <a href="libsoup-soup-uri.html#soup-uri-free"><tt class="function">soup_uri_free()</tt></a>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2593664"></a><h3><a name="soup-uri-copy-root"></a>soup_uri_copy_root ()</h3><a class="indexterm" name="id2593672"></a><pre class="programlisting">SoupUri*    soup_uri_copy_root              (const SoupUri *uri);</pre><p>
+Copies the protocol, host, and port of <i class="parameter"><tt>uri</tt></i> into a new <span class="type">SoupUri</span>
+(all other fields in the new URI will be empty.)</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> a <span class="type">SoupUri</span>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a partial copy of <i class="parameter"><tt>uri</tt></i>, which must be freed with
+<a href="libsoup-soup-uri.html#soup-uri-free"><tt class="function">soup_uri_free()</tt></a>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2593746"></a><h3><a name="soup-uri-equal"></a>soup_uri_equal ()</h3><a class="indexterm" name="id2593754"></a><pre class="programlisting">gboolean    soup_uri_equal                  (const SoupUri *uri1,
+                                             const SoupUri *uri2);</pre><p>
+Tests whether or not <i class="parameter"><tt>u1</tt></i> and <i class="parameter"><tt>u2</tt></i> are equal in all parts</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri1</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>uri2</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> or <tt class="literal">FALSE</tt>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2593830"></a><h3><a name="soup-uri-free"></a>soup_uri_free ()</h3><a class="indexterm" name="id2593839"></a><pre class="programlisting">void        soup_uri_free                   (SoupUri *uri);</pre><p>
+Frees <i class="parameter"><tt>uri</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> a <span class="type">SoupUri</span>
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2601651"></a><h3><a name="soup-uri-encode"></a>soup_uri_encode ()</h3><a class="indexterm" name="id2601659"></a><pre class="programlisting">char*       soup_uri_encode                 (const char *part,
+                                             const char *escape_extra);</pre><p>
+This <tt class="literal">-encodes</tt> the given URI part and returns the escaped version
+in allocated memory, which the caller must free when it is done.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>part</tt></i> :</span></td><td> a URI part
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>escape_extra</tt></i> :</span></td><td> additional characters beyond " \"%#&lt;&gt;{}|\^[]`"
+to escape (or <tt class="literal">NULL</tt>)
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the encoded URI part
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2601733"></a><h3><a name="soup-uri-decode"></a>soup_uri_decode ()</h3><a class="indexterm" name="id2601741"></a><pre class="programlisting">void        soup_uri_decode                 (char *part);</pre><p>
+<tt class="literal">-decodes</tt> the passed-in URI *in place*. The decoded version is
+never longer than the encoded version, so there does not need to
+be any additional space at the end of the string.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>part</tt></i> :</span></td><td> a URI part
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2601784"></a><h3><a name="soup-uri-uses-default-port"></a>soup_uri_uses_default_port ()</h3><a class="indexterm" name="id2601793"></a><pre class="programlisting">gboolean    soup_uri_uses_default_port      (const SoupUri *uri);</pre><p>
+Tests if <i class="parameter"><tt>uri</tt></i> uses the default port for its protocol. (Eg, 80 for
+http.)</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>uri</tt></i> :</span></td><td> a <span class="type">SoupUri</span>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> <tt class="literal">TRUE</tt> or <tt class="literal">FALSE</tt>
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libsoup-soup-status.html"><b>&lt;&lt; soup-status</b></a></td><td align="right"></td></tr></table></body></html>

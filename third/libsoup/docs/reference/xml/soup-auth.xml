@@ -1,0 +1,231 @@
+<?xml version="1.0"?>
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+               "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd">
+<refentry id="SoupAuth">
+<refmeta>
+<refentrytitle>SoupAuth</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>LIBSOUP Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>SoupAuth</refname><refpurpose>HTTP Authentication support</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+struct      <link linkend="SoupAuth-struct">SoupAuth</link>;
+<link linkend="SoupAuth">SoupAuth</link>*   <link linkend="soup-auth-new-from-header-list">soup_auth_new_from_header_list</link>  (const <link linkend="GSList">GSList</link> *header);
+const <link linkend="char">char</link>* <link linkend="soup-auth-get-scheme-name">soup_auth_get_scheme_name</link>       (<link linkend="SoupAuth">SoupAuth</link> *auth);
+const <link linkend="char">char</link>* <link linkend="soup-auth-get-realm">soup_auth_get_realm</link>             (<link linkend="SoupAuth">SoupAuth</link> *auth);
+<link linkend="void">void</link>        <link linkend="soup-auth-authenticate">soup_auth_authenticate</link>          (<link linkend="SoupAuth">SoupAuth</link> *auth,
+                                             const <link linkend="char">char</link> *username,
+                                             const <link linkend="char">char</link> *password);
+<link linkend="gboolean">gboolean</link>    <link linkend="soup-auth-is-authenticated">soup_auth_is_authenticated</link>      (<link linkend="SoupAuth">SoupAuth</link> *auth);
+<link linkend="char">char</link>*       <link linkend="soup-auth-get-authorization">soup_auth_get_authorization</link>     (<link linkend="SoupAuth">SoupAuth</link> *auth,
+                                             <link linkend="SoupMessage">SoupMessage</link> *msg);
+<link linkend="GSList">GSList</link>*     <link linkend="soup-auth-get-protection-space">soup_auth_get_protection_space</link>  (<link linkend="SoupAuth">SoupAuth</link> *auth,
+                                             const <link linkend="SoupUri">SoupUri</link> *source_uri);
+<link linkend="void">void</link>        <link linkend="soup-auth-free-protection-space">soup_auth_free_protection_space</link> (<link linkend="SoupAuth">SoupAuth</link> *auth,
+                                             <link linkend="GSList">GSList</link> *space);
+
+</synopsis>
+</refsynopsisdiv>
+
+<refsect1>
+<title>Object Hierarchy</title>
+<synopsis>
+
+  <link linkend="GObject">GObject</link>
+   +----SoupAuth
+         +----<link linkend="SoupAuthBasic">SoupAuthBasic</link>
+         +----<link linkend="SoupAuthDigest">SoupAuthDigest</link>
+</synopsis>
+
+</refsect1>
+
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+<link linkend="SoupAuth"><type>SoupAuth</type></link> objects store the authentication data associated with a
+given bit of webspace. They are created and maintained automatically
+by <link linkend="SoupSession"><type>SoupSession</type></link>.
+</para>
+
+<para>
+<link linkend="SoupAuth"><type>SoupAuth</type></link> itself is an abstract class. Specific HTTP Authentication
+mechanisms are implemented by its subclasses. (NTLM authentication,
+which works quite differently from normal HTTP authentication, is
+handled by <link linkend="SoupConnectionNTLM"><type>SoupConnectionNTLM</type></link>.)
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="SoupAuth-struct"/>struct SoupAuth</title>
+<indexterm><primary>SoupAuth</primary></indexterm><programlisting>struct SoupAuth;</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="soup-auth-new-from-header-list"/>soup_auth_new_from_header_list ()</title>
+<indexterm><primary>soup_auth_new_from_header_list</primary></indexterm><programlisting><link linkend="SoupAuth">SoupAuth</link>*   soup_auth_new_from_header_list  (const <link linkend="GSList">GSList</link> *header);</programlisting>
+<para>
+Creates a <link linkend="SoupAuth"><type>SoupAuth</type></link> value based on the strongest available
+supported auth type in <parameter>vals</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>header</parameter>&nbsp;:</term>
+<listitem><simpara>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the new <link linkend="SoupAuth"><type>SoupAuth</type></link>, or <literal>NULL</literal> if none could be created.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-auth-get-scheme-name"/>soup_auth_get_scheme_name ()</title>
+<indexterm><primary>soup_auth_get_scheme_name</primary></indexterm><programlisting>const <link linkend="char">char</link>* soup_auth_get_scheme_name       (<link linkend="SoupAuth">SoupAuth</link> *auth);</programlisting>
+<para>
+Returns <parameter>auth</parameter>'s scheme name. (Eg, "Basic")</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>auth</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupAuth"><type>SoupAuth</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the scheme name
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-auth-get-realm"/>soup_auth_get_realm ()</title>
+<indexterm><primary>soup_auth_get_realm</primary></indexterm><programlisting>const <link linkend="char">char</link>* soup_auth_get_realm             (<link linkend="SoupAuth">SoupAuth</link> *auth);</programlisting>
+<para>
+Returns <parameter>auth</parameter>'s realm, if any.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>auth</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupAuth"><type>SoupAuth</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the realm name
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-auth-authenticate"/>soup_auth_authenticate ()</title>
+<indexterm><primary>soup_auth_authenticate</primary></indexterm><programlisting><link linkend="void">void</link>        soup_auth_authenticate          (<link linkend="SoupAuth">SoupAuth</link> *auth,
+                                             const <link linkend="char">char</link> *username,
+                                             const <link linkend="char">char</link> *password);</programlisting>
+<para>
+This is called by the session after requesting a username and
+password from the application. <parameter>auth</parameter> should take the information
+and do whatever scheme-specific processing is needed.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>auth</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupAuth"><type>SoupAuth</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>username</parameter>&nbsp;:</term>
+<listitem><simpara> the username provided by the user or client
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>password</parameter>&nbsp;:</term>
+<listitem><simpara> the password provided by the user or client
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-auth-is-authenticated"/>soup_auth_is_authenticated ()</title>
+<indexterm><primary>soup_auth_is_authenticated</primary></indexterm><programlisting><link linkend="gboolean">gboolean</link>    soup_auth_is_authenticated      (<link linkend="SoupAuth">SoupAuth</link> *auth);</programlisting>
+<para>
+Tests if <parameter>auth</parameter> has been given a username and password</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>auth</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupAuth"><type>SoupAuth</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> <literal>TRUE</literal> if <parameter>auth</parameter> has been given a username and password
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-auth-get-authorization"/>soup_auth_get_authorization ()</title>
+<indexterm><primary>soup_auth_get_authorization</primary></indexterm><programlisting><link linkend="char">char</link>*       soup_auth_get_authorization     (<link linkend="SoupAuth">SoupAuth</link> *auth,
+                                             <link linkend="SoupMessage">SoupMessage</link> *msg);</programlisting>
+<para>
+Generates an appropriate "Authorization" header for <parameter>msg</parameter>. (This
+will only be called if <link linkend="soup-auth-is-authenticated"><function>soup_auth_is_authenticated()</function></link> returns <literal>TRUE</literal>.)</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>auth</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupAuth"><type>SoupAuth</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>msg</parameter>&nbsp;:</term>
+<listitem><simpara> the <link linkend="SoupMessage"><type>SoupMessage</type></link> to be authorized
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the "Authorization" header, which must be freed.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-auth-get-protection-space"/>soup_auth_get_protection_space ()</title>
+<indexterm><primary>soup_auth_get_protection_space</primary></indexterm><programlisting><link linkend="GSList">GSList</link>*     soup_auth_get_protection_space  (<link linkend="SoupAuth">SoupAuth</link> *auth,
+                                             const <link linkend="SoupUri">SoupUri</link> *source_uri);</programlisting>
+<para>
+Returns a list of paths on the server which <parameter>auth</parameter> extends over.
+(All subdirectories of these paths are also assumed to be part
+of <parameter>auth</parameter>'s protection space, unless otherwise discovered not to
+be.)</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>auth</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupAuth"><type>SoupAuth</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>source_uri</parameter>&nbsp;:</term>
+<listitem><simpara> the URI of the request that <parameter>auth</parameter> was generated in
+response to.
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> the list of paths, which must be freed with
+<link linkend="soup-auth-free-protection-space"><function>soup_auth_free_protection_space()</function></link>.
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+<refsect2>
+<title><anchor id="soup-auth-free-protection-space"/>soup_auth_free_protection_space ()</title>
+<indexterm><primary>soup_auth_free_protection_space</primary></indexterm><programlisting><link linkend="void">void</link>        soup_auth_free_protection_space (<link linkend="SoupAuth">SoupAuth</link> *auth,
+                                             <link linkend="GSList">GSList</link> *space);</programlisting>
+<para>
+Frees <parameter>space</parameter>.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>auth</parameter>&nbsp;:</term>
+<listitem><simpara> a <link linkend="SoupAuth"><type>SoupAuth</type></link>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>space</parameter>&nbsp;:</term>
+<listitem><simpara> the return value from <link linkend="soup-auth-get-protection-space"><function>soup_auth_get_protection_space()</function></link>
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+<refsect1>
+<title>See Also</title>
+<para>
+SoupAuthBasic, SoupAuthDigest, SoupSession, SoupConnectionNTLM
+</para>
+</refsect1>
+
+</refentry>

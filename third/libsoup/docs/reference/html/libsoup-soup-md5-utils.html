@@ -1,0 +1,72 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>soup-md5-utils</title><meta name="generator" content="DocBook XSL Stylesheets V1.64.1"><link rel="home" href="index.html" title="libsoup Reference Manual"><link rel="up" href="ch01.html" title="libsoup"><link rel="previous" href="libsoup-soup-headers.html" title="soup-headers"><link rel="next" href="libsoup-soup-message-private.html" title="soup-message-private"><meta name="generator" content="GTK-Doc V1.2 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="libsoup-soup-headers.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch01.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">libsoup Reference Manual</th><td><a accesskey="n" href="libsoup-soup-message-private.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry" lang="en"><a name="libsoup-soup-md5-utils"></a><div class="titlepage"><div></div><div></div></div><div class="refnamediv"><h2><span class="refentrytitle">soup-md5-utils</span></h2><p>soup-md5-utils &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+struct      <a href="libsoup-soup-md5-utils.html#SoupMD5Context">SoupMD5Context</a>;
+void        <a href="libsoup-soup-md5-utils.html#soup-md5-init">soup_md5_init</a>                   (<a href="libsoup-soup-md5-utils.html#SoupMD5Context">SoupMD5Context</a> *ctx);
+void        <a href="libsoup-soup-md5-utils.html#soup-md5-update">soup_md5_update</a>                 (<a href="libsoup-soup-md5-utils.html#SoupMD5Context">SoupMD5Context</a> *ctx,
+                                             const guchar *buf,
+                                             guint32 len);
+void        <a href="libsoup-soup-md5-utils.html#soup-md5-final">soup_md5_final</a>                  (<a href="libsoup-soup-md5-utils.html#SoupMD5Context">SoupMD5Context</a> *ctx,
+                                             guchar digest[16]);
+</pre></div><div class="refsect1" lang="en"><a name="id2550714"></a><h2>Description</h2><p>
+
+</p></div><div class="refsect1" lang="en"><a name="id2550724"></a><h2>Details</h2><div class="refsect2" lang="en"><a name="id2550729"></a><h3><a name="SoupMD5Context"></a>struct SoupMD5Context</h3><a class="indexterm" name="id2550738"></a><pre class="programlisting">struct SoupMD5Context {
+
+	guint32  buf[4];
+	guint32  bits[2];
+	guchar   in[64];
+	gboolean doByteReverse;
+};
+</pre><p>
+
+</p></div><hr><div class="refsect2" lang="en"><a name="id2550749"></a><h3><a name="soup-md5-init"></a>soup_md5_init ()</h3><a class="indexterm" name="id2550758"></a><pre class="programlisting">void        soup_md5_init                   (<a href="libsoup-soup-md5-utils.html#SoupMD5Context">SoupMD5Context</a> *ctx);</pre><p>
+Initialise an md5 buffer.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ctx</tt></i> :</span></td><td> md5 context 
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2550795"></a><h3><a name="soup-md5-update"></a>soup_md5_update ()</h3><a class="indexterm" name="id2550803"></a><pre class="programlisting">void        soup_md5_update                 (<a href="libsoup-soup-md5-utils.html#SoupMD5Context">SoupMD5Context</a> *ctx,
+                                             const guchar *buf,
+                                             guint32 len);</pre><p>
+Update context to reflect the concatenation of another buffer full
+of bytes. Use this to progressively construct an md5 hash.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ctx</tt></i> :</span></td><td> conetxt object used for md5 computaion
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>buf</tt></i> :</span></td><td> buffer to add
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>len</tt></i> :</span></td><td> buffer length
+</td></tr></tbody></table></div></div><hr><div class="refsect2" lang="en"><a name="id2562957"></a><h3><a name="soup-md5-final"></a>soup_md5_final ()</h3><a class="indexterm" name="id2562966"></a><pre class="programlisting">void        soup_md5_final                  (<a href="libsoup-soup-md5-utils.html#SoupMD5Context">SoupMD5Context</a> *ctx,
+                                             guchar digest[16]);</pre><p>
+copy the final md5 hash to a bufer</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left" valign="top"><tbody><tr><td><span class="term"><i class="parameter"><tt>ctx</tt></i> :</span></td><td> context containing the calculated md5
+</td></tr><tr><td><span class="term"><i class="parameter"><tt>digest</tt></i> :</span></td><td> 16 bytes buffer
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="libsoup-soup-headers.html"><b>&lt;&lt; soup-headers</b></a></td><td align="right"><a accesskey="n" href="libsoup-soup-message-private.html"><b>soup-message-private &gt;&gt;</b></a></td></tr></table></body></html>
