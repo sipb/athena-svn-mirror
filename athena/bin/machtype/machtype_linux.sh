@@ -1,8 +1,9 @@
 #!/bin/sh
-# $Id: machtype_linux.sh,v 1.1 1999-01-25 21:29:20 ghudson Exp $
+# $Id: machtype_linux.sh,v 1.2 1999-06-30 19:35:40 jweiss Exp $
 
 # We need to support the following options:
-# NOTE: c, v, d, and M are needed by olc.
+# NOTE: c, v, d, L, and M are needed by olc, and it cares what order
+#  the output is in.
 #  -c     : Processor type
 #  -d     : display type 
 #  -k     : select the kernel
@@ -76,6 +77,41 @@ while getopts cdk:m:rvACELMNPS i; do
 done
 printed=0
 
+if [ $at_rel ]; then
+	echo "@ATHMAJV@.@ATHMINV@"
+	printed=1
+fi
+
+if [ $syspacks ]; then
+	awk '{ v = $5; } END { print v; }' /srvd/.rvdinfo
+	printed=1
+fi
+
+if [ $ath_vers ]; then
+	awk '{ v = $5; } END { print v; }' /etc/athena/version
+	printed=1
+fi
+
+if [ $base_os_name ]; then
+	uname -s
+	printed=1
+fi
+
+if [ $base_os_ver ]; then
+	uname -r
+	printed=1
+fi
+
+if [ $ath_sys_name ]; then
+	echo "@ATHSYS@"
+	printed=1
+fi
+
+if [ $ath_sys_compat ]; then
+	echo "@ATHSYSCOMPAT@"
+	printed=1
+fi
+
 if [ $cpu ] ; then
 	if [ $verbose ]; then
 	        echo "`uname -s` `uname -r` on `uname -m`"
@@ -94,6 +130,14 @@ if [ $display ] ; then
 	printed=1
 fi
 
+if [ $rdsk ]; then
+	awk '/^SCSI device/ { print; }
+	     /^hd[a-z]:/ { print; }
+	     /^Floppy/ { for (i=3; i <= NF; i += 3) print $i ": " $(i+2); }' \
+	     /var/log/dmesg
+	printed=1
+fi
+
 if [ $memory ] ; then
 	if [ $verbose ]; then
 		awk 'BEGIN { FS="[^0-9]+" }
@@ -104,49 +148,6 @@ if [ $memory ] ; then
 		awk 'BEGIN { FS="[^0-9]+" }
 		     /^Memory:/ { printf "%d\n", $3*1.024; }' /var/log/dmesg
 	fi
-	printed=1
-fi
-
-if [ $at_rel ]; then
-	echo "@ATHMAJV@.@ATHMINV@"
-	printed=1
-fi
-
-if [ $ath_vers ]; then
-	awk '{ v = $5; } END { print v; }' /etc/athena/version
-	printed=1
-fi
-
-if [ $base_os_ver ]; then
-	uname -r
-	printed=1
-fi
-
-if [ $base_os_name ]; then
-	uname -s
-	printed=1
-fi
-
-if [ $syspacks ]; then
-	awk '{ v = $5; } END { print v; }' /srvd/.rvdinfo
-	printed=1
-fi
-
-if [ $ath_sys_name ]; then
-	echo "@ATHSYS@"
-	printed=1
-fi
-
-if [ $ath_sys_compat ]; then
-	echo "@ATHSYSCOMPAT@"
-	printed=1
-fi
-
-if [ $rdsk ]; then
-	awk '/^SCSI device/ { print; }
-	     /^hd[a-z]:/ { print; }
-	     /^Floppy/ { for (i=3; i <= NF; i += 3) print $i ": " $(i+2); }' \
-	     /var/log/dmesg
 	printed=1
 fi
 
