@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/String/new_string.c,v $
- *      $Author: jtkohl $
+ *      $Author: probe $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_new_string_c[] = "$Id: new_string.c,v 1.1 1989-11-08 14:20:41 jtkohl Exp $";
+static char rcsid_new_string_c[] = "$Id: new_string.c,v 1.2 1993-11-19 16:10:00 probe Exp $";
 #endif
 
 /*
@@ -69,7 +69,7 @@ string string__CreateFromData(data, length)
     result = (string)malloc(length+1);
     assert(result);
 
-    bcopy(data, result, length);
+    (void) memcpy(result, data, length);
     result[length] = 0;
 
     return(result);
@@ -93,7 +93,7 @@ string string__Copy(s)
     result = (string)malloc(length);
     assert(result);
 
-    bcopy(s, result, length);
+    (void) memcpy(result, s, length);
     return(result);
 }
 
@@ -117,8 +117,8 @@ string string__Concat(a, b)
     result = (string)malloc(result_size);
     assert(result);
 
-    bcopy(a, result, a_length);
-    bcopy(b, result+a_length, b_size);
+    (void) memcpy(result, a, a_length);
+    (void) memcpy(result+a_length, b, b_size);
 
     return(result);
 }
@@ -132,7 +132,7 @@ string string__Concat(a, b)
  *                     temp = string_Concat(a,b);
  *                     free(a);
  *                     return(temp);
- *                 only faster.  I.e., uses realloc instead of malloc+bcopy.
+ *                 only faster.  I.e., uses realloc instead of malloc+memcpy.
  */
 
 string string__Concat2(a, b)
@@ -147,7 +147,7 @@ string string__Concat2(a, b)
 
     a = (string)realloc(a, a_length+b_size);
     assert(a);
-    bcopy(b, a+a_length, b_size);
+    (void) memcpy(a+a_length, b, b_size);
 
     return(a);
 }
