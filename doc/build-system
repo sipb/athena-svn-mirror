@@ -6,7 +6,7 @@ this directory.
 
 This file contains the following sections:
 
-	Using the Athena build system
+	Building packages from the source tree
 	Generic build system guidelines
 	Using Autoconf
 	Using a straight Makefile
