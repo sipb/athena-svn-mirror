@@ -10,8 +10,8 @@
  */
 
 #if  (!defined(lint))  &&  (!defined(SABER))
-static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/klist.c,v 1.2 1991-12-17 11:34:44 vanharen Exp $";
+static char *rcsid =
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/klist.c,v 1.3 1993-07-01 17:29:03 vanharen Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -22,9 +22,9 @@ static char rcsid[] =
 #include <sys/file.h>
 #include <sys/stat.h>
 #include <krb.h>
-#include "Jets.h"
-#include "Button.h"
-#include "warn.h"
+#include <X11/Xj/Jets.h>
+#include <X11/Xj/Button.h>
+#include <X11/Xj/warn.h>
 
 
 #if  defined(ultrix) || defined(_AIX) || defined(_AUX_SOURCE) || defined(sun)
@@ -46,9 +46,10 @@ extern char *krb_err_txt[];
 #define WARN1_TIME 15
 #define WARN2_TIME 5
 
+extern Jet root;
+
 static Warning *old_warn = NULL;
 static int ok();
-extern char line1[], line2[];
 
 void checkTkts(info, id)
      int info, id;
@@ -66,10 +67,10 @@ void checkTkts(info, id)
   struct stat statbuf;
   int diff;
   unsigned int timeout = 5*60*1000;	/* 5 minutes... */
+  char line1[100];
+  char *line2 = "Type `renew' to re-authenticate.";
 
   line1[0] = '\0';
-
-  strcpy(line2, "Type `renew' to re-authenticate.");
 
   if ((file = getenv("KRBTKFILE")) == NULL)
     file = TKT_FILE;
@@ -208,7 +209,7 @@ void checkTkts(info, id)
       w->l1 = XjNewString(line1);
       w->l2 = XjNewString(line2);
 
-      old_warn = UserWarning(w, True);
+      old_warn = XjUserWarning(root, w, True, line1, line2);
     }
   old_ret = ret;
   (void) tf_close();
