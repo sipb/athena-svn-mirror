@@ -5,11 +5,17 @@
 # 
 #	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/zwgc.desc,v $
 #	$Author: raeburn $
-#	$Id: zwgc.desc,v 1.8 1990-11-16 11:21:50 raeburn Exp $
+#	$Id: zwgc.desc,v 1.9 1990-11-16 16:09:39 raeburn Exp $
 #
 #
 # Default WindowGram description file
 #
+
+# Opcode "ping" is used by sender programs to see if the message would
+# really get sent, or if the recipient has logged out.  No useful
+# information is normally contained in these messages, so we discard them.
+if (upcase($opcode) == "PING") then exit endif
+
 #
 # AUTHENTICATION information
 #
@@ -83,8 +89,6 @@ match "WG_CTL_CLASS"
 #	put
 #	exit
 match "message"
-	if (upcase($opcode) == "PING") then exit endif
-
 	case $instance
 	match "PERSONAL"
 		set type = "Personal"
