@@ -17,11 +17,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v $
- *      $Author: raeburn $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.3 1990-01-05 06:23:07 raeburn Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.4 1990-01-10 21:23:03 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -30,7 +30,14 @@ static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/
 extern ACL  Acl_List[];
 
 ERRCODE
+#ifdef __STDC__
 olc_load_user(int fd, REQUEST *request, int auth)
+#else
+olc_load_user(fd,request,auth)
+     int fd;
+     REQUEST *request;
+     int auth;
+#endif /* STDC */
 {
   KNUCKLE *requester, *target;
   USER *user;
@@ -61,7 +68,14 @@ olc_load_user(int fd, REQUEST *request, int auth)
 
 
 ERRCODE
+#ifdef __STDC__
 olc_dump(int fd, REQUEST *request, int auth)
+#else
+olc_dump(fd,request,auth)
+     int fd;
+     REQUEST *request;
+     int auth;
+#endif /* STDC */
 {
   KNUCKLE *requester;
   int status;
@@ -83,7 +97,14 @@ olc_dump(int fd, REQUEST *request, int auth)
 
 
 ERRCODE
+#ifdef __STDC__
 olc_change_motd(int fd, REQUEST *request, int auth)
+#else
+olc_change_motd(fd,request,auth)
+     int fd;
+     REQUEST *request;
+     int auth;
+#endif /* STDC */
 {
   KNUCKLE *requester, *target;
   int status;
@@ -105,7 +126,14 @@ olc_change_motd(int fd, REQUEST *request, int auth)
 
 
 ERRCODE
+#ifdef __STDC__
 olc_change_acl(int fd, REQUEST *request, int auth)
+#else
+olc_change_acl(fd,request,auth)
+     int fd;
+     REQUEST *request;
+     int auth;
+#endif /* STDC */
 {
   KNUCKLE *requester;
   USER *user = (USER *) NULL;
@@ -180,7 +208,14 @@ olc_change_acl(int fd, REQUEST *request, int auth)
   
 
 ERRCODE
+#ifdef __STDC__
 olc_list_acl(int fd, REQUEST *request, int auth)
+#else
+olc_list_acl(fd, request, auth)
+     int fd;                    /* File descriptor for socket. */
+     REQUEST *request;          /* Request structure from olcr. */
+     int auth;                  /* indicates if requestor was authenticated */
+#endif /* STDC */
 {
   KNUCKLE *requester;
   ACL *a_ptr;
@@ -212,7 +247,14 @@ olc_list_acl(int fd, REQUEST *request, int auth)
 }
 
 ERRCODE
+#ifdef __STDC__
 olc_get_accesses(int fd, REQUEST *request, int auth)
+#else
+olc_get_accesses(fd,request,auth)  
+     int fd;
+     REQUEST *request;
+     int auth;
+#endif /* STDC */
 {
   KNUCKLE *requester;
   USER *user, u;
@@ -265,7 +307,14 @@ olc_get_accesses(int fd, REQUEST *request, int auth)
 
 
 ERRCODE
+#ifdef __STDC__
 olc_get_dbinfo(int fd, REQUEST *request, int auth)
+#else
+olc_get_dbinfo(fd,request,auth)  
+     int fd;
+     REQUEST *request;
+     int auth;
+#endif /* STDC */
 {
   KNUCKLE *requester;
   USER *user, u;
@@ -307,7 +356,14 @@ olc_get_dbinfo(int fd, REQUEST *request, int auth)
 
 
 ERRCODE
+#ifdef __STDC__
 olc_change_dbinfo(int fd, REQUEST *request, int auth)
+#else
+olc_change_dbinfo(fd,request,auth)
+     int fd;
+     REQUEST *request;
+     int auth;
+#endif /* STDC */
 {
   KNUCKLE *requester;
   USER *user, u;
