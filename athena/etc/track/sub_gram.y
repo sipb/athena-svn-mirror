@@ -9,8 +9,6 @@ char wordbuf[256];
 char *wordp;
 int wordcnt = 0;
 Entry* e = &entries[ 0];
-
-#include "lex.yy.c"
 %}
 %%
 
@@ -33,7 +31,7 @@ header	:
 	     */
 	    while ( wordp = next_def_except()) {
 		if ( file_pat( wordp))
-		     add_list_elt( re_conv( wordp), DONT_TRACK, &e->patterns);
+		     add_list_elt( wordp, DONT_TRACK, &e->patterns);
 		else add_list_elt( wordp,	  DONT_TRACK, LIST( e->names));
 	    }
 	    /* XXX: global names should match both entry-children and
@@ -45,7 +43,7 @@ header	:
 		  wordp = TEXT( NEXT( wordp))) {
 		strcpy( linebuf, "*/");
 		strcat( linebuf, wordp);
-		add_list_elt( re_conv( linebuf), DONT_TRACK, &e->patterns);
+		add_list_elt( linebuf, DONT_TRACK, &e->patterns);
 	    }
 	    if ( e->names.table) { /* lie, to make extra-roomy global table */
 		 e->names.shift *= 8;
@@ -155,7 +153,7 @@ exceptword:   WORD
 		 wordcnt = FORCE_LINK;
 	    }
 	    if ( file_pat( wordp))
-		 add_list_elt( re_conv( wordp), wordcnt, &e->patterns);
+		 add_list_elt( wordp, wordcnt, &e->patterns);
 	    else add_list_elt( wordp,		wordcnt, LIST( e->names));
 	}
 	| ARROW opt_space WORD
@@ -163,7 +161,7 @@ exceptword:   WORD
 	    /* set force_links bit, add to e->names.
 	     */
 	    if ( file_pat( wordbuf))
-		 add_list_elt( re_conv( wordbuf), FORCE_LINK, &e->patterns);
+		 add_list_elt( wordbuf, FORCE_LINK, &e->patterns);
 	    else add_list_elt( wordbuf,		  FORCE_LINK, LIST( e->names));
 	}
 	;
@@ -200,6 +198,8 @@ opt_space:
 opt_ele : NEWLINE | WHITESPACE
 	;
 %%
+
+#include "lex.yy.c"
 
 yyerror(s)
 char *s;
