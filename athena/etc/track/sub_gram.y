@@ -11,13 +11,16 @@ sublist	: header entrylist opt_space
 	;
 header	: 
 		{
+			entrycnt = 0;
+			clear_ent();
+			entrycnt = 1;
 			clear_ent();
 		}
-	|   GEXCEPT
+	|   GEXCEPT opt_space COLON except COLON
 		{
-			strcat(g_except," ");
-			strcat(g_except,linebuf);
-			doreset();
+			savestr( &entries[ entrycnt].fromfile,
+				"GLOBAL_EXCEPTIONS");
+			entrycnt++;
 			clear_ent();
 		}
         ;
@@ -39,6 +42,8 @@ linkmark  :  opt_space
 fromname: WORD opt_space
 		{
 			savestr(&entries[entrycnt].fromfile,wordbuf[0]);
+			KEYCPY( entries[ entrycnt].sortkey, wordbuf[0]);
+			entries[ entrycnt].keylen = strlen( wordbuf[0]);
 			doreset();
 		}
 	;
@@ -89,13 +94,17 @@ except  :
 	| opt_space wordlist opt_space
 		{
 			int i,j;
+			char * r;
 			for(i=0;entries[entrycnt].exceptions[i]!=(char*)0;i++)
 			{
 			}
-			for (j=0;j<wordcnt;i++,j++)
+			for (j=0;j<wordcnt;j++)
 			{
-				savestr(&entries[entrycnt].exceptions[i],
-						wordbuf[j]);
+				r = wordbuf[ j];
+				if ( file_pat( r))
+					r = re_conv( r);
+				if ( duplicate( r, entrycnt)) continue;
+				savestr(&entries[entrycnt].exceptions[i++], r);
 			}
 			doreset();
 		}

@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 1.7 1987-11-05 16:22:39 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 2.0 1987-12-01 16:54:14 don Exp $
  */
 
 #ifndef lint
-static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 1.7 1987-11-05 16:22:39 don Exp $";
+static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.h,v 2.0 1987-12-01 16:54:14 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -48,8 +48,8 @@ static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena
 /* Default directory containing lock files under real root */
 #define DEF_LOCKDIR	"/tmp"
 
-/* Default exceptions */
-#define DEF_EXCEPT	"#* *~"
+/* Default global exceptions */
+#define DEF_EXCEPT	{ "#*", "*~" }
 
 /* Default log file */
 #define DEF_LOG		"logfiles/lib.log"
@@ -63,18 +63,29 @@ static char *rcsid_track_h = "$Header: /afs/dev.mit.edu/source/repository/athena
 #define BUFLEN 1024
 #define BLOCKSIZE 1024
 #define LINELEN 256
+#define MAXLINES 100
 #define WORDLEN 20
 #define WORDMAX 128
 #define ENTRYMAX 256
+#define STACKMAX 50
 
-char *gets(),*index(),*rindex();
+#define CNT  0
+#define ROOT 1
+#define NAME 2
+#define TAIL 3
 
-extern FILE *popen();
-extern FILE *subfile;
-extern char *make_name();
-extern char errmsg[];
-extern char g_except[];
+typedef struct stl {
+	char sortkey[ LINELEN];
+	char line[ LINELEN];
+} Statline ;
+
+extern Statline *statfilebufs;
+extern int cur_line;
+extern FILE *statfile;
+
 typedef struct ent {
+	char sortkey[ LINELEN];
+	int keylen;
 	int followlink;
 	char *fromfile;
 	char *tofile;
@@ -85,13 +96,18 @@ typedef struct ent {
 extern Entry entries[];
 
 extern int errno;
+extern int dirflag;
+extern int forceflag;
+extern int incl_devs;
+extern int nopullflag;
 extern int quietflag;
 extern int uflag;
-extern int forceflag;
 extern int verboseflag;
-extern int dirflag;
+extern int writeflag;
+extern int entnum;
 extern int entrycnt;
-extern int cur_ent;
+extern int stackmax;
+extern int maxlines;
 
 #define	IS_LIST		1
 #define NO_LIST		0
@@ -100,37 +116,60 @@ extern int cur_ent;
 						sit before trying again
 						i.e.  6 hours */
 extern char binarydir[];
-extern char myname[];
 extern char fromroot[];
 extern char toroot[];
+extern char twdir[];
 extern char cwd[];
-extern char subname[];
+extern char subfilename[];
+extern char subfilepath[];
 extern char prgname[];
-extern int via;
-extern int tcphung();
-extern int child_id;
 extern int debug;
 
 #define	DO_CLOBBER	1
 #define NO_CLOBBER	0
 extern int clobber;
 
-extern int inpipe;
-extern int outpipe;
-
 /* parser stuff */
 extern char linebuf[];
 extern int wordcnt;
 extern FILE *yyin,*yyout;
 
-/* Structure definitions */
-
-struct stamp {
-	char type;
-	char name[LINELEN];
-	char link[LINELEN];
-	int uid,gid,mode,dev;
-	long ftime;
-};
-
 extern int access();
+
+#define TYPE( statbuf) ((statbuf).st_mode & S_IFMT)
+#define MODE( statbuf) ((statbuf).st_mode & 07777)
+#define TIME( statbuf)  (long)(statbuf).st_mtime
+#define UID( statbuf)   (statbuf).st_uid
+#define GID( statbuf)   (statbuf).st_gid
+#define DEV( statbuf)   (statbuf).st_dev
+
+char *gets(),*malloc(),*index(),*realloc(),*rindex();
+int strcmp(),strncmp();
+extern char errmsg[];
+
+/* track's internal functions which need decl's */
+
+extern char *next_def_except();
+extern struct stat *dec_entry(), *dec_statfile();
+extern int entrycmp(), statlinecmp();
+extern char *follow_link();
+extern char **initpath();
+extern char *make_name();
+extern FILE *opensubfile();
+extern char *re_conv();
+extern char *resolve();
+
+/* make a sortkey out of a pathname.
+ * because several printing characters, notably '.',
+ * come before '/' in the standard ascii sort-order,
+ * we need a non-standard sorting order:
+ * /etc
+ * /etc/blah
+ * /etc/whoop
+ * /etc.athena ...
+ * this requires that slashes get mapped to low-ranking
+ * non-printing characters, for the purposes of the sort.
+ * this macro allows us to do it fast.
+ */
+#define KEYCPY( key, name) \
+{char *k,*p; k=key; for (p=name;*p;p++) *k++ = (*p=='/') ? '\001' : *p; *k= *p;}
