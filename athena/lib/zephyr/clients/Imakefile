@@ -5,10 +5,13 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/Imakefile,v $
 /**/#	$Author: jtkohl $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/Imakefile,v 1.3 1989-01-23 16:48:10 jtkohl Exp $
+/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/Imakefile,v 1.4 1989-03-23 11:06:49 jtkohl Exp $
 /**/#
 #define have_subdirs
 #define no_curdir_lint
+
+SRCDIR= ${SRCTOP}/clients
+CODE= Imakefile
 
 #ifdef DO_SYSLOG
 SYSLOGD= syslogd
