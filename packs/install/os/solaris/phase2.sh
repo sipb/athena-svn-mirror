@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Id: phase2.sh,v 1.7 1999-08-20 03:03:12 jweiss Exp $
+### $Id: phase2.sh,v 1.8 1999-08-23 06:29:17 jweiss Exp $
 
 echo "Set some variables"
 PATH=/sbin:/usr/bin:/usr/sbin
@@ -88,9 +88,9 @@ echo "Installing on ${drive}."
 
 case $CUSTOM in
 N)
-  echo "standard installation - 8.2"
-  ln -s /afs/athena.mit.edu/system/sun4x_56/srvd-8.2 /tmp/srvd
-  ln -s /afs/athena.mit.edu/system/sun4x_56/os /tmp/os
+  echo "standard installation - 8.3"
+  ln -s /afs/athena.mit.edu/system/sun4x_56/srvd-8.3 /tmp/srvd
+  ln -s /afs/athena.mit.edu/system/sun4x_56/os-8.3 /tmp/os
   ;;
 
 Y)
