@@ -1,4 +1,4 @@
-# $Id: phase3.sh,v 1.5 1999-11-07 14:35:29 jweiss Exp $
+# $Id: phase3.sh,v 1.6 2000-01-03 06:05:32 zacheiss Exp $
 
 # This file is run out of the srvd by phase2.sh after it starts AFS.
 # The contents of this file used to live in phase2.sh, which is run
@@ -165,8 +165,7 @@ sed -e 	"s#^HOST=[^;]*#HOST=$hostname#
 	s#^SYSTEM=[^;]*#SYSTEM=Solaris#" \
 	< /srvd/etc/athena/rc.conf > /root/etc/athena/rc.conf
 rm -f /root/.rvdinfo
-echo installed on `date` from `df -k / | tail -1 | awk '{print $1}'` \
-	> /root/etc/athena/version
+echo installed on `date` from `/os/usr/bin/tail -1 /etc/vfstab | awk -F: '{print $1}'` > /root/etc/athena/version
 if [ $CUSTOM = Y ]; then
 	if [ $PARTITION = Y ]; then
 		echo custom install with custom partitioning \
