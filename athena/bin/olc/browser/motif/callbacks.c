@@ -15,7 +15,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/callbacks.c,v 1.8 1992-01-07 20:54:10 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/callbacks.c,v 1.9 1992-02-04 22:04:48 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -49,7 +49,7 @@ ENTRY EntryTable[MAX_ENTRIES];		/* Table of entries. */
 int Deep = 0;
 char buffer[BUFSIZ];
 Widget w_list, w_text, w_top_lbl, w_bottom_lbl, w_up, w_save;
-
+Widget w_list_frame, w_text_frame, w_dlg_save;
 /*
  *  Procedures
  *
@@ -270,8 +270,14 @@ void saveCB (w, tag, callback_data)
   int fd;
   char *text;
   char error[BUFSIZ];		/* Space for error message. */
+  Arg arg;
+  char *new_buf;
+  Widget TextBox;
 
-  if ((fd = open(buffer, O_CREAT | O_WRONLY | O_TRUNC, 0644)) < 0)
+  TextBox = XmSelectionBoxGetChild(w_dlg_save, XmDIALOG_TEXT);
+  new_buf = XmTextGetString(TextBox);
+
+  if ((fd = open(new_buf, O_CREAT | O_WRONLY | O_TRUNC, 0644)) < 0)
     {
       sprintf(error, "Unable to open file\n\"%s\"\nfor writing.",
 	      buffer);
@@ -369,6 +375,8 @@ void createCB (w, string, callback_data)
      char *string;
      XmAnyCallbackStruct *callback_data;
 {
+  Arg arg;
+
   if (!strcmp(string, "top_lbl"))
     {
       w_top_lbl = w;
@@ -402,6 +410,7 @@ void createCB (w, string, callback_data)
   }
 
   if (!strcmp(string, "save_dlg")) {
+    w_dlg_save = w;
     XtDestroyWidget(XmSelectionBoxGetChild(w,XmDIALOG_HELP_BUTTON));
     return;
   }
@@ -412,16 +421,41 @@ void createCB (w, string, callback_data)
     return;
   }
 
+  /* 
+    We want a bloody pointer to the list_frame and text_frame
+    to hardcode the XmATTACH_WIDGET.
+    */
+  if (!strcmp(string, "list_frame")) {
+    w_list_frame = w;
+    XtSetArg( arg, XmNtopWidget, w_top_lbl );
+    XtSetValues( w_list_frame, &arg, 1);
+    XtSetArg( arg, XmNbottomWidget, w_up );
+    XtSetValues( w_list_frame, &arg, 1 );
+    return;
+  }
+  
+  if (!strcmp(string, "text_frame")) {
+    w_text_frame = w;
+    XtSetArg( arg, XmNtopWidget, w_bottom_lbl );
+    XtSetValues( w_text_frame, &arg, 1);
+    XtSetArg( arg, XmNbottomWidget, w_save );
+    XtSetValues( w_text_frame, &arg, 1 );
+    return;
+  }
+  
   if (!strcmp(string, "list"))
     {
       char file[BUFSIZ];
       struct stat buf;
 
       w_list = w;
-      strcpy(CurrentDir, "/mit/olc-stock");
+      strcpy(CurrentDir, BASE_DIR);
       sprintf(file, "%s/%s", CurrentDir, "stock_answers");
       strcpy(Indexes[0], file);
 
+#ifdef ATHENA
+      /* At Athena, we use attach to mount the stock answer filesystem; your */
+      /* method may differ at other sites */
       if (stat(file, &buf))
 	system("/bin/athena/attach -n -q olc-stock");	/* attach filsys */
       if (stat(file, &buf))
@@ -430,6 +464,7 @@ void createCB (w, string, callback_data)
 		  program);
 	  exit(-1);
 	}
+#endif
       if (MakeMenu(file) != SUCCESS)
 	{
 	  fprintf(stderr, "%s: Unable to initialize menus.\n",
