@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.7 1989-12-21 12:08:51 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.8 1990-01-17 03:19:47 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -56,14 +56,14 @@ fill_request(req)
   req->requester.instance = User.instance;
   req->requester.uid      = User.uid;
   (void) strncpy(req->requester.username, User.username, LOGIN_SIZE);
-  (void) strncpy(req->requester.realname, User.realname, NAME_LENGTH);
+  (void) strncpy(req->requester.realname, User.realname, NAME_SIZE);
   (void) strncpy(req->requester.machine,  User.machine,
 		 sizeof(req->requester.machine));
 
   req->target.instance = User.instance;
   req->target.uid      = User.uid;
   (void) strncpy(req->target.username, User.username, LOGIN_SIZE);
-  (void) strncpy(req->target.realname, User.realname, NAME_LENGTH);
+  (void) strncpy(req->target.realname, User.realname, NAME_SIZE);
   (void) strncpy(req->target.machine,  User.machine,
 		 sizeof(req->requester.machine));
 
@@ -130,20 +130,20 @@ query_mailhost(s,name)
      int s;
      char *name;
 {
-  char buf[LINE_LENGTH];
+  char buf[LINE_SIZE];
   int code;
 
-  sread(s,buf,LINE_LENGTH * sizeof(char));
+  sread(s,buf,LINE_SIZE * sizeof(char));
   sprintf(buf,"vrfy %s\n",name);
   swrite(s,buf,strlen(buf) * sizeof(char));
 
-  sread(s,buf,LINE_LENGTH * sizeof(char));
+  sread(s,buf,LINE_SIZE * sizeof(char));
   code = atoi(buf);
 
   sprintf(buf, "quit\n");
   swrite(s,buf,strlen(buf) * sizeof(char));
 
-  sread(s,buf,LINE_LENGTH * sizeof(char));
+  sread(s,buf,LINE_SIZE * sizeof(char));
 
   return(code);
  }
@@ -312,7 +312,7 @@ sendmail(smargs)
      char **smargs;
 {
   int fildes[2];	/* File descriptor array. */
-  char *args[NAME_LENGTH];
+  char *args[NAME_SIZE];
   int i = 2;
 
   args[0] = "sendmail";
@@ -323,7 +323,7 @@ sendmail(smargs)
       {
 	args[i] = *smargs;
 	++i;  ++smargs;
-	if(i > NAME_LENGTH)
+	if(i > NAME_SIZE)
 	  break;
       }
   args[i] = (char *) 0;

@@ -16,11 +16,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/list.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/list.c,v 1.1 1989-11-17 14:18:20 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/list.c,v 1.2 1990-01-17 03:19:41 vanharen Exp $";
 #endif
 
 
@@ -39,13 +39,13 @@ OListQueue(Request,list,queues,topics,users,stati)
   int status;
   int n;
 
-  if(strlen(queues) > NAME_LENGTH)
+  if(strlen(queues) > NAME_SIZE)
     return(ERROR);
 
-  if(strlen(topics) > NAME_LENGTH)
+  if(strlen(topics) > NAME_SIZE)
     return(ERROR);
 
-  if(strlen(users) > NAME_LENGTH)
+  if(strlen(users) > NAME_SIZE)
     return(ERROR);
 
   Request->request_type = OLC_LIST;

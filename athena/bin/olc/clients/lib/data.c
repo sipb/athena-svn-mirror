@@ -16,17 +16,17 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/data.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/data.c,v 1.4 1989-11-17 14:16:45 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/data.c,v 1.5 1990-01-17 03:19:23 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
 
 PERSON User;
-char DaemonHost[NAME_LENGTH];
+char DaemonHost[NAME_SIZE];
 
 STATUS Status_Table[] = 
 {

@@ -16,11 +16,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v $
- *      $Author: raeburn $
+ *      $Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v 1.3 1990-01-16 03:04:08 raeburn Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v 1.4 1990-01-17 03:19:38 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -42,7 +42,7 @@ OInitialize()
 {
   int uid;
   struct passwd *pwent;
-  char hostname[LINE_LENGTH];  /* Name of local machine. */
+  char hostname[LINE_SIZE];  /* Name of local machine. */
   char *h;
   struct hostent *host;
 
@@ -138,7 +138,7 @@ OInitialize()
   if (index(User.realname, ',') != 0)
     *index(User.realname, ',') = '\0';
   
-  gethostname(hostname, LINE_LENGTH);
+  gethostname(hostname, LINE_SIZE);
   host = gethostbyname(hostname);
   (void) strcpy(User.machine, (host ? host->h_name : hostname));     
   User.uid = uid;
