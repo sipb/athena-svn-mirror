@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.64 2003-07-15 05:42:00 ghudson Exp $
+# $Id: update_ws.sh,v 1.65 2003-07-15 06:01:10 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -263,7 +263,7 @@ sun4)
     # Single-partition Sun.
     reqrootsize=2097152	# 2GB partition; measured use 1021038K
     requsrsize=0
-    reqrootspace=614400	# 600MB; measured space increase 531949K
+    reqrootspace=819200	# 800MB; measured space increase 708325K
     requsrspace=0
   fi
 
@@ -289,6 +289,18 @@ sun4)
       echo "reinstall or clean local files off the / and /usr partitions."
       logger -t "$HOST" -p user.notice / or /usr too full to take update
       failupdate
+    fi
+    ;;
+  9.2.?)
+    # 9.2.10 introduced 172MB of new data on srvd.big machines.
+    if [ -h /usr/athena ]; then
+      rootspace=`df -k / | awk '{ x = $4; } END { print x; }'`
+      if [ 204800 -gt "$rootspace" ]; then
+        echo "The / partition must have ${reqrootspace}K free for this update."
+        echo "Please clean local files off the disk."
+        logger -t "$HOST" -p user.notice / too full to take update
+        failupdate
+      fi
     fi
     ;;
   esac
