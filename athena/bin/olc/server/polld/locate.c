@@ -10,6 +10,7 @@
 #include <netdb.h>
 #include <signal.h>
 #include <setjmp.h>
+#include <sys/access.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -35,6 +36,9 @@ static int find_zephyr P((PTF *person ));
 static jmp_buf env;		/* for longjmp in finger timeout */
 static int fd;			/* Socket for fingering */
 static FILE *f;			/* Associated FILE * */
+#ifdef ZEPHYR
+static int use_zephyr;		/* If 1, use zephyr */
+#endif
 
 #ifdef VOID_SIGRET
 static void
@@ -57,9 +61,13 @@ locate_person(person)
 
 
 #ifdef ZEPHYR
-  new_status = find_zephyr(person);
-  if (new_status == LOGGED_OUT)
+  if (use_zephyr) {
+    new_status = find_zephyr(person);
+    if ((new_status == LOGGED_OUT) || (new_status == LOC_ERROR))
+      new_status = find_finger(person);
+  } else {
     new_status = find_finger(person);
+  }
 #else
   new_status = find_finger(person);
 #endif
@@ -183,8 +191,8 @@ find_zephyr(person)
   strcat(namebuf,ZGetRealm());
 
   if ((retval = ZLocateUser(namebuf,&numlocs,ZAUTH)) != ZERR_NONE) {
-    syslog(LOG_WARNING,"zephyr error while locating user %s: %d", namebuf,
-	   retval);
+    syslog(LOG_WARNING,"zephyr error while locating user %s: %s", namebuf,
+	   error_message(retval));
     return(LOC_ERROR);
   }
 
@@ -197,8 +205,8 @@ find_zephyr(person)
   /* if they are logged in according to zephyr: */
   for (i=0;i<numlocs;i++) {
     if ((retval = ZGetLocations(locations,&one)) != ZERR_NONE) {
-      syslog(LOG_WARNING,"zephyr error in ZGetLocations for %s:%n", namebuf,
-	     retval);
+      syslog(LOG_WARNING,"zephyr error in ZGetLocations for %s: %s", namebuf,
+	     error_message(retval));
       return(LOC_ERROR);
     }
     
@@ -210,4 +218,20 @@ find_zephyr(person)
   }
   return(new_status);
 }
+
+
+void
+check_zephyr()
+{
+  /* this lets us turn off zephyr polling and fall back on fingering only by */
+  /* creating ZEPHYR_DOWN_FILE; this is useful when the zephyr servers get */
+  /* overwhelmed */
+
+  if (access(ZEPHYR_DOWN_FILE,E_ACC) == 0) {
+    use_zephyr = 0;
+  } else {
+    use_zephyr = 1;
+  }
+}
 #endif /* ZEPHYR */
+
