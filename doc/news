@@ -1,0 +1,45 @@
+This file is intended to keep track of user-visible changes to the
+release, for the construction of the Athena release notes.
+
+Changes from release 8.0 to release 8.1:
+
+	* In release 8.0, running "xmkmf" with the default path would
+	  generate a Makefile which looked for its include files and
+	  libraries in /mit/x11, which could be one of several
+	  lockers.  Now it is preferrable to use the vendor X
+	  libraries, so this bit of glue is going away.  There will be
+	  no /usr/athena/bin/xmkmf any more, nor any symlinks in
+	  /usr/athena pointing to the x11 locker.
+
+	  Users can still do something like "add -f x11r5" and then
+	  "xmkmf", and things should work, if the x11r5 locker is
+	  built for their platform.
+
+	* Athena bitmaps have moved to /usr/athena/include/X11/bitmaps.
+	  Previously, they were in /usr/athena/lib/X11/bitmaps before
+	  because of the /mit/x11 glue.
+
+	* The symlink /bin/csh -> /bin/athena/tcsh has gone away.
+
+	* emacs18 has gone away.
+
+	* In release 8.0, we made symlinks in /usr/lib for the X
+	  libraries under Solaris.  These are no longer present.  The
+	  LD_LIBRARY_PATH environment variable should take care of
+	  programs which do not have a runtime path, and the Athena
+	  release is built with runtime paths for all the programs on
+	  the packs.
+
+	  LD_LIBRARY_PATH will include /usr/dt/lib as well as
+	  /usr/openwin/lib for easy use of the Solaris Motif
+	  libraries.
+
+	* <need an item about named>
+
+	* AFS includes and libraries are installed in
+	  /usr/afsws/include and /usr/afsws/lib.
+
+	* wcl includes and libraries are installed in /usr/athena.
+
+	* The basic krb5 headers and libraries are installed in
+	  /usr/athena.
