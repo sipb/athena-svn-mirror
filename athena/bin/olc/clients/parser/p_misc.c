@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_misc.c,v 1.2 1990-01-17 02:54:08 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_misc.c,v 1.3 1990-02-16 05:58:14 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -62,6 +62,7 @@ do_olc_dump(arguments)
   int status;            
   char file[NAME_SIZE];
   int save_file = 0;
+  int type = OLC_DUMP;
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
@@ -85,17 +86,29 @@ do_olc_dump(arguments)
 	    (void) strcpy(file,*arguments);
 
           save_file = TRUE;
+	  continue;
         }
-      else
-        {
-          arguments = handle_argument(arguments, &Request, &status);
-          if(status)
-            return(ERROR);
-        }
+
+      if(string_equiv(*arguments,"-requests",max(strlen(*arguments),2)))
+	{
+	  type = OLC_DUMP_REQ_STATS;
+	  continue;
+	}
+
+      if(string_equiv(*arguments,"-questions",max(strlen(*arguments),2)))
+	{
+	  type = OLC_DUMP_QUES_STATS;
+	  continue;
+	}
+
+      arguments = handle_argument(arguments, &Request, &status);
+      if(status)
+	return(ERROR);
 
       if(arguments == (char **) NULL)   /* error */
         {
-          printf("Usage is: \tdump  [-file <filename>]\n");
+          printf("Usage is: \tdump  [-requests] [-questions]");
+	  printf(" [-file <filename>]\n");
           return(ERROR);
         }
 
@@ -103,7 +116,7 @@ do_olc_dump(arguments)
         break;
     }
 
-  status = t_dump(&Request,file);
+  status = t_dump(&Request,type,file);
     if(!save_file)
     (void) unlink(file);
   return(status);
