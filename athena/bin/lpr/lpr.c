@@ -19,11 +19,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.11 1991-01-23 13:23:24 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.12 1991-03-01 11:52:20 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.11 1991-01-23 13:23:24 epeisach Exp $";
+static char *rcsid_lpr_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lpr.c,v 1.12 1991-03-01 11:52:20 epeisach Exp $";
 #endif lint
 
 /*
@@ -200,7 +200,7 @@ main(argc, argv)
 
 	    for(i=1, cp = lpropt1; *cp != NULL; cp++) if(*cp == ' ') i++;
 
-	    if(!(nargv = (char **) malloc(i + argc))) {
+	    if(!(nargv = (char **) malloc(sizeof(char *) *(i + argc +1 )))) {
 		printf("%s: out of memory\n", name);
 		exit(1);
 	    }
