@@ -1,5 +1,5 @@
 /*
- * $Id: DClock.c,v 1.3 1999-08-13 00:20:58 danw Exp $
+ * $Id: DClock.c,v 1.4 2004-07-24 22:41:33 ghudson Exp $
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -10,7 +10,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Id: DClock.c,v 1.3 1999-08-13 00:20:58 danw Exp $";
+"$Id: DClock.c,v 1.4 2004-07-24 22:41:33 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -32,7 +32,7 @@ static char *month[] =
   "August", "September", "October", "November", "December",
 };
 
-#define DEF_FMT "%.3w %.3n %2D %02e:%02m:%02s %C%Y"
+#define DEF_FMT "%.3w %.3n %2D %02e:%02m:%02s %C%02Y"
 #define offset(field) XjOffset(DClockJet,field)
 
 static XjResource resources[] = {
