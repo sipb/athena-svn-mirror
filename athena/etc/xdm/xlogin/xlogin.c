@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.4 1990-11-18 17:39:16 mar Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.5 1990-11-26 12:40:56 mar Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
@@ -116,7 +116,7 @@ XtActionsRec actions[] = {
 
 
 
-#define CONSOLEPID "/etc/console.pid"
+#define CONSOLEPID "/etc/athena/console.pid"
 char *utmpf = "/etc/utmp";
 
 /*
