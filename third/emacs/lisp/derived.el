@@ -74,7 +74,7 @@
 ;;   default, but may be redefined by the user to contain special
 ;;   commands (ie. setting local variables like 'outline-regexp')
 ;;   **NOTE: do not use this option -- it will soon be obsolete.
-;; - run anything assigned to 'hypertext-mode-hooks' (obsolete, but
+;; - run anything assigned to 'hypertext-mode-hook' (obsolete, but
 ;;   supported for the sake of compatibility).
 ;;
 ;; The advantages of this system are threefold.  First, text mode is
@@ -143,30 +143,31 @@ been generated automatically, with a reference to the keymap."
   (setq docstring (or docstring (derived-mode-make-docstring parent child)))
 
   (` (progn 
-       (derived-mode-init-mode-variables (quote (, child)))
+       (derived-mode-init-mode-variables '(, child))
+       (put '(, child) 'derived-mode-parent '(, parent))
        (defun (, child) ()
 	 (, docstring)
 	 (interactive)
 					; Run the parent.
 	 ((, parent))
 					; Identify special modes.
-	 (if (get (quote (, parent)) 'special)
-	     (put (quote (, child)) 'special t))
+	 (if (get '(, parent) 'special)
+	     (put '(, child) 'special t))
 					; Identify the child mode.
-	 (setq major-mode (quote (, child)))
+	 (setq major-mode '(, child))
 	 (setq mode-name (, name))
 					; Set up maps and tables.
-	 (derived-mode-set-keymap (quote (, child)))
-	 (derived-mode-set-syntax-table (quote (, child)))
-	 (derived-mode-set-abbrev-table (quote (, child)))
+	 (derived-mode-set-keymap '(, child))
+	 (derived-mode-set-syntax-table '(, child))
+	 (derived-mode-set-abbrev-table '(, child))
 					; Splice in the body (if any).
 	 (,@ body)
 ;;;					; Run the setup function, if
 ;;;					; any -- this will soon be
 ;;;					; obsolete.
-;;;	 (derived-mode-run-setup-function (quote (, child)))
-					; Run the hooks, if any.
-	 (derived-mode-run-hooks (quote (, child)))))))
+;;;	 (derived-mode-run-setup-function '(, child))
+					; Run the hook, if any.
+	 (derived-mode-run-hooks '(, child))))))
 
 
 ;; PUBLIC: find the ultimate class of a derived mode.
@@ -186,9 +187,9 @@ Use the `derived-mode-parent' property of the symbol to trace backwards."
   "Construct a setup-function name based on a mode name."
   (intern (concat (symbol-name mode) "-setup")))
 
-(defsubst derived-mode-hooks-name (mode)
-  "Construct a hooks name based on a mode name."
-  (intern (concat (symbol-name mode) "-hooks")))
+(defsubst derived-mode-hook-name (mode)
+  "Construct the mode hook name based on mode name MODE."
+  (intern (concat (symbol-name mode) "-hook")))
 
 (defsubst derived-mode-map-name (mode)
   "Construct a map name based on a mode name."
@@ -292,9 +293,9 @@ Always merge its parent into it, since the merge is non-destructive."
 ;;;	(funcall fname))))
 
 (defun derived-mode-run-hooks (mode)
-  "Run the hooks if they exist."
+  "Run the mode hook for MODE."
 
-  (let ((hooks-name (derived-mode-hooks-name mode)))
+  (let ((hooks-name (derived-mode-hook-name mode)))
     (if (boundp hooks-name)
 	(run-hooks hooks-name))))
 

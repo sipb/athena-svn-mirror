@@ -33,105 +33,121 @@
 ;;; We don't want to have any undo records in the dumped Emacs.
 (buffer-disable-undo "*scratch*")
 
+(load "byte-run")
 (load "subr")
 
 ;; We specify .el in case someone compiled version.el by mistake.
 (load "version.el")
 
-(garbage-collect)
-(load "byte-run")
-(garbage-collect)
 (load "map-ynp")
-(garbage-collect)
-(load "loaddefs.el")  ;Don't get confused if someone compiled loaddefs by mistake.
-(garbage-collect)
-(load "simple")
-(garbage-collect)
-(load "help")
-(garbage-collect)
-(load "files")
-(garbage-collect)
+(load "widget")
+(load "custom")
+(load "cus-start")
+(load "international/mule")
+(load "international/mule-conf.el") ;Don't get confused if someone compiled this by mistake.
 (load "format")
-(garbage-collect)
+(load "bindings")
+(setq load-source-file-function 'load-with-code-conversion)
+(load "simple")
+(load "help")
+(load "files")
+;; Any Emacs Lisp source file (*.el) loaded here after can contain
+;; multilingual text.
+(load "international/mule-cmds")
+(load "case-table")
+(load "international/characters")
+
+(message "Lists of integers (garbage collection statistics) are normal output")
+(message "while building Emacs; they do not indicate a problem.")
+(message "%s" (garbage-collect))
+(load "loaddefs.el")  ;Don't get confused if someone compiled this by mistake.
+(message "%s" (garbage-collect))
+
+(let ((set-case-syntax-set-multibyte t))
+  (load "international/latin-1")
+  (load "international/latin-2")
+  (load "international/latin-3")
+  (load "international/latin-4")
+  (load "international/latin-5"))
+;; Load language-specific files.
+(load "language/chinese")
+(load "language/cyrillic")
+(load "language/indian")
+(load "language/devanagari")		; This should be loaded after indian.
+(load "language/english")
+(load "language/ethiopic")
+(load "language/european")
+(load "language/czech")
+(load "language/slovak")
+(load "language/romanian")
+(load "language/greek")
+(load "language/hebrew")
+(load "language/japanese")
+(load "language/korean")
+(load "language/lao")
+(load "language/thai")
+(load "language/tibetan")
+(load "language/vietnamese")
+(load "language/misc-lang")
+(update-coding-systems-internal)
+
 (load "indent")
-(garbage-collect)
 (load "isearch")
-(garbage-collect)
 (load "window")
-(if (fboundp 'delete-frame)
-    (progn
-      (garbage-collect)
-      (load "frame")))
+(load "frame")
+(load "faces")
 (if (fboundp 'frame-face-alist)
     (progn
-      (garbage-collect)
-      (load "faces")
       (load "facemenu")))
 (if (fboundp 'track-mouse)
     (progn
-      (garbage-collect)
       (load "mouse")
-      (garbage-collect)
       (load "scroll-bar")
       (load "select")))
+
+(message "%s" (garbage-collect))
 (load "menu-bar")
-(garbage-collect)
 (load "paths.el")  ;Don't get confused if someone compiled paths by mistake.
-(garbage-collect)
 (load "startup")
-(garbage-collect)
-(load "lisp")
-(garbage-collect)
-(load "page")
-(garbage-collect)
+(load "emacs-lisp/lisp")
+(load "textmodes/page")
 (load "register")
-(garbage-collect)
-(load "paragraphs")
-(garbage-collect)
-(load "lisp-mode")
-(garbage-collect)
-(load "text-mode")
-(garbage-collect)
-(load "fill")
-(garbage-collect)
+(load "textmodes/paragraphs")
+(load "emacs-lisp/lisp-mode")
+(load "textmodes/text-mode")
+(load "textmodes/fill")
+(message "%s" (garbage-collect))
+
 (load "replace")
 (if (eq system-type 'vax-vms)
     (progn
-      (garbage-collect)
       (load "vmsproc")))
-(garbage-collect)
 (load "abbrev")
-(garbage-collect)
 (load "buff-menu")
 (if (eq system-type 'vax-vms)
     (progn
-      (garbage-collect)
       (load "vms-patch")))
 (if (eq system-type 'windows-nt)
     (progn
-      (garbage-collect)
       (load "ls-lisp")
-      (garbage-collect)
       (load "disp-table") ; needed to setup ibm-pc char set, see internal.el
-      (garbage-collect)
-      (load "winnt")
-      (garbage-collect)))
+      (load "dos-w32")
+      (load "w32-fns")))
 (if (eq system-type 'ms-dos)
     (progn
       (load "ls-lisp")
-      (garbage-collect)
+      (load "dos-w32")
       (load "dos-fns")
-      (garbage-collect)
-      (load "disp-table") ; needed to setup ibm-pc char set, see internal.el
-      (garbage-collect)))
+      (load "dos-vars")
+      (load "disp-table"))) ; needed to setup ibm-pc char set, see internal.el
 (if (fboundp 'atan)	; preload some constants and 
-    (progn		; floating pt. functions if 
-      (garbage-collect)	; we have float support.
+    (progn		; floating pt. functions if we have float support.
       (load "float-sup")))
+(message "%s" (garbage-collect))
 
-(garbage-collect)
 (load "vc-hooks")
 (load "ediff-hook")
+(message "%s" (garbage-collect))
 
 ;If you want additional libraries to be preloaded and their
 ;doc strings kept in the DOC file rather than in core,
@@ -188,9 +204,9 @@
     (Snarf-documentation "DOC"))
 (message "Finding pointers to doc strings...done")
 
-;Note: You can cause additional libraries to be preloaded
-;by writing a site-init.el that loads them.
-;See also "site-load" above.
+;;;Note: You can cause additional libraries to be preloaded
+;;;by writing a site-init.el that loads them.
+;;;See also "site-load" above.
 (load "site-init" t)
 (setq current-load-list nil)
 (garbage-collect)
@@ -219,7 +235,7 @@
       ;; We used to dump under the name xemacs, but that occasionally
       ;; confused people installing Emacs (they'd install the file
       ;; under the name `xemacs'), and it's inconsistent with every
-      ;; other GNU product's build process.
+      ;; other GNU program's build process.
       (dump-emacs "emacs" "temacs")
       (message "%d pure bytes used" pure-bytes-used)
       ;; Recompute NAME now, so that it isn't set when we dump.
@@ -237,13 +253,12 @@
 
 ;; For machines with CANNOT_DUMP defined in config.h,
 ;; this file must be loaded each time Emacs is run.
-;; So run the startup code now.
+;; So run the startup code now.  First, remove `-l loadup' from args.
 
-(or (equal (nth 3 command-line-args) "dump")
-    (equal (nth 4 command-line-args) "dump")
-    (progn
-      ;; Avoid loading loadup.el a second time!
-      (setq command-line-args (cdr (cdr command-line-args)))
-      (eval top-level)))
+(if (and (equal (nth 1 command-line-args) "-l")
+	 (equal (nth 2 command-line-args) "loadup"))
+    (setcdr command-line-args (nthcdr 3 command-line-args)))
+
+(eval top-level)
 
 ;;; loadup.el ends here

@@ -3,6 +3,10 @@
 /* Get most of the stuff from bsd4.3 */
 #include "bsd4-3.h"
 
+#if defined (__alpha__) && !defined (__ELF__)
+#define NO_SHARED_LIBS
+#endif
+
 /* For mem-limits.h.  */
 #define BSD4_2
 
@@ -39,7 +43,7 @@
 
 #define GETPGRP_NO_ARG
 
-#ifndef NO_SHARED_LIBS
+#if !defined (NO_SHARED_LIBS) && ! defined (__ELF__)
 /* These definitions should work for either dynamic or static linking,
    whichever is the default for `cc -nostdlib'.  */
 #define HAVE_TEXT_START		/* No need to define `start_of_text'.  */
@@ -61,3 +65,17 @@
 #define NO_MATHERR
 
 #define AMPERSAND_FULL_NAME
+
+#ifdef __ELF__
+/* Here is how to find X Windows.  LD_SWITCH_X_SITE_AUX gives an -R option
+   says where to find X windows at run time.  We convert it to a -rpath option
+   which is what OSF1 uses.  */
+#define LD_SWITCH_SYSTEM `echo LD_SWITCH_X_SITE_AUX | sed -e 's/-R/-Wl,-rpath,/'`
+#endif /* __ELF__ */
+
+/* On post 1.3 releases of NetBSD, gcc -nostdlib also clears
+   the library search parth, i.e. it won't search /usr/lib
+   for libc and friends. Using -nostartfiles instead avoids
+   this problem, and will also work on earlier NetBSD releases */
+
+#define LINKER $(CC) -nostartfiles

@@ -453,7 +453,7 @@ as a menu label.")
 
   CHECK_GFX (Qnil);
 
-  xpos = CtoSX (XWINDOW(window)->left + XINT(X_Position));
+  xpos = CtoSX (WINDOW_LEFT_MARGIN (XWINDOW (window)) + XINT(X_Position));
   ypos = CtoSY (XWINDOW(window)->top  + XINT(Y_Position));
 #ifdef  Menu_Base_Kludge
   {static Lisp_Object symbol[2];
@@ -498,7 +498,7 @@ syms_of_sunfns()
 #ifdef  Menu_Base_Kludge
   /* i'm just too lazy to re-write this into C code */
   /* so we will call this elisp function from C */
-  sm_kludge_string = make_pure_string ("sm::menu-kludge", 15);
+  sm_kludge_string = make_pure_string ("sm::menu-kludge", 15, 15, 0);
 #endif /* Menu_Base_Kludge */
 
   defsubr(&Ssun_window_init);

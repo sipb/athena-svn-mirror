@@ -1,12 +1,12 @@
 ;;; dabbrev.el --- dynamic abbreviation package
 
-;; Copyright (C) 1985, 1986, 1992, 1994 Free Software Foundation, Inc.
+;; Copyright (C) 1985, 86, 92, 94, 96, 1997 Free Software Foundation, Inc.
 
 ;; Author: Don Morrison
 ;; Maintainer: Lars Lindberg <Lars.Lindberg@sypro.cap.se>
 ;; Created: 16 Mars 1992
 ;; Lindberg's last update version: 5.7
-;; Keywords: abbrev expand completion
+;; Keywords: abbrev expand completion convenience
 
 ;; This file is part of GNU Emacs.
 
@@ -88,7 +88,7 @@
 ;;  [tromey]	Tom Tromey <tromey@busco.lanl.gov>
 ;;  [Rolf]	Rolf Schreiber <rolf@mathematik.uni-stuttgart.de>
 ;;  [Petri]	Petri Raitio <per@tekla.fi>
-;;  [ejb]	Jay Berkenbilt <ejb@ERA.COM>
+;;  [ejb]	Jay Berkenbilt <ejb@ql.org>
 ;;  [hawley]	Bob Hawley <rth1@quartet.mt.att.com>
 ;;  ... and to all the people who have participated in the beta tests.
 
@@ -97,52 +97,70 @@
 ;;----------------------------------------------------------------
 ;; Customization variables
 ;;----------------------------------------------------------------
-(defvar dabbrev-backward-only nil
-  "*If non-nil, `dabbrev-expand' only looks backwards.")
 
-(defvar dabbrev-limit nil
-  "*Limits region searched by `dabbrev-expand' to this many chars away.")
+(defgroup dabbrev nil
+  "Dynamic Abbreviations"
+  :tag "Dynamic Abbreviations"
+  :group 'abbrev
+  :group 'convenience)
 
-(defvar dabbrev-abbrev-skip-leading-regexp nil
+(defcustom dabbrev-backward-only nil
+  "*If non-nil, `dabbrev-expand' only looks backwards."
+  :type 'boolean
+  :group 'dabbrev)
+
+(defcustom dabbrev-limit nil
+  "*Limits region searched by `dabbrev-expand' to this many chars away."
+  :type '(choice (const :tag "off" nil)
+		 integer)
+  :group 'dabbrev)
+
+(defcustom dabbrev-abbrev-skip-leading-regexp nil
   "*Regexp for skipping leading characters of an abbreviation.
 
 Example: Set this to \"\\\\$\" for programming languages
 in which variable names may appear with or without a leading `$'.
-\(For example, in Makefiles.)
+\(For example, in Makefiles.\)
 
-Set this to nil if no characters should be skipped.")
+Set this to nil if no characters should be skipped."
+  :type '(choice regexp
+		 (const :tag "off" nil))
+  :group 'dabbrev)
 
-;; I recommend that you set this to nil.
-(defvar dabbrev-case-fold-search 'case-fold-search
-  "*Non-nil if dabbrev searches should ignore case.
+(defcustom dabbrev-case-fold-search 'case-fold-search
+  "*Control whether dabbrev searches should ignore case.
 A value of nil means case is significant.
+A value of `case-fold-search' means case is significant
+ if `case-fold-search' is nil.
+Any other non-nil version means case is not significant."
+  :type '(choice (const :tag "off" nil)
+		 (const :tag "like search" case-fold-search)
+		 (other :tag "on" t))
+  :group 'dabbrev)
 
-The value of this variable is an expression; it is evaluated
-and the resulting value determines the decision.
-For example: setting this to `case-fold-search' means evaluate that
-variable to see whether its value is nil.")
-
-(defvar dabbrev-upcase-means-case-search nil
+(defcustom dabbrev-upcase-means-case-search nil
   "*The significance of an uppercase character in an abbreviation.
 nil means case fold search, non-nil means case sensitive search.
 
 This variable has an effect only when the value of
-`dabbrev-case-fold-search' evaluates to t.")
+`dabbrev-case-fold-search' says to ignore case."
+  :type 'boolean
+  :group 'dabbrev)
 
-;; I recommend that you set this to nil.
-(defvar dabbrev-case-replace 'case-replace
-  "*Non-nil means dabbrev should preserve case when expanding the abbreviation.
-More precisely, it preserves the case pattern of the abbreviation as you
-typed it--as opposed to the case pattern of the expansion that is copied.
-The value of this variable is an expression; it is evaluated
-and the resulting value determines the decision.
-For example, setting this to `case-replace' means evaluate that
-variable to see if its value is t or nil.
+(defcustom dabbrev-case-replace 'case-replace
+  "*Controls whether dabbrev preserves case when expanding the abbreviation.
+A value of nil means preserve case.
+A value of `case-replace' means preserve case if `case-replace' is nil.
+Any other non-nil version means do not preserve case.
 
 This variable has an effect only when the value of
-`dabbrev-case-fold-search' evaluates to t.")
+`dabbrev-case-fold-search' specifies to ignore case."
+  :type '(choice (const :tag "off" nil)
+		 (const :tag "like M-x query-replace" case-replace)
+		 (other :tag "on" t))
+  :group 'dabbrev)
 
-(defvar dabbrev-abbrev-char-regexp nil
+(defcustom dabbrev-abbrev-char-regexp nil
   "*Regexp to recognize a character in an abbreviation or expansion.
 This regexp will be surrounded with \\\\( ... \\\\) when actually used.
 
@@ -162,9 +180,12 @@ starting with or containing `no-'.  If you set this variable to
 expanding `yes-or-no-' signals an error because `-' is not part of a word;
 but expanding `yes-or-no' looks for a word starting with `no'.
 
-The recommended value is \"\\\\sw\\\\|\\\\s_\".")
+The recommended value is \"\\\\sw\\\\|\\\\s_\"."
+  :type '(choice (const nil)
+		 regexp)
+  :group 'dabbrev)
 
-(defvar dabbrev-check-all-buffers t
+(defcustom dabbrev-check-all-buffers t
   "*Non-nil means dabbrev package should search *all* buffers.
 
 Dabbrev always searches the current buffer first.  Then, if
@@ -172,9 +193,17 @@ Dabbrev always searches the current buffer first.  Then, if
 designated by `dabbrev-select-buffers-function'.
 
 Then, if `dabbrev-check-all-buffers' is non-nil, dabbrev searches
-all the other buffers.")
+all the other buffers, except those named in `dabbrev-ignored-buffer-names'."
+  :type 'boolean
+  :group 'dabbrev)
 
-(defvar dabbrev-check-other-buffers t
+(defcustom dabbrev-ignored-buffer-names '("*Messages*" "*Buffer List*")
+  "*List of buffer names that dabbrev should not check."
+  :type '(repeat (string :tag "Buffer name"))
+  :group 'dabbrev
+  :version "20.3")
+
+(defcustom dabbrev-check-other-buffers t
   "*Should \\[dabbrev-expand] look in other buffers?\
 
 nil: Don't look in other buffers.
@@ -184,7 +213,11 @@ Anything else: When we can't find any more expansions in
 the current buffer, then ask the user whether to look in other
 buffers too.
 
-The default value is t.")
+The default value is t."
+  :type '(choice (const :tag "off" nil)
+		 (const :tag "on" t)
+		 (other :tag "ask" other))
+  :group 'dabbrev)
 
 ;; I guess setting this to a function that selects all C- or C++-
 ;; mode buffers would be a good choice for a debugging buffer,
@@ -197,7 +230,7 @@ an example.
 
 A mode setting this variable should make it buffer local.")
 
-(defvar dabbrev-friend-buffer-function 'dabbrev--same-major-mode-p
+(defcustom dabbrev-friend-buffer-function 'dabbrev--same-major-mode-p
   "*A function to decide whether dabbrev should search OTHER-BUFFER.
 The function should take one argument, OTHER-BUFFER, and return
 non-nil if that buffer should be searched.  Have a look at
@@ -207,9 +240,11 @@ The value of `dabbrev-friend-buffer-function' has an effect only if
 the value of `dabbrev-select-buffers-function' uses it.  The function
 `dabbrev--select-buffers' is one function you can use here.
 
-A mode setting this variable should make it buffer local.")
+A mode setting this variable should make it buffer local."
+  :type 'function
+  :group 'dabbrev)
 
-(defvar dabbrev-search-these-buffers-only nil
+(defcustom dabbrev-search-these-buffers-only nil
   "If non-nil, a list of buffers which dabbrev should search.
 If this variable is non-nil, dabbrev will only look in these buffers.
 It will not even look in the current buffer if it is not a member of
@@ -316,9 +351,11 @@ if there is a suitable one already."
 	 (dabbrev-check-all-buffers
 	  (and arg (= (prefix-numeric-value arg) 16)))
 	 (abbrev (dabbrev--abbrev-at-point))
-	 (ignore-case-p  (and (eval dabbrev-case-fold-search)
-			      (or (not dabbrev-upcase-means-case-search)
-				  (string= abbrev (downcase abbrev)))))
+	 (ignore-case-p (and (if (eq dabbrev-case-fold-search 'case-fold-search)
+				 case-fold-search
+			       dabbrev-case-fold-search)
+			     (or (not dabbrev-upcase-means-case-search)
+				 (string= abbrev (downcase abbrev)))))
 	 (my-obarray dabbrev--last-obarray)
 	 init)
     (save-excursion
@@ -461,9 +498,8 @@ See also `dabbrev-abbrev-char-regexp' and \\[dabbrev-completion]."
 		;; as our expansion this time.
 		(re-search-forward
 		 (concat "\\(\\(" dabbrev--abbrev-char-regexp "\\)+\\)"))
-		(setq expansion
-		      (buffer-substring dabbrev--last-expansion-location
-					(point)))
+		(setq expansion (buffer-substring-no-properties
+				 dabbrev--last-expansion-location (point)))
 		(if dabbrev--last-case-pattern
 		    (setq expansion (upcase expansion)))
 
@@ -488,7 +524,9 @@ See also `dabbrev-abbrev-char-regexp' and \\[dabbrev-completion]."
       (or expansion
 	  (setq expansion
 		(dabbrev--find-expansion abbrev direction
-					 (and (eval dabbrev-case-fold-search)
+					 (and (if (eq dabbrev-case-fold-search 'case-fold-search)
+						  case-fold-search
+						dabbrev-case-fold-search)
 					      (or (not dabbrev-upcase-means-case-search)
 						  (string= abbrev (downcase abbrev))))))))
     (cond
@@ -524,7 +562,9 @@ See also `dabbrev-abbrev-char-regexp' and \\[dabbrev-completion]."
       ;; set dabbrev--last-case-pattern.
       (and record-case-pattern
 	   (setq dabbrev--last-case-pattern
-		 (and (eval dabbrev-case-fold-search)
+		 (and (if (eq dabbrev-case-fold-search 'case-fold-search)
+			  case-fold-search
+			dabbrev-case-fold-search)
 		      (not dabbrev-upcase-means-case-search)
 		      (equal abbrev (upcase abbrev)))))
 
@@ -588,8 +628,8 @@ See also `dabbrev-abbrev-char-regexp' and \\[dabbrev-completion]."
 	    (error "No possible abbreviation preceding point"))))
     ;; Now find the beginning of that one.
     (dabbrev--goto-start-of-abbrev)
-    (buffer-substring dabbrev--last-abbrev-location
-		      (point))))
+    (buffer-substring-no-properties
+     dabbrev--last-abbrev-location (point))))
 	
 ;;; Initializes all global variables
 (defun dabbrev--reset-global-variables ()
@@ -721,7 +761,9 @@ See also `dabbrev-abbrev-char-regexp' and \\[dabbrev-completion]."
 			(nreverse
 			 (dabbrev-filter-elements
 			  buffer (buffer-list)
-			  (not (memq buffer dabbrev--friend-buffer-list))))
+			  (and (not (member (buffer-name buffer)
+					    dabbrev-ignored-buffer-names))
+			       (not (memq buffer dabbrev--friend-buffer-list)))))
 			dabbrev--friend-buffer-list
 			(append dabbrev--friend-buffer-list
 				non-friend-buffer-list)))))
@@ -758,22 +800,32 @@ See also `dabbrev-abbrev-char-regexp' and \\[dabbrev-completion]."
 ;;; EXPANSION is the expansion substring.
 (defun dabbrev--substitute-expansion (old abbrev expansion)
   ;;(undo-boundary)
-  (let ((use-case-replace (and (eval dabbrev-case-fold-search)
+  (let ((use-case-replace (and (if (eq dabbrev-case-fold-search 'case-fold-search)
+				   case-fold-search
+				 dabbrev-case-fold-search)
 			       (or (not dabbrev-upcase-means-case-search)
 				   (string= abbrev (downcase abbrev)))
-			       (eval dabbrev-case-replace))))
+			       (if (eq dabbrev-case-replace 'case-replace)
+				   case-replace
+				 dabbrev-case-replace))))
     (and nil use-case-replace
 	 (setq old (concat abbrev (or old "")))
 	 (setq expansion (concat abbrev expansion)))
-    ;; If the given abbrev is mixed case and its case pattern
+    ;; If the expansion has mixed case
+    ;; and it is not simply a capitalized word,
+    ;; or if the abbrev has mixed case,
+    ;; and if the given abbrev's case pattern
     ;; matches the start of the expansion,
     ;; copy the expansion's case
     ;; instead of downcasing all the rest.
-    (if (and (string= abbrev
-		      (substring expansion 0 (length abbrev)))
-	     (not (string= abbrev (downcase abbrev)))
-	     (not (string= abbrev (upcase abbrev))))
-	(setq use-case-replace nil))
+    (let ((expansion-rest (substring expansion 1)))
+      (if (and (not (and (or (string= expansion-rest (downcase expansion-rest))
+			     (string= expansion-rest (upcase expansion-rest)))
+			 (or (string= abbrev (downcase abbrev))
+			     (string= abbrev (upcase abbrev)))))
+	       (string= abbrev
+			(substring expansion 0 (length abbrev))))
+	  (setq use-case-replace nil)))
     (if (equal abbrev " ")
 	(setq use-case-replace nil))
     (if use-case-replace
@@ -781,7 +833,7 @@ See also `dabbrev-abbrev-char-regexp' and \\[dabbrev-completion]."
     (if old
 	(save-excursion
 	  (search-backward old))
-      ;;(store-match-data (list (point-marker) (point-marker)))
+      ;;(set-match-data (list (point-marker) (point-marker)))
       (search-backward abbrev))
     ;; Make case of replacement conform to case of abbreviation
     ;; provided (1) that kind of thing is enabled in this buffer
@@ -838,8 +890,8 @@ See also `dabbrev-abbrev-char-regexp' and \\[dabbrev-completion]."
 	      nil
 	    ;; We have a truly valid match.  Find the end.
 	    (re-search-forward pattern2)
-	    (setq found-string
-		  (buffer-substring (match-beginning 1) (match-end 1)))
+	    (setq found-string (buffer-substring-no-properties
+				(match-beginning 1) (match-end 1)))
 	    (and ignore-case (setq found-string (downcase found-string)))
 	    ;; Ignore this match if it's already in the table.
 	    (if (dabbrev-filter-elements
@@ -854,8 +906,8 @@ See also `dabbrev-abbrev-char-regexp' and \\[dabbrev-completion]."
 	(if found-string
 	    ;; Put it into `dabbrev--last-table'
 	    ;; and return it (either downcased, or as is).
-	    (let ((result
-		   (buffer-substring (match-beginning 0) (match-end 0))))
+	    (let ((result (buffer-substring-no-properties
+			   (match-beginning 0) (match-end 0))))
 	      (setq dabbrev--last-table
 		    (cons found-string dabbrev--last-table))
 	      (if (and ignore-case (eval dabbrev-case-replace))

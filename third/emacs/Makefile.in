@@ -44,6 +44,8 @@ C_SWITCH_SYSTEM=@c_switch_system@
 ALLOCA=@ALLOCA@
 LN_S=@LN_S@
 CFLAGS=@CFLAGS@
+LDFLAGS=@LDFLAGS@
+CPPFLAGS=@CPPFLAGS@
 C_SWITCH_X_SITE=@C_SWITCH_X_SITE@
 LD_SWITCH_X_SITE=@LD_SWITCH_X_SITE@
 YACC=@YACC@
@@ -79,9 +81,8 @@ bindir=@bindir@
 datadir=@datadir@
 
 # Where to install and expect the files that Emacs modifies as it
-# runs.	 These files are all architecture-independent. Right now, the
-# only such data is the locking directory; ${lockdir} is a
-# subdirectory of this.
+# runs.  These files are all architecture-independent.
+# Right now, this is not used.
 sharedstatedir=@sharedstatedir@
 
 # Where to install and expect executable files to be run by Emacs
@@ -107,10 +108,15 @@ bitmapdir=@bitmapdir@
 # expected to be in ${srcdir}/src, and the source code for Emacs's
 # utility programs is expected to be in ${srcdir}/lib-src.  This is
 # set by the configure script's `--srcdir' option.
+
+# We use $(srcdir) explicitly in dependencies so as not to depend on VPATH.
 srcdir=@srcdir@
 
 # Tell make where to find source files; this is needed for the makefiles.
 VPATH=@srcdir@
+
+# Where to find the application default.
+x_default_search_path=@x_default_search_path@
 
 # ==================== Emacs-specific directories ====================
 
@@ -154,11 +160,6 @@ buildlisppath=${srcdir}/lisp
 # at once.
 etcdir=@etcdir@
 
-# Where to create and expect the locking directory, where
-# the Emacs locking code keeps track of which files are
-# currently being edited.
-lockdir=@lockdir@
-
 # Where to put executables to be run by Emacs rather than
 # the user.  This path usually includes the Emacs version
 # and configuration name, so that multiple configurations
@@ -175,6 +176,9 @@ docdir=@docdir@
 INSTALL = @INSTALL@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 INSTALL_DATA = @INSTALL_DATA@
+INSTALL_INFO = install-info
+# By default, we uphold the dignity of our programs.
+INSTALL_STRIP =
 
 # ============================= Targets ==============================
 
@@ -184,28 +188,29 @@ EMACS = emacs
 # Subdirectories to make recursively.  `lisp' is not included
 # because the compiled lisp files are part of the distribution
 # and you cannot remake them without installing Emacs first.
-SUBDIR = lib-src src
+SUBDIR = lib-src src leim
 
 # The makefiles of the directories in $SUBDIR.
-SUBDIR_MAKEFILES = lib-src/Makefile man/Makefile src/Makefile oldXMenu/Makefile lwlib/Makefile
+SUBDIR_MAKEFILES = lib-src/Makefile man/Makefile src/Makefile oldXMenu/Makefile lwlib/Makefile leim/Makefile
 
 # Subdirectories to install, and where they'll go.
 # lib-src's makefile knows how to install it, so we don't do that here.
+# leim's makefile also knows how to install it, so we don't do that here.
 # When installing the info files, we need to do special things to
 # avoid nuking an existing dir file, so we don't do that here;
 # instead, we have written out explicit code in the `install' targets.
 COPYDIR = ${srcdir}/etc ${srcdir}/lisp
 COPYDESTS = ${etcdir} ${lispdir}
 
-all:	paths-force ${SUBDIR}
+all: ${SUBDIR}
 
 removenullpaths=sed -e 's/^://g' -e 's/:$$//g' -e 's/::/:/g'
 
-# Note that sed is not in /bin on 386bsd.
-src/paths.h: Makefile ${srcdir}/src/paths.in
-	@echo "Producing \`src/paths.h' from \`src/paths.in'."
+# Generate paths.h from paths.in.  This target is invoked by `configure'.
+paths-force: FRC
 	@(lisppath=`echo ${lisppath} | ${removenullpaths}` ;		\
 	  buildlisppath=`echo ${buildlisppath} | ${removenullpaths}` ;	\
+	  x_default_search_path=`echo ${x_default_search_path}`; \
 	  sed < ${srcdir}/src/paths.in > paths.h.$$$$		\
 	  -e 's;\(#.*PATH_LOADSEARCH\).*$$;\1 "'$${lisppath}'";'	\
 	  -e 's;\(#.*PATH_DUMPLOADSEARCH\).*$$;\1 "'$${buildlisppath}'";' \
@@ -213,42 +218,16 @@ src/paths.h: Makefile ${srcdir}/src/paths.in
 	  -e 's;\(#.*PATH_INFO\).*$$;\1 "${infodir}";'			\
 	  -e 's;\(#.*PATH_DATA\).*$$;\1 "${etcdir}";'			\
 	  -e 's;\(#.*PATH_BITMAPS\).*$$;\1 "${bitmapdir}";'		\
-	  -e 's;\(#.*PATH_DOC\).*$$;\1 "${docdir}";'			\
-	  -e 's;\(#.*PATH_LOCK\).*$$;\1 "${lockdir}/";') &&		\
+	  -e 's;\(#.*PATH_X_DEFAULTS\).*$$;\1 "${x_default_search_path}";' \
+	  -e 's;\(#.*PATH_DOC\).*$$;\1 "${docdir}";') &&		\
 	${srcdir}/move-if-change paths.h.$$$$ src/paths.h
 
-# For `make all',
-# we force the rebuilding of src/paths.h because the user might give
-# make different values for the various directories.  Since we use
-# move-if-change, src/paths.h only actually changes if the user did
-# something notable, so the only unnecessary work we do is in building
-# paths.h.$$, which isn't much.
-# Note that sed is not in /bin on 386bsd.
-# We depend on src/paths.h here to prevent simultaneous execution of
-# that rule and this one, in a parallel make.
-# It is possible for paths.h to be updated twice--but that would happen anyway.
-paths-force: FRC src/paths.h
-	@echo "Producing \`src/paths.h' from \`src/paths.in'."
-	@(lisppath=`echo ${lisppath} | ${removenullpaths}` ;		\
-	  buildlisppath=`echo ${buildlisppath} | ${removenullpaths}` ;	\
-	  sed < ${srcdir}/src/paths.in > paths.h.$$$$		\
-	  -e 's;\(#.*PATH_LOADSEARCH\).*$$;\1 "'$${lisppath}'";'	\
-	  -e 's;\(#.*PATH_DUMPLOADSEARCH\).*$$;\1 "'$${buildlisppath}'";' \
-	  -e 's;\(#.*PATH_EXEC\).*$$;\1 "${archlibdir}";'		\
-	  -e 's;\(#.*PATH_INFO\).*$$;\1 "${infodir}";'			\
-	  -e 's;\(#.*PATH_DATA\).*$$;\1 "${etcdir}";'			\
-	  -e 's;\(#.*PATH_BITMAPS\).*$$;\1 "${bitmapdir}";'		\
-	  -e 's;\(#.*PATH_DOC\).*$$;\1 "${docdir}";'			\
-	  -e 's;\(#.*PATH_LOCK\).*$$;\1 "${lockdir}/";') &&		\
-	${srcdir}/move-if-change paths.h.$$$$ src/paths.h
+# For parallel make, src should be build before leim.
+leim:   src
 
-src:	lib-src FRC src/paths.h
+src:	lib-src FRC
 
-# This ought to depend on src/paths.h, so that in parallel make
-# src/paths.h will be available for the compilations in lib-src.
-# But that causes trouble in `make install' if a different prefix
-# is specified at that time.
-lib-src: FRC src/paths.h
+lib-src: FRC src/config.stamp
 
 .RECURSIVE: ${SUBDIR}
 
@@ -261,19 +240,29 @@ blessmail: ${SUBDIR_MAKEFILES} src FRC
 	cd lib-src; $(MAKE) maybe-blessmail $(MFLAGS) \
 	  MAKE='${MAKE}' archlibdir='$(archlibdir)'
 
-Makefile: Makefile.in config.status
+Makefile: $(srcdir)/Makefile.in config.status
 	./config.status
 
-src/Makefile: src/Makefile.in config.status
+src/Makefile: $(srcdir)/src/Makefile.in config.status
 	./config.status
 
-lib-src/Makefile: lib-src/Makefile.in config.status
+src/config.stamp: $(srcdir)/src/config.in config.status
+	./config.status
+	touch src/config.stamp
+
+lib-src/Makefile: $(srcdir)/lib-src/Makefile.in config.status
 	./config.status
 
-oldXMenu/Makefile: oldXMenu/Makefile.in config.status
+man/Makefile: $(srcdir)/man/Makefile.in config.status
 	./config.status
 
-lwlib/Makefile: lwlib/Makefile.in config.status
+oldXMenu/Makefile: $(srcdir)/oldXMenu/Makefile.in config.status
+	./config.status
+
+lwlib/Makefile: $(srcdir)/lwlib/Makefile.in config.status
+	./config.status
+
+leim/Makefile: $(srcdir)/leim/Makefile.in config.status
 	./config.status
 
 # ==================== Installation ====================
@@ -292,11 +281,9 @@ lwlib/Makefile: lwlib/Makefile.in config.status
 ## place with their files read-only (perhaps because they are checked
 ## into RCS).  In order to make this safe, we make sure that the
 ## source exists and is distinct from the destination.
-## We don't depend on `all', but rather on ${SUBDIR}, so that we won't
-## ever modify src/paths.h.
 ### We do install-arch-indep first because
 ### the executable needs the Lisp files and DOC file to work properly.
-install: ${SUBDIR} install-arch-indep install-arch-dep blessmail
+install: all install-arch-indep install-arch-dep install-leim blessmail
 	@true
 
 ### Install the executables that were compiled specifically for this machine.
@@ -306,8 +293,9 @@ install-arch-dep: mkdir
 	(cd lib-src; \
 	  $(MAKE) install $(MFLAGS) prefix=${prefix} \
 	    exec_prefix=${exec_prefix} bindir=${bindir} \
-	    libexecdir=${libexecdir} archlibdir=${archlibdir})
-	${INSTALL_PROGRAM} src/emacs ${bindir}/emacs-${version}
+	    libexecdir=${libexecdir} archlibdir=${archlibdir} \
+	    INSTALL_STRIP=${INSTALL_STRIP})
+	${INSTALL_PROGRAM} $(INSTALL_STRIP) src/emacs ${bindir}/emacs-${version}
 	-chmod 1755  ${bindir}/emacs-${version}
 	rm -f ${bindir}/$(EMACS)
 	-ln ${bindir}/emacs-${version} ${bindir}/$(EMACS)
@@ -315,10 +303,10 @@ install-arch-dep: mkdir
 ### Install the files that are machine-independent.
 ### Most of them come straight from the distribution;
 ### the exception is the DOC-* files, which are copied
-### from the build directory.
+## from the build directory.
 
-### Note that we copy DOC* and then delete DOC
-### as a workaround for a bug in tar on Ultrix 4.2.
+## Note that we copy DOC* and then delete DOC
+## as a workaround for a bug in tar on Ultrix 4.2.
 install-arch-indep: mkdir
 	-set ${COPYDESTS} ; \
 	for dir in ${COPYDIR} ; do \
@@ -335,8 +323,10 @@ install-arch-indep: mkdir
 	  [ -d $${dir} ] \
 	  && [ `(cd $${dir} && /bin/pwd)` != `(cd $${dest} && /bin/pwd)` ] \
 	  && (echo "Copying $${dir} to $${dest}..." ; \
-	      (cd $${dir}; tar -cf - . )|(cd $${dest};umask 022; tar -xvf - ); \
+	      (cd $${dir}; tar -cf - . ) \
+		|(cd $${dest};umask 022; tar -xvf - && cat > /dev/null); \
 	      for subdir in `find $${dest} -type d ! -name RCS -print` ; do \
+		chmod a+rx $${subdir} ; \
 		rm -rf $${subdir}/RCS ; \
 		rm -rf $${subdir}/CVS ; \
 		rm -f  $${subdir}/\#* ; \
@@ -350,37 +340,64 @@ install-arch-indep: mkdir
 	done
 	-rm -f ${lispdir}/subdirs.el
 	$(srcdir)/update-subdirs ${lispdir}
-	-chmod -R a+r ${COPYDESTS}
+	if [ -f ${datadir}/emacs/${version}/site-lisp/subdirs.el ]; \
+	then true; \
+	else \
+	  (echo "(if (fboundp 'normal-top-level-add-subdirs-to-load-path)"; \
+	   echo "    (normal-top-level-add-subdirs-to-load-path))") \
+	    > ${datadir}/emacs/${version}/site-lisp/subdirs.el; \
+	fi
+	chmod a+r ${datadir}/emacs/${version}/site-lisp/subdirs.el
+	-if [ -f ${datadir}/emacs/site-lisp/subdirs.el ]; \
+	then true; \
+	else \
+	  (echo "(if (fboundp 'normal-top-level-add-subdirs-to-load-path)"; \
+	   echo "    (normal-top-level-add-subdirs-to-load-path))") \
+	    > ${datadir}/emacs/site-lisp/subdirs.el; \
+	fi
+	-chmod a+r ${datadir}/emacs/site-lisp/subdirs.el
 	if [ `(cd ./etc; /bin/pwd)` != `(cd ${docdir}; /bin/pwd)` ]; \
 	then \
 	   echo "Copying etc/DOC-* to ${docdir} ..." ; \
-	   (cd ./etc; tar -cf - DOC*)|(cd ${docdir}; umask 0; tar -xvf - ); \
-	   (cd $(docdir); chmod a+r DOC*; rm DOC) \
+	   (cd ./etc; tar -cf - DOC*) \
+	     |(cd ${docdir}; umask 0; tar -xvf - && cat > /dev/null); \
+	   (cd $(docdir); chmod a+r DOC*; rm DOC); \
 	else true; fi
 	if [ -r ./lisp ] \
+	   && [ -r ./lisp/simple.el ] \
 	   && [ x`(cd ./lisp; /bin/pwd)` != x`(cd ${lispdir}; /bin/pwd)` ] \
 	   && [ x`(cd ${srcdir}/lisp; /bin/pwd)` != x`(cd ./lisp; /bin/pwd)` ]; \
 	then \
 	   echo "Copying lisp/*.el and lisp/*.elc to ${lispdir} ..." ; \
-	   (cd lisp; tar -cf - *.el *.elc)|(cd ${lispdir}; umask 0; tar -xvf - ); \
+	   (cd lisp; tar -cf - *.el *.elc) \
+	     |(cd ${lispdir}; umask 0; tar -xvf - && cat > /dev/null); \
 	else true; fi
 	thisdir=`/bin/pwd`; \
 	if [ `(cd ${srcdir}/info && /bin/pwd)` != `(cd ${infodir} && /bin/pwd)` ]; \
 	then \
 	  (cd ${infodir};  \
-	   if [ -f dir ]; then \
-	     if [ ! -f dir.old ]; then mv -f dir dir.old; \
-	     else mv -f dir dir.bak; fi; \
+	   if [ -f dir ]; then true; \
+	   else	\
+	     (cd $${thisdir}; \
+	      ${INSTALL_DATA} ${srcdir}/info/dir ${infodir}/dir; \
+	      chmod a+r ${infodir}/dir); \
 	   fi; \
 	   cd ${srcdir}/info ; \
-	   (cd $${thisdir}; ${INSTALL_DATA} ${srcdir}/info/dir ${infodir}/dir); \
-	   (cd $${thisdir}; chmod a+r ${infodir}/dir); \
-	   for f in ccmode* cl* dired-x* ediff* emacs* forms* gnus* info* message* mh-e* sc* vip*; do \
+	   for f in ccmode* cl* customize* dired-x* ediff* emacs* forms* gnus* info* message* mh-e* reftex* sc* vip* widget*; do \
 	     (cd $${thisdir}; \
 	      ${INSTALL_DATA} ${srcdir}/info/$$f ${infodir}/$$f; \
 	      chmod a+r ${infodir}/$$f); \
 	   done); \
 	else true; fi
+	-thisdir=`/bin/pwd`; \
+	if [ `(cd ${srcdir}/info && /bin/pwd)` != `(cd ${infodir} && /bin/pwd)` ]; \
+	then \
+	  for f in ccmode cl customize dired-x ediff emacs forms gnus info message mh-e reftex sc vip widget; do \
+	    (cd $${thisdir}; \
+	     ${INSTALL_INFO} --dir-file=${infodir}/dir --info-file=${infodir}/$$f); \
+	  done; \
+	else true; fi
+	-chmod -R a+r ${COPYDESTS} ${infodir}
 	thisdir=`/bin/pwd`; \
 	cd ${srcdir}/etc; \
 	for page in emacs etags ctags ; do \
@@ -389,19 +406,27 @@ install-arch-indep: mkdir
 	   chmod a+r ${man1dir}/$${page}${manext}); \
 	done
 
+### Install LEIM files.  Although they are machine-independent, we
+### have separate target here instead of including it in
+### `install-arch-indep'.  People who extracted LEIM files after they
+### insalled Emacs itself can install only LEIM files by this target.
+install-leim: leim/Makefile mkdir
+	cd leim; $(MAKE) install
+
 ### Build Emacs and install it, stripping binaries while installing them.
 install-strip:
-	$(MAKE) INSTALL_PROGRAM='$(INSTALL_PROGRAM) -s' install
+	$(MAKE) INSTALL_STRIP=-s
 
 ### Build all the directories we're going to install Emacs in.	Since
 ### we may be creating several layers of directories (for example,
 ### /usr/local/lib/emacs/19.0/mips-dec-ultrix4.2), we use mkinstalldirs
 ### instead of mkdir.  Not all systems' mkdir programs have the `-p' flag.
 mkdir: FRC
-	$(srcdir)/mkinstalldirs ${COPYDESTS} ${lockdir} ${infodir} ${man1dir} \
+	$(srcdir)/mkinstalldirs ${COPYDESTS} ${infodir} ${man1dir} \
 	  ${bindir} ${datadir} ${docdir} ${libexecdir} \
+	  ${datadir}/emacs/site-lisp \
+	  ${datadir}/emacs/${version}/site-lisp \
 	  `echo ${locallisppath} | sed 's/:/ /g'`
-	-chmod a+rwx ${lockdir}
 
 ### Delete all the installed files that the `install' target would
 ### create (but not the noninstalled files such as `make all' would
@@ -448,6 +473,7 @@ mostlyclean: FRC
 	(cd lwlib;    $(MAKE) $(MFLAGS) mostlyclean)
 	(cd lib-src;  $(MAKE) $(MFLAGS) mostlyclean)
 	-(cd man &&   $(MAKE) $(MFLAGS) mostlyclean)
+	(cd leim;     $(MAKE) $(MFLAGS) mostlyclean)
 
 ### `clean'
 ###      Delete all files from the current directory that are normally
@@ -463,6 +489,7 @@ clean: FRC
 	(cd lwlib;    $(MAKE) $(MFLAGS) clean)
 	(cd lib-src;  $(MAKE) $(MFLAGS) clean)
 	-(cd man &&   $(MAKE) $(MFLAGS) clean)
+	(cd leim;     $(MAKE) $(MFLAGS) clean)
 
 ### `distclean'
 ###      Delete all files from the current directory that are created by
@@ -473,13 +500,14 @@ clean: FRC
 top_distclean=\
 	rm -f config.status config.cache config.log ; \
 	rm -f Makefile ${SUBDIR_MAKEFILES} ; \
-	(cd lock && (rm * || true))
+	if [ -d lock ] ; then (cd lock && (rm -f * || true)); else true; fi
 distclean: FRC
 	(cd src;      $(MAKE) $(MFLAGS) distclean)
 	(cd oldXMenu; $(MAKE) $(MFLAGS) distclean)
 	(cd lwlib;    $(MAKE) $(MFLAGS) distclean)
 	(cd lib-src;  $(MAKE) $(MFLAGS) distclean)
 	(cd man &&    $(MAKE) $(MFLAGS) distclean)
+	(cd leim;     $(MAKE) $(MFLAGS) distclean)
 	${top_distclean}
 
 ### `maintainer-clean'
@@ -499,6 +527,7 @@ maintainer-clean: FRC
 	(cd lwlib;    $(MAKE) $(MFLAGS) maintainer-clean)
 	(cd lib-src;  $(MAKE) $(MFLAGS) maintainer-clean)
 	-(cd man &&   $(MAKE) $(MFLAGS) maintainer-clean)
+	(cd leim;     $(MAKE) $(MFLAGS) maintainer-clean)
 	${top_distclean}
 
 ### This doesn't actually appear in the coding standards, but Karl
@@ -521,13 +550,13 @@ extraclean:
 ### Note: it's no disaster if these productions miss a file or two; tar
 ### and VC will swiftly let you know if this happens, and it is easily
 ### corrected.
-SOURCES = ChangeLog GETTING.GNU.SOFTWARE INSTALL Makefile.in PROBLEMS \
+SOURCES = ChangeLog GETTING.GNU.SOFTWARE INSTALL Makefile.in \
 	README configure make-dist move-if-change
 
 .PHONY: unlock relock
 
 unlock:
-	chmod u+w $(SOURCES) cpp/*
+	chmod u+w $(SOURCES)
 	-(cd elisp; chmod u+w Makefile README *.texi)
 	(cd etc; $(MAKE) $(MFLAGS) unlock)
 	(cd lib-src; $(MAKE) $(MFLAGS) unlock)
@@ -539,7 +568,7 @@ unlock:
 	(cd src; $(MAKE) $(MFLAGS) unlock)
 
 relock:
-	chmod u-w $(SOURCES) cpp/*
+	chmod u-w $(SOURCES)
 	-(cd elisp; chmod u-w Makefile README *.texi)
 	(cd etc; $(MAKE) $(MFLAGS) relock)
 	(cd lib-src; $(MAKE) $(MFLAGS) relock)
@@ -550,19 +579,23 @@ relock:
 	(cd lwlib; chmod u+w *.[ch] Makefile README)
 	(cd src; $(MAKE) $(MFLAGS) relock)
 
-TAGS tags:	lib-src
-	cd ${srcdir}/src; $(MAKE) tags
+TAGS tags:	lib-src src
+	# The src subdir knows how to do the right thing
+	# even when the build directory and source dir are different.
+	cd src; $(MAKE) tags
 
 check:
 	@echo "We don't have any tests for GNU Emacs yet."
 
 dist:
-	$(srcdir)/update-subdirs ${srcdir}/lisp
 	cd ${srcdir}; make-dist
 
 .PHONY: info dvi dist check
 force-info:
 info: force-info
-	(cd ${srcdir}/man; $(MAKE) $(MFLAGS) info)
+	# Note that man/Makefile knows how to
+	# put the info files in $(srcdir),
+	# so we can do ok running make in the build dir.
+	(cd man; $(MAKE) $(MFLAGS) info)
 dvi:
 	(cd man; $(MAKE) $(MFLAGS) dvi)

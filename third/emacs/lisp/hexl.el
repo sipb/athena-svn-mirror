@@ -1,6 +1,6 @@
 ;;; hexl.el --- edit a file in a hex dump format using the hexl filter.
 
-;; Copyright (C) 1989, 1994 Free Software Foundation, Inc.
+;; Copyright (C) 1989, 1994, 1998 Free Software Foundation, Inc.
 
 ;; Author: Keith Gabryelski <ag@wheaties.ai.mit.edu>
 ;; Maintainer: FSF
@@ -53,25 +53,46 @@
 ;; vars here
 ;;
 
-(defvar hexl-program "hexl"
+(defgroup hexl nil
+  "Edit a file in a hex dump format using the hexl filter."
+  :group 'data)
+
+
+(defcustom hexl-program "hexl"
   "The program that will hexlify and dehexlify its stdin.
 `hexl-program' will always be concatenated with `hexl-options'
-and \"-de\" when dehexlifying a buffer.")
+and \"-de\" when dehexlifying a buffer."
+  :type 'string
+  :group 'hexl)
 
-(defvar hexl-iso ""
+(defcustom hexl-iso ""
   "If your emacs can handle ISO characters, this should be set to
-\"-iso\" otherwise it should be \"\".")
+\"-iso\" otherwise it should be \"\"."
+  :type 'string
+  :group 'hexl)
 
-(defvar hexl-options (format "-hex %s" hexl-iso)
-  "Options to hexl-program that suit your needs.")
+(defcustom hexl-options (format "-hex %s" hexl-iso)
+  "Options to hexl-program that suit your needs."
+  :type 'string
+  :group 'hexl)
 
-(defvar hexlify-command
+(defcustom hexlify-command
   (format "%s%s %s" exec-directory hexl-program hexl-options)
-  "The command to use to hexlify a buffer.")
+  "The command to use to hexlify a buffer."
+  :type 'string
+  :group 'hexl)
 
-(defvar dehexlify-command
+(defcustom dehexlify-command
   (format "%s%s -de %s" exec-directory hexl-program hexl-options)
-  "The command to use to unhexlify a buffer.")
+  "The command to use to unhexlify a buffer."
+  :type 'string
+  :group 'hexl)
+
+(defcustom hexl-follow-ascii t
+  "If non-nil then highlight the ASCII character corresponding to point."
+  :type 'boolean
+  :group 'hexl
+  :version "20.3")
 
 (defvar hexl-max-address 0
   "Maximum offset into hexl buffer.")
@@ -85,7 +106,13 @@ and \"-de\" when dehexlifying a buffer.")
 (defvar hexl-mode-old-require-final-newline)
 (defvar hexl-mode-old-syntax-table)
 
+(defvar hexl-ascii-overlay nil
+  "Overlay used to highlight ASCII element corresponding to current point.")
+(make-variable-buffer-local 'hexl-ascii-overlay)
+
 ;; routines
+
+(put 'hexl-mode 'mode-class 'special)
 
 ;;;###autoload
 (defun hexl-mode (&optional arg)
@@ -212,7 +239,9 @@ You can use \\[hexl-find-file] to visit a file in hexl-mode.
     (add-hook 'after-revert-hook 'hexl-after-revert-hook nil t)
 
     (make-local-hook 'change-major-mode-hook)
-    (add-hook 'change-major-mode-hook 'hexl-maybe-dehexlify-buffer nil t))
+    (add-hook 'change-major-mode-hook 'hexl-maybe-dehexlify-buffer nil t)
+
+    (if hexl-follow-ascii (hexl-follow-ascii 1)))
   (run-hooks 'hexl-mode-hook))
 
 (defun hexl-after-revert-hook ()
@@ -238,8 +267,7 @@ You can use \\[hexl-find-file] to visit a file in hexl-mode.
 				   (set-buffer name)
 				   (dehexlify-buffer)
 				   ;; Prevent infinite recursion.
-				   (let ((hexl-in-save-buffer t)
-					 (buffer-file-type t)) ; for ms-dos
+				   (let ((hexl-in-save-buffer t))
 				     (save-buffer))
 				   (setq modified (buffer-modified-p))
 				   (delete-region (point-min) (point-max))
@@ -256,9 +284,7 @@ You can use \\[hexl-find-file] to visit a file in hexl-mode.
   "Edit file FILENAME in hexl-mode.
 Switch to a buffer visiting file FILENAME, creating one in none exists."
   (interactive "fFilename: ")
-  (if (or (eq system-type 'ms-dos) (eq system-type 'windows-nt))
-      (find-file-binary filename)
-    (find-file filename))
+  (find-file-literally filename)
   (if (not (eq major-mode 'hexl-mode))
       (hexl-mode)))
 
@@ -277,6 +303,8 @@ With arg, don't unhexlify buffer."
 
   (remove-hook 'after-revert-hook 'hexl-after-revert-hook t)
   (remove-hook 'change-major-mode-hook 'hexl-maybe-dehexlify-buffer t)
+  (remove-hook 'post-command-hook 'hexl-follow-ascii-find t)
+  (setq hexl-ascii-overlay nil)
 
   (setq write-contents-hooks hexl-mode-old-write-contents-hooks)
   (setq require-final-newline hexl-mode-old-require-final-newline)
@@ -324,7 +352,7 @@ Ask the user for confirmation."
 Signal error if ADDRESS out of range."
   (interactive "nAddress: ")
   (if (or (< address 0) (> address hexl-max-address))
-	  (error "Out of hexl region."))
+	  (error "Out of hexl region"))
   (goto-char (hexl-address-to-marker address)))
 
 (defun hexl-goto-hex-address (hex-address)
@@ -563,8 +591,19 @@ This discards the buffer's undo information."
        (or (y-or-n-p "Converting to hexl format discards undo info; ok? ")
 	   (error "Aborted")))
   (setq buffer-undo-list nil)
-  (let ((binary-process-output nil) ; for Ms-Dos
-	(binary-process-input t)
+  ;; Don't decode text in the ASCII part of `hexl' program output.
+  (let ((coding-system-for-read 'raw-text)
+	;; If the buffer was read with EOL conversions, be sure to use the
+	;; same conversions when passing the region to the `hexl' program.
+	(coding-system-for-write
+	 (let ((eol-type (coding-system-eol-type buffer-file-coding-system)))
+	   (cond ((eq eol-type 1)
+		  'raw-text-dos)
+		 ((eq eol-type 2)
+		  'raw-text-mac)
+		 ((eq eol-type 0)
+		  'raw-text-unix)
+		 (t 'no-conversion))))
 	(buffer-undo-list t))
     (shell-command-on-region (point-min) (point-max) hexlify-command t)))
 
@@ -576,8 +615,16 @@ This discards the buffer's undo information."
        (or (y-or-n-p "Converting from hexl format discards undo info; ok? ")
 	   (error "Aborted")))
   (setq buffer-undo-list nil)
-  (let ((binary-process-output t) ; for Ms-Dos
-	(binary-process-input nil)
+  (let ((coding-system-for-write 'raw-text)
+	(coding-system-for-read
+	 (let ((eol-type (coding-system-eol-type buffer-file-coding-system)))
+	   (cond ((eq eol-type 1)
+		  'raw-text-dos)
+		 ((eq eol-type 2)
+		  'raw-text-mac)
+		 ((eq eol-type 0)
+		  'raw-text-unix)
+		 (t 'no-conversion))))
 	(buffer-undo-list t))
     (shell-command-on-region (point-min) (point-max) dehexlify-command t)))
 
@@ -598,13 +645,13 @@ This discards the buffer's undo information."
     (let ((ch (logior character 32)))
       (if (and (>= ch ?a) (<= ch ?f))
 	  (- ch (- ?a 10))
-	(error "Invalid hex digit `%c'." ch)))))
+	(error "Invalid hex digit `%c'" ch)))))
 
 (defun hexl-oct-char-to-integer (character)
   "Take a char and return its value as if it was a octal digit."
   (if (and (>= character ?0) (<= character ?7))
       (- character ?0)
-    (error "Invalid octal digit `%c'." character)))
+    (error "Invalid octal digit `%c'" character)))
 
 (defun hexl-printable-character (ch)
   "Return a displayable string for character CH."
@@ -658,7 +705,7 @@ This discards the buffer's undo information."
   (interactive "p")
   (let ((num (hexl-hex-string-to-integer (read-string "Hex number: "))))
     (if (or (> num 255) (< num 0))
-	(error "Hex number out of range.")
+	(error "Hex number out of range")
       (hexl-insert-char num arg))))
 
 (defun hexl-insert-decimal-char (arg)
@@ -666,7 +713,7 @@ This discards the buffer's undo information."
   (interactive "p")
   (let ((num (string-to-int (read-string "Decimal Number: "))))
     (if (or (> num 255) (< num 0))
-	(error "Decimal number out of range.")
+	(error "Decimal number out of range")
       (hexl-insert-char num arg))))
 
 (defun hexl-insert-octal-char (arg)
@@ -674,8 +721,46 @@ This discards the buffer's undo information."
   (interactive "p")
   (let ((num (hexl-octal-string-to-integer (read-string "Octal Number: "))))
     (if (or (> num 255) (< num 0))
-	(error "Decimal number out of range.")
+	(error "Decimal number out of range")
       (hexl-insert-char num arg))))
+
+(defun hexl-follow-ascii (&optional arg)
+  "Toggle following ASCII in Hexl buffers.
+With prefix ARG, turn on following if and only if ARG is positive.
+When following is enabled, the ASCII character corresponding to the
+element under the point is highlighted.
+Customize the variable `hexl-follow-ascii' to disable this feature."
+  (interactive "P")
+  (let ((on-p (if arg 
+		  (> (prefix-numeric-value arg) 0)
+	       (not hexl-ascii-overlay))))
+
+    (make-local-hook 'post-command-hook)
+		    
+    (if on-p
+      ;; turn it on
+      (if (not hexl-ascii-overlay)
+	  (progn
+	    (setq hexl-ascii-overlay (make-overlay 1 1)
+		  hexl-follow-ascii t)
+	    (overlay-put hexl-ascii-overlay 'face 'highlight)
+	    (add-hook 'post-command-hook 'hexl-follow-ascii-find nil t)))
+      ;; turn it off
+      (if hexl-ascii-overlay
+	  (progn
+	    (delete-overlay hexl-ascii-overlay)
+	    (setq hexl-ascii-overlay nil
+		  hexl-follow-ascii nil)
+	    (remove-hook 'post-command-hook 'hexl-follow-ascii-find t)
+	    )))))
+
+(defun hexl-follow-ascii-find ()
+  "Find and highlight the ASCII element corresponding to current point."
+  (let ((pos (+ 51 
+		(- (point) (current-column))
+		(mod (hexl-current-address) 16))))
+    (move-overlay hexl-ascii-overlay pos (1+ pos))
+    ))
 
 ;; startup stuff.
 
@@ -785,5 +870,7 @@ This discards the buffer's undo information."
   (define-key hexl-mode-map "\C-x\C-p" 'undefined)
   (define-key hexl-mode-map "\C-x\C-s" 'hexl-save-buffer)
   (define-key hexl-mode-map "\C-x\C-t" 'undefined))
+
+(provide 'hexl)
 
 ;;; hexl.el ends here

@@ -1,10 +1,12 @@
 ;;; rlogin.el --- remote login interface
 
-;; Copyright (C) 1992, 1993, 1994, 1995 Free Software Foundation, Inc.
+;; Copyright (C) 1992, 1993, 1994, 1995, 1997 Free Software Foundation, Inc.
 
 ;; Author: Noah Friedman
 ;; Maintainer: Noah Friedman <friedman@prep.ai.mit.edu>
 ;; Keywords: unix, comm
+
+;; $Id: rlogin.el,v 1.1.1.2 1998-12-16 19:55:10 ghudson Exp $
 
 ;; This file is part of GNU Emacs.
 
@@ -23,8 +25,6 @@
 ;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 ;; Boston, MA 02111-1307, USA.
 
-;; $Id: rlogin.el,v 1.1.1.1 1996-09-26 00:57:12 ghudson Exp $
-
 ;;; Commentary:
 
 ;; Support for remote logins using `rlogin'.
@@ -42,24 +42,47 @@
 (require 'comint)
 (require 'shell)
 
-(defvar rlogin-program "rlogin"
-  "*Name of program to invoke rlogin")
+(defgroup rlogin nil
+  "Remote login interface"
+  :group 'processes
+  :group 'unix)
 
-(defvar rlogin-explicit-args nil
-  "*List of arguments to pass to rlogin on the command line.")
 
-(defvar rlogin-mode-hook nil
-  "*Hooks to run after setting current buffer to rlogin-mode.")
+(defcustom rlogin-program "rlogin"
+  "*Name of program to invoke rlogin"
+  :type 'string
+  :group 'rlogin)
 
-(defvar rlogin-process-connection-type nil
+(defcustom rlogin-explicit-args nil
+  "*List of arguments to pass to rlogin on the command line."
+  :type '(repeat (string :tag "Argument"))
+  :group 'rlogin)
+
+(defcustom rlogin-mode-hook nil
+  "*Hooks to run after setting current buffer to rlogin-mode."
+  :type 'hook
+  :group 'rlogin)
+
+(defcustom rlogin-process-connection-type
+  (save-match-data
+    ;; Solaris 2.x `rlogin' will spew a bunch of ioctl error messages if
+    ;; stdin isn't a tty.
+    (cond ((and (boundp 'system-configuration)
+                (stringp system-configuration)
+                (string-match "-solaris2" system-configuration))
+           t)
+          (t nil)))
   "*If non-`nil', use a pty for the local rlogin process.
 If `nil', use a pipe (if pipes are supported on the local system).
 
 Generally it is better not to waste ptys on systems which have a static
 number of them.  On the other hand, some implementations of `rlogin' assume
-a pty is being used, and errors will result from using a pipe instead.")
+a pty is being used, and errors will result from using a pipe instead."
+  :type '(choice (const :tag "pipes" nil)
+		 (other :tag "ptys" t))
+  :group 'rlogin)
 
-(defvar rlogin-directory-tracking-mode 'local
+(defcustom rlogin-directory-tracking-mode 'local
   "*Control whether and how to do directory tracking in an rlogin buffer.
 
 nil means don't do directory tracking.
@@ -75,18 +98,26 @@ This variable becomes local to a buffer when set in any fashion for it.
 It is better to use the function of the same name to change the behavior of
 directory tracking in an rlogin session once it has begun, rather than
 simply setting this variable, since the function does the necessary
-re-synching of directories.")
+re-synching of directories."
+  :type '(choice (const :tag "off" nil)
+		 (const :tag "ftp" t)
+		 (other :tag "local" local))
+  :group 'rlogin)
 
 (make-variable-buffer-local 'rlogin-directory-tracking-mode)
 
-(defvar rlogin-host nil
-  "*The name of the remote host.  This variable is buffer-local.")
+(defcustom rlogin-host nil
+  "*The name of the remote host.  This variable is buffer-local."
+  :type '(choice (const nil) string)
+  :group 'rlogin)
 
-(defvar rlogin-remote-user nil
+(defcustom rlogin-remote-user nil
   "*The username used on the remote host.
 This variable is buffer-local and defaults to your local user name.
 If rlogin is invoked with the `-l' option to specify the remote username,
-this variable is set from that.")
+this variable is set from that."
+  :type '(choice (const nil) string)
+  :group 'rlogin)
 
 ;; Initialize rlogin mode map.
 (defvar rlogin-mode-map '())
@@ -214,6 +245,8 @@ variable."
                  (cd-absolute (concat comint-file-name-prefix "~/"))))
         (error nil))))))
 
+(put 'rlogin-mode 'mode-class 'special)
+
 (defun rlogin-mode ()
   "Set major-mode for rlogin sessions.
 If `rlogin-mode-hook' is set, run it."
@@ -287,7 +320,7 @@ local one share the same directories (through NFS)."
       (setq list (cons (substring line (match-beginning 0) (match-end 0))
                        list))
       (setq posn (match-end 0)))
-    (store-match-data (match-data))
+    (set-match-data (match-data))
     (nreverse list)))
 
 (defun rlogin-carriage-filter (string)
@@ -331,5 +364,7 @@ Delete ARG characters forward, or send a C-d to process if at end of buffer."
   (if rlogin-directory-tracking-mode
       (comint-dynamic-complete)
     (insert "\C-i")))
+
+(provide 'rlogin)
 
 ;;; rlogin.el ends here

@@ -1,11 +1,16 @@
-# Set up a mask to use.
-
 # Force loading of symbols, enough to give us gdb_valbits etc.
 set main
 
 # Find lwlib source files too.
 dir ../lwlib
 
+# Don't enter GDB when user types C-g to quit.
+# This has one unfortunate effect: you can't type C-c
+# at the GDB to stop Emacs, when using X.
+# However, C-z works just as well in that case.
+handle 2 noprint pass
+
+# Set up a mask to use.
 # This should be EMACS_INT, but in some cases that is a macro.
 # long ought to work in all cases right now.
 set $valmask = ((long)1 << gdb_valbits) - 1
@@ -62,15 +67,6 @@ print (void *) (($ & $valmask) | gdb_data_seg_bits)
 end
 document xptr
 Print the pointer portion of $, assuming it is an Emacs Lisp value.
-end
-
-define xwindow
-print (struct window *) (($ & $valmask) | gdb_data_seg_bits)
-printf "%dx%d+%d+%d\n", $->width, $->height, $->left, $->top
-end
-document xwindow
-Print $ as a window pointer, assuming it is an Emacs Lisp window value.
-Print the window's position as "WIDTHxHEIGHT+LEFT+TOP".
 end
 
 define xmarker
@@ -136,16 +132,6 @@ document xbuflocal
 Print $ as a buffer-local-value pointer, assuming it is an Emacs Lisp Misc value.
 end
 
-define xbuffer
-print (struct buffer *) (($ & $valmask) | gdb_data_seg_bits)
-output &((struct Lisp_String *) ((($->name) & $valmask) | gdb_data_seg_bits))->data
-echo \n
-end
-document xbuffer
-Set $ as a buffer pointer, assuming it is an Emacs Lisp buffer value.
-Print the name of the buffer.
-end
-
 define xsymbol
 print (struct Lisp_Symbol *) ((((int) $) & $valmask) | gdb_data_seg_bits)
 output (char*)&$->name->data
@@ -158,7 +144,7 @@ end
 
 define xstring
 print (struct Lisp_String *) (($ & $valmask) | gdb_data_seg_bits)
-output ($->size > 1000) ? 0 : ($->data[0])@($->size)
+output ($->size > 1000) ? 0 : ($->data[0])@($->size_byte < 0 ? $->size : $->size_byte)
 echo \n
 end
 document xstring
@@ -176,18 +162,20 @@ Print the contents and address of the vector $.
 This command assumes that $ is an Emacs Lisp vector value.
 end
 
+define xprocess
+print (struct Lisp_Process *) (($ & $valmask) | gdb_data_seg_bits)
+output *$
+echo \n
+end
+document xprocess
+Print the address of the struct Lisp_process which the Lisp_Object $ points to.
+end
+
 define xframe
 print (struct frame *) (($ & $valmask) | gdb_data_seg_bits)
 end
 document xframe
 Print $ as a frame pointer, assuming it is an Emacs Lisp frame value.
-end
-
-define xwinconfig
-print (struct save_window_data *) (($ & $valmask) | gdb_data_seg_bits)
-end
-document xwinconfig
-Print $ as a window configuration pointer, assuming it is an Emacs Lisp window configuration value.
 end
 
 define xcompiled
@@ -198,27 +186,20 @@ document xcompiled
 Print $ as a compiled function pointer, assuming it is an Emacs Lisp compiled value.
 end
 
-define xcons
-print (struct Lisp_Cons *) (($ & $valmask) | gdb_data_seg_bits)
-output *$
-echo \n
+define xwindow
+print (struct window *) (($ & $valmask) | gdb_data_seg_bits)
+printf "%dx%d+%d+%d\n", $->width, $->height, $->left, $->top
 end
-document xcons
-Print the contents of $, assuming it is an Emacs Lisp cons.
-end
-
-define xcar
-print ((($ >> gdb_valbits) & 0xf) == Lisp_Cons ? ((struct Lisp_Cons *) (($ & $valmask) | gdb_data_seg_bits))->car : 0)
-end
-document xcar
-Print the car of $, assuming it is an Emacs Lisp pair.
+document xwindow
+Print $ as a window pointer, assuming it is an Emacs Lisp window value.
+Print the window's position as "WIDTHxHEIGHT+LEFT+TOP".
 end
 
-define xcdr
-print ((($ >> gdb_valbits) & 0xf) == Lisp_Cons ? ((struct Lisp_Cons *) (($ & $valmask) | gdb_data_seg_bits))->cdr : 0)
+define xwinconfig
+print (struct save_window_data *) (($ & $valmask) | gdb_data_seg_bits)
 end
-document xcdr
-Print the cdr of $, assuming it is an Emacs Lisp pair.
+document xwinconfig
+Print $ as a window configuration pointer, assuming it is an Emacs Lisp window configuration value.
 end
 
 define xsubr
@@ -230,13 +211,68 @@ document xsubr
 Print the address of the subr which the Lisp_Object $ points to.
 end
 
-define xprocess
-print (struct Lisp_Process *) (($ & $valmask) | gdb_data_seg_bits)
-output *$
+define xchartable
+print (struct Lisp_Char_Table *) (($ & $valmask) | gdb_data_seg_bits)
+printf "Purpose: "
+output (char*)&((struct Lisp_Symbol *) ((((int) $->purpose) & $valmask) | gdb_data_seg_bits))->name->data
+printf "  %d extra slots", ($->size & 0x1ff) - 388
 echo \n
 end
-document xprocess
-Print the address of the struct Lisp_process which the Lisp_Object $ points to.
+document xchartable
+Print the address of the char-table $, and its purpose.
+This command assumes that $ is an Emacs Lisp char-table value.
+end
+
+define xboolvector
+print (struct Lisp_Bool_Vector *) (($ & $valmask) | gdb_data_seg_bits)
+output ($->size > 256) ? 0 : ($->data[0])@(($->size + 7)/ 8)
+echo \n
+end
+document xboolvector
+Print the contents and address of the bool-vector $.
+This command assumes that $ is an Emacs Lisp bool-vector value.
+end
+
+define xbuffer
+print (struct buffer *) (($ & $valmask) | gdb_data_seg_bits)
+output &((struct Lisp_String *) ((($->name) & $valmask) | gdb_data_seg_bits))->data
+echo \n
+end
+document xbuffer
+Set $ as a buffer pointer, assuming it is an Emacs Lisp buffer value.
+Print the name of the buffer.
+end
+
+define xcons
+print (struct Lisp_Cons *) (($ & $valmask) | gdb_data_seg_bits)
+output/x *$
+echo \n
+end
+document xcons
+Print the contents of $, assuming it is an Emacs Lisp cons.
+end
+
+define nextcons
+p $.cdr
+xcons
+end
+document nextcons
+Print the contents of the next cell in a list.
+This assumes that the last thing you printed was a cons cell contents
+(type struct Lisp_Cons) or a pointer to one.
+end
+define xcar
+print/x ((($ >> gdb_valbits) & 0xf) == Lisp_Cons ? ((struct Lisp_Cons *) (($ & $valmask) | gdb_data_seg_bits))->car : 0)
+end
+document xcar
+Print the car of $, assuming it is an Emacs Lisp pair.
+end
+
+define xcdr
+print/x ((($ >> gdb_valbits) & 0xf) == Lisp_Cons ? ((struct Lisp_Cons *) (($ & $valmask) | gdb_data_seg_bits))->cdr : 0)
+end
+document xcdr
+Print the cdr of $, assuming it is an Emacs Lisp pair.
 end
 
 define xfloat

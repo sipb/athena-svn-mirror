@@ -75,6 +75,8 @@
 (require 'faces)
 (require 'select)
 (require 'menu-bar)
+(if (fboundp 'new-fontset)
+    (require 'fontset))
 
 (defvar x-invocation-args)
 
@@ -165,7 +167,8 @@ This function returns ARGS minus the arguments that have been processed."
   ;; We use ARGS to accumulate the args that we don't handle here, to return.
   (setq x-invocation-args args
 	args nil)
-  (while x-invocation-args
+  (while (and x-invocation-args
+	      (not (equal (car x-invocation-args) "--")))
     (let* ((this-switch (car x-invocation-args))
 	   (orig-this-switch this-switch)
 	   completion argval aelt handler)
@@ -197,7 +200,7 @@ This function returns ARGS minus the arguments that have been processed."
 		(funcall handler this-switch))
 	    (funcall handler this-switch))
 	(setq args (cons orig-this-switch args)))))
-  (nreverse args))
+  (nconc (nreverse args) x-invocation-args))
 
 ;;
 ;; Standard X cursor shapes, courtesy of Mr. Fox, who wanted ALL of them.
@@ -468,6 +471,7 @@ The value may be different for frames on different X displays."
 (define-key function-key-map [M-clear] [?\M-\C-l])
 (define-key function-key-map [M-return] [?\M-\C-m])
 (define-key function-key-map [M-escape] [?\M-\e])
+(define-key function-key-map [iso-lefttab] [backtab])
 
 ;; These tell read-char how to convert
 ;; these special chars to ASCII.
@@ -578,20 +582,32 @@ This is in addition to the primary selection.")
 ;;; Return the value of the current X selection.
 ;;; Consult the selection, then the cut buffer.  Treat empty strings
 ;;; as if they were unset.
+;;; If this function is called twice and finds the same text,
+;;; it returns nil the second time.  This is so that a single
+;;; selection won't be added to the kill ring over and over.
 (defun x-cut-buffer-or-selection-value ()
   (let (text)
 
     ;; Don't die if x-get-selection signals an error.
     (condition-case c
-	(setq text (x-get-selection 'PRIMARY))
+	(setq text (x-get-selection 'PRIMARY 'COMPOUND_TEXT))
       (error nil))
-    (if (string= text "") (setq text nil))
-
-    (if x-select-enable-clipboard
+    (if (null text) 
 	(condition-case c
-	    (setq text (x-get-selection 'CLIPBOARD))
+	    (setq text (x-get-selection 'PRIMARY 'STRING))
 	  (error nil)))
     (if (string= text "") (setq text nil))
+    (when x-select-enable-clipboard
+      (if (null text) 
+	  (condition-case c
+	      (setq text (x-get-selection 'CLIPBOARD 'COMPOUND_TEXT))
+	    (error nil)))
+      (if (null text) 
+	  (condition-case c
+	      (setq text (x-get-selection 'CLIPBOARD 'STRING))
+	    (error nil)))
+      (if (string= text "") (setq text nil)))
+
     (or text (setq text (x-get-cut-buffer 0)))
     (if (string= text "") (setq text nil))
 
@@ -638,6 +654,76 @@ This is in addition to the primary selection.")
 
 (setq x-cut-buffer-max (min (- (/ (x-server-max-request-size) 2) 100)
 			    x-cut-buffer-max))
+
+(if (fboundp 'new-fontset)
+    (progn
+      ;; Create the standard fontset.
+      (create-fontset-from-fontset-spec standard-fontset-spec t)
+
+      ;; Create fontset specified in X resources "Fontset-N" (N is 0, 1, ...).
+      (create-fontset-from-x-resource)
+
+      ;; Try to create a fontset from a font specification which comes
+      ;; from initial-frame-alist, default-frame-alist, or X resource.
+      ;; A font specification in command line argument (i.e. -fn XXXX)
+      ;; should be already in default-frame-alist as a `font'
+      ;; parameter.  However, any font specifications in site-start
+      ;; library, user's init file (.emacs), and default.el are not
+      ;; yet handled here.
+
+      (let ((font (or (cdr (assq 'font initial-frame-alist))
+		      (cdr (assq 'font default-frame-alist))
+		      (x-get-resource "font" "Font")))
+	    xlfd-fields resolved-name)
+	(if (and font
+		 (not (query-fontset font))
+		 (setq resolved-name (x-resolve-font-name font))
+		 (setq xlfd-fields (x-decompose-font-name font)))
+	    (if (string= "fontset"
+			 (aref xlfd-fields xlfd-regexp-registry-subnum))
+		(new-fontset font (x-complement-fontset-spec xlfd-fields nil))
+	      ;; Create a fontset from FONT.  The fontset name is
+	      ;; generated from FONT.  Create style variants of the
+	      ;; fontset too.  Font names in the variants are
+	      ;; generated automatially unless X resources
+	      ;; XXX.attribyteFont explicitly specify them.
+	      (let ((styles (mapcar 'car x-style-funcs-alist))
+		    (faces '(bold italic bold-italic))
+		    face face-font fontset fontset-spec)
+		(while faces
+		  (setq face (car faces))
+		  (setq face-font (x-get-resource (concat (symbol-name face)
+							  ".attributeFont")
+						  "Face.AttributeFont"))
+		  (if face-font
+		      (setq styles (cons (cons face face-font)
+					 (delq face styles))))
+		  (setq faces (cdr faces)))
+		(aset xlfd-fields xlfd-regexp-foundry-subnum nil)
+		(aset xlfd-fields xlfd-regexp-family-subnum nil)
+		(aset xlfd-fields xlfd-regexp-registry-subnum "fontset")
+		(aset xlfd-fields xlfd-regexp-encoding-subnum "startup")
+		;; The fontset name should have concrete values in
+		;; weight and slant field.
+		(let ((weight (aref xlfd-fields xlfd-regexp-weight-subnum))
+		      (slant (aref xlfd-fields xlfd-regexp-slant-subnum))
+		      xlfd-temp)
+		  (if (or (not weight) (string-match "[*?]*" weight))
+		      (progn
+			(setq xlfd-temp (x-decompose-font-name resolved-name))
+			(aset xlfd-fields xlfd-regexp-weight-subnum
+			      (aref xlfd-temp xlfd-regexp-weight-subnum))))
+		  (if (or (not slant) (string-match "[*?]*" slant))
+		      (progn
+			(or xlfd-temp
+			    (setq xlfd-temp
+				  (x-decompose-font-name resolved-name)))
+			(aset xlfd-fields xlfd-regexp-slant-subnum
+			      (aref xlfd-temp xlfd-regexp-slant-subnum)))))
+		(setq fontset (x-compose-font-name xlfd-fields))
+		(create-fontset-from-fontset-spec
+		 (concat fontset ", ascii:" font) styles)
+		))))))
 
 ;; Sun expects the menu bar cut and paste commands to use the clipboard.
 ;; This has ,? to match both on Sunos and on Solaris.
@@ -698,7 +784,7 @@ This is in addition to the primary selection.")
 (setq split-window-keep-point t)
 
 ;; Don't show the frame name; that's redundant with X.
-(setq-default mode-line-buffer-identification '("Emacs: %12b"))
+(setq-default mode-line-frame-identification "  ")
 
 ;;; Motif direct handling of f10 wasn't working right,
 ;;; So temporarily we've turned it off in lwlib-Xm.c

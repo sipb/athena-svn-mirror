@@ -1,6 +1,6 @@
 ;;; ediff-merg.el --- merging utilities
 
-;; Copyright (C) 1994, 1995, 1996 Free Software Foundation, Inc.
+;; Copyright (C) 1994, 1995, 1996, 1997 Free Software Foundation, Inc.
 
 ;; Author: Michael Kifer <kifer@cs.sunysb.edu>
 
@@ -23,14 +23,40 @@
 
 ;;; Code:
 
+(provide 'ediff-merg)
+
+;; compiler pacifier
+(defvar ediff-window-A)
+(defvar ediff-window-B)
+(defvar ediff-window-C)
+(defvar ediff-merge-window-share)
+(defvar ediff-window-config-saved)
+
+(eval-when-compile
+  (let ((load-path (cons (expand-file-name ".") load-path)))
+    (or (featurep 'ediff-init)
+	(load "ediff-init.el" nil nil 'nosuffix))
+    (or (featurep 'ediff-util)
+	(load "ediff-util.el" nil nil 'nosuffix))
+    ))
+;; end pacifier
+
 (require 'ediff-init)
 
+(defcustom ediff-quit-merge-hook 'ediff-maybe-save-and-delete-merge
+  "*Hooks to run before quitting a merge job.
+The most common use is to save and delete the merge buffer."
+  :type 'hook
+  :group 'ediff-merge)
 
-(defvar ediff-default-variant 'combined
+
+(defcustom ediff-default-variant 'combined
   "*The variant to be used as a default for buffer C in merging.
-Valid values are the symbols `default-A', `default-B', and `combined'.")
+Valid values are the symbols `default-A', `default-B', and `combined'."
+  :type '(radio (const default-A) (const default-B) (const combined))
+  :group 'ediff-merge)
 
-(defvar ediff-combination-pattern 
+(defcustom ediff-combination-pattern 
   '("<<<<<<<<<<<<<< variant A" ">>>>>>>>>>>>>> variant B" "======= end of combination")
   "*Pattern to be used for combining difference regions in buffers A and B.
 The value is (STRING1 STRING2 STRING3). The combined text will look like this:
@@ -40,12 +66,20 @@ diff region from variant A
 STRING2
 diff region from variant B
 STRING3
-")
+"
+  :type '(list string string string)
+  :group 'ediff-merge)
 
 (ediff-defvar-local ediff-show-clashes-only  nil
   "*If t, show only those diff regions where both buffers disagree with the ancestor.
 This means that regions that have status prefer-A or prefer-B will be
 skiped over. Nil means show all regions.")
+
+;; If ediff-show-clashes-only, check if there is no clash between the ancestor
+;; and one of the variants.
+(defsubst ediff-merge-region-is-non-clash (n)
+  (and ediff-show-clashes-only
+       (string-match "prefer" (or (ediff-get-state-of-merge n) ""))))
 
 	
 (defsubst ediff-get-combined-region (n)
@@ -98,7 +132,6 @@ skiped over. Nil means show all regions.")
     ))
     
 (defun ediff-set-merge-mode ()
-  ;; by Stig@hackvan.com
   (normal-mode t)
   (remove-hook 'local-write-file-hooks 'ediff-set-merge-mode))
 
@@ -247,7 +280,7 @@ Combining is done according to the specifications in variable
 	    reg-a-beg reg-a-end reg-b-beg reg-b-end reg-c-beg reg-c-end)
 	
 	(if combined
-	    (ediff-eval-in-buffer ediff-buffer-C
+	    (ediff-with-current-buffer ediff-buffer-C
 	      (goto-char reg-beg)
 	      (search-forward pat1 reg-end 'noerror)
 	      (setq reg-a-beg (match-beginning 0))
@@ -264,6 +297,10 @@ Combining is done according to the specifications in variable
 	)))
   
 
-(provide 'ediff-merg)
+;;; Local Variables:
+;;; eval: (put 'ediff-defvar-local 'lisp-indent-hook 'defun)
+;;; eval: (put 'ediff-with-current-buffer 'lisp-indent-hook 1)
+;;; eval: (put 'ediff-with-current-buffer 'edebug-form-spec '(form body))
+;;; End:
 
 ;; ediff-merg.el ends here

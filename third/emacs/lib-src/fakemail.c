@@ -19,22 +19,25 @@ the Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 Boston, MA 02111-1307, USA.  */
 
 
+/* This is needed to get the declaration of cuserid in GNU libc.  */
+#define _XOPEN_SOURCE 1
+
 #define NO_SHORTNAMES
 #include <../src/config.h>
 
-#if defined (BSD) && !defined (BSD4_1) && !defined (USE_FAKEMAIL)
+#if defined (BSD_SYSTEM) && !defined (BSD4_1) && !defined (USE_FAKEMAIL)
 /* This program isnot used in BSD, so just avoid loader complaints.  */
 int
 main ()
 {
-    return 0;
+  return 0;
 }
 #else /* not BSD 4.2 (or newer) */
 #ifdef MSDOS
 int
 main ()
 {
-    return 0;
+  return 0;
 }
 #else /* not MSDOS */
 /* This conditional contains all the rest of the file.  */
@@ -61,6 +64,11 @@ main ()
 #include <ctype.h>
 #include <time.h>
 #include <pwd.h>
+
+/* This is to declare cuserid.  */
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 
 /* Type definitions */
 
@@ -368,9 +376,9 @@ make_file_preface ()
   user_length = strlen (temp);
   the_user = alloc_string (user_length + 1);
   strcpy (the_user, temp);
-  the_string = alloc_string (3 + prefix_length +
-			     user_length +
-			     date_length);
+  the_string = alloc_string (3 + prefix_length
+			     + user_length
+			     + date_length);
   temp = the_string;
   strcpy (temp, FROM_PREFIX);
   temp = &temp[prefix_length];
@@ -594,6 +602,7 @@ args_size (the_header)
 
    Also, if the header has any FCC fields, call setup_files for each one.  */
 
+void
 parse_header (the_header, where)
      header the_header;
      register char *where;

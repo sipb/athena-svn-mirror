@@ -73,6 +73,11 @@ Boston, MA 02111-1307, USA.  */
 #undef LIBX11_SYSTEM
 #define LIBX11_SYSTEM -lpt -lnls -lnsl_s -lc_s -lsocket
 
+/* Motif needs -lintl on some (maybe all) ofthese systems.  */
+#ifdef HAVE_LIBINTL
+#define LIB_MOTIF -lXm -lintl
+#endif
+
 #ifdef HAVE_INET_SOCKETS /* This comes from autoconf.  */
 #define HAVE_SOCKETS
 #endif
@@ -102,6 +107,10 @@ Boston, MA 02111-1307, USA.  */
 
 /* We don't have -loldX, and we don't need it.  */
 #define LIB_XMENU_LIB
+
+/* doug@zadall.com says SCO 3.2v4.2 mktime botches time arithmetic as used
+   by display-time.  */
+#define BROKEN_MKTIME 1
 
 /* SCO does have TIOCGWINSZ.  */
 #undef BROKEN_TIOCGWINSZ

@@ -57,39 +57,60 @@
 
 ;;; Code:
 
+(defgroup apropos nil
+  "Apropos commands for users and programmers"
+  :group 'Help
+  :prefix "apropos")
+
 ;; I see a degradation of maybe 10-20% only.
-(defvar apropos-do-all nil
+(defcustom apropos-do-all nil
   "*Whether the apropos commands should do more.
-Slows them down more or less.  Set this non-nil if you have a fast machine.")
+
+Slows them down more or less.  Set this non-nil if you have a fast machine."
+  :group 'apropos
+  :type 'boolean)
 
 
-(defvar apropos-symbol-face (if window-system 'bold)
-  "*Face for symbol name in apropos output or `nil'.  
-This looks good, but slows down the commands several times.")
+(defcustom apropos-symbol-face (if window-system 'bold)
+  "*Face for symbol name in apropos output or `nil'.
+This looks good, but slows down the commands several times."
+  :group 'apropos
+  :type 'face)
 
-(defvar apropos-keybinding-face (if window-system 'underline)
+(defcustom apropos-keybinding-face (if window-system 'underline)
   "*Face for keybinding display in apropos output or `nil'.  
-This looks good, but slows down the commands several times.")
+This looks good, but slows down the commands several times."
+  :group 'apropos
+  :type 'face)
 
-(defvar apropos-label-face (if window-system 'italic)
+(defcustom apropos-label-face (if window-system 'italic)
   "*Face for label (Command, Variable ...) in apropos output or `nil'.
 If this is `nil' no mouse highlighting occurs.
 This looks good, but slows down the commands several times.
 When this is a face name, as it is initially, it gets transformed to a
-text-property list for efficiency.")
+text-property list for efficiency."
+  :group 'apropos
+  :type 'face)
 
-(defvar apropos-property-face (if window-system 'bold-italic)
+(defcustom apropos-property-face (if window-system 'bold-italic)
   "*Face for property name in apropos output or `nil'.  
-This looks good, but slows down the commands several times.")
+This looks good, but slows down the commands several times."
+  :group 'apropos
+  :type 'face)
 
-(defvar apropos-match-face (if window-system 'secondary-selection)
+(defcustom apropos-match-face (if window-system 'secondary-selection)
   "*Face for matching part in apropos-documentation/value output or `nil'.  
-This looks good, but slows down the commands several times.")
+This looks good, but slows down the commands several times."
+  :group 'apropos
+  :type 'face)
 
 
 (defvar apropos-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map "\C-m" 'apropos-follow)
+    (define-key map " "    'scroll-up)
+    (define-key map "\177" 'scroll-down)
+    (define-key map "q"    'quit-window)
     (define-key map [mouse-2] 'apropos-mouse-follow)
     (define-key map [down-mouse-2] nil)
     map)
@@ -118,20 +139,42 @@ This looks good, but slows down the commands several times.")
   (setq major-mode 'apropos-mode
 	mode-name "Apropos"))
 
+;;;###autoload
+(defun apropos-variable (regexp &optional do-all)
+  "Show user variables that match REGEXP.
+With optional prefix ARG or if `apropos-do-all' is non-nil, also show
+normal variables."
+  (interactive (list (read-string
+                      (concat "Apropos "
+                              (if (or current-prefix-arg apropos-do-all)
+				  "variable"
+				"user option")
+                              " (regexp): "))
+                     current-prefix-arg))
+  (apropos-command regexp nil
+		   (if (or do-all apropos-do-all)
+		       #'(lambda (symbol)
+			   (and (boundp symbol)
+				(get symbol 'variable-documentation)))
+		     'user-variable-p)))
 
 ;; For auld lang syne:
 ;;;###autoload
 (fset 'command-apropos 'apropos-command)
 ;;;###autoload
-(defun apropos-command (apropos-regexp &optional do-all)
-  "Shows commands (interactively callable functions) that match REGEXP.
-With optional prefix ARG or if `apropos-do-all' is non-nil, also show
-variables."
-  (interactive (list (read-string (concat "Apropos command "
-					  (if (or current-prefix-arg
-						  apropos-do-all)
-					      "or variable ")
-					  "(regexp): "))
+(defun apropos-command (apropos-regexp &optional do-all var-predicate)
+  "Show commands (interactively callable functions) that match REGEXP.
+With optional prefix ARG, or if `apropos-do-all' is non-nil, also show
+noninteractive functions.
+
+If VAR-PREDICATE is non-nil, show only variables, and only those that
+satisfy the predicate VAR-PREDICATE."
+  (interactive (list (read-string (concat
+				   "Apropos command "
+				   (if (or current-prefix-arg
+					   apropos-do-all)
+				       "or function ")
+				   "(regexp): "))
 		     current-prefix-arg))
   (let ((message
 	 (let ((standard-output (get-buffer-create "*Apropos*")))
@@ -139,30 +182,33 @@ variables."
     (or do-all (setq do-all apropos-do-all))
     (setq apropos-accumulator
 	  (apropos-internal apropos-regexp
-			    (if do-all
-				(lambda (symbol) (or (commandp symbol)
-						     (user-variable-p symbol)))
-			      'commandp)))
-    (if (apropos-print
-	 t
-	 (lambda (p)
-	   (let (doc symbol)
-	     (while p
-	       (setcar p (list
-			  (setq symbol (car p))
-			  (if (commandp symbol)
-			      (if (setq doc (documentation symbol t))
-				  (substring doc 0 (string-match "\n" doc))
-				"(not documented)"))
-			  (and do-all
-			       (user-variable-p symbol)
-			       (if (setq doc (documentation-property
-					      symbol 'variable-documentation t))
-				   (substring doc 0
-					      (string-match "\n" doc))))))
-	       (setq p (cdr p)))))
-	 nil)
-	(and message (message message)))))
+			    (or var-predicate
+				(if do-all 'functionp 'commandp))))
+    (let ((tem apropos-accumulator))
+      (while tem
+	(if (get (car tem) 'apropos-inhibit)
+	    (setq apropos-accumulator (delq (car tem) apropos-accumulator)))
+	(setq tem (cdr tem))))
+    (let ((p apropos-accumulator)
+	  doc symbol)
+      (while p
+	(setcar p (list
+		   (setq symbol (car p))
+		   (unless var-predicate
+		     (if (functionp symbol)
+			 (if (setq doc (documentation symbol t))
+			     (substring doc 0 (string-match "\n" doc))
+			   "(not documented)")))
+		   (and var-predicate
+			(funcall var-predicate symbol)
+			(if (setq doc (documentation-property
+				       symbol 'variable-documentation t))
+			    (substring doc 0
+				       (string-match "\n" doc))))))
+	(setq p (cdr p))))
+    (and (apropos-print t nil)
+	 message
+	 (message message))))
 
 
 ;;;###autoload
@@ -179,29 +225,56 @@ Returns list of symbols and documentation found."
 			       (lambda (symbol)
 				 (or (fboundp symbol)
 				     (boundp symbol)
+				     (facep symbol)
 				     (symbol-plist symbol))))))
+  (let ((tem apropos-accumulator))
+    (while tem
+      (if (get (car tem) 'apropos-inhibit)
+	  (setq apropos-accumulator (delq (car tem) apropos-accumulator)))
+      (setq tem (cdr tem))))
+  (let ((p apropos-accumulator)
+	symbol doc properties)
+    (while p
+      (setcar p (list
+		 (setq symbol (car p))
+		 (when (fboundp symbol)
+		   (if (setq doc (condition-case nil
+				     (documentation symbol t)
+				   (void-function
+				    "(alias for undefined function)")))
+		       (substring doc 0 (string-match "\n" doc))
+		     "(not documented)"))
+		 (when (boundp symbol)
+		   (if (setq doc (documentation-property
+				  symbol 'variable-documentation t))
+		       (substring doc 0 (string-match "\n" doc))
+		     "(not documented)"))
+		 (when (setq properties (symbol-plist symbol))
+		   (setq doc (list (car properties)))
+		   (while (setq properties (cdr (cdr properties)))
+		     (setq doc (cons (car properties) doc)))
+		   (mapconcat #'symbol-name (nreverse doc) " "))
+		 (when (get symbol 'widget-type)
+		   (if (setq doc (documentation-property
+				  symbol 'widget-documentation t))
+		       (substring doc 0
+				  (string-match "\n" doc))
+		     "(not documented)"))
+		 (when (facep symbol)
+		   (if (setq doc (documentation-property
+				  symbol 'face-documentation t))
+		       (substring doc 0
+				  (string-match "\n" doc))
+		     "(not documented)"))
+		 (when (get symbol 'custom-group)
+		   (if (setq doc (documentation-property
+				  symbol 'group-documentation t))
+		       (substring doc 0
+				  (string-match "\n" doc))
+		     "(not documented)"))))
+      (setq p (cdr p))))
   (apropos-print
    (or do-all apropos-do-all)
-   (lambda (p)
-     (let (symbol doc)
-       (while p
-	 (setcar p (list
-		    (setq symbol (car p))
-		    (if (fboundp symbol)
-			(if (setq doc (documentation symbol t))
-			    (substring doc 0 (string-match "\n" doc))
-			  "(not documented)"))
-		    (if (boundp symbol)
-			(if (setq doc (documentation-property
-				       symbol 'variable-documentation t))
-			    (substring doc 0
-				       (string-match "\n" doc))
-			  "(not documented)"))
-		    (if (setq doc (symbol-plist symbol))
-			(if (eq (/ (length doc) 2) 1)
-			    (format "1 property (%s)" (car doc))
-			  (concat (/ (length doc) 2) " properties")))))
-	 (setq p (cdr p)))))
    nil))
 
 
@@ -227,7 +300,7 @@ Returns list of symbols and values found."
 	(if (or f v p)
 	    (setq apropos-accumulator (cons (list symbol f v p)
 					    apropos-accumulator))))))
-  (apropos-print nil nil t))
+  (apropos-print nil t))
 
 
 ;;;###autoload
@@ -265,7 +338,7 @@ Returns list of symbols and documentation found."
 		       (setq apropos-accumulator
 			     (cons (list symbol f v)
 				   apropos-accumulator)))))))
-	  (apropos-print nil nil t))
+	  (apropos-print nil t))
       (kill-buffer standard-input))))
 
 
@@ -421,16 +494,15 @@ Will return nil instead."
 
 
 
-(defun apropos-print (do-keys doc-fn spacing)
-  "Output result of various apropos commands with `apropos-regexp'.
-APROPOS-ACCUMULATOR is a list.  Optional DOC-FN is called for each element
-of apropos-accumulator and may modify it resulting in (symbol fn-doc
-var-doc [plist-doc]).  Returns sorted list of symbols and documentation
-found."
+(defun apropos-print (do-keys spacing)
+  "Output result of apropos searching into buffer `*Apropos*'.
+The value of `apropos-accumulator' is the list of items to output.
+Each element should have the format (SYMBOL FN-DOC VAR-DOC [PLIST-DOC]).
+The return value is the list that was in `apropos-accumulator', sorted
+alphabetically by symbol name; but this function also sets
+`apropos-accumulator' to nil before returning."
   (if (null apropos-accumulator)
       (message "No apropos matches for `%s'" apropos-regexp)
-    (if doc-fn
-	(funcall doc-fn apropos-accumulator))
     (setq apropos-accumulator
 	  (sort apropos-accumulator (lambda (a b)
 				      (string-lessp (car a) (car b)))))
@@ -493,7 +565,6 @@ found."
 					      key))
 		       key)
 		     item ", "))
-		 (insert "Type ")
 		 (insert "M-x")
 		 (put-text-property (- (point) 3) (point)
 				    'face apropos-keybinding-face)
@@ -515,11 +586,19 @@ found."
 			       (if (apropos-macrop symbol)
 				   "Macro"
 				 "Function"))
-			     do-keys)
-	  (apropos-print-doc 'describe-variable 2
-			     "Variable" do-keys)
+			     t)
+	  ;; We used to use customize-variable-other-window instead
+	  ;; for a customizable variable, but that is slow.
+	  ;; It is better to show an ordinary help buffer
+	  ;; and let the user click on the customization button
+	  ;; in that buffer, if he wants to.
+	  (apropos-print-doc 'describe-variable 2 "Variable" t)
+	  (apropos-print-doc 'customize-group-other-window 6 "Group" t)
+	  (apropos-print-doc 'customize-face-other-window 5 "Face" t)
+	  (apropos-print-doc 'widget-browse-other-window 4 "Widget" t)
 	  (apropos-print-doc 'apropos-describe-plist 3
-			     "Plist" nil)))))
+			     "Plist" nil))
+	(setq buffer-read-only t))))
   (prog1 apropos-accumulator
     (setq apropos-accumulator ())))	; permit gc
 
@@ -598,5 +677,7 @@ found."
     (insert (apropos-format-plist symbol "\n  "))
     (princ ")")
     (print-help-return-message)))
+
+(provide 'apropos)
 
 ;;; apropos.el ends here

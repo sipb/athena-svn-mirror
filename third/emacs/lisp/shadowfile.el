@@ -22,11 +22,6 @@
 ;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 ;; Boston, MA 02111-1307, USA.
 
-;; LCD Archive Entry:
-;; shadowfile|Boris Goldowsky|boris@gnu.ai.mit.edu|
-;; Helps you keep identical copies of files in multiple places.|
-;; $Date: 1996-09-26 00:57:17 $ |$Revision: 1.1.1.1 $|~/misc/shadowfile.el.Z|
-
 ;; Commentary:
 
 ;;  This package helps you to keep identical copies of files in more than one
@@ -84,37 +79,51 @@
 (provide 'shadowfile)
 (require 'ange-ftp)
 
-(setq find-file-visit-truename t)	; makes life easier with symbolic links
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Variables
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defvar shadow-noquery nil
+(defgroup shadow nil
+  "Automatic file copying when saving a file."
+  :prefix "shadow-"
+  :group 'files)
+
+(defcustom shadow-noquery nil
   "*If t, always copy shadow files without asking.
 If nil \(the default), always ask.  If not nil and not t, ask only if there
-is no buffer currently visiting the file.")
+is no buffer currently visiting the file."
+  :type '(choice (const t) (const nil) (other :tag "Ask if no buffer" maybe))
+  :group 'shadow)
 
-(defvar shadow-inhibit-message nil
-  "*If nonnil, do not display a message when a file needs copying.")
+(defcustom shadow-inhibit-message nil
+  "*If nonnil, do not display a message when a file needs copying."
+  :type 'boolean
+  :group 'shadow)
 
-(defvar shadow-inhibit-overload nil
+(defcustom shadow-inhibit-overload nil
   "If nonnil, shadowfile won't redefine C-x C-c.
 Normally it overloads the function `save-buffers-kill-emacs' to check
-for files have been changed and need to be copied to other systems.")
+for files have been changed and need to be copied to other systems."
+  :type 'boolean
+  :group 'shadow)
 
-(defvar shadow-info-file nil
+(defcustom shadow-info-file nil
   "File to keep shadow information in.  
 The shadow-info-file should be shadowed to all your accounts to
-ensure consistency.  Default: ~/.shadows")
+ensure consistency.  Default: ~/.shadows"
+  :type '(choice (const nil) file)
+  :group 'shadow)
 
-(defvar shadow-todo-file nil
+(defcustom shadow-todo-file nil
   "File to store the list of uncopied shadows in.
 This means that if a remote system is down, or for any reason you cannot or
 decide not to copy your shadow files at the end of one emacs session, it will
 remember and ask you again in your next emacs session.
 This file must NOT be shadowed to any other system, it is host-specific.
-Default: ~/.shadow_todo")
+Default: ~/.shadow_todo"
+  :type '(choice (const nil) file)
+  :group 'shadow)
+
 
 ;;; The following two variables should in most cases initialize themselves
 ;;; correctly.  They are provided as variables in case the defaults are wrong

@@ -1,5 +1,5 @@
 /* File IO for GNU Emacs.
-   Copyright (C) 1985,86,87,88,93,94,95,96 Free Software Foundation, Inc.
+   Copyright (C) 1985,86,87,88,93,94,95,96,97,1998 Free Software Foundation, Inc.
 
 This file is part of GNU Emacs.
 
@@ -20,6 +20,11 @@ Boston, MA 02111-1307, USA.  */
 
 #include <config.h>
 
+#if defined (USG5) || defined (BSD_SYSTEM) || defined (LINUX)
+#include <fcntl.h>
+#endif
+
+#include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 
@@ -31,6 +36,10 @@ Boston, MA 02111-1307, USA.  */
 #  define S_ISLNK(m) (((m) & S_IFMT) == S_IFLNK)
 #endif
 
+#if !defined (S_ISFIFO) && defined (S_IFIFO)
+#  define S_ISFIFO(m) (((m) & S_IFMT) == S_IFIFO)
+#endif
+
 #if !defined (S_ISREG) && defined (S_IFREG)
 #  define S_ISREG(m) (((m) & S_IFMT) == S_IFREG)
 #endif
@@ -39,15 +48,6 @@ Boston, MA 02111-1307, USA.  */
 #include "vms-pwd.h"
 #else
 #include <pwd.h>
-#endif
-
-#ifdef MSDOS
-#include "msdos.h"
-#include <sys/param.h>
-#if __DJGPP__ >= 2
-#include <fcntl.h>
-#include <string.h>
-#endif
 #endif
 
 #include <ctype.h>
@@ -84,6 +84,8 @@ extern char *strerror ();
 #include "lisp.h"
 #include "intervals.h"
 #include "buffer.h"
+#include "charset.h"
+#include "coding.h"
 #include "window.h"
 
 #ifdef WINDOWSNT
@@ -92,6 +94,15 @@ extern char *strerror ();
 #include <stdlib.h>
 #include <fcntl.h>
 #endif /* not WINDOWSNT */
+
+#ifdef MSDOS
+#include "msdos.h"
+#include <sys/param.h>
+#if __DJGPP__ >= 2
+#include <fcntl.h>
+#include <string.h>
+#endif
+#endif
 
 #ifdef DOS_NT
 #define CORRECT_DIR_SEPS(s) \
@@ -148,6 +159,13 @@ int auto_saving;
    a new file with the same mode as the original */
 int auto_save_mode_bits;
 
+/* Coding system for file names, or nil if none.  */
+Lisp_Object Vfile_name_coding_system;
+
+/* Coding system for file names used only when
+   Vfile_name_coding_system is nil.  */
+Lisp_Object Vdefault_file_name_coding_system;
+
 /* Alist of elements (REGEXP . HANDLER) for file names
    whose I/O is done with a special handler.  */
 Lisp_Object Vfile_name_handler_alist;
@@ -157,6 +175,9 @@ Lisp_Object Vauto_save_file_format;
 
 /* Lisp functions for translating file formats */
 Lisp_Object Qformat_decode, Qformat_annotate_function;
+
+/* Function to be called to decide a coding system of a reading file.  */
+Lisp_Object Vset_auto_coding_function;
 
 /* Functions to be called to process text properties in inserted file.  */
 Lisp_Object Vafter_insert_file_functions;
@@ -183,6 +204,16 @@ int vms_stmlf_recfm;
    expanding file names.  This can be bound to / or \. */
 Lisp_Object Vdirectory_sep_char;
 
+extern Lisp_Object Vuser_login_name;
+
+#ifdef WINDOWSNT
+extern Lisp_Object Vw32_get_true_file_attributes;
+#endif
+
+extern int minibuf_level;
+
+extern int minibuffer_auto_raise;
+
 /* These variables describe handlers that have "already" had a chance
    to handle the current operation.
 
@@ -193,12 +224,17 @@ Lisp_Object Vdirectory_sep_char;
 static Lisp_Object Vinhibit_file_name_handlers;
 static Lisp_Object Vinhibit_file_name_operation;
 
-Lisp_Object Qfile_error, Qfile_already_exists;
+Lisp_Object Qfile_error, Qfile_already_exists, Qfile_date_error;
 
 Lisp_Object Qfile_name_history;
 
 Lisp_Object Qcar_less_than_car;
 
+static int a_write P_ ((int, char *, int, int,
+			Lisp_Object *, struct coding_system *));
+static int e_write P_ ((int, char *, int, struct coding_system *));
+
+void
 report_file_error (string, data)
      char *string;
      Lisp_Object data;
@@ -217,19 +253,23 @@ report_file_error (string, data)
 	     Fcons (build_string (string), Fcons (errstring, data)));
 }
 
+Lisp_Object
 close_file_unwind (fd)
      Lisp_Object fd;
 {
   close (XFASTINT (fd));
+  return Qnil;
 }
 
 /* Restore point, having saved it as a marker.  */
 
+static Lisp_Object
 restore_point_unwind (location)
      Lisp_Object location;
 {
-  SET_PT (marker_position (location));
+  Fgoto_char (location);
   Fset_marker (location, Qnil, Qnil);
+  return Qnil;
 }
 
 Lisp_Object Qexpand_file_name;
@@ -249,8 +289,9 @@ Lisp_Object Qmake_symbolic_link;
 Lisp_Object Qfile_exists_p;
 Lisp_Object Qfile_executable_p;
 Lisp_Object Qfile_readable_p;
-Lisp_Object Qfile_symlink_p;
 Lisp_Object Qfile_writable_p;
+Lisp_Object Qfile_symlink_p;
+Lisp_Object Qaccess_file;
 Lisp_Object Qfile_directory_p;
 Lisp_Object Qfile_regular_p;
 Lisp_Object Qfile_accessible_directory_p;
@@ -338,15 +379,18 @@ on VMS, perhaps instead a string ending in `:', `]' or `>'.")
 #ifdef DOS_NT
   beg = strcpy (alloca (strlen (beg) + 1), beg);
 #endif
-  p = beg + XSTRING (filename)->size;
+  p = beg + STRING_BYTES (XSTRING (filename));
 
   while (p != beg && !IS_DIRECTORY_SEP (p[-1])
 #ifdef VMS
 	 && p[-1] != ':' && p[-1] != ']' && p[-1] != '>'
 #endif /* VMS */
 #ifdef DOS_NT
-	 /* only recognise drive specifier at beginning */
-	 && !(p[-1] == ':' && p == beg + 2)
+	 /* only recognise drive specifier at the beginning */
+	 && !(p[-1] == ':'
+	      /* handle the "/:d:foo" and "/:foo" cases correctly  */
+	      && ((p == beg + 2 && !IS_DIRECTORY_SEP (*beg))
+		  || (p == beg + 4 && IS_DIRECTORY_SEP (*beg))))
 #endif
 	 ) p--;
 
@@ -354,11 +398,20 @@ on VMS, perhaps instead a string ending in `:', `]' or `>'.")
     return Qnil;
 #ifdef DOS_NT
   /* Expansion of "c:" to drive and default directory.  */
-  if (p == beg + 2 && beg[1] == ':')
+  if (p[-1] == ':')
     {
       /* MAXPATHLEN+1 is guaranteed to be enough space for getdefdir.  */
       unsigned char *res = alloca (MAXPATHLEN + 1);
-      if (getdefdir (toupper (*beg) - 'A' + 1, res))
+      unsigned char *r = res;
+
+      if (p == beg + 4 && IS_DIRECTORY_SEP (*beg) && beg[1] == ':')
+	{
+	  strncpy (res, beg, 2);
+	  beg += 2;
+	  r += 2;
+	}
+
+      if (getdefdir (toupper (*beg) - 'A' + 1, r))
 	{
 	  if (!IS_DIRECTORY_SEP (res[strlen (res) - 1]))
 	    strcat (res, "/");
@@ -368,11 +421,14 @@ on VMS, perhaps instead a string ending in `:', `]' or `>'.")
     }
   CORRECT_DIR_SEPS (beg);
 #endif /* DOS_NT */
-  return make_string (beg, p - beg);
+
+  if (STRING_MULTIBYTE (filename))
+    return make_string (beg, p - beg);
+  return make_unibyte_string (beg, p - beg);
 }
 
-DEFUN ("file-name-nondirectory", Ffile_name_nondirectory, Sfile_name_nondirectory,
-  1, 1, 0,
+DEFUN ("file-name-nondirectory", Ffile_name_nondirectory,
+       Sfile_name_nondirectory, 1, 1, 0,
   "Return file name FILENAME sans its directory.\n\
 For example, in a Unix-syntax file name,\n\
 this is everything after the last slash,\n\
@@ -392,7 +448,7 @@ or the entire name if it contains no slash.")
     return call2 (handler, Qfile_name_nondirectory, filename);
 
   beg = XSTRING (filename)->data;
-  end = p = beg + XSTRING (filename)->size;
+  end = p = beg + STRING_BYTES (XSTRING (filename));
 
   while (p != beg && !IS_DIRECTORY_SEP (p[-1])
 #ifdef VMS
@@ -400,19 +456,25 @@ or the entire name if it contains no slash.")
 #endif /* VMS */
 #ifdef DOS_NT
 	 /* only recognise drive specifier at beginning */
-	 && !(p[-1] == ':' && p == beg + 2)
+	 && !(p[-1] == ':'
+	      /* handle the "/:d:foo" case correctly  */
+	      && (p == beg + 2 || (p == beg + 4 && IS_DIRECTORY_SEP (*beg))))
 #endif
-	 ) p--;
+	 )
+    p--;
 
-  return make_string (p, end - p);
+  if (STRING_MULTIBYTE (filename))
+    return make_string (p, end - p);
+  return make_unibyte_string (p, end - p);
 }
 
-DEFUN ("unhandled-file-name-directory", Funhandled_file_name_directory, Sunhandled_file_name_directory, 1, 1, 0,
+DEFUN ("unhandled-file-name-directory", Funhandled_file_name_directory,
+       Sunhandled_file_name_directory, 1, 1, 0,
   "Return a directly usable directory name somehow associated with FILENAME.\n\
 A `directly usable' directory name is one that may be used without the\n\
 intervention of any file handler.\n\
 If FILENAME is a directly usable file itself, return\n\
-(file-name-directory FILENAME).\n\
+\(file-name-directory FILENAME).\n\
 The `call-process' and `start-process' functions use this function to\n\
 get a current directory to run processes in.")
   (filename)
@@ -437,6 +499,14 @@ file_name_as_directory (out, in)
   int size = strlen (in) - 1;
 
   strcpy (out, in);
+
+  if (size < 0)
+    {
+      out[0] = '.';
+      out[1] = '/';
+      out[2] = 0;
+      return out;
+    }
 
 #ifdef VMS
   /* Is it already a directory string? */
@@ -534,7 +604,7 @@ On VMS, converts \"[X]FOO.DIR\" to \"[X.FOO]\", etc.")
   if (!NILP (handler))
     return call2 (handler, Qfile_name_as_directory, file);
 
-  buf = (char *) alloca (XSTRING (file)->size + 10);
+  buf = (char *) alloca (STRING_BYTES (XSTRING (file)) + 10);
   return build_string (file_name_as_directory (buf, XSTRING (file)->data));
 }
 
@@ -548,6 +618,7 @@ On VMS, converts \"[X]FOO.DIR\" to \"[X.FOO]\", etc.")
  * Value is nonzero if the string output is different from the input.
  */
 
+int
 directory_file_name (src, dst)
      char *src, *dst;
 {
@@ -729,35 +800,126 @@ it returns a file name such as \"[X]Y.DIR.1\".")
   /* 20 extra chars is insufficient for VMS, since we might perform a
      logical name translation. an equivalence string can be up to 255
      chars long, so grab that much extra space...  - sss */
-  buf = (char *) alloca (XSTRING (directory)->size + 20 + 255);
+  buf = (char *) alloca (STRING_BYTES (XSTRING (directory)) + 20 + 255);
 #else
-  buf = (char *) alloca (XSTRING (directory)->size + 20);
+  buf = (char *) alloca (STRING_BYTES (XSTRING (directory)) + 20);
 #endif
   directory_file_name (XSTRING (directory)->data, buf);
   return build_string (buf);
 }
 
+static char make_temp_name_tbl[64] =
+{
+  'A','B','C','D','E','F','G','H',
+  'I','J','K','L','M','N','O','P',
+  'Q','R','S','T','U','V','W','X',
+  'Y','Z','a','b','c','d','e','f',
+  'g','h','i','j','k','l','m','n',
+  'o','p','q','r','s','t','u','v',
+  'w','x','y','z','0','1','2','3',
+  '4','5','6','7','8','9','-','_'
+};
+static unsigned make_temp_name_count, make_temp_name_count_initialized_p;
+
 DEFUN ("make-temp-name", Fmake_temp_name, Smake_temp_name, 1, 1, 0,
   "Generate temporary file name (string) starting with PREFIX (a string).\n\
 The Emacs process number forms part of the result,\n\
-so there is no danger of generating a name being used by another process.")
+so there is no danger of generating a name being used by another process.\n\
+\n\
+In addition, this function makes an attempt to choose a name\n\
+which has no existing file.  To make this work,\n\
+PREFIX should be an absolute file name.")
   (prefix)
      Lisp_Object prefix;
 {
   Lisp_Object val;
-#ifdef MSDOS
-  /* Don't use too many characters of the restricted 8+3 DOS
-     filename space.  */
-  val = concat2 (prefix, build_string ("a.XXX"));
+  int len;
+  int pid;
+  unsigned char *p, *data;
+  char pidbuf[20];
+  int pidlen;
+
+  CHECK_STRING (prefix, 0);
+
+  /* VAL is created by adding 6 characters to PREFIX.  The first
+     three are the PID of this process, in base 64, and the second
+     three are incremented if the file already exists.  This ensures
+     262144 unique file names per PID per PREFIX.  */
+
+  pid = (int) getpid ();
+
+#ifdef HAVE_LONG_FILE_NAMES
+  sprintf (pidbuf, "%d", pid);
+  pidlen = strlen (pidbuf);
 #else
-  val = concat2 (prefix, build_string ("XXXXXX"));
+  pidbuf[0] = make_temp_name_tbl[pid & 63], pid >>= 6;
+  pidbuf[1] = make_temp_name_tbl[pid & 63], pid >>= 6;
+  pidbuf[2] = make_temp_name_tbl[pid & 63], pid >>= 6;
+  pidlen = 3;
 #endif
-  mktemp (XSTRING (val)->data);
-#ifdef DOS_NT
-  CORRECT_DIR_SEPS (XSTRING (val)->data);
-#endif
-  return val;
+
+  len = XSTRING (prefix)->size;
+  val = make_uninit_string (len + 3 + pidlen);
+  data = XSTRING (val)->data;
+  bcopy(XSTRING (prefix)->data, data, len);
+  p = data + len;
+
+  bcopy (pidbuf, p, pidlen);
+  p += pidlen;
+
+  /* Here we try to minimize useless stat'ing when this function is
+     invoked many times successively with the same PREFIX.  We achieve
+     this by initializing count to a random value, and incrementing it
+     afterwards.
+
+     We don't want make-temp-name to be called while dumping,
+     because then make_temp_name_count_initialized_p would get set
+     and then make_temp_name_count would not be set when Emacs starts.  */
+
+  if (!make_temp_name_count_initialized_p)
+    {
+      make_temp_name_count = (unsigned) time (NULL);
+      make_temp_name_count_initialized_p = 1;
+    }
+
+  while (1)
+    {
+      struct stat ignored;
+      unsigned num = make_temp_name_count;
+
+      p[0] = make_temp_name_tbl[num & 63], num >>= 6;
+      p[1] = make_temp_name_tbl[num & 63], num >>= 6;
+      p[2] = make_temp_name_tbl[num & 63], num >>= 6;
+
+      /* Poor man's congruential RN generator.  Replace with
+         ++make_temp_name_count for debugging.  */
+      make_temp_name_count += 25229;
+      make_temp_name_count %= 225307;
+
+      if (stat (data, &ignored) < 0)
+	{
+	  /* We want to return only if errno is ENOENT.  */
+	  if (errno == ENOENT)
+	    return val;
+	  else
+	    /* The error here is dubious, but there is little else we
+	       can do.  The alternatives are to return nil, which is
+	       as bad as (and in many cases worse than) throwing the
+	       error, or to ignore the error, which will likely result
+	       in looping through 225307 stat's, which is not only
+	       dog-slow, but also useless since it will fallback to
+	       the errow below, anyway.  */
+	    report_file_error ("Cannot create temporary name for prefix `%s'",
+			       Fcons (prefix, Qnil));
+	  /* not reached */
+	}
+    }
+
+  error ("Cannot create temporary name for prefix `%s'",
+	 XSTRING (prefix)->data);
+  return Qnil;
 }
+
 
 DEFUN ("expand-file-name", Fexpand_file_name, Sexpand_file_name, 1, 2, 0,
   "Convert filename NAME to absolute, and canonicalize it.\n\
@@ -771,7 +933,7 @@ file names in the file system.\n\
 An initial `~/' expands to your home directory.\n\
 An initial `~USER/' expands to USER's home directory.\n\
 See also the function `substitute-in-file-name'.")
-     (name, default_directory)
+  (name, default_directory)
      Lisp_Object name, default_directory;
 {
   unsigned char *nm;
@@ -791,6 +953,7 @@ See also the function `substitute-in-file-name'.")
 #ifdef DOS_NT
   int drive = 0;
   int collapse_newdir = 1;
+  int is_escaped = 0;
 #endif /* DOS_NT */
   int length;
   Lisp_Object handler;
@@ -806,7 +969,8 @@ See also the function `substitute-in-file-name'.")
   /* Use the buffer's default-directory if DEFAULT_DIRECTORY is omitted.  */
   if (NILP (default_directory))
     default_directory = current_buffer->directory;
-  CHECK_STRING (default_directory, 1);
+  if (! STRINGP (default_directory))
+    default_directory = build_string ("/");
 
   if (!NILP (default_directory))
     {
@@ -833,7 +997,7 @@ See also the function `substitute-in-file-name'.")
 	 is needed at all) without requiring it to be expanded now.  */
 #ifdef DOS_NT
       /* Detect MSDOS file names with drive specifiers.  */
-      && ! (IS_DRIVE (o[0]) && (IS_DEVICE_SEP (o[1]) && IS_DIRECTORY_SEP (o[2])))
+      && ! (IS_DRIVE (o[0]) && IS_DEVICE_SEP (o[1]) && IS_DIRECTORY_SEP (o[2]))
 #ifdef WINDOWSNT
       /* Detect Windows file names in UNC format.  */
       && ! (IS_DIRECTORY_SEP (o[0]) && IS_DIRECTORY_SEP (o[1]))
@@ -867,57 +1031,30 @@ See also the function `substitute-in-file-name'.")
      a local copy to modify, even if there ends up being no change. */
   nm = strcpy (alloca (strlen (nm) + 1), nm);
 
-  /* Find and remove drive specifier if present; this makes nm absolute
-     even if the rest of the name appears to be relative. */
-  {
-    unsigned char *colon = rindex (nm, ':');
-
-    if (colon)
-      /* Only recognize colon as part of drive specifier if there is a
-	 single alphabetic character preceeding the colon (and if the
-	 character before the drive letter, if present, is a directory
-	 separator); this is to support the remote system syntax used by
-	 ange-ftp, and the "po:username" syntax for POP mailboxes. */
-    look_again:
-      if (nm == colon)
-	nm++;
-      else if (IS_DRIVE (colon[-1])
-	       && (colon == nm + 1 || IS_DIRECTORY_SEP (colon[-2])))
-	{
-	  drive = colon[-1];
-	  nm = colon + 1;
-	}
-      else
-	{
-	  while (--colon >= nm)
-	    if (colon[0] == ':')
-	      goto look_again;
-	}
-  }
-#endif /* DOS_NT */
-
-  /* Handle // and /~ in middle of file name
-     by discarding everything through the first / of that sequence.  */
-  p = nm;
-  while (*p)
+  /* Note if special escape prefix is present, but remove for now.  */
+  if (nm[0] == '/' && nm[1] == ':')
     {
-      /* Since we are expecting the name to be absolute, we can assume
-	 that each element starts with a "/".  */
-
-      if (IS_DIRECTORY_SEP (p[0]) && IS_DIRECTORY_SEP (p[1])
-#if defined (APOLLO) || defined (WINDOWSNT)
-	  /* // at start of filename is meaningful on Apollo
-	     and WindowsNT systems */
-	  && nm != p
-#endif /* APOLLO || WINDOWSNT */
-	  )
-	nm = p + 1;
-
-      if (IS_DIRECTORY_SEP (p[0]) && p[1] == '~')
-	nm = p + 1;
-
-      p++;
+      is_escaped = 1;
+      nm += 2;
     }
+
+  /* Find and remove drive specifier if present; this makes nm absolute
+     even if the rest of the name appears to be relative.  Only look for
+     drive specifier at the beginning.  */
+  if (IS_DRIVE (nm[0]) && IS_DEVICE_SEP (nm[1]))
+    {
+      drive = nm[0];
+      nm += 2;
+    }
+
+#ifdef WINDOWSNT
+  /* If we see "c://somedir", we want to strip the first slash after the
+     colon when stripping the drive letter.  Otherwise, this expands to
+     "//somedir".  */
+  if (drive && IS_DIRECTORY_SEP (nm[0]) && IS_DIRECTORY_SEP (nm[1]))
+    nm++;
+#endif /* WINDOWSNT */
+#endif /* DOS_NT */
 
 #ifdef WINDOWSNT
   /* Discard any previous drive specifier if nm is now in UNC format. */
@@ -933,10 +1070,10 @@ See also the function `substitute-in-file-name'.")
   if (
       IS_DIRECTORY_SEP (nm[0])
 #ifdef MSDOS
-      && drive
+      && drive && !is_escaped
 #endif
 #ifdef WINDOWSNT
-      && (drive || IS_DIRECTORY_SEP (nm[1]))
+      && (drive || IS_DIRECTORY_SEP (nm[1])) && !is_escaped
 #endif
 #ifdef VMS
       || index (nm, ':')
@@ -1182,6 +1319,14 @@ See also the function `substitute-in-file-name'.")
       && !newdir)
     {
       newdir = XSTRING (default_directory)->data;
+#ifdef DOS_NT
+      /* Note if special escape prefix is present, but remove for now.  */
+      if (newdir[0] == '/' && newdir[1] == ':')
+	{
+	  is_escaped = 1;
+	  newdir += 2;
+	}
+#endif
     }
 
 #ifdef DOS_NT
@@ -1234,7 +1379,7 @@ See also the function `substitute-in-file-name'.")
 	}
 
       /* Keep only a prefix from newdir if nm starts with slash
-         (//server/share for UNC, nothing otherwise). */
+         (//server/share for UNC, nothing otherwise).  */
       if (IS_DIRECTORY_SEP (nm[0]) && collapse_newdir)
 	{
 #ifdef WINDOWSNT
@@ -1257,9 +1402,9 @@ See also the function `substitute-in-file-name'.")
   if (newdir)
     {
       /* Get rid of any slash at the end of newdir, unless newdir is
-       just // (an incomplete UNC name). */
+	 just / or // (an incomplete UNC name).  */
       length = strlen (newdir);
-      if (IS_DIRECTORY_SEP (newdir[length - 1])
+      if (length > 1 && IS_DIRECTORY_SEP (newdir[length - 1])
 #ifdef WINDOWSNT
 	  && !(length == 2 && IS_DIRECTORY_SEP (newdir[0]))
 #endif
@@ -1278,10 +1423,11 @@ See also the function `substitute-in-file-name'.")
   /* Now concatenate the directory and name to new space in the stack frame */
   tlen += strlen (nm) + 1;
 #ifdef DOS_NT
-  /* Add reserved space for drive name.  (The Microsoft x86 compiler
+  /* Reserve space for drive specifier and escape prefix, since either
+     or both may need to be inserted.  (The Microsoft x86 compiler
      produces incorrect code if the following two lines are combined.)  */
-  target = (unsigned char *) alloca (tlen + 2);
-  target += 2;
+  target = (unsigned char *) alloca (tlen + 4);
+  target += 4;
 #else  /* not DOS_NT */
   target = (unsigned char *) alloca (tlen);
 #endif /* not DOS_NT */
@@ -1291,7 +1437,18 @@ See also the function `substitute-in-file-name'.")
     {
 #ifndef VMS
       if (nm[0] == 0 || IS_DIRECTORY_SEP (nm[0]))
-	strcpy (target, newdir);
+	{
+#ifdef DOS_NT
+	  /* If newdir is effectively "C:/", then the drive letter will have
+	     been stripped and newdir will be "/".  Concatenating with an
+	     absolute directory in nm produces "//", which will then be
+	     incorrectly treated as a network share.  Ignore newdir in
+	     this case (keeping the drive letter).  */
+	  if (!(drive && nm[0] && IS_DIRECTORY_SEP (newdir[0]) 
+		&& newdir[1] == '\0'))
+#endif
+	    strcpy (target, newdir);
+	}
       else
 #endif
 	file_name_as_directory (target, newdir);
@@ -1358,17 +1515,6 @@ See also the function `substitute-in-file-name'.")
 	{
 	  *o++ = *p++;
 	}
-      else if (IS_DIRECTORY_SEP (p[0]) && IS_DIRECTORY_SEP (p[1])
-#if defined (APOLLO) || defined (WINDOWSNT)
-	       /* // at start of filename is meaningful in Apollo
-		  and WindowsNT systems */
-	       && o != target
-#endif /* APOLLO || WINDOWSNT */
-	       )
-	{
-	  o = target;
-	  p++;
-	}
       else if (IS_DIRECTORY_SEP (p[0])
 	       && p[1] == '.'
 	       && (IS_DIRECTORY_SEP (p[2])
@@ -1387,7 +1533,8 @@ See also the function `substitute-in-file-name'.")
 	{
 	  while (o != target && (--o) && !IS_DIRECTORY_SEP (*o))
 	    ;
-	  if (o == target && IS_ANY_SEP (*o))
+	  /* Keep initial / only if this is the whole name.  */
+	  if (o == target && IS_ANY_SEP (*o) && p[3] == 0)
 	    ++o;
 	  p += 3;
 	}
@@ -1408,6 +1555,13 @@ See also the function `substitute-in-file-name'.")
       if (!drive) abort ();
       target -= 2;
       target[0] = DRIVE_LETTER (drive);
+      target[1] = ':';
+    }
+  /* Reinsert the escape prefix if required.  */
+  if (is_escaped)
+    {
+      target -= 2;
+      target[0] = '/';
       target[1] = ':';
     }
   CORRECT_DIR_SEPS (target);
@@ -1455,7 +1609,7 @@ See also the function `substitute-in-file-name'.")
   nm = XSTRING (name)->data;
 
   /* If nm is absolute, flush ...// and detect /./ and /../.
-     If no /./ or /../ we can return right away. */
+     If no /./ or /../ we can return right away.  */
   if (
       nm[0] == '/'
 #ifdef VMS
@@ -1469,7 +1623,7 @@ See also the function `substitute-in-file-name'.")
 	{
 	  if (p[0] == '/' && p[1] == '/'
 #ifdef APOLLO
-	      /* // at start of filename is meaningful on Apollo system */
+	      /* // at start of filename is meaningful on Apollo system.  */
 	      && nm != p
 #endif /* APOLLO */
 	      )
@@ -1702,7 +1856,7 @@ See also the function `substitute-in-file-name'.")
 	}
       else if (!strncmp (p, "//", 2)
 #ifdef APOLLO
-	       /* // at start of filename is meaningful in Apollo system */
+	       /* // at start of filename is meaningful in Apollo system.  */
 	       && o != target
 #endif /* APOLLO */
 	       )
@@ -1776,16 +1930,16 @@ duplicates what `expand-file-name' does.")
   CORRECT_DIR_SEPS (nm);
   substituted = (strcmp (nm, XSTRING (filename)->data) != 0);
 #endif
-  endp = nm + XSTRING (filename)->size;
+  endp = nm + STRING_BYTES (XSTRING (filename));
 
-  /* If /~ or // appears, discard everything through first slash. */
+  /* If /~ or // appears, discard everything through first slash.  */
 
   for (p = nm; p != endp; p++)
     {
       if ((p[0] == '~'
 #if defined (APOLLO) || defined (WINDOWSNT)
 	   /* // at start of file name is meaningful in Apollo and
-	      WindowsNT systems */
+	      WindowsNT systems.  */
 	   || (IS_DIRECTORY_SEP (p[0]) && p - 1 != nm)
 #else /* not (APOLLO || WINDOWSNT) */
 	   || IS_DIRECTORY_SEP (p[0])
@@ -1869,7 +2023,7 @@ duplicates what `expand-file-name' does.")
 
   /* If substitution required, recopy the string and do it */
   /* Make space in stack frame for the new copy */
-  xnm = (unsigned char *) alloca (XSTRING (filename)->size + total + 1);
+  xnm = (unsigned char *) alloca (STRING_BYTES (XSTRING (filename)) + total + 1);
   x = xnm;
 
   /* Copy the rest of the name through, replacing $ constructs with values */
@@ -1913,13 +2067,37 @@ duplicates what `expand-file-name' does.")
 	if (!o)
 	  goto badvar;
 
-	strcpy (x, o);
-	x += strlen (o);
+	if (STRING_MULTIBYTE (filename))
+	  {
+	    /* If the original string is multibyte,
+	       convert what we substitute into multibyte.  */
+	    unsigned char workbuf[4], *str;
+	    int len;
+
+	    while (*o)
+	      {
+		int c = *o++;
+		c = unibyte_char_to_multibyte (c);
+		if (! SINGLE_BYTE_CHAR_P (c))
+		  {
+		    len = CHAR_STRING (c, workbuf, str);
+		    bcopy (str, x, len);
+		    x += len;
+		  }
+		else
+		  *x++ = c;
+	      }
+	  }
+	else
+	  {
+	    strcpy (x, o);
+	    x += strlen (o);
+	  }
       }
 
   *x = 0;
 
-  /* If /~ or // appears, discard everything through first slash. */
+  /* If /~ or // appears, discard everything through first slash.  */
 
   for (p = xnm; p != x; p++)
     if ((p[0] == '~'
@@ -1929,7 +2107,7 @@ duplicates what `expand-file-name' does.")
 	 || IS_DIRECTORY_SEP (p[0])
 #endif /* not (APOLLO || WINDOWSNT) */
 	 )
-	&& p != nm && IS_DIRECTORY_SEP (p[-1]))
+	&& p != xnm && IS_DIRECTORY_SEP (p[-1]))
       xnm = p;
 #ifdef DOS_NT
     else if (IS_DRIVE (p[0]) && p[1] == ':'
@@ -1937,7 +2115,9 @@ duplicates what `expand-file-name' does.")
       xnm = p;
 #endif
 
-  return make_string (xnm, x - xnm);
+  if (STRING_MULTIBYTE (filename))
+    return make_string (xnm, x - xnm);
+  return make_unibyte_string (xnm, x - xnm);
 
  badsubst:
   error ("Bad format environment-variable substitution");
@@ -1962,7 +2142,7 @@ expand_and_dir_to_file (filename, defdir)
   absname = Fexpand_file_name (filename, defdir);
 #ifdef VMS
   {
-    register int c = XSTRING (absname)->data[XSTRING (absname)->size - 1];
+    register int c = XSTRING (absname)->data[STRING_BYTES (XSTRING (absname)) - 1];
     if (c == ':' || c == ']' || c == '>')
       absname = Fdirectory_file_name (absname);
   }
@@ -1970,8 +2150,8 @@ expand_and_dir_to_file (filename, defdir)
   /* Remove final slash, if any (unless this is the root dir).
      stat behaves differently depending!  */
   if (XSTRING (absname)->size > 1
-      && IS_DIRECTORY_SEP (XSTRING (absname)->data[XSTRING (absname)->size - 1])
-      && !IS_DEVICE_SEP (XSTRING (absname)->data[XSTRING (absname)->size-2]))
+      && IS_DIRECTORY_SEP (XSTRING (absname)->data[STRING_BYTES (XSTRING (absname)) - 1])
+      && !IS_DEVICE_SEP (XSTRING (absname)->data[STRING_BYTES (XSTRING (absname))-2]))
     /* We cannot take shortcuts; they might be wrong for magic file names.  */
     absname = Fdirectory_file_name (absname);
 #endif
@@ -1983,31 +2163,42 @@ expand_and_dir_to_file (filename, defdir)
    and bypass the error if the user says to go ahead.
    QUERYSTRING is a name for the action that is being considered
    to alter the file.
+
    *STATPTR is used to store the stat information if the file exists.
-   If the file does not exist, STATPTR->st_mode is set to 0.  */
+   If the file does not exist, STATPTR->st_mode is set to 0.
+   If STATPTR is null, we don't store into it.
+
+   If QUICK is nonzero, we ask for y or n, not yes or no.  */
 
 void
-barf_or_query_if_file_exists (absname, querystring, interactive, statptr)
+barf_or_query_if_file_exists (absname, querystring, interactive, statptr, quick)
      Lisp_Object absname;
      unsigned char *querystring;
      int interactive;
      struct stat *statptr;
+     int quick;
 {
-  register Lisp_Object tem;
+  register Lisp_Object tem, encoded_filename;
   struct stat statbuf;
   struct gcpro gcpro1;
 
+  encoded_filename = ENCODE_FILE (absname);
+
   /* stat is a good way to tell whether the file exists,
      regardless of what access permissions it has.  */
-  if (stat (XSTRING (absname)->data, &statbuf) >= 0)
+  if (stat (XSTRING (encoded_filename)->data, &statbuf) >= 0)
     {
       if (! interactive)
 	Fsignal (Qfile_already_exists,
 		 Fcons (build_string ("File already exists"),
 			Fcons (absname, Qnil)));
       GCPRO1 (absname);
-      tem = do_yes_or_no_p (format1 ("File %s already exists; %s anyway? ",
-				     XSTRING (absname)->data, querystring));
+      tem = format1 ("File %s already exists; %s anyway? ",
+		     XSTRING (absname)->data, querystring);
+      if (quick)
+	tem = Fy_or_n_p (tem);
+      else
+	tem = do_yes_or_no_p (tem);
       UNGCPRO;
       if (NILP (tem))
 	Fsignal (Qfile_already_exists,
@@ -2041,13 +2232,16 @@ A prefix arg makes KEEP-TIME non-nil.")
   char buf[16 * 1024];
   struct stat st, out_st;
   Lisp_Object handler;
-  struct gcpro gcpro1, gcpro2;
+  struct gcpro gcpro1, gcpro2, gcpro3, gcpro4;
   int count = specpdl_ptr - specpdl;
   int input_file_statable_p;
+  Lisp_Object encoded_file, encoded_newname;
 
-  GCPRO2 (file, newname);
+  encoded_file = encoded_newname = Qnil;
+  GCPRO4 (file, newname, encoded_file, encoded_newname);
   CHECK_STRING (file, 0);
   CHECK_STRING (newname, 1);
+
   file = Fexpand_file_name (file, Qnil);
   newname = Fexpand_file_name (newname, Qnil);
 
@@ -2061,14 +2255,17 @@ A prefix arg makes KEEP-TIME non-nil.")
     RETURN_UNGCPRO (call5 (handler, Qcopy_file, file, newname,
 			   ok_if_already_exists, keep_date));
 
+  encoded_file = ENCODE_FILE (file);
+  encoded_newname = ENCODE_FILE (newname);
+
   if (NILP (ok_if_already_exists)
       || INTEGERP (ok_if_already_exists))
-    barf_or_query_if_file_exists (newname, "copy to it",
-				  INTEGERP (ok_if_already_exists), &out_st);
-  else if (stat (XSTRING (newname)->data, &out_st) < 0)
+    barf_or_query_if_file_exists (encoded_newname, "copy to it",
+				  INTEGERP (ok_if_already_exists), &out_st, 0);
+  else if (stat (XSTRING (encoded_newname)->data, &out_st) < 0)
     out_st.st_mode = 0;
 
-  ifd = open (XSTRING (file)->data, O_RDONLY);
+  ifd = open (XSTRING (encoded_file)->data, O_RDONLY);
   if (ifd < 0)
     report_file_error ("Opening input file", Fcons (file, Qnil));
 
@@ -2078,7 +2275,7 @@ A prefix arg makes KEEP-TIME non-nil.")
      copyable by us. */
   input_file_statable_p = (fstat (ifd, &st) >= 0);
 
-#if !defined (MSDOS) || __DJGPP__ > 1
+#if !defined (DOS_NT) || __DJGPP__ > 1
   if (out_st.st_mode != 0
       && st.st_dev == out_st.st_dev && st.st_ino == out_st.st_ino)
     {
@@ -2104,13 +2301,13 @@ A prefix arg makes KEEP-TIME non-nil.")
 
 #ifdef VMS
   /* Create the copy file with the same record format as the input file */
-  ofd = sys_creat (XSTRING (newname)->data, 0666, ifd);
+  ofd = sys_creat (XSTRING (encoded_newname)->data, 0666, ifd);
 #else
 #ifdef MSDOS
   /* System's default file type was set to binary by _fmode in emacs.c.  */
-  ofd = creat (XSTRING (newname)->data, S_IREAD | S_IWRITE);
+  ofd = creat (XSTRING (encoded_newname)->data, S_IREAD | S_IWRITE);
 #else /* not MSDOS */
-  ofd = creat (XSTRING (newname)->data, 0666);
+  ofd = creat (XSTRING (encoded_newname)->data, 0666);
 #endif /* not MSDOS */
 #endif /* VMS */
   if (ofd < 0)
@@ -2136,11 +2333,14 @@ A prefix arg makes KEEP-TIME non-nil.")
 	  EMACS_TIME atime, mtime;
 	  EMACS_SET_SECS_USECS (atime, st.st_atime, 0);
 	  EMACS_SET_SECS_USECS (mtime, st.st_mtime, 0);
-	  if (set_file_times (XSTRING (newname)->data, atime, mtime))
-	    report_file_error ("I/O error", Fcons (newname, Qnil));
+	  if (set_file_times (XSTRING (encoded_newname)->data,
+			      atime, mtime))
+	    Fsignal (Qfile_date_error,
+		     Fcons (build_string ("Cannot set file date"),
+			    Fcons (newname, Qnil)));
 	}
 #ifndef MSDOS
-      chmod (XSTRING (newname)->data, st.st_mode & 07777);
+      chmod (XSTRING (encoded_newname)->data, st.st_mode & 07777);
 #else /* MSDOS */
 #if defined (__DJGPP__) && __DJGPP__ > 1
       /* In DJGPP v2.0 and later, fstat usually returns true file mode bits,
@@ -2148,7 +2348,7 @@ A prefix arg makes KEEP-TIME non-nil.")
          get only the READ bit, which will make the copied file read-only,
          so it's better not to chmod at all.  */
       if ((_djstat_flags & _STFAIL_WRITEBIT) == 0)
-	chmod (XSTRING (newname)->data, st.st_mode & 07777);
+	chmod (XSTRING (encoded_newname)->data, st.st_mode & 07777);
 #endif /* DJGPP version 2 or newer */
 #endif /* MSDOS */
     }
@@ -2170,6 +2370,7 @@ DEFUN ("make-directory-internal", Fmake_directory_internal,
 {
   unsigned char *dir;
   Lisp_Object handler;
+  Lisp_Object encoded_dir;
 
   CHECK_STRING (directory, 0);
   directory = Fexpand_file_name (directory, Qnil);
@@ -2178,7 +2379,9 @@ DEFUN ("make-directory-internal", Fmake_directory_internal,
   if (!NILP (handler))
     return call2 (handler, Qmake_directory_internal, directory);
 
-  dir = XSTRING (directory)->data;
+  encoded_dir = ENCODE_FILE (directory);
+
+  dir = XSTRING (encoded_dir)->data;
 
 #ifdef WINDOWSNT
   if (mkdir (dir) != 0)
@@ -2197,14 +2400,18 @@ DEFUN ("delete-directory", Fdelete_directory, Sdelete_directory, 1, 1, "FDelete 
 {
   unsigned char *dir;
   Lisp_Object handler;
+  Lisp_Object encoded_dir;
 
   CHECK_STRING (directory, 0);
   directory = Fdirectory_file_name (Fexpand_file_name (directory, Qnil));
-  dir = XSTRING (directory)->data;
 
   handler = Ffind_file_name_handler (directory, Qdelete_directory);
   if (!NILP (handler))
     return call2 (handler, Qdelete_directory, directory);
+
+  encoded_dir = ENCODE_FILE (directory);
+
+  dir = XSTRING (encoded_dir)->data;
 
   if (rmdir (dir) != 0)
     report_file_error ("Removing directory", Flist (1, &directory));
@@ -2219,6 +2426,8 @@ If file has multiple names, it continues to exist with the other names.")
      Lisp_Object filename;
 {
   Lisp_Object handler;
+  Lisp_Object encoded_file;
+
   CHECK_STRING (filename, 0);
   filename = Fexpand_file_name (filename, Qnil);
 
@@ -2226,7 +2435,9 @@ If file has multiple names, it continues to exist with the other names.")
   if (!NILP (handler))
     return call2 (handler, Qdelete_file, filename);
 
-  if (0 > unlink (XSTRING (filename)->data))
+  encoded_file = ENCODE_FILE (filename);
+
+  if (0 > unlink (XSTRING (encoded_file)->data))
     report_file_error ("Removing old name", Flist (1, &filename));
   return Qnil;
 }
@@ -2263,9 +2474,11 @@ This is what happens in interactive use with M-x.")
   Lisp_Object args[2];
 #endif
   Lisp_Object handler;
-  struct gcpro gcpro1, gcpro2;
+  struct gcpro gcpro1, gcpro2, gcpro3, gcpro4;
+  Lisp_Object encoded_file, encoded_newname;
 
-  GCPRO2 (file, newname);
+  encoded_file = encoded_newname = Qnil;
+  GCPRO4 (file, newname, encoded_file, encoded_newname);
   CHECK_STRING (file, 0);
   CHECK_STRING (newname, 1);
   file = Fexpand_file_name (file, Qnil);
@@ -2280,15 +2493,18 @@ This is what happens in interactive use with M-x.")
     RETURN_UNGCPRO (call4 (handler, Qrename_file,
 			   file, newname, ok_if_already_exists));
 
+  encoded_file = ENCODE_FILE (file);
+  encoded_newname = ENCODE_FILE (newname);
+
   if (NILP (ok_if_already_exists)
       || INTEGERP (ok_if_already_exists))
-    barf_or_query_if_file_exists (newname, "rename to it",
-				  INTEGERP (ok_if_already_exists), 0);
+    barf_or_query_if_file_exists (encoded_newname, "rename to it",
+				  INTEGERP (ok_if_already_exists), 0, 0);
 #ifndef BSD4_1
-  if (0 > rename (XSTRING (file)->data, XSTRING (newname)->data))
+  if (0 > rename (XSTRING (encoded_file)->data, XSTRING (encoded_newname)->data))
 #else
-  if (0 > link (XSTRING (file)->data, XSTRING (newname)->data)
-      || 0 > unlink (XSTRING (file)->data))
+  if (0 > link (XSTRING (encoded_file)->data, XSTRING (encoded_newname)->data)
+      || 0 > unlink (XSTRING (encoded_file)->data))
 #endif
     {
       if (errno == EXDEV)
@@ -2328,9 +2544,11 @@ This is what happens in interactive use with M-x.")
   Lisp_Object args[2];
 #endif
   Lisp_Object handler;
-  struct gcpro gcpro1, gcpro2;
+  Lisp_Object encoded_file, encoded_newname;
+  struct gcpro gcpro1, gcpro2, gcpro3, gcpro4;
 
-  GCPRO2 (file, newname);
+  GCPRO4 (file, newname, encoded_file, encoded_newname);
+  encoded_file = encoded_newname = Qnil;
   CHECK_STRING (file, 0);
   CHECK_STRING (newname, 1);
   file = Fexpand_file_name (file, Qnil);
@@ -2350,17 +2568,16 @@ This is what happens in interactive use with M-x.")
     RETURN_UNGCPRO (call4 (handler, Qadd_name_to_file, file,
 			   newname, ok_if_already_exists));
 
+  encoded_file = ENCODE_FILE (file);
+  encoded_newname = ENCODE_FILE (newname);
+
   if (NILP (ok_if_already_exists)
       || INTEGERP (ok_if_already_exists))
-    barf_or_query_if_file_exists (newname, "make it a new name",
-				  INTEGERP (ok_if_already_exists), 0);
-#ifdef WINDOWSNT
-  /* Windows does not support this operation.  */
-  report_file_error ("Adding new name", Flist (2, &file));
-#else /* not WINDOWSNT */
+    barf_or_query_if_file_exists (encoded_newname, "make it a new name",
+				  INTEGERP (ok_if_already_exists), 0, 0);
 
   unlink (XSTRING (newname)->data);
-  if (0 > link (XSTRING (file)->data, XSTRING (newname)->data))
+  if (0 > link (XSTRING (encoded_file)->data, XSTRING (encoded_newname)->data))
     {
 #ifdef NO_ARG_ARRAY
       args[0] = file;
@@ -2370,7 +2587,6 @@ This is what happens in interactive use with M-x.")
       report_file_error ("Adding new name", Flist (2, &file));
 #endif
     }
-#endif /* not WINDOWSNT */
 
   UNGCPRO;
   return Qnil;
@@ -2391,9 +2607,11 @@ This happens for interactive use with M-x.")
   Lisp_Object args[2];
 #endif
   Lisp_Object handler;
-  struct gcpro gcpro1, gcpro2;
+  Lisp_Object encoded_filename, encoded_linkname;
+  struct gcpro gcpro1, gcpro2, gcpro3, gcpro4;
 
-  GCPRO2 (filename, linkname);
+  GCPRO4 (filename, linkname, encoded_filename, encoded_linkname);
+  encoded_filename = encoded_linkname = Qnil;
   CHECK_STRING (filename, 0);
   CHECK_STRING (linkname, 1);
   /* If the link target has a ~, we must expand it to get
@@ -2417,17 +2635,22 @@ This happens for interactive use with M-x.")
     RETURN_UNGCPRO (call4 (handler, Qmake_symbolic_link, filename,
 			   linkname, ok_if_already_exists));
 
+  encoded_filename = ENCODE_FILE (filename);
+  encoded_linkname = ENCODE_FILE (linkname);
+
   if (NILP (ok_if_already_exists)
       || INTEGERP (ok_if_already_exists))
-    barf_or_query_if_file_exists (linkname, "make it a link",
-				  INTEGERP (ok_if_already_exists), 0);
-  if (0 > symlink (XSTRING (filename)->data, XSTRING (linkname)->data))
+    barf_or_query_if_file_exists (encoded_linkname, "make it a link",
+				  INTEGERP (ok_if_already_exists), 0, 0);
+  if (0 > symlink (XSTRING (encoded_filename)->data,
+		   XSTRING (encoded_linkname)->data))
     {
       /* If we didn't complain already, silently delete existing file.  */
       if (errno == EEXIST)
 	{
-	  unlink (XSTRING (linkname)->data);
-	  if (0 <= symlink (XSTRING (filename)->data, XSTRING (linkname)->data))
+	  unlink (XSTRING (encoded_linkname)->data);
+	  if (0 <= symlink (XSTRING (encoded_filename)->data,
+			    XSTRING (encoded_linkname)->data))
 	    {
 	      UNGCPRO;
 	      return Qnil;
@@ -2600,6 +2823,8 @@ See also `file-readable-p' and `file-attributes'.")
   if (!NILP (handler))
     return call2 (handler, Qfile_exists_p, absname);
 
+  absname = ENCODE_FILE (absname);
+
   return (stat (XSTRING (absname)->data, &statbuf) >= 0) ? Qt : Qnil;
 }
 
@@ -2622,6 +2847,8 @@ For a directory, this means you can access files in that directory.")
   if (!NILP (handler))
     return call2 (handler, Qfile_executable_p, absname);
 
+  absname = ENCODE_FILE (absname);
+
   return (check_executable (XSTRING (absname)->data) ? Qt : Qnil);
 }
 
@@ -2634,6 +2861,8 @@ See also `file-exists-p' and `file-attributes'.")
   Lisp_Object absname;
   Lisp_Object handler;
   int desc;
+  int flags;
+  struct stat statbuf;
 
   CHECK_STRING (filename, 0);
   absname = Fexpand_file_name (filename, Qnil);
@@ -2644,13 +2873,26 @@ See also `file-exists-p' and `file-attributes'.")
   if (!NILP (handler))
     return call2 (handler, Qfile_readable_p, absname);
 
+  absname = ENCODE_FILE (absname);
+
 #ifdef DOS_NT
   /* Under MS-DOS and Windows, open does not work for directories.  */
   if (access (XSTRING (absname)->data, 0) == 0)
     return Qt;
   return Qnil;
 #else /* not DOS_NT */
-  desc = open (XSTRING (absname)->data, O_RDONLY);
+  flags = O_RDONLY;
+#if defined (S_ISFIFO) && defined (O_NONBLOCK)
+  /* Opening a fifo without O_NONBLOCK can wait.
+     We don't want to wait.  But we don't want to mess wth O_NONBLOCK
+     except in the case of a fifo, on a system which handles it.  */
+  desc = stat (XSTRING (absname)->data, &statbuf);
+  if (desc < 0)
+    return Qnil;
+  if (S_ISFIFO (statbuf.st_mode))
+    flags |= O_NONBLOCK;
+#endif
+  desc = open (XSTRING (absname)->data, flags);
   if (desc < 0)
     return Qnil;
   close (desc);
@@ -2665,7 +2907,7 @@ DEFUN ("file-writable-p", Ffile_writable_p, Sfile_writable_p, 1, 1, 0,
   (filename)
      Lisp_Object filename;
 {
-  Lisp_Object absname, dir;
+  Lisp_Object absname, dir, encoded;
   Lisp_Object handler;
   struct stat statbuf;
 
@@ -2678,9 +2920,11 @@ DEFUN ("file-writable-p", Ffile_writable_p, Sfile_writable_p, 1, 1, 0,
   if (!NILP (handler))
     return call2 (handler, Qfile_writable_p, absname);
 
-  if (stat (XSTRING (absname)->data, &statbuf) >= 0)
-    return (check_writable (XSTRING (absname)->data)
+  encoded = ENCODE_FILE (absname);
+  if (stat (XSTRING (encoded)->data, &statbuf) >= 0)
+    return (check_writable (XSTRING (encoded)->data)
 	    ? Qt : Qnil);
+
   dir = Ffile_name_directory (absname);
 #ifdef VMS
   if (!NILP (dir))
@@ -2690,8 +2934,39 @@ DEFUN ("file-writable-p", Ffile_writable_p, Sfile_writable_p, 1, 1, 0,
   if (!NILP (dir))
     dir = Fdirectory_file_name (dir);
 #endif /* MSDOS */
+
+  dir = ENCODE_FILE (dir);
   return (check_writable (!NILP (dir) ? (char *) XSTRING (dir)->data : "")
 	  ? Qt : Qnil);
+}
+
+DEFUN ("access-file", Faccess_file, Saccess_file, 2, 2, 0,
+  "Access file FILENAME, and get an error if that does not work.\n\
+The second argument STRING is used in the error message.\n\
+If there is no error, we return nil.")
+  (filename, string)
+     Lisp_Object filename, string;
+{
+  Lisp_Object handler, encoded_filename;
+  int fd;
+
+  CHECK_STRING (filename, 0);
+  CHECK_STRING (string, 1);
+
+  /* If the file name has special constructs in it,
+     call the corresponding file handler.  */
+  handler = Ffind_file_name_handler (filename, Qaccess_file);
+  if (!NILP (handler))
+    return call3 (handler, Qaccess_file, filename, string);
+
+  encoded_filename = ENCODE_FILE (filename);
+
+  fd = open (XSTRING (encoded_filename)->data, O_RDONLY);
+  if (fd < 0)
+    report_file_error (XSTRING (string)->data, Fcons (filename, Qnil));
+  close (fd);
+
+  return Qnil;
 }
 
 DEFUN ("file-symlink-p", Ffile_symlink_p, Sfile_symlink_p, 1, 1, 0,
@@ -2717,6 +2992,8 @@ Otherwise returns nil.")
   if (!NILP (handler))
     return call2 (handler, Qfile_symlink_p, filename);
 
+  filename = ENCODE_FILE (filename);
+
   bufsize = 100;
   while (1)
     {
@@ -2735,6 +3012,7 @@ Otherwise returns nil.")
     }
   val = make_string (buf, valsize);
   xfree (buf);
+  val = DECODE_FILE (val);
   return val;
 #else /* not S_IFLNK */
   return Qnil;
@@ -2742,9 +3020,7 @@ Otherwise returns nil.")
 }
 
 DEFUN ("file-directory-p", Ffile_directory_p, Sfile_directory_p, 1, 1, 0,
-  "Return t if file FILENAME is the name of a directory as a file.\n\
-A directory name spec may be given instead; then the value is t\n\
-if the directory so specified exists and really is a directory.")
+  "Return t if FILENAME names an existing directory.")
   (filename)
      Lisp_Object filename;
 {
@@ -2759,6 +3035,8 @@ if the directory so specified exists and really is a directory.")
   handler = Ffind_file_name_handler (absname, Qfile_directory_p);
   if (!NILP (handler))
     return call2 (handler, Qfile_directory_p, absname);
+
+  absname = ENCODE_FILE (absname);
 
   if (stat (XSTRING (absname)->data, &st) < 0)
     return Qnil;
@@ -2816,9 +3094,27 @@ This is the sort of file that holds an ordinary stream of data bytes.")
   if (!NILP (handler))
     return call2 (handler, Qfile_regular_p, absname);
 
+  absname = ENCODE_FILE (absname);
+
+#ifdef WINDOWSNT
+  {
+    int result;
+    Lisp_Object tem = Vw32_get_true_file_attributes;
+
+    /* Tell stat to use expensive method to get accurate info.  */
+    Vw32_get_true_file_attributes = Qt;
+    result = stat (XSTRING (absname)->data, &st);
+    Vw32_get_true_file_attributes = tem;
+
+    if (result < 0)
+      return Qnil;
+    return (st.st_mode & S_IFMT) == S_IFREG ? Qt : Qnil;
+  }
+#else
   if (stat (XSTRING (absname)->data, &st) < 0)
     return Qnil;
   return (st.st_mode & S_IFMT) == S_IFREG ? Qt : Qnil;
+#endif
 }
 
 DEFUN ("file-modes", Ffile_modes, Sfile_modes, 1, 1, 0,
@@ -2838,6 +3134,8 @@ DEFUN ("file-modes", Ffile_modes, Sfile_modes, 1, 1, 0,
   if (!NILP (handler))
     return call2 (handler, Qfile_modes, absname);
 
+  absname = ENCODE_FILE (absname);
+
   if (stat (XSTRING (absname)->data, &st) < 0)
     return Qnil;
 #if defined (MSDOS) && __DJGPP__ < 2
@@ -2854,7 +3152,7 @@ Only the 12 low bits of MODE are used.")
   (filename, mode)
      Lisp_Object filename, mode;
 {
-  Lisp_Object absname;
+  Lisp_Object absname, encoded_absname;
   Lisp_Object handler;
 
   absname = Fexpand_file_name (filename, current_buffer->directory);
@@ -2866,7 +3164,9 @@ Only the 12 low bits of MODE are used.")
   if (!NILP (handler))
     return call3 (handler, Qset_file_modes, absname, mode);
 
-  if (chmod (XSTRING (absname)->data, XINT (mode)) < 0)
+  encoded_absname = ENCODE_FILE (absname);
+
+  if (chmod (XSTRING (encoded_absname)->data, XINT (mode)) < 0)
     report_file_error ("Doing chmod", Fcons (absname, Qnil));
 
   return Qnil;
@@ -2943,6 +3243,11 @@ otherwise, if FILE2 does not exist, the answer is t.")
   if (!NILP (handler))
     return call3 (handler, Qfile_newer_than_file_p, absname1, absname2);
 
+  GCPRO2 (absname1, absname2);
+  absname1 = ENCODE_FILE (absname1);
+  absname2 = ENCODE_FILE (absname2);
+  UNGCPRO;
+
   if (stat (XSTRING (absname1)->data, &st) < 0)
     return Qnil;
 
@@ -2958,35 +3263,75 @@ otherwise, if FILE2 does not exist, the answer is t.")
 Lisp_Object Qfind_buffer_file_type;
 #endif /* DOS_NT */
 
+#ifndef READ_BUF_SIZE
+#define READ_BUF_SIZE (64 << 10)
+#endif
+
+/* This function is called when a function bound to
+   Vset_auto_coding_function causes some error.  At that time, a text
+   of a file has already been inserted in the current buffer, but,
+   markers has not yet been adjusted.  Thus we must adjust markers
+   here.  We are sure that the buffer was empty before the text of the
+   file was inserted.  */
+
+static Lisp_Object
+set_auto_coding_unwind (multibyte)
+     Lisp_Object multibyte;
+{
+  int inserted = Z_BYTE - BEG_BYTE;
+
+  if (!NILP (multibyte))
+    inserted = multibyte_chars_in_text (GPT_ADDR - inserted, inserted);
+  adjust_after_insert (PT, PT_BYTE, Z, Z_BYTE, inserted);
+
+  return Qnil;
+}
+
 DEFUN ("insert-file-contents", Finsert_file_contents, Sinsert_file_contents,
   1, 5, 0,
   "Insert contents of file FILENAME after point.\n\
-Returns list of absolute file name and length of data inserted.\n\
+Returns list of absolute file name and number of bytes inserted.\n\
 If second argument VISIT is non-nil, the buffer's visited filename\n\
 and last save file modtime are set, and it is marked unmodified.\n\
 If visiting and the file does not exist, visiting is completed\n\
-before the error is signaled.\n\n\
+before the error is signaled.\n\
 The optional third and fourth arguments BEG and END\n\
 specify what portion of the file to insert.\n\
+These arguments count bytes in the file, not characters in the buffer.\n\
 If VISIT is non-nil, BEG and END must be nil.\n\
+\n\
 If optional fifth argument REPLACE is non-nil,\n\
 it means replace the current buffer contents (in the accessible portion)\n\
 with the file contents.  This is better than simply deleting and inserting\n\
 the whole thing because (1) it preserves some marker positions\n\
-and (2) it puts less data in the undo list.")
+and (2) it puts less data in the undo list.\n\
+When REPLACE is non-nil, the value is the number of characters actually read,\n\
+which is often less than the number of characters to be read.\n\
+\n\
+This does code conversion according to the value of\n\
+`coding-system-for-read' or `file-coding-system-alist',\n\
+and sets the variable `last-coding-system-used' to the coding system\n\
+actually used.")
   (filename, visit, beg, end, replace)
      Lisp_Object filename, visit, beg, end, replace;
 {
   struct stat st;
   register int fd;
-  register int inserted = 0;
+  int inserted = 0;
   register int how_much;
+  register int unprocessed;
   int count = specpdl_ptr - specpdl;
-  struct gcpro gcpro1, gcpro2, gcpro3;
-  Lisp_Object handler, val, insval;
+  struct gcpro gcpro1, gcpro2, gcpro3, gcpro4;
+  Lisp_Object handler, val, insval, orig_filename;
   Lisp_Object p;
   int total;
   int not_regular = 0;
+  unsigned char read_buf[READ_BUF_SIZE];
+  struct coding_system coding;
+  unsigned char buffer[1 << 14];
+  int replace_handled = 0;
+  int set_coding_system = 0;
+  int coding_system_decided = 0;
 
   if (current_buffer->base_buffer && ! NILP (visit))
     error ("Cannot do file visiting in an indirect buffer");
@@ -2996,8 +3341,9 @@ and (2) it puts less data in the undo list.")
 
   val = Qnil;
   p = Qnil;
+  orig_filename = Qnil;
 
-  GCPRO3 (filename, val, p);
+  GCPRO4 (filename, val, p, orig_filename);
 
   CHECK_STRING (filename, 0);
   filename = Fexpand_file_name (filename, Qnil);
@@ -3009,24 +3355,43 @@ and (2) it puts less data in the undo list.")
     {
       val = call6 (handler, Qinsert_file_contents, filename,
 		   visit, beg, end, replace);
+      if (CONSP (val) && CONSP (XCONS (val)->cdr))
+	inserted = XINT (XCONS (XCONS (val)->cdr)->car);
       goto handled;
     }
 
+  orig_filename = filename;
+  filename = ENCODE_FILE (filename);
+
   fd = -1;
 
+#ifdef WINDOWSNT
+  {
+    Lisp_Object tem = Vw32_get_true_file_attributes;
+
+    /* Tell stat to use expensive method to get accurate info.  */
+    Vw32_get_true_file_attributes = Qt;
+    total = stat (XSTRING (filename)->data, &st);
+    Vw32_get_true_file_attributes = tem;
+  }
+  if (total < 0)
+#else
 #ifndef APOLLO
   if (stat (XSTRING (filename)->data, &st) < 0)
 #else
   if ((fd = open (XSTRING (filename)->data, O_RDONLY)) < 0
       || fstat (fd, &st) < 0)
 #endif /* not APOLLO */
+#endif /* WINDOWSNT */
     {
       if (fd >= 0) close (fd);
     badopen:
       if (NILP (visit))
-	report_file_error ("Opening input file", Fcons (filename, Qnil));
+	report_file_error ("Opening input file", Fcons (orig_filename, Qnil));
       st.st_mtime = -1;
       how_much = 0;
+      if (!NILP (Vcoding_system_for_read))
+	current_buffer->buffer_file_coding_system = Vcoding_system_for_read;
       goto notfound;
     }
 
@@ -3036,13 +3401,15 @@ and (2) it puts less data in the undo list.")
      least signal an error.  */
   if (!S_ISREG (st.st_mode))
     {
-      if (NILP (visit))
+      not_regular = 1;
+
+      if (! NILP (visit))
+	goto notfound;
+
+      if (! NILP (replace) || ! NILP (beg) || ! NILP (end))
 	Fsignal (Qfile_error,
 		 Fcons (build_string ("not a regular file"),
-			Fcons (filename, Qnil)));
-
-      not_regular = 1;
-      goto notfound;
+			Fcons (orig_filename, Qnil)));
     }
 #endif
 
@@ -3057,7 +3424,7 @@ and (2) it puts less data in the undo list.")
   record_unwind_protect (close_file_unwind, make_number (fd));
 
   /* Supposedly happens on VMS.  */
-  if (st.st_size < 0)
+  if (! not_regular && st.st_size < 0)
     error ("File size is negative");
 
   if (!NILP (beg) || !NILP (end))
@@ -3073,32 +3440,148 @@ and (2) it puts less data in the undo list.")
     CHECK_NUMBER (end, 0);
   else
     {
-      XSETINT (end, st.st_size);
-      if (XINT (end) != st.st_size)
-	error ("maximum buffer size exceeded");
+      if (! not_regular)
+	{
+	  XSETINT (end, st.st_size);
+	  if (XINT (end) != st.st_size)
+	    error ("Maximum buffer size exceeded");
+	}
     }
+
+  if (BEG < Z)
+    {
+      /* Decide the coding system to use for reading the file now
+         because we can't use an optimized method for handling
+         `coding:' tag if the current buffer is not empty.  */
+      Lisp_Object val;
+      val = Qnil;
+
+      if (!NILP (Vcoding_system_for_read))
+	val = Vcoding_system_for_read;
+      else if (! NILP (replace))
+	/* In REPLACE mode, we can use the same coding system
+	   that was used to visit the file.  */
+	val = current_buffer->buffer_file_coding_system;
+      else
+	{
+	  /* Don't try looking inside a file for a coding system
+	     specification if it is not seekable.  */
+	  if (! not_regular && ! NILP (Vset_auto_coding_function))
+	    {
+	      /* Find a coding system specified in the heading two
+		 lines or in the tailing several lines of the file.
+		 We assume that the 1K-byte and 3K-byte for heading
+		 and tailing respectively are sufficient fot this
+		 purpose.  */
+	      int how_many, nread;
+
+	      if (st.st_size <= (1024 * 4))
+		nread = read (fd, read_buf, 1024 * 4);
+	      else
+		{
+		  nread = read (fd, read_buf, 1024);
+		  if (nread >= 0)
+		    {
+		      if (lseek (fd, st.st_size - (1024 * 3), 0) < 0)
+			report_file_error ("Setting file position",
+					   Fcons (orig_filename, Qnil));
+		      nread += read (fd, read_buf + nread, 1024 * 3);
+		    }
+		}
+
+	      if (nread < 0)
+		error ("IO error reading %s: %s",
+		       XSTRING (orig_filename)->data, strerror (errno));
+	      else if (nread > 0)
+		{
+		  int count = specpdl_ptr - specpdl;
+		  struct buffer *prev = current_buffer;
+
+		  record_unwind_protect (Fset_buffer, Fcurrent_buffer ());
+		  temp_output_buffer_setup (" *code-converting-work*");
+		  set_buffer_internal (XBUFFER (Vstandard_output));
+		  current_buffer->enable_multibyte_characters = Qnil;
+		  insert_1_both (read_buf, nread, nread, 0, 0, 0);
+		  TEMP_SET_PT_BOTH (BEG, BEG_BYTE);
+		  val = call2 (Vset_auto_coding_function,
+			       filename, make_number (nread));
+		  set_buffer_internal (prev);
+		  /* Discard the unwind protect for recovering the
+                     current buffer.  */
+		  specpdl_ptr--;
+
+		  /* Rewind the file for the actual read done later.  */
+		  if (lseek (fd, 0, 0) < 0)
+		    report_file_error ("Setting file position",
+				       Fcons (orig_filename, Qnil));
+		}
+	    }
+
+	  if (NILP (val))
+	    {
+	      /* If we have not yet decided a coding system, check
+                 file-coding-system-alist.  */
+	      Lisp_Object args[6], coding_systems;
+
+	      args[0] = Qinsert_file_contents, args[1] = orig_filename;
+	      args[2] = visit, args[3] = beg, args[4] = end, args[5] = replace;
+	      coding_systems = Ffind_operation_coding_system (6, args);
+	      if (CONSP (coding_systems))
+		val = XCONS (coding_systems)->car;
+	    }
+	}
+
+      setup_coding_system (Fcheck_coding_system (val), &coding);
+
+      if (NILP (Vcoding_system_for_read)
+	  && NILP (current_buffer->enable_multibyte_characters))
+	/* We must suppress all text conversion except for end-of-line
+	   conversion.  */
+	setup_raw_text_coding_system (&coding);
+
+      coding_system_decided = 1;
+    }
+
+  /* Ensure we always set Vlast_coding_system_used.  */
+  set_coding_system = 1;
 
   /* If requested, replace the accessible part of the buffer
      with the file contents.  Avoid replacing text at the
      beginning or end of the buffer that matches the file contents;
-     that preserves markers pointing to the unchanged parts.  */
-#ifdef DOS_NT
-  /* On MSDOS, replace mode doesn't really work, except for binary files,
-     and it's not worth supporting just for them.  */
-  if (!NILP (replace))
+     that preserves markers pointing to the unchanged parts.
+
+     Here we implement this feature in an optimized way
+     for the case where code conversion is NOT needed.
+     The following if-statement handles the case of conversion
+     in a less optimal way.
+
+     If the code conversion is "automatic" then we try using this
+     method and hope for the best.
+     But if we discover the need for conversion, we give up on this method
+     and let the following if-statement handle the replace job.  */
+  if (!NILP (replace)
+      && BEGV < ZV
+      && ! CODING_REQUIRE_DECODING (&coding)
+      && (coding.eol_type == CODING_EOL_UNDECIDED
+	  || coding.eol_type == CODING_EOL_LF))
     {
-      replace = Qnil;
-      XSETFASTINT (beg, 0);
-      XSETFASTINT (end, st.st_size);
-      del_range_1 (BEGV, ZV, 0);
-    }
-#else /* not DOS_NT */
-  if (!NILP (replace))
-    {
-      unsigned char buffer[1 << 14];
-      int same_at_start = BEGV;
-      int same_at_end = ZV;
+      /* same_at_start and same_at_end count bytes,
+	 because file access counts bytes
+	 and BEG and END count bytes.  */
+      int same_at_start = BEGV_BYTE;
+      int same_at_end = ZV_BYTE;
       int overlap;
+      /* There is still a possibility we will find the need to do code
+	 conversion.  If that happens, we set this variable to 1 to
+	 give up on handling REPLACE in the optimized way.  */
+      int giveup_match_end = 0;
+
+      if (XINT (beg) != 0)
+	{
+	  if (lseek (fd, XINT (beg), 0) < 0)
+	    report_file_error ("Setting file position",
+			       Fcons (orig_filename, Qnil));
+	}
 
       immediate_quit = 1;
       QUIT;
@@ -3111,12 +3594,34 @@ and (2) it puts less data in the undo list.")
 	  nread = read (fd, buffer, sizeof buffer);
 	  if (nread < 0)
 	    error ("IO error reading %s: %s",
-		   XSTRING (filename)->data, strerror (errno));
+		   XSTRING (orig_filename)->data, strerror (errno));
 	  else if (nread == 0)
 	    break;
+
+	  if (coding.type == coding_type_undecided)
+	    detect_coding (&coding, buffer, nread);
+	  if (CODING_REQUIRE_DECODING (&coding))
+	    /* We found that the file should be decoded somehow.
+               Let's give up here.  */
+	    {
+	      giveup_match_end = 1;
+	      break;
+	    }
+
+	  if (coding.eol_type == CODING_EOL_UNDECIDED)
+	    detect_eol (&coding, buffer, nread);
+	  if (coding.eol_type != CODING_EOL_UNDECIDED
+	      && coding.eol_type != CODING_EOL_LF)
+	    /* We found that the format of eol should be decoded.
+               Let's give up here.  */
+	    {
+	      giveup_match_end = 1;
+	      break;
+	    }
+
 	  bufpos = 0;
-	  while (bufpos < nread && same_at_start < ZV
-		 && FETCH_CHAR (same_at_start) == buffer[bufpos])
+	  while (bufpos < nread && same_at_start < ZV_BYTE
+		 && FETCH_BYTE (same_at_start) == buffer[bufpos])
 	    same_at_start++, bufpos++;
 	  /* If we found a discrepancy, stop the scan.
 	     Otherwise loop around and scan the next bufferful.  */
@@ -3126,7 +3631,7 @@ and (2) it puts less data in the undo list.")
       immediate_quit = 0;
       /* If the file matches the buffer completely,
 	 there's no need to replace anything.  */
-      if (same_at_start - BEGV == st.st_size)
+      if (same_at_start - BEGV_BYTE == XINT (end))
 	{
 	  close (fd);
 	  specpdl_ptr--;
@@ -3137,13 +3642,14 @@ and (2) it puts less data in the undo list.")
       immediate_quit = 1;
       QUIT;
       /* Count how many chars at the end of the file
-	 match the text at the end of the buffer.  */
-      while (1)
+	 match the text at the end of the buffer.  But, if we have
+	 already found that decoding is necessary, don't waste time.  */
+      while (!giveup_match_end)
 	{
 	  int total_read, nread, bufpos, curpos, trial;
 
 	  /* At what file position are we now scanning?  */
-	  curpos = st.st_size - (ZV - same_at_end);
+	  curpos = XINT (end) - (ZV_BYTE - same_at_end);
 	  /* If the entire file matches the buffer tail, stop the scan.  */
 	  if (curpos == 0)
 	    break;
@@ -3151,7 +3657,7 @@ and (2) it puts less data in the undo list.")
 	  trial = min (curpos, sizeof buffer);
 	  if (lseek (fd, curpos - trial, 0) < 0)
 	    report_file_error ("Setting file position",
-			       Fcons (filename, Qnil));
+			       Fcons (orig_filename, Qnil));
 
 	  total_read = 0;
 	  while (total_read < trial)
@@ -3159,7 +3665,7 @@ and (2) it puts less data in the undo list.")
 	      nread = read (fd, buffer + total_read, trial - total_read);
 	      if (nread <= 0)
 		error ("IO error reading %s: %s",
-		       XSTRING (filename)->data, strerror (errno));
+		       XSTRING (orig_filename)->data, strerror (errno));
 	      total_read += nread;
 	    }
 	  /* Scan this bufferful from the end, comparing with
@@ -3168,69 +3674,303 @@ and (2) it puts less data in the undo list.")
 	  /* Compare with same_at_start to avoid counting some buffer text
 	     as matching both at the file's beginning and at the end.  */
 	  while (bufpos > 0 && same_at_end > same_at_start
-		 && FETCH_CHAR (same_at_end - 1) == buffer[bufpos - 1])
+		 && FETCH_BYTE (same_at_end - 1) == buffer[bufpos - 1])
 	    same_at_end--, bufpos--;
+
 	  /* If we found a discrepancy, stop the scan.
 	     Otherwise loop around and scan the preceding bufferful.  */
 	  if (bufpos != 0)
-	    break;
-	  /* If display current starts at beginning of line,
-	     keep it that way.  */
-	  if (XBUFFER (XWINDOW (selected_window)->buffer) == current_buffer)
-	    XWINDOW (selected_window)->start_at_line_beg = Fbolp ();
+	    {
+	      /* If this discrepancy is because of code conversion,
+		 we cannot use this method; giveup and try the other.  */
+	      if (same_at_end > same_at_start
+		  && FETCH_BYTE (same_at_end - 1) >= 0200
+		  && ! NILP (current_buffer->enable_multibyte_characters)
+		  && (CODING_MAY_REQUIRE_DECODING (&coding)))
+		giveup_match_end = 1;
+	      break;
+	    }
 	}
       immediate_quit = 0;
 
+      if (! giveup_match_end)
+	{
+	  int temp;
+
+	  /* We win!  We can handle REPLACE the optimized way.  */
+
+	  /* Extend the start of non-matching text area to multibyte
+             character boundary.  */
+	  if (! NILP (current_buffer->enable_multibyte_characters))
+	    while (same_at_start > BEGV_BYTE
+		   && ! CHAR_HEAD_P (FETCH_BYTE (same_at_start)))
+	      same_at_start--;
+
+	  /* Extend the end of non-matching text area to multibyte
+             character boundary.  */
+	  if (! NILP (current_buffer->enable_multibyte_characters))
+	    while (same_at_end < ZV_BYTE
+		   && ! CHAR_HEAD_P (FETCH_BYTE (same_at_end)))
+	      same_at_end++;
+
+	  /* Don't try to reuse the same piece of text twice.  */
+	  overlap = (same_at_start - BEGV_BYTE
+		     - (same_at_end + st.st_size - ZV));
+	  if (overlap > 0)
+	    same_at_end += overlap;
+
+	  /* Arrange to read only the nonmatching middle part of the file.  */
+	  XSETFASTINT (beg, XINT (beg) + (same_at_start - BEGV_BYTE));
+	  XSETFASTINT (end, XINT (end) - (ZV_BYTE - same_at_end));
+
+	  del_range_byte (same_at_start, same_at_end, 0);
+	  /* Insert from the file at the proper position.  */
+	  temp = BYTE_TO_CHAR (same_at_start);
+	  SET_PT_BOTH (temp, same_at_start);
+
+	  /* If display currently starts at beginning of line,
+	     keep it that way.  */
+	  if (XBUFFER (XWINDOW (selected_window)->buffer) == current_buffer)
+	    XWINDOW (selected_window)->start_at_line_beg = Fbolp ();
+
+	  replace_handled = 1;
+	}
+    }
+
+  /* If requested, replace the accessible part of the buffer
+     with the file contents.  Avoid replacing text at the
+     beginning or end of the buffer that matches the file contents;
+     that preserves markers pointing to the unchanged parts.
+
+     Here we implement this feature for the case where code conversion
+     is needed, in a simple way that needs a lot of memory.
+     The preceding if-statement handles the case of no conversion
+     in a more optimized way.  */
+  if (!NILP (replace) && ! replace_handled && BEGV < ZV)
+    {
+      int same_at_start = BEGV_BYTE;
+      int same_at_end = ZV_BYTE;
+      int overlap;
+      int bufpos;
+      /* Make sure that the gap is large enough.  */
+      int bufsize = 2 * st.st_size;
+      unsigned char *conversion_buffer = (unsigned char *) xmalloc (bufsize);
+      int temp;
+
+      /* First read the whole file, performing code conversion into
+	 CONVERSION_BUFFER.  */
+
+      if (lseek (fd, XINT (beg), 0) < 0)
+	{
+	  free (conversion_buffer);
+	  report_file_error ("Setting file position",
+			     Fcons (orig_filename, Qnil));
+	}
+
+      total = st.st_size;	/* Total bytes in the file.  */
+      how_much = 0;		/* Bytes read from file so far.  */
+      inserted = 0;		/* Bytes put into CONVERSION_BUFFER so far.  */
+      unprocessed = 0;		/* Bytes not processed in previous loop.  */
+
+      while (how_much < total)
+	{
+	  /* try is reserved in some compilers (Microsoft C) */
+	  int trytry = min (total - how_much, READ_BUF_SIZE - unprocessed);
+	  unsigned char *destination = read_buf + unprocessed;
+	  int this;
+
+	  /* Allow quitting out of the actual I/O.  */
+	  immediate_quit = 1;
+	  QUIT;
+	  this = read (fd, destination, trytry);
+	  immediate_quit = 0;
+
+	  if (this < 0 || this + unprocessed == 0)
+	    {
+	      how_much = this;
+	      break;
+	    }
+
+	  how_much += this;
+
+	  if (CODING_MAY_REQUIRE_DECODING (&coding))
+	    {
+	      int require, result;
+
+	      this += unprocessed;
+
+	      /* If we are using more space than estimated,
+		 make CONVERSION_BUFFER bigger.  */
+	      require = decoding_buffer_size (&coding, this);
+	      if (inserted + require + 2 * (total - how_much) > bufsize)
+		{
+		  bufsize = inserted + require + 2 * (total - how_much);
+		  conversion_buffer = (unsigned char *) xrealloc (conversion_buffer, bufsize);
+		}
+
+	      /* Convert this batch with results in CONVERSION_BUFFER.  */
+	      if (how_much >= total)  /* This is the last block.  */
+		coding.mode |= CODING_MODE_LAST_BLOCK;
+	      result = decode_coding (&coding, read_buf,
+				      conversion_buffer + inserted,
+				      this, bufsize - inserted);
+
+	      /* Save for next iteration whatever we didn't convert.  */
+	      unprocessed = this - coding.consumed;
+	      bcopy (read_buf + coding.consumed, read_buf, unprocessed);
+	      this = coding.produced;
+	    }
+
+	  inserted += this;
+	}
+
+      /* At this point, INSERTED is how many characters (i.e. bytes)
+	 are present in CONVERSION_BUFFER.
+	 HOW_MUCH should equal TOTAL,
+	 or should be <= 0 if we couldn't read the file.  */
+
+      if (how_much < 0)
+	{
+	  free (conversion_buffer);
+
+	  if (how_much == -1)
+	    error ("IO error reading %s: %s",
+		   XSTRING (orig_filename)->data, strerror (errno));
+	  else if (how_much == -2)
+	    error ("maximum buffer size exceeded");
+	}
+
+      /* Compare the beginning of the converted file
+	 with the buffer text.  */
+
+      bufpos = 0;
+      while (bufpos < inserted && same_at_start < same_at_end
+	     && FETCH_BYTE (same_at_start) == conversion_buffer[bufpos])
+	same_at_start++, bufpos++;
+
+      /* If the file matches the buffer completely,
+	 there's no need to replace anything.  */
+
+      if (bufpos == inserted)
+	{
+	  free (conversion_buffer);
+	  close (fd);
+	  specpdl_ptr--;
+	  /* Truncate the buffer to the size of the file.  */
+	  del_range_1 (same_at_start, same_at_end, 0);
+	  goto handled;
+	}
+
+      /* Extend the start of non-matching text area to multibyte
+	 character boundary.  */
+      if (! NILP (current_buffer->enable_multibyte_characters))
+	while (same_at_start > BEGV_BYTE
+	       && ! CHAR_HEAD_P (FETCH_BYTE (same_at_start)))
+	  same_at_start--;
+
+      /* Scan this bufferful from the end, comparing with
+	 the Emacs buffer.  */
+      bufpos = inserted;
+
+      /* Compare with same_at_start to avoid counting some buffer text
+	 as matching both at the file's beginning and at the end.  */
+      while (bufpos > 0 && same_at_end > same_at_start
+	     && FETCH_BYTE (same_at_end - 1) == conversion_buffer[bufpos - 1])
+	same_at_end--, bufpos--;
+
+      /* Extend the end of non-matching text area to multibyte
+	 character boundary.  */
+      if (! NILP (current_buffer->enable_multibyte_characters))
+	while (same_at_end < ZV_BYTE
+	       && ! CHAR_HEAD_P (FETCH_BYTE (same_at_end)))
+	  same_at_end++;
+
       /* Don't try to reuse the same piece of text twice.  */
-      overlap = same_at_start - BEGV - (same_at_end + st.st_size - ZV);
+      overlap = same_at_start - BEGV_BYTE - (same_at_end + inserted - ZV_BYTE);
       if (overlap > 0)
 	same_at_end += overlap;
 
-      /* Arrange to read only the nonmatching middle part of the file.  */
-      XSETFASTINT (beg, same_at_start - BEGV);
-      XSETFASTINT (end, st.st_size - (ZV - same_at_end));
+      /* If display currently starts at beginning of line,
+	 keep it that way.  */
+      if (XBUFFER (XWINDOW (selected_window)->buffer) == current_buffer)
+	XWINDOW (selected_window)->start_at_line_beg = Fbolp ();
 
-      del_range_1 (same_at_start, same_at_end, 0);
-      /* Insert from the file at the proper position.  */
-      SET_PT (same_at_start);
+      /* Replace the chars that we need to replace,
+	 and update INSERTED to equal the number of bytes
+	 we are taking from the file.  */
+      inserted -= (Z_BYTE - same_at_end) + (same_at_start - BEG_BYTE);
+      del_range_byte (same_at_start, same_at_end, 0);
+      if (same_at_end != same_at_start)
+	SET_PT_BOTH (GPT, GPT_BYTE);
+      else
+	{
+	  /* Insert from the file at the proper position.  */
+	  temp = BYTE_TO_CHAR (same_at_start);
+	  SET_PT_BOTH (temp, same_at_start);
+	}
+
+      insert_1 (conversion_buffer + same_at_start - BEG_BYTE, inserted,
+		0, 0, 0);
+
+      free (conversion_buffer);
+      close (fd);
+      specpdl_ptr--;
+
+      goto handled;
     }
-#endif /* not DOS_NT */
 
-  total = XINT (end) - XINT (beg);
+  if (! not_regular)
+    {
+      register Lisp_Object temp;
 
-  {
-    register Lisp_Object temp;
+      total = XINT (end) - XINT (beg);
 
-    /* Make sure point-max won't overflow after this insertion.  */
-    XSETINT (temp, total);
-    if (total != XINT (temp))
-      error ("maximum buffer size exceeded");
-  }
+      /* Make sure point-max won't overflow after this insertion.  */
+      XSETINT (temp, total);
+      if (total != XINT (temp))
+	error ("Maximum buffer size exceeded");
+    }
+  else
+    /* For a special file, all we can do is guess.  */
+    total = READ_BUF_SIZE;
 
   if (NILP (visit) && total > 0)
-    prepare_to_modify_buffer (point, point);
+    prepare_to_modify_buffer (PT, PT, NULL);
 
-  move_gap (point);
+  move_gap (PT);
   if (GAP_SIZE < total)
     make_gap (total - GAP_SIZE);
 
   if (XINT (beg) != 0 || !NILP (replace))
     {
       if (lseek (fd, XINT (beg), 0) < 0)
-	report_file_error ("Setting file position", Fcons (filename, Qnil));
+	report_file_error ("Setting file position",
+			   Fcons (orig_filename, Qnil));
     }
 
+  /* In the following loop, HOW_MUCH contains the total bytes read so
+     far for a regular file, and not changed for a special file.  But,
+     before exiting the loop, it is set to a negative value if I/O
+     error occurs.  */
   how_much = 0;
-  while (inserted < total)
+  /* Total bytes inserted.  */
+  inserted = 0;
+  /* Here, we don't do code conversion in the loop.  It is done by
+     code_convert_region after all data are read into the buffer.  */
+  while (how_much < total)
     {
 	/* try is reserved in some compilers (Microsoft C) */
-      int trytry = min (total - inserted, 64 << 10);
+      int trytry = min (total - how_much, READ_BUF_SIZE);
       int this;
+
+      /* For a special file, GAP_SIZE should be checked every time.  */
+      if (not_regular && GAP_SIZE < trytry)
+	make_gap (total - GAP_SIZE);
 
       /* Allow quitting out of the actual I/O.  */
       immediate_quit = 1;
       QUIT;
-      this = read (fd, &FETCH_CHAR (point + inserted - 1) + 1, trytry);
+      this = read (fd, BYTE_POS_ADDR (PT_BYTE + inserted - 1) + 1, trytry);
       immediate_quit = 0;
 
       if (this <= 0)
@@ -3239,41 +3979,27 @@ and (2) it puts less data in the undo list.")
 	  break;
 	}
 
-      GPT += this;
       GAP_SIZE -= this;
+      GPT_BYTE += this;
+      ZV_BYTE += this;
+      Z_BYTE += this;
+      GPT += this;
       ZV += this;
       Z += this;
+
+      /* For a regular file, where TOTAL is the real size,
+	 count HOW_MUCH to compare with it.
+	 For a special file, where TOTAL is just a buffer size,
+	 so don't bother counting in HOW_MUCH.
+	 (INSERTED is where we count the number of characters inserted.)  */
+      if (! not_regular)
+	how_much += this;
       inserted += this;
     }
 
-#ifdef DOS_NT
-  /* Demacs 1.1.1 91/10/16 HIRANO Satoshi, MW July 1993 */
-  /* Determine file type from name and remove LFs from CR-LFs if the file
-     is deemed to be a text file.  */
-  {
-    current_buffer->buffer_file_type
-      = call1 (Qfind_buffer_file_type, filename);
-    if (NILP (current_buffer->buffer_file_type))
-      {
-	int reduced_size
-	  = inserted - crlf_to_lf (inserted, &FETCH_CHAR (point - 1) + 1);
-	ZV -= reduced_size;
-	Z -= reduced_size;
-	GPT -= reduced_size;
-	GAP_SIZE += reduced_size;
-	inserted -= reduced_size;
-      }
-  }
-#endif /* DOS_NT */
-
-  if (inserted > 0)
-    {
-      record_insert (point, inserted);
-
-      /* Only defined if Emacs is compiled with USE_TEXT_PROPERTIES */
-      offset_intervals (current_buffer, point, inserted);
-      MODIFF++;
-    }
+  if (GAP_SIZE > 0)
+    /* Put an anchor to ensure multi-byte form ends at gap.  */
+    *GPT_ADDR = 0;
 
   close (fd);
 
@@ -3282,7 +4008,114 @@ and (2) it puts less data in the undo list.")
 
   if (how_much < 0)
     error ("IO error reading %s: %s",
-	   XSTRING (filename)->data, strerror (errno));
+	   XSTRING (orig_filename)->data, strerror (errno));
+
+  if (! coding_system_decided)
+    {
+      /* The coding system is not yet decided.  Decide it by an
+	 optimized method for handling `coding:' tag.  */
+      Lisp_Object val;
+      val = Qnil;
+
+      if (!NILP (Vcoding_system_for_read))
+	val = Vcoding_system_for_read;
+      else
+	{
+	  if (inserted > 0 && ! NILP (Vset_auto_coding_function))
+	    {
+	      /* Since we are sure that the current buffer was
+		 empty before the insertion, we can toggle
+		 enable-multibyte-characters directly here without
+		 taking care of marker adjustment and byte
+		 combining problem.  */
+	      Lisp_Object prev_multibyte;
+	      int count = specpdl_ptr - specpdl;
+
+	      prev_multibyte = current_buffer->enable_multibyte_characters;
+	      current_buffer->enable_multibyte_characters = Qnil;
+	      record_unwind_protect (set_auto_coding_unwind,
+				     prev_multibyte);
+	      val = call2 (Vset_auto_coding_function,
+			   filename, make_number (inserted));
+	      /* Discard the unwind protect for recovering the
+		 error of Vset_auto_coding_function.  */
+	      specpdl_ptr--;
+	      current_buffer->enable_multibyte_characters = prev_multibyte;
+	      TEMP_SET_PT_BOTH (BEG, BEG_BYTE);
+	    }
+
+	  if (NILP (val))
+	    {
+	      /* If the coding system is not yet decided, check
+		 file-coding-system-alist.  */
+	      Lisp_Object args[6], coding_systems;
+
+	      args[0] = Qinsert_file_contents, args[1] = orig_filename;
+	      args[2] = visit, args[3] = beg, args[4] = end, args[5] = Qnil;
+	      coding_systems = Ffind_operation_coding_system (6, args);
+	      if (CONSP (coding_systems))
+		val = XCONS (coding_systems)->car;
+	    }
+	}
+
+      /* The following kludgy code is to avoid some compiler bug.
+	 We can't simply do
+	 setup_coding_system (val, &coding);
+	 on some system.  */
+      {
+	struct coding_system temp_coding;
+	setup_coding_system (val, &temp_coding);
+	bcopy (&temp_coding, &coding, sizeof coding);
+      }
+
+      if (NILP (Vcoding_system_for_read)
+	  && NILP (current_buffer->enable_multibyte_characters))
+	/* We must suppress all text conversion except for
+	   end-of-line conversion.  */
+	setup_raw_text_coding_system (&coding);
+    }
+
+  if (inserted > 0)
+    {
+      if (CODING_MAY_REQUIRE_DECODING (&coding))
+	{
+	  /* Here, we don't have to consider byte combining (see the
+             comment below) because code_convert_region takes care of
+             it.  */
+	  code_convert_region (PT, PT_BYTE, PT + inserted, PT_BYTE + inserted,
+			       &coding, 0, 0);
+	  inserted = (NILP (current_buffer->enable_multibyte_characters)
+		      ? coding.produced : coding.produced_char);
+	}
+      else if (!NILP (current_buffer->enable_multibyte_characters))
+	{
+	  int inserted_byte = inserted;
+
+	  /* There's a possibility that we must combine bytes at the
+	     head (resp. the tail) of the just inserted text with the
+	     bytes before (resp. after) the gap to form a single
+	     character.  */
+	  inserted = multibyte_chars_in_text (GPT_ADDR - inserted, inserted);
+	  adjust_after_insert (PT, PT_BYTE,
+			       PT + inserted_byte, PT_BYTE + inserted_byte,
+			       inserted);
+	}
+      else
+	adjust_after_insert (PT, PT_BYTE, PT + inserted, PT_BYTE + inserted,
+			     inserted);
+    }
+
+#ifdef DOS_NT
+  /* Use the conversion type to determine buffer-file-type
+     (find-buffer-file-type is now used to help determine the
+     conversion).  */
+  if ((coding.eol_type == CODING_EOL_UNDECIDED 
+       || coding.eol_type == CODING_EOL_LF)
+      && ! CODING_REQUIRE_DECODING (&coding))
+    current_buffer->buffer_file_type = Qt;
+  else
+    current_buffer->buffer_file_type = Qnil;
+#endif
 
  notfound:
  handled:
@@ -3298,7 +4131,7 @@ and (2) it puts less data in the undo list.")
       if (NILP (handler))
 	{
 	  current_buffer->modtime = st.st_mtime;
-	  current_buffer->filename = filename;
+	  current_buffer->filename = orig_filename;
 	}
 
       SAVE_MODIFF = MODIFF;
@@ -3315,11 +4148,11 @@ and (2) it puts less data in the undo list.")
       if (not_regular)
 	Fsignal (Qfile_error,
 		 Fcons (build_string ("not a regular file"),
-			Fcons (filename, Qnil)));
+			Fcons (orig_filename, Qnil)));
 
       /* If visiting nonexistent file, return nil.  */
       if (current_buffer->modtime == -1)
-	report_file_error ("Opening input file", Fcons (filename, Qnil));
+	report_file_error ("Opening input file", Fcons (orig_filename, Qnil));
     }
 
   /* Decode file format */
@@ -3331,8 +4164,15 @@ and (2) it puts less data in the undo list.")
       inserted = XFASTINT (insval);
     }
 
-  if (inserted > 0 && NILP (visit) && total > 0)
-    signal_after_change (point, 0, inserted);
+  /* Call after-change hooks for the inserted text, aside from the case
+     of normal visiting (not with REPLACE), which is done in a new buffer
+     "before" the buffer is changed.  */
+  if (inserted > 0 && total > 0
+      && (NILP (visit) || !NILP (replace)))
+    signal_after_change (PT, 0, inserted);
+
+  if (set_coding_system)
+    Vlast_coding_system_used = coding.symbol;
 
   if (inserted > 0)
     {
@@ -3350,18 +4190,24 @@ and (2) it puts less data in the undo list.")
 	}
     }
 
+  /* ??? Retval needs to be dealt with in all cases consistently.  */
   if (NILP (val))
-    val = Fcons (filename,
+    val = Fcons (orig_filename,
 		 Fcons (make_number (inserted),
 			Qnil));
 
   RETURN_UNGCPRO (unbind_to (count, val));
 }
 
-static Lisp_Object build_annotations ();
+static Lisp_Object build_annotations P_ ((Lisp_Object, Lisp_Object,
+					  Lisp_Object));
 
 /* If build_annotations switched buffers, switch back to BUF.
-   Kill the temporary buffer that was selected in the meantime.  */
+   Kill the temporary buffer that was selected in the meantime.
+
+   Since this kill only the last temporary buffer, some buffers remain
+   not killed if build_annotations switched buffers more than once.
+   -- K.Handa */
 
 static Lisp_Object
 build_annotations_unwind (buf)
@@ -3377,8 +4223,8 @@ build_annotations_unwind (buf)
   return Qnil;
 }
 
-DEFUN ("write-region", Fwrite_region, Swrite_region, 3, 6,
-  "r\nFWrite region to file: ",
+DEFUN ("write-region", Fwrite_region, Swrite_region, 3, 7,
+  "r\nFWrite region to file: \ni\ni\ni\np",
   "Write current region into specified file.\n\
 When called from a program, takes three arguments:\n\
 START, END and FILENAME.  START and END are buffer positions.\n\
@@ -3394,10 +4240,18 @@ If VISIT is neither t nor nil nor a string,\n\
   that means do not print the \"Wrote file\" message.\n\
 The optional sixth arg LOCKNAME, if non-nil, specifies the name to\n\
   use for locking and unlocking, overriding FILENAME and VISIT.\n\
+The optional seventh arg CONFIRM, if non-nil, says ask for confirmation\n\
+  before overwriting an existing file.\n\
 Kludgy feature: if START is a string, then that string is written\n\
-to the file, instead of any buffer contents, and END is ignored.")
-  (start, end, filename, append, visit, lockname)
-     Lisp_Object start, end, filename, append, visit, lockname;
+to the file, instead of any buffer contents, and END is ignored.\n\
+\n\
+This does code conversion according to the value of\n\
+`coding-system-for-write', `buffer-file-coding-system', or\n\
+`file-coding-system-alist', and sets the variable\n\
+`last-coding-system-used' to the coding system actually used.")
+
+  (start, end, filename, append, visit, lockname, confirm)
+     Lisp_Object start, end, filename, append, visit, lockname, confirm;
 {
   register int desc;
   int failure;
@@ -3413,13 +4267,14 @@ to the file, instead of any buffer contents, and END is ignored.")
   Lisp_Object handler;
   Lisp_Object visit_file;
   Lisp_Object annotations;
+  Lisp_Object encoded_filename;
   int visiting, quietly;
   struct gcpro gcpro1, gcpro2, gcpro3, gcpro4, gcpro5;
   struct buffer *given_buffer;
 #ifdef DOS_NT
-  int buffer_file_type
-    = NILP (current_buffer->buffer_file_type) ? O_TEXT : O_BINARY;
+  int buffer_file_type = O_BINARY;
 #endif /* DOS_NT */
+  struct coding_system coding;
 
   if (current_buffer->base_buffer && ! NILP (visit))
     error ("Cannot do file visiting in an indirect buffer");
@@ -3427,8 +4282,106 @@ to the file, instead of any buffer contents, and END is ignored.")
   if (!NILP (start) && !STRINGP (start))
     validate_region (&start, &end);
 
-  GCPRO3 (filename, visit, lockname);
+  GCPRO4 (start, filename, visit, lockname);
+
+  /* Decide the coding-system to encode the data with.  */
+  {
+    Lisp_Object val;
+
+    if (auto_saving)
+      val = Qnil;
+    else if (!NILP (Vcoding_system_for_write))
+      val = Vcoding_system_for_write;
+    else
+      {
+	/* If the variable `buffer-file-coding-system' is set locally,
+	   it means that the file was read with some kind of code
+	   conversion or the varialbe is explicitely set by users.  We
+	   had better write it out with the same coding system even if
+	   `enable-multibyte-characters' is nil.
+
+	   If it is not set locally, we anyway have to convert EOL
+	   format if the default value of `buffer-file-coding-system'
+	   tells that it is not Unix-like (LF only) format.  */
+	int using_default_coding = 0;
+	int force_raw_text = 0;
+
+	val = current_buffer->buffer_file_coding_system;
+	if (NILP (val)
+	    || NILP (Flocal_variable_p (Qbuffer_file_coding_system, Qnil)))
+	  {
+	    val = Qnil;
+	    if (NILP (current_buffer->enable_multibyte_characters))
+	      force_raw_text = 1;
+	  }
+	
+	if (NILP (val))
+	  {
+	    /* Check file-coding-system-alist.  */
+	    Lisp_Object args[7], coding_systems;
+
+	    args[0] = Qwrite_region; args[1] = start; args[2] = end;
+	    args[3] = filename; args[4] = append; args[5] = visit;
+	    args[6] = lockname;
+	    coding_systems = Ffind_operation_coding_system (7, args);
+	    if (CONSP (coding_systems) && !NILP (XCONS (coding_systems)->cdr))
+	      val = XCONS (coding_systems)->cdr;
+	  }
+
+	if (NILP (val)
+	    && !NILP (current_buffer->buffer_file_coding_system))
+	  {
+	    /* If we still have not decided a coding system, use the
+	       default value of buffer-file-coding-system.  */
+	    val = current_buffer->buffer_file_coding_system;
+	    using_default_coding = 1;
+	  }
+	    
+	if (!force_raw_text
+	    && !NILP (Ffboundp (Vselect_safe_coding_system_function)))
+	  /* Confirm that VAL can surely encode the current region.  */
+	  val = call3 (Vselect_safe_coding_system_function, start, end, val);
+
+	setup_coding_system (Fcheck_coding_system (val), &coding);
+	if (coding.eol_type == CODING_EOL_UNDECIDED
+	    && !using_default_coding)
+	  {
+	    if (! EQ (default_buffer_file_coding.symbol,
+		      buffer_defaults.buffer_file_coding_system))
+	      setup_coding_system (buffer_defaults.buffer_file_coding_system,
+				   &default_buffer_file_coding);
+	    if (default_buffer_file_coding.eol_type != CODING_EOL_UNDECIDED)
+	      {
+		Lisp_Object subsidiaries;
+
+		coding.eol_type = default_buffer_file_coding.eol_type;
+		subsidiaries = Fget (coding.symbol, Qeol_type);
+		if (VECTORP (subsidiaries)
+		    && XVECTOR (subsidiaries)->size == 3)
+		  coding.symbol
+		    = XVECTOR (subsidiaries)->contents[coding.eol_type];
+	      }
+	  }
+
+	if (force_raw_text)
+	  setup_raw_text_coding_system (&coding);
+	goto done_setup_coding;
+      }
+
+    setup_coding_system (Fcheck_coding_system (val), &coding);
+
+  done_setup_coding:
+    if (!STRINGP (start) && !NILP (current_buffer->selective_display))
+      coding.mode |= CODING_MODE_SELECTIVE_DISPLAY;
+  }
+
+  Vlast_coding_system_used = coding.symbol;
+
   filename = Fexpand_file_name (filename, Qnil);
+
+  if (! NILP (confirm))
+    barf_or_query_if_file_exists (filename, "overwrite", 1, 0, 1);
+
   if (STRINGP (visit))
     visit_file = Fexpand_file_name (visit, Qnil);
   else
@@ -3479,19 +4432,30 @@ to the file, instead of any buffer contents, and END is ignored.")
   count1 = specpdl_ptr - specpdl;
 
   given_buffer = current_buffer;
-  annotations = build_annotations (start, end);
+  annotations = build_annotations (start, end, coding.pre_write_conversion);
   if (current_buffer != given_buffer)
     {
-      start = BEGV;
-      end = ZV;
+      XSETFASTINT (start, BEGV);
+      XSETFASTINT (end, ZV);
     }
 
 #ifdef CLASH_DETECTION
   if (!auto_saving)
-    lock_file (lockname);
+    {
+#if 0  /* This causes trouble for GNUS.  */
+      /* If we've locked this file for some other buffer,
+	 query before proceeding.  */
+      if (!visiting && EQ (Ffile_locked_p (lockname), Qt))
+	call2 (intern ("ask-user-about-lock"), filename, Vuser_login_name);
+#endif
+
+      lock_file (lockname);
+    }
 #endif /* CLASH_DETECTION */
 
-  fn = XSTRING (filename)->data;
+  encoded_filename = ENCODE_FILE (filename);
+
+  fn = XSTRING (encoded_filename)->data;
   desc = -1;
   if (!NILP (append))
 #ifdef DOS_NT
@@ -3500,7 +4464,7 @@ to the file, instead of any buffer contents, and END is ignored.")
     desc = open (fn, O_WRONLY);
 #endif /* not DOS_NT */
 
-  if (desc < 0)
+  if (desc < 0 && (NILP (append) || errno == ENOENT))
 #ifdef VMS
     if (auto_saving)    /* Overwrite any previous version of autosave file */
       {
@@ -3570,7 +4534,7 @@ to the file, instead of any buffer contents, and END is ignored.")
 
   record_unwind_protect (close_file_unwind, make_number (desc));
 
-  if (!NILP (append))
+  if (!NILP (append) && !NILP (Ffile_regular_p (filename)))
     if (lseek (desc, 0, 2) < 0)
       {
 #ifdef CLASH_DETECTION
@@ -3597,6 +4561,19 @@ to the file, instead of any buffer contents, and END is ignored.")
  */
   if (GPT > BEG && GPT_ADDR[-1] != '\n')
     move_gap (find_next_newline (GPT, 1));
+#else
+  /* Whether VMS or not, we must move the gap to the next of newline
+     when we must put designation sequences at beginning of line.  */
+  if (INTEGERP (start)
+      && coding.type == coding_type_iso2022
+      && coding.flags & CODING_FLAG_ISO_DESIGNATE_AT_BOL
+      && GPT > BEG && GPT_ADDR[-1] != '\n')
+    {
+      int opoint = PT, opoint_byte = PT_BYTE;
+      scan_newline (PT, PT_BYTE, ZV, ZV_BYTE, 1, 0);
+      move_gap_both (PT, PT_BYTE);
+      SET_PT_BOTH (opoint, opoint_byte);
+    }
 #endif
 
   failure = 0;
@@ -3605,36 +4582,47 @@ to the file, instead of any buffer contents, and END is ignored.")
   if (STRINGP (start))
     {
       failure = 0 > a_write (desc, XSTRING (start)->data,
-			     XSTRING (start)->size, 0, &annotations);
+			     STRING_BYTES (XSTRING (start)), 0, &annotations,
+			     &coding);
       save_errno = errno;
     }
   else if (XINT (start) != XINT (end))
     {
-      int nwritten = 0;
+      register int end1 = CHAR_TO_BYTE (XINT (end));
+
+      tem = CHAR_TO_BYTE (XINT (start));
+
       if (XINT (start) < GPT)
 	{
-	  register int end1 = XINT (end);
-	  tem = XINT (start);
-	  failure = 0 > a_write (desc, &FETCH_CHAR (tem),
-				 min (GPT, end1) - tem, tem, &annotations);
-	  nwritten += min (GPT, end1) - tem;
+	  failure = 0 > a_write (desc, BYTE_POS_ADDR (tem),
+				 min (GPT_BYTE, end1) - tem, tem, &annotations,
+				 &coding);
 	  save_errno = errno;
 	}
 
       if (XINT (end) > GPT && !failure)
 	{
-	  tem = XINT (start);
-	  tem = max (tem, GPT);
-	  failure = 0 > a_write (desc, &FETCH_CHAR (tem), XINT (end) - tem,
-				 tem, &annotations);
-	  nwritten += XINT (end) - tem;
+	  tem = max (tem, GPT_BYTE);
+	  failure = 0 > a_write (desc, BYTE_POS_ADDR (tem), end1 - tem,
+				 tem, &annotations, &coding);
 	  save_errno = errno;
 	}
     }
   else
     {
       /* If file was empty, still need to write the annotations */
-      failure = 0 > a_write (desc, "", 0, XINT (start), &annotations);
+      coding.mode |= CODING_MODE_LAST_BLOCK;
+      failure = 0 > a_write (desc, "", 0, XINT (start), &annotations, &coding);
+      save_errno = errno;
+    }
+
+  if (CODING_REQUIRE_FLUSHING (&coding)
+      && !(coding.mode & CODING_MODE_LAST_BLOCK)
+      && ! failure)
+    {
+      /* We have to flush out a data. */
+      coding.mode |= CODING_MODE_LAST_BLOCK;
+      failure = 0 > e_write (desc, "", 0, &coding);
       save_errno = errno;
     }
 
@@ -3706,7 +4694,8 @@ to the file, instead of any buffer contents, and END is ignored.")
     current_buffer->modtime = st.st_mtime;
 
   if (failure)
-    error ("IO error writing %s: %s", fn, strerror (save_errno));
+    error ("IO error writing %s: %s", XSTRING (filename)->data,
+	   strerror (save_errno));
 
   if (visiting)
     {
@@ -3719,11 +4708,11 @@ to the file, instead of any buffer contents, and END is ignored.")
     return Qnil;
 
   if (!auto_saving)
-    message ("Wrote %s", XSTRING (visit_file)->data);
+    message_with_string ("Wrote %s", visit_file, 1);
 
   return Qnil;
 }
-
+
 Lisp_Object merge ();
 
 DEFUN ("car-less-than-car", Fcar_less_than_car, Scar_less_than_car, 2, 2, 0,
@@ -3743,12 +4732,15 @@ DEFUN ("car-less-than-car", Fcar_less_than_car, Scar_less_than_car, 2, 2, 0,
    as save-excursion would do.  */
 
 static Lisp_Object
-build_annotations (start, end)
-     Lisp_Object start, end;
+build_annotations (start, end, pre_write_conversion)
+     Lisp_Object start, end, pre_write_conversion;
 {
   Lisp_Object annotations;
   Lisp_Object p, res;
   struct gcpro gcpro1, gcpro2;
+  Lisp_Object original_buffer;
+
+  XSETBUFFER (original_buffer, current_buffer);
 
   annotations = Qnil;
   p = Vwrite_region_annotate_functions;
@@ -3765,8 +4757,8 @@ build_annotations (start, end)
 	 been dealt with by this function.  */
       if (current_buffer != given_buffer)
 	{
-	  start = BEGV;
-	  end = ZV;
+	  XSETFASTINT (start, BEGV);
+	  XSETFASTINT (end, ZV);
 	  annotations = Qnil;
 	}
       Flength (res);   /* Check basic validity of return value */
@@ -3783,100 +4775,134 @@ build_annotations (start, end)
     {
       struct buffer *given_buffer = current_buffer;
       Vwrite_region_annotations_so_far = annotations;
-      res = call3 (Qformat_annotate_function, Fcar (p), start, end);
+      res = call4 (Qformat_annotate_function, Fcar (p), start, end,
+		   original_buffer);
       if (current_buffer != given_buffer)
 	{
-	  start = BEGV;
-	  end = ZV;
+	  XSETFASTINT (start, BEGV);
+	  XSETFASTINT (end, ZV);
 	  annotations = Qnil;
 	}
       Flength (res);
       annotations = merge (annotations, res, Qcar_less_than_car);
       p = Fcdr (p);
     }
+
+  /* At last, do the same for the function PRE_WRITE_CONVERSION
+     implied by the current coding-system.  */
+  if (!NILP (pre_write_conversion))
+    {
+      struct buffer *given_buffer = current_buffer;
+      Vwrite_region_annotations_so_far = annotations;
+      res = call2 (pre_write_conversion, start, end);
+      Flength (res);
+      annotations = (current_buffer != given_buffer
+		     ? res
+		     : merge (annotations, res, Qcar_less_than_car));
+    }
+
   UNGCPRO;
   return annotations;
 }
-
-/* Write to descriptor DESC the LEN characters starting at ADDR,
-   assuming they start at position POS in the buffer.
+
+/* Write to descriptor DESC the NBYTES bytes starting at ADDR,
+   assuming they start at byte position BYTEPOS in the buffer.
    Intersperse with them the annotations from *ANNOT
-   (those which fall within the range of positions POS to POS + LEN),
+   which fall within the range of byte positions BYTEPOS to BYTEPOS + NBYTES,
    each at its appropriate position.
 
-   Modify *ANNOT by discarding elements as we output them.
+   We modify *ANNOT by discarding elements as we use them up.
+
    The return value is negative in case of system call failure.  */
 
-int
-a_write (desc, addr, len, pos, annot)
+static int
+a_write (desc, addr, nbytes, bytepos, annot, coding)
      int desc;
      register char *addr;
-     register int len;
-     int pos;
+     register int nbytes;
+     int bytepos;
      Lisp_Object *annot;
+     struct coding_system *coding;
 {
   Lisp_Object tem;
   int nextpos;
-  int lastpos = pos + len;
+  int lastpos = bytepos + nbytes;
 
   while (NILP (*annot) || CONSP (*annot))
     {
       tem = Fcar_safe (Fcar (*annot));
-      if (INTEGERP (tem) && XINT (tem) >= pos && XFASTINT (tem) <= lastpos)
-	nextpos = XFASTINT (tem);
-      else
-	return e_write (desc, addr, lastpos - pos);
-      if (nextpos > pos)
+      nextpos = bytepos - 1;
+      if (INTEGERP (tem))
+	nextpos = CHAR_TO_BYTE (XFASTINT (tem));
+
+      /* If there are no more annotations in this range,
+	 output the rest of the range all at once.  */
+      if (! (nextpos >= bytepos && nextpos <= lastpos))
+	return e_write (desc, addr, lastpos - bytepos, coding);
+
+      /* Output buffer text up to the next annotation's position.  */
+      if (nextpos > bytepos)
 	{
-	  if (0 > e_write (desc, addr, nextpos - pos))
+	  if (0 > e_write (desc, addr, nextpos - bytepos, coding))
 	    return -1;
-	  addr += nextpos - pos;
-	  pos = nextpos;
+	  addr += nextpos - bytepos;
+	  bytepos = nextpos;
 	}
+      /* Output the annotation.  */
       tem = Fcdr (Fcar (*annot));
       if (STRINGP (tem))
 	{
-	  if (0 > e_write (desc, XSTRING (tem)->data, XSTRING (tem)->size))
+	  if (0 > e_write (desc, XSTRING (tem)->data, STRING_BYTES (XSTRING (tem)),
+			   coding))
 	    return -1;
 	}
       *annot = Fcdr (*annot);
     }
-}
-
-int
-e_write (desc, addr, len)
-     int desc;
-     register char *addr;
-     register int len;
-{
-  char buf[16 * 1024];
-  register char *p, *end;
-
-  if (!EQ (current_buffer->selective_display, Qt))
-    return write (desc, addr, len) - len;
-  else
-    {
-      p = buf;
-      end = p + sizeof buf;
-      while (len--)
-	{
-	  if (p == end)
-	    {
-	      if (write (desc, buf, sizeof buf) != sizeof buf)
-		return -1;
-	      p = buf;
-	    }
-	  *p = *addr++;
-	  if (*p++ == '\015')
-	    p[-1] = '\n';
-	}
-      if (p != buf)
-	if (write (desc, buf, p - buf) != p - buf)
-	  return -1;
-    }
   return 0;
 }
 
+#ifndef WRITE_BUF_SIZE
+#define WRITE_BUF_SIZE (16 * 1024)
+#endif
+
+/* Write NBYTES bytes starting at ADDR into descriptor DESC,
+   encoding them with coding system CODING.  */
+
+static int
+e_write (desc, addr, nbytes, coding)
+     int desc;
+     register char *addr;
+     register int nbytes;
+     struct coding_system *coding;
+{
+  char buf[WRITE_BUF_SIZE];
+
+  /* We used to have a code for handling selective display here.  But,
+     now it is handled within encode_coding.  */
+  while (1)
+    {
+      int result;
+
+      result = encode_coding (coding, addr, buf, nbytes, WRITE_BUF_SIZE);
+      nbytes -= coding->consumed, addr += coding->consumed;
+      if (coding->produced > 0)
+	{
+	  coding->produced -= write (desc, buf, coding->produced);
+	  if (coding->produced) return -1;
+	}
+      if (result == CODING_FINISH_INSUFFICIENT_SRC)
+	{
+	  /* The source text ends by an incomplete multibyte form.
+             There's no way other than write it out as is.  */
+	  nbytes -= write (desc, addr, nbytes);
+	  if (nbytes) return -1;
+	}
+      if (nbytes <= 0)
+	break;
+    }
+  return 0;
+}
+
 DEFUN ("verify-visited-file-modtime", Fverify_visited_file_modtime,
   Sverify_visited_file_modtime, 1, 1, 0,
   "Return t if last mod time of BUF's visited file matches what BUF records.\n\
@@ -3887,6 +4913,7 @@ This means that the file has not been changed since it was visited or saved.")
   struct buffer *b;
   struct stat st;
   Lisp_Object handler;
+  Lisp_Object filename;
 
   CHECK_BUFFER (buf, 0);
   b = XBUFFER (buf);
@@ -3901,7 +4928,9 @@ This means that the file has not been changed since it was visited or saved.")
   if (!NILP (handler))
     return call2 (handler, Qverify_visited_file_modtime, buf);
 
-  if (stat (XSTRING (b->filename)->data, &st) < 0)
+  filename = ENCODE_FILE (b->filename);
+
+  if (stat (XSTRING (filename)->data, &st) < 0)
     {
       /* If the file doesn't exist now and didn't exist before,
 	 we say that it isn't modified, provided the error is a tame one.  */
@@ -3966,7 +4995,10 @@ An argument specifies the modification time value to use\n\
       if (!NILP (handler))
 	/* The handler can find the file name the same way we did.  */
 	return call2 (handler, Qset_visited_file_modtime, Qnil);
-      else if (stat (XSTRING (filename)->data, &st) >= 0)
+
+      filename = ENCODE_FILE (filename);
+
+      if (stat (XSTRING (filename)->data, &st) >= 0)
 	current_buffer->modtime = st.st_mtime;
     }
 
@@ -3977,11 +5009,11 @@ Lisp_Object
 auto_save_error ()
 {
   ring_bell ();
-  message ("Autosaving...error for %s", XSTRING (current_buffer->name)->data);
+  message_with_string ("Autosaving...error for %s", current_buffer->name, 1);
   Fsleep_for (make_number (1), Qnil);
-  message ("Autosaving...error!for %s", XSTRING (current_buffer->name)->data);
+  message_with_string ("Autosaving...error for %s", current_buffer->name, 0);
   Fsleep_for (make_number (1), Qnil);
-  message ("Autosaving...error for %s", XSTRING (current_buffer->name)->data);
+  message_with_string ("Autosaving...error for %s", current_buffer->name, 0);
   Fsleep_for (make_number (1), Qnil);
   return Qnil;
 }
@@ -4002,16 +5034,25 @@ auto_save_1 ()
   return
     Fwrite_region (Qnil, Qnil,
 		   current_buffer->auto_save_file_name,
-		   Qnil, Qlambda, Qnil);
+		   Qnil, Qlambda, Qnil, Qnil);
 }
 
 static Lisp_Object
-do_auto_save_unwind (desc)  /* used as unwind-protect function */
-     Lisp_Object desc;
+do_auto_save_unwind (stream)  /* used as unwind-protect function */
+     Lisp_Object stream;
 {
   auto_saving = 0;
-  if (XINT (desc) >= 0)
-    close (XINT (desc));
+  if (!NILP (stream))
+    fclose ((FILE *) (XFASTINT (XCONS (stream)->car) << 16
+		      | XFASTINT (XCONS (stream)->cdr)));
+  return Qnil;
+}
+
+static Lisp_Object
+do_auto_save_unwind_1 (value)  /* used as unwind-protect function */
+     Lisp_Object value;
+{
+  minibuffer_auto_raise = XINT (value);
   return Qnil;
 }
 
@@ -4033,12 +5074,14 @@ A non-nil CURRENT-ONLY argument means save only current buffer.")
   int auto_saved = 0;
   char *omessage = echo_area_glyphs;
   int omessage_length = echo_area_glyphs_length;
-  extern int minibuf_level;
+  int oldmultibyte = message_enable_multibyte;
   int do_handled_files;
   Lisp_Object oquit;
-  int listdesc;
+  FILE *stream;
+  Lisp_Object lispstream;
   int count = specpdl_ptr - specpdl;
   int *ptr;
+  int orig_minibuffer_auto_raise = minibuffer_auto_raise;
 
   /* Ordinarily don't quit within this function,
      but don't make it impossible to quit (in case we get hung in I/O).  */
@@ -4058,21 +5101,28 @@ A non-nil CURRENT-ONLY argument means save only current buffer.")
     {
       Lisp_Object listfile;
       listfile = Fexpand_file_name (Vauto_save_list_file_name, Qnil);
-#ifdef DOS_NT
-      listdesc = open (XSTRING (listfile)->data,
-		       O_WRONLY | O_TRUNC | O_CREAT | O_TEXT,
-		       S_IREAD | S_IWRITE);
-#else  /* not DOS_NT */
-      listdesc = creat (XSTRING (listfile)->data, 0666);
-#endif /* not DOS_NT */
+      stream = fopen (XSTRING (listfile)->data, "w");
+      if (stream != NULL)
+	{
+	  /* Arrange to close that file whether or not we get an error.
+	     Also reset auto_saving to 0.  */
+	  lispstream = Fcons (Qnil, Qnil);
+	  XSETFASTINT (XCONS (lispstream)->car, (EMACS_UINT)stream >> 16);
+	  XSETFASTINT (XCONS (lispstream)->cdr, (EMACS_UINT)stream & 0xffff);
+	}
+      else
+	lispstream = Qnil;
     }
   else
-    listdesc = -1;
+    {
+      stream = NULL;
+      lispstream = Qnil;
+    }
 
-  /* Arrange to close that file whether or not we get an error.
-     Also reset auto_saving to 0.  */
-  record_unwind_protect (do_auto_save_unwind, make_number (listdesc));
-
+  record_unwind_protect (do_auto_save_unwind, lispstream);
+  record_unwind_protect (do_auto_save_unwind_1,
+			 make_number (minibuffer_auto_raise));
+  minibuffer_auto_raise = 0;
   auto_saving = 1;
 
   /* First, save all files which don't have handlers.  If Emacs is
@@ -4090,17 +5140,17 @@ A non-nil CURRENT-ONLY argument means save only current buffer.")
 	   in the special file that lists them.  For each of these buffers,
 	   Record visited name (if any) and auto save name.  */
 	if (STRINGP (b->auto_save_file_name)
-	    && listdesc >= 0 && do_handled_files == 0)
+	    && stream != NULL && do_handled_files == 0)
 	  {
 	    if (!NILP (b->filename))
 	      {
-		write (listdesc, XSTRING (b->filename)->data,
-		       XSTRING (b->filename)->size);
+		fwrite (XSTRING (b->filename)->data, 1,
+			STRING_BYTES (XSTRING (b->filename)), stream);
 	      }
-	    write (listdesc, "\n", 1);
-	    write (listdesc, XSTRING (b->auto_save_file_name)->data,
-		   XSTRING (b->auto_save_file_name)->size);
-	    write (listdesc, "\n", 1);
+	    putc ('\n', stream);
+	    fwrite (XSTRING (b->auto_save_file_name)->data, 1,
+		    STRING_BYTES (XSTRING (b->auto_save_file_name)), stream);
+	    putc ('\n', stream);
 	  }
 
 	if (!NILP (current_only)
@@ -4143,8 +5193,10 @@ A non-nil CURRENT-ONLY argument means save only current buffer.")
 		&& NILP (no_message))
 	      {
 		/* It has shrunk too much; turn off auto-saving here.  */
-		message ("Buffer %s has shrunk a lot; auto save turned off there",
-			 XSTRING (b->name)->data);
+		minibuffer_auto_raise = orig_minibuffer_auto_raise;
+		message_with_string ("Buffer %s has shrunk a lot; auto save turned off there",
+				     b->name, 1);
+		minibuffer_auto_raise = 0;
 		/* Turn off auto-saving until there's a real save,
 		   and prevent any more warnings.  */
 		XSETINT (b->save_length, -1);
@@ -4176,8 +5228,8 @@ A non-nil CURRENT-ONLY argument means save only current buffer.")
     {
       if (omessage)
 	{
-	  sit_for (1, 0, 0, 0);
-	  message2 (omessage, omessage_length);
+	  sit_for (1, 0, 0, 0, 0);
+	  message2 (omessage, omessage_length, oldmultibyte);
 	}
       else
 	message1 ("Auto-saving...done");
@@ -4231,14 +5283,16 @@ double_dollars (val)
   register int n;
   int osize, count;
 
-  osize = XSTRING (val)->size;
-  /* Quote "$" as "$$" to get it past substitute-in-file-name */
+  osize = STRING_BYTES (XSTRING (val));
+
+  /* Count the number of $ characters.  */
   for (n = osize, count = 0, old = XSTRING (val)->data; n > 0; n--)
     if (*old++ == '$') count++;
   if (count > 0)
     {
       old = XSTRING (val)->data;
-      val = Fmake_string (make_number (osize + count), make_number (0));
+      val = make_uninit_multibyte_string (XSTRING (val)->size + count,
+					  osize + count);
       new = XSTRING (val)->data;
       for (n = osize; n > 0; n--)
 	if (*old != '$')
@@ -4264,6 +5318,8 @@ DEFUN ("read-file-name-internal", Fread_file_name_internal, Sread_file_name_inte
   Lisp_Object name, specdir, realdir, val, orig_string;
   int changed;
   struct gcpro gcpro1, gcpro2, gcpro3, gcpro4, gcpro5;
+
+  CHECK_STRING (string, 0);
 
   realdir = dir;
   name = string;
@@ -4342,6 +5398,8 @@ DIR defaults to current buffer's directory default.")
   Lisp_Object val, insdef, insdef1, tem;
   struct gcpro gcpro1, gcpro2;
   register char *homedir;
+  int replace_in_history = 0;
+  int add_to_history = 0;
   int count;
 
   if (NILP (dir))
@@ -4366,11 +5424,11 @@ DIR defaults to current buffer's directory default.")
       && IS_DIRECTORY_SEP (XSTRING (dir)->data[strlen (homedir)]))
     {
       dir = make_string (XSTRING (dir)->data + strlen (homedir) - 1,
-			 XSTRING (dir)->size - strlen (homedir) + 1);
+			 STRING_BYTES (XSTRING (dir)) - strlen (homedir) + 1);
       XSTRING (dir)->data[0] = '~';
     }
 
-  if (insert_default_directory)
+  if (insert_default_directory && STRINGP (dir))
     {
       insdef = dir;
       if (!NILP (initial))
@@ -4386,106 +5444,80 @@ DIR defaults to current buffer's directory default.")
       else
 	insdef1 = double_dollars (insdef);
     }
-  else if (!NILP (initial))
+  else if (STRINGP (initial))
     {
       insdef = initial;
-      insdef1 = Fcons (double_dollars (insdef), 0);
+      insdef1 = Fcons (double_dollars (insdef), make_number (0));
     }
   else
     insdef = Qnil, insdef1 = Qnil;
 
-#ifdef VMS
   count = specpdl_ptr - specpdl;
+#ifdef VMS
   specbind (intern ("completion-ignore-case"), Qt);
 #endif
+
+  specbind (intern ("minibuffer-completing-file-name"), Qt);
 
   GCPRO2 (insdef, default_filename);
   val = Fcompleting_read (prompt, intern ("read-file-name-internal"),
 			  dir, mustmatch, insdef1,
-			  Qfile_name_history);
+			  Qfile_name_history, default_filename, Qnil);
 
-#ifdef VMS
+  tem = Fsymbol_value (Qfile_name_history);
+  if (CONSP (tem) && EQ (XCONS (tem)->car, val))
+    replace_in_history = 1;
+
+  /* If Fcompleting_read returned the inserted default string itself
+     (rather than a new string with the same contents),
+     it has to mean that the user typed RET with the minibuffer empty.
+     In that case, we really want to return ""
+     so that commands such as set-visited-file-name can distinguish.  */
+  if (EQ (val, default_filename))
+    {
+      /* In this case, Fcompleting_read has not added an element
+	 to the history.  Maybe we should.  */
+      if (! replace_in_history)
+	add_to_history = 1;
+
+      val = build_string ("");
+    }
+
   unbind_to (count, Qnil);
-#endif
-
   UNGCPRO;
   if (NILP (val))
     error ("No file name specified");
+
   tem = Fstring_equal (val, insdef);
+
   if (!NILP (tem) && !NILP (default_filename))
-    return default_filename;
-  if (XSTRING (val)->size == 0 && NILP (insdef))
+    val = default_filename;
+  else if (XSTRING (val)->size == 0 && NILP (insdef))
     {
       if (!NILP (default_filename))
-	return default_filename;
+	val = default_filename;
       else
 	error ("No default file name");
     }
-  return Fsubstitute_in_file_name (val);
-}
+  val = Fsubstitute_in_file_name (val);
 
-#if 0                           /* Old version */
-DEFUN ("read-file-name", Fread_file_name, Sread_file_name, 1, 5, 0,
-  /* Don't confuse make-docfile by having two doc strings for this function.
-     make-docfile does not pay attention to #if, for good reason!  */
-  0)
-  (prompt, dir, defalt, mustmatch, initial)
-     Lisp_Object prompt, dir, defalt, mustmatch, initial;
-{
-  Lisp_Object val, insdef, tem;
-  struct gcpro gcpro1, gcpro2;
-  register char *homedir;
-  int count;
-
-  if (NILP (dir))
-    dir = current_buffer->directory;
-  if (NILP (defalt))
-    defalt = current_buffer->filename;
-
-  /* If dir starts with user's homedir, change that to ~. */
-  homedir = (char *) egetenv ("HOME");
-  if (homedir != 0
-      && STRINGP (dir)
-      && !strncmp (homedir, XSTRING (dir)->data, strlen (homedir))
-      && XSTRING (dir)->data[strlen (homedir)] == '/')
+  if (replace_in_history)
+    /* Replace what Fcompleting_read added to the history
+       with what we will actually return.  */
+    XCONS (Fsymbol_value (Qfile_name_history))->car = val;
+  else if (add_to_history)
     {
-      dir = make_string (XSTRING (dir)->data + strlen (homedir) - 1,
-			 XSTRING (dir)->size - strlen (homedir) + 1);
-      XSTRING (dir)->data[0] = '~';
+      /* Add the value to the history--but not if it matches
+	 the last value already there.  */
+      tem = Fsymbol_value (Qfile_name_history);
+      if (! CONSP (tem) || NILP (Fequal (XCONS (tem)->car, val)))
+	Fset (Qfile_name_history,
+	      Fcons (val, tem));
     }
-
-  if (!NILP (initial))
-    insdef = initial;
-  else if (insert_default_directory)
-    insdef = dir;
-  else
-    insdef = build_string ("");
-
-#ifdef VMS
-  count = specpdl_ptr - specpdl;
-  specbind (intern ("completion-ignore-case"), Qt);
-#endif
-
-  GCPRO2 (insdef, defalt);
-  val = Fcompleting_read (prompt, intern ("read-file-name-internal"),
-			  dir, mustmatch,
-			  insert_default_directory ? insdef : Qnil,
-			  Qfile_name_history);
-
-#ifdef VMS
-  unbind_to (count, Qnil);
-#endif
-
-  UNGCPRO;
-  if (NILP (val))
-    error ("No file name specified");
-  tem = Fstring_equal (val, insdef);
-  if (!NILP (tem) && !NILP (defalt))
-    return defalt;
-  return Fsubstitute_in_file_name (val);
+  return val;
 }
-#endif /* Old version */
 
+void
 syms_of_fileio ()
 {
   Qexpand_file_name = intern ("expand-file-name");
@@ -4505,8 +5537,9 @@ syms_of_fileio ()
   Qfile_exists_p = intern ("file-exists-p");
   Qfile_executable_p = intern ("file-executable-p");
   Qfile_readable_p = intern ("file-readable-p");
-  Qfile_symlink_p = intern ("file-symlink-p");
   Qfile_writable_p = intern ("file-writable-p");
+  Qfile_symlink_p = intern ("file-symlink-p");
+  Qaccess_file = intern ("access-file");
   Qfile_directory_p = intern ("file-directory-p");
   Qfile_regular_p = intern ("file-regular-p");
   Qfile_accessible_directory_p = intern ("file-accessible-directory-p");
@@ -4535,8 +5568,9 @@ syms_of_fileio ()
   staticpro (&Qfile_exists_p);
   staticpro (&Qfile_executable_p);
   staticpro (&Qfile_readable_p);
-  staticpro (&Qfile_symlink_p);
   staticpro (&Qfile_writable_p);
+  staticpro (&Qaccess_file);
+  staticpro (&Qfile_symlink_p);
   staticpro (&Qfile_directory_p);
   staticpro (&Qfile_regular_p);
   staticpro (&Qfile_accessible_directory_p);
@@ -4546,6 +5580,7 @@ syms_of_fileio ()
   staticpro (&Qinsert_file_contents);
   staticpro (&Qwrite_region);
   staticpro (&Qverify_visited_file_modtime);
+  staticpro (&Qset_visited_file_modtime);
 
   Qfile_name_history = intern ("file-name-history");
   Fset (Qfile_name_history, Qnil);
@@ -4555,11 +5590,29 @@ syms_of_fileio ()
   staticpro (&Qfile_error);
   Qfile_already_exists = intern ("file-already-exists");
   staticpro (&Qfile_already_exists);
+  Qfile_date_error = intern ("file-date-error");
+  staticpro (&Qfile_date_error);
 
 #ifdef DOS_NT
   Qfind_buffer_file_type = intern ("find-buffer-file-type");
   staticpro (&Qfind_buffer_file_type);
 #endif /* DOS_NT */
+
+  DEFVAR_LISP ("file-name-coding-system", &Vfile_name_coding_system,
+    "*Coding system for encoding file names.\n\
+If it is nil, default-file-name-coding-system (which see) is used.");
+  Vfile_name_coding_system = Qnil;
+
+  DEFVAR_LISP ("default-file-name-coding-system",
+	       &Vdefault_file_name_coding_system,
+    "Default coding system for encoding file names.\n\
+This variable is used only when file-name-coding-system is nil.\n\
+\n\
+This variable is set/changed by the command set-language-environment.\n\
+User should not set this variable manually,\n\
+instead use file-name-coding-system to get a constant encoding\n\
+of file names regardless of the current language environment.");
+  Vdefault_file_name_coding_system = Qnil;
 
   DEFVAR_LISP ("auto-save-file-format", &Vauto_save_file_format,
     "*Format in which to write auto-save files.\n\
@@ -4587,6 +5640,12 @@ same format as a regular save would use.");
   Fput (Qfile_already_exists, Qerror_message,
 	build_string ("File already exists"));
 
+  Fput (Qfile_date_error, Qerror_conditions,
+	Fcons (Qfile_date_error,
+	       Fcons (Qfile_error, Fcons (Qerror, Qnil))));
+  Fput (Qfile_date_error, Qerror_message,
+	build_string ("Cannot set file date"));
+
   DEFVAR_BOOL ("insert-default-directory", &insert_default_directory,
     "*Non-nil means when reading a filename start with default dir in minibuffer.");
   insert_default_directory = 1;
@@ -4602,7 +5661,7 @@ The value should be either ?/ or ?\\ (any other value is treated as ?\\).\n\
 This variable affects the built-in functions only on Windows,\n\
 on other platforms, it is initialized so that Lisp code can find out\n\
 what the normal separator is.");
-  Vdirectory_sep_char = '/';
+  XSETFASTINT (Vdirectory_sep_char, '/');
 
   DEFVAR_LISP ("file-name-handler-alist", &Vfile_name_handler_alist,
     "*Alist of elements (REGEXP . HANDLER) for file names handled specially.\n\
@@ -4618,6 +5677,19 @@ and FILENAME is handled by HANDLER, then HANDLER is called like this:\n\
 The function `find-file-name-handler' checks this list for a handler\n\
 for its argument.");
   Vfile_name_handler_alist = Qnil;
+
+  DEFVAR_LISP ("set-auto-coding-function",
+	       &Vset_auto_coding_function,
+    "If non-nil, a function to call to decide a coding system of file.\n\
+Two arguments are passed to this function: the file name\n\
+and the length of a file contents following the point.\n\
+This function should return a coding system to decode the file contents.\n\
+It should check the file name against `auto-coding-alist'.\n\
+If no coding system is decided, it should check a coding system\n\
+specified in the heading lines with the format:\n\
+	-*- ... coding: CODING-SYSTEM; ... -*-\n\
+or local variable spec of the tailing lines with `coding:' tag.");
+  Vset_auto_coding_function = Qnil;
 
   DEFVAR_LISP ("after-insert-file-functions", &Vafter_insert_file_functions,
     "A list of functions to be called at the end of `insert-file-contents'.\n\
@@ -4691,6 +5763,7 @@ a non-nil value.");
   defsubr (&Sfile_executable_p);
   defsubr (&Sfile_readable_p);
   defsubr (&Sfile_writable_p);
+  defsubr (&Saccess_file);
   defsubr (&Sfile_symlink_p);
   defsubr (&Sfile_directory_p);
   defsubr (&Sfile_accessible_directory_p);

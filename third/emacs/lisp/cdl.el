@@ -3,6 +3,7 @@
 ;; Copyright (C) 1993 Free Software Foundation, Inc.
 
 ;; Author: ATAE@spva.physics.imperial.ac.uk (Ata Etemadi)
+;; Maintainers: FSF
 ;; Keywords: data
 
 ;; This file is part of GNU Emacs.
@@ -40,5 +41,7 @@
   (call-process-region start end "ncgen"
 		       nil nil nil "-o" (expand-file-name filename))
   (message "ncgen in progress...done"))
+
+(provide 'cdl)
 
 ;;; cdl.el ends here.

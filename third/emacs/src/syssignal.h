@@ -30,11 +30,14 @@ Boston, MA 02111-1307, USA.  */
 
 #define SIGEMPTYMASK (empty_mask)
 #define SIGFULLMASK (full_mask)
-extern sigset_t empty_mask, full_mask, temp_mask;
+extern sigset_t empty_mask, full_mask;
+extern void init_signals P_ ((void));
 
 /* POSIX pretty much destroys any possibility of writing sigmask as a
-   macro in standard C.  */
-#ifndef sigmask
+   macro in standard C.  We always define our own version because the
+   predefined macro in Glibc 2.1 is only provided for compatility for old
+   programs that use int as signal mask type.  */
+#undef sigmask
 #ifdef __GNUC__
 #define sigmask(SIG) 				\
   ({						\
@@ -47,9 +50,10 @@ extern sigset_t empty_mask, full_mask, temp_mask;
 extern sigset_t sys_sigmask ();
 #define sigmask(SIG) (sys_sigmask (SIG))
 #endif /* ! defined (__GNUC__) */
-#endif
 
-#define sigpause(SIG)    sys_sigpause (SIG)
+#undef sigpause
+#define sigpause(MASK)    sigsuspend (&(MASK))
+
 #define sigblock(SIG)    sys_sigblock (SIG)
 #define sigunblock(SIG)  sys_sigunblock (SIG)
 #ifndef sigsetmask
@@ -64,11 +68,10 @@ extern sigset_t sys_sigmask ();
    appears to be assumed in the source, for example data.c:arith_error.  */
 typedef RETSIGTYPE (*signal_handler_t) (/*int*/);
 
-signal_handler_t sys_signal (/*int signal_number, signal_handler_t action*/);
-int      sys_sigpause   (/*sigset_t new_mask*/);
-sigset_t sys_sigblock   (/*sigset_t new_mask*/);
-sigset_t sys_sigunblock (/*sigset_t new_mask*/);
-sigset_t sys_sigsetmask (/*sigset_t new_mask*/);
+signal_handler_t sys_signal P_ ((int signal_number, signal_handler_t action));
+sigset_t sys_sigblock   P_ ((sigset_t new_mask));
+sigset_t sys_sigunblock P_ ((sigset_t new_mask));
+sigset_t sys_sigsetmask P_ ((sigset_t new_mask));
 
 #define sys_sigdel(MASK,SIG) sigdelset (&MASK,SIG)
 
@@ -116,27 +119,18 @@ sigset_t sys_sigsetmask (/*sigset_t new_mask*/);
 { SIGMASKTYPE omask = sigblock (SIGFULLMASK); sigsetmask (omask & ~SIG); }
 #endif
 
-/* It would be very nice if we could somehow clean up all this trash.  */
-
 #ifndef BSD4_1
 #define sigfree() sigsetmask (SIGEMPTYMASK)
-#define sigholdx(sig) sigsetmask (sigmask (sig))
-#define sigblockx(sig) sigblock (sigmask (sig))
-#define sigunblockx(sig) sigunblock (sigmask (sig))
-#define sigpausex(sig) sigpause (0)
 #endif /* not BSD4_1 */
 
 #ifdef BSD4_1
 #define SIGIO SIGTINT
-/* sigfree and sigholdx are in sysdep.c */
-#define sigblockx(sig) sighold (sig)
-#define sigunblockx(sig) sigrelse (sig)
-#define sigpausex(sig) sigpause (sig)
+/* sigfree is in sysdep.c */
 #endif /* BSD4_1 */
 
 /* On bsd, [man says] kill does not accept a negative number to kill a pgrp.
    Must do that using the killpg call.  */
-#ifdef BSD
+#ifdef BSD_SYSTEM
 #define EMACS_KILLPG(gid, signo) (killpg ( (gid), (signo)))
 #else
 #ifdef WINDOWSNT

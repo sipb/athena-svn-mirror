@@ -63,12 +63,12 @@ Boston, MA 02111-1307, USA.  */
 #if defined(_AIX) && defined(_I386)
 #include <termios.h>		/* termios.h needs to be before termio.h */
 #include <termio.h>
-#else /* not HAVE_TERMIOS */
+#else /* not (_AIX && _I386) */
 #ifndef NO_TERMIO
 #include <termio.h>
 #endif
 #include <termios.h>
-#endif /* _AIX && _I386 */
+#endif /* not (_AIX && _I386) */
 #define INCLUDED_FCNTL
 #include <fcntl.h>
 #else /* neither HAVE_TERMIO nor HAVE_TERMIOS */
@@ -296,7 +296,15 @@ static struct sensemode {
 
 #ifdef __GNU_LIBRARY__
 /* GNU libc by default defines getpgrp with no args on all systems.  */
+#if __GLIBC__  >= 2
+/* glibc-2.1 adds the BSD compatibility getpgrp function
+   if you use __BSD_SOURCE, which Emacs does on GNU/Linux systems.  */
+#if __GLIBC_MINOR__ < 1 || ! defined (_BSD_SOURCE)
 #define GETPGRP_NO_ARG
+#endif
+#else /* __GLIBC__ < 2 */
+#define GETPGRP_NO_ARG
+#endif /* __GLIBC__ < 2 */
 #else /* not __GNU_LIBRARY__ */
 #if defined (USG) && !defined (GETPGRP_NEEDS_ARG)
 #  if !defined (GETPGRP_NO_ARG)
@@ -384,6 +392,10 @@ struct emacs_tty {
    expression, so we moved them out to their own functions in sysdep.c.  */
 #define EMACS_GET_TTY(fd, p)        (emacs_get_tty ((fd), (p)))
 #define EMACS_SET_TTY(fd, p, waitp) (emacs_set_tty ((fd), (p), (waitp)))
+#ifdef P_  /* Unfortunately this file is sometimes included before lisp.h */
+extern int emacs_get_tty P_ ((int, struct emacs_tty *));
+extern int emacs_set_tty P_ ((int, struct emacs_tty *, int));
+#endif
 
 
 /* Define EMACS_TTY_TABS_OK.  */

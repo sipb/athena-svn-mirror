@@ -1,5 +1,5 @@
 @c This is part of the Emacs manual.
-@c Copyright (C) 1985, 1986, 1987, 1993, 1994, 1995 Free Software Foundation, Inc.
+@c Copyright (C) 1985, 86, 87, 93, 94, 95, 1997 Free Software Foundation, Inc.
 @c See file emacs.texi for copying conditions.
 @node Building, Abbrevs, Programs, Top
 @chapter Compiling and Testing Programs
@@ -12,18 +12,20 @@ making changes in programs.  This chapter deals with commands that assist
 in the larger process of developing and maintaining programs.
 
 @menu
-* Compilation::                   Compiling programs in languages other
-                                    than Lisp (C, Pascal, etc.)
-* Debuggers::	                  Running symbolic debuggers for
-                                    non-Lisp programs. 
-* Executing Lisp::                Various modes for editing Lisp programs, 
-                                    with different facilities for running
-                                    the Lisp programs. 
+* Compilation::         Compiling programs in languages other
+                          than Lisp (C, Pascal, etc.).
+* Grep Searching::      Running grep as if it were a compiler.
+* Compilation Mode::    The mode for visiting compiler errors.
+* Compilation Shell::   Customizing your shell properly
+                          for use in the compilation buffer.
+* Debuggers::	        Running symbolic debuggers for non-Lisp programs. 
+* Executing Lisp::      Various modes for editing Lisp programs, 
+                          with different facilities for running
+                          the Lisp programs. 
 * Libraries: Lisp Libraries.      Creating Lisp programs to run in Emacs.
 * Interaction: Lisp Interaction.  Executing Lisp in an Emacs buffer.
-* Eval: Lisp Eval.                Executing a single Lisp expression in Emacs.
-* External Lisp::                 Communicating through Emacs with a
-                                    separate Lisp. 
+* Eval: Lisp Eval.      Executing a single Lisp expression in Emacs.
+* External Lisp::         Communicating through Emacs with a separate Lisp. 
 @end menu
 
 @node Compilation
@@ -45,16 +47,12 @@ Run a compiler asynchronously under Emacs, with error messages to
 @item M-x grep
 Run @code{grep} asynchronously under Emacs, with matching lines
 listed in the buffer named @samp{*grep*}.
+@item M-x grep-find
+Run @code{grep} via @code{find}, with user-specified arguments, and
+collect output in the buffer named @samp{*grep*}.
 @item M-x kill-compilation
 @itemx M-x kill-grep
 Kill the running compilation or @code{grep} subprocess.
-@item C-x `
-Visit the locus of the next compiler error message or @code{grep} match.
-@item @key{RET}
-Visit the locus of the error message that point is on.
-This command is used in the compilation buffer.
-@item Mouse-2
-Visit the locus of the error message that you click on.
 @end table
 
 @findex compile
@@ -92,6 +90,11 @@ above point, which remains at the end.  If point is not at the end of
 the buffer, it remains fixed while more compilation output is added at
 the end of the buffer.
 
+@vindex compilation-scroll-output
+  If you set the variable @code{compilation-scroll-output} to a
+non-@code{nil} value, then the compilation buffer always scrolls to
+follow output as it comes in.
+
 @findex kill-compilation
   To kill the compilation process, do @kbd{M-x kill-compilation}.  When
 the compiler process terminates, the mode line of the
@@ -101,14 +104,54 @@ compilation, as only one can exist at any time.  However, @kbd{M-x
 compile} asks for confirmation before actually killing a compilation
 that is running.
 
+@node Grep Searching
+@section Searching with Grep under Emacs
+
+@findex grep
+  Just as you can run a compiler from Emacs and then visit the lines
+where there were compilation errors, you can also run @code{grep} and
+then visit the lines on which matches were found.  This works by
+treating the matches reported by @code{grep} as if they were ``errors.''
+
+  To do this, type @kbd{M-x grep}, then enter a command line that
+specifies how to run @code{grep}.  Use the same arguments you would give
+@code{grep} when running it normally: a @code{grep}-style regexp
+(usually in single-quotes to quote the shell's special characters)
+followed by file names, which may use wildcards.  The output from
+@code{grep} goes in the @samp{*grep*} buffer.  You can find the
+corresponding lines in the original files using @kbd{C-x `} and
+@key{RET}, as with compilation errors.
+
+  If you specify a prefix argument for @kbd{M-x grep}, it figures out
+the tag (@pxref{Tags}) around point, and puts that into the default
+@code{grep} command.
+
+@findex grep-find
+  The command @kbd{M-x grep-find} is similar to @kbd{M-x grep}, but it
+supplies a different initial default for the command---one that runs
+both @code{find} and @code{grep}, so as to search every file in a
+directory tree.  See also the @code{find-grep-dired} command,
+in @ref{Dired and Find}.
+
+@node Compilation Mode
+@section Compilation Mode
+
 @findex compile-goto-error
 @cindex Compilation mode
 @cindex mode, Compilation
   The @samp{*compilation*} buffer uses a special major mode, Compilation
-mode.  This mode provides the keys @key{SPC} and @key{DEL} to scroll by
-screenfuls, and @kbd{M-n} and @kbd{M-p} to move to the next or previous
-error message.  You can also use @kbd{M-@{} and @kbd{M-@}} to move up or
-down to an error message for a different source file.
+mode, whose main feature is to provide a convenient way to look at the
+source line where the error happened.
+
+@table @kbd
+@item C-x `
+Visit the locus of the next compiler error message or @code{grep} match.
+@item @key{RET}
+Visit the locus of the error message that point is on.
+This command is used in the compilation buffer.
+@item Mouse-2
+Visit the locus of the error message that you click on.
+@end table
 
 @kindex C-x `
 @findex next-error
@@ -133,28 +176,37 @@ buffer and finds no more error messages to visit, it fails and signals
 an Emacs error.
 
   @kbd{C-u C-x `} starts scanning from the beginning of the compilation
-buffer.  This way, you can process the same set of errors again.
+buffer.  This is one way to process the same set of errors again.
 
-@findex grep
-  Just as you can run a compiler, you can also run @code{grep} and then
-visit the lines on which matches were found.  To do this, type @kbd{M-x
-grep} with an argument line that contains the same arguments you would
-give @code{grep} when running it normally: a @code{grep}-style regexp
-(usually in single-quotes to quote the shell's special characters)
-followed by file names which may use wildcards.  The output from
-@code{grep} goes in the @samp{*grep*} buffer, and you can find the
-matching lines in the source with @kbd{C-x `} and @key{RET} just like
-compiler errors.
+  Compilation mode also redefines the keys @key{SPC} and @key{DEL} to
+scroll by screenfuls, and @kbd{M-n} and @kbd{M-p} to move to the next or
+previous error message.  You can also use @kbd{M-@{} and @kbd{M-@}} to
+move up or down to an error message for a different source file.
 
-  Note: a shell is used to run the compile command, but the shell is
-told that it should be noninteractive.  This means in particular that
-the shell starts up with no prompt.  If you find your usual shell prompt
-making an unsightly appearance in the @samp{*compilation*} buffer, it
-means you have made a mistake in your shell's init file by setting the
-prompt unconditionally.  (The init file name may be @file{.profile},
-@file{.cshrc}, @file{.shrc}, or various other things, depending on the
-shell you use.)  The shell init file should set the prompt only if there
-already is a prompt.  In csh, here is how to do it:
+  The features of Compilation mode are also available in a minor mode
+called Compilation Minor mode.  This lets you parse error messages in
+any buffer, not just a normal compilation output buffer.  Type @kbd{M-x
+compilation-minor-mode} to enable the minor mode.  This defines the keys
+@key{RET} and @kbd{Mouse-2}, as in the Compilation major mode.
+
+  Compilation minor mode works in any buffer, as long as the contents
+are in a format that it understands.  In an Rlogin buffer (@pxref{Remote
+Host}), Compilation minor mode automatically accesses remote source
+files by FTP (@pxref{File Names}).
+
+@node Compilation Shell
+@section Subshells for Compilation
+
+  Emacs uses a shell to run the compilation command, but specifies
+the option for a noninteractive shell.  This means, in particular, that
+the shell should start with no prompt.  If you find your usual shell
+prompt making an unsightly appearance in the @samp{*compilation*}
+buffer, it means you have made a mistake in your shell's init file by
+setting the prompt unconditionally.  (This init file's name may be
+@file{.bashrc}, @file{.profile}, @file{.cshrc}, @file{.shrc}, or various
+other things, depending on the shell you use.)  The shell init file
+should set the prompt only if there already is a prompt.  In csh, here
+is how to do it:
 
 @example
 if ($?prompt) set prompt = @dots{}
@@ -165,21 +217,13 @@ And here's how to do it in bash:
 
 @example
 if [ "$@{PS1+set@}" = set ]
-then prompt=@dots{}
+then PS1=@dots{}
 fi
 @end example
 
   There may well be other things that your shell's init file
 ought to do only for an interactive shell.  You can use the same
 method to conditionalize them.
-
-  The features of Compilation mode are also available in a minor mode
-called Compilation Minor mode.  This lets you parse error messages in
-any buffer, not just a normal compilation output buffer.  Type @kbd{M-x
-compilation-minor-mode} to enable the minor mode.  This defines the keys
-@key{RET} and @kbd{Mouse-2}, as in the Compilation major mode.  In an
-Rlogin buffer (@pxref{Remote Host}), Compilation minor mode
-automatically accesses remote source files by FTP (@pxref{File Names}).
 
   The MS-DOS ``operating system'' does not support asynchronous
 subprocesses; to work around this lack, @kbd{M-x compile} runs the
@@ -196,13 +240,15 @@ Emacs.  @xref{MS-DOS}.
 @cindex SDB
 @cindex XDB
 @cindex Perldb
+@cindex JDB
+@cindex PDB
 
 @c Do you believe in GUD?
 The GUD (Grand Unified Debugger) library provides an interface to
 various symbolic debuggers from within Emacs.  We recommend the debugger
 GDB, which is free software, but you can also run DBX, SDB or XDB if you
 have them.  GUD can also serve as an interface to the Perl's debugging
-mode.
+mode, the Python debugger PDB, and to JDB, the Java Debugger.
 
 @menu
 * Starting GUD::	How to start a debugger subprocess.
@@ -214,7 +260,7 @@ mode.
 @node Starting GUD
 @subsection Starting GUD
 
-  There are five commands for starting a debugger, each corresponding
+  There are several commands for starting a debugger, each corresponding
 to a particular debugger program.
 
 @table @kbd
@@ -250,16 +296,24 @@ tags table in the working directory and try again.
 @item M-x perldb @key{RET} @var{file} @key{RET}
 @findex perldb
 Run the Perl interpreter in debug mode to debug @var{file}, a Perl program.
-@end table
 
-  You can only run one debugger process at a time.
+@item M-x jdb @key{RET} @var{file} @key{RET}
+@findex jdb
+Run the Java debugger to debug @var{file}.
+
+@item M-x pdb @key{RET} @var{file} @key{RET}
+@findex pdb
+Run the Python debugger to debug @var{file}.
+@end table
 
   Each of these commands takes one argument: a command line to invoke
 the debugger.  In the simplest case, specify just the name of the
 executable file you want to debug.  You may also use options that the
-debugger supports.  However, shell wild cards and variables are not
-allowed.  GUD assumes that the first argument not preceded by a @samp{-}
-is the executable file name.
+debugger supports.  However, shell wildcards and variables are not
+allowed.  GUD assumes that the first argument not starting with a
+@samp{-} is the executable file name.
+
+  Emacs can only run one debugger process at a time.
 
 @node Debugger Operation
 @subsection Debugger Operation
@@ -301,15 +355,15 @@ Here's the global command to set a breakpoint:
 
 @table @kbd
 @item C-x @key{SPC}
-@kindex C-x @key{SPC}
+@kindex C-x SPC
 Set a breakpoint on the source line that point is on.
 @end table
 
 @kindex C-x C-a @r{(GUD)}
   Here are the other special commands provided by GUD.  The keys
 starting with @kbd{C-c} are available only in the GUD interaction
-buffer.  The bindings that start with @kbd{C-x C-a} are available in the
-GUD buffer and also in source files.
+buffer.  The key bindings that start with @kbd{C-x C-a} are available in
+the GUD interaction buffer and also in source files.
 
 @table @kbd
 @item C-c C-l
@@ -390,7 +444,7 @@ equivalent to the @samp{down} command.
 
 @table @kbd
 @item @key{TAB}
-@kindex @key{TAB} @r{(GUD)}
+@kindex TAB @r{(GUD)}
 @findex gud-gdb-complete-command
 With GDB, complete a symbol name (@code{gud-gdb-complete-command}).
 This key is available only in the GUD interaction buffer, and requires
@@ -419,11 +473,14 @@ Instead, type @kbd{C-q @key{TAB}} to enter a tab.
 @vindex sdb-mode-hook
 @vindex xdb-mode-hook
 @vindex perldb-mode-hook
+@vindex pdb-mode-hook
+@vindex jdb-mode-hook
   On startup, GUD runs one of the following hooks: @code{gdb-mode-hook},
 if you are using GDB; @code{dbx-mode-hook}, if you are using DBX;
 @code{sdb-mode-hook}, if you are using SDB; @code{xdb-mode-hook}, if you
-are using XDB; @code{perldb-mode-hook}, for Perl debugging mode.  You
-can use these hooks to define custom key bindings for the debugger
+are using XDB; @code{perldb-mode-hook}, for Perl debugging mode;
+@code{jdb-mode-hook}, for PDB; @code{jdb-mode-hook}, for JDB.  You can
+use these hooks to define custom key bindings for the debugger
 interaction buffer.  @xref{Hooks}.
 
   Here is a convenient way to define a command that sends a particular
@@ -488,7 +545,7 @@ This mode defines @kbd{C-M-x} to evaluate the current defun.
 @xref{Lisp Libraries}.
 @item Lisp Interaction mode
 The mode for an interactive session with Emacs Lisp.  It defines
-@key{LFD} to evaluate the sexp before point and insert its value in the
+@kbd{C-j} to evaluate the sexp before point and insert its value in the
 buffer.  @xref{Lisp Interaction}.
 @item Lisp mode
 The mode for editing source files of programs that run in Lisps other
@@ -621,12 +678,6 @@ what the buffer contains.  When the expression is evaluated, the current
 buffer is once again the buffer that was current when @kbd{M-:} was
 typed.
 
-  @kbd{M-:} can easily confuse users who do not understand it.
-Therefore, @code{eval-expression} is normally a disabled command.
-Attempting to use this command asks for confirmation and gives you the
-option of enabling it; once you enable the command, confirmation will no
-longer be required for it.  @xref{Disabling}.
-
 @kindex C-M-x @r{(Emacs-Lisp mode)}
 @findex eval-defun
   In Emacs-Lisp mode, the key @kbd{C-M-x} is bound to the command
@@ -648,9 +699,10 @@ expression preceding point in the buffer, and displays the value in the
 echo area.  It is available in all major modes, not just Emacs-Lisp
 mode.  It does not treat @code{defvar} specially.
 
-  If @kbd{C-M-x} or @kbd{C-x C-e} is given a numeric argument, it
-inserts the value into the current buffer at point, rather than
-displaying it in the echo area.  The argument's value does not matter.
+  If @kbd{C-M-x}, @kbd{C-x C-e}, or @kbd{M-:} is given a numeric
+argument, it inserts the value into the current buffer at point, rather
+than displaying it in the echo area.  The argument's value does not
+matter.
 
 @findex eval-region
 @findex eval-current-buffer
@@ -670,13 +722,13 @@ change.  This keeps the Lisp world in step with the source file.
 provided for evaluating Lisp expressions interactively inside Emacs.
 
   The simplest way to use the @samp{*scratch*} buffer is to insert Lisp
-expressions and type @key{LFD} after each expression.  This command
+expressions and type @kbd{C-j} after each expression.  This command
 reads the Lisp expression before point, evaluates it, and inserts the
 value in printed representation before point.  The result is a complete
 typescript of the expressions you have evaluated and their values.
 
   The @samp{*scratch*} buffer's major mode is Lisp Interaction mode, which
-is the same as Emacs-Lisp mode except for the binding of @key{LFD}.
+is the same as Emacs-Lisp mode except for the binding of @kbd{C-j}.
 
 @findex lisp-interaction-mode
   The rationale for this feature is that Emacs must have a buffer when

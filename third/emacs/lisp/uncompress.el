@@ -24,9 +24,11 @@
 ;;; Commentary:
 
 ;; This package can be used to arrange for automatic uncompress of
-;; files packed with the UNIX compress(1) utility when they are visited.
+;; compressed files when they are visited.
 ;; All that's necessary is to load it.  This can conveniently be done from
 ;; your .emacs file.
+
+;; M-x auto-compression-mode is a more modern replacement for this package.
 
 ;;; Code:
 
@@ -50,6 +52,9 @@
 (or (assoc "\\.gz$" auto-mode-alist)
     (setq auto-mode-alist
 	  (cons '("\\.gz$" . uncompress-while-visiting) auto-mode-alist)))
+(or (assoc "\\.tgz$" auto-mode-alist)
+    (setq auto-mode-alist
+	  (cons '("\\.tgz$" . uncompress-while-visiting) auto-mode-alist)))
 
 (defun uncompress-while-visiting ()
   "Temporary \"major mode\" used for .Z and .gz files, to uncompress them.
@@ -61,10 +66,20 @@ It then selects a major mode from the uncompressed file name and contents."
     (if (and (not (null buffer-file-name))
 	     (string-match "\\.gz$" buffer-file-name))
 	(set-visited-file-name
-	 (substring buffer-file-name 0 (match-beginning 0)))))
+	 (substring buffer-file-name 0 (match-beginning 0)))
+      (if (and (not (null buffer-file-name))
+               (string-match "\\.tgz$" buffer-file-name))
+          (set-visited-file-name
+           (concat (substring buffer-file-name 0 (match-beginning 0)) ".tar")))))
   (message "Uncompressing...")
-  (let ((buffer-read-only nil))
+  (let ((buffer-read-only nil)
+	(coding-system-for-write 'no-conversion)
+	(coding-system-for-read
+	 (find-operation-coding-system
+	  'insert-file-contents
+	  buffer-file-name t)))
     (shell-command-on-region (point-min) (point-max) uncompress-program t))
+  (goto-char (point-min))
   (message "Uncompressing...done")
   (set-buffer-modified-p nil)
   (make-local-variable 'write-file-hooks)
@@ -89,7 +104,9 @@ It then selects a major mode from the uncompressed file name and contents."
 	(progn
 	  (insert-file-contents buffer-file-name t)
 	  (goto-char (point-min))
-	  (setq error nil)
+	  ;; No need for this, because error won't be set to t
+	  ;; if this function returns t.
+	  ;; (setq error nil)
 	  t))))
 
 (provide 'uncompress)

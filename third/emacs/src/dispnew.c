@@ -1,5 +1,6 @@
 /* Updating of data structures for redisplay.
-   Copyright (C) 1985, 86, 87, 88, 93, 94, 95 Free Software Foundation, Inc.
+   Copyright (C) 1985, 86, 87, 88, 93, 94, 95, 97, 1998
+       Free Software Foundation, Inc.
 
 This file is part of GNU Emacs.
 
@@ -26,6 +27,10 @@ Boston, MA 02111-1307, USA.  */
 #include <stdio.h>
 #include <ctype.h>
 
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
 #include "lisp.h"
 #include "termchar.h"
 #include "termopts.h"
@@ -34,6 +39,7 @@ Boston, MA 02111-1307, USA.  */
 #include "dispextern.h"
 #include "cm.h"
 #include "buffer.h"
+#include "charset.h"
 #include "frame.h"
 #include "window.h"
 #include "commands.h"
@@ -41,8 +47,12 @@ Boston, MA 02111-1307, USA.  */
 #include "indent.h"
 #include "intervals.h"
 #include "blockinput.h"
+#include "process.h"
+#include "keyboard.h"
 
-#include "systty.h"
+/* I don't know why DEC Alpha OSF1 fail to compile this file if we
+   include the following file.  */
+/* #include "systty.h" */
 #include "syssignal.h"
 
 #ifdef HAVE_X_WINDOWS
@@ -60,6 +70,8 @@ Boston, MA 02111-1307, USA.  */
 
 #define max(a, b) ((a) > (b) ? (a) : (b))
 #define min(a, b) ((a) < (b) ? (a) : (b))
+#define minmax(floor, val, ceil) \
+	((val) < (floor) ? (floor) : (val) > (ceil) ? (ceil) : (val))
 
 /* Get number of chars of output now in the buffer of a stdio stream.
    This ought to be built in in stdio, but it isn't.
@@ -144,18 +156,6 @@ FRAME_PTR selected_frame;
    the address of the_only_frame.  */
 FRAME_PTR last_nonminibuf_frame;
 
-/* In a single-frame version, the information that would otherwise
-   exist inside frame objects lives in the following structure instead.
-
-   NOTE: the_only_frame is not checked for garbage collection; don't
-   store collectible objects in any of its fields!
-
-   You're not/The only frame in town/...  */
-
-#ifndef MULTI_FRAME
-struct frame the_only_frame;
-#endif
-
 /* This is a vector, made larger whenever it isn't large enough,
    which is used inside `update_frame' to hold the old contents
    of the FRAME_PHYS_LINES of the frame being updated.  */
@@ -169,8 +169,6 @@ struct cm Wcm;		/* Structure for info on cursor positioning */
 
 int delayed_size_change;  /* 1 means SIGWINCH happened when not safe.  */
 
-#ifdef MULTI_FRAME
-
 DEFUN ("redraw-frame", Fredraw_frame, Sredraw_frame, 1, 1, 0,
   "Clear frame FRAME and output again what is supposed to appear on it.")
   (frame)
@@ -180,13 +178,22 @@ DEFUN ("redraw-frame", Fredraw_frame, Sredraw_frame, 1, 1, 0,
 
   CHECK_LIVE_FRAME (frame, 0);
   f = XFRAME (frame);
-  update_begin (f);
-  if (FRAME_MSDOS_P (f))
-    set_terminal_modes ();
-  clear_frame ();
-  clear_frame_records (f);
-  update_end (f);
-  fflush (stdout);
+
+  /* Erase the frame and its glyph records--if it has any records.
+     It may have none, in the case of the terminal frame
+     that initially exists but is never used
+     when Emacs is using a window system.  */
+  if (FRAME_CURRENT_GLYPHS (f) != 0)
+    {
+      update_begin (f);
+      if (FRAME_MSDOS_P (f))
+	set_terminal_modes ();
+      clear_frame ();
+      clear_frame_records (f);
+      update_end (f);
+      fflush (stdout);
+    }
+
   windows_or_buffers_changed++;
   /* Mark all windows as INaccurate,
      so that every window will have its redisplay done.  */
@@ -195,6 +202,7 @@ DEFUN ("redraw-frame", Fredraw_frame, Sredraw_frame, 1, 1, 0,
   return Qnil;
 }
 
+void
 redraw_frame (f)
      FRAME_PTR f;
 {
@@ -202,30 +210,6 @@ redraw_frame (f)
   XSETFRAME (frame, f);
   Fredraw_frame (frame);
 }
-
-#else
-
-DEFUN ("redraw-frame", Fredraw_frame, Sredraw_frame, 1, 1, 0,
-  /* Don't confuse make-docfile by having two doc strings for this function.
-     make-docfile does not pay attention to #if, for good reason!  */
-  0)
-  (frame)
-     Lisp_Object frame;
-{
-  update_begin (0);
-  set_terminal_modes ();
-  clear_frame ();
-  update_end (0);
-  fflush (stdout);
-  clear_frame_records (0);
-  windows_or_buffers_changed++;
-  /* Mark all windows as INaccurate,
-     so that every window will have its redisplay done.  */
-  mark_window_display_accurate (FRAME_ROOT_WINDOW (0), 0);
-  return Qnil;
-}
-
-#endif
 
 DEFUN ("redraw-display", Fredraw_display, Sredraw_display, 0, 0, "",
   "Clear and redisplay all visible frames.")
@@ -261,8 +245,8 @@ make_frame_glyphs (frame, empty)
      int empty;
 {
   register int i;
-  register width = FRAME_WIDTH (frame);
-  register height = FRAME_HEIGHT (frame);
+  register int width = FRAME_WINDOW_WIDTH (frame);
+  register int height = FRAME_HEIGHT (frame);
   register struct frame_glyphs *new
     = (struct frame_glyphs *) xmalloc (sizeof (struct frame_glyphs));
 
@@ -384,7 +368,7 @@ remake_frame_glyphs (frame)
 
       FRAME_MESSAGE_BUF (frame)
 	= (char *) xrealloc (FRAME_MESSAGE_BUF (frame),
-			     FRAME_WIDTH (frame) + 1);
+			     FRAME_MESSAGE_BUF_SIZE (frame) + 1);
 
       if (echo_area_glyphs == old_message_buf)
 	echo_area_glyphs = FRAME_MESSAGE_BUF (frame);
@@ -393,7 +377,7 @@ remake_frame_glyphs (frame)
     }
   else
     FRAME_MESSAGE_BUF (frame)
-      = (char *) xmalloc (FRAME_WIDTH (frame) + 1);
+      = (char *) xmalloc (FRAME_MESSAGE_BUF_SIZE (frame) + 1);
 
   FRAME_CURRENT_GLYPHS (frame) = make_frame_glyphs (frame, 0);
   FRAME_DESIRED_GLYPHS (frame) = make_frame_glyphs (frame, 0);
@@ -500,6 +484,7 @@ line_draw_cost (m, vpos)
 
 /* cancel_line eliminates any request to display a line at position `vpos' */
 
+void
 cancel_line (vpos, frame)
      int vpos;
      register FRAME_PTR frame;
@@ -507,6 +492,7 @@ cancel_line (vpos, frame)
   FRAME_DESIRED_GLYPHS (frame)->enable[vpos] = 0;
 }
 
+void
 clear_frame_records (frame)
      register FRAME_PTR frame;
 {
@@ -647,7 +633,7 @@ scroll_frame_lines (frame, from, end, amount, newpos)
   register struct frame_glyphs *current_frame
     = FRAME_CURRENT_GLYPHS (frame);
   int pos_adjust;
-  int width = FRAME_WIDTH (frame);
+  int width = FRAME_WINDOW_WIDTH (frame);
 
   if (!line_ins_del_ok)
     return 0;
@@ -855,14 +841,15 @@ scroll_frame_lines (frame, from, end, amount, newpos)
    into the FRAME_DESIRED_GLYPHS (frame) from the FRAME_PHYS_GLYPHS (frame)
    so that update_frame will not change those columns.  */
 
+void
 preserve_other_columns (w)
      struct window *w;
 {
   register int vpos;
   register struct frame_glyphs *current_frame, *desired_frame;
   register FRAME_PTR frame = XFRAME (w->frame);
-  int start = XFASTINT (w->left);
-  int end = XFASTINT (w->left) + XFASTINT (w->width);
+  int start = WINDOW_LEFT_MARGIN (w);
+  int end = WINDOW_RIGHT_EDGE (w);
   int bot = XFASTINT (w->top) + XFASTINT (w->height);
 
   current_frame = FRAME_CURRENT_GLYPHS (frame);
@@ -924,8 +911,8 @@ preserve_my_columns (w)
   register int vpos, fin;
   register struct frame_glyphs *l1, *l2;
   register FRAME_PTR frame = XFRAME (w->frame);
-  int start = XFASTINT (w->left);
-  int end = XFASTINT (w->left) + XFASTINT (w->width);
+  int start = WINDOW_LEFT_MARGIN (w);
+  int end = WINDOW_RIGHT_EDGE (w);
   int bot = XFASTINT (w->top) + XFASTINT (w->height);
 
   for (vpos = XFASTINT (w->top); vpos < bot; vpos++)
@@ -958,7 +945,7 @@ adjust_window_charstarts (w, vpos, adjust)
      int vpos;
      int adjust;
 {
-  int left = XFASTINT (w->left);
+  int left = WINDOW_LEFT_MARGIN (w);
   int top = XFASTINT (w->top);
   int right = left + window_internal_width (w);
   int bottom = top + window_internal_height (w);
@@ -979,6 +966,7 @@ adjust_window_charstarts (w, vpos, adjust)
    for internal consistency.  We cannot check that they are "right";
    we can only look for something nonsensical.  */
 
+void
 verify_charstarts (w)
      struct window *w;
 {
@@ -986,12 +974,12 @@ verify_charstarts (w)
   int i;
   int top = XFASTINT (w->top);
   int bottom = top + window_internal_height (w);
-  int left = XFASTINT (w->left);
+  int left = WINDOW_LEFT_MARGIN (w);
   int right = left + window_internal_width (w);
   int next_line;
   int truncate = (XINT (w->hscroll)
 		  || (truncate_partial_width_windows
-		      && (XFASTINT (w->width) < FRAME_WIDTH (f)))
+		      && !WINDOW_FULL_WIDTH_P (w))
 		  || !NILP (XBUFFER (w->buffer)->truncate_lines));
 
   for (i = top; i < bottom; i++)
@@ -1035,13 +1023,14 @@ verify_charstarts (w)
    cancel the columns of that window, so that when the window is
    displayed over again get_display_line will not complain.  */
 
+void
 cancel_my_columns (w)
      struct window *w;
 {
   register int vpos;
   register struct frame_glyphs *desired_glyphs
     = FRAME_DESIRED_GLYPHS (XFRAME (w->frame));
-  register int start = XFASTINT (w->left);
+  register int start = WINDOW_LEFT_MARGIN (w);
   register int bot = XFASTINT (w->top) + XFASTINT (w->height);
 
   for (vpos = XFASTINT (w->top); vpos < bot; vpos++)
@@ -1080,10 +1069,10 @@ direct_output_for_insert (g)
     int vpos = FRAME_CURSOR_Y (frame);
 
   /* Give up if about to continue line.  */
-  if (hpos >= XFASTINT (w->left) + window_internal_width (w) - 1
+  if (hpos >= WINDOW_LEFT_MARGIN (w) + window_internal_width (w) - 1
     
   /* Avoid losing if cursor is in invisible text off left margin */
-      || (XINT (w->hscroll) && hpos == XFASTINT (w->left))
+      || (XINT (w->hscroll) && hpos == WINDOW_LEFT_MARGIN (w))
     
   /* Give up if cursor outside window (in minibuf, probably) */
       || cursor_in_echo_area
@@ -1104,7 +1093,7 @@ direct_output_for_insert (g)
      At the moment we only lose at end of line or end of buffer
      and only with faces that have some background */
   /* Instead of wasting time, give up if character has any text properties */
-      || ! NILP (Ftext_properties_at (make_number (point - 1), Qnil))
+      || ! NILP (Ftext_properties_at (make_number (PT - 1), Qnil))
 #endif
 
   /* Give up if w is minibuffer and a message is being displayed there */
@@ -1117,19 +1106,20 @@ direct_output_for_insert (g)
     int dummy;
 
     if (FRAME_WINDOW_P (frame) || FRAME_MSDOS_P (frame))
-      face = compute_char_face (frame, w, point - 1, -1, -1, &dummy, point, 0);
+      face = compute_char_face (frame, w, PT - 1, -1, -1, &dummy, PT, 0);
 #endif
     current_frame->glyphs[vpos][hpos] = MAKE_GLYPH (frame, g, face);
-    current_frame->charstarts[vpos][hpos] = point - 1;
+    current_frame->charstarts[vpos][hpos] = PT - 1;
     /* Record the entry for after the newly inserted character.  */
-    current_frame->charstarts[vpos][hpos + 1] = point;
+    current_frame->charstarts[vpos][hpos + 1] = PT;
     adjust_window_charstarts (w, vpos, 1);
   }
   unchanged_modified = MODIFF;
   beg_unchanged = GPT - BEG;
-  XSETFASTINT (w->last_point, point);
-  XSETFASTINT (w->last_point_x, hpos);
+  XSETFASTINT (w->last_point, PT);
+  XSETFASTINT (w->last_point_x, hpos + 1);
   XSETFASTINT (w->last_modified, MODIFF);
+  XSETFASTINT (w->last_overlay_modified, OVERLAY_MODIFF);
 
   reassert_line_highlight (0, vpos);
   write_glyphs (&current_frame->glyphs[vpos][hpos], 1);
@@ -1154,15 +1144,24 @@ direct_output_forward_char (n)
   int hpos = FRAME_CURSOR_X (frame);
 
   /* Give up if in truncated text at end of line.  */
-  if (hpos >= XFASTINT (w->left) + window_internal_width (w) - 1)
+  /* This check is not redundant.  */
+  if (hpos >= WINDOW_LEFT_MARGIN (w) + window_internal_width (w) - 1)
+    return 0;
+
+  /* Give up if the buffer's direction is reversed (i.e. right-to-left).  */
+  if (!NILP (XBUFFER(w->buffer)->direction_reversed))
     return 0;
 
   /* Avoid losing if cursor is in invisible text off left margin
      or about to go off either side of window.  */
-  if ((FRAME_CURSOR_X (frame) == XFASTINT (w->left)
+  if ((FRAME_CURSOR_X (frame) == WINDOW_LEFT_MARGIN (w)
        && (XINT (w->hscroll) || n < 0))
       || (n > 0
-	  && (FRAME_CURSOR_X (frame) + 1 >= window_internal_width (w) - 1))
+	  && (FRAME_CURSOR_X (frame) + 1 
+	      >= XFASTINT (w->left) + window_internal_width (w) - 1))
+      /* BUG FIX: Added "XFASTINT (w->left)".  Without this,
+	 direct_output_forward_char() always fails on "the right"
+	 window.  */
       || cursor_in_echo_area)
     return 0;
 
@@ -1179,14 +1178,14 @@ direct_output_forward_char (n)
   /* Don't use direct output next to an invisible character
      since we might need to do something special.  */
 
-  XSETFASTINT (position, point);
+  XSETFASTINT (position, PT);
   if (XFASTINT (position) < ZV
       && ! NILP (Fget_char_property (position,
 				     Qinvisible,
 				     selected_window)))
     return 0;
 
-  XSETFASTINT (position, point - 1);
+  XSETFASTINT (position, PT - 1);
   if (XFASTINT (position) >= BEGV
       && ! NILP (Fget_char_property (position,
 				     Qinvisible,
@@ -1196,7 +1195,7 @@ direct_output_forward_char (n)
 
   FRAME_CURSOR_X (frame) += n;
   XSETFASTINT (w->last_point_x, FRAME_CURSOR_X (frame));
-  XSETFASTINT (w->last_point, point);
+  XSETFASTINT (w->last_point, PT);
   cursor_to (FRAME_CURSOR_Y (frame), FRAME_CURSOR_X (frame));
   fflush (stdout);
 
@@ -1220,7 +1219,7 @@ update_frame (f, force, inhibit_hairy_id)
   register int i;
   int pause;
   int preempt_count = baud_rate / 2400 + 1;
-  extern input_pending;
+  extern int input_pending;
 #ifdef HAVE_WINDOW_SYSTEM
   register int downto, leftmost;
 #endif
@@ -1309,9 +1308,10 @@ update_frame (f, force, inhibit_hairy_id)
 			sleep (outq / baud_rate);
 		    }
 		}
-	      if ((i - 1) % preempt_count == 0)
-		detect_input_pending ();
 	    }
+
+	  if ((i - 1) % preempt_count == 0)
+	    detect_input_pending ();
 
 	  update_line (f, i);
 #ifdef HAVE_WINDOW_SYSTEM
@@ -1368,19 +1368,27 @@ update_frame (f, force, inhibit_hairy_id)
 		}
 	      while (row > top && col == 0);
 
-	      if (col >= FRAME_WIDTH (f))
+	      /* Make sure COL is not out of range.  */
+	      if (col >= FRAME_CURSOR_X_LIMIT (f))
 		{
-		  col = 0;
+		  /* If we have another row, advance cursor into it.  */
 		  if (row < FRAME_HEIGHT (f) - 1)
-		    row++;
+		    {
+		      col = FRAME_LEFT_SCROLL_BAR_WIDTH (f);
+		      row++;
+		    }
+		  /* Otherwise move it back in range.  */
+		  else
+		    col = FRAME_CURSOR_X_LIMIT (f) - 1;
 		}
 	    }
 
 	  cursor_to (row, col);
 	}
       else
-	cursor_to (FRAME_CURSOR_Y (f), max (min (FRAME_CURSOR_X (f),
-						  FRAME_WIDTH (f) - 1), 0));
+	cursor_to (FRAME_CURSOR_Y (f), 
+		   minmax (0, FRAME_CURSOR_X (f),
+			   FRAME_CURSOR_X_LIMIT (f) - 1));
     }
 
   update_end (f);
@@ -1419,6 +1427,7 @@ quit_error_check ()
 
 extern void scrolling_1 ();
 
+int
 scrolling (frame)
      FRAME_PTR frame;
 {
@@ -1449,9 +1458,17 @@ scrolling (frame)
 	return 0;
       old_hash[i] = line_hash_code (current_frame, i);
       if (! desired_frame->enable[i])
-	new_hash[i] = old_hash[i];
+	{
+	  /* This line cannot be redrawn, so don't let scrolling mess it.  */
+	  new_hash[i] = old_hash[i];
+#define INFINITY 1000000	/* Taken from scroll.c */
+	  draw_cost[i] = INFINITY;
+	}
       else
-	new_hash[i] = line_hash_code (desired_frame, i);
+	{
+	  new_hash[i] = line_hash_code (desired_frame, i);
+	  draw_cost[i] = line_draw_cost (desired_frame, i);
+	}
 
       if (old_hash[i] != new_hash[i])
 	{
@@ -1460,7 +1477,6 @@ scrolling (frame)
 	}
       else if (i == unchanged_at_top)
 	unchanged_at_top++;
-      draw_cost[i] = line_draw_cost (desired_frame, i);
       old_draw_cost[i] = line_draw_cost (current_frame, i);
     }
 
@@ -1504,7 +1520,7 @@ buffer_posn_from_coords (window, col, line)
      int col, line;
 {
   int hscroll = XINT (window->hscroll);
-  int window_left = XFASTINT (window->left);
+  int window_left = WINDOW_LEFT_MARGIN (window);
 
   /* The actual width of the window is window->width less one for the
      DISP_CONTINUE_GLYPH, and less one if it's not the rightmost
@@ -1571,7 +1587,7 @@ count_match (str1, str2)
 /* Char insertion/deletion cost vector, from term.c */
 extern int *char_ins_del_vector;
 
-#define char_ins_del_cost(f) (&char_ins_del_vector[FRAME_WIDTH((f))])
+#define char_ins_del_cost(f) (&char_ins_del_vector[FRAME_WINDOW_WIDTH((f))])
 
 static void
 update_line (frame, vpos)
@@ -1582,7 +1598,7 @@ update_line (frame, vpos)
   int *temp1;
   int tem;
   int osp, nsp, begmatch, endmatch, olen, nlen;
-  int save;
+  GLYPH save;
   register struct frame_glyphs *current_frame
     = FRAME_CURRENT_GLYPHS (frame);
   register struct frame_glyphs *desired_frame
@@ -1619,7 +1635,7 @@ update_line (frame, vpos)
 	     spaces all the way to the frame edge
 	     so that the reverse video extends all the way across.  */
 
-	  while (olen < FRAME_WIDTH (frame) - 1)
+	  while (olen < FRAME_WINDOW_WIDTH (frame) - 1)
 	    obody[olen++] = SPACEGLYPH;
 	}
     }
@@ -1665,7 +1681,7 @@ update_line (frame, vpos)
 	 all the way to the frame edge
 	 so that the reverse video extends all the way across.  */
 
-      while (nlen < FRAME_WIDTH (frame) - 1)
+      while (nlen < FRAME_WINDOW_WIDTH (frame) - 1)
 	nbody[nlen++] = SPACEGLYPH;
     }
 
@@ -1698,8 +1714,10 @@ update_line (frame, vpos)
 	  if (i >= olen || nbody[i] != obody[i])    /* A non-matching char. */
 	    {
 	      cursor_to (vpos, i);
-	      for (j = 1; (i + j < nlen &&
-			   (i + j >= olen || nbody[i+j] != obody[i+j]));
+	      for (j = 1;
+		   (i + j < nlen
+		    && (i + j >= olen || nbody[i + j] != obody[i + j]
+			|| (nbody[i + j] & GLYPH_MASK_PADDING)));
 		   j++);
 
 	      /* Output this run of non-matching chars.  */ 
@@ -1843,7 +1861,7 @@ update_line (frame, vpos)
 	  olen = nlen - (nsp - osp);
 	}
       cursor_to (vpos, osp);
-      insert_glyphs ((char *)0, nsp - osp);
+      insert_glyphs ((GLYPH *) 0, nsp - osp);
     }
   olen += nsp - osp;
 
@@ -1857,7 +1875,7 @@ update_line (frame, vpos)
 	     there is no need to do clear-to-eol at the end.
 	     (and it would not be safe, since cursor is not
 	     going to be "at the margin" after the text is done) */
-	  if (nlen == FRAME_WIDTH (frame))
+	  if (nlen == FRAME_WINDOW_WIDTH (frame))
 	    olen = 0;
 	  write_glyphs (nbody + nsp + begmatch, nlen - tem);
 
@@ -1871,7 +1889,7 @@ update_line (frame, vpos)
 	     it will lose one way or another (depending on AutoWrap)
 	     to clear to end of line after outputting all the text.
 	     So pause with one character to go and clear the line then.  */
-	  if (nlen == FRAME_WIDTH (frame) && fast_clear_end_of_line && olen > nlen)
+	  if (nlen == FRAME_WINDOW_WIDTH (frame) && fast_clear_end_of_line && olen > nlen)
 	    {
 	      /* endmatch must be zero, and tem must equal nsp + begmatch */
 	      write_glyphs (nbody + tem, nlen - tem - 1);
@@ -1886,8 +1904,24 @@ update_line (frame, vpos)
 	}
       else if (nlen > olen)
 	{
-	  write_glyphs (nbody + nsp + begmatch, olen - tem);
-	  insert_glyphs (nbody + nsp + begmatch + olen - tem, nlen - olen);
+	  /* Here, we used to have the following simple code:
+	     ----------------------------------------
+	     write_glyphs (nbody + nsp + begmatch, olen - tem);
+	     insert_glyphs (nbody + nsp + begmatch + olen - tem, nlen - olen);
+	     ----------------------------------------
+	     but it doesn't work if nbody[nsp + begmatch + olen - tem]
+	     is a padding glyph.  */
+	  int out = olen - tem;	/* Columns to be overwritten originally.  */
+	  int del;
+
+	  /* Calculate columns we can actually overwrite.  */
+	  while (nbody[nsp + begmatch + out] & GLYPH_MASK_PADDING) out--;
+	  write_glyphs (nbody + nsp + begmatch, out);
+	  /* If we left columns to be overwritten. we must delete them.  */
+	  del = olen - tem - out;
+	  if (del > 0) delete_glyphs (del);
+	  /* At last, we insert columns not yet written out.  */
+	  insert_glyphs (nbody + nsp + begmatch + out, nlen - olen + del);
 	  olen = nlen;
 	}
       else if (olen > nlen)
@@ -1964,7 +1998,7 @@ the current state.\n")
 	goto changed;
     }
   /* Detect deletion of a buffer at the end of the list.  */
-  if (*vecp == Qlambda)
+  if (EQ (*vecp, Qlambda))
     return Qnil;
  changed:
   /* Start with 1 so there is room for at least one lambda at the end.  */
@@ -2066,6 +2100,7 @@ window_change_signal (signalnum) /* If we don't have an argument, */
 
 /* Do any change in frame size that was requested by a signal.  */
 
+void
 do_pending_window_change ()
 {
   /* If window_change_signal should have run before, run it now.  */
@@ -2097,11 +2132,13 @@ do_pending_window_change ()
    redisplay.  Since this tries to resize windows, we can't call it
    from a signal handler.  */
 
+void
 change_frame_size (f, newheight, newwidth, pretend, delay)
      register FRAME_PTR f;
-     int newheight, newwidth, pretend;
+     int newheight, newwidth, pretend, delay;
 {
   Lisp_Object tail, frame;
+
   if (! FRAME_WINDOW_P (f))
     {
       /* When using termcap, or on MS-DOS, all frames use
@@ -2120,6 +2157,10 @@ change_frame_size_1 (frame, newheight, newwidth, pretend, delay)
      register FRAME_PTR frame;
      int newheight, newwidth, pretend, delay;
 {
+  int new_frame_window_width;
+  unsigned int total_glyphs;
+  int count = specpdl_ptr - specpdl;
+
   /* If we can't deal with the change now, queue it for later.  */
   if (delay)
     {
@@ -2134,15 +2175,25 @@ change_frame_size_1 (frame, newheight, newwidth, pretend, delay)
   FRAME_NEW_WIDTH  (frame) = 0;
 
   /* If an argument is zero, set it to the current value.  */
-  newheight || (newheight = FRAME_HEIGHT (frame));
-  newwidth  || (newwidth  = FRAME_WIDTH  (frame));
+  if (newheight == 0)
+    newheight = FRAME_HEIGHT (frame);
+  if (newwidth == 0)
+    newwidth  = FRAME_WIDTH  (frame);
+  new_frame_window_width = FRAME_WINDOW_WIDTH_ARG (frame, newwidth);
+
+  total_glyphs = newheight * (newwidth + 2) * sizeof (GLYPH);
+
+  /* If these sizes are so big they cause overflow,
+     just ignore the change.  It's not clear what better we could do.  */
+  if (total_glyphs / sizeof (GLYPH) / newheight != newwidth + 2)
+    return;
 
   /* Round up to the smallest acceptable size.  */
   check_frame_size (frame, &newheight, &newwidth);
 
   /* If we're not changing the frame size, quit now.  */
   if (newheight == FRAME_HEIGHT (frame)
-      && newwidth == FRAME_WIDTH (frame))
+      && new_frame_window_width == FRAME_WINDOW_WIDTH (frame))
     return;
 
   BLOCK_INPUT;
@@ -2184,11 +2235,11 @@ change_frame_size_1 (frame, newheight, newwidth, pretend, delay)
 #endif
     }
 
-  if (newwidth != FRAME_WIDTH (frame))
+  if (new_frame_window_width  != FRAME_WINDOW_WIDTH (frame))
     {
-      set_window_width (FRAME_ROOT_WINDOW (frame), newwidth, 0);
+      set_window_width (FRAME_ROOT_WINDOW (frame), new_frame_window_width, 0);
       if (FRAME_HAS_MINIBUF_P (frame))
-	set_window_width (FRAME_MINIBUF_WINDOW (frame), newwidth, 0);
+	set_window_width (FRAME_MINIBUF_WINDOW (frame), new_frame_window_width, 0);
 
       if (FRAME_TERMCAP_P (frame) && !pretend)
 	FrameCols = newwidth;
@@ -2203,10 +2254,10 @@ change_frame_size_1 (frame, newheight, newwidth, pretend, delay)
     }
 
   FRAME_HEIGHT (frame) = newheight;
-  FRAME_WIDTH (frame)  = newwidth;
+  SET_FRAME_WIDTH (frame, newwidth);
 
-  if (FRAME_CURSOR_X (frame) >= FRAME_WIDTH (frame))
-    FRAME_CURSOR_X (frame) = FRAME_WIDTH (frame) - 1;
+  if (FRAME_CURSOR_X (frame) >= FRAME_CURSOR_X_LIMIT (frame))
+    FRAME_CURSOR_X (frame) = FRAME_CURSOR_X_LIMIT (frame) - 1;
   if (FRAME_CURSOR_Y (frame) >= FRAME_HEIGHT (frame))
     FRAME_CURSOR_Y (frame) = FRAME_HEIGHT (frame) - 1;
 
@@ -2214,6 +2265,14 @@ change_frame_size_1 (frame, newheight, newwidth, pretend, delay)
   calculate_costs (frame);
 
   UNBLOCK_INPUT;
+
+  record_unwind_protect (Fset_buffer, Fcurrent_buffer ());
+
+  /* This isn't quite a no-op: it runs window-configuration-change-hook.  */
+  Fset_window_buffer (FRAME_SELECTED_WINDOW (frame),
+		      XWINDOW (FRAME_SELECTED_WINDOW (frame))->buffer);
+
+  unbind_to (count, Qnil);
 }
 
 DEFUN ("send-string-to-terminal", Fsend_string_to_terminal,
@@ -2223,12 +2282,14 @@ Control characters in STRING will have terminal-dependent effects.")
   (string)
      Lisp_Object string;
 {
+  /* ??? Perhaps we should do something special for multibyte strings here.  */
   CHECK_STRING (string, 0);
-  fwrite (XSTRING (string)->data, 1, XSTRING (string)->size, stdout);
+  fwrite (XSTRING (string)->data, 1, STRING_BYTES (XSTRING (string)), stdout);
   fflush (stdout);
   if (termscript)
     {
-      fwrite (XSTRING (string)->data, 1, XSTRING (string)->size, termscript);
+      fwrite (XSTRING (string)->data, 1, STRING_BYTES (XSTRING (string)),
+	      termscript);
       fflush (termscript);
     }
   return Qnil;
@@ -2255,6 +2316,7 @@ terminate any keyboard macro currently executing.")
   return Qnil;
 }
 
+void
 bitch_at_user ()
 {
   if (noninteractive)
@@ -2366,8 +2428,8 @@ Emacs was built without floating point support.\n\
    waiting for input as well.  */
 
 Lisp_Object
-sit_for (sec, usec, reading, display)
-     int sec, usec, reading, display;
+sit_for (sec, usec, reading, display, initial_display)
+     int sec, usec, reading, display, initial_display;
 {
   Lisp_Object read_kbd;
 
@@ -2376,7 +2438,7 @@ sit_for (sec, usec, reading, display)
   if (detect_input_pending_run_timers (display))
     return Qnil;
 
-  if (display)
+  if (initial_display)
     redisplay_preserve_echo_area ();
 
   if (sec == 0 && usec == 0)
@@ -2388,32 +2450,6 @@ sit_for (sec, usec, reading, display)
 
   XSETINT (read_kbd, reading ? -1 : 1);
   wait_reading_process_input (sec, usec, read_kbd, display);
-
-
-  /* wait_reading_process_input should always be available now; it is
-     simulated in a simple way on systems that don't support
-     subprocesses.  */
-#if 0
-  /* No wait_reading_process_input available.  */
-  immediate_quit = 1;
-  QUIT;
-
-  waitchannels = 1;
-#ifdef VMS
-  input_wait_timeout (XINT (arg));
-#else				/* not VMS */
-#ifndef HAVE_TIMEVAL
-  timeout_sec = sec;
-  select (1, &waitchannels, 0, 0, &timeout_sec);
-#else /* HAVE_TIMEVAL */
-  timeout.tv_sec = sec;  
-  timeout.tv_usec = usec;
-  select (1, &waitchannels, 0, 0, &timeout);
-#endif /* HAVE_TIMEVAL */
-#endif /* not VMS */
-
-  immediate_quit = 0;
-#endif 
 
   return detect_input_pending () ? Qnil : Qt;
 }
@@ -2456,7 +2492,7 @@ Value is t if waited the full time with no input arriving.")
     error ("millisecond `sit-for' not supported on %s", SYSTEM_TYPE);
 #endif
 
-  return sit_for (sec, usec, 0, NILP (nodisp));
+  return sit_for (sec, usec, 0, NILP (nodisp), NILP (nodisp));
 }
 
 char *terminal_type;
@@ -2466,6 +2502,7 @@ char *terminal_type;
 /* Then invoke its decoding routine to set up variables
   in the terminal package */
 
+void
 init_display ()
 {
 #ifdef HAVE_X_WINDOWS
@@ -2502,7 +2539,11 @@ init_display ()
       display_arg = (display != 0 && *display != 0);
     }
 
-  if (!inhibit_window_system && display_arg)
+  if (!inhibit_window_system && display_arg 
+#ifndef CANNOT_DUMP
+     && initialized
+#endif
+     )
     {
       Vwindow_system = intern ("x");
 #ifdef HAVE_X11
@@ -2523,7 +2564,7 @@ init_display ()
 #ifdef HAVE_NTGUI
   if (!inhibit_window_system) 
     {
-      Vwindow_system = intern ("win32");
+      Vwindow_system = intern ("w32");
       Vwindow_system_version = make_number (1);
       return;
     }
@@ -2532,7 +2573,7 @@ init_display ()
   /* If no window system has been specified, try to use the terminal.  */
   if (! isatty (0))
     {
-      fprintf (stderr, "emacs: standard input is not a tty\n");
+      fatal ("standard input is not a tty");
       exit (1);
     }
 
@@ -2570,6 +2611,18 @@ For types not defined in VMS, use  define emacs_term \"TYPE\".\n\
 
   term_init (terminal_type);
 
+  {
+    int width = FRAME_WINDOW_WIDTH (selected_frame);
+    int height = FRAME_HEIGHT (selected_frame);
+
+    unsigned int total_glyphs = height * (width + 2) * sizeof (GLYPH);
+
+    /* If these sizes are so big they cause overflow,
+       just ignore the change.  It's not clear what better we could do.  */
+    if (total_glyphs / sizeof (GLYPH) / height != width + 2)
+      fatal ("screen size %dx%d too big", width, height);
+  }
+
   remake_frame_glyphs (selected_frame);
   calculate_costs (selected_frame);
 
@@ -2585,11 +2638,10 @@ For types not defined in VMS, use  define emacs_term \"TYPE\".\n\
 #endif /* SIGWINCH */
 }
 
+void
 syms_of_display ()
 {
-#ifdef MULTI_FRAME
   defsubr (&Sredraw_frame);
-#endif
   defsubr (&Sredraw_display);
   defsubr (&Sframe_or_buffer_changed_p);
   defsubr (&Sopen_termscript);
