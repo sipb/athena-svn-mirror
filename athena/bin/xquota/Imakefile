@@ -3,7 +3,7 @@
  *       Created: 	October 22, 1987
  *       By:		Chris D. Peterson
  *    
- * $Id: Imakefile,v 1.1 1991-06-20 07:33:56 probe Exp $
+ * $Id: Imakefile,v 1.2 1991-06-20 07:55:03 probe Exp $
  *
  *       
  *          Copyright 1987, 1988 by the Massachusetts Institute of Technology.
@@ -12,28 +12,25 @@
  *       see the file mit-copyright.h
 */
     
-LIBDIR= /usr/lib/X11/app-defaults
-
-HELPFILES= -DDEFAULTS_FILE=\"${LIBDIR}/Xquota.ad\"\
-	   -DTOP_HELP_FILE=\"${LIBDIR}/top_help.txt\"\
-	   -DPOPUP_HELP_FILE=\"${LIBDIR}/pop_help.txt\"
-
-DEFINES= -O ${INCFLAGS} ${HELPFILES}
-INCFLAGS= -I.
-LIBS= -lXaw -lXt -lXmu -lX11 -lhesiod -lrpcsvc
-
-SRCS=handler.c main.c quota.c widgets.c
-OBJS=handler.o main.o quota.o widgets.o
-
-CFILES=handler.c main.c quota.c widgets.c
-
 #if (defined(vax) && !defined(ultrix)) || defined(ibm032)
+INCFLAGS= -I. -I/usr/local/include
+LIBS= -lXaw -lXt -lXmu -lX11 -lhesiod -lrpcsvc /usr/local/lib/afs/libsys.a
+
+HELPFILES= -DDEFAULTS_FILE=\"${XAPPDEFDIR}/Xquota.ad\"\
+	   -DTOP_HELP_FILE=\"${XAPPDEFDIR}/top_help.txt\"\
+	   -DPOPUP_HELP_FILE=\"${XAPPDEFDIR}/pop_help.txt\"
+
+DEFINES= ${INCFLAGS} ${HELPFILES}
+
+OBJS=handler.o main.o quota.o widgets.o afsquota.o
+
 SimpleProgram(xquota,${OBJS},${LIBS},$(ATHBINDIR))
 		cc ${CFLAGS} ${LDFLAGS}  -o xquota ${LIBS}
 
-install_file(Xquota.ad,${LIBDIR})
-install_file(top_help.txt,${LIBDIR})
-install_file(pop_help.txt,${LIBDIR})
+install_file(Xquota.ad,${XAPPDEFDIR})
+install_file(top_help.txt,${XAPPDEFDIR})
+install_file(pop_help.txt,${XAPPDEFDIR})
+
 #else
 all::
 	@echo xquota does not compile on this platform
