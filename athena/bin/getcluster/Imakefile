@@ -1,5 +1,5 @@
 #
-# $Id: Imakefile,v 1.4 1993-09-14 15:46:00 vrt Exp $
+# $Id: Imakefile,v 1.5 1996-06-06 05:30:45 ghudson Exp $
 #
 
 SimpleProgram(getcluster,getcluster.o,-lhesiod,/bin/athena)
@@ -10,3 +10,6 @@ install_script(save_cluster_info.solaris.sh,,$(ATHRETCDIR)/save_cluster_info)
 #else
 install_script(save_cluster_info.sh,,$(ATHRETCDIR)/save_cluster_info)
 #endif
+
+check::
+	sh tests.sh
