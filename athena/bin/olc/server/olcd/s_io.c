@@ -21,7 +21,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.4 1990-01-03 23:40:39 raeburn Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.5 1990-01-04 13:54:10 raeburn Exp $";
 #endif
 
 
@@ -45,8 +45,6 @@ extern int errno;
 
 static struct hostent *hp = (struct hostent *)NULL; /* daemon host */
 static struct servent *service = (struct servent *)NULL; /* service entry */
-
-struct hostent *gethostbyname(); /* Get host entry of a host. */
 
 #define	MIN(a,b)	((a)>(b)?(b):(a))
 #define MAX(a,b)        ((a)<(b)?(b):(a))
