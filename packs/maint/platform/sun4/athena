@@ -309,20 +309,14 @@ echo "Logins now possible."					>/dev/console
 echo " done!"							>/dev/console
 	;;
 'stop')
-	pid=`/usr/bin/ps -e | /usr/bin/grep timed | /usr/bin/sed -e 's/^  *//' -e 's/ .*//'`
-	if test "$pid"
-	then
-		kill $pid
+	if [ -s /var/athena/snmpd.pid ]; then
+		kill `cat /var/athena/snmpd.pid`
 	fi
-	pid=`/usr/bin/ps -e | /usr/bin/grep snmpd | /usr/bin/sed -e 's/^  *//' -e 's/ .*//'`
-	if test "$pid"
-	then
-		kill $pid
+	if [ -s /var/athena/zhm.pid ]; then
+		kill `cat /var/athena/zhm.pid`
 	fi
-	pid=`/usr/bin/ps -e | /usr/bin/grep zhm | /usr/bin/sed -e 's/^  *//' -e 's/ .*//'`
-	if test "$pid"
-	then
-		kill $pid
+	if [ -s /var/athena/inetd.pid ]; then
+		kill `cat /var/athena/inetd.pid`
 	fi
 	;;
 *)
