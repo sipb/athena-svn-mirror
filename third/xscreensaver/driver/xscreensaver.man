@@ -1270,6 +1270,7 @@ http://www.jwz.org/xscreensaver/
 .BR X (1),
 .BR xss\-demo (1),
 .BR xss\-command (1),
+.BR xss\-button (1),
 .BR xdm (1),
 .BR xset (1),
 .BR Xsecurity (1),
