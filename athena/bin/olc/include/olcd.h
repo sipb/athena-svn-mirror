@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
- *	$Id: olcd.h,v 1.33 1991-04-08 21:03:34 lwvanels Exp $
+ *	$Id: olcd.h,v 1.34 1991-04-09 13:59:28 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -370,14 +370,6 @@ void dump_list P((void ));
 /* log.c */
 void write_line_to_log P((FILE *log , char *line ));
 void format_line_to_user_log P((FILE *log , char *line ));
-#ifndef __HIGHC__
-char *vfmt P((char *format, va_list pvar ));
-#endif
-#ifdef HAS_STDARG
-char *fmt P((char *format , ...));
-#else
-char *fmt P(());
-#endif
 void log_daemon P((KNUCKLE *knuckle , char *message ));
 void log_message P((KNUCKLE *owner , KNUCKLE *sender , char *message ));
 void log_mail P((KNUCKLE *owner , KNUCKLE *sender , char *message ));
