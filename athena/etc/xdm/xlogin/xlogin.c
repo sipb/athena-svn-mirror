@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.15 1991-07-22 11:33:10 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.16 1991-09-23 10:59:54 lwvanels Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
@@ -954,6 +954,8 @@ void (*abort_proc)();
 	XtDispatchEvent(&e);
     }
 
+    XtRemoveTimeOut(curr_timerid);
+    curr_timerid = 0;
     XtPopdown(WcFullNameToWidget(appShell, "*queryShell"));
     XFlush(dpy);
 }
