@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.8 1989-01-26 10:46:53 jik Exp $";
+     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.9 1989-01-26 11:51:57 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -111,13 +111,13 @@ interactive_mode()
 	  ptr = fgets(buf, MAXPATHLEN, stdin);
 	  if (! ptr) {
 	       printf("\n");
-	       exit(status | ERROR_MASK);
+	       return(status | ERROR_MASK);
 	  }
 	  ptr = index(buf, '\n');  /* fgets breakage */
 	  if (ptr)
 	       *ptr = '\0';
 	  if (! *buf)
-	       exit(status | ERROR_MASK);
+	       return(status | ERROR_MASK);
 	  status = status | undelete(buf);
      } while (*ptr);
 }
