@@ -1,0 +1,99 @@
+XCOMM (c) Copyright 1989, 1990, 1991, 1992, 1993 OPEN SOFTWARE FOUNDATION, INC. 
+XCOMM ALL RIGHTS RESERVED 
+XCOMM 
+XCOMM Motif Release 1.2.2
+XCOMM $Header: /afs/dev.mit.edu/source/repository/third/motif/config/hpLib.tmpl,v 1.1.1.1 1999-01-30 03:16:31 ghudson Exp $
+
+#ifndef SharedXlibRev
+#define SharedXlibRev 5.0
+#endif
+#ifndef SharedOldXRev
+#define SharedOldXRev 5.0
+#endif
+#ifndef SharedXtRev
+#define SharedXtRev 5.0
+#endif
+#ifndef SharedXawRev
+#define SharedXawRev 5.0
+#endif
+#ifndef SharedXmuRev
+#define SharedXmuRev 5.0
+#endif
+#ifndef SharedXextRev
+#define SharedXextRev 5.0
+#endif
+#ifndef SharedXinputRev
+#define SharedXinputRev 5.0
+#endif
+
+SHLIBLDFLAGS = SharedLibraryLoadFlags
+PICFLAGS = PositionIndependentCFlags
+INSTSHLIBFLAGS = InstShLibFlags
+
+/* The next 2 macros set the system location of the X and Motif libs */
+/* The (undocumented) environment variable X11LINKENV may be the name
+ * of a subdirectory, in which case IT MUST HAVE A LEADING "/" */
+
+SYSX11SRC = $(PROJECTROOT)/lib$(X11LINKENV)
+
+#ifdef UseArchivedLibs
+#define LibSfx(a,b) a
+#else
+#define LibSfx(a,b) b
+#endif
+
+#ifndef _Use3
+#  ifdef UseInstalled
+#define _Use3(a,b,c) a
+#  else
+#    ifndef UseSysSrc
+#define _Use3(a,b,c) b
+#    else
+#define _Use3(a,b,c) c
+#    endif
+#  endif
+#endif
+
+/*
+ * and now a little bit of magic for using imake without source tree; if we
+ * are using shared libraries, we really do not need to depend on anything
+ */
+#if SharedLibXext
+     EXTENSIONLIB = _Use3(-lXext,Concat($(EXTENSIONSRC)/lib/libXext.,LibSfx(a,sl)),Concat($(SYSX11SRC)/libXext.,LibSfx(a,sl)))
+     DEPEXTENSIONLIB = _Use3(/**/,Concat($(EXTENSIONSRC)/lib/libXext.,LibSfx(a,sl)),/**/) 
+#endif
+
+#if SharedLibX
+     XLIB = $(EXTENSIONLIB) _Use3(-lX11,Concat($(XLIBSRC)/libX11.,LibSfx(a,sl)),Concat($(SYSX11SRC)/libX11.,LibSfx(a,sl)))
+     DEPXLIB = $(DEPEXTENSIONLIB) _Use3(/**/,Concat($(XLIBSRC)/libX11.,LibSfx(a,sl)),/**/)
+#endif
+
+#if SharedLibXmu
+     XMULIB = _Use3(-lXmu,Concat($(XMUSRC)/libXmu.,LibSfx(a,sl)),Concat($(SYSX11SRC)/libXmu.,LibSfx(a,sl)))
+     DEPXMULIB = _Use3(/**/,Concat($(XMUSRC)/libXmu.,LibSfx(a,sl)),/**/)
+#endif
+
+#if SharedOldLibX
+     OLDXLIB = _Use3(-loldX,Concat($(OLDXLIBSRC)/liboldX.,LibSfx(a,sl)),Concat($(SYSX11SRC)/liboldX.,LibSfx(a,sl)))
+     DEPOLDXLIB = _Use3(/**/,Concat($(OLDXLIBSRC)/liboldX.,LibSfx(a,sl)),/**/)
+#endif
+
+#if SharedLibXt
+     XTOOLLIB = _Use3(-lXt,Concat($(TOOLKITSRC)/libXt.,LibSfx(a,sl)),Concat($(SYSX11SRC)/libXt.,LibSfx(a,sl)))
+     DEPXTOOLLIB = _Use3(/**/,Concat($(TOOLKITSRC)/libXt.,LibSfx(a,sl)),/**/)
+#endif
+
+#if SharedLibXaw
+     XAWLIB = _Use3(-lXaw,Concat($(AWIDGETSRC)/libXaw.,LibSfx(a,sl)),Concat($(SYSX11SRC)/libXaw.,LibSfx(a,sl)))
+     DEPXAWLIB = _Use3(/**/,Concat($(AWIDGETSRC)/libXaw.,LibSfx(a,sl)),/**/)
+#endif
+
+#if SharedLibXinput
+     XILIB = _Use3(-lXi,Concat($(XILIBSRC)/libXi.,LibSfx(a,sl)),Concat($(SYSX11SRC)/libXi.,LibSfx(a,sl)))
+     DEPXILIB = _Use3(/**/,Concat($(XILIBSRC)/libXi.,LibSfx(a,sl)),/**/)
+#endif
+
+#if SharedLibXTest
+     XTESTLIB = _Use3(-lXtst,Concat($(XTESTLIBSRC)/libXtst.,LibSfx(a,sl)),Concat($(SYSX11SRC)/libXtst.,LibSfx(a,sl)))
+     DEPXTESTLIB = _Use3(/**/,Concat($(XTESTLIBSRC)/libXtst.,LibSfx(a,sl)),/**/)
+#endif

@@ -1,0 +1,78 @@
+XCOMM 
+XCOMM (c) Copyright 1989, 1990, 1991, 1992, 1993 OPEN SOFTWARE FOUNDATION, INC. 
+XCOMM ALL RIGHTS RESERVED 
+XCOMM 
+XCOMM 
+XCOMM Motif Release 1.2.3
+XCOMM 
+XCOMM   $RCSfile: Imakefile,v $ $Revision: 1.1.1.1 $ $Date: 1999-01-30 03:16:40 $
+#define DoNormalLib NormalLibMrm
+#define DoSharedLib SharedLibMrm
+#define DoDebugLib DebugLibMrm
+#define DoProfileLib ProfileLibMrm
+#include <Library.tmpl>
+
+#ifdef RsArchitecture
+REQUIREDLIBS = $(MTOOLKITSRC)/libXm.a $(EXTENSIONSRC)/lib/libXext.a $(TOOLKITSRC)/libXt.a $(XLIBSRC)/libX11.a
+#endif
+
+INSTALLFLAGS = $(INSTINCFLAGS)
+INCLUDES = -I. -I$(INCLUDESRC) -I$(MINCLUDESRC) -I$(MLIBSRC)
+
+
+SRCS =	MrmIbuffer.c	MrmIentry.c	MrmIfile.c	MrmIheader.c \
+	MrmIindex.c	MrmIindexw.c	MrmIrid.c	MrmIswap.c \
+	MrmItop.c	MrmItopw.c	Mrmappl.c \
+	Mrmcontext.c	Mrmerror.c	Mrmhier.c	Mrmicon.c \
+	Mrminit.c	Mrmlread.c	Mrmlwrite.c	Mrmmodule.c \
+	Mrmptrlist.c	Mrmtable.c	Mrmtime.c	Mrmvm.c \
+	Mrmwci.c	Mrmwcrw.c	Mrmwcrwr.c	Mrmwread.c \
+	Mrmwrefs.c	Mrmwvalues.c	Mrmwwrite.c
+
+OBJS =	MrmIbuffer.o	MrmIentry.o	MrmIfile.o	MrmIheader.o \
+	MrmIindex.o	MrmIindexw.o	MrmIrid.o	MrmIswap.o \
+	MrmItop.o	MrmItopw.o	Mrmappl.o \
+	Mrmcontext.o	Mrmerror.o	Mrmhier.o	Mrmicon.o \
+	Mrminit.o	Mrmlread.o	Mrmlwrite.o	Mrmmodule.o \
+	Mrmptrlist.o	Mrmtable.o	Mrmtime.o	Mrmvm.o \
+	Mrmwci.o	Mrmwcrw.o	Mrmwcrwr.o	Mrmwread.o \
+	Mrmwrefs.o	Mrmwvalues.o	Mrmwwrite.o
+
+HEADERS = MrmDecls.h	MrmPublic.h	MrmAppl.h
+
+LibraryObjectRule()
+
+#if DoSharedLib
+#if DoNormalLib
+SharedLibraryTarget(Mrm,$(SOMRMREV),$(OBJS),shared,..)
+#else
+SharedLibraryTarget(Mrm,$(SOMRMREV),$(OBJS),.,.)
+#endif
+InstallSharedLibrary(Mrm,$(SOMRMREV),$(USRLIBDIR))
+#endif
+#if DoNormalLib
+NormalLibraryTarget(Mrm,$(OBJS))
+InstallLibrary(Mrm,$(USRLIBDIR))
+#endif
+#if DoProfileLib
+ProfiledLibraryTarget(Mrm,$(OBJS))
+InstallLibrary(Mrm_p,$(USRLIBDIR))
+#endif
+#if DoDebugLib
+DebuggedLibraryTarget(Mrm,$(OBJS))
+InstallLibrary(Mrm_d,$(USRLIBDIR))
+#endif
+
+LintLibraryTarget(Mrm,$(SRCS))
+InstallLintLibrary(Mrm,$(LINTLIBDIR))
+
+BuildIncludes($(HEADERS),Mrm,..)
+
+InstallMultiple($(HEADERS),$(USRINCDIR)/Mrm)
+DependTarget()
+
+NormalLintTarget($(SRCS))
+
+#ifdef UseVista
+VistaMapRule(libMrm.M,libMrm.a)
+#endif

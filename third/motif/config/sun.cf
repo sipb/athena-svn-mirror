@@ -1,0 +1,100 @@
+/* 
+ * (c) Copyright 1989, 1990, 1991, 1992, 1993 OPEN SOFTWARE FOUNDATION, INC. 
+ * ALL RIGHTS RESERVED 
+*/ 
+/* 
+ * Motif Release 1.2.3
+*/ 
+XCOMM   $RCSfile: sun.cf,v $ $Revision: 1.1.1.1 $ $Date: 1999-01-30 03:16:29 $
+XCOMM platform:  $XConsortium: sun.cf,v 1.72.1.1 92/03/18 13:13:37 rws Exp $
+
+#define OSName            SunOS 4.1.1
+XCOMM operating system:  OSName
+#define OSMajorVersion    4
+#define OSMinorVersion    1
+#define OSTeenyVersion    1
+
+#if OSMajorVersion < 4 || (OSMajorVersion == 4 && OSMinorVersion < 1)
+/* We do not guarantee this will work */
+#define BootstrapCFlags   -DNOSTDHDRS
+#define StandardDefines   -DNOSTDHDRS
+#endif
+
+/* You ALSO need this if you have Sun ld patch 100170-06 or later to 4.1.1 */
+#if OSMajorVersion == 4 && (OSMinorVersion > 1 || (OSMinorVersion == 1 && OSTeenyVersion > 1))
+#define SunPost411FCSLd	  YES
+#endif
+
+#ifndef MotifDefines
+#define MotifDefines	-DSTRINGS_ALIGNED -DNO_REGEX -DNO_ISDIR -DUSE_RE_COMP -DNO_REGCOMP -DUSE_GETWD -DNO_MEMMOVE -DNO_ALLOCA -DBOGUS_MB_MAX -DNO_CONST
+#endif		/* for MotifDefines     */
+
+#define HasSaberC	  YES
+#define HasNdbm		  YES
+#define HasShm		  YES
+#define HasSecureRPC	  YES
+#define SetTtyGroup	  YES
+#define HasPutenv	  YES
+#define XsunServer	  YES		/* has color and mono support */
+#define XsunMonoServer	  YES		/* monochrome only */
+#define BuildPexExt	  XsunServer
+#define InstKmemFlags	  -g kmem -m 2755
+
+#ifdef sparc
+#undef sparc
+#define SparcArchitecture
+#endif
+#ifdef sun386
+#undef sun386
+#define i386Architecture
+#endif
+/*
+ * Generator functions for XMLIB, DEPXMLIB etc.  Suggestion has been
+ * sent to MIT for inclusion in standard Project.tmpl.
+ */
+
+#ifndef SharedLibReferences
+#define SharedLibReferences(varname,libname,libsource,rev) \
+Concat(DEP,varname) = /**/				@@\
+varname = _LibUse(/**/,Concat(-L,libsource)) Concat(-l,libname)
+#endif
+
+#include <sunLib.rules>
+
+#if HasGcc
+
+#define SharedLibraryCcCmd cc
+#define ExtraLoadFlags -B/usr/bin/
+#define AllocateLocalDefines /**/
+
+.c.o:
+	$(CC) -c $(CFLAGS) $*.c
+
+#else
+
+#define AllocateLocalDefines -DINCLUDE_ALLOCA_H
+
+#ifdef mc68000
+#define DefaultCCOptions -f68881 -pipe
+#else
+#define DefaultCCOptions -pipe
+#endif
+
+#define PexCCOptions DefaultCCOptions
+
+#endif
+
+#define SharedAllocateLocalDefines -DINCLUDE_ALLOCA_H
+#define LibraryCCOptions /* don't want special floating point */
+
+#ifndef UseSunWindowsInServer
+#define UseSunWindowsInServer	NO	/* link in SunWindows support? */
+#endif
+
+#if UseSunWindowsInServer
+#define SunWindowsDefines -DSUN_WINDOWS
+#else
+#define SunWindowsDefines /* as nothing */
+#endif
+
+#define ServerOSDefines SunWindowsDefines AllocateLocalDefines
