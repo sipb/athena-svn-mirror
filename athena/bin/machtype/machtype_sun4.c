@@ -2,7 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *    $Id: machtype_sun4.c,v 1.11 1995-05-26 20:49:33 cfields Exp $
+ *    $Id: machtype_sun4.c,v 1.12 1995-06-27 19:45:15 cfields Exp $
  *    $Locker:  $
  */
 
@@ -18,7 +18,7 @@
 #include <sys/cpu.h>
 
 int verbose =0;
-char mydisk[8];
+char mydisk[128];
 
 struct nlist nl[] = {
 #define X_cpu 0
@@ -270,16 +270,19 @@ do_disk(kernel, mf)
 char *kernel;
 int mf;
 {
-    mydisk[6] = "\0";
-    mydisk[7] = "\0";
+   int len;
 
-    mf = open ("/dev/dsk/c0t3d0s0", O_RDONLY);
-    read (mf, &mydisk, sizeof(mydisk));
-    if (verbose)
-       printf ("c0t3d0s0 : %s\n", &mydisk);
-    else
-       printf("%c%c%c%c%c%c%c\n", mydisk[0], mydisk[1], mydisk[2], mydisk[3],
-           mydisk[4], mydisk[5], mydisk[6]);
+   mf = open ("/dev/dsk/c0t3d0s0", O_RDONLY);
+   len = read (mf, mydisk, sizeof(mydisk)-1);
+   if (len != -1)
+     mydisk[len] = '\0';
+
+   if (verbose)
+     printf("c0t3d0s0 : ");
+   if (mydisk[1] == 'U')
+     printf("%.7s\n", mydisk);
+   else
+     printf("%.15s\n", mydisk);
 
     return;
 }
