@@ -20,19 +20,20 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v $
- *	$Id: requests_admin.c,v 1.22 1991-03-28 15:06:02 lwvanels Exp $
+ *	$Id: requests_admin.c,v 1.23 1991-09-22 12:04:58 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.22 1991-03-28 15:06:02 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_admin.c,v 1.23 1991-09-22 12:04:58 lwvanels Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
 
 #include <olcd.h>
+#include "version.h"
 
 
 ERRCODE
@@ -537,7 +538,7 @@ olc_version(fd,request)
 {
   char vtext[256];
 
-  sprintf(vtext,"%s: %s", VERSION_INFO,CDATE);
+  sprintf(vtext,"%s: %s", VERSION_INFO,SERVER_VERSION_STRING);
   send_response(fd,SUCCESS);
   write_text_to_fd(fd,vtext);
   return(SUCCESS);
