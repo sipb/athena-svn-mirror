@@ -1,5 +1,5 @@
 /* GAIL - The GNOME Accessibility Enabling Library
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002, 2003 Sun Microsystems Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -103,8 +103,6 @@ gail_paned_new (GtkWidget *widget)
   accessible = ATK_OBJECT (object);
   atk_object_initialize (accessible, widget);
 
-  accessible->role = ATK_ROLE_SPLIT_PANE;
-
   return accessible;
 }
 
@@ -138,6 +136,8 @@ gail_paned_real_initialize (AtkObject *obj,
                     "size_allocate",
                     G_CALLBACK (gail_paned_size_allocate_gtk),
                     NULL);
+
+  obj->role = ATK_ROLE_SPLIT_PANE;
 }
  
 static void

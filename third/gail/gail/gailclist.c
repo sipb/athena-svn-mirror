@@ -987,7 +987,7 @@ gail_clist_set_caption (AtkTable      *table,
                         AtkObject     *caption)
 {
   GailCList* obj = GAIL_CLIST (table);
-  AtkPropertyValues values = { 0, };
+  AtkPropertyValues values = { NULL };
   AtkObject *old_caption;
 
   old_caption = obj->caption;
@@ -1000,9 +1000,9 @@ gail_clist_set_caption (AtkTable      *table,
   g_value_init (&values.new_value, G_TYPE_POINTER);
   g_value_set_pointer (&values.new_value, obj->caption);
 
-  values.property_name = "accessible_table_caption";
+  values.property_name = "accessible-table-caption";
   g_signal_emit_by_name (table, 
-                         "property_change::accessible_table_caption", 
+                         "property_change::accessible-table-caption", 
                          &values, NULL);
   if (old_caption)
     g_object_unref (old_caption);
@@ -1014,7 +1014,7 @@ gail_clist_set_column_description (AtkTable      *table,
                                    const gchar   *description)
 {
   GailCList *clist = GAIL_CLIST (table);
-  AtkPropertyValues values = { 0, };
+  AtkPropertyValues values = { NULL };
   gint actual_column;
 
   if (column < 0 || column >= gail_clist_get_n_columns (table))
@@ -1030,9 +1030,9 @@ gail_clist_set_column_description (AtkTable      *table,
   g_value_init (&values.new_value, G_TYPE_INT);
   g_value_set_int (&values.new_value, column);
 
-  values.property_name = "accessible_table_column_description";
+  values.property_name = "accessible-table-column-description";
   g_signal_emit_by_name (table, 
-                         "property_change::accessible_table_column_description",
+                         "property_change::accessible-table-column-description",
                           &values, NULL);
 
 }
@@ -1043,7 +1043,7 @@ gail_clist_set_column_header (AtkTable      *table,
                               AtkObject     *header)
 {
   GailCList *clist = GAIL_CLIST (table);
-  AtkPropertyValues values = { 0, };
+  AtkPropertyValues values = { NULL };
   gint actual_column;
 
   if (column < 0 || column >= gail_clist_get_n_columns (table))
@@ -1059,9 +1059,9 @@ gail_clist_set_column_header (AtkTable      *table,
   g_value_init (&values.new_value, G_TYPE_INT);
   g_value_set_int (&values.new_value, column);
 
-  values.property_name = "accessible_table_column_header";
+  values.property_name = "accessible-table-column-header";
   g_signal_emit_by_name (table, 
-                         "property_change::accessible_table_column-header",
+                         "property_change::accessible-table-column-header",
                          &values, NULL);
 }
 
@@ -1099,9 +1099,9 @@ gail_clist_set_summary (AtkTable      *table,
   g_value_init (&values.new_value, G_TYPE_POINTER);
   g_value_set_pointer (&values.new_value, obj->summary);
 
-  values.property_name = "accessible_table_summary";
+  values.property_name = "accessible-table-summary";
   g_signal_emit_by_name (table, 
-                         "property_change::accessible_table_summary", 
+                         "property_change::accessible-table-summary", 
                          &values, NULL);
   if (old_summary)
     g_object_unref (old_summary);
@@ -1303,7 +1303,7 @@ gail_clist_set_row_data (AtkTable      *table,
   GailCListRow* row_data;
   gint i;
   gboolean found = FALSE;
-  AtkPropertyValues values = { 0, };
+  AtkPropertyValues values = { NULL };
   gchar *signal_name;
 
   widget = GTK_ACCESSIBLE (table)->widget;
@@ -1376,13 +1376,13 @@ gail_clist_set_row_data (AtkTable      *table,
 
   if (is_header)
     {
-      values.property_name = "accessible_table_row_header";
-      signal_name = "property_change::accessible_table_row_header";
+      values.property_name = "accessible-table-row-header";
+      signal_name = "property_change::accessible-table-row-header";
     }
   else
     {
-      values.property_name = "accessible_table_row_description";
-      signal_name = "property_change::accessible_table_row_description";
+      values.property_name = "accessible-table-row-description";
+      signal_name = "property_change::accessible-table-row-description";
     }
   g_signal_emit_by_name (table, 
                          signal_name,

@@ -1,5 +1,5 @@
 /* GAIL - The GNOME Accessibility Implementation Library
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002, 2003 Sun Microsystems Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -22,7 +22,7 @@
 
 #include <gtk/gtkaccessible.h>
 #include <gail/gailcontainer.h>
-
+#include <libgail-util/gailtextutil.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -41,6 +41,10 @@ typedef struct _GailItemClass              GailItemClass;
 struct _GailItem
 {
   GailContainer parent;
+
+  GailTextUtil  *textutil;
+
+  gchar *text;
 };
 
 GType gail_item_get_type (void);

@@ -1,5 +1,5 @@
 /* GAIL - The GNOME Accessibility Implementation Library
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002, 2003 Sun Microsystems Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -29,6 +29,7 @@ enum {
   DESTROY,
   MAXIMIZE,
   MINIMIZE,
+  MOVE,
   RESIZE,
   RESTORE,
   LAST_SIGNAL
@@ -38,6 +39,7 @@ static void gail_window_class_init (GailWindowClass *klass);
 
 static void                  gail_window_real_initialize (AtkObject    *obj,
                                                           gpointer     data);
+static void                  gail_window_finalize        (GObject      *object);
 
 static G_CONST_RETURN gchar* gail_window_get_name       (AtkObject     *accessible);
 
@@ -47,6 +49,7 @@ static gboolean              gail_window_real_focus_gtk (GtkWidget     *widget,
                                                          GdkEventFocus *event);
 
 static AtkStateSet*          gail_window_ref_state_set  (AtkObject     *accessible);
+static AtkRelationSet*       gail_window_ref_relation_set  (AtkObject     *accessible);
 static void                  gail_window_real_notify_gtk (GObject      *obj,
                                                           GParamSpec   *pspec);
 static gint                  gail_window_get_mdi_zorder (AtkComponent  *component);
@@ -112,7 +115,10 @@ static void
 gail_window_class_init (GailWindowClass *klass)
 {
   GailWidgetClass *widget_class;
+  GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
   AtkObjectClass  *class = ATK_OBJECT_CLASS (klass);
+
+  gobject_class->finalize = gail_window_finalize;
 
   widget_class = (GailWidgetClass*)klass;
   widget_class->focus_gtk = gail_window_real_focus_gtk;
@@ -123,6 +129,7 @@ gail_window_class_init (GailWindowClass *klass)
   class->get_name = gail_window_get_name;
   class->get_parent = gail_window_get_parent;
   class->get_index_in_parent = gail_window_get_index_in_parent;
+  class->ref_relation_set = gail_window_ref_relation_set;
   class->ref_state_set = gail_window_ref_state_set;
   class->initialize = gail_window_real_initialize;
 
@@ -174,6 +181,14 @@ gail_window_class_init (GailWindowClass *klass)
                   NULL, NULL,
                   g_cclosure_marshal_VOID__VOID,
                   G_TYPE_NONE, 0);
+  gail_window_signals [MOVE] =
+    g_signal_new ("move",
+                  G_TYPE_FROM_CLASS (klass),
+                  G_SIGNAL_RUN_LAST,
+                  0, /* default signal handler */
+                  NULL, NULL,
+                  g_cclosure_marshal_VOID__VOID,
+                  G_TYPE_NONE, 0);
   gail_window_signals [RESIZE] =
     g_signal_new ("resize",
                   G_TYPE_FROM_CLASS (klass),
@@ -211,29 +226,12 @@ gail_window_new (GtkWidget *widget)
   accessible = ATK_OBJECT (object);
   atk_object_initialize (accessible, widget);
 
-
-  if (GTK_IS_FILE_SELECTION (widget))
-    accessible->role = ATK_ROLE_FILE_CHOOSER;
-  else if (GTK_IS_COLOR_SELECTION_DIALOG (widget))
-    accessible->role = ATK_ROLE_COLOR_CHOOSER;
-  else if (GTK_IS_FONT_SELECTION_DIALOG (widget))
-    accessible->role = ATK_ROLE_FONT_CHOOSER;
-  else if (GTK_IS_DIALOG (widget))
-    accessible->role = ATK_ROLE_DIALOG;
-  else if (GTK_IS_WINDOW (widget))
-    {
-      const gchar *name;
-
-      name = gtk_widget_get_name (widget);
-      if (name && !strcmp (name, "gtk-tooltips"))
-        accessible->role = ATK_ROLE_TOOL_TIP;
-      else 
-        accessible->role = ATK_ROLE_FRAME;
-    }
-  else if (GTK_IS_HANDLE_BOX (widget))
-    accessible->role = ATK_ROLE_UNKNOWN;
-  else
-    accessible->role = ATK_ROLE_INVALID;
+  /*
+   * Notify that tooltip is showing
+   */
+  if (accessible->role == ATK_ROLE_TOOL_TIP &&
+      GTK_WIDGET_MAPPED (widget))
+    atk_object_notify_state_change (accessible, ATK_STATE_SHOWING, 1);
 
   return accessible;
 }
@@ -242,7 +240,15 @@ static void
 gail_window_real_initialize (AtkObject *obj,
                              gpointer  data)
 {
+  GtkWidget *widget;
+  GailWindow *window;
+
   ATK_OBJECT_CLASS (parent_class)->initialize (obj, data);
+
+  window = GAIL_WINDOW (obj);
+  window->name_change_handler = 0;
+  window->previous_name = g_strdup (gtk_window_get_title (GTK_WINDOW (data)));
+  widget = GTK_WIDGET (data);
 
   g_signal_connect (data,
                     "window_state_event",
@@ -250,15 +256,59 @@ gail_window_real_initialize (AtkObject *obj,
                     NULL);
   g_object_set_data (G_OBJECT (obj), "atk-component-layer",
                      GINT_TO_POINTER (ATK_LAYER_WINDOW));
+
+  if (GTK_IS_FILE_SELECTION (widget))
+    obj->role = ATK_ROLE_FILE_CHOOSER;
+  else if (GTK_IS_COLOR_SELECTION_DIALOG (widget))
+    obj->role = ATK_ROLE_COLOR_CHOOSER;
+  else if (GTK_IS_FONT_SELECTION_DIALOG (widget))
+    obj->role = ATK_ROLE_FONT_CHOOSER;
+  else if (GTK_IS_MESSAGE_DIALOG (widget))
+    obj->role = ATK_ROLE_ALERT;
+  else if (GTK_IS_DIALOG (widget))
+    obj->role = ATK_ROLE_DIALOG;
+  else
+    {
+      const gchar *name;
+
+      name = gtk_widget_get_name (widget);
+      if (name && !strcmp (name, "gtk-tooltips"))
+        obj->role = ATK_ROLE_TOOL_TIP;
+      else if (GTK_IS_PLUG (widget))
+        obj->role = ATK_ROLE_PANEL;
+      else if (GTK_WINDOW (widget)->type == GTK_WINDOW_POPUP)
+        obj->role = ATK_ROLE_WINDOW;
+      else
+        obj->role = ATK_ROLE_FRAME;
+    }
+}
+
+static void
+gail_window_finalize (GObject *object)
+{
+  GailWindow* window = GAIL_WINDOW (object);
+
+  if (window->name_change_handler)
+    {
+      g_source_remove (window->name_change_handler);
+      window->name_change_handler = 0;
+    }
+  if (window->previous_name)
+    {
+      g_free (window->previous_name);
+      window->previous_name = NULL;
+    }
+
+  G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static G_CONST_RETURN gchar*
 gail_window_get_name (AtkObject *accessible)
 {
-  if (accessible->name)
-    return accessible->name;
+  G_CONST_RETURN gchar* name;
 
-  else
+  name = ATK_OBJECT_CLASS (parent_class)->get_name (accessible);
+  if (name == NULL)
     {
       /*
        * Get the window title if it exists
@@ -276,25 +326,20 @@ gail_window_get_name (AtkObject *accessible)
       if (GTK_IS_WINDOW (widget))
         {
           GtkWindow *window = GTK_WINDOW (widget);
-          G_CONST_RETURN gchar* name;
  
           name = gtk_window_get_title (window);
-          if (name)
-            return name;
-
-          if (accessible->role == ATK_ROLE_TOOL_TIP)
+          if (name == NULL &&
+              accessible->role == ATK_ROLE_TOOL_TIP)
             {
               GtkWidget *child;
 
               child = gtk_bin_get_child (GTK_BIN (window));
               g_return_val_if_fail (GTK_IS_LABEL (child), NULL);
               name = gtk_label_get_text (GTK_LABEL (child));
-              return name;
             }
         }
-                    
-      return ATK_OBJECT_CLASS (parent_class)->get_name (accessible);
     }
+  return name;
 }
 
 static AtkObject*
@@ -303,9 +348,6 @@ gail_window_get_parent (AtkObject *accessible)
   AtkObject* parent;
 
   parent = ATK_OBJECT_CLASS (parent_class)->get_parent (accessible);
-
-  if (!parent)
-    parent = atk_get_root ();
 
   return parent;
 }
@@ -351,6 +393,48 @@ gail_window_real_focus_gtk (GtkWidget     *widget,
   return FALSE;
 }
 
+static AtkRelationSet*
+gail_window_ref_relation_set (AtkObject *obj)
+{
+  GtkWidget *widget;
+  AtkRelationSet *relation_set;
+  AtkObject *array[1];
+  AtkRelation* relation;
+  GtkWidget *current_widget;
+  gboolean ret;
+
+  g_return_val_if_fail (GAIL_IS_WIDGET (obj), NULL);
+
+  widget = GTK_ACCESSIBLE (obj)->widget;
+  if (widget == NULL)
+    /*
+     * State is defunct
+     */
+    return NULL;
+
+  relation_set = ATK_OBJECT_CLASS (parent_class)->ref_relation_set (obj);
+
+  if (atk_object_get_role (obj) == ATK_ROLE_TOOL_TIP)
+    {
+      relation = atk_relation_set_get_relation_by_type (relation_set, ATK_RELATION_POPUP_FOR);
+
+      if (relation)
+        {
+          atk_relation_set_remove (relation_set, relation);
+        }
+      ret = gtk_tooltips_get_info_from_tip_window (GTK_WINDOW (widget), NULL, &current_widget);
+      if (ret)
+        {
+          array [0] = gtk_widget_get_accessible (current_widget);
+
+          relation = atk_relation_new (array, 1, ATK_RELATION_POPUP_FOR);
+          atk_relation_set_add (relation_set, relation);
+          g_object_unref (relation);
+        }
+    }
+  return relation_set;
+}
+
 static AtkStateSet*
 gail_window_ref_state_set (AtkObject *accessible)
 {
@@ -385,23 +469,59 @@ gail_window_ref_state_set (AtkObject *accessible)
   return state_set;
 }
 
+static gboolean
+idle_notify_name_change (gpointer data)
+{
+  GailWindow *window;
+  AtkObject *obj;
+
+  window = GAIL_WINDOW (data);
+  window->name_change_handler = 0;
+  if (GTK_ACCESSIBLE (window)->widget == NULL)
+    return FALSE;
+
+  obj = ATK_OBJECT (window);
+  if (obj->name == NULL)
+    {
+    /*
+     * The title has changed so notify a change in accessible-name
+     */
+      g_object_notify (G_OBJECT (obj), "accessible-name");
+    }
+  g_signal_emit_by_name (obj, "visible_data_changed");
+  return FALSE;
+}
+
 static void
 gail_window_real_notify_gtk (GObject		*obj,
                              GParamSpec		*pspec)
 {
   GtkWidget *widget = GTK_WIDGET (obj);
   AtkObject* atk_obj = gtk_widget_get_accessible (widget);
+  GailWindow *window = GAIL_WINDOW (atk_obj);
+  const gchar *name;
+  gboolean name_changed = FALSE;
 
   if (strcmp (pspec->name, "title") == 0)
     {
-      if (atk_obj->name == NULL)
+      name = gtk_window_get_title (GTK_WINDOW (widget));
+      if (name)
         {
-        /*
-         * The title has changed so notify a change in accessible-name
-         */
-          g_object_notify (G_OBJECT (atk_obj), "accessible-name");
-	}
-      g_signal_emit_by_name (atk_obj, "visible_data_changed");
+         if (window->previous_name == NULL ||
+             strcmp (name, window->previous_name) != 0)
+           name_changed = TRUE;
+        }
+      else if (window->previous_name != NULL)
+        name_changed = TRUE;
+
+      if (name_changed)
+        {
+          g_free (window->previous_name);
+          window->previous_name = g_strdup (name);
+       
+          if (window->name_change_handler == 0)
+            window->name_change_handler = g_idle_add (idle_notify_name_change, atk_obj);    
+        }
     }
   else
     GAIL_WIDGET_CLASS (parent_class)->notify_gtk (obj, pspec);
@@ -539,7 +659,7 @@ get_window_desktop (Window window)
   int             format;
   gulong          nitems;
   gulong          bytes_after;
-  gulong         *cardinals;
+  guchar         *cardinals;
   int             error;
   int             result;
   int             desktop;
@@ -553,9 +673,10 @@ get_window_desktop (Window window)
                                0, G_MAXLONG,
                                False, XA_CARDINAL,
                                &ret_type, &format, &nitems,
-                               &bytes_after, (guchar **) &cardinals);
+                               &bytes_after, &cardinals);
   error = gdk_error_trap_pop();
-  if (error != Success || result != Success)
+  /* nitems < 1 will occur if the property is not set */
+  if (error != Success || result != Success || nitems < 1)
     return -1;
 
   desktop = *cardinals;
@@ -589,7 +710,7 @@ get_stacked_windows (GailScreenInfo *info)
   int     format;
   gulong  nitems;
   gulong  bytes_after;
-  Window *data;
+  guchar *data;
   int     error;
   int     result;
   int     i;
@@ -608,9 +729,10 @@ get_stacked_windows (GailScreenInfo *info)
                                _net_client_list_stacking,
                                0, G_MAXLONG,
                                False, XA_WINDOW, &ret_type, &format, &nitems,
-                               &bytes_after, (guchar **)&data);
+                               &bytes_after, &data);
   error = gdk_error_trap_pop ();
-  if (error != Success || result != Success)
+  /* nitems < 1 will occur if the property is not set */
+  if (error != Success || result != Success || nitems < 1)
     {
       free_screen_info (info);
       return FALSE;
@@ -646,7 +768,7 @@ get_stacked_windows (GailScreenInfo *info)
         }
     }
   free_screen_info (info);
-  info->stacked_windows = data;
+  info->stacked_windows = (Window*) data;
   info->stacked_windows_len = nitems;
   info->desktop = desktops;
   info->desktop_changed = desktops_changed;

@@ -61,7 +61,7 @@ _check_toplevel (AtkObject *obj)
 }
 
 static void
-_create_event_watcher ()
+_create_event_watcher (void)
 {
   id = atk_add_focus_tracker (_check_toplevel);
 }

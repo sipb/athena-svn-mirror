@@ -9,13 +9,14 @@ gail_text_util_buffer_setup
 gail_text_util_get_text
 gail_text_util_get_substring
 <SUBSECTION Standard>
+GailTextUtilClass
 GAIL_TEXT_UTIL
 GAIL_IS_TEXT_UTIL
 GAIL_TYPE_TEXT_UTIL
 GAIL_TEXT_UTIL_CLASS
 GAIL_IS_TEXT_UTIL_CLASS
 GAIL_TEXT_UTIL_GET_CLASS
-<SUBSECTION Standard>
+<SUBSECTION Private>
 gail_text_util_get_type
 </SECTION>
 

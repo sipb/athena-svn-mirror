@@ -1,5 +1,5 @@
 /* GAIL - The GNOME Accessibility Implementation Library
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002, 2003 Sun Microsystems Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -33,6 +33,9 @@ static void         gail_notebook_real_notify_gtk     (GObject           *obj,
 
 static AtkObject*   gail_notebook_ref_child           (AtkObject      *obj,
                                                        gint           i);
+static gint         gail_notebook_real_remove_gtk     (GtkContainer   *container,
+                                                       GtkWidget      *widget,
+                                                       gpointer       data);    
 static void         atk_selection_interface_init      (AtkSelectionIface *iface);
 static gboolean     gail_notebook_add_selection       (AtkSelection   *selection,
                                                        gint           i);
@@ -43,6 +46,16 @@ static gboolean     gail_notebook_is_child_selected   (AtkSelection   *selection
                                                        gint           i);
 static AtkObject*   find_child_in_list                (GList          *list,
                                                        gint           index);
+static void         check_cache                       (GailNotebook   *gail_notebook,
+                                                       GtkNotebook    *notebook);
+static void         create_notebook_page_accessible   (GailNotebook   *gail_notebook,
+                                                       GtkNotebook    *notebook,
+                                                       gint           index,
+                                                       gboolean       insert_before,
+                                                       GList          *list);
+static void         gail_notebook_child_parent_set    (GtkWidget      *widget,
+                                                       GtkWidget      *old_parent,
+                                                       gpointer       data);
 static gboolean     gail_notebook_focus_cb            (GtkWidget      *widget,
                                                        GtkDirectionType type);
 static gboolean     gail_notebook_check_focus_tab     (gpointer       data);
@@ -92,8 +105,10 @@ gail_notebook_class_init (GailNotebookClass *klass)
   GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
   AtkObjectClass  *class = ATK_OBJECT_CLASS (klass);
   GailWidgetClass *widget_class;
+  GailContainerClass *container_class;
 
   widget_class = (GailWidgetClass*)klass;
+  container_class = (GailContainerClass*)klass;
 
   parent_class = g_type_class_peek_parent (klass);
   
@@ -108,6 +123,7 @@ gail_notebook_class_init (GailNotebookClass *klass)
    * as the implementation in GailContainer returns the correct
    * number of children.
    */
+  container_class->remove_gtk = gail_notebook_real_remove_gtk;
 }
 
 static void
@@ -116,6 +132,7 @@ gail_notebook_object_init (GailNotebook      *notebook)
   notebook->page_cache = NULL;
   notebook->selected_page = -1;
   notebook->focus_tab_page = -1;
+  notebook->remove_index = -1;
   notebook->idle_focus_id = 0;
 }
 
@@ -131,8 +148,6 @@ gail_notebook_new (GtkWidget *widget)
 
   accessible = ATK_OBJECT (object);
   atk_object_initialize (accessible, widget);
-
-  accessible->role = ATK_ROLE_PAGE_TAB_LIST;
 
   return accessible;
 }
@@ -157,30 +172,14 @@ gail_notebook_ref_child (AtkObject      *obj,
   
   gtk_notebook = GTK_NOTEBOOK (widget);
   
+  if (gail_notebook->page_count < g_list_length (gtk_notebook->children))
+    check_cache (gail_notebook, gtk_notebook);
+
   accessible = find_child_in_list (gail_notebook->page_cache, i);
 
-  if (accessible == NULL)
-    { 
-    /*
-     * We attempt to create the cache of pages when the GailNotebook
-     * is created but we do not get notifications of pages being added or
-     * removed subsequently.
-     *
-     * So this code should be reached only for a page which was added 
-     * subsequently.
-     *
-     * We have a problem if pages are removed in that we cannot remove
-     * the corresponding accessible from the cache.
-     * See bug 58674
-     */
-      accessible = gail_notebook_page_new (gtk_notebook, i);
-      if (!accessible)
-        return NULL;
-      gail_notebook->page_cache = g_list_append (gail_notebook->page_cache, 
-                                                 accessible);
-      g_return_val_if_fail (accessible, NULL);
-    }
-  g_object_ref (accessible);
+  if (accessible != NULL)
+    g_object_ref (accessible);
+
   return accessible;
 }
 
@@ -188,23 +187,19 @@ static void
 gail_notebook_real_initialize (AtkObject *obj,
                                gpointer  data)
 {
-  GailNotebook *notebook = GAIL_NOTEBOOK (obj);
-  GtkNotebook *gtk_notebook = GTK_NOTEBOOK (data);
-  GtkWidget *page;
+  GailNotebook *notebook;
+  GtkNotebook *gtk_notebook;
   gint i;
 
   ATK_OBJECT_CLASS (parent_class)->initialize (obj, data);
 
-  i = 0;
-  page = gtk_notebook_get_nth_page (gtk_notebook, i);
-  while (page)
+  notebook = GAIL_NOTEBOOK (obj);
+  gtk_notebook = GTK_NOTEBOOK (data);
+  for (i = 0; i < g_list_length (gtk_notebook->children); i++)
     {
-      AtkObject *obj;
-
-      obj = gail_notebook_page_new (gtk_notebook, i);
-      notebook->page_cache = g_list_append (notebook->page_cache, obj);
-      page = gtk_notebook_get_nth_page (gtk_notebook, ++i);
+      create_notebook_page_accessible (notebook, gtk_notebook, i, FALSE, NULL);
     }
+  notebook->page_count = i;
   notebook->selected_page = gtk_notebook_get_current_page (gtk_notebook);
   if (gtk_notebook->focus_tab && gtk_notebook->focus_tab->data)
     {
@@ -217,22 +212,33 @@ gail_notebook_real_initialize (AtkObject *obj,
   g_object_weak_ref (G_OBJECT(gtk_notebook),
                      (GWeakNotify) gail_notebook_destroyed,
                      obj);                     
+
+  obj->role = ATK_ROLE_PAGE_TAB_LIST;
 }
 
 static void
 gail_notebook_real_notify_gtk (GObject           *obj,
                                GParamSpec        *pspec)
 {
-  GtkWidget *widget = GTK_WIDGET (obj);
-  AtkObject* atk_obj = gtk_widget_get_accessible (widget);
+  GtkWidget *widget;
+  AtkObject* atk_obj;
+
+  widget = GTK_WIDGET (obj);
+  atk_obj = gtk_widget_get_accessible (widget);
 
   if (strcmp (pspec->name, "page") == 0)
     {
       gint page_num, old_page_num;
-      gint focus_page_num, old_focus_page_num;
-      GailNotebook *gail_notebook = GAIL_NOTEBOOK (atk_obj);
-      GtkNotebook *gtk_notebook = GTK_NOTEBOOK (widget);
+      gint focus_page_num = 0;
+      gint old_focus_page_num;
+      GailNotebook *gail_notebook;
+      GtkNotebook *gtk_notebook;
      
+      gail_notebook = GAIL_NOTEBOOK (atk_obj);
+      gtk_notebook = GTK_NOTEBOOK (widget);
+     
+      if (gail_notebook->page_count < g_list_length (gtk_notebook->children))
+       check_cache (gail_notebook, gtk_notebook);
       /*
        * Notify SELECTED state change for old and new page
        */
@@ -240,27 +246,34 @@ gail_notebook_real_notify_gtk (GObject           *obj,
       page_num = gtk_notebook_get_current_page (gtk_notebook);
       gail_notebook->selected_page = page_num;
       old_focus_page_num = gail_notebook->focus_tab_page;
-      focus_page_num = g_list_index (gtk_notebook->children, gtk_notebook->focus_tab->data);
-      gail_notebook->focus_tab_page = focus_page_num;
+      if (gtk_notebook->focus_tab && gtk_notebook->focus_tab->data)
+        {
+          focus_page_num = g_list_index (gtk_notebook->children, gtk_notebook->focus_tab->data);
+          gail_notebook->focus_tab_page = focus_page_num;
+        }
     
       if (page_num != old_page_num)
         {
           AtkObject *obj;
 
-          g_signal_emit_by_name (atk_obj, "selection_changed");
-          g_signal_emit_by_name (atk_obj, "visible_data_changed");
-
-          obj = find_child_in_list (gail_notebook->page_cache, old_page_num);
-          if (obj)
-            atk_object_notify_state_change (obj,
-                                            ATK_STATE_SELECTED,
-                                            FALSE);
-          obj = find_child_in_list (gail_notebook->page_cache, page_num);
+          if (old_page_num != -1)
+            {
+              obj = gail_notebook_ref_child (atk_obj, old_page_num);
+              if (obj)
+                {
+                  atk_object_notify_state_change (obj,
+                                                  ATK_STATE_SELECTED,
+                                                  FALSE);
+                  g_object_unref (obj);
+                }
+            }
+          obj = gail_notebook_ref_child (atk_obj, page_num);
           if (obj)
             {
               atk_object_notify_state_change (obj,
                                               ATK_STATE_SELECTED,
                                               TRUE);
+              g_object_unref (obj);
               /*
                * The page which is being displayed has changed but there is
                * no need to tell the focus tracker as the focus page will also 
@@ -268,13 +281,15 @@ gail_notebook_real_notify_gtk (GObject           *obj,
                * Notebook does not have tabs.
                */
             }
+          g_signal_emit_by_name (atk_obj, "selection_changed");
+          g_signal_emit_by_name (atk_obj, "visible_data_changed");
         }
       if (gtk_notebook_get_show_tabs (gtk_notebook) &&
          (focus_page_num != old_focus_page_num))
         {
           if (gail_notebook->idle_focus_id)
-            gtk_idle_remove (gail_notebook->idle_focus_id);
-          gail_notebook->idle_focus_id = gtk_idle_add (gail_notebook_check_focus_tab, atk_obj);
+            g_source_remove (gail_notebook->idle_focus_id);
+          gail_notebook->idle_focus_id = g_idle_add (gail_notebook_check_focus_tab, atk_obj);
         }
     }
   else
@@ -441,6 +456,97 @@ find_child_in_list (GList *list,
   return obj;
 }
 
+static void
+check_cache (GailNotebook *gail_notebook,
+             GtkNotebook  *notebook)
+{
+  GList *gtk_list;
+  GList *gail_list;
+  gint i;
+
+  gtk_list = notebook->children;
+  gail_list = gail_notebook->page_cache;
+
+  i = 0;
+  while (gtk_list)
+    {
+      if (!gail_list)
+        {
+          create_notebook_page_accessible (gail_notebook, notebook, i, FALSE, NULL);
+        }
+      else if (GAIL_NOTEBOOK_PAGE (gail_list->data)->page != gtk_list->data)
+        {
+          create_notebook_page_accessible (gail_notebook, notebook, i, TRUE, gail_list);
+        }
+      else
+        {
+          gail_list = gail_list->next;
+        }
+      i++;
+      gtk_list = gtk_list->next;
+    }
+  gail_notebook->page_count = i;
+}
+
+static void
+create_notebook_page_accessible (GailNotebook *gail_notebook,
+                                 GtkNotebook  *notebook,
+                                 gint         index,
+                                 gboolean     insert_before,
+                                 GList        *list)
+{
+  AtkObject *obj;
+
+  obj = gail_notebook_page_new (notebook, index);
+  g_object_ref (obj);
+  if (insert_before)
+    gail_notebook->page_cache = g_list_insert_before (gail_notebook->page_cache, list, obj);
+  else
+    gail_notebook->page_cache = g_list_append (gail_notebook->page_cache, obj);
+  g_signal_connect (gtk_notebook_get_nth_page (notebook, index), 
+                    "parent_set",
+                    G_CALLBACK (gail_notebook_child_parent_set),
+                    GINT_TO_POINTER (index));
+}
+
+static void
+gail_notebook_child_parent_set (GtkWidget *widget,
+                                GtkWidget *old_parent,
+                                gpointer   data)
+{
+  GailNotebook *gail_notebook;
+
+  g_return_if_fail (old_parent != NULL);
+  gail_notebook = GAIL_NOTEBOOK (gtk_widget_get_accessible (old_parent));
+  gail_notebook->remove_index = GPOINTER_TO_INT (data);
+}
+
+static gint
+gail_notebook_real_remove_gtk (GtkContainer *container,
+                               GtkWidget    *widget,
+                               gpointer      data)    
+{
+  GailNotebook *gail_notebook;
+  AtkObject *obj;
+  gint index;
+
+  g_return_val_if_fail (container != NULL, 1);
+  gail_notebook = GAIL_NOTEBOOK (gtk_widget_get_accessible (GTK_WIDGET (container)));
+  index = gail_notebook->remove_index;
+  gail_notebook->remove_index = -1;
+
+  obj = find_child_in_list (gail_notebook->page_cache, index);
+  g_return_val_if_fail (obj, 1);
+  gail_notebook->page_cache = g_list_remove (gail_notebook->page_cache, obj);
+  gail_notebook->page_count -= 1;
+  g_signal_emit_by_name (gail_notebook,
+                         "children_changed::remove",
+                          GAIL_NOTEBOOK_PAGE (obj)->index, 
+                          obj, NULL);
+  g_object_unref (obj);
+  return 1;
+}
+
 static gboolean
 gail_notebook_focus_cb (GtkWidget      *widget,
                         GtkDirectionType type)
@@ -453,8 +559,8 @@ gail_notebook_focus_cb (GtkWidget      *widget,
     case GTK_DIR_LEFT:
     case GTK_DIR_RIGHT:
       if (gail_notebook->idle_focus_id)
-        gtk_idle_remove (gail_notebook->idle_focus_id);
-      gail_notebook->idle_focus_id = gtk_idle_add (gail_notebook_check_focus_tab, atk_obj);
+        g_source_remove (gail_notebook->idle_focus_id);
+      gail_notebook->idle_focus_id = g_idle_add (gail_notebook_check_focus_tab, atk_obj);
       break;
     default:
       break;
@@ -502,5 +608,5 @@ gail_notebook_destroyed (gpointer data)
   GailNotebook *gail_notebook = GAIL_NOTEBOOK (data);
 
   if (gail_notebook->idle_focus_id)
-    gtk_idle_remove (gail_notebook->idle_focus_id);
+    g_source_remove (gail_notebook->idle_focus_id);
 }

@@ -1,17 +1,16 @@
 # Process this file with automake to create Makefile.in.
 
-SUBDIRS=libgail-util gail tests docs
+SUBDIRS=libgail-util gail tests docs po
+
+EXTRA_DIST =		\
+	gail-uninstalled.pc.in
+	gail.pc.in
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA= gail.pc
 
-.PHONY: files
+DISTCHECK_CONFIGURE_FLAGS = --enable-gtk-doc
 
-files:
-	@for subdir in $(SUBDIRS); do\
-	  files=`cd $$subdir; $(MAKE) files | grep -v "make\[[1-9]\]"`; \
-	  for file in $$files; do \
-	    echo $$subdir/$$file; \
-	  done; \
-	done
-
+DISTCLEANFILES =		\
+	gail-unistalled.pc	\
+	gail.pc

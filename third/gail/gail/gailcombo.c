@@ -1,5 +1,5 @@
 /* GAIL - The GNOME Accessibility Implementation Library
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002, 2003 Sun Microsystems Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -62,7 +62,6 @@ static gboolean     gail_combo_remove_selection        (AtkSelection   *selectio
 static gint         _gail_combo_button_release         (gpointer       data);
 static gint         _gail_combo_popup_release          (gpointer       data);
 
-static gboolean     _gail_combo_is_entry_editable      (GtkWidget      *entry);
 
 static gpointer parent_class = NULL;
 
@@ -131,6 +130,8 @@ static void
 gail_combo_object_init (GailCombo      *combo)
 {
   combo->press_description = NULL;
+  combo->old_selection = NULL;
+  combo->deselect_idle_handler = 0;
 }
 
 AtkObject* 
@@ -146,8 +147,6 @@ gail_combo_new (GtkWidget *widget)
   accessible = ATK_OBJECT (object);
   atk_object_initialize (accessible, widget);
 
-  accessible->role = ATK_ROLE_COMBO_BOX;
-
   return accessible;
 }
 
@@ -156,50 +155,88 @@ gail_combo_real_initialize (AtkObject *obj,
                             gpointer  data)
 {
   GtkCombo *combo;
-  GtkWidget *list, *entry;
-  AtkObject *child_accessible;
+  GtkList *list;
+  GList *slist; 
+  GailCombo *gail_combo;
 
   ATK_OBJECT_CLASS (parent_class)->initialize (obj, data);
 
   combo = GTK_COMBO (data);
-  list = combo->list;
-  entry = combo->entry;
 
-  g_signal_connect (list,
+  list = GTK_LIST (combo->list);
+  slist = list->selection;
+
+  gail_combo = GAIL_COMBO (obj);
+  if (slist && slist->data)
+    {
+      gail_combo->old_selection = slist->data;
+    }
+  g_signal_connect (combo->list,
                     "selection_changed",
                     G_CALLBACK (gail_combo_selection_changed_gtk),
-                    obj);
-  child_accessible = gtk_widget_get_accessible (entry);
-  atk_object_set_parent (child_accessible, obj);
-  child_accessible = gtk_widget_get_accessible (list);
-  atk_object_set_parent (child_accessible, obj);
+                    data);
+  atk_object_set_parent (gtk_widget_get_accessible (combo->entry), obj);
+  atk_object_set_parent (gtk_widget_get_accessible (combo->popup), obj);
+
+  obj->role = ATK_ROLE_COMBO_BOX;
+}
+
+static gboolean
+notify_deselect (gpointer data)
+{
+  GailCombo *combo;
+
+  combo = GAIL_COMBO (data);
+
+  combo->old_selection = NULL;
+  g_signal_emit_by_name (data, "selection_changed");
+  return FALSE;
 }
 
 static void
 gail_combo_selection_changed_gtk (GtkWidget      *widget,
                                   gpointer       data)
 {
-  g_signal_emit_by_name (data, "selection_changed");
-}
+  GtkCombo *combo;
+  GtkList *list;
+  GList *slist; 
+  AtkObject *obj;
+  GailCombo *gail_combo;
 
-static gboolean
-_gail_combo_is_entry_editable (GtkWidget       *entry)
-{
-  GValue value = { 0, };
+  combo = GTK_COMBO (data);
+  list = GTK_LIST (combo->list);
+  
+  slist = list->selection;
 
-  g_value_init (&value, G_TYPE_BOOLEAN);
-  g_object_get_property (G_OBJECT (entry), "editable", &value);
-  return g_value_get_boolean (&value);
+  obj = gtk_widget_get_accessible (GTK_WIDGET (data));
+  gail_combo = GAIL_COMBO (obj);
+  if (slist && slist->data)
+    {
+      if (slist->data != gail_combo->old_selection)
+        {
+          gail_combo->old_selection = slist->data;
+          g_signal_emit_by_name (obj, "selection_changed");
+        }
+      if (gail_combo->deselect_idle_handler)
+        {
+          g_source_remove (gail_combo->deselect_idle_handler);
+          gail_combo->deselect_idle_handler = 0;       
+        }
+    }
+  else
+    {
+      if (gail_combo->deselect_idle_handler == 0)
+        gail_combo->deselect_idle_handler =  g_idle_add (notify_deselect, gail_combo);
+    }
 }
 
 /*
  * The children of a GailCombo are the list of items and the entry field
- * if it is editable.
  */
 static gint
 gail_combo_get_n_children (AtkObject* obj)
 {
-  gint n_children = 1;
+  gint n_children = 2;
   GtkWidget *widget;
 
   g_return_val_if_fail (GAIL_IS_COMBO (obj), 0);
@@ -210,9 +247,6 @@ gail_combo_get_n_children (AtkObject* obj)
      * State is defunct
      */
     return 0;
-
-  if (_gail_combo_is_entry_editable (GTK_COMBO (widget)->entry))
-    n_children++;
 
   return n_children;
 }
@@ -237,11 +271,9 @@ gail_combo_ref_child (AtkObject *obj,
     return NULL;
 
   if (i == 0)
-    accessible = gtk_widget_get_accessible (GTK_COMBO (widget)->list);
-  else if (_gail_combo_is_entry_editable (GTK_COMBO (widget)->entry))
+    accessible = gtk_widget_get_accessible (GTK_COMBO (widget)->popup);
+  else 
     accessible = gtk_widget_get_accessible (GTK_COMBO (widget)->entry);
-  else
-    return NULL;
 
   g_object_ref (accessible);
   return accessible;
@@ -282,7 +314,7 @@ gail_combo_do_action (AtkAction *action,
       if (combo->action_idle_handler)
         return FALSE;
 
-      combo->action_idle_handler = gtk_idle_add (idle_do_action, combo);
+      combo->action_idle_handler = g_idle_add (idle_do_action, combo);
       return TRUE;
     }
   else
@@ -337,7 +369,7 @@ idle_do_action (gpointer data)
 
       gtk_widget_event (action_widget, &tmp_event);
 
-      gtk_idle_add (_gail_combo_button_release, combo);
+      g_idle_add (_gail_combo_button_release, combo);
     }
     else
     {
@@ -347,7 +379,7 @@ idle_do_action (gpointer data)
       action_widget = combo->popwin;
     
       gtk_widget_event (action_widget, &tmp_event);
-      gtk_idle_add (_gail_combo_popup_release, combo);
+      g_idle_add (_gail_combo_popup_release, combo);
     }
   return FALSE;
 }
@@ -618,8 +650,13 @@ gail_combo_finalize (GObject            *object)
   g_free (combo->press_description);
   if (combo->action_idle_handler)
     {
-      gtk_idle_remove (combo->action_idle_handler);
+      g_source_remove (combo->action_idle_handler);
       combo->action_idle_handler = 0;
+    }
+  if (combo->deselect_idle_handler)
+    {
+      g_source_remove (combo->deselect_idle_handler);
+      combo->deselect_idle_handler = 0;       
     }
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }

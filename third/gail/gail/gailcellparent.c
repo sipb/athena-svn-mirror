@@ -22,7 +22,7 @@
 #include "gailcellparent.h"
 
 GType
-gail_cell_parent_get_type ()
+gail_cell_parent_get_type (void)
 {
   static GType type = 0;
 

@@ -52,14 +52,14 @@ static void _check_arrows (AtkObject *obj)
 							 md->arrow3, TRUE,TRUE, 0);
 		gtk_box_pack_start(GTK_BOX (GTK_DIALOG (md->dialog)->vbox),
 							 md->arrow4, TRUE,TRUE, 0);
-		gtk_signal_connect(GTK_OBJECT(md->dialog), "destroy",
+		g_signal_connect(GTK_OBJECT(md->dialog), "destroy",
 							 GTK_SIGNAL_FUNC(destroy), md->dialog);
 
 	    md->image = GTK_IMAGE(gtk_image_new_from_file("circles.xbm"));
 		gtk_box_pack_start(GTK_BOX (GTK_DIALOG (md->dialog)->vbox),
 							 GTK_WIDGET(md->image), TRUE,TRUE, 0);
 		md->close_button = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
-		gtk_signal_connect(GTK_OBJECT(md->close_button), "clicked",
+		g_signal_connect(GTK_OBJECT(md->close_button), "clicked",
 							 GTK_SIGNAL_FUNC(destroy), md->dialog);
 
 		gtk_box_pack_start(GTK_BOX (GTK_DIALOG (md->dialog)->action_area),
@@ -143,7 +143,7 @@ static void _check_objects (AtkObject *obj)
 
 
 static void
-_create_event_watcher ()
+_create_event_watcher (void)
 {
   atk_add_focus_tracker (_check_objects);
 }

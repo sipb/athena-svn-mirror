@@ -1,5 +1,5 @@
 /* GAIL - The GNOME Accessibility Implementation Library
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002, 2003 Sun Microsystems Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -23,6 +23,7 @@
 #include <atk/atk.h>
 #include <gtk/gtknotebook.h>
 #include <gail/gailnotebook.h>
+#include <libgail-util/gailtextutil.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -43,8 +44,11 @@ struct _GailNotebookPage
   AtkObject parent;
 
   GtkNotebook *notebook;
+  GtkNotebookPage *page;
   
   gint index;
+
+  GailTextUtil *textutil;
 };
 
 GType gail_notebook_page_get_type (void);

@@ -1,3 +1,465 @@
+Changes in GAIL 1.8.0
+=====================
+* Add translation: Thai [Supranee Thirawattansuk]
+
+* Updated translations: Nepali [Pawan Chitrakar],  Oriya [Gora Mohanty],
+Canadian English [Adam Weinberger]
+
+Changes in GAIL 1.7.1
+=====================
+
+* Fix for double-free in gailutil: see bugzilla 151513.
+
+Overview of Changes in GAIL 1.7.0
+=================================
+* Find label text for items for gradient option in gnome-background-properties
+(bug #144084)
+
+* Ensure that object:text_caret_moved events are set in Forecast tab of
+gweather applet. (bug #144158)
+
+* Fix warning messages emitted when gedit terminates. (bug #144310)
+
+* Have GailWidget emit "bounds-changed" signal  when GtkWidget's size 
+allocation changes. (bug #141191)
+
+* Emit "window:moved" event when toplevel is moved. (bug #144170)
+
+* When we report focus on a combo-box, emit "state-changed:focused" event
+on combo-box, not its text entry field. (bug #145262)
+
+* Fix accessible behavior of GtkExpander in Run Application; i.e. get list
+of known applications. (bug #147581)
+
+* Complete accessible support for GtkComboBox. (bug #136657)
+
+* Fix crash when attempt to move window in metacity using gok. (bug #149302)
+
+* Fix warning message emitted when closing epiphany window. (bug #149442)
+
+* Fix warning messages when accessing child of a treeview. (bug #149798)
+
+* Report name for complex page tab in gedit (bug #104815)
+
+* Get text for items in GtkComboBox for font size in GnomeFontSelection.
+(bug #145136)
+
+* Report correct default action for toggle button in ColorCombo in gal
+(bug #150545)
+
+* Add translations: Norwegian [Kjarten Maraas], Nepali [Pawan Chitrakar],
+Turkmen [Gurban M. Tewekgeli], Bosnian [Kenan Had\305\276iavdi\304\207]
+
+* Updated translations: Albanian [Laurent Dhima], 
+Bulgarian [Vladimir "Kaladan" Petkov] Hindi [ Guntupalli Karunamar]
+Hungarian [Laszlo Dvornik], Panjabi [Amanpreet Singh Alam]
+Gujarati [Ankit Patel]
+
+Overview of Changes in GAIL 1.6.6
+=================================
+* Check that label in page tab is showing before returning it. (bug #129608)
+
+* Ensure that create-tab notification is not sent when tab is removed.
+(bug #128970)
+
+* Report accelerator correctly for menu items created using GtkAction and
+GtkUIManager. (bug #143587)
+
+* Add translations: Bulgarian [Vladimir Petkov]
+
+Overview of Changes in GAIL 1.6.5
+=================================
+* Ensure than antecendent menu is unposted when menu item is activated.
+(bug #134532)
+
+* Set state ATK_STATE_SENSITIVE for cells in a GtkTreeView.  (bug #142776)
+
+* Emit children-changed signal when tab added to or removed from GtkNotebook.
+(bug #128970)
+
+* Updated translations: Simplified Chinese [Funda Wang]
+
+Overview of Changes in GAIL 1.6.4
+=================================
+* Prevent warning message because of referring to non-existent child.
+(bug #141494)
+
+* Report labels correctly for GnomeFontPicker (bug #140616)
+
+* Ensure that focus object for widget is not defunct before reporting
+focus on it. (bug #141907)
+
+* Set button press as default action for button consisting of a down arrow.
+(bug #137401)
+
+Overview of Changes in GAIL 1.6.3
+=================================
+* Fix warning messages when compiling. (bug #140475 [Stanislav Brabec]
+
+* Rework fix for evolution crasher bug. (bug #140559)
+
+* Do not report focus state change on widget when non-widget child of
+widget is reported as having focus. (bug #134003)
+
+Overview of Changes in GAIL 1.6.2
+=================================
+* Ensure that accessible name is reported for file in Nautilus List View.
+(bug #139391)
+
+* Report children of scrolled window correctly when only vertical scrollbar
+is visible. (bug #138734)
+
+* Fix crasher bug in evolution when going to a specific date. (bug #140475)
+
+* Add translations: Add M\304\201ori [John Barstow] 
+
+Overview of Changes in GAIL 1.6.1
+=================================
+* Correctly report LABELLED_BY relation for combo-box when mnemonic
+widget is GnomeFileEntry. (bug #137584)
+
+* Report name correctly for GtkComboBox which has a TreeModel with more
+than one column. (bug #136976)
+
+* Do not treat a GtkHandleBox as a window (bug #138339)
+
+* Set role for popup window to be ROLE_WINDOW instead of ROLE_FRAME.
+(bug #135242)
+
+* Separate items in keybinding by ":". (bug #138392)
+
+* Avoid crash when getting keybinding if GtkEntry is not a mnemonic widget.
+(bug #139236)
+ 
+* Add translations: Punjabi [Amanpreet Singh Alam], Estonian [Pritt Laes]
+
+* Updated translations: Traditional Chinese [Ching-Hung Lin]
+
+Overview of Changes in GAIL 1.6.0
+=================================
+* Added translations: Romanian [Mi\305\237u Moldovan], 
+Bengali [Progga], British (en_GB) [Gareth Owen], Hindi [Anand Subramanian],
+Icelandic [ Helgi \303\236ormar \303\236orbj\303\266rnsson]
+
+* Updated translations: Lithuanian [\305\275ygimantas Beru\304\215ka],
+Norwegian Nynorsk [\303\205smund Skj\303\246veland]
+
+Overview of Changes in GAIL 1.5.8
+=================================
+* Ignore label within button when creating LABELLED_BY relations.
+(bug #136602)
+
+* Find label for button in a GtkTreeView column header. (bug #135943)
+
+* Add translations: Brazilian Portuguese  [Franz Gustav Niederheitmann],
+Russian [Russian team]
+
+* Updated translations: Albanian [Laurent Dhima], Croatian [Robert Sedak]
+
+Overview of Changes in GAIL 1.5.7
+=================================
+* Use gtk_widget_list_mnemonic_labels to create ATK_LABELLED_BY relations
+instead of special case heuristics.  (bug #136163)
+
+* Correct error in GailScale (bug 135227) [Mariano Su\341rez-Alvarez]
+
+* Add translations: Tamil [Adamnseh Nadarajah]
+
+* Updated translations: Albanian [Laurent Dhima], 
+Simplified Chinese [Funda Wang]
+
+Overview of Changes in GAIL 1.5.6
+=================================
+* Emit notification when tooltip is displayed. Set ATK_RELATION_POPUP_FOR
+to identify the object for which the tooltip is displayed. (bug #76266)
+
+* Find text in buttons on GAIM login screen so that it is reported as accessible
+name for button. (bug #134308)
+
+* Do not report widget name as accessible name. (bug #128439)
+
+* Check TreeView is realized before emitting selection-changed signal.
+(bug #134952)
+
+* Add heuristic to find label for NautilusEntry in FMPropertiesWindow.
+(bug #134629)
+
+* Fix leak when adding global event listener. [Christian Persch] (bug #135018)
+
+* Add accessibility implementation for GtkScale. (bug #104797)
+
+* Add translations: Canadian English [Adam Weinberger]
+
+* Updated translations: Albanian [Laurent Dhima], Irish [Alastair McKinstry]
+
+Overview of Changes in GAIL 1.5.5
+=================================
+* Fix emission of test-inserted signals when text in a GtkEntry changes.
+(bug #133283)
+
+* Add heuristic to find label for GnomeEntry. (bug #133403)
+
+* Find labelled-by relation for GnomeColorPicker (bug #133200)
+
+* Correct setting of object in NODE_CHILD_OF relation. (bug #133420)
+
+* Report a GailEntry as child of GailCombo even if it is not editable. 
+(bug 133512)
+
+* Add heuristic to find label for entry in GtkFileSelection. (bug #129371)
+
+* Correct labelling for GnomeIconEntry. (bug #133967)
+
+* Report keybindings for activate action for GailEntry. (bug #132846)
+
+* Avoid spurious reporting of focus on parent menu item when moving from 
+one menu item to another. (bug 128973)
+
+* Report labelling correctly for GnomeFileEntry. (bug #134131)
+
+* Report label for combo-box in Sound preferences capplet. (bug #126972).
+
+* Add translations: Japanese [Takeshi AIHANA], Ukrainian [Maxim Dziumanenko],
+Belarusian [Ales Nyakhaychyk], Finnish [Pauli Virtanen]
+
+* Updated translations: Albanian [Laurent Dhima], 
+Serbian [Aleksandar Uro\305\241evi\304\207]
+
+Overview of Changes in GAIL 1.5.4
+=================================
+* Correct error in action implementation for GtkExpander. (bug #131458) 
+[Bill Haneman]
+
+* Implement AtkSelection for GtkList. (bug #132136)
+
+* Avoid warning when popping up context menu in gnome-terminal. (bug #132457)
+
+* Emit deactivate signal when window is being removed. (bug #132604)
+
+* Add initial accessibility implementation for GtkComboBox.
+
+* Fix crasher bug in gnumeric when treeview is destroyed. (bug #132450)
+
+* Add translations: Irish [Alastair McKinstry], Albanian [Laurent Dhima],
+Azerbaijani [M\311\231tin \306\217mirov]
+
+* Update translations: Norwegian Nynorsk [\303\205smund Skj\303\246veland],
+Czech [Miloslav Trmac], Croatian [Robert Sedak]
+
+Overview of Changes in GAIL 1.5.3
+=================================
+* Define locale dir for gail correctly. (bug #130489)
+
+* Fix FPI in gail documentation. (bug 129730) [Sebastien Bacher]
+
+* Ensure that role for table is set correctly. (bug #128799)
+
+* Add translations: Indonesian [Ahmad Riza H Nst], Arabic [Arafat Medini],
+Norwegian Nyorsk [\303\205smund Skj\303\246veland], Serbian [Robert Sedak],
+Lithuanian [Tomas Kuliavas], Persian [Roozbeh Pournader],
+Danish [Ole Laursen], French [Baptiste Mille-Mathias],
+Mongolian [Sanlig Badral], Italian [Luca Ferretti],
+Korean [Changwoo Ryu].
+
+* Update translations: Polish [Artur Flinta]
+
+Overview of Changes in GAIL 1.5.2
+=================================
+* Ensure that focus object is reported correctly after window 
+deactivate/activate. (bug #127486)
+
+* Set ATK_STATE_SHOWING for cells which are on the screen. (bug #127607)
+
+* Add accessibility support for GtkExpander. (bug #128378)
+
+* Fix crasher bug when GailEntry idle handler is called after the object
+is destroyed. (bug #128497)
+
+* Add translations: Greek [Kostas Papadimas], Malay [Hasbullah Bin Pit],
+Catalan [Jordi Mallach], Norwegian [Kjartan Marass],
+Portuguese [Duarte Loreto]
+
+* Updated translations: Dutch [Elros Cyriatan]
+
+Overview of Changes in GAIL 1.5.1
+=================================
+* Fix emission of warning messages when accessing GtkTreeView. (bug #126706)
+
+* Report name of stock icon when no other name is available for button.
+(bug #126631)
+
+* Wait until menu is mapped before reporting is is visible. This fixes problem
+with incorrect vnumber of children being reported. (bug #126801)
+
+* Report focus on item in menubar before reporting focus on menu item in menu
+when Alt key is used to popup menu. (bug #124838)
+
+* Report text correctly when the text is in bold. (bug #126797)
+
+* Find label for widget Nautilus Desktop Preferences dialog. (bug #126973)
+
+* Add translations: Welsh [Rhys Jones], Polish [Arkadiusz Lipiec],
+Czech [Miloslav Trmac]
+
+Overview of Changes in GAIL 1.5.0
+=================================
+* Fix crasher bug in wnck-applet when gnome-panel terminates (bug #124575)
+
+* Fix crasher bug in glade-2 when GtkCList added to scrolled window
+which previously contained a GtkTreeView. (bug #119635)
+
+* Correct inconsistency in property names; some container hyphen (-) and
+some contained underscore (_). (bug #125212)
+
+* Report focus correctly when Alt+F1 is used to popup panel's menu. 
+(bug #124232)
+
+* Add  translatable accessible names for GTK and GNOME stock icons.
+(bug #122549)
+
+* Report cell as focused the first time a table is displayed. 9bug #126356)
+
+* Fix crasher bug when gok settings dialog is displayed. (bug #126726)
+
+* Do not emit unnecessary notifications about window title change.
+(bug #126605
+
+* Report text correctly for option menu after value changes. (bug #125703)
+
+* Add translations: Swedish [Christian Rose], German [Christian Neumair],
+Serbian [Danilo \305\240egan], Dutch [Vincent van Adrighem],
+Spanish [Francisco Javier F. Serrador]
+
+Overview of Changes in GAIL 1.4.1
+=================================
+* Set role for accessible object for GtkMessageDialog to ATK_ROLE_ALERT
+(bug #122551)
+
+* Apply build fixes for Darwin (bug #1243343) [Jerry Talkington]
+
+* Correct text length reported in text-changed signals emitted when 
+label changes (bug #123696)
+
+* Avoid emitting focus notification for out-of-process GtkSocket (bug #120991)
+
+* Fix documentation build (bug #123876) [Malcolm Tredennick]
+
+* Report children of menu item correctly when menu item has a submenu 
+whose menu items are created only when menu is shown (bug #120303)
+
+* Report label change only if toplevel window is showing. (bug #123470)
+
+Overview of Changes in GAIL 1.4.0
+=================================
+None
+
+Overview of Changes in GAIL 1.3.6
+=================================
+* Do notification of window title change in an idle handler. (bug #119259)
+
+Overview of Changes in GAIL 1.3.5
+=================================
+* Add notification that tooltip is showing if tooltip window is mapped
+when its accessible is created (bug #118743)
+
+* Report expected events when GtkCombo's selection is changed using the
+keyboard. (bug #117063)
+
+* Avoid warning when child changed in row expanded callback (bug #117630)
+
+* Do not emit focus event if active-descendant-changed signal is emitted.
+(bug #115599)
+
+Overview of Changes in GAIL 1.3.4
+=================================
+* Set insert mark at end instead of start of selected text when selecting 
+text in a GtkTextBuffer (bug #116271)
+
+* Fix crasher bug when TreeView has empty column (bug #116043)
+
+* Return correct offset in atk_text_get_offset_at_point (bug #114780)
+
+* Correct LABELLED_BY relation for gtk-demo (bug #114452)
+
+* Set SHWOING and VISIBLE correctly when tab is not shown (bug #114397)
+
+Overview of Changes in GAIL 1.3.3
+=================================
+* Find label for LABELLED_BY relation when label is a sibling of widget's
+parent (bug #113069)
+ 
+* Use object data "gtk-attached-menu" to find menu attached to button to
+report menu as button's child. (bug #113117)
+
+* Check that widget is actually on screen before adding state VISIBLE. 
+(bug #109860)
+
+* Report only one child for option menu. (bug #111983)
+
+Overview of Changes in GAIL 1.3.2
+=================================
+* Add state FOCUSABLE to child of TreeView. Set state FOCUSED on focus cell.
+(bug #112075) [Padraig O'Briain]
+
+* Create LABELLED_BY relation for widgets which are mnemonic widgets.
+(bug #72249) [Padraig]
+
+* Return correct name for GtkOptionMenu. (bug #112572) [Padraig]
+
+* Avoid redumdant acitvate events when dialog window is reopened. (bug #112896)
+[Padraig]
+
+* Fix crasher bug when gucharmap is started with accessibility enabled.
+(bug #112964) [Padraig]
+
+Overview of Changes in GAIL 1.3.1
+=================================
+* Allow GailOptionMenu to report its text (bug #111857) [Padraig O'Briain]
+
+* Generate documentation using output-format of xml (bug #111794) [Padraig]
+
+* Allow for menu being attached to button. This supports accessibility
+implementation of Gnome Menu in gnome-panel (bug #111573) [Padraig]
+
+* Emit notification when context menu is popped down for Gnome Menu.
+(bug #111738) [Padraig]
+
+* Fix crasher when run without gnome-conformant WM (bug #111532)
+[Nalin Dahyabhai]
+
+* Add cgheck that widget is on screen before reporting it as visible.
+[Padraig]
+
+* Set string contens of event correctly when Control modifier is set.
+(bug #108666) [Padraig]
+
+* Set role of GtkPlug to ATK_ROLE_PANEL (bug #108332) [Padraig]
+
+
+Overview of Changes in GAIL 1.3.0
+=================================
+* Use property name accessible-table-caption-caption in 
+gail_tree_view_set_caption  [Padraig O'Briain]
+
+* Have GailOptionMenu report menu and label as its children. [Padraig]
+
+* Report "showing" state correctly for cells in a TreeView with vertical 
+scrollbar. (bug #104623) [Padraig]
+
+* Implement AtkText interface for GailItem, page tab of Notebook, GailStatusbar.
+(bug #104657) [Padraig]
+
+* Report GtkCombo popup window as child of GailCombo. [Padraig]
+
+* Add GailObject which is used for accessibility support in eel and
+nautilus. [Padraig]
+
+* Correct image size for image in buttons on Gnome CD Player. (bug #106715)
+[Padraig]
+
+* Fix crash when getting second child of GailOptionMenu. (bug #106715)
+[Padraig]
+
 Overview of Changes in GAIL 1.2.0
 =================================
 * Allow for more than one label within a button (bug #103465) 
@@ -73,7 +535,7 @@ action is done. (bug #90756) [Padraig]
 * Update docs so that all symbols are documented. [Padraig]
 * Add implementation for atk_component_get_mdi_zorder() for GailWindow.
 (bug #84097) [Mark Mc Loughlin]. 
-* Use +NET_WM_DESKTOP value of Window when getting its zorder [Padraig]
+* Use _NET_WM_DESKTOP value of Window when getting its zorder [Padraig]
 * Minor bug fixes [Padraig]
 
 Overview of Changes in GAIL 1.1.0

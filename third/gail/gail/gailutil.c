@@ -1,5 +1,5 @@
 /* GAIL - The GNOME Accessibility Implementation Library
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002, 2003 Sun Microsystems Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -164,7 +164,10 @@ gail_util_add_global_event_listener (GSignalEmissionHook listener,
         {
           rc = add_listener (listener, split_string[1], split_string[2], event_type);
         }
+
+      g_strfreev (split_string);
     }
+
   return rc;
 }
 
@@ -230,11 +233,14 @@ atk_key_event_from_gdk_event_key (GdkEventKey *key)
   event->state = key->state;
   event->keyval = key->keyval;
   event->length = key->length;
-  if (key->string && key->string [0] && g_unichar_isgraph (g_utf8_get_char (key->string)))
+  if (key->string && key->string [0] && 
+      (key->state & GDK_CONTROL_MASK ||
+       g_unichar_isgraph (g_utf8_get_char (key->string))))
     {
       event->string = key->string;
     }
-  else if (key->type == GDK_KEY_PRESS)
+  else if (key->type == GDK_KEY_PRESS ||
+           key->type == GDK_KEY_RELEASE)
     {
       event->string = gdk_keyval_name (key->keyval);	    
     }
@@ -413,6 +419,7 @@ state_event_watcher (GSignalInvocationHint  *hint,
   GObject *object;
   GtkWidget *widget;
   AtkObject *atk_obj;
+  AtkObject *parent;
   GdkEventWindowState *event;
   gchar *signal_name;
   guint signal_id;
@@ -445,8 +452,12 @@ state_event_watcher (GSignalInvocationHint  *hint,
   
   atk_obj = gtk_widget_get_accessible (widget);
   g_return_val_if_fail (GAIL_IS_WINDOW (atk_obj), FALSE);
-  signal_id = g_signal_lookup (signal_name, GAIL_TYPE_WINDOW); 
-  g_signal_emit (atk_obj, signal_id, 0);
+  parent = atk_object_get_parent (atk_obj);
+  if (parent == atk_get_root ())
+    {
+      signal_id = g_signal_lookup (signal_name, GAIL_TYPE_WINDOW); 
+      g_signal_emit (atk_obj, signal_id, 0);
+    }
 
   return TRUE;
 }
@@ -476,8 +487,31 @@ window_removed (AtkObject *atk_obj,
                  guint     index,
                  AtkObject *child)
 {
+  GtkWidget *widget;
+  GtkWindow *window;
+
   g_return_if_fail (GAIL_IS_WINDOW (child));
 
+  widget = GTK_ACCESSIBLE (child)->widget;
+  g_return_if_fail (widget);
+
+  window = GTK_WINDOW (widget);
+  /*
+   * Deactivate window if it is still focused and we are removing it. This
+   * can happen when a dialog displayed by gok is removed.
+   */
+  if (window->is_active &&
+      window->has_toplevel_focus)
+    {
+      gchar *signal_name;
+      AtkObject *atk_obj;
+
+      atk_obj = gtk_widget_get_accessible (widget);
+      signal_name =  "deactivate";
+      g_signal_emit (atk_obj, g_signal_lookup (signal_name, GAIL_TYPE_WINDOW), 0); 
+    }
+
+  g_signal_handlers_disconnect_by_func (widget, (gpointer) window_focus, NULL);
   g_signal_emit (child, g_signal_lookup ("destroy", GAIL_TYPE_WINDOW), 0); 
 }
 
@@ -488,7 +522,7 @@ window_focus (GtkWidget     *widget,
   gchar *signal_name;
   AtkObject *atk_obj;
 
-  g_return_val_if_fail (GTK_WIDGET (widget), FALSE);
+  g_return_val_if_fail (GTK_IS_WIDGET (widget), FALSE);
 
   atk_obj = gtk_widget_get_accessible (widget);
   signal_name =  (event->in) ? "activate" : "deactivate";
@@ -506,6 +540,7 @@ configure_event_watcher (GSignalInvocationHint  *hint,
   GObject *object;
   GtkWidget *widget;
   AtkObject *atk_obj;
+  AtkObject *parent;
   GdkEvent *event;
   gchar *signal_name;
   guint signal_id;
@@ -532,12 +567,24 @@ configure_event_watcher (GSignalInvocationHint  *hint,
       widget->allocation.height == ((GdkEventConfigure *)event)->height)
     return TRUE;
 
-  signal_name = "resize";
+  if (widget->allocation.width != ((GdkEventConfigure *)event)->width ||
+      widget->allocation.height != ((GdkEventConfigure *)event)->height)
+    {
+      signal_name = "resize";
+    }
+  else
+    {
+      signal_name = "move";
+    }
 
   atk_obj = gtk_widget_get_accessible (widget);
   g_return_val_if_fail (GAIL_IS_WINDOW (atk_obj), FALSE);
-  signal_id = g_signal_lookup (signal_name, GAIL_TYPE_WINDOW); 
-  g_signal_emit (atk_obj, signal_id, 0);
+  parent = atk_object_get_parent (atk_obj);
+  if (parent == atk_get_root ())
+    {
+      signal_id = g_signal_lookup (signal_name, GAIL_TYPE_WINDOW); 
+      g_signal_emit (atk_obj, signal_id, 0);
+    }
 
   return TRUE;
 }

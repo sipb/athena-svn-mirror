@@ -61,6 +61,8 @@ gail_renderer_cell_class_init (GailRendererCellClass *klass)
 
   parent_class = g_type_class_peek_parent (klass);
 
+  klass->property_list = NULL;
+
   gobject_class->finalize = gail_renderer_cell_finalize;
 }
 
@@ -88,4 +90,23 @@ gail_renderer_cell_update_cache (GailRendererCell *cell,
   if (class->update_cache)
     return (class->update_cache)(cell, emit_change_signal);
   return FALSE;
+}
+
+AtkObject*
+gail_renderer_cell_new (void)
+{
+  GObject *object;
+  AtkObject *atk_object;
+  GailRendererCell *cell;
+
+  object = g_object_new (GAIL_TYPE_RENDERER_CELL, NULL);
+
+  g_return_val_if_fail (object != NULL, NULL);
+
+  atk_object = ATK_OBJECT (object);
+  atk_object->role = ATK_ROLE_TABLE_CELL;
+
+  cell = GAIL_RENDERER_CELL(object);
+
+  return atk_object;
 }

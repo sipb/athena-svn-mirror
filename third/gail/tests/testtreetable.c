@@ -16,7 +16,7 @@ static gint _find_expander_column    (AtkTable          *table);
 static void _check_expanders         (AtkTable          *table,
                                       gint              expander_column);
 static void _runtest                 (AtkObject         *obj);
-static void _create_event_watcher    ();
+static void _create_event_watcher    (void);
 static void row_inserted             (AtkObject         *obj,
                                       gint              row,
                                       gint              count);
@@ -340,7 +340,7 @@ _check_expanders (AtkTable *table,
 }
 
 static void
-_create_event_watcher ()
+_create_event_watcher (void)
 {
   atk_add_focus_tracker (_check_table);
 }

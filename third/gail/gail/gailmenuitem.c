@@ -1,5 +1,5 @@
 /* GAIL - The GNOME Accessibility Implementation Library
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002, 2003 Sun Microsystems Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -54,6 +54,9 @@ static void                  menu_item_deselect            (GtkItem        *item
 static void                  menu_item_selection           (GtkItem        *item,
                                                             gboolean       selected);
 static gboolean              find_accel                    (GtkAccelKey    *key,
+                                                            GClosure       *closure,
+                                                            gpointer       data);
+static gboolean              find_accel_new                (GtkAccelKey    *key,
                                                             GClosure       *closure,
                                                             gpointer       data);
 
@@ -144,6 +147,13 @@ gail_menu_item_real_initialize (AtkObject *obj,
     }
   g_object_set_data (G_OBJECT (obj), "atk-component-layer",
                      GINT_TO_POINTER (ATK_LAYER_POPUP));
+
+  if (GTK_IS_TEAROFF_MENU_ITEM (data))
+    obj->role = ATK_ROLE_TEAR_OFF_MENU_ITEM;
+  else if (GTK_IS_SEPARATOR_MENU_ITEM (data))
+    obj->role = ATK_ROLE_SEPARATOR;
+  else
+    obj->role = ATK_ROLE_MENU_ITEM;
 }
 
 static void
@@ -169,14 +179,34 @@ gail_menu_item_new (GtkWidget *widget)
   accessible = ATK_OBJECT (object);
   atk_object_initialize (accessible, widget);
 
-  if (GTK_IS_TEAROFF_MENU_ITEM (widget))
-    accessible->role = ATK_ROLE_TEAR_OFF_MENU_ITEM;
-  else if (GTK_IS_SEPARATOR_MENU_ITEM (widget))
-    accessible->role = ATK_ROLE_SEPARATOR;
-  else
-    accessible->role = ATK_ROLE_MENU_ITEM;
-
   return accessible;
+}
+
+GList *
+get_children (GtkWidget *submenu)
+{
+  GList *children;
+
+  children = gtk_container_get_children (GTK_CONTAINER (submenu));
+  if (g_list_length (children) == 0)
+    {
+      /*
+       * If menu is empty it may be because the menu items are created only 
+       * on demand. For example, in gnome-panel the menu items are created
+       * only when "show" signal is emitted on the menu.
+       *
+       * The following hack forces the menu items to be created.
+       */
+      if (!GTK_WIDGET_VISIBLE (submenu))
+        {
+          GTK_WIDGET_SET_FLAGS (submenu, GTK_VISIBLE);
+          g_signal_emit_by_name (submenu, "show");
+          GTK_WIDGET_UNSET_FLAGS (submenu, GTK_VISIBLE);
+        }
+      g_list_free (children);
+      children = gtk_container_get_children (GTK_CONTAINER (submenu));
+    }
+  return children;
 }
 
 /*
@@ -201,7 +231,7 @@ gail_menu_item_get_n_children (AtkObject* obj)
     {
       GList *children;
 
-      children = gtk_container_get_children (GTK_CONTAINER (submenu));
+      children = get_children (submenu);
       count = g_list_length (children);
       g_list_free (children);
     }
@@ -229,7 +259,7 @@ gail_menu_item_ref_child (AtkObject *obj,
       GList *children;
       GList *tmp_list;
 
-      children = gtk_container_get_children (GTK_CONTAINER (submenu));
+      children = get_children (submenu);
       tmp_list = g_list_nth (children, i);
       if (!tmp_list)
         {
@@ -280,11 +310,35 @@ gail_menu_item_do_action (AtkAction *action,
       if (gail_menu_item->action_idle_handler)
         return FALSE;
       else
-        gail_menu_item->action_idle_handler = gtk_idle_add (idle_do_action, gail_menu_item);
+        gail_menu_item->action_idle_handler = g_idle_add (idle_do_action, gail_menu_item);
       return TRUE;
     }
   else
     return FALSE;
+}
+
+static void
+ensure_menus_unposted (GailMenuItem *menu_item)
+{
+  AtkObject *parent;
+  GtkWidget *widget;
+
+  parent = atk_object_get_parent (ATK_OBJECT (menu_item));
+  while (parent)
+    {
+      if (GTK_IS_ACCESSIBLE (parent))
+        {
+          widget = GTK_ACCESSIBLE (parent)->widget;
+          if (GTK_IS_MENU (widget))
+            {
+              if (GTK_WIDGET_MAPPED (widget))
+                gtk_menu_shell_cancel (GTK_MENU_SHELL (widget));
+
+              return;
+            }
+        }
+      parent = atk_object_get_parent (parent);
+    }
 }
 
 static gboolean
@@ -293,6 +347,7 @@ idle_do_action (gpointer data)
   GtkWidget *item;
   GtkWidget *item_parent;
   GailMenuItem *menu_item;
+  gboolean item_mapped;
 
   menu_item = GAIL_MENU_ITEM (data);
   menu_item->action_idle_handler = 0;
@@ -306,11 +361,14 @@ idle_do_action (gpointer data)
 
   item_parent = gtk_widget_get_parent (item);
   gtk_menu_shell_select_item (GTK_MENU_SHELL (item_parent), item);
+  item_mapped = GTK_WIDGET_MAPPED (item);
   /*
    * This is what is called when <Return> is pressed for a menu item
    */
   g_signal_emit_by_name (item_parent, "activate_current",  
                          /*force_hide*/ 1); 
+  if (!item_mapped)
+    ensure_menus_unposted (menu_item);
   return FALSE;
 }
 
@@ -355,7 +413,9 @@ gail_menu_item_get_keybinding (AtkAction *action,
   /*
    * This function returns a string of the form A;B;C where
    * A is the keybinding for the widget; B is the keybinding to traverse
-   * from the menubar and C is the accelerator
+   * from the menubar and C is the accelerator.
+   * The items in the keybinding to traverse from the menubar are separated
+   * by ":".
    */
   GailMenuItem  *gail_menu_item;
   gchar *keybinding = NULL;
@@ -415,7 +475,10 @@ gail_menu_item_get_keybinding (AtkAction *action,
               if (key_val != GDK_VoidSymbol)
                 {
                   key = gtk_accelerator_name (key_val, mnemonic_modifier);
-                  temp_keybinding = g_strconcat (key, full_keybinding, NULL);
+                  if (full_keybinding)
+                    temp_keybinding = g_strconcat (key, ":", full_keybinding, NULL);
+                  else 
+                    temp_keybinding = g_strconcat (key, NULL);
                   if (temp_item == item)
                     {
                       item_keybinding = g_strdup (key); 
@@ -456,15 +519,38 @@ gail_menu_item_get_keybinding (AtkAction *action,
           GtkAccelKey *key;
 
           group = gtk_menu_get_accel_group (GTK_MENU (parent));
+
           if (group)
             {
               key = gtk_accel_group_find (group, find_accel, item);
+            }
+          else
+            {
+              /*
+               * If the menu item is created using GtkAction and GtkUIManager
+               * we get here.
+               */
+              key = NULL;
+              child = GTK_BIN (item)->child;
+              if (GTK_IS_ACCEL_LABEL (child))
+                {
+                  GtkAccelLabel *accel_label;
 
-              if (key)
-                {           
-                  accelerator = gtk_accelerator_name (key->accel_key,
-                                                      key->accel_mods);
+                  accel_label = GTK_ACCEL_LABEL (child);
+                  if (accel_label->accel_closure)
+                    {
+                      key = gtk_accel_group_find (accel_label->accel_group,
+                                                  find_accel_new,
+                                                  accel_label->accel_closure);
+                    }
+               
                 }
+            }
+
+          if (key)
+            {           
+              accelerator = gtk_accelerator_name (key->accel_key,
+                                                  key->accel_mods);
             }
         }
     }
@@ -533,7 +619,7 @@ gail_menu_item_finalize (GObject *object)
   g_free (menu_item->click_description);
   if (menu_item->action_idle_handler)
     {
-      gtk_idle_remove (menu_item->action_idle_handler);
+      g_source_remove (menu_item->action_idle_handler);
       menu_item->action_idle_handler = 0;
     }
 
@@ -575,4 +661,12 @@ find_accel (GtkAccelKey *key,
    * pending gtk_widget_get_accel_closures being made public
    */
   return data == (gpointer) closure->data;
+}
+
+static gboolean
+find_accel_new (GtkAccelKey *key,
+                GClosure    *closure,
+                gpointer     data)
+{
+  return data == (gpointer) closure;
 }

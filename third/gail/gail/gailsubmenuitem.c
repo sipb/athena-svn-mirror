@@ -1,5 +1,5 @@
 /* GAIL - The GNOME Accessibility Implementation Library
- * Copyright 2002 Sun Microsystems Inc.
+ * Copyright 2002, 2003 Sun Microsystems Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -114,6 +114,8 @@ gail_sub_menu_item_real_initialize (AtkObject *obj,
                     "remove",
                     G_CALLBACK (menu_item_remove_gtk),
                     NULL);
+
+  obj->role = ATK_ROLE_MENU;
 }
 
 AtkObject*
@@ -129,7 +131,6 @@ gail_sub_menu_item_new (GtkWidget *widget)
   accessible = ATK_OBJECT (object);
   atk_object_initialize (accessible, widget);
 
-  accessible->role = ATK_ROLE_MENU;
   return accessible;
 }
 
@@ -231,7 +232,7 @@ gail_sub_menu_item_ref_selection (AtkSelection   *selection,
     return NULL;
 
   submenu = gtk_menu_item_get_submenu (GTK_MENU_ITEM (widget));
-  g_return_val_if_fail (GTK_IS_MENU_SHELL (submenu), FALSE);
+  g_return_val_if_fail (GTK_IS_MENU_SHELL (submenu), NULL);
   shell = GTK_MENU_SHELL (submenu);
   
   if (shell->active_menu_item != NULL)
@@ -367,7 +368,7 @@ menu_item_remove_gtk (GtkContainer *container,
   AtkObject *atk_parent;
   AtkObject *atk_child;
   GailContainer *gail_container;
-  AtkPropertyValues values = { 0, };
+  AtkPropertyValues values = { NULL };
   gint index;
 
   g_return_val_if_fail (GTK_IS_MENU (container), 1);
@@ -381,9 +382,9 @@ menu_item_remove_gtk (GtkContainer *container,
       gail_container = GAIL_CONTAINER (atk_parent);
       g_value_init (&values.old_value, G_TYPE_POINTER);
       g_value_set_pointer (&values.old_value, atk_parent);
-      values.property_name = "accessible_parent";
+      values.property_name = "accessible-parent";
       g_signal_emit_by_name (atk_child,
-                             "property_change::accessible_parent", &values, NULL);
+                             "property_change::accessible-parent", &values, NULL);
 
       index = g_list_index (gail_container->children, widget);
       g_list_free (gail_container->children);

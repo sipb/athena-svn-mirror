@@ -24,6 +24,8 @@
 static void                  gail_frame_class_init       (GailFrameClass  *klass);
 static G_CONST_RETURN gchar* gail_frame_get_name         (AtkObject       *obj);
 
+static gpointer parent_class = NULL;
+
 GType
 gail_frame_get_type (void)
 {
@@ -58,6 +60,8 @@ gail_frame_class_init (GailFrameClass *klass)
   AtkObjectClass *class = ATK_OBJECT_CLASS (klass);
 
   class->get_name = gail_frame_get_name;
+
+  parent_class = g_type_class_peek_parent (klass);
 }
 
 AtkObject* 
@@ -81,11 +85,13 @@ gail_frame_new (GtkWidget *widget)
 static G_CONST_RETURN gchar*
 gail_frame_get_name (AtkObject *obj)
 {
+  G_CONST_RETURN gchar *name;
   g_return_val_if_fail (GAIL_IS_FRAME (obj), NULL);
 
-  if (obj->name != NULL)
+  name = ATK_OBJECT_CLASS (parent_class)->get_name (obj);
+  if (name != NULL)
   {
-    return obj->name;
+    return name;
   }
   else
   {

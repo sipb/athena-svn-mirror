@@ -3,7 +3,7 @@
 
 #define NUM_VALID_ROLES 6  
 
-static void _create_event_watcher ();
+static void _create_event_watcher (void);
 static void _check_text (AtkObject *obj);
 void runtest(AtkObject *, gint);
 
@@ -12,7 +12,7 @@ static guint win_count = 0;
 
 static void _check_text (AtkObject *in_obj)
 {
-  AtkObject *obj = 0;
+  AtkObject *obj = NULL;
   AtkRole role;
   gchar* title;
   AtkRole valid_roles[NUM_VALID_ROLES];
@@ -64,7 +64,7 @@ static void _check_text (AtkObject *in_obj)
    * If testtext test program, find obj just by role since only one child 
    * with no name
    */
-  else if (g_strncasecmp(title, "testtext", 7) == 0) 
+  else if (g_ascii_strncasecmp(title, "testtext", 7) == 0) 
   {
     obj = find_object_by_role(in_obj, valid_roles, NUM_VALID_ROLES);
   }
@@ -117,7 +117,7 @@ static void _check_text (AtkObject *in_obj)
 }
 
 static void
-_create_event_watcher ()
+_create_event_watcher (void)
 {
   id1 = atk_add_focus_tracker (_check_text);
 }

@@ -1,5 +1,5 @@
 /* GAIL - The GNOME Accessibility Implementation Library
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002, 2003 Sun Microsystems Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,9 +27,17 @@ static gint         gail_container_get_n_children      (AtkObject          *obj)
 static AtkObject*   gail_container_ref_child           (AtkObject          *obj,
                                                         gint               i);
 static gint         gail_container_add_gtk             (GtkContainer       *container,
-                                                        GtkWidget          *widget);
+                                                        GtkWidget          *widget,
+                                                        gpointer           data);
 static gint         gail_container_remove_gtk          (GtkContainer       *container,
-                                                        GtkWidget          *widget);
+                                                        GtkWidget          *widget,
+                                                        gpointer           data);
+static gint         gail_container_real_add_gtk        (GtkContainer       *container,
+                                                        GtkWidget          *widget,
+                                                        gpointer           data);
+static gint         gail_container_real_remove_gtk     (GtkContainer       *container,
+                                                        GtkWidget          *widget,
+                                                        gpointer           data);
 
 static void          gail_container_real_initialize    (AtkObject          *obj,
                                                         gpointer           data);
@@ -79,6 +87,9 @@ gail_container_class_init (GailContainerClass *klass)
   class->get_n_children = gail_container_get_n_children;
   class->ref_child = gail_container_ref_child;
   class->initialize = gail_container_real_initialize;
+
+  klass->add_gtk = gail_container_real_add_gtk;
+  klass->remove_gtk = gail_container_real_remove_gtk;
 }
 
 static void
@@ -100,12 +111,6 @@ gail_container_new (GtkWidget *widget)
   accessible = ATK_OBJECT (object);
   atk_object_initialize (accessible, widget);
 
-  if (GTK_IS_TOOLBAR (widget))
-    accessible->role = ATK_ROLE_TOOL_BAR;
-  else if (GTK_IS_VIEWPORT (widget))
-    accessible->role = ATK_ROLE_VIEWPORT;
-  else
-    accessible->role = ATK_ROLE_PANEL;
   return accessible;
 }
 
@@ -158,10 +163,43 @@ gail_container_ref_child (AtkObject *obj,
 }
 
 static gint
-gail_container_add_gtk (GtkContainer       *container,
-                        GtkWidget          *widget)
+gail_container_add_gtk (GtkContainer *container,
+                        GtkWidget    *widget,
+                        gpointer     data)
 {
-  AtkObject* atk_parent = gtk_widget_get_accessible (GTK_WIDGET (container));
+  GailContainer *gail_container = GAIL_CONTAINER (data);
+  GailContainerClass *klass;
+
+  klass = GAIL_CONTAINER_GET_CLASS (gail_container);
+
+  if (klass->add_gtk)
+    return klass->add_gtk (container, widget, data);
+  else
+    return 1;
+}
+ 
+static gint
+gail_container_remove_gtk (GtkContainer *container,
+                           GtkWidget    *widget,
+                           gpointer     data)
+{
+  GailContainer *gail_container = GAIL_CONTAINER (data);
+  GailContainerClass *klass;
+
+  klass = GAIL_CONTAINER_GET_CLASS (gail_container);
+
+  if (klass->remove_gtk)
+    return klass->remove_gtk (container, widget, data);
+  else
+    return 1;
+}
+ 
+static gint
+gail_container_real_add_gtk (GtkContainer *container,
+                             GtkWidget    *widget,
+                             gpointer     data)
+{
+  AtkObject* atk_parent = ATK_OBJECT (data);
   AtkObject* atk_child = gtk_widget_get_accessible (widget);
   GailContainer *gail_container = GAIL_CONTAINER (atk_parent);
   gint       index;
@@ -178,22 +216,32 @@ gail_container_add_gtk (GtkContainer       *container,
 }
 
 static gint
-gail_container_remove_gtk (GtkContainer       *container,
-                           GtkWidget          *widget) 
+gail_container_real_remove_gtk (GtkContainer       *container,
+                                GtkWidget          *widget,
+                                gpointer           data)
 {
-  AtkPropertyValues values = { 0, };
-  AtkObject *atk_parent = gtk_widget_get_accessible (GTK_WIDGET (container));
-  AtkObject *atk_child = gtk_widget_get_accessible (widget);
-  GailContainer *gail_container = GAIL_CONTAINER (atk_parent);
+  AtkPropertyValues values = { NULL };
+  AtkObject* atk_parent;
+  AtkObject *atk_child;
+  GailContainer *gail_container;
   gint       index;
 
-  g_value_init (&values.old_value, G_TYPE_POINTER);
-  g_value_set_pointer (&values.old_value, atk_parent);
-    
-  values.property_name = "accessible_parent";
-  g_signal_emit_by_name (atk_child,
-                         "property_change::accessible_parent", &values, NULL);
+  atk_parent = ATK_OBJECT (data);
+  atk_child = gtk_widget_get_accessible (widget);
 
+  if (atk_child)
+    {
+      g_value_init (&values.old_value, G_TYPE_POINTER);
+      g_value_set_pointer (&values.old_value, atk_parent);
+    
+      values.property_name = "accessible-parent";
+
+      g_object_ref (atk_child);
+      g_signal_emit_by_name (atk_child,
+                             "property_change::accessible-parent", &values, NULL);
+      g_object_unref (atk_child);
+    }
+  gail_container = GAIL_CONTAINER (atk_parent);
   index = g_list_index (gail_container->children, widget);
   g_list_free (gail_container->children);
   gail_container->children = gtk_container_get_children (container);
@@ -215,25 +263,32 @@ gail_container_real_initialize (AtkObject *obj,
   container->children = gtk_container_get_children (GTK_CONTAINER (data));
 
   /*
-   * We store the handler ids for these signals as some objects, e.g.
-   * GailButton need to remove these handlers.
+   * We store the handler ids for these signals in case some objects
+   * need to remove these handlers.
    */
   handler_id = g_signal_connect (data,
                                  "add",
                                  G_CALLBACK (gail_container_add_gtk),
-                                 NULL);
+                                 obj);
   g_object_set_data (G_OBJECT (obj), "gail-add-handler-id", 
                      GUINT_TO_POINTER (handler_id));
   handler_id = g_signal_connect (data,
                                  "remove",
                                  G_CALLBACK (gail_container_remove_gtk),
-                                 NULL);
+                                 obj);
   g_object_set_data (G_OBJECT (obj), "gail-remove-handler-id", 
                      GUINT_TO_POINTER (handler_id));
+
+  if (GTK_IS_TOOLBAR (data))
+    obj->role = ATK_ROLE_TOOL_BAR;
+  else if (GTK_IS_VIEWPORT (data))
+    obj->role = ATK_ROLE_VIEWPORT;
+  else
+    obj->role = ATK_ROLE_PANEL;
 }
 
 static void
-gail_container_finalize (GObject            *object)
+gail_container_finalize (GObject *object)
 {
   GailContainer *container = GAIL_CONTAINER (object);
 

@@ -2,10 +2,14 @@
 GailMisc
 
 <!-- ##### SECTION Short_Description ##### -->
-
+GailMisc is a set of utility functions which may be useful to implementors of
+Atk interfaces for custom widgets.
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
+GailMisc is a set of utility function which are used in the implemementation
+of Atk interfaces for Gtk widgets. They may be useful to implementors of 
+Atk interfaces for custom widgets.
 
 </para>
 

@@ -44,6 +44,9 @@ struct _GailCombo
 
   gchar         *press_description;
   guint         action_idle_handler;
+
+  gpointer      old_selection;
+  guint         deselect_idle_handler;
 };
 
 GType gail_combo_get_type (void);

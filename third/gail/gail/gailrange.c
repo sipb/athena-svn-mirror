@@ -1,5 +1,5 @@
 /* GAIL - The GNOME Accessibility Implementation Library
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002, 2003 Sun Microsystems Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -116,11 +116,6 @@ gail_range_new (GtkWidget *widget)
   accessible = ATK_OBJECT (object);
   atk_object_initialize (accessible, widget);
 
-  /*
-   * Assumed to GtkScale (either GtkHScale or GtkVScale)
-   */
-  accessible->role = ATK_ROLE_SLIDER;
-
   return accessible;
 }
 
@@ -148,6 +143,11 @@ gail_range_real_initialize (AtkObject *obj,
     }
   else
     range->adjustment = NULL;
+
+  /*
+   * Assumed to GtkScale (either GtkHScale or GtkVScale)
+   */
+  obj->role = ATK_ROLE_SLIDER;
 }
 
 static AtkStateSet*
@@ -283,7 +283,7 @@ gail_range_finalize (GObject            *object)
       if (GAIL_ADJUSTMENT (range->adjustment)->adjustment)
         {
           g_signal_handlers_disconnect_by_func (GAIL_ADJUSTMENT (range->adjustment)->adjustment,
-                                                gail_range_value_changed,
+                                                (void *)gail_range_value_changed,
                                                 range);
         }
       g_object_unref (range->adjustment);

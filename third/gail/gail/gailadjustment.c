@@ -1,5 +1,5 @@
 /* GAIL - The GNOME Accessibility Implementation Library
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002, 2003 Sun Microsystems Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -23,6 +23,9 @@
 
 static void	 gail_adjustment_class_init        (GailAdjustmentClass *klass);
 
+static void	 gail_adjustment_real_initialize   (AtkObject	        *obj,
+                                                    gpointer            data);
+
 static void	 atk_value_interface_init          (AtkValueIface       *iface);
 
 static void	 gail_adjustment_get_current_value (AtkValue            *obj,
@@ -37,6 +40,7 @@ static gboolean	 gail_adjustment_set_current_value (AtkValue            *obj,
 static void      gail_adjustment_destroyed         (GtkAdjustment       *adjustment,
                                                     GailAdjustment      *gail_adjustment);
 
+static gpointer parent_class = NULL;
 
 GType
 gail_adjustment_get_type (void)
@@ -78,6 +82,11 @@ gail_adjustment_get_type (void)
 static void	 
 gail_adjustment_class_init (GailAdjustmentClass *klass)
 {
+  AtkObjectClass *class = ATK_OBJECT_CLASS (klass);
+
+  parent_class = g_type_class_peek_parent (klass);
+
+  class->initialize = gail_adjustment_real_initialize;
 }
 
 AtkObject* 
@@ -93,15 +102,28 @@ gail_adjustment_new (GtkAdjustment *adjustment)
   g_return_val_if_fail (object != NULL, NULL);
 
   atk_object = ATK_OBJECT (object);
-  atk_object->role = ATK_ROLE_UNKNOWN;
-  GAIL_ADJUSTMENT (object)->adjustment = adjustment;
+  atk_object_initialize (atk_object, adjustment);
+
+  return atk_object;
+}
+
+static void
+gail_adjustment_real_initialize (AtkObject *obj,
+                                 gpointer  data)
+{
+  GtkAdjustment *adjustment;
+
+  ATK_OBJECT_CLASS (parent_class)->initialize (obj, data);
+
+  adjustment = GTK_ADJUSTMENT (data);
+
+  obj->role = ATK_ROLE_UNKNOWN;
+  GAIL_ADJUSTMENT (obj)->adjustment = adjustment;
 
   g_signal_connect_object (G_OBJECT (adjustment),
                            "destroy",
                            G_CALLBACK (gail_adjustment_destroyed),
-                           object, 0);
-
-  return atk_object;
+                           obj, 0);
 }
 
 static void	 

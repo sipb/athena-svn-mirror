@@ -572,7 +572,7 @@ _create_select_tests_window (AtkObject    *obj,
                                 FALSE);
       gtk_window_set_position (GTK_WINDOW(md[window_no]->selecttestsWindow),
                                GTK_WIN_POS_CENTER); 
-      gtk_signal_connect (GTK_OBJECT(md[window_no]->selecttestsWindow), 
+      g_signal_connect (GTK_OBJECT(md[window_no]->selecttestsWindow), 
                           "destroy",
                           GTK_SIGNAL_FUNC(_destroy), 
                           &md[window_no]->selecttestsWindow);
@@ -600,7 +600,7 @@ _create_select_tests_window (AtkObject    *obj,
       testcb[window_no].runtest = runtest;
       testcb[window_no].obj = obj;
       testcb[window_no].win_num = window_no; 
-      gtk_signal_connect (GTK_OBJECT (md[window_no]->button), 
+      g_signal_connect (GTK_OBJECT (md[window_no]->button), 
                           "clicked",
                           GTK_SIGNAL_FUNC (_testselectioncb),  
                           (gpointer)&testcb[window_no]);
@@ -673,7 +673,7 @@ add_test (gint   window,
 	  gtk_widget_show (listoftests[window][testcount[window]].parameterLabel[i]);
 	  gtk_widget_show (listoftests[window][testcount[window]].parameterInput[i]);
         }
-      gtk_signal_connect (GTK_OBJECT (listoftests[window][testcount[window]].toggleButton),
+      g_signal_connect (GTK_OBJECT (listoftests[window][testcount[window]].toggleButton),
                           "toggled", 
                           GTK_SIGNAL_FUNC(_toggle_selectedcb),
                           (gpointer)&(listoftests[window][testcount[window]]));
@@ -809,7 +809,7 @@ set_output_buffer(gchar *output)
  * Returns: TRUE if g_visibleDialog is set to 1, otherwise FALSE
  **/
 gboolean
-isVisibleDialog()
+isVisibleDialog(void)
 {
  if (g_visibleDialog >= 1)
    return TRUE;
@@ -859,6 +859,8 @@ get_arg_of_func (gint  window,
       0, -1);
       retString = g_strdup(argString);
     }
+  else
+    retString = NULL;
 
   return retString;
 }

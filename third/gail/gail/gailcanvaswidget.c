@@ -119,9 +119,9 @@ gail_canvas_widget_ref_child (AtkObject *obj,
   g_obj = atk_gobject_accessible_get_object (atk_gobj);
   if (g_obj == NULL)
     /* State is defunct */
-    return 0;
+    return NULL;
 
-  g_return_val_if_fail (GNOME_IS_CANVAS_WIDGET (g_obj), 0);
+  g_return_val_if_fail (GNOME_IS_CANVAS_WIDGET (g_obj), NULL);
 
   canvas_widget = GNOME_CANVAS_WIDGET (g_obj);
   g_return_val_if_fail (canvas_widget->widget, NULL);

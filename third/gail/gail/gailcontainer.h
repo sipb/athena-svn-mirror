@@ -1,5 +1,5 @@
 /* GAIL - The GNOME Accessibility Implementation Library
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002, 2003 Sun Microsystems Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Library General Public
@@ -53,6 +53,13 @@ GType gail_container_get_type (void);
 struct _GailContainerClass
 {
   GailWidgetClass parent_class;
+
+  gint (*add_gtk) (GtkContainer *container,
+                   GtkWidget    *widget,
+                   gpointer     data);
+  gint (*remove_gtk) (GtkContainer *container,
+                      GtkWidget    *widget,
+                      gpointer     data);
 };
 
 AtkObject* gail_container_new (GtkWidget *widget);
