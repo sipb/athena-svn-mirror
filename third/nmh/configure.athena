@@ -1,9 +1,9 @@
-# $Id: configure.athena,v 1.4 1999-04-16 00:23:49 tb Exp $
+# $Id: configure.athena,v 1.5 1999-05-19 19:43:51 ghudson Exp $
 
 ./configure --enable-nmh-pop --enable-nmh-debug \
 	--with-krb4=$ATHTOOLROOT/usr/athena \
 	--with-hesiod=$ATHTOOLROOT/usr/athena \
-	--with-mts=sendmail
+	--with-mts=sendmail --with-editor=emacs
 
 # nmh requires that one edit the config.h by hand.  argh.  so do that
 # here.
