@@ -1,10 +1,10 @@
 /*
- * $Id: main.c,v 1.31 1992-12-22 17:48:00 probe Exp $
+ * $Id: main.c,v 1.32 1994-03-25 15:54:51 miki Exp $
  *
  * Copyright (c) 1988,1992 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_main_c = "$Id: main.c,v 1.31 1992-12-22 17:48:00 probe Exp $";
+static char *rcsid_main_c = "$Id: main.c,v 1.32 1994-03-25 15:54:51 miki Exp $";
 
 #include "attach.h"
 #include <signal.h>
@@ -121,7 +121,7 @@ main(argc, argv)
     effective_uid = geteuid();
 
     progname = argv[0];
-    ptr = rindex(progname, '/');
+    ptr = strrchr(progname, '/');
     if (ptr)
 	progname = ptr+1;
 
@@ -412,7 +412,11 @@ fsidcmd(argc, argv)
 	    }
 	    else {
 		strcpy(hostname, hent->h_name);
+#ifdef POSIX
+		memmove(&addr, hent->h_addr_list[0], 4);
+#else
 		bcopy(hent->h_addr_list[0], &addr, 4);
+#endif
 		if ((nfsid(hostname, addr,
 			   op, 1, "nfsid", 0, owner_uid) == SUCCESS) && verbose)
 		    printf("%s: %s %s\n", progname, hostname, ops);
