@@ -1,0 +1,41 @@
+#!/bin/sh
+
+echo "OSCHANGES=true"					>> $CONFVARS
+
+# We forgot to clear the patches list in 9.2.0, so some small number
+# of machines didn't get 9.2 patches.  Reapply them here to make sure.
+# Also apply 112879-09.
+echo "112233-04"					> $PATCHES
+echo "112540-09"					>> $PATCHES
+echo "112620-03"					>> $PATCHES
+echo "112621-05"					>> $PATCHES
+echo "112622-08"					>> $PATCHES
+echo "112764-04"					>> $PATCHES
+echo "112785-17"					>> $PATCHES
+echo "112879-09"					>> $PATCHES
+echo "112902-11"					>> $PATCHES
+echo "112908-07"					>> $PATCHES
+echo "112963-09"					>> $PATCHES
+echo "112964-03"					>> $PATCHES
+echo "112970-03"					>> $PATCHES
+echo "112998-03"					>> $PATCHES
+echo "113033-03"					>> $PATCHES
+echo "113096-03"					>> $PATCHES
+echo "113098-04"					>> $PATCHES
+echo "113277-05"					>> $PATCHES
+echo "113319-11"					>> $PATCHES
+echo "113333-02"					>> $PATCHES
+echo "113713-02"					>> $PATCHES
+echo "113718-01"					>> $PATCHES
+echo "113923-02"					>> $PATCHES
+echo "113993-01"					>> $PATCHES
+echo "114133-01"					>> $PATCHES
+echo "114135-01"					>> $PATCHES
+
+# These components shouldn't have been installed by mozilla; cleaning
+# them up should unbreak URL completion.
+echo "/usr/athena/include/mozilla/ipcd/tmIPCModule.h"	   >> $DEADFILES
+echo "/usr/athena/lib/mozilla/components/libembed_lite.so" >> $DEADFILES
+echo "/usr/athena/lib/mozilla/liblockmodule.so"		   >> $DEADFILES
+echo "/usr/athena/lib/mozilla/libnullplugin.so"		   >> $DEADFILES
+echo "/usr/athena/lib/mozilla/libtransmngr.so"		   >> $DEADFILES
