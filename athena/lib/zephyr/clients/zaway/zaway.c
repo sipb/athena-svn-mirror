@@ -4,7 +4,7 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zaway/zaway.c,v $
- *	$Author: jtkohl $
+ *	$Author: rfrench $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -18,7 +18,7 @@
 #include <pwd.h>
 
 #ifndef lint
-static char rcsid_zaway_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zaway/zaway.c,v 1.2 1988-01-20 17:34:57 jtkohl Exp $";
+static char rcsid_zaway_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zaway/zaway.c,v 1.3 1988-02-06 23:43:47 rfrench Exp $";
 #endif lint
 
 #define MESSAGE_CLASS "MESSAGE"
@@ -87,7 +87,7 @@ main(argc,argv)
 		}
 		if (!strcmp(notice.z_sender,ZGetSender()))
 			continue;
-		if (!strcmp(notice.z_message,"Automated reply:\n"))
+		if (!strcmp(notice.z_message,"Automated reply:"))
 			continue;
 		if (fp) {
 			if (!(ptr = find_message(&notice,fp)))
@@ -105,7 +105,7 @@ main(argc,argv)
 		notice.z_sender = 0;
 		notice.z_default_format = 0;
 		     
-		msg[0] = "Automated reply:\n";
+		msg[0] = "Automated reply:";
 		msg[1] = ptr;
 		
 		notice.z_message_len = strlen(notice.z_message)+1;
