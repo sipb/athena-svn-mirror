@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v 1.4 1989-08-04 11:11:28 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v 1.5 1989-08-22 13:53:09 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -125,9 +125,13 @@ t_forward(Request)
   switch (status) 
     {
     case SUCCESS:
-      printf("Question forwarded.\n");
-      Request->requester.instance = 0;
-      User.instance = 0;
+      printf("Question forwarded. ");
+      if(is_option(Request->options, OFF_OPT))
+	printf("You have signed off OLC.\n");
+      else
+	printf("You are signed off OLC.\n");
+
+      t_set_default_instance(Request);
       status = SUCCESS;
       break;
 
@@ -137,9 +141,13 @@ t_forward(Request)
       break;
 
     case SIGNED_OFF:
-      printf("Question forwarded. You are signed off of OLC.\n");
-      Request->requester.instance = 0;
-      User.instance = 0;
+      printf("Question forwarded. ");
+      if(is_option(Request->options, OFF_OPT))
+	printf("You have signed off OLC.\n");
+      else
+	printf("You are signed off of OLC.\n");
+
+      t_set_default_instance(Request);
       status = SUCCESS;
       break;
 
