@@ -1,7 +1,7 @@
 .\"     -*- nroff -*- mode
 .\"     $Source: /afs/dev.mit.edu/source/repository/athena/bin/machtype/machtype.1,v $
-.\"     $Author: probe $
-.\"     $Header: /afs/dev.mit.edu/source/repository/athena/bin/machtype/machtype.1,v 1.7 1992-01-22 13:36:00 probe Exp $
+.\"     $Author: lwvanels $
+.\"     $Header: /afs/dev.mit.edu/source/repository/athena/bin/machtype/machtype.1,v 1.8 1992-03-20 21:19:55 lwvanels Exp $
 .TH MACHTYPE 1 "Setpember 6 1989"
 .SH NAME
 machtype \- Print machine type to standard output
@@ -17,13 +17,15 @@ when run on a DECstation 3100 (pmax), and "rsaix" when run on an IBM RS6000.
 .B -c
 Print the specific cpu type, one of VAX780, VAX750, VAX730, VAX8600,
 VAX8200, MVAX-II, VAXSTAR, CVAXSTAR, or VAX650 (on a VAX), RTPC-ROMPC,
-RTPC-SGP, RTPC-MOD135, IBM-ATR (on an IBM RT/PC), KN01 (on a pmax), or POWER
-(on a RISC/6000).
+RTPC-SGP, RTPC-MOD135, IBM-ATR (on an IBM RT/PC), KN01 (on a Decstation
+3100), KN02 (DS 5000), KN210 (DS 5400), KN220 (DS5500), KN02ba (DS5000/100)
+or POWER (on a RISC/6000).
 .TP
 .B -d
 Print the types of display heads attached to the system, one or more
 of QVSS, QDSS, SM, SG, PLX, or VS100 (VAX), apa16, aed, apa8, plx, or mpel
-(RT), or PM-MONO or PM-COLOR (pmax), or colorgda, graygda, hiprfmge, hispd3d
+(RT), or PM-MONO or PM-COLOR (pmax), or colorgda, graygda, hiprfmge,
+hispd3d, sga (or other displays defined by IBM in the future)
 (rsaix).
 .TP
 .B -r
