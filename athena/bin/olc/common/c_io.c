@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v $
- *	$Id: c_io.c,v 1.16 1991-10-31 14:58:13 lwvanels Exp $
+ *	$Id: c_io.c,v 1.17 1992-01-28 20:37:07 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.16 1991-10-31 14:58:13 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.17 1992-01-28 20:37:07 lwvanels Exp $";
 #endif
 #endif
 
@@ -599,7 +599,7 @@ int sread(fd, buf, nbytes)
 {
   struct timeval tval;	/* System time structure. */
   fd_set read_fds;		/* File descriptors to check.*/
-  register int n_read, s_val;
+  register int n_read, s_val, tot_read;
 
   if (nbytes <= 0)
     return(0);
@@ -608,22 +608,28 @@ int sread(fd, buf, nbytes)
    *  A necessary evil so that the daemon doesn't hang.
    */
 
-  tval.tv_sec = select_timeout;
-  tval.tv_usec = 0;
-  
-  FD_ZERO(&read_fds);
-  FD_SET(fd,&read_fds);
-  if ((s_val = select(fd+1, &read_fds, NULL, NULL, &tval)) < 1) 
-    {
-      if (s_val == 0)
-	errno = ETIMEDOUT;
+  tot_read = 0;
+  do {
+    tval.tv_sec = select_timeout;
+    tval.tv_usec = 0;
+    
+    FD_ZERO(&read_fds);
+    FD_SET(fd,&read_fds);
+    if ((s_val = select(fd+1, &read_fds, NULL, NULL, &tval)) < 1) 
+      {
+	if (s_val == 0)
+	  errno = ETIMEDOUT;
+	
+	olc_perror("sread: select");
+	return(-1);
+      }
+    
+    n_read = read(fd, (char *)(buf + tot_read), nbytes);
+    tot_read += n_read;
+    nbytes = nbytes - n_read;
+  } while (nbytes != 0);
 
-      olc_perror("sread: select");
-      return(-1);
-    }
-
-  n_read = read(fd, buf, nbytes);
-  return(n_read);
+  return(tot_read);
 }
 
 
@@ -648,27 +654,32 @@ int swrite(fd, buf, nbytes)
 {
   struct timeval tval;	        /* System time structure. */
   fd_set write_fds;		/* File descriptors to check.*/
-  register int n_wrote, s_val;
+  register int n_wrote, s_val, tot_wrote;
 
   if (nbytes <= 0)
     return(0);
 	
-  tval.tv_sec = select_timeout;
-  tval.tv_usec = 0;
-  
-  FD_ZERO(&write_fds);
-  FD_SET(fd,&write_fds);
-  if ((s_val = select(fd+1, NULL, &write_fds, NULL, &tval)) != 1) 
-    {
-      if (s_val == 0)
-	errno = ETIMEDOUT;
+  tot_wrote = 0;
+  do {
+    tval.tv_sec = select_timeout;
+    tval.tv_usec = 0;
+    
+    FD_ZERO(&write_fds);
+    FD_SET(fd,&write_fds);
+    if ((s_val = select(fd+1, NULL, &write_fds, NULL, &tval)) != 1) 
+      {
+	if (s_val == 0)
+	  errno = ETIMEDOUT;
+	
+	olc_perror("swrite: select");
+	return(-1);
+      }
+    
+    n_wrote = write(fd, (char *)(buf + tot_wrote), nbytes);
+    tot_wrote += n_wrote;
+    nbytes = nbytes - n_wrote;
+  } while (nbytes != 0);
 
-      olc_perror("swrite: select");
-      return(-1);
-    }
-  
-  n_wrote = write(fd, buf, nbytes);
-
-  return(n_wrote);
+  return(tot_wrote);
 }
 
