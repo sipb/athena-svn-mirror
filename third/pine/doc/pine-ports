@@ -123,10 +123,10 @@ Here is the full list of Pine ports:
 	sg6	Silicon Graphics Irix >= 6.5
 
     Sun Solaris (Solaris 2.x is the same as SunOS 5.x)
-	so5	Sun Solaris >= 2.5
 	gs5	Sun Solaris >= 2.5 using gcc compiler
-	so4	Sun Solaris <= 2.4
+	so5	Sun Solaris >= 2.5    (not sure this works, try gs5 instead)
 	gs4	Sun Solaris <= 2.4 using gcc compiler
+	so4	Sun Solaris <= 2.4
 	    (Note: If you use so5 or gs5 and the linker can't find the
 	     function srandom, try using so4 or gs4 instead.)
 

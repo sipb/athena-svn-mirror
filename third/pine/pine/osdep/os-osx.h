@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------
-  $Id: os-osx.h,v 1.1.1.3 2003-05-01 01:12:51 ghudson Exp $
+  $Id: os-osx.h,v 1.1.1.4 2004-03-01 21:15:52 ghudson Exp $
 
             T H E    P I N E    M A I L   S Y S T E M
 
@@ -303,7 +303,7 @@ void free();
     Various maximum field lengths, probably shouldn't be changed.
  ----*/
 #define MAX_FULLNAME     (100) 
-#define MAX_NICKNAME      (40)
+#define MAX_NICKNAME      (80)
 #define MAX_ADDRESS      (500)
 #define MAX_NEW_LIST     (500)  /* Max addrs to be added when creating list */
 #define MAX_SEARCH       (100)  /* Longest string to search for             */

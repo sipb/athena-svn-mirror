@@ -1060,6 +1060,105 @@ using the Setup/Config screen.
 
 <HR>
 
+<H2><A NAME="env-variables">Using Environment Variables</A></H2>
+
+The values of <EM>Pine</EM> configuration options may include environment variables
+which are replaced by the value of the variable at the time <EM>Pine</EM> is run
+(and also at the time the config option is changed).
+The syntax to use environment variables is a subset of the common Unix
+shell dollar-syntax.
+For example, if
+
+<P><CENTER><SAMP>$VAR</SAMP></CENTER><P>
+
+appears in the value of a <EM>Pine</EM> configuration option it is looked up in the
+environent (using getenv(&quot;VAR&quot;)) and its
+looked-up value replaces the <SAMP>$VAR</SAMP> part of the option value.
+That sounds more complicated than it actually is.
+An example may make it clearer.
+Unfortunately, the way in which environment variables are set is OS-dependent 
+and command shell-dependent.
+In some Unix command shells you may use
+
+<P><CENTER><SAMP>PERSNAME="Fred Flintstone"</SAMP></CENTER><P>
+   <CENTER><SAMP>export PERSNAME</SAMP></CENTER><P>
+
+Now, if you use <EM>Pine</EM>'s Setup/Config screen to set
+
+<P><CENTER><SAMP>personal-name=$PERSNAME</SAMP></CENTER><P>
+
+the <SAMP>$PERSNAME</SAMP> would be replaced by <SAMP>Fred Flintstone</SAMP>
+so that this would be equivalent to
+
+<P><CENTER><SAMP>personal-name=Fred Flintstone</SAMP></CENTER><P>
+
+Note, environment variable substitution happens after configuration
+options which are lists are split into the separate elements of the list,
+so a single environment variable can't contain a list of values.
+
+<P>
+The environment variable doesn't have to be the only thing
+after the equal sign.
+However, if the name of the variable is not at the end of the line or
+followed by a space (so that you can tell where the variable name ends),
+it must be enclosed in curly braces like
+
+<P><CENTER><SAMP>${VAR}</SAMP></CENTER><P>
+
+It is always ok to use the braces even if you don't need to.
+<P>
+It is also possible to set a default value for an environment variable.
+This default value will be used if the environment variable is not
+set (that is, if getenv(&quot;VAR&quot;) returns NULL).
+The syntax used to set a default value is
+
+<P><CENTER><SAMP>${VAR:-default value}</SAMP></CENTER><P>
+
+If the config file contains
+
+<P><CENTER><SAMP>personal-name=${VAR:-Fred Flintstone}</SAMP></CENTER><P>
+
+then when <EM>Pine</EM> is run <SAMP>VAR</SAMP> will be looked up in the environment.
+If <SAMP>VAR</SAMP> is found then <SAMP>personal-name</SAMP> will have
+the value that <SAMP>VAR</SAMP> was set to, otherwise,
+<SAMP>personal-name</SAMP> will be set to <SAMP>Fred Flintstone</SAMP>,
+the default value.
+
+<P>
+An example where an environment variable might be useful is the
+variable <SAMP>inbox-path</SAMP> in the global configuration file.
+Suppose most users used the server
+
+<P><CENTER><SAMP>imapserver.example.com</SAMP></CENTER><P>
+
+but that there were some exceptions who used
+
+<P><CENTER><SAMP>altimapserver.example.com</SAMP></CENTER><P>
+
+In this case, the system manager might include the following line in
+the systemwide default <EM>Pine</EM> configuration file
+
+<P><CENTER><SAMP>inbox-path=${IMAPSERVER:-imapserver.example.com}</SAMP></CENTER><P>
+
+For the exceptional users adding
+
+<P><CENTER><SAMP>IMAPSERVER=altimapserver.example.com</SAMP></CENTER><P>
+
+to their environment should work.
+<P>
+Another example might be the case where a user has to use a different
+SMTP server from work and from home.
+The setup might be something as simple as
+
+<P><CENTER><SAMP>smtp-server=$SMTP</SAMP></CENTER><P>
+
+or perhaps a default value could be given.
+Note that, as mentioned above, the variable <SAMP>SMTP</SAMP> cannot contain
+a list of SMTP servers.
+<P>
+
+<HR>
+
 <H2><A NAME="smtp-server">SMTP Servers</A></H2>
 
 It is sometimes desirable to set <CODE>smtp-server=localhost</CODE>

@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: mailindx.c,v 1.1.1.3 2003-05-01 01:13:26 ghudson Exp $";
+static char rcsid[] = "$Id: mailindx.c,v 1.1.1.4 2004-03-01 21:16:23 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -4026,6 +4026,9 @@ clear_folder_scores(stream)
 {
     long n;
 
+    if(!stream)
+      return;
+
     for(n = 1L; n <= stream->nmsgs; n++)
       clear_msg_score(stream, n);
 }
@@ -4036,6 +4039,9 @@ clear_msg_score(stream, rawmsgno)
     MAILSTREAM *stream;
     long        rawmsgno;
 {
+    if(!stream)
+      return;
+
     set_msg_score(stream, rawmsgno, SCORE_UNDEF);
 }
 
@@ -5802,10 +5808,12 @@ set_index_addr(idata, field, addr, prefix, width, s)
     char       *s;
 {
     ADDRESS *atmp;
+    char    *p;
+    char    *save_personal = NULL;
 
     for(atmp = addr; idata->stream && atmp; atmp = atmp->next)
       if(atmp->host && atmp->host[0] == '.'){
-	  char *p, *pref, *h, *fields[2];
+	  char *pref, *h, *fields[2];
 	  
 	  if(idata->no_fetch){
 	      idata->bogus = 1;
@@ -5847,7 +5855,7 @@ set_index_addr(idata, field, addr, prefix, width, s)
 
     if(addr && !addr->next		/* only one address */
        && addr->host			/* not group syntax */
-       && addr->personal){		/* there is a personal name */
+       && addr->personal && addr->personal[0]){	/* there is a personal name */
 	char *dummy = NULL;
 	char  buftmp[MAILTMPLEN];
 	int   l;
@@ -5856,28 +5864,42 @@ set_index_addr(idata, field, addr, prefix, width, s)
 	  strcpy(s, prefix);
 
 	sprintf(buftmp, "%.75s", addr->personal);
-	istrncpy(s + l,
-		 (char *) rfc1522_decode((unsigned char *)tmp_20k_buf,
-					 SIZEOF_20KBUF, buftmp, &dummy),
-		 width - l);
+	p = (char *) rfc1522_decode((unsigned char *) tmp_20k_buf,
+				    SIZEOF_20KBUF, buftmp, &dummy);
+	removing_leading_and_trailing_white_space(p);
+	istrncpy(s + l, p, width - l);
+	s[width] = '\0';
 	if(dummy)
 	  fs_give((void **)&dummy);
-
-	return(TRUE);
+	
+	if(*(s+l))
+	  return(TRUE);
+	else{
+	    save_personal = addr->personal;
+	    addr->personal = NULL;
+	}
     }
-    else if(addr){
+
+    if(addr){
 	char *a_string;
 	int   l;
 
 	a_string = addr_list_string(addr, NULL, 0, 0);
+	if(save_personal)
+	  addr->personal = save_personal;
+
 	if(l = prefix ? strlen(prefix) : 0)
 	  strcpy(s, prefix);
 
 	istrncpy(s + l, a_string, width - l);
+	s[width] = '\0';
 
 	fs_give((void **)&a_string);
 	return(TRUE);
     }
+
+    if(save_personal)
+      addr->personal = save_personal;
 
     return(FALSE);
 }
@@ -6452,171 +6474,174 @@ subj_str(idata, width, str)
     unsigned long  rawno;
 
     memset(str, 0, (width+1) * sizeof(*str));
-    if(subject = fetch_subject(idata)){
-	if(THREADING()
-	   && (ps_global->thread_disp_style == THREAD_STRUCT
-	       || ps_global->thread_disp_style == THREAD_MUTTLIKE
-	       || ps_global->thread_disp_style == THREAD_INDENT_SUBJ1
-	       || ps_global->thread_disp_style == THREAD_INDENT_SUBJ2)){
-	    thdorig = thd = fetch_thread(idata->stream, idata->rawno);
-	    border = str + width;
-	    if(current_index_state->plus_col >= 0 && !THRD_INDX()){
-		collapsed = thd && thd->next &&
-			get_lflag(idata->stream, NULL, idata->rawno, MN_COLL);
-		hline = get_index_cache(idata->msgno);
-		hline->plus = collapsed ? ps_global->VAR_THREAD_MORE_CHAR[0]
-			: (thd && thd->next)
-			    ? ps_global->VAR_THREAD_EXP_CHAR[0] : ' ';
-		if(width > 0){
-		    *str++ = ' ';
-		    width--;
-		}
+    subject = fetch_subject(idata);
+    if(!subject)
+      subject = "";
 
-		if(width > 0){
-		    *str++ = ' ';
-		    width--;
-		}
+    if(THREADING()
+       && (ps_global->thread_disp_style == THREAD_STRUCT
+	   || ps_global->thread_disp_style == THREAD_MUTTLIKE
+	   || ps_global->thread_disp_style == THREAD_INDENT_SUBJ1
+	   || ps_global->thread_disp_style == THREAD_INDENT_SUBJ2)){
+	thdorig = thd = fetch_thread(idata->stream, idata->rawno);
+	border = str + width;
+	if(current_index_state->plus_col >= 0 && !THRD_INDX()){
+	    collapsed = thd && thd->next &&
+		    get_lflag(idata->stream, NULL, idata->rawno, MN_COLL);
+	    hline = get_index_cache(idata->msgno);
+	    hline->plus = collapsed ? ps_global->VAR_THREAD_MORE_CHAR[0]
+		    : (thd && thd->next)
+			? ps_global->VAR_THREAD_EXP_CHAR[0] : ' ';
+	    if(width > 0){
+		*str++ = ' ';
+		width--;
 	    }
 
-	    sptr = str;
-
-	    if(thd)
-	      while(thd->parent &&
-		    (thd = fetch_thread(idata->stream, thd->parent)))
-	        depth++;
-
-	    if(depth > 0){
-		if(ps_global->thread_disp_style == THREAD_INDENT_SUBJ1)
-		  mult = 1;
-
-		sptr += (mult*depth);
-		for(thd = thdorig, p = str + mult*depth - mult;
-		    thd && thd->parent && p >= str;
-		    thd = fetch_thread(idata->stream, thd->parent), p -= mult){
-		    if(p + 2 >= border && !q){
-			if(width >= 4 && depth < 100){
-			    sprintf(str, "%*s[%2d]", width-4, "", depth);
-			    q = str + width-4;
-			}
-			else if(width >= 5 && depth < 1000){
-			    sprintf(str, "%*s[%3d]", width-5, "", depth);
-			    q = str + width-5;
-			}
-			else{
-			    sprintf(str, "%s", repeat_char(width, '.'), width);
-			    q = str;
-			}
-
-			border = q;
-			sptr = NULL;
-		    }
-
-		    if(p + 1 < border){
-			p[0] = p[1] = ' ';
-			if(ps_global->thread_disp_style == THREAD_STRUCT
-			   || ps_global->thread_disp_style == THREAD_MUTTLIKE){
-			    if(thd == thdorig && !thd->branch)
-			      p[0] = ps_global->VAR_THREAD_LASTREPLY_CHAR[0];
-			    else if(thd == thdorig || thd->branch)
-			      p[0] = '|';
-
-			    if(thd == thdorig)
-			      p[1] = '-';
-			}
-		    }
-		    else if(p < border){
-			p[0] = ' ';
-			if(ps_global->thread_disp_style == THREAD_STRUCT
-			   || ps_global->thread_disp_style == THREAD_MUTTLIKE){
-			    if(thd == thdorig && !thd->branch)
-			      p[0] = ps_global->VAR_THREAD_LASTREPLY_CHAR[0];
-			    else if(thd == thdorig || thd->branch)
-			      p[0] = '|';
-			}
-		    }
-		}
-	    }
-
-	    if(sptr){
-		int do_subj = 0;
-
-		/*
-		 * Look to see if the subject is the same as the previous
-		 * message in the thread, if any. If it is the same, don't
-		 * reprint the subject.
-		 */
-		if(ps_global->thread_disp_style == THREAD_MUTTLIKE){
-		    if(depth == 0)
-		      do_subj++;
-		    else{
-			if(thdorig->parent &&
-			   (thd = fetch_thread(idata->stream, thdorig->parent))
-			   && thd->rawno){
-			    char       *s1 = NULL, *s2 = NULL, *free_s2 = NULL;
-			    ENVELOPE   *env;
-			    char       *prevsubj = NULL;
-			    mailcache_t mc;
-			    SORTCACHE  *sc = NULL;
-
-			    /* get the stripped subject of previous message */
-			    mc = (mailcache_t) mail_parameters(NIL, GET_CACHE,
-							       NIL);
-			    if(mc)
-			      sc = (*mc)(idata->stream, thd->rawno,
-					 CH_SORTCACHE);
-			    
-			    if(sc && sc->subject)
-			      s2 = sc->subject;
-			    else{
-				env = mail_fetchenvelope(idata->stream,
-						         thd->rawno);
-				if(env && env->subject)
-				  mail_strip_subject(env->subject, &s2);
-				
-				free_s2 = s2;
-			    }
-
-			    mail_strip_subject(subject, &s1);
-			    if(s1 && !s2 || s2 && !s1 || strucmp(s1, s2))
-			      do_subj++;
-			    
-			    if(s1)
-			      fs_give((void **) &s1);
-			    if(free_s2)
-			      fs_give((void **) &free_s2);
-			}
-			else
-			  do_subj++;
-		    }
-		}
-		else
-		  do_subj++;
-
-		if(do_subj){
-		    width = (str + width) - sptr;
-		    len = strlen(subject)+1;
-		    tmp = fs_get(len * sizeof(unsigned char));
-		    istrncpy(sptr, (char *) rfc1522_decode(tmp, len,
-							   subject, NULL),
-			     width);
-		    fs_give((void **) &tmp);
-		}
-		else if(ps_global->thread_disp_style == THREAD_MUTTLIKE)
-		  sptr[0] = '>';
+	    if(width > 0){
+		*str++ = ' ';
+		width--;
 	    }
 	}
-	else{
-	    len = strlen(subject)+1;
-	    tmp = fs_get(len * sizeof(unsigned char));
-	    istrncpy(str,
-		     (char *) rfc1522_decode(tmp, len, subject, NULL),
-		     width);
-	    fs_give((void **) &tmp);
+
+	sptr = str;
+
+	if(thd)
+	  while(thd->parent &&
+		(thd = fetch_thread(idata->stream, thd->parent)))
+	    depth++;
+
+	if(depth > 0){
+	    if(ps_global->thread_disp_style == THREAD_INDENT_SUBJ1)
+	      mult = 1;
+
+	    sptr += (mult*depth);
+	    for(thd = thdorig, p = str + mult*depth - mult;
+		thd && thd->parent && p >= str;
+		thd = fetch_thread(idata->stream, thd->parent), p -= mult){
+		if(p + 2 >= border && !q){
+		    if(width >= 4 && depth < 100){
+			sprintf(str, "%*s[%2d]", width-4, "", depth);
+			q = str + width-4;
+		    }
+		    else if(width >= 5 && depth < 1000){
+			sprintf(str, "%*s[%3d]", width-5, "", depth);
+			q = str + width-5;
+		    }
+		    else{
+			sprintf(str, "%s", repeat_char(width, '.'), width);
+			q = str;
+		    }
+
+		    border = q;
+		    sptr = NULL;
+		}
+
+		if(p + 1 < border){
+		    p[0] = p[1] = ' ';
+		    if(ps_global->thread_disp_style == THREAD_STRUCT
+		       || ps_global->thread_disp_style == THREAD_MUTTLIKE){
+			if(thd == thdorig && !thd->branch)
+			  p[0] = ps_global->VAR_THREAD_LASTREPLY_CHAR[0];
+			else if(thd == thdorig || thd->branch)
+			  p[0] = '|';
+
+			if(thd == thdorig)
+			  p[1] = '-';
+		    }
+		}
+		else if(p < border){
+		    p[0] = ' ';
+		    if(ps_global->thread_disp_style == THREAD_STRUCT
+		       || ps_global->thread_disp_style == THREAD_MUTTLIKE){
+			if(thd == thdorig && !thd->branch)
+			  p[0] = ps_global->VAR_THREAD_LASTREPLY_CHAR[0];
+			else if(thd == thdorig || thd->branch)
+			  p[0] = '|';
+		    }
+		}
+	    }
+	}
+
+	if(sptr){
+	    int do_subj = 0;
+
+	    /*
+	     * Look to see if the subject is the same as the previous
+	     * message in the thread, if any. If it is the same, don't
+	     * reprint the subject.
+	     */
+	    if(ps_global->thread_disp_style == THREAD_MUTTLIKE){
+		if(depth == 0)
+		  do_subj++;
+		else{
+		    if(thdorig->parent &&
+		       (thd = fetch_thread(idata->stream, thdorig->parent))
+		       && thd->rawno){
+			char       *s1 = NULL, *s2 = NULL, *free_s2 = NULL;
+			ENVELOPE   *env;
+			char       *prevsubj = NULL;
+			mailcache_t mc;
+			SORTCACHE  *sc = NULL;
+
+			/* get the stripped subject of previous message */
+			mc = (mailcache_t) mail_parameters(NIL, GET_CACHE,
+							   NIL);
+			if(mc)
+			  sc = (*mc)(idata->stream, thd->rawno,
+				     CH_SORTCACHE);
+			
+			if(sc && sc->subject)
+			  s2 = sc->subject;
+			else{
+			    char *stripthis;
+
+			    env = mail_fetchenvelope(idata->stream,
+						     thd->rawno);
+			    stripthis = (env && env->subject)
+						    ? env->subject : "";
+
+			    mail_strip_subject(stripthis, &s2);
+			    
+			    free_s2 = s2;
+			}
+
+			mail_strip_subject(subject, &s1);
+			if((s1 || s2)
+			   && (s1 && !s2 || s2 && !s1 || strucmp(s1, s2)))
+			  do_subj++;
+			
+			if(s1)
+			  fs_give((void **) &s1);
+			if(free_s2)
+			  fs_give((void **) &free_s2);
+		    }
+		    else
+		      do_subj++;
+		}
+	    }
+	    else
+	      do_subj++;
+
+	    if(do_subj){
+		width = (str + width) - sptr;
+		len = strlen(subject)+1;
+		tmp = fs_get(len * sizeof(unsigned char));
+		istrncpy(sptr, (char *) rfc1522_decode(tmp, len,
+						       subject, NULL),
+			 width);
+		fs_give((void **) &tmp);
+	    }
+	    else if(ps_global->thread_disp_style == THREAD_MUTTLIKE)
+	      sptr[0] = '>';
 	}
     }
     else{
-	hline = get_index_cache(idata->msgno);
-	hline->plus = ' ';
+	len = strlen(subject)+1;
+	tmp = fs_get(len * sizeof(unsigned char));
+	istrncpy(str,
+		 (char *) rfc1522_decode(tmp, len, subject, NULL),
+		 width);
+	fs_give((void **) &tmp);
     }
 }
 
@@ -7217,6 +7242,9 @@ sort_folder(msgmap, new_sort, new_rev, flags)
 
     dprint(2, (debugfile, "Sorting by %s%s\n",
 	       sort_name(new_sort), new_rev ? "/reverse" : ""));
+
+    if(!msgmap)
+      return;
 
     current_sort = mn_get_sort(msgmap);
     current_rev = mn_get_revsort(msgmap);
@@ -8704,6 +8732,9 @@ msgno_include(stream, msgs, filtered)
     long   i, slop, old_total, old_size;
     int    exbits;
     size_t len;
+
+    if(!msgs)
+      return;
 
     for(i = 1L; i <= stream->nmsgs; i++){
 	if(!msgno_exceptions(stream, i, "0", &exbits, FALSE))
@@ -10738,7 +10769,8 @@ adjust_cur_to_visible(stream, msgmap)
     cur = mn_get_cur(msgmap);
 
     /* if current is hidden, adjust */
-    if(msgline_hidden(stream, msgmap, cur, 0)){
+    if(cur >= 1L && cur <= mn_get_total(msgmap)
+       && msgline_hidden(stream, msgmap, cur, 0)){
 
 	dir = mn_get_revsort(msgmap) ? -1 : 1;
 

@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: imap.c,v 1.1.1.3 2003-05-01 01:13:06 ghudson Exp $";
+static char rcsid[] = "$Id: imap.c,v 1.1.1.4 2004-03-01 21:15:41 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -2013,8 +2013,10 @@ pine_tcptimeout(elapsed, sincelast)
 	if(clear_inverse = !InverseState())
 	  StartInverse();
 
+	Writechar(BELL, 0);
+
 	PutLine1(ps_global->ttyo->screen_rows - FOOTER_ROWS(ps_global), 0,
-       "\007Waited %s seconds for server reply.  Break connection to server? ",
+       "Waited %s seconds for server reply.  Break connection to server? ",
 	   long2string(elapsed));
 	CleartoEOLN();
 	fflush(stdout);
@@ -2236,6 +2238,23 @@ try_wantto:
     return(rv);
 }
 
+char *
+pine_newsrcquery(MAILSTREAM *stream, char *mulname, char *name)
+{
+    char buf[MAILTMPLEN];
+
+    if((can_access(mulname, ACCESS_EXISTS) == 0)
+       || !(can_access(name, ACCESS_EXISTS) == 0))
+      return(mulname);
+
+    sprintf(buf,
+	    "Rename newsrc \"%.15s%s\" for use as new host-specific newsrc",
+	    last_cmpnt(name), 
+	    strlen(last_cmpnt(name)) > 15 ? "..." : "");
+    if(want_to(buf, 'n', 'n', NO_HELP, WT_NORM) == 'y')
+      rename_file(name, mulname);
+    return(mulname);
+}
 
 int
 url_local_certdetails(url)

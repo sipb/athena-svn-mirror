@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: addrbook.c,v 1.1.1.2 2003-02-12 08:01:25 ghudson Exp $";
+static char rcsid[] = "$Id: addrbook.c,v 1.1.1.3 2004-03-01 21:15:55 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -7185,7 +7185,8 @@ rfc822_write_address_decode (dest, adr, charset, do_quote)
     if (adr->host) {		/* ordinary address? */
       if (!(base && n)) {	/* only write if exact form or not in group */
 				/* simple case? */
-	if (!(adr->personal || adr->adl)) rfc822_address (dest,adr);
+	if (!((adr->personal && adr->personal[0])
+	      || adr->adl)) rfc822_address (dest,adr);
 	else {			/* no, must use phrase <route-addr> form */
 	  if (adr->personal)
 	    rfc822_cat (dest,

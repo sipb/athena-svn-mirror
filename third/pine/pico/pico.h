@@ -1,5 +1,5 @@
 /*
- * $Id: pico.h,v 1.1.1.3 2003-05-01 01:12:18 ghudson Exp $
+ * $Id: pico.h,v 1.1.1.4 2004-03-01 21:15:58 ghudson Exp $
  *
  * Program:	pico.h - definitions for Pine's composer library
  *
@@ -20,7 +20,7 @@
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-2002 by the University of Washington.
+ * 1989-2003 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -408,7 +408,7 @@ extern	void	kbdestroy PROTO((KBESC_T *));
  */
 #ifdef	maindef
 PICO	*Pmaster = NULL;		/* composer specific stuff */
-char	*version = "4.5";		/* PICO version number */
+char	*version = "4.6";		/* PICO version number */
 
 #else
 extern	PICO *Pmaster;			/* composer specific stuff */

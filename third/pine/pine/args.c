@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: args.c,v 1.1.1.3 2003-05-01 01:13:39 ghudson Exp $";
+static char rcsid[] = "$Id: args.c,v 1.1.1.4 2004-03-01 21:15:38 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -567,6 +567,8 @@ Loop: while(--ac > 0)
 			str = *av;
 		      else if(--ac)
 			str = *++av;
+		      else if(c == 'f' || c == 'F')
+			str = "";
 		      else{
 			  sprintf(tmp_20k_buf, args_err_missing_flag_arg, c);
 			  display_args_err(tmp_20k_buf, NULL, 1);

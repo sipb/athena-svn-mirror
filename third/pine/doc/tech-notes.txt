@@ -1,7 +1,7 @@
 
                              Pine Technical Notes
                                        
-   Version 4.55, March 2003
+   Version 4.58, September 2003
    
    _Pine_ and _Pico_ are trademarks of the University of Washington.
    No commercial use of these trademarks may be made without prior
@@ -81,6 +81,7 @@ Table of Contents
           + Signatures and Signature Placement
           + Feature List Variable
           + Configuration Inheritance
+          + Using Environment Variables
           + SMTP Servers
           + MIME.Types file
           + Color Details
@@ -3045,7 +3046,8 @@ General Configuration Variables
           session, _Pine_ offers to _Save_ the message to the default
           folder.
           Choosing any of the _by-_ options causes _Pine_ to attempt to
-          get the chosen option's value for the message being _Saved_.
+          get the chosen option's value for the message being _Saved_ (or
+          for the first message being Saved if using an aggregate Save).
           For example, if _by-from_ is chosen, _Pine_ attempts to get the
           value of who the message came from (i.e. the from address).
           _Pine_ then attempts to _Save_ the message to a folder matching
@@ -5090,6 +5092,11 @@ John: on a job well done!
           In other words, this is a way to turn on the signature
           stripping behavior without also turning on the dashes-adding
           behavior.
+   _tab-checks-recent_
+          In a FOLDER LIST screen, the TAB key usually just changes which
+          folder is highlighted. If this feature is set, then the TAB key
+          will cause the number of recent messages and the total number
+          of messages in the highlighted folder to be displayed instead.
    _tab-visits-next-new-message-only_
           This feature affects _Pine_'s behavior when using the _TAB_ key
           to move from one message to the next. _Pine_'s usual behavior
@@ -5218,7 +5225,7 @@ John: on a job well done!
           This feature controls an aspect of _Pine_'s FOLDER LIST screen.
           If set, the folders will be listed alphabetically down the
           columns rather than across the columns as is the default.
-   _warn-if-subject-is-blank_
+   _warn-if-blank-subject_
           This feature affects _Pine_'s behavior when you send a message
           being composed. If this option is set, _Pine_ will check to see
           if the message about to be sent has a subject or not. If not,
@@ -8513,6 +8520,97 @@ Configuration Inheritance
    pinerc file directly and manually insert it, or turn on the
    "expose-hidden-config" feature and insert it using the Setup/Config
    screen.
+     _________________________________________________________________
+   
+Using Environment Variables
+
+   The values of _Pine_ configuration options may include environment
+   variables which are replaced by the value of the variable at the time
+   _Pine_ is run (and also at the time the config option is changed). The
+   syntax to use environment variables is a subset of the common Unix
+   shell dollar-syntax. For example, if
+   
+                                    $VAR
+                                      
+   appears in the value of a _Pine_ configuration option it is looked up
+   in the environent (using getenv("VAR")) and its looked-up value
+   replaces the $VAR part of the option value. That sounds more
+   complicated than it actually is. An example may make it clearer.
+   Unfortunately, the way in which environment variables are set is
+   OS-dependent and command shell-dependent. In some Unix command shells
+   you may use
+   
+                         PERSNAME="Fred Flintstone"
+                                      
+                              export PERSNAME
+                                      
+   Now, if you use _Pine_'s Setup/Config screen to set
+   
+                          personal-name=$PERSNAME
+                                      
+   the $PERSNAME would be replaced by Fred Flintstone so that this would
+   be equivalent to
+   
+                       personal-name=Fred Flintstone
+                                      
+   Note, environment variable substitution happens after configuration
+   options which are lists are split into the separate elements of the
+   list, so a single environment variable can't contain a list of values.
+   
+   The environment variable doesn't have to be the only thing after the
+   equal sign. However, if the name of the variable is not at the end of
+   the line or followed by a space (so that you can tell where the
+   variable name ends), it must be enclosed in curly braces like
+   
+                                   ${VAR}
+                                      
+   It is always ok to use the braces even if you don't need to.
+   
+   It is also possible to set a default value for an environment
+   variable. This default value will be used if the environment variable
+   is not set (that is, if getenv("VAR") returns NULL). The syntax used
+   to set a default value is
+   
+                           ${VAR:-default value}
+                                      
+   If the config file contains
+   
+                   personal-name=${VAR:-Fred Flintstone}
+                                      
+   then when _Pine_ is run VAR will be looked up in the environment. If
+   VAR is found then personal-name will have the value that VAR was set
+   to, otherwise, personal-name will be set to Fred Flintstone, the
+   default value.
+   
+   An example where an environment variable might be useful is the
+   variable inbox-path in the global configuration file. Suppose most
+   users used the server
+   
+                           imapserver.example.com
+                                      
+   but that there were some exceptions who used
+   
+                         altimapserver.example.com
+                                      
+   In this case, the system manager might include the following line in
+   the systemwide default _Pine_ configuration file
+   
+              inbox-path=${IMAPSERVER:-imapserver.example.com}
+                                      
+   For the exceptional users adding
+   
+                    IMAPSERVER=altimapserver.example.com
+                                      
+   to their environment should work.
+   
+   Another example might be the case where a user has to use a different
+   SMTP server from work and from home. The setup might be something as
+   simple as
+   
+                             smtp-server=$SMTP
+                                      
+   or perhaps a default value could be given. Note that, as mentioned
+   above, the variable SMTP cannot contain a list of SMTP servers.
      _________________________________________________________________
    
 SMTP Servers

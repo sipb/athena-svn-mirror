@@ -1977,7 +1977,8 @@ alt_editor(f, n)
     char   *cp;
     char   *args[MAXARGS];			/* ptrs into edit command */
     char   result[128];				/* result string */
-    int	   child, pid, i, done = 0, ret = 0;
+    char   prmpt[128];
+    int	   child, pid, i, done = 0, ret = 0, rv;
     SigType (*ohup) SIG_PROTO((int));
     SigType (*oint) SIG_PROTO((int));
     SigType (*osize) SIG_PROTO((int));
@@ -2025,7 +2026,7 @@ alt_editor(f, n)
 
 	if(Pmaster->alt_ed){
 	    char **lp, *wsp, *path, fname[PATH_MAX+1];
-	    int	   c, rv;
+	    int	   c;
 
 	    for(lp = Pmaster->alt_ed; *lp && **lp; lp++){
 		if(wsp = strpbrk(*lp, " \t")){
@@ -2205,9 +2206,14 @@ alt_editor(f, n)
 	if(WIFEXITED(stat) && WEXITSTATUS(stat) == 0)
 	  strcpy(result, "Alternate %s done");
 	else {
-	  sprintf(result, "Alternate %%s abnormally terminated (%d)",
+	  sprintf(result, "Alternate %%s terminated abnormally (%d)",
 		  WIFEXITED(stat) ? WEXITSTATUS(stat) : -1);
-	  ret = -1;
+	  if(f)
+	    ret = -1;
+	  else{
+	      sprintf(prmpt, "Alt editor failed, use file %.20s of size %%ld chars anyway", fn);
+	      ret = -2;
+	  }
 	}
     }
     else if(child == 0){		/* spawn editor */
@@ -2244,6 +2250,27 @@ alt_editor(f, n)
      * replace edited text with new text 
      */
     curbp->b_flag &= ~BFCHG;		/* make sure old text gets blasted */
+
+    if(ret == -2){
+	off_t filesize;
+	char  prompt[128];
+
+	rv = fexist(fn, "r", &filesize);
+	if(rv == FIOSUC && filesize > 0){
+	    sprintf(prompt, prmpt, (long) filesize);
+	    /* clear bottom 3 rows */
+	    pclear(term.t_nrow-2, term.t_nrow+1);
+	    i = mlyesno(prompt, FALSE);
+	    if(i == TRUE){
+		ret = 0;
+		strcpy(result, "OK, alternate %s done");
+	    }
+	    else
+	      ret = -1;
+	}
+	else
+	  ret = -1;
+    }
 
     if(ret == 0)
       readin(fn, 0, 0);			/* read new text overwriting old */

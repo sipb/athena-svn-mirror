@@ -2104,7 +2104,8 @@ The first time you <EM>Save</EM> a message in a session,
 <P>
 
 Choosing any of the <EM>by-</EM> options causes <EM>Pine</EM> to attempt
-to get the chosen option's value for the message being <EM>Saved</EM>.
+to get the chosen option's value for the message being <EM>Saved</EM> (or
+for the first message being Saved if using an aggregate Save).
 For example, if <EM>by-from</EM> is chosen, <EM>Pine</EM> attempts to
 get the value of who the message
 came from (i.e. the from address). <EM>Pine</EM> then attempts to
@@ -5050,6 +5051,15 @@ In other words, this is a way to turn on the signature stripping behavior
 without also turning on the dashes-adding behavior.
 <P>
 
+<DT> <A NAME="tab-checks-recent"><EM>tab-checks-recent</EM></A>
+
+<DD> In a FOLDER LIST screen, the TAB key usually just changes which
+folder is highlighted.
+If this feature is set, then the TAB key will cause the number of
+recent messages and the total number of messages in the highlighted folder
+to be displayed instead.
+<P>
+
 <DT> <A NAME="tab-visits-next-new-message-only"><EM>tab-visits-next-new-message-only</EM></A>
 
 <DD> This feature affects <EM>Pine</EM>'s behavior when using the <EM>TAB</EM>
@@ -5245,7 +5255,7 @@ than across the columns as is the default.
 
 <P>
 
-<DT> <A NAME="warn-if-subject-is-blank"><EM>warn-if-subject-is-blank</EM></A>
+<DT> <A NAME="warn-if-blank-subject"><EM>warn-if-blank-subject</EM></A>
 
 <DD> This feature affects <EM>Pine</EM>'s behavior when you send a message being
 composed.

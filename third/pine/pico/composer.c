@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: composer.c,v 1.1.1.2 2003-02-12 08:01:35 ghudson Exp $";
+static char rcsid[] = "$Id: composer.c,v 1.1.1.3 2004-03-01 21:15:31 ghudson Exp $";
 #endif
 /*
  * Program:	Pine composer routines
@@ -1771,9 +1771,6 @@ int	allowedit;
 		    }
 
 		    PaintBody(1);
-
-		    if (!(gmode & MDDTKILL))
-		      ods.p_off = 0;		/* dot hasn't moved! */
 		    strng = ods.cur_l->text;
 		    ods.p_len = strlen(strng);
 		    headents[ods.cur_e].sticky = 1;
@@ -3545,8 +3542,8 @@ SaveHeaderLines()
     register unsigned	i;			/* index */
     char     *work_buf, *work_buf_begin;
     char     empty[1];
-    int      len, buf_len, work_buf_len;
-    struct hdr_line *travel;
+    int      len, buf_len, work_buf_len, tentative_p_off = 0;
+    struct hdr_line *travel, *tentative_cur_l = NULL;
 
     if(ksize()){
 	if((bp = buf = (char *)malloc(ksize()+5)) == NULL){
@@ -3581,6 +3578,7 @@ SaveHeaderLines()
     if (gmode & MDDTKILL){
 	/* insert new text at the dot position */
 	buf_len      = strlen(buf);
+	tentative_p_off = ods.p_off + buf_len;
 	work_buf_len = strlen(ods.cur_l->text) + buf_len;
 	work_buf = (char *) malloc((work_buf_len + 1) * sizeof(char));
 	if (work_buf == NULL) {
@@ -3605,16 +3603,27 @@ SaveHeaderLines()
 	       break;
 	    } else {
 	       i = TRUE;
-              /* calculate dot's position after insertion */
 	      len = 0;
 	      travel = ods.cur_l;
 	      while (len < 256){
 		  len += strlen(travel->text);
-		  if (len >= 256){
+		  if (len >= 256)
 		    break;
+
+		  /*
+		   * This comes after the break above because it will
+		   * be accounted for in the while loop below.
+		   */
+		  if(!tentative_cur_l){
+		      if(tentative_p_off <= strlen(travel->text))
+			tentative_cur_l = travel;
+		      else
+			tentative_p_off -= strlen(travel->text);
 		  }
+
 		  travel = travel->next;
 	      }
+
 	      ods.cur_l = travel;
 	      ods.p_off = strlen(travel->text) - len + 256;
 	    }
@@ -3630,17 +3639,31 @@ SaveHeaderLines()
 			   headents[ods.cur_e].break_on_comma, 0) == -1) {
 	       i = FALSE;
 	    } else {  
-              /* calculate dot's position after insertion */
 	      len = 0;
 	      travel = ods.cur_l;
 	      while (len < work_buf_len + ods.p_off){
+		  if(!tentative_cur_l){
+		      if(tentative_p_off <= strlen(travel->text))
+			tentative_cur_l = travel;
+		      else
+			tentative_p_off -= strlen(travel->text);
+		  }
+
 		  len += strlen(travel->text);
 		  if (len >= work_buf_len + ods.p_off)
 		    break;
+
 		  travel = travel->next;
 	      }
+
 	      ods.cur_l = travel;
 	      ods.p_off = strlen(travel->text) - len + work_buf_len + ods.p_off;
+	      if(tentative_cur_l
+	         && tentative_p_off >= 0
+		 && tentative_p_off <= strlen(tentative_cur_l->text)){
+		  ods.cur_l = tentative_cur_l;
+		  ods.p_off = tentative_p_off;
+	      }
 	    }
 	}
 
@@ -3648,8 +3671,36 @@ SaveHeaderLines()
 	if(FormatLines(ods.cur_l, buf, LINELEN(),
 		   headents[ods.cur_e].break_on_comma, 0) == -1)
 	  i = FALSE;
-	else
-	  i = TRUE;
+	else{  
+	    i = TRUE;
+	    buf_len      = strlen(buf);
+	    tentative_p_off = buf_len;
+	    ods.p_off = 0;
+	    len = 0;
+	    /* put cursor after the new text */
+	    travel = ods.cur_l;
+	    while(len < buf_len){
+		if(!tentative_cur_l){
+		    if(tentative_p_off <= strlen(travel->text))
+		      tentative_cur_l = travel;
+		    else
+		      tentative_p_off -= strlen(travel->text);
+		}
+
+		len += strlen(travel->text);
+		if(len >= buf_len)
+		  break;
+
+		travel = travel->next;
+	    }
+
+	    if(tentative_cur_l
+	       && tentative_p_off >= 0
+	       && tentative_p_off <= strlen(tentative_cur_l->text)){
+		ods.cur_l = tentative_cur_l;
+		ods.p_off = tentative_p_off;
+	    }
+	}
     }
 
     free(buf);

@@ -10,7 +10,7 @@
  *		Internet: MRC@CAC.Washington.EDU
  *
  * Date:	5 November 1990
- * Last Edited:	2 April 2003
+ * Last Edited:	7 July 2003
  * 
  * The IMAP toolkit provided in this Distribution is
  * Copyright 1988-2003 University of Washington.
@@ -178,7 +178,7 @@ char *lasterror (void);
 
 /* Global storage */
 
-char *version = "2003.337";	/* version number of this server */
+char *version = "2003.339";	/* version number of this server */
 time_t alerttime = 0;		/* time of last alert */
 time_t sysalerttime = 0;	/* time of last system alert */
 time_t useralerttime = 0;	/* time of last user alert */
@@ -556,7 +556,7 @@ int main (int argc,char *argv[])
 	  }
 	}
 				/* close mailbox */
-	else if (!strcmp (cmd,"CLOSE")) {
+	else if (!strcmp (cmd,"CLOSE") || !strcmp (cmd,"UNSELECT")) {
 				/* no arguments */
 	  if (arg) response = badarg;
 	  else {
@@ -564,7 +564,8 @@ int main (int argc,char *argv[])
 	    if (lastsel) fs_give ((void **) &lastsel);
 	    if (lastid) fs_give ((void **) &lastid);
 	    if (lastst.data) fs_give ((void **) &lastst.data);
-	    stream = mail_close_full (stream,anonymous ? NIL : CL_EXPUNGE);
+	    stream = mail_close_full (stream,((*cmd == 'C') && !anonymous) ?
+				      CL_EXPUNGE : NIL);
 	    state = SELECT;	/* no longer opened */
 	    lastcheck = 0;	/* no last checkpoint */
 	  }
@@ -3217,7 +3218,7 @@ void pcapability (long flag)
   PSOUT (" X-NETSCAPE");
 #endif
   if (flag >= 0) {		/* want post-authentication capabilities? */
-    PSOUT (" IDLE NAMESPACE MAILBOX-REFERRALS BINARY SCAN SORT");
+    PSOUT (" IDLE NAMESPACE MAILBOX-REFERRALS BINARY UNSELECT SCAN SORT");
     while (thr) {		/* threaders */
       PSOUT (" THREAD=");
       PSOUT (thr->name);
@@ -3365,7 +3366,7 @@ long proxycopy (MAILSTREAM *stream,char *sequence,char *mailbox,long options)
       md.msgno = (j = i) - 1;
 				/* only if at least one message to copy */
   if (j && !mail_append_multiple (NIL,mailbox,proxy_append,(void *) &md)) {
-    response = lose;		/* set failure */
+    response = trycreate ? losetry : lose;
     return NIL;
   }
   response = win;		/* stomp any previous babble */
@@ -3764,7 +3765,7 @@ void mm_log (char *string,long errflg)
     break;
   case ERROR:			/* error that broke command */
   default:			/* default should never happen */
-    response = lose;		/* set fatality */
+    response = trycreate ? losetry : lose;
     if (lsterr) fs_give ((void **) &lsterr);
 				/* note last error */
     lsterr = cpystr (string);	/* note last error */

@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: adrbklib.c,v 1.1.1.2 2003-02-12 08:02:05 ghudson Exp $";
+static char rcsid[] = "$Id: adrbklib.c,v 1.1.1.3 2004-03-01 21:15:54 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -63,6 +63,11 @@ static char rcsid[] = "$Id: adrbklib.c,v 1.1.1.2 2003-02-12 08:02:05 ghudson Exp
 #endif
 
 #define MAXLINE 1000    /* Longest line in addrbook */
+
+#define TABWIDTH 8
+#define INDENTSTR "   "
+#define INDENTXTRA " : "
+#define INDENT 3  /* length of INDENTSTR */
 
 
 /*
@@ -2125,7 +2130,8 @@ skip_to_next_nickname(fp, offset, address, length, rew, longline)
     int    rew;
     int   *longline;
 {
-    static char line[MAXLINE+1];
+    char *line = NULL;
+    static char linebuf[MAXLINE+INDENT+1];
     static char this_nickname[MAX_NICKNAME+1];
     static char next_nickname[MAX_NICKNAME+1];
     static char this_address[MAXLINE+1];
@@ -2136,7 +2142,12 @@ skip_to_next_nickname(fp, offset, address, length, rew, longline)
     char *addr;
     static long next_nickname_offset = 0L;
     int ok_so_far = 0;
+    size_t totsize;
+#define CHUNKSIZE 500
 
+
+    line = linebuf;
+    totsize = sizeof(linebuf);
 
     if(address)
       *address = this_address;
@@ -2146,29 +2157,36 @@ skip_to_next_nickname(fp, offset, address, length, rew, longline)
 	/* skip leading (bogus) continuation lines */
 	do{
 	    *offset  = ftell(fp);
-	    line[sizeof(line)-2] = '\0';
-	    p       = fgets(line, sizeof(line), fp);
-	    if(p == NULL)
-	      return NULL;
-	    else if(!(p[sizeof(line)-2] == '\0'
-		   || p[sizeof(line)-2] == '\n'
-		   || p[sizeof(line)-2] == '\r')){
-		for(c = 0; c < max(ps_global->ttyo->screen_cols - 30, 0); c++)
-		  if(p[c] == TAB)
-		    p[c] = SPACE;
-		p[c] = '\0';
-		q_status_message1(SM_ORDER | SM_DING, 7, 7,
-				   "Addrbook line too long:  %.200s...", p);
-		dprint(2, (debugfile,
-		    "line too long in skip_to_next_nick(1): %s...\n",
-		    p));
-		if(longline)
-		  *longline = 1;
+	    memset(line, 0, totsize);
+	    p = fgets(line, totsize, fp);
+
+	    if(p == NULL){
+		if(line != linebuf)
+		  fs_give((void **) &line);
 
 		return NULL;
 	    }
-	}while(*p == SPACE);
 
+	    /* line is too long to fit */
+	    while(line[totsize-2] != '\0' && line[totsize-2] != '\n'
+		  && p != NULL){
+		if(totsize == sizeof(linebuf)){		/* first time */
+		    line = (char *) fs_get(totsize+CHUNKSIZE);
+		    memset(line, 0, totsize+CHUNKSIZE);
+		    strncpy(line, linebuf, totsize);
+		}
+		else{
+		    fs_resize((void **) &line, totsize+CHUNKSIZE);
+		    memset(line+totsize, 0, CHUNKSIZE);
+		}
+
+		/* get next CHUNKSIZE characters */
+		p = fgets(line+totsize-1, CHUNKSIZE+1, fp);
+		totsize += CHUNKSIZE;
+	    }
+	}while(line[0] == SPACE);
+
+	p = line;
 	nickname = p;
 	SKIP_TO_TAB(p);
 	/* This *should* be true. */
@@ -2201,29 +2219,30 @@ skip_to_next_nickname(fp, offset, address, length, rew, longline)
 
 	    (void)ungetc(c, fp);
 	    if(ok_so_far){
-		line[sizeof(line)-2] = '\0';
-		p = fgets(line, sizeof(line), fp);
-		if(!(p == NULL
-		   || p[sizeof(line)-2] == '\0'
-		   || p[sizeof(line)-2] == '\n'
-		   || p[sizeof(line)-2] == '\r')){
-		    for(c=0; c<max(ps_global->ttyo->screen_cols-30, 0); c++)
-		      if(p[c] == TAB)
-			p[c] = SPACE;
-		    p[c] = '\0';
-		    q_status_message1(SM_ORDER | SM_DING, 7, 7,
-				   "Addrbook line too long:  %.200s...", p);
-		    dprint(2, (debugfile,
-		    "line too long in skip_to_next_nick(2): %s...\n",
-		    p));
-		    if(longline)
-		      *longline = 1;
+		memset(line, 0, totsize);
+		p = fgets(line, totsize, fp);
 
-		    return NULL;
+		/* line is too long to fit */
+		while(line[totsize-2] != '\0' && line[totsize-2] != '\n'
+		      && p != NULL){
+		    if(totsize == sizeof(linebuf)){		/* first time */
+			line = (char *) fs_get(totsize+CHUNKSIZE);
+			memset(line, 0, totsize+CHUNKSIZE);
+			strncpy(line, linebuf, totsize);
+		    }
+		    else{
+			fs_resize((void **) &line, totsize+CHUNKSIZE);
+			memset(line+totsize, 0, CHUNKSIZE);
+		    }
+
+		    /* get next CHUNKSIZE characters */
+		    p = fgets(line+totsize-1, CHUNKSIZE+1, fp);
+		    totsize += CHUNKSIZE;
 		}
 	    }
 
-	    if(!ok_so_far || p == NULL){
+	    p = line;
+	    if(!ok_so_far || *p == '\0'){
 		ok_so_far = 0;
 		goto no_address_initially;
 	    }
@@ -2247,29 +2266,30 @@ skip_to_next_nickname(fp, offset, address, length, rew, longline)
 
 	    (void)ungetc(c, fp);
 	    if(ok_so_far){
-		line[sizeof(line)-2] = '\0';
-		p = fgets(line, sizeof(line), fp);
-		if(!(p == NULL
-		   || p[sizeof(line)-2] == '\0'
-		   || p[sizeof(line)-2] == '\n'
-		   || p[sizeof(line)-2] == '\r')){
-		    for(c=0; c<max(ps_global->ttyo->screen_cols-30, 0); c++)
-		      if(p[c] == TAB)
-			p[c] = SPACE;
-		    p[c] = '\0';
-		    q_status_message1(SM_ORDER | SM_DING, 7, 7,
-				   "Addrbook line too long:  %.200s...", p);
-		    dprint(2, (debugfile,
-		    "line too long in skip_to_next_nick(3): %s...\n",
-		    p));
-		    if(longline)
-		      *longline = 1;
+		memset(line, 0, totsize);
+		p = fgets(line, totsize, fp);
 
-		    return NULL;
+		/* line is too long to fit */
+		while(line[totsize-2] != '\0' && line[totsize-2] != '\n'
+		      && p != NULL){
+		    if(totsize == sizeof(linebuf)){		/* first time */
+			line = (char *) fs_get(totsize+CHUNKSIZE);
+			memset(line, 0, totsize+CHUNKSIZE);
+			strncpy(line, linebuf, totsize);
+		    }
+		    else{
+			fs_resize((void **) &line, totsize+CHUNKSIZE);
+			memset(line+totsize, 0, CHUNKSIZE);
+		    }
+
+		    /* get next CHUNKSIZE characters */
+		    p = fgets(line+totsize-1, CHUNKSIZE+1, fp);
+		    totsize += CHUNKSIZE;
 		}
 	    }
 
-	    if(!ok_so_far || p == NULL){
+	    p = line;
+	    if(!ok_so_far || *p == '\0'){
 		ok_so_far = 0;
 	        goto no_address_initially;
 	    }
@@ -2290,8 +2310,12 @@ no_address_initially:
 	  next_address[0] = '\0';  /* won't happen with good input data */
     }
 
-    if(next_nickname[0] == '\0')
-      return NULL;
+    if(next_nickname[0] == '\0'){
+	if(line != linebuf)
+	  fs_give((void **) &line);
+
+	return NULL;
+    }
 
     strcpy(this_nickname, next_nickname);
     *offset = next_nickname_offset;
@@ -2300,28 +2324,30 @@ no_address_initially:
     /* skip continuation lines */
     do{
 	next_nickname_offset = ftell(fp);
-	line[sizeof(line)-2] = '\0';
-	p = fgets(line, sizeof(line), fp);
-	if(!(p == NULL
-	   || p[sizeof(line)-2] == '\0'
-	   || p[sizeof(line)-2] == '\n'
-	   || p[sizeof(line)-2] == '\r')){
-	    for(c=0; c<max(ps_global->ttyo->screen_cols-30, 0); c++)
-	      if(p[c] == TAB)
-		p[c] = SPACE;
-	    p[c] = '\0';
-	    q_status_message1(SM_ORDER | SM_DING, 7, 7,
-			   "Addrbook line too long:  %.200s...", p);
-	    dprint(2, (debugfile,
-		"line too long in skip_to_next_nick(4): %s...\n",p));
-	    if(longline)
-	      *longline = 1;
+	memset(line, 0, totsize);
+	p = fgets(line, totsize, fp);
 
-	    return NULL;
+	/* line is too long to fit */
+	while(line[totsize-2] != '\0' && line[totsize-2] != '\n'
+	      && p != NULL){
+	    if(totsize == sizeof(linebuf)){		/* first time */
+		line = (char *) fs_get(totsize+CHUNKSIZE);
+		memset(line, 0, totsize+CHUNKSIZE);
+		strncpy(line, linebuf, totsize);
+	    }
+	    else{
+		fs_resize((void **) &line, totsize+CHUNKSIZE);
+		memset(line+totsize, 0, CHUNKSIZE);
+	    }
+
+	    /* get next CHUNKSIZE characters */
+	    p = fgets(line+totsize-1, CHUNKSIZE+1, fp);
+	    totsize += CHUNKSIZE;
 	}
-    }while(p && *p == SPACE);
+    }while(line[0] == SPACE);
 
-    if(p){
+    p = line;
+    if(*p){
 	nickname = p;
 	SKIP_TO_TAB(p);
 	if(*p == TAB)  /* this should always happen */
@@ -2354,29 +2380,30 @@ no_address_initially:
 
 	    (void)ungetc(c, fp);
 	    if(ok_so_far){
-		line[sizeof(line)-2] = '\0';
-		p = fgets(line, sizeof(line), fp);
-		if(!(p == NULL
-		   || p[sizeof(line)-2] == '\0'
-		   || p[sizeof(line)-2] == '\n'
-		   || p[sizeof(line)-2] == '\r')){
-		    for(c=0; c<max(ps_global->ttyo->screen_cols-30, 0); c++)
-		      if(p[c] == TAB)
-			p[c] = SPACE;
-		    p[c] = '\0';
-		    q_status_message1(SM_ORDER | SM_DING, 7, 7,
-				   "Addrbook line too long:  %.200s...", p);
-		    dprint(2, (debugfile,
-		    "line too long in skip_to_next_nick(5): %s...\n",
-		    p));
-		    if(longline)
-		      *longline = 1;
+		memset(line, 0, totsize);
+		p = fgets(line, totsize, fp);
 
-		    return NULL;
+		/* line is too long to fit */
+		while(line[totsize-2] != '\0' && line[totsize-2] != '\n'
+		      && p != NULL){
+		    if(totsize == sizeof(linebuf)){		/* first time */
+			line = (char *) fs_get(totsize+CHUNKSIZE);
+			memset(line, 0, totsize+CHUNKSIZE);
+			strncpy(line, linebuf, totsize);
+		    }
+		    else{
+			fs_resize((void **) &line, totsize+CHUNKSIZE);
+			memset(line+totsize, 0, CHUNKSIZE);
+		    }
+
+		    /* get next CHUNKSIZE characters */
+		    p = fgets(line+totsize-1, CHUNKSIZE+1, fp);
+		    totsize += CHUNKSIZE;
 		}
 	    }
 
-	    if(!ok_so_far || p == NULL){
+	    p = line;
+	    if(!ok_so_far || *p == '\0'){
 		ok_so_far = 0;
 		goto no_address;
 	    }
@@ -2400,29 +2427,30 @@ no_address_initially:
 
 	    (void)ungetc(c, fp);
 	    if(ok_so_far){
-		line[sizeof(line)-2] = '\0';
-		p = fgets(line, sizeof(line), fp);
-		if(!(p == NULL
-		   || p[sizeof(line)-2] == '\0'
-		   || p[sizeof(line)-2] == '\n'
-		   || p[sizeof(line)-2] == '\r')){
-		    for(c=0; c<max(ps_global->ttyo->screen_cols-30, 0); c++)
-		      if(p[c] == TAB)
-			p[c] = SPACE;
-		    p[c] = '\0';
-		    q_status_message1(SM_ORDER | SM_DING, 7, 7,
-				   "Addrbook line too long:  %.200s...", p);
-		    dprint(2, (debugfile,
-		    "line too long in skip_to_next_nick(6): %s...\n",
-		    p));
-		    if(longline)
-		      *longline = 1;
+		memset(line, 0, totsize);
+		p = fgets(line, totsize, fp);
 
-		    return NULL;
+		/* line is too long to fit */
+		while(line[totsize-2] != '\0' && line[totsize-2] != '\n'
+		      && p != NULL){
+		    if(totsize == sizeof(linebuf)){		/* first time */
+			line = (char *) fs_get(totsize+CHUNKSIZE);
+			memset(line, 0, totsize+CHUNKSIZE);
+			strncpy(line, linebuf, totsize);
+		    }
+		    else{
+			fs_resize((void **) &line, totsize+CHUNKSIZE);
+			memset(line+totsize, 0, CHUNKSIZE);
+		    }
+
+		    /* get next CHUNKSIZE characters */
+		    p = fgets(line+totsize-1, CHUNKSIZE+1, fp);
+		    totsize += CHUNKSIZE;
 		}
 	    }
 
-	    if(!ok_so_far || p == NULL){
+	    p = line;
+	    if(!ok_so_far || *p == '\0'){
 		ok_so_far = 0;
 	        goto no_address;
 	    }
@@ -2447,6 +2475,9 @@ no_address:
 
     if(length)
       *length = next_nickname_offset - *offset;
+
+    if(line != linebuf)
+      fs_give((void **) &line);
 
     return(this_nickname);
 }
@@ -3072,9 +3103,10 @@ length_of_entry(fp, offset)
     FILE *fp;
     long  offset;
 {
-    char line[MAXLINE+1];
+    char line[MAXLINE+INDENT+1];
     char *p;
-    long new_offset = offset;
+    int  first_char;
+    long new_offset;
 
     errno = 0;
     line[0] = '\0';
@@ -3091,13 +3123,36 @@ length_of_entry(fp, offset)
 
     clearerr(fp);
     errno = 0;
+    memset(line, 0, sizeof(line));
+    /* at least one line belongs to this entry */
     p = fgets(line, sizeof(line), fp);
-
-    do{
+    new_offset = ftell(fp);
+    /* read until end of long line, keep resetting offset */
+    while(line[sizeof(line)-2] != '\0' && line[sizeof(line)-2] != '\n'){
+	memset(line, 0, sizeof(line));
+	p = fgets(line, sizeof(line), fp);
 	new_offset = ftell(fp);
-	p          = fgets(line, sizeof(line), fp);
-	
-    }while(p && *p == SPACE);
+    }
+
+    /*
+     * Get more lines and keep counting them as part of this entry if
+     * they are continuation lines.
+     */
+    do{
+	memset(line, 0, sizeof(line));
+	p = fgets(line, sizeof(line), fp);
+	first_char = p ? *p : '\0';
+	if(first_char == SPACE)
+	  new_offset = ftell(fp);
+
+	/* read until end of long line, keep resetting offset */
+	while(first_char == SPACE
+	      && line[sizeof(line)-2] != '\0' && line[sizeof(line)-2] != '\n'){
+	    memset(line, 0, sizeof(line));
+	    p = fgets(line, sizeof(line), fp);
+	    new_offset = ftell(fp);
+	}
+    }while(first_char == SPACE);
     
     if(new_offset <= offset){
 	dprint(2,(debugfile,"length_of_entry: trouble: return length=%ld, %s\n",
@@ -4723,11 +4778,6 @@ adrbk_write(ab, sort_array, enable_intr_handling, be_quiet, write_to_remote)
 	    /*NOTREACHED*/
 	}
     }
-
-#define TABWIDTH 8
-#define INDENTSTR "   "
-#define INDENTXTRA " : "
-#define INDENT 3  /* length of INDENTSTR */
 
 #ifndef	DOS
     save_sighup = (void (*)())signal(SIGHUP, SIG_IGN);

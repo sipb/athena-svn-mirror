@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: bldaddr.c,v 1.1.1.3 2003-05-01 01:12:14 ghudson Exp $";
+static char rcsid[] = "$Id: bldaddr.c,v 1.1.1.4 2004-03-01 21:16:24 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -2373,6 +2373,16 @@ just_update_lookup_file(addrbook_file, sort_rule_descrip)
 #ifdef DEBUG
     init_debug();
 #endif
+
+    /*
+     * It also gets called before collation has been set up so set it
+     * up here. The problem with this is that we don't know what collation
+     * features the user wants yet since we haven't looked at the pinerc
+     * file yet. However, we don't want to wait to go through the screen
+     * setup and everything because we might be called from cron without
+     * a screen. We'll just do the collation the way it works by default.
+     */
+    set_collation(1, 0);
 
     dprint(9, (debugfile, "just_update_lookup_file(%s,%s)\n",
 	       addrbook_file ? addrbook_file : "<null>",
@@ -7409,6 +7419,7 @@ addr_list_string(adrlist, f, verbose, do_quote)
 	list[0] = '\0';
 	rfc822_write_address_decode(list, adrlist,
 				    verbose ? NULL : &charset, do_quote);
+	removing_leading_and_trailing_white_space(list);
 	if(charset)
 	  fs_give((void **)&charset);
     }

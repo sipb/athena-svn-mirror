@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: send.c,v 1.1.1.3 2003-05-01 01:12:59 ghudson Exp $";
+static char rcsid[] = "$Id: send.c,v 1.1.1.4 2004-03-01 21:16:29 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -116,7 +116,7 @@ void       pine_free_body_data PROTO((BODY *));
 long	   pine_smtp_verbose PROTO((SENDSTREAM *));
 void	   pine_smtp_verbose_out PROTO((char *));
 int        call_mailer PROTO((METAENV *, BODY *, char **));
-int        news_poster PROTO((METAENV *, BODY *));
+int        news_poster PROTO((METAENV *, BODY *, char **));
 char      *tidy_smtp_mess PROTO((char *, char *, char *));
 void       mime_recur PROTO((BODY *));
 long	   piped_soutr PROTO((void *, char *));
@@ -133,6 +133,7 @@ int	   sent_percent PROTO(());
 long	   send_body_size PROTO((BODY *));
 void	   set_body_size PROTO((BODY *));
 BODY	  *first_text_8bit PROTO((BODY *));
+void	   set_only_charset_by_grope PROTO((BODY *, char *));
 void	   set_mime_charset PROTO((PARAMETER *, int, char *));
 int	   background_posting PROTO((int));
 void       free_body_particulars PROTO((BODY_PARTICULARS_S *));
@@ -140,7 +141,6 @@ void       reset_body_particulars PROTO((BODY_PARTICULARS_S *, BODY *));
 char      *encode_header_value PROTO((char *, size_t, unsigned char *,
 				      char *, int));
 int        encode_whole_header PROTO((char *, METAENV *));
-void       strip_content_id PROTO((BODY *));
 BODY_PARTICULARS_S *save_body_particulars PROTO((BODY *));
 ADDRESS		   *phone_home_from PROTO(());
 unsigned int	    phone_home_hash PROTO((char *));
@@ -1030,7 +1030,7 @@ redraft(stream, outgoing, body, fcc, lcc, reply, redraft_pos, custom, role,
     gf_io_t	 pc;
     char	*extras, **fields, **values, *p;
     char        *hdrs[2], *h;
-    char       **smtp_servers = NULL;
+    char       **smtp_servers = NULL, **nntp_servers = NULL;
     long	 cont_msg = 1L;
     int		 i, pine_generated = 0, our_replyto = 0;
     int          added_to_role = 0;
@@ -1146,10 +1146,11 @@ redraft(stream, outgoing, body, fcc, lcc, reply, redraft_pos, custom, role,
 #define INDEX_REPLYUID    2
 #define INDEX_REPLYMBOX   3
 #define INDEX_SMTP        4
-#define INDEX_CURSORPOS   5
-#define INDEX_OUR_REPLYTO 6
-#define INDEX_LCC         7	/* MUST REMAIN LAST FIELD DECLARED */
-#define FIELD_COUNT       8
+#define INDEX_NNTP        5
+#define INDEX_CURSORPOS   6
+#define INDEX_OUR_REPLYTO 7
+#define INDEX_LCC         8	/* MUST REMAIN LAST FIELD DECLARED */
+#define FIELD_COUNT       9
 
 	i = count_custom_hdrs_pf(*custom,1) + FIELD_COUNT + 1;
 
@@ -1171,6 +1172,7 @@ redraft(stream, outgoing, body, fcc, lcc, reply, redraft_pos, custom, role,
 	fields[++i]   = "X-Reply-UID";	/* Reply'd to msg's UID */
 	fields[++i]   = "X-Reply-Mbox";	/* Reply'd to msg's Mailbox */
 	fields[++i]   = "X-SMTP-Server";/* SMTP server to use */
+	fields[++i]   = "X-NNTP-Server";/* NNTP server to use */
 	fields[++i]   = "X-Cursor-Pos";	/* Cursor position */
 	fields[++i]   = "X-Our-ReplyTo";	/* ReplyTo is real */
 	fields[++i]   = "Lcc";		/* Lcc: too... */
@@ -1324,6 +1326,42 @@ redraft(stream, outgoing, body, fcc, lcc, reply, redraft_pos, custom, role,
 		} while(*p++);
 
 		fs_give((void **) &values[INDEX_SMTP]);
+	    }
+
+	    if(values[INDEX_NNTP]){
+		char  *q;
+		char **lp;
+		size_t cnt = 0;
+
+		/*
+		 * Turn the space delimited list of smtp nntp into
+		 * a char ** list.
+		 */
+		p = values[INDEX_NNTP];
+		do{
+		    if(!*p || isspace((unsigned char) *p))
+		      cnt++;
+		} while(*p++);
+		
+		nntp_servers = (char **) fs_get((cnt+1) * sizeof(char *));
+		memset(nntp_servers, 0, (cnt+1) * sizeof(char *));
+
+		cnt = 0;
+		q = p = values[INDEX_NNTP];
+		do{
+		    if(!*p || isspace((unsigned char) *p)){
+			if(*p){
+			    *p = '\0';
+			    nntp_servers[cnt++] = cpystr(q);
+			    *p = ' ';
+			    q = p+1;
+			}
+			else
+			  nntp_servers[cnt++] = cpystr(q);
+		    }
+		} while(*p++);
+
+		fs_give((void **) &values[INDEX_NNTP]);
 	    }
 
 	    if(values[INDEX_CURSORPOS]){
@@ -1498,13 +1536,17 @@ redraft(stream, outgoing, body, fcc, lcc, reply, redraft_pos, custom, role,
 	      mail_free_address(&(*outgoing)->reply_to);
 	}
 
-	if(smtp_servers && role && (*role == NULL || added_to_role)){
+	if((smtp_servers || nntp_servers)
+	   && role && (*role == NULL || added_to_role)){
 	    if(*role == NULL){
 		*role = (ACTION_S *)fs_get(sizeof(**role));
 		memset((void *)*role, 0, sizeof(**role));
 	    }
 
-	    (*role)->smtp = smtp_servers;
+	    if(smtp_servers)
+	      (*role)->smtp = smtp_servers;
+	    if(nntp_servers)
+	      (*role)->nntp = nntp_servers;
 	}
 
 	if(!(*outgoing)->subject && hdr_is_in_list("subject", *custom))
@@ -2192,10 +2234,11 @@ static struct headerentry he_custom_free_templ={
 #define	N_RPLUID  16
 #define	N_RPLMBOX 17
 #define	N_SMTP    18
-#define	N_CURPOS  19
-#define	N_OURREPLYTO  20
-#define	N_OURHDRS 21
-#define N_SENDER  22
+#define	N_NNTP    19
+#define	N_CURPOS  20
+#define	N_OURREPLYTO  21
+#define	N_OURHDRS 22
+#define N_SENDER  23
 
 #define TONAME "To"
 #define CCNAME "cc"
@@ -2223,6 +2266,7 @@ static PINEFIELD pf_template[] = {
   {"X-Reply-UID", FreeText,	0, 0, 0, 0},	/* N_RPLUID */
   {"X-Reply-Mbox",FreeText,	0, 0, 0, 0},	/* N_RPLMBOX */
   {"X-SMTP-Server",FreeText,	0, 0, 0, 0},	/* N_SMTP */
+  {"X-NNTP-Server",FreeText,	0, 0, 0, 0},	/* N_NNTP */
   {"X-Cursor-Pos",FreeText,	0, 0, 0, 0},	/* N_CURPOS */
   {"X-Our-ReplyTo",FreeText,	0, 0, 0, 0},	/* N_OURREPLYTO */
   {OUR_HDRS_LIST, FreeText,	0, 0, 0, 0},	/* N_OURHDRS */
@@ -2392,16 +2436,20 @@ pine_simple_send(outgoing, body, prmpt_who, prmpt_cnf, used_tobufval, flagsarg)
 		sending_order[NN+15]	= pf;
                 break;
 
-              case N_CURPOS:			/* won't be used here */
+              case N_NNTP:			/* won't be used here */
 		sending_order[NN+16]	= pf;
                 break;
 
-              case N_OURREPLYTO:		/* won't be used here */
+              case N_CURPOS:			/* won't be used here */
 		sending_order[NN+17]	= pf;
                 break;
 
-              case N_OURHDRS:			/* won't be used here */
+              case N_OURREPLYTO:		/* won't be used here */
 		sending_order[NN+18]	= pf;
+                break;
+
+              case N_OURHDRS:			/* won't be used here */
+		sending_order[NN+19]	= pf;
                 break;
 
               default:
@@ -3005,10 +3053,12 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 			editor_result = 0, body_start = 0, use_news_order = 0;
     char	       *p, *addr, *fcc, *fcc_to_free = NULL;
     char	       *start_here_name = NULL;
+    char               *suggested_nntp_server = NULL;
     char	       *title = NULL;
     struct headerentry *he, *headents, *he_to, *he_fcc, *he_news, *he_lcc,
 		       *he_from = NULL;
-    PINEFIELD          *pfields, *pf, *pf_nobody = NULL, *pf_smtp_server,
+    PINEFIELD          *pfields, *pf, *pf_nobody = NULL,
+                       *pf_smtp_server, *pf_nntp_server,
 		       *pf_fcc = NULL, *pf_err, *pf_uid, *pf_mbox, *pf_curpos,
 		       *pf_ourrep, *pf_ourhdrs, **sending_order;
     METAENV             header;
@@ -3170,6 +3220,48 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 	    }
 	}
     }
+    if(F_ON(F_PREDICT_NNTP_SERVER, ps_global)
+       && outgoing->newsgroups && *outgoing->newsgroups
+       && IS_NEWS(ps_global->mail_stream)){
+	NETMBX news_mb;
+
+	if(mail_valid_net_parse(ps_global->mail_stream->original_mailbox,
+				&news_mb))
+	  if(!strucmp(news_mb.service, "nntp")){
+	      if(*ps_global->mail_stream->original_mailbox == '{'){
+		  char *svcp = NULL, *psvcp;
+
+		  suggested_nntp_server =
+		    cpystr(ps_global->mail_stream->original_mailbox + 1);
+		  if(p = strindex(suggested_nntp_server, '}'))
+		    *p = '\0';
+		  for(p = strindex(suggested_nntp_server, '/'); p && *p;
+		      p = strindex(p, '/')){
+		      /* take out /nntp, which gets added in nntp_open */
+		      if(!struncmp(p, "/nntp", 5))
+			svcp = p + 5;
+		      else if(!struncmp(p, "/service=nntp", 13))
+			svcp = p + 13;
+		      else if(!struncmp(p, "/service=\"nntp\"", 15))
+			svcp = p + 15;
+		      else
+			p++;
+		      if(svcp){
+			  if(*svcp == '\0')
+			    *p = '\0';
+			  else if(*svcp == '/' || *svcp == ':'){
+			      for(psvcp = p; *svcp; svcp++, psvcp++)
+				*psvcp = *svcp;
+			      *psvcp = '\0';
+			  }
+			  svcp = NULL;
+		      }
+		  }
+	      }
+	      else
+		suggested_nntp_server = cpystr(news_mb.orighost);
+	  }
+    }
 
     /*
      * If we don't already have custom headers set and the role has custom
@@ -3275,7 +3367,7 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 	    N_FROM, N_REPLYTO, N_NEWS, N_TO, N_CC, N_BCC, N_FCC,
 	    N_LCC, N_ATTCH, N_SUBJ, N_REF, N_DATE, N_INREPLY,
 	    N_MSGID, N_NOBODY, N_POSTERR, N_RPLUID, N_RPLMBOX,
-	    N_SMTP, N_CURPOS, N_OURREPLYTO, N_OURHDRS
+	    N_SMTP, N_NNTP, N_CURPOS, N_OURREPLYTO, N_OURHDRS
 #if	!(defined(DOS) || defined(OS2)) || defined(NOAUTH)
 	    , N_SENDER
 #endif
@@ -3411,20 +3503,26 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 		pf->text		= &pf->textbuf;
 		pf->he			= NULL;
 	    }
-	    else if(index == N_CURPOS){
+	    else if(index == N_NNTP){
 		sending_order[NN+16]	= pf;
+		pf_nntp_server		= pf;
+		pf->text		= &pf->textbuf;
+		pf->he			= NULL;
+	    }
+	    else if(index == N_CURPOS){
+		sending_order[NN+17]	= pf;
 		pf_curpos		= pf;
 		pf->text		= &pf->textbuf;
 		pf->he			= NULL;
 	    }
 	    else if(index == N_OURREPLYTO){
-		sending_order[NN+17]	= pf;
+		sending_order[NN+18]	= pf;
 		pf_ourrep		= pf;
 		pf->text		= &pf->textbuf;
 		pf->he			= NULL;
 	    }
 	    else if(index == N_OURHDRS){
-		sending_order[NN+18]	= pf;
+		sending_order[NN+19]	= pf;
 		pf_ourhdrs		= pf;
 		pf->text		= &pf->textbuf;
 		pf->he			= NULL;
@@ -4432,6 +4530,45 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 		      pf_smtp_server->textbuf = cpystr("");
 		}
 
+		/* Save the role-specific nntp server */
+		if(suggested_nntp_server || 
+		   (role && role->nntp && role->nntp[0])){
+		    char  *q, *nntp = NULL;
+		    char **lp;
+		    size_t len = 0;
+
+		    if(role && role->nntp && role->nntp[0]){
+			/*
+			 * Turn the list of nntp servers into a space-
+			 * delimited list in a single string.
+			 */
+			for(lp = role->nntp; (q = *lp) != NULL; lp++)
+			  len += (strlen(q) + 1);
+
+			if(len){
+			    nntp = (char *) fs_get(len * sizeof(char));
+			    nntp[0] = '\0';
+			    for(lp = role->nntp; (q = *lp) != NULL; lp++){
+				if(lp != role->nntp)
+				  strncat(nntp, " ", len-strlen(nntp));
+
+				strncat(nntp, q, len-strlen(nntp));
+			    }
+			
+			    nntp[len-1] = '\0';
+			}
+		    }
+		    else
+		      nntp = cpystr(suggested_nntp_server);
+		    
+		    pf_nntp_server->writehdr  = 1;
+		    pf_nntp_server->localcopy = 1;
+		    if(nntp)
+		      pf_nntp_server->textbuf = nntp;
+		    else
+		      pf_nntp_server->textbuf = cpystr("");
+		}
+
 		/*
 		 * Write the list of custom headers to the
 		 * X-Our-Headers header so that we can recover the
@@ -4683,7 +4820,22 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
 
             /*------ Actually post  -------*/
             if(outgoing->newsgroups){
-		if(news_poster(&header, *body) < 0){
+		char **alt_nntp = NULL, *alt_nntp_p[2];
+		if(((role && role->nntp)
+		    || suggested_nntp_server)){
+		    if(ps_global->FIX_NNTP_SERVER
+		       && ps_global->FIX_NNTP_SERVER[0])
+		      q_status_message(SM_ORDER | SM_DING, 5, 5,
+				       "Using nntp-server that is administratively fixed");
+		    else if(role && role->nntp)
+		      alt_nntp = role->nntp;
+		    else{
+			alt_nntp_p[0] = suggested_nntp_server;
+			alt_nntp_p[1] = NULL;
+			alt_nntp = alt_nntp_p;
+		    }
+		}
+		if(news_poster(&header, *body, alt_nntp) < 0){
 		    dprint(1, (debugfile, "Post failed, continuing\n"));
 		    continue;
 		}
@@ -4931,6 +5083,8 @@ pine_send(outgoing, body, editor_title, role, fcc_arg, reply, redraft_pos,
     fs_give((void **)&pfields);
     free_headents(&headents);
     fs_give((void **)&sending_order);
+    if(suggested_nntp_server)
+      fs_give((void **)&suggested_nntp_server);
     if(title)
       fs_give((void **)&title);
     
@@ -7696,7 +7850,9 @@ create_message_body(b, attach, charset)
 	p->body.type		     = TYPEOTHER;
 	p->body.encoding	     = ENCBINARY;
 	p->body.size.bytes           = name_file_size(pa->filename);
-	if(!set_mime_type_by_extension(&p->body, pa->filename))
+	if(set_mime_type_by_extension(&p->body, pa->filename))
+	  set_only_charset_by_grope(&p->body, NULL);
+	else
 	  set_mime_type_by_grope(&p->body, NULL);
 
 	so_release((STORE_S *)p->body.contents.text.data);
@@ -7856,11 +8012,12 @@ set_mime_type_by_grope(body, charset)
     long             max_line = 0L,
                      eight_bit_chars = 0L,
                      line_so_far = 0L,
-                     len = 0L,
-                     can_be_ascii = 1L;
+                     len = 0L;
     STORE_S         *so = (STORE_S *)body->contents.text.data;
     unsigned short   new_encoding = ENCOTHER;
-    int              we_cancel = 0;
+    int              we_cancel = 0,
+		     can_be_ascii = 1,
+		     set_charset_separately = 0;
 #ifdef ENCODE_FROMS
     short            froms = 0, dots = 0,
                      bmap  = 0x1, dmap = 0x1;
@@ -8038,6 +8195,8 @@ set_mime_type_by_grope(body, charset)
 #endif
 	}
     }
+    else if(body->type == TYPETEXT)
+      set_charset_separately++;
 
     if(body->encoding == ENCOTHER || body->type == TYPEOTHER){
 	/*
@@ -8139,9 +8298,16 @@ set_mime_type_by_grope(body, charset)
 	    /* else already a charset parameter there */
 	}
 
-	set_mime_charset(pm,
-			 can_be_ascii > 0,
-			 charset ? charset : ps_global->VAR_CHAR_SET);
+	/*
+	 * If this is set we haven't groped for eight bit chars. This is
+	 * an easy way to do it.
+	 */
+	if(set_charset_separately)
+	  set_only_charset_by_grope(body, charset);
+	else
+	  set_mime_charset(pm,
+			   can_be_ascii > 0,
+			   charset ? charset : ps_global->VAR_CHAR_SET);
     }
 
     if(body->encoding == ENCOTHER)
@@ -8150,6 +8316,57 @@ set_mime_type_by_grope(body, charset)
 #ifndef	DOS
     fs_give((void **)&buf);
 #endif
+
+    if(we_cancel)
+      cancel_busy_alarm(-1);
+}
+
+
+void
+set_only_charset_by_grope(body, charset)
+    BODY *body;
+    char *charset;
+{
+    unsigned char c;
+    int           can_be_ascii = 1;
+    STORE_S      *so = (STORE_S *)body->contents.text.data;
+    int           we_cancel = 0;
+    PARAMETER    *pm;
+
+    if(body->type != TYPETEXT)
+      return;
+
+    we_cancel = busy_alarm(1, NULL, NULL, 0);
+
+    so_seek(so, 0L, 0);
+
+    while(can_be_ascii && so_readc(&c, so))
+      if(c == ctrl('O') || c == ctrl('N') || c == ESCAPE || c & 0x80 || !c)
+	can_be_ascii--;
+
+    if(body->parameter == NULL){	/* no parameters, add charset */
+	pm = body->parameter = mail_newbody_parameter();
+	pm->attribute = cpystr("charset");
+    }
+    else{
+	int su;
+
+	for(pm = body->parameter;
+	    (su=strucmp(pm->attribute, "charset")) && pm->next != NULL;
+	    pm = pm->next)
+	  ;/* searching for charset parameter */
+
+	if(su){			/* add charset parameter */
+	    pm->next = mail_newbody_parameter();
+	    pm = pm->next;
+	    pm->attribute = cpystr("charset");
+	}
+	/* else already a charset parameter there */
+    }
+
+    set_mime_charset(pm,
+		     can_be_ascii > 0,
+		     charset ? charset : ps_global->VAR_CHAR_SET);
 
     if(we_cancel)
       cancel_busy_alarm(-1);
@@ -9147,15 +9364,6 @@ pine_write_body_header(body, f, s)
     STORE_S   *so;
     extern const char *tspecials;
 
-    /*
-     * If requested, strip Content-ID headers that don't look like they
-     * are needed. Microsoft's Outlook XP has a bug that causes it to
-     * not show that there is an attachment when there is a Content-ID
-     * header present on that attachment.
-     */
-    if(F_ON(F_QUELL_CONTENT_ID, ps_global))
-      strip_content_id(body);
-
     if(so = so_get(CharStar, NULL, WRITE_ACCESS)){
 	if(!(so_puts(so, "Content-Type: ")
 	     && so_puts(so, body_types[body->type])
@@ -9190,7 +9398,23 @@ pine_write_body_header(body, f, s)
 						    ? body->encoding
 						    : ENCOTHER])
 		  && so_puts(so, "\015\012")))
-	    || (body->id
+	    /*
+	     * If requested, strip Content-ID headers that don't look like they
+	     * are needed. Microsoft's Outlook XP has a bug that causes it to
+	     * not show that there is an attachment when there is a Content-ID
+	     * header present on that attachment.
+	     *
+	     * If user has quell-content-id turned on, don't output content-id
+	     * unless it is of type message/external-body.
+	     * Since this code doesn't look inside messages being forwarded
+	     * type message content-ids will remain as is and type multipart
+	     * alternative will remain as is. We don't create those on our
+	     * own. If we did, we'd have to worry about getting this right.
+	     */
+	    || (body->id && (F_OFF(F_QUELL_CONTENT_ID, ps_global)
+	                     || (body->type == TYPEMESSAGE
+			         && body->subtype
+				 && !strucmp(body->subtype, "external-body")))
 		&& !(so_puts(so, "Content-ID: ") && so_puts(so, body->id)
 		     && so_puts(so, "\015\012")))
 	    || (body->description
@@ -9267,49 +9491,6 @@ pine_write_body_header(body, f, s)
     }
 
     return(0);
-}
-
-
-/*
- * Strip id's so that Content-ID headers won't be included.
- * We leave the id's as they are inside attached messages, in
- * message/external-body, and 
- * in multipart/alternative parts. This routine exists because
- * Microsoft's Outlook XP has a bug that causes it to
- * not show that there is an attachment when there is a Content-ID
- * header present on that attachment (as of 2001-10-19).
- *
- * This is ad hoc and will probably break something if the feature is
- * set.
- */
-void
-strip_content_id(body)
-    BODY *body;
-{
-    PART *part;
-
-    if(body && body->type == TYPEMULTIPART){
-	/*
-	 * Unless multipart/alternative, look through parts of the
-	 * multipart to remove id's. Stop recursing if multi/alt but
-	 * do remove the top-level id.
-	 */
-	if(!(body->subtype && !strucmp(body->subtype, "alternative"))){
-	    for(part = body->nested.part; part; part = part->next)
-	      strip_content_id(&part->body);
-	}
-    }
-
-    /*
-     * We don't look inside TYPEMESSAGE body's at all, but we do leave
-     * id's for message/external-body.
-     */
-    
-    if(body && body->id){
-	if(!(body->type == TYPEMESSAGE && body->subtype &&
-	     !strucmp(body->subtype, "external-body")))
-          fs_give((void **)&body->id);
-    }
 }
 
 
@@ -9502,11 +9683,13 @@ Returns: -1 if failed or cancelled, 1 if succeeded
 WARNING: This call function has the side effect of writing the message
     to the lmc.so object.   
   ----*/
-news_poster(header, body)
+news_poster(header, body, alt_nntp_servers)
      METAENV *header;
      BODY    *body;
+     char   **alt_nntp_servers;
 {
     char *error_mess, error_buf[200], **news_servers;
+    char **servers_to_use;
     int	  we_cancel = 0, server_no = 0, done_posting = 0;
     void *orig_822_output;
     BODY *bp = NULL;
@@ -9516,10 +9699,14 @@ news_poster(header, body)
 
     dprint(4, (debugfile, "Posting: [%s]\n", header->env->newsgroups));
 
-    if(ps_global->VAR_NNTP_SERVER && ps_global->VAR_NNTP_SERVER[0]
-       && ps_global->VAR_NNTP_SERVER[0][0]){
+    if((alt_nntp_servers && alt_nntp_servers[0] && alt_nntp_servers[0][0])
+       || (ps_global->VAR_NNTP_SERVER && ps_global->VAR_NNTP_SERVER[0]
+       && ps_global->VAR_NNTP_SERVER[0][0])){
        /*---------- NNTP server defined ----------*/
 	error_mess = NULL;
+	servers_to_use = (alt_nntp_servers && alt_nntp_servers[0]
+			  && alt_nntp_servers[0][0]) 
+	  ? alt_nntp_servers : ps_global->VAR_NNTP_SERVER;
 
 	/*
 	 * Install our rfc822 output routine 
@@ -9531,9 +9718,9 @@ news_poster(header, body)
 	server_no = 0;
 	news_servers = (char **)fs_get(2 * sizeof(char *));
 	news_servers[1] = NULL;
-	while(!done_posting && ps_global->VAR_NNTP_SERVER[server_no] && 
-	      ps_global->VAR_NNTP_SERVER[server_no][0]){
-	    news_servers[0] = ps_global->VAR_NNTP_SERVER[server_no];
+	while(!done_posting && servers_to_use[server_no] && 
+	      servers_to_use[server_no][0]){
+	    news_servers[0] = servers_to_use[server_no];
 	    ps_global->noshow_error = 1;
 #ifdef DEBUG
 	    sending_stream = nntp_open(news_servers, debug);

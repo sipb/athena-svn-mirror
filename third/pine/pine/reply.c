@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: reply.c,v 1.1.1.3 2003-05-01 01:12:58 ghudson Exp $";
+static char rcsid[] = "$Id: reply.c,v 1.1.1.4 2004-03-01 21:16:28 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -75,7 +75,6 @@ char	*reply_signature PROTO((ACTION_S *, ENVELOPE *, REDRAFT_POS_S **,
 void	 reply_append_addr PROTO((ADDRESS **, ADDRESS *));
 ADDRESS *reply_resent PROTO((struct pine *, long, char *));
 void	 reply_fish_personal PROTO((ENVELOPE *, ENVELOPE *));
-char	*reply_build_refs PROTO((ENVELOPE *));
 int	 addr_in_env PROTO((ADDRESS *, ENVELOPE *));
 int	 addr_lists_same PROTO((ADDRESS *, ADDRESS *));
 int	 reply_poster_followup PROTO((ENVELOPE *));
@@ -590,11 +589,14 @@ reply(pine_state)
 	    charset = rfc2231_get_param(orig_body->parameter,
 					"charset", NULL, NULL);
 	    if(charset && strucmp(charset, "us-ascii") != 0){
+		CONV_TABLE *ct;
+
 		/*
 		 * There is a non-ascii charset, is there conversion happening?
 		 */
 		if(F_ON(F_DISABLE_CHARSET_CONVERSIONS, ps_global)
-		   || !conversion_table(charset, ps_global->VAR_CHAR_SET)){
+		   || !(ct=conversion_table(charset, ps_global->VAR_CHAR_SET))
+		   || !ct->table){
 		    reply.orig_charset = charset;
 		    charset = NULL;
 		}
@@ -2935,6 +2937,9 @@ reply_news_test(env, outgoing)
 	}
 	else if(!outgoing->newsgroups)
 	  outgoing->newsgroups = cpystr(env->newsgroups);
+	if(!IS_NEWS(ps_global->mail_stream))
+	  q_status_message(SM_ORDER, 2, 3,
+ "Replying to message that MAY or MAY NOT have been posted to newsgroup");
     }
 
     return(ret);
@@ -3853,11 +3858,14 @@ forward(ps)
 	charset = rfc2231_get_param(orig_body->parameter,
 				    "charset", NULL, NULL);
 	if(charset && strucmp(charset, "us-ascii") != 0){
+	    CONV_TABLE *ct;
+
 	    /*
 	     * There is a non-ascii charset, is there conversion happening?
 	     */
 	    if(F_ON(F_DISABLE_CHARSET_CONVERSIONS, ps_global)
-	       || !conversion_table(charset, ps_global->VAR_CHAR_SET)){
+	       || !(ct=conversion_table(charset, ps_global->VAR_CHAR_SET))
+	       || !ct->table){
 		reply.orig_charset = charset;
 		charset = NULL;
 	    }
@@ -4276,7 +4284,7 @@ forward_mime_msg(stream, msgno, section, env, partp, msgtext)
 	stream->text = NULL;
 
 	/* write the body */
-	if(mail_fetch_text (stream,msgno,section,&len,NIL)){
+	if(pine_mail_fetch_text (stream,msgno,section,&len,NIL)){
 	    b->size.bytes = ftell(append_file);
 	    /* next time body may stay in core */
 	    mail_parameters(stream, SET_GETS, (void *)NULL);
@@ -4288,7 +4296,7 @@ forward_mime_msg(stream, msgno, section, env, partp, msgtext)
 #else
 	b->size.bytes = strlen(tmp_text);
 	so_puts((STORE_S *) b->contents.text.data, "\015\012");
-	if(tmp_text = mail_fetch_text (stream,msgno,section,&len,NIL)){
+	if(tmp_text = pine_mail_fetch_text (stream,msgno,section,&len,NIL)){
 	    so_nputs((STORE_S *)b->contents.text.data,tmp_text,(long) len);
 	    b->size.bytes += len;
 	    return(1);
@@ -4676,7 +4684,7 @@ get_body_part_text(stream, body, msg_no, part_no, pc, prefix)
 	  mail_parameters(stream, SET_GETS, (void *)NULL);
 #endif
 
-	if(text = mail_fetch_text(stream, msg_no, part_no, NULL, 0)){
+	if(text = pine_mail_fetch_text(stream, msg_no, part_no, NULL, 0)){
 #if	defined(DOS) && !defined(WIN32)
 	    if(src == FileStar)
 	      gf_set_readc(&gc, append_file, 0L, src);
@@ -4729,11 +4737,12 @@ get_body_part_text(stream, body, msg_no, part_no, pc, prefix)
 
     if(charset = rfc2231_get_param(body->parameter,"charset",NULL,NULL)){
 	if(F_OFF(F_DISABLE_CHARSET_CONVERSIONS, ps_global)){
-	    unsigned char *tab;
+	    CONV_TABLE *ct;
 
-	    if(tab = conversion_table(charset, ps_global->VAR_CHAR_SET)){
+	    ct = conversion_table(charset, ps_global->VAR_CHAR_SET);
+	    if(ct && ct->table){
 		filters[i].filter = gf_convert_charset;
-		filters[i++].data = gf_convert_charset_opt(tab);
+		filters[i++].data = gf_convert_charset_opt(ct->table);
 	    }
 	}
 

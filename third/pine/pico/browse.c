@@ -1,5 +1,5 @@
 #if	!defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: browse.c,v 1.1.1.2 2003-02-12 07:58:17 ghudson Exp $";
+static char rcsid[] = "$Id: browse.c,v 1.1.1.3 2004-03-01 21:15:32 ghudson Exp $";
 #endif
 /*
  * Program:	Routines to support file browser in pico and Pine composer
@@ -21,7 +21,7 @@ static char rcsid[] = "$Id: browse.c,v 1.1.1.2 2003-02-12 07:58:17 ghudson Exp $
  * permission of the University of Washington.
  * 
  * Pine, Pico, and Pilot software and its included text are Copyright
- * 1989-2001 by the University of Washington.
+ * 1989-2003 by the University of Washington.
  * 
  * The full text of our legal notices is contained in the file called
  * CPYRIGHT, included with this distribution.
@@ -103,6 +103,7 @@ static	char	*browser_title = NULL;
     void   zotmaster(struct bmaster **);
     struct fcell *FindCell(struct bmaster *, char *);
     int    sisin(char *, char *);
+    void   p_chdir(struct bmaster *);
     void   BrowserAnchor(char *);
     void   ClearBrowserScreen(void);
     void   BrowserRunChild(char *, char *);
@@ -119,6 +120,7 @@ static	char	*browser_title = NULL;
     void   zotmaster();
     struct fcell *FindCell();
     int    sisin();
+    void   p_chdir();
     void   BrowserAnchor();
     void   ClearBrowserScreen();
     void   BrowserRunChild();
@@ -1738,6 +1740,7 @@ getfcells(dname, fb_flags)
 
     percdircells(mp);
     layoutcells(mp);
+    p_chdir(mp);
     return(mp);
 }
 
@@ -2248,6 +2251,17 @@ BrowserRunChild(child, dir)
 	    fflush(stdout);
 	}
     }
+}
+
+/*
+ * imitate pc-pine memory for where we last called the file browser.
+ */
+void
+p_chdir(mp)
+    struct bmaster *mp;
+{
+    if(mp && mp->dname)
+      chdir(mp->dname);
 }
 #endif	/* _WINDOWS */
 

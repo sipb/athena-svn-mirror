@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: pine.c,v 1.1.1.3 2003-05-01 01:13:34 ghudson Exp $";
+static char rcsid[] = "$Id: pine.c,v 1.1.1.4 2004-03-01 21:15:40 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -582,6 +582,11 @@ main(argc, argv)
     mail_parameters(NULL, SET_MAILPROXYCOPY, (void *) imap_proxycopy);
 
     /*
+     * Setup multiple newsrc transition
+     */
+    mail_parameters(NULL, SET_NEWSRCQUERY, (void *) pine_newsrcquery);
+
+    /*
      * Disable some drivers if requested.
      */
     if(ps_global->VAR_DISABLE_DRIVERS &&
@@ -773,6 +778,48 @@ main(argc, argv)
 	    SourceType  src;
 	    STORE_S    *store = NULL;
 	    char       *decode_error = NULL;
+	    char       filename[MAILTMPLEN];
+
+	    if(args.data.file[0] == '\0'){
+		HelpType help = NO_HELP;
+
+		pine_state->mangled_footer = 1;
+		filename[0] = '\0';
+    		while(1){
+		    int flags = OE_APPEND_CURRENT;
+
+        	    rv = optionally_enter(filename, -FOOTER_ROWS(pine_state),
+					  0, sizeof(filename),
+					  "File to open : ",
+					  NULL, help, &flags);
+        	    if(rv == 3){
+			help = (help == NO_HELP) ? h_no_F_arg : NO_HELP;
+			continue;
+		    }
+
+        	    if(rv != 4)
+		      break;
+    		}
+
+    		if(rv == 1){
+		    q_status_message(SM_ORDER, 0, 2 ,"Cancelled");
+		    goodnight_gracey(pine_state, -1);
+		} 
+
+		if(*filename){
+		    removing_trailing_white_space(filename);
+		    removing_leading_white_space(filename);
+		    if(is_absolute_path(filename))
+		      fnexpand(filename, sizeof(filename));
+
+		    args.data.file = filename;
+    		}
+
+		if(!*filename){
+		    q_status_message(SM_ORDER, 0, 2 ,"No file to open");
+		    goodnight_gracey(pine_state, -1);
+		} 
+	    }
 
 	    if(stdin_getc){
 		redir++;
@@ -1004,9 +1051,39 @@ main(argc, argv)
 	}
 
         if(args.action == aaFolder && args.data.folder){
-	    CONTEXT_S *cntxt;
+	    CONTEXT_S *cntxt = NULL, *tc = NULL;
+	    char       foldername[MAILTMPLEN];
 
-	    if((rv = pine_state->init_context) < 0)
+	    if(args.data.folder[0] == '\0'){
+		char *fldr;
+		unsigned save_def_goto_rule;
+
+		foldername[0] = '\0';
+		save_def_goto_rule = pine_state->goto_default_rule;
+		pine_state->goto_default_rule = GOTO_FIRST_CLCTN;
+		tc = default_save_context(pine_state->context_list);
+		fldr = broach_folder(-FOOTER_ROWS(pine_state), 1, &tc);
+		pine_state->goto_default_rule = save_def_goto_rule;
+		if(fldr){
+		    strncpy(foldername, fldr, sizeof(foldername)-1);
+		    foldername[sizeof(foldername)-1] = '\0';
+		}
+
+		if(*foldername){
+		    removing_trailing_white_space(foldername);
+		    removing_leading_white_space(foldername);
+		    args.data.folder = foldername;
+    		}
+
+		if(!*foldername){
+		    q_status_message(SM_ORDER, 0, 2 ,"No folder to open");
+		    goodnight_gracey(pine_state, -1);
+		} 
+	    }
+
+	    if(tc)
+	      cntxt = tc;
+	    else if((rv = pine_state->init_context) < 0)
 	      /*
 	       * As with almost all the folder vars in the pinerc,
 	       * we subvert the collection "breakout" here if the
@@ -4044,6 +4121,7 @@ pine_mail_open(stream, mailbox, flags)
     long	flags;
 {
     MAILSTREAM *retstream;
+    DRIVER *d;
 
     dprint(7, (debugfile,
 	       "pine_mail_open: opening \"%s\"%s flag=0x%x %s%s%s%s\n", 
@@ -4061,11 +4139,15 @@ pine_mail_open(stream, mailbox, flags)
 #endif
     
     if(F_ON(F_PREFER_ALT_AUTH, ps_global)){
-	DRIVER *d;
-
 	if((d = mail_valid (NIL, mailbox, (char *) NIL))
 	   && !strcmp(d->name, "imap"))
 	  flags |= OP_TRYALT;
+    }
+
+    if(F_ON(F_ENABLE_MULNEWSRCS, ps_global)){
+	if((d = mail_valid(NIL, mailbox, (char *) NIL))
+	   && !strcmp(d->name, "nntp"))
+	  flags |= OP_MULNEWSRC;
     }
 
     /* try to re-use stream during startup */

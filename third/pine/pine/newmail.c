@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: newmail.c,v 1.1.1.3 2003-05-01 01:13:11 ghudson Exp $";
+static char rcsid[] = "$Id: newmail.c,v 1.1.1.4 2004-03-01 21:15:56 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -339,7 +339,7 @@ new_mail_mess(stream, folder, number, max_num)
      char       *folder;
 {
     ENVELOPE	*e;
-    char	*subject = NULL, *from = NULL, tmp[MAILTMPLEN+1],
+    char	*subject = NULL, *from = NULL, tmp[MAILTMPLEN+1], *p,
 		 intro[MAX_SCREEN_COLS+1], subj_leadin[MAILTMPLEN];
     static char *carray[] = { "regarding",
 				"concerning",
@@ -365,10 +365,14 @@ new_mail_mess(stream, folder, number, max_num)
 	     * in the middle of one of them before decoding.
 	     */
 	    sprintf(tmp, "%.*s", MAILTMPLEN, e->from->personal);
- 	    from = cpystr((char *) rfc1522_decode((unsigned char *)tmp_20k_buf,
- 						  SIZEOF_20KBUF, tmp, NULL));
+ 	    p = (char *) rfc1522_decode((unsigned char *) tmp_20k_buf,
+				        SIZEOF_20KBUF, tmp, NULL);
+	    removing_leading_and_trailing_white_space(p);
+	    if(*p)
+ 	      from = cpystr(p);
  	}
- 	else{
+
+ 	if(!from){
  	    sprintf(tmp, "%.40s%s%.40s", 
  		    e->from->mailbox,
  		    e->from->host ? "@" : "",

@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: mailpart.c,v 1.1.1.3 2003-05-01 01:12:36 ghudson Exp $";
+static char rcsid[] = "$Id: mailpart.c,v 1.1.1.4 2004-03-01 21:16:31 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -129,6 +129,7 @@ typedef struct _fetch_read {
 } FETCH_READC_S;
 
 static FETCH_READC_S *g_fr_desc;
+static FETCH_READC_S *g_pft_desc;
 
 /*
  * BUG: Might want to be more adaptive based on connect speed
@@ -271,6 +272,9 @@ void	    fetch_readc_init PROTO((FETCH_READC_S *, MAILSTREAM *, long,
 				    char *, unsigned long, long));
 int	    fetch_readc_cleanup PROTO(());
 char	   *fetch_gets PROTO((readfn_t, void *, unsigned long, GETS_DATA *));
+#ifdef _WINDOWS
+char	   *partial_text_gets PROTO((readfn_t, void *, unsigned long, GETS_DATA *));
+#endif
 int	    fetch_readc PROTO((unsigned char *));
 ATDISP_S   *new_attline PROTO((ATDISP_S **));
 void	    free_attline PROTO((ATDISP_S **));
@@ -1392,7 +1396,8 @@ write_attachment(qline, msgno, a, method)
      char     *method;
 {
     char	filename[MAXPATH+1], full_filename[MAXPATH+1], *charset,
-	       *l_string, title_buf[64], prompt_buf[256], *att_name, *err, *terr;
+	       *l_string, title_buf[64], prompt_buf[256], *att_name, *err,
+               *dec_err, *terr;
     int         r, is_text, over = 0, we_cancel = 0;
     long        len, orig_size;
     gf_io_t     pc;
@@ -1414,9 +1419,17 @@ write_attachment(qline, msgno, a, method)
        (err = rfc2231_get_param(a->body->disposition.parameter, att_name,
 				NULL, NULL))) ||
        (err = rfc2231_get_param(a->body->parameter, att_name + 4, NULL, NULL))){
-	terr = last_cmpnt(err);
+	if(err[0] == '=' && err[1] == '?'){
+	    if(!(dec_err = (char *)rfc1522_decode((unsigned char *)tmp_20k_buf,
+						  SIZEOF_20KBUF, err, NULL)))
+	      dec_err = err;
+	      
+	}
+	else
+	  dec_err = err;
+	terr = last_cmpnt(dec_err);
 	if(!terr)
-	  terr = err;
+	  terr = dec_err;
 	strncpy(filename, terr, sizeof(filename)-1);
 	filename[sizeof(filename)-1] = '\0';
 	fs_give((void **) &err);
@@ -3049,8 +3062,11 @@ forward_attachment(stream, msgno, a)
 	if(nonempty_patterns(rflags, &dummy)){
 	    /*
 	     * There is no message, but a Current Folder Type might match.
+	     *
+	     * This has been changed to check against the message 
+	     * containing the attachment.
 	     */
-	    role = set_role_from_msg(ps_global, ROLE_FORWARD, -1L, NULL);
+	    role = set_role_from_msg(ps_global, ROLE_FORWARD, msgno, NULL);
 	    if(confirm_role(rflags, &role))
 	      role = combine_inherited_role(role);
 	    else{
@@ -3260,13 +3276,16 @@ forward_msg_att(stream, msgno, a)
 				          "charset", NULL, NULL);
 		    
 		    if(charset && strucmp(charset, "us-ascii") != 0){
+			CONV_TABLE *ct;
+
 			/*
 			 * There is a non-ascii charset,
 			 * is there conversion happening?
 			 */
 			if(F_ON(F_DISABLE_CHARSET_CONVERSIONS, ps_global)
-			   || !conversion_table(charset,
-					        ps_global->VAR_CHAR_SET)){
+			   || !(ct=conversion_table(charset,
+					            ps_global->VAR_CHAR_SET))
+			   || !ct->table){
 			    reply.orig_charset = charset;
 			    charset = NULL;
 			}
@@ -3399,6 +3418,7 @@ reply_msg_att(stream, msgno, a)
 	}
 
 	outgoing->in_reply_to = reply_in_reply_to(a->body->nested.msg->env);
+	outgoing->references = reply_build_refs(a->body->nested.msg->env);
 	outgoing->message_id = generate_message_id();
 
 	if(!outgoing->to && !outgoing->cc
@@ -3422,13 +3442,16 @@ reply_msg_att(stream, msgno, a)
 				      "charset", NULL, NULL);
 		
 		if(charset && strucmp(charset, "us-ascii") != 0){
+		    CONV_TABLE *ct;
+
 		    /*
 		     * There is a non-ascii charset,
 		     * is there conversion happening?
 		     */
 		    if(F_ON(F_DISABLE_CHARSET_CONVERSIONS, ps_global)
-		       || !conversion_table(charset,
-					    ps_global->VAR_CHAR_SET)){
+		       || !(ct=conversion_table(charset,
+						ps_global->VAR_CHAR_SET))
+		       || !ct->table){
 			reply.orig_charset = charset;
 			charset = NULL;
 		    }
@@ -4677,6 +4700,130 @@ fetch_readc_cleanup()
     return(0);
 }
 
+
+/*
+ * Wrapper around mail_fetch_text.
+ * Currently the only purpose this wrapper serves is to turn
+ * on partial fetching for quell-ssl-largeblocks.
+ */
+char *
+pine_mail_fetch_text(stream, msgno, section, len, flags)
+    MAILSTREAM *stream;
+    unsigned long msgno;
+    char *section;
+    unsigned long *len;
+    long flags;
+{
+#ifdef   _WINDOWS
+    BODY *body;
+    unsigned long size, firstbyte, lastbyte;
+    void *old_gets;
+    FETCH_READC_S *pftc;
+    char imap_cache_section[MAILTMPLEN];
+    SIZEDTEXT new_text;
+
+    if(F_ON(F_QUELL_SSL_LARGEBLOCKS, ps_global)){
+	if(section && *section)
+	  body = mail_body(stream, msgno, section);
+	else
+	  mail_fetch_structure(stream, msgno, &body, flags);
+	if(!body)
+	  return NULL;
+	if(body->type != TYPEMULTIPART)
+	  size = body->size.bytes;
+	else if(!section || !*section)
+	  size = mail_elt(stream, msgno)->rfc822_size; /* upper bound */
+	else      /* just a guess, can't get actual size */
+	  size = fcc_size_guess(body) + 2048;
+
+	/* 
+	 * imap_cache, originally intended for c-client internal use,
+	 * takes a section argument that is different from one we
+	 * would pass to mail_body.  Typically in this function
+	 * section is NULL, which translates to "TEXT", but in other
+	 * cases we would want to append ".TEXT" to the section
+	 */
+	sprintf(imap_cache_section, "%.*s%sTEXT", MAILTMPLEN - 10,
+		section && *section ? section : "",
+		section && *section ? "." : "");
+
+	if(modern_imap_stream(stream)
+	   && (size > AVOID_MICROSOFT_SSL_CHUNKING_BUG)
+	   && !imap_cache(stream, msgno, imap_cache_section,
+			  NULL, NULL)){
+	    dprint(8, (debugfile, 
+   "pine_mail_fetch_text: doing partial fetching to work around microsoft bug\n"));
+	    pftc = (FETCH_READC_S *)fs_get(sizeof(FETCH_READC_S));
+	    memset(g_pft_desc = pftc, 0, sizeof(FETCH_READC_S));
+	    pftc->chunksize = AVOID_MICROSOFT_SSL_CHUNKING_BUG; 
+	    pftc->chunk = (char *) fs_get((pftc->chunksize+1)
+					  * sizeof(char));
+	    pftc->cache = so_get(CharStar, NULL, EDIT_ACCESS);
+	    pftc->read = 0L;
+	    so_truncate(pftc->cache, size + 1);
+	    old_gets = mail_parameters(stream, GET_GETS, (void *)NULL);
+	    mail_parameters(stream, SET_GETS, (void *) partial_text_gets);
+	    /* start fetching */
+	    do{
+		firstbyte = pftc->read ;
+		lastbyte = firstbyte + pftc->chunksize;
+		mail_partial_text(stream, msgno, section, firstbyte,
+				  pftc->chunksize, flags);
+		if(pftc->read != lastbyte)
+		  break;
+	    } while(pftc->read ==  lastbyte);
+	    dprint(8, (debugfile, 
+   "pine_mail_fetch_text: anticipated size=%lu read=%lu\n",
+		       size, pftc->read));
+	    mail_parameters(stream, SET_GETS, old_gets);
+	    new_text.size = pftc->read;
+	    new_text.data = (unsigned char *)so_text(pftc->cache);
+
+	    /* ugh, rewrite string in case it got stomped on last call */
+	    sprintf(imap_cache_section, "%.*s%sTEXT", MAILTMPLEN - 10,
+		    section && *section ? section : "",
+		    section && *section ? "." : "");
+
+	    imap_cache(stream, msgno, imap_cache_section, NULL, &new_text);
+	    pftc->cache->txt = (void *)NULL;
+	    so_give(&pftc->cache);
+	    fs_give((void **)&pftc->chunk);
+	    fs_give((void **)&pftc);
+	    g_pft_desc = NULL;
+	    if(len)
+	      *len = new_text.size;
+	    return ((char *)new_text.data);
+	}
+	else 
+	  return(mail_fetch_text(stream, msgno, section, len, flags));
+    }
+    else
+#endif /* _WINDOWS */
+    return(mail_fetch_text(stream, msgno, section, len, flags));
+}
+
+#ifdef _WINDOWS
+char *
+partial_text_gets(f, stream, size, md)
+    readfn_t f;
+    void *stream;
+    unsigned long size;
+    GETS_DATA *md;
+{
+    unsigned long n;
+
+    n = min(g_pft_desc->chunksize, size);
+    g_pft_desc->read +=n;
+
+    (*f) (stream, n, g_pft_desc->chunk);
+
+    if(g_pft_desc->cache)
+      so_nputs(g_pft_desc->cache, g_pft_desc->chunk, (long) n);
+
+
+    return(NULL);
+}
+#endif /* _WINDOWS */
 
 /*
  *
