@@ -16,7 +16,7 @@
 #ifndef lint
 #ifndef SABER
 static char rcsid_uloc_c[] =
-  "$Id: uloc.c,v 1.47 1993-04-20 16:42:14 probe Exp $";
+  "$Id: uloc.c,v 1.48 1993-05-05 13:09:47 probe Exp $";
 #endif /* SABER */
 #endif /* lint */
 
@@ -419,10 +419,12 @@ ulocate_dispatch(notice, auth, who, server)
 			nack(notice, who);
 		return(ZERR_NONE);
 	}
+#if 0
 	if (server == me_server) {
 		server_forward(notice, auth, who);
 		ack(notice, who);
 	}
+#endif
 	return(ZERR_NONE);
 }
 
