@@ -7,7 +7,7 @@
 #
 ###########################################################################
 # MODULE: Makefile
-# $Id: Makefile.in,v 1.9 1999-05-15 03:27:10 mwhitson Exp $
+# $Id: Makefile.in,v 1.10 1999-05-17 06:47:02 ghudson Exp $
 ###########################################################################
 #
 # WARNING: This is a makefile for GNU Make or when modified by BSD Make
@@ -302,9 +302,9 @@ lp: lpr
 # lpd.conf
 
 lpd.conf: vars.c
-	$(CPP) $(CFLAGS) -C $^  >/tmp/XYlpd.conf
-	${SRC}/../UTILS/make_lpd_conf $^ </tmp/XYlpd.conf >/tmp/XXlpd.conf
-	cp /tmp/XXlpd.conf $@
+	rm -f $@ XYlpd.conf
+	$(CPP) $(CFLAGS) -C $^  >XYlpd.conf
+	${SRC}/../UTILS/make_lpd_conf $^ <XYlpd.conf >$@
 
 ###########################################################################
 # 
