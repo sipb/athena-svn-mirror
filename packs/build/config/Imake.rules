@@ -93,6 +93,8 @@ all:: profiled all-prof							@@\
 install:: inst-prof							@@\
 profiled:								@@\
 	-mkdir $@							@@\
+clean::									@@\
+	$(RM) -r profiled						@@\
 all-prof inst-prof::
 
 #define SharedObjectRule()						@@\
