@@ -1,0 +1,80 @@
+From florian@suse.de Mon Feb 26 03:35:43 MET 1996
+Article: 927 of comp.os.linux.announce
+Path: knorke.saar.de!pandemonium.abyss.saar.de!wg.saar.de!News.Saar.DE!news.coli.uni-sb.de!news.dfn.de!RRZ.Uni-Koeln.DE!news.rhrz.uni-bonn.de!news.ruhr-uni-bochum.de!news.uni-stuttgart.de!uni-regensburg.de!lrz-muenchen.de!informatik.tu-muenchen.de!Germany.EU.net!EU.net!newsfeed.internetmci.com!tank.news.pipex.net!pipex!dish.news.pipex.net!pipex!news00.sunet.se!sunic!news99.sunet.se!news.funet.fi!news.helsinki.fi!usenet
+From: Florian La Roche <florian@suse.de>
+Newsgroups: comp.os.linux.announce
+Subject: mingetty 0.9
+Followup-To: comp.os.linux.development.system
+Date: Sun, 18 Feb 96 21:01:51 GMT
+Organization: ?
+Lines: 60
+Approved: linux-announce@news.ornl.gov (Lars Wirzenius)
+Message-ID: <cola-liw-824677311-15011-1@oravannahka.helsinki.fi>
+NNTP-Posting-Host: kruuna.helsinki.fi
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+X-Original-Date: Sat, 17 Feb 1996 03:02:26 +0100 (MET)
+
+-----BEGIN PGP SIGNED MESSAGE-----
+
+
+I have written a new getty program, that can only be used as console getty
+for Linux. This getty is about half the size from agetty and very well
+suited for a Greased-Weasel(tm)-based System (better known as Linux).  :-)
+
+As I would use nothing else but mgetty for a modem getty (greetings
+to Gerd Doering from me...), I wanted to have a very minimal getty
+for my virtual consoles under Linux.
+
+It is called mingetty-0.9 and is currently in the incoming-directory of
+sunsite and should probably be moved to /pub/Linux/source/system/Admin/login
+or /pub/Linux/system/Daemons/init.
+You could also fetch it from susix.jura.uni-sb.de/pub/linux/source/system.
+
+utmp-Handling is from agetty in util-linux 2.5 (probably added by Peter Orbaek
+poe@daimi.aau.dk), and Theodore Tytso has helped a bit about correct tty
+handling. By the way, if someone wants to learn about process groups,
+sessions, controling tty's and other things, I have found a good documentation
+in a recent version of the GNU info pages from the GNU C library.
+Some comments in the kernel are also very helpful and sometimes it is also
+possible to just read the relevant source code.
+
+S.u.S.E. GmbH in Germany has paid some of the time that was needed to write
+this program. Thanks a lot for their support. (These are no commercial words,
+just a hint, that you could buy Linux CD-ROMs and Linux-support from them...)
+
+Example entry for a sysvinit-based system:
+1:123:respawn:/sbin/mingetty [--noclear] tty1
+
+Please email me, if you need additional things from a console getty, that
+are currently not supported. I'd add them for you!
+Currently, a man-page is missing and I won't start writing one until
+end of march. So if someone volunteers, I'd be more than thankful.
+
+Thanks to all of you,
+
+Florian La Roche
+
+florian@suse.de
+florian@jurix.jura.uni-sb.de
+
+
+
+-----BEGIN PGP SIGNATURE-----
+Version: 2.6.2i
+
+iQCVAwUBMScl04QRll5MupLRAQEq3gP/YqmGZirs2+pcQKzWHSec6Qg3bUp7rCaZ
+HVh8fOnf2ipLkFcK5XAUk9vP/Smk8dAkTcJ4hs7hZAsWlzYB20Wp5nhRTHDLao+/
+ZWcCJncBXyuT5pzE35aVMkz3j8TEoarOMdXO9GWXKkeFw3J9dWl49sdhlbULyUQi
+ob5eIZ1m8ew=
+=xzpU
+-----END PGP SIGNATURE-----
+
+-- 
+This article has been digitally signed by the moderator, using PGP.
+Finger wirzeniu@kruuna.helsinki.fi for PGP key needed for validating signature.
+Send submissions for comp.os.linux.announce to: linux-announce@news.ornl.gov
+PLEASE remember a short description of the software and the LOCATION.
+
+
