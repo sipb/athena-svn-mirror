@@ -1,9 +1,10 @@
 GLOBAL : *.CKP *.local *.pid *.unstripped :
 ## Major subscription list for workstations
-## $Id: sys_rvd,v 1.1 1998-12-25 19:34:02 ghudson Exp $
+## $Id: sys_rvd,v 1.2 1999-01-04 23:00:43 rbasch Exp $
 ##
 ##	MIT Project Athena
 ##
+	/core::::
 	/etc:::
 		aliases
 		ftpusers
