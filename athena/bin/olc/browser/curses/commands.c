@@ -49,18 +49,29 @@ static char *rcsid_commands_c = "$Header: ";
 print_help()
 {
   int comm_index;				/* Index in command table. */
+  FILE *file;
+  char filename[100];
+
+  sprintf(filename, "/tmp/cref.help.%d", getpid());
+  if ((file = fopen(filename, "w")) == NULL)
+    message(2, "Unable to create help file, sorry.");
   
-  clear();
-  refresh();
-  printf("Commands are:\n");
+  fprintf(file, "Commands are:\n");
   for (comm_index = 0; comm_index < Command_Count; comm_index++)
     {
-      printf("\t%c\t%s\n", Command_Table[comm_index].command,
+      fprintf(file, "     %c   %s\n", Command_Table[comm_index].command,
 	     Command_Table[comm_index].help_string);
     }
-  printf("   <space>\tDisplay next index page.\n");
-  printf("  <number>\tDisplay specified entry.\n");
+  fprintf(file, "  <C-L>  Redisplay the screen.\n");
+  fprintf(file, "  <DEL>  Display previous page of index.\n");
+  fprintf(file, "  <SPC>  Display next page of index.\n");
+  fprintf(file, "  <NUM>  Display specified entry.\n");
+  fclose(file);
+  clear();
+  refresh();
+  call_program("more", filename);
   wait_for_key();
+  unlink(filename);
   clear();
   refresh();
   make_display();
@@ -201,16 +212,13 @@ save_to_file()
 
 next_page()
 {
-  int new_index;			/* New index value. */
-
   if (Entry_Count <= MAX_INDEX_LINES)
     return;
 
-  new_index = Index_Start + MAX_INDEX_LINES - 2;
-  if (new_index < (Entry_Count - MAX_INDEX_LINES + 1))
-    Index_Start = new_index;
-  else
-    Index_Start = Entry_Count - MAX_INDEX_LINES + 1;
+  if (Index_Start + MAX_INDEX_LINES > Entry_Count)
+    return;
+
+  Index_Start += (MAX_INDEX_LINES - 2);
   make_display();
 }
 
@@ -222,7 +230,7 @@ next_page()
 
 prev_page()
 {
-  Index_Start = Index_Start - MAX_INDEX_LINES + 1;
+  Index_Start -= (MAX_INDEX_LINES - 1);
   if (Index_Start < 1)
     Index_Start = 1;
   make_display();
