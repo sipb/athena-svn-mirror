@@ -2,7 +2,7 @@
 /**/# Makefile for xdiscuss
 /**/#
 
-/**/#"$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/Imakefile,v 1.1 1991-06-28 13:01:28 sao Exp $";
+/**/#"$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/Imakefile,v 1.2 1991-07-03 09:24:31 sao Exp $";
 
 INSTDIR=$(ATHBINDIR)
 DEFINES= -I.
@@ -13,6 +13,8 @@ SRCS=	xdsc.c reply.c headers.c cache.c
 
 SimpleProgram(xdsc,$(OBJS),$(LIBS),$(ATHBINDIR))
 install_man(xdsc.1,xdsc.1)
+install_file(Xdsc,$(ATHXAPPDIR))
+install_file(Lucy,$(ATHXAPPDIR))
 
-SpecialObject(xdsc.o,xdsc.c Makefile,-DEDSC_PATH=\"$(ATHLIBDIR)/edsc\")
+SpecialObject(xdsc.o,xdsc.c Makefile,-DEDSC_PATH=\"$(ATHETCDIR)/edsc\")
 
