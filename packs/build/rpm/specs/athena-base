@@ -24,6 +24,11 @@ mkdir -p $RPM_BUILD_ROOT{/usr/athena/man,/etc/athena}
 cp rc.conf $RPM_BUILD_ROOT/etc/athena/rc.conf
 cp mandesc $RPM_BUILD_ROOT/usr/athena/man/mandesc
 
+find $RPM_BUILD_ROOT -type f -or -type l |
+  sed -e "s|$RPM_BUILD_ROOT||" \
+      -e "s|/etc/athena/rc.conf|%config(noreplace) \0" |
+  sort > rpm.filelist
+
 %post
 
 # Inaugurate /etc/athena/version
@@ -31,8 +36,4 @@ if [ ! -f /etc/athena/version ]; then
 	echo Athena Workstation '(linux)' Version Layered `date` >> \
 		 /etc/athena/version
 fi
-
-%files
-/usr/athena/man/mandesc
-%config(noreplace) /etc/athena/rc.conf
 

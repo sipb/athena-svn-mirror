@@ -50,6 +50,11 @@ chmod +x $RPM_BUILD_ROOT/etc/athena/update_ws
 # This file actually goes in the athena-afs package.
 rm $RPM_BUILD_ROOT/etc/athena/config_afs
 
+find $RPM_BUILD_ROOT -type f -or -type l |
+  sed -e "s|$RPM_BUILD_ROOT||" \
+      -e "s|/etc/syslog.conf.athena|%config \0|" |
+  sort > rpm.filelist
+
 %triggerin -- sysklogd
 cp /etc/syslog.conf.athena /etc/syslog.conf
 
@@ -86,6 +91,10 @@ options cs4232 io=0x534 irq=5 dma=1 dma2=0 mpuio=0x330 mpuirq=5
 EOF
   fi
 fi
+
+# Turn on DontZap in the X configuration.
+sed -e 's/#DontZap/DontZap/' < /etc/X11/XF86Config > /etc/X11/XF86Config.new
+mv /etc/X11/XF86Config.new /etc/X11/XF86Config
 
 if grep -q HOST /etc/athena/rc.conf ; then true ; else
   HOST=`hostname`  
@@ -147,18 +156,3 @@ grep -q MAILRELAY /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 MAILRELAY=default;	export MAILRELAY	#* SMTP relay host | default | none
 
 
-%files
-/etc/athena/clean_tmp_areas
-/etc/athena/masks
-/etc/athena/netparams
-/etc/athena/reactivate
-/etc/athena/rpmupdate
-/etc/athena/save_cluster_info
-/etc/athena/shutdown_notify
-/etc/athena/syncconf
-/etc/athena/update_ws
-/etc/passwd.fallback
-/etc/rc.d
-/etc/cron.d
-%config /etc/syslog.conf.athena
-/usr

@@ -30,3 +30,5 @@ mkdir $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/usr/athena/lib/X11/app-defaults
 cp Bugme $RPM_BUILD_ROOT/usr/athena/lib/X11/app-defaults/Bugme
 
+find $RPM_BUILD_ROOT -type f -or -type l |
+    sed -e "s|$RPM_BUILD_ROOT||" | sort > rpm.filelist

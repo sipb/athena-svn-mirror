@@ -35,11 +35,9 @@ cp Dash $RPM_BUILD_ROOT/usr/athena/lib/X11/app-defaults/Dash
 ln -s /afs/athena.mit.edu/system/config/dash/Dash.menus-$major.$minor \
 	$RPM_BUILD_ROOT/usr/athena/lib/Dash.menus
 
+find $RPM_BUILD_ROOT -type f -or -type l |
+  sed -e "s|$RPM_BUILD_ROOT||" \
+      -e "s|/usr/athena/lib/Dash.fallback|%config \0|" |
+  sort > rpm.filelist
 
-%files
-/usr/athena/bin
-/usr/athena/include
-/usr/athena/man
-/usr/athena/lib/X11/app-defaults
-/usr/athena/lib/Dash.menus
-%config /usr/athena/lib/Dash.fallback
+

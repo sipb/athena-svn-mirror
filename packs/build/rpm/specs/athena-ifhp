@@ -23,7 +23,8 @@ mkdir $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT/etc
 cp ifhp.conf $RPM_BUILD_ROOT/etc/ifhp.conf
 
-%files
-/usr
-%config /etc/ifhp.conf
+find $RPM_BUILD_ROOT -type f -or -type l |
+  sed -e "s|$RPM_BUILD_ROOT||" \
+      -e "s|/etc/ifhp.conf|%config \0|" |
+  sort > rpm.filelist
 

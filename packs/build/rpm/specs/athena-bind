@@ -31,16 +31,15 @@ cp resolv.conf			$RPM_BUILD_ROOT/etc/resolv.conf
 cp athena-bind.rc		$RPM_BUILD_ROOT/etc/rc.d/init.d/athena-bind
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-bind
 
+find $RPM_BUILD_ROOT -type f -or -type l |
+  sed -e "s|$RPM_BUILD_ROOT||" \
+      -e "s|/etc/named.conf|%config \0|" \
+      -e "s|/etc/named.localhost|%config \0|" \
+      -e "s|/etc/named.localhost.rev|%config \0|" \
+      -e "s|/etc/named.root|%config \0|" \
+      -e "s|/etc/resolv.conf|%config \0|" |
+  sort > rpm.filelist
+
 %post
 chkconfig --add athena-bind
-
-%files
-/etc/rc.d
-/etc/athena
-/usr
-%config /etc/named.conf
-%config /etc/named.localhost
-%config /etc/named.localhost.rev
-%config /etc/named.root
-%config /etc/resolv.conf
 

@@ -50,14 +50,15 @@ mkdir -p $RPM_BUILD_ROOT/var/athena/sessions
 # Don't install /bin/login on Linux.
 rm $RPM_BUILD_ROOT/bin/login
 
-%files
-/usr
-/etc/athena/telnetd
-%config /etc/athena/krb.conf
-%config /etc/athena/krb.realms
-%config /etc/krb5.conf
-%config /etc/ftpusers
-%dir /var/athena/sessions
+
+find $RPM_BUILD_ROOT -type f -or -type l |
+  sed -e "s|$RPM_BUILD_ROOT||" \
+      -e "s|/etc/athena/krb.conf|%config \0|" \
+      -e "s|/etc/athena/krb.realms|%config \0|" \
+      -e "s|/etc/krb5.conf|%config \0|" \
+      -e "s|/etc/ftpusers|%config \0|" |
+  sort > rpm.filelist
+echo "%dir /var/athena/sessions" >> rpm.filelist
 
 %post
 if [ -e /etc/conf.getty ] && grep -s -q LOGIN /etc/conf.getty ; then

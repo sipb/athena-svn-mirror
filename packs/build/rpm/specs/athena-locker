@@ -30,15 +30,20 @@ cp attach.conf $RPM_BUILD_ROOT/etc/athena/attach.conf
 cp attach.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/attach
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/attach
 
+find $RPM_BUILD_ROOT -type f -or -type l |
+  sed -e "s|$RPM_BUILD_ROOT||" \
+      -e "s|/etc/athena/attach.conf|%config \0|" |
+  sort > rpm.filelist
+
+cat << EOF >> rpm.filelist
+%dir /var/athena/attachtab/directory
+%dir /var/athena/attachtab/locker
+%dir /var/athena/attachtab/mountpoint
+EOF
+
+
 %post
 mkdir -p /mit
 chkconfig --add attach
 
 
-%files
-/etc/rc.d
-/usr
-%config /etc/athena/attach.conf
-%dir /var/athena/attachtab/directory
-%dir /var/athena/attachtab/locker
-%dir /var/athena/attachtab/mountpoint

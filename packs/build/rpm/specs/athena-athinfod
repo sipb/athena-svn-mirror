@@ -22,13 +22,13 @@ rm -rf $RPM_BUILD_ROOT
 mkdir $RPM_BUILD_ROOT
 ./do.sh -p -s /xxx -d $RPM_BUILD_ROOT install
 
-# Extra file
+# Extra files
 mkdir -p $RPM_BUILD_ROOT/etc/athena
 cp athinfo.access $RPM_BUILD_ROOT/etc/athena/athinfo.access
 cp athinfo.defs $RPM_BUILD_ROOT/etc/athena/athinfo.defs
 
-%files
-/etc/athena/athinfod
-/usr
-%config /etc/athena/athinfo.access
-%config /etc/athena/athinfo.defs
+find $RPM_BUILD_ROOT -type f -or -type l |
+  sed -e "s|$RPM_BUILD_ROOT||" \
+      -e "s|/etc/athena/athinfo.access|%config \0|" \
+      -e "s|/etc/athena/athinfo.defs|%config \0|" |
+  sort > rpm.filelist

@@ -6,7 +6,3 @@ Group: Development/Languages
 %description
 The Perl programming language, as configured for Athena
 
-%files
-/usr/athena/bin
-/usr/athena/man
-/usr/athena/lib/perl5

@@ -24,14 +24,7 @@ mkdir -p $RPM_BUILD_ROOT/usr/athena/lib/X11/app-defaults
 cp system.mwmrc $RPM_BUILD_ROOT/usr/athena/lib/X11/system.mwmrc
 cp Mwm $RPM_BUILD_ROOT/usr/athena/lib/X11/app-defaults/Mwm
 
-%files
-/usr/athena/bin
-/usr/athena/include
-/usr/athena/lib/Xm
-/usr/athena/lib/libMrm.a
-/usr/athena/lib/libMrm.so.1.2
-/usr/athena/lib/libUil.so.1.2
-/usr/athena/lib/libXm.a
-/usr/athena/lib/libXm.so.1.2
-/usr/athena/lib/X11/app-defaults
-%config /usr/athena/lib/X11/system.mwmrc
+find $RPM_BUILD_ROOT -type f -or -type l |
+  sed -e "s|$RPM_BUILD_ROOT||" \
+      -e "s|/usr/athena/lib/X11/system.mwmrc|%config \0|" |
+  sort > rpm.filelist

@@ -27,16 +27,16 @@ cp lpd.perms $RPM_BUILD_ROOT/etc/lpd.perms
 cp athena-lpd.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-lpd
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-lpd
 
+find $RPM_BUILD_ROOT -type f -or -type l |
+  sed -e "s|$RPM_BUILD_ROOT||" \
+      -e "s|/etc/lpd.conf|%config \0|" \
+      -e "s|/etc/lpd.perms|%config \0|" |
+  sort > rpm.filelist
+
+
 %post
 grep -q LPD /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 LPD=false;		export LPD		#  Run line printer daemon?
 EOF
 
 chkconfig --add athena-lpd
-
-%files
-/etc/rc.d
-/usr/athena
-%config /etc/lpd.conf
-%config /etc/lpd.perms
-

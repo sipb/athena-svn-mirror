@@ -8,6 +8,3 @@ Requires: athena-hesiod
 %description
 The standard user shell on Athena
 
-%files
-/bin/athena/tcsh
-/usr/athena/man/man1/tcsh.1

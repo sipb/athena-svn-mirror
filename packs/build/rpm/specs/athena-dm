@@ -29,6 +29,12 @@ mkdir -p $RPM_BUILD_ROOT/var/athena/sessions
 mkdir -p $RPM_BUILD_ROOT/etc/athena/login
 cp config $RPM_BUILD_ROOT/etc/athena/login/config
 
+find $RPM_BUILD_ROOT -type f -or -type l |
+  sed -e "s|$RPM_BUILD_ROOT||" \
+      -e "s|/etc/athena/login/config|%config \0|" |
+  sort > rpm.filelist
+echo "%dir /var/athena/sessions" > rpm.filelist
+
 %postun
 [ $1 = 0 ] || exit 0
 if [ -f /etc/X11/prefdm.orig ] ; then
@@ -51,8 +57,3 @@ exec /etc/athena/dm /etc/athena/login/config ttyp0 tty7
 EOF
 chmod +x /etc/X11/prefdm
 
-%files
-/etc/athena/dm
-/usr/athena
-%config /etc/athena/login/config
-%dir /var/athena/sessions

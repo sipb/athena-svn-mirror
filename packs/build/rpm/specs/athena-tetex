@@ -22,3 +22,6 @@ mkdir $RPM_BUILD_ROOT
 
 # Don't try to install a /usr/athena/info/dir file.
 rm $RPM_BUILD_ROOT/usr/athena/info/dir
+
+find $RPM_BUILD_ROOT -type f -or -type l |
+    sed -e "s|$RPM_BUILD_ROOT||" | sort > rpm.filelist

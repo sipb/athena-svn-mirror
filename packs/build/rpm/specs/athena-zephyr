@@ -31,6 +31,11 @@ cp zephyrd.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/zephyrd
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/zhm 
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/zephyrd
 
+find $RPM_BUILD_ROOT -type f -or -type l |
+  sed -e "s|$RPM_BUILD_ROOT||" \
+      -e "s|/etc/athena/zephyr.vars|%config \0" |
+  sort > rpm.filelist
+
 %post
 grep -q ZCLIENT /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 ZCLIENT=true;		export ZCLIENT		#  Zephyr client
@@ -43,10 +48,3 @@ EOF
 chkconfig --add zhm
 chkconfig --add zephyrd
 
-%files
-/etc/rc.d
-/etc/athena/zephyr
-/etc/athena/zhm
-/etc/athena/zshutdown_notify
-/usr
-%config /etc/athena/zephyr.vars

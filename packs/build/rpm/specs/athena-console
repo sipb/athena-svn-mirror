@@ -26,3 +26,6 @@ mkdir $RPM_BUILD_ROOT
 # Extra file
 mkdir -p $RPM_BUILD_ROOT/etc/athena/login
 cp Console $RPM_BUILD_ROOT/etc/athena/login/Console
+
+find $RPM_BUILD_ROOT -type f -or -type l |
+    sed -e "s|$RPM_BUILD_ROOT||" | sort > rpm.filelist

@@ -27,6 +27,11 @@ cp sshd_config $RPM_BUILD_ROOT/etc/sshd_config
 cp athena-sshd.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-sshd
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-sshd
 
+find $RPM_BUILD_ROOT -type f -or -type l |
+  sed -e "s|$RPM_BUILD_ROOT||" \
+      -e "s|/etc/sshd_config|%config \0|" |
+  sort > rpm.filelist
+
 %post
 grep -q SSHD /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 SSHD=false;		export SSHD		#  Secure shell daemon
@@ -38,8 +43,3 @@ if [ ! -f /etc/ssh_host_key ]; then
 fi
 chkconfig --add athena-sshd
 
-%files
-/etc/rc.d
-/etc/athena
-/usr/athena
-%config /etc/sshd_config

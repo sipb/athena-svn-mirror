@@ -32,6 +32,14 @@ mv $RPM_BUILD_ROOT/etc/athena/inetd $RPM_BUILD_ROOT/etc/athena/athena-inetd
 mv $RPM_BUILD_ROOT/usr/athena/man/man8/inetd.8 \
 	$RPM_BUILD_ROOT/usr/athena/man/man8/athena-inetd.8
 
+find $RPM_BUILD_ROOT -type f -or -type l |
+  sed -e "s|$RPM_BUILD_ROOT||" \
+      -e "s|/etc/inetd.conf.minimal|%config \0|" \
+      -e "s|/etc/athena/inetd.conf|%config \0|" |
+  sort > rpm.filelist
+
+
+
 %post
 grep -q ACCESSON /etc/athena/rc.conf || cat << EOF >> /etc/athena/rc.conf
 ACCESSON=false;		export ACCESSON		#  Access on by default
@@ -55,11 +63,4 @@ cp /etc/inetd.conf.minimal /etc/inetd.conf
 	|| echo "gshell		3715/tcp	# gsh service"
 ) >> /etc/services
 
-
-%files
-/etc/athena/athena-inetd
-%config /etc/inetd.conf.minimal
-%config /etc/athena/inetd.conf
-/etc/rc.d
-/usr/athena
 
