@@ -3,6 +3,7 @@ AO [a-zA-Z]
 W [ \t]+
 S .*
 %{
+#undef yywrap
 #define countlines() {char *s=yytext;while(*s!='\0')if(*(s++)=='\n')lineno++;}
 #define getstring() yylval.s=(char *)malloc(yyleng+1);strcpy(yylval.s,yytext)
 #define getshcmd() { int i=0; \
@@ -94,3 +95,8 @@ static int parenlevel;
 yysetin(i)
      FILE *i;
 { yyin = i; }
+
+int yywrap()
+{
+	return 1;
+}
