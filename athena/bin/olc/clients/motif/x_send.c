@@ -11,18 +11,21 @@
  *      MIT Information Systems
  *
  *      Tom Coppeto
+ *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_send.c,v $
- *      $Author: vanharen $
+ *      $Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_send.c,v 1.1 1989-10-11 16:33:16 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_send.c,v 1.2 1991-03-06 15:40:18 lwvanels Exp $";
 #endif
 
+#include <sys/param.h>
 #include "xolc.h"
 
 
@@ -33,7 +36,7 @@ x_reply(Request, message)
 {
   int status, fd;
   char error[BUF_SIZE];
-  char file[NAME_LENGTH];
+  char file[MAXPATHLEN];
 
   if (strlen(message) == 0)
     {
