@@ -47,7 +47,9 @@ static char sccsid[] = "@(#)ftpcmd.y	5.13 (Berkeley) 11/30/88";
 
 char *athena_etext;
 #endif
-
+#ifdef POSIX
+#include <string.h>
+#endif
 extern	struct sockaddr_in data_dest;
 extern	int logged_in;
 extern	struct passwd *pw;
@@ -73,7 +75,7 @@ char cbuf[512];
 char *fromname;
 extern char *bug_address;
 
-char	*index();
+
 %}
 
 %token
@@ -676,7 +678,7 @@ getline(s, n, iop)
 		return (NULL);
 	*cs++ = '\0';
 	if (debug) {
-		cs = index(s, '\r');
+		cs = strchr(s, '\r');
 		if (cs)
 			*cs = '\0';
 		if (! strncasecmp(s, "pass", 4))
@@ -726,7 +728,7 @@ yylex()
 				dologout(0);
 			}
 			(void) alarm(0);
-			if ((cp = index(cbuf, '\r'))) {
+			if ((cp = strchr(cbuf, '\r'))) {
 				*cp++ = '\n'; *cp = '\0';
 			}
 			if ((cp = strpbrk(cbuf, " \n")))
