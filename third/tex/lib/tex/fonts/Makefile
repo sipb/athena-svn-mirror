@@ -1,9 +1,9 @@
-# $Id: Makefile,v 1.9 1997-10-17 06:47:42 ghudson Exp $
+# $Id: Makefile,v 1.10 1998-12-04 18:49:22 ghudson Exp $
 
 SHELL=/bin/sh
 ATHLIBDIR=/usr/athena/lib
 WEB2C=../../../web2c/web2c
-MFVARS=MFINPUTS=../../mf// MFBASES=${WEB2C}/mf MFPOOL=${WEB2C}/mf
+MFVARS=MFINPUTS=../../mf// MFBASES=${WEB2C} MFPOOL=${WEB2C}
 MF=${MFVARS} ./mf
 CMMF=${MFVARS} ./cmmf
 MODE=ljfour
@@ -94,11 +94,11 @@ all: dummy.tfm ${PKS}
 
 mf:
 	rm -f mf
-	ln -s ${WEB2C}/mf/virmf mf
+	ln -s ${WEB2C}/mf mf
 
 cmmf:
 	rm -f cmmf
-	ln -s ${WEB2C}/mf/virmf cmmf
+	ln -s ${WEB2C}/mf cmmf
 
 dummy.tfm: mf
 	${MF} '\mode=${MODE}; input dummy'
@@ -135,19 +135,19 @@ ${CM1493GF}: cmmf
 .SUFFIXES: .600gf .600pk .657gf .657pk .720gf .720pk .864gf .864pk .1037gf \
 	.1037pk .1244gf .1244pk .1493gf .1493pk
 .600gf.600pk:
-	${WEB2C}/fontutil/gftopk ./$<
+	${WEB2C}/gftopk ./$<
 .657gf.657pk:
-	${WEB2C}/fontutil/gftopk ./$<
+	${WEB2C}/gftopk ./$<
 .720gf.720pk:
-	${WEB2C}/fontutil/gftopk ./$<
+	${WEB2C}/gftopk ./$<
 .864gf.864pk:
-	${WEB2C}/fontutil/gftopk ./$<
+	${WEB2C}/gftopk ./$<
 .1037gf.1037pk:
-	${WEB2C}/fontutil/gftopk ./$<
+	${WEB2C}/gftopk ./$<
 .1244gf.1244pk:
-	${WEB2C}/fontutil/gftopk ./$<
+	${WEB2C}/gftopk ./$<
 .1493gf.1493pk:
-	${WEB2C}/fontutil/gftopk ./$<
+	${WEB2C}/gftopk ./$<
 
 install:
 	-mkdir -p ${DESTDIR}${ATHLIBDIR}/tex/fonts/pk
