@@ -15,6 +15,9 @@
  *    $Author: tom $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ * Revision 1.5  90/07/15  18:00:03  tom
+ * changed file mod time vars to be of type TIME
+ * 
  * Revision 1.4  90/06/05  15:24:35  tom
  * lbuf is static
  * 
@@ -28,7 +31,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/stat_grp.c,v 1.5 1990-07-15 18:00:03 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/stat_grp.c,v 1.6 1990-07-16 21:55:24 tom Exp $";
 #endif
 
 
@@ -38,9 +41,9 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
 #ifdef MIT
 #include <utmp.h>
 
-static int stattime();
-static int get_load();
-static int get_time();
+static char stattime();
+static int  get_load();
+static int  get_time();
 static char lbuf[BUFSIZ];
 
 #ifdef ATHENA
@@ -137,6 +140,7 @@ lu_status(varnode, repl, instptr, reqflg)
 	return(BUILD_SUCCESS);
 #endif LOGIN
     default:
+      syslog (LOG_ERR, "lu_status: bad offset: %d", varnode->offset);
       return(BUILD_ERR);
     }
 }
@@ -173,7 +177,7 @@ lu_tuchtime(varnode, repl, instptr, reqflg)
   bcopy ((char *)varnode->var_code, (char *) &repl->name, sizeof(repl->name));
   repl->name.ncmp++;			/* include the "0" instance */
 
-  repl->val.type = TIME;  /* True of all the replies */
+  repl->val.type = STR;  /* True of all the replies */
 
   /* 
    * Files should be defined in snmpd.conf
@@ -182,26 +186,29 @@ lu_tuchtime(varnode, repl, instptr, reqflg)
   switch(varnode->offset)
     {
     case N_MAILALIAS:
-      repl->val.value.intgr = stattime("/usr/lib/aliases");
-      return(BUILD_SUCCESS);
+      repl->val.value.str.str = stattime("/usr/lib/aliases");
     case N_MAILALIASPAG:
-      repl->val.value.intgr = stattime("/usr/lib/aliases.pag");
-      return(BUILD_SUCCESS);
+      repl->val.value.str.str = stattime("/usr/lib/aliases.pag");
     case N_MAILALIASDIR:
-      repl->val.value.intgr = stattime("/usr/lib/aliases.dir");
-      return(BUILD_SUCCESS);
+      repl->val.value.str.str = stattime("/usr/lib/aliases.dir");
     case N_RPCCRED:
-      repl->val.value.intgr = stattime("/usr/etc/credentials");
-      return(BUILD_SUCCESS);
+      repl->val.value.str.str = stattime("/usr/etc/credentials");
     case N_RPCCREDPAG:
-      repl->val.value.intgr = stattime("/usr/etc/credentials.pag");
-      return(BUILD_SUCCESS);
+      repl->val.value.str.str = stattime("/usr/etc/credentials.pag");
     case N_RPCCREDDIR:
-      repl->val.value.intgr = stattime("/usr/etc/credentials.dir");
-      return(BUILD_SUCCESS);
+      repl->val.value.str.str = stattime("/usr/etc/credentials.dir");
     default:
+      syslog (LOG_ERR, "lu_tuchtime: bad offset: %d", varnode->offset);
       return(BUILD_ERR);
     }
+
+  if(repl->val.value.str.str != (char *) NULL)
+    {
+      repl->val.value.str.len = strlen(repl->val.value.str.str);
+      return(BUILD_SUCCESS);
+    }
+  else
+    return(BUILD_ERROR);
 }
 
 
@@ -214,20 +221,29 @@ lu_tuchtime(varnode, repl, instptr, reqflg)
  *              0 if error
  */
 
-static int
+static char *
 stattime(file)
      char *file;
 {
   struct stat statbuf;
+  char *c, *t, *ret;
+
   bzero(&statbuf, sizeof(struct stat));
 
   if(file == (char *) NULL)
-    return(0);
+    return(file);
 
   if(stat(file, &statbuf) < 0)
-    return(0);
+    return((char *) NULL);
+  
+  t   = ctime(&(statbuf.st_mtime));
+  c   = rindex(t, '\n');
+  *c  = '\0';
+  ret = malloc(sizeof(char) * strlen(t));
+  if(ret != (char *) NULL)
+    strcpy(ret, t);
 
-  return(statbuf.st_mtime);
+  return(ret);
 }
 
 

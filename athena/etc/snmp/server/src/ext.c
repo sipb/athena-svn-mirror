@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 1.7 1990-07-15 17:59:31 tom Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 1.8 1990-07-16 21:57:55 tom Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 1.7  90/07/15  17:59:31  tom
+ * changed file mod time vars to be of type TIME
+ * 
  * Revision 1.6  90/05/26  13:37:10  tom
  * cleaned up a naming conflict
  * 
@@ -39,7 +42,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 1.7 1990-07-15 17:59:31 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 1.8 1990-07-16 21:57:55 tom Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -2040,9 +2043,9 @@ struct snmp_tree_info  var_tree_info[] = {  /* must be NULL terminated */
 { &rpsNullRecv,  lu_rpcsv,    NULL, N_RPCSNULLRECV, NULL_OBJINST|VAL_CNTR },
 { &rpsBadLen,    lu_rpcsv,    NULL, N_RPCSBADLEN,   NULL_OBJINST|VAL_CNTR },
 { &rpsXDRCall,   lu_rpcsv,    NULL, N_RPCSXDRCALL,  NULL_OBJINST|VAL_CNTR },
-{ &rpsCredUt,    lu_tuchtime, NULL, N_RPCCRED,      NULL_OBJINST|VAL_TIME },
-{ &rpsCredUtPag, lu_tuchtime, NULL, N_RPCCREDPAG,   NULL_OBJINST|VAL_TIME },
-{ &rpsCredUtDir, lu_tuchtime, NULL, N_RPCCREDDIR,   NULL_OBJINST|VAL_TIME },
+{ &rpsCredUt,    lu_tuchtime, NULL, N_RPCCRED,      NULL_OBJINST|VAL_STR  },
+{ &rpsCredUtPag, lu_tuchtime, NULL, N_RPCCREDPAG,   NULL_OBJINST|VAL_STR  },
+{ &rpsCredUtDir, lu_tuchtime, NULL, N_RPCCREDDIR,   NULL_OBJINST|VAL_STR  },
 #endif RPC
 
 #ifdef NFS		 				  
@@ -2142,9 +2145,9 @@ struct snmp_tree_info  var_tree_info[] = {  /* must be NULL terminated */
 #endif ZEPHYR
 
 { &mQueue,       lu_mail,     NULL, 0,              NULL_OBJINST|VAL_INT  },
-{ &mAliasUt,     lu_tuchtime, NULL, N_MAILALIAS,    NULL_OBJINST|VAL_TIME },
-{ &mAliasUtPag,  lu_tuchtime, NULL, N_MAILALIASPAG, NULL_OBJINST|VAL_TIME },
-{ &mAliasUtDir,  lu_tuchtime, NULL, N_MAILALIASDIR, NULL_OBJINST|VAL_TIME },
+{ &mAliasUt,     lu_tuchtime, NULL, N_MAILALIAS,    NULL_OBJINST|VAL_STR  },
+{ &mAliasUtPag,  lu_tuchtime, NULL, N_MAILALIASPAG, NULL_OBJINST|VAL_STR  },
+{ &mAliasUtDir,  lu_tuchtime, NULL, N_MAILALIASDIR, NULL_OBJINST|VAL_STR  },
 #endif MIT
 
 /*
