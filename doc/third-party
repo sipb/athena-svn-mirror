@@ -113,6 +113,8 @@ Distribution sites for software under third
 	perl		ftp.cpan.org:pub/CPAN/src
 	readline	ftp.gnu.org:pub/gnu/readline
 	rcs		ftp.gnu.org:pub/gnu/rcs
+	read-edid	http://web.onetel.net.uk/~elephant/john/programs\
+			/linux/read-edid/
 	rs		From NetBSD (ftp.netbsd.org), usr.bin/rs
 	sendmail*	ftp.sendmail.org:pub/sendmail
 	ssh*		ftp.cs.hut.fi:pub/ssh
