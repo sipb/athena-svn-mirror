@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# Process the info files in a package:  Copy in the file, and update
+# the dir file in the info directory.
+
+install_info=$PKG_INSTALL_ROOT/usr/athena/bin/install-info
+
+# pkgadd supplies file source/destination pairs on our standard input.
+while read src dest ; do
+  cp -p $src $dest || exit 1
+  $install_info --info-dir="`dirname $dest`" $dest
+done      
+
+exit 0

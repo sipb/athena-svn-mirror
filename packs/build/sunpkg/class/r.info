@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# Handle the removal of the info files in a package:  In addition to
+# removing the file, we delete its entry from the dir file in the info
+# directory.
+
+install_info=$PKG_INSTALL_ROOT/usr/athena/bin/install-info
+
+# pkgrm supplies the path names on our standard input.
+while read dest ; do
+  $install_info --delete --info-dir=`dirname $dest` $dest
+  rm -f $dest
+done      
+
+exit 0
