@@ -322,7 +322,7 @@ GLHACK=-Dclear=__GLclear
 # every system.
 
 # *** Always uncomment this (leave the leading underscore in!):
-_tkinter _tkinter.c tkappinit.c -DWITH_APPINIT \
+# _tkinter _tkinter.c tkappinit.c -DWITH_APPINIT \
 # *** Uncomment and edit to reflect where your Tcl/Tk libraries are:
 #	-L/usr/local/lib \
 # *** Uncomment and edit to reflect where your Tcl/Tk headers are:
@@ -341,7 +341,7 @@ _tkinter _tkinter.c tkappinit.c -DWITH_APPINIT \
 # *** Uncomment and edit for TOGL extension only:
 #	-DWITH_TOGL togl.c \
 # *** Uncomment and edit to reflect your Tcl/Tk versions:
-	-ltk8.3 -ltcl8.3 \
+#	-ltk8.3 -ltcl8.3 \
 # *** Uncomment and edit to reflect where your X11 libraries are:
 #	-L/usr/X11R6/lib \
 # *** Or uncomment this for Solaris:
@@ -351,7 +351,7 @@ _tkinter _tkinter.c tkappinit.c -DWITH_APPINIT \
 # *** Uncomment for AIX:
 #	-lld \
 # *** Always uncomment this; X11 libraries to link with:
-	-lX11
+#	-lX11
 
 # Lance Ellinghaus's modules:
 
