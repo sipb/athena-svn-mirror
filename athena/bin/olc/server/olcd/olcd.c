@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.44 1991-04-11 13:22:04 lwvanels Exp $
+ *	$Id: olcd.c,v 1.45 1991-04-14 17:33:45 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.44 1991-04-11 13:22:04 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.45 1991-04-14 17:33:45 lwvanels Exp $";
 #endif
 #endif
 
@@ -60,7 +60,17 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 
 /* Global variables. */
 
-extern int errno;		/* System error number. */
+#ifdef NEEDS_SELECT_MACROS
+#define NBBY    8 /* number of bits in a byte */
+#define NFDBITS (sizeof(long) * NBBY)        /* bits per mask */
+
+#define FD_SET(n, p)    ((p)->fds_bits[(n)/NFDBITS] |= (1 << ((n) % NFDBITS)))
+#define FD_CLR(n, p)    ((p)->fds_bits[(n)/NFDBITS] &= ~(1 << ((n) % NFDBITS)))
+#define FD_ISSET(n, p)  ((p)->fds_bits[(n)/NFDBITS] & (1 << ((n) % NFDBITS)))
+#define FD_ZERO(p)      bzero((char *)(p), sizeof(*(p)))
+
+#endif
+
 extern PROC  Proc_List[];	/* OLC Proceedure Table */
 char DaemonHost[LINE_SIZE];	/* Name of daemon's machine. */
 struct sockaddr_in sin = { AF_INET }; /* Socket address. */
@@ -540,11 +550,11 @@ process_request (fd, from)
 {
     REQUEST request;	/* Request structure from client. */
     int type;		/* Type of request. */
-    int index;		/* Index in proc. table. */
+    int ind;		/* Index in proc. table. */
     int auth;             /* status from authentication */
     struct hostent *hp;	/* host sending request */
 
-    index = 0;
+    ind = 0;
     processing_request = 1;
     if(read_request(fd, &request) != SUCCESS) {
 	log_error ("Error in reading request");
@@ -582,22 +592,22 @@ process_request (fd, from)
 	send_response(fd,auth);
 	return;
     }
-    while  ((type != Proc_List[index].proc_code)
-	    && (Proc_List[index].proc_code != UNKNOWN_REQUEST))
-	index++;
+    while  ((type != Proc_List[ind].proc_code)
+	    && (Proc_List[ind].proc_code != UNKNOWN_REQUEST))
+	ind++;
 
-    if (Proc_List[index].proc_code != UNKNOWN_REQUEST)
+    if (Proc_List[ind].proc_code != UNKNOWN_REQUEST)
     {
 
 	++request_count;
-	++request_counts[index];
+	++request_counts[ind];
 #if 0
 	printf("%d> Got %s request from %s\n",request_count,
-	       Proc_List[index].description,
+	       Proc_List[ind].description,
 	       request.requester.username);
 #endif
 
-	(*(Proc_List[index].olc_proc))(fd, &request);
+	(*(Proc_List[ind].olc_proc))(fd, &request);
     }
     else
     {
