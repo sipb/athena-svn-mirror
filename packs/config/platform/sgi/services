@@ -1,7 +1,7 @@
 #
 # Network services, Internet style
 #
-# $Id: services,v 1.1 1997-01-02 09:52:55 ghudson Exp $
+# $Id: services,v 1.2 1997-03-26 18:58:03 cfields Exp $
 #
 tcpmux		1/tcp			# TCP port multiplexer (RFC 1078)
 echo		7/tcp
@@ -175,6 +175,8 @@ technotify	3713/udp			# TechNotify mail notification
 gophertech	3714/tcp			# Gopher gateway to TechInfo
 gshell		3715/tcp			# gsh service
 slw		3716/udp			# software license wrapper
+lert		3717/udp			# login user notification
+klpc		49152/tcp			# kerberized lpc daemon
 
 # Image Delivery System (danapple@media-lab, jtidwell@media-lab)
 galatea         4001/tcp        galatead   # Video disk control

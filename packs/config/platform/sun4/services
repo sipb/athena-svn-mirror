@@ -2,7 +2,7 @@
 # Network services, Internet style
 #
 #	$Source: /afs/dev.mit.edu/source/repository/packs/config/platform/sun4/services,v $
-#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sun4/services,v 1.3 1995-07-24 18:06:50 cfields Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sun4/services,v 1.4 1997-03-26 18:58:29 cfields Exp $
 tcpmux		1/tcp
 echo		7/tcp
 echo		7/udp
@@ -312,6 +312,8 @@ technotify	3713/udp			# TechNotify mail notification
 gophertech	3714/tcp			# Gopher gateway to TechInfo
 gshell		3715/tcp			# gsh service
 slw		3716/udp			# software license wrapper
+lert		3717/udp			# login user notification
+klpc		49152/tcp			# kerberized lpc daemon
 
 # Image Delivery System (danapple@media-lab, jtidwell@media-lab)
 galatea         4001/tcp        galatead   # Video disk control
