@@ -3,7 +3,8 @@
 #define LintFlags -DSOLARIS -DSYSV -DPOSIX -DPOSIX_FLOCK -I/usr/openwin/include
 #define ProfCcFlags -pg
 #define CcFlags LintFlags
-#define LdPath -L/usr/openwin/lib -Xlinker -R/usr/openwin/lib -L$(ATHLIBDIR)
+#define LdPath -L/usr/openwin/lib -Xlinker -R/usr/openwin/lib \
+	-L$(ATHTOOLROOT)$(ATHLIBDIR)
 #define LdLibs -lresolv -lsocket -lnsl -lelf -ldl
 #define CcCmd /usr/gcc/bin/gcc
 #define LdCmd /usr/gcc/bin/gcc
@@ -18,7 +19,7 @@
 #define ProfCcFlags -p1
 #define CDebugFlags -O2
 #define CcFlags LintFlags
-#define LdPath -L$(ATHLIBDIR)
+#define LdPath -L$(ATHTOOLROOT)$(ATHLIBDIR)
 #define LdLibs  
 #define CcCmd cc
 #define LdCmd cc
@@ -28,5 +29,5 @@
 #endif
 
 #ifndef NoAFS
-#define AfsDir /usr/afsws
+#define AfsDir $(ATHTOOLROOT)/usr/afsws
 #endif

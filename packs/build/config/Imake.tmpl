@@ -28,6 +28,9 @@
 #ifndef NEWCWD
 #define NEWCWD .
 #endif
+#ifndef TOOLROOT
+#define TOOLROOT
+#endif
 #ifndef ALibDir
 #define ALibDir $(ATHBASEDIR)/lib
 #endif
@@ -110,7 +113,7 @@
 #define LdFlags
 #endif
 #ifndef LdPath
-#define LdPath -L$(ATHLIBDIR)
+#define LdPath -L$(ATHTOOLROOT)$(ATHLIBDIR)
 #endif
 #ifndef LdLibs
 #define LdLibs
@@ -119,7 +122,7 @@
 #define LintCmd lint
 #endif
 #ifndef LintFlags
-#define LintFlags $(DEFINES) -I/usr/athena/include
+#define LintFlags $(DEFINES) -I$(ATHTOOLROOT)$(ATHINCDIR)
 #endif
 
 #ifdef UseInstalled
@@ -161,13 +164,14 @@ PTOP = $(TOP)/ProjectTop
 
 #ifdef UseInstalled
 IMAKE= imake
-IFLAGS= -I$(IRULESRC) $(OTHER_IFLAGS) -DUseInstalled -DTOPDIR=TOPDIR
+IFLAGS= -I$(IRULESRC) $(OTHER_IFLAGS) -DUseInstalled -DTOPDIR=TOPDIR \
+	-DTOOLROOT=TOOLROOT
 XIRULESRC = TOPDIR/xconfig
 XIFLAGS= -I$(XIRULESRC) -DUseInstalled -DTOPDIR=. -DCONFIGDIR=$(XIRULESRC)
 #else
 UTILDIR=$(TOP)/util/bin/
 IMAKE= $(UTILDIR)imake
-IFLAGS= -I$(IRULESRC) $(OTHER_IFLAGS)
+IFLAGS= -I$(IRULESRC) $(OTHER_IFLAGS) -DTOOLROOT=TOOLROOT
 XTOP=$(TOP)/third/common/X11R4
 XIFLAGS= -I$(XTOP)/config -DTOPDIR=$(XTOP) -DCURDIR=$(CWD)
 #endif
@@ -180,6 +184,7 @@ ATHVERS = TOPDIR/version
 
 ATHBASEDIR=/usr/athena
 
+ATHTOOLROOT=TOOLROOT
 ATHLIBDIR=ALibDir
 ATHSHAREDIR=AShareDir
 ATHBINDIR=ABinDir
@@ -211,7 +216,7 @@ WCLDIR=WclDir
 #endif
 
 LINTCFLAG=LintCFlag
-LINTFLAGS=$(DEFINES) -I/usr/athena/include
+LINTFLAGS=$(DEFINES) -I$(ATHTOOLROOT)$(ATHINCDIR)
 
 INSTALL=InstallCmd
 RANLIB=RanLibCmd
@@ -225,7 +230,7 @@ SSCMD=SsCmd
 
 CDEBUG=CDebugFlags
 
-CFLAGS=$(CDEBUG) CcFlags $(DEFINES) -I/usr/athena/include
+CFLAGS=$(CDEBUG) CcFlags $(DEFINES) -I$(ATHTOOLROOT)$(ATHINCDIR)
 LDFLAGS=LdFlags $(LDDEFS)
 LDPATH=LdPath
 LDLIBS=LdLibs
