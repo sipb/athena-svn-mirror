@@ -2,7 +2,7 @@
  * xdm - display manager daemon
  *
  * $XConsortium: verify.c,v 1.24 91/07/18 22:22:45 rws Exp $
- * $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xdm/verify.c,v 1.2 1993-06-30 17:14:36 cfields Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xdm/verify.c,v 1.3 1996-06-27 19:58:55 miki Exp $
  *
  * Copyright 1988 Massachusetts Institute of Technology
  *
@@ -25,9 +25,16 @@
  * typical unix verification routine.
  */
 
+#include        <unistd.h>
+#include        <limits.h>
 # include	"dm.h"
 # include	<pwd.h>
 # include	<utmp.h>
+#ifdef SOLARIS
+#include <utmpx.h>
+#endif
+#include        <sys/wait.h>
+
 # ifdef NGROUPS_MAX
 # include	<grp.h>
 # endif
@@ -38,9 +45,7 @@
 char *getenv();
 #endif
 #include <signal.h>
-#ifdef _POSIX_SOURCE
-#include <unistd.h>
-#endif
+
 
 struct passwd joeblow = {
 	"Nobody", "***************"
@@ -67,7 +72,9 @@ static char *envvars[] = {
 #endif
     NULL
 };
-
+#ifdef POSIX
+static struct sigaction sigact, osigact;
+#endif
 int attach_pid, attach_state, attachhelp_pid, attachhelp_state, quota_pid;
 static int	console = 0;
 static char	consoletty[10];
@@ -126,7 +133,15 @@ struct verify_info	*verify;
 	    dup2(console, 2);
 	}
 	Debug ("Console started\n");
+#ifdef POSIX
+	sigemptyset(&sigact.sa_mask);
+	sigact.sa_flags = 0;
+	sigact.sa_handler = CatchChild;
+	sigaction(SIGCHLD, &sigact, &osigact);
+#else
 	oldsig = signal(SIGCHLD, CatchChild);
+#endif
+
 
 	if (!greet->string || (i = atoi(greet->string)) == 0)
 	  i = 1;
@@ -135,7 +150,11 @@ struct verify_info	*verify;
 	msg = dologin(greet->name, greet->password, i,
 		      "/etc/athena/login/Xsession", &consoletty[5],
 		      "/etc/athena/login/Xsession", d->name, verify);
+#ifdef POSIX
+ 	sigaction(SIGCHLD, &osigact, NULL);
+#else
 	signal(SIGCHLD, oldsig);
+#endif
 	if (msg) {
 	    printf("%s\n", msg);
 	    Debug ("dologin returned %s\n", msg);
@@ -209,10 +228,18 @@ struct verify_info	*verify;
 {
     int found, file;
     char login[9];
+#ifdef SOLARIS
+    struct utmpx utmpx;    
+    struct utmpx *utx_tmp;
+    char * ttyn;
+    char new_id[20];
+    register int f;
+    char *p;
+#endif
     struct utmp utmp;
 
     Debug ("Cleaning up on logout\n");
-
+#ifndef SOLARIS
     found = 0;
     if ((file = open("/etc/utmp", O_RDWR, 0)) > 0) {
 	while (read(file, (char *)&utmp, sizeof(utmp)) > 0) {
@@ -255,7 +282,38 @@ struct verify_info	*verify;
       syslog(3, "Unverify called and entry NOT removed from utmp, tty %s",
 	     &consoletty[5]);
 #endif
+#else /* SOLARIS */
+    gettimeofday(&utmpx.ut_tv);
+    utmpx.ut_type = 8   ;
+    strncpy(utmpx.ut_line, &consoletty[5], sizeof(utmpx.ut_line));    
+    setutxent();
+    utx_tmp = getutxline(&utmpx);
+    if ( utx_tmp != NULL ) {
+      strcpy(utmpx.ut_line, utx_tmp->ut_line);
+      strcpy(utmpx.ut_user,utx_tmp->ut_name);
+      utmpx.ut_pid = getpid();
+      if (utx_tmp)
+              strcpy(new_id, utx_tmp->ut_id);
+      p = index(new_id, '/');
+      if (p)
+              strcpy(p, "\0");
+      strcpy(utmpx.ut_id , new_id);
+      pututxline(&utmpx);
+      getutmp(&utmpx, &utmp);
+      setutent();
+      pututline(&utmp);
+      if ((f = open("/usr/adm/wtmp",O_WRONLY|O_APPEND)) >= 0) {
+              write(f, (char *)&utmp, sizeof(utmp));
+              close(f);
+      }
+       if ((f = open("/usr/adm/wtmpx",O_WRONLY|O_APPEND)) >= 0) {
+               write(f, (char *)&utmpx, sizeof(utmpx));
+              close(f);
+      }
+    }      
+#endif
     cleanup(NULL);
+
 }
 
 
@@ -285,9 +343,12 @@ char	*user, *home, *shell;
     char	**env;
     char	**envvar;
     char	*str;
-    
+    char 	*ow;    
     env = defaultEnv ();
     env = setEnv (env, "DISPLAY", d->name);
+    if (getenv("OPENWINHOME") == NULL)
+	env = setEnv(env, "OPENWINHOME", "/usr/openwin");
+    env = setEnv (env, "OPENWINHOME", ow);
     env = setEnv (env, "HOME", home);
     env = setEnv (env, "USER", user);
     env = setEnv (env, "PATH", useSystemPath ? d->systemPath : d->userPath);
@@ -371,18 +432,18 @@ int			gid;
 SIGVAL CatchChild()
 {
     int pid;
-    waitType status;
+    waitType status; 
     char *number();
 
-    /* Necessary on the rios- it sets the signal handler to SIG_DFL */
-    /* during the execution of a signal handler */
-    signal(SIGCHLD,CatchChild);
+#ifdef POSIX
+    pid = waitpid((pid_t)-1 , &status, WNOHANG);
+#else
     pid = wait3(&status, WNOHANG, 0);
-
+#endif
     if (pid == attach_pid) {
-	attach_state = waitCode(status);
+		attach_state = waitCode(status); 
     } else if (pid == attachhelp_pid) {
-	attachhelp_state = waitCode(status);
+		attachhelp_state = waitCode(status); 
     } else if (pid == quota_pid) {
 	/* don't need to do anything here */
     } else
