@@ -1,6 +1,6 @@
 #! /bin/sh
 #
-# $Id: configure.gnu,v 1.1.1.2 2000-04-07 20:36:07 ghudson Exp $
+# $Id: configure.gnu,v 1.1.1.3 2002-02-07 21:12:18 zacheiss Exp $
 #
 # GNU configure-like front end to metaconfig's Configure.
 #
@@ -86,7 +86,7 @@ EOM
 		exit 1
 		;;
 	*)
-		opts="$opts $1"
+		opts="$opts '$1'"
 		shift
 		;;
 	esac
@@ -126,7 +126,7 @@ case "$verbose" in
 *) copt="$copt -d";;
 esac
 
-set X sh Configure $copt $create $opts
+eval "set X sh Configure $copt $create $opts"
 shift
 echo "$@"
 exec "$@"

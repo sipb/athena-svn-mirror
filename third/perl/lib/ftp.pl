@@ -14,7 +14,7 @@
 # based on original version by Alan R. Martello <al@ee.pitt.edu>
 # And by A.Macpherson@bnr.co.uk for multi-homed hosts
 #
-# $Header: /afs/dev.mit.edu/source/repository/third/perl/lib/ftp.pl,v 1.1.1.2 2000-04-07 20:41:15 ghudson Exp $
+# $Header: /afs/dev.mit.edu/source/repository/third/perl/lib/ftp.pl,v 1.1.1.3 2002-02-07 21:12:20 zacheiss Exp $
 # $Log: not supported by cvs2svn $
 # Revision 1.17  1993/04/21  10:06:54  lmjm
 # Send all status reports to STDERR not to STDOUT (to allow use by ftpcat).
@@ -74,7 +74,7 @@
 # No longer call die expect on fatal errors.  Just return fail codes.
 # Changed returns so higher up routines can tell whats happening.
 # Get expect/accept in correct order for dir listing.
-# When ftp_show is set then print hashes every 1k transfered (like ftp).
+# When ftp_show is set then print hashes every 1k transferred (like ftp).
 # Allow for stripping returns out of incoming data.
 # Save last error in a global string.
 #

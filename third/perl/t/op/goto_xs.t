@@ -1,7 +1,7 @@
 #!./perl
 # tests for "goto &sub"-ing into XSUBs
 
-# $RCSfile: goto_xs.t,v $$Revision: 1.1.1.1 $$Date: 2000-04-07 20:46:27 $
+# $RCSfile: goto_xs.t,v $$Revision: 1.1.1.2 $$Date: 2002-02-07 21:12:23 $
 
 # Note: This only tests things that should *work*.  At some point, it may
 #       be worth while to write some failure tests for things that should
@@ -10,7 +10,7 @@
 #       break correctly as well.
 
 chdir 't' if -d 't';
-unshift @INC, "../lib";
+@INC = '../lib';
 $ENV{PERL5LIB} = "../lib";
 
 # turn warnings into fatal errors

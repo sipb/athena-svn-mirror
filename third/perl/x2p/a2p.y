@@ -1,7 +1,7 @@
 %{
-/* $RCSfile: a2p.y,v $$Revision: 1.1.1.3 $$Date: 2000-04-07 20:47:56 $
+/* $RCSfile: a2p.y,v $$Revision: 1.1.1.4 $$Date: 2002-02-07 21:12:49 $
  *
- *    Copyright (c) 1991-1997, Larry Wall
+ *    Copyright (c) 1991-2001, Larry Wall
  *
  *    You may distribute under the terms of either the GNU General Public
  *    License or the Artistic License, as specified in the README file.

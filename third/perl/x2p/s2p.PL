@@ -29,15 +29,19 @@ print OUT <<"!GROK!THIS!";
 $Config{startperl}
     eval 'exec $Config{perlpath} -S \$0 \${1+"\$@"}'
 	if \$running_under_some_shell;
-\$startperl = "$Config{startperl}";
-\$perlpath = "$Config{perlpath}";
+(\$startperl = <<'/../') =~ s/\\s*\\z//;
+$Config{startperl}
+/../
+(\$perlpath = <<'/../') =~ s/\\s*\\z//;
+$Config{perlpath}
+/../
 !GROK!THIS!
 
 # In the following, perl variables are not expanded during extraction.
 
 print OUT <<'!NO!SUBS!';
 
-# $RCSfile: s2p.PL,v $$Revision: 1.1.1.2 $$Date: 2000-04-07 20:47:59 $
+# $RCSfile: s2p.PL,v $$Revision: 1.1.1.3 $$Date: 2002-02-07 21:12:57 $
 #
 # $Log: not supported by cvs2svn $
 
