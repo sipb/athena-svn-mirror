@@ -1,5 +1,5 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/rpd.h,v 1.6 1990-11-30 18:03:34 lwvanels Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/rpd.h,v 1.7 1990-12-02 13:25:44 lwvanels Exp $
  */
 
 #include <sys/types.h>
@@ -50,29 +50,44 @@ struct 	entry {
 
 /* Acl Library */
 int acl_check P((char *acl, char *principal));
-
+void acl_canonicalize_principal P((char *principal , char *canon ));
+int acl_exact_match P((char *acl , char *principal ));
 #endif /* KERBEROS */
 
 
 
 /* system */
-int socket P((int domain, int type, int protocol));
-int perror P((char *s));
-struct servent *getservbyname P((char *name, char *proto));
-int bzero P((void *b, int length));
-int bind P((int s, struct sockaddr *name, int namelen));
-int listen P((int s, int backlog));
 int accept P((int s, struct sockaddr *addr, int *addrlen));
-int read P((int d, void *buf, int nbytes));
+int bind P((int s, struct sockaddr *name, int namelen));
+int bzero P((void *b, int length));
+void *calloc P((unsigned nelem, unsigned elsize));
 int close P((int d));
-int open P((char *path, int flags, int mode));
-int write P((int d, void *buf, int nbytes));
-int fstat P((int fd, struct stat *buf));
-void *malloc P((unsigned size));
+int exit P((int status));
 int free P((void *ptr));
-int shutdown P((int s, int how));
+int fstat P((int fd, struct stat *buf));
+struct servent *getservbyname P((char *name, char *proto));
+char *index P((char *s, int c));
 char *inet_ntoa P((struct in_addr in));
+int listen P((int s, int backlog));
+off_t lseek P((int d, off_t offset, int whence));
+void *malloc P((unsigned size));
+int open P((char *path, int flags, int mode));
+#ifdef aix
+void perror P((char *s));
+#else
+int perror P((char *s));
+#endif
 int psignal P((unsigned sig, char *s));
+int read P((int d, void *buf, int nbytes));
+int setsockopt P((int s, int level, int optname, void *optval, int optlen));
+int shutdown P((int s, int how));
+int socket P((int domain, int type, int protocol));
+int stat P((char *path, struct stat *buf));
+int strcmp P((char *s1, char *s2));
+char *strcpy P((char *s1, char *s2));
+int strlen P((char *s));
+char *strncpy P((char *s1, char *s2, int n));
+int write P((int d, void *buf, int nbytes));
 
 /* rpd.c */
 int clean_up P((int signal));
