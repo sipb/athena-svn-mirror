@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server.c,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server.c,v 1.2 1990-04-25 11:47:32 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server.c,v 1.3 1990-06-26 13:09:07 epeisach Exp $
  */
 
 /*
@@ -10,7 +10,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char logger_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server.c,v 1.2 1990-04-25 11:47:32 epeisach Exp $";
+static char logger_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/logger_server.c,v 1.3 1990-06-26 13:09:07 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -20,15 +20,13 @@ static char logger_server_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository
 #include "quota_ncs.h"
 #include "quota_err.h"
 #include "quota_db.h"
+#include "gquota_db.h"
 #include "uuid.h"
 #include "logger.h"
 #include "logger_ncs.h"
 char *set_service();
 
 
-
-
-     
 quota_error_code LoggerJournal(h,auth,qid,start,maxnum,flags,numtrans,LogEnts,currency)
 handle_t h;
 krb_ktext *auth;
@@ -54,10 +52,16 @@ quota_currency currency;
     log_header jhead;
     log_entity *ent;
     LogEnt *lent;
-    int i;
+    int i, more, is_group = 0, read_group_record = 0;
+    int retval;
     AUTH_DAT ad;
     char name1[MAX_K_NAME_SZ];
     extern char qcurrency[];             /* The quota currency */
+    quota_rec quotarec;
+    gquota_rec gquotarec;
+    char *service;
+    char grp_str[128];
+
     /* Init for error returns */
     *numtrans = 0;
 
@@ -65,28 +69,81 @@ quota_currency currency;
 
     CHECK_PROTECT();
 
-/* First verify that the user is authenticated - you must be authenticated for
-   any info */
+    service=set_service(qid->service);
+    if (qid->account != 0) is_group++;
+
+    /* First verify that the user is authenticated - you must be 
+       authenticated for any info */
     if(check_krb_auth(h, auth, &ad))
 	return QBADTKTS;
-
+    
     make_kname(ad.pname, ad.pinst, ad.prealm, name1);
 
     if(is_suser(name1)) authuser = 1;
+    
+    if (!authuser && is_group) {
+	retval = quota_db_get_principal(ad.pname, ad.pinst,
+					service,
+					ad.prealm, &quotarec,
+					(unsigned int)1, &more);
+	if (!(retval))
+	    return QNOAUTH;    /* user not in database */
+	else if (retval < 0)
+	    return QDBASEERROR;
+	if (quotarec.deleted)
+	    return QUSERDELETED;
+	
+	retval = gquota_db_get_group(qid->account, service,
+				     &gquotarec, (unsigned int)1,
+				     &more);
+	if (!(retval))
+	    return QNOGROUPEXISTS;    /* group not in database */
+	else if (retval < 0)
+	    return QGDBASEERROR;
+	if (gquotarec.deleted)
+	    return QGROUPDELETED;
+	
+	if (!is_group_admin(quotarec.uid, &gquotarec))
+	    return QNOAUTH;
+	read_group_record++;
+    }
 
     (void) strncpy(uname, ad.pname, ANAME_SZ);
     (void) strncpy(uinstance, ad.pinst, INST_SZ);
     (void) strncpy(urealm, ad.prealm, REALM_SZ);
 
+    if (is_group) {
+	if (!read_group_record) {
+	    retval = gquota_db_get_group(qid->account, service,
+					 &gquotarec, (unsigned int)1,
+					 &more);
+	    if (!(retval))
+		return QNOGROUPEXISTS;    /* group not in database */
+	    else if (retval < 0)
+		return QGDBASEERROR;
+	    if (gquotarec.deleted)
+		return QGROUPDELETED;
+	}
+	sprintf(grp_str,":%d", qid->account);
 
-    /* Find out who the info is about!!! */
+#ifdef SDEBUG
+	syslog(LOG_DEBUG, "grp_str is %s", grp_str);
+#endif SDEBUG
 
-    parse_username(qid->username, rname, rinstance, rrealm);
-
-    if(((strcmp(rname, uname) != 0) || (strcmp(rinstance, uinstance) != 0) ||
-       (strcmp(rrealm, urealm) != 0)) && (authuser == 0)) {
-	return QNOAUTH;
+	(void) strncpy(rname, grp_str, ANAME_SZ);
+	(void) strncpy(rinstance, grp_str, INST_SZ);
+	(void) strncpy(rrealm, grp_str, REALM_SZ);
     }
+    else {
+	/* Find out who the info is about!!! */
+	parse_username(qid->username, rname, rinstance, rrealm);
+    }
+
+    if (!is_group) 
+	if(((strcmp(rname, uname) != 0) || (strcmp(rinstance, uinstance) != 0) ||
+	    (strcmp(rrealm, urealm) != 0)) && (authuser == 0)) {
+	    return QNOAUTH;
+	}
 
     /* Ok - so now the user has full access to requested info -
        within limitations. */
@@ -140,8 +197,6 @@ quota_currency currency;
     /* Ok - staring is now known to be in range. User name checks still
        needed */
 
-
-
     /* Memory for all - start shipping the stuff... */
 
     for(i=1, lent = LogEnts; i <= maxnum; i++, lent++) {
@@ -157,18 +212,22 @@ quota_currency currency;
 			    (ent->user.realm != realm))) {
 	    return QNOAUTH;
 	}
-
+	
 	/* Ok boys, package it up !!! */
 	lent->time = ent->time;
 
 	make_kname(ent->user.name, ent->user.instance, ent->user.realm,
 		   lent->name);
 
+	if (is_group)
+	    lent->account = qid->account;
+	else
+	    lent->account = 0;
+
 	strcpy(lent->service, logger_num_to_string(ent->service));
 	lent->next = ent->next;
 	lent->prev = ent->prev;
-
-
+	
 	lent->func_union.func = ent->func;
 	switch (ent->func) {
 	case LO_ADD:
@@ -178,20 +237,36 @@ quota_currency currency;
 	case LO_DISALLOW:
 	case LO_ALLOW:
 	case LO_ADJUST:
-	    lent->func_union.tagged_union.offset.amount = ent->trans.offset.amt;
-	    make_kname(logger_num_to_string(ent->trans.offset.name),
-		       logger_num_to_string(ent->trans.offset.inst),
-		       logger_num_to_string(ent->trans.offset.realm),
-		       lent->func_union.tagged_union.offset.wname);
-	    break;
-	case LO_CHARGE:
-	    lent->func_union.tagged_union.charge.ptime = ent->trans.charge.subtime;
-	    lent->func_union.tagged_union.charge.npages =  ent->trans.charge.npages;
-	    lent->func_union.tagged_union.charge.pcost = ent->trans.charge.med_cost;
-	    strcpy(lent->func_union.tagged_union.charge.where,
-		   logger_num_to_string(ent->trans.charge.where));
-
-	    break;
+		lent->func_union.tagged_union.offset.amount = ent->trans.offset.amt;
+		make_kname(logger_num_to_string(ent->trans.offset.name),
+			   logger_num_to_string(ent->trans.offset.inst),
+			   logger_num_to_string(ent->trans.offset.realm),
+			   lent->func_union.tagged_union.offset.wname);
+		break;
+        case LO_CHARGE:
+		lent->func_union.tagged_union.charge.ptime = ent->trans.charge.subtime;
+		lent->func_union.tagged_union.charge.npages =  ent->trans.charge.npages;
+		lent->func_union.tagged_union.charge.pcost = ent->trans.charge.med_cost;
+		strcpy(lent->func_union.tagged_union.charge.where,
+		       logger_num_to_string(ent->trans.charge.where));
+		make_kname(logger_num_to_string(ent->trans.charge.name),
+			   logger_num_to_string(ent->trans.charge.inst),
+			   logger_num_to_string(ent->trans.charge.realm),
+			   lent->func_union.tagged_union.charge.wname);
+		break;
+	case LO_ADD_ADMIN:
+	case LO_DELETE_ADMIN:
+	case LO_ADD_USER:
+	case LO_DELETE_USER:
+		make_kname(logger_num_to_string(ent->trans.group.uname),
+			   logger_num_to_string(ent->trans.group.uinst),
+			   logger_num_to_string(ent->trans.group.urealm),
+			   lent->func_union.tagged_union.group.uname);
+		make_kname(logger_num_to_string(ent->trans.group.aname),
+			   logger_num_to_string(ent->trans.group.ainst),
+			   logger_num_to_string(ent->trans.group.arealm),
+			   lent->func_union.tagged_union.group.aname);
+		break;
 	}
 
 	if(authuser && flags) start++;
@@ -208,17 +283,17 @@ quota_currency currency;
 }
 
 /* Warning these must reflect the idl file */
-static print_logger_v1$epv_t print_logger_v1$mgr_epv = {
+static print_logger_v2$epv_t print_logger_v2$mgr_epv = {
     LoggerJournal
     };
 
-register_logger_manager_v1()
+register_logger_manager_v2()
 {
         status_$t st;
 	extern uuid_$t uuid_$nil;
-        rpc_$register_mgr(&uuid_$nil, &print_logger_v1$if_spec, 
-			  print_logger_v1$server_epv,
-			  (rpc_$mgr_epv_t) &print_logger_v1$mgr_epv, &st);
+        rpc_$register_mgr(&uuid_$nil, &print_logger_v2$if_spec, 
+			  print_logger_v2$server_epv,
+			  (rpc_$mgr_epv_t) &print_logger_v2$mgr_epv, &st);
 
     if (st.all != 0) {
 	syslog(LOG_ERR, "Can't register - %s\n", error_text(st));
