@@ -1,6 +1,6 @@
 /* lock.c - universal locking routines */
 #ifndef	lint
-static char ident[] = "@(#)$Id: lock.c,v 1.2 1996-10-13 18:48:12 ghudson Exp $";
+static char ident[] = "@(#)$Id: lock.c,v 1.2.2.1 1997-05-15 03:30:08 ghudson Exp $";
 #endif
 /* compile-time priority:
  *	LOCKF	use if defined
@@ -305,8 +305,8 @@ register char   *file;
 	return OK;
     switch (lockstyle) {
 	case LOK_UNIX: 
-#ifndef	LOCKF
-#ifndef	FLOCK
+#if !defined(LOCKF) || defined(FCNTL)
+#if !defined(FLOCK) || defined(FCNTL)
 #ifndef	FCNTL
 	/* should be an error? */
 #else	/* FCNTL */
@@ -377,8 +377,8 @@ register char	*file;
 
     switch (lockstyle) {
 	case LOK_UNIX: 
-#ifndef	LOCKF
-#ifndef	FLOCK
+#if !defined(LOCKF) || defined(FCNTL)
+#if !defined(FLOCK) || defined(FCNTL)
 #ifndef	FCNTL
 	/* should be an error? */
 #else	/* FCNTL */
