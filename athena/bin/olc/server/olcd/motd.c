@@ -9,13 +9,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v $
- *	$Id: motd.c,v 1.5 1991-01-03 16:15:39 lwvanels Exp $
+ *	$Id: motd.c,v 1.6 1991-01-15 17:55:56 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v 1.5 1991-01-03 16:15:39 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/motd.c,v 1.6 1991-01-15 17:55:56 lwvanels Exp $";
 #endif
 #endif
 
@@ -28,6 +28,9 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <ctype.h>
 #include <sys/time.h>
 #include <sys/file.h>
+#include <sys/stat.h>
+
+#include <lumberjack.h>
 
 #ifdef __STDC__
 # define        P(s) s
@@ -106,21 +109,13 @@ void
   }    
 
   if ((now.tv_sec > expire_time) && (expire_time != 0)) {
-    fd = open(MOTD_FILE,O_TRUNC|O_CREAT, 0644);
+    fd = open(MOTD_FILE,O_TRUNC|O_CREAT, 0664);
     if (fd < 0)
       log_error("check_motd_timeout: Couldn't create/truncate motd file");
     close(fd);
     log_status("MOTD expired");
     expire_time = 0;
     write_motd_times();
-    fd = open(MOTD_TIMEOUT_FILE,O_WRONLY|O_CREAT|O_TRUNC,0644);
-    if (fd < 0) {
-      log_error("check_motd_timeout: Couldn't open motd timeout file");
-      return;
-    }
-    sprintf(buf,"0\n%ld\n",in_time);
-    write(fd,buf,strlen(buf)+1);
-    close(fd);
   }
 }
 
@@ -133,6 +128,8 @@ KNUCKLE *requester;
   char line[BUF_SIZE];	/* buffer to read in to parse possible timeout */
   char msgbuf[BUF_SIZE];
   char *time;
+  struct stat statb;
+  int fd;
 
   expire_time = 0;
   in_time = 0;
@@ -144,9 +141,17 @@ KNUCKLE *requester;
   new_motd = fopen("/tmp/new_motd","w+");
   /* strip out the timeout line and write it to a new file */
   if (new_motd == NULL) { 
-    log_error("change_motd_timeout: opening /tmp/new_motd: %m");
+    log_error("set_motd_timeout: opening /tmp/new_motd: %m");
     return;
   }
+
+/* Fix so it has correct permissions and group */
+  if (fstat(fileno(f), &statb) == -1) {
+    log_error("set_motd_timeout: stat'ing MOTD file: %m");
+    return;
+  }
+  fchown(fileno(new_motd),-1,statb.st_gid);
+  fchmod(fileno(new_motd),0664);
 
 /* Search for timeout and timein strings */
   while (fgets(line,BUF_SIZE,f) != NULL) {
@@ -187,7 +192,10 @@ KNUCKLE *requester;
       log_error("change_motd_timeout: rename: %m");
   }
   else {
-    unlink(MOTD_FILE);
+    fd = open(MOTD_FILE,O_TRUNC|O_CREAT, 0664);
+    if (fd < 0)
+      log_error("set_motd_timeout: Couldn't create/truncate motd file");
+    close(fd);
     check_motd_timeout();
     if (rename("/tmp/new_motd",MOTD_HOLD_FILE) != 0)
       log_error("change_motd_timeout: rename: %m");
@@ -274,4 +282,58 @@ char *buf;
     when = tv.tv_sec + 60*diff;
   }
   return(when);
+}
+
+void
+log_motd(username)
+     char *username;
+{
+  char newfile[NAME_SIZE];	/* New file name. */
+  char ctrlfile[NAME_SIZE];	/* Control file name. */
+  FILE *fp;			/* Stream for control file. */
+  int pid;			/* Process ID for fork. */
+  char msgbuf[BUF_SIZE];	/* Construct messages to be logged. */
+  long time_now;		/* time now, in seconds (a unique number) */
+
+  time_now = NOW;
+
+  (void) sprintf(ctrlfile, "%s/ctrl%d", DONE_DIR, time_now);
+  if (access(ctrlfile,F_OK) == 0) {
+    /* Whups, processed that last done too fast... */
+    time_now++;
+    (void) sprintf(ctrlfile, "%s/ctrl%d", DONE_DIR, time_now);
+  }
+  (void) sprintf(newfile, "%s/log%d", DONE_DIR, time_now);
+
+  sprintf(msgbuf,"/bin/cp %s %s",MOTD_FILE,newfile);
+  system(msgbuf);
+
+  if ((fp = fopen(ctrlfile, "w")) == NULL)
+    {
+      perror("log_motd: control file");
+      log_error("Can't create control file.");
+      return;
+    }
+
+  fprintf(fp, "%s\nNew MOTD: %smotd\n%s\n", newfile, ctime(&time_now),
+	  username);
+  fclose(fp);
+      
+  if ((pid = vfork()) == -1) 
+    {
+      perror("log_motd: vfork");
+      log_error("Can't fork to dispose of log.");
+      return;
+    }
+  else if (pid == 0) 
+    {
+      (void) sprintf(msgbuf, "New motd logged");
+      log_status(msgbuf);
+
+      execl("/usr/local/lumberjack", "lumberjack", 0);
+      perror("log_motd: /usr/local/lumberjack");
+      log_error("log_motd: cannot exec /usr/local/lumberjack.\n");
+      _exit(0);
+    }
+  return;
 }
