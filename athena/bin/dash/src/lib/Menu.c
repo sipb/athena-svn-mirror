@@ -9,10 +9,10 @@
  *
  */
 
-#ifndef	lint
-static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Menu.c,v 1.2 1991-09-04 10:13:21 vanharen Exp $";
-#endif	lint
+#if  (!defined(lint))  &&  (!defined(SABER))
+static char *rcsid =
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/lib/Menu.c,v 1.3 1993-07-02 00:41:22 vanharen Exp $";
+#endif
 
 #include "mit-copyright.h"
 #include <stdio.h>
@@ -20,6 +20,7 @@ static char rcsid[] =
 #include <ctype.h>
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
+#include <X11/cursorfont.h>
 #include <errno.h>
 #include <sys/file.h>
 #include <sys/types.h>
@@ -29,6 +30,9 @@ static char rcsid[] =
 #include "Menu.h"
 #include "Button.h"
 #include "warn.h"
+#include <X11/Xatom.h>
+
+#include <sys/time.h>
 
 #if  defined(ultrix) || defined(_AIX) || defined(_AUX_SOURCE) || defined(sun)
 extern int errno;
@@ -42,8 +46,6 @@ extern int DEBUG;
 
 /* #define DEBUGMEM */
 
-extern void XjUsage();
-
 extern XrmDatabase rdb;
 
 /* oops! broken abstraction! but it's just a string. :-) */
@@ -54,6 +56,7 @@ item quit: \"Quit Dash\" [none] -verify quit();"
 /* come to think of it, should this be a class variable? */
 static XContext context;
 static int gotContextType = 0;
+int me_moving = 0;
 
 #define offset(field) XjOffset(MenuJet,field)
 
@@ -89,7 +92,7 @@ static XjResource resources[] = {
   { XjNreverseVideo, XjCReverseVideo, XjRBoolean, sizeof(Boolean),
       offset(menu.reverseVideo), XjRBoolean, (caddr_t)False },
   { XjNscreenWidth, XjCScreenWidth, XjRBoolean, sizeof(Boolean),
-      offset(menu.screenWidth), XjRBoolean, (caddr_t)True },
+      offset(menu.screenWidth), XjRBoolean, (caddr_t) False },
   { XjNhelpPixmap, XjCPixmap, XjRPixmap, sizeof(XjPixmap *),
       offset(menu.helpPixmap), XjRString, "help.bits" },
   { XjNsubmenuPixmap, XjCPixmap, XjRPixmap, sizeof(XjPixmap *),
@@ -105,7 +108,11 @@ static XjResource resources[] = {
   { XjNverify, XjCVerify, XjRBoolean, sizeof(Boolean),
       offset(menu.verify), XjRBoolean, (caddr_t)True },
   { XjNautoRaise, XjCAutoRaise, XjRBoolean, sizeof(Boolean),
-      offset(menu.autoRaise), XjRBoolean, (caddr_t)False }
+      offset(menu.autoRaise), XjRBoolean, (caddr_t)False },
+  { XjNmoveMenus, XjCMoveMenus, XjRBoolean, sizeof(Boolean),
+      offset(menu.moveMenus), XjRBoolean, (caddr_t)False },
+  { XjNrightJet, XjCJet, XjRString, sizeof(Jet),
+      offset(menu.rightJet), XjRString, NULL },
 };
 
 #undef offset
@@ -121,24 +128,32 @@ static void closeMenuAndAncestorsToLevel();
 
 MenuClassRec menuClassRec = {
   {
-    /* class name */	"Menu",
-    /* jet size   */	sizeof(MenuRec),
-    /* initialize */	initialize,
-    /* prerealize */    NULL,
-    /* realize */	realize,
-    /* event */		event_handler,
-    /* expose */	NULL,
-    /* querySize */     NULL,
-    /* move */		NULL,
-    /* resize */        NULL,
-    /* destroy */       NULL,
-    /* resources */	resources,
-    /* number of 'em */	XjNumber(resources)
+    /* class name */		"Menu",
+    /* jet size   */		sizeof(MenuRec),
+    /* classInitialize */	NULL,
+    /* classInitialized? */	1,
+    /* initialize */		initialize,
+    /* prerealize */    	NULL,
+    /* realize */		realize,
+    /* event */			event_handler,
+    /* expose */		NULL,
+    /* querySize */     	NULL,
+    /* move */			NULL,
+    /* resize */        	NULL,
+    /* destroy */       	NULL,
+    /* resources */		resources,
+    /* number of 'em */		XjNumber(resources)
   }
 };
 
 JetClass menuJetClass = (JetClass)&menuClassRec;
 
+
+/************************************************************************
+ *
+ *  drawHelp  -- draws text in a help box when it is popped up.
+ *
+ ************************************************************************/
 static void drawHelp(me, menu)
      MenuJet me;
      Menu *menu;
@@ -170,6 +185,13 @@ static void drawHelp(me, menu)
     }
 }
 
+
+/************************************************************************
+ *
+ *  computeHelpSize  -- figures out how big a help box is, based on the
+ *	text that it contains.
+ *
+ ************************************************************************/
 static void computeHelpSize(me, menu)
      MenuJet me;
      Menu *menu;
@@ -179,31 +201,38 @@ static void computeHelpSize(me, menu)
   menu->pane_width = 0;
   menu->pane_height = me->menu.vMenuPadding;
 
-  ptr = menu->child->title;
-  while (*ptr != '\0')
+  if (menu->child->title_width != 0)
     {
-      end = ptr;
-      while (*end != '\n' && *end != '\0')
-	end++;
+      menu->pane_width += me->menu.hMenuPadding + menu->child->title_width;
+      menu->pane_height += menu->child->title_height;
+    }
+  else
+    {
+      ptr = menu->child->title;
+      while (*ptr != '\0')
+	{
+	  end = ptr;
+	  while (*end != '\n' && *end != '\0')
+	    end++;
 
-      if (end > ptr)
-	menu->pane_width = MAX(menu->pane_width,
-			       me->menu.hMenuPadding +
-			       XTextWidth(me->menu.font,
-					  ptr,
-					  (int)(end - ptr)));
+	  if (end > ptr)
+	    menu->pane_width = MAX(menu->pane_width,
+				   me->menu.hMenuPadding +
+				   XTextWidth(me->menu.font,
+					      ptr,
+					      (int)(end - ptr)));
 
-      menu->pane_height +=  me->menu.font->ascent +
+	  menu->pane_height +=  me->menu.font->ascent +
 				me->menu.font->descent;
 
-      if (*end != '\0')
-	ptr = end + 1;
-      else
-	ptr = end;
+	  if (*end != '\0')
+	    ptr = end + 1;
+	  else
+	    ptr = end;
+	}
     }
 
-  menu->child->label_x = 0 + BORDER;
-  menu->child->label_y = 0 + BORDER;
+  menu->child->label_x = menu->child->label_y = BORDER;
   menu->child->label_width = menu->pane_width;
   menu->child->label_height = menu->pane_height;
 
@@ -211,31 +240,43 @@ static void computeHelpSize(me, menu)
   menu->pane_height += 2 * BORDER + SHADOW;
 }
 
+
+/************************************************************************
+ *
+ *  computeMenuSize  -- figures out how big a menu is, based on the
+ *	items that it contains.
+ *
+ ************************************************************************/
 void computeMenuSize(me, menu)
      MenuJet me;
      Menu *menu;
 {
-  int x, y, height;
+  int x, y;
+  static int height=0;
   int maxPixmap = 0;
   Menu *m;
 
-  height = me->menu.font->ascent + me->menu.font->descent
-    		+ me->menu.vMenuPadding;
+  if (height==0)
+    height = me->menu.font->ascent + me->menu.font->descent
+      + me->menu.vMenuPadding;
 
-  menu->label_width = me->menu.hMenuPadding +
-    XTextWidth(me->menu.font,
-	       menu->title,
-	       strlen(menu->title));
-  menu->label_height = height;
-
-  if (menu->paneType == HELP)
+  if (menu->parent && menu->parent->paneType == HELP)
     {
-      computeHelpSize(me, menu);
+      computeHelpSize(me, menu->parent);
       return;
     }
 
-  x = 0 + BORDER;
-  y = 0 + BORDER;
+  if (menu->title_width == 0)
+    {
+      menu->title_width = XTextWidth(me->menu.font,
+				     menu->title,
+				     strlen(menu->title));
+    }
+  menu->label_width = me->menu.hMenuPadding + menu->title_width;
+  menu->label_height = height;
+
+
+  x = y = BORDER;
 
   if (menu->orientation == VERTICAL)
     x += 10;
@@ -252,7 +293,8 @@ void computeMenuSize(me, menu)
 	{
 	case HORIZONTAL:
 	  menu->pane_width += m->label_width;
-	  menu->pane_height = MAX(menu->pane_height, m->label_height);
+	  if (m->label_height > menu->pane_height)
+	    menu->pane_height = m->label_height;
 	  x += m->label_width;
 	  break;
 
@@ -261,26 +303,35 @@ void computeMenuSize(me, menu)
 	    {
 	      if (m->paneType != HELP)
 		{
-		  maxPixmap = MAX(maxPixmap,
-				  me->menu.submenuPixmap->width +
-				  me->menu.hMenuPadding);
-		  m->label_height = MAX(m->label_height,
-					me->menu.submenuPixmap->height +
-					me->menu.vMenuPadding);
+		  int tmp;
+		  tmp = me->menu.submenuPixmap->width + me->menu.hMenuPadding;
+		  if (tmp > maxPixmap)
+		    maxPixmap = tmp;
+
+		  tmp = me->menu.submenuPixmap->height + me->menu.vMenuPadding;
+		  if (tmp > m->label_height)
+		    m->label_height = tmp;
 		}
 	      else
 		if (me->menu.showHelp)
 		  {
-		    maxPixmap = MAX(maxPixmap, me->menu.helpPixmap->width +
-				    me->menu.hMenuPadding);
-		    m->label_height = MAX(m->label_height,
-					  me->menu.helpPixmap->height +
-					  me->menu.vMenuPadding);
+		    int tmp;
+		    tmp = me->menu.helpPixmap->width + me->menu.hMenuPadding;
+		    if (tmp > maxPixmap)
+		      maxPixmap = tmp;
+
+		    tmp = me->menu.helpPixmap->height + me->menu.vMenuPadding;
+		    if (tmp > m->label_height)
+		      m->label_height = tmp;
 		  }
 	    }
 	      
+	  if (m->label_width > menu->pane_width)
+	    menu->pane_width = m->label_width;
+/*
 	  menu->pane_width = MAX(menu->pane_width,
 				 m->label_width + m->label_x);
+*/
 	  menu->pane_height += m->label_height;
 	  y += m->label_height;
 
@@ -288,22 +339,37 @@ void computeMenuSize(me, menu)
 	}
     }
 
+  if (menu->orientation == VERTICAL)
+    menu->pane_width += x;
+
   menu->pane_open_x = menu->pane_width + BORDER;
 
   menu->pane_width += 2 * BORDER + SHADOW + maxPixmap;
   menu->pane_height += 2 * BORDER + SHADOW;
 }
 
-/*
- * Iteratively traverse the menu tree (bottom up) and
- * recompute it. This function is usefully called
- * when help mode is toggled.
- */
+
+/************************************************************************
+ *
+ *  computeAllMenuSizes  --
+ *	Iteratively traverse the menu tree (bottom up) and
+ *	recompute it. This function is usefully called
+ *	when help mode is toggled.
+ *
+ ************************************************************************/
 void computeAllMenuSizes(me, menu)
      MenuJet me;
      Menu *menu;
 {
   Menu *m;
+
+  struct timeval start, end;
+
+  if (DEBUG)
+    {
+      gettimeofday(&start, NULL);
+      printf("computeAllMenuSizes: - %d.%d + \n", start.tv_sec, start.tv_usec);
+    }
 
   m = menu;
 
@@ -324,13 +390,42 @@ void computeAllMenuSizes(me, menu)
       if (m != NULL /* && m->sibling != NULL */)
 	m = m->sibling;
     }	  
+  if (DEBUG)
+    {
+      gettimeofday(&end, NULL);
+      printf("computeAllMenuSizes: %d.%d = %d.%06.6d\n",
+	     end.tv_sec, end.tv_usec,
+	     (end.tv_usec > start.tv_usec)
+	     ? end.tv_sec - start.tv_sec
+	     : end.tv_sec - start.tv_sec - 1,
+	     (end.tv_usec > start.tv_usec)
+	     ? end.tv_usec - start.tv_usec
+	     : end.tv_usec + 1000000 - start.tv_usec );
+    }
 }
 
-void computeRootMenuSize(me)
+
+/************************************************************************
+ *
+ *  computeRootMenuSize  --  figure out how big the root menu is.
+ *
+ ************************************************************************/
+void computeRootMenuSize(me, size)
      MenuJet me;
+     XjSize *size;
 {
   computeMenuSize(me, me->menu.rootMenu);
 
+  size->width  = me->menu.rootMenu->pane_width;
+  size->height = me->menu.rootMenu->pane_height;
+
+  if (me->menu.screenWidth == 1 &&
+      me->menu.rootMenu->orientation == HORIZONTAL)
+    size->width = MAX(DisplayWidth(me->core.display,
+				   DefaultScreen(me->core.display)),
+		      me->menu.rootMenu->pane_width);
+
+#ifdef notdefined
   me->core.width = me->menu.rootMenu->pane_width;
   me->core.height = me->menu.rootMenu->pane_height;
 
@@ -339,8 +434,16 @@ void computeRootMenuSize(me)
     me->core.width = MAX(DisplayWidth(me->core.display,
 				      DefaultScreen(me->core.display)),
 			 me->menu.rootMenu->pane_width);
+#endif
 }
 
+
+/************************************************************************
+ *
+ *  stringToQuark  --  quarkifies first string on comma-seperated list
+ *	and returns it, leaving string pointing to next item.
+ *
+ ************************************************************************/
 static XrmQuark stringToQuark(string)
      char **string;
 {
@@ -350,7 +453,7 @@ static XrmQuark stringToQuark(string)
   ptr = *string;
   while (isalnum(*ptr)) ptr++;
   if (ptr == *string)
-    return NULL;
+    return (XrmQuark) NULL;
   tmp = *ptr;
   *ptr = '\0';
   q = XrmStringToQuark(*string);
@@ -366,6 +469,13 @@ static XrmQuark stringToQuark(string)
   return q;
 }
 
+
+/************************************************************************
+ *
+ *  skippast  --  skip past all text until first occurrence of 'what',
+ *	except if 'inquotes' is true, then just find the end of the quote.
+ *
+ ************************************************************************/
 static void skippast(ptr, inquotes, what)
      char **ptr;
      int inquotes;
@@ -399,11 +509,25 @@ static void skippast(ptr, inquotes, what)
     }
 }
 
+
+/************************************************************************
+ *
+ *  countMenuEntries  --  count the number of menu entries in a string.
+ *
+ ************************************************************************/
 static int countMenuEntries(me, string)
      MenuJet me;
      char *string;
 {
   int count = 0;
+
+  struct timeval start, end;
+
+  if (DEBUG)
+    {
+      gettimeofday(&start, NULL);
+      printf("countMenuEntries: - %d.%d + \n", start.tv_sec, start.tv_usec);
+    }
 
   while (*string != '\0')
     {
@@ -416,10 +540,27 @@ static int countMenuEntries(me, string)
       while (isspace(*string)) string++;
     }
 
+  if (DEBUG)
+    {
+      gettimeofday(&end, NULL);
+      printf("countMenuEntries: %d.%d = %d.%06.6d\n", end.tv_sec, end.tv_usec,
+	     (end.tv_usec > start.tv_usec)
+	     ? end.tv_sec - start.tv_sec
+	     : end.tv_sec - start.tv_sec - 1,
+	     (end.tv_usec > start.tv_usec)
+	     ? end.tv_usec - start.tv_usec
+	     : end.tv_usec + 1000000 - start.tv_usec );
+    }
   return count;
 }
 
 
+
+/************************************************************************
+ *
+ *  parseMenuEntry  --  parse entry in 'string' and shove it into 'info'.
+ *
+ ************************************************************************/
 /*
  * Some of this code is *sooooo* gross
  */
@@ -555,6 +696,13 @@ static Boolean parseMenuEntry(me, string, info)
 		  break;
 		}
 
+	      if (strncasecmp(ptr + 1, SUN4, strlen(SUN4)) == 0)
+		{
+		  info->u.i.machtype |= (SUN4NUM << ((*ptr == '+') ? 0 : 8));
+		  ptr += strlen(SUN4) + 1;
+		  break;
+		}
+
 	      if (strncasecmp(ptr + 1, "verify", 6) == 0)
 		{
 		  info->flags |= verifyFLAG;
@@ -673,21 +821,21 @@ static Boolean parseMenuEntry(me, string, info)
 	      while ((qnum < MAXCHILDREN) && !done)
 		{
 		  info->u.m.children[qnum++] = stringToQuark(&ptr);
-		  if (info->u.m.children[qnum - 1] == NULL)
+		  if (info->u.m.children[qnum - 1] == (XrmQuark) NULL)
 		    done = 1;
 		}
 	      if (!done)
 		{
-		  if (NULL != stringToQuark(&ptr))
+		  if ((XrmQuark) NULL != stringToQuark(&ptr))
 		    {
-		      while (stringToQuark(&ptr) != NULL);
+		      while (stringToQuark(&ptr) != (XrmQuark) NULL);
 		      sprintf(errtext,
 			      "'%s' - more than %d child types; truncated",
 			      XrmQuarkToString(info->name), MAXCHILDREN);
 		      XjWarning(errtext);
 		    }
 		}
-	      if (info->u.m.children[0] != NULL)
+	      if (info->u.m.children[0] != (XrmQuark) NULL)
 		info->flags |= childrenFLAG;
 	    }
 	  else /* type != MenuITEM */
@@ -736,7 +884,7 @@ static Boolean parseMenuEntry(me, string, info)
 		  while ((qnum < MAXPARENTS) && !done)
 		    {
 		      info->parents[qnum++] = stringToQuark(&ptr);
-		      if (info->parents[qnum - 1] == NULL)
+		      if (info->parents[qnum - 1] == (XrmQuark) NULL)
 			done = 1;
 		      else
 			{
@@ -787,7 +935,7 @@ static Boolean parseMenuEntry(me, string, info)
 		  else /* we finished the group; do next */
 		    {
 		      done = 0; got_one = 1;
-		      info->parents[qnum - 1] = NULL;
+		      info->parents[qnum - 1] = (XrmQuark) NULL;
 		      info->weight[qnum - 1] = 1; /* short termination */
 		      if (*ptr == ']') ptr++;
 		      else
@@ -831,6 +979,7 @@ static Boolean parseMenuEntry(me, string, info)
 		  goto youlose;
 		}
 
+	      *(ptr-1) = '\0';
 	      info->flags |= activateFLAG;
 	    }
 	  else
@@ -878,6 +1027,13 @@ static Boolean parseMenuEntry(me, string, info)
   return False;
 }
 
+
+
+/************************************************************************
+ *
+ *  addMenuEntry  --  add a menu entry to the menu struct.
+ *
+ ************************************************************************/
 static Boolean addMenuEntry(me, info, i)
      MenuJet me;
      Item *info, *i; /* location to put it if new */
@@ -910,7 +1066,8 @@ static Boolean addMenuEntry(me, info, i)
     {
       (void)hash_store(me->menu.Names, info->name, i);
       bzero(i, sizeof(Item)); /* if new, init to zeroes */
-      i->u.i.machtype = VAXNUM | RTNUM | DECMIPSNUM | PS2NUM | RSAIXNUM;
+      i->u.i.machtype =
+	VAXNUM | RTNUM | DECMIPSNUM | PS2NUM | RSAIXNUM	| SUN4NUM;
       i->u.i.verify = True;
     }
 
@@ -1026,7 +1183,14 @@ static Boolean addMenuEntry(me, info, i)
     return False;
 }
 
-/*
+
+
+#ifdef notdefined
+/************************************************************************
+ *
+ *  printTable  --  prints out the menu table - for debugging...
+ *
+ ************************************************************************/
 static void printTable(t)
      Item *t;
 {
@@ -1034,43 +1198,43 @@ static void printTable(t)
 
   while (t != NULL)
     {
-      fprintf(stdout, "%s %s: \"%s\"",
-	      &"item\000menu"[t->type*5],
+      fprintf(stdout, "%d %s %d %d %d %s\n",
+	      t->type,
 	      XrmQuarkToString(t->name),
+	      t->flags,
+	      (t->type == MenuITEM) ? t->u.m.orientation : t->u.i.machtype,
+	      (t->type == ItemITEM) ? t->u.i.verify : 0,
 	      t->title);
 
       if (t->type == MenuITEM)
 	{
-	  fprintf(stdout, " ");
 	  for (i = 0; i < MAXCHILDREN && t->u.m.children[i] != 0; i++)
 	    {
 	      fprintf(stdout, "%s", XrmQuarkToString(t->u.m.children[i]));
 	      if ((i < MAXCHILDREN - 1) && t->u.m.children[i+1] != 0)
-		fprintf(stdout, ",");
+		fprintf(stdout, " ");
 	    }
+	  fprintf(stdout, "\n");
 	}
 
-      fprintf(stdout, " ");
+
       done = 0; i = 0;
       while (!done)
 	{
-	  if (t->parents[i] != 0)
-	    fprintf(stdout, "(");
-	  else
+	  if (t->parents[i] == 0)
 	    done = 1;
 	  while (!done)
 	    {
 	      if (t->parents[i] != 0)
 		{
 		  fprintf(stdout, "%s", XrmQuarkToString(t->parents[i]));
-		  if (t->weight[i] != 0)
-		    fprintf(stdout, "/%d", t->weight[i]);
+		  fprintf(stdout, " %d", t->weight[i]);
 		  if ((i < MAXPARENTS - 1) && t->parents[i+1] != 0)
-		    fprintf(stdout, ",");
+		    fprintf(stdout, " ");
 		  else
 		    {
 		      done = 1;
-		      fprintf(stdout, ")");
+		      fprintf(stdout, "\n");
 		    }
 		  i++;
 		}
@@ -1084,13 +1248,28 @@ static void printTable(t)
 	      done = 0;
 	    }
 	}
+      fprintf(stdout, "!\n");
 
-      fprintf(stdout, "\n");
+
+      if (t->type == ItemITEM)
+	{
+	  printf("%s\n", "activateStringHere");
+	  printf("%s\n",t->u.i.help);
+	  printf("!\n");
+	}
+
+
       t = t->next;
     }
 }
-*/
+#endif
 
+
+/************************************************************************
+ *
+ *  createTablesFromString  --  create menu tables from a menu string.
+ *
+ ************************************************************************/
 static void createTablesFromString(me, string)
      MenuJet me;
      char *string;
@@ -1098,10 +1277,19 @@ static void createTablesFromString(me, string)
   int counter = 0;
   char *ptr;
   Item info, *location;
+  int num;
+
+  struct timeval start, end;
+
+  if (DEBUG)
+    {
+      gettimeofday(&start, NULL);
+      printf("createTablesFromString: - %d.%d + \n", start.tv_sec, start.tv_usec);
+    }
 
   ptr = string;
-
-  location = (Item *)XjMalloc(countMenuEntries(me, ptr) * sizeof(Item));
+  num = countMenuEntries(me, ptr);
+  location = (Item *)XjMalloc(num * sizeof(Item));
 
   while (*ptr != '\0')
     {
@@ -1112,12 +1300,27 @@ static void createTablesFromString(me, string)
 	  counter++;
 	}
     }
-/*
-  printTable(me->menu.firstMenu);
-  printTable(me->menu.firstItem);
-*/
+
+  if (DEBUG)
+    {
+      gettimeofday(&end, NULL);
+      printf("createTablesFromString: %d.%d = %d.%06.6d\n", end.tv_sec, end.tv_usec,
+	     (end.tv_usec > start.tv_usec)
+	     ? end.tv_sec - start.tv_sec
+	     : end.tv_sec - start.tv_sec - 1,
+	     (end.tv_usec > start.tv_usec)
+	     ? end.tv_usec - start.tv_usec
+	     : end.tv_usec + 1000000 - start.tv_usec );
+    }
 }
 
+
+
+/************************************************************************
+ *
+ *  createItem  --  stick an item into the menu struct...
+ *
+ ************************************************************************/
 static Boolean createItem(me, what)
      MenuJet me;
      Item *what;
@@ -1207,6 +1410,7 @@ static Boolean createItem(me, what)
 	      item->state = CLOSED;
 	      item->paneType = NORMAL;
 	      item->title = what->title;
+	      item->title_width = what->title_width;
 	      item->weight = what->weight[qnum];
 
 	      if (what->type == MenuITEM)
@@ -1227,6 +1431,8 @@ static Boolean createItem(me, what)
 		      item->child = (Menu *)XjMalloc(sizeof(Menu));
 		      bzero(item->child, sizeof(Menu));
 		      item->child->title = what->u.i.help;
+		      item->child->title_width = what->u.i.help_width;
+		      item->child->title_height = what->u.i.help_height;
 		      item->child->parent = item;
 		      item->child->state = CLOSED;
 		      item->child->activateProc = item->activateProc;
@@ -1249,15 +1455,48 @@ static Boolean createItem(me, what)
     return False;
 }
 
+
+
+/************************************************************************
+ *
+ *  createMenuFromTables  --  build the menu struct.
+ *
+ ************************************************************************/
 static void createMenuFromTables(me)
      MenuJet me;
 {
   Item *i;
 
+  struct timeval start, end;
+
+  if (DEBUG)
+    {
+      gettimeofday(&start, NULL);
+      printf("createMenuFromTables: - %d.%d + \n", start.tv_sec, start.tv_usec);
+    }
+
   for (i = me->menu.firstItem; i != NULL; i = i->next)
     (void)createItem(me, i);
+
+  if (DEBUG)
+    {
+      gettimeofday(&end, NULL);
+      printf("createMenuFromTables: %d.%d = %d.%06.6d\n", end.tv_sec, end.tv_usec,
+	     (end.tv_usec > start.tv_usec)
+	     ? end.tv_sec - start.tv_sec
+	     : end.tv_sec - start.tv_sec - 1,
+	     (end.tv_usec > start.tv_usec)
+	     ? end.tv_usec - start.tv_usec
+	     : end.tv_usec + 1000000 - start.tv_usec );
+    }
 }
 
+
+/************************************************************************
+ *
+ *  loadFile  --  read in a file and return it as one big ol' string.
+ *
+ ************************************************************************/
 static char *loadFile(filename)
      char *filename;
 {
@@ -1293,7 +1532,7 @@ static char *loadFile(filename)
 
     size = (int)buf.st_size;
 
-    info = (char *)XjMalloc(size + 1);
+    info = (char *)XjMalloc(size + 1);	/* one extra for the NULL */
 
     if (-1 == read(fd, info, size))
       {
@@ -1314,6 +1553,12 @@ static char *loadFile(filename)
     return info;
 }
 
+
+/************************************************************************
+ *
+ *  destroyChildren  --  mass murder...
+ *
+ ************************************************************************/
 static void destroyChildren(reap)
      Menu *reap;
 {
@@ -1329,6 +1574,12 @@ static void destroyChildren(reap)
     }
 }
     
+
+/************************************************************************
+ *
+ *  destroyMenu  --  destroy yourself!  and your little dog too!
+ *
+ ************************************************************************/
 static void destroyMenu(me)
      MenuJet me;
 {
@@ -1338,6 +1589,13 @@ static void destroyMenu(me)
   me->menu.rootMenu = NULL;
 }
 
+
+
+/************************************************************************
+ *
+ *  loadNewMenus  --  load some new menus into the menu struct.
+ *
+ ************************************************************************/
 /*
  * A lot of this procedure is duplicated from other places -
  * these things ought to be done in common routines. Prime opportunity
@@ -1396,10 +1654,14 @@ int loadNewMenus(me, file)
       me->menu.rootMenu->paneType = NORMAL;
 
       computeAllMenuSizes(me, me->menu.rootMenu);
-      computeRootMenuSize(me);
+      computeRootMenuSize(me, &size);
+      me->core.width  = size.width;
+      me->core.height = size.height;
 
+#ifdef notdefined
       size.width = me->core.width; /* this is an official hack */
       size.height = me->core.height;
+#endif
       XjResize(XjParent(me), &size);
 
       return 0;
@@ -1408,41 +1670,415 @@ int loadNewMenus(me, file)
     return 1;
 }
 
+
+/************************************************************************
+ *
+ *  createTablesFromCompiledFile  --  long enough name or what?
+ *
+ ************************************************************************/
+static int
+createTablesFromCompiledFile(me, file, fontname)
+     MenuJet me;
+     char *file, *fontname;
+{
+  char *comp_file;		/* "compiled" file name */
+  struct stat buf;
+  time_t mod_time;
+  int i, num;
+  Item *loc;
+  char *str, *end;
+  int samefont = False;
+
+  int qnum;
+  int tmp, mach_or_orntn, verify;
+  int j;
+  char *ptr;
+  TypeDef *t;
+
+
+  struct timeval start, t_end;
+
+  if (DEBUG)
+    {
+      gettimeofday(&start, NULL);
+      printf("createTablesFromCompiledFile: - %d.%d + \n", start.tv_sec, start.tv_usec);
+    }
+
+  if (file[0] == '\0'  ||  file == NULL)
+    return False;
+
+  if (-1 == stat(file, &buf))
+    return False;
+  mod_time = buf.st_mtime;
+
+  if ((comp_file = XjMalloc((unsigned)strlen(file) + 5)) == NULL)
+    return False;
+
+  (void) strcpy(comp_file, file);
+  (void) strcat(comp_file, ".cmp");
+
+  if (-1 == stat(comp_file, &buf))
+    {
+      XjFree(comp_file);
+      return False;
+    }
+
+  if (buf.st_mtime < mod_time)
+    {
+      XjFree(comp_file);
+      return False;
+    }
+
+  str = loadFile(comp_file);
+  XjFree(comp_file);
+
+  if (str == NULL)
+    return False;
+
+  num = atoi(str);
+  str += 5;
+
+  tmp = atoi(str);
+  str += 4;
+  *(end = str+tmp) = '\0';
+  if (!strcasecmp(str, fontname))
+    samefont = True;
+  str = ++end;
+
+  loc = (Item *)XjMalloc(num * sizeof(Item));
+  bzero(loc, num * sizeof(Item));
+
+  for (i=0; i < num; i++)
+    {
+      loc->type = atoi(str);
+      str += 2;
+      tmp = atoi(str);
+      str += 5;
+      *(end = str+tmp) = '\0';
+      /*      end = index(str, ' ');       *end = '\0';       */
+      loc->name = XrmStringToQuark(str);
+      str = ++end;
+      loc->flags = atoi(str);
+      str += 6;
+      mach_or_orntn = atoi(str);
+      str += 6;
+      verify = atoi(str);
+      str += 2;
+      
+      tmp = atoi(str);
+      str += 5;
+      *(end = str+tmp) = '\0';
+      /* end = index(str, '\n');      *end = '\0';       */
+      loc->title = str;
+      str = ++end;
+
+      if (samefont)
+	loc->title_width = atoi(str);
+      str += 6;
+
+      switch(loc->type)
+	{
+	  /*
+	   *  If an item, parse this-a-way...
+	   */
+	case ItemITEM:
+	  loc->next = me->menu.firstItem;
+	  me->menu.firstItem = loc;
+	  loc->u.i.machtype = mach_or_orntn;
+	  loc->u.i.verify = verify;
+	  break;
+
+	  /*
+	   *  ...else, if a menu, parse that-a-way...
+	   */
+	case MenuITEM:
+	  loc->next = me->menu.firstMenu;
+	  me->menu.firstMenu = loc;
+	  loc->u.m.orientation = mach_or_orntn;
+
+	  j = 0;
+	  do
+	    {
+	      tmp = atoi(str);
+	      str += 5;
+	      *(end = str+tmp) = '\0';
+	      /* end = index(str, ' ');      *end = '\0';       */
+	      loc->u.m.children[j++] = XrmStringToQuark(str);
+	      str = end+1;
+	    }
+	  while ( *str != '\n' );
+	  str++;
+/*
+	  ret = sscanf(str, "%s %s %s %s %s",
+		       strs[0], strs[1], strs[2], strs[3], strs[4]);
+	  for (j=0; j < ret; j++)
+	    loc->u.m.children[j] = XrmStringToQuark(strs[j]);
+*/
+
+	  break;
+	}
+
+      /*
+       *  Both menus and items have parents, so share this
+       *  line-parsing...
+       */
+
+      qnum = 0;
+      while (*str != '!')
+	{
+	  do
+	    {
+	      end = index(str, ' ');
+	      *end = '\0';
+	      loc->parents[qnum] = XrmStringToQuark(str);
+	      str = ++end;
+	      loc->weight[qnum++] = atoi(str);
+	      str += 5;
+	    }
+	  while ( *str != '\n' );
+	  str++;
+
+	  if (qnum != MAXPARENTS)
+	    {
+	      loc->parents[qnum] = (XrmQuark) NULL;
+	      loc->weight[qnum++] = 1;
+	    }	  
+/*
+	  ret = sscanf(str, "%s %d %s %d %s %d %s %d %s %d %s %d %s %d %s %d %s %d %s %d",
+		       strs[0], &wts[0], strs[1], &wts[1], strs[2], &wts[2],
+		       strs[3], &wts[3], strs[4], &wts[4], strs[5], &wts[5],
+		       strs[6], &wts[6], strs[7], &wts[7], strs[8], &wts[8],
+		       strs[9], &wts[9]);
+	  for (j=0; j < ret/2; j++)
+	    {
+	      loc->parents[qnum] = XrmStringToQuark(strs[j]);
+	      loc->weight[qnum++] = wts[j];
+	    }
+
+	  str = ++end;
+	  end = index(str, '\n');
+	  *end = '\0';
+*/
+
+	}
+      if (qnum != MAXPARENTS)
+	{
+	  qnum--;
+	  loc->parents[qnum] = (XrmQuark) NULL;
+	  loc->weight[qnum] = 0;
+	}
+
+      str += 2;
+
+      switch(loc->type)
+	{
+	  /*
+	   *  If an item, parse this-a-way...
+	   */
+	case ItemITEM:
+	  tmp = atoi(str);
+	  str += 5;
+	  *(end = str+tmp) = '\0';
+	  /*  end = index(str, '\n');	  *end = '\0'; */
+	  ptr = str;
+
+	  if (strncmp("(null)", ptr, 6))
+	    {
+	      if (NULL ==
+		  (loc->u.i.activateProc = XjConvertStringToCallback(&ptr)))
+		{
+		  char errtext[100];
+		  sprintf(errtext,
+			  "'%s' - couldn't grok callback; ignoring entry",
+			  XrmQuarkToString(loc->name));
+		  XjWarning(errtext);
+		  loc->flags &= ~activateFLAG; /* is this right??? */
+		}
+	    }
+
+	  str = ++end;
+	  tmp = atoi(str);
+	  str += 5;
+	  *(end = str+tmp) = '\0';
+	  /* end = index(str, '!');	  while ( *(end-1) != '\n' ) */
+	  /* end = index(end+1, '!');	  *end = '\0';  */
+	  if (strncmp("(null)", str, 6))
+	    {
+	      loc->u.i.help = str;
+	    }
+
+	  str = end+3;
+
+	  if (samefont)
+	    {
+	      loc->u.i.help_width = atoi(str);
+	      str += 6;
+	      loc->u.i.help_height = atoi(str);
+	      str += 6;
+	    }
+	  else
+	    str += 12;
+
+	  break;
+
+	  /*
+	   *  ...else, if a menu, parse that-a-way...
+	   */
+	case MenuITEM:
+	  /*
+	   * Add the new ones...
+	   */
+	  for (j = 0; loc->u.m.children[j] != 0 && j < MAXCHILDREN; j++)
+	    {
+	      t = (TypeDef *)hash_lookup(me->menu.Types, loc->u.m.children[j]);
+	      if (t == NULL)
+		{
+		  t = (TypeDef *)XjMalloc(sizeof(TypeDef));
+		  bzero(t, sizeof(TypeDef));
+		  (void)hash_store(me->menu.Types, loc->u.m.children[j], t);
+		  t->type = loc->u.m.children[j];
+		  t->menus[0] = loc;
+		}
+	      else
+		{
+		  int m;
+
+		  for (m = 0; m < MAXMENUSPERTYPE && t->menus[m] != 0; m++);
+		  if (m == MAXMENUSPERTYPE)
+		    {
+		      char errtext[100];
+		      
+		      sprintf(errtext, "'%s' not typed as %s due to overflow",
+			      XrmQuarkToString(loc->name),
+			      XrmQuarkToString(t->type));
+		      XjWarning(errtext);
+		    }
+		  else
+		    t->menus[m] = loc;
+		}
+	    }
+	  break;
+	}
+
+      (void)hash_store(me->menu.Names, loc->name, loc);
+      loc++;
+    }
+
+  if (DEBUG)
+    {
+      gettimeofday(&t_end, NULL);
+      printf("createTablesFromCompiledFile: %d.%d = %d.%06.6d\n",
+	     t_end.tv_sec, t_end.tv_usec,
+	     (t_end.tv_usec > start.tv_usec)
+	     ? t_end.tv_sec - start.tv_sec
+	     : t_end.tv_sec - start.tv_sec - 1,
+	     (t_end.tv_usec > start.tv_usec)
+	     ? t_end.tv_usec - start.tv_usec
+	     : t_end.tv_usec + 1000000 - start.tv_usec );
+    }
+
+  return True;
+}
+
+
+
+/************************************************************************
+ *
+ *  initialize  --  the mother of all routines...
+ *
+ ************************************************************************/
 static void initialize(me)
      MenuJet me;
 {
-  if (me->menu.file[0] != '\0')
-    me->menu.items = loadFile(me->menu.file);
-
-  if (me->menu.items == NULL  &&  me->menu.fallback[0] != '\0')
+  struct timeval start, end;
+  unsigned long foo;
+  char *fontname;
+  XjSize size;
+  Bool font_prop;
+  if (DEBUG)
     {
-      extern char line1[], line2[];
-      XjWarning("trying fallback file");
-      strcpy(line1, "Unable to load menu file, trying fallback file.");
-      strcpy(line2, "Try restarting dash later to get up-to-date menus.");
-      UserWarning(NULL, False);
-      me->menu.items = loadFile(me->menu.fallback);
+      gettimeofday(&start, NULL);
+      printf("initialize: - %d.%d + \n", start.tv_sec, start.tv_usec);
     }
 
-  if (me->menu.userFile[0] != '\0')
-    me->menu.userItems = loadFile(me->menu.userFile);
+  font_prop = XGetFontProperty(me->menu.font, XA_FONT, &foo);
+  if (font_prop)
+    fontname = XGetAtomName(me->core.display, foo);
 
   me->menu.Names = create_hash(HASHSIZE);
   me->menu.Types = create_hash(HASHSIZE);
   me->menu.firstItem = NULL;
   me->menu.firstMenu = NULL;
 
-  if (me->menu.items != NULL &&
-      me->menu.items[0] != '\0') /* a bit of a lose, but... */
-    createTablesFromString(me, me->menu.items);
-  else
-    createTablesFromString(me, NOMENU);
+  /*
+   * load up default menus...
+   */
+  if (!createTablesFromCompiledFile(me, me->menu.file,
+				    font_prop ? fontname : "" ))
+    {
+      if (me->menu.file[0] != '\0')
+	me->menu.items = loadFile(me->menu.file);
+
+      if (me->menu.items == NULL  &&  me->menu.fallback[0] != '\0')
+	{
+	  Jet root=(Jet)me;
+
+	  XjWarning("trying fallback file");
+	  while (XjParent(root))
+	    root=XjParent(root);
+
+	  XjUserWarning(root, NULL, False,
+			"Unable to load menu file, trying fallback file.",
+			"Try restarting dash later to get up-to-date menus.");
+	  me->menu.items = loadFile(me->menu.fallback);
+	}
+
+      if (me->menu.items != NULL &&
+	  me->menu.items[0] != '\0') /* a bit of a lose, but... */
+	createTablesFromString(me, me->menu.items);
+      else
+	createTablesFromString(me, NOMENU);
+    }
+  if (font_prop)
+    XjFree(fontname);
+
+  /*
+   * load up user-defined stuff...
+   */
+  if (me->menu.userFile[0] != '\0')
+    me->menu.userItems = loadFile(me->menu.userFile);
 
   if (me->menu.userItems != NULL &&
       me->menu.userItems[0] != '\0') /* a bit of a lose, but... */
     createTablesFromString(me, me->menu.userItems);
 
+  /*
+   * create menus from everything...
+   */
   createMenuFromTables(me);
+
+#ifdef notdefined
+  if (print)
+    {
+      struct timeval start, end;
+
+      gettimeofday(&start, NULL);
+      printf("initialize(printTable): - %d.%d + \n", start.tv_sec, start.tv_usec);
+
+      printTable(me->menu.firstMenu);
+      printTable(me->menu.firstItem);
+      print=0;
+
+      gettimeofday(&end, NULL);
+      printf("initialize(printTable): %d.%d = %d.%06.6d\n", end.tv_sec, end.tv_usec,
+	     (end.tv_usec > start.tv_usec)
+	     ? end.tv_sec - start.tv_sec
+	     : end.tv_sec - start.tv_sec - 1,
+	     (end.tv_usec > start.tv_usec)
+	     ? end.tv_usec - start.tv_usec
+	     : end.tv_usec + 1000000 - start.tv_usec );
+    }
+#endif
 
   /*
    * Here all of the menu tree has been created and filled in
@@ -1454,14 +2090,32 @@ static void initialize(me)
 
   computeAllMenuSizes(me, me->menu.rootMenu);
 
-  computeRootMenuSize(me);
-  (XjParent(me))->core.width = me->core.width;
-  (XjParent(me))->core.height = me->core.height;
+  computeRootMenuSize(me, &size);
+  (XjParent(me))->core.width  = me->core.width  = size.width;
+  (XjParent(me))->core.height = me->core.height = size.height;
 
   me->menu.grabbed = False;
   me->menu.scrollx = 0;
+  if (DEBUG)
+    {
+      gettimeofday(&end, NULL);
+      printf("initialize: %d.%d = %d.%06.6d\n", end.tv_sec, end.tv_usec,
+	     (end.tv_usec > start.tv_usec)
+	     ? end.tv_sec - start.tv_sec
+	     : end.tv_sec - start.tv_sec - 1,
+	     (end.tv_usec > start.tv_usec)
+	     ? end.tv_usec - start.tv_usec
+	     : end.tv_usec + 1000000 - start.tv_usec );
+    }
 }
 
+
+
+/************************************************************************
+ *
+ *  realize  --  think about it...
+ *
+ ************************************************************************/
 static void realize(me)
      MenuJet me;
 {
@@ -1489,22 +2143,22 @@ static void realize(me)
   valuemask = ( GCForeground | GCBackground | GCFunction | GCFont
 	       | GCLineWidth | GCGraphicsExposures );
 
-  me->menu.gc = XCreateGC(me->core.display,
-			     me->core.window,
-			     valuemask,
-			     &values);
+  me->menu.gc = XjCreateGC(me->core.display,
+			   me->core.window,
+			   valuemask,
+			   &values);
 
   values.line_width = 0;
   values.line_style = LineOnOffDash;
   values.dashes = (char)1;
   valuemask |= GCLineStyle | GCDashList;
 
-  me->menu.dash_gc = XCreateGC(me->core.display,
-			       me->core.window,
-			       valuemask,
-			       &values);
+  me->menu.dash_gc = XjCreateGC(me->core.display,
+				me->core.window,
+				valuemask,
+				&values);
 
-  me->menu.dot_gc = XCreateGC(me->core.display,
+  me->menu.dot_gc = XjCreateGC(me->core.display,
 			       me->core.window,
 			       valuemask,
 			       &values);
@@ -1514,21 +2168,21 @@ static void realize(me)
 
   valuemask &= ~(GCLineStyle | GCDashList);
 
-  me->menu.dim_gc = XCreateGC(me->core.display,
-			      me->core.window,
-			      valuemask,
-			      &values);
+  me->menu.dim_gc = XjCreateGC(me->core.display,
+			       me->core.window,
+			       valuemask,
+			       &values);
 
   if (me->menu.grey != NULL)
     { /* Turn into a toolkit routine... */
       Pixmap p;
 
-      p = XCreatePixmap(me->core.display,
-			me->core.window,
-			me->menu.grey->width,
-			me->menu.grey->height,
-			DefaultDepth(me->core.display, /* wrong... sigh. */
-				     DefaultScreen(me->core.display)));
+      p = XjCreatePixmap(me->core.display,
+			 me->core.window,
+			 me->menu.grey->width,
+			 me->menu.grey->height,
+			 DefaultDepth(me->core.display, /* wrong... sigh. */
+				      DefaultScreen(me->core.display)));
 
       XCopyPlane(me->core.display,
 		 me->menu.grey->pixmap,
@@ -1553,19 +2207,19 @@ static void realize(me)
   values.foreground = me->menu.background;
   valuemask = ( GCForeground | GCBackground | GCFunction | GCFont
 	       | GCLineWidth | GCGraphicsExposures );
-  me->menu.background_gc = XCreateGC(me->core.display,
-					me->core.window,
-					valuemask,
-					&values);
+  me->menu.background_gc = XjCreateGC(me->core.display,
+				      me->core.window,
+				      valuemask,
+				      &values);
 
   values.function = GXxor;
   values.foreground = (me->menu.foreground ^
 		       me->menu.background);
 
-  me->menu.invert_gc = XCreateGC(me->core.display,
-				    me->core.window,
-				    valuemask,
-				    &values);
+  me->menu.invert_gc = XjCreateGC(me->core.display,
+				  me->core.window,
+				  valuemask,
+				  &values);
   /*
    * Do some context initialization
    */
@@ -1590,7 +2244,8 @@ static void realize(me)
 
   XjSelectInput(me->core.display, me->core.window,
 	       ExposureMask | ButtonPressMask | ButtonReleaseMask |
-	       ButtonMotionMask | EnterWindowMask);
+	       ButtonMotionMask | EnterWindowMask /* | LeaveWindowMask */
+		/*| StructureNotifyMask */);
 
   /*
    * Send the events for this window to us
@@ -1605,8 +2260,51 @@ static void realize(me)
   if (XCNOMEM == XSaveContext(me->core.display, me->menu.rootMenu->menuPane,
 			      context, (caddr_t)me->menu.rootMenu))
     XjFatalError("out of memory in XSaveContext");
+
+  /*
+   * futz around with "rightJet"...
+   */
+  if (me->menu.rightJet)
+    {
+      me->menu.right_jet = XjFindJet(me->menu.rightJet, XjParent(me));
+      if (me->menu.right_jet)
+	{
+	  XjSize size;
+	  int x = me->menu.rootMenu->pane_width
+	    + me->menu.rootMenu->pane_x;
+
+	  size.width  = me->core.width - x;
+	  size.height = me->core.height;
+	  XjMove(me->menu.right_jet, x, me->menu.rootMenu->pane_y);
+	  XjResize(me->menu.right_jet, size);
+	}
+    }
 }
 
+
+
+
+static int (*def_handler)();
+static int menu_error=0;
+static int handler(display, error)
+     Display *display;
+     XErrorEvent *error;
+{
+  if (error->error_code == BadWindow  ||  error->error_code == BadAtom)
+    {
+      menu_error=1;
+      return 0;
+    }
+
+  def_handler(display, error);
+  return 0;			/* it'll never get this far anyway... */
+}
+
+/************************************************************************
+ *
+ *  findMenu  --  figure out where the user clicked...
+ *
+ ************************************************************************/
 void findMenu(me, who, what, start, window, rx, ry)
      MenuJet me;
      Menu **who;	/* what menu we found the mouse to be in */
@@ -1619,12 +2317,22 @@ void findMenu(me, who, what, start, window, rx, ry)
   Menu *level, *ptr;
   Window scratch;
 
+  menu_error=0;
+  def_handler = XSetErrorHandler(handler);
   if (window != me->core.window)
     (void)XTranslateCoordinates(me->core.display,
 				window,
 				me->core.window,
 				rx, ry,
 				&rx, &ry, &scratch);
+  (void) XSetErrorHandler(def_handler);
+  if (menu_error)
+    {
+      *who=NULL;
+      menu_error=0;
+      return;
+    }
+  menu_error=0;
 
 #ifdef DEBUGEVENTS
       fprintf(stderr, "find: %d, %d\n",rx, ry);
@@ -1702,6 +2410,13 @@ void findMenu(me, who, what, start, window, rx, ry)
   return;
 }
 
+
+
+/************************************************************************
+ *
+ *  highlightMenu  --  highlight the current item.
+ *
+ ************************************************************************/
 static void highlightMenu(me, menu, state, gc)
      MenuJet me;
      Menu *menu;
@@ -1748,6 +2463,13 @@ static void highlightMenu(me, menu, state, gc)
     }
 }
 
+
+
+/************************************************************************
+ *
+ *  offset  --  move the menu bar...  there be beasties here...
+ *
+ ************************************************************************/
 static void offset(me, menu, delta)
      MenuJet me;
      Menu *menu;
@@ -1760,15 +2482,24 @@ static void offset(me, menu, delta)
 
 /*   Not quite right...  close...
   if (menu->menuPane == me->core.window)
-    XMoveWindow(me->core.display, menu->menuPane,
-		me->core.x + delta, me->core.y);
+    {
+      me_moving = 1;
+      XMoveWindow(me->core.display, menu->menuPane,
+		  me->core.x + delta, me->core.y);
+    }
   else
-*/
-
+  */
   menu->x += delta;
+  me_moving = 1;
   XMoveWindow(me->core.display, menu->menuPane, menu->x, menu->y);
 }
 
+
+/************************************************************************
+ *
+ *  woffset  --  offset and Warp!  (more beasties...)
+ *
+ ************************************************************************/
 static void woffset(me, menu, delta, warp)
      MenuJet me;
      Menu *menu;
@@ -1783,6 +2514,13 @@ static void woffset(me, menu, delta, warp)
 		 delta, 0);
 }
 
+
+
+/************************************************************************
+ *
+ *  openMenu  --  user clicked on another menu...  open up!
+ *
+ ************************************************************************/
 /*
  * Add window caching code?
  */
@@ -1850,22 +2588,23 @@ static void openMenu(bar, menu)
 	  break;
 	}
 
-/*      XjUsage(); */
-
       delta = 0;
-      for (checkMenu = menu->parent->child;
-	   checkMenu != NULL;
-	   checkMenu = checkMenu->sibling)
-	delta = MAX(delta, checkMenu->pane_width);
-
-      if ((delta =
-	   (DisplayWidth(bar->core.display, DefaultScreen(bar->core.display))
-	   - (x + delta))) < 0)
+      if (bar->menu.moveMenus)
 	{
-	  woffset(bar, menu->parent, delta, True);
-	  bar->menu.responsibleParent = menu->parent;
-	}
+	  for (checkMenu = menu->parent->child;
+	       checkMenu != NULL;
+	       checkMenu = checkMenu->sibling)
+	    delta = MAX(delta, checkMenu->pane_width);
 
+	  if ((delta =
+	       (DisplayWidth(bar->core.display,
+			     DefaultScreen(bar->core.display))
+		- (x + delta))) < 0)
+	    {
+	      woffset(bar, menu->parent, delta, True);
+	      bar->menu.responsibleParent = menu->parent;
+	    }
+	}
       menu->x = x + (delta < 0 ? delta : 0);
       menu->y = y;
 
@@ -1884,7 +2623,7 @@ static void openMenu(bar, menu)
 		      &attributes);
 
       wj = (WindowJet) XjParent(bar);
-      if (wj->window.cursor != NULL)
+      if (wj->window.cursor != (Cursor) NULL)
 	XDefineCursor(bar->core.display, menu->menuPane, wj->window.cursor);
 
       XSelectInput(bar->core.display, menu->menuPane,
@@ -1911,6 +2650,13 @@ static void openMenu(bar, menu)
     }
 }
 
+
+
+/************************************************************************
+ *
+ *  closeMenu  --  user closed a menu...
+ *
+ ************************************************************************/
 static void closeMenu(bar, menu, warp)
      MenuJet bar;
      Menu *menu;
@@ -1921,11 +2667,10 @@ static void closeMenu(bar, menu, warp)
   fprintf(stderr, "Close %s\n", menu->title);
 #endif
 
-  if (menu->menuPane != NULL)
+  if (menu->menuPane != (Window) NULL)
     {
       XDestroyWindow(bar->core.display, menu->menuPane);
-/*      XjUsage(); */
-      menu->menuPane = NULL;
+      menu->menuPane = (Window) NULL;
 
       if (bar->menu.scrollx != 0 && menu->parent != NULL &&
 	  bar->menu.responsibleParent == menu)
@@ -1940,6 +2685,13 @@ static void closeMenu(bar, menu, warp)
     }
 }
 
+
+
+/************************************************************************
+ *
+ *  setMenu  --  I have no idea...
+ *
+ ************************************************************************/
 static void setMenu(me, menu, newState, warp)
      MenuJet me;
      Menu *menu;
@@ -2009,6 +2761,14 @@ static void setMenu(me, menu, newState, warp)
     }
 }
 
+
+
+/************************************************************************
+ *
+ *  closeMenuAndAncestorsToLevel  --  close menu and ancestors up to
+ *	level specified...
+ *
+ ************************************************************************/
 static void closeMenuAndAncestorsToLevel(bar, start, end, warp)
      MenuJet bar;
      Menu *start, *end;
@@ -2018,8 +2778,15 @@ static void closeMenuAndAncestorsToLevel(bar, start, end, warp)
 
   for (ptr = start; ptr != end && ptr != end->parent; ptr = ptr->parent)
     setMenu(bar, ptr, CLOSED, warp);
+  XFlush(bar->core.display);
 }
 
+
+/************************************************************************
+ *
+ *  drawBackground  --  draw background of menu window...
+ *
+ ************************************************************************/
 static void drawBackground(me, menu)
      MenuJet me;
      Menu *menu;
@@ -2053,6 +2820,13 @@ static void drawBackground(me, menu)
 	    width - 1, height - 1);
 }
 
+
+
+/************************************************************************
+ *
+ *  drawPane  --  draw the items in a menu pane.
+ *
+ ************************************************************************/
 static void drawPane(me, eventMenu)
      MenuJet me;
      Menu *eventMenu;
@@ -2149,6 +2923,13 @@ static void drawPane(me, eventMenu)
     }
 }
 
+
+
+/************************************************************************
+ *
+ *  event_handler  --  deal with all the x events that get thrown at us.
+ *
+ ************************************************************************/
 static Boolean event_handler(me, event)
      MenuJet me;
      XEvent *event;
@@ -2166,23 +2947,24 @@ static Boolean event_handler(me, event)
     {
     case GraphicsExpose:
     case Expose:
-#ifdef DEBUGEVENTS
+      if (DEBUG)
       fprintf(stderr, "Exposure\n");
-#endif
+
       if (event->xexpose.count != 0)
 	break;
-      if (eventMenu->menuPane != NULL)
+      if (eventMenu->menuPane != (Window) NULL)
 	{
 	  drawPane(me, eventMenu);
 	}
 
       /* hack to support clock in menu bar */
+      if (me->menu.right_jet)
+	XjExpose(me->menu.right_jet, event);
+#ifdef notdefined	  
       if (me->core.sibling != NULL &&
-	  me->core.sibling->core.window == event->xany.window &&
-	  me->core.sibling->core.classRec->core_class.expose != NULL)
-	  me->core.sibling->core.classRec->core_class.expose(me->core.sibling,
-							     event);
-
+	  me->core.sibling->core.window == event->xany.window)
+	XjExpose(me->core.sibling, event);
+#endif
       break;
 
     case ButtonRelease:
@@ -2250,9 +3032,25 @@ static Boolean event_handler(me, event)
       break;
 
     case ButtonPress:
-      if (me->core.window == event->xany.window &&
-	  WindowVisibility(XjParent(me)) != VisibilityUnobscured)
-	XRaiseWindow(me->core.display, me->core.window);
+      if (me->core.window == event->xany.window)
+	{
+	  if (WindowVisibility(XjParent(me)) != VisibilityUnobscured)
+	    XRaiseWindow(me->core.display, me->core.window);
+	  else
+	    {
+	      Jet rj = me->menu.right_jet;
+	      if (rj
+		  && ((event->xbutton.x > rj->core.x)
+		      && (event->xbutton.x < rj->core.x + rj->core.width))
+		  && ((event->xbutton.y > rj->core.y)
+		      && (event->xbutton.y < rj->core.y + rj->core.height))
+		  && rj->core.classRec->core_class.event)
+		{
+		  if (rj->core.classRec->core_class.event(rj, event))
+		    break;
+		}
+	    }
+	}
 
 #ifdef DEBUGEVENTS
       fprintf(stderr, "ButtonPress to %d (%d) %d\n",
@@ -2270,7 +3068,8 @@ static Boolean event_handler(me, event)
 			   ButtonPressMask |
 			   ButtonReleaseMask |
 			   ButtonMotionMask |
-			   EnterWindowMask,
+			   EnterWindowMask
+			   /* | LeaveWindowMask */ ,
 			   GrabModeAsync,
 			   GrabModeAsync,
 			   None,
@@ -2359,7 +3158,7 @@ static Boolean event_handler(me, event)
        */
       closeMenuAndAncestorsToLevel(me, me->menu.deepestOpened, m, True);
 
-      if (m->menuPane == NULL)
+      if (m->menuPane == (Window) NULL)
 	setMenu(me, m, newState, True);
 
       me->menu.deepestOpened = m;
@@ -2367,14 +3166,25 @@ static Boolean event_handler(me, event)
       break;
 
     case CirculateNotify:
+      if (DEBUG)
+	printf("Menu - circ: x=%d, y=%d\n",
+	       event->xconfigure.x, event->xconfigure.y);
+      break;
+
     case CreateNotify:
+      if (DEBUG)
+	printf("Menu - create: x=%d, y=%d\n",
+	       event->xconfigure.x, event->xconfigure.y);
       break;
 
     case ConfigureNotify:
       if (me->core.window == event->xany.window)
 	{
-	  me->core.x = event->xconfigure.x;
-	  me->core.y = event->xconfigure.y;
+	  if (DEBUG)
+	    printf("Menu - config: x=%d, y=%d\n",
+		   event->xconfigure.x, event->xconfigure.y);
+	  me->menu.rootMenu->x = event->xconfigure.x;
+	  me->menu.rootMenu->y = event->xconfigure.y;
 	}
       break;
 
@@ -2396,12 +3206,27 @@ static Boolean event_handler(me, event)
 	XRaiseWindow(me->core.display, me->core.window);
       break;
 
+    case LeaveNotify:
+      if (me->menu.buttonDown == 0)
+	{
+	  Cursor cursor = XjCreateFontCursor(me->core.display,
+					     XC_ul_angle);
+	  XDefineCursor(me->core.display, me->core.window, cursor);
+	}
+
     default:
       return False;
     }
   return True;
 }
 
+
+
+/************************************************************************
+ *
+ *  tab  --  space out...
+ *
+ ************************************************************************/
 static void tab(n)
      int n;
 {
@@ -2409,6 +3234,12 @@ static void tab(n)
     fprintf(stdout, "    ");
 }
 
+
+/************************************************************************
+ *
+ *  printmenu  --  print out menu struct in a human-readable form.
+ *
+ ************************************************************************/
 static void printmenu(first, tabbing)
      Menu *first;
      int tabbing;
@@ -2458,6 +3289,13 @@ static void printmenu(first, tabbing)
     }
 }
 
+
+/************************************************************************
+ *
+ *  PrintMenu  --  call the printmenu proc above...  this proc is
+ *	suitable for use in a procedure table, the other is not...
+ *
+ ************************************************************************/
 void PrintMenu(me)
      MenuJet me;
 {
