@@ -113,7 +113,14 @@ STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
 
-THEMES =  	Atlanta			Bright			Crux			Esco			AgingGorilla		Metabox
+THEMES = \
+	Atlanta		\
+	Bright		\
+	Crux		\
+	Esco		\
+	AgingGorilla	\
+	Metabox		\
+	Simple
 
 
 THEME_DIR = $(datadir)/themes

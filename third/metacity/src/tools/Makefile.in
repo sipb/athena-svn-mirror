@@ -116,24 +116,34 @@ VERSION = @VERSION@
 icondir = $(pkgdatadir)/icons
 icon_DATA = metacity-window-demo.png
 
-INCLUDES = @METACITY_WINDOW_DEMO_CFLAGS@ @METACITY_MESSAGE_CFLAGS@ 	@METACITY_PROPS_CFLAGS@  -DMETACITY_ICON_DIR=\"$(pkgdatadir)/icons\" 	-DMETACITY_PROPS_GLADEDIR=\"$(pkgdatadir)/glade\" 	-DMETACITY_PROPS_ICON_DIR=\"$(datadir)/pixmaps\" 	-DMETACITY_LOCALEDIR=\"$(prefix)/@DATADIRNAME@/locale\"
+INCLUDES = @METACITY_WINDOW_DEMO_CFLAGS@ @METACITY_MESSAGE_CFLAGS@ \
+	@METACITY_PROPS_CFLAGS@  -DMETACITY_ICON_DIR=\"$(pkgdatadir)/icons\" \
+	-DMETACITY_PROPS_GLADEDIR=\"$(pkgdatadir)/glade\" \
+	-DMETACITY_PROPS_ICON_DIR=\"$(datadir)/pixmaps\" \
+	-DMETACITY_LOCALEDIR=\"$(prefix)/@DATADIRNAME@/locale\"
 
 
-metacity_message_SOURCES =  	metacity-message.c
+metacity_message_SOURCES = \
+	metacity-message.c
 
 
-metacity_window_demo_SOURCES =  	metacity-window-demo.c
+metacity_window_demo_SOURCES = \
+	metacity-window-demo.c
 
 
-metacity_mag_SOURCES =  	metacity-mag.c
+metacity_mag_SOURCES = \
+	metacity-mag.c
 
 
-metacity_grayscale_SOURCES =  	metacity-grayscale.c
+metacity_grayscale_SOURCES = \
+	metacity-grayscale.c
 
 
-@BUILD_CONFIG_DIALOG_TRUE@metacity_properties_SOURCES = 	metacity-properties.c
+metacity_properties_SOURCES = \
+	metacity-properties.c
 
-@BUILD_CONFIG_DIALOG_TRUE@metacity_properties_LDFLAGS = -export-dynamic
+
+metacity_properties_LDFLAGS = -export-dynamic
 
 uidir = $(pkgdatadir)/glade
 ui_DATA = metacity-properties.glade
@@ -142,12 +152,12 @@ propicondir = $(datadir)/pixmaps
 propicon_DATA = metacity-properties.png
 
 METACITY_PROPERTIES_DESKTOP_IN = metacity-properties.desktop.in
-@BUILD_CONFIG_DIALOG_TRUE@METACITY_PROPERTIES_DESKTOP = metacity-properties.desktop
+@BUILD_CONFIG_DIALOG_TRUE@METACITY_PROPERTIES_DESKTOP = @BUILD_CONFIG_DIALOG_TRUE@metacity-properties.desktop
 @BUILD_CONFIG_DIALOG_FALSE@METACITY_PROPERTIES_DESKTOP = 
 
 desktopdir = $(datadir)/control-center-2.0/capplets
 desktop_DATA = $(METACITY_PROPERTIES_DESKTOP)
-@BUILD_CONFIG_DIALOG_TRUE@CONFIG_DIALOG = metacity-properties
+@BUILD_CONFIG_DIALOG_TRUE@CONFIG_DIALOG = @BUILD_CONFIG_DIALOG_TRUE@metacity-properties
 @BUILD_CONFIG_DIALOG_FALSE@CONFIG_DIALOG = 
 
 bin_PROGRAMS = metacity-message metacity-window-demo $(CONFIG_DIALOG)
@@ -158,7 +168,7 @@ metacity_message_LDADD = @METACITY_MESSAGE_LIBS@
 metacity_window_demo_LDADD = @METACITY_WINDOW_DEMO_LIBS@
 metacity_mag_LDADD = @METACITY_WINDOW_DEMO_LIBS@
 metacity_grayscale_LDADD = @METACITY_WINDOW_DEMO_LIBS@
-@BUILD_CONFIG_DIALOG_TRUE@metacity_properties_LDADD = @METACITY_PROPS_LIBS@
+@BUILD_CONFIG_DIALOG_TRUE@metacity_properties_LDADD = @BUILD_CONFIG_DIALOG_TRUE@@METACITY_PROPS_LIBS@
 
 EXTRA_DIST = $(icon_DATA) $(ui_DATA) $(propicon_DATA) $(METACITY_PROPERTIES_DESKTOP_IN)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -187,8 +197,7 @@ metacity_message_LDFLAGS =
 metacity_window_demo_OBJECTS =  metacity-window-demo.$(OBJEXT)
 metacity_window_demo_DEPENDENCIES = 
 metacity_window_demo_LDFLAGS = 
-@BUILD_CONFIG_DIALOG_TRUE@metacity_properties_OBJECTS =  \
-@BUILD_CONFIG_DIALOG_TRUE@metacity-properties.$(OBJEXT)
+metacity_properties_OBJECTS =  metacity-properties.$(OBJEXT)
 @BUILD_CONFIG_DIALOG_TRUE@metacity_properties_DEPENDENCIES = 
 metacity_mag_OBJECTS =  metacity-mag.$(OBJEXT)
 metacity_mag_DEPENDENCIES = 
@@ -442,6 +451,10 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+metacity-grayscale.o: metacity-grayscale.c
+metacity-mag.o: metacity-mag.c
+metacity-message.o: metacity-message.c ../../config.h
+metacity-window-demo.o: metacity-window-demo.c
 
 info-am:
 info: info-am

@@ -1,4 +1,4 @@
-%define ver 2.4.21
+%define ver 2.4.34
 %define RELEASE 1
 %define rel %{?CUSTOM_RELEASE} %{!?CUSTOM_RELEASE:%RELEASE}
 

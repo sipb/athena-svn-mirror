@@ -115,16 +115,20 @@ VERSION = @VERSION@
 
 INCLUDES = @METACITY_CFLAGS@
 
-wm_tester_SOURCES =  	main.c
+wm_tester_SOURCES = \
+	main.c
 
 
-test_gravity_SOURCES =  	test-gravity.c
+test_gravity_SOURCES = \
+	test-gravity.c
 
 
-focus_window_SOURCES =  	focus-window.c
+focus_window_SOURCES = \
+	focus-window.c
 
 
-test_resizing_SOURCES =  	test-resizing.c
+test_resizing_SOURCES = \
+	test-resizing.c
 
 
 noinst_PROGRAMS = wm-tester test-gravity test-resizing focus-window
@@ -300,6 +304,10 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+focus-window.o: focus-window.c
+main.o: main.c
+test-gravity.o: test-gravity.c
+test-resizing.o: test-resizing.c
 
 info-am:
 info: info-am
