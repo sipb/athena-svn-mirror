@@ -17,6 +17,5 @@ olh_ascii	help
 olh_motif	help
 pts		afsuser
 usermaint	moira
-userreg		moira
 vos		afsuser
 xinfo		xmit

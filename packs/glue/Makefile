@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.32 1998-12-26 15:51:44 ghudson Exp $
+# $Id: Makefile,v 1.33 1999-01-09 03:11:12 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -7,7 +7,7 @@ ATHETCDIR=/usr/athena/etc
 ATHMANDIR=/usr/athena/man
 ATTACHRUN=addusr blanche bos chfn chpobox chsh dcmmaint help klog \
 	listmaint mailmaint moira mrcheck namespace olh olh_ascii \
-	olh_motif pts usermaint userreg vos xinfo
+	olh_motif pts usermaint vos xinfo
 ANDREW=/afs/athena.mit.edu/astaff/project/andrew/export
 MOIRA=/afs/athena.mit.edu/system/moira
 HELP=/afs/athena.mit.edu/system/help
@@ -42,8 +42,6 @@ SYMLINKS=	${MOIRA}/man/man1/addusr.1	${ATHMANDIR}/man1/addusr.1 \
 		${HELP}/man/cat1/olh.1		${ATHMANDIR}/cat1/olh.1 \
 		${MOIRA}/man/man1/usermaint.1	${ATHMANDIR}/man1/usermaint.1 \
 		${MOIRA}/man/cat1/usermaint.1	${ATHMANDIR}/cat1/usermaint.1 \
-		${MOIRA}/man/man1/userreg.1	${ATHMANDIR}/man1/userreg.1 \
-		${MOIRA}/man/cat1/userreg.1	${ATHMANDIR}/cat1/userreg.1 \
 		${MKSERV}/man/man8/mkserv.8	${ATHMANDIR}/man8/mkserv.8 \
 		${MKSERV}/man/cat8/mkserv.8	${ATHMANDIR}/cat8/mkserv.8 \
 	${MOIRA}/man/man8/update_server.8  ${ATHMANDIR}/man8/update_server.8 \
@@ -91,7 +89,6 @@ install:
 	install -c -m 555 pts ${DESTDIR}${ATHRBINDIR}
 	install -c -m 555 sis.sh ${DESTDIR}${ATHBINDIR}/sis
 	install -c -m 555 usermaint ${DESTDIR}${ATHBINDIR}
-	install -c -m 555 userreg ${DESTDIR}${ATHBINDIR}
 	install -c -m 555 vacation.sh ${DESTDIR}${ATHBINDIR}/vacation
 	install -c -m 555 verify-message.sh \
 		${DESTDIR}${ATHBINDIR}/verify-message
