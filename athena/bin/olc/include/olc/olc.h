@@ -19,8 +19,8 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc.h,v $
- *	$Id: olc.h,v 1.25 1994-04-08 13:31:23 miki Exp $
- *	$Author: miki $
+ *	$Id: olc.h,v 1.26 1996-09-20 02:26:23 ghudson Exp $
+ *	$Author: ghudson $
  */
 
 #include <mit-copyright.h>
@@ -36,7 +36,7 @@
 #endif
 #include <string.h>
 #if defined(_AUX_SOURCE) || defined(SOLARIS)
-#include <strings.h>
+#include <string.h>
 #endif
 
 #include <olc/lang.h>
