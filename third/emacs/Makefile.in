@@ -474,7 +474,7 @@ mkdir: FRC
 	  $(srcdir)/mkinstalldirs ${DESTDIR}${datadir}; \
 	  chmod a+r ${DESTDIR}${datadir};\
 	fi
-	$(srcdir)/mkinstalldirs ${DESTDIR}${COPYDESTS} ${DESTDIR}${infodir} ${DESTDIR}${man1dir} \
+	$(srcdir)/mkinstalldirs ${COPYDESTS} ${DESTDIR}${infodir} ${DESTDIR}${man1dir} \
 	  ${DESTDIR}${bindir} ${DESTDIR}${docdir} ${DESTDIR}${libexecdir} \
 	  ${DESTDIR}${datadir}/emacs/site-lisp \
 	  ${DESTDIR}${datadir}/emacs/${version}/site-lisp \
