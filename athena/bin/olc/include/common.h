@@ -6,7 +6,7 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/common.h,v $
- *	$Id: common.h,v 1.8 1991-02-25 11:14:25 lwvanels Exp $
+ *	$Id: common.h,v 1.9 1991-04-08 21:04:02 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -49,9 +49,7 @@ int swrite P((int fd , char *buf , int nbytes ));
 /* perror.c */
 char *format_time P((char *time_buf , struct tm *time_info ));
 void time_now P((char *time_buf ));
-#ifndef m68k
-void perror P((char *msg ));
-#endif
+void olc_perror P((char *msg ));
 
 /* status.c */
 int OGetStatusString P((int status , char *string ));
