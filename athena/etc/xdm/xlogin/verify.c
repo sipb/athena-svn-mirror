@@ -1,4 +1,4 @@
-/* $Id: verify.c,v 1.101.4.1 2000-02-05 06:58:19 tb Exp $ */
+/* $Id: verify.c,v 1.101.4.2 2000-02-23 19:33:56 tb Exp $ */
 
 #define _GNU_SOURCE /* make [UW]TMPX_FILE visible */
 
@@ -82,8 +82,7 @@ char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/openwin/bin:/b
 char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/sbin:/usr/bsd:/usr/bin:/bin:/etc:/usr/etc:/usr/bin/X11:/usr/andrew/bin:.";
 #else
 #if defined(__NetBSD__) || defined(__linux__)
-char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin:/bin:/usr/sbin:/
-sbin:/usr/X11R6/bin:/usr/andrew/bin:.";
+char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin:/bin:/usr/sbin:/sbin:/usr/X11R6/bin:/usr/andrew/bin:.";
 #else
 char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin/X11:/usr/new:/usr/ucb:/bin:/usr/bin:/usr/ibm:/usr/andrew/bin:.";
 #endif
