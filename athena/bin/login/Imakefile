@@ -1,6 +1,6 @@
-DEFINES=-DRVD -DNAMESERVER -DVFS -DKRB5 -I$(KRB5DIR)/include $(MACHDEP)
+DEFINES=-DRVD -DNAMESERVER -DVFS -DKRB5 $(MACHDEP)
 
-AFSLIBS = -L$(AFSDIR)/lib -L$(AFSDIR)/lib/afs -lauth -lsys -lrx -llwp
+AFSLIBS = -L$(AFSDIR)/lib -L$(AFSDIR)/lib/afs -lauth -lsys -lrx -llwp -lsys
 
 #if defined(SOLARIS)
 MACHDEP = -DINITTAB
@@ -9,26 +9,9 @@ OSLIBS = -lbsd
 
 #ifdef sgi
 MACHDEP = -DINITTAB
-OSLIBS = -lsys
 #endif
 
-#ifdef ultrix
-#ifdef vax
-MACHDEP=-DPOSIX -DSYSLOG42
-#else
-MACHDEP=-DPOSIX -Olimit 600
-#endif
-#endif
-#ifdef i386
-MACHDEP=-DPOSIX -DSYSV -DINITTAB -DNOPFLAG
-#endif
+LIBS=-lknet -lkrb -ldes -lkrb5 -lcrypto -lcom_err -lhesiod $(OSLIBS)
 
-LIBS=-lknet -lkrb -ldes -L$(KRB5DIR)/lib -lkrb5 -lcrypto -lcom_err -lhesiod \
-	$(OSLIBS)
-
-#ifdef ultrix
-build_program(login,login.o,,$(AFSLIBS) -lnsyslog $(LIBS))
-#else
 build_program(login,login.o,,$(AFSLIBS) $(LIBS))
-#endif
 install_program(login,-o root -m 4555,/bin/login)
