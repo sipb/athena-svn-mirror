@@ -6,13 +6,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v $
- *	$Id: lumberjack.c,v 1.16 1991-09-22 11:26:28 lwvanels Exp $
+ *	$Id: lumberjack.c,v 1.17 1991-09-23 12:53:16 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v 1.16 1991-09-22 11:26:28 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/lumberjack/lumberjack.c,v 1.17 1991-09-23 12:53:16 lwvanels Exp $";
 #endif
 #endif
 
@@ -250,16 +250,27 @@ main (argc, argv)
 	  }
  	  if (WIFEXITED(status)) {
 	    /* dspipe sometimes loses and returns a bogus error value (36096) */
+#ifdef _POSIX_SOURCE
 	    if (WEXITSTATUS(status) != 0) {
 	      fprintf(stderr, "lumberjack: %s exited %d\n", DSPIPE,
 		      WEXITSTATUS(status));
+#else
+	    if (status.w_retcode != 0) {
+	      fprintf(stderr, "lumberjack: %s exited %d\n", DSPIPE,
+		      status.w_retcode);
+#endif
 	    } else {
 	      unlink(logname);
 	      unlink(next->d_name);
 	    }
 	  } else /* signal */
-	    fprintf(stderr, "lumberjack: %s edited with signal %d\n",
+#ifdef _POSIX_SOURCE
+	    fprintf(stderr, "lumberjack: %s exited with signal %d\n",
 		    DSPIPE, WTERMSIG(status));
+#else
+	    fprintf(stderr, "lumberjack: %s exited with signal %d\n",
+		    DSPIPE, status.w_stopsig);
+#endif
 	}
     }
   closedir(dirp);
