@@ -18,7 +18,7 @@
  * lockers.
  */
 
-static const char rcsid[] = "$Id: attachtab.c,v 1.5 1999-06-01 19:09:08 danw Exp $";
+static const char rcsid[] = "$Id: attachtab.c,v 1.6 1999-06-04 20:50:11 danw Exp $";
 
 #include "locker.h"
 #include "locker_private.h"
@@ -415,6 +415,19 @@ cleanup:
 static int compare_locker__dirents(const void *a, const void *b)
 {
   const struct locker__dirent *da = a, *db = b;
+
+  /* MUL lockers (which have spaces in their "mountpoint" names) are
+   * sorted before all other lockers. Other than that, lockers are
+   * sorted by attachent creation time.
+   */
+
+  if (strchr(da->name, ' '))
+    {
+      if (!strchr(db->name, ' '))
+	return -1;
+    }
+  else if (strchr(db->name, ' '))
+    return 1;
 
   return (da->ctime < db->ctime) ? -1 : (da->ctime > db->ctime) ? 1 : 0;
 }
