@@ -19,20 +19,20 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/db.c,v $
- *	$Id: db.c,v 1.4 1990-11-13 14:27:09 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: db.c,v 1.5 1991-08-23 12:57:22 raek Exp $
+ *	$Author: raek $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/db.c,v 1.4 1990-11-13 14:27:09 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/db.c,v 1.5 1991-08-23 12:57:22 raek Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
 #include <olc/olc.h>
 
-
+ERRCODE
 OLoadUser(Request)
      REQUEST *Request;
 {
@@ -57,7 +57,7 @@ OLoadUser(Request)
   return(status);
 }
 
-
+ERRCODE
 OGetDBInfo(Request, dbinfo)
      REQUEST *Request;
      DBINFO *dbinfo;
@@ -87,7 +87,7 @@ OGetDBInfo(Request, dbinfo)
   return(status);
 }
 
-
+ERRCODE
 OSetDBInfo(Request, dbinfo)
      REQUEST *Request;
      DBINFO *dbinfo;

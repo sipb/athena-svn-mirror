@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/status.c,v $
- *	$Id: status.c,v 1.16 1991-02-25 16:31:55 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: status.c,v 1.17 1991-08-23 12:57:42 raek Exp $
+ *	$Author: raek $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/status.c,v 1.16 1991-02-25 16:31:55 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/status.c,v 1.17 1991-08-23 12:57:42 raek Exp $";
 #endif
 #endif
 
@@ -35,6 +35,7 @@ extern long lc_time;
 extern LIST list_cache;
 #define LIST_LIFETIME 60
 
+ERRCODE
 OListPerson(Request,data)
      REQUEST *Request;
      LIST **data;
@@ -47,6 +48,7 @@ OListPerson(Request,data)
 }
 
 
+ERRCODE
 OWho(Request,data)
      REQUEST *Request;
      LIST *data;
@@ -83,6 +85,7 @@ OWho(Request,data)
   return(status);
 }
 
+ERRCODE
 OGetUsername(Request,username)
      REQUEST *Request;
      char *username;
@@ -98,6 +101,7 @@ OGetUsername(Request,username)
   return(SUCCESS);
 }
 
+ERRCODE
 OGetHostname(Request,hostname)
      REQUEST *Request;
      char *hostname;
@@ -113,6 +117,7 @@ OGetHostname(Request,hostname)
   return(SUCCESS);
 }
 
+ERRCODE
 OGetConnectedUsername(Request,username)
      REQUEST *Request;
      char *username;
@@ -128,6 +133,7 @@ OGetConnectedUsername(Request,username)
   return(SUCCESS);
 }
 
+ERRCODE
 OGetConnectedHostname(Request,hostname)
      REQUEST *Request;
      char *hostname;
@@ -143,6 +149,7 @@ OGetConnectedHostname(Request,hostname)
   return(SUCCESS);
 }
 
+ERRCODE
 OVersion(Request,vstring)
      REQUEST *Request;
      char **vstring;

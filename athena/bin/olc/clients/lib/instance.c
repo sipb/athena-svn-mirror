@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/instance.c,v $
- *	$Id: instance.c,v 1.9 1990-11-13 14:28:23 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: instance.c,v 1.10 1991-08-23 12:57:29 raek Exp $
+ *	$Author: raek $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/instance.c,v 1.9 1990-11-13 14:28:23 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/instance.c,v 1.10 1991-08-23 12:57:29 raek Exp $";
 #endif
 #endif
 
@@ -71,7 +71,7 @@ OVerifyInstance(Request,instance)
   return(status);
 }
 
-
+ERRCODE
 OGetDefaultInstance(Request,instance)
      REQUEST *Request;
      int *instance;

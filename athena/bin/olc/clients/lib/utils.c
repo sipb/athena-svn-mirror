@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v $
- *	$Id: utils.c,v 1.18 1991-04-10 21:56:15 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: utils.c,v 1.19 1991-08-23 12:57:45 raek Exp $
+ *	$Author: raek $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.18 1991-04-10 21:56:15 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/utils.c,v 1.19 1991-08-23 12:57:45 raek Exp $";
 #endif
 #endif
 
@@ -44,12 +44,14 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <netdb.h>
 #include <strings.h>
 
+ERRCODE
 OFillRequest(req)
      REQUEST *req;
 {
   return(fill_request(req));
 }
-  
+
+ERRCODE
 fill_request(req)
      REQUEST *req;
 {
@@ -97,6 +99,7 @@ char *host = "athena.mit.edu";
 static struct hostent *hp_local = (struct hostent *) NULL;
 static struct servent *sp_local = (struct servent *) NULL;
 
+ERRCODE
 open_connection_to_mailhost()
 {
   static struct sockaddr_in sin;
@@ -136,6 +139,7 @@ open_connection_to_mailhost()
   return(s);
 }
 
+ERRCODE
 query_mailhost(s,name)
      int s;
      char *name;
@@ -160,6 +164,7 @@ query_mailhost(s,name)
 
 #endif /* ATHENA */
 
+ERRCODE
 can_receive_mail(name)   /*ARGSUSED*/
      char *name;
 {
@@ -358,7 +363,7 @@ sendmail(smargs)
     }
 }
 
-
+int
 file_length(file)
      char *file;
 {

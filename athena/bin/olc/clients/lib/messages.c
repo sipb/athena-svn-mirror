@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/messages.c,v $
- *	$Id: messages.c,v 1.11 1991-03-05 14:45:42 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: messages.c,v 1.12 1991-08-23 12:57:36 raek Exp $
+ *	$Author: raek $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/messages.c,v 1.11 1991-03-05 14:45:42 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/messages.c,v 1.12 1991-08-23 12:57:36 raek Exp $";
 #endif
 #endif
 
@@ -49,7 +49,7 @@ OShowMessageIntoFile(Request,file)
   return(OGetMessage(Request,file,(char **) NULL,OLC_SHOW));
 }
 
-
+ERRCODE
 OShowMessage(Request, buf)
      REQUEST *Request;
      char **buf;

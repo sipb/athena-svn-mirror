@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/acl.c,v $
- *	$Id: acl.c,v 1.4 1990-11-13 14:24:48 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: acl.c,v 1.5 1991-08-23 12:56:51 raek Exp $
+ *	$Author: raek $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/acl.c,v 1.4 1990-11-13 14:24:48 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/acl.c,v 1.5 1991-08-23 12:56:51 raek Exp $";
 #endif
 #endif
 
@@ -67,7 +67,7 @@ OSetAcl(Request,acl)
 
 
 
-
+ERRCODE
 OListAcl(Request,acl, file)
      REQUEST *Request;
      char *acl;
@@ -102,7 +102,7 @@ OListAcl(Request,acl, file)
   return(status);
 }
 
-
+ERRCODE
 OGetAccesses(Request, file)
      REQUEST *Request;
      char *file;

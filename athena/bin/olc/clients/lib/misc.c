@@ -20,19 +20,20 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/misc.c,v $
- *	$Id: misc.c,v 1.6 1990-11-13 14:29:05 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: misc.c,v 1.7 1991-08-23 12:57:39 raek Exp $
+ *	$Author: raek $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/misc.c,v 1.6 1990-11-13 14:29:05 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/misc.c,v 1.7 1991-08-23 12:57:39 raek Exp $";
 #endif
 #endif
 
 #include <mit-copyright.h>
 #include <olc/olc.h>
 
+ERRCODE
 ODump(Request,type,file)
      REQUEST *Request;
      int type;
