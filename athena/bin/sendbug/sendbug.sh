@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: sendbug.sh,v 1.16 1996-08-19 21:14:55 ghudson Exp $
+# $Id: sendbug.sh,v 1.17 1997-04-30 08:32:56 ghudson Exp $
 
 # save PATH so we can restore it for user's $EDITOR later
 saved_path="$PATH"
@@ -11,29 +11,43 @@ export PATH
 bugs_address=bugs@MIT.EDU
 sendmail="/usr/lib/sendmail -t -oi"
 report_file=/tmp/bug$$.text
-if [ ! -r /etc/athena/version -a -r /etc/version ]; then
-      version_file=/etc/version
-else
-      version_file=/etc/athena/version
-fi
-if [ ! -r $version_file ]; then
+version_file=/etc/athena/version
+if [ ! -r "$version_file" ]; then
 	version="unknown version (no $version_file found)"
 else
-	awk_cmd='\
-		{if ($5 == "Update") update++; \
-		else if ($5 == version) { same++; update=0; } \
-		else { version=$5; update=0; same=0; } } ; \
-	END { printf "%s", version; \
-		close1=0; \
-		if (update) { printf " (plus partial update"; close1=1; }\
-		else if (same) { \
-			if (close1) printf "; "; \
-			else printf " ("; \
-			printf "%d update(s) to same version", same; \
-			close1=1; } \
-		if (close1) printf ")"; \
-	}'
-	version=`awk "$awk_cmd" < $version_file`
+	version=`awk '
+		/^Athena Workstation \([^\) ]*\) Version Update/ {
+			update = 1;
+		}
+		/^Athena Workstation \([^\) ]*\) Version [0-9]/ {
+			update = 0;
+			mkserv_update = 0;
+			mkserv = 0;
+			if ($5 == version) {
+				same++;
+			} else {
+				version = $5;
+				same = 0;
+			}
+		}
+		/^Athena Server \([^\) ]*\) Version Update/ {
+			mkserv_update = 1;
+		}
+		/^Athena Server \([^\) ]*\) Version [0-9]/ {
+			mkserv_update = 0;
+			mkserv = 1;
+		}
+		END {
+			printf "%s", version;
+			if (same)
+				printf " (%d update(s) to same version)", same;
+			if (mkserv)
+				printf " (with mkserv)";
+			if (mkserv_update)
+				printf " (plus partial mkserv)";
+			if (update)
+				printf " (plus partial update)";
+		}' "$version_file"`
 fi
 short_version=`expr "$version (" : '\([^(]*[^( ]\) *(.*'`
 machtype=`machtype`
