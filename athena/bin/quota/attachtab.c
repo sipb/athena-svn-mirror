@@ -1,5 +1,5 @@
 /*
- * $Id: attachtab.c,v 1.7 1993-07-25 01:24:47 probe Exp $
+ * $Id: attachtab.c,v 1.8 1997-04-01 01:02:28 ghudson Exp $
  *
  * Copyright (c) 1989,1991 by the Massachusetts Institute of Technology.
  *
@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_attachtab_c[] = "$Id: attachtab.c,v 1.7 1993-07-25 01:24:47 probe Exp $";
+static char rcsid_attachtab_c[] = "$Id: attachtab.c,v 1.8 1997-04-01 01:02:28 ghudson Exp $";
 #endif lint
 
 #include "attach.h"
@@ -55,7 +55,7 @@ void lock_attachtab()
 	    fclose(fp);
 	}
 	if (!initd) {
-	    strcpy(attachtab_fn, "/usr/tmp/attachtab");
+	    strcpy(attachtab_fn, "/var/athena/attachtab");
 	    initd = 1;
 	}
     }
