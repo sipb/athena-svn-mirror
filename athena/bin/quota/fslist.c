@@ -15,7 +15,7 @@
 
 /* Routines for finding mounted/attached filesystems */
 
-static const char rcsid[] = "$Id: fslist.c,v 1.1 1999-03-29 19:14:17 danw Exp $";
+static const char rcsid[] = "$Id: fslist.c,v 1.2 1999-07-31 08:17:46 mwhitson Exp $";
 
 /* There are two basic ways of reading the mounted-filesystems table:
  * the 4.3+BSD way (getfsstat), and the old way (reading a file in
@@ -133,8 +133,8 @@ struct quota_fs *get_fslist(uid_t uid)
 	   !strcmp(mntbuf[i].f_fstypename, "nfs")
 #endif
 #ifdef OSF
-	   !strcmp(mnt_names[mnt_buf[i].f_type], "ufs") ||
-	   !strcmp(mnt_names[mnt_buf[i].f_type], "nfs")
+	   !strcmp(mnt_names[mntbuf[i].f_type], "ufs") ||
+	   !strcmp(mnt_names[mntbuf[i].f_type], "nfs")
 #endif
 	   ) && okname(mntbuf[i].f_mntonname, fsnames))
 	{
@@ -144,7 +144,7 @@ struct quota_fs *get_fslist(uid_t uid)
 	  fslist[numfs++].type = strdup(mntbuf[i].f_fstypename);
 #endif
 #ifdef OSF
-	  fslist[numfs++].type = strdup(mnt_names[mntbuf[i].f_ftype]);
+	  fslist[numfs++].type = strdup(mnt_names[mntbuf[i].f_type]);
 #endif
 	}
     }
