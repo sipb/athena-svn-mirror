@@ -33,14 +33,23 @@ KERNELDIR = ../libafs/
 UKERNELDIR = ../libuafs/
 COMPILE_ET=${TOP_SRCDIR}/comerr/compile_et
 
-CFLAGS=${OPTMZ} -I${TOP_SRCDIR}/config -I${TOP_INCDIR} ${XCFLAGS}
+CFLAGS=${OPTMZ} -I${TOP_SRCDIR}/config -I${TOP_INCDIR} -I. ${XCFLAGS}
 INCLS=${TOP_INCDIR}/rx/rx.h ${TOP_INCDIR}/rx/xdr.h \
-       rxkad.h
+       rxkad.h v5gen.h
 
 OBJS=rxkad_client.o rxkad_server.o rxkad_common.o ticket.o rxkad_errs.o \
-	fcrypt.o crypt_conn.o
+	fcrypt.o crypt_conn.o ticket.o ticket5.o crc.o
 
-all: kinstall ukinstall ${TOP_LIBDIR}/librxkad.a ${TOP_INCDIR}/rx/rxkad.h
+fc_test_OBJS=fc_test.o
+
+fc_test_LIBS=\
+	${TOP_LIBDIR}/librxkad.a \
+	${TOP_LIBDIR}/librx.a \
+	${TOP_LIBDIR}/liblwp.a \
+	${TOP_LIBDIR}/libsys.a
+
+all: kinstall ukinstall ${TOP_LIBDIR}/librxkad.a fc_test \
+	${TOP_INCDIR}/rx/rxkad.h
 
 #
 # Install targets
@@ -175,6 +184,10 @@ rxkad_errs.c rxkad.h: rxkad_errs.et rxkad.p.h
 
 ticket.o: ticket.c lifetimes.h ${INCLS}
 
+ticket5.o: ticket5.c v5gen.c v5der.c v5gen-rewrite.h ${INCLS}
+
+crc.o: crc.c ${INCLS}
+
 fcrypt.o: fcrypt.c fcrypt.h sboxes.h rxkad.h
 	${CC} ${CFLAGS} -c fcrypt.c
 
@@ -183,6 +196,11 @@ tcrypt: tcrypt.o librxkad.a
 
 tcrypt.o: tcrypt.c AFS_component_version_number.o
 
+fc_test: ${fc_test_OBJS}
+	${CC} ${CFLAGS} -o fc_test ${fc_test_OBJS} ${fc_test_LIBS} ${XLIBS}
+
+fc_test.o: ${INCLS}
+
 #
 # Misc. targets
 #
@@ -190,7 +208,8 @@ tcrypt.o: tcrypt.c AFS_component_version_number.o
 clean: 
 	$(RM) -f *.o *.a tcrypt core rxkad_errs.c rxkad.h \
 		AFS_component_version_number.c \
-		crypt_conn.c fcrypt.c fcrypt.h sboxes.h
+		crypt_conn.c fcrypt.c fcrypt.h sboxes.h \
+		fc_test
 
 test:
 	cd test; $(MAKE)

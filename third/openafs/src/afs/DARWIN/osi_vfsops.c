@@ -1,7 +1,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/DARWIN/osi_vfsops.c,v 1.1.1.1 2002-01-31 21:49:55 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/DARWIN/osi_vfsops.c,v 1.1.1.2 2002-12-13 20:39:18 zacheiss Exp $");
 
 #include <afs/sysincludes.h>            /* Standard vendor system headers */
 #include <afs/afsincludes.h>            /* Afs-based standard headers */
@@ -138,11 +138,11 @@ afs_root(struct mount *mp,
     if (tvp) {
         osi_vnhold(tvp,0);
     AFS_GUNLOCK();
-        vn_lock((struct vnode *)tvp, LK_EXCLUSIVE | LK_RETRY, p);
+        vn_lock(AFSTOV(tvp), LK_EXCLUSIVE | LK_RETRY, p);
     AFS_GLOCK();
 	afs_globalVFS = mp;
-	*vpp = (struct vnode *) tvp;
-        tvp->v.v_flag |= VROOT;
+	*vpp = AFSTOV(tvp);
+        AFSTOV(tvp)->v_flag |= VROOT;
     }
 
     afs_Trace2(afs_iclSetp, CM_TRACE_VFSROOT, ICL_TYPE_POINTER, *vpp,

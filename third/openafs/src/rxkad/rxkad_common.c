@@ -16,7 +16,11 @@
 #include <afs/param.h>
 #endif
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxkad/rxkad_common.c,v 1.1.1.1 2002-01-31 21:32:07 zacheiss Exp $");
+#ifdef AFS_SUN59_ENV
+#include <sys/time_impl.h>
+#endif
+
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxkad/rxkad_common.c,v 1.1.1.2 2002-12-13 20:40:28 zacheiss Exp $");
 
 #ifdef KERNEL
 #ifndef UKERNEL
@@ -25,11 +29,14 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rxkad/rxkad
 #ifdef	AFS_AIX_ENV
 #include "../h/systm.h"
 #endif
+#ifdef AFS_DARWIN60_ENV
+#include "../h/kernel.h"
+#endif
 #include "../h/types.h"
 #include "../h/time.h"
 #ifndef AFS_LINUX22_ENV
 #include "../rpc/types.h"
-#include "../rpc/xdr.h"
+#include "../rx/xdr.h"
 #endif /* AFS_LINUX22_ENV */
 #else /* !UKERNEL */
 #include "../afs/sysincludes.h"
@@ -73,7 +80,7 @@ char *rxi_Alloc();
 #ifndef KERNEL
 #define osi_Time() time(0)
 #endif
-struct rxkad_stats rxkad_stats;
+struct rxkad_stats rxkad_stats = {0};
 
 /* this call sets up an endpoint structure, leaving it in *network* byte
  * order so that it can be used quickly for encryption.

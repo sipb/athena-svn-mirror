@@ -28,7 +28,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/afsfileprocs.c,v 1.1.1.1 2002-01-31 21:33:04 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/afsfileprocs.c,v 1.1.1.2 2002-12-13 20:41:51 zacheiss Exp $");
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -1715,6 +1715,7 @@ SAFSS_RemoveFile (tcon, DirFid, Name, OutDirStatus, Sync)
     struct client *t_client;            /* tmp ptr to client data */
     struct in_addr logHostAddr;		/* host ip holder for inet_ntoa */
 
+    FidZero(&dir);
     /* Get ptr to client data for user Id for logging */
     t_client = (struct client *) rx_GetSpecific(tcon, rxcon_client_key); 
     logHostAddr.s_addr =  rx_HostOf(rx_PeerOf(tcon));
@@ -1783,6 +1784,7 @@ SAFSS_RemoveFile (tcon, DirFid, Name, OutDirStatus, Sync)
 Bad_RemoveFile: 
     /* Update and store volume/vnode and parent vnodes back */
     PutVolumePackage(parentwhentargetnotdir, targetptr, parentptr, volptr);
+    FidZap(&dir);
     ViceLog(2, ("SAFS_RemoveFile returns %d\n",	errorCode)); 
     return errorCode;
 
@@ -1877,6 +1879,8 @@ SAFSS_CreateFile (tcon, DirFid, Name, InStatus, OutFid, OutFidStatus,
     struct client *t_client;            /* tmp ptr to client data */
     struct in_addr logHostAddr;		/* host ip holder for inet_ntoa */
 
+    FidZero(&dir);
+
     /* Get ptr to client data for user Id for logging */
     t_client = (struct client *) rx_GetSpecific(tcon, rxcon_client_key); 
     logHostAddr.s_addr =  rx_HostOf(rx_PeerOf(tcon));
@@ -1944,6 +1948,7 @@ SAFSS_CreateFile (tcon, DirFid, Name, InStatus, OutFid, OutFidStatus,
 Bad_CreateFile:
     /* Update and store volume/vnode and parent vnodes back */
     PutVolumePackage(parentwhentargetnotdir, targetptr, parentptr, volptr);
+    FidZap(&dir);
     ViceLog(2, ("SAFS_CreateFile returns %d\n",	errorCode)); 
     return errorCode;
 
@@ -2054,6 +2059,11 @@ SAFSS_Rename (tcon, OldDirFid, OldName, NewDirFid, NewName, OutOldDirStatus,
     int code;
     struct client *t_client;            /* tmp ptr to client data */
     struct in_addr logHostAddr;		/* host ip holder for inet_ntoa */
+
+    FidZero(&olddir);
+    FidZero(&newdir);
+    FidZero(&filedir);
+    FidZero(&newfiledir);
 
     /* Get ptr to client data for user Id for logging */
     t_client = (struct client *) rx_GetSpecific(tcon, rxcon_client_key); 
@@ -2293,7 +2303,7 @@ SAFSS_Rename (tcon, OldDirFid, OldName, NewDirFid, NewName, OutOldDirStatus,
 				 V_parentId(volptr));
 		IH_RELEASE(newfileptr->handle);
 		if (errorCode == -1) {
-		    ViceLog(0, ("Del: inode=%d, name=%s, errno=%d\n",
+		    ViceLog(0, ("Del: inode=%s, name=%s, errno=%d\n",
 				PrintInode(NULL, VN_GET_INO(newfileptr)),
 				NewName, errno));
 		    if ((errno != ENOENT) && (errno != EIO) && (errno != ENXIO))
@@ -2404,6 +2414,10 @@ Bad_Rename:
     }
     PutVolumePackage(fileptr, (newvptr && newvptr != oldvptr? newvptr : 0),
 		     oldvptr, volptr);
+    FidZap(&olddir);
+    FidZap(&newdir);
+    FidZap(&filedir);
+    FidZap(&newfiledir);
     ViceLog(2, ("SAFS_Rename returns %d\n", errorCode));
     return errorCode;
 
@@ -2503,6 +2517,8 @@ SAFSS_Symlink (tcon, DirFid, Name, LinkContents, InStatus, OutFid, OutFidStatus,
     struct in_addr logHostAddr;		/* host ip holder for inet_ntoa */
     FdHandle_t *fdP;
 
+    FidZero(&dir);
+
     /* Get ptr to client data for user Id for logging */
     t_client = (struct client *) rx_GetSpecific(tcon, rxcon_client_key); 
     logHostAddr.s_addr =  rx_HostOf(rx_PeerOf(tcon));
@@ -2594,6 +2610,7 @@ SAFSS_Symlink (tcon, DirFid, Name, LinkContents, InStatus, OutFid, OutFidStatus,
 Bad_SymLink: 
     /* Write the all modified vnodes (parent, new files) and volume back */
     PutVolumePackage(parentwhentargetnotdir, targetptr, parentptr, volptr);
+    FidZap(&dir);
     ViceLog(2, ("SAFS_Symlink returns %d\n", errorCode));
     return errorCode;
 
@@ -2689,6 +2706,8 @@ SAFSS_Link (tcon, DirFid, Name, ExistingFid, OutFidStatus, OutDirStatus, Sync)
     afs_int32 rights, anyrights;		/* rights for this and any user */
     struct client *t_client;            /* tmp ptr to client data */
     struct in_addr logHostAddr;		/* host ip holder for inet_ntoa */
+
+    FidZero(&dir);
 
     /* Get ptr to client data for user Id for logging */
     t_client = (struct client *) rx_GetSpecific(tcon, rxcon_client_key); 
@@ -2794,6 +2813,7 @@ SAFSS_Link (tcon, DirFid, Name, ExistingFid, OutFidStatus, OutDirStatus, Sync)
 Bad_Link:
     /* Write the all modified vnodes (parent, new files) and volume back */
     PutVolumePackage(parentwhentargetnotdir, targetptr, parentptr, volptr);
+    FidZap(&dir);
     ViceLog(2, ("SAFS_Link returns %d\n", errorCode));
     return errorCode;
 
@@ -2894,6 +2914,9 @@ SAFSS_MakeDir (tcon, DirFid, Name, InStatus, OutFid, OutFidStatus,
     struct client *t_client;            /* tmp ptr to client data */
     struct in_addr logHostAddr;		/* host ip holder for inet_ntoa */
 
+    FidZero(&dir);
+    FidZero(&parentdir);
+
     /* Get ptr to client data for user Id for logging */
     t_client = (struct client *) rx_GetSpecific(tcon, rxcon_client_key); 
     logHostAddr.s_addr =  rx_HostOf(rx_PeerOf(tcon));
@@ -2964,7 +2987,7 @@ SAFSS_MakeDir (tcon, DirFid, Name, InStatus, OutFid, OutFidStatus,
     Update_TargetVnodeStatus(targetptr, TVS_MKDIR, client, InStatus,
 			     parentptr, volptr, 0);
 
-    /* Actually create the New directory in the directory package */
+    /* Actually create the New directory in the directory package */ 
     SetDirHandle(&dir, targetptr);
     assert(!(MakeDir(&dir, OutFid, DirFid)));
     DFlush();
@@ -2987,6 +3010,8 @@ SAFSS_MakeDir (tcon, DirFid, Name, InStatus, OutFid, OutFidStatus,
 Bad_MakeDir: 
     /* Write the all modified vnodes (parent, new files) and volume back */
     PutVolumePackage(parentwhentargetnotdir, targetptr, parentptr, volptr);
+    FidZap(&dir);
+    FidZap(&parentdir);
     ViceLog(2, ("SAFS_MakeDir returns %d\n", errorCode)); 
     return errorCode;
 
@@ -3082,6 +3107,8 @@ SAFSS_RemoveDir (tcon, DirFid, Name, OutDirStatus, Sync)
     struct client *t_client;            /* tmp ptr to client data */
     struct in_addr logHostAddr;		/* host ip holder for inet_ntoa */
 
+    FidZero(&dir);
+
     /* Get ptr to client data for user Id for logging */
     t_client = (struct client *) rx_GetSpecific(tcon, rxcon_client_key); 
     logHostAddr.s_addr =  rx_HostOf(rx_PeerOf(tcon));
@@ -3146,6 +3173,7 @@ SAFSS_RemoveDir (tcon, DirFid, Name, OutDirStatus, Sync)
 Bad_RemoveDir: 
     /* Write the all modified vnodes (parent, new files) and volume back */
     PutVolumePackage(parentwhentargetnotdir, targetptr, parentptr, volptr);
+    FidZap(&dir);
     ViceLog(2, ("SAFS_RemoveDir	returns	%d\n", errorCode));
     return errorCode;
 
@@ -4986,7 +5014,7 @@ afs_int32 *a_bytesFetchedP;
     struct iovec tiov[RX_MAXIOVECS];
     int tnio;
 #endif /* AFS_NT40_ENV */
-    int tlen;
+    afs_int32 tlen;
     afs_int32 optSize;
     struct stat tstat;
 #ifdef	AFS_AIX_ENV
@@ -5184,12 +5212,12 @@ StoreData_RXStyle(volptr, targetptr, Fid, client, Call, Pos, Length,
     afs_int32 optSize;			/* optimal transfer size */
     int DataLength;			/* size of inode */
     afs_int32 TruncatedLength;		/* size after ftruncate */
-    afs_int32 NewLength;			/* size after this store completes */
-    afs_int32 adjustSize;			/* bytes to call VAdjust... with */
+    afs_uint32 NewLength;		/* size after this store completes */
+    afs_int32 adjustSize;		/* bytes to call VAdjust... with */
     int linkCount;			/* link count on inode */
     int code;
     FdHandle_t *fdP;
-    struct in_addr logHostAddr;             /* host ip holder for inet_ntoa */
+    struct in_addr logHostAddr;		/* host ip holder for inet_ntoa */
 
 #if FS_STATS_DETAILED
     /*
@@ -5231,7 +5259,7 @@ StoreData_RXStyle(volptr, targetptr, Fid, client, Call, Pos, Length,
 	}
 	
 	if (linkCount != 1) {
-	    int size;
+	    afs_uint32 size;
 	    ViceLog(25, ("StoreData_RXStyle : inode %s has more than onelink\n",
 			 PrintInode(NULL, VN_GET_INO(targetptr))));
 	    /* other volumes share this data, better copy it first */
@@ -5502,8 +5530,14 @@ Check_PermissionRights(targetptr, client, rights, CallingRoutine, InStatus)
 	    }
 	    else {	/* store data or status */
 	      /* watch for chowns and chgrps */
-	      if (CHOWN(InStatus, targetptr) || CHGRP(InStatus, targetptr))
-		return(EPERM);      /* Was EACCES */
+	      if (CHOWN(InStatus, targetptr) || CHGRP(InStatus, targetptr)) {
+		if (VanillaUser (client)) 
+		  return(EPERM);	/* Was EACCES */
+		else
+		  osi_audit(PrivilegeEvent, 0,
+			    AUD_INT, (client ? client->ViceId : 0), 
+			    AUD_INT, CallingRoutine, AUD_END);
+	      }
 	      /* must be sysadmin to set suid/sgid bits */
 	      if ((InStatus->Mask & AFS_SETMODE) &&
 #ifdef AFS_NT40_ENV
@@ -5809,7 +5843,7 @@ Update_ParentVnodeStatus(parentptr, volptr, dir, author, linkcount)
 #endif /* FS_STATS_DETAILED */
 
 {
-    int	newlength;	    /* Holds new directory length */
+    afs_uint32 newlength;	/* Holds new directory length */
     int errorCode;
 #if FS_STATS_DETAILED
     Date currDate;		/*Current date*/
@@ -6572,6 +6606,11 @@ int CopyOnWrite(targetptr, volptr)
 		    ViceLog(0,("CopyOnWrite failed: volume %u in partition %s  (tried reading %u, read %u, wrote %u, errno %u) volume needs salvage\n",
 			       V_id(volptr), volptr->partition->name, length,
 			       rdlen, wrlen, errno));
+#ifdef FAST_RESTART /* if running in no-salvage, don't core the server */
+		    ViceLog(0,("CopyOnWrite failed: taking volume offline\n"));
+#else /* Avoid further corruption and try to get a core. */
+		    assert(0); 
+#endif
                     /* Decrement this inode so salvager doesn't find it. */
 		    FDH_REALLYCLOSE(newFdP);
 		    IH_RELEASE(newH);

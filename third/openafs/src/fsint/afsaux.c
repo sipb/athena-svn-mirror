@@ -14,7 +14,7 @@
 #include <afs/param.h>
 #endif
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/fsint/afsaux.c,v 1.1.1.1 2002-01-31 21:49:02 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/fsint/afsaux.c,v 1.1.1.2 2002-12-13 20:41:06 zacheiss Exp $");
 
 #ifdef KERNEL
 #if defined(UKERNEL)
@@ -22,13 +22,13 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/fsint/afsau
 #include "../afs/afsincludes.h"
 #include "../rx/xdr.h"
 #else /* defined(UKERNEL) */
-#if defined(AFS_ALPHA_ENV) || defined(AFS_LINUX20_ENV) || defined(AFS_DARWIN_ENV)
+#if defined(AFS_ALPHA_ENV) || defined(AFS_LINUX20_ENV) || defined(AFS_DARWIN_ENV) || defined(AFS_FBSD_ENV)
 #include "../afs/sysincludes.h"
 #include "../afs/afsincludes.h"
 #else
 #include "../h/types.h"
 #include "../rpc/types.h"
-#include "../rpc/xdr.h"
+#include "../rx/xdr.h"
 #endif
 #if !defined(AFS_ALPHA_ENV)
 #ifndef	XDR_GETINT32
@@ -37,9 +37,6 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/fsint/afsau
 #ifndef	XDR_PUTINT32
 #define	XDR_PUTINT32	XDR_PUTLONG
 #endif
-#endif
-#ifndef AFS_LINUX22_ENV
-#include "../rpc/auth.h"
 #endif
 #endif /* defined(UKERNEL) */
 #include "../afsint/afsint.h"
@@ -68,7 +65,7 @@ static afs_int32 bslosers = 0;
 #endif
 #if (defined(AFS_AIX_ENV) && !defined(AUTH_DES)) || (!defined(AFS_SUN_ENV)) && !defined(AFS_SGI_ENV) && !defined(AFS_ALPHA_ENV) && !defined(AFS_SUN5_ENV)
 #ifndef	AFS_AIX32_ENV
-#if !defined(AFS_HPUX110_ENV) && !defined(AFS_LINUX20_ENV) && !defined(AFS_DARWIN_ENV)
+#if !defined(AFS_HPUX110_ENV) && !defined(AFS_LINUX20_ENV) && !defined(AFS_DARWIN_ENV) && !defined(AFS_FBSD_ENV)
 /*
  * XDR chars; from user mode xdr package.
  */

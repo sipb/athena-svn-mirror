@@ -47,6 +47,9 @@ AC_ARG_ENABLE(transarc-paths,
 AC_ARG_ENABLE(tivoli-tsm,
 [  --enable-tivoli-tsm              	Enable use of the Tivoli TSM API libraries for butc support],, enable_tivoli_tsm="no"
 )
+AC_ARG_ENABLE(debug-kernel,
+[  --enable-debug-kernel		enable compilation of the kernel module with debugging information (defaults to disabled)],, enable_debug_kernel="no"
+)
 
 dnl weird ass systems
 AC_AIX
@@ -54,9 +57,6 @@ AC_ISC_POSIX
 AC_MINIX
 
 dnl Various compiler setup.
-AC_C_INLINE
-AC_C_CONST
-AC_PROG_CC
 AC_TYPE_PID_T
 AC_TYPE_SIZE_T
 AC_TYPE_SIGNAL
@@ -70,13 +70,18 @@ AM_PROG_LEX
 
 OPENAFS_CHECK_BIGENDIAN
 
+KERN_DEBUG_OPT=
+if test "x$enable_debug_kernel" = "xyes"; then
+  KERN_DEBUG_OPT=-g
+fi
+
 AC_MSG_CHECKING(your OS)
 system=$host
 case $system in
         *-linux*)
 		MKAFS_OSTYPE=LINUX
 		if test "x$enable_redhat_buildsys" = "xyes"; then
-		 AC_DEFINE(ENABLE_REDHAT_BUILDSYS)
+		 AC_DEFINE(ENABLE_REDHAT_BUILDSYS, 1, [define if you have redhat buildsystem])
 		fi
 		if test "x$enable_kernel_module" = "xyes"; then
 		 if test "x$with_linux_kernel_headers" != "x"; then
@@ -120,31 +125,87 @@ case $system in
 		fi
 		AC_MSG_RESULT(linux)
 		if test "x$enable_kernel_module" = "xyes"; then
+		 OMIT_FRAME_POINTER=
+		 if test "x$enable_debug_kernel" = "xno"; then
+			OMIT_FRAME_POINTER=-fomit-frame-pointer
+		 fi
+		 AC_SUBST(OMIT_FRAME_POINTER)
+		 OPENAFS_GCC_SUPPORTS_MARCH
+		 AC_SUBST(P5PLUS_KOPTS)
+		 OPENAFS_GCC_NEEDS_NO_STRENGTH_REDUCE
+		 OPENAFS_GCC_NEEDS_NO_STRICT_ALIASING
+		 OPENAFS_GCC_SUPPORTS_NO_COMMON
+		 AC_SUBST(LINUX_GCC_KOPTS)
 	         ifdef([OPENAFS_CONFIGURE_LIBAFS],
 	           [LINUX_BUILD_VNODE_FROM_INODE(config,afs)],
 	           [LINUX_BUILD_VNODE_FROM_INODE(src/config,src/afs/LINUX)]
 	         )
 	         LINUX_FS_STRUCT_ADDRESS_SPACE_HAS_PAGE_LOCK
+	         LINUX_FS_STRUCT_ADDRESS_SPACE_HAS_GFP_MASK
 		 LINUX_FS_STRUCT_INODE_HAS_I_TRUNCATE_SEM
 		 LINUX_FS_STRUCT_INODE_HAS_I_DIRTY_DATA_BUFFERS
 		 LINUX_FS_STRUCT_INODE_HAS_I_DEVICES
 	  	 LINUX_INODE_SETATTR_RETURN_TYPE
+		 LINUX_COMPLETION_H_EXISTS
+		 LINUX_EXPORTS_TASKLIST_LOCK
 		 LINUX_NEED_RHCONFIG
 		 LINUX_WHICH_MODULES
+                 if test "x$ac_cv_linux_config_modversions" = "xno"; then
+                   AC_MSG_WARN([Cannot determine sys_call_table status. assuming it's exported])
+                   ac_cv_linux_exports_sys_call_table=yes
+                 else
+                   LINUX_EXPORTS_SYS_CALL_TABLE
+                   LINUX_EXPORTS_KALLSYMS_SYMBOL
+                   LINUX_EXPORTS_KALLSYMS_ADDRESS
+                   LINUX_EXPORTS_INIT_MM
+                   if test "x$ac_cv_linux_exports_sys_call_table" = "xno"; then
+                         linux_syscall_method=none
+                         if test "x$ac_cv_linux_exports_init_mm" = "xyes"; then
+                            linux_syscall_method=scan
+                            if test "x$ac_cv_linux_exports_kallsyms_address" = "xyes"; then
+                               linux_syscall_method=scan_with_kallsyms_address
+                            fi
+                         fi
+                         if test "x$ac_cv_linux_exports_kallsyms_symbol" = "xyes"; then
+                            linux_syscall_method=kallsyms_symbol
+                         fi
+                         if test "x$linux_syscall_method" = "xnone"; then
+                        AC_MSG_ERROR([no available sys_call_table access method])
+                         fi
+                   fi
+                 fi
+		 if test "x$ac_cv_linux_exports_tasklist_lock" = "xyes" ; then
+		  AC_DEFINE(EXPORTED_TASKLIST_LOCK, 1, [define if your linux kernel exports tasklist_lock])
+		 fi
+                 if test "x$ac_cv_linux_exports_sys_call_table" = "xyes"; then
+                  AC_DEFINE(EXPORTED_SYS_CALL_TABLE)
+                 fi
+                 if test "x$ac_cv_linux_exports_kallsyms_symbol" = "xyes"; then
+                  AC_DEFINE(EXPORTED_KALLSYMS_SYMBOL)
+                 fi
+                 if test "x$ac_cv_linux_exports_kallsyms_address" = "xyes"; then
+                  AC_DEFINE(EXPORTED_KALLSYMS_ADDRESS)
+                 fi
+		 if test "x$ac_cv_linux_completion_h_exists" = "xyes" ; then
+		  AC_DEFINE(COMPLETION_H_EXISTS, 1, [define if your h_exists exists])
+		 fi
 		 if test "x$ac_cv_linux_func_inode_setattr_returns_int" = "xyes" ; then
-		  AC_DEFINE(INODE_SETATTR_NOT_VOID)
+		  AC_DEFINE(INODE_SETATTR_NOT_VOID, 1, [define if your setattr return return non-void])
 		 fi
 		 if test "x$ac_cv_linux_fs_struct_address_space_has_page_lock" = "xyes"; then 
-		  AC_DEFINE(STRUCT_ADDRESS_SPACE_HAS_PAGE_LOCK)
+		  AC_DEFINE(STRUCT_ADDRESS_SPACE_HAS_PAGE_LOCK, 1, [define if your struct address_space has page_lock])
+		 fi
+		 if test "x$ac_cv_linux_fs_struct_address_space_has_gfp_mask" = "xyes"; then 
+		  AC_DEFINE(STRUCT_ADDRESS_SPACE_HAS_GFP_MASK, 1, [define if your struct address_space has gfp_mask])
 		 fi
 		 if test "x$ac_cv_linux_fs_struct_inode_has_i_truncate_sem" = "xyes"; then 
-		  AC_DEFINE(STRUCT_INODE_HAS_I_TRUNCATE_SEM)
+		  AC_DEFINE(STRUCT_INODE_HAS_I_TRUNCATE_SEM, 1, [define if your struct inode has truncate_sem])
 		 fi
 		 if test "x$ac_cv_linux_fs_struct_inode_has_i_devices" = "xyes"; then 
-		  AC_DEFINE(STRUCT_INODE_HAS_I_DEVICES)
+		  AC_DEFINE(STRUCT_INODE_HAS_I_DEVICES, 1, [define if you struct inode has i_devices])
 		 fi
 		 if test "x$ac_cv_linux_fs_struct_inode_has_i_dirty_data_buffers" = "xyes"; then 
-		  AC_DEFINE(STRUCT_INODE_HAS_I_DIRTY_DATA_BUFFERS)
+		  AC_DEFINE(STRUCT_INODE_HAS_I_DIRTY_DATA_BUFFERS, 1, [define if you struct inode has data_buffers])
 		 fi
                 :
 		fi
@@ -153,6 +214,12 @@ case $system in
 		MKAFS_OSTYPE=SOLARIS
                 AC_MSG_RESULT(sun4)
 		SOLARIS_UFSVFS_HAS_DQRWLOCK
+		SOLARIS_PROC_HAS_P_COREFILE
+                ;;
+        *-sunos*)
+		MKAFS_OSTYPE=SUNOS
+		enable_kernel_module=no
+                AC_MSG_RESULT(sun4)
                 ;;
         *-hpux*)
 		MKAFS_OSTYPE=HPUX
@@ -200,6 +267,7 @@ case $system in
                 AC_MSG_RESULT($system)
                 ;;
 esac
+AC_SUBST(KERN_DEBUG_OPT)
 
 if test "x$with_afs_sysname" != "x"; then
         AFS_SYSNAME="$with_afs_sysname"
@@ -208,6 +276,18 @@ else
 	case $host in
 		i?86-*-freebsd4.2*)
 			AFS_SYSNAME="i386_fbsd_42"
+			;;
+		i?86-*-freebsd4.3*)
+			AFS_SYSNAME="i386_fbsd_43"
+			;;
+		i?86-*-freebsd4.4*)
+			AFS_SYSNAME="i386_fbsd_44"
+			;;
+		i?86-*-freebsd4.5*)
+			AFS_SYSNAME="i386_fbsd_45"
+			;;
+		i?86-*-freebsd4.6*)
+			AFS_SYSNAME="i386_fbsd_46"
 			;;
 		hppa*-hp-hpux11*)
 			AFS_SYSNAME="hp_ux110"
@@ -230,6 +310,24 @@ else
 		powerpc-apple-darwin5.2*)
 			AFS_SYSNAME="ppc_darwin_14"
 			;;
+		powerpc-apple-darwin5.3*)
+			AFS_SYSNAME="ppc_darwin_14"
+			;;
+		powerpc-apple-darwin5.4*)
+			AFS_SYSNAME="ppc_darwin_14"
+			;;
+		powerpc-apple-darwin5.5*)
+			AFS_SYSNAME="ppc_darwin_14"
+			;;
+		powerpc-apple-darwin6.0*)
+			AFS_SYSNAME="ppc_darwin_60"
+			;;
+		powerpc-apple-darwin6.1*)
+			AFS_SYSNAME="ppc_darwin_60"
+			;;
+		powerpc-apple-darwin6.2*)
+			AFS_SYSNAME="ppc_darwin_60"
+			;;
 		sparc-sun-solaris2.5*)
 			AFS_SYSNAME="sun4x_55"
 			;;
@@ -244,6 +342,18 @@ else
 			;;
 		sparc-sun-solaris2.9)
 			AFS_SYSNAME="sun4x_59"
+			;;
+		sparc-sun-sunos4*)
+			AFS_SYSNAME="sun4_413"
+			;;
+		i386-pc-solaris2.7)
+			AFS_SYSNAME="sunx86_57"
+			;;
+		i386-pc-solaris2.8)
+			AFS_SYSNAME="sunx86_58"
+			;;
+		i386-pc-solaris2.9)
+			AFS_SYSNAME="sunx86_59"
 			;;
 		alpha*-dec-osf4.0*)
 			AFS_SYSNAME="alpha_dux40"
@@ -308,7 +418,17 @@ case $AFS_SYSNAME in
 		DARWIN_INFOFILE=afs.${AFS_SYSNAME}.plist
 		;;
 esac
-
+AC_CACHE_VAL(ac_cv_sockaddr_len,
+[
+AC_MSG_CHECKING([if struct sockaddr has sa_len field])
+AC_TRY_COMPILE( [#include <sys/types.h>
+#include <sys/socket.h>],
+[struct sockaddr *a;
+a->sa_len=0;], ac_cv_sockaddr_len=yes, ac_cv_sockaddr_len=no)
+AC_MSG_RESULT($ac_cv_sockaddr_len)])
+if test "$ac_cv_sockaddr_len" = "yes"; then
+   AC_DEFINE(STRUCT_SOCKADDR_HAS_SA_LEN, 1, [define if you struct sockaddr sa_len])
+fi
 if test "x${MKAFS_OSTYPE}" = "xIRIX"; then
         echo Skipping library tests because they confuse Irix.
 else
@@ -317,7 +437,7 @@ else
   if test "$ac_cv_func_socket" = no; then
     for lib in socket inet; do
         if test "$HAVE_SOCKET" != 1; then
-                AC_CHECK_LIB(${lib}, socket,LIBS="$LIBS -l$lib";HAVE_SOCKET=1;AC_DEFINE(HAVE_SOCKET))
+                AC_CHECK_LIB(${lib}, socket,LIBS="$LIBS -l$lib";HAVE_SOCKET=1;AC_DEFINE(HAVE_SOCKET, 1, [define if you have socket]))
         fi
     done
   fi
@@ -327,7 +447,7 @@ else
   if test "$ac_cv_func_connect" = no; then
     for lib in nsl; do
         if test "$HAVE_CONNECT" != 1; then
-                AC_CHECK_LIB(${lib}, connect,LIBS="$LIBS -l$lib";HAVE_CONNECT=1;AC_DEFINE(HAVE_CONNECT))
+                AC_CHECK_LIB(${lib}, connect,LIBS="$LIBS -l$lib";HAVE_CONNECT=1;AC_DEFINE(HAVE_CONNECT, 1, [define if you have connect]))
         fi
     done
   fi
@@ -336,7 +456,7 @@ else
   if test "$ac_cv_func_gethostbyname" = no; then
         for lib in dns nsl resolv; do
           if test "$HAVE_GETHOSTBYNAME" != 1; then
-            AC_CHECK_LIB(${lib}, gethostbyname, LIBS="$LIBS -l$lib";HAVE_GETHOSTBYNAME=1;AC_DEFINE(HAVE_GETHOSTBYNAME))
+            AC_CHECK_LIB(${lib}, gethostbyname, LIBS="$LIBS -l$lib";HAVE_GETHOSTBYNAME=1;AC_DEFINE(HAVE_GETHOSTBYNAME, 1, [define if you have gethostbyname]))
           fi
         done    
   fi    
@@ -345,7 +465,7 @@ else
   if test "$ac_cv_func_res_search" = no; then
         for lib in dns nsl resolv; do
           if test "$HAVE_RES_SEARCH" != 1; then
-            AC_CHECK_LIB(${lib}, res_search, LIBS="$LIBS -l$lib";HAVE_RES_SEARCH=1;AC_DEFINE(HAVE_RES_SEARCH))
+            AC_CHECK_LIB(${lib}, res_search, LIBS="$LIBS -l$lib";HAVE_RES_SEARCH=1;AC_DEFINE(HAVE_RES_SEARCH, 1, [define if you have res_search]))
           fi
         done    
 	if test "$HAVE_RES_SEARCH" = 1; then
@@ -385,28 +505,28 @@ fi
 
 # Fast restart
 if test "$enable_fast_restart" = "yes"; then
-	AC_DEFINE(FAST_RESTART)
+	AC_DEFINE(FAST_RESTART, 1, [define if you want to have fast restart])
 fi
 
 if test "$enable_bitmap_later" = "yes"; then
-	AC_DEFINE(BITMAP_LATER)
+	AC_DEFINE(BITMAP_LATER, 1, [define if you want to salvager to check bitmasks later])
 fi
 
 if test "$enable_full_vos_listvol_switch" = "yes"; then
-	AC_DEFINE(FULL_LISTVOL_SWITCH)
+	AC_DEFINE(FULL_LISTVOL_SWITCH, 1, [define if you want to want listvol switch])
 fi
 
 if test "$enable_bos_restricted_mode" = "yes"; then
-	AC_DEFINE(BOS_RESTRICTED_MODE)
+	AC_DEFINE(BOS_RESTRICTED_MODE, 1, [define if you want to want bos restricted mode])
 fi
 
 if test "$enable_namei_fileserver" = "yes"; then
-	AC_DEFINE(AFS_NAMEI_ENV)
+	AC_DEFINE(AFS_NAMEI_ENV, 1, [define if you want to want namei fileserver])
 fi
 
 if test "$enable_afsdb" = "yes"; then
 	LIB_AFSDB="$LIB_res_search"
-	AC_DEFINE(AFS_AFSDB_ENV)
+	AC_DEFINE(AFS_AFSDB_ENV, 1, [define if you want to want search afsdb rr])
 fi
 
 dnl check for tivoli
@@ -439,9 +559,13 @@ AC_CHECK_HEADERS(netinet/in.h netdb.h sys/fcntl.h sys/mnttab.h sys/mntent.h)
 AC_CHECK_HEADERS(mntent.h sys/vfs.h sys/param.h sys/fs_types.h)
 AC_CHECK_HEADERS(sys/mount.h strings.h termios.h signal.h)
 AC_CHECK_HEADERS(windows.h malloc.h winsock2.h direct.h io.h)
-AC_CHECK_HEADERS(security/pam_modules.h siad.h usersec.h)
+AC_CHECK_HEADERS(security/pam_modules.h siad.h usersec.h ucontext.h)
 
 AC_CHECK_FUNCS(utimes random srandom getdtablesize snprintf re_comp re_exec)
+AC_CHECK_FUNCS(setprogname getprogname sigaction)
+AC_CHECK_TYPE(ssize_t, int)
+
+AC_CHECK_FUNCS(timegm)
 
 dnl Directory PATH handling
 if test "x$enable_transarc_paths" = "xyes"  ; then 

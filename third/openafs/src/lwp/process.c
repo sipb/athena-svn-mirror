@@ -12,7 +12,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/lwp/process.c,v 1.1.1.1 2002-01-31 21:49:52 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/lwp/process.c,v 1.1.1.2 2002-12-13 20:40:36 zacheiss Exp $");
 
 #include <stdio.h>
 #include <assert.h>
@@ -27,7 +27,7 @@ extern int PRE_Block;              /* used in lwp.c and process.s */
 extern char PRE_Block;             /* used in lwp.c and process.s */
 #endif
 
-#ifdef HAVE_UCONTEXT_H
+#if defined(USE_UCONTEXT) && defined(HAVE_UCONTEXT_H)
 
 afs_int32
 savecontext(ep, savearea, newsp)

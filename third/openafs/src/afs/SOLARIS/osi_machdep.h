@@ -39,12 +39,24 @@
  * Time related macros
  */
 #define	afs_hz	    hz
+#ifdef AFS_SUN59_ENV
+#define osi_Time() local_osi_Time()
+extern void gethrestime(timespec_t *);
+static int
+local_osi_Time()
+{
+   timespec_t start;
+   gethrestime(&start);
+   return start.tv_sec;
+}
+#else
 #define osi_Time() (hrestime.tv_sec)
+#endif
 
 #undef afs_osi_Alloc_NoSleep
 extern void *afs_osi_Alloc_NoSleep(size_t size);
 
-#define osi_vnhold(avc, r)  do { VN_HOLD((struct vnode *)(avc)); } while(0)
+#define osi_vnhold(avc, r)  do { VN_HOLD(AFSTOV(avc)); } while(0)
 #define gop_rdwr(rw,gp,base,len,offset,segflg,ioflag,ulimit,cr,aresid) \
   vn_rdwr((rw),(gp),(base),(len),(offset),(segflg),(ioflag),(ulimit),(cr),(aresid))
 
@@ -90,7 +102,7 @@ extern kmutex_t afs_rxglobal_lock;
 #undef AfsLargeFileUio
 #define AfsLargeFileUio(uio)       ( (uio)->_uio_offset._p._u ? 1 : 0 )
 #undef AfsLargeFileSize
-#define AfsLargeFileSize(pos, off) ( ((offset_t)(pos)+(offset_t)(off) > (offset_t)MAXOFF_T)?1:0)
+#define AfsLargeFileSize(pos, off) ( ((offset_t)(pos)+(offset_t)(off) > (offset_t)0x7fffffff)?1:0)
 #endif
 
 #endif /* _OSI_MACHDEP_H_ */

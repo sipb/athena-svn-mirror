@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/dir/buffer.c,v 1.1.1.1 2002-01-31 21:31:51 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/dir/buffer.c,v 1.1.1.2 2002-12-13 20:39:30 zacheiss Exp $");
 
 #include <stdlib.h>
 #include <lock.h>
@@ -132,8 +132,8 @@ char *DRead(fid,page)
     if ( tb = phTable[pHash(fid)] ) {  /* ASSMT HERE */
 	if (bufmatch(tb)) {
 	    ObtainWriteLock(&tb->lock);
-	    ReleaseWriteLock(&afs_bufferLock);
 	    tb->lockers++;
+	    ReleaseWriteLock(&afs_bufferLock);
 	    tb->accesstime = ++timecounter;
 	    ReleaseWriteLock(&tb->lock);
 	    return tb->data;
@@ -144,8 +144,8 @@ char *DRead(fid,page)
 	    if (bufmatch(tb2)) {
 	      buf_Front(bufhead,tb,tb2);
 	      ObtainWriteLock(&tb2->lock);
-	      ReleaseWriteLock(&afs_bufferLock);
 	      tb2->lockers++;
+	      ReleaseWriteLock(&afs_bufferLock);
 	      tb2->accesstime = ++timecounter;
 	      ReleaseWriteLock(&tb2->lock);
 	      return tb2->data;
@@ -154,8 +154,8 @@ char *DRead(fid,page)
 	      if (bufmatch(tb)) {
 		buf_Front(bufhead,tb2,tb);
 		ObtainWriteLock(&tb->lock);
-		ReleaseWriteLock(&afs_bufferLock);
 		tb->lockers++;
+		ReleaseWriteLock(&afs_bufferLock);
 		tb->accesstime = ++timecounter;
 		ReleaseWriteLock(&tb->lock);
 		return tb->data;
@@ -175,8 +175,8 @@ char *DRead(fid,page)
     tb = newslot(fid, page, (tb ? tb : tb2));
     ios++;
     ObtainWriteLock(&tb->lock);
-    ReleaseWriteLock(&afs_bufferLock);
     tb->lockers++;
+    ReleaseWriteLock(&afs_bufferLock);
     if (ReallyRead(tb->fid,tb->page,tb->data)) {
 	tb->lockers--;
         FidZap(tb->fid);	/* disaster */
@@ -394,13 +394,10 @@ char *DNew (fid,page)
      */
     register struct buffer *tb;
     ObtainWriteLock(&afs_bufferLock);
-    if ((tb = newslot(fid,page,0)) == 0) {
-	ReleaseWriteLock(&afs_bufferLock);
-	return 0;
-    }
+    tb = newslot(fid,page,0);
     ObtainWriteLock(&tb->lock);
-    ReleaseWriteLock(&afs_bufferLock);
     tb->lockers++;
+    ReleaseWriteLock(&afs_bufferLock);
     ReleaseWriteLock(&tb->lock);
     return tb->data;
 }

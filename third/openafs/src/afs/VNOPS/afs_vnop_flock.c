@@ -15,7 +15,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_flock.c,v 1.1.1.1 2002-01-31 21:31:36 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_flock.c,v 1.1.1.2 2002-12-13 20:40:58 zacheiss Exp $");
 
 #include "../afs/sysincludes.h"	/* Standard vendor system headers */
 #include "../afs/afsincludes.h"	/* Afs-based standard headers */
@@ -37,7 +37,7 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/a
 static int GetFlockCount(struct vcache *avc, struct vrequest *areq);
 
 void lockIdSet(flock, slp, clid)
-   int clid;  /* non-zero on SGI, OSF, SunOS */
+   int clid;  /* non-zero on SGI, OSF, SunOS, Darwin, xBSD *//* XXX ptr type */
     struct SimpleLocks *slp;
     struct AFS_FLOCK *flock;
 {
@@ -175,10 +175,11 @@ static int lockIdcmp2(flock1, vp, alp, onlymine, clid)
       }
 #endif
       if ((flock1->l_pid == alp->pid) || 
-#if defined(AFS_AIX41_ENV) || defined(AFS_LINUX20_ENV) || defined(AFS_HPUX_ENV) || defined(AFS_DARWIN_ENV) || defined(AFS_FBSD_ENV)
+#if defined(AFS_AIX41_ENV) || defined(AFS_LINUX20_ENV) || defined(AFS_HPUX_ENV)
 	  (!onlymine && (flock1->l_pid == getppid()))
 #else
-#if defined(AFS_SGI65_ENV)
+#if defined(AFS_SGI65_ENV) || defined(AFS_DARWIN_ENV) || defined(AFS_FBSD_ENV) 
+          /* XXX check this. used to be *only* irix for some reason. */ 
 	  (!onlymine && (flock1->l_pid == clid))
 #else
 	  (!onlymine && (flock1->l_pid == procp->p_ppid))
@@ -502,11 +503,21 @@ struct AFS_UCRED *acred; {
 #ifdef	AFS_OSF_ENV
     int acmd = 0;
 #endif
+    struct afs_fakestat_state fakestate;
 
     AFS_STATCNT(afs_lockctl);
     if (code = afs_InitReq(&treq, acred)) return code;
+    afs_InitFakeStat(&fakestate);
+    code = afs_EvalFakeStat(&avc, &fakestate, &treq);
+    if (code) {
+	afs_PutFakeStat(&fakestate);
+	return code;
+    }
 #ifdef	AFS_OSF_ENV
-    if (flag & VNOFLCK)	return 0;
+    if (flag & VNOFLCK)	{
+	afs_PutFakeStat(&fakestate);
+	return 0;
+    }
     if (flag & CLNFLCK) {
 	acmd = LOCK_UN;
     } else if ((flag & GETFLCK) || (flag & RGETFLCK)) {
@@ -520,12 +531,15 @@ struct AFS_UCRED *acred; {
 #else
     if (acmd == F_GETLK) {
 #endif
-	if (af->l_type == F_UNLCK)
+	if (af->l_type == F_UNLCK) {
+	    afs_PutFakeStat(&fakestate);
 	    return 0;
+	}
 #ifndef	AFS_OSF_ENV	/* getlock is a no-op for osf (for now) */
 	code = HandleGetLock(avc, af, &treq, clid);
 #endif
 	code = afs_CheckCode(code, &treq, 2); /* defeat buggy AIX optimz */
+	afs_PutFakeStat(&fakestate);
 	return code;
     }
     else if ((acmd == F_SETLK) || (acmd == F_SETLKW) 
@@ -553,13 +567,17 @@ struct AFS_UCRED *acred; {
 	   even when they should block */
 	if (af->l_whence != 0 || af->l_start != 0 || af->l_len != 0) {
 	    DoLockWarning();
+	    afs_PutFakeStat(&fakestate);
 	    return 0;
 	}
 	/* otherwise we can turn this into a whole-file flock */
 	if (af->l_type == F_RDLCK) code = LOCK_SH;
 	else if (af->l_type == F_WRLCK) code = LOCK_EX;
 	else if (af->l_type == F_UNLCK) code = LOCK_UN;
-	else return EINVAL; /* unknown lock type */
+	else {
+	    afs_PutFakeStat(&fakestate);
+	    return EINVAL; /* unknown lock type */
+	}
 	if (((acmd == F_SETLK) 
 #if 	(defined(AFS_SGI_ENV) || defined(AFS_SUN_ENV)) && !defined(AFS_SUN58_ENV)
 	|| (acmd == F_RSETLK) 
@@ -578,8 +596,10 @@ struct AFS_UCRED *acred; {
 #endif
 #endif
 	code = afs_CheckCode(code, &treq, 3); /* defeat AIX -O bug */
+	afs_PutFakeStat(&fakestate);
 	return code;
     }
+    afs_PutFakeStat(&fakestate);
     return EINVAL;
 }
 
@@ -858,39 +878,49 @@ afs_xflock () {
     struct vrequest treq;
     struct vcache *tvc;
     int flockDone;
+    struct afs_fakestat_state fakestate;
 
+    afs_InitFakeStat(&fakestate);
     AFS_STATCNT(afs_xflock);
     flockDone = 0;
 #ifdef AFS_OSF_ENV
     uap = (struct a *)args;
     getf(&fd, uap->fd, FILE_FLAGS_NULL, &u.u_file_state);
 #else /* AFS_OSF_ENV */
-#if defined(AFS_FBSD_ENV)
     uap = (struct a *)u.u_ap;
-#else
-    uap = (struct a *)u.u_ap;
-#endif /* AFS_FBSD_ENV */
     fd = getf(uap->fd);
 #endif
-    if (!fd) return;
+    if (!fd) {
+	afs_PutFakeStat(&fakestate);
+	return;
+    }
 
-    if (flockDone = afs_InitReq(&treq, u.u_cred)) return flockDone;
+    if (flockDone = afs_InitReq(&treq, u.u_cred)) {
+	afs_PutFakeStat(&fakestate);
+	return flockDone;
+    }
     /* first determine whether this is any sort of vnode */
     if (fd->f_type == DTYPE_VNODE) {
 	/* good, this is a vnode; next see if it is an AFS vnode */
-	tvc = (struct vcache *) fd->f_data;	/* valid, given a vnode */
-	if (IsAfsVnode((struct vnode *)tvc)) {
+	tvc = VTOAFS(fd->f_data);	/* valid, given a vnode */
+	if (IsAfsVnode(AFSTOV(tvc))) {
 	    /* This is an AFS vnode, so do the work */
 #ifdef AFS_DEC_ENV
 	    /* find real vcache entry; shouldn't be null if gnode ref count
 	     * is greater than 0.
 	     */
-	    tvc = (struct vcache *) afs_gntovn(tvc);
+	    tvc = VTOAFS(afs_gntovn)(tvc);
 	    if (!tvc) {
 		u.u_error = ENOENT;
+		afs_PutFakeStat(&fakestate);
 		return;
 	    }
 #endif
+	    code = afs_EvalFakeStat(&tvc, &fakestate, &treq);
+	    if (code) {
+		afs_PutFakeStat(&fakestate);
+		return code;
+	    }
 	    if ((fd->f_flag & (FEXLOCK | FSHLOCK)) && !(uap->com & LOCK_UN)) {
 		/* First, if fd already has lock, release it for relock path */
 #if defined(AFS_SGI_ENV) || defined(AFS_OSF_ENV) || (defined(AFS_SUN_ENV) && !defined(AFS_SUN5_ENV))
@@ -938,6 +968,7 @@ afs_xflock () {
 #else
     FP_UNREF(fd);
 #endif
+    afs_PutFakeStat(&fakestate);
     return code;
 #else	/* AFS_OSF_ENV */
     if (!flockDone)
@@ -946,6 +977,7 @@ afs_xflock () {
 #else
     	flock();
 #endif
+    afs_PutFakeStat(&fakestate);
     return;
 #endif
 }

@@ -22,7 +22,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_readdir.c,v 1.1.1.1 2002-01-31 21:48:52 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_readdir.c,v 1.1.1.2 2002-12-13 20:42:24 zacheiss Exp $");
 
 #include "../afs/sysincludes.h"	/* Standard vendor system headers */
 #include "../afs/afsincludes.h"	/* Afs-based standard headers */
@@ -140,7 +140,7 @@ struct irix5_min_dirent {     /* miniature dirent structure */
 #else
 struct min_direct {	/* miniature direct structure */
 			/* If struct direct changes, this must too */
-#ifdef AFS_DARWIN_ENV
+#if defined(AFS_DARWIN_ENV) || defined(AFS_FBSD_ENV)
     afs_uint32  d_fileno;
     u_short     d_reclen;
     u_char      d_type;
@@ -226,6 +226,45 @@ int	afs_rd_stash_i = 0;
 #endif /* AFS_SUN56_ENV */
 #endif	/* AFS_HPUX100_ENV */
 
+#if defined(AFS_DARWIN_ENV) || defined(AFS_FBSD_ENV)
+int afs_readdir_type(avc, ade) 
+struct DirEntry *	ade;
+struct vcache *		avc;
+{
+     struct VenusFid tfid;
+     struct vcache *tvc;
+     int vtype;
+     tfid.Cell=avc->fid.Cell;
+     tfid.Fid.Volume=avc->fid.Fid.Volume;
+     tfid.Fid.Vnode=ntohl(ade->fid.vnode);
+     tfid.Fid.Unique=ntohl(ade->fid.vunique);
+     if ((avc->states & CForeign) == 0 &&
+         (ntohl(ade->fid.vnode) & 1)) {
+          return DT_DIR;
+     } else if ((tvc=afs_FindVCache(&tfid,0,0,0,0))) {
+           if (tvc->mvstat) {
+               afs_PutVCache(tvc, WRITE_LOCK);
+               return DT_DIR;
+          } else if (((tvc->states) & (CStatd|CTruth))) {
+               /* CTruth will be set if the object has
+                *ever* been statd */
+               vtype=vType(tvc);
+               afs_PutVCache(tvc, WRITE_LOCK);
+               if (vtype == VDIR)
+                    return DT_DIR;
+               else if (vtype == VREG)
+                    return DT_REG;
+               /* Don't do this until we're sure it can't be a mtpt */
+               /* else if (vtype == VLNK)
+                  type=DT_LNK; */
+               /* what other types does AFS support? */
+          } else
+               afs_PutVCache(tvc, WRITE_LOCK);
+    }
+    return DT_UNKNOWN;
+}
+#endif
+
 #ifdef AFS_AIX41_ENV
 #define AFS_MOVE_LOCK()   AFS_GLOCK()
 #define AFS_MOVE_UNLOCK() AFS_GUNLOCK()
@@ -233,7 +272,6 @@ int	afs_rd_stash_i = 0;
 #define AFS_MOVE_LOCK()
 #define AFS_MOVE_UNLOCK()
 #endif
-
 char bufofzeros[64];	/* gotta fill with something */
 afs_readdir_move (de, vc, auio, slen, rlen, off) 
 struct DirEntry *	de;
@@ -348,8 +386,8 @@ int			off;
 #if defined(AFS_SUN_ENV) || defined(AFS_AIX32_ENV) || defined(AFS_SGI_ENV)
     sdirEntry.d_off = off;
 #endif
-#if defined(AFS_DARWIN_ENV)
-    sdirEntry.d_type=DT_UNKNOWN;
+#if defined(AFS_DARWIN_ENV) || defined(AFS_FBSD_ENV)
+    sdirEntry.d_type=afs_readdir_type(vc, de);
 #endif
 
 #if defined(AFS_SGI_ENV)
@@ -423,7 +461,7 @@ void afs_bulkstat_send( avc, req )
  * It has to do with 'offset' (seek locations).
 */
 
-#if	defined(AFS_SUN5_ENV) || defined(AFS_SGI_ENV) || defined(AFS_OSF_ENV) || defined(AFS_DARWIN_ENV)
+#if	defined(AFS_SUN5_ENV) || defined(AFS_SGI_ENV) || defined(AFS_OSF_ENV) || defined(AFS_DARWIN_ENV) || defined(AFS_FBSD_ENV)
 afs_readdir(OSI_VC_ARG(avc), auio, acred, eofp)
     int *eofp;
 #else
@@ -443,6 +481,7 @@ afs_readdir(OSI_VC_ARG(avc), auio, acred)
     struct DirEntry *ode = 0, *nde = 0;
     int o_slen = 0, n_slen = 0;
     afs_uint32 us;
+    struct afs_fakestat_state fakestate;
 #if defined(AFS_SGI53_ENV)
     afs_int32 use64BitDirent;
 #endif /* defined(AFS_SGI53_ENV) */
@@ -480,7 +519,7 @@ afs_readdir(OSI_VC_ARG(avc), auio, acred)
 #endif /* AFS_SGI61_ENV */
 #endif /* defined(AFS_SGI53_ENV) */
 
-#if	defined(AFS_SUN5_ENV) || defined(AFS_SGI_ENV) || defined(AFS_OSF_ENV) || defined(AFS_DARWIN_ENV)
+#if	defined(AFS_SUN5_ENV) || defined(AFS_SGI_ENV) || defined(AFS_OSF_ENV) || defined(AFS_DARWIN_ENV) || defined(AFS_FBSD_ENV)
     /* Not really used by the callee so we ignore it for now */
     if (eofp) *eofp = 0;
 #endif
@@ -495,6 +534,9 @@ afs_readdir(OSI_VC_ARG(avc), auio, acred)
 	return code;
     }
     /* update the cache entry */
+    afs_InitFakeStat(&fakestate);
+    code = afs_EvalFakeStat(&avc, &fakestate, &treq);
+    if (code) goto done;
 tagain:
     code = afs_VerifyVCache(avc, &treq);
     if (code) goto done;
@@ -604,7 +646,7 @@ tagain:
 	    } else {
 		/* nothin to hand over */
 	    }
-#if	defined(AFS_SUN5_ENV) || defined(AFS_SGI_ENV) || defined(AFS_OSF_ENV)
+#if	defined(AFS_SUN5_ENV) || defined(AFS_SGI_ENV) || defined(AFS_OSF_ENV) || defined(AFS_DARWIN_ENV) || defined(AFS_FBSD_ENV)
 	if (eofp) *eofp = 1;	/* Set it properly */
 #endif
 	    if (ode) DRelease(ode, 0);
@@ -729,6 +771,7 @@ done:
 #ifdef	AFS_HPUX_ENV
     osi_FreeSmallSpace((char *)sdirEntry);
 #endif
+    afs_PutFakeStat(&fakestate);
     code = afs_CheckCode(code, &treq, 28);
     return code;
 }
@@ -740,7 +783,7 @@ afs1_readdir(avc, auio, acred, eofp)
 #else
 afs1_readdir(avc, auio, acred)
 #endif
-    register struct vcache *avc;
+    struct vcache *avc;
     struct uio *auio;
     struct AFS_UCRED *acred; {
     struct vrequest treq;
@@ -759,6 +802,7 @@ afs1_readdir(avc, auio, acred)
     struct minnfs_direct *sdirEntry = (struct minnfs_direct *)osi_AllocSmallSpace(sizeof(struct min_direct));
     afs_int32 rlen;
 #endif
+    struct afs_fakestat_state fakestate;
 
     AFS_STATCNT(afs_readdir);
 #if	defined(AFS_SUN5_ENV) || defined(AFS_SGI_ENV) || defined(AFS_OSF_ENV)
@@ -768,6 +812,15 @@ afs1_readdir(avc, auio, acred)
 #ifdef	AFS_HPUX_ENV
 	osi_FreeSmallSpace((char *)sdirEntry);
 #endif
+	return code;
+    }
+    afs_InitFakeStat(&fakestate);
+    code = afs_EvalFakeStat(&avc, &fakestate, &treq);
+    if (code) {
+#ifdef	AFS_HPUX_ENV
+	osi_FreeSmallSpace((char *)sdirEntry);
+#endif
+	afs_PutFakeStat(&fakestate);
 	return code;
     }
     /* update the cache entry */
@@ -955,6 +1008,7 @@ done:
 #if	defined(AFS_HPUX_ENV) || defined(AFS_OSF_ENV)
     osi_FreeSmallSpace((char *)sdirEntry);
 #endif
+    afs_PutFakeStat(&fakestate);
     code = afs_CheckCode(code, &treq, 29);
     return code;
 }

@@ -201,6 +201,7 @@ struct cell {
     u_short vlport;			    /* volume server port */
     short states;			    /* state flags */
     short cellIndex;			    /* relative index number per cell */
+    short realcellIndex;		    /* as above but ignoring aliases */
     time_t timeout;			    /* data expire time, if non-zero */
     char *realName;			    /* who this cell is an alias for */
 };
@@ -496,7 +497,11 @@ struct SimpleLocks {
 #ifdef	AFS_OSF_ENV
 #define CWired		0x00000800	/* OSF hack only */
 #else
+#ifdef AFS_DARWIN_ENV
+#define CUBCinit        0x00000800
+#else
 #define CWRITE_IGN	0x00000800	/* Next OS hack only */
+#endif
 #endif
 #define CUnique		0x00001000	/* vc's uniquifier - latest unifiquier for fid */
 #define CForeign	0x00002000	/* this is a non-afs vcache */
@@ -564,6 +569,13 @@ struct	vtodc
 extern afs_uint32 afs_stampValue;		/* stamp for pair's usage */
 #define	MakeStamp()	(++afs_stampValue)
 
+#define VTOAFS(V) ((struct vcache*)(V))
+#define AFSTOV(V) (&(V)->v)
+#ifdef AFS_LINUX22_ENV
+#define ITOAFS(V) ((struct vcache*)(V))
+#define AFSTOI(V) (struct inode *)(&(V)->v)
+#endif
+
 /* INVARIANTs: (vlruq.next != NULL) == (vlruq.prev != NULL)
  *             nextfree => !vlruq.next && ! vlruq.prev
  * !(avc->nextfree) && !avc->vlruq.next => (FreeVCList == avc->nextfree)
@@ -590,11 +602,11 @@ struct vcache {
      * Do not try to get the vcache lock when the vlock is held */
     afs_rwlock_t vlock;
 #endif /* defined(AFS_SUN5_ENV) */
-#if defined(AFS_SUN_ENV) || defined(AFS_ALPHA_ENV) || defined(AFS_DARWIN_ENV)
 #if	defined(AFS_SUN5_ENV)
     krwlock_t rwlock;
     struct cred *credp;
 #endif
+#if defined(AFS_SUN_ENV) || defined(AFS_ALPHA_ENV) || defined(AFS_DARWIN_ENV) || defined(AFS_FBSD_ENV)
     afs_bozoLock_t pvnLock;	/* see locks.x */
 #endif
 #ifdef	AFS_AIX32_ENV
@@ -609,7 +621,10 @@ struct vcache {
 #ifdef AFS_DARWIN_ENV
     struct lock__bsd__      rwlock;
 #endif
-    afs_int32 parentVnode;			/* Parent dir, if a file. */
+#ifdef AFS_FBSD_ENV
+    struct lock      rwlock;
+#endif
+    afs_int32 parentVnode;		/* Parent dir, if a file. */
     afs_int32 parentUnique;
     struct VenusFid *mvid;		/* Either parent dir (if root) or root (if mt pt) */
     char *linkData;			/* Link data if a symlink. */
@@ -696,9 +711,9 @@ struct vcache {
 #ifdef AFS_SGI64_ENV
 #include <ksys/behavior.h>
 #define AFS_RWLOCK(V,F) \
-	afs_rwlock(&(((struct vcache *)(V))->vc_bhv_desc), (F));
+	afs_rwlock(&VTOAFS(V)->vc_bhv_desc, (F));
 #define AFS_RWUNLOCK(V,F) \
-	afs_rwunlock(&(((struct vcache *)(V))->vc_bhv_desc), (F));
+	afs_rwunlock(&VTOAFS(V)->vc_bhv_desc, (F));
 
 #else
 #define AFS_RWLOCK(V,F) afs_rwlock((vnode_t *)(V), (F) )
@@ -914,7 +929,7 @@ struct dcache {
 	avc->states |= CCore;	/* causes close to be called later */ \
                                                                       \
 	/* The cred and vnode holds will be released in afs_FlushActiveVcaches */  \
-	VN_HOLD((struct vnode *)avc);	/* So it won't disappear */           \
+	VN_HOLD(AFSTOV(avc));	/* So it won't disappear */           \
 	CRKEEP(avc, acred); /* Should use a better place for the creds */ \
     }                                                                         \
     else {                                                                    \
@@ -1028,7 +1043,7 @@ extern int afs_DynrootVOPRemove();
 #else
 #ifdef AFS_DARWIN_ENV
 #define afs_VerifyVCache(avc, areq)  \
-  (((avc)->states & CStatd) ? (osi_VM_Setup(avc), 0) : \
+  (((avc)->states & CStatd) ? (osi_VM_Setup(avc, 0), 0) : \
    afs_VerifyVCache2((avc),areq))
 #else
 #define afs_VerifyVCache(avc, areq)  \
@@ -1133,6 +1148,18 @@ extern int afs_norefpanic;
 #endif /* AFS_DECOSF_ENV */
 #endif /* AFS_SGI62_ENV */
 #endif
+
+/* fakestat support: opaque storage for afs_EvalFakeStat to remember
+ * what vcache should be released.
+ */
+struct afs_fakestat_state {
+    char valid;
+    char did_eval;
+    char need_release;
+    struct vcache *root_vp;
+};
+
+extern int afs_fakestat_enable;
 
 #endif	/* _AFS_H_ */
 

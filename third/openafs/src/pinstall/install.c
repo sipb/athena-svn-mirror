@@ -49,7 +49,7 @@ Generic install command.  Options are:
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/pinstall/install.c,v 1.1.1.1 2002-01-31 21:32:01 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/pinstall/install.c,v 1.1.1.2 2002-12-13 20:40:26 zacheiss Exp $");
 
 #include <stdio.h>
 #include <pwd.h>
@@ -86,7 +86,9 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/pinstall/in
 struct stat istat, ostat;
 
 extern int errno;
+#if !defined(AFS_DARWIN60_ENV)
 extern int sys_nerr;
+#endif
 #if !defined(AFS_LINUX20_ENV) && !defined(AFS_DARWIN_ENV) && !defined(AFS_FBSD_ENV)
 extern char *sys_errlist[];
 #endif
@@ -476,10 +478,8 @@ main (argc, argv)
 #endif /* AFS_HPUX_ENV */
     char pnametmp[1024];
     int pnamelen;
-#if defined (AFS_AIX_ENV) || defined(AFS_XBSD_ENV)
     afs_int32 newcode;
     static char diskBuffer[BUFSIZE];	/* must be static to avoid compiler bugs for large stuff */
-#endif
     char myHostName[100];
     struct timeval tvp[2];
     int isDir;

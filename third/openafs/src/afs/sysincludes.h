@@ -72,9 +72,12 @@ struct xfs_inode_info {};
 #include <linux/string.h>
 #include <asm/semaphore.h>
 #include <linux/errno.h>
+#ifdef COMPLETION_H_EXISTS
+#include <linux/completion.h>
+#endif
 
 #else /* AFS_LINUX22_ENV */
-#if defined(AFS_DARWIN_ENV) || defined(AFS_FBSD_ENV)
+#if defined(AFS_DARWIN_ENV)
 #define _MACH_ETAP_H_   
 typedef unsigned short                  etap_event_t; 
 #endif
@@ -180,7 +183,7 @@ typedef unsigned short                  etap_event_t;
 #endif /* AFS_DEC_ENV */
 
 
-#ifndef AFS_SGI64_ENV
+#if !defined(AFS_SGI64_ENV) && !defined(AFS_FBSD_ENV)
 #include "../h/user.h"
 #endif /* AFS_SGI64_ENV */
 #define	MACH_USER_API	1
@@ -223,17 +226,20 @@ struct vfspage;			/* for vnode.h compiler warnings */
 #  include <sys/namei.h>
 #  include <sys/vnode.h>  
 #  include <sys/queue.h>    
+#  include <sys/malloc.h>    
 #ifndef AFS_FBSD_ENV
 #  include <sys/ubc.h>
 #define timeout_fcn_t mach_timeout_fcn_t
 #  include <kern/sched_prim.h>
 #else
+MALLOC_DECLARE(M_AFS);
 #  include <ufs/ufs/dinode.h>
 #  include <vm/vm.h>
 #  include <vm/vm_extern.h>
 #  include <vm/pmap.h>
 #  include <vm/vm_map.h>
 #  include <sys/lock.h>
+#  include <sys/user.h>
 #endif
 #undef timeout_fcn_t
 #define _DIR_H_
@@ -268,7 +274,7 @@ struct vfspage;			/* for vnode.h compiler warnings */
 #endif /* AFS_SUN5_ENV */
 
 #include "../rpc/types.h"
-#include "../rpc/xdr.h"
+#include "../rx/xdr.h"
 
 #ifdef AFS_AIX32_ENV
 #  include "net/spl.h"
@@ -363,7 +369,7 @@ struct vfspage;			/* for vnode.h compiler warnings */
 #undef register
 #endif	/* AFS_ALPHA_ENV */
 
-#include <rpc/xdr.h>
+#include <rx/xdr.h>
 #include <sys/proc.h>
 #include <sys/ioctl.h>
 

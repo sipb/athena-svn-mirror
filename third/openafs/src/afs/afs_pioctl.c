@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_pioctl.c,v 1.1.1.1 2002-01-31 21:33:09 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/afs_pioctl.c,v 1.1.1.2 2002-12-13 20:41:19 zacheiss Exp $");
 
 #include "../afs/sysincludes.h"	/* Standard vendor system headers */
 #include "../afs/afsincludes.h"	/* Afs-based standard headers */
@@ -131,18 +131,18 @@ static int (*(VpioctlSw[]))() = {
   PRxStatPeer,			/* 54 - control peer RX statistics */
   PGetRxkcrypt,			/* 55 -- Get rxkad encryption flag */
   PSetRxkcrypt,			/* 56 -- Set rxkad encryption flag */
-  PNoop,			/* 57 -- arla: set file prio */
-  PNoop,			/* 58 -- arla: fallback getfh */
-  PNoop,			/* 59 -- arla: fallback fhopen */
-  PNoop,			/* 60 -- arla: controls xfsdebug */
-  PNoop,			/* 61 -- arla: controls arla debug */
-  PNoop,			/* 62 -- arla: debug interface */
-  PNoop,			/* 63 -- arla: print xfs status */
-  PNoop,			/* 64 -- arla: force cache check */
-  PNoop,			/* 65 -- arla: break callback */
+  PBogus,			/* 57 -- arla: set file prio */
+  PBogus,			/* 58 -- arla: fallback getfh */
+  PBogus,			/* 59 -- arla: fallback fhopen */
+  PBogus,			/* 60 -- arla: controls xfsdebug */
+  PBogus,			/* 61 -- arla: controls arla debug */
+  PBogus,			/* 62 -- arla: debug interface */
+  PBogus,			/* 63 -- arla: print xfs status */
+  PBogus,			/* 64 -- arla: force cache check */
+  PBogus,			/* 65 -- arla: break callback */
   PPrefetchFromTape,            /* 66 -- MR-AFS: prefetch file from tape */
   PResidencyCmd,                /* 67 -- MR-AFS: generic commnd interface */
-  PNoop,			/* 68 -- arla: fetch stats */
+  PBogus,			/* 68 -- arla: fetch stats */
 };
 
 static int (*(CpioctlSw[]))() = {
@@ -430,17 +430,28 @@ afs_xioctl ()
 #endif	/* AFS_SUN5_ENV */
 #endif
 #ifndef AFS_LINUX22_ENV
-#if	defined(AFS_AIX32_ENV) || defined(AFS_SUN5_ENV) || defined(AFS_OSF_ENV) || defined(AFS_DARWIN_ENV) || defined(AFS_FBSD_ENV)
+#if	defined(AFS_AIX32_ENV) || defined(AFS_SUN5_ENV) || defined(AFS_OSF_ENV) || defined(AFS_DARWIN_ENV)
       struct file *fd;
 #else
       register struct file *fd;
 #endif
 #endif
+#if defined(AFS_FBSD_ENV)
+      register struct filedesc *fdp;
+#endif
       register struct vcache *tvc;
       register int ioctlDone = 0, code = 0;
       
       AFS_STATCNT(afs_xioctl);
-#if defined(AFS_DARWIN_ENV) || defined(AFS_FBSD_ENV)
+#if defined(AFS_FBSD_ENV)
+        fdp=p->p_fd;
+        if ((u_int)uap->fd >= fdp->fd_nfiles ||
+            (fd = fdp->fd_ofiles[uap->fd]) == NULL)
+                return EBADF;
+        if ((fd->f_flag & (FREAD | FWRITE)) == 0)
+                return EBADF;
+#else
+#if defined(AFS_DARWIN_ENV)
         if ((code=fdgetf(p, uap->fd, &fd)))
            return code;
 #else
@@ -481,10 +492,11 @@ afs_xioctl ()
 #endif
 #endif
 #endif
+#endif
       
       /* first determine whether this is any sort of vnode */
 #ifdef AFS_LINUX22_ENV
-      tvc = (struct vcache *)ip;
+      tvc = VTOAFS(ip);
       {
 #else
 #ifdef	AFS_SUN5_ENV
@@ -494,14 +506,14 @@ afs_xioctl ()
 #endif
 	/* good, this is a vnode; next see if it is an AFS vnode */
 #if	defined(AFS_AIX32_ENV) || defined(AFS_SUN5_ENV)
-	tvc = (struct vcache *) fd->f_vnode;	/* valid, given a vnode */
+	tvc = VTOAFS(fd->f_vnode);	/* valid, given a vnode */
 #else
-	tvc = (struct vcache *) fd->f_data;	/* valid, given a vnode */
+	tvc = VTOAFS((struct vnode*)fd->f_data);	/* valid, given a vnode */
 #endif
 #endif /* AFS_LINUX22_ENV */
-	if (tvc && IsAfsVnode((struct vnode *)tvc)) {
+	if (tvc && IsAfsVnode(AFSTOV(tvc))) {
 #ifdef AFS_DEC_ENV
-	  tvc = (struct vcache *) afs_gntovn((struct gnode *) tvc);
+	  tvc = VTOAFS(afs_gntovn((struct gnode *) tvc));
 	  if (!tvc) {	/* shouldn't happen with held gnodes */
 	    u.u_error = ENOENT;
 	    return;
@@ -589,7 +601,10 @@ afs_xioctl ()
 #endif
           code = ioctl(uap, rvp);
 #else
-#if defined(AFS_DARWIN_ENV) || defined(AFS_FBSD_ENV)
+#if defined(AFS_FBSD_ENV)
+        return ioctl(p, uap);
+#else
+#if defined(AFS_DARWIN_ENV) 
         return ioctl(p, uap, retval);
 #else
 #ifdef  AFS_OSF_ENV
@@ -603,6 +618,7 @@ afs_xioctl ()
 #else   /* AFS_OSF_ENV */
 #ifndef AFS_LINUX22_ENV
           ioctl();
+#endif
 #endif
 #endif
 #endif
@@ -1021,7 +1037,7 @@ afs_syscall_pioctl(path, com, cmarg, follow)
   
   
 afs_HandlePioctl(avc, acom, ablob, afollow, acred)
-     register struct vcache *avc;
+     struct vcache *avc;
      afs_int32 acom;
      struct AFS_UCRED **acred;
      register struct afs_ioctl *ablob;
@@ -1034,11 +1050,20 @@ afs_HandlePioctl(avc, acom, ablob, afollow, acred)
     char *inData, *outData;
     int (*(*pioctlSw))();
     int pioctlSwSize;
+    struct afs_fakestat_state fakestate;
 
     afs_Trace3(afs_iclSetp, CM_TRACE_PIOCTL, ICL_TYPE_INT32, acom & 0xff,
 	       ICL_TYPE_POINTER, avc, ICL_TYPE_INT32, afollow);
     AFS_STATCNT(HandlePioctl);
     if (code = afs_InitReq(&treq, *acred)) return code;
+    afs_InitFakeStat(&fakestate);
+    if (avc) {
+	code = afs_EvalFakeStat(&avc, &fakestate, &treq);
+	if (code) {
+	    afs_PutFakeStat(&fakestate);
+	    return code;
+	}
+    }
     device = (acom & 0xff00) >> 8;
     switch (device) {
 	case 'V':	/* Original pioctl's */
@@ -1050,22 +1075,26 @@ afs_HandlePioctl(avc, acom, ablob, afollow, acred)
 		pioctlSwSize = sizeof(CpioctlSw);
 		break;
 	default:
+		afs_PutFakeStat(&fakestate);
 		return EINVAL;
     }
     function = acom & 0xff;
     if (function >= (pioctlSwSize / sizeof(char *))) {
-      return EINVAL;	/* out of range */
+	afs_PutFakeStat(&fakestate);
+	return EINVAL;	/* out of range */
     }
     inSize = ablob->in_size;
     if (inSize >= PIGGYSIZE) return E2BIG;
     inData = osi_AllocLargeSpace(AFS_LRALLOCSIZ);
     if (inSize > 0) {
       AFS_COPYIN(ablob->in, inData, inSize, code);
+      inData[inSize]='\0';
     }
     else code = 0;
     if (code) {
-      osi_FreeLargeSpace(inData);
-      return code;
+	osi_FreeLargeSpace(inData);
+	afs_PutFakeStat(&fakestate);
+	return code;
     }
     outData = osi_AllocLargeSpace(AFS_LRALLOCSIZ);
     outSize = 0;
@@ -1077,10 +1106,13 @@ afs_HandlePioctl(avc, acom, ablob, afollow, acred)
     if (code == 0 && ablob->out_size > 0) {
       if (outSize > ablob->out_size) outSize = ablob->out_size;
       if (outSize >= PIGGYSIZE) code = E2BIG;
-      else if	(outSize) 
+      else if	(outSize) {
+	outData[outSize]='\0';
 	AFS_COPYOUT(outData, ablob->out, outSize, code);
+      }
     }
     osi_FreeLargeSpace(outData);
+    afs_PutFakeStat(&fakestate);
     return afs_CheckCode(code, &treq, 41);
   }
   
@@ -1172,11 +1204,12 @@ static PStoreBehind(avc, afun, areq, ain, aout, ainSize, aoutSize, acred)
     else code = EPERM;
   }
 
-  if (avc && (sbr->sb_thisfile != -1))
+  if (avc && (sbr->sb_thisfile != -1)) {
     if (afs_AccessOK(avc, PRSFS_WRITE | PRSFS_ADMINISTER, 
 		      areq, DONT_CHECK_MODE_BITS))
       avc->asynchrony = sbr->sb_thisfile;
     else code = EACCES;
+  }
 
   *aoutSize = sizeof(struct sbstruct);
   sbr = (struct sbstruct *)aout;
@@ -1399,6 +1432,7 @@ static PGCPAGs(avc, afun, areq, ain, aout, ainSize, aoutSize, acred)
     ain += sizeof(afs_int32);
     stp	= ain;	/* remember where the ticket is */
     if (i < 0 || i > 2000) return EINVAL;	/* malloc may fail */
+    if (i > MAXKTCTICKETLEN) return EINVAL;
     stLen = i;
     ain	+= i;	/* skip over ticket */
     memcpy((char *)&i, ain, sizeof(afs_int32));
@@ -1414,7 +1448,8 @@ static PGCPAGs(avc, afun, areq, ain, aout, ainSize, aoutSize, acred)
       memcpy((char *)&flag, ain, sizeof(afs_int32));		/* primary id flag */
       ain += sizeof(afs_int32);			/* skip id field */
       /* rest is cell name, look it up */
-      if (flag & 0x8000) {			/* XXX Use Constant XXX */
+      /* some versions of gcc appear to need != 0 in order to get this right */
+      if ((flag & 0x8000) != 0) {		/* XXX Use Constant XXX */
 	  flag &= ~0x8000;
 	  set_parent_pag = 1;
       }
@@ -1437,7 +1472,11 @@ static PGCPAGs(avc, afun, areq, ain, aout, ainSize, aoutSize, acred)
     if (set_parent_pag) {
 	int pag;
 #if defined(AFS_DARWIN_ENV) || defined(AFS_FBSD_ENV)
+#if defined(AFS_DARWIN_ENV)
         struct proc *p=current_proc(); /* XXX */
+#else
+        struct proc *p=curproc; /* XXX */
+#endif
         uprintf("Process %d (%s) tried to change pags in PSetTokens\n",
                 p->p_pid, p->p_comm);
         if (!setpag(p, acred, -1, &pag, 1)) {
@@ -1714,7 +1753,7 @@ static PNewStatMount(avc, afun, areq, ain, aout, ainSize, aoutSize)
 	code = ENOENT;
 	goto out;
     }
-    if (vType(tvc) != VLNK) {
+    if (tvc->mvstat != 1) {
 	afs_PutVCache(tvc, WRITE_LOCK);
 	code = EINVAL;
 	goto out;
@@ -2373,17 +2412,7 @@ static PListCells(avc, afun, areq, ain, aout, ainSize, aoutSize)
 
     memcpy((char *)&whichCell, tp, sizeof(afs_int32));
     tp += sizeof(afs_int32);
-    ObtainReadLock(&afs_xcell);
-    for (cq = CellLRU.next; cq != &CellLRU; cq = tq) {
-	tcell = QTOC(cq); tq = QNext(cq);
-	if (tcell->states & CAlias) {
-	    tcell = 0;
-	    continue;
-	}
-	if (whichCell == 0) break;
-	tcell = 0;
-	whichCell--;
-    }
+    tcell = afs_GetRealCellByIndex(whichCell, READ_LOCK, 0);
     if (tcell) {
 	cp = aout;
 	memset(cp, 0, MAXCELLHOSTS * sizeof(afs_int32));
@@ -2397,7 +2426,6 @@ static PListCells(avc, afun, areq, ain, aout, ainSize, aoutSize)
 	cp += strlen(tcell->cellName)+1;
 	*aoutSize = cp - aout;
     }
-    ReleaseReadLock(&afs_xcell);
     if (tcell) return 0;
     else return EDOM;
 }
@@ -2500,7 +2528,7 @@ static PRemoveMount(avc, afun, areq, ain, aout, ainSize, aoutSize)
 	afs_PutDCache(tdc);
 	goto out;
     }
-    if (vType(tvc) != VLNK) {
+    if (tvc->mvstat != 1) {
 	afs_PutDCache(tdc);
 	afs_PutVCache(tvc, WRITE_LOCK);
 	code = EINVAL;
@@ -2665,7 +2693,7 @@ struct AFS_UCRED *acred;
 	for(tvc = afs_vhashT[i]; tvc; tvc=tvc->hnext) {
 	    if (tvc->fid.Fid.Volume == volume && tvc->fid.Cell == cell) {
 #if	defined(AFS_SGI_ENV) || defined(AFS_ALPHA_ENV)  || defined(AFS_SUN5_ENV)  || defined(AFS_HPUX_ENV) || defined(AFS_LINUX20_ENV)
-		VN_HOLD((struct vnode *)tvc);
+		VN_HOLD(AFSTOV(tvc));
 #else
 #if defined(AFS_DARWIN_ENV) || defined(AFS_FBSD_ENV)
 		osi_vnhold(tvc, 0);
@@ -3697,7 +3725,7 @@ static PFlushMount(avc, afun, areq, ain, aout, ainSize, aoutSize, acred)
 	code = ENOENT;
 	goto out;
     }
-    if (vType(tvc) != VLNK) {
+    if (tvc->mvstat != 1) {
 	afs_PutVCache(tvc, WRITE_LOCK);
 	code = EINVAL;
 	goto out;

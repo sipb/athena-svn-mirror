@@ -37,7 +37,9 @@ typedef unsigned short                  etap_event_t;
 #include "../h/protosw.h"
 #if !defined(AFS_SUN5_ENV) && !defined(AFS_XBSD_ENV)
 #include "../h/domain.h"
+#if !defined(AFS_HPUX110_ENV)
 #include "../h/dir.h"
+#endif
 #include "../h/buf.h"
 #include "../h/mbuf.h"
 #else
@@ -53,19 +55,24 @@ typedef unsigned short                  etap_event_t;
 #ifdef AFS_SGI62_ENV
 #include "../h/hashing.h"
 #endif
+#ifdef AFS_FBSD_ENV
+#include "../h/sysctl.h"
+#endif
 #include "../netinet/in.h"
 #include "../net/route.h"
 #include "../netinet/in_systm.h"
 #include "../netinet/ip.h"
-#if !defined(AFS_HPUX110_ENV) && !defined(AFS_LINUX22_ENV)
+#if !defined(AFS_HPUX110_ENV) && !defined(AFS_LINUX22_ENV) && !defined(AFS_DARWIN60_ENV)
 #include "../netinet/in_pcb.h"
 #endif /* ! AFS_HPUX110_ENV && ! AFS_LINUX22_ENV */
 #ifndef AFS_LINUX22_ENV
+#if !defined(AFS_DARWIN60_ENV)
 #include "../netinet/ip_var.h"
+#endif
 #include "../netinet/ip_icmp.h"
 #endif /* AFS_LINUX22_ENV */
 #include "../netinet/udp.h"
-#if !defined(AFS_SGI62_ENV) && !defined(AFS_LINUX22_ENV)
+#if !defined(AFS_SGI62_ENV) && !defined(AFS_LINUX22_ENV) && !defined(AFS_DARWIN60_ENV)
 #include "../netinet/udp_var.h"
 #endif
 #if defined(AFS_HPUX102_ENV) || (defined(AFS_SGI62_ENV) && !defined(AFS_SGI64_ENV))
@@ -81,7 +88,7 @@ struct coda_inode_info {};
 #include "../h/file.h"
 #endif
 #include "../net/if.h"
-#if !defined(AFS_HPUX110_ENV) && !defined(AFS_LINUX22_ENV)
+#if !defined(AFS_HPUX110_ENV) && !defined(AFS_LINUX22_ENV) && !defined(AFS_DARWIN60_ENV)
 #include "../netinet/in_var.h"
 #endif /* ! AFS_HPUX110_ENV && ! AFS_LINUX22_ENV */
 #ifndef AFS_LINUX22_ENV
@@ -90,9 +97,7 @@ struct coda_inode_info {};
 #include "../afs/afs_osi.h"
 #include "../rx/rx_kmutex.h"
 #include "../afs/lock.h"
-#ifndef AFS_LINUX22_ENV
-#include "../rpc/xdr.h"
-#endif
+#include "../rx/xdr.h"
 #include "../rx/rx.h"
 #include "../rx/rx_globals.h"
 #include "../afs/longc_procs.h"

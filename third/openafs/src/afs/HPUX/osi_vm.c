@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/HPUX/osi_vm.c,v 1.1.1.1 2002-01-31 21:48:50 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/HPUX/osi_vm.c,v 1.1.1.2 2002-12-13 20:39:20 zacheiss Exp $");
 
 #include "../afs/sysincludes.h"	/* Standard vendor system headers */
 #include "../afs/afsincludes.h"	/* Afs-based standard headers */
@@ -68,7 +68,7 @@ osi_VM_TryToSmush(avc, acred, sync)
     struct AFS_UCRED *acred;
     int sync;
 {
-    struct vnode *vp = (struct vnode *)avc;
+    struct vnode *vp = AFSTOV(avc);
 
     /* Flush the delayed write blocks associated with this vnode
      * from the buffer cache

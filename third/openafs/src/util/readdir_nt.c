@@ -19,7 +19,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/util/readdir_nt.c,v 1.1.1.1 2002-01-31 21:49:30 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/util/readdir_nt.c,v 1.1.1.2 2002-12-13 20:40:37 zacheiss Exp $");
 
 #include <errno.h>
 #include <afs/errmap_nt.h>
@@ -32,7 +32,7 @@ RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/util/readdi
 /* opendir() - The case insensitive version of opendir */
 DIR *opendir(const char *path)
 {
-    struct DIR *tDir;
+    DIR *tDir;
     HANDLE tH;
     char tPath[MAX_PATH];
     WIN32_FIND_DATA tData;

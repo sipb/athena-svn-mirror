@@ -3,16 +3,16 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/util/snprintf.c,v 1.1.1.1 2002-01-31 21:49:30 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/util/snprintf.c,v 1.1.1.2 2002-12-13 20:40:16 zacheiss Exp $");
 
-#if defined(AFS_OSF20_ENV) && !defined(AFS_DUX50_ENV) || defined(AFS_AIX32_ENV) || (defined(AFS_SUN55_ENV) && !defined(AFS_SUN56_ENV))
+#if defined(AFS_OSF20_ENV) && !defined(AFS_DUX50_ENV) || defined(AFS_AIX32_ENV) || (defined(AFS_SUN55_ENV) && !defined(AFS_SUN56_ENV)) || !defined(HAVE_SNPRINTF)
 #include <sys/types.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <ctype.h>
 #include <netinet/in.h>
 #include <netdb.h>
-#if defined(AFS_AIX32_ENV) || defined(AFS_SUN55_ENV)
+#if defined(AFS_AIX32_ENV) || defined(AFS_SUN_ENV)
 #include <sys/socket.h>
 #endif
 

@@ -13,7 +13,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/DUX/osi_vfsops.c,v 1.1.1.1 2002-01-31 21:49:55 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/DUX/osi_vfsops.c,v 1.1.1.2 2002-12-13 20:39:45 zacheiss Exp $");
 
 #include "../afs/sysincludes.h"	/* Standard vendor system headers */
 #include "../afs/afsincludes.h"	/* Afs-based standard headers */
@@ -148,15 +148,16 @@ int mp_afs_root (struct mount *afsp, struct vnode **avpp)
 	}
     }
     if (tvp) {
+	struct vnode *vp = AFSTOV(tvp);
 	AFS_GUNLOCK();
-	VN_HOLD((struct vnode *)tvp);
-	VN_LOCK((struct vnode *)tvp);
-	tvp->v.v_flag |= VROOT;	    /* No-op on Ultrix 2.2 */
-	VN_UNLOCK((struct vnode *)tvp);
+	VN_HOLD(vp);
+	VN_LOCK(vp);
+	vp->v_flag |= VROOT;	    /* No-op on Ultrix 2.2 */
+	VN_UNLOCK(vp);
 	AFS_GLOCK();
 
 	afs_globalVFS = afsp;
-	*avpp = (struct vnode *) tvp;
+	*avpp = vp;
     }
 
     afs_Trace2(afs_iclSetp, CM_TRACE_VFSROOT, ICL_TYPE_POINTER, *avpp,
@@ -273,7 +274,7 @@ int mp_afs_vptofh(struct vnode *avn, struct fid *fidp)
     long addr[2];
     register struct cell *tcell;
     int rootvp = 0;
-    struct vcache *avc = (struct vcache *)avn;
+    struct vcache *avc = VTOAFS(avn);
 
     AFS_GLOCK();
     AFS_STATCNT(afs_fid);
@@ -299,7 +300,7 @@ int mp_afs_vptofh(struct vnode *avn, struct fid *fidp)
 	fidp->fid_reserved = AFS_XLATOR_MAGIC;
 	addr[0] = (long)avc;
 	AFS_GUNLOCK();
-	VN_HOLD((struct vnode *)avc);
+	VN_HOLD(AFSTOV(avc));
 	AFS_GLOCK();
     }
 
@@ -483,14 +484,16 @@ int mp_Afs_init(void)
     extern int Afs_xsetgroups(), afs_xioctl(), afs3_syscall();
     
     AFS_GLOCK();
-    sysent[AFS_SYSCALL].sy_call = afs3_syscall;
+    ((struct sysent *) (&sysent[AFS_SYSCALL]))->sy_call = afs3_syscall;
 #ifdef SY_NARG
-    sysent[AFS_SYSCALL].sy_info = 6;
+    ((struct sysent *) (&sysent[AFS_SYSCALL]))->sy_info = 6;
 #else
-    sysent[AFS_SYSCALL].sy_parallel = 0;
-    sysent[AFS_SYSCALL].sy_narg = 6;
+    ((struct sysent *) (&sysent[AFS_SYSCALL]))->sy_parallel = 0;
+    ((struct sysent *) (&sysent[AFS_SYSCALL]))->sy_narg = 6;
 #endif
-    sysent[SYS_setgroups].sy_call = Afs_xsetgroups;
+
+    ((struct sysent *) (&sysent[SYS_setgroups]))->sy_call =
+      Afs_xsetgroups;
     afs_xioctl_func = afsxioctl;    
     afs_xsetgroups_func = afsxsetgroups;
     afs_syscall_func = afssyscall;

@@ -16,7 +16,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/physio.c,v 1.1.1.1 2002-01-31 21:50:36 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/viced/physio.c,v 1.1.1.2 2002-12-13 20:38:46 zacheiss Exp $");
 
 #include <stdio.h>
 #include <errno.h>
@@ -59,7 +59,7 @@ char	      *	data;
     if (fdP == NULL) {
 	code = errno;
         ViceLog (0,
-		 ("ReallyRead(): open failed device %X inode %X errno %d\n",
+		 ("ReallyRead(): open failed device %X inode %s errno %d\n",
 		  file->dirh_handle->ih_dev,
 		  PrintInode(NULL, file->dirh_handle->ih_ino), code));
 	return code;
@@ -67,7 +67,7 @@ char	      *	data;
     if (FDH_SEEK(fdP, block * PAGESIZE, SEEK_SET) < 0) {
 	code = errno;
         ViceLog (0,
-		 ("ReallyRead(): lseek failed device %X inode %X errno %d\n",
+		 ("ReallyRead(): lseek failed device %X inode %s errno %d\n",
 		  file->dirh_handle->ih_dev,
 		  PrintInode(NULL, file->dirh_handle->ih_ino), code));
 	FDH_REALLYCLOSE(fdP);
@@ -80,7 +80,7 @@ char	      *	data;
 	else
 	    code = EIO;
         ViceLog (0,
-		 ("ReallyRead(): read failed device %X inode %X errno %d\n",
+		 ("ReallyRead(): read failed device %X inode %s errno %d\n",
 		  file->dirh_handle->ih_dev,
 		  PrintInode(NULL, file->dirh_handle->ih_ino), code));
 	FDH_REALLYCLOSE(fdP);
@@ -103,7 +103,7 @@ char	      *	data;
     fdP = IH_OPEN(file->dirh_handle);
     if (fdP == NULL) {
         ViceLog (0,
-		 ("ReallyWrite(): open failed device %X inode %X errno %d\n",
+		 ("ReallyWrite(): open failed device %X inode %s errno %d\n",
 		  file->dirh_handle->ih_dev,
 		  PrintInode(NULL, file->dirh_handle->ih_ino), errno));
 	lpErrno = errno;
@@ -111,7 +111,7 @@ char	      *	data;
     }
     if (FDH_SEEK(fdP, block * PAGESIZE, SEEK_SET) < 0) {
         ViceLog (0,
-		 ("ReallyWrite(): lseek failed device %X inode %X errno %d\n",
+		 ("ReallyWrite(): lseek failed device %X inode %s errno %d\n",
 		  file->dirh_handle->ih_dev,
 		  PrintInode(NULL, file->dirh_handle->ih_ino), errno));
 	lpErrno = errno;
@@ -120,7 +120,7 @@ char	      *	data;
     }
     if ((count = FDH_WRITE(fdP, data, PAGESIZE)) != PAGESIZE) {
         ViceLog (0,
-		 ("ReallyWrite(): write failed device %X inode %X errno %d\n",
+		 ("ReallyWrite(): write failed device %X inode %s errno %d\n",
 		  file->dirh_handle->ih_dev,
 		  PrintInode(NULL, file->dirh_handle->ih_ino), errno));
 	lpCount = count;

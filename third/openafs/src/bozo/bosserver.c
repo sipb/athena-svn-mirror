@@ -10,7 +10,7 @@
 #include <afsconfig.h>
 #include <afs/param.h>
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bozo/bosserver.c,v 1.1.1.1 2002-01-31 21:33:36 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/bozo/bosserver.c,v 1.1.1.2 2002-12-13 20:40:41 zacheiss Exp $");
 
 #include <afs/stds.h>
 #include <sys/types.h>
@@ -180,15 +180,26 @@ register char *adir; {
 /* create all the bozo dirs */
 static CreateDirs() {
     
-    MakeDir(AFSDIR_USR_DIRPATH);
-    MakeDir(AFSDIR_SERVER_AFS_DIRPATH);
+    if ((!strncmp(AFSDIR_USR_DIRPATH, AFSDIR_CLIENT_ETC_DIRPATH, 
+		  strlen(AFSDIR_USR_DIRPATH))) || 
+	(!strncmp(AFSDIR_USR_DIRPATH, AFSDIR_SERVER_BIN_DIRPATH,
+		  strlen(AFSDIR_USR_DIRPATH)))) {
+      MakeDir(AFSDIR_USR_DIRPATH);
+    }
+    if (!strncmp(AFSDIR_SERVER_AFS_DIRPATH, AFSDIR_SERVER_BIN_DIRPATH, 
+		 strlen(AFSDIR_SERVER_AFS_DIRPATH))) {
+      MakeDir(AFSDIR_SERVER_AFS_DIRPATH);
+    }
     MakeDir(AFSDIR_SERVER_BIN_DIRPATH);
     MakeDir(AFSDIR_SERVER_ETC_DIRPATH); 
     MakeDir(AFSDIR_SERVER_LOCAL_DIRPATH);
     MakeDir(AFSDIR_SERVER_DB_DIRPATH); 
     MakeDir(AFSDIR_SERVER_LOGS_DIRPATH);
 #ifndef AFS_NT40_ENV
-    MakeDir(AFSDIR_CLIENT_VICE_DIRPATH);
+    if (!strncmp(AFSDIR_CLIENT_VICE_DIRPATH, AFSDIR_CLIENT_ETC_DIRPATH, 
+		 strlen(AFSDIR_CLIENT_VICE_DIRPATH))) {
+      MakeDir(AFSDIR_CLIENT_VICE_DIRPATH);
+    }
     MakeDir(AFSDIR_CLIENT_ETC_DIRPATH);
 
     symlink(AFSDIR_SERVER_THISCELL_FILEPATH, AFSDIR_CLIENT_THISCELL_FILEPATH); 
@@ -910,9 +921,8 @@ char **envp;
     bozo_rxsc[2] = (struct rx_securityClass *) rxkad_NewServerSecurityObject(
 					 0, tdir, afsconf_GetKey, (char *) 0);
 
-    /* These two lines disallow jumbograms */
-    rx_maxReceiveSize = OLD_MAX_PACKET_SIZE;
-    rxi_nSendFrags = rxi_nRecvFrags = 1;
+    /* Disable jumbograms */
+    rx_SetNoJumbo();
 
     tservice = rx_NewService(/* port */ 0, /* service id */ 1, 
 		  /*service name */ "bozo", /* security classes */ bozo_rxsc,
