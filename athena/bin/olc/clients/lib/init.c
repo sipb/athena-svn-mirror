@@ -16,11 +16,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v $
- *      $Author: vanharen $
+ *      $Author: raeburn $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v 1.2 1989-12-22 16:03:04 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/init.c,v 1.3 1990-01-16 03:04:08 raeburn Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -32,43 +32,56 @@ static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 
 extern int OLC;
 
+#ifdef OLZ
+#undef OLC_SERVICE
+#define OLC_SERVICE "olz"
+#endif
+
 ERRCODE
 OInitialize()
 {
   int uid;
   struct passwd *pwent;
   char hostname[LINE_LENGTH];  /* Name of local machine. */
+  char *h;
   struct hostent *host;
 
 #ifdef LAVIN
   char type[BUF_SIZE];
 #endif LAVIN
 
+  h = getenv ("OLCD_HOST");
+
+  if (!h) {
+
 #ifdef HESIOD
-  char **hp;
+      char **hp;
 
-#ifdef OLZ
-  if ((hp = hes_resolve("olz",OLC_SERV_NAME)) == NULL)
-#else
-  if ((hp = hes_resolve(OLC_SERVICE,OLC_SERV_NAME)) == NULL)
-#endif
-    {	
+      if ((hp = hes_resolve(OLC_SERVICE,OLC_SERV_NAME)) == NULL) {	
 
-      fprintf(stderr,
-	      "Unable to get name of OLC server host from the Hesiod nameserver.\n");
-      fprintf(stderr, 
-	      "This means that you cannot use OLC at this time. Any problems \n");
-      fprintf(stderr,
-	      "you may be experiencing with your workstation may be the result of this\n");
-      fprintf(stderr,
-	      "problem. \n");
+	  fprintf(stderr,
+		  "Unable to get name of OLC server host from the Hesiod nameserver.\n");
+	  fprintf(stderr, 
+		  "This means that you cannot use OLC at this time. Any problems \n");
+	  fprintf(stderr,
+		  "you may be experiencing with your workstation may be the result of this\n");
+	  fprintf(stderr,
+		  "problem. \n");
       
-      exit(ERROR);
-    }
-  else 
-    (void) strcpy(DaemonHost, *hp);
+	  exit(ERROR);
+      }
+      else
+	  h = *hp;
 
 #endif HESIOD
+
+      if (!h) {
+	  fprintf (stderr, "Can't find OLC server host!\n");
+	  exit (ERROR);
+      }
+  }
+
+  strcpy (DaemonHost, h);
 
 #ifdef LAVIN
   if(OLC)
@@ -102,7 +115,7 @@ OInitialize()
 	break;
     }
 #endif LAVIN
-#ifdef COURSE
+#if defined(COURSE) && !defined(OLZ)
   strcpy(DaemonHost,"nemesis.mit.edu");
 #endif
 
