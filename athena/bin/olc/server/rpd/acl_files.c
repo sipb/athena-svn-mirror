@@ -5,7 +5,7 @@
 
 #ifndef lint
 #ifndef SABER
-  static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/acl_files.c,v 1.5 1991-04-18 22:25:07 lwvanels Exp $";
+  static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/acl_files.c,v 1.6 1996-09-20 02:43:36 ghudson Exp $";
 #endif
 #endif
 
@@ -41,13 +41,13 @@ struct hashtbl {
 # define P(s) ()
 #endif
 
-int acl_load P((char *name));
-void add_hash P((struct hashtbl *h, char *el));
-int check_hash P((struct hashtbl *h, char *el));
-void destroy_hash P((struct hashtbl *h));
-unsigned int hashval P((char *s));
-struct hashtbl *make_hash P((int size));
-int nuke_whitespace P((char *buf));
+static int acl_load P((char *name));
+static void add_hash P((struct hashtbl *h, char *el));
+static int check_hash P((struct hashtbl *h, char *el));
+static void destroy_hash P((struct hashtbl *h));
+static unsigned int hashval P((char *s));
+static struct hashtbl *make_hash P((int size));
+static int nuke_whitespace P((char *buf));
 
 #undef P
 
@@ -71,8 +71,8 @@ char *canon;
   char *dot, *atsign, *end;
   int len;
   
-  dot = index(principal, INST_SEP);
-  atsign = index(principal, REALM_SEP);
+  dot = strchr(principal, INST_SEP);
+  atsign = strchr(principal, REALM_SEP);
   
   /* Maybe we're done already */
   if(dot != NULL && atsign != NULL) {
@@ -349,8 +349,8 @@ acl_check(acl, principal)
   if(acl_exact_match(acl, canon)) return(1);
   
   /* Try the wildcards */
-  realm = index(canon, REALM_SEP);
-  *index(canon, INST_SEP) = '\0';	/* Chuck the instance */
+  realm = strchr(canon, REALM_SEP);
+  *strchr(canon, INST_SEP) = '\0';	/* Chuck the instance */
   
   sprintf(buf, "%s.*%s", canon, realm);
   if(acl_exact_match(acl, buf)) return(1);
