@@ -1,4 +1,4 @@
 TARGET=`./config.guess |
-	sed 's/sparc[^-]*-/sparcv8-/' |
+	sed 's/ultrasparc[^-]*-/sparcv8-/' |
 	sed 's/^.*-pc-/pentium-pc-/'`
-./configure "$@" --target=$TARGET
+./configure "$@" --build=$TARGET
