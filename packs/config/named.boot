@@ -1,4 +1,4 @@
-; $Header: /afs/dev.mit.edu/source/repository/packs/config/named.boot,v 1.5 1997-05-24 21:27:34 ghudson Exp $
+; $Header: /afs/dev.mit.edu/source/repository/packs/config/named.boot,v 1.6 1997-06-11 21:05:40 ghudson Exp $
 
 directory /etc
 
@@ -8,29 +8,32 @@ directory /etc
 ;
 ;	* Add a line to this file reading:
 ;
-;		primary		foo.bar.baz	named.something
+;	  primary	foo.bar.baz	named.something
 ;
 ;	  where foo.bar.baz is the local record you want to make and
 ;	  named.something is a filename.  For example:
 ;
-;		primary		zephyr.sloc.ns.athena.mit.edu	named.zephyr
+;	  primary	zephyr.sloc.ns.athena.mit.edu	named.zephyr
 ;
 ;	* In /etc/named.something, put:
 ;
-;		@	IN	SOA	bitsy.mit.edu. yourusername.mit.edu. (
-;						1	; Serial
-;						3600	; Refresh 1 hour
-;						300	; Retry 5 minutes
-;						2419200	; Expire 28 days
-;						3600000	; Minimum 1000 hours
-;						)
+;	  @	IN	SOA	yourhostname.mit.edu. yourusername.mit.edu. (
+;					1	; Serial
+;					3600	; Refresh 1 hour
+;					300	; Retry 5 minutes
+;					2419200	; Expire 28 days
+;					3600000	; Minimum 1000 hours
+;					)
+;			NS	yourhostname.mit.edu.
 ;
-;	  substituting your username for "yourusername" and removing all
-;	  whitespace before the '@'.  After the SOA record, put the local
-;	  record(s) themselves, without specifying the name, e.g.:
+;	  substituting your hostname for "yourhostname" and your
+;	  username for "yourusername".  Make sure there is no
+;	  whitespace before the '@'.  After the SOA record, put the
+;	  local record(s) themselves, without specifying the name,
+;	  e.g.:
 ;
-;				TXT	"erato.mit.edu"
-;				TXT	"arilinn.mit.edu"
+;			TXT	"erato.mit.edu"
+;			TXT	"arilinn.mit.edu"
 ;
 ;	* Restart named.
 
