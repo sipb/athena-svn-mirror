@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.7 1989-03-27 12:08:34 jik Exp $";
+     static char rcsid_util_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.c,v 1.8 1989-05-04 14:28:11 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -84,23 +84,6 @@ char *str, *sub_str;
 }
      
      
-is_dotfile(filename)
-char *filename;
-{
-     return (! (strcmp(filename, ".") && strcmp(filename, "..")));
-}
-
-
-
-int is_deleted(filename)
-char *filename;
-{
-     return(! strncmp(filename, ".#", 2));
-}
-
-
-
-
 /*
  * NOTE: Append uses a static array, so its return value must be
  * copied immediately.
