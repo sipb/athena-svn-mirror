@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.10 1999-03-23 18:48:45 danw Exp $
+# $Id: Makefile,v 1.11 1999-03-24 22:36:55 ghudson Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
@@ -15,15 +15,12 @@ ATHXBITDIR=/usr/athena/include/X11/bitmaps
 
 all:
 	cd os/${OS} && ${MAKE} $@
-	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 check:
 	cd os/${OS} && ${MAKE} $@
-	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 install:
 	cd os/${OS} && ${MAKE} $@
-	cd arch/${ATHENA_SYS} && ${MAKE} $@
 	mkdir -p ${DESTDIR}${ATHBINDIR}
 	mkdir -p ${DESTDIR}${ATHETCDIR}
 	mkdir -p ${DESTDIR}${ATHRBINDIR}
@@ -63,8 +60,6 @@ install:
 
 clean:
 	cd os/${OS} && ${MAKE} $@
-	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 distclean:
 	cd os/${OS} && ${MAKE} $@
-	cd arch/${ATHENA_SYS} && ${MAKE} $@

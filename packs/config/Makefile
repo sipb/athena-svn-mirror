@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.20 1998-12-26 15:51:29 ghudson Exp $
+# $Id: Makefile,v 1.21 1999-03-24 22:36:59 ghudson Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -9,11 +9,9 @@ CONFIG=/afs/athena.mit.edu/system/config
 
 all:
 	cd os/${OS} && ${MAKE} $@
-	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 check:
 	cd os/${OS} && ${MAKE} $@
-	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 install:
 	mkdir -p ${DESTDIR}${ETCDIR}
@@ -55,12 +53,9 @@ install:
 		ln -s ${CONFIG}/dash/Dash.menus-$$vers \
 			${DESTDIR}${ATHLIBDIR}/Dash.menus;
 	cd os/${OS} && ${MAKE} $@
-	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 clean:
 	cd os/${OS} && ${MAKE} $@
-	cd arch/${ATHENA_SYS} && ${MAKE} $@
 
 distclean:
 	cd os/${OS} && ${MAKE} $@
-	cd arch/${ATHENA_SYS} && ${MAKE} $@
