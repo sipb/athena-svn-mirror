@@ -29,6 +29,7 @@ XCOMM operating system:  OSName
 
 #if OSMajorVersion >= 3 && OSMinorVersion >= 2
 #define HasBSD44Sockets		YES
+#define OptimizedCDebugFlags
 #endif
 
 #define SystemV			YES
