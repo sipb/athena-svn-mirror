@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v 1.5 1987-06-24 04:21:19 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZParseNot.c,v 1.6 1987-06-26 03:35:55 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -23,7 +23,7 @@ Code_t ZParseNotice(buffer,len,notice,auth,from)
 	int		*auth;
 	struct		sockaddr_in *from;
 {
-	char *ptr,*cksum;
+	char *ptr,*cksum,srcprincipal[ANAME_SZ+INST_SZ+REALM_SZ+4];
 	int result;
 	unsigned int temp[3];
 	AUTH_DAT dat;
@@ -107,16 +107,17 @@ Code_t ZParseNotice(buffer,len,notice,auth,from)
 				   &dat,SERVER_SRVTAB);
 		bcopy(dat.session,__Zephyr_session,sizeof(C_Block));
 		*auth = (result == RD_AP_OK);
+		sprintf(srcprincipal,"%s%s%s@%s",dat.pname,
+			dat.pinst[0]?".":"",dat.pinst,dat.prealm);
+		if (strcmp(srcprincipal,notice->z_sender))
+			*auth = 0;
 		return (ZERR_NONE);
 	}
 
 	if (result = get_credentials(SERVER_SERVICE,SERVER_INSTANCE,
-			    __Zephyr_realm,&cred))
+				     __Zephyr_realm,&cred))
 		return (result+krb_err_base);
 
-/*	if (result = key_sched(cred.session,sess_sched))
-		return (result+krb_err_base);
-*/
 	our_checksum = (ZChecksum_t)quad_cksum(buffer,NULL,cksum-buffer,0,
 					       cred.session);
 

@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.11 1987-06-24 04:21:57 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZSendPkt.c,v 1.12 1987-06-26 03:36:25 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -45,13 +45,14 @@ Code_t ZSendPacket(packet,len)
 	ZParseNotice(packet,len,&notice,0,0);
 
 	if (notice.z_kind == UNSAFE || notice.z_kind == HMACK ||
-	    notice.z_kind == SERVACK || __HM_set)
+	    notice.z_kind == SERVACK || notice.z_kind == CLIENTACK ||
+	    __Zephyr_server || __HM_set)
 		return (ZERR_NONE);
 	
 	tv.tv_sec = 0;
-	tv.tv_usec = 400000;
+	tv.tv_usec = 500000;
 	
-	for (i=0;i<12;i++) {
+	for (i=0;i<HM_TIMEOUT*2;i++) {
 		select(0,&t1,&t2,&t3,&tv);
 		retval = ZCheckIfNotice(ackpack,sizeof ackpack,&notice,
 					&auth,findack,(char *)&notice.z_uid);
