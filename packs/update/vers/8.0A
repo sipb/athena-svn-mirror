@@ -28,7 +28,7 @@ SUN*)
 	rm -rf /usr/share/lib/terminfo/c/c.term
 	rm -rf /usr/share/lib/terminfo/d/d.term
 	rm -rf /usr/share/lib/zoneinfo/US/Yukon /var/cron/log
-	rm -rf /var/spool/cron/crontabs/sysadm /var/uucp/.Workspace
+	rm -rf /usr/spool/cron/crontabs/sysadm /var/uucp/.Workspace
 	rm -rf /var/yp/Makefile /var/yp/updaters /usr/lib/libC.so.4
 
 	# Create new directories and files, make /var/sadm local (otherwise
@@ -44,23 +44,33 @@ SUN*)
 	echo "NEWBOOT=true"                     >> ${CONFVARS}
 	echo "NEWOS=true"                       >> ${CONFVARS}
 	echo "/etc/athena/inetd.conf"           >> ${CONFCHG}
+
+	# Add gettime entry to root crontab.
+	if [ `grep -ic "gettime" /usr/spool/cron/crontabs/root` = 0 ]; then
+		echo "$cronentry" >> /usr/spool/cron/crontabs/root
+	fi
+
+	# Fix /etc/hosts if it's broken.
+	if [ `grep -ic "^${ADDR}[	 ]*${HOST}"\$ /etc/hosts` = 1 ]; then
+		echo "/etc/hosts was moved to /etc/hosts.old"
+		rm -f /etc/hosts.old
+		mv /etc/hosts /etc/hosts.old
+		sed -e "/^${ADDR}/s/${HOST}/${HOST}.MIT.EDU ${HOST}/" \
+			/etc/hosts.old > /etc/hosts
+	fi
+
 	;;
 
-SGI*)
-	cronentry="45	0,12	*	*	*	/etc/athena/desync 39600; . /etc/athena/rc.conf; /etc/athena/gettime -s $TIMEHUB"
+INDY)
+	echo "/usr/spool/cron/crontabs/root"	>> ${CONFCHG}
+
+	hostname=`cat /etc/sys_id`
+	netaddress=`awk /$hostname'/{ print $1 }' /etc/hosts`
+	sed -e  "s/^HOST=NONAME/HOST=$hostname/
+		s/^ADDR=NOADDR/ADDR=$netaddress/
+		s/^NETDEV=NODEV/NETDEV=ec0/
+		s/^MACHINE=[^;]*/MACHINE=$MACH/" \
+	        < /srvd/etc/athena/rc.conf > /etc/athena/rc.conf
+	;;
 esac
-
-# Add gettime entry to root crontab.
-if [ `grep -ic "gettime" /var/cron/crontabs/root` = 0 ]; then
-	echo "$cronentry" >> /var/cron/crontabs/root
-fi
-
-# Fix /etc/hosts if it's broken.
-if [ `grep -ic "^${ADDR}[	 ]*${HOST}"\$ /etc/hosts` = 1 ]; then
-	echo "/etc/hosts was moved to /etc/hosts.old"
-	rm -f /etc/hosts.old
-	mv /etc/hosts /etc/hosts.old
-	sed -e "/^${ADDR}/s/${HOST}/${HOST}.MIT.EDU ${HOST}/" \
-		/etc/hosts.old > /etc/hosts
-fi
 
