@@ -1,4 +1,4 @@
-;; Quail packages for inputting various European characters.
+;;; latin-post.el --- Quail packages for inputting various European characters
 
 ;; Copyright (C) 1997 Electrotechnical Laboratory, JAPAN.
 ;; Licensed to the Free Software Foundation.
@@ -23,6 +23,10 @@
 ;; Boston, MA 02111-1307, USA.
 
 ;; Author: TAKAHASHI Naoto <ntakahas@etl.go.jp>
+
+;;; Commentary:
+
+;;; Code:
 
 (require 'quail)
 
@@ -1864,8 +1868,8 @@ Dead accent is right to ,Af(B." nil t t t t nil nil nil nil nil t)
 
 ;;
 (quail-define-package
- "finish-keyboard" "Latin-1" "FI@" t
- "Finish input method simulating SUN Finnish/Swedish keyboard"
+ "finnish-keyboard" "Latin-1" "FI@" t
+ "Finnish input method simulating SUN Finnish/Swedish keyboard"
  nil t t t t nil nil nil nil nil t)
 
 ;; 1!  2"  3#  4,A$(B  5%  6&  7/  8(  9)  0=  +?  ,A'=(B  ~^
@@ -2121,3 +2125,5 @@ Dead accent is right to ,Af(B." nil t t t t nil nil nil nil nil t)
  (">" ?V)
  ("?" ?Z)
  )
+
+;;; latin-post.el ends here

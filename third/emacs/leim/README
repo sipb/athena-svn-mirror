@@ -6,9 +6,15 @@ Contents of subdirectories are as follows.
 CXTERM-DIC:
 
 This directory contains source dictionaries (TIT format) for Chinese
-input method distribued with cxterm (Chinese version xterm).  These
+input method distributed with cxterm (Chinese version xterm).  These
 dictionaries are automatically converted to Quail packages (Emacs Lisp
-source file) by `make'.
+source files) by `make'.
+
+MISC-DIC:
+
+This directory contains various dictionaries for Chinese input
+methods.  These dictionaries are automatically converted to Quail
+packages (Emacs Lisp source files) by `make'.
 
 quail:
 
@@ -19,12 +25,12 @@ SKK-DIC:
 This directory contains source dictionary for Japanese input method
 distributed with SKK (Japanese input method run with Mule).  But, you
 don't need this file because we distribute an Emacs Lisp source file
-skk/skkdic.el which has already been converted from the source
+ja-dic/ja-dic.el which has already been converted from the source
 dictionary (See below).
 
-skk:
+ja-dic:
 
-This directory contains Emacs Lisp source file skkdic.el which is
-generated from a source dictionary in SKK-DIC directory.  In addtion,
-it contains a byte compiled file skkdic.elc for users convenience
-because it takes rather long time to byte-compile skkdic.el.
+This directory contains Emacs Lisp source file ja-dic.el which is
+generated from a source dictionary in SKK-DIC directory.  In addition,
+it contains a byte compiled file ja-dic.elc for users convenience
+because it takes rather long time to byte-compile ja-dic.el.

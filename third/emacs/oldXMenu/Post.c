@@ -1,6 +1,6 @@
 #include "copyright.h"
 
-/* $Header: /afs/dev.mit.edu/source/repository/third/emacs/oldXMenu/Post.c,v 1.1.1.1 1996-09-26 00:59:45 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/emacs/oldXMenu/Post.c,v 1.1.1.2 2002-02-08 04:29:42 zacheiss Exp $ */
 /* Copyright    Massachusetts Institute of Technology    1985	*/
 
 /*
@@ -64,7 +64,7 @@ XMenuPost(display, menu, p_num, s_num, x_pos, y_pos, event_mask)
 			 p_num, s_num, 
 			 x_pos, y_pos, 
 			 event_mask, 
-			 &data);
+			 &data, 0);
 
     /*
      * Check the return value and return accordingly.

@@ -1,10 +1,10 @@
-;;; quail/slovak.el -- Quail package for inputting Slovak
+;;; slovak.el --- Quail package for inputting Slovak
 
-;; Copyright (C) 1998 Free Software Foundation.
+;; Copyright (C) 1998, 2001 Free Software Foundation.
 
-;; Authors:    Tibor ,B)(Bimko <tibor.simko@fmph.uniba.sk>,
-;;             Milan Zamazal <pdm@fi.muni.cz>
-;; Maintainer: Milan Zamazal <pdm@fi.muni.cz>
+;; Authors: Tibor ,B)(Bimko <tibor.simko@fmph.uniba.sk>
+;;	Milan Zamazal <pdm@zamazal.org>
+;; Maintainer: Pavel Jan,Bm(Bk <Pavel@Janik.cz>
 ;; Keywords: multilingual, input method, Slovak
 
 ;; This file is part of GNU Emacs.
@@ -34,11 +34,10 @@
 
 (require 'quail)
 
-
 (quail-define-package
- "slovak" "Slovak" "SK" nil
+ "slovak" "Slovak" "SK" t
  "Standard Slovak keyboard."
- nil t nil nil nil nil nil nil nil nil t)
+ nil t nil nil t nil nil nil nil nil t)
 
 (quail-define-rules
  ("1" ?+)
@@ -61,8 +60,6 @@
  ("*" ?8)
  ("(" ?9)
  (")" ?0)
- ("q" ?`)
- ("Q" ?`)
  ("-" ?=)
  ("_" ?%)
  ("=" ?')
@@ -136,10 +133,7 @@
  ("+=U" ?,B\(B)
  ("=Z" ?,B](B)
  ("+Y" ?,B.(B)
- ("=q" ?q)
- ("+q" ?q)
- ("=Q" ?Q)
- ("+Q" ?Q)
+ ("=q" ?`)
  ("=2" ?@)
  ("=3" ?#)
  ("=4" ?$)
@@ -173,14 +167,14 @@
 
 
 (quail-define-package
- "slovak-prog-1" "Slovak" "SK" nil
+ "slovak-prog-1" "Slovak" "SK" t
  "Slovak (non-standard) keyboard for programmers #1.
 
 All digits except of `1' are replaced by Slovak characters as on the standard
 Slovak keyboard.
 Dead keys are on `[', `[[', and `[[['.
 All other keys are the same as on standard US keyboard."
- nil t nil nil nil nil nil nil nil nil t)
+ nil t nil nil t nil nil nil nil nil t)
 
 (quail-define-rules
  ("[[[[" ?\[)
@@ -267,14 +261,14 @@ All other keys are the same as on standard US keyboard."
 
 
 (quail-define-package
- "slovak-prog-2" "Slovak" "SK" nil
+ "slovak-prog-2" "Slovak" "SK" t
  "Slovak (non-standard) keyboard for programmers #2.
 
 All digits except of `1' are replaced by Slovak characters as on the standard
 Slovak keyboard.
 Dead keys are on `=' and `+'.
 All other keys are the same as on standard US keyboard."
- nil t nil nil nil nil nil nil nil nil t)
+ nil t nil nil t nil nil nil nil nil t)
 
 (quail-define-rules
  ("2" ?,B5(B)
@@ -369,12 +363,12 @@ All other keys are the same as on standard US keyboard."
 
 
 (quail-define-package
- "slovak-prog-3" "Slovak" "SK" nil
+ "slovak-prog-3" "Slovak" "SK" t
  "Slovak (non-standard) keyboard for programmers #3.
 
 Dead keys are on `[', `[[', `[[[', and `]'.
 All other keys are the same as on standard US keyboard."
- nil t nil nil nil nil nil nil nil nil t)
+ nil t nil nil t nil nil nil nil nil t)
 
 (quail-define-rules
  ("[[[[" ?\[)
@@ -482,3 +476,5 @@ All other keys are the same as on standard US keyboard."
  ([kp-9] ?9)
  ([kp-0] ?0)
  ([kp-add] ?+))
+
+;;; slovak.el ends here

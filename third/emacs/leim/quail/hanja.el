@@ -1,4 +1,4 @@
-;;; quail/hanja.el --- Quail-package for Korean Hanja (KSC5601)
+;;; hanja.el --- Quail-package for Korean Hanja (KSC5601)
 
 ;; Copyright (C) 1997 Electrotechnical Laboratory, JAPAN.
 ;; Licensed to the Free Software Foundation.
@@ -21,6 +21,8 @@
 ;; along with GNU Emacs; see the file COPYING.  If not, write to the
 ;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 ;; Boston, MA 02111-1307, USA.
+
+;;; Commentary:
 
 ;;; Code:
 
@@ -348,6 +350,7 @@
  ("wkd"	"丈仗匠場墻壯奬將帳庄張掌暲杖樟檣欌漿牆狀獐璋章粧腸臟臧莊葬蔣薔藏裝贓醬長障")
  ("Od"	"爭箏諍錚")
  ("wo"	"再哉在宰才材栽梓渽滓災縡裁財載齋齎")
+ ("wod"	"爭箏諍錚")
  ("wj"	"佇低儲咀姐底抵杵楮樗沮渚狙猪疽箸紵苧菹著藷詛貯躇這邸雎齟")
  ("wjr"	"勣吊嫡寂摘敵滴狄炙的積笛籍績翟荻謫賊赤跡蹟迪迹適鏑")
  ("wjs"	"佃佺傳全典前剪塡塼奠專展廛悛戰栓殿氈澱煎琠田甸畑癲筌箋箭篆纏詮輾轉鈿銓錢鐫電顚顫餞")
@@ -506,3 +509,5 @@
  ("gmd"	"興")
  ("gml"	"僖凞喜噫囍姬嬉希憙憘戱晞曦熙熹熺犧禧稀羲")
  ("glf"	"詰"))
+
+;;; hanja.el ends here

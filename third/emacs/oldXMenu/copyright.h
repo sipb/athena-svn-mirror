@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/emacs/oldXMenu/copyright.h,v 1.1.1.1 1996-09-26 00:59:46 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/emacs/oldXMenu/copyright.h,v 1.1.1.2 2002-02-08 04:28:37 zacheiss Exp $ */
 /*
 
 Copyright 1985, 1986, 1987 by the Massachusetts Institute of Technology
