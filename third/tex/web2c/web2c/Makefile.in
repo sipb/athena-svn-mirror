@@ -320,12 +320,6 @@ tangleboot.c tangleboot.h: stamp-tangle $(web2c_programs) $(web2c_aux)
 # tangleboot.p is in the distribution
 stamp-tangle: tangleboot.p
 	date >stamp-tangle
-# This is not run unless tangle.web or tangle.ch is changed.
-tangleboot.p: tangle.web tangle.ch
-	$(shared_env) ./tangle $(srcdir)/tangle.web $(srcdir)/tangle.ch
-	mv tangle.p tangleboot.p
-	date >stamp-tangle
-	$(MAKE) $(common_makeargs) tangle
 
 # Even web2c itself uses the library.
 # It's annoying to have to give all the filenames here, 
