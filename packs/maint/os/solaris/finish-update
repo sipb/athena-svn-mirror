@@ -73,6 +73,85 @@ start)
 		sleep 15
 		exec reboot
 		;;
+	# The following code executes only when booted into the miniroot.
+	BootSwap)
+		UPDATE_ROOT=/root
+		export UPDATE_ROOT
+
+		method=`awk '{a=$6} END {print a}' /etc/athena/version`
+		newvers=`awk '{a=$7} END {print a}' /etc/athena/version`
+
+		CONFVARS="$UPDATE_ROOT/var/athena/update.confvars"
+		. $CONFVARS
+
+		PATH=/sbin:/usr/bin:/usr/sbin
+		export PATH
+
+		echo "Get the rootdrive...."
+		rrootdrive=`cat /etc/vfstab | awk '$3 == "/root" {print $2}'`
+		rootdrive=`cat /etc/vfstab | awk '$3 == "/root" {print $1}'`
+
+		umask 022
+
+		# Make symlinks from our real root to the root we're
+		# installing into. For /srvd, /os, and /install, attach
+		# was done into the UPDATE_ROOT before we rebooted to
+		# get here, so we don't have to do the attach again. For
+		# /afs, AFS is going to be mounted in UPDATE_ROOT.
+		for i in /srvd /os /install; do
+			rm -f "$i"
+			ln -s "$UPDATE_ROOT$i" "$i"
+		done
+
+		echo "Starting AFS filesystem"
+		modload /kernel/misc/nfssrv
+		modload /kernel/fs/afs
+		/etc/afsd -nosettime -daemons 4
+
+		rm -rf /cdrom /patches
+		ln -s "$UPDATE_ROOT/install/cdrom" /cdrom
+		ln -s "$UPDATE_ROOT/install/patches" /patches
+
+		. /srvd/usr/athena/lib/update/update-environment
+		. $CONFDIR/rc.conf
+
+		if [ "$PUBLIC" = true ]; then
+			echo "turn fs fast"
+			/util/fastfs "$UPDATE_ROOT" fast
+			/util/fastfs "$UPDATE_ROOT/usr" fast
+			/util/fastfs "$UPDATE_ROOT/var" fast
+		fi
+
+		sh /srvd/usr/athena/lib/update/update-os 2>&1 \
+		    | tee -a $UPDATE_ROOT/var/athena/update.log
+
+
+		echo "finished update-os"		    
+
+		echo "Installing bootblocks on root "
+		installboot \
+		    "/os/usr/platform/$SUNPLATFORM/lib/fs/ufs/bootblk" \
+		    "$rrootdrive"
+
+		echo "restore the boot-device in the prom"
+		boot=`cat /etc/boot-device`
+		/os/usr/platform/$SUNPLATFORM/sbin/eeprom "$boot"
+
+
+		echo "Updating version for reboot"
+		echo "Athena Workstation ($HOSTTYPE) Version Reboot" \
+			"$method $newvers `date`" >> "$CONFDIR/version"
+
+		if [ "$PUBLIC" = true ]; then
+		    echo "turn fs slow"
+		    /util/fastfs "$UPDATE_ROOT" slow
+		    /util/fastfs "$UPDATE_ROOT/usr" slow
+		    /util/fastfs "$UPDATE_ROOT/var" slow
+		fi
+		sync
+		sleep 15
+		reboot
+		;;
 	esac
 	;;
 stop)
