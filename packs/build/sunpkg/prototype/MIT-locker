@@ -4,6 +4,6 @@
 # Add the attachtab directories.
 sed -e 's|^f none \(etc/athena/attach\.conf\) |e config \1 |' \
     -e '$a\
-d none var/athena/attachtab/directory ? ? ?\
-d none var/athena/attachtab/locker ? ? ?\
-d none var/athena/attachtab/mountpoint ? ? ?'
+d none var/athena/attachtab/directory 0755 root other\
+d none var/athena/attachtab/locker 0755 root other\
+d none var/athena/attachtab/mountpoint 0755 root other'

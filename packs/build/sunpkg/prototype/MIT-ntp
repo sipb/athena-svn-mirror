@@ -4,4 +4,4 @@
 # Add the /var/athena directory.
 sed -e 's|^f none \(etc/ntp\.conf\) |e config \1 |' \
     -e '$a\
-d none var/athena ? ? ?'
+d none var/athena 0755 root other'

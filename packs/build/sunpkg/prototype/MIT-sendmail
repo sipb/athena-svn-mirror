@@ -5,4 +5,4 @@
 sed -e 's|^f none \(etc/mail/aliases\) |e config \1 |' \
     -e 's|^f none \(etc/mail/sendmail\.cf\) |e config \1 |' \
     -e '$a\
-d none var/spool/mqueue ? ? ?'
+d none var/spool/mqueue 0750 root bin'
