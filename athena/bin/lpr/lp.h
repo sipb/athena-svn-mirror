@@ -2,7 +2,7 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v $
  *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v 1.3 1990-06-26 13:34:36 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/lp.h,v 1.4 1990-07-03 12:40:23 epeisach Exp $
  */
 
 /*
@@ -19,6 +19,9 @@
 
 #include <stdio.h>
 #include <sys/param.h>
+#ifdef _AUX_SOURCE
+#include <sys/types.h>
+#endif
 #include <sys/file.h>
 #include <sys/dir.h>
 #include <sys/stat.h>
@@ -117,7 +120,9 @@ struct queue {
 char	*pgetstr();
 char	*malloc();
 char	*getenv();
+#ifndef _AUX_SOURCE
 char	*index();
 char	*rindex();
+#endif
 
 #define UNLINK unlink
