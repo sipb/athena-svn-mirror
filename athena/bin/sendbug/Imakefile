@@ -1,9 +1,10 @@
 /*
  *
- * $Id: Imakefile,v 1.1 1992-04-20 02:28:00 lwvanels Exp $
+ * $Id: Imakefile,v 1.2 1992-04-20 02:28:59 lwvanels Exp $
  *
  */
 
 install::
 	$(INSTALL) -m 755 sendbug.sh ${DESTDIR}$(ATHBINDIR)/sendbug
 
+install_man(sendbug.1,sendbug.1)
