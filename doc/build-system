@@ -191,67 +191,10 @@ to it) which does the following:
 	* Sets the appropriate X include path and library path for use
 	  with AC_PATH_X.
 
-	* Sets the appropriate value of with_motif for use with
-	  AC_WITH_MOTIF, which should be used as follows if you want
-	  to use the Motif library:
-
-		# Near the beginning
-		AC_ARG_WITH(motif,
-			    [  --with-motif=PREFIX     Compile with Motif],
-			    [motif="$withval"], [motif=no])
-
-		# Where you do checks for header files
-		AC_PATH_XTRA
-
-		# Where you do checks for libraries
-		if test "$motif" != no; then
-			if test "$motif" != yes; then
-				CPPFLAGS="${CPPFLAGS} -I$motif/include"
-				LDFLAGS="$LDFLAGS -L$motif/lib"
-			fi
-			AC_CHECK_LIB(Xm, XmStringFree, :,
-				     [AC_MSG_ERROR(Motif library not found)])
-			# Omit the next line if you must have Motif.
-			AC_DEFINE(WITH_MOTIF)
-		# Omit the next two lines if you do not require Motif.
-		else
-			AC_MSG_ERROR(This package requires Motif.)
-		fi
-
-	  You still need to link with -lXm in your Makefile.in.
-
-	* Sets the value of with_afs to point to the AFS includes and
-	  libraries.  You should use this as follows if you need to
-	  link with AFS:
-
-		# Near the beginning
-		AC_ARG_WITH(afs,
-			    [  --with-afs=PREFIX       Compile with AFS],
-			    [afs="$withval"], [afs=no])
-
-		if test "$afs" != no; then
-			AC_CHECK_FUNC(insque, :, AC_CHECK_LIB(compat, insque))
-			AC_CHECK_FUNC(sigvec, :, AC_CHECK_LIB(ucb, sigvec))
-			AC_CHECK_FUNC(gethostbyname, :,
-				      AC_CHECK_LIB(nsl, gethostbyname))
-			AC_CHECK_FUNC(socket, :, AC_CHECK_LIB(socket, socket))
-
-			if test "$afs" != yes; then
-				CPPFLAGS="${CPPFLAGS} -I$afs/include"
-				LDFLAGS="$LDFLAGS -L$afs/lib -L$afs/lib/afs"
-			fi
-			AC_CHECK_LIB(sys, pioctl,,
-				    [AC_MSG_ERROR(AFS libraries not found)],
-				    -lrx -llwp -lsys)
-			# Omit the next line if you must have AFS.
-			AC_DEFINE(WITH_AFS)
-		# Omit the next two lines if you do not require AFS.
-		else
-			AC_MSG_ERROR(This package requires AFS.)
-		fi
-
-	  You still need to link with any appropriate AFS libraries in
-	  your Makefile.in.
+	* Sets the appropriate with_* variables for finding Motif, AFS
+	  libraries, Kerberos 4, Kerberos 5, com_err, and ss.  If your
+	  package uses any of those libraries, copy the aclocal.m4
+	  file from packs/build and use the macros contained within.
 
 	* Sets prefix to /usr/athena, datadir to '${prefix}/lib',
 	  sbindir to '${prefix}/etc', and sysconfdir to '/etc/athena'.
