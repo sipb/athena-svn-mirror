@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.30 1992-06-09 18:06:57 lwvanels Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.31 1992-06-17 15:26:37 lwvanels Exp $
  */
 
 #include <stdio.h>
@@ -136,6 +136,12 @@ char *display;
 #endif
     nocreate = file_exists(NOCREATE);
     nologin = file_exists(NOLOGIN);
+
+    /* check to make sure a username was entered */
+    if (!strcmp(user, ""))
+      {
+	return("No username entered.  Please enter a username and password to try again.");
+      }
 
     /* check local password file */
     if ((pwd = getpwnam(user)) != NULL) {
