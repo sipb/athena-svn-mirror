@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v $
- *	$Id: c_io.c,v 1.22 1992-04-23 21:48:39 lwvanels Exp $
+ *	$Id: c_io.c,v 1.23 1992-08-12 13:40:29 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.22 1992-04-23 21:48:39 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.23 1992-08-12 13:40:29 lwvanels Exp $";
 #endif
 #endif
 
@@ -319,7 +319,7 @@ read_file_into_text(filename,bufp)
 
   if (read(fd,buf,nbytes) != nbytes) {
     free(buf);
-    sprintf(error,"read_fie_into_text: error reading %s", filename);
+    sprintf(error,"read_file_into_text: error reading %s", filename);
     olc_perror(error);
     close(fd);
     return(ERROR);
@@ -616,7 +616,6 @@ int sread(fd, buf, nbytes)
   n_read = 0;
   do {
     if (loops > 5) {
-      fprintf(stderr,"sread: too many loops\n");
       close(fd);
       return(-1);
     }
@@ -651,6 +650,9 @@ int sread(fd, buf, nbytes)
       close(fd);
       return(n_read);
     }
+    if (n_read != 0)
+      loops = 0;
+
     tot_read += n_read;
     nbytes = nbytes - n_read;
     loops++;
@@ -692,7 +694,6 @@ int swrite(fd, buf, nbytes)
   n_wrote = 0;
   do {
     if (loops > 5) {
-      fprintf(stderr,"swrite: too many loops\n");
       close(fd);
       return(-1);
     }
@@ -728,6 +729,9 @@ int swrite(fd, buf, nbytes)
       close(fd);
       return(n_wrote);
     }
+    if (n_wrote != 0)
+      loops = 0;
+
     tot_wrote += n_wrote;
     nbytes = nbytes - n_wrote;
     loops++;
