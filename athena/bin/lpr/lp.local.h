@@ -61,7 +61,7 @@
 #define	DEFLP		"default"
 #define DEFLOCK		"lock"
 #define DEFSTAT		"status"
-#define DEFSPOOL        "/usr/spool/printer"
+#define DEFSPOOL        "/var/spool/printer"
 #define	DEFDAEMON	"/usr/lib/lpd"
 #define	DEFLOGF		"/dev/console"
 #define	DEFDEVLP	"/dev/lp"
@@ -95,7 +95,7 @@
 /*
  * path name of files created by lpd.
  */
-#define MASTERLOCK "/usr/spool/lpd.lock"
+#define MASTERLOCK "/var/spool/lpd.lock"
 #define SOCKETNAME "/dev/printer"
 
 /*
