@@ -1,4 +1,4 @@
-# $Id: packages,v 1.299 2005-01-31 19:11:57 ghudson Exp $
+# $Id: packages,v 1.300 2005-02-23 20:54:11 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -231,7 +231,7 @@ third/libart_lgpl
 third/libbonobo			requires gettext,intltool,ORBit2,glib2,libxml2
 third/libbonoboui		requires gettext,intltool,libgnomecanvas,libbonobo,libgnome,libxml2,GConf2,gtk2,libglade2,glib2
 third/libdaemon			on linux
-third/libgail-gnome		requires atk,gtk2,libbonobo,libbonoboui,libgnomeui,at-spi
+third/libgail-gnome		requires atk,gtk2,libbonobo,libbonoboui,libgnomeui,gnome-panel,at-spi
 third/libghttp			except linux
 third/libglade			requires gtk,gnome-libs,libxml
 third/libglade2			requires gtk2,libxml2,atk,gettext
