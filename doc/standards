@@ -42,8 +42,9 @@ following changes:
 	  work on just about all platforms.
 
 You can use "M-x set-c-style" "GNU" in emacs to have emacs take care
-of the gnu-style indentation for you.  Remember to drop to the next
-line before each open brace.
+of the gnu-style indentation for you.  (This is the default on Athena
+if you haven't set it to something else in your .emacs.)  Remember to
+drop to the next line before each open brace.
 
 When writing return statements, do not put parentheses around the
 return value; just write "return foo;".  This convention is not
@@ -73,9 +74,11 @@ for one line comments, and
 	 * comment text line 2
 	 */
 
-for multi-line comments.  As recommended in the Gnu coding standards,
-your comments should normally be complete, capitalized sentences
-ending with a period.
+for multi-line comments.  (To make "M-q" in Emacs leave the closing
+"*/" on a line by itself, set the variable c-hanging-comment-ender-p
+to nil.) As recommended in the Gnu coding standards, your comments
+should normally be complete, capitalized sentences ending with a
+period.
 
 Write prototypes for all of your functions.  Include argument names in
 your prototypes, to help the reader understand what they mean.
