@@ -7,12 +7,13 @@
 # 	For copying and distribution information, see the file
 # 	"mit-copyright.h". 
 #
-# $Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/Makefile,v 1.1 1988-10-12 10:29:48 raeburn Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/Makefile,v 1.2 1988-11-01 16:38:48 raeburn Exp $
 # Generic one project, one target makefile.
 #
 
 PROJECT= gms
 TARGET= get_message
+SERVER= messaged
 
 CSRCS= get_a_message.c get_fallback_file.c get_message.c get_message_from_server.c get_servername.c gethost_errors.c hesiod_errors.c put_fallback_file.c read_to_memory.c view_message_by_tty.c view_message_by_zephyr.c check_viewable.c
 
@@ -38,33 +39,28 @@ COMPILE_ET=/usr/athena/compile_et
 LIB= lib${PROJECT}.a
 LIBS= $(LIB) -lhesiod -lcom_err
 
-all: $(TARGET)
+all: $(TARGET) $(SERVER)
 
 clean:
 	-rm -f $(OBJS) $(LIB) $(TARGET) $(ETINCS) $(ETOBJS) 
-	-rm -f message_daemon message_daemon.o
+	-rm -f $(SERVER) message_daemon.o
 
 $(TARGET): $(TARGET).o $(LIB)
 	$(CC) $(CFLAGS) -o $@ $(TARGET).o $(LIBS)
 
-install: $(TARGET)
+install: $(TARGET) $(SERVER)
 	install -c -s $(TARGET) ${DESTDIR}/bin/athena/$(TARGET)
-	install -c gmotd.1 ${DESTDIR}/usr/man/man1
+	install -c get_message.1 ${DESTDIR}/usr/man/man1
+	install -c -s $(SERVER) ${DESTDIR}/etc/athena/$(SERVER)
 
-server: message_daemon
-
-# hint: change the message when someone decides where the daemon belongs...
-installserver: message_daemon
-	-echo "No one has decided where this goes, putting it in /etc..."
-	install -c -s message_daemon ${DESTDIR}/etc
-	-echo "Don't forget to update inetd.conf yourself..."
+server: $(SERVER)
 
 MDFLAGS=-DGMS_SERVER_MESSAGE=\"/site/Message\"
 
 message_daemon.o: message_daemon.c
 	$(CC) $(CFLAGS) $(MDFLAGS) -c message_daemon.c
 
-message_daemon: message_daemon.o $(LIB)
+$(SERVER): message_daemon.o $(LIB)
 	$(CC) $(CFLAGS) -o $@ message_daemon.o $(LIBS)
 
 
