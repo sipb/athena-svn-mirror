@@ -1,0 +1,3 @@
+PKG=MIT-ktconvert
+NAME=Script to convert /etc/athena/srvtab to /etc/krb5.keytab
+DESC=The ktconvert script automates the process of converting a Kerberos 4 srvtab located at /etc/athena/srvtab into a Kerberos 5 keytab located at /etc/krb5.keytab.  It also allows this process to be reversed.
