@@ -77,4 +77,3 @@ chmod 666 /dev/{audio,dsp,midi00,mixer,sequencer,sndstat}
 /etc/cron.d
 %config /etc/syslog.conf.athena
 /usr
-%config /etc/athena/rc.conf
