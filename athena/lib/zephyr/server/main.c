@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/main.c,v $
- *	$Author: lwvanels $
+ *	$Author: probe $
  *
  *	Copyright (c) 1987,1988,1991 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -16,7 +16,7 @@
 #ifndef lint
 #ifndef SABER
 static char rcsid_main_c[] =
-    "$Id: main.c,v 1.53 1992-08-26 04:35:49 lwvanels Exp $";
+    "$Id: main.c,v 1.54 1993-03-23 03:10:35 probe Exp $";
 #endif
 #endif
 
@@ -294,7 +294,7 @@ main(argc, argv)
 	(void) signal(SIGTERM, bye);
 #endif /* _POSIX_SOURCE */
 #endif /* DEBUG */
-	syslog(LOG_INFO, "Ready for action");
+	syslog(LOG_NOTICE, "Ready for action");
 #ifdef _POSIX_SOURCE
 	action.sa_handler = dbug_on;
 	sigaction(SIGUSR1, &action, NULL);
@@ -544,7 +544,7 @@ bye(sig)
 #ifdef KERBEROS
 	(void) dest_tkt();
 #endif
-	syslog(LOG_INFO, "goodbye (sig %d)",sig);
+	syslog(LOG_NOTICE, "goodbye (sig %d)",sig);
 	exit(0);
 	/*NOTREACHED*/
 }
