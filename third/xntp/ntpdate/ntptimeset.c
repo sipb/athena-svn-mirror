@@ -121,6 +121,7 @@
 # include <config.h>
 #endif
 
+#include "ntp_machine.h"
 #include "ntp_fp.h"
 #include "ntp.h"
 #include "ntp_io.h"
@@ -141,7 +142,11 @@
 #include <ctype.h>
 #ifndef SYS_WINNT
 # include <netdb.h>
-# include <sys/signal.h>
+# ifdef HAVE_SYS_SIGNAL_H
+#  include <sys/signal.h>
+# else
+#  include <signal.h>
+# endif
 # include <sys/ioctl.h>
 #endif /* SYS_WINNT */
 
@@ -1969,7 +1974,7 @@ sendpkt(
 	}
 
 
-	cc = sendto(fd, (char *)pkt, len, 0, (struct sockaddr *)dest,
+	cc = sendto(fd, (char *)pkt, (size_t)len, 0, (struct sockaddr *)dest,
 	    sizeof(struct sockaddr_in));
 #ifndef SYS_WINNT
 	if (cc == -1) {

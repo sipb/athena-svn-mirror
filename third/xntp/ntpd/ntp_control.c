@@ -15,6 +15,9 @@
 #include <ctype.h>
 #include <signal.h>
 
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
 #ifdef PUBKEY
 #include "ntp_crypto.h"
 #endif /* PUBKEY */
@@ -392,6 +395,7 @@ static u_char clocktypes[] = {
 	CTL_SST_TS_LF,		/* REFCLK_FG (37) */
 	CTL_SST_TS_UHF, 	/* REFCLK_HOPF_SERIAL (38) */
 	CTL_SST_TS_UHF,		/* REFCLK_HOPF_PCI (39) */
+	CTL_SST_TS_LF,		/* REFCLK_JJY (40) */
 };
 
 
@@ -1863,11 +1867,19 @@ ctl_getitem(
 						cp++;
 					while (cp < reqend && *cp != ',') {
 						*tp++ = *cp++;
-						if (tp >= buf + sizeof(buf))
+						if (tp >= buf + sizeof(buf)) {
+							ctl_error(CERR_BADFMT);
+							numctlbadpkts++;
+							msyslog(LOG_WARNING,
+		"Possible 'ntpdx' exploit from %s:%d (possibly spoofed)\n",
+		inet_ntoa(rmt_addr->sin_addr), ntohs(rmt_addr->sin_port)
+								);
 							return (0);
+						}
 					}
 					if (cp < reqend)
 						cp++;
+					*tp-- = '\0';
 					while (tp > buf) {
 						*tp-- = '\0';
 						if (!isspace((int)(*tp)))

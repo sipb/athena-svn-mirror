@@ -21,6 +21,11 @@
 #define closesocket close
 #endif /* SYS_WINNT */
 
+#ifdef HAVE_LIBREADLINE
+# include <readline/readline.h>
+# include <readline/history.h>
+#endif /* HAVE_LIBREADLINE */
+
 #ifdef SYS_VXWORKS
 /* vxWorks needs mode flag -casey*/
 #define open(name, flags)   open(name, flags, 0777)
@@ -202,14 +207,15 @@ struct ctl_var clock_var[] = {
 static const char *tstflagnames[] = {
 	"dup_pkt",		/* TEST1 */
 	"bogus_pkt",		/* TEST2 */
-	"proto_sync",		/* TEST3 */
-	"peer_bounds",		/* TEST4 */
-	"auth",			/* TEST5 */
-	"peer_sync",		/* TEST6 */
+	"proto_unsync",		/* TEST3 */
+	"no_access",		/* TEST4 */
+	"bad_auth",			/* TEST5 */
+	"peer_unsync",		/* TEST6 */
 	"peer_stratum",		/* TEST7 */
 	"root_bounds",		/* TEST8 */
-	"peer_auth",		/* TEST9 */
-	"access"		/* TEST10 */
+	"peer_bounds",		/* TEST9 */
+	"bad_autokey",		/* TEST10 */
+	"not_proventic"		/* TEST11*/
 };
 
 
@@ -670,7 +676,7 @@ sendpkt(
 	    printf("Sending %d octets\n", xdatalen);
 
 
-	if (send(sockfd, xdata, xdatalen, 0) == -1) {
+	if (send(sockfd, xdata, (size_t)xdatalen, 0) == -1) {
 		warning("write to %s failed", currenthost, "");
 		return -1;
 	}
@@ -1258,22 +1264,33 @@ doquery(
 static void
 getcmds(void)
 {
-	char line[MAXLINE];
+#ifdef HAVE_LIBREADLINE
+        char *line;
 
-	for (;;) {
-		if (interactive) {
-#ifdef VMS	/* work around a problem with mixing stdout & stderr */
-			fputs("",stdout);
+        for (;;) {
+                if ((line = readline(interactive?prompt:"")) == NULL) return;
+                if (*line) add_history(line);
+                docmd(line);
+                free(line);
+        }
+#else /* not HAVE_LIBREADLINE */
+        char line[MAXLINE];
+
+        for (;;) {
+                if (interactive) {
+#ifdef VMS      /* work around a problem with mixing stdout & stderr */
+                        fputs("",stdout);
 #endif
-			(void) fputs(prompt, stderr);
-			(void) fflush(stderr);
-		}
+                        (void) fputs(prompt, stderr);
+                        (void) fflush(stderr);
+                }
 
-		if (fgets(line, sizeof line, stdin) == NULL)
-		    return;
+                if (fgets(line, sizeof line, stdin) == NULL)
+                    return;
 
-		docmd(line);
-	}
+                docmd(line);
+        }
+#endif /* not HAVE_LIBREADLINE */
 }
 
 
@@ -1907,9 +1924,9 @@ help(
 		    cmdsort[n++] = xcp->keyword;
 
 #ifdef QSORT_USES_VOID_P
-		qsort(cmdsort, (unsigned)n, sizeof(char *), helpsort);
+		qsort(cmdsort, (size_t)n, sizeof(char *), helpsort);
 #else
-		qsort((char *)cmdsort, n, sizeof(char *), helpsort);
+		qsort((char *)cmdsort, (size_t)n, sizeof(char *), helpsort);
 #endif
 
 		maxlength = 0;
@@ -2840,7 +2857,7 @@ tstflags(
 		cb += strlen(cb);
 	} else {
 		*cb++ = ' ';
-		for (i = 0; i < 10; i++) {
+		for (i = 0; i < 11; i++) {
 			if (val & 0x1) {
 				sprintf(cb, "%s%s", sep, tstflagnames[i]);
 				sep = ", ";
@@ -3058,7 +3075,7 @@ sortassoc(void)
 #else
 		    (char *)
 #endif
-		    assoc_cache, (unsigned)numassoc,
+		    assoc_cache, (size_t)numassoc,
 		    sizeof(struct association), assoccmp);
 }
 

@@ -384,10 +384,9 @@ crypto_recv(
 				rval = RV_LEN;
 			} else if (tstamp == 0) {
 				rval = RV_TSP;
-			} else if (peer->crypto) {
-				rval = RV_DUP;
 			} else {
-				peer->crypto = temp;
+				if (!peer->crypto)
+					peer->crypto = temp;
 				if (ntohl(pkt[i + 1]) != 0)
 					peer->assoc = ntohl(pkt[i + 1]);
 				rval = RV_OK;
@@ -951,9 +950,7 @@ crypto_recv(
 #if NTP_API > 3
 			ntv.modes = MOD_TAI;
 			ntv.constant = sys_tai;
-			if (ntp_adjtime(&ntv) == TIME_ERROR)
-				msyslog(LOG_ERR,
-				    "kernel TAI update failed");
+			(void)ntp_adjtime(&ntv);
 #endif /* NTP_API */
 #endif /* KERNEL_PLL */
 

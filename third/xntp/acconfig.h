@@ -1,9 +1,3 @@
-/* Package */
-#undef PACKAGE
-
-/* Version */
-#undef VERSION
-
 /* debugging code */
 #undef DEBUG
 
@@ -87,6 +81,9 @@
 
 /* Sun IRIG audio decoder */
 #undef CLOCK_IRIG
+
+/* JJY receiver */
+#undef CLOCK_JJY
 
 /* Rockwell Jupiter GPS clock */
 #undef CLOCK_JUPITER
@@ -405,6 +402,12 @@
 /* cfset[io]speed()? */
 #undef DECL_CFSETISPEED_0
 
+/* hstrerror()? */
+#undef DECL_HSTRERROR_0
+
+/* inet_ntoa()? */
+#undef DECL_INET_NTOA_0
+
 /* ioctl()? */
 #undef DECL_IOCTL_0
 
@@ -475,5 +478,8 @@
 
 /* toupper()? */
 #undef DECL_TOUPPER_0
+
+/* strerror()? */
+#undef DECL_STRERROR_0
 
 #undef ULONG_CONST

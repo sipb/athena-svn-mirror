@@ -21,7 +21,7 @@ dnl
 dnl    AC_DEFINE_DIR(DATADIR, datadir)
 dnl    AC_DEFINE_DIR(PROG_PATH, bindir, [Location of installed binaries])
 dnl
-dnl @version $Id: acinclude.m4,v 1.1.1.1 2001-05-08 22:12:34 ghudson Exp $
+dnl @version $Id: acinclude.m4,v 1.1.1.2 2002-03-01 17:35:52 zacheiss Exp $
 dnl @author Alexandre Oliva <oliva@lsd.ic.unicamp.br>
 
 AC_DEFUN(AC_DEFINE_DIR, [

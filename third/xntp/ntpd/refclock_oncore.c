@@ -652,7 +652,7 @@ oncore_start(
 		exit(1);
 	}
 
-	if (pps_device) {
+	if (pps_device && pps_device[0]) {
 		if (stat(pps_device, &stat1)) {
 			perror("ONCORE: stat pps_device");
 			return(0);
@@ -675,6 +675,7 @@ oncore_start(
 					    "refclock_ioctl: time_pps_kcbind failed: %m");
 					return (0);
 				}
+				pps_enable = 1;
 			}
 		}
 	}
@@ -1328,10 +1329,19 @@ oncore_msg_any(
 	int i;
 	const char *fmt = oncore_messages[idx].fmt;
 	const char *p;
+#ifdef HAVE_GETCLOCK
+	struct timespec ts;
+#endif
 	struct timeval tv;
 
 	if (debug > 3) {
+#ifdef HAVE_GETCLOCK
+		(void) getclock(TIMEOFDAY, &ts); 
+		tv.tv_sec = ts.tv_sec; 
+		tv.tv_usec = ts.tv_nsec / 1000; 
+#else
 		GETTIMEOFDAY(&tv, 0);
+#endif
 		printf("ONCORE[%d]: %ld.%06ld\n", instance->unit, (long) tv.tv_sec, (long) tv.tv_usec);
 
 		if (!*fmt) {
@@ -1908,7 +1918,7 @@ oncore_msg_BaEaHa(
 		instance->rsm.bad_fix	  = instance->Ea[64]&0x52;
 		vp = &instance->shmem[instance->shmem_Ba];
 	} else if (instance->chan == 8) {
-		instance->rsm.bad_almanac = instance->Ea[77]&0x1;
+		instance->rsm.bad_almanac = instance->Ea[72]&0x1;
 		instance->rsm.bad_fix	  = instance->Ea[72]&0x52;
 		vp = &instance->shmem[instance->shmem_Ea];
 	} else if (instance->chan == 12) {
@@ -2316,10 +2326,10 @@ oncore_get_timestamp(
 			i = (u_long) pps_i.clear_sequence;
 #ifdef HAVE_STRUCT_TIMESPEC
 			printf("ONCORE[%d]: serial/j (%lu, %lu) %ld.%09ld\n",
-			    instance->unit, i, j, tsp->tv_sec, tsp->tv_nsec);
+			    instance->unit, i, j, (long)tsp->tv_sec, (long)tsp->tv_nsec);
 #else
 			printf("ONCORE[%d]: serial/j (%lu, %lu) %ld.%06ld\n",
-			    instance->unit, i, j, tsp->tv_sec, tsp->tv_usec);
+			    instance->unit, i, j, (long)tsp->tv_sec, (long)tsp->tv_usec);
 #endif
 		}
 

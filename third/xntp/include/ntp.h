@@ -109,6 +109,7 @@ typedef char s_char;
 #define CLOCK_SGATE	4.	/* popcorn spike gate */
 #define BURST_INTERVAL1	4	/* first interburst interval (log2) */
 #define BURST_INTERVAL2	1	/* succeeding interburst intervals (log2) */
+#define HUFFPUFF	900	/* huff-n'-puff sample interval (s) */
 
 /*
  * Operations for jitter calculations (these use doubles).
@@ -456,7 +457,8 @@ struct peer {
 #define REFCLK_FG		37	/* Forum Graphic GPS */
 #define REFCLK_HOPF_SERIAL	38	/* hopf DCF77/GPS serial line receiver  */
 #define REFCLK_HOPF_PCI		39	/* hopf DCF77/GPS PCI receiver  */
-#define REFCLK_MAX		39	/* Grow as needed... */
+#define REFCLK_JJY		40	/* JJY receiver  */
+#define REFCLK_MAX		40	/* Grow as needed... */
 
 /*
  * We tell reference clocks from real peers by giving the reference
@@ -666,12 +668,13 @@ struct pkt {
  */
 #define	LOOP_DRIFTINIT		1	/* set initial frequency offset */
 #define LOOP_DRIFTCOMP		2	/* set frequency offset */
-#define LOOP_PPSDELAY		3	/* set pps delay */
-#define LOOP_PPSBAUD		4	/* set pps baud rate */
-#define LOOP_MAX		5	/* set step offset */
-#define LOOP_PANIC		6	/* set panic offseet */
-#define LOOP_PHI		7	/* set dispersion rate */
-#define LOOP_MINSTEP		8	/* set step timeout */
+#define LOOP_MAX		3	/* set step offset */
+#define LOOP_PANIC		4	/* set panic offseet */
+#define LOOP_PHI		5	/* set dispersion rate */
+#define LOOP_MINSTEP		6	/* set step timeout */
+#define LOOP_MINPOLL		7	/* set min poll interval (log2 s) */
+#define LOOP_ALLAN		8	/* set minimum Allan intercept */
+#define LOOP_HUFFPUFF		9	/* set huff-n'-puff filter length */
 
 /*
  * Configuration items for the stats printer
@@ -687,6 +690,7 @@ struct pkt {
  */
 #define	DEFBROADDELAY	4e-3		/* default broadcast offset */
 #define INADDR_NTP	0xe0000101	/* NTP multicast address 224.0.1.1 */
+
 /*
  * Structure used optionally for monitoring when this is turned on.
  */
@@ -739,19 +743,22 @@ struct restrictlist {
 /*
  * Access flags
  */
-#define	RES_IGNORE		0x1	/* ignore if matched */
-#define	RES_DONTSERVE		0x2	/* don't give him any time */
-#define	RES_DONTTRUST		0x4	/* don't trust if matched */
-#define	RES_NOQUERY		0x8	/* don't allow queries if matched */
-#define	RES_NOMODIFY		0x10	/* don't allow him to modify server */
-#define	RES_NOPEER		0x20	/* don't allocate memory resources */
-#define	RES_NOTRAP		0x40	/* don't allow him to set traps */
-#define	RES_LPTRAP		0x80	/* traps set by him are low priority */
+#define	RES_IGNORE		0x001	/* ignore if matched */
+#define	RES_DONTSERVE		0x002	/* don't give him any time */
+#define	RES_DONTTRUST		0x004	/* don't trust if matched */
+#define	RES_NOQUERY		0x008	/* don't allow queries if matched */
+#define	RES_NOMODIFY		0x010	/* don't allow him to modify server */
+#define	RES_NOPEER		0x020	/* don't allocate memory resources */
+#define	RES_NOTRAP		0x040	/* don't allow him to set traps */
+#define	RES_LPTRAP		0x080	/* traps set by him are low priority */
 #define RES_LIMITED		0x100   /* limit per net number of clients */
+#define	RES_VERSION		0x200	/* serve only current version */
+#define RES_DEMOBILIZE		0x400	/* demobilize association */
 
 #define	RES_ALLFLAGS \
-    (RES_IGNORE|RES_DONTSERVE|RES_DONTTRUST|RES_NOQUERY\
-    |RES_NOMODIFY|RES_NOPEER|RES_NOTRAP|RES_LPTRAP|RES_LIMITED)
+    (RES_IGNORE | RES_DONTSERVE | RES_DONTTRUST | RES_NOQUERY | \
+     RES_NOMODIFY | RES_NOPEER | RES_NOTRAP | RES_LPTRAP | \
+     RES_LIMITED | RES_VERSION | RES_DEMOBILIZE)
 
 /*
  * Match flags
