@@ -1,12 +1,12 @@
 /* 
- * $Id: aklog_main.c,v 1.21 1992-07-07 23:43:17 probe Exp $
+ * $Id: aklog_main.c,v 1.22 1992-08-13 22:25:57 probe Exp $
  *
  * Copyright 1990,1991 by the Massachusetts Institute of Technology
  * For distribution and copying rights, see the file "mit-copyright.h"
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_main.c,v 1.21 1992-07-07 23:43:17 probe Exp $";
+static char *rcsid = "$Id: aklog_main.c,v 1.22 1992-08-13 22:25:57 probe Exp $";
 #endif lint || SABER
 
 #include <stdio.h>
@@ -741,7 +741,7 @@ static void usage()
     sprintf(msgbuf, "\nUsage: %s %s%s%s\n", progname,
 	    "[-d] [[-cell | -c] cell [-k krb_realm]] ",
 	    "[[-p | -path] pathname]\n",
-	    "    [-zsubs] [-hosts] [-noauth] [-noprdb] [-force]\n");
+	    "    [-zsubs] [-hosts] [-noauth] [-noprdb]\n");
     params.pstderr(msgbuf);
     sprintf(msgbuf, "    -d gives debugging information.\n");
     params.pstderr(msgbuf);
