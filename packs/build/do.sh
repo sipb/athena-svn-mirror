@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.50 2000-03-17 21:01:22 ghudson Exp $
+# $Id: do.sh,v 1.51 2000-03-29 19:48:44 ghudson Exp $
 
 source=/mit/source
 srvd=/afs/dev.mit.edu/system/$ATHENA_SYS/srvd-current
@@ -11,7 +11,7 @@ maybe=""
 
 usage() {
 	echo "Usage: do [-cnp] [-s srcdir] [-d destdir] [-t toolroot]" 1>&2
-	echo "	[prepare|clean|all|check|install]" 1>&2
+	echo "	[dist|prepare|clean|all|check|install]" 1>&2
 	exit 1
 }
 
@@ -45,7 +45,7 @@ shift `expr "$OPTIND" - 1`
 operation=${1-all}
 
 case "$operation" in
-prepare|clean|all|check|install)
+dist|prepare|clean|all|check|install)
 	;;
 *)
 	echo Unknown operation \"$operation\" 1>&2
@@ -190,7 +190,7 @@ elif [ -f configure.in ]; then
 		configure=configure
 	fi
 	case $operation in
-	prepare)
+	dist)
 		# Copy in support files and run autoconf if this is a
 		# directory using the Athena build system.
 		if [ -f config.do -o ! -f configure ]; then
@@ -206,6 +206,8 @@ elif [ -f configure.in ]; then
 				-m ${ATHTOOLROOT}/usr/athena/share/autoconf \
 				|| exit 1
 		fi
+		;;
+	prepare)
 		$maybe rm -f config.cache
 		$maybe "./$configure"
 		;;
@@ -224,11 +226,21 @@ elif [ -f configure.in ]; then
 	esac
 elif [ -r Imakefile ]; then
 	case $operation in
+	dist)
+		$maybe mkdir -p config
+		$maybe cp $source/packs/build/xconfig/README config
+		$maybe cp $source/packs/build/xconfig/mkdirhier.sh config
+		$maybe cp $source/packs/build/xconfig/rtcchack.bac config
+		$maybe cp $source/packs/build/xconfig/site.def config
+		$maybe cp $source/packs/build/xconfig/*.cf config
+		$maybe cp $source/packs/build/xconfig/*.rules config
+		$maybe cp $source/packs/build/xconfig/*.tmpl config
+		;;
 	prepare)
-		$maybe imake "-I$source/packs/build/xconfig" -DUseInstalled \
-			"-DTOPDIR=$source/packs/build" \
+		$maybe imake "-Iconfig" -DUseInstalled \
+			"-DTOPDIR=`pwd`" \
 			"-DTOOLROOT=$athtoolroot" \
-			"-DXCONFIGDIR=$source/packs/build/xconfig"
+			"-DXCONFIGDIR=`pwd`/config"
 		$maybe $MAKE Makefiles
 		;;
 	clean)
@@ -247,7 +259,7 @@ elif [ -r Imakefile ]; then
 	esac
 elif [ -r Makefile ]; then
 	case $operation in
-	prepare)
+	dist|prepare)
 		;;
 	clean)
 		$MAKE $n clean "ATHTOOLROOT=$athtoolroot"
