@@ -2,7 +2,7 @@
 /*
  * inc.c -- incorporate messages from a maildrop into a folder
  *
- * $Id: inc.c,v 1.3 1999-02-13 15:42:53 danw Exp $
+ * $Id: inc.c,v 1.4 1999-11-10 17:54:41 ghudson Exp $
  */
 
 #ifdef MAILGROUP
@@ -675,6 +675,9 @@ go_to_it:
 	    mbx_close (packfile, pd);
 	    pd = NOTOK;
 	}
+
+	if (p < 0)
+	    adios (NULL, "failed");
     }
 #endif /* POP */
 
@@ -752,29 +755,25 @@ go_to_it:
 	    }
 	    break;
 	}
-    }
 
-#ifdef POP
-    if (p < 0) {		/* error */
-#else
-    if (i < 0) {		/* error */
-#endif
-	if (locked) {
+	if (i < 0) {		/* error */
+	    if (locked) {
 #ifdef MAILGROUP
-	    /* Be sure we can unlock mail file */
-	    setgid(return_gid);
+		/* Be sure we can unlock mail file */
+		setgid(return_gid);
 #endif /* MAILGROUP */
 
-	    lkfclose (in, newmail);
+		lkfclose (in, newmail);
 
 #ifdef MAILGROUP
-	    /* And then return us to normal privileges */
-	    setgid(getgid());
+		/* And then return us to normal privileges */
+		setgid(getgid());
 #endif /* MAILGROUP */
-	} else {
-	    fclose (in);
+	    } else {
+		fclose (in);
+	    }
+	    adios (NULL, "failed");
 	}
-	adios (NULL, "failed");
     }
 
     if (aud)
