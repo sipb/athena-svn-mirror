@@ -93,7 +93,7 @@ cd $destdir/SOURCES
 
 # Force all source files to the same timestamp, to prevent third-party
 # build systems from thinking some are out of date with respect to others.
-find $source_name-orig -print | xargs touch -t `date +%Y%m%d%H%M.%S`
+find $source_name-orig -print0 | xargs -0 touch -t `date +%Y%m%d%H%M.%S`
 
 # Copy the "patches" in.
 if [ -a $sourcedir/packs/build/rpm/patches/$source_name ]; then
