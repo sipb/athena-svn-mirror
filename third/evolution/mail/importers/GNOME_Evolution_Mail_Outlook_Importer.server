@@ -26,10 +26,14 @@
 		       value="Evolution Outlook Express 4 importáló"/>
 	<oaf_attribute name="name-it" type="string"
 		       value="Importatore Outlook Express 4 di Evolution"/>
+	<oaf_attribute name="name-ja" type="string"
+		       value="Evolution Outlook Express 4 インポータ"/>
 	<oaf_attribute name="name-nl" type="string"
 		       value="Evolution Outlook Express 4 importeerassistent"/>
 	<oaf_attribute name="name-no" type="string"
 		       value="Import fra Outlook Express 4 for Evolution"/>
+	<oaf_attribute name="name-pl" type="string"
+		       value="Druid importu poczty Outlook Express 4 dla Evolution"/>
 	<oaf_attribute name="name-pt" type="string"
 		       value="Importador Outlook Express 4 do Evolution"/>
 	<oaf_attribute name="name-pt_BR" type="string"
@@ -70,10 +74,14 @@
 		       value="Outlook Express 4 (.mbx)"/>
 	<oaf_attribute name="evolution:menu_name-it" type="string"
 		       value="Outlook Express 4 (.mbx)"/>
+	<oaf_attribute name="evolution:menu_name-ja" type="string"
+		       value="Outlook Express 4 (.mbx)"/>
 	<oaf_attribute name="evolution:menu_name-nl" type="string"
 		       value="Outlook Express 4 (.mbx)"/>
 	<oaf_attribute name="evolution:menu_name-no" type="string"
 		       value="Outlook Express 4 (.mbx)"/>
+	<oaf_attribute name="evolution:menu_name-pl" type="string"
+		       value="Outlook Express 4 (.mbox)"/>
 	<oaf_attribute name="evolution:menu_name-pt" type="string"
 		       value="Outlook Express 4 (.mbx)"/>
 	<oaf_attribute name="evolution:menu_name-pt_BR" type="string"
@@ -104,10 +112,14 @@
 		       value="Evolution Outlook Express 4 importáló"/>
 	<oaf_attribute name="name-it" type="string"
 		       value="Importatore Outlook Express 4 di Evolution"/>
+	<oaf_attribute name="name-ja" type="string"
+		       value="Evolution Outlook Express 4 インポータ"/>
 	<oaf_attribute name="name-nl" type="string"
 		       value="Evolution Outlook Express 4 importeerassistent"/>
 	<oaf_attribute name="name-no" type="string"
 		       value="Import fra Outlook Express 4 for Evolution"/>
+	<oaf_attribute name="name-pl" type="string"
+		       value="Druid importu poczty Outlook Express 4 dla Evolution"/>
 	<oaf_attribute name="name-pt" type="string"
 		       value="Importador Outlook Express 4 do Evolution"/>
 	<oaf_attribute name="name-pt_BR" type="string"

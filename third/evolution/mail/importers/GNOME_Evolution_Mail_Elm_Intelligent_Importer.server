@@ -26,10 +26,14 @@
 		       value="Evolution Elm-importáló"/>
 	<oaf_attribute name="name-it" type="string"
 		       value="Importatore Elm di Evolution."/>
+	<oaf_attribute name="name-ja" type="string"
+		       value="Evolution Elm インポータ"/>
 	<oaf_attribute name="name-nl" type="string"
 		       value="Evolution Elm-import"/>
 	<oaf_attribute name="name-no" type="string"
 		       value="Import fra Elm for Evolution"/>
+	<oaf_attribute name="name-pl" type="string"
+		       value="Importer Elm Evolution"/>
 	<oaf_attribute name="name-pt" type="string"
 		       value="Importador Elm do Evolution"/>
 	<oaf_attribute name="name-pt_BR" type="string"
@@ -70,10 +74,14 @@
 		       value="Evolution Elm-importáló"/>
 	<oaf_attribute name="name-it" type="string"
 		       value="Importatore Elm di Evolution."/>
+	<oaf_attribute name="name-ja" type="string"
+		       value="Evolution Elm インポータ"/>
 	<oaf_attribute name="name-nl" type="string"
 		       value="Evolution Elm-import"/>
 	<oaf_attribute name="name-no" type="string"
 		       value="Import fra Elm for Evolution"/>
+	<oaf_attribute name="name-pl" type="string"
+		       value="Importer Elm Evolution"/>
 	<oaf_attribute name="name-pt" type="string"
 		       value="Importador Elm do Evolution"/>
 	<oaf_attribute name="name-pt_BR" type="string"

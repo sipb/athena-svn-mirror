@@ -26,10 +26,14 @@
 		       value="Evolution mbox-importáló"/>
 	<oaf_attribute name="name-it" type="string"
 		       value="Importatore mbox di Evolution."/>
+	<oaf_attribute name="name-ja" type="string"
+		       value="Evolution mbox インポータ"/>
 	<oaf_attribute name="name-nl" type="string"
 		       value="Evolution mbox-import"/>
 	<oaf_attribute name="name-no" type="string"
 		       value="mbox-import for Evolution"/>
+	<oaf_attribute name="name-pl" type="string"
+		       value="Importer mbox Evolution"/>
 	<oaf_attribute name="name-pt" type="string"
 		       value="Importador mbox do Evolution"/>
 	<oaf_attribute name="name-pt_BR" type="string"
@@ -58,6 +62,8 @@
 		       value="MBox (mbox)"/>
 	<oaf_attribute name="evolution:menu_name-cs" type="string"
 		       value="MBox (mbox)"/>
+	<oaf_attribute name="evolution:menu_name-cy" type="string"
+		       value="MBox (mbox)"/>
 	<oaf_attribute name="evolution:menu_name-da" type="string"
 		       value="MBox (mbox)"/>
 	<oaf_attribute name="evolution:menu_name-de" type="string"
@@ -70,10 +76,14 @@
 		       value="MBox (mbox)"/>
 	<oaf_attribute name="evolution:menu_name-it" type="string"
 		       value="MBox (mbox)"/>
+	<oaf_attribute name="evolution:menu_name-ja" type="string"
+		       value="MBox (mbox)"/>
 	<oaf_attribute name="evolution:menu_name-nl" type="string"
 		       value="MBox (mbox)"/>
 	<oaf_attribute name="evolution:menu_name-no" type="string"
 		       value="MBox (.mbox)"/>
+	<oaf_attribute name="evolution:menu_name-pl" type="string"
+		       value="MBox (mbox)"/>
 	<oaf_attribute name="evolution:menu_name-pt" type="string"
 		       value="MBox (mbox)"/>
 	<oaf_attribute name="evolution:menu_name-pt_BR" type="string"
@@ -104,10 +114,14 @@
 		       value="Evolution mbox-importáló"/>
 	<oaf_attribute name="name-it" type="string"
 		       value="Importatore mbox di Evolution."/>
+	<oaf_attribute name="name-ja" type="string"
+		       value="Evolution mbox インポータ"/>
 	<oaf_attribute name="name-nl" type="string"
 		       value="Evolution mbox-import"/>
 	<oaf_attribute name="name-no" type="string"
 		       value="mbox-import for Evolution"/>
+	<oaf_attribute name="name-pl" type="string"
+		       value="Importer mbox Evolution"/>
 	<oaf_attribute name="name-pt" type="string"
 		       value="Importador mbox do Evolution"/>
 	<oaf_attribute name="name-pt_BR" type="string"

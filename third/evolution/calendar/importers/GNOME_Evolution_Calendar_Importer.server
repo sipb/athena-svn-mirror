@@ -25,10 +25,16 @@
                        value="Evolution iCalendar importáló"/>
 	<oaf_attribute name="name-it" type="string"
                        value="Importatore dell&apos; iCalendar di Evolution"/>
+	<oaf_attribute name="name-ja" type="string"
+                       value="Evolution iCalendar インポータ"/>
+	<oaf_attribute name="name-ms" type="string"
+                       value="Pengimport iCalendar Evolusi"/>
 	<oaf_attribute name="name-nl" type="string"
                        value="Evolution iKalender import"/>
 	<oaf_attribute name="name-no" type="string"
                        value="Evolution iCalendar-import"/>
+	<oaf_attribute name="name-pl" type="string"
+                       value="Druid importu plików iCalendar dla Evolution"/>
 	<oaf_attribute name="name-pt" type="string"
                        value="Importador iCalendário Evolution"/>
 	<oaf_attribute name="name-pt_BR" type="string"
@@ -70,10 +76,16 @@
                        value="iCalendar-fájlok (.ics)"/>
 	<oaf_attribute name="evolution:menu_name-it" type="string"
                        value="File iCalendar (.ics)"/>
+	<oaf_attribute name="evolution:menu_name-ja" type="string"
+                       value="iCalendar ファイル (.ics)"/>
+	<oaf_attribute name="evolution:menu_name-ms" type="string"
+                       value="Fail iCalendar (.ics)"/>
 	<oaf_attribute name="evolution:menu_name-nl" type="string"
                        value="iKalender bestanden (.ics)"/>
 	<oaf_attribute name="evolution:menu_name-no" type="string"
                        value="iCalendar-filer (.ics)"/>
+	<oaf_attribute name="evolution:menu_name-pl" type="string"
+                       value="Pliki iCalendar (.ics)"/>
 	<oaf_attribute name="evolution:menu_name-pt" type="string"
                        value="Ficheiros iCalendário (.ics)"/>
 	<oaf_attribute name="evolution:menu_name-pt_BR" type="string"
@@ -108,10 +120,16 @@
                        value="Evolution iCalendar importáló"/>
         <oaf_attribute name="name-it" type="string"
                        value="Importatore dell&apos; iCalendar di Evolution"/>
+        <oaf_attribute name="name-ja" type="string"
+                       value="Evolution iCalendar インポータ"/>
+        <oaf_attribute name="name-ms" type="string"
+                       value="Pengimport iCalendar Evolusi"/>
         <oaf_attribute name="name-nl" type="string"
                        value="Evolution iKalender import"/>
         <oaf_attribute name="name-no" type="string"
                        value="Evolution iCalendar-import"/>
+        <oaf_attribute name="name-pl" type="string"
+                       value="Druid importu plików iCalendar dla Evolution"/>
         <oaf_attribute name="name-pt" type="string"
                        value="Importador iCalendário Evolution"/>
         <oaf_attribute name="name-pt_BR" type="string"
@@ -152,10 +170,16 @@
                        value="vCalendar-fájlok (.vcf)"/>
 	<oaf_attribute name="evolution:menu_name-it" type="string"
                        value="File vCalendar (.vcf)"/>
+	<oaf_attribute name="evolution:menu_name-ja" type="string"
+                       value="vCalendar ファイル (.vcf)"/>
+	<oaf_attribute name="evolution:menu_name-ms" type="string"
+                       value="Fail vCalendar (.vcf)"/>
 	<oaf_attribute name="evolution:menu_name-nl" type="string"
                        value="vKalender bestanden(.vcf)"/>
 	<oaf_attribute name="evolution:menu_name-no" type="string"
                        value="vCalendar-filer (.vcf)"/>
+	<oaf_attribute name="evolution:menu_name-pl" type="string"
+                       value="Pliki vCalendar (.vcf)"/>
 	<oaf_attribute name="evolution:menu_name-pt" type="string"
                        value="Ficheiros vCalendário (.vcf)"/>
 	<oaf_attribute name="evolution:menu_name-pt_BR" type="string"
@@ -190,10 +214,16 @@
                        value="Evolution vCalendar importáló"/>
         <oaf_attribute name="name-it" type="string"
                        value="Importatore del vCalendar di Evolution"/>
+        <oaf_attribute name="name-ja" type="string"
+                       value="Evolution vCalendar インポータ"/>
+        <oaf_attribute name="name-ms" type="string"
+                       value="Pengimport vCalendar Evolusi"/>
         <oaf_attribute name="name-nl" type="string"
                        value="Evolution vKaender import"/>
         <oaf_attribute name="name-no" type="string"
                        value="Evolution vCalendar-import"/>
+        <oaf_attribute name="name-pl" type="string"
+                       value="Druid importu plików vCalendar dla Evolution"/>
         <oaf_attribute name="name-pt" type="string"
                        value="Importador vCalendário Evolution"/>
         <oaf_attribute name="name-pt_BR" type="string"
@@ -235,10 +265,16 @@
                        value="Evolution Naptár intellingens importáló"/>
         <oaf_attribute name="name-it" type="string"
                        value="Importatore intelligente del calendario di Evolution"/>
+        <oaf_attribute name="name-ja" type="string"
+                       value="Evolution カレンダ・インテリジェント・インポータ"/>
+        <oaf_attribute name="name-ms" type="string"
+                       value="Pengimport cerdas Kalendar Evolusi"/>
         <oaf_attribute name="name-nl" type="string"
                        value="Evolution kalender intelligente import"/>
         <oaf_attribute name="name-no" type="string"
                        value="Intelligent import for Evolution kalender"/>
+        <oaf_attribute name="name-pl" type="string"
+                       value="Inteligentny druid importu kalendarza Evolution"/>
         <oaf_attribute name="name-pt" type="string"
                        value="Importador inteligente de Calendário Evolution"/>
         <oaf_attribute name="name-pt_BR" type="string"

@@ -1,3 +1,59 @@
+2003-07-15  Federico Mena Quintero  <federico@ximian.com>
+
+	* folder-browser.c (message_list_drag_data_received): Handle
+	invalid URIs, or more likely, the last empty element in a URI list
+	--- g_strsplit() will yield { "uri1", "", NULL }.  Fixes #46398.
+
+	* component-factory.c (destination_folder_handle_drop): Likewise.
+
+2003-07-11  Antonio Xu  <antonio.xu@sun.com>
+
+	* folder-browser-ui.c: Change the EditPaste mask to IS_0MESSAGE so
+	that it is always activatable. Fixes bug #46018.
+
+2003-07-02  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* mail-tools.c (mail_tool_forward_message): Strip the signature
+	from the body text. Fixes bug #45523. While we're here, also fix
+	the code to quote exactly the same way as the
+	mail_tool_quote_message() function.
+	(mail_tool_quote_message): The last arg should not be
+	'want_plain', because that arg is for whether or not the body
+	should be quoted.
+
+2003-07-04  Maxx Cao  <maxx.cao@sun.com>
+
+	** For bug #41839
+
+	* mail-display.c (do_attachment_header): Attachment buttons made
+	accessable with keyboard (focusable). "Inline" button is disabled
+	when attachment can't be viewed inline.
+	(do_signature): Signature button made accessable with keyboard
+	(focusable).
+	(button_press): Function changed to an event callback (originally
+	gtkbutton signal callback).
+	(popup_menu_placement_callback): Function added to place popup
+	menu (of attachment) beside button when activated by keyboard.
+
+2003-07-02  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* folder-browser.c (message_list_drag_data_get): Apply a
+	From-filter when dragging as a test/uri-list and
+	message/rfc822. Fixes bug #45617. Also free the uids ptrarray for
+	the text/uri-list case.
+
+2003-06-27  Jeffrey Stedfast  <fejj@ximian.com>
+
+	* message-list.c (filter_date): Use the newer utf8 versions of the
+	e_strftime*() functions since our format strings are all now in
+	UTF-8.
+
+	* mail-display.c (mail_display_render): Use the newer
+	e_utf8_strftime_fix_am_pm().
+
+	* mail-callbacks.c (mail_generate_reply): Use e_utf8_strftime(),
+	otherwise we can end up with invalid utf-8.
+
 2003-06-25  Radek Doulik  <rodo@ximian.com>
 
 	* mail-config.c (config_write_style): provide hardcoded default
