@@ -1,9 +1,10 @@
-# $Id: Makefile,v 1.1 1996-09-20 05:14:15 ghudson Exp $
+# $Id: Makefile,v 1.2 1996-12-27 21:38:28 ghudson Exp $
 
 SHELL=/bin/sh
 ATHETCDIR=/usr/athena/etc
 ATHLIBDIR=/usr/athena/lib
 UPDATE=${ATHLIBDIR}/update
+CFLAGS=-g
 
 all: fix_owners rvdinfo
 	cd platform/${HOSTTYPE} && ${MAKE} $@
@@ -13,9 +14,8 @@ fix_owners: fix_owners.o
 
 rvdinfo: ../version
 	. ../version; \
-		machine=`echo "$$HOSTTYPE" | tr "[a-z]" "[A-Z]"`; \
 		version="$$major.$$minor.$$patch"; \
-		echo "Athena RVD ($$machine) Version $$version `date`" > $@
+		echo "Athena RVD ($$HOSTTYPE) Version $$version `date`" > $@
 
 check:
 	cd platform/${HOSTTYPE} && ${MAKE} $@
@@ -41,7 +41,9 @@ install:
 	install -c -m 444 -o 0 -g 0 FILES ${DESTDIR}${UPDATE}/FILES
 
 clean:
+	rm -f fix_owners.o fix_owners rvdinfo FILES
 	cd platform/${HOSTTYPE} && ${MAKE} $@
 
 distclean:
+	rm -f fix_owners.o fix_owners rvdinfo FILES
 	cd platform/${HOSTTYPE} && ${MAKE} $@
