@@ -93,7 +93,6 @@ typedef struct _WindowInfo {
 #define XjNiconWindow "iconWindow"
 #define XjCIconWindow "IconWindow"
 #define XjRWindow "Window"
-#define XjRJet "Jet"
 #define XjCMapNotifyProc "MapNotifyProc"
 #define XjNmapNotifyProc "mapNotifyProc"
 #define XjCBorderWidth "BorderWidth"
