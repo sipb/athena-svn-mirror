@@ -39,3 +39,4 @@ chkconfig	/sbin/chkconfig
 cpuspeed	/sbin/hinv | grep MHZ
 packages	/usr/sbin/showprods -E -n -3
 patches     	/usr/sbin/showprods -E -n -3 patch\*
+modules  	/sbin/ml list
