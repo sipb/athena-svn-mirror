@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.52 2000-03-31 14:44:13 ghudson Exp $
+# $Id: do.sh,v 1.53 2000-04-01 15:49:38 ghudson Exp $
 
 source=/mit/source
 srvd=/afs/dev.mit.edu/system/$ATHENA_SYS/srvd-current
@@ -210,12 +210,11 @@ elif [ -f configure.in ]; then
 			$maybe cp "$source/packs/build/autoconf/config.guess" .
 			$maybe cp "$source/packs/build/autoconf/config.sub" .
 			$maybe cp "$source/packs/build/aclocal.m4" .
-			$maybe cp "$source/packs/build/config.site" \
-				config.site.athena
 			$maybe autoconf \
 				-m ${ATHTOOLROOT}/usr/athena/share/autoconf \
 				|| exit 1
 		fi
+		$maybe cp "$source/packs/build/config.site" config.site.athena
 		;;
 	prepare)
 		$maybe rm -f config.cache
