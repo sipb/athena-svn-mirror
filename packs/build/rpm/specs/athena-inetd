@@ -48,16 +48,12 @@ chkconfig --add athena-inetd
 
 %ifos linux
 %triggerin -- setup
-( grep -s -q ^rkinit /etc/services \
-	|| echo "rkinit	2108/tcp	rkinitd	# Remote ticket granting svc."
- grep -s -q ^write /etc/services \
+( grep -s -q ^write /etc/services \
 	|| echo "write	811/tcp			# Athena remote write service"
  grep -s -q ^busypoll /etc/services \
 	|| echo "busypoll	49154/udp	# busy polling port for ws"
  grep -s -q ^athinfo /etc/services \
 	|| echo "athinfo	49155/tcp	# workstation info server"
- grep -s -q ^gshell /etc/services \
-	|| echo "gshell		3715/tcp	# gsh service"
 ) >> /etc/services
 %endif
 
