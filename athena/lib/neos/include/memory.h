@@ -3,7 +3,7 @@
  *
  * $Author: probe $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/memory.h,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/memory.h,v 1.1 1992-12-07 13:29:42 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/memory.h,v 1.2 1993-02-02 06:23:23 probe Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -12,14 +12,11 @@
  **********************************************************************/
 
 #ifndef lint
-static char rcsid_memory_h[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/memory.h,v 1.1 1992-12-07 13:29:42 probe Exp $";
-#endif lint
+static char rcsid_memory_h[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/memory.h,v 1.2 1993-02-02 06:23:23 probe Exp $";
+#endif
 
 #ifndef __MEMORY_MACROS__
 #define __MEMORY_MACROS__
-
-char *malloc();
-char *realloc();
 
 #define New(type) ((type *)malloc((unsigned)sizeof (type)))
 #define NewArray(type, n) ((type *)malloc((unsigned)sizeof(type) * (n)))
