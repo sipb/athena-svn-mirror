@@ -1,7 +1,7 @@
 /* 
- * $Id: from.c,v 1.9 1991-08-09 17:36:12 epeisach Exp $
+ * $Id: from.c,v 1.10 1991-08-11 21:19:21 probe Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/from.c,v $
- * $Author: epeisach $
+ * $Author: probe $
  *
  * This is the main source file for a KPOP version of the from command. 
  * It was written by Theodore Y. Ts'o, MIT Project Athena.  And later 
@@ -10,7 +10,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: from.c,v 1.9 1991-08-09 17:36:12 epeisach Exp $";
+static char *rcsid = "$Id: from.c,v 1.10 1991-08-11 21:19:21 probe Exp $";
 #endif /* lint || SABER */
 
 #include <stdio.h>
@@ -242,25 +242,25 @@ getmail_pop(user, host, printhdr)
 		return -1;
 	}
 	if (nmsgs == 0) {
-	  return(0);
+		return(0);
 	}
 	if (verbose || totals)
-	    printf("You have %d %s (%d bytes) on %s%c\n",
-		   nmsgs, nmsgs > 1 ? "messages" : "message",
-		   nbytes, host, verbose ? ':' : '.');
+		printf("You have %d %s (%d bytes) on %s%c\n",
+		       nmsgs, nmsgs > 1 ? "messages" : "message",
+		       nbytes, host, verbose ? ':' : '.');
 	if (totals)
-	    return nmsgs;
+		return nmsgs;
 	if (printhdr)
-	    puts("POP mail:");
+		puts("POP mail:");
 
 	/* find out how long the line is for the stdout */
 	if ((ioctl(1, TIOCGWINSZ, (void *)&windowsize) < 0) || 
 	    (windowsize.ws_col == 0))
-	  windowsize.ws_col = 80;  /* default assume 80 */
+		windowsize.ws_col = 80;		/* default assume 80 */
 	/* for the console window timestamp */
 	linelength = windowsize.ws_col - 6;
 	if (linelength < 32)
-	  linelength = 32;
+		linelength = 32;
 	
 	for (i = 1; i <= nmsgs; i++) {
 		if (verbose && !skip_message)
@@ -271,15 +271,20 @@ getmail_pop(user, host, printhdr)
 			(void) pop_command("QUIT");
 			return -1;
 		}
-		if (report) 
-		  print_report(headers, num_headers, linelength);
-		else
-		  for (j = 0; j < num_headers; j++) {
-		    if (!skip_message)
-		      puts(headers[j]);
-		    free(headers[j]);
-		  }
-	      }
+		if (report) {
+			if (!skip_message)
+				print_report(headers, num_headers, linelength);
+			else
+				for (j=0; j<num_headers; j++)
+					free(headers[j]);
+		} else {
+			for (j=0; j<num_headers; j++) {
+				if (!skip_message)
+					puts(headers[j]);
+				free(headers[j]);
+			}
+		}
+	}
 	
 	(void) pop_command("QUIT");
 	return nmsgs;
