@@ -1,6 +1,6 @@
 # Global bashrc file
 #
-# $Id: bashrc,v 1.5 1999-06-18 21:09:57 ghudson Exp $
+# $Id: bashrc,v 1.6 1999-06-21 21:02:11 rbasch Exp $
 
 # This file is sourced by default user file ~/.bashrc
 
@@ -69,11 +69,21 @@ if [ "${ENV_SET+set}" != set ]; then
 	esac
 	export MORE
 
-	# Special variables for suns
-	if [ sun4 = "$MACHTYPE" ]; then
+	# Set miscellaneous system-dependent variables.
+	case $HOSTTYPE in
+	sgi)
+		# The following set the default error message format
+		# to omit the label and severity components, per the
+		# standard IRIX /etc/profile.
+		export MSGVERB=text:action
+		export NOMSGLABEL=1
+		export NOMSGSEVERITY=1
+		;;
+	sun4)
 		export LD_LIBRARY_PATH=/usr/openwin/lib
 		export OPENWINHOME=/usr/openwin
-	fi
+		;;
+	esac
 	
 	export ATHENA_SYS=`/bin/athena/machtype -S`
 	export ATHENA_SYS_COMPAT=`/bin/athena/machtype -C`
