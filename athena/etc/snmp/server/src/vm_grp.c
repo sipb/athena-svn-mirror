@@ -15,6 +15,9 @@
  *    $Author: tom $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ * Revision 1.3  90/05/26  13:41:59  tom
+ * athena release 7.0e
+ * 
  * Revision 1.2  90/04/26  18:42:50  tom
  * *** empty log message ***
  * 
@@ -22,7 +25,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/vm_grp.c,v 1.3 1990-05-26 13:41:59 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/vm_grp.c,v 2.0 1992-04-22 01:58:04 tom Exp $";
 #endif
 
 
@@ -30,10 +33,19 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
 #include <mit-copyright.h>
 
 #ifdef MIT
+
+#ifndef RSPOS
+
 #include <sys/vm.h>
 #include <sys/text.h>
 #include <sys/dk.h>
+
+#ifdef decmips
+#include <sys/dir.h>
+#include <sys/namei.h>
+#else  decmips
 #include <machine/machparam.h>
+#endif /* decmips */
 
 #ifdef VFS
 struct  ncstats {
@@ -61,12 +73,13 @@ static int vmcpu();
 static int vmproctotal();
 static int vmpgrates();
 static int vmsumtotal();
-static int vmxstats();
 static int vmforkstats();
 static int vmtimestats();
 static int vmncstats();
 
-
+#ifndef decmips
+static int vmxstats();
+#endif
 
 int
 lu_vmstat(varnode, repl, instptr, reqflg)
@@ -101,7 +114,7 @@ lu_vmstat(varnode, repl, instptr, reqflg)
 
     case N_VMPAGERE:
     case N_VMPAGEAT:
-    case N_VMPAGEPN:
+    case N_VMPAGEPI:
     case N_VMPAGEPO:
     case N_VMPAGEFR:
     case N_VMPAGEDE:
@@ -151,6 +164,7 @@ lu_vmstat(varnode, repl, instptr, reqflg)
       repl->val.type = CNTR;  
       return(vmsumtotal(varnode->offset, &(repl->val.value.cntr)));
 
+#ifndef decmips
     case N_VMXACALL:
     case N_VMXAHIT:
     case N_VMXASTICK:
@@ -162,7 +176,8 @@ lu_vmstat(varnode, repl, instptr, reqflg)
     case N_VMXFRESWP:
       repl->val.type = CNTR;  
       return(vmxstats(varnode->offset, &(repl->val.value.cntr)));
-      
+#endif
+
     case N_VMFORK:
     case N_VMFKPAGE:
     case N_VMVFORK:
@@ -203,7 +218,7 @@ lu_vmstat(varnode, repl, instptr, reqflg)
 static int
 vmcpu(offset, value)
      int offset;
-     int *value;
+     unsigned int *value;
 {
   long time[CPUSTATES];
 
@@ -286,12 +301,13 @@ vmproctotal(offset, value)
 static int
 vmpgrates(offset, value)
      int offset;
-     int *value;
+     unsigned int *value;
 {
   struct vmmeter rate;
   int nintv = 0;
   int btime = 0;
   int deficit;
+  int hztemp = hz;
 
   if(lseek(kmem, (long) nl[N_HZ].n_value, L_SET) != nl[N_HZ].n_value)
     {
@@ -299,7 +315,7 @@ vmpgrates(offset, value)
      return(BUILD_ERR);
     }
 
-  if(read(kmem, &hz, sizeof(hz)) != sizeof(hz))
+  if(read(kmem, &hztemp, sizeof(hz)) != sizeof(hz))
     {
       syslog(LOG_ERR, "lu_vmstat: can't read hz");
       return(BUILD_ERR);
@@ -371,7 +387,7 @@ vmpgrates(offset, value)
     case N_VMPAGEAT:
       *value = (rate.v_xsfrec+rate.v_xifrec)/nintv;
       return(BUILD_SUCCESS);
-    case N_VMPAGEPN:
+    case N_VMPAGEPI:
       *value = pgtok(rate.v_pgin)/nintv;
       return(BUILD_SUCCESS);
     case N_VMPAGEPO:
@@ -405,7 +421,7 @@ vmpgrates(offset, value)
 static int
 vmsumtotal(offset, value)
      int offset;
-     int *value;
+     unsigned int *value;
 {
   struct vmmeter sum;
 
@@ -513,10 +529,12 @@ vmsumtotal(offset, value)
 }
 
 
+#ifndef decmips
+
 static int
 vmxstats(offset, value)
      int offset;
-     int *value;
+     unsigned int *value;
 {
   struct xstats xstats;
 
@@ -568,10 +586,13 @@ vmxstats(offset, value)
 }
 
 
+#endif
+
+
 static int
 vmforkstats(offset, value)
      int offset;
-     int *value;
+     unsigned int *value;
 {
   struct forkstat forkstat;
 
@@ -613,7 +634,7 @@ vmforkstats(offset, value)
 static int
 vmtimestats(offset, value)
      int offset;
-     int *value;
+     unsigned int *value;
 {
   int rectime;
   int pgintime;
@@ -662,7 +683,7 @@ vmtimestats(offset, value)
 static int
 vmncstats(offset, value)
      int offset;
-     int *value;
+     unsigned int *value;
 { 
 #ifdef VFS
   struct ncstats ncstats;
@@ -741,7 +762,7 @@ vmncstats(offset, value)
     case N_VMNCHLONG:
       *value = nchstats.ncs_long;
       return(BUILD_SUCCESS);
-    case N_VMCHTOTAL:
+    case N_VMNCHTOTAL:
       *value = nchstats.ncs_goodhits + nchstats.ncs_long + 
 	nchstats.ncs_falsehits + nchstats.ncs_miss + nchstats.ncs_badhits;
       return(BUILD_SUCCESS);
@@ -752,6 +773,7 @@ vmncstats(offset, value)
 #endif VFS
 }
 
+#endif /* RSPOS */
 #endif MIT
 
 
