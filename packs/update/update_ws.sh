@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.26 1997-07-04 00:54:34 ghudson Exp $
+# $Id: update_ws.sh,v 1.27 1997-08-01 22:03:04 jweiss Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -85,9 +85,10 @@ esac
 if [ -f "$CONFDIR/rc.conf" ]; then
 	. "$CONFDIR/rc.conf"
 else
-	export PUBLIC AUTOUPDATE
+	export PUBLIC AUTOUPDATE HOST
 	PUBLIC=true
 	AUTOUPDATE=true
+	HOST=`hostname`
 fi
 
 # Make sure /var/athena exists (it was introduced in 8.1.0) so we have a
@@ -119,7 +120,7 @@ rm -f /var/athena/clusterinfo.bsh.update
 # Check if we're already in the middle of an update.
 if [ "$VERSION" = Update -o "$VERSION" = Reboot ]; then
 	if [ ! -f /var/tmp/update.check ]; then
-		logger -t `$HOSTNAME` -p user.notice at revision $VERSION
+		logger -t $HOST -p user.notice at revision $VERSION
 		touch /var/tmp/update.check
 	fi
 
@@ -191,7 +192,7 @@ if [ "$method" = Auto -a "$AUTOUPDATE" != true -a "$PUBLIC" != true ]; then
 	us to do it for you. Thank you.  -Athena Operations
 EOF
 	if [ ! -f /usr/tmp/update.check ]; then
-		logger -t `$HOSTNAME` -p user.notice at revision $VERSION
+		logger -t $HOST -p user.notice at revision $VERSION
 		cp /dev/null /usr/tmp/update.check
 	fi
 
