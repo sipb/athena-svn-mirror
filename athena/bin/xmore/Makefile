@@ -6,7 +6,7 @@
 #     
 #      $Source: /afs/dev.mit.edu/source/repository/athena/bin/xmore/Makefile,v $
 #      $Author: shanzer $
-#      $Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/Makefile,v 1.3 1988-05-23 22:57:13 shanzer Exp $
+#      $Header: /afs/dev.mit.edu/source/repository/athena/bin/xmore/Makefile,v 1.4 1988-05-25 13:14:58 shanzer Exp $
 #      
 #         Copyright 1987, 1988 by the Massachusetts Institute of Technology.
 #     
@@ -27,7 +27,7 @@ LIBDIR=/usr/athena/lib
 
 #The directory to put the manual pages into
 
-MANDIR=/usr/man/man1
+MANDIR=/usr/man
 #The specific section to put xmore's manual page into, can be one of:
 # 0 - 8, n or l (small L).
 MANSECT=1
@@ -53,9 +53,8 @@ ScrollByLine.c: ScrollByLine.c ScrollByLineP.h ScrollByLine.h
 install: ;
 	 strip xmore
 	 cp xmore ${DESTDIR}${INSTDIR}
-	 cp xmore.help ${LIBDIR}
-	 cp xmore.man ${MANDIR}/man${MANSECT}/xmore.${MANSECT}
-	 cp xmore.cat ${MANDIR}/cat${MANSECT}/xmore.${MANSECT}	
+	 cp xmore.help ${DESTDIR}${LIBDIR}
+	 cp xmore.man ${DESTDIR}${MANDIR}/man${MANSECT}/xmore.${MANSECT}
 
 clean: 	;
 	rm -f *~ *.o xmore xmore.shar core xmore.cat
