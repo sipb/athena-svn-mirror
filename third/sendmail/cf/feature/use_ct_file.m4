@@ -1,6 +1,7 @@
 divert(-1)
 #
-# Copyright (c) 1998 Sendmail, Inc.  All rights reserved.
+# Copyright (c) 1998, 1999, 2001 Sendmail, Inc. and its suppliers.
+#	All rights reserved.
 # Copyright (c) 1983 Eric P. Allman.  All rights reserved.
 # Copyright (c) 1988, 1993
 #	The Regents of the University of California.  All rights reserved.
@@ -12,12 +13,11 @@ divert(-1)
 #
 
 divert(0)
-VERSIONID(`@(#)use_ct_file.m4	8.6 (Berkeley) 5/19/1998')
+VERSIONID(`$Id: use_ct_file.m4,v 1.1.1.2 2003-04-08 15:12:30 zacheiss Exp $')
 divert(-1)
 
-# if defined, the sendmail.cf will read the /etc/sendmail.ct file
-# to find the names of trusted users.  There should only be a few
-# of these, and normally this is done directly in the .cf file.
+# if defined, the sendmail.cf will read the /etc/mail/trusted-users file to
+# find the names of trusted users.  There should only be a few of these.
 
 define(`_USE_CT_FILE_', `')
 

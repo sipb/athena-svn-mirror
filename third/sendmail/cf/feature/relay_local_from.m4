@@ -1,6 +1,7 @@
 divert(-1)
 #
-# Copyright (c) 1998 Sendmail, Inc.  All rights reserved.
+# Copyright (c) 1998-1999, 2001 Sendmail, Inc. and its suppliers.
+#	All rights reserved.
 #
 # By using this file, you agree to the terms and conditions set
 # forth in the LICENSE file which can be found at the top level of
@@ -9,7 +10,11 @@ divert(-1)
 #
 
 divert(0)
-VERSIONID(`@(#)relay_local_from.m4	8.2 (Berkeley) 5/19/1998')
+VERSIONID(`$Id: relay_local_from.m4,v 1.1.1.2 2003-04-08 15:11:51 zacheiss Exp $')
 divert(-1)
 
 define(`_RELAY_LOCAL_FROM_', 1)
+errprint(`*** WARNING: FEATURE(`relay_local_from') may cause your system to act as open
+	relay.  Use SMTP AUTH or STARTTLS instead. If you cannot use those,
+	try FEATURE(`relay_mail_from').
+')

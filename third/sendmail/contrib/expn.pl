@@ -12,7 +12,7 @@ use IO::Socket;
 # system requirements:
 # 	must have 'nslookup' and 'hostname' programs.
 
-# $Header: /afs/dev.mit.edu/source/repository/third/sendmail/contrib/expn.pl,v 1.1.1.1 1999-02-23 21:42:19 danw Exp $
+# $OrigHeader: /home/muir/bin/RCS/expn,v 3.11 1997/09/10 08:14:02 muir Exp muir $
 
 # TODO:
 #	less magic should apply to command-line addresses
@@ -1305,7 +1305,7 @@ Finally, the
 debug, flag will expose many of the inner workings so that
 it is possible to eliminate bugs.
 .SH ENVIRONMENT
-No enviroment variables are used.
+No environment variables are used.
 .SH FILES
 .PD 0
 .B /tmp/expn$$

@@ -1,13 +1,23 @@
 /*
+ * Copyright (c) 1999-2001 Sendmail, Inc. and its suppliers.
+ *	All rights reserved.
+ *
+ * By using this file, you agree to the terms and conditions set
+ * forth in the LICENSE file which can be found at the top level of
+ * the sendmail distribution.
+ *
+ */
+
+/*
 **  This program checks to see if your version of seteuid works.
-**  Compile it, make it setuid root, and run it as yourself (NOT as
+**  Compile it, make it set-user-ID root, and run it as yourself (NOT as
 **  root).  If it won't compile or outputs any MAYDAY messages, don't
 **  define USESETEUID in conf.h.
 **
 **	NOTE:  It is not sufficient to have seteuid in your library.
 **	You must also have saved uids that function properly.
 **
-**  Compilation is trivial -- just "cc t_seteuid.c".  Make it setuid,
+**  Compilation is trivial -- just "cc t_seteuid.c".  Make it set-user-ID
 **  root and then execute it as a non-root user.
 */
 
@@ -15,11 +25,27 @@
 #include <unistd.h>
 #include <stdio.h>
 
-#ifdef __hpux
-#define seteuid(e)	setresuid(-1, e, -1)
-#endif
+#ifndef lint
+static char id[] = "@(#)$Id: t_seteuid.c,v 1.1.1.2 2003-04-08 15:06:16 zacheiss Exp $";
+#endif /* ! lint */
 
-main()
+#ifdef __hpux
+# define seteuid(e)	setresuid(-1, e, -1)
+#endif /* __hpux */
+
+static void
+printuids(str, r, e)
+	char *str;
+	uid_t r, e;
+{
+	printf("%s (should be %d/%d): r/euid=%d/%d\n", str, (int) r, (int) e,
+	       (int) getuid(), (int) geteuid());
+}
+
+int
+main(argc, argv)
+	int argc;
+	char **argv;
 {
 	int fail = 0;
 	uid_t realuid = getuid();
@@ -28,7 +54,7 @@ main()
 
 	if (geteuid() != 0)
 	{
-		printf("SETUP ERROR: re-run setuid root\n");
+		printf("SETUP ERROR: re-run set-user-ID root\n");
 		exit(1);
 	}
 
@@ -110,12 +136,4 @@ main()
 
 	printf("\nIt is safe to define USESETEUID on this system\n");
 	exit(0);
-}
-
-printuids(str, r, e)
-	char *str;
-	int r, e;
-{
-	printf("%s (should be %d/%d): r/euid=%d/%d\n", str, r, e,
-		getuid(), geteuid());
 }
