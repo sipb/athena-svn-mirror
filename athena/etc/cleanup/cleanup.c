@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: cleanup.c,v 2.25 1998-03-25 20:25:58 ghudson Exp $";
+static const char rcsid[] = "$Id: cleanup.c,v 2.25.6.1 1999-11-08 20:50:08 tb Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -392,9 +392,9 @@ static uid_t *get_utmp_uids(int *nuids)
    * complicated data structure. */
   while ((utx = getutxent()) != NULL)
     {
-      if (utx->ut_type != USER_PROCESS || utx->ut_name[0] == 0)
+      if (utx->ut_type != USER_PROCESS || utx->ut_user[0] == 0)
 	continue;
-      pwd = getpwnam(utx->ut_name);
+      pwd = getpwnam(utx->ut_user);
       if (!pwd)
 	continue;
       if (n == uids_size)
