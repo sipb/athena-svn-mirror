@@ -516,6 +516,10 @@ pref("network.protocol-handler.expose-all", true);
 // Example: make IMAP an exposed protocol
 // pref("network.protocol-handler.expose.imap", true);
 
+// Athena customization: Use Evolution to handle mailto links.
+pref("network.protocol-handler.app.mailto", "evolution");
+pref("network.protocol-handler.external.mailto", true);
+
 pref("network.hosts.smtp_server",           "mail");
 pref("network.hosts.pop_server",            "mail");
 
