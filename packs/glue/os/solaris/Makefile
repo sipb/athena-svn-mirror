@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.1 1998-12-25 19:33:29 ghudson Exp $
+# $Id: Makefile,v 1.2 2000-04-28 15:19:55 ghudson Exp $
 
 SHELL=/bin/sh
 ATHBINDIR=/usr/athena/bin
@@ -40,8 +40,6 @@ install:
 	ln -s /usr/openwin/bin/xlock ${DESTDIR}${ATHBINDIR}/xlock.real
 	rm -f ${DESTDIR}${ATHBINDIR}/vacation.real
 	ln -s /usr/bin/vacation ${DESTDIR}${ATHBINDIR}/vacation.real
-	rm -f ${DESTDIR}${USRLIBDIR}/cpp
-	ln -s /usr/ccs/lib/cpp ${DESTDIR}${USRLIBDIR}/cpp
 
 clean:
 	rm -f ${ATTACHRUN}
