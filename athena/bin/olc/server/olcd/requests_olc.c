@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *	$Id: requests_olc.c,v 1.27 1990-12-09 17:01:57 lwvanels Exp $
+ *	$Id: requests_olc.c,v 1.28 1990-12-12 15:23:26 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.27 1990-12-09 17:01:57 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.28 1990-12-12 15:23:26 lwvanels Exp $";
 #endif
 #endif
 
@@ -53,10 +53,9 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
  */
 
 ERRCODE
-olc_on(fd, request, auth)
+olc_on(fd, request)
      int fd;			/* File descriptor for socket. */
      REQUEST *request;	        /* Request structure from olcr. */
-     int auth;                  /* indicates if requestor was authenticated */
 {
   KNUCKLE *requester;
   KNUCKLE *target;
@@ -177,7 +176,6 @@ olc_on(fd, request, auth)
  * Function:     olc_create_instance()  creates a new knuckle
  * Arguments:    fd:                    File descriptor socket
  *               request:               The request from olc
- *               auth:                  authentication flag
  * Returns:      PERMISSION_DENIED: 
  *               USER_NOT_FOUND:
  *               ERROR
@@ -190,10 +188,9 @@ olc_on(fd, request, auth)
  */
 
 ERRCODE
-olc_create_instance(fd,request,auth)
+olc_create_instance(fd,request)
      int fd;
      REQUEST *request;
-     int auth;
 {
   KNUCKLE *requester;
   KNUCKLE *target;
@@ -243,11 +240,10 @@ olc_create_instance(fd,request,auth)
 
 
 
-
-olc_get_connected_info(fd,request,auth)
+ERRCODE
+olc_get_connected_info(fd,request)
      int fd;
      REQUEST *request;
-     int auth;
 {
   KNUCKLE *requester;
   KNUCKLE *target;
@@ -292,10 +288,9 @@ olc_get_connected_info(fd,request,auth)
 
 
 ERRCODE
-olc_verify_instance(fd,request,auth)
+olc_verify_instance(fd,request)
      int fd;
      REQUEST *request;
-     int auth;
 {
   KNUCKLE *requester;
   KNUCKLE *target;
@@ -350,10 +345,9 @@ olc_verify_instance(fd,request,auth)
 
 ERRCODE
 
-olc_default_instance(fd,request,auth)
+olc_default_instance(fd,request)
      int fd;
      REQUEST *request;
-     int auth;
 {
   int status;
   int instance;
@@ -371,10 +365,9 @@ olc_default_instance(fd,request,auth)
 
 ERRCODE
 
-olc_who(fd,request,auth)
+olc_who(fd,request)
      int fd;
      REQUEST *request;
-     int auth;
 {
   KNUCKLE *requester;
   KNUCKLE *target;
@@ -487,10 +480,9 @@ olc_who(fd,request,auth)
  */
 
 ERRCODE
-olc_done(fd, request, auth)
+olc_done(fd, request)
      int fd;
      REQUEST *request;
-     int auth;
 {
   KNUCKLE *target;
   KNUCKLE *requester, *consultant;
@@ -655,10 +647,9 @@ olc_done(fd, request, auth)
 
 
 ERRCODE
-olc_cancel(fd, request, auth)
+olc_cancel(fd, request)
      int fd;
      REQUEST *request;
-     int auth;
 {
   KNUCKLE *target;
   KNUCKLE *requester, *consultant;
@@ -825,10 +816,9 @@ olc_cancel(fd, request, auth)
  */
 
 ERRCODE
-olc_ask(fd, request, auth)
+olc_ask(fd, request)
      int fd;
      REQUEST *request;
-     int auth;
 {
   KNUCKLE *target;
   KNUCKLE *requester;
@@ -1000,10 +990,9 @@ olc_ask(fd, request, auth)
  */
 
 ERRCODE
-olc_forward(fd, request,auth)
+olc_forward(fd, request)
      int fd;
      REQUEST *request;
-     int auth;
 {
     KNUCKLE *target, *requester, *consultant;
     char msgbuf[BUF_SIZE];	         /* Message buffer. */
@@ -1157,10 +1146,9 @@ handle_off:
  */
 
 ERRCODE
-olc_off(fd, request, auth)
+olc_off(fd, request)
      int fd;
      REQUEST *request;
-     int auth;
 {
   KNUCKLE *target;
   KNUCKLE *requester;
@@ -1246,10 +1234,9 @@ olc_off(fd, request, auth)
  */
 
 ERRCODE
-olc_send(fd, request, auth)
+olc_send(fd, request)
      int fd;
      REQUEST *request;
-     int auth;
 {
   KNUCKLE    *requester;        /* user making request */
   KNUCKLE    *target;           /* target intermediate connection */
@@ -1395,10 +1382,9 @@ olc_send(fd, request, auth)
  */
 
 ERRCODE
-olc_comment(fd, request, auth)
+olc_comment(fd, request)
      int fd;
      REQUEST *request;
-     int auth;
 {
   KNUCKLE   *requester;	        /* user making request */
   KNUCKLE   *target;	        /* target user */
@@ -1464,10 +1450,9 @@ olc_comment(fd, request, auth)
 
 
 ERRCODE
-olc_describe(fd, request, auth)
+olc_describe(fd, request)
      int fd;
      REQUEST *request;
-     int auth;
 {
   KNUCKLE   *requester;	        /* user making request */
   KNUCKLE   *target;	        /* target user */
@@ -1563,7 +1548,7 @@ olc_describe(fd, request, auth)
  */
 
 ERRCODE
-olc_replay(fd, request, auth)
+olc_replay(fd, request)
      int fd;
      REQUEST *request;
 {
@@ -1644,10 +1629,9 @@ olc_replay(fd, request, auth)
  */
 
 ERRCODE
-olc_show(fd, request, auth)
+olc_show(fd, request)
      int fd;
      REQUEST *request;
-     int auth;
 {
   KNUCKLE *requester;	            /* Current user  making request */
   KNUCKLE *target;
@@ -1741,10 +1725,9 @@ olc_show(fd, request, auth)
 
 
 ERRCODE
-olc_list(fd, request,auth)
+olc_list(fd, request)
      int fd;
      REQUEST *request;
-     int auth;
 {
   KNUCKLE *requester;
   KNUCKLE *target;
@@ -1824,7 +1807,7 @@ olc_list(fd, request,auth)
 	  topicP = &topic_codes[0];
 	}
       	
-      status = list_queue(0,&list,0,topicP,stati,name,&n);
+      status = list_queue(&list,topicP,stati,name,&n);
     }
 
   if(status != SUCCESS)
@@ -1871,10 +1854,9 @@ olc_list(fd, request,auth)
  */
 
 ERRCODE
-olc_topic(fd, request,auth)
+olc_topic(fd, request)
      int fd;
      REQUEST *request;
-     int auth;
 {
   KNUCKLE *requester;
   KNUCKLE *target;
@@ -1919,10 +1901,9 @@ olc_topic(fd, request,auth)
 
 
 ERRCODE
-olc_chtopic(fd, request,auth)
+olc_chtopic(fd, request)
      int fd;
      REQUEST *request;
-     int auth;
 {
   KNUCKLE *requester;
   KNUCKLE *target;
@@ -1999,10 +1980,9 @@ olc_chtopic(fd, request,auth)
 
 
 ERRCODE
-olc_verify_topic(fd, request,auth)
+olc_verify_topic(fd, request)
      int fd;
      REQUEST *request;
-     int auth;
 {
   KNUCKLE *requester;
   KNUCKLE *target;
@@ -2040,10 +2020,9 @@ olc_verify_topic(fd, request,auth)
 
         
 ERRCODE
-olc_list_topics(fd, request,auth)
+olc_list_topics(fd, request)
      int fd;
      REQUEST *request;
-     int auth;
 {
   KNUCKLE *requester;
   int status;
@@ -2073,10 +2052,9 @@ olc_list_topics(fd, request,auth)
 
 
 ERRCODE
-olc_motd(fd, request, auth)
+olc_motd(fd, request)
      int fd;
      REQUEST *request;
-     int auth;
 {
   KNUCKLE *requester;
   int status;
@@ -2119,10 +2097,9 @@ olc_motd(fd, request, auth)
  */
 
 ERRCODE
-olc_mail(fd, request,auth)
+olc_mail(fd, request)
      int fd;
      REQUEST *request;
-     int auth;
 {
   KNUCKLE *requester;
   KNUCKLE *target;
@@ -2207,10 +2184,9 @@ olc_mail(fd, request,auth)
  */
 
 /*RESPONSE*/ ERRCODE
-olc_startup(fd, request, auth)
+olc_startup(fd, request)
      int fd;			/* File descriptor for socket. */
      REQUEST *request;	        /* Request structure from olc. */
-     int auth;
 {
   KNUCKLE *requester;
   char msgbuf[BUF_SIZE];	
@@ -2272,10 +2248,9 @@ olc_startup(fd, request, auth)
  */
 
 ERRCODE
-olc_grab(fd, request,auth)
+olc_grab(fd, request)
      int fd;			 /* File descriptor for socket. */
      REQUEST *request;	         /* Request structure from olc */
-     int auth;
 {
   KNUCKLE    *target;            /* User being grabbed. */
   KNUCKLE    *requester;	 
