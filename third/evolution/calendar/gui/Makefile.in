@@ -1,4 +1,4 @@
-# Makefile.in generated automatically by automake 1.4-p4 from Makefile.am
+# Makefile.in generated automatically by automake 1.4 from Makefile.am
 
 # Copyright (C) 1994, 1995-8, 1999 Free Software Foundation, Inc.
 # This Makefile.in is free software; the Free Software Foundation
@@ -132,8 +132,10 @@ JW = @JW@
 KDE_APPLNK_DIR = @KDE_APPLNK_DIR@
 KRB4_CFLAGS = @KRB4_CFLAGS@
 KRB4_LDFLAGS = @KRB4_LDFLAGS@
+KRB4_LIBS = @KRB4_LIBS@
 KRB5_CFLAGS = @KRB5_CFLAGS@
 KRB5_LDFLAGS = @KRB5_LDFLAGS@
+KRB5_LIBS = @KRB5_LIBS@
 LDAP_CFLAGS = @LDAP_CFLAGS@
 LDAP_LIBS = @LDAP_LIBS@
 LEX = @LEX@
@@ -162,6 +164,7 @@ POSUB = @POSUB@
 PTHREAD_LIB = @PTHREAD_LIB@
 PURIFY = @PURIFY@
 RANLIB = @RANLIB@
+RESOLV_LIBS = @RESOLV_LIBS@
 SCROLLKEEPER_CONFIG = @SCROLLKEEPER_CONFIG@
 SCROLLKEEPER_LOCALSTATE_DIR = @SCROLLKEEPER_LOCALSTATE_DIR@
 SCROLLKEEPER_REQUIRED = @SCROLLKEEPER_REQUIRED@
@@ -222,7 +225,7 @@ etspec_DATA = e-calendar-table.etspec e-meeting-time-sel.etspec
 evolution_calendar_SOURCES =  	$(IDL_GENERATED)				cal-search-bar.c				cal-search-bar.h				calendar-config.c				calendar-config.h				calendar-commands.c				calendar-commands.h				calendar-model.c				calendar-model.h				calendar-offline-handler.c			calendar-offline-handler.h			calendar-view.c					calendar-view.h					calendar-view-factory.c				calendar-view-factory.h				comp-editor-factory.c				comp-editor-factory.h				comp-util.c					comp-util.h					control-factory.c				control-factory.h				component-factory.c				component-factory.h				e-calendar-table.h				e-calendar-table.c				e-cell-date-edit-text.h				e-cell-date-edit-text.c				e-day-view-layout.c				e-day-view-layout.h				e-day-view-main-item.c				e-day-view-main-item.h				e-day-view-time-item.c				e-day-view-time-item.h				e-day-view-top-item.c				e-day-view-top-item.h				e-day-view.c					e-day-view.h					e-itip-control.h				e-itip-control.c				e-meeting-attendee.c				e-meeting-attendee.h				e-meeting-model.c				e-meeting-model.h				e-meeting-time-sel.c				e-meeting-time-sel.h				e-meeting-time-sel-item.c			e-meeting-time-sel-item.h			e-meeting-types.h				e-week-view-event-item.c			e-week-view-event-item.h			e-week-view-layout.c				e-week-view-layout.h				e-week-view-main-item.c				e-week-view-main-item.h				e-week-view-titles-item.c			e-week-view-titles-item.h			e-week-view.c					e-week-view.h					e-tasks.c					e-tasks.h					e-timezone-entry.c				e-timezone-entry.h				gnome-cal.c					gnome-cal.h					goto.c						goto.h						itip-control-factory.c				itip-control-factory.h				itip-utils.c					itip-utils.h					main.c						misc.c						misc.h						print.c						print.h						tag-calendar.c					tag-calendar.h					tasks-control-factory.c				tasks-control-factory.h				tasks-control.c					tasks-control.h					tasks-migrate.c					tasks-migrate.h					weekday-picker.c				weekday-picker.h
 
 
-evolution_calendar_LDADD =  	alarm-notify/libalarm.a									$(DB3_LDADD)										$(top_builddir)/widgets/menus/libmenus.la						$(top_builddir)/shell/libeshell.la							$(top_builddir)/calendar/cal-client/libcal-client.la					$(top_builddir)/calendar/cal-util/libcal-util.la					$(top_builddir)/e-util/libeutil.la							$(top_builddir)/libversit/libversit.la							$(top_builddir)/libical/src/libical/libical-evolution.la				$(top_builddir)/libwombat/libwombat.la							$(top_builddir)/addressbook/backend/ebook/libebook.la					$(top_builddir)/camel/libcamel.la							$(top_builddir)/libibex/libibex.la							$(top_builddir)/libversit/libversit.la							$(top_builddir)/e-util/ename/libename.la						dialogs/libcal-dialogs.a								$(top_builddir)/widgets/e-timezone-dialog/libetimezonedialog.a				$(top_builddir)/widgets/misc/libemiscwidgets.a						$(EXTRA_GNOME_LIBS)									$(BONOBO_HTML_GNOME_LIBS)								$(GNOME_VFS_LIBS)									$(BONOBO_CONF_LIBS)									$(GAL_LIBS)										$(INTLLIBS)
+evolution_calendar_LDADD =  	alarm-notify/libalarm.a									dialogs/libcal-dialogs.a								$(DB3_LDADD)										$(top_builddir)/widgets/menus/libmenus.la						$(top_builddir)/shell/libeshell.la							$(top_builddir)/calendar/cal-client/libcal-client.la					$(top_builddir)/calendar/cal-util/libcal-util.la					$(top_builddir)/e-util/libeutil.la							$(top_builddir)/libversit/libversit.la							$(top_builddir)/widgets/e-timezone-dialog/libetimezonedialog.a				$(top_builddir)/libical/src/libical/libical-evolution.la				$(top_builddir)/libwombat/libwombat.la							$(top_builddir)/addressbook/backend/ebook/libebook.la					$(top_builddir)/camel/libcamel.la							$(top_builddir)/libibex/libibex.la							$(top_builddir)/libversit/libversit.la							$(top_builddir)/e-util/ename/libename.la						$(top_builddir)/widgets/misc/libemiscwidgets.a						$(EXTRA_GNOME_LIBS)									$(BONOBO_HTML_GNOME_LIBS)								$(GNOME_VFS_LIBS)									$(BONOBO_CONF_LIBS)									$(GAL_LIBS)										$(INTLLIBS)
 
 
 evolution_calendar_LDFLAGS = -export-dynamic
@@ -277,19 +280,19 @@ tag-calendar.$(OBJEXT) tasks-control-factory.$(OBJEXT) \
 tasks-control.$(OBJEXT) tasks-migrate.$(OBJEXT) \
 weekday-picker.$(OBJEXT)
 evolution_calendar_DEPENDENCIES =  alarm-notify/libalarm.a \
-$(top_builddir)/widgets/menus/libmenus.la \
+dialogs/libcal-dialogs.a $(top_builddir)/widgets/menus/libmenus.la \
 $(top_builddir)/shell/libeshell.la \
 $(top_builddir)/calendar/cal-client/libcal-client.la \
 $(top_builddir)/calendar/cal-util/libcal-util.la \
 $(top_builddir)/e-util/libeutil.la \
 $(top_builddir)/libversit/libversit.la \
+$(top_builddir)/widgets/e-timezone-dialog/libetimezonedialog.a \
 $(top_builddir)/libical/src/libical/libical-evolution.la \
 $(top_builddir)/libwombat/libwombat.la \
 $(top_builddir)/addressbook/backend/ebook/libebook.la \
 $(top_builddir)/camel/libcamel.la $(top_builddir)/libibex/libibex.la \
 $(top_builddir)/libversit/libversit.la \
-$(top_builddir)/e-util/ename/libename.la dialogs/libcal-dialogs.a \
-$(top_builddir)/widgets/e-timezone-dialog/libetimezonedialog.a \
+$(top_builddir)/e-util/ename/libename.la \
 $(top_builddir)/widgets/misc/libemiscwidgets.a
 CFLAGS = @CFLAGS@
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -303,7 +306,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(evolution_calendar_SOURCES)
 OBJECTS = $(evolution_calendar_OBJECTS)
@@ -564,581 +567,6 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 	$(MAKE) $(AM_MAKEFLAGS) top_distdir="$(top_distdir)" distdir="$(distdir)" dist-hook
-cal-search-bar.o: cal-search-bar.c ../../config.h cal-search-bar.h \
-	../../widgets/misc/e-search-bar.h \
-	../../widgets/misc/e-filter-bar.h ../../filter/rule-context.h \
-	../../filter/filter-part.h ../../filter/filter-input.h \
-	../../filter/filter-element.h ../../filter/filter-rule.h
-calendar-commands.o: calendar-commands.c ../../config.h \
-	../../calendar/cal-util/timeutil.h \
-	../../libical/src/libical/ical.h ../../shell/Evolution.h \
-	calendar-commands.h gnome-cal.h ../../widgets/misc/e-calendar.h \
-	../../widgets/misc/e-calendar-item.h \
-	../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h \
-	e-calendar-table.h ../../widgets/misc/e-cell-date-edit.h \
-	calendar-model.h calendar-config.h \
-	../../widgets/misc/e-dateedit.h goto.h print.h \
-	dialogs/cal-prefs-dialog.h itip-utils.h \
-	../../shell/evolution-shell-component-utils.h
-calendar-config.o: calendar-config.c ../../config.h \
-	../../widgets/e-timezone-dialog/e-timezone-dialog.h \
-	../../calendar/cal-util/timeutil.h \
-	../../libical/src/libical/ical.h component-factory.h \
-	calendar-commands.h gnome-cal.h ../../widgets/misc/e-calendar.h \
-	../../widgets/misc/e-calendar-item.h \
-	../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h \
-	e-calendar-table.h ../../widgets/misc/e-cell-date-edit.h \
-	calendar-model.h e-tasks.h e-cell-date-edit-text.h \
-	calendar-config.h ../../widgets/misc/e-dateedit.h
-calendar-model.o: calendar-model.c ../../config.h \
-	../../e-util/e-time-utils.h ../../calendar/cal-util/timeutil.h \
-	../../libical/src/libical/ical.h calendar-commands.h \
-	gnome-cal.h ../../widgets/misc/e-calendar.h \
-	../../widgets/misc/e-calendar-item.h \
-	../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h \
-	e-calendar-table.h ../../widgets/misc/e-cell-date-edit.h \
-	calendar-model.h calendar-config.h \
-	../../widgets/misc/e-dateedit.h comp-util.h itip-utils.h \
-	../../shell/evolution-activity-client.h \
-	../../shell/evolution-shell-client.h ../../shell/Evolution.h \
-	e-cell-date-edit-text.h misc.h
-calendar-offline-handler.o: calendar-offline-handler.c ../../config.h \
-	../../e-util/e-url.h ../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h \
-	calendar-offline-handler.h ../../shell/Evolution.h
-calendar-view-factory.o: calendar-view-factory.c ../../config.h \
-	calendar-view-factory.h gnome-cal.h \
-	../../widgets/misc/e-calendar.h \
-	../../widgets/misc/e-calendar-item.h \
-	../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h \
-	e-calendar-table.h ../../widgets/misc/e-cell-date-edit.h \
-	calendar-model.h calendar-view.h
-calendar-view.o: calendar-view.c ../../config.h calendar-view.h \
-	gnome-cal.h ../../widgets/misc/e-calendar.h \
-	../../widgets/misc/e-calendar-item.h \
-	../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h \
-	e-calendar-table.h ../../widgets/misc/e-cell-date-edit.h \
-	calendar-model.h
-comp-editor-factory.o: comp-editor-factory.c ../../config.h \
-	../../e-util/e-url.h ../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h \
-	calendar-config.h ../../widgets/misc/e-calendar.h \
-	../../widgets/misc/e-calendar-item.h \
-	../../widgets/misc/e-dateedit.h \
-	../../widgets/misc/e-cell-date-edit.h e-calendar-table.h \
-	calendar-model.h comp-editor-factory.h evolution-calendar.h \
-	comp-util.h dialogs/event-editor.h dialogs/comp-editor.h \
-	dialogs/../itip-utils.h dialogs/comp-editor-page.h \
-	dialogs/task-editor.h
-comp-util.o: comp-util.c ../../config.h calendar-config.h \
-	../../widgets/misc/e-calendar.h \
-	../../widgets/misc/e-calendar-item.h \
-	../../widgets/misc/e-dateedit.h \
-	../../widgets/misc/e-cell-date-edit.h e-calendar-table.h \
-	calendar-model.h ../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h comp-util.h \
-	dialogs/delete-comp.h
-component-factory.o: component-factory.c ../../config.h \
-	../../shell/evolution-shell-component.h ../../shell/Evolution.h \
-	../../shell/evolution-shell-client.h calendar-offline-handler.h \
-	component-factory.h tasks-control-factory.h control-factory.h \
-	calendar-config.h ../../widgets/misc/e-calendar.h \
-	../../widgets/misc/e-calendar-item.h \
-	../../widgets/misc/e-dateedit.h \
-	../../widgets/misc/e-cell-date-edit.h e-calendar-table.h \
-	calendar-model.h ../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h tasks-control.h \
-	tasks-migrate.h
-control-factory.o: control-factory.c ../../config.h \
-	../../calendar/cal-util/timeutil.h \
-	../../libical/src/libical/ical.h gnome-cal.h \
-	../../widgets/misc/e-calendar.h \
-	../../widgets/misc/e-calendar-item.h \
-	../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h \
-	e-calendar-table.h ../../widgets/misc/e-cell-date-edit.h \
-	calendar-model.h calendar-commands.h control-factory.h
-e-calendar-table.o: e-calendar-table.c ../../config.h \
-	../../widgets/misc/e-cell-date-edit.h \
-	../../widgets/misc/e-cell-percent.h e-calendar-table.h \
-	calendar-model.h ../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h \
-	e-cell-date-edit-text.h calendar-config.h \
-	../../widgets/misc/e-calendar.h \
-	../../widgets/misc/e-calendar-item.h \
-	../../widgets/misc/e-dateedit.h dialogs/delete-comp.h \
-	dialogs/task-editor.h dialogs/comp-editor.h \
-	dialogs/../itip-utils.h dialogs/comp-editor-page.h \
-	../../art/task.xpm ../../art/task-recurring.xpm \
-	../../art/task-assigned.xpm ../../art/task-assigned-to.xpm \
-	../../art/check-filled.xpm
-e-cell-date-edit-text.o: e-cell-date-edit-text.c ../../config.h \
-	../../e-util/e-time-utils.h ../../calendar/cal-util/timeutil.h \
-	../../libical/src/libical/ical.h e-cell-date-edit-text.h
-e-day-view-layout.o: e-day-view-layout.c ../../config.h \
-	e-day-view-layout.h e-day-view.h gnome-cal.h \
-	../../widgets/misc/e-calendar.h \
-	../../widgets/misc/e-calendar-item.h \
-	../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h \
-	e-calendar-table.h ../../widgets/misc/e-cell-date-edit.h \
-	calendar-model.h ../../shell/evolution-activity-client.h \
-	../../shell/evolution-shell-client.h ../../shell/Evolution.h
-e-day-view-main-item.o: e-day-view-main-item.c ../../config.h \
-	../../e-util/e-categories-config.h e-day-view-layout.h \
-	e-day-view.h gnome-cal.h ../../widgets/misc/e-calendar.h \
-	../../widgets/misc/e-calendar-item.h \
-	../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h \
-	e-calendar-table.h ../../widgets/misc/e-cell-date-edit.h \
-	calendar-model.h ../../shell/evolution-activity-client.h \
-	../../shell/evolution-shell-client.h ../../shell/Evolution.h \
-	e-day-view-main-item.h
-e-day-view-time-item.o: e-day-view-time-item.c ../../config.h \
-	e-day-view-time-item.h e-day-view.h gnome-cal.h \
-	../../widgets/misc/e-calendar.h \
-	../../widgets/misc/e-calendar-item.h \
-	../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h \
-	e-calendar-table.h ../../widgets/misc/e-cell-date-edit.h \
-	calendar-model.h ../../shell/evolution-activity-client.h \
-	../../shell/evolution-shell-client.h ../../shell/Evolution.h \
-	calendar-config.h ../../widgets/misc/e-dateedit.h
-e-day-view-top-item.o: e-day-view-top-item.c ../../config.h \
-	../../e-util/e-categories-config.h \
-	../../calendar/cal-util/timeutil.h \
-	../../libical/src/libical/ical.h e-day-view-top-item.h \
-	e-day-view.h gnome-cal.h ../../widgets/misc/e-calendar.h \
-	../../widgets/misc/e-calendar-item.h \
-	../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h \
-	e-calendar-table.h ../../widgets/misc/e-cell-date-edit.h \
-	calendar-model.h ../../shell/evolution-activity-client.h \
-	../../shell/evolution-shell-client.h ../../shell/Evolution.h
-e-day-view.o: e-day-view.c ../../config.h e-day-view.h gnome-cal.h \
-	../../widgets/misc/e-calendar.h \
-	../../widgets/misc/e-calendar-item.h \
-	../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h \
-	e-calendar-table.h ../../widgets/misc/e-cell-date-edit.h \
-	calendar-model.h ../../shell/evolution-activity-client.h \
-	../../shell/evolution-shell-client.h ../../shell/Evolution.h \
-	../../calendar/cal-util/timeutil.h dialogs/delete-comp.h \
-	dialogs/send-comp.h comp-util.h itip-utils.h \
-	calendar-commands.h calendar-config.h \
-	../../widgets/misc/e-dateedit.h goto.h e-day-view-time-item.h \
-	e-day-view-top-item.h e-day-view-layout.h \
-	e-day-view-main-item.h misc.h ../../art/bell.xpm \
-	../../art/recur.xpm ../../art/timezone-16.xpm
-e-itip-control.o: e-itip-control.c ../../config.h \
-	../../libical/src/libical/ical.h \
-	../../calendar/cal-util/cal-component.h \
-	../../calendar/cal-util/timeutil.h \
-	../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h \
-	../../e-util/e-time-utils.h ../../e-util/e-dialog-widgets.h \
-	calendar-config.h ../../widgets/misc/e-calendar.h \
-	../../widgets/misc/e-calendar-item.h \
-	../../widgets/misc/e-dateedit.h \
-	../../widgets/misc/e-cell-date-edit.h e-calendar-table.h \
-	calendar-model.h itip-utils.h e-itip-control.h
-e-meeting-attendee.o: e-meeting-attendee.c ../../config.h \
-	e-meeting-attendee.h ../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h e-meeting-types.h
-e-meeting-model.o: e-meeting-model.c ../../config.h \
-	../../addressbook/backend/ebook/e-book.h \
-	../../addressbook/backend/ebook/e-card.h \
-	../../addressbook/backend/ebook/e-card-types.h \
-	../../e-util/e-list.h ../../e-util/e-list-iterator.h \
-	../../e-util/e-iterator.h \
-	../../addressbook/backend/ebook/e-card-cursor.h \
-	../../addressbook/backend/ebook/addressbook.h \
-	../../addressbook/backend/ebook/e-book-view.h \
-	../../addressbook/backend/ebook/e-book-view-listener.h \
-	../../addressbook/backend/ebook/e-book-types.h \
-	../../addressbook/backend/ebook/e-card-simple.h \
-	../../addressbook/backend/ebook/e-destination.h \
-	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/timeutil.h \
-	Evolution-Addressbook-SelectNames.h calendar-config.h \
-	../../widgets/misc/e-calendar.h \
-	../../widgets/misc/e-calendar-item.h \
-	../../widgets/misc/e-dateedit.h \
-	../../widgets/misc/e-cell-date-edit.h e-calendar-table.h \
-	calendar-model.h ../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h itip-utils.h \
-	e-meeting-attendee.h e-meeting-types.h e-meeting-model.h
-e-meeting-time-sel-item.o: e-meeting-time-sel-item.c ../../config.h \
-	calendar-config.h ../../widgets/misc/e-calendar.h \
-	../../widgets/misc/e-calendar-item.h \
-	../../widgets/misc/e-dateedit.h \
-	../../widgets/misc/e-cell-date-edit.h e-calendar-table.h \
-	calendar-model.h ../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h \
-	e-meeting-time-sel-item.h e-meeting-time-sel.h \
-	e-meeting-model.h e-meeting-attendee.h e-meeting-types.h
-e-meeting-time-sel.o: e-meeting-time-sel.c ../../config.h \
-	e-meeting-time-sel.h e-meeting-model.h \
-	../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h \
-	e-meeting-attendee.h e-meeting-types.h \
-	../../widgets/misc/e-dateedit.h component-factory.h \
-	calendar-config.h ../../widgets/misc/e-calendar.h \
-	../../widgets/misc/e-calendar-item.h \
-	../../widgets/misc/e-cell-date-edit.h e-calendar-table.h \
-	calendar-model.h e-meeting-time-sel-item.h
-e-tasks.o: e-tasks.c ../../config.h ../../widgets/menus/gal-view-menus.h \
-	dialogs/task-editor.h dialogs/comp-editor.h \
-	../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h \
-	dialogs/../itip-utils.h dialogs/comp-editor-page.h \
-	cal-search-bar.h ../../widgets/misc/e-search-bar.h \
-	../../widgets/misc/e-filter-bar.h ../../filter/rule-context.h \
-	../../filter/filter-part.h ../../filter/filter-input.h \
-	../../filter/filter-element.h ../../filter/filter-rule.h \
-	calendar-config.h ../../widgets/misc/e-calendar.h \
-	../../widgets/misc/e-calendar-item.h \
-	../../widgets/misc/e-dateedit.h \
-	../../widgets/misc/e-cell-date-edit.h e-calendar-table.h \
-	calendar-model.h component-factory.h e-tasks.h
-e-timezone-entry.o: e-timezone-entry.c ../../config.h \
-	../../widgets/e-timezone-dialog/e-timezone-dialog.h \
-	e-timezone-entry.h ../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h \
-	../../art/timezone-16.xpm
-e-week-view-event-item.o: e-week-view-event-item.c ../../config.h \
-	../../e-util/e-categories-config.h e-week-view-event-item.h \
-	e-week-view.h gnome-cal.h ../../widgets/misc/e-calendar.h \
-	../../widgets/misc/e-calendar-item.h \
-	../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h \
-	e-calendar-table.h ../../widgets/misc/e-cell-date-edit.h \
-	calendar-model.h ../../shell/evolution-activity-client.h \
-	../../shell/evolution-shell-client.h ../../shell/Evolution.h
-e-week-view-layout.o: e-week-view-layout.c ../../config.h \
-	e-week-view-layout.h e-week-view.h gnome-cal.h \
-	../../widgets/misc/e-calendar.h \
-	../../widgets/misc/e-calendar-item.h \
-	../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h \
-	e-calendar-table.h ../../widgets/misc/e-cell-date-edit.h \
-	calendar-model.h ../../shell/evolution-activity-client.h \
-	../../shell/evolution-shell-client.h ../../shell/Evolution.h
-e-week-view-main-item.o: e-week-view-main-item.c ../../config.h \
-	e-week-view-main-item.h e-week-view.h gnome-cal.h \
-	../../widgets/misc/e-calendar.h \
-	../../widgets/misc/e-calendar-item.h \
-	../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h \
-	e-calendar-table.h ../../widgets/misc/e-cell-date-edit.h \
-	calendar-model.h ../../shell/evolution-activity-client.h \
-	../../shell/evolution-shell-client.h ../../shell/Evolution.h
-e-week-view-titles-item.o: e-week-view-titles-item.c ../../config.h \
-	e-week-view-titles-item.h e-week-view.h gnome-cal.h \
-	../../widgets/misc/e-calendar.h \
-	../../widgets/misc/e-calendar-item.h \
-	../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h \
-	e-calendar-table.h ../../widgets/misc/e-cell-date-edit.h \
-	calendar-model.h ../../shell/evolution-activity-client.h \
-	../../shell/evolution-shell-client.h ../../shell/Evolution.h
-e-week-view.o: e-week-view.c ../../config.h e-week-view.h gnome-cal.h \
-	../../widgets/misc/e-calendar.h \
-	../../widgets/misc/e-calendar-item.h \
-	../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h \
-	e-calendar-table.h ../../widgets/misc/e-cell-date-edit.h \
-	calendar-model.h ../../shell/evolution-activity-client.h \
-	../../shell/evolution-shell-client.h ../../shell/Evolution.h \
-	dialogs/delete-comp.h dialogs/send-comp.h comp-util.h \
-	itip-utils.h ../../calendar/cal-util/timeutil.h \
-	calendar-commands.h calendar-config.h \
-	../../widgets/misc/e-dateedit.h goto.h e-week-view-event-item.h \
-	e-week-view-layout.h e-week-view-main-item.h \
-	e-week-view-titles-item.h misc.h ../../art/bell.xpm \
-	../../art/recur.xpm ../../art/timezone-16.xpm \
-	../../art/jump.xpm
-Evolution-Addressbook-SelectNames-common.o: \
-	Evolution-Addressbook-SelectNames-common.c \
-	Evolution-Addressbook-SelectNames.h
-Evolution-Addressbook-SelectNames-skels.o: \
-	Evolution-Addressbook-SelectNames-skels.c \
-	Evolution-Addressbook-SelectNames.h
-Evolution-Addressbook-SelectNames-stubs.o: \
-	Evolution-Addressbook-SelectNames-stubs.c \
-	Evolution-Addressbook-SelectNames.h
-evolution-calendar-common.o: evolution-calendar-common.c \
-	evolution-calendar.h
-evolution-calendar-skels.o: evolution-calendar-skels.c \
-	evolution-calendar.h
-evolution-calendar-stubs.o: evolution-calendar-stubs.c \
-	evolution-calendar.h
-Evolution-Composer-common.o: Evolution-Composer-common.c \
-	Evolution-Composer.h
-Evolution-Composer-skels.o: Evolution-Composer-skels.c \
-	Evolution-Composer.h
-Evolution-Composer-stubs.o: Evolution-Composer-stubs.c \
-	Evolution-Composer.h
-gnome-cal.o: gnome-cal.c ../../config.h ../../e-util/e-url.h \
-	../../calendar/cal-util/timeutil.h \
-	../../libical/src/libical/ical.h \
-	../../widgets/menus/gal-view-menus.h dialogs/event-editor.h \
-	dialogs/comp-editor.h ../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h \
-	dialogs/../itip-utils.h dialogs/comp-editor-page.h \
-	dialogs/task-editor.h comp-util.h e-day-view.h gnome-cal.h \
-	../../widgets/misc/e-calendar.h \
-	../../widgets/misc/e-calendar-item.h e-calendar-table.h \
-	../../widgets/misc/e-cell-date-edit.h calendar-model.h \
-	../../shell/evolution-activity-client.h \
-	../../shell/evolution-shell-client.h ../../shell/Evolution.h \
-	e-week-view.h evolution-calendar.h component-factory.h \
-	cal-search-bar.h ../../widgets/misc/e-search-bar.h \
-	../../widgets/misc/e-filter-bar.h ../../filter/rule-context.h \
-	../../filter/filter-part.h ../../filter/filter-input.h \
-	../../filter/filter-element.h ../../filter/filter-rule.h \
-	calendar-commands.h calendar-config.h \
-	../../widgets/misc/e-dateedit.h calendar-view.h \
-	calendar-view-factory.h tag-calendar.h
-goto.o: goto.c ../../config.h calendar-commands.h gnome-cal.h \
-	../../widgets/misc/e-calendar.h \
-	../../widgets/misc/e-calendar-item.h \
-	../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h \
-	e-calendar-table.h ../../widgets/misc/e-cell-date-edit.h \
-	calendar-model.h calendar-config.h \
-	../../widgets/misc/e-dateedit.h tag-calendar.h goto.h
-itip-control-factory.o: itip-control-factory.c ../../config.h \
-	../../libical/src/libical/ical.h e-itip-control.h \
-	itip-control-factory.h
-itip-utils.o: itip-utils.c ../../config.h \
-	../../libical/src/libical/ical.h Evolution-Composer.h \
-	../../e-util/e-time-utils.h ../../calendar/cal-util/timeutil.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-util/cal-component.h \
-	../../calendar/cal-util/cal-recur.h calendar-config.h \
-	../../widgets/misc/e-calendar.h \
-	../../widgets/misc/e-calendar-item.h \
-	../../widgets/misc/e-dateedit.h \
-	../../widgets/misc/e-cell-date-edit.h e-calendar-table.h \
-	calendar-model.h ../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h itip-utils.h
-main.o: main.c ../../config.h alarm-notify/alarm.h calendar-commands.h \
-	gnome-cal.h ../../widgets/misc/e-calendar.h \
-	../../widgets/misc/e-calendar-item.h \
-	../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h \
-	e-calendar-table.h ../../widgets/misc/e-cell-date-edit.h \
-	calendar-model.h calendar-config.h \
-	../../widgets/misc/e-dateedit.h component-factory.h \
-	comp-editor-factory.h evolution-calendar.h control-factory.h \
-	itip-control-factory.h tasks-control-factory.h
-misc.o: misc.c ../../config.h misc.h
-print.o: print.c ../../config.h ../../e-util/e-dialog-widgets.h \
-	../../e-util/e-time-utils.h ../../calendar/cal-util/timeutil.h \
-	../../libical/src/libical/ical.h calendar-commands.h \
-	gnome-cal.h ../../widgets/misc/e-calendar.h \
-	../../widgets/misc/e-calendar-item.h \
-	../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h \
-	e-calendar-table.h ../../widgets/misc/e-cell-date-edit.h \
-	calendar-model.h calendar-config.h \
-	../../widgets/misc/e-dateedit.h e-day-view.h \
-	../../shell/evolution-activity-client.h \
-	../../shell/evolution-shell-client.h ../../shell/Evolution.h \
-	e-day-view-layout.h e-week-view.h e-week-view-layout.h print.h
-tag-calendar.o: tag-calendar.c ../../config.h \
-	../../calendar/cal-util/timeutil.h \
-	../../libical/src/libical/ical.h calendar-config.h \
-	../../widgets/misc/e-calendar.h \
-	../../widgets/misc/e-calendar-item.h \
-	../../widgets/misc/e-dateedit.h \
-	../../widgets/misc/e-cell-date-edit.h e-calendar-table.h \
-	calendar-model.h ../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h tag-calendar.h
-tasks-control-factory.o: tasks-control-factory.c ../../config.h \
-	tasks-control-factory.h tasks-control.h
-tasks-control.o: tasks-control.c ../../config.h \
-	dialogs/cal-prefs-dialog.h calendar-config.h \
-	../../widgets/misc/e-calendar.h \
-	../../widgets/misc/e-calendar-item.h \
-	../../widgets/misc/e-dateedit.h \
-	../../widgets/misc/e-cell-date-edit.h e-calendar-table.h \
-	calendar-model.h ../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h \
-	calendar-commands.h gnome-cal.h e-tasks.h tasks-control.h \
-	../../shell/evolution-shell-component-utils.h
-tasks-migrate.o: tasks-migrate.c ../../config.h \
-	../../calendar/cal-client/cal-client.h \
-	../../calendar/cal-util/cal-recur.h \
-	../../calendar/cal-util/cal-component.h \
-	../../libical/src/libical/ical.h \
-	../../calendar/cal-util/cal-util.h \
-	../../calendar/cal-client/cal-query.h \
-	../../calendar/cal-client/evolution-calendar.h \
-	component-factory.h tasks-migrate.h
-weekday-picker.o: weekday-picker.c ../../config.h weekday-picker.h
-
 info-am:
 info: info-recursive
 dvi-am:

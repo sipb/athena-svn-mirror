@@ -46,27 +46,27 @@ evolution_addressbook_SOURCES = 	\
 	e-address-popup.c
 
 evolution_addressbook_LDADD =						\
-	select-names/libeselectnames.la					\
-	$(top_builddir)/shell/libeshell.la				\
-	$(EXTRA_GNOME_LIBS)						\
-	$(BONOBO_HTML_GNOME_LIBS)					\
-	$(GNOME_VFS_LIBS)						\
-	$(BONOBO_CONF_LIBS)						\
 	$(top_builddir)/addressbook/gui/widgets/libeminicard.a		\
-	$(top_builddir)/addressbook/backend/ebook/libebook.la		\
 	$(top_builddir)/camel/libcamel.la				\
 	$(top_builddir)/libibex/libibex.la				\
 	$(top_builddir)/e-util/ename/libename.la			\
 	$(top_builddir)/addressbook/gui/contact-list-editor/libecontactlisteditor.a	\
 	$(top_builddir)/addressbook/gui/contact-editor/libecontacteditor.a	\
+	select-names/libeselectnames.la					\
 	$(top_builddir)/libversit/libversit.la				\
 	$(top_builddir)/widgets/misc/libemiscwidgets.a 			\
 	$(top_builddir)/addressbook/printing/libecontactprint.a		\
 	$(top_builddir)/addressbook/gui/search/libeaddressbooksearch.a	\
 	$(top_builddir)/addressbook/gui/merging/libecardmerging.a	\
+	$(top_builddir)/addressbook/backend/ebook/libebook.la		\
 	$(top_builddir)/filter/libfilter.la				\
+	$(top_builddir)/shell/libeshell.la				\
 	$(top_builddir)/e-util/libeutil.la				\
-	$(top_builddir)/widgets/menus/libmenus.la
+	$(top_builddir)/widgets/menus/libmenus.la			\
+	$(EXTRA_GNOME_LIBS)						\
+	$(BONOBO_HTML_GNOME_LIBS)					\
+	$(GNOME_VFS_LIBS)						\
+	$(BONOBO_CONF_LIBS)
 
 evolution_addressbook_LDFLAGS = `gnome-config --libs gdk_pixbuf` -export-dynamic
 
