@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.5 2000-07-30 18:00:54 ghudson Exp $
+# $Id: syncconf.sh,v 1.6 2000-07-31 18:18:57 zacheiss Exp $
 
 rcconf=/etc/athena/rc.conf
 rcsync=/var/athena/rc.conf.sync
@@ -62,26 +62,37 @@ handle()
     remove /etc/hosts.new
     remove /etc/sysconfig/network-scripts/ifcfg-$NETDEV.new
 
-    set -- `/etc/athena/netparams $ADDR`
-    netmask=$1
-    network=$2
-    broadcast=$3
-    gateway=$4
-	
-    append /etc/hosts.new "$ADDR	$HOST"
     append /etc/hosts.new "127.0.0.1	localhost"
 
     append /etc/sysconfig/network.new "NETWORKING=yes"
     append /etc/sysconfig/network.new "FORWARD_IPV4=false"
-    append /etc/sysconfig/network.new "HOSTNAME=$HOST"
-    append /etc/sysconfig/network.new "GATEWAY=$gateway"
 
     append /etc/sysconfig/network-scripts/ifcfg-$NETDEV.new "DEVICE=$NETDEV"
-    append /etc/sysconfig/network-scripts/ifcfg-$NETDEV.new "BOOTPROTO=static"
-    append /etc/sysconfig/network-scripts/ifcfg-$NETDEV.new "IPADDR=$ADDR"
-    append /etc/sysconfig/network-scripts/ifcfg-$NETDEV.new "NETMASK=$netmask"
-    append /etc/sysconfig/network-scripts/ifcfg-$NETDEV.new "NETWORK=$network"
     append /etc/sysconfig/network-scripts/ifcfg-$NETDEV.new "ONBOOT=yes"
+
+    if [ "$ADDR" = dhcp ]; then
+      append /etc/sysconfig/network-scripts/ifcfg-$NETDEV.new \
+	"BOOTPROTO=dhcp"
+    else
+      set -- `/etc/athena/netparams $ADDR`
+      netmask=$1
+      network=$2
+      broadcast=$3
+      gateway=$4
+
+      append /etc/hosts.new "$ADDR      $HOST"
+	
+      append /etc/sysconfig/network.new "HOSTNAME=$HOST"
+      append /etc/sysconfig/network.new "GATEWAY=$gateway"
+
+      append /etc/sysconfig/network-scripts/ifcfg-$NETDEV.new \
+	"BOOTPROTO=static"
+      append /etc/sysconfig/network-scripts/ifcfg-$NETDEV.new "IPADDR=$ADDR"
+      append /etc/sysconfig/network-scripts/ifcfg-$NETDEV.new \
+	"NETMASK=$netmask"
+      append /etc/sysconfig/network-scripts/ifcfg-$NETDEV.new \
+	"NETWORK=$network"
+    fi
 
     update /etc/hosts
     update /etc/sysconfig/network
@@ -100,11 +111,14 @@ handle()
       remove /etc/athena/sendmail.conf
       ;;
     default)
-      case $HOST in
-      *.MIT.EDU|*.mit.edu)
+      case $ADDR,$HOST in
+      dhcp,*)
+        remove /etc/athena/sendmail.conf
+	;;
+      *,*.MIT.EDU|*,*.mit.edu)
 	put /etc/athena/sendmail.conf "relay ATHENA.MIT.EDU"
 	;;
-      *)
+      *,*)
 	remove /etc/athena/sendmail.conf
 	;;
       esac
