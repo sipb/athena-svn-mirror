@@ -235,12 +235,14 @@ fi
 
 for i in $CHANGES; do
   $ECHO "$i \c"
+  if [ $debug = 1 ]; then $ECHO; fi
   handle "$i"
 done
 
 if [ "$DEPENDENCIES" != "" ]; then
   for i in $DEPENDENCIES; do
     $ECHO "($i) \c"
+    if [ $debug = 1 ]; then $ECHO; fi
     handle "$i"
   done
 fi
