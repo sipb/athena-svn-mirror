@@ -1,4 +1,4 @@
-# $Id: packages,v 1.291 2004-10-12 16:39:14 ghudson Exp $
+# $Id: packages,v 1.292 2004-10-14 16:39:53 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -185,6 +185,7 @@ third/gnome-applets		requires gettext,intltool,gtk2,libgnome,libgnomeui,libxklav
 third/gnome-audio
 third/gnome-desktop		requires gettext,intltool,gtk2,libgnomecanvas,libgnomeui,gnome-vfs2,startup-notification
 third/gnome-icon-theme		requires gettext,intltool
+third/gnome-keyring		requires gettext,glib2,gtk2
 third/gnome-libs		requires gtk,imlib,db,ORBit,esound
 third/gnome-mag			requires gettext,intltool,libbonobo,ORBit2,glib2,gtk2,at-spi
 third/gnome-media		requires gettext,intltool,glib2,libgnomeui,esound,scrollkeeper,gail,gstreamer
@@ -237,7 +238,7 @@ third/libgnome			requires gettext,intltool,audiofile,esound,GConf2,glib2,gnome-v
 third/libgnomecanvas		requires gettext,gtk2,libart_lgpl,pango,libglade2,glib2
 third/libgnomeprint		requires gettext,intltool,glib2,libart_lgpl,pango,libxml2,libbonobo,freetype
 third/libgnomeprintui		requires gettext,libgnomeprint,libgnomecanvas,libglade2
-third/libgnomeui		requires gettext,audiofile,esound,jpeg,libgnome,libgnomecanvas,libbonoboui,GConf2,pango,libglade2,popt,gtk2
+third/libgnomeui		requires gettext,audiofile,esound,jpeg,libgnome,libgnomecanvas,libbonoboui,GConf2,pango,libglade2,popt,gtk2,gnome-keyring
 third/libgsf
 third/libgtkhtml		requires gtk2,libxml2,gnome-vfs2,gail
 third/libiconv			except linux
