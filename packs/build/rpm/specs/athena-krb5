@@ -27,7 +27,7 @@ cp athena-version src/appl/athena-version
 # Extra files; see prep/athena-krb5.
 cp krb.conf $RPM_BUILD_ROOT/etc/athena/krb.conf
 cp krb.realms $RPM_BUILD_ROOT/etc/athena/krb.realms
-cp krb5.conf $RPM_BUILD_ROOT/etc
+cp krb5.conf $RPM_BUILD_ROOT/etc/krb5.conf.athena
 cp ftpusers $RPM_BUILD_ROOT/etc
 mkdir -p $RPM_BUILD_ROOT/var/athena/sessions
 
@@ -47,7 +47,14 @@ find $RPM_BUILD_ROOT -type f -or -type l |
   sed -e "s|^$RPM_BUILD_ROOT||" \
       -e "s|^/etc/athena/krb.conf$|%config \0|" \
       -e "s|^/etc/athena/krb.realms$|%config \0|" \
-      -e "s|^/etc/krb5.conf$|%config \0|" \
       -e "s|^/etc/ftpusers$|%config \0|" |
   sort > rpm.filelist
 echo "%dir /var/athena/sessions" >> rpm.filelist
+
+%ifos linux
+%triggerin -- krb5-libs
+%else
+%post
+%endif
+cp -f /etc/krb5.conf /etc/krb5.conf.aside
+cp -f /etc/krb5.conf.athena /etc/krb5.conf
