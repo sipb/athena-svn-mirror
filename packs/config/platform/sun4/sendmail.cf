@@ -2,7 +2,7 @@
 #
 #	SENDMAIL CONFIGURATION FILE
 #
-#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sun4/sendmail.cf,v 1.14 1998-05-26 01:48:24 danw Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/packs/config/platform/sun4/sendmail.cf,v 1.15 1998-06-25 18:39:13 danw Exp $
 #	$Source: /afs/dev.mit.edu/source/repository/packs/config/platform/sun4/sendmail.cf,v $
 #	$Author: danw $
 #
@@ -83,6 +83,8 @@ OH/usr/lib/sendmail.hf
 OI
 # log level
 OL9
+# send message to sender too (only affects local mailing lists)
+Om
 # default messages to old style
 Oo
 # queue directory
