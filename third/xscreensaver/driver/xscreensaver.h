@@ -409,7 +409,6 @@ extern Visual *get_best_gl_visual (saver_screen_info *ssi);
 
 extern Atom XA_VROOT, XA_XSETROOT_ID;
 extern Atom XA_SCREENSAVER, XA_SCREENSAVER_VERSION, XA_SCREENSAVER_ID;
-extern Atom XA_SCREENSAVER_TIME;
 extern Atom XA_SCREENSAVER_STATUS, XA_LOCK, XA_BLANK;
 extern Atom XA_DEMO, XA_PREFS;
 

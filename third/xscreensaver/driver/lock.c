@@ -178,14 +178,14 @@ make_passwd_window (saver_info *si)
 
   /* Find out how long we've actually been screen saved. */
   if (XGetWindowProperty (si->dpy, si->default_screen->screensaver_window,
-                          XA_SCREENSAVER_TIME,
+                          XA_SCREENSAVER_STATUS,
                           0, 1, False, XA_INTEGER,
                           &type, &format, &nitems, &bytesafter,
                           &data) == Success
       && type == XA_INTEGER
       && data)
   {
-    CARD32 time32 = *((CARD32 *)data);
+    CARD32 time32 = ((CARD32 *)data)[1];
     time_t tt = (time_t) time32;
     time_t now = time(NULL);
     pw->idle_time = (now - tt) * 1000;

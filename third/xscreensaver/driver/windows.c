@@ -64,7 +64,6 @@ extern int kill (pid_t, int);		/* signal() is in sys/signal.h... */
 Atom XA_VROOT, XA_XSETROOT_ID;
 Atom XA_SCREENSAVER, XA_SCREENSAVER_VERSION, XA_SCREENSAVER_ID;
 Atom XA_SCREENSAVER_STATUS;
-Atom XA_SCREENSAVER_TIME;
 
 
 extern saver_info *global_si_kludge;	/* I hate C so much... */
@@ -193,7 +192,7 @@ grab_keyboard_and_mouse (saver_info *si, Window window, Cursor cursor)
     fprintf (stderr, "%s: couldn't grab pointer!  (%s)\n",
              blurb(), grab_string(mstatus));
 
-  return (kstatus == GrabSuccess ||
+  return (kstatus == GrabSuccess &&
 	  mstatus == GrabSuccess);
 }
 
@@ -1288,13 +1287,6 @@ blank_screen (saver_info *si)
                                  ? 0
                                  : si->screens[0].cursor));
 
-
-  if (si->using_mit_saver_extension || si->using_sgi_saver_extension)
-    /* If we're using a server extension, then failure to get a grab is
-       not a big deal -- even without the grab, we will still be able
-       to un-blank when there is user activity, since the server will
-       tell us. */
-    ok = True;
 
   if (!ok)
     return False;
