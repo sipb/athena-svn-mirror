@@ -74,10 +74,10 @@ else
 fi
 
 #
-# Start the AFS server processes if a bosserver exists
+# Start the AFS server processes if this is an AFS server
 #
 
-if [ -x /usr/afs/bin/bosserver ]; then
+if [ "$AFSSRV" = true ]; then
 	echo "Starting AFS Server processes"
 	/usr/afs/bin/bosserver &
 	OPTIONS="$OPTIONS -nosettime"
