@@ -78,11 +78,11 @@ VERSION = @VERSION@
 
 bin_PROGRAMS = xalf-capplet
 
-xalf_capplet_SOURCES = xalf-capplet.c
+xalf_capplet_SOURCES = xalf-capplet.c getopt.c getopt1.c
 
 CFLAGS = $(GNOME_CC_CFLAGS)
 
-xalf_capplet_LDFLAGS = $(GNOME_CC_LIBS)
+xalf_capplet_LDADD = $(GNOME_CC_LIBS)
 
 INCLUDES = -I. -I$(srcdir) 					-I$(top_srcdir)/intl -I$(top_builddir)/intl		-DGNOMELOCALEDIR=\""$(datadir)/locale"\"		-I$(includedir) $(GNOME_INCLUDEDIR)			-DGNOMESYSCONFDIR=\""$(sysconfdir)"\"
 
@@ -102,9 +102,9 @@ DEFS = @DEFS@ -I. -I$(srcdir) -I..
 CPPFLAGS = @CPPFLAGS@
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
-xalf_capplet_OBJECTS =  xalf-capplet.o
-xalf_capplet_LDADD = $(LDADD)
+xalf_capplet_OBJECTS =  xalf-capplet.o getopt.o getopt1.o
 xalf_capplet_DEPENDENCIES = 
+xalf_capplet_LDFLAGS = 
 COMPILE = $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)

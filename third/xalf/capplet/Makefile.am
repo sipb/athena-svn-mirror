@@ -1,11 +1,11 @@
 
 bin_PROGRAMS = xalf-capplet
 
-xalf_capplet_SOURCES = xalf-capplet.c
+xalf_capplet_SOURCES = xalf-capplet.c getopt.c getopt1.c
 
 CFLAGS = $(GNOME_CC_CFLAGS)
 
-xalf_capplet_LDFLAGS = $(GNOME_CC_LIBS)
+xalf_capplet_LDADD = $(GNOME_CC_LIBS)
 
 INCLUDES = -I. -I$(srcdir) 				\
 	-I$(top_srcdir)/intl -I$(top_builddir)/intl	\
