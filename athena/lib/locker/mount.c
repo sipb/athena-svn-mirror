@@ -20,6 +20,7 @@
 #include <sys/types.h>
 #include <sys/param.h>
 #include <sys/mount.h>
+#include <sys/stat.h>
 
 #include <sys/wait.h>
 #include <errno.h>
@@ -31,7 +32,7 @@
 #include "locker.h"
 #include "locker_private.h"
 
-static const char rcsid[] = "$Id: mount.c,v 1.2 1999-03-08 14:51:22 ghudson Exp $";
+static const char rcsid[] = "$Id: mount.c,v 1.3 1999-05-19 14:19:49 danw Exp $";
 
 static int domount(locker_context context, int mount,
 		   locker_attachent *at, char **argv);
@@ -56,11 +57,49 @@ int locker__mount(locker_context context, locker_attachent *at,
 int locker__unmount(locker_context context, locker_attachent *at)
 {
   char *argv[3];
+  int status;
 
   argv[0] = UMOUNT_CMD;
   argv[1] = at->mountpoint;
   argv[2] = NULL;
-  return domount(context, 0, at, argv);
+  status = domount(context, 0, at, argv);
+
+  if (status == LOCKER_EDETACH)
+    {
+      /* Check if the detach failed because the filesystem was already
+       * unmounted. (By seeing if the mountpoint directory isn't
+       * there, or if its st_dev matches its parent's st_dev.)
+       */
+      struct stat st1, st2;
+      char *parent, *p;
+
+      if (stat(at->mountpoint, &st1) == -1 && errno == ENOENT)
+	return LOCKER_SUCCESS;
+      parent = strdup(at->mountpoint);
+      if (!parent)
+	return LOCKER_EDETACH;
+
+      p =  strrchr(parent, '/');
+      if (!p)
+	{
+	  free(parent);
+	  return LOCKER_EDETACH;
+	}
+      if (p == parent)
+	p++;
+      *p = '\0';
+      status = stat(parent, &st2);
+      free(parent);
+      if (status == -1)
+	return LOCKER_EDETACH;
+
+      if (st1.st_dev == st2.st_dev)
+	return LOCKER_SUCCESS;
+      else
+	return LOCKER_EDETACH;
+    }
+  else
+    return status;
 }
 
 static int domount(locker_context context, int mount,
@@ -76,7 +115,7 @@ static int domount(locker_context context, int mount,
     {
       locker__error(context, "%s: Could not open pipe for mount: %s.\n",
 		    at->name, strerror(errno));
-      return LOCKER_EATTACH;
+      return mount ? LOCKER_EATTACH : LOCKER_EDETACH;
     }
 
   /* If the liblocker caller has set SIGCHLD's handler to SIG_IGN,
@@ -121,7 +160,7 @@ static int domount(locker_context context, int mount,
 	{
 	  locker__error(context, "%s: Could not fork to exec %s: %s.\n",
 			at->name, argv[0], strerror(errno));
-	  status = LOCKER_EATTACH;
+	  status = mount ? LOCKER_EATTACH : LOCKER_EDETACH;
 	  goto cleanup;
 	}
 
@@ -187,20 +226,20 @@ static int domount(locker_context context, int mount,
     {
       locker__error(context, "%s: %s timed out.\n", at->name,
 		    mount ? "Mount" : "Unmount");
-      status = LOCKER_EATTACH;
+      status = mount ? LOCKER_EATTACH : LOCKER_EDETACH;
     }
   else if (cancel == SIGINT)
     {
       locker__error(context, "%s: %s interrupted by user.\n", at->name,
 		    mount ? "Mount" : "Unmount");
-      status = LOCKER_EATTACH;
+      status = mount ? LOCKER_EATTACH : LOCKER_EDETACH;
     }
   else
     {
       locker__error(context, "%s: %s failed:\n%s", at->name,
 		    mount ? "Mount" : "Unmount",
 		    buf ? buf : "Unknown error.\n");
-      status = LOCKER_EATTACH;
+      status = mount ? LOCKER_EATTACH : LOCKER_EDETACH;
     }
 
 cleanup:
