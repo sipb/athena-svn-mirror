@@ -1,13 +1,7 @@
 #
-# $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/Imakefile,v 1.3 1991-01-18 14:49:58 lwvanels Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/Imakefile,v 1.4 1991-03-04 10:04:01 lwvanels Exp $
 #
-# $Log: not supported by cvs2svn $
-# Revision 1.2  91/01/03  13:05:00  lwvanels
-# DBM not linked into the client
-# 
-# Revision 1.1  90/10/18  05:58:07  lwvanels
-# Initial revision
-# 
+# $Author: lwvanels $ 
 #
 /*#define Profiling*/
 
@@ -20,7 +14,7 @@ SRCS=		olc.c olc_data.c olc_stock.c
 OBJS=		olc.o olc_data.o olc_stock.o
 LOCAL_LIBRARIES= $(PARSER) $(TTY) $(CLIENTLIB) $(COMMONLIB)
 SYS_LIBRARIES=	$(HesiodLib) $(ZephyrLib) $(ComErrLib) $(AclLib) \
-		$(KerberosLib) /** $(CursesLib) **/
+		$(KerberosLib)
 DEPLIBS= $(LOCAL_LIBRARIES)
 
 NormalProgramTarget(olc,$(OBJS),$(LOCAL_LIBRARIES),$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
