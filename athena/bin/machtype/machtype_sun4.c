@@ -2,7 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *    $Id: machtype_sun4.c,v 1.15 1995-11-30 19:33:17 miki Exp $
+ *    $Id: machtype_sun4.c,v 1.16 1996-08-20 19:27:01 cfields Exp $
  *    $Locker:  $
  */
 
@@ -169,15 +169,15 @@ kvm_t *kv;
     /* Print out vendor OS name */
     if (dobosN) {
       if (verbose) {
-     printf("SunOS 5.3\n");
+     printf(OSNAME " " OSVERS "\n");
       } else {
-        printf("SunOS\n");
+        printf(OSNAME "\n");
       }
     }
 
     /* Print out vendor OS version */
     if (dobosV) {
-        printf("5.3\n");
+        printf(OSVERS "\n");
     }
 
     /* Print out Athena System name */
