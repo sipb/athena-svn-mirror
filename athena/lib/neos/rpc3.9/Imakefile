@@ -10,10 +10,10 @@
  *
  */
 
-#if defined(_IBMR2) || defined(sun)
-#define ISUBDIRS rpc
-#else
+#ifdef ultrix
 #define ISUBDIRS rpcgen rpc
+#else
+#define ISUBDIRS rpc
 #endif
 
 clean::
