@@ -263,6 +263,8 @@ int cons_child(cons_state *c, pid_t pid, void *s)
   if (c == NULL || c->pid != pid)
     return 1;
 
+  c->exitStatus = status;
+
   if ((WIFEXITED(status) && WEXITSTATUS(status) == 0) ||
       (WIFSIGNALED(status) && WTERMSIG(status) == SIGKILL))
     cons_cleanup(c, CONS_DOWN);
@@ -270,6 +272,14 @@ int cons_child(cons_state *c, pid_t pid, void *s)
     cons_cleanup(c, CONS_FROZEN);
 
   return 0;
+}
+
+void *cons_exitStatus(cons_state *c)
+{
+  if (c == NULL)
+    return NULL;
+
+  return (void *)&(c->exitStatus);
 }
 
 void cons_close(cons_state *c)
