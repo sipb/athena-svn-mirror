@@ -423,13 +423,8 @@ int esd_audio_open()
     if ( (strcmp(adev.name, "SUNW,CS4231") != 0)
 	&& (strcmp(adev.name, "SUNW,audiots") != 0)
 	&& (strcmp(adev.name, "SUNW,sb16")  != 0)
-<<<<<<< audio_solaris.c
-	&& (strcmp(adev.name, "SUNW,dbri") != 0)
-	&& (strcmp(adev.name, "SUNW,audiots") != 0) )
-=======
 	&& (strcmp(adev.name, "SUNW,sbpro")  != 0)
 	&& (strcmp(adev.name, "SUNW,dbri") != 0)  ) 
->>>>>>> 1.1.1.2
     {
  	fprintf(stderr, "esd: Unknown device `%s', but will try anyway.\n",
 		adev.name);
