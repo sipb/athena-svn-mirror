@@ -8,7 +8,7 @@ if [ -s "$DEADFILES" ]; then
 	echo "Removing outdated files"
 	dead="`cat $DEADFILES`"
 	for i in $dead; do
-		rm -rf $i
+		rm -rf $UPDATE_ROOT/$i
 	done
 fi
 
@@ -35,6 +35,26 @@ if [ -s $LOCALPACKAGES -o -s $LINKPACKAGES ]; then
 		inst $opts -T/os -F /tmp/selections.link -Vskip_rqs:true
 	fi
 
+	# Restore any new config file that inst has replaced.
+	# If inst has copied the file to a .O version, clean it up.
+	# For a public workstation, remove any version file left by
+	# inst (both .N and .O).
+	if [ -s "$CONFCHG" ]; then
+		for i in `cat $CONFCHG`; do
+			if [ -f /srvd$i ]; then
+				rm -rf ${UPDATE_ROOT}$i
+				cp -p /srvd$i ${UPDATE_ROOT}$i
+				if cmp -s ${UPDATE_ROOT}$i ${UPDATE_ROOT}$i.O
+				then
+					rm -f ${UPDATE_ROOT}$i.O
+				fi
+			fi
+			if [ "$PUBLIC" = "true" ]; then
+				rm -rf ${UPDATE_ROOT}$i.[NO]
+			fi
+		done
+	fi
+
 	sh /srvd/install/oschanges --root $UPDATE_ROOT/
 fi
 
@@ -50,8 +70,7 @@ fi
 track -v -F /srvd -T $UPDATE_ROOT/ -d -W /srvd/usr/athena/lib
 rm -f $UPDATE_ROOT/var/athena/rc.conf.sync
 
-# Irix 5.3 only.
-if [ "$NEWUNIX" = true ] ; then
-	echo "Updating kernel"
-	/install/install/update
+if [ "$NEWUNIX" = true -o "$NEWOS" = true ] ; then
+	echo "Building kernel"
+	/srvd/install/buildkernel --root $UPDATE_ROOT/
 fi
