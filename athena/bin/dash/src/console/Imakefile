@@ -28,7 +28,11 @@ SRCS		=	console.c
 OBJS		=	console.o
 
 XJLIB		=	../lib/libXj.a
+#ifdef SOLARIS
+C_LIBS		=	${LOCAL_LIBS} ${XJLIB} ${XLIB} ${M_LIB} /usr/ucblib/libucb.a
+#else
 C_LIBS		=	${LOCAL_LIBS} ${XJLIB} ${XLIB} ${M_LIB}
+#endif
 
 DEFINES         =       ${G_DEFINES}
 
