@@ -18,8 +18,11 @@ agent connections.
 */
 
 /*
- * $Id: sshd.c,v 1.13 1998-05-13 20:18:55 danw Exp $
+ * $Id: sshd.c,v 1.14 1998-06-30 21:10:02 danw Exp $
  * $Log: not supported by cvs2svn $
+ * Revision 1.13  1998/05/13 20:18:55  danw
+ * merge in changes from 1.2.23
+ *
  * Revision 1.12  1998/04/25 23:15:56  ghudson
  * Take advantage of relaxed al_acct_create() contract.
  *
@@ -506,7 +509,7 @@ extern char *setlimits();
 #endif
 
 #ifndef DEFAULT_PATH
-#define DEFAULT_PATH	"/bin/athena:/usr/athena/bin:/bin:/usr/bin:/usr/ucb:/usr/bin/X11:/usr/local/bin"
+#define DEFAULT_PATH	"/bin/athena:/usr/athena/bin:/usr/bsd:/bin:/usr/bin:/usr/ucb:/usr/bin/X11:/usr/local/bin"
 #endif /* DEFAULT_PATH */
 
 #ifndef O_NOCTTY
@@ -3964,6 +3967,24 @@ void do_child(const char *command, struct passwd *pw, const char *term,
   if (auth_get_socket_name() != NULL)
     child_set_env(&env, &envsize, SSH_AUTHSOCKET_ENV_NAME, 
 		  auth_get_socket_name());
+
+  /* Set XAUTHORITY to something safe. (we don't want to put the xauth
+     cookie into AFS.) */
+  if (auth_proto != NULL && auth_data != NULL)
+    {
+      sprintf(buf, "/tmp/xauth-%s-%d", user_name, (int)getpid());
+      if (mkdir(buf, S_IRWXU) == -1)
+	{
+	  fprintf(stderr, "Could not create xauth directory %s: %s\n"
+		  "Disabling X forwarding.\n", buf, strerror(errno));
+	  auth_proto = auth_data = NULL;
+	}
+      else
+	{
+	  strcat(buf, "/Xauthority");
+	  child_set_env(&env, &envsize, "XAUTHORITY", buf);
+	}
+    }      
 
 #ifdef USELOGIN
   if (command != NULL || !options.use_login)
