@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.42 1999-09-20 16:25:12 danw Exp $
+# $Id: do.sh,v 1.43 1999-09-22 00:25:42 danw Exp $
 
 source=/mit/source
 srvd=/afs/dev.mit.edu/system/$ATHENA_SYS/srvd-current
@@ -145,6 +145,13 @@ Linux)
 	;;
 esac
 PATH=$athtoolroot/usr/athena/bin:$PATH
+
+# Determine the Athena version
+. $source/packs/build/version
+ATHENA_MAJOR_VERSION=$major
+ATHENA_MINOR_VERSION=$minor
+ATHENA_PATCH_VERSION=$patch
+export ATHENA_MAJOR_VERSION ATHENA_MINOR_VERSION ATHENA_PATCH_VERSION
 
 # Determine if gmake is available. (It should be, unless this is a
 # full build and we haven't built it yet.)
