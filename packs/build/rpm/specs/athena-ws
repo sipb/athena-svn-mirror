@@ -132,9 +132,9 @@ for cfg in /usr/share/libgnomeprint/*/{models,printers}/*; do
   fi
 done
 
-%triggerin -- kernel
-# /sbin/new-kernel-pkg blew away the single-user boot option.  Put it
-# back.
+%triggerpostun -- kernel
+# With the old kernel out of the way, we can safely create a single-user
+# boot option for what remains.
 cf=/boot/grub/grub.conf
 if [ -f $cf ] && ! grep -qi 'kernel.*single' $cf; then
   cp $cf $cf.new
