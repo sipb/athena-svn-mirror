@@ -1,0 +1,6 @@
+# $Id: Imakefile,v 1.1 1991-07-08 01:01:58 probe Exp $
+
+OBJS       =   gethostnamadr.o hostinfo.o res_query.o
+
+SimpleProgram(hostinfo, ${OBJS}, ,${ATHBINDIR})
+install_man(hostinfo.1,hostinfo.1)
