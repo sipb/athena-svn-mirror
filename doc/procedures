@@ -5,10 +5,9 @@ the use of CVS, it is not a CVS tutorial; read the CVS info pages
 to CVS.  Areas covered in this file are:
 
 	Checking out a working directory
-	Preparing changes for review, and reviewing changes
+	Preparing changes for review
+	Reviewing changes
 	Updating third-party sources
-	When to update the doc/news file
-	When to update the doc/third-party file
 
 You should use cvs from the gnu locker with the source repository.
 People without write access to the repository can use "cvs -u" (a
@@ -33,30 +32,34 @@ CVS knows nothing about AFS permissions, so all directories created
 will have the same permissions as their parent.  It is generally
 safest to do your checkouts in a private area of the filesystem.
 
-Preparing changes for review, and reviewing changes
----------------------------------------------------
+Preparing changes for review
+----------------------------
 
 Changes to the doc hierarchy do not typically need to be reviewed;
 notification is typically good enough, since no software will break as
 a result of changes to the source tree documentation.
 
-Be sure to do a "cvs update" in your working directory to merge in
-changes other people may have made.  (You can do a "cvs -n update" to
-see what changes need to be merged in without actually doing
-anything.)  Be sure to test your changes before submitting them for
-review.
+For changes to other parts of the tree, you should perform the
+following steps while preparing your changes for review:
 
-Prepare your changes with "cvs diff -c" piped to a file.  (Do not cut
-and paste diffs from an xterm; your tabs will be converted to spaces
-and the diffs will not apply properly.)  Use "cvs diff -c -N" if you
-added new files.  Look over your changes; see if you left anything in
-that you meant to take out, and be sure that you haven't been sloppy
-about indentation, spacing, or comments.  Always be consistent with
-nearby code when making changes.  See the file "standards" in this
-directory for more guidelines about changes to the tree.
+	1. Do a "cvs update" in your working directory to merge in
+	   changes other people may have made.  (You can do "cvs -n
+	   update" if you want to see what needs to be merged in
+	   without actually doing the merge.)
 
-Send your diffs, along with a clear description of the change you are
-making, to source-reviewers@mit.edu.
+	2. Be sure to test your changes.
+
+	3. Use "cvs diff -c -N" piped to a file to prepare your
+	   changes.  (Do not cut and paste diffs from an xterm; your
+	   tabs will be converted to spaces.)
+
+	4. Look over your diffs.  Make sure you haven't been sloppy
+	   about spacing, punctuation, and naming, and that you have
+	   tried to conform to the guidelines in the file "standards"
+	   in this directory 
+
+	5. Send your diffs, along with a clear description of the
+	   change you are making, to source-reviewers@mit.edu.
 
 Ideally, at least one person will respond to your mail within a day or
 two, either expressing concerns or signing onto your change.  You
@@ -68,6 +71,14 @@ change.  If after one day, you have received no objections and someone
 has signed onto your change, you may commit your change, noting who
 reviewed it.  If no one responds within five days, you may commit your
 change with the comment that no one reviewed it in five days.
+
+When you check in your change, be sure to include a clear log message.
+Explain why you are making the change you are making if it's not
+obvious.  If you are checking in a significant user-visible change
+(fixing a bug doesn't count), update the doc/news file.
+
+Reviewing changes
+-----------------
 
 When reviewing a change, be sure to make your position on the change
 clear.  Say "I object to this change" if you are not merely voicing a
@@ -100,24 +111,10 @@ Always refer to doc/third-party before doing an import to see if there
 are any special notes on the module you are importing.
 
 Generally, you should only import "clean" third-party source trees
-with no modifications.  If for some reason you need to modify a tree
-before importing it, make a note in the doc/third-party file so that
-people doing future imports will know about it.
-
-When to update the doc/news file
---------------------------------
-
-If you have just committed a change which will result in a significant
-user-visible change to the next release, you should add an item to the
-doc/news file.  A bugfix is not a significant user-visible change;
-items in the news file should be restricted to major changes (such as
-upgrades of third-party software or addition of new functionality) or
-changes which could cause people to complain.  The news file will be
-the primary source of information for the release notes during a
-release cycle.
-
-When to update the doc/third-party file
----------------------------------------
+with no modifications.  If you absolutely need to make changes to the
+source tree before importing it (check with a release engineer before
+deciding that you have to), make a note in the doc/third-party file so
+that people doing future imports will know about it.
 
 If you add a new piece of third-party software or import a new
 version, you should look over doc/third-party and see if any notes
