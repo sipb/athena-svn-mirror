@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_detach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/detach.c,v 1.2 1990-04-19 12:04:37 jfc Exp $";
+static char rcsid_detach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/detach.c,v 1.3 1990-04-19 13:05:18 jfc Exp $";
 #endif lint
 
 #include "attach.h"
@@ -17,7 +17,7 @@ static char rcsid_detach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athe
  */
 
 detach(name)
-    char *name;
+    const char *name;
 {
     struct _attachtab *atp, at;
     int status, bymntpt;
@@ -176,7 +176,7 @@ detach(name)
  * on each one.
  */
 
-detach_all()
+void detach_all()
 {
     struct _attachtab	*atp, *next;
     int tempexp;
@@ -229,8 +229,8 @@ null_detach(at, mopt, errorout)
  * attachtab and call detach on each one.
  */
 
-detach_host(host)
-	char	*host;
+void detach_host(host)
+	const char *host;
 {
 	struct _attachtab	*atp, *next;
 	int tempexp;
