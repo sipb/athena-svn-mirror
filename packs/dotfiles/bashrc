@@ -1,6 +1,6 @@
 # Global bashrc file
 #
-# $Id: bashrc,v 1.29 2003-04-04 17:30:28 ghudson Exp $
+# $Id: bashrc,v 1.30 2003-07-30 18:31:50 ghudson Exp $
 
 # This file is sourced by default user file ~/.bashrc
 
@@ -40,7 +40,7 @@ if [ "${ENV_SET:+set}" != set ]; then
 	sun4)
 		athena_path=/srvd/patch:/usr/athena/bin:/usr/athena/etc
 		athena_path=$athena_path:/bin/athena:/usr/openwin/bin
-		athena_path=$athena_path:/usr/openwin/demo:/usr/bin
+		athena_path=$athena_path:/usr/openwin/demo:/usr/dt/bin:/usr/bin
 		athena_path=$athena_path:/usr/ccs/bin:/usr/sbin:/sbin:/usr/ucb
 		MANPATH=/usr/athena/man:/usr/openwin/man:/usr/dt/man:/usr/man
 		;;
