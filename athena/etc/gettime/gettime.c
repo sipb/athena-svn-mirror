@@ -2,11 +2,11 @@
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v $
  *	$Author: miki $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.9 1992-07-17 15:21:03 miki Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.10 1994-03-31 09:40:14 miki Exp $
  */
 
 #ifndef lint
-static char *rcsid_gettime_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.9 1992-07-17 15:21:03 miki Exp $";
+static char *rcsid_gettime_c = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/gettime.c,v 1.10 1994-03-31 09:40:14 miki Exp $";
 #endif	lint
 
 #include <sys/types.h>
@@ -58,7 +58,9 @@ main(argc, argv)
 #else
 	volatile int attempts = 0;
 #endif
-	
+#ifdef POSIX
+	struct sigaction act;
+#endif	
 	strcpy (hostname, DEFAULT_TIME_SERVER);
 	for (i = 1;i < argc;i++) {
 		if (*argv[i] == '-') {
@@ -91,8 +93,13 @@ main(argc, argv)
 	  exit (2);
 	}
 	sin.sin_family = host->h_addrtype;
+#ifdef POSIX
+	memmove ((caddr_t)&sin.sin_addr, host->h_addr, 
+			host->h_length);
+#else
 	bcopy (host->h_addr, (caddr_t)&sin.sin_addr,
 			host->h_length);
+#endif
 	sin.sin_port = sp->s_port;
 	s = socket(AF_INET, SOCK_DGRAM, 0);
 	if (s < 0) {
@@ -111,7 +118,14 @@ main(argc, argv)
 		exit (10);
 	}
 	alarm(0);
+#ifdef POSIX
+	sigemptyset(&act.sa_mask);
+	act.sa_flags = 0;
+	act.sa_handler= (void (*)()) hiccup;
+	(void) sigaction(SIGALRM, &act, NULL);
+#else
 	signal(SIGALRM, hiccup);
+#endif
 	alarm(5);
 	send (s, buffer, 40, 0); /* Send an empty packet */
 	if (gettimeofday (&tv, &tz) < 0) {
