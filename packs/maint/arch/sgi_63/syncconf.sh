@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.3 1998-03-06 02:50:44 ghudson Exp $
+# $Id: syncconf.sh,v 1.3.2.1 1998-07-05 05:59:00 ghudson Exp $
 
 config=/etc/config
 setconfig="/sbin/chkconfig -f"
@@ -68,7 +68,7 @@ remove()
 
 move()
 {
-	$maybe mv "$1" "$2"
+	$maybe mv -f "$1" "$2"
 }
 
 quiet_move()
@@ -241,6 +241,7 @@ handle()
 		append /etc/hosts "#"
 		append /etc/hosts "127.0.0.1  localhost"
 		append /etc/hosts "$ADDR  $HOST $first"
+		/sbin/nvram netaddr "$ADDR"
 		;;
 
 	*)
