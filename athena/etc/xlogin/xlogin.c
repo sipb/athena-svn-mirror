@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: xlogin.c,v 1.26 2003-05-20 05:15:21 jweiss Exp $";
+static const char rcsid[] = "$Id: xlogin.c,v 1.27 2004-03-27 03:06:18 ghudson Exp $";
  
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -947,7 +947,9 @@ static void loginACT(Widget w, XEvent *event, String *p, Cardinal *n)
 #endif
 
       XWarpPointer(dpy, None, RootWindow(dpy, DefaultScreen(dpy)),
-		   0, 0, 0, 0, 300, 300);
+		   0, 0, 0, 0,
+		   WidthOfScreen(DefaultScreenOfDisplay(dpy)) - 100,
+		   HeightOfScreen(DefaultScreenOfDisplay(dpy)) - 100);
       XFlush(dpy);
       larv_set_busy(1);
       tb.ptr = dologin(loginname, passwd, mode, script, resources.tty,
