@@ -1,5 +1,5 @@
 #
-# $Id: Imakefile,v 1.1 1990-07-24 13:14:07 lwvanels Exp $
+# $Id: Imakefile,v 1.2 1990-08-30 14:19:14 lwvanels Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/lib/olc_help/Imakefile,v $
 #
 
@@ -16,10 +16,10 @@ OBJS=	?.help answers.help ask.help cancel.help \
 	who.help
 
 install::
-	if [ ! -d $(DESTDIR)/usr/athena/lib/olc ]; \
+	-if [ ! -d $(DESTDIR)/usr/athena/lib/olc ]; \
 		then mkdir $(DESTDIR)/usr/athena/lib/olc; \
 		else exit 0; fi
-	if [ ! -d $(DESTDIR)/usr/athena/lib/olc/olc_help ]; \
+	-if [ ! -d $(DESTDIR)/usr/athena/lib/olc/olc_help ]; \
 		then mkdir $(DESTDIR)/usr/athena/lib/olc/olc_help; \
 		else exit 0;fi
 
