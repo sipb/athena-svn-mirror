@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.31 1999-05-20 05:59:42 jweiss Exp $
+# $Id: do-update.sh,v 1.32 1999-09-28 22:10:34 jweiss Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -175,22 +175,25 @@ fi
 
 # We could be more intelligent and shutdown everything, but...
 echo "Shutting down running services"
+if [ -f /var/athena/inetd.pid ]; then
+	kill `cat /var/athena/inetd.pid` > /dev/null 2>&1
+fi
+if [ -f /var/athena/sshd.pid ]; then
+	kill `cat /var/athena/sshd.pid` > /dev/null 2>&1
+fi
+if [ -f /var/athena/named.pid ]; then
+	kill `cat /var/athena/named.pid` > /dev/null 2>&1
+fi
 case "$HOSTTYPE" in
 sgi)
-	killall inetd snmpd syslogd named
+	killall inetd snmpd syslogd
 	;;
 *)
-	if [ -f /var/athena/inetd.pid ]; then
-		kill `cat /var/athena/inetd.pid` > /dev/null 2>&1
-	fi
 	if [ -f /etc/syslog.pid ]; then
 		kill `cat /etc/syslog.pid` > /dev/null 2>&1
 	fi
 	if [ -f /var/athena/snmpd.pid ]; then
 		kill `cat /var/athena/snmpd.pid` > /dev/null 2>&1
-	fi
-	if [ -f /var/athena/named.pid ]; then
-		kill `cat /var/athena/named.pid` > /dev/null 2>&1
 	fi
 	;;
 esac
