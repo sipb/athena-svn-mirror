@@ -1387,7 +1387,7 @@ int rewrite_ccache = 1; /*try to write out ccache*/
 
 		if (username == NULL) {
 			fflag = 0;
-			getloginname();
+			getloginname((cnt == 0) ? 1 : 0);
 		}
 
 		retval = al_login_allowed(username,
@@ -2141,14 +2141,18 @@ term_init (do_rlogin)
 #endif
 }
 
-void getloginname()
+void getloginname(first)
+    int firsttime;
 {
 	register int ch;
 	register char *p;
 	static char nbuf[UT_NAMESIZE + 1];
 
 	for (;;) {
-		printf("login: ");
+		if (!firsttime || getenv("TTYPROMPT") == NULL)
+			printf("login: ");
+		else
+			firsttime = 0;
 		for (p = nbuf; (ch = getchar()) != '\n'; ) {
 			if (ch == EOF)
 				exit(0);
