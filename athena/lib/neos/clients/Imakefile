@@ -1,8 +1,8 @@
 /* 
  * Iakefile for the FX (file exchange) clients
  *
- * $Author: probe $
- * $Id: Imakefile,v 1.2 1991-06-30 15:32:14 probe Exp $
+ * $Author: epeisach $
+ * $Id: Imakefile,v 1.3 1992-04-27 12:39:53 epeisach Exp $
  *
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
@@ -12,21 +12,17 @@
  *
  */
 
+AnsiCC()
+
 CLIENTS = turnin pickup collect uncollect return fxpurge \
 	 fxblanche fxcreate fxdestroy fxls fxping
 
 INCLUDES = -I../lib -I../rpc3.9/usr/include -I../include
-#if defined(_IBMR2)
-LIBS = -L../lib -lfxcl -lhesiod -lkrb -ldes -lcom_err
-#else
-LIBS = -L../lib -L../rpc3.9/usr/lib -lfxcl -lhesiod -lkrb -ldes -lcom_err -lrpclib
-#endif
+LIBS = -L../lib -L../rpc3.9/usr/lib -lfxcl -lhesiod -lkrb -ldes -lcom_err -lfxrpc
 FXOBJS = main.o fx_ct.o fx.o arg.o
 FXSRCS = main.c fx_ct.o fx.c arg.c
 
 DEFINES= ${INCLUDES}
-
-AnsiCC()
 
 .SUFFIXES: .o .h .lint .c .ct
 
