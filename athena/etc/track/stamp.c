@@ -1,8 +1,14 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 4.5 1988-06-10 14:29:57 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 4.7 1988-06-20 18:57:38 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 4.6  88/06/10  15:58:39  don
+ * changed DEV usage to RDEV.
+ * 
+ * Revision 4.5  88/06/10  14:29:57  don
+ * better error-handling on encountering sockets.
+ * 
  * Revision 4.4  88/05/26  13:59:55  don
  * cosmetics in sort_entries(): fixed indentation, and added comments.
  * 
@@ -73,7 +79,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 4.5 1988-06-10 14:29:57 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 4.7 1988-06-20 18:57:38 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -160,10 +166,10 @@ char **path; struct currentness *c;
 		curr1 = 0;
 		break;
 	case S_IFBLK:
-		curr1 = DEV( *s);
+		curr1 = RDEV( *s);
 		break;
 	case S_IFCHR:
-		curr1 = DEV( *s);
+		curr1 = RDEV( *s);
 		break;
 	case S_IFSOCK:
 		sprintf( errmsg, "can't track socket %s.\n", path[ ROOT]);
@@ -308,7 +314,7 @@ sort_entries() {
 
 /*
  * Decode a statfile line into its individual fields.
- * setup TYPE(), UID(), GID(), MODE(), TIME(), & DEV() contents.
+ * setup TYPE(), UID(), GID(), MODE(), TIME(), & RDEV() contents.
  */
 
 char *
@@ -523,7 +529,6 @@ struct currentness *
 dec_entry( entnum, fr, to, cmp, tail)
 int entnum; char *fr[], *to[], *cmp[], *tail; {
         static struct currentness currency_buf, *entry_currency;
-	static int prev_ent = 0;
 	int i;
 	Entry *e;
 	static int xref_flag = 0;
@@ -553,8 +558,7 @@ int entnum; char *fr[], *to[], *cmp[], *tail; {
 	}
 	currency_buf.sbuf.st_mode = S_IFMT;	/* kill short-term data. */
 
-	if (    prev_ent != entnum) {
-		prev_ent =  entnum;
+	if ( ! tail || ! *tail) {
 
 		/* a subtler, longer search would set this flag less often.
 		 */
