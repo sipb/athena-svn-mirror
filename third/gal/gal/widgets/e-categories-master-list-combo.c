@@ -50,16 +50,20 @@ ecmlc_ecml_changed (ECategoriesMasterList *ecml, ECategoriesMasterListCombo *ecm
 {
 	int count = e_categories_master_list_count (ecml);
 	int i;
-	GList *strings = NULL;
-	for (i = 0; i < count; i++) {
-		char *category;
+	GList *strings = NULL, *iter;
 
-		category = e_utf8_to_gtk_string (
-			GTK_WIDGET (ecmlc),
-			e_categories_master_list_nth (ecml, i));
-		strings = g_list_prepend (strings, category);
+	for (i = 0; i < count; i++) {
+		strings = g_list_prepend (strings, (gpointer) e_categories_master_list_nth (ecml, i));
 	}
 	strings = g_list_sort (strings, (GCompareFunc) g_utf8_collate);
+
+	/* Walk through the list and convert utf8 strings to locale */
+	for (iter = strings; iter != NULL; iter = g_list_next (iter)) {
+		/* We don't own the strings returned by e_categories_master_list_nth, so we
+		   don't need to free them. */
+		iter->data = e_utf8_to_gtk_string (GTK_WIDGET (ecmlc), (gchar *) iter->data);
+	}
+
 	strings = g_list_prepend (strings, g_strdup (""));
 	gtk_combo_set_popdown_strings (GTK_COMBO (ecmlc), strings);
 	g_list_foreach (strings, (GFunc) g_free, NULL);

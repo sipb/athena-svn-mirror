@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.1\n"
-"POT-Creation-Date: 2001-11-05 15:43-0500\n"
+"POT-Creation-Date: 2001-11-14 17:29-0500\n"
 "PO-Revision-Date: 2001-07-02 03:18+02:00\n"
 "Last-Translator: Christopher R. Gabriel <cgabriel@softwarelibero.org>\n"
 "Language-Team: Italian <it@li.org>\n"
@@ -168,7 +168,6 @@ msgstr ""
 "dove desiderate inserirla."
 
 #: gal/e-table/e-table-field-chooser-dialog.c:127
-#, fuzzy
 msgid "Add a column..."
 msgstr "Aggiungi una colonna..."
 
@@ -187,26 +186,6 @@ msgstr "Campi disponibili"
 #: gal/e-table/e-table-group.glade.h:4
 msgid "Show in this order"
 msgstr "Mostra in questo ordine"
-
-#: gal/e-table/e-table-group-container.c:349
-#, c-format
-msgid "%s : %s (%d item)"
-msgstr "%s : %s (elemento %d)"
-
-#: gal/e-table/e-table-group-container.c:350
-#, c-format
-msgid "%s : %s (%d items)"
-msgstr "%s : %s (%d elementi)"
-
-#: gal/e-table/e-table-group-container.c:355
-#, c-format
-msgid "%s (%d item)"
-msgstr "%s (elemento %d)"
-
-#: gal/e-table/e-table-group-container.c:356
-#, c-format
-msgid "%s (%d items)"
-msgstr "%s (%d elementi)"
 
 #: gal/e-table/e-table-header-item.c:1294
 msgid "Configuring view: FIXME"
@@ -523,7 +502,7 @@ msgstr "categorie"
 
 #: gal/widgets/e-categories-master-list-array.c:65
 msgid "Birthday"
-msgstr ""
+msgstr "Compleanno"
 
 #: gal/widgets/e-categories-master-list-array.c:66
 msgid "Business"
@@ -644,60 +623,3 @@ msgstr "_Categoria da aggiungere:"
 #: gal/widgets/e-categories-master-list-dialog.glade.h:8
 msgid "_Category to Modify:"
 msgstr "_Categoria da modificare:"
-
-#~ msgid "_Fields..."
-#~ msgstr "_Campi..."
-
-#~ msgid "Unknown"
-#~ msgstr "Sconosciuto"
-
-#~ msgid "Baltic"
-#~ msgstr "Baltico"
-
-#~ msgid "Central European"
-#~ msgstr "Europa Centrale"
-
-#~ msgid "Chinese"
-#~ msgstr "Cinese"
-
-#~ msgid "Cyrillic"
-#~ msgstr "Cirillico"
-
-#~ msgid "Greek"
-#~ msgstr "Greco"
-
-#~ msgid "Japanese"
-#~ msgstr "Giapponese"
-
-#~ msgid "Korean"
-#~ msgstr "Coreano"
-
-#~ msgid "Turkish"
-#~ msgstr "Turco"
-
-#~ msgid "Unicode"
-#~ msgstr "Unicode"
-
-#~ msgid "Western European"
-#~ msgstr "Europa Occidentale"
-
-#~ msgid "Traditional"
-#~ msgstr "Tradizionale"
-
-#~ msgid "Simplified"
-#~ msgstr "Semplificato"
-
-#~ msgid "Ukrainian"
-#~ msgstr "Ucraino"
-
-#~ msgid "New"
-#~ msgstr "Nuovo"
-
-#~ msgid "Unknown character set: %s"
-#~ msgstr "Set di caratteri sconosciuto: %s"
-
-#~ msgid "Enter the character set to use"
-#~ msgstr "Inserire il set di caratteri da utilizzare"
-
-#~ msgid "Other..."
-#~ msgstr "Altro..."

@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.13.99.1\n"
-"POT-Creation-Date: 2001-11-05 15:43-0500\n"
+"POT-Creation-Date: 2001-11-14 17:29-0500\n"
 "PO-Revision-Date: 2001-10-06 20:17+0300\n"
 "Last-Translator: Pauli Virtanen <pauli.virtanen@saunalahti.fi>\n"
 "Language-Team: Finnish <fi@li.org>\n"
@@ -189,26 +189,6 @@ msgstr "Mahdolliset kentät"
 #: gal/e-table/e-table-group.glade.h:4
 msgid "Show in this order"
 msgstr "Näytä tässä järjestyksessä"
-
-#: gal/e-table/e-table-group-container.c:349
-#, c-format
-msgid "%s : %s (%d item)"
-msgstr "%s : %s (%d kohde)"
-
-#: gal/e-table/e-table-group-container.c:350
-#, c-format
-msgid "%s : %s (%d items)"
-msgstr "%s : %s (%d kohdetta)"
-
-#: gal/e-table/e-table-group-container.c:355
-#, c-format
-msgid "%s (%d item)"
-msgstr "%s (%d kohde)"
-
-#: gal/e-table/e-table-group-container.c:356
-#, c-format
-msgid "%s (%d items)"
-msgstr "%s (%d kohdetta)"
 
 #: gal/e-table/e-table-header-item.c:1294
 msgid "Configuring view: FIXME"
@@ -646,3 +626,15 @@ msgstr "_Lisättävä luokka:"
 #: gal/widgets/e-categories-master-list-dialog.glade.h:8
 msgid "_Category to Modify:"
 msgstr "_Muokattava luokka:"
+
+#~ msgid "%s : %s (%d item)"
+#~ msgstr "%s : %s (%d kohde)"
+
+#~ msgid "%s : %s (%d items)"
+#~ msgstr "%s : %s (%d kohdetta)"
+
+#~ msgid "%s (%d item)"
+#~ msgstr "%s (%d kohde)"
+
+#~ msgid "%s (%d items)"
+#~ msgstr "%s (%d kohdetta)"

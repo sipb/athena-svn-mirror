@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.9\n"
-"POT-Creation-Date: 2001-11-05 15:43-0500\n"
-"PO-Revision-Date: 2001-07-13 00:22+0200\n"
+"POT-Creation-Date: 2001-11-14 17:29-0500\n"
+"PO-Revision-Date: 2001-11-09 12:30+0100\n"
 "Last-Translator: Héctor García Álvarez <hector@scouts-es.org>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -40,11 +40,11 @@ msgstr "%a %l:%M %p"
 
 #: gal/e-table/e-cell-date.c:104
 msgid "%b %d %l:%M %p"
-msgstr "%b %d %l:%M %p"
+msgstr "%d %b %l:%M %p"
 
 #: gal/e-table/e-cell-date.c:106
 msgid "%b %d %Y"
-msgstr "%b %d %Y"
+msgstr "%d %b %Y"
 
 #: gal/e-table/e-table-config.c:281 gal/e-table/e-table-config.c:323
 msgid "(Ascending)"
@@ -187,26 +187,6 @@ msgstr "Campos disponibles"
 #: gal/e-table/e-table-group.glade.h:4
 msgid "Show in this order"
 msgstr "Mostrar en este orden"
-
-#: gal/e-table/e-table-group-container.c:349
-#, c-format
-msgid "%s : %s (%d item)"
-msgstr "%s : %s (%d elemento)"
-
-#: gal/e-table/e-table-group-container.c:350
-#, c-format
-msgid "%s : %s (%d items)"
-msgstr "%s : %s (%d elementos)"
-
-#: gal/e-table/e-table-group-container.c:355
-#, c-format
-msgid "%s (%d item)"
-msgstr "%s (%d elemento)"
-
-#: gal/e-table/e-table-group-container.c:356
-#, c-format
-msgid "%s (%d items)"
-msgstr "%s (%d elementos)"
 
 #: gal/e-table/e-table-header-item.c:1294
 msgid "Configuring view: FIXME"
@@ -644,6 +624,18 @@ msgstr "_Categoría a añadir:"
 #: gal/widgets/e-categories-master-list-dialog.glade.h:8
 msgid "_Category to Modify:"
 msgstr "_Categoría a modificar:"
+
+#~ msgid "%s : %s (%d item)"
+#~ msgstr "%s : %s (%d elemento)"
+
+#~ msgid "%s : %s (%d items)"
+#~ msgstr "%s : %s (%d elementos)"
+
+#~ msgid "%s (%d item)"
+#~ msgstr "%s (%d elemento)"
+
+#~ msgid "%s (%d items)"
+#~ msgstr "%s (%d elementos)"
 
 #~ msgid "_Fields..."
 #~ msgstr "_Campos..."

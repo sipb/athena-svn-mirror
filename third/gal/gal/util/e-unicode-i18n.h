@@ -9,7 +9,7 @@ const char *e_utf8_dgettext (const char *domain, const char *string);
 
 #undef U_
 #ifdef GNOME_EXPLICIT_TRANSLATION_DOMAIN
-#	define U_(domain,string) e_utf8_dgettext (domain, string)
+#	define U_(string) e_utf8_dgettext (GNOME_EXPLICIT_TRANSLATION_DOMAIN, string)
 #else 
 #	define U_(string) e_utf8_gettext (string)
 #endif

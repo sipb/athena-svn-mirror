@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.4.99.1 \n"
-"POT-Creation-Date: 2001-11-05 15:43-0500\n"
+"POT-Creation-Date: 2001-11-14 17:29-0500\n"
 "PO-Revision-Date: 2001-01-06 11:16+0900\n"
 "Last-Translator: Young-Ho, Cha <ganadist@chollian.net>\n"
 "Language-Team: Korean <ko@li.org>\n"
@@ -187,26 +187,6 @@ msgstr "이용가능한 필드"
 #: gal/e-table/e-table-group.glade.h:4
 msgid "Show in this order"
 msgstr "이 순서로 보기"
-
-#: gal/e-table/e-table-group-container.c:349
-#, c-format
-msgid "%s : %s (%d item)"
-msgstr ""
-
-#: gal/e-table/e-table-group-container.c:350
-#, c-format
-msgid "%s : %s (%d items)"
-msgstr ""
-
-#: gal/e-table/e-table-group-container.c:355
-#, c-format
-msgid "%s (%d item)"
-msgstr ""
-
-#: gal/e-table/e-table-group-container.c:356
-#, c-format
-msgid "%s (%d items)"
-msgstr ""
 
 #: gal/e-table/e-table-header-item.c:1294
 msgid "Configuring view: FIXME"

@@ -9,7 +9,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.5.99.0\n"
-"POT-Creation-Date: 2001-11-05 15:43-0500\n"
+"POT-Creation-Date: 2001-11-14 17:29-0500\n"
 "PO-Revision-Date: 2001-10-28 19:01GMT\n"
 "Last-Translator: Manuel Borchers <webmaster@matronix.de>\n"
 "Language-Team: German <gnome-de@gnome.org>\n"
@@ -191,26 +191,6 @@ msgstr "Verfügbare Felder"
 #: gal/e-table/e-table-group.glade.h:4
 msgid "Show in this order"
 msgstr "In dieser Reihenfolge anzeigen"
-
-#: gal/e-table/e-table-group-container.c:349
-#, c-format
-msgid "%s : %s (%d item)"
-msgstr "%s : %s (%d Objekt)"
-
-#: gal/e-table/e-table-group-container.c:350
-#, c-format
-msgid "%s : %s (%d items)"
-msgstr "%s : %s (%d Objekte)"
-
-#: gal/e-table/e-table-group-container.c:355
-#, c-format
-msgid "%s (%d item)"
-msgstr "%s (%d Objekt)"
-
-#: gal/e-table/e-table-group-container.c:356
-#, c-format
-msgid "%s (%d items)"
-msgstr "%s (%d Objekte)"
 
 #: gal/e-table/e-table-header-item.c:1294
 msgid "Configuring view: FIXME"
@@ -651,3 +631,15 @@ msgstr "Zu ändernde _Kategorie:"
 
 #~ msgid "label20"
 #~ msgstr "label20"
+
+#~ msgid "%s : %s (%d item)"
+#~ msgstr "%s : %s (%d Objekt)"
+
+#~ msgid "%s : %s (%d items)"
+#~ msgstr "%s : %s (%d Objekte)"
+
+#~ msgid "%s (%d item)"
+#~ msgstr "%s (%d Objekt)"
+
+#~ msgid "%s (%d items)"
+#~ msgstr "%s (%d Objekte)"

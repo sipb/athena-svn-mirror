@@ -1,3 +1,57 @@
+2001-11-14  Christopher James Lahey  <clahey@ximian.com>
+
+	* configure.in (GAL_CURRENT): Bumped version number to 0.18.1.
+
+	* gal/widgets/e-selection-model-array.c
+	(e_selection_model_array_delete_rows): Make sure the cursor row is
+	selected after deleting here.
+
+2001-11-14  Christopher James Lahey  <clahey@ximian.com>
+
+From a patch by Yukihiro Nakai <ynakai@redhat.com>.
+
+	* gal/widgets/e-canvas.c (e_canvas_realize): Handle
+	GDK_IM_PREEDIT_POSITION here.
+
+2001-11-14  Christopher James Lahey  <clahey@ximian.com>
+
+From a patch by Jon Trowbridge  <trow@ximian.com>
+
+	* gal/widgets/e-categories-master-list-combo.c
+	(ecmlc_ecml_changed): Collate based on the utf8 strings instead of
+	the locale strings.  Fixes Ximian bug #14895.
+
+2001-11-12  Zbigniew Chyla  <cyba@gnome.pl>
+
+	gal/unicode/gutf8.c (g_ucs4_to_utf8):
+	s/g_error/utf8_error_msg/ (don't abort on invalid UTF-8).
+
+2001-11-12  Jon Trowbridge  <trow@ximian.com>
+
+	* gal/widgets/e-categories.c (e_categories_init): Removed much of
+	the UI initialization; moved to e_categories_construct.
+	(e_categories_construct): Now contains the UI initialization.
+	Checks to make sure the relevant glade file is found.
+	(e_categories_new): If our construct call failed to properly load
+	the gui, return NULL. (Fixes #14780)
+
+2001-11-06  Zbigniew Chyla  <cyba@gnome.pl>
+
+	* gal/util/e-unicode-i18n.h:
+	Fixed stupid bug (U_ macro should always take one argument).
+
+	* gal/e-table/e-table-group-container.c (compute_text): s/_/U_
+
+2001-11-08  Christopher James Lahey  <clahey@ximian.com>
+
+	* configure.in: Bumped version number to 0.18.0.1.  Bumped
+	revision to 1.
+
+2001-11-08  Jon Trowbridge  <trow@ximian.com>
+
+	* gal/e-text/e-entry.c (full_cb): Only popup entries that have
+	focus.  Fixes the lingering completion popup bug.
+
 2001-11-05  Christopher James Lahey  <clahey@ximian.com>
 
 	* configure.in: Bumped version number to 0.18.

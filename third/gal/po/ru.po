@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version:\n"
-"POT-Creation-Date: 2001-11-05 15:43-0500\n"
+"POT-Creation-Date: 2001-11-14 17:29-0500\n"
 "PO-Revision-Date: 2001-08-07 15:53+0400\n"
 "Last-Translator: Valek Filippov <frob@df.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -184,26 +184,6 @@ msgstr "Доступные поля"
 #: gal/e-table/e-table-group.glade.h:4
 msgid "Show in this order"
 msgstr "Показывать в этом порядке"
-
-#: gal/e-table/e-table-group-container.c:349
-#, c-format
-msgid "%s : %s (%d item)"
-msgstr "%s : %s (%d элемент)"
-
-#: gal/e-table/e-table-group-container.c:350
-#, c-format
-msgid "%s : %s (%d items)"
-msgstr "%s : %s (%d элементов)"
-
-#: gal/e-table/e-table-group-container.c:355
-#, c-format
-msgid "%s (%d item)"
-msgstr "%s (%d элемент)"
-
-#: gal/e-table/e-table-group-container.c:356
-#, c-format
-msgid "%s (%d items)"
-msgstr "%s (%d элементов)"
 
 #: gal/e-table/e-table-header-item.c:1294
 msgid "Configuring view: FIXME"
@@ -647,3 +627,15 @@ msgstr "Категория для изменения:"
 
 #~ msgid "label20"
 #~ msgstr "Метка2"
+
+#~ msgid "%s : %s (%d item)"
+#~ msgstr "%s : %s (%d элемент)"
+
+#~ msgid "%s : %s (%d items)"
+#~ msgstr "%s : %s (%d элементов)"
+
+#~ msgid "%s (%d item)"
+#~ msgstr "%s (%d элемент)"
+
+#~ msgid "%s (%d items)"
+#~ msgstr "%s (%d элементов)"
