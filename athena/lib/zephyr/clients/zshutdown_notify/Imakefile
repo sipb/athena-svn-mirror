@@ -5,12 +5,16 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zshutdown_notify/Imakefile,v $
 /**/#	$Author: jtkohl $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zshutdown_notify/Imakefile,v 1.1 1988-11-14 11:48:23 jtkohl Exp $
+/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zshutdown_notify/Imakefile,v 1.2 1989-03-23 11:20:31 jtkohl Exp $
 /**/#
+
 LIBS= ${ZEPHYR_LIB} ${COMERR_LIB} ${KRB_LIB} ${DES_LIB}
 LINTLIBS= ${ZEPHYR_LINTLIB} ${COMERR_LINTLIB} ${KRB_LINTLIB} ${DES_LINTLIB}
 SRCS = zshutdown_notify.c
 OBJS = zshutdown_notify.o
+
+SRCDIR= ${SRCTOP}/clients/zshutdown_notify
+CODE= ${SRCS} Imakefile
 
 normal_obj_rule()
 

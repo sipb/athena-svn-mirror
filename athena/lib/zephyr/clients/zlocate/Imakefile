@@ -5,12 +5,16 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zlocate/Imakefile,v $
 /**/#	$Author: jtkohl $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zlocate/Imakefile,v 1.1 1988-11-14 11:47:35 jtkohl Exp $
+/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zlocate/Imakefile,v 1.2 1989-03-23 11:17:47 jtkohl Exp $
 /**/#
+
 LIBS= ${ZEPHYR_LIB} ${COMERR_LIB} ${KRB_LIB} ${DES_LIB}
 LINTLIBS= ${ZEPHYR_LINTLIB} ${COMERR_LINTLIB} ${KRB_LINTLIB} ${DES_LINTLIB}
 SRCS = zlocate.c
 OBJS = zlocate.o
+
+SRCDIR= ${SRCTOP}/clients/zlocate
+CODE= ${SRCS} Imakefile
 
 normal_obj_rule()
 

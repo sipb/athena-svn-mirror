@@ -5,14 +5,19 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zmailnotify/Imakefile,v $
 /**/#	$Author: jtkohl $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zmailnotify/Imakefile,v 1.1 1988-11-14 11:48:03 jtkohl Exp $
+/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zmailnotify/Imakefile,v 1.2 1989-03-23 11:18:38 jtkohl Exp $
 /**/#
+
 LIBS= ${ZEPHYR_LIB} ${COMERR_LIB} ${KRB_LIB} ${DES_LIB} ${HES_LIB}
 LINTLIBS= ${ZEPHYR_LINTLIB} ${COMERR_LINTLIB} ${KRB_LINTLIB} ${DES_LINTLIB}
 DEFINES= -DKPOP -DATHENA_COMPAT
 
 SRCS = zmailnotify.c
 OBJS = zmailnotify.o
+
+SRCDIR= ${SRCTOP}/clients/zmailnotify
+CODE= ${SRCS} Imakefile
+
 normal_obj_rule()
 
 program(zmailnotify,${OBJS},,${LIBS},${CLIENTDIR})
