@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.14 1997-04-04 18:02:27 ghudson Exp $
+# $Id: do-update.sh,v 1.15 1997-04-11 20:20:56 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -154,10 +154,6 @@ sgi)
 *)
 	if [ -f /var/athena/inetd.pid ]; then
 		kill `cat /var/athena/inetd.pid` > /dev/null 2>&1
-	fi
-	# 8.0 and prior machines still have /etc/athena/inetd.pid.
-	if [ -f /etc/athena/inetd.pid ]; then
-		kill `cat /etc/athena/inetd.pid` > /dev/null 2>&1
 	fi
 	if [ -f /etc/syslog.pid ]; then
 		kill `cat /etc/syslog.pid` > /dev/null 2>&1
