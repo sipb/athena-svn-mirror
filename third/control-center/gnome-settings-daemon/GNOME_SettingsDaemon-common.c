@@ -9,6 +9,7 @@
 #include "GNOME_SettingsDaemon.h"
 
 static const CORBA_unsigned_long ORBit_zero_int = 0;
+
 #if ( (TC_IMPL_TC_GNOME_SettingsDaemon_0 == 'G') \
 && (TC_IMPL_TC_GNOME_SettingsDaemon_1 == 'N') \
 && (TC_IMPL_TC_GNOME_SettingsDaemon_2 == 'O') \
@@ -31,60 +32,60 @@ static const CORBA_unsigned_long ORBit_zero_int = 0;
 && (TC_IMPL_TC_GNOME_SettingsDaemon_19 == 'n') \
 ) && !defined(TC_DEF_TC_GNOME_SettingsDaemon)
 #define TC_DEF_TC_GNOME_SettingsDaemon 1
-#ifdef ORBIT_IDL_C_IMODULE_GNOME_SettingsDaemon
+#ifdef ORBIT_IDL_C_IMODULE
 static
 #endif
 const struct CORBA_TypeCode_struct TC_GNOME_SettingsDaemon_struct = {
-{&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
-CORBA_tk_objref,
-0,
-0,
-4,
-0,
-0
-,
-NULL,
-CORBA_OBJECT_NIL,
-"SettingsDaemon",
-"IDL:GNOME/SettingsDaemon:1.0",
-NULL,
-NULL,
--1,
-0,
-0, 0
+   {&ORBit_TypeCode_epv, ORBIT_REFCOUNT_STATIC},
+   CORBA_tk_objref,
+   0,
+   0,
+   4,
+   0,
+   0,
+   NULL,
+   CORBA_OBJECT_NIL,
+   "SettingsDaemon",
+   "IDL:GNOME/SettingsDaemon:1.0",
+   NULL,
+   NULL,
+   -1,
+   0,
+   0, 0
 };
 #endif
 
-#ifndef ORBIT_IDL_C_IMODULE_GNOME_SettingsDaemon
+#ifndef ORBIT_IDL_C_IMODULE
 CORBA_unsigned_long GNOME_SettingsDaemon__classid = 0;
 #endif
 
 /* Interface type data */
 
-static ORBit_IArg GNOME_SettingsDaemon_awake__arginfo [] = {
-	{ TC_CORBA_string,  ORBit_I_ARG_IN , "service" }
+static ORBit_IArg GNOME_SettingsDaemon_awake__arginfo[] = {
+   {TC_CORBA_string, ORBit_I_ARG_IN, "service"},
+   {TC_null, 0, NULL}
 };
 
-#ifdef ORBIT_IDL_C_IMODULE_GNOME_SettingsDaemon
+#ifdef ORBIT_IDL_C_IMODULE
 static
 #endif
-ORBit_IMethod GNOME_SettingsDaemon__imethods [] = {
-	{
-		{ 1, 1, GNOME_SettingsDaemon_awake__arginfo, FALSE },
-		{ 0, 0, NULL, FALSE },
-		{ 0, 0, NULL, FALSE },
-		TC_CORBA_boolean, "awake", 5,
-		0| ORBit_I_COMMON_FIXED_SIZE
-}
-};static CORBA_string GNOME_SettingsDaemon__base_itypes[] = {
-"IDL:Bonobo/Unknown:1.0",
-"IDL:omg.org/CORBA/Object:1.0"
+ORBit_IMethod GNOME_SettingsDaemon__imethods[] = {
+   {
+    {2, 2, GNOME_SettingsDaemon_awake__arginfo, FALSE},
+    {0, 0, NULL, FALSE},
+    {0, 0, NULL, FALSE},
+    TC_CORBA_boolean, "awake", 5,
+    0 | ORBit_I_COMMON_FIXED_SIZE}
 };
-#ifdef ORBIT_IDL_C_IMODULE_GNOME_SettingsDaemon
+static CORBA_string GNOME_SettingsDaemon__base_itypes[] = {
+   "IDL:Bonobo/Unknown:1.0",
+   "IDL:omg.org/CORBA/Object:1.0"
+};
+
+#ifdef ORBIT_IDL_C_IMODULE
 static
 #endif
 ORBit_IInterface GNOME_SettingsDaemon__iinterface = {
-TC_GNOME_SettingsDaemon,{1, 1, GNOME_SettingsDaemon__imethods, FALSE},
-{2, 2, GNOME_SettingsDaemon__base_itypes, FALSE}
+   TC_GNOME_SettingsDaemon, {1, 1, GNOME_SettingsDaemon__imethods, FALSE},
+   {2, 2, GNOME_SettingsDaemon__base_itypes, FALSE}
 };
-

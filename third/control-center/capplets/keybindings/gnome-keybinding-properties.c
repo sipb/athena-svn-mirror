@@ -11,7 +11,7 @@
 #include <glade/glade.h>
 #include <X11/Xatom.h>
 
-#include "theme-common.h"
+#include "gnome-theme-info.h"
 #include "wm-common.h"
 #include "capplet-util.h"
 #include "eggcellrendererkeys.h"
@@ -59,6 +59,8 @@ const KeyListEntry metacity_key_list[] =
   { "/apps/metacity/window_keybindings/raise_or_lower",            ALWAYS_VISIBLE,  0 },
   { "/apps/metacity/window_keybindings/raise",                     ALWAYS_VISIBLE,  0 },
   { "/apps/metacity/window_keybindings/lower",                     ALWAYS_VISIBLE,  0 },
+  { "/apps/metacity/window_keybindings/maximize_vertically",       ALWAYS_VISIBLE,  0 },
+  { "/apps/metacity/window_keybindings/maximize_horizontally",     ALWAYS_VISIBLE,  0 },
   { "/apps/metacity/window_keybindings/move_to_workspace_1",       N_WORKSPACES_GT, 1 },
   { "/apps/metacity/window_keybindings/move_to_workspace_2",       N_WORKSPACES_GT, 1 },
   { "/apps/metacity/window_keybindings/move_to_workspace_3",       N_WORKSPACES_GT, 2 },
@@ -192,9 +194,9 @@ create_dialog (void)
 }
 
 static char*
-binding_name (guint            keyval,
+binding_name (guint                   keyval,
               EggVirtualModifierType  mask,
-              gboolean         translate)
+              gboolean                translate)
 {
   if (keyval != 0)
     return egg_virtual_accelerator_name (keyval, mask);
@@ -203,8 +205,8 @@ binding_name (guint            keyval,
 }
 
 static gboolean
-binding_from_string (const char      *str,
-                     guint           *accelerator_key,
+binding_from_string (const char             *str,
+                     guint                  *accelerator_key,
                      EggVirtualModifierType *accelerator_mods)
 {
   g_return_val_if_fail (accelerator_key != NULL, FALSE);
@@ -217,7 +219,7 @@ binding_from_string (const char      *str,
     }
 
   egg_accelerator_parse_virtual (str, accelerator_key, accelerator_mods);
-
+  
   if (*accelerator_key == 0)
     return FALSE;
   else
@@ -385,7 +387,7 @@ clear_old_model (GladeXML  *dialog,
 	      g_free (key_entry->gconf_key);
               g_free (key_entry->description);
 	      g_free (key_entry);
-	    }
+            }
 	}
       g_object_unref (model);
     }
@@ -642,12 +644,12 @@ cb_check_for_uniqueness (GtkTreeModel *model,
 }
 
 static void
-accel_edited_callback (GtkCellRendererText *cell,
-                       const char          *path_string,
-                       guint                keyval,
+accel_edited_callback (GtkCellRendererText   *cell,
+                       const char            *path_string,
+                       guint                  keyval,
                        EggVirtualModifierType mask,
-		       guint                keycode,
-                       gpointer             data)
+		       guint                  keycode,
+                       gpointer               data)
 {
   GtkTreeView *view = (GtkTreeView *)data;
   GtkTreeModel *model;
@@ -678,7 +680,7 @@ accel_edited_callback (GtkCellRendererText *cell,
   tmp_key.editable = TRUE; /* kludge to stuff in a return flag */
 
   if (keyval != 0) /* any number of keys can be disabled */
-  gtk_tree_model_foreach (model, cb_check_for_uniqueness, &tmp_key);
+    gtk_tree_model_foreach (model, cb_check_for_uniqueness, &tmp_key);
 
   /* flag to see if the new accelerator was in use by something */
   if (!tmp_key.editable)
@@ -688,13 +690,15 @@ accel_edited_callback (GtkCellRendererText *cell,
 
       name = egg_virtual_accelerator_name (keyval, mask);
       
-      dialog = gtk_message_dialog_new (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (view))),
-				       GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
-				       GTK_MESSAGE_WARNING,
-				       GTK_BUTTONS_OK,
-				       _("That accelerator key is already in use by: %s\n"),
-				       tmp_key.description ?
-				       tmp_key.description : tmp_key.gconf_key);
+      dialog =
+        gtk_message_dialog_new (GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (view))),
+                                GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
+                                GTK_MESSAGE_WARNING,
+                                GTK_BUTTONS_OK,
+                                _("The shortcut \"%s\" is already used for:\n \"%s\"\n"),
+                                name,
+                                tmp_key.description ?
+                                tmp_key.description : tmp_key.gconf_key);
       g_free (name);
       gtk_dialog_run (GTK_DIALOG (dialog));
       gtk_widget_destroy (dialog);
@@ -748,13 +752,13 @@ theme_changed_func (gpointer  uri,
   GList *list;
 
   client = gconf_client_get_default ();
-  key_theme_list = theme_common_get_list ();
+  key_theme_list = gnome_theme_info_find_by_type (GNOME_THEME_GTK_2_KEYBINDING);
 
   omenu = WID ("key_theme_omenu");
   menu = gtk_menu_new ();
   for (list = key_theme_list; list; list = list->next)
     {
-      ThemeInfo *info = list->data;
+      GnomeThemeInfo *info = list->data;
 
       if (! info->has_keybinding)
 	continue;
@@ -856,11 +860,11 @@ setup_dialog (GladeXML *dialog)
 
   client = gconf_client_get_default ();
 
-  key_theme_list = theme_common_get_list ();
+  key_theme_list = gnome_theme_info_find_by_type (GNOME_THEME_GTK_2_KEYBINDING);
 
   for (list = key_theme_list; list; list = list->next)
     {
-      ThemeInfo *info = list->data;
+      GnomeThemeInfo *info = list->data;
       if (info->has_keybinding)
 	{
 	  found_keys = TRUE;
@@ -882,7 +886,7 @@ setup_dialog (GladeXML *dialog)
   else
     {
       theme_changed_func (NULL, dialog);
-      theme_common_register_theme_change ((GFunc) theme_changed_func, dialog);
+      gnome_theme_info_register_theme_change ((GFunc) theme_changed_func, dialog);
       gconf_client_add_dir (client, "/desktop/gnome/interface", GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
       gconf_client_notify_add (client,
 			       KEY_THEME_KEY,
@@ -899,11 +903,11 @@ setup_dialog (GladeXML *dialog)
 						     gtk_cell_renderer_text_new (),
 						     "text", DESCRIPTION_COLUMN,
 						     NULL);
-  gtk_tree_view_column_set_resizable (column, TRUE);
+  gtk_tree_view_column_set_resizable (column, FALSE);
 
   gtk_tree_view_append_column (GTK_TREE_VIEW (WID ("shortcut_treeview")), column);
   gtk_tree_view_column_set_sort_column_id (column, DESCRIPTION_COLUMN);  
-
+  
   renderer = (GtkCellRenderer *) g_object_new (EGG_TYPE_CELL_RENDERER_KEYS,
 					       "editable", TRUE,
 					       "accel_mode", EGG_CELL_RENDERER_KEYS_MODE_X,
@@ -916,12 +920,12 @@ setup_dialog (GladeXML *dialog)
 
   column = gtk_tree_view_column_new_with_attributes (_("Shortcut"), renderer, NULL);
   gtk_tree_view_column_set_cell_data_func (column, renderer, accel_set_func, NULL, NULL);
-  gtk_tree_view_column_set_resizable (column, TRUE);
+  gtk_tree_view_column_set_resizable (column, FALSE);
 
   gtk_tree_view_append_column (GTK_TREE_VIEW (WID ("shortcut_treeview")), column);
   /* N_COLUMNS is just a place to stick the extra sort function */
   gtk_tree_view_column_set_sort_column_id (column, N_COLUMNS); 
-
+  
   gconf_client_add_dir (client, "/apps/gnome_keybinding_properties", GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
   gconf_client_add_dir (client, "/apps/metacity/general", GCONF_CLIENT_PRELOAD_ONELEVEL, NULL);
   gconf_client_notify_add (client,
@@ -954,6 +958,8 @@ main (int argc, char *argv[])
   gnome_program_init ("gnome-keybinding-properties", VERSION, LIBGNOMEUI_MODULE, argc, argv,
 		      GNOME_PARAM_APP_DATADIR, GNOMECC_DATA_DIR,
 		      NULL);
+
+  gnome_theme_init (NULL);
 
   activate_settings_daemon ();
 

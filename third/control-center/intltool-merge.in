@@ -226,7 +226,7 @@ sub gather_po_files
 sub get_local_charset
 {
     my ($encoding) = @_;
-    my $alias_file = $ENV{"G_CHARSET_ALIAS"} || "/local/gnome20/test/lib/charset.alias";
+    my $alias_file = $ENV{"G_CHARSET_ALIAS"} || "/opt/gnome22/lib/charset.alias";
 
     # seek character encoding aliases in charset.alias (glib)
 
@@ -461,7 +461,7 @@ sub entity_encode
 {
     my ($pre_encoded) = @_;
 
-    my @list_of_chars = unpack ('U*', $pre_encoded);
+    my @list_of_chars = unpack ('C*', $pre_encoded);
 
     if ($PASS_THROUGH_ARG) 
     {

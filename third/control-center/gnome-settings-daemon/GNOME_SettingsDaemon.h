@@ -9,9 +9,9 @@
 #include <orbit/orbit-types.h>
 
 #ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
+extern "C"
+{
+#endif				/* __cplusplus */
 
 /** typedefs **/
 #include <bonobo/Bonobo.h>
@@ -19,8 +19,8 @@ extern "C" {
 #define ORBIT_DECL_GNOME_SettingsDaemon 1
 #define _GNOME_SettingsDaemon_defined 1
 #define GNOME_SettingsDaemon__freekids CORBA_Object__freekids
-typedef CORBA_Object GNOME_SettingsDaemon;
-extern CORBA_unsigned_long GNOME_SettingsDaemon__classid;
+   typedef CORBA_Object GNOME_SettingsDaemon;
+   extern CORBA_unsigned_long GNOME_SettingsDaemon__classid;
 #if !defined(TC_IMPL_TC_GNOME_SettingsDaemon_0)
 #define TC_IMPL_TC_GNOME_SettingsDaemon_0 'G'
 #define TC_IMPL_TC_GNOME_SettingsDaemon_1 'N'
@@ -42,12 +42,12 @@ extern CORBA_unsigned_long GNOME_SettingsDaemon__classid;
 #define TC_IMPL_TC_GNOME_SettingsDaemon_17 'm'
 #define TC_IMPL_TC_GNOME_SettingsDaemon_18 'o'
 #define TC_IMPL_TC_GNOME_SettingsDaemon_19 'n'
-#ifdef ORBIT_IDL_C_IMODULE_GNOME_SettingsDaemon
-static
+#ifdef ORBIT_IDL_C_IMODULE
+   static
 #else
-extern
+   extern
 #endif
-const struct CORBA_TypeCode_struct TC_GNOME_SettingsDaemon_struct;
+   const struct CORBA_TypeCode_struct TC_GNOME_SettingsDaemon_struct;
 #define TC_GNOME_SettingsDaemon ((CORBA_TypeCode)&TC_GNOME_SettingsDaemon_struct)
 #endif
 #endif
@@ -55,53 +55,79 @@ const struct CORBA_TypeCode_struct TC_GNOME_SettingsDaemon_struct;
 /** POA structures **/
 #ifndef _defined_POA_GNOME_SettingsDaemon
 #define _defined_POA_GNOME_SettingsDaemon 1
-typedef struct {
-  void *_private;
-CORBA_boolean (*awake)(PortableServer_Servant _servant, const CORBA_char * service, CORBA_Environment *ev);
-} POA_GNOME_SettingsDaemon__epv;
-typedef struct {
-  PortableServer_ServantBase__epv *_base_epv;
-  POA_Bonobo_Unknown__epv *Bonobo_Unknown_epv;
-  POA_GNOME_SettingsDaemon__epv *GNOME_SettingsDaemon_epv;
-} POA_GNOME_SettingsDaemon__vepv;
-typedef struct {
-  void *_private;
-  POA_GNOME_SettingsDaemon__vepv *vepv;
-} POA_GNOME_SettingsDaemon;
-extern void POA_GNOME_SettingsDaemon__init(PortableServer_Servant servant, CORBA_Environment *ev);
-extern void POA_GNOME_SettingsDaemon__fini(PortableServer_Servant servant, CORBA_Environment *ev);
-#endif /* _defined_POA_GNOME_SettingsDaemon */
+   typedef struct
+   {
+      void *_private;
+       CORBA_boolean(*awake) (PortableServer_Servant _servant,
+			      const CORBA_char * service,
+			      CORBA_Environment * ev);
+   }
+   POA_GNOME_SettingsDaemon__epv;
+   typedef struct
+   {
+      PortableServer_ServantBase__epv *_base_epv;
+      POA_Bonobo_Unknown__epv *Bonobo_Unknown_epv;
+      POA_GNOME_SettingsDaemon__epv *GNOME_SettingsDaemon_epv;
+   }
+   POA_GNOME_SettingsDaemon__vepv;
+   typedef struct
+   {
+      void *_private;
+      POA_GNOME_SettingsDaemon__vepv *vepv;
+   }
+   POA_GNOME_SettingsDaemon;
+   extern void POA_GNOME_SettingsDaemon__init(PortableServer_Servant servant,
+					      CORBA_Environment * ev);
+   extern void POA_GNOME_SettingsDaemon__fini(PortableServer_Servant servant,
+					      CORBA_Environment * ev);
+#endif				/* _defined_POA_GNOME_SettingsDaemon */
 
 /** skel prototypes **/
-void _ORBIT_skel_small_GNOME_SettingsDaemon_awake(POA_GNOME_SettingsDaemon *_ORBIT_servant, gpointer _ORBIT_retval, gpointer *_ORBIT_args, CORBA_Context ctx,CORBA_Environment *ev, CORBA_boolean (*_impl_awake)(PortableServer_Servant _servant, const CORBA_char * service, CORBA_Environment *ev));
+   void _ORBIT_skel_small_GNOME_SettingsDaemon_awake(POA_GNOME_SettingsDaemon
+						     * _ORBIT_servant,
+						     gpointer _ORBIT_retval,
+						     gpointer * _ORBIT_args,
+						     CORBA_Context ctx,
+						     CORBA_Environment * ev,
+						     CORBA_boolean
+						     (*_impl_awake)
+						     (PortableServer_Servant
+						      _servant,
+						      const CORBA_char *
+						      service,
+						      CORBA_Environment *
+						      ev));
 
 /** stub prototypes **/
 #define GNOME_SettingsDaemon_ref Bonobo_Unknown_ref
 #define GNOME_SettingsDaemon_unref Bonobo_Unknown_unref
 #define GNOME_SettingsDaemon_queryInterface Bonobo_Unknown_queryInterface
-CORBA_boolean GNOME_SettingsDaemon_awake(GNOME_SettingsDaemon _obj, const CORBA_char * service, CORBA_Environment *ev);
+   CORBA_boolean GNOME_SettingsDaemon_awake(GNOME_SettingsDaemon _obj,
+					    const CORBA_char * service,
+					    CORBA_Environment * ev);
 #include <orbit/orb-core/orbit-interface.h>
 
-#ifdef ORBIT_IDL_C_IMODULE_GNOME_SettingsDaemon
-static 
+#ifdef ORBIT_IDL_C_IMODULE
+   static
 #else
-extern 
+   extern
 #endif
-ORBit_IInterface GNOME_SettingsDaemon__iinterface;
+   ORBit_IInterface GNOME_SettingsDaemon__iinterface;
 #define GNOME_SettingsDaemon_IMETHODS_LEN 1
-#ifdef ORBIT_IDL_C_IMODULE_GNOME_SettingsDaemon
-static 
+#ifdef ORBIT_IDL_C_IMODULE
+   static
 #else
-extern 
+   extern
 #endif
-ORBit_IMethod GNOME_SettingsDaemon__imethods[GNOME_SettingsDaemon_IMETHODS_LEN];
+   ORBit_IMethod
+      GNOME_SettingsDaemon__imethods[GNOME_SettingsDaemon_IMETHODS_LEN];
 #ifdef __cplusplus
 }
-#endif /* __cplusplus */
+#endif				/* __cplusplus */
 
 #ifndef EXCLUDE_ORBIT_H
 #include <orbit/orbit.h>
 
-#endif /* EXCLUDE_ORBIT_H */
+#endif				/* EXCLUDE_ORBIT_H */
 #endif
 #undef ORBIT_IDL_SERIAL

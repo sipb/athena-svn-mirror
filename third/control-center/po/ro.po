@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 2.0.1-1\n"
-"POT-Creation-Date: 2002-12-19 10:01-0500\n"
+"POT-Creation-Date: 2003-01-10 10:20-0500\n"
 "PO-Revision-Date: 2002-09-05 16:53+0300\n"
 "Last-Translator: Mugurel Tudor <mugurelu@go.ro>\n"
 "Language-Team: română <ro@li.org>\n"
@@ -15,19 +15,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.6\n"
 
-#: capplets/accessibility/keyboard/accessibility-keyboard.c:229
-#: capplets/keyboard/gnome-keyboard-properties.c:159
-#, c-format
-msgid "There was an error launching the keyboard capplet : %s"
+#: capplets/accessibility/keyboard/accessibility-keyboard.c:238
+#, fuzzy, c-format
+msgid "There was an error launching the mouse preferences dialog: %s"
 msgstr "A intervenit o eroare la lansarea capplet tastatură: %s"
 
-#: capplets/accessibility/keyboard/accessibility-keyboard.c:321
-#: capplets/accessibility/keyboard/accessibility-keyboard.c:379
+#: capplets/accessibility/keyboard/accessibility-keyboard.c:334
+#: capplets/accessibility/keyboard/accessibility-keyboard.c:392
 #, c-format
 msgid "Unable to import AccessX settings from file '%s'"
 msgstr "Nu am putut importa setările AccessX din fişierul '%s'"
 
-#: capplets/accessibility/keyboard/accessibility-keyboard.c:452
+#: capplets/accessibility/keyboard/accessibility-keyboard.c:465
 msgid "Select CDE AccessX file"
 msgstr "Selectează fişierul AccessX CDE"
 
@@ -41,56 +40,99 @@ msgstr "Tastatură"
 msgid "Set your keyboard accessibility preferences"
 msgstr "Setează preferinţele de accesibilitate a tastaturii"
 
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.c:57
+msgid ""
+"This system does not seem to have the XKB extension.  The keyboard "
+"accessibility features will not operate without it."
+msgstr ""
+
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:1
-msgid "Beep when an LED is turned on and two beeps when one is turned off."
-msgstr "Un bip când un LED este aprins şi două bipuri când este stins."
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:1
+#: capplets/file-types/file-types-properties.glade.h:1
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:1
+#: capplets/network/gnome-network-preferences.glade.h:2
+#: capplets/theme-switcher/theme-properties.glade.h:1
+#: capplets/theme-switcher/theme-install.glade.h:1
+msgid "*"
+msgstr "*"
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:2
-#, fuzzy
-msgid "Beep when enabling/disabling _keyboard accessibility features"
+msgid "Basic"
 msgstr ""
-"_Bip la activarea/dezactivarea facilităţilor de accesibilitate a tastaturii"
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:3
-msgid "Beep when key is re_jected"
+#, fuzzy
+msgid "Beep if key is re_jected"
 msgstr "Bip când tasta este _refuzată"
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:4
-msgid "Beep when:"
-msgstr "Bip când:"
+msgid "Beep when _features turned on or off from keyboard"
+msgstr ""
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:5
+#, fuzzy
+msgid "Beep when _modifier is pressed"
+msgstr "B_ip când modificatorul este apăsat"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:6
+msgid "Beep when an LED is turned on and two beeps when one is turned off."
+msgstr "Un bip când un LED este aprins şi două bipuri când este stins."
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:7
+#, fuzzy
+msgid "Beep when key is:"
+msgstr "Bip când tasta este _refuzată"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:8
+#, fuzzy
+msgid "Del_ay:"
+msgstr "_Întârziere:"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:9
+msgid "Delay between keypress and pointer mo_vement:"
+msgstr ""
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:10
+msgid "Disa_ble if two keys pressed together"
+msgstr ""
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:11
 #, fuzzy
 msgid "E_nable Toggle Keys"
 msgstr "Pemite taste de _comutare"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:6
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:12
 #, fuzzy
 msgid "Enable Bo_unce Keys"
 msgstr "Refuză tastarea _repetitivă"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:7
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:13
 msgid "Enable Slo_w Keys"
 msgstr "Permite tastare _lentă"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:8
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:14
 msgid "Enable _Mouse Keys"
 msgstr "Permite _controlul mausului"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:9
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:15
 msgid "Enable _Sticky Keys"
 msgstr "Permite taste _persistente"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:10
-msgid "General"
-msgstr "General"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:16
+msgid "Features"
+msgstr ""
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:11
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:17
 #, fuzzy
-msgid "I_gnore keypresses within  :"
+msgid "Filters"
+msgstr "_Fişier"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:18
+#, fuzzy
+msgid "I_gnore duplicate keypresses within:"
 msgstr "_Ignoră apăsările de taste după :"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:12
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:19
 msgid ""
 "Ignore all subsequent presses of the SAME key if they happen within a user "
 "selectable period of time."
@@ -98,15 +140,27 @@ msgstr ""
 "Ignoră toate apăsările ACELEAŞI taste dacă se întâmplă într-o anumită "
 "perioadă de timp ce poate fi setată"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:13
-msgid "Keyboard Accessibility Configuration (AccessX)"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:20
+#, fuzzy
+msgid "Keyboard Accessibility Preferences (AccessX)"
 msgstr "Configurare accesibilitate tastatură (AccessX)"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:14
-msgid "Ma_ximum pointer speed :"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:21
+#, fuzzy
+msgid "Ma_ximum pointer speed:"
 msgstr "Viteza ma_ximă a cursorului:"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:15
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:22
+#: capplets/mouse/mouse.desktop.in.h:1
+msgid "Mouse"
+msgstr "Maus"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:23
+#, fuzzy
+msgid "Mouse _Preferences..."
+msgstr "Preferinţe maus"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:24
 msgid ""
 "Only accept keys after they have been pressed and held for a user adjustable "
 "amount of time."
@@ -114,89 +168,91 @@ msgstr ""
 "Acceptă tasta doar după ce a fost ţinută apasată o anumită perioadă de timp, "
 "ce poate fi setată"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:16
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:25
 msgid ""
 "Perform multiple simultaneous key press operations by pressing modifier keys "
 "in sequence."
 msgstr ""
 "Permite apăsări simultane de taste prin apăsarea modificatorilor în secvenţă."
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:17
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:26
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:16
+msgid "S_peed:"
+msgstr "V_iteză:"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:27
 #, fuzzy
-msgid "Repeat Key Pre_ferences"
-msgstr "Preferinţe repetare taste"
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:18
-msgid "Start mo_ving this long after keypress :"
-msgstr "Începe mişcarea la acest interval după apăsare :"
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:19
-msgid "Testing Area"
-msgstr "Zonă de testare"
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:20
-#, fuzzy
-msgid "Time to acce_lerate to max speed :"
+msgid "Time to acce_lerate to maximum speed:"
 msgstr "Timpul _accelerării la viteză maximă :"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:21
-msgid "Toggle and Repeat Keys"
-msgstr "Taste de comutare şi repetare"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:28
+#, fuzzy
+msgid "Toggle Keys"
+msgstr "Pemite taste de _comutare"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:22
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:29
 msgid "Turn the numeric keypad into a mouse control pad."
 msgstr "Controlează mişcarea mausului cu ajutorul zonei numerice a tastaturii."
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:23
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:30
 #, fuzzy
-msgid "_Beep when modifier is pressed"
-msgstr "B_ip când modificatorul este apăsat"
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:24
-msgid "_Disable if unused for "
+msgid "_Disable if unused for:"
 msgstr "_Dezactivează dacă nu este folosită pentru "
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:25
-msgid "_Enable keyboard accessibility"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:31
+#, fuzzy
+msgid "_Enable keyboard accessibility features"
 msgstr "_Activează accesibilitatea tastaturii"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:26
-msgid "_Import CDE AccessX file"
-msgstr "_Importă fişier AccessX CDE"
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:27
-msgid "_Only accept keypress after :"
-msgstr "_Acceptă apăsări de taste doar după :"
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:28
-msgid ""
-"_Turn off Sticky Keys when\n"
-"two keys pressed simultaneously"
-msgstr ""
-"_Anulează tastarea persistentă când\n"
-"două taste sunt apăsate simultan"
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:30
-msgid "key is _accepted"
-msgstr "tasta este _acceptată"
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:31
-msgid "key is _pressed"
-msgstr "tasta este a_păsată"
-
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:32
-msgid "key is _rejected"
-msgstr "tasta este _ignorată"
+msgid "_Import Feature Settings..."
+msgstr ""
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:33
-msgid "msecs"
-msgstr "msec"
+#, fuzzy
+msgid "_Only accept keys held for:"
+msgstr "_Acceptă apăsări de taste doar după :"
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:34
-msgid "pixels/sec"
-msgstr "pixeli/sec"
+#, fuzzy
+msgid "_Repeat Keys"
+msgstr "Repetarea tastelor"
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:35
+msgid "_Type to test settings:"
+msgstr ""
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:36
+#, fuzzy
+msgid "_accepted"
+msgstr "tasta este _acceptată"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:37
+#, fuzzy
+msgid "_pressed"
+msgstr "tasta este a_păsată"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:38
+#, fuzzy
+msgid "_rejected"
+msgstr "tasta este _ignorată"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:39
+msgid "characters/second"
+msgstr ""
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:40
+#, fuzzy
+msgid "milliseconds"
+msgstr "secunde"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:41
+#, fuzzy
+msgid "pixels/second"
+msgstr "pixeli/sec"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:42
+#: capplets/windows/gnome-window-properties.glade.h:7
 msgid "seconds"
 msgstr "secunde"
 
@@ -250,8 +306,8 @@ msgstr "Selectaţi _imaginea:"
 #: capplets/background/background-properties-capplet.c:567
 #: capplets/common/capplet-util.c:243
 #: capplets/default-applications/gnome-default-applications-properties.c:712
-#: capplets/keyboard/gnome-keyboard-properties.c:293
-#: capplets/mouse/gnome-mouse-properties.c:752
+#: capplets/keyboard/gnome-keyboard-properties.c:290
+#: capplets/mouse/gnome-mouse-properties.c:712
 #: capplets/sound/sound-properties-capplet.c:149
 msgid "Retrieve and store legacy settings"
 msgstr "Recuperează şi memorează setările anterioare"
@@ -286,7 +342,7 @@ msgid "Picture Options:"
 msgstr "Opţiuni imagine:"
 
 #: capplets/background/background-properties.glade.h:8
-#: libbackground/preview-file-selection.c:198
+#: libbackground/preview-file-selection.c:212
 msgid "Preview"
 msgstr "Previzualizare"
 
@@ -539,14 +595,6 @@ msgstr "Selectează aplicaţiile implicite"
 msgid "Please specify a name and a command for this editor."
 msgstr "Vă rugăm specificaţi un nume şi o comandă pentru acest editor."
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:1
-#: capplets/file-types/file-types-properties.glade.h:1
-#: capplets/keyboard/gnome-keyboard-properties.glade.h:1
-#: capplets/network/gnome-network-preferences.glade.h:1
-#: capplets/theme-switcher/theme-install.glade.h:1
-msgid "*"
-msgstr "*"
-
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:2
 msgid "Acce_pts URLs"
 msgstr "Acceptă URL-uri"
@@ -666,6 +714,7 @@ msgid "Window Manager"
 msgstr "Manager de ferestre"
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:31
+#: capplets/file-types/file-types-properties.glade.h:22
 msgid "_Name:"
 msgstr "_Nume:"
 
@@ -754,6 +803,7 @@ msgid "Minimizing and Maximizing"
 msgstr "Minimizare şi maximizare"
 
 #: capplets/desktop-links/Sawfish/meta-properties.desktop.in.h:1
+#: capplets/windows/gnome-window-properties.c:649
 msgid "Meta"
 msgstr "Meta"
 
@@ -811,17 +861,16 @@ msgstr "Aplicaţii moştenite"
 msgid "Legacy applications settings (grdb)"
 msgstr "Setări aplicaţii moştenite (grdb)"
 
-#: capplets/file-types/file-types-capplet.c:194
+#: capplets/file-types/file-types-capplet.c:196
 msgid "Description"
 msgstr "Descriere"
 
-#: capplets/file-types/file-types-capplet.c:216
+#: capplets/file-types/file-types-capplet.c:218
 msgid "Extensions"
 msgstr "Extensii"
 
 #: capplets/file-types/file-types-capplet.desktop.in.h:1
-#: capplets/file-types/file-types-properties.glade.h:8
-#: capplets/file-types/file-types.desktop.in.h:2
+#: capplets/file-types/file-types-properties.glade.h:10
 msgid "File Types and Programs"
 msgstr "Tipuri de fişiere şi programe"
 
@@ -844,60 +893,68 @@ msgid "Add _Service..."
 msgstr "Adaugă _servici..."
 
 #: capplets/file-types/file-types-properties.glade.h:5
-msgid "Add:"
-msgstr "Adaugă:"
+#, fuzzy
+msgid "C_hoose..."
+msgstr "_Alege..."
 
 #: capplets/file-types/file-types-properties.glade.h:6
-msgid "Default action"
-msgstr "Acţiune implicită"
+#, fuzzy
+msgid "Cate_gory:"
+msgstr "Categorie"
 
 #: capplets/file-types/file-types-properties.glade.h:7
+#, fuzzy
+msgid "D_efault action:"
+msgstr "Acţiune implicită"
+
+#: capplets/file-types/file-types-properties.glade.h:8
+#, fuzzy
+msgid "Default _action:"
+msgstr "Acţiune implicită"
+
+#: capplets/file-types/file-types-properties.glade.h:9
 #: capplets/file-types/mime-edit-dialog.c:208
 msgid "Edit file type"
 msgstr "Editează tip de fişier"
 
-#: capplets/file-types/file-types-properties.glade.h:9
-msgid "Filename Extensions"
+#: capplets/file-types/file-types-properties.glade.h:11
+#, fuzzy
+msgid "Filename extensions:"
 msgstr "Extensii fişiere"
 
-#: capplets/file-types/file-types-properties.glade.h:10
+#: capplets/file-types/file-types-properties.glade.h:12
 msgid "Look at content"
 msgstr "Consideră conţinutul"
 
-#: capplets/file-types/file-types-properties.glade.h:11
+#: capplets/file-types/file-types-properties.glade.h:13
+#, fuzzy
+msgid "P_rogram:"
+msgstr "_Program"
+
+#: capplets/file-types/file-types-properties.glade.h:14
 msgid "Program to Run"
 msgstr "Programul rulat"
 
-#: capplets/file-types/file-types-properties.glade.h:12
+#: capplets/file-types/file-types-properties.glade.h:15
 msgid "Run a program"
 msgstr "Rulează un program"
 
-#: capplets/file-types/file-types-properties.glade.h:13
+#: capplets/file-types/file-types-properties.glade.h:16
 msgid "Run in _Terminal"
 msgstr "Rulează în _terminal"
 
-#: capplets/file-types/file-types-properties.glade.h:14
+#: capplets/file-types/file-types-properties.glade.h:17
 msgid "Use parent category _defaults"
 msgstr "Foloseşte setările implicite ale categoriei părinte"
 
-#: capplets/file-types/file-types-properties.glade.h:15
-msgid "Viewer Component"
-msgstr "Componentă vizualizare"
-
-#: capplets/file-types/file-types-properties.glade.h:16
-msgid "_Category"
-msgstr "_Categorie"
-
-#: capplets/file-types/file-types-properties.glade.h:17
-msgid "_Choose..."
-msgstr "_Alege..."
-
 #: capplets/file-types/file-types-properties.glade.h:18
-msgid "_Delete"
-msgstr "_Şterge"
+#, fuzzy
+msgid "_Add:"
+msgstr "Adaugă:"
 
 #: capplets/file-types/file-types-properties.glade.h:19
-msgid "_Description"
+#, fuzzy
+msgid "_Description:"
 msgstr "_Descriere"
 
 #: capplets/file-types/file-types-properties.glade.h:20
@@ -905,28 +962,40 @@ msgid "_Edit..."
 msgstr "_Editează..."
 
 #: capplets/file-types/file-types-properties.glade.h:21
-msgid "_MIME Type"
+#, fuzzy
+msgid "_MIME type:"
 msgstr "Tip _MIME"
 
-#: capplets/file-types/file-types-properties.glade.h:22
-msgid "_Name"
-msgstr "_Nume"
-
 #: capplets/file-types/file-types-properties.glade.h:23
-msgid "_Program"
-msgstr "_Program"
-
-#: capplets/file-types/file-types-properties.glade.h:24
-msgid "_Program to Run"
+#, fuzzy
+msgid "_Program to run:"
 msgstr "_Programul rulat"
 
-#: capplets/file-types/file-types-properties.glade.h:25
-msgid "_Protocol"
+#: capplets/file-types/file-types-properties.glade.h:24
+#, fuzzy
+msgid "_Protocol:"
 msgstr "_Protocol"
 
+#: capplets/file-types/file-types-properties.glade.h:25
+msgid "_Remove"
+msgstr ""
+
+#: capplets/file-types/file-types-properties.glade.h:26
+#, fuzzy
+msgid "_Viewer component:"
+msgstr "Componentă vizualizare"
+
 #: capplets/file-types/file-types.desktop.in.h:1
-msgid "Associate applications with file types"
-msgstr "Asociază aplicaţii cu tipuri de fişiere"
+#, fuzzy
+msgid "File types and programs"
+msgstr "Tipuri de fişiere şi programe"
+
+#: capplets/file-types/file-types.desktop.in.h:2
+#, fuzzy
+msgid "Specify which programs are used to open or view each type of file"
+msgstr ""
+"Specifică programele folosite pentru a deschide sau vizualiza fiecare tip de "
+"fişier"
 
 #: capplets/file-types/mime-category-edit-dialog.c:138
 msgid "Edit file category"
@@ -1115,24 +1184,131 @@ msgid "Select fonts for the desktop"
 msgstr "Selectează fonturi pentru desktop"
 
 #: capplets/font/font-properties.glade.h:1
+msgid "Best _shapes"
+msgstr ""
+
+#: capplets/font/font-properties.glade.h:2
+msgid "Best co_ntrast"
+msgstr ""
+
+#: capplets/font/font-properties.glade.h:3
+msgid "De_tails..."
+msgstr ""
+
+#: capplets/font/font-properties.glade.h:4
 msgid "Font Preferences"
 msgstr "Preferinţe font"
 
-#: capplets/font/font-properties.glade.h:2
+#: capplets/font/font-properties.glade.h:5
+#, fuzzy
+msgid "Font Rendering"
+msgstr "Preferinţe font"
+
+#: capplets/font/font-properties.glade.h:6
+msgid "Font Rendering Details"
+msgstr ""
+
+#: capplets/font/font-properties.glade.h:7
+msgid "G_rayscale"
+msgstr ""
+
+#: capplets/font/font-properties.glade.h:8
+msgid "Hinting:"
+msgstr ""
+
+#: capplets/font/font-properties.glade.h:9
+#, fuzzy
+msgid "N_one"
+msgstr "Nici unul"
+
+#: capplets/font/font-properties.glade.h:10
+msgid "Resolution (_dots per inch):"
+msgstr ""
+
+#: capplets/font/font-properties.glade.h:11
 msgid "Set the font for applications"
 msgstr "Setează fontul pentru aplicaţii"
 
-#: capplets/font/font-properties.glade.h:3
+#: capplets/font/font-properties.glade.h:12
 msgid "Set the font for the icons on the desktop"
 msgstr "Setează fontul pentru iconiţele de pe desktop"
 
-#: capplets/font/font-properties.glade.h:4
+#: capplets/font/font-properties.glade.h:13
+#, fuzzy
+msgid "Set the monospace font for terminals and similar applications"
+msgstr "Setează fontul pentru aplicaţii"
+
+#: capplets/font/font-properties.glade.h:14
+msgid "Smoothing:"
+msgstr ""
+
+#: capplets/font/font-properties.glade.h:15
+msgid "Sub_pixel (LCDs)"
+msgstr ""
+
+#: capplets/font/font-properties.glade.h:16
+msgid "Sub_pixel smoothing (LCDs)"
+msgstr ""
+
+#: capplets/font/font-properties.glade.h:17
+msgid "Subpixel order:"
+msgstr ""
+
+#: capplets/font/font-properties.glade.h:18
+msgid "VB_GR"
+msgstr ""
+
+#: capplets/font/font-properties.glade.h:19
 msgid "_Application font:"
 msgstr "_Font aplicaţii:"
 
-#: capplets/font/font-properties.glade.h:5
+#: capplets/font/font-properties.glade.h:20
+msgid "_BGR"
+msgstr ""
+
+#: capplets/font/font-properties.glade.h:21
 msgid "_Desktop font:"
 msgstr "Font _desktop:"
+
+#: capplets/font/font-properties.glade.h:22
+#, fuzzy
+msgid "_Full"
+msgstr "_Fişier"
+
+#: capplets/font/font-properties.glade.h:23
+#, fuzzy
+msgid "_Medium"
+msgstr "_Meniu"
+
+#: capplets/font/font-properties.glade.h:24
+msgid "_Monochrome"
+msgstr ""
+
+#: capplets/font/font-properties.glade.h:25
+#, fuzzy
+msgid "_None"
+msgstr "Nici unul"
+
+#: capplets/font/font-properties.glade.h:26
+msgid "_RGB"
+msgstr ""
+
+#: capplets/font/font-properties.glade.h:27
+msgid "_Slight"
+msgstr ""
+
+#: capplets/font/font-properties.glade.h:28
+#, fuzzy
+msgid "_Terminal font:"
+msgstr "Terminal"
+
+#: capplets/font/font-properties.glade.h:29
+msgid "_VRGB"
+msgstr ""
+
+#: capplets/font/font-properties.glade.h:30
+msgid "_Window title font:"
+msgstr ""
 
 #: capplets/keybindings/eggcellrendererkeys.c:160
 #: capplets/keybindings/eggcellrendererkeys.c:161
@@ -1153,8 +1329,8 @@ msgid "The type of accelerator."
 msgstr ""
 
 #: capplets/keybindings/eggcellrendererkeys.c:219
-#: capplets/keybindings/gnome-keybinding-properties.c:202
-#: libbackground/applier.c:521
+#: capplets/keybindings/gnome-keybinding-properties.c:204
+#: libbackground/applier.c:588
 msgid "Disabled"
 msgstr "Dezactivat"
 
@@ -1168,30 +1344,32 @@ msgstr ""
 msgid "Type a new accelerator"
 msgstr "Tastează o nouă combinaţie"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:538
+#: capplets/keybindings/gnome-keybinding-properties.c:540
 msgid "<Unknown Action>"
 msgstr "<Acţiune necunoscută>"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:557
+#: capplets/keybindings/gnome-keybinding-properties.c:559
 msgid "Desktop"
 msgstr "Desktop"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:561
+#: capplets/keybindings/gnome-keybinding-properties.c:563
 msgid "Window Management"
 msgstr "Management ferestre"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:695
+#: capplets/keybindings/gnome-keybinding-properties.c:698
 #, c-format
-msgid "That accelerator key is already in use by: %s\n"
+msgid ""
+"The shortcut \"%s\" is already used for:\n"
+" \"%s\"\n"
 msgstr ""
 
-#: capplets/keybindings/gnome-keybinding-properties.c:725
+#: capplets/keybindings/gnome-keybinding-properties.c:729
 #, c-format
 msgid "Error setting new accelerator in configuration database: %s\n"
 msgstr ""
 "Eroare la setarea noului accelerator în baza de date a configuraţiei: %s\n"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:876
+#: capplets/keybindings/gnome-keybinding-properties.c:880
 msgid ""
 "Unable to find any keyboard themes.  This means your GTK+ installation has "
 "been incompletely installed."
@@ -1199,11 +1377,11 @@ msgstr ""
 "Nu am putut găsi nici o temă pentru tastatură. Acest lucru înseamnă că "
 "instalarea dumneavoastră GTK+ a fost incompletă."
 
-#: capplets/keybindings/gnome-keybinding-properties.c:898
+#: capplets/keybindings/gnome-keybinding-properties.c:902
 msgid "Action"
 msgstr "Acţiune"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:917
+#: capplets/keybindings/gnome-keybinding-properties.c:921
 msgid "Shortcut"
 msgstr "Combinaţie taste"
 
@@ -1228,12 +1406,17 @@ msgstr "_Scurtături editare text:"
 msgid "Assign shortcut keys to commands"
 msgstr "Setează scurtăturile pentru comenzi"
 
-#: capplets/keyboard/gnome-keyboard-properties.c:272
+#: capplets/keyboard/gnome-keyboard-properties.c:162
+#, c-format
+msgid "There was an error launching the keyboard capplet : %s"
+msgstr "A intervenit o eroare la lansarea capplet tastatură: %s"
+
+#: capplets/keyboard/gnome-keyboard-properties.c:269
 msgid "_Accessibility"
 msgstr "_Accesibilitate"
 
-#: capplets/keyboard/gnome-keyboard-properties.c:289
-#: capplets/keyboard/gnome-keyboard-properties.c:291
+#: capplets/keyboard/gnome-keyboard-properties.c:286
+#: capplets/keyboard/gnome-keyboard-properties.c:288
 #: capplets/sound/sound-properties-capplet.c:145
 #: capplets/sound/sound-properties-capplet.c:147
 msgid ""
@@ -1294,10 +1477,6 @@ msgstr "Click la apăsarea tastei"
 msgid "Repeat Keys"
 msgstr "Repetarea tastelor"
 
-#: capplets/keyboard/gnome-keyboard-properties.glade.h:16
-msgid "S_peed:"
-msgstr "V_iteză:"
-
 #: capplets/keyboard/gnome-keyboard-properties.glade.h:18
 msgid "_Accessibility..."
 msgstr "_Accesibilitate..."
@@ -1334,7 +1513,7 @@ msgstr "încet"
 msgid "Set your keyboard preferences"
 msgstr "Setează preferinţele tastaturii"
 
-#: capplets/mouse/gnome-mouse-properties.c:477
+#: capplets/mouse/gnome-mouse-properties.c:437
 #, c-format
 msgid ""
 "<b>Unknown Cursor</b>\n"
@@ -1343,7 +1522,7 @@ msgstr ""
 "<b>Cursor necunoscut</b>\n"
 "%s"
 
-#: capplets/mouse/gnome-mouse-properties.c:578
+#: capplets/mouse/gnome-mouse-properties.c:538
 msgid ""
 "<b>Default Cursor - Current</b>\n"
 "The default cursor that ships with X"
@@ -1351,7 +1530,7 @@ msgstr ""
 "<b>Cursor implicit - Curent</b>\n"
 "Cursorul implicit folosit de X"
 
-#: capplets/mouse/gnome-mouse-properties.c:581
+#: capplets/mouse/gnome-mouse-properties.c:541
 msgid ""
 "<b>Default Cursor</b>\n"
 "The default cursor that ships with X"
@@ -1359,7 +1538,7 @@ msgstr ""
 "<b>Cursorul implicit</b>\n"
 "Cursorul implicit folost de X"
 
-#: capplets/mouse/gnome-mouse-properties.c:599
+#: capplets/mouse/gnome-mouse-properties.c:559
 msgid ""
 "<b>White Cursor - Current</b>\n"
 "The default cursor inverted"
@@ -1367,7 +1546,7 @@ msgstr ""
 "<b>Cursor alb - Curent</b>\n"
 "Cursorul implicit inversat"
 
-#: capplets/mouse/gnome-mouse-properties.c:602
+#: capplets/mouse/gnome-mouse-properties.c:562
 msgid ""
 "<b>White Cursor</b>\n"
 "The default cursor inverted"
@@ -1375,7 +1554,7 @@ msgstr ""
 "<b>Cursor alb</b>\n"
 "Cursorul implicit inversat"
 
-#: capplets/mouse/gnome-mouse-properties.c:620
+#: capplets/mouse/gnome-mouse-properties.c:580
 msgid ""
 "<b>Large Cursor - Current</b>\n"
 "Large version of normal cursor"
@@ -1383,7 +1562,7 @@ msgstr ""
 "<b>Cursor mare - Curent</b>\n"
 "Versiunea mărită a cursorului normal"
 
-#: capplets/mouse/gnome-mouse-properties.c:623
+#: capplets/mouse/gnome-mouse-properties.c:583
 msgid ""
 "<b>Large Cursor</b>\n"
 "Large version of normal cursor"
@@ -1391,7 +1570,7 @@ msgstr ""
 "<b>Cursor mare</b>\n"
 "Versiunea mărită a cursorului normal"
 
-#: capplets/mouse/gnome-mouse-properties.c:641
+#: capplets/mouse/gnome-mouse-properties.c:601
 msgid ""
 "<b>Large White Cursor - Current</b>\n"
 "Large version of white cursor"
@@ -1399,7 +1578,7 @@ msgstr ""
 "<b>Cursor mare alb - Curent</b>\n"
 "Versiunea mărită a cursorului alb"
 
-#: capplets/mouse/gnome-mouse-properties.c:644
+#: capplets/mouse/gnome-mouse-properties.c:604
 msgid ""
 "<b>Large White Cursor</b>\n"
 "Large version of white cursor"
@@ -1534,10 +1713,6 @@ msgstr "_Arată poziţia cursorului la apăsarea tastei Control"
 msgid "_Threshold:"
 msgstr "_Reactivitate:"
 
-#: capplets/mouse/mouse.desktop.in.h:1
-msgid "Mouse"
-msgstr "Maus"
-
 #: capplets/mouse/mouse.desktop.in.h:2
 msgid "Set your mouse preferences"
 msgstr "Setează preferinţele mausului"
@@ -1552,37 +1727,76 @@ msgstr "Proxy reţea"
 msgid "Network proxy preferences"
 msgstr "Preferinţe proxy reţea"
 
-#: capplets/network/gnome-network-preferences.glade.h:2
-msgid "Network Preferences"
-msgstr "Preferinţele reţelei"
+#: capplets/network/gnome-network-preferences.glade.h:1
+msgid "      "
+msgstr ""
 
 #: capplets/network/gnome-network-preferences.glade.h:3
-msgid "Network Proxy Preferences"
-msgstr "Preferinţe proxy reţea"
+msgid "<b>_Automatic proxy configuration</b>"
+msgstr ""
 
 #: capplets/network/gnome-network-preferences.glade.h:4
-msgid "P_ort:"
-msgstr "P_ort:"
+msgid "<b>_Direct internet connection</b>"
+msgstr ""
 
 #: capplets/network/gnome-network-preferences.glade.h:5
-msgid "Pass_word:"
-msgstr "Paro_lă:"
+msgid "<b>_Manual proxy configuration</b>"
+msgstr ""
 
 #: capplets/network/gnome-network-preferences.glade.h:6
-msgid "Pro_xy requires username and password"
-msgstr "Pro_xy necesită nume utilizator şi parolă"
+msgid "<b>_Use authentication</b>"
+msgstr ""
 
 #: capplets/network/gnome-network-preferences.glade.h:7
-msgid "User_name:"
-msgstr "Nume _utilizator:"
+msgid "Autoconfiguration _URL:"
+msgstr ""
 
 #: capplets/network/gnome-network-preferences.glade.h:8
-msgid "_Location:"
-msgstr "_Locaţie:"
+msgid "HTTP Proxy Details"
+msgstr ""
 
 #: capplets/network/gnome-network-preferences.glade.h:9
-msgid "_Use HTTP proxy"
+#, fuzzy
+msgid "Network Proxy Configuration"
+msgstr "Preferinţe proxy reţea"
+
+#: capplets/network/gnome-network-preferences.glade.h:10
+#, fuzzy
+msgid "Port:"
+msgstr "P_ort:"
+
+#: capplets/network/gnome-network-preferences.glade.h:11
+msgid "S_ocks host:"
+msgstr ""
+
+#: capplets/network/gnome-network-preferences.glade.h:12
+msgid "_Details"
+msgstr ""
+
+#: capplets/network/gnome-network-preferences.glade.h:13
+#, fuzzy
+msgid "_FTP proxy:"
 msgstr "_Foloseşte proxy HTTP"
+
+#: capplets/network/gnome-network-preferences.glade.h:14
+#, fuzzy
+msgid "_HTTP proxy:"
+msgstr "_Foloseşte proxy HTTP"
+
+#: capplets/network/gnome-network-preferences.glade.h:15
+#, fuzzy
+msgid "_Password:"
+msgstr "Paro_lă:"
+
+#: capplets/network/gnome-network-preferences.glade.h:16
+#, fuzzy
+msgid "_Secure HTTP proxy:"
+msgstr "_Foloseşte proxy HTTP"
+
+#: capplets/network/gnome-network-preferences.glade.h:17
+#, fuzzy
+msgid "_Username:"
+msgstr "Nume _utilizator:"
 
 #: capplets/sound/sound-properties-capplet.c:180
 msgid "Sound preferences"
@@ -1593,16 +1807,17 @@ msgid "E_nable sound server startup"
 msgstr "_Activează serverul de sunet la pornire"
 
 #: capplets/sound/sound-properties.glade.h:2
-msgid "Sound Preferences"
-msgstr "Preferinţe sunet"
+msgid "General"
+msgstr "General"
 
 #: capplets/sound/sound-properties.glade.h:3
-msgid "Sound _Events"
+#, fuzzy
+msgid "Sound Events"
 msgstr "_Evenimente sonore"
 
 #: capplets/sound/sound-properties.glade.h:4
-msgid "_General"
-msgstr "_General"
+msgid "Sound Preferences"
+msgstr "Preferinţe sunet"
 
 #: capplets/sound/sound-properties.glade.h:5
 msgid "_Sounds for events"
@@ -1669,30 +1884,95 @@ msgstr "Selectează teme pentru diferite porţiuni ale desktop-ului"
 msgid "Theme"
 msgstr "Temă"
 
-#: capplets/theme-switcher/theme-properties.glade.h:1
-msgid "Installed Themes"
-msgstr "Teme instalate"
-
 #: capplets/theme-switcher/theme-properties.glade.h:2
-msgid "List of available GTK+ themes"
-msgstr "Lista temelor GTK+ disponibile"
+msgid "<span size=\"larger\" weight=\"bold\">Save theme to disk</span>"
+msgstr ""
 
 #: capplets/theme-switcher/theme-properties.glade.h:3
+#, fuzzy
+msgid "Apply _Background"
+msgstr "Fundal"
+
+#: capplets/theme-switcher/theme-properties.glade.h:4
+#, fuzzy
+msgid "Apply _Font"
+msgstr "Aplică acum"
+
+#: capplets/theme-switcher/theme-properties.glade.h:5
+#, fuzzy
+msgid "Controls"
+msgstr "Control UI"
+
+#: capplets/theme-switcher/theme-properties.glade.h:6
+#, fuzzy
+msgid "Icons"
+msgstr "Doar iconiţe"
+
+#: capplets/theme-switcher/theme-properties.glade.h:7
 msgid "New themes can also be installed by dragging them into the window."
 msgstr ""
 "Temele noi pot fi instalate şi prin tragerea lor deasupra acestei ferestre."
 
-#: capplets/theme-switcher/theme-properties.glade.h:4
+#: capplets/theme-switcher/theme-properties.glade.h:8
+#, fuzzy
+msgid "Short _Description:"
+msgstr "_Descriere"
+
+#: capplets/theme-switcher/theme-properties.glade.h:9
+msgid "Theme Details"
+msgstr ""
+
+#: capplets/theme-switcher/theme-properties.glade.h:10
 msgid "Theme Preferences"
 msgstr "Preferinţe temă"
 
-#: capplets/theme-switcher/theme-properties.glade.h:5
+#: capplets/theme-switcher/theme-properties.glade.h:11
+#, fuzzy
+msgid ""
+"This theme suggests a\n"
+"background:"
+msgstr "Personalizează fundalul spaţiului de lucru"
+
+#: capplets/theme-switcher/theme-properties.glade.h:13
+msgid ""
+"This theme suggests a\n"
+"font and background"
+msgstr ""
+
+#: capplets/theme-switcher/theme-properties.glade.h:15
+msgid ""
+"This theme suggests a\n"
+"font:"
+msgstr ""
+
+#: capplets/theme-switcher/theme-properties.glade.h:17
+#, fuzzy
+msgid "Window Border"
+msgstr "Aspect margine fereastră"
+
+#: capplets/theme-switcher/theme-properties.glade.h:18
+#, fuzzy
+msgid "_Details..."
+msgstr "_Proprietăţi..."
+
+#: capplets/theme-switcher/theme-properties.glade.h:19
 msgid "_Go to theme folder"
 msgstr "_Du-te în directorul cu teme"
 
-#: capplets/theme-switcher/theme-properties.glade.h:6
-msgid "_Install New Theme..."
+#: capplets/theme-switcher/theme-properties.glade.h:20
+#, fuzzy
+msgid "_Install theme..."
 msgstr "_Instalează o nouă temă..."
+
+#: capplets/theme-switcher/theme-properties.glade.h:21
+#, fuzzy
+msgid "_Save theme"
+msgstr "Temă"
+
+#: capplets/theme-switcher/theme-properties.glade.h:22
+#, fuzzy
+msgid "_Theme name:"
+msgstr "Nume _utilizator:"
 
 #: capplets/theme-switcher/theme-install.glade.h:2
 msgid "Install new theme"
@@ -1705,6 +1985,25 @@ msgstr "_Instalează"
 #: capplets/theme-switcher/theme-install.glade.h:4
 msgid "_Location of new theme:"
 msgstr "_Localizarea noii teme:"
+
+#: capplets/theme-switcher/gnome-theme-details.c:329
+#: capplets/theme-switcher/gnome-theme-manager.c:606
+msgid ""
+"No themes could be found on your system.  This probably means that your "
+"\"Theme Preferences\" dialog was improperly installed, or you haven't "
+"installed the \"gnome-themes\" package."
+msgstr ""
+
+#: capplets/theme-switcher/gnome-theme-manager.c:662
+#: capplets/theme-switcher/gnome-theme-manager.c:722
+#, fuzzy
+msgid "Custom theme"
+msgstr "Temă cursor"
+
+#: capplets/theme-switcher/gnome-theme-manager.c:662
+#: capplets/theme-switcher/gnome-theme-manager.c:722
+msgid "You can save this theme by pressing the Save Theme button."
+msgstr ""
 
 #: capplets/ui-properties/behavior.desktop.in.h:1
 msgid "Customize the appearance of toolbars and menubars in applications"
@@ -1831,7 +2130,7 @@ msgstr "_Lipeşte"
 
 #: capplets/ui-properties/gnome-ui-properties.glade.h:26
 msgid "_Print"
-msgstr "_Printează"
+msgstr "_Tipăreşte"
 
 #: capplets/ui-properties/gnome-ui-properties.glade.h:27
 msgid "_Quit"
@@ -1841,30 +2140,56 @@ msgstr "_Ieşi"
 msgid "_Save"
 msgstr "_Salvează"
 
-#: capplets/windows/gnome-window-properties.c:282
-#: capplets/windows/gnome-window-properties.glade.h:6
+#: capplets/windows/gnome-window-properties.c:378
+#, c-format
+msgid ""
+"<b>Cannot start the preferences application for your window manager</b>\n"
+"\n"
+"%s"
+msgstr ""
+
+#: capplets/windows/gnome-window-properties.c:624
+#, fuzzy
+msgid "Control"
+msgstr "Control UI"
+
+#: capplets/windows/gnome-window-properties.c:629
+msgid "Alt"
+msgstr ""
+
+#: capplets/windows/gnome-window-properties.c:635
+#, fuzzy
+msgid "Hyper"
+msgstr "Tip"
+
+#: capplets/windows/gnome-window-properties.c:642
+msgid "Super (or \"Windows logo\")"
+msgstr ""
+
+#: capplets/windows/gnome-window-properties.glade.h:1
+msgid "To _move a window, press-and-hold this key then grab the window:"
+msgstr ""
+
+#: capplets/windows/gnome-window-properties.glade.h:2
 msgid "Window Preferences"
 msgstr "Preferinţe ferestre"
 
-#: capplets/windows/gnome-window-properties.glade.h:1
-msgid "Apply Now"
-msgstr "Aplică acum"
-
-#: capplets/windows/gnome-window-properties.glade.h:2
-msgid "Select windows when the mouse moves over them"
-msgstr "Selectează ferestrele când mausul se mişcă deasupra lor"
-
 #: capplets/windows/gnome-window-properties.glade.h:3
-msgid "Titlebar Font"
-msgstr "Font pentru bara de titlu"
+msgid "_Double-click titlebar to perform this action:"
+msgstr ""
 
 #: capplets/windows/gnome-window-properties.glade.h:4
-msgid "Window Border Appearance"
-msgstr "Aspect margine fereastră"
+msgid "_Interval before raising:"
+msgstr ""
 
 #: capplets/windows/gnome-window-properties.glade.h:5
-msgid "Window Manager:"
-msgstr "Manager de ferestre:"
+msgid "_Raise selected windows after an interval"
+msgstr ""
+
+#: capplets/windows/gnome-window-properties.glade.h:6
+#, fuzzy
+msgid "_Select windows when the mouse moves over them"
+msgstr "Selectează ferestrele când mausul se mişcă deasupra lor"
 
 #: capplets/windows/window-properties.desktop.in.h:1
 msgid "Window Properties"
@@ -1921,11 +2246,13 @@ msgid "Overview of the control center"
 msgstr "Privire de ansamblu asupra centrului de control"
 
 #: control-center/gnomecc-ui.xml.h:3
-msgid "_About..."
+#, fuzzy
+msgid "_About"
 msgstr "_Despre..."
 
 #: control-center/gnomecc-ui.xml.h:4
-msgid "_Contents..."
+#, fuzzy
+msgid "_Contents"
 msgstr "_Conţinut..."
 
 #: control-center/gnomecc-ui.xml.h:6
@@ -1953,32 +2280,32 @@ msgstr ""
 "Nu am putut crea directorul \"%s\".\n"
 "Este nevoie de acesta pentru a permite schimbarea cursorului."
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:106
+#: gnome-settings-daemon/gnome-settings-keybindings.c:146
 #, c-format
 msgid "Key Binding (%s) has its action defined multiple times\n"
 msgstr "Combinaţia de taste (%s) are acţiunea definită de mai multe ori\n"
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:119
+#: gnome-settings-daemon/gnome-settings-keybindings.c:159
 #, c-format
 msgid "Key Binding (%s) has its binding defined multiple times\n"
 msgstr "Combinaţia de taste (%s) are combinaţia definită de mai multe ori\n"
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:125
+#: gnome-settings-daemon/gnome-settings-keybindings.c:165
 #, c-format
 msgid "Key Binding (%s) is incomplete\n"
 msgstr "Combinaţia de taste (%s) este incompletă\n"
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:153
+#: gnome-settings-daemon/gnome-settings-keybindings.c:193
 #, c-format
 msgid "Key Binding (%s) is invalid\n"
 msgstr "Combinaţia de taste (%s) este invalidă\n"
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:241
+#: gnome-settings-daemon/gnome-settings-keybindings.c:281
 #, c-format
 msgid "Key Binding (%s) is already in use\n"
 msgstr "Combinaţia de taste (%s) este deja folosită\n"
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:292
+#: gnome-settings-daemon/gnome-settings-keybindings.c:357
 #, c-format
 msgid ""
 "Error while trying to run (%s)\n"
@@ -2011,16 +2338,16 @@ msgstr "_Nu mai arăta acest mesaj pe viitor"
 msgid "Couldn't load sound file %s as sample %s"
 msgstr "Nu am putut încărca fişierul de sunet %s ca eşantion %s"
 
-#: gnome-settings-daemon/gnome-settings-xsettings.c:150
+#: gnome-settings-daemon/gnome-settings-xsettings.c:184
 #, c-format
 msgid "GConf key %s set to type %s but its expected type was %s\n"
 msgstr "Cheia GConf %s este setată la tipul %s dar tipul aşteptat era %s\n"
 
-#: libbackground/applier.c:239
+#: libbackground/applier.c:254
 msgid "Type"
 msgstr "Tip"
 
-#: libbackground/applier.c:240
+#: libbackground/applier.c:255
 msgid ""
 "Type of bg_applier: BG_APPLIER_ROOT for root window or BG_APPLIER_PREVIEW "
 "for preview"
@@ -2028,23 +2355,31 @@ msgstr ""
 "Tipul bg_applier: BG_APPLIER_ROOT pentru fereastra principală sau "
 "BG_APPLIER_PREVIEW pentru previzualizare"
 
-#: libbackground/applier.c:247
+#: libbackground/applier.c:262
 msgid "Preview Width"
 msgstr "Lăţime previzualizare"
 
-#: libbackground/applier.c:248
+#: libbackground/applier.c:263
 msgid "Width if applier is a preview: Defaults to 64."
 msgstr "Lăţimea dacă este vorba de o previzualizare: implicit la 64."
 
-#: libbackground/applier.c:255
+#: libbackground/applier.c:270
 msgid "Preview Height"
 msgstr "Înălţime previzualizare"
 
-#: libbackground/applier.c:256
+#: libbackground/applier.c:271
 msgid "Height if applier is a preview: Defaults to 48."
 msgstr "Înălţimea dacă este vorba de o previzualizare: implicit la 48."
 
-#: libbackground/preview-file-selection.c:193
+#: libbackground/applier.c:279
+msgid "Screen"
+msgstr ""
+
+#: libbackground/applier.c:280
+msgid "Screen on which BGApplier is to draw"
+msgstr ""
+
+#: libbackground/preview-file-selection.c:207
 msgid "Can't find an hbox, using a normal file selection"
 msgstr "Nu pot găsi un hbox, folosesc o selectare normală de fişiere"
 
@@ -2082,63 +2417,226 @@ msgstr "_Redă"
 msgid "Select sound file"
 msgstr "Selectează fişierul de sunet"
 
-#: libwindow-settings/gnome-wm-manager.c:171
+#: libwindow-settings/gnome-wm-manager.c:320
 #, c-format
-msgid ""
-"Starting %s\n"
-"(%d seconds left before operation times out)"
+msgid "Window manager \"%s\" has not registered a configuration tool\n"
 msgstr ""
-"Pornesc %s\n"
-"(%d secunde rămase până la expirarea timpului)"
 
-#: libwindow-settings/gnome-wm-manager.c:325
-msgid ""
-"wm-properties-capplet: Unable to initialize window manager.\n"
-"\tAnother window manager is already running and could not be killed\n"
+#: libwindow-settings/metacity-window-manager.c:373
+msgid "Maximize"
 msgstr ""
-"wm-properties-capplet: Nu am putut iniţializa managerul de ferestre.\n"
-"\tUn alt manager de ferestre rulează deja şi nu a putut fi omorât\n"
 
-#: libwindow-settings/gnome-wm-manager.c:329
-#, c-format
-msgid ""
-"wm-properties-capplet: Unable to initialize window manager.\n"
-"\t'%s' didn't start\n"
+#: libwindow-settings/metacity-window-manager.c:374
+msgid "Roll up"
 msgstr ""
-"wm-properties-capplet: Nu am putut iniţializa managerul de ferestre.\n"
-"\t'%s' nu a pornit\n"
 
-#: libwindow-settings/gnome-wm-manager.c:378
-msgid "Previous window manager did not die\n"
-msgstr "Precedentul manager de ferestre nu a murit\n"
-
-#: libwindow-settings/gnome-wm-manager.c:411
-#, c-format
+#: schemas/apps_gnome_settings_daemon_default_editor.schemas.in.h:1
 msgid ""
-"Could not start '%s'.\n"
-"Falling back to previous window manager '%s'\n"
+"If true, the mime handlers for text/plain and text/* will be kept in sync"
 msgstr ""
-"Nu am putut porni '%s'.\n"
-"Mă întorc la managerul de ferestre precedent '%s'\n"
 
-#: libwindow-settings/gnome-wm-manager.c:442
+#: schemas/apps_gnome_settings_daemon_default_editor.schemas.in.h:2
+msgid "Sync text/plain and text/* handlers"
+msgstr ""
+
+#: schemas/apps_gnome_settings_daemon_screensaver.schemas.in.h:1
+msgid "Display a dialog when there are errors running XScreenSaver"
+msgstr ""
+
+#: schemas/apps_gnome_settings_daemon_screensaver.schemas.in.h:2
+msgid "Run XScreenSaver at login"
+msgstr ""
+
+#: schemas/apps_gnome_settings_daemon_screensaver.schemas.in.h:3
+msgid "Show Startup Errors"
+msgstr ""
+
+#: schemas/apps_gnome_settings_daemon_screensaver.schemas.in.h:4
+msgid "Start XScreenSaver"
+msgstr ""
+
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:1
+msgid "Antialiasing"
+msgstr ""
+
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:2
+msgid "DPI"
+msgstr ""
+
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:3
+msgid "Hinting"
+msgstr ""
+
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:4
+msgid "RGBA Order"
+msgstr ""
+
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:5
 msgid ""
-"Could not start fallback window manager.\n"
-"Please run a window manager manually. You can\n"
-"do this by selecting \"Run Program\" in the\n"
-"foot menu\n"
+"Resolution used for converting font sizes to pixel sizes, in dots per inch"
 msgstr ""
-"Nu am putut reveni la managerul de ferestre.\n"
-"Vă rugăm rulaţi manual un manager de ferestre.\n"
-"Puteţi face asta selectând \"Rulează program\" din\n"
-"meniul principal.\n"
 
-#: libwindow-settings/gnome-wm-manager.c:467
-msgid "OK"
-msgstr "OK"
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:6
+msgid ""
+"The order of subpixel elements on an LCD screen; only used when antialiasing "
+"is set to \"rgba\". Possible values are: \"rgb\" - red on left, most common. "
+"\"bgr\" - blue on left. \"vrgb\" - red on top. \"vbgr\" - red on bottom."
+msgstr ""
+
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:7
+msgid ""
+"The type of antialiasing to use when rendering fonts. Possible values are: "
+"\"none\" - no antialiasing. \"grayscale\" - standard grayscale antialiasing. "
+"\"rgba\" - subpixel antialiasing. (LCD screens only)."
+msgstr ""
+
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:8
+msgid ""
+"The type of hinting to use when rendering fonts. Possible values are: \"none"
+"\" - no hinting, \"slight\", \"medium\", and \"full\" - as much hinting as "
+"possible; may cause distortion of letter forms."
+msgstr ""
+
+#, fuzzy
+#~ msgid "Use _Background"
+#~ msgstr "Fundal"
+
+#, fuzzy
+#~ msgid "Use _Font"
+#~ msgstr "Font"
+
+#, fuzzy
+#~ msgid "Use _background"
+#~ msgstr "Fundal"
+
+#, fuzzy
+#~ msgid "Current modified"
+#~ msgstr "Index curent URI"
+
+#, fuzzy
+#~ msgid "Super"
+#~ msgstr "Viteză"
+
+#, fuzzy
+#~ msgid "Beep when enabling/disabling _keyboard accessibility features"
+#~ msgstr ""
+#~ "_Bip la activarea/dezactivarea facilităţilor de accesibilitate a "
+#~ "tastaturii"
+
+#~ msgid "Beep when:"
+#~ msgstr "Bip când:"
+
+#, fuzzy
+#~ msgid "Repeat Key Pre_ferences..."
+#~ msgstr "Preferinţe repetare taste"
+
+#, fuzzy
+#~ msgid "Start mo_ving this long after keypress:"
+#~ msgstr "Începe mişcarea la acest interval după apăsare :"
+
+#~ msgid "Testing Area"
+#~ msgstr "Zonă de testare"
+
+#~ msgid "Toggle and Repeat Keys"
+#~ msgstr "Taste de comutare şi repetare"
+
+#, fuzzy
+#~ msgid "_Import CDE AccessX file..."
+#~ msgstr "_Importă fişier AccessX CDE"
+
+#~ msgid ""
+#~ "_Turn off Sticky Keys when\n"
+#~ "two keys pressed simultaneously"
+#~ msgstr ""
+#~ "_Anulează tastarea persistentă când\n"
+#~ "două taste sunt apăsate simultan"
+
+#~ msgid "msecs"
+#~ msgstr "msec"
+
+#~ msgid "Network Preferences"
+#~ msgstr "Preferinţele reţelei"
+
+#~ msgid "Pro_xy requires username and password"
+#~ msgstr "Pro_xy necesită nume utilizator şi parolă"
+
+#~ msgid "_Location:"
+#~ msgstr "_Locaţie:"
+
+#~ msgid "Titlebar Font"
+#~ msgstr "Font pentru bara de titlu"
+
+#~ msgid "Window Border Appearance"
+#~ msgstr "Aspect margine fereastră"
+
+#~ msgid "Window Manager:"
+#~ msgstr "Manager de ferestre:"
+
+#~ msgid ""
+#~ "Starting %s\n"
+#~ "(%d seconds left before operation times out)"
+#~ msgstr ""
+#~ "Pornesc %s\n"
+#~ "(%d secunde rămase până la expirarea timpului)"
+
+#~ msgid ""
+#~ "wm-properties-capplet: Unable to initialize window manager.\n"
+#~ "\tAnother window manager is already running and could not be killed\n"
+#~ msgstr ""
+#~ "wm-properties-capplet: Nu am putut iniţializa managerul de ferestre.\n"
+#~ "\tUn alt manager de ferestre rulează deja şi nu a putut fi omorât\n"
+
+#~ msgid ""
+#~ "wm-properties-capplet: Unable to initialize window manager.\n"
+#~ "\t'%s' didn't start\n"
+#~ msgstr ""
+#~ "wm-properties-capplet: Nu am putut iniţializa managerul de ferestre.\n"
+#~ "\t'%s' nu a pornit\n"
+
+#~ msgid "Previous window manager did not die\n"
+#~ msgstr "Precedentul manager de ferestre nu a murit\n"
+
+#~ msgid ""
+#~ "Could not start '%s'.\n"
+#~ "Falling back to previous window manager '%s'\n"
+#~ msgstr ""
+#~ "Nu am putut porni '%s'.\n"
+#~ "Mă întorc la managerul de ferestre precedent '%s'\n"
+
+#~ msgid ""
+#~ "Could not start fallback window manager.\n"
+#~ "Please run a window manager manually. You can\n"
+#~ "do this by selecting \"Run Program\" in the\n"
+#~ "foot menu\n"
+#~ msgstr ""
+#~ "Nu am putut reveni la managerul de ferestre.\n"
+#~ "Vă rugăm rulaţi manual un manager de ferestre.\n"
+#~ "Puteţi face asta selectând \"Rulează program\" din\n"
+#~ "meniul principal.\n"
+
+#~ msgid "OK"
+#~ msgstr "OK"
+
+#~ msgid "_Category"
+#~ msgstr "_Categorie"
+
+#~ msgid "_Delete"
+#~ msgstr "_Şterge"
+
+#~ msgid "_Name"
+#~ msgstr "_Nume"
+
+#~ msgid "_General"
+#~ msgstr "_General"
+
+#~ msgid "Associate applications with file types"
+#~ msgstr "Asociază aplicaţii cu tipuri de fişiere"
+
+#~ msgid "Installed Themes"
+#~ msgstr "Teme instalate"
+
+#~ msgid "List of available GTK+ themes"
+#~ msgstr "Lista temelor GTK+ disponibile"
 
 #~ msgid "Edit Menu"
 #~ msgstr "Meniu Editare"
-
-#~ msgid "_Menu"
-#~ msgstr "_Meniu"

@@ -15,10 +15,9 @@
 
   <child internal-child="vbox">
     <widget class="GtkVBox" id="dialog-vbox1">
-      <property name="border_width">2</property>
       <property name="visible">True</property>
       <property name="homogeneous">False</property>
-      <property name="spacing">8</property>
+      <property name="spacing">0</property>
 
       <child internal-child="action_area">
 	<widget class="GtkHButtonBox" id="dialog-action_area1">
@@ -128,6 +127,7 @@
 
       <child>
 	<widget class="GtkNotebook" id="notebook1">
+	  <property name="border_width">5</property>
 	  <property name="visible">True</property>
 	  <property name="can_focus">True</property>
 	  <property name="show_tabs">True</property>
@@ -150,7 +150,7 @@
 		  <property name="visible">True</property>
 		  <property name="label_xalign">0</property>
 		  <property name="label_yalign">0.5</property>
-		  <property name="shadow_type">GTK_SHADOW_ETCHED_IN</property>
+		  <property name="shadow_type">GTK_SHADOW_NONE</property>
 
 		  <child>
 		    <widget class="GtkHBox" id="hbox5">
@@ -229,7 +229,7 @@
 				  <property name="digits">1</property>
 				  <property name="update_policy">GTK_UPDATE_CONTINUOUS</property>
 				  <property name="inverted">False</property>
-				  <property name="adjustment">500 50 1510 10 10 0</property>
+				  <property name="adjustment">500 100 1510 10 10 0</property>
 				</widget>
 				<packing>
 				  <property name="left_attach">1</property>
@@ -453,7 +453,7 @@
 		  <property name="visible">True</property>
 		  <property name="label_xalign">0</property>
 		  <property name="label_yalign">0.5</property>
-		  <property name="shadow_type">GTK_SHADOW_ETCHED_IN</property>
+		  <property name="shadow_type">GTK_SHADOW_NONE</property>
 
 		  <child>
 		    <widget class="GtkHBox" id="hbox6">
@@ -707,7 +707,7 @@
 		<widget class="GtkFrame" id="frame1">
 		  <property name="label_xalign">0</property>
 		  <property name="label_yalign">0.5</property>
-		  <property name="shadow_type">GTK_SHADOW_ETCHED_IN</property>
+		  <property name="shadow_type">GTK_SHADOW_NONE</property>
 
 		  <child>
 		    <widget class="GtkHBox" id="hbox2">
@@ -918,7 +918,7 @@
 		  <property name="visible">True</property>
 		  <property name="label_xalign">0</property>
 		  <property name="label_yalign">0.5</property>
-		  <property name="shadow_type">GTK_SHADOW_ETCHED_IN</property>
+		  <property name="shadow_type">GTK_SHADOW_NONE</property>
 
 		  <child>
 		    <widget class="GtkHBox" id="hbox3">

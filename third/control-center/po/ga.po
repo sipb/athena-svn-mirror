@@ -5,30 +5,29 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: control-center CVS\n"
-"POT-Creation-Date: 2002-12-19 10:01-0500\n"
+"POT-Creation-Date: 2003-01-10 10:20-0500\n"
 "PO-Revision-Date: 2000-03-11 01:02+0000\n"
 "Last-Translator:Alastair McKinstry <mckinstry@computer.org>\n"
 "Language-Team: Alastair McKinstry <mckinstry@computer.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: capplets/accessibility/keyboard/accessibility-keyboard.c:229
-#: capplets/keyboard/gnome-keyboard-properties.c:159
+#: capplets/accessibility/keyboard/accessibility-keyboard.c:238
 #, c-format
-msgid "There was an error launching the keyboard capplet : %s"
+msgid "There was an error launching the mouse preferences dialog: %s"
 msgstr ""
 
-#: capplets/accessibility/keyboard/accessibility-keyboard.c:321
-#: capplets/accessibility/keyboard/accessibility-keyboard.c:379
+#: capplets/accessibility/keyboard/accessibility-keyboard.c:334
+#: capplets/accessibility/keyboard/accessibility-keyboard.c:392
 #, c-format
 msgid "Unable to import AccessX settings from file '%s'"
 msgstr ""
 
-#: capplets/accessibility/keyboard/accessibility-keyboard.c:452
+#: capplets/accessibility/keyboard/accessibility-keyboard.c:465
 #, fuzzy
 msgid "Select CDE AccessX file"
-msgstr "TÛg comhad..."
+msgstr "T√≥g comhad..."
 
 #: capplets/accessibility/keyboard/accessibility-keyboard.desktop.in.h:1
 #: capplets/keyboard/gnome-keyboard-properties.glade.h:10
@@ -40,157 +39,209 @@ msgstr " Miarchlar "
 #: capplets/accessibility/keyboard/accessibility-keyboard.desktop.in.h:2
 #, fuzzy
 msgid "Set your keyboard accessibility preferences"
-msgstr "¡baltachtaÌ Cniog"
+msgstr "√Åbaltachta√≠ Cniog"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.c:57
+msgid ""
+"This system does not seem to have the XKB extension.  The keyboard "
+"accessibility features will not operate without it."
+msgstr ""
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:1
-msgid "Beep when an LED is turned on and two beeps when one is turned off."
+#: capplets/default-applications/gnome-default-applications-properties.glade.h:1
+#: capplets/file-types/file-types-properties.glade.h:1
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:1
+#: capplets/network/gnome-network-preferences.glade.h:2
+#: capplets/theme-switcher/theme-properties.glade.h:1
+#: capplets/theme-switcher/theme-install.glade.h:1
+msgid "*"
 msgstr ""
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:2
 #, fuzzy
-msgid "Beep when enabling/disabling _keyboard accessibility features"
-msgstr " Miarchlar "
+msgid "Basic"
+msgstr "Beag"
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:3
-msgid "Beep when key is re_jected"
+msgid "Beep if key is re_jected"
 msgstr ""
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:4
-msgid "Beep when:"
+msgid "Beep when _features turned on or off from keyboard"
 msgstr ""
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:5
-msgid "E_nable Toggle Keys"
+msgid "Beep when _modifier is pressed"
 msgstr ""
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:6
-msgid "Enable Bo_unce Keys"
+msgid "Beep when an LED is turned on and two beeps when one is turned off."
 msgstr ""
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:7
-msgid "Enable Slo_w Keys"
+msgid "Beep when key is:"
 msgstr ""
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:8
-msgid "Enable _Mouse Keys"
+msgid "Del_ay:"
 msgstr ""
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:9
-msgid "Enable _Sticky Keys"
+msgid "Delay between keypress and pointer mo_vement:"
 msgstr ""
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:10
-#, fuzzy
-msgid "General"
-msgstr "tada"
+msgid "Disa_ble if two keys pressed together"
+msgstr ""
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:11
-msgid "I_gnore keypresses within  :"
+msgid "E_nable Toggle Keys"
 msgstr ""
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:12
+msgid "Enable Bo_unce Keys"
+msgstr ""
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:13
+msgid "Enable Slo_w Keys"
+msgstr ""
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:14
+msgid "Enable _Mouse Keys"
+msgstr ""
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:15
+msgid "Enable _Sticky Keys"
+msgstr ""
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:16
+#, fuzzy
+msgid "Features"
+msgstr "Cluich√≠"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:17
+#, fuzzy
+msgid "Filters"
+msgstr "Comhad"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:18
+msgid "I_gnore duplicate keypresses within:"
+msgstr ""
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:19
 msgid ""
 "Ignore all subsequent presses of the SAME key if they happen within a user "
 "selectable period of time."
 msgstr ""
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:13
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:20
 #, fuzzy
-msgid "Keyboard Accessibility Configuration (AccessX)"
+msgid "Keyboard Accessibility Preferences (AccessX)"
 msgstr "Cumramocht painial go leor"
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:14
-msgid "Ma_ximum pointer speed :"
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:21
+msgid "Ma_ximum pointer speed:"
 msgstr ""
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:15
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:22
+#: capplets/mouse/mouse.desktop.in.h:1
+#, fuzzy
+msgid "Mouse"
+msgstr "Claireanna"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:23
+#, fuzzy
+msgid "Mouse _Preferences..."
+msgstr "√Åbaltachta√≠ C√∫lra"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:24
 msgid ""
 "Only accept keys after they have been pressed and held for a user adjustable "
 "amount of time."
 msgstr ""
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:16
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:25
 msgid ""
 "Perform multiple simultaneous key press operations by pressing modifier keys "
 "in sequence."
 msgstr ""
 
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:17
-#, fuzzy
-msgid "Repeat Key Pre_ferences"
-msgstr "¡baltachtaÌ Cniog"
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:18
-msgid "Start mo_ving this long after keypress :"
-msgstr ""
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:19
-msgid "Testing Area"
-msgstr ""
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:20
-msgid "Time to acce_lerate to max speed :"
-msgstr ""
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:21
-msgid "Toggle and Repeat Keys"
-msgstr ""
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:22
-msgid "Turn the numeric keypad into a mouse control pad."
-msgstr ""
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:23
-msgid "_Beep when modifier is pressed"
-msgstr ""
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:24
-msgid "_Disable if unused for "
-msgstr ""
-
-#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:25
-#, fuzzy
-msgid "_Enable keyboard accessibility"
-msgstr " Miarchlar "
-
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:26
-msgid "_Import CDE AccessX file"
+#: capplets/keyboard/gnome-keyboard-properties.glade.h:16
+msgid "S_peed:"
 msgstr ""
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:27
-msgid "_Only accept keypress after :"
+msgid "Time to acce_lerate to maximum speed:"
 msgstr ""
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:28
-msgid ""
-"_Turn off Sticky Keys when\n"
-"two keys pressed simultaneously"
+msgid "Toggle Keys"
+msgstr ""
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:29
+msgid "Turn the numeric keypad into a mouse control pad."
 msgstr ""
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:30
-msgid "key is _accepted"
+msgid "_Disable if unused for:"
 msgstr ""
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:31
-msgid "key is _pressed"
-msgstr ""
+#, fuzzy
+msgid "_Enable keyboard accessibility features"
+msgstr " Miarchlar "
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:32
-msgid "key is _rejected"
+msgid "_Import Feature Settings..."
 msgstr ""
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:33
-msgid "msecs"
+msgid "_Only accept keys held for:"
 msgstr ""
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:34
-msgid "pixels/sec"
-msgstr ""
+#, fuzzy
+msgid "_Repeat Keys"
+msgstr "Moill atriallach"
 
 #: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:35
 #, fuzzy
+msgid "_Type to test settings:"
+msgstr "Cumriagh"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:36
+msgid "_accepted"
+msgstr ""
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:37
+msgid "_pressed"
+msgstr ""
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:38
+#, fuzzy
+msgid "_rejected"
+msgstr "Dealaigh"
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:39
+msgid "characters/second"
+msgstr ""
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:40
+#, fuzzy
+msgid "milliseconds"
+msgstr "T√≥g dealbh..."
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:41
+#, fuzzy
+msgid "pixels/second"
+msgstr "T√≥g dealbh..."
+
+#: capplets/accessibility/keyboard/gnome-accessibility-keyboard-properties.glade.h:42
+#: capplets/windows/gnome-window-properties.glade.h:7
+#, fuzzy
 msgid "seconds"
-msgstr "TÛg dealbh..."
+msgstr "T√≥g dealbh..."
 
 #. solid
 #: capplets/background/background-properties-capplet.c:228
@@ -245,13 +296,13 @@ msgstr ""
 #: capplets/background/background-properties-capplet.c:433
 #, fuzzy
 msgid "Select _picture:"
-msgstr "TÛg dealbh..."
+msgstr "T√≥g dealbh..."
 
 #: capplets/background/background-properties-capplet.c:567
 #: capplets/common/capplet-util.c:243
 #: capplets/default-applications/gnome-default-applications-properties.c:712
-#: capplets/keyboard/gnome-keyboard-properties.c:293
-#: capplets/mouse/gnome-mouse-properties.c:752
+#: capplets/keyboard/gnome-keyboard-properties.c:290
+#: capplets/mouse/gnome-mouse-properties.c:712
 #: capplets/sound/sound-properties-capplet.c:149
 msgid "Retrieve and store legacy settings"
 msgstr ""
@@ -260,22 +311,22 @@ msgstr ""
 #: capplets/background/background-properties.glade.h:2
 #, fuzzy
 msgid "Background Preferences"
-msgstr "¡baltachtaÌ C˙lra"
+msgstr "√Åbaltachta√≠ C√∫lra"
 
 #: capplets/background/background-properties.glade.h:1
 #, fuzzy
 msgid "A preview of the background picture."
-msgstr "Dath C˙lra"
+msgstr "Dath C√∫lra"
 
 #: capplets/background/background-properties.glade.h:3
 #, fuzzy
 msgid "Background Preview"
-msgstr "¡baltachtaÌ C˙lra"
+msgstr "√Åbaltachta√≠ C√∫lra"
 
 #: capplets/background/background-properties.glade.h:4
 #, fuzzy
 msgid "Background _Style:"
-msgstr "Dath C˙lra:"
+msgstr "Dath C√∫lra:"
 
 #: capplets/background/background-properties.glade.h:5
 #, fuzzy
@@ -293,7 +344,7 @@ msgid "Picture Options:"
 msgstr "Cumraigh Chlar"
 
 #: capplets/background/background-properties.glade.h:8
-#: libbackground/preview-file-selection.c:198
+#: libbackground/preview-file-selection.c:212
 #, fuzzy
 msgid "Preview"
 msgstr "Uath-atriall"
@@ -315,7 +366,7 @@ msgstr "Dath"
 #: capplets/background/background-properties.glade.h:12
 #, fuzzy
 msgid "The background picture's file name."
-msgstr "Dath C˙lra"
+msgstr "Dath C√∫lra"
 
 #: capplets/background/background-properties.glade.h:13
 msgid "To set the background picture, drop an image or click to browse."
@@ -336,12 +387,12 @@ msgstr ""
 #: capplets/background/background.desktop.in.h:1
 #, fuzzy
 msgid "Background"
-msgstr "C˙lraÌ"
+msgstr "C√∫lra√≠"
 
 #: capplets/background/background.desktop.in.h:2
 #, fuzzy
 msgid "Customize your desktop background"
-msgstr "TÛg comhad..."
+msgstr "T√≥g comhad..."
 
 #: capplets/common/activate-settings-daemon.c:18
 msgid ""
@@ -426,7 +477,7 @@ msgstr ""
 #: capplets/common/file-transfer-dialog.c:374
 #, fuzzy
 msgid "Connecting..."
-msgstr "CumasaÌ..."
+msgstr "Cumasa√≠..."
 
 #: capplets/common/file-transfer-dialog.c:379
 #: capplets/common/file-transfer-dialog.c:381
@@ -535,14 +586,6 @@ msgstr ""
 msgid "Please specify a name and a command for this editor."
 msgstr ""
 
-#: capplets/default-applications/gnome-default-applications-properties.glade.h:1
-#: capplets/file-types/file-types-properties.glade.h:1
-#: capplets/keyboard/gnome-keyboard-properties.glade.h:1
-#: capplets/network/gnome-network-preferences.glade.h:1
-#: capplets/theme-switcher/theme-install.glade.h:1
-msgid "*"
-msgstr ""
-
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:2
 msgid "Acce_pts URLs"
 msgstr ""
@@ -555,7 +598,7 @@ msgstr "Suim"
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:4
 #, fuzzy
 msgid "C_ustom Editor"
-msgstr "EagathÛir Gnome"
+msgstr "Eagath√≥ir Gnome"
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:5
 msgid "C_ustom Help Browser:"
@@ -564,7 +607,7 @@ msgstr ""
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:6
 #, fuzzy
 msgid "C_ustom Terminal:"
-msgstr "TÛg comhad..."
+msgstr "T√≥g comhad..."
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:7
 #, fuzzy
@@ -574,12 +617,12 @@ msgstr " Dearcadh.."
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:8
 #, fuzzy
 msgid "Co_mmand:"
-msgstr "Ord˙:"
+msgstr "Ord√∫:"
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:9
 #, fuzzy
 msgid "Custom Editor Properties"
-msgstr "AlbachtaÓ Seisi˚n Gnome"
+msgstr "Albachta√Æ Seisi√ªn Gnome"
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:10
 msgid "Default Help Browser"
@@ -588,12 +631,12 @@ msgstr ""
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:11
 #, fuzzy
 msgid "Default Terminal"
-msgstr "TÛg comhad..."
+msgstr "T√≥g comhad..."
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:12
 #, fuzzy
 msgid "Default Text Editor"
-msgstr "EagathÛir Gnome"
+msgstr "Eagath√≥ir Gnome"
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:13
 #, fuzzy
@@ -631,7 +674,7 @@ msgstr ""
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:21
 #, fuzzy
 msgid "Start in T_erminal"
-msgstr "TÛg comhad..."
+msgstr "T√≥g comhad..."
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:22
 #, fuzzy
@@ -641,7 +684,7 @@ msgstr "Triall ina bhfuinneog fiin"
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:23
 #, fuzzy
 msgid "Text Editor"
-msgstr "EagathÛir Gnome"
+msgstr "Eagath√≥ir Gnome"
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:24
 msgid "This application can open _URIs"
@@ -674,6 +717,7 @@ msgid "Window Manager"
 msgstr "Rogha Paipiar balla"
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:31
+#: capplets/file-types/file-types-properties.glade.h:22
 #, fuzzy
 msgid "_Name:"
 msgstr "Ainm"
@@ -681,27 +725,27 @@ msgstr "Ainm"
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:32
 #, fuzzy
 msgid "_Properties..."
-msgstr "AbaltachtaÌ go liir..."
+msgstr "Abaltachta√≠ go liir..."
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:33
 #, fuzzy
 msgid "_Select a Help Browser:"
-msgstr "TÛg comhad..."
+msgstr "T√≥g comhad..."
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:34
 #, fuzzy
 msgid "_Select a Terminal:"
-msgstr "TÛg comhad..."
+msgstr "T√≥g comhad..."
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:35
 #, fuzzy
 msgid "_Select a Web Browser:"
-msgstr "TÛg comhad..."
+msgstr "T√≥g comhad..."
 
 #: capplets/default-applications/gnome-default-applications-properties.glade.h:36
 #, fuzzy
 msgid "_Select an Editor:"
-msgstr "TÛg dealbh..."
+msgstr "T√≥g dealbh..."
 
 #: capplets/desktop-links/Accessibility.directory.in.in.h:1
 msgid "Accessibility"
@@ -750,7 +794,7 @@ msgstr "Mallaigh"
 #: capplets/desktop-links/Sawfish/focus-properties.desktop.in.h:1
 #, fuzzy
 msgid "Configure how to give focus to windows"
-msgstr "¡baltachtaÌ PrintÈir"
+msgstr "√Åbaltachta√≠ Print√©ir"
 
 #: capplets/desktop-links/Sawfish/focus-properties.desktop.in.h:2
 msgid "Focus behavior"
@@ -773,6 +817,7 @@ msgid "Minimizing and Maximizing"
 msgstr ""
 
 #: capplets/desktop-links/Sawfish/meta-properties.desktop.in.h:1
+#: capplets/windows/gnome-window-properties.c:649
 msgid "Meta"
 msgstr ""
 
@@ -787,12 +832,12 @@ msgstr "Teibi."
 #: capplets/desktop-links/Sawfish/misc-properties.desktop.in.h:2
 #, fuzzy
 msgid "Select miscellaneous window options"
-msgstr "¡baltachtaÌ PrintÈir"
+msgstr "√Åbaltachta√≠ Print√©ir"
 
 #: capplets/desktop-links/Sawfish/move-properties.desktop.in.h:1
 #, fuzzy
 msgid "Configure how windows move and resize"
-msgstr "¡baltachtaÌ PrintÈir"
+msgstr "√Åbaltachta√≠ Print√©ir"
 
 #: capplets/desktop-links/Sawfish/move-properties.desktop.in.h:2
 msgid "Moving and Resizing"
@@ -805,7 +850,7 @@ msgstr ""
 #: capplets/desktop-links/Sawfish/placement-properties.desktop.in.h:2
 #, fuzzy
 msgid "Placement"
-msgstr "ClÈ"
+msgstr "Cl√©"
 
 #: capplets/desktop-links/Sawfish/sound-properties.desktop.in.h:1
 msgid "Associate sounds with window manager events"
@@ -816,12 +861,12 @@ msgstr ""
 #: capplets/sound/sound.desktop.in.h:2
 #, fuzzy
 msgid "Sound"
-msgstr "TÛg dealbh..."
+msgstr "T√≥g dealbh..."
 
 #: capplets/desktop-links/Sawfish/workspace-properties.desktop.in.h:1
 #, fuzzy
 msgid "Configure your workspaces and viewports"
-msgstr "¡baltachtaÌ PrintÈir"
+msgstr "√Åbaltachta√≠ Print√©ir"
 
 #: capplets/desktop-links/Sawfish/workspace-properties.desktop.in.h:2
 msgid "Workspaces"
@@ -835,18 +880,17 @@ msgstr ""
 msgid "Legacy applications settings (grdb)"
 msgstr ""
 
-#: capplets/file-types/file-types-capplet.c:194
+#: capplets/file-types/file-types-capplet.c:196
 #, fuzzy
 msgid "Description"
-msgstr "¡it"
+msgstr "√Åit"
 
-#: capplets/file-types/file-types-capplet.c:216
+#: capplets/file-types/file-types-capplet.c:218
 msgid "Extensions"
 msgstr ""
 
 #: capplets/file-types/file-types-capplet.desktop.in.h:1
-#: capplets/file-types/file-types-properties.glade.h:8
-#: capplets/file-types/file-types.desktop.in.h:2
+#: capplets/file-types/file-types-properties.glade.h:10
 msgid "File Types and Programs"
 msgstr ""
 
@@ -870,67 +914,68 @@ msgid "Add _Service..."
 msgstr "Cuir le Painial"
 
 #: capplets/file-types/file-types-properties.glade.h:5
-#, fuzzy
-msgid "Add:"
-msgstr "Suim"
+msgid "C_hoose..."
+msgstr ""
 
 #: capplets/file-types/file-types-properties.glade.h:6
-#, fuzzy
-msgid "Default action"
-msgstr "TÛg comhad..."
+msgid "Cate_gory:"
+msgstr ""
 
 #: capplets/file-types/file-types-properties.glade.h:7
+#, fuzzy
+msgid "D_efault action:"
+msgstr "T√≥g comhad..."
+
+#: capplets/file-types/file-types-properties.glade.h:8
+#, fuzzy
+msgid "Default _action:"
+msgstr "T√≥g comhad..."
+
+#: capplets/file-types/file-types-properties.glade.h:9
 #: capplets/file-types/mime-edit-dialog.c:208
 msgid "Edit file type"
 msgstr ""
 
-#: capplets/file-types/file-types-properties.glade.h:9
-msgid "Filename Extensions"
-msgstr ""
-
-#: capplets/file-types/file-types-properties.glade.h:10
-msgid "Look at content"
-msgstr ""
-
 #: capplets/file-types/file-types-properties.glade.h:11
-#, fuzzy
-msgid "Program to Run"
-msgstr "ScrÌos RÌomhchlar"
+msgid "Filename extensions:"
+msgstr ""
 
 #: capplets/file-types/file-types-properties.glade.h:12
-msgid "Run a program"
+msgid "Look at content"
 msgstr ""
 
 #: capplets/file-types/file-types-properties.glade.h:13
 #, fuzzy
-msgid "Run in _Terminal"
-msgstr "TÛg comhad..."
+msgid "P_rogram:"
+msgstr "Scr√≠os R√≠omhchlar"
 
 #: capplets/file-types/file-types-properties.glade.h:14
-msgid "Use parent category _defaults"
-msgstr ""
+#, fuzzy
+msgid "Program to Run"
+msgstr "Scr√≠os R√≠omhchlar"
 
 #: capplets/file-types/file-types-properties.glade.h:15
-msgid "Viewer Component"
+msgid "Run a program"
 msgstr ""
 
 #: capplets/file-types/file-types-properties.glade.h:16
-msgid "_Category"
-msgstr ""
+#, fuzzy
+msgid "Run in _Terminal"
+msgstr "T√≥g comhad..."
 
 #: capplets/file-types/file-types-properties.glade.h:17
-msgid "_Choose..."
+msgid "Use parent category _defaults"
 msgstr ""
 
 #: capplets/file-types/file-types-properties.glade.h:18
 #, fuzzy
-msgid "_Delete"
-msgstr "Dealaigh"
+msgid "_Add:"
+msgstr "Suim"
 
 #: capplets/file-types/file-types-properties.glade.h:19
 #, fuzzy
-msgid "_Description"
-msgstr "¡it"
+msgid "_Description:"
+msgstr "√Åit"
 
 #: capplets/file-types/file-types-properties.glade.h:20
 #, fuzzy
@@ -939,30 +984,33 @@ msgstr "Eagar..."
 
 #: capplets/file-types/file-types-properties.glade.h:21
 #, fuzzy
-msgid "_MIME Type"
+msgid "_MIME type:"
 msgstr "Saghas MIME:"
-
-#: capplets/file-types/file-types-properties.glade.h:22
-#, fuzzy
-msgid "_Name"
-msgstr "Ainm"
 
 #: capplets/file-types/file-types-properties.glade.h:23
 #, fuzzy
-msgid "_Program"
-msgstr "ScrÌos RÌomhchlar"
+msgid "_Program to run:"
+msgstr "Scr√≠os R√≠omhchlar"
 
 #: capplets/file-types/file-types-properties.glade.h:24
-#, fuzzy
-msgid "_Program to Run"
-msgstr "ScrÌos RÌomhchlar"
+msgid "_Protocol:"
+msgstr ""
 
 #: capplets/file-types/file-types-properties.glade.h:25
-msgid "_Protocol"
+#, fuzzy
+msgid "_Remove"
+msgstr "Scr√≠os"
+
+#: capplets/file-types/file-types-properties.glade.h:26
+msgid "_Viewer component:"
 msgstr ""
 
 #: capplets/file-types/file-types.desktop.in.h:1
-msgid "Associate applications with file types"
+msgid "File types and programs"
+msgstr ""
+
+#: capplets/file-types/file-types.desktop.in.h:2
+msgid "Specify which programs are used to open or view each type of file"
 msgstr ""
 
 #: capplets/file-types/mime-category-edit-dialog.c:138
@@ -1058,7 +1106,7 @@ msgstr ""
 #: capplets/file-types/mime-type-info.c:667
 #, fuzzy
 msgid "Images"
-msgstr "FormÙid Õomha:"
+msgstr "Form√¥id √çomha:"
 
 #: capplets/file-types/mime-type-info.c:669
 #, fuzzy
@@ -1133,7 +1181,7 @@ msgstr ""
 #: capplets/file-types/service-info.c:47
 #, fuzzy
 msgid "Detailed documentation"
-msgstr "TÛg comhad..."
+msgstr "T√≥g comhad..."
 
 #: capplets/file-types/service-info.c:48
 msgid "Manual pages"
@@ -1146,12 +1194,12 @@ msgstr ""
 #: capplets/file-types/service-info.c:50
 #, fuzzy
 msgid "Gnome documentation"
-msgstr "TÛg comhad..."
+msgstr "T√≥g comhad..."
 
 #: capplets/font/font-properties.desktop.in.h:1
 #, fuzzy
 msgid "Font"
-msgstr "ClÛ ⁄s·ideoir"
+msgstr "Cl√≥ √ös√°ideoir"
 
 #: capplets/font/font-properties.desktop.in.h:2
 msgid "Select fonts for the desktop"
@@ -1159,37 +1207,147 @@ msgstr ""
 
 #: capplets/font/font-properties.glade.h:1
 #, fuzzy
-msgid "Font Preferences"
-msgstr "¡baltachtaÌ C˙lra"
+msgid "Best _shapes"
+msgstr "Netscape"
 
 #: capplets/font/font-properties.glade.h:2
-msgid "Set the font for applications"
-msgstr ""
+#, fuzzy
+msgid "Best co_ntrast"
+msgstr "Xterm Dath"
 
 #: capplets/font/font-properties.glade.h:3
-msgid "Set the font for the icons on the desktop"
+msgid "De_tails..."
 msgstr ""
 
 #: capplets/font/font-properties.glade.h:4
-msgid "_Application font:"
-msgstr ""
+#, fuzzy
+msgid "Font Preferences"
+msgstr "√Åbaltachta√≠ C√∫lra"
 
 #: capplets/font/font-properties.glade.h:5
 #, fuzzy
+msgid "Font Rendering"
+msgstr "√Åbaltachta√≠ C√∫lra"
+
+#: capplets/font/font-properties.glade.h:6
+msgid "Font Rendering Details"
+msgstr ""
+
+#: capplets/font/font-properties.glade.h:7
+msgid "G_rayscale"
+msgstr ""
+
+#: capplets/font/font-properties.glade.h:8
+#, fuzzy
+msgid "Hinting:"
+msgstr "Rabhadh:"
+
+#: capplets/font/font-properties.glade.h:9
+#, fuzzy
+msgid "N_one"
+msgstr "tada"
+
+#: capplets/font/font-properties.glade.h:10
+msgid "Resolution (_dots per inch):"
+msgstr ""
+
+#: capplets/font/font-properties.glade.h:11
+msgid "Set the font for applications"
+msgstr ""
+
+#: capplets/font/font-properties.glade.h:12
+msgid "Set the font for the icons on the desktop"
+msgstr ""
+
+#: capplets/font/font-properties.glade.h:13
+msgid "Set the monospace font for terminals and similar applications"
+msgstr ""
+
+#: capplets/font/font-properties.glade.h:14
+msgid "Smoothing:"
+msgstr ""
+
+#: capplets/font/font-properties.glade.h:15
+msgid "Sub_pixel (LCDs)"
+msgstr ""
+
+#: capplets/font/font-properties.glade.h:16
+msgid "Sub_pixel smoothing (LCDs)"
+msgstr ""
+
+#: capplets/font/font-properties.glade.h:17
+msgid "Subpixel order:"
+msgstr ""
+
+#: capplets/font/font-properties.glade.h:18
+msgid "VB_GR"
+msgstr ""
+
+#: capplets/font/font-properties.glade.h:19
+msgid "_Application font:"
+msgstr ""
+
+#: capplets/font/font-properties.glade.h:20
+msgid "_BGR"
+msgstr ""
+
+#: capplets/font/font-properties.glade.h:21
+#, fuzzy
 msgid "_Desktop font:"
 msgstr "Mallaigh"
+
+#: capplets/font/font-properties.glade.h:22
+#, fuzzy
+msgid "_Full"
+msgstr "Comhad"
+
+#: capplets/font/font-properties.glade.h:23
+#, fuzzy
+msgid "_Medium"
+msgstr "Claireanna"
+
+#: capplets/font/font-properties.glade.h:24
+msgid "_Monochrome"
+msgstr ""
+
+#: capplets/font/font-properties.glade.h:25
+#, fuzzy
+msgid "_None"
+msgstr "tada"
+
+#: capplets/font/font-properties.glade.h:26
+msgid "_RGB"
+msgstr ""
+
+#: capplets/font/font-properties.glade.h:27
+#, fuzzy
+msgid "_Slight"
+msgstr "Deis"
+
+#: capplets/font/font-properties.glade.h:28
+#, fuzzy
+msgid "_Terminal font:"
+msgstr "Triall ina bhfuinneog fiin"
+
+#: capplets/font/font-properties.glade.h:29
+msgid "_VRGB"
+msgstr ""
+
+#: capplets/font/font-properties.glade.h:30
+msgid "_Window title font:"
+msgstr ""
 
 #: capplets/keybindings/eggcellrendererkeys.c:160
 #: capplets/keybindings/eggcellrendererkeys.c:161
 #, fuzzy
 msgid "Accelerator key"
-msgstr "Brost˙"
+msgstr "Brost√∫"
 
 #: capplets/keybindings/eggcellrendererkeys.c:170
 #: capplets/keybindings/eggcellrendererkeys.c:171
 #, fuzzy
 msgid "Accelerator modifiers"
-msgstr "Brost˙"
+msgstr "Brost√∫"
 
 #: capplets/keybindings/eggcellrendererkeys.c:180
 msgid "Accel Mode"
@@ -1200,10 +1358,10 @@ msgid "The type of accelerator."
 msgstr ""
 
 #: capplets/keybindings/eggcellrendererkeys.c:219
-#: capplets/keybindings/gnome-keybinding-properties.c:202
-#: libbackground/applier.c:521
+#: capplets/keybindings/gnome-keybinding-properties.c:204
+#: libbackground/applier.c:588
 msgid "Disabled"
-msgstr "MÌchumasach"
+msgstr "M√≠chumasach"
 
 #: capplets/keybindings/eggcellrendererkeys.c:330
 #: capplets/keybindings/eggcellrendererkeys.c:563
@@ -1214,42 +1372,44 @@ msgstr ""
 msgid "Type a new accelerator"
 msgstr ""
 
-#: capplets/keybindings/gnome-keybinding-properties.c:538
+#: capplets/keybindings/gnome-keybinding-properties.c:540
 #, fuzzy
 msgid "<Unknown Action>"
 msgstr "Gan aithne"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:557
+#: capplets/keybindings/gnome-keybinding-properties.c:559
 msgid "Desktop"
 msgstr ""
 
-#: capplets/keybindings/gnome-keybinding-properties.c:561
+#: capplets/keybindings/gnome-keybinding-properties.c:563
 #, fuzzy
 msgid "Window Management"
 msgstr "Rogha Paipiar balla"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:695
+#: capplets/keybindings/gnome-keybinding-properties.c:698
 #, c-format
-msgid "That accelerator key is already in use by: %s\n"
+msgid ""
+"The shortcut \"%s\" is already used for:\n"
+" \"%s\"\n"
 msgstr ""
 
-#: capplets/keybindings/gnome-keybinding-properties.c:725
+#: capplets/keybindings/gnome-keybinding-properties.c:729
 #, c-format
 msgid "Error setting new accelerator in configuration database: %s\n"
 msgstr ""
 
-#: capplets/keybindings/gnome-keybinding-properties.c:876
+#: capplets/keybindings/gnome-keybinding-properties.c:880
 msgid ""
 "Unable to find any keyboard themes.  This means your GTK+ installation has "
 "been incompletely installed."
 msgstr ""
 
-#: capplets/keybindings/gnome-keybinding-properties.c:898
+#: capplets/keybindings/gnome-keybinding-properties.c:902
 #, fuzzy
 msgid "Action"
 msgstr "Roghnachais"
 
-#: capplets/keybindings/gnome-keybinding-properties.c:917
+#: capplets/keybindings/gnome-keybinding-properties.c:921
 #, fuzzy
 msgid "Shortcut"
 msgstr "Mallaigh"
@@ -1262,7 +1422,7 @@ msgstr ""
 #: capplets/keybindings/keybinding.desktop.in.h:2
 #, fuzzy
 msgid "Keyboard Shortcuts"
-msgstr "¡baltachtaÌ Cniog"
+msgstr "√Åbaltachta√≠ Cniog"
 
 #: capplets/keybindings/gnome-keybinding-properties.glade.h:3
 #, fuzzy
@@ -1278,13 +1438,18 @@ msgstr "Mallaigh"
 msgid "Assign shortcut keys to commands"
 msgstr ""
 
-#: capplets/keyboard/gnome-keyboard-properties.c:272
+#: capplets/keyboard/gnome-keyboard-properties.c:162
+#, c-format
+msgid "There was an error launching the keyboard capplet : %s"
+msgstr ""
+
+#: capplets/keyboard/gnome-keyboard-properties.c:269
 #, fuzzy
 msgid "_Accessibility"
 msgstr "Cumriagh"
 
-#: capplets/keyboard/gnome-keyboard-properties.c:289
-#: capplets/keyboard/gnome-keyboard-properties.c:291
+#: capplets/keyboard/gnome-keyboard-properties.c:286
+#: capplets/keyboard/gnome-keyboard-properties.c:288
 #: capplets/sound/sound-properties-capplet.c:145
 #: capplets/sound/sound-properties-capplet.c:147
 msgid ""
@@ -1314,7 +1479,7 @@ msgstr ""
 #: capplets/keyboard/gnome-keyboard-properties.glade.h:7
 #, fuzzy
 msgid "C_ustom:"
-msgstr "TÛg comhad..."
+msgstr "T√≥g comhad..."
 
 #: capplets/keyboard/gnome-keyboard-properties.glade.h:8
 #, fuzzy
@@ -1334,7 +1499,7 @@ msgstr " Miarchlar "
 #: capplets/keyboard/gnome-keyboard-properties.glade.h:12
 #, fuzzy
 msgid "Keyboard Preferences"
-msgstr "¡baltachtaÌ Cniog"
+msgstr "√Åbaltachta√≠ Cniog"
 
 #: capplets/keyboard/gnome-keyboard-properties.glade.h:13
 msgid "Keyboard _repeats when key is held down"
@@ -1348,10 +1513,6 @@ msgstr ""
 #, fuzzy
 msgid "Repeat Keys"
 msgstr "Moill atriallach"
-
-#: capplets/keyboard/gnome-keyboard-properties.glade.h:16
-msgid "S_peed:"
-msgstr ""
 
 #: capplets/keyboard/gnome-keyboard-properties.glade.h:18
 #, fuzzy
@@ -1382,7 +1543,7 @@ msgstr ""
 #: capplets/keyboard/gnome-keyboard-properties.glade.h:24
 #, fuzzy
 msgid "loud"
-msgstr "TÛg dealbh..."
+msgstr "T√≥g dealbh..."
 
 #: capplets/keyboard/gnome-keyboard-properties.glade.h:25
 msgid "quiet"
@@ -1391,58 +1552,58 @@ msgstr ""
 #: capplets/keyboard/keyboard.desktop.in.h:2
 #, fuzzy
 msgid "Set your keyboard preferences"
-msgstr "¡baltachtaÌ Cniog"
+msgstr "√Åbaltachta√≠ Cniog"
 
-#: capplets/mouse/gnome-mouse-properties.c:477
+#: capplets/mouse/gnome-mouse-properties.c:437
 #, c-format
 msgid ""
 "<b>Unknown Cursor</b>\n"
 "%s"
 msgstr ""
 
-#: capplets/mouse/gnome-mouse-properties.c:578
+#: capplets/mouse/gnome-mouse-properties.c:538
 msgid ""
 "<b>Default Cursor - Current</b>\n"
 "The default cursor that ships with X"
 msgstr ""
 
-#: capplets/mouse/gnome-mouse-properties.c:581
+#: capplets/mouse/gnome-mouse-properties.c:541
 msgid ""
 "<b>Default Cursor</b>\n"
 "The default cursor that ships with X"
 msgstr ""
 
-#: capplets/mouse/gnome-mouse-properties.c:599
+#: capplets/mouse/gnome-mouse-properties.c:559
 msgid ""
 "<b>White Cursor - Current</b>\n"
 "The default cursor inverted"
 msgstr ""
 
-#: capplets/mouse/gnome-mouse-properties.c:602
+#: capplets/mouse/gnome-mouse-properties.c:562
 msgid ""
 "<b>White Cursor</b>\n"
 "The default cursor inverted"
 msgstr ""
 
-#: capplets/mouse/gnome-mouse-properties.c:620
+#: capplets/mouse/gnome-mouse-properties.c:580
 msgid ""
 "<b>Large Cursor - Current</b>\n"
 "Large version of normal cursor"
 msgstr ""
 
-#: capplets/mouse/gnome-mouse-properties.c:623
+#: capplets/mouse/gnome-mouse-properties.c:583
 msgid ""
 "<b>Large Cursor</b>\n"
 "Large version of normal cursor"
 msgstr ""
 
-#: capplets/mouse/gnome-mouse-properties.c:641
+#: capplets/mouse/gnome-mouse-properties.c:601
 msgid ""
 "<b>Large White Cursor - Current</b>\n"
 "Large version of white cursor"
 msgstr ""
 
-#: capplets/mouse/gnome-mouse-properties.c:644
+#: capplets/mouse/gnome-mouse-properties.c:604
 msgid ""
 "<b>Large White Cursor</b>\n"
 "Large version of white cursor"
@@ -1524,7 +1685,7 @@ msgstr ""
 #: capplets/mouse/gnome-mouse-properties.glade.h:17
 #, fuzzy
 msgid "Motion"
-msgstr "ag S·bh·il"
+msgstr "ag S√°bh√°il"
 
 #: capplets/mouse/gnome-mouse-properties.glade.h:18
 #, fuzzy
@@ -1534,7 +1695,7 @@ msgstr "Gluaiseacht"
 #: capplets/mouse/gnome-mouse-properties.glade.h:19
 #, fuzzy
 msgid "Mouse Preferences"
-msgstr "¡baltachtaÌ C˙lra"
+msgstr "√Åbaltachta√≠ C√∫lra"
 
 #: capplets/mouse/gnome-mouse-properties.glade.h:20
 msgid "Set the distance you need to move your cursor before dragging an item."
@@ -1551,7 +1712,7 @@ msgstr ""
 #: capplets/mouse/gnome-mouse-properties.glade.h:23
 #, fuzzy
 msgid "_Acceleration:"
-msgstr "Brost˙"
+msgstr "Brost√∫"
 
 #: capplets/mouse/gnome-mouse-properties.glade.h:24
 msgid "_Delay (sec):"
@@ -1575,66 +1736,94 @@ msgstr ""
 msgid "_Threshold:"
 msgstr "Tairseach"
 
-#: capplets/mouse/mouse.desktop.in.h:1
-#, fuzzy
-msgid "Mouse"
-msgstr "Claireanna"
-
 #: capplets/mouse/mouse.desktop.in.h:2
 #, fuzzy
 msgid "Set your mouse preferences"
-msgstr "¡baltachtaÌ C˙lra"
+msgstr "√Åbaltachta√≠ C√∫lra"
 
 #: capplets/network/gnome-network-preferences.desktop.in.h:1
 #, fuzzy
 msgid "Network proxy"
-msgstr "¡baltachtaÌ C˙lra"
+msgstr "√Åbaltachta√≠ C√∫lra"
 
 #: capplets/network/gnome-network-preferences.desktop.in.h:2
 #, fuzzy
 msgid "Network proxy preferences"
-msgstr "¡baltachtaÌ C˙lra"
+msgstr "√Åbaltachta√≠ C√∫lra"
 
-#: capplets/network/gnome-network-preferences.glade.h:2
-#, fuzzy
-msgid "Network Preferences"
-msgstr "¡baltachtaÌ C˙lra"
+#: capplets/network/gnome-network-preferences.glade.h:1
+msgid "      "
+msgstr ""
 
 #: capplets/network/gnome-network-preferences.glade.h:3
-#, fuzzy
-msgid "Network Proxy Preferences"
-msgstr "¡baltachtaÌ C˙lra"
+msgid "<b>_Automatic proxy configuration</b>"
+msgstr ""
 
 #: capplets/network/gnome-network-preferences.glade.h:4
-#, fuzzy
-msgid "P_ort:"
-msgstr "Leathfhocail Dialog"
+msgid "<b>_Direct internet connection</b>"
+msgstr ""
 
 #: capplets/network/gnome-network-preferences.glade.h:5
-msgid "Pass_word:"
+msgid "<b>_Manual proxy configuration</b>"
 msgstr ""
 
 #: capplets/network/gnome-network-preferences.glade.h:6
-msgid "Pro_xy requires username and password"
+msgid "<b>_Use authentication</b>"
 msgstr ""
 
 #: capplets/network/gnome-network-preferences.glade.h:7
-msgid "User_name:"
-msgstr ""
+#, fuzzy
+msgid "Autoconfiguration _URL:"
+msgstr "Cumramocht painial go leor"
 
 #: capplets/network/gnome-network-preferences.glade.h:8
-#, fuzzy
-msgid "_Location:"
-msgstr "Brost˙"
+msgid "HTTP Proxy Details"
+msgstr ""
 
 #: capplets/network/gnome-network-preferences.glade.h:9
-msgid "_Use HTTP proxy"
+#, fuzzy
+msgid "Network Proxy Configuration"
+msgstr "Cumramocht painial go leor"
+
+#: capplets/network/gnome-network-preferences.glade.h:10
+#, fuzzy
+msgid "Port:"
+msgstr "Leathfhocail Dialog"
+
+#: capplets/network/gnome-network-preferences.glade.h:11
+msgid "S_ocks host:"
 msgstr ""
+
+#: capplets/network/gnome-network-preferences.glade.h:12
+#, fuzzy
+msgid "_Details"
+msgstr "Leacaithe"
+
+#: capplets/network/gnome-network-preferences.glade.h:13
+msgid "_FTP proxy:"
+msgstr ""
+
+#: capplets/network/gnome-network-preferences.glade.h:14
+msgid "_HTTP proxy:"
+msgstr ""
+
+#: capplets/network/gnome-network-preferences.glade.h:15
+msgid "_Password:"
+msgstr ""
+
+#: capplets/network/gnome-network-preferences.glade.h:16
+msgid "_Secure HTTP proxy:"
+msgstr ""
+
+#: capplets/network/gnome-network-preferences.glade.h:17
+#, fuzzy
+msgid "_Username:"
+msgstr "Ainm"
 
 #: capplets/sound/sound-properties-capplet.c:180
 #, fuzzy
 msgid "Sound preferences"
-msgstr "¡baltachtaÌ C˙lra"
+msgstr "√Åbaltachta√≠ C√∫lra"
 
 #: capplets/sound/sound-properties.glade.h:1
 msgid "E_nable sound server startup"
@@ -1642,22 +1831,23 @@ msgstr ""
 
 #: capplets/sound/sound-properties.glade.h:2
 #, fuzzy
-msgid "Sound Preferences"
-msgstr "¡baltachtaÌ C˙lra"
+msgid "General"
+msgstr "tada"
 
 #: capplets/sound/sound-properties.glade.h:3
 #, fuzzy
-msgid "Sound _Events"
-msgstr "¡baltachtaÌ C˙lra"
+msgid "Sound Events"
+msgstr "√Åbaltachta√≠ C√∫lra"
 
 #: capplets/sound/sound-properties.glade.h:4
-msgid "_General"
-msgstr ""
+#, fuzzy
+msgid "Sound Preferences"
+msgstr "√Åbaltachta√≠ C√∫lra"
 
 #: capplets/sound/sound-properties.glade.h:5
 #, fuzzy
 msgid "_Sounds for events"
-msgstr "¡baltachtaÌ C˙lra"
+msgstr "√Åbaltachta√≠ C√∫lra"
 
 #: capplets/sound/sound.desktop.in.h:1
 msgid "Enable sound and associate sounds with events"
@@ -1687,7 +1877,7 @@ msgstr ""
 
 #: capplets/theme-switcher/control/control.c:69
 msgid "Submenu"
-msgstr "FÛchl·r"
+msgstr "F√≥chl√°r"
 
 #: capplets/theme-switcher/control/control.c:74
 msgid "Item 1"
@@ -1723,30 +1913,95 @@ msgstr ""
 msgid "Theme"
 msgstr ""
 
-#: capplets/theme-switcher/theme-properties.glade.h:1
-msgid "Installed Themes"
-msgstr ""
-
 #: capplets/theme-switcher/theme-properties.glade.h:2
-msgid "List of available GTK+ themes"
+msgid "<span size=\"larger\" weight=\"bold\">Save theme to disk</span>"
 msgstr ""
 
 #: capplets/theme-switcher/theme-properties.glade.h:3
-msgid "New themes can also be installed by dragging them into the window."
-msgstr ""
+#, fuzzy
+msgid "Apply _Background"
+msgstr "C√∫lra√≠"
 
 #: capplets/theme-switcher/theme-properties.glade.h:4
 #, fuzzy
-msgid "Theme Preferences"
-msgstr "¡baltachtaÌ C˙lra"
+msgid "Apply _Font"
+msgstr "C√∫lra√≠"
 
 #: capplets/theme-switcher/theme-properties.glade.h:5
+#, fuzzy
+msgid "Controls"
+msgstr "Gn√°th"
+
+#: capplets/theme-switcher/theme-properties.glade.h:6
+#, fuzzy
+msgid "Icons"
+msgstr "Dealbh:"
+
+#: capplets/theme-switcher/theme-properties.glade.h:7
+msgid "New themes can also be installed by dragging them into the window."
+msgstr ""
+
+#: capplets/theme-switcher/theme-properties.glade.h:8
+#, fuzzy
+msgid "Short _Description:"
+msgstr "√Åit"
+
+#: capplets/theme-switcher/theme-properties.glade.h:9
+#, fuzzy
+msgid "Theme Details"
+msgstr "Albaltachta√≠"
+
+#: capplets/theme-switcher/theme-properties.glade.h:10
+#, fuzzy
+msgid "Theme Preferences"
+msgstr "√Åbaltachta√≠ C√∫lra"
+
+#: capplets/theme-switcher/theme-properties.glade.h:11
+#, fuzzy
+msgid ""
+"This theme suggests a\n"
+"background:"
+msgstr "T√≥g comhad..."
+
+#: capplets/theme-switcher/theme-properties.glade.h:13
+msgid ""
+"This theme suggests a\n"
+"font and background"
+msgstr ""
+
+#: capplets/theme-switcher/theme-properties.glade.h:15
+msgid ""
+"This theme suggests a\n"
+"font:"
+msgstr ""
+
+#: capplets/theme-switcher/theme-properties.glade.h:17
+#, fuzzy
+msgid "Window Border"
+msgstr "√Åbaltachta√≠ C√∫lra"
+
+#: capplets/theme-switcher/theme-properties.glade.h:18
+#, fuzzy
+msgid "_Details..."
+msgstr "Leacaithe"
+
+#: capplets/theme-switcher/theme-properties.glade.h:19
 msgid "_Go to theme folder"
 msgstr ""
 
-#: capplets/theme-switcher/theme-properties.glade.h:6
-msgid "_Install New Theme..."
+#: capplets/theme-switcher/theme-properties.glade.h:20
+msgid "_Install theme..."
 msgstr ""
+
+#: capplets/theme-switcher/theme-properties.glade.h:21
+#, fuzzy
+msgid "_Save theme"
+msgstr "Ainm"
+
+#: capplets/theme-switcher/theme-properties.glade.h:22
+#, fuzzy
+msgid "_Theme name:"
+msgstr "Ainm"
 
 #: capplets/theme-switcher/theme-install.glade.h:2
 msgid "Install new theme"
@@ -1759,7 +2014,26 @@ msgstr ""
 #: capplets/theme-switcher/theme-install.glade.h:4
 #, fuzzy
 msgid "_Location of new theme:"
-msgstr "Brost˙"
+msgstr "Brost√∫"
+
+#: capplets/theme-switcher/gnome-theme-details.c:329
+#: capplets/theme-switcher/gnome-theme-manager.c:606
+msgid ""
+"No themes could be found on your system.  This probably means that your "
+"\"Theme Preferences\" dialog was improperly installed, or you haven't "
+"installed the \"gnome-themes\" package."
+msgstr ""
+
+#: capplets/theme-switcher/gnome-theme-manager.c:662
+#: capplets/theme-switcher/gnome-theme-manager.c:722
+#, fuzzy
+msgid "Custom theme"
+msgstr "T√≥g comhad..."
+
+#: capplets/theme-switcher/gnome-theme-manager.c:662
+#: capplets/theme-switcher/gnome-theme-manager.c:722
+msgid "You can save this theme by pressing the Save Theme button."
+msgstr ""
 
 #: capplets/ui-properties/behavior.desktop.in.h:1
 msgid "Customize the appearance of toolbars and menubars in applications"
@@ -1798,7 +2072,7 @@ msgstr ""
 #: capplets/ui-properties/gnome-ui-properties.glade.h:5
 #, fuzzy
 msgid "Menu and Toolbar Preferences"
-msgstr "¡baltachtaÌ painial seo..."
+msgstr "√Åbaltachta√≠ painial seo..."
 
 #: capplets/ui-properties/gnome-ui-properties.glade.h:6
 #, fuzzy
@@ -1832,7 +2106,7 @@ msgstr "Comhad"
 #: capplets/ui-properties/gnome-ui-properties.glade.h:12
 #, fuzzy
 msgid "Select the toolbar style."
-msgstr "TÛg comhad..."
+msgstr "T√≥g comhad..."
 
 #: capplets/ui-properties/gnome-ui-properties.glade.h:13
 msgid "Show _icons in menus"
@@ -1907,37 +2181,60 @@ msgstr ""
 msgid "_Save"
 msgstr "Ainm"
 
-#: capplets/windows/gnome-window-properties.c:282
-#: capplets/windows/gnome-window-properties.glade.h:6
+#: capplets/windows/gnome-window-properties.c:378
+#, c-format
+msgid ""
+"<b>Cannot start the preferences application for your window manager</b>\n"
+"\n"
+"%s"
+msgstr ""
+
+#: capplets/windows/gnome-window-properties.c:624
 #, fuzzy
-msgid "Window Preferences"
-msgstr "¡baltachtaÌ C˙lra"
+msgid "Control"
+msgstr "Gn√°th"
+
+#: capplets/windows/gnome-window-properties.c:629
+msgid "Alt"
+msgstr ""
+
+#: capplets/windows/gnome-window-properties.c:635
+msgid "Hyper"
+msgstr ""
+
+#: capplets/windows/gnome-window-properties.c:642
+msgid "Super (or \"Windows logo\")"
+msgstr ""
 
 #: capplets/windows/gnome-window-properties.glade.h:1
-msgid "Apply Now"
+msgid "To _move a window, press-and-hold this key then grab the window:"
 msgstr ""
 
 #: capplets/windows/gnome-window-properties.glade.h:2
-msgid "Select windows when the mouse moves over them"
-msgstr ""
+#, fuzzy
+msgid "Window Preferences"
+msgstr "√Åbaltachta√≠ C√∫lra"
 
 #: capplets/windows/gnome-window-properties.glade.h:3
-msgid "Titlebar Font"
+msgid "_Double-click titlebar to perform this action:"
 msgstr ""
 
 #: capplets/windows/gnome-window-properties.glade.h:4
-msgid "Window Border Appearance"
+msgid "_Interval before raising:"
 msgstr ""
 
 #: capplets/windows/gnome-window-properties.glade.h:5
-#, fuzzy
-msgid "Window Manager:"
-msgstr "Rogha Paipiar balla"
+msgid "_Raise selected windows after an interval"
+msgstr ""
+
+#: capplets/windows/gnome-window-properties.glade.h:6
+msgid "_Select windows when the mouse moves over them"
+msgstr ""
 
 #: capplets/windows/window-properties.desktop.in.h:1
 #, fuzzy
 msgid "Window Properties"
-msgstr "¡baltachtaÌ C˙lra"
+msgstr "√Åbaltachta√≠ C√∫lra"
 
 #: capplets/windows/window-properties.desktop.in.h:2
 msgid "Windows"
@@ -1991,13 +2288,14 @@ msgid "Overview of the control center"
 msgstr ""
 
 #: control-center/gnomecc-ui.xml.h:3
-msgid "_About..."
-msgstr ""
+#, fuzzy
+msgid "_About"
+msgstr "Faoi:"
 
 #: control-center/gnomecc-ui.xml.h:4
 #, fuzzy
-msgid "_Contents..."
-msgstr "CumasaÌ..."
+msgid "_Contents"
+msgstr "Cumasa√≠..."
 
 #: control-center/gnomecc-ui.xml.h:6
 msgid "_Help"
@@ -2022,32 +2320,32 @@ msgid ""
 "This is needed to allow changing cursors."
 msgstr ""
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:106
+#: gnome-settings-daemon/gnome-settings-keybindings.c:146
 #, c-format
 msgid "Key Binding (%s) has its action defined multiple times\n"
 msgstr ""
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:119
+#: gnome-settings-daemon/gnome-settings-keybindings.c:159
 #, c-format
 msgid "Key Binding (%s) has its binding defined multiple times\n"
 msgstr ""
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:125
+#: gnome-settings-daemon/gnome-settings-keybindings.c:165
 #, c-format
 msgid "Key Binding (%s) is incomplete\n"
 msgstr ""
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:153
+#: gnome-settings-daemon/gnome-settings-keybindings.c:193
 #, c-format
 msgid "Key Binding (%s) is invalid\n"
 msgstr ""
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:241
+#: gnome-settings-daemon/gnome-settings-keybindings.c:281
 #, c-format
 msgid "Key Binding (%s) is already in use\n"
 msgstr ""
 
-#: gnome-settings-daemon/gnome-settings-keybindings.c:292
+#: gnome-settings-daemon/gnome-settings-keybindings.c:357
 #, c-format
 msgid ""
 "Error while trying to run (%s)\n"
@@ -2073,40 +2371,49 @@ msgstr ""
 msgid "Couldn't load sound file %s as sample %s"
 msgstr ""
 
-#: gnome-settings-daemon/gnome-settings-xsettings.c:150
+#: gnome-settings-daemon/gnome-settings-xsettings.c:184
 #, c-format
 msgid "GConf key %s set to type %s but its expected type was %s\n"
 msgstr ""
 
-#: libbackground/applier.c:239
+#: libbackground/applier.c:254
 msgid "Type"
 msgstr ""
 
-#: libbackground/applier.c:240
+#: libbackground/applier.c:255
 msgid ""
 "Type of bg_applier: BG_APPLIER_ROOT for root window or BG_APPLIER_PREVIEW "
 "for preview"
 msgstr ""
 
-#: libbackground/applier.c:247
+#: libbackground/applier.c:262
 #, fuzzy
 msgid "Preview Width"
 msgstr "Uath-atriall"
 
-#: libbackground/applier.c:248
+#: libbackground/applier.c:263
 msgid "Width if applier is a preview: Defaults to 64."
 msgstr ""
 
-#: libbackground/applier.c:255
+#: libbackground/applier.c:270
 #, fuzzy
 msgid "Preview Height"
 msgstr "Uath-atriall"
 
-#: libbackground/applier.c:256
+#: libbackground/applier.c:271
 msgid "Height if applier is a preview: Defaults to 48."
 msgstr ""
 
-#: libbackground/preview-file-selection.c:193
+#: libbackground/applier.c:279
+#, fuzzy
+msgid "Screen"
+msgstr "Rogha Paipiar balla"
+
+#: libbackground/applier.c:280
+msgid "Screen on which BGApplier is to draw"
+msgstr ""
+
+#: libbackground/preview-file-selection.c:207
 msgid "Can't find an hbox, using a normal file selection"
 msgstr ""
 
@@ -2132,7 +2439,7 @@ msgstr ""
 #: libsounds/sound-view.c:238
 #, fuzzy
 msgid "_Sounds"
-msgstr "TÛg dealbh..."
+msgstr "T√≥g dealbh..."
 
 #: libsounds/sound-view.c:252
 msgid "_Play"
@@ -2141,62 +2448,148 @@ msgstr ""
 #: libsounds/sound-view.c:258
 #, fuzzy
 msgid "Select sound file"
-msgstr "TÛg comhad..."
+msgstr "T√≥g comhad..."
 
-#: libwindow-settings/gnome-wm-manager.c:171
+#: libwindow-settings/gnome-wm-manager.c:320
 #, c-format
+msgid "Window manager \"%s\" has not registered a configuration tool\n"
+msgstr ""
+
+#: libwindow-settings/metacity-window-manager.c:373
+msgid "Maximize"
+msgstr ""
+
+#: libwindow-settings/metacity-window-manager.c:374
+msgid "Roll up"
+msgstr ""
+
+#: schemas/apps_gnome_settings_daemon_default_editor.schemas.in.h:1
 msgid ""
-"Starting %s\n"
-"(%d seconds left before operation times out)"
+"If true, the mime handlers for text/plain and text/* will be kept in sync"
 msgstr ""
 
-#: libwindow-settings/gnome-wm-manager.c:325
+#: schemas/apps_gnome_settings_daemon_default_editor.schemas.in.h:2
+msgid "Sync text/plain and text/* handlers"
+msgstr ""
+
+#: schemas/apps_gnome_settings_daemon_screensaver.schemas.in.h:1
+msgid "Display a dialog when there are errors running XScreenSaver"
+msgstr ""
+
+#: schemas/apps_gnome_settings_daemon_screensaver.schemas.in.h:2
+msgid "Run XScreenSaver at login"
+msgstr ""
+
+#: schemas/apps_gnome_settings_daemon_screensaver.schemas.in.h:3
+#, fuzzy
+msgid "Show Startup Errors"
+msgstr "Riomhchl√°r"
+
+#: schemas/apps_gnome_settings_daemon_screensaver.schemas.in.h:4
+msgid "Start XScreenSaver"
+msgstr ""
+
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:1
+msgid "Antialiasing"
+msgstr ""
+
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:2
+msgid "DPI"
+msgstr ""
+
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:3
+#, fuzzy
+msgid "Hinting"
+msgstr "Rabhadh:"
+
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:4
+msgid "RGBA Order"
+msgstr ""
+
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:5
 msgid ""
-"wm-properties-capplet: Unable to initialize window manager.\n"
-"\tAnother window manager is already running and could not be killed\n"
+"Resolution used for converting font sizes to pixel sizes, in dots per inch"
 msgstr ""
 
-#: libwindow-settings/gnome-wm-manager.c:329
-#, c-format
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:6
 msgid ""
-"wm-properties-capplet: Unable to initialize window manager.\n"
-"\t'%s' didn't start\n"
+"The order of subpixel elements on an LCD screen; only used when antialiasing "
+"is set to \"rgba\". Possible values are: \"rgb\" - red on left, most common. "
+"\"bgr\" - blue on left. \"vrgb\" - red on top. \"vbgr\" - red on bottom."
 msgstr ""
 
-#: libwindow-settings/gnome-wm-manager.c:378
-msgid "Previous window manager did not die\n"
-msgstr ""
-
-#: libwindow-settings/gnome-wm-manager.c:411
-#, c-format
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:7
 msgid ""
-"Could not start '%s'.\n"
-"Falling back to previous window manager '%s'\n"
+"The type of antialiasing to use when rendering fonts. Possible values are: "
+"\"none\" - no antialiasing. \"grayscale\" - standard grayscale antialiasing. "
+"\"rgba\" - subpixel antialiasing. (LCD screens only)."
 msgstr ""
 
-#: libwindow-settings/gnome-wm-manager.c:442
+#: schemas/desktop_gnome_font_rendering.schemas.in.h:8
 msgid ""
-"Could not start fallback window manager.\n"
-"Please run a window manager manually. You can\n"
-"do this by selecting \"Run Program\" in the\n"
-"foot menu\n"
+"The type of hinting to use when rendering fonts. Possible values are: \"none"
+"\" - no hinting, \"slight\", \"medium\", and \"full\" - as much hinting as "
+"possible; may cause distortion of letter forms."
 msgstr ""
 
-#: libwindow-settings/gnome-wm-manager.c:467
-msgid "OK"
-msgstr "Ceart go Leor"
+#, fuzzy
+#~ msgid "Use _Background"
+#~ msgstr "C√∫lra√≠"
+
+#, fuzzy
+#~ msgid "Use _Font"
+#~ msgstr "Cl√≥ √ös√°ideoir"
+
+#, fuzzy
+#~ msgid "Use _background"
+#~ msgstr "Gan c√∫lra"
+
+#, fuzzy
+#~ msgid "Current modified"
+#~ msgstr "Sa Lar"
+
+#, fuzzy
+#~ msgid "Beep when enabling/disabling _keyboard accessibility features"
+#~ msgstr " Miarchlar "
+
+#, fuzzy
+#~ msgid "Repeat Key Pre_ferences..."
+#~ msgstr "√Åbaltachta√≠ Cniog"
+
+#, fuzzy
+#~ msgid "_Import CDE AccessX file..."
+#~ msgstr "T√≥g comhad..."
+
+#, fuzzy
+#~ msgid "Network Preferences"
+#~ msgstr "√Åbaltachta√≠ C√∫lra"
+
+#, fuzzy
+#~ msgid "Network Proxy Preferences"
+#~ msgstr "√Åbaltachta√≠ C√∫lra"
+
+#, fuzzy
+#~ msgid "_Location:"
+#~ msgstr "Brost√∫"
+
+#, fuzzy
+#~ msgid "Window Manager:"
+#~ msgstr "Rogha Paipiar balla"
+
+#~ msgid "OK"
+#~ msgstr "Ceart go Leor"
+
+#, fuzzy
+#~ msgid "Add:"
+#~ msgstr "Suim"
+
+#, fuzzy
+#~ msgid "_Name"
+#~ msgstr "Ainm"
 
 #, fuzzy
 #~ msgid "Edit Menu"
 #~ msgstr "Eagar"
-
-#, fuzzy
-#~ msgid "Information"
-#~ msgstr "Cumramocht painial go leor"
-
-#, fuzzy
-#~ msgid "faster"
-#~ msgstr "Gluaisigh"
 
 #, fuzzy
 #~ msgid "_Keyboard"
@@ -2204,35 +2597,31 @@ msgstr "Ceart go Leor"
 
 #, fuzzy
 #~ msgid "Configure window appearance"
-#~ msgstr "¡baltachtaÌ PrintÈir"
+#~ msgstr "√Åbaltachta√≠ Print√©ir"
 
 #, fuzzy
 #~ msgid "Configure key shortcuts"
-#~ msgstr "¡baltachtaÌ PrintÈir"
+#~ msgstr "√Åbaltachta√≠ Print√©ir"
 
 #, fuzzy
 #~ msgid "Configure window properties"
-#~ msgstr "¡baltachtaÌ PrintÈir"
+#~ msgstr "√Åbaltachta√≠ Print√©ir"
 
 #, fuzzy
 #~ msgid "Configure window manager configuration properties"
-#~ msgstr "¡baltachtaÌ PrintÈir"
+#~ msgstr "√Åbaltachta√≠ Print√©ir"
 
 #, fuzzy
 #~ msgid "Configure window placement"
-#~ msgstr "¡baltachtaÌ PrintÈir"
+#~ msgstr "√Åbaltachta√≠ Print√©ir"
+
+#, fuzzy
+#~ msgid "Information"
+#~ msgstr "Cumramocht painial go leor"
 
 #, fuzzy
 #~ msgid "Needs _terminal"
 #~ msgstr "Triall ina bhfuinneog fiin"
-
-#, fuzzy
-#~ msgid "_Add"
-#~ msgstr "Suim"
-
-#, fuzzy
-#~ msgid "_Remove"
-#~ msgstr "ScrÌos"
 
 #, fuzzy
 #~ msgid "Add file type"
@@ -2252,10 +2641,6 @@ msgstr "Ceart go Leor"
 #, fuzzy
 #~ msgid "Long"
 #~ msgstr "tada"
-
-#, fuzzy
-#~ msgid "Medium"
-#~ msgstr "Claireanna"
 
 #, fuzzy
 #~ msgid "Repeat s_peed:"
@@ -2278,11 +2663,11 @@ msgstr "Ceart go Leor"
 
 #, fuzzy
 #~ msgid "Keyboard Properties"
-#~ msgstr "¡baltachtaÌ Cniog"
+#~ msgstr "√Åbaltachta√≠ Cniog"
 
 #, fuzzy
 #~ msgid "Mouse Properties"
-#~ msgstr "¡baltachtaÌ Cniog"
+#~ msgstr "√Åbaltachta√≠ Cniog"
 
 #, fuzzy
 #~ msgid "Toolbars & Menus"
@@ -2294,7 +2679,7 @@ msgstr "Ceart go Leor"
 
 #, fuzzy
 #~ msgid "E-Mail"
-#~ msgstr "ag S·bh·il"
+#~ msgstr "ag S√°bh√°il"
 
 #, fuzzy
 #~ msgid "radiobutton1"
@@ -2318,27 +2703,23 @@ msgstr "Ceart go Leor"
 
 #, fuzzy
 #~ msgid "CD Properties"
-#~ msgstr "¡baltachtaÌ Cniog"
+#~ msgstr "√Åbaltachta√≠ Cniog"
 
 #, fuzzy
 #~ msgid "Configure handling of CD devices"
-#~ msgstr "¡baltachtaÌ PrintÈir"
+#~ msgstr "√Åbaltachta√≠ Print√©ir"
 
 #, fuzzy
 #~ msgid "Global panel properties"
-#~ msgstr "¡baltachtaÌ C˙lra"
+#~ msgstr "√Åbaltachta√≠ C√∫lra"
 
 #, fuzzy
 #~ msgid "Panel"
 #~ msgstr "Cealaigh"
 
 #, fuzzy
-#~ msgid "Startup Programs"
-#~ msgstr "Riomhchl·r"
-
-#, fuzzy
 #~ msgid "Select an icon..."
-#~ msgstr "TÛg dealbh..."
+#~ msgstr "T√≥g dealbh..."
 
 #, fuzzy
 #~ msgid "Mime Type: "
@@ -2346,14 +2727,14 @@ msgstr "Ceart go Leor"
 
 #, fuzzy
 #~ msgid "Remove"
-#~ msgstr "ScrÌos"
+#~ msgstr "Scr√≠os"
 
 #~ msgid "Example: emacs %f"
 #~ msgstr "Sampla: emacs %f"
 
 #, fuzzy
 #~ msgid "Select a file..."
-#~ msgstr "TÛg comhad..."
+#~ msgstr "T√≥g comhad..."
 
 #, fuzzy
 #~ msgid "View"
@@ -2368,14 +2749,11 @@ msgstr "Ceart go Leor"
 #~ msgstr "Saghas MIME:"
 
 #~ msgid "Command"
-#~ msgstr "Ord˙"
+#~ msgstr "Ord√∫"
 
 #, fuzzy
 #~ msgid "handler:"
 #~ msgstr "Fan"
-
-#~ msgid "Netscape"
-#~ msgstr "Netscape"
 
 #~ msgid "Netscape (new window)"
 #~ msgstr "Netscape (fuinneog nua)"
@@ -2405,7 +2783,7 @@ msgstr "Ceart go Leor"
 
 #, fuzzy
 #~ msgid "Command:"
-#~ msgstr "Ord˙:"
+#~ msgstr "Ord√∫:"
 
 #, fuzzy
 #~ msgid "Configuration Command:"
@@ -2421,19 +2799,15 @@ msgstr "Ceart go Leor"
 
 #, fuzzy
 #~ msgid "_Action"
-#~ msgstr "Brost˙"
+#~ msgstr "Brost√∫"
 
 #, fuzzy
 #~ msgid "_Sound"
-#~ msgstr "TÛg dealbh..."
-
-#, fuzzy
-#~ msgid "Theme Properties"
-#~ msgstr "AlbaltachtaÌ"
+#~ msgstr "T√≥g dealbh..."
 
 #, fuzzy
 #~ msgid "At the center of the screen"
-#~ msgstr "¡baltachtaÌ PrintÈir"
+#~ msgstr "√Åbaltachta√≠ Print√©ir"
 
 #, fuzzy
 #~ msgid "Bottom"
@@ -2449,7 +2823,7 @@ msgstr "Ceart go Leor"
 
 #, fuzzy
 #~ msgid "Left"
-#~ msgstr "ClÈ"
+#~ msgstr "Cl√©"
 
 #, fuzzy
 #~ msgid "Left aligned"
@@ -2461,10 +2835,7 @@ msgstr "Ceart go Leor"
 
 #, fuzzy
 #~ msgid "Multiple Documents"
-#~ msgstr "TÛg comhad..."
-
-#~ msgid "Right"
-#~ msgstr "Deis"
+#~ msgstr "T√≥g comhad..."
 
 #, fuzzy
 #~ msgid "Right aligned"
@@ -2531,14 +2902,10 @@ msgstr "Ceart go Leor"
 
 #, fuzzy
 #~ msgid "Keybinding Properties"
-#~ msgstr "¡baltachtaÌ Cniog"
-
-#, fuzzy
-#~ msgid "Screensaver"
-#~ msgstr "Rogha Paipiar balla"
+#~ msgstr "√Åbaltachta√≠ Cniog"
 
 #~ msgid "Close"
-#~ msgstr "D˙n"
+#~ msgstr "D√∫n"
 
 #, fuzzy
 #~ msgid "Main Settings"
@@ -2570,19 +2937,15 @@ msgstr "Ceart go Leor"
 
 #, fuzzy
 #~ msgid "Gnome Default Editor"
-#~ msgstr "EagathÛir Gnome"
+#~ msgstr "Eagath√≥ir Gnome"
 
 #, fuzzy
 #~ msgid "Rollback"
 #~ msgstr "Clog"
 
 #, fuzzy
-#~ msgid "About %s\n"
-#~ msgstr "Faoi:"
-
-#, fuzzy
 #~ msgid "Demo"
-#~ msgstr "ScrÌos"
+#~ msgstr "Scr√≠os"
 
 #, fuzzy
 #~ msgid "3d clock"
@@ -2594,7 +2957,7 @@ msgstr "Ceart go Leor"
 
 #, fuzzy
 #~ msgid "Large"
-#~ msgstr "MÛr"
+#~ msgstr "M√≥r"
 
 #, fuzzy
 #~ msgid "Low"
@@ -2609,23 +2972,15 @@ msgstr "Ceart go Leor"
 
 #, fuzzy
 #~ msgid "Many"
-#~ msgstr "ag S·bh·il"
+#~ msgstr "ag S√°bh√°il"
 
 #, fuzzy
 #~ msgid "Attraction (balls)"
 #~ msgstr "Tsg iomha"
 
 #, fuzzy
-#~ msgid "Balls"
-#~ msgstr "Beag"
-
-#, fuzzy
 #~ msgid "Color Contrast"
 #~ msgstr "Xterm Dath"
-
-#, fuzzy
-#~ msgid "Tails"
-#~ msgstr "Leacaithe"
 
 #, fuzzy
 #~ msgid "Blaster"
@@ -2637,11 +2992,7 @@ msgstr "Ceart go Leor"
 
 #, fuzzy
 #~ msgid "Cage"
-#~ msgstr "MÛr"
-
-#, fuzzy
-#~ msgid "Coral"
-#~ msgstr "Gn·th"
+#~ msgstr "M√≥r"
 
 #, fuzzy
 #~ msgid "Critical"
@@ -2657,15 +3008,15 @@ msgstr "Ceart go Leor"
 
 #, fuzzy
 #~ msgid "Cynosure"
-#~ msgstr "D˙n"
+#~ msgstr "D√∫n"
 
 #, fuzzy
 #~ msgid "Deco"
-#~ msgstr "ScrÌos"
+#~ msgstr "Scr√≠os"
 
 #, fuzzy
 #~ msgid "Demon"
-#~ msgstr "ScrÌos"
+#~ msgstr "Scr√≠os"
 
 #, fuzzy
 #~ msgid "Flag"
@@ -2677,7 +3028,7 @@ msgstr "Ceart go Leor"
 
 #, fuzzy
 #~ msgid "Iterations:"
-#~ msgstr "Brost˙"
+#~ msgstr "Brost√∫"
 
 #, fuzzy
 #~ msgid "Flow"
@@ -2688,12 +3039,8 @@ msgstr "Ceart go Leor"
 #~ msgstr "Triail"
 
 #, fuzzy
-#~ msgid "Gears"
-#~ msgstr "CluichÌ"
-
-#, fuzzy
 #~ msgid "GLText"
-#~ msgstr "ClÈ"
+#~ msgstr "Cl√©"
 
 #, fuzzy
 #~ msgid "Helix"
@@ -2701,7 +3048,7 @@ msgstr "Ceart go Leor"
 
 #, fuzzy
 #~ msgid "Closer"
-#~ msgstr "D˙n"
+#~ msgstr "D√∫n"
 
 #, fuzzy
 #~ msgid "Laser"
@@ -2731,10 +3078,6 @@ msgstr "Ceart go Leor"
 #~ msgid "Penrose"
 #~ msgstr "tada"
 
-#, fuzzy
-#~ msgid "Color contrast"
-#~ msgstr "Xterm Dath"
-
 #~ msgid "Width"
 #~ msgstr "Fan"
 
@@ -2744,11 +3087,11 @@ msgstr "Ceart go Leor"
 
 #, fuzzy
 #~ msgid "Sonar"
-#~ msgstr "TÛg dealbh..."
+#~ msgstr "T√≥g dealbh..."
 
 #, fuzzy
 #~ msgid "Worm"
-#~ msgstr "Gn·th"
+#~ msgstr "Gn√°th"
 
 #, fuzzy
 #~ msgid "XDaliClock"
@@ -2756,7 +3099,7 @@ msgstr "Ceart go Leor"
 
 #, fuzzy
 #~ msgid "Xroger"
-#~ msgstr "MÛr"
+#~ msgstr "M√≥r"
 
 #, fuzzy
 #~ msgid "Unknown error."
@@ -2768,24 +3111,24 @@ msgstr "Ceart go Leor"
 
 #, fuzzy
 #~ msgid "Background colors"
-#~ msgstr "Dath C˙lra"
+#~ msgstr "Dath C√∫lra"
 
 #, fuzzy
 #~ msgid "Style:"
-#~ msgstr "StÌl:"
+#~ msgstr "St√≠l:"
 
 #~ msgid "Tiled"
 #~ msgstr "Leacaithe"
 
 #~ msgid "Set background image."
-#~ msgstr "Cuir picti˙r culra."
+#~ msgstr "Cuir picti√∫r culra."
 
 #~ msgid "IMAGE-FILE"
 #~ msgstr "COMHAD-IOMHA"
 
 #, fuzzy
 #~ msgid "Capplet options"
-#~ msgstr "UirlisÓn"
+#~ msgstr "Uirlis√Æn"
 
 #, fuzzy
 #~ msgid "Bell"
@@ -2820,7 +3163,7 @@ msgstr "Ceart go Leor"
 
 #, fuzzy
 #~ msgid "Browse with single window"
-#~ msgstr "D˚n Fhuinneog"
+#~ msgstr "D√ªn Fhuinneog"
 
 #~ msgid "CAPPLET"
 #~ msgstr "CAPPLET"
@@ -2834,20 +3177,8 @@ msgstr "Ceart go Leor"
 #~ msgstr "Suimigh..."
 
 #, fuzzy
-#~ msgid "Type here to test setting"
-#~ msgstr "Cumriagh"
-
-#, fuzzy
 #~ msgid "Create..."
-#~ msgstr "AbaltachtaÌ..."
-
-#, fuzzy
-#~ msgid "Restore configuration from"
-#~ msgstr "Cumramocht painial go leor"
-
-#, fuzzy
-#~ msgid "Restore old configuration"
-#~ msgstr "Cumramocht painial go leor"
+#~ msgstr "Abaltachta√≠..."
 
 #, fuzzy
 #~ msgid "Icon List"
@@ -2867,13 +3198,13 @@ msgstr "Ceart go Leor"
 
 #, fuzzy
 #~ msgid "Advanced Properties"
-#~ msgstr "¡baltachtaÌ Panail"
+#~ msgstr "√Åbaltachta√≠ Panail"
 
 #~ msgid "Cancel Login"
 #~ msgstr "Cealaigh Logann"
 
 #~ msgid "Style"
-#~ msgstr "StÌl"
+#~ msgstr "St√≠l"
 
 #~ msgid "Running"
 #~ msgstr "Ag rith"
@@ -2899,7 +3230,7 @@ msgstr "Ceart go Leor"
 
 #, fuzzy
 #~ msgid "Default MDI Mode:"
-#~ msgstr "Luach gn·th"
+#~ msgstr "Luach gn√°th"
 
 #, fuzzy
 #~ msgid "ID"
@@ -2915,52 +3246,49 @@ msgstr "Ceart go Leor"
 #~ msgstr "IOR"
 
 #~ msgid "IMAGE"
-#~ msgstr "ÕOMHA"
+#~ msgstr "√çOMHA"
 
 #~ msgid "COLOR"
 #~ msgstr "DATH"
 
 #~ msgid "MODE"
-#~ msgstr "M”D"
+#~ msgstr "M√ìD"
 
 #~ msgid "%s Settings..."
 #~ msgstr "Cumraigh %s..."
 
 #~ msgid "Author:"
-#~ msgstr "⁄dar:"
+#~ msgstr "√ödar:"
 
 #~ msgid "Author: UNKNOWN"
-#~ msgstr "⁄dar: anathnÌd"
+#~ msgstr "√ödar: anathn√≠d"
 
 #~ msgid " Normal"
-#~ msgstr "Gn·th"
+#~ msgstr "Gn√°th"
 
 #~ msgid "Try"
 #~ msgstr "Tastail"
-
-#~ msgid "Warning:"
-#~ msgstr "Rabhadh:"
 
 #~ msgid "Show small icons"
 #~ msgstr "Taispeain Iomhanna beag"
 
 #~ msgid "Tooltips enabled"
-#~ msgstr "⁄s·id Tooltips"
+#~ msgstr "√ös√°id Tooltips"
 
 #~ msgid "Add applet"
 #~ msgstr "Bog mionuirlis"
 
 #~ msgid "Remove this panel"
-#~ msgstr "ScrÌos an painial seo"
+#~ msgstr "Scr√≠os an painial seo"
 
 #~ msgid "Add this launcher to panel"
 #~ msgstr "Cuir le Painial"
 
 #~ msgid "Log out"
-#~ msgstr "…irigh as"
+#~ msgstr "√âirigh as"
 
 #~ msgid "Launcher properties"
-#~ msgstr "¡baltachtaÌ seoltsra"
+#~ msgstr "√Åbaltachta√≠ seoltsra"
 
 #~ msgid "App"
 #~ msgstr "Uirlis"
@@ -2978,49 +3306,46 @@ msgstr "Ceart go Leor"
 #~ msgstr "Deireadh"
 
 #~ msgid " Folder"
-#~ msgstr " Fillte·n"
+#~ msgstr " Fillte√°n"
 
 #~ msgid "Gnome Look and Feel Properties"
-#~ msgstr "AlbaltachtaÌ"
+#~ msgstr "Albaltachta√≠"
 
 #~ msgid "Mail check properties"
-#~ msgstr "¡baltachtaÌ phoist"
+#~ msgstr "√Åbaltachta√≠ phoist"
 
 #~ msgid "Notification"
 #~ msgstr "Fograiocht."
 
 #~ msgid "You have mail."
-#~ msgstr "Ta rÌomhphost agat."
+#~ msgstr "Ta r√≠omhphost agat."
 
 #~ msgid "You have new mail."
 #~ msgstr "Ta rmomhphost nua agat."
 
 #~ msgid "GNOME Fish Properties"
-#~ msgstr "AlbachtaÌ Iasc go GNOME"
-
-#~ msgid "Icon:"
-#~ msgstr "Dealbh:"
+#~ msgstr "Albachta√≠ Iasc go GNOME"
 
 #~ msgid "Backgroundcolor"
-#~ msgstr "Dath C˙lra"
+#~ msgstr "Dath C√∫lra"
 
 #~ msgid "Cannot open /dev/apm; can't get data."
-#~ msgstr "NÓl oscailt ar fail \"proc/apm\"; Nml sonrai ar fail."
+#~ msgstr "N√Æl oscailt ar fail \"proc/apm\"; Nml sonrai ar fail."
 
 #~ msgid "Battery Monitor Settings"
-#~ msgstr "Staid batairÌ:"
+#~ msgstr "Staid batair√≠:"
 
 #~ msgid "Battery Status:"
-#~ msgstr "Staid batairÌ:"
+#~ msgstr "Staid batair√≠:"
 
 #~ msgid "APM BIOS Version:"
 #~ msgstr "Leagan BIOS APM:"
 
 #~ msgid "Linux APM Driver Version:"
-#~ msgstr "Linux APM Leagan TionanaÌ:"
+#~ msgstr "Linux APM Leagan Tionana√≠:"
 
 #~ msgid "APM Stats"
-#~ msgstr "SonraÌ APM"
+#~ msgstr "Sonra√≠ APM"
 
 #~ msgid "More than 100,000,000 minutes of battery life?!?"
 #~ msgstr "Nmos mo na 100,000,000 noimead beatha fagtha?!?"
@@ -3029,7 +3354,7 @@ msgstr "Ceart go Leor"
 #~ msgstr "%d noimead batairm"
 
 #~ msgid "%d minutes of battery"
-#~ msgstr "%d noimead batairÌ"
+#~ msgstr "%d noimead batair√≠"
 
 #~ msgid "unknown minutes of battery (%d%%)"
 #~ msgstr "%d noimead batairm"
@@ -3044,19 +3369,16 @@ msgstr "Ceart go Leor"
 #~ msgstr "Ard agus ag luchtu."
 
 #~ msgid "There is no battery?!?"
-#~ msgstr "Nach bhfuil batairÌ  ann."
+#~ msgstr "Nach bhfuil batair√≠  ann."
 
 #~ msgid "Can't open /dev/apm; can't get data."
-#~ msgstr "NÓl oscailt ar fail \"proc/apm\"; NÌl sonraÌ ar f·il."
+#~ msgstr "N√Æl oscailt ar fail \"proc/apm\"; N√≠l sonra√≠ ar f√°il."
 
 #~ msgid "Something wrong with /proc/apm; can't get data."
-#~ msgstr "Rud eigin  cearr le \"proc/apm\"; NÌl sonraÌ ar f·il."
+#~ msgstr "Rud eigin  cearr le \"proc/apm\"; N√≠l sonra√≠ ar f√°il."
 
 #~ msgid "Can't open /proc/apm; can't get data."
-#~ msgstr "NÌl oscailt ar fail \"proc/apm\"; NÌl sonraÌ ar f·il."
-
-#~ msgid "No background"
-#~ msgstr "Gan c˙lra"
+#~ msgstr "N√≠l oscailt ar fail \"proc/apm\"; N√≠l sonra√≠ ar f√°il."
 
 #~ msgid "Left middle"
 #~ msgstr "Ciotach"

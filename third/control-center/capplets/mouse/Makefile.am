@@ -40,4 +40,3 @@ desktop_DATA = $(Desktop_in_files:.desktop.in=.desktop)
 INCLUDES   = $(GNOMECC_CAPPLETS_CFLAGS)
 CLEANFILES = $(GNOMECC_CAPPLETS_CLEANFILES)
 EXTRA_DIST = $(Glade_DATA) $(icons_DATA) $(Desktop_in_files) $(pixmap_DATA) $(cursorfont_DATA)
-
