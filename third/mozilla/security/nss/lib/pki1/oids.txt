@@ -30,7 +30,7 @@
 # may use your version of this file under either the MPL or the
 # GPL.
 #
-CVS_ID "@(#) $RCSfile: oids.txt,v $ $Revision: 1.1.1.4 $ $Date: 2004-02-27 17:25:18 $ $Name: not supported by cvs2svn $"
+CVS_ID "@(#) $RCSfile: oids.txt,v $ $Revision: 1.1.1.5 $ $Date: 2004-06-30 18:03:50 $ $Name: not supported by cvs2svn $"
 
 # Fields
 #  OID  -- the OID data itself, in dotted-number format
