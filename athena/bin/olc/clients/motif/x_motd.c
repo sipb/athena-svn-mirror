@@ -12,20 +12,29 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_motd.c,v $
- *      $Author: vanharen $
+ *      $Author: lwvanels $
  */
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_motd.c,v 1.4 1989-10-11 16:30:55 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_motd.c,v 1.5 1991-03-06 15:39:00 lwvanels Exp $";
 #endif
 
+#include <sys/types.h>
+#include <sys/stat.h>
+
+#include <Xm/Text.h>
+
 #include "xolc.h"
+
+#define STANDARD_CURSOR	SetCursor(0)
+#define WAIT_CURSOR	SetCursor(1)
 
 ERRCODE
 x_get_motd(Request,type,file,dialog)
@@ -39,13 +48,11 @@ x_get_motd(Request,type,file,dialog)
   Arg arg;
   char *motd;
   int fd;
-  Widget wl[2];
 
-  wl[0] = toplevel;
-  wl[1] = w_send_form;
+  WAIT_CURSOR;
 
-  MuSetCursors(wl, 2, XC_watch);
-  status = OGetMOTD(Request,type,file);
+  Request->request_type = OLC_MOTD;
+  status = OGetFile(Request,type,file);
   
   switch(status)
     {
@@ -55,7 +62,7 @@ x_get_motd(Request,type,file,dialog)
 	{
 	  fprintf(stderr, "motd: unable to stat motd file.\n");
 	  MuError("motd: unable to stat motd file.");
-	  MuSetCursors(wl, 2, XC_top_left_arrow);
+	  STANDARD_CURSOR;
 	  return(ERROR);
 	}
 	  
@@ -64,21 +71,21 @@ x_get_motd(Request,type,file,dialog)
 	{
 	  fprintf(stderr, "x_get_motd: unable to malloc space for motd.\n");
 	  MuError("x_get_motd: unable to malloc space for motd.");
-	  MuSetCursors(wl, 2, XC_top_left_arrow);
+	  STANDARD_CURSOR;
 	  return(ERROR);
 	}
 
       if ((fd = open(file, O_RDONLY, 0)) < 0)
 	{
 	  MuError("x_get_motd: unable to open motd file for read.");
-	  MuSetCursors(wl, 2, XC_top_left_arrow);
+	  STANDARD_CURSOR;
 	  return(ERROR);
 	}
 
       if ((read(fd, motd, statbuf.st_size)) != statbuf.st_size)
 	{
 	  MuError("x_get_motd: unable to read motd correctly.");
-	  MuSetCursors(wl, 2, XC_top_left_arrow);
+	  STANDARD_CURSOR;
 	  return(ERROR);
 	}
       
@@ -107,6 +114,6 @@ x_get_motd(Request,type,file,dialog)
       break;
     }
 
-  MuSetCursors(wl, 2, XC_top_left_arrow);
+  STANDARD_CURSOR;
   return(status);
 }
