@@ -1,7 +1,7 @@
 /* 
- * $Id: rkinit_private.h,v 1.4 1990-07-16 14:14:49 qjb Exp $
+ * $Id: rkinit_private.h,v 1.5 1994-03-30 15:52:19 cfields Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/include/rkinit_private.h,v $
- * $Author: qjb $
+ * $Author: cfields $
  *
  * Header file for rkinit library and server internal use
  */
@@ -10,7 +10,7 @@
 #define __RKINIT_PRIVATE_H__
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid_rkinit_private_h = "$Id: rkinit_private.h,v 1.4 1990-07-16 14:14:49 qjb Exp $";
+static char *rcsid_rkinit_private_h = "$Id: rkinit_private.h,v 1.5 1994-03-30 15:52:19 cfields Exp $";
 #endif /* lint || SABER */
 
 #include <sys/types.h>
@@ -55,8 +55,8 @@ static char *rcsid_rkinit_private_h = "$Id: rkinit_private.h,v 1.4 1990-07-16 14
 #define VERSION_INFO_SIZE 2
 
 /* Useful definitions */
-#define BCLEAR(a) bzero((char *)(a), sizeof(a))
-#define SBCLEAR(a) bzero((char *)&(a), sizeof(a))
+#define BCLEAR(a) memset((char *)(a), 0, sizeof(a))
+#define SBCLEAR(a) memset((char *)&(a), 0, sizeof(a))
 #define min(a,b) (((a) < (b)) ? (a) : (b))
 #define max(a,b) (((a) > (b)) ? (a) : (b))
 
