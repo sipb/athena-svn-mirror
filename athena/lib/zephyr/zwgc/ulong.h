@@ -6,7 +6,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/ulong.h,v $
  *      $Author: ghudson $
- *	$Id: ulong.h,v 1.5 1994-11-01 16:08:49 ghudson Exp $
+ *	$Id: ulong.h,v 1.6 1994-11-12 03:33:40 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -17,7 +17,7 @@
 
 #include <sys/types.h>
 
-#if defined(ultrix) || defined(vax) || defined(SUNOS)
+#if defined(ultrix) || defined(vax) || defined(SUNOS) || defined(__NetBSD__)
 typedef unsigned long ulong;
 #endif
 
