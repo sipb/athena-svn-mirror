@@ -718,10 +718,10 @@ int syncpipe[2];
     }
  
     if (passwd_req)
-        execl(login_program, "login", "-p", "-h", rhost_name,
+        execl(login_program, "login", "-h", rhost_name,
           lusername, 0);
     else
-        execl(login_program, "login", "-p", "-h", rhost_name,
+        execl(login_program, "login", "-h", rhost_name,
              "-f", lusername, 0);
 #else /* USE_LOGIN_F */
 	execl(login_program, "login", "-r", rhost_name, 0);
