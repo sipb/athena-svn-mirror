@@ -38,7 +38,7 @@
  * software for any purpose.  It is provided "as is" without express or 
  * implied warranty.
  *
- * $Revision: 1.2 $
+ * $Revision: 1.3 $
  *
  * Version 1.0 April 27, 1998.
  * - Initial version
@@ -169,7 +169,7 @@ static long delta(struct timeval *, struct timeval *);
 /*
  * The Bogie.
  *
- * This represents an object that is visable on the scope.
+ * This represents an object that is visible on the scope.
  */
 
 typedef struct Bogie {
@@ -205,7 +205,7 @@ typedef struct {
     int width, height;		/* Window dimensions */
     int minx, miny, maxx, maxy, /* Bounds of the scope */
 	centrex, centrey, radius; /* Parts of the scope circle */
-    Bogie *visable;		/* List of visable objects */
+    Bogie *visible;		/* List of visible objects */
     int current;		/* Current position of sweep */
     int sweepnum;               /* The current id of the sweep */
     int delay;			/* how long between each frame of the anim */
@@ -230,7 +230,9 @@ void *sensor_info;			/* Information about the sensor */
 
 typedef struct ping_target {
     char *name;			/* The name of the target */
+#ifdef HAVE_PING
     struct sockaddr address;	/* The address of the target */
+#endif /* HAVE_PING */
     struct ping_target *next;	/* The next one in the list */
 } ping_target;
 
@@ -360,6 +362,7 @@ newBogie(char *name, int distance, int tick, int ttl)
 
     Bogie *new;
 
+    distance *= 1000;
     /* Allocate a bogie and initialize it */
 
     if ((new = (Bogie *) calloc(1, sizeof(Bogie))) == NULL) {
@@ -446,46 +449,90 @@ findNode(Bogie *bl, char *name)
 static int
 lookupHost(ping_target *target) 
 {
-
   struct hostent *hent;
+  struct sockaddr_in *iaddr;
 
-    /* Local Variables */
+  int iip[4];
+  char c;
 
-    struct sockaddr_in *iaddr;
+  iaddr = (struct sockaddr_in *) &(target->address);
+  iaddr->sin_family = AF_INET;
 
-    /* Set up the target address we first assume that the name is the
-       IP address as a string */
+  if (4 == sscanf(target->name, "%d.%d.%d.%d%c",
+                  &iip[0], &iip[1], &iip[2], &iip[3], &c))
+    {
+      /* It's an IP address.
+       */
+      unsigned char ip[4];
 
-    iaddr = (struct sockaddr_in *) &(target->address);
-    iaddr->sin_family = AF_INET;
-    if ((iaddr->sin_addr.s_addr = inet_addr(target->name)) >= 0) {
-      char ip[4];
-      ip[3] = iaddr->sin_addr.s_addr >> 24 & 255;
-      ip[2] = iaddr->sin_addr.s_addr >> 16 & 255;
-      ip[1] = iaddr->sin_addr.s_addr >>  8 & 255;
-      ip[0] = iaddr->sin_addr.s_addr       & 255;
-      hent = gethostbyaddr (ip, 4, AF_INET);
-      if (hent && hent->h_name && *hent->h_name) {
+      ip[0] = iip[0];
+      ip[1] = iip[1];
+      ip[2] = iip[2];
+      ip[3] = iip[3];
+
+      if (ip[3] == 0)
+        {
+          if (debug_p > 1)
+            fprintf (stderr, "%s:   ignoring bogus IP %s\n",
+                     progname, target->name);
+          return 0;
+        }
+
+      iaddr->sin_addr.s_addr = ((ip[3] << 24) |
+                                (ip[2] << 16) |
+                                (ip[1] <<  8) |
+                                (ip[0]));
+      hent = gethostbyaddr ((const char *) ip, 4, AF_INET);
+
+      if (debug_p > 1)
+        fprintf (stderr, "%s:   %s => %s\n",
+                 progname, target->name,
+                 ((hent && hent->h_name && *hent->h_name)
+                  ? hent->h_name : "<unknown>"));
+
+      if (hent && hent->h_name && *hent->h_name)
         target->name = strdup (hent->h_name);
-        return 1;
-      }
     }
+  else
+    {
+      /* It's a host name.
+       */
+      hent = gethostbyname (target->name);
+      if (!hent)
+        {
+          fprintf (stderr, "%s: could not resolve host:  %s\n",
+                   progname, target->name);
+          return 0;
+        }
 
-    /* Conversion of IP address failed, try to look the host up by name */
+      memcpy (&iaddr->sin_addr, hent->h_addr_list[0],
+              sizeof(iaddr->sin_addr));
 
-    hent = gethostbyname(target->name);
-    if (hent == NULL) {
-      fprintf(stderr, "%s: could not resolve host %s\n",
-              progname, target->name);
-      return 0;
+      if (debug_p > 1)
+        fprintf (stderr, "%s:   %s => %d.%d.%d.%d\n",
+                 progname, target->name,
+                 iaddr->sin_addr.s_addr       & 255,
+                 iaddr->sin_addr.s_addr >>  8 & 255,
+                 iaddr->sin_addr.s_addr >> 16 & 255,
+                 iaddr->sin_addr.s_addr >> 24 & 255);
     }
-    memcpy(&iaddr->sin_addr, hent->h_addr_list[0],
-           sizeof(iaddr->sin_addr));
-
-    /* Done */
-
-    return 1;
+  return 1;
 }
+
+
+static void
+print_host (FILE *out, unsigned long ip, const char *name)
+{
+  char ips[50];
+  sprintf (ips, "%lu.%lu.%lu.%lu",
+           (ip)       & 255,
+           (ip >>  8) & 255,
+           (ip >> 16) & 255,
+           (ip >> 24) & 255);
+  if (!name || !*name) name = "<unknown>";
+  fprintf (out, "%-16s %s\n", ips, name);
+}
+
 
 /*
  * Create a target for a host.
@@ -521,15 +568,29 @@ newHost(char *name)
     if (! lookupHost(target))
 	goto target_init_error;
 
+    /* Don't ever use loopback (127.0.0) hosts */
+    {
+      struct sockaddr_in *iaddr = (struct sockaddr_in *) &(target->address);
+      unsigned long ip = iaddr->sin_addr.s_addr;
+      if ((ip         & 255) == 127 &&
+          ((ip >>  8) & 255) == 0 &&
+          ((ip >> 16) & 255) == 0)
+        {
+          if (debug_p)
+            fprintf (stderr, "%s:   ignoring loopback host %s\n",
+                     progname, target->name);
+          goto target_init_error;
+        }
+    }
+
     /* Done */
 
     if (debug_p)
       {
         struct sockaddr_in *iaddr = (struct sockaddr_in *) &(target->address);
         unsigned long ip = iaddr->sin_addr.s_addr;
-        fprintf (stderr, "%s:   added host %d.%d.%d.%d (%s)\n", progname,
-                 ip & 255, ip >> 8 & 255, ip >> 16 & 255, ip >> 24 & 255, 
-                 target->name);
+        fprintf (stderr, "%s:   added ", progname);
+        print_host (stderr, ip, target->name);
       }
 
     return target;
@@ -603,8 +664,8 @@ readPingHostsFile(char *fname)
 	/* Get the name and address */
 
 	name = addr = NULL;
-	if ((addr = strtok(buf, " \t\n")) != NULL)
-	    name = strtok(NULL, " \t\n");
+	if ((addr = strtok(buf, " ,;\t\n")) != NULL)
+	    name = strtok(NULL, " ,;\t\n");
 	else
 	    continue;
 
@@ -622,7 +683,22 @@ readPingHostsFile(char *fname)
               addr = NULL;
             }
         }
-        /*printf ("\"%s\" \"%s\"\n", name, addr);*/
+
+        /* If the name is all digits, it's not a name. */
+        if (name)
+          {
+            const char *s;
+            for (s = name; *s; s++)
+              if (*s < '0' || *s > '9')
+                break;
+            if (! *s)
+              {
+                if (debug_p > 1)
+                  fprintf (stderr, "%s:  skipping bogus name \"%s\" (%s)\n",
+                           progname, name, addr);
+                name = NULL;
+              }
+          }
 
 	/* Create a new target using first the name then the address */
 
@@ -670,8 +746,10 @@ delete_duplicate_hosts (ping_target *list)
               if (ip1 == ip2)
                 {
                   if (debug_p)
-                    fprintf (stderr, "%s: deleted duplicate: %s\n",
-                             progname, rest2->next->name);
+                    {
+                      fprintf (stderr, "%s: deleted duplicate: ", progname);
+                      print_host (stderr, ip2, rest2->next->name);
+                    }
                   rest2->next = rest2->next->next;
                 }
             }
@@ -710,9 +788,9 @@ subnetHostsList(int base, int subnet_width)
     if (subnet_width < 24)
       {
         fprintf (stderr,
-    "%s: pinging %u hosts is a bad idea; please use a subnet mask of 24 bits\n"
+   "%s: pinging %lu hosts is a bad idea; please use a subnet mask of 24 bits\n"
                  "       or more (255 hosts max.)\n",
-                 progname, (1L << (32 - subnet_width)) - 1);
+                 progname, (unsigned long) (1L << (32 - subnet_width)) - 1);
         exit (1);
       }
     else if (subnet_width > 30)
@@ -755,6 +833,17 @@ subnetHostsList(int base, int subnet_width)
               (((unsigned char) hent->h_addr_list[0][2]) <<  8) |
               (((unsigned char) hent->h_addr_list[0][3])));
 
+    if (base == ((127 << 24) | 1))
+      {
+        fprintf (stderr,
+                 "%s: unable to determine local subnet address: \"%s\"\n"
+                 "       resolves to loopback address %d.%d.%d.%d.\n",
+                 progname, hostname,
+                 (base >> 24) & 255, (base >> 16) & 255,
+                 (base >>  8) & 255, (base      ) & 255);
+        return NULL;
+      }
+
     for (i = 255; i >= 0; i--) {
         int ip = (base & 0xFFFFFF00) | i;
       
@@ -772,9 +861,15 @@ subnetHostsList(int base, int subnet_width)
           fprintf(stderr, "%s:  subnet: %s (%d.%d.%d.%d & %d.%d.%d.%d / %d)\n",
                   progname,
                   address,
-                  (base>>24)&255, (base>>16)&255, (base>>8)&255, base&mask&255,
-                  (mask>>24)&255, (mask>>16)&255, (mask>>8)&255, mask&255,
-                  subnet_width);
+                  (int) (base>>24)&255,
+                  (int) (base>>16)&255,
+                  (int) (base>> 8)&255,
+                  (int) (base&mask&255),
+                  (int) (mask>>24)&255,
+                  (int) (mask>>16)&255,
+                  (int) (mask>> 8)&255,
+                  (int) (mask&255),
+                  (int) subnet_width);
 
         p = address + strlen(address) + 1;
 	sprintf(p, "%d", i);
@@ -838,6 +933,19 @@ init_ping(void)
     pi->targets = parse_mode (socket_initted_p);
     pi->targets = delete_duplicate_hosts (pi->targets);
 
+
+    if (debug_p)
+      {
+        ping_target *t;
+        fprintf (stderr, "%s: Target list:\n", progname);
+        for (t = pi->targets; t; t = t->next)
+          {
+            struct sockaddr_in *iaddr = (struct sockaddr_in *) &(t->address);
+            unsigned long ip = iaddr->sin_addr.s_addr;
+            fprintf (stderr, "%s:   ", progname);
+            print_host (stderr, ip, t->name);
+          }
+      }
 
     /* Make sure there is something to ping */
 
@@ -904,8 +1012,13 @@ sendping(ping_info *pi, ping_target *pt)
     ICMP_CHECKSUM(icmph) = 0;
     ICMP_ID(icmph) = pi->pid;
     ICMP_SEQ(icmph) = pi->seq++;
+# ifdef GETTIMEOFDAY_TWO_ARGS
     gettimeofday((struct timeval *) &packet[sizeof(struct ICMP)],
 		 (struct timezone *) 0);
+# else
+    gettimeofday((struct timeval *) &packet[sizeof(struct ICMP)]);
+# endif
+
     strcpy((char *) &packet[sizeof(struct ICMP) + sizeof(struct timeval)],
 	   pt->name);
     ICMP_CHECKSUM(icmph) = checksum((u_short *)packet, pcktsiz);
@@ -1009,7 +1122,7 @@ getping(sonar_info *si, ping_info *pi)
     /* Local Variables */
 
     struct sockaddr from;
-    int fromlen;
+    unsigned int fromlen;  /* Posix says socklen_t, but that's not portable */
     int result;
     u_char packet[1024];
     struct timeval now;
@@ -1022,6 +1135,8 @@ getping(sonar_info *si, ping_info *pi)
     char *name;
     struct sigaction sa;
     struct itimerval it;
+    fd_set rfds;
+    struct timeval tv;
 
     /* Set up a signal to interupt our wait for a packet */
 
@@ -1047,13 +1162,29 @@ getping(sonar_info *si, ping_info *pi)
     /* Wait for a result packet */
 
     fromlen = sizeof(from);
-    while (! timer_expired &&
-	   (result = recvfrom(pi->icmpsock, packet, sizeof(packet),
-			      0, &from, &fromlen)) > 0) {
+    while (! timer_expired) {
+      tv.tv_usec=pi->timeout;
+      tv.tv_sec=0;
+#if 0
+      /* This breaks on BSD, which uses bzero() in the definition of FD_ZERO */
+      FD_ZERO(&rfds);
+#else
+      memset (&rfds, 0, sizeof(rfds));
+#endif
+      FD_SET(pi->icmpsock,&rfds);
+      /* only wait a little while, in case we raced with the timer expiration.
+         From Valentijn Sessink <valentyn@openoffice.nl> */
+      if (select(pi->icmpsock+1, &rfds, NULL, NULL, &tv) >0) {
+        result = recvfrom(pi->icmpsock, packet, sizeof(packet),
+                      0, &from, &fromlen);
 
 	/* Check the packet */
 
+# ifdef GETTIMEOFDAY_TWO_ARGS
 	gettimeofday(&now, (struct timezone *) 0);
+# else
+	gettimeofday(&now);
+# endif
 	ip = (struct ip *) packet;
         iphdrlen = IP_HDRLEN(ip) << 2;
 	icmph = (struct ICMP *) &packet[iphdrlen];
@@ -1115,6 +1246,7 @@ getping(sonar_info *si, ping_info *pi)
 	new->distance = delta(then, &now) / 100;
 	if (new->distance == 0)
 		new->distance = 2; /* HACK */
+      }
     }
 
     /* Done */
@@ -1228,8 +1360,8 @@ init_sim(void)
 	    return NULL;
 	}
 	sprintf(si->teamA[i].name, "%s%03d", si->teamAID, i+1);
-	si->teamA[i].nexttick = (int) (90.0 * random() / RAND_MAX);
-	si->teamA[i].nextdist = (int) (100.0 * random() / RAND_MAX);
+	si->teamA[i].nexttick = random() % 90;
+	si->teamA[i].nextdist = random() % 100;
 	si->teamA[i].movedonsweep = -1;
     }
 
@@ -1251,8 +1383,8 @@ init_sim(void)
 	    return NULL;
 	}
 	sprintf(si->teamB[i].name, "%s%03d", si->teamBID, i+1);
-	si->teamB[i].nexttick = (int) (90.0 * random() / RAND_MAX);
-	si->teamB[i].nextdist = (int) (100.0 * random() / RAND_MAX);
+	si->teamB[i].nexttick = random() % 90;
+	si->teamB[i].nextdist = random() % 100;
 	si->teamB[i].movedonsweep = -1;
     }
 
@@ -1260,6 +1392,26 @@ init_sim(void)
 
     return si;
 }
+
+/*
+ * Creates and returns a drawing mask for the scope:
+ * mask out anything outside of the disc.
+ */
+static Pixmap
+scope_mask (Display *dpy, Window win, sonar_info *si)
+{
+  XGCValues gcv;
+  Pixmap mask = XCreatePixmap(dpy, win, si->width, si->height, 1);
+  GC gc = XCreateGC (dpy, mask, 0, &gcv);
+  XSetFunction (dpy, gc, GXclear);
+  XFillRectangle (dpy, mask, gc, 0, 0, si->width, si->height);
+  XSetFunction (dpy, gc, GXset);
+  XFillArc(dpy, mask, gc, si->minx, si->miny, 
+           si->maxx - si->minx, si->maxy - si->miny,
+           0, 360 * 64);
+  return mask;
+}
+
 
 /*
  * Initialize the Sonar.
@@ -1296,7 +1448,7 @@ init_sonar(Display *dpy, Window win)
 
     si->dpy = dpy;
     si->win = win;
-    si->visable = NULL;
+    si->visible = NULL;
     XGetWindowAttributes(dpy, win, &xwa);
     si->cmap = xwa.colormap;
     si->width = xwa.width;
@@ -1341,6 +1493,14 @@ init_sonar(Display *dpy, Window win)
 					dpy, si->cmap);
     si->grid = XCreateGC (dpy, win, GCForeground, &gcv);
 
+    /* Install the clip mask... */
+    {
+      Pixmap mask = scope_mask (dpy, win, si);
+      XSetClipMask(dpy, si->text, mask);
+      XSetClipMask(dpy, si->erase, mask);
+      XFreePixmap (dpy, mask); /* it's been copied into the GCs */
+    }
+
     /* Compute pixel values for fading text on the display */
 
     XParseColor(dpy, si->cmap, 
@@ -1384,6 +1544,9 @@ init_sonar(Display *dpy, Window win)
                      si->sweep_colors, &si->sweep_segs,
                      False, True, False);
 
+    if (si->sweep_segs <= 0)
+      si->sweep_segs = 1;
+
     /* Done */
 
     return si;
@@ -1399,8 +1562,8 @@ updateLocation(sim_target *t)
 
     int xdist, xtick;
 
-    xtick = (int) (3.0 * random() / RAND_MAX) - 1;
-    xdist = (int) (11.0 * random() / RAND_MAX) - 5;
+    xtick = (int) (random() %  3) - 1;
+    xdist = (int) (random() % 11) - 5;
     if (((t->nexttick + xtick) < 90) && ((t->nexttick + xtick) >= 0))
 	t->nexttick += xtick;
     else
@@ -1648,13 +1811,13 @@ Sonar(sonar_info *si, Bogie *bl)
     Bogie *bp, *prev;
     int i;
 
-    /* Check for expired tagets and remove them from the visable list */
+    /* Check for expired tagets and remove them from the visible list */
 
     prev = NULL;
-    for (bp = si->visable; bp != NULL; bp = (bp ? bp->next : 0)) {
+    for (bp = si->visible; bp != NULL; bp = (bp ? bp->next : 0)) {
 
 	/*
-	 * Remove it from the visable list if it's expired or we have
+	 * Remove it from the visible list if it's expired or we have
 	 * a new target with the same name.
 	 */
 
@@ -1665,7 +1828,7 @@ Sonar(sonar_info *si, Bogie *bl)
 	    DrawBogie(si, 0, bp->name, bp->tick,
 		      bp->distance, bp->ttl, bp->age);
 	    if (prev == NULL)
-		si->visable = bp->next;
+		si->visible = bp->next;
 	    else
 		prev->next = bp->next;
 	    freeBogie(bp);
@@ -1695,17 +1858,17 @@ Sonar(sonar_info *si, Bogie *bl)
                (4 * 64));
     }
 
-    /* Move the new targets to the visable list */
+    /* Move the new targets to the visible list */
 
     for (bp = bl; bp != (Bogie *) 0; bp = bl) {
 	bl = bl->next;
-	bp->next = si->visable;
-	si->visable = bp;
+	bp->next = si->visible;
+	si->visible = bp;
     }
 
-    /* Draw the visable targets */
+    /* Draw the visible targets */
 
-    for (bp = si->visable; bp != NULL; bp = bp->next) {
+    for (bp = si->visible; bp != NULL; bp = bp->next) {
 	if (bp->age < bp->ttl)		/* grins */
 	   DrawBogie(si, 1, bp->name, bp->tick, bp->distance, bp->ttl,bp->age);
     }
@@ -1721,6 +1884,7 @@ parse_mode (Bool ping_works_p)
 {
   char *source = get_string_resource ("ping", "Ping");
   char *token, *end;
+  char dummy;
 
   ping_target *hostlist = 0;
 
@@ -1741,16 +1905,16 @@ parse_mode (Bool ping_works_p)
   while (token < end)
     {
       char *next;
+# ifdef HAVE_PING
       ping_target *new;
       struct stat st;
       unsigned int n0=0, n1=0, n2=0, n3=0, m=0;
       char d;
+# endif /* HAVE_PING */
 
       for (next = token;
-           *next && *next != ',' &&
-                    *next != ' ' &&
-                    *next != '\t' &&
-                    *next != '\n';
+           *next &&
+           *next != ',' && *next != ' ' && *next != '\t' && *next != '\n';
            next++)
         ;
       *next = 0;
@@ -1771,8 +1935,9 @@ parse_mode (Bool ping_works_p)
           return 0;
         }
 
-      if ((4 == sscanf (token, "%d.%d.%d/%d %c",    &n0,&n1,&n2,    &m,&d)) ||
-          (5 == sscanf (token, "%d.%d.%d.%d/%d %c", &n0,&n1,&n2,&n3,&m,&d)))
+#ifdef HAVE_PING
+      if ((4 == sscanf (token, "%u.%u.%u/%u %c",    &n0,&n1,&n2,    &m,&d)) ||
+          (5 == sscanf (token, "%u.%u.%u.%u/%u %c", &n0,&n1,&n2,&n3,&m,&d)))
         {
           /* subnet: A.B.C.D/M
              subnet: A.B.C/M
@@ -1780,7 +1945,7 @@ parse_mode (Bool ping_works_p)
           unsigned long ip = (n0 << 24) | (n1 << 16) | (n2 << 8) | n3;
           new = subnetHostsList(ip, m);
         }
-      else if (4 == sscanf (token, "%d.%d.%d.%d %c", &n0, &n1, &n2, &n3, &d))
+      else if (4 == sscanf (token, "%u.%u.%u.%u %c", &n0, &n1, &n2, &n3, &d))
         {
           /* IP: A.B.C.D
            */
@@ -1790,7 +1955,7 @@ parse_mode (Bool ping_works_p)
         {
           new = subnetHostsList(0, 24);
         }
-      else if (1 == sscanf (token, "subnet/%d %c", &m))
+      else if (1 == sscanf (token, "subnet/%u %c", &m, &dummy))
         {
           new = subnetHostsList(0, m);
         }
@@ -1817,6 +1982,7 @@ parse_mode (Bool ping_works_p)
 
           sensor = ping;
         }
+#endif /* HAVE_PING */
 
       token = next + 1;
       while (token < end &&
@@ -1852,7 +2018,12 @@ screenhack(Display *dpy, Window win)
     debug_p = get_boolean_resource ("debug", "Debug");
 
     sensor = 0;
+# ifdef HAVE_PING
     sensor_info = (void *) init_ping();
+# else  /* !HAVE_PING */
+    sensor_info = 0;
+    parse_mode (0);  /* just to check argument syntax */
+# endif /* !HAVE_PING */
 
     if (sensor == 0)
       {
@@ -1871,7 +2042,11 @@ screenhack(Display *dpy, Window win)
 
 	/* Call the sensor and display the results */
 
+# ifdef GETTIMEOFDAY_TWO_ARGS
 	gettimeofday(&start, (struct timezone *) 0);
+# else
+	gettimeofday(&start);
+# endif
 	bl = sensor(si, sensor_info);
 	Sonar(si, bl);
 
@@ -1881,7 +2056,11 @@ screenhack(Display *dpy, Window win)
 	if (si->current == 0)
 	  si->sweepnum++;
 	XSync (dpy, False);
+# ifdef GETTIMEOFDAY_TWO_ARGS
 	gettimeofday(&finish, (struct timezone *) 0);
+# else
+	gettimeofday(&finish);
+# endif
 	sleeptime = si->delay - delta(&start, &finish);
         screenhack_handle_events (dpy);
 	if (sleeptime > 0L)

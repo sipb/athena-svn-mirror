@@ -1,4 +1,4 @@
-/* xscreensaver, Copyright (c) 1993-2001 Jamie Zawinski <jwz@jwz.org>
+/* xscreensaver, Copyright (c) 1993-2003 Jamie Zawinski <jwz@jwz.org>
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
  * documentation for any purpose is hereby granted without fee, provided that
@@ -19,6 +19,10 @@
 
 #include <string.h>
 #include <stdio.h>
+
+#ifdef HAVE_SIGACTION
+# include <signal.h>    /* for sigset_t */
+#endif
 
 #include "prefs.h"
 
@@ -62,6 +66,7 @@ struct saver_info {
      server extension info
      ======================================================================= */
 
+  Bool xinerama_p;		   /* Whether Xinerama is in use.            */
   Bool using_xidle_extension;	   /* which extension is being used.         */
   Bool using_mit_saver_extension;  /* Note that `p->use_*' is the *request*, */
   Bool using_sgi_saver_extension;  /* and `si->using_*' is the *reality*.    */
@@ -84,6 +89,8 @@ struct saver_info {
   Bool screen_blanked_p;	/* Whether the saver is currently active. */
   Window mouse_grab_window;	/* Window holding our mouse grab */
   Window keyboard_grab_window;	/* Window holding our keyboard grab */
+  int mouse_grab_screen;	/* The screen number the mouse grab is on */
+  int keyboard_grab_screen;	/* The screen number the keyboard grab is on */
   Bool fading_possible_p;	/* Whether fading to/from black is possible. */
   Bool throttled_p;             /* Whether we should temporarily just blank
                                    the screen, not run hacks. */
@@ -183,7 +190,19 @@ struct saver_info {
 struct saver_screen_info {
   saver_info *global;
 
-  Screen *screen;
+  int number;			/* The internal ordinal of this screen,
+                                   counting Xinerama rectangles as separate
+                                   screens. */
+  int real_screen_number;	/* The number of the underlying X screen on
+                                   which this rectangle lies. */
+  Screen *screen;		/* The X screen in question. */
+
+  int x, y, width, height;	/* The size and position of this rectangle
+                                   on its underlying X screen. */
+
+  Bool real_screen_p;		/* This will be true of exactly one ssi per
+                                   X screen. */
+
   Widget toplevel_shell;
 
   /* =======================================================================
@@ -268,7 +287,7 @@ struct saver_screen_info {
    server extensions and virtual roots
    ======================================================================= */
 
-extern void restore_real_vroot (saver_info *si);
+extern Bool restore_real_vroot (saver_info *si);
 extern void disable_builtin_screensaver (saver_info *, Bool unblank_screen_p);
 extern Bool ensure_no_screensaver_running (Display *, Screen *);
 
@@ -304,6 +323,7 @@ extern void unblank_screen (saver_info *si);
 extern void get_screen_viewport (saver_screen_info *ssi,
                                  int *x_ret, int *y_ret,
                                  int *w_ret, int *h_ret,
+                                 int target_x, int target_y,
                                  Bool verbose_p);
 
 
@@ -319,7 +339,9 @@ extern Bool passwd_valid_p (const char *typed_passwd, Bool verbose_p);
 #endif /* NO_LOCKING */
 
 extern void set_locked_p (saver_info *si, Bool locked_p);
-extern int move_mouse_grab (saver_info *si, Window to, Cursor cursor);
+extern int move_mouse_grab (saver_info *si, Window to, Cursor cursor,
+                            int to_screen_no);
+extern int mouse_screen (saver_info *si);
 
 
 /* =======================================================================
@@ -355,6 +377,7 @@ extern void activate_lock_timer (XtPointer si, XtIntervalId *id);
 extern void reset_watchdog_timer (saver_info *si, Bool on_p);
 extern void idle_timer (XtPointer si, XtIntervalId *id);
 extern void sleep_until_idle (saver_info *si, Bool until_idle_p);
+extern void reset_timers (saver_info *si);
 
 /* =======================================================================
    remote control
@@ -367,6 +390,13 @@ extern void maybe_reload_init_file (saver_info *);
    subprocs
    ======================================================================= */
 
+extern void handle_signals (saver_info *si);
+#ifdef HAVE_SIGACTION
+ extern sigset_t block_sigchld (void);
+#else  /* !HAVE_SIGACTION */
+ extern int block_sigchld (void);
+#endif /* !HAVE_SIGACTION */
+extern void unblock_sigchld (void);
 extern void hack_environment (saver_info *si);
 extern void hack_subproc_environment (saver_screen_info *ssi);
 extern void init_sigchld (void);
@@ -378,6 +408,8 @@ extern void emergency_kill_subproc (saver_info *si);
 extern Bool select_visual (saver_screen_info *ssi, const char *visual_name);
 extern void store_saver_status (saver_info *si);
 extern const char *signal_name (int signal);
+extern void exec_command (const char *shell, const char *command,
+                          int nice_level);
 
 /* =======================================================================
    subprocs diagnostics
@@ -406,8 +438,9 @@ extern Bool window_exists_p (Display *dpy, Window window);
 extern char *timestring (void);
 extern Bool display_is_on_console_p (saver_info *si);
 extern Visual *get_best_gl_visual (saver_screen_info *ssi);
+extern void check_for_leaks (const char *where);
 
-extern Atom XA_VROOT, XA_XSETROOT_ID;
+extern Atom XA_VROOT, XA_XSETROOT_ID, XA_ESETROOT_PMAP_ID, XA_XROOTPMAP_ID;
 extern Atom XA_SCREENSAVER, XA_SCREENSAVER_VERSION, XA_SCREENSAVER_ID;
 extern Atom XA_SCREENSAVER_STATUS, XA_LOCK, XA_BLANK;
 extern Atom XA_DEMO, XA_PREFS;

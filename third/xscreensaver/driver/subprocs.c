@@ -1,6 +1,5 @@
 /* subprocs.c --- choosing, spawning, and killing screenhacks.
- * xscreensaver, Copyright (c) 1991, 1992, 1993, 1995, 1997, 1998, 1999, 2000
- *  Jamie Zawinski <jwz@jwz.org>
+ * xscreensaver, Copyright (c) 1991-2003 Jamie Zawinski <jwz@jwz.org>
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
  * documentation for any purpose is hereby granted without fee, provided that
@@ -31,8 +30,8 @@
 # include <sys/wait.h>		/* for waitpid() and associated macros */
 #endif
 
-#if defined(HAVE_SETPRIORITY) && defined(PRIO_PROCESS)
-# include <sys/resource.h>	/* for setpriority() and PRIO_PROCESS */
+#ifdef HAVE_SETRLIMIT
+# include <sys/resource.h>	/* for setrlimit() and RLIMIT_AS */
 #endif
 
 #ifdef VMS
@@ -73,264 +72,74 @@ extern int kill (pid_t, int);		/* signal() is in sys/signal.h... */
 
 extern saver_info *global_si_kludge;	/* I hate C so much... */
 
+
+/* RLIMIT_AS (called RLIMIT_VMEM on some systems) controls the maximum size
+   of a process's address space, i.e., the maximal brk(2) and mmap(2) values.
+   Setting this lets you put a cap on how much memory a process can allocate.
+
+   Except the "and mmap()" part kinda makes this useless, since many GL
+   implementations end up using mmap() to pull the whole frame buffer into
+   memory (or something along those lines) making it appear processes are
+   using hundreds of megabytes when in fact they're using very little, and
+   we end up capping their mallocs prematurely.  YAY!
+ */
+#if defined(RLIMIT_VMEM) && !defined(RLIMIT_AS)
+# define RLIMIT_AS RLIMIT_VMEM
+#endif
+
 static void
-nice_subproc (int nice_level)
+limit_subproc_memory (int address_space_limit, Bool verbose_p)
 {
-  if (nice_level == 0)
+
+/* This has caused way more problems than it has solved...
+   Let's just completely ignore the "memoryLimit" option now.
+ */
+#undef HAVE_SETRLIMIT
+
+#if defined(HAVE_SETRLIMIT) && defined(RLIMIT_AS)
+  struct rlimit r;
+
+  if (address_space_limit < 10 * 1024)  /* let's not be crazy */
     return;
 
-#if defined(HAVE_NICE)
-  {
-    int old_nice = nice (0);
-    int n = nice_level - old_nice;
-    errno = 0;
-    if (nice (n) == -1 && errno != 0)
-      {
-	char buf [512];
-	sprintf (buf, "%s: nice(%d) failed", blurb(), n);
-	perror (buf);
-    }
-  }
-#elif defined(HAVE_SETPRIORITY) && defined(PRIO_PROCESS)
-  if (setpriority (PRIO_PROCESS, getpid(), nice_level) != 0)
+  if (getrlimit (RLIMIT_AS, &r) != 0)
     {
       char buf [512];
-      sprintf (buf, "%s: setpriority(PRIO_PROCESS, %lu, %d) failed",
-	       blurb(), (unsigned long) getpid(), nice_level);
+      sprintf (buf, "%s: getrlimit(RLIMIT_AS) failed", blurb());
       perror (buf);
+      return;
     }
-#else
-  fprintf (stderr,
-	   "%s: don't know how to change process priority on this system.\n",
-	   blurb());
 
-#endif
-}
+  r.rlim_cur = address_space_limit;
 
-
-#ifndef VMS
-
-static void
-exec_simple_command (const char *command)
-{
-  char *av[1024];
-  int ac = 0;
-  char *token = strtok (strdup(command), " \t");
-  while (token)
+  if (setrlimit (RLIMIT_AS, &r) != 0)
     {
-      av[ac++] = token;
-      token = strtok(0, " \t");
+      char buf [512];
+      sprintf (buf, "%s: setrlimit(RLIMIT_AS, {%lu, %lu}) failed",
+               blurb(), r.rlim_cur, r.rlim_max);
+      perror (buf);
+      return;
     }
-  av[ac] = 0;
 
-  execvp (av[0], av);			/* shouldn't return. */
-
-  {
-    char buf [512];
-
-    /* If the user has a .xscreensaver with screenhacks that are gone, we
-     * don't want to blab about it.
-     */
-    if (errno == ENOENT)
-      exit(NONEXISTENT_SCREENHACK); /* Note this only exits a child fork. */
-
-    sprintf (buf, "%s: could not execute \"%s\"", blurb(), av[0]);
-    perror (buf);
-
-    if (errno == ENOENT &&
-	(token = getenv("PATH")))
-      {
-# ifndef PATH_MAX
-#  ifdef MAXPATHLEN
-#   define PATH_MAX MAXPATHLEN
-#  else
-#   define PATH_MAX 2048
-#  endif
-# endif
-	char path[PATH_MAX];
-	fprintf (stderr, "\n");
-	*path = 0;
-# if defined(HAVE_GETCWD)
-	getcwd (path, sizeof(path));
-# elif defined(HAVE_GETWD)
-	getwd (path);
-# endif
-	if (*path)
-	  fprintf (stderr, "    Current directory is: %s\n", path);
-	fprintf (stderr, "    PATH is:\n");
-	token = strtok (strdup(token), ":");
-	while (token)
-	  {
-	    fprintf (stderr, "        %s\n", token);
-	    token = strtok(0, ":");
-	  }
-	fprintf (stderr, "\n");
-      }
-  }
-  fflush(stderr);
-  fflush(stdout);
-  exit (1);	/* Note that this only exits a child fork.  */
-}
-
-
-static void
-exec_complex_command (const char *shell, const char *command)
-{
-  char *av[5];
-  int ac = 0;
-  char *command2 = (char *) malloc (strlen (command) + 10);
-  const char *s;
-  int got_eq = 0;
-  const char *after_vars;
-
-  /* Skip leading whitespace.
-   */
-  while (*command == ' ' || *command == '\t')
-    command++;
-
-  /* If the string has a series of tokens with "=" in them at them, set
-     `after_vars' to point into the string after those tokens and any
-     trailing whitespace.  Otherwise, after_vars == command.
-   */
-  after_vars = command;
-  for (s = command; *s; s++)
+  if (verbose_p)
     {
-      if (*s == '=') got_eq = 1;
-      else if (*s == ' ')
-        {
-          if (got_eq)
-            {
-              while (*s == ' ' || *s == '\t')
-                s++;
-              after_vars = s;
-              got_eq = 0;
-            }
-          else
-            break;
-        }
+      int i = address_space_limit;
+      char buf[100];
+      if      (i >= (1<<30) && i == ((i >> 30) << 30))
+        sprintf(buf, "%dG", i >> 30);
+      else if (i >= (1<<20) && i == ((i >> 20) << 20))
+        sprintf(buf, "%dM", i >> 20);
+      else if (i >= (1<<10) && i == ((i >> 10) << 10))
+        sprintf(buf, "%dK", i >> 10);
+      else
+        sprintf(buf, "%d bytes", i);
+
+      fprintf (stderr, "%s: limited pid %lu address space to %s.\n",
+               blurb(), (unsigned long) getpid (), buf);
     }
 
-  *command2 = 0;
-  strncat (command2, command, after_vars - command);
-  strcat (command2, "exec ");
-  strcat (command2, after_vars);
-
-  /* We have now done these transformations:
-     "foo -x -y"               ==>  "exec foo -x -y"
-     "BLAT=foop      foo -x"   ==>  "BLAT=foop      exec foo -x"
-     "BLAT=foop A=b  foo -x"   ==>  "BLAT=foop A=b  exec foo -x"
-   */
-
-
-  /* Invoke the shell as "/bin/sh -c 'exec prog -arg -arg ...'" */
-  av [ac++] = (char *) shell;
-  av [ac++] = "-c";
-  av [ac++] = command2;
-  av [ac]   = 0;
-
-  execvp (av[0], av);			/* shouldn't return. */
-
-  {
-    char buf [512];
-    sprintf (buf, "%s: execvp(\"%s\") failed", blurb(), av[0]);
-    perror (buf);
-    fflush(stderr);
-    fflush(stdout);
-    exit (1);	/* Note that this only exits a child fork.  */
-  }
+#endif /* HAVE_SETRLIMIT && RLIMIT_AS */
 }
-
-#else  /* VMS */
-
-static void
-exec_vms_command (const char *command)
-{
-  system (command);
-  fflush (stderr);
-  fflush (stdout);
-  exit (1);	/* Note that this only exits a child fork.  */
-}
-
-#endif /* !VMS */
-
-
-static void
-exec_screenhack (saver_info *si, const char *command)
-{
-  /* I don't believe what a sorry excuse for an operating system UNIX is!
-
-     - I want to spawn a process.
-     - I want to know it's pid so that I can kill it.
-     - I would like to receive a message when it dies of natural causes.
-     - I want the spawned process to have user-specified arguments.
-
-     If shell metacharacters are present (wildcards, backquotes, etc), the
-     only way to parse those arguments is to run a shell to do the parsing
-     for you.
-
-     And the only way to know the pid of the process is to fork() and exec()
-     it in the spawned side of the fork.
-
-     But if you're running a shell to parse your arguments, this gives you
-     the pid of the *shell*, not the pid of the *process* that you're
-     actually interested in, which is an *inferior* of the shell.  This also
-     means that the SIGCHLD you get applies to the shell, not its inferior.
-     (Why isn't that sufficient?  I don't remember any more, but it turns
-     out that it isn't.)
-
-     So, the only solution, when metacharacters are present, is to force the
-     shell to exec() its inferior.  What a fucking hack!  We prepend "exec "
-     to the command string, and hope it doesn't contain unquoted semicolons
-     or ampersands (we don't search for them, because we don't want to
-     prohibit their use in quoted strings (messages, for example) and parsing
-     out the various quote characters is too much of a pain.)
-
-     (Actually, Clint Wong <clint@jts.com> points out that process groups
-     might be used to take care of this problem; this may be worth considering
-     some day, except that, 1: this code works now, so why fix it, and 2: from
-     what I've seen in Emacs, dealing with process groups isn't especially
-     portable.)
-   */
-  saver_preferences *p = &si->prefs;
-
-#ifndef VMS
-  Bool hairy_p = !!strpbrk (command, "*?$&!<>[];`'\\\"=");
-  /* note: = is in the above because of the sh syntax "FOO=bar cmd". */
-
-  if (getuid() == (uid_t) 0 || geteuid() == (uid_t) 0)
-    {
-      /* If you're thinking of commenting this out, think again.
-         If you do so, you will open a security hole.  Mail jwz
-         so that he may enlighten you as to the error of your ways.
-       */
-      fprintf (stderr, "%s: we're still running as root!  Disaster!\n",
-               blurb());
-      saver_exit (si, 1, 0);
-    }
-
-  if (p->verbose_p)
-    fprintf (stderr, "%s: spawning \"%s\" in pid %lu%s.\n",
-	     blurb(), command, (unsigned long) getpid (),
-	     (hairy_p ? " (via shell)" : ""));
-
-  if (hairy_p)
-    /* If it contains any shell metacharacters, do it the hard way,
-       and fork a shell to parse the arguments for us. */
-    exec_complex_command (p->shell, command);
-  else
-    /* Otherwise, we can just exec the program directly. */
-    exec_simple_command (command);
-
-#else /* VMS */
-  if (p->verbose_p)
-    fprintf (stderr, "%s: spawning \"%s\" in pid %lu.\n",
-	     blurb(), command, getpid());
-  exec_vms_command (command);
-#endif /* VMS */
-
-  abort();	/* that shouldn't have returned. */
-}
-
 
 
 /* Management of child processes, and de-zombification.
@@ -349,6 +158,7 @@ enum job_status {
 struct screenhack_job {
   char *name;
   pid_t pid;
+  int screen;
   enum job_status status;
   struct screenhack_job *next;
 };
@@ -362,8 +172,9 @@ show_job_list (void)
   struct screenhack_job *job;
   fprintf(stderr, "%s: job list:\n", blurb());
   for (job = jobs; job; job = job->next)
-    fprintf (stderr, "  %5ld: (%s) %s\n",
+    fprintf (stderr, "  %5ld: %2d: (%s) %s\n",
 	     (long) job->pid,
+             job->screen,
 	     (job->status == job_running ? "running" :
 	      job->status == job_stopped ? "stopped" :
 	      job->status == job_killed  ? " killed" :
@@ -375,8 +186,8 @@ show_job_list (void)
 
 static void clean_job_list (void);
 
-struct screenhack_job *
-make_job (pid_t pid, const char *cmd)
+static struct screenhack_job *
+make_job (pid_t pid, int screen, const char *cmd)
 {
   struct screenhack_job *job = (struct screenhack_job *) malloc (sizeof(*job));
 
@@ -408,6 +219,7 @@ make_job (pid_t pid, const char *cmd)
 
   job->name = strdup(name);
   job->pid = pid;
+  job->screen = screen;
   job->status = job_running;
   job->next = jobs;
   jobs = job;
@@ -484,26 +296,38 @@ static void describe_dead_child (saver_info *, pid_t, int wait_status);
 static int block_sigchld_handler = 0;
 
 
-static void
+#ifdef HAVE_SIGACTION
+ sigset_t
+#else  /* !HAVE_SIGACTION */
+ int
+#endif /* !HAVE_SIGACTION */
 block_sigchld (void)
 {
 #ifdef HAVE_SIGACTION
   sigset_t child_set;
   sigemptyset (&child_set);
   sigaddset (&child_set, SIGCHLD);
+  sigaddset (&child_set, SIGPIPE);
   sigprocmask (SIG_BLOCK, &child_set, 0);
 #endif /* HAVE_SIGACTION */
 
   block_sigchld_handler++;
+
+#ifdef HAVE_SIGACTION
+  return child_set;
+#else  /* !HAVE_SIGACTION */
+  return 0;
+#endif /* !HAVE_SIGACTION */
 }
 
-static void
+void
 unblock_sigchld (void)
 {
 #ifdef HAVE_SIGACTION
   sigset_t child_set;
   sigemptyset(&child_set);
   sigaddset(&child_set, SIGCHLD);
+  sigaddset(&child_set, SIGPIPE);
   sigprocmask(SIG_UNBLOCK, &child_set, 0);
 #endif /* HAVE_SIGACTION */
 
@@ -546,31 +370,27 @@ kill_job (saver_info *si, pid_t pid, int signal)
   default: abort();
   }
 
-#ifdef SIGSTOP
   if (p->verbose_p)
-    fprintf (stderr, "%s: %s pid %lu.\n", blurb(),
-	     (signal == SIGTERM ? "killing" :
-	      signal == SIGSTOP ? "suspending" :
-	      signal == SIGCONT ? "resuming" : "signalling"),
-	     (unsigned long) job->pid);
-#else  /* !SIGSTOP */
-  if (p->verbose_p)
-    fprintf (stderr, "%s: %s pid %lu.\n", blurb(), "killing",
-	     (unsigned long) job->pid);
-#endif /* !SIGSTOP */
+    fprintf (stderr, "%s: %d: %s pid %lu (%s)\n",
+             blurb(), job->screen,
+             (job->status == job_killed  ? "killing" :
+              job->status == job_stopped ? "suspending" : "resuming"),
+             (unsigned long) job->pid,
+             job->name);
 
   status = kill (job->pid, signal);
 
   if (p->verbose_p && status < 0)
     {
       if (errno == ESRCH)
-	fprintf (stderr, "%s: child process %lu (%s) was already dead.\n",
-		 blurb(), job->pid, job->name);
+	fprintf (stderr,
+                 "%s: %d: child process %lu (%s) was already dead.\n",
+		 blurb(), job->screen, (unsigned long) job->pid, job->name);
       else
 	{
 	  char buf [1024];
-	  sprintf (buf, "%s: couldn't kill child process %lu (%s)",
-		   blurb(), job->pid, job->name);
+	  sprintf (buf, "%s: %d: couldn't kill child process %lu (%s)",
+		   blurb(), job->screen, (unsigned long) job->pid, job->name);
 	  perror (buf);
 	}
     }
@@ -652,6 +472,7 @@ describe_dead_child (saver_info *si, pid_t kid, int wait_status)
   saver_preferences *p = &si->prefs;
   struct screenhack_job *job = find_job (kid);
   const char *name = job ? job->name : "<unknown>";
+  int screen_no = job ? job->screen : 0;
 
   if (WIFEXITED (wait_status))
     {
@@ -675,16 +496,17 @@ describe_dead_child (saver_info *si, pid_t kid, int wait_status)
       if (exit_status != 0 && exit_status != NONEXISTENT_SCREENHACK &&
 	  (!job || (p->verbose_p || job->status != job_killed)))
 	fprintf (stderr,
-		 "%s: child pid %lu (%s) exited abnormally (code %d).\n",
-		 blurb(), (unsigned long) kid, name, exit_status);
+		 "%s: %d: child pid %lu (%s) exited abnormally (code %d).\n",
+		 blurb(), screen_no, (unsigned long) kid, name, exit_status);
       else if (p->verbose_p || si->demoing_p)
         {
 	  if (exit_status == NONEXISTENT_SCREENHACK)
-	    fprintf (stderr, "%s: child pid %lu (%s) was a nonexistent hack.\n",
-		     blurb(), (unsigned long) kid, name);
+	    fprintf (stderr, "%s: %d: child pid %lu (%s) "
+		     "was a nonexistent hack.\n",
+		     blurb(), screen_no, (unsigned long) kid, name);
 	  else
-	    fprintf (stderr, "%s: child pid %lu (%s) exited normally.\n",
-		     blurb(), (unsigned long) kid, name);
+	    fprintf (stderr, "%s: %d: child pid %lu (%s) exited normally.\n",
+		     blurb(), screen_no, (unsigned long) kid, name);
 	}
 
       if (job)
@@ -696,8 +518,8 @@ describe_dead_child (saver_info *si, pid_t kid, int wait_status)
 	  !job ||
 	  job->status != job_killed ||
 	  WTERMSIG (wait_status) != SIGTERM)
-	fprintf (stderr, "%s: child pid %lu (%s) terminated with %s.\n",
-		 blurb(), (unsigned long) kid, name,
+	fprintf (stderr, "%s: %d: child pid %lu (%s) terminated with %s.\n",
+		 blurb(), screen_no, (unsigned long) kid, name,
 		 signal_name (WTERMSIG(wait_status)));
 
       if (job)
@@ -804,6 +626,50 @@ select_visual_of_hack (saver_screen_info *ssi, screenhack *hack)
 
 
 static void
+print_path_error (const char *program)
+{
+  char buf [512];
+  char *cmd = strdup (program);
+  char *token = strchr (cmd, ' ');
+
+  if (token) *token = 0;
+  sprintf (buf, "%s: could not execute \"%.100s\"", blurb(), cmd);
+  free (cmd);
+  perror (buf);
+
+  if (errno == ENOENT &&
+      (token = getenv("PATH")))
+    {
+# ifndef PATH_MAX
+#  ifdef MAXPATHLEN
+#   define PATH_MAX MAXPATHLEN
+#  else
+#   define PATH_MAX 2048
+#  endif
+# endif
+      char path[PATH_MAX];
+      fprintf (stderr, "\n");
+      *path = 0;
+# if defined(HAVE_GETCWD)
+      getcwd (path, sizeof(path));
+# elif defined(HAVE_GETWD)
+      getwd (path);
+# endif
+      if (*path)
+        fprintf (stderr, "    Current directory is: %s\n", path);
+      fprintf (stderr, "    PATH is:\n");
+      token = strtok (strdup(token), ":");
+      while (token)
+        {
+          fprintf (stderr, "        %s\n", token);
+          token = strtok(0, ":");
+        }
+      fprintf (stderr, "\n");
+    }
+}
+
+
+static void
 spawn_screenhack_1 (saver_screen_info *ssi, Bool first_time_p)
 {
   saver_info *si = ssi->global;
@@ -822,32 +688,62 @@ spawn_screenhack_1 (saver_screen_info *ssi, Bool first_time_p)
 
     AGAIN:
 
-      if (p->screenhacks_count == 1)
-	/* If there is only one hack in the list, there is no choice. */
-	new_hack = 0;
-
+      if (p->screenhacks_count < 1)
+        {
+          /* No hacks at all */
+          new_hack = -1;
+        }
+      else if (p->screenhacks_count == 1)
+        {
+          /* Exactly one hack in the list */
+          new_hack = 0;
+        }
       else if (si->selection_mode == -1)
-	/* Select the next hack, wrapping. */
-	new_hack = (ssi->current_hack + 1) % p->screenhacks_count;
-
+        {
+          /* Select the next hack, wrapping. */
+          new_hack = (ssi->current_hack + 1) % p->screenhacks_count;
+        }
       else if (si->selection_mode == -2)
-	/* Select the previous hack, wrapping. */
-	new_hack = ((ssi->current_hack + p->screenhacks_count - 1)
-		    % p->screenhacks_count);
-
+        {
+          /* Select the previous hack, wrapping. */
+          if (ssi->current_hack < 0)
+            new_hack = p->screenhacks_count - 1;
+          else
+            new_hack = ((ssi->current_hack + p->screenhacks_count - 1)
+                        % p->screenhacks_count);
+        }
       else if (si->selection_mode > 0)
-	/* Select a specific hack, by number.  No negotiation. */
 	{
+          /* Select a specific hack, by number (via the ACTIVATE command.) */
 	  new_hack = ((si->selection_mode - 1) % p->screenhacks_count);
 	  force = True;
 	}
-      else
+      else if (p->mode == ONE_HACK &&
+               p->selected_hack >= 0)
+	{
+          /* Select a specific hack, by number (via "One Saver" mode.) */
+          new_hack = p->selected_hack;
+	  force = True;
+	}
+      else if (p->mode == BLANK_ONLY || p->mode == DONT_BLANK)
+        {
+          new_hack = -1;
+        }
+      else  /* (p->mode == RANDOM_HACKS) */
 	{
 	  /* Select a random hack (but not the one we just ran.) */
 	  while ((new_hack = random () % p->screenhacks_count)
 		 == ssi->current_hack)
 	    ;
 	}
+
+      if (new_hack < 0)   /* don't run a hack */
+        {
+          ssi->current_hack = -1;
+          if (si->selection_mode < 0)
+            si->selection_mode = 0;
+          return;
+        }
 
       ssi->current_hack = new_hack;
       hack = p->screenhacks[ssi->current_hack];
@@ -873,8 +769,8 @@ spawn_screenhack_1 (saver_screen_info *ssi, Bool first_time_p)
 	      */
 	      if (p->verbose_p)
 		fprintf(stderr,
-			"%s: no suitable visuals for these programs.\n",
-			blurb());
+		      "%s: %d: no programs enabled, or no suitable visuals.\n",
+			blurb(), ssi->number);
 	      return;
 	    }
 	  else
@@ -897,15 +793,34 @@ spawn_screenhack_1 (saver_screen_info *ssi, Bool first_time_p)
 
 	case 0:
 	  close (ConnectionNumber (si->dpy));	/* close display fd */
-	  nice_subproc (p->nice_inferior);	/* change process priority */
+	  limit_subproc_memory (p->inferior_memory_limit, p->verbose_p);
 	  hack_subproc_environment (ssi);	/* set $DISPLAY */
-	  exec_screenhack (si, hack->command);	/* this does not return */
-	  abort();
+
+          if (p->verbose_p)
+            fprintf (stderr, "%s: %d: spawning \"%s\" in pid %lu.\n",
+                     blurb(), ssi->number, hack->command,
+                     (unsigned long) getpid ());
+
+	  exec_command (p->shell, hack->command, p->nice_inferior);
+
+	  /* If the user has a .xscreensaver with screenhacks that are gone, we
+	   * don't want to blab about it.
+	   */
+	  if (errno == ENOENT)
+	    exit(NONEXISTENT_SCREENHACK);
+
+          /* If that returned, we were unable to exec the subprocess.
+             Print an error message, if desired.
+           */
+          if (! p->ignore_uninstalled_p)
+            print_path_error (hack->command);
+
+          exit (1);  /* exits child fork */
 	  break;
 
 	default:
 	  ssi->pid = forked;
-	  (void) make_job (forked, hack->command);
+	  (void) make_job (forked, ssi->number, hack->command);
 	  break;
 	}
     }
@@ -1018,6 +933,11 @@ hack_environment (saver_info *si)
 
       if (putenv (npath))
 	abort ();
+
+      /* don't free (npath) -- some implementations of putenv (BSD 4.4,
+         glibc 2.0) copy the argument, but some (libc4,5, glibc 2.1.2)
+         do not.  So we must leak it (and/or the previous setting). Yay.
+       */
     }
 #endif /* HAVE_PUTENV && DEFAULT_PATH_PREFIX */
 }
@@ -1034,16 +954,16 @@ hack_subproc_environment (saver_screen_info *ssi)
      be the screen on which this particular hack is running -- not the display
      specification which the driver itself is using, since the driver ignores
      its screen number and manages all existing screens.
+
+     Likewise, store a window ID in $XSCREENSAVER_WINDOW -- this will allow
+     us to (eventually) run multiple hacks in Xinerama mode, where each hack
+     has the same $DISPLAY but a different piece of glass.
    */
   saver_info *si = ssi->global;
   const char *odpy = DisplayString (si->dpy);
-  char *ndpy = (char *) malloc(strlen(odpy) + 20);
-  int screen_number;
+  char *ndpy = (char *) malloc (strlen(odpy) + 20);
+  char *nssw = (char *) malloc (40);
   char *s;
-
-  for (screen_number = 0; screen_number < si->nscreens; screen_number++)
-    if (ssi == &si->screens[screen_number])
-      break;
 
   strcpy (ndpy, "DISPLAY=");
   s = ndpy + strlen(ndpy);
@@ -1054,13 +974,23 @@ hack_subproc_environment (saver_screen_info *ssi)
   while (isdigit(*s)) s++;			/* skip over dpy number */
   while (*s == '.') s++;			/* skip over dot */
   if (s[-1] != '.') *s++ = '.';			/* put on a dot */
-  sprintf(s, "%d", screen_number);		/* put on screen number */
+  sprintf(s, "%d", ssi->real_screen_number);	/* put on screen number */
+
+  sprintf (nssw, "XSCREENSAVER_WINDOW=0x%lX",
+           (unsigned long) ssi->screensaver_window);
 
   /* Allegedly, BSD 4.3 didn't have putenv(), but nobody runs such systems
      any more, right?  It's not Posix, but everyone seems to have it. */
 #ifdef HAVE_PUTENV
   if (putenv (ndpy))
     abort ();
+  if (putenv (nssw))
+    abort ();
+
+  /* don't free ndpy/nssw -- some implementations of putenv (BSD 4.4,
+     glibc 2.0) copy the argument, but some (libc4,5, glibc 2.1.2)
+     do not.  So we must leak it (and/or the previous setting). Yay.
+   */
 #endif /* HAVE_PUTENV */
 }
 
@@ -1143,23 +1073,33 @@ get_best_gl_visual (saver_screen_info *ssi)
         /* Wait for the child to die. */
         waitpid (-1, &wait_status, 0);
 
-        if (1 == sscanf (buf, "0x%x %c", &v, &c))
+        if (1 == sscanf (buf, "0x%lx %c", &v, &c))
           result = (int) v;
 
         if (result == 0)
           {
             if (si->prefs.verbose_p)
-              fprintf (stderr, "%s: %s did not report a GL visual!\n",
-                       blurb(), av[0]);
+              {
+                int L = strlen(buf);
+                fprintf (stderr, "%s: %s did not report a GL visual!\n",
+                         blurb(), av[0]);
+
+                if (L && buf[L-1] == '\n')
+                  buf[--L] = 0;
+                if (*buf)
+                  fprintf (stderr, "%s: %s said: \"%s\"\n",
+                           blurb(), av[0], buf);
+              }
             return 0;
           }
         else
           {
             Visual *v = id_to_visual (ssi->screen, result);
             if (si->prefs.verbose_p)
-              fprintf (stderr, "%s: %s says the GL visual is 0x%X%s.\n",
-                       blurb(), av[0], result,
-                       (v == ssi->default_visual ? " (the default)" : ""));
+              fprintf (stderr, "%s: %d: %s: GL visual is 0x%X%s.\n",
+                       blurb(), ssi->number,
+                       av[0], result,
+                       (v == ssi->default_visual ? " (default)" : ""));
             return v;
           }
       }
@@ -1188,31 +1128,33 @@ save_argv (int argc, char **argv)
 }
 
 
-/* Re-execs the process with the arguments in saved_argv.
-   Does not return unless there was an error.
+/* Re-execs the process with the arguments in saved_argv.  Does not return.
  */
 void
 restart_process (saver_info *si)
 {
+  fflush (stdout);
+  fflush (stderr);
+  shutdown_stderr (si);
   if (si->prefs.verbose_p)
     {
       int i;
-      fprintf (real_stderr, "%s: re-executing", blurb());
+      fprintf (stderr, "%s: re-executing", blurb());
       for (i = 0; saved_argv[i]; i++)
-	fprintf (real_stderr, " %s", saved_argv[i]);
-      fprintf (real_stderr, "\n");
+	fprintf (stderr, " %s", saved_argv[i]);
+      fprintf (stderr, "\n");
     }
-  describe_uids (si, real_stderr);
-  fprintf (real_stderr, "\n");
+  describe_uids (si, stderr);
+  fprintf (stderr, "\n");
 
-  fflush (real_stdout);
-  fflush (real_stderr);
+  fflush (stdout);
+  fflush (stderr);
   execvp (saved_argv [0], saved_argv);	/* shouldn't return */
   {
     char buf [512];
     sprintf (buf, "%s: could not restart process", blurb());
     perror(buf);
     fflush(stderr);
+    abort();
   }
-  XBell(si->dpy, 0);
 }
