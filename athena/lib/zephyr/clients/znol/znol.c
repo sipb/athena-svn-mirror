@@ -18,7 +18,7 @@
 #include <pwd.h>
 
 #ifndef lint
-static char rcsid_znol_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/znol/znol.c,v 1.2 1987-10-25 01:39:51 rfrench Exp $";
+static char rcsid_znol_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/znol/znol.c,v 1.3 1987-11-08 00:06:48 rfrench Exp $";
 #endif lint
 
 #define SUBSATONCE 7
@@ -80,7 +80,7 @@ main(argc,argv)
 			strcpy(anyonename,argv[++arg]);
 			continue;
 		}
-		printf("Usage: %s [on|off] [-f file]\n",argv[0]);
+		printf("Usage: %s [on|off] [-q] [-l] [-f file]\n",argv[0]);
 		exit (1);
 	}
 
