@@ -15,7 +15,7 @@
 
 /* This file implements the main athdir library calls. */
 
-static char rcsid[] = "$Id: athdir.c,v 1.3 1999-02-08 23:11:33 danw Exp $";
+static char rcsid[] = "$Id: athdir.c,v 1.4 1999-06-23 21:36:43 ghudson Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -36,7 +36,7 @@ static char rcsid[] = "$Id: athdir.c,v 1.3 1999-02-08 23:11:33 danw Exp $";
 #define HOSTTYPE "rsaix"
 #endif
 
-#ifdef SOLARIS
+#if defined(__sun__) && defined(__svr4__)
 #define HOSTTYPESET 1
 #define HOSTTYPE "sun4"
 #endif
