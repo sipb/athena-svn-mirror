@@ -15,13 +15,20 @@ start)
 			exit 0
 		fi
 
+		# We get run before inetsvc (since we don't want to run
+		# inetd), which means named isn't running.  Run it.
+		/usr/sbin/in.named
+
+		# Make sure we see the right cells as setuid.
+		sh /etc/athena/config_afs
+
 		echo "Finishing partially completed update"
 		echo "***** Finishing update after reboot" \
 			>> /var/athena/update.log
-		sh /usr/athena/lib/update/finish-update 2>&1 \
+		sh /srvd/usr/athena/lib/update/finish-update "$newvers" 2>&1 \
 			| tee -a /var/athena/update.log
 
-		if [ "$method" = "Manual" ]; then
+		if [ "$method" = Manual ]; then
 			echo "The update to version $newvers is complete.  You"
 			echo "may now examine the system before rebooting it"
 			echo "under $newvers.  When you are finished, type"
