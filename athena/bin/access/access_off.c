@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: access_off.c,v 1.13 1999-02-27 17:10:47 ghudson Exp $";
+static const char rcsid[] = "$Id: access_off.c,v 1.14 1999-04-02 16:49:11 ghudson Exp $";
 
 #include <sys/types.h>
 #include <stdio.h>
@@ -25,7 +25,7 @@ static const char rcsid[] = "$Id: access_off.c,v 1.13 1999-02-27 17:10:47 ghudso
 #define PATH_INETD_PID		"/var/athena/inetd.pid"
 #define PATH_SSHD_PID		"/var/athena/sshd.pid"
 
-static int sendsig(const char *pidpath, int on);
+static int sendsig(const char *pidpath, int on, int important);
 
 int main(int argc, char **argv)
 {
@@ -39,14 +39,14 @@ int main(int argc, char **argv)
   on = (strcmp(progname, "access_off") != 0);
 
   err = 0;
-  if (sendsig(PATH_INETD_PID, on) == -1)
+  if (sendsig(PATH_INETD_PID, on, 1) == -1)
     err = 1;
-  if (sendsig(PATH_SSHD_PID, on) == -1)
+  if (sendsig(PATH_SSHD_PID, on, 0) == -1)
     err = 1;
   return err;
 }
 
-static int sendsig(const char *pidpath, int on)
+static int sendsig(const char *pidpath, int on, int important)
 {
   FILE *pidfile;
   int pid;
@@ -55,6 +55,8 @@ static int sendsig(const char *pidpath, int on)
   pidfile = fopen(pidpath, "r");
   if (!pidfile)
     {
+      if (!important)
+	return 0;
       fprintf(stderr, "Cannot read %s.  Daemon probably not running\n",
 	      pidpath);
       return -1;
