@@ -1,0 +1,13 @@
+#!/bin/sh
+
+grep -s '^ZCLIENT=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
+  cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
+ZCLIENT=true;		export ZCLIENT		#  Zephyr client
+EOF
+
+grep -s '^ZSERVER=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
+  cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
+ZSERVER=false;		export ZSERVER		#  Zephyr server
+EOF
+
+exit 0

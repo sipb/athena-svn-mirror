@@ -1,0 +1,11 @@
+#!/bin/sh
+
+PATH=/usr/athena/bin:$PATH
+umask 022
+
+mkdir -p $PKG_INSTALL_ROOT/etc/athena/pango
+chroot ${PKG_INSTALL_ROOT:-/} \
+  /usr/athena/bin/pango-querymodules \
+    > $PKG_INSTALL_ROOT/etc/athena/pango/pango.modules
+
+exit 0

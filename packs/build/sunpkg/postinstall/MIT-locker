@@ -1,0 +1,5 @@
+#!/bin/sh
+
+mkdir -p -m 755 $PKG_INSTALL_ROOT/mit
+
+exit 0

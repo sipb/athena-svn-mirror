@@ -1,0 +1,8 @@
+#!/bin/sh
+
+grep -s '^OLC=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
+  cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
+OLC=false;		export OLC		#  OLC daemon?
+EOF
+
+exit 0

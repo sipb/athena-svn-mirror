@@ -1,0 +1,93 @@
+#!/bin/sh
+
+grep -s '^HOST=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || {
+  host=`hostname | tr "[A-Z]" "[a-z]"`
+  cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
+HOST=$host;		export HOST		#* Hostname
+EOF
+}
+
+# If NETDEV is already set in rc.conf, get it.  Otherwise, set it to
+# the first non-loopback interface.
+if grep -s '^NETDEV=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null ; then
+  eval `grep '^NETDEV=' $PKG_INSTALL_ROOT/etc/athena/rc.conf`
+else
+  NETDEV=`ifconfig -au | \
+    awk -F: '/^[a-z]/ { if ($1 != "lo0") { print $1; exit; } }'`
+  cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
+NETDEV=${NETDEV:-eri0};		export NETDEV		#* Network interface
+EOF
+fi
+
+grep -s '^ADDR=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || {
+  ADDR=`ifconfig ${NETDEV:-eri0} | awk '$1 == "inet" { print $2; }'`
+  cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
+ADDR=${ADDR:-127.0.0.1};	export ADDR		#* Internet address
+EOF
+}
+
+grep -s '^MACHINE=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || {
+  MACHINE=`$PKG_INSTALL_ROOT/bin/athena/machtype -c`
+  cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
+MACHINE=$MACHINE;	export MACHINE		# Type of machine
+EOF
+}
+
+grep -s '^SYSTEM=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
+  cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
+SYSTEM=solaris; 	export SYSTEM		# Type of operating system
+EOF
+
+grep -s '^PUBLIC=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
+  cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
+PUBLIC=false;		export PUBLIC		# Public workstation?
+EOF
+
+grep -s '^NOCREATE=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
+  cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
+NOCREATE=false;		export NOCREATE		# Create /etc/nocreate; see al_login_allowed(3)
+EOF
+
+grep -s '^NOATTACH=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
+  cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
+NOATTACH=false;		export NOATTACH		# Disallow attaching homedirs?
+EOF
+
+grep -s '^NOREMOTE=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
+  cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
+NOREMOTE=false;		export NOREMOTE		# Create /etc/noremote; see al_login_allowed(3)
+EOF
+
+grep -s '^AUTOUPDATE=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
+  cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
+AUTOUPDATE=true;	export AUTOUPDATE	# Automatically update?
+EOF
+
+grep -s '^SYNCCONFIG=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
+  cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
+SYNCCONFIG=true;	export SYNCCONFIG	# Synchronize configurations?
+EOF
+
+grep -s '^MAILRELAY=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
+  cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
+MAILRELAY=default;	export MAILRELAY	#* SMTP relay host | default | none
+EOF
+
+# Inaugurate /etc/shells if necessary, and make sure it contains
+# our favorite local shells.
+extrashells="/afs/sipb/project/tcsh/tcsh \
+             /afs/sipb/project/tcsh/t \
+             /afs/sipb/project/tcsh/betatcsh \
+             /afs/sipb/project/tcsh/b \
+             /afs/athena/project/gnu/bin/bash \
+             /afs/sipb/project/bash/bash"
+
+if [ ! -f $PKG_INSTALL_ROOT/etc/shells ]; then
+  cp -p /srvd/etc/shells $PKG_INSTALL_ROOT/etc/shells
+fi
+for s in $extrashells; do
+  grep -s "^$s\$" $PKG_INSTALL_ROOT/etc/shells > /dev/null || \
+    echo "$s" >> $PKG_INSTALL_ROOT/etc/shells
+done
+
+exit 0

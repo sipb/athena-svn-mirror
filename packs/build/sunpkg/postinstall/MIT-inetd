@@ -1,0 +1,8 @@
+#!/bin/sh
+
+grep -s '^ACCESSON=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
+  cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
+ACCESSON=false;		export ACCESSON		#  Access on by default
+EOF
+
+exit 0

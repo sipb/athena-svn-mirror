@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# Add the MRUPDATE setting to rc.conf if needed.
+grep -s '^MRUPDATE=' $PKG_INSTALL_ROOT/etc/athena/rc.conf > /dev/null || \
+  cat << EOF >> $PKG_INSTALL_ROOT/etc/athena/rc.conf
+MRUPDATE=false;		export MRUPDATE		# Moira update daemon
+EOF
+
+exit 0
