@@ -7,7 +7,7 @@
 #
 ###########################################################################
 # MODULE: Makefile
-# $Id: Makefile.in,v 1.13 1999-10-27 22:31:35 mwhitson Exp $
+# $Id: Makefile.in,v 1.14 1999-10-30 19:41:14 mwhitson Exp $
 ###########################################################################
 #
 # WARNING: This is a makefile for GNU Make or when modified by BSD Make
@@ -408,14 +408,14 @@ install: all
 	${INSTALLCMD} ${STRIP} -m $(ROOT_PERMS) lpr ${bindir}
 	${INSTALLCMD} ${STRIP} -m $(ROOT_PERMS) lpstat ${bindir}
 	${INSTALLCMD} ${STRIP} -m $(ROOT_PERMS) lpc ${sbindir}
-	${INSTALLCMD} ${STRIP} -m $(ROOT_PERMS) lpd ${LPD_DIR}
+	${INSTALLCMD} ${STRIP} -m $(NORM_PERMS) lpd ${LPD_DIR}
 	${INSTALLCMD} ${STRIP} -m $(NORM_PERMS) lpf ${FILTER_DIR}
 	${INSTALLCMD} ${STRIP} -m $(NORM_PERMS) lpbanner ${FILTER_DIR}
 	${INSTALLCMD}    -m $(NORM_PERMS) pclbanner ${FILTER_DIR}
 	${INSTALLCMD}    -m $(NORM_PERMS) psbanner ${FILTER_DIR}
 	${INSTALLCMD} ${STRIP} -m $(NORM_PERMS) checkpc ${sbindir}
 	${INSTALLCMD} ${STRIP} -m $(NORM_PERMS) lpraccnt ${sbindir}
-	cd ${bindir}; rm -f lp cancel; ln ${STRIP} lpr lp; ln -s lprm cancel;
+	cd ${bindir}; rm -f lp cancel; ln -s lpr lp; ln -s lprm cancel;
 
 uninstall:
 	rm -f ${LPD_DIR}/lpd
