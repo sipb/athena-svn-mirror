@@ -1,4 +1,4 @@
-/* $Id: al_private.h,v 1.5 1998-04-08 02:15:32 ghudson Exp $ */
+/* $Id: al_private.h,v 1.6 1998-05-31 15:31:51 ghudson Exp $ */
 
 /* Copyright 1997, 1998 by the Massachusetts Institute of Technology.
  *
@@ -48,6 +48,12 @@
 #define PATH_SHADOW		"/etc/shadow"
 #define PATH_SHADOW_TMP		"/etc/stmp"
 #endif
+
+/* The gid of the lowest-numbered group for which a group membership
+ * may be added based on hesiod information. The low-numbered groups
+ * are reserved since they may grant privileged file access.
+ */
+#define MIN_HES_GROUP 12
 
 struct passwd;
 
