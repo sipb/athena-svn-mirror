@@ -14,4 +14,5 @@
 afs-protections.sh
 import.sh
 logfilter.pl
+record.pl
 timestamps.pl
