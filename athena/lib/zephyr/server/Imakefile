@@ -5,7 +5,7 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/Imakefile,v $
 /**/#	$Author: jtkohl $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/Imakefile,v 1.7 1989-10-18 13:07:03 jtkohl Exp $
+/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/Imakefile,v 1.8 1989-10-18 13:10:47 jtkohl Exp $
 /**/#
 
 #if defined(DO_SYSLOG) && defined(SYSLOG_COMPAT42)
@@ -51,7 +51,7 @@ OBJS= 	zsrv_err.o \
 	timer.o \
 	uloc.o \
 	kstuff.o \
-	version.c
+	version.o
 
 OTHERSRCS= zsrv_err.et
 CONFIG_FILES= default.subscriptions
