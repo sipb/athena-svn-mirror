@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_col_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/col.c,v 1.2 1989-03-27 12:05:12 jik Exp $";
+     static char rcsid_col_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/col.c,v 1.3 1989-05-04 09:09:27 jik Exp $";
 #endif
 
 /*
@@ -64,18 +64,22 @@ FILE *outfile;
 	  height++;
      
      if (number_flag) for (updown = 0; updown < height; updown++) {
-	  for (leftright = updown; leftright < num_to_print;
-	       leftright += height) {
+	  for (leftright = updown; leftright < num_to_print; ) {
 	       (void) sprintf(buf, "%*d. %s", numwidth, leftright+1,
 			      strings[leftright]);
-	       fprintf(outfile, "%*s", -column_width, buf);
+	       if ((leftright += height) >= num_to_print)
+		    fprintf(outfile, "%s", buf );
+	       else
+		    fprintf(outfile, "%*s", -column_width, buf);
 	  }
 	  fprintf(outfile, "\n");
      } else for (updown = 0; updown < height; updown++) {
-	  for (leftright = updown; leftright < num_to_print;
-	       leftright += height) {
+	  for (leftright = updown; leftright < num_to_print; ) {
 	       (void) sprintf(buf, "%s", strings[leftright]);
-	       fprintf(outfile, "%*s", -column_width, buf);
+	       if ((leftright += height) >= num_to_print)
+		    fprintf(outfile, "%s", buf );
+	       else
+		    fprintf(outfile, "%*s", -column_width, buf);
 	  }
 	  fprintf(outfile, "\n");
      }
