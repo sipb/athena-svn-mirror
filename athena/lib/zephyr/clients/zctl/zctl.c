@@ -3,7 +3,7 @@
  *
  *	Created by:	Robert French
  *
- *	$Id: zctl.c,v 1.28 1999-01-22 23:18:29 ghudson Exp $
+ *	$Id: zctl.c,v 1.29 1999-06-01 19:00:43 ghudson Exp $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -17,7 +17,7 @@
 #include <pwd.h>
 #include <netdb.h>
 #ifndef lint
-static const char *rcsid_zctl_c = "$Id: zctl.c,v 1.28 1999-01-22 23:18:29 ghudson Exp $";
+static const char *rcsid_zctl_c = "$Id: zctl.c,v 1.29 1999-06-01 19:00:43 ghudson Exp $";
 #endif
 
 #define SUBSATONCE 7
@@ -105,13 +105,13 @@ main(argc,argv)
 #endif
 
 	if (!(hent = gethostbyname(ourhost))) {
-		fprintf(stderr,"%s: Can't get canonical name for host %s",
-			argv[0], ourhost);
-		exit (1);
-	}
+		fprintf(stderr,"%s: Can't resolve hostname %s; %s may be "
+			"wrong in subscriptions",argv[0],ourhost,
+			TOKEN_CANONNAME);
+		strncpy(ourhostcanon,ourhost,sizeof(ourhostcanon)-1);
+	} else
+		strncpy(ourhostcanon,hent->h_name,sizeof(ourhostcanon)-1);
 
-	(void) strcpy(ourhostcanon,hent->h_name);
-	
 	sci_idx = ss_create_invocation("zctl","",0,&zctl_cmds,&code);
 	if (code) {
 		ss_perror(sci_idx,code,"while creating invocation");
@@ -130,7 +130,7 @@ main(argc,argv)
 		exit((code != 0));
 	} 
 
-	printf("ZCTL $Revision: 1.28 $ (Protocol %s%d.%d) - Type '?' for a list of commands.\n\n",
+	printf("ZCTL $Revision: 1.29 $ (Protocol %s%d.%d) - Type '?' for a list of commands.\n\n",
 	       ZVERSIONHDR,
 	       ZVERSIONMAJOR,ZVERSIONMINOR);
 	
