@@ -1,10 +1,10 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/acl/acl_files.c,v $
- *	$Author: jtkohl $
+ *	$Author: probe $
  */
 
 #ifndef lint
-static char rcsid_acl_files_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/acl/acl_files.c,v 1.3 1987-11-16 10:39:51 jtkohl Exp $";
+static char rcsid_acl_files_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/acl/acl_files.c,v 1.4 1989-05-29 15:58:25 probe Exp $";
 #endif lint
 
 /*
@@ -396,8 +396,14 @@ char *name;
     acl_cache[i].acl = (struct hashtbl *) 0;
 
  got_it:
-    /* See if the stat matches */
-    if(fstat(acl_cache[i].fd, &s) < 0) return(-1);
+    /*
+     * See if the stat matches
+     *
+     * Use stat(), not fstat(), as the file may have been re-created by
+     * acl_add or acl_delete.  If this happens, the old inode will have
+     * no changes in the mod-time and the following test will fail.
+     */
+    if(stat(acl_cache[i].filename, &s) < 0) return(-1);
     if(acl_cache[i].acl == (struct hashtbl *) 0
        || s.st_nlink != acl_cache[i].status.st_nlink
        || s.st_mtime != acl_cache[i].status.st_mtime
