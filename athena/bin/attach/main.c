@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.19 1990-11-16 16:20:40 probe Exp $";
+static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.20 1991-01-22 16:20:18 probe Exp $";
 
 #include "attach.h"
 #include <signal.h>
@@ -58,7 +58,7 @@ int ufs_attach(), ufs_detach();
 #endif
 int err_attach(), null_detach();
 char	**ufs_explicit();
-int attach_mul(), detach_mul();
+int mul_attach(), mul_detach();
 
 struct _fstypes fstypes[] = {
     { "---", 0, -1, 0, (char *) 0, 0, null_detach, 0 },	/* The null type */
@@ -74,12 +74,12 @@ struct _fstypes fstypes[] = {
     { "UFS", TYPE_UFS, MOUNT_UFS, FS_MNTPT | FS_MNTPT_CANON, "rw", 
 	      ufs_attach, ufs_detach, ufs_explicit },
 #endif
-    { "ERR", TYPE_ERR, -1, 0, (char *) 0, err_attach, 0, 0 },
 #ifdef AFS
     { "AFS", TYPE_AFS, -1, FS_MNTPT | FS_PARENTMNTPT, "nrw", afs_attach, 
 	      afs_detach, afs_explicit },
 #endif
-    { "MUL", TYPE_MUL, -1, 0, "-", attach_mul, detach_mul, 0 },
+    { "ERR", TYPE_ERR, -1, 0, (char *) 0, err_attach, 0, 0 },
+    { "MUL", TYPE_MUL, -1, 0, "-", mul_attach, mul_detach, 0 },
     { 0, -1, 0, 0, (char *) 0, 0, 0, 0 }
 };
 
@@ -98,9 +98,10 @@ main(argc, argv)
     /* Stop overriding my explicit file modes! */
     umask(022);
 
-    /* Install signal intercept for SIGTERM and SIGINT */
+    /* Install signal handlers */
     (void) signal (SIGTERM, sig_trap);
     (void) signal (SIGINT, sig_trap);
+    (void) signal (SIGHUP, sig_trap);
 
     real_uid = owner_uid = getuid();
     effective_uid = geteuid();
@@ -181,9 +182,7 @@ nfsidcmd(argc, argv)
     char *ops;
     struct hostent *hent;
     char hostname[BUFSIZ];
-    struct _attachtab	*atp;
-    struct _attachtab	*save_atp=0;
-    char		*save_atp_hostdir;
+    register struct _attachtab	*atp;
     struct in_addr addr;
     static struct command_list options[] = {
 	{ "-verbose", "-v" },
