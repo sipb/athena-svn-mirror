@@ -1,6 +1,6 @@
 .\"	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/zwgc.1,v $
 .\"	$Author: jtkohl $
-.\"	$Id: zwgc.1,v 1.8 1989-11-30 16:44:39 jtkohl Exp $
+.\"	$Id: zwgc.1,v 1.9 1989-12-01 13:50:01 jtkohl Exp $
 '	# end of TP (cf }N below)
 '	# copied here, since we use @ in some of our tags, and that
 '	# messes up \w and \h
@@ -618,8 +618,10 @@ environments, evaluated in the context of the current style and
 substyle.
 .IP
 The style is specific to each window.  Its name has three dot
-(``.'') separated fields, which are by default the class, instance, and
-recipient of the message.  The style can be altered setting the
+(``.'') separated fields, which are by default the values of the class,
+instance, and recipient variables, with all dots changed to underscores
+(``_'') and all letters converted to lowercase.  The style can be
+altered by setting the
 .I style
 variable.  Note that it \fBmust always\fR have exactly two ``.''
 characters in it.
