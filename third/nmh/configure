@@ -1897,7 +1897,7 @@ fi
 for ac_hdr in string.h memory.h stdlib.h unistd.h errno.h fcntl.h \
                  limits.h crypt.h termcap.h termio.h termios.h locale.h \
                  sys/param.h sys/time.h sys/utsname.h arpa/inet.h \
-                 arpa/ftp.h
+                 arpa/ftp.h ndbm.h db.h
 do
 ac_safe=`echo "$ac_hdr" | sed 'y%./+-%__p_%'`
 echo $ac_n "checking for $ac_hdr""... $ac_c" 1>&6
