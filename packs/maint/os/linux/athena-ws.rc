@@ -78,6 +78,13 @@ case "$1" in
 		echo
 	fi
 
+	if lspci -n | egrep -q 'Class 0101: 8086:(7111|2411)' \
+	   && grep -q 'hda$' /proc/partitions; then
+		echo -n "Turning on DMA for /dev/hda"
+		hdparm -q -d1 /dev/hda && success hdparm || failure hdparm
+		echo
+	fi
+
 	if [ "$PUBLIC" = true ]; then
 		echo -n Public workstation cleanup
 
