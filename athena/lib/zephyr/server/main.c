@@ -15,12 +15,15 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/main.c,v 1.9 1987-07-17 16:27:28 jtkohl Exp $";
-static char copyright[] = "Copyright (c) 1987 Massachusetts Institute of Technology.\nPortions Copyright (c) 1986 Student Information Processing Board, Massachusetts Institute of Technology\n";
-static char version[] = "Zephyr Server (Prerelease) 0.5";
+static char rcsid_main_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/main.c,v 1.10 1987-07-22 17:54:05 jtkohl Exp $";
+char copyright[] = "Copyright (c) 1987 Massachusetts Institute of Technology.\nPortions Copyright (c) 1986 Student Information Processing Board, Massachusetts Institute of Technology\n";
 #endif SABER
 #endif lint
-
+#ifdef DEBUG
+char version[] = "Zephyr Server (Prerelease DEBUG) 0.6";
+#else
+char version[] = "Zephyr Server (Prerelease) 0.6";
+#endif DEBUG
 /*
  * Server loop for Zephyr.
  */
@@ -104,6 +107,8 @@ static ZAcl_t matchallacl = { MATCH_ALL_ACL };
 #ifdef DEBUG
 int zdebug = 0;
 #endif DEBUG
+u_long npackets = 0;			/* number of packets processed */
+long uptime;				/* when we started operations */
 
 main(argc,argv)
 int argc;
@@ -189,6 +194,7 @@ char **argv;
 #endif DEBUG
 
 	/* GO! */
+	uptime = NOW;
 	for EVER {
 		tvp = &nexthost_tv;
 		if (nexttimo != 0L) {
@@ -241,6 +247,7 @@ char **argv;
 					       error_message(status));
 					continue;
 				}
+				npackets++;
 				if (status = ZParseNotice(input_packet,
 							  input_len,
 							  &new_notice,
@@ -272,6 +279,7 @@ char **argv;
 					}
 				}
 				if (whoisit.sin_port != hm_port &&
+				    strcmp(new_notice.z_class,ZEPHYR_ADMIN_CLASS) &&
 				    whoisit.sin_port != sock_sin.sin_port &&
 				    new_notice.z_kind != CLIENTACK) {
 					syslog(LOG_ERR,
@@ -407,11 +415,13 @@ usage()
  */
 
 static int
-bye()
+bye(sig)
+int sig;
 {
 	server_shutdown();		/* tell other servers */
 	hostm_shutdown();		/* tell our hosts */
-	syslog(LOG_INFO, "goodbye");
+	(void) dest_tkt();
+	syslog(LOG_INFO, "goodbye (sig %d)",sig);
 	exit(0);
 	/*NOTREACHED*/
 }
