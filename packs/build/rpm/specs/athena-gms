@@ -1,12 +1,10 @@
 Name: athena-gms
-Summary: A program to display the global Athena message of the day
+Summary: A library used by the global Athena message service
 Copyright: MIT
 Group: Applications/Communications
 
-Requires: athena-hesiod athena-libet
+Requires: athena-libet
 
 %description
-The get_message utility locates the Athena Global Message server,
-retrieves the current message of the day, and displays it if
-necessary.
-
+The gms library defines error codes and constants used by get_message
+and messaged, the components of the global Athena message service.
