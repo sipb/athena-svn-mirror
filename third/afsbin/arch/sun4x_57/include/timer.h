@@ -1,8 +1,8 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/timer.h,v 1.1.1.1 2000-03-29 21:27:19 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/timer.h,v 1.1.1.2 2000-04-12 18:29:27 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/timer.h,v $ */
 
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsidtimer = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/timer.h,v 1.1.1.1 2000-03-29 21:27:19 ghudson Exp $";
+static char *rcsidtimer = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/timer.h,v 1.1.1.2 2000-04-12 18:29:27 ghudson Exp $";
 #endif
 
 /*

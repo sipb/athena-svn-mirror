@@ -74,7 +74,7 @@
 
 
 struct ka_CBS {
-	int32 SeqLen;
+	afs_int32 SeqLen;
 	char *SeqBody;
 };
 typedef struct ka_CBS ka_CBS;
@@ -82,8 +82,8 @@ bool_t xdr_ka_CBS();
 
 
 struct ka_BBS {
-	int32 MaxSeqLen;
-	int32 SeqLen;
+	afs_int32 MaxSeqLen;
+	afs_int32 SeqLen;
 	char *SeqBody;
 };
 typedef struct ka_BBS ka_BBS;
@@ -115,7 +115,7 @@ bool_t xdr_EncryptionKey();
 #define NEVERDATE 037777777777		/* a date that will never come */
 #endif
 #ifndef Date
-#define Date u_int32
+#define Date afs_uint32
 #endif
 #if !defined(AFS_HPUX_ENV) && !defined(AFS_NT40_ENV) && !defined(AFS_LINUX20_ENV)
 #define AUTH_DBM_LOG
@@ -134,41 +134,41 @@ bool_t xdr_kaident();
 
 
 struct kaentryinfo {
-	int32 minor_version;
-	int32 flags;
-	u_int32 user_expiration;
-	u_int32 modification_time;
+	afs_int32 minor_version;
+	afs_int32 flags;
+	afs_uint32 user_expiration;
+	afs_uint32 modification_time;
 	struct kaident modification_user;
-	u_int32 change_password_time;
-	int32 max_ticket_lifetime;
-	int32 key_version;
+	afs_uint32 change_password_time;
+	afs_int32 max_ticket_lifetime;
+	afs_int32 key_version;
 	EncryptionKey key;
-	u_int32 keyCheckSum;
-	u_int32 misc_auth_bytes;
-	int32 reserved3;
-	int32 reserved4;
+	afs_uint32 keyCheckSum;
+	afs_uint32 misc_auth_bytes;
+	afs_int32 reserved3;
+	afs_int32 reserved4;
 };
 typedef struct kaentryinfo kaentryinfo;
 bool_t xdr_kaentryinfo();
 
 
 struct kasstats {
-	int32 minor_version;
-	int32 allocs;
-	int32 frees;
-	int32 cpws;
-	int32 reserved1;
-	int32 reserved2;
-	int32 reserved3;
-	int32 reserved4;
+	afs_int32 minor_version;
+	afs_int32 allocs;
+	afs_int32 frees;
+	afs_int32 cpws;
+	afs_int32 reserved1;
+	afs_int32 reserved2;
+	afs_int32 reserved3;
+	afs_int32 reserved4;
 };
 typedef struct kasstats kasstats;
 bool_t xdr_kasstats();
 
 
 struct katimeval {
-	int32 tv_sec;
-	int32 tv_usec;
+	afs_int32 tv_sec;
+	afs_int32 tv_usec;
 };
 typedef struct katimeval katimeval;
 bool_t xdr_katimeval();
@@ -183,10 +183,10 @@ bool_t xdr_karpcstats();
 
 
 struct kadstats {
-	int32 minor_version;
-	int32 host;
-	u_int32 start_time;
-	int32 hashTableUtilization;
+	afs_int32 minor_version;
+	afs_int32 host;
+	afs_uint32 start_time;
+	afs_int32 hashTableUtilization;
 	struct karpcstats Authenticate;
 	struct karpcstats ChangePassword;
 	struct karpcstats GetTicket;
@@ -204,11 +204,11 @@ struct kadstats {
 	struct karpcstats UGetTicket;
 	struct karpcstats Unlock;
 	struct karpcstats LockStatus;
-	int32 string_checks;
-	int32 reserved1;
-	int32 reserved2;
-	int32 reserved3;
-	int32 reserved4;
+	afs_int32 string_checks;
+	afs_int32 reserved1;
+	afs_int32 reserved2;
+	afs_int32 reserved3;
+	afs_int32 reserved4;
 };
 typedef struct kadstats kadstats;
 bool_t xdr_kadstats();
@@ -216,8 +216,8 @@ bool_t xdr_kadstats();
 #define KADEBUGKCINFOSIZE 25
 
 struct ka_kcInfo {
-	u_int32 used;
-	int32 kvno;
+	afs_uint32 used;
+	afs_int32 kvno;
 	char primary;
 	char keycksum;
 	char principal[64];
@@ -227,11 +227,11 @@ bool_t xdr_ka_kcInfo();
 
 
 struct ka_debugInfo {
-	int32 minorVersion;
-	int32 host;
-	u_int32 startTime;
+	afs_int32 minorVersion;
+	afs_int32 host;
+	afs_uint32 startTime;
 	int noAuth;
-	u_int32 lastTrans;
+	afs_uint32 lastTrans;
 	char lastOperation[16];
 	char lastAuth[256];
 	char lastUAuth[256];
@@ -240,43 +240,41 @@ struct ka_debugInfo {
 	char lastAdmin[256];
 	char lastTGSServer[256];
 	char lastUTGSServer[256];
-	u_int32 nextAutoCPW;
+	afs_uint32 nextAutoCPW;
 	int updatesRemaining;
-	u_int32 dbHeaderRead;
-	int32 dbVersion;
-	int32 dbFreePtr;
-	int32 dbEofPtr;
-	int32 dbKvnoPtr;
-	int32 dbSpecialKeysVersion;
-	int32 cheader_lock;
-	int32 keycache_lock;
-	int32 kcVersion;
+	afs_uint32 dbHeaderRead;
+	afs_int32 dbVersion;
+	afs_int32 dbFreePtr;
+	afs_int32 dbEofPtr;
+	afs_int32 dbKvnoPtr;
+	afs_int32 dbSpecialKeysVersion;
+	afs_int32 cheader_lock;
+	afs_int32 keycache_lock;
+	afs_int32 kcVersion;
 	int kcSize;
 	int kcUsed;
 	struct ka_kcInfo kcInfo[KADEBUGKCINFOSIZE];
-	int32 reserved1;
-	int32 reserved2;
-	int32 reserved3;
-	int32 reserved4;
+	afs_int32 reserved1;
+	afs_int32 reserved2;
+	afs_int32 reserved3;
+	afs_int32 reserved4;
 };
 typedef struct ka_debugInfo ka_debugInfo;
 bool_t xdr_ka_debugInfo();
 
+#define KAA_STATINDEX 18
+#define KAT_STATINDEX 19
+#define KAM_STATINDEX 20
 
 /* Opcode-related useful stats for package: KAA_ */
 #define KAA_LOWEST_OPCODE   1
 #define KAA_HIGHEST_OPCODE	22
 #define KAA_NUMBER_OPCODES	4
 
-#define KAA_NO_OF_CLIENT_STAT_FUNCS	4
-
-#define KAA_NO_OF_SERVER_STAT_FUNCS	4
+#define KAA_NO_OF_STAT_FUNCS	4
 
 AFS_RXGEN_EXPORT
-extern const char *KAA_client_function_names[];
-
-AFS_RXGEN_EXPORT
-extern const char *KAA_server_function_names[];
+extern const char *KAA_function_names[];
 
 
 /* Opcode-related useful stats for package: KAT_ */
@@ -284,15 +282,10 @@ extern const char *KAA_server_function_names[];
 #define KAT_HIGHEST_OPCODE	23
 #define KAT_NUMBER_OPCODES	2
 
-#define KAT_NO_OF_CLIENT_STAT_FUNCS	2
-
-#define KAT_NO_OF_SERVER_STAT_FUNCS	2
+#define KAT_NO_OF_STAT_FUNCS	2
 
 AFS_RXGEN_EXPORT
-extern const char *KAT_client_function_names[];
-
-AFS_RXGEN_EXPORT
-extern const char *KAT_server_function_names[];
+extern const char *KAT_function_names[];
 
 
 /* Opcode-related useful stats for package: KAM_ */
@@ -300,14 +293,9 @@ extern const char *KAT_server_function_names[];
 #define KAM_HIGHEST_OPCODE	15
 #define KAM_NUMBER_OPCODES	12
 
-#define KAM_NO_OF_CLIENT_STAT_FUNCS	12
-
-#define KAM_NO_OF_SERVER_STAT_FUNCS	12
+#define KAM_NO_OF_STAT_FUNCS	12
 
 AFS_RXGEN_EXPORT
-extern const char *KAM_client_function_names[];
-
-AFS_RXGEN_EXPORT
-extern const char *KAM_server_function_names[];
+extern const char *KAM_function_names[];
 
 #endif	/* _RXGEN_KAUTH_ */

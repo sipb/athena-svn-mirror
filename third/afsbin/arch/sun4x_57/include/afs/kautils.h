@@ -11,7 +11,7 @@
  * REFER TO COPYRIGHT INSTRUCTIONS FORM NUMBER G120-2083
  */
 
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/kautils.h,v 1.1.1.1 2000-03-29 21:27:21 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/kautils.h,v 1.1.1.2 2000-04-12 18:30:01 ghudson Exp $ */
 
 /* $Log: not supported by cvs2svn $
  * Revision 2.2  1990/09/27  13:51:37  ota
@@ -54,21 +54,22 @@
 
 
 #define KA_TIMESTR_LEN 30
+#define Date afs_uint32
 
 /*
  * Public function prototypes
  */
 
-extern int32 ka_GetAuthToken (
+extern afs_int32 ka_GetAuthToken (
   char *name,
   char *instance,
   char *cell,
   struct ktc_encryptionKey *key,
-  int32  lifetime,
-  int32  *pwexpires
+  afs_int32  lifetime,
+  afs_int32  *pwexpires
 );
 
-extern int32 ka_GetServerToken (
+extern afs_int32 ka_GetServerToken (
   char *name,
   char *instance,
   char *cell,
@@ -78,17 +79,17 @@ extern int32 ka_GetServerToken (
   int   dosetpag
 );
 
-extern int32 ka_GetAdminToken (
+extern afs_int32 ka_GetAdminToken (
   char *name,
   char *instance,
   char *cell,
   struct ktc_encryptionKey *key,
-  int32  lifetime,
+  afs_int32  lifetime,
   struct ktc_token *token,
   int   newer
 );
 
-extern int32 ka_VerifyUserToken(
+extern afs_int32 ka_VerifyUserToken(
   char *name,
   char *instance,
   char *cell,
@@ -97,22 +98,22 @@ extern int32 ka_VerifyUserToken(
 
 extern void ka_ExplicitCell (
   char *cell,
-  int32 serverList[]
+  afs_int32 serverList[]
 );
 
-extern int32 ka_GetServers (
+extern afs_int32 ka_GetServers (
   char *cell,
   struct afsconf_cell *cellinfo
 );
 
-extern int32 ka_GetSecurity (
+extern afs_int32 ka_GetSecurity (
   int   service,
   struct ktc_token *token,
   struct rx_securityClass **scP,
   int  *siP
 );
 
-extern int32 ka_SingleServerConn (
+extern afs_int32 ka_SingleServerConn (
   char *cell,
   char *server,
   int   service,
@@ -120,21 +121,21 @@ extern int32 ka_SingleServerConn (
   struct ubik_client **conn
 );
 
-extern int32 ka_AuthSpecificServersConn (
+extern afs_int32 ka_AuthSpecificServersConn (
   int                  service,
   struct ktc_token    *token,
   struct afsconf_cell *cellinfo,
   struct ubik_client **conn
 );
 
-extern int32 ka_AuthServerConn (
+extern afs_int32 ka_AuthServerConn (
   char                *cell,
   int                  service,
   struct ktc_token    *token,
   struct ubik_client **conn
 );
 
-extern int32 ka_Authenticate (
+extern afs_int32 ka_Authenticate (
   char *name,
   char *instance,
   char *cell,
@@ -144,10 +145,10 @@ extern int32 ka_Authenticate (
   Date  start,
   Date end,
   struct ktc_token *token,
-  int32 *pwexpires
+  afs_int32 *pwexpires
 );
 
-extern int32 ka_GetToken (
+extern afs_int32 ka_GetToken (
   char               *name,
   char               *instance,
   char               *cell,
@@ -161,7 +162,7 @@ extern int32 ka_GetToken (
   struct ktc_token   *token
 );
 
-extern int32 ka_ChangePassword (
+extern afs_int32 ka_ChangePassword (
   char               *name,
   char               *instance,
   struct ubik_client *conn,
@@ -175,21 +176,21 @@ extern void ka_StringToKey (
   struct ktc_encryptionKey *key
 );
 
-extern int32 ka_ReadPassword (
+extern afs_int32 ka_ReadPassword (
   char          *prompt,
   int            verify,
   char          *cell,
   struct ktc_encryptionKey *key
 );
 
-extern int32 ka_ParseLoginName (
+extern afs_int32 ka_ParseLoginName (
   char *login,
   char  name[MAXKTCNAMELEN],
   char  inst[MAXKTCNAMELEN],
   char  cell[MAXKTCREALMLEN]
 );
 
-extern int32 ka_Init(
+extern afs_int32 ka_Init(
   int flags
 );
 
@@ -239,13 +240,13 @@ extern int ka_ReadBytes (
 );
 
 extern int umin (
-  u_int32 a,
-  u_int32 b
+  afs_uint32 a,
+  afs_uint32 b
 );
 
-extern int32 ka_KeyCheckSum (
+extern afs_int32 ka_KeyCheckSum (
   char *key,
-  u_int32 *cksumP
+  afs_uint32 *cksumP
 );
 
 extern int ka_KeyIsZero(
@@ -254,32 +255,32 @@ extern int ka_KeyIsZero(
 );
 
 extern void ka_timestr (
-  int32 time,
+  afs_int32 time,
   char *tstr,
-  int32 tlen
+  afs_int32 tlen
 );
 
-extern int32 ka_GetAFSTicket (
+extern afs_int32 ka_GetAFSTicket (
   char *name,
   char *instance,
   char *realm,
   Date lifetime,
-  int32 flags
+  afs_int32 flags
 );
 
-extern int32 ka_UserAuthenticateGeneral (
-  int32 flags,
+extern afs_int32 ka_UserAuthenticateGeneral (
+  afs_int32 flags,
   char *name,
   char *instance,
   char *realm,
   char *password,
   Date lifetime,
-  int32 *password_expires,
-  int32 spare2,
+  afs_int32 *password_expires,
+  afs_int32 spare2,
   char **reasonP
 );
 
-extern int32 ka_UserAuthenticate (
+extern afs_int32 ka_UserAuthenticate (
   char *name,
   char *instance,
   char *realm,
@@ -288,15 +289,15 @@ extern int32 ka_UserAuthenticate (
   char **reasonP
 );
 
-extern int32 ka_UserReadPassword (
+extern afs_int32 ka_UserReadPassword (
   char *prompt,
   char *password,
   int   plen,
   char **reasonP
 );
 
-extern int32 ka_VerifyUserPassword(
-     int32 version,
+extern afs_int32 ka_VerifyUserPassword(
+     afs_int32 version,
      char *name,
      char *instance,
      char *realm,
@@ -318,25 +319,25 @@ extern int32 ka_VerifyUserPassword(
     ka_UserAuthenticateGeneral \
         (KA_USERAUTH_VERSION + (f), n,i,r,p,l, /*spare1,2*/0,0, rP)
 
-extern int32 KAM_CreateUser();
-extern int32 KAM_DeleteUser();
-extern int32 KAA_ChangePassword();
-extern int32 KAM_SetPassword();
-extern int32 KAA_Authenticate(), KAA_AuthenticateV2();
-extern int32 KAT_GetTicket();
-extern int32 KAM_SetFields();
+extern afs_int32 KAM_CreateUser();
+extern afs_int32 KAM_DeleteUser();
+extern afs_int32 KAA_ChangePassword();
+extern afs_int32 KAM_SetPassword();
+extern afs_int32 KAA_Authenticate(), KAA_AuthenticateV2();
+extern afs_int32 KAT_GetTicket();
+extern afs_int32 KAM_SetFields();
 #define KA_REUSEPW 1
 #define KA_NOREUSEPW 2
 #define KA_ISLOCKED 4                
 
-extern int32 KAM_GetEntry();
-extern int32 KAM_ListEntry();
-extern int32 KAM_GetStats();
-extern int32 KAM_GetPassword();
-extern int32 KAM_GetRandomKey();
-extern int32 KAM_Debug();
-extern int32 KAM_Unlock();
-extern int32 KAM_LockStatus();
+extern afs_int32 KAM_GetEntry();
+extern afs_int32 KAM_ListEntry();
+extern afs_int32 KAM_GetStats();
+extern afs_int32 KAM_GetPassword();
+extern afs_int32 KAM_GetRandomKey();
+extern afs_int32 KAM_Debug();
+extern afs_int32 KAM_Unlock();
+extern afs_int32 KAM_LockStatus();
 
 #define KA_AUTHENTICATION_SERVICE 731
 #define KA_TICKET_GRANTING_SERVICE 732
@@ -370,21 +371,21 @@ struct ka_gettgtAnswer {		/* format of response */
     Date time;				/* the time of the request plus one */
     struct ktc_encryptionKey
          sessionkey;			/* the session key in the ticket */
-    int32 kvno;				/* version # of tkt encrypting key */
-    int32 ticket_len;			/* the ticket's length */
+    afs_int32 kvno;				/* version # of tkt encrypting key */
+    afs_int32 ticket_len;			/* the ticket's length */
     char ticket[MAXKTCTICKETLEN];	/* the ticket itself (no padding) */
     char label[KA_LABELSIZE];		/* label to verify correct decrypt */
 };
 
 struct ka_ticketAnswer {		/* format of response */
-    int32 cksum;				/* function to be defined */
+    afs_int32 cksum;				/* function to be defined */
     Date challenge;			/* the time of the request plus one */
     struct ktc_encryptionKey
          sessionKey;			/* the session key in the ticket */
     Date startTime;
     Date endTime;
-    int32 kvno;				/* version of ticket encrypting key */
-    int32 ticketLen;			/* the ticket's length */
+    afs_int32 kvno;				/* version of ticket encrypting key */
+    afs_int32 ticketLen;			/* the ticket's length */
     char name[MAXKTCNAMELEN];
     char instance[MAXKTCNAMELEN];
     char cell[MAXKTCNAMELEN];
@@ -398,8 +399,8 @@ struct ka_cpwRequest {			/* format of request */
     Date time;				/* time of request */
     struct ktc_encryptionKey
 	 newpw;				/* new key */
-    int32 kvno;				/* version number of key */
-    int32 spare;				/* must be zero */
+    afs_int32 kvno;				/* version number of key */
+    afs_int32 spare;				/* must be zero */
     char label[KA_LABELSIZE];		/* label to verify correct decrypt */
 };
 
@@ -418,8 +419,8 @@ struct ka_getTicketAnswer {
     struct ktc_encryptionKey sessionKey;
     Date startTime;
     Date endTime;
-    int32 kvno;
-    int32 ticketLen;
+    afs_int32 kvno;
+    afs_int32 ticketLen;
     char name[MAXKTCNAMELEN];
     char instance[MAXKTCNAMELEN];
     char cell[MAXKTCNAMELEN];

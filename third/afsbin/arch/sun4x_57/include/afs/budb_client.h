@@ -4,7 +4,7 @@
  */
 /* Including budb_client.p.h at beginning of budb_client.h file. */
 
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/budb_client.h,v 1.1.1.1 2000-03-29 21:27:21 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/budb_client.h,v 1.1.1.2 2000-04-12 18:30:08 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/budb_client.h,v $ */
 
 /*
@@ -34,11 +34,11 @@
 
 struct udbHandleS
 {
-    int32 uh_scIndex;                            /* what type of sec. object */
+    afs_int32 uh_scIndex;                            /* what type of sec. object */
     struct rx_securityClass *uh_secobj;                 /* security object */
     struct rx_connection *uh_serverConn[MAXSERVERS];    /* server connections*/
     struct ubik_client *uh_client;              /* ubik client handle */
-    u_int32 uh_instanceId;			/* instance of client */
+    afs_uint32 uh_instanceId;			/* instance of client */
 };
 
 typedef struct udbHandleS       udbHandleT;
@@ -49,58 +49,59 @@ typedef udbHandleT              *udbHandleP;
 struct udbClientTextS
 {
     char *textName;				/* for info. only */
-    int32  textType;				/* used as key for access */
-    u_int32 textVersion;				/* version # for cache mgmt */
-    u_int32 lockHandle;				/* for atomicity */
-    int32 textSize;				/* no. of bytes */
+    afs_int32  textType;				/* used as key for access */
+    afs_uint32 textVersion;				/* version # for cache mgmt */
+    afs_uint32 lockHandle;				/* for atomicity */
+    afs_int32 textSize;				/* no. of bytes */
     FILE *textStream;				/* file stream or NULL */
 };
 
 typedef struct udbClientTextS	udbClientTextT;
 typedef udbClientTextT		*udbClientTextP;
 
-extern int32 BUDB_AddVolume();
-extern int32 BUDB_AddVolumes();
-extern int32 BUDB_CreateDump ();
-extern int32 BUDB_DeleteDump ();
-extern int32 BUDB_DeleteTape ();
-extern int32 BUDB_DeleteVDP();
-extern int32 BUDB_FindClone();
-extern int32 BUDB_FindDump();
-extern int32 BUDB_FindLatestDump();
-extern int32 BUDB_FindLastTape();
-extern int32 BUDB_MakeDumpAppended();
-extern int32 BUDB_FinishDump ();
-extern int32 BUDB_FinishTape ();
-extern int32 BUDB_GetDumps ();
-extern int32 BUDB_GetTapes ();
-extern int32 BUDB_GetVolumes ();
-extern int32 BUDB_UseTape ();
+extern afs_int32 BUDB_AddVolume();
+extern afs_int32 BUDB_AddVolumes();
+extern afs_int32 BUDB_CreateDump ();
+extern afs_int32 BUDB_DeleteDump ();
+extern afs_int32 BUDB_ListDumps ();
+extern afs_int32 BUDB_DeleteTape ();
+extern afs_int32 BUDB_DeleteVDP();
+extern afs_int32 BUDB_FindClone();
+extern afs_int32 BUDB_FindDump();
+extern afs_int32 BUDB_FindLatestDump();
+extern afs_int32 BUDB_FindLastTape();
+extern afs_int32 BUDB_MakeDumpAppended();
+extern afs_int32 BUDB_FinishDump ();
+extern afs_int32 BUDB_FinishTape ();
+extern afs_int32 BUDB_GetDumps ();
+extern afs_int32 BUDB_GetTapes ();
+extern afs_int32 BUDB_GetVolumes ();
+extern afs_int32 BUDB_UseTape ();
 
 /* text mgmt interface */
-extern int32 BUDB_GetText();
-extern int32 BUDB_GetTextVersion();
-extern int32 BUDB_SaveText();
-extern int32 BUDB_SaveTextVersion();
+extern afs_int32 BUDB_GetText();
+extern afs_int32 BUDB_GetTextVersion();
+extern afs_int32 BUDB_SaveText();
+extern afs_int32 BUDB_SaveTextVersion();
 
 /* text lock mgmt interface */
 
-extern int32 BUDB_FreeAllLocks();
-extern int32 BUDB_FreeLock();
-extern int32 BUDB_GetInstanceId();
-extern int32 BUDB_GetLock();
+extern afs_int32 BUDB_FreeAllLocks();
+extern afs_int32 BUDB_FreeLock();
+extern afs_int32 BUDB_GetInstanceId();
+extern afs_int32 BUDB_GetLock();
 
 /* Database verification and dump */
 
-extern int32 BUDB_DbVerify();
-extern int32 BUDB_DumpDB();
-extern int32 BUDB_RestoreDbHeader();
+extern afs_int32 BUDB_DbVerify();
+extern afs_int32 BUDB_DumpDB();
+extern afs_int32 BUDB_RestoreDbHeader();
 
 /* testing interface */
 
-extern int32 BUDB_T_GetVersion();
-extern int32 BUDB_T_DumpHashTable ();
-extern int32 BUDB_T_DumpDatabase();
+extern afs_int32 BUDB_T_GetVersion();
+extern afs_int32 BUDB_T_DumpHashTable ();
+extern afs_int32 BUDB_T_DumpDatabase();
 
 #endif
 

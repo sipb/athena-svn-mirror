@@ -77,6 +77,13 @@
 #define AFSCALL_INIT_MEMCACHE_SLEEP 0x2	/* Use osi_Alloc to allocate memcache
 					 * instead of osi_Alloc_NoSleep */
 
+/* flags for rxstats pioctl */
+
+#define AFSCALL_RXSTATS_MASK	0x7 /* Valid flag bits */
+#define AFSCALL_RXSTATS_ENABLE	0x1 /* Enable RX stats */
+#define AFSCALL_RXSTATS_DISABLE	0x2 /* Disable RX stats */
+#define AFSCALL_RXSTATS_CLEAR	0x4 /* Clear RX stats */
+
 #define	AFSOP_GO		100	/* whether settime is being done */
 /* not for initialization: debugging assist */
 #define	AFSOP_CHECKLOCKS	200	/* dump lock state */
@@ -99,16 +106,16 @@
 
 /* arguments passed by afsd */
 struct afs_cacheParams {
-    int32 cacheScaches;
-    int32 cacheFiles;
-    int32 cacheBlocks;
-    int32 cacheDcaches;
-    int32 cacheVolumes;
-    int32 chunkSize;
-    int32 setTimeFlag;
-    int32 memCacheFlag;
-    int32 inodes;
-    int32 users;
+    afs_int32 cacheScaches;
+    afs_int32 cacheFiles;
+    afs_int32 cacheBlocks;
+    afs_int32 cacheDcaches;
+    afs_int32 cacheVolumes;
+    afs_int32 chunkSize;
+    afs_int32 setTimeFlag;
+    afs_int32 memCacheFlag;
+    afs_int32 inodes;
+    afs_int32 users;
 };
 
 /*
@@ -124,5 +131,30 @@ struct afs_cacheParams {
 #else
 #define	AFS_SMALLOCSIZ 	(64*sizeof(void *))         /*  "Small" allocated size */
 #endif
+
+/* Cache configuration available through the client callback interface */
+typedef struct cm_initparams_v1 {
+    afs_uint32 nChunkFiles;
+    afs_uint32 nStatCaches;
+    afs_uint32 nDataCaches;
+    afs_uint32 nVolumeCaches;
+    afs_uint32 firstChunkSize;
+    afs_uint32 otherChunkSize;
+    afs_uint32 cacheSize;
+    afs_uint32 setTime;
+    afs_uint32 memCache;
+} cm_initparams_v1;
+
+/*
+ * If you need to change afs_cacheParams, you should probably create a brand
+ * new structure.  Keeping the old structure will allow backwards compatibility
+ * with old clients (even if it is only used to calculate allocation size).
+ * If you do change the size or the format, you'll need to bump
+ * AFS_CLIENT_CONFIG_RETRIEVAL_VERSION.  This allows some primitive form
+ * of versioning a la rxdebug.
+ */
+
+#define AFS_CLIENT_RETRIEVAL_VERSION		1	/* latest version */
+#define AFS_CLIENT_RETRIEVAL_FIRST_EDITION	1	/* first version */
 
 #endif /* _AFS_ARGS_H_ */

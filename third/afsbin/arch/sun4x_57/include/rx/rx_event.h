@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/rx/rx_event.h,v 1.1.1.1 2000-03-29 21:27:22 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/rx/rx_event.h,v 1.1.1.2 2000-04-12 18:30:36 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/rx/rx_event.h,v $ */
 
 /*

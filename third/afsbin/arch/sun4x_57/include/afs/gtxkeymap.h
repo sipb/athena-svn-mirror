@@ -24,7 +24,7 @@ struct keymap_entry {
 
 struct keymap_map {
     short refcount;	/* reference count */
-    char pad[2];	/* padding to int32 boundary */
+    char pad[2];	/* padding to afs_int32 boundary */
     struct keymap_entry entries[KEYMAP_NENTRIES];
 };
 

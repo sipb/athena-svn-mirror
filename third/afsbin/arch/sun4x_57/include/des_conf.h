@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/des_conf.h,v $
  * $Author: ghudson $
- * $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/des_conf.h,v 1.1.1.1 2000-03-29 21:27:19 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/des_conf.h,v 1.1.1.2 2000-04-12 18:29:25 ghudson Exp $
  *
  * Copyright 1988 by the Massachusetts Institute of Technology.
  *

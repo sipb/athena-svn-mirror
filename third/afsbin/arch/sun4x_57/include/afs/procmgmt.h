@@ -1,6 +1,6 @@
 /* Copyright (C) 1998  Transarc Corporation.  All Rights Reserved.
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/procmgmt.h,v 1.1.1.1 2000-03-29 21:27:20 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/procmgmt.h,v 1.1.1.2 2000-04-12 18:29:37 ghudson Exp $
  */
 
 #ifndef TRANSARC_PROCMGMT_H

@@ -69,9 +69,10 @@
 #define AFS_RXGEN_EXPORT
 #endif /* AFS_NT40_ENV */
 
+#define BC_STATINDEX 3
 
 struct bc_junk {
-	int32 a;
+	afs_int32 a;
 };
 typedef struct bc_junk bc_junk;
 bool_t xdr_bc_junk();

@@ -29,51 +29,51 @@
 #include <afs/volint.h>
 
 struct ProbeViceStatistics {
-    u_int32 CurrentMsgNumber;
-    u_int32 OldestMsgNumber;
-    u_int32 CurrentTime;
-    u_int32 BootTime;
-    u_int32 StartTime;
-    int32	  CurrentConnections;
-    u_int32 TotalViceCalls;
-    u_int32 TotalFetchs;
-    u_int32 FetchDatas;
-    u_int32 FetchedBytes;
-    int32	  FetchDataRate;
-    u_int32 TotalStores;
-    u_int32 StoreDatas;
-    u_int32 StoredBytes;
-    int32	  StoreDataRate;
-    u_int32 TotalRPCBytesSent;
-    u_int32 TotalRPCBytesReceived;
-    u_int32 TotalRPCPacketsSent;
-    u_int32 TotalRPCPacketsReceived;
-    u_int32 TotalRPCPacketsLost;
-    u_int32       TotalRPCBogusPackets;
-    int32	  SystemCPU;
-    int32	  UserCPU;
-    int32	  NiceCPU;
-    int32	  IdleCPU;
-    int32	  TotalIO;
-    int32	  ActiveVM;
-    int32	  TotalVM;
-    int32	  EtherNetTotalErrors;
-    int32	  EtherNetTotalWrites;
-    int32	  EtherNetTotalInterupts;
-    int32	  EtherNetGoodReads;
-    int32	  EtherNetTotalBytesWritten;
-    int32	  EtherNetTotalBytesRead;
-    int32	  ProcessSize;
-    int32	  WorkStations;
-    int32	  ActiveWorkStations;
-    int32	  Spare1;
-    int32	  Spare2;
-    int32	  Spare3;
-    int32	  Spare4;
-    int32	  Spare5;
-    int32	  Spare6;
-    int32	  Spare7;
-    int32	  Spare8;
+    afs_uint32 CurrentMsgNumber;
+    afs_uint32 OldestMsgNumber;
+    afs_uint32 CurrentTime;
+    afs_uint32 BootTime;
+    afs_uint32 StartTime;
+    afs_int32	  CurrentConnections;
+    afs_uint32 TotalViceCalls;
+    afs_uint32 TotalFetchs;
+    afs_uint32 FetchDatas;
+    afs_uint32 FetchedBytes;
+    afs_int32	  FetchDataRate;
+    afs_uint32 TotalStores;
+    afs_uint32 StoreDatas;
+    afs_uint32 StoredBytes;
+    afs_int32	  StoreDataRate;
+    afs_uint32 TotalRPCBytesSent;
+    afs_uint32 TotalRPCBytesReceived;
+    afs_uint32 TotalRPCPacketsSent;
+    afs_uint32 TotalRPCPacketsReceived;
+    afs_uint32 TotalRPCPacketsLost;
+    afs_uint32       TotalRPCBogusPackets;
+    afs_int32	  SystemCPU;
+    afs_int32	  UserCPU;
+    afs_int32	  NiceCPU;
+    afs_int32	  IdleCPU;
+    afs_int32	  TotalIO;
+    afs_int32	  ActiveVM;
+    afs_int32	  TotalVM;
+    afs_int32	  EtherNetTotalErrors;
+    afs_int32	  EtherNetTotalWrites;
+    afs_int32	  EtherNetTotalInterupts;
+    afs_int32	  EtherNetGoodReads;
+    afs_int32	  EtherNetTotalBytesWritten;
+    afs_int32	  EtherNetTotalBytesRead;
+    afs_int32	  ProcessSize;
+    afs_int32	  WorkStations;
+    afs_int32	  ActiveWorkStations;
+    afs_int32	  Spare1;
+    afs_int32	  Spare2;
+    afs_int32	  Spare3;
+    afs_int32	  Spare4;
+    afs_int32	  Spare5;
+    afs_int32	  Spare6;
+    afs_int32	  Spare7;
+    afs_int32	  Spare8;
     ViceDisk	  Disk[VOLMAXPARTS];
 };
 
@@ -86,7 +86,7 @@ struct fsprobe_ConnectionInfo {
     struct rx_connection *rxconn;	/*Rx connection*/
     struct rx_connection *rxVolconn;	/*Rx connection to Vol server*/
     struct partList partList;		/*Server part list*/
-    int32 partCnt;      			/*# of parts */
+    afs_int32 partCnt;      			/*# of parts */
     char hostName[256];			/*Computed hostname*/
 };
 
@@ -96,7 +96,7 @@ struct fsprobe_ConnectionInfo {
   */
 struct fsprobe_ProbeResults {
     int probeNum;			/*Probe number*/
-    int32 probeTime;			/*Time probe initiated*/
+    afs_int32 probeTime;			/*Time probe initiated*/
     struct ProbeViceStatistics *stats;	/*Ptr to stats array for servers*/
     int *probeOK;			/*Array: was latest probe successful?*/
 };

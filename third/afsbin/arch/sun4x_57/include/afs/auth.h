@@ -11,7 +11,7 @@
  * REFER TO COPYRIGHT INSTRUCTIONS FORM NUMBER G120-2083
  */
 
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/auth.h,v 1.1.1.1 2000-03-29 21:27:20 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/auth.h,v 1.1.1.2 2000-04-12 18:29:55 ghudson Exp $ */
 
 #ifndef __AUTH_AFS_INCL_
 #define	__AUTH_AFS_INCL_    1
@@ -22,8 +22,8 @@
 #define AUTH_SUPERUSER        "afs"
 
 struct ktc_token {
-    int32 startTime;
-    int32 endTime;
+    afs_int32 startTime;
+    afs_int32 endTime;
     struct ktc_encryptionKey sessionKey;
     short kvno;  /* XXX UNALIGNED */
     int ticketLen;

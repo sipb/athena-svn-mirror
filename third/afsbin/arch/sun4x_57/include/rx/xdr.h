@@ -151,14 +151,14 @@ typedef struct {
 		bool_t	(*x_putint64)(); /* send 32 bits of a long */
 #endif /* AFS_SGI61_ENV */
 #if !(defined(KERNEL) && defined(AFS_SUN57_ENV))
-		bool_t	(*x_getint32)();	/* get a int32 from underlying stream */
-		bool_t	(*x_putint32)();	/* put a int32 to " */
+		bool_t	(*x_getint32)();	/* get an afs_int32 from underlying stream */
+		bool_t	(*x_putint32)();	/* put an afs_int32 to " */
 #endif
 		bool_t	(*x_getbytes)();/* get some bytes from " */
 		bool_t	(*x_putbytes)();/* put some bytes to " */
 		u_int	(*x_getpostn)();/* returns bytes off from beginning */
 		bool_t  (*x_setpostn)();/* lets you reposition the stream */
-		int32 *	(*x_inline)();	/* buf quick ptr to buffered data */
+		afs_int32 *	(*x_inline)();	/* buf quick ptr to buffered data */
 		void	(*x_destroy)();	/* free privates of this xdr_stream */
 #if defined(KERNEL) && defined(AFS_SUN57_ENV)
 		bool_t  (*x_control)();
@@ -176,7 +176,7 @@ typedef struct {
  * Operations defined on a XDR handle
  *
  * XDR		*xdrs;
- * int32		*int32p;
+ * afs_int32		*int32p;
  * caddr_t	 addr;
  * u_int	 len;
  * u_int	 pos;
@@ -271,15 +271,15 @@ struct xdr_discrim {
 
 #define IXDR_GET_BOOL(buf)		((bool_t)IXDR_GET_INT32(buf))
 #define IXDR_GET_ENUM(buf, t)		((t)IXDR_GET_INT32(buf))
-#define IXDR_GET_U_INT32(buf)		((u_int32)IXDR_GET_INT32(buf))
+#define IXDR_GET_U_INT32(buf)		((afs_uint32)IXDR_GET_INT32(buf))
 #define IXDR_GET_SHORT(buf)		((short)IXDR_GET_INT32(buf))
 #define IXDR_GET_U_SHORT(buf)		((u_short)IXDR_GET_INT32(buf))
 
-#define IXDR_PUT_BOOL(buf, v)		IXDR_PUT_INT32((buf), ((int32)(v)))
-#define IXDR_PUT_ENUM(buf, v)		IXDR_PUT_INT32((buf), ((int32)(v)))
-#define IXDR_PUT_U_INT32(buf, v)	IXDR_PUT_INT32((buf), ((int32)(v)))
-#define IXDR_PUT_SHORT(buf, v)		IXDR_PUT_INT32((buf), ((int32)(v)))
-#define IXDR_PUT_U_SHORT(buf, v)	IXDR_PUT_INT32((buf), ((int32)(v)))
+#define IXDR_PUT_BOOL(buf, v)		IXDR_PUT_INT32((buf), ((afs_int32)(v)))
+#define IXDR_PUT_ENUM(buf, v)		IXDR_PUT_INT32((buf), ((afs_int32)(v)))
+#define IXDR_PUT_U_INT32(buf, v)	IXDR_PUT_INT32((buf), ((afs_int32)(v)))
+#define IXDR_PUT_SHORT(buf, v)		IXDR_PUT_INT32((buf), ((afs_int32)(v)))
+#define IXDR_PUT_U_SHORT(buf, v)	IXDR_PUT_INT32((buf), ((afs_int32)(v)))
 
 /*
  * These are the "generic" xdr routines.
@@ -318,20 +318,20 @@ extern bool_t xdrrec_skiprecord();	/* move to begining of next record */
 extern bool_t xdrrec_eof();		/* true iff no more input */
 
 /*
- * If you change the definitions of xdr_int32 and xdr_u_int32, be sure
+ * If you change the definitions of xdr_afs_int32 and xdr_afs_uint32, be sure
  * to change them in BOTH rx/xdr.h and rxgen/rpc_main.c.  Also, config/stds.h
- * has the defines for int32 which should match below.
+ * has the defines for afs_int32 which should match below.
  */
 
-#ifndef xdr_int32
+#ifndef xdr_afs_int32
 #ifdef  AFS_64BIT_ENV
-#define xdr_int32 xdr_int
+#define xdr_afs_int32 xdr_int
 #else
-#define xdr_int32 xdr_long
+#define xdr_afs_int32 xdr_long
 #endif
 #endif
-#ifndef xdr_u_int32
-#define xdr_u_int32 xdr_u_int
+#ifndef xdr_afs_uint32
+#define xdr_afs_uint32 xdr_u_int
 #endif
 
 #endif /* __XDR_INCLUDE__ */

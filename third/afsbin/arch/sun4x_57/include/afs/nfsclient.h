@@ -16,17 +16,17 @@ struct nfsclientpag {
     /* From here to .... */
     struct nfsclientpag	*next;	/* Next hash pointer */
     struct exporterops	*nfs_ops;
-    int32 states;
-    int32 type;
+    afs_int32 states;
+    afs_int32 type;
     struct exporterstats nfs_stats;
     /* .... here is also an overlay to the afs_exporter structure */
 
-    int32 refCount;		/* Ref count for packages using this */
-    int32 uid;			/* search based on uid and ... */
-    int32 host;			/* ... nfs client's host ip address */
-    int32 pag;			/* active pag for all  (uid, host) "unpaged" conns */
+    afs_int32 refCount;		/* Ref count for packages using this */
+    afs_int32 uid;			/* search based on uid and ... */
+    afs_int32 host;			/* ... nfs client's host ip address */
+    afs_int32 pag;			/* active pag for all  (uid, host) "unpaged" conns */
     char *sysname;		/* user's "@sys" value; also kept in unixuser */
-    int32 lastcall;		/*  Used for timing out nfsclientpag structs  */
+    afs_int32 lastcall;		/*  Used for timing out nfsclientpag structs  */
 };
 
 

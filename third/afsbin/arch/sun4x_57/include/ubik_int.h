@@ -74,25 +74,25 @@
 
 
 struct BDesc {
-	int32 host;
+	afs_int32 host;
 	short portal;
-	int32 session;
+	afs_int32 session;
 };
 typedef struct BDesc BDesc;
 bool_t xdr_BDesc();
 
 
 struct net_version {
-	int32 epoch;
-	int32 counter;
+	afs_int32 epoch;
+	afs_int32 counter;
 };
 typedef struct net_version net_version;
 bool_t xdr_net_version();
 
 
 struct net_tid {
-	int32 epoch;
-	int32 counter;
+	afs_int32 epoch;
+	afs_int32 counter;
 };
 typedef struct net_tid net_tid;
 bool_t xdr_net_tid();
@@ -100,99 +100,99 @@ bool_t xdr_net_tid();
 #define UBIK_MAX_INTERFACE_ADDR 256
 
 struct ubik_debug {
-	int32 now;
-	int32 lastYesTime;
-	int32 lastYesHost;
-	int32 lastYesState;
-	int32 lastYesClaim;
-	int32 lowestHost;
-	int32 lowestTime;
-	int32 syncHost;
-	int32 syncTime;
+	afs_int32 now;
+	afs_int32 lastYesTime;
+	afs_int32 lastYesHost;
+	afs_int32 lastYesState;
+	afs_int32 lastYesClaim;
+	afs_int32 lowestHost;
+	afs_int32 lowestTime;
+	afs_int32 syncHost;
+	afs_int32 syncTime;
 	struct net_version syncVersion;
 	struct net_tid syncTid;
-	int32 amSyncSite;
-	int32 syncSiteUntil;
-	int32 nServers;
-	int32 lockedPages;
-	int32 writeLockedPages;
+	afs_int32 amSyncSite;
+	afs_int32 syncSiteUntil;
+	afs_int32 nServers;
+	afs_int32 lockedPages;
+	afs_int32 writeLockedPages;
 	struct net_version localVersion;
-	int32 activeWrite;
-	int32 tidCounter;
-	int32 anyReadLocks;
-	int32 anyWriteLocks;
-	int32 recoveryState;
-	int32 currentTrans;
-	int32 writeTrans;
-	int32 epochTime;
-	int32 interfaceAddr[UBIK_MAX_INTERFACE_ADDR];
+	afs_int32 activeWrite;
+	afs_int32 tidCounter;
+	afs_int32 anyReadLocks;
+	afs_int32 anyWriteLocks;
+	afs_int32 recoveryState;
+	afs_int32 currentTrans;
+	afs_int32 writeTrans;
+	afs_int32 epochTime;
+	afs_int32 interfaceAddr[UBIK_MAX_INTERFACE_ADDR];
 };
 typedef struct ubik_debug ubik_debug;
 bool_t xdr_ubik_debug();
 
 
 struct ubik_sdebug {
-	int32 addr;
-	int32 lastVoteTime;
-	int32 lastBeaconSent;
-	int32 lastVote;
+	afs_int32 addr;
+	afs_int32 lastVoteTime;
+	afs_int32 lastBeaconSent;
+	afs_int32 lastVote;
 	struct net_version remoteVersion;
-	int32 currentDB;
-	int32 beaconSinceDown;
-	int32 up;
-	int32 altAddr[255];
+	afs_int32 currentDB;
+	afs_int32 beaconSinceDown;
+	afs_int32 up;
+	afs_int32 altAddr[255];
 };
 typedef struct ubik_sdebug ubik_sdebug;
 bool_t xdr_ubik_sdebug();
 
 
 struct ubik_debug_old {
-	int32 now;
-	int32 lastYesTime;
-	int32 lastYesHost;
-	int32 lastYesState;
-	int32 lastYesClaim;
-	int32 lowestHost;
-	int32 lowestTime;
-	int32 syncHost;
-	int32 syncTime;
+	afs_int32 now;
+	afs_int32 lastYesTime;
+	afs_int32 lastYesHost;
+	afs_int32 lastYesState;
+	afs_int32 lastYesClaim;
+	afs_int32 lowestHost;
+	afs_int32 lowestTime;
+	afs_int32 syncHost;
+	afs_int32 syncTime;
 	struct net_version syncVersion;
 	struct net_tid syncTid;
-	int32 amSyncSite;
-	int32 syncSiteUntil;
-	int32 nServers;
-	int32 lockedPages;
-	int32 writeLockedPages;
+	afs_int32 amSyncSite;
+	afs_int32 syncSiteUntil;
+	afs_int32 nServers;
+	afs_int32 lockedPages;
+	afs_int32 writeLockedPages;
 	struct net_version localVersion;
-	int32 activeWrite;
-	int32 tidCounter;
-	int32 anyReadLocks;
-	int32 anyWriteLocks;
-	int32 recoveryState;
-	int32 currentTrans;
-	int32 writeTrans;
-	int32 epochTime;
+	afs_int32 activeWrite;
+	afs_int32 tidCounter;
+	afs_int32 anyReadLocks;
+	afs_int32 anyWriteLocks;
+	afs_int32 recoveryState;
+	afs_int32 currentTrans;
+	afs_int32 writeTrans;
+	afs_int32 epochTime;
 };
 typedef struct ubik_debug_old ubik_debug_old;
 bool_t xdr_ubik_debug_old();
 
 
 struct ubik_sdebug_old {
-	int32 addr;
-	int32 lastVoteTime;
-	int32 lastBeaconSent;
-	int32 lastVote;
+	afs_int32 addr;
+	afs_int32 lastVoteTime;
+	afs_int32 lastBeaconSent;
+	afs_int32 lastVote;
 	struct net_version remoteVersion;
-	int32 currentDB;
-	int32 beaconSinceDown;
-	int32 up;
+	afs_int32 currentDB;
+	afs_int32 beaconSinceDown;
+	afs_int32 up;
 };
 typedef struct ubik_sdebug_old ubik_sdebug_old;
 bool_t xdr_ubik_sdebug_old();
 
 
 struct UbikInterfaceAddr {
-	int32 hostAddr[UBIK_MAX_INTERFACE_ADDR];
+	afs_int32 hostAddr[UBIK_MAX_INTERFACE_ADDR];
 };
 typedef struct UbikInterfaceAddr UbikInterfaceAddr;
 bool_t xdr_UbikInterfaceAddr();
@@ -216,9 +216,9 @@ bool_t xdr_iovec_buf();
 
 
 struct ubik_iovec {
-	int32 file;
-	int32 position;
-	int32 length;
+	afs_int32 file;
+	afs_int32 position;
+	afs_int32 length;
 };
 typedef struct ubik_iovec ubik_iovec;
 bool_t xdr_ubik_iovec();
@@ -230,11 +230,13 @@ typedef struct iovec_wrt {
 } iovec_wrt;
 bool_t xdr_iovec_wrt();
 
+#define VOTE_STATINDEX 11
 
 #include <rx/rx_multi.h>
 #define multi_VOTE_Beacon(state, voteStart, Version, tid) \
 	multi_Body(StartVOTE_Beacon(multi_call, state, voteStart, Version, tid), EndVOTE_Beacon(multi_call))
 
+#define DISK_STATINDEX 12
 
 #define multi_DISK_Probe() \
 	multi_Body(StartDISK_Probe(multi_call), EndDISK_Probe(multi_call))
@@ -249,15 +251,10 @@ bool_t xdr_iovec_wrt();
 #define VOTE_HIGHEST_OPCODE	10005
 #define VOTE_NUMBER_OPCODES	6
 
-#define VOTE_NO_OF_CLIENT_STAT_FUNCS	8
-
-#define VOTE_NO_OF_SERVER_STAT_FUNCS	6
+#define VOTE_NO_OF_STAT_FUNCS	6
 
 AFS_RXGEN_EXPORT
-extern const char *VOTE_client_function_names[];
-
-AFS_RXGEN_EXPORT
-extern const char *VOTE_server_function_names[];
+extern const char *VOTE_function_names[];
 
 
 /* Opcode-related useful stats for package: DISK_ */
@@ -265,14 +262,9 @@ extern const char *VOTE_server_function_names[];
 #define DISK_HIGHEST_OPCODE	20013
 #define DISK_NUMBER_OPCODES	14
 
-#define DISK_NO_OF_CLIENT_STAT_FUNCS	20
-
-#define DISK_NO_OF_SERVER_STAT_FUNCS	14
+#define DISK_NO_OF_STAT_FUNCS	14
 
 AFS_RXGEN_EXPORT
-extern const char *DISK_client_function_names[];
-
-AFS_RXGEN_EXPORT
-extern const char *DISK_server_function_names[];
+extern const char *DISK_function_names[];
 
 #endif	/* _RXGEN_UBIK_INT_ */

@@ -1,11 +1,11 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/volume.h,v 1.1.1.1 2000-03-29 21:27:21 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/volume.h,v 1.1.1.2 2000-04-12 18:30:13 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/volume.h,v $ */
 
 #ifndef __volume_h
 #define	__volume_h  1
 
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsidvolume = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/volume.h,v 1.1.1.1 2000-03-29 21:27:21 ghudson Exp $";
+static char *rcsidvolume = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_57/include/afs/volume.h,v 1.1.1.2 2000-04-12 18:30:13 ghudson Exp $";
 #endif
 
 /*
@@ -27,6 +27,7 @@ static char *rcsidvolume = "$Header: /afs/dev.mit.edu/source/repository/third/af
 #define VolumeWriteable(vp)		(V_type(vp)==readwriteVolume)
 #define VolumeWriteable2(vol)		(vol.type == readwriteVolume)
 typedef bit32				FileOffset; /* Offset in this file */
+#define Date afs_uint32
 
 #ifdef AFS_PTHREAD_ENV
 #include <assert.h>
@@ -140,18 +141,18 @@ typedef struct VolumeDiskHeader {
     VolumeId	id;	      /* Volume number */
     VolumeId	parent;	      /* Read-write volume number (or this volume
     				 number if this is a read-write volume) */
-    int32       volumeInfo_lo;
-    int32       smallVnodeIndex_lo;
-    int32       largeVnodeIndex_lo;
-    int32       volumeAcl_lo;
-    int32       volumeMountTable_lo;
-    int32	volumeInfo_hi;
-    int32	smallVnodeIndex_hi;
-    int32	largeVnodeIndex_hi;
-    int32	volumeAcl_hi;
-    int32	volumeMountTable_hi;
-    int32	linkTable_lo;
-    int32	linkTable_hi;
+    afs_int32       volumeInfo_lo;
+    afs_int32       smallVnodeIndex_lo;
+    afs_int32       largeVnodeIndex_lo;
+    afs_int32       volumeAcl_lo;
+    afs_int32       volumeMountTable_lo;
+    afs_int32	volumeInfo_hi;
+    afs_int32	smallVnodeIndex_hi;
+    afs_int32	largeVnodeIndex_hi;
+    afs_int32	volumeAcl_hi;
+    afs_int32	volumeMountTable_hi;
+    afs_int32	linkTable_lo;
+    afs_int32	linkTable_hi;
     /* If you add fields, add them before here and reduce the size of  array */
     bit32	reserved[3];
 } VolumeDiskHeader_t;
@@ -295,8 +296,8 @@ typedef struct Volume {
     struct vnodeIndex {
       IHandle_t	*handle;	/* Unix inode holding this index */
       byte      *bitmap;	/* Index bitmap */
-      u_int32	bitmapSize;	/* length of bitmap, in bytes */
-      u_int32	bitmapOffset;	/* Which byte address of the first long to
+      afs_uint32	bitmapSize;	/* length of bitmap, in bytes */
+      afs_uint32	bitmapOffset;	/* Which byte address of the first long to
 				   start search from in bitmap */
     } vnodeIndex[nVNODECLASSES];
     IHandle_t	*linkHandle;
@@ -324,7 +325,7 @@ typedef struct Volume {
     byte	specialStatus;	/* An error code to return on VGetVolume: the
 				   volume is unavailable for the reason quoted,
 				   currently VBUSY or VMOVED */
-    int32	updateTime;	/* Time that this volume was put on the updated
+    afs_int32	updateTime;	/* Time that this volume was put on the updated
 				   volume list--the list of volumes that will be
 				   salvaged should the file server crash */
 } Volume;
