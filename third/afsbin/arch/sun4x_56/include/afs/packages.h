@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/packages.h,v 1.1.1.1 1998-02-20 21:35:28 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/packages.h,v 1.1.1.2 1999-12-21 04:05:54 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/packages.h,v $ */
 
 /*
@@ -23,9 +23,6 @@
 */
 
 /* $Log: not supported by cvs2svn $
- * Revision 2.1  1990/08/07  19:38:39  hines
- * Start with clean version to sync test and dev trees.
- *
  * Revision 1.3  89/03/30  21:48:21  kazar
  * update copyright notice
  * 

@@ -2,7 +2,7 @@
 #define __AFS_SYSNAMES_INCL_ENV_ 1
 
 /*
- * (C) Copyright Transarc Corporation 1992
+ * (C) Copyright Transarc Corporation 1998, 1992
  * Licensed Materials - Property of Transarc
  * All Rights Reserved.
  *
@@ -36,6 +36,7 @@
 #define SYS_NAME_ID_hp700_ux101	 	 412
 #define SYS_NAME_ID_hp800_ux101	 	 413
 #define SYS_NAME_ID_hp_ux102	 	 414
+#define SYS_NAME_ID_hp_ux110	 	 415
 
 #define SYS_NAME_ID_mac2_51		 500	
 #define SYS_NAME_ID_mac_aux10		 501
@@ -47,9 +48,6 @@
 #define SYS_NAME_ID_rs_aix32		 701
 #define SYS_NAME_ID_rs_aix41		 702
 #define SYS_NAME_ID_rs_aix42		 703
-
-#define SYS_NAME_ID_rt_aix221		 800
-#define SYS_NAME_ID_rt_aos4		 802
 
 #define SYS_NAME_ID_sun3_411		 906
 #define SYS_NAME_ID_sun3x_411		 912
@@ -70,6 +68,9 @@
 #define SYS_NAME_ID_sunx86_54		 933
 #define SYS_NAME_ID_sun4x_55           	 934
 #define SYS_NAME_ID_sun4x_56           	 935
+#define SYS_NAME_ID_sunx86_56          	 936
+#define SYS_NAME_ID_sunx86_55          	 937
+#define SYS_NAME_ID_sun4x_57		 938
 
 
 #define SYS_NAME_ID_vax_ul4		1003
@@ -84,6 +85,7 @@
 #define	SYS_NAME_ID_sgi_62		1105
 #define	SYS_NAME_ID_sgi_63		1106
 #define	SYS_NAME_ID_sgi_64		1107
+#define	SYS_NAME_ID_sgi_65		1108
 
 #define SYS_NAME_ID_alpha_osf1		1200
 #define SYS_NAME_ID_alpha_osf20		1201
@@ -94,6 +96,11 @@
 
 #define SYS_NAME_ID_ncrx86_20		1300
 #define SYS_NAME_ID_ncrx86_30		1301
+
+#define SYS_NAME_ID_i386_nt35		1400
+
+#define SYS_NAME_ID_i386_linux2		1500
+#define SYS_NAME_ID_i386_linux22	1501
 
 /*
  * Placeholder to keep system-wide standard flags since this file is included by all 

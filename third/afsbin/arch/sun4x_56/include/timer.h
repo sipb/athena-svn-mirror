@@ -1,8 +1,8 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/timer.h,v 1.1.1.1 1998-02-20 21:35:26 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/timer.h,v 1.1.1.2 1999-12-21 04:05:48 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/timer.h,v $ */
 
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsidtimer = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/timer.h,v 1.1.1.1 1998-02-20 21:35:26 ghudson Exp $";
+static char *rcsidtimer = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/timer.h,v 1.1.1.2 1999-12-21 04:05:48 ghudson Exp $";
 #endif
 
 /*
@@ -42,13 +42,21 @@ struct TM_Elem {
     char		*BackPointer;	/* filled by caller, not interpreted by package */
 };
 
+#if defined(AFS_HPUX_ENV) || defined(AFS_NT40_ENV)
+extern void insque(struct TM_Elem *elementp, struct TM_Elem *quep);
+extern void remque(struct TM_Elem *elementp);
+extern int TM_eql(struct timeval *t1, struct timeval *t2);
+#endif
 #ifndef _TIMER_IMPL_
-extern void Tm_Insert();
+#define Tm_Insert(list, elem) insque(list, elem)
 #define TM_Remove(list, elem) remque(elem)
 extern int TM_Rescan();
+void TM_Insert();
 extern struct TM_Elem *TM_GetExpired();
 extern struct TM_Elem *TM_GetEarliest();
 #endif
+
+extern int TM_Final();
 
 #define FOR_ALL_ELTS(var, list, body)\
 	{\

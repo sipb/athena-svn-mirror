@@ -1,8 +1,8 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/voldefs.h,v 1.1.1.1 1998-02-20 21:35:29 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/voldefs.h,v 1.1.1.2 1999-12-21 04:06:07 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/voldefs.h,v $ */
 
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsidvoldefs = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/voldefs.h,v 1.1.1.1 1998-02-20 21:35:29 ghudson Exp $";
+static char *rcsidvoldefs = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/voldefs.h,v 1.1.1.2 1999-12-21 04:06:07 ghudson Exp $";
 #endif
 
 /*
@@ -40,6 +40,16 @@ static char *rcsidvoldefs = "$Header: /afs/dev.mit.edu/source/repository/third/a
 #endif
 #define VMAXPATHLEN 64		/* Maximum length (including null) of a volume
 				   external path name */
+
+#if defined(AFS_NAMEI_ENV) && !defined(AFS_NT40_ENV)
+/* INODEDIR holds all the inodes. Since it's name does not begin with "V"
+ * and it's created when the first volume is created, linear directory
+ * searches will find the directory early. If only I had needed this before
+ * the NT server went beta, it could be used there as well.
+ */
+#define INODEDIR "AFSIDat"
+#define INODEDIRLEN (sizeof(INODEDIR)-1)
+#endif
 
 /* Pathname for the maximum volume id ever created by this server */
 #define MAXVOLIDPATH	"/vice/vol/maxvolid"

@@ -4,7 +4,7 @@
  */
 /* Including budb_client.p.h at beginning of budb_client.h file. */
 
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/budb_client.h,v 1.1.1.1 1998-02-20 21:35:27 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/budb_client.h,v 1.1.1.2 1999-12-21 04:06:04 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/budb_client.h,v $ */
 
 /*
@@ -60,6 +60,7 @@ typedef struct udbClientTextS	udbClientTextT;
 typedef udbClientTextT		*udbClientTextP;
 
 extern int32 BUDB_AddVolume();
+extern int32 BUDB_AddVolumes();
 extern int32 BUDB_CreateDump ();
 extern int32 BUDB_DeleteDump ();
 extern int32 BUDB_DeleteTape ();

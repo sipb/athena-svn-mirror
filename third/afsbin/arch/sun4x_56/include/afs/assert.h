@@ -1,8 +1,8 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/assert.h,v 1.1.1.1 1998-02-20 21:35:27 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/assert.h,v 1.1.1.2 1999-12-21 04:05:52 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/assert.h,v $ */
 
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsidassert = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/assert.h,v 1.1.1.1 1998-02-20 21:35:27 ghudson Exp $";
+static char *rcsidassert = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/assert.h,v 1.1.1.2 1999-12-21 04:05:52 ghudson Exp $";
 #endif
 
 /*
@@ -27,5 +27,7 @@ static char *rcsidassert = "$Header: /afs/dev.mit.edu/source/repository/third/af
 */
 /*	@(#)assert.h 1.1 83/08/01 SMI; from UCB 4.1 83/05/03	*/
 /* Modified to dump core, rather than exit.  May/85 RNS */
+
+void AssertionFailed(char *file, int line);
 
 # define assert(ex) {if (!(ex)) AssertionFailed(__FILE__, __LINE__);}

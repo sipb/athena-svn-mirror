@@ -1,8 +1,8 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/partition.h,v 1.1.1.1 1998-02-20 21:35:28 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/partition.h,v 1.1.1.2 1999-12-21 04:06:07 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/partition.h,v $ */
 
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsidpartition = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/partition.h,v 1.1.1.1 1998-02-20 21:35:28 ghudson Exp $";
+static char *rcsidpartition = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/partition.h,v 1.1.1.2 1999-12-21 04:06:07 ghudson Exp $";
 #endif
 
 /*
@@ -35,6 +35,14 @@ static char *rcsidpartition = "$Header: /afs/dev.mit.edu/source/repository/third
 #define VICE_PARTITION_PREFIX	"/vicep"
 #define VICE_PREFIX_SIZE	(sizeof(VICE_PARTITION_PREFIX)-1)
 
+/* For NT, the roles of "name" and "devName" are reversed. That is, "name"
+ * refers to the drive letter name and "devName" refers to the /vicep style
+ * or name. The reason for this is that a lot of places assume that "name"
+ * is the right thing to use to access the partition. Silly of them isn't it?
+ * The NT version of VInitPartition does the intial setup. There is an NT
+ * variant for VGetPartition as well. Also, the VolPartitionInfo RPC does
+ * a swap before sending the data out on the wire.
+ */
 struct DiskPartition {
     struct DiskPartition *next;
     char	name[32];	/* Mounted partition name */
@@ -60,11 +68,36 @@ struct DiskPartition {
 				   is not reread--does not apply here.  The
 				   superblock is re-read periodically by
 				   VSetPartitionDiskUsage().) */
-    int		minFree;	/* Percentage to be kept free, as last read
+    int		minFree;	/* Number blocks to be kept free, as last read
     				   from the superblock */
     int		flags;
+    int 	f_files;	/* total number of files in this partition */
 };
 #define	PART_DONTUPDATE	1
+#define PART_DUPLICATE  2 /* NT - used if we find more than one partition 
+			   * using the same drive. Will be dumped before
+			   * all partitions attached.
+			   */
+
+#ifdef AFS_NT40_ENV
+#include <WINNT/vptab.h>
+extern int VValidVPTEntry(struct vptab *vptp);
+#endif
+
 
 extern struct DiskPartition *DiskPartitionList;
-struct DiskPartition *VGetPartition();
+extern struct DiskPartition *VGetPartition();
+extern int VAttachPartitions(void);
+extern void VLockPartition(char *name);
+extern void VLockPartition_r(char *name);
+extern void VUnlockPartition(char *name);
+extern void VUnlockPartition_r(char *name);
+extern void VResetDiskUsage(void);
+extern void VResetDiskUsage_r(void);
+extern void VSetPartitionDiskUsage(register struct DiskPartition *dp);
+extern void VSetPartitionDiskUsage_r(register struct DiskPartition *dp);
+extern char *VPartitionPath(struct DiskPartition *p);
+/*extern void VAdjustDiskUsage(Error *ec, Volume *vp, int32 blocks,
+			     int32 checkBlocks); */
+extern void VPrintDiskStats(void);
+

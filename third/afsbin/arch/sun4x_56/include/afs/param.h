@@ -1,11 +1,6 @@
 #ifndef	_PARAM_SUN4X_56_H_
 #define	_PARAM_SUN4X_56_H_
 
-/*
-XCFLAGS=-I/usr/ucbinclude
-XLIBS=/lib/libsocket.a /usr/ucblib/libucb.a
-*/
-
 #include <afs/afs_sysnames.h>
 
 #define AFS_VFS_ENV	1
@@ -21,9 +16,10 @@ XLIBS=/lib/libsocket.a /usr/ucblib/libucb.a
 #define	AFS_SUN54_ENV		1
 #define	AFS_SUN55_ENV		1
 #define	AFS_SUN56_ENV		1
-#define AFS_BSD_ENV		1
 #define AFS_GLOBAL_SUNLOCK	1	/* For fine mp lock granularity comment this out */
 /*#define AFS_FINEGR_SUNLOCK	1	/* For global locking comment this out */
+#define RXK_LISTENER_ENV   1
+#define AFS_GCPAGS		1       /* if nonzero, garbage collect PAGs */
 
 #define	AFS_3DISPARES		1	/* Utilize the 3 available disk inode 'spares' */
 #define	AFS_SYSCALL		105
@@ -36,7 +32,20 @@ XLIBS=/lib/libsocket.a /usr/ucblib/libucb.a
 #define SYS_NAME	"sun4x_56"
 #define SYS_NAME_ID	SYS_NAME_ID_sun4x_56
 #define AFSBIG_ENDIAN	1
-#define AFS_HAVE_FFS            1       /* Use system's ffs. */
+#define AFS_HAVE_FFS    1       /* Use system's ffs. */
+#define AFS_HAVE_VXFS	1	/* Support cache on Veritas vxfs file system */
+#define AFS_HAVE_STATVFS 1	/* System supports statvfs */
+#define AFS_VM_RDWR_ENV	1	/* read/write implemented via VM */
+#define AFS_USE_GETTIMEOFDAY 1  /* use gettimeofday to implement rx clock */
+
+#define NEARINODE_HINT  1   /* hint to ufs module to scatter inodes on disk*/
+#define nearInodeHash(volid, hval) {                                 \
+                unsigned char*  ts = (unsigned char*)&(volid)+sizeof(volid)-1;\
+                for ( (hval)=0; ts >= (unsigned char*)&(volid); ts--){\
+                    (hval) *= 173;                      \
+                    (hval) += *ts;                      \
+                }                                       \
+                }
 
 /* Extra kernel definitions (from kdefs file) */
 #ifdef KERNEL
@@ -56,6 +65,7 @@ XLIBS=/lib/libsocket.a /usr/ucblib/libucb.a
 #define	AFS_MINCHANGE	2
 #define	osi_GetTime(x)	uniqtime(x)
 #define	AFS_KALLOC(n)	kmem_alloc(n, KM_SLEEP)
+#define AFS_KALLOC_NOSLEEP(n)   kmem_alloc(n, KM_NOSLEEP)
 #define	AFS_KFREE	kmem_free
 #define	VATTR_NULL	vattr_null
 #endif KERNEL
@@ -64,6 +74,5 @@ XLIBS=/lib/libsocket.a /usr/ucblib/libucb.a
 #define CMSERVERPREF
 #endif
 #define	ROOTINO		UFSROOTINO
-
 
 #endif	_PARAM_SUN4X_56_H_

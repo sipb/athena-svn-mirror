@@ -51,4 +51,8 @@ struct ktime {
 #define	ktime_DateToLong	ktime_DateToInt32	/* XXX */
 #define	ktimeRelDate_ToLong	ktimeRelDate_ToInt32	/* XXX */
 #define	LongTo_ktimeRelDate     Int32To_ktimeRelDate	/* XXX */
+
+int32 ktime_InterpretDate(struct ktime_date *akdate);
+
+
 #endif /* __INCL_KTIME_ */

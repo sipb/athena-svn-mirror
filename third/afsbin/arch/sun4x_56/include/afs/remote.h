@@ -1,9 +1,9 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/remote.h,v 1.1.1.1 1998-02-20 21:35:29 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/remote.h,v 1.1.1.2 1999-12-21 04:05:51 ghudson Exp $ */
 /* $ACIS:remote.h 9.1$ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/remote.h,v $ */
 
 #if !defined(lint) && !defined(LOCORE)  && defined(RCS_HDRS)
-static char *rcsidremote = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/remote.h,v 1.1.1.1 1998-02-20 21:35:29 ghudson Exp $";
+static char *rcsidremote = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/remote.h,v 1.1.1.2 1999-12-21 04:05:51 ghudson Exp $";
 #endif
 
 /*
@@ -101,9 +101,6 @@ struct	intercept_message {
 #endif
 #ifdef vax
 #define RMT_MAJ		33
-#endif
-#ifdef	ibm032
-#define	RMT_MAJ		16
 #endif
 
 /* Sleep priorities */

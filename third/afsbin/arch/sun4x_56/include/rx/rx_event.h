@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/rx/rx_event.h,v 1.1.1.1 1998-02-20 21:35:29 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/rx/rx_event.h,v 1.1.1.2 1999-12-21 04:06:19 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/rx/rx_event.h,v $ */
 
 /*
@@ -40,9 +40,20 @@
 struct rxevent {
     struct rx_queue junk;    /* Events are queued */
     struct clock eventTime; /* When this event times out (in clock.c units) */
-    int	(*func)();	    /* Function to call when this expires */
+    void (*func)();	    /* Function to call when this expires */
     char *arg;		    /* Argument to the function */
     char *arg1;		    /* Another argument */
+};
+
+/* We used to maintain a sorted list of events, but the amount of CPU
+ * required to maintain the list grew with the square of the number of
+ * connections. Now we keep a list of epochs, each epoch contains the
+ * events scheduled for a particular second. Each epoch contains a sorted
+ * list of the events scheduled for that epoch. */
+struct rxepoch {
+    struct rx_queue junk;	/* Epochs are queued */
+    int epochSec;		/* each epoch spans one second */
+    struct rx_queue events;     /* list of events for this epoch */
 };
 
 /* Some macros to make macros more reasonable (this allows a block to be used within a macro which does not cause if statements to screw up).   That is, you can use "if (...) macro_name(); else ...;" without having things blow up on the semi-colon. */
@@ -54,6 +65,9 @@ struct rxevent {
 
 /* This routine must be called to initialize the event package.  nEvents is the number of events to allocate in a batch whenever more are needed.  If this is 0, a default number (10) will be allocated. */
 extern void rxevent_Init(/* nEvents, scheduler */);
+
+/* Get the expiration time for the next event */
+extern void exevent_NextEvent(/* when */);
 
 /* Arrange for the indicated event at the appointed time.  When is a "struct clock", in the clock.c time base */
 extern struct rxevent *rxevent_Post(/* when, func, arg, arg1 */);

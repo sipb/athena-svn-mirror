@@ -36,7 +36,7 @@
 #if defined(KERNEL)
 #define assert(x) \
 if(!(x)) { printf("assertion failed: line %d, file %s\n",\
-		  __LINE__,__FILE__); panic("assert"); }
+		  __LINE__,__FILE__); osi_Panic("assert"); }
 
 /*
  * Debug modules

@@ -11,7 +11,7 @@
  */
 
 /*===============================================================
- * Copyright (C) 1989 Transarc Corporation - All rights reserved 
+ * Copyright (C) 1998 Transarc Corporation - All rights reserved 
  *===============================================================*/
 
 
@@ -26,55 +26,6 @@
 #include <afs/param.h>
 #include <afs/bubasics.h>
 
-/* mt does not work in AIX, hence the stuff below */
-#ifdef AFS_AIX_ENV
-#include <sys/tape.h>
-
-struct stop st_com;
-#ifdef AFS_AIX32_ENV
-/*
- * AIX31 device driver neglected to provide this functionality.
- * sigh.
- */
-struct always_wonderful {
-	int32	utterly_fantastic;
-} st_status;
-#else
-struct stget st_status;
-#endif
-
-#define GENCOM st_com
-#define GENGET st_status
-#define GENOP st_op
-#define GENCOUNT st_count
-#define GENWEOF STWEOF
-#define GENREW STREW
-#define GENFSF STFSF
-#define GENRETEN STRETEN
-#define GENRESET STRESET
-#define GENBSF STREW /* should be a no-op */ 
-#define GENCALL(fid,com) ioctl(fid,STIOCTOP,com)
-
-#else
-#include <sys/mtio.h>
-
-struct mtop mt_com;
-struct mtget mt_status;
-
-#define GENCOM mt_com
-#define GENGET mt_status
-#define GENOP  mt_op
-#define GENCOUNT mt_count
-#define GENWEOF MTWEOF
-#define GENREW MTREW
-#define GENFSF MTFSF
-#define GENRETEN MTRETEN
-#define GENBSF MTBSF
-#define GENOFFL MTOFFL
-#define GENCALL(fid,com) ioctl(fid,MTIOCTOP,com)
-
-#endif
-
 struct blockMark {
     int	count;	    /* actual number of bytes valid in the block */
     int32 magic;	    
@@ -87,9 +38,8 @@ struct blockMark {
 /* the 16k limit is related to tc_EndMargin in dumps.c*/
 #define BUTM_BLOCKSIZE 16384
 #define	BUTM_BLKSIZE   (BUTM_BLOCKSIZE - ((5*sizeof(int32)) + sizeof(int)))   
-                                                                  /* size of data portion of 
-								     block written on tape:
-  								     16k - sizeof(blockMark) */
+                       /* size of data portion of block written on tape:
+			* 16k - sizeof(blockMark) */
 
 struct butm_tapeInfo {
     int32  structVersion;

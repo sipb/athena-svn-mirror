@@ -1,11 +1,11 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/lock.h,v 1.1.1.1 1998-02-20 21:35:26 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/lock.h,v 1.1.1.2 1999-12-21 04:05:47 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/lock.h,v $ */
 
 #ifndef LOCK_H
 #define LOCK_H
 
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsidlock = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/lock.h,v 1.1.1.1 1998-02-20 21:35:26 ghudson Exp $";
+static char *rcsidlock = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/lock.h,v 1.1.1.2 1999-12-21 04:05:47 ghudson Exp $";
 #endif
 
 /*
@@ -56,13 +56,34 @@ static char *rcsidlock = "$Header: /afs/dev.mit.edu/source/repository/third/afsb
 #define BEGINMAC do {
 #define ENDMAC   } while (0)
 
+#ifdef AFS_PTHREAD_ENV
+#include <assert.h>
+#include <pthread.h>
+#define LOCK_LOCK(A) assert(pthread_mutex_lock(&(A)->mutex) == 0);
+#define LOCK_UNLOCK(A) assert(pthread_mutex_unlock(&(A)->mutex) == 0);
+#else /* AFS_PTHREAD_ENV */
+#define LOCK_LOCK(A)
+#define LOCK_UNLOCK(A)
+#endif /* AFS_PTHREAD_ENV */
+
 /* all locks wait on excl_locked except for READ_LOCK, which waits on readers_reading */
 struct Lock {
     unsigned char	wait_states;	/* type of lockers waiting */
     unsigned char	excl_locked;	/* anyone have boosted, shared or write lock? */
     unsigned char	readers_reading;	/* # readers actually with read locks */
     unsigned char	num_waiting;	/* probably need this soon */
+#ifdef AFS_PTHREAD_ENV
+    pthread_mutex_t	mutex;		/* protects this structure */
+    pthread_cond_t	read_cv;	/* wait for read locks */
+    pthread_cond_t	write_cv;	/* wait for write/shared locks */
+#endif /* AFS_PTHREAD_ENV */
 };
+
+extern void Afs_Lock_Obtain(struct Lock * lock, int how);
+extern void Afs_Lock_ReleaseR(struct Lock *lock);
+extern void Afs_Lock_ReleaseW(struct Lock * lock);
+void Lock_Init(struct Lock *lock);
+void Lock_Destroy(struct Lock *lock);
 
 #define READ_LOCK	1
 #define WRITE_LOCK	2
@@ -74,35 +95,53 @@ struct Lock {
 #define EXCL_LOCKS (WRITE_LOCK|SHARED_LOCK)
 
 #define ObtainReadLock(lock)\
-	if (!((lock)->excl_locked & WRITE_LOCK) && !(lock)->wait_states)\
-	    (lock) -> readers_reading++;\
-	else\
-	    Afs_Lock_Obtain(lock, READ_LOCK)
-
+	BEGINMAC \
+	    LOCK_LOCK(lock) \
+	    if (!((lock)->excl_locked & WRITE_LOCK) && !(lock)->wait_states)\
+		(lock) -> readers_reading++;\
+	    else\
+		Afs_Lock_Obtain(lock, READ_LOCK); \
+	    LOCK_UNLOCK(lock) \
+	ENDMAC
+    
 #define ObtainWriteLock(lock)\
-	if (!(lock)->excl_locked && !(lock)->readers_reading)\
-	    (lock) -> excl_locked = WRITE_LOCK;\
-	else\
-	    Afs_Lock_Obtain(lock, WRITE_LOCK)
-
+	BEGINMAC \
+	    LOCK_LOCK(lock) \
+	    if (!(lock)->excl_locked && !(lock)->readers_reading)\
+		(lock) -> excl_locked = WRITE_LOCK;\
+	    else\
+		Afs_Lock_Obtain(lock, WRITE_LOCK); \
+	    LOCK_UNLOCK(lock) \
+	ENDMAC
+    
 #define ObtainSharedLock(lock)\
-	if (!(lock)->excl_locked && !(lock)->wait_states)\
-	    (lock) -> excl_locked = SHARED_LOCK;\
-	else\
-	    Afs_Lock_Obtain(lock, SHARED_LOCK)
+	BEGINMAC \
+	    LOCK_LOCK(lock) \
+	    if (!(lock)->excl_locked && !(lock)->wait_states)\
+		(lock) -> excl_locked = SHARED_LOCK;\
+	    else\
+	        Afs_Lock_Obtain(lock, SHARED_LOCK); \
+	    LOCK_UNLOCK(lock) \
+	ENDMAC
 
 #define BoostSharedLock(lock)\
-	if (!(lock)->readers_reading)\
-	    (lock)->excl_locked = WRITE_LOCK;\
-	else\
-	    Afs_Lock_Obtain(lock, BOOSTED_LOCK)
+	BEGINMAC \
+	    LOCK_LOCK(lock) \
+	    if (!(lock)->readers_reading)\
+		(lock)->excl_locked = WRITE_LOCK;\
+	    else\
+		Afs_Lock_Obtain(lock, BOOSTED_LOCK); \
+	    LOCK_UNLOCK(lock) \
+	ENDMAC
 
 /* this must only be called with a WRITE or boosted SHARED lock! */
 #define UnboostSharedLock(lock)\
 	BEGINMAC\
+	    LOCK_LOCK(lock) \
 	    (lock)->excl_locked = SHARED_LOCK; \
 	    if((lock)->wait_states) \
 		Afs_Lock_ReleaseR(lock); \
+	    LOCK_UNLOCK(lock) \
 	ENDMAC
 
 #ifdef notdef
@@ -116,8 +155,10 @@ struct Lock {
 
 #define ReleaseReadLock(lock)\
 	BEGINMAC\
+	    LOCK_LOCK(lock) \
 	    if (!--(lock)->readers_reading && (lock)->wait_states)\
 		Afs_Lock_ReleaseW(lock) ; \
+	    LOCK_UNLOCK(lock) \
 	ENDMAC
 
 
@@ -131,10 +172,12 @@ struct Lock {
 #endif /* notdef */
 
 #define ReleaseWriteLock(lock)\
-        BEGINMAC\
+	BEGINMAC\
+	    LOCK_LOCK(lock) \
 	    (lock)->excl_locked &= ~WRITE_LOCK;\
 	    if ((lock)->wait_states) Afs_Lock_ReleaseR(lock);\
-        ENDMAC
+	    LOCK_UNLOCK(lock) \
+	ENDMAC
 
 #ifdef notdef
 /* This is what the previous definition should be, but the hi-C compiler generates
@@ -147,10 +190,12 @@ struct Lock {
 
 /* can be used on shared or boosted (write) locks */
 #define ReleaseSharedLock(lock)\
-        BEGINMAC\
+	BEGINMAC\
+	    LOCK_LOCK(lock) \
 	    (lock)->excl_locked &= ~(SHARED_LOCK | WRITE_LOCK);\
 	    if ((lock)->wait_states) Afs_Lock_ReleaseR(lock);\
-        ENDMAC
+	    LOCK_UNLOCK(lock) \
+	ENDMAC
 
 #ifdef notdef
 /* This is what the previous definition should be, but the hi-C compiler generates
@@ -161,7 +206,17 @@ struct Lock {
 	((lock)->wait_states ?\
 		Afs_Lock_ReleaseR(lock) : 0))
 #endif /* notdef */
-	
+
+/* convert a write lock to a read lock */
+#define ConvertWriteToReadLock(lock)\
+	BEGINMAC\
+	    LOCK_LOCK(lock) \
+	    (lock)->excl_locked &= ~WRITE_LOCK;\
+	    (lock)->readers_reading++;\
+	    if ((lock)->wait_states & READ_LOCK) \
+		Afs_Lock_WakeupR(lock) ; \
+	    LOCK_UNLOCK(lock) \
+	ENDMAC
 
 /* I added this next macro to make sure it is safe to nuke a lock -- Mike K. */
 #define LockWaiters(lock)\

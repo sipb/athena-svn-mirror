@@ -1,11 +1,11 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/volume.h,v 1.1.1.1 1998-02-20 21:35:29 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/volume.h,v 1.1.1.2 1999-12-21 04:06:07 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/volume.h,v $ */
 
 #ifndef __volume_h
 #define	__volume_h  1
 
 #if !defined(lint) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsidvolume = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/volume.h,v 1.1.1.1 1998-02-20 21:35:29 ghudson Exp $";
+static char *rcsidvolume = "$Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/afs/volume.h,v 1.1.1.2 1999-12-21 04:06:07 ghudson Exp $";
 #endif
 
 /*
@@ -23,9 +23,32 @@ static char *rcsidvolume = "$Header: /afs/dev.mit.edu/source/repository/third/af
 
 #include <afs/afssyscalls.h>
 #include "voldefs.h"
+#include "ihandle.h"
 #define VolumeWriteable(vp)		(V_type(vp)==readwriteVolume)
 #define VolumeWriteable2(vol)		(vol.type == readwriteVolume)
 typedef bit32				FileOffset; /* Offset in this file */
+
+#ifdef AFS_PTHREAD_ENV
+#include <assert.h>
+#include <pthread.h>
+extern pthread_mutex_t vol_glock_mutex;
+extern pthread_mutex_t vol_attach_mutex;
+extern pthread_cond_t vol_put_volume_cond;
+extern pthread_cond_t vol_sleep_cond;
+#define VATTACH_LOCK \
+    assert(pthread_mutex_lock(&vol_attach_mutex) == 0);
+#define VATTACH_UNLOCK \
+    assert(pthread_mutex_unlock(&vol_attach_mutex) == 0);
+#define VOL_LOCK \
+    assert(pthread_mutex_lock(&vol_glock_mutex) == 0);
+#define VOL_UNLOCK \
+    assert(pthread_mutex_unlock(&vol_glock_mutex) == 0);
+#else /* AFS_PTHREAD_ENV */
+#define VATTACH_LOCK
+#define VATTACH_UNLOCK
+#define VOL_LOCK
+#define VOL_UNLOCK
+#endif /* AFS_PTHREAD_ENV */
 
 typedef enum {fileServer, volumeUtility, salvager} ProgramType;
 extern ProgramType programType;	/* The type of program using the package */
@@ -49,6 +72,7 @@ struct versionStamp {		/* Version stamp for critical volume files */
 #define LARGEINDEXMAGIC		0x88664433
 #define	MOUNTMAGIC		0x9a8b7c6d
 #define ACLMAGIC		0x88877712
+#define LINKTABLEMAGIC		0x99877712
 
 #define VOLUMEHEADERVERSION	1
 #define VOLUMEINFOVERSION	1
@@ -56,6 +80,7 @@ struct versionStamp {		/* Version stamp for critical volume files */
 #define	LARGEINDEXVERSION	1
 #define	MOUNTVERSION		1
 #define ACLVERSION		1
+#define LINKTABLEVERSION	1
 
 /*
  * Define whether we are keeping detailed statistics on volume dealings.
@@ -106,6 +131,7 @@ typedef struct VolumeHeader {
     Inode       largeVnodeIndex;
     Inode       volumeAcl;
     Inode       volumeMountTable;
+    Inode	linkTable;
 } VolumeHeader_t;
 
 
@@ -124,8 +150,10 @@ typedef struct VolumeDiskHeader {
     int32	largeVnodeIndex_hi;
     int32	volumeAcl_hi;
     int32	volumeMountTable_hi;
+    int32	linkTable_lo;
+    int32	linkTable_hi;
     /* If you add fields, add them before here and reduce the size of  array */
-    bit32	reserved[5];
+    bit32	reserved[3];
 } VolumeDiskHeader_t;
 
 /* A vnode index file header */
@@ -180,7 +208,11 @@ typedef struct VolumeDiskData {
 				   this volume; it is bogus (left over from an aborted  volume move,
 				   for example).  Note:  if this flag is on, then inService should
 				   be OFF--only the salvager checks this flag */
+#ifdef ALPHA_DUX40_ENV
+#define DONT_SALVAGE	0xE6
+#else /* ALPHA_DUX40_ENV */
 #define DONT_SALVAGE	0xE5
+#endif /* ALPHA_DUX40_ENV */
     byte	dontSalvage;	/* If this is on, then don't bother salvaging this volume*/
     byte	reserveb3;
 
@@ -261,12 +293,13 @@ typedef struct Volume {
     struct DiskPartition
     		*partition;	/* Information about the Unix partition */
     struct vnodeIndex {
-      Inode	inode;		/* Unix inode holding this index */
+      IHandle_t	*handle;	/* Unix inode holding this index */
       byte      *bitmap;	/* Index bitmap */
       u_int32	bitmapSize;	/* length of bitmap, in bytes */
       u_int32	bitmapOffset;	/* Which byte address of the first long to
 				   start search from in bitmap */
     } vnodeIndex[nVNODECLASSES];
+    IHandle_t	*linkHandle;
     Unique	nextVnodeUnique;/* Derived originally from volume uniquifier.
 			   	   This is the actual next version number to
 			   	   assign; the uniquifier is bumped by 200 and
@@ -274,7 +307,7 @@ typedef struct Volume {
 			   	   If the volume is shutdown gracefully, the
 				   uniquifier should be rewritten with the
 				   value nextVnodeVersion*/
-    Inode	diskDataInode;	/* Unix inode holding general volume info */
+    IHandle_t	*diskDataHandle;/* Unix inode holding general volume info */
     bit16	vnodeHashOffset;/* Computed by HashOffset function in vnode.h.
 				   Assigned to the volume when initialized. 
 				   Added to vnode number for hash table index */
@@ -307,10 +340,10 @@ struct volHeader {
 
 #define V_device(vp)		((vp)->device)
 #define V_partition(vp)		((vp)->partition)
-#define V_inode(vp)		((vp)->inode)
-#define V_diskDataInode(vp)	((vp)->diskDataInode)
+#define V_diskDataHandle(vp)	((vp)->diskDataHandle)
 #define V_vnodeIndex(vp)	((vp)->vnodeIndex)
 #define V_nextVnodeUnique(vp)	((vp)->nextVnodeUnique)
+#define V_linkHandle(vp)	((vp)->linkHandle)
 
 /* N.B. V_id must be this, rather than vp->id, or some programs will break, probably */
 #define V_stamp(vp)		((vp)->header->diskstuff.stamp)
@@ -369,13 +402,50 @@ struct volHeader {
 extern char *VSalvageMessage;	/* Canonical message when a volume is forced
 				   offline */
 extern Volume * VGetVolume();
+extern Volume * VGetVolume_r();
+extern void VPutVolume(Volume *);
+extern void VPutVolume_r(Volume *);
+extern void VOffline(Volume *vp, char *message);
+extern void VOffline_r(Volume *vp, char *message);
+extern int VConnectFS(void);
+extern int VConnectFS_r(void);
 extern Volume * VAttachVolume();
+extern Volume * VAttachVolume_r();
 extern Volume * VCreateVolume();
+extern Volume * VCreateVolume_r();
 extern VnodeId VallocBitMapEntry();
-extern VFreeBitMapEntry();
+extern VnodeId VallocBitMapEntry_r();
+extern void VFreeBitMapEntry(Error *ec, register struct vnodeIndex *index,
+			     int bitNumber);
+extern void VFreeBitMapEntry_r(Error *ec, register struct vnodeIndex *index,
+			       int bitNumber);
 extern int VolumeNumber();
+extern int VolumeNumber_r();
 extern char * VolumeExternalName();
+extern char * VolumeExternalName_r();
 extern Volume * VAttachVolumeByName();
+extern Volume * VAttachVolumeByName_r();
+extern void VShutdown(void);
+extern void VUpdateVolume(Error *ec,Volume *vp);
+extern void VUpdateVolume_r(Error *ec,Volume *vp);
+extern void VAddToVolumeUpdateList(Error *ec, Volume *vp);
+extern void VAddToVolumeUpdateList_r(Error *ec, Volume *vp);
+extern void VDetachVolume(Error *ec, Volume *vp);
+extern void VDetachVolume_r(Error *ec, Volume *vp);
+extern void VForceOffline(Volume *vp);
+extern void VBumpVolumeUsage(register Volume *vp);
+extern void VSetDiskUsage(void);
+extern void VPrintCacheStats(void);
+extern void VReleaseVnodeFiles_r(Volume *vp);
+extern void VCloseVnodeFiles_r(Volume *vp);
+extern struct DiskPartition *VGetPartition(char *name, int abortp);
+extern struct DiskPartition *VGetPartition_r(char *name, int abortp);
+extern int VInitVolumePackage(ProgramType pt, int nLargeVnodes,
+			      int nSmallVnodes,
+			      int connect, int volcache);
+extern void DiskToVolumeHeader(VolumeHeader_t *h, VolumeDiskHeader_t *dh);
+extern void VolumeHeaderToDisk(VolumeDiskHeader_t *dh, VolumeHeader_t *h);
+
 
 /* Naive formula relating number of file size to number of 1K blocks in file */
 /* Note:  we charge 1 block for 0 length files so the user can't store
@@ -404,5 +474,11 @@ extern Volume * VAttachVolumeByName();
 			   never knows about more than one copy of the same volume--when
 			   a volume is moved from one partition to another on a single
 			   server */
+
+#if	defined(NEARINODE_HINT)
+#define V_pref(vp,nearInode)  nearInodeHash(V_id(vp),(nearInode)); (nearInode) %= V_partition(vp)->f_files 
+#else  			
+#define V_pref(vp,nearInode)   nearInode = 0 
+#endif			/* NEARINODE_HINT */
 
 #endif /* __volume_h */

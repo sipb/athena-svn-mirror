@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/rx/rx_null.h,v 1.1.1.1 1998-02-20 21:35:30 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/rx/rx_null.h,v 1.1.1.2 1999-12-21 04:06:17 ghudson Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/third/afsbin/arch/sun4x_56/include/rx/rx_null.h,v $ */
 
 /*
