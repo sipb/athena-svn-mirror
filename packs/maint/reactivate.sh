@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.9 1991-08-26 03:46:47 probe Exp $
+# $Id: reactivate.sh,v 1.10 1991-08-26 04:00:50 probe Exp $
 
 trap "" 1 15
 
@@ -46,8 +46,8 @@ fi
 # Clean temporary areas (including temporary home directories)
 case "${MACHINE}" in
 RSAIX)
-	find /tmp -depth \( -type f -o -type l \) -print | xargs /bin/rm -f
-	find /tmp -depth -type d -print | xargs /bin/rmdir
+	find /tmp -depth \( -type f -o -type l \) -print | xargs /bin/rm -f -
+	find /tmp -depth -type d -print | xargs /bin/rmdir 1>/dev/null 2>&1
 	;;
 *)
 	/bin/mv /tmp/.X11-unix /tmp/../.X11-unix
