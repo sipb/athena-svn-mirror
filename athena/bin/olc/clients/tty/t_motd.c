@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_motd.c,v $
- *	$Id: t_motd.c,v 1.8 1990-11-14 14:45:47 lwvanels Exp $
+ *	$Id: t_motd.c,v 1.9 1991-01-03 15:33:04 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_motd.c,v 1.8 1990-11-14 14:45:47 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_motd.c,v 1.9 1991-01-03 15:33:04 lwvanels Exp $";
 #endif
 #endif
 
@@ -34,14 +34,14 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <olc/olc_tty.h>
 
 ERRCODE
-t_get_motd(Request,type,file,display_opts)
+t_get_file(Request,type,file,display_opts)
      REQUEST *Request;
      int type, display_opts;
      char *file;
 {
   int status;
 
-  status = OGetMOTD(Request,type,file);
+  status = OGetFile(Request,type,file);
   
   switch(status)
     {
@@ -62,7 +62,7 @@ t_get_motd(Request,type,file,display_opts)
   
 
 ERRCODE
-t_change_motd(Request,type,file, editor, incflag)
+t_change_file(Request,type,file, editor, incflag)
      REQUEST *Request;
      int type;
      char *file;
@@ -72,7 +72,7 @@ t_change_motd(Request,type,file, editor, incflag)
   int status;
 
   set_option(Request->options, VERIFY);
-  status = OChangeMOTD(Request,type,file);
+  status = OChangeFile(Request,type,file);
   
   switch(status)
     {
@@ -95,21 +95,25 @@ t_change_motd(Request,type,file, editor, incflag)
   unset_option(Request->options, VERIFY);
   if((editor != (char *) NULL) && incflag)
     {
-      status = OGetMOTD(Request,type,file);
+/* This hack to pass through the right "get file" request number */
+      int ort = Request->request_type;
+      Request->request_type = incflag;
+      status = OGetFile(Request,type,file);
+      Request->request_type = ort;
       if(status != SUCCESS)
-	printf("Error getting motd, continuing...\n");
+	printf("Error getting file, continuing...\n");
     }
     
   status = enter_message(file,editor);
   if(status)
     return(status);
 
-  status = OChangeMOTD(Request,type,file);
+  status = OChangeFile(Request,type,file);
   
   switch(status)
     {
     case SUCCESS:
-      printf("MOTD change succesful. \n");
+      printf("Change succesful. \n");
       break;
       
           default:
