@@ -1,0 +1,103 @@
+INITIAL ANNOUNCEMENT
+____________________
+
+Hi,
+
+I created the xml-i18n-tools module on CVS based on code by me, Darin
+and Kenneth Christiansen. This module contains some utility scripts
+and assorted auto* magic for internationalizing various kinds of XML
+files. This supersedes the earlier scripts that Kenny distributed to
+be checked into each module. In addition, it has an additional merging
+feature, currently only for oaf files.
+
+* Here's what this package does:
+
+** Automatically extracts translatable strings from oaf, glade, bonobo
+  ui, nautilus theme and other XML files into the po files.
+
+** Automatically merges translations from po files back into .oaf files
+  (encoding to be 7-bit clean). I can also extend this merging
+  mechanism to support other types of XML files.
+
+Having the translations directly in the XML file is critical for some
+file formats, and very helpful for others. When one package installs a
+file and a program from another package might at some time read it,
+you need to have the translations directly in the file, since the app
+reading the data file will not know which message catalog to use.
+
+The beauty of this extract and merge system is that it works through
+the existing po mechanism, so translators will be able to work in
+their normal way, and be notified of strings that change, or new
+strings that are added, with existing tools.
+
+I plan to enhance the system to support .desktop files, mime database
+files, and other files that normally embed translations. I would also
+be glad to add translation merging support for more XML file types if
+
+xml-i18n-tools has a script xml-i18n-toolize which copies the various
+scripts and does the other magic to your module, so users building
+from tarballs don't need xml-i18n-tools, only folks building from cvs.
+
+
+* xml-i18n-tools simple to use. To use it for your module you just do
+the following:
+
+** Add these lines to autogen.sh, after the call to gettextize:
+
+echo "Running xml-i18n-toolize... Ignore non-fatal messages."
+xml-i18n-toolize --copy --force --automake
+
+** Add this line to configure.in near the top
+
+AM_PROG_XML_I18N_TOOLS
+
+** Add the .xml and .glade files you want translated to POTFILES.in
+
+At this point, strings marked translatable will be automatically
+extracted to the .po files.
+
+* To get oaf translation extraction and merging requires a few more
+steps:
+
+** Rename your .oafinfo file to .oaf.in and put an underscore before
+   every value property for string attributes
+
+** Add the .oaf.in files to POTFILES.in
+
+** Put lines like these in every Makefile.am that installs oafinfo
+   files:
+
+--- start ----
+
+oafdir = $(datadir)/oaf
+
+oaf_in_files = My_OAF_info_file.oaf.in
+oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+
+@XML_I18N_MERGE_OAF_RULE@
+
+EXTRA_DIST=$(oaf_in_files) $(oafinfo_DATA)
+
+--- end ----
+
+At this point, your oaf translations will be extracted and
+merged. Also, so long as you are renaming the .oafinfo files to
+.oaf.in, you should take the opportunity to rename them to the new base
+naming convention, with namespacing, for example:
+
+nautilus.oafinfo --> Nautilus_shell.oaf.in
+
+nautilus-rpm-view.oafinfo --> Nautilus_View_rpm.oaf.in
+
+
+I'm going to do all these steps for OAF, Ammonite and Nautilus
+shortly. I'd also plan to submit patches to do it for bonobo,
+gnumeric, evolution, at least, and I can help out with any other
+modules people want help with.
+
+Also, if the Glade, Bonobo, etc maintainers are interested in doing
+translation merging like OAF, I'd love to discuss a design for it.
+
+Regards,
+
+Maciej

@@ -1,0 +1,314 @@
+2001-01-20  Kenneth Christiansen <kenneth@gnu.org>
+
+	* configure.in: Changed version to 0.6
+	Ready for new release.
+
+2001-01-20  Kenneth Christiansen <kenneth@gnu.org>
+
+        * xml-i18n-tools.m4: Corrected one missing
+	keys.
+
+2001-01-20  Kenneth Christiansen <kenneth@gnu.org>
+
+	* xml-i18n-tools.m4: s/keys/desktop/; some
+	places and replaced some spaces with tabs.
+
+2001-01-20  Kenneth Christiansen <kenneth@gnu.org>
+
+	* xml-i18n-merge.in: 
+	* xml-i18n-tools.m4:
+	Added merging for *.desktop files.
+
+2001-01-20  Kenneth Christiansen <kenneth@gnu.org>
+
+	* xml-i18n-unicodify: Added small utility
+	to convert *.po files to UTF-8.
+
+2001-01-20  Kenneth Christiansen <kenneth@gnu.org>
+
+        * xml-i18n-merge.in: Yay, updated the oaf 
+	merge mechanism so it supported multiply
+	lines. This also fixed a problem Kmaraas
+	had.
+
+2001-01-20  Kenneth Christiansen <kenneth@gnu.org>
+
+        * xml-i18n-merge.in: Implimented the lookup
+	mechanism differently, and speeded up the
+	merge process approx. 200 times. Now it's
+	fast!
+
+2001-01-18  Kenneth Christiansen <kenneth@gnu.org>
+
+        * xml-i18n-merge.in: Added fix for ++ in
+	strings.
+
+2001-01-18  Kenneth Christiansen <kenneth@gnu.org>
+
+	* xml-i18n-merge.in:
+	* xml-i18n-tools.m4:
+	* xml-i18n-update.in:
+	* xml-i18n-extract.in:
+	Support .keys.in files for translation of
+	MIME data used by gnome-vfs. This is a pretty
+	major change, so please inform me of any bugs.
+
+2001-01-17  Kenneth Christiansen <kenneth@gnu.org>
+
+        * xml-i18n-merge: Made script handle fuzzy's
+
+2001-01-17  Kenneth Christiansen <kenneth@gnu.org>
+
+	* configure.in: Made release
+
+2001-01-17  Darin Adler  <darin@eazel.com>
+
+	* xml-i18n-tools.m4: Rebuild oaf files when the
+	xml-i18n-merge script changes.
+
+2001-01-17  Kenneth Christiansen <kenneth@gnu.org>
+
+        * xml-i18n-extract.in: More verbose work.
+
+2001-01-17  Kenneth Christiansen <kenneth@gnu.org>
+
+        * xml-i18n-extract.in: Also update help here
+
+2001-01-17  Kenneth Christiansen <kenneth@gnu.org>
+
+        * xml-i18n-update.in: Updated help
+
+2001-01-17  Kenneth Christiansen <kenneth@gnu.org>
+
+        * xml-i18n-update.in:
+	* xml-i18n-extract.in:
+	Added -q option to make the script more quiet.
+
+2001-01-17  Darin Adler  <darin@eazel.com>
+
+	* xml-i18n-update.in: Add missing chomp.
+
+2001-01-16  Darin Adler  <darin@eazel.com>
+
+	* xml-i18n-extract.in:
+	* xml-i18n-update.in:
+	Support .oaf.in.in as a hack for Bonobo. Maybe we
+	can come up with a better solution when Maciej
+	returns from his vacation.
+
+2001-01-16  Kenneth Christiansen <kenneth@gnu.org>
+
+        * xml-i18n-update.in: GNU license at top. 
+	Changed the optionsystem to resemple the 
+	other scripts in the xml-i18n-tools package. 
+
+2001-01-16  Darin Adler  <darin@eazel.com>
+
+	* xml-i18n-update.in: Added back in the line of
+	code to generate the pot that was accidentally
+	removed.
+
+2001-01-16  Darin Adler  <darin@eazel.com>
+
+	* xml-i18n-merge.in: Fix so it won't parse the
+	comments as translations.
+
+2001-01-16  Kenneth Christiansen <kenneth@gnu.org>
+
+        * xml-i18n-update.in: Removed obsolete code, made
+	status stuff a little better.
+
+2001-01-16  Kenneth Christiansen <kenneth@gnu.org>
+
+        * xml-i18n-update.in: Added new --statuslist option
+	Changed parts of the scripts to make it cleaner. It 
+	still need a major cleanup.
+
+2001-01-15  Darin Adler  <darin@eazel.com>
+
+	* xml-i18n-tools.spec.in: Oops. One too many.
+
+2001-01-15  Kenneth Christiansen <kenneth@gnu.org>
+
+        * xml-i18n-update.in: Some name change.
+
+2001-01-15  Darin Adler  <darin@eazel.com>
+
+	* xml-i18n-tools.spec.in: Add the installed scripts
+	so the RPM version also installs them. Maciej missed
+	this when doing his fix for 5454.
+
+2001-01-15  Kenneth Christiansen <kenneth@gnu.org>
+
+        * xml-i18n-update.in: Rewrote maintain section.
+	It now also handles files based on xml.
+
+2001-01-15  Darin Adler  <darin@eazel.com>
+
+	* xml-i18n-extract.in: Add "&amp" to the entities
+	that we special-case.
+
+2001-01-09  Kenneth Christiansen <kenneth@gnu.org>
+
+        * xml-i18n-update.in: New indent, more like GNU
+        coding style. Upped code a little.
+
+2001-01-09  Kenneth Christiansen <kenneth@gnu.org>
+
+        * xml-i18n-extract.in: New indent, more like GNU
+	coding style. Upped code a little.
+
+2001-01-09  Darin Adler  <darin@eazel.com>
+
+	* xml-i18n-extract.in: A few more tweaks, including
+	getting rid of the special case for 1-line messages.
+	* xml-i18n-update.in: Get rid of debugging print.
+
+2001-01-09  Kenneth Christiansen <kenneth@gnu.org>
+
+        * xml-i18n-update.in: Typo
+
+2001-01-09  Darin Adler  <darin@eazel.com>
+
+	* README: Fix formatting. Mention .cvsignore.
+	* xml-i18n-extract.in: Improved the no-c-format change.
+
+2001-01-09  Kenneth Christiansen <kenneth@gnu.org>
+
+        * xml-i18n-update.in: Modified "get package_name" code so 
+	that it handles AM_INIT_AUTOMAKE($SOMETHING, $SOMETHING).
+	With this change the script how works fine for evolution
+	as well.
+
+2001-01-09  Kenneth Christiansen <kenneth@gnu.org>
+
+	* xml-i18n-extract.in: Modified a no-c-format patch from
+	Jody Goldberg and applied it.
+
+2001-01-09  Kenneth Christiansen <kenneth@gnu.org>
+
+        * xml-i18n-update.in: Changed die to print, and added exit; 
+ 	instead. Getting a "error occured on line 408" is not very
+	user friendly.
+
+2001-01-08  Maciej Stachowiak  <mjs@eazel.com>
+
+	Fix bug 5454 (Translators have to run ./autogen.sh in each module
+	they work on).
+
+	* Makefile.am: Install xml-i18n-update and xml-i18n-extract, so
+	translators can update their po file without doing an autogen.sh,
+	by doing `xml-i18n-update <lang>' with the xml-i18n-tools package
+	installed.
+	
+	* xml-i18n-update.in: Translators have to run ./autogen.sh in each
+	module they work on. Find installed xml-i18n-extract as well as
+	the one in the source tree, for purposes of running on
+	non-autogen'd modules.
+
+2001-01-08  Maciej Stachowiak  <mjs@eazel.com>
+
+	* xml-i18n-update.in: Fix builddir != srcdir build (I think).
+
+2001-01-08  Darin Adler  <darin@eazel.com>
+
+	* xml-i18n-extract.in: Remove comment at the top of each
+	generated C file. It just clutters the .pot and .po files.
+
+2001-01-08  Almer S. Tigelaar  <almer1@dds.nl>
+
+	* autogen.sh: Change message to advise to "make install" as there
+	is nothing to "make".
+
+2001-01-07  Fatih Demir	<kabalak@gmx.net>
+
+	* .cvsignore: Added xml-i18n-tools.spec.
+
+2001-01-05  Maciej Stachowiak  <mjs@eazel.com>
+
+	* README: Some fixes suggested by Darin.
+	* xml-i18n-tools.Makefile.patch: Applied changes from Kenneth
+	Christiansen to make things like `make fr' to build a single po
+	file work.
+	* xml-i18n-update.in: Detect PACKAGE automatically by finding
+	configure.in and looking there.
+
+2001-01-05  Jody Goldberg <jgoldberg@home.com>
+
+	* xml-i18n-tools.m4 : s/top_builddir/top_srcdir/
+
+2001-01-06  Kenneth Christiansen <kenneth@gnu.org>
+
+        * update.sh: Applied patch from Christian Rose.
+
+2001-01-06  Kenneth Christiansen <kenneth@gnu.org>
+
+        * update.sh: Script for translators not being able to run 
+          autogen.sh. Can be placed in po/ dirs. Well tested.
+
+2001-01-06  Kenneth Christiansen <kenneth@gnu.org>
+
+        * NEWS: Added initial announcement
+
+2001-01-05  Maciej Stachowiak  <mjs@eazel.com>
+
+	* xml-i18n-tools.Makefile.patch: Fix up to remove accidentally
+	inserted duplicate definitions of some variables.
+	
+	* xml-i18n-tools.m4: In XML_I18N_MERGE_OAF_RULE, make .oaf file
+	depend on all .po files, as well as on .oaf.in.
+
+2001-01-04  Robin * Slomkowski  <rslomkow@eazel.com>
+
+	* Makefile.am: added specfile to EXTRA_DISTS
+	* xml-i18n-tools.spec.in: removed COPYING.LIB
+
+2001-01-04  Robin * Slomkowski  <rslomkow@eazel.com>
+
+	* Makefile.am: added Makefile.patch to EXTRA_DISTS
+
+2001-01-04  Robin * Slomkowski  <rslomkow@eazel.com>
+
+	* configure.in: added support for a spec file.
+	* xml-i18n-tools.spec.in: added a specfile.
+
+2001-01-03  Maciej Stachowiak  <mjs@eazel.com>
+
+	* AUTHORS: Added Darin since he did a lot of the design and
+	implementation work.
+	
+	* xml-i18n-tools.Makefile.patch: New version based on Darin's
+	Nautilus-customized version, which avoids the .headerlock mess and
+	simplifies things.
+
+2001-01-03  Maciej Stachowiak  <mjs@eazel.com>
+
+	Initial checkin of xml-i18n system.
+	
+	* .cvsignore: Files to ignore.
+	* AUTHORS: Add me and Kenny.
+	* COPYING: The GPL
+	* INSTALL: Install instructions
+	* Makefile.am: Makefile.
+	* autogen.sh: the usual.
+	* configure.in: Generate generated files.
+
+	* xml-i18n-toolize.in: Used to generate xml-i18n-toolize, a
+	program like libtoolize that makes your module use xml-i18n-tools.
+
+	* xml-i18n-extract.in: Used to generate xml-i18n-extract; based on
+	Kenneth Christiansen's ui-extract.pl. This script knows how to
+	extract translations from -ui.xml, nautilus theme, .glad and
+	.oaf.in files.
+
+	* xml-i18n-update.in: Used to generate
+	xml-i18n-update. This translation update script is based on based on
+	Kenneth Christiansen's update.pl
+
+	* xml-i18n-merge.in: Used to generate xml-i18n-merge, an XML
+	translation merge script (only works for .oaf files so far).
+	
+	* xml-i18n-tools.Makefile.patch: Patch for po/Makefile.in.in,
+	automatically applied after xml-18n-toolize
+	
+	* xml-i18n-tools.m4: M4 macro file that defines AM_PROG_XML_I18N_TOOLS

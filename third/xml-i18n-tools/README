@@ -1,0 +1,65 @@
+How to use
+----------
+
+xml-i18n-tools has a script xml-i18n-toolize which copies the various
+scripts and does the other magic to your module, so users building
+from tarballs don't need xml-i18n-tools, only folks building from cvs.
+(This is modeled on gettextize.)
+
+xml-i18n-tools simple to use. To use it for your module you just do
+the following:
+
+  o Install xml-i18n-tools, and make sure that the macro it installs is 
+    in aclocal's path, or do:
+
+	export ACLOCAL_FLAGS='-I /usr/local/share/aclocal' 
+
+ o  Add these lines to autogen.sh, after the call to gettextize:
+  
+	echo "Running xml-i18n-toolize... Ignore non-fatal messages."
+	xml-i18n-toolize --copy --force --automake
+
+ o  Add this line to configure.in near the top
+ 
+	AM_PROG_XML_I18N_TOOLS
+
+ o  Add xml-i18n-extract, xml-i18n-merge and xml-i18n-update to
+    EXTRA_DIST in your top-level Makefile.am and also to the top-level
+    .cvsignore.
+ 
+ o  Add the .xml and .glade files you want translated to POTFILES.in
+ 
+At this point, strings marked translatable will be automatically
+extracted to the .po files.
+
+To get oaf translation extraction and merging requires a few more steps:
+
+ o Rename your .oafinfo file to .oaf.in and put an underscore before
+   every value property for string attributes that should be
+   localized.
+
+ o Add the .oaf.in files to POTFILES.in
+
+ o Put lines like these in every Makefile.am that installs oafinfo
+   files:
+ 
+	--- start ----
+ 
+	oafdir = $(datadir)/oaf
+ 
+	oaf_in_files = My_OAF_info_file.oaf.in
+	oaf_DATA = $(oaf_in_files:.oaf.in=.oaf)
+ 
+	@XML_I18N_MERGE_OAF_RULE@
+ 
+	EXTRA_DIST=$(oaf_in_files) $(oaf_DATA)
+ 
+	--- end ----
+ 
+At this point, your oaf translations will be extracted and
+merged. Also, so long as you are renaming the .oafinfo files to
+.oaf.in, you should take the opportunity to rename them to the new base
+naming convention, with namespacing, for example:
+
+	nautilus.oafinfo --> Nautilus_shell.oaf.in
+	nautilus-rpm-view.oafinfo --> Nautilus_View_rpm.oaf.in
