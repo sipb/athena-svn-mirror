@@ -6,68 +6,66 @@ directory for information about procedures relevant to developers.
 
 The areas covered in this file are:
 
-	Mailing lists
-	Permissions
-	Build machines
-	The wash process
-	Imake templates
-	Release notes
-	Release cycles
-	Patch releases
-	Third-party pullups for patch releases
-	Rel-eng machines
-	Cluster information
+  Mailing lists
+  Permissions
+  Build machines
+  The wash process
+  Imake templates
+  Release notes
+  Release cycles
+  Patch releases
+  Third-party pullups for patch releases
+  Rel-eng machines
+  Cluster information
 
 Mailing lists
 -------------
 
 Here are descriptions of the mailing lists related to the source tree:
 
-	* source-developers
+  * source-developers
 
-		For discussion of the policy and day-to-day
-		maintenance of the repository.  This is a public list,
-		and there is a public discuss archive on menelaus.
+    For discussion of the policy and day-to-day maintenance of the
+    repository.  This is a public list, and there is a public discuss
+    archive on menelaus.
 
-	* source-reviewers
+  * source-reviewers
 
-		For review of changes to be checked into the
-		repository.  To be a member of this mailing list, you
-		must have read access to the non-public parts of the
-		source tree, but you do not need to be a staff member.
-		There is a non-public discuss archive on menelaus.
+    For review of changes to be checked into the repository.  To be a
+    member of this mailing list, you must have read access to the
+    non-public parts of the source tree, but you do not need to be a
+    staff member.  There is a non-public discuss archive on menelaus.
 
-	* source-commits
+  * source-commits
 
-		This mailing lists receives commit logs for all
-		commits to the repository.  This is a public mailing
-		list.  There is a public discuss archive on menelaus.
+    This mailing lists receives commit logs for all commits to the
+    repository.  This is a public mailing list.  There is a public
+    discuss archive on menelaus.
 
-	* source-diffs
+  * source-diffs
 
-		This mailing list receives commit logs with diffs for
-		all commits to the repository.  To be on this mailing
-		list, you must have read access to the non-public
-		parts of the source tree.  There is no discuss archive
-		for this list.
+    This mailing list receives commit logs with diffs for all commits
+    to the repository.  To be on this mailing list, you must have read
+    access to the non-public parts of the source tree.  There is no
+    discuss archive for this list.
 
-	* source-wash
+  * source-wash
 
-		This mailing list receives mail when the wash process
-		blows out.  This is a public mailing list.  There is
-		no discuss archive for this list.
+    This mailing list receives mail when the wash process blows out.
+    This is a public mailing list.  There is no discuss archive for
+    this list.
 
-	* rel-eng
+  * rel-eng
 
-		The release engineering mailing list.  Mail goes here
-		about patch releases and other release details.  There
-		is a public archive on menelaus.
+    The release engineering mailing list.  Mail goes here about patch
+    releases and other release details.  There is a public archive on
+    menelaus.
 
-	* release-team
+  * release-team
 
-		The mailing list for the release team, which sets
-		policy for releases.  There is a public archive on
-		menelaus (currently, it has the name "release-77").
+    The mailing list for the release team, which sets policy for
+    releases.  There is a public archive on menelaus (currently, it
+    has the name "release-77").
 
 Permissions
 -----------
@@ -75,36 +73,34 @@ Permissions
 Following are descriptions of the various groups found on the acls of
 the source tree:
 
-	* read:source
-	  read:staff
+  * read:source
+    read:staff
 
-		These two groups have identical permissions in the
-		repository, but read:source contains artificial
-		constructs (the builder user and service principals)
-		while read:staff contains people.  In the future,
-		highly restricted source could have access for
-		read:source and not read:staff.
+    These two groups have identical permissions in the repository, but
+    read:source contains artificial constructs (the builder user and
+    service principals) while read:staff contains people.  In the
+    future, highly restricted source could have access for read:source
+    and not read:staff.
 
-		Both of these groups have read access to non-public
-		areas of the source tree.
+    Both of these groups have read access to non-public areas of the
+    source tree.
 
-	* write:staff
+  * write:staff
 
-		Contains developers with commit access to the source
-		tree.  This group has write access to the repository,
-		but not to the checked-out copy of the mainline
-		(/mit/source).
+    Contains developers with commit access to the source tree.  This
+    group has write access to the repository, but not to the
+    checked-out copy of the mainline (/mit/source).
 
-	* write:update
+  * write:update
 
-		Contains the service principal responsible for
-		updating /mit/source.  This group has write access to
-		/mit/source but not to the repository.
+    Contains the service principal responsible for updating
+    /mit/source.  This group has write access to /mit/source but not
+    to the repository.
 
-	* adm:source
+  * adm:source
 
-		This group has administrative access to the repository
-		and to /mit/source.
+    This group has administrative access to the repository and to
+    /mit/source.
 
 system:anyuser has read access to public areas of the source tree and
 list access to the rest.  system:authuser occasionally has read access
@@ -129,24 +125,23 @@ first, of course, so that AFS can be visible from both.
 
 To set up a build machine, follow these instructions after installing:
 
-	* Set the root password.
-	* Put "builder rl" in /etc/athena/access.
-	* In /etc/athena/rc.conf, set SSHD and ACCESSON to true.  Set
-	  AFSADJUST, PUBLIC, and AUTOUPDATE to false.
-	* Create /rel/wash/afs and parents.
-	* Edit /usr/vice/etc/cacheinfo and change the AFS mountpoint
-	  from "/afs" to "/rel/wash/afs".
-	* Reboot.  (Remote access daemons should work without AFS,
-	  more or less.)
-	* Create symlinks /afs -> rel/wash/afs and /rel/afs ->
-	  wash/afs.
-	* Run "/mit/source/packs/build/makeroot.sh /rel X.Y", where
-	  X.Y is the full release this build is for.
-	* Run "/mit/source/packs/build/makeroot.sh /rel/wash".
-	* Make a symlink from /rel/.srvd to the AFS srvd volume, and
-	  from /rel/build to the AFS build volume.  (These steps can
-	  be ommitted if the release cycle hasn't progressed far
-	  enough for those volumes to exist.)
+  * Set the root password.
+  * Put "builder rl" in /etc/athena/access.
+  * In /etc/athena/rc.conf, set SSHD and ACCESSON to true.  Set
+    AFSADJUST, PUBLIC, and AUTOUPDATE to false.
+  * Create /rel/wash/afs and parents.
+  * Edit /usr/vice/etc/cacheinfo and change the AFS mountpoint from
+    "/afs" to "/rel/wash/afs".
+  * Reboot.  (Remote access daemons should work without AFS, more or
+    less.)
+  * Create symlinks /afs -> rel/wash/afs and /rel/afs -> wash/afs.
+  * Run "/mit/source/packs/build/makeroot.sh /rel X.Y", where X.Y is
+    the full release this build is for.
+  * Run "/mit/source/packs/build/makeroot.sh /rel/wash".
+  * Make a symlink from /rel/.srvd to the AFS srvd volume, and from
+    /rel/build to the AFS build volume.  (These steps can be ommitted
+    if the release cycle hasn't progressed far enough for those
+    volumes to exist.)
 
 The wash process
 ----------------
@@ -156,26 +151,25 @@ scratch, intended to alert the source tree maintainers when someone
 checks in a change which causes the source tree to stop building.  The
 general architecture of the wash process is:
 
-	* Each night at midnight, a machine performs a cvs update of
-	  the checked-out tree in /afs/dev.mit.edu/source/src-current.
-	  If the cvs update fails, the update script sends mail to
-	  source-wash@mit.edu.  This machine is on read:source and
-	  write:update.
+  * Each night at midnight, a machine performs a cvs update of the
+    checked-out tree in /afs/dev.mit.edu/source/src-current.  If the
+    cvs update fails, the update script sends mail to
+    source-wash@mit.edu.  This machine is on read:source and
+    write:update.
 
-	* Each night at 4:30am, a machine of each architecture
-	  performs a build of the tree into /var/srvd.new, using the
-	  build directory /var/build.  If the build fails, the wash
-	  script copies the log of the failed build into AFS and sends
-	  mail to source-wash@mit.edu with the last few lines of the
-	  log.  If the build succeeds, the wash script moves
-	  /var/srvd.new to /var/srvd, so that /var/srvd is always the
-	  last successful build of the source tree.
+  * Each night at 4:30am, a machine of each architecture performs a
+    build of the tree into /var/srvd.new, using the build directory
+    /var/build.  If the build fails, the wash script copies the log of
+    the failed build into AFS and sends mail to source-wash@mit.edu
+    with the last few lines of the log.  If the build succeeds, the
+    wash script moves /var/srvd.new to /var/srvd, so that /var/srvd is
+    always the last successful build of the source tree.
 
-	* Each Sunday at 1:00am, the wash machines make a copy of
-	  their last successful builds into a "srvd-current" directory
-	  in AFS.  The copy is done without system:administrator
-	  privileges, so the file permissions on srvd-current are all
-	  wrong, but the current srvd is useful for development work.
+  * Each Sunday at 1:00am, the wash machines make a copy of their last
+    successful builds into a "srvd-current" directory in AFS.  The
+    copy is done without system:administrator privileges, so the file
+    permissions on srvd-current are all wrong, but the current srvd is
+    useful for development work.
 
 Source for the wash scripts lives in /afs/dev.mit.edu/service/wash.
 They are installed in /usr/local on the wash machines.  Logs of the
@@ -186,64 +180,60 @@ process.
 
 To set up the source update on a machine:
 
-	* Ensure that it is in the set of machines installed onto by
-	  /afs/dev.mit.edu/service/wash/inst, and run that script to
-	  install the wash scripts onto that machine.
+  * Ensure that it is in the set of machines installed onto by
+    /afs/dev.mit.edu/service/wash/inst, and run that script to install
+    the wash scripts onto that machine.
 
-	* Set up the cron job on the machine according to
-	  /afs/dev.mit.edu/service/wash/README.
+  * Set up the cron job on the machine according to
+    /afs/dev.mit.edu/service/wash/README.
 
-	* Ensure that the machine has a host key or rcmd srvtab.
+  * Ensure that the machine has a host key or rcmd srvtab.
 
-	* Ensure that rcmd.machinename has a PTS identity in the dev
-	  cell.
+  * Ensure that rcmd.machinename has a PTS identity in the dev cell.
 
-	* Ensure that rcmd.machinename is in write:update.
+  * Ensure that rcmd.machinename is in write:update.
 
 To set up the wash on a build machine:
 
-	* Ensure that it is in the set of machines installed onto by
-	  /afs/dev.mit.edu/service/wash/inst, and run that script to
-	  install the wash scripts onto that machine.
+  * Ensure that it is in the set of machines installed onto by
+    /afs/dev.mit.edu/service/wash/inst, and run that script to install
+    the wash scripts onto that machine.
 
-	* Set up cron jobs on the machine according to
-	  /afs/dev.mit.edu/service/wash/README.
+  * Set up cron jobs on the machine according to
+    /afs/dev.mit.edu/service/wash/README.
 
-	* Ensure that the machine has a host key or rcmd srvtab.
+  * Ensure that the machine has a host key or rcmd srvtab.
 
-	* Ensure that rcmd.machinename has a PTS identity in the dev
-	  cell.
+  * Ensure that rcmd.machinename has a PTS identity in the dev cell.
 
-	* Ensure that rcmd.machinename is in read:source.
+  * Ensure that rcmd.machinename is in read:source.
 
-	* Ensure that
-	  /afs/dev.mit.edu/service/wash/status/machinename.mit.edu
-	  exists and that rcmd.machinename has write access to it.
+  * Ensure that
+    /afs/dev.mit.edu/service/wash/status/machinename.mit.edu exists
+    and that rcmd.machinename has write access to it.
 
-	* Ensure that /afs/dev.mit.edu/system/systemtype/srvd-current
-	  exists as a separate volume with adequate quota, and that
-	  rcmd.machinename has write access to it.
+  * Ensure that /afs/dev.mit.edu/system/systemtype/srvd-current exists
+    as a separate volume with adequate quota, and that
+    rcmd.machinename has write access to it.
 
 Imake templates
 ---------------
 
 We don't like imake, but we have two sets of imake templates:
 
-	* packs/build/config
+  * packs/build/config
 
-		These templates are the legacy Athena build system.
-		They are no longer used by any software in the
-		release; we install them in case someone wants to
-		build some very old software.
+    These templates are the legacy Athena build system.  They are no
+    longer used by any software in the release; we install them in
+    case someone wants to build some very old software.
 
-	* packs/build/xconfig
+  * packs/build/xconfig
 
-		These templates are used for building software which
-		uses X-style Imakefiles.  They may need periodic
-		updating as new versions of X are released.  These
-		templates are full of a lot of hacks, mostly because
-		the imake model isn't really adequate for dealing with
-		third-party software and local site customizations.
+    These templates are used for building software which uses X-style
+    Imakefiles.  They may need periodic updating as new versions of X
+    are released.  These templates are full of a lot of hacks, mostly
+    because the imake model isn't really adequate for dealing with
+    third-party software and local site customizations.
 
 Release notes
 -------------
@@ -272,137 +262,132 @@ and the public release.  The release team has a set of criteria for
 entering and exiting each phase, which won't be covered here.  The
 following guidelines should help the release go smoothly:
 
-	* Crash and burn
+  * Crash and burn
 
-	  This phase is for rel-eng internal testing.  The release
-	  engineer needs to make sure that the current source base
-	  works well enough for testers to use it and find bugs.  For
-	  crash and burn to begin, the operating system support person
-	  for each platform must provide a way to install or update a
-	  machine to the new version of the operating system for that
-	  platform.
+    This phase is for rel-eng internal testing.  The release engineer
+    needs to make sure that the current source base works well enough
+    for testers to use it and find bugs.  For crash and burn to begin,
+    the operating system support person for each platform must provide
+    a way to install or update a machine to the new version of the
+    operating system for that platform.
 
-	  Each platform needs a build tree and system packs volume.
-	  The build tree should be mounted in
-	  /afs/dev.mit.edu/project/release/<version>/build/<sysname>.
-	  The system packs volume should be mounted in
-	  /afs/dev.mit.edu/system/<sysname>/srvd-<version>.
+    Each platform needs a build tree and system packs volume.  The
+    build tree should be mounted in
+    /afs/dev.mit.edu/project/release/<version>/build/<sysname>.  The
+    system packs volume should be mounted in
+    /afs/dev.mit.edu/system/<sysname>/srvd-<version>.
 
-	  Each platform needs a new-release build machine to generate
-	  system packs to test.  Set it up according to the directions
-	  in "Build Machines" above.
+    Each platform needs a new-release build machine to generate system
+    packs to test.  Set it up according to the directions in "Build
+    Machines" above.
 
-	  To do a full build for release testing:
+    To do a full build for release testing:
 
-		# Get tickets as builder and ssh to the wash machine
-		rm -rf /rel/.srvd/* /rel/.srvd/.??*
-		rm -rf /rel/build/* /rel/build/.??*
-		chroot /rel sh /mit/source-X.Y/packs/build/build.sh -l &
+    # Get tickets as builder and ssh to the wash machine
+    rm -rf /rel/.srvd/* /rel/.srvd/.??*
+    rm -rf /rel/build/* /rel/build/.??*
+    chroot /rel sh /mit/source-X.Y/packs/build/build.sh -l &
 
-	  (It can be useful to run the ssh to the build machine inside
-	  a screen session so you don't have to log out of the build
-	  machine until the build is finished.)
+    (It can be useful to run the ssh to the build machine inside a
+    screen session so you don't have to log out of the build machine
+    until the build is finished.)
 
-	  The crash and burn machines should be identified and used to
-	  test the update (and install, if possible).  System packs
-	  may be regenerated at will.  The system packs volume does
-	  not need any replication.
+    The crash and burn machines should be identified and used to test
+    the update (and install, if possible).  System packs may be
+    regenerated at will.  The system packs volume does not need any
+    replication.
 
-	  System release notes should be prepared during this phase.
+    System release notes should be prepared during this phase.
 
-	  Before the transition from crash and burn to alpha, the
-	  release engineer should do a sanity check on the new packs
-	  by comparing a file listing of the new packs to a file
-	  listing of the previous release's packs.  The release
-	  engineer should also check the list of configuration files
-	  for each platform (in packs/update/platform/*/configfiles)
-	  and make sure that any configuration files which have
-	  changed are listed as changed in the version script.
-	  Finally, the release should be checked to make sure it won't
-	  overflow partitions on any client machines; currently, SGIs
-	  are not a problem (because they have one big partition) and
-	  the most restrictive sizes on Solaris clients are 27713K and
-	  51903K of useable space for the root and /usr partitions.
+    Before the transition from crash and burn to alpha, the release
+    engineer should do a sanity check on the new packs by comparing a
+    file listing of the new packs to a file listing of the previous
+    release's packs.  The release engineer should also check the list
+    of configuration files for each platform (in
+    packs/update/platform/*/configfiles) and make sure that any
+    configuration files which have changed are listed as changed in
+    the version script.  Finally, the release should be checked to
+    make sure it won't overflow partitions on any client machines;
+    currently, SGIs are not a problem (because they have one big
+    partition) and the most restrictive sizes on Solaris clients are
+    27713K and 51903K of useable space for the root and /usr
+    partitions.
 
-	  A note on the wash: it is not especially important that the
-	  wash be running during the release cycle, but currently the
-	  wash can run on the new release build machine without
-	  interfering with the build functions of the machine.
-	  So after updating the wash machine to the new OS for new
-	  release builds, the release engineer can set up the wash
-	  right away.
+    A note on the wash: it is not especially important that the wash
+    be running during the release cycle, but currently the wash can
+    run on the new release build machine without interfering with the
+    build functions of the machine.  So after updating the wash
+    machine to the new OS for new release builds, the release engineer
+    can set up the wash right away.
 
-	* Alpha
+  * Alpha
 
-	  The alpha phase is for internal testing by the release team.
-	  System packs may still be regenerated at will, but the
-	  system packs volume (and os volume) should be read-only so
-	  it can be updated by a vos release.  Changes to the packs do
-	  not need to be propagated in patch releases; testers are
-	  expected to be able to ensure consistency by forcing repeat
-	  updates or reinstalling their machines.
+    The alpha phase is for internal testing by the release team.
+    System packs may still be regenerated at will, but the system
+    packs volume (and os volume) should be read-only so it can be
+    updated by a vos release.  Changes to the packs do not need to be
+    propagated in patch releases; testers are expected to be able to
+    ensure consistency by forcing repeat updates or reinstalling their
+    machines.
 
-	  User release notes should be prepared during this phase.
+    User release notes should be prepared during this phase.
 
-	  Before the transition from alpha to beta, doc/third-party
-	  should be checked to see if miscellaneous third-party files
-	  (the ones not under the "third" hierarchy) should be
-	  updated.
+    Before the transition from alpha to beta, doc/third-party should
+    be checked to see if miscellaneous third-party files (the ones not
+    under the "third" hierarchy) should be updated.
 
-	* Beta
+  * Beta
 
-	  The beta phase involves outside testers.  System packs and
-	  os volumes should be replicated on multiple servers, and
-	  permissions should be set to avoid accidental changes
-	  (traditionally this means giving write access to
-	  system:packs, a normally empty group).  Changes to the packs
-	  must be propagated by patch releases.
+    The beta phase involves outside testers.  System packs and os
+    volumes should be replicated on multiple servers, and permissions
+    should be set to avoid accidental changes (traditionally this
+    means giving write access to system:packs, a normally empty
+    group).  Changes to the packs must be propagated by patch
+    releases.
 
-	  User release notes should be essentially finished by the end
-	  of this phase.  System release notes may continue to be
-	  updated as bug fixes occur.  Ideally, no new features should
-	  be committed to the source tree during the beta phase.
+    User release notes should be essentially finished by the end of
+    this phase.  System release notes may continue to be updated as
+    bug fixes occur.  Ideally, no new features should be committed to
+    the source tree during the beta phase.
 
-	  For the transition from beta to early:
+    For the transition from beta to early:
 
-		- Prepare a release branch with a name of the form
-		  athena-8_1.  Tag it with athena-8_1-early.
+    - Prepare a release branch with a name of the form athena-8_1.
+      Tag it with athena-8_1-early.
 
-		- Create a volume with a mountpoint of the form
-		  /afs/dev.mit.edu/source/src-8.1 and check out a tree
-		  on the branch there.  Set the permissions by doing
-		  an fs copyacl from an older source tree before the
-		  checkout, and run CVSROOT/afs-permissions.sh after
-		  the checkout.  Copy over the .rconf file from the
-		  src-current directory.  Have a filsys entry of the
-		  form source-8.1 created for the new tree.
+    - Create a volume with a mountpoint of the form
+      /afs/dev.mit.edu/source/src-8.1 and check out a tree on the
+      branch there.  Set the permissions by doing an fs copyacl from
+      an older source tree before the checkout, and run
+      CVSROOT/afs-permissions.sh after the checkout.  Copy over the
+      .rconf file from the src-current directory.  Have a filsys entry
+      of the form source-8.1 created for the new tree.
 
-		- attach and lock the branch source tree on each build
-		  machine.
+    - attach and lock the branch source tree on each build machine.
 
-		- Do a final full build of the release from the branch
-		  source tree.
+    - Do a final full build of the release from the branch source
+      tree.
 
-	* Early
+  * Early
 
-	  The early release involves more outside testers and some
-	  cluster machines.  The release should be considered ready
-	  for public consumption.
+    The early release involves more outside testers and some cluster
+    machines.  The release should be considered ready for public
+    consumption.
 
-	  The release branch should be tagged with a name of the form
-	  athena-8_1-early.
+    The release branch should be tagged with a name of the form
+    athena-8_1-early.
 
-	* Release
+  * Release
 
-	  The release branch should be tagged with a name of the form
-	  athena-8_1-release.
+    The release branch should be tagged with a name of the form
+    athena-8_1-release.
 
-	  Once the release has gone public, the current-release
-	  machines should be updated to the release and set up as the
-	  build machines for the now-current release.  Remove the
-	  /build and /.srvd symlinks on the new-release build
-	  machines, and make sure the wash is running on them if you
-	  didn't do so back in the crash and burn phase.
+    Once the release has gone public, the current-release machines
+    should be updated to the release and set up as the build machines
+    for the now-current release.  Remove the /build and /.srvd
+    symlinks on the new-release build machines, and make sure the wash
+    is running on them if you didn't do so back in the crash and burn
+    phase.
 
 One thing that needs to happen externally during a release cycle, if
 there is an OS upgrade involved, is the addition of compatibility
@@ -412,16 +397,16 @@ andrew, definitely need to be hit, and the popular software lockers
 need to be hit as well. Here is a reasonable list of popular lockers
 to get in addition to the glue ones:
 
-	consult
-	games
-	gnu
-	graphics
-	outland
-	sipb
-	tcl
-	watchmaker
-	windowmanagers
-	/afs/sipb/project/tcsh
+  consult
+  games
+  gnu
+  graphics
+  outland
+  sipb
+  tcl
+  watchmaker
+  windowmanagers
+  /afs/sipb/project/tcsh
 
 In addition, the third-party software lockers need to be updated; the
 third-party software group keeps their own list.
@@ -433,69 +418,63 @@ Once a release has hit beta test, all changes to the release must be
 propagated through patch releases.  The steps to performing a patch
 release are:
 
-	* Check in the changes on the mainline (if they apply) and on
-	  the release branch and update the relevant sections of the
-	  source tree in /mit/source-<version>.
+  * Check in the changes on the mainline (if they apply) and on the
+    release branch and update the relevant sections of the source tree
+    in /mit/source-<version>.
 
-	* If the update needs to do anything other than track against
-	  the system packs, you must prepare a version script which
-	  deals with any transition issues, specifies whether to track
-	  the OS volume, specifies whether to deal with a kernel
-	  update, and specifies which if any configuration files need
-	  to be updated.  See the update script
-	  (packs/update/do-update.sh) for details.  See
-	  packs/build/update/os/*/configfiles for a list of
-	  configuration files for a given platform.  The version
-	  script should be checked in on the mainline and on the
-	  release branch.
+  * If the update needs to do anything other than track against the
+    system packs, you must prepare a version script which deals with
+    any transition issues, specifies whether to track the OS volume,
+    specifies whether to deal with a kernel update, and specifies
+    which if any configuration files need to be updated.  See the
+    update script (packs/update/do-update.sh) for details.  See
+    packs/build/update/os/*/configfiles for a list of configuration
+    files for a given platform.  The version script should be checked
+    in on the mainline and on the release branch.
 
-	* Do the remainder of the steps as "builder" on the build
-	  machine.  Probably the best way is to get Kerberos tickets
-	  as "builder" and ssh to the build machine.
+  * Do the remainder of the steps as "builder" on the build machine.
+    Probably the best way is to get Kerberos tickets as "builder" and
+    ssh to the build machine.
 
-	* Make sure to add symlinks under /build tree for any files
-	  you have added.  Note that you probably added a build script
-	  if the update needs to do anything other than track against
-	  the system packs.
+  * Make sure to add symlinks under /build tree for any files you have
+    added.  Note that you probably added a build script if the update
+    needs to do anything other than track against the system packs.
 
-	* In the build tree, bump the version number in
-	  packs/build/version (the symlink should be broken for this
-	  file to avoid having to change it in the source tree).
+  * In the build tree, bump the version number in packs/build/version
+    (the symlink should be broken for this file to avoid having to
+    change it in the source tree).
 
-	* If you are going to need to update binaries that users run
-	  from the packs, go into the packs and move (don't copy) them
-	  into a .deleted directory at the root of the packs.  This is
-	  especially important for binaries like emacs and dash which
-	  people run for long periods of time, to avoid making the
-	  running processes dump core when the packs are released.
+  * If you are going to need to update binaries that users run from
+    the packs, go into the packs and move (don't copy) them into a
+    .deleted directory at the root of the packs.  This is especially
+    important for binaries like emacs and dash which people run for
+    long periods of time, to avoid making the running processes dump
+    core when the packs are released.
 
-	* Update the read-write volume of the packs to reflect the
-	  changes you've made.  You can use the build.sh script to
-	  build and install specific packages, or you can use the
-	  do.sh script to build the package and then install specific
-	  files (cutting and pasting from the output of "gmake -n
-	  install DESTDIR=/srvd" is the safest way); updating the
-	  fewest number of files is preferrable.  Remember to install
-	  the version script.
+  * Update the read-write volume of the packs to reflect the changes
+    you've made.  You can use the build.sh script to build and install
+    specific packages, or you can use the do.sh script to build the
+    package and then install specific files (cutting and pasting from
+    the output of "gmake -n install DESTDIR=/srvd" is the safest way);
+    updating the fewest number of files is preferrable.  Remember to
+    install the version script.
 
-	* Use the build.sh script to build and install
-	  packs/build/finish.  This will fix ownerships and update the
-	  track lists and the like.
+  * Use the build.sh script to build and install packs/build/finish.
+    This will fix ownerships and update the track lists and the like.
 
-	* It's a good idea to test the update from the read-write
-	  packs by symlinking the read-write packs to /srvd on a test
-	  machine and taking the update.  Note that when the machine
-	  comes back up with the new version, it will probably
-	  re-attach the read-write packs, so you may have to re-make
-	  the symlink if you want to test stuff that's on the packs.
+  * It's a good idea to test the update from the read-write packs by
+    symlinking the read-write packs to /srvd on a test machine and
+    taking the update.  Note that when the machine comes back up with
+    the new version, it will probably re-attach the read-write packs,
+    so you may have to re-make the symlink if you want to test stuff
+    that's on the packs.
 
-	* At some non-offensive time, release the packs in the dev
-	  cell.
+  * At some non-offensive time, release the packs in the dev cell.
 
-	* Send mail to rel-eng saying that the patch release went out,
-	  and what was in it.  (You can find many example pieces of
-	  mail in the discuss archive.)  Include instructions
-	  explaining how to propagate the release to the athena cell.
+  * Send mail to rel-eng saying that the patch release went out, and
+    what was in it.  (You can find many example pieces of mail in the
+    discuss archive.)  Include instructions explaining how to
+    propagate the release to the athena cell.
 
 Third-party pull-ups for patch releases
 ---------------------------------------
@@ -519,25 +498,25 @@ To account for this problem as well as other corner cases, use the
 following procedure to pull up third-party packages for a patch
 release:
 
-	cvs co -r athena-X_Y third/module
-	cd third/module
-	cvs update -d
-	cvs update -j athena-X_Y -j HEAD
-	cvs ci
-	cd /afs/dev.mit.edu/source/repository/third/module
-	find . -name "*,v" -print0 | xargs -0 sh /tmp/vend.sh
+  cvs co -r athena-X_Y third/module
+  cd third/module
+  cvs update -d
+  cvs update -j athena-X_Y -j HEAD
+  cvs ci
+  cd /afs/dev.mit.edu/source/repository/third/module
+  find . -name "*,v" -print0 | xargs -0 sh /tmp/vend.sh
 
 Where /tmp/vend.sh is:
 
-	#!/bin/sh
+  #!/bin/sh
 
-	for f; do
-	  if rlog -h "$f" | grep -q '^head: 1\.1$' && \
-	     rlog -h "$f" | grep -q '^branch:$' && \
-	     rlog -h "$f" | grep -q 'vendor: 1\.1\.1$'; then
-	    rcs -bvendor "$f"
-	  fi
-	done
+  for f; do
+    if rlog -h "$f" | grep -q '^head: 1\.1$' && \
+       rlog -h "$f" | grep -q '^branch:$' && \
+       rlog -h "$f" | grep -q 'vendor: 1\.1\.1$'; then
+      rcs -bvendor "$f"
+    fi
+  done
 
 The find -print0 and xargs -0 flags are not available on the native
 Solaris versions of find and xargs, so the final step may be best
@@ -550,44 +529,44 @@ The machine running the wash update is equal-rites.mit.edu.
 
 There are three rel-eng machines for each platform:
 
-	* A current release build machine, for doing incremental
-	  updates to the last public release.  This machine may also
-	  be used by developers for building software.
+  * A current release build machine, for doing incremental updates to
+    the last public release.  This machine may also be used by
+    developers for building software.
 
-	* A new release build machine, for building and doing
-	  incremental updates to releases which are still in testing.
-	  This machine also performs the wash.  This machine may also
-	  be used by developers for building software, or if they want
-	  a snapshot of the new system packs to build things against.
+  * A new release build machine, for building and doing incremental
+    updates to releases which are still in testing.  This machine also
+    performs the wash.  This machine may also be used by developers
+    for building software, or if they want a snapshot of the new
+    system packs to build things against.
 
-	* A crash and burn machine, usually located in the release
-	  engineer's office for easy physical access.
+  * A crash and burn machine, usually located in the release
+    engineer's office for easy physical access.
 
 Here is a list of the rel-eng machines for each platform:
 
-			Sun                  O2          Linux
+                       Sun                  O2          Linux
 
-Current release build	downy                bounce      snuggle
-New release build	maytag               whirlpool   kenmore
-Crash and burn		the-colour-of-magic  reaper-man  men-at-arms
+Current release build  downy                bounce      snuggle
+New release build      maytag               whirlpool   kenmore
+Crash and burn         the-colour-of-magic  reaper-man  men-at-arms
 
 For reference, here are some names that fit various laundry and
 construction naming schemes:
 
-	* Washing machines: kenmore, whirlpool, ge, maytag
-	* Laundry detergents: fab, calgon, era, cheer, woolite,
-		tide, ultra-tide, purex
-	* Bleaches: clorox, ajax
-	* Fabric softeners: downy, final-touch, snuggle, bounce
-	* Heavy machinery: steam-shovel, pile-driver, dump-truck,
-		wrecking-ball, crane
-	* Construction kits: lego, capsela, technics, k-nex, playdoh,
-		construx
-	* Construction materials: rebar, two-by-four, plywood,
-		sheetrock
-	* Heavy machinery companies: caterpillar, daewoo, john-deere,
-		sumitomo
-	* Buildings: empire-state, prudential, chrysler
+  * Washing machines: kenmore, whirlpool, ge, maytag
+  * Laundry detergents: fab, calgon, era, cheer, woolite,
+    tide, ultra-tide, purex
+  * Bleaches: clorox, ajax
+  * Fabric softeners: downy, final-touch, snuggle, bounce
+  * Heavy machinery: steam-shovel, pile-driver, dump-truck,
+    wrecking-ball, crane
+  * Construction kits: lego, capsela, technics, k-nex, playdoh,
+    construx
+  * Construction materials: rebar, two-by-four, plywood,
+    sheetrock
+  * Heavy machinery companies: caterpillar, daewoo, john-deere,
+    sumitomo
+  * Buildings: empire-state, prudential, chrysler
 
 Clusters
 --------
@@ -609,8 +588,8 @@ At the crash and burn, alpha, and beta phases of the release cycle,
 the appropriate cluster (PHASE-PLATFORM) should be updated to include
 data records of the form:
 
-	Label: syslib		Data: dev-PLATFORMsys-XY X.Y t
-(SGI)	Label: instlib		Data: dev-sgi-inst-XY X.Y t
+       Label: syslib     Data: dev-PLATFORMsys-XY X.Y t
+(SGI)  Label: instlib    Data: dev-sgi-inst-XY X.Y t
 
 This change will cause console messages to appear on the appropriate
 machines informing their maintainers of a new testing release which
@@ -621,8 +600,8 @@ removed from the new syslib records in the crash, alpha, and beta
 clusters, and the appropriate cluster (early-PLATFORM or
 public-PLATFORM) should be updated to include data records:
 
-	Label: syslib		Data: athena-PLATFORMsys-XY X.Y
-(SGI)	Label: instlib		Data: athena-sgi-inst-XY X.Y
+       Label: syslib     Data: athena-PLATFORMsys-XY X.Y
+(SGI)  Label: instlib    Data: athena-sgi-inst-XY X.Y
 
 This change will cause AUTOUPDATE machines in the appropriate cluster
 (as well as the crash, alpha, and beta clusters) to take the new
