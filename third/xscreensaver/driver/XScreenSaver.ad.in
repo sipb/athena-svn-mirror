@@ -139,7 +139,6 @@
 				hopalong -root				    \n\
 				greynetic -root				    \n\
 				imsmap -root				    \n\
-				spotlight -root				    \n\
 				hypercube -root				    \n\
 				hyperball -root				    \n\
 				halo -root				    \n\
@@ -216,23 +215,14 @@
 				shadebobs -root				    \n\
 				ccurve -root				    \n\
 				blaster -root				    \n\
-				bumps -root				    \n\
-				xteevee -root				    \n\
 				xspirograph -root			    \n\
 				nerverot -root				    \n\
 -	    "NerveRot (dense)"	nerverot -root -count 1000		    \n\
 -	    "NerveRot (thick)"	nerverot -root -count 100 -line-width 4       \
 			        -max-nerve-radius 0.8 -nervousness 0.5 -db  \n\
 				xrayswarm -root				    \n\
--	       "Zoom (Fatbits)"	zoom -root				    \n\
-	       "Zoom (Lenses)"	zoom -root -lenses			    \n\
 				whirlwindwarp -root			    \n\
   color: 			bubbles -root				    \n\
-  default-n:			webcollage -root			    \n\
-  default-n:  "WebCollage (whacked)"					      \
-				webcollage -root -filter		      \
-				  'vidwhacker -stdin -stdout'		    \n\
-- default-n:			vidwhacker -root			    \n\
 									      \
 -	   GL:	   "Pulsar (textures)"					      \
 				  pulsar -root -texture -mipmap		      \
@@ -630,10 +620,6 @@ This hack grabs an image of the screen, and then lets a transparent	\
 lens wander around the screen, magnifying whatever is underneath.	\
 Written by Jonas Munsin.
 
-*hacks.spotlight.documentation:						\
-Draws a spotlight scanning across a black screen, illumnating the	\
-underlying desktop when it passes.  Written by Rick Schultz.
-
 *hacks.hypercube.documentation:						\
 This displays 2D projections of the sequence of 3D objects which are	\
 the projections of the 4D analog to the cube: as a square is composed	\
@@ -1025,17 +1011,6 @@ Draws a simulation of flying space-combat robots (cleverly disguised	\
 as colored circles) doing battle in front of a moving star field.	\
 Written by Jonathan Lin.
 
-*hacks.bumps.documentation:						\
-A bit like `Spotlight', except that instead of merely exposing part	\
-of your desktop, it creates a bump map from it.	 Basically, it		\
-3D-izes a roaming section of your desktop, based on color intensity.	\
-Written by Shane Smit.
-
-*hacks.xteevee.name: XTeeVee
-*hacks.xteevee.documentation:						\
-XTeeVee simulates various television problems, including static,	\
-loss of vertical hold, and a test pattern.  By Greg Knauss.
-
 *hacks.xspirograph.name: XSpiroGraph
 *hacks.xspirograph.documentation:					\
 Simulates that pen-in-nested-plastic-gears toy from your childhood.     \
@@ -1046,33 +1021,6 @@ By Rohit Singh.
 Draws different shapes composed of nervously vibrating squiggles,       \
 as if seen through a camera operated by a monkey on crack.              \
 By Dan Bornstein.
-
-*hacks.webcollage.name: WebCollage
-*hacks.webcollage.documentation:					\
-This program makes collages out of random images pulled off of the	\
-World Wide Web.	 It finds these images by doing random web searches,	\
-and then extracting images from the returned pages.  It can also be	\
-set up to filter the images through the `VidWhacker' program, above,	\
-which looks really great.						\
-								    \n\n\
-(Note that most of the images it finds are text, and not pictures.	\
-This is because most of the web is pictures of text.  Which is pretty	\
-sad.)  Written by Jamie Zawinski.
-
-*hacks.vidwhacker.name: VidWhacker
-*hacks.vidwhacker.documentation:					\
-This is actually just a shell script that grabs a frame of video from	\
-the system's video input, and then uses some PBM filters (chosen at	\
-random) to manipulate and recombine the video frame in various ways	\
-(edge detection, subtracting the image from a rotated version of	\
-itself, etc.)  Then it displays that image for a few seconds, and	\
-does it again.	This works really well if you just feed broadcast	\
-television into it.							\
-								    \n\n\
-Currently, the three lines of the script that actually grab the		\
-source picture are SGI specific, but it should be trivial to adapt it	\
-to work on other systems that can grab video (please send me the	\
-changes if you do this...)
 
 *hacks.rocks.documentation:						\
 This draws an animation of flight through an asteroid field, with	\
@@ -1180,11 +1128,6 @@ Written by Josiah Pease.
 *hacks.xrayswarm.documentation:     					\
 Draws a few swarms of critters flying around the screen, with nicely	\
 faded color trails behind them.  Written by Chris Leger.
-
-*hacks.zoom.documentation:                                              \
-Zooms in on a part of the screen and then moves around.  With the       \
--lenses option the result is like looking through many overlapping      \
-lenses rather than just a simple zoom.  Written by James Macnicol.
 
 *hacks.whirlwindwarp.name: WhirlwindWarp
 *hacks.whirlwindwarp.documentation:                                  \
