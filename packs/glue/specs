@@ -19,7 +19,6 @@ olh		help
 olh_ascii	help
 olh_motif	help
 pts		afsuser
-sis		sis
 usermaint	moira
 userreg		moira
 vos		afsuser
