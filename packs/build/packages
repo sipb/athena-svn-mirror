@@ -1,4 +1,4 @@
-# $Id: packages,v 1.258 2004-03-02 16:26:24 ghudson Exp $
+# $Id: packages,v 1.259 2004-03-02 17:03:26 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -90,7 +90,6 @@ athena/bin/olc			requires krb5,hesiod,zephyr,et,Mu,wcl
 athena/bin/passwd		requires krb5,al
 athena/bin/quota		requires locker,openafs
 athena/bin/revert-to-dash
-athena/bin/rkinit		requires krb5,athena/lib/rkinit
 athena/bin/saferm
 athena/bin/sendbug
 athena/bin/syncupdate
@@ -116,7 +115,6 @@ athena/etc/messaged		requires gms
 athena/etc/mkcred
 athena/etc/newsyslog		except linux
 athena/etc/offlinehome		on linux
-athena/etc/rkinitd		requires krb5,athena/lib/rkinit
 athena/etc/rpmupdate		on linux
 athena/etc/synctree
 athena/etc/track
@@ -134,7 +132,6 @@ athena/lib/fxcl			requires krb5,hesiod package libfxcl
 athena/lib/hesiod
 athena/lib/larv			requires hesiod
 athena/lib/locker		requires zephyr,krb5,hesiod,openafs,et
-athena/lib/rkinit		requires krb5,et package librkinit
 athena/lib/ss			requires readline,et package libss
 athena/lib/zephyr		requires krb5,ares,hesiod,ss,et
 
