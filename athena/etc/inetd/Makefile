@@ -3,9 +3,9 @@
 #	MIT Project Athena
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/etc/inetd/Makefile,v $
-#	$Author: miki $
+#	$Author: cfields $
 #	$Locker:  $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/Makefile,v 1.3 1994-05-04 11:41:47 miki Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/etc/inetd/Makefile,v 1.4 1994-08-15 17:09:07 cfields Exp $
 #
 # Copyright (c) 1980 Regents of the University of California.
 # All rights reserved.  The Berkeley software License Agreement
@@ -28,12 +28,12 @@ ${STD} ${KMEM} ${SETUID} ${OPR}:
 	cc ${CFLAGS} -o $@ $@.c ${LDFLAGS}
 
 
-install: installman
+install: install.man
 	-for i in ${STD} ; do \
-		rm ${DESTDIR}/etc/$$i; \
-		install -c -s $$i ${DESTDIR}/etc/$$i; done
+		rm ${DESTDIR}/etc/athena/$$i; \
+		install -c -s $$i ${DESTDIR}/etc/athena/$$i; done
        
-installman:	
+install.man:	
 	install -c inetd.conf.5  ${DESTDIR}/usr/athena/man/man5/inetd.conf.5
 	install -c inetd.8  ${DESTDIR}/usr/athena/man/man5/inetd.8       
 clean:
