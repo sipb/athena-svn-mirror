@@ -139,7 +139,7 @@ cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 l = @l@
 
-INCLUDES =  	-I$(includedir)			-I$(top_srcdir)/intl -I$(top_builddir)/intl
+INCLUDES =  	-I$(top_srcdir)/intl -I$(top_builddir)/intl
 
 
 LDADD = 
@@ -296,7 +296,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-
 info-am:
 info: info-am
 dvi-am:

@@ -139,7 +139,7 @@ cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 l = @l@
 
-INCLUDES = -I$(includedir) $(GNOME_INCLUDEDIR) 	-DGNOMELOCALEDIR=\""$(datadir)/locale\""
+INCLUDES = $(GNOME_INCLUDEDIR) 	-DGNOMELOCALEDIR=\""$(datadir)/locale\""
 
 
 LDADD = -lXt -lXmu $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS)
@@ -299,7 +299,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-
 info-am:
 info: info-am
 dvi-am:

@@ -139,7 +139,7 @@ cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 l = @l@
 
-INCLUDES = -I. -I$(srcdir) 					-I$(top_srcdir)/intl -I$(top_builddir)/intl		-I$(srcdir)/../../panel					-I$(top_builddir)/panel					-DGNOMELOCALEDIR=\""$(datadir)/locale"\"		-I$(includedir) $(GNOME_INCLUDEDIR)			@PIXBUF_CFLAGS@
+INCLUDES = -I. -I$(srcdir) 					-I$(top_srcdir)/intl -I$(top_builddir)/intl		-I$(srcdir)/../../panel					-I$(top_builddir)/panel					-DGNOMELOCALEDIR=\""$(datadir)/locale"\"		$(GNOME_INCLUDEDIR)			@PIXBUF_CFLAGS@
 
 
 SUBDIRS = help
@@ -473,7 +473,6 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
-
 info-am:
 info: info-recursive
 dvi-am:

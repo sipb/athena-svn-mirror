@@ -139,7 +139,7 @@ cxxflags_set = @cxxflags_set@
 gnomelocaledir = @gnomelocaledir@
 l = @l@
 
-INCLUDES =  	-I$(includedir)			-I$(top_srcdir)/intl		-I$(top_builddir)/intl		$(GNOME_INCLUDEDIR)		-DGNOMELOCALEDIR=\""$(datadir)/locale\""
+INCLUDES =  	-I$(top_srcdir)/intl		-I$(top_builddir)/intl		$(GNOME_INCLUDEDIR)		-DGNOMELOCALEDIR=\""$(datadir)/locale\""
 
 
 LDADD =  	$(GNOME_LIBDIR)			$(GNOMEUI_LIBS)			$(PIXBUF_LIBS)			$(CANVAS_PIXBUF_LIBS)		$(INTLLIBS)
@@ -323,7 +323,6 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
-
 info-am:
 info: info-am
 dvi-am:

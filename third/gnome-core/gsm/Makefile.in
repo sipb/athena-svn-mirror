@@ -143,7 +143,7 @@ SUBDIRS = help
 
 defaultdir = $(datadir)/gnome
 
-INCLUDES = -I$(includedir) $(GNOME_INCLUDEDIR) 	-I$(top_srcdir)/intl -I$(top_builddir)/intl		-DGNOMELOCALEDIR=\""$(datadir)/locale\"" 	-DDEFAULTDIR="\"$(defaultdir)\""
+INCLUDES = $(GNOME_INCLUDEDIR) 	-I$(top_srcdir)/intl -I$(top_builddir)/intl		-DGNOMELOCALEDIR=\""$(datadir)/locale\"" 	-DDEFAULTDIR="\"$(defaultdir)\""
 
 
 LDADD = $(GNOME_LIBDIR) $(GNOMEUI_LIBS) $(INTLLIBS)
@@ -596,7 +596,6 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
-
 info-am:
 info: info-recursive
 dvi-am:

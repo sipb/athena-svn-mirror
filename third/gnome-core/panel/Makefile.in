@@ -147,7 +147,7 @@ AUTOMAKE_OPTIONS = 1.3
 
 SUBDIRS = doc help
 
-INCLUDES = -I. -I$(srcdir) 	-I$(top_srcdir)/intl 	-I$(top_builddir)/intl 	-I$(top_builddir)/panel 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	-DGNOME_DATADIR=\""$(datadir)"\" 	-I$(includedir) $(GNOME_INCLUDEDIR) $(ORB_CFLAGS) 	@PIXBUF_CFLAGS@
+INCLUDES = -I. -I$(srcdir) 	-I$(top_srcdir)/intl 	-I$(top_builddir)/intl 	-I$(top_builddir)/panel 	-DGNOMELOCALEDIR=\""$(datadir)/locale"\" 	-DGNOME_DATADIR=\""$(datadir)"\" 	$(GNOME_INCLUDEDIR) $(ORB_CFLAGS) 	@PIXBUF_CFLAGS@
 
 
 bin_PROGRAMS = panel gnome-panel-properties-capplet
@@ -660,15 +660,6 @@ distdir: $(DISTFILES)
 	      || exit 1; \
 	  fi; \
 	done
-drawer.o: drawer.c ../config.h panel-include.h panel-types.h \
-	gnome-panel.h panel-widget.h button-widget.h basep-widget.h \
-	edge-widget.h border-widget.h aligned-widget.h sliding-widget.h \
-	floating-widget.h drawer-widget.h drawer.h panel.h applet.h \
-	panel_config.h foobar-widget.h session.h main.h \
-	panel_config_global.h distribution.h menu.h menu-fentry.h \
-	menu-rh.h menu-properties.h menu-util.h swallow.h launcher.h \
-	logout.h extern.h status.h panel-util.h xstuff.h
-
 info-am:
 info: info-recursive
 dvi-am:
