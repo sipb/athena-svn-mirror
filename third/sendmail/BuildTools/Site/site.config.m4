@@ -4,8 +4,8 @@ APPENDDEF(`confINCDIRS', `-I$(ATHTOOLROOT)/usr/athena/include')
 APPENDDEF(`confLIBDIRS', `-L$(ATHTOOLROOT)/usr/athena/lib')
 APPENDDEF(`confLIBS', `-lwrap -lhesiod')
 
-dnl Avoid having NIS be defined
-define(`confMAPDEF', `-DNDBM -DMAP_REGEX')
+dnl We don't want NIS support
+APPENDDEF(`confMAPDEF', `-UNIS')
 
 dnl Debugging, not optimizing
 define(`confOPTIMIZE', `-g')
