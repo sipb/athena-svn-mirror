@@ -174,8 +174,11 @@ grab_keyboard_and_mouse (saver_info *si, Window window, Cursor cursor)
     }
 
   if (kstatus != GrabSuccess)
-    fprintf (stderr, "%s: couldn't grab keyboard!  (%s)\n",
-             blurb(), grab_string(kstatus));
+    {
+      fprintf (stderr, "%s: couldn't grab keyboard!  (%s)\n",
+	       blurb(), grab_string(kstatus));
+      return False;
+    }
 
   for (i = 0; i < retries; i++)
     {
@@ -189,11 +192,14 @@ grab_keyboard_and_mouse (saver_info *si, Window window, Cursor cursor)
     }
 
   if (mstatus != GrabSuccess)
-    fprintf (stderr, "%s: couldn't grab pointer!  (%s)\n",
-             blurb(), grab_string(mstatus));
+    {
+      fprintf (stderr, "%s: couldn't grab pointer!  (%s)\n",
+	       blurb(), grab_string(mstatus));
+      ungrab_kbd (si);
+      return False;
+    }
 
-  return (kstatus == GrabSuccess &&
-	  mstatus == GrabSuccess);
+  return True;
 }
 
 static void
