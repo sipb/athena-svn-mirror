@@ -8,12 +8,12 @@
  * Copyright (C) 1991 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
- *      $Id: olcm.c,v 1.16 2000-11-16 16:31:51 zacheiss Exp $
+ *      $Id: olcm.c,v 1.17 2004-01-21 17:38:11 ghudson Exp $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Id: olcm.c,v 1.16 2000-11-16 16:31:51 zacheiss Exp $";
+static char rcsid[] ="$Id: olcm.c,v 1.17 2004-01-21 17:38:11 ghudson Exp $";
 #endif
 #endif
 
@@ -239,7 +239,7 @@ main(argc,argv)
     }
   }
 
-  if ((username[0] == '\0') || (!valid_realm)) {
+  if ((username[0] == '\0') || strcmp(username,"olc") == 0 || (!valid_realm)) {
     /* didn't find one, make up one by default */
     strncpy(username,DFLT_USERNAME,8);
     username[8] = '\0';
