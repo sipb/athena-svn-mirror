@@ -1,13 +1,13 @@
 /*	Created by:  Theodore Ts'o
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/attach/ufs.c,v $
- *	$Author: vrt $
+ *	$Author: miki $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
 #ifndef lint
-static char rcsid_ufs_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/ufs.c,v 1.4 1993-05-05 17:05:37 vrt Exp $";
+static char rcsid_ufs_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/ufs.c,v 1.5 1994-03-25 15:56:54 miki Exp $";
 #endif
 
 #include "attach.h"
@@ -100,12 +100,12 @@ perform_fsck(device, errorname, useraw)
 		char	*cpp, *cpp2;
 		struct stat	buf;
 		
-		if (!(cpp = rindex(rdevice, '/')))
+		if (!(cpp = strrchr(rdevice, '/')))
 			cpp = rdevice;
 		else
 			cpp++;
 		*cpp++ = 'r';
-		if (!(cpp2 = rindex(device, '/')))
+		if (!(cpp2 = strrchr(device, '/')))
 			cpp2 = device;
 		else
 			cpp2++;
