@@ -1,4 +1,4 @@
-;; $Id: site-init.jl,v 1.15 2001-07-18 14:11:20 ghudson Exp $
+;; $Id: site-init.jl,v 1.16 2001-07-25 15:01:17 ghudson Exp $
 ;; Site initialization for Athena
 
 ;; Pick a nice readable default font.
@@ -13,7 +13,7 @@
 
 ;; Don't load a custom default file; it loses information about which
 ;; variables users have set, and it overrides site defaults.
-(setq custom-default-file nil)
+(setq custom-default-file "/dev/null")
 
 ;; Define some of the settings from the sawfish custom default file as
 ;; site defaults.  What we left out was a setting to enable tooltips,
