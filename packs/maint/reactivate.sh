@@ -1,7 +1,7 @@
 #!/bin/sh
 # Script to bounce the packs on an Athena workstation
 #
-# $Id: reactivate.sh,v 1.63 2001-08-01 13:47:40 ghudson Exp $
+# $Id: reactivate.sh,v 1.64 2001-09-04 18:39:28 rbasch Exp $
 
 # Ignore various terminating signals.
 trap "" HUP INT QUIT PIPE ALRM TERM USR1 USR2
@@ -207,6 +207,9 @@ rm -rf /var/tmp/!!!SuperLock!!! /tmp/.esd
 if [ sun4 = "$HOSTTYPE" ]; then
 	rm -rf /var/adm/utmp /var/adm/wtmp
 fi
+
+# Clean up socket files left by sawfish.
+rm -rf /tmp/.sawfish-*
 
 if [ "$full" = true ]; then
 	# Clean temporary areas (including temporary home directories)
