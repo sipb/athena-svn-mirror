@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.7 1989-03-27 12:06:47 jik Exp $";
+     static char rcsid_expunge_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/expunge.c,v 1.8 1989-04-06 23:25:20 jik Exp $";
 #endif
 
 /*
@@ -270,7 +270,7 @@ process_files(files, num)
 char **files;
 int num;
 {
-     int i;
+     int i, skipped = 0;
      filerec *leaf;
      
      for (i = 0; i < num; i++) {
@@ -283,11 +283,11 @@ int num;
 	  free(files[i]);
 	  if (! timed_out(leaf, current_time, timev)) {
 	       free_leaf(leaf);
-	       num--;
+	       skipped++;
 	  }
      }
      free(files);
-     return(num);
+     return(num-skipped);
 }
 
 
