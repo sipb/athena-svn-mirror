@@ -1,4 +1,4 @@
-# $Id: packages,v 1.205 2003-02-02 05:55:15 ghudson Exp $
+# $Id: packages,v 1.206 2003-02-03 13:41:35 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -130,7 +130,7 @@ athena/lib/ss			requires readline,et package libss
 athena/lib/zephyr		requires krb5,ares,hesiod,ss,et
 
 # Third-party software
-third/acme			requires gettext,intltool,libgnomeui,libglade,libwnck,GConf2
+third/acme			except solaris requires gettext,intltool,libgnomeui,libglade,libwnck,GConf2
 third/afsbin			on irix
 third/at-spi			requires gettext,intltool,libbonobo,atk,gtk2,gail,libbonobo,bonobo-activation,popt
 third/atk			requires glib2,gettext
