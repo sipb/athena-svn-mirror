@@ -3,9 +3,13 @@ DEFINES=-DUW $(MACHDEFS)
 PROGRAM=	quota
 SRCS=		quota.c $(MACHSRCS)
 OBJS=		quota.o $(MACHOBJS)
-#ifndef ultrix
+#if defined(vax) || defined(ibm032)
 LIBS=		-lrpcsvc
 #endif
+#ifdef _AIX
+LIBS=		-lrpc
+#endif
+
 #if defined(ultrix) || defined(i386)
 /* Need to use the local header files and sources */
 MACHDEFS=-I./include
