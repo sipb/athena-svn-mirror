@@ -14,7 +14,7 @@
 #	endpackage	the name of the package in the package list to
 #			stop building at
 
-# $Revision: 1.51 $
+# $Revision: 1.52 $
 
 umask 2
 
@@ -22,6 +22,7 @@ set machine=`machtype`
 
 set SRVD="/srvd"
 set BUILD="/build"
+set SOURCE="/source"
 
 #set the path to include the right xmkmf and imake
 if ($machine == "sun4") then
@@ -233,7 +234,7 @@ switch ($package)
 
 	# Probably want this in build/bin... change Imake.tmpl...
 	mkdir -p $SRVD/usr/athena/bin
-	cp -p /source/third/supported/X11R5/mit/util/scripts/mkdirhier.sh $SRVD/usr/athena/bin/mkdirhier
+	cp -p $SOURCE/third/supported/X11R5/mit/util/scripts/mkdirhier.sh $SRVD/usr/athena/bin/mkdirhier
 
 # The wrong hack for now. Should make a copy of what we use for posterity,
 # and link to that.
@@ -248,7 +249,7 @@ endif
 			(make -f Makefile.ini >>& $outfile ) && \
 			(cp imake $BUILD/bin >>& $outfile) && \
 			(chmod 755 $BUILD/bin/imake >>& $outfile) && \
-			(cp /source/xmkmf $BUILD/bin >>& $outfile))
+			(cp $SOURCE/xmkmf $BUILD/bin >>& $outfile))
 		if ($status == 1 ) then
 			echo "We bombed in imake" >>& $outfile
 			exit -1
@@ -303,7 +304,7 @@ endif
 # Mark, why don't we just do everything in build/support?
 #	cd $BUILD/support/makedepend
 #	((echo "In makedepend" >>& $outfile) &&\
-#	(imake -I/source/third/supported/X11R5/mit/config -DTOPDIR=. -DCURDIR=. >>& $outfile) &&\
+#	(imake -I$SOURCE/third/supported/X11R5/mit/config -DTOPDIR=. -DCURDIR=. >>& $outfile) &&\
 #	(make clean >>& $outfile) &&\
 #	(make >>& $outfile) &&\
 #	(cp makedepend $BUILD/bin >>& $outfile))
@@ -319,7 +320,7 @@ endif
 
 	# Hack...
 	if ($machine == "decmips") then
-		(cp -p /source/decmips/etc/named/bin/mkdep.ultrix $BUILD/bin/mkdep >>& $outfile)
+		(cp -p $SOURCE/decmips/etc/named/bin/mkdep.ultrix $BUILD/bin/mkdep >>& $outfile)
 	endif
 
 	if ($machine == "sun4") then
@@ -327,7 +328,7 @@ endif
 		rm -f cc
 		ln -s /mit/compiler-80/sun4bin/gcc cc
 		rm -f suncc
-		cp -p /source/sun4/suncc .
+		cp -p $SOURCE/sun4/suncc .
 	endif
 
 	breaksw
