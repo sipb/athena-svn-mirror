@@ -27,7 +27,10 @@ static char sccsid[] = "@(#)popen.c	5.3 (Berkeley) 11/30/88";
 #include <sys/types.h>
 #include <sys/signal.h>
 #include <stdio.h>
-
+#ifdef POSIX
+#include <strings.h>
+#include <unistd.h>
+#endif
 /*
  * Special version of popen which avoids call to shell.  This insures noone
  * may create a pipe to a hidden program as a side effect of a list or dir
@@ -54,7 +57,11 @@ ftpd_popen(program, type)
 		return(NULL);
 
 	if (!pids) {
+#ifndef POSIX
 		if ((fds = getdtablesize()) <= 0)
+#else
+		if ((fds = sysconf(_SC_OPEN_MAX)) <= 0)
+#endif
 			return(NULL);
 		if (!(pids =
 		    (unsigned int *)malloc((u_int)(fds * sizeof(unsigned int)))))
@@ -140,10 +147,16 @@ pclose(iop)
 	FILE *iop;
 {
 	register int fdes;
+#ifdef POSIX
+	sigset_t omask, nmask;
+#else
 	long omask;
+#endif
 	int pid, stat_loc;
 	u_int waitpid();
-
+#ifdef POSIX
+	struct sigaction act;
+#endif
 	/*
 	 * pclose returns -1 if stream is not associated with a
 	 * `popened' command, or, if already `pclosed'.
@@ -151,16 +164,40 @@ pclose(iop)
 	if (pids[fdes = fileno(iop)] == 0)
 		return(-1);
 	(void)fclose(iop);
+#ifdef POSIX
+	sigemptyset(&nmask);
+	sigaddset(&nmask, SIGINT);
+	sigaddset(&nmask, SIGQUIT);
+	sigaddset(&nmask, SIGHUP);
+	sigprocmask(SIG_BLOCK, &nmask, &omask);
+#else
 	omask = sigblock(sigmask(SIGINT)|sigmask(SIGQUIT)|sigmask(SIGHUP));
-#ifdef _IBMR2
+#endif
+#if defined(_IBMR2) || defined(SOLARIS)
+#ifdef POSIX
+	sigemptyset(&act.sa_mask);
+	act.sa_flags = 0;
+	act.sa_handler= (void (*)()) SIG_DFL;
+	(void) sigaction (SIGCHLD, &act, NULL);
+#else
 	signal(SIGCHLD, SIG_DFL);
+#endif
 	while ((pid = waitpid(pids[fdes], &stat_loc, 0))
 	       != pids[fdes] && pid != -1);
+#ifdef POSIX
+	act.sa_handler= (void (*)()) SIG_IGN;
+	(void) sigaction (SIGCHLD, &act, NULL);
+#else
 	signal(SIGCHLD, SIG_IGN);
+#endif
 #else
 	while ((pid = wait(&stat_loc)) != pids[fdes] && pid != -1);
 #endif
+#ifdef POSIX
+	(void)sigprocmask(SIG_SETMASK, &omask, NULL);
+#else
 	(void)sigsetmask(omask);
+#endif
 	pids[fdes] = 0;
 	return(stat_loc);
 }
