@@ -11,3 +11,5 @@ alias	term	'setenv TERM `tset -Q - \!*`'
 if ($?prompt) then	# set prompt to a value depending on host name
 	set prompt="`hostname | sed s/mit-//`% "
 endif
+
+set msg = "Sourcing .cshrc and .login..."
