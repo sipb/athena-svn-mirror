@@ -10,3 +10,4 @@
 console	/etc/athena/console -f /etc/athena/login/Console -display :0.0
 #ULTconsole	/etc/athena/console -f /etc/athena/login/Console -display :0.0 -input /dev/xcons
 login	/etc/athena/xlogin -config /etc/athena/login -display :0.0
+#ULTlogin login	/etc/athena/xlogin -config /etc/athena/login -display :0.0 -fp /usr/lib/X11/fonts/misc/,/usr/lib/X11/fonts/75dpi/,/usr/lib/X11/fonts/100dpi/,/usr/lib/X11/fonts/decwin/screen75
