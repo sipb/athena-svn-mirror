@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.3 2000-05-31 22:34:15 ghudson Exp $
+# $Id: syncconf.sh,v 1.4 2000-07-21 07:22:26 jweiss Exp $
 
 rcconf=/etc/athena/rc.conf
 rcsync=/var/athena/rc.conf.sync
@@ -197,7 +197,7 @@ if [ \$HOST != $HOST ]; then changes="\$changes HOSTADDR MAILRELAY"; fi
 if [ \$ADDR != $ADDR ]; then changes="\$changes HOSTADDR MAILRELAY"; fi
 if [ \$MAILRELAY != $MAILRELAY ]; then changes="\$changes MAILRELAY"; fi
 if [ \$AFSCLIENT != $AFSCLIENT ]; then changes="\$changes AFS"; fi
-if [ \$AFSSRV != $AFSSERVER ]; then changes="\$changes AFS"; fi
+if [ \$AFSSRV != $AFSSRV ]; then changes="\$changes AFS"; fi
 EOF
 
 if [ -n "$mustreboot" ]; then
