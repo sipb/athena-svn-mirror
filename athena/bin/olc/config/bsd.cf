@@ -1,6 +1,0 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/config/bsd.cf,v 1.4 1991-09-22 12:16:18 lwvanels Exp $ */
-/* Copyright (C) 1991 by the Massachusetts Institute of Technology.
- * For copying and distribution information, see the file "mit-copyright.h". */
-#define HaveGcc 1
-#define HasSaberC 1
-#define HaveAnsiIncludes 1
