@@ -526,8 +526,8 @@ else
         AC_MSG_RESULT($AFS_SYSNAME)
 fi
 
-# KDUMP64 defaults to KDUMP for systems without a separate kdump64
-KDUMP64='${KDUMP}'
+# KDUMP64 is only defined for systems with a separate kdump64.
+KDUMP64=
 KDUMP=kdump
 case $AFS_SYSNAME in
 	sgi_6?)
@@ -789,7 +789,7 @@ AC_PROG_LEX
 AC_DECL_YYTEXT])
 
 dnl
-dnl $Id: aclocal.m4,v 1.7 2004-02-13 20:53:52 zacheiss Exp $
+dnl $Id: aclocal.m4,v 1.8 2004-02-18 19:31:48 zacheiss Exp $
 dnl
 
 dnl check if this computer is little or big-endian

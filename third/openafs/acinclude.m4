@@ -514,8 +514,8 @@ else
         AC_MSG_RESULT($AFS_SYSNAME)
 fi
 
-# KDUMP64 defaults to KDUMP for systems without a separate kdump64
-KDUMP64='${KDUMP}'
+# KDUMP64 is only defined for systems with a separate kdump64.
+KDUMP64=
 KDUMP=kdump
 case $AFS_SYSNAME in
 	sgi_6?)
