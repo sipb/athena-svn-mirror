@@ -1,17 +1,17 @@
 #!/bin/sh -
-# Version-specific update script for 7.6A
+# Version-specific update script for 7.6E
 
 echo "NEWTTYS=true"			>> ${CONFVARS}
 
 case ${MACH} in
 VS2*)	;;
 DS*)
-	echo "NEWUNIX=true"                     >> ${CONFVARS}
 	;;
 RSAIX)
 	;;
 SUN*)
-	echo "Copying in new /etc/init.d/athena..."
-	cp -p /srvd/etc/init.d/athena /etc/init.d/athena
-	echo "Done."
+	echo "NEWUNIX=true"                     >> ${CONFVARS}
+	sed s/RSAIX/SUN4/ < /etc/athena/rc.conf > /tmp/rc.conf
+	cp -p /tmp/rc.conf /etc/athena/rc.conf
+	rm -f /tmp/rc.conf
 esac
