@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.26 1998-05-08 15:57:41 ghudson Exp $
+# $Id: do-update.sh,v 1.27 1998-05-31 15:30:19 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -285,7 +285,9 @@ if [ "$NEWOS" = true ]; then
 	exec reboot
 fi
 
-# Not an OS update; run finish-update here.
+# Not an OS update; run finish-update here.  Restart named first, since
+# mkserv has to resolve names.
+/etc/athena/named
 sh /srvd/usr/athena/lib/update/finish-update "$newvers"
 if [ "$method" = Auto ]; then
 	echo "Automatic update done; system will reboot in 15 seconds."
