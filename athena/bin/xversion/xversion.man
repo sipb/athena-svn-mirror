@@ -1,0 +1,25 @@
+.\" $Header: /afs/dev.mit.edu/source/repository/athena/bin/xversion/xversion.man,v 1.1 1989-06-10 10:51:30 probe Exp $
+.TH XVERSION "5 October 1987" "X Version 11"
+.UC 4
+.SH NAME
+xversion \- determine which version of X is running
+.SH SYNOPSIS
+.B xversion
+[ -r ]
+.SH DESCRIPTION
+.I Xversion
+prints to standard output the text '10' or '11' according
+to the version of the X Window System currently running on the
+workstation.
+.PP
+If
+.I xversion
+cannot make a connection to the server, it prints the text '?unknown'.
+.PP
+.I xversion
+is intended principally as a tool to be used within shell scripts,
+such as
+.I xswitch.
+.SH BUGS
+The display name is hard-coded as 'unix:0'; i.e. the value of the
+DISPLAY environment variable is ignored.
