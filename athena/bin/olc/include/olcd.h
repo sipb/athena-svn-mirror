@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
- *	$Id: olcd.h,v 1.39 1991-11-05 13:59:29 lwvanels Exp $
+ *	$Id: olcd.h,v 1.39.1.1 1992-01-07 18:59:28 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -107,11 +107,27 @@ void backup_data P((void ));
 void load_data P((void ));
 void dump_data P((char *file ));
 
+/* data_structs.c */
+void init_user_hash P((void));
+USER *find_user P((char *name));
+int insert_user P((USER *u));
+int remove_user P((USER *u));
+USER *alloc_user P((void));
+void dealloc_user P((USER *u));
+void init_knuc_hash P((void));
+KNUCKLE *find_knuc P((char *name, int inst));
+int insert_knuc P((KNUCKLE *k));
+int remove_knuc P((KNUCKLE *k));
+KNUCKLE *alloc_knuc P((void));
+void dealloc_knuc P((KNUCKLE *k));
+QUESTION *alloc_ques P((void));
+void dealloc_ques P((QUESTION *k));
+void insert_knuc_in_user P((USER *u, KNUCKLE *k));
+void remove_knuc_from_user P((KNUCKLE *k));
+
 /* data_utils.c */
 KNUCKLE *create_user P((PERSON *person ));
 KNUCKLE *create_knuckle P((USER *user ));
-int insert_knuckle P((KNUCKLE *knuckle ));
-int insert_knuckle_in_user P((KNUCKLE *knuckle , USER *user ));
 int insert_topic P((TOPIC *t ));
 int get_topic_code P((char *t));
 void delete_user P((USER *user ));
