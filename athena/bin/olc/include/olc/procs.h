@@ -17,7 +17,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/procs.h,v $
  *      $Author: tjcoppet $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/procs.h,v 1.1 1989-07-07 13:22:36 tjcoppet Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/procs.h,v 1.2 1989-08-08 10:45:28 tjcoppet Exp $
  */
 
 /* Declarations of common functions. */

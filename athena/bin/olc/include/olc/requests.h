@@ -17,7 +17,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/requests.h,v $
  *      $Author: tjcoppet $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/requests.h,v 1.2 1989-07-13 13:26:53 tjcoppet Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/requests.h,v 1.3 1989-08-08 10:46:31 tjcoppet Exp $
  */
 
 /* request structure */
@@ -58,43 +58,42 @@ typedef struct tIO_REQUEST
 /* Requests for the OLC processes */
 /* it's going to be a fun day */
 
-#define OLC_ON 	            201	     /* Sign on */
-#define OLC_OFF	            202	     /* Sign off */
-#define OLC_SEND            203	     /* Send text to the user. */
-#define OLC_REPLAY          204	     /* Replay the conversation. */
-#define OLC_LIST            207	     /* List current conversations. */
-#define OLC_GRAB            208	     /* Grab a question. */
-#define OLC_MAIL            209	     /* Send mail to a user. */
-#define OLC_TOPIC           210	     /* Query or change topic of a question. */
-#define OLC_COMMENT         211	     /* Put a comment in the log. */
-#define OLC_FORWARD         212	     /* Forward a question to someone else. */
-#define OLC_DONE            213	     /* Done with this question. */
-#define OLC_STARTUP         214	     /* Start up an olc session. */
-#define OLC_SHOW            215	     /* Show any new messages. */
-#define OLC_CANCEL          217	     /* Cancel a question. */
-#define OLC_ACCESS          218      /* Allow access. NOT IMPLEMENTED. */
-#define OLC_NOACCESS        219	     /* Disallow access. NOT IMPLEMENTED. */
-#define OLC_STATUS          220	     /* Print OLC user status information */
-#define OLC_LIST_TOPICS     221      /* List OLC topics */
-#define OLC_ASK             222      /* ask a question */
-#define OLC_MOTD            223      /* display motd */
-#define OLC_CHMOTD          224      /* Change motd */
-#define OLC_CHECK_USER      225      /* Check user status */
-#define OLC_ADD_PRINCIPAL   225      /* add user to acl */
-#define OLC_DEL_PRINCIPAL   226      /* delete user from acl */
-#define OLC_USER_INFO       227      /* find out about user */
-#define OLC_RESTART         229      /* restart server */
-#define OLC_FLUSH_NM        230      /* flush new messages */
-#define OLC_CHTOPIC         231      /* change topic */
-#define OLC_CREATE_INSTANCE 232      /* create instance */
-#define OLC_DUMP            233      /* debug server */
-#define OLC_WHO             234      /* find who */
-#define OLC_VERIFY_INSTANCE 235      /* verify an instance */
-#define OLC_HELP_TOPIC      236
-#define OLC_VERIFY_TOPIC    237
-#define OLC_CONNECTED       238
-#define OLC_LOAD_USER       239
-
+#define OLC_ON 	             201      /* Sign on */
+#define OLC_OFF	             202      /* Sign off */
+#define OLC_SEND             203      /* Send text to the user. */
+#define OLC_REPLAY           204      /* Replay the conversation. */
+#define OLC_LIST             207      /* List current conversations. */
+#define OLC_GRAB             208      /* Grab a question. */
+#define OLC_MAIL             209      /* Send mail to a user. */
+#define OLC_TOPIC            210      /* Query/change topic of a question. */
+#define OLC_COMMENT          211      /* Put a comment in the log. */
+#define OLC_FORWARD          212      /* Forward a question to someone else. */
+#define OLC_DONE             213      /* Done with this question. */
+#define OLC_STARTUP          214      /* Start up an olc session. */
+#define OLC_SHOW             215      /* Show any new messages. */
+#define OLC_CANCEL           217      /* Cancel a question. */
+#define OLC_DESCRIBE         218      /* Sing a song */
+#define OLC_STATUS           220      /* Print OLC user status information */
+#define OLC_LIST_TOPICS      221      /* List OLC topics */
+#define OLC_ASK              222      /* ask a question */
+#define OLC_MOTD             223      /* display motd */
+#define OLC_CHANGE_MOTD      224      /* Change motd */
+#define OLC_CHECK_USER       225      /* Check user status */
+#define OLC_ADD_PRINCIPAL    225      /* add user to acl */
+#define OLC_DEL_PRINCIPAL    226      /* delete user from acl */
+#define OLC_USER_INFO        227      /* find out about user */
+#define OLC_RESTART          229      /* restart server */
+#define OLC_FLUSH_NM         230      /* flush new messages */
+#define OLC_CHANGE_TOPIC     231      /* change topic */
+#define OLC_CREATE_INSTANCE  232      /* create instance */
+#define OLC_DUMP             233      /* debug server */
+#define OLC_WHO              234      /* find who */
+#define OLC_VERIFY_INSTANCE  235      /* verify an instance */
+#define OLC_HELP_TOPIC       236
+#define OLC_VERIFY_TOPIC     237
+#define OLC_CONNECTED        238
+#define OLC_LOAD_USER        239
+#define OLC_DEFAULT_INSTANCE 240
 /* Return values from daemon requests and functions. */
 
 #define PERMISSION_DENIED	100
@@ -130,25 +129,32 @@ typedef struct tIO_REQUEST
 /* Request options. */  /* should be broken up by request */
 
 #define	NO_OPT             0	/* No options here. */
-#define	OFF_OPT	           1	/* Several commands -- sign consultant off. */
-#define URGENT_OPT         2	/* OLCR_ON -- Urgent questions only. */
-#define OLC_DUTY_OPT       4	/* OLCR_ON -- Consultant is on OLC duty. */
-#define NEW_TOPIC_OPT      8	/* OLC_SEND -- Parse a new topic. */
-#define MAIL_SEND          16	/* OLCR_MAIL -- Send the mail message. */
-#define MAIL_COMPOSE       32	
-#define UNANS_OPT          64	/* OLCR_FORWARD -- Send to unanswered log. */
-#define FORWARD_OFF        128	/* OLCR_OFF et al -- Sign off forcibly. */
-#define VERIFY             256
-#define FORWARD_UNANSWERED 512
-#define ON_FIRST           1024
-#define ON_SECOND          2048
-#define ON_DUTY            4096
-#define ON_URGENT          8192
-#define OFF_FORCE          16384
-#define TOPIC_VERIFY       32768
-#define SPLIT_OPT          65536
-#define CONNECTED_OPT      131072
-#define NOFLUSH_OPT        262144
+#define	OFF_OPT	           1<<1	/* Several commands -- sign consultant off. */
+#define URGENT_OPT         1<<2	/* OLCR_ON -- Urgent questions only. */
+#define OLC_DUTY_OPT       1<<3	/* OLCR_ON -- Consultant is on OLC duty. */
+#define NEW_TOPIC_OPT      1<<4	/* OLC_SEND -- Parse a new topic. */
+#define MAIL_SEND          1<<5	/* OLCR_MAIL -- Send the mail message. */
+#define MAIL_COMPOSE       1<<6	
+#define UNANS_OPT          1<<7	/* OLCR_FORWARD -- Send to unanswered log. */
+#define FORWARD_OFF        1<<8	/* OLCR_OFF et al -- Sign off forcibly. */
+#define VERIFY             1<<9
+#define FORWARD_UNANSWERED 1<<10
+#define ON_FIRST           1<<11
+#define ON_SECOND          1<<12
+#define ON_DUTY            1<<13
+#define ON_URGENT          1<<14
+#define OFF_FORCE          1<<15
+#define TOPIC_VERIFY       1<<16
+#define SPLIT_OPT          1<<17
+#define CONNECTED_OPT      1<<18
+#define NOFLUSH_OPT        1<<19
+#define STATUS_ACTIVE      1<<20
+#define STATUS_PENDING     1<<21
+#define STATUS_UNSEEN      1<<22
+#define STATUS_PICKUP      1<<23
+#define STATUS_REFERRED    1<<24
+#define CHANGE_COMMENT_OPT 1<<25
+#define CHANGE_NOTE_OPT    1<<26
 
 #define LIST_PERSONAL      1
 

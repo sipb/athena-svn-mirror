@@ -17,7 +17,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/macros.h,v $
  *      $Author: tjcoppet $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/macros.h,v 1.1 1989-07-07 13:22:19 tjcoppet Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/macros.h,v 1.2 1989-08-08 10:43:10 tjcoppet Exp $
  */
 
 
@@ -80,14 +80,26 @@ typedef int     RESPONSE;       /* A response code. */
 #define LABEL_LENGTH    32
 #define NAME_LENGTH     64      /* Maximum length for a filename. */
 #define LINE_LENGTH     128     /* Maximum length for an input line. */
-#define COMMAND_LENGTH  1000    /* Maximum length of command line. */
 #define BUFSIZE         1024    /* Size of a message buffer. */
+#define ERRSIZE         512     /* Size of an error message. */
+
+/* the above names will be phased out */
+
 #define LOGIN_SIZE      9       /* Length of a username, plus NULL. */
 #define REALNAME_SIZE   40      /* Arbitrary length of a real name. */
-#define IDENT_SIZE      REALNAME_SIZE \
-+ LOGIN_SIZE + LINE_LENGTH + 5  /* Length of identification string. */
+#define IDENT_SIZE      REALNAME_SIZE + LOGIN_SIZE + LINE_LENGTH + 5  
+                                /* Length of identification string. */
 #define TOPIC_SIZE      24      /* Length of one-word topic. */
-#define ERRSIZE         512     /* Size of an error message. */
-#define MAX_BYTES       512     /* Max. bytes to use on a socket. */
 #define TIME_SIZE       30      /* Size of a time string. */
 #define STATUS_SIZE     20
+#define STRING_SIZE     16
+#define LABEL_SIZE      32
+#define NAME_SIZE       64      /* Maximum length for a filename. */
+#define NOTE_SIZE       64
+#define LINE_SIZE      128      /* Maximum length for an input line. */
+#define ERROR_SIZE     512      /* Size of an error message. */
+#define COMMENT_SIZE   512
+#define BUF_SIZE      1024      /* Size of a message buffer. */
+
+#define MAX_BYTES       512     /* Max. bytes to use on a socket. */
+#define COMMAND_LENGTH  1000    /* Maximum length of command line. */

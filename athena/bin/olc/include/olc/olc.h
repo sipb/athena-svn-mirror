@@ -17,7 +17,7 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc.h,v $
  *      $Author: tjcoppet $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc.h,v 1.1 1989-07-07 13:22:25 tjcoppet Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc.h,v 1.2 1989-08-08 10:44:48 tjcoppet Exp $
  */
 
 #include <stdio.h>                  
@@ -56,6 +56,7 @@ extern char REALM[];
 extern char INSTANCE[];
 #endif KERBEROS
 
+extern STATUS Status_Table[];
 
 /*
  * misc stuff

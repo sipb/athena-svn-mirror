@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_instance.c,v 1.4 1989-08-07 15:01:44 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_instance.c,v 1.5 1989-08-08 10:38:27 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -68,6 +68,29 @@ t_instance(Request,instance)
 	    return(ERROR);
 	}
     }
+}
+
+
+
+t_set_default_instance(Request)
+     REQUEST *Request;
+{
+  int instance;  
+  int status;
+
+  status = OGetDefaultInstance(Request,&instance);
+  switch(status)
+    {
+    case SUCCESS:
+      User.instance = instance;
+      Request->target.instance = instance;
+      Request->requester.instance = instance;
+      break;
+    default:
+      handle_response(status, Request);
+      break;
+    }
+  return(status);
 }
 
 

@@ -1,28 +1,32 @@
 
-#define OFF             0       /* registered in OLC */
-#define ON              1       /* ??? */
-#define FIRST           2       /* first crack at questions in specialty */
-#define DUTY            4       /* general olc duty */
-#define SECOND          8       /* backseat at questions in specialty */
-#define URGENT          16      /* backseat general duty */
-#define SIGNED_ON       31      /* signed on at all? */
-#define BUSY            64      /* answering a question */
-#define CACHED          128     /* structure is in a cache */
+#define OFF             0          /* registered in OLC */
+#define ON              1<<1       /* ??? */
+#define FIRST           1<<2       /* first crack at questions in specialty */
+#define DUTY            1<<3       /* general olc duty */
+#define SECOND          1<<4       /* backseat at questions in specialty */
+#define URGENT          1<<5       /* backseat general duty */
+#define SIGNED_ON       (ON || FIRST || DUTY || SECOND || URGENT)
+
+#define LOGGED_OUT      1<<8       /* dearly departed */
+#define MACHINE_DOWN    1<<9
+#define UNKNOWN_STATUS  1<<10
+#define NOT_HERE        1<<11
+#define ACTIVE          1<<12
+
+#define BUSY            1<<14      /* answering a question */
+#define CACHED          1<<15      /* structure is in a cache */
 
 /* question status flags */
 
-#define PENDING         512       /* question previously forwarded */
-#define NOT_SEEN        1024      /* yet to get help */
-#define DONE            2048      /* resolved the question */
-#define CANCEL          4096      /* cancelled the question */
-#define SERVICED        8192      /* was user helped ?*/
-#define QUESTION_STATUS 15872     /* the above 5 bits */
+#define PENDING         1<<16      /* question previously forwarded */
+#define NOT_SEEN        1<<17      /* yet to get help */
+#define DONE            1<<18      /* resolved the question */
+#define CANCEL          1<<19      /* cancelled the question */
+#define SERVICED        1<<20      /* was user helped ?*/
+#define QUESTION_STATUS (PENDING || NOT_SEEN| DONE || CANCEL || SERVICED)
+#define PICKUP          1<<22      /*waiting for user */
+#define REFERRED        1<<23      /* waiting for someone else */
 
 /* user status flags */
 
-#define LOGGED_OUT      1         /* dearly departed */
-#define MACHINE_DOWN    2
-#define UNKNOWN_STATUS  4
-#define NOT_HERE        7
-#define ACTIVE          8
 

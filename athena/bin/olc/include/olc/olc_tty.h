@@ -17,11 +17,13 @@
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc_tty.h,v $
  *      $Author: tjcoppet $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc_tty.h,v 1.1 1989-07-07 13:22:33 tjcoppet Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc_tty.h,v 1.2 1989-08-08 10:45:13 tjcoppet Exp $
  */
 
 extern int OLC, OLCR, OLCA;
 extern PERSON User;
 
-#define DFLT_EDITOR "/usr/athena/emacs"
+#define DEFAULT_EDITOR "/usr/athena/emacs"
+#define NO_EDITOR      "madman_across_the_water"
+
 #define newline() write(1,"\n",1);

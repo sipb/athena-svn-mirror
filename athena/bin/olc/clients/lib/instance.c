@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/instance.c,v 1.3 1989-08-04 11:20:04 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/instance.c,v 1.4 1989-08-08 10:40:09 tjcoppet Exp $";
 #endif
 
 
@@ -54,3 +54,27 @@ OVerifyInstance(Request,instance)
   return(status);
 }
 
+
+OGetDefaultInstance(Request,instance)
+     REQUEST *Request;
+     int *instance;
+{
+  int status;
+  int fd;
+
+  Request->request_type = OLC_DEFAULT_INSTANCE;
+
+  fd = open_connection_to_daemon();
+  
+  status = send_request(fd,Request);
+  if(status)
+    return(status);
+
+  read_response(fd,&status);
+  
+  if(status == SUCCESS)
+      read_int_from_fd(fd,instance);
+
+  close(fd);
+  return(status);
+}
