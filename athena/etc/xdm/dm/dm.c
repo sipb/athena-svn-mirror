@@ -1,4 +1,4 @@
-/* $Id: dm.c,v 1.72.4.1 2000-02-05 06:56:18 tb Exp $
+/* $Id: dm.c,v 1.72.4.2 2000-03-01 16:05:44 tb Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -41,7 +41,7 @@ static sigset_t sig_cur;
 #include <al.h>
 
 #ifndef lint
-static char *rcsid_main = "$Id: dm.c,v 1.72.4.1 2000-02-05 06:56:18 tb Exp $";
+static char *rcsid_main = "$Id: dm.c,v 1.72.4.2 2000-03-01 16:05:44 tb Exp $";
 #endif
 
 /* Non-portable termios flags we'd like to set. */
@@ -543,7 +543,8 @@ int main(int argc, char **argv)
 	    (void) sigprocmask(SIG_BLOCK, &mask, NULL);
 	    if (count > 0 && FD_ISSET(console_tty, &readfds)) {
 		file = read(console_tty, buf, sizeof(buf));
-		write(1, buf, file);
+		if (file != -1)
+		  write(1, buf, file);
 	    }
 	} else {
 	    alarm(60);
@@ -781,6 +782,7 @@ static void shutdown(int signo)
     int pgrp, i;
     struct termios tc;
     char buf[BUFSIZ];
+    int notused;
 
     syslog(LOG_DEBUG, "Received SIGFPE, performing shutdown");
     if (login_running == RUNNING)
@@ -800,8 +802,17 @@ static void shutdown(int signo)
 
     (void) sigprocmask(SIG_SETMASK, &sig_zero, (sigset_t *)0);
 
-    while (1) {
-	i = read(console_tty, buf, sizeof(buf));
+
+  /* Make sure the slave side is open before we read from the master;
+     some systems will return EIO if there are no current writers. */
+  sprintf(buf, "/dev/%s", logintty);
+  notused = open(buf, O_RDWR, 0);
+  while (1)
+    {
+      i = read(console_tty, buf, sizeof(buf));
+      if (i == -1)
+	perror("console pty");
+      else
 	write(1, buf, i);
     }
 }
