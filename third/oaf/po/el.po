@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: oaf 0.6.3\n"
-"POT-Creation-Date: 2002-01-17 19:59-0800\n"
+"POT-Creation-Date: 2002-04-16 11:37+0100\n"
 "PO-Revision-Date: 2001-02-18 16:42:06+0900\n"
 "Last-Translator: Simos Xenitellis <simos@hellug.gr>\n"
 "Language-Team: Greek <nls@tux.hellug.gr>\n"
@@ -19,35 +19,35 @@ msgstr ""
 msgid "No server corresponding to your query"
 msgstr "Δεν υπάρχει εξυπηρετητής που να αντιστοιχεί με την ερώτησή σας"
 
-#: liboaf/oaf-fork-server.c:76
+#: liboaf/oaf-fork-server.c:83
 #, c-format
 msgid "Failed to read from child process: %s\n"
 msgstr ""
 
-#: liboaf/oaf-fork-server.c:175
+#: liboaf/oaf-fork-server.c:138
+msgid "Child process did not give an error message, unknown failure occurred"
+msgstr ""
+
+#: liboaf/oaf-fork-server.c:270
 msgid "Couldn't fork a new process"
 msgstr "Αδύνατη η δικράνωση νέας διεργασίας"
 
-#: liboaf/oaf-fork-server.c:196
+#: liboaf/oaf-fork-server.c:291
 #, c-format
 msgid "Child received signal %u (%s)"
 msgstr "Η θυγατρική διεργασία έλαβε το σινιάλο %u (%s)"
 
-#: liboaf/oaf-fork-server.c:202
+#: liboaf/oaf-fork-server.c:297
 #, c-format
 msgid "Unknown non-exit error (status is %u)"
 msgstr "Άγνωστο μη μοιραίο σφάλμα (η κατάσταση είναι %u)"
 
-#: liboaf/oaf-fork-server.c:257
-msgid "Child process did not give an error message, unknown failure occurred"
-msgstr ""
-
-#: liboaf/oaf-fork-server.c:286
+#: liboaf/oaf-fork-server.c:355
 #, c-format
 msgid "OAF failed to set process group of %s: %s\n"
 msgstr ""
 
-#: liboaf/oaf-fork-server.c:297
+#: liboaf/oaf-fork-server.c:366
 #, c-format
 msgid "Failed to execute %s: %d (%s)\n"
 msgstr ""
@@ -72,7 +72,7 @@ msgstr "IID για ενεργοποίηση"
 msgid "Prevent registering of server with OAF"
 msgstr "Αποτροπή καταχώρησης του εξυπηρετητή με το OAF"
 
-#: liboaf/oaf-mainloop.c:425
+#: liboaf/oaf-mainloop.c:438
 msgid "OAF options"
 msgstr "Επιλογές OAF"
 
@@ -166,7 +166,19 @@ msgstr ""
 "Δεν υποστηρίζεται ακόμα η ενεργοποίηση αντικειμένων shlib σε απομακρυσμένη "
 "διεργασία"
 
-#: oafd/od-corba.c:488
+#.
+#. * If this exception blows ( which it will only do with a multi-object )
+#. * factory, you need to ensure you register the object you were activated
+#. * for [use const char *bonobo_activation_iid_get (void); ] is registered
+#. * with bonobo_activation_active_server_register - _after_ any other
+#. * servers are registered.
+#.
+#: oafd/od-corba.c:302
+#, c-format
+msgid "Race condition activating server '%s'"
+msgstr ""
+
+#: oafd/od-corba.c:586
 #, c-format
 msgid ""
 "Couldn't find activation record for server `%s'. The likely cause is a "

@@ -64,6 +64,11 @@ typedef struct
 }
 impl_POA_OAF_ObjectDirectory;
 
+static CORBA_Object 
+od_get_active_server (impl_POA_OAF_ObjectDirectory * servant,
+                       OAF_ImplementationID iid,
+                      CORBA_Context ctx, CORBA_Environment * ev);
+
 /*** Implementation stub prototypes ***/
 
 static OAF_ServerInfoListCache
@@ -239,7 +244,6 @@ update_registry (impl_POA_OAF_ObjectDirectory *servant)
                         if (registry_directory_needs_update 
                             (servant, servant->registry_source_directories[i])) {
                                 must_load = TRUE;
-                                break;
                         }
                 }
 
@@ -261,6 +265,97 @@ update_registry (impl_POA_OAF_ObjectDirectory *servant)
         }
 }
 
+
+/*
+ * FIXME: this smells, here we vandalise the oh so complicated
+ * design and enforce the invariant that there can only ever
+ * be one ObjectDirectory.
+ */
+static impl_POA_OAF_ObjectDirectory *main_dir = NULL;
+
+CORBA_Object
+oaf_object_directory_re_check_fn (const char        *display,
+                                  const char        *act_iid,
+                                  gpointer           user_data,
+                                  CORBA_Environment *ev)
+{
+        CORBA_Object retval;
+        ODActivationInfo *info = user_data;
+
+        retval = od_get_active_server (
+                main_dir, (OAF_ImplementationID) act_iid, info->ctx, ev);
+
+        if (ev->_major != CORBA_NO_EXCEPTION ||
+            retval == CORBA_OBJECT_NIL) {
+                char *msg;
+		OAF_GeneralError *errval = OAF_GeneralError__alloc ();
+
+                CORBA_exception_free (ev);
+
+                /*
+                 * If this exception blows ( which it will only do with a multi-object )
+                 * factory, you need to ensure you register the object you were activated
+                 * for [use const char *bonobo_activation_iid_get (void); ] is registered
+                 * with bonobo_activation_active_server_register - _after_ any other
+                 * servers are registered.
+                 */
+                msg = g_strdup_printf (_("Race condition activating server '%s'"), act_iid);
+                errval->description = CORBA_string_dup (msg);
+                g_free (msg);
+
+		CORBA_exception_set (ev, CORBA_USER_EXCEPTION,
+				     ex_OAF_GeneralError, errval);
+                retval = CORBA_OBJECT_NIL;
+        }
+
+        return retval;
+}
+
+static gchar **
+split_path_unique (const char *colon_delimited_path)
+{
+        int i, max;
+        gboolean different;
+        gchar **ret, **wrk;
+        GSList *l, *tmp = NULL;
+
+        g_return_val_if_fail (colon_delimited_path != NULL, NULL);
+
+        wrk = g_strsplit (colon_delimited_path, ":", -1);
+
+        g_return_val_if_fail (wrk != NULL, NULL);
+
+        for (max = i = 0; wrk [i]; i++) {
+                different = TRUE;
+                for (l = tmp; l; l = l->next) {
+                        if (!strcmp (l->data, wrk [i])) {
+                                different = FALSE;
+                        } else if (wrk [i] == '\0') {
+                                different = FALSE;
+                        }
+                }
+                if (different) {
+                        tmp = g_slist_prepend (tmp, g_strdup (wrk [i]));
+                        max++;
+                }
+        }
+
+        tmp = g_slist_reverse (tmp);
+
+        ret = g_new (char *, max + 1);
+
+        for (l = tmp, i = 0; l; l = l->next) {
+                ret [i++] = l->data;
+        }
+
+        ret [i] = NULL;
+
+        g_slist_free (tmp);
+        g_strfreev (wrk);
+
+        return ret;
+}
+
 OAF_ObjectDirectory
 OAF_ObjectDirectory_create (PortableServer_POA poa,
 			    const char *domain,
@@ -271,7 +366,9 @@ OAF_ObjectDirectory_create (PortableServer_POA poa,
 	impl_POA_OAF_ObjectDirectory *newservant;
 	PortableServer_ObjectId *objid;
 
+        g_assert (main_dir == NULL);
 	newservant = g_new0 (impl_POA_OAF_ObjectDirectory, 1);
+        main_dir = newservant;
 	newservant->servant.vepv = &impl_OAF_ObjectDirectory_vepv;
 	newservant->poa = poa;
 	POA_OAF_ObjectDirectory__init ((PortableServer_Servant) newservant,
@@ -285,7 +382,7 @@ OAF_ObjectDirectory_create (PortableServer_POA poa,
 	newservant->attr_hostID = oaf_hostname_get ();
 	newservant->by_iid = NULL;
 
-        newservant->registry_source_directories = g_strsplit (registry_path, ":", -1);
+        newservant->registry_source_directories = split_path_unique (registry_path);
         newservant->registry_directory_mtimes = g_hash_table_new (g_str_hash, g_str_equal);
 
         update_registry (newservant);
@@ -469,8 +566,9 @@ impl_OAF_ObjectDirectory_activate (impl_POA_OAF_ObjectDirectory * servant,
                  * from the initial process to be handled in the event
                  * loop.
                  */
-
-                if (ev->_major != CORBA_NO_EXCEPTION) {
+                /* FIXME: theoretically this is no longer neccessary */
+                if (ev->_major != CORBA_NO_EXCEPTION ||
+                    retval == CORBA_OBJECT_NIL) {
                         CORBA_exception_init (&retry_ev);
 
                         retval = od_get_active_server (servant, iid, ctx, &retry_ev);

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: oaf 0.7.0.0\n"
-"POT-Creation-Date: 2002-01-17 19:59-0800\n"
+"POT-Creation-Date: 2002-04-16 11:37+0100\n"
 "PO-Revision-Date: 2001-10-24 13:06CET\n"
 "Last-Translator: Stanislav Visnovsky <visnovsky@nenya.ms.mff.cuni.cz>\n"
 "Language-Team: Slovak <sk-i18n@lists.linux.sk>\n"
@@ -18,35 +18,35 @@ msgstr ""
 msgid "No server corresponding to your query"
 msgstr "®iadny server neodpovedá otázke"
 
-#: liboaf/oaf-fork-server.c:76
+#: liboaf/oaf-fork-server.c:83
 #, c-format
 msgid "Failed to read from child process: %s\n"
 msgstr "Nepodarilo sa èítanie od potomka: %s\n"
 
-#: liboaf/oaf-fork-server.c:175
+#: liboaf/oaf-fork-server.c:138
+msgid "Child process did not give an error message, unknown failure occurred"
+msgstr "Potomok neposlal správu chyby, nastalo neznáme zlyhanie"
+
+#: liboaf/oaf-fork-server.c:270
 msgid "Couldn't fork a new process"
 msgstr "Nie je mo¾né vytvori» nový proces"
 
-#: liboaf/oaf-fork-server.c:196
+#: liboaf/oaf-fork-server.c:291
 #, c-format
 msgid "Child received signal %u (%s)"
 msgstr "Potomok zachytil signál %u (%s)"
 
-#: liboaf/oaf-fork-server.c:202
+#: liboaf/oaf-fork-server.c:297
 #, c-format
 msgid "Unknown non-exit error (status is %u)"
 msgstr "Neznáma nenávratová chyba (stav je %u)"
 
-#: liboaf/oaf-fork-server.c:257
-msgid "Child process did not give an error message, unknown failure occurred"
-msgstr "Potomok neposlal správu chyby, nastalo neznáme zlyhanie"
-
-#: liboaf/oaf-fork-server.c:286
+#: liboaf/oaf-fork-server.c:355
 #, c-format
 msgid "OAF failed to set process group of %s: %s\n"
 msgstr "OAF nemohol nastavi» skupinu procesu %s: %s\n"
 
-#: liboaf/oaf-fork-server.c:297
+#: liboaf/oaf-fork-server.c:366
 #, c-format
 msgid "Failed to execute %s: %d (%s)\n"
 msgstr "Nepodarilo sa vykona» %s: %d (%s)\n"
@@ -71,7 +71,7 @@ msgstr "aktivova» IID"
 msgid "Prevent registering of server with OAF"
 msgstr "Zabráni» registrácii serveru v OAF"
 
-#: liboaf/oaf-mainloop.c:425
+#: liboaf/oaf-mainloop.c:438
 msgid "OAF options"
 msgstr "Mo¾nosti OAF"
 
@@ -159,7 +159,19 @@ msgstr "VÝRAZ"
 msgid "We don't handle activating shlib objects in a remote process yet"
 msgstr "Zatiaµ nie je mo¾né aktivova» shlib objekty vo vzdialených procesoch"
 
-#: oafd/od-corba.c:488
+#.
+#. * If this exception blows ( which it will only do with a multi-object )
+#. * factory, you need to ensure you register the object you were activated
+#. * for [use const char *bonobo_activation_iid_get (void); ] is registered
+#. * with bonobo_activation_active_server_register - _after_ any other
+#. * servers are registered.
+#.
+#: oafd/od-corba.c:302
+#, c-format
+msgid "Race condition activating server '%s'"
+msgstr ""
+
+#: oafd/od-corba.c:586
 #, c-format
 msgid ""
 "Couldn't find activation record for server `%s'. The likely cause is a "

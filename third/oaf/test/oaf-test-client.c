@@ -1,11 +1,13 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*- */
 #include <liboaf/liboaf.h>
+#include <liboaf/oaf-async.h>
+#include <liboaf/liboaf-private.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "empty.h"
 
-#define TOTAL_TEST_SCORE 13
+#define TOTAL_TEST_SCORE 15
 
 CORBA_Object name_service = CORBA_OBJECT_NIL;
 
@@ -87,10 +89,68 @@ test_empty (CORBA_Object obj, CORBA_Environment *ev, const char *type)
         }
 }
 
+
+static int
+idle_base_activation (gpointer user_data)
+{
+        /* This is a facile test, we always activate the
+         * ActivationContext first and then get the OD from it */
+        oaf_activation_context_get ();
+
+        return FALSE;
+}
+
+static void
+race_base_init (void)
+{
+        g_idle_add (idle_base_activation, NULL);
+        /* to race with the activation context get in the same process */
+        oaf_object_directory_get (NULL, NULL, NULL);
+}
+
+int passed = 0;
+int async_done = 0;
+
+static void
+empty_activation_cb (CORBA_Object   obj,
+                     const char    *error_reason, 
+                     gpointer       user_data)
+{
+        CORBA_Environment ev;
+
+        CORBA_exception_init (&ev);
+
+        if (error_reason)
+                g_warning ("Async activation error '%s'", error_reason);
+
+        else if (test_object (obj, &ev, "by async query"))
+                passed += test_empty (obj, &ev, "by async query");
+
+        CORBA_exception_free (&ev);
+
+        async_done++;
+}
+
+static void
+race_empty (CORBA_Environment *ev)
+{
+	oaf_activate_async (
+                "repo_ids.has('IDL:Empty2:1.0')", NULL,
+                0, empty_activation_cb, NULL, ev);
+        g_assert (ev->_major == CORBA_NO_EXCEPTION);
+
+	oaf_activate_async (
+                "repo_ids.has('IDL:Empty:1.0')", NULL,
+                0, empty_activation_cb, NULL, ev);
+        g_assert (ev->_major == CORBA_NO_EXCEPTION);
+
+        while (async_done < 2)
+                g_main_iteration (TRUE);
+}
+
 int
 main (int argc, char *argv[])
 {
-        int passed = 0;
 	CORBA_Object obj;
 	CORBA_Environment ev;
 
@@ -98,6 +158,9 @@ main (int argc, char *argv[])
 	oaf_init (argc, argv);
 
 /*      putenv("OAF_BARRIER_INIT=1"); */
+
+        race_base_init ();
+        race_empty (&ev);
 
 	obj = oaf_activate ("repo_ids.has('IDL:Empty:1.0')", NULL, 0, NULL,
                             &ev);

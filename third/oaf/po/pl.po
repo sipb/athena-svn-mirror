@@ -9,7 +9,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: oaf\n"
-"POT-Creation-Date: 2002-01-17 19:59-0800\n"
+"POT-Creation-Date: 2002-04-16 11:37+0100\n"
 "PO-Revision-Date: 2001-10-14 16:44+0200\n"
 "Last-Translator: GNOME PL Team <translators@gnome.pl>\n"
 "Language-Team: Polish <pl@li.org>\n"
@@ -21,35 +21,35 @@ msgstr ""
 msgid "No server corresponding to your query"
 msgstr "¯aden serwer nie odpowiada zapytaniu"
 
-#: liboaf/oaf-fork-server.c:76
+#: liboaf/oaf-fork-server.c:83
 #, c-format
 msgid "Failed to read from child process: %s\n"
 msgstr "Nie mo¿na odczytaæ z procesu potomnego: %s\n"
 
-#: liboaf/oaf-fork-server.c:175
+#: liboaf/oaf-fork-server.c:138
+msgid "Child process did not give an error message, unknown failure occurred"
+msgstr "Proces potomny nie poda³ komunikatu b³êdu, wyst±pi³ nieznany b³±d"
+
+#: liboaf/oaf-fork-server.c:270
 msgid "Couldn't fork a new process"
 msgstr "Nie mo¿na utworzyæ nowego procesu"
 
-#: liboaf/oaf-fork-server.c:196
+#: liboaf/oaf-fork-server.c:291
 #, c-format
 msgid "Child received signal %u (%s)"
 msgstr "Potomek otrzyma³ sygna³ %u (%s)"
 
-#: liboaf/oaf-fork-server.c:202
+#: liboaf/oaf-fork-server.c:297
 #, c-format
 msgid "Unknown non-exit error (status is %u)"
 msgstr "Nieznany b³±d procesu (kod stanu %u)"
 
-#: liboaf/oaf-fork-server.c:257
-msgid "Child process did not give an error message, unknown failure occurred"
-msgstr "Proces potomny nie poda³ komunikatu b³êdu, wyst±pi³ nieznany b³±d"
-
-#: liboaf/oaf-fork-server.c:286
+#: liboaf/oaf-fork-server.c:355
 #, c-format
 msgid "OAF failed to set process group of %s: %s\n"
 msgstr "OAF: Nie mo¿na ustawiæ grupy procesu %s: %s\n"
 
-#: liboaf/oaf-fork-server.c:297
+#: liboaf/oaf-fork-server.c:366
 #, c-format
 msgid "Failed to execute %s: %d (%s)\n"
 msgstr "Nie mo¿na wykonaæ %s: %d (%s)\n"
@@ -74,7 +74,7 @@ msgstr "Aktywowany IID"
 msgid "Prevent registering of server with OAF"
 msgstr "Wstrzymuje rejestracjê serwera przez OAF-a"
 
-#: liboaf/oaf-mainloop.c:425
+#: liboaf/oaf-mainloop.c:438
 msgid "OAF options"
 msgstr "Opcje OAF-a"
 
@@ -165,7 +165,19 @@ msgstr ""
 "Aktywowanie obiektów w bibliotekach dzielonych dla zdalnych procesów nie "
 "jest jeszcze obs³ugiwane"
 
-#: oafd/od-corba.c:488
+#.
+#. * If this exception blows ( which it will only do with a multi-object )
+#. * factory, you need to ensure you register the object you were activated
+#. * for [use const char *bonobo_activation_iid_get (void); ] is registered
+#. * with bonobo_activation_active_server_register - _after_ any other
+#. * servers are registered.
+#.
+#: oafd/od-corba.c:302
+#, c-format
+msgid "Race condition activating server '%s'"
+msgstr ""
+
+#: oafd/od-corba.c:586
 #, c-format
 msgid ""
 "Couldn't find activation record for server `%s'. The likely cause is a "
