@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h."
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v $
- *	$Id: c_io.c,v 1.10 1990-11-15 15:11:05 lwvanels Exp $
+ *	$Id: c_io.c,v 1.11 1990-12-17 08:53:09 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.10 1990-11-15 15:11:05 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/common/c_io.c,v 1.11 1990-12-17 08:53:09 lwvanels Exp $";
 #endif
 #endif
 
@@ -574,7 +574,7 @@ int sread(fd, buf, nbytes)
      int nbytes;
 {
   struct timeval tval;	/* System time structure. */
-  int read_fds;		/* File descriptors to check.*/
+  fd_set read_fds;		/* File descriptors to check.*/
   register int n_read, s_val;
 
   if (nbytes <= 0)
@@ -587,8 +587,9 @@ int sread(fd, buf, nbytes)
   tval.tv_sec = select_timeout;
   tval.tv_usec = 0;
   
-  read_fds = 1 << fd;
-  if ((s_val = select(fd+1, &read_fds, 0, 0, &tval)) < 1) 
+  FD_ZERO(&read_fds);
+  FD_SET(fd,&read_fds);
+  if ((s_val = select(fd+1, &read_fds, NULL, NULL, &tval)) < 1) 
     {
       if (s_val == 0)
 	errno = ETIMEDOUT;
@@ -622,7 +623,7 @@ int swrite(fd, buf, nbytes)
      int nbytes;
 {
   struct timeval tval;	        /* System time structure. */
-  int write_fds;		/* File descriptors to check.*/
+  fd_set write_fds;		/* File descriptors to check.*/
   register int n_wrote, s_val;
 
   if (nbytes <= 0)
@@ -631,8 +632,9 @@ int swrite(fd, buf, nbytes)
   tval.tv_sec = select_timeout;
   tval.tv_usec = 0;
   
-  write_fds = 1 << fd;
-  if ((s_val = select(fd+1, 0, &write_fds, 0, &tval)) != 1) 
+  FD_ZERO(&write_fds);
+  FD_SET(fd,&write_fds);
+  if ((s_val = select(fd+1, NULL, &write_fds, NULL, &tval)) != 1) 
     {
       if (s_val == 0)
 	errno = ETIMEDOUT;
