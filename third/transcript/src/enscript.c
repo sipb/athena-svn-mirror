@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1987,1990,1991,1992  Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/third/transcript/src/enscript.c,v 1.3 1999-08-04 14:50:17 ghudson Exp $";
+_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/third/transcript/src/enscript.c,v 1.4 2000-03-17 03:24:37 ghudson Exp $";
 #endif
 /* enscript.c
  *
@@ -1744,8 +1744,8 @@ private VOID SetTime(tval)
 
     if (Gaudy) {
 	tp = localtime(&tval);
-	VOIDC sprintf(DateStr, "(%02d/%02d/%02d)(%02d:%02d:%02d)",
-		tp->tm_year, tp->tm_mon+1, tp->tm_mday,
+	VOIDC sprintf(DateStr, "(%04d/%02d/%02d)(%02d:%02d:%02d)",
+		tp->tm_year + 1900, tp->tm_mon+1, tp->tm_mday,
 		tp->tm_hour, tp->tm_min, tp->tm_sec);
     }
     else {
