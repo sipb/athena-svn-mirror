@@ -41,7 +41,6 @@
 #include <gconf/gconf.h>
 #include <gconf/gconf-client.h>
 
-#include <libgnomevfs/gnome-vfs-mime-handlers.h>
 #include <libgnomevfs/gnome-vfs.h>
 #include <libgnome/gnome-url.h>
 #include <bonobo/bonobo-exception.h>
@@ -66,6 +65,7 @@
 
 #include <libsoup/soup-message.h>
 
+#include "e-util/e-gui-utils.h"
 #include "e-util/e-mktemp.h"
 #include "addressbook/backend/ebook/e-book-util.h"
 
@@ -81,8 +81,6 @@
 #include "mail.h"
 
 #include "camel/camel-data-cache.h"
-
-#include "art/empty.xpm"
 
 #define d(x)
 
@@ -307,6 +305,10 @@ on_link_clicked (GtkHTML *html, const char *url, MailDisplay *md)
 		send_to_url (url, NULL);
 	} else if (*url == '#') {
 		mail_display_jump_to_anchor (md, url);
+	} else if (!strncasecmp (url, "cid:", 4) != 0) {
+		/* FIXME: what do we do here? we can't pass to gnome_url_show() */
+	} else if (!strncasecmp (url, "thismessage:", 12)) {
+		/* FIXME: same as jump_to_anchor? */
 	} else {
 		GError *err = NULL;
 		
@@ -446,24 +448,28 @@ inline_cb (GtkWidget *widget, gpointer user_data)
 	mail_display_queue_redisplay (md);
 }
 
-static gboolean
-button_press (GtkWidget *widget, GdkEvent *event, CamelMimePart *part)
+static void
+inline_toggle(MailDisplay *md, CamelMimePart *part)
 {
-	MailDisplay *md;
+	g_return_if_fail(md != NULL);
 
-	if (event->type == GDK_BUTTON_PRESS)
-		g_signal_stop_emission_by_name (widget, "button_press_event");
-	else if (event->type == GDK_KEY_PRESS && event->key.keyval != GDK_Return)
-		return FALSE;
-
-	md = g_object_get_data ((GObject *) widget, "MailDisplay");
-	if (md == NULL) {
-		g_warning ("No MailDisplay on button!");
-		return TRUE;
-	}
-	
 	mail_part_toggle_displayed (part, md);
 	mail_display_queue_redisplay (md);
+}
+
+static void
+inline_button_clicked(GtkWidget *widget, CamelMimePart *part)
+{
+	inline_toggle((MailDisplay *)g_object_get_data((GObject *)widget, "MailDisplay"), part);
+}
+
+static gboolean
+inline_button_press(GtkWidget *widget, GdkEventKey *event, CamelMimePart *part)
+{
+	if (event->keyval != GDK_Return)
+		return FALSE;
+
+	inline_toggle((MailDisplay *)g_object_get_data((GObject *)widget, "MailDisplay"), part);
 
 	return TRUE;
 }
@@ -590,60 +596,6 @@ pixmap_press (GtkWidget *widget, GdkEvent *event, gpointer user_data)
 	return TRUE;
 }	
 
-static GdkPixbuf *
-pixbuf_for_mime_type (const char *mime_type)
-{
-	const char *icon_name;
-	char *filename = NULL;
-	GdkPixbuf *pixbuf = NULL;
-	
-	icon_name = gnome_vfs_mime_get_icon (mime_type);
-	
-	if (icon_name) {
-		if (*icon_name == '/') {
-			pixbuf = gdk_pixbuf_new_from_file (icon_name, NULL);
-			if (pixbuf)
-				return pixbuf;
-		}
-		
-		filename = gnome_program_locate_file (NULL, GNOME_FILE_DOMAIN_PIXMAP,
-						      icon_name, TRUE, NULL);
-		if (!filename) {
-			char *fm_icon;
-			
-			fm_icon = g_strdup_printf ("nautilus/%s", icon_name);
-			filename = gnome_program_locate_file (NULL, GNOME_FILE_DOMAIN_PIXMAP,
-							      fm_icon, TRUE, NULL);
-			if (!filename) {
-				g_free (fm_icon);
-				fm_icon = g_strdup_printf ("mc/%s", icon_name);
-				filename = gnome_program_locate_file (NULL, GNOME_FILE_DOMAIN_PIXMAP,
-								      fm_icon, TRUE, NULL);
-			}
-			g_free (fm_icon);
-		}
-		
-		if (filename) {
-			pixbuf = gdk_pixbuf_new_from_file (filename, NULL);
-			g_free (filename);
-		}
-	}
-	
-	if (!pixbuf) {
-		filename = gnome_program_locate_file (NULL, GNOME_FILE_DOMAIN_PIXMAP,
-						      "gnome-unknown.png", TRUE, NULL);
-		if (filename) {
-			pixbuf = gdk_pixbuf_new_from_file (filename, NULL);
-			g_free (filename);
-		} else {
-			g_warning ("Could not get any icon for %s!",mime_type);
-			pixbuf = gdk_pixbuf_new_from_xpm_data((const char **)empty_xpm);
-		}
-	}
-	
-	return pixbuf;
-}
-
 static gboolean
 pixbuf_uncache (gpointer key)
 {
@@ -727,7 +679,7 @@ pixbuf_gen_idle (struct _PixbufLoader *pbl)
 	
 	if (error || !pbl->mstream) {
 		if (pbl->type)
-			pixbuf = pixbuf_for_mime_type (pbl->type);
+			pixbuf = e_icon_for_mime_type (pbl->type, 24);
 		else
 			pixbuf = gdk_pixbuf_new_from_file (EVOLUTION_ICONSDIR "/pgp-signature-nokey.png", NULL);
 	} else
@@ -1084,8 +1036,8 @@ do_attachment_header (GtkHTML *html, GtkHTMLEmbedded *eb,
 	
 	handler = mail_lookup_handler (eb->type);
 	if (handler && handler->builtin) {
-		g_signal_connect (button, "button_press_event", G_CALLBACK (button_press), part);
-		g_signal_connect (button, "key_press_event", G_CALLBACK (button_press), part);
+		g_signal_connect (button, "clicked", G_CALLBACK (inline_button_clicked), part);
+		g_signal_connect (button, "key_press_event", G_CALLBACK (inline_button_press), part);
 	} else {
 		gtk_widget_set_sensitive (button, FALSE);
 		GTK_WIDGET_UNSET_FLAGS (button, GTK_CAN_FOCUS);
@@ -1222,8 +1174,8 @@ do_signature (GtkHTML *html, GtkHTMLEmbedded *eb,
 	
 	button = gtk_button_new ();
 	g_object_set_data ((GObject *) button, "MailDisplay", md);
-	g_signal_connect (button, "button_press_event", G_CALLBACK (button_press), part);
-	g_signal_connect (button, "key_press_event", G_CALLBACK (button_press), part);
+	g_signal_connect (button, "clicked", G_CALLBACK (inline_button_clicked), part);
+	g_signal_connect (button, "key_press_event", G_CALLBACK (inline_button_press), part);
 
 	gtk_container_add (GTK_CONTAINER (button), pbl->pixmap);
 	gtk_widget_show_all (button);
@@ -1934,7 +1886,7 @@ mail_display_render (MailDisplay *md, GtkHTML *html, gboolean reset_scroll)
 			
 			localtime_r (&target_date, &due);
 			
-			e_utf8_strftime_fix_am_pm (due_date, sizeof (due_date), _("by %B %d, %Y, %l:%M %P"), &due);
+			e_utf8_strftime_fix_am_pm (due_date, sizeof (due_date), _("by %B %d, %Y, %l:%M %p"), &due);
 		} else {
 			due_date[0] = '\0';
 		}
@@ -2197,14 +2149,7 @@ invisible_selection_clear_event_callback (GtkWidget *widget,
 					  GdkEventSelection *event,
 					  void *data)
 {
-	MailDisplay *display;
-	
-	display = MAIL_DISPLAY (data);
-	
-	g_free (display->selection);
-	display->selection = NULL;
-	
-	return TRUE;
+	return FALSE;
 }
 
 static void
