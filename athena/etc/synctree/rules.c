@@ -8,9 +8,7 @@
 #else
 #include <a.out.h>
 #endif
-#ifdef sparc
-#include <alloca.h>
-#endif
+
 extern char *date_db_name;
 extern rule rules[];
 extern unsigned int lastrule;

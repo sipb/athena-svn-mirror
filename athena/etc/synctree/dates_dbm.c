@@ -6,9 +6,8 @@
 #include <string.h>
 #include <time.h>
 #include <ndbm.h>
-#ifdef sparc
-#include <alloca.h>
-#endif
+#include "synctree.h"
+
 time_t get_date(dbmpp,fname)
      DBM **dbmpp;
      char *fname;
