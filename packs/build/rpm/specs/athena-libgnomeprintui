@@ -1,7 +1,0 @@
-Name: athena-libgnomeprintui
-Summary: GUI support for libgnomeprint, for Athena
-License: LGPL
-Group: System Environment/Libraries
-
-%description
-The libgnomeprintui package contains GTK+ widgets related to printing.

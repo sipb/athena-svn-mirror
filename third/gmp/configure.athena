@@ -1,4 +1,0 @@
-TARGET=`./config.guess |
-	sed 's/\(ultra\)*sparc[^-]*-/sparcv8-/' |
-	sed 's/^.*-pc-/pentium-pc-/'`
-./configure "$@" --build=$TARGET
