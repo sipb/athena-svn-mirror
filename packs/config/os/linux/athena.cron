@@ -4,4 +4,4 @@
 30 3 * * *	root	/etc/athena/desync 7200; /etc/athena/local-lockers
 0,6,12,18,24,30,36,42,48,54 * * * * root /etc/athena/desync 360; /etc/athena/reactivate > /dev/console 2>&1
 0 0 * * *	root	/etc/athena/desync 3600; /etc/athena/counterlog cron
-15 3 * 4,10 0	root	/usr/sbin/setclock
+15 3 * 4,10 0	root	/etc/athena/syncclock
