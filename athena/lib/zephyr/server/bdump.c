@@ -4,7 +4,7 @@
  *	Created by:	John T. Kohl
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/bdump.c,v $
- *	$Author: raeburn $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_bdump_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/bdump.c,v 1.28 1988-10-19 22:51:54 raeburn Exp $";
+static char rcsid_bdump_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/bdump.c,v 1.29 1988-12-08 08:46:29 jtkohl Exp $";
 #endif /* SABER */
 #endif /* lint */
 
@@ -524,11 +524,13 @@ int omask;
 }
 
 #ifdef KERBEROS
+#define TKTLIFETIME	96
+static long tkt_lifetime();
+
 static int
 get_tgt()
 {
 	int retval;
-
 	if (!*my_realm)
 		if ((retval = get_krbrlm(my_realm, 1)) != KSUCCESS) {
 			syslog(LOG_ERR,"krbrlm: %s",
@@ -537,13 +539,16 @@ get_tgt()
 			return(1);
 		}
 	/* have they expired ? */
-	if (ticket_time < NOW - (96L * 5L) + 15L) { /* +15 for leeway */
+	if (ticket_time < NOW - tkt_lifetime(TKTLIFETIME) + 15L) {
+		/* +15 for leeway */
 		zdbug((LOG_DEBUG,"get new tickets: %d %d %d",
-		       ticket_time, NOW, NOW - (96L * 5L) + 15L));
+		       ticket_time, NOW,
+		       NOW - tkt_lifetime(TKTLIFETIME) + 15L));
 		(void) dest_tkt();
 		if ((retval =
-		     get_svc_in_tkt("zephyr","zephyr",my_realm,"zephyr","zephyr",
-				    96, ZEPHYR_SRVTAB)) != KSUCCESS) {
+		     get_svc_in_tkt("zephyr", "zephyr", my_realm,
+				    "zephyr", "zephyr",
+				    TKTLIFETIME, ZEPHYR_SRVTAB)) != KSUCCESS) {
 			syslog(LOG_ERR,"get_tkt: %s",
 			       krb_err_txt[retval]);
 			ticket_time = 0L;
@@ -552,6 +557,13 @@ get_tgt()
 			ticket_time = NOW;
 	}
 	return(0);
+}
+
+static long
+tkt_lifetime(val)
+int val;
+{
+    return((long) val * 5L * 60L);
 }
 #endif /* KERBEROS */
 
