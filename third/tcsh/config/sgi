@@ -66,11 +66,7 @@
  *		This may or may not be true.  For example, Apple Unix
  *		(OREO) has BSDJOBS and BSDSIGS but not BSDTIMES.
  */
-#ifdef mips
-# define BSDTIMES
-#else
 # undef BSDTIMES
-#endif
 
 /*
  * BSDLIMIT	You have BSD-style resource limit stuff (getrlimit/setrlimit)
