@@ -1,9 +1,9 @@
 /***********************************************************************
  * to be included by all fx library clients
  *
- * $Author: probe $
+ * $Author: vrt $
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fxcl.h,v $
- * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fxcl.h,v 1.2 1993-02-03 12:50:04 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fxcl.h,v 1.3 1993-04-27 17:15:00 vrt Exp $
  *
  * Copyright 1989, 1990 by the Massachusetts Institute of Technology.
  *
@@ -15,7 +15,7 @@
 #define _fxcl_h_
 
 #ifndef lint
-static char rcsid_fxcl_h[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fxcl.h,v 1.2 1993-02-03 12:50:04 probe Exp $";
+static char rcsid_fxcl_h[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/neos/include/fxcl.h,v 1.3 1993-04-27 17:15:00 vrt Exp $";
 #endif /* lint */
 
 #include <stdio.h>
@@ -28,6 +28,9 @@ static char rcsid_fxcl_h[] = "$Header: /afs/dev.mit.edu/source/repository/athena
 #include <krb_err.h>
 #include <sys/param.h>
 #include <time.h>
+#ifdef SOLARIS
+#include <netdb.h>
+#endif /* SOLARIS */
 
 #define paper_clear(p) bzero((char *) p, sizeof(Paper))
 #define paper_copy(a, b)  bcopy((char *) a, (char *) b, sizeof(Paper))
