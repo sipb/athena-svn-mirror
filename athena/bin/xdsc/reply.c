@@ -27,7 +27,7 @@ without express or implied warranty.
 #include	<X11/Shell.h>
 #include	"xdsc.h"
 
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/reply.c,v 1.12 1991-05-07 15:24:44 sao Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/reply.c,v 1.13 1991-06-06 15:17:15 sao Exp $";
 
 extern char	*strchr();
 extern char     *getenv();
@@ -38,6 +38,8 @@ extern int	topscreen;
 extern Widget	topW, paneW;
 extern TextWidget	bottextW;
 extern int	char_width;
+extern char	*GetTransactionFile();
+extern Boolean	nocache;
 
 static char	sourcefile[80];
 
@@ -391,8 +393,11 @@ int	current;
 			"%s/xdsc/%s-%d", getenv("HOME"), 
 			CurrentMtg(1), current);
 
-	sprintf (	sourcefile,
-			"%s-%d", filebase, current);
+	if (nocache)
+		strcpy (sourcefile, GetTransactionFile(current));
+	else
+		sprintf (	sourcefile,
+				"%s-%d", filebase, current);
 
 	mywidth = 80 * char_width;
 
