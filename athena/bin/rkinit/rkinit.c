@@ -1,12 +1,21 @@
-/* 
- * $Id: rkinit.c,v 1.1 1999-10-05 17:08:34 danw Exp $
+/* Copyright 1989,1999 by the Massachusetts Institute of Technology.
  *
- * This is an rkinit client
+ * Permission to use, copy, modify, and distribute this
+ * software and its documentation for any purpose and without
+ * fee is hereby granted, provided that the above copyright
+ * notice appear in all copies and that both that copyright
+ * notice and this permission notice appear in supporting
+ * documentation, and that the name of M.I.T. not be used in
+ * advertising or publicity pertaining to distribution of the
+ * software without specific, written prior permission.
+ * M.I.T. makes no representations about the suitability of
+ * this software for any purpose.  It is provided "as is"
+ * without express or implied warranty.
  */
 
-#if !defined(lint) && !defined(SABER) && !defined(LOCORE) && defined(RCS_HDRS)
-static char *rcsid = "$Id: rkinit.c,v 1.1 1999-10-05 17:08:34 danw Exp $";
-#endif /* lint || SABER || LOCORE || RCS_HDRS */
+/* rkinit: a remote kinit client */
+
+static const char rcsid[] = "$Id: rkinit.c,v 1.2 1999-12-09 22:23:58 danw Exp $";
 
 #include <stdio.h>
 #include <string.h>
@@ -29,12 +38,8 @@ static char *rcsid = "$Id: rkinit.c,v 1.1 1999-10-05 17:08:34 danw Exp $";
 #ifndef FALSE
 #define FALSE 0
 #endif
-	
-#ifdef __STDC__
-static void usage(void) 
-#else
-static void usage()
-#endif /* __STDC__ */
+
+static void usage(void)
 {
     fprintf(stderr,"Usage: rkinit [host] options\n");
     fprintf(stderr,
@@ -42,17 +47,11 @@ static void usage()
     fprintf(stderr, "         [-t lifetime] [-h host] [-notimeout]\n");
     fprintf(stderr, "A host must be specified either with the -h option ");
     fprintf(stderr, "or as the first argument.\n");
-	    
+
     exit(1);
 }
 
-#ifdef __STDC__
-main(int argc, char *argv[])
-#else
-main(argc, argv)
-  int argc;
-  char *argv[];
-#endif /* __STDC__ */
+int main(int argc, char *argv[])
 {
     char *whoami;		/* Name of this program */
 
@@ -80,10 +79,11 @@ main(argc, argv)
     memset(realm, 0, sizeof(realm));
     memset(r_krealm, 0, sizeof(r_krealm));
     /* Parse commandline arguements. */
-    if ((whoami = strrchr(argv[0], '/')) == 0)
-	whoami = argv[0];
-    else
+    whoami = strrchr(argv[0], '/');
+    if (whoami)
 	whoami++;
+    else
+	whoami = argv[0];
 
     if (argc < 2) usage();
 
@@ -100,11 +100,11 @@ main(argc, argv)
 		usage();
 	    else
 		host = argv[i];
-	}	    
+	}
 	else if (strcmp(argv[i], "-l") == NULL) {
 	    if (++i >= argc)
 		usage();
-	    else 
+	    else
 		username = argv[i];
 	}
 	else if (strcmp(argv[i], "-k") == NULL) {
@@ -147,19 +147,21 @@ main(argc, argv)
 
     /* Initialize the realm of the remote host if necessary */
     if (r_krealm[0] == 0) {
-	/* 
+	/*
 	 * Try to figure out the realm of the remote host.  If the
 	 * remote host is unknown, don't worry about it; the library
 	 * will handle the error better and print a good error message.
 	 */
 	struct hostent *hp;
-	if (hp = gethostbyname(host))
+	hp = gethostbyname(host);
+	if (hp)
 	    strcpy(r_krealm, krb_realmofhost(hp->h_name));
     }
 
     /* If no username was specified, use local id on client host */
     if (username == 0) {
-	if ((localid = getpwuid(getuid())) == 0) {
+	localid = getpwuid(getuid());
+	if (localid == 0) {
 	    fprintf(stderr, "You can not be found in the password file.\n");
 	    exit(1);
 	}
@@ -168,10 +170,10 @@ main(argc, argv)
 
     /* Find out who will go in the ticket file */
     if (! principal[0]) {
-	if ((status = krb_get_tf_fullname(TKT_FILE, aname, inst, realm)) 
-	    != KSUCCESS) {
-	    /* 
-	     * If user has no ticket file and principal was not specified, 
+	status = krb_get_tf_fullname(TKT_FILE, aname, inst, realm);
+	if (status != KSUCCESS) {
+	    /*
+	     * If user has no ticket file and principal was not specified,
 	     * we will try to get tickets for username@remote_realm
 	     */
 	    strcpy(aname, username);
@@ -179,8 +181,8 @@ main(argc, argv)
 	}
     }
     else {
-	if ((status = kname_parse(aname, inst, realm, principal))
-	    != KSUCCESS) {
+	status = kname_parse(aname, inst, realm, principal);
+	if (status != KSUCCESS) {
 	    fprintf(stderr, "%s\n", krb_err_txt[status]);
 	    exit(1);
 	}
@@ -191,7 +193,7 @@ main(argc, argv)
     }
 
     memset(&info, 0, sizeof(info));
-    
+
     strcpy(info.aname, aname);
     strcpy(info.inst, inst);
     strcpy(info.realm, realm);
@@ -202,7 +204,8 @@ main(argc, argv)
 	strncpy(info.tktfilename, tktfilename, sizeof(info.tktfilename) - 1);
     info.lifetime = lifetime;
 
-    if (status = rkinit(host, r_krealm, &info, timeout)) {
+    status = rkinit(host, r_krealm, &info, timeout);
+    if (status) {
 	com_err(whoami, status, "while obtaining remote tickets:");
 	fprintf(stderr, "%s\n", rkinit_errmsg(0));
 	exit(1);

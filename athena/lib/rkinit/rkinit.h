@@ -1,4 +1,4 @@
-/* $Id: rkinit.h,v 1.1 1999-10-05 17:09:55 danw Exp $ */
+/* $Id: rkinit.h,v 1.2 1999-12-09 22:23:55 danw Exp $ */
 
 /* Copyright 1997, 1998 by the Massachusetts Institute of Technology.
  *
@@ -54,8 +54,8 @@ typedef struct {
 #define PKT_LEN 1
 #define PKT_DATA (PKT_LEN + sizeof(long))
 
-/* 
- * Message types for packets.  Make sure that rki_mt_to_string is right in 
+/*
+ * Message types for packets.  Make sure that rki_mt_to_string is right in
  * rk_util.c
  */
 #define MT_STATUS 0
@@ -101,7 +101,6 @@ int rki_rpc_send_ckdc(MSG_DAT *);
 int rki_get_csaddr(struct sockaddr_in *, struct sockaddr_in *);
 void rki_drop_server(void);
 void rki_cleanup_rpc(void);
-void rki_dmsg(char *);
 char *rki_mt_to_string(int);
 int rki_choose_version(int *);
 int rki_send_rkinit_info(int, rkinit_info *);

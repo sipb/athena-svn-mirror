@@ -15,7 +15,7 @@
 
 /* This file contains general rkinit server utilities. */
 
-static const char rcsid[] = "$Id: util.c,v 1.1 1999-10-05 17:10:00 danw Exp $";
+static const char rcsid[] = "$Id: util.c,v 1.2 1999-12-09 22:24:01 danw Exp $";
 
 #include <stdio.h>
 #include <rkinit.h>
@@ -25,21 +25,18 @@ static const char rcsid[] = "$Id: util.c,v 1.1 1999-10-05 17:10:00 danw Exp $";
 
 static char errbuf[BUFSIZ];
 
-void rpc_exchange_version_info();
-void error();
-
 int choose_version(int *version)
 {
     int c_lversion;		/* lowest version number client supports */
     int c_hversion;		/* highest version number client supports */
     int status = RKINIT_SUCCESS;
-    
+
     rpc_exchange_version_info(&c_lversion, &c_hversion,
 				  RKINIT_LVERSION, RKINIT_HVERSION);
-    
+
     *version = min(RKINIT_HVERSION, c_hversion);
     if (*version < max(RKINIT_LVERSION, c_lversion)) {
-	sprintf(errbuf, 
+	sprintf(errbuf,
 		"Can't run version %d client against version %d server.",
 		c_hversion, RKINIT_HVERSION);
 	rkinit_errmsg(errbuf);

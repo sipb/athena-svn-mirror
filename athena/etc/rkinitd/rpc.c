@@ -15,7 +15,7 @@
 
 /* This file contains the network parts of the rkinit server. */
 
-static const char rcsid[] = "$Id: rpc.c,v 1.1 1999-10-05 17:10:00 danw Exp $";
+static const char rcsid[] = "$Id: rpc.c,v 1.2 1999-12-09 22:24:00 danw Exp $";
 
 #include <stdio.h>
 #include <string.h>
@@ -25,6 +25,7 @@ static const char rcsid[] = "$Id: rpc.c,v 1.1 1999-10-05 17:10:00 danw Exp $";
 #include <syslog.h>
 #include <signal.h>
 #include <errno.h>
+#include <unistd.h>
 
 #include <rkinit.h>
 #include <rkinit_err.h>
@@ -38,26 +39,22 @@ static int out;
 
 static char errbuf[BUFSIZ];
 
-void error();
-
-static int timeout(void)
+static void timeout(int signal)
 {
     syslog(LOG_WARNING, "rkinitd timed out.\n");
     exit(1);
-
-    return(0);			/* To make the compiler happy... */
 }
 
 /*
  * This function does all the network setup for rkinitd.
- * It returns true if we were started from inetd, or false if 
+ * It returns true if we were started from inetd, or false if
  * we were started from the commandline.
- * It causes the program to exit if there is an error. 
+ * It causes the program to exit if there is an error.
  */
-int setup_rpc(int notimeout)		
+int setup_rpc(int notimeout)
 {
     struct itimerval timer;	/* Time structure for timeout */
-    struct sigaction act, oact;
+    struct sigaction act;
 
     sigemptyset(&act.sa_mask);
     act.sa_flags = 0;
@@ -74,7 +71,7 @@ int setup_rpc(int notimeout)
 	timer.it_interval.tv_sec = RKINITD_TIMEOUT;
 	timer.it_interval.tv_usec = 0;
 	timer.it_value = timer.it_interval;
-	
+
 	/* Start the timer. */
 	if (setitimer (ITIMER_REAL, &timer, (struct itimerval *)0) < 0) {
 	    sprintf(errbuf, "setitimer: %s", strerror(errno));
@@ -83,19 +80,19 @@ int setup_rpc(int notimeout)
 	    exit(1);
 	}
 
-	act.sa_handler= (void (*)()) timeout;
+	act.sa_handler = timeout;
 	(void) sigaction (SIGALRM, &act, NULL);
     }
 
     return(TRUE);
 }
 
-void rpc_exchange_version_info(int *c_lversion, int *c_hversion, 
+void rpc_exchange_version_info(int *c_lversion, int *c_hversion,
 			       int s_lversion, int s_hversion)
 {
     u_char version_info[VERSION_INFO_SIZE];
     u_long length = sizeof(version_info);
-    
+
     if (rki_get_packet(in, MT_CVERSION, &length, (char *)version_info) !=
 	RKINIT_SUCCESS) {
 	error();
@@ -108,22 +105,22 @@ void rpc_exchange_version_info(int *c_lversion, int *c_hversion,
     version_info[0] = s_lversion;
     version_info[1] = s_hversion;
 
-    if (rki_send_packet(out, MT_SVERSION, length, (char *)version_info) != 
+    if (rki_send_packet(out, MT_SVERSION, length, (char *)version_info) !=
 	RKINIT_SUCCESS) {
 	error();
 	exit(1);
     }
 }
-    
+
 void rpc_get_rkinit_info(rkinit_info *info)
 {
     u_long length = sizeof(rkinit_info);
-    
+
     if (rki_get_packet(in, MT_RKINIT_INFO, &length, (char *)info)) {
 	error();
 	exit(1);
     }
-    
+
     info->lifetime = ntohl(info->lifetime);
 }
 
@@ -151,7 +148,7 @@ void rpc_exchange_tkt(KTEXT cip, MSG_DAT *scip)
 	error();
 	exit(1);
     }
-    
+
     if (rki_get_packet(in, MT_CKDC, &length, (char *)scip->app_data)) {
 	error();
 	exit(1);
@@ -159,7 +156,7 @@ void rpc_exchange_tkt(KTEXT cip, MSG_DAT *scip)
     scip->app_length = length;
 }
 
-void rpc_getauth(KTEXT auth, struct sockaddr_in *caddr, 
+void rpc_getauth(KTEXT auth, struct sockaddr_in *caddr,
 		 struct sockaddr_in *saddr)
 {
     int addrlen = sizeof(struct sockaddr_in);
@@ -169,14 +166,14 @@ void rpc_getauth(KTEXT auth, struct sockaddr_in *caddr,
 	exit(1);
     }
 
-    if (getpeername(in, caddr, &addrlen) < 0) {
+    if (getpeername(in, (struct sockaddr *)caddr, &addrlen) < 0) {
 	sprintf(errbuf, "getpeername: %s", strerror(errno));
 	rkinit_errmsg(errbuf);
 	error();
 	exit(1);
     }
 
-    if (getsockname(out, saddr, &addrlen) < 0) {
+    if (getsockname(out, (struct sockaddr *)saddr, &addrlen) < 0) {
 	sprintf(errbuf, "getsockname: %s", strerror(errno));
 	rkinit_errmsg(errbuf);
 	error();

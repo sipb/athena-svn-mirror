@@ -18,7 +18,7 @@
  * conventions used within the rkinit library.
  */
 
-static const char rcsid[] = "$Id: rk_krb.c,v 1.1 1999-10-05 17:09:53 danw Exp $";
+static const char rcsid[] = "$Id: rk_krb.c,v 1.2 1999-12-09 22:23:54 danw Exp $";
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -29,6 +29,7 @@ static const char rcsid[] = "$Id: rk_krb.c,v 1.1 1999-10-05 17:09:53 danw Exp $"
 #include <termios.h>
 #include <signal.h>
 #include <setjmp.h>
+#include <unistd.h>
 
 #include <krb.h>
 #include <des.h>
@@ -37,9 +38,9 @@ static const char rcsid[] = "$Id: rk_krb.c,v 1.1 1999-10-05 17:09:53 danw Exp $"
 #include <rkinit_err.h>
 
 static sigjmp_buf env;
-static void sig_restore();
-static void push_signals();
-static void pop_signals();
+static void sig_restore(void);
+static void push_signals(void);
+static void pop_signals(void);
 
 /* Information to be passed around within client get_in_tkt */
 typedef struct {
@@ -47,10 +48,10 @@ typedef struct {
     char *username;
     char *host;
 } rkinit_intkt_info;
-    
+
 static char errbuf[BUFSIZ];
 
-static int rki_key_proc(char *user, char *instance, char *realm, char *arg, 
+static int rki_key_proc(char *user, char *instance, char *realm, char *arg,
 			des_cblock key)
 {
     rkinit_intkt_info *rii = (rkinit_intkt_info *)arg;
@@ -61,15 +62,15 @@ static int rki_key_proc(char *user, char *instance, char *realm, char *arg,
     SBCLEAR(ttyb);
     BCLEAR(password);
 
-    /* 
-     * If the username does not match the aname in the ticket, 
+    /*
+     * If the username does not match the aname in the ticket,
      * we will print that too.  Otherwise, we won't.
      */
-    
+
     printf("Kerberos initialization (%s)", rii->host);
     if (strcmp(rii->username, user))
 	printf(": tickets will be owned by %s", rii->username);
-    
+
     printf("\nPassword for %s%s%s@%s: ", user,
 	   (instance[0]) ? "." : "", instance, realm);
 
@@ -80,7 +81,7 @@ static int rki_key_proc(char *user, char *instance, char *realm, char *arg,
 	ok = -1;
 	goto lose;
     }
-    
+
     (void) tcgetattr(0, &ttyb);
     ttyb.c_lflag &= ~ECHO;
     (void) tcsetattr(0, TCSAFLUSH, &ttyb);
@@ -111,14 +112,17 @@ lose:
     return(ok);
 }
 
-static int rki_decrypt_tkt(char *user, char *instance, char *realm, 
-			   char *arg, int (*key_proc)(), KTEXT *cipp)
+static int rki_decrypt_tkt(char *user, char *instance, char *realm,
+			   char *arg,
+			   int (*key_proc)(char *, char *, char *,
+					   char *, C_Block),
+			   KTEXT *cipp)
 {
     KTEXT cip = *cipp;
     C_Block key;		/* Key for decrypting cipher */
     Key_schedule key_s;
     KTEXT scip = 0;		/* cipher from rkinit server */
-    
+
     rkinit_intkt_info *rii = (rkinit_intkt_info *)arg;
 
     /* generate a key */
@@ -133,12 +137,12 @@ static int rki_decrypt_tkt(char *user, char *instance, char *realm,
 
     /* Decrypt information from KDC */
     des_pcbc_encrypt((C_Block *)cip->dat,(C_Block *)cip->dat,
-		     (long) cip->length, key_s, key, 0);
+		     (long) cip->length, key_s, (C_Block *)key, 0);
 
     /* DescrYPT rkinit server's information from KDC */
     scip = rii->scip;
     des_pcbc_encrypt((C_Block *)scip->dat,(C_Block *)scip->dat,
-		     (long) scip->length, key_s, key, 0);
+		     (long) scip->length, key_s, (C_Block *)key, 0);
 
     /* Get rid of all traces of key */
     memset((char *)key, 0, sizeof(key));
@@ -149,7 +153,7 @@ static int rki_decrypt_tkt(char *user, char *instance, char *realm,
 
 int rki_get_tickets(int version, char *host, char *r_krealm, rkinit_info *info)
 {
-    int status = RKINIT_SUCCESS;
+    int status;
     KTEXT_ST auth;
     char phost[MAXHOSTNAMELEN];
     KTEXT_ST scip;		/* server's KDC packet */
@@ -174,26 +178,30 @@ int rki_get_tickets(int version, char *host, char *r_krealm, rkinit_info *info)
     SBCLEAR(msg_data);
     BCLEAR(enc_data);
 
-    if ((status = rki_send_rkinit_info(version, info)) != RKINIT_SUCCESS)
+    status = rki_send_rkinit_info(version, info);
+    if (status != RKINIT_SUCCESS)
 	return(status);
 
-    if ((status = rki_rpc_get_skdc(&scip)) != RKINIT_SUCCESS) 
+    status = rki_rpc_get_skdc(&scip);
+    if (status != RKINIT_SUCCESS)
 	return(status);
 
     rii.scip = &scip;
     rii.host = host;
     rii.username = info->username;
-    if (status = krb_get_in_tkt(info->aname, info->inst, info->realm, 
-				"krbtgt", info->realm, 1,
-				rki_key_proc, rki_decrypt_tkt, (char *)&rii)) {
+    status = krb_get_in_tkt(info->aname, info->inst, info->realm,
+			    "krbtgt", info->realm, 1, rki_key_proc,
+			    rki_decrypt_tkt, (char *)&rii);
+    if (status) {
 	strcpy(errbuf, krb_err_txt[status]);
 	rkinit_errmsg(errbuf);
-	return(RKINIT_KERBEROS);	    
+	return(RKINIT_KERBEROS);
     }
 
     /* Create an authenticator */
-    strcpy(phost, krb_get_phost(host));    
-    if (status = krb_mk_req(&auth, KEY, phost, r_krealm, 0)) {
+    strcpy(phost, krb_get_phost(host));
+    status = krb_mk_req(&auth, KEY, phost, r_krealm, 0);
+    if (status) {
 	sprintf(errbuf, "krb_mk_req: %s", krb_err_txt[status]);
 	rkinit_errmsg(errbuf);
 	return(RKINIT_KERBEROS);
@@ -201,7 +209,8 @@ int rki_get_tickets(int version, char *host, char *r_krealm, rkinit_info *info)
 
     /* Re-encrypt server KDC packet in session key */
     /* Get credentials from ticket file */
-    if (status = krb_get_cred(KEY, phost, r_krealm, &cred)) {
+    status = krb_get_cred(KEY, phost, r_krealm, &cred);
+    if (status) {
 	sprintf(errbuf, "krb_get_cred: %s", krb_err_txt[status]);
 	rkinit_errmsg(errbuf);
 	return(RKINIT_KERBEROS);
@@ -209,25 +218,28 @@ int rki_get_tickets(int version, char *host, char *r_krealm, rkinit_info *info)
 
     /* Exctract the session key and make the schedule */
     memcpy(key, cred.session, sizeof(key));
-    if (status = des_key_sched(key, sched)) {
+    status = des_key_sched(key, sched);
+    if (status) {
 	sprintf(errbuf, "des_key_sched: %s", krb_err_txt[status]);
 	rkinit_errmsg(errbuf);
 	return(RKINIT_DES);
     }
 
     /* Get client and server addresses */
-    if ((status = rki_get_csaddr(&caddr, &saddr)) != RKINIT_SUCCESS)
+    status = rki_get_csaddr(&caddr, &saddr);
+    if (status != RKINIT_SUCCESS)
 	return(status);
 
-    /* 
+    /*
      * scip was passed to krb_get_in_tkt, where it was decrypted.
-     * Now re-encrypt in the session key. 
+     * Now re-encrypt in the session key.
      */
 
     msg_data.app_data = enc_data;
-    if ((msg_data.app_length = 
-	 krb_mk_priv(scip.dat, msg_data.app_data, scip.length, sched, key, 
-		     &caddr, &saddr)) == -1) {
+    msg_data.app_length = krb_mk_priv(scip.dat, msg_data.app_data,
+				      scip.length, sched, key, &caddr,
+				      &saddr);
+    if (msg_data.app_length == -1) {
 	sprintf(errbuf, "krb_mk_priv failed.");
 	rkinit_errmsg(errbuf);
 	return(RKINIT_KERBEROS);
@@ -236,7 +248,8 @@ int rki_get_tickets(int version, char *host, char *r_krealm, rkinit_info *info)
     /* Destroy tickets, which we no longer need */
     dest_tkt();
 
-    if ((status = rki_rpc_send_ckdc(&msg_data)) != RKINIT_SUCCESS)
+    status = rki_rpc_send_ckdc(&msg_data);
+    if (status != RKINIT_SUCCESS)
 	return(status);
 
     if (version < 4) {
@@ -248,10 +261,12 @@ int rki_get_tickets(int version, char *host, char *r_krealm, rkinit_info *info)
 	select(0, NULL, NULL, NULL, &tv);
     }
 
-    if ((status = rki_rpc_sendauth(&auth)) != RKINIT_SUCCESS)
+    status = rki_rpc_sendauth(&auth);
+    if (status != RKINIT_SUCCESS)
 	return(status);
 
-    if (status = rki_rpc_get_status())
+    status = rki_rpc_get_status();
+    if (status)
 	return(status);
 
     return(RKINIT_SUCCESS);
@@ -260,30 +275,30 @@ int rki_get_tickets(int version, char *host, char *r_krealm, rkinit_info *info)
 
 static struct sigaction oact[NSIG];
 
-static void push_signals()
+static void push_signals(void)
 {
-    register i;
+    int i;
     struct sigaction act;
+
     sigemptyset(&act.sa_mask);
     act.sa_flags = 0;
-    act.sa_handler= (void (*)()) sig_restore;
-    for (i = 0; i < NSIG; i++) 
+    act.sa_handler = sig_restore;
+    for (i = 0; i < NSIG; i++)
         (void) sigaction (i, &act, &oact[i]);
 }
 
-static void pop_signals()
+static void pop_signals(void)
 {
-    register i;
+    int i;
     struct sigaction act;
+
     sigemptyset(&act.sa_mask);
     act.sa_flags = 0;
     for (i = 0; i < NSIG; i++)
         (void) sigaction (i, &oact[i], NULL);
 }
 
-static void sig_restore(sig,code,scp)
-    int sig,code;
-    struct sigcontext *scp;
+static void sig_restore(void)
 {
     siglongjmp(env,1);
 }

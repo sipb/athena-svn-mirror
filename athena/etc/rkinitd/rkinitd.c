@@ -15,7 +15,7 @@
 
 /* This is the main source file for rkinit. */
 
-static const char rcsid[] = "$Id: rkinitd.c,v 1.1 1999-10-05 17:09:59 danw Exp $";
+static const char rcsid[] = "$Id: rkinitd.c,v 1.2 1999-12-09 22:24:00 danw Exp $";
 
 #include <stdio.h>
 #include <ctype.h>
@@ -32,6 +32,8 @@ static const char rcsid[] = "$Id: rkinitd.c,v 1.1 1999-10-05 17:09:59 danw Exp $
 #include <krb.h>
 #include <des.h>
 #include <syslog.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 #include <rkinit.h>
 #include <rkinit_err.h>
@@ -40,7 +42,7 @@ static const char rcsid[] = "$Id: rkinitd.c,v 1.1 1999-10-05 17:09:59 danw Exp $
 
 static int inetd = TRUE;	/* True if we were started by inetd */
 
-static void usage(void) 
+static void usage(void)
 {
     syslog(LOG_ERR, "rkinitd usage: rkinitd [-notimeout]\n");
     exit(1);
@@ -49,7 +51,7 @@ static void usage(void)
 void error(void)
 {
     char errbuf[BUFSIZ];
-    
+
     strcpy(errbuf, rkinit_errmsg(0));
     if (strlen(errbuf)) {
 	if (inetd)
@@ -68,10 +70,8 @@ int main(int argc, char *argv[])
     static char    *envinit[1];	/* Empty environment */
     extern char    **environ;	/* This process's environment */
 
-    int status = 0;		/* General error code */
-
     /*
-     * Clear the environment so that this process does not inherit 
+     * Clear the environment so that this process does not inherit
      * kerberos ticket variable information from the person who started
      * the process (if a person started it...).
      */
@@ -85,12 +85,12 @@ int main(int argc, char *argv[])
     rki_i_am_server();
 #endif /* DEBUG */
 
-    /* 
-     * Make sure that we are running as root or can arrange to be 
+    /*
+     * Make sure that we are running as root or can arrange to be
      * running as root.  We need both to be able to read /etc/srvtab
      * and to be able to change uid to create tickets.
      */
-    
+
     (void) setuid(0);
     if (getuid() != 0) {
 	syslog(LOG_ERR, "rkinitd: not running as root.\n");
@@ -109,17 +109,15 @@ int main(int argc, char *argv[])
 
     inetd = setup_rpc(notimeout);
 
-    if ((status = choose_version(&version) != RKINIT_SUCCESS)) {
+    if (choose_version(&version) != RKINIT_SUCCESS) {
 	error();
 	exit(1);
     }
 
-    if ((status = get_tickets(version) != RKINIT_SUCCESS)) {
+    if (get_tickets(version) != RKINIT_SUCCESS) {
 	error();
 	exit(1);
     }
 
-    exit(0);
+    return 0;
 }
-
-    
