@@ -2455,6 +2455,7 @@ void
 dofork()
 {
     int child;
+    struct sigaction action;
 
 #ifdef _IBMR2
     update_ref_count(1);
@@ -2464,30 +2465,12 @@ dofork()
 
     /* The parent continues here */
 
-    { /* Try and get rid of our controlling tty.  On SunOS, this may or may
-       not work depending on if our parent did a setsid before exec-ing us. */
-#ifndef __linux__
-      /* On linux, TIOCNOTTY causes us to die on a
-	SIGHUP, so don't even try it. */
-#ifdef TIOCNOTTY
-      { int fd;
-        if ((fd = open("/dev/tty", O_RDWR)) >= 0) {
-          ioctl(fd, TIOCNOTTY, 0);
-          close(fd);
-        }
-      }
-#endif
-#endif /* __linux__ */
-#ifdef HAVE_SETSID
-      (void)setsid();
-#else
-#ifdef SETPGRP_TWOARG
-      (void)setpgrp(0, 0);
-#else
-      (void)setpgrp();
-#endif
-#endif
-    } 
+    /* We'll get a SIGHUP if the connection is closed, since we're the
+     * session leader.  Ignore it. */
+    sigemptyset(&action.sa_mask);
+    action.sa_flags = 0;
+    action.sa_handler = SIG_IGN;
+    sigaction(SIGHUP, &action, NULL);
 
     /* Setup stuff?  This would be things we could do in parallel with login */
     (void) chdir("/");	/* Let's not keep the fs busy... */
