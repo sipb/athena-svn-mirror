@@ -17,7 +17,7 @@
  * lockers.
  */
 
-static const char rcsid[] = "$Id: fsid.c,v 1.5.2.1 1999-07-30 22:08:30 ghudson Exp $";
+static const char rcsid[] = "$Id: fsid.c,v 1.5.2.2 1999-09-20 17:09:55 ghudson Exp $";
 
 #include <netdb.h>
 #include <stdlib.h>
@@ -115,6 +115,10 @@ int fsid_main(int argc, char **argv)
 
 	    case 'u':
 	      op = LOCKER_AUTH_UNAUTHENTICATE;
+	      break;
+
+	    case 'v':
+	      verbose = 1;
 	      break;
 
 	    case 'd':
