@@ -47,9 +47,12 @@ static char rcsid[] = "$NetBSD: get_names.c,v 1.4 1994/12/09 02:14:16 jtc Exp $"
 #include <string.h>
 #include "talk.h"
 
+#ifndef MAXHOSTNAMELEN
+#define MAXHOSTNAMELEN 256
+#endif
+
 char	*getlogin();
 char	*ttyname();
-char	*rindex();
 extern	CTL_MSG msg;
 
 /*
@@ -87,7 +90,7 @@ get_names(argc, argv)
 	my_machine_name = hostname;
 	/* check for, and strip out, the machine name of the target */
 	names = strdup(argv[1]);
-	for (cp = names; *cp && !index("@:!.", *cp); cp++)
+	for (cp = names; *cp && !strchr("@:!.", *cp); cp++)
 		;
 	if (*cp == '\0') {
 		/* this is a local to local talk */
