@@ -15,7 +15,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.19 1991-09-23 11:46:20 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/procs.c,v 1.20 1992-01-07 18:38:39 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -53,8 +53,13 @@ extern int      sys_nerr;
 # define P_(s) ()
 #endif
 
+#ifdef VOID_SIGRET
+static void reaper P_((int sig));
+static void view_ready P_((int sig));
+#else
 static int reaper P_((int sig));
 static int view_ready P_((int sig));
+#endif
 
 #undef P_
 
@@ -63,31 +68,57 @@ static int view_ready P_((int sig));
  *
  */
 
+#ifdef VOID_SIGRET
+static void
+#else
 static int
+#endif
 reaper(sig)
 {
+#ifdef _POSIX_SOURCE
+  int foo;
+#else
   union wait foo;
+#endif
   int pid;
   Arg args[1];
 
+#ifndef _POSIX_SOURCE
   signal(SIGCHLD, reaper);
+#endif
   pid = wait3(&foo,WNOHANG,0);
   if (pid <= 0)
+#ifdef VOID_SIGRET
+    return;
+#else
     return(0);
+#endif
   if (pid == sa_pid) {
     sa_pid = 0;
     XtSetArg(args[0],XmNsensitive,TRUE);
     XtSetValues(w_stock_btn, args, 1);
   }
+#ifdef VOID_SIGRET
+  return;
+#else
   return(0);
+#endif
 }
 
+#ifdef VOID_SIGRET
+static void
+#else
 static int
+#endif
 view_ready(sig)
 {
   signal(SIGUSR1, SIG_IGN);
   STANDARD_CURSOR;
+#ifdef VOID_SIGRET
+  return;
+#else
   return(0);
+#endif
 }  
 
 void
@@ -491,6 +522,9 @@ olc_stock (w, tag, callback_data)
 {
   Arg args[1];
   char pidascii[7];
+#ifdef _POSIX_SOURCE
+  struct sigaction action;
+#endif
 
   WAIT_CURSOR;
   XtSetArg(args[0],XmNsensitive,FALSE);
@@ -511,8 +545,20 @@ olc_stock (w, tag, callback_data)
       _exit(1);
     }
   }
+#ifdef _POSIX_SOURCE
+  action.sa_flags = 0;
+  sigemptyset(&action.sa_mask);
+
+  action.sa_handler = reaper;
+  sigaction(SIGCHLD, &action, NULL);
+  
+  action.sa_handler = view_ready;
+  sigaction(SIGUSR1, &action, NULL);
+#else
   signal(SIGCHLD,reaper);
   signal(SIGUSR1,view_ready);
+#endif
+
 #ifdef LOG_USAGE
   log_view("browser_start");
 #endif
