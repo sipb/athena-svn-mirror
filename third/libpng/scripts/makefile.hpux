@@ -10,15 +10,16 @@ ZLIBINC=/opt/zlib/include
 
 CC=cc
 CFLAGS=-I$(ZLIBINC) -O -Ae +DA1.1 +DS2.0
+# Caution: be sure you have built zlib with the same CFLAGS.
 CCFLAGS=-I$(ZLIBINC) -O -Ae +DA1.1 +DS2.0
 LDFLAGS=-L. -L$(ZLIBLIB) -lpng -lz -lm
 
 RANLIB=ranlib
 
-# read libpng.txt or png.h to see why PNGMAJ is 2.  You should not
+# read libpng.txt or png.h to see why PNGMAJ is 3.  You should not
 # have to change it.
-PNGMAJ = 2
-PNGMIN = 1.0.8
+PNGMAJ = 3
+PNGMIN = 1.2.1
 PNGVER = $(PNGMAJ).$(PNGMIN)
 
 # where make install puts libpng.a and png.h
@@ -67,11 +68,11 @@ install: libpng.a
 	cp libpng.a libpng.sl.$(PNGVER) $(prefix)/lib
 	chmod 644 $(prefix)/lib/libpng.a
 	chmod 755 $(prefix)/lib/libpng.sl.$(PNGVER)
-	(cd $(prefix)/lib; ln -f -s libpng.sl.$(PNGVER) libpng.sl.$(MNGMAJ); \
+	(cd $(prefix)/lib; ln -f -s libpng.sl.$(PNGVER) libpng.sl.$(PNGMAJ); \
 	ln -f -s libpng.sl.$(PNGMAJ) libpng.sl)
 
 clean:
-	rm -f *.o libpng.a libpng.sl* pngtest pngout.png
+	/bin/rm -f *.o libpng.a libpng.sl libpng.sl.$(PNGMAJ)* pngtest pngout.png
 
 DOCS = ANNOUNCE CHANGES INSTALL KNOWNBUG LICENSE README TODO Y2KINFO
 writelock:
