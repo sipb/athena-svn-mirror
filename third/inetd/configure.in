@@ -6,6 +6,26 @@ AC_PROG_INSTALL
 
 AC_CHECK_HEADERS(rpc/rpcent.h)
 
+dnl This is based on AC_CHECK_TYPE, but checks <sys/resource.h> in addition
+dnl to the usual places.
+
+AC_HEADER_STDC
+AC_MSG_CHECKING(for rlim_t)
+AC_CACHE_VAL(ac_cv_type_rlim_t,
+[AC_EGREP_CPP(dnl
+changequote(<<,>>)dnl
+<<rlim_t[^a-zA-Z_0-9]>>dnl
+changequote([,]), [#include <sys/types.h>
+#include <sys/resource.h>
+#if STDC_HEADERS
+#include <stdlib.h>
+#include <stddef.h>
+#endif], ac_cv_type_rlim_t=yes, ac_cv_type_rlim_t=no)])dnl
+AC_MSG_RESULT($ac_cv_type_rlim_t)
+if test $ac_cv_type_rlim_t = no; then
+  AC_DEFINE(rlim_t, long)
+fi
+
 AC_CHECK_FUNC(gethostbyname, :, AC_CHECK_LIB(nsl, gethostbyname))
 AC_CHECK_FUNC(socket, :, AC_CHECK_LIB(socket, socket))
 AC_MSG_CHECKING(for libwrap)
