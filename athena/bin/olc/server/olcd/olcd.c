@@ -57,7 +57,7 @@ extern "C" {
 #endif
 
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.12 1990-01-16 11:08:39 vanharen Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.13 1990-01-16 14:38:05 vanharen Exp $";
 
 /* Global variables. */
 
@@ -130,19 +130,20 @@ main (argc, argv)
      char **argv;
 #endif
 {
-  struct sockaddr_in from;           /* Socket address for input. */
-  struct servent *service;           /* Network service entry. */
-  struct hostent *this_host_entry;   /* Host entry for this host. */
-  struct hostent *daemon_host_entry; /* Entry for daemon host.*/
-  char hostname[LINE_LENGTH];        /* Name of this host. */
-  int fd;			     /* Socket fd. */
-  int onoff;		             /* Value variable for setsockopt. */
-  int n_errs=0;		             /* Error count in accept() call */
-  int arg=0;			     /* Argument counter */
-  int hostset = 0;                   /* Flag if host was passed as arg */
+  struct sockaddr_in from;		/* Socket address for input. */
+  struct servent *service;		/* Network service entry. */
+  struct hostent *this_host_entry;	/* Host entry for this host. */
+  struct hostent *daemon_host_entry;	/* Entry for daemon host.*/
+  char hostname[LINE_LENGTH];		/* Name of this host. */
+  int fd;				/* Socket fd. */
+  int onoff;				/* Value variable for setsockopt. */
+  int n_errs=0;				/* Error count in accept() call */
+  int arg=0;				/* Argument counter */
+  int hostset = 0;			/* Flag if host was passed as arg */
+  int nofork = 0;			/* Flag if you don't want to fork */
   
 #ifdef HESIOD
-  char **hp;		             /* return value of Hesiod resolver */
+  char **hp;				/* return value of Hesiod resolver */
 #endif HESIOD
 
 #ifdef KERBEROS
@@ -161,7 +162,12 @@ main (argc, argv)
 	  (void) strncpy(DaemonHost,argv[++arg],LINE_LENGTH);
 	  hostset = 1;
 	  continue;
-	}	
+	}
+      if(!strcmp(argv[arg],"-nofork"))
+	{
+	  nofork = 1;
+	  continue;
+	}
       fprintf(stderr, "unknown argument: %s\n",argv[arg]);
       exit(1);
     }
@@ -170,31 +176,32 @@ main (argc, argv)
    * fork off
    */
 	
-#ifndef TEST
-  switch (fork()) 
+  if (!nofork)
     {
-    case 0:	        /* child */
-      break;
-    case -1:		/* error */
-      perror("Can't fork");
-      exit(-1);
-    default:		/* parent */
-      exit(0);
+      switch (fork()) 
+	{
+	case 0:				/* child */
+	  break;
+	case -1:			/* error */
+	  perror("Can't fork");
+	  exit(-1);
+	default:			/* parent */
+	  exit(0);
+	}
+      
+      for (fd = 0; fd < 10; fd++)
+	(void) close(fd);
+      (void) open("/", 0);
+      (void) dup2(0, 1);
+      (void) dup2(0, 2);
+      freopen(STDERR_LOG, "a", stderr);
+      fd = open("/dev/tty", O_RDWR, 0);
+      if (fd >= 0) 
+	{
+	  ioctl(fd, TIOCNOTTY, (char *) NULL);
+	  (void) close(fd);
+	}
     }
-  
-  for (fd = 0; fd < 10; fd++)
-    (void) close(fd);
-  (void) open("/", 0);
-  (void) dup2(0, 1);
-  (void) dup2(0, 2);
-  freopen(STDERR_LOG, "a", stderr);
-  fd = open("/dev/tty", O_RDWR, 0);
-  if (fd >= 0) 
-    {
-      ioctl(fd, TIOCNOTTY, (char *) NULL);
-      (void) close(fd);
-    }
-#endif TEST
 
   setlinebuf(stdout);
   setlinebuf(stderr);
@@ -344,6 +351,7 @@ main (argc, argv)
       strcpy (DaemonHost, hostname);
 #else
       log_error("error: hesiod information doesn't point here; exiting");
+      log_error(fmt("%s != %s", hostname, daemon_host_entry->h_name));
       return 1;
 #endif
   }
