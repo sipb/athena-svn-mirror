@@ -15,6 +15,11 @@ Third-party stuff not under third
 		and fetching it out of the vendor X distribution at
 		build time is contrary to principles.
 
+	* packs/build/autoconf/
+
+		The files in this directory are copied from
+		third/autoconf and used by do.sh.
+
 	* packs/config/named.root
 
 		This is a copy of the named.root file available at
