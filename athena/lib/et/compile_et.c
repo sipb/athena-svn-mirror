@@ -20,7 +20,7 @@
 static const char copyright[] =
     "Copyright 1987,1988 by MIT Student Information Processing Board";
 
-static const char rcsid[] = "$Id: compile_et.c,v 1.9 1999-11-23 20:27:11 danw Exp $";
+static const char rcsid[] = "$Id: compile_et.c,v 1.9.6.1 2002-09-10 20:23:57 ghudson Exp $";
 
 enum lang {
     lang_C,			/* ANSI C (default) */
@@ -289,6 +289,9 @@ int main(int argc, char **argv)
     }
     fprintf (hfile, "#define ERROR_TABLE_BASE_%s (%ldL)\n",
 	     table_name, (long) table_number);
+    fprintf (hfile, "struct error_table;\n");
+    fprintf (hfile, "extern const struct error_table et_%s_error_table;\n",
+	     table_name);
     /* compatibility... */
     fprintf (hfile, "\n/* for compatibility with older versions... */\n");
     fprintf (hfile, "#define init_%s_err_tbl initialize_%s_error_table\n",
