@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Id: install1.sh,v 1.1.2.1 2000-07-05 20:22:23 ghudson Exp $
+### $Id: install1.sh,v 1.1.2.2 2000-09-23 19:33:59 ghudson Exp $
 
 echo "Set some variables"
 PATH=/sbin:/usr/bin:/usr/sbin:/os/usr/bin
@@ -90,10 +90,10 @@ echo "Installing on ${drive}."
 case $CUSTOM in
 N)
   echo "standard installation - 8.4"
-  ln -s /afs/dev.mit.edu/system/sun4x_57/srvd /tmp/srvd
-  ln -s /afs/dev.mit.edu/system/sun4x_57/os /tmp/os
-  ln -s /afs/dev.mit.edu/system/sun4x_57/install/cdrom /tmp/cdrom
-  ln -s /afs/dev.mit.edu/system/sun4x_57/install/patches /tmp/patches
+  ln -s /afs/athena.mit.edu/system/sun4x_57/srvd /tmp/srvd
+  ln -s /afs/athena.mit.edu/system/sun4x_57/os /tmp/os
+  ln -s /afs/athena.mit.edu/system/sun4x_57/install/cdrom /tmp/cdrom
+  ln -s /afs/athena.mit.edu/system/sun4x_57/install/patches /tmp/patches
   ;;
 
 Y)
@@ -127,17 +127,17 @@ Y)
        ;;
    8.4)
        echo "installing 8.4"
-       ln -s /afs/dev.mit.edu/system/sun4x_57/srvd /tmp/srvd
-       ln -s /afs/dev.mit.edu/system/sun4x_57/os /tmp/os
-       ln -s /afs/dev.mit.edu/system/sun4x_57/install/cdrom /tmp/cdrom
-       ln -s /afs/dev.mit.edu/system/sun4x_57/install/patches /tmp/patches
+       ln -s /afs/athena.mit.edu/system/sun4x_57/srvd /tmp/srvd
+       ln -s /afs/athena.mit.edu/system/sun4x_57/os /tmp/os
+       ln -s /afs/athena.mit.edu/system/sun4x_57/install/cdrom /tmp/cdrom
+       ln -s /afs/athena.mit.edu/system/sun4x_57/install/patches /tmp/patches
        ;;
     *)
        echo "installing 8.4"
-       ln -s /afs/dev.mit.edu/system/sun4x_57/srvd /tmp/srvd
-       ln -s /afs/dev.mit.edu/system/sun4x_57/os /tmp/os
-       ln -s /afs/dev.mit.edu/system/sun4x_57/install/cdrom /tmp/cdrom
-       ln -s /afs/dev.mit.edu/system/sun4x_57/install/patches /tmp/patches
+       ln -s /afs/athena.mit.edu/system/sun4x_57/srvd /tmp/srvd
+       ln -s /afs/athena.mit.edu/system/sun4x_57/os /tmp/os
+       ln -s /afs/athena.mit.edu/system/sun4x_57/install/cdrom /tmp/cdrom
+       ln -s /afs/athena.mit.edu/system/sun4x_57/install/patches /tmp/patches
        ;;
    esac
    echo "done choosing rev"
@@ -243,6 +243,11 @@ Y)
        cat /util/format.input.SUN9.0G | \
                 format ${drive} >/dev/null 2>&1
        ;;
+    SUN18G)
+       echo "formatting SUN18G"
+       cat /util/format.input.SUN18G | \
+                format ${drive} >/dev/null 2>&1
+       ;;
     ST34321A)
        echo "formatting ST34321A"
        cat /util/format.input.ST34321A | \
@@ -251,6 +256,16 @@ Y)
     ST34342A)
        echo "formatting ST34342A"
        cat /util/format.input.ST34342A | \
+		format ${drive} >/dev/null 2>&1
+       ;;
+    ST38420A)
+       echo "formatting ST38420A"
+       cat /util/format.input.ST38420A | \
+		format ${drive} >/dev/null 2>&1
+       ;;
+    ST39120A|ST39111A)
+       echo "formating ST39120A"
+       cat /util/format.input.ST39120A | \
 		format ${drive} >/dev/null 2>&1
        ;;
     ST39140A)
@@ -303,9 +318,12 @@ chmod 0700 cache
 for i in cacheinfo CellServDB SuidCells ThisCell
         do cp -p /afsin/$i etc/ ; done
 cd etc
-mv CellServDB CellServDB.public
-ln -s CellServDB.public CellServDB
+cp -p CellServDB CellServDB.public
 cp -p SuidCells SuidCells.public
+chown root:root CellServDB CellServDB.public SuidCells Suidcells.public ThisCell
+chown root:root cacheinfo
+chmod a+r CellServDB CellServDB.public SuidCells Suidcells.public ThisCell
+chmod a+r cacheinfo
 # !!
 echo "Making an /afs repository"
 mkdir /tmp/afs
