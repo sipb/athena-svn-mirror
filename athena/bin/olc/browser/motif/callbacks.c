@@ -15,7 +15,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/callbacks.c,v 1.6 1991-04-18 22:44:35 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/motif/callbacks.c,v 1.7 1991-08-12 13:13:27 lwvanels Exp $";
 #endif
 
 #include <mit-copyright.h>
@@ -423,7 +423,7 @@ void createCB (w, string, callback_data)
       strcpy(Indexes[0], file);
 
       if (stat(file, &buf))
-	system("/bin/athena/attach -n olc-stock");	/* attach filsys */
+	system("/bin/athena/attach -n -q olc-stock");	/* attach filsys */
       if (stat(file, &buf))
 	{
 	  fprintf(stderr, "%s: Unable to attach olc-stock filesystem.\n",
