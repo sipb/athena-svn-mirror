@@ -9,9 +9,12 @@
  *
  * LIBS: 
  *
+ * CFLAGS: -DORDER
+ *
  * AUTHOR:  David S. Comay <dsc@seismo.css.gov>
  * patches: Alex A. Sergejew <aas@swin.oz.au>
  *          Jeff White <jwhite@isdpvbds1.isd.csc.com>
+ *	    Rainer Orth <ro@TechFak.Uni-Bielefeld.DE>
  */
 
 #include <sys/types.h>
@@ -64,6 +67,12 @@ struct handle
 #define weighted_cpu(pct, pp) ((pp)->p_time == 0 ? 0.0 : \
 			 ((pct) / (1.0 - exp((pp)->p_time * logcpu))))
 
+/* process time is only available in u area, so retrieve it from u.u_ru and
+   store a copy in unused (by top) p_ref field of struct proc
+   struct timeval field tv_sec is a long, p_ref is an int, but both are the
+   same size on VAX and MIPS, so this is safe */
+#define PROCTIME(pp) ((pp)->p_ref)
+
 /* what we consider to be process size: */
 #define PROCSIZE(pp) ((pp)->p_tsize + (pp)->p_dsize + (pp)->p_ssize)
 
@@ -103,7 +112,7 @@ static char header[] =
 #define UNAME_START 6
 
 #define Proc_format \
-	"%5d %-8.8s %3d %4d %5s %5s %-5s%4d:%02d %5.2f%% %5.2f%% %.16s"
+	"%5d %-8.8s %3d %4d %5s %5s %-5s %6s %5.2f%% %5.2f%% %.16s"
 
 
 /* process state names for the "STATE" column of the display */
@@ -172,6 +181,25 @@ char *memorynames[] = {
     "K act/tot  ", "Free: ", "K", NULL
 };
 
+/* these are names given to allowed sorting orders -- first is default */
+char *ordernames[] = {
+      "cpu", "size", "res", "time", NULL
+};
+
+/* forward definitions for comparison functions */
+int compare_cpu();
+int compare_size();
+int compare_res();
+int compare_time();
+
+int (*proc_compares[])() = {
+      compare_cpu,
+      compare_size,
+      compare_res,
+      compare_time,
+      NULL
+};
+
 /* these are for keeping track of the proc array */
 
 static int bytes;
@@ -199,8 +227,8 @@ machine_init(statics)
 struct statics *statics;
 
 {
-    register int i = 0;
-    register int pagesize;
+    int i = 0;
+    int pagesize;
 
     if ((kmem = open(KMEM, O_RDONLY)) == -1) {
 	perror(KMEM);
@@ -283,6 +311,7 @@ struct statics *statics;
     statics->procstate_names = procstatenames;
     statics->cpustate_names = cpustatenames;
     statics->memory_names = memorynames;
+    statics->order_names = ordernames;
 
     /* all done! */
     return(0);
@@ -290,10 +319,10 @@ struct statics *statics;
 
 char *format_header(uname_field)
 
-register char *uname_field;
+char *uname_field;
 
 {
-    register char *ptr;
+    char *ptr;
 
     ptr = header + UNAME_START;
     while (*uname_field != '\0')
@@ -311,8 +340,8 @@ struct system_info *si;
 {
     load_avg avenrun[3];
     long total;
-    register int i;
-    register int ncpu;
+    int i;
+    int ncpu;
     struct cpudata cpu;
 
     for (i = 0; i < CPUSTATES; ++i)
@@ -344,9 +373,9 @@ struct system_info *si;
 
     /* convert load averages to doubles */
     {
-	register int i;
-	register double *infoloadp;
-	register load_avg *sysloadp;
+	int i;
+	double *infoloadp;
+	load_avg *sysloadp;
 
 	infoloadp = si->load_avg;
 	sysloadp = avenrun;
@@ -391,11 +420,12 @@ struct process_select *sel;
 int (*compare)();
 
 {
-    register int i;
-    register int total_procs;
-    register int active_procs;
-    register struct proc **prefp;
-    register struct proc *pp;
+    int i;
+    int total_procs;
+    int active_procs;
+    struct proc **prefp;
+    struct proc *pp;
+    struct user u;
 
     /* these are copied out of sel for speed */
     int show_idle;
@@ -431,20 +461,30 @@ int (*compare)();
 	if (pp->p_stat != 0 && pp->p_stat != SIDL &&
 	    (show_system || ((pp->p_type & SSYS) == 0)))
 	{
+#ifdef vax
+#define PCTCPU_NONZERO (pp->p_pctcpu != 0.0)
+#else
+#define PCTCPU_NONZERO (pp->p_pctcpu != 0)
+#endif
 	    total_procs++;
 	    process_states[pp->p_stat]++;
 	    if ((pp->p_stat != SZOMB) &&
 		(pp->p_stat != SIDL) &&
-#ifdef vax
-		(show_idle || (pp->p_pctcpu != 0.0) || (pp->p_stat == SRUN)) &&
+		(show_idle || PCTCPU_NONZERO || (pp->p_stat == SRUN)) &&
 		(!show_uid || pp->p_uid == (uid_t)sel->uid))
-#else
-  		(show_idle || (pp->p_pctcpu != 0) || (pp->p_stat == SRUN)) &&
-  		(!show_uid || pp->p_uid == (uid_t)sel->uid))
-#endif
 	    {
 		*prefp++ = pp;
 		active_procs++;
+
+		if (getu(pp, &u) == -1)
+		{
+		    PROCTIME(pp) = 0;
+		}
+		else
+		{
+		    PROCTIME(pp) = u.u_ru.ru_utime.tv_sec +
+			u.u_ru.ru_stime.tv_sec;
+		}
 	    }
 	}
     }
@@ -473,9 +513,8 @@ caddr_t handle;
 char *(*get_userid)();
 
 {
-    register struct proc *pp;
-    register long cputime;
-    register double pct;
+    struct proc *pp;
+    double pct;
     int where;
     struct user u;
     struct handle *hp;
@@ -485,18 +524,14 @@ char *(*get_userid)();
     pp = *(hp->next_proc++);
     hp->remaining--;
     
-
-    /* get the process's user struct and set cputime */
+    /* get the process's user struct */
     where = getu(pp, &u);
     if (where == -1)
     {
 	(void) strcpy(u.u_comm, "<swapped>");
-	cputime = 0;
     }
     else
     {
-
-	  
 	/* set u_comm for system processes */
 	if (u.u_comm[0] == '\0')
 	{
@@ -521,8 +556,6 @@ char *(*get_userid)();
 	    (void) strncat(u.u_comm, ">", sizeof(u.u_comm) - 1);
 	    u.u_comm[sizeof(u.u_comm) - 1] = '\0';
 	}
-
-	cputime = u.u_ru.ru_utime.tv_sec + u.u_ru.ru_stime.tv_sec;
     }
 
     /* calculate the base for cpu percentages */
@@ -538,8 +571,7 @@ char *(*get_userid)();
 	    format_k(pagetok(PROCSIZE(pp))),
 	    format_k(pagetok(pp->p_rssize)),
 	    state_abbrev[pp->p_stat],
-	    cputime / 60l,
-	    cputime % 60l,
+	    format_time(PROCTIME(pp)),
 	    100.0 * weighted_cpu(pct, pp),
 	    100.0 * pct,
 	    printable(u.u_comm));
@@ -571,14 +603,14 @@ static struct alignuser {
 
 getu(p, u)
 
-register struct proc *p;
+struct proc *p;
 struct user *u;
 
 {
     struct pte uptes[UPAGES];
-    register caddr_t upage;
-    register struct pte *pte;
-    register nbytes, n;
+    caddr_t upage;
+    struct pte *pte;
+    int nbytes, n;
 
     /*
      *  Check if the process is currently loaded or swapped out.  The way we
@@ -644,10 +676,10 @@ struct user *u;
 
 int check_nlist(nlst)
 
-register struct nlist *nlst;
+struct nlist *nlst;
 
 {
-    register int i;
+    int i;
 
     /* check to see if we got ALL the symbols we requested */
     /* this will write one line to stderr for every symbol not found */
@@ -707,18 +739,35 @@ char *refstr;
     return(1);
 }
     
-/* comparison routine for qsort */
+/* comparison routines for qsort */
 
 /*
- *  proc_compare - comparison function for "qsort"
- *	Compares the resource consumption of two processes using five
- *  	distinct keys.  The keys (in descending order of importance) are:
- *  	percent cpu, cpu ticks, state, resident set size, total virtual
- *  	memory usage.  The process states are ordered as follows (from least
- *  	to most important):  WAIT, zombie, sleep, stop, start, run.  The
- *  	array declaration below maps a process state index into a number
- *  	that reflects this ordering.
+ * There are currently four possible comparison routines.  main selects
+ * one of these by indexing in to the array proc_compares.
+ *
+ * Possible keys are defined as macros below.  Currently these keys are
+ * defined:  percent cpu, cpu ticks, process state, resident set size,
+ * total virtual memory usage.  The process states are ordered as follows
+ * (from least to most important):  WAIT, zombie, sleep, stop, start, run.
+ * The array declaration below maps a process state index into a number
+ * that reflects this ordering.
  */
+
+/* First, the possible comparison keys.  These are defined in such a way
+   that they can be merely listed in the source code to define the actual
+   desired ordering.
+ */
+
+#define ORDERKEY_PCTCPU  if (lresult = p2->p_pctcpu - p1->p_pctcpu,\
+                           (result = lresult > 0 ? 1 : lresult < 0 ? -1 : 0) == 0)
+#define ORDERKEY_CPTICKS if ((result = PROCTIME(p2) - PROCTIME(p1)) == 0)
+#define ORDERKEY_STATE   if ((result = sorted_state[p2->p_stat] - \
+                            sorted_state[p1->p_stat])  == 0)
+#define ORDERKEY_PRIO    if ((result = p2->p_pri - p1->p_pri) == 0)
+#define ORDERKEY_RSSIZE  if ((result = p2->p_rssize - p1->p_rssize) == 0)
+#define ORDERKEY_MEM     if ((result = PROCSIZE(p2) - PROCSIZE(p1)) == 0)
+
+/* Now the array that maps process state to a weight */
 
 static unsigned char sorted_state[] =
 {
@@ -731,7 +780,9 @@ static unsigned char sorted_state[] =
     4	/* stop			*/
 };
  
-proc_compare(pp1, pp2)
+/* compare_cpu - the comparison function for sorting by cpu percentage */
+
+compare_cpu(pp1, pp2)
 
 struct proc **pp1;
 struct proc **pp2;
@@ -746,38 +797,98 @@ struct proc **pp2;
     p1 = *pp1;
     p2 = *pp2;
 
-    /* compare percent cpu (pctcpu) */
-#ifdef vax
-    if ((lresult = p2->p_pctcpu - p1->p_pctcpu) == 0.0)
-#else
-    if ((lresult = p2->p_pctcpu - p1->p_pctcpu) == 0)
-#endif
-    {
-	/* use cpticks to break the tie */
-	if ((result = p2->p_cpticks - p1->p_cpticks) == 0)
-	{
-	    /* use process state to break the tie */
-	    if ((result = sorted_state[p2->p_stat] -
-			  sorted_state[p1->p_stat])  == 0)
-	    {
-		/* use priority to break the tie */
-		if ((result = p2->p_pri - p1->p_pri) == 0)
-		{
-		    /* use resident set size (rssize) to break the tie */
-		    if ((result = p2->p_rssize - p1->p_rssize) == 0)
-		    {
-			/* use total memory to break the tie */
-			result = PROCSIZE(p2) - PROCSIZE(p1);
-		    }
-		}
-	    }
-	}
-    }
-    else
-    {
-	result = lresult < 0 ? -1 : 1;
-    }
+    ORDERKEY_PCTCPU
+    ORDERKEY_CPTICKS
+    ORDERKEY_STATE
+    ORDERKEY_PRIO
+    ORDERKEY_RSSIZE
+    ORDERKEY_MEM
+    ;
 
+    return(result);
+}
+
+/* compare_size - the comparison function for sorting by total memory usage */
+
+compare_size(pp1, pp2)
+
+struct proc **pp1;
+struct proc **pp2;
+
+{
+    register struct proc *p1;
+    register struct proc *p2;
+    register int result;
+    register pctcpu lresult;
+
+    /* remove one level of indirection */
+    p1 = *pp1;
+    p2 = *pp2;
+
+    ORDERKEY_MEM
+    ORDERKEY_RSSIZE
+    ORDERKEY_PCTCPU
+    ORDERKEY_CPTICKS
+    ORDERKEY_STATE
+    ORDERKEY_PRIO
+    ;
+
+    return(result);
+}
+
+/* compare_res - the comparison function for sorting by resident set size */
+
+compare_res(pp1, pp2)
+
+struct proc **pp1;
+struct proc **pp2;
+
+{
+    register struct proc *p1;
+    register struct proc *p2;
+    register int result;
+    register pctcpu lresult;
+
+    /* remove one level of indirection */
+    p1 = *pp1;
+    p2 = *pp2;
+
+    ORDERKEY_RSSIZE
+    ORDERKEY_MEM
+    ORDERKEY_PCTCPU
+    ORDERKEY_CPTICKS
+    ORDERKEY_STATE
+    ORDERKEY_PRIO
+    ;
+
+    return(result);
+}
+
+/* compare_time - the comparison function for sorting by total cpu time */
+
+compare_time(pp1, pp2)
+
+struct proc **pp1;
+struct proc **pp2;
+
+{
+    register struct proc *p1;
+    register struct proc *p2;
+    register int result;
+    register pctcpu lresult;
+
+    /* remove one level of indirection */
+    p1 = *pp1;
+    p2 = *pp2;
+
+    ORDERKEY_CPTICKS
+    ORDERKEY_PCTCPU
+    ORDERKEY_STATE
+    ORDERKEY_PRIO
+    ORDERKEY_RSSIZE
+    ORDERKEY_MEM
+    ;
+  
     return(result);
 }
 
@@ -796,9 +907,9 @@ int proc_owner(pid)
 int pid;
 
 {
-    register int cnt;
-    register struct proc **prefp;
-    register struct proc *pp;
+    int cnt;
+    struct proc **prefp;
+    struct proc *pp;
 
     prefp = pref;
     cnt = pref_len;

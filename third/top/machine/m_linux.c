@@ -1,16 +1,19 @@
 /*
  * top - a top users display for Unix
  *
- * SYNOPSIS:  Linux 1.2.x, 1.3.x, using the /proc filesystem
+ * SYNOPSIS:  Linux 1.2.x, 1.3.x 2.0.x, using the /proc filesystem
  *
  * DESCRIPTION:
- * This is the machine-dependent module for Linux 1.2.x or 1.3.x.
+ * This is the machine-dependent module for Linux 1.2.x, 1.3.x or 2.0.x.
  *
  * LIBS:
  *
- * CFLAGS: -DHAVE_GETOPT
+ * CFLAGS: -DHAVE_GETOPT -DHAVE_STRERROR -DORDER
+ *
+ * TERMCAP: -lcurses
  *
  * AUTHOR: Richard Henderson <rth@tamu.edu>
+ * Order support added by Alexey Klimkin <kad@klon.tme.mcst.ru>
  */
 
 #include "top.h"
@@ -94,7 +97,25 @@ static char *memorynames[NMEMSTATS+1] =
 static char fmt_header[] =
 "  PID X        PRI NICE  SIZE   RES STATE   TIME   WCPU    CPU COMMAND";
 
+#ifdef ORDER
+/* these are names given to allowed sorting orders -- first is default */
+char *ordernames[] = 
+{"cpu", "size", "res", "time", NULL};
 
+/* forward definitions for comparison functions */
+int compare_cpu();
+int compare_size();
+int compare_res();
+int compare_time();
+
+int (*proc_compares[])() = {
+    compare_cpu,
+    compare_size,
+    compare_res,
+    compare_time,
+    NULL };
+#endif
+	
 /*=SYSTEM STATE INFO====================================================*/
 
 /* these are for calculating cpu state percentages */
@@ -172,6 +193,9 @@ machine_init(statics)
     statics->procstate_names = procstatenames;
     statics->cpustate_names = cpustatenames;
     statics->memory_names = memorynames;
+#ifdef ORDER
+    statics->order_names = ordernames;
+#endif
 
     /* all done! */
     return 0;
@@ -509,7 +533,158 @@ format_next_process(handle, get_userid)
     return (fmt);
 }
 
+#ifdef ORDER
+/* comparison routines for qsort */
 
+/*
+ * There are currently four possible comparison routines.  main selects
+ * one of these by indexing in to the array proc_compares.
+ *
+ * Possible keys are defined as macros below.  Currently these keys are
+ * defined:  percent cpu, cpu ticks, process state, resident set size,
+ * total virtual memory usage.  The process states are ordered as follows
+ * (from least to most important):  WAIT, zombie, sleep, stop, start, run.
+ * The array declaration below maps a process state index into a number
+ * that reflects this ordering.
+ */
+
+/* First, the possible comparison keys.  These are defined in such a way
+   that they can be merely listed in the source code to define the actual
+   desired ordering.
+ */
+
+#define ORDERKEY_PCTCPU  if (dresult = p2->pcpu - p1->pcpu,\
+							 (result = dresult > 0.0 ? 1 : dresult < 0.0 ? -1 : 0) == 0)
+#define ORDERKEY_CPTICKS if ((result = p2->time - p1->time) == 0)
+#define ORDERKEY_STATE   if ((result = (sort_state[p2->state] - \
+										sort_state[p1->state])) == 0)
+#define ORDERKEY_PRIO    if ((result = p2->pri - p1->pri) == 0)
+#define ORDERKEY_RSSIZE  if ((result = p2->rss - p1->rss) == 0)
+#define ORDERKEY_MEM     if ((result = p2->size - p1->size) == 0)
+
+/* Now the array that maps process state to a weight */
+
+unsigned char sort_state[] =
+{
+	0,	/* empty */
+	6, 	/* run */
+	3,	/* sleep */
+	5,	/* disk wait */
+	1,	/* zombie */
+	2,	/* stop */
+	4	/* swap */
+};
+
+
+/* compare_cpu - the comparison function for sorting by cpu percentage */
+
+int
+compare_cpu (
+	       struct top_proc **pp1,
+	       struct top_proc **pp2)
+  {
+    register struct top_proc *p1;
+    register struct top_proc *p2;
+    register long result;
+    double dresult;
+
+    /* remove one level of indirection */
+    p1 = *pp1;
+    p2 = *pp2;
+
+    ORDERKEY_PCTCPU
+    ORDERKEY_CPTICKS
+    ORDERKEY_STATE
+    ORDERKEY_PRIO
+    ORDERKEY_RSSIZE
+    ORDERKEY_MEM
+    ;
+
+    return result == 0 ? 0 : result < 0 ? -1 : 1;
+  }
+
+/* compare_size - the comparison function for sorting by total memory usage */
+
+int
+compare_size (
+	       struct top_proc **pp1,
+	       struct top_proc **pp2)
+  {
+    register struct top_proc *p1;
+    register struct top_proc *p2;
+    register long result;
+    double dresult;
+
+    /* remove one level of indirection */
+    p1 = *pp1;
+    p2 = *pp2;
+
+    ORDERKEY_MEM
+    ORDERKEY_RSSIZE
+    ORDERKEY_PCTCPU
+    ORDERKEY_CPTICKS
+    ORDERKEY_STATE
+    ORDERKEY_PRIO
+    ;
+
+    return result == 0 ? 0 : result < 0 ? -1 : 1;
+  }
+
+/* compare_res - the comparison function for sorting by resident set size */
+
+int
+compare_res (
+	       struct top_proc **pp1,
+	       struct top_proc **pp2)
+  {
+    register struct top_proc *p1;
+    register struct top_proc *p2;
+    register long result;
+    double dresult;
+
+    /* remove one level of indirection */
+    p1 = *pp1;
+    p2 = *pp2;
+
+    ORDERKEY_RSSIZE
+    ORDERKEY_MEM
+    ORDERKEY_PCTCPU
+    ORDERKEY_CPTICKS
+    ORDERKEY_STATE
+    ORDERKEY_PRIO
+    ;
+
+    return result == 0 ? 0 : result < 0 ? -1 : 1;
+  }
+
+/* compare_time - the comparison function for sorting by total cpu time */
+
+int
+compare_time (
+	       struct top_proc **pp1,
+	       struct top_proc **pp2)
+  {
+    register struct top_proc *p1;
+    register struct top_proc *p2;
+    register long result;
+    double dresult;
+
+    /* remove one level of indirection */
+    p1 = *pp1;
+    p2 = *pp2;
+
+    ORDERKEY_CPTICKS
+    ORDERKEY_PCTCPU
+    ORDERKEY_STATE
+    ORDERKEY_PRIO
+    ORDERKEY_MEM
+    ORDERKEY_RSSIZE
+    ;
+
+    return result == 0 ? 0 : result < 0 ? -1 : 1;
+  }
+
+#else /* ORDER */
 /*
  *  proc_compare - comparison function for "qsort"
  *	Compares the resource consumption of two processes using five
@@ -571,7 +746,7 @@ proc_compare (pp1, pp2)
 
     return result == 0 ? 0 : result < 0 ? -1 : 1;
 }
-
+#endif /* ORDER */
 
 /*
  * proc_owner(pid) - returns the uid that owns process "pid", or -1 if

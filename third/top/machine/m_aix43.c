@@ -1,17 +1,21 @@
 /*
  * top - a top users display for Unix
  *
- * SYNOPSIS:  POWER and POWER2 running AIX 3.2.5.0
+ * SYNOPSIS:  PowerPC running AIX 4.2 or higher
  *
  * DESCRIPTION:
- * This is the machine-dependent module for AIX 3.2.5.0
- * It is tested on all POWER architectures.
+ * This is the machine-dependent module for AIX 4.2 and higher
+ * It is currenlty only tested on PowerPC architectures.
  *
  * TERMCAP: -lcurses
  *
  * CFLAGS: -DORDER -DHAVE_GETOPT
  *
- * AUTHOR:  Erik Deumens <deumens@qtp.ufl.edu>
+ * LIBS: -bD:0x18000000
+ *
+ * AUTHOR:  Joep Vesseur <joep@fwi.uva.nl>
+ *
+ * PATCHES: Antoine Tabary <tabary@bruyeres.cea.fr>
  */
 
 #include <stdlib.h>
@@ -21,26 +25,15 @@
 #include <sys/sysinfo.h>
 #include <procinfo.h>
 #include <sys/proc.h>
-/*
-#include <sys/var.h>
-*/
 #include <pwd.h>
 #include "top.h"
 #include "machine.h"
 
 
-#define PROCRESS(p) (((p)->u.ui_trss + (p)->u.ui_drss)*4)
-#define PROCSIZE(p) (((p)->u.ui_tsize/1024+(p)->u.ui_dvm)*4)
-#define PROCTIME(pi) (pi->u.ui_ru.ru_utime.tv_sec + pi->u.ui_ru.ru_stime.tv_sec)
+#define PROCRESS(p) (((p)->pi_trss + (p)->pi_drss)*4)
+#define PROCSIZE(p) (((p)->pi_tsize/1024+(p)->pi_dvm)*4)
+#define PROCTIME(pi) (pi->pi_ru.ru_utime.tv_sec + pi->pi_ru.ru_stime.tv_sec)
 
-/*
- * structure procsinfo exists in AIX 4.1 and is constructed here by combining
- * procinfo and userinfo which exists in AIX 3.2 also.
- */
-struct procsinfo {
-  struct procinfo p;
-  struct userinfo u;
-};
 
 /*
  * structure definition taken from 'monitor' by Jussi Maki (jmaki@hut.fi)
@@ -88,12 +81,12 @@ struct handle
  *  These definitions control the format of the per-process area
  */
 static char header[] =
-  "  PID X        PRI NICE   SIZE   RES STATE   TIME   WCPU    CPU COMMAND";
+  "   PID X        PRI NICE   SIZE   RES STATE   TIME   WCPU    CPU COMMAND";
 /* 0123456   -- field to fill in starts at header+6 */
-#define UNAME_START 6
+#define UNAME_START 7
 
 #define Proc_format \
-	"%5d %-8.8s %3d %4d %5d%c %4d%c %-5s %6s %5.2f%% %5.2f%% %.14s%s"
+	"%6d %-8.8s %3d %4d %5d%c %4d%c %-5s %6s %5.2f%% %5.2f%% %.14s%s"
 
 
 /* these are for detailing the process states */
@@ -125,7 +118,7 @@ char *memorynames[] = {
 #define M_VIRTFREE 5
 
 char *state_abbrev[] = {
-    "", "sleep", "", "run", "sleep", "zomb", "stop", "run", "swap"
+    "", "sleep", "", "", "sleep", "zomb", "stop", "run", "swap"
 };
 
 /* sorting orders. first is default */
@@ -173,14 +166,13 @@ static long cp_diff[CPU_NTIMES];
 long old_runque;
 
 /* process info */
-/*struct var v_info;*/		/* to determine nprocs */
+struct var v_info;		/* to determine nprocs */
 int nprocs;			/* maximum nr of procs in proctab */
 int ncpus;			/* nr of cpus installed */
 
 int ptsize;			/* size of process table in bytes */
 struct proc *p_proc;		/* a copy of the process table */
 struct procsinfo *p_info;	/* needed for vm and ru info */
-struct procinfo *p_infop;       /* return array for getproc call */
 struct procsinfo **pref;	/* processes selected for display */
 int pref_len;			/* number of processes selected */
 
@@ -210,16 +202,17 @@ machine_init(statics)
     proc_offset    = nlst[X_PROC].n_value;
     v_offset       = nlst[X_V].n_value;
 
-    ncpus = 1;                 /* number of cpus, AIX 3.2 has only 1 CPU */
-    nprocs = PROCMASK(NPROC);
+    getkval(v_offset, (caddr_t)&v_info, sizeof v_info, "v");
+
+    ncpus = v_info.v_ncpus;	/* number of cpus */
+    nprocs = PROCMASK(PIDMAX);
 
     ptsize = nprocs * sizeof (struct proc);
     p_proc = (struct proc *)malloc(ptsize);
     p_info = (struct procsinfo *)malloc(nprocs * sizeof (struct procsinfo));
-    p_infop = (struct procinfo *)malloc(nprocs * sizeof (struct procinfo));
     pref = (struct procsinfo **)malloc(nprocs * sizeof (struct procsinfo *));
 
-    if (!p_proc || !p_info || !p_infop || !pref) {
+    if (!p_proc || !p_info || !pref) {
 	fprintf(stderr, "top: not enough memory\n");
 	return -1;
     }
@@ -310,7 +303,8 @@ caddr_t get_process_info(si, sel, compare)
     struct process_select *sel;
     int (*compare)();
 {
-    int i, nproc, st;
+    int i, nproc;
+    int ptsize_util;
     int active_procs = 0, total_procs = 0;
     struct procsinfo *pp, **p_pref = pref;
     unsigned long pctcpu;
@@ -321,24 +315,20 @@ caddr_t get_process_info(si, sel, compare)
 
     curtime = time(0);
 
-    /* get the procinfo structures of all running processes */
-    nproc = getproc(p_infop, nprocs, sizeof (struct procinfo));
+    /* get the procsinfo structures of all running processes */
+    nproc = getprocs(p_info, sizeof (struct procsinfo), NULL, 0, 
+		     &procsindex, nprocs);
     if (nproc < 0) {
-	perror("getproc");
+	perror("getprocs");
 	quit(1);
-    }
-    for (i=0; i<nproc; i++) {
-      st = getuser(&p_infop[i],sizeof(struct procinfo),
-		   &p_info[i].u,sizeof(struct userinfo));
-      if (st==-1) p_infop[i].pi_stat = SZOMB; 
-      memcpy (&p_info[i].p,&p_infop[i],sizeof(struct procinfo));
     }
 
     /* the swapper has no cmd-line attached */
-    strcpy(p_info[0].u.ui_comm, "swapper");
+    strcpy(p_info[0].pi_comm, "swapper");
     
     /* get proc table */
-    getkval(proc_offset, (caddr_t)p_proc, ptsize, "proc");
+    ptsize_util = (PROCMASK(p_info[nproc-1].pi_pid)+1) * sizeof(struct proc);
+    getkval(proc_offset, (caddr_t)p_proc, ptsize_util, "proc");
 
     memset(process_states, 0, sizeof process_states);
 
@@ -349,14 +339,21 @@ caddr_t get_process_info(si, sel, compare)
      */
     for (pp = p_info, i = 0; i < nproc; pp++, i++) {
 
-	p = &p_proc[PROCMASK(pp->p.pi_pid)];
+	p = &p_proc[PROCMASK(pp->pi_pid)];
 
-        if (pp->p.pi_stat && (sel->system || ((pp->p.pi_flag & SKPROC) == 0))) {
+	/* AIX marks all runnable processes as ACTIVE. We want to know
+	   which processes are sleeping, so check used cpu ticks and adjust
+	   status field accordingly
+	 */
+	if (p->p_stat == SACTIVE && p->p_cpticks == 0)
+	    p->p_stat = SIDL;
+
+        if (pp->pi_state && (sel->system || ((pp->pi_flags & SKPROC) == 0))) {
 	    total_procs++;
 	    process_states[p->p_stat]++;
-	    if ( (pp->p.pi_stat != SZOMB) &&
-		(sel->idle || p->p_cpticks != 0 /*|| (p->p_stat == SACTIVE)*/)
-		&& (sel->uid == -1 || pp->p.pi_uid == (uid_t)sel->uid)) {
+	    if ( (pp->pi_state != SZOMB) &&
+		(sel->idle || p->p_cpticks != 0 || (p->p_stat == SACTIVE))
+		&& (sel->uid == -1 || pp->pi_uid == (uid_t)sel->uid)) {
                 *p_pref++ = pp;
 		active_procs++;
 	    }
@@ -386,7 +383,7 @@ char fmt[128];		/* static area where result is built */
 
 /* define what weighted cpu is. use definition of %CPU from 'man ps(1)' */
 #define weighted_cpu(pp) (PROCTIME(pp) == 0 ? 0.0 : \
-                        (((PROCTIME(pp)*100.0)/(curtime-pi->u.ui_start)/ncpus)))
+                        (((PROCTIME(pp)*100.0)/(curtime-pi->pi_start)/ncpus)))
 #define double_pctcpu(p) ((double)p->p_pctcpu/(double)FLT_MODULO)
 
 char *format_next_process(handle, get_userid)
@@ -409,24 +406,24 @@ char *format_next_process(handle, get_userid)
     }
     pi = *(hp->next_proc++);
     hp->remaining--;
-    p = &p_proc[PROCMASK(pi->p.pi_pid)];
+    p = &p_proc[PROCMASK(pi->pi_pid)];
 
     cpu_time = PROCTIME(pi);
 
     /* we disply sizes up to 10M in KiloBytes, beyond 10M in MegaBytes */
-    if ((proc_size = (pi->u.ui_tsize/1024+pi->u.ui_dvm)*4) > 10240) {
+    if ((proc_size = (pi->pi_tsize/1024+pi->pi_dvm)*4) > 10240) {
 	proc_size /= 1024;
 	size_unit = 'M';
     }
-    if ((proc_ress = (pi->u.ui_trss + pi->u.ui_drss)*4) > 10240) {
+    if ((proc_ress = (pi->pi_trss + pi->pi_drss)*4) > 10240) {
 	proc_ress /= 1024;
 	ress_unit = 'M';
     }
 
     sprintf(fmt, Proc_format ,
-            pi->p.pi_pid,					  /* PID */
-            (*get_userid)(pi->u.ui_uid),			  /* login name */
-            getpriority(PRIO_PROCESS, pi->p.pi_pid),
+            pi->pi_pid,					  /* PID */
+            (*get_userid)(pi->pi_uid),			  /* login name */
+            getpriority(PRIO_PROCESS, pi->pi_pid),
 	    EXTRACT_NICE(p),				  /* fixed or vari */
             proc_size,					  /* size */
             size_unit,					  /* K or M */
@@ -436,8 +433,8 @@ char *format_next_process(handle, get_userid)
             format_time(cpu_time),			  /* time used */
 	    weighted_cpu(pi),	                          /* WCPU */
 	    100.0 * double_pctcpu(p),                     /* CPU */
-            printable(pi->u.ui_comm),                       /* COMM */
-	    (pi->p.pi_flag & SKPROC) == 0 ? "" : " (sys)"  /* kernel process? */
+            printable(pi->pi_comm),                       /* COMM */
+	    (pi->pi_flags & SKPROC) == 0 ? "" : " (sys)"  /* kernel process? */
 	    );
     return(fmt);
 }
@@ -541,8 +538,8 @@ compare_cpu(ppi1, ppi2)
     register int result;
     register long lresult;
 
-    p1 = &p_proc[PROCMASK(pi1->p.pi_pid)];
-    p2 = &p_proc[PROCMASK(pi2->p.pi_pid)];
+    p1 = &p_proc[PROCMASK(pi1->pi_pid)];
+    p2 = &p_proc[PROCMASK(pi2->pi_pid)];
 
     ORDERKEY_PCTCPU
     ORDERKEY_CPTICKS
@@ -569,8 +566,8 @@ compare_size(ppi1, ppi2)
     register int result;
     register long lresult;
 
-    p1 = &p_proc[PROCMASK(pi1->p.pi_pid)];
-    p2 = &p_proc[PROCMASK(pi2->p.pi_pid)];
+    p1 = &p_proc[PROCMASK(pi1->pi_pid)];
+    p2 = &p_proc[PROCMASK(pi2->pi_pid)];
 
     ORDERKEY_MEM
     ORDERKEY_RSSIZE
@@ -597,8 +594,8 @@ compare_res(ppi1, ppi2)
     register int result;
     register long lresult;
 
-    p1 = &p_proc[PROCMASK(pi1->p.pi_pid)];
-    p2 = &p_proc[PROCMASK(pi2->p.pi_pid)];
+    p1 = &p_proc[PROCMASK(pi1->pi_pid)];
+    p2 = &p_proc[PROCMASK(pi2->pi_pid)];
 
     ORDERKEY_RSSIZE
     ORDERKEY_MEM
@@ -625,8 +622,8 @@ compare_time(ppi1, ppi2)
     register int result;
     register long lresult;
 
-    p1 = &p_proc[PROCMASK(pi1->p.pi_pid)];
-    p2 = &p_proc[PROCMASK(pi2->p.pi_pid)];
+    p1 = &p_proc[PROCMASK(pi1->pi_pid)];
+    p2 = &p_proc[PROCMASK(pi2->pi_pid)];
 
     ORDERKEY_CPTICKS
     ORDERKEY_PCTCPU
@@ -653,8 +650,8 @@ compare_prio(ppi1, ppi2)
     register int result;
     register long lresult;
 
-    p1 = &p_proc[PROCMASK(pi1->p.pi_pid)];
-    p2 = &p_proc[PROCMASK(pi2->p.pi_pid)];
+    p1 = &p_proc[PROCMASK(pi1->pi_pid)];
+    p2 = &p_proc[PROCMASK(pi2->pi_pid)];
 
     ORDERKEY_PRIO
     ORDERKEY_PCTCPU
@@ -676,11 +673,12 @@ int pid;
    register int cnt = pref_len;
 
    while (--cnt >= 0) {
-       if ((*prefp)->p.pi_pid == pid)
-	   return (*prefp)->p.pi_uid;
+       if ((*prefp)->pi_pid == pid)
+	   return (*prefp)->pi_uid;
        prefp++;
    }
    
    return(-1);
 }
+
 

@@ -1,16 +1,16 @@
 /*
  * top - a top users display for Unix
  *
- * SYNOPSIS:  any uniprocessor, 32 bit SGI machine running IRIX 5.3
+ * SYNOPSIS:  any uniprocessor, SGI machine running IRIX 6.2
  *
  * DESCRIPTION:
- * This is the machine-dependent module for IRIX 5.3.
- * It has been tested on Indys running 5.3 and Indigos running 5.3XFS
+ * This is the machine-dependent module for IRIX 6.2.
+ * It has been tested on an Indy running 6.2
  *
- * LIBS: -lmld
+ * LIBS: -lelf
  * CFLAGS: -DHAVE_GETOPT
  *
- * AUTHOR: Sandeep Cariapa <cariapa@sgi.com>
+ * AUTHOR: Sandeep Cariapa <cariapa@sgi.com> (6.2 mods by tda10@cam.ac.uk)
  * This is not a supported product of Silicon Graphics, Inc.
  * Please do not call SGI for support.
  *
@@ -29,12 +29,15 @@
 #include <paths.h>
 #include <dirent.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <nlist.h>
 #include <unistd.h>
 #include <errno.h>
 #include <fcntl.h>
 #include "top.h"
 #include "machine.h"
+
+#undef IRIX_MPID  /* 6.2 doesn't seem to have mpid at all */
 
 #ifdef IRIX64
 #define nlist nlist64
@@ -61,8 +64,10 @@
 # define intload(i) ((double)(i))
 #endif
 
-#define percent_cpu(pp) (*(double *)pp->pr_fill)
-#define weighted_cpu(pp) (*(double *)&pp->pr_fill[2])
+/* use float because we can't fit a double into a long 
+   even on a 32bit machine */
+#define percent_cpu(pp) (*(float *)(pp->pr_fill))
+#define weighted_cpu(pp) (*(float *)&pp->pr_fill[2])
 
 static int pagesize;
 #define pagetok(size) ((size)*pagesize)
@@ -79,7 +84,7 @@ static char header[] =
 #define UNAME_START 6
 
 #define Proc_format \
-	"%5d %-8.8s %3d %4d %5s %5s %-5s %6s %5.2f%% %5.2f%% %.16s"
+	"%5d %-8.8s %3ld %4d %5s %5s %-5s %6s %5.2f%% %5.2f%% %.16s"
 
 /* these are for detailing the process states */
 char *state_abbrev[] =
@@ -127,7 +132,7 @@ static struct nlist nlst[] = {
 { "freemem" },		/* 2. Amount of free memory in system. */
 { "maxmem" },		/* 3. Maximum amount of memory usable by system. */
 { "availrmem" },        /* 4. Available real memory. */
-#ifndef IRIX64
+#ifdef IRIX_MPID
 { "mpid" },		/* 5. PID of last process. */
 #endif
 { 0 }
@@ -198,7 +203,7 @@ int machine_init(statics)
   freemem_offset = nlst[X_FREEMEM].n_value;
   maxmem_offset = nlst[X_MAXMEM].n_value;
   availrmem_offset = nlst[X_AVAILRMEM].n_value;
-#ifndef IRIX64
+#ifdef IRIX_MPID
    mpid_offset = nlst[X_MPID].n_value;
 #endif
 
@@ -287,8 +292,8 @@ void get_system_info(si)
   (void) getkval(maxmem_offset, (int *) (&maxmem), sizeof(maxmem), "maxmem");
   (void) getkval(availrmem_offset, (int *) (&availrmem), sizeof(availrmem),
 "availrmem");
-#ifdef IRIX64
-  si->last_pid = 0;
+#ifndef IRIX_MPID
+  si->last_pid = -1;  /* don't display this field */
 #else
   (void) getkval(mpid_offset, &(si->last_pid), sizeof (si->last_pid), "mpid");
 #endif
@@ -580,6 +585,7 @@ void getptable (baseptr)
      struct prpsinfo *baseptr;
 {
   struct prpsinfo *currproc;	/* pointer to current proc structure	*/
+  struct prcred        currcred;
   int numprocs = 0;
   int i;
   struct dirent *directp;
@@ -631,11 +637,21 @@ void getptable (baseptr)
     {
       int fd;
 
+      /*
+       * ignore names with leading dots: both ioctls below work
+       * for spurious (thread related?) entries
+       */
+      if (directp->d_name[0] == '.')
+	continue;
+
+
       if ((fd = open (directp->d_name, O_RDONLY)) < 0)
 	continue;
 
       currproc = &baseptr[numprocs];
-      if (ioctl (fd, PIOCPSINFO, currproc) < 0)
+      if (ioctl (fd, PIOCPSINFO, currproc) < 0 ||
+	  /* ps(1) uses this to check for dummy procfs entries */
+	  ioctl(fd, PIOCCRED, &currcred) < 0)
 	{
 	  (void) close (fd);
 	  continue;

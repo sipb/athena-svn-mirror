@@ -10,7 +10,7 @@
  *
  * LIBS:  -lkvm
  *
- * AUTHOR:  William LeFebvre <phil@eecs.nwu.edu>
+ * AUTHOR:  William LeFebvre <wnl@groupsys.com>
  *          Brett McCoy <brtmac@maverick.ksu.ksu.edu>
  */
 

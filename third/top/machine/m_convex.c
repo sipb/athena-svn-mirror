@@ -6,7 +6,7 @@
  * DESCRIPTION:
  * This is the machine-dependent module for Convex OS.11.X
  * Most of it was stolen from m_sunos4.c which was written by
- * William LeFebvre <phil@eecs.nwu.edu>
+ * William LeFebvre <wnl@groupsys.com>
  * Works for:
  *      Convex OS 11.1
  *

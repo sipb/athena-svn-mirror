@@ -1,18 +1,19 @@
 /*
  * top - a top users display for Unix
  *
- * SYNOPSIS:  DEC Alpha AXP running OSF/1 or Digital Unix 4.0.
+ * SYNOPSIS:  OSF/1, Digital Unix 4.0, Compaq Tru64 5.0
  *
  * DESCRIPTION:
- * This is the machine-dependent module for DEC OSF/1 
- * It is known to work on OSF/1 1.2, 1.3, 2.0-T3, 3.0, and Digital Unix V4.0
+ * This is the machine-dependent module for DEC OSF/1 and its descendents
+ * It is known to work on OSF/1 1.2, 1.3, 2.0-T3, 3.0, Digital Unix V4.0,
+ * Digital Unix 5.0, and Tru64 5.0.
  * WARNING: if you use optimization with the standard "cc" compiler that
  * .        comes with V3.0 the resulting executable may core dump.  If
  * .        this happens, recompile without optimization.
  *
  * LIBS: -lmld -lmach
  *
- * CFLAGS: -DHAVE_GETOPT
+ * CFLAGS: -DHAVE_GETOPT -DORDER
  *
  * AUTHOR:  Anthony Baxter, <anthony@aaii.oz.au>
  * Derived originally from m_ultrix, by David S. Comay <dsc@seismo.css.gov>, 
@@ -29,12 +30,11 @@
  *	automatically detect the absence of _mpid in the nlist and
  *	recover gracefully---this appears to be the only difference
  *	with 3.0.
+ *
+ * Modified: 3-Mar-00, Rainer Orth <ro@TechFak.Uni-Bielefeld.DE>
+ *	added support for sort ordering.
  */
 /* 
- * $Id: m_decosf1.c,v 1.1.1.1 1996-10-07 20:10:21 ghudson Exp $
- * Theres some real icky bits in this code - you have been warned :)
- * Extremely icky bits are marked with FIXME: 
- *
  * Theory of operation: 
  * 
  * Use Mach calls to build up a structure that contains all the sorts
@@ -60,6 +60,9 @@
 #include <sys/file.h>
 #include <sys/time.h>
 /* #include <machine/pte.h> */
+/* forward declarations, needed by <net/if.h> included from <sys/table.h> */
+struct rtentry;
+struct mbuf;
 #include <sys/table.h>
 #include <mach.h>
 #include <mach/mach_types.h>
@@ -69,6 +72,7 @@
 
 #include "top.h"
 #include "machine.h"
+#include "utils.h"
 
 extern int errno, sys_nerr;
 extern char *sys_errlist[];
@@ -171,6 +175,25 @@ char *memorynames[] = {
     "M use/tot  ", "Free: ", "K", NULL
 };
 
+/* these are names given to allowed sorting orders -- first is default */
+char *ordernames[] = {
+    "cpu", "size", "res", "time", NULL
+};
+
+/* forward definitions for comparison functions */
+int compare_cpu();
+int compare_size();
+int compare_res();
+int compare_time();
+
+int (*proc_compares[])() = {
+    compare_cpu,
+    compare_size,
+    compare_res,
+    compare_time,
+    NULL
+};
+
 /* these are for getting the memory statistics */
 
 static int pageshift;		/* log base 2 of the pagesize */
@@ -192,6 +215,7 @@ void do_threads_calculations();
 struct osf1_top_proc {
     size_t p_mach_virt_size;
     char p_mach_state;
+    int p_flag;
     fixpt_t p_mach_pct_cpu; /* aka p_pctcpu */
     int used_ticks;
     size_t process_size;
@@ -283,6 +307,7 @@ struct statics *statics;
     statics->procstate_names = procstatenames;
     statics->cpustate_names = cpustatenames;
     statics->memory_names = memorynames;
+    statics->order_names = ordernames;
 
     /* initialise this, for calculating cpu time */
     if (table(TBL_SYSINFO,0,&sibuf,1,sizeof(struct tbl_sysinfo))<0) {
@@ -312,7 +337,7 @@ register char *uname_field;
     return(header);
 }
 
-get_system_info(si)
+void get_system_info(si)
 struct system_info *si;
 {
     struct tbl_loadavg labuf;
@@ -337,7 +362,7 @@ struct system_info *si;
     /* get load averages */
     if (table(TBL_LOADAVG,0,&labuf,1,sizeof(struct tbl_loadavg))<0) {
 	perror("TBL_LOADAVG");
-	return(-1);
+	return;
     }
     if (labuf.tl_lscale)   /* scaled */
 	for(i=0;i<3;i++) 
@@ -350,7 +375,7 @@ struct system_info *si;
     /* array of cpu state counters */
     if (table(TBL_SYSINFO,0,&sibuf,1,sizeof(struct tbl_sysinfo))<0) {
 	perror("TBL_SYSINFO");
-	return(-1);
+	return;
     }
     new_ticks[0] = sibuf.si_user ; new_ticks[1] = sibuf.si_nice;
     new_ticks[2] = sibuf.si_sys  ; new_ticks[3] = sibuf.si_idle;
@@ -412,7 +437,6 @@ int (*compare)();
 
     /* these are copied out of sel for speed */
     int show_idle;
-    int show_system;
     int show_uid;
     int show_command;
 
@@ -421,7 +445,6 @@ int (*compare)();
 
     /* set up flags which define what we are going to select */
     show_idle = sel->idle;
-    show_system = sel->system;
     show_uid = sel->uid != -1;
     show_command = sel->command != NULL;
 
@@ -429,13 +452,6 @@ int (*compare)();
     total_procs = 0;
     active_procs = 0;
     memset((char *)process_states, 0, sizeof(process_states));
-    process_states[0]=0;
-    process_states[1]=0;
-    process_states[2]=0;
-    process_states[3]=0;
-    process_states[4]=0;
-    process_states[5]=0;
-    process_states[6]=0;
     prefp = pref;
     pp=pbase;
     for (j=0; j<nproc; j += 8) 
@@ -452,23 +468,30 @@ int (*compare)();
 	    {
 		pp->p_pid = p_i[k].pi_pid;
 		pp->p_ruid = p_i[k].pi_ruid;
+		pp->p_flag = p_i[k].pi_flag;
 		pp->p_nice = getpriority(PRIO_PROCESS,p_i[k].pi_pid);
 		/* Load useful values into the proc structure */
 		do_threads_calculations(pp);
 		/*
 		 *  Place pointers to each valid proc structure in pref[].
 		 *  Process slots that are actually in use have a non-zero
-		 *  status field.  Processes with SSYS set are system
-		 *  processes---these get ignored unless show_sysprocs is set.
+		 *  status field.  
 		 */
+#ifdef DEBUG
+		/*
+		 *  Emit debug info about all processes before selection.
+		 */
+		fprintf(stderr, "pid = %d ruid = %d comm = %s p_mach_state = %d p_stat = %d p_flag = 0x%x\n",
+			pp->p_pid, pp->p_ruid, p_i[k].pi_comm,
+			pp->p_mach_state, p_i[k].pi_status, pp->p_flag);
+#endif
 		if (pp->p_mach_state != 0)
 		{
 		    total_procs++;
 		    process_states[pp->p_mach_state]++;
-		    if ((pp->p_mach_state != SZOMB) &&
-			(pp->p_mach_state != SIDL) &&
+		    if ((pp->p_mach_state != 8) &&
 			(show_idle || (pp->p_mach_pct_cpu != 0) || 
-                                   (pp->p_mach_state == SRUN)) &&
+			 (pp->p_mach_state == 1)) &&
 			(!show_uid || pp->p_ruid == (uid_t)sel->uid)) {
 			*prefp++ = pp;
 			active_procs++;
@@ -504,7 +527,6 @@ char *(*get_userid)();
     register struct osf1_top_proc *pp;
     register long cputime;
     register double pct;
-    int where;
     struct user u;
     struct handle *hp;
 
@@ -547,7 +569,9 @@ char *(*get_userid)();
 	    (void) strcpy(u.u_comm, "[execpt.hndlr]");
 	}
     }
-    if (where == 1) {
+
+    /* Check if process is in core */
+    if (!(pp->p_flag & SLOAD)) {
 	/*
 	 * Print swapped processes as <pname>
 	 */
@@ -622,18 +646,35 @@ char *refstr;
     return(1);
 }
     
-/* comparison routine for qsort */
+/* comparison routines for qsort */
 
 /*
- *  proc_compare - comparison function for "qsort"
- *   Compares the resource consumption of two processes using five
- *   distinct keys. The keys (in descending order of importance) are:
- *   percent cpu, cpu ticks, state, resident set size, total virtual
- *   memory usage. The process states are ordered as follows (from least
- *   to most important): WAIT, zombie, sleep, stop, start, run. The array
- *   declaration below maps a process state index into a number that
- *   reflects this ordering.
+ * There are currently four possible comparison routines.  main selects
+ * one of these by indexing in to the array proc_compares.
+ *
+ * Possible keys are defined as macros below.  Currently these keys are
+ * defined:  percent cpu, cpu ticks, process state, resident set size,
+ * total virtual memory usage.  The process states are ordered as follows
+ * (from least to most important):  WAIT, zomb, ???, halt, idle, sleep,
+ * stop, run.  The array declaration below maps a process state index into
+ * a number that reflects this ordering.
  */
+
+/* First, the possible comparison keys.  These are defined in such a way
+   that they can be merely listed in the source code to define the actual
+   desired ordering.
+ */
+
+#define ORDERKEY_PCTCPU  if (lresult = p2->p_mach_pct_cpu - p1->p_mach_pct_cpu,\
+                           (result = lresult > 0 ? 1 : lresult < 0 ? -1 : 0) == 0)
+#define ORDERKEY_CPTICKS if ((result = p2->used_ticks - p1->used_ticks) == 0)
+#define ORDERKEY_STATE   if ((result = sorted_state[p2->p_mach_state] - \
+                            sorted_state[p1->p_mach_state])  == 0)
+#define ORDERKEY_PRIO    if ((result = p2->p_pri - p1->p_pri) == 0)
+#define ORDERKEY_RSSIZE  if ((result = p2->p_rssize - p1->p_rssize) == 0)
+#define ORDERKEY_MEM     if ((result = p2->p_mach_virt_size - p1->p_mach_virt_size) == 0)
+
+/* Now the array that maps process state to a weight */
 
 static unsigned char sorted_state[] =
 {
@@ -648,7 +689,9 @@ static unsigned char sorted_state[] =
    2, /*"zomb"*/
 };
  
-proc_compare(pp1, pp2)
+/* compare_cpu - the comparison function for sorting by cpu percentage */
+
+compare_cpu(pp1, pp2)
 
 struct osf1_top_proc **pp1;
 struct osf1_top_proc **pp2;
@@ -656,40 +699,105 @@ struct osf1_top_proc **pp2;
 {
     register struct osf1_top_proc *p1;
     register struct osf1_top_proc *p2;
-    register int result;
-    register pctcpu lresult=0.0;
-    struct user u1, u2;
+    register long result;
+    register pctcpu lresult;
 
     /* remove one level of indirection */
     p1 = *pp1;
     p2 = *pp2;
 
-    /* compare percent cpu (pctcpu) */
-    if ((lresult = p2->p_mach_pct_cpu - p1->p_mach_pct_cpu) == 0)
-    {
-	/* use process state to break the tie */
-	if ((result = sorted_state[p2->p_mach_state] -
-		  sorted_state[p1->p_mach_state])  == 0)
-	{
-	    /* use elapsed time to break the tie */
-	    if ((result = p2->used_ticks - p1->used_ticks) == 0)
-	    {
-		/* use priority to break the tie */
-		if ((result = p2->p_pri - p1->p_pri) == 0)
-		{
-		    /* use resident set size (rssize) to break the tie */
-		    if ((result = p2->p_rssize - p1->p_rssize) == 0)
-		    {
-			/* use total memory to break the tie */
-			result = p2->process_size - p1->process_size;
-		    }
-		}
-	    }
-	}
-    }
+    ORDERKEY_PCTCPU
+    ORDERKEY_CPTICKS
+    ORDERKEY_STATE
+    ORDERKEY_PRIO
+    ORDERKEY_RSSIZE
+    ORDERKEY_MEM
+    ;
 
-    if(lresult)
-	result = lresult < 0 ? -1 : 1;
+    return(result);
+}
+
+/* compare_size - the comparison function for sorting by total memory usage */
+
+compare_size(pp1, pp2)
+
+struct osf1_top_proc **pp1;
+struct osf1_top_proc **pp2;
+
+{
+    register struct osf1_top_proc *p1;
+    register struct osf1_top_proc *p2;
+    register long result;
+    register pctcpu lresult;
+
+    /* remove one level of indirection */
+    p1 = *pp1;
+    p2 = *pp2;
+
+    ORDERKEY_MEM
+    ORDERKEY_RSSIZE
+    ORDERKEY_PCTCPU
+    ORDERKEY_CPTICKS
+    ORDERKEY_STATE
+    ORDERKEY_PRIO
+    ;
+
+    return(result);
+}
+
+/* compare_res - the comparison function for sorting by resident set size */
+
+compare_res(pp1, pp2)
+
+struct osf1_top_proc **pp1;
+struct osf1_top_proc **pp2;
+
+{
+    register struct osf1_top_proc *p1;
+    register struct osf1_top_proc *p2;
+    register long result;
+    register pctcpu lresult;
+
+    /* remove one level of indirection */
+    p1 = *pp1;
+    p2 = *pp2;
+
+    ORDERKEY_RSSIZE
+    ORDERKEY_MEM
+    ORDERKEY_PCTCPU
+    ORDERKEY_CPTICKS
+    ORDERKEY_STATE
+    ORDERKEY_PRIO
+    ;
+
+    return(result);
+}
+
+/* compare_time - the comparison function for sorting by total cpu time */
+
+compare_time(pp1, pp2)
+
+struct osf1_top_proc **pp1;
+struct osf1_top_proc **pp2;
+
+{
+    register struct osf1_top_proc *p1;
+    register struct osf1_top_proc *p2;
+    register long result;
+    register pctcpu lresult;
+
+    /* remove one level of indirection */
+    p1 = *pp1;
+    p2 = *pp2;
+
+    ORDERKEY_CPTICKS
+    ORDERKEY_PCTCPU
+    ORDERKEY_STATE
+    ORDERKEY_PRIO
+    ORDERKEY_RSSIZE
+    ORDERKEY_MEM
+    ;
+  
     return(result);
 }
 
@@ -836,3 +944,4 @@ int setpriority(int dummy, int procnum, int niceval)
     }
     return(syscall(SYS_setpriority,PRIO_PROCESS,procnum,niceval));
 }
+
