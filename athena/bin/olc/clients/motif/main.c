@@ -26,7 +26,7 @@
 
 #ifndef SABER
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.11 1991-03-24 23:10:50 lwvanels Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.12 1991-03-26 08:52:15 lwvanels Exp $";
 #endif
 #endif
 
@@ -40,6 +40,10 @@ static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/
 /*
  *  OLC-type variables.
  */
+
+static XrmOptionDescRec options[] = {
+{"-scale",      "*load.minScale",       XrmoptionSepArg,           NULL},
+};
 
 PERSON User;                            /* Structure describing user. */
 char DaemonHost[MAXHOSTNAMELEN];           /* Name of the daemon's machine. */
@@ -74,7 +78,7 @@ int OLCR=0, OLC=0;
 
 main(argc, argv)
      int argc;
-     char *argv[];
+     char **argv;
 {  
   Arg args[10];
   int n = 0;
@@ -94,29 +98,6 @@ main(argc, argv)
       OLCR = 1;
     }
 
-
-  ++argv, --argc;
-  while (argc > 0 && argv[0][0] == '-') {
-    if (!strcmp (argv[0], "-server")) {
-      /*
-       * this is a kludge, but the other interface is already
-       * there
-       */
-      (void) setenv ("OLCD_HOST", argv[1], 1);
-      ++argv, --argc;
-    }
-    else if (!strcmp (argv[0], "-port")) {
-      (void) setenv ("OLCD_PORT", argv[1], 1);
-      ++argv, --argc;
-    }
-    else {
-      fprintf (stderr, "%s: unknown control argument %s\n",
-	       program, argv[0]);
-      exit (1);
-    }
-    ++argv;
-    --argc;
-  }
 
 /*
  *  First, try opening display.  If this fails, print a 'nice' error
@@ -140,7 +121,30 @@ main(argc, argv)
  *  If opening display was successful, then initialize toolkit, display,
  *  interface, etc.
  */
-  toplevel = XtInitialize(NULL, "Xolc", NULL, 0, &argc, argv);
+  toplevel = XtInitialize("xolc" , "Xolc", NULL, 0, &argc, argv);
+
+  ++argv, --argc;
+  while (argc > 0 && argv[0][0] == '-') {
+    if (!strcmp (argv[0], "-server")) {
+      /*
+       * this is a kludge, but the other interface is already
+       * there
+       */
+      (void) setenv ("OLCD_HOST", argv[1], 1);
+      ++argv, --argc;
+    }
+    else if (!strcmp (argv[0], "-port")) {
+      (void) setenv ("OLCD_PORT", argv[1], 1);
+      ++argv, --argc;
+    }
+    else {
+      fprintf (stderr, "%s: unknown control argument %s\n",
+	       program, argv[0]);
+      exit (1);
+    }
+    ++argv;
+    --argc;
+  }
 
   n=0;
   XtSetArg(args[n], XmNallowShellResize, TRUE); n++;
