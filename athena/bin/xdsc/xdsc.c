@@ -8,12 +8,13 @@
 #include	<Xaw/Paned.h>
 #include	<Xaw/AsciiText.h>
 #include	<Xaw/TextP.h>
+#include	<Xaw/TextSinkP.h>
 #include	<Xaw/Dialog.h>
 #include	<Xaw/Form.h>
 #include	<Xaw/Label.h>
 #include	"xdsc.h"
 
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/xdsc.c,v 1.3 1990-12-07 15:57:22 sao Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/xdsc.c,v 1.4 1990-12-11 16:38:15 sao Exp $";
 
 /*
 ** Globals
@@ -26,6 +27,8 @@ CommandWidget	botbuttons[MAX_BOT_BUTTONS];
 char		filebase[50];
 int		whichTopScreen = MAIN;
 Widget		topW, paneW;
+void		RemoveLetterC();
+int		char_width;
 
 /*
 ** External functions
@@ -103,6 +106,8 @@ char *argv[];
 {
 	int	pid;
 	char	*oldpath, *newpath;
+	Arg	args[1];
+	int	width;
 
 	if (argc > 1)
 		debug = True;
@@ -161,6 +166,18 @@ char *argv[];
 	free (newpath);
 
 	BuildUserInterface ();
+
+/*
+** Set our width to 80 chars wide in the current font.  Min value of 500
+** means that all the lower buttons will fit.
+*/
+	char_width = (((TextSinkObject) (toptextW->text.sink))->
+				text_sink.font->max_bounds.width);
+
+	width = 80 * char_width;
+	XtSetArg(args[0], XtNwidth, width < 500 ? 500 : width);
+	XtSetValues(topW, args, 1);
+
 	XtRealizeWidget(topW);
 
 	SetLabelsAndCallback (MAIN);
@@ -244,7 +261,6 @@ BuildUserInterface()
 
 
 	n = 0;
-	XtSetArg(args[n], XtNskipAdjust, True);			n++;
 	paneW = XtCreateManagedWidget(
 			"pane",
 			panedWidgetClass,
@@ -262,7 +278,7 @@ BuildUserInterface()
 
 	for (i = 0; i < MAX_TOP_BUTTONS; i++) {
 		n = 0;
-		XtSetArg(args[n], XtNlabel, "---");	n++;
+		XtSetArg(args[n], XtNlabel, "---");		n++;
 		commandW = (CommandWidget) XtCreateManagedWidget(
 			"box",
 			commandWidgetClass,
@@ -302,10 +318,7 @@ BuildUserInterface()
 	XtSetArg(args[n], XtNstring, meetinglist);		n++;
 	XtSetArg(args[n], XtNeditType, XawtextEdit);		n++;
 	XtSetArg(args[n], XtNuseStringInPlace, False);		n++;
-/*
-	XtSetArg(args[n], XtNlength, strlen(meetinglist));	n++;
-	XtSetArg(args[n], XtNuseStringInPlace, True);		n++;
-*/
+
 	toptextW = (TextWidget) XtCreateManagedWidget(
 			"toptext",
 			asciiTextWidgetClass,
@@ -624,6 +637,8 @@ XtPointer	call_data;
 		break;
 	case 3:
 		RestoreTopTextWidget();
+		if (TransactionNum(HIGHESTSEEN) ==  TransactionNum(LAST))
+			RemoveLetterC();
 		break;
 
 	default:
