@@ -1,0 +1,46 @@
+# $Id: Makefile.in,v 1.1 1997-10-02 17:27:13 ghudson Exp $
+
+SHELL=/bin/sh
+VPATH=@srcdir@
+INSTALL=@INSTALL@
+INSTALL_PROGRAM=@INSTALL_PROGRAM@
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+bindir=@bindir@
+mandir=@mandir@
+
+CC=@CC@
+CPPFLAGS=@CPPFLAGS@
+CFLAGS=@CFLAGS@
+LDFLAGS=@LDFLAGS@
+LIBS=@LIBS@
+ALL_CFLAGS=${CPPFLAGS} ${CFLAGS}
+
+all: ansi unseg
+
+ansi: ansi.o
+	${CC} ${LDFLAGS} -o ansi ansi.o ${LIBS}
+
+unseg: unseg.o
+	${CC} ${LDFLAGS} -o unseg unseg.o ${LIBS}
+
+.c.o:
+	${CC} -c ${ALL_CFLAGS} $<
+
+check:
+
+install:
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${bindir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man1
+	${INSTALL_PROGRAM} ansi ${DESTDIR}${bindir}
+	${INSTALL_PROGRAM} unseg ${DESTDIR}${bindir}
+	${INSTALL} -m 444 ${srcdir}/ansi.1 ${DESTDIR}${mandir}/man1
+	${INSTALL} -m 444 ${srcdir}/unseg.1 ${DESTDIR}${mandir}/man1
+
+clean:
+	rm -f ansi.o ansi unseg.o unseg
+
+distclean: clean
+	rm -f config.cache config.log config.status Makefile
