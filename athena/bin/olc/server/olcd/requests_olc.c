@@ -21,7 +21,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.12 1990-02-14 15:40:09 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.13 1990-02-15 18:51:15 vanharen Exp $";
 #endif
 
 
@@ -978,6 +978,9 @@ olc_ask(fd, request, auth)
       olc_broadcast_message("new_question",msgbuf, topic);
       break;
     }
+
+  if (request->version >= VERSION_5)
+    write_int_to_fd(fd, target->instance);
 
 #ifdef LOG
   (void) sprintf(msgbuf,"Successful question from  %s [%d]",
