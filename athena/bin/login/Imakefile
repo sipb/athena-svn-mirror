@@ -6,5 +6,5 @@ MACHDEP=-DPOSIX -DSYSLOG42
 #ifdef i386
 MACHDEP=-DPOSIX -DSYSV -DINITTAB -DNOPFLAG
 #endif
-build_program(login,login.c,,-lknet -lkrb -ldes -lhesiod)
+build_program(login,login.o,,-lknet -lkrb -ldes -lhesiod)
 install_program(login,-o root -m 4555,/bin/login)
