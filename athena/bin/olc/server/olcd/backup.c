@@ -14,11 +14,11 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v $
- *      $Author: vanharen $
+ *      $Author: raeburn $
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.10 1990-01-26 15:51:58 vanharen Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/backup.c,v 1.11 1990-02-08 22:49:38 raeburn Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -282,46 +282,6 @@ read_user_info(fd, user)
 }
 
 
-static jmp_buf trap;
-
-#ifdef __STDC__
-oops(int a)			/* signal number */
-#else
-oops(a)
-    int a;			/* signal number */
-#endif
-{
-  longjmp(trap, 1);
-}
-
-static int
-#ifdef __STDC__
-verify_string(const char *str)
-#else
-verify_string(str)
-     char *str;
-#endif
-{
-  register int string_is_bogus;
-
-  (void) signal(SIGSEGV, oops);
-  (void) signal(SIGBUS,  oops);
-  (void) signal(SIGILL,  oops);
-  if (!setjmp(trap)) 
-    {
-      (void) strlen(str);
-      string_is_bogus = SUCCESS;
-    }
-  else
-    string_is_bogus = FAILURE;
-  
-  (void) signal(SIGSEGV, SIG_DFL);
-  (void) signal(SIGBUS, SIG_DFL);
-  (void) signal(SIGILL, SIG_DFL);
-
-  return (string_is_bogus);
-}
-
 static void
 ensure_consistent_state()
 {
@@ -387,17 +347,7 @@ ensure_consistent_state()
 		    printf("Inconsistencies found; creating core file");
 		    wait(0);
 		}
-#endif	TEST  
-	    }
-	}
-      if (k->new_messages != (char *) NULL) 
-	{
-	  if (verify_string(k->new_messages) != SUCCESS) 
-	    {
-	      k->new_messages = (char *) NULL;
-	      (void) sprintf(msgbuf, "Inconsistency: user %s's messages\n",
-			     k->user->username);
-	      log_error(msgbuf);
+#endif
 	    }
 	}
     }
