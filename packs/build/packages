@@ -1,4 +1,4 @@
-# $Id: packages,v 1.187 2002-12-25 17:57:07 ghudson Exp $
+# $Id: packages,v 1.188 2002-12-25 18:19:38 ghudson Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -182,8 +182,8 @@ third/libpng			except linux requires zlib
 third/librep			requires gmp,gdbm
 third/librsvg			requires freetype,libpng
 third/libungif			except linux
-third/libxml
-third/libxml2
+third/libxml			requires zlib
+third/libxml2			requires zlib
 third/look			on irix
 third/lprng/athena		package lprng-misc
 third/lprng/ifhp
