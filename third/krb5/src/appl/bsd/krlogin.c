@@ -1430,19 +1430,24 @@ void oob()
 {
     char mark;
     char waste[RLOGIN_BUFSIZ];
-    int atmark;
+    int atmark, n;
 
     mark = 0;
     
     recv(rem, &mark, 1, MSG_OOB);
 
     if (server_message(mark)) {
-	if (ioctl(rem, SIOCATMARK, &atmark) < 0) {
-	    perror("ioctl");
-	    return;
+	for (;;) {
+	    if (ioctl(rem, SIOCATMARK, &atmark) < 0) {
+		perror("ioctl");
+		return;
+	    }
+	    if (atmark)
+		break;
+	    n = read(rem, waste, sizeof (waste));
+	    if (n <= 0)
+		break;
 	}
-	if (!atmark)
-	    read(rem, waste, sizeof (waste));
     }
 }
 
