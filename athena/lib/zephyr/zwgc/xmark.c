@@ -5,7 +5,7 @@
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zwgc/xmark.c,v $
- *      $Author: marc $
+ *      $Author: jtkohl $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_xmark_c[] = "$Id: xmark.c,v 1.4 1989-11-15 22:46:43 marc Exp $";
+static char rcsid_xmark_c[] = "$Id: xmark.c,v 1.5 1989-11-16 16:01:45 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -114,13 +114,15 @@ void xmarkSetBound(gram,x,y,which)
 	 font=get_fontst_from_fid(xb->fid);
 	 for (i=0,s=((gram->text)+(xb->strindex));
 	      xofs<x && i<xb->strlen;
-	      i++,s++)
-	   if (x<=(xofs+=font->per_char[*s - font->min_char_or_byte2].width)) {
+	      i++,s++) {
+	     /* if font->per_char is NULL, then we should use min_bounds */
+	     short usewidth = font->per_char ? font->per_char[*s - font->min_char_or_byte2].width : font->min_bounds.width;
+	   if (x <= (xofs+=usewidth)) {
 	      markchar[which]=i;
-	      markpixel[which]=xofs-xb->x1-
-		font->per_char[*s - font->min_char_or_byte2].width;
+	      markpixel[which]=xofs - xb->x1 - usewidth;
 	      RETURN;
 	   }
+	 }
       }
    }
 
