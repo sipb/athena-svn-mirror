@@ -33,10 +33,7 @@
 .\" "
 .TH FTPD 8
 .SH NAME
-.B ftpd
-\-
-.SM DARPA
-Internet File Transfer Protocol server
+ftpd \- DARPA Internet File Transfer Protocol server
 .SH SYNOPSIS
 .B ftpd
 [\fB\-d\fP] [\fB\-l\fP] [\fB\-t\fP \fItimeout\fP] [\fB\-T\fP
