@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal\n"
-"POT-Creation-Date: 2003-02-03 11:15-0600\n"
+"POT-Creation-Date: 2003-03-14 11:44-0600\n"
 "PO-Revision-Date: 2002-02-17 23:06+0800\n"
 "Last-Translator: Wang Li <charlesw1234@163.com>\n"
 "Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
@@ -340,7 +340,7 @@ msgid "Define Views for %s"
 msgstr "为“%s”定义视图"
 
 # gal/menus/gal-define-views.glade.h:2
-#: gal/menus/gal-define-views-dialog.c:298 gal/menus/gal-view-instance.c:588
+#: gal/menus/gal-define-views-dialog.c:298 gal/menus/gal-view-instance.c:590
 #, fuzzy
 msgid "Define Views"
 msgstr "为“%s”定义视图"
@@ -382,13 +382,13 @@ msgid "Table"
 msgstr "表格"
 
 # gal/e-table/e-table-header-item.c:1431
-#: gal/menus/gal-view-instance.c:583
+#: gal/menus/gal-view-instance.c:585
 #, fuzzy
 msgid "Custom View"
 msgstr "定制当前视图"
 
 # gal/widgets/e-categories-master-list-array.c:76
-#: gal/menus/gal-view-instance.c:584
+#: gal/menus/gal-view-instance.c:586
 #, fuzzy
 msgid "Save Custom View"
 msgstr "关键客户"

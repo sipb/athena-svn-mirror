@@ -1,6 +1,6 @@
 AC_INIT(README)
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gal,0.23)
+AM_INIT_AUTOMAKE(gal,0.24)
 
 AM_MAINTAINER_MODE
 AM_ACLOCAL_INCLUDE(macros)
@@ -11,20 +11,20 @@ AC_SUBST(GAL_API_VERSION)
 
 dnl libtool versioning
 
-dnl gal-0.23 = 1
+dnl gal-0.24 = 0
 dnl increment if any interfaces have been added; set to 0
 dnl  if any interfaces have been removed. removal has 
 dnl  precedence over adding, so set to 0 if both happened.
-GAL_AGE=1
+GAL_AGE=0
 
-dnl gal-0.23 = 1
+dnl gal-0.24 = 0
 dnl increment any time the source changes; set to 
 dnl  0 if you increment CURRENT
-GAL_REVISION=1
+GAL_REVISION=0
 
-dnl gal-0.23 = 22
+dnl gal-0.24 = 23
 dnl increment if the interface has additions, changes, removals.
-GAL_CURRENT=22
+GAL_CURRENT=23
 
 AC_SUBST(GAL_CURRENT)
 AC_SUBST(GAL_REVISION)

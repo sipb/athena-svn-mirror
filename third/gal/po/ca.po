@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 2.0.0.4\n"
-"POT-Creation-Date: 2003-02-03 11:15-0600\n"
+"POT-Creation-Date: 2003-03-14 11:44-0600\n"
 "PO-Revision-Date: 2002-05-31 20:02+0200\n"
 "Last-Translator: Jordi Mallach <jordi@sindominio.net>\n"
 "Language-Team: Catalan <gnome@softcatala.net>\n"
@@ -345,7 +345,7 @@ msgid "Define Views for %s"
 msgstr "Defineix les visualitzacions per a \"%s\""
 
 # gal/menus/gal-define-views.glade.h:2
-#: gal/menus/gal-define-views-dialog.c:298 gal/menus/gal-view-instance.c:588
+#: gal/menus/gal-define-views-dialog.c:298 gal/menus/gal-view-instance.c:590
 #, fuzzy
 msgid "Define Views"
 msgstr "Defineix les visualitzacions per a \"%s\""
@@ -387,13 +387,13 @@ msgid "Table"
 msgstr "Taula"
 
 # gal/e-table/e-table-header-item.c:1444
-#: gal/menus/gal-view-instance.c:583
+#: gal/menus/gal-view-instance.c:585
 #, fuzzy
 msgid "Custom View"
 msgstr "Personalitza la visualització actual"
 
 # gal/widgets/e-categories-master-list-array.c:76
-#: gal/menus/gal-view-instance.c:584
+#: gal/menus/gal-view-instance.c:586
 #, fuzzy
 msgid "Save Custom View"
 msgstr "Client clau"

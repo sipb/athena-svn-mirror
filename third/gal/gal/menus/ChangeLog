@@ -1,3 +1,11 @@
+2003-03-13  Mike Kestner  <mkestner@ximian.com>
+
+	* gal-view-collection.c (gal_view_collection_save): use 
+	e_xml_save_file and check return
+	(gal_view_collection_load): check return of e_create_directory
+	* gal-view-instance.c (save_current_view): use e_xml_save_file 
+	and check return
+
 2002-12-17  Gilbert Fang  <gilbert.fang@sun.com>
 
 	* gal-define-views-dialog.c (gdvd_button_new_dialog_callback):

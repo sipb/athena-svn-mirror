@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.9\n"
-"POT-Creation-Date: 2003-02-03 11:15-0600\n"
+"POT-Creation-Date: 2003-03-14 11:44-0600\n"
 "PO-Revision-Date: 2002-08-22 15:16-0400\n"
 "Last-Translator: Radek Doulik <rodo@ximian.com>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -266,7 +266,7 @@ msgstr "Pøizpùsobit aktuální pohled"
 msgid "Define Views for %s"
 msgstr "Definovat pohledy pro %s"
 
-#: gal/menus/gal-define-views-dialog.c:298 gal/menus/gal-view-instance.c:588
+#: gal/menus/gal-define-views-dialog.c:298 gal/menus/gal-view-instance.c:590
 msgid "Define Views"
 msgstr "Definovat pohledy"
 
@@ -299,11 +299,11 @@ msgstr "_Nový..."
 msgid "Table"
 msgstr "Tabulka"
 
-#: gal/menus/gal-view-instance.c:583
+#: gal/menus/gal-view-instance.c:585
 msgid "Custom View"
 msgstr "Pøizpùsobit pohled"
 
-#: gal/menus/gal-view-instance.c:584
+#: gal/menus/gal-view-instance.c:586
 msgid "Save Custom View"
 msgstr "Ulo¾it pøizpùsobený pohled"
 

@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal\n"
-"POT-Creation-Date: 2003-02-03 11:15-0600\n"
+"POT-Creation-Date: 2003-03-14 11:44-0600\n"
 "PO-Revision-Date: 2001-01-23 11:22+0200\n"
 "Last-Translator: Marius Andreiana <mandreiana@yahoo.com>\n"
 "Language-Team: Românã <ro@li.org>\n"
@@ -271,7 +271,7 @@ msgstr "Personalizeaza vizualizarea curentã..."
 msgid "Define Views for %s"
 msgstr "Defineºte vizualizãrile pentru \"%s\""
 
-#: gal/menus/gal-define-views-dialog.c:298 gal/menus/gal-view-instance.c:588
+#: gal/menus/gal-define-views-dialog.c:298 gal/menus/gal-view-instance.c:590
 #, fuzzy
 msgid "Define Views"
 msgstr "Defineºte vizualizãrile pentru \"%s\""
@@ -305,12 +305,12 @@ msgstr "_Nou..."
 msgid "Table"
 msgstr "Tabel"
 
-#: gal/menus/gal-view-instance.c:583
+#: gal/menus/gal-view-instance.c:585
 #, fuzzy
 msgid "Custom View"
 msgstr "Personalizeaza vizualizarea curentã..."
 
-#: gal/menus/gal-view-instance.c:584
+#: gal/menus/gal-view-instance.c:586
 msgid "Save Custom View"
 msgstr ""
 

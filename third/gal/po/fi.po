@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.19.99.0\n"
-"POT-Creation-Date: 2003-02-03 11:15-0600\n"
+"POT-Creation-Date: 2003-03-14 11:44-0600\n"
 "PO-Revision-Date: 2002-08-27 15:33+0300\n"
 "Last-Translator: Pauli Virtanen <pauli.virtanen@hut.fi>\n"
 "Language-Team: Finnish <fi@li.org>\n"
@@ -269,7 +269,7 @@ msgstr "Mukauta nykyist‰ n‰kym‰‰..."
 msgid "Define Views for %s"
 msgstr "M‰‰rit‰ kohteen \"%s\" n‰kym‰t"
 
-#: gal/menus/gal-define-views-dialog.c:298 gal/menus/gal-view-instance.c:588
+#: gal/menus/gal-define-views-dialog.c:298 gal/menus/gal-view-instance.c:590
 msgid "Define Views"
 msgstr "M‰‰rit‰ n‰kym‰t"
 
@@ -302,11 +302,11 @@ msgstr "_Uusi..."
 msgid "Table"
 msgstr "Taulukko"
 
-#: gal/menus/gal-view-instance.c:583
+#: gal/menus/gal-view-instance.c:585
 msgid "Custom View"
 msgstr "Mukautettu n‰kym‰"
 
-#: gal/menus/gal-view-instance.c:584
+#: gal/menus/gal-view-instance.c:586
 msgid "Save Custom View"
 msgstr "Tallenna mukautettu n‰kym‰"
 

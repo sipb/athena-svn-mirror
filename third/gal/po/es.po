@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gal 0.21.0.99\n"
-"POT-Creation-Date: 2003-02-03 11:15-0600\n"
+"POT-Creation-Date: 2003-03-14 11:44-0600\n"
 "PO-Revision-Date: 2002-11-14 18:28GMT\n"
 "Last-Translator: Germán Poo Caamaño <gpoo@ubiobio.cl>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
@@ -268,7 +268,7 @@ msgstr "Personalizar vista actual..."
 msgid "Define Views for %s"
 msgstr "Definir vistas para %s"
 
-#: gal/menus/gal-define-views-dialog.c:298 gal/menus/gal-view-instance.c:588
+#: gal/menus/gal-define-views-dialog.c:298 gal/menus/gal-view-instance.c:590
 msgid "Define Views"
 msgstr "Definir vistas"
 
@@ -301,11 +301,11 @@ msgstr "_Nuevo..."
 msgid "Table"
 msgstr "Tabla"
 
-#: gal/menus/gal-view-instance.c:583
+#: gal/menus/gal-view-instance.c:585
 msgid "Custom View"
 msgstr "Personalizar vista"
 
-#: gal/menus/gal-view-instance.c:584
+#: gal/menus/gal-view-instance.c:586
 msgid "Save Custom View"
 msgstr "Guardar vista personalizada"
 
