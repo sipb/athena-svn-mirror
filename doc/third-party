@@ -80,9 +80,6 @@ Distribution sites for software under third
 -------------------------------------------
 
 	afsbin		See below.
-	cns		Previously we've talked to people we know at
-			Cygnus; the official channels involve signing
-			some ITAR-related paperwork.
 	emacs		prep.ai.mit.edu:pub/gnu
 	gcc		prep.ai.mit.edu:pub/gnu
 	ispell		ftp.cs.ucla.edu:pub/ispell-3.1
