@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v 1.6 1990-04-25 19:34:52 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_cmdloop.c,v 1.7 1990-04-26 08:15:34 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -237,6 +237,29 @@ command_index(Command_Table, command_name)
 }
 
 
+static char *local[] =
+{
+  "inst", "username", "realname",
+  "machine", "user", /** "nickname", "title", **/
+};
+#define NUML (sizeof(local)/sizeof(char *))
+
+static char *server[] = 
+{
+  "cinst", "cusername", "crealname",
+  "cmachine", "cuser",
+  "ustatus", "cstatus", "nseen", "topic",
+  /** "cnickname", "ctitle", **/
+};
+#define NUMS (sizeof(server)/sizeof(char *))
+
+static char *timestuff[] =
+{
+  "dayname", "monthname", "MON", "mon", "DAY", "day", "YEAR", "year",
+  "milhour", "HOUR", "hour", "min", "sec", "AMPM", "ampm",
+};
+#define NUMT (sizeof(timestuff)/sizeof(char *))
+
 char *
 expand_variable(Request,var)
      REQUEST *Request;
@@ -245,7 +268,7 @@ expand_variable(Request,var)
   int uinfo, sinfo, tinfo;
   long time_now;
   struct tm *time_info;
-  char buf[BUF_SIZE] = "UNKNOWN";
+  char buf[BUF_SIZE];
   LIST list;
 
   int     uid;                       /* Person's user ID. */
@@ -257,29 +280,6 @@ expand_variable(Request,var)
   char    nickname[STRING_SIZE];     /* Person's first name. */
   char    title[LABEL_SIZE];         /* Person's title */
   char    machine[LABEL_SIZE];       /* Person's current machine. */
-
-  char *local[] =
-    {
-      "inst", "username", "realname",
-      "machine", "user", /** "nickname", "title", **/
-    };
-#define NUML (sizeof(local)/sizeof(char *))
-
-  char *server[] = 
-    {
-      "cinst", "cusername", "crealname",
-      "cmachine", "cuser",
-      "ustatus", "cstatus", "nseen", "topic",
-      /** "cnickname", "ctitle", **/
-    };
-#define NUMS (sizeof(server)/sizeof(char *))
-
-  char *timestuff[] =
-    {
-      "dayname", "monthname", "MON", "mon", "DAY", "day", "YEAR", "year",
-      "milhour", "HOUR", "hour", "min", "sec", "AMPM", "ampm",
-    };
-#define NUMT (sizeof(timestuff)/sizeof(char *))
 
   for (uinfo=0; uinfo < NUML; uinfo++)
     {
@@ -431,13 +431,13 @@ expand_variable(Request,var)
 	  sprintf(buf, "%2.2d", time_info->tm_mon + 1);
 	  break;
 	case 3:			/* mon (month #, with leading space) */
-	  sprintf(buf, "%2d", time_info->tm_mon + 1);
+	  sprintf(buf, "%d", time_info->tm_mon + 1);
 	  break;
 	case 4:			/* DAY (day of month) */
 	  sprintf(buf, "%2.2d", time_info->tm_mday);
 	  break;
 	case 5:			/* day (day of month, with leading space*/
-	  sprintf(buf, "%2d", time_info->tm_mday);
+	  sprintf(buf, "%d", time_info->tm_mday);
 	  break;
 	case 6:			/* YEAR (full year number) */
 	  sprintf(buf, "%4d", time_info->tm_year + 1900);
@@ -456,7 +456,7 @@ expand_variable(Request,var)
 				    : time_info->tm_hour)));
 	  break;
 	case 10:		/* hour (hour number, with leading  space) */
-	  sprintf(buf, "%2d", ((time_info->tm_hour > 12)
+	  sprintf(buf, "%d", ((time_info->tm_hour > 12)
 			       ? (time_info->tm_hour - 12)
 			       : ((time_info->tm_hour == 0)
 				  ? 12
@@ -479,7 +479,7 @@ expand_variable(Request,var)
 	}
       return(buf);
     }
-  return(buf);
+  return("UNKNOWN");
 }
 
 
