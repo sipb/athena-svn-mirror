@@ -1,19 +1,51 @@
 /* 
- * $Id: aklog_param.c,v 1.2 1990-06-22 18:43:05 qjb Exp $
+ * $Id: aklog_param.c,v 1.3 1990-06-27 13:05:52 qjb Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/aklog/aklog_param.c,v $
  * $Author: qjb $
  *
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_param.c,v 1.2 1990-06-22 18:43:05 qjb Exp $";
+static char *rcsid = "$Id: aklog_param.c,v 1.3 1990-06-27 13:05:52 qjb Exp $";
 #endif /* lint || SABER */
 
 #include <aklog.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
+#ifndef TRUE
+#define TRUE 1
+#endif
+
+#ifndef FALSE
+#define FALSE 0
+#endif
 
 extern int readlink ARGS((char *, char *, int));
 extern int lstat ARGS((char *, struct stat *));
+extern char *getwd ARGS((char *));
+
+
+#ifdef __STDC__
+static int isdir(char *path, unsigned char *val)
+#else
+static int isdir(path, val)
+  char *path;
+  unsigned char *val;
+#endif /* __STDC__ */
+{
+    struct stat statbuf;
+
+    if (lstat(path, &statbuf) < 0)
+	return (-1);
+    else {
+	if ((statbuf.st_mode & S_IFMT) == S_IFDIR) 
+	    *val = TRUE;
+	else
+	    *val = FALSE;
+	return (0);
+    }  
+}
 
 
 #ifdef __STDC__
@@ -80,7 +112,8 @@ void aklog_init_params(params)
 #endif /* __STDC__ */
 {
     params->readlink = readlink;
-    params->lstat = lstat;
+    params->isdir = isdir;
+    params->getwd = getwd;
     params->get_cred = get_cred;
     params->pstderr = pstderr;
     params->pstdout = pstdout;

@@ -1,12 +1,12 @@
 /* 
- * $Id: aklog_main.c,v 1.2 1990-06-22 18:43:28 qjb Exp $
+ * $Id: aklog_main.c,v 1.3 1990-06-27 13:05:47 qjb Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/aklog/aklog_main.c,v $
  * $Author: qjb $
  *
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_main.c,v 1.2 1990-06-22 18:43:28 qjb Exp $";
+static char *rcsid = "$Id: aklog_main.c,v 1.3 1990-06-27 13:05:47 qjb Exp $";
 #endif lint || SABER
 
 #include <stdio.h>
@@ -205,7 +205,7 @@ static int get_realm_of_cell(cell, realm)
 #endif /* __STDC__ */
 {
     int status = AKLOG_SUCCESS;
-    char host[BUFSIZ];
+    char host[MAXHOSTNAMELEN + 1];
 
     bzero(host, sizeof(host));
 
@@ -296,7 +296,14 @@ static int auth_to_cell(cell, realm)
 	status = params.get_cred(name, instance, realm_of_cell, &c);
 	
 	if (status != KSUCCESS) {
-	    sprintf(msgbuf, "%s: Couldn't get AFS tickets", progname);
+	    if (dflag) {
+		sprintf(msgbuf, 
+			"Kerberos error code returned by get_cred: %d\n",
+			status);
+		params.pstdout(msgbuf);
+	    }
+	    sprintf(msgbuf, "%s: Couldn't get AFS tickets (%s.%s@%s)",
+		    progname, name, instance, realm_of_cell);
 	    params.pstderr(msgbuf);
 	    sprintf(msgbuf," for cell %s", cell_to_use);
 	    params.pstderr(msgbuf);
@@ -367,7 +374,7 @@ static int get_afs_mountpoint(file, mountpoint, size)
   int size;
 #endif /* __STDC__ */
 {
-    char our_file[BUFSIZ];
+    char our_file[MAXPATHLEN + 1];
     char *parent_dir;
     char *last_component;
     struct ViceIoctl vio;
@@ -426,12 +433,12 @@ static char *next_path(origpath)
   char *origpath;
 #endif /* __STDC__ */
 {
-    static char path[BUFSIZ];
-    static char pathtocheck[BUFSIZ];
+    static char path[MAXPATHLEN + 1];
+    static char pathtocheck[MAXPATHLEN + 1];
 
     int link = FALSE;		/* Is this a symbolic link? */
-    char linkbuf[BUFSIZ];
-    char tmpbuf[BUFSIZ];
+    char linkbuf[MAXPATHLEN + 1];
+    char tmpbuf[MAXPATHLEN + 1];
 
     static char *last_comp;	/* last component of directory name */
     static char *elast_comp;	/* End of last component */
@@ -586,19 +593,19 @@ static int auth_to_path(path)
     int status = AKLOG_SUCCESS;
 
     char *nextpath;
-    char pathtocheck[BUFSIZ];
-    char mountpoint[BUFSIZ];
+    char pathtocheck[MAXPATHLEN + 1];
+    char mountpoint[MAXPATHLEN + 1];
 
     char *cell;
     char *endofcell;
 
-    struct stat stat;
+    u_char isdir;
 
     /* Initialize */
     if (path[0] == DIR)
 	strcpy(pathtocheck, path);
     else {
-	if (getwd(pathtocheck) == NULL) {
+	if (params.getwd(pathtocheck) == NULL) {
 	    sprintf(msgbuf, "Unable to find current working directory.  ");
 	    params.pstderr(msgbuf);
 	    sprintf(msgbuf, "Try an absolute pathname:\n");
@@ -640,7 +647,7 @@ static int auth_to_path(path)
 	    }
 	}
 	else
-	    if (params.lstat(pathtocheck, &stat) < 0) {
+	    if (params.isdir(pathtocheck, &isdir) < 0) {
 		/*
 		 * If we've logged and still can't stat, there's
 		 * a problem... 
@@ -650,7 +657,7 @@ static int auth_to_path(path)
 		params.pstderr(msgbuf);
 		return(AKLOG_BADPATH);
 	    }
-	    else if ((stat.st_mode & S_IFMT) != S_IFDIR) {
+	    else if (! isdir) {
 		/* Allow only directories */
 		sprintf(msgbuf, "%s: %s: %s\n", progname, pathtocheck,
 			sys_errlist[ENOTDIR]);
@@ -718,7 +725,7 @@ void aklog(argc, argv, a_params)
 
     char realm[REALM_SZ];	/* Kerberos realm of afs server */
     char cell[BUFSIZ];		/* Cell to which we are authenticating */
-    char path[BUFSIZ];		/* Path length for path mode */
+    char path[MAXPATHLEN + 1];		/* Path length for path mode */
 
     linked_list cells;		/* List of cells to log to */
     linked_list paths;		/* List of paths to log to */
