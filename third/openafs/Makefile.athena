@@ -1,4 +1,4 @@
-# $Id: Makefile.athena,v 1.13 2005-03-11 05:26:52 zacheiss Exp $
+# $Id: Makefile.athena,v 1.14 2005-03-11 23:41:55 zacheiss Exp $
 
 SHELL=/bin/sh
 ATHRBINDIR=/bin/athena
@@ -77,6 +77,7 @@ install:
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/afsint.h $$SRVD${WS}/include/afs
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/afssyscalls.h $$SRVD${WS}/include/afs
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/afsutil.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/afsutil_prototypes.h $$SRVD${WS}/include/afs
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/assert.h $$SRVD${WS}/include/afs
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/audit.h $$SRVD${WS}/include/afs
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/auth.h $$SRVD${WS}/include/afs
@@ -144,10 +145,14 @@ install:
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/pthread_nosigs.h $$SRVD${WS}/include/afs
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/ptint.h $$SRVD${WS}/include/afs
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/ptserver.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/ptuser.h $$SRVD${WS}/include/afs
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/remote.h $$SRVD${WS}/include/afs
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/rxgen_consts.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/softsig.h $$SRVD${WS}/include/afs
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/stds.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/sysctl.h $$SRVD${WS}/include/afs
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/tcdata.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/unified_afs.h $$SRVD${WS}/include/afs
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/usd.h $$SRVD${WS}/include/afs
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/venus.h $$SRVD${WS}/include/afs
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/vice.h $$SRVD${WS}/include/afs
@@ -160,8 +165,10 @@ install:
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/volint.h $$SRVD${WS}/include/afs
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/volser.h $$SRVD${WS}/include/afs
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/volume.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/xfsattrs.h $$SRVD${WS}/include/afs
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/xstat_cm.h $$SRVD${WS}/include/afs
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/afs/xstat_fs.h $$SRVD${WS}/include/afs
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/fcrypt.h $$SRVD${WS}/include/rx
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/rx.h $$SRVD${WS}/include/rx
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/rx_clock.h $$SRVD${WS}/include/rx
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/rx_event.h $$SRVD${WS}/include/rx
@@ -171,15 +178,19 @@ install:
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/rx_multi.h $$SRVD${WS}/include/rx
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/rx_null.h $$SRVD${WS}/include/rx
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/rx_packet.h $$SRVD${WS}/include/rx
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/rx_prototypes.h $$SRVD${WS}/include/rx
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/rx_pthread.h $$SRVD${WS}/include/rx
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/rx_queue.h $$SRVD${WS}/include/rx
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/rx_user.h $$SRVD${WS}/include/rx
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/rxkad.h $$SRVD${WS}/include/rx
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/rxkad_prototypes.h $$SRVD${WS}/include/rx
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/rxstat.h $$SRVD${WS}/include/rx
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/xdr.h $$SRVD${WS}/include/rx
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/rx/xdr_prototypes.h $$SRVD${WS}/include/rx
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/des.h $$SRVD${WS}/include
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/des_conf.h $$SRVD${WS}/include
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/des_odd.h $$SRVD${WS}/include
+	install -c -m 444 ${AFS_SYSNAME}/dest/include/des_prototypes.h $$SRVD${WS}/include
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/lock.h $$SRVD${WS}/include
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/lwp.h $$SRVD${WS}/include
 	install -c -m 444 ${AFS_SYSNAME}/dest/include/mit-cpyright.h $$SRVD${WS}/include
