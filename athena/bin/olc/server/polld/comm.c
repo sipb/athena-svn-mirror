@@ -9,14 +9,14 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/comm.c,v $
- *	$Id: comm.c,v 1.1 1991-01-08 16:51:30 lwvanels Exp $
+ *	$Id: comm.c,v 1.2 1991-03-28 13:29:39 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/comm.c,v 1.1 1991-01-08 16:51:30 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/comm.c,v 1.2 1991-03-28 13:29:39 lwvanels Exp $";
 #endif
 #endif
 
@@ -24,8 +24,10 @@ static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <polld.h>
 #include <olcd.h>
 
+#ifdef KERBEROS
 char INSTANCE[INST_SZ];
 char REALM[REALM_SZ];
+#endif
 
 void
 tell_main_daemon(user)
@@ -36,8 +38,9 @@ tell_main_daemon(user)
   int status, fd;
 
   if (request.version != CURRENT_VERSION) {
+#ifdef KERBEROS
     char kname[ANAME_SZ], kinst[INST_SZ];
-
+#endif
     request.options = NO_OPT;
     request.version = CURRENT_VERSION;
     request.request_type = OLC_SET_USER_STATUS;
@@ -61,7 +64,7 @@ tell_main_daemon(user)
     strcpy(REALM,DFLT_SERVER_REALM);
 #else
     /* Well, if you don't have kerberos, you might as well be anyone.. */
-    strcpy(request.requester.username,"olc.poller");
+    strcpy(request.requester.username,"olc");
 #endif
     request.requester.instance = 0;
   }
