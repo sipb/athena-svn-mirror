@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.46 2000-05-19 18:14:51 ghudson Exp $
+# $Id: update_ws.sh,v 1.47 2000-05-19 18:31:10 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -243,34 +243,36 @@ failupdate() {
 
 case "$HOSTTYPE" in
 sun4)
+  # Make sure /usr is a 100MB partition, or it can't run the current release.
+  # Since roughly 7% of the partition is lost to filesystem overhead, we
+  # check for a filesystem size of 90MB or greater.
   usrsize=`df -k /usr | awk '{ x = $2' }' END { print x; }' `
-  if [ 102400 -gt "$usrsize" ]; then
-    echo "/usr partition is not big enough for Athena release"
-    echo "8.4 and higher.  You must reinstall to take this update."
+  if [ 92160 -gt "$usrsize" ]; then
+    echo "/usr partition is not big enough for Athena release 8.4 and higher."
+    echo "You must reinstall to take this update."
     failupdate
   fi
-  ;;
-esac
 
-# The 8.1 -> 8.2 update consumes about 1.7MB on the /usr partition and
-# about 3.9MB on the root partition.  Since the smallest-sized Solaris
-# partitions only have 5.7MB free on /usr and 8.1MB free on the root
-# filesystem under 8.1, it's important to make sure that neither
-# filesystem fills up.  Some day the version scripts should take care
-# of setting the numbers for this check, but that requires adding
-# multiple phases to the version scripts.
-case $HOSTTYPE,$version in
-sun4,8.[01].*|sun4,7.*)
-  if [ 3072 -gt "`df -k /usr | awk '/\/usr$/ { print $4; }'`" ]; then
-    echo "/usr partition low on space (less than 3MB); not performing update."
-    echo "Please reinstall or clean local files off /usr partition."
-    failupdate
-  fi
-  if [ 5120 -gt "`df -k / | awk '/\/$/ { print $4; }'`" ]; then
-    echo "Root partition low on space (less than 5MB); not performing update."
-    echo "Please reinstall or clean local files off root partition."
-    failupdate
-  fi
+  # For the update to 8.4, ensure that there is at least 35MB
+  # available.  Information relevant to this calculation:
+  #	* A freshly installed 8.3 machine uses 43797K on /usr.
+  #	* A freshly updated 8.4 machine uses 78118K on /usr.
+  #	* Roughly 7% of the partition is lost to overhead.
+  #	* The df -k available space output reflects another 10%
+  #	  reduction on account of minfree.
+  # So on a freshly installed 8.3 machine with a 100MB usr partition,
+  # there will be roughly 37MB available, and the update will consume
+  # roughly 34MB.  This isn't as bad as it sounds; we can go over
+  # the available amount as long as we don't exhaust minfree.
+  case $version in
+  8.[0123].*|7.*)
+    usrspace=`df -k /usr | awk '{ x = $4 }' END { print x; }'`
+    if [ 35840 -gt "$usrspace" ]; then
+      echo "The /usr partition must have 35MB free for this update.  Please"
+      echo "reinstall of clean local files off of the /usr partition."
+    fi
+    ;;
+  esac
   ;;
 esac
 
