@@ -45,9 +45,7 @@ if [ "$NEWUNIX" = true ] ; then
 	track -c -v -F /os/usr/kernel -T /usr/kernel -d \
 		-W /srvd/usr/athena/lib -s stats/usr_kernel_rvd \
 		slists/usr_kernel_rvd
-	cp -p /srvd/kernel/drv/* /kernel/drv/
 	cp -p /srvd/kernel/fs/* /kernel/fs/
-	cp -p /srvd/kernel/strmod/* /kernel/strmod/
 fi
 
 if [ "$NEWBOOT" = true ]; then
