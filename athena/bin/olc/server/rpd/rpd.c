@@ -6,7 +6,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/rpd.c,v 1.7 1990-12-31 20:49:36 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/rpd/rpd.c,v 1.8 1991-01-01 14:33:24 lwvanels Exp $";
 #endif
 #endif
 
@@ -15,6 +15,19 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 int sock;	/* the listening socket */
 int fd;		/* the accepting socket */
 
+#ifdef __STDC__
+# define        P(s) s
+#else
+# define P(s) ()
+#endif
+
+
+#ifdef PROFILE
+static int dump_profile P((int sig ));
+static int start_profile P((int sig ));
+#endif /* PROFILE */
+#undef P
+
 main()
 {
   int len,max_fd;
@@ -22,10 +35,22 @@ main()
   struct servent *sent;
   int onoff;
 
+#ifdef PROFILE
+    /* Turn off profiling on startup; that way, we collect "steady state" */
+    /* statistics, not the initial flurry of startup activity */
+    moncontrol(0);
+#endif
+
+
   signal(SIGHUP,clean_up);
   signal(SIGINT,clean_up);
   signal(SIGTERM,clean_up);
   signal(SIGPIPE,SIG_IGN);
+#ifdef PROFILE
+  signal(SIGUSR1, dump_profile); /* Dump profiling information and stop */
+  				 /* profiling */
+  signal(SIGUSR2, start_profile); /* Start profiling */
+#endif /* PROFILE */
 
 #ifdef mips
   openlog("rpd",LOG_PID);  /* Broken ultrix syslog.. */
@@ -119,6 +144,27 @@ main()
     close(fd);
   }
 }
+
+#ifdef PROFILE
+static int
+dump_profile(sig)
+     int sig;
+{
+  syslog(LOG_INFO,"Dumping profile..");
+  monitor(0);
+  moncontrol(0);
+  return 0;
+}
+
+static int
+start_profile(sig)
+     int sig;
+{
+  syslog(LOG_INFO,"Starting profile..");
+  moncontrol(1);
+  return 0;
+}
+#endif /* PROFILE */
 
 int
 clean_up(signal)
