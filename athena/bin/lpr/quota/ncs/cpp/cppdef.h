@@ -36,7 +36,7 @@
 #define	SYS_68000		7
 #define SYS_MSDOS		8
 
-#ifdef apple_aux
+#if defined(apple_aux) || defined(_AUX_SOURCE)
 /* since the current apple_aux cpp doesn't predefine anything! */
 #define HOST                    SYS_UNIX
 #endif
@@ -204,10 +204,13 @@
 #ifdef CRAY2
 #define MACHINE                 "CRAY, CRAY2"
 #endif
-#ifdef  apple_aux
+#if defined(AIX) && defined(_I386)
+#define MACHINE		"_AIX", "_I386", "NLS", "AIX", "i386"
+#endif
+#if defined(apple_aux) || defined(_AUX_SOURCE)
 #define	MACHINE			"M68000", "m68000", "m68k"
 #undef  SYSTEM
-#define	SYSTEM			"unix", "apple_aux"
+#define	SYSTEM			"unix", "apple_aux", "_AUX_SOURCE", "_SYSV_SOURCE", "_BSD_SOURCE"
 #endif
 #endif
 
@@ -395,6 +398,6 @@
  *  be elided.
  */
 
-#if 0
+#if defined(_AUX_SOURCE) || (defined(AIX) && defined(_I386))
 #define ELIDE_DOLLAR 1
 #endif
