@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Truncating Files</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="GnomeVFS - Filesystem Abstraction library"><link rel="up" href="gnome-vfs-file-operations.html" title="File Handling"><link rel="previous" href="gnome-vfs-gnome-vfs-file-info-ops.html" title="Getting and Setting File Information"><link rel="next" href="gnome-vfs-gnome-vfs-file-advanced-ops.html" title="Advanced File Operations"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gnome-vfs-gnome-vfs-file-info-ops.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gnome-vfs-file-operations.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GnomeVFS - Filesystem Abstraction library</th><td><a accesskey="n" href="gnome-vfs-gnome-vfs-file-advanced-ops.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry"><a name="gnome-vfs-gnome-vfs-file-trunc-ops"></a><div class="titlepage"></div><div class="refnamediv"><h2>Truncating Files</h2><p>Truncating Files &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-file-trunc-ops.html#gnome-vfs-truncate">gnome_vfs_truncate</a>           (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *text_uri,
+                                             <a href="gnome-vfs-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> length);
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-file-trunc-ops.html#gnome-vfs-truncate-uri">gnome_vfs_truncate_uri</a>       (GnomeVFSURI *uri,
+                                             <a href="gnome-vfs-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> length);
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-file-trunc-ops.html#gnome-vfs-truncate-handle">gnome_vfs_truncate_handle</a>    (GnomeVFSHandle *handle,
+                                             <a href="gnome-vfs-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> length);
+</pre></div><div class="refsect1"><h2>Description</h2><p>
+
+</p></div><div class="refsect1"><h2>Details</h2><div class="refsect2"><h3><a name="gnome-vfs-truncate"></a>gnome_vfs_truncate ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_truncate           (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *text_uri,
+                                             <a href="gnome-vfs-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> length);</pre><p>
+Truncate the file at <i><tt>text_uri</tt></i> to <i><tt>length</tt></i> bytes.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>text_uri</tt></i> :</span></td><td> URI of the file to be truncated
+</td></tr><tr><td><span class="term"><i><tt>length</tt></i> :</span></td><td> length of the new file at <i><tt>text_uri</tt></i>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An integer representing the result of the operation
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-truncate-uri"></a>gnome_vfs_truncate_uri ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_truncate_uri       (GnomeVFSURI *uri,
+                                             <a href="gnome-vfs-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> length);</pre><p>
+Truncate the file at <i><tt>uri</tt></i> to be only <i><tt>length</tt></i> bytes. Data past <i><tt>length</tt></i>
+bytes will be discarded.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>uri</tt></i> :</span></td><td> URI of the file to be truncated
+</td></tr><tr><td><span class="term"><i><tt>length</tt></i> :</span></td><td> length of the new file at <i><tt>uri</tt></i>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An integer representing the result of the operation
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-truncate-handle"></a>gnome_vfs_truncate_handle ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_truncate_handle    (GnomeVFSHandle *handle,
+                                             <a href="gnome-vfs-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> length);</pre><p>
+Truncate the file pointed to be <i><tt>handle</tt></i> to be only <i><tt>length</tt></i> bytes. 
+Data past <i><tt>length</tt></i> bytes will be discarded.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>handle</tt></i> :</span></td><td> a handle to the file to be truncated
+</td></tr><tr><td><span class="term"><i><tt>length</tt></i> :</span></td><td> length of the new file the handle is open to
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An integer representing the result of the operation
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gnome-vfs-gnome-vfs-file-info-ops.html"><b>&lt;&lt; Getting and Setting File Information</b></a></td><td align="right"><a accesskey="n" href="gnome-vfs-gnome-vfs-file-advanced-ops.html"><b>Advanced File Operations &gt;&gt;</b></a></td></tr></table></body></html>

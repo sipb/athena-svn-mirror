@@ -43,6 +43,24 @@ close_callback (GnomeVFSAsyncHandle *handle,
 }
 
 static void
+file_control_callback (GnomeVFSAsyncHandle *handle,
+		       GnomeVFSResult result,
+		       gpointer operation_data,
+		       gpointer callback_data)
+{
+	if (result != GNOME_VFS_OK) {
+		fprintf (stderr, "file_control failed: %s\n",
+			 gnome_vfs_result_to_string (result));
+	} else {
+		printf ("file_control result: %s\n", *(char **)operation_data);
+		g_free (operation_data);
+	}
+	
+	fprintf (stderr, "Now closing the file.\n");
+	gnome_vfs_async_close (handle, close_callback, "close");
+}
+
+static void
 read_callback (GnomeVFSAsyncHandle *handle,
 	       GnomeVFSResult result,
                gpointer buffer,
@@ -50,6 +68,8 @@ read_callback (GnomeVFSAsyncHandle *handle,
 	       GnomeVFSFileSize bytes_read,
                gpointer callback_data)
 {
+	char **op_data;
+	
 	if (result != GNOME_VFS_OK) {
 		fprintf (stderr, "Read failed: %s\n",
 			 gnome_vfs_result_to_string (result));
@@ -63,8 +83,9 @@ read_callback (GnomeVFSAsyncHandle *handle,
 		fprintf (stderr, "%s", (char *) buffer);
 	}
 
-	fprintf (stderr, "Now closing the file.\n");
-	gnome_vfs_async_close (handle, close_callback, "close");
+	fprintf (stderr, "Now testing file_control.\n");
+	op_data = g_new (char *, 1);
+	gnome_vfs_async_file_control (handle, "file:test", op_data, g_free, file_control_callback, "file_control");
 }
 
 static void

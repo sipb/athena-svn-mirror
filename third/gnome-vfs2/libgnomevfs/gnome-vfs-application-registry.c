@@ -46,11 +46,6 @@
 #include <time.h>
 #include <unistd.h>
 
-/* Defined there and not with the other constants in the header file not to 
- * break 2.0 api freeze
- */
-#define GNOME_VFS_APPLICATION_REGISTRY_USES_GNOMEVFS "uses_gnomevfs"
-
 #if !defined getc_unlocked && !defined HAVE_GETC_UNLOCKED
 # define getc_unlocked(fp) getc (fp)
 #endif
@@ -858,7 +853,7 @@ load_application_info_from (const char *filename, gboolean user_owned)
 
 	fclose (fp);
 
-	gnome_vfs_file_date_tracker_start_tracking_file (registry_date_tracker, filename);
+	_gnome_vfs_file_date_tracker_start_tracking_file (registry_date_tracker, filename);
 }
 
 /**
@@ -920,7 +915,7 @@ application_info_load (ApplicationRegistryDir *source)
 	}
 	closedir (dir);
 
-	gnome_vfs_file_date_tracker_start_tracking_file (registry_date_tracker, source->dirname);
+	_gnome_vfs_file_date_tracker_start_tracking_file (registry_date_tracker, source->dirname);
 }
 
 /**
@@ -948,7 +943,7 @@ gnome_vfs_application_registry_init (void)
 	if (gnome_vfs_application_registry_initialized)
 		return;
 
-	registry_date_tracker = gnome_vfs_file_date_tracker_new ();
+	registry_date_tracker = _gnome_vfs_file_date_tracker_new ();
 
 	/*
 	 * The hash tables that store the mime keys.
@@ -996,7 +991,7 @@ maybe_reload (void)
 {
 	gnome_vfs_application_registry_init ();
 
-	if (!gnome_vfs_file_date_tracker_date_has_changed (registry_date_tracker)) {
+	if (!_gnome_vfs_file_date_tracker_date_has_changed (registry_date_tracker)) {
 		return;
 	}
 	
@@ -1070,7 +1065,7 @@ gnome_vfs_application_registry_shutdown (void)
 		specific_mime_types = NULL;
 	}
 
-	gnome_vfs_file_date_tracker_free (registry_date_tracker);
+	_gnome_vfs_file_date_tracker_free (registry_date_tracker);
 
 	g_free(gnome_registry_dir.dirname);
 	gnome_registry_dir.dirname = NULL;
@@ -1406,8 +1401,8 @@ gnome_vfs_application_registry_set_value (const char *app_id,
 	user_file_dirty = TRUE;
 }
 
-/*
- * gnome_vfs_application_registry_set_bool_value
+/**
+ * gnome_vfs_application_registry_set_bool_value:
  * @app_id:  registry id of the application
  * @key: target key
  * @value: value you want to set the target key to
@@ -1417,7 +1412,6 @@ gnome_vfs_application_registry_set_value (const char *app_id,
  * gnome_vfs_application_registry_sync to save your changes.
  *
  */
-
 void
 gnome_vfs_application_registry_set_bool_value (const char *app_id,
 					       const char *key,
@@ -1638,7 +1632,7 @@ gnome_vfs_application_registry_supports_uri_scheme (const char *app_id,
 		GList *supported_uris;
 		gboolean res;
 		
-		supported_uris = gnome_vfs_configuration_get_methods_list();
+		supported_uris = _gnome_vfs_configuration_get_methods_list();
 		res = (g_list_find_custom(supported_uris,
 					  /*glib is const incorrect*/(gpointer) uri_scheme,
 					  (GCompareFunc) strcmp) != NULL);
@@ -1918,7 +1912,7 @@ gnome_vfs_application_registry_get_mime_application (const char *app_id)
 
 	if (uses_gnomevfs) {
 		GList *methods_list = 
-			gnome_vfs_configuration_get_methods_list();
+			_gnome_vfs_configuration_get_methods_list();
 		GList *l;
 		if (application->expects_uris == GNOME_VFS_MIME_APPLICATION_ARGUMENT_TYPE_PATHS) {
 			application->expects_uris = GNOME_VFS_MIME_APPLICATION_ARGUMENT_TYPE_URIS;

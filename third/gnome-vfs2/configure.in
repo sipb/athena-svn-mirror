@@ -1,12 +1,15 @@
 AC_INIT(libgnomevfs/gnome-vfs.h)
 
 AM_CONFIG_HEADER(config.h)
-AM_INIT_AUTOMAKE(gnome-vfs, 2.0.4.1)
+AM_INIT_AUTOMAKE(gnome-vfs, 2.2.0)
 
 AM_MAINTAINER_MODE
 
 GNOME_COMMON_INIT
 GNOME_PLATFORM_GNOME_2(yes, force)
+
+dnl touch NOINST_GOB
+dnl AC_CONFIG_SUBDIRS(gob)
 
 AC_ISC_POSIX
 AC_PROG_CC
@@ -55,7 +58,7 @@ PKG_CHECK_MODULES(MONIKERS, libbonobo-2.0 >= $BONOBO_REQUIRED)
 AC_SUBST(MONIKERS_CFLAGS)
 AC_SUBST(MONIKERS_LIBS)
 
-PKG_CHECK_MODULES(TEST, bonobo-activation-2.0 >= $BONOBO_ACTIVATION_REQUIRED gconf-2.0 >= $GCONF_REQUIRED)
+PKG_CHECK_MODULES(TEST, bonobo-activation-2.0 >= $BONOBO_ACTIVATION_REQUIRED gconf-2.0 >= $GCONF_REQUIRED gthread-2.0 >= $GLIB_REQUIRED)
 AC_SUBST(TEST_LIBS)
 AC_SUBST(TEST_CFLAGS)
 
@@ -81,11 +84,11 @@ GETTEXT_PACKAGE=gnome-vfs-2.0
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE")
 
-ALL_LINGUAS="am ar az be bg ca cs da de el es et eu fi fr ga gl hi hu it ja ko lt lv ms nl nn no pl pt pt_BR ro ru sk sl sq sv tr uk vi wa zh_CN zh_TW"
+ALL_LINGUAS="ar az be bg ca cs da de el es et eu fi fr ga gl he hi hu it ja ko lt lv ms nl nn no pl pt pt_BR ro ru sk sl sq sv tr uk vi wa zh_CN zh_TW"
 AM_GLIB_GNU_GETTEXT
 
 AC_FUNC_ALLOCA
-AC_CHECK_FUNCS(getdtablesize open64 lseek64 statvfs)
+AC_CHECK_FUNCS(getdtablesize open64 lseek64 statvfs seteuid setegid setresuid setresgid)
 AC_REPLACE_FUNCS(getdelim)
 
 dnl Specify the gconf configuration source, 
@@ -345,7 +348,7 @@ if test "x${with_openssl_includes}" != "xno"; then
 	
 	if test "x{$openssl_includes}" != "xno" -a "x{$openssl_includes}" != "x"; then
 		have_openssl_includes="yes"
-		if "{$openssl_includes}" != "/usr/include" ; then
+		if test "${with_openssl_includes}" != "/usr/include" ; then
 			OPENSSL_CFLAGS="-I$with_openssl_includes"
 		else
 			OPENSSL_CFLAGS=""
@@ -391,10 +394,19 @@ else
 	AC_MSG_RESULT(no)
 fi
 
+dnl ****************************
+dnl GNUTLS
+dnl ****************************
+
+dnl comment this out for the moment:    
+        
+dnl if test ! "x${openssl_libs}" != "xno"; then
+dnl   AM_PATH_LIBGNUTLS(0.5.1, AC_DEFINE(HAVE_GNUTLS))
+dnl fi
 
 PKG_CHECK_MODULES(LIBGNOMEVFS, glib-2.0 >= $GLIB_REQUIRED gmodule-2.0 >= $GLIB_REQUIRED gthread-2.0 >= $GLIB_REQUIRED gconf-2.0 >= $GCONF_REQUIRED bonobo-activation-2.0 >= $BONOBO_ACTIVATION_REQUIRED ORBit-2.0 >= $ORBIT_REQUIRED libxml-2.0 >= $XML_REQUIRED gnome-mime-data-2.0)
-LIBGNOMEVFS_CFLAGS="$LIBGNOMEVFS_CFLAGS $OPENSSL_CFLAGS"
-LIBGNOMEVFS_LIBS="$LIBGNOMEVFS_LIBS $OPENSSL_LIBS"
+LIBGNOMEVFS_CFLAGS="$LIBGNOMEVFS_CFLAGS $OPENSSL_CFLAGS $LIBGNUTLS_CFLAGS"
+LIBGNOMEVFS_LIBS="$LIBGNOMEVFS_LIBS $OPENSSL_LIBS $LIBGNUTLS_LIBS"
 AC_SUBST(LIBGNOMEVFS_CFLAGS)
 AC_SUBST(LIBGNOMEVFS_LIBS)
 
@@ -432,12 +444,34 @@ AC_SUBST(HTML_DIR)
 
 AC_CHECK_PROG(GTKDOC, gtkdoc-mkdb, true, false)
 
+gtk_doc_min_version=0.10
+if $GTKDOC ; then
+    gtk_doc_version=`gtkdoc-mkdb --version`
+    AC_MSG_CHECKING([gtk-doc version ($gtk_doc_version) >= $gtk_doc_min_version])
 
-AM_CONDITIONAL(HAVE_GTK_DOC, $GTKDOC)
-AC_SUBST(HAVE_GTK_DOC)
+    IFS="${IFS=         }"; gnome_vfs_save_IFS="$IFS"; IFS="."
+    set $gtk_doc_version
+    for min in $gtk_doc_min_version ; do
+        cur=$1; shift
+        if test -z $min ; then break; fi
+        if test -z $cur ; then GTKDOC=false; break; fi
+        if test $cur -gt $min ; then break ; fi
+        if test $cur -lt $min ; then GTKDOC=false; break ; fi
+    done
+    IFS="$gnome_vfs_save_IFS"
+    
+    if $GTKDOC ; then
+      AC_MSG_RESULT(yes)
+    else
+      AC_MSG_RESULT(no)
+    fi
+fi
 
 AC_CHECK_PROG(DB2HTML, db2html, true, false)
 AM_CONDITIONAL(HAVE_DOCBOOK, $DB2HTML)
+
+AM_CONDITIONAL(HAVE_GTK_DOC, $GTKDOC)
+AC_SUBST(HAVE_GTK_DOC)
 
 dnl Let people disable the gtk-doc stuff.
 AC_ARG_ENABLE(gtk-doc, [  --enable-gtk-doc  Use gtk-doc to build documentation [default=auto]], enable_gtk_doc="$enableval", enable_gtk_doc=auto)
@@ -450,16 +484,14 @@ if test "x$enable_gtk_doc" = xauto ; then
   fi
 fi
 
-if test "x$enable_gtk_doc" = xyes; then
-	ENABLE_GTK_DOC=true
-else
- 	ENABLE_GTK_DOC=false
-fi
-
-
 dnl NOTE: We need to use a separate automake conditional for this
 dnl       to make this work with the tarballs.
-AM_CONDITIONAL(ENABLE_GTK_DOC, $ENABLE_GTK_DOC)
+AM_CONDITIONAL(ENABLE_GTK_DOC, test x$enable_gtk_doc = xyes)
+
+dnl ******************************
+dnl *** End checks for gtk-doc ***
+dnl ******************************
+
 
 dnl borrowed from gnu findutils
 dnl and relicensed as LGPL by the FSF

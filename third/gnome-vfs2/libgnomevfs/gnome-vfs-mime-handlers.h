@@ -59,6 +59,13 @@ typedef struct {
 
 } GnomeVFSMimeApplication;
 
+/**
+ * GnomeVFSMimeAction:
+ *
+ * This data structure describes an action that can be done 
+ * on a file.
+ **/
+
 typedef struct {
 	GnomeVFSMimeActionType action_type;
 	union {
@@ -69,7 +76,6 @@ typedef struct {
 
 	/* Padded to avoid future breaks in ABI compatibility */
 	void *reserved1;
-
 } GnomeVFSMimeAction;
 
 GnomeVFSMimeApplication *gnome_vfs_mime_application_copy                   (GnomeVFSMimeApplication *application);

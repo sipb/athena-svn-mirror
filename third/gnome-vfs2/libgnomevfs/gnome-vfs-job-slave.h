@@ -26,11 +26,11 @@
 
 #include "gnome-vfs-job.h"
 
-gboolean gnome_vfs_job_create_slave        (GnomeVFSJob *job);
+gboolean _gnome_vfs_job_create_slave        (GnomeVFSJob *job);
 
 /* Call this before taking down the idle task in the master thread to
  * give pending slave threads a chance to finish cleanly.
  */
-void     gnome_vfs_thread_backend_shutdown (void);
+void     _gnome_vfs_thread_backend_shutdown (void);
 
 #endif /* GNOME_VFS_JOB_SLAVE_H */

@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>
+Monitoring</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="GnomeVFS - Filesystem Abstraction library"><link rel="up" href="advanced-operations.html" title="Advanced Operations"><link rel="previous" href="advanced-operations.html" title="Advanced Operations"><link rel="next" href="gnome-vfs-gnome-vfs-cancellation.html" title="
+Cancellation"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="advanced-operations.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="advanced-operations.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GnomeVFS - Filesystem Abstraction library</th><td><a accesskey="n" href="gnome-vfs-gnome-vfs-cancellation.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry"><a name="gnome-vfs-gnome-vfs-monitor"></a><div class="titlepage"></div><div class="refnamediv"><h2>
+Monitoring</h2><p>
+Monitoring &#8212; 
+watch files for changes, and get called back if they do</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-monitor.html#gnome-vfs-monitor-add">gnome_vfs_monitor_add</a>        (GnomeVFSMonitorHandle **handle,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *text_uri,
+                                             <a href="gnome-vfs-gnome-vfs-monitor.html#GnomeVFSMonitorType">GnomeVFSMonitorType</a> monitor_type,
+                                             <a href="gnome-vfs-gnome-vfs-monitor.html#GnomeVFSMonitorCallback">GnomeVFSMonitorCallback</a> callback,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-monitor.html#gnome-vfs-monitor-cancel">gnome_vfs_monitor_cancel</a>     (GnomeVFSMonitorHandle *handle);
+enum        <a href="gnome-vfs-gnome-vfs-monitor.html#GnomeVFSMonitorType">GnomeVFSMonitorType</a>;
+enum        <a href="gnome-vfs-gnome-vfs-monitor.html#GnomeVFSMonitorEventType">GnomeVFSMonitorEventType</a>;
+void        (<a href="gnome-vfs-gnome-vfs-monitor.html#GnomeVFSMonitorCallback">*GnomeVFSMonitorCallback</a>)      (GnomeVFSMonitorHandle *handle,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *monitor_uri,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *info_uri,
+                                             <a href="gnome-vfs-gnome-vfs-monitor.html#GnomeVFSMonitorEventType">GnomeVFSMonitorEventType</a> event_type,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);
+</pre></div><div class="refsect1"><h2>Description</h2><p>
+
+</p></div><div class="refsect1"><h2>Details</h2><div class="refsect2"><h3><a name="gnome-vfs-monitor-add"></a>gnome_vfs_monitor_add ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_monitor_add        (GnomeVFSMonitorHandle **handle,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *text_uri,
+                                             <a href="gnome-vfs-gnome-vfs-monitor.html#GnomeVFSMonitorType">GnomeVFSMonitorType</a> monitor_type,
+                                             <a href="gnome-vfs-gnome-vfs-monitor.html#GnomeVFSMonitorCallback">GnomeVFSMonitorCallback</a> callback,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre><p>
+Watch the file or directory at <i><tt>text_uri</tt></i> for changes (or the creation/deletion of the file)
+and call <i><tt>callback</tt></i> when there is a change. If a directory monitor is added, <i><tt>callback</tt></i> is
+notified when any file in the directory changes.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>handle</tt></i> :</span></td><td> after the call, <i><tt>handle</tt></i> will be a pointer to an operation handle
+</td></tr><tr><td><span class="term"><i><tt>text_uri</tt></i> :</span></td><td> URI to monitor
+</td></tr><tr><td><span class="term"><i><tt>monitor_type</tt></i> :</span></td><td> add a directory or file monitor
+</td></tr><tr><td><span class="term"><i><tt>callback</tt></i> :</span></td><td> function to call when the monitor is tripped
+</td></tr><tr><td><span class="term"><i><tt>user_data</tt></i> :</span></td><td> data to pass to <i><tt>callback</tt></i>
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> an integer representing the success of the operation
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-monitor-cancel"></a>gnome_vfs_monitor_cancel ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_monitor_cancel     (GnomeVFSMonitorHandle *handle);</pre><p>
+Cancel the monitor pointed to be <i><tt>handle</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>handle</tt></i> :</span></td><td> handle of the monitor to cancel
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> an integer representing the success of the operation
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="GnomeVFSMonitorType"></a>enum GnomeVFSMonitorType</h3><pre class="programlisting">typedef enum {
+  GNOME_VFS_MONITOR_FILE,
+  GNOME_VFS_MONITOR_DIRECTORY
+} GnomeVFSMonitorType;
+</pre><p>
+Type of resources that can be monitored.</p><p>
+
+</p></div><hr><div class="refsect2"><h3><a name="GnomeVFSMonitorEventType"></a>enum GnomeVFSMonitorEventType</h3><pre class="programlisting">typedef enum {
+  GNOME_VFS_MONITOR_EVENT_CHANGED,
+  GNOME_VFS_MONITOR_EVENT_DELETED,
+  GNOME_VFS_MONITOR_EVENT_STARTEXECUTING,
+  GNOME_VFS_MONITOR_EVENT_STOPEXECUTING,
+  GNOME_VFS_MONITOR_EVENT_CREATED,
+  GNOME_VFS_MONITOR_EVENT_METADATA_CHANGED
+} GnomeVFSMonitorEventType;
+</pre><p>
+Types of events that can be monitored.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><tt>GNOME_VFS_MONITOR_EVENT_CHANGED</tt></span></td><td> file data changed
+</td></tr><tr><td><span class="term"><tt>GNOME_VFS_MONITOR_EVENT_DELETED</tt></span></td><td> file deleted event
+</td></tr><tr><td><span class="term"><tt>GNOME_VFS_MONITOR_EVENT_STARTEXECUTING</tt></span></td><td>  
+</td></tr><tr><td><span class="term"><tt>GNOME_VFS_MONITOR_EVENT_STOPEXECUTING</tt></span></td><td> 
+</td></tr><tr><td><span class="term"><tt>GNOME_VFS_MONITOR_EVENT_CREATED</tt></span></td><td> file created event
+</td></tr><tr><td><span class="term"><tt>GNOME_VFS_MONITOR_EVENT_METADATA_CHANGED</tt></span></td><td> file metadata changed
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="GnomeVFSMonitorCallback"></a>GnomeVFSMonitorCallback ()</h3><pre class="programlisting">void        (*GnomeVFSMonitorCallback)      (GnomeVFSMonitorHandle *handle,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *monitor_uri,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *info_uri,
+                                             <a href="gnome-vfs-gnome-vfs-monitor.html#GnomeVFSMonitorEventType">GnomeVFSMonitorEventType</a> event_type,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> user_data);</pre><p>
+Function called when a monitor detects a change.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>handle</tt></i> :</span></td><td> the handle of the monitor that created the event
+</td></tr><tr><td><span class="term"><i><tt>monitor_uri</tt></i> :</span></td><td> the URI of the monitor that was triggered
+</td></tr><tr><td><span class="term"><i><tt>info_uri</tt></i> :</span></td><td> the URI of the actual file this event is concerned with (this can be different
+from <i><tt>monitor_uri</tt></i> if it was a directory monitor)
+</td></tr><tr><td><span class="term"><i><tt>event_type</tt></i> :</span></td><td> what happened to <i><tt>info_uri</tt></i>
+</td></tr><tr><td><span class="term"><i><tt>user_data</tt></i> :</span></td><td> user data passed to <a href="gnome-vfs-gnome-vfs-monitor.html#gnome-vfs-monitor-add">gnome_vfs_monitor_add</a>() when the monitor was created
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="advanced-operations.html"><b>&lt;&lt; Advanced Operations</b></a></td><td align="right"><a accesskey="n" href="gnome-vfs-gnome-vfs-cancellation.html"><b>
+Cancellation &gt;&gt;</b></a></td></tr></table></body></html>

@@ -32,7 +32,9 @@ G_BEGIN_DECLS
 
 struct stat;
 
+#ifndef GNOME_VFS_DISABLE_DEPRECATED
 void 	     gnome_vfs_mime_shutdown 				(void);
+#endif
 
 const char  *gnome_vfs_mime_type_from_name			(const char        *filename);
 const char  *gnome_vfs_mime_type_from_name_or_default	        (const char        *filename,

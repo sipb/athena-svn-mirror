@@ -31,6 +31,7 @@
 #include <libgnomevfs/gnome-vfs-file-size.h>
 #include <libgnomevfs/gnome-vfs-result.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
+#include <libgnomevfs/gnome-vfs-handle.h>
 
 G_BEGIN_DECLS
 
@@ -72,7 +73,7 @@ char *gnome_vfs_escape_set 		     (const char      *string,
  * Unix path, since pieces of Unix paths can't contain "/". ASCII 0
  * is always illegal due to the limitations of NULL-terminated strings.
  */
-char *gnome_vfs_unescape_string              (const char      *string,
+char *gnome_vfs_unescape_string              (const char      *escaped_string,
 					      const char      *illegal_characters);
 
 /* returns a copy of uri, converted to a canonical form */
@@ -113,10 +114,42 @@ GnomeVFSResult	gnome_vfs_get_volume_free_space	(const GnomeVFSURI 	*vfs_uri,
 
 char *gnome_vfs_icon_path_from_filename       (const char *filename);
 
+/* Convert a file descriptor to a handle */
+GnomeVFSResult	gnome_vfs_open_fd	(GnomeVFSHandle	**handle,
+					 int filedes);
+
 /* TRUE if the current thread is the thread with the main glib event loop */
-#define GNOME_VFS_ASSERT_PRIMARY_THREAD g_assert (gnome_vfs_is_primary_thread())
-#define GNOME_VFS_ASSERT_SECONDARY_THREAD g_assert (!gnome_vfs_is_primary_thread())
 gboolean	gnome_vfs_is_primary_thread (void);
+
+/**
+ * GNOME_VFS_ASSERT_PRIMARY_THREAD:
+ *
+ * Asserts that the current thread is the thread with 
+ * the main glib event loop 
+ **/
+#define GNOME_VFS_ASSERT_PRIMARY_THREAD g_assert (gnome_vfs_is_primary_thread())
+
+/**
+ * GNOME_VFS_ASSERT_SECONDARY_THREAD:
+ *
+ * Asserts that the current thread is NOT the thread with
+ * the main glib event loop 
+ **/
+#define GNOME_VFS_ASSERT_SECONDARY_THREAD g_assert (!gnome_vfs_is_primary_thread())
+
+/* Reads the contents of an entire file into memory */
+GnomeVFSResult  gnome_vfs_read_entire_file (const char *uri,
+					    int *file_size,
+					    char **file_contents);
+
+char * gnome_vfs_format_uri_for_display (const char *uri);
+char * gnome_vfs_make_uri_from_input (const char *uri);
+char * gnome_vfs_make_uri_canonical_strip_fragment (const char *uri);
+gboolean gnome_vfs_uris_match (const char *uri_1, const char *uri_2);
+char * gnome_vfs_get_uri_scheme (const char *uri);
+char * gnome_vfs_make_uri_from_shell_arg (const char *uri);
+char * gnome_vfs_make_uri_full_from_relative (const char *base_uri,
+					      const char *relative_uri);
 
 G_END_DECLS
 

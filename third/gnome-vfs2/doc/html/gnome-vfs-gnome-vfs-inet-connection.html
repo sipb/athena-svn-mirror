@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-vfs-inet-connection</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="GnomeVFS - Filesystem Abstraction library"><link rel="up" href="ch08.html" title="Other Stuff"><link rel="previous" href="gnome-vfs-gnome-vfs-standard-callbacks.html" title="gnome-vfs-standard-callbacks"><link rel="next" href="gnome-vfs-gnome-vfs-module-callback.html" title="gnome-vfs-module-callback"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gnome-vfs-gnome-vfs-standard-callbacks.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="ch08.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GnomeVFS - Filesystem Abstraction library</th><td><a accesskey="n" href="gnome-vfs-gnome-vfs-module-callback.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry"><a name="gnome-vfs-gnome-vfs-inet-connection"></a><div class="titlepage"></div><div class="refnamediv"><h2>gnome-vfs-inet-connection</h2><p>gnome-vfs-inet-connection &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-inet-connection.html#gnome-vfs-inet-connection-create">gnome_vfs_inet_connection_create</a>
+                                            (GnomeVFSInetConnection **connection_return,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *host_name,
+                                             <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a> host_port,
+                                             GnomeVFSCancellation *cancellation);
+void        <a href="gnome-vfs-gnome-vfs-inet-connection.html#gnome-vfs-inet-connection-destroy">gnome_vfs_inet_connection_destroy</a>
+                                            (GnomeVFSInetConnection *connection,
+                                             GnomeVFSCancellation *cancellation);
+void        <a href="gnome-vfs-gnome-vfs-inet-connection.html#gnome-vfs-inet-connection-free">gnome_vfs_inet_connection_free</a>  (GnomeVFSInetConnection *connection,
+                                             GnomeVFSCancellation *cancellation);
+GnomeVFSSocket* <a href="gnome-vfs-gnome-vfs-inet-connection.html#gnome-vfs-inet-connection-to-socket">gnome_vfs_inet_connection_to_socket</a>
+                                            (GnomeVFSInetConnection *connection);
+GnomeVFSSocketBuffer* <a href="gnome-vfs-gnome-vfs-inet-connection.html#gnome-vfs-inet-connection-to-socket-buffer">gnome_vfs_inet_connection_to_socket_buffer</a>
+                                            (GnomeVFSInetConnection *connection);
+int         <a href="gnome-vfs-gnome-vfs-inet-connection.html#gnome-vfs-inet-connection-get-fd">gnome_vfs_inet_connection_get_fd</a>
+                                            (GnomeVFSInetConnection *connection);
+</pre></div><div class="refsect1"><h2>Description</h2><p>
+
+</p></div><div class="refsect1"><h2>Details</h2><div class="refsect2"><h3><a name="gnome-vfs-inet-connection-create"></a>gnome_vfs_inet_connection_create ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_inet_connection_create
+                                            (GnomeVFSInetConnection **connection_return,
+                                             const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *host_name,
+                                             <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a> host_port,
+                                             GnomeVFSCancellation *cancellation);</pre><p>
+Creates a connection at <i><tt>handle_return</tt></i> to <i><tt>host_name</tt></i> using
+port <i><tt>port</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>connection_return</tt></i> :</span></td><td> pointer to a GnomeVFSInetConnection, which will
+contain an allocated GnomeVFSInetConnection object on return.
+</td></tr><tr><td><span class="term"><i><tt>host_name</tt></i> :</span></td><td> string indicating the host to establish an internet connection with
+</td></tr><tr><td><span class="term"><i><tt>host_port</tt></i> :</span></td><td> the port number to connect to
+</td></tr><tr><td><span class="term"><i><tt>cancellation</tt></i> :</span></td><td> handle allowing cancellation of the operation
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> GnomeVFSResult indicating the success of the operation
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-inet-connection-destroy"></a>gnome_vfs_inet_connection_destroy ()</h3><pre class="programlisting">void        gnome_vfs_inet_connection_destroy
+                                            (GnomeVFSInetConnection *connection,
+                                             GnomeVFSCancellation *cancellation);</pre><p>
+Closes/Destroys <i><tt>connection</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>connection</tt></i> :</span></td><td> connection to destroy
+</td></tr><tr><td><span class="term"><i><tt>cancellation</tt></i> :</span></td><td> handle for cancelling the operation
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-inet-connection-free"></a>gnome_vfs_inet_connection_free ()</h3><pre class="programlisting">void        gnome_vfs_inet_connection_free  (GnomeVFSInetConnection *connection,
+                                             GnomeVFSCancellation *cancellation);</pre><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>connection</tt></i> :</span></td><td>
+</td></tr><tr><td><span class="term"><i><tt>cancellation</tt></i> :</span></td><td>
+
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-inet-connection-to-socket"></a>gnome_vfs_inet_connection_to_socket ()</h3><pre class="programlisting">GnomeVFSSocket* gnome_vfs_inet_connection_to_socket
+                                            (GnomeVFSInetConnection *connection);</pre><p>
+Wrapper <i><tt>connection</tt></i> inside a standard GnomeVFSSocket for convenience.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>connection</tt></i> :</span></td><td> connection to convert to wrapper in a GnomeVFSSocket
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a newly created GnomeVFSSocket around <i><tt>connection</tt></i>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-inet-connection-to-socket-buffer"></a>gnome_vfs_inet_connection_to_socket_buffer ()</h3><pre class="programlisting">GnomeVFSSocketBuffer* gnome_vfs_inet_connection_to_socket_buffer
+                                            (GnomeVFSInetConnection *connection);</pre><p>
+Wrapper <i><tt>connection</tt></i> inside a standard GnomeVFSSocketBuffer for convenience.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>connection</tt></i> :</span></td><td> connection to convert to wrapper in a GnomeVFSSocketBuffer
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a newly created GnomeVFSSocketBuffer around <i><tt>connection</tt></i>.
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-inet-connection-get-fd"></a>gnome_vfs_inet_connection_get_fd ()</h3><pre class="programlisting">int         gnome_vfs_inet_connection_get_fd
+                                            (GnomeVFSInetConnection *connection);</pre><p>
+Retrieve the UNIX file descriptor corresponding to <i><tt>connection</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>connection</tt></i> :</span></td><td> connection to get the file descriptor from
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> file descriptor
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gnome-vfs-gnome-vfs-standard-callbacks.html"><b>&lt;&lt; gnome-vfs-standard-callbacks</b></a></td><td align="right"><a accesskey="n" href="gnome-vfs-gnome-vfs-module-callback.html"><b>gnome-vfs-module-callback &gt;&gt;</b></a></td></tr></table></body></html>

@@ -1,0 +1,128 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-vfs-socket-buffer</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="GnomeVFS - Filesystem Abstraction library"><link rel="up" href="modules.html" title="Filesystem Modules"><link rel="previous" href="gnome-vfs-gnome-vfs-socket.html" title="gnome-vfs-socket"><link rel="next" href="gnome-vfs-gnome-vfs-transform.html" title="gnome-vfs-transform"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gnome-vfs-gnome-vfs-socket.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="modules.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GnomeVFS - Filesystem Abstraction library</th><td><a accesskey="n" href="gnome-vfs-gnome-vfs-transform.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry"><a name="gnome-vfs-gnome-vfs-socket-buffer"></a><div class="titlepage"></div><div class="refnamediv"><h2>gnome-vfs-socket-buffer</h2><p>gnome-vfs-socket-buffer &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+GnomeVFSSocketBuffer* <a href="gnome-vfs-gnome-vfs-socket-buffer.html#gnome-vfs-socket-buffer-new">gnome_vfs_socket_buffer_new</a>
+                                            (GnomeVFSSocket *socket);
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-socket-buffer.html#gnome-vfs-socket-buffer-destroy">gnome_vfs_socket_buffer_destroy</a>
+                                            (GnomeVFSSocketBuffer *socket_buffer,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> close_socket);
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-socket-buffer.html#gnome-vfs-socket-buffer-read">gnome_vfs_socket_buffer_read</a> (GnomeVFSSocketBuffer *socket_buffer,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> buffer,
+                                             <a href="gnome-vfs-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> bytes,
+                                             <a href="gnome-vfs-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> *bytes_read);
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-socket-buffer.html#gnome-vfs-socket-buffer-peekc">gnome_vfs_socket_buffer_peekc</a>
+                                            (GnomeVFSSocketBuffer *socket_buffer,
+                                             char *character);
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-socket-buffer.html#gnome-vfs-socket-buffer-write">gnome_vfs_socket_buffer_write</a>
+                                            (GnomeVFSSocketBuffer *socket_buffer,
+                                             <a
+href="../glib/glib-Basic-Types.html#gconstpointer"
+>gconstpointer</a> buffer,
+                                             <a href="gnome-vfs-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> bytes,
+                                             <a href="gnome-vfs-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> *bytes_written);
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-socket-buffer.html#gnome-vfs-socket-buffer-flush">gnome_vfs_socket_buffer_flush</a>
+                                            (GnomeVFSSocketBuffer *socket_buffer);
+</pre></div><div class="refsect1"><h2>Description</h2><p>
+
+</p></div><div class="refsect1"><h2>Details</h2><div class="refsect2"><h3><a name="gnome-vfs-socket-buffer-new"></a>gnome_vfs_socket_buffer_new ()</h3><pre class="programlisting">GnomeVFSSocketBuffer* gnome_vfs_socket_buffer_new
+                                            (GnomeVFSSocket *socket);</pre><p>
+Create a socket buffer around <i><tt>socket</tt></i>. A buffered
+socket allows data to be poked at without reading it
+as it will be buffered. A future read will retrieve
+the data again.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>socket</tt></i> :</span></td><td> socket to be buffered
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a newly allocated GnomeVFSSocketBuffer
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-socket-buffer-destroy"></a>gnome_vfs_socket_buffer_destroy ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_socket_buffer_destroy
+                                            (GnomeVFSSocketBuffer *socket_buffer,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> close_socket);</pre><p>
+Free the socket buffer.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>socket_buffer</tt></i> :</span></td><td> buffered socket to destray
+</td></tr><tr><td><span class="term"><i><tt>close_socket</tt></i> :</span></td><td> if <tt>TRUE</tt> the socket being buffered will be closed too
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> GnomeVFSResult indicating the success of the operation
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-socket-buffer-read"></a>gnome_vfs_socket_buffer_read ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_socket_buffer_read (GnomeVFSSocketBuffer *socket_buffer,
+                                             <a
+href="../glib/glib-Basic-Types.html#gpointer"
+>gpointer</a> buffer,
+                                             <a href="gnome-vfs-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> bytes,
+                                             <a href="gnome-vfs-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> *bytes_read);</pre><p>
+Read <i><tt>bytes</tt></i> bytes of data from the <i><tt>socket</tt></i> into <i><tt>socket_buffer</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>socket_buffer</tt></i> :</span></td><td> buffered socket to read data from
+</td></tr><tr><td><span class="term"><i><tt>buffer</tt></i> :</span></td><td> allocated buffer of at least <i><tt>bytes</tt></i> bytes to be read into
+</td></tr><tr><td><span class="term"><i><tt>bytes</tt></i> :</span></td><td> number of bytes to read from <i><tt>socket</tt></i> into <i><tt>socket_buffer</tt></i>
+</td></tr><tr><td><span class="term"><i><tt>bytes_read</tt></i> :</span></td><td> pointer to a GnomeVFSFileSize, will contain
+the number of bytes actually read from the socket on return.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> GnomeVFSResult indicating the success of the operation
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-socket-buffer-peekc"></a>gnome_vfs_socket_buffer_peekc ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_socket_buffer_peekc
+                                            (GnomeVFSSocketBuffer *socket_buffer,
+                                             char *character);</pre><p>
+Peek at the next character in <i><tt>socket_buffer</tt></i> without actually reading
+the character in. The next read will retrieve <i><tt>c</tt></i> (as well as any following
+data if requested).</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>socket_buffer</tt></i> :</span></td><td> the socket buffer to read from
+</td></tr><tr><td><span class="term"><i><tt>character</tt></i> :</span></td><td> pointer to a char, will contain a character on return from
+a successful &quot;peek&quot;
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> GnomeVFSResult indicating the success of the operation
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-socket-buffer-write"></a>gnome_vfs_socket_buffer_write ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_socket_buffer_write
+                                            (GnomeVFSSocketBuffer *socket_buffer,
+                                             <a
+href="../glib/glib-Basic-Types.html#gconstpointer"
+>gconstpointer</a> buffer,
+                                             <a href="gnome-vfs-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> bytes,
+                                             <a href="gnome-vfs-gnome-vfs-file-size.html#GnomeVFSFileSize">GnomeVFSFileSize</a> *bytes_written);</pre><p>
+Write <i><tt>bytes</tt></i> bytes of data from <i><tt>buffer</tt></i> to <i><tt>socket_buffer</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>socket_buffer</tt></i> :</span></td><td> buffered socket to write data to
+</td></tr><tr><td><span class="term"><i><tt>buffer</tt></i> :</span></td><td> data to write to the socket
+</td></tr><tr><td><span class="term"><i><tt>bytes</tt></i> :</span></td><td> number of bytes from <i><tt>buffer</tt></i> to write to <i><tt>socket_buffer</tt></i>
+</td></tr><tr><td><span class="term"><i><tt>bytes_written</tt></i> :</span></td><td> pointer to a GnomeVFSFileSize, will contain
+the number of bytes actually written to the socket on return.
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> GnomeVFSResult indicating the success of the operation
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-socket-buffer-flush"></a>gnome_vfs_socket_buffer_flush ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_socket_buffer_flush
+                                            (GnomeVFSSocketBuffer *socket_buffer);</pre><p>
+Write all outstanding data to <i><tt>socket_buffer</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>socket_buffer</tt></i> :</span></td><td> buffer to flush
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> GnomeVFSResult indicating the success of the operation
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gnome-vfs-gnome-vfs-socket.html"><b>&lt;&lt; gnome-vfs-socket</b></a></td><td align="right"><a accesskey="n" href="gnome-vfs-gnome-vfs-transform.html"><b>gnome-vfs-transform &gt;&gt;</b></a></td></tr></table></body></html>

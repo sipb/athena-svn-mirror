@@ -34,6 +34,10 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#define GNOME_VFS_MODULE_INIT      "vfs_module_init"
+#define GNOME_VFS_MODULE_TRANSFORM "vfs_module_transform"
+#define GNOME_VFS_MODULE_SHUTDOWN  "vfs_module_shutdown"
+
 struct _ModuleElement {
 	char *name;
 	const char *args;
@@ -99,17 +103,15 @@ init_path_list (void)
 {
 	const gchar *user_path_list;
 
-	if (module_path_list != NULL) {
+	if (module_path_list != NULL)
 		return TRUE;
-	}
 
 	/* User-supplied path.  */
 
 	user_path_list = getenv ("GNOME_VFS_MODULE_PATH");
 	if (user_path_list != NULL) {
-		if (! install_path_list (user_path_list)) {
+		if (! install_path_list (user_path_list))
 			return FALSE;
-		}
 	}
 
 	/* Default path.  It comes last so that users can override it.  */
@@ -125,17 +127,13 @@ gnome_vfs_method_init (void)
 {
 	G_LOCK (gnome_vfs_method_init);
 
-	if (method_already_initialized) {
+	if (method_already_initialized)
 		goto gnome_vfs_method_init_out;
-	}
 
-	if (! init_hash_table ()) {
+	if (! init_hash_table ())
 		goto gnome_vfs_method_init_out;
-	}
-
-	if (! init_path_list ()) {
+	if (! init_path_list ())
 		goto gnome_vfs_method_init_out;
-	}
 
 	method_already_initialized = TRUE;
 
@@ -277,34 +275,47 @@ gnome_vfs_add_module_to_hash_table (const gchar *name)
 
 	module_element = g_hash_table_lookup (module_hash, name);
 
-	if (module_element != NULL) {
+	if (module_element != NULL)
 		goto add_module_out;
-	}
 
-	module_name = gnome_vfs_configuration_get_module_path (name, &args);
-	if (module_name == NULL) {
+	module_name = _gnome_vfs_configuration_get_module_path (name, &args);
+	if (module_name == NULL)
 		goto add_module_out;
-	}
 
 	/* Set the effective UID/GID to the user UID/GID to prevent attacks to
            setuid/setgid executables.  */
 
 	saved_uid = geteuid ();
 	saved_gid = getegid ();
+#if defined(HAVE_SETEUID)
 	seteuid (getuid ());
+#elif defined(HAVE_SETRESUID)
+	setresuid (-1, getuid (), -1);
+#endif
+#if defined(HAVE_SETEGID)
 	setegid (getgid ());
+#elif defined(HAVE_SETRESGID)
+	setresgid (-1, getgid (), -1);
+#endif
 
 	if (g_path_is_absolute (module_name))
 		load_module (module_name, name, args, &method, &transform);
 	else
 		load_module_in_path_list (module_name, name, args, &method, &transform);
 
+#if defined(HAVE_SETEUID)
 	seteuid (saved_uid);
+#elif defined(HAVE_SETRESUID)
+	setresuid (-1, saved_uid, -1);
+#endif
+#if defined(HAVE_SETEGID)
 	setegid (saved_gid);
+#elif defined(HAVE_SETRESGID)
+	setresgid (-1, saved_gid, -1);
+#endif
 
-	if (method == NULL && transform == NULL) {
+	if (method == NULL && transform == NULL)
 		goto add_module_out;
-	}
 
 	module_element = g_new (ModuleElement, 1);
 	module_element->name = g_strdup (name);

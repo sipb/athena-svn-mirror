@@ -28,11 +28,11 @@
 
 typedef struct GnomeVFSModuleCallbackStackInfo GnomeVFSModuleCallbackStackInfo;
 
-void                             gnome_vfs_module_callback_private_init        (void);
-GnomeVFSModuleCallbackStackInfo *gnome_vfs_module_callback_get_stack_info      (void);
-void                             gnome_vfs_module_callback_free_stack_info     (GnomeVFSModuleCallbackStackInfo *stack_info);
-void                             gnome_vfs_module_callback_use_stack_info      (GnomeVFSModuleCallbackStackInfo *stack_info);
-void                             gnome_vfs_module_callback_clear_stacks        (void);
-void                             gnome_vfs_module_callback_set_in_async_thread (gboolean in_async_thread);
+void                             _gnome_vfs_module_callback_private_init        (void);
+GnomeVFSModuleCallbackStackInfo *_gnome_vfs_module_callback_get_stack_info      (void);
+void                             _gnome_vfs_module_callback_free_stack_info     (GnomeVFSModuleCallbackStackInfo *stack_info);
+void                             _gnome_vfs_module_callback_use_stack_info      (GnomeVFSModuleCallbackStackInfo *stack_info);
+void                             _gnome_vfs_module_callback_clear_stacks        (void);
+void                             _gnome_vfs_module_callback_set_in_async_thread (gboolean in_async_thread);
 
 #endif

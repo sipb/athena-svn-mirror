@@ -31,6 +31,16 @@ G_BEGIN_DECLS
 
 typedef struct GnomeVFSDirectoryHandle GnomeVFSDirectoryHandle;
 
+/**
+ * GnomeVFSDirectoryVisitOptions:
+ * @GNOME_VFS_DIRECTORY_VISIT_DEFAULT: 
+ * @GNOME_VFS_DIRECTORY_VISIT_SAMEFS: Visit only directories on the same 
+ * file system as the parent
+ * @GNOME_VFS_DIRECTORY_VISIT_LOOPCHECK: Loop prevention
+ *
+ * This options control the way in which directories are visited.
+ **/
+
 typedef enum {
 	GNOME_VFS_DIRECTORY_VISIT_DEFAULT = 0,
 	GNOME_VFS_DIRECTORY_VISIT_SAMEFS = 1 << 0,
@@ -76,8 +86,7 @@ GnomeVFSResult	gnome_vfs_directory_visit_files
 					(const gchar *text_uri,
 					 GList *file_list,
 					 GnomeVFSFileInfoOptions info_options,
-					 GnomeVFSDirectoryVisitOptions
-					 	visit_options,
+					 GnomeVFSDirectoryVisitOptions visit_options,
 					 GnomeVFSDirectoryVisitFunc callback,
 					 gpointer data);
 

@@ -1,5 +1,5 @@
 # Spanish translation.
-# Copyright (C) 2000 Free Software Foundation, Inc.
+# Copyright (C) 2000,2003 Free Software Foundation, Inc.
 # Manuel de Vega Barreiro <barreiro@arrakis.es>, 2000.
 # Mauricio Araya Polo <mauricio@eazel.com>, 2001.
 # Juan Manuel García Molina <juanma_gm@wanadoo.es>, 2002.
@@ -7,15 +7,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: gnome-vfs 1.9.16\n"
-"POT-Creation-Date: 2002-11-13 12:11-0500\n"
-"PO-Revision-Date: 2002-06-02 19:48+0100\n"
-"Last-Translator: Juan Manuel García Molina <juanma_gm@wanadoo.es>\n"
+"POT-Creation-Date: 2003-01-20 20:46+0100\n"
+"PO-Revision-Date: 2003-01-10 14:54-0300\n"
+"Last-Translator: Pablo Gonzalo del Campo <pablodc@bigfoot.com>\n"
 "Language-Team: Spanish <traductores@es.gnome.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "First-Translator: Mauricio Araya Polo <mauricio@eazel.com>\n"
-"X-Generator: KBabel 0.9.6\n"
+"X-Generator: KBabel 1.1\n"
 
 #: libgnomevfs/gnome-vfs-configuration.c:223
 #, c-format
@@ -37,24 +37,24 @@ msgstr "%s:%d contiene un modulo sin nombre."
 msgid "Configuration file `%s' was not found: %s"
 msgstr "No se encuentra el archivo de configuración `%s': %s"
 
-#: libgnomevfs/gnome-vfs-job.c:707
+#: libgnomevfs/gnome-vfs-job.c:737
 #, c-format
 msgid "Unknown op type %u"
 msgstr "Tipo de op %u desconocido"
 
-#: libgnomevfs/gnome-vfs-job.c:996 libgnomevfs/gnome-vfs-job.c:1141
+#: libgnomevfs/gnome-vfs-job.c:1026 libgnomevfs/gnome-vfs-job.c:1171
 #, c-format
 msgid "Cannot create pipe for open GIOChannel: %s"
-msgstr "No se puede crear el pipe para el canal GIOC abierto: %s"
+msgstr "No se puede crear el pipe para el canal de E/S abierto: %s"
 
-#: libgnomevfs/gnome-vfs-job.c:1601
+#: libgnomevfs/gnome-vfs-job.c:1661
 #, c-format
 msgid "Unknown job kind %u"
 msgstr "Tipo de trabajo %u desconocido"
 
-#: libgnomevfs/gnome-vfs-job.c:1634
+#: libgnomevfs/gnome-vfs-job.c:1694
 msgid "Operation stopped"
-msgstr "La operación ha sido detenida detenida"
+msgstr "La operación ha sido detenida"
 
 #: libgnomevfs/gnome-vfs-parse-ls.c:652
 #, c-format
@@ -128,7 +128,7 @@ msgstr "No queda espacio en el dispositivo"
 #. GNOME_VFS_ERROR_READ_ONLY
 #: libgnomevfs/gnome-vfs-result.c:47
 msgid "Read-only file system"
-msgstr "El sistema de archivo ficheros sólo es de lectura"
+msgstr "Sistema de archivos de sólo lectura"
 
 #. GNOME_VFS_ERROR_INVALID_URI
 #: libgnomevfs/gnome-vfs-result.c:48
@@ -270,33 +270,42 @@ msgstr "Petición de datos de servicios obsoletos "
 msgid "Protocol error"
 msgstr "Error de protocolo"
 
-#: libgnomevfs/gnome-vfs-result.c:137
+#. GNOME_VFS_ERROR_NO_MASTER_BROWSER
+#: libgnomevfs/gnome-vfs-result.c:76
+msgid "Could not find master browser"
+msgstr "No se pudo encontrar el examinador principal"
+
+#: libgnomevfs/gnome-vfs-result.c:170
 msgid "Unknown error"
 msgstr "Error desconocido"
 
-#: libgnomevfs/gnome-vfs-utils.c:65
+#: libgnomevfs/gnome-vfs-utils.c:83
 msgid "1 byte"
 msgstr "1 byte"
 
-#: libgnomevfs/gnome-vfs-utils.c:67
+#: libgnomevfs/gnome-vfs-utils.c:85
 #, c-format
 msgid "%u bytes"
 msgstr "%u bytes"
 
-#: libgnomevfs/gnome-vfs-utils.c:74
+#: libgnomevfs/gnome-vfs-utils.c:92
 #, c-format
 msgid "%.1f K"
 msgstr "%.1f K"
 
-#: libgnomevfs/gnome-vfs-utils.c:78
+#: libgnomevfs/gnome-vfs-utils.c:96
 #, c-format
 msgid "%.1f MB"
 msgstr "%.1f MB"
 
-#: libgnomevfs/gnome-vfs-utils.c:82
+#: libgnomevfs/gnome-vfs-utils.c:100
 #, c-format
 msgid "%.1f GB"
 msgstr "%.1f GB"
+
+#: libgnomevfs/gnome-vfs-utils.c:1109
+msgid " (invalid Unicode)"
+msgstr " (Unicode inválido)"
 
 #: modules/file-method.c:382
 #, c-format

@@ -1,0 +1,1709 @@
+<HTML
+><HEAD
+><TITLE
+>mime-info</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
+REL="HOME"
+TITLE="GnomeVFS - Filesystem Abstraction library"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="MIME types & the Application Registry"
+HREF="mime-registry.html"><LINK
+REL="PREVIOUS"
+TITLE="MIME Handlers"
+HREF="gnome-vfs-mime-handlers.html"><LINK
+REL="NEXT"
+TITLE="mime-monitor"
+HREF="gnome-vfs-mime-monitor.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>GnomeVFS - Filesystem Abstraction library</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gnome-vfs-mime-handlers.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="mime-registry.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="gnome-vfs-mime-monitor.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="GNOME-VFS-MIME-INFO"
+>mime-info</A
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN7419"
+></A
+><H2
+>Name</H2
+>mime-info&nbsp;--&nbsp;</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN7422"
+></A
+><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+void        <A
+HREF="gnome-vfs-mime-info.html#GNOME-VFS-MIME-FREEZE"
+>gnome_vfs_mime_freeze</A
+>           (void);
+void        <A
+HREF="gnome-vfs-mime-info.html#GNOME-VFS-MIME-THAW"
+>gnome_vfs_mime_thaw</A
+>             (void);
+void        <A
+HREF="gnome-vfs-mime-info.html#GNOME-VFS-MIME-INFO-RELOAD"
+>gnome_vfs_mime_info_reload</A
+>      (void);
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    <A
+HREF="gnome-vfs-mime-info.html#GNOME-VFS-MIME-TYPE-IS-KNOWN"
+>gnome_vfs_mime_type_is_known</A
+>    (const char *mime_type);
+const char* <A
+HREF="gnome-vfs-mime-info.html#GNOME-VFS-MIME-GET-VALUE"
+>gnome_vfs_mime_get_value</A
+>        (const char *mime_type,
+                                             const char *key);
+<A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> <A
+HREF="gnome-vfs-mime-info.html#GNOME-VFS-MIME-SET-VALUE"
+>gnome_vfs_mime_set_value</A
+>     (const char *mime_type,
+                                             const char *key,
+                                             const char *value);
+<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A>*      <A
+HREF="gnome-vfs-mime-info.html#GNOME-VFS-MIME-GET-KEY-LIST"
+>gnome_vfs_mime_get_key_list</A
+>     (const char *mime_type);
+void        <A
+HREF="gnome-vfs-mime-info.html#GNOME-VFS-MIME-KEYS-LIST-FREE"
+>gnome_vfs_mime_keys_list_free</A
+>   (<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *mime_type_list);
+<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A>*      <A
+HREF="gnome-vfs-mime-info.html#GNOME-VFS-MIME-GET-EXTENSIONS-LIST"
+>gnome_vfs_mime_get_extensions_list</A
+>
+                                            (const char *mime_type);
+void        <A
+HREF="gnome-vfs-mime-info.html#GNOME-VFS-MIME-EXTENSIONS-LIST-FREE"
+>gnome_vfs_mime_extensions_list_free</A
+>
+                                            (<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *list);
+char*       <A
+HREF="gnome-vfs-mime-info.html#GNOME-VFS-MIME-GET-EXTENSIONS-STRING"
+>gnome_vfs_mime_get_extensions_string</A
+>
+                                            (const char *mime_type);
+char*       <A
+HREF="gnome-vfs-mime-info.html#GNOME-VFS-MIME-GET-EXTENSIONS-PRETTY-STRING"
+>gnome_vfs_mime_get_extensions_pretty_string</A
+>
+                                            (const char *mime_type);
+<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A>*      <A
+HREF="gnome-vfs-mime-info.html#GNOME-VFS-GET-REGISTERED-MIME-TYPES"
+>gnome_vfs_get_registered_mime_types</A
+>
+                                            (void);
+void        <A
+HREF="gnome-vfs-mime-info.html#GNOME-VFS-MIME-REGISTERED-MIME-TYPE-LIST-FREE"
+>gnome_vfs_mime_registered_mime_type_list_free</A
+>
+                                            (<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *list);
+<A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> <A
+HREF="gnome-vfs-mime-info.html#GNOME-VFS-MIME-SET-REGISTERED-TYPE-KEY"
+>gnome_vfs_mime_set_registered_type_key</A
+>
+                                            (const char *mime_type,
+                                             const char *key,
+                                             const char *data);
+<A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> <A
+HREF="gnome-vfs-mime-info.html#GNOME-VFS-MIME-SET-EXTENSIONS-LIST"
+>gnome_vfs_mime_set_extensions_list</A
+>
+                                            (const char *mime_type,
+                                             const char *extensions_list);
+void        <A
+HREF="gnome-vfs-mime-info.html#GNOME-VFS-MIME-REGISTERED-MIME-TYPE-DELETE"
+>gnome_vfs_mime_registered_mime_type_delete</A
+>
+                                            (const char *mime_type);
+void        <A
+HREF="gnome-vfs-mime-info.html#GNOME-VFS-MIME-RESET"
+>gnome_vfs_mime_reset</A
+>            (void);</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN7453"
+></A
+><H2
+>Description</H2
+><P
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN7456"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7458"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-FREEZE"
+></A
+>gnome_vfs_mime_freeze ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_vfs_mime_freeze           (void);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Freezes the mime data so that you can do multiple 
+updates to the dat in one batch without needing
+to back the files to disk or readind them</P
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7464"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-THAW"
+></A
+>gnome_vfs_mime_thaw ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_vfs_mime_thaw             (void);</PRE
+></TD
+></TR
+></TABLE
+><P
+>UnFreezes the mime data so that you can do multiple 
+updates to the dat in one batch without needing
+to back the files to disk or readind them</P
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7470"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-INFO-RELOAD"
+></A
+>gnome_vfs_mime_info_reload ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_vfs_mime_info_reload      (void);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7475"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-TYPE-IS-KNOWN"
+></A
+>gnome_vfs_mime_type_is_known ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    gnome_vfs_mime_type_is_known    (const char *mime_type);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function returns TRUE if <TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+> is in the MIME database at all.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7483"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a mime type.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> TRUE if anything is known about <TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>, otherwise FALSE</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7497"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-GET-VALUE"
+></A
+>gnome_vfs_mime_get_value ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>const char* gnome_vfs_mime_get_value        (const char *mime_type,
+                                             const char *key);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function retrieves the value associated with <TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+> in 
+the given GnomeMimeContext.  The string is private, you
+should not free the result.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7504"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a mime type.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A key to lookup for the given mime-type</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> GNOME_VFS_OK if the operation succeeded, otherwise an error code</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7521"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-SET-VALUE"
+></A
+>gnome_vfs_mime_set_value ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> gnome_vfs_mime_set_value     (const char *mime_type,
+                                             const char *key,
+                                             const char *value);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function is going to set the value 
+associated to the key and it will save it
+to the user' file if necessary.
+You should not free the key/values passed to 
+this function. They are used internally.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7528"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a mime type.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a key to store the value in.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>value</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the value to store in the key.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> GNOME_VFS_OK if the operation succeeded, otherwise an error code&#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7549"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-GET-KEY-LIST"
+></A
+>gnome_vfs_mime_get_key_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A>*      gnome_vfs_mime_get_key_list     (const char *mime_type);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7556"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the mime type to lookup.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a GList that contains private strings with all of the keys
+associated with the <TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>.  </TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7570"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-KEYS-LIST-FREE"
+></A
+>gnome_vfs_mime_keys_list_free ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_vfs_mime_keys_list_free   (<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *mime_type_list);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Frees the mime type list.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7577"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type_list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A mime type list to free.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7586"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-GET-EXTENSIONS-LIST"
+></A
+>gnome_vfs_mime_get_extensions_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A>*      gnome_vfs_mime_get_extensions_list
+                                            (const char *mime_type);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7593"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the mime type</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a list of extensions for this mime-type</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7606"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-EXTENSIONS-LIST-FREE"
+></A
+>gnome_vfs_mime_extensions_list_free ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_vfs_mime_extensions_list_free
+                                            (<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *list);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7612"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7621"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-GET-EXTENSIONS-STRING"
+></A
+>gnome_vfs_mime_get_extensions_string ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>char*       gnome_vfs_mime_get_extensions_string
+                                            (const char *mime_type);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7626"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7639"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-GET-EXTENSIONS-PRETTY-STRING"
+></A
+>gnome_vfs_mime_get_extensions_pretty_string ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>char*       gnome_vfs_mime_get_extensions_pretty_string
+                                            (const char *mime_type);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7645"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the mime type</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>a string containing comma seperated extensions for this mime-type</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7658"
+></A
+><H3
+><A
+NAME="GNOME-VFS-GET-REGISTERED-MIME-TYPES"
+></A
+>gnome_vfs_get_registered_mime_types ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A>*      gnome_vfs_get_registered_mime_types
+                                            (void);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7664"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7673"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-REGISTERED-MIME-TYPE-LIST-FREE"
+></A
+>gnome_vfs_mime_registered_mime_type_list_free ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_vfs_mime_registered_mime_type_list_free
+                                            (<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *list);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Call this function on the list returned by gnome_vfs_get_registered_mime_types
+to free the list and all of its elements.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7680"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the extensions list</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7689"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-SET-REGISTERED-TYPE-KEY"
+></A
+>gnome_vfs_mime_set_registered_type_key ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> gnome_vfs_mime_set_registered_type_key
+                                            (const char *mime_type,
+                                             const char *key,
+                                             const char *data);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This function sets the key data for the registered mime
+type's hash table.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7696"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> 	Mime type to set key for</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>key</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> 	The key to set</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> 	The data to set for the key</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> GNOME_VFS_OK if the operation succeeded, otherwise an error code</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7717"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-SET-EXTENSIONS-LIST"
+></A
+>gnome_vfs_mime_set_extensions_list ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> gnome_vfs_mime_set_extensions_list
+                                            (const char *mime_type,
+                                             const char *extensions_list);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Sets the extensions for a given mime type. Overrides
+the previously set extensions.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7724"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> the mime type.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>extensions_list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> a whitespace-separated list of the 
+extensions to set for this mime type.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> GNOME_VFS_OK if the operation succeeded, otherwise an error code.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7741"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-REGISTERED-MIME-TYPE-DELETE"
+></A
+>gnome_vfs_mime_registered_mime_type_delete ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_vfs_mime_registered_mime_type_delete
+                                            (const char *mime_type);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Delete a mime type for the user which runs this command.
+You can undo this only by calling gnome_vfs_mime_reset</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN7747"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>mime_type</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN7756"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MIME-RESET"
+></A
+>gnome_vfs_mime_reset ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_vfs_mime_reset            (void);</PRE
+></TD
+></TR
+></TABLE
+><P
+>resets the user's mime database to the system defaults.</P
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gnome-vfs-mime-handlers.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="mime-registry.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="gnome-vfs-mime-monitor.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>MIME Handlers</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>mime-monitor</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

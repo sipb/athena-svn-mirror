@@ -1,0 +1,1780 @@
+<HTML
+><HEAD
+><TITLE
+>Directory Operations</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
+REL="HOME"
+TITLE="GnomeVFS - Filesystem Abstraction library"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Basic File Operations"
+HREF="file-operations.html"><LINK
+REL="PREVIOUS"
+TITLE="Basic File I/O"
+HREF="gnome-vfs-ops.html"><LINK
+REL="NEXT"
+TITLE="Finding Special Directories"
+HREF="gnome-vfs-finding-special-directories.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>GnomeVFS - Filesystem Abstraction library</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gnome-vfs-ops.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="file-operations.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="gnome-vfs-finding-special-directories.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="GNOME-VFS-DIRECTORY"
+>Directory Operations</A
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN1106"
+></A
+><H2
+>Name</H2
+>Directory Operations&nbsp;--&nbsp;loading and parsing directory contents</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN1109"
+></A
+><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+<A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> <A
+HREF="gnome-vfs-directory.html#GNOME-VFS-DIRECTORY-OPEN"
+>gnome_vfs_directory_open</A
+>     (GnomeVFSDirectoryHandle **handle,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *text_uri,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSFILEINFOOPTIONS"
+>GnomeVFSFileInfoOptions</A
+> options);
+<A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> <A
+HREF="gnome-vfs-directory.html#GNOME-VFS-DIRECTORY-OPEN-FROM-URI"
+>gnome_vfs_directory_open_from_uri</A
+>
+                                            (GnomeVFSDirectoryHandle **handle,
+                                             GnomeVFSURI *uri,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSFILEINFOOPTIONS"
+>GnomeVFSFileInfoOptions</A
+> options);
+<A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> <A
+HREF="gnome-vfs-directory.html#GNOME-VFS-DIRECTORY-READ-NEXT"
+>gnome_vfs_directory_read_next</A
+>
+                                            (GnomeVFSDirectoryHandle *handle,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSFILEINFO"
+>GnomeVFSFileInfo</A
+> *file_info);
+<A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> <A
+HREF="gnome-vfs-directory.html#GNOME-VFS-DIRECTORY-CLOSE"
+>gnome_vfs_directory_close</A
+>    (GnomeVFSDirectoryHandle *handle);
+<A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> <A
+HREF="gnome-vfs-directory.html#GNOME-VFS-DIRECTORY-VISIT"
+>gnome_vfs_directory_visit</A
+>    (const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *uri,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSFILEINFOOPTIONS"
+>GnomeVFSFileInfoOptions</A
+> info_options,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSDIRECTORYVISITOPTIONS"
+>GnomeVFSDirectoryVisitOptions</A
+> visit_options,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSDIRECTORYVISITFUNC"
+>GnomeVFSDirectoryVisitFunc</A
+> callback,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> data);
+<A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> <A
+HREF="gnome-vfs-directory.html#GNOME-VFS-DIRECTORY-VISIT-URI"
+>gnome_vfs_directory_visit_uri</A
+>
+                                            (GnomeVFSURI *uri,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSFILEINFOOPTIONS"
+>GnomeVFSFileInfoOptions</A
+> info_options,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSDIRECTORYVISITOPTIONS"
+>GnomeVFSDirectoryVisitOptions</A
+> visit_options,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSDIRECTORYVISITFUNC"
+>GnomeVFSDirectoryVisitFunc</A
+> callback,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> data);
+<A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> <A
+HREF="gnome-vfs-directory.html#GNOME-VFS-DIRECTORY-VISIT-FILES"
+>gnome_vfs_directory_visit_files</A
+>
+                                            (const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *text_uri,
+                                             <A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *file_list,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSFILEINFOOPTIONS"
+>GnomeVFSFileInfoOptions</A
+> info_options,
+                                             GnomeVFSDirectoryVisitOptionsvisit_options,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSDIRECTORYVISITFUNC"
+>GnomeVFSDirectoryVisitFunc</A
+> callback,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> data);
+<A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> <A
+HREF="gnome-vfs-directory.html#GNOME-VFS-DIRECTORY-VISIT-FILES-AT-URI"
+>gnome_vfs_directory_visit_files_at_uri</A
+>
+                                            (GnomeVFSURI *uri,
+                                             <A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *file_list,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSFILEINFOOPTIONS"
+>GnomeVFSFileInfoOptions</A
+> info_options,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSDIRECTORYVISITOPTIONS"
+>GnomeVFSDirectoryVisitOptions</A
+> visit_options,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSDIRECTORYVISITFUNC"
+>GnomeVFSDirectoryVisitFunc</A
+> callback,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> data);
+<A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> <A
+HREF="gnome-vfs-directory.html#GNOME-VFS-DIRECTORY-LIST-LOAD"
+>gnome_vfs_directory_list_load</A
+>
+                                            (<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> **list,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *text_uri,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSFILEINFOOPTIONS"
+>GnomeVFSFileInfoOptions</A
+> options);</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1164"
+></A
+><H2
+>Description</H2
+><P
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN1167"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1169"
+></A
+><H3
+><A
+NAME="GNOME-VFS-DIRECTORY-OPEN"
+></A
+>gnome_vfs_directory_open ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> gnome_vfs_directory_open     (GnomeVFSDirectoryHandle **handle,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *text_uri,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSFILEINFOOPTIONS"
+>GnomeVFSFileInfoOptions</A
+> options);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Open directory <TT
+CLASS="PARAMETER"
+><I
+>text_uri</I
+></TT
+> for reading.  On return, @*handle will point to
+a <TT
+CLASS="LITERAL"
+>GnomeVFSDirectoryHandle</TT
+> object which can be used to read the directory
+entries one by one.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1181"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>handle</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A pointer to a pointer to a GnomeVFSDirectoryHandle object</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>text_uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> String representing the URI to open</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>options</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Options for reading file information</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An integer representing the result of the operation</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1202"
+></A
+><H3
+><A
+NAME="GNOME-VFS-DIRECTORY-OPEN-FROM-URI"
+></A
+>gnome_vfs_directory_open_from_uri ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> gnome_vfs_directory_open_from_uri
+                                            (GnomeVFSDirectoryHandle **handle,
+                                             GnomeVFSURI *uri,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSFILEINFOOPTIONS"
+>GnomeVFSFileInfoOptions</A
+> options);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Open directory <TT
+CLASS="PARAMETER"
+><I
+>text_uri</I
+></TT
+> for reading.  On return, @*handle will point to
+a <TT
+CLASS="LITERAL"
+>GnomeVFSDirectoryHandle</TT
+> object which can be used to read the directory
+entries one by one.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1214"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>handle</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A pointer to a pointer to a GnomeVFSDirectoryHandle object</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> URI to open</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>options</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Options for reading file information</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An integer representing the result of the operation.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1235"
+></A
+><H3
+><A
+NAME="GNOME-VFS-DIRECTORY-READ-NEXT"
+></A
+>gnome_vfs_directory_read_next ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> gnome_vfs_directory_read_next
+                                            (GnomeVFSDirectoryHandle *handle,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSFILEINFO"
+>GnomeVFSFileInfo</A
+> *file_info);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Read the next directory entry from <TT
+CLASS="PARAMETER"
+><I
+>handle</I
+></TT
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1245"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>handle</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A directory handle</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>file_info</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Pointer to a <TT
+CLASS="LITERAL"
+>GnomeVFSFileInfo</TT
+> struct where the data about
+the entry will be stored</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An integer value representing the result of the operation.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1263"
+></A
+><H3
+><A
+NAME="GNOME-VFS-DIRECTORY-CLOSE"
+></A
+>gnome_vfs_directory_close ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> gnome_vfs_directory_close    (GnomeVFSDirectoryHandle *handle);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Close <TT
+CLASS="PARAMETER"
+><I
+>handle</I
+></TT
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1272"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>handle</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A directory handle.</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An integer representing the result of the operation.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1285"
+></A
+><H3
+><A
+NAME="GNOME-VFS-DIRECTORY-VISIT"
+></A
+>gnome_vfs_directory_visit ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> gnome_vfs_directory_visit    (const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *uri,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSFILEINFOOPTIONS"
+>GnomeVFSFileInfoOptions</A
+> info_options,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSDIRECTORYVISITOPTIONS"
+>GnomeVFSDirectoryVisitOptions</A
+> visit_options,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSDIRECTORYVISITFUNC"
+>GnomeVFSDirectoryVisitFunc</A
+> callback,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> data);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Visit <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>, retrieving information as specified by <TT
+CLASS="PARAMETER"
+><I
+>info_options</I
+></TT
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1299"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> URI to start from</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>info_options</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Options specifying what kind of file information must be
+retrieved</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>visit_options</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Options specifying the type of visit</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>callback</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Callback to be called for every visited file</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Data to be passed to <TT
+CLASS="PARAMETER"
+><I
+>callback</I
+></TT
+> at each iteration</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1329"
+></A
+><H3
+><A
+NAME="GNOME-VFS-DIRECTORY-VISIT-URI"
+></A
+>gnome_vfs_directory_visit_uri ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> gnome_vfs_directory_visit_uri
+                                            (GnomeVFSURI *uri,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSFILEINFOOPTIONS"
+>GnomeVFSFileInfoOptions</A
+> info_options,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSDIRECTORYVISITOPTIONS"
+>GnomeVFSDirectoryVisitOptions</A
+> visit_options,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSDIRECTORYVISITFUNC"
+>GnomeVFSDirectoryVisitFunc</A
+> callback,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> data);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Visit <TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>, retrieving information as specified by <TT
+CLASS="PARAMETER"
+><I
+>info_options</I
+></TT
+>.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1343"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> URI to start from</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>info_options</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Options specifying what kind of file information must be
+retrieved</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>visit_options</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Options specifying the type of visit</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>callback</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Callback to be called for every visited file</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Data to be passed to <TT
+CLASS="PARAMETER"
+><I
+>callback</I
+></TT
+> at each iteration</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A result code indicating whether the operation succeeded. &#13;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1373"
+></A
+><H3
+><A
+NAME="GNOME-VFS-DIRECTORY-VISIT-FILES"
+></A
+>gnome_vfs_directory_visit_files ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> gnome_vfs_directory_visit_files
+                                            (const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *text_uri,
+                                             <A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *file_list,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSFILEINFOOPTIONS"
+>GnomeVFSFileInfoOptions</A
+> info_options,
+                                             GnomeVFSDirectoryVisitOptionsvisit_options,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSDIRECTORYVISITFUNC"
+>GnomeVFSDirectoryVisitFunc</A
+> callback,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> data);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1385"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>text_uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>file_list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>info_options</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>Param4</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>callback</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1418"
+></A
+><H3
+><A
+NAME="GNOME-VFS-DIRECTORY-VISIT-FILES-AT-URI"
+></A
+>gnome_vfs_directory_visit_files_at_uri ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> gnome_vfs_directory_visit_files_at_uri
+                                            (GnomeVFSURI *uri,
+                                             <A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> *file_list,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSFILEINFOOPTIONS"
+>GnomeVFSFileInfoOptions</A
+> info_options,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSDIRECTORYVISITOPTIONS"
+>GnomeVFSDirectoryVisitOptions</A
+> visit_options,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSDIRECTORYVISITFUNC"
+>GnomeVFSDirectoryVisitFunc</A
+> callback,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> data);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1430"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>file_list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>info_options</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>visit_options</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>callback</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN1463"
+></A
+><H3
+><A
+NAME="GNOME-VFS-DIRECTORY-LIST-LOAD"
+></A
+>gnome_vfs_directory_list_load ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> gnome_vfs_directory_list_load
+                                            (<A
+HREF=../glib/glib-doubly-linked-lists.html#GLIST
+>GList</A> **list,
+                                             const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *text_uri,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSFILEINFOOPTIONS"
+>GnomeVFSFileInfoOptions</A
+> options);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Load a directory from <TT
+CLASS="PARAMETER"
+><I
+>text_uri</I
+></TT
+> with the specified <TT
+CLASS="PARAMETER"
+><I
+>options</I
+></TT
+>
+into a list.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN1475"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>list</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An address of a pointer to a list of GnomeVFSFileInfo</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>text_uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> A text URI</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>options</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Options for loading the directory </TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> An integer representing the result of the operation.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gnome-vfs-ops.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="file-operations.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="gnome-vfs-finding-special-directories.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Basic File I/O</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Finding Special Directories</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

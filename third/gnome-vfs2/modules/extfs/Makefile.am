@@ -1,4 +1,4 @@
-extfsdir = $(prefix)/lib/vfs/2.0/extfs
+extfsdir = $(libdir)/vfs/2.0/extfs
 
 extfs_DATA =					\
 	README

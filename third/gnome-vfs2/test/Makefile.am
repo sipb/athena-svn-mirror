@@ -25,8 +25,10 @@ noinst_PROGRAMS =				\
 	test-mime-info				\
 	test-monitor				\
 	test-performance			\
+	test-resolv				\
 	test-seek				\
 	test-shell				\
+	test-subdir				\
 	test-symlinks				\
 	test-ssl				\
 	test-sync				\
@@ -41,7 +43,6 @@ noinst_PROGRAMS =				\
 	$(NULL)
 
 test_files=		\
-	auto-test	\
 	test.input	\
 	test.cmds	\
 	test.output
@@ -64,6 +65,12 @@ test_async_LDADD = $(libraries)
 
 test_performance_SOURCES = test-performance.c
 test_performance_LDADD = $(libraries)
+
+test_resolv_SOURCES = test-resolv.c
+test_resolv_LDADD = $(libraries)
+
+test_subdir_SOURCES = test-subdir.c
+test_subdir_LDADD = $(libraries)
 
 test_async_directory_SOURCES = test-async-directory.c
 test_async_directory_LDADD = $(libraries)
@@ -137,6 +144,9 @@ test_mime_info_LDADD = $(libraries)
 test_monitor_SOURCES = test-monitor.c
 test_monitor_LDADD = $(libraries)
 
+# test_metadata_SOURCES = test-metadata.c
+# test_metadata_LDADD = $(libraries)
+
 test_callback_SOURCES = test-callback.c
 test_callback_LDADD = $(libraries)
 
@@ -148,4 +158,5 @@ test_queue_LDADD = $(libraries)
 
 EXTRA_DIST =					\
 	$(test_files)				\
+	auto-test				\
 	vfs-run.in

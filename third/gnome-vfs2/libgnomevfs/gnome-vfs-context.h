@@ -32,8 +32,7 @@ G_BEGIN_DECLS
 typedef struct GnomeVFSContext GnomeVFSContext;
 
 GnomeVFSContext* gnome_vfs_context_new                   (void);
-void             gnome_vfs_context_ref                   (GnomeVFSContext *ctx);
-void             gnome_vfs_context_unref                 (GnomeVFSContext *ctx);
+void             gnome_vfs_context_free                  (GnomeVFSContext *ctx);
 
 /* To be really thread-safe, these need to return objects with an increased
    refcount; however they don't, only one thread at a time

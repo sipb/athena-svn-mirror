@@ -1,0 +1,109 @@
+<refentry id="gnome-vfs-gnome-vfs-directory-find-ops">
+<refmeta>
+<refentrytitle>
+Locating Standard Directories</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>
+Locating Standard Directories</refname><refpurpose>
+Utilities for locating standard directories such as the desktop and trash</refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+enum        <link linkend="GnomeVFSFindDirectoryKind">GnomeVFSFindDirectoryKind</link>;
+<link linkend="GnomeVFSResult">GnomeVFSResult</link> <link linkend="gnome-vfs-find-directory">gnome_vfs_find_directory</link>     (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *near_uri,
+                                             <link linkend="GnomeVFSFindDirectoryKind">GnomeVFSFindDirectoryKind</link> kind,
+                                             <link linkend="GnomeVFSURI">GnomeVFSURI</link> **result,
+                                             <link linkend="gboolean">gboolean</link> create_if_needed,
+                                             <link linkend="gboolean">gboolean</link> find_if_needed,
+                                             <link linkend="guint">guint</link> permissions);
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GnomeVFSFindDirectoryKind"/>enum GnomeVFSFindDirectoryKind</title>
+<programlisting>typedef enum {
+	GNOME_VFS_DIRECTORY_KIND_DESKTOP = 1000,
+	GNOME_VFS_DIRECTORY_KIND_TRASH = 1001
+} GnomeVFSFindDirectoryKind;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="gnome-vfs-find-directory"/>gnome_vfs_find_directory ()</title>
+<programlisting><link linkend="GnomeVFSResult">GnomeVFSResult</link> gnome_vfs_find_directory     (<link linkend="GnomeVFSURI">GnomeVFSURI</link> *near_uri,
+                                             <link linkend="GnomeVFSFindDirectoryKind">GnomeVFSFindDirectoryKind</link> kind,
+                                             <link linkend="GnomeVFSURI">GnomeVFSURI</link> **result,
+                                             <link linkend="gboolean">gboolean</link> create_if_needed,
+                                             <link linkend="gboolean">gboolean</link> find_if_needed,
+                                             <link linkend="guint">guint</link> permissions);</programlisting>
+<para>
+Used to return well known directories such as Trash, Desktop, etc. from different
+file systems.
+</para>
+<para>
+There is quite a complicated logic behind finding/creating a Trash directory
+and you need to be aware of some implications:
+Finding the Trash the first time when using the file method may be pretty 
+expensive. A cache file is used to store the location of that Trash file
+for next time.
+If <parameter>ceate_if_needed</parameter> is specified without <parameter>find_if_needed</parameter>, you may end up
+creating a Trash file when there already is one. Your app should start out
+by doing a gnome_vfs_find_directory with the <parameter>find_if_needed</parameter> to avoid this
+and then use the <parameter>create_if_needed</parameter> flag to create Trash lazily when it is
+needed for throwing away an item on a given disk.</para>
+<para>
+
+</para><variablelist role="params">
+<varlistentry><term><parameter>near_uri</parameter>&nbsp;:</term>
+<listitem><simpara> find a well known directory on the same volume as <parameter>near_uri</parameter>
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>kind</parameter>&nbsp;:</term>
+<listitem><simpara> kind of well known directory
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>result</parameter>&nbsp;:</term>
+<listitem><simpara> newly created URI of the directory we found
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>create_if_needed</parameter>&nbsp;:</term>
+<listitem><simpara> If directory we are looking for does not exist, try to create it
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>find_if_needed</parameter>&nbsp;:</term>
+<listitem><simpara> If we don't know where trash is yet, look for it.
+</simpara></listitem></varlistentry>
+<varlistentry><term><parameter>permissions</parameter>&nbsp;:</term>
+<listitem><simpara> If creating, use these permissions
+</simpara></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><simpara> An integer representing the result of the operation
+</simpara></listitem></varlistentry>
+</variablelist></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

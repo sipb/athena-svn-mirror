@@ -1,0 +1,350 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>
+Application Registry</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="GnomeVFS - Filesystem Abstraction library"><link rel="up" href="mime-registry.html" title="MIME Registry"><link rel="previous" href="mime-registry.html" title="MIME Registry"><link rel="next" href="gnome-vfs-gnome-vfs-mime-database.html" title="
+File Types"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="mime-registry.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="mime-registry.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GnomeVFS - Filesystem Abstraction library</th><td><a accesskey="n" href="gnome-vfs-gnome-vfs-mime-database.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry"><a name="gnome-vfs-gnome-vfs-application-registry"></a><div class="titlepage"></div><div class="refnamediv"><h2>
+Application Registry</h2><p>
+Application Registry &#8212; 
+stores supported MIME types and URIs of various applications</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+#define     <a href="gnome-vfs-gnome-vfs-application-registry.html#GNOME-VFS-APPLICATION-REGISTRY-COMMAND-CAPS">GNOME_VFS_APPLICATION_REGISTRY_COMMAND</a>
+#define     <a href="gnome-vfs-gnome-vfs-application-registry.html#GNOME-VFS-APPLICATION-REGISTRY-NAME-CAPS">GNOME_VFS_APPLICATION_REGISTRY_NAME</a>
+#define     <a href="gnome-vfs-gnome-vfs-application-registry.html#GNOME-VFS-APPLICATION-REGISTRY-CAN-OPEN-MULTIPLE-FILES-CAPS">GNOME_VFS_APPLICATION_REGISTRY_CAN_OPEN_MULTIPLE_FILES</a>
+#define     <a href="gnome-vfs-gnome-vfs-application-registry.html#GNOME-VFS-APPLICATION-REGISTRY-REQUIRES-TERMINAL-CAPS">GNOME_VFS_APPLICATION_REGISTRY_REQUIRES_TERMINAL</a>
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    <a href="gnome-vfs-gnome-vfs-application-registry.html#gnome-vfs-application-registry-exists">gnome_vfs_application_registry_exists</a>
+                                            (const char *app_id);
+<a
+href="../glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*      <a href="gnome-vfs-gnome-vfs-application-registry.html#gnome-vfs-application-registry-get-keys">gnome_vfs_application_registry_get_keys</a>
+                                            (const char *app_id);
+const char* <a href="gnome-vfs-gnome-vfs-application-registry.html#gnome-vfs-application-registry-peek-value">gnome_vfs_application_registry_peek_value</a>
+                                            (const char *app_id,
+                                             const char *key);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    <a href="gnome-vfs-gnome-vfs-application-registry.html#gnome-vfs-application-registry-get-bool-value">gnome_vfs_application_registry_get_bool_value</a>
+                                            (const char *app_id,
+                                             const char *key,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> *got_key);
+void        <a href="gnome-vfs-gnome-vfs-application-registry.html#gnome-vfs-application-registry-remove-application">gnome_vfs_application_registry_remove_application</a>
+                                            (const char *app_id);
+void        <a href="gnome-vfs-gnome-vfs-application-registry.html#gnome-vfs-application-registry-set-value">gnome_vfs_application_registry_set_value</a>
+                                            (const char *app_id,
+                                             const char *key,
+                                             const char *value);
+void        <a href="gnome-vfs-gnome-vfs-application-registry.html#gnome-vfs-application-registry-set-bool-value">gnome_vfs_application_registry_set_bool_value</a>
+                                            (const char *app_id,
+                                             const char *key,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> value);
+void        <a href="gnome-vfs-gnome-vfs-application-registry.html#gnome-vfs-application-registry-unset-key">gnome_vfs_application_registry_unset_key</a>
+                                            (const char *app_id,
+                                             const char *key);
+<a
+href="../glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*      <a href="gnome-vfs-gnome-vfs-application-registry.html#gnome-vfs-application-registry-get-applications">gnome_vfs_application_registry_get_applications</a>
+                                            (const char *mime_type);
+<a
+href="../glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*      <a href="gnome-vfs-gnome-vfs-application-registry.html#gnome-vfs-application-registry-get-mime-types">gnome_vfs_application_registry_get_mime_types</a>
+                                            (const char *app_id);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    <a href="gnome-vfs-gnome-vfs-application-registry.html#gnome-vfs-application-registry-supports-mime-type">gnome_vfs_application_registry_supports_mime_type</a>
+                                            (const char *app_id,
+                                             const char *mime_type);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    <a href="gnome-vfs-gnome-vfs-application-registry.html#gnome-vfs-application-registry-supports-uri-scheme">gnome_vfs_application_registry_supports_uri_scheme</a>
+                                            (const char *app_id,
+                                             const char *uri_scheme);
+<a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    <a href="gnome-vfs-gnome-vfs-application-registry.html#gnome-vfs-application-is-user-owned-application">gnome_vfs_application_is_user_owned_application</a>
+                                            (const <a href="gnome-vfs-gnome-vfs-mime-database.html#GnomeVFSMimeApplication">GnomeVFSMimeApplication</a> *application);
+void        <a href="gnome-vfs-gnome-vfs-application-registry.html#gnome-vfs-application-registry-clear-mime-types">gnome_vfs_application_registry_clear_mime_types</a>
+                                            (const char *app_id);
+void        <a href="gnome-vfs-gnome-vfs-application-registry.html#gnome-vfs-application-registry-add-mime-type">gnome_vfs_application_registry_add_mime_type</a>
+                                            (const char *app_id,
+                                             const char *mime_type);
+void        <a href="gnome-vfs-gnome-vfs-application-registry.html#gnome-vfs-application-registry-remove-mime-type">gnome_vfs_application_registry_remove_mime_type</a>
+                                            (const char *app_id,
+                                             const char *mime_type);
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-application-registry.html#gnome-vfs-application-registry-sync">gnome_vfs_application_registry_sync</a>
+                                            (void);
+void        <a href="gnome-vfs-gnome-vfs-application-registry.html#gnome-vfs-application-registry-shutdown">gnome_vfs_application_registry_shutdown</a>
+                                            (void);
+void        <a href="gnome-vfs-gnome-vfs-application-registry.html#gnome-vfs-application-registry-reload">gnome_vfs_application_registry_reload</a>
+                                            (void);
+<a href="gnome-vfs-gnome-vfs-mime-database.html#GnomeVFSMimeApplication">GnomeVFSMimeApplication</a>* <a href="gnome-vfs-gnome-vfs-application-registry.html#gnome-vfs-application-registry-get-mime-application">gnome_vfs_application_registry_get_mime_application</a>
+                                            (const char *app_id);
+void        <a href="gnome-vfs-gnome-vfs-application-registry.html#gnome-vfs-application-registry-save-mime-application">gnome_vfs_application_registry_save_mime_application</a>
+                                            (const <a href="gnome-vfs-gnome-vfs-mime-database.html#GnomeVFSMimeApplication">GnomeVFSMimeApplication</a> *application);
+</pre></div><div class="refsect1"><h2>Description</h2><p>
+
+</p></div><div class="refsect1"><h2>Details</h2><div class="refsect2"><h3><a name="GNOME-VFS-APPLICATION-REGISTRY-COMMAND-CAPS"></a>GNOME_VFS_APPLICATION_REGISTRY_COMMAND</h3><pre class="programlisting">#define GNOME_VFS_APPLICATION_REGISTRY_COMMAND &quot;command&quot;
+</pre><p>
+Application registry key for fetching the command to execute
+an application.</p><p>
+
+</p></div><hr><div class="refsect2"><h3><a name="GNOME-VFS-APPLICATION-REGISTRY-NAME-CAPS"></a>GNOME_VFS_APPLICATION_REGISTRY_NAME</h3><pre class="programlisting">#define GNOME_VFS_APPLICATION_REGISTRY_NAME &quot;name&quot;
+</pre><p>
+Application registry key for fetching the name of an application.</p><p>
+
+</p></div><hr><div class="refsect2"><h3><a name="GNOME-VFS-APPLICATION-REGISTRY-CAN-OPEN-MULTIPLE-FILES-CAPS"></a>GNOME_VFS_APPLICATION_REGISTRY_CAN_OPEN_MULTIPLE_FILES</h3><pre class="programlisting">#define GNOME_VFS_APPLICATION_REGISTRY_CAN_OPEN_MULTIPLE_FILES &quot;can_open_multiple_files&quot;
+</pre><p>
+Application registry key for determining if an application 
+can open multiple files in the same invocation.</p><p>
+
+</p></div><hr><div class="refsect2"><h3><a name="GNOME-VFS-APPLICATION-REGISTRY-REQUIRES-TERMINAL-CAPS"></a>GNOME_VFS_APPLICATION_REGISTRY_REQUIRES_TERMINAL</h3><pre class="programlisting">#define GNOME_VFS_APPLICATION_REGISTRY_REQUIRES_TERMINAL &quot;requires_terminal&quot;
+</pre><p>
+Application registry key for determining if an application
+needs to run from within a terminal (for example, mpg123)</p><p>
+
+</p></div><hr><div class="refsect2"><h3><a name="gnome-vfs-application-registry-exists"></a>gnome_vfs_application_registry_exists ()</h3><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    gnome_vfs_application_registry_exists
+                                            (const char *app_id);</pre><p>
+This function will return TRUE if there is an entry for <i><tt>app_id</tt></i> in
+the registry, otherwise FALSE.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>app_id</tt></i> :</span></td><td> an application ID
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if the application is in the registry, FALSE if not 
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-application-registry-get-keys"></a>gnome_vfs_application_registry_get_keys ()</h3><pre class="programlisting"><a
+href="../glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*      gnome_vfs_application_registry_get_keys
+                                            (const char *app_id);</pre><p>
+This function wil return a list of strings which is the list of
+keys set for <i><tt>app_id</tt></i> in the application registry.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>app_id</tt></i> :</span></td><td> the application ID for which to get keys
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> A list of the keys set for <i><tt>app_id</tt></i>
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-application-registry-peek-value"></a>gnome_vfs_application_registry_peek_value ()</h3><pre class="programlisting">const char* gnome_vfs_application_registry_peek_value
+                                            (const char *app_id,
+                                             const char *key);</pre><p>
+This will return the value associated with <i><tt>key</tt></i> for <i><tt>app_id</tt></i> in the
+application registry. There is no need to free the return value.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>app_id</tt></i> :</span></td><td> the application ID for which to look up a value
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> the key to look up
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the value associated with the key, or NULL if there is no
+associated value
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-application-registry-get-bool-value"></a>gnome_vfs_application_registry_get_bool_value ()</h3><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    gnome_vfs_application_registry_get_bool_value
+                                            (const char *app_id,
+                                             const char *key,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> *got_key);</pre><p>
+This will look up a key in the structure pointed to by app_id and return the
+boolean value of that key.  It will return false if there are no
+applications associated with the app_id.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>app_id</tt></i> :</span></td><td>  registry id of the application
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> key to look up
+</td></tr><tr><td><span class="term"><i><tt>got_key</tt></i> :</span></td><td> TRUE if a setting was dound, otherwise FALSE
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if <i><tt>key</tt></i> is set to &quot;true&quot; or &quot;yes&quot; for <i><tt>app_id</tt></i>, otherwise FALSE
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-application-registry-remove-application"></a>gnome_vfs_application_registry_remove_application ()</h3><pre class="programlisting">void        gnome_vfs_application_registry_remove_application
+                                            (const char *app_id);</pre><p>
+Given the registry id this function will remove all applications that has
+been set by the user.  You will need to call
+gnome_vfs_application_registry_sync to save the changes.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>app_id</tt></i> :</span></td><td>  registry id of the application
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-application-registry-set-value"></a>gnome_vfs_application_registry_set_value ()</h3><pre class="programlisting">void        gnome_vfs_application_registry_set_value
+                                            (const char *app_id,
+                                             const char *key,
+                                             const char *value);</pre><p>
+This function will set values pertaining to registry entry pointed to by
+app_id.  You will need to call gnome_vfs_application_registry_sync to
+realize the changes.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>app_id</tt></i> :</span></td><td>  registry id of the application
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> target key
+</td></tr><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td> value to set the target key to
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-application-registry-set-bool-value"></a>gnome_vfs_application_registry_set_bool_value ()</h3><pre class="programlisting">void        gnome_vfs_application_registry_set_bool_value
+                                            (const char *app_id,
+                                             const char *key,
+                                             <a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a> value);</pre><p>
+This function will modify those registry values that are of type boolean to
+a value specified by the user.  You will need to call
+gnome_vfs_application_registry_sync to save your changes.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>app_id</tt></i> :</span></td><td>  registry id of the application
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> target key
+</td></tr><tr><td><span class="term"><i><tt>value</tt></i> :</span></td><td> value you want to set the target key to
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-application-registry-unset-key"></a>gnome_vfs_application_registry_unset_key ()</h3><pre class="programlisting">void        gnome_vfs_application_registry_unset_key
+                                            (const char *app_id,
+                                             const char *key);</pre><p>
+This function given the application and the target will wipe the current
+value that the key contains.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>app_id</tt></i> :</span></td><td> registry id of the application
+</td></tr><tr><td><span class="term"><i><tt>key</tt></i> :</span></td><td> search key
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-application-registry-get-applications"></a>gnome_vfs_application_registry_get_applications ()</h3><pre class="programlisting"><a
+href="../glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*      gnome_vfs_application_registry_get_applications
+                                            (const char *mime_type);</pre><p>
+This will return all applications from the registry that are associated with
+the given mime type string, if NULL it returns all applications.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>mime_type</tt></i> :</span></td><td>  mime type string
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a list of the application IDs for all applications which
+support the given mime type.
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-application-registry-get-mime-types"></a>gnome_vfs_application_registry_get_mime_types ()</h3><pre class="programlisting"><a
+href="../glib/glib-Doubly-Linked-Lists.html#GList"
+>GList</a>*      gnome_vfs_application_registry_get_mime_types
+                                            (const char *app_id);</pre><p>
+This function returns a list of strings that represent the mime
+types that can be handled by an application.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>app_id</tt></i> :</span></td><td> registry id of application
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> a list of the mime types supported
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-application-registry-supports-mime-type"></a>gnome_vfs_application_registry_supports_mime_type ()</h3><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    gnome_vfs_application_registry_supports_mime_type
+                                            (const char *app_id,
+                                             const char *mime_type);</pre><p>
+Use this function to see if there is an application associated with a given
+mime type.  The function will return true or false.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>app_id</tt></i> :</span></td><td> registry id of application
+</td></tr><tr><td><span class="term"><i><tt>mime_type</tt></i> :</span></td><td> mime type string
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if <i><tt>app_id</tt></i> supports <i><tt>mime_type</tt></i>, otherwise FALSE.
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-application-registry-supports-uri-scheme"></a>gnome_vfs_application_registry_supports_uri_scheme ()</h3><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    gnome_vfs_application_registry_supports_uri_scheme
+                                            (const char *app_id,
+                                             const char *uri_scheme);</pre><p>
+Given the id of the application this function will determine if the
+uri scheme will given is supported.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>app_id</tt></i> :</span></td><td> registry id of application
+</td></tr><tr><td><span class="term"><i><tt>uri_scheme</tt></i> :</span></td><td> uri schme string
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> TRUE if <i><tt>app_id</tt></i> supports <i><tt>uri_scheme</tt></i>, otherwise FALSE
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-application-is-user-owned-application"></a>gnome_vfs_application_is_user_owned_application ()</h3><pre class="programlisting"><a
+href="../glib/glib-Basic-Types.html#gboolean"
+>gboolean</a>    gnome_vfs_application_is_user_owned_application
+                                            (const <a href="gnome-vfs-gnome-vfs-mime-database.html#GnomeVFSMimeApplication">GnomeVFSMimeApplication</a> *application);</pre><p>
+This function will determine if a mime application is user owned or not.  By
+user ownered this means that the application is not a system application
+located in the prerequisite /usr area but rather in the user's area.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>application</tt></i> :</span></td><td>  data structure of the mime application
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> gboolean
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-application-registry-clear-mime-types"></a>gnome_vfs_application_registry_clear_mime_types ()</h3><pre class="programlisting">void        gnome_vfs_application_registry_clear_mime_types
+                                            (const char *app_id);</pre><p>
+This function will remove the mime types associated with the application.
+Changes are not realized until the  gnome_vfs_application_registry_sync
+function is called to save the changes to the file.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>app_id</tt></i> :</span></td><td> Application id
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-application-registry-add-mime-type"></a>gnome_vfs_application_registry_add_mime_type ()</h3><pre class="programlisting">void        gnome_vfs_application_registry_add_mime_type
+                                            (const char *app_id,
+                                             const char *mime_type);</pre><p>
+This function will associate a mime type with an application given the   
+application registry id and the mime type.  Changes are not realized until
+the gnome_vfs_application_registry_sync function is called to save the
+changes to the file.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>app_id</tt></i> :</span></td><td> registry id of application
+</td></tr><tr><td><span class="term"><i><tt>mime_type</tt></i> :</span></td><td> mime type string
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-application-registry-remove-mime-type"></a>gnome_vfs_application_registry_remove_mime_type ()</h3><pre class="programlisting">void        gnome_vfs_application_registry_remove_mime_type
+                                            (const char *app_id,
+                                             const char *mime_type);</pre><p>
+This function will de-associate a mime type from an application registry.  
+Given the application registry id and the mime type.  Changes are not
+realized until the gnome_vfs_application_registry_sync function is called to
+save the changes to the file.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>app_id</tt></i> :</span></td><td> registry id of the application
+</td></tr><tr><td><span class="term"><i><tt>mime_type</tt></i> :</span></td><td> mime type string
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-application-registry-sync"></a>gnome_vfs_application_registry_sync ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_application_registry_sync
+                                            (void);</pre><p>
+This function will sync the registry.  Typically you would use this function
+after a modification of the registry.  When you modify the registry a dirty
+flag is set.  Calling this function will save your modifications to disk and
+reset the flag.
+</p><p>
+If successful, will return GNOME_VFS_OK</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> GnomeVFSResult
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-application-registry-shutdown"></a>gnome_vfs_application_registry_shutdown ()</h3><pre class="programlisting">void        gnome_vfs_application_registry_shutdown
+                                            (void);</pre><p>
+Synchronize gnome-vfs application registry data to disk, and free
+resources.</p><p>
+
+</p></div><hr><div class="refsect2"><h3><a name="gnome-vfs-application-registry-reload"></a>gnome_vfs_application_registry_reload ()</h3><pre class="programlisting">void        gnome_vfs_application_registry_reload
+                                            (void);</pre><p>
+If this function is called for the first time it will initialize the
+registry.  Subsequent calls to the function will clear out the current
+registry contents and load registry contents from the save file.  Make
+certain that you've saved your registry before calling this function.  It
+will destroy unsaved changes.</p><p>
+
+</p></div><hr><div class="refsect2"><h3><a name="gnome-vfs-application-registry-get-mime-application"></a>gnome_vfs_application_registry_get_mime_application ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-mime-database.html#GnomeVFSMimeApplication">GnomeVFSMimeApplication</a>* gnome_vfs_application_registry_get_mime_application
+                                            (const char *app_id);</pre><p>
+Returns a structure that contains the application that handles
+the mime type associated by the application referred by app_id.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>app_id</tt></i> :</span></td><td>  registry id of the application
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> GnomeVFSMimeApplication
+
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-application-registry-save-mime-application"></a>gnome_vfs_application_registry_save_mime_application ()</h3><pre class="programlisting">void        gnome_vfs_application_registry_save_mime_application
+                                            (const <a href="gnome-vfs-gnome-vfs-mime-database.html#GnomeVFSMimeApplication">GnomeVFSMimeApplication</a> *application);</pre><p>
+This will save to the registry the application that will be associated with
+a defined mime type.  The defined mime type is located within the
+GnomeVFSMimeApplication structure.  Changes are not realized until the
+gnome_vfs_application_registry_sync function is called.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>application</tt></i> :</span></td><td> application associated with the mime type
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="mime-registry.html"><b>&lt;&lt; MIME Registry</b></a></td><td align="right"><a accesskey="n" href="gnome-vfs-gnome-vfs-mime-database.html"><b>
+File Types &gt;&gt;</b></a></td></tr></table></body></html>

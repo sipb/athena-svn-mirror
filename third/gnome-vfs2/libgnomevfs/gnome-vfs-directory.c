@@ -517,6 +517,20 @@ gnome_vfs_directory_visit (const gchar *text_uri,
 	return result;
 }
 
+/**
+ * gnome_vfs_directory_visit_files_at_uri:
+ * @uri: URI of a directory to "visit" the files in
+ * @file_list: GList of char *s of file names in @uri to visit
+ * @info_options: bitmask controlling the type of information to fetch
+ * @visit_options: options controlling e.g. loop prevention, and filesystem checks.
+ * Affects the way visiting is done.
+ * @callback: function to call with the file info structs
+ * @data: data to pass to @callback.
+ *
+ * Fetches information about a list of files in a base URI @uri.
+ *
+ * Return value: a GnomeVFSResult indication the success of the operation
+ **/
 GnomeVFSResult
 gnome_vfs_directory_visit_files_at_uri (GnomeVFSURI *uri,
 					GList *file_list,
@@ -569,12 +583,25 @@ gnome_vfs_directory_visit_files_at_uri (GnomeVFSURI *uri,
 	return GNOME_VFS_OK;
 }
 
+/**
+ * gnome_vfs_directory_visit_files:
+ * @text_uri: string representing the URI of a directory to "visit" the files in
+ * @file_list: GList of char *s of file names in @uri to visit
+ * @info_options: bitmask controlling the type of information to fetch
+ * @visit_options: options controlling e.g. loop prevention, and filesystem checks.
+ * Affects the way visiting is done.
+ * @callback: function to call with the file info structs
+ * @data: data to pass to @callback.
+ *
+ * Fetches information about a list of files in a base URI @uri.
+ *
+ * Return value: a GnomeVFSResult indication the success of the operation
+ **/
 GnomeVFSResult
 gnome_vfs_directory_visit_files (const gchar *text_uri,
 				 GList *file_list,
 				 GnomeVFSFileInfoOptions info_options,
-				 GnomeVFSDirectoryVisitOptions
-				 	visit_options,
+				 GnomeVFSDirectoryVisitOptions visit_options,
 				 GnomeVFSDirectoryVisitFunc callback,
 				 gpointer data)
 {

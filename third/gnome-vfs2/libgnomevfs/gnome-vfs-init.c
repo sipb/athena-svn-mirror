@@ -79,24 +79,35 @@ gnome_vfs_pthread_init (void)
 	private_is_primary_thread = g_private_new (NULL);
 	g_private_set (private_is_primary_thread, GUINT_TO_POINTER (1));
 	
-	gnome_vfs_module_callback_private_init ();
+	_gnome_vfs_module_callback_private_init ();
 	
-	gnome_vfs_async_job_map_init ();
-	gnome_vfs_thread_pool_init ();
-	gnome_vfs_job_queue_init ();
+	_gnome_vfs_async_job_map_init ();
+	_gnome_vfs_thread_pool_init ();
+	_gnome_vfs_job_queue_init ();
 }
 
+/**
+ * gnome_vfs_init:
+ *
+ * If GnomeVFS is not already initialized, initialize it. This must be
+ * called prior to performing any other GnomeVFS operations, and may
+ * be called multiple times without error.
+ * 
+ * Return value: %TRUE if GnomeVFS is successfully initialized (or was
+ * already initialized)
+ **/
 gboolean 
 gnome_vfs_init (void)
 {
 	gboolean retval;
 	char *bogus_argv[2] = { "dummy", NULL };
 
-	if (!ensure_dot_gnome_exists ())
+	if (!ensure_dot_gnome_exists ()) {
 		return FALSE;
+	}
 
-	if (!g_thread_supported ())
-		g_thread_init (NULL);
+ 	if (!g_thread_supported ())
+ 		g_thread_init (NULL);
 
 	G_LOCK (vfs_already_initialized);
 
@@ -110,15 +121,15 @@ gnome_vfs_init (void)
 			bonobo_activation_init (0, bogus_argv);
 		}
 
-		gnome_vfs_ssl_init ();
+		_gnome_vfs_ssl_init ();
 
 		retval = gnome_vfs_method_init ();
 
 		if (retval) {
-			retval = gnome_vfs_process_init ();
+			retval = _gnome_vfs_process_init ();
 		}
 		if (retval) {
-			retval = gnome_vfs_configuration_init ();
+			retval = _gnome_vfs_configuration_init ();
 		}
 		if (retval) {
 			signal (SIGPIPE, SIG_IGN);
@@ -133,7 +144,14 @@ gnome_vfs_init (void)
 	return retval;
 }
 
-
+/**
+ * gnome_vfs_initialized:
+ *
+ * Detects if GnomeVFS has already been initialized (GnomeVFS must be
+ * initialized prior to using any methods or operations).
+ * 
+ * Return value: %TRUE if GnomeVFS has already been initialized
+ **/
 gboolean
 gnome_vfs_initialized (void)
 {
@@ -145,10 +163,17 @@ gnome_vfs_initialized (void)
 	return out;
 }
 
+/**
+ * gnome_vfs_shutdown:
+ *
+ * Cease all active GnomeVFS operations and unload the MIME
+ * database from memory.
+ * 
+ **/
 void
 gnome_vfs_shutdown (void)
 {
-	gnome_vfs_thread_backend_shutdown ();
+	_gnome_vfs_thread_backend_shutdown ();
 	gnome_vfs_mime_shutdown ();
 }
 
@@ -170,8 +195,8 @@ gnome_vfs_postinit (gpointer app, gpointer modinfo)
 	gnome_vfs_pthread_init ();
 
 	gnome_vfs_method_init ();
-	gnome_vfs_process_init ();
-	gnome_vfs_configuration_init ();
+	_gnome_vfs_process_init ();
+	_gnome_vfs_configuration_init ();
 
 	signal (SIGPIPE, SIG_IGN);
 
@@ -179,6 +204,14 @@ gnome_vfs_postinit (gpointer app, gpointer modinfo)
 	G_UNLOCK (vfs_already_initialized);
 }
 
+/**
+ * gnome_vfs_is_primary_thread:
+ *
+ * Check if the current thread is the thread with the main glib event loop.
+ *
+ * Return value: %TRUE if the current thread is the thread with the 
+ * main glib event loop
+ **/
 gboolean
 gnome_vfs_is_primary_thread (void)
 {

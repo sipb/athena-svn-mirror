@@ -62,7 +62,7 @@ init_hash_table (void)
 }
 
 GnomeVFSResult
-gnome_vfs_monitor_do_add (GnomeVFSMethod *method,
+_gnome_vfs_monitor_do_add (GnomeVFSMethod *method,
 			  GnomeVFSMonitorHandle **handle,
 			  GnomeVFSURI *uri,
                           GnomeVFSMonitorType monitor_type,
@@ -112,7 +112,7 @@ destroy_monitor_handle (GnomeVFSMonitorHandle *handle) {
 }
 
 GnomeVFSResult 
-gnome_vfs_monitor_do_cancel (GnomeVFSMonitorHandle *handle)
+_gnome_vfs_monitor_do_cancel (GnomeVFSMonitorHandle *handle)
 {
 	GnomeVFSResult result;
 

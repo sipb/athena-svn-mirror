@@ -80,8 +80,19 @@ typedef struct {
 } GnomeVFSToplevelURI;
 
 
-/* This is used for hiding information when transforming the GnomeVFSURI into a
-   string.  */
+/**
+ * GnomeVFSURIHideOptions:
+ * @GNOME_VFS_URI_HIDE_NONE: don't hide anything
+ * @GNOME_VFS_URI_HIDE_USER_NAME: hide the user name
+ * @GNOME_VFS_URI_HIDE_PASSWORD: hide the password
+ * @GNOME_VFS_URI_HIDE_HOST_NAME: hide the host name
+ * @GNOME_VFS_URI_HIDE_HOST_PORT: hide the port
+ * @GNOME_VFS_URI_HIDE_TOPLEVEL_METHOD: hide the method (e.g. http, file)
+ * @GNOME_VFS_URI_HIDE_FRAGMENT_IDENTIFIER: hide the fragment identifier
+ *
+ * Packed boolean bitfield controlling hiding of various elements
+ * of a GnomeVFSURI when it is converted to a string.
+ **/
 typedef enum {
 	GNOME_VFS_URI_HIDE_NONE = 0,
 	GNOME_VFS_URI_HIDE_USER_NAME = 1 << 0,
@@ -93,10 +104,31 @@ typedef enum {
 } GnomeVFSURIHideOptions;
 
 
-/* CONSTANTS */
+/**
+ * GNOME_VFS_URI_MAGIC_CHR:
+ *
+ * The character used to divide location from
+ * extra "arguments" passed to the method.
+ **/
+/**
+ * GNOME_VFS_URI_MAGIC_STR:
+ *
+ * The character used to divide location from
+ * extra "arguments" passed to the method.
+ **/
 #define GNOME_VFS_URI_MAGIC_CHR	'#'
 #define GNOME_VFS_URI_MAGIC_STR "#"
 
+/**
+ * GNOME_VFS_URI_PATH_CHR:
+ *
+ * Defines the path seperator character.
+ **/
+/**
+ * GNOME_VFS_URI_PATH_STR:
+ *
+ * Defines the path seperator string.
+ **/
 #define GNOME_VFS_URI_PATH_CHR '/'
 #define GNOME_VFS_URI_PATH_STR "/"
 
@@ -108,7 +140,7 @@ GnomeVFSURI 	     *gnome_vfs_uri_ref                   (GnomeVFSURI *uri);
 void        	      gnome_vfs_uri_unref                 (GnomeVFSURI *uri);
 
 GnomeVFSURI          *gnome_vfs_uri_append_string         (const GnomeVFSURI *uri,
-						           const char *path);
+						           const char *uri_fragment);
 GnomeVFSURI          *gnome_vfs_uri_append_path           (const GnomeVFSURI *uri,
 						           const char *path);
 GnomeVFSURI          *gnome_vfs_uri_append_file_name      (const GnomeVFSURI *uri,
@@ -140,8 +172,8 @@ void		     gnome_vfs_uri_set_password           (GnomeVFSURI *uri,
 gboolean	     gnome_vfs_uri_equal	          (const GnomeVFSURI *a,
 						           const GnomeVFSURI *b);
 
-gboolean	     gnome_vfs_uri_is_parent	          (const GnomeVFSURI *parent,
-						           const GnomeVFSURI *item,
+gboolean	     gnome_vfs_uri_is_parent	          (const GnomeVFSURI *possible_parent,
+						           const GnomeVFSURI *possible_child,
 						           gboolean recursive);
 				  
 const gchar 	    *gnome_vfs_uri_get_path                (const GnomeVFSURI *uri);

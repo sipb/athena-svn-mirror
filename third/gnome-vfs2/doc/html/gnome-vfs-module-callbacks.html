@@ -1,0 +1,1862 @@
+<HTML
+><HEAD
+><TITLE
+>Module Callbacks</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
+REL="HOME"
+TITLE="GnomeVFS - Filesystem Abstraction library"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Basic File Operations"
+HREF="file-operations.html"><LINK
+REL="PREVIOUS"
+TITLE="Copy Engine"
+HREF="gnome-vfs-xfer.html"><LINK
+REL="NEXT"
+TITLE="Standard Callbacks"
+HREF="gnome-vfs-standard-callbacks.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>GnomeVFS - Filesystem Abstraction library</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gnome-vfs-xfer.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="file-operations.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="gnome-vfs-standard-callbacks.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="GNOME-VFS-MODULE-CALLBACKS"
+>Module Callbacks</A
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN2755"
+></A
+><H2
+>Name</H2
+>Module Callbacks&nbsp;--&nbsp;registering for special callbacks from gnome-vfs module operations</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN2758"
+></A
+><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+void        (<A
+HREF="gnome-vfs-module-callbacks.html#GNOMEVFSMODULECALLBACK"
+>*GnomeVFSModuleCallback</A
+>)       (<A
+HREF=../glib/glib-basic-types.html#GCONSTPOINTER
+>gconstpointer</A> in,
+                                             <A
+HREF=../glib/glib-basic-types.html#GSIZE
+>gsize</A> in_size,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> out,
+                                             <A
+HREF=../glib/glib-basic-types.html#GSIZE
+>gsize</A> out_size,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> callback_data);
+void        (<A
+HREF="gnome-vfs-module-callbacks.html#GNOMEVFSMODULECALLBACKRESPONSE"
+>*GnomeVFSModuleCallbackResponse</A
+>)
+                                            (<A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> response_data);
+void        (<A
+HREF="gnome-vfs-module-callbacks.html#GNOMEVFSASYNCMODULECALLBACK"
+>*GnomeVFSAsyncModuleCallback</A
+>)  (<A
+HREF=../glib/glib-basic-types.html#GCONSTPOINTER
+>gconstpointer</A> in,
+                                             <A
+HREF=../glib/glib-basic-types.html#GSIZE
+>gsize</A> in_size,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> out,
+                                             <A
+HREF=../glib/glib-basic-types.html#GSIZE
+>gsize</A> out_size,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> callback_data,
+                                             <A
+HREF="gnome-vfs-module-callbacks.html#GNOMEVFSMODULECALLBACKRESPONSE"
+>GnomeVFSModuleCallbackResponse</A
+> response,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> response_data);
+void        <A
+HREF="gnome-vfs-module-callbacks.html#GNOME-VFS-MODULE-CALLBACK-SET-DEFAULT"
+>gnome_vfs_module_callback_set_default</A
+>
+                                            (const char *callback_name,
+                                             <A
+HREF="gnome-vfs-module-callbacks.html#GNOMEVFSMODULECALLBACK"
+>GnomeVFSModuleCallback</A
+> callback,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> callback_data,
+                                             <A
+HREF=../glib/glib-datasets.html#GDESTROYNOTIFY
+>GDestroyNotify</A> destroy_notify);
+void        <A
+HREF="gnome-vfs-module-callbacks.html#GNOME-VFS-MODULE-CALLBACK-PUSH"
+>gnome_vfs_module_callback_push</A
+>  (const char *callback_name,
+                                             <A
+HREF="gnome-vfs-module-callbacks.html#GNOMEVFSMODULECALLBACK"
+>GnomeVFSModuleCallback</A
+> callback,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> callback_data,
+                                             <A
+HREF=../glib/glib-datasets.html#GDESTROYNOTIFY
+>GDestroyNotify</A> destroy_notify);
+void        <A
+HREF="gnome-vfs-module-callbacks.html#GNOME-VFS-MODULE-CALLBACK-POP"
+>gnome_vfs_module_callback_pop</A
+>   (const char *callback_name);
+void        <A
+HREF="gnome-vfs-module-callbacks.html#GNOME-VFS-ASYNC-MODULE-CALLBACK-SET-DEFAULT"
+>gnome_vfs_async_module_callback_set_default</A
+>
+                                            (const char *callback_name,
+                                             <A
+HREF="gnome-vfs-module-callbacks.html#GNOMEVFSASYNCMODULECALLBACK"
+>GnomeVFSAsyncModuleCallback</A
+> callback,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> callback_data,
+                                             <A
+HREF=../glib/glib-datasets.html#GDESTROYNOTIFY
+>GDestroyNotify</A> destroy_notify);
+void        <A
+HREF="gnome-vfs-module-callbacks.html#GNOME-VFS-ASYNC-MODULE-CALLBACK-PUSH"
+>gnome_vfs_async_module_callback_push</A
+>
+                                            (const char *callback_name,
+                                             <A
+HREF="gnome-vfs-module-callbacks.html#GNOMEVFSASYNCMODULECALLBACK"
+>GnomeVFSAsyncModuleCallback</A
+> callback,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> callback_data,
+                                             <A
+HREF=../glib/glib-datasets.html#GDESTROYNOTIFY
+>GDestroyNotify</A> destroy_notify);
+void        <A
+HREF="gnome-vfs-module-callbacks.html#GNOME-VFS-ASYNC-MODULE-CALLBACK-POP"
+>gnome_vfs_async_module_callback_pop</A
+>
+                                            (const char *callback_name);</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN2795"
+></A
+><H2
+>Description</H2
+><P
+>Sometimes, a module operation will want to call back to the
+application before completing. For example, it may want to request
+that the application prompt the user for a username and password to
+access a particular URI. Or it may want to provide a status message
+that the application can display.</P
+><P
+>Such callbacks are handled using the module callback mechanism.</P
+><P
+>Module callbacks may be set globally for all threads, or they may be
+temporarilly overridden using a per-thread stack. Normally the stack
+is not inherited by new threads; however, async operations are run
+with a set of callbacks that corresponds to when the operation was
+tarted.</P
+><P
+>There are also special async module callbacks. Async callbacks are
+only invoked from async module operations, and take precedence over
+sync callbacks in this case, if set. They are dispatched on the main
+thread. Also, unlike regular callbacks, they do not need to provide
+the answer right away. Instead, they can arrange to have a response
+function called at any later time. This enables async callbacks to pop
+up non-modal dialogs or schedule other async work before providing a
+response.</P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN2801"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2803"
+></A
+><H3
+><A
+NAME="GNOMEVFSMODULECALLBACK"
+></A
+>GnomeVFSModuleCallback ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        (*GnomeVFSModuleCallback)       (<A
+HREF=../glib/glib-basic-types.html#GCONSTPOINTER
+>gconstpointer</A> in,
+                                             <A
+HREF=../glib/glib-basic-types.html#GSIZE
+>gsize</A> in_size,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> out,
+                                             <A
+HREF=../glib/glib-basic-types.html#GSIZE
+>gsize</A> out_size,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> callback_data);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This is the type of a callback function that gets set for a module
+callback. </P
+><P
+>When the callback is invoked, the user function is called with an
+<TT
+CLASS="PARAMETER"
+><I
+>in</I
+></TT
+> argument, the exact type of which depends on the specific
+callback. It is generally a pointer to a struct with several fields
+that provide information to the callback.</P
+><P
+>The <TT
+CLASS="PARAMETER"
+><I
+>out</I
+></TT
+> argument is used to return a values from the
+callback. Once again the exact type depends on the specific
+callback. It is generally a pointer to a pre-allocated struct with
+several fields that the callback function should fill in before
+returning.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2818"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>in</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The in argument for this callback; the exact type depends on the specific callback</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>in_size</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Size of the in argument; useful for sanity-checking</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>out</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The out argument for this callback; the exact type depends on the specific callback</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>out_size</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Size of the out argument; useful for sanity-checking</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>callback_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The <TT
+CLASS="PARAMETER"
+><I
+>callback_data</I
+></TT
+> specified when this callback was set</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2844"
+></A
+><H3
+><A
+NAME="GNOMEVFSMODULECALLBACKRESPONSE"
+></A
+>GnomeVFSModuleCallbackResponse ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        (*GnomeVFSModuleCallbackResponse)
+                                            (<A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> response_data);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This is the type of the response function passed to a
+<A
+HREF="gnome-vfs-module-callbacks.html#GNOMEVFSASYNCMODULECALLBACK"
+>GnomeVFSAsyncModuleCallback</A
+>(). It should be called when the async
+callback has completed.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2852"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>response_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Pass the <TT
+CLASS="PARAMETER"
+><I
+>response_data</I
+></TT
+> argument originally passed to the async callback</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2862"
+></A
+><H3
+><A
+NAME="GNOMEVFSASYNCMODULECALLBACK"
+></A
+>GnomeVFSAsyncModuleCallback ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        (*GnomeVFSAsyncModuleCallback)  (<A
+HREF=../glib/glib-basic-types.html#GCONSTPOINTER
+>gconstpointer</A> in,
+                                             <A
+HREF=../glib/glib-basic-types.html#GSIZE
+>gsize</A> in_size,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> out,
+                                             <A
+HREF=../glib/glib-basic-types.html#GSIZE
+>gsize</A> out_size,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> callback_data,
+                                             <A
+HREF="gnome-vfs-module-callbacks.html#GNOMEVFSMODULECALLBACKRESPONSE"
+>GnomeVFSModuleCallbackResponse</A
+> response,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> response_data);</PRE
+></TD
+></TR
+></TABLE
+><P
+>This is the type of a callback function that gets set for an async
+module callback. </P
+><P
+>Such callbacks are useful when you are using the API and want
+callbacks to be handled from the main thread, for instance if they
+need to put up a dialog.</P
+><P
+>Like a <A
+HREF="gnome-vfs-module-callbacks.html#GNOMEVFSMODULECALLBACK"
+>GnomeVFSModuleCallback</A
+>(), an async callback has <TT
+CLASS="PARAMETER"
+><I
+>in</I
+></TT
+> and <TT
+CLASS="PARAMETER"
+><I
+>out</I
+></TT
+>
+arguments for passing data into and out of the callback. However,
+an async callback does not need to fill in the <TT
+CLASS="PARAMETER"
+><I
+>out</I
+></TT
+> argument before
+returning. Instead, it can arrange to have the work done from a
+callback on the main loop, from another thread, etc. The <TT
+CLASS="PARAMETER"
+><I
+>response</I
+></TT
+>
+function should be called by whatever code finishes the work of the
+callback with <TT
+CLASS="PARAMETER"
+><I
+>response_data</I
+></TT
+> as an argument once the <TT
+CLASS="PARAMETER"
+><I
+>out</I
+></TT
+> argument
+is filled in and the callback is done.</P
+><P
+>The <TT
+CLASS="PARAMETER"
+><I
+>in</I
+></TT
+> and <TT
+CLASS="PARAMETER"
+><I
+>out</I
+></TT
+> arguments are guaranteed to remain valid until the
+<TT
+CLASS="PARAMETER"
+><I
+>response</I
+></TT
+> function is called.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2888"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>in</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The in argument for this callback; the exact type depends on the specific callback</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>in_size</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Size of the in argument; useful for sanity-checking</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>out</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The out argument for this callback; the exact type depends on the specific callback</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>out_size</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Size of the out argument; useful for sanity-checking</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>callback_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The <TT
+CLASS="PARAMETER"
+><I
+>callback_data</I
+></TT
+> specified when this callback was set</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>response</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Response function to call when the callback is completed</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>response_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Argument to pass to <TT
+CLASS="PARAMETER"
+><I
+>response</I
+></TT
+></TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2923"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MODULE-CALLBACK-SET-DEFAULT"
+></A
+>gnome_vfs_module_callback_set_default ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_vfs_module_callback_set_default
+                                            (const char *callback_name,
+                                             <A
+HREF="gnome-vfs-module-callbacks.html#GNOMEVFSMODULECALLBACK"
+>GnomeVFSModuleCallback</A
+> callback,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> callback_data,
+                                             <A
+HREF=../glib/glib-datasets.html#GDESTROYNOTIFY
+>GDestroyNotify</A> destroy_notify);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Set the default callback for <TT
+CLASS="PARAMETER"
+><I
+>callback_name</I
+></TT
+> to
+<TT
+CLASS="PARAMETER"
+><I
+>callback</I
+></TT
+>. <TT
+CLASS="PARAMETER"
+><I
+>callback</I
+></TT
+> will be called with <TT
+CLASS="PARAMETER"
+><I
+>callback_data</I
+></TT
+> on the
+same thread as the gnome-vfs operation that invokes it. The default
+value is shared for all threads, but setting it is thread-safe.</P
+><P
+>Use this function if you want to set a handler to be used by your
+whole application. You can use <A
+HREF="gnome-vfs-module-callbacks.html#GNOME-VFS-MODULE-CALLBACK-PUSH"
+>gnome_vfs_module_callback_push</A
+>() to
+set a callback function that will temporarily override the default
+on the current thread instead. Or you can also use
+<A
+HREF="gnome-vfs-module-callbacks.html#GNOME-VFS-ASYNC-MODULE-CALLBACK-SET-DEFAULT"
+>gnome_vfs_async_module_callback_set_default</A
+>() to set an async
+callback function.</P
+><P
+>Note: <TT
+CLASS="PARAMETER"
+><I
+>destroy_notify</I
+></TT
+> may be called on any thread - it is not
+guaranteed to be called on the main thread.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2941"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>callback_name</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The name of the module callback to set</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>callback</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The function to call when the callback is invoked</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>callback_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Pointer to pass as the <TT
+CLASS="PARAMETER"
+><I
+>callback_data</I
+></TT
+> argument to <TT
+CLASS="PARAMETER"
+><I
+>callback</I
+></TT
+></TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>destroy_notify</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Function to call when <TT
+CLASS="PARAMETER"
+><I
+>callback_data</I
+></TT
+> is to be freed.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN2965"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MODULE-CALLBACK-PUSH"
+></A
+>gnome_vfs_module_callback_push ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_vfs_module_callback_push  (const char *callback_name,
+                                             <A
+HREF="gnome-vfs-module-callbacks.html#GNOMEVFSMODULECALLBACK"
+>GnomeVFSModuleCallback</A
+> callback,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> callback_data,
+                                             <A
+HREF=../glib/glib-datasets.html#GDESTROYNOTIFY
+>GDestroyNotify</A> destroy_notify);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Set <TT
+CLASS="PARAMETER"
+><I
+>callback</I
+></TT
+> as a temprary handler for <TT
+CLASS="PARAMETER"
+><I
+>callback_name</I
+></TT
+>. <TT
+CLASS="PARAMETER"
+><I
+>callback</I
+></TT
+>
+will be called with <TT
+CLASS="PARAMETER"
+><I
+>callback_data</I
+></TT
+> on the same thread as the
+gnome-vfs operation that invokes it. The temporary handler is set
+per-thread.</P
+><P
+><A
+HREF="gnome-vfs-module-callbacks.html#GNOME-VFS-MODULE-CALLBACK-POP"
+>gnome_vfs_module_callback_pop</A
+>() removes the most recently set
+temporary handler. The temporary handlers are treated as a first-in
+first-out stack.</P
+><P
+>Use this function to set a temporary callback handler for a single
+call or a few calls. You can use
+<A
+HREF="gnome-vfs-module-callbacks.html#GNOME-VFS-MODULE-CALLBACK-SET-DEFAULT"
+>gnome_vfs_module_callback_set_default</A
+>() to set a callback function
+that will establish a permanent global setting for all threads
+instead.</P
+><P
+>Note: <TT
+CLASS="PARAMETER"
+><I
+>destroy_notify</I
+></TT
+> may be called on any thread - it is not
+guaranteed to be called on the main thread.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN2984"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>callback_name</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The name of the module callback to set temporarily</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>callback</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The function to call when the callback is invoked</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>callback_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Pointer to pass as the <TT
+CLASS="PARAMETER"
+><I
+>callback_data</I
+></TT
+> argument to <TT
+CLASS="PARAMETER"
+><I
+>callback</I
+></TT
+></TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>destroy_notify</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Function to call when <TT
+CLASS="PARAMETER"
+><I
+>callback_data</I
+></TT
+> is to be freed.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3008"
+></A
+><H3
+><A
+NAME="GNOME-VFS-MODULE-CALLBACK-POP"
+></A
+>gnome_vfs_module_callback_pop ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_vfs_module_callback_pop   (const char *callback_name);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Remove the temporary handler for <TT
+CLASS="PARAMETER"
+><I
+>callback_name</I
+></TT
+> most recently set
+with <A
+HREF="gnome-vfs-module-callbacks.html#GNOME-VFS-MODULE-CALLBACK-PUSH"
+>gnome_vfs_module_callback_push</A
+>().  If another temporary
+handler was previously set on the same thread, it becomes the
+current handler. Otherwise, the default handler, if any, becomes
+current. </P
+><P
+>The temporary handlers are treated as a first-in first-out
+stack.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3017"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>callback_name</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The name of the module callback to remove a temporary handler for</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3026"
+></A
+><H3
+><A
+NAME="GNOME-VFS-ASYNC-MODULE-CALLBACK-SET-DEFAULT"
+></A
+>gnome_vfs_async_module_callback_set_default ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_vfs_async_module_callback_set_default
+                                            (const char *callback_name,
+                                             <A
+HREF="gnome-vfs-module-callbacks.html#GNOMEVFSASYNCMODULECALLBACK"
+>GnomeVFSAsyncModuleCallback</A
+> callback,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> callback_data,
+                                             <A
+HREF=../glib/glib-datasets.html#GDESTROYNOTIFY
+>GDestroyNotify</A> destroy_notify);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Set the default async callback for <TT
+CLASS="PARAMETER"
+><I
+>callback_name</I
+></TT
+> to
+<TT
+CLASS="PARAMETER"
+><I
+>callback</I
+></TT
+>. <TT
+CLASS="PARAMETER"
+><I
+>callback</I
+></TT
+> will be called with <TT
+CLASS="PARAMETER"
+><I
+>callback_data</I
+></TT
+>
+from a callback on the main thread. It will be passed a response
+function which should be called to signal completion of the callback.
+The callback function itself may return in the meantime.</P
+><P
+>The default value is shared for all threads, but setting it is
+thread-safe.</P
+><P
+>Use this function if you want to globally set a callback handler
+for use with async operations.</P
+><P
+>You can use <A
+HREF="gnome-vfs-module-callbacks.html#GNOME-VFS-ASYNC-MODULE-CALLBACK-PUSH"
+>gnome_vfs_async_module_callback_push</A
+>() to set an async
+callback function that will temporarily override the default on the
+current thread instead. Or you can also use
+<A
+HREF="gnome-vfs-module-callbacks.html#GNOME-VFS-MODULE-CALLBACK-SET-DEFAULT"
+>gnome_vfs_module_callback_set_default</A
+>() to set a regular callback
+function.</P
+><P
+>Note: <TT
+CLASS="PARAMETER"
+><I
+>destroy_notify</I
+></TT
+> may be called on any thread - it is not
+guaranteed to be called on the main thread.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3046"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>callback_name</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The name of the async module callback to set</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>callback</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The function to call when the callback is invoked</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>callback_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Pointer to pass as the <TT
+CLASS="PARAMETER"
+><I
+>callback_data</I
+></TT
+> argument to <TT
+CLASS="PARAMETER"
+><I
+>callback</I
+></TT
+></TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>destroy_notify</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Function to call when <TT
+CLASS="PARAMETER"
+><I
+>callback_data</I
+></TT
+> is to be freed.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3070"
+></A
+><H3
+><A
+NAME="GNOME-VFS-ASYNC-MODULE-CALLBACK-PUSH"
+></A
+>gnome_vfs_async_module_callback_push ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_vfs_async_module_callback_push
+                                            (const char *callback_name,
+                                             <A
+HREF="gnome-vfs-module-callbacks.html#GNOMEVFSASYNCMODULECALLBACK"
+>GnomeVFSAsyncModuleCallback</A
+> callback,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> callback_data,
+                                             <A
+HREF=../glib/glib-datasets.html#GDESTROYNOTIFY
+>GDestroyNotify</A> destroy_notify);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Set <TT
+CLASS="PARAMETER"
+><I
+>callback_func</I
+></TT
+> as a temprary async handler for
+<TT
+CLASS="PARAMETER"
+><I
+>callback_name</I
+></TT
+>. <TT
+CLASS="PARAMETER"
+><I
+>callback</I
+></TT
+> will be called with <TT
+CLASS="PARAMETER"
+><I
+>callback_data</I
+></TT
+>
+from a callback on the main thread. It will be passed a response
+function which should be called to signal completion of the
+callback. The callback function itself may return in the meantime.</P
+><P
+>The temporary async handler is set per-thread.</P
+><P
+><A
+HREF="gnome-vfs-module-callbacks.html#GNOME-VFS-ASYNC-MODULE-CALLBACK-POP"
+>gnome_vfs_async_module_callback_pop</A
+>() removes the most recently set
+temporary temporary handler. The temporary async handlers are
+treated as a first-in first-out stack.</P
+><P
+>Use this function to set a temporary async callback handler for a
+single call or a few calls. You can use
+<A
+HREF="gnome-vfs-module-callbacks.html#GNOME-VFS-ASYNC-MODULE-CALLBACK-SET-DEFAULT"
+>gnome_vfs_async_module_callback_set_default</A
+>() to set an async
+callback function that will establish a permanent global setting
+for all threads instead.</P
+><P
+>Note: <TT
+CLASS="PARAMETER"
+><I
+>destroy_notify</I
+></TT
+> may be called on any thread - it is not
+guaranteed to be called on the main thread.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3090"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>callback_name</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The name of the module callback to set temporarily</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>callback</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The function to call when the callback is invoked</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>callback_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Pointer to pass as the <TT
+CLASS="PARAMETER"
+><I
+>callback_data</I
+></TT
+> argument to <TT
+CLASS="PARAMETER"
+><I
+>callback</I
+></TT
+></TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>destroy_notify</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> Function to call when <TT
+CLASS="PARAMETER"
+><I
+>callback_data</I
+></TT
+> is to be freed.</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3114"
+></A
+><H3
+><A
+NAME="GNOME-VFS-ASYNC-MODULE-CALLBACK-POP"
+></A
+>gnome_vfs_async_module_callback_pop ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        gnome_vfs_async_module_callback_pop
+                                            (const char *callback_name);</PRE
+></TD
+></TR
+></TABLE
+><P
+>Remove the temporary async handler for <TT
+CLASS="PARAMETER"
+><I
+>callback_name</I
+></TT
+> most recently
+set with <A
+HREF="gnome-vfs-module-callbacks.html#GNOME-VFS-ASYNC-MODULE-CALLBACK-PUSH"
+>gnome_vfs_async_module_callback_push</A
+>().  If another
+temporary async handler was previously set on the same thread, it
+becomes the current handler. Otherwise, the default async handler,
+if any, becomes current.</P
+><P
+>The temporary async handlers are treated as a first-in first-out
+stack.</P
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3123"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>callback_name</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+> The name of the module callback to remove a temporary handler for</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3132"
+></A
+><H2
+>See Also</H2
+><P
+><A
+HREF="gnome-vfs-standard-callbacks.html"
+>Standard Callbacks</A
+></P
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="gnome-vfs-xfer.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="file-operations.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="gnome-vfs-standard-callbacks.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Copy Engine</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Standard Callbacks</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

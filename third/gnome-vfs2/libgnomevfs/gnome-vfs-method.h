@@ -208,6 +208,13 @@ typedef GnomeVFSResult (* GnomeVFSMethodMonitorCancelFunc)
      					(GnomeVFSMethod *method,
       					 GnomeVFSMethodHandle *handle);
 
+typedef GnomeVFSResult (* GnomeVFSMethodFileControlFunc)
+     					(GnomeVFSMethod *method,
+      					 GnomeVFSMethodHandle *method_handle,
+					 const char *operation,
+					 gpointer operation_data,
+					 GnomeVFSContext *context);
+
 
 
 /* Use this macro to test whether a given function is implemented in
@@ -246,6 +253,7 @@ struct GnomeVFSMethod {
 	GnomeVFSMethodCreateSymbolicLinkFunc create_symbolic_link;
 	GnomeVFSMethodMonitorAddFunc monitor_add;
 	GnomeVFSMethodMonitorCancelFunc monitor_cancel;
+	GnomeVFSMethodFileControlFunc file_control;
 };
 
 gboolean	   gnome_vfs_method_init   (void);

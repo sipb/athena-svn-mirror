@@ -34,7 +34,7 @@ show_result (GnomeVFSResult result, const gchar *what, const gchar *text_uri)
 {
 	fprintf (stderr, "%s `%s': %s\n",
 		 what, text_uri, gnome_vfs_result_to_string (result));
-	if (result != GNOME_VFS_OK)
+	if (result != GNOME_VFS_OK && result != GNOME_VFS_ERROR_EOF)
 		exit (1);
 }
 
@@ -47,6 +47,7 @@ main (int argc, char **argv)
 	GnomeVFSFileSize  bytes_read;
 	GnomeVFSURI 	 *uri;
 	gchar            *text_uri;
+	gchar            *out;
 
 	if (argc != 2) {
 		printf ("Usage: %s <uri>\n", argv[0]);
@@ -79,6 +80,14 @@ main (int argc, char **argv)
 		if(!bytes_read) break;
 	}
 
+	result = gnome_vfs_file_control (handle, "file:test", &out);
+	show_result (result, "file_control", text_uri);
+	if (result == GNOME_VFS_OK) {
+		g_print ("file_control file:test: %s\n", out);
+	} 
+		
+	
+	
 	result = gnome_vfs_close (handle);
 	show_result (result, "close", text_uri);
 

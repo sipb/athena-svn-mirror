@@ -2,6 +2,7 @@
 /*
 
    Copyright (C) 2001 Eazel, Inc
+   Copyright (C) 2002 Seth Nickell
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -19,6 +20,7 @@
    Boston, MA 02111-1307, USA.
 
    Author: Michael Fleming <mfleming@eazel.com>
+           Seth Nickell <snickell@stanford.edu>
 */
 
 #ifndef GNOME_VFS_STANDARD_CALLBACKS_H

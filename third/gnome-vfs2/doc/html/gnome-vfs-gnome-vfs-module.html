@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>gnome-vfs-module</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="GnomeVFS - Filesystem Abstraction library"><link rel="up" href="modules.html" title="Filesystem Modules"><link rel="previous" href="gnome-vfs-gnome-vfs-method.html" title="gnome-vfs-method"><link rel="next" href="gnome-vfs-gnome-vfs-module-shared.html" title="gnome-vfs-module-shared"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gnome-vfs-gnome-vfs-method.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="modules.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GnomeVFS - Filesystem Abstraction library</th><td><a accesskey="n" href="gnome-vfs-gnome-vfs-module-shared.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry"><a name="gnome-vfs-gnome-vfs-module"></a><div class="titlepage"></div><div class="refnamediv"><h2>gnome-vfs-module</h2><p>gnome-vfs-module &#8212; </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+GnomeVFSMethod* <a href="gnome-vfs-gnome-vfs-module.html#vfs-module-init">vfs_module_init</a>             (const char *method_name,
+                                             const char *args);
+GnomeVFSTransform* <a href="gnome-vfs-gnome-vfs-module.html#vfs-module-transform">vfs_module_transform</a>     (const char *method_name,
+                                             const char *args);
+void        <a href="gnome-vfs-gnome-vfs-module.html#vfs-module-shutdown">vfs_module_shutdown</a>             (GnomeVFSMethod *method);
+</pre></div><div class="refsect1"><h2>Description</h2><p>
+
+</p></div><div class="refsect1"><h2>Details</h2><div class="refsect2"><h3><a name="vfs-module-init"></a>vfs_module_init ()</h3><pre class="programlisting">GnomeVFSMethod* vfs_module_init             (const char *method_name,
+                                             const char *args);</pre><p>
+Standard extern call implemented by each filesystem module. This is called
+to initialize the module and setup any basic structures / connections the
+method requires. It also allows the module to identify the URI method it is
+associated with in this instance.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>method_name</tt></i> :</span></td><td> name of the method that invoked this module (e.g. &quot;http&quot;, &quot;ftp&quot;, &quot;file&quot;).
+</td></tr><tr><td><span class="term"><i><tt>args</tt></i> :</span></td><td> not used by most modules, but potential arguments for creating the module (could
+be a file to point at, for example)
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the module symbol table, pointing to the appropriate calls for
+this module.
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="vfs-module-transform"></a>vfs_module_transform ()</h3><pre class="programlisting">GnomeVFSTransform* vfs_module_transform     (const char *method_name,
+                                             const char *args);</pre><p>
+Shift an already instanced module to a new method name. This call is not implemented
+by most modules and is optional.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>method_name</tt></i> :</span></td><td> name of the method that invoked this module (e.g. &quot;http&quot;, &quot;ftp&quot;, &quot;file&quot;).
+</td></tr><tr><td><span class="term"><i><tt>args</tt></i> :</span></td><td> not used by most modules, but potential arguments for creating the module (could
+be a file to point at, for example)
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> the module symbol table, pointing to the appropriate calls for
+this module.
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="vfs-module-shutdown"></a>vfs_module_shutdown ()</h3><pre class="programlisting">void        vfs_module_shutdown             (GnomeVFSMethod *method);</pre><p>
+Called to tell a module to end any active operations, free all used memory,
+and close any connections (as appropriate) or resources.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>method</tt></i> :</span></td><td> the symbol table of the module being shut down
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gnome-vfs-gnome-vfs-method.html"><b>&lt;&lt; gnome-vfs-method</b></a></td><td align="right"><a accesskey="n" href="gnome-vfs-gnome-vfs-module-shared.html"><b>gnome-vfs-module-shared &gt;&gt;</b></a></td></tr></table></body></html>

@@ -593,6 +593,28 @@ read_link (const gchar *full_name)
 	}
 }
 
+static void
+get_access_info (GnomeVFSFileInfo *file_info,
+              const gchar *full_name)
+{
+     /* FIXME: should check errno after calling access because we don't
+      * want to set valid_fields if something bad happened during one
+      * of the access calls
+      */
+     if (access (full_name, R_OK) == 0) {
+             file_info->permissions |= GNOME_VFS_PERM_ACCESS_READABLE;
+     }
+
+     if (access (full_name, W_OK) == 0) {
+             file_info->permissions |= GNOME_VFS_PERM_ACCESS_WRITABLE;
+     }
+
+     if (access (full_name, X_OK) == 0) {
+             file_info->permissions |= GNOME_VFS_PERM_ACCESS_EXECUTABLE;
+     }
+     file_info->valid_fields |= GNOME_VFS_FILE_INFO_FIELDS_ACCESS;
+}
+
 static GnomeVFSResult
 get_stat_info (GnomeVFSFileInfo *file_info,
 	       const gchar *full_name,
@@ -821,6 +843,10 @@ do_get_file_info (GnomeVFSMethod *method,
 	if (result != GNOME_VFS_OK) {
 		g_free (full_name);
 		return result;
+	}
+
+	if (options & GNOME_VFS_FILE_INFO_GET_ACCESS_RIGHTS) {
+		get_access_info (file_info, full_name);
 	}
 
 	if (options & GNOME_VFS_FILE_INFO_GET_MIME_TYPE) {
@@ -2216,6 +2242,20 @@ do_monitor_cancel (GnomeVFSMethod *method,
 #endif
 }
 
+static GnomeVFSResult
+do_file_control (GnomeVFSMethod *method,
+		 GnomeVFSMethodHandle *method_handle,
+		 const char *operation,
+		 gpointer operation_data,
+		 GnomeVFSContext *context)
+{
+	if (strcmp (operation, "file:test") == 0) {
+		*(char **)operation_data = g_strdup ("test ok");
+		return GNOME_VFS_OK;
+	}
+	return GNOME_VFS_ERROR_NOT_SUPPORTED;
+}
+
 static GnomeVFSMethod method = {
 	sizeof (GnomeVFSMethod),
 	do_open,
@@ -2242,7 +2282,8 @@ static GnomeVFSMethod method = {
 	do_find_directory,
 	do_create_symbolic_link,
 	do_monitor_add,
-	do_monitor_cancel
+	do_monitor_cancel,
+	do_file_control
 };
 
 GnomeVFSMethod *

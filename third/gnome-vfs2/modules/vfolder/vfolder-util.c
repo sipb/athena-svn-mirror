@@ -31,7 +31,6 @@
 #include <string.h>
 #include <sys/time.h>
 #include <unistd.h>
-#include <libgnomevfs/gnome-vfs-directory.h>
 #include <libgnomevfs/gnome-vfs-file-info.h>
 #include <libgnomevfs/gnome-vfs-ops.h>
 
@@ -152,55 +151,6 @@ ctime_for_uri (const gchar *uri)
 	return ctime;
 }
 
-static void
-notify_children_changed_since (VFolderMonitor *monitor, time_t last_change_time)
-{
-	GnomeVFSDirectoryHandle *handle;
-	GnomeVFSFileInfo *file_info;
-	GnomeVFSResult result;
-	gchar *file_uri;
-
-	result = gnome_vfs_directory_open (&handle,
-					   monitor->uri,
-					   GNOME_VFS_FILE_INFO_DEFAULT);
-	if (result != GNOME_VFS_OK)
-		return;
-
-	file_info = gnome_vfs_file_info_new ();
-
-	while (TRUE) {
-		result = gnome_vfs_directory_read_next (handle, file_info);
-		if (result != GNOME_VFS_OK)
-			break;
-
-		if (!strcmp (file_info->name, ".") ||
-		    !strcmp (file_info->name, ".."))
-			continue;
-
-		if (file_info->ctime > last_change_time) {
-			file_uri = vfolder_build_uri (monitor->uri, 
-						      file_info->name, 
-						      NULL);
-
-			/* 
-			 * FIXME: No way to know if file is newly created (since
-			 * unix has no create date), so we may emit CHANGED for
-			 * files previously unknown to listeners. 
-			 */
-			(*monitor->callback) ((GnomeVFSMonitorHandle *) monitor,
-					      monitor->uri,
-					      file_uri,
-				              GNOME_VFS_MONITOR_EVENT_CHANGED,
-					      monitor->user_data);
-
-			g_free (file_uri);
-		}
-	}
-
-	gnome_vfs_file_info_unref (file_info);
-	gnome_vfs_directory_close (handle);
-}
-
 static gboolean
 monitor_timeout_cb (gpointer user_data)
 {
@@ -209,7 +159,7 @@ monitor_timeout_cb (gpointer user_data)
 
 	/* 
 	 * Copy the stat_monitors list in case the callback removes/adds
-	 * monitors (which is likely).  
+	 * monitors (which is likely).
 	 */
 	G_LOCK (stat_monitors);
 	copy = g_slist_copy (stat_monitors);
@@ -217,43 +167,31 @@ monitor_timeout_cb (gpointer user_data)
 
 	for (iter = copy; iter; iter = iter->next) {
 		VFolderMonitor *monitor = iter->data;
-		time_t ctime, old_ctime;
+		time_t ctime;
 
 		G_LOCK (stat_monitors);
-
-		if (g_slist_index (stat_monitors, iter->data) < 0) {
+		if (g_slist_position (stat_monitors, iter) < 0) {
 			G_UNLOCK (stat_monitors);
 			continue;
 		}
-
-		if (monitor->frozen) {
-			G_UNLOCK (stat_monitors);
-			continue;
-		}
-
-		ctime = ctime_for_uri (monitor->uri);
-		if (ctime == monitor->ctime) {
-			G_UNLOCK (stat_monitors);
-			continue;
-		}
-
-		old_ctime = monitor->ctime;
-		monitor->ctime = ctime;
-
 		G_UNLOCK (stat_monitors);
 
-		/* Emit monitor for changed/created children */
-		if (ctime != 0 && monitor->type == GNOME_VFS_MONITOR_DIRECTORY)
-			notify_children_changed_since (monitor, old_ctime);
+		if (monitor->frozen)
+			continue;
 
-		/* Emit monitor for the monitored file itself */
+		ctime = ctime_for_uri (monitor->uri);
+		if (ctime == monitor->ctime)
+			continue;
+
 		(*monitor->callback) ((GnomeVFSMonitorHandle *) monitor,
 				      monitor->uri,
 				      monitor->uri,
-				      (old_ctime && ctime == 0) ?
+				      ctime == 0 ?
 				              GNOME_VFS_MONITOR_EVENT_DELETED :
 				              GNOME_VFS_MONITOR_EVENT_CHANGED,
 				      monitor->user_data);
+
+		monitor->ctime = ctime;
 	}
 
 	g_slist_free (copy);

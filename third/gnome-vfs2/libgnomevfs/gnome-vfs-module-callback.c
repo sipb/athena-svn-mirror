@@ -147,7 +147,7 @@ async_callback_invoke (gconstpointer in,
 
 	g_static_mutex_lock (&async_callback_lock);
 	response_data.done = FALSE;
-	gnome_vfs_dispatch_module_callback (async_callback->callback,
+	_gnome_vfs_dispatch_module_callback (async_callback->callback,
 					    in, in_size,
 					    out, out_size,
 					    async_callback->callback_data, 
@@ -284,26 +284,9 @@ pop_stack_table (GHashTable *table,
 	}
 }
 
-
 /* Functions to copy, duplicate and clear callback tables and callback
  * stack tables, and helpers for these functions.
  */
-
-static void
-copy_one_callback  (gpointer	key,
-		    gpointer	value,
-		    gpointer	callback_data)
-{
-	const char *callback_name;
-	CallbackInfo *callback;
-	GHashTable *table;
-	
-	callback_name = key;
-	callback = value;
-	table = callback_data;
-	
-	insert_callback_into_table (table, callback_name, callback);
-}
 
 static void
 copy_one_stack_top (gpointer key,
@@ -337,17 +320,6 @@ copy_one_callback_to_stack (gpointer key,
 	table = callback_data;
 	
 	push_callback_into_stack_table (table, callback_name, callback);
-}
-
-static GHashTable *
-duplicate_callback_table (GHashTable *table)
-{
-	GHashTable *copy;
-	
-	copy = g_hash_table_new (g_str_hash, g_str_equal);
-	g_hash_table_foreach (table, copy_one_callback, copy);
-	
-	return copy;
 }
 
 static void
@@ -471,7 +443,7 @@ free_stack_tables_to_free (void)
 }
 
 void
-gnome_vfs_module_callback_private_init (void)
+_gnome_vfs_module_callback_private_init (void)
 {
 	callback_stacks_key = g_private_new (stack_table_destroy);
 	async_callback_stacks_key = g_private_new (stack_table_destroy);
@@ -935,16 +907,16 @@ gnome_vfs_module_callback_invoke (const char    *callback_name,
  */
 
 GnomeVFSModuleCallbackStackInfo *
-gnome_vfs_module_callback_get_stack_info (void)
+_gnome_vfs_module_callback_get_stack_info (void)
 {
 	GnomeVFSModuleCallbackStackInfo *stack_info;
 
 	stack_info = g_new (GnomeVFSModuleCallbackStackInfo, 1);
+	stack_info->current_callbacks = g_hash_table_new (g_str_hash, g_str_equal);
+	stack_info->current_async_callbacks = g_hash_table_new (g_str_hash, g_str_equal);
 
 	g_static_mutex_lock (&callback_table_lock);
 	initialize_global_if_needed ();
-	stack_info->current_callbacks = duplicate_callback_table (default_callbacks);
-	stack_info->current_async_callbacks = duplicate_callback_table (default_async_callbacks);
 	g_static_mutex_unlock (&callback_table_lock);
 
 	initialize_per_thread_if_needed ();
@@ -957,7 +929,7 @@ gnome_vfs_module_callback_get_stack_info (void)
 }
 
 void
-gnome_vfs_module_callback_free_stack_info (GnomeVFSModuleCallbackStackInfo *stack_info)
+_gnome_vfs_module_callback_free_stack_info (GnomeVFSModuleCallbackStackInfo *stack_info)
 {
 	clear_callback_table (stack_info->current_callbacks);
 	g_hash_table_destroy (stack_info->current_callbacks); 
@@ -968,7 +940,7 @@ gnome_vfs_module_callback_free_stack_info (GnomeVFSModuleCallbackStackInfo *stac
 }
 
 void
-gnome_vfs_module_callback_use_stack_info (GnomeVFSModuleCallbackStackInfo *stack_info)
+_gnome_vfs_module_callback_use_stack_info (GnomeVFSModuleCallbackStackInfo *stack_info)
 {
 	initialize_per_thread_if_needed ();
 	copy_callback_table_to_stack_table (stack_info->current_callbacks, 
@@ -978,7 +950,7 @@ gnome_vfs_module_callback_use_stack_info (GnomeVFSModuleCallbackStackInfo *stack
 }
 
 void
-gnome_vfs_module_callback_clear_stacks (void)
+_gnome_vfs_module_callback_clear_stacks (void)
 {
 	initialize_per_thread_if_needed ();
 	clear_stack_table (g_private_get (callback_stacks_key));
@@ -986,7 +958,7 @@ gnome_vfs_module_callback_clear_stacks (void)
 }
 
 void
-gnome_vfs_module_callback_set_in_async_thread (gboolean in_async_thread)
+_gnome_vfs_module_callback_set_in_async_thread (gboolean in_async_thread)
 {
 	initialize_per_thread_if_needed ();
 	g_private_set (in_async_thread_key, GINT_TO_POINTER (in_async_thread));

@@ -94,9 +94,7 @@ GTKDOC = @GTKDOC@
 HAVE_GTK_DOC = @HAVE_GTK_DOC@
 HTML_DIR = @HTML_DIR@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
@@ -111,6 +109,7 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -119,6 +118,9 @@ LIBEFS_CFLAGS = @LIBEFS_CFLAGS@
 LIBEFS_LIBS = @LIBEFS_LIBS@
 LIBGNOMEVFS_CFLAGS = @LIBGNOMEVFS_CFLAGS@
 LIBGNOMEVFS_LIBS = @LIBGNOMEVFS_LIBS@
+LIBGNUTLS_CFLAGS = @LIBGNUTLS_CFLAGS@
+LIBGNUTLS_CONFIG = @LIBGNUTLS_CONFIG@
+LIBGNUTLS_LIBS = @LIBGNUTLS_LIBS@
 LIBIDL_REQUIRED = @LIBIDL_REQUIRED@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
@@ -146,6 +148,8 @@ PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POPT_LIBS = @POPT_LIBS@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PTHREAD_LIB = @PTHREAD_LIB@
 RANLIB = @RANLIB@
 STRIP = @STRIP@
@@ -170,21 +174,69 @@ cxxflags_set = @cxxflags_set@
 
 NULL = 
 
-INCLUDES =  	-I$(top_srcdir)					-I$(top_builddir)				$(TEST_CFLAGS)					$(VFS_CFLAGS)					-DG_DISABLE_DEPRECATED				-DMODULES_PATH=\"$(libdir)/vfs/modules\"
+INCLUDES = \
+	-I$(top_srcdir)				\
+	-I$(top_builddir)			\
+	$(TEST_CFLAGS)				\
+	$(VFS_CFLAGS)				\
+	-DG_DISABLE_DEPRECATED			\
+	-DMODULES_PATH=\"$(libdir)/vfs/modules\"
 
 
-noinst_PROGRAMS =  	test-async					test-async-cancel                       	test-async-directory				test-channel					test-directory					test-directory-visit				test-dirop					test-escape					test-find-directory				test-info					test-mime					test-mime-handlers				test-mime-handlers-set				test-mime-info					test-monitor					test-performance				test-seek					test-shell					test-symlinks					test-ssl					test-sync					test-sync-create				test-sync-write					test-unlink					test-uri					test-xfer					test-callback					test-module-selftest				test-queue					$(NULL)
+noinst_PROGRAMS = \
+	test-async				\
+	test-async-cancel                       \
+	test-async-directory			\
+	test-channel				\
+	test-directory				\
+	test-directory-visit			\
+	test-dirop				\
+	test-escape				\
+	test-find-directory			\
+	test-info				\
+	test-mime				\
+	test-mime-handlers			\
+	test-mime-handlers-set			\
+	test-mime-info				\
+	test-monitor				\
+	test-performance			\
+	test-resolv				\
+	test-seek				\
+	test-shell				\
+	test-subdir				\
+	test-symlinks				\
+	test-ssl				\
+	test-sync				\
+	test-sync-create			\
+	test-sync-write				\
+	test-unlink				\
+	test-uri				\
+	test-xfer				\
+	test-callback				\
+	test-module-selftest			\
+	test-queue				\
+	$(NULL)
 
 
-test_files =  	auto-test		test.input		test.cmds		test.output
+test_files = \
+	test.input	\
+	test.cmds	\
+	test.output
 
 
 # Set up the environment so the tests can find the modules
-TESTS_ENVIRONMENT = GNOME_VFS_MODULE_PATH=$(top_builddir)/modules/.libs 		GNOME_VFS_MODULE_CONFIG_PATH=$(top_srcdir)/modules 		GNOME_VFS_TEST_CONFIG_FILE=$(top_srcdir)/test/queue-test-config.xml 		SRCDIR=$(srcdir)
+TESTS_ENVIRONMENT = GNOME_VFS_MODULE_PATH=$(top_builddir)/modules/.libs \
+		GNOME_VFS_MODULE_CONFIG_PATH=$(top_srcdir)/modules \
+		GNOME_VFS_TEST_CONFIG_FILE=$(top_srcdir)/test/queue-test-config.xml \
+		SRCDIR=$(srcdir)
 
 TESTS = test-async-cancel test-escape test-uri test-queue $(srcdir)/auto-test
 
-libraries =  	$(top_builddir)/libgnomevfs/libgnomevfs-2.la		$(TEST_LIBS)						$(POPT_LIBS)						$(LIBEFS_LIBS)
+libraries = \
+	$(top_builddir)/libgnomevfs/libgnomevfs-2.la	\
+	$(TEST_LIBS)					\
+	$(POPT_LIBS)					\
+	$(LIBEFS_LIBS)
 
 
 test_async_SOURCES = test-async.c
@@ -192,6 +244,12 @@ test_async_LDADD = $(libraries)
 
 test_performance_SOURCES = test-performance.c
 test_performance_LDADD = $(libraries)
+
+test_resolv_SOURCES = test-resolv.c
+test_resolv_LDADD = $(libraries)
+
+test_subdir_SOURCES = test-subdir.c
+test_subdir_LDADD = $(libraries)
 
 test_async_directory_SOURCES = test-async-directory.c
 test_async_directory_LDADD = $(libraries)
@@ -265,6 +323,9 @@ test_mime_info_LDADD = $(libraries)
 test_monitor_SOURCES = test-monitor.c
 test_monitor_LDADD = $(libraries)
 
+# test_metadata_SOURCES = test-metadata.c
+# test_metadata_LDADD = $(libraries)
+
 test_callback_SOURCES = test-callback.c
 test_callback_LDADD = $(libraries)
 
@@ -274,7 +335,10 @@ test_module_selftest_LDADD = $(libraries)
 test_queue_SOURCES = test-queue.c
 test_queue_LDADD = $(libraries)
 
-EXTRA_DIST =  	$(test_files)					vfs-run.in
+EXTRA_DIST = \
+	$(test_files)				\
+	auto-test				\
+	vfs-run.in
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../config.h
@@ -285,12 +349,12 @@ test-directory$(EXEEXT) test-directory-visit$(EXEEXT) \
 test-dirop$(EXEEXT) test-escape$(EXEEXT) test-find-directory$(EXEEXT) \
 test-info$(EXEEXT) test-mime$(EXEEXT) test-mime-handlers$(EXEEXT) \
 test-mime-handlers-set$(EXEEXT) test-mime-info$(EXEEXT) \
-test-monitor$(EXEEXT) test-performance$(EXEEXT) test-seek$(EXEEXT) \
-test-shell$(EXEEXT) test-symlinks$(EXEEXT) test-ssl$(EXEEXT) \
-test-sync$(EXEEXT) test-sync-create$(EXEEXT) test-sync-write$(EXEEXT) \
-test-unlink$(EXEEXT) test-uri$(EXEEXT) test-xfer$(EXEEXT) \
-test-callback$(EXEEXT) test-module-selftest$(EXEEXT) \
-test-queue$(EXEEXT)
+test-monitor$(EXEEXT) test-performance$(EXEEXT) test-resolv$(EXEEXT) \
+test-seek$(EXEEXT) test-shell$(EXEEXT) test-subdir$(EXEEXT) \
+test-symlinks$(EXEEXT) test-ssl$(EXEEXT) test-sync$(EXEEXT) \
+test-sync-create$(EXEEXT) test-sync-write$(EXEEXT) test-unlink$(EXEEXT) \
+test-uri$(EXEEXT) test-xfer$(EXEEXT) test-callback$(EXEEXT) \
+test-module-selftest$(EXEEXT) test-queue$(EXEEXT)
 PROGRAMS =  $(noinst_PROGRAMS)
 
 
@@ -355,12 +419,18 @@ test_performance_OBJECTS =  test-performance.$(OBJEXT)
 test_performance_DEPENDENCIES =  \
 $(top_builddir)/libgnomevfs/libgnomevfs-2.la
 test_performance_LDFLAGS = 
+test_resolv_OBJECTS =  test-resolv.$(OBJEXT)
+test_resolv_DEPENDENCIES =  $(top_builddir)/libgnomevfs/libgnomevfs-2.la
+test_resolv_LDFLAGS = 
 test_seek_OBJECTS =  test-seek.$(OBJEXT)
 test_seek_DEPENDENCIES =  $(top_builddir)/libgnomevfs/libgnomevfs-2.la
 test_seek_LDFLAGS = 
 test_shell_OBJECTS =  test-shell.$(OBJEXT)
 test_shell_DEPENDENCIES =  $(top_builddir)/libgnomevfs/libgnomevfs-2.la
 test_shell_LDFLAGS = 
+test_subdir_OBJECTS =  test-subdir.$(OBJEXT)
+test_subdir_DEPENDENCIES =  $(top_builddir)/libgnomevfs/libgnomevfs-2.la
+test_subdir_LDFLAGS = 
 test_symlinks_OBJECTS =  test-symlinks.$(OBJEXT)
 test_symlinks_DEPENDENCIES =  \
 $(top_builddir)/libgnomevfs/libgnomevfs-2.la
@@ -408,10 +478,10 @@ DIST_COMMON =  Makefile.am Makefile.in vfs-run.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
-SOURCES = $(test_async_SOURCES) $(test_async_cancel_SOURCES) $(test_async_directory_SOURCES) $(test_channel_SOURCES) $(test_directory_SOURCES) $(test_directory_visit_SOURCES) $(test_dirop_SOURCES) $(test_escape_SOURCES) $(test_find_directory_SOURCES) $(test_info_SOURCES) $(test_mime_SOURCES) $(test_mime_handlers_SOURCES) $(test_mime_handlers_set_SOURCES) $(test_mime_info_SOURCES) $(test_monitor_SOURCES) $(test_performance_SOURCES) $(test_seek_SOURCES) $(test_shell_SOURCES) $(test_symlinks_SOURCES) $(test_ssl_SOURCES) $(test_sync_SOURCES) $(test_sync_create_SOURCES) $(test_sync_write_SOURCES) $(test_unlink_SOURCES) $(test_uri_SOURCES) $(test_xfer_SOURCES) $(test_callback_SOURCES) $(test_module_selftest_SOURCES) $(test_queue_SOURCES)
-OBJECTS = $(test_async_OBJECTS) $(test_async_cancel_OBJECTS) $(test_async_directory_OBJECTS) $(test_channel_OBJECTS) $(test_directory_OBJECTS) $(test_directory_visit_OBJECTS) $(test_dirop_OBJECTS) $(test_escape_OBJECTS) $(test_find_directory_OBJECTS) $(test_info_OBJECTS) $(test_mime_OBJECTS) $(test_mime_handlers_OBJECTS) $(test_mime_handlers_set_OBJECTS) $(test_mime_info_OBJECTS) $(test_monitor_OBJECTS) $(test_performance_OBJECTS) $(test_seek_OBJECTS) $(test_shell_OBJECTS) $(test_symlinks_OBJECTS) $(test_ssl_OBJECTS) $(test_sync_OBJECTS) $(test_sync_create_OBJECTS) $(test_sync_write_OBJECTS) $(test_unlink_OBJECTS) $(test_uri_OBJECTS) $(test_xfer_OBJECTS) $(test_callback_OBJECTS) $(test_module_selftest_OBJECTS) $(test_queue_OBJECTS)
+SOURCES = $(test_async_SOURCES) $(test_async_cancel_SOURCES) $(test_async_directory_SOURCES) $(test_channel_SOURCES) $(test_directory_SOURCES) $(test_directory_visit_SOURCES) $(test_dirop_SOURCES) $(test_escape_SOURCES) $(test_find_directory_SOURCES) $(test_info_SOURCES) $(test_mime_SOURCES) $(test_mime_handlers_SOURCES) $(test_mime_handlers_set_SOURCES) $(test_mime_info_SOURCES) $(test_monitor_SOURCES) $(test_performance_SOURCES) $(test_resolv_SOURCES) $(test_seek_SOURCES) $(test_shell_SOURCES) $(test_subdir_SOURCES) $(test_symlinks_SOURCES) $(test_ssl_SOURCES) $(test_sync_SOURCES) $(test_sync_create_SOURCES) $(test_sync_write_SOURCES) $(test_unlink_SOURCES) $(test_uri_SOURCES) $(test_xfer_SOURCES) $(test_callback_SOURCES) $(test_module_selftest_SOURCES) $(test_queue_SOURCES)
+OBJECTS = $(test_async_OBJECTS) $(test_async_cancel_OBJECTS) $(test_async_directory_OBJECTS) $(test_channel_OBJECTS) $(test_directory_OBJECTS) $(test_directory_visit_OBJECTS) $(test_dirop_OBJECTS) $(test_escape_OBJECTS) $(test_find_directory_OBJECTS) $(test_info_OBJECTS) $(test_mime_OBJECTS) $(test_mime_handlers_OBJECTS) $(test_mime_handlers_set_OBJECTS) $(test_mime_info_OBJECTS) $(test_monitor_OBJECTS) $(test_performance_OBJECTS) $(test_resolv_OBJECTS) $(test_seek_OBJECTS) $(test_shell_OBJECTS) $(test_subdir_OBJECTS) $(test_symlinks_OBJECTS) $(test_ssl_OBJECTS) $(test_sync_OBJECTS) $(test_sync_create_OBJECTS) $(test_sync_write_OBJECTS) $(test_unlink_OBJECTS) $(test_uri_OBJECTS) $(test_xfer_OBJECTS) $(test_callback_OBJECTS) $(test_module_selftest_OBJECTS) $(test_queue_OBJECTS)
 
 all: all-redirect
 .SUFFIXES:
@@ -543,6 +613,10 @@ test-performance$(EXEEXT): $(test_performance_OBJECTS) $(test_performance_DEPEND
 	@rm -f test-performance$(EXEEXT)
 	$(LINK) $(test_performance_LDFLAGS) $(test_performance_OBJECTS) $(test_performance_LDADD) $(LIBS)
 
+test-resolv$(EXEEXT): $(test_resolv_OBJECTS) $(test_resolv_DEPENDENCIES)
+	@rm -f test-resolv$(EXEEXT)
+	$(LINK) $(test_resolv_LDFLAGS) $(test_resolv_OBJECTS) $(test_resolv_LDADD) $(LIBS)
+
 test-seek$(EXEEXT): $(test_seek_OBJECTS) $(test_seek_DEPENDENCIES)
 	@rm -f test-seek$(EXEEXT)
 	$(LINK) $(test_seek_LDFLAGS) $(test_seek_OBJECTS) $(test_seek_LDADD) $(LIBS)
@@ -550,6 +624,10 @@ test-seek$(EXEEXT): $(test_seek_OBJECTS) $(test_seek_DEPENDENCIES)
 test-shell$(EXEEXT): $(test_shell_OBJECTS) $(test_shell_DEPENDENCIES)
 	@rm -f test-shell$(EXEEXT)
 	$(LINK) $(test_shell_LDFLAGS) $(test_shell_OBJECTS) $(test_shell_LDADD) $(LIBS)
+
+test-subdir$(EXEEXT): $(test_subdir_OBJECTS) $(test_subdir_DEPENDENCIES)
+	@rm -f test-subdir$(EXEEXT)
+	$(LINK) $(test_subdir_LDFLAGS) $(test_subdir_OBJECTS) $(test_subdir_LDADD) $(LIBS)
 
 test-symlinks$(EXEEXT): $(test_symlinks_OBJECTS) $(test_symlinks_DEPENDENCIES)
 	@rm -f test-symlinks$(EXEEXT)
@@ -613,7 +691,7 @@ TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) $(LISP)
 	  awk '    { files[$$0] = 1; } \
 	       END { for (i in files) print i; }'`; \
 	test -z "$(ETAGS_ARGS)$$unique$(LISP)$$tags" \
-	  || (cd $(srcdir) && etags -o $$here/TAGS $(ETAGS_ARGS) $$tags  $$unique $(LISP))
+	  || (cd $(srcdir) && etags $(ETAGS_ARGS) $$tags  $$unique $(LISP) -o $$here/TAGS)
 
 mostlyclean-tags:
 
@@ -639,6 +717,342 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+test-async-cancel.o: test-async-cancel.c ../config.h \
+	../libgnomevfs/gnome-vfs-async-ops.h \
+	../libgnomevfs/gnome-vfs-file-info.h \
+	../libgnomevfs/gnome-vfs-file-size.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-uri.h \
+	../libgnomevfs/gnome-vfs-find-directory.h \
+	../libgnomevfs/gnome-vfs-handle.h \
+	../libgnomevfs/gnome-vfs-context.h \
+	../libgnomevfs/gnome-vfs-cancellation.h \
+	../libgnomevfs/gnome-vfs-xfer.h ../libgnomevfs/gnome-vfs-init.h \
+	../libgnomevfs/gnome-vfs-job.h \
+	../libgnomevfs/gnome-vfs-module-callback.h \
+	../libgnomevfs/gnome-vfs-module-callback-private.h
+test-async-directory.o: test-async-directory.c ../config.h \
+	../libgnomevfs/gnome-vfs-async-ops.h \
+	../libgnomevfs/gnome-vfs-file-info.h \
+	../libgnomevfs/gnome-vfs-file-size.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-uri.h \
+	../libgnomevfs/gnome-vfs-find-directory.h \
+	../libgnomevfs/gnome-vfs-handle.h \
+	../libgnomevfs/gnome-vfs-context.h \
+	../libgnomevfs/gnome-vfs-cancellation.h \
+	../libgnomevfs/gnome-vfs-xfer.h ../libgnomevfs/gnome-vfs-init.h
+test-async.o: test-async.c ../config.h \
+	../libgnomevfs/gnome-vfs-async-ops.h \
+	../libgnomevfs/gnome-vfs-file-info.h \
+	../libgnomevfs/gnome-vfs-file-size.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-uri.h \
+	../libgnomevfs/gnome-vfs-find-directory.h \
+	../libgnomevfs/gnome-vfs-handle.h \
+	../libgnomevfs/gnome-vfs-context.h \
+	../libgnomevfs/gnome-vfs-cancellation.h \
+	../libgnomevfs/gnome-vfs-xfer.h ../libgnomevfs/gnome-vfs-init.h
+test-callback.o: test-callback.c ../config.h \
+	../libgnomevfs/gnome-vfs-async-ops.h \
+	../libgnomevfs/gnome-vfs-file-info.h \
+	../libgnomevfs/gnome-vfs-file-size.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-uri.h \
+	../libgnomevfs/gnome-vfs-find-directory.h \
+	../libgnomevfs/gnome-vfs-handle.h \
+	../libgnomevfs/gnome-vfs-context.h \
+	../libgnomevfs/gnome-vfs-cancellation.h \
+	../libgnomevfs/gnome-vfs-xfer.h ../libgnomevfs/gnome-vfs-init.h \
+	../libgnomevfs/gnome-vfs-ops.h \
+	../libgnomevfs/gnome-vfs-monitor.h \
+	../libgnomevfs/gnome-vfs-module-callback.h \
+	../libgnomevfs/gnome-vfs-standard-callbacks.h
+test-channel.o: test-channel.c ../config.h \
+	../libgnomevfs/gnome-vfs-async-ops.h \
+	../libgnomevfs/gnome-vfs-file-info.h \
+	../libgnomevfs/gnome-vfs-file-size.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-uri.h \
+	../libgnomevfs/gnome-vfs-find-directory.h \
+	../libgnomevfs/gnome-vfs-handle.h \
+	../libgnomevfs/gnome-vfs-context.h \
+	../libgnomevfs/gnome-vfs-cancellation.h \
+	../libgnomevfs/gnome-vfs-xfer.h ../libgnomevfs/gnome-vfs-init.h
+test-directory-visit.o: test-directory-visit.c ../config.h \
+	../libgnomevfs/gnome-vfs-directory.h \
+	../libgnomevfs/gnome-vfs-file-info.h \
+	../libgnomevfs/gnome-vfs-file-size.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-uri.h ../libgnomevfs/gnome-vfs-init.h
+test-directory.o: test-directory.c ../config.h \
+	../libgnomevfs/gnome-vfs-directory.h \
+	../libgnomevfs/gnome-vfs-file-info.h \
+	../libgnomevfs/gnome-vfs-file-size.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-uri.h ../libgnomevfs/gnome-vfs-init.h
+test-dirop.o: test-dirop.c ../config.h ../libgnomevfs/gnome-vfs-init.h \
+	../libgnomevfs/gnome-vfs-ops.h \
+	../libgnomevfs/gnome-vfs-file-info.h \
+	../libgnomevfs/gnome-vfs-file-size.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-uri.h \
+	../libgnomevfs/gnome-vfs-handle.h \
+	../libgnomevfs/gnome-vfs-context.h \
+	../libgnomevfs/gnome-vfs-cancellation.h \
+	../libgnomevfs/gnome-vfs-monitor.h
+test-escape.o: test-escape.c ../config.h ../libgnomevfs/gnome-vfs-init.h \
+	../libgnomevfs/gnome-vfs-utils.h \
+	../libgnomevfs/gnome-vfs-file-size.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-uri.h \
+	../libgnomevfs/gnome-vfs-handle.h \
+	../libgnomevfs/gnome-vfs-context.h \
+	../libgnomevfs/gnome-vfs-cancellation.h \
+	../libgnomevfs/gnome-vfs-file-info.h
+test-find-directory.o: test-find-directory.c ../config.h \
+	../libgnomevfs/gnome-vfs-find-directory.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-uri.h ../libgnomevfs/gnome-vfs-init.h
+test-info.o: test-info.c ../config.h ../libgnomevfs/gnome-vfs-init.h \
+	../libgnomevfs/gnome-vfs-ops.h \
+	../libgnomevfs/gnome-vfs-file-info.h \
+	../libgnomevfs/gnome-vfs-file-size.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-uri.h \
+	../libgnomevfs/gnome-vfs-handle.h \
+	../libgnomevfs/gnome-vfs-context.h \
+	../libgnomevfs/gnome-vfs-cancellation.h \
+	../libgnomevfs/gnome-vfs-monitor.h
+test-metadata.o: test-metadata.c ../libgnomevfs/gnome-vfs.h \
+	../libgnomevfs/gnome-vfs-async-ops.h \
+	../libgnomevfs/gnome-vfs-file-info.h \
+	../libgnomevfs/gnome-vfs-file-size.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-uri.h \
+	../libgnomevfs/gnome-vfs-find-directory.h \
+	../libgnomevfs/gnome-vfs-handle.h \
+	../libgnomevfs/gnome-vfs-context.h \
+	../libgnomevfs/gnome-vfs-cancellation.h \
+	../libgnomevfs/gnome-vfs-xfer.h \
+	../libgnomevfs/gnome-vfs-directory.h \
+	../libgnomevfs/gnome-vfs-init.h \
+	../libgnomevfs/gnome-vfs-module-callback.h \
+	../libgnomevfs/gnome-vfs-monitor.h \
+	../libgnomevfs/gnome-vfs-ops.h ../libgnomevfs/gnome-vfs-utils.h \
+	../libgnomevfs/gnome-vfs-metadata.h
+test-mime-handlers-set.o: test-mime-handlers-set.c ../config.h \
+	../libgnomevfs/gnome-vfs-application-registry.h \
+	../libgnomevfs/gnome-vfs-mime-handlers.h \
+	../libgnomevfs/gnome-vfs-mime-utils.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-uri.h ../libgnomevfs/gnome-vfs-init.h
+test-mime-handlers.o: test-mime-handlers.c ../config.h \
+	../libgnomevfs/gnome-vfs-init.h \
+	../libgnomevfs/gnome-vfs-mime-handlers.h \
+	../libgnomevfs/gnome-vfs-mime-utils.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-uri.h
+test-mime-info.o: test-mime-info.c ../config.h \
+	../libgnomevfs/gnome-vfs-init.h \
+	../libgnomevfs/gnome-vfs-mime-handlers.h \
+	../libgnomevfs/gnome-vfs-mime-utils.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-uri.h \
+	../libgnomevfs/gnome-vfs-mime-info.h
+test-mime.o: test-mime.c ../config.h ../libgnomevfs/gnome-vfs-init.h \
+	../libgnomevfs/gnome-vfs-mime-magic.h \
+	../libgnomevfs/gnome-vfs-mime-utils.h \
+	../libgnomevfs/gnome-vfs-mime-info.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-mime.h ../libgnomevfs/gnome-vfs-uri.h \
+	../libgnomevfs/gnome-vfs-utils.h \
+	../libgnomevfs/gnome-vfs-file-size.h \
+	../libgnomevfs/gnome-vfs-handle.h \
+	../libgnomevfs/gnome-vfs-context.h \
+	../libgnomevfs/gnome-vfs-cancellation.h \
+	../libgnomevfs/gnome-vfs-file-info.h
+test-module-selftest.o: test-module-selftest.c ../config.h \
+	../libgnomevfs/gnome-vfs-init.h \
+	../libgnomevfs/gnome-vfs-private-utils.h \
+	../libgnomevfs/gnome-vfs-cancellation.h \
+	../libgnomevfs/gnome-vfs-handle.h \
+	../libgnomevfs/gnome-vfs-context.h \
+	../libgnomevfs/gnome-vfs-file-size.h \
+	../libgnomevfs/gnome-vfs-file-info.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-uri.h \
+	../libgnomevfs/gnome-vfs-process.h
+test-monitor.o: test-monitor.c ../libgnomevfs/gnome-vfs.h \
+	../libgnomevfs/gnome-vfs-async-ops.h \
+	../libgnomevfs/gnome-vfs-file-info.h \
+	../libgnomevfs/gnome-vfs-file-size.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-uri.h \
+	../libgnomevfs/gnome-vfs-find-directory.h \
+	../libgnomevfs/gnome-vfs-handle.h \
+	../libgnomevfs/gnome-vfs-context.h \
+	../libgnomevfs/gnome-vfs-cancellation.h \
+	../libgnomevfs/gnome-vfs-xfer.h \
+	../libgnomevfs/gnome-vfs-directory.h \
+	../libgnomevfs/gnome-vfs-init.h \
+	../libgnomevfs/gnome-vfs-module-callback.h \
+	../libgnomevfs/gnome-vfs-monitor.h \
+	../libgnomevfs/gnome-vfs-ops.h ../libgnomevfs/gnome-vfs-utils.h
+test-performance.o: test-performance.c ../config.h \
+	../libgnomevfs/gnome-vfs.h ../libgnomevfs/gnome-vfs-async-ops.h \
+	../libgnomevfs/gnome-vfs-file-info.h \
+	../libgnomevfs/gnome-vfs-file-size.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-uri.h \
+	../libgnomevfs/gnome-vfs-find-directory.h \
+	../libgnomevfs/gnome-vfs-handle.h \
+	../libgnomevfs/gnome-vfs-context.h \
+	../libgnomevfs/gnome-vfs-cancellation.h \
+	../libgnomevfs/gnome-vfs-xfer.h \
+	../libgnomevfs/gnome-vfs-directory.h \
+	../libgnomevfs/gnome-vfs-init.h \
+	../libgnomevfs/gnome-vfs-module-callback.h \
+	../libgnomevfs/gnome-vfs-monitor.h \
+	../libgnomevfs/gnome-vfs-ops.h ../libgnomevfs/gnome-vfs-utils.h \
+	../libgnomevfs/gnome-vfs-mime-info.h
+test-queue.o: test-queue.c ../config.h \
+	../libgnomevfs/gnome-vfs-async-ops.h \
+	../libgnomevfs/gnome-vfs-file-info.h \
+	../libgnomevfs/gnome-vfs-file-size.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-uri.h \
+	../libgnomevfs/gnome-vfs-find-directory.h \
+	../libgnomevfs/gnome-vfs-handle.h \
+	../libgnomevfs/gnome-vfs-context.h \
+	../libgnomevfs/gnome-vfs-cancellation.h \
+	../libgnomevfs/gnome-vfs-xfer.h \
+	../libgnomevfs/gnome-vfs-job-limit.h \
+	../libgnomevfs/gnome-vfs-init.h ../libgnomevfs/gnome-vfs-job.h \
+	../libgnomevfs/gnome-vfs-module-callback.h \
+	../libgnomevfs/gnome-vfs-module-callback-private.h
+test-resolv.o: test-resolv.c ../config.h ../libgnomevfs/gnome-vfs-init.h \
+	../libgnomevfs/gnome-vfs-ops.h \
+	../libgnomevfs/gnome-vfs-file-info.h \
+	../libgnomevfs/gnome-vfs-file-size.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-uri.h \
+	../libgnomevfs/gnome-vfs-handle.h \
+	../libgnomevfs/gnome-vfs-context.h \
+	../libgnomevfs/gnome-vfs-cancellation.h \
+	../libgnomevfs/gnome-vfs-monitor.h \
+	../libgnomevfs/gnome-vfs-private-utils.h \
+	../libgnomevfs/gnome-vfs-process.h
+test-seek.o: test-seek.c ../config.h ../libgnomevfs/gnome-vfs-init.h \
+	../libgnomevfs/gnome-vfs-ops.h \
+	../libgnomevfs/gnome-vfs-file-info.h \
+	../libgnomevfs/gnome-vfs-file-size.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-uri.h \
+	../libgnomevfs/gnome-vfs-handle.h \
+	../libgnomevfs/gnome-vfs-context.h \
+	../libgnomevfs/gnome-vfs-cancellation.h \
+	../libgnomevfs/gnome-vfs-monitor.h
+test-shell.o: test-shell.c ../config.h ../libgnomevfs/gnome-vfs-init.h \
+	../libgnomevfs/gnome-vfs-directory.h \
+	../libgnomevfs/gnome-vfs-file-info.h \
+	../libgnomevfs/gnome-vfs-file-size.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-uri.h \
+	../libgnomevfs/gnome-vfs-find-directory.h \
+	../libgnomevfs/gnome-vfs-ops.h \
+	../libgnomevfs/gnome-vfs-handle.h \
+	../libgnomevfs/gnome-vfs-context.h \
+	../libgnomevfs/gnome-vfs-cancellation.h \
+	../libgnomevfs/gnome-vfs-monitor.h
+test-ssl.o: test-ssl.c ../config.h ../libgnomevfs/gnome-vfs-init.h \
+	../libgnomevfs/gnome-vfs-socket-buffer.h \
+	../libgnomevfs/gnome-vfs-socket.h \
+	../libgnomevfs/gnome-vfs-file-size.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-ssl.h
+test-subdir.o: test-subdir.c ../config.h ../libgnomevfs/gnome-vfs-init.h \
+	../libgnomevfs/gnome-vfs-ops.h \
+	../libgnomevfs/gnome-vfs-file-info.h \
+	../libgnomevfs/gnome-vfs-file-size.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-uri.h \
+	../libgnomevfs/gnome-vfs-handle.h \
+	../libgnomevfs/gnome-vfs-context.h \
+	../libgnomevfs/gnome-vfs-cancellation.h \
+	../libgnomevfs/gnome-vfs-monitor.h \
+	../libgnomevfs/gnome-vfs-private-utils.h \
+	../libgnomevfs/gnome-vfs-process.h
+test-symlinks.o: test-symlinks.c ../config.h \
+	../libgnomevfs/gnome-vfs-async-ops.h \
+	../libgnomevfs/gnome-vfs-file-info.h \
+	../libgnomevfs/gnome-vfs-file-size.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-uri.h \
+	../libgnomevfs/gnome-vfs-find-directory.h \
+	../libgnomevfs/gnome-vfs-handle.h \
+	../libgnomevfs/gnome-vfs-context.h \
+	../libgnomevfs/gnome-vfs-cancellation.h \
+	../libgnomevfs/gnome-vfs-xfer.h ../libgnomevfs/gnome-vfs-init.h \
+	../libgnomevfs/gnome-vfs-ops.h \
+	../libgnomevfs/gnome-vfs-monitor.h
+test-sync-create.o: test-sync-create.c ../config.h \
+	../libgnomevfs/gnome-vfs-init.h ../libgnomevfs/gnome-vfs-ops.h \
+	../libgnomevfs/gnome-vfs-file-info.h \
+	../libgnomevfs/gnome-vfs-file-size.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-uri.h \
+	../libgnomevfs/gnome-vfs-handle.h \
+	../libgnomevfs/gnome-vfs-context.h \
+	../libgnomevfs/gnome-vfs-cancellation.h \
+	../libgnomevfs/gnome-vfs-monitor.h
+test-sync-write.o: test-sync-write.c ../config.h \
+	../libgnomevfs/gnome-vfs-init.h ../libgnomevfs/gnome-vfs-ops.h \
+	../libgnomevfs/gnome-vfs-file-info.h \
+	../libgnomevfs/gnome-vfs-file-size.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-uri.h \
+	../libgnomevfs/gnome-vfs-handle.h \
+	../libgnomevfs/gnome-vfs-context.h \
+	../libgnomevfs/gnome-vfs-cancellation.h \
+	../libgnomevfs/gnome-vfs-monitor.h
+test-sync.o: test-sync.c ../config.h ../libgnomevfs/gnome-vfs-init.h \
+	../libgnomevfs/gnome-vfs-ops.h \
+	../libgnomevfs/gnome-vfs-file-info.h \
+	../libgnomevfs/gnome-vfs-file-size.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-uri.h \
+	../libgnomevfs/gnome-vfs-handle.h \
+	../libgnomevfs/gnome-vfs-context.h \
+	../libgnomevfs/gnome-vfs-cancellation.h \
+	../libgnomevfs/gnome-vfs-monitor.h
+test-unlink.o: test-unlink.c ../config.h ../libgnomevfs/gnome-vfs-init.h \
+	../libgnomevfs/gnome-vfs-ops.h \
+	../libgnomevfs/gnome-vfs-file-info.h \
+	../libgnomevfs/gnome-vfs-file-size.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-uri.h \
+	../libgnomevfs/gnome-vfs-handle.h \
+	../libgnomevfs/gnome-vfs-context.h \
+	../libgnomevfs/gnome-vfs-cancellation.h \
+	../libgnomevfs/gnome-vfs-monitor.h
+test-uri.o: test-uri.c ../config.h ../libgnomevfs/gnome-vfs-init.h \
+	../libgnomevfs/gnome-vfs-private-utils.h \
+	../libgnomevfs/gnome-vfs-cancellation.h \
+	../libgnomevfs/gnome-vfs-handle.h \
+	../libgnomevfs/gnome-vfs-context.h \
+	../libgnomevfs/gnome-vfs-file-size.h \
+	../libgnomevfs/gnome-vfs-file-info.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-uri.h \
+	../libgnomevfs/gnome-vfs-process.h \
+	../libgnomevfs/gnome-vfs-utils.h
+test-xfer.o: test-xfer.c ../config.h ../libgnomevfs/gnome-vfs-init.h \
+	../libgnomevfs/gnome-vfs-xfer.h \
+	../libgnomevfs/gnome-vfs-file-info.h \
+	../libgnomevfs/gnome-vfs-file-size.h \
+	../libgnomevfs/gnome-vfs-result.h \
+	../libgnomevfs/gnome-vfs-uri.h
 
 check-TESTS: $(TESTS)
 	@failed=0; all=0; \

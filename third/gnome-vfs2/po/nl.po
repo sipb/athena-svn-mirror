@@ -1,22 +1,21 @@
-# Gnome-vfs translation.
-# Copyright (C) 2000 Free Software Foundation, Inc.
-# Dennis Smit <synap@area101.penguin.nl>, 2000.
-# Mendel Mobach <mendel@mobach.nl>, 2000.
+# Commentaar:a.t.meinen <a.t.meinen@chello.nl>, 2003.
+# 
 msgid ""
 msgstr ""
 "Project-Id-Version: Gnome-vfs\n"
-"POT-Creation-Date: 2002-11-13 12:11-0500\n"
-"PO-Revision-Date: 2002-05-28 20:49+02:00\n"
-"Last-Translator: Mendel Mobach <mendel@mobach.nl>\n"
-"Language-Team: Dutch <nl@li.org>\n"
+"POT-Creation-Date: 2003-01-20 20:46+0100\n"
+"PO-Revision-Date: 2003-01-06 13:48+0100\n"
+"Last-Translator: Tino Meinen <a.t.meinen@chello.nl>\n"
+"Language-Team: Dutch <vertaling@nl.linux.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+# hier wordt waarschijnlijk NULL bedoeld ipv NUL
 #: libgnomevfs/gnome-vfs-configuration.c:223
 #, c-format
 msgid "%s:%d contains NUL characters."
-msgstr "%s:%d bevat NUL karakters"
+msgstr "%s:%d bevat NULL-tekens"
 
 #: libgnomevfs/gnome-vfs-configuration.c:240
 #, c-format
@@ -33,33 +32,33 @@ msgstr "%s:%d bevat geen modulenaam"
 msgid "Configuration file `%s' was not found: %s"
 msgstr "Configuratiebestand '%s' is niet gevonden: %s"
 
-#: libgnomevfs/gnome-vfs-job.c:707
+#: libgnomevfs/gnome-vfs-job.c:737
 #, c-format
 msgid "Unknown op type %u"
 msgstr "Onbekend oper-type %u"
 
-#: libgnomevfs/gnome-vfs-job.c:996 libgnomevfs/gnome-vfs-job.c:1141
+#: libgnomevfs/gnome-vfs-job.c:1026 libgnomevfs/gnome-vfs-job.c:1171
 #, c-format
 msgid "Cannot create pipe for open GIOChannel: %s"
 msgstr "Kan geen pijp creëren voor GIOChannel: %s"
 
-#: libgnomevfs/gnome-vfs-job.c:1601
+#: libgnomevfs/gnome-vfs-job.c:1661
 #, c-format
 msgid "Unknown job kind %u"
 msgstr "Onbekend taaktype %u"
 
-#: libgnomevfs/gnome-vfs-job.c:1634
+#: libgnomevfs/gnome-vfs-job.c:1694
 msgid "Operation stopped"
 msgstr "Operatie gestopt"
 
 #: libgnomevfs/gnome-vfs-parse-ls.c:652
 #, c-format
 msgid "Could not parse: %s"
-msgstr "Kan niet verwerken: %s"
+msgstr "Kon niet verwerken: %s"
 
 #: libgnomevfs/gnome-vfs-parse-ls.c:654
 msgid "More parsing errors will be ignored."
-msgstr "Verder verwerkingsfouten worden genegeerd."
+msgstr "Volgende verwerkingsfouten worden genegeerd."
 
 #. GNOME_VFS_OK
 #: libgnomevfs/gnome-vfs-result.c:35
@@ -109,7 +108,7 @@ msgstr "Ongeldig formaat"
 #. GNOME_VFS_ERROR_BAD_FILE
 #: libgnomevfs/gnome-vfs-result.c:44
 msgid "Bad file handle"
-msgstr "Slechte bestandshandle"
+msgstr "Slechte bestands-handle"
 
 #. GNOME_VFS_ERROR_TOO_BIG
 #: libgnomevfs/gnome-vfs-result.c:45
@@ -159,7 +158,7 @@ msgstr "Einde van bestand"
 #. GNOME_VFS_ERROR_NOT_A_DIRECTORY
 #: libgnomevfs/gnome-vfs-result.c:54
 msgid "Not a directory"
-msgstr "Geen directory"
+msgstr "Geen map"
 
 #. GNOME_VFS_ERROR_IN_PROGRESS
 #: libgnomevfs/gnome-vfs-result.c:55
@@ -224,12 +223,12 @@ msgstr "Operatie afgebroken"
 #. GNOME_VFS_ERROR_DIRECTORY_BUSY
 #: libgnomevfs/gnome-vfs-result.c:67
 msgid "Directory busy"
-msgstr "Dictory is in gebruik"
+msgstr "Map is in gebruik"
 
 #. GNOME_VFS_ERROR_DIRECTORY_NOT_EMPTY
 #: libgnomevfs/gnome-vfs-result.c:68
 msgid "Directory not empty"
-msgstr "Directory is niet leeg"
+msgstr "Map is niet leeg"
 
 #. GNOME_VFS_ERROR_TOO_MANY_LINKS
 #: libgnomevfs/gnome-vfs-result.c:69
@@ -266,33 +265,42 @@ msgstr "Verzoek maakt gegevens van de service achterhaald"
 msgid "Protocol error"
 msgstr "Protocolfout"
 
-#: libgnomevfs/gnome-vfs-result.c:137
+#. GNOME_VFS_ERROR_NO_MASTER_BROWSER
+#: libgnomevfs/gnome-vfs-result.c:76
+msgid "Could not find master browser"
+msgstr "Kon de hoofd-browser niet vinden"
+
+#: libgnomevfs/gnome-vfs-result.c:170
 msgid "Unknown error"
 msgstr "Onbekende fout"
 
-#: libgnomevfs/gnome-vfs-utils.c:65
+#: libgnomevfs/gnome-vfs-utils.c:83
 msgid "1 byte"
 msgstr "1 byte"
 
-#: libgnomevfs/gnome-vfs-utils.c:67
+#: libgnomevfs/gnome-vfs-utils.c:85
 #, c-format
 msgid "%u bytes"
 msgstr "%u bytes"
 
-#: libgnomevfs/gnome-vfs-utils.c:74
+#: libgnomevfs/gnome-vfs-utils.c:92
 #, c-format
 msgid "%.1f K"
 msgstr "%.1f K"
 
-#: libgnomevfs/gnome-vfs-utils.c:78
+#: libgnomevfs/gnome-vfs-utils.c:96
 #, c-format
 msgid "%.1f MB"
 msgstr "%.1f Mb"
 
-#: libgnomevfs/gnome-vfs-utils.c:82
+#: libgnomevfs/gnome-vfs-utils.c:100
 #, c-format
 msgid "%.1f GB"
 msgstr "%.1f Gb"
+
+#: libgnomevfs/gnome-vfs-utils.c:1109
+msgid " (invalid Unicode)"
+msgstr " (ongeldige Unicode)"
 
 #: modules/file-method.c:382
 #, c-format

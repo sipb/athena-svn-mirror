@@ -74,20 +74,16 @@ GnomeVFSResult	 gnome_vfs_tell			(GnomeVFSHandle *handle,
 
 GnomeVFSResult	 gnome_vfs_get_file_info	(const gchar *text_uri,
 						 GnomeVFSFileInfo *info,
-						 GnomeVFSFileInfoOptions
-						 	options);
+						 GnomeVFSFileInfoOptions options);
 
-GnomeVFSResult	 gnome_vfs_get_file_info_uri
-						(GnomeVFSURI *uri,
+GnomeVFSResult	 gnome_vfs_get_file_info_uri    (GnomeVFSURI *uri,
 						 GnomeVFSFileInfo *info,
-						 GnomeVFSFileInfoOptions
-						        options);
+						 GnomeVFSFileInfoOptions options);
 
 GnomeVFSResult	 gnome_vfs_get_file_info_from_handle
 						(GnomeVFSHandle *handle,
 						 GnomeVFSFileInfo *info,
-						 GnomeVFSFileInfoOptions
-						 	options);
+						 GnomeVFSFileInfoOptions options);
 
 GnomeVFSResult   gnome_vfs_truncate             (const gchar *text_uri,
 						 GnomeVFSFileSize length);
@@ -140,6 +136,10 @@ GnomeVFSResult gnome_vfs_monitor_add (GnomeVFSMonitorHandle **handle,
                                       gpointer user_data);
 
 GnomeVFSResult gnome_vfs_monitor_cancel (GnomeVFSMonitorHandle *handle);
+
+GnomeVFSResult gnome_vfs_file_control   (GnomeVFSHandle *handle,
+					 const char *operation,
+					 gpointer operation_data);
 
 G_END_DECLS
 

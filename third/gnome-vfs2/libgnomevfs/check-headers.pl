@@ -25,7 +25,7 @@ while (<MAKEFILE_AM>) {
         $current_hash = \%public_headers
     } elsif (/libgnomevfsmoduleinclude_HEADERS/) {
         $current_hash = \%module_headers
-    } elsif (/libgnomevfs_2_la_SOURCES/) {
+    } elsif (/noinst_HEADERS/) {
         $current_hash = \%private_headers
     } elsif (/\$\(NULL\)/ || ! /\\/) {
         $current_hash = 0;

@@ -190,14 +190,15 @@ gnome_vfs_file_info_copy (GnomeVFSFileInfo *dest,
 }
 
 /**
- * gnome_vfs_file_info_dup
+ * gnome_vfs_file_info_dup:
  * @orig: Pointer to a file information structure to duplicate
  * 
- * Returns a new file information struct that duplicates the information in @orig.
+ * Duplicates @orig and returns it.
+ * 
+ * Returns: a new file information struct that duplicates the information in @orig.
  **/
-
 GnomeVFSFileInfo *
-gnome_vfs_file_info_dup 	(const GnomeVFSFileInfo *orig)
+gnome_vfs_file_info_dup (const GnomeVFSFileInfo *orig)
 {
 	GnomeVFSFileInfo * ret;
 
@@ -219,7 +220,7 @@ gnome_vfs_file_info_dup 	(const GnomeVFSFileInfo *orig)
  * Compare the two file info structs, return TRUE if they match.
  *
  * Returns: TRUE if the two GnomeVFSFileInfos match, otherwise return FALSE.
- */
+ **/
 gboolean
 gnome_vfs_file_info_matches (const GnomeVFSFileInfo *a,
 			     const GnomeVFSFileInfo *b)
@@ -247,6 +248,14 @@ gnome_vfs_file_info_matches (const GnomeVFSFileInfo *a,
 	return g_ascii_strcasecmp (a->mime_type, b->mime_type) == 0;
 }
 
+/**
+ * gnome_vfs_file_info_list_ref:
+ * @list: list of GnomeVFSFileInfo elements
+ *
+ * Increments the reference count of the items in @list by one.
+ *
+ * Return value: @list
+ **/
 GList *
 gnome_vfs_file_info_list_ref (GList *list)
 {
@@ -254,6 +263,16 @@ gnome_vfs_file_info_list_ref (GList *list)
 	return list;
 }
 
+/**
+ * gnome_vfs_file_info_list_unref:
+ * @list: list of GnomeVFSFileInfo elements
+ *
+ * Decrements the reference count of the items in @list by one.
+ * Note that the list is *not freed* even if each member of the list
+ * is freed.
+ *
+ * Return value: @list
+ **/
 GList *
 gnome_vfs_file_info_list_unref (GList *list)
 {
@@ -261,12 +280,28 @@ gnome_vfs_file_info_list_unref (GList *list)
 	return list;
 }
 
+/**
+ * gnome_vfs_file_info_list_copy:
+ * @list: list of GnomeVFSFileInfo elements
+ *
+ * Creates a duplicate of @list, and references each member of
+ * that list.
+ *
+ * Return value: a newly referenced duplicate of @list
+ **/
 GList *
 gnome_vfs_file_info_list_copy (GList *list)
 {
 	return g_list_copy (gnome_vfs_file_info_list_ref (list));
 }
 
+/**
+ * gnome_vfs_file_info_list_free:
+ * @list: list of GnomeVFSFileInfo elements
+ *
+ * Decrements the reference count of each member of @list by one,
+ * and frees the list itself.
+ **/
 void
 gnome_vfs_file_info_list_free (GList *list)
 {

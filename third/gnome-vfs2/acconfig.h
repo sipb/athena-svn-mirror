@@ -38,3 +38,4 @@
 /* Define to use Ultrix getmnt to get filesystem type.  */
 #undef FSTYPE_GETMNT
 
+#undef HAVE_GNUTLS

@@ -357,12 +357,12 @@ read_gzip_header (GnomeVFSHandle *handle,
 		RETURN_IF_FAIL (skip (handle, 2));
 
 	*modification_time = (buffer[4] | (buffer[5] << 8)
-			      | (buffer[6] << 9) | (buffer[7] << 10));
+			      | (buffer[6] << 16) | (buffer[7] << 24));
 	return GNOME_VFS_OK;
 }
 
 static GnomeVFSResult
-write_gzip_header (GnomeVFSHandle *handle)
+write_gzip_header (GnomeVFSHandle *handle, time_t modification_time)
 {
 	GnomeVFSResult result;
 	guchar buffer[GZIP_HEADER_SIZE];
@@ -372,10 +372,10 @@ write_gzip_header (GnomeVFSHandle *handle)
 	buffer[1] = GZIP_MAGIC_2;     /* magic 2 */
 	buffer[2] = Z_DEFLATED;       /* method */
 	buffer[3] = 0;                /* flags */
-	buffer[4] = 0;                /* time 1 */
-	buffer[5] = 0;                /* time 2 */
-	buffer[6] = 0;                /* time 3 */
-	buffer[7] = 0;                /* time 4 */
+	buffer[4] = (guchar) ((modification_time >>  0) & 0xFF);   /* time 1 */
+	buffer[5] = (guchar) ((modification_time >>  8) & 0xFF);   /* time 2 */
+	buffer[6] = (guchar) ((modification_time >> 16) & 0xFF);   /* time 3 */
+	buffer[7] = (guchar) ((modification_time >> 24) & 0xFF);   /* time 4 */
 	buffer[8] = 0;                /* xflags */
 	buffer[9] = 3;                /* OS (Unix) */
 
@@ -494,12 +494,13 @@ do_open (GnomeVFSMethod *method,
 			return GNOME_VFS_ERROR_INTERNAL;
 		}
 	} else {                          /* GNOME_VFS_OPEN_WRITE */
-		result = write_gzip_header (parent_handle);
+		modification_time = time (NULL);
+		result = write_gzip_header (parent_handle, modification_time);
 		RETURN_IF_FAIL (result);
 
 		/* FIXME bugzilla.eazel.com 1172: need to set modification_time */
 		gzip_handle = gzip_method_handle_new (parent_handle,
-						      (time_t) 0,
+						      modification_time,
 						      uri,
 						      open_mode);
 

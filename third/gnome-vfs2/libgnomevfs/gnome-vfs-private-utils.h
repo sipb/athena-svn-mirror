@@ -35,7 +35,7 @@
 
 G_BEGIN_DECLS
 
-gchar   	*gnome_vfs_canonicalize_pathname         (char *path);
+gchar   	*_gnome_vfs_canonicalize_pathname         (char *path);
 GnomeVFSResult   gnome_vfs_remove_optional_escapes 	 (char *escaped_uri);
 
 pid_t	 	 gnome_vfs_forkexec 	(const gchar *file_name,
@@ -67,10 +67,18 @@ GnomeVFSURI    *gnome_vfs_uri_new_private (const gchar *text_uri,
 					   gboolean allow_translate);
 
 
-gboolean	gnome_vfs_istr_has_prefix (const char *haystack,
+gboolean	_gnome_vfs_istr_has_prefix (const char *haystack,
 					   const char *needle);
-gboolean	gnome_vfs_istr_has_suffix (const char *haystack,
+gboolean	_gnome_vfs_istr_has_suffix (const char *haystack,
 					   const char *needle);
+
+GnomeVFSResult _gnome_vfs_uri_resolve_all_symlinks_uri (GnomeVFSURI *uri,
+							GnomeVFSURI **result_uri);
+GnomeVFSResult  _gnome_vfs_uri_resolve_all_symlinks (const char *text_uri,
+						     char **resolved_text_uri);
+
+gboolean  _gnome_vfs_uri_is_in_subdir (GnomeVFSURI *uri, GnomeVFSURI *dir);
+
 
 G_END_DECLS
 

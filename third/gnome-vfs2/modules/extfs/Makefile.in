@@ -94,9 +94,7 @@ GTKDOC = @GTKDOC@
 HAVE_GTK_DOC = @HAVE_GTK_DOC@
 HTML_DIR = @HTML_DIR@
 INSTOBJEXT = @INSTOBJEXT@
-INTLDEPS = @INTLDEPS@
 INTLLIBS = @INTLLIBS@
-INTLOBJS = @INTLOBJS@
 INTLTOOL_CAVES_RULE = @INTLTOOL_CAVES_RULE@
 INTLTOOL_DESKTOP_RULE = @INTLTOOL_DESKTOP_RULE@
 INTLTOOL_DIRECTORY_RULE = @INTLTOOL_DIRECTORY_RULE@
@@ -111,6 +109,7 @@ INTLTOOL_SCHEMAS_RULE = @INTLTOOL_SCHEMAS_RULE@
 INTLTOOL_SERVER_RULE = @INTLTOOL_SERVER_RULE@
 INTLTOOL_SHEET_RULE = @INTLTOOL_SHEET_RULE@
 INTLTOOL_SOUNDLIST_RULE = @INTLTOOL_SOUNDLIST_RULE@
+INTLTOOL_THEME_RULE = @INTLTOOL_THEME_RULE@
 INTLTOOL_UI_RULE = @INTLTOOL_UI_RULE@
 INTLTOOL_UPDATE = @INTLTOOL_UPDATE@
 INTLTOOL_XML_RULE = @INTLTOOL_XML_RULE@
@@ -119,6 +118,9 @@ LIBEFS_CFLAGS = @LIBEFS_CFLAGS@
 LIBEFS_LIBS = @LIBEFS_LIBS@
 LIBGNOMEVFS_CFLAGS = @LIBGNOMEVFS_CFLAGS@
 LIBGNOMEVFS_LIBS = @LIBGNOMEVFS_LIBS@
+LIBGNUTLS_CFLAGS = @LIBGNUTLS_CFLAGS@
+LIBGNUTLS_CONFIG = @LIBGNUTLS_CONFIG@
+LIBGNUTLS_LIBS = @LIBGNUTLS_LIBS@
 LIBIDL_REQUIRED = @LIBIDL_REQUIRED@
 LIBTOOL = @LIBTOOL@
 LN_S = @LN_S@
@@ -146,6 +148,8 @@ PKG_CONFIG = @PKG_CONFIG@
 POFILES = @POFILES@
 POPT_LIBS = @POPT_LIBS@
 POSUB = @POSUB@
+PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
+PO_IN_DATADIR_TRUE = @PO_IN_DATADIR_TRUE@
 PTHREAD_LIB = @PTHREAD_LIB@
 RANLIB = @RANLIB@
 STRIP = @STRIP@
@@ -168,15 +172,49 @@ WARN_CFLAGS = @WARN_CFLAGS@
 XML_REQUIRED = @XML_REQUIRED@
 cxxflags_set = @cxxflags_set@
 
-extfsdir = $(prefix)/lib/vfs/2.0/extfs
+extfsdir = $(libdir)/vfs/2.0/extfs
 
-extfs_DATA =  	README
-
-
-extfs_SCRIPTS =  	a						deb						hp48						mailfs						patchfs						rpm						rpms						trpm						ar						arj						cpio						lha						rar						zip						tar						zoo
+extfs_DATA = \
+	README
 
 
-EXTRA_DIST =  	a						ar.in						arj						cpio.in						deb.in						hp48						lha.in						mailfs						patchfs						rar.in						rpm						tar						rpms						trpm						uha.in						zip.in						zoo.in
+extfs_SCRIPTS = \
+	a					\
+	deb					\
+	hp48					\
+	mailfs					\
+	patchfs					\
+	rpm					\
+	rpms					\
+	trpm					\
+	ar					\
+	arj					\
+	cpio					\
+	lha					\
+	rar					\
+	zip					\
+	tar					\
+	zoo
+
+
+EXTRA_DIST = \
+	a					\
+	ar.in					\
+	arj					\
+	cpio.in					\
+	deb.in					\
+	hp48					\
+	lha.in					\
+	mailfs					\
+	patchfs					\
+	rar.in					\
+	rpm					\
+	tar					\
+	rpms					\
+	trpm					\
+	uha.in					\
+	zip.in					\
+	zoo.in
 
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = ../../config.h
@@ -191,7 +229,7 @@ lha.in rar.in zip.in zoo.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 all: all-redirect
 .SUFFIXES:

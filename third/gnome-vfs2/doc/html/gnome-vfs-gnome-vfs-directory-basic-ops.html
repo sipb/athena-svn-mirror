@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>
+Basic Directory Operations</title><meta name="generator" content="DocBook XSL Stylesheets V1.50.0"><meta name="generator" content="GTK-Doc V0.10 (XML mode)"><style type="text/css">
+        .synopsis, .classsynopsis {
+            background: #eeeeee;
+            border: solid 1px #aaaaaa;
+            padding: 0.5em;
+        }
+        .programlisting {
+            background: #eeeeff;
+            border: solid 1px #aaaaff;
+            padding: 0.5em;
+        }
+        .variablelist {
+            padding: 4px;
+            margin-left: 3em;
+        }
+        .navigation {
+            background: #ffeeee;
+            border: solid 1px #ffaaaa;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+        }
+        .navigation a {
+            color: #770000;
+        }
+        .navigation a:visited {
+            color: #550000;
+        }
+        .navigation .title {
+            font-size: 200%;
+        }
+      </style><link rel="home" href="index.html" title="GnomeVFS - Filesystem Abstraction library"><link rel="up" href="gnome-vfs-directory-operations.html" title="Directory Handling"><link rel="previous" href="gnome-vfs-directory-operations.html" title="Directory Handling"><link rel="next" href="gnome-vfs-gnome-vfs-directory-list-ops.html" title="
+Listing Directory Contents"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><table class="navigation" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle"><td><a accesskey="p" href="gnome-vfs-directory-operations.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td><td><a accesskey="u" href="gnome-vfs-directory-operations.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td><td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td><th width="100%" align="center">GnomeVFS - Filesystem Abstraction library</th><td><a accesskey="n" href="gnome-vfs-gnome-vfs-directory-list-ops.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td></tr></table><div class="refentry"><a name="gnome-vfs-gnome-vfs-directory-basic-ops"></a><div class="titlepage"></div><div class="refnamediv"><h2>
+Basic Directory Operations</h2><p>
+Basic Directory Operations &#8212; 
+Creating and removing directories.</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><pre class="synopsis">
+
+
+
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-directory-basic-ops.html#gnome-vfs-make-directory">gnome_vfs_make_directory</a>     (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *text_uri,
+                                             <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a> perm);
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-directory-basic-ops.html#gnome-vfs-make-directory-for-uri">gnome_vfs_make_directory_for_uri</a>
+                                            (GnomeVFSURI *uri,
+                                             <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a> perm);
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-directory-basic-ops.html#gnome-vfs-remove-directory">gnome_vfs_remove_directory</a>   (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *text_uri);
+<a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> <a href="gnome-vfs-gnome-vfs-directory-basic-ops.html#gnome-vfs-remove-directory-from-uri">gnome_vfs_remove_directory_from_uri</a>
+                                            (GnomeVFSURI *uri);
+</pre></div><div class="refsect1"><h2>Description</h2><p>
+
+</p></div><div class="refsect1"><h2>Details</h2><div class="refsect2"><h3><a name="gnome-vfs-make-directory"></a>gnome_vfs_make_directory ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_make_directory     (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *text_uri,
+                                             <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a> perm);</pre><p>
+Create <i><tt>text_uri</tt></i> as a directory.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>text_uri</tt></i> :</span></td><td> URI of the directory to be created
+</td></tr><tr><td><span class="term"><i><tt>perm</tt></i> :</span></td><td> Unix-style permissions for the newly created directory
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An integer representing the result of the operation
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-make-directory-for-uri"></a>gnome_vfs_make_directory_for_uri ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_make_directory_for_uri
+                                            (GnomeVFSURI *uri,
+                                             <a
+href="../glib/glib-Basic-Types.html#guint"
+>guint</a> perm);</pre><p>
+Create a directory at <i><tt>uri</tt></i>. Only succeeds if a file or directory
+does not already exist at <i><tt>uri</tt></i>.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>uri</tt></i> :</span></td><td> URI of the directory to be created
+</td></tr><tr><td><span class="term"><i><tt>perm</tt></i> :</span></td><td> Unix-style permissions for the newly created directory
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An integer representing the result of the operation
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-remove-directory"></a>gnome_vfs_remove_directory ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_remove_directory   (const <a
+href="../glib/glib-Basic-Types.html#gchar"
+>gchar</a> *text_uri);</pre><p>
+Remove <i><tt>text_uri</tt></i>.  <i><tt>text_uri</tt></i> must be an empty directory.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>text_uri</tt></i> :</span></td><td> URI of the directory to be removed
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An integer representing the result of the operation
+</td></tr></tbody></table></div></div><hr><div class="refsect2"><h3><a name="gnome-vfs-remove-directory-from-uri"></a>gnome_vfs_remove_directory_from_uri ()</h3><pre class="programlisting"><a href="gnome-vfs-gnome-vfs-result.html#GnomeVFSResult">GnomeVFSResult</a> gnome_vfs_remove_directory_from_uri
+                                            (GnomeVFSURI *uri);</pre><p>
+Remove <i><tt>uri</tt></i>.  <i><tt>uri</tt></i> must be an empty directory.</p><p>
+
+</p><div class="variablelist"><table border="0"><col align="left"><tbody><tr><td><span class="term"><i><tt>uri</tt></i> :</span></td><td> URI of the directory to be removed
+</td></tr><tr><td><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></td><td> An integer representing the result of the operation
+</td></tr></tbody></table></div></div></div></div><table class="navigation" width="100%" summary="Navigation footer" cellpadding="2" cellspacing="0"><tr valign="middle"><td align="left"><a accesskey="p" href="gnome-vfs-directory-operations.html"><b>&lt;&lt; Directory Handling</b></a></td><td align="right"><a accesskey="n" href="gnome-vfs-gnome-vfs-directory-list-ops.html"><b>
+Listing Directory Contents &gt;&gt;</b></a></td></tr></table></body></html>

@@ -1,0 +1,193 @@
+<refentry id="gnome-vfs-gnome-vfs-standard-callbacks">
+<refmeta>
+<refentrytitle>gnome-vfs-standard-callbacks</refentrytitle>
+<manvolnum>3</manvolnum>
+<refmiscinfo>GNOME-VFS Library</refmiscinfo>
+</refmeta>
+
+<refnamediv>
+<refname>gnome-vfs-standard-callbacks</refname><refpurpose></refpurpose>
+</refnamediv>
+
+<refsynopsisdiv><title>Synopsis</title>
+
+<synopsis>
+
+
+
+#define     <link linkend="GNOME-VFS-MODULE-CALLBACK-AUTHENTICATION-CAPS">GNOME_VFS_MODULE_CALLBACK_AUTHENTICATION</link>
+#define     <link linkend="GNOME-VFS-MODULE-CALLBACK-HTTP-PROXY-AUTHENTICATION-CAPS">GNOME_VFS_MODULE_CALLBACK_HTTP_PROXY_AUTHENTICATION</link>
+typedef     <link linkend="GnomeVFSModuleCallbackAuthenticationOut">GnomeVFSModuleCallbackAuthenticationOut</link>;
+#define     <link linkend="GNOME-VFS-MODULE-CALLBACK-HTTP-SEND-ADDITIONAL-HEADERS-CAPS">GNOME_VFS_MODULE_CALLBACK_HTTP_SEND_ADDITIONAL_HEADERS</link>
+typedef     <link linkend="GnomeVFSModuleCallbackAdditionalHeadersIn">GnomeVFSModuleCallbackAdditionalHeadersIn</link>;
+typedef     <link linkend="GnomeVFSModuleCallbackAdditionalHeadersOut">GnomeVFSModuleCallbackAdditionalHeadersOut</link>;
+#define     <link linkend="GNOME-VFS-MODULE-CALLBACK-HTTP-RECEIVED-HEADERS-CAPS">GNOME_VFS_MODULE_CALLBACK_HTTP_RECEIVED_HEADERS</link>
+typedef     <link linkend="GnomeVFSModuleCallbackReceivedHeadersIn">GnomeVFSModuleCallbackReceivedHeadersIn</link>;
+typedef     <link linkend="GnomeVFSModuleCallbackReceivedHeadersOut">GnomeVFSModuleCallbackReceivedHeadersOut</link>;
+#define     <link linkend="GNOME-VFS-MODULE-CALLBACK-STATUS-MESSAGE-CAPS">GNOME_VFS_MODULE_CALLBACK_STATUS_MESSAGE</link>
+typedef     <link linkend="GnomeVFSModuleCallbackStatusMessageIn">GnomeVFSModuleCallbackStatusMessageIn</link>;
+typedef     <link linkend="GnomeVFSModuleCallbackStatusMessageOut">GnomeVFSModuleCallbackStatusMessageOut</link>;
+</synopsis>
+</refsynopsisdiv>
+
+
+
+
+
+
+
+<refsect1>
+<title>Description</title>
+<para>
+
+</para>
+</refsect1>
+
+<refsect1>
+<title>Details</title>
+<refsect2>
+<title><anchor id="GNOME-VFS-MODULE-CALLBACK-AUTHENTICATION-CAPS"/>GNOME_VFS_MODULE_CALLBACK_AUTHENTICATION</title>
+<programlisting>#define GNOME_VFS_MODULE_CALLBACK_AUTHENTICATION "simple-authentication"
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GNOME-VFS-MODULE-CALLBACK-HTTP-PROXY-AUTHENTICATION-CAPS"/>GNOME_VFS_MODULE_CALLBACK_HTTP_PROXY_AUTHENTICATION</title>
+<programlisting>#define GNOME_VFS_MODULE_CALLBACK_HTTP_PROXY_AUTHENTICATION "http:proxy-authentication"
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GnomeVFSModuleCallbackAuthenticationOut"/>GnomeVFSModuleCallbackAuthenticationOut</title>
+<programlisting>typedef struct {
+	char *username;		/* will be freed by g_free,
+				 * NULL indicates no auth should be provided;
+				 * if the request requires authn, the operation
+				 * will fail with a GNOME_VFS_ERROR_ACCESS_DENIED
+				 * code
+				 */
+	char *password;		/* will be freed by g_free */
+
+	/* Reserved "padding" to avoid future breaks in ABI compatibility */
+	void *reserved1;
+	void *reserved2;
+
+} GnomeVFSModuleCallbackAuthenticationOut;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GNOME-VFS-MODULE-CALLBACK-HTTP-SEND-ADDITIONAL-HEADERS-CAPS"/>GNOME_VFS_MODULE_CALLBACK_HTTP_SEND_ADDITIONAL_HEADERS</title>
+<programlisting>#define GNOME_VFS_MODULE_CALLBACK_HTTP_SEND_ADDITIONAL_HEADERS "http:send-additional-headers"
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GnomeVFSModuleCallbackAdditionalHeadersIn"/>GnomeVFSModuleCallbackAdditionalHeadersIn</title>
+<programlisting>typedef struct {
+	GnomeVFSURI *uri;		/* URI of operation */
+
+	/* Reserved "padding" to avoid future breaks in ABI compatibility */
+	void *reserved1;
+	void *reserved2;
+} GnomeVFSModuleCallbackAdditionalHeadersIn;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GnomeVFSModuleCallbackAdditionalHeadersOut"/>GnomeVFSModuleCallbackAdditionalHeadersOut</title>
+<programlisting>typedef struct {
+	GList *headers;			/* list of headers, will be freeed */
+
+	/* Reserved "padding" to avoid future breaks in ABI compatibility */
+	void *reserved1;
+	void *reserved2;
+} GnomeVFSModuleCallbackAdditionalHeadersOut;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GNOME-VFS-MODULE-CALLBACK-HTTP-RECEIVED-HEADERS-CAPS"/>GNOME_VFS_MODULE_CALLBACK_HTTP_RECEIVED_HEADERS</title>
+<programlisting>#define GNOME_VFS_MODULE_CALLBACK_HTTP_RECEIVED_HEADERS "http:received-headers"
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GnomeVFSModuleCallbackReceivedHeadersIn"/>GnomeVFSModuleCallbackReceivedHeadersIn</title>
+<programlisting>typedef struct {
+	GnomeVFSURI *uri;		/* URI of operation */
+	GList *headers;			/* list of headers */
+
+	/* Reserved "padding" to avoid future breaks in ABI compatibility */
+	void *reserved1;
+	void *reserved2;
+} GnomeVFSModuleCallbackReceivedHeadersIn;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GnomeVFSModuleCallbackReceivedHeadersOut"/>GnomeVFSModuleCallbackReceivedHeadersOut</title>
+<programlisting>typedef struct {
+	int dummy;
+
+	/* Reserved "padding" to avoid future breaks in ABI compatibility */
+	void *reserved1;
+	void *reserved2;
+} GnomeVFSModuleCallbackReceivedHeadersOut;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GNOME-VFS-MODULE-CALLBACK-STATUS-MESSAGE-CAPS"/>GNOME_VFS_MODULE_CALLBACK_STATUS_MESSAGE</title>
+<programlisting>#define GNOME_VFS_MODULE_CALLBACK_STATUS_MESSAGE "status-message"
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GnomeVFSModuleCallbackStatusMessageIn"/>GnomeVFSModuleCallbackStatusMessageIn</title>
+<programlisting>typedef struct {
+	char *uri;		/* Full URI of operation */
+	char *message;		/* A message indicating the current state or
+				 * NULL if there is no message */
+	int percentage;		/* Percentage indicating completeness 0-100 or
+				 * -1 if there is no progress percentage to
+				 * report */
+
+	/* Reserved "padding" to avoid future breaks in ABI compatibility */
+	void *reserved1;
+	void *reserved2;
+} GnomeVFSModuleCallbackStatusMessageIn;
+</programlisting>
+<para>
+
+</para></refsect2>
+<refsect2>
+<title><anchor id="GnomeVFSModuleCallbackStatusMessageOut"/>GnomeVFSModuleCallbackStatusMessageOut</title>
+<programlisting>typedef struct {
+	int dummy; /* empty structs not allowed */
+
+	/* Reserved "padding" to avoid future breaks in ABI compatibility */
+	void *reserved1;
+	void *reserved2;
+} GnomeVFSModuleCallbackStatusMessageOut;
+</programlisting>
+<para>
+
+</para></refsect2>
+
+</refsect1>
+
+
+
+
+</refentry>

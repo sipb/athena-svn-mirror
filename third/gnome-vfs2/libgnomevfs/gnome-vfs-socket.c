@@ -37,6 +37,18 @@ struct GnomeVFSSocket {
 };
 
 
+/**
+ * gnome_vfs_socket_new:
+ * @impl: an implementation of a socket, e.g. GnomeVFSSSL
+ * @connection: pointer to a connection object used by @impl to track
+ * state (the exact nature of @connection varies from implementation to
+ * implementation)
+ *
+ * Creates a new GnomeVFS Socket using the specific implementation
+ * @impl.
+ *
+ * Return value: a newly created socket
+ **/
 GnomeVFSSocket* gnome_vfs_socket_new (GnomeVFSSocketImpl *impl, 
 				      void               *connection) 
 {
@@ -49,6 +61,18 @@ GnomeVFSSocket* gnome_vfs_socket_new (GnomeVFSSocketImpl *impl,
 	return socket;
 }
 
+/**
+ * gnome_vfs_socket_write:
+ * @socket: socket to write data to
+ * @buffer: data to write to the socket
+ * @bytes: number of bytes from @buffer to write to @socket
+ * @bytes_written: pointer to a GnomeVFSFileSize, will contain
+ * the number of bytes actually written to the socket on return.
+ *
+ * Write @bytes bytes of data from @buffer to @socket.
+ *
+ * Return value: GnomeVFSResult indicating the success of the operation
+ **/
 GnomeVFSResult  
 gnome_vfs_socket_write (GnomeVFSSocket *socket, 
 			gconstpointer buffer,
@@ -59,6 +83,14 @@ gnome_vfs_socket_write (GnomeVFSSocket *socket,
 				    buffer, bytes, bytes_written);
 }
 
+/**
+ * gnome_vfs_socket_close:
+ * @socket: the socket to be closed
+ *
+ * Close @socket, freeing any resources it may be using.
+ *
+ * Return value: GnomeVFSResult indicating the success of the operation
+ **/
 GnomeVFSResult  
 gnome_vfs_socket_close (GnomeVFSSocket *socket)
 {
@@ -66,6 +98,18 @@ gnome_vfs_socket_close (GnomeVFSSocket *socket)
 	return GNOME_VFS_OK;
 }
 
+/**
+ * gnome_vfs_socket_read:
+ * @socket: socket to read data from
+ * @buffer: allocated buffer of at least @bytes bytes to be read into
+ * @bytes: number of bytes to read from @socket into @buffer
+ * @bytes_read: pointer to a GnomeVFSFileSize, will contain
+ * the number of bytes actually read from the socket on return.
+ *
+ * Read @bytes bytes of data from the @socket into @buffer.
+ *
+ * Return value: GnomeVFSResult indicating the success of the operation
+ **/
 GnomeVFSResult  
 gnome_vfs_socket_read  (GnomeVFSSocket *socket, 
 			gpointer buffer, 

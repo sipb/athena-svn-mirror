@@ -1,0 +1,93 @@
+<!-- ##### SECTION Title ##### -->
+gnome-vfs-standard-callbacks
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO GNOME_VFS_MODULE_CALLBACK_AUTHENTICATION ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO GNOME_VFS_MODULE_CALLBACK_HTTP_PROXY_AUTHENTICATION ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### TYPEDEF GnomeVFSModuleCallbackAuthenticationOut ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO GNOME_VFS_MODULE_CALLBACK_HTTP_SEND_ADDITIONAL_HEADERS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### TYPEDEF GnomeVFSModuleCallbackAdditionalHeadersIn ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### TYPEDEF GnomeVFSModuleCallbackAdditionalHeadersOut ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO GNOME_VFS_MODULE_CALLBACK_HTTP_RECEIVED_HEADERS ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### TYPEDEF GnomeVFSModuleCallbackReceivedHeadersIn ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### TYPEDEF GnomeVFSModuleCallbackReceivedHeadersOut ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### MACRO GNOME_VFS_MODULE_CALLBACK_STATUS_MESSAGE ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### TYPEDEF GnomeVFSModuleCallbackStatusMessageIn ##### -->
+<para>
+
+</para>
+
+
+<!-- ##### TYPEDEF GnomeVFSModuleCallbackStatusMessageOut ##### -->
+<para>
+
+</para>
+
+

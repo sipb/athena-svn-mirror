@@ -29,14 +29,14 @@
 #include <libgnomevfs/gnome-vfs-method.h>
 #include <libgnomevfs/gnome-vfs-uri.h>
 
-GnomeVFSResult gnome_vfs_monitor_do_add (GnomeVFSMethod *method,
+GnomeVFSResult _gnome_vfs_monitor_do_add (GnomeVFSMethod *method,
 			  		 GnomeVFSMonitorHandle **handle,
 					 GnomeVFSURI *uri,
                           		 GnomeVFSMonitorType monitor_type,
 			  		 GnomeVFSMonitorCallback callback,
 			  		 gpointer user_data);
 
-GnomeVFSResult gnome_vfs_monitor_do_cancel (GnomeVFSMonitorHandle *handle);
+GnomeVFSResult _gnome_vfs_monitor_do_cancel (GnomeVFSMonitorHandle *handle);
 
 /* this is for modules - should it be in a separate header file? */
 void gnome_vfs_monitor_callback (GnomeVFSMethodHandle *method_handle,

@@ -38,17 +38,17 @@ typedef GnomeVFSResult (* GnomeVFSSniffBufferReadCall)(gpointer context,
 		
 typedef struct GnomeVFSMimeSniffBuffer GnomeVFSMimeSniffBuffer;
 
-void			 gnome_vfs_mime_clear_magic_table 		(void);
+void			 _gnome_vfs_mime_clear_magic_table 		(void);
 
-GnomeVFSMimeSniffBuffer	*gnome_vfs_mime_sniff_buffer_new_from_handle 	
+GnomeVFSMimeSniffBuffer	*_gnome_vfs_mime_sniff_buffer_new_from_handle 	
 					(GnomeVFSHandle 		*file);
-GnomeVFSMimeSniffBuffer	*gnome_vfs_mime_sniff_buffer_new_from_memory 
+GnomeVFSMimeSniffBuffer	*_gnome_vfs_mime_sniff_buffer_new_from_memory 
 					(const guchar 			*buffer, 
 					 gssize 			buffer_size);
 GnomeVFSMimeSniffBuffer	*gnome_vfs_mime_sniff_buffer_new_from_existing_data 	
 					(const guchar 			*buffer, 
 					 gssize 			buffer_size);
-GnomeVFSMimeSniffBuffer	*gnome_vfs_mime_sniff_buffer_new_generic 	
+GnomeVFSMimeSniffBuffer	*_gnome_vfs_mime_sniff_buffer_new_generic 	
 					(GnomeVFSSniffBufferSeekCall	seek_callback, 
 					 GnomeVFSSniffBufferReadCall	read_callback,
 					 gpointer			context);
@@ -57,21 +57,17 @@ GnomeVFSMimeSniffBuffer	*gnome_vfs_mime_sniff_buffer_new_generic
 void			 gnome_vfs_mime_sniff_buffer_free 
 					(GnomeVFSMimeSniffBuffer	*buffer);
 
-GnomeVFSResult		 gnome_vfs_mime_sniff_buffer_get
+GnomeVFSResult		 _gnome_vfs_mime_sniff_buffer_get
 					(GnomeVFSMimeSniffBuffer	*buffer,
 					 gssize				size);
 
 const char  		*gnome_vfs_get_mime_type_for_buffer
 					 (GnomeVFSMimeSniffBuffer	*buffer);
 
-gboolean		 gnome_vfs_sniff_buffer_looks_like_text
+gboolean		 _gnome_vfs_sniff_buffer_looks_like_text
 					 (GnomeVFSMimeSniffBuffer	*buffer);
-gboolean		 gnome_vfs_sniff_buffer_looks_like_mp3
+gboolean		 _gnome_vfs_sniff_buffer_looks_like_mp3
 					 (GnomeVFSMimeSniffBuffer	*buffer);
-gboolean		 gnome_vfs_sniff_buffer_looks_like_gzip
-					 (GnomeVFSMimeSniffBuffer 	*sniff_buffer,
-					  const char 			*file_name);
-
 G_END_DECLS
 
 #endif

@@ -113,6 +113,9 @@ gnome_vfs_mime_monitor_init (GnomeVFSMIMEMonitor *monitor)
 	g_free (mime_dir);
 
 	mime_dir = g_strconcat (g_get_home_dir (), "/.gnome/mime-info", NULL);
+	if (!g_file_test (mime_dir, G_FILE_TEST_EXISTS)) {
+		mkdir (mime_dir, S_IRWXU);
+	}
 	gnome_vfs_monitor_add (&monitor->priv->local_handle,
 			       mime_dir,
 			       GNOME_VFS_MONITOR_DIRECTORY,
@@ -136,7 +139,7 @@ mime_dir_changed_callback (GnomeVFSMonitorHandle    *handle,
 	else if (monitor_callback_data->type == LOCAL_MIME_DIR)
 		_gnome_vfs_mime_info_mark_user_mime_dir_dirty ();
 		
-	gnome_vfs_mime_monitor_emit_data_changed (monitor_callback_data->monitor);
+	_gnome_vfs_mime_monitor_emit_data_changed (monitor_callback_data->monitor);
 }
 
 static void
@@ -149,7 +152,13 @@ gnome_vfs_mime_monitor_finalize (GObject *object)
 	g_free (GNOME_VFS_MIME_MONITOR (object)->priv);
 }
 
-/* Return a pointer to the single global monitor. */
+/**
+ * gnome_vfs_mime_monitor_get:
+ *
+ * Get access to the single global monitor. 
+ *
+ * Return value: the global #GnomeVFSMIMEMonitor
+ **/
 GnomeVFSMIMEMonitor *
 gnome_vfs_mime_monitor_get (void)
 {
@@ -162,7 +171,7 @@ gnome_vfs_mime_monitor_get (void)
 
 
 void
-gnome_vfs_mime_monitor_emit_data_changed (GnomeVFSMIMEMonitor *monitor)
+_gnome_vfs_mime_monitor_emit_data_changed (GnomeVFSMIMEMonitor *monitor)
 {
 	g_return_if_fail (GNOME_VFS_IS_MIME_MONITOR (monitor));
 

@@ -26,10 +26,30 @@
 
 #include <glib.h>
 
+/**
+ * GnomeVFSMonitorType:
+ * @GNOME_VFS_MONITOR_FILE: 
+ * @GNOME_VFS_MONITOR_DIRECTORY: 
+ *
+ * Type of resources that can be monitored.
+ **/
+
 typedef enum {
   GNOME_VFS_MONITOR_FILE,
   GNOME_VFS_MONITOR_DIRECTORY
 } GnomeVFSMonitorType;
+
+/**
+ * GnomeVFSMonitorEventType:
+ * @GNOME_VFS_MONITOR_EVENT_CHANGED: file data changed
+ * @GNOME_VFS_MONITOR_EVENT_DELETED: file deleted event
+ * @GNOME_VFS_MONITOR_EVENT_STARTEXECUTING:  
+ * @GNOME_VFS_MONITOR_EVENT_STOPEXECUTING: 
+ * @GNOME_VFS_MONITOR_EVENT_CREATED: file created event
+ * @GNOME_VFS_MONITOR_EVENT_METADATA_CHANGED: file metadata changed
+ * 
+ * Types of events that can be monitored.
+ **/
 
 typedef enum {
   GNOME_VFS_MONITOR_EVENT_CHANGED,
@@ -42,6 +62,18 @@ typedef enum {
 
 typedef struct GnomeVFSMonitorHandle GnomeVFSMonitorHandle;
 
+/**
+ * GnomeVFSMonitorCallback:
+ * @handle: the handle of the monitor that created the event
+ * @monitor_uri: the URI of the monitor that was triggered
+ * @info_uri: the URI of the actual file this event is concerned with (this can be different
+ * from @monitor_uri if it was a directory monitor)
+ * @event_type: what happened to @info_uri
+ * @user_data: user data passed to gnome_vfs_monitor_add() when the monitor was created
+ *
+ * Function called when a monitor detects a change.
+ *
+ **/
 typedef void (* GnomeVFSMonitorCallback) (GnomeVFSMonitorHandle *handle,
                                           const gchar *monitor_uri,
                                           const gchar *info_uri,

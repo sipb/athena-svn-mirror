@@ -1,0 +1,2514 @@
+<HTML
+><HEAD
+><TITLE
+>types</TITLE
+><META
+NAME="GENERATOR"
+CONTENT="Modular DocBook HTML Stylesheet Version 1.64
+"><LINK
+REL="HOME"
+TITLE="GnomeVFS - Filesystem Abstraction library"
+HREF="index.html"><LINK
+REL="UP"
+TITLE="Common Data Types"
+HREF="data-types.html"><LINK
+REL="PREVIOUS"
+TITLE="Common Data Types"
+HREF="data-types.html"><LINK
+REL="NEXT"
+TITLE="File Info"
+HREF="gnome-vfs-file-info.html"></HEAD
+><BODY
+CLASS="REFENTRY"
+BGCOLOR="#FFFFFF"
+TEXT="#000000"
+LINK="#0000FF"
+VLINK="#840084"
+ALINK="#0000FF"
+><DIV
+CLASS="NAVHEADER"
+><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TH
+COLSPAN="4"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="5"
+>GnomeVFS - Filesystem Abstraction library</FONT
+></TH
+></TR
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="data-types.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="data-types.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="gnome-vfs-file-info.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+></TABLE
+></DIV
+><H1
+><A
+NAME="GNOME-VFS-TYPES"
+>types</A
+></H1
+><DIV
+CLASS="REFNAMEDIV"
+><A
+NAME="AEN3250"
+></A
+><H2
+>Name</H2
+>types&nbsp;--&nbsp;</DIV
+><DIV
+CLASS="REFSYNOPSISDIV"
+><A
+NAME="AEN3253"
+></A
+><H2
+>Synopsis</H2
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="SYNOPSIS"
+>&#13;
+
+enum        <A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+>;
+enum        <A
+HREF="gnome-vfs-types.html#GNOMEVFSOPENMODE"
+>GnomeVFSOpenMode</A
+>;
+enum        <A
+HREF="gnome-vfs-types.html#GNOMEVFSFILETYPE"
+>GnomeVFSFileType</A
+>;
+enum        <A
+HREF="gnome-vfs-types.html#GNOMEVFSFILEPERMISSIONS"
+>GnomeVFSFilePermissions</A
+>;
+enum        <A
+HREF="gnome-vfs-types.html#GNOMEVFSSEEKPOSITION"
+>GnomeVFSSeekPosition</A
+>;
+typedef     <A
+HREF="gnome-vfs-types.html#GNOMEVFSTOPLEVELURI"
+>GnomeVFSToplevelURI</A
+>;
+enum        <A
+HREF="gnome-vfs-types.html#GNOMEVFSURIHIDEOPTIONS"
+>GnomeVFSURIHideOptions</A
+>;
+enum        <A
+HREF="gnome-vfs-types.html#GNOMEVFSFILEFLAGS"
+>GnomeVFSFileFlags</A
+>;
+enum        <A
+HREF="gnome-vfs-types.html#GNOMEVFSFILEINFOFIELDS"
+>GnomeVFSFileInfoFields</A
+>;
+typedef     <A
+HREF="gnome-vfs-types.html#GNOMEVFSFILEINFO"
+>GnomeVFSFileInfo</A
+>;
+enum        <A
+HREF="gnome-vfs-types.html#GNOMEVFSFILEINFOOPTIONS"
+>GnomeVFSFileInfoOptions</A
+>;
+enum        <A
+HREF="gnome-vfs-types.html#GNOMEVFSSETFILEINFOMASK"
+>GnomeVFSSetFileInfoMask</A
+>;
+enum        <A
+HREF="gnome-vfs-types.html#GNOMEVFSFINDDIRECTORYKIND"
+>GnomeVFSFindDirectoryKind</A
+>;
+enum        <A
+HREF="gnome-vfs-types.html#GNOMEVFSDIRECTORYVISITOPTIONS"
+>GnomeVFSDirectoryVisitOptions</A
+>;
+<A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    (<A
+HREF="gnome-vfs-types.html#GNOMEVFSDIRECTORYVISITFUNC"
+>*GnomeVFSDirectoryVisitFunc</A
+>)   (const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *rel_path,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSFILEINFO"
+>GnomeVFSFileInfo</A
+> *info,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> recursing_will_loop,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> data,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> *recurse);
+enum        <A
+HREF="gnome-vfs-types.html#GNOMEVFSXFEROPTIONS"
+>GnomeVFSXferOptions</A
+>;
+enum        <A
+HREF="gnome-vfs-types.html#GNOMEVFSXFERPROGRESSSTATUS"
+>GnomeVFSXferProgressStatus</A
+>;
+enum        <A
+HREF="gnome-vfs-types.html#GNOMEVFSXFEROVERWRITEMODE"
+>GnomeVFSXferOverwriteMode</A
+>;
+enum        <A
+HREF="gnome-vfs-types.html#GNOMEVFSXFEROVERWRITEACTION"
+>GnomeVFSXferOverwriteAction</A
+>;
+enum        <A
+HREF="gnome-vfs-types.html#GNOMEVFSXFERERRORMODE"
+>GnomeVFSXferErrorMode</A
+>;
+enum        <A
+HREF="gnome-vfs-types.html#GNOMEVFSXFERERRORACTION"
+>GnomeVFSXferErrorAction</A
+>;
+enum        <A
+HREF="gnome-vfs-types.html#GNOMEVFSXFERPHASE"
+>GnomeVFSXferPhase</A
+>;
+typedef     <A
+HREF="gnome-vfs-types.html#GNOMEVFSXFERPROGRESSINFO"
+>GnomeVFSXferProgressInfo</A
+>;
+<A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A>        (<A
+HREF="gnome-vfs-types.html#GNOMEVFSXFERPROGRESSCALLBACK"
+>*GnomeVFSXferProgressCallback</A
+>) (<A
+HREF="gnome-vfs-types.html#GNOMEVFSXFERPROGRESSINFO"
+>GnomeVFSXferProgressInfo</A
+> *info,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> data);
+void        (<A
+HREF="gnome-vfs-types.html#GNOMEVFSASYNCCALLBACK"
+>*GnomeVFSAsyncCallback</A
+>)        (GnomeVFSAsyncHandle *handle,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> result,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> callback_data);
+typedef     <A
+HREF="gnome-vfs-types.html#GNOMEVFSASYNCOPENCALLBACK"
+>GnomeVFSAsyncOpenCallback</A
+>;
+typedef     <A
+HREF="gnome-vfs-types.html#GNOMEVFSASYNCCREATECALLBACK"
+>GnomeVFSAsyncCreateCallback</A
+>;
+typedef     <A
+HREF="gnome-vfs-types.html#GNOMEVFSASYNCCREATEASCHANNELCALLBACK"
+>GnomeVFSAsyncCreateAsChannelCallback</A
+>;
+#define     <A
+HREF="gnome-vfs-types.html#GNOMEVFSASYNCCLOSECALLBACK"
+>GnomeVFSAsyncCloseCallback</A
+>
+void        (<A
+HREF="gnome-vfs-types.html#GNOMEVFSASYNCREADCALLBACK"
+>*GnomeVFSAsyncReadCallback</A
+>)    (GnomeVFSAsyncHandle *handle,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> result,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> buffer,
+                                             <A
+HREF="gnome-vfs-file-size.html#GNOMEVFSFILESIZE"
+>GnomeVFSFileSize</A
+> bytes_requested,
+                                             <A
+HREF="gnome-vfs-file-size.html#GNOMEVFSFILESIZE"
+>GnomeVFSFileSize</A
+> bytes_read,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> callback_data);
+void        (<A
+HREF="gnome-vfs-types.html#GNOMEVFSASYNCWRITECALLBACK"
+>*GnomeVFSAsyncWriteCallback</A
+>)   (GnomeVFSAsyncHandle *handle,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> result,
+                                             <A
+HREF=../glib/glib-basic-types.html#GCONSTPOINTER
+>gconstpointer</A> buffer,
+                                             <A
+HREF="gnome-vfs-file-size.html#GNOMEVFSFILESIZE"
+>GnomeVFSFileSize</A
+> bytes_requested,
+                                             <A
+HREF="gnome-vfs-file-size.html#GNOMEVFSFILESIZE"
+>GnomeVFSFileSize</A
+> bytes_written,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> callback_data);
+typedef     <A
+HREF="gnome-vfs-types.html#GNOMEVFSGETFILEINFORESULT"
+>GnomeVFSGetFileInfoResult</A
+>;
+typedef     <A
+HREF="gnome-vfs-types.html#GNOMEVFSFINDDIRECTORYRESULT"
+>GnomeVFSFindDirectoryResult</A
+>;
+GnomeVFSTransform* (<A
+HREF="gnome-vfs-types.html#GNOMEVFSTRANSFORMINITFUNC"
+>*GnomeVFSTransformInitFunc</A
+>)
+                                            (const char *method_name,
+                                             const char *config_args);
+<A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> (<A
+HREF="gnome-vfs-types.html#GNOMEVFSTRANSFORMFUNC"
+>*GnomeVFSTransformFunc</A
+>)     (GnomeVFSTransform *transform,
+                                             const char *old_uri,
+                                             char **new_uri,
+                                             GnomeVFSContext *context);
+typedef     <A
+HREF="gnome-vfs-types.html#GNOMEVFSMETHODHANDLE"
+>GnomeVFSMethodHandle</A
+>;</PRE
+></TD
+></TR
+></TABLE
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3320"
+></A
+><H2
+>Description</H2
+><P
+></P
+></DIV
+><DIV
+CLASS="REFSECT1"
+><A
+NAME="AEN3323"
+></A
+><H2
+>Details</H2
+><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3325"
+></A
+><H3
+><A
+NAME="GNOMEVFSRESULT"
+></A
+>enum GnomeVFSResult</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum {
+	GNOME_VFS_OK,
+	GNOME_VFS_ERROR_NOT_FOUND,
+	GNOME_VFS_ERROR_GENERIC,
+	GNOME_VFS_ERROR_INTERNAL,
+	GNOME_VFS_ERROR_BAD_PARAMETERS,
+	GNOME_VFS_ERROR_NOT_SUPPORTED,
+	GNOME_VFS_ERROR_IO,
+	GNOME_VFS_ERROR_CORRUPTED_DATA,
+	GNOME_VFS_ERROR_WRONG_FORMAT,
+	GNOME_VFS_ERROR_BAD_FILE,
+	GNOME_VFS_ERROR_TOO_BIG,
+	GNOME_VFS_ERROR_NO_SPACE,
+	GNOME_VFS_ERROR_READ_ONLY,
+	GNOME_VFS_ERROR_INVALID_URI,
+	GNOME_VFS_ERROR_NOT_OPEN,
+	GNOME_VFS_ERROR_INVALID_OPEN_MODE,
+	GNOME_VFS_ERROR_ACCESS_DENIED,
+	GNOME_VFS_ERROR_TOO_MANY_OPEN_FILES,
+	GNOME_VFS_ERROR_EOF,
+	GNOME_VFS_ERROR_NOT_A_DIRECTORY,
+	GNOME_VFS_ERROR_IN_PROGRESS,
+	GNOME_VFS_ERROR_INTERRUPTED,
+	GNOME_VFS_ERROR_FILE_EXISTS,
+	GNOME_VFS_ERROR_LOOP,
+	GNOME_VFS_ERROR_NOT_PERMITTED,
+	GNOME_VFS_ERROR_IS_DIRECTORY,
+	GNOME_VFS_ERROR_NO_MEMORY,
+	GNOME_VFS_ERROR_HOST_NOT_FOUND,
+	GNOME_VFS_ERROR_INVALID_HOST_NAME,
+	GNOME_VFS_ERROR_HOST_HAS_NO_ADDRESS,
+	GNOME_VFS_ERROR_LOGIN_FAILED,
+	GNOME_VFS_ERROR_CANCELLED,
+	GNOME_VFS_ERROR_DIRECTORY_BUSY,
+	GNOME_VFS_ERROR_DIRECTORY_NOT_EMPTY,
+	GNOME_VFS_ERROR_TOO_MANY_LINKS,
+	GNOME_VFS_ERROR_READ_ONLY_FILE_SYSTEM,
+	GNOME_VFS_ERROR_NOT_SAME_FILE_SYSTEM,
+	GNOME_VFS_ERROR_NAME_TOO_LONG,
+	GNOME_VFS_ERROR_SERVICE_NOT_AVAILABLE,
+	GNOME_VFS_ERROR_SERVICE_OBSOLETE,
+	GNOME_VFS_ERROR_PROTOCOL_ERROR,
+	GNOME_VFS_NUM_ERRORS
+} GnomeVFSResult;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3330"
+></A
+><H3
+><A
+NAME="GNOMEVFSOPENMODE"
+></A
+>enum GnomeVFSOpenMode</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum {
+        GNOME_VFS_OPEN_NONE = 0,
+        GNOME_VFS_OPEN_READ = 1 &lt;&lt; 0,
+        GNOME_VFS_OPEN_WRITE = 1 &lt;&lt; 1,
+        GNOME_VFS_OPEN_RANDOM = 1 &lt;&lt; 2
+} GnomeVFSOpenMode;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3335"
+></A
+><H3
+><A
+NAME="GNOMEVFSFILETYPE"
+></A
+>enum GnomeVFSFileType</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum {
+	GNOME_VFS_FILE_TYPE_UNKNOWN,
+	GNOME_VFS_FILE_TYPE_REGULAR,
+	GNOME_VFS_FILE_TYPE_DIRECTORY,
+	GNOME_VFS_FILE_TYPE_FIFO,
+	GNOME_VFS_FILE_TYPE_SOCKET,
+	GNOME_VFS_FILE_TYPE_CHARACTER_DEVICE,
+	GNOME_VFS_FILE_TYPE_BLOCK_DEVICE,
+	GNOME_VFS_FILE_TYPE_SYMBOLIC_LINK
+} GnomeVFSFileType;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3340"
+></A
+><H3
+><A
+NAME="GNOMEVFSFILEPERMISSIONS"
+></A
+>enum GnomeVFSFilePermissions</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum {
+	GNOME_VFS_PERM_SUID = S_ISUID,
+	GNOME_VFS_PERM_SGID = S_ISGID,	
+	GNOME_VFS_PERM_STICKY = 01000,	/* S_ISVTX not defined on all systems */
+	GNOME_VFS_PERM_USER_READ = S_IRUSR,
+	GNOME_VFS_PERM_USER_WRITE = S_IWUSR,
+	GNOME_VFS_PERM_USER_EXEC = S_IXUSR,
+	GNOME_VFS_PERM_USER_ALL = S_IRUSR | S_IWUSR | S_IXUSR,
+	GNOME_VFS_PERM_GROUP_READ = S_IRGRP,
+	GNOME_VFS_PERM_GROUP_WRITE = S_IWGRP,
+	GNOME_VFS_PERM_GROUP_EXEC = S_IXGRP,
+	GNOME_VFS_PERM_GROUP_ALL = S_IRGRP | S_IWGRP | S_IXGRP,
+	GNOME_VFS_PERM_OTHER_READ = S_IROTH,
+	GNOME_VFS_PERM_OTHER_WRITE = S_IWOTH,
+	GNOME_VFS_PERM_OTHER_EXEC = S_IXOTH,
+	GNOME_VFS_PERM_OTHER_ALL = S_IROTH | S_IWOTH | S_IXOTH
+} GnomeVFSFilePermissions;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3345"
+></A
+><H3
+><A
+NAME="GNOMEVFSSEEKPOSITION"
+></A
+>enum GnomeVFSSeekPosition</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum {
+        GNOME_VFS_SEEK_START,
+        GNOME_VFS_SEEK_CURRENT,
+        GNOME_VFS_SEEK_END
+} GnomeVFSSeekPosition;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3350"
+></A
+><H3
+><A
+NAME="GNOMEVFSTOPLEVELURI"
+></A
+>GnomeVFSToplevelURI</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef struct {
+	/* Base object.  */
+	GnomeVFSURI uri;
+
+	/* Server location information.  */
+	gchar *host_name;
+	guint host_port;
+
+	/* Authorization information.  */
+	gchar *user_name;
+	gchar *password;
+
+	/* The parent URN, if it exists */
+	gchar *urn;
+} GnomeVFSToplevelURI;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3355"
+></A
+><H3
+><A
+NAME="GNOMEVFSURIHIDEOPTIONS"
+></A
+>enum GnomeVFSURIHideOptions</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum {
+	GNOME_VFS_URI_HIDE_NONE = 0,
+	GNOME_VFS_URI_HIDE_USER_NAME = 1 &lt;&lt; 0,
+	GNOME_VFS_URI_HIDE_PASSWORD = 1 &lt;&lt; 1,
+	GNOME_VFS_URI_HIDE_HOST_NAME = 1 &lt;&lt; 2,
+	GNOME_VFS_URI_HIDE_HOST_PORT = 1 &lt;&lt; 3,
+	GNOME_VFS_URI_HIDE_TOPLEVEL_METHOD = 1 &lt;&lt; 4,
+	GNOME_VFS_URI_HIDE_FRAGMENT_IDENTIFIER = 1 &lt;&lt; 8
+} GnomeVFSURIHideOptions;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3360"
+></A
+><H3
+><A
+NAME="GNOMEVFSFILEFLAGS"
+></A
+>enum GnomeVFSFileFlags</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum {
+	GNOME_VFS_FILE_FLAGS_NONE = 0,
+	/* Whether the file is a symlink.  */
+	GNOME_VFS_FILE_FLAGS_SYMLINK = 1 &lt;&lt; 0,
+	/* Whether the file is on a local file system.  */
+	GNOME_VFS_FILE_FLAGS_LOCAL = 1 &lt;&lt; 1,
+} GnomeVFSFileFlags;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3365"
+></A
+><H3
+><A
+NAME="GNOMEVFSFILEINFOFIELDS"
+></A
+>enum GnomeVFSFileInfoFields</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum {
+	GNOME_VFS_FILE_INFO_FIELDS_NONE = 0,
+	GNOME_VFS_FILE_INFO_FIELDS_TYPE = 1 &lt;&lt; 0,
+	GNOME_VFS_FILE_INFO_FIELDS_PERMISSIONS = 1 &lt;&lt; 1,
+	GNOME_VFS_FILE_INFO_FIELDS_FLAGS = 1 &lt;&lt; 2,
+	GNOME_VFS_FILE_INFO_FIELDS_DEVICE = 1 &lt;&lt; 3,
+	GNOME_VFS_FILE_INFO_FIELDS_INODE = 1 &lt;&lt; 4,
+	GNOME_VFS_FILE_INFO_FIELDS_LINK_COUNT = 1 &lt;&lt; 5,
+	GNOME_VFS_FILE_INFO_FIELDS_SIZE = 1 &lt;&lt; 6,
+	GNOME_VFS_FILE_INFO_FIELDS_BLOCK_COUNT = 1 &lt;&lt; 7,
+	GNOME_VFS_FILE_INFO_FIELDS_IO_BLOCK_SIZE = 1 &lt;&lt; 8,
+	GNOME_VFS_FILE_INFO_FIELDS_ATIME = 1 &lt;&lt; 9,
+	GNOME_VFS_FILE_INFO_FIELDS_MTIME = 1 &lt;&lt; 10,
+	GNOME_VFS_FILE_INFO_FIELDS_CTIME = 1 &lt;&lt; 11,
+	GNOME_VFS_FILE_INFO_FIELDS_SYMLINK_NAME = 1 &lt;&lt; 12,
+	GNOME_VFS_FILE_INFO_FIELDS_MIME_TYPE = 1 &lt;&lt; 13
+} GnomeVFSFileInfoFields;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3370"
+></A
+><H3
+><A
+NAME="GNOMEVFSFILEINFO"
+></A
+>GnomeVFSFileInfo</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef struct {
+	/* Base name of the file (no path).  */
+	gchar *name;
+
+	/* Fields which are actually valid in this strcture. */
+	GnomeVFSFileInfoFields valid_fields;
+
+	/* File type (i.e. regular, directory, block device...).  */
+	GnomeVFSFileType type;
+
+	/* File permissions.  */
+	GnomeVFSFilePermissions permissions;
+
+	/* Flags for this file.  */
+	GnomeVFSFileFlags flags;
+
+	/* This is only valid if `is_local' is TRUE (see below).  */
+	dev_t device;
+	ino_t inode;
+
+	/* Link count.  */
+	guint link_count;
+
+	/* UID, GID.  */
+	guint uid;
+	guint gid;
+
+	/* Size in bytes.  */
+	GnomeVFSFileSize size;
+
+	/* Size measured in units of 512-byte blocks.  */
+	GnomeVFSFileSize block_count;
+
+	/* Optimal buffer size for reading/writing the file.  */
+	guint io_block_size;
+
+	/* Access, modification and change times.  */
+	time_t atime;
+	time_t mtime;
+	time_t ctime;
+
+	/* If the file is a symlink (see `flags'), this specifies the file the
+           link points to.  */
+	gchar *symlink_name;
+
+	/* MIME type.  */
+	gchar *mime_type;
+
+	guint refcount;
+} GnomeVFSFileInfo;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3375"
+></A
+><H3
+><A
+NAME="GNOMEVFSFILEINFOOPTIONS"
+></A
+>enum GnomeVFSFileInfoOptions</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum {
+	GNOME_VFS_FILE_INFO_DEFAULT = 0, /* FIXME bugzilla.eazel.com 1203: name sucks */
+	GNOME_VFS_FILE_INFO_GET_MIME_TYPE = 1 &lt;&lt; 0,
+	GNOME_VFS_FILE_INFO_FORCE_FAST_MIME_TYPE = 1 &lt;&lt; 1,
+	GNOME_VFS_FILE_INFO_FORCE_SLOW_MIME_TYPE = 1 &lt;&lt; 2,
+	GNOME_VFS_FILE_INFO_FOLLOW_LINKS = 1 &lt;&lt; 3
+} GnomeVFSFileInfoOptions;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3380"
+></A
+><H3
+><A
+NAME="GNOMEVFSSETFILEINFOMASK"
+></A
+>enum GnomeVFSSetFileInfoMask</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum {
+	GNOME_VFS_SET_FILE_INFO_NONE = 0,
+	GNOME_VFS_SET_FILE_INFO_NAME = 1 &lt;&lt; 0,
+	GNOME_VFS_SET_FILE_INFO_PERMISSIONS = 1 &lt;&lt; 1,
+	GNOME_VFS_SET_FILE_INFO_OWNER = 1 &lt;&lt; 2,
+	GNOME_VFS_SET_FILE_INFO_TIME = 1 &lt;&lt; 3
+} GnomeVFSSetFileInfoMask;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3385"
+></A
+><H3
+><A
+NAME="GNOMEVFSFINDDIRECTORYKIND"
+></A
+>enum GnomeVFSFindDirectoryKind</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum {
+	GNOME_VFS_DIRECTORY_KIND_DESKTOP = 1000,
+	GNOME_VFS_DIRECTORY_KIND_TRASH = 1001
+} GnomeVFSFindDirectoryKind;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3390"
+></A
+><H3
+><A
+NAME="GNOMEVFSDIRECTORYVISITOPTIONS"
+></A
+>enum GnomeVFSDirectoryVisitOptions</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum {
+	GNOME_VFS_DIRECTORY_VISIT_DEFAULT = 0,
+	GNOME_VFS_DIRECTORY_VISIT_SAMEFS = 1 &lt;&lt; 0,
+	GNOME_VFS_DIRECTORY_VISIT_LOOPCHECK = 1 &lt;&lt; 1
+} GnomeVFSDirectoryVisitOptions;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3395"
+></A
+><H3
+><A
+NAME="GNOMEVFSDIRECTORYVISITFUNC"
+></A
+>GnomeVFSDirectoryVisitFunc ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A>    (*GnomeVFSDirectoryVisitFunc)   (const <A
+HREF=../glib/glib-basic-types.html#GCHAR
+>gchar</A> *rel_path,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSFILEINFO"
+>GnomeVFSFileInfo</A
+> *info,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> recursing_will_loop,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> data,
+                                             <A
+HREF=../glib/glib-basic-types.html#GBOOLEAN
+>gboolean</A> *recurse);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3406"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>rel_path</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>info</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>recursing_will_loop</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>recurse</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3435"
+></A
+><H3
+><A
+NAME="GNOMEVFSXFEROPTIONS"
+></A
+>enum GnomeVFSXferOptions</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum {
+	GNOME_VFS_XFER_DEFAULT = 0,
+	GNOME_VFS_XFER_UNUSED_1 = 1 &lt;&lt; 0,
+	GNOME_VFS_XFER_FOLLOW_LINKS = 1 &lt;&lt; 1,
+	GNOME_VFS_XFER_UNUSED_2 = 1 &lt;&lt; 2,
+	GNOME_VFS_XFER_RECURSIVE = 1 &lt;&lt; 3,
+	GNOME_VFS_XFER_SAMEFS = 1 &lt;&lt; 4,
+	GNOME_VFS_XFER_DELETE_ITEMS = 1 &lt;&lt; 5,
+	GNOME_VFS_XFER_EMPTY_DIRECTORIES = 1 &lt;&lt; 6,
+	GNOME_VFS_XFER_NEW_UNIQUE_DIRECTORY = 1 &lt;&lt; 7,
+	GNOME_VFS_XFER_REMOVESOURCE = 1 &lt;&lt; 8,
+	GNOME_VFS_XFER_USE_UNIQUE_NAMES = 1 &lt;&lt; 9,
+	GNOME_VFS_XFER_LINK_ITEMS = 1 &lt;&lt; 10
+} GnomeVFSXferOptions;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3440"
+></A
+><H3
+><A
+NAME="GNOMEVFSXFERPROGRESSSTATUS"
+></A
+>enum GnomeVFSXferProgressStatus</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum {
+	GNOME_VFS_XFER_PROGRESS_STATUS_OK = 0,
+	GNOME_VFS_XFER_PROGRESS_STATUS_VFSERROR = 1,
+	GNOME_VFS_XFER_PROGRESS_STATUS_OVERWRITE = 2,
+	/* during the duplicate status the progress callback is asked to
+	   supply a new unique name */
+	GNOME_VFS_XFER_PROGRESS_STATUS_DUPLICATE = 3
+} GnomeVFSXferProgressStatus;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3445"
+></A
+><H3
+><A
+NAME="GNOMEVFSXFEROVERWRITEMODE"
+></A
+>enum GnomeVFSXferOverwriteMode</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum {
+	/* Interrupt transferring with an error (GNOME_VFS_ERROR_FILEEXISTS).  */
+	GNOME_VFS_XFER_OVERWRITE_MODE_ABORT = 0,
+	/* Invoke the progress callback with a
+	   `GNOME_VFS_XFER_PROGRESS_STATUS_OVERWRITE' status code. */
+	GNOME_VFS_XFER_OVERWRITE_MODE_QUERY = 1,
+	/* Overwrite files silently.  */
+	GNOME_VFS_XFER_OVERWRITE_MODE_REPLACE = 2,
+	/* Ignore files silently.  */
+	GNOME_VFS_XFER_OVERWRITE_MODE_SKIP = 3
+} GnomeVFSXferOverwriteMode;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3450"
+></A
+><H3
+><A
+NAME="GNOMEVFSXFEROVERWRITEACTION"
+></A
+>enum GnomeVFSXferOverwriteAction</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum {
+	GNOME_VFS_XFER_OVERWRITE_ACTION_ABORT = 0,
+	GNOME_VFS_XFER_OVERWRITE_ACTION_REPLACE = 1,
+	GNOME_VFS_XFER_OVERWRITE_ACTION_REPLACE_ALL = 2,
+	GNOME_VFS_XFER_OVERWRITE_ACTION_SKIP = 3,
+	GNOME_VFS_XFER_OVERWRITE_ACTION_SKIP_ALL = 4,
+} GnomeVFSXferOverwriteAction;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3455"
+></A
+><H3
+><A
+NAME="GNOMEVFSXFERERRORMODE"
+></A
+>enum GnomeVFSXferErrorMode</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum {
+	/* Interrupt transferring with an error (code returned is code of the
+           operation that has caused the error).  */
+	GNOME_VFS_XFER_ERROR_MODE_ABORT = 0,
+	/* Invoke the progress callback with a
+	   `GNOME_VFS_XFER_PROGRESS_STATUS_VFSERROR' status code. */
+	GNOME_VFS_XFER_ERROR_MODE_QUERY = 1,
+} GnomeVFSXferErrorMode;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3460"
+></A
+><H3
+><A
+NAME="GNOMEVFSXFERERRORACTION"
+></A
+>enum GnomeVFSXferErrorAction</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum {
+	/* Interrupt operation and return `GNOME_VFS_ERROR_INTERRUPTED'.  */
+	GNOME_VFS_XFER_ERROR_ACTION_ABORT = 0,
+	/* Try the same operation again.  */
+	GNOME_VFS_XFER_ERROR_ACTION_RETRY = 1,
+	/* Skip this file and continue normally.  */
+	GNOME_VFS_XFER_ERROR_ACTION_SKIP = 2
+} GnomeVFSXferErrorAction;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3465"
+></A
+><H3
+><A
+NAME="GNOMEVFSXFERPHASE"
+></A
+>enum GnomeVFSXferPhase</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef enum {
+	/* Initial phase */
+	GNOME_VFS_XFER_PHASE_INITIAL,
+	/* Checking if destination can handle move/copy */
+	GNOME_VFS_XFER_CHECKING_DESTINATION,
+	/* Collecting file list */
+	GNOME_VFS_XFER_PHASE_COLLECTING,
+	/* File list collected (*) */
+	GNOME_VFS_XFER_PHASE_READYTOGO,
+	/* Opening source file for reading */
+	GNOME_VFS_XFER_PHASE_OPENSOURCE,
+	/* Creating target file for copy */
+	GNOME_VFS_XFER_PHASE_OPENTARGET,
+	/* Copying data from source to target (*) */
+	GNOME_VFS_XFER_PHASE_COPYING,
+	/* Moving file from source to target (*) */
+	GNOME_VFS_XFER_PHASE_MOVING,
+	/* Reading data from source file */
+	GNOME_VFS_XFER_PHASE_READSOURCE,
+	/* Writing data to target file */
+	GNOME_VFS_XFER_PHASE_WRITETARGET,
+	/* Closing source file */
+	GNOME_VFS_XFER_PHASE_CLOSESOURCE,
+	/* Closing target file */
+	GNOME_VFS_XFER_PHASE_CLOSETARGET,
+	/* Deleting source file */
+	GNOME_VFS_XFER_PHASE_DELETESOURCE,
+	/* Setting attributes on target file */
+	GNOME_VFS_XFER_PHASE_SETATTRIBUTES,
+	/* Go to the next file (*) */
+	GNOME_VFS_XFER_PHASE_FILECOMPLETED,
+	/* cleaning up after a move (removing source files, etc.) */
+	GNOME_VFS_XFER_PHASE_CLEANUP,
+	/* Operation finished (*) */
+	GNOME_VFS_XFER_PHASE_COMPLETED,
+	GNOME_VFS_XFER_NUM_PHASES
+} GnomeVFSXferPhase;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3470"
+></A
+><H3
+><A
+NAME="GNOMEVFSXFERPROGRESSINFO"
+></A
+>GnomeVFSXferProgressInfo</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef struct {
+	/* Progress status (see above for a description).  */
+	GnomeVFSXferProgressStatus status;
+
+	/* VFS status code.  If `status' is
+           `GNOME_VFS_XFER_PROGRESS_STATUS_VFSERROR', you should look at this
+           member to know what has happened.  */
+	GnomeVFSResult vfs_status;
+
+	/* Current phase in the transferring process.  */
+	GnomeVFSXferPhase phase;
+
+	/* Source URI. FIXME bugzilla.eazel.com 1206: change name? */
+	gchar *source_name;
+
+	/* Destination URI. FIXME bugzilla.eazel.com 1206: change name? */
+	gchar *target_name;
+
+	/* Index of file being copied. */
+	gulong file_index;
+
+	/* Total number of files to be copied.  */
+	gulong files_total;
+
+	/* Total number of bytes to be copied.  */
+	GnomeVFSFileSize bytes_total;
+
+	/* Total size of this file (in bytes).  */
+	GnomeVFSFileSize file_size;
+
+	/* Bytes copied for this file so far.  */
+	GnomeVFSFileSize bytes_copied;
+
+	/* Total amount of data copied from the beginning.  */
+	GnomeVFSFileSize total_bytes_copied;
+	
+	/* Target unique name used when duplicating, etc. to avoid collisions */ 
+	gchar *duplicate_name;
+
+	/* Count used in the unique name e.g. (copy 2), etc. */
+	int duplicate_count;
+
+	gboolean top_level_item;
+	/* indicates that the copied/moved/deleted item is an actual item
+	 * passed in the uri list rather than one encountered by recursively
+	 * traversing directories. Used by metadata copying.
+	 */
+
+} GnomeVFSXferProgressInfo;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3475"
+></A
+><H3
+><A
+NAME="GNOMEVFSXFERPROGRESSCALLBACK"
+></A
+>GnomeVFSXferProgressCallback ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF=../glib/glib-basic-types.html#GINT
+>gint</A>        (*GnomeVFSXferProgressCallback) (<A
+HREF="gnome-vfs-types.html#GNOMEVFSXFERPROGRESSINFO"
+>GnomeVFSXferProgressInfo</A
+> *info,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> data);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3483"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>info</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3500"
+></A
+><H3
+><A
+NAME="GNOMEVFSASYNCCALLBACK"
+></A
+>GnomeVFSAsyncCallback ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        (*GnomeVFSAsyncCallback)        (GnomeVFSAsyncHandle *handle,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> result,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> callback_data);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3508"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>handle</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>result</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>callback_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3525"
+></A
+><H3
+><A
+NAME="GNOMEVFSASYNCOPENCALLBACK"
+></A
+>GnomeVFSAsyncOpenCallback</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef GnomeVFSAsyncCallback GnomeVFSAsyncOpenCallback;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3530"
+></A
+><H3
+><A
+NAME="GNOMEVFSASYNCCREATECALLBACK"
+></A
+>GnomeVFSAsyncCreateCallback</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef GnomeVFSAsyncCallback GnomeVFSAsyncCreateCallback;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3535"
+></A
+><H3
+><A
+NAME="GNOMEVFSASYNCCREATEASCHANNELCALLBACK"
+></A
+>GnomeVFSAsyncCreateAsChannelCallback</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef GnomeVFSAsyncOpenAsChannelCallback GnomeVFSAsyncCreateAsChannelCallback;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3540"
+></A
+><H3
+><A
+NAME="GNOMEVFSASYNCCLOSECALLBACK"
+></A
+>GnomeVFSAsyncCloseCallback</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>#define GnomeVFSAsyncCloseCallback	GnomeVFSAsyncCallback</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3545"
+></A
+><H3
+><A
+NAME="GNOMEVFSASYNCREADCALLBACK"
+></A
+>GnomeVFSAsyncReadCallback ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        (*GnomeVFSAsyncReadCallback)    (GnomeVFSAsyncHandle *handle,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> result,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> buffer,
+                                             <A
+HREF="gnome-vfs-file-size.html#GNOMEVFSFILESIZE"
+>GnomeVFSFileSize</A
+> bytes_requested,
+                                             <A
+HREF="gnome-vfs-file-size.html#GNOMEVFSFILESIZE"
+>GnomeVFSFileSize</A
+> bytes_read,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> callback_data);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3556"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>handle</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>result</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>buffer</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>bytes_requested</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>bytes_read</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>callback_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3585"
+></A
+><H3
+><A
+NAME="GNOMEVFSASYNCWRITECALLBACK"
+></A
+>GnomeVFSAsyncWriteCallback ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>void        (*GnomeVFSAsyncWriteCallback)   (GnomeVFSAsyncHandle *handle,
+                                             <A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> result,
+                                             <A
+HREF=../glib/glib-basic-types.html#GCONSTPOINTER
+>gconstpointer</A> buffer,
+                                             <A
+HREF="gnome-vfs-file-size.html#GNOMEVFSFILESIZE"
+>GnomeVFSFileSize</A
+> bytes_requested,
+                                             <A
+HREF="gnome-vfs-file-size.html#GNOMEVFSFILESIZE"
+>GnomeVFSFileSize</A
+> bytes_written,
+                                             <A
+HREF=../glib/glib-basic-types.html#GPOINTER
+>gpointer</A> callback_data);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3596"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>handle</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>result</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>buffer</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>bytes_requested</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>bytes_written</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>callback_data</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3625"
+></A
+><H3
+><A
+NAME="GNOMEVFSGETFILEINFORESULT"
+></A
+>GnomeVFSGetFileInfoResult</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef struct {
+	GnomeVFSURI *uri;
+	GnomeVFSResult result;
+	GnomeVFSFileInfo *file_info;
+} GnomeVFSGetFileInfoResult;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3630"
+></A
+><H3
+><A
+NAME="GNOMEVFSFINDDIRECTORYRESULT"
+></A
+>GnomeVFSFindDirectoryResult</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef struct {
+	GnomeVFSURI *uri;
+	GnomeVFSResult result;
+} GnomeVFSFindDirectoryResult;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3635"
+></A
+><H3
+><A
+NAME="GNOMEVFSTRANSFORMINITFUNC"
+></A
+>GnomeVFSTransformInitFunc ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>GnomeVFSTransform* (*GnomeVFSTransformInitFunc)
+                                            (const char *method_name,
+                                             const char *config_args);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3641"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>method_name</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>config_args</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3658"
+></A
+><H3
+><A
+NAME="GNOMEVFSTRANSFORMFUNC"
+></A
+>GnomeVFSTransformFunc ()</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+><A
+HREF="gnome-vfs-types.html#GNOMEVFSRESULT"
+>GnomeVFSResult</A
+> (*GnomeVFSTransformFunc)     (GnomeVFSTransform *transform,
+                                             const char *old_uri,
+                                             char **new_uri,
+                                             GnomeVFSContext *context);</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+><DIV
+CLASS="INFORMALTABLE"
+><A
+NAME="AEN3666"
+></A
+><P
+></P
+><TABLE
+BORDER="0"
+WIDTH="100%"
+BGCOLOR="#FFD0D0"
+CELLSPACING="0"
+CELLPADDING="4"
+CLASS="CALSTABLE"
+><TBODY
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>transform</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>old_uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>new_uri</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><TT
+CLASS="PARAMETER"
+><I
+>context</I
+></TT
+>&nbsp;:</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+><TR
+><TD
+WIDTH="20%"
+ALIGN="RIGHT"
+VALIGN="TOP"
+><I
+CLASS="EMPHASIS"
+>Returns</I
+> :</TD
+><TD
+WIDTH="80%"
+ALIGN="LEFT"
+VALIGN="TOP"
+>&nbsp;</TD
+></TR
+></TBODY
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><HR><DIV
+CLASS="REFSECT2"
+><A
+NAME="AEN3691"
+></A
+><H3
+><A
+NAME="GNOMEVFSMETHODHANDLE"
+></A
+>GnomeVFSMethodHandle</H3
+><TABLE
+BORDER="0"
+BGCOLOR="#D6E8FF"
+WIDTH="100%"
+CELLPADDING="6"
+><TR
+><TD
+><PRE
+CLASS="PROGRAMLISTING"
+>typedef gpointer GnomeVFSMethodHandle;</PRE
+></TD
+></TR
+></TABLE
+><P
+></P
+></DIV
+></DIV
+><DIV
+CLASS="NAVFOOTER"
+><BR
+CLEAR="all"><BR><TABLE
+WIDTH="100%"
+BORDER="0"
+BGCOLOR="#000000"
+CELLPADDING="1"
+CELLSPACING="0"
+><TR
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="left"
+><A
+HREF="data-types.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>&#60;&#60;&#60; Previous Page</B
+></FONT
+></A
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#0000C0"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="index.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Home</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#00C000"
+ALIGN="center"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+><A
+HREF="data-types.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Up</B
+></FONT
+></A
+></B
+></FONT
+></TD
+><TD
+WIDTH="25%"
+BGCOLOR="#C00000"
+ALIGN="right"
+><A
+HREF="gnome-vfs-file-info.html"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Next Page &#62;&#62;&#62;</B
+></FONT
+></A
+></TD
+></TR
+><TR
+><TD
+COLSPAN="2"
+ALIGN="left"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>Common Data Types</B
+></FONT
+></TD
+><TD
+COLSPAN="2"
+ALIGN="right"
+><FONT
+COLOR="#FFFFFF"
+SIZE="3"
+><B
+>File Info</B
+></FONT
+></TD
+></TR
+></TABLE
+></DIV
+></BODY
+></HTML
+>

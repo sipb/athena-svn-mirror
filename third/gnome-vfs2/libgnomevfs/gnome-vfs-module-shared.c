@@ -12,6 +12,17 @@
 #include "gnome-vfs-module.h"
 #include "gnome-vfs-ops.h"
 
+/**
+ * gnome_vfs_mime_type_from_mode:
+ * @mode:
+ *
+ * Returns a MIME type based on the mode passed. It only works when mode
+ * references a special file (directory, device, fifo, socket or symlink)
+ *
+ * Returns: a string containing the MIME type, if @mode is a normal file
+ * returns NULL.
+ **/
+
 const gchar *
 gnome_vfs_mime_type_from_mode (mode_t mode)
 {
@@ -36,6 +47,18 @@ gnome_vfs_mime_type_from_mode (mode_t mode)
 
 	return mime_type;
 }
+
+/**
+ * gnome_vfs_get_special_mime_type:
+ * @uri:
+ *
+ * Gets the MIME type for @uri, this function only returns the type
+ * when the URI points to a file that can't be sniffed (sockets, 
+ * directories, devices, and fifos).
+ *
+ * Returns: a string containing the mime type, NULL if the @uri doesn't 
+ * present an special file.
+ **/
 
 const char *
 gnome_vfs_get_special_mime_type (GnomeVFSURI *uri)

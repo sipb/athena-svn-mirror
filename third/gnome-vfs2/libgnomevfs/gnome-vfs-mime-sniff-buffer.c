@@ -51,7 +51,7 @@ handle_read_glue (gpointer context, gpointer buffer,
 }
 
 GnomeVFSMimeSniffBuffer *
-gnome_vfs_mime_sniff_buffer_new_from_handle (GnomeVFSHandle *file)
+_gnome_vfs_mime_sniff_buffer_new_from_handle (GnomeVFSHandle *file)
 {
 	GnomeVFSMimeSniffBuffer *result;
 
@@ -65,7 +65,7 @@ gnome_vfs_mime_sniff_buffer_new_from_handle (GnomeVFSHandle *file)
 }
 
 GnomeVFSMimeSniffBuffer	*
-gnome_vfs_mime_sniff_buffer_new_generic (GnomeVFSSniffBufferSeekCall seek_callback, 
+_gnome_vfs_mime_sniff_buffer_new_generic (GnomeVFSSniffBufferSeekCall seek_callback, 
 					 GnomeVFSSniffBufferReadCall read_callback,
 					 gpointer context)
 {
@@ -82,7 +82,7 @@ gnome_vfs_mime_sniff_buffer_new_generic (GnomeVFSSniffBufferSeekCall seek_callba
 }
 
 GnomeVFSMimeSniffBuffer * 
-gnome_vfs_mime_sniff_buffer_new_from_memory (const guchar *buffer, 
+_gnome_vfs_mime_sniff_buffer_new_from_memory (const guchar *buffer, 
 					     gssize buffer_length)
 {
 	GnomeVFSMimeSniffBuffer *result;
@@ -126,7 +126,7 @@ enum {
 };
 
 GnomeVFSResult
-gnome_vfs_mime_sniff_buffer_get (GnomeVFSMimeSniffBuffer *buffer,
+_gnome_vfs_mime_sniff_buffer_get (GnomeVFSMimeSniffBuffer *buffer,
 				 gssize size)
 {
 	GnomeVFSResult result;

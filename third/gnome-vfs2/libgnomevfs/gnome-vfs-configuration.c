@@ -399,11 +399,11 @@ add_directory_internal (const char *dir)
 }
 
 void
-gnome_vfs_configuration_add_directory (const char *dir)
+_gnome_vfs_configuration_add_directory (const char *dir)
 {
 	G_LOCK (configuration);
 	if (configuration == NULL) {
-		g_warning ("gnome_vfs_configuration_init must be called prior to adding a directory.");
+		g_warning ("_gnome_vfs_configuration_init must be called prior to adding a directory.");
 		G_UNLOCK (configuration);
 		return;
 	}
@@ -442,7 +442,7 @@ install_path_list (const gchar *environment_path)
 
 
 gboolean
-gnome_vfs_configuration_init (void)
+_gnome_vfs_configuration_init (void)
 {
 	char *home_config;
 	char *environment_path;
@@ -484,7 +484,7 @@ gnome_vfs_configuration_init (void)
 }
 
 void
-gnome_vfs_configuration_uninit (void)
+_gnome_vfs_configuration_uninit (void)
 {
 	G_LOCK (configuration);
 	if (configuration == NULL) {
@@ -533,7 +533,7 @@ maybe_reload (void)
 }
 
 const gchar *
-gnome_vfs_configuration_get_module_path (const gchar *method_name, const char ** args)
+_gnome_vfs_configuration_get_module_path (const gchar *method_name, const char ** args)
 {
 	ModulePathElement *element;
 
@@ -547,7 +547,7 @@ gnome_vfs_configuration_get_module_path (const gchar *method_name, const char **
 			(configuration->method_to_module_path, method_name);
 	} else {
 		/* This should never happen.  */
-		g_warning ("Internal error: the configuration system was not initialized. Did you call gnome_vfs_configuration_init?");
+		g_warning ("Internal error: the configuration system was not initialized. Did you call _gnome_vfs_configuration_init?");
 		element = NULL;
 	}
 
@@ -568,7 +568,7 @@ add_method_to_list(const gchar *key, gpointer value, GList **methods_list)
 }
 
 GList *
-gnome_vfs_configuration_get_methods_list (void)
+_gnome_vfs_configuration_get_methods_list (void)
 {
 	GList *methods_list = NULL;
 
