@@ -1,8 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.18 1998-02-18 21:57:46 ghudson Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.19 1998-02-27 01:36:48 ghudson Exp $
  *
  *	$Log: not supported by cvs2svn $
+ *	Revision 4.18  1998/02/18 21:57:46  ghudson
+ *	Add the ability to make an entire entry a forced symlink.
+ *
  *	Revision 4.17  1998/02/08 22:26:58  ghudson
  *	Remove the unsupported and incomplete followlinks features.
  *
@@ -166,7 +169,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.18 1998-02-18 21:57:46 ghudson Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 4.19 1998-02-27 01:36:48 ghudson Exp $";
 #endif lint
 
 #include "bellcore-copyright.h"
@@ -638,7 +641,7 @@ writestat()
 		if (entries[entnum].islink) {
 			fake_link( "", from[ NAME], entry_currency);
 			write_statline( from, entry_currency);
-			break;
+			continue;
 		}
 
 		/* write_statline returns fromfile's true type,
