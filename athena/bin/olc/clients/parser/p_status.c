@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_status.c,v 1.3 1989-07-16 17:06:15 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_status.c,v 1.4 1989-08-07 15:03:05 tjcoppet Exp $";
 #endif
 
 
@@ -64,7 +64,7 @@ do_olc_status(arguments)
 	break;
     }
 
-  status = t_personal_status(&Request);
+  status = t_personal_status(&Request,FALSE);
   return(status);
 }
 
