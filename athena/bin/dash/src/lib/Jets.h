@@ -144,6 +144,7 @@ extern char *XjMalloc(), *XjRealloc();
 extern Jet XjCreateRoot();
 extern Jet XjVaCreateJet();
 extern Jet XjFindJet();
+extern void XjReadCallback();
 extern void XjLoadFromResources();
 extern void XjSetSignalChecker();
 extern void XjRealizeJet();
@@ -236,15 +237,22 @@ extern void XjStdinCallback();
         ((int) (((char *) (&(((type)NULL)->field))) - ((char *) NULL)))
 
 /* #define XjFree(ptr) free(ptr) */
+#define XjCreatePixmap(d, r, w, h, p)  XCreatePixmap((d), (r), (w), (h), (p))
+#define XjFreePixmap(d, p)  XFreePixmap((d), (p))
+#define XjCreateGC(d, r, m, v)  XCreateGC((d), (r), (m), (v))
+#define XjFreeGC(d, gc)  XFreeGC((d), (gc))
+#define XjCreateFontCursor(d, s)  XCreateFontCursor((d), (s))
+#define XjFreeCursor(d, c)  XFreeCursor((d), (c))
+#define XjFreeStringList(p)  XFreeStringList((p))
 
 #define XjNewString(str) \
     ((str) != NULL ? (strcpy(XjMalloc((unsigned)strlen(str) + 1), str)) : NULL)
 
 #ifndef MIN
-#define MIN(x,y) ((x < y) ? (x) : (y))
+#define MIN(x, y) (((x) < (y)) ? (x) : (y))
 #endif
 #ifndef MAX
-#define MAX(x,y) ((x > y) ? (x) : (y))
+#define MAX(x, y) (((x) > (y)) ? (x) : (y))
 #endif
 
 /*
