@@ -21,9 +21,9 @@ echo  "MIT configuration..." > /dev/console
 
 # Clean up the password file.
 
-echo "Cleaning up passwd file: "				>/dev/console
+echo "Cleaning up passwd file: \c"				>/dev/console
 if [ -f /etc/passwd.local -a -f /etc/shadow.local ]; then
-	echo "recovered from passwd.local..."			>/dev/console
+	echo "recovered from passwd.local... \c"		>/dev/console
 	/bin/cp /etc/passwd.local /etc/passwd
 	/bin/cp /etc/shadow.local /etc/shadow
 fi
@@ -32,7 +32,7 @@ echo "done."							>/dev/console
 # Clean up the group file.
 
 if [ -f /etc/group.local ]; then
-	echo "Recovering group file..."				>/dev/console
+	echo "Recovering group file... \c"			>/dev/console
 	/bin/cp /etc/group.local /etc/group
 	echo "done."						>/dev/console
 fi
@@ -43,7 +43,7 @@ rm -rf /.deleted /etc/sm/* /etc/sm.bak/*
 # Reset time with the time hub
 if [ "${TIMECLIENT}" = "true" ]; then
 	echo ""							>/dev/console
-	echo  "Setting time: "					>/dev/console
+	echo  "Setting time: \c"				>/dev/console
 	if [ -f /etc/athena/gettime ]; then
         	/etc/athena/gettime -s ${TIMEHUB}		>/dev/console
 	else
@@ -53,7 +53,7 @@ fi
 
 if [ "${AFSSRV}" = "true" ]; then
 	echo ""							>/dev/console
-	echo "AFS server: "					>/dev/console
+	echo "AFS server: \c"					>/dev/console
 	if [ -f /usr/afs/bin/bosserver ]; then
 		/usr/afs/bin/bosserver &
 		echo "started."					>/dev/console
@@ -65,7 +65,7 @@ fi
 # Start up afsd in foreground, in case any daemons are coming off AFS
 if [ "${AFSCLIENT}" != "false" ]; then
 	echo ""							>/dev/console
-	echo  "Starting AFS client: "				>/dev/console
+	echo  "Starting AFS client: \c"				>/dev/console
 
 	if [ \( "${AFSADJUST}" = "true" -o "${PUBLIC}" = "true" \) \
 	     -a -d /usr/vice/cache/ ]; then
@@ -83,12 +83,13 @@ if [ "${AFSCLIENT}" != "false" ]; then
 			/usr/vice/etc/cacheinfo 		>/dev/console
 	fi
 
+	modload /kernel/fs/afs
+
 	if [ "${TIMESRV}" = "true" -o "${TIMECLIENT}" != "true" ]; then
 		AFSOPTS="-nosettime"
 	fi
 	if [ "${AFSCLIENT-true}" = "true" ]; then
 		AFSCLIENT=4
-		modload /kernel/fs/afs
 	fi
 	AFSOPTS="${AFSOPTS} -daemons ${AFSCLIENT}"
 	/etc/afsd ${AFSOPTS}
@@ -98,21 +99,21 @@ if [ "${AFSCLIENT}" != "false" ]; then
 	sh /etc/athena/config_afs
 fi
 
-echo "Loading pcfile system..."
+echo "Loading pcfile system... \c"				>/dev/console
 /usr/sbin/modload /usr/kernel/fs/pcfs
-echo "Loading fd driver..."
+echo "Loading fd driver... \c"					>/dev/console
 /usr/sbin/modload /usr/kernel/fs/fdfs
 echo "Done"
 
 # fsid not working yet so next block commented out; still true???
 #if [ "${NFSCLIENT}" != "false" ]; then
-#	echo  "NFS client: "					>/dev/console
-#	echo  "flushing old NFS connections..."	>/dev/console
+#	echo  "NFS client: \c"					>/dev/console
+#	echo  "flushing old NFS connections... \c"		>/dev/console
 #	/bin/athena/fsid -p -a
 #	echo "done."						>/dev/console
 #fi
 
-echo "Removing old attach mount points..."			>/dev/console
+echo "Removing old attach mount points... \c"			>/dev/console
 /bin/athena/detach -O -n -h -a
 echo "done."							>/dev/console
 
@@ -123,7 +124,7 @@ if [ "${PUBLIC}" = "true" ]; then
 fi
 
 if [ "${RVDCLIENT}" = "true" ]; then
-	echo "Getting cluster information: "			>/dev/console
+	echo "Getting cluster information: \c"			>/dev/console
 	/etc/athena/save_cluster_info
 	if [ -f /etc/athena/clusterinfo.bsh ]; then
 		. /etc/athena/clusterinfo.bsh
@@ -137,7 +138,7 @@ fi
 
 # Take a new release, if necessary.
 if [ "${AUTOUPDATE}" = "true" -a -f /srvd/auto_update ]; then
-	echo  "Checking /srvd/auto_update..."			>/dev/console
+	echo  "Checking /srvd/auto_update... \c"		>/dev/console
 	/srvd/auto_update rc < /dev/console > /dev/console 2>&1
 	echo "done."						>/dev/console
 elif [ -f /srvd/.rvdinfo ]; then
@@ -162,8 +163,7 @@ echo ""								>/dev/console
 # If this is a PUBLIC workstation, ensure that that there are no hacks.
 # Do not update rc.conf if the workstation and srvd are different versions.
 if [ "${PUBLIC}" = "true" ]; then
-	echo "Public workstation cleanup..."			>/dev/console
-	echo ""							>/dev/console
+	echo "Public workstation cleanup... \c"			>/dev/console
 	rm -rf /.hushlogin /etc/X0.hosts /usr/local/
 	rm -f /etc/*.local /etc/athena/*.local /etc/athena/login/*.local
 	rm -f /var/spool/cron/crontabs/root
@@ -207,55 +207,60 @@ fi
 
 # Dealing with sendmail.cf
 if [ "${NEWMAILCF}" = "true" ];then
-	echo "copying sendmail.cf..."
+	echo "Copying sendmail.cf... \c"			>/dev/console
 	cp -p /srvd/etc/mail/sendmail.cf /etc/mail/sendmail.cf
 	cp -p /srvd/etc/mail/aliases /etc/mail/aliases
 fi
 # no matter what freeze the configuration
 /usr/lib/sendmail -bz 
+echo "done."							>/dev/console
 
 # Start standard daemons
 echo ""								>/dev/console
-echo  "Starting Athena daemons: "				>/dev/console
+echo  "Starting Athena daemons: \c"				>/dev/console
 
 #	if [ "${TIMECLIENT}" = "true" ]; then
 #		echo  "timed..."				>/dev/console
 #		/etc/athena/timed &
 #	fi
 
+# Start Athena's inetd
+echo "inetd... \c"						>/dev/console
+/etc/athena/inetd &
+
 if [ "${SNMP}" = "true" ]; then
-	echo  "snmpd..."					>/dev/console
+	echo  "snmpd... \c"					>/dev/console
 	/etc/athena/snmpd &
 fi
 
 # the sendmail file in rc2.d already cleaned the queues
 if [ "${SENDMAIL}" = "true" ]; then
-	echo  "sendmail..."					>/dev/console
+	echo  "sendmail... \c"					>/dev/console
 	/usr/lib/sendmail -bd -q1h;
 fi
 
 if [ "${ZCLIENT}" = "true" ]; then
-	echo  "zhm..."						>/dev/console
+	echo  "zhm... \c"					>/dev/console
 	rm -f /etc/athena/zhm.pid
 	/etc/athena/zhm &
 fi
 
 if [ "${MRUPDATE}" = "true" ]; then
-	echo  "update_server..."				>/dev/console
+	echo  "update_server... \c"				>/dev/console
 	/usr/athena/etc/update_server &
 fi
 
+echo "done."							>/dev/console
+echo ""								>/dev/console
+
 if [ "${PUBLIC}" = "true" ]; then
-	echo  "Clearing out /mit..."				>/dev/console
+	echo  "Clearing out /mit... \c"				>/dev/console
 	/bin/rm -f /mit/*
 	/bin/rmdir /mit/*  >/dev/null
 	echo "done."						>/dev/console
 fi
 
-# Start Athena's inetd
-/etc/athena/inetd &
-
-echo "Editing /etc/motd..."					>/dev/console
+echo "Editing /etc/motd... \c"					>/dev/console
 awk '{ prev = $0 }; END { print prev }' /etc/athena/version	> /tmp/t1
 if [ "${PUBLIC}" != "true" ]; then
 	awk '{ if ( NR > 1 ) print $0 }' /etc/motd		>>/tmp/t1
@@ -264,7 +269,7 @@ mv /tmp/t1 /etc/motd
 chmod 644 /etc/motd
 echo "done."							>/dev/console
 
-echo  "Fixing noattach, nocreate, noremote, and nologin..."	>/dev/console
+echo  "Fixing noattach, nocreate, noremote, and nologin... \c"	>/dev/console
 if [ "${NOCREATE}" = "true" ]; then
 	echo "" >> /etc/nocreate
 else
@@ -282,6 +287,8 @@ if [ "${NOREMOTE}" = "true" ]; then
 else
         rm -f /etc/noremote
 fi
+
+echo "done."							>/dev/console
 
 rm -f /etc/nologin
 echo "Logins now possible."					>/dev/console
