@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.22 1992-05-26 19:06:04 cfields Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.23 1992-05-26 20:03:01 cfields Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
@@ -618,6 +618,13 @@ do_motd()
 #ifndef MOTD_TEST
 	resources.motdFile = MOTD_FILENAME;
 #endif
+
+	/* Initialize motdtext to NULL in case it never gets set.
+	   This happens in the case of a bad stat on the motd
+	   file, or showMotd false. */
+	buf[0] = '\0';
+	XtSetArg(args[0], XtNlabel, buf);
+	XtSetValues(motdtext, args, 1);
     }
 
     if (resources.showMotd && resources.motdFile != NULL) {
@@ -1413,7 +1420,7 @@ static void adjustOwl(search)
      Widget search;
 {
   Widget version, logo, eyes, Slogo, Sversion;
-  XtWidgetGeometry logoGeom, eyesGeom, versionGeom, SlogoGeom, SversionGeom;
+  XtWidgetGeometry logoGeom, eyesGeom, versionGeom;
   Pixmap owlPix;
   Arg args[2];
   int newx;
