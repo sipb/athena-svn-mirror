@@ -121,6 +121,9 @@ main(argc, argv)
     krb5_creds my_creds;
     krb5_error_code code;
     int got_krb4 = 0;
+    char password[255], *client_name, prompt[255];
+    int pwsize;
+    krb5_deltat lifetime;
 
     /* Ensure we can be driven from a pipe */
     if(!isatty(fileno(stdin)))
@@ -159,7 +162,6 @@ main(argc, argv)
 #endif
         case 'l':
 	    {
-		krb5_deltat lifetime;
 		code = krb5_string_to_deltat(optarg, &lifetime);
 		if (code != 0 || lifetime == 0) {
 		    fprintf(stderr, "Bad lifetime value %s\n", optarg);
@@ -318,13 +320,27 @@ main(argc, argv)
     
     switch (action) {
     case INIT_PW:
-	code = krb5_get_init_creds_password(kcontext, &my_creds, me, NULL,
+	if ((code = krb5_unparse_name(kcontext, me, &client_name))) {
+	    com_err(argv[0], code, "when unparsing name");
+	    exit(1);
+	}
+	(void) sprintf(prompt, "Password for %s: ", client_name);
+	pwsize = sizeof(password);
+	code = krb5_read_password(kcontext, prompt, 0, password, &pwsize);
+	if (code || pwsize == 0) {
+	      fprintf(stderr, "Error while reading password for '%s'\n",
+		      client_name);
+	      memset(password, 0, sizeof(password));
+	      exit(1);
+	}
+	code = krb5_get_init_creds_password(kcontext, &my_creds, me, password,
 					    krb5_prompter_posix, NULL,
 					    start_time, service_name,
 					    &opts);
 #ifdef KRB5_KRB4_COMPAT
 	got_krb4 = try_krb4(kcontext, me, password, lifetime);
 #endif
+	memset(password, 0, sizeof(password));
 	break;
     case INIT_KT:
 	code = krb5_get_init_creds_keytab(kcontext, &my_creds, me, keytab,
