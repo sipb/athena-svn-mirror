@@ -1,8 +1,7 @@
 #!/bin/sh
-# $Id: sendbug.sh,v 1.4 1989-12-08 12:49:52 epeisach Exp $
+# $Id: sendbug.sh,v 1.5 1991-07-22 17:00:09 epeisach Exp $
 # make sure stuff this script needs is up front
-eval `/etc/athena/sh_commands_path`
-PATH=$PATH:/bin/athena
+PATH=/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin/X11:/usr/ucb:/bin:/usr/bin
 bugs_address=bugs@Athena.MIT.EDU
 sendmail="/usr/lib/sendmail -t -oi"
 report_file=/tmp/bug$$.text
