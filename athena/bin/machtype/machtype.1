@@ -1,0 +1,28 @@
+.\"     -*- nroff -*- mode
+.\"     $Source: /afs/dev.mit.edu/source/repository/athena/bin/machtype/machtype.1,v $
+.\"     $Author: treese $
+.\"     $Header: /afs/dev.mit.edu/source/repository/athena/bin/machtype/machtype.1,v 1.1 1987-08-02 21:31:34 treese Exp $
+
+.TH MACHTYPE 1 "June 23, 1987"
+.SH NAME
+machtype \- Print machine type to standard output
+.SH SYNOPSIS
+.B machtype
+.SH DESCRIPTION
+.I Machtype
+prints the CPU type to standard output.  It prints "vax" when run on a
+VAX processor (including VAXstation II and VAXstation 2000), and "rt"
+when run on an IBM RT/PC workstation.
+.PP
+.I Machtype
+is useful for conditionalizing shell scripts, .login files, etc. in an
+environment that contains filesystems shared across several different
+architectures.
+.PP
+.SH EXAMPLE
+To set your search path for commands in your .login file to include a
+machine-specific directory in your home directory.
+.PP
+set path=(~/`machtype`Bin $path)
+.SH SEE ALSO
+csh(1)
