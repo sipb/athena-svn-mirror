@@ -14,7 +14,7 @@
 #	endpackage	the name of the package in the package list to
 #			stop building at
 
-# $Revision: 1.42 $
+# $Revision: 1.43 $
 
 umask 2
 
@@ -88,7 +88,7 @@ set etcs="athena/etc/track athena/etc/rvd athena/etc/newsyslog athena/etc/cleanu
 # Decomissioned 9/95 by fiat
 # athena/bin/xps athena/bin/afs-nfs athena/bin/xprint athena/bin/kerberometer
 
-set bins=" athena/bin/session athena/bin/olc.dev athena/bin/finger athena/bin/ispell athena/bin/Ansi athena/bin/sendbug athena/bin/just athena/bin/rep athena/bin/cxref athena/bin/tarmail athena/bin/access athena/bin/mon athena/bin/dent athena/bin/xquota athena/bin/attach athena/bin/dash athena/bin/xmore athena/bin/mkserv athena/bin/cal athena/bin/scripts athena/bin/xdsc athena/bin/rkinit.76 athena/bin/xversion athena/bin/discuss athena/bin/from athena/bin/delete athena/bin/getcluster athena/bin/gms athena/bin/hostinfo athena/bin/machtype athena/bin/login athena/bin/tcsh athena/bin/write athena/bin/tinkerbell athena/ucb/lpr athena/ucb/quota"
+set bins=" athena/bin/session athena/bin/olc.dev athena/bin/finger athena/bin/ispell athena/bin/Ansi athena/bin/sendbug athena/bin/just athena/bin/rep athena/bin/cxref athena/bin/tarmail athena/bin/access athena/bin/mon athena/bin/dent athena/bin/xquota athena/bin/attach athena/bin/dash athena/bin/xmore athena/bin/mkserv athena/bin/cal athena/bin/scripts athena/bin/xdsc athena/bin/rkinit.76 athena/bin/xversion athena/bin/discuss athena/bin/from athena/bin/delete athena/bin/getcluster athena/bin/gms athena/bin/hostinfo athena/bin/machtype athena/bin/login athena/bin/tcsh athena/bin/write athena/bin/tinkerbell athena/bin/athdir athena/ucb/lpr athena/ucb/quota"
 
 # athena/bin/tar is leftover from vax & rt
 # athena/bin/olh removed, superseded by web browsers
@@ -152,7 +152,9 @@ switch ( $machine )
     breaksw
 
   case decmips
-    set packages=(decmips/kits/install_srvd setup athena/lib/syslog decmips/lib/resolv $libs1 $tools $third $machthird $libs2 $etcs $bins $machine athena/etc/nfsc)
+    set packages=(decmips/kits/install_srvd setup athena/lib/syslog decmips/lib/resolv $libs1 $tools $third $machthird $libs2 $etcs $bins $machine athena/etc/nfsc $end)
+
+    breaksw
 
   case sgi
     set packages =(setup $libs1 $tools $third $machthird $libs2 $etcs $bins)
@@ -243,7 +245,7 @@ endif
 	(((cd $BUILD/setup; xmkmf . ) >>& $outfile) && \
 	((cd $BUILD/setup; make install DESTDIR=$SRVD ) >>& $outfile) )
 	if ($status == 1 ) then
-	        echo "We bombed in install" >>& $outfile
+	        echo "We bombed in setup install" >>& $outfile
 		exit -1
 	endif
 
@@ -281,7 +283,7 @@ endif
 # We if on these machines because we don't expect to do any of this
 # for future machines, so this shouldn't require changes for new ports.
 if ($machine == "decmips" || machine == "sun4" || $machine == "rsaix") then
-	source /source/support/scripts/X.csh
+	source $BUILD/support/scripts/X.csh
 endif
 
 # Mark, why don't we just do everything in build/support?
@@ -329,25 +331,25 @@ endif # installonly
 
 	umount /srvd >>& $outfile
 	rmdir /srvd >>& $outfile
-	ln -s /afs/rel-eng/system/pmax_ul4/srvd /srvd >>& $outfile
+	ln -s /afs/dev/system/pmax_ul4/srvd /srvd >>& $outfile
 	mkdir /srvd.tmp >>& $outfile
   if ($zap == 1) then			# Accident prevention
-	newfs /dev/rrz3d fuji2266 >>& $outfile
+	newfs /dev/rrz1d fuji2266 >>& $outfile
   endif
-	mount /dev/rz3d /srvd.tmp >>& $outfile
+	mount /dev/rz1d /srvd.tmp >>& $outfile
 
 	(echo In $package >>& $outfile)
 	( cd $BUILD/$package ; make base update setup1 DESTDIR=/srvd.tmp >>& $outfile )
 	umount /srvd.tmp >>& $outfile
-	fsck /dev/rz3d >>& $outfile
+	fsck /dev/rz1d >>& $outfile
 	rmdir /srvd.tmp >>& $outfile
 	rm /srvd >>& $outfile
 	mkdir /srvd
-	mount /srvd >>& $outfile
-#	if ( $status == 1 ) then
-#		echo "We bombed in $package" >> & $outfile
-#		exit -1
-#	endif
+	mount /dev/rz1d /srvd >>& $outfile
+	if ( $status == 1 ) then
+		echo "We bombed in $package" >> & $outfile
+		exit -1
+	endif
 	breaksw
 
 	case decmips
@@ -382,7 +384,7 @@ endif # installonly
 
 	case third/supported/kerberos5
 	((echo In $package : configure >>& $outfile) && \
-	((cd $BUILD/$package/src; ./configure --with-krb4=/usr/athena --enable-athena) >>& $outfile) && \
+	((cd $BUILD/$package/src; ./configure --with-ccopts=-O --with-krb4=/usr/athena --enable-athena) >>& $outfile) && \
 	(echo In $package : make clean >>& $outfile ) && \
 	((cd $BUILD/$package/src;make clean) >>& $outfile ) && \
 	(echo In $package : make all >>& $outfile ) && \
@@ -589,8 +591,13 @@ if ( $installonly == "0" ) then
 		exit -1
 	endif
 endif # installonly
-
-	(cd $BUILD/$package ; make install DESTDIR=$SRVD >>& $outfile)
+	if ($machine == "decmips") then
+		(cd $BUILD/$package ; make install \
+			INCROOT=$SRVD/usr/athena/include \
+			USRLIBDIR=/mit/motif/decmipslib  >>& $outfile)
+	else
+		(cd $BUILD/$package ; make install DESTDIR=$SRVD >>& $outfile)
+	endif
 	if ($status == 1) then
 		echo "We bombed in $package" >>& $outfile
 		exit -1
