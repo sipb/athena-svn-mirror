@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: build.sh,v 1.20 1998-10-03 20:04:43 ghudson Exp $
+# $Id: build.sh,v 1.21 1998-11-28 22:18:21 ghudson Exp $
 
 # This is the script for building the Athena source tree, or pieces of
 # it.  It is less flexible than the do.sh script in this directory.
@@ -9,9 +9,10 @@
 source="/mit/source"
 build="/build"
 srvd="/srvd"
-usage="build [-s srcdir] [-b builddir] [-d destdir] [-n] [package [endpackage]]"
+usage="build [-s srcdir] [-b builddir] [-d destdir] [-k] [-n]"
+usage="$usage [package [endpackage]]"
 
-while getopts s:b:d:n opt; do
+while getopts s:b:d:k opt; do
 	case "$opt" in
 	s)
 		source="$OPTARG"
@@ -21,6 +22,9 @@ while getopts s:b:d:n opt; do
 		;;
 	d)
 		srvd="$OPTARG"
+		;;
+	k)
+		ignore=true
 		;;
 	n)
 		nobuild=true
@@ -87,8 +91,13 @@ for package in $packages; do
 	echo "**********************"
 	for op in prepare clean all check install; do
 		echo "***** ${package}: $op"
-		sh $source/packs/build/do.sh -c -s "$source" -d "$srvd" "$op" \
-			|| { echo "We bombed in $package"; exit 1; }
+		sh $source/packs/build/do.sh -c -s "$source" -d "$srvd" "$op"
+		if [ $? -ne 0 ]; then
+			echo "We bombed in $package"
+			if [ -z "$ignore" ]; then
+				exit 1
+			fi
+		fi
 
 		# Redo the output redirection command to flush the log file.
 		exec >> "$logfile" 2>&1
