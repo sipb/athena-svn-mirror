@@ -285,6 +285,7 @@ execbrc(p, s)
 
 	for (lm = restbuf; *p != '{'; *lm++ = *p++)
 		continue;
+	/* pe starts pointing to one past the first '{'. */
 	for (pe = ++p; *pe; pe++)
 	switch (*pe) {
 
@@ -301,6 +302,8 @@ execbrc(p, s)
 	case '[':
 		for (pe++; *pe && *pe != ']'; pe++)
 			continue;
+		if (!*pe)
+			pe--;
 		continue;
 	}
 pend:
@@ -313,7 +316,7 @@ pend:
 		continue;
 
 	case '}':
-		if (brclev) {
+		if (brclev) {	/* brclev = 0 is outermost brace set */
 			brclev--;
 			continue;
 		}
@@ -328,7 +331,10 @@ doit:
 		*pm = 0;
 		(void) strncpy(lm, pl, sizeof(restbuf) - 1 - (lm - restbuf));
 		restbuf[sizeof(restbuf) - 1] = '\0';
-		(void) strncat(restbuf, pe + 1, sizeof(restbuf) - 1 - strlen(restbuf));
+		if (*pe) {
+			(void) strncat(restbuf, pe + 1,
+				       sizeof(restbuf) - 1 - strlen(restbuf));
+		}
 		*pm = savec;
 		if (s == 0) {
 			sgpathp = gpathp;

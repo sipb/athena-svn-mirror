@@ -2935,13 +2935,22 @@ alpha*-dec-osf*)
 # (compiled-in or SHLIB_PATH) will be searched first.
 #
 *-*-hpux*)
-	PICFLAGS=+z
+	if test "$krb5_cv_prog_gcc" = yes; then
+		PICFLAGS=-fPIC
+	else
+		PICFLAGS=+z
+	fi
 	INSTALL_SHLIB='$(INSTALL)'
 	SHLIBEXT=.sl
 	SHLIBVEXT='.$(LIBMAJOR).$(LIBMINOR)'
 	SHLIBSEXT='.$(LIBMAJOR)'
-	SHLIB_EXPFLAGS='+s +b $(SHLIB_RDIRS) $(SHLIB_DIRS) $(SHLIB_EXPLIBS)'
-	LDCOMBINE='ld -b +h lib$(LIB)$(SHLIBSEXT)'
+	if test "$krb5_cv_prog_gcc" = yes; then
+		SHLIB_EXPFLAGS='-Wl,+s -Wl,+b,$(SHLIB_RDIRS) $(SHLIB_DIRS) $(SHLIB_EXPLIBS)'
+		LDCOMBINE='gcc -fPIC -shared -Wl,+h,lib$(LIB)$(SHLIBSEXT)'
+	else
+		SHLIB_EXPFLAGS='+s +b $(SHLIB_RDIRS) $(SHLIB_DIRS) $(SHLIB_EXPLIBS)'
+		LDCOMBINE='ld -b +h lib$(LIB)$(SHLIBSEXT)'
+	fi
 	CC_LINK_SHARED='$(CC) $(PROG_LIBPATH) -Wl,+s -Wl,+b,$(PROG_RPATH)'
 	CC_LINK_STATIC='$(CC) $(PROG_LIBPATH)'
 	RUN_ENV='SHLIB_PATH=`echo $(PROG_LIBPATH) | sed -e "s/-L//g" -e "s/ /:/g"`; export SHLIB_PATH;'
@@ -3271,7 +3280,7 @@ fi
 
 
 echo $ac_n "checking for compile in -lgen""... $ac_c" 1>&6
-echo "configure:3275: checking for compile in -lgen" >&5
+echo "configure:3284: checking for compile in -lgen" >&5
 ac_lib_var=`echo gen'_'compile | sed 'y%./+-%__p_%'`
 if eval "test \"`echo '$''{'ac_cv_lib_$ac_lib_var'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
@@ -3279,7 +3288,7 @@ else
   ac_save_LIBS="$LIBS"
 LIBS="-lgen  $LIBS"
 cat > conftest.$ac_ext <<EOF
-#line 3283 "configure"
+#line 3292 "configure"
 #include "confdefs.h"
 /* Override any gcc2 internal prototype to avoid an error.  */
 /* We use char because int might match the return type of a gcc2
@@ -3290,7 +3299,7 @@ int main() {
 compile()
 ; return 0; }
 EOF
-if { (eval echo configure:3294: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
+if { (eval echo configure:3303: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest${ac_exeext}; then
   rm -rf conftest*
   eval "ac_cv_lib_$ac_lib_var=yes"
 else
