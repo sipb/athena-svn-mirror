@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v 1.4 1993-07-02 03:51:18 vanharen Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v 1.5 1993-07-02 09:29:17 vanharen Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -43,10 +43,7 @@ static char *rcsid =
 #include "dash.h"
 
 
-#if  defined(UltrixArchitecture) \
-  || defined(AIXArchitecture) \
-  || defined(MacIIArchitecture) \
-  || defined(SunArchitecture)
+#if defined(NEED_ERRNO_DEFS)
 extern int errno;
 extern char *sys_errlist[];
 extern int sys_nerr;
@@ -157,7 +154,7 @@ static XjResource appResources[] =
 #undef offset
 
 
-#if (HasPutenv)
+#if defined(HAS_PUTENV)
 /*
  *  setenv() doesn't exist on some systems...  it's putenv instead.
  *  So, we write our own setenv routine, and use it instead.
@@ -771,7 +768,7 @@ static Child *firstChild = NULL;
 /*
  * Avoid zombies
  */
-#if defined(RsArchitecture)
+#if defined(RS_ARCH)
 void checkChildren(sig)
      int sig;
 #else
@@ -782,7 +779,7 @@ int checkChildren()
   Child *ch, **last;
   int child;
 
-#if defined(MacIIArchitecture)
+#if defined(MAC_ARCH)
   int status;
 
   while ((child = wait3(&status, WNOHANG, 0)) > 0)
@@ -1502,7 +1499,7 @@ int message(info, zilch, data)
 	break;
       }
 
-#if !defined(MacIIArchitecture)
+#if !defined(MAC_ARCH)
   else
     {
       sprintf(errtext, "unrecognized ClientMessage: %d\n",
