@@ -15,9 +15,10 @@
 
 /* This file contains the network parts of the rkinit server. */
 
-static const char rcsid[] = "$Id: rpc.c,v 1.2 1999-12-09 22:24:00 danw Exp $";
+static const char rcsid[] = "$Id: rpc.c,v 1.3 2001-04-05 01:16:58 ghudson Exp $";
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 #include <netinet/in.h>
