@@ -8,8 +8,11 @@
 #
 # Created: Wed Mar 22 18:02:48 1995 ylo
 #
-# $Id: configure.in,v 1.6 1998-02-28 19:08:18 ghudson Exp $
+# $Id: configure.in,v 1.7 1998-03-03 17:18:30 rbasch Exp $
 # $Log: not supported by cvs2svn $
+# Revision 1.6  1998/02/28 19:08:18  ghudson
+# Do a better job of using libucb.
+#
 # Revision 1.5  1998/01/24 01:47:24  danw
 # merge in changes for 1.2.22
 #
@@ -425,11 +428,11 @@ case "$host" in
     no_libsun=yes
     if test -z "$GCC";then
         if test "`uname -s`" = "IRIX64"; then
-            CFLAGS="-n32 -D_LONG_LONG_LIMB $CFLAGS"
-            LDFLAGS="-n32 $LDFLAGS"
+            CFLAGS="-D_LONG_LONG_LIMB $CFLAGS"
+            LDFLAGS="$LDFLAGS"
         else
-            CFLAGS="-n32 $CFLAGS"
-            LDFLAGS="-n32 $LDFLAGS"
+            CFLAGS="$CFLAGS"
+            LDFLAGS="$LDFLAGS"
         fi
     fi
     # force /etc/shadow support. they can run /sbin/pwconv at any time.

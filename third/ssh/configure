@@ -906,11 +906,11 @@ EOF
     no_libsun=yes
     if test -z "$GCC";then
         if test "`uname -s`" = "IRIX64"; then
-            CFLAGS="-n32 -D_LONG_LONG_LIMB $CFLAGS"
-            LDFLAGS="-n32 $LDFLAGS"
+            CFLAGS="-D_LONG_LONG_LIMB $CFLAGS"
+            LDFLAGS="$LDFLAGS"
         else
-            CFLAGS="-n32 $CFLAGS"
-            LDFLAGS="-n32 $LDFLAGS"
+            CFLAGS="$CFLAGS"
+            LDFLAGS="$LDFLAGS"
         fi
     fi
     # force /etc/shadow support. they can run /sbin/pwconv at any time.
