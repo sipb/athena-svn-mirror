@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.59 1994-07-25 04:43:50 cfields Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.60 1994-07-28 03:26:24 cfields Exp $
  */
 
 #include <stdio.h>
@@ -54,13 +54,7 @@
 #include <sys/fs_types.h>
 #endif
 
-/* Set the hosttype environment variable */
-#ifdef _IBMR2
-#define HOSTTYPE "rsaix"
-#endif
-#ifdef sparc
-#define HOSTTYPE "sun4"
-#endif
+#include "environment.h"
 
 #undef NGROUPS
 #define NGROUPS 16
@@ -111,8 +105,7 @@
 #define WTMP "/usr/adm/wtmp"
 #define TMPDOTFILES "/usr/athena/lib/prototype_tmpuser/."
 #ifdef SOLARIS
-char *defaultpath = "/usr/athena/bin:/bin/athena:/usr/openwin/bin:/bin:/usr/ucb:/usr/sbin:/usr/andrew/bin:.";
-char *libpath = "/usr/openwin/lib";
+char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/openwin/bin:/bin:/usr/ucb:/usr/sbin:/usr/andrew/bin:.";
 #else
 char *defaultpath = "/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin/X11:/usr/new:/usr/ucb:/bin:/usr/bin:/usr/ibm:/usr/andrew/bin:.";
 #endif
@@ -414,6 +407,30 @@ char *display;
 		  "Warning: could not get any groups for you from Hesiod.\n");
     }
 
+    /*
+     * Set up the user's environment.
+     *
+     *   By default, none of xlogin's environment is passed to
+     *   users who log in.
+     *
+     *   The PASSENV macro is defined to make it trivial to pass
+     *   an element of xlogin's environment on to the user.
+     *
+     *   Note that the environment for pre-login options is set
+     *   up in xlogin.c: it is NOT RELATED to this environment
+     *   setup. If you add a new environment variable here,
+     *   consider whether or not it also needs to be added there.
+     *   Note that variables that need to be PASSENVed here do not
+     *   need similar treatment in the pre-login area, since there
+     *   all variables as passed by default.
+     */
+#define PASSENV(envvar)					\
+    msg = getenv(envvar);				\
+    if (msg) {						\
+	sprintf(errbuf, "%s=%s", envvar, msg);		\
+	environment[i++] = strsave(errbuf);		\
+    }
+
     environment = (char **) malloc(MAXENVIRON * sizeof(char *));
     if (environment == NULL)
       return("Out of memory while trying to initialize user environment variables.");
@@ -435,13 +452,15 @@ char *display;
     sprintf(errbuf, "DISPLAY=%s", display);
     environment[i++] = strsave(errbuf);
 #ifdef HOSTTYPE
-     sprintf(errbuf, "hosttype=%s", HOSTTYPE);
+     sprintf(errbuf, "hosttype=%s", HOSTTYPE); /* environment.h */
      environment[i++] = strsave(errbuf);
 #endif
+
 #ifdef SOLARIS
-    sprintf(errbuf, "LD_LIBRARY_PATH=%s", libpath);
+    PASSENV("LD_LIBRARY_PATH");
+    PASSENV("OPENWINHOME");
 #endif
-    environment[i++] = strsave(errbuf);
+
     if (homedir_status == HD_TEMP) {
 	environment[i++] = "TMPHOME=1";
     }
@@ -449,11 +468,8 @@ char *display;
     mktemp(wgfile);
     sprintf(errbuf, "WGFILE=%s", wgfile);
     environment[i++] = strsave(errbuf);
-    msg = getenv("TZ");
-    if (msg) {                /* Pass along timezone */
-	sprintf(errbuf, "TZ=%s", msg);
-	environment[i++] = strsave(errbuf);
-    }
+    PASSENV("TZ");
+
 #if defined(_AIX) && defined(_IBMR2)
 #ifndef XDM
     environment[i++] = "SYSENVIRON:";
