@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.34 1992-08-15 21:32:37 probe Exp $
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/verify.c,v 1.35 1992-10-01 11:33:39 miki Exp $
  */
 
 #include <stdio.h>
@@ -373,6 +373,9 @@ char *display;
 #endif
 #if defined(ultrix) && defined(mips)
     environment[i++] = "hosttype=decmips";
+#endif
+#if defined(sun) 
+    environment[i++] = "hosttype=sun4";
 #endif
     msg = getenv("TZ");
     if (msg) {                /* Pass along timezone */
