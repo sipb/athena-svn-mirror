@@ -78,8 +78,10 @@ done
 chmod 666 /dev/{audio,dsp,midi00,mixer,sequencer,sndstat}
 
 %triggerin -- finger-server
-sed -e '/disable/s/yes/no/' /etc/xinetd.d/finger > /etc/xinetd.d/finger.new
-mv -f /etc/xinetd.d/finger.new /etc/xinetd.d/finger
+if [ -f /etc/xinetd.d/finger ]; then
+  sed -e '/disable/s/yes/no/' /etc/xinetd.d/finger > /etc/xinetd.d/finger.new
+  mv -f /etc/xinetd.d/finger.new /etc/xinetd.d/finger
+fi
 
 %triggerin -- setup
 sed -e '/^COLOR/s/tty/none/' /etc/DIR_COLORS > /etc/DIR_COLORS.new
@@ -108,7 +110,7 @@ options cs4232 io=0x534 irq=5 dma=1 dma2=0 mpuio=0x330 mpuirq=5
 EOF
   fi
 fi
-if grep -q i810 /etc/sysconfig/hwconf ; then
+if /sbin/lspci -n|grep -q 8086:2445 ; then
   touch /etc/modules.conf
   if grep -q sound-slot-0 /etc/modules.conf ; then true ; else
 	cat >> /etc/modules.conf << EOF
