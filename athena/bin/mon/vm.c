@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/mon/vm.c,v $
- *	$Author: kaufer $
+ *	$Author: epeisach $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/mon/vm.c,v 1.3 1987-04-21 14:16:55 kaufer Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/mon/vm.c,v 1.4 1990-03-26 15:39:30 epeisach Exp $
  */
 
 #ifndef lint
-static char *rcsid_vm_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/mon/vm.c,v 1.3 1987-04-21 14:16:55 kaufer Exp $";
+static char *rcsid_vm_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/mon/vm.c,v 1.4 1990-03-26 15:39:30 epeisach Exp $";
 #endif	lint
 
 /*
@@ -22,7 +22,11 @@ static char *rcsid_vm_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bi
  */
 
 #include "mon.h"
+#ifdef ultrix
+#include <machine/param.h>	/* defines bytes/page */
+#else
 #include <machine/machparam.h>	/* defines bytes/page */
+#endif
 
 /* Temporary defines */
 #define	PROCS	2
@@ -87,13 +91,13 @@ vm()
 
 	/* Display CPU info */
         mvprintw(CPUY+1,4,"%4d  %4d", 
-#ifdef vax
+#if defined(vax) || defined(mips)
 	(rate.v_intr) - hz, rate.v_syscall);
 #endif
 #if defined(sun) || defined(ibm032)
 	rate.v_intr, rate.v_syscall);
 #endif
-/* if not vax, sun or ibm, a syntax error will result */
+/* if not vax, mips, sun or ibm, a syntax error will result */
         mvprintw(CPUY+1,17,"%4d", rate.v_swtch);
         cputime();
 
