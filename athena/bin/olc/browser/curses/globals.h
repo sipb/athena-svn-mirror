@@ -38,6 +38,7 @@ extern int Previous_Index;		/* Upper level CREF entry. */
 extern ENTRY Entry_Table[];		/* Table of CREF entries. */
 extern int Entry_Count;			/* Number of entries. */
 extern int Index_Start;			/* Current top of index. */
+extern int Prev_Index_Start;		/* Upper level top of index. */
 extern COMMAND Command_Table[];		/* CREF command table. */
 extern int Command_Count;		/* Number of CREF commands. */
 extern char Save_File[];		/* Default save file. */
