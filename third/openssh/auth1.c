@@ -427,17 +427,6 @@ do_authentication()
 	authctxt->user = user;
 	authctxt->style = style;
 
-	/* Verify that the user is a valid user. */
-	pw = getpwnam(user);
-	if (pw && allowed_user(pw)) {
-		authctxt->valid = 1;
-		pw = pwcopy(pw);
-	} else {
-		debug("do_authentication: illegal user %s", user);
-		pw = NULL;
-	}
-	authctxt->pw = pw;
-
 	status = al_login_allowed(user, 1, &is_local_acct, &filetext);
 	if (status != AL_SUCCESS)
 	  {
@@ -480,6 +469,17 @@ do_authentication()
 	    session_username = xstrdup(user);
 	    atexit(session_cleanup);
 	  }
+
+	/* Verify that the user is a valid user. */
+	pw = getpwnam(user);
+	if (pw && allowed_user(pw)) {
+		authctxt->valid = 1;
+		pw = pwcopy(pw);
+	} else {
+		debug("do_authentication: illegal user %s", user);
+		pw = NULL;
+	}
+	authctxt->pw = pw;
 
 	setproctitle("%s", pw ? user : "unknown");
 

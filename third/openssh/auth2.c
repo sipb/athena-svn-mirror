@@ -207,21 +207,7 @@ input_userauth_request(int type, int plen, void *ctxt)
 	if (authctxt->attempt++ == 0) {
 		/* setup auth context */
 		struct passwd *pw = NULL;
-		pw = getpwnam(user);
-		if (pw && allowed_user(pw) && strcmp(service, "ssh-connection")==0) {
-			authctxt->pw = pwcopy(pw);
-			authctxt->valid = 1;
-			debug2("input_userauth_request: setting up authctxt for %s", user);
-#ifdef USE_PAM
-			start_pam(pw->pw_name);
-#endif
-		} else {
-			log("input_userauth_request: illegal user %s", user);
-#ifdef USE_PAM
-			start_pam("NOUSER");
-#endif
-		}
-		
+
 		status = al_login_allowed(user, 1, &is_local_acct, &filetext);
 		if (status != AL_SUCCESS)
 		  {
@@ -249,21 +235,36 @@ input_userauth_request(int type, int plen, void *ctxt)
 
 		    fatal("Login denied: %s", err);
 		  }
-		  if (!is_local_acct)
-		    {
-		      status = al_acct_create(user, NULL, getpid(), 0, 0, 
-					      NULL);
-		      if (status != AL_SUCCESS && debug_flag)
-			{
-			  err = al_strerror(status, &errmem);
-			  debug("al_acct_create failed for user %s: %s", user,
-				err);
-			  al_free_errmem(errmem);
-			}
-		      session_username = xstrdup(user);
-		      atexit(session_cleanup);
-		    }
-
+		if (!is_local_acct)
+		  {
+		    status = al_acct_create(user, NULL, getpid(), 0, 0, 
+					    NULL);
+		    if (status != AL_SUCCESS && debug_flag)
+		      {
+			err = al_strerror(status, &errmem);
+			debug("al_acct_create failed for user %s: %s", user,
+			      err);
+			al_free_errmem(errmem);
+		      }
+		    session_username = xstrdup(user);
+		    atexit(session_cleanup);
+		  }		
+		
+		pw = getpwnam(user);
+		if (pw && allowed_user(pw) && strcmp(service, "ssh-connection")==0) {
+			authctxt->pw = pwcopy(pw);
+			authctxt->valid = 1;
+			debug2("input_userauth_request: setting up authctxt for %s", user);
+#ifdef USE_PAM
+			start_pam(pw->pw_name);
+#endif
+		} else {
+			log("input_userauth_request: illegal user %s", user);
+#ifdef USE_PAM
+			start_pam("NOUSER");
+#endif
+		}
+		
 		setproctitle("%s", pw ? user : "unknown");
 		authctxt->user = xstrdup(user);
 		authctxt->service = xstrdup(service);
