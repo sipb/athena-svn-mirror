@@ -12,18 +12,21 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_connect.c,v $
- *	$Id: p_connect.c,v 1.10 1990-07-16 09:33:57 vanharen Exp $
- *	$Author: vanharen $
+ *	$Id: p_connect.c,v 1.11 1990-11-14 12:23:33 lwvanels Exp $
+ *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_connect.c,v 1.10 1990-07-16 09:33:57 vanharen Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_connect.c,v 1.11 1990-11-14 12:23:33 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>
