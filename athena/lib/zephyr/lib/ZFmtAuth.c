@@ -4,16 +4,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v $
- *	$Author: rfrench $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.6 1988-05-17 21:21:29 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.7 1988-06-17 17:13:53 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZFormatAuthenticNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.6 1988-05-17 21:21:29 rfrench Exp $";
+static char rcsid_ZFormatAuthenticNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtAuth.c,v 1.7 1988-06-17 17:13:53 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -36,18 +36,15 @@ Code_t ZFormatAuthenticNotice(notice, buffer, buffer_len, len, session)
     newnotice.z_authent_len = 0;
     newnotice.z_ascii_authent = (char *)"";
 	
-    if ((retval = Z_FormatRawHeader(&newnotice, buffer, buffer_len, &hdrlen))
-	!= ZERR_NONE)
+    if ((retval = Z_FormatRawHeader(&newnotice, buffer, buffer_len,
+				    &hdrlen, &ptr)) != ZERR_NONE)
 	return (retval);
 
-    for (hdrlen--;buffer[hdrlen-1];hdrlen--)
-	;
-	
-    newnotice.z_checksum = (ZChecksum_t)quad_cksum(buffer, NULL, hdrlen, 0, 
-						   session);
+    newnotice.z_checksum = (ZChecksum_t)quad_cksum(buffer, NULL, ptr - buffer,
+						   0, session);
 
-    if ((retval = Z_FormatRawHeader(&newnotice, buffer, buffer_len, &hdrlen))
-	!= ZERR_NONE)
+    if ((retval = Z_FormatRawHeader(&newnotice, buffer, buffer_len,
+				    &hdrlen, (char **) 0)) != ZERR_NONE)
 	return (retval);
 
     ptr = buffer+hdrlen;
