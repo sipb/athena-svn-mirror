@@ -4,7 +4,7 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.c,v $
- *	$Author: probe $
+ *	$Author: jtkohl $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -18,7 +18,7 @@
 #include <netdb.h>
 
 #ifndef lint
-static char rcsid_zwrite_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.c,v 1.24 1988-09-09 12:26:03 probe Exp $";
+static char rcsid_zwrite_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zwrite/zwrite.c,v 1.25 1988-11-14 11:58:28 jtkohl Exp $";
 #endif lint
 
 #define DEFAULT_CLASS "MESSAGE"
@@ -161,11 +161,17 @@ main(argc, argv)
     notice.z_recipient = "";
     if (filsys == 1)
 	    notice.z_default_format = "@bold(Filesystem Operation Message for $instance:)\nFrom: @bold($sender)\n$message";
-    else if (auth == ZAUTH)
-	notice.z_default_format = "Class $class, Instance $instance:\n@center(To: @bold($recipient))\n$message";
-    else
-	notice.z_default_format = "@bold(UNAUTHENTIC) Class $class, Instance $instance:\n$message";
-
+    else if (auth == ZAUTH) {
+	if (signature)
+	    notice.z_default_format = "Class $class, Instance $instance:\nTo: @bold($recipient)\n@bold($1) <$sender>\n\n$2";
+	else
+	    notice.z_default_format = "Class $class, Instance $instance:\nTo: @bold($recipient)\n$message";
+    } else {
+	if (signature)
+	    notice.z_default_format = "@bold(UNAUTHENTIC) Class $class, Instance $instance:\n@bold($1) <$sender>\n\n$2";
+	else
+	    notice.z_default_format = "@bold(UNAUTHENTIC) Class $class, Instance $instance:\n$message";
+    }
     if (!nocheck && !msgarg && filsys != 1)
 	send_off(&notice, 0);
 	
@@ -178,7 +184,9 @@ main(argc, argv)
 	message = malloc((unsigned)(strlen(signature)+sizeof("From: ")+2));
 	(void) strcpy(message, "From: ");
 	(void) strcat(message, signature);
-	msgsize = strlen(message)+1;
+	msgsize = strlen(message);
+	message[msgsize++] = '\n';
+	message[msgsize++] = '\0';
     }
 	
     if (msgarg) {
@@ -213,12 +221,12 @@ main(argc, argv)
 			message = realloc(message,
 					  (unsigned)(msgsize+strlen(bfr)));
 		else
-			message = malloc((unsigned)(msgsize+strlen(bfr)));
+			message = malloc((unsigned)strlen(bfr));
 		(void) strcpy(message+msgsize, bfr);
 		msgsize += strlen(bfr);
 	    }
 	    message = realloc(message, (unsigned)(msgsize+1));
-	    message[msgsize] = '\0';
+	    message[msgsize++] = '\0';
 	}
 	else {	/* Use read so you can send binary messages... */
 	    while (nchars = read(fileno(stdin), bfr, sizeof bfr)) {
@@ -226,10 +234,19 @@ main(argc, argv)
 		    fprintf(stderr, "Read error from stdin!  Can't continue!\n");
 		    exit(1);
 		}
-		message = realloc(message, (unsigned)(msgsize+nchars));
+		if (message)
+		    message = realloc(message, (unsigned)(msgsize+nchars));
+		else
+		    message = malloc((unsigned)nchars);
 		bcopy(bfr, message+msgsize, nchars);
 		msgsize += nchars;
 	    }
+	    /* end of msg */
+	    if (message)
+		message = realloc(message, (unsigned)(msgsize+1));
+	    else
+		message = malloc((unsigned) 1);
+	    message[msgsize++] = '\0';	/* null-terminate */
 	} 
     }
 
