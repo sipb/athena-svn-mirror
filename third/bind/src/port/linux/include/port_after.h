@@ -8,7 +8,6 @@
 #define USE_SETSID
 #define SETGRENT_VOID
 #define SIOCGIFCONF_ADDR
-#define USE_LOG_CONS
 #define HAVE_CHROOT
 #define CAN_CHANGE_ID
 
