@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1.2.1 2001-03-09 21:22:45 ghudson Exp $
+# $Id: Makefile.in,v 1.1.2.2 2001-03-13 21:25:03 ghudson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -10,6 +10,7 @@ prefix=@prefix@
 exec_prefix=@exec_prefix@
 sbindir=@sbindir@
 mandir=@mandir@
+lsbindir=@lsbindir@
 
 CC=@CC@
 DEFS=@DEFS@
@@ -31,9 +32,9 @@ rpmupdate: rpmupdate.o
 check:
 
 install:
-	${top_srcdir}/mkinstalldirs ${DESTDIR}${sbindir}
+	${top_srcdir}/mkinstalldirs ${DESTDIR}${lsbindir}
 	${top_srcdir}/mkinstalldirs ${DESTDIR}${mandir}/man8
-	${INSTALL_PROGRAM} rpmupdate ${DESTDIR}${sbindir}
+	${INSTALL_PROGRAM} rpmupdate ${DESTDIR}${lsbindir}
 	${INSTALL} -m 444 ${srcdir}/rpmupdate.8 ${DESTDIR}${mandir}/man8
 
 clean:
