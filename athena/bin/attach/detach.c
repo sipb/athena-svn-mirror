@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_detach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/detach.c,v 1.1 1990-04-19 12:03:15 jfc Exp $";
+static char rcsid_detach_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/detach.c,v 1.2 1990-04-19 12:04:37 jfc Exp $";
 #endif lint
 
 #include "attach.h"
@@ -87,15 +87,15 @@ detach(name)
 		    atp->flags &= ~FLAG_LOCKED;
 		    status = SUCCESS;
 	    } else if (owner_check && !clean_detach) {
-		    if (del_an_owner(atp, euid)) {
-			    int ret;
+		    if (del_an_owner(atp, owner_uid)) {
+			    int ret = SUCCESS;
 			    fprintf(stderr, "%s: Filesystem wanted by others, not unmounted.\n", name);
 			    error_status = ERR_ATTACHINUSE;
 			    put_attachtab();
-			    if (atp->fs->type == TYPE_NFS)
+			    if (atp->fs->type == TYPE_NFS && do_nfsid)
 				    ret = nfsid(atp->host, atp->hostaddr,
 						MOUNTPROC_KUIDUMAP, 1,
-						atp->hesiodname, 0);
+						atp->hesiodname, 0, real_uid);
 			    unlock_attachtab();
 			    free_attachtab();
 			    end_critical_code();
@@ -179,7 +179,7 @@ detach(name)
 detach_all()
 {
     struct _attachtab	*atp, *next;
-    int tempexp, userid;
+    int tempexp;
     extern struct _attachtab	*attachtab_last, *attachtab_first;
     struct _fstypes	*fs_type = NULL;
 
@@ -189,7 +189,6 @@ detach_all()
     
     if (filsys_type)
 	    fs_type = get_fs(filsys_type);
-    userid = euid;
     tempexp = explicit;
     atp = attachtab_last;
     attachtab_last = attachtab_first = NULL;
@@ -197,7 +196,7 @@ detach_all()
 	    next = atp->prev;
 	    explicit = atp->explicit;
 	    if ((override || !owner_check || clean_detach
-		 || is_an_owner(atp,userid)) &&
+		 || is_an_owner(atp,owner_uid)) &&
 		(!filsys_type || fs_type == atp->fs) &&
 		!(atp->flags & FLAG_LOCKED))
 		    detach(atp->hesiodname);
@@ -234,7 +233,7 @@ detach_host(host)
 	char	*host;
 {
 	struct _attachtab	*atp, *next;
-	int tempexp, userid;
+	int tempexp;
 	extern struct _attachtab	*attachtab_last, *attachtab_first;
 	struct _fstypes	*fs_type = NULL;
 
@@ -244,7 +243,6 @@ detach_host(host)
     
 	if (filsys_type)
 		fs_type = get_fs(filsys_type);
-	userid = euid;
 	tempexp = explicit;
 	atp = attachtab_last;
 	attachtab_last = attachtab_first = NULL;
@@ -252,7 +250,7 @@ detach_host(host)
 		next = atp->prev;
 		explicit = atp->explicit;
 		if ((override || !owner_check || clean_detach
-		     || is_an_owner(atp,euid)) &&
+		     || is_an_owner(atp,owner_uid)) &&
 		    (!filsys_type || fs_type == atp->fs) &&
 		    (host_compare(host, atp->host)) &&
 		    !(atp->flags & FLAG_LOCKED))
