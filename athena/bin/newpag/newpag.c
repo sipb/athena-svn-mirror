@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-return main(argc, argv)
+int main(argc, argv)
 	int argc;
 	char **argv;
 {
