@@ -88,18 +88,16 @@
 #endif
 
 /* Internal functions */
-#ifdef __STDC__
 long ptyint_void_association(void);
 long ptyint_open_ctty (char *slave, int *fd);
-long ptyint_update_wtmp (struct utmp *ut, char *host, char *user);
-
+#ifdef HAVE_SETUTXENT
+long ptyint_update_wtmpx(struct utmpx *utx);
+#endif
+#if !(defined(WTMPX_FILE) && defined(HAVE_UPDWTMPX)) \
+	|| !defined(HAVE_SETUXENT)
+long ptyint_update_wtmp(struct utmp *ut);
+#endif
 void ptyint_vhangup(void);
-#else /*__STDC__*/
-
-long ptyint_void_association();
-void ptyint_vhangup();
-long ptyint_update_wtmp();
-#endif /* __STDC__*/
 
 #define __PTY_INT_H__
 #endif
