@@ -1,36 +1,8 @@
 #
-# $Id: Imakefile,v 1.22 1993-06-18 18:13:17 miki Exp $
+# $Id: Imakefile,v 1.23 1994-03-17 20:33:37 cfields Exp $
 #
 # Remember: most conditionalization should be done in the package, not here.
 
-#ifdef SOLARIS
-#define ISUBDIRS cleanup inetd newsyslog nfsc rvd synctree track traceroute xdm
-#else
-#define ISUBDIRS cleanup ftpd inetd netconfig newsyslog nfsc rvd synctree track traceroute xdm
-#endif
-
-#ifdef ultrix
-XSCRIPTS=console-getty
-#endif
-
-#ifdef SOLARIS
-XSCRIPTS=console-ttymon 
-#endif
-
-SCRIPT= clean_tmp_areas config_afs reactivate shutdown_notify $(XSCRIPTS)
 
 SimpleProgram(gettime,gettime.o,,$(ATHRETCDIR)/)
 
-#ifdef SOLARIS
-install::
-	for i in ${SCRIPT}; do \
-		$(INSTALL) -m 0755 $$i.sh $(DESTDIR)$(ATHRETCDIR)/$$i; \
-		done
-#else
-install::
-	for i in ${SCRIPT}; do \
-		$(INSTALL) -m 0755 $$i.sh $(DESTDIR)$(ATHRETCDIR)/$$i; \
-		done
-#endif
-
-install_man(reactivate.8,reactivate.8)
