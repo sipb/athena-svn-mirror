@@ -19,11 +19,11 @@
 
 *timeout:		10
 *cycle:			10
-*lockTimeout:		0
+*lockTimeout:		1
 *passwdTimeout:		30
 *maxIdleTime:		20
 *nice:			10
-*lock:			False
+*lock:			True
 *lockVTs:		True
 *verbose:		False
 *timestamp:		False
