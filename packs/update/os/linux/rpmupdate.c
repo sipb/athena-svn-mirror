@@ -18,10 +18,11 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.7 2000-08-04 23:55:19 ghudson Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.8 2000-08-15 15:23:55 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/utsname.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
@@ -76,6 +77,7 @@ static enum act decide_private(struct package *pkg);
 static void schedule_update(struct package *pkg, rpmTransactionSet rpmdep);
 static void display_action(struct package *pkg, enum act action);
 static void update_lilo(struct package *pkg);
+static char *fudge_arch_in_filename(char *filename);
 static void printrev(struct rev *rev);
 static int revcmp(struct rev *rev1, struct rev *rev2);
 static int revsame(struct rev *rev1, struct rev *rev2);
@@ -436,6 +438,7 @@ static void schedule_update(struct package *pkg, rpmTransactionSet rpmdep)
   FD_t fd;
 
   assert(pkg->filename != NULL);
+  pkg->filename = fudge_arch_in_filename(pkg->filename);
   fd = fdOpen(pkg->filename, O_RDONLY, 0);
   if (fd == NULL)
     die("Can't read package file %s", pkg->filename);
@@ -553,6 +556,61 @@ static void update_lilo(struct package *pkg)
     }
 
   system("/sbin/lilo");
+}
+
+/* If filename has an arch string which is too high for this machine's
+ * architecture, replace it with a new filename containing this
+ * machine's architecture.  filename must be an allocated string which
+ * can be freed and replaced.
+ */
+static char *fudge_arch_in_filename(char *filename)
+{
+  static const char *arches[] = { "i386", "i486", "i586", "i686", NULL };
+  const char *p;
+  int i, j, len;
+  struct utsname buf;
+  char *newfile;
+
+  /* Find the beginning of the arch string in filename. */
+  p = find_back(filename, filename + strlen(filename), '.');
+  assert(p != NULL);
+  p = find_back(filename, p, '.');
+  assert(p != NULL);
+  p++;
+
+  /* Locate this architecture in the array.  If it's not one we recognize,
+   * or if it's the least common denominator, leave well enough alone.
+   */
+  for (i = 0; arches[i] != NULL; i++)
+    {
+      len = strlen(arches[i]);
+      if (strncmp(p, arches[i], len) == 0 && *(p + len) == '.')
+	break;
+    }
+  if (i == 0 || arches[i] == NULL)
+    return filename;
+
+  /* Locate this machine's architecture in the array.  If we don't
+   * recognize it, or if it's at least as high as the filename's
+   * architecture, don't touch anything. */
+  assert(uname(&buf) == 0);
+  for (j = 0; arches[j] != NULL; j++)
+    {
+      if (strcmp(buf.machine, arches[j]) == 0)
+	break;
+    }
+  if (j >= i)
+    return filename;
+
+  /* We have to downgrade the architecture of the filename.  Make a
+   * new string and free the old one.
+   */
+  newfile = malloc(strlen(filename) - strlen(arches[i]) +
+		   strlen(arches[j]) + 1);
+  sprintf(newfile, "%.*s%s%s", p - filename, filename, arches[j],
+	  p + strlen(arches[i]));
+  free(filename);
+  return newfile;
 }
 
 static void printrev(struct rev *rev)
