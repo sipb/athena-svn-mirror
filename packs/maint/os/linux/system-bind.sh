@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: system-bind.sh,v 1.1 2003-07-02 20:10:10 ghudson Exp $
+# $Id: system-bind.sh,v 1.1.2.1 2003-07-03 15:45:16 ghudson Exp $
 #
 # HUP the named daemon to refresh the IP address.
 #
