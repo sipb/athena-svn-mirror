@@ -1,3 +1,3 @@
 05 3 * * *	/etc/athena/newsyslog
 20 4 * * *	/etc/athena/clean_tmp_areas
-37 * * * *	/usr/lib/sendmail -q
+37 * * * *	sleep `echo $ADDR | awk -F. '{ print $4 * 13 }' `;/usr/lib/sendmail -q
