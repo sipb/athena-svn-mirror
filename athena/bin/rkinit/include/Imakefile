@@ -1,0 +1,20 @@
+#
+# $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/include/Imakefile,v 1.1 1991-06-13 05:11:19 probe Exp $
+# $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/include/Imakefile,v $
+# $Author: probe $
+#
+
+INSTALLDIR 	= /usr/include
+
+all:: rkinit_err.h
+
+rkinit_err.h: 
+	cd ../lib; make ../include/rkinit_err.h
+
+depend:: rkinit_err.h
+
+install_file(rkinit.h,$(INSTALLDIR)/rkinit.h)
+install_file(rkinit_err.h,$(INSTALLDIR)/rkinit_err.h)
+
+clean::
+	rm -f *~ rkinit_err.h
