@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v 1.7 1990-02-15 18:14:48 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_send.c,v 1.8 1990-02-28 11:43:10 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -239,12 +239,13 @@ t_mail(Request,file,editor,smargs, check)
 	set_option(Request->options, CONNECTED_OPT);
       
       status = OShowMessage(Request,&message);
-      if(status != SUCCESS)
+      if ((status != SUCCESS) && (status != NO_MESSAGES))
 	{
 	  handle_response(status,Request);
 	}
 
-      if(!strncmp(message,"No new messages.", strlen("No new messages.")))
+      if ((status == NO_MESSAGES) ||
+	  (!strncmp(message,"No new messages.", strlen("No new messages."))))
 	message = (char *) NULL;
 
       (void) OMailHeader(Request,file,username, 
