@@ -268,13 +268,13 @@ liblpr.a: $(LIBLPR_OBJS)
 	$(RANLIB) $@
 
 lpr: $(LPR_OBJS) liblpr.a
-	$(LDCC) $(LDFLAGS) -o $@ $^ $(LIBS) -lkrb4 -ldes425
+	$(LDCC) $(LDFLAGS) -o $@ $^ -lkrb4 -ldes425 $(LIBS)
 lpd: $(LPD_OBJS) liblpr.a
-	$(LDCC) $(LDFLAGS) -o $@ $^ $(LIBS) -lkrb4 -ldes425
+	$(LDCC) $(LDFLAGS) -o $@ $^ -lkrb4 -ldes425 $(LIBS)
 lpq: $(LPQ_OBJS) liblpr.a
 	$(LDCC) $(LDFLAGS) -o $@ $^ $(LIBS)
 lprm: $(LPRM_OBJS) liblpr.a
-	$(LDCC) $(LDFLAGS) -o $@ $^ $(LIBS) -lkrb4 -ldes425
+	$(LDCC) $(LDFLAGS) -o $@ $^ -lkrb4 -ldes425 $(LIBS)
 lpc: $(LPC_OBJS) liblpr.a
 	$(LDCC) $(LDFLAGS) -o $@ $^ $(LIBS)
 checkpc: $(CHECKPC_OBJS) liblpr.a
