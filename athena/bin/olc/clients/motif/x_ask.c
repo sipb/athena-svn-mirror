@@ -11,18 +11,21 @@
  *      MIT Information Systems
  *
  *      Tom Coppeto
+ *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_ask.c,v $
- *      $Author: vanharen $
+ *      $Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_ask.c,v 1.1 1989-10-11 16:20:11 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_ask.c,v 1.2 1991-03-06 15:37:02 lwvanels Exp $";
 #endif
 
+#include <sys/param.h>
 #include "xolc.h"
 
 ERRCODE
@@ -32,7 +35,8 @@ x_ask(Request, topic, question)
      char *question;
 {
   int status, fd;
-  char file[NAME_LENGTH];
+  char file[MAXPATHLEN];
+  char buf[BUFSIZ];
 
   set_option(Request->options,VERIFY);
   status = OAsk(Request,topic,NULL);
@@ -46,12 +50,10 @@ x_ask(Request, topic, question)
     case INVALID_TOPIC:
       MuError("That topic is invalid.\n\nEither try again, or select a different topic and try again.");
       return(ERROR);
-      break;
       
     case ERROR:
       MuError("An error has occurred while contacting server.\n\nPlease try again.");
       return(ERROR);
-      break;
 
     case CONNECTED:
       MuError("You are already connected.");
@@ -70,7 +72,8 @@ x_ask(Request, topic, question)
       break;
 
     case HAS_QUESTION:
-      if (MuGetBoolean("Your current instance is busy, would you like to create\nanother instance to ask your question?", "Yes", "No", NULL, TRUE, Mu_Popup_Center))
+      if (MuGetBoolean("Your current instance is busy, would you like to create\nanother instance to ask your question?",
+		       "Yes", "No", NULL, TRUE))
 	{
 	  set_option(Request->options, SPLIT_OPT);
 	  x_ask(Request, topic, question);
@@ -88,7 +91,6 @@ x_ask(Request, topic, question)
     default:
       if((status = handle_response(status, Request)) != SUCCESS)
 	  return(ERROR);
-      break;
     }
 
   if(status!=SUCCESS)
@@ -115,7 +117,9 @@ x_ask(Request, topic, question)
   switch(status)
     {
     case NOT_CONNECTED:
-      MuHelp("There is no consultant currently available.  Your request\nwill be forwarded to the first available consultant.\n\nIf you would like to see answers to common questions,\nclick on the \"stock answer browser\" button above.\n\nIf you find the answer to your question, click on the\n\"cancel\" button below, and your question will be\nremoved from the queue.");
+      strcpy(buf,"There is no consultant currently available.  Your request\nwill be forwarded to the first available consultant.\n\nIf you would like to see answers to common questions,");
+      strcat(buf,"\nclick on the \"stock answer browser\" button above.\n\nIf you find the answer to your question, click on the\n\"cancel\" button below, and your question will be\nremoved from the queue.");
+      MuHelp(buf);
       status = SUCCESS;
       break;
 
