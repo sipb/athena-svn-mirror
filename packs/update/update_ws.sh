@@ -6,7 +6,7 @@
 # for a successful update are met. Then prepare the machine for update,
 # and run do_update.
 #
-# $Id: update_ws.sh,v 1.2 1996-05-10 22:24:20 cfields Exp $
+# $Id: update_ws.sh,v 1.3 1996-05-15 20:39:37 cfields Exp $
 #
 
 trap "" 1 15
@@ -17,20 +17,20 @@ LIBDIR=/srvd/usr/athena/lib/update;	export LIBDIR
 PATH=/bin:/srvd/bin:/srvd/etc:/srvd/etc/athena:/srvd/bin/athena:/srvd/usr/athena/etc:/srvd/usr/bin:/srvd/usr/etc:/srvd/usr/ucb:/usr/bin:/usr/ucb:$LIBDIR ; export PATH
 
 RC=nothing
+HOSTNAME=/usr/ucb/hostname
+WHOAMI=/usr/ucb/whoami
+LOGGER=/usr/ucb/logger
+
 case `/bin/athena/machtype` in
 sgi)
 	RC=rc
 	CONFIG=/etc/config
-	HOSTNAME=/bin/hostname
+	HOSTNAME=/usr/bsd/hostname
 	WHOAMI=/bin/whoami
 	LOGGER=/usr/bsd/logger
 	;;
 sun4)
 	RC=rc
-*)
-	HOSTNAME=/usr/ucb/hostname
-	WHOAMI=/usr/ucb/whoami
-	LOGGER=/usr/ucb/logger
 	;;
 esac
 
@@ -153,8 +153,9 @@ if [ -d ${SITE}/server ] ; then
 	esac
 
 	/bin/athena/attach -q -h -n -o hard mkserv
-	MKSERV=`/srvd/usr/athena/bin/athdir /mit/mkserv`/mkserv
+	MKSERV=`/usr/athena/bin/athdir /mit/mkserv`/mkserv
 	if [ -s ${MKSERV} ]; then
+		export MKSERV
 		${MKSERV} updatetest
 		if [ $? -ne 0 ]; then
 			echo "Update cannot be performed as mkserv services cannot be found for all services"
@@ -175,11 +176,15 @@ if [ "${AUTO}" = "true" -a "$1" = "reactivate" ]; then
 		ln ${ROOT}/etc/athena/dm ${ROOT}/.deleted/
 	fi
 
-	if [ -f /etc/init.d/axdm ]; then
-		/etc/init.d/axdm stop
+	if [ -f /etc/athena/nanny ]; then
+		/etc/athena/nanny MODE=NONE	# Shut down X
+		/etc/athena/nanny die		# Shut down nanny
 	fi
 
 	sleep 2
+	if [ `/bin/athena/machtype` = sgi ]; then
+		exec 1>/dev/tport 2>&1
+	fi
 fi
 
 FULLCOPY=true; export FULLCOPY
@@ -197,7 +202,7 @@ EOF
 	${RC}|reactivate|activate|deactivate)
 		case `/bin/athena/machtype` in
 		sgi)
-			/etc/killall -TERM inetd snmpd zhm syslog
+			/etc/killall -TERM inetd snmpd zhm syslogd
 			;;
 		*)
 		        rm /tmp/pids
