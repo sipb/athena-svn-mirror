@@ -30,3 +30,4 @@ interfaces	netstat -in
 routes		netstat -rn
 listeners	netstat -an -f inet -P tcp | grep 'LISTEN$'
 login		test -f /etc/nologin; echo $?
+cpuspeed	/usr/athena/bin/sysinfo | grep MHz
