@@ -899,6 +899,7 @@ echo "/var/spool/cron/crontabs/root"		>> "$CONFCHG"
 
 echo "/usr/sipb"				>> "$DEADFILES"
 echo "/etc/named.boot"				>> "$DEADFILES"
+echo "/etc/athena/ftpd"				>> "$DEADFILES"
 # Cleanup after various cracking incidents
 
 # Skull virus of 19971027:
