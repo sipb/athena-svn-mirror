@@ -2,7 +2,11 @@
 #
 # Update script for Project Athena workstations
 #
-# $Id: update_ws.sh,v 1.1 1996-05-10 19:27:58 cfields Exp $
+# Check that an update is needed, and make sure the conditions necessary
+# for a successful update are met. Then prepare the machine for update,
+# and run do_update.
+#
+# $Id: update_ws.sh,v 1.2 1996-05-10 22:24:20 cfields Exp $
 #
 
 trap "" 1 15
@@ -12,18 +16,27 @@ CONFDIR="${CONFDIR-/etc/athena}"; export CONFDIR
 LIBDIR=/srvd/usr/athena/lib/update;	export LIBDIR
 PATH=/bin:/srvd/bin:/srvd/etc:/srvd/etc/athena:/srvd/bin/athena:/srvd/usr/athena/etc:/srvd/usr/bin:/srvd/usr/etc:/srvd/usr/ucb:/usr/bin:/usr/ucb:$LIBDIR ; export PATH
 
+RC=nothing
 case `/bin/athena/machtype` in
 sgi)
+	RC=rc
 	CONFIG=/etc/config
 	HOSTNAME=/bin/hostname
 	WHOAMI=/bin/whoami
+	LOGGER=/usr/bsd/logger
 	;;
+sun4)
+	RC=rc
 *)
 	HOSTNAME=/usr/ucb/hostname
 	WHOAMI=/usr/ucb/whoami
+	LOGGER=/usr/ucb/logger
 	;;
 esac
 
+#
+# If /srvd is not mounted, quit.
+#
 if [ ! -d /srvd/bin ]; then
 	exit 1
 fi
@@ -59,8 +72,8 @@ case `echo $VERSION $NEWVERS | awk '(NR==1) { \
 	else if (substr($1,1,3) == substr($2,1,3)) {print "INCR"} \
 	else {print "FULL"}}'` in
 OOPS)
-	if [ ! -f /usr/tmp/update.check -a -f /usr/ucb/logger ]; then
-		/usr/ucb/logger -t `$HOSTNAME` -p user.notice at revision $VERSION
+	if [ ! -f /usr/tmp/update.check -a -f $LOGGER ]; then
+		$LOGGER -t `$HOSTNAME` -p user.notice at revision $VERSION
 		cp /dev/null /usr/tmp/update.check
 	fi
 
@@ -90,8 +103,8 @@ if [ "${AUTO}" = "true" -a "${AUTOUPDATE}" != "true" ]; then
 	on how to update your workstation yourself, or to schedule
 	us to do it for you. Thank you.  -Athena Operations
 EOF
-	if [ ! -f /usr/tmp/update.check -a -f /usr/ucb/logger ]; then
-		/usr/ucb/logger -t `$HOSTNAME` -p user.notice at revision $VERSION
+	if [ ! -f /usr/tmp/update.check -a -f $LOGGER ]; then
+		$LOGGER -t `$HOSTNAME` -p user.notice at revision $VERSION
 		cp /dev/null /usr/tmp/update.check
 	fi
 
@@ -120,28 +133,7 @@ if [ "`$WHOAMI`" != "root" ];  then
 	exit 1
 fi
 
-case `/bin/athena/machtype` in
-decmips)
-	SITE=/var
-	MKSERV=/mit/mkserv/decmipsbin/mkserv
-	;;
-rsaix)
-	SITE=/var
-	MKSERV=/mit/mkserv/rsaixbin/mkserv
-	;;
-sun4)
-	SITE=/var
-	MKSERV=/mit/mkserv/sun4bin/mkserv
-	;;
-sgi)
-	SITE=/var
-	MKSERV=/mit/mkserv/arch/@sys/bin/mkserv
-	;;
-*)
-	SITE=/var
-	MKSERV=`athdir /mit/mkserv`
-	;;
-esac
+SITE=/var
 
 if [ -d ${SITE}/server ] ; then
 	# shutdown kills off named which we need.
@@ -161,6 +153,7 @@ if [ -d ${SITE}/server ] ; then
 	esac
 
 	/bin/athena/attach -q -h -n -o hard mkserv
+	MKSERV=`/srvd/usr/athena/bin/athdir /mit/mkserv`/mkserv
 	if [ -s ${MKSERV} ]; then
 		${MKSERV} updatetest
 		if [ $? -ne 0 ]; then
@@ -182,8 +175,8 @@ if [ "${AUTO}" = "true" -a "$1" = "reactivate" ]; then
 		ln ${ROOT}/etc/athena/dm ${ROOT}/.deleted/
 	fi
 
-	if [ -f /etc/init.d/xdm ]; then
-		/etc/init.d/xdm stop
+	if [ -f /etc/init.d/axdm ]; then
+		/etc/init.d/axdm stop
 	fi
 
 	sleep 2
@@ -201,7 +194,7 @@ PLEASE DO *NOT* DISTURB IT WHILE THIS IS IN PROGRESS.
 
 EOF
 	case "$1" in
-	reactivate|activate|deactivate)
+	${RC}|reactivate|activate|deactivate)
 		case `/bin/athena/machtype` in
 		sgi)
 			/etc/killall -TERM inetd snmpd zhm syslog
