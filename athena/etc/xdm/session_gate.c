@@ -2,7 +2,7 @@
  *  session_gate - Keeps session alive by continuing to run
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/xdm/session_gate.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/session_gate.c,v 1.1 1990-11-18 18:30:23 mar Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/session_gate.c,v 1.2 1990-11-18 18:39:21 mar Exp $
  *	$Author: mar $
  */
 
@@ -85,7 +85,7 @@ char **argv;
 }
 
 
-static powers[] = {10000,1000,100,10,1};
+static powers[] = {100000, 10000,1000,100,10,1};
 
 int itoa(x, buf)
 int x;
