@@ -8,7 +8,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.22 1991-04-14 17:17:08 lwvanels Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/oreplay.c,v 1.23 1991-04-15 14:33:31 lwvanels Exp $";
 #endif
 #endif
 
@@ -36,10 +36,10 @@ int select_timeout;
 # define P(s) ()
 #endif
 
-char *f_gets P((FILE *input_file , char *a ));
+char *f_gets P((FILE *input_file , char *a, int n ));
 void usage P((void ));
 void punt P((int fd , char *filename ));
-
+void format_listing P((int input_fd, int output_fd));
 #undef P
 
 extern char DaemonHost[];
@@ -317,78 +317,88 @@ main(argc,argv)
 /* format listing if neccessary */
 
   if (!gimme_raw && i_list) {
-    FILE *input_file;
-    char qname[10];
-    char username[9];
-    char machine[80];
-    int inst;
-    char  login_stat[4];
-    char  status[10];
-    char consultant[9];
-    int cinst;
-    char cstat[10];
-    int nseen;
-    char topic[10];
-    char date[6];
-    char time[5];
-    char descr[128];
-    char tmp[40];
-    char obuf[1024];
-    int len;
-    int nc,nq,j;
-    
-    lseek(output_fd,0,L_SET);
-    input_file = fdopen(output_fd,"r+");
-
-    nq = atoi(f_gets(input_file,tmp));
-    for(j=0;j<nq;j++) {
-      f_gets(input_file,qname);
-      nc = atoi(f_gets(input_file,tmp));
-      sprintf(obuf,"\n[%s]\n",qname);
-      write(temp_fd,obuf,strlen(obuf));
-      for(;nc>0;nc--) {
-	f_gets(input_file,username);
-	f_gets(input_file,machine);
-	len = strlen(username);
-	machine[18-len] = '*';
-	machine[19-len] = '\0';
-	inst = atoi(f_gets(input_file,tmp));
-	f_gets(input_file,login_stat);
-	f_gets(input_file,status);
-	f_gets(input_file,consultant);
-	cinst = atoi(f_gets(input_file,tmp));
-	f_gets(input_file,cstat);
-	nseen = atoi(f_gets(input_file,tmp));
-	f_gets(input_file,topic);
-	f_gets(input_file,date);
-	f_gets(input_file,time);
-	f_gets(input_file,descr);
-	sprintf(tmp,"%s@%s",username,machine);
-	if (cinst <0)
-	  sprintf(obuf,"%-20s[%d] %1s %-8s %-8s          %2d %-10s %s %s\n",
-		  tmp, inst, login_stat, status, consultant, nseen, topic,
-		  date, time);
-	else
-	  sprintf(obuf,"%-20s[%d] %1s %-8s %-8s[%2d] %-4s %2d %-10s %s %s\n",
-		  tmp, inst, login_stat, status, consultant, cinst, cstat,
-		  nseen, topic, date, time);
-	write(temp_fd,obuf,strlen(obuf));
-      }
-    }
-    fclose(input_file);
+    format_listing(output_fd,temp_fd);
     unlink(templ);
   }
   exit(0);
 }
 
+static void
+format_listing(input_fd,output_fd)
+     int input_fd;
+     int output_fd;
+{
+  FILE *input_file;
+  char qname[10];
+  char username[10];
+  char machine[80];
+  int inst;
+  char  login_stat[4];
+  char  status[10];
+  char consultant[10];
+  int cinst;
+  char cstat[10];
+  int nseen;
+  char topic[20];
+  char date[10];
+  char time[10];
+  char descr[128];
+  char tmp[40];
+  char obuf[1024];
+  int len;
+  int nc,nq,j;
+  
+  lseek(input_fd,0,L_SET);
+  input_file = fdopen(input_fd,"r+");
+  
+  nq = atoi(f_gets(input_file,tmp,40));
+  for(j=0;j<nq;j++) {
+    f_gets(input_file,qname,10);
+    nc = atoi(f_gets(input_file,tmp,40));
+    sprintf(obuf,"\n[%s]\n",qname);
+    write(output_fd,obuf,strlen(obuf));
+    for(;nc>0;nc--) {
+      f_gets(input_file,username,10);
+      f_gets(input_file,machine,80);
+      len = strlen(username);
+      machine[18-len] = '*';
+      machine[19-len] = '\0';
+      inst = atoi(f_gets(input_file,tmp,40));
+      f_gets(input_file,login_stat,4);
+      f_gets(input_file,status,10);
+      f_gets(input_file,consultant,10);
+      cinst = atoi(f_gets(input_file,tmp,40));
+      f_gets(input_file,cstat,10);
+      nseen = atoi(f_gets(input_file,tmp,40));
+      f_gets(input_file,topic,20);
+      f_gets(input_file,date,10);
+      f_gets(input_file,time,10);
+      f_gets(input_file,descr,128);
+      sprintf(tmp,"%s@%s",username,machine);
+      if (cinst <0)
+	sprintf(obuf,"%-20s[%d] %1s %-8s %-8s          %2d %-10s %s %s\n",
+		tmp, inst, login_stat, status, consultant, nseen, topic,
+		date, time);
+      else
+	sprintf(obuf,"%-20s[%d] %1s %-8s %-8s[%2d] %-4s %2d %-10s %s %s\n",
+		tmp, inst, login_stat, status, consultant, cinst, cstat,
+		nseen, topic, date, time);
+      write(output_fd,obuf,strlen(obuf));
+    }
+  }
+  fclose(input_file);
+  return;
+}
+
 char *
-f_gets(input_file,a)
+f_gets(input_file,a,n)
      FILE *input_file;
      char *a;
+     int n;
 {
   char *p;
 
-  fgets(a,1000,input_file);
+  fgets(a,n,input_file);
   p = index(a,'\n');
   if (p != NULL) *p = '\0';
   return(a);
