@@ -14,9 +14,9 @@ Functions to interface with the SSH_AUTHENTICATION_FD socket.
 */
 
 /*
- * $Id: authfd.h,v 1.1.1.1 1997-10-17 22:26:14 danw Exp $
+ * $Id: authfd.h,v 1.1.1.2 1999-03-08 17:43:36 danw Exp $
  * $Log: not supported by cvs2svn $
- * Revision 1.5  1997/03/26 07:01:19  kivinen
+ * Revision 1.5  1997/03/26  07:01:19  kivinen
  * 	Removed ssh_close_authentication function.
  * 	Fixed prototypes.
  *

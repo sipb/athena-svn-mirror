@@ -14,9 +14,21 @@ Simple pattern matching, with '*' and '?' as wildcards.
 */
 
 /*
- * $Id: match.c,v 1.1.1.1 1997-10-17 22:26:08 danw Exp $
+ * $Id: match.c,v 1.1.1.2 1999-03-08 17:43:19 danw Exp $
  * $Log: not supported by cvs2svn $
- * Revision 1.3  1997/04/27 22:19:35  kivinen
+ * Revision 1.7  1998/07/08 01:08:02  kivinen
+ * 	Added more conts, fixed typo.
+ *
+ * Revision 1.6  1998/07/08 01:05:11  kivinen
+ * 	Added consts.
+ *
+ * Revision 1.5  1998/07/08 00:44:44  kivinen
+ * 	Added match_host. Changed match_user to use it.
+ *
+ * Revision 1.4  1998/06/11 00:07:36  kivinen
+ * 	Added match_user function.
+ *
+ * Revision 1.3  1997/04/27  22:19:35  kivinen
  * 	Fixed typo.
  *
  * Revision 1.2  1997/04/27 21:52:05  kivinen
@@ -34,6 +46,7 @@ Simple pattern matching, with '*' and '?' as wildcards.
 
 #include "includes.h"
 #include "ssh.h"
+#include "xmalloc.h"
 
 /* Returns true if the given string matches the pattern (which may contain
    ? and * as wildcards), and zero if it does not match. */
@@ -92,6 +105,68 @@ int match_pattern(const char *s, const char *pattern)
       pattern++;
     }
   /*NOTREACHED*/
+}
+
+/* Check that host name matches the pattern. If the pattern only contains
+   numbers and periods, and wildcards compare it against the ip address
+   otherwise assume it is host name */
+int match_host(const char *host, const char *ip, const char *pattern)
+{
+  int is_ip_pattern;
+  const char *p;
+
+  /* if the pattern does not contain any alpha characters then
+     assume that it is a IP address (with possible wildcards),
+     otherwise assume it is a hostname */
+  if (ip)
+    is_ip_pattern = 1;
+  else
+    is_ip_pattern = 0;
+
+  for(p = pattern; *p; p++)
+    if (!(isdigit(*p) || *p == '.' || *p == '?' || *p == '*'))
+      {
+	is_ip_pattern = 0;
+	break;
+      }
+  if (is_ip_pattern)
+    {
+      return match_pattern(ip, pattern);
+    } 
+  return match_pattern(host, pattern);
+}
+
+/* this combines the effect of match_pattern on a username, hostname
+   and IP address. If the pattern contains a @ then the part preceding
+   the @ is checked against the username. The part after the @ is
+   checked against the hostname and IP address. If no @ is found then
+   a normal match_pattern is done against the username 
+
+   This is more useful than just a match_pattern as it allows you to
+   specify exactly what users are alowed to login from what hosts
+   (tridge, May 1998)
+*/
+int match_user(const char *user, const char *host, const char *ip,
+	       const char *pattern)
+{
+  int ret;
+  char *p2;
+  char *p;
+
+  p = strchr(pattern,'@');
+  
+  if (!p)
+    return match_pattern(user, pattern);
+
+  p2 = xstrdup(pattern);
+  p = strchr(p2, '@');
+  
+  *p = 0;
+
+  ret = match_pattern(user,p2) && match_host(host, ip, p + 1);
+  
+  xfree(p2);
+  return ret;
 }
 
 #ifdef F_SECURE_COMMERCIAL

@@ -14,9 +14,19 @@ Generic header file for ssh.
 */
 
 /*
- * $Id: ssh.h,v 1.1.1.3 1998-05-13 19:11:42 danw Exp $
+ * $Id: ssh.h,v 1.1.1.4 1999-03-08 17:43:43 danw Exp $
  * $Log: not supported by cvs2svn $
- * Revision 1.22  1998/03/27 17:02:55  kivinen
+ * Revision 1.25  1998/07/08 01:05:30  kivinen
+ * 	Added consts.
+ *
+ * Revision 1.24  1998/07/08 00:50:13  kivinen
+ * 	Added some prototypes. Added setting PASSWD_PATH if not set in
+ * 	by the configure.
+ *
+ * Revision 1.23  1998/05/23  20:37:44  kivinen
+ * 	Added OSF1 C2 prototypes.
+ *
+ * Revision 1.22  1998/03/27  17:02:55  kivinen
  * 	Added gateway ports option. Added ignore root rhosts option.
  *
  * Revision 1.21  1998/01/02 06:23:01  kivinen
@@ -274,6 +284,11 @@ only by root, whereas ssh_config should be world-readable. */
    authentication socket. */
 #define SSH_AUTHSOCKET_ENV_NAME		"SSH_AUTH_SOCK"
 
+/* Check that we always have PASSWD_PATH set */
+#ifndef PASSWD_PATH
+#define PASSWD_PATH "/bin/passwd"
+#endif /* PASSWD_PATH */
+
 /* Force host key length and server key length to differ by at least this
    many bits.  This is to make double encryption with rsaref work. */
 #define SSH_KEY_BITS_RESERVED		128
@@ -494,7 +509,8 @@ int get_remote_port(void);
    comma-separated sequence of subpatterns (each possibly preceded by ! to 
    indicate negation).  Returns true if there is a positive match; zero
    otherwise. */
-int match_hostname(const char *host, const char *pattern, unsigned int len);
+int match_hostname(const char *host, const char *ip,
+		   const char *pattern, unsigned int len);
 
 /* Checks whether the given host is already in the list of our known hosts.
    Returns HOST_OK if the host is known and has the specified key,
@@ -789,6 +805,14 @@ void auth_input_open_request(void);
 /* Returns true if the given string matches the pattern (which may contain
    ? and * as wildcards), and zero if it does not match. */
 int match_pattern(const char *s, const char *pattern);
+/* this combines the effect of match_pattern on a username, hostname
+   and IP address. */
+int match_user(const char *user, const char *host, const char *ip,
+	       const char *pattern);
+/* Check that host name matches the pattern. If the pattern only contains
+   numbers and periods, and wildcards compare it against the ip address
+   otherwise assume it is host name */
+int match_host(const char *host, const char *ip, const char *pattern);
 
 #ifdef F_SECURE_COMMERCIAL
 
@@ -838,5 +862,16 @@ extern uid_t original_real_uid;
 #else
 #define UID_ROOT 0
 #endif
+
+#ifdef HAVE_OSF1_C2_SECURITY
+void initialize_osf_security(int ac, char **av);
+
+const char *osf1c2_check_account_and_terminal(const char *username,
+					      const char *terminal);
+
+int osf1c2_getprpwent(char *p, char *n, int len);
+
+char *osf1c2crypt(const char *pw, char *salt);
+#endif /* HAVE_OSF1_C2_SECURITY */
 
 #endif /* SSH_H */

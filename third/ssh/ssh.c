@@ -16,9 +16,17 @@ of X11, TCP/IP, and authentication connections.
 */
 
 /*
- * $Id: ssh.c,v 1.1.1.3 1998-05-13 19:11:26 danw Exp $
+ * $Id: ssh.c,v 1.1.1.4 1999-03-08 17:43:23 danw Exp $
  * $Log: not supported by cvs2svn $
- * Revision 1.29  1998/04/17 00:40:07  kivinen
+ * Revision 1.31  1998/07/08 00:47:18  kivinen
+ * 	Fixed typo (privileged).
+ *
+ * Revision 1.30  1998/05/23  20:25:44  kivinen
+ * 	Changed () -> (void). Added check that {ssh,slogin}{,1}{.old}
+ * 	are known program names, not host names. Added missing break
+ * 	to 'g' option switch clause.
+ *
+ * Revision 1.29  1998/04/17  00:40:07  kivinen
  * 	Fixed -f code so that it will also use setpgid/setpgrp if
  * 	setsid is not available.
  *
@@ -255,9 +263,9 @@ RSAPrivateKey host_private_key;
 /* Original real uid. */
 uid_t original_real_uid;
 
-/* Prints a help message to the user.  This function never returns. */
 
-void usage()
+/* Prints a help message to the user.  This function never returns. */
+void usage(void)
 {
   fprintf(stderr, "Usage: %s [options] host [command]\n", av0);
   fprintf(stderr, "Options:\n");
@@ -295,7 +303,7 @@ void usage()
 #endif /* WITH_BLOWFISH */
 	  "``3des''\n");
   fprintf(stderr, "  -p port     Connect to this port.  Server must be on the same port.\n");
-  fprintf(stderr, "  -P          Don't use priviledged source port.\n");
+  fprintf(stderr, "  -P          Don't use privileged source port.\n");
 #ifndef SSH_NO_PORT_FORWARDING
   fprintf(stderr, "  -L listen-port:host:port   Forward local port to remote address\n");
   fprintf(stderr, "  -R listen-port:host:port   Forward remote port to local address\n");
@@ -392,7 +400,7 @@ int main(int ac, char **av)
   struct stat st;
   struct passwd *pw, pwcopy;
   int interactive = 0, dummy;
-  int use_priviledged_port = 1;
+  int use_privileged_port = 1;
   uid_t original_effective_uid;
 #ifdef SIGWINCH
   struct winsize ws;
@@ -463,6 +471,9 @@ int main(int ac, char **av)
     cp = av0;
   if (strcmp(cp, "rsh") != 0 && strcmp(cp, "ssh") != 0 &&
       strcmp(cp, "rlogin") != 0 && strcmp(cp, "slogin") != 0 &&
+      strcmp(cp, "ssh1") != 0 && strcmp(cp, "slogin1") != 0 &&
+      strcmp(cp, "ssh.old") != 0 && strcmp(cp, "slogin.old") != 0 &&
+      strcmp(cp, "ssh1.old") != 0 && strcmp(cp, "slogin1.old") != 0 &&
       strcmp(cp, "remsh") != 0)
     host = cp;
   
@@ -656,11 +667,12 @@ int main(int ac, char **av)
 	  break;
 
 	case 'P':
-	  use_priviledged_port = 0;
+	  use_privileged_port = 0;
 	  break;
 
 	case 'g':
 	  options.gateway_ports = 1;
+	  break;
 
 	default:
 	  usage();
@@ -752,20 +764,20 @@ int main(int ac, char **av)
       fatal("rsh_connect returned");
     }
 
-  if (use_priviledged_port && !options.use_priviledged_port)
+  if (use_privileged_port && !options.use_privileged_port)
     {
-      use_priviledged_port = 0;
+      use_privileged_port = 0;
     }
   if (!options.rhosts_authentication && !options.rhosts_rsa_authentication)
     {
-      use_priviledged_port = 0;
+      use_privileged_port = 0;
     }
   /* Open a connection to the remote host.  This needs root privileges if
      rhosts_authentication is true.  Note that the random_state is not
      yet used by this call, although a pointer to it is stored, and thus it
      need not be initialized. */
   ok = ssh_connect(host, options.port, options.connection_attempts,
-		   !use_priviledged_port,
+		   !use_privileged_port,
 		   original_real_uid, options.proxy_command, &random_state);
 
   /* Check if the connection failed, and try "rsh" if appropriate. */

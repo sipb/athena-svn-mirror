@@ -1,3 +1,4 @@
+# Generated automatically from Makefile.in by configure.
 # Makefile for zlib
 # Copyright (C) 1995-1996 Jean-loup Gailly.
 # For conditions of distribution and use, see copyright notice in zlib.h 
@@ -10,6 +11,16 @@
 #    make install
 # To install in $HOME instead of /usr/local, use:
 #    make install prefix=$HOME
+
+srcdir = .
+
+prefix = /usr/local
+exec_prefix = ${prefix}
+bindir = ${exec_prefix}/bin
+sbindir = ${exec_prefix}/sbin
+mandir = ${prefix}/man
+libdir = ${exec_prefix}/lib
+includedir = ${prefix}/include
 
 CC=cc
 
@@ -28,9 +39,6 @@ LIBS=libz.a
 AR=ar rc
 RANLIB=ranlib
 TAR=tar
-
-prefix=/usr/local
-exec_prefix = $(prefix)
 
 OBJS = adler32.o compress.o crc32.o gzio.o uncompr.o deflate.o trees.o \
        zutil.o inflate.o infblock.o inftrees.o infcodes.o infutil.o inffast.o
@@ -63,7 +71,7 @@ minigzip: minigzip.o $(LIBS)
 install: $(LIBS)
 	-@if [ ! $(prefix)/include  ]; then mkdir $(prefix)/include; fi
 	-@if [ ! $(exec_prefix)/lib ]; then mkdir $(exec_prefix)/lib; fi
-	cp zlib.h zconf.h $(prefix)/include
+	cp $(srcdir)/zlib.h $(srcdir)/zconf.h $(prefix)/include
 	chmod 644 $(prefix)/include/zlib.h $(prefix)/include/zconf.h
 	cp $(LIBS) $(exec_prefix)/lib
 	cd $(exec_prefix)/lib; chmod 644 $(LIBS)
@@ -83,6 +91,9 @@ uninstall:
 
 clean:
 	rm -f *.o *~ example minigzip libz.a libz.so* foo.gz
+
+distclean: clean
+	rm -f Makefile
 
 zip:
 	mv Makefile Makefile~; cp -p Makefile.in Makefile

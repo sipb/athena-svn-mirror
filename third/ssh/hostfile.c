@@ -14,9 +14,13 @@ Functions for manipulating the known hosts files.
 */
 
 /*
- * $Id: hostfile.c,v 1.1.1.1 1997-10-17 22:26:02 danw Exp $
+ * $Id: hostfile.c,v 1.1.1.2 1999-03-08 17:43:07 danw Exp $
  * $Log: not supported by cvs2svn $
- * Revision 1.2  1997/03/19 21:13:51  kivinen
+ * Revision 1.3  1998/07/08 00:43:25  kivinen
+ * 	Added ip number to mach_hostname. Changed it to use match_host
+ * 	instead of match_pattern.
+ *
+ * Revision 1.2  1997/03/19  21:13:51  kivinen
  * 	Enlarged line buffer in check_host_in_hostfile to 16384.
  *
  * Revision 1.1.1.1  1996/02/18 21:38:12  ylo
@@ -121,7 +125,8 @@ int auth_rsa_read_key(char **cpp, unsigned int *bitsp, MP_INT *e, MP_INT *n)
    indicate negation).  Returns true if there is a positive match; zero
    otherwise. */
 
-int match_hostname(const char *host, const char *pattern, unsigned int len)
+int match_hostname(const char *host, const char *ip,
+		   const char *pattern, unsigned int len)
 {
   char sub[1024];
   int negated;
@@ -158,7 +163,7 @@ int match_hostname(const char *host, const char *pattern, unsigned int len)
       sub[subi] = '\0';
 
       /* Try to match the subpattern against the host name. */
-      if (match_pattern(host, sub))
+      if (match_host(host, ip, sub))
 	if (negated)
 	  return 0;  /* Fail if host matches any negated subpattern. */
         else
@@ -231,7 +236,7 @@ HostStatus check_host_in_hostfile(uid_t uid,
 	;
 
       /* Check if the host name matches. */
-      if (!match_hostname(host, cp, (unsigned int)(cp2 - cp)))
+      if (!match_hostname(host, NULL, cp, (unsigned int)(cp2 - cp)))
 	continue;
       
       /* Got a match.  Skip host name. */

@@ -15,9 +15,9 @@ authentication.
 */
 
 /*
- * $Id: auth-rh-rsa.c,v 1.1.1.2 1998-05-13 19:11:12 danw Exp $
+ * $Id: auth-rh-rsa.c,v 1.1.1.3 1999-03-08 17:43:05 danw Exp $
  * $Log: not supported by cvs2svn $
- * Revision 1.3  1998/03/27 16:53:36  kivinen
+ * Revision 1.3  1998/03/27  16:53:36  kivinen
  * 	Added ignore_root_rhosts support.
  *
  * Revision 1.2  1996/10/29 22:34:10  kivinen

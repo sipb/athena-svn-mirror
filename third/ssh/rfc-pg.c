@@ -12,9 +12,9 @@ Created: Fri Jul  7 02:14:16 1995 ylo
 */
 
 /*
- * $Id: rfc-pg.c,v 1.1.1.1 1997-10-17 22:25:50 danw Exp $
+ * $Id: rfc-pg.c,v 1.1.1.2 1999-03-08 17:42:56 danw Exp $
  * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  1996/02/18 21:38:10  ylo
+ * Revision 1.1.1.1  1996/02/18  21:38:10  ylo
  * 	Imported ssh-1.2.13.
  *
  * Revision 1.2  1995/07/13  01:31:15  ylo

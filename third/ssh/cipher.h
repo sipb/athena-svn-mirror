@@ -12,9 +12,9 @@ Created: Wed Apr 19 16:50:42 1995 ylo
 */
 
 /*
- * $Id: cipher.h,v 1.1.1.2 1998-05-13 19:11:34 danw Exp $
+ * $Id: cipher.h,v 1.1.1.3 1999-03-08 17:43:33 danw Exp $
  * $Log: not supported by cvs2svn $
- * Revision 1.9  1998/04/30 01:51:26  kivinen
+ * Revision 1.9  1998/04/30  01:51:26  kivinen
  * 	Reserved cipher number 7 to Bernard Perrot
  * 	<perrot@lal.in2p3.fr> for some weak 40 bit encryption method.
  *

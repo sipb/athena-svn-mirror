@@ -16,9 +16,15 @@ the login based on rhosts authentication.  This file also processes
 */
 
 /*
- * $Id: auth-rhosts.c,v 1.1.1.2 1998-05-13 19:11:10 danw Exp $
+ * $Id: auth-rhosts.c,v 1.1.1.3 1999-03-08 17:43:03 danw Exp $
  * $Log: not supported by cvs2svn $
- * Revision 1.8  1998/04/30 03:58:38  kivinen
+ * Revision 1.10  1998/07/08 00:38:32  kivinen
+ * 	Fixed typo (privileged).
+ *
+ * Revision 1.9  1998/05/23  20:20:04  kivinen
+ * 	Added num_deny_shosts/num_allow_shosts option support.
+ *
+ * Revision 1.8  1998/04/30  03:58:38  kivinen
  * 	Fixed typo.
  *
  * Revision 1.7  1998/04/30 01:50:40  kivinen
@@ -88,6 +94,9 @@ the login based on rhosts authentication.  This file also processes
 #include "ssh.h"
 #include "xmalloc.h"
 #include "userfile.h"
+#include "servconf.h"
+
+extern ServerOptions options;
 
 /* Returns true if the strings are equal, ignoring case (a-z only). */
 
@@ -247,6 +256,31 @@ int check_rhosts_file(uid_t uid, const char *filename, const char *hostname,
 	continue; /* Different username. */
 
 #endif /* HAVE_INNETGR */
+      
+      /* Check whether this host is permitted to be in .[rs]hosts. */
+      {
+	int perm_denied = 0;
+	int i;
+	if (options.num_deny_shosts > 0)
+	  {
+	    for (i = 0; i < options.num_deny_shosts; i++)
+	      if (match_pattern(host, options.deny_shosts[i]))
+		perm_denied = 1;
+	  }
+	if ((!perm_denied) && options.num_allow_shosts > 0)
+	  {
+	    for (i = 0; i < options.num_allow_shosts; i++)
+	      if (match_pattern(host, options.allow_shosts[i]))
+		break;
+	    if (i >= options.num_allow_shosts)
+	      perm_denied = 1;
+	  }
+	if (perm_denied)
+	  {
+	    log_msg("Use of %s denied for %s", filename, host);
+	    continue;
+	  }
+      }
 
       /* Found the user and host. */
       userfile_close(uf);
@@ -309,14 +343,14 @@ int auth_rhosts(struct passwd *pw, const char *client_user,
   port = get_remote_port();
 
   /* Check that the connection comes from a privileged port.
-     Rhosts authentication only makes sense for priviledged programs.
+     Rhosts authentication only makes sense for privileged programs.
      Of course, if the intruder has root access on his local machine,
      he can connect from any port.  So do not use .rhosts
      authentication from machines that you do not trust. */
   if (port >= IPPORT_RESERVED ||
       port < IPPORT_RESERVED / 2)
     {
-      log_msg("Connection from %.100s from nonpriviledged port %d",
+      log_msg("Connection from %.100s from nonprivileged port %d",
 	  hostname, port);
       packet_send_debug("Your ssh client is not running as root.");
       return 0;

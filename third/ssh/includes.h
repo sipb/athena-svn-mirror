@@ -14,9 +14,9 @@ This file includes most of the needed system headers.
 */
 
 /*
- * $Id: includes.h,v 1.1.1.3 1998-05-13 19:11:36 danw Exp $
+ * $Id: includes.h,v 1.1.1.4 1999-03-08 17:43:37 danw Exp $
  * $Log: not supported by cvs2svn $
- * Revision 1.12  1998/04/30 01:51:53  kivinen
+ * Revision 1.12  1998/04/30  01:51:53  kivinen
  * 	Added linux sparc fix.
  *
  * Revision 1.11  1998/01/21 14:01:11  kivinen

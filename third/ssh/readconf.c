@@ -14,9 +14,15 @@ Functions for reading the configuration files.
 */
 
 /*
- * $Id: readconf.c,v 1.1.1.3 1998-05-13 19:11:28 danw Exp $
+ * $Id: readconf.c,v 1.1.1.4 1999-03-08 17:43:25 danw Exp $
  * $Log: not supported by cvs2svn $
- * Revision 1.13  1998/04/30 01:55:12  kivinen
+ * Revision 1.15  1998/07/08 00:46:30  kivinen
+ * 	Fixed typo (privileged).
+ *
+ * Revision 1.14  1998/05/23  20:23:39  kivinen
+ * 	Removed extra comma at the end of OpCodes enum.
+ *
+ * Revision 1.13  1998/04/30  01:55:12  kivinen
  * 	Added PasswordPromptLogin and PasswordPromptHost options, so
  * 	now the password prompt is configurable.
  *
@@ -163,9 +169,9 @@ typedef enum
   oUser, oHost, oEscapeChar, oRhostsRSAAuthentication, oProxyCommand,
   oGlobalKnownHostsFile, oUserKnownHostsFile, oConnectionAttempts,
   oBatchMode, oStrictHostKeyChecking, oCompression, oCompressionLevel,
-  oKeepAlives, oUsePriviledgedPort, oKerberosAuthentication,
+  oKeepAlives, oUsePrivilegedPort, oKerberosAuthentication,
   oKerberosTgtPassing, oClearAllForwardings, oNumberOfPasswordPrompts,
-  oXauthPath, oGatewayPorts, oPasswordPromptLogin, oPasswordPromptHost, 
+  oXauthPath, oGatewayPorts, oPasswordPromptLogin, oPasswordPromptHost
 } OpCodes;
 
 /* Textual representations of the tokens. */
@@ -203,7 +209,8 @@ static struct
   { "compression", oCompression },
   { "compressionlevel", oCompressionLevel },
   { "keepalive", oKeepAlives },
-  { "usepriviledgedport", oUsePriviledgedPort },
+  { "usepriviledgedport", oUsePrivilegedPort },
+  { "useprivilegedport", oUsePrivilegedPort },
   { "kerberosauthentication", oKerberosAuthentication },
   { "kerberostgtpassing", oKerberosTgtPassing },
   { "clearallforwardings", oClearAllForwardings },
@@ -390,8 +397,8 @@ void process_config_line(Options *options, const char *host,
       intptr = &options->keepalives;
       goto parse_flag;
 
-    case oUsePriviledgedPort:
-      intptr = &options->use_priviledged_port;
+    case oUsePrivilegedPort:
+      intptr = &options->use_privileged_port;
       goto parse_flag;
       
     case oCompressionLevel:
@@ -697,7 +704,7 @@ void initialize_options(Options *options)
   options->clear_all_forwardings = -1;
   options->num_local_forwards = 0;
   options->num_remote_forwards = 0;
-  options->use_priviledged_port = -1;
+  options->use_privileged_port = -1;
   options->no_user_given = 0;
   options->xauth_path = NULL;
   options->gateway_ports = -1;
@@ -742,8 +749,8 @@ void fill_default_options(Options *options)
     options->batch_mode = 0;
   if (options->strict_host_key_checking == -1)
     options->strict_host_key_checking = 2;
-  if (options->use_priviledged_port == -1)
-    options->use_priviledged_port = 1;
+  if (options->use_privileged_port == -1)
+    options->use_privileged_port = 1;
   if (options->compression == -1)
     options->compression = 0;
   if (options->keepalives == -1)

@@ -14,9 +14,9 @@ Functions for reading passphrases and passwords.
 */
 
 /*
- * $Id: readpass.c,v 1.1.1.1 1997-10-17 22:26:12 danw Exp $
+ * $Id: readpass.c,v 1.1.1.2 1999-03-08 17:43:25 danw Exp $
  * $Log: not supported by cvs2svn $
- * Revision 1.6  1997/05/13 22:30:18  kivinen
+ * Revision 1.6  1997/05/13  22:30:18  kivinen
  * 	Added some casts.
  *
  * Revision 1.5  1997/04/17 04:01:52  kivinen

@@ -14,9 +14,9 @@ Interface for the packet protocol functions.
 */
 
 /*
- * $Id: packet.h,v 1.1.1.2 1998-05-13 19:11:40 danw Exp $
+ * $Id: packet.h,v 1.1.1.3 1999-03-08 17:43:43 danw Exp $
  * $Log: not supported by cvs2svn $
- * Revision 1.6  1998/03/27 16:59:16  kivinen
+ * Revision 1.6  1998/03/27  16:59:16  kivinen
  * 	Added socks.h include.
  *
  * Revision 1.5  1997/04/05 17:29:14  ylo

@@ -15,9 +15,9 @@ failure (they call fatal if they encounter an error).
 */
 
 /*
- * $Id: xmalloc.h,v 1.1.1.1 1997-10-17 22:26:15 danw Exp $
+ * $Id: xmalloc.h,v 1.1.1.2 1999-03-08 17:43:42 danw Exp $
  * $Log: not supported by cvs2svn $
- * Revision 1.1.1.1  1996/02/18 21:38:10  ylo
+ * Revision 1.1.1.1  1996/02/18  21:38:10  ylo
  * 	Imported ssh-1.2.13.
  *
  * Revision 1.2  1995/07/13  01:41:41  ylo

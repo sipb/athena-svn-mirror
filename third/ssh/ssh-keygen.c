@@ -14,9 +14,12 @@ Identity and host key generation and maintenance.
 */
 
 /*
- * $Id: ssh-keygen.c,v 1.1.1.1 1997-10-17 22:26:12 danw Exp $
+ * $Id: ssh-keygen.c,v 1.1.1.2 1999-03-08 17:43:27 danw Exp $
  * $Log: not supported by cvs2svn $
- * Revision 1.11  1997/04/27 21:54:52  kivinen
+ * Revision 1.12  1998/05/23  20:37:28  kivinen
+ * 	Changed () -> (void).
+ *
+ * Revision 1.11  1997/04/27  21:54:52  kivinen
  * 	Added F-SECURE stuff.
  *
  * Revision 1.10  1997/04/17 04:17:35  kivinen
@@ -415,7 +418,7 @@ void do_change_comment(struct passwd *pw)
   exit(0);
 }
 
-int do_update_cipher(struct passwd *pw)
+void do_update_cipher(struct passwd *pw)
 {
   char buf[1024], *comment;
   RSAPrivateKey private_key;

@@ -1,10 +1,10 @@
 .\" -*- nroff -*-
 .\"
-.\" $Id: RFC.nroff,v 1.1.1.2 1998-05-13 19:11:02 danw Exp $
+.\" $Id: RFC.nroff,v 1.1.1.3 1999-03-08 17:42:55 danw Exp $
 .\" $Log: not supported by cvs2svn $
-.\" Revision 1.11  1998/04/30 01:49:48  kivinen
-.\" 	Fixed phone numbers.
-.\"
+# Revision 1.11  1998/04/30  01:49:48  kivinen
+# 	Fixed phone numbers.
+#
 .\" Revision 1.10  1998/03/27 17:25:27  kivinen
 .\" 	Removed TSS.
 .\"
