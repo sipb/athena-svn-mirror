@@ -21,7 +21,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.8 1990-02-01 12:00:38 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.9 1990-02-15 18:50:00 vanharen Exp $";
 #endif
 
 #include <olc/lang.h>
@@ -102,10 +102,12 @@ read_request(fd, request)
   printf("%d %d\n",request->requester.uid,request->version);
 #endif TEST
 
-  if ((request->version != CURRENT_VERSION) && (request->version != VERSION_3))
+  if (request->version < VERSION_3)
     {
-      sprintf(msgbuf, "Error in version from %s@%s",
-	      io_req.requester.username, io_req.requester.machine);
+      sprintf(msgbuf,
+	      "Error in version from %s@%s\ncurr ver = %d, ver recvd = %d",
+	      io_req.requester.username, io_req.requester.machine,
+	      CURRENT_VERSION, request->version);
       log_error(msgbuf);
       return(ERROR);
     }
@@ -154,7 +156,7 @@ send_list(fd, request, list)
   OLDLIST frep;
   int response;
 
-  if(request->version == VERSION_4)
+  if(request->version >= VERSION_4)
     {
       list_rq = *list;
       list_rq.nseen              = htonl((u_long) list->nseen);
