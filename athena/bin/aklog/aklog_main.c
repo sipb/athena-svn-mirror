@@ -1,12 +1,12 @@
 /* 
- * $Id: aklog_main.c,v 1.13 1991-07-01 09:54:23 probe Exp $
- * $Source: /afs/dev.mit.edu/source/repository/athena/bin/aklog/aklog_main.c,v $
- * $Author: probe $
+ * $Id: aklog_main.c,v 1.14 1991-07-16 06:24:49 probe Exp $
  *
+ * Copyright 1990,1991 by the Massachusetts Institute of Technology
+ * For distribution and copying rights, see the file "mit-copyright.h"
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_main.c,v 1.13 1991-07-01 09:54:23 probe Exp $";
+static char *rcsid = "$Id: aklog_main.c,v 1.14 1991-07-16 06:24:49 probe Exp $";
 #endif lint || SABER
 
 #include <stdio.h>
@@ -587,7 +587,7 @@ static void add_hosts(file)
 		    sprintf(msgbuf, "Got host %s\n", inet_ntoa(in));
 		    params.pstdout(msgbuf);
 		}
-		ll_string(&hostlist, ll_s_add, inet_ntoa(in));
+		ll_string(&hostlist, ll_s_add, (char *)inet_ntoa(in));
 	    }
 	    if (zsubs && (hp=gethostbyaddr(&phosts[i],sizeof(long),AF_INET))) {
 		if (dflag) {
