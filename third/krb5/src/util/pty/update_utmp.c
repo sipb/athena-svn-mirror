@@ -142,7 +142,6 @@ long pty_update_utmp (process_type, pid, username, line, host, flags)
     strncpy(utx.ut_user, ent.ut_user, sizeof(ent.ut_user));
     strncpy(utx.ut_id, ent.ut_id, sizeof(ent.ut_id));
     strncpy(utx.ut_line, ent.ut_line, sizeof(ent.ut_line));
-    utx.ut_pid = ent.ut_pid;
     utx.ut_type = ent.ut_type;
 #ifdef UT_EXIT_STRUCTURE_DIFFER
     utx.ut_exit.ut_exit = ent.ut_exit.e_exit;
@@ -158,6 +157,7 @@ long pty_update_utmp (process_type, pid, username, line, host, flags)
     utx.ut_tv.tv_sec = ent.ut_time;
     utx.ut_tv.tv_usec = 0;
 #endif
+    utx.ut_pid = pid;
     if (host)
       strncpy(utx.ut_host, host, sizeof(utx.ut_host));
     else
