@@ -134,16 +134,18 @@ SRC = dospecial.c dviinput.c fontdef.c loadfont.c dvips.c tfmload.c \
 	download.c prescan.c scanpage.c skippage.c output.c scalewidth.c \
 	dosection.c dopage.c resident.c search.c unpack.c drawPS.c \
 	header.c makefont.c repack.c virtualfont.c dpicheck.c finclude.c \
-	pprescan.c papersiz.c flib.c color.c bbox.c emspecial.c
+	pprescan.c papersiz.c flib.c color.c bbox.c emspecial.c t1part.c \
+        hps.c
 
 OBJ = dospecial.o dviinput.o fontdef.o loadfont.o dvips.o tfmload.o \
 	download.o prescan.o scanpage.o skippage.o output.o scalewidth.o \
 	dosection.o dopage.o resident.o search.o unpack.o drawPS.o \
 	header.o makefont.o repack.o virtualfont.o dpicheck.o finclude.o \
-	pprescan.o papersiz.o flib.o color.o bbox.o emspecial.o
+	pprescan.o papersiz.o flib.o color.o bbox.o emspecial.o t1part.o \
+        hps.o
 
 all : afm2tfm dvips tex.pro texps.pro texc.pro special.pro finclude.pro \
-      color.pro crop.pro
+      color.pro crop.pro hps.pro
 
 dvips : $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) $(LIBS) $(FLIBS) -o dvips
@@ -184,9 +186,12 @@ color.pro : color.lpro squeeze
 crop.pro : crop.lpro squeeze
 	./squeeze <crop.lpro >crop.pro
 
+hps.pro : hps.lpro squeeze
+	./squeeze <hps.lpro >hps.pro
+
 install : afm2tfm dvips MakeTeXPK \
 	tex.pro texc.pro texps.pro special.pro finclude.pro color.pro \
-	crop.pro config.ps psfonts.map epsf.tex epsf.sty rotate.tex \
+	crop.pro hps.pro config.ps psfonts.map epsf.tex epsf.sty rotate.tex \
 	rotate.sty colordvi.tex colordvi.sty blackdvi.tex blackdvi.sty \
 	dvips.tex dvipsmac.tex dvips.1 afm2tfm.1
 	- mkdir ${DESTDIR}$(BINDIR)
@@ -204,6 +209,7 @@ install : afm2tfm dvips MakeTeXPK \
 	$(INSTALL) -c -m 644 finclude.pro ${DESTDIR}$(HEADERDIR)
 	$(INSTALL) -c -m 644 color.pro ${DESTDIR}$(HEADERDIR)
 	$(INSTALL) -c -m 644 crop.pro ${DESTDIR}$(HEADERDIR)
+	$(INSTALL) -c -m 644 hps.pro ${DESTDIR}$(HEADERDIR)
 	$(INSTALL) -c -m 644 config.ps ${DESTDIR}$(CONFIGDIR)/$(CONFIGFILE)
 	$(INSTALL) -c -m 644 psfonts.map ${DESTDIR}$(CONFIGDIR)
 	$(INSTALL) -c -m 644 epsf.tex ${DESTDIR}$(TEXMACRODIR)
