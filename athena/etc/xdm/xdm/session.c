@@ -159,7 +159,7 @@ struct display	*d;
     for (i = 0; i < d->authNum; i++)
     {
 	if (d->authorizations[i]->name_length == 9 &&
-	    bcmp (d->authorizations[i]->name, "SUN-DES-1", 9) == 0)
+	    memcmp (d->authorizations[i]->name, "SUN-DES-1", 9) == 0)
 	{
 	    XHostAddress	addr;
 	    char		netname[MAXNETNAMELEN+1];
@@ -415,7 +415,7 @@ char			*passwd;
 	    Debug ("User netname: %s\n", netname);
 	    len = strlen (passwd);
 	    if (len > 8)
-		bzero (passwd + 8, len - 8);
+		memset (passwd + 8, 0, len - 8);
 	    ret = getsecretkey(netname,secretkey,passwd);
 	    Debug ("getsecretkey returns %d, key length %d\n",
 		    ret, strlen (secretkey));
@@ -423,7 +423,7 @@ char			*passwd;
 	    Debug ("key_setsecret returns %d\n", ret);
 	}
 #endif
-	bzero(passwd, strlen(passwd));
+	memset(passwd, 0, strlen(passwd));
 	SetUserAuthorization (d, verify);
 	home = getEnv (verify->userEnviron, "HOME");
 	if (home)
@@ -431,6 +431,7 @@ char			*passwd;
 			LogError ("No home directory %s for user %s, using /\n",
 				  home, getEnv (verify->userEnviron, "USER"));
 			chdir ("/");
+			verify->userEnviron = setEnv(verify->userEnviron, "HOME", "/");
 		}
 	if (verify->argv) {
 		Debug ("executing session %s\n", verify->argv[0]);
@@ -444,12 +445,12 @@ char			*passwd;
 	execute (failsafeArgv, verify->userEnviron);
 	exit (1);
     case -1:
-	bzero(passwd, strlen(passwd));
+	memset(passwd, 0, strlen(passwd));
 	Debug ("StartSession, fork failed\n");
 	LogError ("can't start session for %d, fork failed\n", d->name);
 	return 0;
     default:
-	bzero(passwd, strlen(passwd));
+	memset(passwd, 0, strlen(passwd));
 	Debug ("StartSession, fork suceeded %d\n", pid);
 	*pidp = pid;
 	return 1;
@@ -561,6 +562,9 @@ execute (argv, environ)
 char	**argv;
 char	**environ;
 {
+    /* give /dev/null as stdin */
+    (void) close (0);
+    open ("/dev/null", 0);
     /* make stdout follow stderr to the log file */
     dup2 (2,1);
     execve (argv[0], argv, environ);
