@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/procs.h,v $
- *	$Id: procs.h,v 1.13 1991-08-23 12:10:16 raek Exp $
+ *	$Id: procs.h,v 1.14 1991-08-23 13:03:21 raek Exp $
  *	$Author: raek $
  */
 
@@ -107,7 +107,7 @@ ERRCODE nl_get_log P((int fd, char **buf, int *buflen, char *username, int insta
 ERRCODE nl_get_nm P((int fd, char **buf, int *buflen, char *username, int instance, int nuke, int *outlen));
 
 /* olc.c */
-ERRCODE main P((int argc , char **argv ));
+int main P((int argc , char **argv ));
 ERRCODE do_olc_init P((void ));
 
 /* olc_stock.c */
