@@ -203,10 +203,36 @@ getprent(bp)
 	}
 }
 
+/*
+ * Why do we close() before fclose()?
+ *
+ * endprent is called only by forked children, and with forked
+ * children calling it under POSIX semantics there is a problem.
+ *
+ * When the forked child calls fclose(), fclose() (under POSIX) seeks
+ * the file (and it's sharing the file descriptor with the parent) to
+ * the byte after the last one read (as recorded in the FILE
+ * structure) before close()ing. At the time of fork(), that pointer
+ * is set to X. After the fork happens, the parent may get to run for
+ * a while before the child does, and so it merrily continues reading
+ * through the file, getting the pointer set to X+delta. But then the
+ * child gets its turn, and seeks the pointer back to X. So the
+ * parent's loop pointer has just been decremented, and may read
+ * through the file potentially forever.
+ *
+ * Clearly we do not want the seek. So we close() the descriptor so
+ * that fclose() (or exit() calling fclose()) can't muck with it. We
+ * then do the fclose() anyway in the hope that it will free the memory
+ * it was using.
+ *
+ * See Solaris stdio(3S) and fclose(3S) more details.
+ */
 endprent()
 {
-	if (pfp != NULL)
+	if (pfp != NULL) {
+		close(fileno(pfp));
 		fclose(pfp);
+	}
 	pfp = NULL;
 }
 
