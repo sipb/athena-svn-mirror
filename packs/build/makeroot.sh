@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: makeroot.sh,v 1.5 2002-03-02 20:32:28 ghudson Exp $
+# $Id: makeroot.sh,v 1.6 2002-03-06 20:56:58 ghudson Exp $
 
 if [ $# -lt 1 ]; then
   echo "Usage: $0 rootdir [fullversion]" >&2
@@ -126,6 +126,11 @@ sgi)
   ;;
 
 esac
+
+# It's really convenient to have a nice shell in the build root area,
+# at least on Solaris and IRIX.
+mkdir -p "$root/bin/athena"
+cp /bin/athena/tcsh "$root/bin/athena/tcsh"
 
 # The discuss build needs the discuss user to be in the passwd file.
 grep '^discuss' /etc/passwd >> $root/etc/passwd
