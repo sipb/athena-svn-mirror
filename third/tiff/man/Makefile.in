@@ -1,5 +1,5 @@
 #! smake
-#	$Header: /afs/dev.mit.edu/source/repository/third/tiff/man/Makefile.in,v 1.1.1.1 2002-12-26 02:37:21 ghudson Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/third/tiff/man/Makefile.in,v 1.2 2003-01-25 05:52:01 ghudson Exp $
 #
 # @WARNING@
 #
@@ -344,7 +344,7 @@ apps/Makefile:
 	 for i in *.1; do						\
 	    f=${MANAPPNAME};						\
 	    ${ECHO} '	cd ..; ${INSTALL} -m 444 			\
-		-F ${DESTDIR}${MAN}/${MANAPPS}				\
+		-F $${DESTDIR}${MAN}/${MANAPPS}				\
 		-idb tiff.man.tools -src' apps/"$$i" '-O' "$$f";	\
 	 done								\
 	)>apps/Makefile
@@ -357,7 +357,7 @@ lib/Makefile:
 	 for i in *.3t; do						\
 	    f=${MANLIBNAME};						\
 	    ${ECHO} '	cd ..; ${INSTALL} -m 444 			\
-		-F ${DESTDIR}${MAN}/${MANLIB}				\
+		-F $${DESTDIR}${MAN}/${MANLIB}				\
 		-idb tiff.man.dev -src' lib/"$$i" '-O' "$$f";		\
 	 done								\
 	)>lib/Makefile
