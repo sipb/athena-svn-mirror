@@ -1,12 +1,12 @@
 /* 
- * $Id: aklog_main.c,v 1.5 1990-07-23 09:08:35 qjb Exp $
+ * $Id: aklog_main.c,v 1.6 1990-07-23 09:48:06 qjb Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/aklog/aklog_main.c,v $
  * $Author: qjb $
  *
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_main.c,v 1.5 1990-07-23 09:08:35 qjb Exp $";
+static char *rcsid = "$Id: aklog_main.c,v 1.6 1990-07-23 09:48:06 qjb Exp $";
 #endif lint || SABER
 
 #include <stdio.h>
@@ -25,7 +25,7 @@ static char *rcsid = "$Id: aklog_main.c,v 1.5 1990-07-23 09:08:35 qjb Exp $";
 #include <afs/venus.h>
 #include <afs/ptserver.h>
 
-#include <aklog.h>
+#include "aklog.h"
 #include "linked_list.h"
 
 #define AFSKEY "afs"

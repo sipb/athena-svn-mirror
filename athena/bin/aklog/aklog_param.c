@@ -1,15 +1,15 @@
 /* 
- * $Id: aklog_param.c,v 1.3 1990-06-27 13:05:52 qjb Exp $
+ * $Id: aklog_param.c,v 1.4 1990-07-23 09:52:32 qjb Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/aklog/aklog_param.c,v $
  * $Author: qjb $
  *
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Id: aklog_param.c,v 1.3 1990-06-27 13:05:52 qjb Exp $";
+static char *rcsid = "$Id: aklog_param.c,v 1.4 1990-07-23 09:52:32 qjb Exp $";
 #endif /* lint || SABER */
 
-#include <aklog.h>
+#include "aklog.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 
