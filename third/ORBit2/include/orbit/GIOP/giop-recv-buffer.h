@@ -25,18 +25,9 @@ struct _GIOPMessageQueueEntry {
 	GIOPConnection     *cnx;
 	CORBA_unsigned_long msg_type;
 	CORBA_unsigned_long request_id;
-	union {
-#ifdef ORBIT_THREADED
-		struct {
-			pthread_mutex_t *condvar_lock;
-			pthread_cond_t *condvar;
-		} threaded;
-#endif
-		struct {
-			GIOPAsyncCallback cb;
-			gpointer          unused;
-		} unthreaded;
-	} u;
+	GIOPThread         *src_thread;
+
+	GIOPAsyncCallback   async_cb;
 };
 
 struct _GIOPRecvBuffer {
@@ -51,11 +42,11 @@ struct _GIOPRecvBuffer {
 
 	GIOPVersion giop_version;
 	gulong      left_to_read;
-	gboolean    free_body : 1;
+	guint       free_body : 1;
 };
 
 #define         giop_msg_conversion_needed(msg)     giop_endian_conversion_needed(GIOP_MSG(msg)->header.flags)
-GIOPRecvBuffer *giop_recv_buffer_use_buf           (void);
+GIOPRecvBuffer *giop_recv_buffer_use_buf           (GIOPConnection        *cnx);
 GIOPRecvBuffer *giop_recv_buffer_use_encaps_buf    (GIOPRecvBuffer        *buf);
 GIOPRecvBuffer *giop_recv_buffer_use_encaps        (guchar                *mem,
 						    gulong                 len);
@@ -67,8 +58,7 @@ void            giop_recv_list_setup_queue_entry   (GIOPMessageQueueEntry *ent,
 void            giop_recv_list_setup_queue_entry_async (GIOPMessageQueueEntry *ent,
 							GIOPAsyncCallback      cb);
 
-GIOPRecvBuffer *giop_recv_buffer_get               (GIOPMessageQueueEntry *ent,
-						    gboolean               block_for_reply);
+GIOPRecvBuffer *giop_recv_buffer_get               (GIOPMessageQueueEntry *ent);
 void            giop_recv_buffer_unuse             (GIOPRecvBuffer        *buf);
 
 #define giop_recv_buffer_reply_status(buf) (                                            \
@@ -81,7 +71,7 @@ CORBA_unsigned_long         giop_recv_buffer_get_request_id (GIOPRecvBuffer *buf
 char                       *giop_recv_buffer_get_opname     (GIOPRecvBuffer *buf);
 CORBA_sequence_CORBA_octet *giop_recv_buffer_get_objkey     (GIOPRecvBuffer *buf);
 void                        giop_recv_list_zap              (GIOPConnection *cnx);
-gboolean                    giop_connection_handle_input    (LINCConnection *lcnx);
+gboolean                    giop_connection_handle_input    (LinkConnection *lcnx);
 void                        giop_connection_destroy_frags   (GIOPConnection *cnx);
 
 #endif /* ORBIT2_INTERNAL_API */

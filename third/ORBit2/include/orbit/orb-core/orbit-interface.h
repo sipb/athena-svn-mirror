@@ -5,7 +5,7 @@
 #ifndef orbit_interface_H
 #define orbit_interface_H 1
 #include <glib.h>
-#define ORBIT_IDL_SERIAL 19
+#define ORBIT_IDL_SERIAL 20
 #include <orbit/orbit-types.h>
 
 #ifdef __cplusplus
@@ -124,8 +124,7 @@ extern "C"
        _length;
       ORBit_IArg *_buffer;
       CORBA_boolean _release;
-   }
-   CORBA_sequence_ORBit_IArg;
+   } CORBA_sequence_ORBit_IArg;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_ORBit_IArg_0)
 #define TC_IMPL_TC_CORBA_sequence_ORBit_IArg_0 'o'
@@ -214,8 +213,7 @@ extern "C"
        _length;
       CORBA_TypeCode *_buffer;
       CORBA_boolean _release;
-   }
-   CORBA_sequence_CORBA_TypeCode;
+   } CORBA_sequence_CORBA_TypeCode;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_TypeCode_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_TypeCode_0 'o'
@@ -304,8 +302,7 @@ extern "C"
        _length;
       CORBA_string *_buffer;
       CORBA_boolean _release;
-   }
-   CORBA_sequence_CORBA_string;
+   } CORBA_sequence_CORBA_string;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_string_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_string_0 'o'
@@ -483,8 +480,7 @@ extern "C"
        _length;
       ORBit_IMethod *_buffer;
       CORBA_boolean _release;
-   }
-   CORBA_sequence_ORBit_IMethod;
+   } CORBA_sequence_ORBit_IMethod;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_ORBit_IMethod_0)
 #define TC_IMPL_TC_CORBA_sequence_ORBit_IMethod_0 'o'
@@ -576,8 +572,7 @@ extern "C"
        _length;
       CORBA_string *_buffer;
       CORBA_boolean _release;
-   }
-   CORBA_sequence_CORBA_string;
+   } CORBA_sequence_CORBA_string;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_string_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_string_0 'o'
@@ -667,8 +662,7 @@ extern "C"
        _length;
       ORBit_IInterface *_buffer;
       CORBA_boolean _release;
-   }
-   CORBA_sequence_ORBit_IInterface;
+   } CORBA_sequence_ORBit_IInterface;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_ORBit_IInterface_0)
 #define TC_IMPL_TC_CORBA_sequence_ORBit_IInterface_0 'o'

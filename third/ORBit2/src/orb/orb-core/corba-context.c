@@ -9,13 +9,13 @@ free_entry (gpointer key, gpointer value, gpointer user_data)
 {
 	g_free (key);
 	g_free (value);
-	
+
 	return TRUE;
 }
 
 static void ORBit_Context_free_fn(ORBit_RootObject ctx);
 
-static gboolean
+static void
 free_child (gpointer value, gpointer user_data)
 {
 	CORBA_Context ctx = value;
@@ -23,8 +23,6 @@ free_child (gpointer value, gpointer user_data)
 	ctx->parent.refs = 0;
 	ctx->parent_ctx = CORBA_OBJECT_NIL;
 	ORBit_Context_free_fn (ORBIT_ROOT_OBJECT (ctx));
-
-	return TRUE;
 }
 
 static void
@@ -33,12 +31,12 @@ ORBit_Context_free_fn (ORBit_RootObject obj_in)
 	CORBA_Context ctx = (CORBA_Context) obj_in;
 
 	if (ctx->children) {
-		g_slist_foreach (ctx->children, (GFunc)free_child, ctx);
+		g_slist_foreach (ctx->children, free_child, NULL);
 		g_slist_free (ctx->children);
 	}
 
 	if (ctx->mappings) {
-		g_hash_table_foreach_remove (ctx->mappings, free_entry, ctx);
+		g_hash_table_foreach_remove (ctx->mappings, free_entry, NULL);
 		g_hash_table_destroy (ctx->mappings);
 	}
 
@@ -385,9 +383,9 @@ ORBit_Context_demarshal (CORBA_Context   parent,
 	char               *key, *value;
 
 	initme->parent.refs = ORBIT_REFCOUNT_STATIC;
-
 	initme->parent_ctx = parent;
-
+	initme->mappings = NULL;
+ 
 	buf->cur = ALIGN_ADDRESS (buf->cur, 4);
 	if ((buf->cur + 4) > buf->end)
 		goto errout;
@@ -400,10 +398,8 @@ ORBit_Context_demarshal (CORBA_Context   parent,
 
 	if (nstrings)
 		initme->mappings = g_hash_table_new (g_str_hash, g_str_equal);
-	else {
-		initme->mappings = NULL;
+	else
 		goto errout;
-	}
 
 	for (i = 0; i < nstrings; ) {
 		buf->cur = ALIGN_ADDRESS (buf->cur, 4);

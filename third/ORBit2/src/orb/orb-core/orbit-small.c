@@ -36,7 +36,7 @@
 #include "orb-core-private.h"
 #include "orbit-debug.h"
 
-int ORBit_small_flags = ORBIT_SMALL_FAST_LOCALS;
+int ORBit_small_flags = 0;
 
 gpointer
 ORBit_small_alloc (CORBA_TypeCode tc)
@@ -220,7 +220,7 @@ ORBit_small_marshal_context (GIOPSendBuffer *send_buffer,
 	   efficiency of the current impl */
 	ORBit_ContextMarshalItem *mlist;
 
-	mlist = alloca (sizeof (ORBit_ContextMarshalItem) *
+	mlist = g_alloca (sizeof (ORBit_ContextMarshalItem) *
 			m_data->contexts._length);
 
 	tprintf (" context { ");
@@ -284,7 +284,8 @@ typedef struct {
 #define do_marshal_value(a,b,c)     \
 	ORBit_marshal_value   ((a),(gconstpointer *)(b),(c))
 #define do_demarshal_value(a,b,c,e) \
-	ORBit_demarshal_value ((c),(b),(a),(e))
+	if (ORBit_demarshal_value ((c),(b),(a),(e))) \
+		goto demarshal_exception
 
 static gboolean
 orbit_small_marshal (CORBA_Object           obj,
@@ -305,7 +306,7 @@ orbit_small_marshal (CORBA_Object           obj,
 	{
 		int          align;
 		int          len = sizeof (CORBA_unsigned_long) + m_data->name_len + 1;
-		guchar      *header = alloca (len + sizeof (CORBA_unsigned_long));
+		guchar      *header = g_alloca (len + sizeof (CORBA_unsigned_long));
 
 		*(CORBA_unsigned_long *) header = m_data->name_len + 1;
 		memcpy (header + sizeof (CORBA_unsigned_long),
@@ -321,7 +322,8 @@ orbit_small_marshal (CORBA_Object           obj,
 	}
 
 	send_buffer = giop_send_buffer_use_request (
-		cnx->giop_version, request_id, CORBA_TRUE,
+		cnx->giop_version, request_id, 
+		(m_data->flags & ORBit_I_METHOD_1_WAY) == 0,
 		obj->object_key, &op_vec, NULL);
 
 	if (!send_buffer)
@@ -380,27 +382,19 @@ typedef enum {
 	MARSHAL_CLEAN
 } DeMarshalRetType;
 
-typedef enum {
-	RECV_BUFFER_RELEASE,
-	RECV_BUFFER_KEEP
-} DeMarshalRecvRelease;
-
 static DeMarshalRetType
 orbit_small_demarshal (CORBA_Object           obj,
 		       GIOPConnection       **cnx,
-		       GIOPMessageQueueEntry *mqe,
+		       GIOPRecvBuffer        *recv_buffer,
 		       CORBA_Environment     *ev,
 		       gpointer               ret,
 		       ORBit_IMethod         *m_data,
-		       gpointer              *args,
-		       DeMarshalRecvRelease   recv_release)
+		       gpointer              *args)
 {
 	gpointer        data, p;
 	CORBA_TypeCode  tc;
-	GIOPRecvBuffer *recv_buffer;
 	CORBA_ORB       orb = obj->orb;
 
-	recv_buffer = giop_recv_buffer_get (mqe, TRUE);
 	if (!recv_buffer) {
 		dprintf (MESSAGES, "No recv buffer ...\n");
 		return MARSHAL_SYS_EXCEPTION_INCOMPLETE;
@@ -470,6 +464,8 @@ orbit_small_demarshal (CORBA_Object           obj,
 			dump_arg (a, tc);
 
 			if (a->flags & ORBit_I_ARG_OUT)
+				/* this may read (&discard) uninitialized memory,
+				 * see 'foo' below. This is for simplicity. */
 				arg = *(gpointer *)args [i];
 			else
 				arg = args [i];
@@ -504,7 +500,7 @@ orbit_small_demarshal (CORBA_Object           obj,
 				} else if (a->flags & ORBit_I_ARG_INOUT) {
 					ORBit_freekids_via_TypeCode (tc, arg);
 					do_demarshal_value (recv_buffer, &arg, tc, orb);
-				} else
+				} else /* 'foo' - don't use the bogus 'arg' contents */
 					*(gpointer *)args [i] = p = ORBit_demarshal_arg (
 						recv_buffer, tc, obj->orb);
 
@@ -521,28 +517,29 @@ orbit_small_demarshal (CORBA_Object           obj,
 			tprintf (" )");
 	}
 
-	if (recv_release == RECV_BUFFER_RELEASE)
-		giop_recv_buffer_unuse (recv_buffer);
-
 	return MARSHAL_CLEAN;
+
+ demarshal_exception:
+	/* FIXME: may well leak */
+	CORBA_exception_set_system(ev, ex_CORBA_MARSHAL,
+				   CORBA_COMPLETED_MAYBE);
+	return MARSHAL_EXCEPTION_COMPLETE;
 
  msg_exception:
 	if (giop_recv_buffer_reply_status (recv_buffer) ==
 	    GIOP_LOCATION_FORWARD) {
 		
 		*cnx = ORBit_handle_location_forward (recv_buffer, obj);
-		tprintf (" Exception: forward");
-
-		if (recv_release == RECV_BUFFER_RELEASE)
-			giop_recv_buffer_unuse (recv_buffer);
-
+		tprintf (" Exception: forward (%p)", *cnx);
+		if (!*cnx) {
+			CORBA_exception_set_system(ev, ex_CORBA_MARSHAL,
+						   CORBA_COMPLETED_MAYBE);
+			return MARSHAL_SYS_EXCEPTION_INCOMPLETE;
+		}
 		return MARSHAL_RETRY;
 	} else {
 		ORBit_handle_exception_array (
 			recv_buffer, ev, &m_data->exceptions, obj->orb);
-
-		if (recv_release == RECV_BUFFER_RELEASE)
-			giop_recv_buffer_unuse (recv_buffer);
 
 #ifdef G_ENABLE_DEBUG
 		if (_orbit_debug_flags & ORBIT_DEBUG_TRACES) {
@@ -568,8 +565,14 @@ ORBit_small_invoke_stub_n (CORBA_Object        object,
 			   CORBA_Context       ctx,
 			   CORBA_Environment  *ev)
 {
-	/* FIXME: validate on the sequence length ? */
-	ORBit_small_invoke_stub (object, &methods->_buffer[index], ret, args, ctx, ev);
+	if (index < 0 || index > methods->_length) {
+		dprintf (MESSAGES, "Cannot invoke OOB method (%ld,%lu)\n",
+			 index, (gulong)methods->_length);
+		CORBA_exception_set_system (ev, ex_CORBA_NO_IMPLEMENT,
+					    CORBA_COMPLETED_NO);
+
+	} else
+		ORBit_small_invoke_stub (object, &methods->_buffer[index], ret, args, ctx, ev);
 }
 
 void
@@ -582,9 +585,12 @@ ORBit_small_invoke_stub (CORBA_Object       obj,
 {
 	CORBA_unsigned_long     request_id;
 	CORBA_completion_status completion_status;
-	GIOPConnection         *cnx;
+	GIOPConnection         *cnx = NULL;
 	GIOPMessageQueueEntry   mqe;
 	ORBit_OAObject          adaptor_obj;
+	GIOPRecvBuffer         *recv_buffer = NULL;
+	CORBA_Object            xt_proxy = CORBA_OBJECT_NIL;
+	ORBitPolicy            *invoke_policy = CORBA_OBJECT_NIL;
 
 	if (!obj) {
 		dprintf (MESSAGES, "Cannot invoke method on null object\n");
@@ -593,15 +599,34 @@ ORBit_small_invoke_stub (CORBA_Object       obj,
 		goto clean_out;
 	}
 
+	CORBA_exception_init (ev);
+
+	if ((invoke_policy = ORBit_object_get_policy (obj)))
+		ORBit_policy_push (invoke_policy);
+
 	adaptor_obj = obj->adaptor_obj;
 
 	if (adaptor_obj) {
-		tprintf_header (obj, m_data);
-		tprintf ("[in-proc]");
-		ORBit_small_handle_request (adaptor_obj, m_data->name, ret,
-					    args, ctx, NULL, ev);
-		goto clean_out;
-	}
+		/* FIXME: unchecked cast */
+		if (ORBit_poa_allow_cross_thread_call ((ORBit_POAObject) adaptor_obj,
+						       m_data->flags)) {
+			tprintf_header (obj, m_data);
+			tprintf ("[in-proc]");
+			ORBit_small_handle_request (adaptor_obj, m_data->name, ret,
+						    args, ctx, NULL, ev);
+			goto clean_out;
+		} else {
+			tprintf ("[in-proc-XT]");
+			/*
+			 * FIXME: this is _really_ slow, can easily be optimised
+			 * by shoving the GIOP data straight on the incoming
+			 * queue
+			 */
+			xt_proxy = ORBit_objref_get_proxy (obj);
+			obj = xt_proxy;
+		}
+	} else
+		giop_thread_new_check (NULL);
 
 	cnx = ORBit_object_get_connection (obj);
 
@@ -629,9 +654,10 @@ ORBit_small_invoke_stub (CORBA_Object       obj,
 		goto clean_out;
 	}
 
-	switch (orbit_small_demarshal (obj, &cnx, &mqe, ev,
-				       ret, m_data, args,
-				       RECV_BUFFER_RELEASE))
+	recv_buffer = giop_recv_buffer_get (&mqe);
+
+	switch (orbit_small_demarshal (obj, &cnx, recv_buffer, ev,
+				       ret, m_data, args))
 	{
 	case MARSHAL_SYS_EXCEPTION_COMPLETE:
 		completion_status = CORBA_COMPLETED_YES;
@@ -656,7 +682,16 @@ ORBit_small_invoke_stub (CORBA_Object       obj,
 	};
 
  clean_out:
+	ORBit_RootObject_release (xt_proxy);
+	giop_recv_buffer_unuse (recv_buffer);
+
 	tprintf_end_method ();
+	if (cnx)
+		giop_connection_unref (cnx);
+	if (invoke_policy) {
+		ORBit_policy_pop ();
+		ORBit_policy_unref (invoke_policy);
+	}
 	return;
 
  system_exception:
@@ -698,7 +733,7 @@ ORBit_small_invoke_adaptor (ORBit_OAObject     adaptor_obj,
 		switch (tc->kind) {
 		case BASE_TYPES:
 		case OBJ_STRING_TYPES:
-			retval = alloca (ORBit_gather_alloc_info (tc));
+			retval = g_alloca (ORBit_gather_alloc_info (tc));
 			break;
 		case STRUCT_UNION_TYPES:
 			if (m_data->flags & ORBit_I_COMMON_FIXED_SIZE) {
@@ -716,8 +751,10 @@ ORBit_small_invoke_adaptor (ORBit_OAObject     adaptor_obj,
 		int len = m_data->arguments._length *
 			sizeof (gpointer);
 
-		args = alloca (len);
-		scratch = alloca (len);
+		args = g_alloca (len);
+		memset (args, 0, len);
+		scratch = g_alloca (len);
+		memset (scratch, 0, len);
 	}		
 
 	for (i = 0; i < m_data->arguments._length; i++) {
@@ -735,7 +772,7 @@ ORBit_small_invoke_adaptor (ORBit_OAObject     adaptor_obj,
 			switch (tc->kind) {
 			case BASE_TYPES:
 			case OBJ_STRING_TYPES:
-				p = args [i] = alloca (ORBit_gather_alloc_info (tc));
+				p = args [i] = g_alloca (ORBit_gather_alloc_info (tc));
 				do_demarshal_value (recv_buffer, &p, tc, orb);
 
 				p = args [i];
@@ -744,7 +781,7 @@ ORBit_small_invoke_adaptor (ORBit_OAObject     adaptor_obj,
 			case STRUCT_UNION_TYPES:
 			case CORBA_tk_array:
 				if (a->flags & ORBit_I_COMMON_FIXED_SIZE) {
-					p = args [i] = alloca (ORBit_gather_alloc_info (tc));
+					p = args [i] = g_alloca (ORBit_gather_alloc_info (tc));
 					do_demarshal_value (recv_buffer, &p, tc, orb);
 					p = args [i];
 					tprintf_trace_value (&p, tc);
@@ -768,7 +805,7 @@ ORBit_small_invoke_adaptor (ORBit_OAObject     adaptor_obj,
 			switch (tc->kind) {
 			case BASE_TYPES:
 			case OBJ_STRING_TYPES:
-				scratch [i] = alloca (ORBit_gather_alloc_info (tc));
+				scratch [i] = g_alloca (ORBit_gather_alloc_info (tc));
 				break;
 			case STRUCT_UNION_TYPES:
 			case CORBA_tk_array:
@@ -802,8 +839,14 @@ ORBit_small_invoke_adaptor (ORBit_OAObject     adaptor_obj,
 
 	if (m_data->flags & ORBit_I_METHOD_1_WAY)
 		goto clean_out;
+	else
+		goto handle_possible_exception;
+	
+ demarshal_exception:
+	CORBA_exception_set_system (ev, ex_CORBA_MARSHAL,
+				    CORBA_COMPLETED_NO);
 
- sys_exception:
+ handle_possible_exception:
 	/* FIXME: should we be using the connection's GIOP version ? */
 	send_buffer = giop_send_buffer_use_reply (
 		recv_buffer->giop_version,
@@ -821,7 +864,7 @@ ORBit_small_invoke_adaptor (ORBit_OAObject     adaptor_obj,
 			   so we throw a system exception next */
 			dprintf (MESSAGES, "Re-sending an exception, this time %d: '%s'",
 				 ev->_major, ev->_id);
-			goto sys_exception;
+			goto handle_possible_exception;
 		}
 		tprintf ("User exception '%s'", ev->_id);
 
@@ -909,18 +952,19 @@ ORBit_small_invoke_adaptor (ORBit_OAObject     adaptor_obj,
 	giop_send_buffer_write (send_buffer, recv_buffer->connection, FALSE);
 	giop_send_buffer_unuse (send_buffer);
 
-	if (m_data->ret && tc->kind != CORBA_tk_void &&
-	    ev->_major == CORBA_NO_EXCEPTION) {
+	if (m_data->ret && tc->kind != CORBA_tk_void) {
 		switch (m_data->ret->kind) {
 		case BASE_TYPES:
 			break;
 		case CORBA_tk_objref:
 		case CORBA_tk_TypeCode:
-			CORBA_Object_release (*(CORBA_Object *) retval, ev);
+			if (ev->_major == CORBA_NO_EXCEPTION)
+				CORBA_Object_release (*(CORBA_Object *) retval, ev);
 			break;
 		case CORBA_tk_string:
 		case CORBA_tk_wstring:
-			ORBit_free (*(char **) retval);
+			if (ev->_major == CORBA_NO_EXCEPTION)
+				ORBit_free (*(char **) retval);
 			break;
 		case STRUCT_UNION_TYPES:
 			if (m_data->flags & ORBit_I_COMMON_FIXED_SIZE) {
@@ -928,7 +972,8 @@ ORBit_small_invoke_adaptor (ORBit_OAObject     adaptor_obj,
 				break;
 			} /* drop through */
 		default:
-			ORBit_free (pretval);
+			if (ev->_major == CORBA_NO_EXCEPTION)
+				ORBit_free (pretval);
 			break;
 		}
 	}
@@ -969,20 +1014,30 @@ ORBit_small_invoke_adaptor (ORBit_OAObject     adaptor_obj,
 				ORBit_free (args [i]);
 				break;
 			}
-		} else if (ev->_major == CORBA_NO_EXCEPTION) { /* Out */
+		} else { /* Out */
 			switch (tc->kind) {
 			case BASE_TYPES:
 				break;
 			case CORBA_tk_objref:
 			case CORBA_tk_TypeCode:
-				CORBA_Object_release (*(CORBA_Object *) scratch [i], ev);
+				if (ev->_major == CORBA_NO_EXCEPTION)
+					CORBA_Object_release (*(CORBA_Object *) scratch [i], ev);
 				break;
 			case CORBA_tk_string:
 			case CORBA_tk_wstring:
-				ORBit_free (*(char **) scratch [i]);
+				if (ev->_major == CORBA_NO_EXCEPTION)
+					ORBit_free (*(char **) scratch [i]);
 				break;
+			case STRUCT_UNION_TYPES:
+			case CORBA_tk_array:
+				if (a->flags & ORBit_I_COMMON_FIXED_SIZE) {
+					ORBit_free (scratch [i]);
+					break;
+				}
+				/* drop through */
 			default:
-				ORBit_free (scratch [i]);
+				if (ev->_major == CORBA_NO_EXCEPTION)
+					ORBit_free (scratch [i]);
 				break;
 			}
 		}
@@ -1029,8 +1084,10 @@ ORBit_small_demarshal_async (ORBitAsyncQueueEntry *aqe,
 			     gpointer             *args,
 			     CORBA_Environment    *ev)
 {
-	switch (orbit_small_demarshal (aqe->obj, &aqe->mqe.cnx, &aqe->mqe, ev,
-				       ret, aqe->m_data, args, RECV_BUFFER_KEEP)) {
+	g_return_if_fail (aqe->mqe.buffer != NULL);
+
+	switch (orbit_small_demarshal (aqe->obj, &aqe->mqe.cnx, aqe->mqe.buffer, ev,
+				       ret, aqe->m_data, args)) {
 	case MARSHAL_SYS_EXCEPTION_COMPLETE:
 		aqe->completion_status = CORBA_COMPLETED_YES;
 		dprintf (MESSAGES, "Sys exception completed on id 0x%x\n\n",
@@ -1076,10 +1133,10 @@ async_recv_cb (ORBitAsyncQueueEntry *aqe)
 	CORBA_exception_init (ev);
 
 	/* So we don't get invoked again */
-	aqe->mqe.u.unthreaded.cb = NULL;
+	aqe->mqe.async_cb = NULL;
 
 	if (!aqe->mqe.cnx ||
-	    aqe->mqe.cnx->parent.status == LINC_DISCONNECTED)
+	    aqe->mqe.cnx->parent.status == LINK_DISCONNECTED)
 		CORBA_exception_set_system (ev, ex_CORBA_COMM_FAILURE,
 					    aqe->completion_status);
 
@@ -1088,6 +1145,7 @@ async_recv_cb (ORBitAsyncQueueEntry *aqe)
 
 	ORBit_RootObject_release (aqe->obj);
 /*	ORBit_RootObject_release (aqe->m_data); */
+	giop_recv_list_destroy_queue_entry (&aqe->mqe);
 	g_free (aqe);
 	CORBA_exception_free (ev);
 }
@@ -1157,6 +1215,8 @@ ORBit_small_invoke_async (CORBA_Object         obj,
 	aqe->m_data = /* ORBit_RootObject_duplicate */ (m_data);
 
  clean_out:
+	if (cnx)
+		giop_connection_unref (cnx);
 	tprintf_end_method ();
 	return;
 
@@ -1187,17 +1247,17 @@ ORBit_small_get_servant (CORBA_Object obj)
 }
 
 static ORBitConnectionStatus
-get_status (LINCConnection *cnx)
+get_status (GIOPConnection *cnx)
 {
 	ORBitConnectionStatus ret;
 
 	g_return_val_if_fail (cnx != NULL, ORBIT_CONNECTION_DISCONNECTED);
 
-	switch (cnx->status) {
-	case LINC_CONNECTED:
+	switch (link_connection_get_status (LINK_CONNECTION (cnx))) {
+	case LINK_CONNECTED:
 		ret = ORBIT_CONNECTION_CONNECTED;
 		break;
-	case LINC_CONNECTING:
+	case LINK_CONNECTING:
 		ret = ORBIT_CONNECTION_CONNECTED;
 		break;
 	default:
@@ -1212,16 +1272,20 @@ ORBit_small_get_connection_status (CORBA_Object obj)
 {
 	ORBitConnectionStatus ret;
 
+	g_return_val_if_fail (obj != CORBA_OBJECT_NIL,
+			      ORBIT_CONNECTION_DISCONNECTED);
+
 	if (ORBit_small_get_servant (obj))
 		ret = ORBIT_CONNECTION_IN_PROC;
 	else {
-		GIOPConnection *connection;
+		GIOPConnection *cnx;
 
-		connection = ORBit_object_get_connection (obj);
+		cnx = ORBit_object_get_connection (obj);
 
-		if (connection)
-			ret = get_status (LINC_CONNECTION (connection));
-		else
+		if (cnx) {
+			ret = get_status (cnx);
+			giop_connection_unref (cnx);
+		} else
 			ret = ORBIT_CONNECTION_DISCONNECTED;
 	}
 
@@ -1242,14 +1306,47 @@ ORBit_small_listen_for_broken (CORBA_Object obj,
 		ret = ORBIT_CONNECTION_IN_PROC;
 
 	else {
-		GIOPConnection *connection;
+		GIOPConnection *cnx;
 
-		connection = ORBit_object_get_connection (obj);
+		cnx = ORBit_object_get_connection (obj);
 
-		if (connection) {
-			ret = get_status (LINC_CONNECTION (connection));
-			g_signal_connect (G_OBJECT (connection),
-					  "broken", fn, user_data);
+		if (cnx) {
+			ret = get_status (cnx);
+			link_connection_add_broken_cb
+				(LINK_CONNECTION (cnx),
+				 (LinkBrokenCallback)fn, user_data);
+			giop_connection_unref (cnx);
+		} else
+			ret = ORBIT_CONNECTION_DISCONNECTED;
+	}
+
+	return ret;
+}
+
+ORBitConnectionStatus
+ORBit_small_unlisten_for_broken_full (CORBA_Object obj,
+				      GCallback    fn,
+				      gpointer     user_data)
+{
+	ORBitConnectionStatus ret;
+
+	if (!obj)
+		ret = ORBIT_CONNECTION_DISCONNECTED;
+
+	else if (ORBit_small_get_servant (obj))
+		ret = ORBIT_CONNECTION_IN_PROC;
+
+	else {
+		GIOPConnection *cnx;
+
+		cnx = ORBit_object_peek_connection (obj);
+
+		if (cnx) {
+			ret = get_status (cnx);
+			link_connection_remove_broken_cb
+				(LINK_CONNECTION (cnx),
+				 (LinkBrokenCallback)fn, user_data);
+			giop_connection_unref (cnx);
 		} else
 			ret = ORBIT_CONNECTION_DISCONNECTED;
 	}
@@ -1261,46 +1358,42 @@ ORBitConnectionStatus
 ORBit_small_unlisten_for_broken (CORBA_Object obj,
 				 GCallback    fn)
 {
-	ORBitConnectionStatus ret;
+	return ORBit_small_unlisten_for_broken_full (obj, fn, NULL);
+}
 
-	if (!obj)
-		ret = ORBIT_CONNECTION_DISCONNECTED;
-
-	else if (ORBit_small_get_servant (obj))
-		ret = ORBIT_CONNECTION_IN_PROC;
-
-	else {
-		GIOPConnection *connection;
-
-		connection = ORBit_object_get_connection (obj);
-
-		if (connection) {
-			ret = get_status (LINC_CONNECTION (connection));
-			g_signal_handlers_disconnect_matched (
-				G_OBJECT (connection), 
-				G_SIGNAL_MATCH_FUNC,
-				0, 0, NULL, G_CALLBACK (fn), NULL);
-		} else
-			ret = ORBIT_CONNECTION_DISCONNECTED;
-	}
-
-	return ret;
+ORBitConnection *
+ORBit_small_get_connection_ref (CORBA_Object obj)
+{
+	return (ORBitConnection *) ORBit_object_get_connection (obj);
 }
 
 ORBitConnection *
 ORBit_small_get_connection (CORBA_Object obj)
 {
-	return (ORBitConnection *) ORBit_object_get_connection (obj);
+	ORBitConnection *cnx;
+
+	cnx = ORBit_small_get_connection_ref (obj);
+
+	/* This sucks but compatibily */
+	ORBit_small_connection_unref (cnx);
+	
+	return cnx;
+}
+
+void
+ORBit_small_connection_unref (ORBitConnection *cnx)
+{
+	if (cnx)
+		giop_connection_unref (cnx);
 }
 
 void
 ORBit_connection_set_max_buffer (ORBitConnection *cnx,
 				 gulong           max_buffer_bytes)
 {
-	LINCConnection *lcnx = (LINCConnection *) cnx;
+	LinkConnection *lcnx = (LinkConnection *) cnx;
 
-	g_return_if_fail (LINC_IS_CONNECTION (lcnx));
+	g_return_if_fail (LINK_IS_CONNECTION (lcnx));
 
-	linc_connection_set_max_buffer (lcnx, max_buffer_bytes);
+	link_connection_set_max_buffer (lcnx, max_buffer_bytes);
 }
-

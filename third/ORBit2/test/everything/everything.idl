@@ -50,6 +50,7 @@ module test {
 	interface ContextServer;
 	interface DeadReferenceObj;
 	interface PingPongServer;
+	interface LifeCycleServer;
 
 	interface TestFactory {
 		BasicServer getBasicServer();
@@ -68,7 +69,13 @@ module test {
 		TransientObj createTransientObj();
 		DeadReferenceObj createDeadReferenceObj();
 		PingPongServer createPingPongServer ();
+	        LifeCycleServer createLifeCycleServer ();
 		void noOp ();
+	};
+
+	interface LifeCycleServer {
+		void deactivateOnReturn();
+		void deactivateUnrefOnReturn();
 	};
 
 	interface DeadReferenceObj {
@@ -100,6 +107,15 @@ module test {
 		DerivedServer serv;
 	};
 
+	struct AlignHoleInnerStruct {
+		double a;
+		octet  b;
+	};
+	struct AlignHoleStruct {
+		AlignHoleInnerStruct a;
+		char b;
+	};
+
 	typedef sequence<string> StrSeq;
 	typedef sequence<string> AnotherStrSeq;
 	typedef sequence<CompoundStruct,2> BoundedStructSeq;
@@ -117,6 +133,7 @@ module test {
 		BoundedStructSeq opBoundedStructSeq(in BoundedStructSeq inArg,
 						    inout BoundedStructSeq inoutArg,
 						    out BoundedStructSeq outArg);
+		LongSeq opMassiveSeq();
 	};
   
 	typedef enum AnEnum { 
@@ -139,6 +156,7 @@ module test {
 
 	const long SequenceLen = 4;
 
+	typedef octet OctetArray[SequenceLen];
 	typedef long LongArray[SequenceLen];
 	typedef string StrArray[SequenceLen];
 	typedef string StrArrayMultiDimensional[SequenceLen][3][5];
@@ -146,6 +164,7 @@ module test {
 
 	interface ArrayServer {
 		LongArray opLongArray(in LongArray inArg, inout LongArray inoutArg, out LongArray outArg);
+		OctetArray opOctetArray(in OctetArray inArg, inout OctetArray inoutArg, out OctetArray outArg);
 		StrArray opStrArray(in StrArray inArg, inout StrArray inoutArg, out StrArray outArg);
 	};
   
@@ -163,6 +182,11 @@ module test {
 		oneway void opOneWay(in string inArg);
 		void noImplement ();
 		void testLargeStringSeq (in StrSeq seq);
+
+		long   getObjectCount ();
+		Object getObject      (in long which);
+
+		void testBoolString (in boolean inBool, in string inArg, inout string inoutArg);
 	};
 
 	interface StructServer : BasicServer {
@@ -175,6 +199,9 @@ module test {
 		CompoundStruct opCompound       (in CompoundStruct          inArg, 
 						 inout CompoundStruct       inoutArg,
 						 out CompoundStruct         outArg);
+		AlignHoleStruct opAlignHole     (in AlignHoleStruct         inArg,
+						 inout AlignHoleStruct      inoutArg,
+						 out AlignHoleStruct        outArg);
 		oneway void    opObjectStruct   (in ObjectStruct            inArg);
 		StructAny opStructAny           ();
 	};
@@ -203,7 +230,7 @@ module test {
 	case 1: long x;
 	default: long w;
 	case 2: string y;
-	case 3: 
+	case 3: double j;
 	case 4: boolean z;
 	case 5: VariableLengthStruct a;
 	case 6: StrSeq b;

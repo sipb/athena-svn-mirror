@@ -15,6 +15,7 @@ INCLUDES =						\
 	$(WARN_CFLAGS)					\
 	$(ORBIT_DEBUG_CFLAGS)				\
 	$(DISABLE_DEPRECATED_CFLAGS)			\
+	$(LOCAL_LINC_CFLAGS)				\
 	$(ORBIT_CFLAGS)
 
 POA_IDLOUT=poa-defs-common.c
@@ -23,7 +24,8 @@ main_src = \
 	poa.c \
 	orbit-poa-export.h \
 	orbit-poa.h \
-	poa-macros.h	\
+	poa-private.h \
+	poa-macros.h \
 	poa-manager.c \
 	poa-policy.c \
 	poa-servants.c \
@@ -37,6 +39,7 @@ IDL_FLAGS= -I$(top_srcdir)/src/idl/CORBA_PIDL			\
 	-I$(top_srcdir)/src/idl/CORBA				\
 	-I$(top_srcdir)/src/idl/misc				\
 	-I$(top_srcdir)/src/orb/orb-core			\
+	-D_PRE_3_0_COMPILER_                                    \
 	--noskels --nodefskels --nostubs --noidata --noheaders  \
 	--define=Object=OObject --define=TypeCode=TTypeCode	\
         --showcpperrors

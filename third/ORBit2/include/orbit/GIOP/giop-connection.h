@@ -22,13 +22,10 @@ G_BEGIN_DECLS
 				         GIOP_TYPE_IS_CONNECTION (((GTypeClass*) (class))->g_type))
 
 struct _GIOPConnection {
-	LINCConnection  parent;
+	LinkConnection  parent;
 
-	GMutex         *incoming_mutex;
 	GIOPRecvBuffer *incoming_msg;
 	GList          *incoming_frags;
-
-	GMutex         *outgoing_mutex;
 
 	GIOPVersion     giop_version;
 
@@ -36,7 +33,7 @@ struct _GIOPConnection {
 };
 
 typedef struct {
-	LINCConnectionClass parent_class;
+	LinkConnectionClass parent_class;
 } GIOPConnectionClass;
 
 GType           giop_connection_get_type      (void) G_GNUC_CONST;
@@ -46,13 +43,12 @@ GIOPConnection *giop_connection_initiate      (gpointer              orb_data,
 					       const char           *remote_serv_info,
 					       GIOPConnectionOptions options,
 					       GIOPVersion           giop_version);
-void            giop_connection_set_orb_n_ver (GIOPConnection       *cnx,
-					       gpointer              orb_data,
-					       GIOPVersion           version);
-					       
-void            giop_connection_remove_by_orb (gpointer              match_orb_data);
+void            giop_connections_shutdown     (void);
 void            giop_connection_close         (GIOPConnection       *cnx);
-void            giop_connection_unref         (GIOPConnection       *cnx);
+LinkConnectionStatus giop_connection_try_reconnect (GIOPConnection *cnx);
+
+#define         giop_connection_ref(cnx)      link_connection_ref(cnx)
+#define         giop_connection_unref(cnx)    link_connection_unref(cnx)
 
 #endif /* ORBIT2_INTERNAL_API */
 

@@ -5,7 +5,7 @@
 #ifndef iop_defs_H
 #define iop_defs_H 1
 #include <glib.h>
-#define ORBIT_IDL_SERIAL 19
+#define ORBIT_IDL_SERIAL 20
 #include <orbit/orbit-types.h>
 
 #ifdef __cplusplus
@@ -14,37 +14,6 @@ extern "C"
 #endif				/* __cplusplus */
 
 /** typedefs **/
-#if !defined(_IOP_EndpointIdPositionComponent_defined)
-#define _IOP_EndpointIdPositionComponent_defined 1
-   typedef struct IOP_EndpointIdPositionComponent_type
-      IOP_EndpointIdPositionComponent;
-   struct IOP_EndpointIdPositionComponent_type
-   {
-      CORBA_unsigned_short begin;
-      CORBA_unsigned_short end;
-   };
-
-#if !defined(TC_IMPL_TC_IOP_EndpointIdPositionComponent_0)
-#define TC_IMPL_TC_IOP_EndpointIdPositionComponent_0 'i'
-#define TC_IMPL_TC_IOP_EndpointIdPositionComponent_1 'o'
-#define TC_IMPL_TC_IOP_EndpointIdPositionComponent_2 'p'
-#define TC_IMPL_TC_IOP_EndpointIdPositionComponent_3 '_'
-#define TC_IMPL_TC_IOP_EndpointIdPositionComponent_4 'd'
-#define TC_IMPL_TC_IOP_EndpointIdPositionComponent_5 'e'
-#define TC_IMPL_TC_IOP_EndpointIdPositionComponent_6 'f'
-#define TC_IMPL_TC_IOP_EndpointIdPositionComponent_7 's'
-#ifdef ORBIT_IDL_C_IMODULE_iop_defs
-   static
-#else
-   extern
-#endif
-   const struct CORBA_TypeCode_struct
-      TC_IOP_EndpointIdPositionComponent_struct;
-#define TC_IOP_EndpointIdPositionComponent ((CORBA_TypeCode)&TC_IOP_EndpointIdPositionComponent_struct)
-#endif
-#define IOP_EndpointIdPositionComponent__alloc() ((IOP_EndpointIdPositionComponent *)ORBit_small_alloc (TC_IOP_EndpointIdPositionComponent))
-#define IOP_EndpointIdPositionComponent__freekids(m,d) ORBit_small_freekids (TC_IOP_EndpointIdPositionComponent,(m),(d))
-#endif
 #if !defined(_IOP_ProfileId_defined)
 #define _IOP_ProfileId_defined 1
    typedef CORBA_unsigned_long IOP_ProfileId;
@@ -78,6 +47,10 @@ extern "C"
 #define IOP_TAG_MULTIPLE_COMPONENTS 1U
 #endif				/* !IOP_TAG_MULTIPLE_COMPONENTS */
 
+#ifndef IOP_TAG_SCCP_IOP
+#define IOP_TAG_SCCP_IOP 2U
+#endif				/* !IOP_TAG_SCCP_IOP */
+
 #if !defined(_IOP_TaggedProfile_defined)
 #define _IOP_TaggedProfile_defined 1
    typedef struct IOP_TaggedProfile_type IOP_TaggedProfile;
@@ -99,8 +72,7 @@ extern "C"
        _length;
       CORBA_octet *_buffer;
       CORBA_boolean _release;
-   }
-   CORBA_sequence_CORBA_octet;
+   } CORBA_sequence_CORBA_octet;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_octet_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_octet_0 'i'
@@ -171,8 +143,7 @@ extern "C"
        _length;
       IOP_TaggedProfile *_buffer;
       CORBA_boolean _release;
-   }
-   CORBA_sequence_IOP_TaggedProfile;
+   } CORBA_sequence_IOP_TaggedProfile;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_IOP_TaggedProfile_0)
 #define TC_IMPL_TC_CORBA_sequence_IOP_TaggedProfile_0 'i'
@@ -269,8 +240,7 @@ extern "C"
        _length;
       CORBA_octet *_buffer;
       CORBA_boolean _release;
-   }
-   CORBA_sequence_CORBA_octet;
+   } CORBA_sequence_CORBA_octet;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_octet_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_octet_0 'i'
@@ -338,8 +308,7 @@ extern "C"
        _length;
       IOP_TaggedComponent *_buffer;
       CORBA_boolean _release;
-   }
-   CORBA_sequence_IOP_TaggedComponent;
+   } CORBA_sequence_IOP_TaggedComponent;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_IOP_TaggedComponent_0)
 #define TC_IMPL_TC_CORBA_sequence_IOP_TaggedComponent_0 'i'
@@ -446,9 +415,53 @@ extern "C"
 #define IOP_TAG_GENERIC_SEC_MECH 22U
 #endif				/* !IOP_TAG_GENERIC_SEC_MECH */
 
+#ifndef IOP_TAG_FIREWALL_TRANS
+#define IOP_TAG_FIREWALL_TRANS 23U
+#endif				/* !IOP_TAG_FIREWALL_TRANS */
+
+#ifndef IOP_TAG_SCCP_CONTACT_INFO
+#define IOP_TAG_SCCP_CONTACT_INFO 24U
+#endif				/* !IOP_TAG_SCCP_CONTACT_INFO */
+
 #ifndef IOP_TAG_JAVA_CODEBASE
 #define IOP_TAG_JAVA_CODEBASE 25U
 #endif				/* !IOP_TAG_JAVA_CODEBASE */
+
+#ifndef IOP_TAG_TRANSACTION_POLICY
+#define IOP_TAG_TRANSACTION_POLICY 26U
+#endif				/* !IOP_TAG_TRANSACTION_POLICY */
+
+#ifndef IOP_TAG_MESSAGE_ROUTER
+#define IOP_TAG_MESSAGE_ROUTER 30U
+#endif				/* !IOP_TAG_MESSAGE_ROUTER */
+
+#ifndef IOP_TAG_OTS_POLICY
+#define IOP_TAG_OTS_POLICY 31U
+#endif				/* !IOP_TAG_OTS_POLICY */
+
+#ifndef IOP_TAG_INV_POLICY
+#define IOP_TAG_INV_POLICY 32U
+#endif				/* !IOP_TAG_INV_POLICY */
+
+#ifndef IOP_TAG_CSI_SEC_MECH_LIST
+#define IOP_TAG_CSI_SEC_MECH_LIST 33U
+#endif				/* !IOP_TAG_CSI_SEC_MECH_LIST */
+
+#ifndef IOP_TAG_NULL_TAG
+#define IOP_TAG_NULL_TAG 34U
+#endif				/* !IOP_TAG_NULL_TAG */
+
+#ifndef IOP_TAG_SECIOP_SEC_TRANS
+#define IOP_TAG_SECIOP_SEC_TRANS 35U
+#endif				/* !IOP_TAG_SECIOP_SEC_TRANS */
+
+#ifndef IOP_TAG_TLS_SEC_TRANS
+#define IOP_TAG_TLS_SEC_TRANS 36U
+#endif				/* !IOP_TAG_TLS_SEC_TRANS */
+
+#ifndef IOP_TAG_ACTIVITY_POLICY
+#define IOP_TAG_ACTIVITY_POLICY 37U
+#endif				/* !IOP_TAG_ACTIVITY_POLICY */
 
 #ifndef IOP_TAG_COMPLETE_OBJECT_KEY
 #define IOP_TAG_COMPLETE_OBJECT_KEY 5U
@@ -477,6 +490,10 @@ extern "C"
 #ifndef IOP_TAG_DCE_SEC_MECH
 #define IOP_TAG_DCE_SEC_MECH 103U
 #endif				/* !IOP_TAG_DCE_SEC_MECH */
+
+#ifndef IOP_TAG_INET_SEC_TRANS
+#define IOP_TAG_INET_SEC_TRANS 123U
+#endif				/* !IOP_TAG_INET_SEC_TRANS */
 
 #if !defined(_IOP_ServiceId_defined)
 #define _IOP_ServiceId_defined 1
@@ -524,8 +541,7 @@ extern "C"
        _length;
       CORBA_octet *_buffer;
       CORBA_boolean _release;
-   }
-   CORBA_sequence_CORBA_octet;
+   } CORBA_sequence_CORBA_octet;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_octet_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_octet_0 'i'
@@ -593,8 +609,7 @@ extern "C"
        _length;
       IOP_ServiceContext *_buffer;
       CORBA_boolean _release;
-   }
-   CORBA_sequence_IOP_ServiceContext;
+   } CORBA_sequence_IOP_ServiceContext;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_IOP_ServiceContext_0)
 #define TC_IMPL_TC_CORBA_sequence_IOP_ServiceContext_0 'i'
@@ -685,6 +700,265 @@ extern "C"
 #define IOP_UnknownExceptionInfo 9U
 #endif				/* !IOP_UnknownExceptionInfo */
 
+#ifndef IOP_RTCorbaPriority
+#define IOP_RTCorbaPriority 10U
+#endif				/* !IOP_RTCorbaPriority */
+
+#ifndef IOP_RTCorbaPriorityRange
+#define IOP_RTCorbaPriorityRange 11U
+#endif				/* !IOP_RTCorbaPriorityRange */
+
+#ifndef IOP_FT_GROUP_VERSION
+#define IOP_FT_GROUP_VERSION 12U
+#endif				/* !IOP_FT_GROUP_VERSION */
+
+#ifndef IOP_FT_REQUEST
+#define IOP_FT_REQUEST 13U
+#endif				/* !IOP_FT_REQUEST */
+
+#ifndef IOP_ExceptionDetailMessage
+#define IOP_ExceptionDetailMessage 14U
+#endif				/* !IOP_ExceptionDetailMessage */
+
+#ifndef IOP_SecurityAttributeService
+#define IOP_SecurityAttributeService 15U
+#endif				/* !IOP_SecurityAttributeService */
+
+#ifndef IOP_ActivityService
+#define IOP_ActivityService 16U
+#endif				/* !IOP_ActivityService */
+
+#if !defined(ORBIT_DECL_IOP_Codec) && !defined(_IOP_Codec_defined)
+#define ORBIT_DECL_IOP_Codec 1
+#define _IOP_Codec_defined 1
+#define IOP_Codec__freekids CORBA_Object__freekids
+   typedef CORBA_Object IOP_Codec;
+   extern CORBA_unsigned_long IOP_Codec__classid;
+#if !defined(TC_IMPL_TC_IOP_Codec_0)
+#define TC_IMPL_TC_IOP_Codec_0 'i'
+#define TC_IMPL_TC_IOP_Codec_1 'o'
+#define TC_IMPL_TC_IOP_Codec_2 'p'
+#define TC_IMPL_TC_IOP_Codec_3 '_'
+#define TC_IMPL_TC_IOP_Codec_4 'd'
+#define TC_IMPL_TC_IOP_Codec_5 'e'
+#define TC_IMPL_TC_IOP_Codec_6 'f'
+#define TC_IMPL_TC_IOP_Codec_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_IOP_Codec_struct;
+#define TC_IOP_Codec ((CORBA_TypeCode)&TC_IOP_Codec_struct)
+#endif
+#endif
+#undef ex_IOP_Codec_InvalidTypeForEncoding
+#define ex_IOP_Codec_InvalidTypeForEncoding "IDL:omg.org/IOP/Codec/InvalidTypeForEncoding:1.0"
+#if !defined(_IOP_Codec_InvalidTypeForEncoding_defined)
+#define _IOP_Codec_InvalidTypeForEncoding_defined 1
+   typedef struct IOP_Codec_InvalidTypeForEncoding_type
+      IOP_Codec_InvalidTypeForEncoding;
+   struct IOP_Codec_InvalidTypeForEncoding_type
+   {
+      int dummy;
+   };
+
+#if !defined(TC_IMPL_TC_IOP_Codec_InvalidTypeForEncoding_0)
+#define TC_IMPL_TC_IOP_Codec_InvalidTypeForEncoding_0 'i'
+#define TC_IMPL_TC_IOP_Codec_InvalidTypeForEncoding_1 'o'
+#define TC_IMPL_TC_IOP_Codec_InvalidTypeForEncoding_2 'p'
+#define TC_IMPL_TC_IOP_Codec_InvalidTypeForEncoding_3 '_'
+#define TC_IMPL_TC_IOP_Codec_InvalidTypeForEncoding_4 'd'
+#define TC_IMPL_TC_IOP_Codec_InvalidTypeForEncoding_5 'e'
+#define TC_IMPL_TC_IOP_Codec_InvalidTypeForEncoding_6 'f'
+#define TC_IMPL_TC_IOP_Codec_InvalidTypeForEncoding_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct
+      TC_IOP_Codec_InvalidTypeForEncoding_struct;
+#define TC_IOP_Codec_InvalidTypeForEncoding ((CORBA_TypeCode)&TC_IOP_Codec_InvalidTypeForEncoding_struct)
+#endif
+#define IOP_Codec_InvalidTypeForEncoding__alloc() ((IOP_Codec_InvalidTypeForEncoding *)ORBit_small_alloc (TC_IOP_Codec_InvalidTypeForEncoding))
+#define IOP_Codec_InvalidTypeForEncoding__freekids(m,d) ORBit_small_freekids (TC_IOP_Codec_InvalidTypeForEncoding,(m),(d))
+#endif
+#undef ex_IOP_Codec_FormatMismatch
+#define ex_IOP_Codec_FormatMismatch "IDL:omg.org/IOP/Codec/FormatMismatch:1.0"
+#if !defined(_IOP_Codec_FormatMismatch_defined)
+#define _IOP_Codec_FormatMismatch_defined 1
+   typedef struct IOP_Codec_FormatMismatch_type IOP_Codec_FormatMismatch;
+   struct IOP_Codec_FormatMismatch_type
+   {
+      int dummy;
+   };
+
+#if !defined(TC_IMPL_TC_IOP_Codec_FormatMismatch_0)
+#define TC_IMPL_TC_IOP_Codec_FormatMismatch_0 'i'
+#define TC_IMPL_TC_IOP_Codec_FormatMismatch_1 'o'
+#define TC_IMPL_TC_IOP_Codec_FormatMismatch_2 'p'
+#define TC_IMPL_TC_IOP_Codec_FormatMismatch_3 '_'
+#define TC_IMPL_TC_IOP_Codec_FormatMismatch_4 'd'
+#define TC_IMPL_TC_IOP_Codec_FormatMismatch_5 'e'
+#define TC_IMPL_TC_IOP_Codec_FormatMismatch_6 'f'
+#define TC_IMPL_TC_IOP_Codec_FormatMismatch_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_IOP_Codec_FormatMismatch_struct;
+#define TC_IOP_Codec_FormatMismatch ((CORBA_TypeCode)&TC_IOP_Codec_FormatMismatch_struct)
+#endif
+#define IOP_Codec_FormatMismatch__alloc() ((IOP_Codec_FormatMismatch *)ORBit_small_alloc (TC_IOP_Codec_FormatMismatch))
+#define IOP_Codec_FormatMismatch__freekids(m,d) ORBit_small_freekids (TC_IOP_Codec_FormatMismatch,(m),(d))
+#endif
+#undef ex_IOP_Codec_TypeMismatch
+#define ex_IOP_Codec_TypeMismatch "IDL:omg.org/IOP/Codec/TypeMismatch:1.0"
+#if !defined(_IOP_Codec_TypeMismatch_defined)
+#define _IOP_Codec_TypeMismatch_defined 1
+   typedef struct IOP_Codec_TypeMismatch_type IOP_Codec_TypeMismatch;
+   struct IOP_Codec_TypeMismatch_type
+   {
+      int dummy;
+   };
+
+#if !defined(TC_IMPL_TC_IOP_Codec_TypeMismatch_0)
+#define TC_IMPL_TC_IOP_Codec_TypeMismatch_0 'i'
+#define TC_IMPL_TC_IOP_Codec_TypeMismatch_1 'o'
+#define TC_IMPL_TC_IOP_Codec_TypeMismatch_2 'p'
+#define TC_IMPL_TC_IOP_Codec_TypeMismatch_3 '_'
+#define TC_IMPL_TC_IOP_Codec_TypeMismatch_4 'd'
+#define TC_IMPL_TC_IOP_Codec_TypeMismatch_5 'e'
+#define TC_IMPL_TC_IOP_Codec_TypeMismatch_6 'f'
+#define TC_IMPL_TC_IOP_Codec_TypeMismatch_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_IOP_Codec_TypeMismatch_struct;
+#define TC_IOP_Codec_TypeMismatch ((CORBA_TypeCode)&TC_IOP_Codec_TypeMismatch_struct)
+#endif
+#define IOP_Codec_TypeMismatch__alloc() ((IOP_Codec_TypeMismatch *)ORBit_small_alloc (TC_IOP_Codec_TypeMismatch))
+#define IOP_Codec_TypeMismatch__freekids(m,d) ORBit_small_freekids (TC_IOP_Codec_TypeMismatch,(m),(d))
+#endif
+#if !defined(_IOP_EncodingFormat_defined)
+#define _IOP_EncodingFormat_defined 1
+   typedef CORBA_short IOP_EncodingFormat;
+#define IOP_EncodingFormat_marshal(x,y,z) CORBA_short_marshal((x),(y),(z))
+#define IOP_EncodingFormat_demarshal(x,y,z,i) CORBA_short_demarshal((x),(y),(z),(i))
+#if !defined(TC_IMPL_TC_IOP_EncodingFormat_0)
+#define TC_IMPL_TC_IOP_EncodingFormat_0 'i'
+#define TC_IMPL_TC_IOP_EncodingFormat_1 'o'
+#define TC_IMPL_TC_IOP_EncodingFormat_2 'p'
+#define TC_IMPL_TC_IOP_EncodingFormat_3 '_'
+#define TC_IMPL_TC_IOP_EncodingFormat_4 'd'
+#define TC_IMPL_TC_IOP_EncodingFormat_5 'e'
+#define TC_IMPL_TC_IOP_EncodingFormat_6 'f'
+#define TC_IMPL_TC_IOP_EncodingFormat_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_IOP_EncodingFormat_struct;
+#define TC_IOP_EncodingFormat ((CORBA_TypeCode)&TC_IOP_EncodingFormat_struct)
+#endif
+#define IOP_EncodingFormat__alloc() ((IOP_EncodingFormat *)ORBit_small_alloc (TC_CORBA_short))
+#define IOP_EncodingFormat__freekids(m,d) ORBit_small_freekids (TC_CORBA_short,(m),(d))
+#endif
+#ifndef IOP_ENCODING_CDR_ENCAPS
+#define IOP_ENCODING_CDR_ENCAPS 0
+#endif				/* !IOP_ENCODING_CDR_ENCAPS */
+
+#if !defined(_IOP_Encoding_defined)
+#define _IOP_Encoding_defined 1
+   typedef struct IOP_Encoding_type IOP_Encoding;
+   struct IOP_Encoding_type
+   {
+      IOP_EncodingFormat format;
+      CORBA_octet major_version;
+      CORBA_octet minor_version;
+   };
+
+#if !defined(TC_IMPL_TC_IOP_Encoding_0)
+#define TC_IMPL_TC_IOP_Encoding_0 'i'
+#define TC_IMPL_TC_IOP_Encoding_1 'o'
+#define TC_IMPL_TC_IOP_Encoding_2 'p'
+#define TC_IMPL_TC_IOP_Encoding_3 '_'
+#define TC_IMPL_TC_IOP_Encoding_4 'd'
+#define TC_IMPL_TC_IOP_Encoding_5 'e'
+#define TC_IMPL_TC_IOP_Encoding_6 'f'
+#define TC_IMPL_TC_IOP_Encoding_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_IOP_Encoding_struct;
+#define TC_IOP_Encoding ((CORBA_TypeCode)&TC_IOP_Encoding_struct)
+#endif
+#define IOP_Encoding__alloc() ((IOP_Encoding *)ORBit_small_alloc (TC_IOP_Encoding))
+#define IOP_Encoding__freekids(m,d) ORBit_small_freekids (TC_IOP_Encoding,(m),(d))
+#endif
+#if !defined(ORBIT_DECL_IOP_CodecFactory) && !defined(_IOP_CodecFactory_defined)
+#define ORBIT_DECL_IOP_CodecFactory 1
+#define _IOP_CodecFactory_defined 1
+#define IOP_CodecFactory__freekids CORBA_Object__freekids
+   typedef CORBA_Object IOP_CodecFactory;
+   extern CORBA_unsigned_long IOP_CodecFactory__classid;
+#if !defined(TC_IMPL_TC_IOP_CodecFactory_0)
+#define TC_IMPL_TC_IOP_CodecFactory_0 'i'
+#define TC_IMPL_TC_IOP_CodecFactory_1 'o'
+#define TC_IMPL_TC_IOP_CodecFactory_2 'p'
+#define TC_IMPL_TC_IOP_CodecFactory_3 '_'
+#define TC_IMPL_TC_IOP_CodecFactory_4 'd'
+#define TC_IMPL_TC_IOP_CodecFactory_5 'e'
+#define TC_IMPL_TC_IOP_CodecFactory_6 'f'
+#define TC_IMPL_TC_IOP_CodecFactory_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_IOP_CodecFactory_struct;
+#define TC_IOP_CodecFactory ((CORBA_TypeCode)&TC_IOP_CodecFactory_struct)
+#endif
+#endif
+#undef ex_IOP_CodecFactory_UnknownEncoding
+#define ex_IOP_CodecFactory_UnknownEncoding "IDL:omg.org/IOP/CodecFactory/UnknownEncoding:1.0"
+#if !defined(_IOP_CodecFactory_UnknownEncoding_defined)
+#define _IOP_CodecFactory_UnknownEncoding_defined 1
+   typedef struct IOP_CodecFactory_UnknownEncoding_type
+      IOP_CodecFactory_UnknownEncoding;
+   struct IOP_CodecFactory_UnknownEncoding_type
+   {
+      int dummy;
+   };
+
+#if !defined(TC_IMPL_TC_IOP_CodecFactory_UnknownEncoding_0)
+#define TC_IMPL_TC_IOP_CodecFactory_UnknownEncoding_0 'i'
+#define TC_IMPL_TC_IOP_CodecFactory_UnknownEncoding_1 'o'
+#define TC_IMPL_TC_IOP_CodecFactory_UnknownEncoding_2 'p'
+#define TC_IMPL_TC_IOP_CodecFactory_UnknownEncoding_3 '_'
+#define TC_IMPL_TC_IOP_CodecFactory_UnknownEncoding_4 'd'
+#define TC_IMPL_TC_IOP_CodecFactory_UnknownEncoding_5 'e'
+#define TC_IMPL_TC_IOP_CodecFactory_UnknownEncoding_6 'f'
+#define TC_IMPL_TC_IOP_CodecFactory_UnknownEncoding_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct
+      TC_IOP_CodecFactory_UnknownEncoding_struct;
+#define TC_IOP_CodecFactory_UnknownEncoding ((CORBA_TypeCode)&TC_IOP_CodecFactory_UnknownEncoding_struct)
+#endif
+#define IOP_CodecFactory_UnknownEncoding__alloc() ((IOP_CodecFactory_UnknownEncoding *)ORBit_small_alloc (TC_IOP_CodecFactory_UnknownEncoding))
+#define IOP_CodecFactory_UnknownEncoding__freekids(m,d) ORBit_small_freekids (TC_IOP_CodecFactory_UnknownEncoding,(m),(d))
+#endif
 #if !defined(_IIOP_Version_defined)
 #define _IIOP_Version_defined 1
    typedef struct IIOP_Version_type IIOP_Version;
@@ -735,8 +1009,7 @@ extern "C"
        _length;
       CORBA_octet *_buffer;
       CORBA_boolean _release;
-   }
-   CORBA_sequence_CORBA_octet;
+   } CORBA_sequence_CORBA_octet;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_octet_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_octet_0 'i'
@@ -809,8 +1082,7 @@ extern "C"
        _length;
       CORBA_octet *_buffer;
       CORBA_boolean _release;
-   }
-   CORBA_sequence_CORBA_octet;
+   } CORBA_sequence_CORBA_octet;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_octet_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_octet_0 'i'
@@ -852,8 +1124,7 @@ extern "C"
        _length;
       IOP_TaggedComponent *_buffer;
       CORBA_boolean _release;
-   }
-   CORBA_sequence_IOP_TaggedComponent;
+   } CORBA_sequence_IOP_TaggedComponent;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_IOP_TaggedComponent_0)
 #define TC_IMPL_TC_CORBA_sequence_IOP_TaggedComponent_0 'i'
@@ -954,8 +1225,7 @@ extern "C"
        _length;
       IIOP_ListenPoint *_buffer;
       CORBA_boolean _release;
-   }
-   CORBA_sequence_IIOP_ListenPoint;
+   } CORBA_sequence_IIOP_ListenPoint;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_IIOP_ListenPoint_0)
 #define TC_IMPL_TC_CORBA_sequence_IIOP_ListenPoint_0 'i'
@@ -1082,8 +1352,7 @@ extern "C"
        _length;
       CORBA_octet *_buffer;
       CORBA_boolean _release;
-   }
-   CORBA_sequence_CORBA_octet;
+   } CORBA_sequence_CORBA_octet;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_octet_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_octet_0 'i'
@@ -1133,8 +1402,8 @@ extern "C"
 #define GIOP_Principal__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CORBA_octet,(m),(d))
 #define GIOP_Principal_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
 #endif
-#if !defined(_GIOP_MsgType_1_0_defined)
-#define _GIOP_MsgType_1_0_defined 1
+#if !defined(_GIOP_MsgType_1_1_defined)
+#define _GIOP_MsgType_1_1_defined 1
    typedef enum
    {
       GIOP_Request,
@@ -1143,26 +1412,76 @@ extern "C"
       GIOP_LocateRequest,
       GIOP_LocateReply,
       GIOP_CloseConnection,
-      GIOP_MessageError
-   }
-   GIOP_MsgType_1_0;
-#if !defined(TC_IMPL_TC_GIOP_MsgType_1_0_0)
-#define TC_IMPL_TC_GIOP_MsgType_1_0_0 'i'
-#define TC_IMPL_TC_GIOP_MsgType_1_0_1 'o'
-#define TC_IMPL_TC_GIOP_MsgType_1_0_2 'p'
-#define TC_IMPL_TC_GIOP_MsgType_1_0_3 '_'
-#define TC_IMPL_TC_GIOP_MsgType_1_0_4 'd'
-#define TC_IMPL_TC_GIOP_MsgType_1_0_5 'e'
-#define TC_IMPL_TC_GIOP_MsgType_1_0_6 'f'
-#define TC_IMPL_TC_GIOP_MsgType_1_0_7 's'
+      GIOP_MessageError,
+      GIOP_Fragment
+   } GIOP_MsgType_1_1;
+#if !defined(TC_IMPL_TC_GIOP_MsgType_1_1_0)
+#define TC_IMPL_TC_GIOP_MsgType_1_1_0 'i'
+#define TC_IMPL_TC_GIOP_MsgType_1_1_1 'o'
+#define TC_IMPL_TC_GIOP_MsgType_1_1_2 'p'
+#define TC_IMPL_TC_GIOP_MsgType_1_1_3 '_'
+#define TC_IMPL_TC_GIOP_MsgType_1_1_4 'd'
+#define TC_IMPL_TC_GIOP_MsgType_1_1_5 'e'
+#define TC_IMPL_TC_GIOP_MsgType_1_1_6 'f'
+#define TC_IMPL_TC_GIOP_MsgType_1_1_7 's'
 #ifdef ORBIT_IDL_C_IMODULE_iop_defs
    static
 #else
    extern
 #endif
-   const struct CORBA_TypeCode_struct TC_GIOP_MsgType_1_0_struct;
-#define TC_GIOP_MsgType_1_0 ((CORBA_TypeCode)&TC_GIOP_MsgType_1_0_struct)
+   const struct CORBA_TypeCode_struct TC_GIOP_MsgType_1_1_struct;
+#define TC_GIOP_MsgType_1_1 ((CORBA_TypeCode)&TC_GIOP_MsgType_1_1_struct)
 #endif
+#endif
+#if !defined(_GIOP_MsgType_1_2_defined)
+#define _GIOP_MsgType_1_2_defined 1
+   typedef GIOP_MsgType_1_1 GIOP_MsgType_1_2;
+#define GIOP_MsgType_1_2_marshal(x,y,z) GIOP_MsgType_1_1_marshal((x),(y),(z))
+#define GIOP_MsgType_1_2_demarshal(x,y,z,i) GIOP_MsgType_1_1_demarshal((x),(y),(z),(i))
+#if !defined(TC_IMPL_TC_GIOP_MsgType_1_2_0)
+#define TC_IMPL_TC_GIOP_MsgType_1_2_0 'i'
+#define TC_IMPL_TC_GIOP_MsgType_1_2_1 'o'
+#define TC_IMPL_TC_GIOP_MsgType_1_2_2 'p'
+#define TC_IMPL_TC_GIOP_MsgType_1_2_3 '_'
+#define TC_IMPL_TC_GIOP_MsgType_1_2_4 'd'
+#define TC_IMPL_TC_GIOP_MsgType_1_2_5 'e'
+#define TC_IMPL_TC_GIOP_MsgType_1_2_6 'f'
+#define TC_IMPL_TC_GIOP_MsgType_1_2_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_GIOP_MsgType_1_2_struct;
+#define TC_GIOP_MsgType_1_2 ((CORBA_TypeCode)&TC_GIOP_MsgType_1_2_struct)
+#endif
+#define GIOP_MsgType_1_2__alloc() ((GIOP_MsgType_1_2 *)ORBit_small_alloc (TC_GIOP_MsgType_1_1))
+#define GIOP_MsgType_1_2__freekids(m,d) ORBit_small_freekids (TC_GIOP_MsgType_1_1,(m),(d))
+#endif
+#if !defined(_GIOP_MsgType_1_3_defined)
+#define _GIOP_MsgType_1_3_defined 1
+   typedef GIOP_MsgType_1_1 GIOP_MsgType_1_3;
+#define GIOP_MsgType_1_3_marshal(x,y,z) GIOP_MsgType_1_1_marshal((x),(y),(z))
+#define GIOP_MsgType_1_3_demarshal(x,y,z,i) GIOP_MsgType_1_1_demarshal((x),(y),(z),(i))
+#if !defined(TC_IMPL_TC_GIOP_MsgType_1_3_0)
+#define TC_IMPL_TC_GIOP_MsgType_1_3_0 'i'
+#define TC_IMPL_TC_GIOP_MsgType_1_3_1 'o'
+#define TC_IMPL_TC_GIOP_MsgType_1_3_2 'p'
+#define TC_IMPL_TC_GIOP_MsgType_1_3_3 '_'
+#define TC_IMPL_TC_GIOP_MsgType_1_3_4 'd'
+#define TC_IMPL_TC_GIOP_MsgType_1_3_5 'e'
+#define TC_IMPL_TC_GIOP_MsgType_1_3_6 'f'
+#define TC_IMPL_TC_GIOP_MsgType_1_3_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_GIOP_MsgType_1_3_struct;
+#define TC_GIOP_MsgType_1_3 ((CORBA_TypeCode)&TC_GIOP_MsgType_1_3_struct)
+#endif
+#define GIOP_MsgType_1_3__alloc() ((GIOP_MsgType_1_3 *)ORBit_small_alloc (TC_GIOP_MsgType_1_1))
+#define GIOP_MsgType_1_3__freekids(m,d) ORBit_small_freekids (TC_GIOP_MsgType_1_1,(m),(d))
 #endif
 #if !defined(_GIOP_MessageHeader_1_0_defined)
 #define _GIOP_MessageHeader_1_0_defined 1
@@ -1253,6 +1572,31 @@ extern "C"
 #define GIOP_MessageHeader_1_2__alloc() ((GIOP_MessageHeader_1_2 *)ORBit_small_alloc (TC_GIOP_MessageHeader_1_1))
 #define GIOP_MessageHeader_1_2__freekids(m,d) ORBit_small_freekids (TC_GIOP_MessageHeader_1_1,(m),(d))
 #endif
+#if !defined(_GIOP_MessageHeader_1_3_defined)
+#define _GIOP_MessageHeader_1_3_defined 1
+   typedef GIOP_MessageHeader_1_1 GIOP_MessageHeader_1_3;
+#define GIOP_MessageHeader_1_3_marshal(x,y,z) GIOP_MessageHeader_1_1_marshal((x),(y),(z))
+#define GIOP_MessageHeader_1_3_demarshal(x,y,z,i) GIOP_MessageHeader_1_1_demarshal((x),(y),(z),(i))
+#if !defined(TC_IMPL_TC_GIOP_MessageHeader_1_3_0)
+#define TC_IMPL_TC_GIOP_MessageHeader_1_3_0 'i'
+#define TC_IMPL_TC_GIOP_MessageHeader_1_3_1 'o'
+#define TC_IMPL_TC_GIOP_MessageHeader_1_3_2 'p'
+#define TC_IMPL_TC_GIOP_MessageHeader_1_3_3 '_'
+#define TC_IMPL_TC_GIOP_MessageHeader_1_3_4 'd'
+#define TC_IMPL_TC_GIOP_MessageHeader_1_3_5 'e'
+#define TC_IMPL_TC_GIOP_MessageHeader_1_3_6 'f'
+#define TC_IMPL_TC_GIOP_MessageHeader_1_3_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_GIOP_MessageHeader_1_3_struct;
+#define TC_GIOP_MessageHeader_1_3 ((CORBA_TypeCode)&TC_GIOP_MessageHeader_1_3_struct)
+#endif
+#define GIOP_MessageHeader_1_3__alloc() ((GIOP_MessageHeader_1_3 *)ORBit_small_alloc (TC_GIOP_MessageHeader_1_1))
+#define GIOP_MessageHeader_1_3__freekids(m,d) ORBit_small_freekids (TC_GIOP_MessageHeader_1_1,(m),(d))
+#endif
 #if !defined(_GIOP_RequestHeader_1_0_defined)
 #define _GIOP_RequestHeader_1_0_defined 1
    typedef struct GIOP_RequestHeader_1_0_type GIOP_RequestHeader_1_0;
@@ -1274,8 +1618,7 @@ extern "C"
        _length;
       CORBA_octet *_buffer;
       CORBA_boolean _release;
-   }
-   CORBA_sequence_CORBA_octet;
+   } CORBA_sequence_CORBA_octet;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_octet_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_octet_0 'i'
@@ -1350,8 +1693,7 @@ extern "C"
        _length;
       CORBA_octet *_buffer;
       CORBA_boolean _release;
-   }
-   CORBA_sequence_CORBA_octet;
+   } CORBA_sequence_CORBA_octet;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_octet_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_octet_0 'i'
@@ -1493,8 +1835,7 @@ extern "C"
        _length;
       CORBA_octet *_buffer;
       CORBA_boolean _release;
-   }
-   CORBA_sequence_CORBA_octet;
+   } CORBA_sequence_CORBA_octet;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_octet_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_octet_0 'i'
@@ -1526,8 +1867,7 @@ extern "C"
 	 CORBA_sequence_CORBA_octet object_key;
 	 IOP_TaggedProfile profile;
 	 GIOP_IORAddressingInfo ior;
-      }
-      _u;
+      } _u;
    };
 #if !defined(TC_IMPL_TC_GIOP_TargetAddress_0)
 #define TC_IMPL_TC_GIOP_TargetAddress_0 'i'
@@ -1582,6 +1922,31 @@ extern "C"
 #define GIOP_RequestHeader_1_2__alloc() ((GIOP_RequestHeader_1_2 *)ORBit_small_alloc (TC_GIOP_RequestHeader_1_2))
 #define GIOP_RequestHeader_1_2__freekids(m,d) ORBit_small_freekids (TC_GIOP_RequestHeader_1_2,(m),(d))
 #endif
+#if !defined(_GIOP_RequestHeader_1_3_defined)
+#define _GIOP_RequestHeader_1_3_defined 1
+   typedef GIOP_RequestHeader_1_2 GIOP_RequestHeader_1_3;
+#define GIOP_RequestHeader_1_3_marshal(x,y,z) GIOP_RequestHeader_1_2_marshal((x),(y),(z))
+#define GIOP_RequestHeader_1_3_demarshal(x,y,z,i) GIOP_RequestHeader_1_2_demarshal((x),(y),(z),(i))
+#if !defined(TC_IMPL_TC_GIOP_RequestHeader_1_3_0)
+#define TC_IMPL_TC_GIOP_RequestHeader_1_3_0 'i'
+#define TC_IMPL_TC_GIOP_RequestHeader_1_3_1 'o'
+#define TC_IMPL_TC_GIOP_RequestHeader_1_3_2 'p'
+#define TC_IMPL_TC_GIOP_RequestHeader_1_3_3 '_'
+#define TC_IMPL_TC_GIOP_RequestHeader_1_3_4 'd'
+#define TC_IMPL_TC_GIOP_RequestHeader_1_3_5 'e'
+#define TC_IMPL_TC_GIOP_RequestHeader_1_3_6 'f'
+#define TC_IMPL_TC_GIOP_RequestHeader_1_3_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_GIOP_RequestHeader_1_3_struct;
+#define TC_GIOP_RequestHeader_1_3 ((CORBA_TypeCode)&TC_GIOP_RequestHeader_1_3_struct)
+#endif
+#define GIOP_RequestHeader_1_3__alloc() ((GIOP_RequestHeader_1_3 *)ORBit_small_alloc (TC_GIOP_RequestHeader_1_2))
+#define GIOP_RequestHeader_1_3__freekids(m,d) ORBit_small_freekids (TC_GIOP_RequestHeader_1_2,(m),(d))
+#endif
 #if !defined(_GIOP_ReplyStatusType_1_0_defined)
 #define _GIOP_ReplyStatusType_1_0_defined 1
    typedef enum
@@ -1590,8 +1955,7 @@ extern "C"
       GIOP_USER_EXCEPTION,
       GIOP_SYSTEM_EXCEPTION,
       GIOP_LOCATION_FORWARD
-   }
-   GIOP_ReplyStatusType_1_0;
+   } GIOP_ReplyStatusType_1_0;
 #if !defined(TC_IMPL_TC_GIOP_ReplyStatusType_1_0_0)
 #define TC_IMPL_TC_GIOP_ReplyStatusType_1_0_0 'i'
 #define TC_IMPL_TC_GIOP_ReplyStatusType_1_0_1 'o'
@@ -1746,8 +2110,7 @@ extern "C"
        _length;
       CORBA_octet *_buffer;
       CORBA_boolean _release;
-   }
-   CORBA_sequence_CORBA_octet;
+   } CORBA_sequence_CORBA_octet;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_octet_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_octet_0 'i'
@@ -1852,6 +2215,31 @@ extern "C"
 #define GIOP_LocateRequestHeader_1_2__alloc() ((GIOP_LocateRequestHeader_1_2 *)ORBit_small_alloc (TC_GIOP_LocateRequestHeader_1_2))
 #define GIOP_LocateRequestHeader_1_2__freekids(m,d) ORBit_small_freekids (TC_GIOP_LocateRequestHeader_1_2,(m),(d))
 #endif
+#if !defined(_GIOP_LocateRequestHeader_1_3_defined)
+#define _GIOP_LocateRequestHeader_1_3_defined 1
+   typedef GIOP_LocateRequestHeader_1_2 GIOP_LocateRequestHeader_1_3;
+#define GIOP_LocateRequestHeader_1_3_marshal(x,y,z) GIOP_LocateRequestHeader_1_2_marshal((x),(y),(z))
+#define GIOP_LocateRequestHeader_1_3_demarshal(x,y,z,i) GIOP_LocateRequestHeader_1_2_demarshal((x),(y),(z),(i))
+#if !defined(TC_IMPL_TC_GIOP_LocateRequestHeader_1_3_0)
+#define TC_IMPL_TC_GIOP_LocateRequestHeader_1_3_0 'i'
+#define TC_IMPL_TC_GIOP_LocateRequestHeader_1_3_1 'o'
+#define TC_IMPL_TC_GIOP_LocateRequestHeader_1_3_2 'p'
+#define TC_IMPL_TC_GIOP_LocateRequestHeader_1_3_3 '_'
+#define TC_IMPL_TC_GIOP_LocateRequestHeader_1_3_4 'd'
+#define TC_IMPL_TC_GIOP_LocateRequestHeader_1_3_5 'e'
+#define TC_IMPL_TC_GIOP_LocateRequestHeader_1_3_6 'f'
+#define TC_IMPL_TC_GIOP_LocateRequestHeader_1_3_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_GIOP_LocateRequestHeader_1_3_struct;
+#define TC_GIOP_LocateRequestHeader_1_3 ((CORBA_TypeCode)&TC_GIOP_LocateRequestHeader_1_3_struct)
+#endif
+#define GIOP_LocateRequestHeader_1_3__alloc() ((GIOP_LocateRequestHeader_1_3 *)ORBit_small_alloc (TC_GIOP_LocateRequestHeader_1_2))
+#define GIOP_LocateRequestHeader_1_3__freekids(m,d) ORBit_small_freekids (TC_GIOP_LocateRequestHeader_1_2,(m),(d))
+#endif
 #if !defined(_GIOP_LocateStatusType_1_0_defined)
 #define _GIOP_LocateStatusType_1_0_defined 1
    typedef enum
@@ -1859,8 +2247,7 @@ extern "C"
       GIOP_UNKNOWN_OBJECT,
       GIOP_OBJECT_HERE,
       GIOP_OBJECT_FORWARD
-   }
-   GIOP_LocateStatusType_1_0;
+   } GIOP_LocateStatusType_1_0;
 #if !defined(TC_IMPL_TC_GIOP_LocateStatusType_1_0_0)
 #define TC_IMPL_TC_GIOP_LocateStatusType_1_0_0 'i'
 #define TC_IMPL_TC_GIOP_LocateStatusType_1_0_1 'o'
@@ -1960,6 +2347,1981 @@ extern "C"
 #endif
 #define GIOP_FragmentHeader_1_2__alloc() ((GIOP_FragmentHeader_1_2 *)ORBit_small_alloc (TC_GIOP_FragmentHeader_1_2))
 #define GIOP_FragmentHeader_1_2__freekids(m,d) ORBit_small_freekids (TC_GIOP_FragmentHeader_1_2,(m),(d))
+#endif
+#if !defined(_GIOP_FragmentHeader_1_3_defined)
+#define _GIOP_FragmentHeader_1_3_defined 1
+   typedef GIOP_FragmentHeader_1_2 GIOP_FragmentHeader_1_3;
+#define GIOP_FragmentHeader_1_3_marshal(x,y,z) GIOP_FragmentHeader_1_2_marshal((x),(y),(z))
+#define GIOP_FragmentHeader_1_3_demarshal(x,y,z,i) GIOP_FragmentHeader_1_2_demarshal((x),(y),(z),(i))
+#if !defined(TC_IMPL_TC_GIOP_FragmentHeader_1_3_0)
+#define TC_IMPL_TC_GIOP_FragmentHeader_1_3_0 'i'
+#define TC_IMPL_TC_GIOP_FragmentHeader_1_3_1 'o'
+#define TC_IMPL_TC_GIOP_FragmentHeader_1_3_2 'p'
+#define TC_IMPL_TC_GIOP_FragmentHeader_1_3_3 '_'
+#define TC_IMPL_TC_GIOP_FragmentHeader_1_3_4 'd'
+#define TC_IMPL_TC_GIOP_FragmentHeader_1_3_5 'e'
+#define TC_IMPL_TC_GIOP_FragmentHeader_1_3_6 'f'
+#define TC_IMPL_TC_GIOP_FragmentHeader_1_3_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_GIOP_FragmentHeader_1_3_struct;
+#define TC_GIOP_FragmentHeader_1_3 ((CORBA_TypeCode)&TC_GIOP_FragmentHeader_1_3_struct)
+#endif
+#define GIOP_FragmentHeader_1_3__alloc() ((GIOP_FragmentHeader_1_3 *)ORBit_small_alloc (TC_GIOP_FragmentHeader_1_2))
+#define GIOP_FragmentHeader_1_3__freekids(m,d) ORBit_small_freekids (TC_GIOP_FragmentHeader_1_2,(m),(d))
+#endif
+#ifndef CSI_OMGVMCID
+#define CSI_OMGVMCID 324816U
+#endif				/* !CSI_OMGVMCID */
+
+#if !defined(ORBIT_DECL_CORBA_sequence_CORBA_octet)
+#define ORBIT_DECL_CORBA_sequence_CORBA_octet 1
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_0 'i'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_1 'o'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_2 'p'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_3 '_'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_4 'd'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_5 'e'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_6 'f'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_7 's'
+#if !defined(_CORBA_sequence_CORBA_octet_defined)
+#define _CORBA_sequence_CORBA_octet_defined 1
+   typedef struct
+   {
+      CORBA_unsigned_long _maximum,
+       _length;
+      CORBA_octet *_buffer;
+      CORBA_boolean _release;
+   } CORBA_sequence_CORBA_octet;
+#endif
+#if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_octet_0)
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_0 'i'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_1 'o'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_2 'p'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_3 '_'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_4 'd'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_5 'e'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_6 'f'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct;
+#define TC_CORBA_sequence_CORBA_octet ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_octet_struct)
+#endif
+#define CORBA_sequence_CORBA_octet__alloc() ((CORBA_sequence_CORBA_octet *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_octet))
+#define CORBA_sequence_CORBA_octet__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CORBA_octet,(m),(d))
+#define CORBA_sequence_CORBA_octet_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
+#define CORBA_sequence_CORBA_octet_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
+#endif
+#if !defined(_CSI_X509CertificateChain_defined)
+#define _CSI_X509CertificateChain_defined 1
+   typedef CORBA_sequence_CORBA_octet CSI_X509CertificateChain;
+#define CSI_X509CertificateChain_marshal(x,y,z) CORBA_sequence_CORBA_octet_marshal((x),(y),(z))
+#define CSI_X509CertificateChain_demarshal(x,y,z,i) CORBA_sequence_CORBA_octet_demarshal((x),(y),(z),(i))
+#if !defined(TC_IMPL_TC_CSI_X509CertificateChain_0)
+#define TC_IMPL_TC_CSI_X509CertificateChain_0 'i'
+#define TC_IMPL_TC_CSI_X509CertificateChain_1 'o'
+#define TC_IMPL_TC_CSI_X509CertificateChain_2 'p'
+#define TC_IMPL_TC_CSI_X509CertificateChain_3 '_'
+#define TC_IMPL_TC_CSI_X509CertificateChain_4 'd'
+#define TC_IMPL_TC_CSI_X509CertificateChain_5 'e'
+#define TC_IMPL_TC_CSI_X509CertificateChain_6 'f'
+#define TC_IMPL_TC_CSI_X509CertificateChain_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CSI_X509CertificateChain_struct;
+#define TC_CSI_X509CertificateChain ((CORBA_TypeCode)&TC_CSI_X509CertificateChain_struct)
+#endif
+#define CSI_X509CertificateChain__alloc() ((CSI_X509CertificateChain *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_octet))
+#define CSI_X509CertificateChain__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CORBA_octet,(m),(d))
+#define CSI_X509CertificateChain_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
+#endif
+#if !defined(ORBIT_DECL_CORBA_sequence_CORBA_octet)
+#define ORBIT_DECL_CORBA_sequence_CORBA_octet 1
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_0 'i'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_1 'o'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_2 'p'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_3 '_'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_4 'd'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_5 'e'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_6 'f'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_7 's'
+#if !defined(_CORBA_sequence_CORBA_octet_defined)
+#define _CORBA_sequence_CORBA_octet_defined 1
+   typedef struct
+   {
+      CORBA_unsigned_long _maximum,
+       _length;
+      CORBA_octet *_buffer;
+      CORBA_boolean _release;
+   } CORBA_sequence_CORBA_octet;
+#endif
+#if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_octet_0)
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_0 'i'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_1 'o'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_2 'p'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_3 '_'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_4 'd'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_5 'e'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_6 'f'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct;
+#define TC_CORBA_sequence_CORBA_octet ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_octet_struct)
+#endif
+#define CORBA_sequence_CORBA_octet__alloc() ((CORBA_sequence_CORBA_octet *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_octet))
+#define CORBA_sequence_CORBA_octet__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CORBA_octet,(m),(d))
+#define CORBA_sequence_CORBA_octet_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
+#define CORBA_sequence_CORBA_octet_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
+#endif
+#if !defined(_CSI_X501DistinguishedName_defined)
+#define _CSI_X501DistinguishedName_defined 1
+   typedef CORBA_sequence_CORBA_octet CSI_X501DistinguishedName;
+#define CSI_X501DistinguishedName_marshal(x,y,z) CORBA_sequence_CORBA_octet_marshal((x),(y),(z))
+#define CSI_X501DistinguishedName_demarshal(x,y,z,i) CORBA_sequence_CORBA_octet_demarshal((x),(y),(z),(i))
+#if !defined(TC_IMPL_TC_CSI_X501DistinguishedName_0)
+#define TC_IMPL_TC_CSI_X501DistinguishedName_0 'i'
+#define TC_IMPL_TC_CSI_X501DistinguishedName_1 'o'
+#define TC_IMPL_TC_CSI_X501DistinguishedName_2 'p'
+#define TC_IMPL_TC_CSI_X501DistinguishedName_3 '_'
+#define TC_IMPL_TC_CSI_X501DistinguishedName_4 'd'
+#define TC_IMPL_TC_CSI_X501DistinguishedName_5 'e'
+#define TC_IMPL_TC_CSI_X501DistinguishedName_6 'f'
+#define TC_IMPL_TC_CSI_X501DistinguishedName_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CSI_X501DistinguishedName_struct;
+#define TC_CSI_X501DistinguishedName ((CORBA_TypeCode)&TC_CSI_X501DistinguishedName_struct)
+#endif
+#define CSI_X501DistinguishedName__alloc() ((CSI_X501DistinguishedName *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_octet))
+#define CSI_X501DistinguishedName__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CORBA_octet,(m),(d))
+#define CSI_X501DistinguishedName_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
+#endif
+#if !defined(ORBIT_DECL_CORBA_sequence_CORBA_octet)
+#define ORBIT_DECL_CORBA_sequence_CORBA_octet 1
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_0 'i'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_1 'o'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_2 'p'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_3 '_'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_4 'd'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_5 'e'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_6 'f'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_7 's'
+#if !defined(_CORBA_sequence_CORBA_octet_defined)
+#define _CORBA_sequence_CORBA_octet_defined 1
+   typedef struct
+   {
+      CORBA_unsigned_long _maximum,
+       _length;
+      CORBA_octet *_buffer;
+      CORBA_boolean _release;
+   } CORBA_sequence_CORBA_octet;
+#endif
+#if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_octet_0)
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_0 'i'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_1 'o'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_2 'p'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_3 '_'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_4 'd'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_5 'e'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_6 'f'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct;
+#define TC_CORBA_sequence_CORBA_octet ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_octet_struct)
+#endif
+#define CORBA_sequence_CORBA_octet__alloc() ((CORBA_sequence_CORBA_octet *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_octet))
+#define CORBA_sequence_CORBA_octet__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CORBA_octet,(m),(d))
+#define CORBA_sequence_CORBA_octet_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
+#define CORBA_sequence_CORBA_octet_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
+#endif
+#if !defined(_CSI_UTF8String_defined)
+#define _CSI_UTF8String_defined 1
+   typedef CORBA_sequence_CORBA_octet CSI_UTF8String;
+#define CSI_UTF8String_marshal(x,y,z) CORBA_sequence_CORBA_octet_marshal((x),(y),(z))
+#define CSI_UTF8String_demarshal(x,y,z,i) CORBA_sequence_CORBA_octet_demarshal((x),(y),(z),(i))
+#if !defined(TC_IMPL_TC_CSI_UTF8String_0)
+#define TC_IMPL_TC_CSI_UTF8String_0 'i'
+#define TC_IMPL_TC_CSI_UTF8String_1 'o'
+#define TC_IMPL_TC_CSI_UTF8String_2 'p'
+#define TC_IMPL_TC_CSI_UTF8String_3 '_'
+#define TC_IMPL_TC_CSI_UTF8String_4 'd'
+#define TC_IMPL_TC_CSI_UTF8String_5 'e'
+#define TC_IMPL_TC_CSI_UTF8String_6 'f'
+#define TC_IMPL_TC_CSI_UTF8String_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CSI_UTF8String_struct;
+#define TC_CSI_UTF8String ((CORBA_TypeCode)&TC_CSI_UTF8String_struct)
+#endif
+#define CSI_UTF8String__alloc() ((CSI_UTF8String *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_octet))
+#define CSI_UTF8String__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CORBA_octet,(m),(d))
+#define CSI_UTF8String_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
+#endif
+#if !defined(ORBIT_DECL_CORBA_sequence_CORBA_octet)
+#define ORBIT_DECL_CORBA_sequence_CORBA_octet 1
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_0 'i'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_1 'o'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_2 'p'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_3 '_'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_4 'd'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_5 'e'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_6 'f'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_7 's'
+#if !defined(_CORBA_sequence_CORBA_octet_defined)
+#define _CORBA_sequence_CORBA_octet_defined 1
+   typedef struct
+   {
+      CORBA_unsigned_long _maximum,
+       _length;
+      CORBA_octet *_buffer;
+      CORBA_boolean _release;
+   } CORBA_sequence_CORBA_octet;
+#endif
+#if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_octet_0)
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_0 'i'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_1 'o'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_2 'p'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_3 '_'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_4 'd'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_5 'e'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_6 'f'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct;
+#define TC_CORBA_sequence_CORBA_octet ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_octet_struct)
+#endif
+#define CORBA_sequence_CORBA_octet__alloc() ((CORBA_sequence_CORBA_octet *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_octet))
+#define CORBA_sequence_CORBA_octet__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CORBA_octet,(m),(d))
+#define CORBA_sequence_CORBA_octet_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
+#define CORBA_sequence_CORBA_octet_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
+#endif
+#if !defined(_CSI_OID_defined)
+#define _CSI_OID_defined 1
+   typedef CORBA_sequence_CORBA_octet CSI_OID;
+#define CSI_OID_marshal(x,y,z) CORBA_sequence_CORBA_octet_marshal((x),(y),(z))
+#define CSI_OID_demarshal(x,y,z,i) CORBA_sequence_CORBA_octet_demarshal((x),(y),(z),(i))
+#if !defined(TC_IMPL_TC_CSI_OID_0)
+#define TC_IMPL_TC_CSI_OID_0 'i'
+#define TC_IMPL_TC_CSI_OID_1 'o'
+#define TC_IMPL_TC_CSI_OID_2 'p'
+#define TC_IMPL_TC_CSI_OID_3 '_'
+#define TC_IMPL_TC_CSI_OID_4 'd'
+#define TC_IMPL_TC_CSI_OID_5 'e'
+#define TC_IMPL_TC_CSI_OID_6 'f'
+#define TC_IMPL_TC_CSI_OID_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CSI_OID_struct;
+#define TC_CSI_OID ((CORBA_TypeCode)&TC_CSI_OID_struct)
+#endif
+#define CSI_OID__alloc() ((CSI_OID *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_octet))
+#define CSI_OID__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CORBA_octet,(m),(d))
+#define CSI_OID_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
+#endif
+#if !defined(ORBIT_DECL_CORBA_sequence_CORBA_octet)
+#define ORBIT_DECL_CORBA_sequence_CORBA_octet 1
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_0 'i'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_1 'o'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_2 'p'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_3 '_'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_4 'd'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_5 'e'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_6 'f'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_7 's'
+#if !defined(_CORBA_sequence_CORBA_octet_defined)
+#define _CORBA_sequence_CORBA_octet_defined 1
+   typedef struct
+   {
+      CORBA_unsigned_long _maximum,
+       _length;
+      CORBA_octet *_buffer;
+      CORBA_boolean _release;
+   } CORBA_sequence_CORBA_octet;
+#endif
+#if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_octet_0)
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_0 'i'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_1 'o'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_2 'p'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_3 '_'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_4 'd'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_5 'e'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_6 'f'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct;
+#define TC_CORBA_sequence_CORBA_octet ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_octet_struct)
+#endif
+#define CORBA_sequence_CORBA_octet__alloc() ((CORBA_sequence_CORBA_octet *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_octet))
+#define CORBA_sequence_CORBA_octet__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CORBA_octet,(m),(d))
+#define CORBA_sequence_CORBA_octet_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
+#define CORBA_sequence_CORBA_octet_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
+#endif
+#if !defined(ORBIT_DECL_CORBA_sequence_CORBA_sequence_CORBA_octet)
+#define ORBIT_DECL_CORBA_sequence_CORBA_sequence_CORBA_octet 1
+#define ORBIT_IMPL_CORBA_sequence_CORBA_sequence_CORBA_octet_0 'i'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_sequence_CORBA_octet_1 'o'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_sequence_CORBA_octet_2 'p'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_sequence_CORBA_octet_3 '_'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_sequence_CORBA_octet_4 'd'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_sequence_CORBA_octet_5 'e'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_sequence_CORBA_octet_6 'f'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_sequence_CORBA_octet_7 's'
+#if !defined(_CORBA_sequence_CORBA_sequence_CORBA_octet_defined)
+#define _CORBA_sequence_CORBA_sequence_CORBA_octet_defined 1
+   typedef struct
+   {
+      CORBA_unsigned_long _maximum,
+       _length;
+      CORBA_sequence_CORBA_octet *_buffer;
+      CORBA_boolean _release;
+   } CORBA_sequence_CORBA_sequence_CORBA_octet;
+#endif
+#if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_sequence_CORBA_octet_0)
+#define TC_IMPL_TC_CORBA_sequence_CORBA_sequence_CORBA_octet_0 'i'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_sequence_CORBA_octet_1 'o'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_sequence_CORBA_octet_2 'p'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_sequence_CORBA_octet_3 '_'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_sequence_CORBA_octet_4 'd'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_sequence_CORBA_octet_5 'e'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_sequence_CORBA_octet_6 'f'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_sequence_CORBA_octet_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct
+      TC_CORBA_sequence_CORBA_sequence_CORBA_octet_struct;
+#define TC_CORBA_sequence_CORBA_sequence_CORBA_octet ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_sequence_CORBA_octet_struct)
+#endif
+#define CORBA_sequence_CORBA_sequence_CORBA_octet__alloc() ((CORBA_sequence_CORBA_sequence_CORBA_octet *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_sequence_CORBA_octet))
+#define CORBA_sequence_CORBA_sequence_CORBA_octet__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CORBA_sequence_CORBA_octet,(m),(d))
+#define CORBA_sequence_CORBA_sequence_CORBA_octet_allocbuf(l) ((CORBA_sequence_CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_sequence_CORBA_octet, (l)))
+#define CORBA_sequence_CORBA_sequence_CORBA_octet_allocbuf(l) ((CORBA_sequence_CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_sequence_CORBA_octet, (l)))
+#endif
+#if !defined(ORBIT_DECL_CORBA_sequence_CSI_OID)
+#define ORBIT_DECL_CORBA_sequence_CSI_OID 1
+#define ORBIT_IMPL_CORBA_sequence_CSI_OID_0 'i'
+#define ORBIT_IMPL_CORBA_sequence_CSI_OID_1 'o'
+#define ORBIT_IMPL_CORBA_sequence_CSI_OID_2 'p'
+#define ORBIT_IMPL_CORBA_sequence_CSI_OID_3 '_'
+#define ORBIT_IMPL_CORBA_sequence_CSI_OID_4 'd'
+#define ORBIT_IMPL_CORBA_sequence_CSI_OID_5 'e'
+#define ORBIT_IMPL_CORBA_sequence_CSI_OID_6 'f'
+#define ORBIT_IMPL_CORBA_sequence_CSI_OID_7 's'
+#if !defined(_CORBA_sequence_CSI_OID_defined)
+#define _CORBA_sequence_CSI_OID_defined 1
+   typedef CORBA_sequence_CORBA_sequence_CORBA_octet CORBA_sequence_CSI_OID;
+#endif
+#if !defined(TC_IMPL_TC_CORBA_sequence_CSI_OID_0)
+#define TC_IMPL_TC_CORBA_sequence_CSI_OID_0 'i'
+#define TC_IMPL_TC_CORBA_sequence_CSI_OID_1 'o'
+#define TC_IMPL_TC_CORBA_sequence_CSI_OID_2 'p'
+#define TC_IMPL_TC_CORBA_sequence_CSI_OID_3 '_'
+#define TC_IMPL_TC_CORBA_sequence_CSI_OID_4 'd'
+#define TC_IMPL_TC_CORBA_sequence_CSI_OID_5 'e'
+#define TC_IMPL_TC_CORBA_sequence_CSI_OID_6 'f'
+#define TC_IMPL_TC_CORBA_sequence_CSI_OID_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CSI_OID_struct;
+#define TC_CORBA_sequence_CSI_OID ((CORBA_TypeCode)&TC_CORBA_sequence_CSI_OID_struct)
+#endif
+#define CORBA_sequence_CSI_OID__alloc CORBA_sequence_CORBA_sequence_CORBA_octet__alloc
+#define CORBA_sequence_CSI_OID__freekids CORBA_sequence_CORBA_sequence_CORBA_octet__freekids
+#define CORBA_sequence_CSI_OID_allocbuf CORBA_sequence_CORBA_sequence_CORBA_octet_allocbuf
+#define CORBA_sequence_CSI_OID_marshal(x,y,z) CORBA_sequence_CORBA_sequence_CORBA_octet_marshal((x),(y),(z))
+#define CORBA_sequence_CSI_OID_demarshal(x,y,z,i) CORBA_sequence_CORBA_sequence_CORBA_octet_demarshal((x),(y),(z),(i))
+#endif
+#if !defined(_CSI_OIDList_defined)
+#define _CSI_OIDList_defined 1
+   typedef CORBA_sequence_CSI_OID CSI_OIDList;
+#define CSI_OIDList_marshal(x,y,z) CORBA_sequence_CSI_OID_marshal((x),(y),(z))
+#define CSI_OIDList_demarshal(x,y,z,i) CORBA_sequence_CSI_OID_demarshal((x),(y),(z),(i))
+#if !defined(TC_IMPL_TC_CSI_OIDList_0)
+#define TC_IMPL_TC_CSI_OIDList_0 'i'
+#define TC_IMPL_TC_CSI_OIDList_1 'o'
+#define TC_IMPL_TC_CSI_OIDList_2 'p'
+#define TC_IMPL_TC_CSI_OIDList_3 '_'
+#define TC_IMPL_TC_CSI_OIDList_4 'd'
+#define TC_IMPL_TC_CSI_OIDList_5 'e'
+#define TC_IMPL_TC_CSI_OIDList_6 'f'
+#define TC_IMPL_TC_CSI_OIDList_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CSI_OIDList_struct;
+#define TC_CSI_OIDList ((CORBA_TypeCode)&TC_CSI_OIDList_struct)
+#endif
+#define CSI_OIDList__alloc() ((CSI_OIDList *)ORBit_small_alloc (TC_CORBA_sequence_CSI_OID))
+#define CSI_OIDList__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CSI_OID,(m),(d))
+#define CSI_OIDList_allocbuf(l) ((CSI_OID*)ORBit_small_allocbuf (TC_CORBA_sequence_CSI_OID, (l)))
+#endif
+#if !defined(ORBIT_DECL_CORBA_sequence_CORBA_octet)
+#define ORBIT_DECL_CORBA_sequence_CORBA_octet 1
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_0 'i'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_1 'o'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_2 'p'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_3 '_'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_4 'd'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_5 'e'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_6 'f'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_7 's'
+#if !defined(_CORBA_sequence_CORBA_octet_defined)
+#define _CORBA_sequence_CORBA_octet_defined 1
+   typedef struct
+   {
+      CORBA_unsigned_long _maximum,
+       _length;
+      CORBA_octet *_buffer;
+      CORBA_boolean _release;
+   } CORBA_sequence_CORBA_octet;
+#endif
+#if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_octet_0)
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_0 'i'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_1 'o'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_2 'p'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_3 '_'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_4 'd'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_5 'e'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_6 'f'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct;
+#define TC_CORBA_sequence_CORBA_octet ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_octet_struct)
+#endif
+#define CORBA_sequence_CORBA_octet__alloc() ((CORBA_sequence_CORBA_octet *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_octet))
+#define CORBA_sequence_CORBA_octet__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CORBA_octet,(m),(d))
+#define CORBA_sequence_CORBA_octet_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
+#define CORBA_sequence_CORBA_octet_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
+#endif
+#if !defined(_CSI_GSSToken_defined)
+#define _CSI_GSSToken_defined 1
+   typedef CORBA_sequence_CORBA_octet CSI_GSSToken;
+#define CSI_GSSToken_marshal(x,y,z) CORBA_sequence_CORBA_octet_marshal((x),(y),(z))
+#define CSI_GSSToken_demarshal(x,y,z,i) CORBA_sequence_CORBA_octet_demarshal((x),(y),(z),(i))
+#if !defined(TC_IMPL_TC_CSI_GSSToken_0)
+#define TC_IMPL_TC_CSI_GSSToken_0 'i'
+#define TC_IMPL_TC_CSI_GSSToken_1 'o'
+#define TC_IMPL_TC_CSI_GSSToken_2 'p'
+#define TC_IMPL_TC_CSI_GSSToken_3 '_'
+#define TC_IMPL_TC_CSI_GSSToken_4 'd'
+#define TC_IMPL_TC_CSI_GSSToken_5 'e'
+#define TC_IMPL_TC_CSI_GSSToken_6 'f'
+#define TC_IMPL_TC_CSI_GSSToken_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CSI_GSSToken_struct;
+#define TC_CSI_GSSToken ((CORBA_TypeCode)&TC_CSI_GSSToken_struct)
+#endif
+#define CSI_GSSToken__alloc() ((CSI_GSSToken *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_octet))
+#define CSI_GSSToken__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CORBA_octet,(m),(d))
+#define CSI_GSSToken_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
+#endif
+#if !defined(ORBIT_DECL_CORBA_sequence_CORBA_octet)
+#define ORBIT_DECL_CORBA_sequence_CORBA_octet 1
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_0 'i'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_1 'o'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_2 'p'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_3 '_'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_4 'd'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_5 'e'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_6 'f'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_7 's'
+#if !defined(_CORBA_sequence_CORBA_octet_defined)
+#define _CORBA_sequence_CORBA_octet_defined 1
+   typedef struct
+   {
+      CORBA_unsigned_long _maximum,
+       _length;
+      CORBA_octet *_buffer;
+      CORBA_boolean _release;
+   } CORBA_sequence_CORBA_octet;
+#endif
+#if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_octet_0)
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_0 'i'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_1 'o'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_2 'p'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_3 '_'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_4 'd'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_5 'e'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_6 'f'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct;
+#define TC_CORBA_sequence_CORBA_octet ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_octet_struct)
+#endif
+#define CORBA_sequence_CORBA_octet__alloc() ((CORBA_sequence_CORBA_octet *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_octet))
+#define CORBA_sequence_CORBA_octet__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CORBA_octet,(m),(d))
+#define CORBA_sequence_CORBA_octet_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
+#define CORBA_sequence_CORBA_octet_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
+#endif
+#if !defined(_CSI_GSS_NT_ExportedName_defined)
+#define _CSI_GSS_NT_ExportedName_defined 1
+   typedef CORBA_sequence_CORBA_octet CSI_GSS_NT_ExportedName;
+#define CSI_GSS_NT_ExportedName_marshal(x,y,z) CORBA_sequence_CORBA_octet_marshal((x),(y),(z))
+#define CSI_GSS_NT_ExportedName_demarshal(x,y,z,i) CORBA_sequence_CORBA_octet_demarshal((x),(y),(z),(i))
+#if !defined(TC_IMPL_TC_CSI_GSS_NT_ExportedName_0)
+#define TC_IMPL_TC_CSI_GSS_NT_ExportedName_0 'i'
+#define TC_IMPL_TC_CSI_GSS_NT_ExportedName_1 'o'
+#define TC_IMPL_TC_CSI_GSS_NT_ExportedName_2 'p'
+#define TC_IMPL_TC_CSI_GSS_NT_ExportedName_3 '_'
+#define TC_IMPL_TC_CSI_GSS_NT_ExportedName_4 'd'
+#define TC_IMPL_TC_CSI_GSS_NT_ExportedName_5 'e'
+#define TC_IMPL_TC_CSI_GSS_NT_ExportedName_6 'f'
+#define TC_IMPL_TC_CSI_GSS_NT_ExportedName_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CSI_GSS_NT_ExportedName_struct;
+#define TC_CSI_GSS_NT_ExportedName ((CORBA_TypeCode)&TC_CSI_GSS_NT_ExportedName_struct)
+#endif
+#define CSI_GSS_NT_ExportedName__alloc() ((CSI_GSS_NT_ExportedName *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_octet))
+#define CSI_GSS_NT_ExportedName__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CORBA_octet,(m),(d))
+#define CSI_GSS_NT_ExportedName_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
+#endif
+#if !defined(ORBIT_DECL_CORBA_sequence_CORBA_octet)
+#define ORBIT_DECL_CORBA_sequence_CORBA_octet 1
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_0 'i'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_1 'o'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_2 'p'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_3 '_'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_4 'd'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_5 'e'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_6 'f'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_7 's'
+#if !defined(_CORBA_sequence_CORBA_octet_defined)
+#define _CORBA_sequence_CORBA_octet_defined 1
+   typedef struct
+   {
+      CORBA_unsigned_long _maximum,
+       _length;
+      CORBA_octet *_buffer;
+      CORBA_boolean _release;
+   } CORBA_sequence_CORBA_octet;
+#endif
+#if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_octet_0)
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_0 'i'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_1 'o'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_2 'p'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_3 '_'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_4 'd'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_5 'e'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_6 'f'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct;
+#define TC_CORBA_sequence_CORBA_octet ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_octet_struct)
+#endif
+#define CORBA_sequence_CORBA_octet__alloc() ((CORBA_sequence_CORBA_octet *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_octet))
+#define CORBA_sequence_CORBA_octet__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CORBA_octet,(m),(d))
+#define CORBA_sequence_CORBA_octet_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
+#define CORBA_sequence_CORBA_octet_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
+#endif
+#if !defined(ORBIT_DECL_CORBA_sequence_CORBA_sequence_CORBA_octet)
+#define ORBIT_DECL_CORBA_sequence_CORBA_sequence_CORBA_octet 1
+#define ORBIT_IMPL_CORBA_sequence_CORBA_sequence_CORBA_octet_0 'i'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_sequence_CORBA_octet_1 'o'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_sequence_CORBA_octet_2 'p'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_sequence_CORBA_octet_3 '_'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_sequence_CORBA_octet_4 'd'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_sequence_CORBA_octet_5 'e'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_sequence_CORBA_octet_6 'f'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_sequence_CORBA_octet_7 's'
+#if !defined(_CORBA_sequence_CORBA_sequence_CORBA_octet_defined)
+#define _CORBA_sequence_CORBA_sequence_CORBA_octet_defined 1
+   typedef struct
+   {
+      CORBA_unsigned_long _maximum,
+       _length;
+      CORBA_sequence_CORBA_octet *_buffer;
+      CORBA_boolean _release;
+   } CORBA_sequence_CORBA_sequence_CORBA_octet;
+#endif
+#if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_sequence_CORBA_octet_0)
+#define TC_IMPL_TC_CORBA_sequence_CORBA_sequence_CORBA_octet_0 'i'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_sequence_CORBA_octet_1 'o'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_sequence_CORBA_octet_2 'p'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_sequence_CORBA_octet_3 '_'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_sequence_CORBA_octet_4 'd'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_sequence_CORBA_octet_5 'e'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_sequence_CORBA_octet_6 'f'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_sequence_CORBA_octet_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct
+      TC_CORBA_sequence_CORBA_sequence_CORBA_octet_struct;
+#define TC_CORBA_sequence_CORBA_sequence_CORBA_octet ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_sequence_CORBA_octet_struct)
+#endif
+#define CORBA_sequence_CORBA_sequence_CORBA_octet__alloc() ((CORBA_sequence_CORBA_sequence_CORBA_octet *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_sequence_CORBA_octet))
+#define CORBA_sequence_CORBA_sequence_CORBA_octet__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CORBA_sequence_CORBA_octet,(m),(d))
+#define CORBA_sequence_CORBA_sequence_CORBA_octet_allocbuf(l) ((CORBA_sequence_CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_sequence_CORBA_octet, (l)))
+#define CORBA_sequence_CORBA_sequence_CORBA_octet_allocbuf(l) ((CORBA_sequence_CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_sequence_CORBA_octet, (l)))
+#endif
+#if !defined(ORBIT_DECL_CORBA_sequence_CSI_GSS_NT_ExportedName)
+#define ORBIT_DECL_CORBA_sequence_CSI_GSS_NT_ExportedName 1
+#define ORBIT_IMPL_CORBA_sequence_CSI_GSS_NT_ExportedName_0 'i'
+#define ORBIT_IMPL_CORBA_sequence_CSI_GSS_NT_ExportedName_1 'o'
+#define ORBIT_IMPL_CORBA_sequence_CSI_GSS_NT_ExportedName_2 'p'
+#define ORBIT_IMPL_CORBA_sequence_CSI_GSS_NT_ExportedName_3 '_'
+#define ORBIT_IMPL_CORBA_sequence_CSI_GSS_NT_ExportedName_4 'd'
+#define ORBIT_IMPL_CORBA_sequence_CSI_GSS_NT_ExportedName_5 'e'
+#define ORBIT_IMPL_CORBA_sequence_CSI_GSS_NT_ExportedName_6 'f'
+#define ORBIT_IMPL_CORBA_sequence_CSI_GSS_NT_ExportedName_7 's'
+#if !defined(_CORBA_sequence_CSI_GSS_NT_ExportedName_defined)
+#define _CORBA_sequence_CSI_GSS_NT_ExportedName_defined 1
+   typedef CORBA_sequence_CORBA_sequence_CORBA_octet
+      CORBA_sequence_CSI_GSS_NT_ExportedName;
+#endif
+#if !defined(TC_IMPL_TC_CORBA_sequence_CSI_GSS_NT_ExportedName_0)
+#define TC_IMPL_TC_CORBA_sequence_CSI_GSS_NT_ExportedName_0 'i'
+#define TC_IMPL_TC_CORBA_sequence_CSI_GSS_NT_ExportedName_1 'o'
+#define TC_IMPL_TC_CORBA_sequence_CSI_GSS_NT_ExportedName_2 'p'
+#define TC_IMPL_TC_CORBA_sequence_CSI_GSS_NT_ExportedName_3 '_'
+#define TC_IMPL_TC_CORBA_sequence_CSI_GSS_NT_ExportedName_4 'd'
+#define TC_IMPL_TC_CORBA_sequence_CSI_GSS_NT_ExportedName_5 'e'
+#define TC_IMPL_TC_CORBA_sequence_CSI_GSS_NT_ExportedName_6 'f'
+#define TC_IMPL_TC_CORBA_sequence_CSI_GSS_NT_ExportedName_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct
+      TC_CORBA_sequence_CSI_GSS_NT_ExportedName_struct;
+#define TC_CORBA_sequence_CSI_GSS_NT_ExportedName ((CORBA_TypeCode)&TC_CORBA_sequence_CSI_GSS_NT_ExportedName_struct)
+#endif
+#define CORBA_sequence_CSI_GSS_NT_ExportedName__alloc CORBA_sequence_CORBA_sequence_CORBA_octet__alloc
+#define CORBA_sequence_CSI_GSS_NT_ExportedName__freekids CORBA_sequence_CORBA_sequence_CORBA_octet__freekids
+#define CORBA_sequence_CSI_GSS_NT_ExportedName_allocbuf CORBA_sequence_CORBA_sequence_CORBA_octet_allocbuf
+#define CORBA_sequence_CSI_GSS_NT_ExportedName_marshal(x,y,z) CORBA_sequence_CORBA_sequence_CORBA_octet_marshal((x),(y),(z))
+#define CORBA_sequence_CSI_GSS_NT_ExportedName_demarshal(x,y,z,i) CORBA_sequence_CORBA_sequence_CORBA_octet_demarshal((x),(y),(z),(i))
+#endif
+#if !defined(_CSI_GSS_NT_ExportedNameList_defined)
+#define _CSI_GSS_NT_ExportedNameList_defined 1
+   typedef CORBA_sequence_CSI_GSS_NT_ExportedName CSI_GSS_NT_ExportedNameList;
+#define CSI_GSS_NT_ExportedNameList_marshal(x,y,z) CORBA_sequence_CSI_GSS_NT_ExportedName_marshal((x),(y),(z))
+#define CSI_GSS_NT_ExportedNameList_demarshal(x,y,z,i) CORBA_sequence_CSI_GSS_NT_ExportedName_demarshal((x),(y),(z),(i))
+#if !defined(TC_IMPL_TC_CSI_GSS_NT_ExportedNameList_0)
+#define TC_IMPL_TC_CSI_GSS_NT_ExportedNameList_0 'i'
+#define TC_IMPL_TC_CSI_GSS_NT_ExportedNameList_1 'o'
+#define TC_IMPL_TC_CSI_GSS_NT_ExportedNameList_2 'p'
+#define TC_IMPL_TC_CSI_GSS_NT_ExportedNameList_3 '_'
+#define TC_IMPL_TC_CSI_GSS_NT_ExportedNameList_4 'd'
+#define TC_IMPL_TC_CSI_GSS_NT_ExportedNameList_5 'e'
+#define TC_IMPL_TC_CSI_GSS_NT_ExportedNameList_6 'f'
+#define TC_IMPL_TC_CSI_GSS_NT_ExportedNameList_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CSI_GSS_NT_ExportedNameList_struct;
+#define TC_CSI_GSS_NT_ExportedNameList ((CORBA_TypeCode)&TC_CSI_GSS_NT_ExportedNameList_struct)
+#endif
+#define CSI_GSS_NT_ExportedNameList__alloc() ((CSI_GSS_NT_ExportedNameList *)ORBit_small_alloc (TC_CORBA_sequence_CSI_GSS_NT_ExportedName))
+#define CSI_GSS_NT_ExportedNameList__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CSI_GSS_NT_ExportedName,(m),(d))
+#define CSI_GSS_NT_ExportedNameList_allocbuf(l) ((CSI_GSS_NT_ExportedName*)ORBit_small_allocbuf (TC_CORBA_sequence_CSI_GSS_NT_ExportedName, (l)))
+#endif
+#if !defined(_CSI_MsgType_defined)
+#define _CSI_MsgType_defined 1
+   typedef CORBA_short CSI_MsgType;
+#define CSI_MsgType_marshal(x,y,z) CORBA_short_marshal((x),(y),(z))
+#define CSI_MsgType_demarshal(x,y,z,i) CORBA_short_demarshal((x),(y),(z),(i))
+#if !defined(TC_IMPL_TC_CSI_MsgType_0)
+#define TC_IMPL_TC_CSI_MsgType_0 'i'
+#define TC_IMPL_TC_CSI_MsgType_1 'o'
+#define TC_IMPL_TC_CSI_MsgType_2 'p'
+#define TC_IMPL_TC_CSI_MsgType_3 '_'
+#define TC_IMPL_TC_CSI_MsgType_4 'd'
+#define TC_IMPL_TC_CSI_MsgType_5 'e'
+#define TC_IMPL_TC_CSI_MsgType_6 'f'
+#define TC_IMPL_TC_CSI_MsgType_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CSI_MsgType_struct;
+#define TC_CSI_MsgType ((CORBA_TypeCode)&TC_CSI_MsgType_struct)
+#endif
+#define CSI_MsgType__alloc() ((CSI_MsgType *)ORBit_small_alloc (TC_CORBA_short))
+#define CSI_MsgType__freekids(m,d) ORBit_small_freekids (TC_CORBA_short,(m),(d))
+#endif
+#ifndef CSI_MTEstablishContext
+#define CSI_MTEstablishContext 0
+#endif				/* !CSI_MTEstablishContext */
+
+#ifndef CSI_MTCompleteEstablishContext
+#define CSI_MTCompleteEstablishContext 1
+#endif				/* !CSI_MTCompleteEstablishContext */
+
+#ifndef CSI_MTContextError
+#define CSI_MTContextError 4
+#endif				/* !CSI_MTContextError */
+
+#ifndef CSI_MTMessageInContext
+#define CSI_MTMessageInContext 5
+#endif				/* !CSI_MTMessageInContext */
+
+#if !defined(_CSI_ContextId_defined)
+#define _CSI_ContextId_defined 1
+   typedef CORBA_unsigned_long_long CSI_ContextId;
+#define CSI_ContextId_marshal(x,y,z) CORBA_unsigned_long_long_marshal((x),(y),(z))
+#define CSI_ContextId_demarshal(x,y,z,i) CORBA_unsigned_long_long_demarshal((x),(y),(z),(i))
+#if !defined(TC_IMPL_TC_CSI_ContextId_0)
+#define TC_IMPL_TC_CSI_ContextId_0 'i'
+#define TC_IMPL_TC_CSI_ContextId_1 'o'
+#define TC_IMPL_TC_CSI_ContextId_2 'p'
+#define TC_IMPL_TC_CSI_ContextId_3 '_'
+#define TC_IMPL_TC_CSI_ContextId_4 'd'
+#define TC_IMPL_TC_CSI_ContextId_5 'e'
+#define TC_IMPL_TC_CSI_ContextId_6 'f'
+#define TC_IMPL_TC_CSI_ContextId_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CSI_ContextId_struct;
+#define TC_CSI_ContextId ((CORBA_TypeCode)&TC_CSI_ContextId_struct)
+#endif
+#define CSI_ContextId__alloc() ((CSI_ContextId *)ORBit_small_alloc (TC_CORBA_unsigned_long_long))
+#define CSI_ContextId__freekids(m,d) ORBit_small_freekids (TC_CORBA_unsigned_long_long,(m),(d))
+#endif
+#if !defined(_CSI_AuthorizationElementType_defined)
+#define _CSI_AuthorizationElementType_defined 1
+   typedef CORBA_unsigned_long CSI_AuthorizationElementType;
+#define CSI_AuthorizationElementType_marshal(x,y,z) CORBA_unsigned_long_marshal((x),(y),(z))
+#define CSI_AuthorizationElementType_demarshal(x,y,z,i) CORBA_unsigned_long_demarshal((x),(y),(z),(i))
+#if !defined(TC_IMPL_TC_CSI_AuthorizationElementType_0)
+#define TC_IMPL_TC_CSI_AuthorizationElementType_0 'i'
+#define TC_IMPL_TC_CSI_AuthorizationElementType_1 'o'
+#define TC_IMPL_TC_CSI_AuthorizationElementType_2 'p'
+#define TC_IMPL_TC_CSI_AuthorizationElementType_3 '_'
+#define TC_IMPL_TC_CSI_AuthorizationElementType_4 'd'
+#define TC_IMPL_TC_CSI_AuthorizationElementType_5 'e'
+#define TC_IMPL_TC_CSI_AuthorizationElementType_6 'f'
+#define TC_IMPL_TC_CSI_AuthorizationElementType_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CSI_AuthorizationElementType_struct;
+#define TC_CSI_AuthorizationElementType ((CORBA_TypeCode)&TC_CSI_AuthorizationElementType_struct)
+#endif
+#define CSI_AuthorizationElementType__alloc() ((CSI_AuthorizationElementType *)ORBit_small_alloc (TC_CORBA_unsigned_long))
+#define CSI_AuthorizationElementType__freekids(m,d) ORBit_small_freekids (TC_CORBA_unsigned_long,(m),(d))
+#endif
+#ifndef CSI_X509AttributeCertChain
+#define CSI_X509AttributeCertChain 324817U
+#endif				/* !CSI_X509AttributeCertChain */
+
+#if !defined(ORBIT_DECL_CORBA_sequence_CORBA_octet)
+#define ORBIT_DECL_CORBA_sequence_CORBA_octet 1
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_0 'i'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_1 'o'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_2 'p'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_3 '_'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_4 'd'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_5 'e'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_6 'f'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_7 's'
+#if !defined(_CORBA_sequence_CORBA_octet_defined)
+#define _CORBA_sequence_CORBA_octet_defined 1
+   typedef struct
+   {
+      CORBA_unsigned_long _maximum,
+       _length;
+      CORBA_octet *_buffer;
+      CORBA_boolean _release;
+   } CORBA_sequence_CORBA_octet;
+#endif
+#if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_octet_0)
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_0 'i'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_1 'o'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_2 'p'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_3 '_'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_4 'd'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_5 'e'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_6 'f'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct;
+#define TC_CORBA_sequence_CORBA_octet ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_octet_struct)
+#endif
+#define CORBA_sequence_CORBA_octet__alloc() ((CORBA_sequence_CORBA_octet *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_octet))
+#define CORBA_sequence_CORBA_octet__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CORBA_octet,(m),(d))
+#define CORBA_sequence_CORBA_octet_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
+#define CORBA_sequence_CORBA_octet_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
+#endif
+#if !defined(_CSI_AuthorizationElementContents_defined)
+#define _CSI_AuthorizationElementContents_defined 1
+   typedef CORBA_sequence_CORBA_octet CSI_AuthorizationElementContents;
+#define CSI_AuthorizationElementContents_marshal(x,y,z) CORBA_sequence_CORBA_octet_marshal((x),(y),(z))
+#define CSI_AuthorizationElementContents_demarshal(x,y,z,i) CORBA_sequence_CORBA_octet_demarshal((x),(y),(z),(i))
+#if !defined(TC_IMPL_TC_CSI_AuthorizationElementContents_0)
+#define TC_IMPL_TC_CSI_AuthorizationElementContents_0 'i'
+#define TC_IMPL_TC_CSI_AuthorizationElementContents_1 'o'
+#define TC_IMPL_TC_CSI_AuthorizationElementContents_2 'p'
+#define TC_IMPL_TC_CSI_AuthorizationElementContents_3 '_'
+#define TC_IMPL_TC_CSI_AuthorizationElementContents_4 'd'
+#define TC_IMPL_TC_CSI_AuthorizationElementContents_5 'e'
+#define TC_IMPL_TC_CSI_AuthorizationElementContents_6 'f'
+#define TC_IMPL_TC_CSI_AuthorizationElementContents_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct
+      TC_CSI_AuthorizationElementContents_struct;
+#define TC_CSI_AuthorizationElementContents ((CORBA_TypeCode)&TC_CSI_AuthorizationElementContents_struct)
+#endif
+#define CSI_AuthorizationElementContents__alloc() ((CSI_AuthorizationElementContents *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_octet))
+#define CSI_AuthorizationElementContents__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CORBA_octet,(m),(d))
+#define CSI_AuthorizationElementContents_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
+#endif
+#if !defined(_CSI_AuthorizationElement_defined)
+#define _CSI_AuthorizationElement_defined 1
+   typedef struct CSI_AuthorizationElement_type CSI_AuthorizationElement;
+   struct CSI_AuthorizationElement_type
+   {
+      CSI_AuthorizationElementType the_type;
+      CSI_AuthorizationElementContents the_element;
+   };
+
+#if !defined(TC_IMPL_TC_CSI_AuthorizationElement_0)
+#define TC_IMPL_TC_CSI_AuthorizationElement_0 'i'
+#define TC_IMPL_TC_CSI_AuthorizationElement_1 'o'
+#define TC_IMPL_TC_CSI_AuthorizationElement_2 'p'
+#define TC_IMPL_TC_CSI_AuthorizationElement_3 '_'
+#define TC_IMPL_TC_CSI_AuthorizationElement_4 'd'
+#define TC_IMPL_TC_CSI_AuthorizationElement_5 'e'
+#define TC_IMPL_TC_CSI_AuthorizationElement_6 'f'
+#define TC_IMPL_TC_CSI_AuthorizationElement_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CSI_AuthorizationElement_struct;
+#define TC_CSI_AuthorizationElement ((CORBA_TypeCode)&TC_CSI_AuthorizationElement_struct)
+#endif
+#define CSI_AuthorizationElement__alloc() ((CSI_AuthorizationElement *)ORBit_small_alloc (TC_CSI_AuthorizationElement))
+#define CSI_AuthorizationElement__freekids(m,d) ORBit_small_freekids (TC_CSI_AuthorizationElement,(m),(d))
+#endif
+#if !defined(ORBIT_DECL_CORBA_sequence_CSI_AuthorizationElement)
+#define ORBIT_DECL_CORBA_sequence_CSI_AuthorizationElement 1
+#define ORBIT_IMPL_CORBA_sequence_CSI_AuthorizationElement_0 'i'
+#define ORBIT_IMPL_CORBA_sequence_CSI_AuthorizationElement_1 'o'
+#define ORBIT_IMPL_CORBA_sequence_CSI_AuthorizationElement_2 'p'
+#define ORBIT_IMPL_CORBA_sequence_CSI_AuthorizationElement_3 '_'
+#define ORBIT_IMPL_CORBA_sequence_CSI_AuthorizationElement_4 'd'
+#define ORBIT_IMPL_CORBA_sequence_CSI_AuthorizationElement_5 'e'
+#define ORBIT_IMPL_CORBA_sequence_CSI_AuthorizationElement_6 'f'
+#define ORBIT_IMPL_CORBA_sequence_CSI_AuthorizationElement_7 's'
+#if !defined(_CORBA_sequence_CSI_AuthorizationElement_defined)
+#define _CORBA_sequence_CSI_AuthorizationElement_defined 1
+   typedef struct
+   {
+      CORBA_unsigned_long _maximum,
+       _length;
+      CSI_AuthorizationElement *_buffer;
+      CORBA_boolean _release;
+   } CORBA_sequence_CSI_AuthorizationElement;
+#endif
+#if !defined(TC_IMPL_TC_CORBA_sequence_CSI_AuthorizationElement_0)
+#define TC_IMPL_TC_CORBA_sequence_CSI_AuthorizationElement_0 'i'
+#define TC_IMPL_TC_CORBA_sequence_CSI_AuthorizationElement_1 'o'
+#define TC_IMPL_TC_CORBA_sequence_CSI_AuthorizationElement_2 'p'
+#define TC_IMPL_TC_CORBA_sequence_CSI_AuthorizationElement_3 '_'
+#define TC_IMPL_TC_CORBA_sequence_CSI_AuthorizationElement_4 'd'
+#define TC_IMPL_TC_CORBA_sequence_CSI_AuthorizationElement_5 'e'
+#define TC_IMPL_TC_CORBA_sequence_CSI_AuthorizationElement_6 'f'
+#define TC_IMPL_TC_CORBA_sequence_CSI_AuthorizationElement_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct
+      TC_CORBA_sequence_CSI_AuthorizationElement_struct;
+#define TC_CORBA_sequence_CSI_AuthorizationElement ((CORBA_TypeCode)&TC_CORBA_sequence_CSI_AuthorizationElement_struct)
+#endif
+#define CORBA_sequence_CSI_AuthorizationElement__alloc() ((CORBA_sequence_CSI_AuthorizationElement *)ORBit_small_alloc (TC_CORBA_sequence_CSI_AuthorizationElement))
+#define CORBA_sequence_CSI_AuthorizationElement__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CSI_AuthorizationElement,(m),(d))
+#define CORBA_sequence_CSI_AuthorizationElement_allocbuf(l) ((CSI_AuthorizationElement*)ORBit_small_allocbuf (TC_CORBA_sequence_CSI_AuthorizationElement, (l)))
+#define CORBA_sequence_CSI_AuthorizationElement_allocbuf(l) ((CSI_AuthorizationElement*)ORBit_small_allocbuf (TC_CORBA_sequence_CSI_AuthorizationElement, (l)))
+#endif
+#if !defined(_CSI_AuthorizationToken_defined)
+#define _CSI_AuthorizationToken_defined 1
+   typedef CORBA_sequence_CSI_AuthorizationElement CSI_AuthorizationToken;
+#define CSI_AuthorizationToken_marshal(x,y,z) CORBA_sequence_CSI_AuthorizationElement_marshal((x),(y),(z))
+#define CSI_AuthorizationToken_demarshal(x,y,z,i) CORBA_sequence_CSI_AuthorizationElement_demarshal((x),(y),(z),(i))
+#if !defined(TC_IMPL_TC_CSI_AuthorizationToken_0)
+#define TC_IMPL_TC_CSI_AuthorizationToken_0 'i'
+#define TC_IMPL_TC_CSI_AuthorizationToken_1 'o'
+#define TC_IMPL_TC_CSI_AuthorizationToken_2 'p'
+#define TC_IMPL_TC_CSI_AuthorizationToken_3 '_'
+#define TC_IMPL_TC_CSI_AuthorizationToken_4 'd'
+#define TC_IMPL_TC_CSI_AuthorizationToken_5 'e'
+#define TC_IMPL_TC_CSI_AuthorizationToken_6 'f'
+#define TC_IMPL_TC_CSI_AuthorizationToken_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CSI_AuthorizationToken_struct;
+#define TC_CSI_AuthorizationToken ((CORBA_TypeCode)&TC_CSI_AuthorizationToken_struct)
+#endif
+#define CSI_AuthorizationToken__alloc() ((CSI_AuthorizationToken *)ORBit_small_alloc (TC_CORBA_sequence_CSI_AuthorizationElement))
+#define CSI_AuthorizationToken__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CSI_AuthorizationElement,(m),(d))
+#define CSI_AuthorizationToken_allocbuf(l) ((CSI_AuthorizationElement*)ORBit_small_allocbuf (TC_CORBA_sequence_CSI_AuthorizationElement, (l)))
+#endif
+#if !defined(_CSI_IdentityTokenType_defined)
+#define _CSI_IdentityTokenType_defined 1
+   typedef CORBA_unsigned_long CSI_IdentityTokenType;
+#define CSI_IdentityTokenType_marshal(x,y,z) CORBA_unsigned_long_marshal((x),(y),(z))
+#define CSI_IdentityTokenType_demarshal(x,y,z,i) CORBA_unsigned_long_demarshal((x),(y),(z),(i))
+#if !defined(TC_IMPL_TC_CSI_IdentityTokenType_0)
+#define TC_IMPL_TC_CSI_IdentityTokenType_0 'i'
+#define TC_IMPL_TC_CSI_IdentityTokenType_1 'o'
+#define TC_IMPL_TC_CSI_IdentityTokenType_2 'p'
+#define TC_IMPL_TC_CSI_IdentityTokenType_3 '_'
+#define TC_IMPL_TC_CSI_IdentityTokenType_4 'd'
+#define TC_IMPL_TC_CSI_IdentityTokenType_5 'e'
+#define TC_IMPL_TC_CSI_IdentityTokenType_6 'f'
+#define TC_IMPL_TC_CSI_IdentityTokenType_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CSI_IdentityTokenType_struct;
+#define TC_CSI_IdentityTokenType ((CORBA_TypeCode)&TC_CSI_IdentityTokenType_struct)
+#endif
+#define CSI_IdentityTokenType__alloc() ((CSI_IdentityTokenType *)ORBit_small_alloc (TC_CORBA_unsigned_long))
+#define CSI_IdentityTokenType__freekids(m,d) ORBit_small_freekids (TC_CORBA_unsigned_long,(m),(d))
+#endif
+#ifndef CSI_ITTAbsent
+#define CSI_ITTAbsent 0U
+#endif				/* !CSI_ITTAbsent */
+
+#ifndef CSI_ITTAnonymous
+#define CSI_ITTAnonymous 1U
+#endif				/* !CSI_ITTAnonymous */
+
+#ifndef CSI_ITTPrincipalName
+#define CSI_ITTPrincipalName 2U
+#endif				/* !CSI_ITTPrincipalName */
+
+#ifndef CSI_ITTX509CertChain
+#define CSI_ITTX509CertChain 4U
+#endif				/* !CSI_ITTX509CertChain */
+
+#ifndef CSI_ITTDistinguishedName
+#define CSI_ITTDistinguishedName 8U
+#endif				/* !CSI_ITTDistinguishedName */
+
+#if !defined(ORBIT_DECL_CORBA_sequence_CORBA_octet)
+#define ORBIT_DECL_CORBA_sequence_CORBA_octet 1
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_0 'i'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_1 'o'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_2 'p'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_3 '_'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_4 'd'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_5 'e'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_6 'f'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_7 's'
+#if !defined(_CORBA_sequence_CORBA_octet_defined)
+#define _CORBA_sequence_CORBA_octet_defined 1
+   typedef struct
+   {
+      CORBA_unsigned_long _maximum,
+       _length;
+      CORBA_octet *_buffer;
+      CORBA_boolean _release;
+   } CORBA_sequence_CORBA_octet;
+#endif
+#if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_octet_0)
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_0 'i'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_1 'o'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_2 'p'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_3 '_'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_4 'd'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_5 'e'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_6 'f'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct;
+#define TC_CORBA_sequence_CORBA_octet ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_octet_struct)
+#endif
+#define CORBA_sequence_CORBA_octet__alloc() ((CORBA_sequence_CORBA_octet *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_octet))
+#define CORBA_sequence_CORBA_octet__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CORBA_octet,(m),(d))
+#define CORBA_sequence_CORBA_octet_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
+#define CORBA_sequence_CORBA_octet_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
+#endif
+#if !defined(_CSI_IdentityExtension_defined)
+#define _CSI_IdentityExtension_defined 1
+   typedef CORBA_sequence_CORBA_octet CSI_IdentityExtension;
+#define CSI_IdentityExtension_marshal(x,y,z) CORBA_sequence_CORBA_octet_marshal((x),(y),(z))
+#define CSI_IdentityExtension_demarshal(x,y,z,i) CORBA_sequence_CORBA_octet_demarshal((x),(y),(z),(i))
+#if !defined(TC_IMPL_TC_CSI_IdentityExtension_0)
+#define TC_IMPL_TC_CSI_IdentityExtension_0 'i'
+#define TC_IMPL_TC_CSI_IdentityExtension_1 'o'
+#define TC_IMPL_TC_CSI_IdentityExtension_2 'p'
+#define TC_IMPL_TC_CSI_IdentityExtension_3 '_'
+#define TC_IMPL_TC_CSI_IdentityExtension_4 'd'
+#define TC_IMPL_TC_CSI_IdentityExtension_5 'e'
+#define TC_IMPL_TC_CSI_IdentityExtension_6 'f'
+#define TC_IMPL_TC_CSI_IdentityExtension_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CSI_IdentityExtension_struct;
+#define TC_CSI_IdentityExtension ((CORBA_TypeCode)&TC_CSI_IdentityExtension_struct)
+#endif
+#define CSI_IdentityExtension__alloc() ((CSI_IdentityExtension *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_octet))
+#define CSI_IdentityExtension__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CORBA_octet,(m),(d))
+#define CSI_IdentityExtension_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
+#endif
+#if !defined(_CSI_IdentityToken_defined)
+#define _CSI_IdentityToken_defined 1
+   typedef struct CSI_IdentityToken_type CSI_IdentityToken;
+   struct CSI_IdentityToken_type
+   {
+      CSI_IdentityTokenType _d;
+      union
+      {
+	 CORBA_boolean absent;
+	 CORBA_boolean anonymous;
+	 CSI_GSS_NT_ExportedName principal_name;
+	 CSI_X509CertificateChain certificate_chain;
+	 CSI_X501DistinguishedName dn;
+	 CSI_IdentityExtension id;
+      } _u;
+   };
+#if !defined(TC_IMPL_TC_CSI_IdentityToken_0)
+#define TC_IMPL_TC_CSI_IdentityToken_0 'i'
+#define TC_IMPL_TC_CSI_IdentityToken_1 'o'
+#define TC_IMPL_TC_CSI_IdentityToken_2 'p'
+#define TC_IMPL_TC_CSI_IdentityToken_3 '_'
+#define TC_IMPL_TC_CSI_IdentityToken_4 'd'
+#define TC_IMPL_TC_CSI_IdentityToken_5 'e'
+#define TC_IMPL_TC_CSI_IdentityToken_6 'f'
+#define TC_IMPL_TC_CSI_IdentityToken_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CSI_IdentityToken_struct;
+#define TC_CSI_IdentityToken ((CORBA_TypeCode)&TC_CSI_IdentityToken_struct)
+#endif
+#define CSI_IdentityToken__alloc() ((CSI_IdentityToken *)ORBit_small_alloc (TC_CSI_IdentityToken))
+#define CSI_IdentityToken__freekids(m,d) ORBit_small_freekids (TC_CSI_IdentityToken,(m),(d))
+#endif
+#if !defined(_CSI_EstablishContext_defined)
+#define _CSI_EstablishContext_defined 1
+   typedef struct CSI_EstablishContext_type CSI_EstablishContext;
+   struct CSI_EstablishContext_type
+   {
+      CSI_ContextId client_context_id;
+      CSI_AuthorizationToken authorization_token;
+      CSI_IdentityToken identity_token;
+      CSI_GSSToken client_authentication_token;
+   };
+
+#if !defined(TC_IMPL_TC_CSI_EstablishContext_0)
+#define TC_IMPL_TC_CSI_EstablishContext_0 'i'
+#define TC_IMPL_TC_CSI_EstablishContext_1 'o'
+#define TC_IMPL_TC_CSI_EstablishContext_2 'p'
+#define TC_IMPL_TC_CSI_EstablishContext_3 '_'
+#define TC_IMPL_TC_CSI_EstablishContext_4 'd'
+#define TC_IMPL_TC_CSI_EstablishContext_5 'e'
+#define TC_IMPL_TC_CSI_EstablishContext_6 'f'
+#define TC_IMPL_TC_CSI_EstablishContext_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CSI_EstablishContext_struct;
+#define TC_CSI_EstablishContext ((CORBA_TypeCode)&TC_CSI_EstablishContext_struct)
+#endif
+#define CSI_EstablishContext__alloc() ((CSI_EstablishContext *)ORBit_small_alloc (TC_CSI_EstablishContext))
+#define CSI_EstablishContext__freekids(m,d) ORBit_small_freekids (TC_CSI_EstablishContext,(m),(d))
+#endif
+#if !defined(_CSI_CompleteEstablishContext_defined)
+#define _CSI_CompleteEstablishContext_defined 1
+   typedef struct CSI_CompleteEstablishContext_type
+      CSI_CompleteEstablishContext;
+   struct CSI_CompleteEstablishContext_type
+   {
+      CSI_ContextId client_context_id;
+      CORBA_boolean context_stateful;
+      CSI_GSSToken final_context_token;
+   };
+
+#if !defined(TC_IMPL_TC_CSI_CompleteEstablishContext_0)
+#define TC_IMPL_TC_CSI_CompleteEstablishContext_0 'i'
+#define TC_IMPL_TC_CSI_CompleteEstablishContext_1 'o'
+#define TC_IMPL_TC_CSI_CompleteEstablishContext_2 'p'
+#define TC_IMPL_TC_CSI_CompleteEstablishContext_3 '_'
+#define TC_IMPL_TC_CSI_CompleteEstablishContext_4 'd'
+#define TC_IMPL_TC_CSI_CompleteEstablishContext_5 'e'
+#define TC_IMPL_TC_CSI_CompleteEstablishContext_6 'f'
+#define TC_IMPL_TC_CSI_CompleteEstablishContext_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CSI_CompleteEstablishContext_struct;
+#define TC_CSI_CompleteEstablishContext ((CORBA_TypeCode)&TC_CSI_CompleteEstablishContext_struct)
+#endif
+#define CSI_CompleteEstablishContext__alloc() ((CSI_CompleteEstablishContext *)ORBit_small_alloc (TC_CSI_CompleteEstablishContext))
+#define CSI_CompleteEstablishContext__freekids(m,d) ORBit_small_freekids (TC_CSI_CompleteEstablishContext,(m),(d))
+#endif
+#if !defined(_CSI_ContextError_defined)
+#define _CSI_ContextError_defined 1
+   typedef struct CSI_ContextError_type CSI_ContextError;
+   struct CSI_ContextError_type
+   {
+      CSI_ContextId client_context_id;
+      CORBA_long major_status;
+      CORBA_long minor_status;
+      CSI_GSSToken error_token;
+   };
+
+#if !defined(TC_IMPL_TC_CSI_ContextError_0)
+#define TC_IMPL_TC_CSI_ContextError_0 'i'
+#define TC_IMPL_TC_CSI_ContextError_1 'o'
+#define TC_IMPL_TC_CSI_ContextError_2 'p'
+#define TC_IMPL_TC_CSI_ContextError_3 '_'
+#define TC_IMPL_TC_CSI_ContextError_4 'd'
+#define TC_IMPL_TC_CSI_ContextError_5 'e'
+#define TC_IMPL_TC_CSI_ContextError_6 'f'
+#define TC_IMPL_TC_CSI_ContextError_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CSI_ContextError_struct;
+#define TC_CSI_ContextError ((CORBA_TypeCode)&TC_CSI_ContextError_struct)
+#endif
+#define CSI_ContextError__alloc() ((CSI_ContextError *)ORBit_small_alloc (TC_CSI_ContextError))
+#define CSI_ContextError__freekids(m,d) ORBit_small_freekids (TC_CSI_ContextError,(m),(d))
+#endif
+#if !defined(_CSI_MessageInContext_defined)
+#define _CSI_MessageInContext_defined 1
+   typedef struct CSI_MessageInContext_type CSI_MessageInContext;
+   struct CSI_MessageInContext_type
+   {
+      CSI_ContextId client_context_id;
+      CORBA_boolean discard_context;
+   };
+
+#if !defined(TC_IMPL_TC_CSI_MessageInContext_0)
+#define TC_IMPL_TC_CSI_MessageInContext_0 'i'
+#define TC_IMPL_TC_CSI_MessageInContext_1 'o'
+#define TC_IMPL_TC_CSI_MessageInContext_2 'p'
+#define TC_IMPL_TC_CSI_MessageInContext_3 '_'
+#define TC_IMPL_TC_CSI_MessageInContext_4 'd'
+#define TC_IMPL_TC_CSI_MessageInContext_5 'e'
+#define TC_IMPL_TC_CSI_MessageInContext_6 'f'
+#define TC_IMPL_TC_CSI_MessageInContext_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CSI_MessageInContext_struct;
+#define TC_CSI_MessageInContext ((CORBA_TypeCode)&TC_CSI_MessageInContext_struct)
+#endif
+#define CSI_MessageInContext__alloc() ((CSI_MessageInContext *)ORBit_small_alloc (TC_CSI_MessageInContext))
+#define CSI_MessageInContext__freekids(m,d) ORBit_small_freekids (TC_CSI_MessageInContext,(m),(d))
+#endif
+#if !defined(_CSI_SASContextBody_defined)
+#define _CSI_SASContextBody_defined 1
+   typedef struct CSI_SASContextBody_type CSI_SASContextBody;
+   struct CSI_SASContextBody_type
+   {
+      CSI_MsgType _d;
+      union
+      {
+	 CSI_EstablishContext establish_msg;
+	 CSI_CompleteEstablishContext complete_msg;
+	 CSI_ContextError error_msg;
+	 CSI_MessageInContext in_context_msg;
+      } _u;
+   };
+#if !defined(TC_IMPL_TC_CSI_SASContextBody_0)
+#define TC_IMPL_TC_CSI_SASContextBody_0 'i'
+#define TC_IMPL_TC_CSI_SASContextBody_1 'o'
+#define TC_IMPL_TC_CSI_SASContextBody_2 'p'
+#define TC_IMPL_TC_CSI_SASContextBody_3 '_'
+#define TC_IMPL_TC_CSI_SASContextBody_4 'd'
+#define TC_IMPL_TC_CSI_SASContextBody_5 'e'
+#define TC_IMPL_TC_CSI_SASContextBody_6 'f'
+#define TC_IMPL_TC_CSI_SASContextBody_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CSI_SASContextBody_struct;
+#define TC_CSI_SASContextBody ((CORBA_TypeCode)&TC_CSI_SASContextBody_struct)
+#endif
+#define CSI_SASContextBody__alloc() ((CSI_SASContextBody *)ORBit_small_alloc (TC_CSI_SASContextBody))
+#define CSI_SASContextBody__freekids(m,d) ORBit_small_freekids (TC_CSI_SASContextBody,(m),(d))
+#endif
+#if !defined(_CSI_StringOID_defined)
+#define _CSI_StringOID_defined 1
+   typedef CORBA_string CSI_StringOID;
+#define CSI_StringOID_marshal(x,y,z) CORBA_string_marshal((x),(y),(z))
+#define CSI_StringOID_demarshal(x,y,z,i) CORBA_string_demarshal((x),(y),(z),(i))
+#if !defined(TC_IMPL_TC_CSI_StringOID_0)
+#define TC_IMPL_TC_CSI_StringOID_0 'i'
+#define TC_IMPL_TC_CSI_StringOID_1 'o'
+#define TC_IMPL_TC_CSI_StringOID_2 'p'
+#define TC_IMPL_TC_CSI_StringOID_3 '_'
+#define TC_IMPL_TC_CSI_StringOID_4 'd'
+#define TC_IMPL_TC_CSI_StringOID_5 'e'
+#define TC_IMPL_TC_CSI_StringOID_6 'f'
+#define TC_IMPL_TC_CSI_StringOID_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CSI_StringOID_struct;
+#define TC_CSI_StringOID ((CORBA_TypeCode)&TC_CSI_StringOID_struct)
+#endif
+#define CSI_StringOID__alloc() ((CSI_StringOID *)ORBit_small_alloc (TC_CORBA_string))
+#define CSI_StringOID__freekids(m,d) ORBit_small_freekids (TC_CORBA_string,(m),(d))
+#endif
+#ifndef CSI_KRB5MechOID
+#define CSI_KRB5MechOID "oid:1.2.840.113554.1.2.2"
+#endif				/* !CSI_KRB5MechOID */
+
+#ifndef CSI_GSS_NT_Export_Name_OID
+#define CSI_GSS_NT_Export_Name_OID "oid:1.3.6.1.5.6.4"
+#endif				/* !CSI_GSS_NT_Export_Name_OID */
+
+#ifndef CSI_GSS_NT_Scoped_Username_OID
+#define CSI_GSS_NT_Scoped_Username_OID "oid:2.23.130.1.2.1"
+#endif				/* !CSI_GSS_NT_Scoped_Username_OID */
+
+#if !defined(_CSIIOP_AssociationOptions_defined)
+#define _CSIIOP_AssociationOptions_defined 1
+   typedef CORBA_unsigned_short CSIIOP_AssociationOptions;
+#define CSIIOP_AssociationOptions_marshal(x,y,z) CORBA_unsigned_short_marshal((x),(y),(z))
+#define CSIIOP_AssociationOptions_demarshal(x,y,z,i) CORBA_unsigned_short_demarshal((x),(y),(z),(i))
+#if !defined(TC_IMPL_TC_CSIIOP_AssociationOptions_0)
+#define TC_IMPL_TC_CSIIOP_AssociationOptions_0 'i'
+#define TC_IMPL_TC_CSIIOP_AssociationOptions_1 'o'
+#define TC_IMPL_TC_CSIIOP_AssociationOptions_2 'p'
+#define TC_IMPL_TC_CSIIOP_AssociationOptions_3 '_'
+#define TC_IMPL_TC_CSIIOP_AssociationOptions_4 'd'
+#define TC_IMPL_TC_CSIIOP_AssociationOptions_5 'e'
+#define TC_IMPL_TC_CSIIOP_AssociationOptions_6 'f'
+#define TC_IMPL_TC_CSIIOP_AssociationOptions_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CSIIOP_AssociationOptions_struct;
+#define TC_CSIIOP_AssociationOptions ((CORBA_TypeCode)&TC_CSIIOP_AssociationOptions_struct)
+#endif
+#define CSIIOP_AssociationOptions__alloc() ((CSIIOP_AssociationOptions *)ORBit_small_alloc (TC_CORBA_unsigned_short))
+#define CSIIOP_AssociationOptions__freekids(m,d) ORBit_small_freekids (TC_CORBA_unsigned_short,(m),(d))
+#endif
+#ifndef CSIIOP_NoProtection
+#define CSIIOP_NoProtection 1U
+#endif				/* !CSIIOP_NoProtection */
+
+#ifndef CSIIOP_Integrity
+#define CSIIOP_Integrity 2U
+#endif				/* !CSIIOP_Integrity */
+
+#ifndef CSIIOP_Confidentiality
+#define CSIIOP_Confidentiality 4U
+#endif				/* !CSIIOP_Confidentiality */
+
+#ifndef CSIIOP_DetectReplay
+#define CSIIOP_DetectReplay 8U
+#endif				/* !CSIIOP_DetectReplay */
+
+#ifndef CSIIOP_DetectMisordering
+#define CSIIOP_DetectMisordering 16U
+#endif				/* !CSIIOP_DetectMisordering */
+
+#ifndef CSIIOP_EstablishTrustInTarget
+#define CSIIOP_EstablishTrustInTarget 32U
+#endif				/* !CSIIOP_EstablishTrustInTarget */
+
+#ifndef CSIIOP_EstablishTrustInClient
+#define CSIIOP_EstablishTrustInClient 64U
+#endif				/* !CSIIOP_EstablishTrustInClient */
+
+#ifndef CSIIOP_NoDelegation
+#define CSIIOP_NoDelegation 128U
+#endif				/* !CSIIOP_NoDelegation */
+
+#ifndef CSIIOP_SimpleDelegation
+#define CSIIOP_SimpleDelegation 256U
+#endif				/* !CSIIOP_SimpleDelegation */
+
+#ifndef CSIIOP_CompositeDelegation
+#define CSIIOP_CompositeDelegation 512U
+#endif				/* !CSIIOP_CompositeDelegation */
+
+#ifndef CSIIOP_IdentityAssertion
+#define CSIIOP_IdentityAssertion 1024U
+#endif				/* !CSIIOP_IdentityAssertion */
+
+#ifndef CSIIOP_DelegationByClient
+#define CSIIOP_DelegationByClient 2048U
+#endif				/* !CSIIOP_DelegationByClient */
+
+#if !defined(_CSIIOP_ServiceConfigurationSyntax_defined)
+#define _CSIIOP_ServiceConfigurationSyntax_defined 1
+   typedef CORBA_unsigned_long CSIIOP_ServiceConfigurationSyntax;
+#define CSIIOP_ServiceConfigurationSyntax_marshal(x,y,z) CORBA_unsigned_long_marshal((x),(y),(z))
+#define CSIIOP_ServiceConfigurationSyntax_demarshal(x,y,z,i) CORBA_unsigned_long_demarshal((x),(y),(z),(i))
+#if !defined(TC_IMPL_TC_CSIIOP_ServiceConfigurationSyntax_0)
+#define TC_IMPL_TC_CSIIOP_ServiceConfigurationSyntax_0 'i'
+#define TC_IMPL_TC_CSIIOP_ServiceConfigurationSyntax_1 'o'
+#define TC_IMPL_TC_CSIIOP_ServiceConfigurationSyntax_2 'p'
+#define TC_IMPL_TC_CSIIOP_ServiceConfigurationSyntax_3 '_'
+#define TC_IMPL_TC_CSIIOP_ServiceConfigurationSyntax_4 'd'
+#define TC_IMPL_TC_CSIIOP_ServiceConfigurationSyntax_5 'e'
+#define TC_IMPL_TC_CSIIOP_ServiceConfigurationSyntax_6 'f'
+#define TC_IMPL_TC_CSIIOP_ServiceConfigurationSyntax_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct
+      TC_CSIIOP_ServiceConfigurationSyntax_struct;
+#define TC_CSIIOP_ServiceConfigurationSyntax ((CORBA_TypeCode)&TC_CSIIOP_ServiceConfigurationSyntax_struct)
+#endif
+#define CSIIOP_ServiceConfigurationSyntax__alloc() ((CSIIOP_ServiceConfigurationSyntax *)ORBit_small_alloc (TC_CORBA_unsigned_long))
+#define CSIIOP_ServiceConfigurationSyntax__freekids(m,d) ORBit_small_freekids (TC_CORBA_unsigned_long,(m),(d))
+#endif
+#ifndef CSIIOP_SCS_GeneralNames
+#define CSIIOP_SCS_GeneralNames 324816U
+#endif				/* !CSIIOP_SCS_GeneralNames */
+
+#ifndef CSIIOP_SCS_GSSExportedName
+#define CSIIOP_SCS_GSSExportedName 324817U
+#endif				/* !CSIIOP_SCS_GSSExportedName */
+
+#if !defined(ORBIT_DECL_CORBA_sequence_CORBA_octet)
+#define ORBIT_DECL_CORBA_sequence_CORBA_octet 1
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_0 'i'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_1 'o'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_2 'p'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_3 '_'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_4 'd'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_5 'e'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_6 'f'
+#define ORBIT_IMPL_CORBA_sequence_CORBA_octet_7 's'
+#if !defined(_CORBA_sequence_CORBA_octet_defined)
+#define _CORBA_sequence_CORBA_octet_defined 1
+   typedef struct
+   {
+      CORBA_unsigned_long _maximum,
+       _length;
+      CORBA_octet *_buffer;
+      CORBA_boolean _release;
+   } CORBA_sequence_CORBA_octet;
+#endif
+#if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_octet_0)
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_0 'i'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_1 'o'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_2 'p'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_3 '_'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_4 'd'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_5 'e'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_6 'f'
+#define TC_IMPL_TC_CORBA_sequence_CORBA_octet_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CORBA_sequence_CORBA_octet_struct;
+#define TC_CORBA_sequence_CORBA_octet ((CORBA_TypeCode)&TC_CORBA_sequence_CORBA_octet_struct)
+#endif
+#define CORBA_sequence_CORBA_octet__alloc() ((CORBA_sequence_CORBA_octet *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_octet))
+#define CORBA_sequence_CORBA_octet__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CORBA_octet,(m),(d))
+#define CORBA_sequence_CORBA_octet_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
+#define CORBA_sequence_CORBA_octet_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
+#endif
+#if !defined(_CSIIOP_ServiceSpecificName_defined)
+#define _CSIIOP_ServiceSpecificName_defined 1
+   typedef CORBA_sequence_CORBA_octet CSIIOP_ServiceSpecificName;
+#define CSIIOP_ServiceSpecificName_marshal(x,y,z) CORBA_sequence_CORBA_octet_marshal((x),(y),(z))
+#define CSIIOP_ServiceSpecificName_demarshal(x,y,z,i) CORBA_sequence_CORBA_octet_demarshal((x),(y),(z),(i))
+#if !defined(TC_IMPL_TC_CSIIOP_ServiceSpecificName_0)
+#define TC_IMPL_TC_CSIIOP_ServiceSpecificName_0 'i'
+#define TC_IMPL_TC_CSIIOP_ServiceSpecificName_1 'o'
+#define TC_IMPL_TC_CSIIOP_ServiceSpecificName_2 'p'
+#define TC_IMPL_TC_CSIIOP_ServiceSpecificName_3 '_'
+#define TC_IMPL_TC_CSIIOP_ServiceSpecificName_4 'd'
+#define TC_IMPL_TC_CSIIOP_ServiceSpecificName_5 'e'
+#define TC_IMPL_TC_CSIIOP_ServiceSpecificName_6 'f'
+#define TC_IMPL_TC_CSIIOP_ServiceSpecificName_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CSIIOP_ServiceSpecificName_struct;
+#define TC_CSIIOP_ServiceSpecificName ((CORBA_TypeCode)&TC_CSIIOP_ServiceSpecificName_struct)
+#endif
+#define CSIIOP_ServiceSpecificName__alloc() ((CSIIOP_ServiceSpecificName *)ORBit_small_alloc (TC_CORBA_sequence_CORBA_octet))
+#define CSIIOP_ServiceSpecificName__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CORBA_octet,(m),(d))
+#define CSIIOP_ServiceSpecificName_allocbuf(l) ((CORBA_octet*)ORBit_small_allocbuf (TC_CORBA_sequence_CORBA_octet, (l)))
+#endif
+#if !defined(_CSIIOP_ServiceConfiguration_defined)
+#define _CSIIOP_ServiceConfiguration_defined 1
+   typedef struct CSIIOP_ServiceConfiguration_type
+      CSIIOP_ServiceConfiguration;
+   struct CSIIOP_ServiceConfiguration_type
+   {
+      CSIIOP_ServiceConfigurationSyntax syntax;
+      CSIIOP_ServiceSpecificName name;
+   };
+
+#if !defined(TC_IMPL_TC_CSIIOP_ServiceConfiguration_0)
+#define TC_IMPL_TC_CSIIOP_ServiceConfiguration_0 'i'
+#define TC_IMPL_TC_CSIIOP_ServiceConfiguration_1 'o'
+#define TC_IMPL_TC_CSIIOP_ServiceConfiguration_2 'p'
+#define TC_IMPL_TC_CSIIOP_ServiceConfiguration_3 '_'
+#define TC_IMPL_TC_CSIIOP_ServiceConfiguration_4 'd'
+#define TC_IMPL_TC_CSIIOP_ServiceConfiguration_5 'e'
+#define TC_IMPL_TC_CSIIOP_ServiceConfiguration_6 'f'
+#define TC_IMPL_TC_CSIIOP_ServiceConfiguration_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CSIIOP_ServiceConfiguration_struct;
+#define TC_CSIIOP_ServiceConfiguration ((CORBA_TypeCode)&TC_CSIIOP_ServiceConfiguration_struct)
+#endif
+#define CSIIOP_ServiceConfiguration__alloc() ((CSIIOP_ServiceConfiguration *)ORBit_small_alloc (TC_CSIIOP_ServiceConfiguration))
+#define CSIIOP_ServiceConfiguration__freekids(m,d) ORBit_small_freekids (TC_CSIIOP_ServiceConfiguration,(m),(d))
+#endif
+#if !defined(ORBIT_DECL_CORBA_sequence_CSIIOP_ServiceConfiguration)
+#define ORBIT_DECL_CORBA_sequence_CSIIOP_ServiceConfiguration 1
+#define ORBIT_IMPL_CORBA_sequence_CSIIOP_ServiceConfiguration_0 'i'
+#define ORBIT_IMPL_CORBA_sequence_CSIIOP_ServiceConfiguration_1 'o'
+#define ORBIT_IMPL_CORBA_sequence_CSIIOP_ServiceConfiguration_2 'p'
+#define ORBIT_IMPL_CORBA_sequence_CSIIOP_ServiceConfiguration_3 '_'
+#define ORBIT_IMPL_CORBA_sequence_CSIIOP_ServiceConfiguration_4 'd'
+#define ORBIT_IMPL_CORBA_sequence_CSIIOP_ServiceConfiguration_5 'e'
+#define ORBIT_IMPL_CORBA_sequence_CSIIOP_ServiceConfiguration_6 'f'
+#define ORBIT_IMPL_CORBA_sequence_CSIIOP_ServiceConfiguration_7 's'
+#if !defined(_CORBA_sequence_CSIIOP_ServiceConfiguration_defined)
+#define _CORBA_sequence_CSIIOP_ServiceConfiguration_defined 1
+   typedef struct
+   {
+      CORBA_unsigned_long _maximum,
+       _length;
+      CSIIOP_ServiceConfiguration *_buffer;
+      CORBA_boolean _release;
+   } CORBA_sequence_CSIIOP_ServiceConfiguration;
+#endif
+#if !defined(TC_IMPL_TC_CORBA_sequence_CSIIOP_ServiceConfiguration_0)
+#define TC_IMPL_TC_CORBA_sequence_CSIIOP_ServiceConfiguration_0 'i'
+#define TC_IMPL_TC_CORBA_sequence_CSIIOP_ServiceConfiguration_1 'o'
+#define TC_IMPL_TC_CORBA_sequence_CSIIOP_ServiceConfiguration_2 'p'
+#define TC_IMPL_TC_CORBA_sequence_CSIIOP_ServiceConfiguration_3 '_'
+#define TC_IMPL_TC_CORBA_sequence_CSIIOP_ServiceConfiguration_4 'd'
+#define TC_IMPL_TC_CORBA_sequence_CSIIOP_ServiceConfiguration_5 'e'
+#define TC_IMPL_TC_CORBA_sequence_CSIIOP_ServiceConfiguration_6 'f'
+#define TC_IMPL_TC_CORBA_sequence_CSIIOP_ServiceConfiguration_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct
+      TC_CORBA_sequence_CSIIOP_ServiceConfiguration_struct;
+#define TC_CORBA_sequence_CSIIOP_ServiceConfiguration ((CORBA_TypeCode)&TC_CORBA_sequence_CSIIOP_ServiceConfiguration_struct)
+#endif
+#define CORBA_sequence_CSIIOP_ServiceConfiguration__alloc() ((CORBA_sequence_CSIIOP_ServiceConfiguration *)ORBit_small_alloc (TC_CORBA_sequence_CSIIOP_ServiceConfiguration))
+#define CORBA_sequence_CSIIOP_ServiceConfiguration__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CSIIOP_ServiceConfiguration,(m),(d))
+#define CORBA_sequence_CSIIOP_ServiceConfiguration_allocbuf(l) ((CSIIOP_ServiceConfiguration*)ORBit_small_allocbuf (TC_CORBA_sequence_CSIIOP_ServiceConfiguration, (l)))
+#define CORBA_sequence_CSIIOP_ServiceConfiguration_allocbuf(l) ((CSIIOP_ServiceConfiguration*)ORBit_small_allocbuf (TC_CORBA_sequence_CSIIOP_ServiceConfiguration, (l)))
+#endif
+#if !defined(_CSIIOP_ServiceConfigurationList_defined)
+#define _CSIIOP_ServiceConfigurationList_defined 1
+   typedef CORBA_sequence_CSIIOP_ServiceConfiguration
+      CSIIOP_ServiceConfigurationList;
+#define CSIIOP_ServiceConfigurationList_marshal(x,y,z) CORBA_sequence_CSIIOP_ServiceConfiguration_marshal((x),(y),(z))
+#define CSIIOP_ServiceConfigurationList_demarshal(x,y,z,i) CORBA_sequence_CSIIOP_ServiceConfiguration_demarshal((x),(y),(z),(i))
+#if !defined(TC_IMPL_TC_CSIIOP_ServiceConfigurationList_0)
+#define TC_IMPL_TC_CSIIOP_ServiceConfigurationList_0 'i'
+#define TC_IMPL_TC_CSIIOP_ServiceConfigurationList_1 'o'
+#define TC_IMPL_TC_CSIIOP_ServiceConfigurationList_2 'p'
+#define TC_IMPL_TC_CSIIOP_ServiceConfigurationList_3 '_'
+#define TC_IMPL_TC_CSIIOP_ServiceConfigurationList_4 'd'
+#define TC_IMPL_TC_CSIIOP_ServiceConfigurationList_5 'e'
+#define TC_IMPL_TC_CSIIOP_ServiceConfigurationList_6 'f'
+#define TC_IMPL_TC_CSIIOP_ServiceConfigurationList_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct
+      TC_CSIIOP_ServiceConfigurationList_struct;
+#define TC_CSIIOP_ServiceConfigurationList ((CORBA_TypeCode)&TC_CSIIOP_ServiceConfigurationList_struct)
+#endif
+#define CSIIOP_ServiceConfigurationList__alloc() ((CSIIOP_ServiceConfigurationList *)ORBit_small_alloc (TC_CORBA_sequence_CSIIOP_ServiceConfiguration))
+#define CSIIOP_ServiceConfigurationList__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CSIIOP_ServiceConfiguration,(m),(d))
+#define CSIIOP_ServiceConfigurationList_allocbuf(l) ((CSIIOP_ServiceConfiguration*)ORBit_small_allocbuf (TC_CORBA_sequence_CSIIOP_ServiceConfiguration, (l)))
+#endif
+#if !defined(_CSIIOP_AS_ContextSec_defined)
+#define _CSIIOP_AS_ContextSec_defined 1
+   typedef struct CSIIOP_AS_ContextSec_type CSIIOP_AS_ContextSec;
+   struct CSIIOP_AS_ContextSec_type
+   {
+      CSIIOP_AssociationOptions target_supports;
+      CSIIOP_AssociationOptions target_requires;
+      CSI_OID client_authentication_mech;
+      CSI_GSS_NT_ExportedName target_name;
+   };
+
+#if !defined(TC_IMPL_TC_CSIIOP_AS_ContextSec_0)
+#define TC_IMPL_TC_CSIIOP_AS_ContextSec_0 'i'
+#define TC_IMPL_TC_CSIIOP_AS_ContextSec_1 'o'
+#define TC_IMPL_TC_CSIIOP_AS_ContextSec_2 'p'
+#define TC_IMPL_TC_CSIIOP_AS_ContextSec_3 '_'
+#define TC_IMPL_TC_CSIIOP_AS_ContextSec_4 'd'
+#define TC_IMPL_TC_CSIIOP_AS_ContextSec_5 'e'
+#define TC_IMPL_TC_CSIIOP_AS_ContextSec_6 'f'
+#define TC_IMPL_TC_CSIIOP_AS_ContextSec_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CSIIOP_AS_ContextSec_struct;
+#define TC_CSIIOP_AS_ContextSec ((CORBA_TypeCode)&TC_CSIIOP_AS_ContextSec_struct)
+#endif
+#define CSIIOP_AS_ContextSec__alloc() ((CSIIOP_AS_ContextSec *)ORBit_small_alloc (TC_CSIIOP_AS_ContextSec))
+#define CSIIOP_AS_ContextSec__freekids(m,d) ORBit_small_freekids (TC_CSIIOP_AS_ContextSec,(m),(d))
+#endif
+#if !defined(_CSIIOP_SAS_ContextSec_defined)
+#define _CSIIOP_SAS_ContextSec_defined 1
+   typedef struct CSIIOP_SAS_ContextSec_type CSIIOP_SAS_ContextSec;
+   struct CSIIOP_SAS_ContextSec_type
+   {
+      CSIIOP_AssociationOptions target_supports;
+      CSIIOP_AssociationOptions target_requires;
+      CSIIOP_ServiceConfigurationList privilege_authorities;
+      CSI_OIDList supported_naming_mechanisms;
+      CSI_IdentityTokenType supported_identity_types;
+   };
+
+#if !defined(TC_IMPL_TC_CSIIOP_SAS_ContextSec_0)
+#define TC_IMPL_TC_CSIIOP_SAS_ContextSec_0 'i'
+#define TC_IMPL_TC_CSIIOP_SAS_ContextSec_1 'o'
+#define TC_IMPL_TC_CSIIOP_SAS_ContextSec_2 'p'
+#define TC_IMPL_TC_CSIIOP_SAS_ContextSec_3 '_'
+#define TC_IMPL_TC_CSIIOP_SAS_ContextSec_4 'd'
+#define TC_IMPL_TC_CSIIOP_SAS_ContextSec_5 'e'
+#define TC_IMPL_TC_CSIIOP_SAS_ContextSec_6 'f'
+#define TC_IMPL_TC_CSIIOP_SAS_ContextSec_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CSIIOP_SAS_ContextSec_struct;
+#define TC_CSIIOP_SAS_ContextSec ((CORBA_TypeCode)&TC_CSIIOP_SAS_ContextSec_struct)
+#endif
+#define CSIIOP_SAS_ContextSec__alloc() ((CSIIOP_SAS_ContextSec *)ORBit_small_alloc (TC_CSIIOP_SAS_ContextSec))
+#define CSIIOP_SAS_ContextSec__freekids(m,d) ORBit_small_freekids (TC_CSIIOP_SAS_ContextSec,(m),(d))
+#endif
+#if !defined(_CSIIOP_CompoundSecMech_defined)
+#define _CSIIOP_CompoundSecMech_defined 1
+   typedef struct CSIIOP_CompoundSecMech_type CSIIOP_CompoundSecMech;
+   struct CSIIOP_CompoundSecMech_type
+   {
+      CSIIOP_AssociationOptions target_requires;
+      IOP_TaggedComponent transport_mech;
+      CSIIOP_AS_ContextSec as_context_mech;
+      CSIIOP_SAS_ContextSec sas_context_mech;
+   };
+
+#if !defined(TC_IMPL_TC_CSIIOP_CompoundSecMech_0)
+#define TC_IMPL_TC_CSIIOP_CompoundSecMech_0 'i'
+#define TC_IMPL_TC_CSIIOP_CompoundSecMech_1 'o'
+#define TC_IMPL_TC_CSIIOP_CompoundSecMech_2 'p'
+#define TC_IMPL_TC_CSIIOP_CompoundSecMech_3 '_'
+#define TC_IMPL_TC_CSIIOP_CompoundSecMech_4 'd'
+#define TC_IMPL_TC_CSIIOP_CompoundSecMech_5 'e'
+#define TC_IMPL_TC_CSIIOP_CompoundSecMech_6 'f'
+#define TC_IMPL_TC_CSIIOP_CompoundSecMech_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CSIIOP_CompoundSecMech_struct;
+#define TC_CSIIOP_CompoundSecMech ((CORBA_TypeCode)&TC_CSIIOP_CompoundSecMech_struct)
+#endif
+#define CSIIOP_CompoundSecMech__alloc() ((CSIIOP_CompoundSecMech *)ORBit_small_alloc (TC_CSIIOP_CompoundSecMech))
+#define CSIIOP_CompoundSecMech__freekids(m,d) ORBit_small_freekids (TC_CSIIOP_CompoundSecMech,(m),(d))
+#endif
+#if !defined(ORBIT_DECL_CORBA_sequence_CSIIOP_CompoundSecMech)
+#define ORBIT_DECL_CORBA_sequence_CSIIOP_CompoundSecMech 1
+#define ORBIT_IMPL_CORBA_sequence_CSIIOP_CompoundSecMech_0 'i'
+#define ORBIT_IMPL_CORBA_sequence_CSIIOP_CompoundSecMech_1 'o'
+#define ORBIT_IMPL_CORBA_sequence_CSIIOP_CompoundSecMech_2 'p'
+#define ORBIT_IMPL_CORBA_sequence_CSIIOP_CompoundSecMech_3 '_'
+#define ORBIT_IMPL_CORBA_sequence_CSIIOP_CompoundSecMech_4 'd'
+#define ORBIT_IMPL_CORBA_sequence_CSIIOP_CompoundSecMech_5 'e'
+#define ORBIT_IMPL_CORBA_sequence_CSIIOP_CompoundSecMech_6 'f'
+#define ORBIT_IMPL_CORBA_sequence_CSIIOP_CompoundSecMech_7 's'
+#if !defined(_CORBA_sequence_CSIIOP_CompoundSecMech_defined)
+#define _CORBA_sequence_CSIIOP_CompoundSecMech_defined 1
+   typedef struct
+   {
+      CORBA_unsigned_long _maximum,
+       _length;
+      CSIIOP_CompoundSecMech *_buffer;
+      CORBA_boolean _release;
+   } CORBA_sequence_CSIIOP_CompoundSecMech;
+#endif
+#if !defined(TC_IMPL_TC_CORBA_sequence_CSIIOP_CompoundSecMech_0)
+#define TC_IMPL_TC_CORBA_sequence_CSIIOP_CompoundSecMech_0 'i'
+#define TC_IMPL_TC_CORBA_sequence_CSIIOP_CompoundSecMech_1 'o'
+#define TC_IMPL_TC_CORBA_sequence_CSIIOP_CompoundSecMech_2 'p'
+#define TC_IMPL_TC_CORBA_sequence_CSIIOP_CompoundSecMech_3 '_'
+#define TC_IMPL_TC_CORBA_sequence_CSIIOP_CompoundSecMech_4 'd'
+#define TC_IMPL_TC_CORBA_sequence_CSIIOP_CompoundSecMech_5 'e'
+#define TC_IMPL_TC_CORBA_sequence_CSIIOP_CompoundSecMech_6 'f'
+#define TC_IMPL_TC_CORBA_sequence_CSIIOP_CompoundSecMech_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct
+      TC_CORBA_sequence_CSIIOP_CompoundSecMech_struct;
+#define TC_CORBA_sequence_CSIIOP_CompoundSecMech ((CORBA_TypeCode)&TC_CORBA_sequence_CSIIOP_CompoundSecMech_struct)
+#endif
+#define CORBA_sequence_CSIIOP_CompoundSecMech__alloc() ((CORBA_sequence_CSIIOP_CompoundSecMech *)ORBit_small_alloc (TC_CORBA_sequence_CSIIOP_CompoundSecMech))
+#define CORBA_sequence_CSIIOP_CompoundSecMech__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CSIIOP_CompoundSecMech,(m),(d))
+#define CORBA_sequence_CSIIOP_CompoundSecMech_allocbuf(l) ((CSIIOP_CompoundSecMech*)ORBit_small_allocbuf (TC_CORBA_sequence_CSIIOP_CompoundSecMech, (l)))
+#define CORBA_sequence_CSIIOP_CompoundSecMech_allocbuf(l) ((CSIIOP_CompoundSecMech*)ORBit_small_allocbuf (TC_CORBA_sequence_CSIIOP_CompoundSecMech, (l)))
+#endif
+#if !defined(_CSIIOP_CompoundSecMechanisms_defined)
+#define _CSIIOP_CompoundSecMechanisms_defined 1
+   typedef CORBA_sequence_CSIIOP_CompoundSecMech CSIIOP_CompoundSecMechanisms;
+#define CSIIOP_CompoundSecMechanisms_marshal(x,y,z) CORBA_sequence_CSIIOP_CompoundSecMech_marshal((x),(y),(z))
+#define CSIIOP_CompoundSecMechanisms_demarshal(x,y,z,i) CORBA_sequence_CSIIOP_CompoundSecMech_demarshal((x),(y),(z),(i))
+#if !defined(TC_IMPL_TC_CSIIOP_CompoundSecMechanisms_0)
+#define TC_IMPL_TC_CSIIOP_CompoundSecMechanisms_0 'i'
+#define TC_IMPL_TC_CSIIOP_CompoundSecMechanisms_1 'o'
+#define TC_IMPL_TC_CSIIOP_CompoundSecMechanisms_2 'p'
+#define TC_IMPL_TC_CSIIOP_CompoundSecMechanisms_3 '_'
+#define TC_IMPL_TC_CSIIOP_CompoundSecMechanisms_4 'd'
+#define TC_IMPL_TC_CSIIOP_CompoundSecMechanisms_5 'e'
+#define TC_IMPL_TC_CSIIOP_CompoundSecMechanisms_6 'f'
+#define TC_IMPL_TC_CSIIOP_CompoundSecMechanisms_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CSIIOP_CompoundSecMechanisms_struct;
+#define TC_CSIIOP_CompoundSecMechanisms ((CORBA_TypeCode)&TC_CSIIOP_CompoundSecMechanisms_struct)
+#endif
+#define CSIIOP_CompoundSecMechanisms__alloc() ((CSIIOP_CompoundSecMechanisms *)ORBit_small_alloc (TC_CORBA_sequence_CSIIOP_CompoundSecMech))
+#define CSIIOP_CompoundSecMechanisms__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CSIIOP_CompoundSecMech,(m),(d))
+#define CSIIOP_CompoundSecMechanisms_allocbuf(l) ((CSIIOP_CompoundSecMech*)ORBit_small_allocbuf (TC_CORBA_sequence_CSIIOP_CompoundSecMech, (l)))
+#endif
+#if !defined(_CSIIOP_CompoundSecMechList_defined)
+#define _CSIIOP_CompoundSecMechList_defined 1
+   typedef struct CSIIOP_CompoundSecMechList_type CSIIOP_CompoundSecMechList;
+   struct CSIIOP_CompoundSecMechList_type
+   {
+      CORBA_boolean stateful;
+      CSIIOP_CompoundSecMechanisms mechanism_list;
+   };
+
+#if !defined(TC_IMPL_TC_CSIIOP_CompoundSecMechList_0)
+#define TC_IMPL_TC_CSIIOP_CompoundSecMechList_0 'i'
+#define TC_IMPL_TC_CSIIOP_CompoundSecMechList_1 'o'
+#define TC_IMPL_TC_CSIIOP_CompoundSecMechList_2 'p'
+#define TC_IMPL_TC_CSIIOP_CompoundSecMechList_3 '_'
+#define TC_IMPL_TC_CSIIOP_CompoundSecMechList_4 'd'
+#define TC_IMPL_TC_CSIIOP_CompoundSecMechList_5 'e'
+#define TC_IMPL_TC_CSIIOP_CompoundSecMechList_6 'f'
+#define TC_IMPL_TC_CSIIOP_CompoundSecMechList_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CSIIOP_CompoundSecMechList_struct;
+#define TC_CSIIOP_CompoundSecMechList ((CORBA_TypeCode)&TC_CSIIOP_CompoundSecMechList_struct)
+#endif
+#define CSIIOP_CompoundSecMechList__alloc() ((CSIIOP_CompoundSecMechList *)ORBit_small_alloc (TC_CSIIOP_CompoundSecMechList))
+#define CSIIOP_CompoundSecMechList__freekids(m,d) ORBit_small_freekids (TC_CSIIOP_CompoundSecMechList,(m),(d))
+#endif
+#if !defined(_CSIIOP_TransportAddress_defined)
+#define _CSIIOP_TransportAddress_defined 1
+   typedef struct CSIIOP_TransportAddress_type CSIIOP_TransportAddress;
+   struct CSIIOP_TransportAddress_type
+   {
+      CORBA_string host_name;
+      CORBA_unsigned_short port;
+   };
+
+#if !defined(TC_IMPL_TC_CSIIOP_TransportAddress_0)
+#define TC_IMPL_TC_CSIIOP_TransportAddress_0 'i'
+#define TC_IMPL_TC_CSIIOP_TransportAddress_1 'o'
+#define TC_IMPL_TC_CSIIOP_TransportAddress_2 'p'
+#define TC_IMPL_TC_CSIIOP_TransportAddress_3 '_'
+#define TC_IMPL_TC_CSIIOP_TransportAddress_4 'd'
+#define TC_IMPL_TC_CSIIOP_TransportAddress_5 'e'
+#define TC_IMPL_TC_CSIIOP_TransportAddress_6 'f'
+#define TC_IMPL_TC_CSIIOP_TransportAddress_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CSIIOP_TransportAddress_struct;
+#define TC_CSIIOP_TransportAddress ((CORBA_TypeCode)&TC_CSIIOP_TransportAddress_struct)
+#endif
+#define CSIIOP_TransportAddress__alloc() ((CSIIOP_TransportAddress *)ORBit_small_alloc (TC_CSIIOP_TransportAddress))
+#define CSIIOP_TransportAddress__freekids(m,d) ORBit_small_freekids (TC_CSIIOP_TransportAddress,(m),(d))
+#endif
+#if !defined(ORBIT_DECL_CORBA_sequence_CSIIOP_TransportAddress)
+#define ORBIT_DECL_CORBA_sequence_CSIIOP_TransportAddress 1
+#define ORBIT_IMPL_CORBA_sequence_CSIIOP_TransportAddress_0 'i'
+#define ORBIT_IMPL_CORBA_sequence_CSIIOP_TransportAddress_1 'o'
+#define ORBIT_IMPL_CORBA_sequence_CSIIOP_TransportAddress_2 'p'
+#define ORBIT_IMPL_CORBA_sequence_CSIIOP_TransportAddress_3 '_'
+#define ORBIT_IMPL_CORBA_sequence_CSIIOP_TransportAddress_4 'd'
+#define ORBIT_IMPL_CORBA_sequence_CSIIOP_TransportAddress_5 'e'
+#define ORBIT_IMPL_CORBA_sequence_CSIIOP_TransportAddress_6 'f'
+#define ORBIT_IMPL_CORBA_sequence_CSIIOP_TransportAddress_7 's'
+#if !defined(_CORBA_sequence_CSIIOP_TransportAddress_defined)
+#define _CORBA_sequence_CSIIOP_TransportAddress_defined 1
+   typedef struct
+   {
+      CORBA_unsigned_long _maximum,
+       _length;
+      CSIIOP_TransportAddress *_buffer;
+      CORBA_boolean _release;
+   } CORBA_sequence_CSIIOP_TransportAddress;
+#endif
+#if !defined(TC_IMPL_TC_CORBA_sequence_CSIIOP_TransportAddress_0)
+#define TC_IMPL_TC_CORBA_sequence_CSIIOP_TransportAddress_0 'i'
+#define TC_IMPL_TC_CORBA_sequence_CSIIOP_TransportAddress_1 'o'
+#define TC_IMPL_TC_CORBA_sequence_CSIIOP_TransportAddress_2 'p'
+#define TC_IMPL_TC_CORBA_sequence_CSIIOP_TransportAddress_3 '_'
+#define TC_IMPL_TC_CORBA_sequence_CSIIOP_TransportAddress_4 'd'
+#define TC_IMPL_TC_CORBA_sequence_CSIIOP_TransportAddress_5 'e'
+#define TC_IMPL_TC_CORBA_sequence_CSIIOP_TransportAddress_6 'f'
+#define TC_IMPL_TC_CORBA_sequence_CSIIOP_TransportAddress_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct
+      TC_CORBA_sequence_CSIIOP_TransportAddress_struct;
+#define TC_CORBA_sequence_CSIIOP_TransportAddress ((CORBA_TypeCode)&TC_CORBA_sequence_CSIIOP_TransportAddress_struct)
+#endif
+#define CORBA_sequence_CSIIOP_TransportAddress__alloc() ((CORBA_sequence_CSIIOP_TransportAddress *)ORBit_small_alloc (TC_CORBA_sequence_CSIIOP_TransportAddress))
+#define CORBA_sequence_CSIIOP_TransportAddress__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CSIIOP_TransportAddress,(m),(d))
+#define CORBA_sequence_CSIIOP_TransportAddress_allocbuf(l) ((CSIIOP_TransportAddress*)ORBit_small_allocbuf (TC_CORBA_sequence_CSIIOP_TransportAddress, (l)))
+#define CORBA_sequence_CSIIOP_TransportAddress_allocbuf(l) ((CSIIOP_TransportAddress*)ORBit_small_allocbuf (TC_CORBA_sequence_CSIIOP_TransportAddress, (l)))
+#endif
+#if !defined(_CSIIOP_TransportAddressList_defined)
+#define _CSIIOP_TransportAddressList_defined 1
+   typedef CORBA_sequence_CSIIOP_TransportAddress CSIIOP_TransportAddressList;
+#define CSIIOP_TransportAddressList_marshal(x,y,z) CORBA_sequence_CSIIOP_TransportAddress_marshal((x),(y),(z))
+#define CSIIOP_TransportAddressList_demarshal(x,y,z,i) CORBA_sequence_CSIIOP_TransportAddress_demarshal((x),(y),(z),(i))
+#if !defined(TC_IMPL_TC_CSIIOP_TransportAddressList_0)
+#define TC_IMPL_TC_CSIIOP_TransportAddressList_0 'i'
+#define TC_IMPL_TC_CSIIOP_TransportAddressList_1 'o'
+#define TC_IMPL_TC_CSIIOP_TransportAddressList_2 'p'
+#define TC_IMPL_TC_CSIIOP_TransportAddressList_3 '_'
+#define TC_IMPL_TC_CSIIOP_TransportAddressList_4 'd'
+#define TC_IMPL_TC_CSIIOP_TransportAddressList_5 'e'
+#define TC_IMPL_TC_CSIIOP_TransportAddressList_6 'f'
+#define TC_IMPL_TC_CSIIOP_TransportAddressList_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CSIIOP_TransportAddressList_struct;
+#define TC_CSIIOP_TransportAddressList ((CORBA_TypeCode)&TC_CSIIOP_TransportAddressList_struct)
+#endif
+#define CSIIOP_TransportAddressList__alloc() ((CSIIOP_TransportAddressList *)ORBit_small_alloc (TC_CORBA_sequence_CSIIOP_TransportAddress))
+#define CSIIOP_TransportAddressList__freekids(m,d) ORBit_small_freekids (TC_CORBA_sequence_CSIIOP_TransportAddress,(m),(d))
+#define CSIIOP_TransportAddressList_allocbuf(l) ((CSIIOP_TransportAddress*)ORBit_small_allocbuf (TC_CORBA_sequence_CSIIOP_TransportAddress, (l)))
+#endif
+#ifndef CSIIOP_TAG_SECIOP_SEC_TRANS
+#define CSIIOP_TAG_SECIOP_SEC_TRANS 35U
+#endif				/* !CSIIOP_TAG_SECIOP_SEC_TRANS */
+
+#if !defined(_CSIIOP_SECIOP_SEC_TRANS_defined)
+#define _CSIIOP_SECIOP_SEC_TRANS_defined 1
+   typedef struct CSIIOP_SECIOP_SEC_TRANS_type CSIIOP_SECIOP_SEC_TRANS;
+   struct CSIIOP_SECIOP_SEC_TRANS_type
+   {
+      CSIIOP_AssociationOptions target_supports;
+      CSIIOP_AssociationOptions target_requires;
+      CSI_OID mech_oid;
+      CSI_GSS_NT_ExportedName target_name;
+      CSIIOP_TransportAddressList addresses;
+   };
+
+#if !defined(TC_IMPL_TC_CSIIOP_SECIOP_SEC_TRANS_0)
+#define TC_IMPL_TC_CSIIOP_SECIOP_SEC_TRANS_0 'i'
+#define TC_IMPL_TC_CSIIOP_SECIOP_SEC_TRANS_1 'o'
+#define TC_IMPL_TC_CSIIOP_SECIOP_SEC_TRANS_2 'p'
+#define TC_IMPL_TC_CSIIOP_SECIOP_SEC_TRANS_3 '_'
+#define TC_IMPL_TC_CSIIOP_SECIOP_SEC_TRANS_4 'd'
+#define TC_IMPL_TC_CSIIOP_SECIOP_SEC_TRANS_5 'e'
+#define TC_IMPL_TC_CSIIOP_SECIOP_SEC_TRANS_6 'f'
+#define TC_IMPL_TC_CSIIOP_SECIOP_SEC_TRANS_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CSIIOP_SECIOP_SEC_TRANS_struct;
+#define TC_CSIIOP_SECIOP_SEC_TRANS ((CORBA_TypeCode)&TC_CSIIOP_SECIOP_SEC_TRANS_struct)
+#endif
+#define CSIIOP_SECIOP_SEC_TRANS__alloc() ((CSIIOP_SECIOP_SEC_TRANS *)ORBit_small_alloc (TC_CSIIOP_SECIOP_SEC_TRANS))
+#define CSIIOP_SECIOP_SEC_TRANS__freekids(m,d) ORBit_small_freekids (TC_CSIIOP_SECIOP_SEC_TRANS,(m),(d))
+#endif
+#ifndef CSIIOP_TAG_TLS_SEC_TRANS
+#define CSIIOP_TAG_TLS_SEC_TRANS 36U
+#endif				/* !CSIIOP_TAG_TLS_SEC_TRANS */
+
+#if !defined(_CSIIOP_TLS_SEC_TRANS_defined)
+#define _CSIIOP_TLS_SEC_TRANS_defined 1
+   typedef struct CSIIOP_TLS_SEC_TRANS_type CSIIOP_TLS_SEC_TRANS;
+   struct CSIIOP_TLS_SEC_TRANS_type
+   {
+      CSIIOP_AssociationOptions target_supports;
+      CSIIOP_AssociationOptions target_requires;
+      CSIIOP_TransportAddressList addresses;
+   };
+
+#if !defined(TC_IMPL_TC_CSIIOP_TLS_SEC_TRANS_0)
+#define TC_IMPL_TC_CSIIOP_TLS_SEC_TRANS_0 'i'
+#define TC_IMPL_TC_CSIIOP_TLS_SEC_TRANS_1 'o'
+#define TC_IMPL_TC_CSIIOP_TLS_SEC_TRANS_2 'p'
+#define TC_IMPL_TC_CSIIOP_TLS_SEC_TRANS_3 '_'
+#define TC_IMPL_TC_CSIIOP_TLS_SEC_TRANS_4 'd'
+#define TC_IMPL_TC_CSIIOP_TLS_SEC_TRANS_5 'e'
+#define TC_IMPL_TC_CSIIOP_TLS_SEC_TRANS_6 'f'
+#define TC_IMPL_TC_CSIIOP_TLS_SEC_TRANS_7 's'
+#ifdef ORBIT_IDL_C_IMODULE_iop_defs
+   static
+#else
+   extern
+#endif
+   const struct CORBA_TypeCode_struct TC_CSIIOP_TLS_SEC_TRANS_struct;
+#define TC_CSIIOP_TLS_SEC_TRANS ((CORBA_TypeCode)&TC_CSIIOP_TLS_SEC_TRANS_struct)
+#endif
+#define CSIIOP_TLS_SEC_TRANS__alloc() ((CSIIOP_TLS_SEC_TRANS *)ORBit_small_alloc (TC_CSIIOP_TLS_SEC_TRANS))
+#define CSIIOP_TLS_SEC_TRANS__freekids(m,d) ORBit_small_freekids (TC_CSIIOP_TLS_SEC_TRANS,(m),(d))
 #endif
 #if !defined(_BiDirPolicy_BidirectionalPolicyValue_defined)
 #define _BiDirPolicy_BidirectionalPolicyValue_defined 1
@@ -2071,8 +4433,7 @@ extern "C"
        _length;
       CORBA_unsigned_long *_buffer;
       CORBA_boolean _release;
-   }
-   CORBA_sequence_CORBA_unsigned_long;
+   } CORBA_sequence_CORBA_unsigned_long;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_unsigned_long_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_unsigned_long_0 'i'
@@ -2256,8 +4617,7 @@ extern "C"
        _length;
       CORBA_octet *_buffer;
       CORBA_boolean _release;
-   }
-   CORBA_sequence_CORBA_octet;
+   } CORBA_sequence_CORBA_octet;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_CORBA_octet_0)
 #define TC_IMPL_TC_CORBA_sequence_CORBA_octet_0 'i'
@@ -2329,8 +4689,7 @@ extern "C"
        _length;
       IOP_TaggedComponent *_buffer;
       CORBA_boolean _release;
-   }
-   CORBA_sequence_IOP_TaggedComponent;
+   } CORBA_sequence_IOP_TaggedComponent;
 #endif
 #if !defined(TC_IMPL_TC_CORBA_sequence_IOP_TaggedComponent_0)
 #define TC_IMPL_TC_CORBA_sequence_IOP_TaggedComponent_0 'i'
@@ -2414,6 +4773,20 @@ extern "C"
 #endif
 
 /** stub prototypes **/
+   CORBA_OctetSeq *IOP_Codec_encode(IOP_Codec _obj, const CORBA_any * data,
+				    CORBA_Environment * ev);
+   CORBA_any *IOP_Codec_decode(IOP_Codec _obj, const CORBA_OctetSeq * data,
+			       CORBA_Environment * ev);
+   CORBA_OctetSeq *IOP_Codec_encode_value(IOP_Codec _obj,
+					  const CORBA_any * data,
+					  CORBA_Environment * ev);
+   CORBA_any *IOP_Codec_decode_value(IOP_Codec _obj,
+				     const CORBA_OctetSeq * data,
+				     const CORBA_TypeCode tc,
+				     CORBA_Environment * ev);
+   IOP_Codec IOP_CodecFactory_create_codec(IOP_CodecFactory _obj,
+					   const IOP_Encoding * enc,
+					   CORBA_Environment * ev);
 #define BiDirPolicy_BidirectionalPolicy__get_policy_type CORBA_Policy__get_policy_type
 #define BiDirPolicy_BidirectionalPolicy_copy CORBA_Policy_copy
 #define BiDirPolicy_BidirectionalPolicy_destroy CORBA_Policy_destroy

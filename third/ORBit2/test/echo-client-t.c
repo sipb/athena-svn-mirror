@@ -64,10 +64,7 @@ main (int argc, char *argv[])
 
 	CORBA_exception_init ((ev = &real_ev));
 
-	/* Tell linc we want a threaded ORB */
-	linc_set_threaded (TRUE);
-
-	orb = CORBA_ORB_init (&argc, argv, "orbit-local-orb", ev);
+	orb = CORBA_ORB_init (&argc, argv, "orbit-local-mt-orb", ev);
 
 	if (argc < 2) {
 		g_error ("Syntax: %s <server IOR> [<niters> [<nthreads>] ]\n",
@@ -89,7 +86,8 @@ main (int argc, char *argv[])
 			echo_client_thread, &threads[i],
 			TRUE, &error);
 		if (error)
-			g_error ("Error spawning threads '%s'", error->message);
+			g_error ("Error spawning threads '%s'", 
+				 error->message);
 	}
 
 	for (i = 0; i < nthreads; i++) {

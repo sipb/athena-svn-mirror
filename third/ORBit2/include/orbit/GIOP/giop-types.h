@@ -16,6 +16,25 @@ G_BEGIN_DECLS
 
 #ifdef ORBIT2_INTERNAL_API
 
+typedef struct _GIOPThread GIOPThread;
+
+struct _GIOPThread {
+	GMutex       *lock;
+	GCond        *incoming;
+	GMainContext *wake_context;
+
+	GList        *keys;	/* ie. per POA, per Connection, per Object etc. */
+
+	GList        *async_ents;
+	GList        *request_queue;
+
+	GQueue       *invoke_policies;
+
+	void        (*request_handler) (gpointer poa_object,
+					gpointer recv_buffer,
+					gpointer dummy);
+};
+
 #define GIOP_INITIAL_MSG_SIZE_LIMIT 256*1024
 
 typedef enum {

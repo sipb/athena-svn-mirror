@@ -2,10 +2,38 @@
 #define __ORBIT_ADAPTOR_H__
 
 #include <glib.h>
+#include <stdarg.h>
 
 G_BEGIN_DECLS
 
+typedef enum {
+	ORBIT_THREAD_HINT_NONE = 0,
+	ORBIT_THREAD_HINT_PER_OBJECT,
+	ORBIT_THREAD_HINT_PER_REQUEST,
+	ORBIT_THREAD_HINT_PER_POA,
+	ORBIT_THREAD_HINT_PER_CONNECTION,
+	ORBIT_THREAD_HINT_ONEWAY_AT_IDLE,
+	ORBIT_THREAD_HINT_ALL_AT_IDLE,
+	ORBIT_THREAD_HINT_ON_CONTEXT
+} ORBitThreadHint;
+
+typedef struct ORBit_ObjectAdaptor_type *ORBit_ObjectAdaptor;
+
+void            ORBit_ObjectAdaptor_set_thread_hint  (ORBit_ObjectAdaptor adaptor,
+						      ORBitThreadHint     thread_hint,
+						      ...);
+void            ORBit_ObjectAdaptor_set_thread_hintv (ORBit_ObjectAdaptor adaptor,
+						      ORBitThreadHint     thread_hint,
+						      va_list             args);
+ORBitThreadHint ORBit_ObjectAdaptor_get_thread_hint  (ORBit_ObjectAdaptor adaptor);
+
+void            ORBit_ObjectAdaptor_object_bind_to_current_thread (CORBA_Object obj);
+
+
 #ifdef ORBIT2_INTERNAL_API
+
+void                ORBit_handle_locate_request     (CORBA_ORB          orb, 
+						     GIOPRecvBuffer    *recv_buffer);
 
 void                ORBit_handle_request            (CORBA_ORB          orb, 
 						     GIOPRecvBuffer    *recv_buffer);
@@ -28,16 +56,9 @@ void                ORBit_OAObject_invoke           (ORBit_OAObject     adaptor_
 						     CORBA_Context      ctx,
 						     gpointer           data,
 						     CORBA_Environment *ev);
-#endif /* ORBIT2_INTERNAL_API */
-
 /*
  * ORBit_OAObject
  */
-#if defined(ORBIT2_INTERNAL_API) || defined (ORBIT2_STUBS_API)
-
-#ifndef ORBIT2_INTERNAL_API
-#define GIOPRecvBuffer void
-#endif
 
 typedef gboolean            (*ORBitStateCheckFunc) (ORBit_OAObject     adaptor_obj);
 
@@ -59,7 +80,7 @@ typedef void                (*ORBitReqFunc)        (ORBit_OAObject     adaptor_o
 						    CORBA_Environment *ev);
 
 typedef enum {
-	ORBIT_ADAPTOR_POA = 1 << 0
+	ORBIT_ADAPTOR_POA        = 1 << 0
 } ORBit_Adaptor_type;
 
 struct ORBit_OAObject_Interface_type {
@@ -81,16 +102,11 @@ struct ORBit_OAObject_type {
 	ORBit_OAObject_Interface       interface;
 };
 
-#endif /* defined(ORBIT2_INTERNAL_API) || defined (ORBIT2_STUBS_API) */
-
 /*
  * ORBit_ObjectAdaptor
  */
 
-#ifdef ORBIT2_INTERNAL_API
-
-typedef struct ORBit_ObjectAdaptor_type *ORBit_ObjectAdaptor;
-typedef CORBA_sequence_CORBA_octet       ORBit_AdaptorKey;
+typedef CORBA_sequence_CORBA_octet ORBit_AdaptorKey;
 
 typedef void (*ORBitReqHandlerFunc) (ORBit_ObjectAdaptor         adaptor,
 				     GIOPRecvBuffer             *recv_buffer,
@@ -99,9 +115,15 @@ typedef void (*ORBitReqHandlerFunc) (ORBit_ObjectAdaptor         adaptor,
 struct ORBit_ObjectAdaptor_type {
 	struct ORBit_RootObject_struct parent;
 
+	GMutex                        *lock;
+
 	ORBitReqHandlerFunc            handle_request;
 
 	ORBit_AdaptorKey               adaptor_key;
+
+	ORBitThreadHint                thread_hint;
+
+	GMainContext                  *context;
 };
 
 int ORBit_adaptor_setup (ORBit_ObjectAdaptor adaptor, CORBA_ORB orb);

@@ -1,3 +1,139 @@
+ORBit2-2.9.6
+
+	* bug fixes
+		+ PPC union walking bug (Michael, Jeroen Z)
+
+ORBit2-2.9.5
+
+	* bug fixes
+		+ don't crash with NULL env (Mark)
+
+ORBit2-2.9.4
+
+	* bug fixes
+		+ enviroment pollution (Michael)
+		+ AIX portability bits (The Written Word)
+
+ORBit2-2.9.3
+
+	* bug fixes
+		+ configure logic bug (Morten Welinder)
+		+ no-mainloop threading issue (Michael)
+		+ custom policy oneway fix (Michael, JP)
+		+ policy lookup fix (Alex Larsson)
+
+ORBit2-2.9.2
+
+	* bug fixes
+		+ threaded client deadlock (Michael)
+		+ skelimpl leak fix (Frank)
+		+ forward request double free (Michael)
+		+ thread queue processing (Frank)
+
+ORBit2-2.9.1
+
+	* bug fixes
+		+ thread handling / shutdown bugs (Justin Schoeman)
+		+ linc I/O revents race fix (Padraig O'Briain)
+		+ name service ref leak (Justin)
+		+ GIOP HUP error cleanup (Michael)
+		+ ORB shutdown from any thread (Michael)
+		+ build fixes / cleans (Justin, Michael)
+	* featurelets
+		+ (limited) re-enterancy client policy (Michael)
+		+ re-factored invocation stack (Frank Rehberger)
+		+ deactivation / return test (Michael) 
+
+ORBit2-2.9.0
+
+	* bug fixes
+		+ speed up child POA destruction (Michael)
+	* featurelets
+		+ allow objects to be bound to specific threads (Alex Larsson)
+
+ORBit2-2.8.0
+
+	* bug fixes
+		+ sequence_concat helper (Frank)
+		+ corbaloc fixes (Frank)
+
+ORBit2-2.7.6
+
+	* bug fixes
+		+ try_connection deadlock (Michael, Padraig O'Briain)
+		+ shutdown_orb fd leak (Michael, Morten Welinder)
+		+ don't export libIDL strangely (Michael, Morten)
+	* featurelets
+		+ define file specific foo in idlcompile (James H)
+
+
+ORBit2-2.7.5
+
+	* bug fixes
+		+ cmdline option parsing (Michael)
+		+ idl-compiler stderr fixes (Dan Winship)
+		+ object key hashing fix (Frank Rehberger)
+		+ ~always enable thread-safety (Michael)
+		+ parallel build fixes (Michael)
+		+ _is_a fixes for in-proc + transient poa (Michael)
+	* featurelets
+		+ RootPOA/POACurrent set guards (Frank)
+		+ corbaloc support (Frank)
+		+ more regression tests (Michael, Frank)
+
+ORBit2-2.7.3
+
+	* bug fixes
+		+ vicious union discriminator issue (Brian Cameron)
+		+ non_existent / try_connection fix (Michael)
+		+ 'broken' emission at idle (Michael, George Lebl)
+		+ DynAnyFactory registration (Michael)
+		+ no longer explicitely "entering a wold of pain"
+		+ ORBit_sequence fixes (Frank Rehberger)
+		+ linc source fix (Padraig O'Briain)
+		+ gthread linkage fix (Michael)
+		+ struct/union leakage on exceptions (Frank)
+	* featurelets
+		+ improved regression tests (Michael, Frank, Bowie Owens)
+		+ lots of documentation improvements (Gustavo Carneiro)
+		+ -ORBInitRef, -ORBNamingIOR (Frank)
+
+ORBit2-2.7.2
+
+
+	* bug fixes
+		+ fixed docs build (Gustavo Varneiro)
+		+ thread pool fix (Alex)
+		+ build fixes (Waschk, oGalaxy, Michael)
+	* features (Michael)
+		+ vastly improved thread safety (& Alex)
+		+ improved regression tests
+		+ much improved ABI
+		+ implemented POA thread policies
+		+ client side re-enterancy guard policies
+		+ internalized linc as 'linc2/link'
+		+ in-proc cross-thread invocation
+		+ poa copying API
+
+ORBit2-2.7.1
+
+	* bug fixes
+		+ tail align fix (Herbert Valerio Riedel)
+		+ request ID fix (Herbert)
+		+ thread hint fix (Gustavo Carneiro)
+		+ build fixes (Richard Kinder)
+		+ packed type marshal fix (Michael Haubenwallner)
+		+ purifing mode fixes (Michael)
+		+ use g_get_tmp_dir (Michael)
+	* features
+		+ much improved thread safey (Michael)
+		+ improved tests (Michael)
+		+ locate request impl. (Herbert)
+		+ GIOP cleans (Herbert)
+		+ configurable init msg limit (Michael)
+		+ cygwin support (Masahiro Sakai)
+		+ code cleans (Richard Kinder)
+
 ORBit2-2.5.1
 
 	* bug fixes

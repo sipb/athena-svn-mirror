@@ -3,7 +3,7 @@
 #include <orbit/orbit.h>
 #include "orb-core-private.h"
 
-/**
+/***
     The argument {mem} is a chuck of memory described by {tc}, and its
     contents is freed, but {mem} itself is not freed. That is, if {mem}
     contains anything interesting (objrefs, pointers), they are freed.
@@ -34,9 +34,9 @@ ORBit_freekids_via_TypeCode_T (gpointer       mem,
 		CORBA_any *pval = mem;
 		if (pval->_release)
 			ORBit_free_T (pval->_value);
-		pval->_value = 0;
+		pval->_value = NULL;
 		ORBit_RootObject_release_T (pval->_type);
-		pval->_type = 0;
+		pval->_type = NULL;
 		retval = (guchar *) (pval + 1);
 		break;
 	}
@@ -45,7 +45,7 @@ ORBit_freekids_via_TypeCode_T (gpointer       mem,
 		CORBA_Object *pval = mem;
 
 		ORBit_RootObject_release_T (*pval);
-		*pval = 0;
+		*pval = NULL;
 		retval = ((guchar *)mem) + sizeof (*pval);
 		break;
 	}
@@ -53,23 +53,28 @@ ORBit_freekids_via_TypeCode_T (gpointer       mem,
 		CORBA_Principal *pval = mem;
 		if (pval->_release)
 			ORBit_free_T (pval->_buffer);
-		pval->_buffer = 0;
+		pval->_buffer = NULL;
 		retval = (guchar *)(pval + 1);
 		break;
 	}
 	case CORBA_tk_except:
 	case CORBA_tk_struct:
+		mem = ALIGN_ADDRESS (mem, tc->c_align);
 		for (i = 0; i < tc->sub_parts; i++) {
 			subtc = tc->subtypes [i];
 			mem = ALIGN_ADDRESS (mem, subtc->c_align);
 			mem = ORBit_freekids_via_TypeCode_T (mem, subtc);
 		}
+		mem = ALIGN_ADDRESS (mem, tc->c_align);
 		retval = mem;
 		break;
 	case CORBA_tk_union: {
 		int sz = 0;
 		int al = 1;
-		gconstpointer cmem = mem;
+		gconstpointer cmem;
+
+		cmem = ALIGN_ADDRESS (mem, MAX (tc->discriminator->c_align,
+						tc->c_align));
 		subtc = ORBit_get_union_tag (tc, &cmem, TRUE);
 		for (i = 0; i < tc->sub_parts; i++) {
 			al = MAX (al, tc->subtypes [i]->c_align);
@@ -123,11 +128,11 @@ ORBit_freekids_via_TypeCode (CORBA_TypeCode tc, gpointer mem)
 {
 	gpointer ret;
 
-	LINC_MUTEX_LOCK   (ORBit_RootObject_lifecycle_lock);
+	LINK_MUTEX_LOCK   (ORBit_RootObject_lifecycle_lock);
 
 	ret = ORBit_freekids_via_TypeCode_T (mem, tc);
 
-	LINC_MUTEX_UNLOCK (ORBit_RootObject_lifecycle_lock);
+	LINK_MUTEX_UNLOCK (ORBit_RootObject_lifecycle_lock);
 
 	return ret;
 }
@@ -208,11 +213,11 @@ ORBit_free (gpointer mem)
 	if (!mem)
 		return;
 
-	LINC_MUTEX_LOCK   (ORBit_RootObject_lifecycle_lock);
+	LINK_MUTEX_LOCK   (ORBit_RootObject_lifecycle_lock);
 
 	ORBit_free_T (mem);
 
-	LINC_MUTEX_UNLOCK (ORBit_RootObject_lifecycle_lock);
+	LINK_MUTEX_UNLOCK (ORBit_RootObject_lifecycle_lock);
 }
 
 CORBA_char *
@@ -306,6 +311,9 @@ ORBit_realloc_tcval (gpointer       old,
 	if (!num_elements)
 		return NULL;
 
+	if (!old_num_elements && !old)
+		return ORBit_alloc_tcval (tc, num_elements);
+
 	if (!(element_size = ORBit_gather_alloc_info (tc)))
 		return NULL;
 
@@ -313,11 +321,37 @@ ORBit_realloc_tcval (gpointer       old,
 			    LONG_PREFIX_LEN +
 			    element_size * num_elements);
 
+	/* Initialize as yet unused memory to 'safe' values */
 	memset ((guchar *) prefix + LONG_PREFIX_LEN +
 		old_num_elements * element_size,
 		0, (num_elements - old_num_elements) * element_size);
 
 	return (guchar *) prefix + LONG_PREFIX_LEN;
+}
+
+CORBA_TypeCode
+ORBit_alloc_get_tcval (gpointer mem)
+{
+	ORBitMemHow how;
+	ORBit_MemPrefix *prefix;
+
+	if (!mem)
+		return NULL;
+
+	if ((gulong)mem & 0x1)
+		return TC_CORBA_string;
+
+	how = *(((ORBitMemHow *) mem) - 1);
+
+	if (ORBIT_MEMHOW_HOW (how) == ORBIT_MEMHOW_TYPECODE) {
+		prefix = (ORBit_MemPrefix *) 
+		  ((guchar *) mem - LONG_PREFIX_LEN);
+
+		return ORBit_RootObject_duplicate (prefix->u.tc);
+	} else
+		g_error ("Can't determine type of %p (%d)", mem, how);
+
+	return NULL;
 }
 
 gpointer

@@ -1,8 +1,42 @@
 TODO:
 
-* GIOP fragments
-	+ need to handle a cancel request in the middle of a fragment stream
+* Ensure that we can have our 'non-threaded' thread be any thread.
 
+* Turn off the global 'fast_calls' variable, to knobble
+  old stubs, and go with the new ABI.
+
+* Cross thread Object references
+	+ I think the way to fix this is by using a different
+	  interface->adaptor_type: ORBIT_ADAPTOR_POA_THREADED,
+	  such that the fast case will always drop through to
+	  small_invoke_stub_n, where we can get far more creative.
+
+* Threading 
+	+ GIOPMessageQueueEntry needs to hold a cnx ref.
+	+ orb->current_invocations needs to be per-thread ...
+	  also, we should push a stack-data pointer.
+	+ Need to emit 'broken' connection - via the listen/unlisten
+	  stuff in the main thread ... [ and garentee the same
+	  invariants as previously ? cnx status etc. ? ]
+
+	+ Create a per-object policy 'PROCESS_REENTERANTLY', using our
+	  VPVID space; takes a boolean ... set it on the object ...
+	  [ make some libbonobo wrappers to improve the situation ]
+	+ CORBA_Object_non_existant - needs to do a blocking
+	  check for CONNECTED / DISCONNETED.
+	+ bin redundant forwards in poa.c
+	+ giop_recv_thread_fn - more work needed
+	+ ** ERROR **: Need to handle zapped cnx' async callbacks
+
+
+* User friendliness
+	+ tolerate NULL CORBA_Environments in stubs
+	+ 'sequence from GList' API.
+	+ always return initialized memory on exception
+	+ add an X like 'event' processing API for incoming bits (?)
+
+* GIOP fragments
+/	+ need to handle a cancel request in the middle of a fragment stream
 
 * It seems the local case optimization can go wrong when
   invoking bogus methods from a different interface on an Object ref.

@@ -32,7 +32,8 @@ static GMutex *giop_queued_messages_lock = NULL;
 
 /* Don't do this genericaly, union's suck genericaly */
 static gboolean
-giop_GIOP_TargetAddress_demarshal(GIOPRecvBuffer *buf, GIOP_TargetAddress *value)
+giop_GIOP_TargetAddress_demarshal (GIOPRecvBuffer     *buf,
+				   GIOP_TargetAddress *value)
 {
 	gboolean do_bswap = giop_msg_conversion_needed (buf);
 
@@ -40,28 +41,30 @@ giop_GIOP_TargetAddress_demarshal(GIOPRecvBuffer *buf, GIOP_TargetAddress *value
 	if ((buf->cur + 2) > buf->end)
 		return TRUE;
 	if (do_bswap)
-		buf->msg.u.request_1_2.target._d = GUINT16_SWAP_LE_BE (
+		value->_d = GUINT16_SWAP_LE_BE (
 			*(guint16 *) buf->cur);
 	else
-		buf->msg.u.request_1_2.target._d = *(guint16 *) buf->cur;
+		value->_d = *(guint16 *) buf->cur;
 	buf->cur += 2;
 
-	switch (buf->msg.u.request_1_2.target._d) {
+	switch (value->_d) {
 	case GIOP_KeyAddr:
 		buf->cur = ALIGN_ADDRESS (buf->cur, 4);
+
 		if ((buf->cur + 4) > buf->end)
 			return TRUE;
-		buf->msg.u.request_1_2.target._u.object_key._release = CORBA_FALSE;
+		value->_u.object_key._release = CORBA_FALSE;
 		if (do_bswap)
-			buf->msg.u.request_1_2.target._u.object_key._length = GUINT32_SWAP_LE_BE(*((guint32 *)buf->cur));
+			value->_u.object_key._length = GUINT32_SWAP_LE_BE(*((guint32 *)buf->cur));
 		else
-			buf->msg.u.request_1_2.target._u.object_key._length = *((guint32 *)buf->cur);
+			value->_u.object_key._length = *((guint32 *)buf->cur);
 		buf->cur += 4;
-		if ((buf->cur + buf->msg.u.request_1_2.target._u.object_key._length) > buf->end ||
-		    (buf->cur + buf->msg.u.request_1_2.target._u.object_key._length) < buf->cur)
+		if ((buf->cur + value->_u.object_key._length) > buf->end ||
+		    (buf->cur + value->_u.object_key._length) < buf->cur)
 			return TRUE;
-		buf->msg.u.request_1_2.target._u.object_key._buffer = buf->cur;
-		buf->cur += buf->msg.u.request_1_2.target._u.object_key._length;
+		value->_u.object_key._buffer = buf->cur;
+		buf->cur += value->_u.object_key._length;
+
 		break;
 	case GIOP_ProfileAddr:
 		g_warning ("XXX FIXME GIOP_ProfileAddr not handled");
@@ -272,96 +275,93 @@ giop_recv_buffer_demarshal_reply_1_2(GIOPRecvBuffer *buf)
 static gboolean
 giop_recv_buffer_demarshal_cancel(GIOPRecvBuffer *buf)
 {
-  gboolean do_bswap = giop_msg_conversion_needed(buf);
+	gboolean do_bswap = giop_msg_conversion_needed (buf);
 
-  buf->cur = ALIGN_ADDRESS(buf->cur, 4);
-  if((buf->cur + 4) > buf->end)
-    return TRUE;
-  if(do_bswap)
-    buf->msg.u.cancel_request.request_id = GUINT32_SWAP_LE_BE(*((guint32 *)buf->cur));
-  else
-    buf->msg.u.cancel_request.request_id = *((guint32 *)buf->cur);
-  buf->cur += 4;
+	buf->cur = ALIGN_ADDRESS (buf->cur, 4);
+	if ((buf->cur + 4) > buf->end)
+		return TRUE;
+	if (do_bswap)
+		buf->msg.u.cancel_request.request_id = GUINT32_SWAP_LE_BE(*((guint32 *)buf->cur));
+	else
+		buf->msg.u.cancel_request.request_id = *((guint32 *)buf->cur);
+	buf->cur += 4;
 
-  return FALSE;
+	return FALSE;
 }
 
 static gboolean
 giop_recv_buffer_demarshal_locate_request_1_1(GIOPRecvBuffer *buf)
 {
-  gboolean do_bswap = giop_msg_conversion_needed(buf);
+	gboolean do_bswap = giop_msg_conversion_needed (buf);
 
-  buf->cur = ALIGN_ADDRESS(buf->cur, 4);
+	buf->cur = ALIGN_ADDRESS (buf->cur, 4);
 
-  if((buf->cur + 8) > buf->end)
-    return TRUE;
+	if ((buf->cur + 8) > buf->end)
+		return TRUE;
 
-  if(do_bswap)
-    buf->msg.u.locate_request_1_1.request_id = GUINT32_SWAP_LE_BE(*((guint32 *)buf->cur));
-  else
-    buf->msg.u.locate_request_1_1.request_id = *((guint32 *)buf->cur);
-  buf->cur += 4;
-  if(do_bswap)
-    buf->msg.u.locate_request_1_1.object_key._length = GUINT32_SWAP_LE_BE(*((guint32 *)buf->cur));
-  else
-    buf->msg.u.locate_request_1_1.object_key._length = *((guint32 *)buf->cur);
-  buf->cur += 4;
+	if (do_bswap)
+		buf->msg.u.locate_request_1_1.request_id = GUINT32_SWAP_LE_BE(*((guint32 *)buf->cur));
+	else
+		buf->msg.u.locate_request_1_1.request_id = *((guint32 *)buf->cur);
+	buf->cur += 4;
+	if (do_bswap)
+		buf->msg.u.locate_request_1_1.object_key._length = GUINT32_SWAP_LE_BE(*((guint32 *)buf->cur));
+	else
+		buf->msg.u.locate_request_1_1.object_key._length = *((guint32 *)buf->cur);
+	buf->cur += 4;
 
-  if((buf->cur + buf->msg.u.locate_request_1_1.object_key._length) > buf->end
-     || (buf->cur + buf->msg.u.locate_request_1_1.object_key._length) < buf->cur)
-    return TRUE;
+	if ((buf->cur + buf->msg.u.locate_request_1_1.object_key._length) > buf->end ||
+	    (buf->cur + buf->msg.u.locate_request_1_1.object_key._length) < buf->cur)
+		return TRUE;
 
-  buf->msg.u.locate_request_1_1.object_key._buffer = buf->cur;
-  buf->msg.u.locate_request_1_1.object_key._release = CORBA_FALSE;
-  buf->cur += buf->msg.u.locate_request_1_1.object_key._length;
+	buf->msg.u.locate_request_1_1.object_key._buffer = buf->cur;
+	buf->msg.u.locate_request_1_1.object_key._release = CORBA_FALSE;
+	buf->cur += buf->msg.u.locate_request_1_1.object_key._length;
 
-  return FALSE;
+	return FALSE;
 }
 
 static gboolean
 giop_recv_buffer_demarshal_locate_request_1_2(GIOPRecvBuffer *buf)
 {
-  gboolean do_bswap = giop_msg_conversion_needed(buf);
+	gboolean do_bswap = giop_msg_conversion_needed(buf);
 
-  buf->cur = ALIGN_ADDRESS(buf->cur, 4);
+	buf->cur = ALIGN_ADDRESS(buf->cur, 4);
 
-  if((buf->cur + 4) > buf->end)
-    return TRUE;
+	if((buf->cur + 4) > buf->end)
+		return TRUE;
 
-  if(do_bswap)
-    buf->msg.u.locate_request_1_1.request_id = GUINT32_SWAP_LE_BE(*((guint32 *)buf->cur));
-  else
-    buf->msg.u.locate_request_1_1.request_id = *((guint32 *)buf->cur);
-  buf->cur += 4;
-  
-  return giop_GIOP_TargetAddress_demarshal(buf, &buf->msg.u.request_1_2.target);
+	if(do_bswap)
+		buf->msg.u.locate_request_1_2.request_id = GUINT32_SWAP_LE_BE(*((guint32 *)buf->cur));
+	else
+		buf->msg.u.locate_request_1_2.request_id = *((guint32 *)buf->cur);
+	buf->cur += 4;
+
+	return giop_GIOP_TargetAddress_demarshal (buf, &buf->msg.u.locate_request_1_2.target);
 }
 
 static gboolean
 giop_recv_buffer_demarshal_locate_reply_1_1(GIOPRecvBuffer *buf)
 {
-  gboolean do_bswap = giop_msg_conversion_needed(buf);
+	gboolean do_bswap = giop_msg_conversion_needed(buf);
 
-  buf->cur = ALIGN_ADDRESS(buf->cur, 4);
+	buf->cur = ALIGN_ADDRESS (buf->cur, 4);
 
-  if((buf->cur + 8) > buf->end)
-    return TRUE;
+	if ((buf->cur + 8) > buf->end)
+		return TRUE;
 
-  if(do_bswap)
-    {
-      buf->msg.u.locate_reply_1_1.request_id = GUINT32_SWAP_LE_BE(*((guint32 *)buf->cur));
-      buf->cur += 4;
-      buf->msg.u.locate_reply_1_1.locate_status = GUINT32_SWAP_LE_BE(*((guint32 *)buf->cur));
-    }
-  else
-    {
-      buf->msg.u.locate_reply_1_1.request_id = *((guint32 *)buf->cur);
-      buf->cur += 4;
-      buf->msg.u.locate_reply_1_1.locate_status = *((guint32 *)buf->cur);
-    }
-  buf->cur += 4;
+	if (do_bswap) {
+		buf->msg.u.locate_reply_1_1.request_id = GUINT32_SWAP_LE_BE(*((guint32 *)buf->cur));
+		buf->cur += 4;
+		buf->msg.u.locate_reply_1_1.locate_status = GUINT32_SWAP_LE_BE(*((guint32 *)buf->cur));
+	} else {
+		buf->msg.u.locate_reply_1_1.request_id = *((guint32 *)buf->cur);
+		buf->cur += 4;
+		buf->msg.u.locate_reply_1_1.locate_status = *((guint32 *)buf->cur);
+	}
+	buf->cur += 4;
   
-  return FALSE;
+	return FALSE;
 }
 
 static gboolean
@@ -397,6 +397,8 @@ giop_recv_buffer_demarshal (GIOPRecvBuffer *buf)
 		{ giop_recv_buffer_demarshal_locate_reply_1_1,
 		  giop_recv_buffer_demarshal_locate_reply_1_1,
 		  giop_recv_buffer_demarshal_locate_reply_1_2},
+		/* close connection */
+		{NULL, NULL, NULL},
 		/* message error */
 		{NULL, NULL, NULL},
 		/* fragment */
@@ -420,7 +422,7 @@ giop_recv_buffer_demarshal (GIOPRecvBuffer *buf)
 GIOPRecvBuffer *
 giop_recv_buffer_use_encaps (guchar *mem, gulong len)
 {
-	GIOPRecvBuffer *buf = giop_recv_buffer_use_buf ();
+	GIOPRecvBuffer *buf = giop_recv_buffer_use_buf (NULL);
 
 	buf->cur = buf->message_body = mem;
 	buf->end = buf->cur + len;
@@ -504,8 +506,78 @@ giop_recv_buffer_unuse (GIOPRecvBuffer *buf)
 	default:
 		break;
 	}
-
+	if(buf->connection)
+		giop_connection_unref (buf->connection);
 	g_free (buf);
+}
+
+static void
+ent_lock (GIOPMessageQueueEntry *ent)
+{
+	if (ent->src_thread)
+		g_mutex_lock (ent->src_thread->lock);
+}
+
+static void
+ent_unlock (GIOPMessageQueueEntry *ent)
+{
+	if (ent->src_thread)
+		g_mutex_unlock (ent->src_thread->lock);
+}
+
+static void
+giop_recv_destroy_queue_entry_T (GIOPMessageQueueEntry *ent)
+{
+	if (ent->cnx) {
+		giop_connection_unref (ent->cnx);
+		ent->cnx = NULL;
+	}
+}
+
+void
+giop_recv_list_destroy_queue_entry (GIOPMessageQueueEntry *ent)
+{
+	LINK_MUTEX_LOCK (giop_queued_messages_lock);
+#ifdef DEBUG
+	g_warning ("Remove XX:%p:(%p) - %d", ent, ent->async_cb,
+		   g_list_length (giop_queued_messages));
+#endif
+	giop_queued_messages = g_list_remove (giop_queued_messages, ent);
+	LINK_MUTEX_UNLOCK (giop_queued_messages_lock);
+
+	giop_recv_destroy_queue_entry_T (ent);
+}
+
+void
+giop_recv_list_setup_queue_entry (GIOPMessageQueueEntry *ent,
+				  GIOPConnection        *cnx,
+				  CORBA_unsigned_long    msg_type,
+				  CORBA_unsigned_long    request_id)
+{
+	ent->src_thread = giop_thread_self ();
+	ent->async_cb = NULL;
+
+	ent->cnx = giop_connection_ref (cnx);
+	ent->msg_type = msg_type;
+	ent->request_id = request_id;
+	ent->buffer = NULL;
+
+	LINK_MUTEX_LOCK   (giop_queued_messages_lock);
+#ifdef DEBUG
+	g_warning ("Push XX:%p:(%p) - %d", ent, ent->async_cb,
+		   g_list_length (giop_queued_messages));
+#endif
+	giop_queued_messages = g_list_prepend (giop_queued_messages, ent);
+	LINK_MUTEX_UNLOCK (giop_queued_messages_lock);
+}
+
+void
+giop_recv_list_setup_queue_entry_async (GIOPMessageQueueEntry *ent,
+					GIOPAsyncCallback      cb)
+{
+	g_return_if_fail (ent != NULL);
+
+	ent->async_cb = cb;
 }
 
 void
@@ -514,7 +586,7 @@ giop_recv_list_zap (GIOPConnection *cnx)
 	GList  *l, *next;
 	GSList *sl, *notify = NULL;
 
-	LINC_MUTEX_LOCK (giop_queued_messages_lock);
+	LINK_MUTEX_LOCK (giop_queued_messages_lock);
 
 	for (l = giop_queued_messages; l; l = next) {
 		GIOPMessageQueueEntry *ent = l->data;
@@ -522,37 +594,39 @@ giop_recv_list_zap (GIOPConnection *cnx)
 		next = l->next;
 
 		if (ent->cnx == cnx) {
+			ent_lock (ent);
+
+			dprintf (ERRORS, "Zap listener on dead cnx with buffer %p\n",
+				 ent->buffer);
+
 			giop_recv_buffer_unuse (ent->buffer);
 			ent->buffer = NULL;
-			ent->cnx = NULL;
-#ifdef ORBIT_THREADED
-			notify = g_slist_prepend (notify, ent);
-#else
-			if (ent->u.unthreaded.cb)
+
+			giop_recv_destroy_queue_entry_T (ent);
+
+			if (giop_thread_io () && !ent->async_cb)
+				giop_incoming_signal_T (ent->src_thread, GIOP_CLOSECONNECTION);
+			ent_unlock (ent);
+
+			if (ent->async_cb)
 				notify = g_slist_prepend (notify, ent);
-#endif
 			giop_queued_messages = g_list_delete_link (
 				giop_queued_messages, l);
 		}
 	}
 
-	LINC_MUTEX_UNLOCK (giop_queued_messages_lock);
+	LINK_MUTEX_UNLOCK (giop_queued_messages_lock);
 
 	for (sl = notify; sl; sl = sl->next) {
 		GIOPMessageQueueEntry *ent = sl->data;
-
-#ifdef ORBIT_THREADED
-		pthread_cond_signal (&ent->condvar);
-#else
-
-		if (ent->u.unthreaded.cb) {
-#ifdef DEBUG
-			g_warning ("About to invoke %p:%p:%p", l, ent, ent->u.unthreaded.cb);
-#endif
-			ent->u.unthreaded.cb (ent);
-		} else
+		
+		if (!ent->async_cb) {
+			/* This should never happen */
 			g_warning ("Extraordinary recv list re-enterancy");
-#endif
+			continue;
+		}
+
+		giop_invoke_async (ent);
 	}
 	g_slist_free (notify);
 }
@@ -596,6 +670,7 @@ giop_recv_buffer_get_request_id (GIOPRecvBuffer *buf)
 				  msg.u.locate_reply_1_1.request_id),
 		  G_STRUCT_OFFSET(GIOPRecvBuffer,
 				  msg.u.locate_reply_1_2.request_id)},
+		{0,0,0}, /* GIOP_CLOSECONNECTION */
 		{0,0,0}, /* GIOP_MESSAGEERROR */
 		{0,0,0} /* GIOP_FRAGMENT */
 	};
@@ -608,77 +683,45 @@ giop_recv_buffer_get_request_id (GIOPRecvBuffer *buf)
 	return G_STRUCT_MEMBER (CORBA_unsigned_long, buf, offset);
 }
 
-void
-giop_recv_list_destroy_queue_entry (GIOPMessageQueueEntry *ent)
+static inline gboolean
+check_got (GIOPMessageQueueEntry *ent)
 {
-	LINC_MUTEX_LOCK (giop_queued_messages_lock);
-	giop_queued_messages = g_list_remove (giop_queued_messages, ent);
-#ifdef DEBUG
-	g_warning ("Pop XX:%p:NULL - %d", ent, g_list_length (giop_queued_messages));
-#endif
-	LINC_MUTEX_UNLOCK (giop_queued_messages_lock);
-
-#ifdef ORBIT_THREADED
-	/* FIXME: Fix this mess */
-	pthread_cond_destroy(&ent->condvar);
-	LINC_MUTEX_DESTROY(ent->condvar_lock);
-#endif
-}
-
-void
-giop_recv_list_setup_queue_entry (GIOPMessageQueueEntry *ent,
-				  GIOPConnection        *cnx,
-				  CORBA_unsigned_long    msg_type,
-				  CORBA_unsigned_long    request_id)
-{
-#ifdef ORBIT_THREADED
-	/* FIXME: fix this mess */
-	LINC_MUTEX_INIT (ent->condvar_lock);
-	pthread_cond_init (&ent->condvar, NULL);
-	LINC_MUTEX_LOCK (ent->condvar_lock);
-#else
-	ent->u.unthreaded.cb = NULL;
-#endif
-
-	ent->cnx = cnx;
-	ent->msg_type = msg_type;
-	ent->request_id = request_id;
-
-	LINC_MUTEX_LOCK   (giop_queued_messages_lock);
-#ifdef DEBUG
-	g_warning ("Push XX:%p:NULL - %d", ent, g_list_length (giop_queued_messages));
-#endif
-	giop_queued_messages = g_list_prepend (giop_queued_messages, ent);
-	LINC_MUTEX_UNLOCK (giop_queued_messages_lock);
-
-	ent->buffer = NULL;
-}
-
-void
-giop_recv_list_setup_queue_entry_async (GIOPMessageQueueEntry *ent,
-					GIOPAsyncCallback      cb)
-{
-	g_return_if_fail (ent != NULL);
-
-	ent->u.unthreaded.cb = cb;
+	return (ent->buffer || !ent->cnx ||
+		(ent->cnx->parent.status == LINK_DISCONNECTED));
 }
 
 GIOPRecvBuffer *
-giop_recv_buffer_get (GIOPMessageQueueEntry *ent, gboolean block_for_reply)
+giop_recv_buffer_get (GIOPMessageQueueEntry *ent)
 {
-#ifdef ORBIT_THREADED
-	/* FIXME: fix this mess */
-	pthread_cond_wait (&ent->condvar, &ent->condvar_lock);
-	LINC_MUTEX_UNLOCK (ent->condvar_lock);
-#else
-	if (block_for_reply) {
-		while (!ent->buffer && ent->cnx &&
-		       (ent->cnx->parent.status != LINC_DISCONNECTED))
-			linc_main_iteration (block_for_reply);
-	} else
-		linc_main_iteration (FALSE);
-#endif
+	GIOPThread *tdata = giop_thread_self ();
 
+ thread_switch:
+	if (giop_thread_io ()) {
+		ent_lock (ent);
+
+		for (; !check_got (ent); ) {
+			if (!giop_thread_queue_empty_T (tdata)) {
+				ent_unlock (ent);
+				giop_thread_queue_process (tdata);
+				ent_lock (ent);
+			} else
+				g_cond_wait (tdata->incoming, tdata->lock);
+		}
+		
+		ent_unlock (ent);
+
+	} else { /* non-threaded */
+
+		while (!ent->buffer && ent->cnx &&
+		       (ent->cnx->parent.status != LINK_DISCONNECTED) &&
+		       !giop_thread_io())
+			link_main_iteration (TRUE);
+
+		if (giop_thread_io())
+			goto thread_switch;
+	}
+
+	giop_thread_queue_tail_wakeup (tdata);
 	giop_recv_list_destroy_queue_entry (ent);
 
 	return ent->buffer;
@@ -687,17 +730,39 @@ giop_recv_buffer_get (GIOPMessageQueueEntry *ent, gboolean block_for_reply)
 ORBit_ObjectKey*
 giop_recv_buffer_get_objkey (GIOPRecvBuffer *buf)
 {
-	switch (buf->msg.header.version [1]) {
-	case 0:
-		return &buf->msg.u.request_1_0.object_key;
+	switch (buf->msg.header.message_type) {
+	case GIOP_REQUEST:
+		switch (buf->msg.header.version [1]) {
+		case 0:
+			return &buf->msg.u.request_1_0.object_key;
+			break;
+		case 1:
+			return &buf->msg.u.request_1_1.object_key;
+			break;
+		case 2:
+			g_assert (buf->msg.u.request_1_2.target._d == GIOP_KeyAddr);
+			return &buf->msg.u.request_1_2.target._u.object_key;
+			break;
+		}
 		break;
-	case 1:
-		return &buf->msg.u.request_1_1.object_key;
+
+	case GIOP_LOCATEREQUEST:
+		switch (buf->msg.header.version [1]) {
+		case 0:
+			return &buf->msg.u.locate_request_1_0.object_key;
+			break;
+		case 1:
+			return &buf->msg.u.locate_request_1_1.object_key;
+			break;
+		case 2:
+			g_assert (buf->msg.u.locate_request_1_2.target._d == GIOP_KeyAddr);
+			return &buf->msg.u.locate_request_1_2.target._u.object_key;
+			break;
+		}
 		break;
-	case 2:
-		g_assert (buf->msg.u.request_1_2.target._d == GIOP_KeyAddr);
-		return &buf->msg.u.request_1_2.target._u.object_key;
-		break;
+
+	default:
+		g_assert_not_reached ();
 	}
 
 	return NULL;
@@ -724,7 +789,7 @@ giop_recv_buffer_get_opname (GIOPRecvBuffer *buf)
 void
 giop_recv_buffer_init (void)
 {
-	giop_queued_messages_lock = linc_mutex_new ();
+	giop_queued_messages_lock = link_mutex_new ();
 }
 
 static void
@@ -858,6 +923,15 @@ concat_frags (GList *list)
 	return FALSE;
 }
 
+static glong giop_initial_msg_size_limit = GIOP_INITIAL_MSG_SIZE_LIMIT;
+
+void
+giop_recv_set_limit (glong limit)
+{
+	if (limit > 256) /* Something slightly sensible ? */
+		giop_initial_msg_size_limit = limit;
+}
+
 /**
  * giop_recv_buffer_handle_fragmented:
  * @buf: pointer to recv buffer pointer
@@ -929,7 +1003,8 @@ giop_recv_buffer_handle_fragmented (GIOPRecvBuffer **ret_buf,
 		g_list_append (list, buf);
 
 		if (!cnx->parent.is_auth &&
-		    buf->msg.header.message_size > GIOP_INITIAL_MSG_SIZE_LIMIT) {
+		    buf->msg.header.message_size > giop_initial_msg_size_limit) {
+			dprintf (ERRORS, "Message exceeded initial size limit\n");
 			error = TRUE;
 			giop_connection_remove_frag (cnx, list);
 		}
@@ -959,7 +1034,7 @@ handle_reply (GIOPRecvBuffer *buf)
 
 	error = FALSE;
 
-	LINC_MUTEX_LOCK (giop_queued_messages_lock);
+	LINK_MUTEX_LOCK (giop_queued_messages_lock);
 
 	for (l = giop_queued_messages; l; l = l->next) {
 		ent = l->data;
@@ -969,39 +1044,9 @@ handle_reply (GIOPRecvBuffer *buf)
 			break;
 	}
 
-	if (l) {
-		ent = l->data;
+	ent = l ? l->data : NULL;
 
-		if (ent->cnx != buf->connection) {
-#ifdef G_ENABLE_DEBUG
-			if (giop_debug_hook_spoofed_reply)
-				giop_debug_hook_spoofed_reply (buf, ent);
-#endif
-
-			dprintf (ERRORS, "We received a bogus reply\n");
-
-			giop_recv_buffer_unuse (buf);
-			return TRUE;
-		}
-
-		ent->buffer = buf;
-#ifdef ORBIT_THREADED
-		pthread_cond_signal (&ent->condvar);
-#else
-		if (ent->u.unthreaded.cb)
-			giop_queued_messages = g_list_delete_link (
-				giop_queued_messages, l);
-
-		LINC_MUTEX_UNLOCK (giop_queued_messages_lock);
-
-		if (ent->u.unthreaded.cb) {
-			ent->u.unthreaded.cb (ent);
-			giop_recv_buffer_unuse (buf);
-		}
-#endif
-	} else {
-		LINC_MUTEX_UNLOCK (giop_queued_messages_lock);
-
+	if (!ent) {
 		if (giop_recv_buffer_reply_status (buf) ==
 		    CORBA_SYSTEM_EXCEPTION) {
 			/*
@@ -1020,8 +1065,49 @@ handle_reply (GIOPRecvBuffer *buf)
 			error = TRUE;
 		}
 
-		giop_recv_buffer_unuse (buf);
+	} else if (ent->cnx != buf->connection) {
+#ifdef G_ENABLE_DEBUG
+		if (giop_debug_hook_spoofed_reply)
+			giop_debug_hook_spoofed_reply (buf, ent);
+#endif
+		dprintf (ERRORS, "We received a bogus reply\n");
+
+		error = TRUE;
+
+	} else {
+#ifdef DEBUG
+		g_warning ("Pop XX:%p:%p - %d",
+			   ent, ent->async_cb,
+			   g_list_length (giop_queued_messages));
+#endif
+		giop_queued_messages = g_list_delete_link
+			(giop_queued_messages, l);
 	}
+
+	LINK_MUTEX_UNLOCK (giop_queued_messages_lock);
+
+	if (ent && !error) {
+		gboolean async = FALSE;
+
+		ent_lock (ent);
+		ent->buffer = buf;
+
+		if (giop_thread_io () && !ent->async_cb)
+			giop_incoming_signal_T (ent->src_thread,
+						GIOP_REPLY);
+
+		else if (ent->async_cb)
+			async = TRUE;
+
+		ent_unlock (ent);
+
+		if (async)
+			giop_invoke_async (ent);
+
+		buf = NULL;
+	}
+	
+	giop_recv_buffer_unuse (buf);
 
 	return error;
 }
@@ -1066,8 +1152,12 @@ giop_recv_msg_reading_body (GIOPRecvBuffer *buf,
 	if ((buf->msg.header.flags & GIOP_FLAG_LITTLE_ENDIAN) != GIOP_FLAG_ENDIANNESS)
 		buf->msg.header.message_size = GUINT32_SWAP_LE_BE (buf->msg.header.message_size);
 
-	if (!is_auth && buf->msg.header.message_size > GIOP_INITIAL_MSG_SIZE_LIMIT)
+	/* NB. at least CLOSECONNECTION has 0 length message_size */
+
+	if (!is_auth && buf->msg.header.message_size > giop_initial_msg_size_limit) {
+		dprintf (ERRORS, "Message exceeded unauthorized size limit\n");
 		return TRUE;
+	}
 
 	if (alloc_buffer (buf, NULL, buf->msg.header.message_size))
 		return TRUE;
@@ -1086,37 +1176,27 @@ giop_recv_msg_reading_body (GIOPRecvBuffer *buf,
  * giving a nice deadlock.
  */
 gboolean
-giop_connection_handle_input (LINCConnection *lcnx)
+giop_connection_handle_input (LinkConnection *lcnx)
 {
 	GIOPRecvBuffer *buf;
 	GIOPConnection *cnx = (GIOPConnection *) lcnx;
-
-	g_object_ref ((GObject *) cnx);
-	LINC_MUTEX_LOCK (cnx->incoming_mutex);
 
 	do {
 		int n;
 
 		if (!cnx->incoming_msg)
-			cnx->incoming_msg = giop_recv_buffer_use_buf ();
+			cnx->incoming_msg = giop_recv_buffer_use_buf (cnx);
 
 		buf = cnx->incoming_msg;
 
-		n = linc_connection_read (
+		n = link_connection_read (
 			lcnx, buf->cur, buf->left_to_read, FALSE);
 
-		if (n == 0) { /* We'll be back */
-			LINC_MUTEX_UNLOCK (cnx->incoming_mutex);
-			g_object_unref ((GObject *) cnx);
+		if (n == 0) /* We'll be back */
 			return TRUE;
-		}
 
-		if (n < 0 || !buf->left_to_read) { /* HUP */
-			LINC_MUTEX_UNLOCK (cnx->incoming_mutex);
-			linc_connection_state_changed (lcnx, LINC_DISCONNECTED);
-			g_object_unref ((GObject *) cnx);
-			return TRUE;
-		}
+		if (n < 0 || !buf->left_to_read) /* HUP */
+			goto msg_error;
 
 /*		fprintf (stderr, "Read %d\n", n);
 		giop_dump (stderr, buf->cur, n, 0); */
@@ -1150,7 +1230,7 @@ giop_connection_handle_input (LINCConnection *lcnx)
 					dprintf (ERRORS, "broken incoming length data\n");
 					goto msg_error;
 				}
-				do_giop_dump (stderr, buf->cur, buf->msg.header.message_size, 0);
+				do_giop_dump (stderr, buf->cur, buf->msg.header.message_size, 12);
 
 				buf->state = GIOP_MSG_READY;
 
@@ -1165,7 +1245,6 @@ giop_connection_handle_input (LINCConnection *lcnx)
 
 					else {
 						cnx->incoming_msg = NULL;
-						LINC_MUTEX_UNLOCK (cnx->incoming_mutex);
 						goto frag_out;
 					}
 
@@ -1184,27 +1263,31 @@ giop_connection_handle_input (LINCConnection *lcnx)
 			}
 		}
 
-	} while (cnx->incoming_msg && buf->state != GIOP_MSG_READY);
+	} while (cnx->incoming_msg &&
+		 buf->left_to_read > 0 &&
+		 buf->state != GIOP_MSG_READY);
 
 	cnx->incoming_msg = NULL;
-	LINC_MUTEX_UNLOCK (cnx->incoming_mutex);
-
-	buf->connection = cnx;
 
 	switch (buf->msg.header.message_type) {
 	case GIOP_REPLY:
 	case GIOP_LOCATEREPLY:
+		dprintf (MESSAGES, "handling reply\n");
 		if (handle_reply (buf)) /* dodgy inbound data, pull the cnx */
-			linc_connection_state_changed (lcnx, LINC_DISCONNECTED);
+			link_connection_state_changed (lcnx, LINK_DISCONNECTED);
 		break;
 
 	case GIOP_REQUEST:
+		dprintf (MESSAGES, "handling request\n");
 		ORBit_handle_request (cnx->orb_data, buf);
-		giop_recv_buffer_unuse (buf);
+		break;
+
+	case GIOP_LOCATEREQUEST:
+		dprintf (MESSAGES, "handling locate request\n");
+		ORBit_handle_locate_request (cnx->orb_data, buf);
 		break;
 
 	case GIOP_CANCELREQUEST:
-	case GIOP_LOCATEREQUEST:
 	case GIOP_MESSAGEERROR:
 		dprintf (ERRORS, "dropping an unusual & unhandled input buffer 0x%x",
 			 buf->msg.header.message_type);
@@ -1212,8 +1295,9 @@ giop_connection_handle_input (LINCConnection *lcnx)
 		break;
 
 	case GIOP_CLOSECONNECTION:
+		dprintf (MESSAGES, "received close connection\n");
 		giop_recv_buffer_unuse (buf);
-		linc_connection_state_changed (lcnx, LINC_DISCONNECTED);
+		link_connection_state_changed (lcnx, LINK_DISCONNECTED);
 		break;
 
 	case GIOP_FRAGMENT:
@@ -1226,13 +1310,10 @@ giop_connection_handle_input (LINCConnection *lcnx)
 	}
 
  frag_out:	
-	g_object_unref ((GObject *) cnx);
-
 	return TRUE;
 
  msg_error:
 	cnx->incoming_msg = NULL;
-	LINC_MUTEX_UNLOCK (cnx->incoming_mutex);
 
 	buf->msg.header.message_type = GIOP_MESSAGEERROR;
 	buf->msg.header.message_size = 0;
@@ -1242,23 +1323,26 @@ giop_connection_handle_input (LINCConnection *lcnx)
 	/* Zap it for badness.
 	 * XXX We should probably handle oversized
 	 * messages more graciously XXX */
-	linc_connection_state_changed (LINC_CONNECTION (cnx),
-				       LINC_DISCONNECTED);
-	g_object_unref ((GObject *) cnx);
+	link_connection_state_changed (LINK_CONNECTION (cnx),
+				       LINK_DISCONNECTED);
 
 	return TRUE;
 }
 
 GIOPRecvBuffer *
-giop_recv_buffer_use_buf (void)
+giop_recv_buffer_use_buf (GIOPConnection *cnx)
 {
 	GIOPRecvBuffer *buf = NULL;
-
+	
+	if(cnx)
+		giop_connection_ref (cnx);
+	
 	buf = g_new0 (GIOPRecvBuffer, 1);
 
 	buf->state = GIOP_MSG_READING_HEADER;
 	buf->cur = (guchar *)&buf->msg.header;
 	buf->left_to_read = 12;
+	buf->connection = cnx;
 
 	return buf;
 }

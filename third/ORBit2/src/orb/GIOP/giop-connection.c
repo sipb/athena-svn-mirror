@@ -5,84 +5,17 @@
 
 #include "giop-private.h"
 
-#undef CNX_LIST_DEBUG
+static LinkConnectionClass *parent_class = NULL;
 
-static LINCConnectionClass *parent_class = NULL;
-
-static struct {
-	GMutex *lock;
-	GList  *list;
-} cnx_list = { NULL, NULL };
-
-#ifdef CNX_LIST_DEBUG
-static char *
-giop_cnx_descr (GIOPConnection *cnx)
-{
-	return g_strdup_printf ("Cnx (%p) - '%s' '%s' '%s' - %s",
-				cnx, cnx->parent.proto->name,
-				cnx->parent.remote_host_info ? cnx->parent.remote_host_info : "<Null>",
-				cnx->parent.remote_serv_info ? cnx->parent.remote_serv_info : "<Null>",
-				cnx->parent.options & LINC_CONNECTION_SSL ? "ssl" : "no ssl");
-}
-#endif
-
-void
-giop_connection_list_init (void)
-{
-	cnx_list.lock = linc_mutex_new ();
-	cnx_list.list = NULL;
-}
+enum {
+	PROP_0,
+	PROP_ORB,
+	PROP_GIOP_VERSION
+};
 
 static void
-giop_connection_list_add (GIOPConnection *cnx)
-{
-#ifdef CNX_LIST_DEBUG
-	g_warning ("Add '%s'", giop_cnx_descr (cnx));
-	g_assert (cnx->parent.was_initiated);
-#endif
-	cnx_list.list = g_list_prepend (cnx_list.list, cnx);
-}
-
-static void
-giop_connection_list_remove (GIOPConnection *cnx)
-{
-#ifdef CNX_LIST_DEBUG
-	g_warning ("Remove '%s'", giop_cnx_descr (cnx));
-#endif
-	if (cnx->parent.was_initiated)
-		cnx_list.list = g_list_remove (cnx_list.list, cnx);
-}
-
-static GIOPConnection *
-giop_connection_list_lookup (const char *proto_name,
-			     const char *remote_host_info,
-			     const char *remote_serv_info,
-			     gboolean    is_ssl)
-{
-	GList *l;
-	const LINCProtocolInfo *proto;
-
-	proto = linc_protocol_find (proto_name);
-
-	for (l = cnx_list.list; l; l = l->next) {
-		GIOPConnection *cnx = l->data;
-
-		if (cnx->parent.proto == proto &&
-		    cnx->parent.status != LINC_DISCONNECTED &&
-		    ((cnx->parent.options & LINC_CONNECTION_SSL) == 
-		     (is_ssl ? LINC_CONNECTION_SSL : 0)) &&
-		    !strcmp (remote_host_info, cnx->parent.remote_host_info) &&
-		    !strcmp (remote_serv_info, cnx->parent.remote_serv_info))
-
-			return g_object_ref (G_OBJECT (cnx));
-	}
-
-	return NULL;
-}
-
-static void
-giop_connection_real_state_changed (LINCConnection      *cnx,
-				    LINCConnectionStatus status)
+giop_connection_real_state_changed (LinkConnection      *cnx,
+				    LinkConnectionStatus status)
 {
 	GIOPConnection *gcnx = GIOP_CONNECTION (cnx);
 
@@ -90,13 +23,11 @@ giop_connection_real_state_changed (LINCConnection      *cnx,
 		parent_class->state_changed (cnx, status);
 
 	switch (status) {
-	case LINC_DISCONNECTED:
-		LINC_MUTEX_LOCK (gcnx->incoming_mutex);
+	case LINK_DISCONNECTED:
 		if (gcnx->incoming_msg) {
 			giop_recv_buffer_unuse (gcnx->incoming_msg);
 			gcnx->incoming_msg = NULL;
 		}
-		LINC_MUTEX_UNLOCK (gcnx->incoming_mutex);
 		giop_recv_list_zap (gcnx);
 		break;
 	default:
@@ -107,10 +38,10 @@ giop_connection_real_state_changed (LINCConnection      *cnx,
 void
 giop_connection_close (GIOPConnection *cnx)
 {
-	if (cnx->parent.status == LINC_DISCONNECTED)
+	if (cnx->parent.status == LINK_DISCONNECTED)
 		return;
 
-	if (cnx->parent.status == LINC_CONNECTED &&
+	if (cnx->parent.status == LINK_CONNECTED &&
 	    (!cnx->parent.was_initiated ||
 	     cnx->giop_version == GIOP_1_2)) {
 		GIOPSendBuffer *buf;
@@ -121,8 +52,7 @@ giop_connection_close (GIOPConnection *cnx)
 		giop_send_buffer_unuse (buf);
 	}
 
-	linc_connection_state_changed (
-		LINC_CONNECTION (cnx), LINC_DISCONNECTED);
+	link_connection_disconnect (LINK_CONNECTION (cnx));
 }
 
 static void
@@ -130,26 +60,52 @@ giop_connection_dispose (GObject *obj)
 {
 	GIOPConnection *cnx = (GIOPConnection *) obj;
 
+	giop_thread_key_release (obj);
+
 	giop_connection_close (cnx);
 
-	if (cnx->incoming_mutex) {
-		g_mutex_free (cnx->incoming_mutex);
-		cnx->incoming_mutex = NULL;
-	}
-
-	if (cnx->outgoing_mutex) {
-		g_mutex_free (cnx->outgoing_mutex);
-		cnx->outgoing_mutex = NULL;
-	}
-
 	giop_connection_destroy_frags (cnx);
-
-	giop_connection_list_remove (cnx);
 
 	g_assert (cnx->incoming_msg == NULL);
 
 	if (((GObjectClass *)parent_class)->dispose)
 		((GObjectClass *)parent_class)->dispose (obj);
+}
+
+static void
+giop_connection_set_property (GObject           *object,
+			      guint              prop_id,
+			      const GValue      *value,
+			      GParamSpec        *pspec)
+{
+	GIOPConnection *cnx = (GIOPConnection *) object;
+
+	switch (prop_id) {
+	case PROP_ORB:
+		cnx->orb_data = g_value_get_pointer (value);
+		break;
+	case PROP_GIOP_VERSION:
+		cnx->giop_version = g_value_get_uint (value);
+		break;
+	}
+}
+ 
+static void
+giop_connection_get_property (GObject           *object,
+			      guint              prop_id,
+			      GValue            *value,
+			      GParamSpec        *pspec)
+{
+	GIOPConnection *cnx = (GIOPConnection *) object;
+
+	switch (prop_id) {
+	case PROP_ORB:
+		g_value_set_pointer (value, cnx->orb_data);
+		break;
+	case PROP_GIOP_VERSION:
+		g_value_set_uint (value, cnx->giop_version);
+		break;
+	}
 }
 
 static void
@@ -160,6 +116,18 @@ giop_connection_class_init (GIOPConnectionClass *klass)
 	parent_class = g_type_class_peek_parent (klass);
 
 	object_class->dispose = giop_connection_dispose;
+	object_class->set_property = giop_connection_set_property;
+	object_class->get_property = giop_connection_get_property;
+
+	g_object_class_install_property
+		(object_class, PROP_ORB,
+		 g_param_spec_pointer ("orb", NULL, NULL,
+				       G_PARAM_READWRITE));
+	g_object_class_install_property
+		(object_class, PROP_GIOP_VERSION,
+		 g_param_spec_uint ("version", NULL, NULL,
+				    0, G_MAXINT, 0,
+				    G_PARAM_READWRITE));
 
 	klass->parent_class.state_changed = giop_connection_real_state_changed;
 	klass->parent_class.handle_input  = giop_connection_handle_input;
@@ -168,8 +136,6 @@ giop_connection_class_init (GIOPConnectionClass *klass)
 static void
 giop_connection_init (GIOPConnection *cnx)
 {
-	cnx->incoming_mutex = linc_mutex_new ();
-	cnx->outgoing_mutex = linc_mutex_new ();
 }
 
 GType
@@ -191,20 +157,11 @@ giop_connection_get_type (void)
 		};
       
 		object_type = g_type_register_static (
-			linc_connection_get_type(),
+			link_connection_get_type(),
 			"GIOPConnection", &object_info, 0);
 	}  
 
 	return object_type;
-}
-
-void
-giop_connection_set_orb_n_ver (GIOPConnection *cnx,
-			       gpointer        orb_data,
-			       GIOPVersion     version)
-{
-	cnx->orb_data = orb_data;
-	cnx->giop_version = version;
 }
 
 GIOPConnection *
@@ -215,83 +172,23 @@ giop_connection_initiate (gpointer orb_data,
 			  GIOPConnectionOptions options,
 			  GIOPVersion giop_version)
 {
-	GIOPConnection *cnx;
-
 	g_return_val_if_fail (remote_host_info != NULL, NULL);
 
-	LINC_MUTEX_LOCK (cnx_list.lock);
+	options |= LINK_CONNECTION_NONBLOCKING;
 
-#ifndef ORBIT_THREADED
-	options |= LINC_CONNECTION_NONBLOCKING;
-#endif
-
-	cnx = giop_connection_list_lookup (
-		proto_name, remote_host_info,
-		remote_serv_info, (options & LINC_CONNECTION_SSL));
-
-	if (!cnx) {
-		cnx = (GIOPConnection *) g_object_new (
-			giop_connection_get_type (), NULL);
-
-		giop_connection_set_orb_n_ver (
-			cnx, orb_data, giop_version);
-
-		if (!linc_connection_initiate (
-			(LINCConnection *) cnx,
-			proto_name, remote_host_info,
-			remote_serv_info, options)) {
-
-			LINC_MUTEX_UNLOCK (cnx_list.lock);
-			g_object_unref (G_OBJECT (cnx));
-
-			return NULL;
-		} else
-			giop_connection_list_add (cnx);
-	}
-
-	LINC_MUTEX_UNLOCK (cnx_list.lock);
-
-	return cnx;
+	return (GIOPConnection *)
+		link_connection_initiate
+			(giop_connection_get_type (),
+			 proto_name, remote_host_info,
+			 remote_serv_info, options,
+			 "orb", orb_data,
+			 "version", (guint) giop_version,
+			 NULL);
 }
 
-void
-giop_connection_remove_by_orb (gpointer match_orb_data)
+LinkConnectionStatus
+giop_connection_try_reconnect (GIOPConnection *cnx)
 {
-	GList *l, *next;
-	GSList *sl, *to_close = NULL;
-
-	LINC_MUTEX_LOCK (cnx_list.lock);
-
-	for (l = cnx_list.list; l; l = next) {
-		GIOPConnection *cnx = l->data;
-
-		next = l->next;
-
-		if (cnx->orb_data == match_orb_data) {
-			to_close = g_slist_prepend (to_close, cnx);
-			cnx_list.list = g_list_delete_link (cnx_list.list, l);
-		}
-	}
-
-	LINC_MUTEX_UNLOCK (cnx_list.lock);
-
-	for (sl= to_close; sl; sl = sl->next) {
-		GIOPConnection *cnx = sl->data;
-
-		giop_connection_close (cnx);
-		g_object_unref (G_OBJECT (cnx));
-	}
-	g_slist_free (to_close);
+	return link_connection_try_reconnect (LINK_CONNECTION (cnx));
 }
 
-void
-giop_connection_unref (GIOPConnection *cnx)
-{
-	if (cnx) {
-		LINC_MUTEX_LOCK (cnx_list.lock);
-		
-		g_object_unref (G_OBJECT (cnx));
-		
-		LINC_MUTEX_UNLOCK (cnx_list.lock);
-	}
-}

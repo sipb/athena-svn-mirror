@@ -1,10 +1,2139 @@
-2003-01-14  Michael Meeks  <michael@ximian.com>
+2004-09-13  Mark McLoughlin  <mark@skynet.ie>
 
-	* Version 2.6.0
+	* configure.in: Version 2.12.0.
+
+2004-08-25  Michael Haubenwallner <michael.haubenwallner@salomon.at>
+
+	* src/orb/orb-core/allocators.c (ORBit_freekids_via_TypeCode_T):
+	Step over align-holes at the end of structures (bug#151023)
+	* src/orb/orb-core/corba-any.c
+	(ORBit_marshal_value) (ORBit_demarshal_value)
+	(ORBit_copy_value_core) (ORBit_value_equivalent):
+	Ditto.
+	* test/everything/everything.idl
+	test/everything/client.c
+	test/everything/structServer.c:
+	Added testcase for bug#151023, align-holes at the end of structures.
+	* test/everything/constants.h:
+	Ditto.
+	Added constants for CHAR and OCTET.
+
+2004-08-19  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.11.2
+
+	* src/orb/GIOP/giop-recv-buffer.c
+	(giop_recv_list_destroy_queue_entry): unref the
+	ent's connection without the message queue lock
+	held.
+
+	* test/everything/client.c: bin stderr printfs
+	during thread tests, to avoid unhelpful rescheduling.
+	
+	* src/orb/orb-core/orbit-small.c
+	(ORBit_small_unlisten_for_broken_full): use the
+	peek method, no need to try re-connecting just to
+	disconnect the 'broken' signal.
+
+	* src/orb/orb-core/corba-object.c
+	(CORBA_Object_release_cb): after a long audit;
+	unlock / lock around the giop connection unref;
+	this avoids the final connection release
+	deadlocking vs. a pending call in the I/O
+	thread needing this lock.
+	(ORBit_object_peek_connection): impl.
+
+2004-08-19  Magnus Therning  <magnus@therning.org>
+
+	* src/idl-compiler/orbit-idl-backend.c: fix
+	bit-field assignments.
+
+2004-08-10  Michael Meeks  <michael@ximian.com>
+
+	* test/everything/basicServer.c
+	(BasicServer_testBoolString): impl.
+
+2004-08-11  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/idl-compiler/orbit-idl-c-backend.c: (orbit_idl_output_c):
+	0 vs NULL.
+	* src/idl-compiler/orbit-idl-c-common.c: (cc_output_typecodes):i
+	Same here.
+	* src/idl-compiler/orbit-idl-c-utils.c:
+	(orbit_cbe_get_typespec_str): Same here too.
+	* src/orb/dynamic/dynany.c: (DynamicAny_DynUnion_member_name):
+	0 vs NULL and add some casts.
+	* src/orb/orb-core/allocators.c: (ORBit_freekids_via_TypeCode_T):
+	0 vs NULL fixes.
+	* src/orb/orb-core/corba-object.c: (ORBit_objref_find):
+	Same again.
+	* src/services/name/boot.c: (main): And again.
+	* test/echo-srv.c: (echo_srv_finish_object), (echo_srv_finish_poa):
+	And again.
+
+2004-08-10  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/orb/orb-core/iop-profiles.c: (IOP_start_profiles),
+	(IOP_TAG_CODE_SETS_demarshal): don't initialize the sequence
+	using structure initialization, but rather zero the structure
+	contents. Fixes bug #147255, which admittedly is really a
+	gcc on powerpc bug, but this code is nicer anyway.
+
+2004-08-08  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* src/orb/orb-core/corba-any.c (ORBit_sequence_remove):
+	Impl. method to remove a single element in an ORBit sequence.
+
+	* include/orbit/orb-core/orbit-small.h: Add ORBit_sequence_remove
+	prototype.
+
+	* test/everything/client.c (testSequenceHelpers): Test
+	ORBit_sequence_remove.
+
+2004-07-30  Mark McLoughlin  <mark@skynet.ie>
+
+	* test/test-corbaloc.c: "\%" isn't a valid escape sequence,
+	so just use "%". From d.binderman@virgin.net.
+
+2004-07-07  Frank Rehberger  <frehberg@mole.xtradyne.de>
+
+	* Revert to Version 2.11.x and Add Version ORBit2-2.11.1
+	(developer release only)
+
+2004-07-07  Frank Rehberger <frehberg@gnome-de.org>
+	* Add Version ORBit2-2.12.0
+
+2004-06-22  Chris Landrieu  <perotin101@yahoo.com>
+
+	* src/orb/orb-core/allocators.c (ORBit_freekids_via_TypeCode_T):
+	add missing pre-align for struct/except types. Complicate the
+	union alignment rules.
+
+2004-05-30  Christophe Saout  <christophe@saout.de>
+
+	* src/orb/orb-core/corba-any.c:
+	(ORBit_marshal_value, ORBit_demarshal_value): Fix broken wstring
+	support. Marshal/demarshal the correct number of bytes on the
+	wire and negotiate the UTF-16 byte ordering using an optional
+	endianess marker. Also works now with JacORB.
+
+2004-05-30  Christophe Saout  <christophe@saout.de>
+
+	* src/services/imodule/orbit-imodule-utils.c
+	(ORBit_imodule_get_typecode): set c_align in nested array
+	typecodes that are not handled by ORBit_imodule_find_c_align.
+
+2004-05-17  Michael Meeks  <michael@ximian.com>
+
+	* ORBit-2.0.pc.in: prune pkgconfig cruft.
+
+2004-05-14  Fernando Herrera  <fherrera@onirica.com>
+
+	* src/idl-compiler/orbit-idl-c-backend.c: (out_for_pass):
+	 clobber LC_ALL because cpp tranlates some strings in some 
+	locales during dep files generation that makes compilation
+	fails. Fixes bug #142546.
+
+2004-05-08  Frank Rehberger  <frehberg@gnome-de.org>
+
+	* src/orb/orb-core/iop-profiles.c (IOP_start_profiles): orbit
+	generated profiles contain full codeset data structures
+	(IOP_component_free): freeing codeset structures
+	(CodeSetComponent_marshal): marshal codeset structures
+	(CodeSetComponent_demarshal): demarshal codeset structures
+	* src/orb/orb-core/iop-profiles.h (IOP_PROFILES_CODE_SET_*):
+	declare known code-sets, but UTF8 and UTF16 supported only.
+	(struct IOP_TAG_CODE_SETS_info): complete CodeSet data structure
+	using CONV_FRAME_CodeSetComponentInfo.
+	* src/orb/orb-core/corba-orb.c: variable orbit_use_corbaloc must
+	be of type gboolean.
+
+2004-05-07  Michael Meeks  <michael@ximian.com>
+
+	* configure.in: bump version to 2.11.0 (after branch),
+	update configure message to point to gnome-2-6 branch.
+
+2004-05-02  Frank Rehberger  <frehberg@gnome-de.org>
+
+	* src/orb/orb-core/corba-loc.c (corbaloc_profile_iiop): reference
+	constants defined for CSSIOP
+
+	* src/orb/orb-core/iop-defs.idl: add IIOP.idl and CORBA Security
+	Ineterop. attributes in files CSI.idl and CSIIOP.idl 
+
+2004-05-01  Frank Rehberger <frehberg@gnome-de.org>
+
+	* src/idl: upgrade to CORBA-3.0 IDL files cause of security
+	attributes defined in there
+	* include/orbit/orb-core/orb-types.h: comment typedef being
+	defined in generated include/orbit/orb-core/corba-defs.h now.
+
+2004-05-07  Michael Meeks  <michael@ximian.com>
+
+	* Branch for Gnome 2.6
+
+2004-04-24  Dan Winship  <danw@ximian.com>
+
+	* src/services/imodule/Makefile.am (LDADD): Remove
+	$(LOCAL_LINC_LIBS). (Only libORBit-2 itself should be linking
+	against it.)
+
+	* src/services/name/Makefile.am (libORBitCosNaming_2_la_LDFLAGS):
+	Likewise
+	
+2004-04-24  Frank Rehberger  <frehberg@fresa.casa.in-berlin.de>
+
+	* MAINTAINERS: maintainer-ship handed over to  frehberg@gnome-de.org
+
+2004-04-21  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.10.1
+
+2004-04-21  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/orb-core/iop-profiles.c
+	(CodeSetComponent_demarshal): don't spew a
+	g_warning, just a dprintf.
+	(IOP_UnknownComponent_marshal): actually marshal
+	the length of the sequence as well as the data.
+
+2004-04-21  Bill Haneman  <bill.haneman@sun.com>
+
+	* test/everything/basicServer.c
+	(TestFactory_getObjectCount, TestFactory_getObject):
+	hammer on some JavaORB stuff.
+
+	* test/everything/client.c (testIOR): impl.
+	(run_tests): upd.
+
+2004-04-13  Joe Marcus Clarke  <marcus@freebsd.org>
+
+	* ORBit-2.0.pc.in: add gthread dep.
+
+2004-03-19  Mark McLoughlin  <mark@skynet.ie>
+
+	* orbit2-config.in: return -lORBitCosNaming-2 with
+	--use-service=name rather than -lORBitCosNaming.
+	This script is still deprecated old cruft, though.
+
+2004-03-04  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.10.0
+
+	* src/orb/orb-core/corba-orb.c (CORBA_ORB_init):
+	add 'orbit-io-thread' initializer to force I/O thread
+	usage.
+
+	* src/orb/GIOP/giop.c (giop_init): s/threaded/thread_safe/
+
+2004-02-12  Chris Toshok  <toshok@ximian.com>
+
+	* Version 2.9.8
+
+2004-02-12  Chris Toshok  <toshok@ximian.com>
+
+	* src/orb/orb-core/Makefile.am (INCLUDES): change the order so
+	that top_builddir is always listed first.  This keeps heads in
+	top_srcdir from ending up in the .dep files and causing make
+	distcheck to fail.
+
+2004-02-10  Tomasz K³oczko <kloczek@pld.org.pl>
+
+	* acinclude.m4: added missing [] quotation first parameter of
+	  AC_DEFUN(). This fix is for aclocal from automake 1.8.x and is
+	  backward compatible with older auto tools.
+
+2004-02-10  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/orb-core/Makefile.am: always dist. HTTP_FILES.
+
+2004-02-06  Chris Toshok  <toshok@ximian.com>
+
+	* src/orb/poa/poa.c (push_request_idle): add an @on_context arg,
+	so callers can specify the GMainContext to use.  Also, NULL out
+	pcl->pobj and pcl->recv_buffer.
+	(poa_destroy_idle_closure): new function.  free up the
+	PoaIdleClosure here, and release/unuse the POAObject/buffer if we
+	haven't hit the idle handler yet.
+	(ORBit_POA_handle_request): implement ORBIT_THREAD_HINT_ON_CONTEXT
+	case, and pass NULL to push_request_idle for the normal IDLE
+	cases.
+	(ORBit_poa_allow_cross_thread_call): add ON_CONTEXT where the
+	other idle poa policies are, and add a FIXME comment about needing
+	something along the lines of g_main_context_get_owner to implement
+	it properly.
+
+	* src/orb/poa/object-adaptor.c
+	(ORBit_ObjectAdaptor_set_thread_hintv): extract the GMainContext
+	out of the arg list in the ON_CONTEXT case.
+
+	* include/orbit/poa/orbit-adaptor.h (ORBit_ObjectAdaptor_type):
+	add context slot.
+
+2004-02-06  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/orb-core/Makefile.am (IDL_DIR): set
+	this so we're not vunerable to environment
+	problems.
+
+2004-02-05  Michael Meeks  <michael@ximian.com>
+
+	* test/test-giop.c (run_test): upd. tests.
+
+2004-02-04  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.9.7
+
+2004-02-04  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/GIOP/giop-recv-buffer.c
+	(giop_recv_list_zap): signal the wait condition on
+	threads when a connection dies.
+
+2004-02-04  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/GIOP/giop.c (wakeup_mainloop): handle EAGAIN
+	on wakeup pipe more elegantly, downgrade g_error.
+
+2004-02-02  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* src/services/imodule/orbit-imodule.c: (build_cpp_args):
+	Don't use deprecated function. Closes bug #133168.
+
+2004-02-02  Michael Meeks  <michael@ximian.com>
+
+	* docs/internals/Makefile.am: add misc. bits.
+
+	* docs/internals/interface-indirection.xls: switch
+	from .gnumeric, and tag -kb.
+
+2004-01-25  Alexander Winston  <alexander.winston@comcast.net>
+
+	* ORBit2.m4: quote it properly
+
+2004-01-16  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.9.6
+
+2004-01-16  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/orb-core/corba-any.c (ORBit_copy_value_core): 
+	fetch the union tag only after pre-aligning correctly,
+	vicious PPC snafu; thanks to Jeroen Zwartepoorte for
+	his patience.
+
+	* test/everything/everything.idl: add a double
+	to the VariableLengthUnion - causing grief on PPC.
+
+2004-01-15  Mark McLoughlin  <mark@skynet.ie>
+
+	* Version 2.9.5
+
+2004-01-15  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/orb/orb-core/corba-env.c: (CORBA_exception_free),
+	(CORBA_exception_set_system), (CORBA_exception_set),
+	(CORBA_exception_init): add pre-conditions so as to
+	warn people that passing NULL for the environment to
+	CORBA methods is not allowed, without changing the
+	existing behaviour.
+
+2004-01-14  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.9.4
+
+2004-01-14  Michael Meeks  <michael@ximian.com>
+
+	* test/everything/client.c (testWithException): add.
+
+	* src/orb/orb-core/orbit-small.c
+	(ORBit_small_invoke_stub): always clean Environment
+	as it enters - otherwise there's no way of telling if
+	the return value is valid.
+
+	* src/orb/poa/poa.c (ORBit_c_stub_invoke): init ev.
+	here too; same reason; upd. locking comments.
+
+2004-01-14  Albert Chin-A-Young  <china@thewrittenword.com>
+
+	* include/orbit/GIOP/giop-recv-buffer.h: guint for
+	single bitfield.
+
+	* src/orb/orb-core/corba-object.c (CORBA_Object_is_a),
+	* src/orb/poa/poa.c (ORBit_POA_setup_root): fix
+	array assigment portability.
+
+2004-01-09  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.9.3
+
+2004-01-09  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/orb-core/orbit-small.c
+	(ORBit_small_invoke_stub): add performance
+	comment and pass method flags in.
+
+	* src/orb/poa/poa.c (get_c_method),
+	(ORBit_c_stub_invoke): extract / pass on the
+	method flags to:
+	(ORBit_poa_allow_cross_thread_call): if we
+	have an non-std. threading policy, then do
+	a 'true' oneway call. 
+
+2004-01-06  Michael Meeks  <michael@ximian.com>
+
+	* configure.in: fix 'if !' bug for Morten.
+
+2003-12-10  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/GIOP/giop.c (giop_init): make the
+	write pipe non-blocking.
+	(giop_thread_queue_process): fix printf.
+	(giop_thread_push_recv): kill.
+	(giop_incoming_signal_T): add 'type' param; we
+	know people are waiting for replies and don't need
+	wakeup.
+	(giop_invoke_async, giop_thread_request_push):
+	annotate as requests not replies.
+
+	* src/orb/GIOP/giop-recv-buffer.c
+	(handle_reply): in-line giop_thread_push_recv
+	for simplicity & mark as a reply type.
+
+2003-12-10  Alexander Larsson  <alexl@redhat.com>
+
+	* src/orb/GIOP/giop.c (first_valid_request):
+	Really look up the policy
+
+2003-12-08  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.9.2
+
+2003-12-08  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/orb-core/orbit-small.c
+	(ORBit_small_invoke_stub): bin double unuse in
+	MARSHAL_RETRY loop; add more exception handling.
+
+2003-12-06  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/GIOP/giop.c (wakeup_mainloop): don't spin on
+	EAGAIN, if the buffer is full we're sure of waking the
+	mainloop. Warn on EAGAIN - someone isn't running the
+	glib mainloop.
+
+2003-11-17  Frank Rehberger  <frehberg@xtradyne.de>
+
+	* src/orb/GIOP/giop.c (giop_mainloop_handle_input): invoke
+	giop_thread_queue_process with specific GIOPThread object instead
+	NULL.
+
+2003-11-15  Frank Rehberger  <frehberg@xtradyne.de>
+
+	* src/idl-compiler/orbit-idl-c-skelimpl.c (cbe_ski_do_interface):
+	fix mem-leak in generated code: g_free (servant) in destructor
+	impl_*__destroy() by default
+	
+2003-11-13  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.9.1
+
+	* src/orb/orb-core/Makefile.am: fix include.
+
+2003-11-10  Justin Schoeman <justin@expertron.co.za>
+
+	* src/orb/GIOP/giop-recv-buffer.c (giop_recv_buffer_use_buf,
+	giop_recv_buffer_unuse): Add a reference to the connection on
+	giop_recv_buffer_use_buf, and remove it on giop_recv_buffer_unuse.
+	Prevents a connection shutdown while a request is being handled.
+
+2003-11-06  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* linc2/src/linc-server.c (link_server_handle_io): Change g_error
+	to g_warning to avoid crash if revents field reset between check()
+	and dispatch(). Fixes bug #126209.
+
+2003-11-03  Frank Rehberger  <frehberg@xtradyne.com>
+ 
+        * src/orb/poa/poa.c (ORBit_POA_invocation_stack_pop)
+        (ORBit_POA_invocation_stack_push)
+        (ORBit_POA_invocation_stack_lookup_objid)
+        (ORBit_POA_invocation_stack_lookup_objref)
+        (ORBit_POA_invocation_stack_peek): refactore code managing
+        invocation stack; done for later thread aware management of stack.
+ 
+2003-11-03  Justin Schoeman <justin@expertron.co.za>
+
+	* src/orb/orb-core/corba-orb.c (ORBit_initial_references_by_user):
+	Destroy the NameService object after calling 
+	ORBit_set_initial_reference on it, as ORBit_set_initial_reference 
+	dup's the object.
+
+2003-10-31  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/GIOP/giop.c (giop_thread_free):
+	only free policy queue if we have one.
+
+	* src/orb/GIOP/giop-recv-buffer.c
+	(giop_connection_handle_input): on HUP goto
+	msg_error so we don't leave the cnx->incoming_msg
+	hanging around.
+
+2003-10-30  Michael Meeks  <michael@ximian.com>
+
+	* test/everything/lifeCycle.c
+	(LifeCycleServer_deactivateUnrefOnReturn): a nasty
+	in-proc hack that unreferences our CORBA_Object
+	handle.
+
+	* test/everything/client.c (testLifeCycle): use
+	the ORBit_small_invoke_stub_n path, used by older
+	stubs.
+
+2003-10-29  Justin Schoeman <justin@expertron.co.za>
+
+	* src/orb/orb-core/orbit-object.c (ORBit_RootObject_shutdown): fix
+	declaration of valid_running when G_ENABLE_DEBUG is defined.
+	* src/orb/GIOP/giop.c (giop_thread_request_push_key): make sure
+	tdata is set before calling giop_thread_key_add_T.
+
+2003-10-27  Michael Meeks  <michael@ximian.com>
+
+	* test/everything/client.c (testPolicy): impl.
+
+	* src/orb/orb-core/orbit-policy.c
+	(ORBit_object_get_policy, ORBit_object_set_policy): impl.
+
+	* src/orb/orb-core/orbit-small.c
+	(ORBit_small_invoke_stub): push/pop the policy if
+	there is one associated with an object.
+
+	* src/orb/GIOP/giop.c (giop_thread_queue_process):
+	move it here, rename, re-hash, fix leak.
+	(giop_thread_queue_empty_T): implement.
+	(giop_thread_request_process): move into process_queue.
+	(giop_mainloop_handle_input): upd.
+	(giop_invoke_async): push the async reply to the
+	right thread, cleanly.
+	(giop_thread_queue_tail_wakeup): impl.
+	(giop_list_pop): re-implement, bin GQueue - it's more bloated,
+	and sucks harder than GList.
+	(giop_thread_free): free policy queue.
+
+	* src/orb/GIOP/giop-recv-buffer.c
+	(giop_recv_buffer_get): handle switch to threaded
+	IO in mid wait properly.
+	(giop_recv_handle_queued_input): move this to giop.c
+	(handle_reply): bin process_now
+
+2003-10-24  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/GIOP/giop.c (giop_shutdown): allow
+	shutdown from any thread - this looks safe enough,
+	at least here.
+
+2003-10-23  Mark McLoughlin  <mark@skynet.ie>
+
+	* configure.in: release version 2.9.0.
+
+2003-10-23  Mark McLoughlin  <mark@skynet.ie>
+
+	* test/everything/lifeCycle.c: add this from the
+	2.8.2 tarball. Michael must have forgotten to
+	CVS add it.
+
+2003-10-14  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/poa/poa.c (ORBit_POA_destroy_T_R):
+	rename to this; fix nasty deadlock with child
+	poas.
+
+2003-10-10  Michael Meeks  <michael@ximian.com>
+
+	* configure.in: switch to 2.9.0
+
+	* ORBit.spec.in: fix from Joe Pranevich.
+
+	* src/orb/GIOP/giop-recv-buffer.c
+	(giop_recv_thread_fn): prune cruft.
+
+	* src/orb/GIOP/giop-connection.c
+	(giop_connections_shutdown): axe.
+
+	* src/orb/GIOP/giop.c (giop_shutdown): call
+	linc_connections_close.
+
+	* src/orb/poa/poa.c (get_c_method): re-order check
+	for ORBIT_ADAPTOR_POA to pre the cast, check that we're
+	not walking over the end of vepvmap_cache.
+	(ORBit_skel_class_register): setup VEPV_CACHE_SIZE
+	using the 0'th element of vepvcache.	
+
+2003-10-01  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/poa/poa.c (ORBit_POA_destroy_T): make
+	the adaptor array walk slightly faster.
+
+	* test/everything/client.c (test_time_noop):
+	fix timer leak.
+
+2003-10-08  Olivier Andrieu  <oliv__a@users.sourceforge.net>
+
+	* src/orb/orb-core/corba-typecode.c: (CORBA_TypeCode_id),
+	(CORBA_TypeCode_name), (CORBA_TypeCode_member_name),
+	(CORBA_TypeCode_member_type), (CORBA_TypeCode_discriminator_type),
+	(CORBA_TypeCode_content_type):
+	duplicate return values of type string or TypeCode in
+	CORBA_TypeCode_* functions for spec conformance.
+
+2003-10-07  Ian McKellar  <yakk@yakk.net>
+
+	* src/services/imodule/orbit-imodule.c:
+	(ORBit_iinterface_fill_iargs):
+	I suck - Olivier just made a better version of my change.
+	I'm reverting it.
+
+2003-10-07  Ian McKellar  <yakk@yakk.net>
+
+	reviewed by: Michael Meeks  <michael@ximian.com>
+
+	* src/services/imodule/orbit-imodule.c:
+	(ORBit_iinterface_fill_iargs):
+	Fill in the iarg->name from the IDL.
+
+2003-10-06  Olivier Andrieu  <oliv__a@users.sourceforge.net>
+
+	* src/services/imodule/orbit-imodule.c:
+	(ORBit_iinterface_fill_iargs):
+	fill the name field of ORBit::IArg struct
+
+2003-10-02  Alexander Larsson  <alexl@redhat.com>
+
+	* include/orbit/GIOP/giop-types.h:
+	* include/orbit/GIOP/giop.h:
+	* src/orb/GIOP/giop.c: (giop_thread_new), (giop_thread_key_add_T),
+	(giop_thread_key_release_T), (giop_thread_free),
+	(giop_thread_self), (giop_thread_key_add),
+	(giop_thread_key_release), (giop_thread_request_push_key),
+	(giop_request_handler_fn), (giop_init):
+	Allow GIOPThreads to have several keys.
+	Don't leak some GIOPThread contents.
+	
+	* src/orb/poa/orbit-adaptor.c:
+	* include/orbit/poa/orbit-adaptor.h:
+	Add ORBIT_THREAD_HINT_ON_CONTEXT to case to fix warning.
+	Fix recursion in ORBit_ObjectAdaptor_set_thread_hint
+	Implement ORBit_ObjectAdaptor_object_bind_to_current_thread.
+	
+	* src/orb/poa/poa.c: (ORBit_POA_handle_request):
+	Add comment about thread binding.
+
+2003-09-30  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/poa/poa.c (ORBit_POAObject_handle_request):
+	get the pobj->use_cnt tracking right.
+
+	* src/orb/GIOP/giop.c (scan_socket_dir): actually
+	use the string comparison to use the sort order,
+	not the directory order.
+
+	* test/everything/server.c
+	(TestFactory_createLifeCycleServer): impl
+	* test/everything/lifeCycle.c: add module.
+	* test/everything/client.c (testLifeCycle): impl.
+	(run_tests): upd. - try to catch Ettore's bug - to no
+	avail.
+
+	* src/idl-compiler/orbit-idl-main.c: at least return
+	error status on an error ...
+
+2003-09-29  Michael Meeks  <michael@ximian.com>
+
+	* test/test-mem.c (main_func): release refs we own.
+
+	* test/test-performance.c (test_activation): destroy
+	the child poa nicely.
+
+	* src/orb/poa/poa.c (PortableServer_POA_destroy):
+	hold the POA lock, re-flow.
+	(ORBit_POA_destroy_T): upd. lock/unlock children.
+
+	* src/orb/orb-core/corba-object.c
+	(ORBit_try_connection_T): clean warnings.
+
+	* src/orb/poa/poa.c (ORBit_POA_deactivate_object_T):
+	rename to this.
+	(ORBit_POAObject_handle_request): upd, hold a poa
+	ref. for longer.
+
+	* src/orb/orb-core/corba-orb.c
+	(CORBA_ORB_destroy, shutdown_orb): stop the g_atexit
+	case from moaning about leaked references, if we have to
+	do work here, then someone didn't do a debug_shutdown
+	properly anyway, so it will always moan annoyingly.
+
+	* src/orb/orb-core/orbit-object.c
+	(ORBit_RootObject_shutdown): add non-moaning option
+
+2003-09-29  Olivier Andrieu  <oliv__a@users.sourceforge.net>
+
+	* src/orb/orb-core/orbit-typelib.c (add_if_unique) 
+	(ORBit_get_typelib_paths): update typelib_path semantics
+	to be more sane.
+
+2003-09-22  Kjartan Maraas  <kmaraas@gnome.org>
+
+	* acconfig.h: Removed.
+	* configure.in: Added templates from acconfig.h here..
+	* src/orb/orb-core/corba-any.c: (ORBit_sequence_concat):
+	* src/orb/orb-core/corba-orb.c:
+	(CORBA_ORB_resolve_initial_references):
+	* src/services/imodule/orbit-imodule.c: (build_cpp_args):
+	* test/test-corbaloc.c: (main): Remove compiler warnings.
+
+Thu Sep 18 09:09:39 2003  George Lebl <jirka@5z.com>
+
+	* src/orb/util/genrand.c: when seeding from time shift the
+	  seconds up as we don't really care much about the high
+	  order bits (they're not interesting).  Achieve almost 32
+	  bits of entropy within an hour of uncertainty this way
+	  rather then a century.  Only affects places without
+	  /dev/urandom
+
+2003-09-16  Michael Meeks  <michael@ximian.com>
+
+	* configure.in: add $(top_builddir)/linc2/include
+	to LOCAL_LINC_CFLAGS - how did distcheck not pick
+	this up ?
+
+2003-09-09  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.8.1
+
+2003-09-08  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* linc2/src/linc-private.h: Add field was_disconnected  in order to
+	deal with the case where connecting after disconnection returns 
+	EINPROGRESS.
+	* linc2/src/linc-connection.c:
+	(linc_connection_state_changed_T_R): Do not emit "broken" signal if
+	disconnected field is set.
+	(linc_connection_try_disconnect): Set was_disconnected field before
+	calling link_connection_wait_connected_T.
+	(link_connection_init): Initialize was_disconnected to FALSE. 
+
+	This fixes bug #121246.
+
+2003-09-05  Frank Rehberger  <Frank.Rehberger@xtradyne.de>
+
+	* test/test-mem.c: autmatic memory verification based on 'ps' command,
+	added POA test
+
+2003-08-26  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.8.0
+
+2003-08-21  Frank Rehberger  <Frank.Rehberger@xtradyne.de>
+
+	* src/orb/orb-core/corba-any.c (ORBit_sequence_concat): initial
+	implementaion
+
+2003-08-19  Frank Rehberger  <Frank.Rehberger@xtradyne.de>
+
+	* src/orb/orb-core/corba-loc.c (ORBit_corbaloc_from): encode
+	giop-version in corbaloc
+	
+	* src/orb/orb-core/corba-object.c (ORBit_object_to_corbaloc):
+	representation for empty object reference
+	(ORBit_object_by_corbaloc): accept corbaloc representation for
+	empty object
+
+	* src/orb/orb-core/corba-orb.c (CORBA_ORB_object_to_string): if
+	corbaloc fails, fallback to common marshalling
+
+2003-08-11  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.7.6
+
+2003-08-08  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/orb-core/corba-object.c
+	(ORBit_try_connection_T): rename to this, return the
+	correct state, and handle the result.
+	(ORBit_object_get_connection): in here.
+	(ORBit_try_connection_T): drop the lock over the
+	[re-]connection phase - it's possibly re-enterant. #117970
+
+	* src/orb/GIOP/giop-connection.c
+	(giop_connection_try_reconnect): return the status.
+
+2003-08-07  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/orb-core/corba-orb.c (shutdown_orb):
+	set init_level to 1, so our g_atexit handler
+	actually does clean-up the ORB bits.
+
+2003-08-06  Michael Meeks  <michael@ximian.com>
+
+	* configure.in: don't link libIDL into the name
+	service; thanks Morten.
+
+2003-08-04  James Henstridge  <james@daa.com.au>
+
+	* src/services/imodule/orbit-imodule.c (build_cpp_args): add
+	function to build up a full set of cpp args (adds __ORBIT_IDL__
+	and __basename_COMPILATION).  Makes many Gnome IDL files just
+	work.
+	(ORBit_iinterfaces_from_file): use build_cpp_args() to build the
+	full set of CPP args.
+
+2003-07-31  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.7.5
+
+	* src/orb/orb-core/corba-object.c: by-pass invoke_stub
+	in-proc, since we may have a transient policy on our
+	object; and we want an answer now.
+
+	* test/everything/server.c
+	(TestFactory_getDerivedServer): impl.
+	(test_TestFactory__init): upd.
+
+	* test/everything/derivedServer.c: add.
+
+	* src/orb/orb-core/corba-loc.c (ORBit_corbaloc_from):
+	invert ssl_info NULL check's sense, remove redundant
+	braces / inits. Add a 'break' so we don't drop through
+	to the next case by mistake.
+
+	* test/everything/client.c (testIsA): hammer _is_a
+	on the 'diamond of death'.
+
+2003-07-30  Frank Rehberger  <Frank.Rehberger@xtradyne.de>
+
+	* src/orb/orb-core/corba-object.c (g_CORBA_Object_hash): use
+	object key for calculation, remove commented code
+
+	* src/orb/orb-core/corba-loc.c (ORBit_corbaloc_from): if ssl port
+	given create ssliop-profile instead of iiop-profile.
+
+2003-07-30  Michael Meeks  <michael@ximian.com>
+
+	* test/everything/server.c, client.c: upd. to
+	"orbit-local-non-threaded-orb".
+
+	* src/orb/orb-core/corba-orb.c
+	(CORBA_ORB_init): default to a thread-safe ORB, since we
+	can't have GConf initializing without threads, and then
+	libbonobo requiring that we have them later; and (it seems)
+	GConf won't change.
+
+	* Makefile.shared: parallel build messing.
+
+	* src/orb/orb-core/Makefile.am: parallel build fixage.
+
+2003-07-29  Michael Meeks  <michael@ximian.com>
+
+	* configure.in: disable linux/irda.h check / include,
+	causing misc. problems, and the code is unused anyway.
+	#118495.
+
+2003-07-29  Frank Rehberger  <Frank.Rehberger@web.de>
+
+	* src/orb/orb-core/corba-loc.c (corbaloc_profile_iiop_parse):
+	polishing comments and layout (true K&R)
+	(corbaloc_profile_iiop): target supports full security features,
+	target requires at least integrity and confidentiality
+
+	* src/orb/orb-core/corba-object.c (g_CORBA_Object_hash): polishing
+	comments
+
+2003-07-28  Frank Rehberger  <Frank.Rehberger@web.de>
+
+	* test/everything/test.sh (SAMPLE_NAME): regression test for corbaloc
+
+	* src/orb/orb-core/corba-orb.c (CORBA_ORB_object_to_string):
+	feature allows stringified represantation in corbaloc syntax
+
+2003-07-28  Frank Rehberger  <Frank.Rehberger@web.de>
+
+	* test/Makefile.am (noinst_PROGRAMS): add target test-corbaloc
+
+	* test/test-corbaloc.c: test verifies string->object
+	transformation from corbaloc strings
+
+	* src/orb/orb-core/corba-orb.c (CORBA_ORB_string_to_object):
+	provide corbaloc parsing
+
+	* src/orb/orb-core/Makefile.am (main_src): add corba-loc.c
+
+	* src/orb/orb-core/corba-loc.c: new module, provides OMG corbaloc
+	support
+
+	* src/orb/orb-core/corba-object.c (ORBit_object_to_corbaloc):
+	thread safe invocation of corbaloc functions
+	(ORBit_object_by_corbaloc): thread safe creation of object from
+	corbaloc string
+
+2003-07-28  Frank Rehberger  <Frank.Rehberger@web.de>
+
+	* src/orb/orb-core/iop-profiles.c (IOP_ObjectKey_dump): zero
+	padding in hex object key
+
+	* src/orb/orb-core/iop-profiles.c (IOP_profile_dump): free
+	temporary 'key'
+
+	* src/orb/orb-core/corba-orb.c (ORBit_initial_references_by_user):
+	protect initial references "RootPOA" and "POACurrent" from being
+	set by user
+
+2003-07-25  Dan Winship  <danw@ximian.com>
+
+	* src/idl-compiler/orbit-idl-main.c (main): Don't print version
+	info / flags to stderr. They're not errors.
+
+2003-07-15  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/util/orbit-options.c
+	(ORBit_option_command_line_parse): fix warning,
+	bin redundant commenting.
+
+	* Version 2.7.3
+
+2003-07-15  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/orb-core/corba-object.c
+	(ORBit_try_connection): bin the TESTME g_warning.
+
+2003-07-14  Mark McLoughlin  <mark@skynet.ie>
+
+	Fix for bug #103159.
+	Patiently tracked down by Brian Cameron <brian.cameron@sun.com>
+
+	* src/orb/orb-core/corba-any.c: (ORBit_value_equivalent):
+	align to the discriminator before figure out the members
+	typecode based on the discriminator value.
+
+2003-07-14  Michael Meeks  <michael@ximian.com>
+
+	* test/everything/client.c (testSegv): fix silly -
+	amazing that gcc didn't catch this for me (!?)
+
+	* src/orb/GIOP/giop-recv-buffer.c: bin execinfo,
+	thanks Morten.
+
+2003-07-11  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/orb-core/corba-orb.c
+	(ORBit_initial_references_by_user): fix iterator type.
+
+	* src/orb/orb-core/corba-object.c
+	(ORBit_try_connection): use the (now) thread safe
+	linc_connection_wait_connected [ although not re-enterant
+	sadly ], if we've connected in the past, always return
+	the same connection - but have a go at reviving it if
+	it dropped.
+
+2003-07-09  Michael Meeks  <michael@ximian.com>
+
+	* test/everything/client.c (testNonExistent): impl.
+
+	* src/orb/orb-core/corba-object.c
+	(CORBA_Object_non_existent): wait until it's connected
+	before giving a verdict.
+
+2003-07-08  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/orb-core/corba-orb.c: bin popt.h include.
+
+2003-07-07  Michael Meeks  <michael@ximian.com>
+
+	* test/everything/client.c (testPingPong): reset max_buffer
+	on the cnx to 0 afterwards the test - ie. don't poison other
+	stuff.
+
+	* src/orb/orb-core/orbit-small.c (async_recv_cb):
+	call destroy_queue_entry on the mqe.
+
+	* src/orb/GIOP/giop-recv-buffer.c (giop_recv_list_setup_queue_entry)
+	(giop_recv_list_destroy_queue_entry): hold a ref. on the cnx.
+	(giop_recv_destroy_queue_entry_T): split out.
+
+	* src/orb/dynamic/dynany.c (ORBit_DynAnyFactory_new): impl.
+
+	* src/orb/orbit-init.c (ORBit_init_internals): register
+	DynAnyFactory - a completely bogus object to satisfy the spec.
+
+	* src/orb/orb-core/corba-orb.c
+	(ORBit_initial_references_by_user): cleanup.
+
+2003-07-07  Michael Meeks  <michael@ximian.com>
+
+	* test/everything/test.sh: put the failures first.
+
+	* src/orb/GIOP/giop-send-buffer.c
+	(giop_send_buffer_unuse): shrink indirect chunk size, so
+	we don't keep vast buffers kicking around.
+
+	* src/orb/orb-core/corba-any.c (ORBit_sequence_append):
+	prune comments.
+
+	* src/orb/orb-core/allocators.c (ORBit_realloc_tcval):
+	bin comments / extra braces - nice otherwise.
+
+2003-07-03  Frank Rehberger  <Frank.Rehberger@web.de>
+
+	* src/orb/orb-core/corba-any.c (ORBit_sequence_alloc): undo
+	previous change, now sequence length initially seq->_length=length
+	* test/everything/client.c (testSequenceHelpers): undo previous
+	changes to client.c
+
+2003-07-03  Frank Rehberger  <Frank.Rehberger@web.de>
+
+	* src/orb/orb-core/corba-context.c (ORBit_Context_demarshal): fix
+	for #116338
+
+2003-07-02  Frank Rehberger  <Frank.Rehberger@web.de>
+
+	* src/orb/orb-core/allocators.c (ORBit_realloc_tcval): prevent
+	SEGV on empty sequences; if(old_num_elements==0 && !old_buffer)
+	return ORBit_alloc_tcval(tc,num_elements);
+
+2003-07-01  Frank Rehberger  <Frank.Rehberger@web.de>
+
+	* src/orb/orb-core/corba-any.c (ORBit_sequence_alloc): invoke
+	CORBA_sequence_set_release (seq, CORBA_TRUE) on new sequence,
+	otherwise _buffer wouldn't be CORBA_free'd! Length of new sequence
+	is 0 instead of _length==_maximum.
+	(ORBit_sequence_append): calculate resized seq-length by
+	new_len = MAX (2, (seq->_maximum * 2));
+
+	* test/everything/client.c (testSequenceHelpers): extend
+	ORBit_sequence* tests
+
+2003-06-30  Padraig O'Briain <padraig.obriain@sun.com>
+
+	* linc2/src/linc-connection.c: Move link_source_remove and 
+	link_source_add to before link_connection_state_changed_T_R.
+
+	This fixes bug #116350.
+
+2003-06-28  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* docs/api/Makefile.am (DOC_SOURCE_DIR): indicate a source dir, so
+	that gtk-doc can scan for inline docs.
+
+	* src/orb/orb-core/allocators.c: Added an extra asterisk to the
+	comment block in the beginning of the file, to prevent gtk-doc
+	from thinking this is an inline documentation comment.
+
+2003-06-27  Frank Rehberger  <Frank.Rehberger@web.de>
+
+	* src/orb/orb-core/corba-orb.c (CORBA_ORB_resolve_initial_references): 
+	feature-disabled: disabled exceptions that broke GNOME in
+	bonobo_arg_new().  Feature should be re-enabled for later release.
+
+2003-06-24  Michael Meeks  <michael@ximian.com>
+
+	* test/everything/client.c (testUnboundedSequence): fix silly.
+
+	* src/orb/orb-core/orbit-small.c (ORBit_small_listen_for_broken) 
+	(ORBit_small_unlisten_for_broken_full): upd.
+
+2003-06-22  Frank Rehberger <Frank.Rehberger@web.de>
+
+	* src/orb/util/orbit_optionss.h: introducing type ORBit_OptionKeyValue
+	* src/orb/orb-core/corba-orb.c:  bugfix in CORBA_init() of initial 
+	-ORBInitRef and -ORBNamingIOR option parsing 	
+	
+2003-06-22  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* docs/api/ORBit2-sections.txt: Created the orbit2-small section.
+
+	* docs/api/Makefile.am: Instead of specifying an include directory
+	for gtkdoc-scan, indicate a specific set of files to scan instead,
+	via the variable EXTRA_HFILES.
+
+	* docs/api/ORBit2-docs.sgml: Added the orbit2-small section.
+
+	* docs/api/tmpl/orbit2-small.sgml: New template file for the orbit-small.h header.
+
+	* docs/api/tmpl/orbit2-allocators.sgml: Added some documention for
+	this section.
+
+2003-06-19  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* Makefile.shared: Moved the target 'distclean-local' out of the
+	MAINTAINER_MODE conditional because, since the deps are always
+	generated (regardless of maintainer mode), they should be always
+	be deleted too; This avoids the "files left in build directory
+	after distclean" automake 1.7 error.
+
+	* test/Makefile.am (DYNANY_IDLOUT): Added skels and stubs sources.
+
+	* docs/api/ORBit2-sections.txt: New file, ORBit2 API sections.
+
+	* docs/api/ORBit2-docs.sgml: New file, main ORBit2 API docbook source.
+
+	* docs/api/Makefile.am: New makefile, to build ORBit2 API docs.
+
+	* linc2/configure.in, linc2/acconfig.h, linc2/autogen.sh: Removed
+	these files: they're no longer used, and are getting in the way.
+
+	* autogen.sh: Use (include) generic gnome autogen; Require
+	automake >= 1.6 because of gtk-doc.
+
+	* Makefile.am (DISTCHECK_CONFIGURE_FLAGS): Added --enable-gtk-doc,
+	to make distcheck work.
+
+	* configure.in: Write linc2/include/linc/linc-config.h; gtk-doc
+	detection. Write docs/api/Makefile.
+
+	* test/poa/Makefile.am: Avoid "blank line following trailing
+	backslash" automake warning.
+
+	* test/everything/Makefile.am (BUILT_SOURCES): Removed duplicate
+	definition.
+	(CLEANFILES): Also removed this duplicate definition.
+
+	* src/orb/dynamic/Makefile.am: Removed duplicate definition of
+	DYNAMIC_IDLOUT.
+
+	* src/orb/orb-core/Makefile.am (IDL_COMPILER): Removed, twice;
+	already defined in Makefile.shared.
+
+2003-06-19  Michael Meeks  <michael@ximian.com>
+
+	* configure.in: add gthread to ORBIT_LIBS etc.
+
+2003-06-19  Bowie Owens  <bowie.owens@csiro.au>
+
+	* test/everything/sequenceServer.c
+	(SequenceServer_opMassiveSeq): impl. & hook it up.
+
+	* test/everything/client.c (testUnboundedSequence):
+	invoke opMassiveSeq.
+
+2003-06-18  Frank Rehberger  <Frank.Rehberger@web.de>
+
+	* src/orb/util/orbit-options.c: enable parsing of command line options 
+	* src/orb/util/orbit-options.h: declare ORBIT_OPTION_KEY_VALUE
+	* src/orb/util/orbit-options.c: code for option ORBIT_OPTION_KEY_VALUE
+	* src/orb/orb-core/corba-orb.c: support for -ORBNamingIOR, -ORBInitRef 
+
+2003-06-11  Michael Meeks  <michael@ximian.com>
+
+	* test/everything/client.c (test_time_noop): fix.
+
+2003-06-11  Frank Rehberger <Frank.Rehberger@web.de>
+
+	* src/orb/orb-core/orbit-small.c
+	(ORBit_small_invoke_adaptor): ensure we free
+	temporarily allocated fixed size struct/union
+	return & out values.
+
+2003-06-11  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/poa/poa.c: bin dupped set_classinfo macro.
+
+	* include/orbit/poa/poa.h
+	(ORBIT_SERVANT_SET_CLASSINFO): add back to please
+	old/stale stubs.
+
+2003-06-09  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/GIOP/giop.c (giop_init): bin terrifying
+	warning; hey-ho.
+
+2003-06-09  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.7.2
+
+2003-06-09  Michael Meeks  <michael@ximian.com>
+
+	* include/orbit/orb-core/corba-object-type.h:
+	internalize the CORBA_Object layout.
+
+	* src/orb/poa/orbit-adaptor.c
+	(ORBit_ObjectAdaptor_set_thread_hintv): split
+	(ORBit_ObjectAdaptor_set_thread_hint): impl.
+
+	* src/idl-compiler/orbit-idl-c-common.c
+	(orbit_idl_output_c_common): guard the skel
+	marshallers so they arn't built in the imodule.
+
+	* configure.in (ORBIT_SERIAL): bump it.
+
+	* include/orbit/poa/orbit-adaptor.h:
+	internalize everything except the thread hint bits.
+
+	* include/orbit/poa/poa-types.h: internalize
+	ORBit_POAObejct_type, drastically prune the
+	macros / ABI exposure.
+
+	* src/orb/orb-core/orbit-small.c: disable
+	ORBIT_SMALL_FAST_LOCALS to hugely prune our
+	ABI.
+
+	* src/orb/poa/poa.c (ORBit_c_stub_invoke):
+	add pre/post call macro values in comments here.
+
+2003-06-06  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/Makefile.am: poke at deps again [!]
+
+	* src/orb/GIOP/giop-connection.c
+	(giop_connections_shutdown): warn hackers only,
+	an old problem.
+
+	* test/poa/test-poa.c: make the test effective &
+	pass.
+
+	* src/orb/Makefile.am: fix deps again (?)
+
+	* src/orb/orb-core/orbit-small.c
+	(ORBit_small_unlisten_for_broken_full): split from
+	(ORBit_small_unlisten_for_broken): here, and allow
+	a 'user_data' to be specified ie. make the method
+	actually useful.
+	(ORBit_small_invoke_stub_n): fix warning.
+
+2003-06-06  Michael Meeks  <michael@ximian.com>
+
+	* test/poa/test-poa.c: add.
+
+	* src/orb/poa/poa.c (ORBit_POA_copy_policies): impl.
+	(ORBit_POA_new_from): impl.
+
+2003-06-05  Michael Meeks  <michael@ximian.com>
+
+	* include/orbit/orb-core/corba-object.h: fix
+	include.
+
+	* src/orb/orb-core/orbit-policy.[ch]: stub.
+
+2003-06-05  Michael Meeks  <michael@ximian.com>
+
+	* test/everything/Makefile.am: use check_PROGRAMS
+	instead of noinst_PROGRAMS - Mac people have
+	problems with their static libraries it seems.
+
+	* test/everything/client.c (test_time_noop):
+	upd for FORCE_GENERIC_MARSHAL etc.
+
+	* src/orb/poa/poa.c (get_c_method):
+	in-line ORBIT_STUB_IsBypass (and the epv lookups)
+	add ORBIT_SMALL_FORCE_GENERIC_MARSHAL
+	(ORBit_POA_activate_object_T): tolerate a NULL
+	vepvmap.
+
+2003-06-04  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/Makefile.am: add dep on linc lib.
+
+	* test/everything/test.sh,
+	* test/everything/client.c: run more tests.
+
+	* src/orb/GIOP/giop.c (giop_thread_new_check): impl.
+
+	* src/orb/poa/orbit-adaptor.c
+	(ORBit_ObjectAdaptor_set_thread_hint): spawn the
+	I/O thread when we set an interesting hint
+
+	* src/orb/orb-core/orbit-small.c
+	(ORBit_small_invoke_stub): ensure we check to
+	see if we're in another thread.
+
+	* src/orb/poa/poa.c
+	(ORBit_poa_allow_cross_thread_call): add check
+	to invoke switch to threaded io for XT case.
+
+	* src/orb/GIOP/giop-recv-buffer.c
+	(giop_recv_buffer_get): use giop_thread_io instead
+	of tdata != NULL.
+
+	* src/orb/poa/poa.c (pool_push_request_for_T) 
+	(ORBit_POA_handle_request, ORBit_POA_handle_request):
+	use giop_thread_io.
+	(ORBit_POA_handle_request): invoke_incoming_req
+	outside the poa lock.
+
+	* src/orb/orb-core/corba-object.c
+	(ORBit_try_connection): use giop_thread_safe (?),
+	we don't want to drop into
+	link_connection_wait_connected via re-enterancy.
+
+	* src/orb/GIOP/giop-recv-buffer.c
+	(handle_reply): switch on giop_thread_io.
+
+	* src/orb/GIOP/giop.c (giop_threaded): rename to
+	(giop_thread_safe): this, (giop_thread_io): add.
+	(giop_shutdown, giop_thread_set_main_handler),
+	(giop_thread_self, giop_thread_key_release),
+	(giop_invoke_async, giop_main_run): upd.
+	
+	* src/orb/Makefile.am (libORBit_2_la_LIBADD): 
+	libadd the link library.
+
+2003-06-03  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/orb-core/corba-orb.c
+	(CORBA_ORB_init): move genuid_init lower than
+	giop_init (which does a linc_init).
+
+2003-06-03  Alexander Larsson  <alexl@redhat.com>
+
+	* src/orb/GIOP/giop.c (giop_request_handler_fn):
+	use data as tdata instead of user_data
+
+2003-06-03  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/GIOP/giop-connection.c
+	(giop_connection_initiate): upd.
+
+2003-05-31  Michael Meeks  <michael@ximian.com>
+
+	* ORBit-2.0.pc.in: remove 'linc' in Requires,
+	thanks oGalaxyo.
+
+2003-05-30  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/GIOP/giop.c (giop_tmpdir_init):
+	guard against double init.
+	(ORBit_get_safe_tmp): impl. for hp/others.
+
+	* */Makefile.am: add LOCAL_LINC_LIBS/CFLAGS
+
+	* include/orbit/orbit.h: only include GIOP
+	if we need to.
+
+	* include/orbit/GIOP/Makefile.am: don't
+	install the GIOP headers - they're private.
+
+	* configure.in: include linc2/include in the
+	include path.
+
+	* Updated *.[ch] with:
+
+		#!/usr/bin/perl -w -pi.bak
+		s/linc_/link_/g;
+		s/LINC([^_])/Link$1/g;
+		s/LINC/LINK/g;
+
+	* configure.in: merge a chunk of checks in
+	for linc2
+
+2003-05-30  <waschk@informatik.uni-rostock.de>
+
+	* test/everything/Makefile.am
+	(Everything_module_la_LDFLAGS): avoid version.
+
+2003-05-29  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/orb-core/orbit-small.c (ORBit_small_invoke_stub_n):
+	validate the index into the sequence.
+	
+2003-05-29  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/orb-core/orbit-small.c
+	(ORBit_small_invoke_stub): check cross-thread calls,
+	and generate an in-proc proxy for non-allowed xt cases.
+
+	* src/orb/poa/poa.c (ORBit_poa_allow_cross_thread_call): impl.
+	(get_c_method): use it.
+
+	* src/orb/GIOP/giop.c (giop_thread_same_key): impl.
+
+2003-05-28  Michael Meeks  <michael@ximian.com>
+
+	* src/idl-compiler/orbit-idl-c-skels.c:
+	move ck_output_skels (and deps) into:
+
+	* src/idl-compiler/orbit-idl-c-common.c: here.
+	(orbit_idl_output_c_common): hook in, but only on
+	stub/skelish builds.
+
+	* src/orb/poa/poa.c (ORBit_stub_post_invoke): kill.
+	(ORBit_stub_pre_get_epv): rename to 
+	(get_c_method): this and re-hash.
+	(ORBit_c_stub_invoke): impl. - a new plan.
+
+	* include/orbit/poa/poa-basics.h: bin old/stale
+	ORBitSkeleton typedef.
+
+2003-05-27  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/poa/poa.c (ORBit_stub_pre_get_epv) 
+	(ORBit_stub_post_invoke): impl. to get this
+	out of the stubs.
+
+	* src/idl-compiler/orbit-idl-c-stubs.c
+	(cs_output_stub): use the new stub methods.
+
+2003-05-23  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/GIOP/giop-server.c
+	(giop_server_handle_create_connection): upd.
+	cnx instantiaton.
+
+	* src/orb/GIOP/giop-connection.c
+	(giop_connection_get_property, giop_connection_set_property): impl.
+	(giop_connection_class_init): upd.
+	(giop_connection_set_orb_n_ver): kill.
+
+	* src/orb/orb-core/corba-object.c,
+	* src/orb/orb-core/orbit-small.c: sed:
+	s/linc_object_ref/giop_connection_ref/
+	s/linc_object_unref/giop_connection_unref/
+
+2003-05-22  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/GIOP/giop-connection.c
+	(giop_connection_initiate): use new linc API.
+	(giop_connection_list_lookup_T): bin. 
+	(giop_connection_list_add, giop_connection_list_init),
+	(giop_connection_list_remove): bin.
+	
+	* src/orb/GIOP/giop.c (giop_init): upd.
+
+	* src/orb/GIOP/giop.c (giop_thread_request_push_key):
+	fix HINT_PER_REQUEST policy by not inserting NULL into
+	the hash table (thanks to AlexL).
+
+	* src/orb/orb-core/corba-orb.c (CORBA_ORB_init): fix
+	non-debugging build; thanks to Christophe.
+
+2003-05-21  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/GIOP/giop-recv-buffer.c (handle_reply): 
+	re-work the code for a simpler, more readable flow,
+	and fix async/ent ownership silly.
+
+	* src/orb/orb-core/corba-orb.c (ORBit_setup_debug_flags): 
+	add 'force_threaded' debug option.
+	(CORBA_ORB_init): do the dirty bits.
+
+2003-05-14  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/orb-core/orbit-small.c (orbit_small_demarshal): 
+	split out giop_recv_buffer_get, and pass the recv buffer in,
+	remove the recv release argument.
+	(ORBit_small_demarshal_async): pass the buffer straight in.
+	(ORBit_small_invoke_stub): unref the recv buffer here.
+
+	* src/orb/GIOP/giop.c (giop_thread_request_process) 
+	(giop_thread_request_push): use a GQueue for request_queue.
+	(giop_incoming_signal_T, giop_incoming_signal): impl.
+
+	* src/orb/GIOP/giop-recv-buffer.c
+	(giop_recv_handle_queued_input): bin the return value,
+	and re-hash.
+	(giop_recv_buffer_get): use a GQueue for request_queue.
+
+	* src/orb/GIOP/giop.c (giop_thread_free): impl.
+	(giop_invoke_async): re-factor bits into here.
+	(giop_request_handler_fn): free the giop thread
+	after use.
+
+	* src/orb/GIOP/giop-recv-buffer.c (handle_reply):
+	bin process_now distinction.
+	(giop_recv_list_zap): use giop_invoke_async so we
+	work across threads.
+
+	* include/orbit/GIOP/giop-recv-buffer.h: make
+	free_body a guchar not a (signed) gboolean;
+	thanks to Morten.
+
+2003-05-13  Michael Meeks  <michael@ximian.com>
+
+	* test/everything/client.c (testDerivedServer): impl.
+	(run_tests): call it.
+
+	* src/idl-compiler/orbit-idl-c-skels.c
+	(cbe_skel_interface_print_vepvmap_offsets),
+	(cbe_skel_do_interface): pass parent id through.
+
+	* src/idl-compiler/orbit-idl-utils.c
+	(IDL_tree_traverse_helper): re-hash self inclusion;
+	This bug was _really_ screwing up libbonobo.
+
+2003-05-12  Michael Meeks  <michael@ximian.com>
+
+	* src/idl-compiler/orbit-idl-utils.c
+	(IDL_tree_traverse_parents_full): split from
+	(IDL_tree_traverse_parents): here.
+
+	* include/orbit/poa/poa-types.h (ORBIT_VEPV_OFFSET): impl.
+
+	* src/idl-compiler/orbit-idl-c-skels.c
+	(cbe_skel_interface_print_vepvmap_offsets): impl.
+	(cbe_skel_do_interface): upd to call skel_class_register.
+
+	* src/orb/poa/poa.c (ORBit_classinfo_lookup): hold lock.
+	(ORBit_skel_class_register): impl. for thread-safe skels
+	(ORBit_poa_init): init lock.
+
+	* src/orb/poa/poa.c (ORBit_POAObject_handle_request):
+	bin current_invocations->data assertion; we can get
+	here without pushing the current invocation; was
+	hurting libbonoboui.
+
+2003-05-12  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+
+	* MAINTAINERS: Declare myself as documentation maintainer.
+
+2003-05-09  Michael Meeks  <michael@ximian.com>
+
+	* test/everything/*.c: large scale servant re-factor.
+
+2003-05-08  Michael Meeks  <michael@ximian.com>
+
+	* test/everything/server.c (simple_finalize): impl.
+	(test_TestFactory__fini, create_TestFactory): 
+	allocate servant.
+	(simple_servant, TestFactory_createDeadReferenceObj) 
+	(test_TestFactory__init): allocate the servants, so
+	we're thread-safe.
+	
+	* test/everything/*.c: use Simple_base_epv to
+	finalize the servant where appropriate.
+
+2003-05-07  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/GIOP/giop-connection.c
+	(giop_connection_dispose): release thread key.
+
+	* src/orb/poa/poa.c (pool_push_request_for_T): impl.
+	(ORBit_POA_handle_request): implement
+	PER_OBJECT,POA,CONNECTION,REQUEST policies.
+	(ORBit_POA_free_fn, ORBit_POAObject_release_cb):
+	de-register threading keys.
+
+	* src/orb/GIOP/giop.c (giop_thread_key_release_T)
+	(giop_request_handler_fn, giop_thread_key_release) 
+	(giop_thread_request_push_for): impl.
+	(giop_init): create the thread pool.
+
+2003-05-06  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/orb-core/corba-object.c
+	(ORBit_demarshal_object): add precondition.
+
+	* src/orb/orb-core/orbit-small.c
+	(ORBit_small_get_connection_status): add
+	pre-condition.
+
+2003-05-03  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.7.1
+
+2003-04-29  Michael Meeks  <michael@ximian.com>
+
+	* test/everything/client.c (main, run_tests): pull
+	out testSegv.
+
+	* src/orb/orb-core/corba-object.c
+	(ORBit_try_connection): bin some type-checked casts.
+
+	* test/everything/client.c (run_threaded_tests),
+	(test_thread): impl.
+
+	* src/orb/util/genrand.c (genuid_rand_openssl),
+	(genuid_glib_pseudo, genuid_simple): take lock for
+	static incrementing foo.
+	(ORBit_genuid_fini, ORBit_genuid_init): setup lock.
+
+	* src/orb/orb-core/corba-object.c (ORBit_objref_new):
+	setup the adaptor_obj explicitely at construct time.
+
+	* src/orb/poa/poa.c (ORBit_POA_obj_to_ref): upd.
+
+	* test/everything/client.c (testAsync): upd.
+
+	* src/orb/orb-core/orbit-small.c
+	(ORBit_small_get_connection): don't take a ref, for b/w
+	compatibility.
+	(ORBit_small_get_connection_ref): add separate method.
+
+2003-04-25  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/orb-core/orbit-small.c
+	(ORBit_small_invoke_stub, ORBit_small_invoke_async) 
+	(ORBit_small_get_connection_status) 
+	(ORBit_small_unlisten_for_broken, get_status) 
+	(ORBit_small_get_connection): update to handle cnx.
+	reference correctly.
+	(ORBit_small_connection_unref): impl.
+
+	* src/orb/orb-core/corba-object.c
+	(ORBit_objref_get_proxy, ORBit_marshal_object): register
+	objref after generating profiles, hold lock, refactor
+	slightly.
+	(ORBit_object_get_connection): return an incremented ref.
+	(CORBA_Object_non_existent): handle ref.
+
+	* src/orb/orb-core/iop-profiles.c
+	(IOP_generate_profiles): remove object registration.
+
+2003-04-24  Michael Meeks  <michael@ximian.com>
+
+	* test/everything/test.sh: add threaded tests into the
+	default run: too bold perhaps.
+
+	* src/orb/orb-core/corba-object.c
+	(_ORBit_object_init): impl.
+	(ORBit_try_connection): re-hash; add locking.
+	(CORBA_Object_release_cb): bin giop_connection_unref.
+	(ORBit_object_get_connection): hold the lock while we're
+	working on the object.
+
+	* src/orb/GIOP/giop-connection.c
+	(giop_connection_unref): bin it.
+
+	* src/orb/orb-core/corba-orb.c (CORBA_ORB_init): add init.
+
+2003-04-23  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/orb-core/corba-object.c
+	(ORBit_try_connection): here lurketh much grief.
+
+	* src/orb/GIOP/giop-recv-buffer.c
+	(giop_recv_msg_reading_body): add comment on 0 length
+	message for CLOSECONNECTION.
+	(giop_connection_handle_input): handle 0 length bodies
+	properly.
+
+2003-04-21  Herbert Valerio Riedel  <hvr@gnu.org>
+
+	* src/orb/poa/orbit-adaptor.c
+	(ORBit_handle_locate_request): impl. a stub (checks for POA,
+	but not object itself so far).
+
+	* src/orb/orb-core/orbit-small.c (orbit_small_marshal):
+	set the response_expected flag correctly for oneways.
+
+	* src/orb/GIOP/giop-send-buffer.c
+	(giop_send_buffer_use_request): fix request id bits.
+	(giop_send_buffer_write): don't tail align send buffers,
+	we only want to do that (elsewhere) for fragments (it seems)
+
+	* src/orb/GIOP/giop-recv-buffer.c
+	(giop_GIOP_TargetAddress_demarshal): clean it up.
+	(giop_recv_buffer_demarshal_locate_request_1_2):
+	fix id demarshal
+	(giop_recv_buffer_get_request_id, giop_recv_buffer_demarshal):
+	add "close connection" stub.
+	(giop_recv_buffer_get_objkey): make it work fully for more
+	msg types & versions.
+	(giop_connection_handle_input): handle locate request.
+
+2003-04-21  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/GIOP/giop-recv-buffer.c (giop_recv_set_limit): impl.
+	(giop_recv_buffer_handle_fragmented, giop_recv_msg_reading_body):
+	use the dynamic limit instead.
+
+	* src/orb/orb-core/corba-orb.c (CORBA_ORB_init): set the limit,
+	add an "ORBInitialMsgLimit" option.
+
+	* src/orb/GIOP/giop.c (wakeup_mainloop): handle EINTR.
+
+2003-04-19  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/GIOP/giop.c (giop_init, giop_shutdown): bin
+	incoming thread bits.
+
+	* src/orb/orb-core/orbit-small.c (get_status): use
+	linc_connection_get_status.
+
+	* src/orb/GIOP/giop-connection.c (giop_connection_close):
+	use linc_connection_disconnect instead of a dubious forced
+	state change.
+
+2003-04-18  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/GIOP/giop-recv-buffer.c (giop_connection_handle_input):
+	hold neither ref nor lock, linc does it.
+
+	* src/orb/GIOP/giop-connection.c (giop_connection_real_state_changed) 
+	(giop_connection_dispose, giop_connection_init): bin locking action.
+
+	* include/orbit/GIOP/giop-connection.h: bin incoming and
+	outgoing mutex; all locking is in linc-connection now.
+
+2003-04-18  Gustavo J. A. M. Carneiro  <gustavo@users.sourceforge.net>
+                                                                                
+        * src/orb/poa/orbit-adaptor.c
+        (ORBit_ObjectAdaptor_set_thread_hint): Update debugging check to
+        consider the new _IDLE thread hints.
+                                                                                
+2003-04-17  Michael Meeks  <michael@ximian.com>
+
+	* test/everything/client.c (test_basic_server):
+	re-factor this out so we can apply it to different remote
+	POA policies later.
+
+	* src/orb/poa/poa.c (push_request_idle, poa_invoke_at_idle),
+	(ORBit_POA_handle_request): impl both. both idle policies.
+	(poa_recv_is_oneway): impl.
+
+2003-04-15  Masahiro Sakai  <sakai@tom.sfc.keio.ac.jp>
+
+	* Makefile.shared: append $(EXEEXT) to IDL_COMPILER.
+
+	* configure.in: call AC_LIBTOOL_WIN32_DLL.
+
+	* configure.in: call AC_PROG_CC earlier. because AM_PROG_LIBTOOL
+	needs it.
+
+	* src/orb/GIOP/giop.c (test_safe_socket_dir): disable permission
+	checking on Cygwin.
+
+	* src/orb/Makefile.am: add -no-undefined to libORBit_2_la_LDFLAGS.
+
+	* src/services/imodule/Makefile.am: add -no-undefined to
+	libORBit_imodule_2_la_LDFLAGS and write dependency libraries in 
+	libORBit_imodule_2_la_LIBADD explicitly.
+
+	* src/services/name/Makefile.am: add -no-undefined to
+	libORBitCosNaming_2_la_LDFLAGS and write dependency libraries in
+	libORBitCosNaming_2_la_LIBADD explicitly.
+
+	* test/everything/Makefile.am: add -no-undefined to 
+	Everything_module_la_LDFLAGS.
+
+2003-04-10  Michael Meeks  <michael@ximian.com>
+
+	* docs/FAQ: update threading bits.
+
+2003-04-08  Michael Meeks  <michael@ximian.com>
+
+	* configure.in: check for a slew of sys headers.
+
+	* src/orb/orb-core/orbhttp.c: only include
+	headers we have.
+
+2003-04-04  Michael Meeks  <michael@ximian.com>
+
+	* test/poa/poatest-basic11.c (poatest_run): test
+	the ObjectId <-> string methods. This test fails.
+
+	* src/orb/poa/poa.c (PortableServer_ObjectId_to_wstring)
+	(PortableServer_ObjectId_to_string): don't trample
+	on bits off the end of the string terminating it.
+
+	* src/orb/GIOP/giop-recv-buffer.c
+	(giop_recv_thread_fn): remove shutdown warning.
+
+	* src/orb/GIOP/giop.c (giop_shutdown): guard
+	against double invocation.
+
+	* src/orb/orb-core/corba-orb.c
+	(ORBit_ORB_shutdown_servers): remove warning.
+	(CORBA_ORB_shutdown): delay server shutdown until giop
+	worker thread is joined.
+
+	* src/orb/orb-core/iop-profiles.c
+	(IOP_delete_profiles): NULL ORB profiles pointer.
+
+2003-04-03  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/orb-core/corba-object.c
+	(ORBit_register_objref): take the ORB lock, and
+	work on the ORB.
+	(ORBit_lookup_objref, CORBA_Object_release_cb): ditto.
+	(ORBit_objref_find): set the orb before lookup.
+
+	* src/orb/orb-core/corba-orb.c
+	(CORBA_ORB_shutdown): don't do an init_level check,
+	don't barf half way on 'wait for completion', but
+	actually do a full shutdown (doh).
+	(strip_object_profiles): do this on the objects.
+
+	* test/everything/server.c
+	(TestFactory_segv): do a shutdown, not a dodgy
+	loop kill.
+
+2003-04-02  Richard Kinder <r_kinder@yahoo.com>
+
+        * configure.in: fix for #108932 - warning spat out for linux/irda.h.
+        Also fix up error case when no pkg-config script exists - exit with
+        AC_MSG_ERROR rather than letting the script die by coincidence.
+
+2003-04-01  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/GIOP/giop.c (giop_shutdown, giop_main_run):
+	add shared seperate 'main-thread' glib mainloop, 
+	If you are running your own loop, you get to quit that
+	yourself on CORBA_ORB_shutdown, we only break out of
+	CORBA_ORB_run's loop, if it's going.
+
+	* src/orb/poa/poa-private.h: add.
+
+	* src/orb/poa/poa.c (ORBit_POA_free_fn, ORBit_POA_new):
+	add a per poa lock, add '_T' suffixes to things that
+	take / release no locks. Push POA_[UN]LOCK throught,
+	need some work on pre-conditions though.
+	(ORBit_POAObject_handle_request): do some ref holding
+	over invocation & re-factor exception processing.
+
+	* src/orb/poa/poa-manager.c
+	(PortableServer_POAManager_get_state): lock
+	sprinkling.
+
+	* src/orb/poa/poa.c (ORBit_POACurrent_get_object):
+	hold the orb lock while poking at current_invocations.
+	(ORBit_POAObject_handle_request),
+	(PortableServer_POA_servant_to_reference): ditto.
+	(push_request): split out
+
+	* src/orb/orb-core/orbit-small.c
+	(orbit_small_demarshal): add comment for Rich Burridge.
+
+2003-03-31  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/GIOP/giop-recv-buffer.c
+	(giop_recv_buffer_get): integrate the request
+	processing into the same condition.
+
+	* src/orb/GIOP/giop.c (giop_thread_get_main): impl.
+
+	* test/everything/client.c (run_tests): shunt
+	testMisc belong pingPong.
+
+	* src/orb/GIOP/giop.c: massive threading re-hash,
+	realised a seprate GIOPQueue to the GIOPThread was
+	a painful waste of time.
+
+	* src/orb/poa/poa.c (queue_request, local_main_handle)
+	(LocalClosure): kill old hacks.
+	(ORBit_POA_handle_request): use new external hacks.
+
+	* src/orb/poa/poa.c (ORBit_poa_init): add.
+
+	* src/orb/orb-core/corba-orb.c (CORBA_ORB_init):
+	do the poa_init.
+
+	* src/orb/GIOP/giop.c (scan_socket_dir): handle
+	non-existant directories gracefully.
+
+	* test/everything/test.sh: stop 'make check'
+	destroying the system socket directory - and causing
+	all manner of grief.
+
+	* src/orb/GIOP/giop-connection.c
+	(giop_connection_initiate): bin last ORBIT_THREADED
+	conditionals.
+
+	* include/orbit/GIOP/giop-basics.h,
+	* src/orb/GIOP/giop-server.c (giop_server_new): ditto
+
+2003-03-29  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/orb-core/corba-orb.c (CORBA_ORB_run):
+	add a nasty hack to not do a linc_mainloop in the 
+	threaded case, since that causes acute problems.
+
+	* test/everything/test.sh: add --threaded test.
+
+	* src/orb/GIOP/giop-connection.c
+	(giop_connection_dispose): 
+	(giop_connection_init): bin outgoing_mutex, move this
+	into linc for easier cross thread output task transfer.
+
+	* src/orb/GIOP/giop-send-buffer.c
+	(giop_send_buffer_write): ditto.
+
+2003-03-30  Richard Kinder <r_kinder@yahoo.com>
+
+        * src/orb/orb-core/corba-context.c: Code cleanups. Remove gboolean
+        return value from free_child since it is never used. Clean up some
+        unused user_data arguments to g_slist_foreach and
+        g_hash_table_foreach_remove. Fixes #109358.
+
+2003-03-28  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/GIOP/giop-send-buffer.c (giop_send_buffer_write): 
+	do the nasty re-entering connection wait phase here
+	instead of in linc, so we can make it thread safe later.
+
+2003-03-28  Michael Haubenwallner  <michael.haubenwallner@salomon.at>
+
+	* src/orb/orb-core/corba-any.c
+	(ORBit_marshal_value): fix silly marshalling packed types.
+
+2003-03-28  Michael Meeks  <michael@ximian.com>
+
+	* test/everything/client.c
+	(testFixedLengthArray): split into (testLongArray)
+	add (testOctetArray).
+
+	* test/everything/arrayServer.c
+	(ArrayServer_opOctetArray): add.
+
+2003-03-27  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/GIOP/giop-send-buffer.c
+	(giop_send_buffer_init): always enable wire data
+	wiping if ORBIT_PURIFY.
+
+	* src/orb/GIOP/giop.c (giop_tmpdir_init):
+	use g_get_tmp_dir instead of hard-coding "/tmp".
+
+2003-03-25  Michael Meeks  <michael@ximian.com>
+
+	* Version 2.7.0
+
+2003-03-25  Richard Kinder <r_kinder@yahoo.com>
+
+        * src/services/name/orbit-name-server.c: return CORBA_OBJECT_NIL rather
+        than NULL, clean up rn_unref functions. Fixes #109125.
+
+2003-03-24  Richard Kinder <r_kinder@yahoo.com>
+
+        * src/orb/poa/poa.c: Change return values for ORBit_POA_is_inuse and
+        ORBit_POA_destroy to gboolean's, not CORBA_boolean's. Fixes #109066
+
+2003-03-18  Archana Shah  <archana.shah@wipro.com>
+
+	* /configure.in: Put a check to read the argument for, 
+	whether to enable orbhttp compilation.
+
+	* /src/orb/orb-core/Makefile.am: Changed so that orbhttp.c 
+	and orbhttp.h will be compiled only if mentioned.
+	
+	* /src/orb/orb-core/corba-orb.c (CORBA_ORB_init):
+	Put checks for compilation of http-ior segment.
+
+2003-03-18  Shailesh Mittal  <shailesh.mittal@wipro.com>
+
+	* src/orb/orb-core/iop-profiles.c (IOP_start_profiles):
+	Fixed the bug, now it works for IPv6 options without having
+	unix option set, by eliminating the requirement of osi profile for IPv6.
+	Fixed sense of string comparision which check for duplicate profiles.
+
+2003-03-17  Michael Meeks  <michael@server.home>
+
+	* src/orb/orb-core/orbit-small.c
+	(ORBit_small_invoke_adaptor): memset scratch, args to 0.
+	(ORBit_small_invoke_adaptor, orbit_small_demarshal):
+	handle de-marshalling overruns with an exception, rather
+	a goto spaghetitfication.
+
+	* src/orb/include/Makefile.am: check and install
+	rules depend on 'all', hopefully fixes brokenness
+	with 'make install'
+
+	* src/orb/orb-core/orbit-small.c
+	(ORBit_small_invoke_adaptor): use g_alloca now
+	we have it.
+
+	* src/orb/GIOP/giop-recv-buffer.c
+	(giop_connection_handle_input): debug dump the correct
+	body offset instead of starting at 0, use 12.
+
+	* src/orb/GIOP/giop.c (giop_dump): print --- delimiter
+	after dumping the full block.
+
+2003-03-15  Christophe Merlet  <redfox@redfoxcenter.org>
+
+	* ORBit-imodule-2.0.pc.in: Fix a typo.
+
+2003-03-14  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/orb-core/corba-any.c
+	(ORBit_demarshal_value): optimize zero length
+	sequences.
+
+	* src/orb/orb-core/corba-orb.c
+	(CORBA_ORB_destroy): give a different warning if
+	people unref but don't destroy the ORB.
+
+2003-03-11  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/orb-core/corba-any.c (ORBit_sequence_alloc)
+	(ORBit_sequence_append, ORBit_sequence_set_size) 
+	(ORBit_sequence_concat): impl & stub sequence helpers.
+	(SKIP_ALIAS): use this throught.
+
+	* src/orb/orb-core/allocators.c
+	(ORBit_alloc_get_tcval): impl.
+
+	* src/orb/poa/poa.c (ORBit_POAObject_handle_request): 
+	only lookup CORBA_Object small skels in-proc.
+
+2003-03-03  Michael Meeks  <michael@localhost.localdomain>
+
+	* src/orb/poa/poa.c (ORBit_POA_handle_request):
+	add HINT_ONEWAY_AT_IDLE and HINT_ALL_AT_IDLE
+	thread hints - currently ONEWAY doesn't distinguish.
+
+2003-02-14  Mark McLoughlin  <mark@skynet.ie>
+
+	* include/orbit/poa/orbit-adaptor.h: add
+	ORBit_ObjectAdaptor_(get|set)_thread_hint.
+
+	* src/idl/misc/PortableServer.idl: kill non spec compliant
+	ThreadPolicy enum values.
+
+	* src/orb/poa/orbit-adaptor.c:
+	(ORBit_ObjectAdaptor_set_thread_hint),
+	(ORBit_ObjectAdaptor_get_thread_hint): impl.
+	(ORBit_adaptor_setup): init the hint.
+
+	* src/orb/poa/poa.c:
+	(queue_request): split out from handle_request().
+	(ORBit_POA_handle_request): upd and treat ORB_CTRL mode
+	with no hint just like single threaded mode.
+
+2003-02-11  Mark McLoughlin  <mark@skynet.ie>
+
+	* Makefile.am, ORBit-imodule-2.0.pc.in,
+	  configure.in: build and install a pkg-config
+	  file for the imodule service.
+
+	* src/services/imodule/Makefile.am: actually
+	install the damn thing. Doh.
+
+2003-02-10  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/GIOP/giop.c (wakeup_mainloop): spew
+	errors on error.
+
+	* src/orb/GIOP/giop-recv-buffer.c
+	(giop_connection_handle_input): add more helpful
+	messages.
+
+	* configure.in: make the "can't link" message more
+	generally helpful.
+
+2003-01-26  Michael Meeks  <michael@ximian.com>
+
+	* test/everything/client.c (wait_till_done):
+	split out, and add thread safe path.
+
+	* src/orb/poa/poa.c (ORBit_POA_handle_request):
+	free the recv buffer if we've handled it
+	immediately in this thread.
+	(ORBit_POA_object_id_lookup): return a ref.
+	(PortableServer_POA_create_reference_with_id),
+	(PortableServer_POA_activate_object_with_id),
+	(PortableServer_POA_id_to_reference),
+	(PortableServer_POA_id_to_servant): tool up
+	with matching releases.
+	(ORBit_POA_handle_request): hold the pobj
+	during the scope.
+	(ORBit_POA_set_policies): init threading type
+	to STM by default.
+
+	* src/orb/GIOP/giop-recv-buffer.c
+	(giop_connection_handle_input): let
+	ORBit_handle_request free the recv buffer when
+	convenient.
+
+	* src/orb/poa/orbit-adaptor.c
+	(ORBit_adaptor_find): dup the returned ref,
+	and hold lifecycle lock over orb->adaptors
+	manipulation.
+	(ORBit_handle_request): release the ref.
+	(ORBit_adaptor_setup): hold lifecycle lock
+	over adaptor setup.
+
+2002-11-29  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/GIOP/giop-connection.c
+	(giop_connection_list_lookup),
+	(giop_connection_initiate),
+	(giop_connections_shutdown): use linc_object_[un]ref.
+
+	* src/orb/GIOP/giop-recv-buffer.c
+	(giop_connection_handle_input): ditto.
+	
+2002-10-31  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/orb-core/corba-orb.c
+	(ORBit_ORB_start_servers): lock the ORB
+	while setting up the profiles.
+	(ORBit_ORB_shutdown_servers): guard with
+	locks.
+
+	* src/orb/GIOP/giop.c (giop_shutdown): impl.
+
+	* src/orb/GIOP/giop-connection.c
+	(giop_connection_remove_by_orb): rename to
+	(giop_connections_shutdown): this & upd.
+	(giop_connection_unref): use linc_object_unref.
+	
+	* src/orb/GIOP/giop.c (giop_init): 
+	actually start the IO thread ;-)
+
+2002-10-31  Michael Meeks  <michael@ximian.com>
+
+	* test/echo-client-t.c (main): init mt orb.
+
+	* src/orb/GIOP/giop-recv-buffer.c
+	(giop_recv_list_destroy_queue_entry): kill
+	bogus thread stuff.
+	(handle_reply): queue up reply recv's on
+	the right thread for processing elsewhere.
+	(giop_recv_buffer_get): kill unused non-blocking
+	mode, substantially re-write.
+	(giop_recv_list_zap): use locking.
+
+	* src/orb/GIOP/giop.c
+	(giop_thread_push_recv): impl.
+
+2002-10-30  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/GIOP/giop-recv-buffer.c
+	(giop_recv_list_setup_queue_entry_async),
+	(giop_recv_list_setup_queue_entry): upd.
+	(giop_connection_handle_input): upd.
+
+	* include/orbit/GIOP/giop-recv-buffer.h
+	(GIOPMessageQueueEntry): bin bogus thread bits,
+	add thread id.
+
+	* src/orb/GIOP/giop.c (giop_init): pass threaded,
+	setup main thread / context wakeup.
+	(giop_thread_new, giop_thread_self): impl.
+
+	* src/orb/orb-core/corba-orb.c
+	(CORBA_ORB_init): check for orbit-local-mt-orb
+	profile.
+
+2003-01-26  Michael Meeks  <michael@ximian.com>
+
+	* test/everything/server.c (main),
+	* test/everything/client.c (main): add --threaded
+	option to enable threading.
+
+2002-12-20  Michael Meeks  <michael@ximian.com>
+
+	* src/orb/poa/poa.c (ORBit_POAObject_handle_request): upd.
+
+	* include/orbit/poa/poa-types.h: make the first
+	element a 'dummy' - reflecting reality.
+
+	* include/orbit/poa/poa-basics.h: bin the old
+	relay_call. Rename the impl_finder.
+
+2003-01-09  Mark McLoughlin  <mark@skynet.ie>
+
+	* src/orb/orb-core/corba-orb.c: (CORBA_ORB_create_struct_tc),
+	(CORBA_ORB_create_union_tc), (CORBA_ORB_create_enum_tc),
+	(CORBA_ORB_create_alias_tc), (CORBA_ORB_create_exception_tc),
+	(CORBA_ORB_create_interface_tc), (CORBA_ORB_create_string_tc),
+	(CORBA_ORB_create_wstring_tc), (CORBA_ORB_create_fixed_tc),
+	(CORBA_ORB_create_sequence_tc),
+	(CORBA_ORB_create_recursive_sequence_tc),
+	(CORBA_ORB_create_array_tc): remove malloc return value
+	checks - its all through glib.
 
 2003-01-09  Michael Meeks  <michael@ximian.com>
 
-	* configure.in: remove 'development ver.' warning.
+	* configure.in: bump version to 2.7.0,
+	require linc >= 1.1.0
 
 	* Branch for gnome-2-2
 

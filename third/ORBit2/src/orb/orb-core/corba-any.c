@@ -3,12 +3,13 @@
 #include "orb-core-private.h"
 #include <string.h>
 
+#define SKIP_ALIAS(tc) \
+	while ((tc)->kind == CORBA_tk_alias) { (tc) = (tc)->subtypes [0]; }
+
 size_t
 ORBit_gather_alloc_info (CORBA_TypeCode tc)
 {
-
-	while (tc->kind == CORBA_tk_alias)
-		tc = tc->subtypes[0];
+	SKIP_ALIAS (tc);
 
 	switch (tc->kind) {
 	case CORBA_tk_long:
@@ -103,8 +104,7 @@ ORBit_marshal_value (GIOPSendBuffer *buf,
 	CORBA_unsigned_long i, ulval;
 	gconstpointer       subval;
 
-	while (tc->kind == CORBA_tk_alias)
-		tc = tc->subtypes[0];
+	SKIP_ALIAS (tc);
 
 	switch (tc->kind) {
 	case CORBA_tk_wchar:
@@ -170,6 +170,7 @@ ORBit_marshal_value (GIOPSendBuffer *buf,
 		*val = ALIGN_ADDRESS (*val, tc->c_align);
 		for (i = 0; i < tc->sub_parts; i++)
 			ORBit_marshal_value (buf, val, tc->subtypes[i]);
+		*val = ALIGN_ADDRESS (*val, tc->c_align);
 		break;
 	case CORBA_tk_union: {
 		gconstpointer	discrim, body;
@@ -191,14 +192,18 @@ ORBit_marshal_value (GIOPSendBuffer *buf,
 		*val = ((guchar *)*val) + sz;
 		break;
 	}
-	case CORBA_tk_wstring:
+	case CORBA_tk_wstring: {
+		CORBA_wchar endian_marker = 0xfeff;
+
 		*val = ALIGN_ADDRESS (*val, ORBIT_ALIGNOF_CORBA_POINTER);
-		ulval = CORBA_wstring_len (*(CORBA_wchar **)*val) + 1;
+		ulval = (CORBA_wstring_len (*(CORBA_wchar **)*val) + 1) * 2;
 		giop_send_buffer_append_aligned (buf, &ulval,
 						 sizeof (CORBA_unsigned_long));
-		giop_send_buffer_append (buf, *(char **)*val, ulval);
-		*val = ((guchar *)*val) + sizeof (char *);
+		giop_send_buffer_append (buf, &endian_marker, 2);
+		giop_send_buffer_append (buf, *(CORBA_wchar **)*val, ulval - 2);
+		*val = ((guchar *)*val) + sizeof (CORBA_wchar *);
 		break;
+	}
 	case CORBA_tk_string:
 		*val = ALIGN_ADDRESS (*val, ORBIT_ALIGNOF_CORBA_POINTER);
 		giop_send_buffer_append_string (buf, *(char **)*val);
@@ -233,7 +238,8 @@ ORBit_marshal_value (GIOPSendBuffer *buf,
 		case CORBA_tk_boolean:
 		case CORBA_tk_char:
 		case CORBA_tk_octet:
-			giop_send_buffer_append (buf, val, tc->length);
+			giop_send_buffer_append (buf, *val, tc->length);
+			*val = ((guchar *)*val) + tc->length;
 			break;
 		default: {
 			int align = tc->subtypes[0]->c_align;
@@ -278,8 +284,7 @@ ORBit_get_union_switch (CORBA_TypeCode  tc,
 {
 	glong retval = 0; /* Quiet gcc */
 
-	while (tc->kind == CORBA_tk_alias)
-		tc = tc->subtypes[0];
+	SKIP_ALIAS (tc);
 
 	switch (tc->kind) {
 	case CORBA_tk_ulong:
@@ -389,8 +394,7 @@ ORBit_demarshal_value (CORBA_TypeCode  tc,
 {
 	CORBA_long i;
 
-	while (tc->kind == CORBA_tk_alias)
-		tc = tc->subtypes[0];
+	SKIP_ALIAS (tc);
 
 	switch (tc->kind) {
 	case CORBA_tk_short:
@@ -555,6 +559,7 @@ ORBit_demarshal_value (CORBA_TypeCode  tc,
 			if (ORBit_demarshal_value (tc->subtypes[i], val, buf, orb))
 				return TRUE;
 		}
+		*val = ALIGN_ADDRESS (*val, tc->c_align);
 		break;
 	case CORBA_tk_union: {
 		CORBA_TypeCode  subtc;
@@ -579,7 +584,6 @@ ORBit_demarshal_value (CORBA_TypeCode  tc,
 		break;
 	}
 	case CORBA_tk_string:
-	case CORBA_tk_wstring:
 		*val = ALIGN_ADDRESS (*val, ORBIT_ALIGNOF_CORBA_POINTER);
 		buf->cur = ALIGN_ADDRESS (buf->cur, sizeof (CORBA_long));
 		if ((buf->cur + sizeof (CORBA_long)) > buf->end)
@@ -595,6 +599,54 @@ ORBit_demarshal_value (CORBA_TypeCode  tc,
 		*val = ((guchar *)*val) + sizeof (CORBA_char *);
 		buf->cur += i;
 		break;
+	case CORBA_tk_wstring: {
+		CORBA_wchar endian_marker = 0, *ptr;
+
+		*val = ALIGN_ADDRESS (*val, ORBIT_ALIGNOF_CORBA_POINTER);
+		buf->cur = ALIGN_ADDRESS (buf->cur, sizeof (CORBA_long));
+		if ((buf->cur + sizeof (CORBA_long)) > buf->end)
+			return TRUE;
+		i = *(CORBA_unsigned_long *)buf->cur;
+		if (giop_msg_conversion_needed (buf))
+			i = GUINT32_SWAP_LE_BE (i);
+		buf->cur += sizeof (CORBA_unsigned_long);
+		if ((buf->cur + i) > buf->end
+		    || (buf->cur + i) < buf->cur)
+			return TRUE;
+		if (i >= 2) {
+			endian_marker = *(CORBA_wchar *)buf->cur;
+			if (endian_marker != 0xfeff &&
+			    endian_marker != 0xfffe)
+				endian_marker = 0;
+			else {
+				i -= 2;
+				buf->cur += 2;
+			}
+		}
+		if (!endian_marker) {
+			((unsigned char *)&endian_marker)[0] = 0xfe;
+			((unsigned char *)&endian_marker)[1] = 0xff;
+		}
+		ptr = CORBA_wstring_alloc ((i + 1) / 2);
+		*(CORBA_wchar **)*val = ptr;
+		if (endian_marker == 0xfffe) {
+			while(i >= 2) {
+				*ptr++ = GUINT16_SWAP_LE_BE(
+				         	*((CORBA_wchar *)buf->cur));
+				buf->cur += 2;
+				i -= 2;
+			}
+			*ptr = 0;
+		} else {
+			memcpy(ptr, buf->cur, i);
+			ptr[(i + 1) / 2] = 0;
+			buf->cur += i;
+			i = 0;
+		}
+		*val = ((guchar *)*val) + sizeof (CORBA_wchar *);
+		buf->cur += i;
+		break;
+	}
 	case CORBA_tk_sequence: {
 		CORBA_sequence_CORBA_octet *p;
 		gpointer subval;
@@ -610,9 +662,14 @@ ORBit_demarshal_value (CORBA_TypeCode  tc,
 		else
 			p->_length = *(CORBA_unsigned_long *)buf->cur;
 		buf->cur += sizeof (CORBA_long);
-		if (tc->subtypes[0]->kind == CORBA_tk_octet ||
-		    tc->subtypes[0]->kind == CORBA_tk_boolean ||
-		    tc->subtypes[0]->kind == CORBA_tk_char) {
+
+		p->_maximum = p->_length;
+		if (p->_length == 0)
+			p->_buffer = NULL;
+
+		else if (tc->subtypes[0]->kind == CORBA_tk_octet ||
+			 tc->subtypes[0]->kind == CORBA_tk_boolean ||
+			 tc->subtypes[0]->kind == CORBA_tk_char) {
 			/* This special-casing could be taken further to apply to
 			   all atoms... */
 			if ((buf->cur + p->_length) > buf->end ||
@@ -729,8 +786,7 @@ ORBit_copy_value_core (gconstpointer *val,
 	gconstpointer pval1; 
 	gpointer pval2;
 
-	while (tc->kind == CORBA_tk_alias)
-		tc = tc->subtypes[0];
+	SKIP_ALIAS (tc);
 
 	switch (tc->kind) {
 	case CORBA_tk_wchar:
@@ -834,15 +890,19 @@ ORBit_copy_value_core (gconstpointer *val,
 		*newval = ALIGN_ADDRESS (*newval, tc->c_align);
 		for (i = 0; i < tc->sub_parts; i++)
 			ORBit_copy_value_core (val, newval, tc->subtypes[i]);
+		*val = ALIGN_ADDRESS (*val, tc->c_align);
+		*newval = ALIGN_ADDRESS (*newval, tc->c_align);
 		break;
 	case CORBA_tk_union: {
-		CORBA_TypeCode utc = ORBit_get_union_tag (tc, (gconstpointer *)val, FALSE);
+		CORBA_TypeCode utc;
 		gint	       union_align = tc->c_align;
 		gint	       discrim_align = MAX (tc->discriminator->c_align, tc->c_align);
 		size_t	       union_size = ORBit_gather_alloc_info (tc);
 
 		pval1 = *val = ALIGN_ADDRESS (*val, discrim_align);
 		pval2 = *newval = ALIGN_ADDRESS (*newval, discrim_align);
+
+		utc = ORBit_get_union_tag (tc, (gconstpointer *)val, FALSE);
 
 		ORBit_copy_value_core (&pval1, &pval2, tc->discriminator);
 
@@ -936,8 +996,7 @@ ORBit_value_equivalent (gpointer *a, gpointer *b,
 	gboolean ret;
 	int i;
 
-	while (tc->kind == CORBA_tk_alias)
-		tc = tc->subtypes[0];
+	SKIP_ALIAS (tc);
 
 	switch (tc->kind) {
 	case CORBA_tk_null:
@@ -1025,6 +1084,8 @@ ORBit_value_equivalent (gpointer *a, gpointer *b,
 			if (!ORBit_value_equivalent (a, b, tc->subtypes [i], ev))
 				return FALSE;
 
+		*a = ALIGN_ADDRESS (*a, tc->c_align);
+		*b = ALIGN_ADDRESS (*b, tc->c_align);
 		return TRUE;
 	}
 
@@ -1054,24 +1115,20 @@ ORBit_value_equivalent (gpointer *a, gpointer *b,
 	}
 
 	case CORBA_tk_union: {
-		gint     union_align = tc->c_align;
-		gint     discrim_align = MAX (tc->discriminator->c_align, tc->c_align);
-		size_t   union_size = ORBit_gather_alloc_info (tc);
-		gpointer a_orig, b_orig;
+		CORBA_TypeCode utc_a, utc_b;
+		gint           union_align = tc->c_align;
+		gint           discrim_align = MAX (tc->discriminator->c_align, tc->c_align);
+		size_t         union_size = ORBit_gather_alloc_info (tc);
+		gpointer       a_orig, b_orig;
 
-		CORBA_TypeCode utc_a = ORBit_get_union_tag (
-			tc, (gconstpointer *)a, FALSE);
-		CORBA_TypeCode utc_b = ORBit_get_union_tag (
-			tc, (gconstpointer *)b, FALSE);
+		a_orig = *a = ALIGN_ADDRESS (*a, discrim_align);
+		b_orig = *b = ALIGN_ADDRESS (*b, discrim_align);
 
-		a_orig = *a;
-		b_orig = *b;
+		utc_a = ORBit_get_union_tag (tc, (gconstpointer *)a, FALSE);
+		utc_b = ORBit_get_union_tag (tc, (gconstpointer *)b, FALSE);
 
 		if (!CORBA_TypeCode_equal (utc_a, utc_b, ev))
 			return FALSE;
-
-		*a = ALIGN_ADDRESS (*a, discrim_align);
-		*b = ALIGN_ADDRESS (*b, discrim_align);
 
 		if (!ORBit_value_equivalent (a, b, tc->discriminator, ev))
 			return FALSE;
@@ -1129,4 +1186,186 @@ ORBit_any_equivalent (CORBA_any *obj, CORBA_any *any, CORBA_Environment *ev)
 	b = any->_value;
 
 	return ORBit_value_equivalent (&a, &b, any->_type, ev);
+}
+
+/* Friendly sequence allocators */
+
+#define BASE_TYPES \
+	     CORBA_tk_short: \
+	case CORBA_tk_long: \
+	case CORBA_tk_enum: \
+	case CORBA_tk_ushort: \
+	case CORBA_tk_ulong: \
+	case CORBA_tk_float: \
+	case CORBA_tk_double: \
+	case CORBA_tk_boolean: \
+	case CORBA_tk_char: \
+	case CORBA_tk_octet: \
+	case CORBA_tk_longlong: \
+	case CORBA_tk_ulonglong: \
+	case CORBA_tk_longdouble: \
+	case CORBA_tk_wchar
+
+gpointer
+ORBit_sequence_alloc (CORBA_TypeCode      sequence_tc,
+		      CORBA_unsigned_long length)
+{
+	CORBA_TypeCode tc = sequence_tc;
+  	CORBA_sequence_CORBA_octet *seq;
+
+	g_return_val_if_fail (sequence_tc != NULL, NULL);
+
+	SKIP_ALIAS (tc);
+	g_return_val_if_fail (tc->kind == CORBA_tk_sequence, NULL);
+	
+	seq = ORBit_alloc_by_tc (sequence_tc);
+	seq->_buffer = ORBit_small_allocbuf (tc, length);
+	seq->_length  = length;
+	seq->_maximum = length;
+	
+	CORBA_sequence_set_release (seq, CORBA_TRUE);
+
+	g_assert (ORBit_alloc_get_tcval (seq) == sequence_tc);
+
+	return seq;
+}
+
+void
+ORBit_sequence_set_size (gpointer            sequence,
+			 CORBA_unsigned_long length)
+{
+	CORBA_TypeCode tc, subtc;
+	CORBA_sequence_CORBA_octet *seq = sequence;
+
+	g_return_if_fail (seq != NULL);
+	g_return_if_fail (seq->_length <= seq->_maximum);
+
+	if (seq->_length == length)
+		return;
+
+	tc = ORBit_alloc_get_tcval (sequence);
+	SKIP_ALIAS (tc);
+	g_return_if_fail (tc->kind == CORBA_tk_sequence);
+	subtc = tc->subtypes[0];
+
+	if (length < seq->_length) {
+		guint i;
+
+		switch (subtc->kind) {
+		case BASE_TYPES: /* leave some in-line values */
+			break;
+		default: {
+			guint element_size = ORBit_gather_alloc_info (subtc);
+
+			for (i = length; i < seq->_length; i++)
+				ORBit_freekids_via_TypeCode
+					(subtc, (guchar *)seq->_buffer + i * element_size);
+
+			/* Don't trust the API user not to poke at it again */
+			memset ((guchar *)seq->_buffer + length * element_size,
+				0, (seq->_length - length) * element_size);
+			break;
+		}
+		}
+	} else {
+		if (length > seq->_maximum) {
+			guint new_len = MAX (length, seq->_maximum * 2);
+
+			seq->_buffer = ORBit_realloc_tcval
+				(seq->_buffer, subtc,
+				 seq->_maximum, new_len);
+			seq->_maximum = new_len;
+		}
+	}
+	seq->_length = length;
+}
+
+void
+ORBit_sequence_append (gpointer      sequence,
+		       gconstpointer element)
+{
+	guint element_size;
+	guchar *dest;
+	CORBA_TypeCode tc, subtc;
+  	CORBA_sequence_CORBA_octet *seq = sequence;
+
+	g_return_if_fail (seq != NULL);
+	g_return_if_fail (seq->_length <= seq->_maximum);
+
+	tc = ORBit_alloc_get_tcval (sequence);
+	SKIP_ALIAS (tc);
+	subtc = tc->subtypes [0];
+	g_return_if_fail (tc->kind == CORBA_tk_sequence);
+
+	if (seq->_length == seq->_maximum) {
+		guint new_len = MAX (2, (seq->_maximum * 2));
+
+		seq->_buffer = ORBit_realloc_tcval
+			(seq->_buffer, subtc,
+			 seq->_maximum, new_len );
+		seq->_maximum = new_len;
+	}
+
+	element_size = ORBit_gather_alloc_info (subtc);
+	
+	dest = seq->_buffer;
+	dest += element_size * seq->_length;
+	ORBit_copy_value_core (&element, (gpointer)&dest, subtc);
+
+	seq->_length++;
+}
+
+void
+ORBit_sequence_remove (gpointer sequence,
+                       guint    idx)
+{
+	guint element_size, remaining;
+	guchar *elem;
+	CORBA_TypeCode tc, subtc;
+  	CORBA_sequence_CORBA_octet *seq = sequence;
+
+	tc = ORBit_alloc_get_tcval (sequence);
+	SKIP_ALIAS (tc);
+	g_return_if_fail (tc->kind == CORBA_tk_sequence);
+	g_return_if_fail (seq != NULL);
+	g_return_if_fail (seq->_length <= seq->_maximum);
+	g_return_if_fail (idx < seq->_length);
+
+	subtc = tc->subtypes [0];
+	element_size = ORBit_gather_alloc_info (subtc);
+	elem = seq->_buffer + element_size*idx;
+        remaining = seq->_length - idx - 1;
+        ORBit_freekids_via_TypeCode (subtc, elem);
+          /* shift remaining elements into free slot */
+        memcpy (elem, elem + element_size, element_size*remaining);
+          /* zero last element */
+        memset (elem + element_size*remaining, 0, element_size);
+
+	seq->_length--;
+}
+
+void
+ORBit_sequence_concat (gpointer      sequence,
+		       gconstpointer append)
+{
+	gint  i;	
+	guint element_size;
+	guchar *src;
+	CORBA_TypeCode tc, subtc;
+  	CORBA_sequence_CORBA_octet *seq = (CORBA_sequence_CORBA_octet *)append;
+
+	g_return_if_fail (seq != NULL);
+	g_return_if_fail (seq->_length <= seq->_maximum);
+
+	tc = ORBit_alloc_get_tcval (sequence);
+	SKIP_ALIAS (tc);
+	subtc = tc->subtypes [0];
+	g_return_if_fail (tc->kind == CORBA_tk_sequence);
+
+	element_size = ORBit_gather_alloc_info (subtc);
+
+	src = seq->_buffer;
+
+	for (i = 0; i < seq->_length; ++i, src += element_size) 
+		ORBit_sequence_append (sequence, (gpointer)src);
 }
