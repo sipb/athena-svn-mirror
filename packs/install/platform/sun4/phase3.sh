@@ -1,4 +1,4 @@
-# $Id: phase3.sh,v 1.7 1997-01-05 14:18:22 ghudson Exp $
+# $Id: phase3.sh,v 1.8 1997-02-11 18:31:29 ghudson Exp $
 # $Source: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase3.sh,v $
 
 # This file is run out of the srvd by phase2.sh after it starts AFS.
@@ -73,22 +73,17 @@ echo "Finishing etc"
 cp /dev/null etc/mnttab
 cp /dev/null etc/dumpdates
 #cp /dev/null ups_data
-cp -p /srvd/etc/ftpusers etc/ftpusers
-cp -p /srvd/etc/inet/inetd.conf etc/inet/inetd.conf
-cp -p /srvd/etc/inet/services etc/inet/services
-cp -p /srvd/etc/athena/inetd.conf etc/athena/inetd.conf
-cp -p /srvd/etc/minor_perm etc/minor_perm
-cp -p /srvd/etc/system etc/system
-cp -p /srvd/etc/shells etc/shells
-cp -p /srvd/etc/syslog.conf etc/syslog.conf
-cp -p /srvd/etc/athena/attach.conf etc/athena/attach.conf
-cp -p /srvd/etc/athena/newsyslog.conf etc/athena/newsyslog.conf
-cp -p /srvd/etc/mail/sendmail.cf etc/mail/sendmail.cf
+for i in `cat /srvd/usr/athena/lib/update/configfiles`; do
+	if [ -f /srvd$i ]; then
+		cp -p /srvd$i /root$i
+	else
+		cp -p /os$i /root$i
+	fi
+done
 cp -p /os/etc/name_to_major etc/name_to_major
 cp -p /os/etc/driver_aliases etc/driver_aliases
 cp -p /os/etc/device.tab etc/device.tab
 cp -p /os/etc/dgroup.tab etc/dgroup.tab
-chmod 644 etc/system
 
 hostname=`echo $hostname | awk -F. '{print $1}' | /usr/bin/tr "[A-Z]" "[a-z]"`
 echo "Host name is $hostname"
