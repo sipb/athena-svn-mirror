@@ -1359,6 +1359,12 @@ start_login(host, autologin, name)
 		close(pty);
 #endif
 	closelog();
+
+	if (decrypt_input)
+		printf("What you type is protected by encryption.\r\n");
+	else
+		printf("Warning: this session is NOT encrypted!\r\n");
+
 	execv(login_program, argv);
 
 	syslog(LOG_ERR, "%s: %m", login_program);

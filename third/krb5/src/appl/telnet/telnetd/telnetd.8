@@ -41,9 +41,9 @@ protocol server
 [\fB\-a\fP \fIauthmode\fP] [\fB\-B\fP] [\fB\-D\fP] [\fIdebugmode\fP]
 [\fB\-edebug\fP] [\fB\-h\fP] [\fB\-I\fP\fIinitid\fP] [\fB\-l\fP]
 [\fB\-k\fP] [\fB\-n\fP] [\fB\-r\fP\fIlowpty-highpty\fP] [\fB\-s\fP]
-[\fB\-S\fP \fItos\fP] [\fB\-U\fP] [\fB\-X\fP \fIauthtype\fP]
+[\fB\-S\fP \fItos\fP] [\fB\-U\fP] [\fB\-x\fP] [\fB\-X\fP \fIauthtype\fP]
 [\fB\-debug\fP [\fIport\fP]]
-.Sh DESCRIPTION
+.SH DESCRIPTION
 The
 .B telnetd
 command is a server which supports the
@@ -285,6 +285,11 @@ to refuse connections from addresses that cannot be mapped back into a
 symbolic name via the
 .IR gethostbyaddr (3)
 routine.
+.TP
+.B \-x
+This option causes
+.B telnetd
+to refuse unencrypted connections.
 .TP
 \fB\-X\fP \fIauthtype\fP
 This option is only valid if
