@@ -1,5 +1,5 @@
 #
-# $Id: Makefile.in,v 1.4 2003-02-24 18:04:07 zacheiss Exp $
+# $Id: Makefile.in,v 1.5 2004-02-29 06:40:04 zacheiss Exp $
 #
 # This is the Makefile for the AFS-Kerberos 5 Migration Kit.  See the
 # directions below for the meaning of each flag.
@@ -41,9 +41,6 @@ SYSLIBS=@SYSLIBS@
 
 # AFS libraries
 AFSLIBS=@AFSLIBS@
-
-# Location of the 5-2-4 library
-KRB524LIB=@KRB524LIB@
 
 # Location of the kdb5 library
 KDB5LIB=@KDB5LIB@
@@ -94,7 +91,7 @@ asetkey: asetkey.o
 	$(LD) -o $@ asetkey.o  $(SYSLIBS) $(AFSLIBS) $(LDPATH_FLAGS)$(LIBS)
 
 aklog: $(AKLOG_OBJS)  $(LIBOBJS)
-	$(LD) -o aklog $(AKLOG_OBJS) $(LIBOBJS) $(KRB524LIB)  $(SYSLIBS) $(AFSLIBS) $(LDPATH_FLAGS) $(LIBS)
+	$(LD) -o aklog $(AKLOG_OBJS) $(LIBOBJS) $(SYSLIBS) $(AFSLIBS) $(LDPATH_FLAGS) $(LIBS)
 
 fakeka: fakeka.o
 	$(LD) -o $@ fakeka.o $(LIBS) $(SYSLIBS) $(FAKEKA_LIBS) $(LDPATH_FLAGS)
