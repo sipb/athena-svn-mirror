@@ -17,7 +17,7 @@
  * functions to add and remove a user from the system passwd database.
  */
 
-static const char rcsid[] = "$Id: passwd.c,v 1.14 1999-07-01 14:07:25 rbasch Exp $";
+static const char rcsid[] = "$Id: passwd.c,v 1.15 1999-09-22 22:10:27 danw Exp $";
 
 #include <errno.h>
 #include <pwd.h>
@@ -60,7 +60,7 @@ static int copy_changing_cryptpw(FILE *in, FILE *out, const char *username,
  * file.
  */
 
-static FILE *lock_passwd()
+static FILE *lock_passwd(void)
 {
 #ifdef HAVE_LCKPWDF
   FILE *fp;

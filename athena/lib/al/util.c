@@ -17,7 +17,7 @@
  * miscellaneous functions.
  */
 
-static const char rcsid[] = "$Id: util.c,v 1.8 1999-09-02 14:37:20 ghudson Exp $";
+static const char rcsid[] = "$Id: util.c,v 1.9 1999-09-22 22:10:28 danw Exp $";
 
 #include <sys/param.h>
 #include <assert.h>
@@ -232,11 +232,11 @@ static struct passwd *lookup(const char *username, uid_t uid)
 #define FIELD(v)	{ v = buffer; NEXT_FIELD; }
       FIELD(pwd->pw_name);
       FIELD(pwd->pw_passwd);
-      if (!isdigit(*buffer))
+      if (!isdigit((unsigned char)*buffer))
 	BAD_LINE;
       pwd->pw_uid = atoi(buffer);
       NEXT_FIELD;
-      if (!isdigit(*buffer))
+      if (!isdigit((unsigned char)*buffer))
 	BAD_LINE;
       pwd->pw_gid = atoi(buffer);
       NEXT_FIELD;
@@ -315,7 +315,8 @@ int al__username_valid(const char *username)
     return 0;
   for (; *username; username++)
     {
-      if (!isprint(*username) || *username == '/' || *username == ':')
+      if (!isprint((unsigned char)*username) || *username == '/' ||
+	  *username == ':')
 	return 0;
     }
   return 1;

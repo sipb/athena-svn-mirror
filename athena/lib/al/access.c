@@ -18,7 +18,7 @@
  * file for a user.
  */
 
-static const char rcsid[] = "$Id: access.c,v 1.4 1998-06-04 18:26:03 ghudson Exp $";
+static const char rcsid[] = "$Id: access.c,v 1.5 1999-09-22 22:10:27 danw Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -110,13 +110,13 @@ int al_get_access(const char *username, char **access, char **text)
 	    continue;
 
 	  /* Skip to the access bits. */
-	  while (*p && !isspace(*p))
+	  while (*p && !isspace((unsigned char)*p))
 	    p++;
-	  while (isspace(*p))
+	  while (isspace((unsigned char)*p))
 	    p++;
 
 	  q = p;
-	  while (*q && !isspace(*q))
+	  while (*q && !isspace((unsigned char)*q))
 	    q++;
 	  if (access)
 	    {
@@ -133,7 +133,7 @@ int al_get_access(const char *username, char **access, char **text)
 	  if (text)
 	    {
 	      p = q;
-	      while (isspace(*p))
+	      while (isspace((unsigned char)*p))
 		p++;
 	      if (*p)
 		{
@@ -193,5 +193,6 @@ static int first_field_match(const char *line, const char *s)
 {
   int len = strlen(s);
 
-  return (strncmp(line, s, len) == 0 && (isspace(line[len]) || !line[len]));
+  return (strncmp(line, s, len) == 0 &&
+	  (isspace((unsigned char)line[len]) || !line[len]));
 }

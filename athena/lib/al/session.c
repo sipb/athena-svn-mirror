@@ -17,7 +17,7 @@
  * functions to get and put the session record.
  */
 
-static const char rcsid[] = "$Id: session.c,v 1.10 1998-05-07 23:58:31 ghudson Exp $";
+static const char rcsid[] = "$Id: session.c,v 1.11 1999-09-22 22:10:27 danw Exp $";
 
 #include <ctype.h>
 #include <sys/types.h>
@@ -40,7 +40,7 @@ char *al__session_dir = PATH_SESSIONS;
 /* This is an internal function.  Its contract is to zero out the
  * informational fields in a record structure.
  */
-void zero_record(struct al_record *r)
+static void zero_record(struct al_record *r)
 {
   r->exists = r->passwd_added = r->attached = r->ngroups = r->npids = 0;
   r->old_homedir = NULL;
@@ -182,7 +182,7 @@ int al__get_session_record(const char *username,
       record->ngroups = 0;
       while (*ptr1)
 	{
-	  if (!isdigit(*ptr1) || NULL == (ptr1 = strchr(ptr1, ':')))
+	  if (!isdigit((unsigned char)*ptr1) || !(ptr1 = strchr(ptr1, ':')))
 	    goto cleanup;
 	  record->ngroups++;
 	  ptr1++;
@@ -216,7 +216,7 @@ int al__get_session_record(const char *username,
       record->npids = 0;
       while (*ptr1)
 	{
-	  if (!isdigit(*ptr1) || NULL == (ptr1 = strchr(ptr1, ':')))
+	  if (!isdigit((unsigned char)*ptr1) || !(ptr1 = strchr(ptr1, ':')))
 	    goto cleanup;
 	  record->npids++;
 	  ptr1++;

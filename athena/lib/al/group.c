@@ -17,7 +17,7 @@
  * functions to add and remove a user from the group database.
  */
 
-static const char rcsid[] = "$Id: group.c,v 1.9 1999-07-01 14:07:23 rbasch Exp $";
+static const char rcsid[] = "$Id: group.c,v 1.10 1999-09-22 22:10:27 danw Exp $";
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -424,7 +424,7 @@ static int retrieve_hesgroups(const char *username, struct hesgroup **groups,
       /* Find the end of the group name.  Stop if we hit the end, if we
        * have a zero-length group name, or if we have a non-numeric gid. */
       q = strchr(p, ':');
-      if (!q || q == p || !isdigit(*(q + 1)))
+      if (!q || q == p || !isdigit((unsigned char)*(q + 1)))
 	break;
 
       if (atoi(q + 1) >= MIN_HES_GROUP)
@@ -555,7 +555,7 @@ static int parse_to_gid(char *s, char **p, gid_t *gid)
   *gid = atoi(s);
 
   /* Now advance to the next colon, making sure that everything is a digit. */
-  while (isdigit(*s))
+  while (isdigit((unsigned char)*s))
     s++;
   if (*s != ':')
     return -1;
