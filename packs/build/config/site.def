@@ -1,7 +1,6 @@
 #ifdef SOLARIS
 #define NOLINT
 #define LintFlags -DSOLARIS -DSYSV -DPOSIX -DPOSIX_FLOCK -I/usr/openwin/include
-#define ProfCcFlags -pg
 #define CcFlags LintFlags
 #define LdPath -L/usr/openwin/lib -Xlinker -R/usr/openwin/lib \
 	-L$(ATHTOOLROOT)$(ATHLIBDIR)
@@ -16,7 +15,6 @@
 #ifdef sgi
 #define NOLINT
 #define LintFlags -DSYSV -DPOSIX -DPOSIX_FLOCK
-#define ProfCcFlags -p1
 #define CcFlags LintFlags
 #define LdPath -L$(ATHTOOLROOT)$(ATHLIBDIR)
 #define LdLibs  
@@ -30,7 +28,6 @@
 #ifdef linux
 #define NOLINT
 #define LintFlags -DPOSIX -I/usr/X11R6/include
-#define ProfCcFlags -pg
 #define CcFlags LintFlags
 #define LdPath -L$(ATHTOOLROOT)$(ATHLIBDIR) -L/usr/X11R6/lib
 #define LdLibs -lresolv
