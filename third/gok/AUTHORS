@@ -1,0 +1,26 @@
+                   GNOME Onscreen Keyboard Authors
+                   ===============================
+
+David Bolter <david.bolter@utoronto.ca>
+Bill Haneman <bill.haneman@sun.com>
+Chris Ridpath <chris.ridpath@utoronto.ca>
+Simon Bates <simon.bates@utoronto.ca>
+
+with contributions from:
+Steven Baker <srbaker@pobox.com>
+Calum Benson  <calum.benson@sun.com>
+Ben Konrath  <ben.konrath@utoronto.ca>
+Peter Lazlo  <laca@sun.com>
+Michael Meeks <micheal@ximian.com>
+Marc Mulcahy <marc.mulcahy@sun.com>
+Padraig O'Briain <padraig.obriain@sun.com>
+Laurel Williams  <laurel.williams@utoronto.ca>
+Cynick Young  <cynick.young@utoronto.ca>
+
+
+HISTORY
+Date: 01/01/2002 - 01/01/2003
+Original Core:
+Chris Ridpath (main programmer, implementation architect)
+Simon Bates (programmer, build and configuration dude) 
+David Bolter (project maintainer, programmer)

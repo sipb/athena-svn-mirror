@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<GOK:GokFile xmlns:GOK="http://www.gnome.org/GOK">
+
+<GOK:keyboard name="move-resize" commandprediction="no" wordcompletion="no" expand="sometimes">
+	<GOK:key left="0" right="1" top="0" bottom="1" type="branchBack">
+		<!-- Translators: short label for go back. -->
+		<_GOK:label>back</_GOK:label>
+	</GOK:key>
+	<GOK:key left="1" right="3" top="0" bottom="1" type="dock" dir="north">
+		<!-- Translators: dock is used as a verb. -->
+		<_GOK:label>Dock Top</_GOK:label>
+	</GOK:key>
+	<GOK:key left="3" right="5" top="0" bottom="1" type="dock" dir="south">
+		<!-- Translators: dock is used as a verb. -->
+		<_GOK:label>Dock Bottom</_GOK:label>
+	</GOK:key>
+	<GOK:key left="5" right="6" top="0" bottom="1" type="move-resize" dir="fillwidth">
+		<_GOK:label>Fill</_GOK:label>
+	</GOK:key>
+
+	<GOK:key left="0" right="1" top="1" bottom="2" type="move-resize" dir="northwest">
+		<GOK:image source="NW.png" type="fixed:20,20"/>
+	</GOK:key>
+	<GOK:key left="1" right="3" top="1" bottom="2" type="move-resize" dir="north">
+		<!-- Translators: this describes the direction gok will move. -->
+		<_GOK:label>Up</_GOK:label>
+	</GOK:key>
+	<GOK:key left="3" right="4" top="1" bottom="2" type="move-resize" dir="northeast">
+		<GOK:image source="NE.png" type="fixed:20,20" align="right"/>
+	</GOK:key>
+	<GOK:key left="4" right="6" top="1" bottom="2" type="move-resize" dir="narrower">
+		<_GOK:label>Narrower</_GOK:label>
+	</GOK:key>
+
+	<GOK:key left="0" right="1" top="2" bottom="3" type="move-resize" dir="west">
+		<!-- Translators: this describes the direction gok will move. -->
+		<_GOK:label>Left</_GOK:label>
+	</GOK:key>
+	<GOK:key left="1" right="3" top="2" bottom="3" type="dock" dir="none">
+		<_GOK:label>Float</_GOK:label>
+	</GOK:key>
+	<GOK:key left="3" right="4" top="2" bottom="3" type="move-resize" dir="east">
+		<!-- Translators: this describes the direction gok will move. -->
+		<_GOK:label>Right</_GOK:label>
+	</GOK:key>
+	<GOK:key left="4" right="6" top="2" bottom="3" type="move-resize" dir="wider">
+		<_GOK:label>Wider</_GOK:label>
+	</GOK:key>
+
+	<GOK:key left="0" right="1" top="3" bottom="4" type="move-resize" dir="southwest">
+		<GOK:image source="SW.png" type="fixed:20,20"/>
+	</GOK:key>
+	<GOK:key left="1" right="3" top="3" bottom="4" type="move-resize" dir="south">
+		<!-- Translators: this describes the direction gok will move. -->
+		<_GOK:label>Down</_GOK:label>
+	</GOK:key>
+	<GOK:key left="3" right="4" top="3" bottom="4" type="move-resize" dir="southeast">
+		<GOK:image source="SE.png" type="fixed:20,20" align="right"/>
+	</GOK:key>
+	<GOK:key left="4" right="6" top="3" bottom="4" type="move-resize" dir="shorter">
+		<!-- Translators: shorter as in height. -->
+		<_GOK:label>Shorter</_GOK:label>
+	</GOK:key>
+
+	<GOK:key left="0" right="1" top="4" bottom="5" type="branch" target="hide">
+		<_GOK:label>Hide</_GOK:label>
+	</GOK:key>
+        <GOK:key left="1" right="4" top="4" bottom="5" type="repeat-next">
+                <_GOK:label>Repeat Next Key</_GOK:label>
+        </GOK:key>
+	<GOK:key left="4" right="6" top="4" bottom="5" type="move-resize" dir="taller">
+		<_GOK:label>Taller</_GOK:label>
+	</GOK:key>
+</GOK:keyboard>
+</GOK:GokFile>

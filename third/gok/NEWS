@@ -1,0 +1,527 @@
+What's new in GOK 0.11.8 ?
+
+* Fixed broken .m4 macro (bugzilla 152086)
+
+* Fixes for bug #144435, #147633, #142831, and #150260.
+  Non-XKB compose keyboards are working better now with
+  word completion, and at login with a working 'Menus' key.
+
+What's new in GOK 0.11.5 ?
+
+* Localization improvements from Takao Fujiwara.
+
+* Don't do word completion if current text field is PASSWORD_TEXT.
+
+* Minor bug fixes.
+
+* new language: id (Indonesian), Ahmad Riza H Nst.
+
+What's new in GOK 0.11.4 ?
+
+* Allows user to override access method, "scan" action, and "select"
+  actions from command line.  See "gok --usage" or "gok --help" for
+  more info.
+
+* Requires at-spi-1.5.2 or better.
+
+* Requires libloginhelper-1.0.
+
+* Implements LoginHelper interface, to let authentication clients know
+  that GOK needs certain services during screen lock or authentication
+  (such as having its main window raised, access to XInput devices, etc.)
+
+* Always register with bonobo-activation (as a LoginHelper).
+
+* Fixed bug in gok_scanner_current_state_uses_corepointer, which
+  means the "core pointer warning" dialog doesn't get posted
+  unnecessarily.
+
+* Adds a new gconf key, /apps/gok/per_user_dictionary, 
+  which determines whether each GOK user has a private (writeable)
+  copy of the main GOK word completion dictionary or not.
+
+* Bug fixes: #143453, #143295, #142796.
+
+
+=====
+
+What's new in GOK 0.11.3 ?
+
+(This is the first external release in the development
+series of GOK targeting the gnome 2.8 release)
+
+Lots of new UI and features...
+
+* Added 5-switch directed scanning access method.
+
+* Fixed DOCK behavior when docking at top of screen (#140882).
+
+* Warn user about likely side-effects when starting GOK in 
+  corepointer mode (except for Direct
+  Selection access method).
+
+* Changed GOK's dialogs (About, startup message dialogs, etc.) to 
+  prevent them from raising above GOK's main window when in DOCK mode.
+  (#136160).
+
+* Fixed the very broken KEYSTRING word completion input.
+
+* Added a utility ('create_branching_keyboard') for creating
+  branching compose keyboards for non-Latin locales and locales which
+  normally require 'input methods' for text input.
+ 
+* Allow user to chooise between prebuild compose keyboard from a
+  custom .kbd file. a keyboard created from the XKB keyboard
+  description on the X Server (default), an alphabetic keyboard, or a
+  keyboard with alphabetic keys listed in order of frequency.  Better
+  handling of key shift levels for non-alphabetic keys.
+
+* Added a numberpad keyboard (136482) and put a branch key for it on
+  the compose keyboard.
+
+* Added a valuator keyboard, and support UI grab and manipulation of
+  sliders and scrollbars (132757, 138751).
+
+* Allow the user to change the sensitivity of the XInput valuators
+  (132132).
+
+* Allow the user to select Dock and Fill modes for GOK from the
+  "Settings" dialog (118222).
+
+* Allow the user to specify an additional search directory for GOK
+  keyboards (109181, 140929)
+
+* by default we put the additional keys on the "XKB" Compose keyboard
+  on the leftmost column instead of on a new row, to conserve space.
+
+* Use libglade instead of glade-generated source files.
+
+* Require libbonobo-2 2.5.1
+
+* Better support for tables, including the ability to select rows in
+  GNOME tables via GOK.
+
+* Build and packaging fixes.
+
+* Fixes for bugs: 133545, 117568, 138683, 129450, 136065, 136732,
+  139495, 140051, 141996, 136877, 141240, more.
+
+* languages: gu (Guntupalli Karunakar)
+
+
+=======
+
+What's new in GOK 0.10.1 ?
+
+* Much improved table handling: many table and list items
+  that were previously 'inert' when activated from GOK now
+  work correctly. (#117567, #129450)
+
+* GOK now allows direct interaction with the gtk+-2.4 file selector.
+  (#136065).
+
+* Fixed a regression in the Settings dialog 
+  when used with HighContrastInverse themes. (#138683)
+
+* Fixed modifier/shift behavior in "alphabetic" keyboards that
+  aren't created from the XKB keyboard description.
+
+* Improved support for Mozilla-1.6. (This will be visible to end-users
+  when mozilla changes are pushed out to the main 1.6 tree)
+  (#135314)
+
+* other bugfixes: #133545
+
+* languages:
+  bn (Sayamindu Dasgupta)
+  hu (Andras Timar)
+
+=======
+[This is the gnome-2.6.0 release of GOK.]
+
+What's new in GOK 0.10.0 ?
+
+* Fix for #136756, which could interfere with dwell selection
+  settings.
+
+* languages:
+  Punjabi (Guntupalli Karunakar)
+  en_GB (Gareth Owen)
+
+======
+
+[This is the gnome-2.6 RC1 release of GOK.]
+
+What's new in GOK 0.9.11 ?
+
+* Fix for double-unref bug (#136764) that could cause crashes if
+  an accessible selection or action failed.
+
+* Fix for bug #136509, which restores visual 
+  indication of shift state to
+  hand-crafted alphanumeric keyboards.
+
+=====
+
+* Much improved support for panel applets. [bug #129609]
+
+* Fixed support for 'Text Manipulation' keyboard [bug #136326]
+
+* Update UI-Grab when hypertext or scrollbar content changes. [bug
+  #135635]
+
+* Build fixes for source and docs.
+
+* Build updated to use automake-1.7 [bug #134954]
+
+* Fixes for improper memory references detected with valgrind.
+
+* Updated translations:
+	  M�tin �mirov (az)
+	  Christian Neumair (de)
+	  Nikos Charonitakis (el)
+
+* translations 100% complete: 
+  az, cs, da, de, en_CA, es, ja, ko, nl, no, pl, pt, sq, sr,
+  sr@Latn, sv.
+
+* translations 90 - 99% complete: 
+  el, hr, lt, mn.
+
+* translations 80 - 90% complete:
+  ar, be, ca, cy, fr, ms, pt_BR, sl, vi, zh_CN.
+
+* Thanks to all translators in the gok-0.9 series:
+
+  Arafat Medini (ar)
+  M�tin �mirov (az)
+  Miloslav Trmac (cs)
+  Ole Laursen (da)
+  Christian Neumair (de)
+  Nikos Charonitakis (el)
+  Adam Weinberger (en_CA)
+  Francisco Javier F. Serrador (es)
+  Christophe Merlet (RedFox) (fr)
+  Alastair McKinstry (ga)
+  G Karunakar (hi)
+  "Last-Translator: auto\n" (hr)
+  Takeshi AIHANA (ja)
+  Changwoo Ryu (ko)
+  Tomas Kuliavas (lt)
+  Sanlig Badral (mn)
+  Hasbullah Bin Pit (ms)
+  Tino Meinen (nl)
+  Sigurd Gartmann (no)
+  GNOME PL Team (pl)
+  Duarte Loret (pt)
+  Marcel Telka (sk)
+  Laurent Dhima (sq)
+  �анило Шеган (sr) [sorry Danilo Segan ;-)]
+  Christian Rose (sv)
+  Burçin Dönmez (tr)
+
+
+=======
+
+What's new in GOK 0.9.9 ?
+
+* Fixed regression in toolbar items; they should be actionable now.
+
+* Restart on SEGV
+
+* Fixed 'Full Credits' link in Gok-About
+
+* Improve treatment of combo-boxes (aka GtkOptionMenus), to
+  expose the editable text entry if available.
+
+* Fixed word-completion when shift modifiers are used.
+  (bug #13439).
+
+* Fixed intermittent "double key activation" problem when using
+  corepointer with Direct Selection (bug #134218).
+
+* Worked around an infinite-loop problem when using nautilus with gok.
+  (bug #134631)
+
+* Fix for bug #135833.
+
+What's new in GOK 0.9.8 ?
+
+* Fixed bug #133999 - DOCK mode now fills the screen width correctly.
+
+* fix for bug #134726, which could cause a SEGV with 
+  OpenOffice and some other apps.
+
+* fix for bug #133504, which restores proper functioning of
+  gok's DOCK mode when using FILL/expand.
+
+* en_CA added to ALL_LINGUAS (Christian Rose)
+
+* two new strings marked for 
+  translation (Kjartan Marass)
+
+
+What's new in GOK 0.9.7 ?
+
+* redist to fix missing GNOME_Gok.server.in.in (somehow lost
+  in previous dist).
+
+* better word completion support for non-latin languages
+
+* word-completion support for deadkeys.
+
+* removed C99-isms, build cleanly with -ansi and -Werror.
+
+* bugfixes for: #133999, 133992, #134040, #109403, #134103,
+  #134147, #126437.
+
+* translations 99 - 100% complete: 
+  az, cs, de, el, es, ko, nl, no, pl, sq, sr, sr@Latn.
+
+* translations 90 - 98% complete: 
+  hr, lt, mn, sv.
+
+=====
+
+What's new in GOK 0.9.6/0.9.5 ?
+
+* Keep GOK onscreen even when 'show desktop' button is activated. 
+* Substantial preformance re-work of GOK's 'UI Grab' and advanced
+  UI query features.  Produces 10x speedup with some apps.
+* Better support for comboboxes and list boxes; also better support for
+  interacting with the desktop and context menus.
+  Some support for valuators (user can focus them via gok).
+* More consistent tracking of focus and active application window.
+* Better support for UI Grab on GOK's own Settings dialog.
+* Marked settings UI elements for translation.
+* Support for multi-group keyboards; GOK now works
+  with the gkb/gswitchit and the GNOME Keyboard Indicator.
+* Deadkey labels are much improved.
+* (temporary?) workaround for bug #109403; GOK can be used
+  better with pixmap themes, but no longer tracks changes to 
+  the user theme in its own settings dialog.
+
+* Lots of bugfixes: 125931, 131426, 117072, 123479, 132094,
+  132104, 132292, 132775, 133296, 133484, 126437, 121907, more.
+
+new languages:
+
+* ga (Irish): Aliastair McKinstry
+
+substantially complete translations:
+
+* az, cs, de, el, es, hr, ko, lt, mn, nl, no, pl, sq, sr, sr@Latn, sv.
+
+=======
+
+What's new in GOK 0.9.5?
+
+* Mostly bug fixes.
+* Added UI for specification of an extra word list
+* Note dependancy updated: gtk+ 2.3.1
+* Sticky keys are now set more consistently (Thanks Muktha 
+<muktha.narayan@wipro.com>)
+
+Bugfixes: #126727, #127296, #127397, #128934, #126298, #127966,
+#128438, #127053, #128692, #129972, #129629, #130807, #106978
+
+New Translations:
+* ar (Arafat Medini), hr (Robert Sedak), lt (Tomas Kuliavas)
+
+
+What's new in GOK 0.9.4
+
+* Improved display for non-US compose keyboards.
+* Improved gok_keyboard_about
+* Deals better with UI components having the same/similar names
+* New access method: single-key sequential scanning.
+* Automatically searches for dynamic GOK keyboards matching the current
+  locale, and uses localized GOK keyboards if available.
+* Bugfixes: #128966, #126298, #126299, #128117, #128185,
+  #127398, #126722, #127053, #126814, #126815 (partial).
+
+What's new in GOK 0.9.3
+
+* Lots of Internationalization improvements:
+-> Merged the gok_i18n branch into HEAD.
+-> GOK Keyboards are now marked for translation.
+-> Improved support for compose-key sequences.
+-> Can support matching more than one modifier at once,
+   useful for international keyboards with multiple glyphs per
+   keycap.
+-> More strings marked for translation.
+
+* Efficiency improvements.
+
+* Fix for building without XInput.
+
+* Prevent GOK from occluding itself with its dialogs.
+
+* GOK can now present buttons for 'nameless' UI elements e.g. those
+  with only icons and not text labels.
+
+* GOK now reacts to state-changes in UI elements which it is presenting
+  in a UI-Grab keyboard.
+
+* We now require intltool 0.27.3 to build GOK.
+
+* Fixes for 125156, 121445, 107211, 108137, 107857, 122109, 117049, 
+  125319, and more.
+
+What's new in GOK 0.9.1
+
+* New strings marked for translation
+
+* Improvements to internationalization:
+-> GOK word completion is now UTF-capable
+-> GOK can use a system or user word-list, in UTF8 or ISO-latin.
+-> More than one modifier can be matched
+
+* User can specify an additional dictionary/wordlist file, for instance
+  a wordlist from ispell, via gconf.  (There's no UI for this in GOK yet).
+
+
+What's new in GOK 0.8.4
+
+This is the official GNOME 2.4.1 GOK release.
+
+* added a word-completion test to the test suite.
+
+* critical bug fixes: #123497, #123405.
+
+* other bug fixes: #120305.
+
+What's new in GOK 0.8.3
+
+* bug fixes
+
+* this is a hurried release as 0.8.2 is flaky (sorry)
+
+
+This (0.8.0) is the official GNOME 2.4 GOK release.
+
+What's new in GOK 0.8.0:
+
+* Fix for bugs #120914
+
+* Fix for conflict with gtk+ version 2.2.3. 
+
+* new translations: sq (Laurent Dhima); mk, zh_TW (Abel Cheung).
+
+* updated README to give detailed directions on configuring GOK
+  to use extended input devices (e.g. non-corepointer XInput devices),
+  and updates to Known Issues section.
+
+
+What's new in GOK 0.7.14:
+
+* Gok now interrogates the foreground application at startup if the application
+  is accessible.
+  
+* Gok doesn't display non-showing widgets (unless they are menus)
+
+* Fixes and improvements for: #120305, #120303, #116225, #113136, #120489,
+#119260, #119880, #108120, #120650
+
+
+What's new in GOK 0.7.13:
+
+* Detailed news unavailable.
+
+* Updated Requirements: intltool 0.27.1
+
+* Fixes and improvements for: #114345, #118865, #118282, #116966, #115979, 
+#117570, #116688, #114053, #114290, #116903, #117602, #119907, #117571, #118192,
+#117463, #117473, #118509, #118105, #112281, #118275, #109193, #117560, #116426,
+#116881, #117592
+  
+
+What's new in GOK 0.7.8:
+
+* Improvements/fixes for images on buttons.  Use images for 'arrows' in
+  move-resize keyboard.
+
+* Install GOK in the Applications menu; for the moment it installs into 
+  'Applications/Other' but it should install into 'Applications/Accessibility' 
+  once that submenu is created.
+
+* Allow resizing of GOK keys from the 'move-resize' keyboard.
+
+* Fix so that page tabs are included in UI Grab and are actionable.
+
+* Fixes for "Text Manipulation" keyboard.
+
+* GOK is now almost UI frozen for GNOME 2.4.
+
+* Fixes and improvements for: #115979, #108120. #98545, #114740, #116192, #115108,
+  #115252, #114879.  
+
+* new languages including ml from Guntupalli Karunakar. 
+  
+
+What's new in GOK 0.7.7:
+
+* Intial implementation of a "Text Manipulation" keyboard that 
+  allows fast navigation, cut, paste, and copy operations within a
+  document that exports the AT-SPI accessibility APIs.
+
+* Word completion improvements, better behavior between words and 
+  with "backspace".
+
+* GOK warns if StickyKeys is not enabled, and sets it (#114726).
+
+* GOK asks WM not to display close, iconify, or maximize buttons (#107917)
+
+* GOK provides some mouse control/emulation features (#109188)
+
+* Fixed crasher bug #110276 (actually fixed in at-spi, by Michael).
+
+* Fixes/Enhancements for bugs/RFEs: #108091, #110268 (Padraig), #109183, 
+  #112507, #114654, #109182
+
+=========
+
+What's new in GOK 0.7.6:
+
+* Added repeat feature.  Repeat stoppage is currently described for 
+each access method in the respective xml (.xam) file.  
+Repeat mode is currently implemented via a new key type. 
+This allows users with severly limited action palettes to
+use repeat mode.  Adding repeat start descriptions to some of the 
+access methods is a good future goal.
+
+* bug fix for #109178
+
+=========
+
+What's new in GOK 0.7.5:
+
+* new "Show/Hide" feature in "Window" keyboard.
+
+* Changes to main keyboard, places Preferences in a new
+  "GOK" keyboard.
+
+* Added "Help" and "About" buttons.
+
+* Added hyperlink traversal features and lots of improvements to
+  the "UI Grab" behavior.  Also grab and focus text entry fields.
+
+* Added "dock" and "float" buttons for docking and undocking.
+
+* bugfixes/enhancement for #108308, #92668, #114124, #107477.
+
+=======
+
+What's new in GOK 0.7.4:
+
+* bugfixes for #88033, #113836, #108273, #108282, 
+  RFEs #108055, #109325
+
+* GOK now allows images to be placed on its buttons, with 
+either a default, stock, or user-specified size.
+
+* new panel/dock mode for GOK, keeps maximized windows from 
+encroaching, and lets WM do it's best not to put things
+underneath GOK.
+
+==============

@@ -1,0 +1,88 @@
+<!-- ##### SECTION Title ##### -->
+global
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO EMPTY_STRING ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION string_equals ##### -->
+<para>
+
+</para>
+
+@string_1: 
+@string_2: 
+@Returns: 
+
+
+<!-- ##### FUNCTION string_not_equals ##### -->
+<para>
+
+</para>
+
+@string_1: 
+@string_2: 
+@Returns: 
+
+
+<!-- ##### FUNCTION string_empty ##### -->
+<para>
+
+</para>
+
+@string_1: 
+@Returns: 
+
+
+<!-- ##### FUNCTION string_starts_with ##### -->
+<para>
+
+</para>
+
+@string_1: 
+@string_2: 
+@Returns: 
+
+
+<!-- ##### FUNCTION string_ends_with ##### -->
+<para>
+
+</para>
+
+@string_1: 
+@string_2: 
+@Returns: 
+
+
+<!-- ##### FUNCTION string_trim ##### -->
+<para>
+
+</para>
+
+@string_1: 
+
+
+<!-- ##### FUNCTION checked_malloc ##### -->
+<para>
+
+</para>
+
+@size: 
+
+

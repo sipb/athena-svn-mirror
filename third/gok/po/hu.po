@@ -1,0 +1,1979 @@
+# Hungarian translation of gok.
+# Copyright (C) 2004 Free Software Foundation, Inc.
+# This file is distributed under the same license as the gok package.
+# Gergely Nagy <greg@gnome.hu>, 2004.
+# Laszlo Dvornik <dvornik@gnome.hu>, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gok\n"
+"POT-Creation-Date: 2004-09-10 06:47+0100\n"
+"PO-Revision-Date: 2004-08-26 13:21+0200\n"
+"Last-Translator: Laszlo Dvornik <dvornik@gnome.hu>\n"
+"Language-Team: Hungarian <gnome@gnome.hu>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
+
+#: automatic-scanning.xml.in.h:1 direct-selection.xml.in.h:1
+#: dwell-selection.xml.in.h:1 inverse-scanning.xml.in.h:1
+#: singlekey-inverse-scanning.xml.in.h:1 directed.xml.in.h:1
+msgid "(100s of a second)"
+msgstr "(századmásodperc)"
+
+#: automatic-scanning.xml.in.h:2 direct-selection.xml.in.h:2
+#: inverse-scanning.xml.in.h:2
+msgid "Auto Repeat On"
+msgstr "Automatikus ismétlés be"
+
+#: automatic-scanning.xml.in.h:3 direct-selection.xml.in.h:3
+#: dwell-selection.xml.in.h:2 inverse-scanning.xml.in.h:3
+msgid "Auto Repeat Rate:"
+msgstr "Automatikus ismétlési ráta:"
+
+#: automatic-scanning.xml.in.h:4
+msgid "Automatic Scanning"
+msgstr "Automatikus keresés"
+
+#: automatic-scanning.xml.in.h:5 singlekey-automatic-scanning.xml.in.h:1
+msgid "Autostart (starts automatically)"
+msgstr "Autostart (automatikusan elindul)"
+
+#: automatic-scanning.xml.in.h:6 inverse-scanning.xml.in.h:4
+#: singlekey-automatic-scanning.xml.in.h:2
+#: singlekey-inverse-scanning.xml.in.h:2
+msgid "Bottom/Top"
+msgstr "Lent/Fent"
+
+#: automatic-scanning.xml.in.h:7 inverse-scanning.xml.in.h:5
+msgid "Continuous Cycle On"
+msgstr "Folyamatos léptetés be"
+
+#: automatic-scanning.xml.in.h:8 inverse-scanning.xml.in.h:6
+#: singlekey-automatic-scanning.xml.in.h:3
+#: singlekey-inverse-scanning.xml.in.h:3
+msgid "Cycles Before Stopping:"
+msgstr "Léptetés leállítás előtt:"
+
+#: automatic-scanning.xml.in.h:9 direct-selection.xml.in.h:5
+#: dwell-selection.xml.in.h:4 gok.glade2.h:69 inverse-scanning.xml.in.h:7
+#: singlekey-automatic-scanning.xml.in.h:4
+#: singlekey-inverse-scanning.xml.in.h:4 directed.xml.in.h:4
+msgid "Feedback"
+msgstr "Visszajelzés"
+
+#: automatic-scanning.xml.in.h:10
+msgid "Feedback Movement"
+msgstr "Mozgás visszajelzése"
+
+#: automatic-scanning.xml.in.h:11
+msgid "Feedback Selection"
+msgstr "Kijelölés visszajelzése"
+
+#: automatic-scanning.xml.in.h:12 singlekey-automatic-scanning.xml.in.h:7
+msgid "Initial Delay:"
+msgstr "Kezdeti késleltetés:"
+
+#: automatic-scanning.xml.in.h:13 inverse-scanning.xml.in.h:10
+#: singlekey-automatic-scanning.xml.in.h:8
+#: singlekey-inverse-scanning.xml.in.h:7
+msgid "Left/Right"
+msgstr "Balra/Jobbra"
+
+#: automatic-scanning.xml.in.h:14 direct-selection.xml.in.h:10
+#: dwell-selection.xml.in.h:10 inverse-scanning.xml.in.h:12
+#: singlekey-automatic-scanning.xml.in.h:10
+#: singlekey-inverse-scanning.xml.in.h:9 directed.xml.in.h:8
+msgid "Operation"
+msgstr "Művelet"
+
+#: automatic-scanning.xml.in.h:15 direct-selection.xml.in.h:11
+#: inverse-scanning.xml.in.h:13 singlekey-automatic-scanning.xml.in.h:11
+#: singlekey-inverse-scanning.xml.in.h:10
+msgid "Options"
+msgstr "Beállítások"
+
+#: automatic-scanning.xml.in.h:16 singlekey-automatic-scanning.xml.in.h:12
+msgid ""
+"Press a switch to start scanning.  Press another switch or the same switch "
+"again to select."
+msgstr ""
+"A kereséshez nyomjon meg egy kapcsolót. A kiválasztáshoz nyomjon meg egy "
+"másikat, vagy ugyanazt még egyszer."
+
+#: automatic-scanning.xml.in.h:17 singlekey-automatic-scanning.xml.in.h:13
+msgid "Press switch to start"
+msgstr "Nyomja meg a kapcsolót az indításhoz"
+
+#: automatic-scanning.xml.in.h:18 inverse-scanning.xml.in.h:15
+#: singlekey-automatic-scanning.xml.in.h:14
+#: singlekey-inverse-scanning.xml.in.h:12
+msgid "Right/Left"
+msgstr "Jobbra/Balra"
+
+#: automatic-scanning.xml.in.h:19 inverse-scanning.xml.in.h:16
+#: singlekey-automatic-scanning.xml.in.h:15
+#: singlekey-inverse-scanning.xml.in.h:13 directed.xml.in.h:10
+msgid "Scan Delay:"
+msgstr "Keresési késleltetés:"
+
+#: automatic-scanning.xml.in.h:20 inverse-scanning.xml.in.h:17
+#: singlekey-automatic-scanning.xml.in.h:16
+#: singlekey-inverse-scanning.xml.in.h:14 directed.xml.in.h:11
+msgid "Scan Speed:"
+msgstr "Keresési sebesség:"
+
+#: automatic-scanning.xml.in.h:21
+msgid "Select"
+msgstr "Kijelölés"
+
+#: automatic-scanning.xml.in.h:22
+msgid "Start Scanning"
+msgstr "Keresés indítása"
+
+#: automatic-scanning.xml.in.h:23 inverse-scanning.xml.in.h:21
+#: singlekey-automatic-scanning.xml.in.h:23
+#: singlekey-inverse-scanning.xml.in.h:20
+msgid "Top/Bottom"
+msgstr "Fent/Lent"
+
+#: automatic-scanning.xml.in.h:24 inverse-scanning.xml.in.h:22
+#: singlekey-inverse-scanning.xml.in.h:21 directed.xml.in.h:15
+msgid "Wrap Rows/Columns"
+msgstr "Sorok/Oszlopok tördelése"
+
+#: automatic-scanning.xml.in.h:25
+msgid "feedbackmovement"
+msgstr "feedbackmovement"
+
+#: automatic-scanning.xml.in.h:26
+msgid "feedbackselection"
+msgstr "feedbackselection"
+
+#: direct-selection.xml.in.h:4
+msgid "Direct Selection"
+msgstr "Közvetlen kiválasztás"
+
+#: direct-selection.xml.in.h:6 dwell-selection.xml.in.h:5
+#: inverse-scanning.xml.in.h:8 singlekey-automatic-scanning.xml.in.h:5
+#: singlekey-inverse-scanning.xml.in.h:5 directed.xml.in.h:5
+msgid "Feedback Movement:"
+msgstr "Mozgás visszajelzése:"
+
+#: direct-selection.xml.in.h:7 dwell-selection.xml.in.h:6
+#: singlekey-automatic-scanning.xml.in.h:6
+#: singlekey-inverse-scanning.xml.in.h:6
+msgid "Feedback Selection:"
+msgstr "Kijelölés visszajelzése:"
+
+#: direct-selection.xml.in.h:8 dwell-selection.xml.in.h:7
+msgid "Highlight:"
+msgstr "Kiemelés:"
+
+#: direct-selection.xml.in.h:9
+msgid "Move the mouse pointer to highlight a key.  Press a switch to select."
+msgstr ""
+"Az egérrel mutasson rá egy billentyűre. Nyomjon meg egy kapcsolót az "
+"aktiváláshoz."
+
+#: direct-selection.xml.in.h:12 dwell-selection.xml.in.h:11
+#: inverse-scanning.xml.in.h:19 singlekey-automatic-scanning.xml.in.h:18
+#: singlekey-inverse-scanning.xml.in.h:17 directed.xml.in.h:12
+msgid "Select:"
+msgstr "Kiválasztás:"
+
+#: dwell-selection.xml.in.h:3
+msgid "Dwell Selection"
+msgstr "Időzős kiválasztás"
+
+#: dwell-selection.xml.in.h:8
+msgid "Move the mouse pointer to highlight a key.  Dwell on the key to select."
+msgstr ""
+"Az egérrel mutasson rá egy billentyűre. Időzzön el felette az aktiváláshoz."
+
+#: dwell-selection.xml.in.h:9 inverse-scanning.xml.in.h:11
+#: singlekey-automatic-scanning.xml.in.h:9
+#: singlekey-inverse-scanning.xml.in.h:8 directed.xml.in.h:7
+msgid "Movement:"
+msgstr "Mozgás:"
+
+#: dwell-selection.xml.in.h:12 inverse-scanning.xml.in.h:20
+#: singlekey-automatic-scanning.xml.in.h:19
+#: singlekey-inverse-scanning.xml.in.h:18 directed.xml.in.h:13
+msgid "Selection:"
+msgstr "Kijelölés:"
+
+#: gok-controls.kbd.in.h:1
+msgid "About"
+msgstr "Névjegy"
+
+#: gok-controls.kbd.in.h:2
+msgid "Help"
+msgstr "Súgó"
+
+#: gok-controls.kbd.in.h:3
+msgid "Preferences"
+msgstr "Beállítások"
+
+#: gok-controls.kbd.in.h:4
+msgid "Quit GOK"
+msgstr "Kilépés a GOK-ból"
+
+#: gok-controls.kbd.in.h:5 main.kbd.in.h:12
+msgid "Window"
+msgstr "Ablak"
+
+#. "back" means go to previous keyboard
+#: gok-controls.kbd.in.h:6 gok/gok-keyboard.c:2476 gok/gok-windowlister.c:130
+#: launcher.kbd.in.h:5 mouse.kbd.in.h:24 move-resize.kbd.in.h:23
+#: numberpad.kbd.in.h:19 quit.kbd.in.h:4 valuator.kbd.in.h:3
+msgid "back"
+msgstr "vissza"
+
+#: gok-with-references.schemas.in.h:1 gok/main.c:284
+msgid ""
+"A multiplier to be applied to input device valuator events before processing"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:2
+msgid ""
+"A semicolon-delimited list of fully specified paths to additional word-"
+"completion dictionaries"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:3
+msgid "Are the preferences to be restricted?"
+msgstr "A beállítások korlátozva legyenek?"
+
+#: gok-with-references.schemas.in.h:4
+msgid "Determines the keyboard type used for the default compose keyboard"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:5
+msgid ""
+"Does GOK generate its compose keyboard dynamically based on information from "
+"the X Server?"
+msgstr ""
+"A GOK az X-kiszolgálótól kapott adatok alapján dinamikusan állítsa elő a "
+"billentyűzetet?"
+
+#: gok-with-references.schemas.in.h:6
+msgid ""
+"Does each GOK user have a private copy of the word prediction dictionary?"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:7
+msgid "Does the GOK window expand to fill the full screen width?"
+msgstr "A GOK ablak kitöltse a teljes képernyőszélességet?"
+
+#: gok-with-references.schemas.in.h:8
+msgid "Does the core pointer follow the GOK keyboard pointer?"
+msgstr "A rendszer (egér)mutatója kövesse a GOK mutatóját?"
+
+#: gok-with-references.schemas.in.h:9
+msgid "Does this action use key averaging"
+msgstr "A művelet átlagolja a billentyűket"
+
+#: gok-with-references.schemas.in.h:10
+msgid "Does this feedback flash"
+msgstr "A visszajelzés villogjon"
+
+#: gok-with-references.schemas.in.h:11
+msgid "Does this feedback play a sound"
+msgstr "A visszajelzés hangot adjon"
+
+#: gok-with-references.schemas.in.h:12
+msgid "Does this feedback speak the label of a GOK key"
+msgstr "A visszajelzés felolvassa-e a GOK-billentyű címkéjét"
+
+#: gok-with-references.schemas.in.h:13
+msgid "GOK main window anchor location (if a dock), or empty string if not"
+msgstr "A GOK ablak helyzete dokkolás esetén, vagy üres mező"
+
+#: gok-with-references.schemas.in.h:14
+msgid ""
+"How many children of each node in the GUI tree to search for accessible "
+"objects"
+msgstr ""
+"A felhasználói felületet leíró fa hány csúcsában történjen keresés "
+"hozzáférést segítő elemek után"
+
+#: gok-with-references.schemas.in.h:15
+msgid "How many levels down the GUI tree to search for accessible objects"
+msgstr ""
+"A felhasználói felületet leíró fában milyen mélyen történjen keresés "
+"hozzáférést segítő elemek után"
+
+#: gok-with-references.schemas.in.h:16
+msgid "Is this action permanent"
+msgstr "Állandó a művelet"
+
+#: gok-with-references.schemas.in.h:17
+msgid "Is this feedback permanent"
+msgstr "Állandó a visszajelzés"
+
+#: gok-with-references.schemas.in.h:18
+msgid "Is word completion on"
+msgstr "A szókiegészítés aktív"
+
+#: gok-with-references.schemas.in.h:19
+msgid ""
+"Should be one of the following: xkb, default, alpha, alpha-freq, custom; if "
+"custom, custom_compose_keyboard should be defined."
+msgstr ""
+
+#: gok-with-references.schemas.in.h:20
+msgid "The access method to use"
+msgstr "A hozzáférési mód"
+
+#: gok-with-references.schemas.in.h:21
+msgid "The directory to load access method files from."
+msgstr "A hozzáférési módokat tartalmazó könyvtár."
+
+#: gok-with-references.schemas.in.h:22
+msgid "The directory to load dictionary files from."
+msgstr "A szótárfájlokat tartalmazó könyvtár."
+
+#: gok-with-references.schemas.in.h:23
+msgid "The directory to load the gok resource file from."
+msgstr "A GOK erőforrásfájlokat tartalmazó könyvtár."
+
+#: gok-with-references.schemas.in.h:24
+msgid "The directory to load user-specific or custom keyboard files from."
+msgstr ""
+"A felhasználóspecifikus vagy egyéni billentyűzetleíró fájlokat tartalmazó "
+"könyvtár."
+
+#: gok-with-references.schemas.in.h:25
+msgid "The full pathname to a file which defines a custom GOK compose keyboard"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:26
+msgid "The key height"
+msgstr "Billentyűmagasság"
+
+#: gok-with-references.schemas.in.h:27
+msgid "The key width"
+msgstr "Billentyűszélesség"
+
+#: gok-with-references.schemas.in.h:28
+msgid "The keyboards X coordinate"
+msgstr "A billentyűzet X koordinátája"
+
+#: gok-with-references.schemas.in.h:29
+msgid "The keyboards Y coordinate"
+msgstr "A billentyűzet Y koordinátája"
+
+#: gok-with-references.schemas.in.h:30
+msgid "The name of the sound that this feedback will play"
+msgstr "A visszajelzéskor megszólaló hangfájl"
+
+#: gok-with-references.schemas.in.h:31
+msgid "The name of the xinput device to use"
+msgstr "Az xinput eszköz neve"
+
+#: gok-with-references.schemas.in.h:32
+msgid "The name to display to the user for this action"
+msgstr "A művelet neve"
+
+#: gok-with-references.schemas.in.h:33
+msgid "The name to display to the user for this feedback"
+msgstr "A visszajelzés neve"
+
+#: gok-with-references.schemas.in.h:34
+msgid "The number if applicable"
+msgstr "A száma (ha szükséges)"
+
+#: gok-with-references.schemas.in.h:35
+msgid "The number of predictions for word completion"
+msgstr "A javaslatok száma szókiegészítésnél"
+
+#: gok-with-references.schemas.in.h:36
+msgid "The number of times this feedback will flash"
+msgstr "A felvillanásainak száma visszajelzésnél"
+
+#: gok-with-references.schemas.in.h:37
+msgid "The primary or system directory to load keyboard files from."
+msgstr ""
+"A billentyűzetleíró fájlokat tartalmazó elsődleges vagy rendszerkönyvtár."
+
+#: gok-with-references.schemas.in.h:38
+msgid "The rate for this action"
+msgstr "A művelet rátája"
+
+#: gok-with-references.schemas.in.h:39
+msgid "The space between keys"
+msgstr "Hézag a billentyűk között"
+
+#: gok-with-references.schemas.in.h:40
+msgid "The state in which this action is activated"
+msgstr "Az állapot, amelyben a művelet elindul"
+
+#: gok-with-references.schemas.in.h:41
+msgid "The type of this action"
+msgstr "A művelet típusa"
+
+#: gok-with-references.schemas.in.h:42
+msgid ""
+"Whether to use additional word lists when searching for GOK word-completion "
+"candidates"
+msgstr ""
+
+#: gok.desktop.in.h:1
+msgid "On-Screen Keyboard"
+msgstr "Képernyő-billentyűzet"
+
+#: gok.desktop.in.h:2
+msgid "The GNOME On-screen Keyboard"
+msgstr "A GNOME Képernyő-billentyűzet"
+
+#: gok.glade2.h:1
+msgid "*"
+msgstr "*"
+
+#: gok.glade2.h:2
+msgid "3 State"
+msgstr "3 állású"
+
+#: gok.glade2.h:3
+msgid "<b>Appearance</b>"
+msgstr "<b>Megjelenés</b>"
+
+#: gok.glade2.h:4
+msgid "<b>Behavior</b>"
+msgstr "<b>Működés</b>"
+
+#: gok.glade2.h:5
+msgid "<b>Branch</b>"
+msgstr "<b>Ág</b>"
+
+#: gok.glade2.h:6
+msgid "<b>Command Prediction</b>"
+msgstr "<b>Parancselőrejelzés</b>"
+
+#: gok.glade2.h:7
+msgid "<b>Compose Keyboard</b>"
+msgstr "<b>Billentyűzet szerkesztése</b>"
+
+#: gok.glade2.h:8
+msgid "<b>Custom Keyboards</b>"
+msgstr "<b>Egyéni billentyűzetek</b>"
+
+#: gok.glade2.h:9
+msgid "<b>Define Actions</b>"
+msgstr "<b>Műveletek definiálása</b>"
+
+#: gok.glade2.h:10
+msgid "<b>Define Feedback</b>"
+msgstr "<b>Visszajelzés definiálása</b>"
+
+#: gok.glade2.h:11
+msgid "<b>Delay Before Activation</b>"
+msgstr "<b>Aktiválás előtti idő</b>"
+
+#: gok.glade2.h:12
+msgid "<b>Description</b>"
+msgstr "<b>Leírás</b>"
+
+#: gok.glade2.h:13
+msgid "<b>Dock and Expand Horizontally</b>"
+msgstr ""
+
+#: gok.glade2.h:14
+msgid "<b>Event Source</b>"
+msgstr "<b>Esemény forrása</b>"
+
+#: gok.glade2.h:15
+msgid "<b>Font</b>"
+msgstr "<b>Betűtípus</b>"
+
+#: gok.glade2.h:16
+msgid "<b>Key Flashing</b>"
+msgstr "<b>Villogó billentyű</b>"
+
+#: gok.glade2.h:17
+msgid "<b>Key Size and Spacing Controls</b>"
+msgstr "<b>Billentyűméret és hézagok</b>"
+
+#: gok.glade2.h:18
+msgid "<b>Key</b>"
+msgstr "<b>Billentyű</b>"
+
+#: gok.glade2.h:19
+msgid "<b>Keyboard</b>"
+msgstr "<b>Billentyűzet</b>"
+
+#: gok.glade2.h:20
+msgid "<b>Modifier</b>"
+msgstr "<b>Módosító</b>"
+
+#: gok.glade2.h:21
+msgid "<b>Output</b>"
+msgstr "<b>Kimenet</b>"
+
+#: gok.glade2.h:22
+msgid "<b>Position</b>"
+msgstr "<b>Helyzet</b>"
+
+#: gok.glade2.h:23
+msgid "<b>Preview</b>"
+msgstr "<b>Előnézet</b>"
+
+#: gok.glade2.h:24
+msgid "<b>Sensitivity</b>"
+msgstr "<b>Érzékenység</b>"
+
+#: gok.glade2.h:25
+msgid "<b>Sound</b>"
+msgstr "<b>Hang</b>"
+
+#: gok.glade2.h:26
+msgid "<b>Speech</b>"
+msgstr "<b>Beszéd</b>"
+
+#: gok.glade2.h:27
+msgid "<b>Switch or Button Number</b>"
+msgstr "<b>Kapcsoló vagy gomb sorszáma</b>"
+
+#: gok.glade2.h:28
+msgid "<b>Theme</b>"
+msgstr "<b>Téma</b>"
+
+#: gok.glade2.h:29
+msgid "<b>Timers and Delays</b>"
+msgstr "<b>Időzítők</b>"
+
+#: gok.glade2.h:30
+msgid "<b>Type</b>"
+msgstr "<b>Típus</b>"
+
+#: gok.glade2.h:31
+msgid "<b>Valuator Type</b>"
+msgstr ""
+
+#: gok.glade2.h:32
+msgid "<b>Word Completion</b>"
+msgstr "<b>Szókiegészítés</b>"
+
+#: gok.glade2.h:33
+msgid ""
+"<small><i><b>Note:</b> Changes to this setting will not take effect until "
+"you next run GOK.</i></small>"
+msgstr ""
+"<small><i><b>Megjegyzés:</b> Ezek a változások a GOK újraindításakor lépnek "
+"majd életbe.</i></small>"
+
+#: gok.glade2.h:34
+msgid ""
+"A multipler which is applied to the extended input device valuator events "
+"before processing."
+msgstr ""
+
+#: gok.glade2.h:35
+msgid "Access Methods"
+msgstr "Hozzáférési módok"
+
+#: gok.glade2.h:36
+msgid "AccessMethodName"
+msgstr "AccessMethodName"
+
+#: gok.glade2.h:37
+msgid "Action Names List"
+msgstr "Műveletek nevei"
+
+#: gok.glade2.h:38
+msgid "Action Type:"
+msgstr "Művelet típusa:"
+
+#: gok.glade2.h:39
+msgid "ActionTypeNotebook"
+msgstr "ActionTypeNotebook"
+
+#: gok.glade2.h:40
+msgid "Actions"
+msgstr "Műveletek"
+
+#: gok.glade2.h:41
+msgid "Activate on Dw_ell"
+msgstr "_Időzős aktiválás"
+
+#: gok.glade2.h:42
+msgid "Activate on _Enter"
+msgstr "_Enter billentyűre aktiválás"
+
+#: gok.glade2.h:43
+msgid "Activate on _Move"
+msgstr "_Mozgásra aktiválás"
+
+#: gok.glade2.h:44
+msgid "Activate when _pressed"
+msgstr "_Gombnyomásra aktiválás"
+
+#: gok.glade2.h:45
+msgid "Activate when _released"
+msgstr "Gomb_felengedésre aktiválás"
+
+#: gok.glade2.h:46
+msgid "Add"
+msgstr "Hozzáad"
+
+#: gok.glade2.h:47
+msgid "Add New Key"
+msgstr "Új billentyű hozzáadása"
+
+#: gok.glade2.h:48
+msgid "Additional directory to search for GOK Keyboards"
+msgstr ""
+
+#: gok.glade2.h:49
+msgid "Additional directory to search for GOK keyboard files"
+msgstr "További GOK billentyűzetleíró fájlokat tartalmazó könyvtár"
+
+#: gok.glade2.h:50
+msgid "Alphanumeric keyboard arranged by letter frequency"
+msgstr ""
+
+#: gok.glade2.h:51
+msgid "Alphanumeric keyboard sorted alphabetically"
+msgstr ""
+
+#: gok.glade2.h:52
+msgid "Appearance"
+msgstr "Megjelenés"
+
+#: gok.glade2.h:53
+msgid "Bottom:"
+msgstr "Alul:"
+
+#: gok.glade2.h:54
+msgid "Browse"
+msgstr "Tallózás"
+
+#: gok.glade2.h:55
+msgid "C_ore pointer"
+msgstr "A _Rendszer (egér)mutatója"
+
+#: gok.glade2.h:56
+msgid "Command Prediction"
+msgstr "Parancselőrejelzés"
+
+#: gok.glade2.h:57
+msgid "Delay"
+msgstr "Szünet"
+
+#: gok.glade2.h:58
+msgid ""
+"Delay, in 100ths of a second, after the triggering event occurs, before "
+"activation takes place."
+msgstr ""
+"Szünet, századmásodpercben, az beviteli esemény és a művelet végrehajtása "
+"között."
+
+#: gok.glade2.h:59
+msgid "Delete"
+msgstr "Töröl"
+
+#: gok.glade2.h:60
+msgid "Delete Key"
+msgstr "Billentyű törlése"
+
+#: gok.glade2.h:61
+msgid "Dock"
+msgstr "Dokkoló"
+
+#. Translators: dock is used as a verb.
+#: gok.glade2.h:62 move-resize.kbd.in.h:2
+msgid "Dock Bottom"
+msgstr "Dokkolás alul"
+
+#. Translators: dock is used as a verb.
+#: gok.glade2.h:63 move-resize.kbd.in.h:4
+msgid "Dock Top"
+msgstr "Dokkolás felül"
+
+#: gok.glade2.h:64
+msgid "Duplicate"
+msgstr "Átmásol"
+
+#: gok.glade2.h:65
+msgid "Enable _key flashing"
+msgstr "_Villogás engedélyezése"
+
+#: gok.glade2.h:66
+msgid "Enable _sound"
+msgstr "_Hang engedélyezése"
+
+#: gok.glade2.h:67
+msgid "Enable _word completion"
+msgstr "_Szókiegészítés engedélyezése"
+
+#: gok.glade2.h:68
+msgid "Enable co_mmand prediction"
+msgstr "_Parancselőrejelzés engedélyezése"
+
+#: gok.glade2.h:70
+msgid "Fill WIdth"
+msgstr ""
+
+#: gok.glade2.h:71
+msgid "Font Group:"
+msgstr "Betűtípus csoport:"
+
+#: gok.glade2.h:72 gok/gok-editor.c:35
+msgid "GOK Keyboard Editor"
+msgstr "GOK billentyűzet szerkesztő"
+
+#: gok.glade2.h:73
+msgid "GOK Preferences"
+msgstr "GOK beállítások"
+
+#: gok.glade2.h:74
+msgid "GOK:"
+msgstr "GOK:"
+
+#: gok.glade2.h:75
+msgid "Key Height"
+msgstr "Billentyűmagasság"
+
+#: gok.glade2.h:76
+msgid "Key Spacing"
+msgstr "Billentyűköz"
+
+#: gok.glade2.h:77
+msgid "Key Width"
+msgstr "Billentyűszélesség"
+
+#: gok.glade2.h:78
+msgid "Key _width:"
+msgstr "Billentyű_szélesség:"
+
+#: gok.glade2.h:79
+msgid "Key h_eight:"
+msgstr "Billentyű_magasság:"
+
+#: gok.glade2.h:80
+msgid "Keyboards"
+msgstr "Billentyűzetek"
+
+#: gok.glade2.h:81
+msgid "Keycode:"
+msgstr "Billentyűkód:"
+
+#: gok.glade2.h:82
+msgid "Keysym:"
+msgstr ""
+
+#: gok.glade2.h:83
+msgid "Label:"
+msgstr "Címke:"
+
+#: gok.glade2.h:84 directed.xml.in.h:6
+msgid "Left:"
+msgstr "Balra:"
+
+#: gok.glade2.h:85
+msgid "Match physical keyboard as reported by X Server"
+msgstr ""
+
+#: gok.glade2.h:86
+msgid "Modifier Post"
+msgstr "Utómódosító"
+
+#: gok.glade2.h:87
+msgid "Modifier Pre"
+msgstr "Előmódosító"
+
+#: gok.glade2.h:88
+msgid "Modifier:"
+msgstr "Módosító:"
+
+#: gok.glade2.h:89
+msgid "Move Down"
+msgstr "Lemozgat"
+
+#: gok.glade2.h:90
+msgid "Move Up"
+msgstr "Felmozgat"
+
+#: gok.glade2.h:91
+msgid "Name:"
+msgstr "Név:"
+
+#: gok.glade2.h:92
+msgid "New"
+msgstr "Új"
+
+#: gok.glade2.h:93
+msgid "Next Key"
+msgstr "Következő billentyű"
+
+#: gok.glade2.h:94
+msgid "Normal"
+msgstr "Normál"
+
+#: gok.glade2.h:95
+msgid "Number of _flashes:"
+msgstr "_Felvillanások száma:"
+
+#: gok.glade2.h:96
+msgid "Number of _predictions:"
+msgstr "_Előrejelzések száma:"
+
+#: gok.glade2.h:97
+msgid "Number of command predictions:"
+msgstr "Parancselőrejelzések száma:"
+
+#: gok.glade2.h:98
+msgid "Number of word predictions:"
+msgstr "Javaslatok száma szókiegészítésnél:"
+
+#: gok.glade2.h:99
+msgid "Other _input device:"
+msgstr "Egyéb _beviteli eszköz:"
+
+#: gok.glade2.h:100
+msgid "Prediction"
+msgstr "Előrejelzés"
+
+#: gok.glade2.h:101
+msgid "Press"
+msgstr "Lenyom"
+
+#: gok.glade2.h:102
+msgid "Previous Key"
+msgstr "Előző billentyű"
+
+#: gok.glade2.h:103
+msgid "Read keyboard from file:"
+msgstr "Billentyűzet beolvasása fájlból:"
+
+#: gok.glade2.h:104
+msgid "Release"
+msgstr "Felenged"
+
+#: gok.glade2.h:105 directed.xml.in.h:9
+msgid "Right:"
+msgstr "Jobbra:"
+
+#: gok.glade2.h:106
+msgid "S_witch"
+msgstr "_Gomb"
+
+#: gok.glade2.h:107
+msgid "Show Only This Font Group"
+msgstr "Csak ez a betűtípuscsoport jelenjen meg"
+
+#: gok.glade2.h:108
+msgid "So_und:"
+msgstr "_Hang:"
+
+#: gok.glade2.h:109
+msgid "Speak key _label"
+msgstr ""
+
+#: gok.glade2.h:110
+msgid "Style:"
+msgstr "Stílus:"
+
+#: gok.glade2.h:111
+msgid "Switch _1"
+msgstr "Gomb _1"
+
+#: gok.glade2.h:112
+msgid "Switch _2"
+msgstr "Gomb _2"
+
+#: gok.glade2.h:113
+msgid "Switch _3"
+msgstr "Gomb _3"
+
+#: gok.glade2.h:114
+msgid "Switch _4"
+msgstr "Gomb _4"
+
+#: gok.glade2.h:115
+msgid "Switch _5"
+msgstr "Gomb _5"
+
+#: gok.glade2.h:116
+msgid "Target:"
+msgstr "Cél:"
+
+#: gok.glade2.h:117
+msgid "To Back"
+msgstr "Háttérbe"
+
+#: gok.glade2.h:118
+msgid "To Front"
+msgstr "Előtérbe"
+
+#: gok.glade2.h:119
+msgid "Toggle"
+msgstr "Átvált"
+
+#: gok.glade2.h:120
+msgid "Top:"
+msgstr "Felül:"
+
+#: gok.glade2.h:121
+msgid "Use _extra word list file(s)"
+msgstr "_Extra szólistafájl(ok) használata"
+
+#: gok.glade2.h:122
+msgid "Use _key averaging"
+msgstr "Idő_átlagolás használata"
+
+#: gok.glade2.h:123
+msgid "Valuator Sensitivity"
+msgstr ""
+
+#: gok.glade2.h:124
+msgid "Word Completion"
+msgstr "Szókiegészítés"
+
+#: gok.glade2.h:125
+msgid "_100ths of a second"
+msgstr "_Századmásodperc"
+
+#: gok.glade2.h:126
+msgid "_Add"
+msgstr "Hozzá_ad"
+
+#: gok.glade2.h:127
+msgid "_Browse..."
+msgstr "_Tallózás..."
+
+#: gok.glade2.h:128
+msgid "_Delete"
+msgstr "_Töröl"
+
+#: gok.glade2.h:129
+msgid "_Joystick"
+msgstr "_Botkormány"
+
+#: gok.glade2.h:130
+msgid "_Method:"
+msgstr "_Módszer:"
+
+#: gok.glade2.h:131
+msgid "_Name:"
+msgstr "_Név:"
+
+#: gok.glade2.h:132
+msgid "_New"
+msgstr "_Új"
+
+#: gok.glade2.h:133
+msgid "_Number of predictions:"
+msgstr "_Előrejelzések száma:"
+
+#: gok.glade2.h:134
+msgid "_Rename"
+msgstr "Át_nevez"
+
+#: gok.glade2.h:135
+msgid "_Single axis:"
+msgstr "_Egy tengely:"
+
+#: gok.glade2.h:136
+msgid "_Spacing:"
+msgstr "_Hézag:"
+
+#: gok.glade2.h:137
+msgid "_Use Desktop Theme Preferences"
+msgstr "_Globális Témabeállítás használata"
+
+#: gok.glade2.h:138
+msgid "_Valuator"
+msgstr ""
+
+#: gok.glade2.h:139
+msgid "_X-Y valuator (axes 0 and 1)"
+msgstr ""
+
+#: gok.glade2.h:140
+msgid "access method name"
+msgstr "hozzáférési mód neve"
+
+#: gok.glade2.h:141
+msgid "cancel"
+msgstr "mégsem"
+
+#: gok.glade2.h:142
+msgid "display user help"
+msgstr "felhasználói súgó megjelenítése"
+
+#: gok.glade2.h:143
+msgid "high"
+msgstr "magas"
+
+#: gok.glade2.h:144
+msgid "low"
+msgstr "alacsony"
+
+#: gok.glade2.h:145
+msgid "pixels"
+msgstr "képpont"
+
+#: gok.glade2.h:146
+msgid "revert to original settings"
+msgstr "visszatérés az eredeti beállításokhoz"
+
+#: gok.glade2.h:147
+msgid "try these settings"
+msgstr "ezen beállítások kipróbálása"
+
+#: gok.glade2.h:148
+msgid "use these settings"
+msgstr "ezen beállítások használata"
+
+#: gok/gok-button.c:221
+msgid "You appear to be using GOK in 'core pointer' mode."
+msgstr ""
+
+#: gok/callbacks.c:394
+msgid "Sorry, Access Method Wizard not implemented yet."
+msgstr "Sajnáljuk, a Hozzáférési mód varázsló még nem készült el."
+
+#: gok/callbacks.c:396
+msgid "GOK Access Method Wizard"
+msgstr "GOK Hozzáférés mód varázsló"
+
+#: gok/gok-control.c:227
+msgid "Sorry, browse for sound file not implemented yet."
+msgstr "Sajnáljuk, a Hangfájl tallózó még nem készült el."
+
+#: gok/gok-control.c:229
+msgid "GOK Browse for sound file"
+msgstr "GOK Hangfájl tallózó"
+
+#: gok/gok-control.c:253
+msgid "Sorry, advanced settings not implemented yet."
+msgstr "Sajnáljuk, a haladó beállítások párbeszédablak még nem készült el."
+
+#: gok/gok-control.c:255
+msgid "GOK Inverse Scanning Advanced"
+msgstr "GOK fordított haladó keresés"
+
+#: gok/gok-editor.c:154 gok/gok-editor.c:187 gok/gok-editor.c:267
+msgid ""
+"You have modified the current file.\n"
+"Do you want to discard your changes?"
+msgstr ""
+"A fájl módosítva lett.\n"
+"El akarjuk vetni a változtatásokat?"
+
+#: gok/gok-editor.c:156 gok/gok-editor.c:189 gok/gok-editor.c:269
+#: gok/gok-editor.c:1060
+msgid "Keyboard Filename Invalid"
+msgstr "Érvénytelen billentyűzetfájlnév"
+
+#: gok/gok-editor.c:218
+msgid "new"
+msgstr "új"
+
+#. create the file selector dialog
+#: gok/gok-editor.c:279
+msgid "Select keyboard file for editing"
+msgstr "Szerkeszteni kívánt billentyű fájl"
+
+#: gok/gok-editor.c:289 gok/gok-editor.c:981
+msgid ".kbd files"
+msgstr ".kbd fájlok"
+
+#: gok/gok-editor.c:544
+msgid "label"
+msgstr "címke"
+
+#: gok/gok-editor.c:718
+#, c-format
+msgid "Can't save file: %s\n"
+msgstr "Nem lehet elmenteni: %s\n"
+
+#. get name of keyboard filename
+#. create the file selector dialog
+#: gok/gok-editor.c:971
+msgid "Save keyboard file as"
+msgstr "Billentyűzetfájl mentése másként"
+
+#: gok/gok-editor.c:1052
+#, c-format
+msgid ""
+"This is not a valid keyboard filename:\n"
+"%s"
+msgstr ""
+"Érvénytelen billentyűzetfájlnév:\n"
+"%s"
+
+#: gok/gok-editor.c:1082
+msgid "(new)"
+msgstr "(új)"
+
+#: gok/gok-key.c:115
+msgid "Mute"
+msgstr "Elnémítás"
+
+#: gok/gok-key.c:118
+msgid ""
+"Mouse\n"
+"Keys"
+msgstr ""
+
+#: gok/gok-key.c:121
+msgid ""
+"Left\n"
+"Tab"
+msgstr ""
+
+#: gok/gok-key.c:232
+msgid "Divide"
+msgstr "Osztás"
+
+#: gok/gok-key.c:235
+msgid "Multiply"
+msgstr "Szorzás"
+
+#: gok/gok-key.c:238
+msgid "Subtract"
+msgstr "Kivonás"
+
+#: gok/gok-key.c:241
+msgid "Addition"
+msgstr "Összegzés"
+
+#: gok/gok-key.c:244
+msgid "Prior"
+msgstr ""
+
+#: gok/gok-key.c:247
+msgid "Next"
+msgstr "Következő"
+
+#: gok/gok-key.c:250 numberpad.kbd.in.h:6
+msgid "Home"
+msgstr "Home"
+
+#: gok/gok-key.c:253 numberpad.kbd.in.h:4
+msgid "End"
+msgstr "End"
+
+#. Translators: this describes the direction gok will move.
+#: gok/gok-key.c:256 move-resize.kbd.in.h:20 numberpad.kbd.in.h:17
+msgid "Up"
+msgstr "Fel"
+
+#. Translators: this describes the direction gok will move.
+#: gok/gok-key.c:259 move-resize.kbd.in.h:6 numberpad.kbd.in.h:3
+msgid "Down"
+msgstr "Lent"
+
+#. Translators: this describes the direction gok will move.
+#: gok/gok-key.c:262 move-resize.kbd.in.h:11 numberpad.kbd.in.h:8
+msgid "Left"
+msgstr "Balra"
+
+#. Translators: this describes the direction gok will move.
+#: gok/gok-key.c:265 move-resize.kbd.in.h:15 numberpad.kbd.in.h:14
+msgid "Right"
+msgstr "Jobbra"
+
+#: gok/gok-key.c:268
+msgid "Begin"
+msgstr ""
+
+#: gok/gok-key.c:271
+msgid "Decimal"
+msgstr "Decimális"
+
+#: gok/gok-key.c:274
+msgid "Meta"
+msgstr "Meta"
+
+#: gok/gok-key.c:277
+msgid ""
+"Multi\n"
+"key"
+msgstr ""
+
+#: gok/gok-key.c:280
+msgid ""
+"Eisu\n"
+"toggle"
+msgstr ""
+
+#: gok/gok-key.c:283
+msgid ""
+"Henkan\n"
+"Mode"
+msgstr ""
+
+#: gok/gok-key.c:286
+msgid "Muhenkan"
+msgstr ""
+
+#: gok/gok-key.c:289
+msgid ""
+"Mode\n"
+"switch"
+msgstr ""
+"Mód\n"
+"váltás"
+
+#: gok/gok-keyboard.c:150
+#, c-format
+msgid "Xkb extension could not be initialized! (error code %x)"
+msgstr "Nem lehet inicializálni az Xkb kiterjesztést! (%x. hibakód)"
+
+#: gok/gok-keyboard.c:156 gok/gok-keyboard.c:196
+msgid "keyboard description not available!"
+msgstr "Billentyűzetleírás nem elérhető!"
+
+#: gok/gok-keyboard.c:162 gok/gok-keyboard.c:202 gok/gok-keyboard.c:499
+msgid "Keyboard Geometry cannot be read from your X Server."
+msgstr ""
+
+#: gok/gok-keyboard.c:425
+msgid "Back"
+msgstr "Vissza"
+
+#: gok/gok-keyboard.c:443 valuator.kbd.in.h:1
+msgid "Repeat Next"
+msgstr "Következő ismétlése"
+
+#: gok/gok-keyboard.c:456
+msgid "Edit"
+msgstr "Szerkesztés"
+
+#. translators: Abbreviation/mnemonic for "numeric keypad", but must be <= 10 chars
+#: gok/gok-keyboard.c:469
+msgid ""
+"Num\n"
+"Pad"
+msgstr ""
+
+#. translators: Abbreviation/mnemonic for "numeric keypad", but must be <= 10 chars
+#: gok/gok-keyboard.c:483 move-resize.kbd.in.h:9
+msgid "Hide"
+msgstr "Elrejtés"
+
+#. translators: "shift" as in "the shift modifier key"
+#: gok/gok-keyboard.c:694
+msgid "shift"
+msgstr "shift"
+
+#. translators: The context is "key level" as in shift/caps status on keyboard
+#: gok/gok-keyboard.c:706
+msgid "Level 2"
+msgstr "Level 2"
+
+#. translators: see note for "Level 2"
+#: gok/gok-keyboard.c:718
+msgid "Level 3"
+msgstr "Level 3"
+
+#. translators: this is a label for a 'Back space' key
+#: gok/gok-keyboard.c:730
+msgid ""
+"Back\n"
+"Space"
+msgstr ""
+"Back\n"
+"Space"
+
+#. translators: this is a label for a "Tab" key, for instance on a keyboard
+#: gok/gok-keyboard.c:741 numberpad.kbd.in.h:16
+msgid "Tab"
+msgstr "Tab"
+
+#. translators: this is a label for a "spacebar" key, for instance on a keyboard
+#: gok/gok-keyboard.c:752
+msgid "space"
+msgstr "szóköz"
+
+#. translators: this is a label for an "Enter" or Return key, for instance on a keyboard
+#: gok/gok-keyboard.c:763 numberpad.kbd.in.h:5
+msgid "Enter"
+msgstr "Enter"
+
+#: gok/gok-keyboard.c:801 main.kbd.in.h:7
+msgid "Menus"
+msgstr "Menük"
+
+#.
+#. * Note to Translators: the following strings should contain your LANG/locale's
+#. * alphabet or, in the case of LANGs with a very large glyph set, a set of
+#. * character-primitives which can be used to compose your language's character set.
+#. * Each string below corresponds to the characters associated with a particular
+#. * "shift level" in the XKB keyboard definition.
+#. * The prefix before the '|' character is just a context string and need not be
+#. * translated.
+#. *
+#. * For languages where 'case' is used, the first string should contain
+#. * the lowercase alphabet.
+#. *
+#. * Note that unless your locale clearly requires that digits and/or punctuation
+#. * precede alphabetic characters, digits and punctuation should be placed
+#. * at the end of the string.
+#.
+#: gok/gok-keyboard.c:860
+msgid "level 0|abcdefghijklmnopqrstuvwxyz1234567890-=[];'#\\,./"
+msgstr "level 0|aábcdeéfghiíjklmnoóöőpqrstuúüűvwxyz1234567890-=[];'#\\,./"
+
+#. The substring "level 1|" should not be translated.
+#. * For languages/locales which use 'upper case', this string should
+#. * correspond to uppercase versions of characters in the 'level 0' string.
+#.
+#: gok/gok-keyboard.c:865
+msgid "level 1|ABCDEFGHIJKLMNOPQRSTUVWXYZ!\"3$%^&*()_+{}:@~<>?"
+msgstr "level 1|AÁBCDEÉFGHIÍJKLMNOÓÖŐPQRSTUÚÜŰVWXYZ!\"3$%^&*()_+{}:@~<>?"
+
+#. Not used in C locale: this string can contain a third set of characters
+#. * at another 'shift level'.  It can be used to provide a second/alternate
+#. * glyph/character set for the locale, separately or in conjunction with
+#. * 'level 3'.  At the translator's discretion, accented characters can be
+#. * placed here and in 'level 3' as well.
+#.
+#: gok/gok-keyboard.c:872 gok/gok-keyboard.c:928
+msgid "level 2|"
+msgstr "level 2|"
+
+#. For locales which need an even larger character set, or offer uppercase versions
+#. * of the 'level2' characters, add them to 'level 3'
+#: gok/gok-keyboard.c:875 gok/gok-keyboard.c:929
+msgid "level 3|"
+msgstr "level 3|"
+
+#.
+#. * Note to Translators: the following strings should contain your LANG/locale's
+#. * alphabet or, in the case of LANGs with a very large glyph set, a set of
+#. * character-primitives which can be used to compose your language's character set.
+#. * This string should contain all of the glyphs in the "level #|abcde..." strings
+#. * but they should appear in 'frequency order', that is, the most frequently occurring
+#. * characters in your locale should appear at the front of the list.
+#. * (Put digits after characters, and punctuation last).
+#. * If level 0 and level 1 refer to upper-and-lower-case in your locale,
+#. * the characters in these two strings should occur in the same relative order.
+#.
+#: gok/gok-keyboard.c:923
+msgid "level 0|etaonrishdlfcmugypwbvkxjqz`1234567890-=\\[];'<,./"
+msgstr ""
+
+#: gok/gok-keyboard.c:924
+msgid "level 1|ETAONRISHDLFCMUGYPWBVKXJQZ~!@#$%^&*()_+|{}:\"><>?"
+msgstr ""
+
+#. change the name of the window to the keyboard name
+#: gok/gok-keyboard.c:1908
+msgid "GOK - "
+msgstr "GOK - "
+
+#: gok/gok-keyboard.c:2736
+msgid "GUI"
+msgstr "GUI"
+
+#. translators: "table" as in row/column data structure
+#: gok/gok-keyboard.c:2741 gok/gok-spy.c:1673
+msgid "Table"
+msgstr "Táblázat"
+
+#: gok/gok-keyboard.c:2746 main.kbd.in.h:9
+msgid "Toolbars"
+msgstr "Eszköztárak"
+
+#: gok/gok-keyboard.c:2750
+msgid "Applications"
+msgstr "Alkalmazások"
+
+#: gok/gok-keyboard.c:2757
+msgid "Menu"
+msgstr "Menü"
+
+#: gok/gok-keyboard.c:3527
+msgid "translator_credits"
+msgstr ""
+"Dvornik László <dvornik@gnome.hu>\n"
+"Nagy Gergely <greg@gnome.hu>"
+
+#: gok/gok-keyboard.c:3550 main.kbd.in.h:4
+msgid "GOK"
+msgstr "GOK"
+
+#: gok/gok-keyboard.c:3552
+msgid "Dynamic virtual keyboards for the GNOME desktop"
+msgstr "Dinamikus virtuális billentyűzetek a GNOME munkaasztalhoz"
+
+#: gok/gok-keyboard.c:3561
+msgid "Full Credits"
+msgstr "Köszönet"
+
+#: gok/gok-scanner.c:1003
+msgid "error reading description"
+msgstr "hiba a leírás olvasása közben"
+
+#. translators: abbreviated version of "Vertical Scrollbar"
+#: gok/gok-spy.c:1593
+msgid "V Scrollbar"
+msgstr "F gördítősáv"
+
+#. translators: abbreviated version of "Horizontal Scrollbar"
+#: gok/gok-spy.c:1598
+msgid "H Scrollbar"
+msgstr "V gördítősáv"
+
+#. create the 'new action name' dialog
+#: gok/gok-page-actions.c:380 gok/gok-page-actions.c:425
+#: gok/gok-page-actions.c:444
+msgid "GOK Action Name"
+msgstr "GOK műveletnév"
+
+#. add a text label
+#: gok/gok-page-actions.c:386
+msgid "Change the action name:"
+msgstr "A műveletnév megváltoztatása:"
+
+#: gok/gok-page-actions.c:423
+msgid ""
+"Action name can't be empty.\n"
+"Please enter a new action name."
+msgstr ""
+"A műveletnév nem lehet üres.\n"
+"Adjon meg egy új műveletnevet."
+
+#: gok/gok-page-actions.c:442
+msgid ""
+"Sorry, that action name already exists.\n"
+"Please enter a new action name"
+msgstr ""
+"Sajnálom, ez a műveletnév már létezik.\n"
+"Adjon meg egy új műveletnevet"
+
+#: gok/gok-page-actions.c:497
+#, c-format
+msgid "New Action %d"
+msgstr "%d. új művelet"
+
+#: gok/gok-page-actions.c:560
+#, c-format
+msgid "Do you wish to delete this action (%s)?"
+msgstr "Törölni akarja ezt a műveletet (%s)?"
+
+#: gok/gok-page-actions.c:568
+msgid "GOK Delete Action"
+msgstr "GOK művelettörlés"
+
+#. create the 'new feedbacks name' dialog
+#: gok/gok-page-feedbacks.c:411 gok/gok-page-feedbacks.c:456
+#: gok/gok-page-feedbacks.c:475
+msgid "GOK Feedback Name"
+msgstr "GOK visszajelzésnév"
+
+#. add a text label
+#: gok/gok-page-feedbacks.c:417
+msgid "Change the feedback name:"
+msgstr "A visszajelzésnév megváltoztatása:"
+
+#: gok/gok-page-feedbacks.c:454
+msgid ""
+"Feedback name can't be empty.\n"
+"Please enter a new feedback name."
+msgstr ""
+"A visszajelzésnév nem lehet üres.\n"
+"Adjon meg egy új visszajelzésnevet."
+
+#: gok/gok-page-feedbacks.c:473
+msgid ""
+"Sorry, that feedback name already exists.\n"
+"Please enter a new feedback name"
+msgstr ""
+"Sajnálom, ez a visszajelzésnév már létezik.\n"
+"Adjon meg egy új visszajelzésnevet"
+
+#: gok/gok-page-feedbacks.c:526
+#, c-format
+msgid "New Feedback %d"
+msgstr "%d új visszajelzés"
+
+#: gok/gok-page-feedbacks.c:644
+#, c-format
+msgid "Do you wish to delete this feedback (%s)?"
+msgstr "Törölni akarja ezt a visszajelzést (%s)?"
+
+#: gok/gok-page-feedbacks.c:652
+msgid "GOK Delete Feedback"
+msgstr "GOK visszajelzéstörlés"
+
+#. create the file selector dialog
+#: gok/gok-page-feedbacks.c:875
+msgid "Select sound file"
+msgstr "Hangfájl kiválasztása"
+
+#: gok/gok-page-keyboard.c:180
+msgid "Enter directory to search for additional GOK keyboard files."
+msgstr ""
+"Adja meg a további GOK billentyűzetleíró fájlokat tartalmazó könyvtárat."
+
+#: gok/gok-page-keyboard.c:194
+msgid "Select the XML file defining your startup compose keyboard"
+msgstr ""
+
+#: gok/gok-page-keysizespace.c:83
+msgid "Button"
+msgstr "Gomb"
+
+#. and post a warning if the new settings use corepointer
+#: gok/gok-settings-dialog.c:259
+msgid "You appear to be configuring GOK to use 'core pointer' mode."
+msgstr ""
+
+#: gok/gok-windowlister.c:98
+msgid "Window List"
+msgstr "Ablaklista"
+
+#: gok/gok-utf8-word-complete.c:120
+#, c-format
+msgid "Could not read contents of dictionary file '%s'\n"
+msgstr "Nem lehet olvasni a(z) '%s' szótárfájl tartalmát\n"
+
+#: gok/main.c:164
+msgid ""
+"Use the specified access method. NAME is a string and can be found in the "
+"various access method files (.xam) assigned to the \"name\" property of <gok:"
+"accessmethod> tag. Note this is not necessarily the same as the name of the ."
+"xam file. (See --list-accessmethods)"
+msgstr ""
+
+#: gok/main.c:165
+msgid "NAME"
+msgstr "NAME"
+
+#: gok/main.c:173
+msgid "Start the GOK keyboard editor"
+msgstr "A GOK billentyűzet-szerkesztő indítása"
+
+#: gok/main.c:181
+msgid "Use special, but possibly unstable, gok stuff"
+msgstr ""
+
+#: gok/main.c:189
+msgid ""
+"Whenever --geometry is not used gok remembers its position between "
+"invocations and starts in the position that it had when it was last "
+"shutdown.  When --geometry is used gok positions itself within the "
+"rectangular area of screen described by the given X11 geometry "
+"specification.  When --geometry is used gok does not remember its position "
+"when it shuts down.  This behaviour can be changed with the --"
+"remembergeometry flag which forces gok to remember its position when "
+"shutdown even when it was started with --geometry."
+msgstr ""
+
+#: gok/main.c:190
+msgid "GEOMETRY"
+msgstr "GEOMETRY"
+
+#: gok/main.c:198
+msgid "Use the specified input device"
+msgstr "A megadott bemeneti eszköz használata"
+
+#: gok/main.c:199
+msgid "DEVICENAME"
+msgstr "DEVICENAME"
+
+#: gok/main.c:207
+msgid "Start GOK with the specified keyboard."
+msgstr "A GOK indítása a megadott billentyűzettel."
+
+#: gok/main.c:208
+msgid "KEYBOARDNAME"
+msgstr "KEYBOARDNAME"
+
+#: gok/main.c:216
+msgid "List the access methods that can used as options to other arguments."
+msgstr ""
+
+#: gok/main.c:225
+msgid "List the actions that can used as options to other arguments."
+msgstr ""
+
+#: gok/main.c:234
+msgid "GOK will be used to login"
+msgstr "A GOK lesz használva a bejelentkezéshez"
+
+#: gok/main.c:245
+msgid ""
+"Can be used with --geometry.  Forces GOK to remember its position when "
+"shutdown even when it was started with --geometry.  Please see the "
+"discussion under the --geometry flag for more information."
+msgstr ""
+
+#: gok/main.c:256
+msgid "Start GOK and hook this action to scan operations. (See --list-actions)"
+msgstr ""
+
+#: gok/main.c:266
+msgid ""
+"Start GOK and hook this action to select operations. (See --list-actions)"
+msgstr ""
+
+#: gok/main.c:275
+msgid "Open the settings dialog box when GOK starts"
+msgstr "A beállítások párbeszédablak megnyitása a GOK indulásakor"
+
+#: gok/main.c:588
+msgid "gok: Unsupported geometry specification\n"
+msgstr ""
+
+#: gok/main.c:589
+msgid ""
+"gok: Currently GOK requires that the x, y, width and height all be given\n"
+msgstr ""
+
+#: gok/main.c:685
+msgid "XKB extension is required."
+msgstr "XKB kiterjesztés szükséges."
+
+#: gok/main.c:695
+msgid "Can't initialize actions."
+msgstr "Nem lehet inicializálni a műveleteket."
+
+#: gok/main.c:705
+msgid "Can't initialize feedbacks."
+msgstr "Nem lehet inicializálni a visszajelzéseket."
+
+#: gok/main.c:732
+msgid "Can't create the main GOK window!"
+msgstr "Nem lehet létrehozni a fő GOK ablakot!"
+
+#: gok/main.c:751
+msgid "Can't create the settings dialog window!"
+msgstr "Nem lehet létrehozni a beállítások párbeszédablakot!"
+
+#: gok/main.c:773
+msgid "You are using GOK in 'core pointer' mode."
+msgstr ""
+
+#: gok/main.c:813
+msgid "No keyboards to display!"
+msgstr "Nincs megjeleníthető billentyűzet!"
+
+#: gok/main.c:949
+msgid "popup menu"
+msgstr "helyi menü"
+
+#: gok/main.c:1805
+msgid "Can't create a compose keyboard!"
+msgstr "Nem lehet létrehozni egy szerkesztett billentyűzetet!"
+
+#: gok/main.c:1847
+msgid "Can't read any keyboards!"
+msgstr "Nem lehet olvasni egy billentyűzetet sem!"
+
+#: gok/main.c:1964
+msgid "could not access method directory key from GConf!"
+msgstr ""
+
+#: gok/main.c:1972
+msgid "possibly unknown access method!"
+msgstr ""
+
+#: gok/main.c:2513
+msgid "Sorry, GOK can't run because:\n"
+msgstr "Sajnálom, a GOK nem futtatható, mert:\n"
+
+#: gok/main.c:2522
+msgid "GOK Fatal Error"
+msgstr "GOK végzetes hiba"
+
+#: gok/main.c:2534
+msgid ""
+"GOK uses GConf 2 to store its settings and requires certain settings to be "
+"in GConf to run.  GOK is currently unable to retrieve those settings.  If "
+"this is the first time that you have run gok after installing it you may "
+"need to restart gconfd, you can use this command: 'gconftool-2 --shutdown' "
+"or log out and back in."
+msgstr ""
+
+#: gok/main.c:2551
+msgid ""
+"Currently GOK requires that the x, y, width and height all be given.  Sorry, "
+"your geometry specification will not be used."
+msgstr ""
+
+#: gok/main.c:2553
+msgid "gok: Unsupported geometry specification"
+msgstr ""
+
+#: gok/main.c:2760
+msgid ""
+"GOK may not work properly, because it could not enable your desktop's "
+"'sticky keys' feature."
+msgstr ""
+
+#: gok/main.c:2767
+msgid "GOK has enabled Sticky Keys, which it requires.\n"
+msgstr ""
+
+#: gok/main.c:2789
+msgid "GOK cannot run because XKB display extension is missing.\n"
+msgstr "A GOK nem futtatható, mert hiányzik az XKB kiterjesztés.\n"
+
+#: gok/main.c:2853
+msgid ""
+"This means that the device you are using to operate GOK\n"
+"is also controlling the system pointer (or 'mouse pointer').\n"
+"Conflicts with applications' use of the pointer may interfere\n"
+"with your ability to use applications or GOK.\n"
+"\n"
+"We strongly recommend configuring your input device as an\n"
+"'Extended' input device instead; see GOK Help for more information."
+msgstr ""
+
+#: gok/main.c:2917
+msgid ""
+"Assistive Technology Support Is Not Enabled.\n"
+"\n"
+"You can start GOK without enabling support for assistive technologies. "
+"However, some of the features of the application might not be available.\n"
+"\n"
+"To enable support for assistive technologies and log in to a new session "
+"with the change enabled, click Enable and Log Out.\n"
+"\n"
+"To continue using GOK, click Continue.\n"
+"\n"
+"To quit GOK, click Close.\n"
+"\n"
+msgstr ""
+
+#: gok/main.c:2936
+msgid "Enable and Log Out"
+msgstr "Engedélyezés és Kijelentkezés"
+
+#: gok/main.c:2948
+msgid "Continue"
+msgstr "Folytatás"
+
+#: inverse-scanning.xml.in.h:9
+msgid "Inverse Scanning"
+msgstr "Fordított keresés"
+
+#: inverse-scanning.xml.in.h:14 singlekey-inverse-scanning.xml.in.h:11
+msgid "Press and hold a switch to scan.  Press another switch to select."
+msgstr ""
+"Tartson lenyomva egy kapcsolót a kereséshez. Nyomjon meg egy másikat az "
+"aktiváláshoz."
+
+#: inverse-scanning.xml.in.h:18 singlekey-inverse-scanning.xml.in.h:15
+msgid "Scan:"
+msgstr "Keresés:"
+
+#: singlekey-automatic-scanning.xml.in.h:17
+#: singlekey-inverse-scanning.xml.in.h:16
+msgid "Scanning Direction:"
+msgstr "Keresés iránya:"
+
+#: singlekey-automatic-scanning.xml.in.h:20
+msgid "Single Key Automatic Scanning"
+msgstr "Egy billentyű automatikus keresése"
+
+#: singlekey-automatic-scanning.xml.in.h:21
+msgid "Start Scanning:"
+msgstr "Keresés indítása:"
+
+#: singlekey-automatic-scanning.xml.in.h:22
+msgid "Start scanning:"
+msgstr "Keresés indítása:"
+
+#: singlekey-automatic-scanning.xml.in.h:24
+msgid "Wrap"
+msgstr "Tördelés"
+
+#: singlekey-inverse-scanning.xml.in.h:19
+msgid "Single Key Inverse Scanning"
+msgstr "Egy billentyű fordított keresése"
+
+#: directed.xml.in.h:2
+msgid "5 Switch Directed"
+msgstr ""
+
+#: directed.xml.in.h:3
+msgid "Down:"
+msgstr "Le:"
+
+#: directed.xml.in.h:14
+msgid "Up:"
+msgstr "Fel:"
+
+#: hide.kbd.in.h:1
+msgid "Show"
+msgstr "Megjelenítés"
+
+#: launcher.kbd.in.h:1
+msgid "Help Browser"
+msgstr "Súgóböngésző"
+
+#: launcher.kbd.in.h:2
+msgid "Terminal"
+msgstr "Terminál"
+
+#: launcher.kbd.in.h:3
+msgid "Text Editor"
+msgstr "Szövegszerkesztő"
+
+#: launcher.kbd.in.h:4
+msgid "Web Browser"
+msgstr "Webböngésző"
+
+#: main.kbd.in.h:1
+msgid "Activate"
+msgstr "Aktiválás"
+
+#. Translators: one word meaning: to enter text.
+#: main.kbd.in.h:3
+msgid "Compose"
+msgstr "Szerkesztés"
+
+#. Translators: launcher, as in launching/running programs
+#: main.kbd.in.h:6
+msgid "Launcher"
+msgstr "Indító"
+
+#: main.kbd.in.h:8
+msgid "Mouse"
+msgstr "Egér"
+
+#. Translators: short version User Interface Grab, used to grab GUI buttons etc.
+#: main.kbd.in.h:11
+msgid "UI Grab"
+msgstr ""
+
+#: mouse.kbd.in.h:1
+msgid "Button 1"
+msgstr "1. gomb"
+
+#: mouse.kbd.in.h:2
+msgid "Button 2"
+msgstr "2. gomb"
+
+#: mouse.kbd.in.h:3
+msgid "Button 3"
+msgstr "3. gomb"
+
+#: mouse.kbd.in.h:4
+msgid "Dbl Click"
+msgstr "Dupla kattintás"
+
+#. Translators: direction right (East)
+#: mouse.kbd.in.h:6
+msgid "E"
+msgstr "K"
+
+#: mouse.kbd.in.h:7
+msgid "Latch"
+msgstr "Retesz"
+
+#. Translators: direction up (North)
+#: mouse.kbd.in.h:9
+msgid "N"
+msgstr "É"
+
+#. Translators: direction up and right (North East)
+#: mouse.kbd.in.h:11
+msgid "NE"
+msgstr "ÉK"
+
+#. Translators: direction up and left (North West)
+#: mouse.kbd.in.h:13
+msgid "NW"
+msgstr "ÉNY"
+
+#: mouse.kbd.in.h:14
+msgid "Pointer"
+msgstr "Egérmutató"
+
+#: mouse.kbd.in.h:15
+msgid "Repeat"
+msgstr "Ismétlés"
+
+#. Translators: direction down (South)
+#: mouse.kbd.in.h:17
+msgid "S"
+msgstr "D"
+
+#. Translators: direction down and right (South East)
+#: mouse.kbd.in.h:19
+msgid "SE"
+msgstr "DK"
+
+#. Translators: direction down and left (South West)
+#: mouse.kbd.in.h:21
+msgid "SW"
+msgstr "DNY"
+
+#. Translators: direction left (West)
+#: mouse.kbd.in.h:23
+msgid "W"
+msgstr "NY"
+
+#: move-resize.kbd.in.h:7
+msgid "Fill"
+msgstr "Kitöltés"
+
+#: move-resize.kbd.in.h:8
+msgid "Float"
+msgstr "Lebegő"
+
+#: move-resize.kbd.in.h:12
+msgid "Narrower"
+msgstr "Keskenyebbre"
+
+#: move-resize.kbd.in.h:13
+msgid "Repeat Next Key"
+msgstr "Következő billentyű ismétlése"
+
+#. Translators: shorter as in height.
+#: move-resize.kbd.in.h:17
+msgid "Shorter"
+msgstr "Rövidebbre"
+
+#: move-resize.kbd.in.h:18
+msgid "Taller"
+msgstr "Magasabbra"
+
+#: move-resize.kbd.in.h:21
+msgid "Wider"
+msgstr "Szélesebbre"
+
+#: numberpad.kbd.in.h:1
+msgid "Ctrl"
+msgstr "Ctrl"
+
+#: numberpad.kbd.in.h:2
+msgid "Del"
+msgstr "Del"
+
+#: numberpad.kbd.in.h:7
+msgid "Ins"
+msgstr "Ins"
+
+#: numberpad.kbd.in.h:9
+msgid "Num"
+msgstr "Num"
+
+#. Translators: abbreviation for Page Down.
+#: numberpad.kbd.in.h:11
+msgid "PgDn"
+msgstr "PgDn"
+
+#. Translators: abbreviation for Page Up.
+#: numberpad.kbd.in.h:13
+msgid "PgUp"
+msgstr "PgUp"
+
+#: numberpad.kbd.in.h:15
+msgid "Shift"
+msgstr "Shift"
+
+#. Translators: short phrase to confirm that user wants to quit.
+#: quit.kbd.in.h:2
+msgid "Really Quit!"
+msgstr "Kilépés!"

@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+  <!-- ============= Customization Section ============================= -->
+  <!-- Use this section to describe how to customize the application. -->
+  <sect1 id="gok-prefs"> 
+    <title>Settings</title> 
+    <para>To configure &app;, select GOK keys: 
+      <menuchoice> 
+	<guimenu>GOK</guimenu> 
+	<guimenuitem>Preferences</guimenuitem> 
+      </menuchoice>. The 
+      <guilabel>Preferences</guilabel> dialog contains the following tabbed
+      sections:</para> 
+		<note>
+	   		<para>You can open the <application>&app;</application> preferences from the command line:</para>
+			<para>
+			<command>gok --settings</command> 
+    		</para> 
+		</note>
+<!-- =============== Customization Subsection ================ -->
+<!-- Use a new section to describe different tabbed sections on the Settings or Preferences
+	     dialog. -->
+    <sect2 id="gok-prefs-appearance"> 
+      <title>Appearance</title> 
+		 <para>This tab allows users to set key size and spacing between keys in their onscreen keyboards. 
+		 This feature is especially useful to individuals with difficulty targeting specific areas using 
+		 a pointing device because of mobility restrictions and those with low vision.</para>
+     <variablelist> 
+	<varlistentry> 
+	  <term> 
+	    <guilabel>Key width</guilabel> </term> 
+	  <listitem> 
+	    <para>Use this spin control to specify the width of a typical GOK key (5-200 pixels).</para>
+	    <!--<para>Default: 
+	      <guilabel></guilabel>.</para> -->
+	  </listitem> 
+	</varlistentry> 
+	<varlistentry> 
+	  <term> 
+	    <guilabel>Key height</guilabel> </term> 
+	  <listitem> 
+	    <para>Use this spin control to specify the height of a typical GOK key (5-200 pixels).</para>
+	    <!--<para>Default: 
+	      <guilabel></guilabel>.</para> -->
+	  </listitem> 
+	</varlistentry> 
+	<varlistentry> 
+	  <term> 
+	    <guilabel>Spacing</guilabel> </term> 
+	  <listitem> 
+	    <para>Use this spin control to specify the spacing between GOK keys (0-100 pixels).
+		</para>
+	    <!--<para>Default: 
+	      <guilabel></guilabel>.</para> -->
+	  </listitem> 
+	</varlistentry> 
+	<varlistentry> 
+	  <term> 
+	    <guilabel>Preview</guilabel> </term> 
+	  <listitem> 
+	    <para>This area shows what 4 GOK keys would look like with the current settings.
+		</para>
+	    <!--<para>Default: 
+	      <guilabel></guilabel>.</para> -->
+	  </listitem> 
+	</varlistentry> 
+	<varlistentry> 
+	  <term> 
+	    <guilabel>Use Desktop Theme Preferences</guilabel> </term> 
+	  <listitem> 
+	    <para>Select this option to have GOK use the desktop theme preferences
+		where possible or appropriate.  For example, GOK buttons can resemble
+		themed buttons.
+	    </para>
+	    <para>Default: unselected.</para> 
+	  </listitem> 
+	</varlistentry> 
+      </variablelist> 
+		 <sect3 id="gok-prefs-appearance-alternate">
+		<title>Alternate method of changing key width and height</title>
+		<para>Users can also change Key Width and Key Height simply by dragging 
+		the corners or sides of any GOK. If this is performed while the Settings 
+		dialog is open (and the Appearance tab selected), users can see the 
+		changes reflected in the preview window and the Key Size controls. 
+		(Note: Key spacing cannot be altered using this method.)</para>
+		</sect3>
+   </sect2>
+    <!-- ============= Customization Subsection ===================== -->
+    <!-- Another tabbed section on the Preferences dialog. -->
+    <sect2 id="gok-prefs-Actions"> 
+		<title>Actions</title>
+		
+		<para>Actions allow users to predetermine a method of accessing and using the GOK. It is especially useful to 
+		clinicians with a variety of clients who have different special needs. A clinician can, for example, create an action with 
+		its own specific set of defaults (i.e. Ali's Puff Switch, Jane's Head Wand, etc.)</para>
+		
+		<para>This dialog offers a number of preset options listed under the Action Name menu. The list includes: Left, Middle, and 
+		Right Mouse Button, Mouse buttons 4 and 5, Mouse Pointer, Dwell and switches 1 through 5. Each selection is linked to the 
+		radio buttons and entry fields beneath the menu.</para>
+		
+		<para>For example, the default in the dropdown list is &quot;Middle Mouse Button&quot;. With this selection, the Action Type 
+		radio button is preset to &quot;Mouse Button&quot; and the Switch, Dwell, and Mouse Pointer sections are all disabled (i.e. 
+		grayed out).</para>
+		
+		<para>The Mouse Button section, however, remains active enabling users to select Button Number, Activate When, and Button 
+		Delay through a series of radio buttons and a text entry field.</para>
+		
+		<para>If a user were to change the default from &quot;Middle Mouse Button&quot; to &quot;Switch 1&quot; the Action Type 
+		radio button would change to &quot;Switch&quot; and all Switch options would become enabled. (The Mouse Button, Dwell, and 
+		Mouse Pointer sections would be rendered inactive.)</para>
+		
+		<sect3 id="gok-prefs-new-actions">
+		<title>Creating a new Action</title>
+		
+		<para>To create an action for a specific individual (i.e. Ali's Puff Switch), select the &quot;Add Action&quot; button. The 
+		title &quot;New Action 1&quot; appears in the Action Name window and the &quot;Delete Action&quot; and &quot;Change 
+		Name&quot; buttons become active. Note: Each time an action is added, the number represented in the default name increases 
+		by one (i.e. New Action 2, New Action 3, etc.) </para>
+		
+		<para>Next, select &quot;Change Name&quot;. An Action Name dialog appears with the default name pre-selected. Enter the new 
+		name (i.e. Ali's Puff Switch) and select &quot;OK&quot;. The name now appears in the Action Name window and all the Action 
+		Type radio buttons (i.e. Switch, Mouse Button, Dwell, Mouse Pointer) become active enabling users to customize actions to 
+		suit an individual's specific needs.</para>
+		
+		<para>To remove an action, be sure it is displayed in the Action Name window and then select the &quot;Delete Action&quot; 
+		button. A dialog appears asking the user to confirm that this action is to be deleted.</para>
+		
+		</sect3>
+		
+		<sect3 id="gok-prefs-action-type">
+		<title>Action Type</title>
+		
+		<para>This determines the type of input device and access method used to indicate that a selection has been made. Users 
+		have the following four options: Switch, Mouse Button, Dwell, and Mouse Pointer. Each option is discussed below.</para>
+		
+		<orderedlist>
+		<listitem>
+		<para>Switch: When Switch is chosen as the Action Type, users have the option of selecting up to five switches as their 
+		input method. Additional radio buttons allow users to configure each switch individually (i.e. trigger an action when a 
+		switch is pressed or released) and set the Switch Delay time (i.e. the length of time a switch has to be in the 
+		&quot;on&quot; or &quot;off&quot; position before a selection is considered intentional). Switch Delay time is calculated 
+		in 1/100ths of a second with values ranging from 0 to a maximum of 3000 or 30 seconds.</para>
+		</listitem>
+		
+		<listitem>
+		<para>Mouse Button: When Mouse Button is selected as the Action Type, users are able to customize the function of up to five 
+		Mouse buttons and assign them any one of the following actions: Button Pressed, Button Released, Clicked, or Double Clicked. 
+		Button Delay determines the length of time a Mouse button has to be held in an &quot;on&quot; or &quot;off&quot; position 
+		for the selection to be considered intentional. As with Switch Delay, time is calculated in 1/100ths of a second with values 
+		ranging from 0-3000.</para>
+		</listitem>
+		
+		<listitem>
+		<para>Dwell: With this method, selections are made by positioning the Mouse pointer over a key for a specified length of 
+		time. Dwell Rate determines length of time the pointer must hover over a key in order for the selection to be considered 
+		intentional. Dwell time is also calculated in 1/100ths of a second with values ranging from 0 to 3000.</para>
+		</listitem>
+		
+		<listitem>
+		<para>Mouse Pointer: When Mouse Pointer is selected as the Action Type, users control the pointer through the various means 
+		available to them (i.e. numeric keypad, head wand, switches, etc.) When the Key Averaging checkbox is selected, users choose 
+		a rate ranging from 0 to 3000 (i.e. 0 to 30 seconds). A selection will only become active after the mouse pointer has 
+		hovered over a particular key for the length of time specified by the Key Averaging Rate. The difference between Key 
+		Averaging and Dwell time is that the mouse pointer does not have to hover over a key continually. If a user has a tremor, 
+		for example, and the mouse pointer sometimes moves off the intended target, the key that receives the most accumulated time 
+		will eventually become active. If the Key Averaging Rate is set to 1500, and the intended target is the Tab key, when the 
+		mouse pointer has hovered over Tab for an accumulated time of 15 seconds, it will become active.</para>
+		</listitem>
+		</orderedlist>
+		
+		</sect3>
+		
+		</sect2>
+    <!-- ============= Customization Subsection ===================== -->
+    <!-- Another tabbed section on the Preferences dialog. -->
+    <sect2 id="gok-prefs-Feedback"> 
+		<title>Feedback</title>
+		<para>This dialog enables users to have a visual and/or audio signal sent to them indicating that a key has been selected. 
+		These visual/audio cues are extremely helpful to those with a hearing or visual impairment.</para>
+		
+		<para>The Feedback dialog offers the following two options through the Feedback Name dropdown menu: Key Flashing and 
+		Sound.</para>
+		
+		<para>To activate option one, check the &quot;Key Flashing On&quot; checkbox. The &quot;Number Of Flashes&quot; value 
+		determines how many times the onscreen key will flash (rates range from 1-15). To select an audio cue, check the 
+		&quot;Sound On&quot; checkbox and then use the &quot;Browse For Sound File&quot; button. Users can also have both feedback 
+		options operating simultaneously by selecting &quot;Key flashing and Sound&quot;.</para>
+		
+		<sect3 id="gok-settings-new-feedback">
+		<title>Create Feedback</title>
+		
+		<para>To customize visual and/or audio cues, select the &quot;Add Feedback&quot; button (this also enables the 
+		&quot;Delete Feedback&quot; and &quot;Change Name&quot; buttons). This is an especially useful feature for clinicians 
+		wanting to establish personalized visual/audio cues for each of their clients.</para>
+		
+		<para>The title &quot;New Feedback 1&quot; appears in the Feedback Name window. Each time a new action is added, the number 
+		appearing in the default increases by one (i.e. New Feedback 2, New Feedback 3, etc.) </para>
+		
+		<para>Next, select &quot;Change Name&quot;. A Feedback Name dialog appears with the default name pre-selected. Enter the new 
+		name (i.e. Jane's Sound File) and select &quot;OK&quot;. The new title now appears in the Feedback Name window. Use the Key 
+		Flashing and/or Sound options to customize the feedback response to meet an individual's specific needs.</para>
+		
+		<para>To remove a feedback created by the user, be sure it is displayed in the Feedback Name window, and then select the &quot;Delete 
+		Feedback&quot; button. A dialog appears asking the user to confirm that this action is to be deleted.</para>
+		
+		</sect3>
+    </sect2>
+	
+    <!-- ============= Customization Subsection ===================== -->
+    <!-- Another tabbed section on the Preferences dialog. -->
+    <sect2 id="gok-prefs-Access-Methods"> 
+		<title>Access Methods</title>
+		<para>The following five Access Methods are available to users: Direct Selection, Dwell Selection, Automatic Scanning, 
+		Inverse Scanning, and Coded Input (Switch). Users are presented with a series of radio buttons and 
+		checkboxes which allows them to customize GOK to suit their own special needs. Each access method provides users with a 
+		brief description of its functionality, an Operations section used to determine methods of highlighting and selecting keys, 
+		a Feedback section providing visual and/or audio cues that a selection has been made, and an Auto Repeat Option.</para>
+		
+		<sect3 id="gok-accessmethods-direct">
+		<title>Direct Selection</title>
+		
+		<para>This method allows users to select keys onscreen with a direct mouse click. The mouse pointer is 
+		used to highlight a specific key and then a switch is pressed to make a selection.</para>
+		
+		<para>The Operation section includes two dropdown menus that enable users to select a method of highlighting and activating 
+		a specific key. To highlight a key, users have the option of choosing either Mouse Pointer or a method created in Actions. 
+		The dropdown menu for activating a selection includes: Left, Middle, and Right Mouse buttons, Mouse buttons 4 and 5, 
+		Switches 1 to 5, as well as any customized methods creating in Actions.</para>
+		
+		<para>Feedback also includes two dropdown menus. Users who wish to receive a signal indicating that a key has been 
+		highlighted can select Key Flashing, Sound, or Both. The same options are available to indicate when a key has been 
+		activated.</para>
+		
+		<para>When Auto Repeat On is checked in the Options section, a specific key or character will be repeated as long as the 
+		input device (i.e. mouse button, switch, etc.) is activated. This feature is especially useful for moving the cursor 
+		rapidly across the screen and for entering the same character repeatedly (i.e. using series of asterisks to break up 
+		sections of text).</para>
+		
+		<para>The Auto Repeat Rate determines in 1/100ths of a second how fast the keystroke or character will be registered 
+		onscreen. The rate ranges from 0 to 100 (i.e. up to 1 second).</para>
+		
+		</sect3>
+		
+		<sect3 id="gok-acessmethods-dwell">
+		<title>Dwell Selection</title>
+		
+		<para>With this access method, selections are made by positioning the pointer over a key for specified length of time using 
+		a mouse or other type of pointing device.</para>
+		
+		<para>In Dwell mode, users are limited to a Mouse Pointer or alternate pointing device (created in Actions) as a means of 
+		highlighting keys. Dwell is, of course, the default for making a selection.</para>
+		
+		<para>Feedback and Options settings are identical to those found under Direct Selection.</para>
+		
+		</sect3>
+		
+		<sect3 id="gok-accessmethod-auto">
+		<title>Automatic Scanning</title>
+		
+		<para>Individual rows and columns are highlighted automatically, and the user makes a selection using either a switch or 
+		mouse button when the desired row/key is reached.</para>
+		
+		<para>Users can initiate Automatic Scanning and make selections via a Mouse button, switch (1-5) or customized switch/Mouse 
+		button action. Automatic Scanning will highlight each row in succession, beginning at the top. When the highlight reaches 
+		the desired row, the user stops the scan by activating a button or switch. The highlight now moves from left to right, 
+		beginning at the he leftmost key. When the desired key is reached, the user makes a selection using a mouse button or 
+		switch.</para>
+		
+		<para>The Feedback and Auto Repeat settings for Automatic Scanning are identical to those described in the Direct Scanning 
+		section.</para>
+		
+		<para>Additional options include Scan Delay (which controls actual scanning speed) and Initial Delay (the length of time the 
+		scan pauses before beginning a cycle of highlighting rows or individual keys). Scanning speed ranges from 10-500 while the 
+		range for Initial Delay is 0-500. Users also have the option of changing the scanning direction from top to bottom and left 
+		to right (the defaults) to bottom to top and/or right to left.</para>
+		
+		<para>Scanning can be set to either continuous (i.e. cycle through the keyboard without stopping until a selection has been 
+		made) or set to a fixed number ranging from a single pass through the keyboard to 10. Users can also set the scan to 
+		automatic (i.e. being without user input) or to begin only after input from the user.</para>
+		
+		</sect3>
+		
+		<sect3 id="gok-accessmethods-inverse">
+		<title>Inverse Scanning</title>
+		
+		<para>The user manually controls the scanning (i.e. highlighting) and key selection process.</para>
+		
+		<para>Inverse Scanning is similar to Automatic Scanning in that individual rows and columns are highlighted enabling users 
+		to make a specific key selection. The main difference is that scanning (moving the highlight down rows and across columns) 
+		proceeds only when the user keeps switch 1 pressed down. To stop the highlight scan when the desired row or column is 
+		reached, the user simply releases the switch. To make a selection, the user must press and release switch 2. To resume 
+		scanning without making a selection press and hold switch 1.</para>
+		
+		<para>The Feedback and Auto Repeat settings for Inverse Scanning are identical to those described in the Direct Scanning 
+		section. Scan Delay and other scanning options function in identical fashion to those in Automatic Scanning.</para>
+		
+		</sect3>
+    </sect2>
+	
+
+<!-- ============= Customization Subsection ===================== -->
+    <!-- Another tabbed section on the Preferences dialog. -->
+    <sect2 id="gok-prefs-Prediction"> 
+		<title>Prediction</title>
+		<para>The Prediction dialog allows users to choose whether to enable the Word Completion and Command Prediction options. 
+		Word Completion is useful for composing text (e.g. email). The ability to specify an extra word list is a new feature
+		and needs more testing (feedback is appreciated).
+		Command Prediction (experimental) provides quick access to the 
+		most used GOK keys.</para>
+		
+		<para>Word Completion is limited to between three and 10 words. The maximum for Command Prediction is 25 predictions.</para>
+    </sect2>
+	
+		
+  </sect1>

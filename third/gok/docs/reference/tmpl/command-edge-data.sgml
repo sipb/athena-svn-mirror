@@ -1,0 +1,93 @@
+<!-- ##### SECTION Title ##### -->
+command-edge-data
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO COMMAND_EDGE_DATA_DEFAULT_WEIGHT ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### MACRO COMMAND_EDGE_DATA_WEIGHT_DELTA ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION command_edge_data_equals ##### -->
+<para>
+
+</para>
+
+@data_1: 
+@data_2: 
+@Returns: 
+
+
+<!-- ##### FUNCTION command_edge_data_free ##### -->
+<para>
+
+</para>
+
+@data: 
+
+
+<!-- ##### FUNCTION command_edge_data_create ##### -->
+<para>
+
+</para>
+
+@weight: 
+@Returns: 
+
+
+<!-- ##### FUNCTION command_edge_data_set_weight ##### -->
+<para>
+
+</para>
+
+@data: 
+@weight: 
+
+
+<!-- ##### FUNCTION command_edge_data_get_weight ##### -->
+<para>
+
+</para>
+
+@data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION command_edge_data_dump_text ##### -->
+<para>
+
+</para>
+
+@data: 
+@stream: 
+
+
+<!-- ##### FUNCTION command_edge_data_dump_binary ##### -->
+<para>
+
+</para>
+
+@data: 
+@stream: 
+
+

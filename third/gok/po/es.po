@@ -1,0 +1,2340 @@
+# traducción de es.po al Spanish
+# translation of es.po to Spanish
+# translation of gok.HEAD.es.po to Spanish
+# Spanish translation for gok.
+# Copyright © 2003 Free Software Foundation, Inc.
+# This file is distributed under the same license as the gok package.
+# Pablo Gonzalo del Campo <pablodc@bigfoot.com>,
+# Alejandro Sáchez Acosta <asanchez@gnu.org>, 2002.
+# Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: es\n"
+"POT-Creation-Date: 2004-09-10 06:47+0100\n"
+"PO-Revision-Date: 2004-08-28 15:48+0200\n"
+"Last-Translator: Francisco Javier F. Serrador <serrador@cvs.gnome.org>\n"
+"Language-Team: Spanish <traductores@es.gnome.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
+"X-Generator: KBabel 1.3.1\n"
+"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+
+#: automatic-scanning.xml.in.h:1 direct-selection.xml.in.h:1
+#: dwell-selection.xml.in.h:1 inverse-scanning.xml.in.h:1
+#: singlekey-inverse-scanning.xml.in.h:1 directed.xml.in.h:1
+msgid "(100s of a second)"
+msgstr "(100a de un segundo)"
+
+#: automatic-scanning.xml.in.h:2 direct-selection.xml.in.h:2
+#: inverse-scanning.xml.in.h:2
+msgid "Auto Repeat On"
+msgstr "Repetición automática activada"
+
+#: automatic-scanning.xml.in.h:3 direct-selection.xml.in.h:3
+#: dwell-selection.xml.in.h:2 inverse-scanning.xml.in.h:3
+msgid "Auto Repeat Rate:"
+msgstr "Velocidad de la autorepetición:"
+
+#: automatic-scanning.xml.in.h:4
+msgid "Automatic Scanning"
+msgstr "Rastreo automático"
+
+#: automatic-scanning.xml.in.h:5 singlekey-automatic-scanning.xml.in.h:1
+msgid "Autostart (starts automatically)"
+msgstr "Inicio automático (se inicia automáticamente)"
+
+#: automatic-scanning.xml.in.h:6 inverse-scanning.xml.in.h:4
+#: singlekey-automatic-scanning.xml.in.h:2
+#: singlekey-inverse-scanning.xml.in.h:2
+msgid "Bottom/Top"
+msgstr "Inferior/Superior"
+
+#: automatic-scanning.xml.in.h:7 inverse-scanning.xml.in.h:5
+msgid "Continuous Cycle On"
+msgstr "Ciclado continuo activado"
+
+#: automatic-scanning.xml.in.h:8 inverse-scanning.xml.in.h:6
+#: singlekey-automatic-scanning.xml.in.h:3
+#: singlekey-inverse-scanning.xml.in.h:3
+msgid "Cycles Before Stopping:"
+msgstr "Ciclos antes de detenerse:"
+
+#: automatic-scanning.xml.in.h:9 direct-selection.xml.in.h:5
+#: dwell-selection.xml.in.h:4 gok.glade2.h:69 inverse-scanning.xml.in.h:7
+#: singlekey-automatic-scanning.xml.in.h:4
+#: singlekey-inverse-scanning.xml.in.h:4 directed.xml.in.h:4
+msgid "Feedback"
+msgstr "Retroalimentación"
+
+#: automatic-scanning.xml.in.h:10
+msgid "Feedback Movement"
+msgstr "Movimiento de realimentación"
+
+#: automatic-scanning.xml.in.h:11
+msgid "Feedback Selection"
+msgstr "Selección de realimentación"
+
+#: automatic-scanning.xml.in.h:12 singlekey-automatic-scanning.xml.in.h:7
+msgid "Initial Delay:"
+msgstr "Retardo inicial:"
+
+#: automatic-scanning.xml.in.h:13 inverse-scanning.xml.in.h:10
+#: singlekey-automatic-scanning.xml.in.h:8
+#: singlekey-inverse-scanning.xml.in.h:7
+msgid "Left/Right"
+msgstr "Izquierda/Derecha"
+
+#: automatic-scanning.xml.in.h:14 direct-selection.xml.in.h:10
+#: dwell-selection.xml.in.h:10 inverse-scanning.xml.in.h:12
+#: singlekey-automatic-scanning.xml.in.h:10
+#: singlekey-inverse-scanning.xml.in.h:9 directed.xml.in.h:8
+msgid "Operation"
+msgstr "Operación"
+
+#: automatic-scanning.xml.in.h:15 direct-selection.xml.in.h:11
+#: inverse-scanning.xml.in.h:13 singlekey-automatic-scanning.xml.in.h:11
+#: singlekey-inverse-scanning.xml.in.h:10
+msgid "Options"
+msgstr "Opciones"
+
+#: automatic-scanning.xml.in.h:16 singlekey-automatic-scanning.xml.in.h:12
+msgid ""
+"Press a switch to start scanning.  Press another switch or the same switch "
+"again to select."
+msgstr ""
+"Presione un interruptor para iniciar el rastreo. Presione otro interruptor o "
+"el mismo nuevamente para seleccionar."
+
+#: automatic-scanning.xml.in.h:17 singlekey-automatic-scanning.xml.in.h:13
+msgid "Press switch to start"
+msgstr "Presione cambiar para iniciar"
+
+#: automatic-scanning.xml.in.h:18 inverse-scanning.xml.in.h:15
+#: singlekey-automatic-scanning.xml.in.h:14
+#: singlekey-inverse-scanning.xml.in.h:12
+msgid "Right/Left"
+msgstr "Derecha/Izquierda"
+
+#: automatic-scanning.xml.in.h:19 inverse-scanning.xml.in.h:16
+#: singlekey-automatic-scanning.xml.in.h:15
+#: singlekey-inverse-scanning.xml.in.h:13 directed.xml.in.h:10
+msgid "Scan Delay:"
+msgstr "Retardo del rastreo:"
+
+#: automatic-scanning.xml.in.h:20 inverse-scanning.xml.in.h:17
+#: singlekey-automatic-scanning.xml.in.h:16
+#: singlekey-inverse-scanning.xml.in.h:14 directed.xml.in.h:11
+msgid "Scan Speed:"
+msgstr "Velocidad del rastreo:"
+
+#: automatic-scanning.xml.in.h:21
+msgid "Select"
+msgstr "Seleccionar"
+
+#: automatic-scanning.xml.in.h:22
+msgid "Start Scanning"
+msgstr "Iniciar rastreo"
+
+#: automatic-scanning.xml.in.h:23 inverse-scanning.xml.in.h:21
+#: singlekey-automatic-scanning.xml.in.h:23
+#: singlekey-inverse-scanning.xml.in.h:20
+msgid "Top/Bottom"
+msgstr "Superior/Inferior"
+
+#: automatic-scanning.xml.in.h:24 inverse-scanning.xml.in.h:22
+#: singlekey-inverse-scanning.xml.in.h:21 directed.xml.in.h:15
+msgid "Wrap Rows/Columns"
+msgstr "Ajustar las filas/columnas"
+
+#: automatic-scanning.xml.in.h:25
+msgid "feedbackmovement"
+msgstr "movimiento retroalimentación"
+
+#: automatic-scanning.xml.in.h:26
+msgid "feedbackselection"
+msgstr "seleccionretroalimentación"
+
+#: direct-selection.xml.in.h:4
+msgid "Direct Selection"
+msgstr "Selección directa"
+
+#: direct-selection.xml.in.h:6 dwell-selection.xml.in.h:5
+#: inverse-scanning.xml.in.h:8 singlekey-automatic-scanning.xml.in.h:5
+#: singlekey-inverse-scanning.xml.in.h:5 directed.xml.in.h:5
+msgid "Feedback Movement:"
+msgstr "Movimiento de realimentación:"
+
+#: direct-selection.xml.in.h:7 dwell-selection.xml.in.h:6
+#: singlekey-automatic-scanning.xml.in.h:6
+#: singlekey-inverse-scanning.xml.in.h:6
+msgid "Feedback Selection:"
+msgstr "Selección de realimentación:"
+
+#: direct-selection.xml.in.h:8 dwell-selection.xml.in.h:7
+msgid "Highlight:"
+msgstr "Resaltado:"
+
+#: direct-selection.xml.in.h:9
+msgid "Move the mouse pointer to highlight a key.  Press a switch to select."
+msgstr ""
+"Mueva el puntero del ratón para resaltar una tecla. Presione un interruptor "
+"para seleccionar."
+
+#: direct-selection.xml.in.h:12 dwell-selection.xml.in.h:11
+#: inverse-scanning.xml.in.h:19 singlekey-automatic-scanning.xml.in.h:18
+#: singlekey-inverse-scanning.xml.in.h:17 directed.xml.in.h:12
+msgid "Select:"
+msgstr "Seleccionar:"
+
+#: dwell-selection.xml.in.h:3
+msgid "Dwell Selection"
+msgstr "Selección al posarse"
+
+#: dwell-selection.xml.in.h:8
+msgid "Move the mouse pointer to highlight a key.  Dwell on the key to select."
+msgstr ""
+"Mueva el puntero del ratón para resaltar una tecla. Pósese sobre la tecla "
+"para seleccionarla."
+
+#: dwell-selection.xml.in.h:9 inverse-scanning.xml.in.h:11
+#: singlekey-automatic-scanning.xml.in.h:9
+#: singlekey-inverse-scanning.xml.in.h:8 directed.xml.in.h:7
+msgid "Movement:"
+msgstr "Movimiento:"
+
+#: dwell-selection.xml.in.h:12 inverse-scanning.xml.in.h:20
+#: singlekey-automatic-scanning.xml.in.h:19
+#: singlekey-inverse-scanning.xml.in.h:18 directed.xml.in.h:13
+msgid "Selection:"
+msgstr "Selección:"
+
+#: gok-controls.kbd.in.h:1
+msgid "About"
+msgstr "Acerca de"
+
+#: gok-controls.kbd.in.h:2
+msgid "Help"
+msgstr "Ayuda"
+
+#: gok-controls.kbd.in.h:3
+msgid "Preferences"
+msgstr "Preferencias"
+
+#: gok-controls.kbd.in.h:4
+msgid "Quit GOK"
+msgstr "Salir de GOK"
+
+#: gok-controls.kbd.in.h:5 main.kbd.in.h:12
+msgid "Window"
+msgstr "Ventana"
+
+#. "back" means go to previous keyboard
+#: gok-controls.kbd.in.h:6 gok/gok-keyboard.c:2476 gok/gok-windowlister.c:130
+#: launcher.kbd.in.h:5 mouse.kbd.in.h:24 move-resize.kbd.in.h:23
+#: numberpad.kbd.in.h:19 quit.kbd.in.h:4 valuator.kbd.in.h:3
+msgid "back"
+msgstr "atrás"
+
+#: gok-with-references.schemas.in.h:1 gok/main.c:284
+msgid ""
+"A multiplier to be applied to input device valuator events before processing"
+msgstr ""
+"Un multiplicador que será aplicado al evaluador del dispositivo de entrada "
+"de eventos antes del preproceso"
+
+#: gok-with-references.schemas.in.h:2
+msgid ""
+"A semicolon-delimited list of fully specified paths to additional word-"
+"completion dictionaries"
+msgstr ""
+"Una lista delimitada por puntos y comas de rutas completamente especificadas "
+"a diccionarios de completado de palabras"
+
+#: gok-with-references.schemas.in.h:3
+msgid "Are the preferences to be restricted?"
+msgstr "¿Las preferencias deben ser restringidas?"
+
+#: gok-with-references.schemas.in.h:4
+msgid "Determines the keyboard type used for the default compose keyboard"
+msgstr ""
+"Determina el tipo de teclado usado para el teclado compuesto predeterminado"
+
+#: gok-with-references.schemas.in.h:5
+msgid ""
+"Does GOK generate its compose keyboard dynamically based on information from "
+"the X Server?"
+msgstr ""
+"¿Debe GOK generar su teclado compuesto dinámicamente basado en la "
+"información del servidor X?"
+
+#: gok-with-references.schemas.in.h:6
+msgid ""
+"Does each GOK user have a private copy of the word prediction dictionary?"
+msgstr ""
+"¿Tiene cada usuario de GOK una copia privada del diccionario de predicción "
+"de palabras?"
+
+#: gok-with-references.schemas.in.h:7
+msgid "Does the GOK window expand to fill the full screen width?"
+msgstr ""
+"¿La ventana de GOK debe expandirse hasta llegar el ancho completo de la "
+"pantalla?"
+
+#: gok-with-references.schemas.in.h:8
+msgid "Does the core pointer follow the GOK keyboard pointer?"
+msgstr "¿Debe el puntero del núcleo seguir al puntero del teclado de GOK?"
+
+#: gok-with-references.schemas.in.h:9
+msgid "Does this action use key averaging"
+msgstr "Hace que esta acción utilice el promedio de tecla"
+
+#: gok-with-references.schemas.in.h:10
+msgid "Does this feedback flash"
+msgstr "Hace que este aviso parpadee"
+
+#: gok-with-references.schemas.in.h:11
+msgid "Does this feedback play a sound"
+msgstr "Hace que este aviso reproduzca un sonido"
+
+#: gok-with-references.schemas.in.h:12
+msgid "Does this feedback speak the label of a GOK key"
+msgstr "Hace que este aviso diga la etiqueta de una tecla GOK"
+
+#: gok-with-references.schemas.in.h:13
+msgid "GOK main window anchor location (if a dock), or empty string if not"
+msgstr ""
+"Posición del anclaje de la ventana principal de GOK (si es un empotrable) o "
+"una cadena vacía si no lo está"
+
+#: gok-with-references.schemas.in.h:14
+msgid ""
+"How many children of each node in the GUI tree to search for accessible "
+"objects"
+msgstr ""
+"Cantidad de descendientes por cada nodo en el árbol del GUI para buscar "
+"objetos accesibles"
+
+#: gok-with-references.schemas.in.h:15
+msgid "How many levels down the GUI tree to search for accessible objects"
+msgstr ""
+"Cantidad de niveles bajo el árbol del GUI para buscar objetos accesibles"
+
+#: gok-with-references.schemas.in.h:16
+msgid "Is this action permanent"
+msgstr "Define si esta acción es permanente"
+
+#: gok-with-references.schemas.in.h:17
+msgid "Is this feedback permanent"
+msgstr "Define si este aviso es permanente"
+
+#: gok-with-references.schemas.in.h:18
+msgid "Is word completion on"
+msgstr "Define si la terminación de palabra está activada"
+
+#: gok-with-references.schemas.in.h:19
+msgid ""
+"Should be one of the following: xkb, default, alpha, alpha-freq, custom; if "
+"custom, custom_compose_keyboard should be defined."
+msgstr ""
+"Debería ser uno de los siguientes: xkb, default, alpha, alpha-freq, custom; "
+"si es custom, custom_compose_keyboard debe definirse también."
+
+#: gok-with-references.schemas.in.h:20
+msgid "The access method to use"
+msgstr "El método de acceso a utilizar"
+
+#: gok-with-references.schemas.in.h:21
+msgid "The directory to load access method files from."
+msgstr "El directorio desde donde cargar los archivos de métodos de acceso."
+
+#: gok-with-references.schemas.in.h:22
+msgid "The directory to load dictionary files from."
+msgstr "El directorio desde donde cargar los archivos de diccionario."
+
+#: gok-with-references.schemas.in.h:23
+msgid "The directory to load the gok resource file from."
+msgstr "El directorio desde donde cargar el archivo de recursos de gok."
+
+#: gok-with-references.schemas.in.h:24
+msgid "The directory to load user-specific or custom keyboard files from."
+msgstr ""
+"El directorio desde donde cargar los archivos de teclado específicos del "
+"usuario o personalizados."
+
+#: gok-with-references.schemas.in.h:25
+msgid "The full pathname to a file which defines a custom GOK compose keyboard"
+msgstr ""
+"La ruta completa a un archivo que define un teclado personalizado compuesto "
+"para GOK"
+
+#: gok-with-references.schemas.in.h:26
+msgid "The key height"
+msgstr "La altura de la tecla"
+
+#: gok-with-references.schemas.in.h:27
+msgid "The key width"
+msgstr "El ancho de la tecla"
+
+#: gok-with-references.schemas.in.h:28
+msgid "The keyboards X coordinate"
+msgstr "La coordenada X de los teclados"
+
+#: gok-with-references.schemas.in.h:29
+msgid "The keyboards Y coordinate"
+msgstr "La coordenada Y de los teclados"
+
+#: gok-with-references.schemas.in.h:30
+msgid "The name of the sound that this feedback will play"
+msgstr "El nombre del sonido que reproducirá este aviso"
+
+#: gok-with-references.schemas.in.h:31
+msgid "The name of the xinput device to use"
+msgstr "El nombre del dispositivo xinput a utilizar"
+
+#: gok-with-references.schemas.in.h:32
+msgid "The name to display to the user for this action"
+msgstr "El nombre que se le mostrará al usuario para esta acción"
+
+#: gok-with-references.schemas.in.h:33
+msgid "The name to display to the user for this feedback"
+msgstr "El nombre que se le mostrará al usuario para este aviso"
+
+#: gok-with-references.schemas.in.h:34
+msgid "The number if applicable"
+msgstr "La cantidad, si es aplicable"
+
+#: gok-with-references.schemas.in.h:35
+msgid "The number of predictions for word completion"
+msgstr "La cantidad de predicciones para la terminación de palabras"
+
+#: gok-with-references.schemas.in.h:36
+msgid "The number of times this feedback will flash"
+msgstr "La cantidad de veces que este aviso parpadeará"
+
+#: gok-with-references.schemas.in.h:37
+msgid "The primary or system directory to load keyboard files from."
+msgstr ""
+"El directorio primario o de sistema desde donde cargar los archivos de "
+"teclado."
+
+#: gok-with-references.schemas.in.h:38
+msgid "The rate for this action"
+msgstr "La velocidad para esta acción"
+
+#: gok-with-references.schemas.in.h:39
+msgid "The space between keys"
+msgstr "El espacio entre las teclas"
+
+#: gok-with-references.schemas.in.h:40
+msgid "The state in which this action is activated"
+msgstr "El estado en que esta acción es activada"
+
+#: gok-with-references.schemas.in.h:41
+msgid "The type of this action"
+msgstr "El tipo de esta acción"
+
+#: gok-with-references.schemas.in.h:42
+msgid ""
+"Whether to use additional word lists when searching for GOK word-completion "
+"candidates"
+msgstr ""
+"Indica si debe usar listas de palabras adicionales al buscar candidatos para "
+"completado de palabras"
+
+#: gok.desktop.in.h:1
+msgid "On-Screen Keyboard"
+msgstr "Teclado en pantalla"
+
+#: gok.desktop.in.h:2
+msgid "The GNOME On-screen Keyboard"
+msgstr "El teclado en pantalla de Gnome"
+
+#: gok.glade2.h:1
+msgid "*"
+msgstr "*"
+
+#: gok.glade2.h:2
+msgid "3 State"
+msgstr "3er estado"
+
+#: gok.glade2.h:3
+msgid "<b>Appearance</b>"
+msgstr "<b>Apariencia</b>"
+
+#: gok.glade2.h:4
+msgid "<b>Behavior</b>"
+msgstr "<b>Comportamiento</b>"
+
+#: gok.glade2.h:5
+msgid "<b>Branch</b>"
+msgstr "<b>Bifurcar</b>"
+
+#: gok.glade2.h:6
+msgid "<b>Command Prediction</b>"
+msgstr "<b>Predicción de comando</b>"
+
+#: gok.glade2.h:7
+msgid "<b>Compose Keyboard</b>"
+msgstr "<b>Teclado compuesto</b>"
+
+#: gok.glade2.h:8
+msgid "<b>Custom Keyboards</b>"
+msgstr "<b>Teclado personalizado</b>"
+
+#: gok.glade2.h:9
+msgid "<b>Define Actions</b>"
+msgstr "<b>Definir acciones</b>"
+
+#: gok.glade2.h:10
+msgid "<b>Define Feedback</b>"
+msgstr "<b>Definir el aviso</b>"
+
+#: gok.glade2.h:11
+msgid "<b>Delay Before Activation</b>"
+msgstr "<b>Retraso antes de la activación</b>"
+
+#: gok.glade2.h:12
+msgid "<b>Description</b>"
+msgstr "<b>Descripción</b>"
+
+#: gok.glade2.h:13
+msgid "<b>Dock and Expand Horizontally</b>"
+msgstr "<b>Empotrar y expandir horizontalmente</b>"
+
+#: gok.glade2.h:14
+msgid "<b>Event Source</b>"
+msgstr "<b>Origen del evento</b>"
+
+#: gok.glade2.h:15
+msgid "<b>Font</b>"
+msgstr "<b>Tipografía</b>"
+
+#: gok.glade2.h:16
+msgid "<b>Key Flashing</b>"
+msgstr "<b>Parpadeo de la tecla</b>"
+
+#: gok.glade2.h:17
+msgid "<b>Key Size and Spacing Controls</b>"
+msgstr "<b>Tamaño de la tecla / Controles de espaciado</b>"
+
+#: gok.glade2.h:18
+msgid "<b>Key</b>"
+msgstr "<b>Tecla</b>"
+
+#: gok.glade2.h:19
+msgid "<b>Keyboard</b>"
+msgstr "<b>Teclado</b>"
+
+#: gok.glade2.h:20
+msgid "<b>Modifier</b>"
+msgstr "<b>Modificador</b>"
+
+#: gok.glade2.h:21
+msgid "<b>Output</b>"
+msgstr "<b>Salida</b>"
+
+#: gok.glade2.h:22
+msgid "<b>Position</b>"
+msgstr "<b>Posición</b>"
+
+#: gok.glade2.h:23
+msgid "<b>Preview</b>"
+msgstr "<b>Vista previa</b>"
+
+#: gok.glade2.h:24
+msgid "<b>Sensitivity</b>"
+msgstr "<b>Sensibilidad</b>"
+
+#: gok.glade2.h:25
+msgid "<b>Sound</b>"
+msgstr "<b>Sonido</b>"
+
+#: gok.glade2.h:26
+msgid "<b>Speech</b>"
+msgstr "<b>Voz</b>"
+
+#: gok.glade2.h:27
+msgid "<b>Switch or Button Number</b>"
+msgstr "<b>Número de botón a interruptor</b>"
+
+#: gok.glade2.h:28
+msgid "<b>Theme</b>"
+msgstr "<b>Tema</b>"
+
+#: gok.glade2.h:29
+msgid "<b>Timers and Delays</b>"
+msgstr "<b>Temporizadores/Retrasos</b>"
+
+#: gok.glade2.h:30
+msgid "<b>Type</b>"
+msgstr "<b>Tipo</b>"
+
+#: gok.glade2.h:31
+msgid "<b>Valuator Type</b>"
+msgstr "<b>Tipo de evaluador</b>"
+
+#: gok.glade2.h:32
+msgid "<b>Word Completion</b>"
+msgstr "<b>Terminación de palabra</b>"
+
+#: gok.glade2.h:33
+msgid ""
+"<small><i><b>Note:</b> Changes to this setting will not take effect until "
+"you next run GOK.</i></small>"
+msgstr ""
+"<small><i><b>Aviso:</b> Los cambios realizados a esta configuración no "
+"surtirán efecto hasta la próxima ejecución de GOK.</i></small>"
+
+#: gok.glade2.h:34
+msgid ""
+"A multipler which is applied to the extended input device valuator events "
+"before processing."
+msgstr ""
+"Un multiplicador que se aplica al dispositivo de entrada evaluador de "
+"eventos extendido antes de procesar."
+
+#: gok.glade2.h:35
+msgid "Access Methods"
+msgstr "Métodos de acceso"
+
+#: gok.glade2.h:36
+msgid "AccessMethodName"
+msgstr "AccessMethodName"
+
+#: gok.glade2.h:37
+msgid "Action Names List"
+msgstr "Lista de nombres de acción"
+
+#: gok.glade2.h:38
+msgid "Action Type:"
+msgstr "Tipo de acción"
+
+#: gok.glade2.h:39
+msgid "ActionTypeNotebook"
+msgstr "Anotador de tipo de acción"
+
+#: gok.glade2.h:40
+msgid "Actions"
+msgstr "Acciones"
+
+#: gok.glade2.h:41
+msgid "Activate on Dw_ell"
+msgstr "Activar al posars_e"
+
+#: gok.glade2.h:42
+msgid "Activate on _Enter"
+msgstr "Activar con _Intro"
+
+#: gok.glade2.h:43
+msgid "Activate on _Move"
+msgstr "Activar al _mover"
+
+#: gok.glade2.h:44
+msgid "Activate when _pressed"
+msgstr "Activar cuando es _presionado"
+
+#: gok.glade2.h:45
+msgid "Activate when _released"
+msgstr "Activa_r cuando es soltado"
+
+#: gok.glade2.h:46
+msgid "Add"
+msgstr "Añadir"
+
+#: gok.glade2.h:47
+msgid "Add New Key"
+msgstr "Añadir una tecla nueva"
+
+#: gok.glade2.h:48
+msgid "Additional directory to search for GOK Keyboards"
+msgstr "Directorio adicional donde buscar teclados GOK"
+
+#: gok.glade2.h:49
+msgid "Additional directory to search for GOK keyboard files"
+msgstr "Directorio adicional donde buscar archivos de teclado de GOK"
+
+#: gok.glade2.h:50
+msgid "Alphanumeric keyboard arranged by letter frequency"
+msgstr "Teclado alfanumérico ordenado por frecuencia de letras"
+
+#: gok.glade2.h:51
+msgid "Alphanumeric keyboard sorted alphabetically"
+msgstr "Teclado alfanumérico ordenado alfabéticamente"
+
+#: gok.glade2.h:52
+msgid "Appearance"
+msgstr "Apariencia"
+
+#: gok.glade2.h:53
+msgid "Bottom:"
+msgstr "Fondo:"
+
+#: gok.glade2.h:54
+msgid "Browse"
+msgstr "Examinar"
+
+#: gok.glade2.h:55
+msgid "C_ore pointer"
+msgstr "Punter_o principal"
+
+#: gok.glade2.h:56
+msgid "Command Prediction"
+msgstr "Predicción de comando"
+
+#: gok.glade2.h:57
+msgid "Delay"
+msgstr "Retraso"
+
+#: gok.glade2.h:58
+msgid ""
+"Delay, in 100ths of a second, after the triggering event occurs, before "
+"activation takes place."
+msgstr ""
+"Retraso, en centésimas de segundo, luego que ocurre la activación del "
+"evento, antes de que la activación se realice."
+
+#: gok.glade2.h:59
+msgid "Delete"
+msgstr "Borrar"
+
+#: gok.glade2.h:60
+msgid "Delete Key"
+msgstr "Borrar la tecla"
+
+#: gok.glade2.h:61
+msgid "Dock"
+msgstr "Empotrar"
+
+#. Translators: dock is used as a verb.
+#: gok.glade2.h:62 move-resize.kbd.in.h:2
+msgid "Dock Bottom"
+msgstr "Empotrar inferior"
+
+#. Translators: dock is used as a verb.
+#: gok.glade2.h:63 move-resize.kbd.in.h:4
+msgid "Dock Top"
+msgstr "Empotrar superior"
+
+#: gok.glade2.h:64
+msgid "Duplicate"
+msgstr "Duplicar"
+
+#: gok.glade2.h:65
+msgid "Enable _key flashing"
+msgstr "Activar el parpadeo de la t_ecla"
+
+#: gok.glade2.h:66
+msgid "Enable _sound"
+msgstr "Activar el _sonido"
+
+#: gok.glade2.h:67
+msgid "Enable _word completion"
+msgstr "Activar la terminación de _palabra"
+
+#: gok.glade2.h:68
+msgid "Enable co_mmand prediction"
+msgstr "Activar la predicción de co_mando"
+
+#: gok.glade2.h:70
+msgid "Fill WIdth"
+msgstr "Anchura de rellenado"
+
+#: gok.glade2.h:71
+msgid "Font Group:"
+msgstr "Grupo de la tipografía:"
+
+#: gok.glade2.h:72 gok/gok-editor.c:35
+msgid "GOK Keyboard Editor"
+msgstr "Editor de teclado de GOK"
+
+#: gok.glade2.h:73
+msgid "GOK Preferences"
+msgstr "Preferencias de GOK"
+
+#: gok.glade2.h:74
+msgid "GOK:"
+msgstr "GOK:"
+
+#: gok.glade2.h:75
+msgid "Key Height"
+msgstr "Altura de la tecla"
+
+#: gok.glade2.h:76
+msgid "Key Spacing"
+msgstr "Espaciado de teclas"
+
+#: gok.glade2.h:77
+msgid "Key Width"
+msgstr "Ancho de la tecla"
+
+#: gok.glade2.h:78
+msgid "Key _width:"
+msgstr "A_ncho de la tecla:"
+
+#: gok.glade2.h:79
+msgid "Key h_eight:"
+msgstr "Altura de la t_ecla:"
+
+#: gok.glade2.h:80
+msgid "Keyboards"
+msgstr "Teclados"
+
+#: gok.glade2.h:81
+msgid "Keycode:"
+msgstr "Código de la tecla:"
+
+#: gok.glade2.h:82
+msgid "Keysym:"
+msgstr "Sim. de la tecla:"
+
+#: gok.glade2.h:83
+msgid "Label:"
+msgstr "Etiqueta:"
+
+#: gok.glade2.h:84 directed.xml.in.h:6
+msgid "Left:"
+msgstr "Izquierda:"
+
+#: gok.glade2.h:85
+msgid "Match physical keyboard as reported by X Server"
+msgstr "Coincidir con el teclado físico según el servidor X"
+
+#: gok.glade2.h:86
+msgid "Modifier Post"
+msgstr "Siguiente modificador"
+
+#: gok.glade2.h:87
+msgid "Modifier Pre"
+msgstr "Modificador anterior"
+
+#: gok.glade2.h:88
+msgid "Modifier:"
+msgstr "Modificador"
+
+#: gok.glade2.h:89
+msgid "Move Down"
+msgstr "Mover hacia abajo"
+
+#: gok.glade2.h:90
+msgid "Move Up"
+msgstr "Mover hacia arriba"
+
+#: gok.glade2.h:91
+msgid "Name:"
+msgstr "Nombre:"
+
+#: gok.glade2.h:92
+msgid "New"
+msgstr "Nuevo"
+
+#: gok.glade2.h:93
+msgid "Next Key"
+msgstr "Siguiente tecla"
+
+#: gok.glade2.h:94
+msgid "Normal"
+msgstr "Normal"
+
+#: gok.glade2.h:95
+msgid "Number of _flashes:"
+msgstr "Cantidad de pa_rpadeos:"
+
+#: gok.glade2.h:96
+msgid "Number of _predictions:"
+msgstr "Cantidad de _predicciones:"
+
+#: gok.glade2.h:97
+msgid "Number of command predictions:"
+msgstr "Número de predicciones de comandos:"
+
+#: gok.glade2.h:98
+msgid "Number of word predictions:"
+msgstr "Número de predicciones de palabras:"
+
+#: gok.glade2.h:99
+msgid "Other _input device:"
+msgstr "Otro d_ispositivo de entrada:"
+
+#: gok.glade2.h:100
+msgid "Prediction"
+msgstr "Predicción"
+
+#: gok.glade2.h:101
+msgid "Press"
+msgstr "Presionada"
+
+#: gok.glade2.h:102
+msgid "Previous Key"
+msgstr "Tecla anterior"
+
+#: gok.glade2.h:103
+msgid "Read keyboard from file:"
+msgstr "Leer teclado desde el archivo:"
+
+#: gok.glade2.h:104
+msgid "Release"
+msgstr "Liberada"
+
+#: gok.glade2.h:105 directed.xml.in.h:9
+msgid "Right:"
+msgstr "Derecha:"
+
+#: gok.glade2.h:106
+msgid "S_witch"
+msgstr "Co_nmutador"
+
+#: gok.glade2.h:107
+msgid "Show Only This Font Group"
+msgstr "Mostrar sólo este grupo de tipografías"
+
+#: gok.glade2.h:108
+msgid "So_und:"
+msgstr "So_nido:"
+
+#: gok.glade2.h:109
+msgid "Speak key _label"
+msgstr "Etiqueta de tecla _hablada"
+
+#: gok.glade2.h:110
+msgid "Style:"
+msgstr "Estilo:"
+
+#: gok.glade2.h:111
+msgid "Switch _1"
+msgstr "Conmutador _1"
+
+#: gok.glade2.h:112
+msgid "Switch _2"
+msgstr "Conmutador _2"
+
+#: gok.glade2.h:113
+msgid "Switch _3"
+msgstr "Conmutador _3"
+
+#: gok.glade2.h:114
+msgid "Switch _4"
+msgstr "Conmutador _4"
+
+#: gok.glade2.h:115
+msgid "Switch _5"
+msgstr "Conmutador _5"
+
+#: gok.glade2.h:116
+msgid "Target:"
+msgstr "Objetivo:"
+
+#: gok.glade2.h:117
+msgid "To Back"
+msgstr "Hacia atrás"
+
+#: gok.glade2.h:118
+msgid "To Front"
+msgstr "Hacia el frente"
+
+#: gok.glade2.h:119
+msgid "Toggle"
+msgstr "Cambiar"
+
+#: gok.glade2.h:120
+msgid "Top:"
+msgstr "Superior:"
+
+#: gok.glade2.h:121
+msgid "Use _extra word list file(s)"
+msgstr "Usar archivo(s) de palabras _extra"
+
+#: gok.glade2.h:122
+msgid "Use _key averaging"
+msgstr "Utilizar promedio de _tecla"
+
+#: gok.glade2.h:123
+msgid "Valuator Sensitivity"
+msgstr "Sensibilidad del evaluador"
+
+#: gok.glade2.h:124
+msgid "Word Completion"
+msgstr "Completado de palabras"
+
+#: gok.glade2.h:125
+msgid "_100ths of a second"
+msgstr "(_100mas de un segundo)"
+
+#: gok.glade2.h:126
+msgid "_Add"
+msgstr "_Añadir"
+
+#: gok.glade2.h:127
+msgid "_Browse..."
+msgstr "E_xaminar..."
+
+#: gok.glade2.h:128
+msgid "_Delete"
+msgstr "B_orrar"
+
+#: gok.glade2.h:129
+msgid "_Joystick"
+msgstr "_Joystick"
+
+#: gok.glade2.h:130
+msgid "_Method:"
+msgstr "_Método:"
+
+#: gok.glade2.h:131
+msgid "_Name:"
+msgstr "_Nombre:"
+
+#: gok.glade2.h:132
+msgid "_New"
+msgstr "_Nuevo"
+
+#: gok.glade2.h:133
+msgid "_Number of predictions:"
+msgstr "Ca_ntidad de predicciones:"
+
+#: gok.glade2.h:134
+msgid "_Rename"
+msgstr "_Renombrar"
+
+#: gok.glade2.h:135
+msgid "_Single axis:"
+msgstr "Eje_s simples:"
+
+#: gok.glade2.h:136
+msgid "_Spacing:"
+msgstr "E_spaciado:"
+
+#: gok.glade2.h:137
+msgid "_Use Desktop Theme Preferences"
+msgstr "_Utilizar las preferencias del tema de escritorio"
+
+#: gok.glade2.h:138
+msgid "_Valuator"
+msgstr "E_valuador"
+
+#: gok.glade2.h:139
+msgid "_X-Y valuator (axes 0 and 1)"
+msgstr "Evaluador _X-Y [ejes 0 y 1]"
+
+#: gok.glade2.h:140
+msgid "access method name"
+msgstr "nombre del método de acceso"
+
+#: gok.glade2.h:141
+msgid "cancel"
+msgstr "cancelar"
+
+#: gok.glade2.h:142
+msgid "display user help"
+msgstr "mostrar la ayuda de usuario"
+
+#: gok.glade2.h:143
+msgid "high"
+msgstr "alto"
+
+#: gok.glade2.h:144
+msgid "low"
+msgstr "bajo"
+
+#: gok.glade2.h:145
+msgid "pixels"
+msgstr "píxeles"
+
+#: gok.glade2.h:146
+msgid "revert to original settings"
+msgstr "recuperar la configuración original"
+
+#: gok.glade2.h:147
+msgid "try these settings"
+msgstr "probar esta configuración"
+
+#: gok.glade2.h:148
+msgid "use these settings"
+msgstr "usar esta configuración"
+
+#: gok/gok-button.c:221
+msgid "You appear to be using GOK in 'core pointer' mode."
+msgstr "Está usando GOK en modo 'core pointer'."
+
+#: gok/callbacks.c:394
+msgid "Sorry, Access Method Wizard not implemented yet."
+msgstr "Lo siento, el asistente de métodos de acceso no está implementado aún."
+
+#: gok/callbacks.c:396
+msgid "GOK Access Method Wizard"
+msgstr "Asistente de método de acceso de GOK"
+
+#: gok/gok-control.c:227
+msgid "Sorry, browse for sound file not implemented yet."
+msgstr "Lo siento, la búsqueda de archivos de sonido no está implementada aún."
+
+#: gok/gok-control.c:229
+msgid "GOK Browse for sound file"
+msgstr "Búsqueda de archivo de sonido de GOK"
+
+#: gok/gok-control.c:253
+msgid "Sorry, advanced settings not implemented yet."
+msgstr "Lo siento, la configuración avanzada no está implementada aún."
+
+#: gok/gok-control.c:255
+msgid "GOK Inverse Scanning Advanced"
+msgstr "Rastreo inverso avanzado de GOK"
+
+#: gok/gok-editor.c:154 gok/gok-editor.c:187 gok/gok-editor.c:267
+msgid ""
+"You have modified the current file.\n"
+"Do you want to discard your changes?"
+msgstr ""
+"Ha modificado el archivo actual.\n"
+"¿Desea descartar los cambios realizados?"
+
+#: gok/gok-editor.c:156 gok/gok-editor.c:189 gok/gok-editor.c:269
+#: gok/gok-editor.c:1060
+msgid "Keyboard Filename Invalid"
+msgstr "Nombre de archivo de teclado incorrecto"
+
+#: gok/gok-editor.c:218
+msgid "new"
+msgstr "nuevo"
+
+#. create the file selector dialog
+#: gok/gok-editor.c:279
+msgid "Select keyboard file for editing"
+msgstr "Seleccione el archivo de teclado a editar"
+
+#: gok/gok-editor.c:289 gok/gok-editor.c:981
+msgid ".kbd files"
+msgstr "archivos .kbd"
+
+#: gok/gok-editor.c:544
+msgid "label"
+msgstr "etiqueta"
+
+#: gok/gok-editor.c:718
+#, c-format
+msgid "Can't save file: %s\n"
+msgstr "No se puede guardar el archivo: %s\n"
+
+#. get name of keyboard filename
+#. create the file selector dialog
+#: gok/gok-editor.c:971
+msgid "Save keyboard file as"
+msgstr "guardar el archivo de teclado como"
+
+#: gok/gok-editor.c:1052
+#, c-format
+msgid ""
+"This is not a valid keyboard filename:\n"
+"%s"
+msgstr ""
+"Este no es un nombre válido para un archivo de teclado:\n"
+"%s"
+
+#: gok/gok-editor.c:1082
+msgid "(new)"
+msgstr "(nuevo)"
+
+#: gok/gok-key.c:115
+msgid "Mute"
+msgstr "Silenciar"
+
+#: gok/gok-key.c:118
+msgid ""
+"Mouse\n"
+"Keys"
+msgstr ""
+"Teclas del \n"
+"ratón"
+
+#: gok/gok-key.c:121
+msgid ""
+"Left\n"
+"Tab"
+msgstr ""
+"Tabulación\n"
+"izquierda"
+
+#: gok/gok-key.c:232
+msgid "Divide"
+msgstr "Dividir"
+
+#: gok/gok-key.c:235
+msgid "Multiply"
+msgstr "Multiplicar"
+
+#: gok/gok-key.c:238
+msgid "Subtract"
+msgstr "Restar"
+
+#: gok/gok-key.c:241
+msgid "Addition"
+msgstr "Adición"
+
+#: gok/gok-key.c:244
+msgid "Prior"
+msgstr "Anterior"
+
+#: gok/gok-key.c:247
+msgid "Next"
+msgstr "Siguiente"
+
+#: gok/gok-key.c:250 numberpad.kbd.in.h:6
+msgid "Home"
+msgstr "Inicio"
+
+#: gok/gok-key.c:253 numberpad.kbd.in.h:4
+msgid "End"
+msgstr "Fin"
+
+#. Translators: this describes the direction gok will move.
+#: gok/gok-key.c:256 move-resize.kbd.in.h:20 numberpad.kbd.in.h:17
+msgid "Up"
+msgstr "Subir"
+
+#. Translators: this describes the direction gok will move.
+#: gok/gok-key.c:259 move-resize.kbd.in.h:6 numberpad.kbd.in.h:3
+msgid "Down"
+msgstr "Abajo"
+
+#. Translators: this describes the direction gok will move.
+#: gok/gok-key.c:262 move-resize.kbd.in.h:11 numberpad.kbd.in.h:8
+msgid "Left"
+msgstr "Izquierda"
+
+#. Translators: this describes the direction gok will move.
+#: gok/gok-key.c:265 move-resize.kbd.in.h:15 numberpad.kbd.in.h:14
+msgid "Right"
+msgstr "Derecha"
+
+#: gok/gok-key.c:268
+msgid "Begin"
+msgstr "Inicio"
+
+#: gok/gok-key.c:271
+msgid "Decimal"
+msgstr "Decimal"
+
+#: gok/gok-key.c:274
+msgid "Meta"
+msgstr "Meta"
+
+#: gok/gok-key.c:277
+msgid ""
+"Multi\n"
+"key"
+msgstr ""
+"Tecla\n"
+"Multi"
+
+#: gok/gok-key.c:280
+msgid ""
+"Eisu\n"
+"toggle"
+msgstr ""
+"Activar\n"
+"Eisu"
+
+#: gok/gok-key.c:283
+msgid ""
+"Henkan\n"
+"Mode"
+msgstr ""
+"Modo\n"
+"Henkan"
+
+#: gok/gok-key.c:286
+msgid "Muhenkan"
+msgstr "Muhenkan"
+
+#: gok/gok-key.c:289
+msgid ""
+"Mode\n"
+"switch"
+msgstr ""
+"Cambio\n"
+"modo"
+
+#: gok/gok-keyboard.c:150
+#, c-format
+msgid "Xkb extension could not be initialized! (error code %x)"
+msgstr "La extensión Xkb no pudo inicializarse (código de error %x)"
+
+#: gok/gok-keyboard.c:156 gok/gok-keyboard.c:196
+msgid "keyboard description not available!"
+msgstr "descripción de teclado no disponible"
+
+#: gok/gok-keyboard.c:162 gok/gok-keyboard.c:202 gok/gok-keyboard.c:499
+msgid "Keyboard Geometry cannot be read from your X Server."
+msgstr "La geometría del teclado no pudo leerse de su servidor X"
+
+#: gok/gok-keyboard.c:425
+msgid "Back"
+msgstr "Atrás"
+
+#: gok/gok-keyboard.c:443 valuator.kbd.in.h:1
+msgid "Repeat Next"
+msgstr "Repetir siguiente"
+
+#: gok/gok-keyboard.c:456
+msgid "Edit"
+msgstr "Editar"
+
+#. translators: Abbreviation/mnemonic for "numeric keypad", but must be <= 10 chars
+#: gok/gok-keyboard.c:469
+msgid ""
+"Num\n"
+"Pad"
+msgstr ""
+"Teclado\n"
+"numérico"
+
+#. translators: Abbreviation/mnemonic for "numeric keypad", but must be <= 10 chars
+#: gok/gok-keyboard.c:483 move-resize.kbd.in.h:9
+msgid "Hide"
+msgstr "Ocultar"
+
+#. translators: "shift" as in "the shift modifier key"
+#: gok/gok-keyboard.c:694
+msgid "shift"
+msgstr "mayús."
+
+#. translators: The context is "key level" as in shift/caps status on keyboard
+#: gok/gok-keyboard.c:706
+msgid "Level 2"
+msgstr "Nivel 2"
+
+#. translators: see note for "Level 2"
+#: gok/gok-keyboard.c:718
+msgid "Level 3"
+msgstr "Nivel 3"
+
+#. translators: this is a label for a 'Back space' key
+#: gok/gok-keyboard.c:730
+msgid ""
+"Back\n"
+"Space"
+msgstr "Retroceso"
+
+#. translators: this is a label for a "Tab" key, for instance on a keyboard
+#: gok/gok-keyboard.c:741 numberpad.kbd.in.h:16
+msgid "Tab"
+msgstr "Tabulación"
+
+#. translators: this is a label for a "spacebar" key, for instance on a keyboard
+#: gok/gok-keyboard.c:752
+msgid "space"
+msgstr "espacio»"
+
+#. translators: this is a label for an "Enter" or Return key, for instance on a keyboard
+#: gok/gok-keyboard.c:763 numberpad.kbd.in.h:5
+msgid "Enter"
+msgstr "Intro"
+
+#: gok/gok-keyboard.c:801 main.kbd.in.h:7
+msgid "Menus"
+msgstr "Menús"
+
+#.
+#. * Note to Translators: the following strings should contain your LANG/locale's
+#. * alphabet or, in the case of LANGs with a very large glyph set, a set of
+#. * character-primitives which can be used to compose your language's character set.
+#. * Each string below corresponds to the characters associated with a particular
+#. * "shift level" in the XKB keyboard definition.
+#. * The prefix before the '|' character is just a context string and need not be
+#. * translated.
+#. *
+#. * For languages where 'case' is used, the first string should contain
+#. * the lowercase alphabet.
+#. *
+#. * Note that unless your locale clearly requires that digits and/or punctuation
+#. * precede alphabetic characters, digits and punctuation should be placed
+#. * at the end of the string.
+#.
+#: gok/gok-keyboard.c:860
+msgid "level 0|abcdefghijklmnopqrstuvwxyz1234567890-=[];'#\\,./"
+msgstr "nivel 0|abcdefghijklmnñopqrstuvwxyz1234567890-=[];'#\\,./"
+
+#. The substring "level 1|" should not be translated.
+#. * For languages/locales which use 'upper case', this string should
+#. * correspond to uppercase versions of characters in the 'level 0' string.
+#.
+#: gok/gok-keyboard.c:865
+msgid "level 1|ABCDEFGHIJKLMNOPQRSTUVWXYZ!\"3$%^&*()_+{}:@~<>?"
+msgstr "nivel 1|ABCDEFGHIJKLMNÑOPQRSTUVWXYZ!\"3$%^&*()_+{}:@~<>?"
+
+#. Not used in C locale: this string can contain a third set of characters
+#. * at another 'shift level'.  It can be used to provide a second/alternate
+#. * glyph/character set for the locale, separately or in conjunction with
+#. * 'level 3'.  At the translator's discretion, accented characters can be
+#. * placed here and in 'level 3' as well.
+#.
+#: gok/gok-keyboard.c:872 gok/gok-keyboard.c:928
+msgid "level 2|"
+msgstr "nivel 2|"
+
+#. For locales which need an even larger character set, or offer uppercase versions
+#. * of the 'level2' characters, add them to 'level 3'
+#: gok/gok-keyboard.c:875 gok/gok-keyboard.c:929
+msgid "level 3|"
+msgstr "nivel 3|"
+
+#.
+#. * Note to Translators: the following strings should contain your LANG/locale's
+#. * alphabet or, in the case of LANGs with a very large glyph set, a set of
+#. * character-primitives which can be used to compose your language's character set.
+#. * This string should contain all of the glyphs in the "level #|abcde..." strings
+#. * but they should appear in 'frequency order', that is, the most frequently occurring
+#. * characters in your locale should appear at the front of the list.
+#. * (Put digits after characters, and punctuation last).
+#. * If level 0 and level 1 refer to upper-and-lower-case in your locale,
+#. * the characters in these two strings should occur in the same relative order.
+#.
+#: gok/gok-keyboard.c:923
+msgid "level 0|etaonrishdlfcmugypwbvkxjqz`1234567890-=\\[];'<,./"
+msgstr "nivel 0|etaonrishdlfcmugypwbvkxjqz`1234567890-=\\[];'<,./"
+
+#: gok/gok-keyboard.c:924
+msgid "level 1|ETAONRISHDLFCMUGYPWBVKXJQZ~!@#$%^&*()_+|{}:\"><>?"
+msgstr "nivel 1|ETAONRISHDLFCMUGYPWBVKXJQZ~!@#$%^&*()_+|{}:\"><>?"
+
+#. change the name of the window to the keyboard name
+#: gok/gok-keyboard.c:1908
+msgid "GOK - "
+msgstr "GOK - "
+
+#: gok/gok-keyboard.c:2736
+msgid "GUI"
+msgstr "GUI"
+
+#. translators: "table" as in row/column data structure
+#: gok/gok-keyboard.c:2741 gok/gok-spy.c:1673
+msgid "Table"
+msgstr "Tabla"
+
+#: gok/gok-keyboard.c:2746 main.kbd.in.h:9
+msgid "Toolbars"
+msgstr "Barras de herramientas"
+
+#: gok/gok-keyboard.c:2750
+msgid "Applications"
+msgstr "Aplicaciones"
+
+#: gok/gok-keyboard.c:2757
+msgid "Menu"
+msgstr "Menú"
+
+#: gok/gok-keyboard.c:3527
+msgid "translator_credits"
+msgstr "Pablo G. del Campo <pablodc@bigfoot.com>"
+
+#: gok/gok-keyboard.c:3550 main.kbd.in.h:4
+msgid "GOK"
+msgstr "GOK"
+
+#: gok/gok-keyboard.c:3552
+msgid "Dynamic virtual keyboards for the GNOME desktop"
+msgstr "Teclados dinámicos virtuales para el escritorio Gnome"
+
+#: gok/gok-keyboard.c:3561
+msgid "Full Credits"
+msgstr "Créditos completos"
+
+#: gok/gok-scanner.c:1003
+msgid "error reading description"
+msgstr "error leyendo la descripción"
+
+#. translators: abbreviated version of "Vertical Scrollbar"
+#: gok/gok-spy.c:1593
+msgid "V Scrollbar"
+msgstr "Barra despl. V."
+
+#. translators: abbreviated version of "Horizontal Scrollbar"
+#: gok/gok-spy.c:1598
+msgid "H Scrollbar"
+msgstr "Barra despl. H."
+
+#. create the 'new action name' dialog
+#: gok/gok-page-actions.c:380 gok/gok-page-actions.c:425
+#: gok/gok-page-actions.c:444
+msgid "GOK Action Name"
+msgstr "Nombre de acción de GOK"
+
+#. add a text label
+#: gok/gok-page-actions.c:386
+msgid "Change the action name:"
+msgstr "Cambiar el nombre de la acción:"
+
+#: gok/gok-page-actions.c:423
+msgid ""
+"Action name can't be empty.\n"
+"Please enter a new action name."
+msgstr ""
+"El nombre de la acción no puede quedar vacío.\n"
+"Por favor ingrese un nombre de acción nuevo."
+
+#: gok/gok-page-actions.c:442
+msgid ""
+"Sorry, that action name already exists.\n"
+"Please enter a new action name"
+msgstr ""
+"Lo siento, ese nombre de acción ya existe.\n"
+"Por favor ingrese un nuevo nombre de acción"
+
+#: gok/gok-page-actions.c:497
+#, c-format
+msgid "New Action %d"
+msgstr "Nueva acción %d"
+
+#: gok/gok-page-actions.c:560
+#, c-format
+msgid "Do you wish to delete this action (%s)?"
+msgstr "¿Desea eliminar esta acción (%s)?"
+
+#: gok/gok-page-actions.c:568
+msgid "GOK Delete Action"
+msgstr "Borrar acción de GOK"
+
+#. create the 'new feedbacks name' dialog
+#: gok/gok-page-feedbacks.c:411 gok/gok-page-feedbacks.c:456
+#: gok/gok-page-feedbacks.c:475
+msgid "GOK Feedback Name"
+msgstr "Nombre de aviso de GOK"
+
+#. add a text label
+#: gok/gok-page-feedbacks.c:417
+msgid "Change the feedback name:"
+msgstr "Cambiar el nombre del aviso:"
+
+#: gok/gok-page-feedbacks.c:454
+msgid ""
+"Feedback name can't be empty.\n"
+"Please enter a new feedback name."
+msgstr ""
+"El nombre del aviso no puede quedar vacío.\n"
+"Por favor ingrese un nuevo nombre de aviso."
+
+#: gok/gok-page-feedbacks.c:473
+msgid ""
+"Sorry, that feedback name already exists.\n"
+"Please enter a new feedback name"
+msgstr ""
+"Lo siento, ese nombre de aviso ya existe.\n"
+"Por favor ingrese un nuevo nombre de aviso"
+
+#: gok/gok-page-feedbacks.c:526
+#, c-format
+msgid "New Feedback %d"
+msgstr "Nuevo aviso %d"
+
+#: gok/gok-page-feedbacks.c:644
+#, c-format
+msgid "Do you wish to delete this feedback (%s)?"
+msgstr "¿Desea eliminar este aviso (%s)?"
+
+#: gok/gok-page-feedbacks.c:652
+msgid "GOK Delete Feedback"
+msgstr "Eliminar aviso de GOK"
+
+#. create the file selector dialog
+#: gok/gok-page-feedbacks.c:875
+msgid "Select sound file"
+msgstr "Seleccione un archivo de sonido"
+
+#: gok/gok-page-keyboard.c:180
+msgid "Enter directory to search for additional GOK keyboard files."
+msgstr ""
+"Introduzca el directorio desde donde buscar los archivos de teclado GOK "
+"adicionales."
+
+#: gok/gok-page-keyboard.c:194
+msgid "Select the XML file defining your startup compose keyboard"
+msgstr "Seleccione el archivo XML que define su teclado compuesto de inicio"
+
+#: gok/gok-page-keysizespace.c:83
+msgid "Button"
+msgstr "Botón"
+
+#. and post a warning if the new settings use corepointer
+#: gok/gok-settings-dialog.c:259
+msgid "You appear to be configuring GOK to use 'core pointer' mode."
+msgstr "Parece que GOK está configurado para usar el modo 'core pointer'."
+
+#: gok/gok-windowlister.c:98
+msgid "Window List"
+msgstr "Lista de ventana"
+
+#: gok/gok-utf8-word-complete.c:120
+#, c-format
+msgid "Could not read contents of dictionary file '%s'\n"
+msgstr "No se pudo leer el contenido del archivo de diccionario «%s»\n"
+
+#: gok/main.c:164
+msgid ""
+"Use the specified access method. NAME is a string and can be found in the "
+"various access method files (.xam) assigned to the \"name\" property of <gok:"
+"accessmethod> tag. Note this is not necessarily the same as the name of the ."
+"xam file. (See --list-accessmethods)"
+msgstr ""
+"Usar el método de acceso especificado. NOMBRE es una cadena y puede ser "
+"encontrada en varios archivos de métodos de acceso (.xam) asignados a la "
+"propiedad «name» (nombre) de la etiqueta <gok:accessmethod>. Tenga en cuenta "
+"que no necesariamente es igual al nombre del archivo xam. (Vea --list-"
+"accessmethods)"
+
+#: gok/main.c:165
+msgid "NAME"
+msgstr "NOMBRE"
+
+#: gok/main.c:173
+msgid "Start the GOK keyboard editor"
+msgstr "Ejecutar el editor de teclado de GOK"
+
+#: gok/main.c:181
+msgid "Use special, but possibly unstable, gok stuff"
+msgstr "Usar las utilidades especiales pero posiblemente inestables de GOK"
+
+#: gok/main.c:189
+msgid ""
+"Whenever --geometry is not used gok remembers its position between "
+"invocations and starts in the position that it had when it was last "
+"shutdown.  When --geometry is used gok positions itself within the "
+"rectangular area of screen described by the given X11 geometry "
+"specification.  When --geometry is used gok does not remember its position "
+"when it shuts down.  This behaviour can be changed with the --"
+"remembergeometry flag which forces gok to remember its position when "
+"shutdown even when it was started with --geometry."
+msgstr ""
+"Si «--geometry» no es utilizado gok recuerda su posición entre las "
+"invocaciones y arranca en la posición en que estuvo cuando fue cerrado por "
+"última vez. Cuando se utiliza «--geometry» gok se posiciona a sí mismo en el "
+"área rectangular de la pantalla descripta por la especificación de la "
+"geometría de X obtenida. Cuando se utiliza «--geometry» gok no recuerda su "
+"posición al ser cerrado. Este comportamiento puede ser cambiado con el "
+"modificador «--remembergeometry» que fuerza a gok a recordar su posición "
+"cuando es cerrado aún si fue iniciado con «--geometry»."
+
+#: gok/main.c:190
+msgid "GEOMETRY"
+msgstr "GEOMETRÍA"
+
+#: gok/main.c:198
+msgid "Use the specified input device"
+msgstr "Usar el dispositivo de entrada especificado"
+
+#: gok/main.c:199
+msgid "DEVICENAME"
+msgstr "NOMBRE-DISPOSITIVO"
+
+#: gok/main.c:207
+msgid "Start GOK with the specified keyboard."
+msgstr "Iniciar GOK con el teclado especificado"
+
+#: gok/main.c:208
+msgid "KEYBOARDNAME"
+msgstr "NOMBREDELTECLADO"
+
+#: gok/main.c:216
+msgid "List the access methods that can used as options to other arguments."
+msgstr ""
+"Lista de métodos de acceso que puede ser usada como opciones a otros "
+"argumentos."
+
+#: gok/main.c:225
+msgid "List the actions that can used as options to other arguments."
+msgstr ""
+"Lista de acciones que pueden ser usadas como opciones a otros argumentos."
+
+#: gok/main.c:234
+msgid "GOK will be used to login"
+msgstr "GOK se utilizará para conectarse"
+
+#: gok/main.c:245
+msgid ""
+"Can be used with --geometry.  Forces GOK to remember its position when "
+"shutdown even when it was started with --geometry.  Please see the "
+"discussion under the --geometry flag for more information."
+msgstr ""
+"Puede ser usado con «--geometry». Fuerza a GOK a recordar su posición cuando "
+"es cerrado aún si fue iniciado con «--geometry». Por favor vea la discusión "
+"acerca del modificador «--geometry» para obtener mas información."
+
+#: gok/main.c:256
+msgid "Start GOK and hook this action to scan operations. (See --list-actions)"
+msgstr ""
+"Iniciar Gok y enganchar esta acción para analizar operaciones. (Vea --list-"
+"actions)"
+
+#: gok/main.c:266
+msgid ""
+"Start GOK and hook this action to select operations. (See --list-actions)"
+msgstr ""
+"Iniciar GOK y enganchar esta acción para seleccionar operaciones. (Vea --"
+"list-actions)"
+
+#: gok/main.c:275
+msgid "Open the settings dialog box when GOK starts"
+msgstr "Abrir el dialogo de configuración cuando GOK se inicia"
+
+#: gok/main.c:588
+msgid "gok: Unsupported geometry specification\n"
+msgstr "gok: Especificación de geometría no soportada\n"
+
+#: gok/main.c:589
+msgid ""
+"gok: Currently GOK requires that the x, y, width and height all be given\n"
+msgstr ""
+"gok: Actualmente GOK necesita obligatoriamente los valores de x,y el ancho y "
+"el alto\n"
+
+#: gok/main.c:685
+msgid "XKB extension is required."
+msgstr "Se requiere una extensión XKB."
+
+#: gok/main.c:695
+msgid "Can't initialize actions."
+msgstr "No se pueden inicializar las acciones."
+
+#: gok/main.c:705
+msgid "Can't initialize feedbacks."
+msgstr "No se pueden inicializar los avisos"
+
+#: gok/main.c:732
+msgid "Can't create the main GOK window!"
+msgstr "No se puede crear la ventana principal de GOK"
+
+#: gok/main.c:751
+msgid "Can't create the settings dialog window!"
+msgstr "No se puede crear el dialogo de configuración"
+
+#: gok/main.c:773
+msgid "You are using GOK in 'core pointer' mode."
+msgstr "Está usando GOK en modo 'core pointer'."
+
+#: gok/main.c:813
+msgid "No keyboards to display!"
+msgstr "No hay ningún teclado para mostrar"
+
+#: gok/main.c:949
+msgid "popup menu"
+msgstr "menú emergente"
+
+#: gok/main.c:1805
+msgid "Can't create a compose keyboard!"
+msgstr "No se puede crear un teclado compuesto."
+
+#: gok/main.c:1847
+msgid "Can't read any keyboards!"
+msgstr "No se puede leer ningún teclado"
+
+#: gok/main.c:1964
+msgid "could not access method directory key from GConf!"
+msgstr ""
+"¡no se ha podido acceder a la clave del directorio de métodos de acceso "
+"desde GConf!"
+
+#: gok/main.c:1972
+msgid "possibly unknown access method!"
+msgstr "¡posiblemente un método de acceso desconocido!"
+
+#: gok/main.c:2513
+msgid "Sorry, GOK can't run because:\n"
+msgstr "Lo siento, GOK no puede ejecutarte debido a:\n"
+
+#: gok/main.c:2522
+msgid "GOK Fatal Error"
+msgstr "Error fatal de GOK"
+
+#: gok/main.c:2534
+msgid ""
+"GOK uses GConf 2 to store its settings and requires certain settings to be "
+"in GConf to run.  GOK is currently unable to retrieve those settings.  If "
+"this is the first time that you have run gok after installing it you may "
+"need to restart gconfd, you can use this command: 'gconftool-2 --shutdown' "
+"or log out and back in."
+msgstr ""
+"GOK utiliza GConf2 para guardar su configuración y necesitar que cierta "
+"configuración se encuentre el GConf para ejecutarse. GOK en este momento no "
+"puede recuperar esta configuración. Si es la primera vez que ejecuta GOK "
+"luego de instalarlo puede ser necesario reiniciar gconfd, puede utilizar "
+"este comando para ello: «gconftool-2 --shutdown» o puede cerrar la sesión y "
+"volver a entrar."
+
+#: gok/main.c:2551
+msgid ""
+"Currently GOK requires that the x, y, width and height all be given.  Sorry, "
+"your geometry specification will not be used."
+msgstr ""
+"En este momento GOK necesita obligatoriamente los valores de x,y el ancho y "
+"el alto. Lo siento, su especificación de geometría no será utilizada."
+
+#: gok/main.c:2553
+msgid "gok: Unsupported geometry specification"
+msgstr "gok: Especificación de geometría no soportada"
+
+#: gok/main.c:2760
+msgid ""
+"GOK may not work properly, because it could not enable your desktop's "
+"'sticky keys' feature."
+msgstr ""
+"GOK puede no funcionar correctamente, debido a que no se pudo activar la "
+"característica «teclas persistentes» en su escritorio."
+
+#: gok/main.c:2767
+msgid "GOK has enabled Sticky Keys, which it requires.\n"
+msgstr "GOK ha activado las Teclas persistentes, porque hacen falta.\n"
+
+#: gok/main.c:2789
+msgid "GOK cannot run because XKB display extension is missing.\n"
+msgstr ""
+"GOK no puede ejecutarse porque la extensión de visualización XKB falta.\n"
+
+#: gok/main.c:2853
+msgid ""
+"This means that the device you are using to operate GOK\n"
+"is also controlling the system pointer (or 'mouse pointer').\n"
+"Conflicts with applications' use of the pointer may interfere\n"
+"with your ability to use applications or GOK.\n"
+"\n"
+"We strongly recommend configuring your input device as an\n"
+"'Extended' input device instead; see GOK Help for more information."
+msgstr ""
+"Esto significa que el dispositivo que está usando para operar GOK\n"
+"está también controlando el puntero del sistema (o 'puntero del ratón').\n"
+"Los conflictos con las aplicaciones que usen el puntero pueden interferir\n"
+"con su capacidad para usar dichas aplicaciones o GOK.\n"
+"\n"
+"Recomendamos encarecidamente que configure su dispositivo de entrada\n"
+"como un dispositivo de entrada 'Extendido' en su lugar; vea la ayuda de\n"
+"GOK para más información."
+
+#: gok/main.c:2917
+msgid ""
+"Assistive Technology Support Is Not Enabled.\n"
+"\n"
+"You can start GOK without enabling support for assistive technologies. "
+"However, some of the features of the application might not be available.\n"
+"\n"
+"To enable support for assistive technologies and log in to a new session "
+"with the change enabled, click Enable and Log Out.\n"
+"\n"
+"To continue using GOK, click Continue.\n"
+"\n"
+"To quit GOK, click Close.\n"
+"\n"
+msgstr ""
+"El Soporte de Asistencia a Discapacitados no está activado.\n"
+"\n"
+"Puede iniciar GOK sin activar el soporte de asistencia a discapacitados. Sin "
+"embargo, algunas de las características de la aplicación quizá no estén "
+"disponibles.\n"
+"\n"
+"Para activar el soporte de asistencia a discapacitados e iniciar una sesión "
+"nueva con el cambio activado, pulse Activar y salga de la sesión. \n"
+"Para continuar usando GOK pulse en Continuar.\n"
+"\n"
+"Para salir de GOK, pulse Cerrar.\n"
+"\n"
+
+#: gok/main.c:2936
+msgid "Enable and Log Out"
+msgstr "Activar y salir de la sesión"
+
+#: gok/main.c:2948
+msgid "Continue"
+msgstr "Continuar"
+
+#: inverse-scanning.xml.in.h:9
+msgid "Inverse Scanning"
+msgstr "Rastreo inverso"
+
+#: inverse-scanning.xml.in.h:14 singlekey-inverse-scanning.xml.in.h:11
+msgid "Press and hold a switch to scan.  Press another switch to select."
+msgstr ""
+"Pulse y mantenga presionado un interruptor para rastrear. Presione otro "
+"interruptor para seleccionar."
+
+#: inverse-scanning.xml.in.h:18 singlekey-inverse-scanning.xml.in.h:15
+msgid "Scan:"
+msgstr "Rastreo:"
+
+#: singlekey-automatic-scanning.xml.in.h:17
+#: singlekey-inverse-scanning.xml.in.h:16
+msgid "Scanning Direction:"
+msgstr "Dirección del rastreo:"
+
+#: singlekey-automatic-scanning.xml.in.h:20
+msgid "Single Key Automatic Scanning"
+msgstr "Rastreo automático de tecla simple"
+
+#: singlekey-automatic-scanning.xml.in.h:21
+msgid "Start Scanning:"
+msgstr "Iniciar rastreo:"
+
+#: singlekey-automatic-scanning.xml.in.h:22
+msgid "Start scanning:"
+msgstr "Iniciando el rastreo:"
+
+#: singlekey-automatic-scanning.xml.in.h:24
+msgid "Wrap"
+msgstr "Ajuste"
+
+#: singlekey-inverse-scanning.xml.in.h:19
+msgid "Single Key Inverse Scanning"
+msgstr "Rastreo inverso de tecla simple"
+
+#: directed.xml.in.h:2
+msgid "5 Switch Directed"
+msgstr "5 Cambiar directo"
+
+#: directed.xml.in.h:3
+msgid "Down:"
+msgstr "Bajar:"
+
+#: directed.xml.in.h:14
+msgid "Up:"
+msgstr "Subir:"
+
+#: hide.kbd.in.h:1
+msgid "Show"
+msgstr "Mostrar"
+
+#: launcher.kbd.in.h:1
+msgid "Help Browser"
+msgstr "Visor de ayuda"
+
+#: launcher.kbd.in.h:2
+msgid "Terminal"
+msgstr "Terminal"
+
+#: launcher.kbd.in.h:3
+msgid "Text Editor"
+msgstr "Editor de texto"
+
+#: launcher.kbd.in.h:4
+msgid "Web Browser"
+msgstr "Navegador web"
+
+#: main.kbd.in.h:1
+msgid "Activate"
+msgstr "Activar"
+
+#. Translators: one word meaning: to enter text.
+#: main.kbd.in.h:3
+msgid "Compose"
+msgstr "Componer"
+
+#. Translators: launcher, as in launching/running programs
+#: main.kbd.in.h:6
+msgid "Launcher"
+msgstr "Lanzador"
+
+#: main.kbd.in.h:8
+msgid "Mouse"
+msgstr "Ratón"
+
+#. Translators: short version User Interface Grab, used to grab GUI buttons etc.
+#: main.kbd.in.h:11
+msgid "UI Grab"
+msgstr "Extractor IU"
+
+#: mouse.kbd.in.h:1
+msgid "Button 1"
+msgstr "Botón 1"
+
+#: mouse.kbd.in.h:2
+msgid "Button 2"
+msgstr "Botón 2"
+
+#: mouse.kbd.in.h:3
+msgid "Button 3"
+msgstr "Botón 3"
+
+#: mouse.kbd.in.h:4
+msgid "Dbl Click"
+msgstr "Doble pulsación"
+
+#. Translators: direction right (East)
+#: mouse.kbd.in.h:6
+msgid "E"
+msgstr "E"
+
+#: mouse.kbd.in.h:7
+msgid "Latch"
+msgstr "Cierre"
+
+#. Translators: direction up (North)
+#: mouse.kbd.in.h:9
+msgid "N"
+msgstr "N"
+
+#. Translators: direction up and right (North East)
+#: mouse.kbd.in.h:11
+msgid "NE"
+msgstr "NE"
+
+#. Translators: direction up and left (North West)
+#: mouse.kbd.in.h:13
+msgid "NW"
+msgstr "NO"
+
+#: mouse.kbd.in.h:14
+msgid "Pointer"
+msgstr "Puntero"
+
+#: mouse.kbd.in.h:15
+msgid "Repeat"
+msgstr "Repetir"
+
+#. Translators: direction down (South)
+#: mouse.kbd.in.h:17
+msgid "S"
+msgstr "S"
+
+#. Translators: direction down and right (South East)
+#: mouse.kbd.in.h:19
+msgid "SE"
+msgstr "SE"
+
+#. Translators: direction down and left (South West)
+#: mouse.kbd.in.h:21
+msgid "SW"
+msgstr "SO"
+
+#. Translators: direction left (West)
+#: mouse.kbd.in.h:23
+msgid "W"
+msgstr "O"
+
+#: move-resize.kbd.in.h:7
+msgid "Fill"
+msgstr "Rellenar"
+
+#: move-resize.kbd.in.h:8
+msgid "Float"
+msgstr "Flotar"
+
+#: move-resize.kbd.in.h:12
+msgid "Narrower"
+msgstr "Más estrecho"
+
+#: move-resize.kbd.in.h:13
+msgid "Repeat Next Key"
+msgstr "Repetir siguiente tecla"
+
+#. Translators: shorter as in height.
+#: move-resize.kbd.in.h:17
+msgid "Shorter"
+msgstr "Más corto"
+
+#: move-resize.kbd.in.h:18
+msgid "Taller"
+msgstr "Más alto"
+
+#: move-resize.kbd.in.h:21
+msgid "Wider"
+msgstr "Más ancho"
+
+#: numberpad.kbd.in.h:1
+msgid "Ctrl"
+msgstr "Ctrl"
+
+#: numberpad.kbd.in.h:2
+msgid "Del"
+msgstr "Supr"
+
+#: numberpad.kbd.in.h:7
+msgid "Ins"
+msgstr "Ins"
+
+#: numberpad.kbd.in.h:9
+msgid "Num"
+msgstr ""
+"Bloq.\n"
+"Num"
+
+#. Translators: abbreviation for Page Down.
+#: numberpad.kbd.in.h:11
+msgid "PgDn"
+msgstr "AvPág"
+
+#. Translators: abbreviation for Page Up.
+#: numberpad.kbd.in.h:13
+msgid "PgUp"
+msgstr "RePág"
+
+#: numberpad.kbd.in.h:15
+msgid "Shift"
+msgstr "Mayús."
+
+#. Translators: short phrase to confirm that user wants to quit.
+#: quit.kbd.in.h:2
+msgid "Really Quit!"
+msgstr "Salir!"
+
+#~ msgid "Key 1"
+#~ msgstr "Tecla 1"
+
+#~ msgid "Key 2"
+#~ msgstr "Tecla 2"
+
+#~ msgid "Key 3"
+#~ msgstr "Tecla 3"
+
+#~ msgid "Key 4"
+#~ msgstr "Tecla 4"
+
+#~ msgid "example key 1"
+#~ msgstr "tecla de ejemplo 1"
+
+#~ msgid "example key 2"
+#~ msgstr "tecla de ejemplo 2"
+
+#~ msgid "example key 3"
+#~ msgstr "tecla de ejemplo 3"
+
+#~ msgid "example key 4"
+#~ msgstr "tecla de ejemplo 4"
+
+#~ msgid "\"Alt\""
+#~ msgstr "«Alt»"
+
+#~ msgid "\"Shift AltGr Level-3\""
+#~ msgstr "«Mayús. AltGr Nivel-3»"
+
+#~ msgid "\"Tab\""
+#~ msgstr "«Tabulación»"
+
+#~ msgid "\"spacebar\""
+#~ msgstr "«Barra espaciadora»"
+
+#~ msgid "Extra word list file"
+#~ msgstr "Archivo de lista de palabras extra"
+
+#~ msgid "Path(s) to file(s) containing additional word list to search."
+#~ msgstr ""
+#~ "Ruta(s) a el/los archivo(s) que contienen listas de palabras adicionales "
+#~ "para buscar."
+
+#~ msgid "Text Manipulation"
+#~ msgstr "Manipulación de texto"
+
+#~ msgid ""
+#~ "Copyright (C) 2001-2003 Sun Microsystems, Copyright (C) 2001-2003 "
+#~ "University of Toronto"
+#~ msgstr ""
+#~ "Copyright © 2001-2003 Sun Microsystems, Copyright © 2001-2003 University "
+#~ "of Toronto"
+
+#~ msgid "Select extra word list file"
+#~ msgstr "Seleccione el archivo de lista de palabras extra"
+
+#~ msgid "_Try"
+#~ msgstr "_Probar"
+
+#~ msgid "label84"
+#~ msgstr "etiqueta84"
+
+#~ msgid "label85"
+#~ msgstr "etiqueta85"
+
+#~ msgid "Couldn't find pixmap file: %s"
+#~ msgstr "No se ha podido encontrar el archivo de imagen: %s"
+
+#~ msgid "left"
+#~ msgstr "izquierda"
+
+#~ msgid "word right"
+#~ msgstr "palabra derecha"
+
+#~ msgid "word left"
+#~ msgstr "palabra izquierda"
+
+#~ msgid ". right"
+#~ msgstr ". derecha"
+
+#~ msgid ". left"
+#~ msgstr ". izquierda"
+
+#~ msgid "select right"
+#~ msgstr "seleccionar derecha"
+
+#~ msgid "select left"
+#~ msgstr "seleccionar izquierda"
+
+#~ msgid "select word right"
+#~ msgstr "seleccionar la palabra de la derecha"
+
+#~ msgid "select word left"
+#~ msgstr "seleccionar la palabra izquierda"
+
+#~ msgid "select . right"
+#~ msgstr "seleccionar . derecha"
+
+#~ msgid "select . left"
+#~ msgstr "seleccionar . izquierda"
+
+#~ msgid "copy"
+#~ msgstr "copiar"
+
+#~ msgid "delete"
+#~ msgstr "borrar"
+
+#~ msgid "cut"
+#~ msgstr "cortar"
+
+#~ msgid "paste"
+#~ msgstr "pegar"
+
+#~ msgid "clear"
+#~ msgstr "limpiar"
+
+#~ msgid "gok_scanner_initialize failed!"
+#~ msgstr "Ha fallado gok_scanner_initialize"
+
+#~ msgid "(100ths of a second)"
+#~ msgstr "(100mas de un segundo)"
+
+#~ msgid "Action _Name:"
+#~ msgstr "_Nombre de la acción:"
+
+#~ msgid "C_ommand Prediction On"
+#~ msgstr "Predicción de c_omando activada"
+
+#~ msgid "ComboInputDevice"
+#~ msgstr "ComboInputDevice"
+
+#~ msgid "GOK Settings"
+#~ msgstr "Configuración de GOK"
+
+#~ msgid "Key"
+#~ msgstr "Tecla"
+
+#~ msgid "Key Size / Spacing Example"
+#~ msgstr "Tamaño de la tecla / Ejemplo de espaciado"
+
+#~ msgid "N_umber Of Predictions:"
+#~ msgstr "Cantidad de p_redicciones:"
+
+#~ msgid "Select the input device from this list"
+#~ msgstr "Seleccione el dispositivo de entrada desde la lista"
+
+#~ msgid "Sound"
+#~ msgstr "Sonido"
+
+#~ msgid "Swi_tch Released"
+#~ msgstr "Cam_biar a liberada"
+
+#~ msgid "Switch Number:"
+#~ msgstr "Número del conmutador:"
+
+#~ msgid "Text entry field for input device name."
+#~ msgstr ""
+#~ "Campo de entrada de texto para el nombre del dispositivo de entrada."
+
+#~ msgid "Theme"
+#~ msgstr "Tema"
+
+#~ msgid "Type"
+#~ msgstr "Tipo"
+
+#~ msgid "_Add Feedback"
+#~ msgstr "_Añadir un aviso"
+
+#~ msgid "_Change Name"
+#~ msgstr "_Cambiar el nombre"
+
+#~ msgid "_Delete Action"
+#~ msgstr "_Borrar la acción"
+
+#~ msgid "_Input Device Name:"
+#~ msgstr "Nombre del d_ispositivo de entrada:"
+
+#~ msgid "_Key Flashing On"
+#~ msgstr "Parpadeo de _tecla activado"
+
+#~ msgid "_Sound On"
+#~ msgstr "Activar el _sonido"
+
+#~ msgid "_Switch"
+#~ msgstr "_Conmutar"
+
+#~ msgid ""
+#~ "_Use GTK+ Theme \n"
+#~ "(Change will not take effect until next time GOK is run.)"
+#~ msgstr ""
+#~ "_Utilizar un tema GTK+\n"
+#~ "(los cambios no tendrán efecto hasta la próxima vez que GOK se ejecute.)"
+
+#~ msgid "_Word Completion On"
+#~ msgstr "Terminación de _palabra activada"
+
+#~ msgid "input device entry"
+#~ msgstr "ingreso de dispositivo de entrada"
+
+#~ msgid "CTRL+Z"
+#~ msgstr "CTRL+Z"
+
+#~ msgid "Word L"
+#~ msgstr "Palabra I"
+
+#~ msgid "Word R"
+#~ msgstr "Palabra D"
+
+#~ msgid "S Word L"
+#~ msgstr "M Palabra I"
+
+#~ msgid "S Word R"
+#~ msgstr "M Palabra D"
+
+#~ msgid "S Letter L"
+#~ msgstr "M Letra I"
+
+#~ msgid "S Letter R"
+#~ msgstr "M Letra D"
+
+#~ msgid "B_utton Released"
+#~ msgstr "B_otón liberado"
+
+#~ msgid "Bu_tton Delay:"
+#~ msgstr "Re_traso del botón:"
+
+#~ msgid "Button _4"
+#~ msgstr "Botón _4"
+
+#~ msgid "C_licked"
+#~ msgstr "Pu_lsado"
+
+#~ msgid "D_well"
+#~ msgstr "Ca_ptura"
+
+#~ msgid "Dw_ell Rate:"
+#~ msgstr "V_elocidad de captura:"
+
+#~ msgid "Key Averaging _Rate:"
+#~ msgstr "Velocidad del p_romedio de tecla:"
+
+#~ msgid "Left Button (_1)"
+#~ msgstr "Botón izquierdo (_1)"
+
+#~ msgid "Middle Button (_3)"
+#~ msgstr "Botón central (_3)"
+
+#~ msgid "Mouse Button"
+#~ msgstr "Botón del ratón"
+
+#~ msgid "Right Button (_2)"
+#~ msgstr "Botón derecho (_2)"
+
+#~ msgid "_Browse For Sound File..."
+#~ msgstr "_Buscar un archivo de sonido..."
+
+#~ msgid "_Button Pressed"
+#~ msgstr "_Botón presionado"
+
+#~ msgid "_Mouse Button"
+#~ msgstr "B_otón del ratón"
+
+#~ msgid "spinKeyAverage"
+#~ msgstr "spinKeyAverage"

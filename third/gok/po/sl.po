@@ -1,0 +1,2213 @@
+# Slovenian translation file for gok.
+# Copyright (C) 2000 Free Software Foundation, Inc.
+# Andraz Tori <andraz.tori1@guest.arnes.si> 2000
+#
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gok\n"
+"POT-Creation-Date: 2004-09-10 06:47+0100\n"
+"PO-Revision-Date: 2000-07-07 12:30+0200\n"
+"Last-Translator: Andraz Tori <andraz.tori1@guest.arnes.si>\n"
+"Language-Team: Slovenian <sl@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
+
+# G:0 K:0 O:2
+#: automatic-scanning.xml.in.h:1 direct-selection.xml.in.h:1
+#: dwell-selection.xml.in.h:1 inverse-scanning.xml.in.h:1
+#: singlekey-inverse-scanning.xml.in.h:1 directed.xml.in.h:1
+#, fuzzy
+msgid "(100s of a second)"
+msgstr "_stotnik sekunde"
+
+#: automatic-scanning.xml.in.h:2 direct-selection.xml.in.h:2
+#: inverse-scanning.xml.in.h:2
+msgid "Auto Repeat On"
+msgstr ""
+
+#: automatic-scanning.xml.in.h:3 direct-selection.xml.in.h:3
+#: dwell-selection.xml.in.h:2 inverse-scanning.xml.in.h:3
+msgid "Auto Repeat Rate:"
+msgstr ""
+
+#: automatic-scanning.xml.in.h:4
+msgid "Automatic Scanning"
+msgstr "Samodejno preiskovanje"
+
+#: automatic-scanning.xml.in.h:5 singlekey-automatic-scanning.xml.in.h:1
+msgid "Autostart (starts automatically)"
+msgstr ""
+
+# G:1 K:0 O:0
+#: automatic-scanning.xml.in.h:6 inverse-scanning.xml.in.h:4
+#: singlekey-automatic-scanning.xml.in.h:2
+#: singlekey-inverse-scanning.xml.in.h:2
+#, fuzzy
+msgid "Bottom/Top"
+msgstr "Spodaj:"
+
+#: automatic-scanning.xml.in.h:7 inverse-scanning.xml.in.h:5
+msgid "Continuous Cycle On"
+msgstr ""
+
+#: automatic-scanning.xml.in.h:8 inverse-scanning.xml.in.h:6
+#: singlekey-automatic-scanning.xml.in.h:3
+#: singlekey-inverse-scanning.xml.in.h:3
+msgid "Cycles Before Stopping:"
+msgstr ""
+
+#: automatic-scanning.xml.in.h:9 direct-selection.xml.in.h:5
+#: dwell-selection.xml.in.h:4 gok.glade2.h:69 inverse-scanning.xml.in.h:7
+#: singlekey-automatic-scanning.xml.in.h:4
+#: singlekey-inverse-scanning.xml.in.h:4 directed.xml.in.h:4
+msgid "Feedback"
+msgstr "Povratna informacija"
+
+#: automatic-scanning.xml.in.h:10
+#, fuzzy
+msgid "Feedback Movement"
+msgstr "Ime povratnih informacij GOK"
+
+#: automatic-scanning.xml.in.h:11
+#, fuzzy
+msgid "Feedback Selection"
+msgstr "Neposredna izbira"
+
+#: automatic-scanning.xml.in.h:12 singlekey-automatic-scanning.xml.in.h:7
+msgid "Initial Delay:"
+msgstr ""
+
+# G:1 K:0 O:0
+#: automatic-scanning.xml.in.h:13 inverse-scanning.xml.in.h:10
+#: singlekey-automatic-scanning.xml.in.h:8
+#: singlekey-inverse-scanning.xml.in.h:7
+#, fuzzy
+msgid "Left/Right"
+msgstr "Desno:"
+
+#: automatic-scanning.xml.in.h:14 direct-selection.xml.in.h:10
+#: dwell-selection.xml.in.h:10 inverse-scanning.xml.in.h:12
+#: singlekey-automatic-scanning.xml.in.h:10
+#: singlekey-inverse-scanning.xml.in.h:9 directed.xml.in.h:8
+msgid "Operation"
+msgstr ""
+
+#: automatic-scanning.xml.in.h:15 direct-selection.xml.in.h:11
+#: inverse-scanning.xml.in.h:13 singlekey-automatic-scanning.xml.in.h:11
+#: singlekey-inverse-scanning.xml.in.h:10
+#, fuzzy
+msgid "Options"
+msgstr "Dejanja"
+
+#: automatic-scanning.xml.in.h:16 singlekey-automatic-scanning.xml.in.h:12
+#, fuzzy
+msgid ""
+"Press a switch to start scanning.  Press another switch or the same switch "
+"again to select."
+msgstr ""
+"Pritisnite stikalo za začetek peiskovanja. Pritisnite drugo ali isto stikalo "
+"za izbiro."
+
+#: automatic-scanning.xml.in.h:17 singlekey-automatic-scanning.xml.in.h:13
+msgid "Press switch to start"
+msgstr ""
+
+# G:1 K:0 O:0
+#: automatic-scanning.xml.in.h:18 inverse-scanning.xml.in.h:15
+#: singlekey-automatic-scanning.xml.in.h:14
+#: singlekey-inverse-scanning.xml.in.h:12
+#, fuzzy
+msgid "Right/Left"
+msgstr "Desno:"
+
+#: automatic-scanning.xml.in.h:19 inverse-scanning.xml.in.h:16
+#: singlekey-automatic-scanning.xml.in.h:15
+#: singlekey-inverse-scanning.xml.in.h:13 directed.xml.in.h:10
+#, fuzzy
+msgid "Scan Delay:"
+msgstr "Zakasnitev"
+
+#: automatic-scanning.xml.in.h:20 inverse-scanning.xml.in.h:17
+#: singlekey-automatic-scanning.xml.in.h:16
+#: singlekey-inverse-scanning.xml.in.h:14 directed.xml.in.h:11
+msgid "Scan Speed:"
+msgstr ""
+
+#: automatic-scanning.xml.in.h:21
+#, fuzzy
+msgid "Select"
+msgstr "Zbriši"
+
+#: automatic-scanning.xml.in.h:22
+#, fuzzy
+msgid "Start Scanning"
+msgstr "Samodejno preiskovanje"
+
+# G:1 K:0 O:0
+#: automatic-scanning.xml.in.h:23 inverse-scanning.xml.in.h:21
+#: singlekey-automatic-scanning.xml.in.h:23
+#: singlekey-inverse-scanning.xml.in.h:20
+#, fuzzy
+msgid "Top/Bottom"
+msgstr "Spodaj:"
+
+#: automatic-scanning.xml.in.h:24 inverse-scanning.xml.in.h:22
+#: singlekey-inverse-scanning.xml.in.h:21 directed.xml.in.h:15
+msgid "Wrap Rows/Columns"
+msgstr ""
+
+#: automatic-scanning.xml.in.h:25
+#, fuzzy
+msgid "feedbackmovement"
+msgstr "Ali je ta povranta informacija stalna"
+
+#: automatic-scanning.xml.in.h:26
+#, fuzzy
+msgid "feedbackselection"
+msgstr "Neposredna izbira"
+
+#: direct-selection.xml.in.h:4
+msgid "Direct Selection"
+msgstr "Neposredna izbira"
+
+#: direct-selection.xml.in.h:6 dwell-selection.xml.in.h:5
+#: inverse-scanning.xml.in.h:8 singlekey-automatic-scanning.xml.in.h:5
+#: singlekey-inverse-scanning.xml.in.h:5 directed.xml.in.h:5
+#, fuzzy
+msgid "Feedback Movement:"
+msgstr "Ime povratnih informacij GOK"
+
+#: direct-selection.xml.in.h:7 dwell-selection.xml.in.h:6
+#: singlekey-automatic-scanning.xml.in.h:6
+#: singlekey-inverse-scanning.xml.in.h:6
+#, fuzzy
+msgid "Feedback Selection:"
+msgstr "Neposredna izbira"
+
+# G:1 K:0 O:0
+#: direct-selection.xml.in.h:8 dwell-selection.xml.in.h:7
+#, fuzzy
+msgid "Highlight:"
+msgstr "Desno:"
+
+#: direct-selection.xml.in.h:9
+#, fuzzy
+msgid "Move the mouse pointer to highlight a key.  Press a switch to select."
+msgstr ""
+"Premaknite miškin kazalec, da bo osvetlil tipko. Za izbiro pritisnite "
+"stikalo."
+
+#: direct-selection.xml.in.h:12 dwell-selection.xml.in.h:11
+#: inverse-scanning.xml.in.h:19 singlekey-automatic-scanning.xml.in.h:18
+#: singlekey-inverse-scanning.xml.in.h:17 directed.xml.in.h:12
+#, fuzzy
+msgid "Select:"
+msgstr "Zbriši"
+
+#: dwell-selection.xml.in.h:3
+msgid "Dwell Selection"
+msgstr "Izbira s postankom"
+
+#: dwell-selection.xml.in.h:8
+#, fuzzy
+msgid "Move the mouse pointer to highlight a key.  Dwell on the key to select."
+msgstr ""
+"Premaknite miškin kazalec, da bo osvetlil tipko. Za izbiro ostanite na njej."
+
+#: dwell-selection.xml.in.h:9 inverse-scanning.xml.in.h:11
+#: singlekey-automatic-scanning.xml.in.h:9
+#: singlekey-inverse-scanning.xml.in.h:8 directed.xml.in.h:7
+msgid "Movement:"
+msgstr ""
+
+#: dwell-selection.xml.in.h:12 inverse-scanning.xml.in.h:20
+#: singlekey-automatic-scanning.xml.in.h:19
+#: singlekey-inverse-scanning.xml.in.h:18 directed.xml.in.h:13
+#, fuzzy
+msgid "Selection:"
+msgstr "Izbira s postankom"
+
+#: gok-controls.kbd.in.h:1
+msgid "About"
+msgstr ""
+
+#: gok-controls.kbd.in.h:2
+msgid "Help"
+msgstr ""
+
+#: gok-controls.kbd.in.h:3
+#, fuzzy
+msgid "Preferences"
+msgstr "Nastavitve GOK"
+
+#: gok-controls.kbd.in.h:4
+msgid "Quit GOK"
+msgstr ""
+
+#: gok-controls.kbd.in.h:5 main.kbd.in.h:12
+#, fuzzy
+msgid "Window"
+msgstr "Seznam oken"
+
+#. "back" means go to previous keyboard
+#: gok-controls.kbd.in.h:6 gok/gok-keyboard.c:2476 gok/gok-windowlister.c:130
+#: launcher.kbd.in.h:5 mouse.kbd.in.h:24 move-resize.kbd.in.h:23
+#: numberpad.kbd.in.h:19 quit.kbd.in.h:4 valuator.kbd.in.h:3
+msgid "back"
+msgstr "nazaj"
+
+#: gok-with-references.schemas.in.h:1 gok/main.c:284
+msgid ""
+"A multiplier to be applied to input device valuator events before processing"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:2
+msgid ""
+"A semicolon-delimited list of fully specified paths to additional word-"
+"completion dictionaries"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:3
+msgid "Are the preferences to be restricted?"
+msgstr "Ali naj bodo nastavitve omejene?"
+
+#: gok-with-references.schemas.in.h:4
+msgid "Determines the keyboard type used for the default compose keyboard"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:5
+msgid ""
+"Does GOK generate its compose keyboard dynamically based on information from "
+"the X Server?"
+msgstr ""
+"Ali naj GOK samodejno dinamično ustvari svojo tipkovnico glede na podatke iz "
+"strežnika X?"
+
+#: gok-with-references.schemas.in.h:6
+msgid ""
+"Does each GOK user have a private copy of the word prediction dictionary?"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:7
+msgid "Does the GOK window expand to fill the full screen width?"
+msgstr "Ali naj se okno GOK razširi, da bo zasedlo celotno širino zaslona?"
+
+#: gok-with-references.schemas.in.h:8
+msgid "Does the core pointer follow the GOK keyboard pointer?"
+msgstr "Ali naj osnovni kazalec sledi GOKovemu tipkovničnem kazalcu?"
+
+#: gok-with-references.schemas.in.h:9
+msgid "Does this action use key averaging"
+msgstr "Ali to dejanje uporablja povprečje tipk"
+
+#: gok-with-references.schemas.in.h:10
+msgid "Does this feedback flash"
+msgstr "Ali naj ta povratna informacija vizualno bliskne"
+
+#: gok-with-references.schemas.in.h:11
+msgid "Does this feedback play a sound"
+msgstr "Ali naj ta povratna informacija zaigra zvok"
+
+#: gok-with-references.schemas.in.h:12
+#, fuzzy
+msgid "Does this feedback speak the label of a GOK key"
+msgstr "Ali naj ta povratna informacija zaigra zvok"
+
+#: gok-with-references.schemas.in.h:13
+msgid "GOK main window anchor location (if a dock), or empty string if not"
+msgstr "Položaj glavnega okna GOK (če je dok) ali prazen niz, če ni"
+
+#: gok-with-references.schemas.in.h:14
+msgid ""
+"How many children of each node in the GUI tree to search for accessible "
+"objects"
+msgstr ""
+"Koliko otrok vsakega lista drevesa grafičnega vmesnika naj se išče za "
+"dostopnimi predmeti"
+
+#: gok-with-references.schemas.in.h:15
+msgid "How many levels down the GUI tree to search for accessible objects"
+msgstr ""
+"Koliko stopenj navzdol po drevesu grafičnega vmesnika naj se išče za "
+"dostopnimi predmeti"
+
+#: gok-with-references.schemas.in.h:16
+msgid "Is this action permanent"
+msgstr "Ali je to dejanje stalno"
+
+#: gok-with-references.schemas.in.h:17
+msgid "Is this feedback permanent"
+msgstr "Ali je ta povranta informacija stalna"
+
+#: gok-with-references.schemas.in.h:18
+msgid "Is word completion on"
+msgstr "Ali je vključeno dokončevanje besed"
+
+#: gok-with-references.schemas.in.h:19
+msgid ""
+"Should be one of the following: xkb, default, alpha, alpha-freq, custom; if "
+"custom, custom_compose_keyboard should be defined."
+msgstr ""
+
+#: gok-with-references.schemas.in.h:20
+msgid "The access method to use"
+msgstr "Dostopnostni postopek, ki naj se uporabi"
+
+#: gok-with-references.schemas.in.h:21
+msgid "The directory to load access method files from."
+msgstr "Imenik od koder naj se naložijo datoteke dostopnostnih postopkov."
+
+#: gok-with-references.schemas.in.h:22
+msgid "The directory to load dictionary files from."
+msgstr "Imenik od koder naj se naložijo datoteke slovarja."
+
+#: gok-with-references.schemas.in.h:23
+msgid "The directory to load the gok resource file from."
+msgstr "Imenik od koder naj se naloži datoteka z viri gok."
+
+#: gok-with-references.schemas.in.h:24
+#, fuzzy
+msgid "The directory to load user-specific or custom keyboard files from."
+msgstr "Imenik od koder naj se naložijo datoteke tipkovnic."
+
+#: gok-with-references.schemas.in.h:25
+msgid "The full pathname to a file which defines a custom GOK compose keyboard"
+msgstr ""
+
+#: gok-with-references.schemas.in.h:26
+msgid "The key height"
+msgstr "Višina tipke"
+
+#: gok-with-references.schemas.in.h:27
+msgid "The key width"
+msgstr "Širina tipke"
+
+#: gok-with-references.schemas.in.h:28
+msgid "The keyboards X coordinate"
+msgstr "Tipkovnična koordinata X"
+
+#: gok-with-references.schemas.in.h:29
+msgid "The keyboards Y coordinate"
+msgstr "Tipkovnična koordinata Y"
+
+#: gok-with-references.schemas.in.h:30
+msgid "The name of the sound that this feedback will play"
+msgstr "Ime zvoka, ki ga bo predvajala ta povratna informacija"
+
+#: gok-with-references.schemas.in.h:31
+msgid "The name of the xinput device to use"
+msgstr "Ime naprave xinput, ki naj se uporabi"
+
+#: gok-with-references.schemas.in.h:32
+msgid "The name to display to the user for this action"
+msgstr "Ime, ki naj se za to dejanje prikaže uporabniku"
+
+#: gok-with-references.schemas.in.h:33
+msgid "The name to display to the user for this feedback"
+msgstr "Ime, ki naj se za to povratno informacijo prikaže uporabniku"
+
+#: gok-with-references.schemas.in.h:34
+msgid "The number if applicable"
+msgstr "Številka, če je smiselna"
+
+#: gok-with-references.schemas.in.h:35
+msgid "The number of predictions for word completion"
+msgstr "Število predvidevanj za dokončevanje besed"
+
+#: gok-with-references.schemas.in.h:36
+msgid "The number of times this feedback will flash"
+msgstr "Kolikokrat se bo ta povratna informacija zabliskala"
+
+#: gok-with-references.schemas.in.h:37
+#, fuzzy
+msgid "The primary or system directory to load keyboard files from."
+msgstr "Imenik od koder naj se naložijo datoteke tipkovnic."
+
+#: gok-with-references.schemas.in.h:38
+msgid "The rate for this action"
+msgstr "Pogostost tega dejanja"
+
+#: gok-with-references.schemas.in.h:39
+msgid "The space between keys"
+msgstr "Prostor med tipkami"
+
+#: gok-with-references.schemas.in.h:40
+msgid "The state in which this action is activated"
+msgstr "Stanje v katerem je to dejanje aktivirano"
+
+#: gok-with-references.schemas.in.h:41
+msgid "The type of this action"
+msgstr "Vrsta tega dejanja"
+
+#: gok-with-references.schemas.in.h:42
+msgid ""
+"Whether to use additional word lists when searching for GOK word-completion "
+"candidates"
+msgstr ""
+
+#: gok.desktop.in.h:1
+msgid "On-Screen Keyboard"
+msgstr "Zaslonska tipkovnica"
+
+# G:1 K:0 O:0
+#: gok.desktop.in.h:2
+msgid "The GNOME On-screen Keyboard"
+msgstr "Zaslonska tipkovnica GNOME"
+
+#: gok.glade2.h:1
+msgid "*"
+msgstr "*"
+
+#: gok.glade2.h:2
+msgid "3 State"
+msgstr "3 stanja"
+
+#: gok.glade2.h:3
+msgid "<b>Appearance</b>"
+msgstr "<b>Videz</b>"
+
+# G:1 K:0 O:0
+#: gok.glade2.h:4
+msgid "<b>Behavior</b>"
+msgstr "<b>Obnašanje</b>"
+
+# G:1 K:0 O:0
+#: gok.glade2.h:5
+msgid "<b>Branch</b>"
+msgstr "<b>Veja</b>"
+
+#: gok.glade2.h:6
+msgid "<b>Command Prediction</b>"
+msgstr "<b>Napovedovanje ukazov</b>"
+
+#: gok.glade2.h:7
+#, fuzzy
+msgid "<b>Compose Keyboard</b>"
+msgstr "<b>Tipkovnica</b>"
+
+#: gok.glade2.h:8
+#, fuzzy
+msgid "<b>Custom Keyboards</b>"
+msgstr "<b>Tipkovnica</b>"
+
+#: gok.glade2.h:9
+msgid "<b>Define Actions</b>"
+msgstr "<b>Določi dejanja</b>"
+
+#: gok.glade2.h:10
+msgid "<b>Define Feedback</b>"
+msgstr "<b>Določi povratne informacije</b>"
+
+#: gok.glade2.h:11
+msgid "<b>Delay Before Activation</b>"
+msgstr "<b>Premor pred aktivacijo</b>"
+
+#: gok.glade2.h:12
+msgid "<b>Description</b>"
+msgstr "<b>Opis<b>"
+
+#: gok.glade2.h:13
+msgid "<b>Dock and Expand Horizontally</b>"
+msgstr ""
+
+# G:0 K:1 O:0
+#: gok.glade2.h:14
+msgid "<b>Event Source</b>"
+msgstr "<b>Vir dogodka</b>"
+
+#: gok.glade2.h:15
+msgid "<b>Font</b>"
+msgstr "<b>Pisava</b>"
+
+# G:1 K:0 O:0
+#: gok.glade2.h:16
+msgid "<b>Key Flashing</b>"
+msgstr "<b>Bliskanje tipke</b>"
+
+#: gok.glade2.h:17
+msgid "<b>Key Size and Spacing Controls</b>"
+msgstr "<b>Nastavitve velikosti tipk in razmikov</b>"
+
+#: gok.glade2.h:18
+msgid "<b>Key</b>"
+msgstr "<b>Tipka</b>"
+
+#: gok.glade2.h:19
+msgid "<b>Keyboard</b>"
+msgstr "<b>Tipkovnica</b>"
+
+#: gok.glade2.h:20
+msgid "<b>Modifier</b>"
+msgstr "<b>Spremenilnik</b>"
+
+#: gok.glade2.h:21
+msgid "<b>Output</b>"
+msgstr "<b>Izhod</b>"
+
+#: gok.glade2.h:22
+msgid "<b>Position</b>"
+msgstr "<b>Položaj</b>"
+
+#: gok.glade2.h:23
+msgid "<b>Preview</b>"
+msgstr "<b>Predogled</b>"
+
+#: gok.glade2.h:24
+#, fuzzy
+msgid "<b>Sensitivity</b>"
+msgstr "<b>Položaj</b>"
+
+# G:2 K:0 O:0
+#: gok.glade2.h:25
+msgid "<b>Sound</b>"
+msgstr "<b>Zvok</b>"
+
+#: gok.glade2.h:26
+#, fuzzy
+msgid "<b>Speech</b>"
+msgstr "<b>Vrsta</b>"
+
+#: gok.glade2.h:27
+msgid "<b>Switch or Button Number</b>"
+msgstr "<b>Stikalo ali številka gumba</b>"
+
+#: gok.glade2.h:28
+msgid "<b>Theme</b>"
+msgstr "<b>Tema</b>"
+
+#: gok.glade2.h:29
+msgid "<b>Timers and Delays</b>"
+msgstr "<b>Merilci časa in premori</b>"
+
+#: gok.glade2.h:30
+msgid "<b>Type</b>"
+msgstr "<b>Vrsta</b>"
+
+#: gok.glade2.h:31
+msgid "<b>Valuator Type</b>"
+msgstr "<b>Vrsta cenilnika</b>"
+
+#: gok.glade2.h:32
+msgid "<b>Word Completion</b>"
+msgstr "<b>Dokončevanje besed</b>"
+
+#: gok.glade2.h:33
+msgid ""
+"<small><i><b>Note:</b> Changes to this setting will not take effect until "
+"you next run GOK.</i></small>"
+msgstr ""
+"<small><i><b>Opomba:</b> Spremembe teh nastavitev se ne bodo uveljavile do "
+"naslednjega zagona GOKa.</i></small>"
+
+#: gok.glade2.h:34
+msgid ""
+"A multipler which is applied to the extended input device valuator events "
+"before processing."
+msgstr ""
+
+#: gok.glade2.h:35
+msgid "Access Methods"
+msgstr "Dostopnostni postopki"
+
+#: gok.glade2.h:36
+#, fuzzy
+msgid "AccessMethodName"
+msgstr "Dostopnostni postopki"
+
+#: gok.glade2.h:37
+msgid "Action Names List"
+msgstr "Seznam imen dejanj"
+
+#: gok.glade2.h:38
+msgid "Action Type:"
+msgstr "Vrsta dejanja:"
+
+# G:1 K:0 O:0
+#: gok.glade2.h:39
+msgid "ActionTypeNotebook"
+msgstr "VrstaDejanjaPrenosnik"
+
+#: gok.glade2.h:40
+msgid "Actions"
+msgstr "Dejanja"
+
+# G:1 K:0 O:0
+#: gok.glade2.h:41
+msgid "Activate on Dw_ell"
+msgstr "Aktiviraj ob po_stanku"
+
+#: gok.glade2.h:42
+msgid "Activate on _Enter"
+msgstr "Aktiviraj ob _entru"
+
+#: gok.glade2.h:43
+msgid "Activate on _Move"
+msgstr "Aktiviraj ob _premiku"
+
+#: gok.glade2.h:44
+msgid "Activate when _pressed"
+msgstr "Aktiviraj ob p_ritisku"
+
+#: gok.glade2.h:45
+msgid "Activate when _released"
+msgstr "Aktiviraj ob sp_ustitvi"
+
+#: gok.glade2.h:46
+msgid "Add"
+msgstr "Dodaj"
+
+# G:1 K:0 O:0
+#: gok.glade2.h:47
+msgid "Add New Key"
+msgstr "Dodaj nov ključ"
+
+#: gok.glade2.h:48
+msgid "Additional directory to search for GOK Keyboards"
+msgstr ""
+
+#: gok.glade2.h:49
+#, fuzzy
+msgid "Additional directory to search for GOK keyboard files"
+msgstr "Imenik od koder naj se naložijo datoteke tipkovnic."
+
+#: gok.glade2.h:50
+msgid "Alphanumeric keyboard arranged by letter frequency"
+msgstr ""
+
+#: gok.glade2.h:51
+msgid "Alphanumeric keyboard sorted alphabetically"
+msgstr ""
+
+#: gok.glade2.h:52
+msgid "Appearance"
+msgstr "Videz"
+
+# G:1 K:0 O:0
+#: gok.glade2.h:53
+msgid "Bottom:"
+msgstr "Spodaj:"
+
+# G:1 K:0 O:0
+#: gok.glade2.h:54
+#, fuzzy
+msgid "Browse"
+msgstr "_Brskaj..."
+
+# G:2 K:3 O:1
+#: gok.glade2.h:55
+msgid "C_ore pointer"
+msgstr "_Glavni kazalec"
+
+#: gok.glade2.h:56
+msgid "Command Prediction"
+msgstr "Napovedovanje ukazov"
+
+#: gok.glade2.h:57
+msgid "Delay"
+msgstr "Zakasnitev"
+
+# G:1 K:0 O:0
+#: gok.glade2.h:58
+msgid ""
+"Delay, in 100ths of a second, after the triggering event occurs, before "
+"activation takes place."
+msgstr ""
+"Zakasnitev po sprožitvenem dogodku, ko se zgodi aktivacija, v stotinkah "
+"sekunde."
+
+#: gok.glade2.h:59
+msgid "Delete"
+msgstr "Zbriši"
+
+# G:1 K:0 O:0
+#: gok.glade2.h:60
+msgid "Delete Key"
+msgstr "Tipka delete"
+
+#: gok.glade2.h:61
+msgid "Dock"
+msgstr ""
+
+# G:1 K:0 O:0
+#. Translators: dock is used as a verb.
+#: gok.glade2.h:62 move-resize.kbd.in.h:2
+#, fuzzy
+msgid "Dock Bottom"
+msgstr "Spodaj:"
+
+#. Translators: dock is used as a verb.
+#: gok.glade2.h:63 move-resize.kbd.in.h:4
+msgid "Dock Top"
+msgstr ""
+
+# G:1 K:0 O:0
+#: gok.glade2.h:64
+msgid "Duplicate"
+msgstr "Podvoji"
+
+# G:1 K:1 O:2
+#: gok.glade2.h:65
+msgid "Enable _key flashing"
+msgstr "Vkluči _bliskanje tipk"
+
+#: gok.glade2.h:66
+msgid "Enable _sound"
+msgstr "Vključi zvok"
+
+# G:1 K:0 O:0
+#: gok.glade2.h:67
+msgid "Enable _word completion"
+msgstr "Vključi _dokončevanje besed"
+
+#: gok.glade2.h:68
+msgid "Enable co_mmand prediction"
+msgstr "Vključi _napovedovanje ukazov"
+
+#: gok.glade2.h:70
+msgid "Fill WIdth"
+msgstr ""
+
+#: gok.glade2.h:71
+msgid "Font Group:"
+msgstr "Skupina pisave:"
+
+#: gok.glade2.h:72 gok/gok-editor.c:35
+msgid "GOK Keyboard Editor"
+msgstr "Urejevalnik tipkovnice GOK"
+
+#: gok.glade2.h:73
+msgid "GOK Preferences"
+msgstr "Nastavitve GOK"
+
+#: gok.glade2.h:74
+msgid "GOK:"
+msgstr "GOK:"
+
+#: gok.glade2.h:75
+msgid "Key Height"
+msgstr "Višina tipke"
+
+#: gok.glade2.h:76
+msgid "Key Spacing"
+msgstr "Razmik tipk"
+
+#: gok.glade2.h:77
+msgid "Key Width"
+msgstr "Širina tipke"
+
+#: gok.glade2.h:78
+msgid "Key _width:"
+msgstr "Ši_rina tipke:"
+
+#: gok.glade2.h:79
+msgid "Key h_eight:"
+msgstr "_Višina tipke:"
+
+#: gok.glade2.h:80
+#, fuzzy
+msgid "Keyboards"
+msgstr "<b>Tipkovnica</b>"
+
+#: gok.glade2.h:81
+msgid "Keycode:"
+msgstr "Koda tipke:"
+
+#: gok.glade2.h:82
+msgid "Keysym:"
+msgstr "Simbol tipke:"
+
+#: gok.glade2.h:83
+msgid "Label:"
+msgstr "Oznaka:"
+
+# G:4 K:4 O:6
+#: gok.glade2.h:84 directed.xml.in.h:6
+msgid "Left:"
+msgstr "Levo:"
+
+#: gok.glade2.h:85
+msgid "Match physical keyboard as reported by X Server"
+msgstr ""
+
+# G:4 K:4 O:1
+#: gok.glade2.h:86
+msgid "Modifier Post"
+msgstr "Spremenilnik po"
+
+#: gok.glade2.h:87
+msgid "Modifier Pre"
+msgstr "Spremenilnik pred"
+
+#: gok.glade2.h:88
+msgid "Modifier:"
+msgstr "Spremenilnik:"
+
+# G:0 K:1 O:0
+#: gok.glade2.h:89
+msgid "Move Down"
+msgstr "Premakni navzdol"
+
+# G:1 K:0 O:0
+#: gok.glade2.h:90
+msgid "Move Up"
+msgstr "Premakni navzgor"
+
+# G:1 K:0 O:0
+#: gok.glade2.h:91
+msgid "Name:"
+msgstr "Ime:"
+
+# G:13 K:22 O:2
+#: gok.glade2.h:92
+msgid "New"
+msgstr "Nova"
+
+# G:10 K:7 O:3
+#: gok.glade2.h:93
+msgid "Next Key"
+msgstr "Naslednja tipka"
+
+#: gok.glade2.h:94
+msgid "Normal"
+msgstr "Običajno"
+
+# G:1 K:0 O:0
+#: gok.glade2.h:95
+msgid "Number of _flashes:"
+msgstr "Število _bliskanj:"
+
+#: gok.glade2.h:96
+msgid "Number of _predictions:"
+msgstr "Število _napovedi:"
+
+#: gok.glade2.h:97
+#, fuzzy
+msgid "Number of command predictions:"
+msgstr "Število _napovedi:"
+
+#: gok.glade2.h:98
+#, fuzzy
+msgid "Number of word predictions:"
+msgstr "Število _napovedi:"
+
+#: gok.glade2.h:99
+msgid "Other _input device:"
+msgstr "Druge _vhodne naprave:"
+
+#: gok.glade2.h:100
+msgid "Prediction"
+msgstr "Napoved"
+
+#: gok.glade2.h:101
+msgid "Press"
+msgstr "Pritisk"
+
+#: gok.glade2.h:102
+msgid "Previous Key"
+msgstr "Prejšnja tipka"
+
+# G:18 K:8 O:2
+#: gok.glade2.h:103
+#, fuzzy
+msgid "Read keyboard from file:"
+msgstr "Izberi datoteko tipkovnice za urejanje"
+
+#: gok.glade2.h:104
+msgid "Release"
+msgstr "Spust"
+
+# G:1 K:0 O:0
+#: gok.glade2.h:105 directed.xml.in.h:9
+msgid "Right:"
+msgstr "Desno:"
+
+# G:3 K:5 O:1
+#: gok.glade2.h:106
+msgid "S_witch"
+msgstr "_Stikalo"
+
+# G:2 K:0 O:0
+#: gok.glade2.h:107
+msgid "Show Only This Font Group"
+msgstr "Kaži le to skupino pisav"
+
+#: gok.glade2.h:108
+msgid "So_und:"
+msgstr "_Zvok:"
+
+#: gok.glade2.h:109
+msgid "Speak key _label"
+msgstr ""
+
+# G:10 K:8 O:5
+#: gok.glade2.h:110
+msgid "Style:"
+msgstr "Slog:"
+
+# G:1 K:0 O:0
+#: gok.glade2.h:111
+msgid "Switch _1"
+msgstr "Stikalo _1"
+
+#: gok.glade2.h:112
+msgid "Switch _2"
+msgstr "Stikalo _2"
+
+#: gok.glade2.h:113
+msgid "Switch _3"
+msgstr "Stikalo _3"
+
+#: gok.glade2.h:114
+msgid "Switch _4"
+msgstr "Stikalo _4"
+
+#: gok.glade2.h:115
+msgid "Switch _5"
+msgstr "Stikalo _5"
+
+#: gok.glade2.h:116
+msgid "Target:"
+msgstr "Cilj:"
+
+# G:1 K:2 O:0
+#: gok.glade2.h:117
+msgid "To Back"
+msgstr "V ozadje"
+
+# G:0 K:1 O:0
+#: gok.glade2.h:118
+msgid "To Front"
+msgstr "V ospredje"
+
+# G:0 K:1 O:2
+#: gok.glade2.h:119
+msgid "Toggle"
+msgstr "Preklopi"
+
+# G:1 K:1 O:3
+#: gok.glade2.h:120
+msgid "Top:"
+msgstr "Zgoraj:"
+
+#: gok.glade2.h:121
+#, fuzzy
+msgid "Use _extra word list file(s)"
+msgstr "Izberi zvočno datoteko"
+
+# G:3 K:3 O:1
+#: gok.glade2.h:122
+msgid "Use _key averaging"
+msgstr "Uporabi povprečnost _tipk"
+
+#: gok.glade2.h:123
+msgid "Valuator Sensitivity"
+msgstr ""
+
+#: gok.glade2.h:124
+msgid "Word Completion"
+msgstr "Dokončevanje besed"
+
+# G:0 K:0 O:2
+#: gok.glade2.h:125
+msgid "_100ths of a second"
+msgstr "_stotnik sekunde"
+
+#: gok.glade2.h:126
+msgid "_Add"
+msgstr "_Dodaj"
+
+# G:1 K:0 O:0
+#: gok.glade2.h:127
+msgid "_Browse..."
+msgstr "_Brskaj..."
+
+# G:1 K:0 O:0
+#: gok.glade2.h:128
+msgid "_Delete"
+msgstr "_Zbriši"
+
+# G:1 K:0 O:0
+#: gok.glade2.h:129
+msgid "_Joystick"
+msgstr "_Igralna palica"
+
+# G:1 K:1 O:0
+#: gok.glade2.h:130
+msgid "_Method:"
+msgstr "_Postopek:"
+
+# G:0 K:1 O:0
+#: gok.glade2.h:131
+msgid "_Name:"
+msgstr "_Ime:"
+
+# G:8 K:12 O:3
+#: gok.glade2.h:132
+msgid "_New"
+msgstr "_Nova"
+
+# G:4 K:1 O:2
+#: gok.glade2.h:133
+msgid "_Number of predictions:"
+msgstr "Š_tevilo napovedi"
+
+#: gok.glade2.h:134
+msgid "_Rename"
+msgstr "P_reimenuj"
+
+# G:3 K:0 O:7
+#: gok.glade2.h:135
+msgid "_Single axis:"
+msgstr "_Ena os:"
+
+#: gok.glade2.h:136
+msgid "_Spacing:"
+msgstr "_Razmik:"
+
+# G:0 K:1 O:12
+#: gok.glade2.h:137
+msgid "_Use Desktop Theme Preferences"
+msgstr "_Uporabi nastavitve namizne teme"
+
+#: gok.glade2.h:138
+msgid "_Valuator"
+msgstr "_Cenilnik"
+
+#: gok.glade2.h:139
+msgid "_X-Y valuator (axes 0 and 1)"
+msgstr "Cenilnik _X-Y (osi 0 in 1)"
+
+#: gok.glade2.h:140
+msgid "access method name"
+msgstr "ime dostopnostnega postopka"
+
+#: gok.glade2.h:141
+msgid "cancel"
+msgstr "prekliči"
+
+#: gok.glade2.h:142
+msgid "display user help"
+msgstr "prikaži pomoč uporabniku"
+
+# G:1 K:0 O:0
+#: gok.glade2.h:143
+#, fuzzy
+msgid "high"
+msgstr "Desno:"
+
+#: gok.glade2.h:144
+msgid "low"
+msgstr ""
+
+#: gok.glade2.h:145
+msgid "pixels"
+msgstr "pikslov"
+
+#: gok.glade2.h:146
+msgid "revert to original settings"
+msgstr "povrni na izvorne nastavitve"
+
+#: gok.glade2.h:147
+msgid "try these settings"
+msgstr "poizkusi te nastavitve"
+
+# G:1 K:0 O:0
+#: gok.glade2.h:148
+msgid "use these settings"
+msgstr "uporabi te nastavitve"
+
+#: gok/gok-button.c:221
+msgid "You appear to be using GOK in 'core pointer' mode."
+msgstr ""
+
+# G:1 K:0 O:0
+#: gok/callbacks.c:394
+msgid "Sorry, Access Method Wizard not implemented yet."
+msgstr "Oprostite, Čarovnik dostopnostnih postopkov še ni implementiran."
+
+#: gok/callbacks.c:396
+msgid "GOK Access Method Wizard"
+msgstr "GOKov Čarovnik dostopnostnih postopkov"
+
+#: gok/gok-control.c:227
+msgid "Sorry, browse for sound file not implemented yet."
+msgstr "Oprostite, brskanje za zvočno datoteko še ni implementirano."
+
+#: gok/gok-control.c:229
+msgid "GOK Browse for sound file"
+msgstr "Brskanje za zvočno datoteko GOK"
+
+#: gok/gok-control.c:253
+msgid "Sorry, advanced settings not implemented yet."
+msgstr "Oprostite, napredne možnosti še niso implementirane."
+
+#: gok/gok-control.c:255
+msgid "GOK Inverse Scanning Advanced"
+msgstr "Napredno obrnjeno preiskovanje GOK"
+
+#: gok/gok-editor.c:154 gok/gok-editor.c:187 gok/gok-editor.c:267
+msgid ""
+"You have modified the current file.\n"
+"Do you want to discard your changes?"
+msgstr ""
+"Spremenili ste trenutno datoteko.\n"
+"Želite zavreči vaše spremembe?"
+
+#: gok/gok-editor.c:156 gok/gok-editor.c:189 gok/gok-editor.c:269
+#: gok/gok-editor.c:1060
+msgid "Keyboard Filename Invalid"
+msgstr "Ime datoteke tipkovnice ni veljavno"
+
+#: gok/gok-editor.c:218
+msgid "new"
+msgstr "nova"
+
+# G:18 K:8 O:2
+#. create the file selector dialog
+#: gok/gok-editor.c:279
+msgid "Select keyboard file for editing"
+msgstr "Izberi datoteko tipkovnice za urejanje"
+
+#: gok/gok-editor.c:289 gok/gok-editor.c:981
+msgid ".kbd files"
+msgstr ""
+
+#: gok/gok-editor.c:544
+msgid "label"
+msgstr "oznaka"
+
+# G:1 K:0 O:0
+#: gok/gok-editor.c:718
+#, c-format
+msgid "Can't save file: %s\n"
+msgstr "Ne morem shraniti datoteke: %s\n"
+
+# G:18 K:8 O:2
+#. get name of keyboard filename
+#. create the file selector dialog
+#: gok/gok-editor.c:971
+#, fuzzy
+msgid "Save keyboard file as"
+msgstr "Izberi datoteko tipkovnice za urejanje"
+
+#: gok/gok-editor.c:1052
+#, c-format
+msgid ""
+"This is not a valid keyboard filename:\n"
+"%s"
+msgstr ""
+"To ni veljavno ime datoteke:\n"
+"%s"
+
+#: gok/gok-editor.c:1082
+msgid "(new)"
+msgstr "(nova)"
+
+# G:6 K:4 O:0
+#: gok/gok-key.c:115
+#, fuzzy
+msgid "Mute"
+msgstr "Menuji"
+
+# G:6 K:4 O:0
+#: gok/gok-key.c:118
+#, fuzzy
+msgid ""
+"Mouse\n"
+"Keys"
+msgstr "Menuji"
+
+# G:4 K:4 O:6
+#: gok/gok-key.c:121
+#, fuzzy
+msgid ""
+"Left\n"
+"Tab"
+msgstr "Levo:"
+
+#: gok/gok-key.c:232
+msgid "Divide"
+msgstr ""
+
+#: gok/gok-key.c:235
+msgid "Multiply"
+msgstr ""
+
+#: gok/gok-key.c:238
+msgid "Subtract"
+msgstr ""
+
+#: gok/gok-key.c:241
+#, fuzzy
+msgid "Addition"
+msgstr "Napoved"
+
+#: gok/gok-key.c:244
+msgid "Prior"
+msgstr ""
+
+# G:10 K:7 O:3
+#: gok/gok-key.c:247
+#, fuzzy
+msgid "Next"
+msgstr "Naslednja tipka"
+
+#: gok/gok-key.c:250 numberpad.kbd.in.h:6
+msgid "Home"
+msgstr ""
+
+#: gok/gok-key.c:253 numberpad.kbd.in.h:4
+msgid "End"
+msgstr ""
+
+#. Translators: this describes the direction gok will move.
+#: gok/gok-key.c:256 move-resize.kbd.in.h:20 numberpad.kbd.in.h:17
+msgid "Up"
+msgstr ""
+
+# G:0 K:1 O:0
+#. Translators: this describes the direction gok will move.
+#: gok/gok-key.c:259 move-resize.kbd.in.h:6 numberpad.kbd.in.h:3
+#, fuzzy
+msgid "Down"
+msgstr "Premakni navzdol"
+
+# G:4 K:4 O:6
+#. Translators: this describes the direction gok will move.
+#: gok/gok-key.c:262 move-resize.kbd.in.h:11 numberpad.kbd.in.h:8
+#, fuzzy
+msgid "Left"
+msgstr "Levo:"
+
+# G:1 K:0 O:0
+#. Translators: this describes the direction gok will move.
+#: gok/gok-key.c:265 move-resize.kbd.in.h:15 numberpad.kbd.in.h:14
+#, fuzzy
+msgid "Right"
+msgstr "Desno:"
+
+#: gok/gok-key.c:268
+msgid "Begin"
+msgstr ""
+
+#: gok/gok-key.c:271
+msgid "Decimal"
+msgstr ""
+
+#: gok/gok-key.c:274
+msgid "Meta"
+msgstr ""
+
+#: gok/gok-key.c:277
+msgid ""
+"Multi\n"
+"key"
+msgstr ""
+
+#: gok/gok-key.c:280
+msgid ""
+"Eisu\n"
+"toggle"
+msgstr ""
+
+#: gok/gok-key.c:283
+msgid ""
+"Henkan\n"
+"Mode"
+msgstr ""
+
+#: gok/gok-key.c:286
+msgid "Muhenkan"
+msgstr ""
+
+#: gok/gok-key.c:289
+msgid ""
+"Mode\n"
+"switch"
+msgstr ""
+
+#: gok/gok-keyboard.c:150
+#, c-format
+msgid "Xkb extension could not be initialized! (error code %x)"
+msgstr ""
+
+#: gok/gok-keyboard.c:156 gok/gok-keyboard.c:196
+msgid "keyboard description not available!"
+msgstr ""
+
+#: gok/gok-keyboard.c:162 gok/gok-keyboard.c:202 gok/gok-keyboard.c:499
+msgid "Keyboard Geometry cannot be read from your X Server."
+msgstr ""
+
+#: gok/gok-keyboard.c:425
+msgid "Back"
+msgstr "Nazaj"
+
+# G:18 K:8 O:2
+#: gok/gok-keyboard.c:443 valuator.kbd.in.h:1
+#, fuzzy
+msgid "Repeat Next"
+msgstr "Ponovi naslednjo tipko"
+
+#: gok/gok-keyboard.c:456
+msgid "Edit"
+msgstr ""
+
+#. translators: Abbreviation/mnemonic for "numeric keypad", but must be <= 10 chars
+#: gok/gok-keyboard.c:469
+msgid ""
+"Num\n"
+"Pad"
+msgstr ""
+
+#. translators: Abbreviation/mnemonic for "numeric keypad", but must be <= 10 chars
+#: gok/gok-keyboard.c:483 move-resize.kbd.in.h:9
+msgid "Hide"
+msgstr ""
+
+#. translators: "shift" as in "the shift modifier key"
+#: gok/gok-keyboard.c:694
+msgid "shift"
+msgstr ""
+
+#. translators: The context is "key level" as in shift/caps status on keyboard
+#: gok/gok-keyboard.c:706
+msgid "Level 2"
+msgstr ""
+
+#. translators: see note for "Level 2"
+#: gok/gok-keyboard.c:718
+msgid "Level 3"
+msgstr ""
+
+#. translators: this is a label for a 'Back space' key
+#: gok/gok-keyboard.c:730
+msgid ""
+"Back\n"
+"Space"
+msgstr ""
+
+#. translators: this is a label for a "Tab" key, for instance on a keyboard
+#: gok/gok-keyboard.c:741 numberpad.kbd.in.h:16
+#, fuzzy
+msgid "Tab"
+msgstr "\"Tabulator\""
+
+# G:0 K:1 O:3
+#. translators: this is a label for a "spacebar" key, for instance on a keyboard
+#: gok/gok-keyboard.c:752
+#, fuzzy
+msgid "space"
+msgstr "\"preslednica\""
+
+# G:2 K:3 O:1
+#. translators: this is a label for an "Enter" or Return key, for instance on a keyboard
+#: gok/gok-keyboard.c:763 numberpad.kbd.in.h:5
+#, fuzzy
+msgid "Enter"
+msgstr "_Glavni kazalec"
+
+# G:6 K:4 O:0
+#: gok/gok-keyboard.c:801 main.kbd.in.h:7
+msgid "Menus"
+msgstr "Menuji"
+
+#.
+#. * Note to Translators: the following strings should contain your LANG/locale's
+#. * alphabet or, in the case of LANGs with a very large glyph set, a set of
+#. * character-primitives which can be used to compose your language's character set.
+#. * Each string below corresponds to the characters associated with a particular
+#. * "shift level" in the XKB keyboard definition.
+#. * The prefix before the '|' character is just a context string and need not be
+#. * translated.
+#. *
+#. * For languages where 'case' is used, the first string should contain
+#. * the lowercase alphabet.
+#. *
+#. * Note that unless your locale clearly requires that digits and/or punctuation
+#. * precede alphabetic characters, digits and punctuation should be placed
+#. * at the end of the string.
+#.
+#: gok/gok-keyboard.c:860
+msgid "level 0|abcdefghijklmnopqrstuvwxyz1234567890-=[];'#\\,./"
+msgstr ""
+
+#. The substring "level 1|" should not be translated.
+#. * For languages/locales which use 'upper case', this string should
+#. * correspond to uppercase versions of characters in the 'level 0' string.
+#.
+#: gok/gok-keyboard.c:865
+msgid "level 1|ABCDEFGHIJKLMNOPQRSTUVWXYZ!\"3$%^&*()_+{}:@~<>?"
+msgstr ""
+
+#. Not used in C locale: this string can contain a third set of characters
+#. * at another 'shift level'.  It can be used to provide a second/alternate
+#. * glyph/character set for the locale, separately or in conjunction with
+#. * 'level 3'.  At the translator's discretion, accented characters can be
+#. * placed here and in 'level 3' as well.
+#.
+#: gok/gok-keyboard.c:872 gok/gok-keyboard.c:928
+msgid "level 2|"
+msgstr ""
+
+#. For locales which need an even larger character set, or offer uppercase versions
+#. * of the 'level2' characters, add them to 'level 3'
+#: gok/gok-keyboard.c:875 gok/gok-keyboard.c:929
+msgid "level 3|"
+msgstr ""
+
+#.
+#. * Note to Translators: the following strings should contain your LANG/locale's
+#. * alphabet or, in the case of LANGs with a very large glyph set, a set of
+#. * character-primitives which can be used to compose your language's character set.
+#. * This string should contain all of the glyphs in the "level #|abcde..." strings
+#. * but they should appear in 'frequency order', that is, the most frequently occurring
+#. * characters in your locale should appear at the front of the list.
+#. * (Put digits after characters, and punctuation last).
+#. * If level 0 and level 1 refer to upper-and-lower-case in your locale,
+#. * the characters in these two strings should occur in the same relative order.
+#.
+#: gok/gok-keyboard.c:923
+msgid "level 0|etaonrishdlfcmugypwbvkxjqz`1234567890-=\\[];'<,./"
+msgstr ""
+
+#: gok/gok-keyboard.c:924
+msgid "level 1|ETAONRISHDLFCMUGYPWBVKXJQZ~!@#$%^&*()_+|{}:\"><>?"
+msgstr ""
+
+# G:5 K:3 O:21
+#. change the name of the window to the keyboard name
+#: gok/gok-keyboard.c:1908
+msgid "GOK - "
+msgstr "GOK - "
+
+# G:9 K:15 O:42
+#: gok/gok-keyboard.c:2736
+msgid "GUI"
+msgstr "GUI"
+
+#. translators: "table" as in row/column data structure
+#: gok/gok-keyboard.c:2741 gok/gok-spy.c:1673
+#, fuzzy
+msgid "Table"
+msgstr "oznaka"
+
+#: gok/gok-keyboard.c:2746 main.kbd.in.h:9
+msgid "Toolbars"
+msgstr ""
+
+# G:1 K:0 O:0
+#: gok/gok-keyboard.c:2750
+msgid "Applications"
+msgstr "Programi"
+
+# G:0 K:3 O:0
+#: gok/gok-keyboard.c:2757
+msgid "Menu"
+msgstr "Menu"
+
+# G:3 K:3 O:0
+#: gok/gok-keyboard.c:3527
+msgid "translator_credits"
+msgstr "Andraž Tori <andraz.tori1@guest.arnes.si>"
+
+# G:8 K:0 O:0
+#: gok/gok-keyboard.c:3550 main.kbd.in.h:4
+msgid "GOK"
+msgstr "GOK"
+
+#: gok/gok-keyboard.c:3552
+msgid "Dynamic virtual keyboards for the GNOME desktop"
+msgstr "Dinamične navidezne tipkovnice za namizje GNOME"
+
+#: gok/gok-keyboard.c:3561
+msgid "Full Credits"
+msgstr ""
+
+#: gok/gok-scanner.c:1003
+msgid "error reading description"
+msgstr ""
+
+#. translators: abbreviated version of "Vertical Scrollbar"
+#: gok/gok-spy.c:1593
+msgid "V Scrollbar"
+msgstr ""
+
+#. translators: abbreviated version of "Horizontal Scrollbar"
+#: gok/gok-spy.c:1598
+msgid "H Scrollbar"
+msgstr ""
+
+#. create the 'new action name' dialog
+#: gok/gok-page-actions.c:380 gok/gok-page-actions.c:425
+#: gok/gok-page-actions.c:444
+msgid "GOK Action Name"
+msgstr "Ime dejanja GOK"
+
+#. add a text label
+#: gok/gok-page-actions.c:386
+msgid "Change the action name:"
+msgstr "Spremeni ime dejanja:"
+
+#: gok/gok-page-actions.c:423
+msgid ""
+"Action name can't be empty.\n"
+"Please enter a new action name."
+msgstr ""
+"Ime dejanja ne more biti prazno.\n"
+"Prosimo vpišite novo ime dejanja."
+
+#: gok/gok-page-actions.c:442
+msgid ""
+"Sorry, that action name already exists.\n"
+"Please enter a new action name"
+msgstr ""
+"Oprostite, takšno ime dejanja že obstaja.\n"
+"Prosimo, vpišite novo ime dejanja"
+
+#: gok/gok-page-actions.c:497
+#, c-format
+msgid "New Action %d"
+msgstr "Novo dejanje %d"
+
+#: gok/gok-page-actions.c:560
+#, c-format
+msgid "Do you wish to delete this action (%s)?"
+msgstr "Želite zbrisati to dejanje (%s)?"
+
+#: gok/gok-page-actions.c:568
+msgid "GOK Delete Action"
+msgstr "Zbriši dejanje GOK"
+
+#. create the 'new feedbacks name' dialog
+#: gok/gok-page-feedbacks.c:411 gok/gok-page-feedbacks.c:456
+#: gok/gok-page-feedbacks.c:475
+msgid "GOK Feedback Name"
+msgstr "Ime povratnih informacij GOK"
+
+#. add a text label
+#: gok/gok-page-feedbacks.c:417
+msgid "Change the feedback name:"
+msgstr "Spremeni ime povratnih informacij:"
+
+#: gok/gok-page-feedbacks.c:454
+msgid ""
+"Feedback name can't be empty.\n"
+"Please enter a new feedback name."
+msgstr ""
+"Ime povratnih informacij ne more biti prazno.\n"
+"Prosimo, vpišite novo ime povratnih informacij."
+
+#: gok/gok-page-feedbacks.c:473
+msgid ""
+"Sorry, that feedback name already exists.\n"
+"Please enter a new feedback name"
+msgstr ""
+"Oprostite, takšno ime povratnih informacij že obstaja.\n"
+"Prosimo, vpišite novo ime povratnih informacij"
+
+#: gok/gok-page-feedbacks.c:526
+#, c-format
+msgid "New Feedback %d"
+msgstr "Nove povratne informacije %d"
+
+#: gok/gok-page-feedbacks.c:644
+#, c-format
+msgid "Do you wish to delete this feedback (%s)?"
+msgstr "Želite zbrisati to povratno informacijo (%s)"
+
+#: gok/gok-page-feedbacks.c:652
+msgid "GOK Delete Feedback"
+msgstr "Zbriši povratno informacijo GOK"
+
+#. create the file selector dialog
+#: gok/gok-page-feedbacks.c:875
+msgid "Select sound file"
+msgstr "Izberi zvočno datoteko"
+
+#: gok/gok-page-keyboard.c:180
+#, fuzzy
+msgid "Enter directory to search for additional GOK keyboard files."
+msgstr "Imenik od koder naj se naložijo datoteke tipkovnic."
+
+#: gok/gok-page-keyboard.c:194
+msgid "Select the XML file defining your startup compose keyboard"
+msgstr ""
+
+# G:1 K:0 O:0
+#: gok/gok-page-keysizespace.c:83
+#, fuzzy
+msgid "Button"
+msgstr "Spodaj:"
+
+#. and post a warning if the new settings use corepointer
+#: gok/gok-settings-dialog.c:259
+msgid "You appear to be configuring GOK to use 'core pointer' mode."
+msgstr ""
+
+#: gok/gok-windowlister.c:98
+msgid "Window List"
+msgstr "Seznam oken"
+
+#: gok/gok-utf8-word-complete.c:120
+#, c-format
+msgid "Could not read contents of dictionary file '%s'\n"
+msgstr ""
+
+#: gok/main.c:164
+#, fuzzy
+msgid ""
+"Use the specified access method. NAME is a string and can be found in the "
+"various access method files (.xam) assigned to the \"name\" property of <gok:"
+"accessmethod> tag. Note this is not necessarily the same as the name of the ."
+"xam file. (See --list-accessmethods)"
+msgstr ""
+"Uporabi določen postopek dostopnosti. IME je niz in je lahko najden v večih "
+"datotekah dostopnostnih postopkov (.xam) dodel jenih lastnosti značke <gok:"
+"accessmethod> \"name\".Opomba: To ni nujno isto ime, kot ime datoteke xam."
+
+#: gok/main.c:165
+msgid "NAME"
+msgstr "IME"
+
+# G:4 K:0 O:0
+#: gok/main.c:173
+msgid "Start the GOK keyboard editor"
+msgstr "Poženi urejevalnik tipkovnice GOK"
+
+#: gok/main.c:181
+msgid "Use special, but possibly unstable, gok stuff"
+msgstr "Uporabni posebne, a verjetno nestabilne, dele goka"
+
+#: gok/main.c:189
+msgid ""
+"Whenever --geometry is not used gok remembers its position between "
+"invocations and starts in the position that it had when it was last "
+"shutdown.  When --geometry is used gok positions itself within the "
+"rectangular area of screen described by the given X11 geometry "
+"specification.  When --geometry is used gok does not remember its position "
+"when it shuts down.  This behaviour can be changed with the --"
+"remembergeometry flag which forces gok to remember its position when "
+"shutdown even when it was started with --geometry."
+msgstr ""
+"Kadar ni uporabljena možnost --geometry si GOK zapomni svoj položaj in se ob "
+"naslednjem zagonu pokaže na položaju kjer je bil zadnjič uporabljen. Ko je "
+"uporabljena možnost --geometry, jo GOK uporabi za svojo namestitev na "
+"pravokotno površino zaslona opisano z specifikacijo geometrije X11. Kadar je "
+"uporabljena možnost --geometry ob izhodu ne zapomni svojega položaja. To "
+"obnašanje se lahko spremeni z možnostjo --remembergeometry, ki povzroči, da "
+"si gok svoj položaj na zaslonu zapomni ob vsakem izhodu."
+
+#: gok/main.c:190
+msgid "GEOMETRY"
+msgstr "GEOMETRIJA"
+
+# G:7 K:0 O:0
+#: gok/main.c:198
+msgid "Use the specified input device"
+msgstr "Uporabi navedeno vhodno napravo"
+
+#: gok/main.c:199
+msgid "DEVICENAME"
+msgstr "IMENAPRAVE"
+
+#: gok/main.c:207
+msgid "Start GOK with the specified keyboard."
+msgstr "Zaženi GOK z navedeno tipkovnico."
+
+#: gok/main.c:208
+msgid "KEYBOARDNAME"
+msgstr "IMETIPKOVNICE"
+
+#: gok/main.c:216
+msgid "List the access methods that can used as options to other arguments."
+msgstr ""
+
+#: gok/main.c:225
+msgid "List the actions that can used as options to other arguments."
+msgstr ""
+
+#: gok/main.c:234
+msgid "GOK will be used to login"
+msgstr "GOK se bo uporabil za prijavo"
+
+#: gok/main.c:245
+msgid ""
+"Can be used with --geometry.  Forces GOK to remember its position when "
+"shutdown even when it was started with --geometry.  Please see the "
+"discussion under the --geometry flag for more information."
+msgstr ""
+"Lahko je uporabljeno z možnostjo --geometry.  Prisili GOK, da si vedno ob "
+"izhodu zapomni svoj položaj. Prosimo, poglejte tudi komentar k možnosti --"
+"geometry."
+
+#: gok/main.c:256
+msgid "Start GOK and hook this action to scan operations. (See --list-actions)"
+msgstr ""
+
+#: gok/main.c:266
+msgid ""
+"Start GOK and hook this action to select operations. (See --list-actions)"
+msgstr ""
+
+#: gok/main.c:275
+msgid "Open the settings dialog box when GOK starts"
+msgstr "Ob zagonu GOKa odpri okno z nastavitvami"
+
+#: gok/main.c:588
+msgid "gok: Unsupported geometry specification\n"
+msgstr "gok: Nepodprta navedba geometrije\n"
+
+#: gok/main.c:589
+msgid ""
+"gok: Currently GOK requires that the x, y, width and height all be given\n"
+msgstr ""
+"gok: Trenutno GOK zahteva, da so podane vse možnosti: x, y, širina in "
+"višina\n"
+
+#: gok/main.c:685
+msgid "XKB extension is required."
+msgstr "Zahtevana je razširitev XKB."
+
+#: gok/main.c:695
+msgid "Can't initialize actions."
+msgstr "Ne morem inicializirati dejanj."
+
+#: gok/main.c:705
+msgid "Can't initialize feedbacks."
+msgstr "Ne morem inicializirati povratnih informacij."
+
+#: gok/main.c:732
+msgid "Can't create the main GOK window!"
+msgstr "Ne morem ustvariti glavnega okna GOK!"
+
+#: gok/main.c:751
+msgid "Can't create the settings dialog window!"
+msgstr "Ne morem ustvariti okna nastavitev!"
+
+#: gok/main.c:773
+msgid "You are using GOK in 'core pointer' mode."
+msgstr ""
+
+#: gok/main.c:813
+msgid "No keyboards to display!"
+msgstr "Ni tipkovnic za prikaz!"
+
+#: gok/main.c:949
+msgid "popup menu"
+msgstr ""
+
+#: gok/main.c:1805
+#, fuzzy
+msgid "Can't create a compose keyboard!"
+msgstr "Ne morem prebrati nobenih tipkovnic!"
+
+#: gok/main.c:1847
+msgid "Can't read any keyboards!"
+msgstr "Ne morem prebrati nobenih tipkovnic!"
+
+#: gok/main.c:1964
+msgid "could not access method directory key from GConf!"
+msgstr "ne morem dostopati do ključa imenika postopka GConfa!"
+
+#: gok/main.c:1972
+msgid "possibly unknown access method!"
+msgstr "možna neznan dostopnostni postopek"
+
+#: gok/main.c:2513
+msgid "Sorry, GOK can't run because:\n"
+msgstr "Oprostite, GOKa ni mogoče pognati zaradi:\n"
+
+#: gok/main.c:2522
+msgid "GOK Fatal Error"
+msgstr "Usodna napaka GOK"
+
+#: gok/main.c:2534
+msgid ""
+"GOK uses GConf 2 to store its settings and requires certain settings to be "
+"in GConf to run.  GOK is currently unable to retrieve those settings.  If "
+"this is the first time that you have run gok after installing it you may "
+"need to restart gconfd, you can use this command: 'gconftool-2 --shutdown' "
+"or log out and back in."
+msgstr ""
+"GOK za shranjevanje nastavitev uporablja GConf 2, zato mora biti ta pognan. "
+"GOK trenutno ne more dobiti teh nastavitev.  Če je to prvi zagon GOKa po "
+"namestivti, potem morate vnovič zagnati gconfd. Uporabite lahko sledeč ukaz: "
+"'gconftool-2 --shutdown' ali pa se odjavite in znova prijavite."
+
+#: gok/main.c:2551
+msgid ""
+"Currently GOK requires that the x, y, width and height all be given.  Sorry, "
+"your geometry specification will not be used."
+msgstr ""
+"Trenutno GOK zahteva, da so podane vse možnosti: x, y, širina in višina. "
+"Oprostite, vaša navedba geometrije ne bo uporabljena."
+
+#: gok/main.c:2553
+msgid "gok: Unsupported geometry specification"
+msgstr "gok: Nepodprta navedba geometrije"
+
+#: gok/main.c:2760
+msgid ""
+"GOK may not work properly, because it could not enable your desktop's "
+"'sticky keys' feature."
+msgstr ""
+
+#: gok/main.c:2767
+msgid "GOK has enabled Sticky Keys, which it requires.\n"
+msgstr ""
+
+#: gok/main.c:2789
+msgid "GOK cannot run because XKB display extension is missing.\n"
+msgstr ""
+
+#: gok/main.c:2853
+msgid ""
+"This means that the device you are using to operate GOK\n"
+"is also controlling the system pointer (or 'mouse pointer').\n"
+"Conflicts with applications' use of the pointer may interfere\n"
+"with your ability to use applications or GOK.\n"
+"\n"
+"We strongly recommend configuring your input device as an\n"
+"'Extended' input device instead; see GOK Help for more information."
+msgstr ""
+
+#: gok/main.c:2917
+msgid ""
+"Assistive Technology Support Is Not Enabled.\n"
+"\n"
+"You can start GOK without enabling support for assistive technologies. "
+"However, some of the features of the application might not be available.\n"
+"\n"
+"To enable support for assistive technologies and log in to a new session "
+"with the change enabled, click Enable and Log Out.\n"
+"\n"
+"To continue using GOK, click Continue.\n"
+"\n"
+"To quit GOK, click Close.\n"
+"\n"
+msgstr ""
+"Podpora pomožnim tehnologijam ni vključena.\n"
+"\n"
+"Lahko zaženete GOK brez podpore pomožnim tehnologijam,vendar v tem primeru "
+"morda nekatere možnosti ne bodo na voljo.\n"
+"\n"
+"Za vklop pomožnih tehnolgoij in prijavo v novo sejo s spremenjenimi "
+"nastavitvami, kliknite \"Vklopi in se odjavi\".\n"
+"\n"
+"Za nadaljevanje uporabe GOKa, kliknite \"Nadaljuj\".\n"
+"\n"
+"Za izhod iz GOKa, kliknite \"Zapri\".\n"
+"\n"
+
+#: gok/main.c:2936
+msgid "Enable and Log Out"
+msgstr "Vklopi in se odjavi"
+
+#: gok/main.c:2948
+msgid "Continue"
+msgstr "Nadaljuj"
+
+#: inverse-scanning.xml.in.h:9
+msgid "Inverse Scanning"
+msgstr "Obrnjeno preiskovanje"
+
+#: inverse-scanning.xml.in.h:14 singlekey-inverse-scanning.xml.in.h:11
+#, fuzzy
+msgid "Press and hold a switch to scan.  Press another switch to select."
+msgstr ""
+"Pritisnite in držite stikalo za preiskovanje. Pritisnite drugo stikalo za "
+"izbiro."
+
+#: inverse-scanning.xml.in.h:18 singlekey-inverse-scanning.xml.in.h:15
+msgid "Scan:"
+msgstr ""
+
+#: singlekey-automatic-scanning.xml.in.h:17
+#: singlekey-inverse-scanning.xml.in.h:16
+msgid "Scanning Direction:"
+msgstr ""
+
+#: singlekey-automatic-scanning.xml.in.h:20
+#, fuzzy
+msgid "Single Key Automatic Scanning"
+msgstr "Samodejno preiskovanje"
+
+#: singlekey-automatic-scanning.xml.in.h:21
+#, fuzzy
+msgid "Start Scanning:"
+msgstr "Samodejno preiskovanje"
+
+#: singlekey-automatic-scanning.xml.in.h:22
+#, fuzzy
+msgid "Start scanning:"
+msgstr "Samodejno preiskovanje"
+
+#: singlekey-automatic-scanning.xml.in.h:24
+msgid "Wrap"
+msgstr ""
+
+#: singlekey-inverse-scanning.xml.in.h:19
+#, fuzzy
+msgid "Single Key Inverse Scanning"
+msgstr "Obrnjeno preiskovanje"
+
+#: directed.xml.in.h:2
+msgid "5 Switch Directed"
+msgstr ""
+
+# G:0 K:1 O:0
+#: directed.xml.in.h:3
+#, fuzzy
+msgid "Down:"
+msgstr "Premakni navzdol"
+
+#: directed.xml.in.h:14
+msgid "Up:"
+msgstr ""
+
+#: hide.kbd.in.h:1
+msgid "Show"
+msgstr ""
+
+#: launcher.kbd.in.h:1
+msgid "Help Browser"
+msgstr ""
+
+#: launcher.kbd.in.h:2
+msgid "Terminal"
+msgstr ""
+
+#: launcher.kbd.in.h:3
+msgid "Text Editor"
+msgstr ""
+
+#: launcher.kbd.in.h:4
+msgid "Web Browser"
+msgstr ""
+
+#: main.kbd.in.h:1
+#, fuzzy
+msgid "Activate"
+msgstr "Aktiviraj ob _premiku"
+
+#. Translators: one word meaning: to enter text.
+#: main.kbd.in.h:3
+msgid "Compose"
+msgstr ""
+
+#. Translators: launcher, as in launching/running programs
+#: main.kbd.in.h:6
+msgid "Launcher"
+msgstr ""
+
+# G:6 K:4 O:0
+#: main.kbd.in.h:8
+#, fuzzy
+msgid "Mouse"
+msgstr "Menuji"
+
+#. Translators: short version User Interface Grab, used to grab GUI buttons etc.
+#: main.kbd.in.h:11
+msgid "UI Grab"
+msgstr ""
+
+#: mouse.kbd.in.h:1
+msgid "Button 1"
+msgstr ""
+
+#: mouse.kbd.in.h:2
+msgid "Button 2"
+msgstr ""
+
+#: mouse.kbd.in.h:3
+msgid "Button 3"
+msgstr ""
+
+#: mouse.kbd.in.h:4
+msgid "Dbl Click"
+msgstr ""
+
+#. Translators: direction right (East)
+#: mouse.kbd.in.h:6
+msgid "E"
+msgstr ""
+
+#: mouse.kbd.in.h:7
+msgid "Latch"
+msgstr ""
+
+#. Translators: direction up (North)
+#: mouse.kbd.in.h:9
+msgid "N"
+msgstr ""
+
+#. Translators: direction up and right (North East)
+#: mouse.kbd.in.h:11
+#, fuzzy
+msgid "NE"
+msgstr "IME"
+
+#. Translators: direction up and left (North West)
+#: mouse.kbd.in.h:13
+msgid "NW"
+msgstr ""
+
+# G:2 K:3 O:1
+#: mouse.kbd.in.h:14
+#, fuzzy
+msgid "Pointer"
+msgstr "_Glavni kazalec"
+
+#: mouse.kbd.in.h:15
+#, fuzzy
+msgid "Repeat"
+msgstr "Spust"
+
+#. Translators: direction down (South)
+#: mouse.kbd.in.h:17
+msgid "S"
+msgstr ""
+
+#. Translators: direction down and right (South East)
+#: mouse.kbd.in.h:19
+msgid "SE"
+msgstr ""
+
+#. Translators: direction down and left (South West)
+#: mouse.kbd.in.h:21
+msgid "SW"
+msgstr ""
+
+#. Translators: direction left (West)
+#: mouse.kbd.in.h:23
+msgid "W"
+msgstr ""
+
+#: move-resize.kbd.in.h:7
+msgid "Fill"
+msgstr ""
+
+#: move-resize.kbd.in.h:8
+msgid "Float"
+msgstr ""
+
+#: move-resize.kbd.in.h:12
+msgid "Narrower"
+msgstr ""
+
+# G:18 K:8 O:2
+#: move-resize.kbd.in.h:13
+msgid "Repeat Next Key"
+msgstr "Ponovi naslednjo tipko"
+
+#. Translators: shorter as in height.
+#: move-resize.kbd.in.h:17
+msgid "Shorter"
+msgstr ""
+
+#: move-resize.kbd.in.h:18
+msgid "Taller"
+msgstr ""
+
+#: move-resize.kbd.in.h:21
+msgid "Wider"
+msgstr ""
+
+# G:5 K:3 O:0
+#: numberpad.kbd.in.h:1
+#, fuzzy
+msgid "Ctrl"
+msgstr "\"Ctrl\""
+
+#: numberpad.kbd.in.h:2
+#, fuzzy
+msgid "Del"
+msgstr "Zakasnitev"
+
+#: numberpad.kbd.in.h:7
+msgid "Ins"
+msgstr ""
+
+#: numberpad.kbd.in.h:9
+msgid "Num"
+msgstr ""
+
+#. Translators: abbreviation for Page Down.
+#: numberpad.kbd.in.h:11
+msgid "PgDn"
+msgstr ""
+
+#. Translators: abbreviation for Page Up.
+#: numberpad.kbd.in.h:13
+msgid "PgUp"
+msgstr ""
+
+#: numberpad.kbd.in.h:15
+msgid "Shift"
+msgstr ""
+
+#. Translators: short phrase to confirm that user wants to quit.
+#: quit.kbd.in.h:2
+msgid "Really Quit!"
+msgstr ""
+
+# G:1 K:1 O:0
+#~ msgid "Key 1"
+#~ msgstr "Ključ 1"
+
+#~ msgid "Key 2"
+#~ msgstr "Ključ 2"
+
+#~ msgid "Key 3"
+#~ msgstr "Ključ 3"
+
+#~ msgid "Key 4"
+#~ msgstr "Ključ 4"
+
+# G:0 K:0 O:1
+#~ msgid "example key 1"
+#~ msgstr "primer ključa 1"
+
+# G:0 K:0 O:1
+#~ msgid "example key 2"
+#~ msgstr "primer ključa 2"
+
+# G:0 K:0 O:1
+#~ msgid "example key 3"
+#~ msgstr "primer ljuča 3"
+
+#~ msgid "example key 4"
+#~ msgstr "primer ključa 4"
+
+#~ msgid "\"Alt\""
+#~ msgstr "\"Alt\""
+
+# G:3 K:2 O:0
+#~ msgid "\"Shift AltGr Level-3\""
+#~ msgstr "\"Shift AltGr Stopnja 3\""
+
+#~ msgid "Text Manipulation"
+#~ msgstr "Obvladovanje besedila"
+
+#~ msgid ""
+#~ "Copyright (C) 2001-2003 Sun Microsystems, Copyright (C) 2001-2003 "
+#~ "University of Toronto"
+#~ msgstr ""
+#~ "Avtorske pravice pridržane (C) 2001-2003 Sun Microsystems, avtorske "
+#~ "pravice pridržane (C) 2001-2003 University of Toronto"
+
+# G:1 K:1 O:1
+#~ msgid "label84"
+#~ msgstr "oznaka84"
+
+#~ msgid "label85"
+#~ msgstr "oznaka85"
+
+# G:1 K:0 O:0
+#~ msgid "Couldn't find pixmap file: %s"
+#~ msgstr "Nisem mogel najti datoteke s sliko: %s"

@@ -1,0 +1,390 @@
+<?xml version="1.0"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+  <!ENTITY legal SYSTEM "legal.xml">
+  <!ENTITY prefs SYSTEM "prefs.xml">
+  <!ENTITY keyboards SYSTEM "keyboards.xml">
+  <!ENTITY appversion "0.10.1">
+  <!ENTITY manrevision "2.1">
+  <!ENTITY date "April 2004">
+  <!ENTITY app "<application>GOK</application>">
+  <!ENTITY atrc "Adaptive Technology Resource Centre">
+  <!-- Information about the entities
+       The legal.xml file contains legal information, there is no need to edit the file. 
+       Use the appversion entity to specify the version of the application.
+       Use the manrevision entity to specify the revision number of this manual.
+       Use the date entity to specify the release date of this manual.
+       Use the app entity to specify the name of the application. -->
+]>
+<!-- 
+      (Do not remove this comment block.)
+  Maintained by the GNOME Documentation Project
+  http://developer.gnome.org/projects/gdp
+  Template version: 2.0 beta
+  Template last modified Apr 11, 2002
+-->
+<!-- =============Document Header ============================= -->
+<article id="index" lang="en">
+<!-- please do not change the id; for translations, change lang to -->
+<!-- appropriate code -->
+  <articleinfo> 
+    <title>&app; Manual V&manrevision;</title>       
+
+    <copyright> 
+      <year>2003</year> 
+      <year>2004</year> 
+      <holder>GOK Development Team</holder> 
+    </copyright> 
+    <copyright> 
+      <year>2002</year> 
+      <year>2003</year> 
+      <holder>ATRC</holder> 
+    </copyright>
+<!-- translators: uncomment this:
+
+  <copyright>
+   <year>2002</year>
+   <holder>ME-THE-TRANSLATOR (Latin translation)</holder>
+  </copyright>
+
+   -->
+<!-- An address can be added to the publisher information.  If a role is 
+     not specified, the publisher/author is the same for all versions of the 
+     document.  -->
+    <publisher> 
+      <publishername>&atrc;</publishername> 
+    </publisher> 
+
+   <!-- This file  contains link to license for the documentation (GNU FDL), and 
+        other legal stuff such as "NO WARRANTY" statement. Please do not change 
+	any of this. -->
+  &legal;
+ 
+
+	  <authorgroup>
+	  <author> 
+		<firstname>Simon</firstname> 
+		<surname>Bates</surname> 
+		<affiliation> 
+	  		<orgname>&atrc;</orgname> 
+	  		<address> <email>simon.bates@utoronto.ca</email> </address> 
+		</affiliation> 
+      </author> 
+      <author> 
+		<firstname>David</firstname> 
+		<surname>Bolter</surname> 
+		<affiliation> 
+	  		<orgname>&atrc;</orgname> 
+	  		<address> <email>david.bolter@utoronto.ca</email> </address> 
+		</affiliation> 
+      </author> 
+      <author> 
+		<firstname>Bruce</firstname> 
+		<surname>Etheridge</surname> 
+		<affiliation> 
+	  		<orgname>&atrc;</orgname> 
+	  		<address> <email>bruce.etheridge@utoronto.ca</email> </address> 
+		</affiliation> 
+      </author> 
+      <author> 
+		<firstname>Bill</firstname> 
+		<surname>Haneman</surname> 
+		<affiliation> 
+	  		<orgname>Sun Microsystems</orgname> 
+	  		<address> <email>bill.haneman@sun.com</email> </address> 
+		</affiliation> 
+      </author> 
+      
+<!-- This is appropriate place for other contributors: translators,
+     maintainers,  etc. Commented out by default.
+     
+      <othercredit role="translator">
+		<firstname>Latin</firstname> 
+		<surname>Translator 1</surname> 
+		<affiliation> 
+	  		<orgname>Latin Translation Team</orgname> 
+	  		<address> <email>translator@gnome.org</email> </address> 
+		</affiliation>
+		<contrib>Latin translation</contrib>
+      </othercredit>
+-->
+    </authorgroup>
+
+
+<!-- According to GNU FDL, revision history is mandatory if you are -->
+<!-- modifying/reusing someone else's document.  If not, you can omit it. -->
+<!-- Remember to remove the &manrevision; entity from the revision entries other
+-->
+<!-- than the current revision. -->
+<!-- The revision numbering system for GNOME manuals is as follows: -->
+<!-- * the revision number consists of two components -->
+<!-- * the first component of the revision number reflects the release version of the GNOME desktop. -->
+<!-- * the second component of the revision number is a decimal unit that is incremented with each revision of the manual. -->
+<!-- For example, if the GNOME desktop release is V2.x, the first version of the manual that -->
+<!-- is written in that desktop timeframe is V2.0, the second version of the manual is V2.1, etc. -->
+<!-- When the desktop release version changes to V3.x, the revision number of the manual changes -->
+<!-- to V3.0, and so on. -->  
+    <revhistory>
+      <revision> 
+		<revnumber>GOK Manual V&manrevision;</revnumber> 
+		<date>&date;</date> 
+		<revdescription> 
+	  		<para role="author">David Bolter
+	    	<email>david.bolter@utoronto.ca</email>
+	  		</para>
+	  		<para role="publisher">ATRC</para>
+		</revdescription> 
+      </revision> 
+      <revision> 
+		<revnumber>GNOME Onscreen Keyboard (GOK) - User Manual V1.0</revnumber> 
+		<date>2002</date> 
+		<revdescription> 
+	  		<para role="author">Bruce Etheridge 
+	    	<email>bruce.etheridge@utoronto.ca</email>
+	  		</para>
+	  		<para role="author">Simon Bates
+	    	<email>simon.bates@utoronto.ca</email>
+	  		</para>
+	  		<para role="publisher">&atrc;</para>
+		</revdescription> 
+      </revision> 
+    </revhistory> 
+
+    <releaseinfo>This manual describes version &appversion; of GOK.
+    </releaseinfo> 
+    <legalnotice> 
+      <title>Feedback</title> 
+      <para>To report a bug or make a suggestion regarding the &app; application or
+      this manual, follow the directions in the <ulink url="ghelp:gnome-feedback"
+	  type="help">GNOME Feedback Page</ulink>. 
+      </para>
+<!-- Translators may also add here feedback address for translations -->
+    </legalnotice> 
+  </articleinfo> 
+
+  <indexterm zone="index"> 
+    <primary>GOK</primary> 
+  </indexterm> 
+  <indexterm zone="index"> 
+    <primary>gok</primary> 
+  </indexterm>
+
+<!-- ============= Document Body ============================= -->
+<!-- ============= Introduction ============================== -->
+<!-- Use the Introduction section to give a brief overview of what
+     the application is and what it does. -->
+  <sect1 id="myapp-introduction"> 
+    <title>Introduction</title> 
+    <para>The &app; application enables you to view image files. 
+    &app; provides the following features:</para> 
+	<para>
+	&app; is a dynamic onscreen keyboard for
+	UNIX and UNIX-like operating systems.  It features Direct Selection,
+	Dwell Selection, Automatic Scanning and Inverse Scanning access
+	methods and includes word completion.
+	</para>
+	
+	<para>
+	GOK includes an alphanumeric keyboard and a keyboard for launching
+	applications.  Keyboards are specified in XML enabling existing
+	keyboards to be modified and new keyboards to be created.  The access
+	methods are also specified in XML providing the ability to modify
+	existing access methods and create new ones.
+	</para>
+	
+	<para>
+	GOK is not limited to presenting keyboards that have been designed by
+	hand and is able to dynamically create keyboards so that it can adapt
+	to the user's current situation.  GOK is able to redisplay components
+	of the user interfaces of running applications directly within GOK as
+	keyboards.  This provides efficient access to elements of the user
+	interface, removing the need to navigate the interface indirectly
+	though keyboard accelerators.  GOK supports the redisplay of
+	application menus and toolbars.  GOK contains a window activator
+	keyboard that lists the current windows on the desktop and provides
+	the ability to switch between them.
+	</para>
+	
+	<para>
+	Users have the option of setting key width, height, and spacing as
+	well as visual and auditory feedback on highlighting and selection.
+	</para>
+    <note>
+      <para>GOK is constantly evolving.</para>
+    </note>
+  </sect1>
+
+<!-- =========== Getting Started ============================== -->
+<!-- Use the Getting Started section to describe the steps required
+     to start the application and to describe the user interface components
+     of the application. If there is other information that it is important
+     for readers to know before they start using the application, you should
+     also include this information here. 
+     If the information about how to get started is very short, you can 
+     include it in the Introduction and omit this section. -->
+
+  <sect1 id="gok-getting-started"> 
+    <title>Getting Started</title> 
+
+    <sect2 id="gok-start">
+    <title>To Start &app;</title>
+    <para>You can start <application>&app;</application> in the following ways:
+    </para> 
+    <variablelist>
+    	<varlistentry>
+    		<term><guimenu>Applications</guimenu> menu</term>
+    		<listitem>
+    		<para>Choose 
+    		<menuchoice>
+    		<guisubmenu>Accessibility</guisubmenu>
+    		<guimenuitem>On-Screen Keyboard</guimenuitem>
+    		</menuchoice>. </para>
+    		</listitem>
+    	</varlistentry>
+    	<varlistentry>
+    		<term>Command line</term>
+    		<listitem>
+    		<para>To start <application>&app;</application> from a command line, type the following command, 
+    		then press <keycap>Return</keycap>:</para>
+    		<para> 
+			<command>gok</command> 
+    		</para> 
+    		</listitem>
+    	</varlistentry>
+    </variablelist>
+    </sect2>
+     <sect2 id="gok-when-start">
+    <title>When You Start &app;</title>
+    <para>When you start <application>&app;</application>, the main keyboard is displayed.</para>
+
+    <!-- ==== Figure ==== -->
+	<!--
+      <figure id="mainwindow-fig"> 
+	<title>&app; Start Up Window</title> 
+	<screenshot> 
+	  <mediaobject> 
+	    <imageobject><imagedata
+		fileref="figures/myapp_start_window.png" format="PNG"/> 
+	    </imageobject>
+		-->
+	    <!-- EPS versions of the figures are not required at the moment. -->
+            <!-- 
+		    <imageobject>
+      		<imagedata fileref="figures/image.eps" format="EPS"/>
+    		    </imageobject>
+	    -->
+		<!--
+	    <textobject> 
+	      <phrase>Shows &app; main window. Contains titlebar, menubar, toolbar, display area, and
+	      scrollbars. Menubar contains File, View, Settings, and Help menus. </phrase> 
+	    </textobject> 
+	  </mediaobject> 
+	</screenshot> 
+      </figure>
+	  -->
+    <!-- ==== End of Figure ==== -->
+
+    <!-- Include any descriptions of the GUI immediately after the screenshot of the main UI, -->
+    <!-- for example, the items on the menubar and on the toolbar. This section is optional. -->
+
+	<para>To launch an editor and begin entering text:</para>
+    <variablelist>
+	<varlistentry>
+	<term>Select the [Launcher] key.</term>
+	<listitem>
+	<para>This will branch you to the &app; Launcher keyboard.</para>
+	</listitem>
+	</varlistentry>
+	<varlistentry>
+	<term>Select [Text Editor]</term>
+	<listitem>
+	<para>This will cause a text editor to be launched, and GOK should automatically branch to the Main keyboard.</para>
+	</listitem>
+	</varlistentry>
+	<varlistentry>
+	<term>Select [Compose]</term>
+	<listitem>
+	<para>This will branch you to a keyboard which will allow you to enter text in the editor application.</para>
+	</listitem>
+	</varlistentry>
+	</variablelist>
+    </sect2>
+     <sect2 id="gok-when-docked">
+    <title>Docking &app;</title>
+    <para><application>&app;</application> functions well as a docked window.</para>
+	<para>You can dock <application>&app;</application> via the preferences dialog, or alternatively via the "window" keyboard.</para>
+		<note>
+	   		<para><application>&app;</application> will not function correctly if docked on the same edge as something else.</para>
+		</note>
+	</sect2>
+  </sect1>
+
+&prefs;
+
+&keyboards;
+
+<!-- ============= Bugs ================================== -->
+<!-- This section is optional and is commented out by default. 
+     You can use it to describe known bugs and limitations of the 
+	  program if there are any - please be frank and list all
+     problems you know of. 
+  
+  <sect1 id="mayapp-bugs">
+  <title>Known Bugs and Limitations</title>
+  <para>Mouse grabs... </para>
+ </sect1>
+-->
+<!-- ============= About ================================== -->
+<!-- This section contains info about the program (not docs), such as
+      author's name(s), web page, license, feedback address. This
+      section is optional: primary place for this info is "About.." box of
+      the program. However, if you do wish to include this info in the
+      manual, this is the place to put it. Alternatively, you can put this information in the title page.-->
+  <sect1 id="gok-about"> 
+    <title>About &app;</title> 
+    <para> &app; was written by</para> 
+	<variablelist>
+	<varlistentry>
+	<listitem>
+	David Bolter (<email>david.bolter@utoronto.ca</email>)
+	</listitem>
+	</varlistentry>
+	<varlistentry>
+	<listitem>
+	Bill Haneman (<email>bill.haneman@sun.com</email>)
+	</listitem>
+	</varlistentry>
+	<varlistentry>
+	<listitem>
+	Chris Ridpath (<email>chris.ridpath@utoronto.ca</email>)
+	</listitem>
+	</varlistentry>
+	<varlistentry>
+	<listitem>
+	Simon Bates (<email>simon.bates@utoronto.ca</email>)
+	</listitem>
+	</varlistentry>
+	<varlistentry>
+	<listitem>
+	With contributions from many others (please see AUTHORS file)
+	</listitem>
+	</varlistentry>
+	</variablelist>
+	<para>To find more information about
+      &app;, please visit GOK's web page: 
+      <ulink url="http://www.gok.ca" type="http">www.gok.ca</ulink>. </para>
+    <para>
+      To report a bug or make a suggestion regarding this application or
+      this manual, follow the directions in this 
+      <ulink url="ghelp:gnome-feedback"   type="help">document</ulink>.
+    </para>
+
+    <para> This program is distributed under the terms of the GNU
+      Library General Public license as published by the Free Software
+      Foundation; either version 2 of the License, or (at your option)
+      any later version. A copy of this license can be found at this
+      <ulink url="ghelp:lgpl" type="help">link</ulink>, or in the file
+      COPYING included with the source code of this program. </para>
+
+  </sect1> 
+</article>

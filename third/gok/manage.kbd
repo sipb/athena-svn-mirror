@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<GOK:GokFile xmlns:GOK="http://www.gnome.org/GOK">
+
+<GOK:keyboard name="manage" commandprediction="no" wordcompletion="no">
+	<GOK:key left="0" right="1" top="0" bottom="1" type="branchBack">
+		<GOK:label>back</GOK:label>
+	</GOK:key>
+	<GOK:key left="1" right="2" top="0" bottom="1" type="branchWindows">
+		<GOK:label>Activate Window</GOK:label>
+	</GOK:key>
+	<GOK:key left="2" right="3" top="0" bottom="1" type="settings">
+		<GOK:label>Settings</GOK:label>
+	</GOK:key>
+	<GOK:key left="0" right="1" top="1" bottom="2" type="normal">
+		<GOK:label>Gok</GOK:label>
+	</GOK:key>
+	<GOK:key left="1" right="2" top="1" bottom="2" type="normal">
+		<GOK:label>Other</GOK:label>
+	</GOK:key>
+	<GOK:key left="2" right="3" top="1" bottom="2" type="normal">
+		<GOK:label>Pointer</GOK:label>
+	</GOK:key>
+</GOK:keyboard>
+</GOK:GokFile>

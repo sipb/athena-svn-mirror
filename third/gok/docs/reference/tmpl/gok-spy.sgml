@@ -1,0 +1,115 @@
+<!-- ##### SECTION Title ##### -->
+gok-spy
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### FUNCTION gok_spy_open ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION gok_spy_close ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION gok_spy_register_appchangelistener ##### -->
+<para>
+
+</para>
+
+@callback: 
+
+
+<!-- ##### FUNCTION gok_spy_deregister_appchangelistener ##### -->
+<para>
+
+</para>
+
+@callback: 
+
+
+<!-- ##### FUNCTION gok_spy_register_windowchangelistener ##### -->
+<para>
+
+</para>
+
+@callback: 
+
+
+<!-- ##### FUNCTION gok_spy_deregister_windowchangelistener ##### -->
+<para>
+
+</para>
+
+@callback: 
+
+
+<!-- ##### FUNCTION gok_spy_register_mousebuttonlistener ##### -->
+<para>
+
+</para>
+
+@callback: 
+
+
+<!-- ##### FUNCTION gok_spy_deregister_mousebuttonlistener ##### -->
+<para>
+
+</para>
+
+@callback: 
+
+
+<!-- ##### FUNCTION gok_spy_get_list ##### -->
+<para>
+
+</para>
+
+@paccessible: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gok_spy_refresh ##### -->
+<para>
+
+</para>
+
+@plist: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gok_spy_free ##### -->
+<para>
+
+</para>
+
+@nodes: 
+
+
+<!-- ##### FUNCTION gok_spy_has_child ##### -->
+<para>
+
+</para>
+
+@accessible: 
+@type: 
+@role: 
+@Returns: 
+
+

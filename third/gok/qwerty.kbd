@@ -1,0 +1,388 @@
+<?xml version="1.0"?>
+<GOK:GokFile xmlns:GOK="http://www.gnome.org/GOK">
+ 
+<GOK:keyboard name="qwerty" wordcompletion="yes"> 
+	<GOK:key left="0" right="1" top="0" bottom="1" type="branchBack"> 
+		<GOK:label>back</GOK:label> 
+	</GOK:key> 
+	<GOK:key left="1" right="2" top="0" bottom="1" type="normal"> 
+		<GOK:label>Esc</GOK:label> 
+		<GOK:output type="keysym">Escape</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="2" right="3" top="0" bottom="1" type="normal"> 
+		<GOK:label>F1</GOK:label> 
+		<GOK:output type="keysym">F1</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="3" right="4" top="0" bottom="1" type="normal"> 
+		<GOK:label>F2</GOK:label> 
+		<GOK:output type="keysym">F2</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="4" right="5" top="0" bottom="1" type="normal"> 
+		<GOK:label>F3</GOK:label> 
+		<GOK:output type="keysym">F3</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="5" right="6" top="0" bottom="1" type="normal"> 
+		<GOK:label>F4</GOK:label> 
+		<GOK:output type="keysym">F4</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="6" right="7" top="0" bottom="1" type="normal"> 
+		<GOK:label>F5</GOK:label> 
+		<GOK:output type="keysym">F5</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="7" right="8" top="0" bottom="1" type="normal"> 
+		<GOK:label>F6</GOK:label> 
+		<GOK:output type="keysym">F6</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="8" right="9" top="0" bottom="1" type="normal"> 
+		<GOK:label>F7</GOK:label> 
+		<GOK:output type="keysym">F7</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="9" right="10" top="0" bottom="1" type="normal"> 
+		<GOK:label>F8</GOK:label> 
+		<GOK:output type="keysym">F8</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="10" right="11" top="0" bottom="1" type="normal"> 
+		<GOK:label>F9</GOK:label> 
+		<GOK:output type="keysym">F9</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="11" right="12" top="0" bottom="1" type="normal"> 
+		<GOK:label>F10</GOK:label> 
+		<GOK:output type="keysym">F10</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="12" right="13" top="0" bottom="1" type="normal"> 
+		<GOK:label>F11</GOK:label> 
+		<GOK:output type="keysym">F11</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="13" right="14" top="0" bottom="1" type="normal"> 
+		<GOK:label>F12</GOK:label> 
+		<GOK:output type="keysym">F12</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="15" right="17" top="2" bottom="3" type="normal"> 
+		<GOK:label>Print Screen</GOK:label> 
+		<GOK:output type="keysym">PrntScrn</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="15" right="17" top="3" bottom="4" type="normal"> 
+		<GOK:label>Scroll Lock</GOK:label> 
+		<GOK:output type="keysym">Scroll_Lock</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="16" right="17" top="4" bottom="5" type="normal"> 
+		<GOK:label>Pause</GOK:label> 
+		<GOK:output type="keysym">Pause</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="0" right="1" top="1" bottom="2" type="normal" fontsizegroup="1"> 
+		<GOK:label>`</GOK:label> 
+		<GOK:label level="1">~</GOK:label>
+		<GOK:output type="keysym">asciitilde</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="1" right="2" top="1" bottom="2" type="normal" fontsizegroup="1"> 
+		<GOK:label>1</GOK:label> 
+		<GOK:label level="1">!</GOK:label>
+		<GOK:output type="keysym">1</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="2" right="3" top="1" bottom="2" type="normal" fontsizegroup="1"> 
+		<GOK:label>2</GOK:label> 
+		<GOK:label level="1">@</GOK:label>
+		<GOK:output type="keysym">2</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="3" right="4" top="1" bottom="2" type="normal" fontsizegroup="1"> 
+		<GOK:label>3</GOK:label> 
+		<GOK:label level="1">#</GOK:label>
+		<GOK:output type="keysym">3</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="4" right="5" top="1" bottom="2" type="normal" fontsizegroup="1"> 
+		<GOK:label>4</GOK:label> 
+		<GOK:label level="1">$</GOK:label>
+		<GOK:output type="keysym">4</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="5" right="6" top="1" bottom="2" type="normal" fontsizegroup="1"> 
+		<GOK:label>5</GOK:label> 
+		<GOK:label level="1">%</GOK:label>
+		<GOK:output type="keysym">5</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="6" right="7" top="1" bottom="2" type="normal" fontsizegroup="1"> 
+		<GOK:label>6</GOK:label> 
+		<GOK:label level="1">^</GOK:label>
+		<GOK:output type="keysym">6</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="7" right="8" top="1" bottom="2" type="normal" fontsizegroup="1"> 
+		<GOK:label>7</GOK:label> 
+		<GOK:label level="1">&amp;</GOK:label>
+		<GOK:output type="keysym">7</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="8" right="9" top="1" bottom="2" type="normal" fontsizegroup="1"> 
+		<GOK:label>8</GOK:label> 
+		<GOK:label level="1">*</GOK:label>
+		<GOK:output type="keysym">8</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="9" right="10" top="1" bottom="2" type="normal" fontsizegroup="1"> 
+		<GOK:label>9</GOK:label> 
+		<GOK:label level="1">(</GOK:label>
+		<GOK:output type="keysym">9</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="10" right="11" top="1" bottom="2" type="normal" fontsizegroup="1"> 
+		<GOK:label>0</GOK:label> 
+		<GOK:label level="1">)</GOK:label>
+		<GOK:output type="keysym">0</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="11" right="12" top="1" bottom="2" type="normal" fontsizegroup="1"> 
+		<GOK:label>-</GOK:label> 
+		<GOK:label level="1">_</GOK:label>
+		<GOK:output type="keysym">minus</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="12" right="13" top="1" bottom="2" type="normal" fontsizegroup="1"> 
+		<GOK:label>=</GOK:label> 
+		<GOK:label level="1">+</GOK:label>
+		<GOK:output type="keysym">equal</GOK:output>
+	</GOK:key> 
+	<GOK:key left="13" right="15" top="1" bottom="2" type="normal"> 
+		<GOK:label>Backspace</GOK:label> 
+		<GOK:output type="keysym">BackSpace</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="14" right="15" top="2" bottom="3" type="normal"> 
+		<GOK:label>Insert</GOK:label> 
+		<GOK:output type="keysym">Insert</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="13" right="14" top="4" bottom="5" type="normal"> 
+		<GOK:label>Home</GOK:label> 
+		<GOK:output type="keysym">Home</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="15" right="17" top="0" bottom="1" type="normal"> 
+		<GOK:label>Page Up</GOK:label> 
+		<GOK:output type="keysym">Page_Up</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="0" right="1" top="2" bottom="3" type="normal"> 
+		<GOK:label>Tab</GOK:label> 
+		<GOK:output type="keysym">Tab</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="1" right="2" top="2" bottom="3" type="normal" fontsizegroup="1"> 
+		<GOK:label>q</GOK:label> 
+		<GOK:label level="1">Q</GOK:label>
+		<GOK:output type="keysym">q</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="2" right="3" top="2" bottom="3" type="normal" fontsizegroup="1"> 
+		<GOK:label>w</GOK:label> 
+		<GOK:label level="1">W</GOK:label>
+		<GOK:output type="keysym">w</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="3" right="4" top="2" bottom="3" type="normal" fontsizegroup="1"> 
+		<GOK:label>e</GOK:label> 
+		<GOK:label level="1">E</GOK:label>
+		<GOK:output type="keysym">e</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="4" right="5" top="2" bottom="3" type="normal" fontsizegroup="1"> 
+		<GOK:label>r</GOK:label> 
+		<GOK:label level="1">R</GOK:label>
+		<GOK:output type="keysym">r</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="5" right="6" top="2" bottom="3" type="normal" fontsizegroup="1"> 
+		<GOK:label>t</GOK:label> 
+		<GOK:label level="1">T</GOK:label>
+		<GOK:output type="keysym">t</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="6" right="7" top="2" bottom="3" type="normal" fontsizegroup="1"> 
+		<GOK:label>y</GOK:label> 
+		<GOK:label level="1">Y</GOK:label>
+		<GOK:output type="keysym">y</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="7" right="8" top="2" bottom="3" type="normal" fontsizegroup="1"> 
+		<GOK:label>u</GOK:label> 
+		<GOK:label level="1">U</GOK:label>
+		<GOK:output type="keysym">u</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="8" right="9" top="2" bottom="3" type="normal" fontsizegroup="1"> 
+		<GOK:label>i</GOK:label> 
+		<GOK:label level="1">I</GOK:label>
+		<GOK:output type="keysym">i</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="9" right="10" top="2" bottom="3" type="normal" fontsizegroup="1"> 
+		<GOK:label>o</GOK:label> 
+		<GOK:label level="1">O</GOK:label>
+		<GOK:output type="keysym">o</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="10" right="11" top="2" bottom="3" type="normal" fontsizegroup="1"> 
+		<GOK:label>p</GOK:label> 
+		<GOK:label level="1">P</GOK:label>
+		<GOK:output type="keysym">p</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="11" right="12" top="2" bottom="3" type="normal" fontsizegroup="1"> 
+		<GOK:label>[</GOK:label> 
+		<GOK:label level="1">{</GOK:label>
+		<GOK:output type="keysym">bracketleft</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="12" right="13" top="2" bottom="3" type="normal" fontsizegroup="1"> 
+		<GOK:label>]</GOK:label> 
+		<GOK:label level="1">}</GOK:label>
+		<GOK:output type="keysym">bracketright</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="13" right="14" top="2" bottom="3" type="normal" fontsizegroup="1"> 
+		<GOK:label>\</GOK:label> 
+		<GOK:label level="1">|</GOK:label>
+		<GOK:output type="keysym">backslash</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="14" right="15" top="0" bottom="1" type="normal"> 
+		<GOK:label>Delete</GOK:label> 
+		<GOK:output type="keysym">Delete</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="13" right="14" top="5" bottom="6" type="normal"> 
+		<GOK:label>End</GOK:label> 
+		<GOK:output type="keysym">End</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="15" right="17" top="1" bottom="2" type="normal" > 
+		<GOK:label>Page Down</GOK:label> 
+		<GOK:output type="keysym">Page_Down</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="0" right="1" top="3" bottom="4" type="modifier" modifier="capslock" modifiertype="toggle"> 
+		<GOK:label>Caps</GOK:label> 
+		<GOK:output type="keysym">Caps_Lock</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="1" right="2" top="3" bottom="4" type="normal" fontsizegroup="1"> 
+		<GOK:label>a</GOK:label> 
+		<GOK:label level="1">A</GOK:label>
+		<GOK:output type="keysym">a</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="2" right="3" top="3" bottom="4" type="normal" fontsizegroup="1"> 
+		<GOK:label>s</GOK:label> 
+		<GOK:label level="1">S</GOK:label>
+		<GOK:output type="keysym">s</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="3" right="4" top="3" bottom="4" type="normal" fontsizegroup="1"> 
+		<GOK:label>d</GOK:label> 
+		<GOK:label level="1">D</GOK:label>
+		<GOK:output type="keysym">d</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="4" right="5" top="3" bottom="4" type="normal" fontsizegroup="1"> 
+		<GOK:label>f</GOK:label> 
+		<GOK:label level="1">F</GOK:label>
+		<GOK:output type="keysym">f</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="5" right="6" top="3" bottom="4" type="normal" fontsizegroup="1"> 
+		<GOK:label>g</GOK:label> 
+		<GOK:label level="1">G</GOK:label>
+		<GOK:output type="keysym">g</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="6" right="7" top="3" bottom="4" type="normal" fontsizegroup="1"> 
+		<GOK:label>h</GOK:label> 
+		<GOK:label level="1">H</GOK:label>
+		<GOK:output type="keysym">h</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="7" right="8" top="3" bottom="4" type="normal" fontsizegroup="1"> 
+		<GOK:label>j</GOK:label> 
+		<GOK:label level="1">J</GOK:label>
+		<GOK:output type="keysym">j</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="8" right="9" top="3" bottom="4" type="normal" fontsizegroup="1"> 
+		<GOK:label>k</GOK:label> 
+		<GOK:label level="1">K</GOK:label>
+		<GOK:output type="keysym">k</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="9" right="10" top="3" bottom="4" type="normal" fontsizegroup="1"> 
+		<GOK:label>l</GOK:label> 
+		<GOK:label level="1">L</GOK:label>
+		<GOK:output type="keysym">l</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="10" right="11" top="3" bottom="4" type="normal" fontsizegroup="1"> 
+		<GOK:label>;</GOK:label> 
+		<GOK:label level="1">:</GOK:label>
+		<GOK:output type="keysym">semicolon</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="11" right="12" top="3" bottom="4" type="normal" fontsizegroup="1"> 
+		<GOK:label>'</GOK:label> 
+		<GOK:label level="1">&quot;</GOK:label>
+		<GOK:output type="keysym">apostrophe</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="12" right="15" top="3" bottom="4" type="normal"> 
+		<GOK:label>Enter</GOK:label> 
+		<GOK:output type="keysym">Return</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="0" right="1" top="4" bottom="5" type="modifier" modifier="shift">
+		<GOK:label>Shift</GOK:label> 
+		<GOK:output type="keysym">Shift_L</GOK:output>
+	</GOK:key> 
+	<GOK:key left="1" right="2" top="4" bottom="5" type="normal" fontsizegroup="1"> 
+		<GOK:label>z</GOK:label> 
+		<GOK:label level="1">Z</GOK:label>
+		<GOK:output type="keysym">z</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="2" right="3" top="4" bottom="5" type="normal" fontsizegroup="1"> 
+		<GOK:label>x</GOK:label> 
+		<GOK:label level="1">X</GOK:label>
+		<GOK:output type="keysym">x</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="3" right="4" top="4" bottom="5" type="normal" fontsizegroup="1"> 
+		<GOK:label>c</GOK:label> 
+		<GOK:label level="1">C</GOK:label>
+		<GOK:output type="keysym">c</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="4" right="5" top="4" bottom="5" type="normal" fontsizegroup="1"> 
+		<GOK:label>v</GOK:label> 
+		<GOK:label level="1">V</GOK:label>
+		<GOK:output type="keysym">v</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="5" right="6" top="4" bottom="5" type="normal" fontsizegroup="1"> 
+		<GOK:label>b</GOK:label> 
+		<GOK:label level="1">B</GOK:label>
+		<GOK:output type="keysym">b</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="6" right="7" top="4" bottom="5" type="normal" fontsizegroup="1"> 
+		<GOK:label>n</GOK:label> 
+		<GOK:label level="1">N</GOK:label>
+		<GOK:output type="keysym">n</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="7" right="8" top="4" bottom="5" type="normal" fontsizegroup="1"> 
+		<GOK:label>m</GOK:label> 
+		<GOK:label level="1">M</GOK:label>
+		<GOK:output type="keysym">m</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="8" right="9" top="4" bottom="5" type="normal" fontsizegroup="1"> 
+		<GOK:label>,</GOK:label> 
+		<GOK:label level="1">&lt;</GOK:label>
+		<GOK:output type="keysym">comma</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="9" right="10" top="4" bottom="5" type="normal" fontsizegroup="1"> 
+		<GOK:label>.</GOK:label> 
+		<GOK:label level="1">&gt;</GOK:label>
+		<GOK:output type="keysym">period</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="10" right="11" top="4" bottom="5" type="normal" fontsizegroup="1"> 
+		<GOK:label>/</GOK:label> 
+		<GOK:label level="1">?</GOK:label>
+		<GOK:output type="keysym">slash</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="11" right="13" top="4" bottom="5" type="modifier" modifier="shift">
+		<GOK:label>Shift</GOK:label>
+		<GOK:output type="keysym">Shift_R</GOK:output>
+	</GOK:key> 
+	<GOK:key left="14" right="15" top="4" bottom="5" type="normal"> 
+		<GOK:label>Up</GOK:label> 
+		<GOK:output type="keysym">Up</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="0" right="1" top="5" bottom="6" type="modifier" modifier="ctrl">
+		<GOK:label>Ctrl</GOK:label>
+		<GOK:output type="keysym">Control_L</GOK:output>
+	</GOK:key> 
+	<GOK:key left="1" right="2" top="5" bottom="6" type="modifier" modifier="mod4"> 
+		<GOK:label>Meta</GOK:label> 
+		<GOK:output type="keysym">Meta_L</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="2" right="3" top="5" bottom="6" type="modifier" modifier="alt"> 
+		<GOK:label>Alt</GOK:label> 
+		<GOK:output type="keysym">Alt_L</GOK:output>
+	</GOK:key> 
+	<GOK:key left="3" right="13" top="5" bottom="6" type="normal"> 
+		<GOK:label>Space</GOK:label> 
+		<GOK:output type="keysym">space</GOK:output> 
+	</GOK:key>
+	<GOK:key left="15" right="16" top="4" bottom="5" type="normal"> 
+		<GOK:label>Left</GOK:label> 
+		<GOK:output type="keysym">Left</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="14" right="15" top="5" bottom="6" type="normal"> 
+		<GOK:label>Down</GOK:label> 
+		<GOK:output type="keysym">Down</GOK:output> 
+	</GOK:key> 
+	<GOK:key left="15" right="16" top="5" bottom="6" type="normal"> 
+		<GOK:label>Right</GOK:label> 
+		<GOK:output type="keysym">Right</GOK:output> 
+	</GOK:key>
+</GOK:keyboard> 
+</GOK:GokFile> 

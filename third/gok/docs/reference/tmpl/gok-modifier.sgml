@@ -1,0 +1,133 @@
+<!-- ##### SECTION Title ##### -->
+gok-modifier
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO MODIFIER_NORMAL ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### ENUM ModifierStates ##### -->
+<para>
+
+</para>
+
+@MODIFIER_STATE_OFF: 
+@MODIFIER_STATE_ON: 
+@MODIFIER_STATE_LOCKED: 
+
+<!-- ##### ENUM ModifierTypes ##### -->
+<para>
+
+</para>
+
+@MODIFIER_TYPE_NORMAL: 
+@MODIFIER_TYPE_TOGGLE: 
+
+<!-- ##### FUNCTION gok_modifier_add ##### -->
+<para>
+
+</para>
+
+@Name: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gok_modifier_set_pre ##### -->
+<para>
+
+</para>
+
+@Name: 
+@pOutput: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gok_modifier_set_post ##### -->
+<para>
+
+</para>
+
+@Name: 
+@pOutput: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gok_modifier_set_type ##### -->
+<para>
+
+</para>
+
+@Name: 
+@Type: 
+
+
+<!-- ##### FUNCTION gok_modifier_output_pre ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION gok_modifier_output_post ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION gok_modifier_all_off ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION gok_modifier_get_state ##### -->
+<para>
+
+</para>
+
+@pNameModifier: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gok_modifier_get_type ##### -->
+<para>
+
+</para>
+
+@pNameModifier: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gok_modifier_get_normal ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gok_modifier_update_modifier_keys ##### -->
+<para>
+
+</para>
+
+@pKeyboard: 
+
+

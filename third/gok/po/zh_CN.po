@@ -1,0 +1,1991 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2003 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Funda Wang <fundawang@linux.net.cn>, 2003,2004.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gok\n"
+"POT-Creation-Date: 2004-09-10 06:47+0100\n"
+"PO-Revision-Date: 2004-08-14 16:40+0800\n"
+"Last-Translator: Funda Wang <fundawang@linux.net.cn>\n"
+"Language-Team: zh_CN <i18n-translation@lists.linux.net.cn>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
+
+#: automatic-scanning.xml.in.h:1 direct-selection.xml.in.h:1
+#: dwell-selection.xml.in.h:1 inverse-scanning.xml.in.h:1
+#: singlekey-inverse-scanning.xml.in.h:1 directed.xml.in.h:1
+msgid "(100s of a second)"
+msgstr "(百分之一秒)"
+
+#: automatic-scanning.xml.in.h:2 direct-selection.xml.in.h:2
+#: inverse-scanning.xml.in.h:2
+msgid "Auto Repeat On"
+msgstr "自动重复打开"
+
+#: automatic-scanning.xml.in.h:3 direct-selection.xml.in.h:3
+#: dwell-selection.xml.in.h:2 inverse-scanning.xml.in.h:3
+msgid "Auto Repeat Rate:"
+msgstr "自动重复速度："
+
+#: automatic-scanning.xml.in.h:4
+msgid "Automatic Scanning"
+msgstr "自动扫描"
+
+#: automatic-scanning.xml.in.h:5 singlekey-automatic-scanning.xml.in.h:1
+msgid "Autostart (starts automatically)"
+msgstr "自动开始"
+
+#: automatic-scanning.xml.in.h:6 inverse-scanning.xml.in.h:4
+#: singlekey-automatic-scanning.xml.in.h:2
+#: singlekey-inverse-scanning.xml.in.h:2
+msgid "Bottom/Top"
+msgstr "下/上"
+
+#: automatic-scanning.xml.in.h:7 inverse-scanning.xml.in.h:5
+msgid "Continuous Cycle On"
+msgstr "持续循环打开"
+
+#: automatic-scanning.xml.in.h:8 inverse-scanning.xml.in.h:6
+#: singlekey-automatic-scanning.xml.in.h:3
+#: singlekey-inverse-scanning.xml.in.h:3
+msgid "Cycles Before Stopping:"
+msgstr "停止前循环："
+
+#: automatic-scanning.xml.in.h:9 direct-selection.xml.in.h:5
+#: dwell-selection.xml.in.h:4 gok.glade2.h:69 inverse-scanning.xml.in.h:7
+#: singlekey-automatic-scanning.xml.in.h:4
+#: singlekey-inverse-scanning.xml.in.h:4 directed.xml.in.h:4
+msgid "Feedback"
+msgstr "反馈"
+
+#: automatic-scanning.xml.in.h:10
+msgid "Feedback Movement"
+msgstr "反馈移动"
+
+#: automatic-scanning.xml.in.h:11
+msgid "Feedback Selection"
+msgstr "反馈选择"
+
+#: automatic-scanning.xml.in.h:12 singlekey-automatic-scanning.xml.in.h:7
+msgid "Initial Delay:"
+msgstr "初始延迟："
+
+#: automatic-scanning.xml.in.h:13 inverse-scanning.xml.in.h:10
+#: singlekey-automatic-scanning.xml.in.h:8
+#: singlekey-inverse-scanning.xml.in.h:7
+msgid "Left/Right"
+msgstr "左/右"
+
+#: automatic-scanning.xml.in.h:14 direct-selection.xml.in.h:10
+#: dwell-selection.xml.in.h:10 inverse-scanning.xml.in.h:12
+#: singlekey-automatic-scanning.xml.in.h:10
+#: singlekey-inverse-scanning.xml.in.h:9 directed.xml.in.h:8
+msgid "Operation"
+msgstr "操作"
+
+#: automatic-scanning.xml.in.h:15 direct-selection.xml.in.h:11
+#: inverse-scanning.xml.in.h:13 singlekey-automatic-scanning.xml.in.h:11
+#: singlekey-inverse-scanning.xml.in.h:10
+msgid "Options"
+msgstr "选项"
+
+#: automatic-scanning.xml.in.h:16 singlekey-automatic-scanning.xml.in.h:12
+msgid ""
+"Press a switch to start scanning.  Press another switch or the same switch "
+"again to select."
+msgstr "按开关即可开始扫描。按另外一个开关或再按一次相同的开关可进行选择。"
+
+#: automatic-scanning.xml.in.h:17 singlekey-automatic-scanning.xml.in.h:13
+msgid "Press switch to start"
+msgstr "请按开关开始"
+
+#: automatic-scanning.xml.in.h:18 inverse-scanning.xml.in.h:15
+#: singlekey-automatic-scanning.xml.in.h:14
+#: singlekey-inverse-scanning.xml.in.h:12
+msgid "Right/Left"
+msgstr "右/左"
+
+#: automatic-scanning.xml.in.h:19 inverse-scanning.xml.in.h:16
+#: singlekey-automatic-scanning.xml.in.h:15
+#: singlekey-inverse-scanning.xml.in.h:13 directed.xml.in.h:10
+msgid "Scan Delay:"
+msgstr "扫描延迟："
+
+#: automatic-scanning.xml.in.h:20 inverse-scanning.xml.in.h:17
+#: singlekey-automatic-scanning.xml.in.h:16
+#: singlekey-inverse-scanning.xml.in.h:14 directed.xml.in.h:11
+msgid "Scan Speed:"
+msgstr "扫描速度："
+
+#: automatic-scanning.xml.in.h:21
+msgid "Select"
+msgstr "选择"
+
+#: automatic-scanning.xml.in.h:22
+msgid "Start Scanning"
+msgstr "开始扫描"
+
+#: automatic-scanning.xml.in.h:23 inverse-scanning.xml.in.h:21
+#: singlekey-automatic-scanning.xml.in.h:23
+#: singlekey-inverse-scanning.xml.in.h:20
+msgid "Top/Bottom"
+msgstr "上/底"
+
+#: automatic-scanning.xml.in.h:24 inverse-scanning.xml.in.h:22
+#: singlekey-inverse-scanning.xml.in.h:21 directed.xml.in.h:15
+msgid "Wrap Rows/Columns"
+msgstr "回绕行/列"
+
+#: automatic-scanning.xml.in.h:25
+msgid "feedbackmovement"
+msgstr "feedbackmovement"
+
+#: automatic-scanning.xml.in.h:26
+msgid "feedbackselection"
+msgstr "feedbackselection"
+
+#: direct-selection.xml.in.h:4
+msgid "Direct Selection"
+msgstr "方向选择"
+
+#: direct-selection.xml.in.h:6 dwell-selection.xml.in.h:5
+#: inverse-scanning.xml.in.h:8 singlekey-automatic-scanning.xml.in.h:5
+#: singlekey-inverse-scanning.xml.in.h:5 directed.xml.in.h:5
+msgid "Feedback Movement:"
+msgstr "反馈移动："
+
+#: direct-selection.xml.in.h:7 dwell-selection.xml.in.h:6
+#: singlekey-automatic-scanning.xml.in.h:6
+#: singlekey-inverse-scanning.xml.in.h:6
+msgid "Feedback Selection:"
+msgstr "反馈选择："
+
+#: direct-selection.xml.in.h:8 dwell-selection.xml.in.h:7
+msgid "Highlight:"
+msgstr "突出显示："
+
+#: direct-selection.xml.in.h:9
+msgid "Move the mouse pointer to highlight a key.  Press a switch to select."
+msgstr "将鼠标指针指向可突出显示按键。按开关可选择。"
+
+#: direct-selection.xml.in.h:12 dwell-selection.xml.in.h:11
+#: inverse-scanning.xml.in.h:19 singlekey-automatic-scanning.xml.in.h:18
+#: singlekey-inverse-scanning.xml.in.h:17 directed.xml.in.h:12
+msgid "Select:"
+msgstr "选择："
+
+#: dwell-selection.xml.in.h:3
+msgid "Dwell Selection"
+msgstr "悬停选择"
+
+#: dwell-selection.xml.in.h:8
+msgid "Move the mouse pointer to highlight a key.  Dwell on the key to select."
+msgstr "将鼠标指针指向可突出显示按键。再停一会儿可选择。"
+
+#: dwell-selection.xml.in.h:9 inverse-scanning.xml.in.h:11
+#: singlekey-automatic-scanning.xml.in.h:9
+#: singlekey-inverse-scanning.xml.in.h:8 directed.xml.in.h:7
+msgid "Movement:"
+msgstr "移动："
+
+#: dwell-selection.xml.in.h:12 inverse-scanning.xml.in.h:20
+#: singlekey-automatic-scanning.xml.in.h:19
+#: singlekey-inverse-scanning.xml.in.h:18 directed.xml.in.h:13
+msgid "Selection:"
+msgstr "选择："
+
+#: gok-controls.kbd.in.h:1
+msgid "About"
+msgstr "关于"
+
+#: gok-controls.kbd.in.h:2
+msgid "Help"
+msgstr "帮助"
+
+#: gok-controls.kbd.in.h:3
+msgid "Preferences"
+msgstr "首选项"
+
+#: gok-controls.kbd.in.h:4
+msgid "Quit GOK"
+msgstr "退出 GOK"
+
+#: gok-controls.kbd.in.h:5 main.kbd.in.h:12
+msgid "Window"
+msgstr "窗口"
+
+#. "back" means go to previous keyboard
+#: gok-controls.kbd.in.h:6 gok/gok-keyboard.c:2476 gok/gok-windowlister.c:130
+#: launcher.kbd.in.h:5 mouse.kbd.in.h:24 move-resize.kbd.in.h:23
+#: numberpad.kbd.in.h:19 quit.kbd.in.h:4 valuator.kbd.in.h:3
+msgid "back"
+msgstr "后退"
+
+#: gok-with-references.schemas.in.h:1 gok/main.c:284
+msgid ""
+"A multiplier to be applied to input device valuator events before processing"
+msgstr "在处理之前应用到输入设备估算器事件的乘法器。"
+
+#: gok-with-references.schemas.in.h:2
+msgid ""
+"A semicolon-delimited list of fully specified paths to additional word-"
+"completion dictionaries"
+msgstr "用分号隔开的列表，列出了额外单词补全字典的完整路径"
+
+#: gok-with-references.schemas.in.h:3
+msgid "Are the preferences to be restricted?"
+msgstr "首选项是否受限？"
+
+#: gok-with-references.schemas.in.h:4
+msgid "Determines the keyboard type used for the default compose keyboard"
+msgstr "确认用于默认编写键盘的键盘类型"
+
+#: gok-with-references.schemas.in.h:5
+msgid ""
+"Does GOK generate its compose keyboard dynamically based on information from "
+"the X Server?"
+msgstr "GOK 是否基于 X 服务器的信息动态编辑键盘？"
+
+#: gok-with-references.schemas.in.h:6
+msgid ""
+"Does each GOK user have a private copy of the word prediction dictionary?"
+msgstr "每个 GOK 用户是否都要拥有单词预测字典的独立副本？"
+
+#: gok-with-references.schemas.in.h:7
+msgid "Does the GOK window expand to fill the full screen width?"
+msgstr "是否扩展 GOK 窗口以占满整个屏幕宽度？"
+
+#: gok-with-references.schemas.in.h:8
+msgid "Does the core pointer follow the GOK keyboard pointer?"
+msgstr "核心指针是否跟随 GOK 键盘指针？"
+
+#: gok-with-references.schemas.in.h:9
+msgid "Does this action use key averaging"
+msgstr "此动作是否使用按键均分"
+
+#: gok-with-references.schemas.in.h:10
+msgid "Does this feedback flash"
+msgstr "此反馈是否闪烁"
+
+#: gok-with-references.schemas.in.h:11
+msgid "Does this feedback play a sound"
+msgstr "此反馈是否播放声音"
+
+#: gok-with-references.schemas.in.h:12
+msgid "Does this feedback speak the label of a GOK key"
+msgstr "此反馈是否读出 GOK 按键的标签"
+
+#: gok-with-references.schemas.in.h:13
+msgid "GOK main window anchor location (if a dock), or empty string if not"
+msgstr "GOK 主窗口锚位置(如果停靠的话)，如果不停靠就是空字符串"
+
+#: gok-with-references.schemas.in.h:14
+msgid ""
+"How many children of each node in the GUI tree to search for accessible "
+"objects"
+msgstr "为了访问对象，需要搜索 GUI 树中每个结点的多少子对象"
+
+#: gok-with-references.schemas.in.h:15
+msgid "How many levels down the GUI tree to search for accessible objects"
+msgstr "为了访问对象，要向下搜索 GUI 树多深"
+
+#: gok-with-references.schemas.in.h:16
+msgid "Is this action permanent"
+msgstr "此动作是否永久"
+
+#: gok-with-references.schemas.in.h:17
+msgid "Is this feedback permanent"
+msgstr "此反馈是否永久"
+
+#: gok-with-references.schemas.in.h:18
+msgid "Is word completion on"
+msgstr "是否打开单词补全"
+
+#: gok-with-references.schemas.in.h:19
+msgid ""
+"Should be one of the following: xkb, default, alpha, alpha-freq, custom; if "
+"custom, custom_compose_keyboard should be defined."
+msgstr ""
+"应该是如下选项之一：xkb、default、alpha、alpha-freq、custom；如果是 custom 的"
+"话，应该定义 custom_compose_keyboard。"
+
+#: gok-with-references.schemas.in.h:20
+msgid "The access method to use"
+msgstr "要使用的访问方式"
+
+#: gok-with-references.schemas.in.h:21
+msgid "The directory to load access method files from."
+msgstr "要装入的访问方式文件所在目录。"
+
+#: gok-with-references.schemas.in.h:22
+msgid "The directory to load dictionary files from."
+msgstr "要装入的字典文件所在目录。"
+
+#: gok-with-references.schemas.in.h:23
+msgid "The directory to load the gok resource file from."
+msgstr "要装入的 gok 资源文件所在目录。"
+
+#: gok-with-references.schemas.in.h:24
+msgid "The directory to load user-specific or custom keyboard files from."
+msgstr "装入用户指定或自定义键盘文件所在的目录。"
+
+#: gok-with-references.schemas.in.h:25
+msgid "The full pathname to a file which defines a custom GOK compose keyboard"
+msgstr "定义自定义 GOK 编写键盘文件的完整路径名"
+
+#: gok-with-references.schemas.in.h:26
+msgid "The key height"
+msgstr "按键高度"
+
+#: gok-with-references.schemas.in.h:27
+msgid "The key width"
+msgstr "按键宽度"
+
+#: gok-with-references.schemas.in.h:28
+msgid "The keyboards X coordinate"
+msgstr "键盘 X 坐标"
+
+#: gok-with-references.schemas.in.h:29
+msgid "The keyboards Y coordinate"
+msgstr "键盘 Y 坐标"
+
+#: gok-with-references.schemas.in.h:30
+msgid "The name of the sound that this feedback will play"
+msgstr "此反馈要播放的声音名称"
+
+#: gok-with-references.schemas.in.h:31
+msgid "The name of the xinput device to use"
+msgstr "要使用的 xinput 设备"
+
+#: gok-with-references.schemas.in.h:32
+msgid "The name to display to the user for this action"
+msgstr "此动作显示给用户的名称"
+
+#: gok-with-references.schemas.in.h:33
+msgid "The name to display to the user for this feedback"
+msgstr "此反馈显示给用户的名称"
+
+#: gok-with-references.schemas.in.h:34
+msgid "The number if applicable"
+msgstr "可应用的数字"
+
+#: gok-with-references.schemas.in.h:35
+msgid "The number of predictions for word completion"
+msgstr "单词补全的预测数"
+
+#: gok-with-references.schemas.in.h:36
+msgid "The number of times this feedback will flash"
+msgstr "此反馈闪烁的次数"
+
+#: gok-with-references.schemas.in.h:37
+msgid "The primary or system directory to load keyboard files from."
+msgstr "要装入的键盘文件所在的主要或系统目录。"
+
+#: gok-with-references.schemas.in.h:38
+msgid "The rate for this action"
+msgstr "此动作的等级"
+
+#: gok-with-references.schemas.in.h:39
+msgid "The space between keys"
+msgstr "按键间隔"
+
+#: gok-with-references.schemas.in.h:40
+msgid "The state in which this action is activated"
+msgstr "此动作激活的状态"
+
+#: gok-with-references.schemas.in.h:41
+msgid "The type of this action"
+msgstr "此动作的类型"
+
+#: gok-with-references.schemas.in.h:42
+msgid ""
+"Whether to use additional word lists when searching for GOK word-completion "
+"candidates"
+msgstr "GOK 搜索单词补全候选时是否要使用额外单词列表"
+
+#: gok.desktop.in.h:1
+msgid "On-Screen Keyboard"
+msgstr "屏幕上的键盘"
+
+#: gok.desktop.in.h:2
+msgid "The GNOME On-screen Keyboard"
+msgstr "GNOME 软键盘"
+
+#: gok.glade2.h:1
+msgid "*"
+msgstr "*"
+
+#: gok.glade2.h:2
+msgid "3 State"
+msgstr "3 态"
+
+#: gok.glade2.h:3
+msgid "<b>Appearance</b>"
+msgstr "<b>外观</b>"
+
+#: gok.glade2.h:4
+msgid "<b>Behavior</b>"
+msgstr "<b>行为</b>"
+
+#: gok.glade2.h:5
+msgid "<b>Branch</b>"
+msgstr "<b>分支</b>"
+
+#: gok.glade2.h:6
+msgid "<b>Command Prediction</b>"
+msgstr "<b>命令预测</b>"
+
+#: gok.glade2.h:7
+msgid "<b>Compose Keyboard</b>"
+msgstr "<b>编写键盘</b>"
+
+#: gok.glade2.h:8
+msgid "<b>Custom Keyboards</b>"
+msgstr "<b>自定义键盘</b>"
+
+#: gok.glade2.h:9
+msgid "<b>Define Actions</b>"
+msgstr "<b>定义动作</b>"
+
+#: gok.glade2.h:10
+msgid "<b>Define Feedback</b>"
+msgstr "<b>定义反馈</b>"
+
+#: gok.glade2.h:11
+msgid "<b>Delay Before Activation</b>"
+msgstr "<b>激活前的延迟</b>"
+
+#: gok.glade2.h:12
+msgid "<b>Description</b>"
+msgstr "<b>描述</b>"
+
+#: gok.glade2.h:13
+msgid "<b>Dock and Expand Horizontally</b>"
+msgstr "<b>停靠和水平展开</b>"
+
+#: gok.glade2.h:14
+msgid "<b>Event Source</b>"
+msgstr "<b>事件源</b>"
+
+#: gok.glade2.h:15
+msgid "<b>Font</b>"
+msgstr "<b>字体</b>"
+
+#: gok.glade2.h:16
+msgid "<b>Key Flashing</b>"
+msgstr "<b>按键闪烁</b>"
+
+#: gok.glade2.h:17
+msgid "<b>Key Size and Spacing Controls</b>"
+msgstr "<b>按键大小和间距控件</b>"
+
+#: gok.glade2.h:18
+msgid "<b>Key</b>"
+msgstr "<b>按键</b>"
+
+#: gok.glade2.h:19
+msgid "<b>Keyboard</b>"
+msgstr "<b>键盘</b>"
+
+#: gok.glade2.h:20
+msgid "<b>Modifier</b>"
+msgstr "<b>修饰键</b>"
+
+#: gok.glade2.h:21
+msgid "<b>Output</b>"
+msgstr "<b>输出</b>"
+
+#: gok.glade2.h:22
+msgid "<b>Position</b>"
+msgstr "<b>位置</b>"
+
+#: gok.glade2.h:23
+msgid "<b>Preview</b>"
+msgstr "<b>预览</b>"
+
+#: gok.glade2.h:24
+msgid "<b>Sensitivity</b>"
+msgstr "<b>敏感度</b>"
+
+#: gok.glade2.h:25
+msgid "<b>Sound</b>"
+msgstr "<b>声音</b>"
+
+#: gok.glade2.h:26
+msgid "<b>Speech</b>"
+msgstr "<b>语音</b>"
+
+#: gok.glade2.h:27
+msgid "<b>Switch or Button Number</b>"
+msgstr "<b>开关或按钮数</b>"
+
+#: gok.glade2.h:28
+msgid "<b>Theme</b>"
+msgstr "<b>主题</b>"
+
+#: gok.glade2.h:29
+msgid "<b>Timers and Delays</b>"
+msgstr "<b>计时器和延迟</b>"
+
+#: gok.glade2.h:30
+msgid "<b>Type</b>"
+msgstr "<b>类型</b>"
+
+#: gok.glade2.h:31
+msgid "<b>Valuator Type</b>"
+msgstr "<b>估算器类型</b>"
+
+#: gok.glade2.h:32
+msgid "<b>Word Completion</b>"
+msgstr "<b>单词补全</b>"
+
+#: gok.glade2.h:33
+msgid ""
+"<small><i><b>Note:</b> Changes to this setting will not take effect until "
+"you next run GOK.</i></small>"
+msgstr ""
+"<small><i><b>注意：</b>对此设置的更改要等到下次运行 GOK 才会生效。</i></"
+"small>"
+
+#: gok.glade2.h:34
+msgid ""
+"A multipler which is applied to the extended input device valuator events "
+"before processing."
+msgstr "在处理之前应用到扩展输入设备估算器事件的乘法器。"
+
+#: gok.glade2.h:35
+msgid "Access Methods"
+msgstr "访问方式"
+
+#: gok.glade2.h:36
+msgid "AccessMethodName"
+msgstr "访问方式名称"
+
+#: gok.glade2.h:37
+msgid "Action Names List"
+msgstr "动作名称列表"
+
+#: gok.glade2.h:38
+msgid "Action Type:"
+msgstr "动作类型："
+
+#: gok.glade2.h:39
+msgid "ActionTypeNotebook"
+msgstr "动作类型笔记本"
+
+#: gok.glade2.h:40
+msgid "Actions"
+msgstr "动作"
+
+#: gok.glade2.h:41
+msgid "Activate on Dw_ell"
+msgstr "悬停激活(_E)"
+
+#: gok.glade2.h:42
+msgid "Activate on _Enter"
+msgstr "回车激活(_E)"
+
+#: gok.glade2.h:43
+msgid "Activate on _Move"
+msgstr "移动激活(_M)"
+
+#: gok.glade2.h:44
+msgid "Activate when _pressed"
+msgstr "按下激活(_P)"
+
+#: gok.glade2.h:45
+msgid "Activate when _released"
+msgstr "释放激活(_R)"
+
+#: gok.glade2.h:46
+msgid "Add"
+msgstr "添加"
+
+#: gok.glade2.h:47
+msgid "Add New Key"
+msgstr "添加新按键"
+
+#: gok.glade2.h:48
+msgid "Additional directory to search for GOK Keyboards"
+msgstr "要搜索 GOK 键盘的额外目录"
+
+#: gok.glade2.h:49
+msgid "Additional directory to search for GOK keyboard files"
+msgstr "要搜索 GOK 键盘文件的额外目录"
+
+#: gok.glade2.h:50
+msgid "Alphanumeric keyboard arranged by letter frequency"
+msgstr "按字母频率排列的字母表键盘"
+
+#: gok.glade2.h:51
+msgid "Alphanumeric keyboard sorted alphabetically"
+msgstr "按字母顺序排列的字母表键盘"
+
+#: gok.glade2.h:52
+msgid "Appearance"
+msgstr "外观"
+
+#: gok.glade2.h:53
+msgid "Bottom:"
+msgstr "下："
+
+#: gok.glade2.h:54
+msgid "Browse"
+msgstr "浏览"
+
+#: gok.glade2.h:55
+msgid "C_ore pointer"
+msgstr "核心指针(_O)"
+
+#: gok.glade2.h:56
+msgid "Command Prediction"
+msgstr "命令预测"
+
+#: gok.glade2.h:57
+msgid "Delay"
+msgstr "延迟"
+
+#: gok.glade2.h:58
+msgid ""
+"Delay, in 100ths of a second, after the triggering event occurs, before "
+"activation takes place."
+msgstr "以百分之一秒为单位的延迟，表明了触发事件发生后激活发生前所等待的时间。"
+
+#: gok.glade2.h:59
+msgid "Delete"
+msgstr "删除"
+
+#: gok.glade2.h:60
+msgid "Delete Key"
+msgstr "删除按键"
+
+#: gok.glade2.h:61
+msgid "Dock"
+msgstr "停靠"
+
+#. Translators: dock is used as a verb.
+#: gok.glade2.h:62 move-resize.kbd.in.h:2
+msgid "Dock Bottom"
+msgstr "下侧停靠"
+
+#. Translators: dock is used as a verb.
+#: gok.glade2.h:63 move-resize.kbd.in.h:4
+msgid "Dock Top"
+msgstr "上侧停靠"
+
+#: gok.glade2.h:64
+msgid "Duplicate"
+msgstr "副本"
+
+#: gok.glade2.h:65
+msgid "Enable _key flashing"
+msgstr "启用按键闪烁(_K)"
+
+#: gok.glade2.h:66
+msgid "Enable _sound"
+msgstr "启用声音(_S)"
+
+#: gok.glade2.h:67
+msgid "Enable _word completion"
+msgstr "启用单词补全(_W)"
+
+#: gok.glade2.h:68
+msgid "Enable co_mmand prediction"
+msgstr "启用命令预测(_M)"
+
+#: gok.glade2.h:70
+msgid "Fill WIdth"
+msgstr "填充宽度"
+
+#: gok.glade2.h:71
+msgid "Font Group:"
+msgstr "字体组："
+
+#: gok.glade2.h:72 gok/gok-editor.c:35
+msgid "GOK Keyboard Editor"
+msgstr "GOK 键盘编辑器"
+
+#: gok.glade2.h:73
+msgid "GOK Preferences"
+msgstr "GOK 首选项"
+
+#: gok.glade2.h:74
+msgid "GOK:"
+msgstr "GOK："
+
+#: gok.glade2.h:75
+msgid "Key Height"
+msgstr "按键高度"
+
+#: gok.glade2.h:76
+msgid "Key Spacing"
+msgstr "按键间距"
+
+#: gok.glade2.h:77
+msgid "Key Width"
+msgstr "按键宽度"
+
+#: gok.glade2.h:78
+msgid "Key _width:"
+msgstr "按键宽度(_W)："
+
+#: gok.glade2.h:79
+msgid "Key h_eight:"
+msgstr "按键高度(_E)："
+
+#: gok.glade2.h:80
+msgid "Keyboards"
+msgstr "键盘"
+
+#: gok.glade2.h:81
+msgid "Keycode:"
+msgstr "按键代码："
+
+#: gok.glade2.h:82
+msgid "Keysym:"
+msgstr "按键符号："
+
+#: gok.glade2.h:83
+msgid "Label:"
+msgstr "标签："
+
+#: gok.glade2.h:84 directed.xml.in.h:6
+msgid "Left:"
+msgstr "左："
+
+#: gok.glade2.h:85
+msgid "Match physical keyboard as reported by X Server"
+msgstr "匹配由 X 服务器报告的物理键盘"
+
+#: gok.glade2.h:86
+msgid "Modifier Post"
+msgstr "后修饰键"
+
+#: gok.glade2.h:87
+msgid "Modifier Pre"
+msgstr "前修饰键"
+
+#: gok.glade2.h:88
+msgid "Modifier:"
+msgstr "修饰键："
+
+#: gok.glade2.h:89
+msgid "Move Down"
+msgstr "下移"
+
+#: gok.glade2.h:90
+msgid "Move Up"
+msgstr "上移"
+
+#: gok.glade2.h:91
+msgid "Name:"
+msgstr "名称："
+
+#: gok.glade2.h:92
+msgid "New"
+msgstr "新建"
+
+#: gok.glade2.h:93
+msgid "Next Key"
+msgstr "下一按键"
+
+#: gok.glade2.h:94
+msgid "Normal"
+msgstr "普通"
+
+#: gok.glade2.h:95
+msgid "Number of _flashes:"
+msgstr "闪烁数(_F)："
+
+#: gok.glade2.h:96
+msgid "Number of _predictions:"
+msgstr "预测数(_P)："
+
+#: gok.glade2.h:97
+msgid "Number of command predictions:"
+msgstr "命令预测数："
+
+#: gok.glade2.h:98
+msgid "Number of word predictions:"
+msgstr "单词预测数："
+
+#: gok.glade2.h:99
+msgid "Other _input device:"
+msgstr "其它输入设备(_I)："
+
+#: gok.glade2.h:100
+msgid "Prediction"
+msgstr "预测"
+
+#: gok.glade2.h:101
+msgid "Press"
+msgstr "按下"
+
+#: gok.glade2.h:102
+msgid "Previous Key"
+msgstr "上一按键"
+
+#: gok.glade2.h:103
+msgid "Read keyboard from file:"
+msgstr "从文件读取键盘："
+
+#: gok.glade2.h:104
+msgid "Release"
+msgstr "放开"
+
+#: gok.glade2.h:105 directed.xml.in.h:9
+msgid "Right:"
+msgstr "右："
+
+#: gok.glade2.h:106
+msgid "S_witch"
+msgstr "开关(_W)"
+
+#: gok.glade2.h:107
+msgid "Show Only This Font Group"
+msgstr "只显示此字体组"
+
+#: gok.glade2.h:108
+msgid "So_und:"
+msgstr "声音(_U)："
+
+#: gok.glade2.h:109
+msgid "Speak key _label"
+msgstr "说出按键标签(_L)"
+
+#: gok.glade2.h:110
+msgid "Style:"
+msgstr "样式："
+
+#: gok.glade2.h:111
+msgid "Switch _1"
+msgstr "开关 _1"
+
+#: gok.glade2.h:112
+msgid "Switch _2"
+msgstr "开关 _2"
+
+#: gok.glade2.h:113
+msgid "Switch _3"
+msgstr "开关 _3"
+
+#: gok.glade2.h:114
+msgid "Switch _4"
+msgstr "开关 _4"
+
+#: gok.glade2.h:115
+msgid "Switch _5"
+msgstr "开关 _5"
+
+#: gok.glade2.h:116
+msgid "Target:"
+msgstr "目标："
+
+#: gok.glade2.h:117
+msgid "To Back"
+msgstr "推到最后"
+
+#: gok.glade2.h:118
+msgid "To Front"
+msgstr "提到最前"
+
+#: gok.glade2.h:119
+msgid "Toggle"
+msgstr "切换"
+
+#: gok.glade2.h:120
+msgid "Top:"
+msgstr "上："
+
+#: gok.glade2.h:121
+msgid "Use _extra word list file(s)"
+msgstr "使用额外的单词列表文件(_E)"
+
+#: gok.glade2.h:122
+msgid "Use _key averaging"
+msgstr "使用按键均化(_K)"
+
+#: gok.glade2.h:123
+msgid "Valuator Sensitivity"
+msgstr "评价敏感度"
+
+#: gok.glade2.h:124
+msgid "Word Completion"
+msgstr "单词补全"
+
+#: gok.glade2.h:125
+msgid "_100ths of a second"
+msgstr "百分之一秒(_1)"
+
+#: gok.glade2.h:126
+msgid "_Add"
+msgstr "添加(_A)"
+
+#: gok.glade2.h:127
+msgid "_Browse..."
+msgstr "浏览(_B)..."
+
+#: gok.glade2.h:128
+msgid "_Delete"
+msgstr "删除(_D)"
+
+#: gok.glade2.h:129
+msgid "_Joystick"
+msgstr "摇杆(_J)"
+
+#: gok.glade2.h:130
+msgid "_Method:"
+msgstr "方式(_M)："
+
+#: gok.glade2.h:131
+msgid "_Name:"
+msgstr "名称(_N)："
+
+#: gok.glade2.h:132
+msgid "_New"
+msgstr "新建(_N)"
+
+#: gok.glade2.h:133
+msgid "_Number of predictions:"
+msgstr "预测数(_N)："
+
+#: gok.glade2.h:134
+msgid "_Rename"
+msgstr "重命名(_R)"
+
+#: gok.glade2.h:135
+msgid "_Single axis:"
+msgstr "单轴(_S)："
+
+#: gok.glade2.h:136
+msgid "_Spacing:"
+msgstr "间距(_S)："
+
+#: gok.glade2.h:137
+msgid "_Use Desktop Theme Preferences"
+msgstr "使用桌面主题首选项(_U)"
+
+#: gok.glade2.h:138
+msgid "_Valuator"
+msgstr "估算(_V)"
+
+#: gok.glade2.h:139
+msgid "_X-Y valuator (axes 0 and 1)"
+msgstr "_X-Y 估算(轴 0 和 1)"
+
+#: gok.glade2.h:140
+msgid "access method name"
+msgstr "访问方式名称"
+
+#: gok.glade2.h:141
+msgid "cancel"
+msgstr "取消"
+
+#: gok.glade2.h:142
+msgid "display user help"
+msgstr "显示用户帮助"
+
+#: gok.glade2.h:143
+msgid "high"
+msgstr "高"
+
+#: gok.glade2.h:144
+msgid "low"
+msgstr "低"
+
+#: gok.glade2.h:145
+msgid "pixels"
+msgstr "像素"
+
+#: gok.glade2.h:146
+msgid "revert to original settings"
+msgstr "还原原始设置"
+
+#: gok.glade2.h:147
+msgid "try these settings"
+msgstr "测试这些设置"
+
+#: gok.glade2.h:148
+msgid "use these settings"
+msgstr "使用这些设置"
+
+#: gok/gok-button.c:221
+msgid "You appear to be using GOK in 'core pointer' mode."
+msgstr "您似乎正以“核心模式”使用 GOK。"
+
+#: gok/callbacks.c:394
+msgid "Sorry, Access Method Wizard not implemented yet."
+msgstr "抱歉，尚未实现访问方式向导。"
+
+#: gok/callbacks.c:396
+msgid "GOK Access Method Wizard"
+msgstr "GOK 访问方式向导"
+
+#: gok/gok-control.c:227
+msgid "Sorry, browse for sound file not implemented yet."
+msgstr "抱歉，尚未实现浏览声音文件。"
+
+#: gok/gok-control.c:229
+msgid "GOK Browse for sound file"
+msgstr "GOK 浏览声音文件"
+
+#: gok/gok-control.c:253
+msgid "Sorry, advanced settings not implemented yet."
+msgstr "抱歉，尚未实现高级设置。"
+
+#: gok/gok-control.c:255
+msgid "GOK Inverse Scanning Advanced"
+msgstr "GOK 高级反转扫描"
+
+#: gok/gok-editor.c:154 gok/gok-editor.c:187 gok/gok-editor.c:267
+msgid ""
+"You have modified the current file.\n"
+"Do you want to discard your changes?"
+msgstr ""
+"您修改了当前文件。\n"
+"您想要丢弃您的更改吗？"
+
+#: gok/gok-editor.c:156 gok/gok-editor.c:189 gok/gok-editor.c:269
+#: gok/gok-editor.c:1060
+msgid "Keyboard Filename Invalid"
+msgstr "键盘文件名无效"
+
+#: gok/gok-editor.c:218
+msgid "new"
+msgstr "新建"
+
+#. create the file selector dialog
+#: gok/gok-editor.c:279
+msgid "Select keyboard file for editing"
+msgstr "选择要编辑的键盘文件"
+
+#: gok/gok-editor.c:289 gok/gok-editor.c:981
+msgid ".kbd files"
+msgstr ".kbd 文件"
+
+#: gok/gok-editor.c:544
+msgid "label"
+msgstr "标签"
+
+#: gok/gok-editor.c:718
+#, c-format
+msgid "Can't save file: %s\n"
+msgstr "无法保存文件：%s\n"
+
+#. get name of keyboard filename
+#. create the file selector dialog
+#: gok/gok-editor.c:971
+msgid "Save keyboard file as"
+msgstr "键盘文件另存为"
+
+#: gok/gok-editor.c:1052
+#, c-format
+msgid ""
+"This is not a valid keyboard filename:\n"
+"%s"
+msgstr ""
+"不是有效的键盘文件名：\n"
+"%s"
+
+#: gok/gok-editor.c:1082
+msgid "(new)"
+msgstr "(新)"
+
+#: gok/gok-key.c:115
+msgid "Mute"
+msgstr "静音"
+
+#: gok/gok-key.c:118
+msgid ""
+"Mouse\n"
+"Keys"
+msgstr "鼠标键"
+
+#: gok/gok-key.c:121
+msgid ""
+"Left\n"
+"Tab"
+msgstr ""
+"左\n"
+"Tab"
+
+#: gok/gok-key.c:232
+msgid "Divide"
+msgstr "除"
+
+#: gok/gok-key.c:235
+msgid "Multiply"
+msgstr "乘"
+
+#: gok/gok-key.c:238
+msgid "Subtract"
+msgstr "减"
+
+#: gok/gok-key.c:241
+msgid "Addition"
+msgstr "加"
+
+#: gok/gok-key.c:244
+msgid "Prior"
+msgstr "上个"
+
+#: gok/gok-key.c:247
+msgid "Next"
+msgstr "下个"
+
+#: gok/gok-key.c:250 numberpad.kbd.in.h:6
+msgid "Home"
+msgstr "Home"
+
+#: gok/gok-key.c:253 numberpad.kbd.in.h:4
+msgid "End"
+msgstr "End"
+
+#. Translators: this describes the direction gok will move.
+#: gok/gok-key.c:256 move-resize.kbd.in.h:20 numberpad.kbd.in.h:17
+msgid "Up"
+msgstr "上"
+
+#. Translators: this describes the direction gok will move.
+#: gok/gok-key.c:259 move-resize.kbd.in.h:6 numberpad.kbd.in.h:3
+msgid "Down"
+msgstr "下"
+
+#. Translators: this describes the direction gok will move.
+#: gok/gok-key.c:262 move-resize.kbd.in.h:11 numberpad.kbd.in.h:8
+msgid "Left"
+msgstr "左"
+
+#. Translators: this describes the direction gok will move.
+#: gok/gok-key.c:265 move-resize.kbd.in.h:15 numberpad.kbd.in.h:14
+msgid "Right"
+msgstr "右"
+
+#: gok/gok-key.c:268
+msgid "Begin"
+msgstr "开始"
+
+#: gok/gok-key.c:271
+msgid "Decimal"
+msgstr "数字"
+
+#: gok/gok-key.c:274
+msgid "Meta"
+msgstr "元"
+
+#: gok/gok-key.c:277
+msgid ""
+"Multi\n"
+"key"
+msgstr "多键"
+
+#: gok/gok-key.c:280
+msgid ""
+"Eisu\n"
+"toggle"
+msgstr ""
+"Eisu\n"
+"切换"
+
+#: gok/gok-key.c:283
+msgid ""
+"Henkan\n"
+"Mode"
+msgstr ""
+"Henkan\n"
+"模式"
+
+#: gok/gok-key.c:286
+msgid "Muhenkan"
+msgstr "Muhenkan"
+
+#: gok/gok-key.c:289
+msgid ""
+"Mode\n"
+"switch"
+msgstr "模式切换"
+
+#: gok/gok-keyboard.c:150
+#, c-format
+msgid "Xkb extension could not be initialized! (error code %x)"
+msgstr "无法初始化 Xkb 扩展！(错误代码 %x)"
+
+#: gok/gok-keyboard.c:156 gok/gok-keyboard.c:196
+msgid "keyboard description not available!"
+msgstr "键盘描述不可用！"
+
+#: gok/gok-keyboard.c:162 gok/gok-keyboard.c:202 gok/gok-keyboard.c:499
+msgid "Keyboard Geometry cannot be read from your X Server."
+msgstr "无法从您的 X 服务器读取键盘几何位置。"
+
+#: gok/gok-keyboard.c:425
+msgid "Back"
+msgstr "后退"
+
+#: gok/gok-keyboard.c:443 valuator.kbd.in.h:1
+msgid "Repeat Next"
+msgstr "重新下个"
+
+#: gok/gok-keyboard.c:456
+msgid "Edit"
+msgstr "编辑"
+
+#. translators: Abbreviation/mnemonic for "numeric keypad", but must be <= 10 chars
+#: gok/gok-keyboard.c:469
+msgid ""
+"Num\n"
+"Pad"
+msgstr "小键盘"
+
+#. translators: Abbreviation/mnemonic for "numeric keypad", but must be <= 10 chars
+#: gok/gok-keyboard.c:483 move-resize.kbd.in.h:9
+msgid "Hide"
+msgstr "隐藏"
+
+#. translators: "shift" as in "the shift modifier key"
+#: gok/gok-keyboard.c:694
+msgid "shift"
+msgstr "Shift"
+
+#. translators: The context is "key level" as in shift/caps status on keyboard
+#: gok/gok-keyboard.c:706
+msgid "Level 2"
+msgstr "级别 2"
+
+#. translators: see note for "Level 2"
+#: gok/gok-keyboard.c:718
+msgid "Level 3"
+msgstr "级别 3"
+
+#. translators: this is a label for a 'Back space' key
+#: gok/gok-keyboard.c:730
+msgid ""
+"Back\n"
+"Space"
+msgstr "BackSpace"
+
+#. translators: this is a label for a "Tab" key, for instance on a keyboard
+#: gok/gok-keyboard.c:741 numberpad.kbd.in.h:16
+msgid "Tab"
+msgstr "Tab"
+
+#. translators: this is a label for a "spacebar" key, for instance on a keyboard
+#: gok/gok-keyboard.c:752
+msgid "space"
+msgstr "空格"
+
+#. translators: this is a label for an "Enter" or Return key, for instance on a keyboard
+#: gok/gok-keyboard.c:763 numberpad.kbd.in.h:5
+msgid "Enter"
+msgstr "Enter"
+
+#: gok/gok-keyboard.c:801 main.kbd.in.h:7
+msgid "Menus"
+msgstr "菜单"
+
+#.
+#. * Note to Translators: the following strings should contain your LANG/locale's
+#. * alphabet or, in the case of LANGs with a very large glyph set, a set of
+#. * character-primitives which can be used to compose your language's character set.
+#. * Each string below corresponds to the characters associated with a particular
+#. * "shift level" in the XKB keyboard definition.
+#. * The prefix before the '|' character is just a context string and need not be
+#. * translated.
+#. *
+#. * For languages where 'case' is used, the first string should contain
+#. * the lowercase alphabet.
+#. *
+#. * Note that unless your locale clearly requires that digits and/or punctuation
+#. * precede alphabetic characters, digits and punctuation should be placed
+#. * at the end of the string.
+#.
+#: gok/gok-keyboard.c:860
+msgid "level 0|abcdefghijklmnopqrstuvwxyz1234567890-=[];'#\\,./"
+msgstr "级别 0|abcdefghijklmnopqrstuvwxyz1234567890-=[];'#\\,./"
+
+#. The substring "level 1|" should not be translated.
+#. * For languages/locales which use 'upper case', this string should
+#. * correspond to uppercase versions of characters in the 'level 0' string.
+#.
+#: gok/gok-keyboard.c:865
+msgid "level 1|ABCDEFGHIJKLMNOPQRSTUVWXYZ!\"3$%^&*()_+{}:@~<>?"
+msgstr "级别 1|ABCDEFGHIJKLMNOPQRSTUVWXYZ!\"3$%^&*()_+{}:@~<>?"
+
+#. Not used in C locale: this string can contain a third set of characters
+#. * at another 'shift level'.  It can be used to provide a second/alternate
+#. * glyph/character set for the locale, separately or in conjunction with
+#. * 'level 3'.  At the translator's discretion, accented characters can be
+#. * placed here and in 'level 3' as well.
+#.
+#: gok/gok-keyboard.c:872 gok/gok-keyboard.c:928
+msgid "level 2|"
+msgstr "级别 2|"
+
+#. For locales which need an even larger character set, or offer uppercase versions
+#. * of the 'level2' characters, add them to 'level 3'
+#: gok/gok-keyboard.c:875 gok/gok-keyboard.c:929
+msgid "level 3|"
+msgstr "级别 3|"
+
+#.
+#. * Note to Translators: the following strings should contain your LANG/locale's
+#. * alphabet or, in the case of LANGs with a very large glyph set, a set of
+#. * character-primitives which can be used to compose your language's character set.
+#. * This string should contain all of the glyphs in the "level #|abcde..." strings
+#. * but they should appear in 'frequency order', that is, the most frequently occurring
+#. * characters in your locale should appear at the front of the list.
+#. * (Put digits after characters, and punctuation last).
+#. * If level 0 and level 1 refer to upper-and-lower-case in your locale,
+#. * the characters in these two strings should occur in the same relative order.
+#.
+#: gok/gok-keyboard.c:923
+msgid "level 0|etaonrishdlfcmugypwbvkxjqz`1234567890-=\\[];'<,./"
+msgstr "level 0|etaonrishdlfcmugypwbvkxjqz`1234567890-=\\[];'<,./"
+
+#: gok/gok-keyboard.c:924
+msgid "level 1|ETAONRISHDLFCMUGYPWBVKXJQZ~!@#$%^&*()_+|{}:\"><>?"
+msgstr "级别 1|ETAONRISHDLFCMUGYPWBVKXJQZ~!@#$%^&*()_+|{}:\"><>?"
+
+#. change the name of the window to the keyboard name
+#: gok/gok-keyboard.c:1908
+msgid "GOK - "
+msgstr "GOK - "
+
+#: gok/gok-keyboard.c:2736
+msgid "GUI"
+msgstr "GUI"
+
+#. translators: "table" as in row/column data structure
+#: gok/gok-keyboard.c:2741 gok/gok-spy.c:1673
+msgid "Table"
+msgstr "表"
+
+#: gok/gok-keyboard.c:2746 main.kbd.in.h:9
+msgid "Toolbars"
+msgstr "工具栏"
+
+#: gok/gok-keyboard.c:2750
+msgid "Applications"
+msgstr "应用程序"
+
+#: gok/gok-keyboard.c:2757
+msgid "Menu"
+msgstr "菜单"
+
+#: gok/gok-keyboard.c:3527
+msgid "translator_credits"
+msgstr "GNOME 简体中文翻译"
+
+#: gok/gok-keyboard.c:3550 main.kbd.in.h:4
+msgid "GOK"
+msgstr "GOK"
+
+#: gok/gok-keyboard.c:3552
+msgid "Dynamic virtual keyboards for the GNOME desktop"
+msgstr "GNOME 桌面的动态虚拟键盘"
+
+#: gok/gok-keyboard.c:3561
+msgid "Full Credits"
+msgstr "完全称谓"
+
+#: gok/gok-scanner.c:1003
+msgid "error reading description"
+msgstr "读取描述出错"
+
+#. translators: abbreviated version of "Vertical Scrollbar"
+#: gok/gok-spy.c:1593
+msgid "V Scrollbar"
+msgstr "垂直滚动条"
+
+#. translators: abbreviated version of "Horizontal Scrollbar"
+#: gok/gok-spy.c:1598
+msgid "H Scrollbar"
+msgstr "水平滚动条"
+
+#. create the 'new action name' dialog
+#: gok/gok-page-actions.c:380 gok/gok-page-actions.c:425
+#: gok/gok-page-actions.c:444
+msgid "GOK Action Name"
+msgstr "GOK 动作名称"
+
+#. add a text label
+#: gok/gok-page-actions.c:386
+msgid "Change the action name:"
+msgstr "更改动作名称："
+
+#: gok/gok-page-actions.c:423
+msgid ""
+"Action name can't be empty.\n"
+"Please enter a new action name."
+msgstr ""
+"动作名称不能为空。\n"
+"请输入新动作名称。"
+
+#: gok/gok-page-actions.c:442
+msgid ""
+"Sorry, that action name already exists.\n"
+"Please enter a new action name"
+msgstr ""
+"抱歉，此动作名称已存在。\n"
+"请输入新的动作名称"
+
+#: gok/gok-page-actions.c:497
+#, c-format
+msgid "New Action %d"
+msgstr "新建动作 %d"
+
+#: gok/gok-page-actions.c:560
+#, c-format
+msgid "Do you wish to delete this action (%s)?"
+msgstr "您想要删除此动作(%s)吗？"
+
+#: gok/gok-page-actions.c:568
+msgid "GOK Delete Action"
+msgstr "GOK 删除动作"
+
+#. create the 'new feedbacks name' dialog
+#: gok/gok-page-feedbacks.c:411 gok/gok-page-feedbacks.c:456
+#: gok/gok-page-feedbacks.c:475
+msgid "GOK Feedback Name"
+msgstr "GOK 反馈名称"
+
+#. add a text label
+#: gok/gok-page-feedbacks.c:417
+msgid "Change the feedback name:"
+msgstr "更改反馈名称："
+
+#: gok/gok-page-feedbacks.c:454
+msgid ""
+"Feedback name can't be empty.\n"
+"Please enter a new feedback name."
+msgstr ""
+"反馈名称不能为空。\n"
+"请输入新反馈名称。"
+
+#: gok/gok-page-feedbacks.c:473
+msgid ""
+"Sorry, that feedback name already exists.\n"
+"Please enter a new feedback name"
+msgstr ""
+"抱歉，此反馈名称已存在。\n"
+"请输入新的反馈名称"
+
+#: gok/gok-page-feedbacks.c:526
+#, c-format
+msgid "New Feedback %d"
+msgstr "新反馈 %d"
+
+#: gok/gok-page-feedbacks.c:644
+#, c-format
+msgid "Do you wish to delete this feedback (%s)?"
+msgstr "您是否想要删除此反馈(%s)？"
+
+#: gok/gok-page-feedbacks.c:652
+msgid "GOK Delete Feedback"
+msgstr "GOK 删除反馈"
+
+#. create the file selector dialog
+#: gok/gok-page-feedbacks.c:875
+msgid "Select sound file"
+msgstr "选择声音文件"
+
+#: gok/gok-page-keyboard.c:180
+msgid "Enter directory to search for additional GOK keyboard files."
+msgstr "输入要搜索额外 GOK 键盘文件的目录。"
+
+#: gok/gok-page-keyboard.c:194
+msgid "Select the XML file defining your startup compose keyboard"
+msgstr "选择定义您启动编著键盘的 XML 文件"
+
+#: gok/gok-page-keysizespace.c:83
+msgid "Button"
+msgstr "按钮"
+
+#. and post a warning if the new settings use corepointer
+#: gok/gok-settings-dialog.c:259
+msgid "You appear to be configuring GOK to use 'core pointer' mode."
+msgstr "您似乎将 GOK 配置成使用“核心指针”模式。"
+
+#: gok/gok-windowlister.c:98
+msgid "Window List"
+msgstr "窗口列表"
+
+#: gok/gok-utf8-word-complete.c:120
+#, c-format
+msgid "Could not read contents of dictionary file '%s'\n"
+msgstr "无法读取字典文件“%s”的内容\n"
+
+#: gok/main.c:164
+msgid ""
+"Use the specified access method. NAME is a string and can be found in the "
+"various access method files (.xam) assigned to the \"name\" property of <gok:"
+"accessmethod> tag. Note this is not necessarily the same as the name of the ."
+"xam file. (See --list-accessmethods)"
+msgstr ""
+"使用指定的访问方式。NAME 是字符串，可在不同的访问方式文件(.xam)中 <gok:"
+"accessmethod> 的“name”属性中找到。请注意，此名称不必与 .xam 文件的名称相同。"
+"(见 --list-accessmethods)"
+
+#: gok/main.c:165
+msgid "NAME"
+msgstr "名称"
+
+#: gok/main.c:173
+msgid "Start the GOK keyboard editor"
+msgstr "启动 GOK 键盘编辑器"
+
+#: gok/main.c:181
+msgid "Use special, but possibly unstable, gok stuff"
+msgstr "使用特殊但可能不稳定的 gok 成员"
+
+#: gok/main.c:189
+msgid ""
+"Whenever --geometry is not used gok remembers its position between "
+"invocations and starts in the position that it had when it was last "
+"shutdown.  When --geometry is used gok positions itself within the "
+"rectangular area of screen described by the given X11 geometry "
+"specification.  When --geometry is used gok does not remember its position "
+"when it shuts down.  This behaviour can be changed with the --"
+"remembergeometry flag which forces gok to remember its position when "
+"shutdown even when it was started with --geometry."
+msgstr ""
+"只要没有使用 --geometry，gok 都会在不同会话间记住其上次关闭时的位置。如果使用"
+"了 --geometry，gok 就会定位于屏幕中给定的 X11 几何位置上。如果使用了 --"
+"geometry，gok 就不会在关闭时记住其位置。此特性可以用 --remembergeometry 标志"
+"更改，这会强制 gok 在关闭时记住其位置，即使是用 --geometry 启动的也一样。"
+
+#: gok/main.c:190
+msgid "GEOMETRY"
+msgstr "几何属性"
+
+#: gok/main.c:198
+msgid "Use the specified input device"
+msgstr "使用指定输入设备"
+
+#: gok/main.c:199
+msgid "DEVICENAME"
+msgstr "设备名"
+
+#: gok/main.c:207
+msgid "Start GOK with the specified keyboard."
+msgstr "以指定键盘启动 GOK。"
+
+#: gok/main.c:208
+msgid "KEYBOARDNAME"
+msgstr "键盘名"
+
+#: gok/main.c:216
+msgid "List the access methods that can used as options to other arguments."
+msgstr "列出可用作其它参数选项的访问方式。"
+
+#: gok/main.c:225
+msgid "List the actions that can used as options to other arguments."
+msgstr "列出可用作其它参数选项的动作。"
+
+#: gok/main.c:234
+msgid "GOK will be used to login"
+msgstr "GOK 将用于登录"
+
+#: gok/main.c:245
+msgid ""
+"Can be used with --geometry.  Forces GOK to remember its position when "
+"shutdown even when it was started with --geometry.  Please see the "
+"discussion under the --geometry flag for more information."
+msgstr ""
+"可以和 --geometry 使用。强制 GOK 在关闭时记住其位置，即使带 --geometry 启动也"
+"一样。请参看 --geometry 标志下的讨论以获得更多信息。"
+
+#: gok/main.c:256
+msgid "Start GOK and hook this action to scan operations. (See --list-actions)"
+msgstr "启动 GOK 并拦截此动作以扫描操作。(见 --list-actions)"
+
+#: gok/main.c:266
+msgid ""
+"Start GOK and hook this action to select operations. (See --list-actions)"
+msgstr "启动 GOK 并拦截此动作以选择操作。(见 --list-actions)"
+
+#: gok/main.c:275
+msgid "Open the settings dialog box when GOK starts"
+msgstr "启动 GOK 时打开设置对话框"
+
+#: gok/main.c:588
+msgid "gok: Unsupported geometry specification\n"
+msgstr "gok：不支持的几何属性指定\n"
+
+#: gok/main.c:589
+msgid ""
+"gok: Currently GOK requires that the x, y, width and height all be given\n"
+msgstr "gok：目前 GOK 需要同时给出 x，y，宽度和高度。\n"
+
+#: gok/main.c:685
+msgid "XKB extension is required."
+msgstr "需要 XKB 扩展。"
+
+#: gok/main.c:695
+msgid "Can't initialize actions."
+msgstr "无法初始化动作。"
+
+#: gok/main.c:705
+msgid "Can't initialize feedbacks."
+msgstr "无法初始化反馈。"
+
+#: gok/main.c:732
+msgid "Can't create the main GOK window!"
+msgstr "无法创建主 GOK 窗口！"
+
+#: gok/main.c:751
+msgid "Can't create the settings dialog window!"
+msgstr "无法创建设置对话窗口！"
+
+#: gok/main.c:773
+msgid "You are using GOK in 'core pointer' mode."
+msgstr "您正在以“核心指针”模式使用 GOK。"
+
+#: gok/main.c:813
+msgid "No keyboards to display!"
+msgstr "没有可显示的键盘！"
+
+#: gok/main.c:949
+msgid "popup menu"
+msgstr "弹出菜单"
+
+#: gok/main.c:1805
+msgid "Can't create a compose keyboard!"
+msgstr "无法创建编写键盘！"
+
+#: gok/main.c:1847
+msgid "Can't read any keyboards!"
+msgstr "无法读取任何键盘！"
+
+#: gok/main.c:1964
+msgid "could not access method directory key from GConf!"
+msgstr "无法访问 GConf 中的方式目录键"
+
+#: gok/main.c:1972
+msgid "possibly unknown access method!"
+msgstr "可能有未知访问方式！"
+
+#: gok/main.c:2513
+msgid "Sorry, GOK can't run because:\n"
+msgstr "抱歉，无法运行 GOK，原因如下：\n"
+
+#: gok/main.c:2522
+msgid "GOK Fatal Error"
+msgstr "GOK 严重错误"
+
+#: gok/main.c:2534
+msgid ""
+"GOK uses GConf 2 to store its settings and requires certain settings to be "
+"in GConf to run.  GOK is currently unable to retrieve those settings.  If "
+"this is the first time that you have run gok after installing it you may "
+"need to restart gconfd, you can use this command: 'gconftool-2 --shutdown' "
+"or log out and back in."
+msgstr ""
+"GOK 使用 GConf2 存储其设置，并需要 GConf 中有特定设置才能运行。GOK 目前无法获"
+"取这些设置。如果这是您在安装 gok 之后第一次运行，您可能需要重新启动 gconfd，"
+"您可以使用此命令：“gconftoo-2 --shutdown”或者注销后重新登录。"
+
+#: gok/main.c:2551
+msgid ""
+"Currently GOK requires that the x, y, width and height all be given.  Sorry, "
+"your geometry specification will not be used."
+msgstr ""
+"目前 GOK 需要同时给出 x，y，宽度和高度。抱歉，无法使用您指定的几何属性。"
+
+#: gok/main.c:2553
+msgid "gok: Unsupported geometry specification"
+msgstr "gok：不支持的几何属性指定"
+
+#: gok/main.c:2760
+msgid ""
+"GOK may not work properly, because it could not enable your desktop's "
+"'sticky keys' feature."
+msgstr "GOK 可能工作不正常，原因是无法启用您桌面的“粘滞键”特性。"
+
+#: gok/main.c:2767
+msgid "GOK has enabled Sticky Keys, which it requires.\n"
+msgstr "GOK 已经启用了所需的粘滞键。\n"
+
+#: gok/main.c:2789
+msgid "GOK cannot run because XKB display extension is missing.\n"
+msgstr "GOD 无法运行，原因是缺少 XKB 显示扩展。\n"
+
+#: gok/main.c:2853
+msgid ""
+"This means that the device you are using to operate GOK\n"
+"is also controlling the system pointer (or 'mouse pointer').\n"
+"Conflicts with applications' use of the pointer may interfere\n"
+"with your ability to use applications or GOK.\n"
+"\n"
+"We strongly recommend configuring your input device as an\n"
+"'Extended' input device instead; see GOK Help for more information."
+msgstr ""
+"这意味着您正在用来操作 GOK 的设备也正在控制系统指针(或\n"
+"“鼠标指针”)。与应用程序指针的冲突可能影响到您使用应用\n"
+"程序或是 GOK。\n"
+"\n"
+"我们强烈建议您将您的输入设备配置为“扩展”输入设备；请\n"
+"查看 GOK 帮助中的更多信息。"
+
+#: gok/main.c:2917
+msgid ""
+"Assistive Technology Support Is Not Enabled.\n"
+"\n"
+"You can start GOK without enabling support for assistive technologies. "
+"However, some of the features of the application might not be available.\n"
+"\n"
+"To enable support for assistive technologies and log in to a new session "
+"with the change enabled, click Enable and Log Out.\n"
+"\n"
+"To continue using GOK, click Continue.\n"
+"\n"
+"To quit GOK, click Close.\n"
+"\n"
+msgstr ""
+"辅助技术支持尚未启用。\n"
+"\n"
+"在不启用辅助技术的情况下仍然可以启动 GOK。但是，此程序的某些特性可能不可"
+"用。\n"
+"\n"
+"要启用辅助技术并登录到新会话中，请单击“启用并注销”。\n"
+"\n"
+"要继续使用 GOK，请单击“继续”。\n"
+"\n"
+"要退出 GOK，请单击“关闭”。\n"
+"\n"
+
+#: gok/main.c:2936
+msgid "Enable and Log Out"
+msgstr "启用并注销"
+
+#: gok/main.c:2948
+msgid "Continue"
+msgstr "继续"
+
+#: inverse-scanning.xml.in.h:9
+msgid "Inverse Scanning"
+msgstr "反转扫描"
+
+#: inverse-scanning.xml.in.h:14 singlekey-inverse-scanning.xml.in.h:11
+msgid "Press and hold a switch to scan.  Press another switch to select."
+msgstr "长按开关可扫描。按另外一个开关可选择。"
+
+#: inverse-scanning.xml.in.h:18 singlekey-inverse-scanning.xml.in.h:15
+msgid "Scan:"
+msgstr "扫描："
+
+#: singlekey-automatic-scanning.xml.in.h:17
+#: singlekey-inverse-scanning.xml.in.h:16
+msgid "Scanning Direction:"
+msgstr "扫描方向："
+
+#: singlekey-automatic-scanning.xml.in.h:20
+msgid "Single Key Automatic Scanning"
+msgstr "单键自动扫描"
+
+#: singlekey-automatic-scanning.xml.in.h:21
+msgid "Start Scanning:"
+msgstr "开始扫描："
+
+#: singlekey-automatic-scanning.xml.in.h:22
+msgid "Start scanning:"
+msgstr "开始扫描："
+
+#: singlekey-automatic-scanning.xml.in.h:24
+msgid "Wrap"
+msgstr "环绕"
+
+#: singlekey-inverse-scanning.xml.in.h:19
+msgid "Single Key Inverse Scanning"
+msgstr "单键反转扫描"
+
+#: directed.xml.in.h:2
+msgid "5 Switch Directed"
+msgstr "五向开关"
+
+#: directed.xml.in.h:3
+msgid "Down:"
+msgstr "下："
+
+#: directed.xml.in.h:14
+msgid "Up:"
+msgstr "上："
+
+#: hide.kbd.in.h:1
+msgid "Show"
+msgstr "显示"
+
+#: launcher.kbd.in.h:1
+msgid "Help Browser"
+msgstr "帮助浏览器"
+
+#: launcher.kbd.in.h:2
+msgid "Terminal"
+msgstr "终端"
+
+#: launcher.kbd.in.h:3
+msgid "Text Editor"
+msgstr "文本编辑器"
+
+#: launcher.kbd.in.h:4
+msgid "Web Browser"
+msgstr "Web 浏览器"
+
+#: main.kbd.in.h:1
+msgid "Activate"
+msgstr "激活"
+
+#. Translators: one word meaning: to enter text.
+#: main.kbd.in.h:3
+msgid "Compose"
+msgstr "编写"
+
+#. Translators: launcher, as in launching/running programs
+#: main.kbd.in.h:6
+msgid "Launcher"
+msgstr "启动器"
+
+#: main.kbd.in.h:8
+msgid "Mouse"
+msgstr "鼠标"
+
+#. Translators: short version User Interface Grab, used to grab GUI buttons etc.
+#: main.kbd.in.h:11
+msgid "UI Grab"
+msgstr "UI 把手"
+
+#: mouse.kbd.in.h:1
+msgid "Button 1"
+msgstr "按钮 1"
+
+#: mouse.kbd.in.h:2
+msgid "Button 2"
+msgstr "按钮 2"
+
+#: mouse.kbd.in.h:3
+msgid "Button 3"
+msgstr "按钮 3"
+
+#: mouse.kbd.in.h:4
+msgid "Dbl Click"
+msgstr "双击"
+
+#. Translators: direction right (East)
+#: mouse.kbd.in.h:6
+msgid "E"
+msgstr "右"
+
+#: mouse.kbd.in.h:7
+msgid "Latch"
+msgstr "插销"
+
+#. Translators: direction up (North)
+#: mouse.kbd.in.h:9
+msgid "N"
+msgstr "上"
+
+#. Translators: direction up and right (North East)
+#: mouse.kbd.in.h:11
+msgid "NE"
+msgstr "右上"
+
+#. Translators: direction up and left (North West)
+#: mouse.kbd.in.h:13
+msgid "NW"
+msgstr "左上"
+
+#: mouse.kbd.in.h:14
+msgid "Pointer"
+msgstr "指针"
+
+#: mouse.kbd.in.h:15
+msgid "Repeat"
+msgstr "重复"
+
+#. Translators: direction down (South)
+#: mouse.kbd.in.h:17
+msgid "S"
+msgstr "下"
+
+#. Translators: direction down and right (South East)
+#: mouse.kbd.in.h:19
+msgid "SE"
+msgstr "右下"
+
+#. Translators: direction down and left (South West)
+#: mouse.kbd.in.h:21
+msgid "SW"
+msgstr "左下"
+
+#. Translators: direction left (West)
+#: mouse.kbd.in.h:23
+msgid "W"
+msgstr "左"
+
+#: move-resize.kbd.in.h:7
+msgid "Fill"
+msgstr "填充"
+
+#: move-resize.kbd.in.h:8
+msgid "Float"
+msgstr "浮动"
+
+#: move-resize.kbd.in.h:12
+msgid "Narrower"
+msgstr "更窄"
+
+#: move-resize.kbd.in.h:13
+msgid "Repeat Next Key"
+msgstr "重新下个按键"
+
+#. Translators: shorter as in height.
+#: move-resize.kbd.in.h:17
+msgid "Shorter"
+msgstr "更短"
+
+#: move-resize.kbd.in.h:18
+msgid "Taller"
+msgstr "更长"
+
+#: move-resize.kbd.in.h:21
+msgid "Wider"
+msgstr "更宽"
+
+#: numberpad.kbd.in.h:1
+msgid "Ctrl"
+msgstr "Ctrl"
+
+#: numberpad.kbd.in.h:2
+msgid "Del"
+msgstr "Del"
+
+#: numberpad.kbd.in.h:7
+msgid "Ins"
+msgstr "Ins"
+
+#: numberpad.kbd.in.h:9
+msgid "Num"
+msgstr "Num"
+
+#. Translators: abbreviation for Page Down.
+#: numberpad.kbd.in.h:11
+msgid "PgDn"
+msgstr "PgDn"
+
+#. Translators: abbreviation for Page Up.
+#: numberpad.kbd.in.h:13
+msgid "PgUp"
+msgstr "PgUp"
+
+#: numberpad.kbd.in.h:15
+msgid "Shift"
+msgstr "Shift"
+
+#. Translators: short phrase to confirm that user wants to quit.
+#: quit.kbd.in.h:2
+msgid "Really Quit!"
+msgstr "真的退出！"

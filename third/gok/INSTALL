@@ -1,0 +1,116 @@
+Installing GOK
+**************
+
+
+Requirements
+============
+
+- GNOME 2 *
+
+- AT-SPI *
+
+- libwnck
+
+- EsounD (ESD)
+
+- m4
+
+- To build the API reference documentation you will need gtk-doc and
+  its requirements:
+
+    Perl 5
+
+    DocBook DTD 3.0
+        http://www.ora.com/davenport
+
+    Jade 1.1
+        http://www.jclark.com/jade
+
+    Modular DocBook Stylesheets
+        http://nwalsh.com/docbook/dsssl
+
+
+* GOK can also be used with non-GNOME-2 applications and applications
+written with toolkits for which an AT-SPI bridge does not exist.  In
+this case GOK functions fully as an onscreen keyboard but the more
+advanced dynamic features such as redisplaying an application's user
+interface in a GOK keyboard will not be available.  Please see the
+note below on nature of GOK's dependency on AT-SPI and the potential
+for loosening it.
+
+Building
+========
+
+To build for installation in directory PREFIX:
+
+$ ./configure --prefix=PREFIX
+$ make
+
+The --prefix argument is optional and defaults to /usr/local
+
+Installing
+==========
+
+Become root if necessary and:
+
+# make install
+
+Before running GOK for the first time it is necessary to restart
+gconfd.  You can use this command, run as the user under which you
+started your GNOME session:
+
+$ gconftool-2 --shutdown
+
+or log out and back in again.
+
+configure Options
+=================
+
+For information on how to use type:
+
+$ ./configure --help
+
+Additional options above standard configure options:
+
+--enable-gtk-doc              Use gtk-doc to build documentation
+                              default=yes
+
+--enable-logging-normal       Enables logging of normal behaviour
+                              default=no
+
+--enable-logging-exceptional  Enable logging of exceptional behaviour
+                              default=no
+
+Troubleshooting
+===============
+
+Please see the README file for suggestions if you are having trouble
+installing GOK.
+
+GOK's dependency on AT-SPI
+==========================
+
+Although GOK can be used with non-GNOME-2 applications it is currently
+dependent upon AT-SPI to build.  GOK uses AT-SPI for the following:
+
+- To get information about running applications that enables GOK to
+  dynamicly redisplay an application's user interface in a GOK keyboard
+
+- To get notification on the state on the system's modifier keys
+
+- To get core pointer button press events when the core pointer
+  is outside of the GOK window
+
+It would be possible to modify GOK so that it checked for AT-SPI in
+configure.in and only compiled in the features that are dependent on
+AT-SPI if AT-SPI is present.  GOK could then be built and used in a
+non-GNOME-2 environment in which AT-SPI was not present.
+
+Configuring for Input Devices
+=============================
+
+[Please see the above-named section in the README file.]
+
+--
+
+This document last updated: Thursday, December 12th, 2002.

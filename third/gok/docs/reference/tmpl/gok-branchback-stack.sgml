@@ -1,0 +1,54 @@
+<!-- ##### SECTION Title ##### -->
+gok-branchback-stack
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO MAX_BRANCHBACKSTACK ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION gok_branchbackstack_initialize ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION gok_branchbackstack_push ##### -->
+<para>
+
+</para>
+
+@pKeyboard: 
+
+
+<!-- ##### FUNCTION gok_branchbackstack_pop ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gok_branchbackstack_is_empty ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+

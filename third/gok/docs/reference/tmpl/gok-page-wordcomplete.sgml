@@ -1,0 +1,57 @@
+<!-- ##### SECTION Title ##### -->
+gok-page-wordcomplete
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### FUNCTION gok_page_wordcomplete_initialize ##### -->
+<para>
+
+</para>
+
+@xml: 
+@Returns: 
+<!-- # Unused Parameters # -->
+@pWindowSettings: 
+
+
+<!-- ##### FUNCTION gok_page_wordcomplete_refresh ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION gok_page_wordcomplete_apply ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gok_page_wordcomplete_revert ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gok_page_wordcomplete_backup ##### -->
+<para>
+
+</para>
+
+
+

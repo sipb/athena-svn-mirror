@@ -1,0 +1,38 @@
+<!-- ##### SECTION Title ##### -->
+gok-sound
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### FUNCTION gok_sound_initialize ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION gok_sound_shutdown ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION gok_sound_play ##### -->
+<para>
+
+</para>
+
+@soundfile: 
+
+

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<GOK:GokFile xmlns:GOK="http://www.gnome.org/GOK">
+
+<GOK:keyboard name="valuator" commandprediction="no" wordcompletion="no" expand="sometimes">
+	<GOK:key left="0" right="2" top="0" bottom="1" type="branchBack">
+		<!-- Translators: short label for go back. -->
+		<_GOK:label>back</_GOK:label>
+	</GOK:key>
+        <GOK:key left="2" right="4" top="0" bottom="1" type="repeat-next">
+                <_GOK:label>Repeat Next</_GOK:label>
+        </GOK:key>
+	<GOK:key left="4" right="6" top="0" bottom="1" type="valuator" command="less">
+		<GOK:image source="value-less.png" type="fit" align="left" />
+	</GOK:key>
+	<GOK:key left="6" right="8" top="0" bottom="1" type="valuator" command="more">
+		<GOK:image source="value-more.png" type="fit" align="right" />
+	</GOK:key>
+
+	<GOK:key left="0" right="2" top="1" bottom="2" type="valuator" command="fast-less">
+		<GOK:image source="value-fast-less.png" type="fit" align="left"/>
+	</GOK:key>
+        <GOK:key left="2" right="4" top="1" bottom="2" type="valuator" command="fast-more">
+		<GOK:image source="value-fast-more.png" type="fit" align="right"/>
+        </GOK:key>
+	<GOK:key left="4" right="6" top="1" bottom="2" type="valuator" command="min">
+		<GOK:image source="value-min.png" type="fit" align="left"/>
+	</GOK:key>
+	<GOK:key left="6" right="8" top="1" bottom="2" type="valuator" command="max">
+		<GOK:image source="value-max.png" type="fit" align="right"/>
+	</GOK:key>
+
+</GOK:keyboard>
+</GOK:GokFile>

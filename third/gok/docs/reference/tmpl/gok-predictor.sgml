@@ -1,0 +1,140 @@
+<!-- ##### SECTION Title ##### -->
+gok-predictor
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### MACRO GOK_PREDICTOR_MAX_VERTICES ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION gok_predictor_open ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gok_predictor_close ##### -->
+<para>
+
+</para>
+
+@gok_predictor: 
+
+
+<!-- ##### FUNCTION gok_predictor_add_key ##### -->
+<para>
+
+</para>
+
+@gok_predictor: 
+@vertex_data: 
+
+
+<!-- ##### FUNCTION gok_predictor_get ##### -->
+<para>
+
+</para>
+
+@gok_predictor: 
+@num_predictions: 
+@keyboard_id: 
+@algorithm: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gok_predictor_remove_keyboard ##### -->
+<para>
+
+</para>
+
+@gok_predictor: 
+@keyboard_id: 
+
+
+<!-- ##### FUNCTION gok_predictor_remove_key ##### -->
+<para>
+
+</para>
+
+@gok_predictor: 
+@vertex_data: 
+
+
+<!-- ##### FUNCTION gok_predictor_on ##### -->
+<para>
+
+</para>
+
+@bOnOff: 
+
+
+<!-- ##### FUNCTION gok_predictor_change_number_predictions ##### -->
+<para>
+
+</para>
+
+@Number: 
+
+
+<!-- ##### FUNCTION gok_predictor_add_prediction_keys ##### -->
+<para>
+
+</para>
+
+@pKeyboard: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gok_predictor_predict ##### -->
+<para>
+
+</para>
+
+@gP: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gok_predictor_get_real ##### -->
+<para>
+
+</para>
+
+@pKeyboardName: 
+@pKeyLabel: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gok_predictor_log ##### -->
+<para>
+
+</para>
+
+@gP: 
+@keyboardID: 
+@keyID: 
+
+
+<!-- ##### FUNCTION gok_main_get_command_predictor ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+

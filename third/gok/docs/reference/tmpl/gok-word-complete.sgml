@@ -1,0 +1,54 @@
+<!-- ##### SECTION Title ##### -->
+gok-word-complete
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### FUNCTION gok_wordcomplete_open ##### -->
+<para>
+
+</para>
+
+@complete: 
+@directory: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gok_wordcomplete_close ##### -->
+<para>
+
+</para>
+
+@complete: 
+
+
+<!-- ##### FUNCTION gok_wordcomplete_predict ##### -->
+<para>
+
+</para>
+
+@complete: 
+@num_predictions: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gok_wordcomplete_add_new_word ##### -->
+<para>
+
+</para>
+
+@complete: 
+@word: 
+@Returns: 
+
+

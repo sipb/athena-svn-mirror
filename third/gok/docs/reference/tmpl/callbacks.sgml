@@ -1,0 +1,857 @@
+<!-- ##### SECTION Title ##### -->
+callbacks
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### FUNCTION on_window1_realize ##### -->
+<para>
+
+</para>
+
+@widget: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_window1_remove ##### -->
+<para>
+
+</para>
+
+@container: 
+@widget: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_window1_delete_event ##### -->
+<para>
+
+</para>
+
+@widget: 
+@event: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION on_window1_size_allocate ##### -->
+<para>
+
+</para>
+
+@widget: 
+@allocation: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_window1_unrealize ##### -->
+<para>
+
+</para>
+
+@widget: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_window1_destroy ##### -->
+<para>
+
+</para>
+
+@object: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_window1_button_press_event ##### -->
+<para>
+
+</para>
+
+@widget: 
+@event: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION on_editor_button_press_event ##### -->
+<para>
+
+</para>
+
+@widget: 
+@event: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION on_window1_client_event ##### -->
+<para>
+
+</para>
+
+@widget: 
+@event: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION on_window1_drag_motion ##### -->
+<para>
+
+</para>
+
+@widget: 
+@drag_context: 
+@x: 
+@y: 
+@time: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION on_window1_button_release_event ##### -->
+<para>
+
+</para>
+
+@widget: 
+@event: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION on_window1_configure_event ##### -->
+<para>
+
+</para>
+
+@widget: 
+@event: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION on_window1_motion_notify_event ##### -->
+<para>
+
+</para>
+
+@widget: 
+@event: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION on_entryName_changed ##### -->
+<para>
+
+</para>
+
+@editable: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_dialogSettings_delete_event ##### -->
+<para>
+
+</para>
+
+@widget: 
+@event: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION on_dialogSettings_destroy_event ##### -->
+<para>
+
+</para>
+
+@widget: 
+@event: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION on_dialogSettings_destroy ##### -->
+<para>
+
+</para>
+
+@object: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_buttonKeySize_clicked ##### -->
+<para>
+
+</para>
+
+@button: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_spinSpacing_changed ##### -->
+<para>
+
+</para>
+
+@editable: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_spinWidth_changed ##### -->
+<para>
+
+</para>
+
+@editable: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_spinHeight_changed ##### -->
+<para>
+
+</para>
+
+@editable: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_radiobuttonTypeSwitch_toggled ##### -->
+<para>
+
+</para>
+
+@togglebutton: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_radiobuttonTypeMouseButton_toggled ##### -->
+<para>
+
+</para>
+
+@togglebutton: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_radiobuttonTypeDwell_toggled ##### -->
+<para>
+
+</para>
+
+@togglebutton: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_radiobuttonTypeMousePointer_toggled ##### -->
+<para>
+
+</para>
+
+@togglebutton: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_buttonNewAction_clicked ##### -->
+<para>
+
+</para>
+
+@button: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_checkWordCompletion_toggled ##### -->
+<para>
+
+</para>
+
+@togglebutton: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_buttonSaveAction_clicked ##### -->
+<para>
+
+</para>
+
+@button: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_buttonDeleteAction_clicked ##### -->
+<para>
+
+</para>
+
+@button: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_spinSwitchDelay_changed ##### -->
+<para>
+
+</para>
+
+@editable: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_buttonAccessMethodWizard_clicked ##### -->
+<para>
+
+</para>
+
+@button: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_comboActionNames_focus_out_event ##### -->
+<para>
+
+</para>
+
+@widget: 
+@event: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION on_entryActionName_focus_out_event ##### -->
+<para>
+
+</para>
+
+@widget: 
+@event: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION on_spinSwitchDelay_focus_in_event ##### -->
+<para>
+
+</para>
+
+@widget: 
+@event: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION on_entryActionName_leave_notify_event ##### -->
+<para>
+
+</para>
+
+@widget: 
+@event: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION on_buttonChangeName_clicked ##### -->
+<para>
+
+</para>
+
+@button: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_radiobuttonSwitch1_toggled ##### -->
+<para>
+
+</para>
+
+@togglebutton: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_radiobuttonSwitch2_toggled ##### -->
+<para>
+
+</para>
+
+@togglebutton: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_radiobuttonSwitch3_toggled ##### -->
+<para>
+
+</para>
+
+@togglebutton: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_radiobuttonSwitch4_toggled ##### -->
+<para>
+
+</para>
+
+@togglebutton: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_radiobuttonSwitch5_toggled ##### -->
+<para>
+
+</para>
+
+@togglebutton: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_radiobuttonSwitchPress_toggled ##### -->
+<para>
+
+</para>
+
+@togglebutton: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_radiobuttonSwitchRelease_toggled ##### -->
+<para>
+
+</para>
+
+@togglebutton: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_radiobuttonMouseButton0_toggled ##### -->
+<para>
+
+</para>
+
+@togglebutton: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_radiobuttonMouseButton1_toggled ##### -->
+<para>
+
+</para>
+
+@togglebutton: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_radiobuttonMouseButton2_toggled ##### -->
+<para>
+
+</para>
+
+@togglebutton: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_radiobuttonMouseButton3_toggled ##### -->
+<para>
+
+</para>
+
+@togglebutton: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_radiobuttonMouseButton4_toggled ##### -->
+<para>
+
+</para>
+
+@togglebutton: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_radiobuttonButtonPress_toggled ##### -->
+<para>
+
+</para>
+
+@togglebutton: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_radiobuttonButtonRelease_toggled ##### -->
+<para>
+
+</para>
+
+@togglebutton: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_radiobuttonButtonClick_toggled ##### -->
+<para>
+
+</para>
+
+@togglebutton: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_spinButtonDelay_changed ##### -->
+<para>
+
+</para>
+
+@editable: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_spinDwellRate_changed ##### -->
+<para>
+
+</para>
+
+@editable: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_checkKeyAverage_toggled ##### -->
+<para>
+
+</para>
+
+@togglebutton: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_spinKeyAverage_changed ##### -->
+<para>
+
+</para>
+
+@editable: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_file1_activate ##### -->
+<para>
+
+</para>
+
+@menuitem: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_new1_activate ##### -->
+<para>
+
+</para>
+
+@menuitem: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_open1_activate ##### -->
+<para>
+
+</para>
+
+@menuitem: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_save1_activate ##### -->
+<para>
+
+</para>
+
+@menuitem: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_save_as1_activate ##### -->
+<para>
+
+</para>
+
+@menuitem: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_exit1_activate ##### -->
+<para>
+
+</para>
+
+@menuitem: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_help1_activate ##### -->
+<para>
+
+</para>
+
+@menuitem: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_gok_editor_help1_activate ##### -->
+<para>
+
+</para>
+
+@menuitem: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_about1_activate ##### -->
+<para>
+
+</para>
+
+@menuitem: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_windowEditor_destroy_event ##### -->
+<para>
+
+</para>
+
+@widget: 
+@event: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION on_windowEditor_delete_event ##### -->
+<para>
+
+</para>
+
+@widget: 
+@event: 
+@user_data: 
+@Returns: 
+
+
+<!-- ##### FUNCTION on_spinbutton47_changed ##### -->
+<para>
+
+</para>
+
+@editable: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_buttonNext_clicked ##### -->
+<para>
+
+</para>
+
+@button: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_buttonPrevious_clicked ##### -->
+<para>
+
+</para>
+
+@button: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_buttonAddNewKey_clicked ##### -->
+<para>
+
+</para>
+
+@button: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_buttonDeleteKey_clicked ##### -->
+<para>
+
+</para>
+
+@button: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_buttonDuplicate_clicked ##### -->
+<para>
+
+</para>
+
+@button: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_spinLeft_changed ##### -->
+<para>
+
+</para>
+
+@editable: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_spinLeft_insert_text ##### -->
+<para>
+
+</para>
+
+@editable: 
+@new_text: 
+@new_text_length: 
+@position: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_spinRight_insert_text ##### -->
+<para>
+
+</para>
+
+@editable: 
+@new_text: 
+@new_text_length: 
+@position: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_spinTop_insert_text ##### -->
+<para>
+
+</para>
+
+@editable: 
+@new_text: 
+@new_text_length: 
+@position: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_spinBottom_insert_text ##### -->
+<para>
+
+</para>
+
+@editable: 
+@new_text: 
+@new_text_length: 
+@position: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_dialogSettings_show ##### -->
+<para>
+
+</para>
+
+@widget: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_buttonAddFeedback_clicked ##### -->
+<para>
+
+</para>
+
+@button: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_buttonDeleteFeedback_clicked ##### -->
+<para>
+
+</para>
+
+@button: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_buttonChangeFeedbackName_clicked ##### -->
+<para>
+
+</para>
+
+@button: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_buttonFeedbackSoundFile_clicked ##### -->
+<para>
+
+</para>
+
+@button: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_entry63_changed ##### -->
+<para>
+
+</para>
+
+@editable: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_entryFeedback_changed ##### -->
+<para>
+
+</para>
+
+@editable: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_checkKeyFlashing_clicked ##### -->
+<para>
+
+</para>
+
+@button: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_spinKeyFlashing_changed ##### -->
+<para>
+
+</para>
+
+@editable: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_checkSoundOn_clicked ##### -->
+<para>
+
+</para>
+
+@button: 
+@user_data: 
+
+
+<!-- ##### FUNCTION on_entrySoundName_changed ##### -->
+<para>
+
+</para>
+
+@editable: 
+@user_data: 
+
+

@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<GOK:GokFile xmlns:GOK="http://www.gnome.org/GOK">
+
+<GOK:keyboard name="hide" commandprediction="no" wordcompletion="no" expand="never">
+	<GOK:key left="0" right="1" top="0" bottom="1" type="branchBack">
+		<_GOK:label>Show</_GOK:label>
+	</GOK:key>
+</GOK:keyboard>
+</GOK:GokFile>

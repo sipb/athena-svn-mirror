@@ -1,0 +1,98 @@
+<!-- ##### SECTION Title ##### -->
+gok-feedback
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### FUNCTION gok_feedback_new ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gok_feedback_free ##### -->
+<para>
+
+</para>
+
+@pFeedback: 
+
+
+<!-- ##### FUNCTION gok_feedback_open ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gok_feedback_close ##### -->
+<para>
+
+</para>
+
+
+
+<!-- ##### FUNCTION gok_feedback_get_first_feedback ##### -->
+<para>
+
+</para>
+
+@Returns: 
+
+
+<!-- ##### FUNCTION gok_feedback_find_feedback ##### -->
+<para>
+
+</para>
+
+@NameFeedback: 
+@bDisplayName: 
+@Returns: 
+
+
+<!-- ##### FUNCTION gok_feedback_add_feedback ##### -->
+<para>
+
+</para>
+
+@pFeedbackNew: 
+
+
+<!-- ##### FUNCTION gok_feedback_delete_feedback ##### -->
+<para>
+
+</para>
+
+@pFeedbackDelete: 
+
+
+<!-- ##### FUNCTION gok_feedback_backup ##### -->
+<para>
+
+</para>
+
+@pFeedback: 
+
+
+<!-- ##### FUNCTION gok_feedback_revert ##### -->
+<para>
+
+</para>
+
+@pFeedback: 
+@Returns: 
+
+

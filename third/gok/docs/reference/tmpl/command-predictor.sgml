@@ -1,0 +1,106 @@
+<!-- ##### SECTION Title ##### -->
+command-predictor
+
+<!-- ##### SECTION Short_Description ##### -->
+
+
+<!-- ##### SECTION Long_Description ##### -->
+<para>
+
+</para>
+
+<!-- ##### SECTION See_Also ##### -->
+<para>
+
+</para>
+
+<!-- ##### ENUM Prediction_Algorithm ##### -->
+<para>
+
+</para>
+
+@RECENCY: 
+@FREQUENCY: 
+
+<!-- ##### FUNCTION command_predictor_free ##### -->
+<para>
+
+</para>
+
+@predictor: 
+
+
+<!-- ##### FUNCTION command_predictor_create ##### -->
+<para>
+
+</para>
+
+@graph: 
+@Returns: 
+
+
+<!-- ##### FUNCTION command_predictor_calculate_recency_percentages ##### -->
+<para>
+
+</para>
+
+@predictor: 
+
+
+<!-- ##### FUNCTION command_predictor_get_recency_percent_correct ##### -->
+<para>
+
+</para>
+
+@predictor: 
+@index: 
+@Returns: 
+
+
+<!-- ##### FUNCTION command_predictor_calculate_frequency_percentages ##### -->
+<para>
+
+</para>
+
+@predictor: 
+
+
+<!-- ##### FUNCTION command_predictor_get_frequency_percent_correct ##### -->
+<para>
+
+</para>
+
+@predictor: 
+@index: 
+@Returns: 
+
+
+<!-- ##### FUNCTION command_predictor_predict_same_as_last ##### -->
+<para>
+
+</para>
+
+@predictor: 
+@Returns: 
+
+
+<!-- ##### FUNCTION command_predictor_predict_high_stat ##### -->
+<para>
+
+</para>
+
+@predictor: 
+@Returns: 
+
+
+<!-- ##### FUNCTION command_predictor_evaluate_prediction ##### -->
+<para>
+
+</para>
+
+@predictor: 
+@actual_vertex: 
+@algorithm: 
+@num_predictions: 
+
+

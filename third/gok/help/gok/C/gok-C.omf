@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<omf>
+  <resource>
+    <creator>
+      bruce.etheridge@utoronto.ca
+    </creator>
+    <title>
+      GNOME Onscreen Keyboard (GOK)
+    </title>
+    <date>
+      2002-09-25
+    </date>
+    <subject category="GNOME|Accessibility"/>
+    <description>
+      The User Manual for the GNOME Onscreen Keyboard.
+    </description>
+    <type>
+      user's guide
+    </type>
+    <format mime="text/xml" dtd="-//OASIS//DTD DocBook XML V4.1.2//EN"/>
+    <identifier url="gok.xml"/>
+    <language code="C"/>
+    <relation seriesid="d6ed21d2-d0d0-11d6-994a-eb03e80c0571"/>
+  </resource>
+</omf>
