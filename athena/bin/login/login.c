@@ -1,11 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.25 1989-07-19 20:24:16 raeburn Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.26 1989-10-17 10:14:48 probe Exp $
  */
 
 #ifndef lint
 static char *rcsid_login_c =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.25 1989-07-19 20:24:16 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.26 1989-10-17 10:14:48 probe Exp $";
 #endif	/* lint */
 
 /*
@@ -59,7 +59,6 @@ static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
 #include <netinet/in.h>
 #include <grp.h>
 typedef struct in_addr inaddr_t;
-#include <attach.h>
 
 #define TTYGRPNAME	"tty"		/* name of group to own ttys */
 #define TTYGID(gid)	tty_gid(gid)	/* gid that owns all ttys */
@@ -684,6 +683,7 @@ leavethis:
 		(void) dest_tkt();
 	exit(1);
     }
+    chdir(pwd->pw_dir);
 
     setenv("HOME", pwd->pw_dir, 1);
     setenv("SHELL", pwd->pw_shell, 1);
@@ -1197,10 +1197,8 @@ attach_homedir()
 	} 
 	while (wait(&status) != attachpid)
 		;
-	if (status.w_retcode == ATTACH_OK ||
-	    status.w_retcode == ATTACH_ERR_ATTACHED) {
+	if (!status.w_retcode) {
 		chown(pwd->pw_dir, pwd->pw_uid, pwd->pw_gid);
-		chdir(pwd->pw_dir);
 		return (0);
 	}
 	return (1);
