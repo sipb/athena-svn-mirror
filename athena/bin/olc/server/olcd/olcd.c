@@ -23,13 +23,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v $
- *	$Id: olcd.c,v 1.29 1990-12-05 21:26:11 lwvanels Exp $
+ *	$Id: olcd.c,v 1.30 1990-12-09 16:54:21 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.29 1990-12-05 21:26:11 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/olcd.c,v 1.30 1990-12-09 16:54:21 lwvanels Exp $";
 #endif
 #endif
 
@@ -758,7 +758,7 @@ get_kerberos_ticket()
 	if (ptr)
 	  *ptr = '\0';
 	uncase(sinstance);
-	log_error (fmt ("get new tickets: %s %s ", K_SERVICE, sinstance));
+	log_status (fmt ("get new tickets: %s %s ", K_SERVICE, sinstance));
 	dest_tkt();
 	ret = krb_get_svc_in_tkt(K_SERVICE, sinstance, SERVER_REALM,
 				 "krbtgt", SERVER_REALM,
