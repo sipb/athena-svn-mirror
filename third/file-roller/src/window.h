@@ -74,7 +74,6 @@ typedef struct {
         GtkWidget *      app;
 	GtkWidget *      list_view;
 	GtkListStore *   list_store;
-	GtkListStore *   empty_store;
 	GtkWidget *      toolbar;
 	GtkWidget *      statusbar;
 	GtkWidget *      location_bar;
@@ -128,6 +127,9 @@ typedef struct {
 						     * handle. */
 	gint             activity_ref;              /* when > 0 some activity
                                                      * is present. */
+
+	guint            update_timeout_handle;     /* update file list 
+ 						     * timeout handle. */
 
 	VisitDirHandle  *vd_handle;
 

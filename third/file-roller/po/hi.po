@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: file-roller.HEAD.hi\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 19:49+0200\n"
+"POT-Creation-Date: 2004-08-06 16:53+0000\n"
 "PO-Revision-Date: 2004-08-02 13:26+0530\n"
 "Last-Translator: Ravishankar Shrivastava <raviratlami@yahoo.com>\n"
 "Language-Team: Hindi <indlinux-hindi@lists.sourceforge.net>\n"
@@ -107,7 +107,7 @@ msgid "Zoo (.zoo)"
 msgstr "जू (.zoo)"
 
 #: src/actions.c:176 src/actions.c:196 src/dlg-batch-add.c:101
-#: src/dlg-batch-add.c:127 src/dlg-batch-add.c:169 src/window.c:3812
+#: src/dlg-batch-add.c:127 src/dlg-batch-add.c:169 src/window.c:3786
 msgid "Could not create the archive"
 msgstr "अभिलेख तैयार नहीं कर सका"
 
@@ -183,7 +183,7 @@ msgstr "प्रतिलिपि (_C)"
 msgid "_Move"
 msgstr "खिसकाएँ (_M)"
 
-#: src/actions.c:876 src/window.c:4924
+#: src/actions.c:876 src/window.c:4900
 msgid "Rename"
 msgstr "नाम बदलें "
 
@@ -191,7 +191,7 @@ msgstr "नाम बदलें "
 msgid "New archive name (without extension)"
 msgstr "नया अभिलेख नाम (एक्सटेंशन रहित)"
 
-#: src/actions.c:881 src/window.c:4929
+#: src/actions.c:881 src/window.c:4905
 msgid "_Rename"
 msgstr "नाम बदलें (_R)"
 
@@ -201,7 +201,7 @@ msgid ""
 "permanently?"
 msgstr "अभिलेख रद्दी पर नहीं ले जाया जा सका. क्या आप इसे हमेशा हेतु मिटाना चाहेंगे?"
 
-#: src/actions.c:1219 src/window.c:4643
+#: src/actions.c:1219 src/window.c:4618
 msgid "Last Output"
 msgstr "अंतिम आउटपुट"
 
@@ -217,8 +217,8 @@ msgstr ""
 
 #  Create the application.
 #. Create the application.
-#: src/actions.c:1280 src/gtk-utils.c:390 src/main.c:102 src/window.c:855
-#: src/window.c:1286 src/window.c:3111
+#: src/actions.c:1280 src/gtk-utils.c:390 src/main.c:102 src/window.c:843
+#: src/window.c:1274 src/window.c:3085
 msgid "File Roller"
 msgstr "फ़ाइल रोलर"
 
@@ -226,79 +226,78 @@ msgstr "फ़ाइल रोलर"
 msgid "An archive manager for GNOME."
 msgstr "गनोम हेतु एक अभिलेख प्रबंधक"
 
-#: src/dlg-add-files.c:85 src/dlg-add-files.c:147 src/dlg-add-folder.c:115
-#: src/dlg-add-folder.c:247
+#: src/dlg-add-files.c:92 src/dlg-add-files.c:99 src/dlg-add-folder.c:121
 #, c-format
 msgid "You don't have the right permissions to read files from folder \"%s\""
 msgstr "फ़ोल्डर \"%s\" में से फ़ाइलों को पढ़ने हेतु आपके पास उचित अनुमतियाँ नहीं हैं"
 
-#: src/dlg-add-files.c:91 src/dlg-add-files.c:153 src/dlg-add-folder.c:121
-#: src/dlg-add-folder.c:253 src/window.c:1967 src/window.c:2005
+#: src/dlg-add-files.c:98 src/dlg-add-folder.c:127 src/window.c:1952
+#: src/window.c:1990
 msgid "Could not add the files to the archive"
 msgstr "फ़ाइलों को अभिलेख में जोड़ नहीं सका"
 
-#: src/dlg-add-files.c:179
+#: src/dlg-add-files.c:155
 msgid "Add Files"
 msgstr "फ़ाइलें जोड़ें"
 
-#: src/dlg-add-files.c:191 src/dlg-add-folder.c:321
+#: src/dlg-add-files.c:167 src/dlg-add-folder.c:299
 msgid "_Add only if newer"
 msgstr "तभी जोड़ें जब नया हो (_A)"
 
-#: src/dlg-add-folder.c:309
+#: src/dlg-add-folder.c:287
 msgid "Add a Folder"
 msgstr "फ़ोल्डर जोड़ें"
 
-#: src/dlg-add-folder.c:322
+#: src/dlg-add-folder.c:300
 msgid "_Include subfolders"
 msgstr "सब-फ़ोल्डर्स शामिल करें (_I)"
 
-#: src/dlg-add-folder.c:323
+#: src/dlg-add-folder.c:301
 msgid "Exclude folders that are symbolic lin_ks"
 msgstr "जो फ़ोल्डर्स सिंबालिक लिंक हैं उन्हें नहीं जोड़ें (_k)"
 
-#: src/dlg-add-folder.c:326 src/dlg-add-folder.c:331
+#: src/dlg-add-folder.c:304 src/dlg-add-folder.c:309
 msgid "example: *.o; *.bak"
 msgstr "उदाहरण: *.o; *.bak"
 
-#: src/dlg-add-folder.c:327
+#: src/dlg-add-folder.c:305
 msgid "_Include files:"
 msgstr "फ़ाइलें शामिल करें: (_I)"
 
-#: src/dlg-add-folder.c:332
+#: src/dlg-add-folder.c:310
 msgid "E_xclude files:"
 msgstr "फ़ाइलें शामिल नहीं करें: (_x)"
 
-#: src/dlg-add-folder.c:335
+#: src/dlg-add-folder.c:313
 msgid "_Load Options"
 msgstr "लोड हेतु विकल्प (_L)"
 
-#: src/dlg-add-folder.c:336
+#: src/dlg-add-folder.c:314
 msgid "Sa_ve Options"
 msgstr "सहेजने हेतु विकल्प (_v)"
 
-#: src/dlg-add-folder.c:796
+#: src/dlg-add-folder.c:776
 msgid "Save Options"
 msgstr "सहेजने हेतु विकल्प"
 
-#: src/dlg-add-folder.c:797
+#: src/dlg-add-folder.c:777
 msgid "Options Name:"
 msgstr "विकल्प नाम:"
 
-#: src/dlg-batch-add.c:128 src/fr-archive.c:631 src/window.c:3813
-#: src/window.c:3969
+#: src/dlg-batch-add.c:128 src/fr-archive.c:631 src/window.c:3787
+#: src/window.c:3943
 msgid "Archive type not supported."
 msgstr "अभिलेख प्रकार समर्थित नहीं."
 
-#: src/dlg-batch-add.c:148 src/dlg-extract.c:152 src/window.c:4210
+#: src/dlg-batch-add.c:148 src/dlg-extract.c:152 src/window.c:4185
 msgid "Destination folder does not exist.  Do you want to create it?"
 msgstr "गंतव्य फ़ोल्डर मौज़ूद नहीं है. क्या आप इसे तैयार करना चाहेंगे?"
 
-#: src/dlg-batch-add.c:151 src/dlg-extract.c:155 src/window.c:4213
+#: src/dlg-batch-add.c:151 src/dlg-extract.c:155 src/window.c:4188
 msgid "Create _Folder"
 msgstr "फ़ोल्डर बनाएँ (_F)"
 
-#: src/dlg-batch-add.c:165 src/dlg-extract.c:172 src/window.c:4230
+#: src/dlg-batch-add.c:165 src/dlg-extract.c:172 src/window.c:4205
 #, c-format
 msgid "Could not create the destination folder: %s."
 msgstr "गंतव्य फ़ोल्डर: %s तैयार नहीं कर सका."
@@ -308,7 +307,7 @@ msgid "Archive not created"
 msgstr "अभिलेख बनाया नहीं गया"
 
 #: src/dlg-extract.c:176 src/dlg-extract.c:196 src/dlg-extract.c:221
-#: src/window.c:4234 src/window.c:4254
+#: src/window.c:4209 src/window.c:4229
 msgid "Extraction not performed"
 msgstr "निकाला नहीं गया"
 
@@ -387,7 +386,7 @@ msgstr "%s गुण"
 msgid "Modified on:"
 msgstr "को परिवर्धित:"
 
-#: src/dlg-prop.c:140 src/window.c:425
+#: src/dlg-prop.c:140 src/window.c:413
 msgid "%d %B %Y, %H:%M"
 msgstr "%d %B %Y, %H:%M"
 
@@ -497,7 +496,7 @@ msgstr "फ़ाइल जोड़ रहे:"
 msgid "Removing file: "
 msgstr "फ़ाइल मिटा रहे:"
 
-#: src/fr-command-tar.c:451 src/window.c:1388
+#: src/fr-command-tar.c:451 src/window.c:1376
 msgid "Deleting files from archive"
 msgstr "फ़ाइलों को अभिलेख से मिटा रहे"
 
@@ -727,7 +726,7 @@ msgstr "पासवर्ड... (_w)"
 msgid "Specify a password for this archive"
 msgstr "इस अभिलेख हेतु पासवर्ड निर्दिष्ट करें"
 
-#: src/ui.h:126 src/window.c:5036
+#: src/ui.h:126 src/window.c:5012
 msgid "_Paste"
 msgstr "चिपकाएँ (_P)"
 
@@ -883,58 +882,58 @@ msgstr "स्थान से (_L)"
 msgid "Sort file list by location"
 msgstr "स्थान के आधार फ़ाइल सूची छाँटें"
 
-#: src/window.c:698
+#: src/window.c:686
 msgid "Folder"
 msgstr "फ़ोल्डर"
 
-#: src/window.c:863
+#: src/window.c:851
 msgid "[read only]"
 msgstr "[सिर्फ पढ़ने योग्य] "
 
-#: src/window.c:957
+#: src/window.c:945
 #, c-format
 msgid "%d file (%s)"
 msgid_plural "%d files (%s)"
 msgstr[0] "%d फ़ाइल (%s)"
 msgstr[1] ""
 
-#: src/window.c:962
+#: src/window.c:950
 #, c-format
 msgid "%d file selected (%s)"
 msgid_plural "%d files selected (%s)"
 msgstr[0] "%d फ़ाइल चुना (%s)"
 msgstr[1] ""
 
-#: src/window.c:1385
+#: src/window.c:1373
 msgid "Reading archive"
 msgstr "अभिलेख पढ़ रहे"
 
-#: src/window.c:1391
+#: src/window.c:1379
 msgid "Adding files to archive"
 msgstr "फ़ाइलें अभिलेख में जोड़ रहे"
 
-#: src/window.c:1394
+#: src/window.c:1382
 msgid "Extracting files from archive"
 msgstr "अभिलेख से फ़ाइलें निकाल रहे"
 
-#: src/window.c:1397
+#: src/window.c:1385
 msgid "Testing archive"
 msgstr "अभिलेख जाँच रहे"
 
-#: src/window.c:1400
+#: src/window.c:1388
 msgid "Getting the file list"
 msgstr "फ़ाइल सूची प्राप्त कर रहे"
 
-#: src/window.c:1407
+#: src/window.c:1395
 msgid "wait please..."
 msgstr "कृपया इंतजार करें..."
 
-#: src/window.c:1484
+#: src/window.c:1472
 #, c-format
 msgid "Could not display the folder \"%s\""
 msgstr "फ़ोल्डर \"%s\" प्रदर्शित नहीं कर सका"
 
-#: src/window.c:1543
+#: src/window.c:1531
 msgid ""
 "This archive is password protected.\n"
 "Please specify a password with the command: Edit->Password"
@@ -942,58 +941,58 @@ msgstr ""
 "यह अभिलेख पासवर्ड से सुरक्षित है.\n"
 "कृपया पासवर्ड इस कमांड के साथ दें: संपादन->पासवर्ड"
 
-#: src/window.c:1545
+#: src/window.c:1533
 msgid ""
 "The specified password is not valid, please specify a new password with the "
 "command: Edit->Password"
 msgstr ""
 "उल्लेखित पासवर्ड वैध नहीं है, कृपया एक नया पासवर्ड इस कमांड के साथ दें: संपादन->पासवर्ड"
 
-#: src/window.c:1550 src/window.c:2169
+#: src/window.c:1538
 msgid "Could not perform the operation"
 msgstr "क्रिया पूरा नहीं कर पाया"
 
-#: src/window.c:1575
+#: src/window.c:1563
 msgid "An error occurred while extracting files."
 msgstr "फ़ाइलें निकालते समय एक त्रुटि हुई."
 
-#: src/window.c:1579
+#: src/window.c:1567
 msgid "An error occurred while loading the archive."
 msgstr "अभिलेख लोड करते समय एक त्रुटि हुई."
 
-#: src/window.c:1583
+#: src/window.c:1571
 msgid "An error occurred while deleting files from the archive."
 msgstr "अभिलेख में से फ़ाइल मिटाते समय एक त्रुटि हुई."
 
-#: src/window.c:1587
+#: src/window.c:1575
 msgid "An error occurred while adding files to the archive."
 msgstr "अभिलेख में फ़ाइलें जोड़ते समय एक त्रुटि हुई."
 
-#: src/window.c:1591
+#: src/window.c:1579
 msgid "An error occurred while testing archive."
 msgstr "अभिलेख के परीक्षम के दौरान एक त्रुटि हुई"
 
-#: src/window.c:1600
+#: src/window.c:1588
 msgid "Command not found."
 msgstr "कमांड नही मिला."
 
-#: src/window.c:1603
+#: src/window.c:1591
 msgid "Command exited abnormally."
 msgstr "कमांड अस्वाभाविक रूप से बाहर हुआ."
 
-#: src/window.c:1732
+#: src/window.c:1720
 msgid "Test Result"
 msgstr "जाँच परिणाम"
 
-#: src/window.c:1968
+#: src/window.c:1953
 msgid "You don't have the right permissions."
 msgstr "आपके पास उचित अनुमतियाँ नहीं हैं."
 
-#: src/window.c:2006
+#: src/window.c:1991
 msgid "You can't add an archive to itself."
 msgstr "आप एक अभिलेख को उसी अभिलेख में नहीं जोड़ सकते."
 
-#: src/window.c:2203
+#: src/window.c:2175
 msgid ""
 "Do you want to add this file to the current archive or open it as a new "
 "archive?"
@@ -1001,84 +1000,84 @@ msgstr ""
 "क्या आप इस फ़ाइल को वर्तमान अभिलेख में जोड़ना चाहते हैं या इसे नए अभिलेख के रूप मे खोलना "
 "चाहते हैं?"
 
-#: src/window.c:2240
+#: src/window.c:2212
 msgid "Do you want to create a new archive with these files?"
 msgstr "कया आप इन फ़ाइलों के साथ नया अभिलेख बनाना चाहते हैं?"
 
-#: src/window.c:2243
+#: src/window.c:2215
 msgid "Create _Archive"
 msgstr "अभिलेख तैयार करें (_A)"
 
-#: src/window.c:2564
+#: src/window.c:2538
 msgid "Size"
 msgstr "आकार"
 
-#: src/window.c:2565
+#: src/window.c:2539
 msgid "Type"
 msgstr "प्रकार"
 
-#: src/window.c:2566
+#: src/window.c:2540
 msgid "Date Modified"
 msgstr "तिथि परिवर्धित"
 
-#: src/window.c:2567
+#: src/window.c:2541
 msgid "Location"
 msgstr "स्थान"
 
-#: src/window.c:2574
+#: src/window.c:2548
 msgid "Name"
 msgstr "नाम"
 
-#: src/window.c:3031
+#: src/window.c:3005
 #, c-format
 msgid "Open '%s'"
 msgstr "खोलें '%s'"
 
-#: src/window.c:3350
+#: src/window.c:3324
 msgid "Go to the previous visited location"
 msgstr "पिछले सैर किए स्थान पर जाएँ"
 
-#: src/window.c:3358
+#: src/window.c:3332
 msgid "Go to the next visited location"
 msgstr "अगले सैर किए स्थान पर जाएँ"
 
-#: src/window.c:3366
+#: src/window.c:3340
 msgid "Go up one level"
 msgstr "एक स्तर ऊपर जाएँ"
 
-#: src/window.c:3374
+#: src/window.c:3348
 msgid "Go to the home location"
 msgstr "घर स्थान पर जाएँ"
 
 #  current location
 #. current location
-#: src/window.c:3393
+#: src/window.c:3367
 msgid "Location:"
 msgstr "स्थानः"
 
-#: src/window.c:3904
+#: src/window.c:3878
 #, c-format
 msgid "Could not open \"%s\""
 msgstr "\"%s\" को खोल नहीं सका"
 
-#: src/window.c:3962
+#: src/window.c:3936
 #, c-format
 msgid "Could not save the archive \"%s\""
 msgstr "अभिलेख \"%s\" सहेज नहीं सका"
 
-#: src/window.c:4856
+#: src/window.c:4832
 msgid "The new name is void."
 msgstr "नया नाम अमान्य है."
 
-#: src/window.c:4856 src/window.c:4860 src/window.c:4869
+#: src/window.c:4832 src/window.c:4836 src/window.c:4845
 msgid "Please use a different name."
 msgstr "कृपया एक भिन्न नाम उपयोग करें."
 
-#: src/window.c:4860
+#: src/window.c:4836
 msgid "The new name is equal to the old one."
 msgstr "नया नाम पुराने नाम के बराबर है."
 
-#: src/window.c:4869
+#: src/window.c:4845
 #, c-format
 msgid ""
 "The name \"%s\" is not valid because it cannot contain the characters: %s\n"
@@ -1089,34 +1088,34 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/window.c:4925
+#: src/window.c:4901
 msgid "New folder name"
 msgstr "नया फ़ोल्डर नाम"
 
-#: src/window.c:4925
+#: src/window.c:4901
 msgid "New file name"
 msgstr "नया फ़ाइल नाम"
 
-#: src/window.c:4946
+#: src/window.c:4922
 msgid "Could not rename the folder"
 msgstr "फ़ोल्डर नाम नहीं बदल सका"
 
-#: src/window.c:4946
+#: src/window.c:4922
 msgid "Could not rename the file"
 msgstr "फ़ाइल नाम बदल नहीं सका"
 
-#: src/window.c:5031
+#: src/window.c:5007
 msgid "Paste Selection"
 msgstr "चयन चिपकाएँ"
 
-#: src/window.c:5032
+#: src/window.c:5008
 msgid "Destination folder"
 msgstr "गंतव्य फ़ोल्डर"
 
-#: src/window.c:5614
+#: src/window.c:5594
 msgid "Add files to an archive"
 msgstr "अभिलेख में नया फ़ाइल जोड़ें"
 
-#: src/window.c:5641
+#: src/window.c:5621
 msgid "Extract archive"
 msgstr "अभिलेख निकालें"

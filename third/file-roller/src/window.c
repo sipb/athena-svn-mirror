@@ -39,6 +39,7 @@
 #include "dlg-extract.h"
 #include "dlg-viewer.h"
 #include "dlg-viewer-or-app.h"
+#include "dlg-open-with.h"
 #include "egg-recent.h"
 #include "egg-recent-util.h"
 #include "eggtreemultidnd.h"
@@ -631,7 +632,6 @@ get_action_from_sort_method (WindowSortMethod sort_method)
 typedef struct {
 	FRWindow *window;
 	GList    *file_list;
-	gboolean  add_timeout;
 } UpdateData;
 
 
@@ -665,6 +665,11 @@ update_file_list_idle (gpointer callback_data)
 	GList      *scan;
 	int         i;
 	int         n = FILES_TO_PROCESS_AT_ONCE;
+
+	if (window->update_timeout_handle != 0) {
+		g_source_remove (window->update_timeout_handle);
+		window->update_timeout_handle = 0;
+	}
 
 	if (data->file_list == NULL) {
 		update_data_free (data);
@@ -740,14 +745,13 @@ update_file_list_idle (gpointer callback_data)
 	if (data->file_list == NULL) {
 		update_data_free (data);
 		return FALSE;
-	} else if (data->add_timeout) {
-		data->add_timeout = FALSE;
-		g_timeout_add (DISPLAY_TIMEOUT_INTERVAL_MSECS, 
-			       update_file_list_idle, 
-			       data);
-	}
 
-	return TRUE;
+	} else 
+		window->update_timeout_handle = g_timeout_add (DISPLAY_TIMEOUT_INTERVAL_MSECS, 
+							       update_file_list_idle, 
+							       data);
+
+	return FALSE;
 }
 
 
@@ -782,9 +786,6 @@ window_update_file_list (FRWindow *window)
 		gtk_widget_grab_focus (window->list_view);
 		window->give_focus_to_the_list = FALSE;
 	}
-
-	gtk_tree_view_set_model (GTK_TREE_VIEW (window->list_view), 
-				 GTK_TREE_MODEL (window->empty_store));
 
 	gtk_list_store_clear (window->list_store);
 	if (! GTK_WIDGET_VISIBLE (window->list_view))
@@ -829,7 +830,6 @@ window_update_file_list (FRWindow *window)
 	udata = g_new0 (UpdateData, 1);
 	udata->window = window;
 	udata->file_list = g_list_copy (file_list);
-	udata->add_timeout = TRUE;
 
 	update_file_list_idle (udata);
 
@@ -1424,7 +1424,7 @@ _window_add_to_recent_list (FRWindow *window,
 
 	/* avoid adding temporary archives to the list. */
 
-	tmp = g_strconcat (g_get_tmp_dir (), "/file-roller", NULL);
+	tmp = g_strconcat (g_get_tmp_dir (), "/fr-", NULL);
 	if (path_in_path (tmp, filename)) {
 		g_free (tmp);
 		return;
@@ -1910,6 +1910,7 @@ get_file_list_from_url_list (gchar *url_list)
 	GList *list = NULL;
 	int    i;
 	char  *url_start, *url_end;
+	gboolean dnd_valid = FALSE;
 
 	i = 0;
 	url_start = url_list;
@@ -1925,21 +1926,35 @@ get_file_list_from_url_list (gchar *url_list)
 			url_start += 5;
 			if ((url_start[0] == '/') 
 			    && (url_start[1] == '/')) url_start += 2;
+
+			dnd_valid = TRUE;
+
+			url = g_strndup (url_start, url_end - url_start);
+			list = g_list_prepend (list, get_path_from_url (url));
+			g_free (url);
+
+			while ((url_list[i] != '\0')
+			       && ((url_list[i] == '\r') 
+				   || (url_list[i] == '\n'))) i++;
+			url_start = url_list + i;
+
 		} else {
-			path_list_free (list);
-			return NULL;
+			while ((url_list[i] != '\0')
+			       && ((url_list[i] == '\r') 
+				   || (url_list[i] == '\n'))) i++;
+			url_start = url_list + i;
+			if (url_list[i] == '\0' && !dnd_valid) {
+				path_list_free (list);
+				return NULL;
+			}
 		}
-
-		url = g_strndup (url_start, url_end - url_start);
-		list = g_list_prepend (list, get_path_from_url (url));
-		g_free (url);
-
-		while ((url_list[i] != '\0')
-		       && ((url_list[i] == '\r')
-			   || (url_list[i] == '\n'))) i++;
-		url_start = url_list + i;
 	}
 	
+	if (!dnd_valid) {
+		path_list_free (list);
+		return NULL;
+	}
+
 	return g_list_reverse (list);
 }
 
@@ -2682,7 +2697,7 @@ default_sort_func (GtkTreeModel *model,
 		   GtkTreeIter  *b, 
 		   gpointer      user_data)
 {
-	return 1;
+	return 0;
 }
 
 
@@ -3200,6 +3215,8 @@ window_new ()
 	window->activity_timeout_handle = 0;
 	window->vd_handle = NULL;
 
+	window->update_timeout_handle = 0;
+
 	window->archive_present = FALSE;
 	window->archive_new = FALSE;
 	window->archive_filename = NULL;
@@ -3243,14 +3260,6 @@ window_new ()
 						 G_TYPE_STRING,
 						 G_TYPE_STRING,
 						 G_TYPE_STRING);
-	window->empty_store = gtk_list_store_new (NUMBER_OF_COLUMNS, 
-						  G_TYPE_POINTER,
-						  GDK_TYPE_PIXBUF,
-						  G_TYPE_STRING,
-						  G_TYPE_STRING,
-						  G_TYPE_STRING,
-						  G_TYPE_STRING,
-						  G_TYPE_STRING);
 	window->list_view = gtk_tree_view_new_with_model (GTK_TREE_MODEL (window->list_store));
 
 	gtk_tree_view_set_rules_hint (GTK_TREE_VIEW (window->list_view), TRUE);
@@ -3734,7 +3743,6 @@ window_close (FRWindow *window)
 
 	g_object_unref (window->archive);
 	g_object_unref (window->list_store);
-	g_object_unref (window->empty_store);
 
 	_window_clipboard_clear (window);
 
@@ -5155,9 +5163,7 @@ view_file (FRArchive   *archive,
 	   FRProcError *error,
 	   gpointer     callback_data)
 {
-	ViewerData         *vdata = callback_data;
-	const char         *mime_type;
-	GnomeVFSMimeAction *mime_action;
+	ViewerData *vdata = callback_data;
 
 	g_signal_handlers_disconnect_matched (G_OBJECT (archive), 
 					      G_SIGNAL_MATCH_DATA, 
@@ -5170,32 +5176,8 @@ view_file (FRArchive   *archive,
 		return;
 	}
 
-	mime_type = gnome_vfs_mime_type_from_name_or_default (vdata->filename, NULL);
-	mime_action = gnome_vfs_mime_get_default_action (mime_type);
-
-	if ((mime_type == NULL) || (mime_action == NULL)) {
-		dlg_viewer (vdata->window, vdata->filename);
-		viewer_list = g_list_prepend (viewer_list, vdata);
-	} else {
-		FRProcess  *proc;
-
-		proc = fr_process_new ();
-		proc->term_on_stop = FALSE;
-		vdata->process = proc;
-		
-		fr_process_begin_command (proc, "nautilus");
-		fr_process_add_arg (proc, "--sm-disable"); 
-		fr_process_add_arg (proc, "--no-desktop");
-		fr_process_add_arg (proc, "--no-default-window");
-		fr_process_add_arg (proc, vdata->e_filename);
-		fr_process_end_command (proc);
-
-		viewer_list = g_list_prepend (viewer_list, vdata);
-		fr_process_start (proc);
-	}
-
-	if (mime_action != NULL)
-		gnome_vfs_mime_action_free (mime_action);
+	dlg_viewer (vdata->window, vdata->filename);
+	viewer_list = g_list_prepend (viewer_list, vdata);
 }
 
 
@@ -5334,44 +5316,29 @@ window_open_files (FRWindow *window,
 void
 window_view_or_open_file (FRWindow *window, 
 			  gchar    *filename)
-{
-	GnomeVFSMimeAction *action;
-	const char         *mime_type;
-	char               *command;
-	GList              *singleton;
 
-	
+{
+	const char              *mime_type = NULL;
+	GnomeVFSMimeApplication *application = NULL;
+	GList                   *file_list;
+
 	if (window->activity_ref > 0)
 		return;
-	
+
 	mime_type = gnome_vfs_mime_type_from_name_or_default (filename, NULL);
-	if (mime_type == NULL) {
-		window_view_file (window, filename);
-		return;
-	}
-		
-	action = gnome_vfs_mime_get_default_action (mime_type);
-		
-	if (action == NULL) {
-		dlg_viewer_or_app (window, filename);
-		return;
-	}
-		
-	switch (action->action_type) {
-	case GNOME_VFS_MIME_ACTION_TYPE_NONE:
-	case GNOME_VFS_MIME_ACTION_TYPE_COMPONENT:
-		window_view_file (window, filename);
-		break;
-		
-	case GNOME_VFS_MIME_ACTION_TYPE_APPLICATION:
-		command = application_get_command (action->action.application);
-		singleton = g_list_append (NULL, filename);
-		window_open_files (window, command, singleton);
-		g_list_free (singleton);
+	if (mime_type != NULL)
+		application = gnome_vfs_mime_get_default_application (mime_type);
+
+	file_list = g_list_append (NULL, filename);
+
+	if (application != NULL) {
+		char *command = application_get_command (application);
+		window_open_files (window, command, file_list);
 		g_free (command);
-		break;
-	}
-	gnome_vfs_mime_action_free (action);
+	} else 
+		dlg_open_with (window, file_list);
+
+	g_list_free (file_list);
 }
 
 

@@ -3,13 +3,13 @@
 # Jimmy Carlson <sanaya@telia.com>, 2002.
 # Christian Rose <menthos@menthos.com>, 2002, 2003, 2004.
 #
-# $Id: sv.po,v 1.1.1.2 2004-10-06 19:41:53 ghudson Exp $
+# $Id: sv.po,v 1.1.1.3 2005-03-10 19:07:39 ghudson Exp $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: file-roller\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-13 19:49+0200\n"
+"POT-Creation-Date: 2004-08-19 15:32+0200\n"
 "PO-Revision-Date: 2004-08-19 15:32+0200\n"
 "Last-Translator: Christian Rose <menthos@menthos.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -107,7 +107,7 @@ msgid "Zoo (.zoo)"
 msgstr "Zoo (.zoo)"
 
 #: src/actions.c:176 src/actions.c:196 src/dlg-batch-add.c:101
-#: src/dlg-batch-add.c:127 src/dlg-batch-add.c:169 src/window.c:3812
+#: src/dlg-batch-add.c:127 src/dlg-batch-add.c:169 src/window.c:3802
 msgid "Could not create the archive"
 msgstr "Kunde inte skapa arkivet"
 
@@ -183,7 +183,7 @@ msgstr "_Kopiera"
 msgid "_Move"
 msgstr "_Flytta"
 
-#: src/actions.c:876 src/window.c:4924
+#: src/actions.c:876 src/window.c:4916
 msgid "Rename"
 msgstr "Byt namn"
 
@@ -191,7 +191,7 @@ msgstr "Byt namn"
 msgid "New archive name (without extension)"
 msgstr "Nytt arkivnamn (utan filändelse)"
 
-#: src/actions.c:881 src/window.c:4929
+#: src/actions.c:881 src/window.c:4921
 msgid "_Rename"
 msgstr "_Byt namn"
 
@@ -202,7 +202,7 @@ msgid ""
 msgstr ""
 "Arkivet kan inte flyttas till papperskorgen. Vill du ta bort det permanent?"
 
-#: src/actions.c:1219 src/window.c:4643
+#: src/actions.c:1219 src/window.c:4634
 msgid "Last Output"
 msgstr "Senaste utdata"
 
@@ -218,8 +218,8 @@ msgstr ""
 "Skicka synpunkter på översättningen till sv@li.org"
 
 #. Create the application.
-#: src/actions.c:1280 src/gtk-utils.c:390 src/main.c:102 src/window.c:855
-#: src/window.c:1286 src/window.c:3111
+#: src/actions.c:1280 src/gtk-utils.c:390 src/main.c:102 src/window.c:843
+#: src/window.c:1274 src/window.c:3101
 msgid "File Roller"
 msgstr "File Roller"
 
@@ -235,7 +235,7 @@ msgstr ""
 "Du har inte de rättigheter som krävs för att läsa filer i mappen \"%s\""
 
 #: src/dlg-add-files.c:91 src/dlg-add-files.c:153 src/dlg-add-folder.c:121
-#: src/dlg-add-folder.c:253 src/window.c:1967 src/window.c:2005
+#: src/dlg-add-folder.c:253 src/window.c:1955 src/window.c:1993
 msgid "Could not add the files to the archive"
 msgstr "Kunde inte lägga till filerna till arkivet"
 
@@ -287,20 +287,20 @@ msgstr "Sparalternativ"
 msgid "Options Name:"
 msgstr "Alternativnamn:"
 
-#: src/dlg-batch-add.c:128 src/fr-archive.c:631 src/window.c:3813
-#: src/window.c:3969
+#: src/dlg-batch-add.c:128 src/fr-archive.c:631 src/window.c:3803
+#: src/window.c:3959
 msgid "Archive type not supported."
 msgstr "Arkivtypen stöds inte."
 
-#: src/dlg-batch-add.c:148 src/dlg-extract.c:152 src/window.c:4210
+#: src/dlg-batch-add.c:148 src/dlg-extract.c:152 src/window.c:4201
 msgid "Destination folder does not exist.  Do you want to create it?"
 msgstr "Målmappen finns inte. Vill du skapa den?"
 
-#: src/dlg-batch-add.c:151 src/dlg-extract.c:155 src/window.c:4213
+#: src/dlg-batch-add.c:151 src/dlg-extract.c:155 src/window.c:4204
 msgid "Create _Folder"
 msgstr "Skapa _mapp"
 
-#: src/dlg-batch-add.c:165 src/dlg-extract.c:172 src/window.c:4230
+#: src/dlg-batch-add.c:165 src/dlg-extract.c:172 src/window.c:4221
 #, c-format
 msgid "Could not create the destination folder: %s."
 msgstr "Kunde inte skapa målmappen: %s."
@@ -310,7 +310,7 @@ msgid "Archive not created"
 msgstr "Arkivet skapades inte"
 
 #: src/dlg-extract.c:176 src/dlg-extract.c:196 src/dlg-extract.c:221
-#: src/window.c:4234 src/window.c:4254
+#: src/window.c:4225 src/window.c:4245
 msgid "Extraction not performed"
 msgstr "Uppackning inte utförd"
 
@@ -390,7 +390,7 @@ msgstr "Egenskaper för %s"
 msgid "Modified on:"
 msgstr "Ändrad den:"
 
-#: src/dlg-prop.c:140 src/window.c:425
+#: src/dlg-prop.c:140 src/window.c:413
 msgid "%d %B %Y, %H:%M"
 msgstr "%d %B %Y, %H.%M"
 
@@ -502,7 +502,7 @@ msgstr "Lägger till fil: "
 msgid "Removing file: "
 msgstr "Tar bort fil: "
 
-#: src/fr-command-tar.c:451 src/window.c:1388
+#: src/fr-command-tar.c:451 src/window.c:1376
 msgid "Deleting files from archive"
 msgstr "Tar bort filer från arkivet"
 
@@ -731,7 +731,7 @@ msgstr "Lösen_ord..."
 msgid "Specify a password for this archive"
 msgstr "Ange ett lösenord för detta arkiv"
 
-#: src/ui.h:126 src/window.c:5036
+#: src/ui.h:126 src/window.c:5028
 msgid "_Paste"
 msgstr "Klistra _in"
 
@@ -887,58 +887,58 @@ msgstr "efter _plats"
 msgid "Sort file list by location"
 msgstr "Sortera fillista efter plats"
 
-#: src/window.c:698
+#: src/window.c:686
 msgid "Folder"
 msgstr "Mapp"
 
-#: src/window.c:863
+#: src/window.c:851
 msgid "[read only]"
 msgstr "[skrivskyddad]"
 
-#: src/window.c:957
+#: src/window.c:945
 #, c-format
 msgid "%d file (%s)"
 msgid_plural "%d files (%s)"
 msgstr[0] "%d fil (%s)"
 msgstr[1] "%d filer (%s)"
 
-#: src/window.c:962
+#: src/window.c:950
 #, c-format
 msgid "%d file selected (%s)"
 msgid_plural "%d files selected (%s)"
 msgstr[0] "%d fil markerad (%s)"
 msgstr[1] "%d filer markerade (%s)"
 
-#: src/window.c:1385
+#: src/window.c:1373
 msgid "Reading archive"
 msgstr "Läser arkiv"
 
-#: src/window.c:1391
+#: src/window.c:1379
 msgid "Adding files to archive"
 msgstr "Lägger till filer till arkivet"
 
-#: src/window.c:1394
+#: src/window.c:1382
 msgid "Extracting files from archive"
 msgstr "Packar upp filer från arkivet"
 
-#: src/window.c:1397
+#: src/window.c:1385
 msgid "Testing archive"
 msgstr "Testar arkivet"
 
-#: src/window.c:1400
+#: src/window.c:1388
 msgid "Getting the file list"
 msgstr "Hämtar fillistan"
 
-#: src/window.c:1407
+#: src/window.c:1395
 msgid "wait please..."
 msgstr "var vänlig vänta..."
 
-#: src/window.c:1484
+#: src/window.c:1472
 #, c-format
 msgid "Could not display the folder \"%s\""
 msgstr "Kunde inte visa mappen \"%s\""
 
-#: src/window.c:1543
+#: src/window.c:1531
 msgid ""
 "This archive is password protected.\n"
 "Please specify a password with the command: Edit->Password"
@@ -946,7 +946,7 @@ msgstr ""
 "Detta arkiv är lösenordsskyddat.\n"
 "Ange ett lösenord med kommandot: Redigera->Lösenord"
 
-#: src/window.c:1545
+#: src/window.c:1533
 msgid ""
 "The specified password is not valid, please specify a new password with the "
 "command: Edit->Password"
@@ -954,51 +954,51 @@ msgstr ""
 "Det angivna lösenordet är inte giltigt. Ange ett nytt lösenord med "
 "kommandot: Redigera->Lösenord"
 
-#: src/window.c:1550 src/window.c:2169
+#: src/window.c:1538 src/window.c:2157
 msgid "Could not perform the operation"
 msgstr "Kunde inte utföra åtgärden"
 
-#: src/window.c:1575
+#: src/window.c:1563
 msgid "An error occurred while extracting files."
 msgstr "Ett fel inträffade under uppackning av filer."
 
-#: src/window.c:1579
+#: src/window.c:1567
 msgid "An error occurred while loading the archive."
 msgstr "Ett fel inträffade vid inläsning av arkivet."
 
-#: src/window.c:1583
+#: src/window.c:1571
 msgid "An error occurred while deleting files from the archive."
 msgstr "Ett fel inträffade vid borttagning av filer från arkivet."
 
-#: src/window.c:1587
+#: src/window.c:1575
 msgid "An error occurred while adding files to the archive."
 msgstr "Ett fel inträffade vid tilläggning av filer till arkivet."
 
-#: src/window.c:1591
+#: src/window.c:1579
 msgid "An error occurred while testing archive."
 msgstr "Ett fel inträffade vid testande av arkivet."
 
-#: src/window.c:1600
+#: src/window.c:1588
 msgid "Command not found."
 msgstr "Kommandot kunde inte hittas."
 
-#: src/window.c:1603
+#: src/window.c:1591
 msgid "Command exited abnormally."
 msgstr "Programmet avslutades felaktigt."
 
-#: src/window.c:1732
+#: src/window.c:1720
 msgid "Test Result"
 msgstr "Testresultat"
 
-#: src/window.c:1968
+#: src/window.c:1956
 msgid "You don't have the right permissions."
 msgstr "Du har inte rätt rättigheter."
 
-#: src/window.c:2006
+#: src/window.c:1994
 msgid "You can't add an archive to itself."
 msgstr "Du kan inte lägga till ett arkiv till sig självt."
 
-#: src/window.c:2203
+#: src/window.c:2191
 msgid ""
 "Do you want to add this file to the current archive or open it as a new "
 "archive?"
@@ -1006,83 +1006,83 @@ msgstr ""
 "Vill du lägga till den här filen till det aktuella arkivet eller öppna den "
 "som ett nytt arkiv?"
 
-#: src/window.c:2240
+#: src/window.c:2228
 msgid "Do you want to create a new archive with these files?"
 msgstr "Vill du skapa ett nytt arkiv med dessa filer?"
 
-#: src/window.c:2243
+#: src/window.c:2231
 msgid "Create _Archive"
 msgstr "Skapa _arkiv"
 
-#: src/window.c:2564
+#: src/window.c:2554
 msgid "Size"
 msgstr "Storlek"
 
-#: src/window.c:2565
+#: src/window.c:2555
 msgid "Type"
 msgstr "Typ"
 
-#: src/window.c:2566
+#: src/window.c:2556
 msgid "Date Modified"
 msgstr "Ändringsdatum"
 
-#: src/window.c:2567
+#: src/window.c:2557
 msgid "Location"
 msgstr "Plats"
 
-#: src/window.c:2574
+#: src/window.c:2564
 msgid "Name"
 msgstr "Namn"
 
-#: src/window.c:3031
+#: src/window.c:3021
 #, c-format
 msgid "Open '%s'"
 msgstr "Öppna \"%s\""
 
-#: src/window.c:3350
+#: src/window.c:3340
 msgid "Go to the previous visited location"
 msgstr "Gå till föregående besökta plats"
 
-#: src/window.c:3358
+#: src/window.c:3348
 msgid "Go to the next visited location"
 msgstr "Gå till nästa besökta plats"
 
-#: src/window.c:3366
+#: src/window.c:3356
 msgid "Go up one level"
 msgstr "Gå upp en nivå"
 
-#: src/window.c:3374
+#: src/window.c:3364
 msgid "Go to the home location"
 msgstr "Gå till hemplatsen"
 
 #. current location
-#: src/window.c:3393
+#: src/window.c:3383
 msgid "Location:"
 msgstr "Plats:"
 
-#: src/window.c:3904
+#: src/window.c:3894
 #, c-format
 msgid "Could not open \"%s\""
 msgstr "Kunde inte öppna \"%s\""
 
-#: src/window.c:3962
+#: src/window.c:3952
 #, c-format
 msgid "Could not save the archive \"%s\""
 msgstr "Kunde inte spara arkivet \"%s\""
 
-#: src/window.c:4856
+#: src/window.c:4848
 msgid "The new name is void."
 msgstr "Det nya namnet är tomt."
 
-#: src/window.c:4856 src/window.c:4860 src/window.c:4869
+#: src/window.c:4848 src/window.c:4852 src/window.c:4861
 msgid "Please use a different name."
 msgstr "Använd ett annat namn."
 
-#: src/window.c:4860
+#: src/window.c:4852
 msgid "The new name is equal to the old one."
 msgstr "Det nya namnet är identiskt med det gamla."
 
-#: src/window.c:4869
+#: src/window.c:4861
 #, c-format
 msgid ""
 "The name \"%s\" is not valid because it cannot contain the characters: %s\n"
@@ -1093,35 +1093,35 @@ msgstr ""
 "\n"
 "%s"
 
-#: src/window.c:4925
+#: src/window.c:4917
 msgid "New folder name"
 msgstr "Nytt mappnamn"
 
-#: src/window.c:4925
+#: src/window.c:4917
 msgid "New file name"
 msgstr "Nytt filnamn"
 
-#: src/window.c:4946
+#: src/window.c:4938
 msgid "Could not rename the folder"
 msgstr "Kunde inte byta namn på mappen"
 
-#: src/window.c:4946
+#: src/window.c:4938
 msgid "Could not rename the file"
 msgstr "Kunde inte byta namn på filen"
 
-#: src/window.c:5031
+#: src/window.c:5023
 msgid "Paste Selection"
 msgstr "Klistra in markering"
 
-#: src/window.c:5032
+#: src/window.c:5024
 msgid "Destination folder"
 msgstr "Målmapp"
 
-#: src/window.c:5614
+#: src/window.c:5610
 msgid "Add files to an archive"
 msgstr "Lägg till filer till arkivet"
 
-#: src/window.c:5641
+#: src/window.c:5637
 msgid "Extract archive"
 msgstr "Packa upp arkiv"
 
