@@ -1,5 +1,5 @@
 # config.site: Athena-specific autconf configuration
-# $Id: config.site,v 1.11 1998-02-25 17:08:24 danw Exp $
+# $Id: config.site,v 1.12 1998-04-27 16:57:21 ghudson Exp $
 #
 
 athena=true
@@ -29,13 +29,6 @@ case "${HOSTTYPE}" in
 		x_includes=
 		x_libraries=
 		with_motif=yes
-		;;
-esac
-
-# Set location of supporting regexp libraries, if any.
-case "${HOSTTYPE}" in
-	sgi)
-		with_regex=$ATHTOOLROOT/usr/athena
 		;;
 esac
 
