@@ -19,6 +19,12 @@
  * 		- A login session record is created containing the
  * 		  requisite information for reversal of the above
  * 		  steps by al_acct_revert().
+ *	  Otherwise
+ *		- If the user was added to the system passwd database
+ *		  by a prior login, the value of cryptpw is not NULL,
+ *		  and /etc/nocrack is not present in the filesystem,
+ *		  the value of cryptpw is substituted for the password
+ *		  field of the added passwd line.
  *
  * 	* Unless a login record was already present and indicated that
  * 	  a temporary directory has been created for the user:
