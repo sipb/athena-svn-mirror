@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/oreplay/Imakefile,v $
- * $Id: Imakefile,v 1.2 1991-03-24 15:01:01 lwvanels Exp $
+ * $Id: Imakefile,v 1.3 1991-03-24 19:04:40 lwvanels Exp $
  */
 
 /* #define Profiling */
@@ -61,7 +61,6 @@ oshow:
 clean::
 	$(RM) oshow
 
-DependTarget()
 LintTarget()
 
 AllTarget(oreplay olist oshow)
