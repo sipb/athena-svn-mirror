@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: verify.c,v 1.12 2000-04-25 13:47:34 rbasch Exp $";
+static const char rcsid[] = "$Id: verify.c,v 1.13 2002-11-11 18:27:08 ghudson Exp $";
 
 #include <sys/types.h>
 #include <sys/param.h>
@@ -643,10 +643,8 @@ static char *get_tickets(char *username, char *password)
   char key[8], *rcmd;
   static char errbuf[1024];
   int error;
-  struct hostent *hp;
   KTEXT_ST ticket;
   AUTH_DAT authdata;
-  unsigned long addr;
 
   rcmd = "rcmd";
 
@@ -705,14 +703,6 @@ static char *get_tickets(char *username, char *password)
   if (read_service_key(rcmd, phost, realm, 0, NULL, key) == KFAILURE)
     return NULL;
 
-  hp = gethostbyname(hostname);
-  if (!hp)
-    {
-      fprintf(stderr, "Warning: cannot get address for host %s\n", hostname);
-      return NULL;
-    }
-  memmove(&addr, hp->h_addr, sizeof(addr));
-
   error = krb_mk_req(&ticket, rcmd, phost, realm, 0);
   if (error == KDC_PR_UNKNOWN)
     return NULL;
@@ -723,7 +713,7 @@ static char *get_tickets(char *username, char *password)
       return errbuf;
     }
 
-  error = krb_rd_req(&ticket, rcmd, phost, addr, &authdata, "");
+  error = krb_rd_req(&ticket, rcmd, phost, 0, &authdata, "");
   if (error != KSUCCESS)
     {
       memset(&ticket, 0, sizeof(ticket));
