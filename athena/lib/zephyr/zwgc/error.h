@@ -4,7 +4,7 @@
  *
  *      Created by:     Marc Horowitz <marc@athena.mit.edu>
  *
- *      $Id: error.h,v 1.5 1999-01-22 23:20:16 ghudson Exp $
+ *      $Id: error.h,v 1.6 1999-10-15 17:15:45 ghudson Exp $
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -18,10 +18,10 @@
 #define error_MODULE
 
 #include <stdio.h>
+#include <errno.h>
+#include <com_err.h>
 
-extern int errno;
 extern int error_code;
-extern void com_err();
 
 #define  FATAL_TRAP(function_call, message) \
                                            { error_code = (function_call);\
