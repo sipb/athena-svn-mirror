@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+
+<SRSOUT>
+<VOICE ID="accelerator" TTSEngine="gnome-speech" TTSVoice="V2 Es - Festival GNOME Speech Driver" rate="78" pitch="15" volume="100"></VOICE>
+<VOICE ID="childcount" TTSEngine="gnome-speech" TTSVoice="V2 Es - Festival GNOME Speech Driver" rate="78" pitch="15" volume="100"></VOICE>
+<VOICE ID="empty" TTSEngine="gnome-speech" TTSVoice="V2 Es - Festival GNOME Speech Driver" rate="78" pitch="15" volume="100"></VOICE>
+<VOICE ID="location" TTSEngine="gnome-speech" TTSVoice="V2 Es - Festival GNOME Speech Driver" rate="78" pitch="15" volume="100"></VOICE>
+<VOICE ID="message" TTSEngine="gnome-speech" TTSVoice="V2 Es - Festival GNOME Speech Driver" rate="78" pitch="15" volume="100"></VOICE>
+<VOICE ID="name" TTSEngine="gnome-speech" TTSVoice="V2 Es - Festival GNOME Speech Driver" rate="78" pitch="15" volume="100"></VOICE>
+<VOICE ID="role" TTSEngine="gnome-speech" TTSVoice="V2 Es - Festival GNOME Speech Driver" rate="78" pitch="15" volume="100"></VOICE>
+<VOICE ID="shortcut" TTSEngine="gnome-speech" TTSVoice="V2 Es - Festival GNOME Speech Driver" rate="78" pitch="15" volume="100"></VOICE>
+<VOICE ID="state" TTSEngine="gnome-speech" TTSVoice="V2 Es - Festival GNOME Speech Driver" rate="78" pitch="15" volume="100"></VOICE>
+<VOICE ID="system" TTSEngine="gnome-speech" TTSVoice="V2 Es - Festival GNOME Speech Driver" rate="78" pitch="15" volume="100"></VOICE>
+<VOICE ID="text" TTSEngine="gnome-speech" TTSVoice="V2 Es - Festival GNOME Speech Driver" rate="78" pitch="15" volume="100"></VOICE>
+<VOICE ID="value" TTSEngine="gnome-speech" TTSVoice="V2 Es - Festival GNOME Speech Driver" rate="78" pitch="15" volume="100"></VOICE>
+<VOICE ID="default" TTSEngine="gnome-speech" TTSVoice="V0 Adult Male 1 - IBM Viavoice GNOME Speech Driver" rate="60" pitch="80" volume="100"></VOICE>
+
+<VOICE ID="spanish" TTSEngine="gnome-speech" TTSVoice="V2 Es - Festival GNOME Speech Driver" rate="78" pitch="15" volume="100"></VOICE>
+<VOICE ID="english" TTSEngine="gnome-speech" TTSVoice="V0 Adult Male 1 - IBM Viavoice GNOME Speech Driver" rate="60" pitch="50" volume="100"></VOICE>
+<VOICE ID="french" TTSEngine="gnome-speech" TTSVoice="V1 Adult Female 1 - IBM Viavoice GNOME Speech Driver" rate="60" pitch="50" volume="100"></VOICE>
+
+<TEXT voice="english">Testing default voice, an IBM Adult Male voice.</TEXT>
+
+<TEXT voice="french">Personnaliser la barre d'état</TEXT>
+<TEXT voice="french">Barre d'outils</TEXT>
+<TEXT voice="french">Barre d'état</TEXT>
+<TEXT voice="french">Fenêtre de sortie</TEXT>
+<TEXT voice="french">Sélectionner tout</TEXT>
+<TEXT voice="french">Aperçu avant impression</TEXT>
+
+<TEXT voice="spanish">No se encontró el archivo binario</TEXT>
+<TEXT voice="spanish">Añadir / Modificar</TEXT>
+
+
+</SRSOUT>

@@ -1,0 +1,1856 @@
+<gconfschemafile>
+
+  <schemalist>
+  
+<schema>
+<key>/schemas/apps/gnopernicus/braille/cursor_style</key>
+<applyto>/apps/gnopernicus/braille/cursor_style</applyto>
+<owner>gnopernicus</owner>
+<type>string</type>
+<default>underline</default>
+<locale name="C"></locale>
+</schema>
+<schema>
+<key>/schemas/apps/gnopernicus/braille/port_no</key>
+<applyto>/apps/gnopernicus/braille/port_no</applyto>
+<owner>gnopernicus</owner>
+<type>int</type>
+<default>1</default>
+<locale name="C"></locale>
+</schema>
+<schema>
+<key>/schemas/apps/gnopernicus/braille/attribute</key>
+<applyto>/apps/gnopernicus/braille/attribute</applyto>
+<owner>gnopernicus</owner>
+<type>int</type>
+<default>8</default>
+<locale name="C"></locale>
+</schema>
+<schema>
+<key>/schemas/apps/gnopernicus/braille/braille_style</key>
+<applyto>/apps/gnopernicus/braille/braille_style</applyto>
+<owner>gnopernicus</owner>
+<type>string</type>
+<default>8</default>
+<locale name="C"></locale>
+</schema>
+<schema>
+<key>/schemas/apps/gnopernicus/braille/translation_table</key>
+<applyto>/apps/gnopernicus/braille/translation_table</applyto>
+<owner>gnopernicus</owner>
+<type>string</type>
+<default>de</default>
+<locale name="C"></locale>
+</schema>
+<schema>
+<key>/schemas/apps/gnopernicus/braille/optical</key>
+<applyto>/apps/gnopernicus/braille/optical</applyto>
+<owner>gnopernicus</owner>
+<type>int</type>
+<default>0</default>
+<locale name="C"></locale>
+</schema>
+<schema>
+<key>/schemas/apps/gnopernicus/braille/position</key>
+<applyto>/apps/gnopernicus/braille/position</applyto>
+<owner>gnopernicus</owner>
+<type>int</type>
+<default>2</default>
+<locale name="C"></locale>
+</schema>
+<schema>
+<key>/schemas/apps/gnopernicus/braille/fill_char</key>
+<applyto>/apps/gnopernicus/braille/fill_char</applyto>
+<owner>gnopernicus</owner>
+<type>string</type>
+<default>##</default>
+<locale name="C"></locale>
+</schema>
+<schema>
+<key>/schemas/apps/gnopernicus/braille/status</key>
+<applyto>/apps/gnopernicus/braille/status</applyto>
+<owner>gnopernicus</owner>
+<type>string</type>
+<default>CursorPos</default>
+<locale name="C"></locale>
+</schema>
+
+<schema>
+ <key>/schemas/apps/gnopernicus/braille/device</key>
+ <applyto>/apps/gnopernicus/braille/device</applyto>
+ <owner>gnopernicus</owner>
+ <type>string</type>
+ <default>VARIO</default>
+ <locale name="C">
+ <short>Braille Settings</short>
+ <long>Braille Settings</long>
+ </locale>
+</schema>
+      
+      
+      <schema>
+      <key>/schemas/apps/gnopernicus/config/show_gnopernicus_min</key>
+      <applyto>/apps/gnopernicus/config/show_gnopernicus_min</applyto>
+      <owner>gnopernicus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+        <short>Gnopernicus config</short>
+        <long>Gnopernicus config</long>
+      </locale>
+      </schema>
+      <schema>
+      <key>/schemas/apps/gnopernicus/config/brlmon/ip</key>
+      <applyto>/apps/gnopernicus/config/brlmon/ip</applyto>
+      <owner>gnopernicus</owner>
+      <type>string</type>
+      <default>127.0.0.1</default>
+      <locale name="C">
+        <short>Gnopernicus config</short>
+        <long>Gnopernicus config</long>
+      </locale>
+      </schema>
+      <schema>
+      <key>/schemas/apps/gnopernicus/config/brlmon/port</key>
+      <applyto>/apps/gnopernicus/config/brlmon/port</applyto>
+      <owner>gnopernicus</owner>
+      <type>int</type>
+      <default>7000</default>
+      <locale name="C">
+        <short>Gnopernicus config</short>
+        <long>Gnopernicus config</long>
+      </locale>
+      </schema>
+    
+      <schema>
+      <key>/schemas/apps/gnopernicus/config/remote/port</key>
+      <applyto>/apps/gnopernicus/config/remote/port</applyto>
+      <owner>gnopernicus</owner>
+      <type>int</type>
+      <default>7096</default>
+      <locale name="C">
+        <short>Gnopernicus config</short>
+        <long>Gnopernicus config</long>
+      </locale>
+      </schema>
+      <schema>
+      <key>/schemas/apps/gnopernicus/config/remote/ip</key>
+      <applyto>/apps/gnopernicus/config/remote/ip</applyto>
+      <owner>gnopernicus</owner>
+      <type>string</type>
+      <default>127.0.0.1</default>
+      <locale name="C">
+        <short>Gnopernicus config</short>
+        <long>Gnopernicus config</long>
+      </locale>
+      </schema>
+
+      
+      <schema>
+      <key>/schemas/apps/gnopernicus/srcore/br_active</key>
+      <applyto>/apps/gnopernicus/srcore/br_active</applyto>
+      <owner>gnopernicus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+        <short>Srcore</short>
+        <long>Srcore</long>
+      </locale>
+      </schema>
+      <schema>
+      <key>/schemas/apps/gnopernicus/srcore/bm_active</key>
+      <applyto>/apps/gnopernicus/srcore/bm_active</applyto>
+      <owner>gnopernicus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+        <short>Srcore</short>
+        <long>Srcore</long>
+      </locale>
+      </schema>
+      <schema>
+      <key>/schemas/apps/gnopernicus/srcore/sp_active</key>
+      <applyto>/apps/gnopernicus/srcore/sp_active</applyto>
+      <owner>gnopernicus</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+        <short>Srcore</short>
+        <long>Srcore</long>
+      </locale>
+      </schema>
+      <schema>
+      <key>/schemas/apps/gnopernicus/srcore/mag_active</key>
+      <applyto>/apps/gnopernicus/srcore/mag_active</applyto>
+      <owner>gnopernicus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+        <short>Srcore</short>
+        <long>Srcore</long>
+      </locale>
+      </schema>
+
+      <schema>
+      <key>/schemas/apps/gnopernicus/srcore/take_mouse</key>
+      <applyto>/apps/gnopernicus/srcore/take_mouse</applyto>
+      <owner>gnopernicus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+        <short>Srcore</short>
+        <long>Srcore</long>
+      </locale>
+      </schema>
+      <schema>
+      <key>/schemas/apps/gnopernicus/srcore/simulate_click</key>
+      <applyto>/apps/gnopernicus/srcore/simulate_click</applyto>
+      <owner>gnopernicus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+        <short>Srcore</short>
+        <long>Srcore</long>
+      </locale>
+      </schema>
+
+
+<schema>
+<key>/schemas/apps/gnopernicus/speech/voices_parameters/accelerator</key>
+<applyto>/apps/gnopernicus/speech/voices_parameters/accelerator</applyto>
+<owner>gnopernicus</owner>
+<type>list</type>
+<list_type>string</list_type>
+<default>[FreeTTS_Gnome_Speech_Driver,V0 kevin - FreeTTS Gnome Speech Driver,100,150,100]</default>
+<locale name="C"></locale>
+</schema>
+<schema>
+<key>/schemas/apps/gnopernicus/speech/voices_parameters/childcount</key>
+<applyto>/apps/gnopernicus/speech/voices_parameters/childcount</applyto>
+<owner>gnopernicus</owner>
+<type>list</type>
+<list_type>string</list_type>
+<default>[FreeTTS_Gnome_Speech_Driver,V0 kevin - FreeTTS Gnome Speech Driver,100,150,100]</default>
+<locale name="C"></locale>
+</schema>
+<schema>
+<key>/schemas/apps/gnopernicus/speech/voices_parameters/empty</key>
+<applyto>/apps/gnopernicus/speech/voices_parameters/empty</applyto>
+<owner>gnopernicus</owner>
+<type>list</type>
+<list_type>string</list_type>
+<default>[FreeTTS_Gnome_Speech_Driver,V0 kevin - FreeTTS Gnome Speech Driver,100,150,100]</default>
+<locale name="C"></locale>
+</schema>
+<schema>
+<key>/schemas/apps/gnopernicus/speech/voices_parameters/location</key>
+<applyto>/apps/gnopernicus/speech/voices_parameters/location</applyto>
+<owner>gnopernicus</owner>
+<type>list</type>
+<list_type>string</list_type>
+<default>[FreeTTS_Gnome_Speech_Driver,V0 kevin - FreeTTS Gnome Speech Driver,100,150,100]</default>
+<locale name="C"></locale>
+</schema>
+<schema>
+<key>/schemas/apps/gnopernicus/speech/voices_parameters/message</key>
+<applyto>/apps/gnopernicus/speech/voices_parameters/message</applyto>
+<owner>gnopernicus</owner>
+<type>list</type>
+<list_type>string</list_type>
+<default>[FreeTTS_Gnome_Speech_Driver,V0 kevin - FreeTTS Gnome Speech Driver,100,150,100]</default>
+<locale name="C"></locale>
+</schema>
+<schema>
+<key>/schemas/apps/gnopernicus/speech/voices_parameters/name</key>
+<applyto>/apps/gnopernicus/speech/voices_parameters/name</applyto>
+<owner>gnopernicus</owner>
+<type>list</type>
+<list_type>string</list_type>
+<default>[FreeTTS_Gnome_Speech_Driver,V0 kevin - FreeTTS Gnome Speech Driver,100,150,100]</default>
+<locale name="C"></locale>
+</schema>
+<schema>
+<key>/schemas/apps/gnopernicus/speech/voices_parameters/description</key>
+<applyto>/apps/gnopernicus/speech/voices_parameters/description</applyto>
+<owner>gnopernicus</owner>
+<type>list</type>
+<list_type>string</list_type>
+<default>[FreeTTS_Gnome_Speech_Driver,V0 kevin - FreeTTS Gnome Speech Driver,100,150,100]</default>
+<locale name="C"></locale>
+</schema>
+<schema>
+<key>/schemas/apps/gnopernicus/speech/voices_parameters/role</key>
+<applyto>/apps/gnopernicus/speech/voices_parameters/role</applyto>
+<owner>gnopernicus</owner>
+<type>list</type>
+<list_type>string</list_type>
+<default>[FreeTTS_Gnome_Speech_Driver,V0 kevin - FreeTTS Gnome Speech Driver,100,150,100]</default>
+<locale name="C"></locale>
+</schema>
+<schema>
+<key>/schemas/apps/gnopernicus/speech/voices_parameters/column_header</key>
+<applyto>/apps/gnopernicus/speech/voices_parameters/column_header</applyto>
+<owner>gnopernicus</owner>
+<type>list</type>
+<list_type>string</list_type>
+<default>[FreeTTS_Gnome_Speech_Driver,V0 kevin - FreeTTS Gnome Speech Driver,100,150,100]</default>
+<locale name="C"></locale>
+</schema>
+<schema>
+<key>/schemas/apps/gnopernicus/speech/voices_parameters/row_header</key>
+<applyto>/apps/gnopernicus/speech/voices_parameters/row_header</applyto>
+<owner>gnopernicus</owner>
+<type>list</type>
+<list_type>string</list_type>
+<default>[FreeTTS_Gnome_Speech_Driver,V0 kevin - FreeTTS Gnome Speech Driver,100,150,100]</default>
+<locale name="C"></locale>
+</schema>
+<schema>
+<key>/schemas/apps/gnopernicus/speech/voices_parameters/cell</key>
+<applyto>/apps/gnopernicus/speech/voices_parameters/cell</applyto>
+<owner>gnopernicus</owner>
+<type>list</type>
+<list_type>string</list_type>
+<default>[FreeTTS_Gnome_Speech_Driver,V0 kevin - FreeTTS Gnome Speech Driver,100,150,100]</default>
+<locale name="C"></locale>
+</schema>
+<schema>
+<key>/schemas/apps/gnopernicus/speech/voices_parameters/shortcut</key>
+<applyto>/apps/gnopernicus/speech/voices_parameters/shortcut</applyto>
+<owner>gnopernicus</owner>
+<type>list</type>
+<list_type>string</list_type>
+<default>[FreeTTS_Gnome_Speech_Driver,V0 kevin - FreeTTS Gnome Speech Driver,100,150,100]</default>
+<locale name="C"></locale>
+</schema>
+<schema>
+<key>/schemas/apps/gnopernicus/speech/voices_parameters/state</key>
+<applyto>/apps/gnopernicus/speech/voices_parameters/state</applyto>
+<owner>gnopernicus</owner>
+<type>list</type>
+<list_type>string</list_type>
+<default>[FreeTTS_Gnome_Speech_Driver,V0 kevin - FreeTTS Gnome Speech Driver,100,150,100]</default>
+<locale name="C"></locale>
+</schema>
+<schema>
+<key>/schemas/apps/gnopernicus/speech/voices_parameters/system</key>
+<applyto>/apps/gnopernicus/speech/voices_parameters/system</applyto>
+<owner>gnopernicus</owner>
+<type>list</type>
+<list_type>string</list_type>
+<default>[FreeTTS_Gnome_Speech_Driver,V0 kevin - FreeTTS Gnome Speech Driver,100,150,100]</default>
+<locale name="C"></locale>
+</schema>
+<schema>
+<key>/schemas/apps/gnopernicus/speech/voices_parameters/text</key>
+<applyto>/apps/gnopernicus/speech/voices_parameters/text</applyto>
+<owner>gnopernicus</owner>
+<type>list</type>
+<list_type>string</list_type>
+<default>[FreeTTS_Gnome_Speech_Driver,V0 kevin - FreeTTS Gnome Speech Driver,100,150,100]</default>
+<locale name="C"></locale>
+</schema>
+<schema>
+<key>/schemas/apps/gnopernicus/speech/voices_parameters/value</key>
+<applyto>/apps/gnopernicus/speech/voices_parameters/value</applyto>
+<owner>gnopernicus</owner>
+<type>list</type>
+<list_type>string</list_type>
+<default>[FreeTTS_Gnome_Speech_Driver,V0 kevin - FreeTTS Gnome Speech Driver,100,150,100]</default>
+<locale name="C"></locale>
+</schema>
+<schema>
+<key>/schemas/apps/gnopernicus/speech/voices_parameters/gnopernicus_speakers</key>
+<applyto>/apps/gnopernicus/speech/voices_parameters/gnopernicus_speakers</applyto>
+<owner>gnopernicus</owner>
+<type>list</type>
+<list_type>string</list_type>
+<default>[accelerator,childcount,location,message,name,description,role,column_header,row_header,cell,shortcut,state,system,text,value,empty]</default>
+<locale name="C"></locale>
+</schema>
+
+<schema>
+<key>/schemas/apps/gnopernicus/speech/dictionary/dictionary_list</key>
+<applyto>/apps/gnopernicus/speech/dictionary/dictionary_list</applyto>
+<owner>gnopernicus</owner>
+<type>list</type>
+<list_type>string</list_type>
+<default>[USA&lt;&gt;United States Of America]</default>
+<locale name="C"></locale>
+</schema>
+
+<schema>
+<key>/schemas/apps/gnopernicus/speech/settings/cursors</key>
+<applyto>/apps/gnopernicus/speech/settings/cursors</applyto>
+<owner>gnopernicus</owner>
+<type>string</type>
+<default>NONE</default>
+<locale name="C"></locale>
+</schema>
+<schema>
+<key>/schemas/apps/gnopernicus/speech/settings/spaces</key>
+<applyto>/apps/gnopernicus/speech/settings/spaces</applyto>
+<owner>gnopernicus</owner>
+<type>string</type>
+<default>ALL</default>
+<locale name="C"></locale>
+</schema>
+<schema>
+<key>/schemas/apps/gnopernicus/speech/settings/modifiers</key>
+<applyto>/apps/gnopernicus/speech/settings/modifiers</applyto>
+<owner>gnopernicus</owner>
+<type>string</type>
+<default>NONE</default>
+<locale name="C"></locale>
+</schema>
+<schema>
+<key>/schemas/apps/gnopernicus/speech/settings/count</key>
+<applyto>/apps/gnopernicus/speech/settings/count</applyto>
+<owner>gnopernicus</owner>
+<type>string</type>
+<default>NONE</default>
+<locale name="C"></locale>
+</schema>
+<schema>
+<key>/schemas/apps/gnopernicus/speech/settings/punctuation</key>
+<applyto>/apps/gnopernicus/speech/settings/punctuation</applyto>
+<owner>gnopernicus</owner>
+<type>string</type>
+<default>IGNORE</default>
+<locale name="C"></locale>
+</schema>
+<schema>
+<key>/schemas/apps/gnopernicus/speech/settings/dictionary_active</key>
+<applyto>/apps/gnopernicus/speech/settings/dictionary_active</applyto>
+<owner>gnopernicus</owner>
+<type>string</type>
+<default>NO</default>
+<locale name="C"></locale>
+</schema>
+<schema>
+<key>/schemas/apps/gnopernicus/speech/settings/text_echo</key>
+<applyto>/apps/gnopernicus/speech/settings/text_echo</applyto>
+<owner>gnopernicus</owner>
+<type>string</type>
+<default>CHARACTER</default>
+<locale name="C"></locale>
+</schema>
+
+
+      <schema>
+      <key>/schemas/apps/gnopernicus/magnifier/schema1/generic_zoomer/cursor</key>
+      <applyto>/apps/gnopernicus/magnifier/schema1/generic_zoomer/cursor</applyto>
+      <owner>gnopernicus</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+        <short>Magnifier Settings</short>
+        <long>Magnifier Settings</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/magnifier/schema1/generic_zoomer/cursor_name</key>
+      <applyto>/apps/gnopernicus/magnifier/schema1/generic_zoomer/cursor_name</applyto>
+      <owner>gnopernicus</owner>
+      <type>string</type>
+      <default>default</default>
+      <locale name="C">
+        <short>Magnifier Settings</short>
+        <long>Magnifier Settings</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/magnifier/schema1/generic_zoomer/cursor_size</key>
+      <applyto>/apps/gnopernicus/magnifier/schema1/generic_zoomer/cursor_size</applyto>
+      <owner>gnopernicus</owner>
+      <type>int</type>
+      <default>32</default>
+      <locale name="C">
+        <short>Magnifier Settings</short>
+        <long>Magnifier Settings</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/magnifier/schema1/generic_zoomer/cursor_scale</key>
+      <applyto>/apps/gnopernicus/magnifier/schema1/generic_zoomer/cursor_scale</applyto>
+      <owner>gnopernicus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+        <short>Magnifier Settings</short>
+        <long>Magnifier Settings</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/magnifier/schema1/generic_zoomer/cursor_color</key>
+      <applyto>/apps/gnopernicus/magnifier/schema1/generic_zoomer/cursor_color</applyto>
+      <owner>gnopernicus</owner>
+      <type>int</type>
+      <default>0</default>
+      <locale name="C">
+        <short>Magnifier Settings</short>
+        <long>Magnifier Settings</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/magnifier/schema1/generic_zoomer/crosswire</key>
+      <applyto>/apps/gnopernicus/magnifier/schema1/generic_zoomer/crosswire</applyto>
+      <owner>gnopernicus</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+        <short>Magnifier Settings</short>
+        <long>Magnifier Settings</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/magnifier/schema1/generic_zoomer/crosswire_clip</key>
+      <applyto>/apps/gnopernicus/magnifier/schema1/generic_zoomer/crosswire_clip</applyto>
+      <owner>gnopernicus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+        <short>Magnifier Settings</short>
+        <long>Magnifier Settings</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/magnifier/schema1/generic_zoomer/crosswire_size</key>
+      <applyto>/apps/gnopernicus/magnifier/schema1/generic_zoomer/crosswire_size</applyto>
+      <owner>gnopernicus</owner>
+      <type>int</type>
+      <default>10</default>
+      <locale name="C">
+        <short>Magnifier Settings</short>
+        <long>Magnifier Settings</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/magnifier/schema1/generic_zoomer/crosswire_color</key>
+      <applyto>/apps/gnopernicus/magnifier/schema1/generic_zoomer/crosswire_color</applyto>
+      <owner>gnopernicus</owner>
+      <type>int</type>
+      <default>0</default>
+      <locale name="C">
+        <short>Magnifier Settings</short>
+        <long>Magnifier Settings</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/magnifier/schema1/generic_zoomer/zp_left</key>
+      <applyto>/apps/gnopernicus/magnifier/schema1/generic_zoomer/zp_left</applyto>
+      <owner>gnopernicus</owner>
+      <type>int</type>
+      <default>320</default>
+      <locale name="C">
+        <short>Magnifier Settings</short>
+        <long>Magnifier Settings</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/magnifier/schema1/generic_zoomer/zp_top</key>
+      <applyto>/apps/gnopernicus/magnifier/schema1/generic_zoomer/zp_top</applyto>
+      <owner>gnopernicus</owner>
+      <type>int</type>
+      <default>0</default>
+      <locale name="C">
+        <short>Magnifier Settings</short>
+        <long>Magnifier Settings</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/magnifier/schema1/generic_zoomer/zp_width</key>
+      <applyto>/apps/gnopernicus/magnifier/schema1/generic_zoomer/zp_width</applyto>
+      <owner>gnopernicus</owner>
+      <type>int</type>
+      <default>2147483647</default>
+      <locale name="C">
+        <short>Magnifier Settings</short>
+        <long>Magnifier Settings</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/magnifier/schema1/generic_zoomer/zp_height</key>
+      <applyto>/apps/gnopernicus/magnifier/schema1/generic_zoomer/zp_height</applyto>
+      <owner>gnopernicus</owner>
+      <type>int</type>
+      <default>2147483647</default>
+      <locale name="C">
+        <short>Magnifier Settings</short>
+        <long>Magnifier Settings</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/magnifier/schema1/generic_zoomer/border_width</key>
+      <applyto>/apps/gnopernicus/magnifier/schema1/generic_zoomer/border_width</applyto>
+      <owner>gnopernicus</owner>
+      <type>int</type>
+      <default>2</default>
+      <locale name="C">
+        <short>Magnifier Settings</short>
+        <long>Magnifier Settings</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/magnifier/schema1/generic_zoomer/border_color</key>
+      <applyto>/apps/gnopernicus/magnifier/schema1/generic_zoomer/border_color</applyto>
+      <owner>gnopernicus</owner>
+      <type>int</type>
+      <default>0</default>
+      <locale name="C">
+        <short>Magnifier Settings</short>
+        <long>Magnifier Settings</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/magnifier/schema1/generic_zoomer/id</key>
+      <applyto>/apps/gnopernicus/magnifier/schema1/generic_zoomer/id</applyto>
+      <owner>gnopernicus</owner>
+      <type>string</type>
+      <default>generic_zoomer</default>
+      <locale name="C">
+        <short>Magnifier Settings</short>
+        <long>Magnifier Settings</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/magnifier/schema1/generic_zoomer/source</key>
+      <applyto>/apps/gnopernicus/magnifier/schema1/generic_zoomer/source</applyto>
+      <owner>gnopernicus</owner>
+      <type>string</type>
+      <default>:0.0</default>
+      <locale name="C">
+        <short>Magnifier Settings</short>
+        <long>Magnifier Settings</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/magnifier/schema1/generic_zoomer/target</key>
+      <applyto>/apps/gnopernicus/magnifier/schema1/generic_zoomer/target</applyto>
+      <owner>gnopernicus</owner>
+      <type>string</type>
+      <default>:0.0</default>
+      <locale name="C">
+        <short>Magnifier Settings</short>
+        <long>Magnifier Settings</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/magnifier/schema1/generic_zoomer/zoom_factor_x</key>
+      <applyto>/apps/gnopernicus/magnifier/schema1/generic_zoomer/zoom_factor_x</applyto>
+      <owner>gnopernicus</owner>
+      <type>float</type>
+      <default>2.0</default>
+      <locale name="C">
+        <short>Magnifier Settings</short>
+        <long>Magnifier Settings</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/magnifier/schema1/generic_zoomer/zoom_factor_y</key>
+      <applyto>/apps/gnopernicus/magnifier/schema1/generic_zoomer/zoom_factor_y</applyto>
+      <owner>gnopernicus</owner>
+      <type>float</type>
+      <default>2.0</default>
+      <locale name="C">
+        <short>Magnifier Settings</short>
+        <long>Magnifier Settings</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/magnifier/schema1/generic_zoomer/zoom_factor_lock</key>
+      <applyto>/apps/gnopernicus/magnifier/schema1/generic_zoomer/zoom_factor_lock</applyto>
+      <owner>gnopernicus</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+        <short>Magnifier Settings</short>
+        <long>Magnifier Settings</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/magnifier/schema1/generic_zoomer/invert</key>
+      <applyto>/apps/gnopernicus/magnifier/schema1/generic_zoomer/invert</applyto>
+      <owner>gnopernicus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+        <short>Magnifier Settings</short>
+        <long>Magnifier Settings</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/magnifier/schema1/generic_zoomer/smoothing</key>
+      <applyto>/apps/gnopernicus/magnifier/schema1/generic_zoomer/smoothing</applyto>
+      <owner>gnopernicus</owner>
+      <type>string</type>
+      <default>none</default>
+      <locale name="C">
+        <short>Magnifier Settings</short>
+        <long>Magnifier Settings</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/magnifier/schema1/generic_zoomer/tracking</key>
+      <applyto>/apps/gnopernicus/magnifier/schema1/generic_zoomer/tracking</applyto>
+      <owner>gnopernicus</owner>
+      <type>string</type>
+      <default>mouse</default>
+      <locale name="C">
+        <short>Magnifier Settings</short>
+        <long>Magnifier Settings</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/magnifier/schema1/generic_zoomer/mouse_tracking</key>
+      <applyto>/apps/gnopernicus/magnifier/schema1/generic_zoomer/mouse_tracking</applyto>
+      <owner>gnopernicus</owner>
+      <type>string</type>
+      <default>mouse-push</default>
+      <locale name="C">
+        <short>Magnifier Settings</short>
+        <long>Magnifier Settings</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/magnifier/schema1/generic_zoomer/visible</key>
+      <applyto>/apps/gnopernicus/magnifier/schema1/generic_zoomer/visible</applyto>
+      <owner>gnopernicus</owner>
+      <type>bool</type>
+      <default>true</default>
+      <locale name="C">
+        <short>Magnifier Settings</short>
+        <long>Magnifier Settings</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/magnifier/schema1/generic_zoomer/alignment_y</key>
+      <applyto>/apps/gnopernicus/magnifier/schema1/generic_zoomer/alignment_y</applyto>
+      <owner>gnopernicus</owner>
+      <type>string</type>
+      <default>auto</default>
+      <locale name="C">
+        <short>Magnifier Settings</short>
+        <long>Magnifier Settings</long>
+      </locale>
+      </schema>    
+      <schema>
+      <key>/schemas/apps/gnopernicus/magnifier/schema1/generic_zoomer/alignment_x</key>
+      <applyto>/apps/gnopernicus/magnifier/schema1/generic_zoomer/alignment_x</applyto>
+      <owner>gnopernicus</owner>
+      <type>string</type>
+      <default>auto</default>
+      <locale name="C">
+        <short>Magnifier Settings</short>
+        <long>Magnifier Settings</long>
+      </locale>
+      </schema>      
+
+      <schema>
+      <key>/schemas/apps/gnopernicus/magnifier/schema1/generic_zoomer/panning</key>
+      <applyto>/apps/gnopernicus/magnifier/schema1/generic_zoomer/panning</applyto>
+      <owner>gnopernicus</owner>
+      <type>bool</type>
+      <default>false</default>
+      <locale name="C">
+        <short>Magnifier Settings</short>
+        <long>Magnifier Settings</long>
+      </locale>
+      </schema>      
+
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/braille_key/braille_key_list</key>
+      <applyto>/apps/gnopernicus/command_map/braille_key/braille_key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[DK00,DK02,DK03,DK05,DK04,DK01,DK01DK02]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+<schema>
+<key>/schemas/apps/gnopernicus/command_map/key_pad/key_pad_list</key>
+<applyto>/apps/gnopernicus/command_map/key_pad/key_pad_list</applyto>
+<owner>gnopernicus</owner>
+<type>list</type>
+<list_type>string</list_type>
+<default>[L06K04,L06K06,L06K02,L06K08,L06K05,L06K07,L06K09,L06K10,L06K01,L06K03,L06K11,L06K12,L06K13,L07K09,L07K01,L07K03,L07K11,L07K08,L07K02,L07K06,L07K04,L07K05,L07K13,L07K10,L08K07,L08K09,L08K08,L08K04,L08K06,L08K05,L08K01,L08K03,L08K02,L08K10,L08K13,L00K08,L00K02,L00K04,L00K06,L00K05,L00K10,L00K07,L00K09,L00K01,L00K03,L00K11,L00K12,L00K15,L00K13,L00K14,L01K01,L01K02,L01K03,L01K12,L03K05,L03K04,L03K07,L03K06,L03K02,L03K03,L03K10,L03K01,L05K01,L05K02,L05K03,L05K04,L05K05,L05K06,L05K07,L05K08,L05K09,L05K10,L09K01,L09K03,L09K04,L09K06,L10K01,L10K02,L10K03,L10L04]</default>
+<locale name="C"></locale>
+</schema>
+
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/DK00/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/DK00/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[goto parent]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/DK01/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/DK01/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[goto focus]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/DK02/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/DK02/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[goto child]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/DK03/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/DK03/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[goto previous]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/DK04/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/DK04/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[repeat last]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/DK05/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/DK05/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[goto next]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/DK01DK02/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/DK01DK02/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[do default action]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>
+           
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L00K01/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L00K01/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[goto toolbar]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L00K02/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L00K02/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[goto child]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L00K03/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L00K03/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[goto statusbar]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L00K04/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L00K04/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[goto previous]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L00K05/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L00K05/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[repeat last]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L00K06/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L00K06/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[goto next]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L00K07/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L00K07/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[goto title]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L00K08/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L00K08/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[goto parent]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L00K09/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L00K09/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[goto menu]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L00K10/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L00K10/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[toggle tracking mode]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L00K11/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L00K11/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[widget surroundings]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L00K12/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L00K12/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[goto focus]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L00K13/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L00K13/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[change navigation mode]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L00K14/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L00K14/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[goto last]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L00K15/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L00K15/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[goto first]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      
+      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L01K01/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L01K01/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[attributes at caret]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L01K02/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L01K02/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[watch current object]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L01K03/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L01K03/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[unwatch all objects]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L01K12/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L01K12/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[goto caret]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>
+      
+      
+      
+      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L03K01/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L03K01/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[find set]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L03K02/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L03K02/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[do default action]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L03K03/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L03K03/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[window overview]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L03K04/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L03K04/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[window hierarchy]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L03K07/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L03K07/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[read whole window]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L03K05/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L03K05/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[flat review]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L03K06/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L03K06/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[detailed informations]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L03K10/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L03K10/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[find next]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>
+
+      
+      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L05K01/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L05K01/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[mouse left press]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L05K02/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L05K02/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[mouse left click]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L05K03/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L05K03/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[mouse left release]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L05K04/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L05K04/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[mouse right press]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L05K05/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L05K05/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[mouse right click]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L05K06/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L05K06/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[mouse right release]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L05K07/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L05K07/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[mouse middle press]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L05K09/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L05K09/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[mouse middle release]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L05K08/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L05K08/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[mouse middle click]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L05K10/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L05K10/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[mouse goto current]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+
+
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L06K01/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L06K01/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[cursor on/off]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L06K02/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L06K02/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[decrease y scale]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L06K03/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L06K03/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[crosswire on/off]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L06K04/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L06K04/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[decrease x scale]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L06K05/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L06K05/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[lock xy scale]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L06K06/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L06K06/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[increase x scale]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L06K07/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L06K07/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[invert on/off]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L06K08/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L06K08/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[increase y scale]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L06K09/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L06K09/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[smoothing toggle]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L06K10/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L06K10/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[load magnifier defaults]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L06K11/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L06K11/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[cursor mag on/off]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L06K12/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L06K12/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[automatic panning on/off]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L06K13/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L06K13/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[mouse tracking toggle]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L07K01/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L07K01/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[cursor on/off]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L07K02/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L07K02/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[decrease cursor size]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L07K03/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L07K03/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[crosswire on/off]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L07K04/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L07K04/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[decrease crosswire size]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L07K05/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L07K05/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[crosswire clip on/off]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L07K06/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L07K06/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[increase crosswire size]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L07K08/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L07K08/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[increase cursor size]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L07K09/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L07K09/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[cursor toggle]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L07K10/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L07K10/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[load magnifier defaults]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L07K11/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L07K11/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[cursor mag on/off]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L07K13/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L07K13/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[mouse tracking toggle]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L08K01/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L08K01/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[decrease volume]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L08K02/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L08K02/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[default volume]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L08K03/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L08K03/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[increase volume]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L08K04/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L08K04/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[decrease rate]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L08K05/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L08K05/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[default rate]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L08K06/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L08K06/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[increase rate]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L08K07/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L08K07/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[decrease pitch]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L08K08/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L08K08/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[default pitch]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L08K09/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L08K09/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[increase pitch]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L08K10/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L08K10/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[speech default]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L08K13/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L08K13/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[pause/resume]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L09K01/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L09K01/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[char left]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L09K03/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L09K03/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[char right]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L09K04/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L09K04/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[display left]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L09K06/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L09K06/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[display right]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+
+
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L10K01/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L10K01/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[braille on/off]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L10K02/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L10K02/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[speech on/off]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L10K03/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L10K03/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[magnifier on/off]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+      <schema>
+      <key>/schemas/apps/gnopernicus/command_map/keyboard/L10K04/key_list</key>
+      <applyto>/apps/gnopernicus/command_map/keyboard/L10K04/key_list</applyto>
+      <owner>gnopernicus</owner>
+      <type>list</type>
+      <list_type>string</list_type>
+      <default>[braille monitor on/off]</default>
+      <locale name="C">
+        <short>Command Map</short>
+        <long>Command Map</long>
+      </locale>
+      </schema>      
+
+<schema>
+<key>/schemas/apps/gnopernicus/presentation/active_setting</key>
+<applyto>/apps/gnopernicus/presentation/active_setting</applyto>
+<owner>gnopernicus</owner>
+<type>string</type>
+<default>default</default>
+<locale name="C"></locale>
+</schema>
+
+</schemalist>
+
+</gconfschemafile>

@@ -1,0 +1,3 @@
+braille_monitor_settingsdir = $(datadir)/gnopernicus/glade/gnopi_files/Braille_Monitor_Settings
+
+braille_monitor_settings_DATA =braille_monitor_settings.glade2

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<BRLOUT language="us" bstyle="8" clear="true">
+	
+	<BRLDISP ID="0" offset="0" cursor="4" cstyle="underline" clear="true">				
+		
+		<DOTS> dot123478 00 dot1436 FF</DOTS> <TEXT marker="Button OK"> OK </TEXT> <DOTS> F9 </DOTS> <TEXT> </TEXT>
+		<DOTS> CF </DOTS> <TEXT> Cancel </TEXT> <DOTS> F9 </DOTS> <TEXT> </TEXT>
+		<DOTS> CF </DOTS> <TEXT> Apply </TEXT> <DOTS> F9 </DOTS>
+		<TEXT> </TEXT>
+		<TEXT language="us"> English 1234 </TEXT>
+		<TEXT language="ge"> Deutsch 1234 </TEXT>
+		<TEXT attr="dot78">    </TEXT>
+			
+	</BRLDISP>
+
+	<BRLDISP role="status" dno="0">	
+		<DOTS> 07 38 C0 FF </DOTS>			
+	</BRLDISP>
+	
+	<BYTES> 1B FF CC AB </BYTES>
+
+</BRLOUT>

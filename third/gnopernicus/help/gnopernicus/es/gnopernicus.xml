@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" 
+"http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+  <!ENTITY legal SYSTEM "legal.xml">
+  <!ENTITY appversion "0.0.2">
+  <!ENTITY manrevision "0.1">
+  <!ENTITY date "January 2003">
+  <!ENTITY app "gnopernicus">
+]>
+<!-- 
+      (Do not remove this comment block.)
+  Maintained by the GNOME Documentation Project
+  http://developer.GNOME.org/projects/gdp
+  Template version: 2.0 beta
+  Template last modified Jan 30, 2002
+  
+-->
+<!-- =============Document Header ============================= -->
+<article id="index" lang="es">
+<!-- please do not change the id; for translations, change lang to -->
+<!-- appropriate code -->
+  <articleinfo> 
+	 <title>&app; Manual V&manrevision;</title>
+	 <copyright> 
+		<year>2003</year>
+		<holder>BAUM Retec AG and BAUM Engineering SRL</holder>
+	</copyright>
+	<copyright>
+		<year>2003</year>
+		<holder>Sun Microsystems</holder>
+	</copyright>
+
+<!-- translators: uncomment this:-->
+
+  <copyright>
+   <year>2004</year>
+   <holder>Francisco Javier F. Serrador (es)</holder>
+  </copyright>
+
+	 <publisher> 
+		<publishername> GNOME Documentation Project</publishername>
+	 </publisher>
+	 &legal; 
+	 <authorgroup> 
+		<author> 
+		  <firstname>BAUM</firstname>
+		  <surname>GNOME Documentation Team</surname> 
+		  <affiliation> 
+			 <orgname>BAUM Retec AG and BAUM Engineering SRL</orgname>
+			 <address> <email>ps@baum.ro</email> </address>
+		  </affiliation>
+		</author>
+		<author> 
+		  <firstname>Sun Microsystems</firstname>
+		  <surname>GNOME Documentation Team</surname> 
+		  <affiliation> 
+			 <orgname>Sun Microsystems</orgname>
+		  </affiliation>
+		</author>
+<!-- This is appropriate place for other contributors: translators,-->
+       <othercredit role="translator">
+	<firstname>Francisco Javier</firstname> 
+	<surname>F. Serrador</surname> 
+	<affiliation> 
+	  <orgname>Gnome Hispano</orgname> 
+	  <address> <email>traductores@es.gnome.org</email> </address> 
+	</affiliation>
+	<contrib>Spanish translation</contrib>
+      </othercredit>
+-->
+	 </authorgroup>
+
+<!-- According to GNU FDL, revision history is mandatory if you are -->
+<!-- modifying/reusing someone else's document.  If not, you can omit it. -->
+	 <revhistory>
+<!-- Remember to remove the &manrevision; entity from the revision entries other
+   than the current revision. -->
+   		<revision> 
+		  <revnumber>&app; Manual V&manrevision;</revnumber>
+		  <date>&date;</date> 
+		  <revdescription> 
+			 <para role="author">Gnopernicus Team</para>
+		  </revdescription>
+		</revision>
+	 </revhistory>
+	 <releaseinfo> Este manual describe la versión &appversion; de &app;.
+		</releaseinfo>
+	 <legalnotice> 
+		<title>Ayuda en Internet</title>
+		<para>Para ayuda en línea visite el sitio web de <ulink url="http://www.baum.ro/gnopernicus.html">Gnopernicus</ulink>. </para>
+	 </legalnotice>
+  </articleinfo>
+  <indexterm><primary>gnopernicus</primary></indexterm>
+
+<!-- ============= Document Body ============================= -->
+<!-- ============= Introduction ============================== -->
+  <sect1 id="gnopernicus-intro"> 
+	 <title>Introducción</title>
+	 <para>La aplicación <application>&app;</application> es un
+lector de pantalla y un ampliador.
+	</para>
+  </sect1>
+<!-- ============= Getting Started =========================== -->
+  <sect1 id="gnopernicus-getting-started"> 
+	 <title>Inicio</title>
+
+<!-- ============= To Start gnopernicus ============================ -->
+	 <sect2 id="gopernicus-to-start"> 
+		<title>Para iniciar &app;</title>
+		<para>Puede iniciar la aplicación
+<application>&app;</application> de las siguientes maneras:</para>
+		<variablelist>
+    		<varlistentry>
+    		<term>Menú <guimenu>Aplicaciones</guimenu></term>
+    		<listitem>
+    		<para>Elija
+    		<menuchoice>
+    		    <guisubmenu>Preferencias del escritorio</guisubmenu>
+		    <guisubmenu>Accesibilidad</guisubmenu>
+    		    <guimenuitem>Gnopernicus</guimenuitem>
+    		</menuchoice>. </para>
+    		</listitem>
+    		</varlistentry>
+    		<varlistentry>
+    		<term>Línea de comandos</term>
+    		<listitem>
+    		<para>Teclee <command>gnopernicus</command>, y pulse <keycap>Intro</keycap>.</para>
+		<para>Si ha especificado el parámetro -d,
+		<application>&app;</application> se ejecutará con la
+		configuración predeterminada</para>
+    		</listitem>
+    		</varlistentry>
+    		</variablelist>
+	</sect2>
+ </sect1>
+ 
+ <sect1 id="gnopernicus-how-to-use">
+  <title>Uso</title>
+  
+    <sect2 id="gnopernicus-general-settings">
+	<title>Configuración general</title>
+    </sect2>
+    <sect2 id="gnopernicus-input-output-settings">
+	<title>Configuración de Entrada/Salida</title>
+	<sect3 id="gnopernicus-braille-settings">
+	    <title>Configuración Brailles</title>
+	    <sect4 id="gnopernicus-braille-key-mapping">
+	    <title>Mapa de teclas Braille</title>
+	    <para>DKXX - Mostrar tecla XX</para>
+	    </sect4>
+	</sect3>
+	<sect3 id="gnopernicus-speech-settings"> 
+	    <title>Configuración de la voz</title>
+	</sect3>
+	<sect3 id="gnopernicus-magnifier-settings"> 
+	    <title>Configuración de la lupa</title>
+	</sect3>
+	<sect3 id="gnopernicus-keyboard-and-mouse-settings">
+	    <title>Configuración de teclado y ratón</title>
+	</sect3>
+	 <sect3 id="gnopernicus-braille-monitor">
+	    <title>Monitor Braille</title>
+	    <sect4 id="gnopernicus-braille-monitor-start"> 
+		<title>Para iniciar el monitor Braille</title>
+		<variablelist>
+    		<varlistentry>
+    		<term>Línea de órdenes</term>
+    		<listitem>
+    		<para>Teclee <command>brlmonitor</command>, y pulse <keycap>Intro</keycap>.</para>
+		<para>Puede especificar parámetros para [-line | -l] [-column | -c] [-port | -p] [-mode | -m].</para>
+		<para>line - número de línenas a mostrar </para>
+		<para>column - número de columnas a mostrar </para>
+		<para>port - número de puerto UDP, en que el Monitor Braille escuchará</para>
+		<para>mode - puede especificar si quiere ejecutarlo
+		con tipografía  [normal | braille | dual].</para>
+    		</listitem>
+    		</varlistentry>
+		<varlistentry>
+    		<term>Desde gnopernicus</term>
+    		<listitem>
+    		<para>ir a configuración General en el menú principal,
+    		y marque la casilla Monitor Braille.</para>
+    		</listitem>
+    		</varlistentry>
+    		</variablelist>
+	    </sect4>
+	
+<!--	    <sect4 id="gnopernicus-brlmonitor-options"> 
+		<title>Options in for Braille Monitor</title>
+	    </sect4>-->
+	</sect3>
+
+    </sect2>
+    <sect2 id="gnopernicus-configure"> 
+	<title>Configuración</title>
+	<sect3 id="gnopernicus-command-mapping"> 
+	<title>Mapeo de comandos</title>
+	    <guilabel>Teclas de capas</guilabel>
+	    <para>CapaXXTeclaYY presenta la capa XX de la tecla YY.
+		Podría cambiarse la capa de la tecla pulsada de la
+	capa después de pulsar 0.
+		El tiempo de expiración de los cambios es de 5 segundos.
+		Puede activar una función al pulsar la tecla desde el
+	teclado numérico.
+	    </para>
+	    <para>Códigos de capas correspondientes a las teclas del teclado numérico.</para>
+	    <orderedlist>
+	    <listitem>
+		<para>00- Teclado:<keycombo><keycap>0</keycap></keycombo></para>
+	    </listitem>
+	    <listitem>
+		<para>01- Teclado:<keycombo><keycap>1</keycap></keycombo></para>
+	    </listitem>
+	    <listitem>
+		<para>02- Teclado:<keycombo><keycap>2</keycap></keycombo></para>
+	    </listitem>
+	    <listitem>
+		<para>03- Teclado:<keycombo><keycap>3</keycap></keycombo></para>
+	    </listitem>
+	    <listitem>
+		<para>04- Teclado:<keycombo><keycap>4</keycap></keycombo></para>
+	    </listitem>
+	    <listitem>
+		<para>05- Teclado:<keycombo><keycap>5</keycap></keycombo></para>
+	    </listitem>
+	    <listitem>
+		<para>06- Teclado:<keycombo><keycap>6</keycap></keycombo></para>
+	    </listitem>
+	    <listitem>
+		<para>07- Teclado:<keycombo><keycap>7</keycap></keycombo></para>
+	    </listitem>
+	    <listitem>
+		<para>08- Teclado:<keycombo><keycap>8</keycap></keycombo></para>
+	    </listitem>
+	    <listitem>
+		<para>09- Teclado:<keycombo><keycap>9</keycap></keycombo></para>
+	    </listitem>
+	    <listitem>
+		<para>10- Teclado:<keycombo><keycap>Supr</keycap></keycombo></para>
+	    </listitem>
+	    <listitem>
+		<para>11- Teclado:<keycombo><keycap>Intro</keycap></keycombo></para>
+	    </listitem>
+	    <listitem>
+		<para>12- Teclado:<keycombo><keycap>Más</keycap></keycombo></para>
+	    </listitem>
+	    <listitem>
+		<para>13- Teclado:<keycombo><keycap>Menos</keycap></keycombo></para>
+	    </listitem>
+	    <listitem>
+		<para>14- Teclado:<keycombo><keycap>Asterisco</keycap></keycombo></para>
+	    </listitem>
+	    <listitem>
+		<para>15- Teclado:<keycombo><keycap>Barra (/)</keycap></keycombo></para>
+	    </listitem>
+	    </orderedlist>
+	    <guilabel>Teclas definidas por el usuario</guilabel>
+	    <para>El usuario pueder especificar una combinación de teclas, a la cual puede asociar una función.
+	    Los modificadores : Control - C, Alt - A, Mayús - S y Bloq.Num - N.
+	    (Ex. CAS-s = CTRL+ALT+SHIFT+s)
+	    </para>
+
+	</sect3>
+	<sect3 id="gnopernicus-presentation">
+	    <title>Presentación</title>
+	</sect3>
+	<sect3 id="gnopernicus-find">
+	    <title>Buscar</title>
+	</sect3>
+	<sect3 id="gnopernicus-screen-review">
+	    <title>Revisor de pantalla</title>
+	</sect3>
+	<sect3 id="gnopernicus-screen-language">
+	    <title>Idioma</title>
+	    <para>En esta versión no funciona.</para>
+	</sect3>
+    </sect2>
+    <sect2 id="gnopernicus-load-default">
+    <title>Cargar configuración predeterminada</title>
+    </sect2>
+    <sect2 id="gnopernicus-help"> 
+    <title>Atuda</title>
+    </sect2>
+    <sect2 id="gnopernicus-about"> 
+    <title>Acerca de</title>
+    </sect2>
+    <sect2 id="gnopernicus-minimize"> 
+    <title>Minimizar menú</title>
+    </sect2>
+ </sect1>
+</article>

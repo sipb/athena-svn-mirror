@@ -1,0 +1,4947 @@
+# Greek translation of gnopernicus.
+# This file is distributed under the same license as the PACKAGE package.
+# Nikos initial translation 131 translated messages 01Sep03
+# Nikos update translation 265 translated messages 05Sep03
+# Nikos update             309 translated messages 03Nov03
+# kostas:30Jan2004, update 774 messages
+# Nikos:20Fev2004, fixes
+# kostas:07Mar2004, update,885messages
+#  kostas:09Mar2004,finished translation but Full review and QA is needed, translation is ambiguous
+# Nikos:31Aug2004, update translation
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
+# Kostas Papadimas <pkst@gnome.org>, 2004.
+# Nikos Charonitakis <charosn@her.forthnet.gr>, 2004.
+msgid ""
+msgstr ""
+"Project-Id-Version: el\n"
+"POT-Creation-Date: 2004-09-15 12:38+0300\n"
+"PO-Revision-Date: 2004-08-31 22:54-0300\n"
+"Last-Translator: Nikos Charonitakis <charosn@her.forthnet.gr>\n"
+"Language-Team:  <nls@tux.hellug.gr>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Report-Msgid-Bugs-To: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: KBabel 1.3.1\n"
+
+#: braille/test/remote.c:548
+msgid "Braille remote"
+msgstr "Απομακρυσμένο μπράιγ"
+
+#: brlmon/brlmon.c:196
+msgid "Braille monitor"
+msgstr "Οθόνη μπράϊγ"
+
+#: brlmon/brlmon.c:325 brlmon/brlmon.c:333
+#, c-format
+msgid "Invalid port number: %d."
+msgstr "Μη έγκυρος αριθμός θύρας: %d."
+
+#: brlmon/brlmon.c:326 brlmon/brlmon.c:334
+msgid "port_no = [1025 - 30000]."
+msgstr "port_no = [1025 - 30000]."
+
+#: brlmon/brlmon.c:520
+msgid "Can not open socket!"
+msgstr "Αποτυχία ανοίγματος υποδοχής!"
+
+#: brlmon/brlmon.c:543
+#, c-format
+msgid "Can not bind port number %d."
+msgstr "Αποτυχία bind αριθμού θύρας %d."
+
+#: brlmon/brlmon.c:547
+#, c-format
+msgid "Waiting for data on port UDP %u."
+msgstr "Αναμονή για δεδομένα στην θύρα UDP %u."
+
+#: brlmon/brlmonui.c:225 gnopi/gnopiconf.c:43
+msgid "Failed to init gconf client."
+msgstr "Αποτυχία αρχικοποίησης πελάτη gconf."
+
+#: brlmon/brlmonui.c:234 srconf/libsrconf/libsrconf.c:418
+msgid "Failed to add directory."
+msgstr "Αποτυχία προσθήκης καταλόγου."
+
+#: brlmon/brlmonui.c:246 gnopi/kbconf.c:79 gnopi/spconf.c:89
+#: srconf/libsrconf/libsrconf.c:431
+msgid "Failed to add notify."
+msgstr "Αποτυχία προσθήκης ειδοποίησης."
+
+#: brlmon/brlmonui.c:261 gnopi/gnopiconf.c:145
+#, c-format
+msgid "Expected key: %s"
+msgstr "Αναμενόμενο κλειδί: %s"
+
+#: brlmon/brlmonui.c:301
+#, c-format
+msgid "Failed to set value: %d"
+msgstr "Αποτυχία ορισμού τιμής: %d"
+
+#: brlmon/brlmonui.c:342 brlmon/brlmonui.c:444 gnopi/gnopiconf.c:355
+#: gnopi/gnopiconf.c:409 gnopi/gnopiconf.c:560 gnopi/gnopiconf.c:733
+#, c-format
+msgid "Invalid type of key: %s."
+msgstr "Μή έκυρος τύπος κλειδιού: %s."
+
+#: brlmon/brlmonui.c:345 brlmon/brlmonui.c:364
+#, c-format
+msgid "Failed to set int value: %d."
+msgstr "Αποτυχία ορισμού int value: %d."
+
+#: brlmon/brlmonui.c:358 brlmon/brlmonui.c:459
+#, c-format
+msgid "Failed to get value: %s."
+msgstr "Αποτυχία λήψης τιμής: %s."
+
+#: brlmon/brlmonui.c:403 gnopi/gnopiconf.c:357 gnopi/gnopiconf.c:375
+#: gnopi/gnopiconf.c:562 gnopi/gnopiconf.c:578
+#, c-format
+msgid "Failed to set value: %d."
+msgstr "Αποτυχία ορισμού τιμής: %d."
+
+#: brlmon/brlmonui.c:447 brlmon/brlmonui.c:462
+#, c-format
+msgid "Failed to set boolean value: %d."
+msgstr "Αποτυχία ορισμού τιμής  boolean: %d."
+
+#: brlmon/brlmonui.c:501 gnopi/gnopiconf.c:496 gnopi/gnopiconf.c:509
+#, c-format
+msgid "Failed to set value: %s."
+msgstr "Αποτυχία ορισμού τιμής: %s."
+
+#: brlmon/brlmonui.c:535
+#, c-format
+msgid "Failed to get string value: %s."
+msgstr "Αποτυχία λήψης τιμής αλφαριθμητικού: %s."
+
+#: brlmon/brlmonui.c:539 brlmon/brlmonui.c:549
+#, c-format
+msgid "Failed to set string value: %s."
+msgstr "Αποτυχία ορισμού τιμής αλφαριθμητικού: %s."
+
+#: brlmon/brlmonui.c:583 gnopi/bmui.c:297
+#, c-format
+msgid "Invalid modetype: %s."
+msgstr "Μη έγκυρο modetype: %s."
+
+#: brlmon/brlmonui.c:635
+#, c-format
+msgid "%s font not installed."
+msgstr "η γραμματοσειρά %s δεν έχει εγκατασταθεί."
+
+#. *
+#. * bmui_load_colors
+#. *
+#. * Load text colors.
+#. *
+#. * returns:
+#. *
+#: brlmon/brlmonui.c:639 gnopi/bmui.c:251
+msgid "Can not parse color string."
+msgstr "Αδυναμία ανάλυσης χρώματος αλφαριθμητικού."
+
+#: brlmon/brlmonui.c:1111
+msgid "Status"
+msgstr "Κατάσταση"
+
+#: brlmon/brlmonui.c:1318
+#, fuzzy, c-format
+msgid "Too many cells on display. [Max %d]"
+msgstr "Πάρα πολλά κελιά για εμφάνιση.  [Max %d]"
+
+#: brlmon/brlmonui.c:1319
+#, c-format
+msgid "Load default display size. Line: %d Column: %d."
+msgstr "Φόρτωση προεπιλεγμένου μεγέθους οθόνης. Γραμμή: %d Στήλη: %d."
+
+#. unsupported attribute
+#: brlmon/brlmonxml.c:84
+#, c-format
+msgid "BRLOUT attribute %s is not supported."
+msgstr "Το γνώρισμα BRLOUT%s δεν υποστηρίζεται."
+
+#. unsupported attribute
+#: brlmon/brlmonxml.c:218
+#, c-format
+msgid "TEXT attribute %s is not supported."
+msgstr "Το γνώρισμα TEXT %s δεν υποστηρίζεται."
+
+#: gnopi/bmconf.c:318
+msgid "Failed to set display size."
+msgstr "Αποτυχία ορισμού μεγέθους οθόνης."
+
+#: gnopi/bmconf.c:336
+msgid "Failed to set display position."
+msgstr "Αποτυχία ορισμού θέσης οθόνης."
+
+#: gnopi/bmconf.c:368
+msgid "Failed to set display mode."
+msgstr "Αποτυχία ορισμού λειτουργίας οθόνης."
+
+#: gnopi/bmconf.c:392
+msgid "Failed to set dot type colors."
+msgstr "Αποτυχία ορισμού χρωμάτων τύπου κουκίδας."
+
+#: gnopi/bmconf.c:409
+msgid "Failed to set font size."
+msgstr "Αποτυχία ορισμού μεγέθους γραμματοσειράς."
+
+#: gnopi/bmui.c:328
+#, c-format
+msgid "Invalid position: %s."
+msgstr "Μη έγκυρη θέση: %s."
+
+#: gnopi/brlconf.c:282 gnopi/cmdmapconf.c:237 gnopi/coreconf.c:140
+#: gnopi/kbconf.c:126 gnopi/magconf.c:226 gnopi/spconf.c:152
+#: gnopi/spconf.c:1203
+msgid "Unable to allocate memory."
+msgstr "Αδυναμία ανάθεσης μνήμης."
+
+#: gnopi/brlconf.c:388
+#, c-format
+msgid "Failed to set braille style: %s."
+msgstr "Αποτυχία ορισμού στυλ μπράϊγ: %s."
+
+#: gnopi/brlconf.c:397
+#, c-format
+msgid "Failed to set braille cursor style: %s."
+msgstr "Αποτυχία ορισμού στυλ δρομέα μπράϊγ: %s."
+
+#: gnopi/brlconf.c:406
+#, c-format
+msgid "Failed to set attribute settings: %d."
+msgstr "Αποτυχία ορισμού ρυθμίσεων γνωρίσματος: %d."
+
+#: gnopi/brlconf.c:415
+#, c-format
+msgid "Failed to set braille device: %s."
+msgstr "Αποτυχία ορισμού συσκευής μπράϊγ: %s."
+
+#: gnopi/brlconf.c:424
+#, c-format
+msgid "Failed to set fill character: %s."
+msgstr "Αποτυχία ορισμού γεμίσματος χαρακτήρα: %s."
+
+#: gnopi/brlconf.c:433
+#, c-format
+msgid "Failed to set serial port number: %d."
+msgstr "Αποτυχία οριιμού αριθμού σειριακής θύρας: %d."
+
+#: gnopi/brlconf.c:443
+#, c-format
+msgid "Failed to set translation table: %s."
+msgstr "Αποτυχία ορισμού πίνακα μετάφρασης: %s."
+
+#: gnopi/brlconf.c:452
+#, c-format
+msgid "Failed to set optical sensor: %d."
+msgstr "Αποτυχία ορισμού οπτικού αισθητήρα: %d."
+
+#: gnopi/brlconf.c:461
+#, c-format
+msgid "Failed to set position sensor: %d."
+msgstr "Αποτυχία ορισμού αισθητήρα θέσης: %d."
+
+#: gnopi/brlconf.c:470
+#, c-format
+msgid "Failed to set status cell: %s."
+msgstr "Αποτυχία ορισμού κατάστασης κελιού: %s."
+
+#: gnopi/brlconf.c:556
+msgid "<none>"
+msgstr "<κανένα>"
+
+#: gnopi/brlui.c:79
+msgid "American English"
+msgstr "Αμερικάνικα Αγγλικά"
+
+#: gnopi/brlui.c:80
+msgid "German"
+msgstr "Γερμανικά"
+
+#: gnopi/brlui.c:81
+msgid "Spanish"
+msgstr "Ισπανικά"
+
+#: gnopi/brlui.c:82
+msgid "Swedish"
+msgstr "Σουηδικά"
+
+#. To translators: X = X Window System server
+#: gnopi/brlui.c:351
+msgid "X display's _terminal number:"
+msgstr "Αριθμός _τερματικού X display's:"
+
+#: gnopi/brlui.c:357
+#: gnopi/gnopi_files/Braille_Settings/braille_device.glade2.h:6
+msgid "_Port:"
+msgstr "_Θύρα:"
+
+#: gnopi/brlui.c:623
+msgid "Language"
+msgstr "Γλώσσα"
+
+#: gnopi/brlui.c:1218 gnopi/cmdmapui.c:475
+msgid "No selected command!"
+msgstr "Δεν υπάρχει επιλεγμένη εντολή!"
+
+#: gnopi/brlui.c:1242
+msgid "Invalid device key!"
+msgstr "Μη έγκυρο πλήκτρο συσκευής!"
+
+#: gnopi/brlui.c:1477 gnopi/brlui.c:1900 gnopi/cmdmapui.c:717
+#: gnopi/cmdmapui.c:1568 gnopi/cmdmapui.c:1588
+msgid "Commands"
+msgstr "Εντολές"
+
+#: gnopi/brlui.c:1632 gnopi/cmdmapui.c:1186
+msgid "No selected item to modify!"
+msgstr "Δεν υπάρχει επιλεγμένο αντικείμενο για τροποποίηση!"
+
+#: gnopi/brlui.c:1644 gnopi/brlui.c:1724 gnopi/cmdmapui.c:1059
+#: gnopi/cmdmapui.c:1196
+msgid "Invalid selected item!"
+msgstr "Μή έγκυρο επιλεγμένο αντικείμενο!"
+
+#: gnopi/brlui.c:1712 gnopi/cmdmapui.c:1046
+msgid "No selected item to remove!"
+msgstr "Δεν υπάρχει επιλεγμένο αντικείμενο για απομάκρυνση!"
+
+#: gnopi/brlui.c:1894
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:9
+msgid "Braille Keys"
+msgstr "Πλήκτρα Μπράιγ"
+
+#: gnopi/cmdmapconf.c:462 gnopi/cmdmapconf.c:503
+msgid "Change commit error."
+msgstr "Αλλαγή σφάλματος υποβολής."
+
+#: gnopi/cmdmapui.c:45
+msgid "decrease y scale"
+msgstr "μείωση κλίμακας ψ"
+
+#: gnopi/cmdmapui.c:46
+msgid "decrease x scale"
+msgstr "αύξηση κλίμακας χ"
+
+#: gnopi/cmdmapui.c:47
+msgid "increase y scale"
+msgstr "αύξηση κλίμακας ψ"
+
+#: gnopi/cmdmapui.c:48
+msgid "increase x scale"
+msgstr "αύξηση κλίμακας χ"
+
+#: gnopi/cmdmapui.c:49
+msgid "lock xy scale"
+msgstr "κλείδωμα κλίμακας χψ"
+
+#: gnopi/cmdmapui.c:50
+msgid "smoothing toggle"
+msgstr "εναλλαγή εξομάλυνσης"
+
+#: gnopi/cmdmapui.c:51
+msgid "cursor toggle"
+msgstr "εναλλαγή δρομέα"
+
+#: gnopi/cmdmapui.c:52
+msgid "cursor on/off"
+msgstr "δρομέας on/off"
+
+#: gnopi/cmdmapui.c:53
+msgid "cursor magnification on/off"
+msgstr "μεγέθυνση δρομέα on/off"
+
+#: gnopi/cmdmapui.c:54
+msgid "decrease cursor size"
+msgstr "μείωση μεγέθους δρομέα"
+
+#: gnopi/cmdmapui.c:55
+msgid "increase cursor size"
+msgstr "αύξηση μεγέθους δρομέα"
+
+#: gnopi/cmdmapui.c:56
+msgid "invert on/off"
+msgstr "αντιστροφή on/off"
+
+#: gnopi/cmdmapui.c:57
+msgid "magnifier default"
+msgstr "προεπιλογή μεγεθυντή"
+
+#: gnopi/cmdmapui.c:58
+msgid "crosshair on/off"
+msgstr "crosshair on/off"
+
+#: gnopi/cmdmapui.c:59
+msgid "crosshair clip on/off"
+msgstr "crosshair clip on/off"
+
+#: gnopi/cmdmapui.c:60
+msgid "decrease crosshair size"
+msgstr "μείωση μεγέθους crosshair"
+
+#: gnopi/cmdmapui.c:61
+msgid "increase crosshair size"
+msgstr "αύξηση μεγέθους crosshair "
+
+#: gnopi/cmdmapui.c:62
+msgid "automatic panning on/off"
+msgstr "αυτόματο panning on/off"
+
+#: gnopi/cmdmapui.c:63
+msgid "mouse tracking toggle"
+msgstr "εναλλαγή mouse tracking"
+
+#: gnopi/cmdmapui.c:64
+msgid "load magnifier defaults"
+msgstr "φόρτωση προεπιλογών μεγεθυντή"
+
+#: gnopi/cmdmapui.c:66
+msgid "decrease pitch"
+msgstr "μείωση βήματος"
+
+#: gnopi/cmdmapui.c:67
+msgid "increase pitch"
+msgstr "αύξηση βήματος"
+
+#: gnopi/cmdmapui.c:68
+msgid "default pitch"
+msgstr "προεπιλεγμένο βήμα"
+
+#: gnopi/cmdmapui.c:69
+msgid "decrease rate"
+msgstr "μείωση ρυθμού"
+
+#: gnopi/cmdmapui.c:70
+msgid "increase rate"
+msgstr "αύξηση ρυθμού"
+
+#: gnopi/cmdmapui.c:71
+msgid "default rate"
+msgstr "προεπιλεγμένος ρυθμός"
+
+#: gnopi/cmdmapui.c:72
+msgid "decrease volume"
+msgstr "μείωση έντασης"
+
+#: gnopi/cmdmapui.c:73
+msgid "increase volume"
+msgstr "αύξηση έντασης"
+
+#: gnopi/cmdmapui.c:74
+msgid "default volume"
+msgstr "προεπιλεγμένη ένταση"
+
+#: gnopi/cmdmapui.c:75
+msgid "speech default"
+msgstr "προεπιλογή ομιλίας"
+
+#: gnopi/cmdmapui.c:77
+msgid "goto parent"
+msgstr "μετάβαση στο μητρικό"
+
+#: gnopi/cmdmapui.c:78
+msgid "goto child"
+msgstr "μετάβαση στο θυγατρικό"
+
+#: gnopi/cmdmapui.c:79
+msgid "goto previous"
+msgstr "πήγαινε στο προηγούμενο"
+
+#: gnopi/cmdmapui.c:80
+msgid "goto next"
+msgstr "πήγαινε στο επόμενο"
+
+#: gnopi/cmdmapui.c:81
+msgid "repeat last"
+msgstr "επανάληψη τελευταίου"
+
+#: gnopi/cmdmapui.c:82
+msgid "goto focus"
+msgstr "μετάβαση στην εστίαση"
+
+#: gnopi/cmdmapui.c:83
+msgid "goto title"
+msgstr "πήγαινε στον τίτλο"
+
+#: gnopi/cmdmapui.c:84
+msgid "goto menu"
+msgstr "πήγαινε στο μενού"
+
+#: gnopi/cmdmapui.c:85
+msgid "goto toolbar"
+msgstr "πήγαινε στην εργαλειοθήκη"
+
+#: gnopi/cmdmapui.c:86
+msgid "goto statusbar"
+msgstr "πήγαινε στη γραμμή κατάστασης"
+
+#: gnopi/cmdmapui.c:87
+msgid "widget surroundings"
+msgstr "περίχωρα γραφικού συστατικού"
+
+#: gnopi/cmdmapui.c:89
+msgid "goto caret"
+msgstr "goto caret"
+
+#: gnopi/cmdmapui.c:90
+msgid "goto first"
+msgstr "πήγαινε στο πρώτο"
+
+#: gnopi/cmdmapui.c:91
+msgid "goto last"
+msgstr "πήγαινε στο τελευταίο"
+
+#: gnopi/cmdmapui.c:92
+msgid "change navigation mode"
+msgstr "αλλαγή λειτουργίας περιήγησης"
+
+#: gnopi/cmdmapui.c:94
+msgid "toggle flat review/focus tracking mode"
+msgstr "εναλλαγή  flat review/focus tracking mode"
+
+#: gnopi/cmdmapui.c:95
+msgid "flat review"
+msgstr "flat review"
+
+#: gnopi/cmdmapui.c:96
+msgid "window hierarchy"
+msgstr "ιεραρχία παραθύρου"
+
+#: gnopi/cmdmapui.c:97
+msgid "read whole window"
+msgstr ""
+
+#: gnopi/cmdmapui.c:98
+msgid "detailed informations"
+msgstr "λεπτομερείς πληροφορίες"
+
+#: gnopi/cmdmapui.c:99
+msgid "do default action"
+msgstr "εκτέλεση προεπιλεγμένης ενέργειας"
+
+#: gnopi/cmdmapui.c:100
+msgid "window overview"
+msgstr "περίληψη παραθύρου"
+
+#: gnopi/cmdmapui.c:101
+msgid "find next"
+msgstr "εύρεση επόμενου"
+
+#: gnopi/cmdmapui.c:102
+msgid "find set"
+msgstr "find set"
+
+#: gnopi/cmdmapui.c:103
+msgid "attributes at caret"
+msgstr "γνωρίσματα στο caret"
+
+#: gnopi/cmdmapui.c:104
+msgid "watch current object"
+msgstr "παρακολούθηση τρέχοντος αντικειμένου"
+
+#: gnopi/cmdmapui.c:105 srcore/srctrl.c:1353
+msgid "unwatch all objects"
+msgstr "ακύρωση παρακολούθησης όλων των αντικειμένων"
+
+#: gnopi/cmdmapui.c:107
+msgid "mouse left press"
+msgstr "αριστερό πάτημα ποντικιού"
+
+#: gnopi/cmdmapui.c:108
+msgid "mouse left click"
+msgstr "αριστερό κλικ ποντικιού"
+
+#: gnopi/cmdmapui.c:109
+msgid "mouse left release"
+msgstr "απελευθέρωση αριστερού ποντικιού"
+
+#: gnopi/cmdmapui.c:110
+msgid "mouse right press"
+msgstr "δεξί πάτημα ποντικιού"
+
+#: gnopi/cmdmapui.c:111
+msgid "mouse right click"
+msgstr "δεξί κλικ ποντικιού"
+
+#: gnopi/cmdmapui.c:112
+msgid "mouse right release"
+msgstr "απελευθέρωση δεξιού ποντικιού"
+
+#: gnopi/cmdmapui.c:113
+msgid "mouse middle press"
+msgstr "μεσαίο πάτημα ποντικιού"
+
+#: gnopi/cmdmapui.c:114
+msgid "mouse middle release"
+msgstr "απελευθέρωση μεσαίου ποντικιού"
+
+#: gnopi/cmdmapui.c:115
+msgid "mouse middle click"
+msgstr "μεσαίο κλικ ποντικιού"
+
+#: gnopi/cmdmapui.c:116
+msgid "mouse goto current"
+msgstr "mouse goto current"
+
+#: gnopi/cmdmapui.c:118
+msgid "shutup"
+msgstr "σιωπή"
+
+#: gnopi/cmdmapui.c:119
+msgid "pause/resume"
+msgstr "παύση/συνέχεια"
+
+#: gnopi/cmdmapui.c:121
+msgid "char left"
+msgstr "χαρακ αριστερά"
+
+#: gnopi/cmdmapui.c:122
+msgid "char right"
+msgstr "χαρακ δεξιά"
+
+#: gnopi/cmdmapui.c:123
+msgid "display left"
+msgstr "προβολή αριστερά"
+
+#: gnopi/cmdmapui.c:124
+msgid "display right"
+msgstr "προβολή δεξιά"
+
+#: gnopi/cmdmapui.c:126
+msgid "braille on/off"
+msgstr "μπράϊγ on/off"
+
+#: gnopi/cmdmapui.c:127
+msgid "speech on/off"
+msgstr "ομιλία on/off"
+
+#: gnopi/cmdmapui.c:128
+msgid "magnifier on/off"
+msgstr "μεγεθυντής  on/of"
+
+#: gnopi/cmdmapui.c:129
+msgid "braille monitor on/off"
+msgstr "οθόνη μπράϊγ on/off"
+
+#: gnopi/cmdmapui.c:143
+msgid "A"
+msgstr "A"
+
+#: gnopi/cmdmapui.c:144
+msgid "B"
+msgstr "B"
+
+#: gnopi/cmdmapui.c:145
+msgid "C"
+msgstr "C"
+
+#: gnopi/cmdmapui.c:146
+msgid "D"
+msgstr "D"
+
+#: gnopi/cmdmapui.c:147
+msgid "E"
+msgstr "E"
+
+#: gnopi/cmdmapui.c:148
+msgid "F"
+msgstr "F"
+
+#: gnopi/cmdmapui.c:149
+msgid "G"
+msgstr "G"
+
+#: gnopi/cmdmapui.c:150
+msgid "H"
+msgstr "H"
+
+#: gnopi/cmdmapui.c:151
+msgid "I"
+msgstr "I"
+
+#: gnopi/cmdmapui.c:152
+msgid "J"
+msgstr "J"
+
+#: gnopi/cmdmapui.c:153
+msgid "K"
+msgstr "K"
+
+#: gnopi/cmdmapui.c:154
+msgid "L"
+msgstr "L"
+
+#: gnopi/cmdmapui.c:155
+msgid "M"
+msgstr "M"
+
+#: gnopi/cmdmapui.c:156
+msgid "N"
+msgstr "N"
+
+#: gnopi/cmdmapui.c:157
+msgid "O"
+msgstr "O"
+
+#: gnopi/cmdmapui.c:158
+msgid "P"
+msgstr "P"
+
+#: gnopi/cmdmapui.c:159
+msgid "Q"
+msgstr "Q"
+
+#: gnopi/cmdmapui.c:160
+msgid "R"
+msgstr "R"
+
+#: gnopi/cmdmapui.c:161
+msgid "S"
+msgstr "S"
+
+#: gnopi/cmdmapui.c:162
+msgid "T"
+msgstr "T"
+
+#: gnopi/cmdmapui.c:163
+msgid "U"
+msgstr "U"
+
+#: gnopi/cmdmapui.c:164
+msgid "V"
+msgstr "V"
+
+#: gnopi/cmdmapui.c:165
+msgid "W"
+msgstr "W"
+
+#: gnopi/cmdmapui.c:166
+msgid "X"
+msgstr "X"
+
+#: gnopi/cmdmapui.c:167
+msgid "Y"
+msgstr "Y"
+
+#: gnopi/cmdmapui.c:168
+msgid "Z"
+msgstr "Z"
+
+#: gnopi/cmdmapui.c:169
+msgid "F1"
+msgstr "F1"
+
+#: gnopi/cmdmapui.c:170
+msgid "F2"
+msgstr "F2"
+
+#: gnopi/cmdmapui.c:171
+msgid "F3"
+msgstr "F3"
+
+#: gnopi/cmdmapui.c:172
+msgid "F4"
+msgstr "F4"
+
+#: gnopi/cmdmapui.c:173
+msgid "F5"
+msgstr "F5"
+
+#: gnopi/cmdmapui.c:174
+msgid "F6"
+msgstr "F6"
+
+#: gnopi/cmdmapui.c:175
+msgid "F7"
+msgstr "F7"
+
+#: gnopi/cmdmapui.c:176
+msgid "F8"
+msgstr "F8"
+
+#: gnopi/cmdmapui.c:177
+msgid "F9"
+msgstr "F9"
+
+#: gnopi/cmdmapui.c:178
+msgid "F10"
+msgstr "F10"
+
+#: gnopi/cmdmapui.c:179
+msgid "F11"
+msgstr "F11"
+
+#: gnopi/cmdmapui.c:180
+msgid "F12"
+msgstr "F12"
+
+#: gnopi/cmdmapui.c:181
+msgid "0"
+msgstr "0"
+
+#: gnopi/cmdmapui.c:182
+msgid "1"
+msgstr "1"
+
+#: gnopi/cmdmapui.c:183
+msgid "2"
+msgstr "2"
+
+#: gnopi/cmdmapui.c:184
+msgid "3"
+msgstr "3"
+
+#: gnopi/cmdmapui.c:185
+msgid "4"
+msgstr "4"
+
+#: gnopi/cmdmapui.c:186
+msgid "5"
+msgstr "5"
+
+#: gnopi/cmdmapui.c:187
+msgid "6"
+msgstr "6"
+
+#: gnopi/cmdmapui.c:188
+msgid "7"
+msgstr "7"
+
+#: gnopi/cmdmapui.c:189
+msgid "8"
+msgstr "8"
+
+#: gnopi/cmdmapui.c:190
+msgid "9"
+msgstr "9"
+
+#: gnopi/cmdmapui.c:191
+msgid "apostrophe"
+msgstr "απόστροφος"
+
+#: gnopi/cmdmapui.c:192
+msgid "backslash"
+msgstr "backslash"
+
+#: gnopi/cmdmapui.c:193
+msgid "bracket left"
+msgstr "αριστερή παρένθεση"
+
+#: gnopi/cmdmapui.c:194
+msgid "bracket right"
+msgstr "δεξιά παρένθεση"
+
+#: gnopi/cmdmapui.c:195
+msgid "comma"
+msgstr "κόμμα"
+
+#: gnopi/cmdmapui.c:196
+msgid "equal"
+msgstr "ίσο"
+
+#: gnopi/cmdmapui.c:197
+msgid "grave"
+msgstr "βαρεία"
+
+#: gnopi/cmdmapui.c:198
+msgid "minus"
+msgstr "μείον"
+
+#: gnopi/cmdmapui.c:199
+msgid "period"
+msgstr "τελεία"
+
+#: gnopi/cmdmapui.c:200
+msgid "quote left"
+msgstr "αριστερό εισαγωγικό"
+
+#: gnopi/cmdmapui.c:201
+msgid "semicolon"
+msgstr "άνω τελεία"
+
+#: gnopi/cmdmapui.c:202
+msgid "slash"
+msgstr "slash"
+
+#: gnopi/cmdmapui.c:1133
+msgid "Invalid key or existent key."
+msgstr "Μη έγκυρο ή ανύπαρκτο πλήκτρο."
+
+#: gnopi/cmdmapui.c:1562
+msgid "Layer Keys"
+msgstr "Πλήκτρα Layer "
+
+#: gnopi/cmdmapui.c:1582
+msgid "User Keys"
+msgstr "Πλήκτρα χρήστη"
+
+#: gnopi/coreconf.c:248
+#, c-format
+msgid "Failed to set exit val: %d."
+msgstr "Αποτυχία ορισμού τιμής εξόδου: %d."
+
+#: gnopi/coreconf.c:290
+#, c-format
+msgid "Failed to set move mouse: %d."
+msgstr "Αποτυχία ορισμού μετακίνησης ποντικιού: %d."
+
+#: gnopi/coreconf.c:299
+#, c-format
+msgid "Failed to set simulate click: %d."
+msgstr "Αποτυχία ορισμού εξομοίωσης κλικ: %d."
+
+#: gnopi/coreconf.c:308
+#, c-format
+msgid "Failed to set find text: %s."
+msgstr "Αποτυχία ορισμού εύρεσης κειμένου: %s."
+
+#: gnopi/coreconf.c:318
+#, c-format
+msgid "Failed to set magnifier status: %d."
+msgstr "Αποτυχία ορισμού κατάστασης μεγεθυντή: %d."
+
+#: gnopi/coreconf.c:327
+#, c-format
+msgid "Failed to set speech status: %d."
+msgstr "Αποτυχία ορισμού κατάστασης ομιλίας: %d."
+
+#: gnopi/coreconf.c:336
+#, c-format
+msgid "Failed to set braille status: %d."
+msgstr "Αποτυχία ορισμού κατάστασης μπράϊγ: %d."
+
+#: gnopi/coreconf.c:345
+#, c-format
+msgid "Failed to set braille monitor status: %d."
+msgstr "Αποτυχία ορισμού κατάστασης οθόνης μπράϊγ: %d."
+
+#: gnopi/coreconf.c:354
+#, c-format
+msgid "Failed to set minimize flag: %d."
+msgstr "Αποτυχία ορισμού σημαίας ελαχιστοποίησης: %d."
+
+#: gnopi/coreconf.c:363
+#, c-format
+msgid "Failed to set exit ack: %d."
+msgstr "Αποτυχία ορισμού exit ack: %d."
+
+#: gnopi/coreconf.c:372
+#, c-format
+msgid "Failed to set language: %s."
+msgstr "Αποτυχία ορισμού γλώσσας: %s."
+
+#: gnopi/coreconf.c:381
+#, c-format
+msgid "Failed to set screen review: %d."
+msgstr "Αποτυχία ορισμού περίληψης οθόνης: %d."
+
+#: gnopi/defui.c:73
+#, c-format
+msgid "Are you sure you want to load default values for %s?"
+msgstr ""
+"Είστε σίγουροι ότι θέλετε να φορτώσετε τις προεπιλεγμένες τιμές για το %s?"
+
+#: gnopi/defui.c:100
+msgid "braille"
+msgstr "μπράιγ"
+
+#: gnopi/defui.c:116
+msgid "Braille default setting loaded."
+msgstr "Φορτώθηκε προεπιλεγμένη ρύθμιση μπράϊγ."
+
+#: gnopi/defui.c:125
+msgid "speech"
+msgstr "ομιλία"
+
+#: gnopi/defui.c:133
+msgid "Speech default setting loaded."
+msgstr "Φορτώθηκε προεπιλεγμένη ρύθμιση ομιλίας."
+
+#: gnopi/defui.c:142
+msgid "magnifier"
+msgstr "μεγεθυντής"
+
+#: gnopi/defui.c:156
+msgid "Magnifier default setting loaded."
+msgstr "Φορτώθηκε προεπιλεγμένη ρύθμιση μεγεθυντή."
+
+#: gnopi/defui.c:165
+msgid "keyboard"
+msgstr "πληκτρολόγιο"
+
+#: gnopi/defui.c:173
+msgid "Keyboard default setting loaded."
+msgstr "Φορτώθηκε προεπιλεγμένη ρύθμιση πληκτρολογίου."
+
+#: gnopi/defui.c:182
+msgid "braille monitor"
+msgstr "Οθόνη μπράιγ"
+
+#: gnopi/defui.c:189
+msgid "Braille monitor default setting loaded."
+msgstr "Φορτώθηκε προεπιλεγμένη ρύθμιση οθόνης μπράϊγ."
+
+#: gnopi/defui.c:198
+msgid "start up"
+msgstr "εκκίνηση"
+
+#: gnopi/defui.c:207
+msgid "Startup default setting loaded."
+msgstr "Φορτώθηκε προεπιλεγμένη ρύθμιση εκκίνησης."
+
+#: gnopi/defui.c:217
+msgid "command map"
+msgstr "χάρτης εντολών"
+
+#: gnopi/defui.c:225
+msgid "Command map default setting loaded."
+msgstr "Φορτώθηκε προεπιλεγμένη ρύθμιση χάρτη εντολών."
+
+#: gnopi/defui.c:235
+msgid "presentation"
+msgstr "παρουσίαση"
+
+#: gnopi/defui.c:241
+msgid "Presentation default setting loaded."
+msgstr "Φορτώθηκε προεπιλεγμένη ρύθμιση παρουσίασης."
+
+#: gnopi/defui.c:250
+msgid "screen review"
+msgstr "περίληψη οθόνης"
+
+#: gnopi/defui.c:256
+msgid "Screen review default setting loaded."
+msgstr "Φορτώθηκε προεπιλεγμένη ρύθμιση περίληψης οθόνης."
+
+#: gnopi/defui.c:279
+msgid "all modules"
+msgstr "όλες οι μονάδες"
+
+#: gnopi/defui.c:282
+msgid "All default settings loaded."
+msgstr "Φορτώθηκαν όλες οι προεπιλεγμένες ρυθμίσεις."
+
+#: gnopi/genui.c:66
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:12
+msgid "_Braille"
+msgstr "_Μπράιγ"
+
+#: gnopi/genui.c:69
+msgid "_Braille (unavailable)"
+msgstr "_Μπράιγ (μη διαθέσιμο)"
+
+#: gnopi/genui.c:74
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:13
+msgid "_Magnifier"
+msgstr "_Μεγεθυντής"
+
+#: gnopi/genui.c:77
+msgid "_Magnifier (unavailable)"
+msgstr "_Μεγεθυντής (μη διαθέσιμος)"
+
+#: gnopi/genui.c:82
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:14
+msgid "_Speech"
+msgstr "_Ομιλία"
+
+#: gnopi/genui.c:85
+msgid "_Speech (unavailable)"
+msgstr "_Ομιλία (μη διαθέσιμη)"
+
+#: gnopi/genui.c:90
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:4
+msgid "B_raille monitor"
+msgstr "Οθόνη μπ_ράϊγ"
+
+#: gnopi/genui.c:93
+msgid "B_raille monitor (unavailable)"
+msgstr "Οθόνη μπ_ράϊγ (μή διαθέσιμο)"
+
+#: gnopi/gnopernicus.desktop.in.h:1
+msgid "Assistive Technologies for Blind and Visually Impaired"
+msgstr "Βοηθητικές τεχνολογίες για άτομα με προβλήματα στην όραση"
+
+#: gnopi/gnopernicus.desktop.in.h:2
+msgid "Screen Reader and Magnifier"
+msgstr "Αναγνώστης οθόνης και μεγεθυντής"
+
+#: gnopi/gnopi.c:302
+msgid "gnopernicus"
+msgstr "gnopernicus"
+
+#: gnopi/gnopi.c:309
+msgid "Gconf initialization failed."
+msgstr "Αποτυχία αρχικοποίησης του Gconf."
+
+#: gnopi/gnopi.c:316
+msgid "Invalid parameters."
+msgstr "Μη έγκυροι παραμέτροι."
+
+#: gnopi/gnopi.c:322
+msgid "Multiple instances are NOT ALLOWED. This instance will end."
+msgstr "ΔΕΝ ΕΠΙΤΡΕΠΟΝΤΑΙ πολλαπλές εκτελέσεις. Αυτή η εκτέλεση θα τερματιστεί."
+
+#: gnopi/gnopi.c:328
+msgid "GTK initialization failed."
+msgstr "Αποτυχία αρχικοποίησης GTK."
+
+#: gnopi/gnopi.c:334
+msgid "Can not create a new process."
+msgstr "Αδυναμία δημιουργίας νέας διεργασίας."
+
+#: gnopi/gnopi.c:344
+msgid "Exit gnopernicus."
+msgstr "Κλείσιμο gnopenicus."
+
+#: gnopi/gnopi.c:352
+msgid "Gnopernicus initialization failed."
+msgstr "Αποτυχία αρχικοποίησης του Gnopernicus."
+
+#: gnopi/gnopi.c:359
+msgid "Can not load .glade2 file"
+msgstr "Αδύνατη η φόρτωση του αρχείου .glade2"
+
+#. if (WIFSIGNALED (gn_srcore_status) != 0)
+#. sru_message ("signal no: %d", WTERMSIG (gn_srcore_status));
+#: gnopi/gnopi.c:659
+msgid "srcore exited."
+msgstr "srcore τερματίστηκε."
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:1
+msgid "<b>Color</b>"
+msgstr "<b>Χρώμα</b>"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:2
+msgid "<b>Font</b>"
+msgstr "<b>Γραμματοσειρά</b>"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:3
+msgid "<b>Mode Type</b>"
+msgstr "<b>Τύπος Λειτουργίας</b>"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:4
+msgid "<b>Position</b>"
+msgstr "<b>Θέση</b>"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:5
+msgid "<b>Size</b>"
+msgstr "<b>Μέγεθος</b>"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:6
+msgid "B_raille"
+msgstr "Μ_πράιγ"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:7
+msgid "Braille Monitor Preferences"
+msgstr "Προτιμήσεις Οθόνης Μπράϊγ"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:8
+msgid "Color selection for texts which use dot 7"
+msgstr "Επιλογή χρώματος για κείμενα που χρησιμοποιούν dot 7"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:9
+msgid "Color selection for texts which use dot 8"
+msgstr "Επιλογή χρώματος για κείμενα που χρησιμοποιούν dot 8"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:10
+msgid "Color selection for texts which use dots 7 and 8"
+msgstr "Επιλογή χρώματος για κείμενα που χρησιμοποιούν dot 7 και 8"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:11
+msgid "Colu_mns:"
+msgstr "Σ_τήλες:"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:12
+msgid "Display at bottom of screen"
+msgstr "Εμφάνιση στο κάτω μέρος της οθόνης"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:13
+msgid "Display on top of screen"
+msgstr "Εμφάνιση στο πάνω μέρος της οθόνης"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:14
+msgid "Display using braille font"
+msgstr "Εμφάνιση με την χρήση γραμματοσειράς μπράϊγ"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:15
+msgid "Display using normal font"
+msgstr "Εμφάνιση με την χρήση κανονικής γραμματοσειράς "
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:16
+msgid "Display with both fonts"
+msgstr "Εμφάνιση με την χρήση και των δύο  γραμματοσειρών"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:17
+msgid "Dot 7:"
+msgstr "Κουκκίδα 7:"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:18
+msgid "Dot 8:"
+msgstr "Κουκκίδα 8:"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:19
+msgid "Dots 78:"
+msgstr "Dots 78:"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:20
+msgid "Number of cell columns"
+msgstr "Αριθμός στηλών κελιού"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:21
+msgid "Number of cell lines"
+msgstr "Αριθμός γραμμών κελιού"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:22
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:43
+msgid "Pick a color"
+msgstr "Επιλογή χρώματος"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:23
+msgid "Size of font"
+msgstr "Μέγεθος γραμματοσειράς"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:24
+msgid "Use system theme colors"
+msgstr "Χρήση χρωμάτων θέματος συστήματος"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:25
+msgid "Use theme _system colors"
+msgstr "Χρήση χρωμάτων θέματος _συστήματος"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:26
+msgid "_Dual"
+msgstr "_Διπλό"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:27
+msgid "_Lines:"
+msgstr "_Γραμμές:"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:28
+msgid "_Normal"
+msgstr "_Κανονικό"
+
+#: gnopi/gnopi_files/Braille_Monitor_Settings/braille_monitor_settings.glade2.h:29
+msgid "_Size:"
+msgstr "_Μέγεθος:"
+
+#: gnopi/gnopi_files/Braille_Settings/attribute_settings.glade2.h:1
+msgid "Attributes"
+msgstr "Γνωρίσματα"
+
+#: gnopi/gnopi_files/Braille_Settings/attribute_settings.glade2.h:2
+msgid "_1. Dot 8"
+msgstr "_1. Κουκκίδα 8"
+
+#: gnopi/gnopi_files/Braille_Settings/attribute_settings.glade2.h:3
+msgid "_2. Dot 7"
+msgstr "_2. Κουκκίδα 7"
+
+#: gnopi/gnopi_files/Braille_Settings/attribute_settings.glade2.h:4
+msgid "_3. Dot 8 or 7"
+msgstr "_3. Dot 8 or 7"
+
+#: gnopi/gnopi_files/Braille_Settings/attribute_settings.glade2.h:5
+msgid "_4. Off"
+msgstr "_4. Off"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_device.glade2.h:1
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:1
+#: gnopi/gnopi_files/Find/find.glade2.h:2
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:1
+#: gnopi/gnopi_files/Presentation/presentation.glade2.h:1
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:3
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:1
+msgid "*"
+msgstr "*"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_device.glade2.h:2
+msgid "Braille Device"
+msgstr "Συσκευή Μπράιγ"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_device.glade2.h:3
+msgid "Braille devices list"
+msgstr "Λίστα συσκευών μπράιγ"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_device.glade2.h:4
+msgid "Serial port number where the device is linked"
+msgstr "Αριθμός σειριακής θύρας όπου είναι συνδεδεμένη η συσκευή"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_device.glade2.h:5
+msgid "_Device:"
+msgstr "_Συσκευή:"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:2
+msgid "10 _Font size"
+msgstr "10 Μέγεθος _γραμματοσειράς"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:3
+msgid "11 _Activate script function \"OnPosSwitch\""
+msgstr "11 _Ενεργοποίηση λειτουργίας δέσμης ενεργειών \"OnPosSwitch\""
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:4
+msgid "12 _Present attributes"
+msgstr "12 _Υπάρχοντα γνωρίσματα"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:5
+msgid "<b>_Braille keys list</b>"
+msgstr "<b>Λίστα πλήκτρων _μπράϊγ</b>"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:6
+msgid "Activate script function \"OnPosSwitch\""
+msgstr "Ενεργοποίηση λειτουργίας δέσμης ενεργειών \"OnPosSwitch\""
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:7
+msgid "Add item in braille keys list"
+msgstr "Προσθήκη αντικειμένου στην λίστα πλήκτρων μπράϊγ"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:8
+msgid "Braille Display Key Mapping"
+msgstr "Χαρτογράφηση πλήκτρου οθόνης μπράϊγ"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:10
+msgid "Braille device keys list"
+msgstr "Λίστα πλήκτρων συσκευής μπράϊγ"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:11
+msgid "Braille keys list"
+msgstr "Λίστα πλήκτρων μπράϊγ"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:12
+msgid "Command List"
+msgstr "Λίστα εντολών"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:13
+msgid "Command list"
+msgstr "Λίστα εντολών"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:14
+msgid "Font name"
+msgstr "Όνομα γραμματοσειράς"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:15
+msgid "Font size"
+msgstr "Μέγεθος γραμματοσειράς"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:16
+msgid "Font style"
+msgstr "Στυλ γραμματοσειράς"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:17
+msgid "Modify selected item"
+msgstr "Τροποποίηση επιλεγμένου αντικειμένου"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:18
+msgid "Move caret"
+msgstr "Μετακίνηση caret"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:19
+msgid "Move mouse and click left"
+msgstr "Μετακίνηση ποντικιού και αριστερό κλικ"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:20
+msgid "Move mouse and click left and right"
+msgstr "Μετακίνηση ποντικιού και αριστερό και δεξιό κλικ"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:21
+msgid "Move mouse and click right"
+msgstr "Μετακίνηση ποντικιού και δεξιό  κλικ"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:22
+msgid "Only move mouse"
+msgstr "Μόνο μετακίνηση ποντικιού"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:23
+msgid "Optical Sensors"
+msgstr "Οπτικοί Αισθητήρες"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:24
+msgid "Optical sensors off"
+msgstr "Οπτικοί αισθητήρες ανενεργοί"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:25
+msgid "Position Sensors"
+msgstr "Τοποθέτηση αισθητήρων"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:26
+msgid "Position sensors off"
+msgstr "Αισθητήρες θέσης ανενεργοί"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:27
+msgid "Present attributes"
+msgstr "Τρέχοντα γνωρίσματα"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:28
+msgid "Remove selected item from braille keys list"
+msgstr "Απομάκρυνση επιλεγμένου αντικειμένου από την λίστα πλήκτρων μπράϊγ"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:29
+msgid "Show X coordinate"
+msgstr "Προβολή συντεταγμένης X "
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:30
+msgid "Show Y coordinate"
+msgstr "Προβολή συντεταγμένης Y"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:31
+msgid "_0 Optical sensors off"
+msgstr "_0 Οπτικοί αισθητήρες ανενεργοί"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:32
+msgid "_0 Position sensors off"
+msgstr "_0 Αισθητήρες θέσης ανενεργοί"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:33
+msgid "_1 Only move mouse"
+msgstr "_1 Μόνο μετακίνηση ποντικιού"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:34
+msgid "_2 Move mouse and click left"
+msgstr "_2 Μετακίνηση ποντικιού και αριστερό κλικ"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:35
+msgid "_3 Move mouse and click right"
+msgstr "_3 Μετακίνηση ποντικιού και δεξιό  κλικ"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:36
+msgid "_4 Move mouse and click left or right"
+msgstr "_4 Μετακίνηση ποντικιού και αριστερό και δεξιό κλικ"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:37
+msgid "_5 Move caret"
+msgstr "_5 Μετακίνηση caret"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:38
+msgid "_6 Show X coordinate"
+msgstr "_6 Εμφάνιση συντεταγμένης  X "
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:39
+msgid "_7 Show Y coordinate"
+msgstr "_7 Εμφάνιση συντεταγμένης  Y "
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:40
+msgid "_8 Font style"
+msgstr "_8 Στυλ γραμματοσειράς"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:41
+msgid "_9 Font name"
+msgstr "_9 Όνομα γραμματοσειράς"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:42
+msgid "_Commands:"
+msgstr "_Εντολές:"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:43
+msgid "_Device key:"
+msgstr "_Κλειδί συσκευής:"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_mapping.glade2.h:44
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:85
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:28
+msgid "_Modify"
+msgstr "_Τροποποίηση"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:1
+msgid "Braille Preferences"
+msgstr "Προτιμήσεις Μπράιγ"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:2
+msgid "Close braille settings"
+msgstr "Κλείσιμο ρυθμίσεων μπράιγ"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:3
+msgid "Map function for display keys"
+msgstr "Χαρτογράφηση λειτουργίας για πλήκτρα εμφάνισης"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:4
+msgid "Select braille device"
+msgstr "Επιλογή συσκευής μπράιγ"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:5
+msgid "Select braille style 8/6 dots"
+msgstr "Επιλογή στυλ μπράϊγ 8/6 κουκίδων"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:6
+msgid "Select cursor setting FullCell/UnderLined/NoCursor"
+msgstr "Επιλογή ρύθμισης δρομέα Πλήρες Κελί/Υπογράμμιση/Χωρίς Δρομέα"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:7
+msgid "Select translation table for braille device"
+msgstr "Επιλογή πίνακα μετάφρασης για συσκευή μπράϊγ"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:8
+msgid "_1 Braille Device"
+msgstr "_1 Συσκευή Μπράιγ"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:9
+msgid "_2 Translation Table"
+msgstr "_2 Πίνακας Μετάφρασης"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:10
+msgid "_3 Braille Style"
+msgstr "_3 Στυλ Μπράιγ"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:11
+msgid "_4 Cursor Preferences"
+msgstr "_4 Προτιμήσεις Δρομέα"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_settings.glade2.h:12
+msgid "_5 Braille Key Mapping"
+msgstr "_5 Μπράϊγ χαρτογράφηση πλήκτρων"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_style.glade2.h:1
+msgid "Braille Style"
+msgstr "Στυλ Μπράιγ"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_style.glade2.h:2
+msgid "Use 6 dots"
+msgstr "Χρήση 6 κουκκίδων"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_style.glade2.h:3
+msgid "Use 8 dots"
+msgstr "Χρήση 8 κουκκίδων"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_style.glade2.h:4
+msgid "_6 Dot Braille"
+msgstr "_6 κουκίδες Μπράιγ"
+
+#: gnopi/gnopi_files/Braille_Settings/braille_style.glade2.h:5
+msgid "_8 Dot Braille"
+msgstr "_8 κουκίδες Μπράιγ"
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:1
+msgid "Cursor Preferences"
+msgstr "Προτιμήσεις Δρομέα"
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:2
+msgid "Cursor on braille display is a full cell"
+msgstr "Ο δρομέας στην οθόνη Μπράιγ είναι ένα πλήρες κελί"
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:3
+msgid "Cursor on braille display is an underline"
+msgstr "Ο δρομέας στην οθόνη Μπράιγ είναι υπογράμμιση"
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:4
+msgid "No cursor on braille display"
+msgstr "Δεν υπάρχει δρομέας στην οθόνη Μπράιγ "
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:5
+msgid "_Full cell cursor"
+msgstr "Δρομέας πλή_ρους κελιού"
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:6
+msgid "_No cursor"
+msgstr "_Χωρίς δρομέα"
+
+#: gnopi/gnopi_files/Braille_Settings/cursor_settings.glade2.h:7
+msgid "_Underline cursor (dots 7 and 8)"
+msgstr "Υπο_γράμμιση δρομέα (κουκίδες 7 και 8)"
+
+#: gnopi/gnopi_files/Braille_Settings/translation_table.glade2.h:1
+msgid "Translation Table"
+msgstr "Πίνακας Μετάφρασης"
+
+#: gnopi/gnopi_files/Braille_Settings/translation_table.glade2.h:2
+msgid "Translation table list"
+msgstr "Λίστα πίνακα μετάφρασης"
+
+#: gnopi/gnopi_files/Braille_Settings/translation_table.glade2.h:3
+msgid "_Select language:"
+msgstr "_Επιλογή γλώσσας:"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:1
+msgid "   "
+msgstr "   "
+
+#: gnopi/gnopi_files/Find/find.glade2.h:3
+msgid "<b>Fi_nd Text:</b>"
+msgstr "<b>Ε_υρεση Κειμένου:</b>"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:4
+msgid "<b>Find Attributes:</b>"
+msgstr "<b>Εύρεση Γνωρισμάτων:</b>"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:5
+msgid "<b>Match</b>"
+msgstr "<b>Ταίριασμα</b>"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:6
+msgid "<b>Scope</b>"
+msgstr "<b>Σκοπός</b>"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:7
+msgid "<b>Search For</b>"
+msgstr "<b>Αναζήτηση Για</b>"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:8
+msgid "A_ll chosen attributes"
+msgstr "Ό_λα τα επιλεγμένα γνωρίσματα"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:9
+msgid "A_ny chosen attributes"
+msgstr "Όποιο_δήποτε επιλεγμένο γνώρισμα"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:10
+msgid "A_ttribute"
+msgstr "Γ_νώρισμα"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:11
+msgid "Bold"
+msgstr "Έντονα"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:12
+msgid "Case _sensitive"
+msgstr "_Διάκριση πεζών/κεφαλαίων"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:13
+msgid "Case sensitive on/off"
+msgstr "Διάκριση πεζών κεφαλαίων on / off"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:14
+msgid "Italic"
+msgstr "Πλάγια"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:15
+msgid "S_elected"
+msgstr "Ε_πιλεγμένο"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:16
+msgid "Scope area is a desktop"
+msgstr "Η περιοχή σκόπευσης είναι η επιφάνεια εργασίας"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:17
+msgid "Scope area is a window"
+msgstr "Η περιοχή σκόπευσης είναι ένα παράθυρο"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:18
+msgid "Scope area is an application"
+msgstr "Η περιοχή σκόπευσης είναι μια εφαρμογή"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:19
+msgid "Search Preferences"
+msgstr "Προτιμήσεις Αναζήτησης"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:20
+msgid "Search criteria is a graphics"
+msgstr "Τα κριτήρια αναζήτησης είναι γραφικά"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:21
+msgid "Search criteria is a text"
+msgstr "Τα κριτήρια αναζήτησης είναι κείμενο"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:22
+msgid "Search criteria is an attribute"
+msgstr "Τα κριτήρια αναζήτησης είναι ένα γνώρισμα"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:23
+msgid "Selected item"
+msgstr "Επιλεγμένο αντικείμενο"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:24
+msgid "Stri_kethrough"
+msgstr "Επι_σήμανση"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:25
+msgid "Strikethrough"
+msgstr "Επισήμανση"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:26
+msgid "Te_xt"
+msgstr "Κεί_μενο"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:27
+msgid "Text to search"
+msgstr "Κείμενο προς αναζήτηση"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:28
+msgid "Underline"
+msgstr "Υπογράμμιση"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:29
+msgid "_Application"
+msgstr "_Εφαρμογή"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:30
+msgid "_Bold"
+msgstr "_Έντονα"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:31
+msgid "_Desktop"
+msgstr "_Επιφάνεια Εργασίας"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:32
+msgid "_Graphics"
+msgstr "_Γραφικά"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:33
+msgid "_Italic"
+msgstr "_Πλάγια"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:34
+msgid "_Underline"
+msgstr "_Υπογράμμιση"
+
+#: gnopi/gnopi_files/Find/find.glade2.h:35
+msgid "_Window"
+msgstr "_Παράθυρο"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:1
+msgid "    "
+msgstr "    "
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:2
+msgid "<b>Active Components</b>"
+msgstr "<b>Ενεργά Συστατικά</b>"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:3
+msgid "<b>Startup</b>"
+msgstr "<b>Εκκίνηση</b>"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:5
+msgid "Braille monitor on/off"
+msgstr "Οθόνη μπράϊγ on/off"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:6
+msgid "Braille on/off"
+msgstr "Μπράϊγ on/off"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:7
+msgid "Magnifier on/off"
+msgstr "Μεγεθυντής on/off"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:8
+msgid "Speech on/off"
+msgstr "Ομιλία on/off"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:9
+msgid "Start gnopernicus minimized"
+msgstr "Εκκίνηση gnopernicus σε ελαχιστοποίηση"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:10
+msgid "Start m_inimized"
+msgstr "Εκκίνηση σε ελα_χιστοποίηση"
+
+#: gnopi/gnopi_files/General_Settings/general_settings.glade2.h:11
+msgid "Startup Mode"
+msgstr "Λειτουργία εκκίνησης"
+
+#: gnopi/gnopi_files/Keyboard_Mouse_Settings/keyboard_mouse_settings.glade2.h:1
+msgid "Mouse Preferences"
+msgstr "Προτιμήσεις Ποντικιού"
+
+#: gnopi/gnopi_files/Keyboard_Mouse_Settings/keyboard_mouse_settings.glade2.h:2
+msgid "Simulate click on current object"
+msgstr "Εξομοίωση κλικ στο τρέχον αντικείμενο"
+
+#: gnopi/gnopi_files/Keyboard_Mouse_Settings/keyboard_mouse_settings.glade2.h:3
+msgid "Take mouse at current object"
+msgstr "Μετακίνηση ποντικιού στο τρέχον αντικείμενο"
+
+#: gnopi/gnopi_files/Keyboard_Mouse_Settings/keyboard_mouse_settings.glade2.h:4
+msgid "_Simulate click on current object"
+msgstr "Ε_ξομοίωση κλικ στο τρέχον αντικείμενο"
+
+#: gnopi/gnopi_files/Keyboard_Mouse_Settings/keyboard_mouse_settings.glade2.h:5
+msgid "_Take mouse at current object"
+msgstr "Μετα_κίνηση ποντικιού στο τρέχον αντικείμενο"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:1
+msgid "Close \"Load Default Preferences\""
+msgstr "Κλείσιμο \"Φόρτωσης προεπιλεγμένων προτιμήσεων\""
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:2
+msgid "Load Default Preferences"
+msgstr "Φόρτωση προεπιλεγμένων προτιμήσεων"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:3
+msgid "Load Default Settings"
+msgstr "Φόρτωση προεπιλεγμένων ρυθμίσεων"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:4
+msgid "Load all defaults"
+msgstr "Φόρτωση όλων των προεπιλογών"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:5
+msgid "Load braille defaults"
+msgstr "Φόρτωση προεπιλογών μπράϊγ"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:6
+msgid "Load braille monitor defaults"
+msgstr "Φόρτωση προεπιλογών οθόνης  μπράϊγ"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:7
+msgid "Load command map defaults"
+msgstr "Φόρτωση προεπιλογών χάρτη εντολών"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:8
+msgid "Load magnifier defaults"
+msgstr "Φόρτωση προεπιλογών μεγεθυντή"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:9
+msgid "Load mouse defaults"
+msgstr "Φόρτωση προεπιλογών ποντικιού"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:10
+msgid "Load presentation defaults"
+msgstr "Φόρτωση προεπιλογών παρουσίασης"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:11
+msgid "Load screen review defaults"
+msgstr "Φόρτωση προεπιλογών περίληψης οθόνης"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:12
+msgid "Load speech defaults"
+msgstr "Φόρτωση προεπιλογών λόγου"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:13
+msgid "Load startup mode defaults"
+msgstr "Φόρτωση προεπιλογών λειτουργίας εκκίνησης"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:14
+msgid "_0 All"
+msgstr "_0 Ολα"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:15
+msgid "_1 Braille"
+msgstr "_1 Μπράιγ"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:16
+msgid "_2 Speech"
+msgstr "_2 Ομιλία"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:17
+#: gnopi/gnopi_files/gnopi.glade2.h:33
+msgid "_3 Magnifier"
+msgstr "_3 Μεγεθυντής"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:18
+msgid "_4 Keyboard"
+msgstr "_4 Πληκτρολόγιο"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:19
+#: gnopi/gnopi_files/gnopi.glade2.h:36
+msgid "_5 Braille Monitor"
+msgstr "_5 Οθόνη Μπράϊγ"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:20
+msgid "_6 Startup"
+msgstr "_6 Εκκίνηση"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:21
+msgid "_7 Command Map"
+msgstr "_7 Χάρτης εντολών"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:22
+msgid "_8 Presentation"
+msgstr "_ Παρουσίαση"
+
+#: gnopi/gnopi_files/Load_Default/load_default.glade2.h:23
+msgid "_9 Screen Review"
+msgstr "_9 Περίληψη οθόνης"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:2
+msgid "<b>Border settings</b>"
+msgstr "<b>Ρυθμίσεις πλαισίου</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:3
+msgid "<b>Cross-hair</b>"
+msgstr "<b>Cross-hair</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:4
+msgid "<b>Cursor setting</b>"
+msgstr "<b>Ρύθμιση δρομέα</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:5
+msgid "<b>Display screen</b>"
+msgstr "<b>Οθόνη εμφάνισης</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:6
+msgid "<b>Focus tracking mode</b>"
+msgstr "<b>Λειτουργία tracking εστίασης</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:7
+msgid "<b>Mo_use tracking mode</b>"
+msgstr "<b>Λειτουργία Mo_use tracking</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:8
+msgid "<b>S_moothing</b>"
+msgstr "<b>Ε_ξομάλυνση</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:9
+msgid "<b>Zoomer placement</b>"
+msgstr "<b>Τοποθέτηση μεγεθυντή</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:10
+msgid "<b>Zoomfactor</b>"
+msgstr "<b>Παράγοντας μεγέθυνσης</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:11
+msgid "<b>_Zoomer list</b>"
+msgstr "<b>Λίστα μεγε_θυντή</b>"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:12
+msgid "Bor_der size:"
+msgstr "Μέγεθος π_λαισίου:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:13
+msgid "Border c_olor:"
+msgstr "Χ_ρώμα πλαισίου:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:14
+msgid "Border color"
+msgstr "Χρώμα πλαισίου"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:15
+msgid "Border size"
+msgstr "Μέγεθος πλαισίου"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:16
+#, fuzzy
+msgid "C_entered"
+msgstr "_Κεντραρισμένο"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:17
+msgid "C_ursor on/off"
+msgstr "Δ_ρομέας on/off"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:18
+msgid "Cross-ha_ir size:"
+msgstr "Μέγεθος Cross-ha_ir:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:19
+msgid "Cross-hair c_lip on/off"
+msgstr "Cross-hair c_lip on/off"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:20
+#, fuzzy
+msgid "Cross-hair colo_r:"
+msgstr "_Χρώμα Cross-hair:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:21
+#, fuzzy
+msgid "Cross-hair color in_verted"
+msgstr "Cross-hair color _inverted"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:22
+#, fuzzy
+msgid "Cross-hair o_n/off"
+msgstr "Cross-_hair on/off"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:23
+msgid "Crosshair clip on/off"
+msgstr "Crosshair clip on/off"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:24
+msgid "Crosshair color"
+msgstr "Crosshair color"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:25
+msgid "Crosshair on/off"
+msgstr "Crosshair on/off"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:26
+msgid "Crosshair size"
+msgstr "Crosshair size"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:27
+msgid "Cursor _size:"
+msgstr "_Μέγεθος δρομέα:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:28
+msgid "Cursor c_olor:"
+msgstr "_Χρώμα δρομέα:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:29
+msgid "Cursor color"
+msgstr "Χρώμα δρομέα"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:30
+msgid "Cursor magnification"
+msgstr "Μεγέθυνση δρομέα"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:31
+msgid "Cursor on/off"
+msgstr "Δρομέας on/off"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:32
+msgid "Cursor size"
+msgstr "Μέγεθος δρομέα"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:33
+msgid "Display screen source"
+msgstr "Εμφάνιση πηγής οθόνης"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:34
+msgid "Display screen target"
+msgstr "Εμφάνιση στόχου οθόνης"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:35
+msgid "Invert crosshair color"
+msgstr "Αντιστροφή χρώματος crosshair"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:36
+msgid "Invert on/off"
+msgstr "Αντιστροφή on/off"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:37
+#, fuzzy
+msgid "Lock zoom _factor"
+msgstr "Κλείδωμα παράγοντα μεγέθυνσης"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:38
+msgid "Lock zoom factor"
+msgstr "Κλείδωμα παράγοντα μεγέθυνσης"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:39
+msgid "Magnifier Preferences"
+msgstr "Προτιμήσεις μεγεθυντή"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:40
+msgid "Magnifier settings"
+msgstr "Ρυθμίσεις μεγεθυντή"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:41
+msgid "Mouse tracking type"
+msgstr "Τύπος Mouse tracking"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:42
+msgid "Panning on/off"
+msgstr "Panning on/off"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:44
+#, fuzzy
+msgid "Set cursor separate from _magnification"
+msgstr "_Μεγέθυνση δρομέα"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:45
+msgid "Smoothing type"
+msgstr "Τύπος εξομάλυνσης"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:46
+#, fuzzy
+msgid "Tar_get:"
+msgstr "Σ_τόχος:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:47
+msgid "Zoom factor X"
+msgstr "Παράγοντας μεγέθυνσης X"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:48
+msgid "Zoom factor Y"
+msgstr "Παράγοντας μεγέθυνσης Y"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:49
+msgid "Zoom factor _X:"
+msgstr "Παράγοντας μεγέθυνσης _X:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:50
+msgid "Zoom factor _Y:"
+msgstr "Παράγοντας μεγέθυνσης _Y:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:51
+msgid "Zoomer Options"
+msgstr "Επιλογές μεγεθυντή"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:52
+msgid "Zoomer placement bottom"
+msgstr "Τοποθέτηση μεγεθυντή κάτω"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:53
+msgid "Zoomer placement left"
+msgstr "Τοποθέτηση μεγεθυντή αριστερά"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:54
+msgid "Zoomer placement right"
+msgstr "Τοποθέτηση μεγεθυντή δεξιά"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:55
+msgid "Zoomer placement top"
+msgstr "Τοποθέτηση μεγεθυντή πάνω"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:56
+msgid "Zoomers list"
+msgstr "Λίστα μεγεθυντών"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:57
+msgid "_Add/Modify"
+msgstr "_Προσθήκη/Μετατροπή"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:58
+msgid "_Auto"
+msgstr "_Αυτόματο"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:59
+msgid "_Bottom:"
+msgstr "_Κάτω:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:60
+msgid "_Invert"
+msgstr "Αναστρο_φή"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:61
+msgid "_Left:"
+msgstr "_Αριστερά:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:62
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:87
+msgid "_None"
+msgstr "Κα_νένα"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:63
+msgid "_Panning"
+msgstr "_Panning"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:64
+msgid "_Remove"
+msgstr "_Απομάκρυνση"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:65
+msgid "_Right:"
+msgstr "_Δεξιά:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:66
+msgid "_Source:"
+msgstr "_Πηγή:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:67
+msgid "_Top:"
+msgstr "_Επάνω:"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:68
+#: gnopi/magui.c:49
+msgid "bilinear"
+msgstr "bilinear"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:69
+#: gnopi/magui.c:61
+msgid "centered"
+msgstr "κεντραρισμένο"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:70
+#: gnopi/magui.c:48 gnopi/magui.c:63
+msgid "none"
+msgstr "κανένα"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:71
+#: gnopi/magui.c:62
+msgid "proportional"
+msgstr "αναλογικό"
+
+#: gnopi/gnopi_files/Magnifier_Settings/magnifier_settings.glade2.h:72
+#: gnopi/magui.c:60
+msgid "push"
+msgstr "push"
+
+#: gnopi/gnopi_files/Presentation/presentation.glade2.h:2
+msgid "Expert"
+msgstr "Expert"
+
+#: gnopi/gnopi_files/Presentation/presentation.glade2.h:3
+msgid "Mode selected:"
+msgstr "Επιλεγμένη λειτουργία:"
+
+#: gnopi/gnopi_files/Presentation/presentation.glade2.h:4
+msgid "Presentation"
+msgstr "Παρουσίαση"
+
+#: gnopi/gnopi_files/Presentation/presentation.glade2.h:5
+#: srcore/default.xml.in.h:10 srcore/verbose.xml.in.h:10
+msgid "Verbose"
+msgstr "Verbose"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:1
+msgid "<b>Horizontal flags</b>"
+msgstr "<b>Οριζόντιες σημαίες</b>"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:2
+msgid "<b>Vertical flags</b>"
+msgstr "<b>Κάθετες σημαίες</b>"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:3
+msgid "Add all empty lines"
+msgstr "Προσθήκη όλων των κενών γραμμών"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:4
+msgid "Add all spaces"
+msgstr "Προσθήκη όλων των διαστημάτων"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:5
+msgid "Add all spaces and empty lines"
+msgstr "Προσθήκη όλων των διαστημάτων και των κενών γραμμών"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:6
+msgid "Add embedded empty lines"
+msgstr "Προσθήκη ενσωματωμένων κενών γραμμών"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:7
+msgid "Add embedded spaces"
+msgstr "Προσθήκη ενσωματωμένων διαστημάτων"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:8
+msgid "Add leading empty lines"
+msgstr "Προσθήκη καθοδηγητικών κενών γραμμών"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:9
+msgid "Add leading spaces"
+msgstr "Προσθήκη καθοδηγητικών διαστημάτων"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:10
+msgid "Add trailing empty lines"
+msgstr "Προσθήκη κενών γραμμών που ακολουθούν"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:11
+msgid "Add trailing spaces"
+msgstr "Προσθήκη διαστημάτων που ακολουθούν"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:12
+msgid "All _horizontal"
+msgstr "Όλα _οριζόντια"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:13
+msgid "All _vertical"
+msgstr "Όλα _κάθετα"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:14
+msgid "Count em_pty lines"
+msgstr "Μέτρηση κε_νών γραμμών"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:15
+msgid "Count empty lines"
+msgstr "Μέτρηση κενών γραμμών"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:16
+msgid "E_mbedded"
+msgstr "Ε_νσωματωμέμο"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:17
+msgid "Lea_ding"
+msgstr "Καθο_δήγηση"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:18
+msgid "Screen Review Preferences"
+msgstr "Προτιμήσεις περίληψης οθόνης"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:19
+msgid "T_railing"
+msgstr "Ακολου_θία"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:20
+msgid "_All flags"
+msgstr "'Ο_λες σημαίες"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:21
+msgid "_Embedded"
+msgstr "_Ενσωματωμένο"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:22
+msgid "_Leading"
+msgstr "_Καθοδηγητικά"
+
+#: gnopi/gnopi_files/Screen_Review/screen_review.glade2.h:23
+msgid "_Trailing"
+msgstr "Ακο_λουθίες"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:2
+#, no-c-format
+msgid "%"
+msgstr "%"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:4
+msgid "<b><></b>"
+msgstr "<b><></b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:5
+msgid "<b>Absolute Value</b>"
+msgstr "<b>Απόλυτη Τιμή</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:6
+msgid "<b>Driver</b>"
+msgstr "<b>Οδηγός</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:7
+msgid "<b>Properties</b>"
+msgstr "<b>Ιδιότητες</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:8
+msgid "<b>Punctuation</b>"
+msgstr "<b>Στίξη</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:9
+msgid "<b>Relative Values</b>"
+msgstr "<b>Σχετικές Τιμές</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:10
+msgid "<b>Text Echo</b>"
+msgstr "<b>Ηχό Κειμένου</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:11
+msgid "<b>Voice</b>"
+msgstr "<b>Φωνή</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:12
+msgid "<b>_Dictionary</b>"
+msgstr "<b>_Λεξικό</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:13
+msgid "<b>_Replacement:</b>"
+msgstr "<b>_Αντικατάσταση:</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:14
+msgid "<b>_Voice list</b>"
+msgstr "<b>Λίστα _φωνών</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:15
+msgid "<b>_Word:</b>"
+msgstr "<b>_Λέξη:</b>"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:16
+msgid "A_ll"
+msgstr "Ό_λα"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:17
+msgid "Activate pitch"
+msgstr "Ενεργοποίηση βήματος"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:18
+msgid "Activate rate"
+msgstr "Ενεργοποίηση ρυθμού"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:19
+msgid "Activate volume"
+msgstr "Ενεργοποίηση  έντασης ήχου"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:20
+msgid "Add / Modify Dictionary Entry"
+msgstr "Προσθήκη / Τροποποίηση καταχώρησης λεξικού"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:21
+msgid "Add / Modify Voice"
+msgstr "Προσθήκη / Τροποποίηση Φωνής"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:22
+msgid "Add new item in voices list"
+msgstr "Προσθήκη νέου αντικειμένου στην λίστα φωνών"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:23
+msgid "Add new word in dictionary"
+msgstr "Προσθήκη νέας λέξης στο λεξικό"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:24
+msgid ""
+"Change for all voices the engine driver and the engine speaker with a "
+"selected driver and speaker"
+msgstr ""
+"Αλλαγή του οδηγού μηχανής για όλες τις φωνές, και αλλαγή του ηχείου μηχανής "
+"με ένα επιλεγμένο οδηγό και ηχείο"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:25
+msgid "Charac_ter"
+msgstr "Χαρα_κτήρας"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:26
+msgid "Count cha_racters"
+msgstr "Μέτρηση χαρα_κτήρων"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:27
+msgid "Count characters"
+msgstr "Μέτρηση χαρακτήρων"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:28
+msgid "Decrease pitch"
+msgstr "Μείωση βήματος"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:29
+msgid "Decrease rate"
+msgstr "Μείωση ρυθμού"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:30
+msgid "Decrease volume"
+msgstr "Μείωση έντασης"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:31
+msgid "Dictionary"
+msgstr "Λεξικό"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:32
+msgid "Dictionary list"
+msgstr "Λίστα λεξικού"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:33
+msgid "Do not speak text"
+msgstr ""
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:34
+msgid "Edit A_bsolute..."
+msgstr "Επεξεργασία Α_πόλυτου..."
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:35
+msgid "Edit Absolute Voice Values"
+msgstr "Επεξεργασία απόλυτων τιμών φωνής"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:36
+msgid "Edit R_elative..."
+msgstr "Επεξεργασία σ_χετικού..."
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:37
+msgid "Edit Relative Voice Values"
+msgstr "Επεξεργασία σχετικών τιμών φωνής"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:38
+msgid "Edit dictionary"
+msgstr "Επεξεργασία λεξικού"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:39
+msgid "Edit parameter values absolutely"
+msgstr "Απόλυτη επεξεργασία τιμών παραμέτρου"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:40
+msgid "Edit parameter values relatively"
+msgstr "Σχετική επεξεργασία τιμών παραμέτρου"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:41
+msgid "Engine _driver:"
+msgstr "Οδη_γός  μηχανής:"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:42
+msgid "Engine _speaker:"
+msgstr "Η_χείο μηχανής:"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:43
+msgid "Engine driver"
+msgstr "Οδηγός  μηχανής"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:44
+msgid "Engine speaker"
+msgstr "Ηχείο μηχανής"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:45
+msgid "Gnopernicus system voice"
+msgstr "Φωνή συστήματος του Gnopernicus"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:46
+msgid "Hz"
+msgstr "Hz"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:47
+msgid "Ignore all punctuation"
+msgstr "Αγνόηση της στίξης"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:48
+msgid "Increase pitch"
+msgstr "Αύξηση βήματος"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:49
+msgid "Increase rate"
+msgstr "Αύξηση ρυθμού"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:50
+msgid "Increase volume"
+msgstr "Αύξηση ήχου"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:51
+msgid "Made pitch sensitive for changing"
+msgstr "Τροποποίηση ευαισθησίας βήματος για αλλαγή"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:52
+msgid "Made rate sensitive for changing"
+msgstr "Τροποποίηση ευαισθησίας ρυθμού για αλλαγή"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:53
+msgid "Made volume sensitive for changing"
+msgstr "Τροποποίηση ευαισθησίας έντασης για αλλαγή"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:54
+msgid "Modify selected voice"
+msgstr "Τροποποίηση επιλεγμένης φωνής"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:55
+msgid "Modify word"
+msgstr "Τροποποίηση λέξης"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:56
+#: gnopi/spvoiceui.c:2010
+msgid "Pitch"
+msgstr "Βήμα"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:57
+#: gnopi/spvoiceui.c:2002
+msgid "Rate"
+msgstr "Ρυθμός"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:58
+msgid "Remove selected voice from voices list"
+msgstr "Απομάκρυνση επιλεγμένης φωνής από την λίστα φωνών"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:59
+msgid "Remove word from dictionary"
+msgstr "Απομάκρυνση λέξης από λεξικό"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:60
+msgid "Replecement"
+msgstr "Αντικατάσταση"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:61
+#, fuzzy
+msgid "Sa_y all navigation keys"
+msgstr "αλλαγή λειτουργίας περιήγησης"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:62
+msgid "Say all modi_fiers"
+msgstr "Απαγγελία όλων των modi_fiers"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:63
+msgid "Say all modifiers"
+msgstr "Απαγγελία όλων των modifiers"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:64
+#, fuzzy
+msgid "Say all navigation keys"
+msgstr "αλλαγή λειτουργίας περιήγησης"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:65
+msgid "Say all s_paces"
+msgstr "Απαγγελία όλων των δια_στημάτων"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:66
+msgid "Say all spaces"
+msgstr "Απαγγελία όλων των διαστημάτων"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:67
+msgid "Say text as character"
+msgstr "Απαγγελία κειμένου ως χαρακτήρα"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:68
+msgid "Say text as word"
+msgstr "Απαγγελία κειμένου ως λέξη"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:69
+msgid "Set voices and the voice parameters"
+msgstr "Καθορισμός φωνών και παραμέτρων φωνής"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:70
+msgid "Show all punctuation"
+msgstr "Εμφάνιση όλης της στίξης"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:71
+msgid "Show most punctuation"
+msgstr "Εμφάνιση της περισσότερης στίξης"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:72
+msgid "Show some punctuation"
+msgstr "Εμφάνιση κάποιας στίξης"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:73
+msgid "Speech Preferences"
+msgstr "Προτιμήσεις Ομιλίας"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:74
+msgid "Test selected voice"
+msgstr "Δοκιμή επιλεγμένης φωνής"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:75
+msgid "Use dictionary"
+msgstr "Χρήση λεξικού"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:76
+msgid "Voice _name:"
+msgstr "_Όνομα φωνής:"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:77
+msgid "Voice list"
+msgstr "Λίστα φωνών"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:78
+msgid "Voices"
+msgstr "Φωνές"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:79
+#: gnopi/spvoiceui.c:1994
+msgid "Volume"
+msgstr "Ένταση"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:80
+msgid "Word to replace"
+msgstr "Λέξη για αντικατάσταση"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:81
+msgid "Word/Min"
+msgstr "Λέξη/Λεπ"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:82
+msgid "_Dictionary..."
+msgstr "_Λεξικό..."
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:83
+msgid "_Force All Voices to Selected Driver and Speaker"
+msgstr "_Υποχρεωτική παράκαμψη όλων των φωνών στον επιλεγμένο οδηγό και ηχείο"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:84
+msgid "_Ignore"
+msgstr "Α_γνόηση"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:86
+msgid "_Most"
+msgstr "_Περισσότερα"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:88
+msgid "_Pitch (Hz)"
+msgstr "_Βήμα (Hz)"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:89
+msgid "_Pitch:"
+msgstr "_Βήμα:"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:90
+msgid "_Rate (words/min)"
+msgstr "_Ρυθμός (λέξεις/λεπτό)"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:91
+msgid "_Rate:"
+msgstr "_Ρυθμός:"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:92
+msgid "_Some"
+msgstr "_Κάποια"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:93
+msgid "_Test voice"
+msgstr "_Δοκιμή φωνής"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:94
+msgid "_Use dictionary"
+msgstr "_Χρήση λεξικού"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:95
+msgid "_Voices..."
+msgstr "_Φωνές..."
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:97
+#, no-c-format
+msgid "_Volume (%)"
+msgstr "_Ένταση (%)"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:98
+msgid "_Volume:"
+msgstr "_Ένταση:"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:99
+msgid "_Word"
+msgstr "_Λέξη"
+
+#: gnopi/gnopi_files/Speech_Settings/speech_settings.glade2.h:100
+msgid "words/min"
+msgstr "λέξεις/λεπ"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:2
+msgid "<b>_Commands list</b>"
+msgstr "<b>Λίστα _εντολών</b>"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:3
+msgid "<b>_Layers list</b>"
+msgstr "<b>Λίστα _Layers</b>"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:4
+msgid "<b>_User defined list</b>"
+msgstr "<b>Λίστα κα_θορισμένη από τον χρήστη</b>"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:5
+msgid "Add Layer Key"
+msgstr "Προσθήκη Layer Key"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:6
+msgid "Add User Defined Key"
+msgstr "Προσθήκη πλήκτρου καθορισμένου από τον χρήστη"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:7
+msgid "Add new item"
+msgstr "Προθήκη νέου αντικειμένου"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:8
+msgid "Alt modifier"
+msgstr "Alt modifier"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:9
+msgid "Command Mapping"
+msgstr "Χαρτογράφηση εντολών"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:10
+msgid "Commands List"
+msgstr "Λίστα Εντολών"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:11
+msgid "Control modifier"
+msgstr "Control modifier"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:12
+msgid "Key number"
+msgstr "Αριθμός πλήκτρου"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:13
+msgid "Keys list"
+msgstr "Λίστα πλήκτρων"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:14
+msgid "Layer command list"
+msgstr "Λίστα εντολών Layer"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:15
+msgid "Layer number"
+msgstr "Αριθμός Layer"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:16
+msgid "Layers"
+msgstr "Layers"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:17
+msgid "List of gnopernicus commands"
+msgstr "Λίστα των εντολών του gnopernicus"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:18
+msgid "Modify command for the selected item"
+msgstr "Τροποποίηση εντολής για το συγκεκριμένο αντικείμενο"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:19
+msgid "Remove selected item"
+msgstr "Απομάκρυνση επιλεγμένου αντικειμένου"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:20
+msgid "Shift modifier"
+msgstr "Shift modifier"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:21
+msgid "User Defined"
+msgstr "Προσαρμοσμένα από τον χρήστη"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:22
+msgid "User defined commands list."
+msgstr "Προσαρμοσμένη από τον χρήστη λίστα εντολών."
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:23
+msgid "_Alt"
+msgstr "_Alt"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:24
+msgid "_Ctrl"
+msgstr "_Ctrl"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:25
+msgid "_Key:"
+msgstr "_Πλήκτρο:"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:26
+msgid "_Layer:"
+msgstr "_Layer:"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:27
+msgid "_Modifier keys:"
+msgstr "Πλήκρα _Modifier:"
+
+#: gnopi/gnopi_files/User_Properties/user_properties.glade2.h:29
+msgid "_Shift"
+msgstr "_Shift"
+
+#: gnopi/gnopi_files/about.glade2.h:1
+msgid "Screen Reader and Magnifier for the GNOME Desktop"
+msgstr "Αναγνώστης οθόνης και Μεγεθυντής για την επιφάνεια εργασίας του GNOME"
+
+#: gnopi/gnopi_files/about.glade2.h:2
+msgid "translator_credits"
+msgstr ""
+"Κώστας Παπαδήμας <pkst@gmx.net>\n"
+"Νίκος Χαρωνιτάκης <charosn@her.forthnet.gr>"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:1
+msgid ""
+"<b>Gnopernicus has detected that the assistive technology \n"
+"support is not enabled.</b>\n"
+msgstr ""
+"<b>Ο Gnopernicus εντόπισε ότι η υποστήριξη βοηθητικών τεχνολογιών \n"
+"δεν έχει ενεργοποιηθεί.</b>\n"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:4
+msgid "About"
+msgstr "Περί"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:5 srcore/srpres.c:759
+msgid "Alert"
+msgstr "Συναγερμός"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:6
+msgid "Braille device preferences"
+msgstr "Προτιμήσεις συσκευής μπράιγ"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:7
+msgid "Braille monitor preferences"
+msgstr "Προτιμήσεις οθόνης μπράϊγ"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:8
+msgid "Close preferences"
+msgstr "Κλείσιμο προτιμήσεων"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:9
+msgid "Command mapping"
+msgstr "Χαρτογράφηση εντολών"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:10
+msgid "Do you want to enable the assistive technology support?"
+msgstr "Θέλετε να ενεργοποιήσετε την υποστήριξη βοηθητικών τεχνολογιών?"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:11
+msgid "Exit from gnopernicus"
+msgstr "Έξοδος από το gnopernicus"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:12
+msgid "Find on screen"
+msgstr "Εύρεση στην οθόνη"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:13
+msgid "Gnopernicus"
+msgstr "Gnopernicus"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:14
+msgid "Gnopernicus usage help"
+msgstr "Βοήθεια χρήσης Gnopernicus"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:15
+msgid "Iconify menu"
+msgstr "Εικονοποίηση μενού"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:16
+msgid "Load default preferences"
+msgstr "Φόρτωση προεπιλεγμένων ρυθμίσεων"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:17
+msgid "Magnifier preferences"
+msgstr "Προτιμήσεις μεγεθυντή"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:18
+msgid "Mouse preferences"
+msgstr "Προτιμήσεις Ποντικιού"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:19
+msgid "Preferences"
+msgstr "Προτιμήσεις"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:20
+msgid "Preferences..."
+msgstr "Προτιμήσεις..."
+
+#: gnopi/gnopi_files/gnopi.glade2.h:21 srcore/srspc.c:1032
+msgid "Question"
+msgstr "Ερώτηση"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:22
+msgid "Role presentation"
+msgstr "Παρουσίαση ρόλου"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:23
+msgid "Screen review"
+msgstr "Περίληψη οθόνης"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:24
+msgid "Speech preferences"
+msgstr "Προτιμήσεις ομιλίας"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:25
+msgid "Startup mode..."
+msgstr "Λειτουργία εκκίνησης..."
+
+#: gnopi/gnopi_files/gnopi.glade2.h:26
+msgid ""
+"You will have to log out for the change to take effect.\n"
+"Do you want to log out now? "
+msgstr ""
+"Θα πρέπει να αποσυνδεθείτε για να πραγματοποιηθεί η αλλαγή.\n"
+"Θέλετε να αποσυνδεθείτε τώρα?"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:28
+msgid "_1 Speech"
+msgstr "_1 Ομιλία"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:29
+msgid "_1 Startup Mode..."
+msgstr "_1 Λειτουργία Εκκίνησης..."
+
+#: gnopi/gnopi_files/gnopi.glade2.h:30
+msgid "_2 Braille"
+msgstr "_2 Μπράιγ"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:31
+msgid "_2 Preferences..."
+msgstr "_2 Προτιμήσεις..."
+
+#: gnopi/gnopi_files/gnopi.glade2.h:32
+msgid "_3 Default Preferences..."
+msgstr "_3 Προεπιλεγμένες Προτιμήσεις..."
+
+#: gnopi/gnopi_files/gnopi.glade2.h:34
+msgid "_4 Minimize"
+msgstr "_4 Ελαχιστοποίηση"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:35
+msgid "_4 Mouse"
+msgstr "_4 Ποντίκι"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:37
+msgid "_5 Help"
+msgstr "_5 Βοήθεια"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:38
+msgid "_6 About"
+msgstr "_6 Περί"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:39
+msgid "_6 Command Mapping"
+msgstr "_6 Χαρτογράφηση Εντολών"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:40
+msgid "_7 Presentation"
+msgstr "_7 Παρουσίαση"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:41
+msgid "_8 Screen Review"
+msgstr "_8 Περίληψη οθόνης"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:42
+msgid "_9 Search"
+msgstr "_9 Αναζήτηση"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:43
+msgid "_Don't Enable Support"
+msgstr "Να _μην Ενεργοποιηθεί η Υποστήριξη"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:44
+msgid "_Enable Support"
+msgstr "_Ενεργοποίηση Υποστήριξης"
+
+#: gnopi/gnopi_files/gnopi.glade2.h:45
+msgid "_Quit"
+msgstr "_Έξοδος"
+
+#: gnopi/gnopiconf.c:411 gnopi/gnopiconf.c:429
+#, c-format
+msgid "Failed to set value: %f."
+msgstr "Αποτυχία ορισμού τιμής: %f."
+
+#: gnopi/gnopiconf.c:735
+msgid "Failed to set value."
+msgstr "Αποτυχία ορισμού τιμής."
+
+#: gnopi/gnopiui.c:73 gnopi/gnopiui.c:87 gnopi/gnopiui.c:99
+#: gnopi/gnopiui.c:105
+msgid "We could not load the interface!"
+msgstr "Αδυναμία φόρτωσης της διεπαφής!"
+
+#: gnopi/magui.c:74
+msgid "default"
+msgstr "προεπιλογή"
+
+#: gnopi/magui.c:472
+msgid ""
+"Can NOT remove zoomer because multiple zoomers are not supported in this "
+"version."
+msgstr ""
+"Αδυναμία απομάκρυνσης μεγεθυντή επειδή δεν υποστηρίζονται πολλαπλοί "
+"μεγεθυντές σε αυτή την έκδοση."
+
+#: gnopi/magui.c:673
+msgid "Zoomers"
+msgstr "Μεγεθυντές"
+
+#: gnopi/magui.c:1588
+#, c-format
+msgid "Zoomer Options (%s)"
+msgstr "Επιλογές μεγεθυντή (%s)"
+
+#: gnopi/spconf.c:335
+msgid "Failed to set dictionary changes."
+msgstr "Αποτυχία ορισμού αλλαγών λεξικού."
+
+#: gnopi/spconf.c:343
+msgid "Failed to set removed voice value."
+msgstr "Αποτυχία ορισμού τιμής απομακρυσμένης φωνής."
+
+#: gnopi/spconf.c:353
+#, c-format
+msgid "Failed to set count: %s."
+msgstr "Αποτυχία ορισμού αρίθμησης: %s."
+
+#: gnopi/spconf.c:362
+#, c-format
+msgid "Failed to set Punctuation: %s."
+msgstr "Αποτυχία ορισμού στίξης: %s."
+
+#: gnopi/spconf.c:371
+#, c-format
+msgid "Failed to set text echo value: %s."
+msgstr "Αποτυχία ορισμού τιμής echo κειμένου: %s."
+
+#: gnopi/spconf.c:380
+#, c-format
+msgid "Failed to set modifiers value: %s."
+msgstr "Αποτυχία ορισμού τιμής modifiers: %s."
+
+#: gnopi/spconf.c:389
+#, c-format
+msgid "Failed to set cursors value: %s."
+msgstr "Αποτυχία ορισμού τιμής δρομέων: %s."
+
+#: gnopi/spconf.c:398
+#, c-format
+msgid "Failed to set spaces value: %s."
+msgstr "Αποτυχία ορισμού τιμής διαστημάτων: %s."
+
+#: gnopi/spconf.c:407
+#, c-format
+msgid "Failed to set dictionary value: %s."
+msgstr "Αποτυχία ορισμού τιμής λεξικού: %s."
+
+#: gnopi/spconf.c:416
+#, c-format
+msgid "Failed to set testable voice %s."
+msgstr "Αποτυχία ορισμού δοκιμαστικής φωνής: %s."
+
+#: gnopi/spconf.c:608
+#, c-format
+msgid "%s no name"
+msgstr "%s χωρίς όνομα"
+
+#: gnopi/spdictui.c:79
+msgid "Invalid word or replacer!"
+msgstr "Μη έγκυρη λέξη ή αντικαταστάτης!"
+
+#: gnopi/spdictui.c:85
+msgid "Word exists in dictionary!"
+msgstr "Η λέξη υπάρχει στο λεξικό!"
+
+#: gnopi/spdictui.c:271 gnopi/spdictui.c:324
+msgid "No selected word to modify!"
+msgstr "Δεν υπάρχει επιλεγμένη λέξη για τροποποίηση!"
+
+#: gnopi/spdictui.c:298
+msgid "No selected word to remove!"
+msgstr "Δεν υπάρχει επιλεγμένη λέξη για απομάκρυνση!"
+
+#: gnopi/spdictui.c:447
+msgid "Word"
+msgstr "Λέξη"
+
+#: gnopi/spdictui.c:456
+msgid "Replacer"
+msgstr "Αντικαταστάτης"
+
+#: gnopi/spvoiceui.c:32
+msgid "<all drivers>"
+msgstr "<όλοι οι οδηγοί>"
+
+#: gnopi/spvoiceui.c:33
+msgid "<all voices>"
+msgstr "<όλες οι φωνές>"
+
+#: gnopi/spvoiceui.c:277
+msgid "Invalid voice!"
+msgstr "Μη έγκυρη φωνή!"
+
+#: gnopi/spvoiceui.c:1165
+msgid "Invalid driver or voice!"
+msgstr "Μη έγκυρος οδηγός ή φωνή!"
+
+#: gnopi/spvoiceui.c:1595
+msgid "No selected voice to modify!"
+msgstr "Δεν υπάρχει επιλεγμένη φωνή για τροποποίηση!"
+
+#: gnopi/spvoiceui.c:1654
+msgid "No selected voice to remove!"
+msgstr "Δεν υπάρχει επιλεγμένη φωνή για απομάκρυνση!"
+
+#: gnopi/spvoiceui.c:1727
+msgid "No selected voice to test!"
+msgstr "Δεν υπάρχει επιλεγμένη φωνή για δοκιμή!"
+
+#: gnopi/spvoiceui.c:1968
+msgid "Voice"
+msgstr "Φωνή"
+
+#: gnopi/spvoiceui.c:1977
+msgid "Driver"
+msgstr "Οδηγός"
+
+#: gnopi/spvoiceui.c:1986
+msgid "Speaker"
+msgstr "Ηχείο"
+
+#: speech/libsrs/srs-speech.c:289
+msgid "Alpha"
+msgstr "Alpha"
+
+#: speech/libsrs/srs-speech.c:290
+msgid "Bravo"
+msgstr "Bravo"
+
+#: speech/libsrs/srs-speech.c:291
+msgid "Charlie"
+msgstr "Charlie"
+
+#: speech/libsrs/srs-speech.c:292
+msgid "Delta"
+msgstr "Delta"
+
+#: speech/libsrs/srs-speech.c:293
+msgid "Echo"
+msgstr "Echo"
+
+#: speech/libsrs/srs-speech.c:294
+msgid "Foxtrot"
+msgstr "Foxtrot"
+
+#: speech/libsrs/srs-speech.c:295
+msgid "Golf"
+msgstr "Golf"
+
+#: speech/libsrs/srs-speech.c:296
+msgid "Hotel"
+msgstr "Ξενοδοχείο"
+
+#: speech/libsrs/srs-speech.c:297
+msgid "India"
+msgstr "Ινδία"
+
+#: speech/libsrs/srs-speech.c:298
+msgid "Juliet"
+msgstr "Juliet"
+
+#: speech/libsrs/srs-speech.c:299
+msgid "Kilo"
+msgstr "Kilo"
+
+#: speech/libsrs/srs-speech.c:300
+msgid "Lima"
+msgstr "Lima"
+
+#: speech/libsrs/srs-speech.c:301
+msgid "Mike"
+msgstr "Mike"
+
+#: speech/libsrs/srs-speech.c:302
+msgid "November"
+msgstr "Νοέμβριος"
+
+#: speech/libsrs/srs-speech.c:303
+msgid "Oscar"
+msgstr "Oscar"
+
+#: speech/libsrs/srs-speech.c:304
+msgid "Papa"
+msgstr "Papa"
+
+#: speech/libsrs/srs-speech.c:305
+msgid "Quebec"
+msgstr "Κεμπέκ"
+
+#: speech/libsrs/srs-speech.c:306
+msgid "Romeo"
+msgstr "Romeo"
+
+#: speech/libsrs/srs-speech.c:307
+msgid "Sierra"
+msgstr "Sierra"
+
+#: speech/libsrs/srs-speech.c:308
+msgid "Tango"
+msgstr "Τανγκό"
+
+#: speech/libsrs/srs-speech.c:309
+msgid "Uniform"
+msgstr "Uniform"
+
+#: speech/libsrs/srs-speech.c:310
+msgid "Victor"
+msgstr "Victor"
+
+#: speech/libsrs/srs-speech.c:311
+msgid "Whiskey"
+msgstr "Whiskey"
+
+#: speech/libsrs/srs-speech.c:312
+msgid "Xray"
+msgstr "Xray"
+
+#: speech/libsrs/srs-speech.c:313
+msgid "Yankee"
+msgstr "Yankee"
+
+#: speech/libsrs/srs-speech.c:314
+msgid "Zulu"
+msgstr "Ζουλού"
+
+#: speech/libsrs/srs-speech.c:315 srcore/srspc.c:1759
+msgid "space"
+msgstr "διάστημα"
+
+#: speech/libsrs/srs-speech.c:316
+msgid "tab"
+msgstr "στήλη"
+
+#: speech/libsrs/srs-speech.c:317
+msgid "new line"
+msgstr "νέα γραμμή"
+
+#: speech/libsrs/srs-speech.c:318
+msgid "dash"
+msgstr "dash"
+
+#: srconf/libsrconf/libsrconf.c:454
+#, c-format
+msgid "Failed to access configuration source(s): %s\n"
+msgstr "Αποτυχία πρόσβασης στην(ις) πηγή(ές) ρυθμίσεων: %s\n"
+
+#: srconf/libsrconf/libsrconf.c:467
+#, c-format
+msgid "Failed to add notify: %s"
+msgstr "Αποτυχία προσθήκης ειδοποίησης.:%s"
+
+#: srconf/libsrconf/libsrconf.c:521
+msgid "Failed to remove directory."
+msgstr "Αποτυχία απομάκρυνσης καταλόγου."
+
+#: srconf/libsrconf/libsrconf.c:865
+msgid "Failed to set configdata."
+msgstr "Αποτυχία ορισμού δεδομένων ρυθμίσεων."
+
+#: srconf/libsrconf/libsrconf.c:939
+msgid "Failed set data."
+msgstr "Αποτυχία ορισμού δεδομένων."
+
+#: srcore/default.xml.in.h:1 srcore/verbose.xml.in.h:1
+msgid "( )"
+msgstr "( )"
+
+#: srcore/default.xml.in.h:2 srcore/verbose.xml.in.h:2
+msgid "(C)"
+msgstr "(C)"
+
+#: srcore/default.xml.in.h:3 srcore/verbose.xml.in.h:3
+msgid "(E)"
+msgstr "(E)"
+
+#: srcore/default.xml.in.h:4 srcore/verbose.xml.in.h:4
+msgid "(P)"
+msgstr "(P)"
+
+#: srcore/default.xml.in.h:5 srcore/verbose.xml.in.h:5
+msgid "(U)"
+msgstr "(U)"
+
+#: srcore/default.xml.in.h:6 srcore/verbose.xml.in.h:6
+msgid "(c)"
+msgstr "(c)"
+
+#: srcore/default.xml.in.h:7 srcore/verbose.xml.in.h:7
+msgid "(m)"
+msgstr "(m)"
+
+#: srcore/default.xml.in.h:8 srcore/verbose.xml.in.h:8
+msgid "(n)"
+msgstr "(n)"
+
+#: srcore/default.xml.in.h:9 srcore/verbose.xml.in.h:9
+msgid "Give maximum speech and braille output."
+msgstr "Μέγιστο αποτέλεσμα λόγου και μπράΙγ."
+
+#: srcore/default.xml.in.h:11 srcore/srctrl.c:2258 srcore/srctrl.c:2409
+#: srcore/verbose.xml.in.h:11
+msgid "item"
+msgid_plural "items"
+msgstr[0] "αντικείμενο"
+msgstr[1] "αντικείμενα"
+
+#: srcore/default.xml.in.h:12 srcore/verbose.xml.in.h:12
+msgid "items"
+msgstr "αντικείμενα"
+
+#: srcore/srctrl.c:1012
+msgid "no parent"
+msgstr "δεν υπάρχει μητρικό"
+
+#: srcore/srctrl.c:1036
+msgid "no children"
+msgstr "δεν υπάρχει θυγατρικό"
+
+#: srcore/srctrl.c:1069
+msgid "no next"
+msgstr "δεν υπάρχει επόμενο"
+
+#: srcore/srctrl.c:1185
+msgid "Cannot find next text!"
+msgstr "Αδυναμία εύρεσης επόμενου κείμενου!"
+
+#: srcore/srctrl.c:1196
+msgid "Cannot find next image!"
+msgstr "Αδυναμία εύρεσης επόμενης εικόνας!"
+
+#: srcore/srctrl.c:1207
+msgid "Cannot find next attributes!"
+msgstr "Αποτυχία εύρεσης επόμενων γνωρισμάτων!"
+
+#: srcore/srctrl.c:1296
+msgid "no previous"
+msgstr "δεν υπάρχει προηγούμενο"
+
+#: srcore/srctrl.c:1340
+msgid "added watch for current object"
+msgstr "προσθήκη παρακολούθησης για το τρέχον αντικείμενο"
+
+#: srcore/srctrl.c:1341
+msgid "cannot add watch for current object"
+msgstr "αποτυχία προσθήκης παρακολούθησης για το τρέχον αντικείμενο"
+
+#: srcore/srctrl.c:1366
+msgid "no caret"
+msgstr "δεν υπάρχει caret"
+
+#: srcore/srctrl.c:1387
+msgid "already on first"
+msgstr "ήδη στο πρώτο"
+
+#: srcore/srctrl.c:1408
+msgid "already on last"
+msgstr "ήδη στο τελευταίο"
+
+#: srcore/srctrl.c:1421
+msgid "now navigating in application"
+msgstr "τώρα γίνεται περιήγηση στην εφαρμογή"
+
+#: srcore/srctrl.c:1425
+msgid "now navigating in desktop"
+msgstr "τώρα γίνεται περιήγηση στην επιφάνεια εργασίας"
+
+#: srcore/srctrl.c:1429
+msgid "now navigating in window"
+msgstr "τώρα γίνεται περιήγηση στο παράθυρο"
+
+#: srcore/srctrl.c:1522
+msgid "no focus"
+msgstr "δεν υπάρχει εστίαση"
+
+#: srcore/srctrl.c:1562
+msgid "no title"
+msgstr "δεν υπάρχει τίτλος"
+
+#: srcore/srctrl.c:1583
+msgid "no menu bar"
+msgstr "δεν υπάρχει εργαλειοθήκη μενού"
+
+#: srcore/srctrl.c:1606
+msgid "no tool bar"
+msgstr "δεν υπάρχει εργαλειοθήκη"
+
+#: srcore/srctrl.c:1630
+msgid "no status bar"
+msgstr "δεν υπάρχει γραμμή κατάστασης"
+
+#: srcore/srctrl.c:2214
+#, fuzzy
+msgid "on"
+msgstr "κάτω"
+
+#: srcore/srctrl.c:2236 srcore/srctrl.c:2387
+msgid "from a"
+msgstr "από"
+
+#: srcore/srctrl.c:2238 srcore/srctrl.c:2394
+msgid "with"
+msgstr "με"
+
+#: srcore/srctrl.c:2269
+#, fuzzy
+msgid "in a"
+msgstr "σε"
+
+#: srcore/srctrl.c:2272
+msgid "named "
+msgstr ""
+
+#: srcore/srctrl.c:2274
+msgid "with no name"
+msgstr "χωρίς όνομα"
+
+#: srcore/srctrl.c:2288
+#, fuzzy
+msgid "of application"
+msgstr "_Εφαρμογή"
+
+#: srcore/srctrl.c:2375
+msgid "on a"
+msgstr "σε"
+
+#: srcore/srctrl.c:2614
+msgid "first line"
+msgstr "πρώτη γραμμή"
+
+#: srcore/srctrl.c:2621
+msgid "last line"
+msgstr "τελευταία γραμμή"
+
+#: srcore/srctrl.c:2629 srcore/srctrl.c:2631
+msgid "[first line]"
+msgstr "[πρώτη γραμμή]"
+
+#: srcore/srctrl.c:2636 srcore/srctrl.c:2638
+msgid "[last line]"
+msgstr "[τελευταία γραμμή]"
+
+#: srcore/srctrl.c:2654
+msgid "empty line"
+msgstr "άδεια γραμμή"
+
+#: srcore/srctrl.c:2661
+#, c-format
+msgid "%d empty line"
+msgid_plural "%d empty lines"
+msgstr[0] "%d άδεια γραμμή"
+msgstr[1] "%d άδειες γραμμές"
+
+#: srcore/srctrl.c:2682 srcore/srctrl.c:2684
+msgid "[empty line]"
+msgstr "[άδεια γραμμή]"
+
+#: srcore/srctrl.c:2689
+#, c-format
+msgid "[%d empty line]"
+msgid_plural "[%d empty lines]"
+msgstr[0] "[%d άδεια γραμμή]"
+msgstr[1] "[%d άδειες γραμμές]"
+
+#: srcore/srctrl.c:2771 srcore/srctrl.c:2772 srcore/srctrl.c:2780
+#: srcore/srctrl.c:2935 srcore/srctrl.c:2936
+msgid "cannot make flat review for current window"
+msgstr "αδυναμία επίπεδης επισκόπησης για το τρέχον παράθυρο"
+
+#: srcore/srctrl.c:3007
+msgid "flat review mode"
+msgstr "λειτουργία επίπεδης επισκόπησης"
+
+#: srcore/srctrl.c:3023
+msgid "focus tracking mode"
+msgstr "Λειτουργία tracking εστίασης"
+
+#: srcore/srctrl.c:3562
+#, c-format
+msgid "\"%s\" entry has invalid value at position %d."
+msgstr "Η καταχώρηση \"%s\" έχει άκυρη τιμή στην θέση %d."
+
+#: srcore/srctrl.c:3583
+#, c-format
+msgid "key \"%s\" has an invalid value at position %d."
+msgstr "κλειδί \"%s\"έχει μια μή έγκυρη τιμή στην θέση %d."
+
+#: srcore/srctrl.c:3619
+msgid "Can not get key pad commands mapping from gconf."
+msgstr "Αδυναμία λήψης εντολών χαρτογράφησης key pad από το gconf."
+
+#: srcore/srctrl.c:3630
+msgid "Can not get braille display commands mapping from gconf."
+msgstr "Αδυναμία λήψης εντολών χαρτογράφησης εμφάνισης μπράϊγ από το gconf."
+
+#: srcore/srctrl.c:3641
+msgid "Can not get user defined commands mapping from gconf."
+msgstr ""
+"Αδυναμία λήψης εντολών χαρτογράφησης καθορισμένων από το χρήστη από το gconf."
+
+#: srcore/srctrl.c:3745
+msgid "no role available"
+msgstr "δεν υπάρχει διαθέσιμος ρόλος"
+
+#: srcore/srmain.c:68 srcore/srmain.c:71
+msgid "No focus"
+msgstr "Δεν υπάρχει εστίαση"
+
+#: srcore/srmain.c:74
+msgid "No accessible object is focused"
+msgstr "Δεν υπάρχει εστίαση σε προσβάσιμο αντικείμενο"
+
+#: srcore/srmain.c:434
+msgid "unknown location"
+msgstr "άγνωστη τοποθεσία"
+
+#: srcore/srmain.c:471
+msgid "no details"
+msgstr "δεν υπάρχουν λεπτομέρειες"
+
+#: srcore/srmain.c:511
+msgid "layer"
+msgstr "layer"
+
+#: srcore/srmain.c:532
+msgid "back to layer"
+msgstr "πίσω στο  layer"
+
+#: srcore/srmain.c:898
+msgid "cursor on"
+msgstr "δρομέας ενεργός"
+
+#: srcore/srmain.c:898
+msgid "cursor off"
+msgstr "δρομέας ανενεργός"
+
+#: srcore/srmain.c:916
+msgid "current cursor is"
+msgstr "ο τρέχων δρομέας είναι"
+
+#: srcore/srmain.c:934
+msgid "cursor size"
+msgstr "μέγεθος δρομέα"
+
+#: srcore/srmain.c:951
+msgid "cursor magnification on"
+msgstr "μεγέθυνση δρομέα ενεργή"
+
+#: srcore/srmain.c:952
+msgid "cursor magnification off"
+msgstr "μεγέθυνση δρομέα ανενεργή"
+
+#: srcore/srmain.c:970
+msgid "cursor color"
+msgstr "χρώμα δρομέα"
+
+#: srcore/srmain.c:987
+msgid "crosshair on"
+msgstr "crosshair on"
+
+#: srcore/srmain.c:987
+msgid "crosshair off"
+msgstr "crosshair off"
+
+#: srcore/srmain.c:1004
+msgid "crosshair clip on"
+msgstr "crosshair clip on"
+
+#: srcore/srmain.c:1005
+msgid "crosshair clip off"
+msgstr "crosshair clip off"
+
+#: srcore/srmain.c:1023
+msgid "crosshair size"
+msgstr "μέγεθος crosshair "
+
+#: srcore/srmain.c:1041
+msgid "crosshair color"
+msgstr "χρώμα crosshair "
+
+#: srcore/srmain.c:1059
+msgid "zoomer placement left"
+msgstr "τοποθέτηση μεγεθυντή αριστερά"
+
+#: srcore/srmain.c:1077
+msgid "zoomer placement top"
+msgstr "τοποθέτηση μεγεθυντή πάνω"
+
+#: srcore/srmain.c:1095
+msgid "zoomer placement width"
+msgstr "πλάτος τοποθέτησης μεγεθυντή"
+
+#: srcore/srmain.c:1113
+msgid "zoomer placement height"
+msgstr "ύψος τοποθέτησης μεγεθυντή"
+
+#: srcore/srmain.c:1143
+#, fuzzy
+msgid "magnifier target"
+msgstr "επίκεντρο μεγεθυντή"
+
+#: srcore/srmain.c:1161
+msgid "magnifier source"
+msgstr "πηγή μεγεθυντή"
+
+#: srcore/srmain.c:1179
+msgid "zoom factor x"
+msgstr "παράγοντας μεγέθυνσης x"
+
+#: srcore/srmain.c:1197
+msgid "zoom factor y"
+msgstr "παράγοντας μεγέθυνσης y"
+
+#: srcore/srmain.c:1214
+msgid "zoom factor locked"
+msgstr "παράγοντας μεγέθυνσης κλειδωμένος"
+
+#: srcore/srmain.c:1215
+msgid "zoom factor unlocked"
+msgstr "παράγοντας μεγέθυνσης ξεκλειδώθηκε"
+
+#: srcore/srmain.c:1232
+msgid "invert on"
+msgstr "αναστροφή ενεργή"
+
+#: srcore/srmain.c:1232
+msgid "invert off"
+msgstr "αναστροφή ανενεργή"
+
+#: srcore/srmain.c:1250
+msgid "magnifier smoothing type"
+msgstr "τύπος εξομάλυνσης μεγεθυντή"
+
+#: srcore/srmain.c:1273
+msgid "mouse tracking mode"
+msgstr "λειτουργία mouse tracking"
+
+#: srcore/srmain.c:1295
+msgid "panning on"
+msgstr "panning on"
+
+#: srcore/srmain.c:1295
+msgid "panning off"
+msgstr "panning off"
+
+#: srcore/srmain.c:1667
+msgid "alt"
+msgstr "alt"
+
+#: srcore/srmain.c:1672
+msgid "control"
+msgstr "control"
+
+#: srcore/srmain.c:1677
+msgid "shift"
+msgstr "shift"
+
+#: srcore/srmain.c:1682
+msgid "caps lock"
+msgstr "caps lock"
+
+#: srcore/srmain.c:1686
+msgid "num lock"
+msgstr "num lock"
+
+#: srcore/srmain.c:1694 srcore/srmain.c:1738
+msgid "right"
+msgstr "δεξιά"
+
+#: srcore/srmain.c:1696 srcore/srmain.c:1740
+msgid "left"
+msgstr "αριστερά"
+
+#: srcore/srmain.c:1730
+msgid "home"
+msgstr "home"
+
+#: srcore/srmain.c:1732
+msgid "end"
+msgstr "end"
+
+#: srcore/srmain.c:1734
+msgid "page up"
+msgstr "page up"
+
+#: srcore/srmain.c:1736
+msgid "page down"
+msgstr "page down"
+
+#: srcore/srmain.c:1742
+msgid "down"
+msgstr "κάτω"
+
+#: srcore/srmain.c:1744
+msgid "up"
+msgstr "πάνω"
+
+#: srcore/srmain.c:1746
+msgid "backspace"
+msgstr "backspace"
+
+#: srcore/srmain.c:1748
+msgid "delete"
+msgstr "delete"
+
+#: srcore/srmain.c:1750
+msgid "escape"
+msgstr "escape"
+
+#: srcore/srmain.c:2269
+msgid "Welcome to Gnopernicus"
+msgstr "Καλώς ήλθατε στο Gnopernicus"
+
+#: srcore/srmain.c:2373
+msgid "braille device can not be initialized"
+msgstr "αδυναμία αρχικοποίησης συσκευής μπράϊγ"
+
+#: srcore/srmain.c:2385
+msgid "Gnopernicus is now exiting. Have a nice day!"
+msgstr "Ο Gnopernicus τώρα τερματίζεται. Να περνάτε καλά!"
+
+#: srcore/srmain.c:2662
+msgid "srcore"
+msgstr "srcore"
+
+#: srcore/srpres.c:757
+msgid "UNK"
+msgstr ""
+
+#: srcore/srpres.c:757
+msgid "UNKNOWN"
+msgstr "ΑΓΝΩΣΤΟ"
+
+#: srcore/srpres.c:757
+msgid "Unknown"
+msgstr "Άγνωστο"
+
+#: srcore/srpres.c:758
+msgid "???"
+msgstr ";;;"
+
+#: srcore/srpres.c:758
+msgid "INVALID"
+msgstr "ΜΗ ΕΓΚΥΡΟ"
+
+#: srcore/srpres.c:758
+msgid "Invalid"
+msgstr "Μη έγκυρο"
+
+#: srcore/srpres.c:759
+msgid "ALR"
+msgstr ""
+
+#: srcore/srpres.c:759
+msgid "ALERT"
+msgstr ""
+
+#: srcore/srpres.c:760
+msgid "CNV"
+msgstr ""
+
+#: srcore/srpres.c:760
+msgid "CANVAS"
+msgstr ""
+
+#: srcore/srpres.c:760
+msgid "Canvas"
+msgstr ""
+
+#: srcore/srpres.c:761
+msgid "CHK"
+msgstr ""
+
+#: srcore/srpres.c:761
+msgid "CHECK_BOX"
+msgstr ""
+
+#: srcore/srpres.c:761
+msgid "Check box"
+msgstr ""
+
+#: srcore/srpres.c:762 srcore/srpres.c:785 srcore/srpres.c:795
+msgid "MIT"
+msgstr ""
+
+#: srcore/srpres.c:762 srcore/srpres.c:785 srcore/srpres.c:795
+msgid "MENU ITEM"
+msgstr ""
+
+#: srcore/srpres.c:762
+msgid "Check Menu item"
+msgstr ""
+
+#: srcore/srpres.c:763
+msgid "CCH"
+msgstr ""
+
+#: srcore/srpres.c:763
+msgid "COLOR CHOOSER"
+msgstr ""
+
+#: srcore/srpres.c:763
+msgid "Color chooser"
+msgstr "Επιλογέας χρώματος"
+
+#: srcore/srpres.c:764
+msgid "CHD"
+msgstr ""
+
+#: srcore/srpres.c:764
+msgid "COLUMN HEADER"
+msgstr ""
+
+#: srcore/srpres.c:764
+#, fuzzy
+msgid "Column header"
+msgstr "Μέτρηση χαρακτήρων"
+
+#: srcore/srpres.c:765
+msgid "CBO"
+msgstr ""
+
+#: srcore/srpres.c:765
+msgid "COMBO BOX"
+msgstr ""
+
+#: srcore/srpres.c:765
+msgid "Combo box"
+msgstr ""
+
+#: srcore/srpres.c:766
+msgid "DIC"
+msgstr ""
+
+#: srcore/srpres.c:766
+msgid "DESKTOP ICON"
+msgstr ""
+
+#: srcore/srpres.c:766
+#, fuzzy
+msgid "Desktop icon"
+msgstr "_Επιφάνεια Εργασίας"
+
+#: srcore/srpres.c:767
+msgid "DFR"
+msgstr ""
+
+#: srcore/srpres.c:767
+msgid "DESKTOP FRAME"
+msgstr ""
+
+#: srcore/srpres.c:767
+#, fuzzy
+msgid "Desktop frame"
+msgstr "_Επιφάνεια Εργασίας"
+
+#: srcore/srpres.c:768
+msgid "DLG"
+msgstr ""
+
+#: srcore/srpres.c:768
+msgid "DIALOG"
+msgstr ""
+
+#: srcore/srpres.c:768
+#, fuzzy
+msgid "Dialog"
+msgstr "Kilo"
+
+#: srcore/srpres.c:769
+msgid "DIP"
+msgstr ""
+
+#: srcore/srpres.c:769
+msgid "DIRECTORY PANE"
+msgstr ""
+
+#: srcore/srpres.c:769
+msgid "Directory pane"
+msgstr ""
+
+#: srcore/srpres.c:770
+msgid "FCH"
+msgstr ""
+
+#: srcore/srpres.c:770
+msgid "FILE CHOOSER"
+msgstr ""
+
+#: srcore/srpres.c:770
+msgid "File chooser"
+msgstr ""
+
+#: srcore/srpres.c:771
+msgid "FLR"
+msgstr ""
+
+#: srcore/srpres.c:771
+msgid "FILLER"
+msgstr ""
+
+#: srcore/srpres.c:771
+#, fuzzy
+msgid "Filler"
+msgstr "μπράιγ"
+
+#: srcore/srpres.c:772
+msgid "FRM"
+msgstr ""
+
+#: srcore/srpres.c:772
+msgid "FRAME"
+msgstr ""
+
+#: srcore/srpres.c:772
+#, fuzzy
+msgid "Frame"
+msgstr "βαρεία"
+
+#: srcore/srpres.c:773
+msgid "GPN"
+msgstr ""
+
+#: srcore/srpres.c:773
+msgid "GLASS PANE"
+msgstr ""
+
+#: srcore/srpres.c:773
+msgid "Glass pane"
+msgstr ""
+
+#: srcore/srpres.c:774
+msgid "HTM"
+msgstr ""
+
+#: srcore/srpres.c:774
+msgid "HTML CONTAINER"
+msgstr ""
+
+#: srcore/srpres.c:774
+msgid "H T M L container"
+msgstr ""
+
+#: srcore/srpres.c:775 srcore/srpres.c:780
+msgid "LNK"
+msgstr ""
+
+#: srcore/srpres.c:775 srcore/srpres.c:780
+msgid "LINK"
+msgstr ""
+
+#: srcore/srpres.c:775 srcore/srpres.c:780
+msgid "link"
+msgstr "σύνδεσμος"
+
+#: srcore/srpres.c:776
+msgid "ICO"
+msgstr ""
+
+#: srcore/srpres.c:776
+msgid "ICON"
+msgstr "ΕΙΚΟΝΙΔΙΟ"
+
+#: srcore/srpres.c:776
+msgid "Icon"
+msgstr "Εικονίδιο"
+
+#: srcore/srpres.c:777
+msgid "IFR"
+msgstr ""
+
+#: srcore/srpres.c:777
+msgid "INTERNAL FRAME"
+msgstr ""
+
+#: srcore/srpres.c:777
+msgid "Internal frame"
+msgstr ""
+
+#: srcore/srpres.c:778
+msgid "LBL"
+msgstr ""
+
+#: srcore/srpres.c:778
+msgid "LABEL"
+msgstr "ΕΤΙΚΕΤΑ"
+
+#: srcore/srpres.c:778
+msgid "Label"
+msgstr "Ετικέτα"
+
+#: srcore/srpres.c:779
+msgid "LPN"
+msgstr ""
+
+#: srcore/srpres.c:779
+msgid "LAYERED PANE"
+msgstr ""
+
+#: srcore/srpres.c:779
+#, fuzzy
+msgid "Layered pane"
+msgstr "Αριθμός Layer"
+
+#: srcore/srpres.c:781
+msgid "LST"
+msgstr ""
+
+#: srcore/srpres.c:781
+msgid "LIST"
+msgstr "ΛΙΣΤΑ"
+
+#: srcore/srpres.c:781
+msgid "List"
+msgstr "Λίστα"
+
+#: srcore/srpres.c:782
+msgid "LIT"
+msgstr ""
+
+#: srcore/srpres.c:782
+msgid "LIST ITEM"
+msgstr ""
+
+#: srcore/srpres.c:782
+#, fuzzy
+msgid "List item"
+msgstr "αντικείμενο"
+
+#: srcore/srpres.c:783
+msgid "MNU"
+msgstr ""
+
+#: srcore/srpres.c:783
+msgid "MENU"
+msgstr "ΜΕΝΟΥ"
+
+#: srcore/srpres.c:783
+msgid "Menu"
+msgstr "Μενού"
+
+#: srcore/srpres.c:784
+msgid "MBR"
+msgstr ""
+
+#: srcore/srpres.c:784
+msgid "MENU BAR"
+msgstr ""
+
+#: srcore/srpres.c:784
+#, fuzzy
+msgid "Menu bar"
+msgstr "δεν υπάρχει εργαλειοθήκη μενού"
+
+#: srcore/srpres.c:785
+#, fuzzy
+msgid "Menu item"
+msgstr "αντικείμενο"
+
+#: srcore/srpres.c:786
+msgid "OPN"
+msgstr ""
+
+#: srcore/srpres.c:786
+msgid "OPTION PANE"
+msgstr ""
+
+#: srcore/srpres.c:786
+msgid "Option pane"
+msgstr ""
+
+#: srcore/srpres.c:787
+msgid "PGT"
+msgstr ""
+
+#: srcore/srpres.c:787
+msgid "PAGE TAB"
+msgstr ""
+
+#: srcore/srpres.c:787
+msgid "Page tab"
+msgstr ""
+
+#: srcore/srpres.c:788
+msgid "PTL"
+msgstr ""
+
+#: srcore/srpres.c:788
+msgid "PAGE TAB LIST"
+msgstr ""
+
+#: srcore/srpres.c:788
+msgid "Page tab list"
+msgstr ""
+
+#: srcore/srpres.c:789
+msgid "PNL"
+msgstr ""
+
+#: srcore/srpres.c:789
+msgid "PANEL"
+msgstr ""
+
+#: srcore/srpres.c:789
+msgid "Panel"
+msgstr ""
+
+#: srcore/srpres.c:790
+msgid "PWD"
+msgstr ""
+
+#: srcore/srpres.c:790
+msgid "PASSWORD TEXT"
+msgstr ""
+
+#: srcore/srpres.c:790
+msgid "Password text"
+msgstr ""
+
+#: srcore/srpres.c:791
+msgid "PMN"
+msgstr ""
+
+#: srcore/srpres.c:791
+msgid "POPUP MENU"
+msgstr ""
+
+#: srcore/srpres.c:791
+#, fuzzy
+msgid "Popup menu"
+msgstr "πήγαινε στο μενού"
+
+#: srcore/srpres.c:792
+msgid "PRG"
+msgstr ""
+
+#: srcore/srpres.c:792
+msgid "PROGRESS BAR"
+msgstr ""
+
+#: srcore/srpres.c:792
+msgid "Progress bar"
+msgstr ""
+
+#: srcore/srpres.c:793
+msgid "PBT"
+msgstr ""
+
+#: srcore/srpres.c:793
+msgid "PUSH BUTTON"
+msgstr ""
+
+#: srcore/srpres.c:793
+msgid "Push button"
+msgstr ""
+
+#: srcore/srpres.c:794
+msgid "RAD"
+msgstr ""
+
+#: srcore/srpres.c:794
+msgid "RADIO BUTTON"
+msgstr ""
+
+#: srcore/srpres.c:794
+msgid "Radio button"
+msgstr ""
+
+#: srcore/srpres.c:795
+msgid "Radio Menu item"
+msgstr ""
+
+#: srcore/srpres.c:796
+msgid "RPN"
+msgstr ""
+
+#: srcore/srpres.c:796
+msgid "ROOT PANE"
+msgstr ""
+
+#: srcore/srpres.c:796
+#, fuzzy
+msgid "Root pane"
+msgstr "μετάβαση στο μητρικό"
+
+#: srcore/srpres.c:797
+msgid "RHD"
+msgstr ""
+
+#: srcore/srpres.c:797
+msgid "ROW HEADER"
+msgstr ""
+
+#: srcore/srpres.c:797
+msgid "Row header"
+msgstr ""
+
+#: srcore/srpres.c:798
+msgid "SCR"
+msgstr ""
+
+#: srcore/srpres.c:798
+msgid "SCROLL BAR"
+msgstr "ΓΡΑΜΜΗ ΚΥΛΙΣΗΣ"
+
+#: srcore/srpres.c:798
+msgid "Scroll bar"
+msgstr "Γραμμή κύλισης"
+
+#: srcore/srpres.c:799 srcore/srpres.c:827
+msgid "SPN"
+msgstr ""
+
+#: srcore/srpres.c:799
+msgid "SCROLL PANE"
+msgstr ""
+
+#: srcore/srpres.c:799
+msgid "Scroll pane"
+msgstr ""
+
+#: srcore/srpres.c:800
+msgid "SEP"
+msgstr ""
+
+#: srcore/srpres.c:800
+msgid "SEPARATOR"
+msgstr "ΔΙΑΧΩΡΙΣΤΙΚΟ"
+
+#: srcore/srpres.c:800
+msgid "Separator"
+msgstr "Διαχωριστικό"
+
+#: srcore/srpres.c:801
+msgid "SLD"
+msgstr ""
+
+#: srcore/srpres.c:801
+msgid "SLIDER"
+msgstr ""
+
+#: srcore/srpres.c:801
+#, fuzzy
+msgid "Slider"
+msgstr "Sierra"
+
+#: srcore/srpres.c:802
+msgid "SPP"
+msgstr ""
+
+#: srcore/srpres.c:802
+msgid "SPLIT PANE"
+msgstr ""
+
+#: srcore/srpres.c:802
+msgid "Split pane"
+msgstr ""
+
+#: srcore/srpres.c:803
+msgid "STA"
+msgstr ""
+
+#: srcore/srpres.c:803
+msgid "STATUS BAR"
+msgstr "ΓΡΑΜΜΗ ΚΑΤΑΣΤΑΣΗΣ"
+
+#: srcore/srpres.c:803
+msgid "Status bar"
+msgstr "Γραμμή κατάστασης"
+
+#: srcore/srpres.c:804
+msgid "TAB"
+msgstr ""
+
+#: srcore/srpres.c:804
+msgid "TABLE"
+msgstr "ΠΙΝΑΚΑΣ"
+
+#: srcore/srpres.c:804
+msgid "Table"
+msgstr "Πίνακας"
+
+#: srcore/srpres.c:805
+msgid "CEL"
+msgstr ""
+
+#: srcore/srpres.c:805
+msgid "TABLE CELL"
+msgstr "ΚΕΛΙ ΠΙΝΑΚΑ"
+
+#: srcore/srpres.c:805
+msgid "Table cell"
+msgstr "Κελι πίνακα"
+
+#: srcore/srpres.c:806 srcore/srpres.c:831
+msgid "TCH"
+msgstr ""
+
+#: srcore/srpres.c:806
+msgid "TABLE COLUMN HEADER"
+msgstr ""
+
+#: srcore/srpres.c:806
+msgid "Table column header"
+msgstr ""
+
+#: srcore/srpres.c:807
+msgid "TRH"
+msgstr ""
+
+#: srcore/srpres.c:807
+msgid "TABLE ROW HEADER"
+msgstr ""
+
+#: srcore/srpres.c:807
+msgid "Table row header"
+msgstr ""
+
+#: srcore/srpres.c:808 srcore/srpres.c:809
+msgid "TXT"
+msgstr ""
+
+#: srcore/srpres.c:808
+msgid "MULTI LINE TEXT"
+msgstr ""
+
+#: srcore/srpres.c:808
+msgid "Multi Line Text"
+msgstr ""
+
+#: srcore/srpres.c:809
+msgid "SINGLE LINE TEXT"
+msgstr ""
+
+#: srcore/srpres.c:809
+msgid "Single Line Text"
+msgstr ""
+
+#: srcore/srpres.c:810
+msgid "TOG"
+msgstr ""
+
+#: srcore/srpres.c:810
+msgid "TOGGLE BUTTON"
+msgstr ""
+
+#: srcore/srpres.c:810
+msgid "Toggle button"
+msgstr ""
+
+#: srcore/srpres.c:811
+msgid "TOL"
+msgstr ""
+
+#: srcore/srpres.c:811
+msgid "TOOL BAR"
+msgstr ""
+
+#: srcore/srpres.c:811
+#, fuzzy
+msgid "Tool bar"
+msgstr "δεν υπάρχει εργαλειοθήκη"
+
+#: srcore/srpres.c:812
+msgid "TIP"
+msgstr ""
+
+#: srcore/srpres.c:812
+msgid "TOOL TIP"
+msgstr ""
+
+#: srcore/srpres.c:812
+msgid "Tool tip"
+msgstr ""
+
+#: srcore/srpres.c:813
+msgid "TRE"
+msgstr ""
+
+#: srcore/srpres.c:813
+msgid "TREE"
+msgstr ""
+
+#: srcore/srpres.c:813
+msgid "Tree"
+msgstr ""
+
+#: srcore/srpres.c:814
+msgid "TRI"
+msgstr ""
+
+#: srcore/srpres.c:814
+msgid "TREE ITEM"
+msgstr ""
+
+#: srcore/srpres.c:814
+#, fuzzy
+msgid "Tree item"
+msgstr "Επιλεγμένο αντικείμενο"
+
+#: srcore/srpres.c:815
+msgid "TRT"
+msgstr ""
+
+#: srcore/srpres.c:815
+msgid "TREE TABLE"
+msgstr ""
+
+#: srcore/srpres.c:815
+msgid "Tree table"
+msgstr ""
+
+#: srcore/srpres.c:816
+msgid "VWP"
+msgstr ""
+
+#: srcore/srpres.c:816
+msgid "VIEWPORT"
+msgstr ""
+
+#: srcore/srpres.c:816
+msgid "Viewport"
+msgstr ""
+
+#: srcore/srpres.c:817
+msgid "WND"
+msgstr ""
+
+#: srcore/srpres.c:817
+msgid "WINDOW"
+msgstr "ΠΑΡΑΘΥΡΟ"
+
+#: srcore/srpres.c:817
+msgid "Window"
+msgstr "Παράθυρο"
+
+#: srcore/srpres.c:818
+msgid "ACC"
+msgstr ""
+
+#: srcore/srpres.c:818
+msgid "ACCELERATOR LABEL"
+msgstr ""
+
+#: srcore/srpres.c:818
+msgid "Accelerator label"
+msgstr ""
+
+#: srcore/srpres.c:819
+msgid "ANI"
+msgstr ""
+
+#: srcore/srpres.c:819
+msgid "ANIMATION"
+msgstr "ΚΙΝΗΣΗ"
+
+#: srcore/srpres.c:819
+#, fuzzy
+msgid "Animation"
+msgstr "Κίνηση"
+
+#: srcore/srpres.c:820
+msgid "ARR"
+msgstr ""
+
+#: srcore/srpres.c:820
+msgid "ARROW"
+msgstr ""
+
+#: srcore/srpres.c:820
+msgid "Arrow"
+msgstr ""
+
+#: srcore/srpres.c:821
+msgid "CAL"
+msgstr ""
+
+#: srcore/srpres.c:821
+msgid "CALENDAR"
+msgstr ""
+
+#: srcore/srpres.c:821
+msgid "Calendar"
+msgstr ""
+
+#: srcore/srpres.c:822
+msgid "DAT"
+msgstr ""
+
+#: srcore/srpres.c:822
+msgid "DATE EDITOR"
+msgstr ""
+
+#: srcore/srpres.c:822
+msgid "Date editor"
+msgstr ""
+
+#: srcore/srpres.c:823
+msgid "DIL"
+msgstr ""
+
+#: srcore/srpres.c:823
+msgid "DIAL"
+msgstr ""
+
+#: srcore/srpres.c:823
+#, fuzzy
+msgid "Dial"
+msgstr "_Διπλό"
+
+#: srcore/srpres.c:824
+msgid "DRW"
+msgstr ""
+
+#: srcore/srpres.c:824
+msgid "DRAWING AREA"
+msgstr "ΠΕΡΙΟΧΗ ΣΧΕΔΙΑΣΗΣ"
+
+#: srcore/srpres.c:824
+msgid "Drawing area"
+msgstr "Περιοχή σχεδίασης"
+
+#: srcore/srpres.c:825
+msgid "FNT"
+msgstr ""
+
+#: srcore/srpres.c:825
+msgid "FONT CHOOSER"
+msgstr ""
+
+#: srcore/srpres.c:825
+#, fuzzy
+msgid "Font chooser"
+msgstr "Μέγεθος γραμματοσειράς"
+
+#: srcore/srpres.c:826
+msgid "IMG"
+msgstr ""
+
+#: srcore/srpres.c:826
+msgid "IMAGE"
+msgstr "ΕΙΚΟΝΑ"
+
+#: srcore/srpres.c:826
+msgid "Image"
+msgstr "Εικόνα"
+
+#: srcore/srpres.c:827
+msgid "SPIN BUTTON"
+msgstr ""
+
+#: srcore/srpres.c:827
+msgid "Spin button"
+msgstr ""
+
+#: srcore/srpres.c:828
+msgid "TRM"
+msgstr ""
+
+#: srcore/srpres.c:828
+msgid "TERMINAL"
+msgstr "ΤΕΡΜΑΤΙΚΟ"
+
+#: srcore/srpres.c:828
+msgid "Terminal"
+msgstr "Τερματικό"
+
+#: srcore/srpres.c:829
+msgid "EXT"
+msgstr ""
+
+#: srcore/srpres.c:829
+msgid "EXTENDED"
+msgstr ""
+
+#: srcore/srpres.c:829
+msgid "Extended"
+msgstr ""
+
+#: srcore/srpres.c:830
+msgid "TLI"
+msgstr ""
+
+#: srcore/srpres.c:830
+msgid "TABLE LINE"
+msgstr "ΓΡΑΜΜΗ ΠΙΝΑΚΑ"
+
+#: srcore/srpres.c:830
+msgid "Table line"
+msgstr "Γραμμή πίνακα"
+
+#: srcore/srpres.c:831
+msgid "TABLE COLUMNS HEADER"
+msgstr ""
+
+#: srcore/srpres.c:831
+msgid "Table columns header"
+msgstr ""
+
+#: srcore/srpres.c:832
+msgid "TIT"
+msgstr ""
+
+#: srcore/srpres.c:832
+msgid "TITLE BAR"
+msgstr ""
+
+#: srcore/srpres.c:832
+#, fuzzy
+msgid "Title bar"
+msgstr "δεν υπάρχει εργαλειοθήκη"
+
+#: srcore/srpres.c:833
+msgid "EDB"
+msgstr ""
+
+#: srcore/srpres.c:833
+msgid "EDIT BAR"
+msgstr ""
+
+#: srcore/srpres.c:833
+#, fuzzy
+msgid "Edit bar"
+msgstr "Επεξεργασία λεξικού"
+
+#: srcore/srspc.c:439
+#, c-format
+msgid "Incorrect parameters for voice \"%s%s\""
+msgstr "Άκυρες παράμετροι για φωνή \"%s%s\""
+
+#: srcore/srspc.c:481
+#, c-format
+msgid "failed to send to speech next string \"%s\""
+msgstr "αποτυχία αποστολής επόμενου αλφαριθμητικού \"%s\" στην ομιλία"
+
+#: srcore/srspc.c:547
+#, c-format
+msgid "could not create/modify voice \"%s\""
+msgstr "αδυναμία δημιουργίας/τροποποίησς φωνής \"%s\""
+
+#: srcore/srspc.c:707
+#, c-format
+msgid "voice \"%s\" will sound this way"
+msgstr "η φωνή  \"%s\" θα ακούγετε με αυτό τον τρόπο"
+
+#: srcore/srspc.c:712
+#, c-format
+msgid "could not test voice \"%s\""
+msgstr "αδυναμία δοκιμής φωνής \"%s\""
+
+#: srcore/srspc.c:801
+#, c-format
+msgid "value not supported for speech count mode \"%s\""
+msgstr "η τιμή δεν υποστηρίζεται για την λειτουργία μέτρησης ομιλίας \"%s\""
+
+#: srcore/srspc.c:837
+#, c-format
+msgid "value not supported for speech modifiers type \"%s\""
+msgstr "η τιμή δεν υποστηρίζεται για τον τύπο τροποποιητών ομιλίας \"%s\""
+
+#: srcore/srspc.c:873
+#, c-format
+msgid "value not supported for speech cursors type \"%s\""
+msgstr "η τιμή δεν υποστηρίζεται για τον τύπο δρμέων ομιλίας \"%s\""
+
+#: srcore/srspc.c:909
+#, c-format
+msgid "value not supported for speech spaces type \"%s\""
+msgstr "η τιμή δεν υποστηρίζεται για τον τύπο διαστημάτων ομιλίας \"%s\""
+
+#: srcore/srspc.c:945
+#, c-format
+msgid "value not supported for speech dictionary type \"%s\""
+msgstr "η τιμή δεν υποστηρίζεται για τον τύπο λεξικού ομιλίας \"%s\""
+
+#: srcore/srspc.c:982
+#, c-format
+msgid "value not supported for speech text echo type \"%s\""
+msgstr "η τιμή δεν υποστηρίζεται για τον τύπο echo κειμένου  ομιλίας \"%s\""
+
+#: srcore/srspc.c:1001
+msgid "Tilde"
+msgstr "Tilde"
+
+#: srcore/srspc.c:1001
+msgid "Tildaes"
+msgstr "Tildaes"
+
+#: srcore/srspc.c:1002
+msgid "Exclamation"
+msgstr "Θαυμαστικό"
+
+#: srcore/srspc.c:1002
+msgid "Exclamations"
+msgstr "Θαυμαστικά"
+
+#: srcore/srspc.c:1003
+msgid "At"
+msgstr "At"
+
+#: srcore/srspc.c:1003
+msgid "Ats"
+msgstr "Ats"
+
+#: srcore/srspc.c:1004
+msgid "Hash"
+msgstr "Hash"
+
+#: srcore/srspc.c:1004
+msgid "Hashes"
+msgstr "Hashes"
+
+#: srcore/srspc.c:1005
+msgid "Dollar"
+msgstr "Δολλάριο"
+
+#: srcore/srspc.c:1005
+msgid "Dollars"
+msgstr "Δολλάρια"
+
+#: srcore/srspc.c:1006
+msgid "Percent"
+msgstr "Ποσοστό"
+
+#: srcore/srspc.c:1006
+msgid "Percents"
+msgstr "Ποσοστά"
+
+#: srcore/srspc.c:1007
+msgid "Caret"
+msgstr "Caret"
+
+#: srcore/srspc.c:1007
+msgid "Carets"
+msgstr "Carets"
+
+#: srcore/srspc.c:1008
+msgid "And"
+msgstr "Και"
+
+#: srcore/srspc.c:1008
+msgid "Ands"
+msgstr "Και"
+
+#: srcore/srspc.c:1009
+msgid "Asterisk"
+msgstr "Αστερίσκος"
+
+#: srcore/srspc.c:1009
+msgid "Asterisks"
+msgstr "Αστερίσκοι"
+
+#: srcore/srspc.c:1010
+msgid "Left Paranthesis"
+msgstr "Αριστερή Παρένθεση"
+
+#: srcore/srspc.c:1011
+msgid "Right Paranthesis"
+msgstr "Δεξιά Παρένθεση"
+
+#: srcore/srspc.c:1012
+msgid "Underscore"
+msgstr "Υπογράμμιση"
+
+#: srcore/srspc.c:1012
+msgid "Underscores"
+msgstr "Υπογραμμίσεις"
+
+#: srcore/srspc.c:1013
+msgid "Plus"
+msgstr "Συν"
+
+#: srcore/srspc.c:1013
+msgid "Pluses"
+msgstr "Συν"
+
+#: srcore/srspc.c:1014
+msgid "Equal"
+msgstr "Ίσον"
+
+#: srcore/srspc.c:1014
+msgid "Equals"
+msgstr "Ίσον"
+
+#: srcore/srspc.c:1015
+msgid "Minus"
+msgstr "Μείον"
+
+#: srcore/srspc.c:1015
+msgid "Minuses"
+msgstr "Μείον"
+
+#: srcore/srspc.c:1016
+msgid "Quote"
+msgstr "Εισαγωγικό"
+
+#: srcore/srspc.c:1016
+msgid "Quotes"
+msgstr "Εισαγωγικά"
+
+#: srcore/srspc.c:1017
+msgid "Left Bracket"
+msgstr "Αριστερή Παρένθεση"
+
+#: srcore/srspc.c:1017
+msgid "Left Brackets"
+msgstr "Αριστερές Παρενθέσεις"
+
+#: srcore/srspc.c:1018
+msgid "Right Bracket"
+msgstr "Δεξιά Παρένθεση"
+
+#: srcore/srspc.c:1018
+msgid "Right Brackets"
+msgstr "Δεξιές Παρενθέσεις"
+
+#: srcore/srspc.c:1019
+msgid "Left Brace"
+msgstr "Αριστερό άγκιστρο"
+
+#: srcore/srspc.c:1019
+msgid "Left Braces"
+msgstr "Αριστερά άγκιστρα"
+
+#: srcore/srspc.c:1020
+msgid "Right Brace"
+msgstr "Δεξιό άγκιστρο"
+
+#: srcore/srspc.c:1020
+msgid "Right Braces"
+msgstr "Δεξιά άγκιστρα"
+
+#: srcore/srspc.c:1021
+msgid "Semicolon"
+msgstr "Άνω τελεία"
+
+#: srcore/srspc.c:1021
+msgid "Semicolons"
+msgstr "Άνω τελείες"
+
+#: srcore/srspc.c:1022
+msgid "Colon"
+msgstr "Άνω-κάτω τελεία"
+
+#: srcore/srspc.c:1022
+msgid "Colons"
+msgstr "Άνω-κάτω τελείες"
+
+#: srcore/srspc.c:1023
+msgid "Double quote"
+msgstr "Διπλή παρένθεση"
+
+#: srcore/srspc.c:1023
+msgid "Double quotes"
+msgstr "Διπλές παρενθέσεις"
+
+#: srcore/srspc.c:1024
+msgid "Apostrophe"
+msgstr "Απόστροφος"
+
+#: srcore/srspc.c:1024
+msgid "Apostrophes"
+msgstr "Απόστροφοι"
+
+#: srcore/srspc.c:1025
+msgid "Back Slash"
+msgstr "Δεξιότροπη κάθετος"
+
+#: srcore/srspc.c:1025
+msgid "Back Slashes"
+msgstr "Δεξιότροποι κάθετοι"
+
+#: srcore/srspc.c:1026
+msgid "Bar"
+msgstr "Μπάρα"
+
+#: srcore/srspc.c:1026
+msgid "Bars"
+msgstr "Μπάρες"
+
+#: srcore/srspc.c:1027
+msgid "Greater"
+msgstr "Μεγαλύτερο"
+
+#: srcore/srspc.c:1027
+msgid "Greaters"
+msgstr "Μεγαλύτερα"
+
+#: srcore/srspc.c:1028
+msgid "Less"
+msgstr "Λιγότερο"
+
+#: srcore/srspc.c:1028
+msgid "Lesses"
+msgstr "Λιγότερα"
+
+#: srcore/srspc.c:1029
+msgid "Comma"
+msgstr "Κόμμα"
+
+#: srcore/srspc.c:1029
+msgid "Commas"
+msgstr "Κόμματα"
+
+#: srcore/srspc.c:1030
+msgid "Dot"
+msgstr "Τελεία"
+
+#: srcore/srspc.c:1030
+msgid "Dots"
+msgstr "Τελείες"
+
+#: srcore/srspc.c:1031
+msgid "Slash"
+msgstr "Slash"
+
+#: srcore/srspc.c:1031
+msgid "Slashes"
+msgstr "Slashes"
+
+#: srcore/srspc.c:1032
+msgid "Questions"
+msgstr "Ερωτήσεις"
+
+#: srcore/srspc.c:1106
+#, c-format
+msgid "value not supported for speech punctuation type \"%s\""
+msgstr "η τιμή δεν υποστηρίζεται για τύπο στίξης ομιλίας  \"%s\""
+
+#: srcore/srspc.c:1364
+msgid "Unable to initialize hashtable"
+msgstr "Αδυναμία αρχικοποίησης  hashtable"
+
+#: srcore/srspc.c:1370
+msgid "Unable to load dictionary from gconf"
+msgstr "Αδυναμία φόρτωσης λεξικού από το gconf"
+
+#: srcore/srspc.c:1561
+msgid "speech initialization succeded"
+msgstr "επιτυχία αρχικοποίησης ομιλίας"
+
+#: srcore/srspc.c:1565
+msgid "speech initialization failed"
+msgstr "απέτυχε η αρχικοποίηση ομιλίας"
+
+#: srcore/srspc.c:1761
+#, fuzzy
+msgid "enter"
+msgstr "κεντραρισμένο"
+
+#: srcore/srspc.c:1844
+#, c-format
+msgid "can not find \"%s\" voice. use default voice"
+msgstr "αδυναμία εύρεσης φωνής \"%s\". χρήση προεπιλεγμένης φωνής "
+
+#: srcore/srspc.c:1861
+msgid "voices pitch will be set to default value"
+msgstr "το βήμα φωνής θα οριστεί στην προεπιλεγμένη τιμή"
+
+#: srcore/srspc.c:1863
+msgid "voices pitch will be decreased"
+msgstr "το βήμα φωνής θα μειωθεί"
+
+#: srcore/srspc.c:1865
+msgid "voices pitch will be increased"
+msgstr "το βήμα φωνής θα αυξηθεί"
+
+#: srcore/srspc.c:1909
+msgid "voices rate will be set to default value"
+msgstr "ο ρυθμός φωνής θα οριστεί στην προεπιλεγμένη τιμή"
+
+#: srcore/srspc.c:1911
+msgid "voices rate will be decreased"
+msgstr "ο ρυθμός φωνής θα μειωθεί"
+
+#: srcore/srspc.c:1913
+msgid "voices rate will be increased"
+msgstr "ο ρυθμός φωνής θα αυξηθεί"
+
+#: srcore/srspc.c:1958
+msgid "voices volume will be set to default value"
+msgstr "η ένταση φωνής θα οριστεί στην προεπιλεγμένη τιμή"
+
+#: srcore/srspc.c:1960
+msgid "voices volume will be decreased"
+msgstr "η ένταση  φωνής θα μειωθεί"
+
+#: srcore/srspc.c:1962
+msgid "voices volume will be increased"
+msgstr "η ένταση  φωνής θα αυξηθεί"
+
+#: srcore/srspc.c:2088
+#, c-format
+msgid "no support for speech key \"%s\""
+msgstr "δεν υπάρχει υποστήριξη για κλειδί φωνής \"%s\""

@@ -1,0 +1,642 @@
+<?xml version="1.0"?>
+<!DOCTYPE article PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN" "http://www.oasis-open.org/docbook/xml/4.1.2/docbookx.dtd" [
+<!ENTITY app "Gnopernicus">
+<!ENTITY appversion "0.0.2">
+<!ENTITY date "09 March 2004">
+<!ENTITY legal SYSTEM "legal.xml">
+<!ENTITY manrevision "2.0">
+]>
+<article id="index" lang="en"> 
+  <articleinfo> 
+	 <title>&app; Manual V&manrevision;</title> 
+	 <copyright> 
+		<year>2004</year> 
+		<holder>Sun Microsystems</holder> 
+	 </copyright> 
+	 <copyright> 
+		<year>2003</year><holder>BAUM Retec AG and BAUM Engineering SRL</holder> 
+	 </copyright> 
+	  
+	 <publisher> 
+		<publishername> GNOME Documentation Project</publishername> 
+	 </publisher> &legal; 
+	 <legalnotice id="feedback"> 
+		<title>Feedback Information</title> 
+		<para>
+		  To report a bug or make a suggestion regarding this application or this
+		  documentation, see the 
+		  <ulink type="help" url="ghelp:gnome-feedback">GNOME Feedback
+			 Page</ulink>. 
+		</para>
+	 </legalnotice> 
+	 <authorgroup> 
+		<author> 
+		  <firstname>Sun</firstname> 
+		  <surname>GNOME Documentation Team</surname> 
+		  <affiliation> 
+			 <orgname>Sun Microsystems</orgname> 
+		  </affiliation> 
+		</author> 
+		<author> 
+		  <firstname>BAUM</firstname>
+		  <surname>Gnopernicus Team</surname> 
+		  <affiliation> 
+			 <orgname>BAUM Retec AG and BAUM Engineering SRL</orgname>
+			 <address> <email>ps@baum.ro</email> </address>
+		  </affiliation>
+		</author> 
+	 </authorgroup> 
+	 <revhistory> 
+		<revision> 
+		  <revnumber>&app; Manual V&manrevision;</revnumber> 
+		  <date>&date;</date> 
+		  <revdescription> 
+			 <para>
+				Sun GNOME Documentation Team</para>
+			 <para>
+				GNOME Documentation Project 
+			 </para>
+		  </revdescription> 
+		</revision> 
+		<revision> 
+		  <revnumber>&app; Manual V0.1</revnumber> 
+		  <date>January 2003</date> 
+		  <revdescription> 
+			 <para role="author"> 
+				Baum Gnopernicus Team</para>
+			 <para role="publisher">
+				GNOME Documentation Project</para>
+		  </revdescription> 
+		</revision> 
+	 </revhistory> 
+	 <releaseinfo> This manual describes version &appversion; of
+		&app;.</releaseinfo> 
+	 		
+  </articleinfo>
+
+
+<!-- Introduction-->
+  <sect1 id="introduction"> 
+	 <title>Introduction</title> 
+	 <para>The <application>&app;</application> application enables users with limited vision, or no vision, to use the GNOME Desktop and associated applications. 
+		<application>&app;</application>  provides the following functionality:</para>
+	 <variablelist><varlistentry><term>Screen reader</term><listitem><para>The screen reader enables non-visual access to standard applications in the GNOME Desktop, using speech and Braille output.</para></listitem></varlistentry></variablelist><variablelist><varlistentry><term>Magnifier</term><listitem><para>The magnifier   provides automated focus tracking and fullscreen magnification to aid low-vision users.</para></listitem></varlistentry></variablelist><para>For more information about <application>&app;</application>, visit the following website: <ulink url="http://www.baum.ro/gnopernicus.html">http://www.baum.ro/gnopernicus</ulink></para></sect1>
+
+<!-- Getting Started-->
+  <sect1 id="getting-started"> 
+	 <title>Getting Started</title> 
+	 <sect2 id="gnopernicus-start"><title>To Start Gnopernicus</title><para>
+		You can start <application>&app;</application> in the following ways:</para>
+	 <variablelist>
+		<varlistentry>
+		  <term>Applications menu</term>
+		  <listitem>
+			 
+		  <para>Choose 
+    		<menuchoice>
+    		    <guisubmenu>Accessibility</guisubmenu>
+		    
+    		    <guimenuitem>Screen Reader and Magnifier</guimenuitem>
+    		</menuchoice>. </para></listitem>
+		</varlistentry>
+	 <varlistentry>
+		  <term>Command line</term>
+		  <listitem>
+			 <para>
+				Execute the following command: 
+				<command>gnopernicus</command>
+			 </para><para>You can use the <option>-d</option>   option to specify default settings.</para>
+		  </listitem>
+		</varlistentry>
+		</variablelist> 
+	 </sect2>
+<sect2 id="gnopernicus-started"><title>When You Start Gnopernicus</title><para>
+		When you start <application>&app;</application>, the <guilabel>Gnopernicus</guilabel> menu window appears:
+	 </para>
+		<!-- ==== Figure ==== -->
+		<figure id="mainwindow-fig">
+		<title>&app; Menu Window</title>
+		<screenshot>
+		  <mediaobject>
+		    <imageobject>
+		      <imagedata fileref="figures/gnopernicus.png" format="PNG"/>
+		    </imageobject>
+		    <textobject>
+		      <phrase>Shows Gnopernicus menu window. Contains launchers for Startup Mode, Preferences, Default Preferences, Minimize, Help, About, and Quit.</phrase>
+		    </textobject>
+		  </mediaobject>
+		</screenshot>
+		</figure>
+		<!-- ==== End of Figure ==== -->
+
+<para>The <guilabel>Gnopernicus</guilabel>  menu window contains the following items:</para>
+	 
+	  
+  <variablelist><varlistentry><term>Startup Mode</term><listitem><para>The <guilabel>Startup Mode</guilabel> dialog enables you to choose the functionality that you want <application>&app;</application> to provide when you launch the application. You can also apply functionality changes while you are using the application.</para></listitem></varlistentry><varlistentry><term>Preferences</term><listitem><para>You can adjust the settings for speech output, magnifier behavior, Braille output, Braille monitor, mouse behavior, and key mapping.</para></listitem></varlistentry><varlistentry><term>Default Preferences</term><listitem><para>You can click on this item at any time to load the default settings for <application>&app;</application>.</para></listitem></varlistentry>
+
+<varlistentry><term>Minimize</term><listitem><para>You can click on this item to minimize the <guilabel>Gnopernicus</guilabel>  menu window.</para></listitem></varlistentry><varlistentry><term>Help</term><listitem><para>You can click on this item to open the Help manual for <application>&app;</application>.</para></listitem></varlistentry><varlistentry><term>About</term><listitem><para>You can click on this item to read developer information about the <application>&app;</application> application.</para></listitem></varlistentry><varlistentry><term>Quit</term><listitem><para>You can click on this item to exit <application>&app;</application> at any time.</para>  </listitem></varlistentry></variablelist></sect2></sect1>
+<sect1 id="gnopernicus-usage"><title>Usage</title><para><application>&app;</application>  functions are mapped onto  keys on the  numeric keypad. Because the number of keys on the numeric keypad are limited, the functions are assigned in layers. Any  key can have multiple functions, depending on which layer is active.  You can use the assigned layers of the <application>&app;</application> numeric keypad to work with the different functional areas of the application. The numeric keypad codes are written as follows: Layer<emphasis>nn</emphasis>Key<emphasis>nn</emphasis>, where Layer<emphasis>nn</emphasis> represents the number of the keypad layer, and Key<emphasis>nn</emphasis> represents the key value. The following sections include some useful numeric keypad assigned actions. </para>
+
+<para>You can modify the defined actions for the numeric keypad layers, and you can also assign a keystroke sequence to any key on your keyboard, using the following modifiers:
+</para>
+<itemizedlist>
+	<listitem>
+		<para>Control
+		</para>
+	</listitem>
+	<listitem>
+		<para>Alt
+		</para>
+	</listitem>
+	<listitem>
+		<para>Shift
+		</para>
+	</listitem>
+</itemizedlist>
+<para>See <xref linkend="gnopernicus-layers"/> for more information about numeric keypad actions.</para>
+<sect2 id="gnopernicus-layer-switch"><title>To Switch Between Numeric Keypad Layers</title>
+<para>To switch between numeric keypad layers, perform the following actions: <orderedlist><listitem><para>Switch on the Num Lock.</para></listitem><listitem><para>Press the  <keycap>0</keycap> key on the  numeric keypad.</para></listitem><listitem><para>Press the key on the numeric keypad that corresponds to the layer you want activate, or press the <keycap>Delete</keycap> key for layer 10. You must perform this action within five seconds of the first action. If you do not press the layer number within five seconds, then <application>&app;</application> does  not change the current layer.</para></listitem></orderedlist> </para>
+
+</sect2>
+<sect2 id="gnopernicus-layer-modify"><title>To Modify Defined Layer Keys</title>
+<para>Perform the following steps to modify layer keys that are already defined:</para>
+	<orderedlist>
+		<listitem>
+			<para>Click on <guimenuitem>Command Mapping</guimenuitem> in the <application>&app;</application> menu window.
+			</para>
+		</listitem>
+		<listitem>
+			<para>Open the <guilabel>Layers</guilabel> tab in the <guilabel>Command Mapping</guilabel> dialog.
+			</para>
+		</listitem>
+		<listitem>
+			<para>Select the layer code you want to modify.
+			</para>
+		</listitem>
+		<listitem>
+			<para>Click <guilabel>Modify</guilabel>.
+			</para>
+		</listitem>
+		<listitem>
+			<para>Make your modifications.
+			</para>
+		</listitem>
+		<listitem>
+			<para>Click <guilabel>OK</guilabel>.
+			</para>
+		</listitem>
+	</orderedlist>
+</sect2>
+
+<sect2 id="gnopernicus-keystrokes"><title>To Define Your Own Keystrokes</title>
+<para>Perform the following steps to assign your own keystrokes to keys on your keyboard:</para>
+	<orderedlist>
+		<listitem>
+			<para>Click on <guimenuitem>Command Mapping</guimenuitem> in the <application>&app;</application> menu window.
+			</para>
+		</listitem>
+		<listitem>
+			<para>Open the <guilabel>User Defined</guilabel> tab in the <guilabel>Command Mapping</guilabel> dialog.
+			</para>
+		</listitem>
+		<listitem>
+			<para>Click <guilabel>Add</guilabel>.
+			</para>
+		</listitem>
+		<listitem>
+			<para>Create your keystroke sequence by selecting the modifier options.
+			</para>
+		</listitem>
+		<listitem>
+			<para>Assign a key from your keyboard.
+			</para>
+		</listitem>
+		<listitem>
+			<para>Click <guilabel>OK</guilabel>
+			</para>
+		</listitem>
+	</orderedlist>
+</sect2>
+<sect2 id="gnopernicus-speech-activate"><title>To Activate Speech Output</title><para>Speech output is normally active by default when <application>&app;</application> starts. However, if there is no speech output, click on  <guimenuitem>Startup Mode</guimenuitem> in the <application>&app;</application> menu window, then select the <guilabel>Speech</guilabel> option in the <guilabel>Startup Mode</guilabel> dialog.</para><para>Some useful assigned actions on the numeric keypad that you can use to work with the Speech output feature are as follows:
+</para>
+<para>
+<informaltable frame="topbot"><tgroup cols="2"><colspec colnum="1" colname="col1" colsep="0" rowsep="0" colwidth="1.00*"/><colspec colnum="2" colname="col2" colsep="0" rowsep="0" colwidth="2.31*"/><thead><row rowsep="1" valign="top"><entry colname="col1" colsep="0" valign="top" rowsep="1"><para>Numeric Keypad Code</para></entry><entry colname="col2" colsep="0" valign="top"><para>Assigned Action</para></entry></row></thead><tbody><row valign="top"><entry colname="col1" colsep="0" rowsep="0" valign="top"><para>L08K13</para></entry><entry colname="col2" colsep="0" rowsep="0" valign="top"><para>Pause or continue reading a large chunk of text.</para></entry></row><row valign="top"><entry colname="col1" colsep="0" rowsep="0" valign="top"><para>L08K01</para></entry><entry colname="col2" colsep="0" rowsep="0" valign="top"><para>Decrease the speech volume.</para></entry></row><row valign="top"><entry colname="col1" colsep="0" rowsep="0" valign="top"><para>L00K05</para></entry><entry colname="col2" colsep="0" rowsep="0" valign="top"><para>Repeat last utterance. To spell out characters, press <keycombo><keycap>Ctrl</keycap><keycap>Left Arrow</keycap></keycombo>.</para></entry></row><row><entry colname="col1" colsep="0" rowsep="0"><para>L03K04</para></entry><entry colname="col2" colsep="0" rowsep="0"><para>Provide speech output of the complete contents of a window through the heirarchy of the contents. This is called a <emphasis>logical review</emphasis>.</para></entry></row><row><entry colname="col1" colsep="0" rowsep="0"><para>L03K05</para></entry><entry colname="col2" colsep="0" rowsep="0"><para>Provide speech output of the complete contents of a window flattening the heirarchy in a left-to-right top-to-bottom way. This is called a <emphasis>spatial review</emphasis>.</para></entry></row></tbody></tgroup></informaltable></para><para><?xm-replace_text {para}?></para></sect2>
+
+<sect2 id="gnopernicus-brlmon-start"><title>To Start Braille Monitor</title><para>You can start Braille Monitor in the following ways:</para><variablelist>
+		<varlistentry>
+    		<term>&app; Menu Window</term>
+    		<listitem>
+    		<para>Open the Startup Mode dialog, then select the Braille Monitor option.</para>
+    		</listitem>
+    		</varlistentry>
+    		<varlistentry>
+    		<term>Command line</term>
+    		<listitem>
+    		<para>Execute the following command: <command>brlmonitor</command></para>
+		<para>You  can specify the following options with the <command>brlmonitor</command> command: <informaltable frame="none"><tgroup cols="2" colsep="0" rowsep="0" align="left"><colspec colnum="1" colname="col1" colwidth="1.00*" align="left" colsep="0" rowsep="0"/><colspec colnum="2" colname="col2" colwidth="1.82*" align="left" colsep="0" rowsep="0"/><tbody><row rowsep="0" valign="top"><entry colname="col1" align="left" rowsep="0" colsep="0" valign="top"><para>[-column | -c]</para></entry><entry colname="col2" align="left" valign="top"><para>Number of columns on display </para></entry></row><row rowsep="0" valign="top"><entry colname="col1" align="left" valign="top"><para>[-line | -l]</para></entry><entry colname="col2" align="left" valign="top"><para>Number of lines on display </para></entry></row><row rowsep="0" valign="top"><entry colname="col1" align="left" valign="top"><para>[-mode | -m] </para></entry><entry colname="col2" align="left" valign="top"><para>Specifies the  font: [normal | braille | dual]</para></entry></row><row rowsep="0" valign="top"><entry colname="col1" align="left" valign="top"><para>[-port | -p] </para></entry><entry colname="col2" align="left" valign="top"><para>UDP port number</para></entry></row></tbody></tgroup></informaltable>   </para>	
+    		</listitem>
+    		</varlistentry>
+    		</variablelist>
+	    </sect2>
+<sect2 id="gnopernicus-braille-output"><title>To Activate Braille Output</title><para>Click on  <guimenuitem>Braille</guimenuitem> in the <application>&app;</application> menu window, then select the <guilabel>Braille</guilabel> option in the <guilabel>Startup Mode</guilabel> dialog.</para></sect2>
+
+<sect2 id="gnopernicus-magnifier-activate"><title>To Activate the Magnifier</title>
+
+<para>Click on  <guimenuitem>Magnifier</guimenuitem> in the <application>&app;</application> menu window, then select the <guilabel>Magnifier</guilabel> option in the <guilabel>Startup Mode</guilabel> dialog.</para>
+<para>When the magnifier is activated, half of the screen appears normal size and the other half of the screen is magnified. The location of the cursor on the normal-size screen is indicated by a mobile crosshair on the magnified part of the screen.
+</para>
+</sect2>
+</sect1>
+
+<!--Configuring the application-->
+
+<sect1 id="gnopernicus-layers"><title>Command Mapping With Layer Keys</title>
+
+	<para>Currently, <application>&app;</application> functions are mapped on to 11 layers, from 00 to 10.  There is a possibility to have up to 16 layers.</para>
+
+
+<para>The layer numbers and corresponding  numeric keypad keys are as follows: 
+</para>
+<para>
+<informaltable frame="topbot"><tgroup cols="2" colsep="0" rowsep="0"><colspec colnum="1" colname="col1" colwidth="1.00*"/><colspec colnum="2" colname="col2" colwidth="281.25"/><thead><row rowsep="1"><entry colname="col1" rowsep="1" colsep="0"><para>Layer</para></entry><entry colname="col2" rowsep="1" colsep="0"><para>Key</para></entry></row></thead><tbody><row><entry colname="col1" rowsep="0" colsep="0"><para>00</para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para><keycap>0</keycap></para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para>01</para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para><keycap>1</keycap></para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para>02</para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para><keycap>2</keycap></para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para>03</para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para><keycap>3</keycap></para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para>04</para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para><keycap>4</keycap></para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para>05</para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para><keycap>5</keycap></para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para>06</para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para><keycap>6</keycap></para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para>07</para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para><keycap>7</keycap></para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para>08</para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para><keycap>8</keycap></para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para>09</para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para><keycap>9</keycap></para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para>10</para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para><keycap>Del</keycap></para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para>11</para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para><keycap>Enter</keycap></para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para>12</para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para><keycap>Plus</keycap></para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para>13</para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para><keycap>Minus</keycap></para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para>14</para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para><keycap>Asterisk</keycap></para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para>15</para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para><keycap>Slash</keycap></para></entry></row></tbody></tgroup></informaltable></para>
+
+<!--	<sect2 id="gnopernicus-screen-language"> 
+	    <title>Language</title>
+	    <para> Not working in this version.</para>
+	</sect2> -->
+	
+<para>The currently assigned functions of the numeric keypad layers are listed in the following tables. <table frame="topbot"><title>Numeric Keypad Layer 00: Navigation Controls</title><tgroup cols="2" colsep="0" rowsep="0"><colspec colnum="1" colname="col1" colwidth="1.00*"/><colspec colnum="2" colname="col2" colwidth="281.25"/><thead><row rowsep="1"><entry colname="col1" rowsep="1" colsep="0"><para>Key</para></entry><entry colname="col2" rowsep="1" colsep="0"><para>Function</para></entry></row></thead><tbody><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>1</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Go to toolbar.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>2</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Go to child.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>3</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Go to statusbar.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>4</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Go to previous.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>5</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Repeat last utterance.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>6</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Go to next.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>7</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Go to title.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>8</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Go to parent.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>9</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Go to menubar.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>Del</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Toggle between focus tracking and flat review mode.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>Enter</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Describe my surroundings.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>Plus</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Go to focus.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>Minus</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Change navigation mode.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>Asterisk</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Go to last.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>Slash</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Go to first.</para></entry></row></tbody></tgroup></table>
+
+<table frame="topbot"><title>Numeric Keypad Layer 01</title>
+<tgroup cols="2" colsep="0" rowsep="0"><colspec colnum="1" colname="col1" colwidth="1.00*"/><colspec colnum="2" colname="col2" colwidth="281.25"/>
+
+<thead>
+	<row rowsep="1"><entry colname="col1" rowsep="1" colsep="0"><para>Key</para></entry><entry 			colname="col2" rowsep="1" colsep="0"><para>Function</para></entry>
+	</row>
+</thead>
+	<tbody>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>1</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Attributes at caret.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>2</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Watch current object.</para>
+			</entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>Plus</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Go to caret.</para>
+			</entry>
+		</row>
+	</tbody>
+</tgroup>
+</table>
+
+<table frame="topbot"><title>Numeric Keypad Layer 03</title><tgroup cols="2" colsep="0" rowsep="0"><colspec colnum="1" colname="col1" colwidth="1.00*"/><colspec colnum="2" colname="col2" colwidth="281.25"/><thead><row rowsep="1"><entry colname="col1" rowsep="1" colsep="0"><para>Key</para></entry><entry colname="col2" rowsep="1" colsep="0"><para>Function</para></entry></row></thead><tbody><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>1</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Find set.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>2</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Do default action.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>3</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Window overview.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>4</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Window hierarchy.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>5</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Flat review.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>6</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Object details.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>Del</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Find next.</para></entry></row></tbody></tgroup></table><table frame="topbot"><title>Numeric Keypad Layer 05: Mouse Controls</title><tgroup cols="2" colsep="0" rowsep="0"><colspec colnum="1" colname="col1" colwidth="1.00*"/><colspec colnum="2" colname="col2" colwidth="281.25"/><thead><row rowsep="1"><entry colname="col1" rowsep="1" colsep="0"><para>Key</para></entry><entry colname="col2" rowsep="1" colsep="0"><para>Function</para></entry></row></thead><tbody><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>1</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Left mouse button press.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>2</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Left mouse button click.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>3</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Left mouse button release.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>4</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Right mouse button press.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>5</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Right mouse button click.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>6</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Right mouse button release.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>7</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Middle mouse button press.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>8</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Middle mouse button click.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>9</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Middle mouse button release.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>Del</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Move mouse to current object.</para></entry></row></tbody></tgroup></table><table frame="topbot"><title>Numeric Keypad Layer 06: Magnifier Characteristics</title><tgroup cols="2" colsep="0" rowsep="0"><colspec colnum="1" colname="col1" colwidth="1.00*"/><colspec colnum="2" colname="col2" colwidth="281.25"/><thead><row rowsep="1"><entry colname="col1" rowsep="1" colsep="0"><para>Key</para></entry><entry colname="col2" rowsep="1" colsep="0"><para>Function</para></entry></row></thead><tbody><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>1</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Toggle the cursor on and off.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>2</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Decrease the y scale.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>3</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Toggle the crosshair on and off.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>4</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Decrease the x scale.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>5</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Lock the x scale and the y scale.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>6</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Increase the x scale.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>7</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Invert on and off.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>8</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Increase the y scale.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>9</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Smoothing toggle.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>Del</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Load magnifier defaults.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>Enter</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Toggle the cursor magnifier  on and off.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>Plus</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Toggle panning on and off.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>Minus</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Toggle between mouse tracking modes.</para></entry></row></tbody></tgroup></table><table frame="topbot"><title>Numeric Keypad Layer 07: Magnifier Mouse and Cursor Controls</title><tgroup cols="2" colsep="0" rowsep="0"><colspec colnum="1" colname="col1" colwidth="1.00*"/><colspec colnum="2" colname="col2" colwidth="281.25"/><thead><row rowsep="1"><entry colname="col1" rowsep="1" colsep="0"><para>Key</para></entry><entry colname="col2" rowsep="1" colsep="0"><para>Function</para></entry></row></thead><tbody><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>1</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Toggle the cursor on and off	.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>2</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Decrease the size of the cursor.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>3</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Toggle the crosshair on and off.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>4</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Decrease the size of the crosshair.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>5</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Toggle the crosshair clip on and off.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>6</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Increase the size of the crosshair.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>7</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Not mapped.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>8</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Increase the size of the cursor.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>9</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Cursor toggle.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>Del</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Load magnifier defaults.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>Enter</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Toggle the cursor magnifier  on and off.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>Plus</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Not mapped</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>Minus</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Toggle between mouse tracking modes.</para></entry></row></tbody></tgroup></table><table frame="topbot"><title>Numeric Keypad Layer 08: Speech Characteristics</title><tgroup cols="2" colsep="0" rowsep="0"><colspec colnum="1" colname="col1" colwidth="1.00*"/><colspec colnum="2" colname="col2" colwidth="281.25"/><thead><row rowsep="1"><entry colname="col1" rowsep="1" colsep="0"><para>Key</para></entry><entry colname="col2" rowsep="1" colsep="0"><para>Function</para></entry></row></thead><tbody><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>1</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Decrease volume of speech output.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>2</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Default setting for volume of speech output.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>3</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Increase the volume of speech output.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>4</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Decrease rate of speech output.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>5</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Default setting for rate of speech output.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>6</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Increase rate of speech output.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>7</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Decrease pitch of speech output.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>8</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Default pitch setting for speech output.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>9</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Increase pitch of speech output.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>Del</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Default settings for speech output.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>Minus</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Toggle between Pause and Resume for speech output.</para></entry></row></tbody></tgroup></table><table frame="topbot"><title>Numeric Keypad Layer 09: Braille Scroll Controls</title><tgroup cols="2" colsep="0" rowsep="0"><colspec colnum="1" colname="col1" colwidth="1.00*"/><colspec colnum="2" colname="col2" colwidth="281.25"/><thead><row rowsep="1"><entry colname="col1" rowsep="1" colsep="0"><para>Key</para></entry><entry colname="col2" rowsep="1" colsep="0"><para>Function</para></entry></row></thead><tbody><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>1</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Scroll one braille character to the left.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>3</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Scroll one braille character to the right.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>4</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Scroll one braille display to the left.</para></entry></row><row><entry colname="col1" rowsep="0" colsep="0"><para><keycap>6</keycap></para>
+	    </entry><entry colname="col2" rowsep="0" colsep="0"><para>Scroll one braille display to the right.</para></entry></row></tbody></tgroup></table>
+
+<table frame="topbot"><title>Numeric Keypad Layer 10: Toggle Keys</title>
+	<tgroup cols="2" colsep="0" rowsep="0"><colspec colnum="1" colname="col1" colwidth="1.00*"/><colspec colnum="2" colname="col2" colwidth="281.25"/>
+		<thead>
+			<row rowsep="1">
+				<entry colname="col1" rowsep="1" colsep="0">
+					<para>Key</para></entry>
+				<entry colname="col2" rowsep="1" colsep="0">
+					<para>Function</para>
+				</entry>
+			</row>
+		</thead>
+	<tbody>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>1</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Toggle Braille output on and off.</para></entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>2</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Toggle speech output on and off.</para></entry>
+		</row>
+		<row>
+			<entry colname="col1" rowsep="0" colsep="0">
+				<para><keycap>3</keycap></para>
+	    	</entry>
+			<entry colname="col2" rowsep="0" colsep="0">
+				<para>Toggle magnifier on and off.</para></entry>
+		</row>
+
+</tbody></tgroup></table></para>
+    </sect1>
+
+ 
+
+   
+<!--Preferences-->
+  <sect1 id="gnopernicus-preferences"> 
+	 <title>Preferences</title> 
+	 <para>
+	 To control the behavior of the various functional areas in <application>&app;</application>, you  select options in preference dialogs specific to each functional area. To open the <guilabel>Preferences</guilabel> menu window, click on <guimenuitem>Preferences</guimenuitem> in the <guilabel>&app;</guilabel> menu window.
+	 </para>
+  <sect2 id="gnopernicus-speech-prefs"><title>Speech Preferences</title>
+	<para>
+	Click on <guilabel>Speech</guilabel> to open the <guilabel>Speech Preferences</guilabel> dialog.
+	</para>
+	<para>
+	You can change the speech characteristics for punctuation reading, text echo, and several other parameters.
+	</para>
+</sect2>
+
+<sect2 id="gnopernicus-braille-prefs"><title>Braille Preferences</title>
+	<para>
+	 	Click on <guilabel>Braille</guilabel> to open the <guilabel>Braille  Preferences</guilabel> dialog.
+	</para>
+	<para>
+	You can change the following functionality: 
+
+	</para>		<itemizedlist>
+			<listitem>
+				<para>Braille device
+				</para>
+			</listitem>
+			<listitem>
+				<para>Translation table
+				</para>
+			</listitem>
+			<listitem>
+				<para>Braille style
+				</para>
+			</listitem>
+			<listitem>
+				<para>Cursor preferences
+				</para>
+			</listitem>
+			<listitem>
+				<para>Braille key mapping
+				</para>
+			</listitem>
+		</itemizedlist>
+</sect2>
+
+<sect2 id="gnopernicus-magnifier-prefs"><title>Magnifier Preferences</title>
+	<para>Click on <guilabel>Magnifier</guilabel> to open the <guilabel>Magnifier Preferences</guilabel> dialog.
+	</para>
+	<para>You can change the following functionality: 
+	</para>	
+		<itemizedlist>
+			<listitem>
+				<para>Cursor settings
+				</para>
+			</listitem>
+			<listitem>
+				<para>Crosshair settings
+				</para>
+			</listitem>
+			<listitem>
+				<para>Zoomer list
+				</para>
+			</listitem>
+		</itemizedlist>
+</sect2>
+
+<sect2 id="gnopernicus-mouse-prefs"><title>Mouse Preferences</title>
+	<para>
+	 	Click on <guilabel>Mouse</guilabel> to open the <guilabel>Mouse  Preferences</guilabel> dialog.
+	 </para>
+	<para>You can select the following options for mouse behavior: 
+	</para>	
+		<itemizedlist>
+			<listitem>
+				<para>Take mouse at current object
+				</para>
+			</listitem>
+			<listitem>
+				<para>Simulate click as current object
+				</para>
+			</listitem>
+		</itemizedlist>
+</sect2>
+
+<sect2 id="gnopernicus-brlmon-prefs"><title>Braille Monitor Preferences</title>
+	<para>
+	 	Click on <guilabel>Braille Monitor</guilabel> to open the <guilabel>Braille Monitor Preferences</guilabel> dialog.
+	 </para>
+	<para>You can change the following functionality: 
+	</para>	
+		<itemizedlist>
+			<listitem>
+				<para>Size
+				</para>
+			</listitem>
+			<listitem>
+				<para>Font
+				</para>
+			</listitem>
+			<listitem>
+				<para>Mode type
+				</para>
+			</listitem>
+			<listitem>
+				<para>Position
+				</para>
+			</listitem>
+			<listitem>
+				<para>Color
+				</para>
+			</listitem>
+		</itemizedlist>
+</sect2>
+
+<sect2 id="gnopernicus-cm-prefs"><title>Command Mapping Preferences</title>
+	<para>
+	 	Click on <guilabel>Command Mapping</guilabel> to open the <guilabel>Command Mapping</guilabel> dialog.
+	 </para>
+	<para>You can work with the following command mapping tabs: 
+	</para>	
+		<itemizedlist>
+			<listitem>
+				<para>Layers
+				</para>
+			</listitem>
+			<listitem>
+				<para>User defined
+				</para>
+			</listitem>
+		</itemizedlist>
+</sect2>
+
+<sect2 id="gnopernicus-presentation-prefs"><title>Presentation Preferences</title>
+	<para>
+	 	Click on <guilabel>Presentation</guilabel> to open the <guilabel>Presentation Preferences</guilabel> dialog.
+	 </para>
+	<para>You can select the following functionality: 
+	</para>	
+		<itemizedlist>
+			<listitem>
+				<para>Verbose
+				</para>
+			</listitem>
+			<listitem>
+				<para>Default
+				</para>
+			</listitem>
+		</itemizedlist>
+</sect2>
+
+<sect2 id="gnopernicus-screenreview-prefs"><title>Screen Review Preferences</title>
+	<para>
+	 	Click on <guilabel>Screen Review</guilabel> to open the <guilabel>Screen Review Preferences</guilabel> dialog.
+	 </para>
+	<para>You can select the following functionality: 
+	</para>	
+		<itemizedlist>
+			<listitem>
+				<para>Horizontal flags
+				</para>
+			</listitem>
+			<listitem>
+				<para>Vertical flags
+				</para>
+			</listitem>
+		</itemizedlist>
+</sect2>
+
+<sect2 id="gnopernicus-search-prefs"><title>Search Preferences</title>
+	<para>
+	 	Click on <guilabel>Search</guilabel> to open the <guilabel>Search Preferences</guilabel> dialog.
+	 </para>
+	<para>You can search for an object on your screen, within the following parameters: 
+	</para>	
+		<itemizedlist>
+			<listitem>
+				<para>Window
+				</para>
+			</listitem>
+			<listitem>
+				<para>Application
+				</para>
+			</listitem>
+			<listitem>
+				<para>Desktop
+				</para>
+			</listitem>
+			<listitem>
+				<para>Text
+				</para>
+			</listitem>
+			<listitem>
+				<para>Attribute
+				</para>
+			</listitem>
+			<listitem>
+				<para>Graphics
+				</para>
+			</listitem>
+		</itemizedlist>
+</sect2>
+
+</sect1>
+  
+  </article> 

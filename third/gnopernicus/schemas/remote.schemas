@@ -1,0 +1,26 @@
+<gconfschemafile>
+  <schemalist>
+      <schema>
+      <key>/schemas/apps/gnopernicus/remote/port</key>
+      <applyto>/apps/gnopernicus/remote/port</applyto>
+      <owner>gnopernicus</owner>
+      <type>int</type>
+      <default>7096</default>
+      <locale name="C">
+        <short>Remote Braille</short>
+        <long>Remote Braille</long>
+      </locale>
+      </schema>
+      <schema>
+      <key>/schemas/apps/gnopernicus/remote/ip</key>
+      <applyto>/apps/gnopernicus/remote/ip</applyto>
+      <owner>gnopernicus</owner>
+      <type>string</type>
+      <default>127.0.0.1</default>
+      <locale name="C">
+        <short>Remote Braille</short>
+        <long>Remote Braille</long>
+      </locale>
+      </schema>
+    </schemalist>  
+</gconfschemafile>

@@ -1,0 +1,235 @@
+<?xml version="1.0" standalone="no"?> <!--*- mode: xml -*-->
+<!DOCTYPE glade-interface SYSTEM "http://glade.gnome.org/glade-2.0.dtd">
+
+<glade-interface>
+<requires lib="gnome"/>
+
+<widget class="GtkWindow" id="w_default_load">
+  <property name="width_request">230</property>
+  <property name="height_request">330</property>
+  <property name="visible">True</property>
+  <property name="tooltip" translatable="yes">Load Default Settings</property>
+  <property name="title" translatable="yes">Load Default Preferences</property>
+  <property name="type">GTK_WINDOW_TOPLEVEL</property>
+  <property name="window_position">GTK_WIN_POS_NONE</property>
+  <property name="modal">True</property>
+  <property name="resizable">False</property>
+  <property name="destroy_with_parent">False</property>
+  <signal name="remove" handler="on_w_default_load_remove"/>
+
+  <child>
+    <widget class="GtkVBox" id="vbox1">
+      <property name="visible">True</property>
+      <property name="homogeneous">False</property>
+      <property name="spacing">0</property>
+
+      <child>
+	<widget class="GtkButton" id="bt_default_braille">
+	  <property name="height_request">30</property>
+	  <property name="visible">True</property>
+	  <property name="tooltip" translatable="yes">Load braille defaults</property>
+	  <property name="can_focus">True</property>
+	  <property name="label" translatable="yes">_1 Braille</property>
+	  <property name="use_underline">True</property>
+	  <property name="relief">GTK_RELIEF_NORMAL</property>
+	  <signal name="clicked" handler="on_bt_default_braille_clicked"/>
+	  <accelerator key="B" modifiers="GDK_MOD1_MASK" signal="clicked"/>
+	</widget>
+	<packing>
+	  <property name="padding">0</property>
+	  <property name="expand">True</property>
+	  <property name="fill">True</property>
+	</packing>
+      </child>
+
+      <child>
+	<widget class="GtkButton" id="bt_default_speech">
+	  <property name="height_request">30</property>
+	  <property name="visible">True</property>
+	  <property name="tooltip" translatable="yes">Load speech defaults</property>
+	  <property name="can_focus">True</property>
+	  <property name="label" translatable="yes">_2 Speech</property>
+	  <property name="use_underline">True</property>
+	  <property name="relief">GTK_RELIEF_NORMAL</property>
+	  <signal name="clicked" handler="on_bt_default_speech_clicked"/>
+	  <accelerator key="S" modifiers="GDK_MOD1_MASK" signal="clicked"/>
+	</widget>
+	<packing>
+	  <property name="padding">0</property>
+	  <property name="expand">True</property>
+	  <property name="fill">True</property>
+	</packing>
+      </child>
+
+      <child>
+	<widget class="GtkButton" id="bt_default_magnifier">
+	  <property name="height_request">30</property>
+	  <property name="visible">True</property>
+	  <property name="tooltip" translatable="yes">Load magnifier defaults</property>
+	  <property name="can_focus">True</property>
+	  <property name="label" translatable="yes">_3 Magnifier</property>
+	  <property name="use_underline">True</property>
+	  <property name="relief">GTK_RELIEF_NORMAL</property>
+	  <signal name="clicked" handler="on_bt_default_magnifier_clicked"/>
+	  <accelerator key="M" modifiers="GDK_MOD1_MASK" signal="clicked"/>
+	</widget>
+	<packing>
+	  <property name="padding">0</property>
+	  <property name="expand">True</property>
+	  <property name="fill">True</property>
+	</packing>
+      </child>
+
+      <child>
+	<widget class="GtkButton" id="bt_default_keyboard">
+	  <property name="height_request">30</property>
+	  <property name="visible">True</property>
+	  <property name="tooltip" translatable="yes">Load mouse defaults</property>
+	  <property name="can_focus">True</property>
+	  <property name="label" translatable="yes">_4 Keyboard</property>
+	  <property name="use_underline">True</property>
+	  <property name="relief">GTK_RELIEF_NORMAL</property>
+	  <signal name="clicked" handler="on_bt_default_keyboard_clicked"/>
+	  <accelerator key="K" modifiers="GDK_MOD1_MASK" signal="clicked"/>
+	</widget>
+	<packing>
+	  <property name="padding">0</property>
+	  <property name="expand">True</property>
+	  <property name="fill">True</property>
+	</packing>
+      </child>
+
+      <child>
+	<widget class="GtkButton" id="bt_default_braille_monitor">
+	  <property name="height_request">30</property>
+	  <property name="visible">True</property>
+	  <property name="tooltip" translatable="yes">Load braille monitor defaults</property>
+	  <property name="can_focus">True</property>
+	  <property name="label" translatable="yes">_5 Braille Monitor</property>
+	  <property name="use_underline">True</property>
+	  <property name="relief">GTK_RELIEF_NORMAL</property>
+	  <signal name="clicked" handler="on_bt_default_braille_monitor_clicked" last_modification_time="Wed, 02 Jul 2003 15:04:26 GMT"/>
+	  <accelerator key="I" modifiers="GDK_MOD1_MASK" signal="clicked"/>
+	</widget>
+	<packing>
+	  <property name="padding">0</property>
+	  <property name="expand">False</property>
+	  <property name="fill">False</property>
+	</packing>
+      </child>
+
+      <child>
+	<widget class="GtkButton" id="bt_default_general">
+	  <property name="height_request">30</property>
+	  <property name="visible">True</property>
+	  <property name="tooltip" translatable="yes">Load startup mode defaults</property>
+	  <property name="can_focus">True</property>
+	  <property name="label" translatable="yes">_6 Startup</property>
+	  <property name="use_underline">True</property>
+	  <property name="relief">GTK_RELIEF_NORMAL</property>
+	  <signal name="clicked" handler="on_bt_default_general_clicked"/>
+	  <accelerator key="G" modifiers="GDK_MOD1_MASK" signal="clicked"/>
+	</widget>
+	<packing>
+	  <property name="padding">0</property>
+	  <property name="expand">True</property>
+	  <property name="fill">True</property>
+	</packing>
+      </child>
+
+      <child>
+	<widget class="GtkButton" id="bt_default_cmdmap">
+	  <property name="height_request">30</property>
+	  <property name="visible">True</property>
+	  <property name="tooltip" translatable="yes">Load command map defaults</property>
+	  <property name="can_focus">True</property>
+	  <property name="label" translatable="yes">_7 Command Map</property>
+	  <property name="use_underline">True</property>
+	  <property name="relief">GTK_RELIEF_NORMAL</property>
+	  <signal name="clicked" handler="on_bt_default_cmdmap_clicked"/>
+	</widget>
+	<packing>
+	  <property name="padding">0</property>
+	  <property name="expand">True</property>
+	  <property name="fill">True</property>
+	</packing>
+      </child>
+
+      <child>
+	<widget class="GtkButton" id="bt_default_presentation">
+	  <property name="height_request">30</property>
+	  <property name="visible">True</property>
+	  <property name="tooltip" translatable="yes">Load presentation defaults</property>
+	  <property name="can_focus">True</property>
+	  <property name="label" translatable="yes">_8 Presentation</property>
+	  <property name="use_underline">True</property>
+	  <property name="relief">GTK_RELIEF_NORMAL</property>
+	  <signal name="clicked" handler="on_bt_default_presentation_clicked" last_modification_time="Thu, 16 Jan 2003 11:02:10 GMT"/>
+	</widget>
+	<packing>
+	  <property name="padding">0</property>
+	  <property name="expand">True</property>
+	  <property name="fill">True</property>
+	</packing>
+      </child>
+
+      <child>
+	<widget class="GtkButton" id="bt_default_screen_review">
+	  <property name="height_request">30</property>
+	  <property name="visible">True</property>
+	  <property name="tooltip" translatable="yes">Load screen review defaults</property>
+	  <property name="can_focus">True</property>
+	  <property name="label" translatable="yes">_9 Screen Review</property>
+	  <property name="use_underline">True</property>
+	  <property name="relief">GTK_RELIEF_NORMAL</property>
+	  <signal name="clicked" handler="on_bt_default_screen_review_clicked" last_modification_time="Thu, 06 Feb 2003 13:53:04 GMT"/>
+	</widget>
+	<packing>
+	  <property name="padding">0</property>
+	  <property name="expand">True</property>
+	  <property name="fill">True</property>
+	</packing>
+      </child>
+
+      <child>
+	<widget class="GtkButton" id="bt_default_all">
+	  <property name="height_request">30</property>
+	  <property name="visible">True</property>
+	  <property name="tooltip" translatable="yes">Load all defaults</property>
+	  <property name="can_focus">True</property>
+	  <property name="label" translatable="yes">_0 All</property>
+	  <property name="use_underline">True</property>
+	  <property name="relief">GTK_RELIEF_NORMAL</property>
+	  <signal name="clicked" handler="on_bt_default_all_clicked"/>
+	</widget>
+	<packing>
+	  <property name="padding">0</property>
+	  <property name="expand">True</property>
+	  <property name="fill">True</property>
+	</packing>
+      </child>
+
+      <child>
+	<widget class="GtkButton" id="bt_default_close">
+	  <property name="height_request">30</property>
+	  <property name="visible">True</property>
+	  <property name="tooltip" translatable="yes">Close &quot;Load Default Preferences&quot;</property>
+	  <property name="can_focus">True</property>
+	  <property name="has_focus">True</property>
+	  <property name="label">gtk-close</property>
+	  <property name="use_stock">True</property>
+	  <property name="relief">GTK_RELIEF_NORMAL</property>
+	  <signal name="clicked" handler="on_bt_default_close_clicked"/>
+	  <accelerator key="Escape" modifiers="0" signal="clicked"/>
+	</widget>
+	<packing>
+	  <property name="padding">0</property>
+	  <property name="expand">True</property>
+	  <property name="fill">True</property>
+	</packing>
+      </child>
+    </widget>
+  </child>
+</widget>
+
+</glade-interface>

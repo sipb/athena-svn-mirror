@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+
+<SRSOUT>
+
+<VOICE ID="fcstrk" TTSEngine="Festival" TTSVoice="kal_diphone" priority="0" preempt="yes" rate="80" pitch="100"></VOICE>
+<VOICE ID="kbd" TTSEngine="Festival" TTSVoice="don_diphone" priority="1" preempt="no" rate="120" pitch="50"></VOICE>
+
+<TEXT voice="fcstrk" marker="fcs_marker">Checkbox voice enabled, not checked.</TEXT>
+<TEXT voice="kbd"> A... B... C... I am the keyboard speaker.</TEXT>
+
+</SRSOUT>
+
+
+

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<BRLOUT language="en_US" bstyle="8" clear="true">
+	
+	<BRLDISP ID="0" start="0" offset="6" cursor="4" cstyle="underline" clear="true">				
+		
+		<DOTS> CF </DOTS> <TEXT> Cancel </TEXT> 
+		<SCROLL mode="9"></SCROLL>
+		<DOTS> F9 </DOTS> <TEXT> </TEXT>
+		<DOTS> CF </DOTS> <TEXT> Apply </TEXT> <DOTS> F9 </DOTS>
+		<TEXT attr="dot78">    </TEXT>
+		<TEXT> &lt;dana test1&gt; </TEXT>		
+		<TEXT> dana test2 </TEXT>					
+		<TEXT> &amp;dana test3&apos; </TEXT>							
+		<SCROLL mode="-6"></SCROLL>
+		<SCROLL mode="width"></SCROLL>
+		<SCROLL mode="-23"></SCROLL>
+	</BRLDISP>
+
+	<BRLDISP role="status">	
+		<DOTS> 07 38 C0 FF </DOTS>	
+	</BRLDISP>
+	
+	<BYTES> 1B FF CC AB </BYTES>
+
+</BRLOUT>

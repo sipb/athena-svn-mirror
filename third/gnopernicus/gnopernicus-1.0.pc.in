@@ -1,0 +1,12 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+idldir=
+
+Name: gnopernicus
+Description: Accessibility Technology Software
+Requires:  cspi-1.0 gtk+-2.0 libglade-2.0 libgnome-2.0 libgnomeui-2.0 libxml-2.0
+Version: @VERSION@
+Libs: -L${libdir}/gnopernicus-1.0 -lsrlow -lbrl -lsrs -lke -lsrconf -lsrutil
+Cflags: -I${includedir}/gnopernicus-1.0
