@@ -14,7 +14,7 @@
 
 @SET_MAKE@
 
-# $Id: Makefile.in,v 1.1.1.1 2004-04-09 20:09:18 amb Exp $
+# $Id: Makefile.in,v 1.2 2004-04-12 20:00:44 amb Exp $
 
 # This file is part of ifplugd.
 #
@@ -295,12 +295,12 @@ ifplugd.init: ifplugd.init.in Makefile
 	chmod 755 $@
 
 install-data-local: ifplugd.init
-	$(INSTALL) -b -D -m755 ifplugd.init ${DESTDIR}${sysinitdir}/ifplugd
+	$(INSTALL) -b -D -m755 ifplugd.init ${DESTDIR}${sysinitdir}/athena-ifplugd
 	$(INSTALL) -b -D -m755 $(srcdir)/ifplugd.action ${DESTDIR}${sysconfdir}/ifplugd/ifplugd.action
 	$(INSTALL) -b -D -m644 $(srcdir)/ifplugd.conf ${DESTDIR}${sysconfdir}/ifplugd/ifplugd.conf
 
 uninstall-local:
-	rm -f ${DESTDIR}${sysconfdir}/ifplugd/ifplugd.action ${DESTDIR}${sysconfdir}/ifplugd/ifplugd.conf ${DESTDIR}${sysinitdir}/ifplugd
+	rm -f ${DESTDIR}${sysconfdir}/ifplugd/ifplugd.action ${DESTDIR}${sysconfdir}/ifplugd/ifplugd.conf ${DESTDIR}${sysinitdir}/athena-ifplugd
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:
