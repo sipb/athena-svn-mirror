@@ -16,12 +16,12 @@
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/ask.c,v $
- *      $Author: tjcoppet $
+ *      $Author: vanharen $
  */
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/ask.c,v 1.5 1989-11-17 14:16:08 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/ask.c,v 1.6 1990-02-15 18:45:12 vanharen Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -63,6 +63,8 @@ OAsk(Request,topic,file)
 
   write_file_to_fd(fd,file);
   read_response(fd,&status);
+  if ((status == CONNECTED) || (status == NOT_CONNECTED))
+    read_int_from_fd(fd,&(Request->requester.instance));
   close(fd);
   return(status);
 }
