@@ -1,0 +1,14 @@
+;
+; Reverse-resolve LOCALHOST
+;
+
+@	IN	SOA	LOCALHOST.MIT.EDU. ROOT.MIT.EDU. (
+				1 ; Serial
+				3600	; Refresh 1 hour
+				300	; Retry 5 minutes
+				2419200 ; Expire 28 days
+				21600	; Minimum 6 hours
+				)
+		IN	NS	LOCALHOST.MIT.EDU.
+
+1.0.0	IN	PTR	LOCALHOST.MIT.EDU.
