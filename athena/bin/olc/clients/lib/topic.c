@@ -12,18 +12,21 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1989,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/topic.c,v $
- *	$Id: topic.c,v 1.7 1990-07-16 08:17:45 lwvanels Exp $
+ *	$Id: topic.c,v 1.8 1990-11-13 15:52:41 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/topic.c,v 1.7 1990-07-16 08:17:45 lwvanels Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/topic.c,v 1.8 1990-11-13 15:52:41 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>
@@ -42,36 +45,9 @@ OGetTopic(Request,topic)
      REQUEST *Request;
      char *topic;
 {
-  int fd;
-  RESPONSE response;
   int status;
-  char *buf;
   LIST data;
-/*
-  Request->request_type = OLC_TOPIC;
-  status = open_connection_to_daemon(Request, &fd);
-  if(status)
-    return(status);
 
-  status = send_request(fd, Request);
-  if(status)
-    {
-      close(fd);
-      return(status);
-    }
-  read_response(fd, &response);  
- 
-  if(response == SUCCESS)
-    {
-      if ((buf = read_text_from_fd(fd)) != (char *)NULL)
-	strncpy(topic,buf,TOPIC_SIZE);
-      else
-	response = FAILURE;
-    }
-
-  close(fd);
-  return(response);
-*/
   status = OWho(Request,&data);
   if(status == SUCCESS)      
     strcpy(topic,data.topic);
