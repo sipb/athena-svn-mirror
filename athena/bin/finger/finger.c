@@ -3,11 +3,11 @@
  * For copying and distribution information, see the file
  * "mit-copyright.h".
  *
- * $Id: finger.c,v 1.25 1995-06-27 22:08:44 cfields Exp $
+ * $Id: finger.c,v 1.26 1996-05-26 03:38:47 ghudson Exp $
  */
 
 #ifndef lint
-static char *rcsid_finger_c = "$Id: finger.c,v 1.25 1995-06-27 22:08:44 cfields Exp $";
+static char *rcsid_finger_c = "$Id: finger.c,v 1.26 1996-05-26 03:38:47 ghudson Exp $";
 #endif /*lint*/
 
 /*
@@ -130,7 +130,7 @@ struct utmp user;
 
 struct person {			/* one for each person fingered */
 	char *name;		/* name */
-	char tty[LMAX + 1];	/* null terminated tty line */
+	char tty[BUFSIZ];	/* null terminated tty line */
 	char host[BUFSIZ];	/* null terminated remote host name */
 	int loginout;		/* 0 means login time, 1 logout */
 #ifdef POSIX
