@@ -17,7 +17,7 @@
  * expire.
  */
 
-static const char rcsid[] = "$Id: authwatch.c,v 1.3 2002-06-13 18:43:54 mwhitson Exp $";
+static const char rcsid[] = "$Id: authwatch.c,v 1.4 2004-04-14 18:31:21 mwhitson Exp $";
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -26,8 +26,6 @@ static const char rcsid[] = "$Id: authwatch.c,v 1.3 2002-06-13 18:43:54 mwhitson
 #include <com_err.h>
 
 #include <gtk/gtk.h>
-#include <libgnomeui/gnome-stock.h>
-#include <libgnomeui/gnome-messagebox.h>
 
 #define MAX_TIMEOUT 60*5   /* Maximum interval between checks, in seconds */
 
@@ -97,25 +95,25 @@ gint timeout_cb(gpointer unused)
 
   static const struct {
     const unsigned int tte;     /* Time to expiration, in seconds */
-    const char *message;        /* Formatted for a gnome_message_box */
+    const char *message;        /* Formatted for a gtk_message_dialog */
   } warnings[] = {
     { 0,
-"You have no authentication.  Select ``Renew Authentication'' from the\n"
+"You have no authentication.  Select ``Renew Authentication'' from the "
 "Athena ``Utilities'' menu to re-authenticate."
     },
 
     { 60,
-"Your authentication will expire in less than one minute.  Select\n"
+"Your authentication will expire in less than one minute.  Select "
 "``Renew Authentication'' from the Athena ``Utilities'' menu to re-authenticate."
     },
 
     { 60*5,
-"Your authentication will expire in less than five minutes.  Select\n"
+"Your authentication will expire in less than five minutes.  Select "
 "``Renew Authentication'' from the Athena ``Utilities'' menu to re-authenticate."
     },
 
     { 60*15,
-"Your authentication will expire in less than fifteen minutes.  Select\n"
+"Your authentication will expire in less than fifteen minutes.  Select "
 "``Renew Authentication'' from the Athena ``Utilities'' menu to re-authenticate."
     }
   };
@@ -145,20 +143,21 @@ gint timeout_cb(gpointer unused)
 
       if (state < nwarnings)
 	{
-	  dialog = gnome_message_box_new(warnings[state].message,
-					 GNOME_MESSAGE_BOX_WARNING,
-					 GNOME_STOCK_BUTTON_OK,
-					 NULL);
+	  dialog = gtk_message_dialog_new(NULL, 0,
+					  GTK_MESSAGE_WARNING,
+					  GTK_BUTTONS_OK,
+					  warnings[state].message);
 
 	  if (dialog == NULL)
 	    {
 	      fprintf(stderr, "authwatch: error creating dialog window\n");
 	      exit(1);
 	    }
-	  gtk_signal_connect(GTK_OBJECT(dialog), "destroy",
-			     GTK_SIGNAL_FUNC(gtk_widget_destroyed),
-			     &dialog);
-
+	  g_signal_connect(G_OBJECT(dialog), "response",
+			   G_CALLBACK(gtk_widget_destroy), NULL);
+	  g_signal_connect(G_OBJECT(dialog), "destroy",
+			   G_CALLBACK(gtk_widget_destroyed), &dialog);
+	  g_object_set(G_OBJECT(dialog), "type", GTK_WINDOW_POPUP, NULL);
 	  gtk_window_set_position(GTK_WINDOW(dialog), GTK_WIN_POS_CENTER);
 	  gtk_widget_show(dialog);
 	}
@@ -182,11 +181,7 @@ main(int argc, char **argv)
 {
   krb5_error_code status;
 
-  if (gnome_init("authwatch", "", argc, argv) != 0)
-    {
-      fprintf(stderr, "authwatch: could not inititalize GNOME library.\n");
-      exit(1);
-    }
+  gtk_init(&argc, &argv);
 
   status = krb5_init_context(&k5_context);
   if (status != 0)

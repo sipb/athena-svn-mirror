@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 2002-01-23 22:15:29 mwhitson Exp $
+# $Id: Makefile.in,v 1.2 2004-04-14 18:31:06 mwhitson Exp $
 
 SHELL=/bin/sh
 VPATH=@srcdir@
@@ -17,8 +17,8 @@ CPPFLAGS=@CPPFLAGS@
 CFLAGS=@CFLAGS@
 LDFLAGS=@LDFLAGS@
 LIBS=@KRB5_LIBS@ @LIBS@
-ALL_CFLAGS=`gnome-config --cflags gnomeui` ${CPPFLAGS} ${CFLAGS} ${DEFS}
-ALL_LIBS=`gnome-config --libs gnomeui` ${LIBS}
+ALL_CFLAGS=`pkg-config --cflags gtk+-2.0` ${CPPFLAGS} ${CFLAGS} ${DEFS}
+ALL_LIBS=`pkg-config --libs gtk+-2.0` ${LIBS}
 
 all: authwatch
 
