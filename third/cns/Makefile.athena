@@ -1,9 +1,11 @@
-# $Id: Makefile.athena,v 1.1 1996-10-12 22:05:40 ghudson Exp $
+# $Id: Makefile.athena,v 1.2 1996-10-13 04:28:57 ghudson Exp $
 
 SHELL=/bin/sh
 
-configure:
+configure: force
 	CC="$$COMPILER" ./configure --site=athena
+
+force:
 
 clean:
 	${MAKE} clean
@@ -14,4 +16,4 @@ all:
 check:
 
 install:
-	${MAKE} install install.man DESTDIR="$$SRVD"
+	${MAKE} install DESTDIR="$$SRVD"

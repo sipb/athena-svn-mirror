@@ -1,10 +1,12 @@
-# $Id: Makefile.athena,v 1.1 1996-10-12 22:05:48 ghudson Exp $
+# $Id: Makefile.athena,v 1.2 1996-10-13 04:28:40 ghudson Exp $
 
 SHELL=/bin/sh
 
-configure:
+configure: force
 	rm -f config.cache
 	./configure
+
+force:
 
 clean:
 	${MAKE} clean
