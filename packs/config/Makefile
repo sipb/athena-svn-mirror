@@ -1,11 +1,10 @@
-# $Id: Makefile,v 1.7 1997-03-31 06:30:06 ghudson Exp $
+# $Id: Makefile,v 1.8 1997-04-30 22:59:03 ghudson Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
 ATHRETCDIR=/etc/athena
 ATHLIBDIR=/usr/athena/lib
 ATHMANDIR=/usr/athena/man
-APPDEFS=${ATHLIBDIR}/X11/app-defaults
 CONFIG=/afs/athena.mit.edu/system/config
 
 all:
@@ -19,9 +18,7 @@ install:
 	-mkdir -p ${DESTDIR}${ATHRETCDIR}
 	-mkdir -p ${DESTDIR}${ATHLIBDIR}
 	-mkdir -p ${DESTDIR}${ATHMANDIR}
-	-mkdir -p ${DESTDIR}${APPDEFS}
 	install -c -m 0644 Dash.fallback ${DESTDIR}${ATHLIBDIR}
-	install -c -m 0644 Mwm.ad ${DESTDIR}${APPDEFS}/Mwm
 	install -c -m 0644 ftpusers ${DESTDIR}${ETCDIR}
 	install -c -m 0644 krb.conf ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 krb.realms ${DESTDIR}${ATHRETCDIR}
