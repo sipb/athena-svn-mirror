@@ -1,8 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.3 1988-06-10 15:55:29 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.4 1988-06-13 16:27:24 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 4.3  88/06/10  15:55:29  don
+ * fixed a bug in device-handling: update  was triggered by differences in
+ * st_dev, rather than st_rdev.
+ * 
  * Revision 4.2  88/05/27  20:15:21  don
  * fixed two bugs at once: the nopulflag bug, and -I wasn't preserving
  * mode-bits at all. see update().
@@ -56,7 +60,7 @@
 
 #ifndef lint
 static char
-*rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.3 1988-06-10 15:55:29 don Exp $";
+*rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/update.c,v 4.4 1988-06-13 16:27:24 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -298,7 +302,7 @@ struct currentness *r, *l;
 
 		oumask = umask(0); /* Symlinks don't really have modes */
 		if ( symlink( r->link, localname)) {
-			sprintf(errmsg, "can't create symbolic link %s -> %s\n",
+			sprintf(errmsg,"can't create symbolic link %s -> %s\n",
 				localname, r->link);
 			do_gripe();
 			umask(oumask);
@@ -317,6 +321,14 @@ struct currentness *r, *l;
 			: 0 );
 	case S_IFBLK:
 	case S_IFCHR:
+		/* need to recompute the device#-difference,
+		 * in case r or l has been recomputed since currency_diff()
+		 * first computed it.
+		 */
+		if ( ! exists || ! DIFF( *r, *l, st_rdev));
+		else if ( exists = removeit( localname, local_type))
+			return( -1);
+
 		if ( !exists && mknod( localname, remote_type,RDEV( r->sbuf))){
 			sprintf(errmsg, "can't make device %s\n", localname);
 			do_gripe();
@@ -542,6 +554,10 @@ struct currentness *r, *l, *d;
 		n = l->cksum;
 		m = r->cksum;
 		format =	"%s %s%s %s ( file-cksum=%4.x)\n"; }
+	else if   (  RDEV( *ds)) {
+		n =  RDEV( *ls);
+		m =  RDEV( *rs);
+		format =	"%s %s%s %s ( device-type=%d)\n"; }
 	else if   ( MODE( *ds)) {
 		n = MODE( *ls);
 		m = MODE( *rs);
@@ -554,10 +570,6 @@ struct currentness *r, *l, *d;
 		n =  GID( *ls);
 		m =  GID( *rs);
 		format =	"%s %s%s %s ( group-id=%d)\n"; }
-	else if   (  RDEV( *ds)) {
-		n =  RDEV( *ls);
-		m =  RDEV( *rs);
-		format =	"%s %s%s %s ( device-type=%d)\n"; }
 
 	fprintf( stderr, format, "Updating", ltype, lfill, lname, n);
 	fprintf( stderr, format, "    from", rtype, rfill, rname, m);
