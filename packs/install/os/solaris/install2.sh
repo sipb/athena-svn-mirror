@@ -8,7 +8,7 @@ umask 022
 # alert for changes.
 platform=`uname -m`
 
-CPUTYPE=`/sbin/machtype -c`; export HOSTTYPE
+CPUTYPE=`/sbin/machtype -c`; export CPUTYPE
 if [ "$CPUTYPE" = SPARC/4 ]; then
     echo "Setting monitor resolution..."
     /os/usr/platform/$platform/sbin/eeprom output-device=screen:r1152x900x94
