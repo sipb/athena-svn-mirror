@@ -15,6 +15,10 @@
  *    $Author: tom $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ * Revision 1.5  90/07/17  14:18:57  tom
+ * deleted unused variables
+ * stripped newline after machtype string
+ * 
  * Revision 1.4  90/05/26  13:39:52  tom
  * athena release 7.0e - fixed get-next
  * 
@@ -28,7 +32,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/mt_grp.c,v 1.5 1990-07-17 14:18:57 tom Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/mt_grp.c,v 2.0 1992-04-22 02:04:30 tom Exp $";
 #endif
 
 
@@ -47,6 +51,9 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
 #define MACH_DISPOPT "-d"
 #define MACH_DROPT   "-r"
 #define MACH_MOPT    "-M"
+#define MACH_VOPT    "-A"
+#define MACH_OSOPT   "-N"
+#define MACH_OSVOPT  "-E"
 
 /*
  * This will have to do for now
@@ -58,20 +65,24 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
 #define DPY_SIZE    16
 #define DATA_LEN    128
 
-char databuf[DATA_LEN];
+static char *machine_type = (char *) NULL;
+static char *version = (char *) NULL;
+static char *os = (char *) NULL;
+static char *osversion = (char *) NULL;
+static char displays[MAX_DISPLAY][DPY_SIZE];
+static char disks[MAX_DISKS][DISK_SIZE];
 
-char displays[MAX_DISPLAY][DPY_SIZE];
-char disks[MAX_DISKS][DISK_SIZE];
-
-char *type = (char *) NULL;
-int  ndisplays = -1;
-int  ndisks = -1;
-int  memory = -1;
+static int  ndisplays = -1;
+static int  ndisks = -1;
+static int  memory = -1;
 
 static void mt_machtype();
 static void mt_display();
 static void mt_disks();
 static void mt_memory();
+static void mt_version();
+static void mt_osversion();
+
 
 /* 
  * Function:    lu_machtype()
@@ -85,7 +96,6 @@ static void mt_memory();
  *              Information is retrieved from /bin/athena/machtype once
  *              and stored permenantly. Warning! You must restart snmpd if you 
  *              change machine types!
- *              Warning: This gets messy...
  * Returns:     BUILD_SUCCESS/BUILD_ERR
  */
 
@@ -111,26 +121,32 @@ lu_machtype(varnode, repl, instptr, reqflg)
 
   switch (varnode->offset) 
     {
-    case N_MACHTYPE:
-      if((varnode->flags & NULL_OBJINST) && (reqflg == NXT))
+    case N_MACHVERSION:
+      if((varnode->flags & NULL_OBJINST) && (reqflg & NXT))
 	return(BUILD_ERR);
 	
-      if(type == (char *) NULL)
+      if(!version)
+	mt_version();
+
+      bcopy ((char *)varnode->var_code, (char *) &repl->name, 
+	     sizeof(repl->name));
+      repl->name.ncmp++;			/* include the "0" instance */
+      return(make_str(&(repl->val), version));
+
+    case N_MACHTYPE:
+      if((varnode->flags & NULL_OBJINST) && (reqflg & NXT))
+	return(BUILD_ERR);
+	
+      if(!machine_type)
 	mt_machtype();
 
       bcopy ((char *)varnode->var_code, (char *) &repl->name, 
 	     sizeof(repl->name));
       repl->name.ncmp++;			/* include the "0" instance */
-      repl->val.type = STR;
-      repl->val.value.str.len = strlen(type);
-      repl->val.value.str.str = (char *) malloc(repl->val.value.str.len * 
-						sizeof(char));
-      strcpy(repl->val.value.str.str, type);
-      return(BUILD_SUCCESS);
-
+      return(make_str(&(repl->val), machine_type));
 
     case N_MACHNDISPLAY:
-      if((varnode->flags & NULL_OBJINST) && (reqflg == NXT))
+      if((varnode->flags & NULL_OBJINST) && (reqflg & NXT))
 	return(BUILD_ERR);
 
       if(ndisplays < 0)
@@ -145,7 +161,6 @@ lu_machtype(varnode, repl, instptr, reqflg)
       repl->val.value.intgr = ndisplays;
       return(BUILD_SUCCESS);
 
-
     case N_MACHDISPLAY:      
       if(ndisplays < 0)
 	mt_display();
@@ -157,13 +172,9 @@ lu_machtype(varnode, repl, instptr, reqflg)
       else 
 	num = instptr->cmp[0];
       
-      if((reqflg == NXT) && (instptr != (objident *) NULL) && 
+      if((reqflg & NXT) && (instptr != (objident *) NULL) && 
 	 (instptr->ncmp != 0))
 	num++;
-
-      /*
-       * you must increment the instance even if the instance is out of bounds
-       */
 
       if(num > ndisplays)
 	return(BUILD_ERR);
@@ -171,17 +182,11 @@ lu_machtype(varnode, repl, instptr, reqflg)
       bcopy ((char *)varnode->var_code, (char *) &repl->name, 
 	     sizeof(repl->name));
       repl->name.cmp[repl->name.ncmp] = num;
-      repl->name.ncmp++;			
-      repl->val.type = STR;
-      repl->val.value.str.len = strlen(displays[num-1]);
-      repl->val.value.str.str = (char *) malloc(repl->val.value.str.len * 
-						sizeof(char));
-      strcpy(repl->val.value.str.str, displays[num-1]);
-      return(BUILD_SUCCESS);
-
+      repl->name.ncmp++;	
+      return(make_str(&(repl->val), displays[num-1]));
 
     case N_MACHNDISK:
-      if((varnode->flags & NULL_OBJINST) && (reqflg == NXT))
+      if((varnode->flags & NULL_OBJINST) && (reqflg & NXT))
 	return(BUILD_ERR);
 
       if(ndisks < 0)
@@ -195,7 +200,6 @@ lu_machtype(varnode, repl, instptr, reqflg)
       repl->val.type = INT;
       repl->val.value.intgr = ndisks;
       return(BUILD_SUCCESS);
-
       
     case N_MACHDISK:
       if(ndisks < 0)
@@ -208,7 +212,7 @@ lu_machtype(varnode, repl, instptr, reqflg)
       else 
 	num = instptr->cmp[0];
       
-      if((reqflg == NXT) && (instptr != (objident *) NULL) && 
+      if((reqflg & NXT) && (instptr != (objident *) NULL) && 
 	 (instptr->ncmp != 0))
 	num++;
       
@@ -226,17 +230,10 @@ lu_machtype(varnode, repl, instptr, reqflg)
 	     sizeof(repl->name));
       repl->name.cmp[repl->name.ncmp] = num;
       repl->name.ncmp++;                    /* include the "0" instance */
-      repl->val.type = STR;
-      repl->val.value.str.len = strlen(disks[num-1]);
-      repl->val.value.str.str = (char *) malloc(repl->val.value.str.len  * 
-						sizeof(char));
-      strcpy(repl->val.value.str.str, disks[num-1]);
-      return(BUILD_SUCCESS);
+      return(make_str(&(repl->val), disks[num-1]));
 
-
-    case N_MACHMEMORY:
-      
-      if((varnode->flags & NULL_OBJINST) && (reqflg == NXT))
+    case N_MACHMEMORY:      
+      if((varnode->flags & NULL_OBJINST) && (reqflg & NXT))
 	return(BUILD_ERR);
       
       if(memory < 0)
@@ -248,11 +245,74 @@ lu_machtype(varnode, repl, instptr, reqflg)
       repl->val.type = INT;
       repl->val.value.intgr = memory;
       return(BUILD_SUCCESS);
+
+    case N_MACHOS:      
+      if((varnode->flags & NULL_OBJINST) && (reqflg & NXT))
+	return(BUILD_ERR);
+      
+      if(!os)
+	mt_osversion();
+
+      bcopy ((char *)varnode->var_code, (char *) &repl->name, 
+	     sizeof(repl->name));
+      repl->name.ncmp++;                    /* include the "0" instance */
+      return(make_str(&(repl->val), os));
+
+    case N_MACHOSVERSION:      
+      if((varnode->flags & NULL_OBJINST) && (reqflg & NXT))
+	return(BUILD_ERR);
+      
+      if(!osversion)
+	mt_osversion();
+
+      bcopy ((char *)varnode->var_code, (char *) &repl->name, 
+	     sizeof(repl->name));
+      repl->name.ncmp++;                    /* include the "0" instance */
+      return(make_str(&(repl->val), osversion));
+
+    case N_MACHOSVENDOR:      
+      if((varnode->flags & NULL_OBJINST) && (reqflg & NXT))
+	return(BUILD_ERR);
+      
+      if(!os)
+	mt_osversion();
+
+      bcopy ((char *)varnode->var_code, (char *) &repl->name, 
+	     sizeof(repl->name));
+      repl->name.ncmp++;                    /* include the "0" instance */
+
+      if(os)
+	{
+	  if(strcasecmp(os, "BSD") == 0)
+	    return(make_str(&(repl->val), "UCB"));
+	  if(strcasecmp(os, "ULTRIX") == 0)
+	    return(make_str(&(repl->val), "DEC"));
+	  if(strcasecmp(os, "AIX") == 0)
+	    return(make_str(&(repl->val), "IBM"));
+	  if(strcasecmp(os, "SUNOS") == 0)
+	    return(make_str(&(repl->val), "SUN"));
+	}
+      return(make_str(&(repl->val), "???"));
+      
     default:
       syslog (LOG_ERR, "lu_machtype: bad mt offset: %d", varnode->offset);
       return(BUILD_ERR);
-  }
+    }
 }
+
+
+
+char *
+get_machtype()
+{
+  if(*gw_version_id != '\0')
+    machine_type = gw_version_id;
+  else
+    if(machine_type == (char *) NULL)
+      mt_machtype();
+  return(machine_type);
+}
+
 
 
 
@@ -266,18 +326,76 @@ mt_machtype()
 {
   char *c;
 
-  bzero(databuf, sizeof(databuf));
-  call_program(MACH_PROGRAM, MACH_MACHOPT, databuf, sizeof(databuf)-1);
-  type = (char *) malloc((strlen(databuf) + 1) * sizeof(char));
-  if(type == (char *) NULL)
+  bzero(lbuf, sizeof(lbuf));
+  call_program(MACH_PROGRAM, MACH_MACHOPT, lbuf, sizeof(lbuf)-1);
+  if(*lbuf == '\0')
+    return;
+  if(!(machine_type = (char *) malloc((strlen(lbuf) + 1) * sizeof(char))))
     syslog(LOG_ERR, "mt_machtype: unable to allocate teensie string");
   else
-    strcpy(type, databuf);
-  if((c = rindex(type, '\n')) != (char *) NULL)
+    strcpy(machine_type, lbuf);
+  if(c = rindex(machine_type, '\n'))
     *c = '\0';
   return;
 }
 
+
+/* 
+ * Function:    mt_version()
+ * Description: call machtype and get version
+ */
+
+static void
+mt_version()
+{
+  char *c;
+
+  bzero(lbuf, sizeof(lbuf));
+  call_program(MACH_PROGRAM, MACH_VOPT, lbuf, sizeof(lbuf)-1);
+  if(!*lbuf)
+    return;
+  if(!(version = (char *) malloc((strlen(lbuf) + 1) * sizeof(char))))
+    syslog(LOG_ERR, "mt_version: unable to allocate teensie string");
+  else
+    strcpy(version, lbuf);
+  if(c = rindex(version, '\n'))
+    *c = '\0';
+  return;
+}
+
+
+/* 
+ * Function:    mt_osversion()
+ * Description: call machtype and get version
+ */
+
+static void
+mt_osversion()
+{
+  char *c;
+
+  bzero(lbuf, sizeof(lbuf));
+  call_program(MACH_PROGRAM, MACH_OSOPT, lbuf, sizeof(lbuf)-1);
+  if(!*lbuf)
+    return;
+  if(!(os = (char *) malloc((strlen(lbuf) + 1) * sizeof(char))))
+    syslog(LOG_ERR, "mt_version: unable to allocate teensie string");
+  else
+    strcpy(os, lbuf);
+  if(c = rindex(os, '\n'))
+    *c = '\0';
+
+  call_program(MACH_PROGRAM, MACH_OSVOPT, lbuf, sizeof(lbuf)-1);
+  if(!*lbuf)
+    return;
+  if(!(osversion = (char *) malloc((strlen(lbuf) + 1) * sizeof(char))))
+    syslog(LOG_ERR, "mt_version: unable to allocate teensie string");
+  else
+    strcpy(osversion, lbuf);
+  if(c = rindex(osversion, '\n'))
+    *c = '\0';
+  return;
+}
 
 
 /* 
@@ -291,12 +409,13 @@ mt_display()
   int mptr = 0;
   char *cptr;
 
-  bzero(databuf, sizeof(databuf));
+  bzero(lbuf, sizeof(lbuf));
+  bzero(displays, sizeof(displays));
   ndisplays = 0;
-  call_program(MACH_PROGRAM, MACH_DISPOPT, databuf, sizeof(databuf)-1);
-  if(*databuf == '\0')
+  call_program(MACH_PROGRAM, MACH_DISPOPT, lbuf, sizeof(lbuf)-1);
+  if(*lbuf == '\0')
     return;
-  for(cptr = &databuf[0]; *cptr != '\0'; cptr++)
+  for(cptr = &lbuf[0]; *cptr != '\0'; cptr++)
     if(*cptr == '\n')
       {
 	if(mptr != 0)
@@ -321,27 +440,31 @@ mt_display()
 static void
 mt_disks()
 {
-  int mptr = 0;
-  int copy = 0;
+  int  mptr = 0;
+  int  copy = 0;
   char *cptr;
 
-  bzero(databuf, sizeof(databuf));
-  call_program(MACH_PROGRAM, MACH_DROPT, databuf, sizeof(databuf));
-  if(*databuf == '\0')
+  bzero(lbuf, sizeof(lbuf));
+  bzero(disks, sizeof(disks));
+  call_program(MACH_PROGRAM, MACH_DROPT, lbuf, sizeof(lbuf));
+  if(*lbuf == '\0')
     return;
   ndisks = 0;
 
-  for(cptr = &databuf[0]; *cptr != '\0'; cptr++)
+  for(cptr = &lbuf[0]; *cptr != '\0'; cptr++)
     if(*cptr == '\n')
       {
-	disks[ndisks++][mptr] = '\0';
-	mptr = 0;
+	if(mptr > 0)
+	  {
+	    disks[ndisks++][mptr] = '\0';
+	    mptr = 0;
+	    if(ndisks == MAX_DISKS)
+	      break;
+	  }
 	copy = 0;
-	if(ndisks == MAX_DISKS)
-	  break;
       }
     else
-      if((mptr < DISK_SIZE) && copy)
+      if((mptr < DISK_SIZE) && copy && isprint(*cptr))
 	disks[ndisks][mptr++] = *cptr;
       else
 	if(!copy  && (*cptr == ':'))
@@ -361,12 +484,12 @@ static void
 mt_memory()
 {
 
-  bzero(databuf, sizeof(databuf));
-  call_program(MACH_PROGRAM,MACH_MOPT, databuf, sizeof(databuf) - 1);
-  if(strncmp(databuf, "0x", 2) == 0)
-    sscanf(&databuf[2], "%x", &memory);
+  bzero(lbuf, sizeof(lbuf));
+  call_program(MACH_PROGRAM,MACH_MOPT, lbuf, sizeof(lbuf) - 1);
+  if(strncmp(lbuf, "0x", 2) == 0)
+    sscanf(&lbuf[2], "%x", &memory);
   else
-    memory = atoi(databuf);
+    memory = atoi(lbuf);
 }
 
 #endif ATHENA
