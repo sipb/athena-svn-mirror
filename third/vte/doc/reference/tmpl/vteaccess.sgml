@@ -16,9 +16,10 @@ Accessibility peer of #VteTerminal.
 
 <!-- ##### STRUCT VteTerminalAccessible ##### -->
 <para>
-
+This should not be accessed directly.  Use the #AtkText interface instead.
 </para>
 
+@parent: 
 
 <!-- ##### FUNCTION vte_terminal_accessible_new ##### -->
 <para>

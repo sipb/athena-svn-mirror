@@ -16,12 +16,14 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: matcher.c,v 1.1.1.1 2003-01-29 21:57:37 ghudson Exp $"
+#ident "$Id: matcher.c,v 1.1.1.2 2004-09-27 21:01:06 ghudson Exp $"
 
+#include "../config.h"
 #include <sys/types.h>
 #include <stdio.h>
 #include <string.h>
 #include <glib-object.h>
+#include "debug.h"
 #include "matcher.h"
 #include "table.h"
 #include "trie.h"
@@ -126,121 +128,27 @@ _vte_matcher_print(struct _vte_matcher *matcher)
 	}
 }
 
-/* Determine sensible iconv target names for gunichar and iso-8859-1. */
-#define SAMPLE "ABCDEF"
-static char *
-_vte_matcher_find_valid_encoding(char **list, gssize length, gboolean wide)
+/* Free a parameter array.  Most of the GValue elements can clean up after
+ * themselves, but we're using gpointers to hold unicode character strings, and
+ * we need to free those ourselves. */
+void
+_vte_matcher_free_params_array(GValueArray *params)
 {
-	gunichar wbuffer[8];
-	unsigned char nbuffer[8];
-	void *buffer;
-	char inbuf[BUFSIZ];
-	char outbuf[BUFSIZ];
-	char *ibuf, *obuf;
-	gsize isize, osize;
-	int i;
-	gsize outbytes;
-	GIConv conv;
-
-	if (wide) {
-		buffer = wbuffer;
-	} else {
-		buffer = nbuffer;
-	}
-
-	for (i = 0; SAMPLE[i] != '\0'; i++) {
-		wbuffer[i] = nbuffer[i] = SAMPLE[i];
-	}
-	wbuffer[i] = nbuffer[i] = SAMPLE[i];
-
-	for (i = 0; i < length; i++) {
-		conv = g_iconv_open(list[i], "UTF-8");
-		if (conv == ((GIConv) -1)) {
-#ifdef VTE_DEBUG
-			if (_vte_debug_on(VTE_DEBUG_MISC)) {
-				fprintf(stderr, "Conversions to `%s' are not "
-					"supported by giconv.\n", list[i]);
-			}
-#endif
-			continue;
-		}
-
-		ibuf = (char*) &inbuf;
-		strcpy(inbuf, SAMPLE);
-		isize = 3;
-		obuf = (char*) &outbuf;
-		osize = sizeof(outbuf);
-
-		g_iconv(conv, &ibuf, &isize, &obuf, &osize);
-		g_iconv_close(conv);
-
-		outbytes = sizeof(outbuf) - osize;
-		if ((isize == 0) && (outbytes > 0)) {
-			if (memcmp(outbuf, buffer, outbytes) == 0) {
-#ifdef VTE_DEBUG
-				if (_vte_debug_on(VTE_DEBUG_MISC)) {
-					fprintf(stderr, "Found iconv target "
-						"`%s'.\n", list[i]);
+	guint i;
+	GValue *value;
+	gpointer ptr;
+	if (params != NULL) {
+		for (i = 0; i < params->n_values; i++) {
+			value = g_value_array_get_nth(params, i);
+			if (G_VALUE_HOLDS_POINTER(value)) {
+				ptr = g_value_get_pointer(value);
+				if (ptr != NULL) {
+					g_free(ptr);
 				}
-#endif
-				return g_strdup(list[i]);
+				g_value_set_pointer(value, NULL);
 			}
 		}
+		g_value_array_free(params);
 	}
-
-	return NULL;
-}
-
-const char *
-_vte_matcher_wide_encoding()
-{
-	char *wide[] = {
-		"10646",
-		"ISO_10646",
-		"ISO-10646",
-		"ISO10646",
-		"ISO-10646-1",
-		"ISO10646-1",
-		"ISO-10646/UCS4",
-		"UCS-4",
-		"UCS4",
-		"UCS-4-BE",
-		"UCS-4BE",
-		"UCS4-BE",
-		"UCS-4-INTERNAL",
-		"UCS-4-LE",
-		"UCS-4LE",
-		"UCS4-LE",
-		"UNICODE",
-		"UNICODE-BIG",
-		"UNICODEBIG",
-		"UNICODE-LITTLE",
-		"UNICODELITTLE",
-		"WCHAR_T",
-	};
-	static char *ret = NULL;
-	if (ret == NULL) {
-		ret = _vte_matcher_find_valid_encoding(wide,
-						       G_N_ELEMENTS(wide),
-						       TRUE);
-	}
-	return ret;
-}
-
-const char *
-_vte_matcher_narrow_encoding()
-{
-	char *narrow[] = {
-		"8859-1",
-		"ISO-8859-1",
-		"ISO8859-1",
-	};
-	static char *ret = NULL;
-	if (ret == NULL) {
-		ret = _vte_matcher_find_valid_encoding(narrow,
-						       G_N_ELEMENTS(narrow),
-						       FALSE);
-	}
-	return ret;
 }
 

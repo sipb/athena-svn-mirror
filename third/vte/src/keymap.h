@@ -21,11 +21,11 @@
 #ifndef vte_keymap_h_included
 #define vte_keymap_h_included
 
-#ident "$Id: keymap.h,v 1.1.1.1 2003-01-29 21:57:46 ghudson Exp $"
+#ident "$Id: keymap.h,v 1.1.1.2 2004-09-27 21:01:04 ghudson Exp $"
 
 #include <glib.h>
 #include <gdk/gdk.h>
-#include "termcap.h"
+#include "vtetc.h"
 
 G_BEGIN_DECLS
 

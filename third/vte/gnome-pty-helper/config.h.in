@@ -36,6 +36,9 @@
 /* Define to 1 if you have the `pt' library (-lpt). */
 #undef HAVE_LIBPT
 
+/* Define to 1 if you have the `util' library (-lutil). */
+#undef HAVE_LIBUTIL
+
 /* Define to 1 if you have the <libutil.h> header file. */
 #undef HAVE_LIBUTIL_H
 
@@ -191,3 +194,15 @@
 
 /* Version number of package */
 #undef VERSION
+
+/* Use all glibc features. */
+#undef _GNU_SOURCE
+
+/* Needed to get declarations for msg_control and msg_controllen on Solaris */
+#undef _XOPEN_SOURCE
+
+/* Needed to get declarations for msg_control and msg_controllen on Solaris */
+#undef _XOPEN_SOURCE_EXTENDED
+
+/* Needed to get declarations for msg_control and msg_controllen on Solaris */
+#undef __EXTENSIONS__

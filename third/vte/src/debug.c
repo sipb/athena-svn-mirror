@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2002 Red Hat, Inc.
+ * Copyright (C) 2002,2003 Red Hat, Inc.
  *
  * This is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Library General Public License as published by
@@ -16,9 +16,10 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: debug.c,v 1.1.1.1 2003-01-29 21:57:38 ghudson Exp $"
+#ident "$Id: debug.c,v 1.1.1.2 2004-09-27 21:01:18 ghudson Exp $"
 #include "../config.h"
 #include <glib.h>
+#include <stdio.h>
 #include "debug.h"
 
 static VteDebugFlags _vte_debug_flags = 0;
@@ -82,5 +83,8 @@ _vte_debug_parse_string(const char *string)
 gboolean
 _vte_debug_on(VteDebugFlags flags)
 {
+#ifdef VTE_DEBUG
+	fflush(NULL);
+#endif
 	return (_vte_debug_flags & flags) == flags;
 }

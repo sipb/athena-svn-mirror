@@ -1,5 +1,8 @@
-SUBDIRS = src gnome-pty-helper python termcaps po doc
-EXTRA_DIST = HACKING vte.spec vte.pc.in
+SUBDIRS = src python termcaps po doc
+EXTRA_DIST = HACKING vte.spec vte.pc.in vte-uninstalled.pc.in MESSAGE-OF-DOOM
+if BUILD_GNOME_PTY_HELPER
+SUBDIRS += gnome-pty-helper
+endif
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = vte.pc
@@ -11,6 +14,9 @@ forcetag:
 
 reallytag:
 	cvs tag -cR $(CVSTAG) .
+
+up:
+	cvs up -dP
 
 tag:
 	$(top_srcdir)/autogen.sh

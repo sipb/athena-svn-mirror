@@ -16,10 +16,10 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: utf8mode.c,v 1.1.1.1 2003-01-29 21:56:59 ghudson Exp $"
+#ident "$Id: utf8mode.c,v 1.1.1.2 2004-09-27 21:01:12 ghudson Exp $"
 #include "../config.h"
 #include <stdio.h>
-#define ESC ""
+#define ESC "\033"
 
 int
 main(int argc, char **argv)

@@ -21,9 +21,11 @@
 #ifndef vte_matcher_h_included
 #define vte_matcher_h_included
 
-#ident "$Id: matcher.h,v 1.1.1.1 2003-01-29 21:57:37 ghudson Exp $"
+#ident "$Id: matcher.h,v 1.1.1.2 2004-09-27 21:01:06 ghudson Exp $"
 
 #include <glib-object.h>
+
+G_BEGIN_DECLS
 
 struct _vte_matcher;
 
@@ -47,10 +49,9 @@ const char *_vte_matcher_match(struct _vte_matcher *matcher,
 /* Dump out the contents of a matcher, mainly for debugging. */
 void _vte_matcher_print(struct _vte_matcher *matcher);
 
-/* A gunichar-compatible giconv target, if one can be found. */
-const char *_vte_matcher_wide_encoding(void);
+/* Free a parameter array. */
+void _vte_matcher_free_params_array(GValueArray *params);
 
-/* A single-byte iso-8859-1 giconv target, if one can be found. */
-const char *_vte_matcher_narrow_encoding(void);
+G_END_DECLS
 
 #endif

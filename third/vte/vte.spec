@@ -1,12 +1,12 @@
 Name: vte
-Version: 0.10.27
+Version: 0.11.11
 Release: 1
 Summary: An experimental terminal emulator.
 License: LGPL
 Group: User Interface/X
 BuildRoot: %{_tmppath}/%{name}-root
 Source: %{name}-%{version}.tar.gz
-BuildPrereq: gtk2-devel, pygtk2-devel, python-devel
+BuildPrereq: gtk-doc, gtk2-devel, pygtk2-devel, python-devel
 Requires: bitmap-fonts
 
 %description
@@ -28,7 +28,7 @@ package contains the files needed for building applications using VTE.
 if [ -x %{_bindir}/python2.2 ]; then
 	PYTHON=%{_bindir}/python2.2; export PYTHON
 fi
-%configure --enable-shared --enable-static --libexecdir=%{_libdir}/%{name}
+%configure --enable-shared --enable-static --libexecdir=%{_libdir}/%{name} --without-glX --with-default-emulation=xterm
 make
 
 %clean
@@ -59,8 +59,9 @@ fi
 rm -f $RPM_BUILD_ROOT/%{_libdir}/python*/site-packages/*.la
 rm -f $RPM_BUILD_ROOT/%{_libdir}/python*/site-packages/*.a
 
-# Generate ldconfig symlinks.
-/sbin/ldconfig -n $RPM_BUILD_ROOT/%{_libdir}
+for png in home left right up ; do
+cp %{_datadir}/gtk-doc/data/${png}.png $RPM_BUILD_ROOT/%{_datadir}/gtk-doc/html/vte/
+done
 
 %find_lang %{name}
 
@@ -70,7 +71,7 @@ rm -f $RPM_BUILD_ROOT/%{_libdir}/python*/site-packages/*.a
 
 %files -f %{name}.lang
 %defattr(-,root,root)
-%doc ChangeLog COPYING HACKING NEWS README doc/utmpwtmp.txt doc/boxes.txt
+%doc ChangeLog COPYING HACKING NEWS README doc/utmpwtmp.txt doc/boxes.txt src/iso2022.txt doc/openi18n/UTF-8.txt doc/openi18n/wrap.txt
 %{_libdir}/*.so.*
 %dir %{_libdir}/%{name}
 %attr(2711,root,utmp) %{_libdir}/%{name}/gnome-pty-helper
@@ -90,21 +91,69 @@ rm -f $RPM_BUILD_ROOT/%{_libdir}/python*/site-packages/*.a
 %{_libdir}/%{name}/slowcat
 %{_libdir}/%{name}/utf8echo
 %{_libdir}/%{name}/utf8mode
+%{_libdir}/%{name}/vterdb
 %{_libdir}/%{name}/window
 %{_libdir}/*.a
 %{_libdir}/*.so
 %{_libdir}/pkgconfig/*
 
 %changelog
-* Mon Apr 28 2003 Nalin Dahyabhai <nalin@redhat.com> 0.10.27-1
-- use KS X 1001 instead of KS C 5601 for Korean display
-- adjust selection so that triple-click hopefully works better
-- fix meta-sends-escape for the return key
+* Fri Apr 30 2004 Nalin Dahyabhai <nalin@redhat.com> 0.11.11-1
+- update to 0.11.11
 
-* Tue Mar  4 2003 Nalin Dahyabhai <nalin@redhat.com> 0.10.26-1
-- calculate widths properly for monospaced fonts which include double-wide
-  characters
-- line autowrap properly when a scrolling region is set
+* Mon Jun 16 2003 Nalin Dahyabhai <nalin@redhat.com> 0.11.10-2
+- rebuild
+
+* Mon Jun 16 2003 Nalin Dahyabhai <nalin@redhat.com> 0.11.10-1
+- fix vte_terminal_set_encoding() so that the Terminal/Character Coding
+  menu works in gnome-terminal again
+- fix display of the character under the cursor in cases where it's too wide
+
+* Wed Jun 04 2003 Elliot Lee <sopwith@redhat.com>
+- rebuilt
+
+* Mon Jun  2 2003 Nalin Dahyabhai <nalin@redhat.com> 0.11.9-2
+- rebuild
+
+* Mon Jun  2 2003 Nalin Dahyabhai <nalin@redhat.com> 0.11.9-1
+- fix saving/restoring the cursor with DECSET/DECRST
+- revert behavior wrt ambiguously-wide characters to be more like 0.10.x
+
+* Thu May 22 2003 Nalin Dahyabhai <nalin@redhat.com> 0.11.8-1
+- close some memory leaks
+- fix conversions of NUL bytes (Ctrl-Space)
+
+* Tue May 20 2003 Nalin Dahyabhai <nalin@redhat.com> 0.11.7-1
+- make handling of 8-bit SS2 and SS3 coexist properly with UTF-8 and other
+  encodings where valid text can't be mistaken for the control codes
+- fix keypad page down in application keypad mode
+- fix reference loop which prevented proper finalizing of the widget
+
+* Tue May  6 2003 Nalin Dahyabhai <nalin@redhat.com> 0.11.6-1
+- handle 8-bit SS2 and SS3
+- share backgrounds between terminal instances
+
+* Wed Apr 30 2003 Nalin Dahyabhai <nalin@redhat.com> 0.11.5-1
+- pick up font settings from xrdb if GTK+ doesn't know anything
+- support CP437 as a national replacement charset
+
+* Thu Apr 24 2003 Nalin Dahyabhai <nalin@redhat.com> 0.11.4-1
+- update transparent background faster when moving windows
+- fix bold
+- add an AtkComponent interface for accessibility
+
+* Thu Apr 17 2003 Nalin Dahyabhai <nalin@redhat.com> 0.11.3-1
+- rework support for national replacement charsets and iso2022
+
+* Thu Apr 17 2003 Nalin Dahyabhai <nalin@redhat.com> 0.11.2-1
+- selection tweaks and an openi18n fix
+
+* Mon Apr 14 2003 Nalin Dahyabhai <nalin@redhat.com> 0.11.1-1
+- drawing cleanups
+
+* Wed Apr  9 2003 Nalin Dahyabhai <nalin@redhat.com>
+- rework drawing with Xft2 to use font sets
+- implement drawing with freetype using font sets
 
 * Mon Feb 24 2003 Nalin Dahyabhai <nalin@redhat.com> 0.10.25-1
 - incorporate fix for issues noted by H D Moore (CAN-2003-0070)
@@ -163,6 +212,9 @@ rm -f $RPM_BUILD_ROOT/%{_libdir}/python*/site-packages/*.a
 
 * Fri Jan 31 2003 Nalin Dahyabhai <nalin@redhat.com> 0.10.16-1
 - fix "selection always extends by default" bug
+
+* Thu Jan 30 2003 Nalin Dahyabhai <nalin@redhat.com> 0.11.0-1
+- fork stable branch
 
 * Wed Jan 22 2003 Nalin Dahyabhai <nalin@redhat.com> 0.10.15-1
 - make mouse modes mutually-exclusive

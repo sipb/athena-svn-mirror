@@ -16,11 +16,14 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: pty.c,v 1.1.1.1 2003-01-29 21:57:39 ghudson Exp $"
+#ident "$Id: pty.c,v 1.1.1.2 2004-09-27 21:01:37 ghudson Exp $"
 #include "../config.h"
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
+#ifdef HAVE_SYS_TERMIOS_H
+#include <sys/termios.h>
+#endif
 #include <sys/uio.h>
 #include <sys/wait.h>
 #include <errno.h>
@@ -30,15 +33,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef HAVE_TERMIOS_H
+#include <termios.h>
+#endif
 #include <unistd.h>
 #ifdef HAVE_SYS_UN_H
 #include <sys/un.h>
 #endif
 #ifdef HAVE_STROPTS_H
 #include <stropts.h>
-#endif
-#ifdef HAVE_TERMIOS_H
-#include <termios.h>
 #endif
 #include <glib.h>
 #include "debug.h"
@@ -201,8 +204,74 @@ _vte_pty_pipe_open_bi(int *a, int *b, int *c, int *d)
 	return ret;
 }
 
-/* Run the given command, using the given descriptor as the controlling
- * terminal. */
+/* Like read, but hide EINTR and EAGAIN. */
+static ssize_t
+n_read(int fd, void *buffer, size_t count)
+{
+	size_t n = 0;
+	char *buf = buffer;
+	int i;
+	while (n < count) {
+		i = read(fd, buf + n, count - n);
+		switch (i) {
+		case 0:
+			return n;
+			break;
+		case -1:
+			switch (errno) {
+			case EINTR:
+			case EAGAIN:
+#ifdef ERESTART
+			case ERESTART:
+#endif
+				break;
+			default:
+				return -1;
+			}
+			break;
+		default:
+			n += i;
+			break;
+		}
+	}
+	return n;
+}
+
+/* Like write, but hide EINTR and EAGAIN. */
+static ssize_t
+n_write(int fd, const void *buffer, size_t count)
+{
+	size_t n = 0;
+	const char *buf = buffer;
+	int i;
+	while (n < count) {
+		i = write(fd, buf + n, count - n);
+		switch (i) {
+		case 0:
+			return n;
+			break;
+		case -1:
+			switch (errno) {
+			case EINTR:
+			case EAGAIN:
+#ifdef ERESTART
+			case ERESTART:
+#endif
+				break;
+			default:
+				return -1;
+			}
+			break;
+		default:
+			n += i;
+			break;
+		}
+	}
+	return n;
+}
+
+/* Run the given command (if specified), using the given descriptor as the
+ * controlling terminal. */
 static int
 _vte_pty_run_on_pty(int fd, int ready_reader, int ready_writer,
 		    char **env_add, const char *command, char **argv,
@@ -211,6 +280,7 @@ _vte_pty_run_on_pty(int fd, int ready_reader, int ready_writer,
 	int i;
 	char c;
 	char **args, *arg;
+
 	if (fd != STDIN_FILENO) {
 		dup2(fd, STDIN_FILENO);
 	}
@@ -230,19 +300,25 @@ _vte_pty_run_on_pty(int fd, int ready_reader, int ready_writer,
 	}
 
 #ifdef HAVE_STROPTS_H
-	if (!ioctl (fd, I_FIND, "ptem") && ioctl (fd, I_PUSH, "ptem") == -1) {
+	if ((ioctl(fd, I_FIND, "ptem") == 0) &&
+	    (ioctl(fd, I_PUSH, "ptem") == -1)) {
 		close (fd);
+		_exit (0);
 		return -1;
 	}
 
-	if (!ioctl (fd, I_FIND, "ldterm") && ioctl (fd, I_PUSH, "ldterm") == -1) {
+	if ((ioctl(fd, I_FIND, "ldterm") == 0) &&
+	    (ioctl(fd, I_PUSH, "ldterm") == -1)) {
 		close (fd);
+		_exit (0);
 		return -1;
 	}
 
-	if (!ioctl (fd, I_FIND, "ttcompat") && ioctl (fd, I_PUSH, "ttcompat") == -1) {
+	if ((ioctl(fd, I_FIND, "ttcompat") == 0) &&
+	    (ioctl(fd, I_PUSH, "ttcompat") == -1)) {
 		perror ("ioctl (fd, I_PUSH, \"ttcompat\")");
 		close (fd);
+		_exit (0);
 		return -1;
 	}
 #endif /* HAVE_STROPTS_H */
@@ -283,9 +359,9 @@ _vte_pty_run_on_pty(int fd, int ready_reader, int ready_writer,
 		fprintf(stderr, "Child sending child-ready.\n");
 	}
 #endif
-	write(ready_writer, &c, 1);
+	n_write(ready_writer, &c, 1);
 	fsync(ready_writer);
-	read(ready_reader, &c, 1);
+	n_read(ready_reader, &c, 1);
 #ifdef VTE_DEBUG
 	if (_vte_debug_on(VTE_DEBUG_PTY)) {
 		fprintf(stderr, "Child received parent-ready.\n");
@@ -296,22 +372,26 @@ _vte_pty_run_on_pty(int fd, int ready_reader, int ready_writer,
 		close(ready_reader);
 	}
 
-	/* Outta here. */
-	if (argv != NULL) {
-		for (i = 0; (argv[i] != NULL); i++) ;
-		args = g_malloc0(sizeof(char*) * (i + 1));
-		for (i = 0; (argv[i] != NULL); i++) {
-			args[i] = g_strdup(argv[i]);
+	/* If the caller provided a command, we can't go back, ever. */
+	if (command != NULL) {
+		/* Outta here. */
+		if (argv != NULL) {
+			for (i = 0; (argv[i] != NULL); i++) ;
+			args = g_malloc0(sizeof(char*) * (i + 1));
+			for (i = 0; (argv[i] != NULL); i++) {
+				args[i] = g_strdup(argv[i]);
+			}
+			execvp(command, args);
+		} else {
+			arg = g_strdup(command);
+			execlp(command, arg, NULL);
 		}
-		execvp(command, args);
-	} else {
-		arg = g_strdup(command);
-		execlp(command, arg, NULL);
+
+		/* Avoid calling any atexit() code. */
+		_exit(0);
+		g_assert_not_reached();
 	}
 
-	/* Avoid calling any atexit() code. */
-	_exit(0);
-	g_assert_not_reached();
 	return 0;
 }
 
@@ -338,12 +418,45 @@ _vte_pty_fork_on_pty_name(const char *path, int parent_fd, char **env_add,
 
 	/* Start up a child. */
 	pid = fork();
-	if (pid == -1) {
+	switch (pid) {
+	case -1:
 		/* Error fork()ing.  Bail. */
 		*child = -1;
 		return -1;
-	}
-	if (pid != 0) {
+		break;
+	case 0:
+		/* Child. Close the parent's ends of the pipes. */
+		close(ready_a[0]);
+		close(ready_b[1]);
+
+		/* Start a new session and become process-group leader. */
+		setsid();
+		setpgid(0, 0);
+
+		/* Close most descriptors. */
+		for (i = 0; i < sysconf(_SC_OPEN_MAX); i++) {
+			if ((i != ready_b[0]) && (i != ready_a[1])) {
+				close(i);
+			}
+		}
+
+		/* Open the slave PTY, acquiring it as the controlling terminal
+		 * for this process and its children. */
+		fd = open(path, O_RDWR);
+		if (fd == -1) {
+			return -1;
+		}
+#ifdef TIOCSCTTY
+		/* TIOCSCTTY is defined?  Let's try that, too. */
+		ioctl(fd, TIOCSCTTY, fd);
+#endif
+		/* Store 0 as the "child"'s ID to indicate to the caller that
+		 * it is now the child. */
+		*child = 0;
+		return _vte_pty_run_on_pty(fd, ready_b[0], ready_a[1],
+					   env_add, command, argv, directory);
+		break;
+	default:
 		/* Parent.  Close the child's ends of the pipes, do the ready
 		 * handshake, and return the child's PID. */
 		close(ready_b[0]);
@@ -358,7 +471,7 @@ _vte_pty_fork_on_pty_name(const char *path, int parent_fd, char **env_add,
 			fprintf(stderr, "Parent ready, waiting for child.\n");
 		}
 #endif
-		read(ready_a[0], &c, 1);
+		n_read(ready_a[0], &c, 1);
 #ifdef VTE_DEBUG
 		if (_vte_debug_on(VTE_DEBUG_PTY)) {
 			fprintf(stderr, "Parent received child-ready.\n");
@@ -370,41 +483,16 @@ _vte_pty_fork_on_pty_name(const char *path, int parent_fd, char **env_add,
 			fprintf(stderr, "Parent sending parent-ready.\n");
 		}
 #endif
-		write(ready_b[1], &c, 1);
+		n_write(ready_b[1], &c, 1);
 		close(ready_a[0]);
 		close(ready_b[1]);
 
 		*child = pid;
 		return 0;
+		break;
 	}
-
-	/* Child.  Close the parent's ends of the pipes. */
-	close(ready_a[0]);
-	close(ready_b[1]);
-
-	/* Start a new session and become process-group leader. */
-	setsid();
-	setpgid(0, 0);
-
-	/* Close all descriptors. */
-	for (i = 0; i < sysconf(_SC_OPEN_MAX); i++) {
-		if ((i != ready_b[0]) && (i != ready_a[1])) {
-			close(i);
-		}
-	}
-
-	/* Open the slave PTY, acquiring it as the controlling terminal for
-	 * this process and its children. */
-	fd = open(path, O_RDWR);
-	if (fd == -1) {
-		return -1;
-	}
-#ifdef TIOCSCTTY
-	/* TIOCSCTTY is defined?  Let's try that, too. */
-	ioctl(fd, TIOCSCTTY, fd);
-#endif
-	return _vte_pty_run_on_pty(fd, ready_b[0], ready_a[1],
-				   env_add, command, argv, directory);
+	g_assert_not_reached();
+	return -1;
 }
 
 /* Fork off a child (storing its PID in child), and exec the named command
@@ -431,12 +519,55 @@ _vte_pty_fork_on_pty_fd(int fd, char **env_add,
 
 	/* Start up a child. */
 	pid = fork();
-	if (pid == -1) {
+	switch (pid) {
+	case -1:
 		/* Error fork()ing.  Bail. */
 		*child = -1;
 		return -1;
-	}
-	if (pid != 0) {
+		break;
+	case 0:
+		/* Child.  CLose the parent's ends of the pipes. */
+		close(ready_a[0]);
+		close(ready_b[1]);
+
+		/* Save the name of the pty -- we'll need it later to acquire
+		 * it as our controlling terminal. */
+		tty = ttyname(fd);
+
+		/* Start a new session and become process-group leader. */
+		setsid();
+		setpgid(0, 0);
+
+		/* Close all other descriptors. */
+		for (i = 0; i < sysconf(_SC_OPEN_MAX); i++) {
+			if ((i != fd) &&
+			    (i != ready_b[0]) &&
+			    (i != ready_a[1])) {
+				close(i);
+			}
+		}
+
+		/* Try to reopen the pty to acquire it as our controlling
+		 * terminal. */
+		if (tty != NULL) {
+			i = open(tty, O_RDWR);
+			if (i != -1) {
+				close(fd);
+				fd = i;
+			}
+	#ifdef TIOCSCTTY
+			/* TIOCSCTTY is defined?  Let's try that, too. */
+			ioctl(fd, TIOCSCTTY, fd);
+	#endif
+		}
+
+		/* Store 0 as the "child"'s ID to indicate to the caller that
+		 * it is now the child. */
+		*child = 0;
+		return _vte_pty_run_on_pty(fd, ready_b[0], ready_a[1],
+					   env_add, command, argv, directory);
+		break;
+	default:
 		/* Parent.  Close the child's ends of the pipes, do the ready
 		 * handshake, and return the child's PID. */
 		close(ready_b[0]);
@@ -451,7 +582,7 @@ _vte_pty_fork_on_pty_fd(int fd, char **env_add,
 			fprintf(stderr, "Parent ready.\n");
 		}
 #endif
-		read(ready_a[0], &c, 1);
+		n_read(ready_a[0], &c, 1);
 #ifdef VTE_DEBUG
 		if (_vte_debug_on(VTE_DEBUG_PTY)) {
 			fprintf(stderr, "Parent received child-ready.\n");
@@ -463,48 +594,15 @@ _vte_pty_fork_on_pty_fd(int fd, char **env_add,
 			fprintf(stderr, "Parent sending parent-ready.\n");
 		}
 #endif
-		write(ready_b[1], &c, 1);
+		n_write(ready_b[1], &c, 1);
 		close(ready_a[0]);
 		close(ready_b[1]);
 
 		*child = pid;
 		return 0;
 	}
-
-	/* Child.  CLose the parent's ends of the pipes. */
-	close(ready_a[0]);
-	close(ready_b[1]);
-
-	/* Save the name of the pty -- we'll need it later to acquire it as
-	 * our controlling terminal. */
-	tty = ttyname(fd);
-
-	/* Start a new session and become process-group leader. */
-	setsid();
-	setpgid(0, 0);
-
-	/* Close all other descriptors. */
-	for (i = 0; i < sysconf(_SC_OPEN_MAX); i++) {
-		if ((i != fd) && (i != ready_b[0]) && (i != ready_a[1])) {
-			close(i);
-		}
-	}
-
-	/* Try to reopen the pty to acquire it as our controlling terminal. */
-	if (tty != NULL) {
-		i = open(tty, O_RDWR);
-		if (i != -1) {
-			close(fd);
-			fd = i;
-		}
-#ifdef TIOCSCTTY
-		/* TIOCSCTTY is defined?  Let's try that, too. */
-		ioctl(fd, TIOCSCTTY, fd);
-#endif
-	}
-
-	return _vte_pty_run_on_pty(fd, ready_b[0], ready_a[1],
-				   env_add, command, argv, directory);
+	g_assert_not_reached();
+	return -1;
 }
 
 /**
@@ -589,16 +687,29 @@ static char *
 _vte_pty_ptsname(int master)
 {
 #if defined(HAVE_PTSNAME_R)
-	char buf[PATH_MAX];
-	memset(buf, 0, sizeof(buf));
-	if (ptsname_r(master, buf, sizeof(buf) - 1) == 0) {
+	gsize len = 1024;
+	char *buf = NULL;
+	int i;
+	do {
+		buf = g_malloc0(len);
+		i = ptsname_r(master, buf, len - 1);
+		switch (i) {
+		case 0:
+			/* Return the allocated buffer with the name in it. */
 #ifdef VTE_DEBUG
-		if (_vte_debug_on(VTE_DEBUG_PTY)) {
-			fprintf(stderr, "PTY slave is `%s'.\n", buf);
-		}
+			if (_vte_debug_on(VTE_DEBUG_PTY)) {
+				fprintf(stderr, "PTY slave is `%s'.\n", buf);
+			}
 #endif
-		return g_strdup(buf);
-	}
+			return buf;
+			break;
+		default:
+			g_free(buf);
+			buf = NULL;
+			break;
+		}
+		len *= 2;
+	} while ((i != 0) && (errno == ERANGE));
 #elif defined(HAVE_PTSNAME)
 	char *p;
 	if ((p = ptsname(master)) != NULL) {
@@ -633,6 +744,9 @@ _vte_pty_getpt(void)
 #else
 	/* Try to allocate a pty by accessing the pty master multiplex. */
 	fd = open("/dev/ptmx", O_RDWR | O_NOCTTY);
+	if ((fd == -1) && (errno == ENOENT)) {
+		fd = open("/dev/ptc", O_RDWR | O_NOCTTY); /* AIX */
+	}
 #endif
 	/* Set it to blocking. */
 	flags = fcntl(fd, F_GETFL);
@@ -706,7 +820,7 @@ _vte_pty_open_unix98(pid_t *child, char **env_add,
 	return fd;
 }
 
-#ifdef HAVE_SENDMSG
+#ifdef HAVE_RECVMSG
 static void
 _vte_pty_read_ptypair(int tunnel, int *parentfd, int *childfd)
 {
@@ -798,7 +912,7 @@ _vte_pty_start_helper(void)
 		 * going to work (assuming we can open a pty using some other
 		 * method). */
 		g_warning(_("can not run %s"), LIBEXECDIR "/gnome-pty-helper");
-	 	return FALSE;
+		return FALSE;
 	}
 	/* Create a communication link for use with the helper. */
 	tmp[0] = open("/dev/null", O_RDONLY);
@@ -862,23 +976,43 @@ _vte_pty_open_with_helper(pid_t *child, char **env_add,
 	if (_vte_pty_helper_started) {
 		ops = op;
 		/* Send our request. */
-		if (write(_vte_pty_helper_tunnel,
-			  &ops, sizeof(ops)) != sizeof(ops)) {
+		if (n_write(_vte_pty_helper_tunnel,
+			    &ops, sizeof(ops)) != sizeof(ops)) {
 			return -1;
 		}
+#ifdef VTE_DEBUG
+		if (_vte_debug_on(VTE_DEBUG_PTY)) {
+			fprintf(stderr, "Sent request to helper.\n");
+		}
+#endif
 		/* Read back the response. */
-		if (read(_vte_pty_helper_tunnel,
-			 &ret, sizeof(ret)) != sizeof(ret)) {
+		if (n_read(_vte_pty_helper_tunnel,
+			   &ret, sizeof(ret)) != sizeof(ret)) {
 			return -1;
 		}
+#ifdef VTE_DEBUG
+		if (_vte_debug_on(VTE_DEBUG_PTY)) {
+			fprintf(stderr, "Received response from helper.\n");
+		}
+#endif
 		if (ret == 0) {
 			return -1;
 		}
+#ifdef VTE_DEBUG
+		if (_vte_debug_on(VTE_DEBUG_PTY)) {
+			fprintf(stderr, "Helper returns success.\n");
+		}
+#endif
 		/* Read back a tag. */
-		if (read(_vte_pty_helper_tunnel,
-			 &tag, sizeof(tag)) != sizeof(tag)) {
+		if (n_read(_vte_pty_helper_tunnel,
+			   &tag, sizeof(tag)) != sizeof(tag)) {
 			return -1;
 		}
+#ifdef VTE_DEBUG
+		if (_vte_debug_on(VTE_DEBUG_PTY)) {
+			fprintf(stderr, "Tag = %p.\n", tag);
+		}
+#endif
 		/* Receive the master and slave ptys. */
 		_vte_pty_read_ptypair(_vte_pty_helper_tunnel,
 				      &parentfd, &childfd);
@@ -888,10 +1022,8 @@ _vte_pty_open_with_helper(pid_t *child, char **env_add,
 			close(childfd);
 			return -1;
 		}
-
 #ifdef VTE_DEBUG
-		if (_vte_debug_on(VTE_DEBUG_MISC) ||
-		    _vte_debug_on(VTE_DEBUG_PTY)) {
+		if (_vte_debug_on(VTE_DEBUG_PTY)) {
 			fprintf(stderr, "Got master pty %d and slave pty %d.\n",
 				parentfd, childfd);
 		}
@@ -986,6 +1118,36 @@ _vte_pty_open(pid_t *child, char **env_add,
 }
 
 /**
+ * _vte_pty_set_utf8:
+ * @pty: The pty master descriptor.
+ * @utf8: Whether or not the pty is in UTF-8 mode.
+ *
+ * Tells the kernel whether the terminal is UTF-8 or not, in case it can make
+ * use of the info.  Linux 2.6.5 or so defines IUTF8 to make the line
+ * discipline do multibyte backspace correctly.
+ */
+void
+_vte_pty_set_utf8(int pty, gboolean utf8)
+{
+#ifdef IUTF8
+	struct termios tio;
+	tcflag_t saved_cflag;
+	if (pty != -1) {
+		if (tcgetattr(pty, &tio) != -1) {
+			saved_cflag = tio.c_iflag;
+			tio.c_iflag &= ~IUTF8;
+			if (utf8) {
+				tio.c_iflag |= IUTF8;
+			}
+			if (saved_cflag != tio.c_iflag) {
+				tcsetattr(pty, TCSANOW, &tio);
+			}
+		}
+	}
+#endif
+}
+
+/**
  * _vte_pty_close:
  * @pty: the pty master descriptor.
  *
@@ -1005,12 +1167,12 @@ _vte_pty_close(int pty)
 			ops = GNOME_PTY_CLOSE_PTY;
 			tag = g_tree_lookup(_vte_pty_helper_map,
 					    GINT_TO_POINTER(pty));
-			if (write(_vte_pty_helper_tunnel,
-				  &ops, sizeof(ops)) != sizeof(ops)) {
+			if (n_write(_vte_pty_helper_tunnel,
+				    &ops, sizeof(ops)) != sizeof(ops)) {
 				return;
 			}
-			if (write(_vte_pty_helper_tunnel,
-				  &tag, sizeof(tag)) != sizeof(tag)) {
+			if (n_write(_vte_pty_helper_tunnel,
+				    &tag, sizeof(tag)) != sizeof(tag)) {
 				return;
 			}
 			/* Remove the item from the map. */
@@ -1034,27 +1196,51 @@ sigchld_handler(int signum)
 int
 main(int argc, char **argv)
 {
-	pid_t child;
+	pid_t child = 0;
 	char c;
 	int ret;
 	signal(SIGCHLD, sigchld_handler);
 	_vte_debug_parse_string(getenv("VTE_DEBUG_FLAGS"));
 	fd = _vte_pty_open(&child, NULL,
-			   (argc > 1) ? argv[1] : "/usr/bin/tty",
+			   (argc > 1) ? argv[1] : NULL,
 			   (argc > 1) ? argv + 1 : NULL,
 			   NULL,
 			   0, 0,
-			   FALSE, FALSE, FALSE);
+			   TRUE, TRUE, TRUE);
+	if (child == 0) {
+		int i;
+		for (i = 0; ; i++) {
+			switch (i % 3) {
+			case 0:
+			case 1:
+				fprintf(stdout, "%d\n", i);
+				break;
+			case 2:
+				fprintf(stderr, "%d\n", i);
+				break;
+			default:
+				g_assert_not_reached();
+				break;
+			}
+			sleep(1);
+		}
+	}
 	g_print("Child pid is %d.\n", (int)child);
 	do {
-		ret = read(fd, &c, 1);
+		ret = n_read(fd, &c, 1);
 		if (ret == 0) {
 			break;
 		}
 		if ((ret == -1) && (errno != EAGAIN) && (errno != EINTR)) {
 			break;
 		}
-		write(STDOUT_FILENO, &c, 1);
+		if (argc < 2) {
+			n_write(STDOUT_FILENO, "[", 1);
+		}
+		n_write(STDOUT_FILENO, &c, 1);
+		if (argc < 2) {
+			n_write(STDOUT_FILENO, "]", 1);
+		}
 	} while (TRUE);
 	return 0;
 }

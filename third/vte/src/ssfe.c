@@ -19,39 +19,44 @@
 */
 
 #include "../config.h"
+
+#include <stdarg.h>
+
+#ifdef HAVE_NCURSES
+#include <ncurses.h>
+#include <term.h>
+#define HAVE_CURSES
+#else
+#ifdef HAVE_CURSES
+#include <curses.h>
+#include <term.h>
+#else
+#ifdef HAVE_TERMCAP
+#include <termcap.h>
+#endif
+#endif
+#endif
+
 #include <sys/types.h>
-#include <sys/time.h>
 #include <sys/ioctl.h>
+#ifdef HAVE_SYS_TERMIOS_H
+#include <sys/termios.h>
+#endif
+#include <sys/time.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#ifdef HAVE_TERMIOS_H
 #include <termios.h>
+#endif
 #include <time.h>
 #include <unistd.h>
 
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
-#endif
-
-#ifdef HAVE_NCURSES
-#include <ncurses.h>
-#ifdef HAVE_TERM_H
-#include <term.h>
-#endif
-#else
-#ifdef HAVE_CURSES
-#include <curses.h>
-#ifdef HAVE_TERM_H
-#include <term.h>
-#endif
-#else
-#ifdef HAVE_TERMCAP
-#include <termcap.h>
-#endif
-#endif
 #endif
 
 #define BUF_SIZE 512
@@ -141,7 +146,7 @@ static void putcap(unsigned char *s) {
 static int do_cs(int y1, int y2) {
   static char temp[16];
   if (ansi_cs) {
-    sprintf(temp, "\e[%d;%dr", y1, y2);
+    sprintf(temp, "%c[%d;%dr", 27, y1, y2);
     write(1, temp, strlen(temp));
   } else putcap((char *)tgoto(t_cs, y2-1, y1-1));
   return 0;
@@ -347,21 +352,21 @@ static void doprotcommand(void) {
 
   switch (protcmd[0]) {
     case 'i' : dispmode=2;	/* set irc mode, ack */
-    	       bold=inv=under=0;
+	       bold=inv=under=0;
 	       write(writefd, "@ssfe@i\n", 8);
 	       break;
     case 'c' : dispmode=1;	/* set cooked mode, ack */
 	       write(writefd, "@ssfe@c\n", 8);
-    	       break;
+	       break;
     case 's' : setstatus(protcmd+1); /* set status */
-    	       displaystatus();
-    	       break;
+	       displaystatus();
+	       break;
     case 'T' : strncpy(ctrl_t, protcmd+1, 127); /* set ^t's text */
 	       ctrl_t[126] = '\0';
 	       strcat(ctrl_t, "\n");
 	       break;
     case 't' : addtab(protcmd+1); /* add tabkey entry */
-    	       break;
+	       break;
     case 'l' : fullscroll(); /* clear screen */
 	       normal();
 	       clearscreen();
@@ -397,7 +402,7 @@ static void doprotcommand(void) {
 	       }
 	       break;
     case 'o' : strcpy(o_buffer, protcmd+1);
-    	       break;
+	       break;
   }
 }
 

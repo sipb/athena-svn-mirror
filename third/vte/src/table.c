@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: table.c,v 1.1.1.1 2003-01-29 21:57:42 ghudson Exp $"
+#ident "$Id: table.c,v 1.1.1.2 2004-09-27 21:01:08 ghudson Exp $"
 #include "../config.h"
 #include <sys/types.h>
 #include <assert.h>
@@ -96,9 +96,9 @@ _vte_table_free(struct _vte_table *table)
 /* Add a string to the tree with the given increment value. */
 static void
 _vte_table_addi(struct _vte_table *table,
-	        const unsigned char *original, gssize original_length,
-	        const char *pattern, gssize length,
-	        const char *result, GQuark quark, int inc)
+		const unsigned char *original, gssize original_length,
+		const char *pattern, gssize length,
+		const char *result, GQuark quark, int inc)
 {
 	int i;
 	guint8 check;
@@ -131,8 +131,8 @@ _vte_table_addi(struct _vte_table *table,
 		/* Handle an increment. */
 		if (pattern[1] == 'i') {
 			_vte_table_addi(table, original, original_length,
-				        pattern + 2, length - 2,
-				        result, quark, inc + 1);
+					pattern + 2, length - 2,
+					result, quark, inc + 1);
 			return;
 		}
 
@@ -149,8 +149,8 @@ _vte_table_addi(struct _vte_table *table,
 			}
 			/* Add the rest of the string to the subtable. */
 			_vte_table_addi(subtable, original, original_length,
-				        pattern + 2, length - 2,
-				        result, quark, inc);
+					pattern + 2, length - 2,
+					result, quark, inc);
 			return;
 		}
 
@@ -167,8 +167,8 @@ _vte_table_addi(struct _vte_table *table,
 			}
 			/* Add the rest of the string to the subtable. */
 			_vte_table_addi(subtable, original, original_length,
-				        pattern + 2, length - 2,
-				        result, quark, inc);
+					pattern + 2, length - 2,
+					result, quark, inc);
 			return;
 		}
 
@@ -183,8 +183,8 @@ _vte_table_addi(struct _vte_table *table,
 			}
 			/* Add the rest of the string to the subtable. */
 			_vte_table_addi(subtable, original, original_length,
-				        pattern + 2, length - 2,
-				        result, quark, inc);
+					pattern + 2, length - 2,
+					result, quark, inc);
 			return;
 		}
 
@@ -204,9 +204,9 @@ _vte_table_addi(struct _vte_table *table,
 				}
 				/* Add the rest of the string to the subtable. */
 				_vte_table_addi(subtable,
-					        original, original_length,
-					        pattern + 3, length - 3,
-					        result, quark, inc);
+						original, original_length,
+						pattern + 3, length - 3,
+						result, quark, inc);
 			}
 			/* Also add a subtable for higher characters. */
 			if (table->table[0] == NULL) {
@@ -217,8 +217,8 @@ _vte_table_addi(struct _vte_table *table,
 			}
 			/* Add the rest of the string to the subtable. */
 			_vte_table_addi(subtable, original, original_length,
-				        pattern + 3, length - 3,
-				        result, quark, inc);
+					pattern + 3, length - 3,
+					result, quark, inc);
 			return;
 		}
 	}
@@ -234,8 +234,8 @@ _vte_table_addi(struct _vte_table *table,
 	}
 	/* Add the rest of the string to the subtable. */
 	_vte_table_addi(subtable, original, original_length,
-		        pattern + 1, length - 1,
-		        result, quark, inc);
+			pattern + 1, length - 1,
+			result, quark, inc);
 }
 
 /* Add a string to the matching tree. */
@@ -261,7 +261,7 @@ _vte_table_add(struct _vte_table *table,
 		length -= 3;
 	}
 	_vte_table_addi(table, pattern_copy, length, pattern_copy, length,
-		        result, quark, 0);
+			result, quark, 0);
 	g_free(pattern_copy);
 }
 
@@ -365,7 +365,8 @@ _vte_table_extract_number(GValueArray **array,
 	GValue value = {0,};
 	GString *tmp;
 	char **vals;
-	int i;
+	int i, j;
+	long total;
 
 	tmp = g_string_new("");
 	for (i = 0; i < arginfo->length; i++) {
@@ -381,7 +382,12 @@ _vte_table_extract_number(GValueArray **array,
 			if (*array == NULL) {
 				*array = g_value_array_new(1);
 			}
-			g_value_set_long(&value, atol(vals[i]));
+			for (total = 0, j = 0; vals[i][j] != '\0'; j++) {
+				total *= 10;
+				total += g_unichar_digit_value(vals[i][j]) == -1 ?
+					 0 : g_unichar_digit_value(vals[i][j]);
+			}
+			g_value_set_long(&value, total);
 			g_value_array_append(*array, &value);
 		}
 
@@ -404,7 +410,7 @@ _vte_table_extract_string(GValueArray **array,
 	ptr = g_malloc(sizeof(gunichar) * (arginfo->length + 1));
 	memcpy(ptr, arginfo->start, (arginfo->length * sizeof(gunichar)));
 	for (i = 0; i < arginfo->length; i++) {
-		ptr[i] &= ~(VTE_ISO2022_WIDTH_MASK);
+		ptr[i] &= ~(VTE_ISO2022_ENCODED_WIDTH_MASK);
 	}
 	ptr[arginfo->length] = '\0';
 	g_value_init(&value, G_TYPE_POINTER);
@@ -419,7 +425,7 @@ _vte_table_extract_string(GValueArray **array,
 
 static void
 _vte_table_extract_char(GValueArray **array,
-		        struct _vte_table_arginfo *arginfo, long increment)
+			struct _vte_table_arginfo *arginfo, long increment)
 {
 	GValue value = {0,};
 
@@ -505,9 +511,9 @@ _vte_table_match(struct _vte_table *table,
 
 	/* Check for a pattern match. */
 	ret = _vte_table_matchi(table, pattern, length,
-			        res, consumed, quark,
-			        &original, &original_length,
-			        &params);
+				res, consumed, quark,
+				&original, &original_length,
+				&params);
 	*res = ret;
 
 	/* If we got a match, extract the parameters. */
@@ -555,8 +561,8 @@ _vte_table_match(struct _vte_table *table,
 				if (p[1] == '+') {
 					arginfo = tmp->data;
 					_vte_table_extract_char(array,
-							        arginfo,
-							        p[2]);
+								arginfo,
+								p[2]);
 					tmp = g_list_next(tmp);
 					p += 3;
 					continue;
@@ -593,7 +599,7 @@ _vte_table_printi(struct _vte_table *table, const char *lead, int *count)
 	/* Result? */
 	if (table->result != NULL) {
 		fprintf(stderr, "%s = `%s'(%d)\n", lead,
-		        table->result, table->increment);
+			table->result, table->increment);
 	}
 
 	/* Literal? */
@@ -634,7 +640,7 @@ _vte_table_print(struct _vte_table *table)
 	int count = 0;
 	_vte_table_printi(table, "", &count);
 	fprintf(stderr, "%d nodes = %ld bytes.\n",
-	        count, (long) count * sizeof(struct _vte_table));
+		count, (long) count * sizeof(struct _vte_table));
 }
 
 #ifdef TABLE_MAIN
@@ -707,7 +713,7 @@ print_array(GValueArray *array)
 			}
 		}
 		printf(")");
-		g_value_array_free(array);
+		_vte_matcher_free_params_array(array);
 	}
 }
 

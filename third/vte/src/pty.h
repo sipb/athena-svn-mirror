@@ -19,7 +19,7 @@
 #ifndef vte_pty_h_included
 #define vte_pty_h_included
 
-#ident "$Id: pty.h,v 1.1.1.1 2003-01-29 21:57:23 ghudson Exp $"
+#ident "$Id: pty.h,v 1.1.1.2 2004-09-27 21:01:27 ghudson Exp $"
 
 #include <sys/types.h>
 
@@ -38,6 +38,9 @@ int _vte_pty_open(pid_t *child, char **env_add,
  * with errno set to defined return codes from ioctl(). */
 int _vte_pty_get_size(int master, int *columns, int *rows);
 int _vte_pty_set_size(int master, int columns, int rows);
+
+/* Try to let the kernel know that the terminal is or is not UTF-8. */
+void _vte_pty_set_utf8(int pty, gboolean utf8);
 
 /* Close a pty. */
 void _vte_pty_close(int pty);

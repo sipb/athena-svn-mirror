@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: trie.c,v 1.1.1.1 2003-01-29 21:57:36 ghudson Exp $"
+#ident "$Id: trie.c,v 1.1.1.2 2004-09-27 21:01:16 ghudson Exp $"
 #include "../config.h"
 #include <sys/types.h>
 #include <assert.h>
@@ -33,6 +33,7 @@
 #include "iso2022.h"
 #include "matcher.h"
 #include "trie.h"
+#include "vteconv.h"
 
 #ifndef HAVE_WINT_T
 typedef gunichar wint_t;
@@ -311,7 +312,7 @@ char_class_string_extract(const gunichar *s, size_t length,
 	ret = g_malloc0((len + 1) * sizeof(gunichar));
 	unichar_sncpy(ret, s, len);
 	for (i = 0; i < len; i++) {
-		ret[i] &= ~(VTE_ISO2022_WIDTH_MASK);
+		ret[i] &= ~(VTE_ISO2022_ENCODED_WIDTH_MASK);
 	}
 #ifdef VTE_DEBUG
 	if (_vte_debug_on(VTE_DEBUG_PARSE)) {
@@ -486,7 +487,7 @@ _vte_trie_add(struct _vte_trie *trie, const char *pattern, size_t length,
 	      const char *result, GQuark quark)
 {
 	char *wpattern, *wpattern_end, *tpattern;
-	GIConv conv;
+	VteConv conv;
 	size_t wlength;
 
 	g_return_if_fail(trie != NULL);
@@ -500,17 +501,17 @@ _vte_trie_add(struct _vte_trie *trie, const char *pattern, size_t length,
 	wlength = sizeof(gunichar) * (length + 1);
 	wpattern = wpattern_end = g_malloc0(wlength + 1);
 
-	conv = g_iconv_open(_vte_matcher_wide_encoding(), "UTF-8");
-	g_assert(conv != ((GIConv) -1));
+	conv = _vte_conv_open(VTE_CONV_GUNICHAR_TYPE, "UTF-8");
+	g_assert(conv != ((VteConv) -1));
 
 	tpattern = (char*)pattern;
-	g_iconv(conv, &tpattern, &length, &wpattern_end, &wlength);
+	_vte_conv(conv, &tpattern, &length, &wpattern_end, &wlength);
 	if (length == 0) {
 		wlength = (wpattern_end - wpattern) / sizeof(gunichar);
 		_vte_trie_addx(trie, (gunichar*)wpattern, wlength,
 			       result, quark, 0);
 	}
-	g_iconv_close(conv);
+	_vte_conv_close(conv);
 
 	g_free(wpattern);
 }
@@ -631,13 +632,13 @@ _vte_trie_matchx(struct _vte_trie *trie, const gunichar *pattern, size_t length,
 				if (better) {
 					best = tmp;
 					if (bestarray != NULL) {
-						g_value_array_free(bestarray);
+						_vte_matcher_free_params_array(bestarray);
 					}
 					bestarray = tmparray;
 					bestquark = tmpquark;
 					bestconsumed = *consumed;
 				} else {
-					g_value_array_free(tmparray);
+					_vte_matcher_free_params_array(tmparray);
 					tmparray = NULL;
 				}
 			}
@@ -649,9 +650,9 @@ _vte_trie_matchx(struct _vte_trie *trie, const gunichar *pattern, size_t length,
 		for (i = 0; i < bestarray->n_values; i++) {
 			g_value_array_append(array,
 					     g_value_array_get_nth(bestarray,
-						     		   i));
+								   i));
 		}
-		g_value_array_free(bestarray);
+		_vte_matcher_free_params_array(bestarray);
 	}
 #if 0
 	printf("`%s' ", best);
@@ -668,8 +669,8 @@ _vte_trie_matchx(struct _vte_trie *trie, const gunichar *pattern, size_t length,
  * works, and the result string if we have an exact match. */
 TRIE_MAYBE_STATIC const char *
 _vte_trie_match(struct _vte_trie *trie, const gunichar *pattern, size_t length,
-	        const char **res, const gunichar **consumed,
-	        GQuark *quark, GValueArray **array)
+		const char **res, const gunichar **consumed,
+		GQuark *quark, GValueArray **array)
 {
 	const char *ret = NULL;
 	GQuark tmpquark;
@@ -705,7 +706,7 @@ _vte_trie_match(struct _vte_trie *trie, const gunichar *pattern, size_t length,
 					}
 				}
 			}
-			g_value_array_free(valuearray);
+			_vte_matcher_free_params_array(valuearray);
 		}
 		if (array != NULL) {
 			*array = NULL;
@@ -714,7 +715,7 @@ _vte_trie_match(struct _vte_trie *trie, const gunichar *pattern, size_t length,
 		if (array != NULL) {
 			*array = valuearray;
 		} else {
-			g_value_array_free(valuearray);
+			_vte_matcher_free_params_array(valuearray);
 		}
 	}
 
@@ -792,7 +793,7 @@ _vte_trie_printx(struct _vte_trie *trie, const char *previous,
 		}
 		if (trie->trie_paths[i].trie->result != NULL) {
 			printf("%s = `%s'\n", buf,
-			        trie->trie_paths[i].trie->result);
+			       trie->trie_paths[i].trie->result);
 		}
 		_vte_trie_printx(trie->trie_paths[i].trie, buf, nodecount);
 	}
@@ -839,15 +840,15 @@ static void
 convert_mbstowcs(const char *i, size_t ilen,
 		 gunichar *o, size_t *olen, size_t max_olen)
 {
-	GIConv conv;
+	VteConv conv;
 	size_t outlen;
-	conv = g_iconv_open(_vte_matcher_wide_encoding(), "UTF-8");
-	g_assert(conv != ((GIConv) -1));
+	conv = _vte_conv_open(VTE_CONV_GUNICHAR_TYPE, "UTF-8");
+	g_assert(conv != ((VteConv) -1));
 
 	memset(o, 0, max_olen);
 	outlen = max_olen;
-	g_iconv(conv, (char**)&i, &ilen, (char**)&o, &outlen);
-	g_iconv_close(conv);
+	_vte_conv_cu(conv, (char**)&i, &ilen, &o, &outlen);
+	_vte_conv_close(conv);
 
 	*olen = (max_olen - outlen) / sizeof(gunichar);
 }
@@ -868,30 +869,29 @@ main(int argc, char **argv)
 	trie = _vte_trie_new();
 
 	_vte_trie_add(trie, "abcdef", 6, "abcdef",
-		      g_quark_from_string("abcdef"));
+		      g_quark_from_static_string("abcdef"));
 	_vte_trie_add(trie, "abcde", 5, "abcde",
-		      g_quark_from_string("abcde"));
+		      g_quark_from_static_string("abcde"));
 	_vte_trie_add(trie, "abcdeg", 6, "abcdeg",
-		      g_quark_from_string("abcdeg"));
+		      g_quark_from_static_string("abcdeg"));
 	_vte_trie_add(trie, "abc%+Aeg", 8, "abc%+Aeg",
-		      g_quark_from_string("abc%+Aeg"));
+		      g_quark_from_static_string("abc%+Aeg"));
 	_vte_trie_add(trie, "abc%deg", 7, "abc%deg",
-		      g_quark_from_string("abc%deg"));
+		      g_quark_from_static_string("abc%deg"));
 	_vte_trie_add(trie, "abc%%eg", 7, "abc%%eg",
-		      g_quark_from_string("abc%%eg"));
+		      g_quark_from_static_string("abc%%eg"));
 	_vte_trie_add(trie, "abc%%%i%deg", 11, "abc%%%i%deg",
-		      g_quark_from_string("abc%%%i%deg"));
+		      g_quark_from_static_string("abc%%%i%deg"));
 	_vte_trie_add(trie, "<esc>[%i%d;%dH", 14, "vtmatch",
-		      g_quark_from_string("vtmatch"));
+		      g_quark_from_static_string("vtmatch"));
 	_vte_trie_add(trie, "<esc>[%i%mL", 11, "multimatch",
-		      g_quark_from_string("multimatch"));
+		      g_quark_from_static_string("multimatch"));
 	_vte_trie_add(trie, "<esc>[%mL<esc>[%mL", 18, "greedy",
-		      g_quark_from_string("greedy"));
+		      g_quark_from_static_string("greedy"));
 	_vte_trie_add(trie, "<esc>]2;%sh", 11, "decset-title",
-		      g_quark_from_string("decset-title"));
+		      g_quark_from_static_string("decset-title"));
 
-	printf("Wide encoding is `%s'.\n", _vte_matcher_wide_encoding());
-	printf("Narrow encoding is `%s'.\n", _vte_matcher_narrow_encoding());
+	printf("Wide encoding is `%s'.\n", VTE_CONV_GUNICHAR_TYPE);
 
 	_vte_trie_print(trie);
 	printf("\n");
@@ -899,176 +899,176 @@ main(int argc, char **argv)
 	quark = 0;
 	convert_mbstowcs("abc", 3, buf, &buflen, sizeof(buf));
 	printf("`%s' = `%s'\n", "abc",
-	        _vte_trie_match(trie, buf, buflen,
-			        NULL, &consumed, &quark, &array));
+	       _vte_trie_match(trie, buf, buflen,
+			       NULL, &consumed, &quark, &array));
 	printf("=> `%s' (%d)\n", g_quark_to_string(quark), consumed - buf);
 	if (array != NULL) {
 		dump_array(array);
-		g_value_array_free(array);
+		_vte_matcher_free_params_array(array);
 		array = NULL;
 	}
 
 	quark = 0;
 	convert_mbstowcs("abcdef", 6, buf, &buflen, sizeof(buf));
 	printf("`%s' = `%s'\n", "abcdef",
-	        _vte_trie_match(trie, buf, buflen,
-			        NULL, &consumed, &quark, &array));
+	       _vte_trie_match(trie, buf, buflen,
+			       NULL, &consumed, &quark, &array));
 	printf("=> `%s' (%d)\n", g_quark_to_string(quark), consumed - buf);
 	if (array != NULL) {
 		dump_array(array);
-		g_value_array_free(array);
+		_vte_matcher_free_params_array(array);
 		array = NULL;
 	}
 
 	quark = 0;
 	convert_mbstowcs("abcde", 5, buf, &buflen, sizeof(buf));
 	printf("`%s' = `%s'\n", "abcde",
-	        _vte_trie_match(trie, buf, buflen,
-			        NULL, &consumed, &quark, &array));
+	       _vte_trie_match(trie, buf, buflen,
+			       NULL, &consumed, &quark, &array));
 	printf("=> `%s' (%d)\n", g_quark_to_string(quark), consumed - buf);
 	if (array != NULL) {
 		dump_array(array);
-		g_value_array_free(array);
+		_vte_matcher_free_params_array(array);
 		array = NULL;
 	}
 
 	quark = 0;
 	convert_mbstowcs("abcdeg", 6, buf, &buflen, sizeof(buf));
 	printf("`%s' = `%s'\n", "abcdeg",
-	        _vte_trie_match(trie, buf, buflen,
-			        NULL, &consumed, &quark, &array));
+	       _vte_trie_match(trie, buf, buflen,
+			       NULL, &consumed, &quark, &array));
 	printf("=> `%s' (%d)\n", g_quark_to_string(quark), consumed - buf);
 	if (array != NULL) {
 		dump_array(array);
-		g_value_array_free(array);
+		_vte_matcher_free_params_array(array);
 		array = NULL;
 	}
 
 	quark = 0;
 	convert_mbstowcs("abc%deg", 7, buf, &buflen, sizeof(buf));
 	printf("`%s' = `%s'\n", "abc%deg",
-	        _vte_trie_match(trie, buf, buflen,
-			        NULL, &consumed, &quark, &array));
+	       _vte_trie_match(trie, buf, buflen,
+			       NULL, &consumed, &quark, &array));
 	printf("=> `%s' (%d)\n", g_quark_to_string(quark), consumed - buf);
 	if (array != NULL) {
 		dump_array(array);
-		g_value_array_free(array);
+		_vte_matcher_free_params_array(array);
 		array = NULL;
 	}
 
 	quark = 0;
 	convert_mbstowcs("abc10eg", 7, buf, &buflen, sizeof(buf));
 	printf("`%s' = `%s'\n", "abc10eg",
-	        _vte_trie_match(trie, buf, buflen,
-			        NULL, &consumed, &quark, &array));
+	       _vte_trie_match(trie, buf, buflen,
+			       NULL, &consumed, &quark, &array));
 	printf("=> `%s' (%d)\n", g_quark_to_string(quark), consumed - buf);
 	if (array != NULL) {
 		dump_array(array);
-		g_value_array_free(array);
+		_vte_matcher_free_params_array(array);
 		array = NULL;
 	}
 
 	quark = 0;
 	convert_mbstowcs("abc%eg", 6, buf, &buflen, sizeof(buf));
 	printf("`%s' = `%s'\n", "abc%eg",
-	        _vte_trie_match(trie, buf, buflen,
-			        NULL, &consumed, &quark, &array));
+	       _vte_trie_match(trie, buf, buflen,
+			       NULL, &consumed, &quark, &array));
 	printf("=> `%s' (%d)\n", g_quark_to_string(quark), consumed - buf);
 	if (array != NULL) {
 		dump_array(array);
-		g_value_array_free(array);
+		_vte_matcher_free_params_array(array);
 		array = NULL;
 	}
 
 	quark = 0;
 	convert_mbstowcs("abc%10eg", 8, buf, &buflen, sizeof(buf));
 	printf("`%s' = `%s'\n", "abc%10eg",
-	        _vte_trie_match(trie, buf, buflen,
-			        NULL, &consumed, &quark, &array));
+	       _vte_trie_match(trie, buf, buflen,
+			       NULL, &consumed, &quark, &array));
 	printf("=> `%s' (%d)\n", g_quark_to_string(quark), consumed - buf);
 	if (array != NULL) {
 		dump_array(array);
-		g_value_array_free(array);
+		_vte_matcher_free_params_array(array);
 		array = NULL;
 	}
 
 	quark = 0;
 	convert_mbstowcs("abcBeg", 6, buf, &buflen, sizeof(buf));
 	printf("`%s' = `%s'\n", "abcBeg",
-	        _vte_trie_match(trie, buf, buflen,
-			        NULL, &consumed, &quark, &array));
+	       _vte_trie_match(trie, buf, buflen,
+			       NULL, &consumed, &quark, &array));
 	printf("=> `%s' (%d)\n", g_quark_to_string(quark), consumed - buf);
 	if (array != NULL) {
 		dump_array(array);
-		g_value_array_free(array);
+		_vte_matcher_free_params_array(array);
 		array = NULL;
 	}
 
 	quark = 0;
 	convert_mbstowcs("<esc>[25;26H", 12, buf, &buflen, sizeof(buf));
 	printf("`%s' = `%s'\n", "<esc>[25;26H",
-	        _vte_trie_match(trie, buf, buflen,
-			        NULL, &consumed, &quark, &array));
+	       _vte_trie_match(trie, buf, buflen,
+			       NULL, &consumed, &quark, &array));
 	printf("=> `%s' (%d)\n", g_quark_to_string(quark), consumed - buf);
 	if (array != NULL) {
 		dump_array(array);
-		g_value_array_free(array);
+		_vte_matcher_free_params_array(array);
 		array = NULL;
 	}
 
 	quark = 0;
 	convert_mbstowcs("<esc>[25;2", 10, buf, &buflen, sizeof(buf));
 	printf("`%s' = `%s'\n", "<esc>[25;2",
-	        _vte_trie_match(trie, buf, buflen,
-			        NULL, &consumed, &quark, &array));
+	       _vte_trie_match(trie, buf, buflen,
+			       NULL, &consumed, &quark, &array));
 	printf("=> `%s' (%d)\n", g_quark_to_string(quark), consumed - buf);
 	if (array != NULL) {
 		dump_array(array);
-		g_value_array_free(array);
+		_vte_matcher_free_params_array(array);
 	}
 
 	quark = 0;
 	convert_mbstowcs("<esc>[25L", 9, buf, &buflen, sizeof(buf));
 	printf("`%s' = `%s'\n", "<esc>[25L",
-	        _vte_trie_match(trie, buf, buflen,
-			        NULL, &consumed, &quark, &array));
+	       _vte_trie_match(trie, buf, buflen,
+			       NULL, &consumed, &quark, &array));
 	printf("=> `%s' (%d)\n", g_quark_to_string(quark), consumed - buf);
 	if (array != NULL) {
 		dump_array(array);
-		g_value_array_free(array);
+		_vte_matcher_free_params_array(array);
 	}
 
 	quark = 0;
 	convert_mbstowcs("<esc>[25L<esc>[24L", 18, buf, &buflen, sizeof(buf));
 	printf("`%s' = `%s'\n", "<esc>[25L<esc>[24L",
-	        _vte_trie_match(trie, buf, buflen,
-			        NULL, &consumed, &quark, &array));
+	       _vte_trie_match(trie, buf, buflen,
+			       NULL, &consumed, &quark, &array));
 	printf("=> `%s' (%d)\n", g_quark_to_string(quark), consumed - buf);
 	if (array != NULL) {
 		dump_array(array);
-		g_value_array_free(array);
+		_vte_matcher_free_params_array(array);
 	}
 
 	quark = 0;
 	convert_mbstowcs("<esc>[25;26L", 12, buf, &buflen, sizeof(buf));
 	printf("`%s' = `%s'\n", "<esc>[25;26L",
-	        _vte_trie_match(trie, buf, buflen,
-			        NULL, &consumed, &quark, &array));
+	       _vte_trie_match(trie, buf, buflen,
+			       NULL, &consumed, &quark, &array));
 	printf("=> `%s' (%d)\n", g_quark_to_string(quark), consumed - buf);
 	if (array != NULL) {
 		dump_array(array);
-		g_value_array_free(array);
+		_vte_matcher_free_params_array(array);
 	}
 
 	quark = 0;
 	convert_mbstowcs("<esc>]2;WoofWoofh", 17, buf, &buflen, sizeof(buf));
 	printf("`%s' = `%s'\n", "<esc>]2;WoofWoofh",
-	        _vte_trie_match(trie, buf, buflen,
-			        NULL, &consumed, &quark, &array));
+	       _vte_trie_match(trie, buf, buflen,
+			       NULL, &consumed, &quark, &array));
 	printf("=> `%s' (%d)\n", g_quark_to_string(quark), consumed - buf);
 	if (array != NULL) {
 		dump_array(array);
-		g_value_array_free(array);
+		_vte_matcher_free_params_array(array);
 		array = NULL;
 	}
 
@@ -1076,24 +1076,24 @@ main(int argc, char **argv)
 	convert_mbstowcs("<esc>]2;WoofWoofh<esc>]2;WoofWoofh", 34,
 			 buf, &buflen, sizeof(buf));
 	printf("`%s' = `%s'\n", "<esc>]2;WoofWoofh<esc>]2;WoofWoofh",
-	        _vte_trie_match(trie, buf, buflen,
+	       _vte_trie_match(trie, buf, buflen,
 			       NULL, &consumed, &quark, &array));
 	printf("=> `%s' (%d)\n", g_quark_to_string(quark), consumed - buf);
 	if (array != NULL) {
 		dump_array(array);
-		g_value_array_free(array);
+		_vte_matcher_free_params_array(array);
 		array = NULL;
 	}
 
 	quark = 0;
 	convert_mbstowcs("<esc>]2;WoofWoofhfoo", 20, buf, &buflen, sizeof(buf));
 	printf("`%s' = `%s'\n", "<esc>]2;WoofWoofhfoo",
-	        _vte_trie_match(trie, buf, buflen,
-			        NULL, &consumed, &quark, &array));
+	       _vte_trie_match(trie, buf, buflen,
+			       NULL, &consumed, &quark, &array));
 	printf("=> `%s' (%d)\n", g_quark_to_string(quark), consumed - buf);
 	if (array != NULL) {
 		dump_array(array);
-		g_value_array_free(array);
+		_vte_matcher_free_params_array(array);
 		array = NULL;
 	}
 

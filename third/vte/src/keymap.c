@@ -16,9 +16,10 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: keymap.c,v 1.1.1.3 2003-05-04 19:07:43 ghudson Exp $"
+#ident "$Id: keymap.c,v 1.1.1.4 2004-09-27 21:01:31 ghudson Exp $"
 #include "../config.h"
 #include <stdlib.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
 #include <glib.h>
@@ -27,19 +28,15 @@
 #include "caps.h"
 #include "debug.h"
 #include "keymap.h"
-#include "termcap.h"
+#include "vtetc.h"
 #ifdef HAVE_NCURSES
 #include <ncurses.h>
-#ifdef HAVE_TERM_H
 #include <term.h>
-#endif
 #define HAVE_CURSES
 #else
 #ifdef HAVE_CURSES
 #include <curses.h>
-#ifdef HAVE_TERM_H
 #include <term.h>
-#endif
 #else
 #ifdef HAVE_TERMCAP
 #include <termcap.h>
@@ -62,7 +59,7 @@ _vte_keysym_name(guint keyval)
 
 enum _vte_cursor_mode {
 	cursor_default =	1 << 0,
-	cursor_app =		1 << 1,
+	cursor_app =		1 << 1
 };
 
 enum _vte_keypad_mode {
@@ -75,7 +72,7 @@ enum _vte_fkey_mode {
 	fkey_sun =	1 << 1,
 	fkey_hp =	1 << 2,
 	fkey_legacy =	1 << 3,
-	fkey_vt220 =	1 << 4,
+	fkey_vt220 =	1 << 4
 };
 
 #define cursor_all	(cursor_default | cursor_app)
@@ -100,6 +97,9 @@ struct _vte_keymap_entry {
 
 /* Normal keys unaffected by modes. */
 static struct _vte_keymap_entry _vte_keymap_GDK_space[] = {
+	/* Meta+space = ESC+" " */
+	{cursor_all, keypad_all, fkey_all,
+	 VTE_META_MASK, _VTE_CAP_ESC " ", 2, NULL},
 	/* Control+space = NUL */
 	{cursor_all, keypad_all, fkey_all, GDK_CONTROL_MASK, "\0", 1, NULL},
 	/* Regular space. */
@@ -149,6 +149,22 @@ static struct _vte_keymap_entry _vte_keymap_GDK_Insert[] = {
 static struct _vte_keymap_entry _vte_keymap_GDK_ISO_Left_Tab[] = {
 	{cursor_all, keypad_all, fkey_all, 0, NULL, 0, "kB"},
 	{cursor_all, keypad_all, fkey_all, 0, _VTE_CAP_CSI "Z", -1, NULL},
+	{cursor_all, keypad_all, fkey_all, 0, NULL, 0, NULL},
+};
+
+static struct _vte_keymap_entry _vte_keymap_GDK_slash[] = {
+	{cursor_all, keypad_all, fkey_all,
+	 VTE_META_MASK, _VTE_CAP_ESC "/", 2, NULL},
+	{cursor_all, keypad_all, fkey_all, GDK_CONTROL_MASK, "\037", 1, NULL},
+	{cursor_all, keypad_all, fkey_all, 0, "/", 1, NULL},
+	{cursor_all, keypad_all, fkey_all, 0, NULL, 0, NULL},
+};
+
+static struct _vte_keymap_entry _vte_keymap_GDK_question[] = {
+	{cursor_all, keypad_all, fkey_all,
+	 VTE_META_MASK, _VTE_CAP_ESC "?", 2, NULL},
+	{cursor_all, keypad_all, fkey_all, GDK_CONTROL_MASK, "\177", 1, NULL},
+	{cursor_all, keypad_all, fkey_all, 0, "?", 1, NULL},
 	{cursor_all, keypad_all, fkey_all, 0, NULL, 0, NULL},
 };
 
@@ -424,7 +440,7 @@ static struct _vte_keymap_entry _vte_keymap_GDK_KP_Page_Down[] = {
 	 0, _VTE_CAP_CSI "6~", -1, NULL},
 	{cursor_all, keypad_default, fkey_sun, 0, _VTE_CAP_CSI "6z", -1, NULL},
 	{cursor_all, keypad_default, fkey_vt220, 0, "3", 1, NULL},
-	{cursor_all, keypad_app, fkey_notvt220, 0, _VTE_CAP_CSI "5~", -1, NULL},
+	{cursor_all, keypad_app, fkey_notvt220, 0, _VTE_CAP_CSI "6~", -1, NULL},
 	{cursor_all, keypad_app, fkey_vt220, 0, _VTE_CAP_SS3 "s", -1, NULL},
 	{cursor_all, keypad_all, fkey_all, 0, NULL, 0, NULL},
 };
@@ -794,6 +810,8 @@ static struct _vte_keymap_group {
 	{GDK_Home,		_vte_keymap_GDK_Home},
 	{GDK_End,		_vte_keymap_GDK_End},
 	{GDK_Insert,		_vte_keymap_GDK_Insert},
+	{GDK_slash,		_vte_keymap_GDK_slash},
+	{GDK_question,		_vte_keymap_GDK_question},
 	/* GDK_Delete is all handled in code, due to funkiness. */
 	{GDK_Page_Up,		_vte_keymap_GDK_Page_Up},
 	{GDK_Page_Down,		_vte_keymap_GDK_Page_Down},
@@ -1131,7 +1149,7 @@ _vte_keymap_map(guint keyval,
 			tmp = g_strdup(termcap_special);
 			cap = tgetstr(tmp, &cap);
 		}
-		if ((cap == NULL) && (strcmp(terminal, "xterm") == 0)) {
+		if ((cap == NULL) && (strstr(terminal, "xterm") == 0)) {
 			/* try, try again */
 			if (tgetent(ncurses_buffer, "xterm-xfree86") == 1) {
 				cap = ncurses_area;

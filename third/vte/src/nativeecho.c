@@ -16,7 +16,7 @@
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
 
-#ident "$Id: nativeecho.c,v 1.1.1.1 2003-01-29 21:57:46 ghudson Exp $"
+#ident "$Id: nativeecho.c,v 1.1.1.2 2004-09-27 21:01:12 ghudson Exp $"
 #include "../config.h"
 #include <limits.h>
 #include <stdio.h>
@@ -24,7 +24,7 @@
 #include <string.h>
 #include <unistd.h>
 #include "table.h"
-#define ESC ""
+#define ESC "\033"
 
 int
 main(int argc, char **argv)
@@ -40,10 +40,10 @@ main(int argc, char **argv)
 
 	for (i = 1; i < argc; i++) {
 		l = strtol(argv[i], &p, 0);
-		while (l > 0) {
+		do {
 			printf("%c", (unsigned char) (l & 0xff));
 			l = l >> 8;
-		}
+		} while (l > 0);
 	}
 
 	return 0;
