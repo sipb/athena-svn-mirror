@@ -52,12 +52,12 @@
 
 #include "ntp_stdlib.h"
 
-extern	double	sin	P((double));
-extern	double	cos	P((double));
-extern	double	acos	P((double));
-extern	double	tan	P((double));
-extern	double	atan	P((double));
-extern	double	sqrt	P((double));
+extern	double	sin	(double);
+extern	double	cos	(double);
+extern	double	acos	(double);
+extern	double	tan	(double);
+extern	double	atan	(double);
+extern	double	sqrt	(double);
 
 #define	STREQ(a, b)	(*(a) == *(b) && strcmp((a), (b)) == 0)
 
@@ -74,7 +74,7 @@ extern	double	sqrt	P((double));
 #define	WINTERHEIGHT	(250.0)		/* winter height in km */
 
 #define SATHEIGHT	(6.6110 * 6378.0) /* geosync satellite height in km
-						from centre of earth */
+					     from centre of earth */
 
 #define WWVLAT  "n40:40:49"
 #define WWVLONG "w105:02:27"
@@ -117,69 +117,68 @@ int height;
 char *progname;
 int debug;
 
-static	void	doit		P((double, double, double, double, double, char *));
-static	double	latlong		P((char *, int));
-static	double	greatcircle	P((double, double, double, double));
-static	double	waveangle	P((double, double, int));
-static	double	propdelay	P((double, double, int));
-static	int	finddelay	P((double, double, double, double, double, double *));
-static	void	satdoit		P((double, double, double, double, double, double, char *));
-static	void	satfinddelay	P((double, double, double, double, double *));
-static	double	satpropdelay	P((double));
+static	void	doit		(double, double, double, double, double, char *);
+static	double	latlong		(char *, int);
+static	double	greatcircle	(double, double, double, double);
+static	double	waveangle	(double, double, int);
+static	double	propdelay	(double, double, int);
+static	int	finddelay	(double, double, double, double, double, double *);
+static	void	satdoit		(double, double, double, double, double, double, char *);
+static	void	satfinddelay	(double, double, double, double, double *);
+static	double	satpropdelay	(double);
 
 /*
  * main - parse arguments and handle options
  */
-void
-main(argc, argv)
-int argc;
-char *argv[];
+int
+main(
+	int argc,
+	char *argv[]
+	)
 {
 	int c;
 	int errflg = 0;
 	double lat1, long1;
 	double lat2, long2;
 	double lat3, long3;
-	extern int ntp_optind;
-	extern char *ntp_optarg;
 
 	progname = argv[0];
 	while ((c = ntp_getopt(argc, argv, "dh:CWG")) != EOF)
-		switch (c) {
+	    switch (c) {
 		case 'd':
-			++debug;
-			break;
+		    ++debug;
+		    break;
 		case 'h':
-			hflag++;
-			height = atof(ntp_optarg);
-			if (height <= 0.0) {
-				(void) fprintf(stderr, "height %s unlikely\n",
-					       ntp_optarg);
-				errflg++;
-			}
-			break;
+		    hflag++;
+		    height = atof(ntp_optarg);
+		    if (height <= 0.0) {
+			    (void) fprintf(stderr, "height %s unlikely\n",
+					   ntp_optarg);
+			    errflg++;
+		    }
+		    break;
 		case 'C':
-			Cflag++;
-			break;
+		    Cflag++;
+		    break;
 		case 'W':
-			Wflag++;
-			break;
+		    Wflag++;
+		    break;
 		case 'G':
-			Gflag++;
-			break;
+		    Gflag++;
+		    break;
 		default:
-			errflg++;
-			break;
-		}
+		    errflg++;
+		    break;
+	    }
 	if (errflg || (!(Cflag || Wflag || Gflag) && ntp_optind+4 != argc) || 
-            ((Cflag || Wflag || Gflag) && ntp_optind+2 != argc)) {
+	    ((Cflag || Wflag || Gflag) && ntp_optind+2 != argc)) {
 		(void) fprintf(stderr,
-		    "usage: %s [-d] [-h height] lat1 long1 lat2 long2\n",
-		    progname);
+			       "usage: %s [-d] [-h height] lat1 long1 lat2 long2\n",
+			       progname);
 		(void) fprintf(stderr," - or -\n");
 		(void) fprintf(stderr,
-		    "usage: %s -CWG [-d] lat long\n",
-		    progname);
+			       "usage: %s -CWG [-d] lat long\n",
+			       progname);
 		exit(2);
 	}
 
@@ -193,14 +192,14 @@ char *argv[];
 			doit(lat1, long1, lat2, long2, height, "");
 		} else {
 			doit(lat1, long1, lat2, long2, (double)SUMMERHEIGHT,
-			    "summer propagation, ");
+			     "summer propagation, ");
 			doit(lat1, long1, lat2, long2, (double)WINTERHEIGHT,
-			    "winter propagation, ");
+			     "winter propagation, ");
 		}
 	} else if (Wflag) {
 		/*
 		 * Compute delay from WWV
-	         */
+		 */
 		lat1 = latlong(argv[ntp_optind], 1);
 		long1 = latlong(argv[ntp_optind + 1], 0);
 		lat2 = latlong(wwvlat, 1);
@@ -209,23 +208,23 @@ char *argv[];
 			doit(lat1, long1, lat2, long2, height, "WWV  ");
 		} else {
 			doit(lat1, long1, lat2, long2, (double)SUMMERHEIGHT,
-			    "WWV  summer propagation, ");
+			     "WWV  summer propagation, ");
 			doit(lat1, long1, lat2, long2, (double)WINTERHEIGHT,
-			    "WWV  winter propagation, ");
+			     "WWV  winter propagation, ");
 		}
 
 		/*
 		 * Compute delay from WWVH
-	         */
+		 */
 		lat2 = latlong(wwvhlat, 1);
 		long2 = latlong(wwvhlong, 0);
 		if (hflag) {
 			doit(lat1, long1, lat2, long2, height, "WWVH ");
 		} else {
 			doit(lat1, long1, lat2, long2, (double)SUMMERHEIGHT,
-			    "WWVH summer propagation, ");
+			     "WWVH summer propagation, ");
 			doit(lat1, long1, lat2, long2, (double)WINTERHEIGHT,
-			    "WWVH winter propagation, ");
+			     "WWVH winter propagation, ");
 		}
 	} else if (Cflag) {
 		lat1 = latlong(argv[ntp_optind], 1);
@@ -236,9 +235,9 @@ char *argv[];
 			doit(lat1, long1, lat2, long2, height, "CHU ");
 		} else {
 			doit(lat1, long1, lat2, long2, (double)SUMMERHEIGHT,
-			    "CHU summer propagation, ");
+			     "CHU summer propagation, ");
 			doit(lat1, long1, lat2, long2, (double)WINTERHEIGHT,
-			    "CHU winter propagation, ");
+			     "CHU winter propagation, ");
 		}
 	} else if (Gflag) {
 		lat1 = latlong(goes_up_lat, 1);
@@ -269,20 +268,21 @@ char *argv[];
  * doit - compute a delay and print it
  */
 static void
-doit(lat1, long1, lat2, long2, h, str)
-	double lat1;
-	double long1;
-	double lat2;
-	double long2;
-	double h;
-	char *str;
+doit(
+	double lat1,
+	double long1,
+	double lat2,
+	double long2,
+	double h,
+	char *str
+	)
 {
 	int hops;
 	double delay;
 
 	hops = finddelay(lat1, long1, lat2, long2, h, &delay);
 	printf("%sheight %g km, hops %d, delay %g seconds\n",
-	    str, h, hops, delay);
+	       str, h, hops, delay);
 }
 
 
@@ -290,9 +290,10 @@ doit(lat1, long1, lat2, long2, h, str)
  * latlong - decode a latitude/longitude value
  */
 static double
-latlong(str, islat)
-	char *str;
-	int islat;
+latlong(
+	char *str,
+	int islat
+	)
 {
 	register char *cp;
 	register char *bp;
@@ -307,25 +308,25 @@ latlong(str, islat)
 		 * Must be north or south
 		 */
 		if (*str == 'N' || *str == 'n')
-			isneg = 0;
+		    isneg = 0;
 		else if (*str == 'S' || *str == 's')
-			isneg = 1;
+		    isneg = 1;
 		else
-			isneg = -1;
+		    isneg = -1;
 	} else {
 		/*
 		 * East is positive, west is negative
 		 */
 		if (*str == 'E' || *str == 'e')
-			isneg = 0;
+		    isneg = 0;
 		else if (*str == 'W' || *str == 'w')
-			isneg = 1;
+		    isneg = 1;
 		else
-			isneg = -1;
+		    isneg = -1;
 	}
 
 	if (isneg >= 0)
-		str++;
+	    str++;
 
 	colon = strchr(str, ':');
 	if (colon != NULL) {
@@ -335,7 +336,7 @@ latlong(str, islat)
 		cp = str;
 		bp = buf;
 		while (cp < colon)
-			*bp++ = *cp++;
+		    *bp++ = *cp++;
 		*bp = '\0';
 		cp++;
 		arg = atof(buf);
@@ -344,23 +345,23 @@ latlong(str, islat)
 		if (colon != NULL) {
 			bp = buf;
 			while (cp < colon)
-				*bp++ = *cp++;
+			    *bp++ = *cp++;
 			*bp = '\0';
 			cp++;
 			arg += atof(buf) / div;
 			div = 3600.0;
 		}
 		if (*cp != '\0')
-			arg += atof(cp) / div;
+		    arg += atof(cp) / div;
 	} else {
 		arg = atof(str);
 	}
 
 	if (isneg == 1)
-		arg = -arg;
+	    arg = -arg;
 
 	if (debug > 2)
-		(void) printf("latitude/longitude %s = %g\n", str, arg);
+	    (void) printf("latitude/longitude %s = %g\n", str, arg);
 
 	return arg;
 }
@@ -370,11 +371,12 @@ latlong(str, islat)
  * greatcircle - compute the great circle distance in kilometers
  */
 static double
-greatcircle(lat1, long1, lat2, long2)
-	double lat1;
-	double long1;
-	double lat2;
-	double long2;
+greatcircle(
+	double lat1,
+	double long1,
+	double lat2,
+	double long2
+	)
 {
 	double dg;
 	double l1r, l2r;
@@ -382,10 +384,10 @@ greatcircle(lat1, long1, lat2, long2)
 	l1r = lat1 * RADPERDEG;
 	l2r = lat2 * RADPERDEG;
 	dg = EARTHRADIUS * acos(
-	    (cos(l1r) * cos(l2r) * cos((long2-long1)*RADPERDEG))
-	    + (sin(l1r) * sin(l2r)));
+		(cos(l1r) * cos(l2r) * cos((long2-long1)*RADPERDEG))
+		+ (sin(l1r) * sin(l2r)));
 	if (debug >= 2)
-		printf(
+	    printf(
 		    "greatcircle lat1 %g long1 %g lat2 %g long2 %g dist %g\n",
 		    lat1, long1, lat2, long2, dg);
 	return dg;
@@ -397,10 +399,11 @@ greatcircle(lat1, long1, lat2, long2)
  *	       height and number of hops.
  */
 static double
-waveangle(dg, h, n)
-	double dg;
-	double h;
-	int n;
+waveangle(
+	double dg,
+	double h,
+	int n
+	)
 {
 	double theta;
 	double delta;
@@ -408,8 +411,8 @@ waveangle(dg, h, n)
 	theta = dg / (EARTHRADIUS * (double)(2 * n));
 	delta = atan((h / (EARTHRADIUS * sin(theta))) + tan(theta/2)) - theta;
 	if (debug >= 2)
-		printf("waveangle dist %g height %g hops %d angle %g\n",
-		    dg, h, n, delta / RADPERDEG);
+	    printf("waveangle dist %g height %g hops %d angle %g\n",
+		   dg, h, n, delta / RADPERDEG);
 	return delta;
 }
 
@@ -418,10 +421,11 @@ waveangle(dg, h, n)
  * propdelay - compute the propagation delay
  */
 static double
-propdelay(dg, h, n)
-	double dg;
-	double h;
-	int n;
+propdelay(
+	double dg,
+	double h,
+	int n
+	)
 {
 	double phi;
 	double theta;
@@ -431,8 +435,8 @@ propdelay(dg, h, n)
 	phi = (PI/2.0) - atan((h / (EARTHRADIUS * sin(theta))) + tan(theta/2));
 	td = dg / (LIGHTSPEED * sin(phi));
 	if (debug >= 2)
-		printf("propdelay dist %g height %g hops %d time %g\n",
-		    dg, h, n, td);
+	    printf("propdelay dist %g height %g hops %d time %g\n",
+		   dg, h, n, td);
 	return td;
 }
 
@@ -441,13 +445,14 @@ propdelay(dg, h, n)
  * finddelay - find the propagation delay
  */
 static int
-finddelay(lat1, long1, lat2, long2, h, delay)
-	double lat1;
-	double long1;
-	double lat2;
-	double long2;
-	double h;
-	double *delay;
+finddelay(
+	double lat1,
+	double long1,
+	double lat2,
+	double long2,
+	double h,
+	double *delay
+	)
 {
 	double dg;	/* great circle distance */
 	double delta;	/* wave angle */
@@ -455,17 +460,17 @@ finddelay(lat1, long1, lat2, long2, h, delay)
 
 	dg = greatcircle(lat1, long1, lat2, long2);
 	if (debug)
-		printf("great circle distance %g km %g miles\n", dg, dg/MILE);
+	    printf("great circle distance %g km %g miles\n", dg, dg/MILE);
 	
 	n = 1;
 	while ((delta = waveangle(dg, h, n)) < 0.0) {
 		if (debug)
-			printf("tried %d hop%s, no good\n", n, n>1?"s":"");
+		    printf("tried %d hop%s, no good\n", n, n>1?"s":"");
 		n++;
 	}
 	if (debug)
-		printf("%d hop%s okay, wave angle is %g\n", n, n>1?"s":"",
-		    delta / RADPERDEG);
+	    printf("%d hop%s okay, wave angle is %g\n", n, n>1?"s":"",
+		   delta / RADPERDEG);
 
 	*delay = propdelay(dg, h, n);
 	return n;
@@ -475,14 +480,15 @@ finddelay(lat1, long1, lat2, long2, h, delay)
  * satdoit - compute a delay and print it
  */
 static void
-satdoit(lat1, long1, lat2, long2, lat3, long3, str)
-	double lat1;
-	double long1;
-	double lat2;
-	double long2;
-	double lat3;
-	double long3;
-	char *str;
+satdoit(
+	double lat1,
+	double long1,
+	double lat2,
+	double long2,
+	double lat3,
+	double long3,
+	char *str
+	)
 {
 	double up_delay,down_delay;
 
@@ -497,12 +503,13 @@ satdoit(lat1, long1, lat2, long2, lat3, long3, str)
  * and a satellite
  */
 static void
-satfinddelay(lat1, long1, lat2, long2, delay)
-	double lat1;
-	double long1;
-	double lat2;
-	double long2;
-	double *delay;
+satfinddelay(
+	double lat1,
+	double long1,
+	double lat2,
+	double long2,
+	double *delay
+	)
 {
 	double dg;	/* great circle distance */
 
@@ -516,8 +523,9 @@ satfinddelay(lat1, long1, lat2, long2, delay)
  * and a satellite
  */
 static double
-satpropdelay(dg)
-	double dg;
+satpropdelay(
+	double dg
+	)
 {
 	double k1, k2, dist;
 	double theta;
@@ -527,10 +535,10 @@ satpropdelay(dg)
 	k1 = EARTHRADIUS * sin(theta);
 	k2 = SATHEIGHT - (EARTHRADIUS * cos(theta));
 	if (debug >= 2)
-		printf("Theta %g k1 %g k2 %g\n", theta, k1, k2);
+	    printf("Theta %g k1 %g k2 %g\n", theta, k1, k2);
 	dist = sqrt(k1*k1 + k2*k2);
 	td = dist / LIGHTSPEED;
 	if (debug >= 2)
-		printf("propdelay dist %g height %g time %g\n", dg, dist, td);
+	    printf("propdelay dist %g height %g time %g\n", dg, dist, td);
 	return td;
 }

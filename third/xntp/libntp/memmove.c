@@ -63,17 +63,18 @@ typedef	int word;		/* "word" used for optimal copy speed */
  * (the portable versions of) bcopy, memcpy, and memmove.
  */
 void *
-memmove(dst0, src0, length)
-	void *dst0;
-	const void *src0;
-	register size_t length;
+memmove(
+	void *dst0,
+	const void *src0,
+	register size_t length
+	)
 {
 	register char *dst = dst0;
 	register const char *src = src0;
 	register size_t t;
 
 	if (length == 0 || dst == src)		/* nothing to do */
-		goto done;
+	    goto done;
 
 	/*
 	 * Macros: loop-t-times; and loop-t-times, t>0
@@ -92,9 +93,9 @@ memmove(dst0, src0, length)
 			 * unless the low bits match.
 			 */
 			if ((t ^ (int)dst) & wmask || length < wsize)
-				t = length;
+			    t = length;
 			else
-				t = wsize - (t & wmask);
+			    t = wsize - (t & wmask);
 			length -= t;
 			TLOOP1(*dst++ = *src++);
 		}
@@ -116,9 +117,9 @@ memmove(dst0, src0, length)
 		t = (int)src;
 		if ((t | (int)dst) & wmask) {
 			if ((t ^ (int)dst) & wmask || length <= wsize)
-				t = length;
+			    t = length;
 			else
-				t &= wmask;
+			    t &= wmask;
 			length -= t;
 			TLOOP1(*--dst = *--src);
 		}
@@ -127,7 +128,7 @@ memmove(dst0, src0, length)
 		t = length & wmask;
 		TLOOP(*--dst = *--src);
 	}
-done:
+    done:
 	return (dst0);
 }
 #else

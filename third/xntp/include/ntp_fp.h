@@ -1,6 +1,9 @@
 /*
- * ntp_fp.h - definitions for NTP fixed point arithmetic
+ * ntp_fp.h - definitions for NTP fixed/floating-point arithmetic
  */
+
+#ifndef NTP_FP_H
+#define NTP_FP_H
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -9,15 +12,15 @@
 #include "ntp_types.h"
 
 /*
- * NTP uses two fixed point formats.  The first (l_fp) is the "long" format
- * and is 64 bits long with the decimal between bits 31 and 32.  This
- * is used for time stamps in the NTP packet header (in network byte
- * order) and for internal computations of offsets (in local host byte
- * order).  We use the same structure for both signed and unsigned values,
- * which is a big hack but saves rewriting all the operators twice.  Just
- * to confuse this, we also sometimes just carry the fractional part in
- * calculations, in both signed and unsigned forms.  Anyway, an l_fp looks
- * like:
+ * NTP uses two fixed point formats.  The first (l_fp) is the "long"
+ * format and is 64 bits long with the decimal between bits 31 and 32.
+ * This is used for time stamps in the NTP packet header (in network
+ * byte order) and for internal computations of offsets (in local host
+ * byte order). We use the same structure for both signed and unsigned
+ * values, which is a big hack but saves rewriting all the operators
+ * twice. Just to confuse this, we also sometimes just carry the
+ * fractional part in calculations, in both signed and unsigned forms.
+ * Anyway, an l_fp looks like:
  *
  *    0			  1		      2			  3
  *    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -289,6 +292,52 @@ typedef u_int32 u_fp;
 			  ((a)->l_i == (b)->l_i && (a)->l_uf >= (b)->l_uf))
 #define	L_ISEQU(a, b)	M_ISEQU((a)->l_ui, (a)->l_uf, (b)->l_ui, (b)->l_uf)
 
+/*
+ * s_fp/double and u_fp/double conversions
+ */
+#define FRIC		65536.	 		/* 2^16 as a double */
+#define DTOFP(r)	((s_fp)((r) * FRIC))
+#define DTOUFP(r)	((u_fp)((r) * FRIC))
+#define FPTOD(r)	((double)(r) / FRIC)
+
+/*
+ * l_fp/double conversions
+ */
+#define FRAC		4294967296. 		/* 2^32 as a double */
+#define M_DTOLFP(d, r_i, r_uf) 			/* double to l_fp */ \
+	do { \
+		register double d_tmp; \
+		\
+		d_tmp = (d); \
+		if (d_tmp < 0) { \
+			d_tmp = -d_tmp; \
+			(r_i) = (int32)(d_tmp); \
+			(r_uf) = (u_int32)(((d_tmp) - (double)(r_i)) * FRAC); \
+			M_NEG((r_i), (r_uf)); \
+		} else { \
+			(r_i) = (int32)(d_tmp); \
+			(r_uf) = (u_int32)(((d_tmp) - (double)(r_i)) * FRAC); \
+		} \
+	} while (0)
+#define M_LFPTOD(r_i, r_uf, d) 			/* l_fp to double */ \
+	do { \
+		register l_fp l_tmp; \
+		\
+		l_tmp.l_i = (r_i); \
+		l_tmp.l_f = (r_uf); \
+		if (l_tmp.l_i < 0) { \
+			M_NEG(l_tmp.l_i, l_tmp.l_uf); \
+			(d) = -((double)l_tmp.l_i + ((double)l_tmp.l_uf) / FRAC); \
+		} else { \
+			(d) = (double)l_tmp.l_i + ((double)l_tmp.l_uf) / FRAC; \
+		} \
+	} while (0)
+#define DTOLFP(d, v) 	M_DTOLFP((d), (v)->l_ui, (v)->l_uf)
+#define LFPTOD(v, d) 	M_LFPTOD((v)->l_ui, (v)->l_uf, (d))
+
+/*
+ * Prototypes
+ */
 extern	char *	dofptoa		P((u_fp, int, int, int));
 extern	char *	dolfptoa	P((u_long, u_long, int, int, int));
 
@@ -298,14 +347,16 @@ extern	char *	fptoa		P((s_fp, int));
 extern	char *	fptoms		P((s_fp, int));
 extern	char *	fptoms		P((s_fp, int));
 extern	int	hextolfp	P((const char *, l_fp *));
+extern  void    gpstolfp        P((int, int, unsigned long, l_fp *));
 extern	int	mstolfp		P((const char *, l_fp *));
 extern	char *	prettydate	P((l_fp *));
+extern	char *	gmprettydate	P((l_fp *));
 extern	char *	uglydate	P((l_fp *));
+extern  void    mfp_mul         P((int32 *, u_int32 *, int32, u_int32, int32, u_int32));
 
 extern	void	get_systime	P((l_fp *));
-extern	int	step_systime	P((l_fp *));
-extern  int 	step_systime_real P((l_fp *));
-extern	int	adj_systime	P((l_fp *));
+extern	int	step_systime	P((double));
+extern	int	adj_systime	P((double));
 
 #define	lfptoa(_fpv, _ndec)	mfptoa((_fpv)->l_ui, (_fpv)->l_uf, (_ndec))
 #define	lfptoms(_fpv, _ndec)	mfptoms((_fpv)->l_ui, (_fpv)->l_uf, (_ndec))
@@ -318,3 +369,5 @@ extern	int	adj_systime	P((l_fp *));
 #define	ulfptoa(_fpv, _ndec)	dolfptoa((_fpv)->l_ui, (_fpv)->l_uf, 0, (_ndec), 0)
 #define	ulfptoms(_fpv, _ndec)	dolfptoa((_fpv)->l_ui, (_fpv)->l_uf, 0, (_ndec), 1)
 #define	umfptoa(_fpi, _fpf, _ndec) dolfptoa((_fpi), (_fpf), 0, (_ndec), 0)
+
+#endif /* NTP_FP_H */

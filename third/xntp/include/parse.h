@@ -1,9 +1,9 @@
 /*
- * /src/NTP/REPOSITORY/v4/include/parse.h,v 3.31 1996/12/01 16:02:46 kardel Exp
+ * /src/NTP/ntp-4/include/parse.h,v 4.5 1998/08/09 22:23:32 kardel RELEASE_19990228_A
  *
- * parse.h,v 3.31 1996/12/01 16:02:46 kardel Exp
+ * parse.h,v 4.5 1998/08/09 22:23:32 kardel RELEASE_19990228_A
  *
- * Copyright (C) 1989,1990,1991,1992,1993,1994,1995,1996 by Frank Kardel
+ * Copyright (C) 1989-1998 by Frank Kardel
  * Friedrich-Alexander Universität Erlangen-Nürnberg, Germany
  *                                    
  * This program is distributed in the hope that it will be useful,
@@ -15,7 +15,7 @@
 #ifndef __PARSE_H__
 #define __PARSE_H__
 #if	!(defined(lint) || defined(__GNUC__))
-  static char parsehrcsid[]="parse.h,v 3.31 1996/12/01 16:02:46 kardel Exp";
+  static char parsehrcsid[]="parse.h,v 4.5 1998/08/09 22:23:32 kardel RELEASE_19990228_A";
 #endif
 
 #include "ntp_types.h"
@@ -33,15 +33,16 @@
 #define PARSESTREAM
 #endif
 #endif
-#if defined(PARSESTREAM) && defined(STREAM)
+#if defined(PARSESTREAM) && defined(HAVE_SYS_STREAM_H)
 #define PARSEKERNEL
 #endif
 #ifdef PARSEKERNEL
 #ifndef _KERNEL
 extern caddr_t kmem_alloc P((unsigned int));
 extern caddr_t kmem_free P((caddr_t, unsigned int));
-extern int splx();
-extern int splhigh();
+extern unsigned int splx P((unsigned int));
+extern unsigned int splhigh P((void));
+extern unsigned int splclock P((void));
 #define MALLOC(_X_) (char *)kmem_alloc(_X_)
 #define FREE(_X_, _Y_) kmem_free((caddr_t)_X_, _Y_)
 #else
@@ -54,14 +55,13 @@ extern int splhigh();
 #define FREE(_X_, _Y_) free(_X_)
 #endif
 
-#if defined(PARSESTREAM) && defined(STREAM)
+#if defined(PARSESTREAM) && defined(HAVE_SYS_STREAM_H)
 #include <sys/stream.h>
 #include <sys/stropts.h>
 #else	/* STREAM */
 #include <stdio.h>
 #include "ntp_syslog.h"
 #ifdef	DEBUG
-extern int debug;
 #define DD_PARSE 5
 #define DD_RAWDCF 4
 #define parseprintf(LEVEL, ARGS) if (debug > LEVEL) printf ARGS
@@ -72,6 +72,9 @@ extern int debug;
 
 #if defined(timercmp) && defined(__GNUC__)
 #undef timercmp
+#endif
+
+#if !defined(timercmp)
 #define	timercmp(tvp, uvp, cmp)	\
 	((tvp)->tv_sec cmp (uvp)->tv_sec || \
 	 ((tvp)->tv_sec == (uvp)->tv_sec && (tvp)->tv_usec cmp (uvp)->tv_usec))
@@ -106,7 +109,7 @@ extern int debug;
  */
 #define PARSEB_ALTERNATE	  0x00001000 /* alternate antenna used */
 #define PARSEB_POSITION		  0x00002000 /* position available */
-
+#define PARSEB_MESSAGE            0x00004000 /* addtitional message data */
 /*
  * feature information
  */
@@ -123,7 +126,7 @@ extern int debug;
 
 #define PARSE_TCINFO		(PARSEB_ANNOUNCE|PARSEB_POWERUP|PARSEB_NOSYNC|PARSEB_DST|\
 				 PARSEB_UTC|PARSEB_LEAPS|PARSEB_ALTERNATE|PARSEB_S_LEAP|\
-				 PARSEB_S_LOCATION|PARSEB_TIMECODE)
+				 PARSEB_S_LOCATION|PARSEB_TIMECODE|PARSEB_MESSAGE)
 
 #define PARSE_POWERUP(x)        ((x) & PARSEB_POWERUP)
 #define PARSE_NOSYNC(x)         (((x) & (PARSEB_POWERUP|PARSEB_NOSYNC)) == PARSEB_NOSYNC)
@@ -144,19 +147,25 @@ extern int debug;
 #define PARSE_TIMECODE(x)	((x) & PARSEB_TIMECODE)
 #define PARSE_PPS(x)		((x) & PARSEB_PPS)
 #define PARSE_POSITION(x)	((x) & PARSEB_POSITION)
+#define PARSE_MESSAGE(x)	((x) & PARSEB_MESSAGE)
 
 /*
- * operation flags - some are also fudge flags
+ * operation flags - lower nibble contains fudge flags
  */
 #define PARSE_STATISTICS    0x08  /* enable statistics */
-#define PARSE_LEAP_DELETE   0x04  /* delete leap - overides statistics */
+#define PARSE_LEAP_DELETE   0x04  /* delete leap */
 #define PARSE_FIXED_FMT     0x10  /* fixed format */
 #define PARSE_PPSCLOCK      0x20  /* try to get PPS time stamp via ppsclock ioctl */
 
+/*
+ * size of buffers
+ */
+#define PARSE_TCMAX	    400	  /* maximum addition data size */
+
 typedef union timestamp
 {
-  struct timeval tv;		/* timeval - usually kernel view */
-  l_fp           fp;		/* fixed point - xntp view */
+  struct timeval tv;		/* timeval - kernel view */
+  l_fp           fp;		/* fixed point - ntp view */
 } timestamp_t;
 
 /*
@@ -171,13 +180,15 @@ struct parsetime
   long           parse_usecerror;	/* sampled usec error */
   u_long	 parse_state;	/* current receiver state */
   unsigned short parse_format;	/* format code */
+  unsigned short parse_msglen;	/* length of message */
+  unsigned char  parse_msg[PARSE_TCMAX]; /* original messages */
 };
 
 typedef struct parsetime parsetime_t;
 
 /*---------- STREAMS interface ----------*/
 
-#ifdef STREAM
+#ifdef HAVE_SYS_STREAM_H
 /*
  * ioctls
  */
@@ -197,11 +208,6 @@ typedef struct parsetime parsetime_t;
 #define PARSE_IO_CS6	0x00000001
 #define PARSE_IO_CS7	0x00000002 
 #define PARSE_IO_CS8	0x00000003 
-
-/*
- * sizes
- */
-#define PARSE_TCMAX	128
 
 /*
  * ioctl structure
@@ -234,32 +240,11 @@ typedef union parsectl parsectl_t;
 
 /*------ for conversion routines --------*/
 
-#define PARSE_DELTA        16
-
 struct parse			/* parse module local data */
 {
   int            parse_flags;	/* operation and current status flags */
   
   int		 parse_ioflags;	   /* io handling flags (5-8 Bit control currently) */
-  int		 parse_syncflags;	   /* possible sync events (START/END/character) */
-  /*
-   * RS232 input parser information
-   */
-  unsigned char  parse_startsym[32]; /* possible start packet values */
-  unsigned char  parse_endsym[32];   /* possible end packet values */
-  unsigned char	 parse_syncsym[32];  /* sync characters */
-  struct timeval parse_timeout;	   /* max gap between characters (us) */
-
-  /*
-   * PPS 'input' buffer
-   */
-  struct timeval parse_lastone;	/* time stamp of last PPS 1 transition */
-  struct timeval parse_lastzero;	/* time stamp of last PPS 0 transition */
-
-  /*
-   * character input buffer
-   */
-  timestamp_t    parse_lastchar;	/* time stamp of last received character */
 
   /*
    * private data - fixed format only
@@ -279,7 +264,8 @@ struct parse			/* parse module local data */
   unsigned short parse_ldsize;	/* last data buffer length */
   u_long         parse_badformat;	/* number of unparsable pakets */
   
-  parsetime_t      parse_dtime;	/* external data prototype */
+  timestamp_t    parse_lastchar; /* last time a character was received */
+  parsetime_t    parse_dtime;	/* external data prototype */
 };
 
 typedef struct parse parse_t;
@@ -295,60 +281,54 @@ struct clocktime		/* clock time broken up from time code */
   long usecond;
   long utcoffset;	/* in seconds */
   time_t utctime;	/* the actual time - alternative to date/time */
-  long flags;		/* current clock status */
+  u_long flags;		/* current clock status */
 };
 
 typedef struct clocktime clocktime_t;
 
 /*
- * clock formats specify routines to be called to
- * convert the buffer into a struct clock.
- * functions are called
- *   fn(buffer, data, clock) -> CVT_NONE, CVT_FAIL, CVT_OK
- *
- * the private data pointer can be used to
- * distingush between different formats of a common
- * base type
- */
-#define F_START		0x00000001 /* start packet delimiter */
-#define F_END		0x00000002 /* end packet delimiter */
-#define SYNC_TIMEOUT	0x00000004 /* packet restart after timeout */
-#define SYNC_START	0x00000008 /* packet start is sync event */
-#define SYNC_END	0x00000010 /* packet end is sync event */
-#define SYNC_CHAR	0x00000020 /* special character is sync event */
-#define SYNC_ONE	0x00000040 /* PPS synchronize on 'ONE' transition */
-#define SYNC_ZERO	0x00000080 /* PPS synchronize on 'ZERO' transition */
-#define SYNC_SYNTHESIZE 0x00000100 /* generate intermediate time stamps */
-#define CVT_FIXEDONLY   0x00010000 /* convert only in fixed configuration */
-
-/*
  * parser related return/error codes
  */
-#define CVT_MASK	0x0000000F /* conversion exit code */
-#define   CVT_NONE	0x00000001 /* format not applicable */
-#define   CVT_FAIL	0x00000002 /* conversion failed - error code returned */
-#define   CVT_OK	0x00000004 /* conversion succeeded */
-#define   CVT_SKIP	0x00000008 /* conversion succeeded */
-#define CVT_BADFMT	0x00000010 /* general format error - (unparsable) */
-#define CVT_BADDATE     0x00000020 /* date field incorrect */
-#define CVT_BADTIME	0x00000040 /* time field incorrect */
+#define CVT_MASK	 (unsigned)0x0000000F /* conversion exit code */
+#define   CVT_NONE	 (unsigned)0x00000001 /* format not applicable */
+#define   CVT_FAIL	 (unsigned)0x00000002 /* conversion failed - error code returned */
+#define   CVT_OK	 (unsigned)0x00000004 /* conversion succeeded */
+#define   CVT_SKIP	 (unsigned)0x00000008 /* conversion succeeded */
+#define CVT_ADDITIONAL   (unsigned)0x00000010 /* additional data is available */
+#define CVT_BADFMT	 (unsigned)0x00000100 /* general format error - (unparsable) */
+#define CVT_BADDATE      (unsigned)0x00000200 /* date field incorrect */
+#define CVT_BADTIME	 (unsigned)0x00000400 /* time field incorrect */
+
+/*
+ * return codes used by special input parsers
+ */
+#define PARSE_INP_SKIP  0x00	/* discard data - may have been consumed */
+#define PARSE_INP_TIME  0x01	/* time code assembled */
+#define PARSE_INP_PARSE 0x02	/* parse data using normal algorithm */
+#define PARSE_INP_DATA  0x04	/* additional data to pass up */
+#define PARSE_INP_SYNTH 0x08	/* just pass up synthesized time */
+
+/*
+ * PPS edge info
+ */
+#define SYNC_ZERO	0x00
+#define SYNC_ONE	0x01
 
 struct clockformat
 {
-  u_long	(*input)();	/* special input protocol - implies fixed format */
-  u_long        (*convert)();	/* conversion routine */
-  void          (*syncevt)();	/* routine for handling RS232 sync events (time stamps) */
-  u_long        (*syncpps)();	/* PPS input routine */
-  u_long        (*synth)();	/* time code synthesizer */
+  /* special input protocol - implies fixed format */
+  u_long	(*input)   P((parse_t *, unsigned int, timestamp_t *));
+  /* conversion routine */
+  u_long        (*convert) P((unsigned char *, int, struct format *, clocktime_t *, void *));
+  /* routine for handling RS232 sync events (time stamps) */
+  /* PPS input routine */
+  u_long        (*syncpps) P((parse_t *, int, timestamp_t *));
+  /* time code synthesizer */
+
   void           *data;		/* local parameters */
-  char           *name;		/* clock format name */
+  const char     *name;		/* clock format name */
   unsigned short  length;	/* maximum length of data packet */
-  u_long   flags;	/* valid start symbols etc. */
   unsigned short  plen;		/* length of private data - implies fixed format */
-  struct timeval  timeout;	/* buffer restart after timeout (us) */
-  unsigned char   startsym;	/* start symbol */
-  unsigned char   endsym;	/* end symbol */
-  unsigned char   syncsym;	/* sync symbol */
 };
 
 typedef struct clockformat clockformat_t;
@@ -366,101 +346,46 @@ extern int  parse_getfmt P((parsectl_t *, parse_t *));
 extern int  parse_setfmt P((parsectl_t *, parse_t *));
 extern int  parse_setcs P((parsectl_t *, parse_t *));
 
-extern int Strok P((char *, char *));
-extern int Stoi P((char *, long *, int));
+extern unsigned int parse_restart P((parse_t *, unsigned int));
+extern unsigned int parse_addchar P((parse_t *, unsigned int));
+extern unsigned int parse_end P((parse_t *));
+
+extern int Strok P((const unsigned char *, const unsigned char *));
+extern int Stoi P((const unsigned char *, long *, int));
 
 extern time_t parse_to_unixtime P((clocktime_t *, u_long *));
-extern u_long updatetimeinfo P((parse_t *, time_t, u_long, u_long));
+extern u_long updatetimeinfo P((parse_t *, u_long));
 extern void syn_simple P((parse_t *, timestamp_t *, struct format *, u_long));
 extern u_long pps_simple P((parse_t *, int, timestamp_t *));
+extern u_long pps_one P((parse_t *, int, timestamp_t *));
+extern u_long pps_zero P((parse_t *, int, timestamp_t *));
+extern int parse_timedout P((parse_t *, timestamp_t *, struct timeval *));
+
 #endif
 
 /*
  * History:
  *
  * parse.h,v
- * Revision 3.31  1996/12/01 16:02:46  kardel
- * freeze for 5.86.12.2 PARSE-Patch
+ * Revision 4.5  1998/08/09 22:23:32  kardel
+ * 4.0.73e2 adjustments
  *
- * Revision 3.30  1996/11/24 20:09:17  kardel
- * RELEASE_5_86_12_2 reconcilation
+ * Revision 4.4  1998/06/14 21:09:27  kardel
+ * Sun acc cleanup
  *
- * Revision 3.29  1996/10/05 13:30:13  kardel
- * general update
+ * Revision 4.3  1998/06/13 11:49:25  kardel
+ * STREAM macro gone in favor of HAVE_SYS_STREAM_H
  *
- * Revision 3.28  1996/06/01 16:49:59  kardel
- * changed flag value for statistics preparation
+ * Revision 4.2  1998/06/12 15:14:25  kardel
+ * fixed prototypes
  *
- * Revision 3.27  1995/10/15 23:46:05  duwe
- * look for ntp_syslog.h in the right place
+ * Revision 4.1  1998/05/24 10:07:59  kardel
+ * removed old data structure cruft (new input model)
+ * new PARSE_INP* macros for input handling
+ * removed old SYNC_* macros from old input model
+ * (struct clockformat): removed old parse functions in favor of the
+ * new input model
+ * updated prototypes
  *
- * Revision 3.26  1995/07/02  20:01:00  kardel
- * keep ANSI happy...
- *
- * Revision 3.25  1995/06/18  12:14:56  kardel
- * removed dispersion calulation from parse subsystem
- *
- * Revision 3.24  1995/04/09  20:53:39  kardel
- * 3.4n reconcilation
- *
- * Revision 3.23  1994/10/03  22:13:04  kardel
- * typoe...
- *
- * Revision 3.22  1994/10/03  10:03:19  kardel
- * 3.4e reconcilation
- *
- * Revision 3.21  1994/05/30  20:58:34  kardel
- * fix prototypes
- *
- * Revision 3.20  1994/05/30  10:19:44  kardel
- * int32 cleanup
- *
- * Revision 3.19  1994/05/15  11:30:33  kardel
- * documented flag4 as statistics enable flag
- *
- * Revision 3.18  1994/05/12  12:40:34  kardel
- * shut up gcc about broken Sun/BSD code
- *
- * Revision 3.17  1994/03/03  09:27:20  kardel
- * rcs ids fixed
- *
- * Revision 3.13  1994/01/25  19:04:21  kardel
- * 94/01/23 reconcilation
- *
- * Revision 3.12  1994/01/23  17:23:05  kardel
- * 1994 reconcilation
- *
- * Revision 3.11  1993/11/11  11:20:18  kardel
- * declaration fixes
- *
- * Revision 3.10  1993/11/01  19:59:48  kardel
- * parse Solaris support (initial version)
- *
- * Revision 3.9  1993/10/06  00:14:57  kardel
- * include fixes
- *
- * Revision 3.8  1993/10/05  23:15:41  kardel
- * more STREAM protection
- *
- * Revision 3.7  1993/10/05  22:56:10  kardel
- * STREAM must be defined for PARSESTREAMS
- *
- * Revision 3.6  1993/10/03  19:10:28  kardel
- * restructured I/O handling
- *
- * Revision 3.5  1993/09/26  23:41:13  kardel
- * new parse driver logic
- *
- * Revision 3.4  1993/09/01  21:46:31  kardel
- * conditional cleanup
- *
- * Revision 3.3  1993/08/27  00:29:29  kardel
- * compilation cleanup
- *
- * Revision 3.2  1993/07/09  11:37:05  kardel
- * Initial restructured version + GPS support
- *
- * Revision 3.1  1993/07/06  09:59:12  kardel
- * DCF77 driver goes generic...
- *
+ * form V3 3.31 - log info deleted 1998/04/11 kardel
  */

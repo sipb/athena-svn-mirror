@@ -52,7 +52,7 @@ static long saveup;		/* corrections accumulator */
  * clear_adjtime - reset accumulator and threshold variables
  */
 void
-_clear_adjtime()
+_clear_adjtime(void)
 {
 	saveup = 0;
 	adjthresh = ADJ_THRESH;
@@ -62,9 +62,10 @@ _clear_adjtime()
  * adjtime - hp-ux copout of the standard Unix adjtime() system call
  */
 int
-adjtime(delta, olddelta)
-	register struct timeval *delta;
-	register struct timeval *olddelta;
+adjtime(
+	register struct timeval *delta,
+	register struct timeval *olddelta
+	)
 {
 	struct timeval newdelta;
 
@@ -101,7 +102,7 @@ adjtime(delta, olddelta)
 	 * as per Unix convention.
 	 */
 	if (olddelta)
-		olddelta->tv_sec = olddelta->tv_usec = 0;
+	    olddelta->tv_sec = olddelta->tv_usec = 0;
 	return(0);
 }
 
@@ -109,9 +110,10 @@ adjtime(delta, olddelta)
  * _adjtime - does the actual work
  */
 int
-_adjtime(delta, olddelta)
-	register struct timeval *delta;
-	register struct timeval *olddelta;
+_adjtime(
+	register struct timeval *delta,
+	register struct timeval *olddelta
+	)
 {
 	register int mqid;
 	MsgBuf msg;
@@ -123,23 +125,23 @@ _adjtime(delta, olddelta)
 	 * and recreated)
 	 */
 	if ((mqid = msgget(KEY, 0)) == -1)
-		return (-1);
+	    return (-1);
 	msgp->msgb.mtype = CLIENT;
 	msgp->msgb.tv = *delta;
 	if (olddelta)
-		msgp->msgb.code = DELTA2;
+	    msgp->msgb.code = DELTA2;
 	else
-		msgp->msgb.code = DELTA1;
+	    msgp->msgb.code = DELTA1;
 
 	/*
 	 * Tickle adjtimed and snatch residual, if indicated. Lots of
 	 * fanatic error checking here.
 	 */
 	if (msgsnd(mqid, &msgp->msgp, MSGSIZE, 0) == -1)
-		return (-1);
+	    return (-1);
 	if (olddelta) {
 		if (msgrcv(mqid, &msgp->msgp, MSGSIZE, SERVER, 0) == -1)
-			return (-1);
+		    return (-1);
 		*olddelta = msgp->msgb.tv;
 	}
 	return (0);

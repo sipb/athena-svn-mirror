@@ -20,19 +20,18 @@
 #define	KEY_TYPE_NTP	2
 #define	KEY_TYPE_ASCII	3
 
-#define	STD_PARITY_BITS	0x01010101
+#define	STD_PARITY_BITS	((unsigned)0x01010101)
 
 #endif
 
-#ifdef	MD5
 #define	KEY_TYPE_MD5	4
-#endif
 
 int
-authusekey(keyno, keytype, str)
-	u_int32 keyno;
-	int keytype;
-	const char *str;
+authusekey(
+	keyid_t keyno,
+	int keytype,
+	const u_char *str
+	)
 {
 #ifdef DES
 	u_int32 key[2];
@@ -41,20 +40,20 @@ authusekey(keyno, keytype, str)
 	int i;
 	static const char *hex = "0123456789abcdef";
 #endif
-	const char *cp;
+	const u_char *cp;
 	int len;
 
 	cp = str;
-	len = strlen(cp);
+	len = strlen((const char *)cp);
 	if (len == 0)
-		return 0;
+	    return 0;
 
 	switch(keytype) {
 #ifdef	DES
-	case KEY_TYPE_STD:
-	case KEY_TYPE_NTP:
+	    case KEY_TYPE_STD:
+	    case KEY_TYPE_NTP:
 		if (len != 16)		/* Lazy.  Should define constant */
-			return 0;
+		    return 0;
 		/*
 		 * Decode hex key.
 		 */
@@ -62,11 +61,11 @@ authusekey(keyno, keytype, str)
 		key[1] = 0;
 		for (i = 0; i < 16; i++) {
 			if (!isascii(*cp))
-				return 0;
+			    return 0;
 			xdigit = strchr(hex, isupper(*cp) ? tolower(*cp) : *cp);
 			cp++;
 			if (xdigit == 0)
-				return 0;
+			    return 0;
 			key[i>>3] <<= 4;
 			key[i>>3] |= (u_int32)(xdigit - hex) & 0xf;
 		}
@@ -76,7 +75,7 @@ authusekey(keyno, keytype, str)
 		 */
 		if (keytype == KEY_TYPE_NTP) {
 			for (i = 0; i < 2; i++)
-				key[i] = ((key[i] << 1) & ~STD_PARITY_BITS)
+			    key[i] = ((key[i] << 1) & ~STD_PARITY_BITS)
 				    | ((key[i] >> 7) & STD_PARITY_BITS);
 		}
 
@@ -94,17 +93,17 @@ authusekey(keyno, keytype, str)
 		DESauth_setkey(keyno, key);
 		break;
 	
-	case KEY_TYPE_ASCII:
+	    case KEY_TYPE_ASCII:
 		/*
 		 * Make up key from ascii representation
 		 */
 		memset((char *) keybytes, 0, sizeof(keybytes));
 		for (i = 0; i < 8 && i < len; i++)
-			keybytes[i] = *cp++ << 1;
+		    keybytes[i] = *cp++ << 1;
 		key[0] = (u_int32)keybytes[0] << 24 | (u_int32)keybytes[1] << 16
-		    | (u_int32)keybytes[2] << 8 | (u_int32)keybytes[3];
+			| (u_int32)keybytes[2] << 8 | (u_int32)keybytes[3];
 		key[1] = (u_int32)keybytes[4] << 24 | (u_int32)keybytes[5] << 16
-		    | (u_int32)keybytes[6] << 8 | (u_int32)keybytes[7];
+			| (u_int32)keybytes[6] << 8 | (u_int32)keybytes[7];
 		
 		/*
 		 * Set parity on key
@@ -118,14 +117,11 @@ authusekey(keyno, keytype, str)
 		break;
 #endif
 
-#ifdef	MD5
-	case KEY_TYPE_MD5:
-	/* XXX FIXME: MD5auth_setkey() casts arg2 back to (char *) */
-		MD5auth_setkey(keyno, (u_int32 *)str);
+	    case KEY_TYPE_MD5:
+		MD5auth_setkey(keyno, str, (int)strlen((const char *)str));
 		break;
-#endif
 
-	default:
+	    default:
 		/* Oh, well */
 		return 0;
 	}

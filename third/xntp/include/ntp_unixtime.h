@@ -5,13 +5,10 @@
 
 #include "ntp_types.h"
 
-#include <sys/time.h>
-
-
 /* gettimeofday() takes two args in BSD and only one in SYSV */
 # if defined(HAVE_SYS_TIMERS_H) && defined(HAVE_GETCLOCK)
 #  include <sys/timers.h>
-int getclock P((int clock_type, struct timespec *tp));
+int getclock (int clock_type, struct timespec *tp);
 /* Don't #define GETTIMEOFDAY because we shouldn't be using it in this case. */
 #   define SETTIMEOFDAY(a, b) (settimeofday(a, b))
 # else /* not (HAVE_SYS_TIMERS_H && HAVE_GETCLOCK) */
@@ -19,8 +16,13 @@ int getclock P((int clock_type, struct timespec *tp));
 #   define GETTIMEOFDAY(a, b) (gettimeofday(a))
 #   define SETTIMEOFDAY(a, b) (settimeofday(a))
 #  else /* ! SYSV_TIMEOFDAY */
+#if defined SYS_CYGWIN32
+#   define GETTIMEOFDAY(a, b) (gettimeofday(a, b))
+#   define SETTIMEOFDAY(a, b) (settimeofday_NT(a))
+#else
 #   define GETTIMEOFDAY(a, b) (gettimeofday(a, b))
 #   define SETTIMEOFDAY(a, b) (settimeofday(a, b))
+#endif
 #  endif /* SYSV_TIMEOFDAY */
 # endif /* not (HAVE_SYS_TIMERS_H && HAVE_GETCLOCK) */
 

@@ -1,88 +1,97 @@
 /*
- * authencrypt - compute and encrypt the mac field in an NTP packet
+ * DES interface for rsaref2.0
+ *
+ * These routines implement an interface for the RSA Laboratories
+ * implementation of the Data Encryption Standard (DES) algorithm
+ * operating in Cipher-Block Chaining (CBC) mode. This algorithm is
+ * included in the rsaref2.0 package available from RSA in the US and
+ * foreign countries. Further information is available at www.rsa.com.
  */
+
+#include "ntp_machine.h"
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
+#ifdef DES
+#include "ntp_types.h"
+#include "ntp_fp.h"
+#include "ntp_string.h"
+#include "global.h"
+#include "des.h"
 #include "ntp_stdlib.h"
 
+#define BLOCK_OCTETS	8	/* message digest size */
+#define MAXTPKT 	128 /* max packet size */
+
+
 /*
- * For our purposes an NTP packet looks like:
+ * DESauthencrypt - generate DES-CBC message authenticator
  *
- *	a variable amount of encrypted data, multiple of 8 bytes, followed by:
- *	NOCRYPT_OCTETS worth of unencrypted data, followed by:
- *	BLOCK_OCTETS worth of ciphered checksum.
- */ 
-#define	NOCRYPT_OCTETS	4
-#define	BLOCK_OCTETS	8
-
-#define	NOCRYPT_int32S	((NOCRYPT_OCTETS)/sizeof(u_int32))
-#define	BLOCK_int32S	((BLOCK_OCTETS)/sizeof(u_int32))
-
-/*
- * Imported from the key data base module
+ * Returns length of authenticator field.
  */
-extern u_int32 cache_keyid;	/* cached key ID */
-extern u_int32 DEScache_ekeys[];	/* cached decryption keys */
-extern u_int32 DESzeroekeys[];	/* zero key decryption keys */
-
-/*
- * Stat counters from the database module
- */
-extern u_int32 authencryptions;
-extern u_int32 authkeyuncached;
-extern u_int32 authnokey;
-
 int
-DESauthencrypt(keyno, pkt, length)
-	u_int32 keyno;
-	u_int32 *pkt;
-	int length;	/* length of encrypted portion of packet */
+DESauthencrypt(
+	u_char *key,		/* key pointer */
+	u_int32 *pkt,		/* packet pointer */
+	int length		/* packet length */
+	)
 {
-	register u_int32 *pd;
-	register int i;
-	register u_char *keys;
-	register int len;
+	DES_CBC_CTX ctx;
+	u_int32 tpkt[MAXTPKT];
 	u_int32 work[2];
-
-	authencryptions++;
-
-	if (keyno == 0) {
-		keys = (u_char *)DESzeroekeys;
-	} else {
-		if (keyno != cache_keyid) {
-			authkeyuncached++;
-			if (!authhavekey(keyno)) {
-				authnokey++;
-				return 0;
-			}
-		}
-		keys = (u_char *)DEScache_ekeys;
-	}
+	int i, j;
 
 	/*
-	 * Do the encryption.  Work our way forward in the packet, eight
-	 * bytes at a time, encrypting as we go.  Note that the byte order
-	 * issues are handled by the DES routine itself
+	 * DES-CBC with zero IV. Note the encrypted text is discarded.
 	 */
-	pd = pkt;
 	work[0] = work[1] = 0;
-	len = length / sizeof(u_int32);
+	DES_CBCInit(&ctx, key, (u_char *)work, 1);
+	DES_CBCUpdate(&ctx, (u_char *)tpkt, (u_char *)pkt,
+		(u_int)length);
+	i = length / 4 + 1;
+	j = i - 3;
+	pkt[i++] = (u_int32)htonl(tpkt[j++]);
+	pkt[i] = (u_int32)htonl(tpkt[j]);
+	return (BLOCK_OCTETS + 4);
+}
 
-	for (i = (len/2); i > 0; i--) {
-		work[0] ^= *pd++;
-		work[1] ^= *pd++;
-		DESauth_des(work, keys);
-	}
 
-	if (len & 0x1) {
-		work[0] ^= *pd++;
-		DESauth_des(work, keys);
-	}
+/*
+ * DESauthdecrypt - verify DES message authenticator
+ *
+ * Returns one if authenticator valid, zero if invalid.
+ */
+int
+DESauthdecrypt(
+	u_char *key,		/* key pointer */
+	u_int32 *pkt,		/* packet pointer */
+	int length, 		/* packet length */
+	int size		/* size of MAC field */
+	)
+{
+	DES_CBC_CTX ctx;
+	u_int32 tpkt[MAXTPKT];
+	u_int32 work[2];
+	int i, j;
 
 	/*
-	 * Space past the keyid and stick the result back in the mac field
+	 * DES-CBC with zero IV. Note the encrypted text is discarded.
 	 */
-	pd += NOCRYPT_int32S;
-	*pd++ = work[0];
-	*pd = work[1];
-
-	return 4 + BLOCK_OCTETS;	/* return size of key and MAC  */
+	if (size != BLOCK_OCTETS + 4)
+		return (0);
+	work[0] = work[1] = 0;
+	DES_CBCInit (&ctx, key, (u_char *)work, 1);
+	DES_CBCUpdate (&ctx, (u_char *)tpkt, (u_char *)pkt,
+		(u_int)length);
+	i = length / 4 + 1;
+	j = i - 3;
+	if ((u_int32)ntohl(pkt[i++]) == tpkt[j++] &&
+		(u_int32)ntohl(pkt[i]) == tpkt[j])
+		return (1);
+	return (0);
 }
+#else
+int authencrypt_bs;
+#endif /* DES */

@@ -28,15 +28,16 @@
 
 
 int
-clocktime(yday, hour, minute, second, tzoff, rec_ui, yearstart, ts_ui)
-	int yday;
-	int hour;
-	int minute;
-	int second;
-	int tzoff;
-	u_long rec_ui;
-	u_long *yearstart;
-	u_int32 *ts_ui;
+clocktime(
+	int yday,
+	int hour,
+	int minute,
+	int second,
+	int tzoff,
+	u_long rec_ui,
+	u_long *yearstart,
+	u_int32 *ts_ui
+	)
 {
 	register long tmp;
 	register u_long date;

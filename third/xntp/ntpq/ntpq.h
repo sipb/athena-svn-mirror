@@ -43,14 +43,14 @@ struct parse {
 };
 
 /*
- * xntpdc includes a command parser which could charitably be called
+ * ntpdc includes a command parser which could charitably be called
  * crude.  The following structure is used to define the command
  * syntax.
  */
 struct xcmd {
   const char *keyword;		/* command key word */
-  void (*handler)	P((struct parse *, FILE *));	/* command handler */
-  u_char arg[MAXARGS];		/* descriptors for arguments */
+	void (*handler)	P((struct parse *, FILE *));	/* command handler */
+	u_char arg[MAXARGS];	/* descriptors for arguments */
   const char *desc[MAXARGS];	/* descriptions for arguments */
   const char *comment;
 };
@@ -76,7 +76,7 @@ struct ctl_var {
 };
 
 extern	void	asciize		P((int, char *, FILE *));
-extern	int	getnetnum	P((char *, u_int32 *, char *));
+extern	int	getnetnum	P((const char *, u_int32 *, char *));
 extern	void	sortassoc	P((void));
 extern	int	doquery		P((int, int, int, int, char *, u_short *, int *, char **));
 extern	char *	nntohost	P((u_int32));

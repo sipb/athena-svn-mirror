@@ -9,7 +9,7 @@ struct ntp_control {
 	u_char r_m_e_op;		/* response, more, error, opcode */
 	u_short sequence;		/* sequence number of request */
 	u_short status;			/* status word for association */
-	u_short associd;		/* association ID */
+	associd_t associd;		/* association ID */
 	u_short offset;			/* offset of this batch of data */
 	u_short count;			/* count of data in this packet */
 	u_char data[(480 + MAX_MAC_LEN)]; /* data + auth */
@@ -92,14 +92,14 @@ struct ntp_control {
 #define	CTL_PST_REACH		0x10
 #define	CTL_PST_UNSPEC		0x08
 
-#define	CTL_PST_SEL_REJECT	0	/* rejected */
-#define	CTL_PST_SEL_SANE	1	/* passed sanity checks */
-#define	CTL_PST_SEL_CORRECT	2	/* passed correctness checks */
-#define	CTL_PST_SEL_SELCAND	3	/* passed candidate checks */
-#define	CTL_PST_SEL_SYNCCAND	4	/* passed outlyer checks */
-#define	CTL_PST_SEL_DISTSYSPEER	5	/* selected, distance exceeded */
-#define	CTL_PST_SEL_SYSPEER	6	/* selected */
-#define	CTL_PST_SEL_PPS		7	/* selected, pps signal override */
+#define	CTL_PST_SEL_REJECT	0	/*   reject */
+#define	CTL_PST_SEL_SANE	1	/* x falsetick */
+#define	CTL_PST_SEL_CORRECT	2	/* . excess */
+#define	CTL_PST_SEL_SELCAND	3	/* - outlyer */
+#define	CTL_PST_SEL_SYNCCAND	4	/* + candidat */
+#define	CTL_PST_SEL_DISTSYSPEER	5	/* # selected */
+#define	CTL_PST_SEL_SYSPEER	6	/* * sys.peer */
+#define	CTL_PST_SEL_PPS		7	/* o pps.peer */
 
 #define	CTL_PEER_MAXEVENTS	15
 
@@ -154,19 +154,29 @@ struct ntp_control {
 #define	CS_REFTIME	7
 #define	CS_POLL		8
 #define	CS_PEERID	9
-#define	CS_OFFSET	10
-#define	CS_DRIFT	11
-#define	CS_COMPLIANCE	12
-#define	CS_CLOCK	13
-#define	CS_LEAPIND	14
-#define	CS_LEAPWARNING	15
-#define	CS_PROCESSOR	16
-#define	CS_SYSTEM	17
-#define	CS_KEYID	18
-#define	CS_REFSKEW	19
-#define CS_VARLIST	20
-
+#define CS_STATE	10
+#define	CS_OFFSET	11
+#define	CS_DRIFT	12
+#define CS_JITTER	13
+#define	CS_CLOCK	14
+#define	CS_PROCESSOR	15
+#define	CS_SYSTEM	16
+#define CS_VERSION	17
+#define	CS_STABIL	18
+#define CS_VARLIST	19
+#ifdef PUBKEY
+#define CS_FLAGS	20
+#define CS_HOST		21
+#define CS_PUBLIC	22
+#define	CS_CERTIF	23
+#define CS_DHPARAMS	24
+#define	CS_REVTIME	25
+#define CS_LEAPTAB	26
+#define CS_TAI		27
+#define	CS_MAXCODE	CS_TAI
+#else
 #define	CS_MAXCODE	CS_VARLIST
+#endif /* PUBKEY */
 
 /*
  * Peer variables we understand
@@ -196,19 +206,33 @@ struct ntp_control {
 #define	CP_TIMER	23
 #define	CP_DELAY	24
 #define	CP_OFFSET	25
-#define	CP_DISPERSION	26
-#define	CP_KEYID	27
-#define	CP_FILTDELAY	28
-#define	CP_FILTOFFSET	29
-#define	CP_PMODE	30
-#define	CP_RECEIVED	31
-#define	CP_SENT		32
-#define	CP_FILTERROR	33
-#define	CP_FLASH	34
-#define CP_DISP		35
-#define CP_VARLIST	36
-
+#define CP_JITTER	26
+#define	CP_DISPERSION	27
+#define	CP_KEYID	28
+#define	CP_FILTDELAY	29
+#define	CP_FILTOFFSET	30
+#define	CP_PMODE	31
+#define	CP_RECEIVED	32
+#define	CP_SENT		33
+#define	CP_FILTERROR	34
+#define	CP_FLASH	35
+#define CP_TTL		36
+#define CP_TTLMAX	37
+#define CP_VARLIST	38
+#ifdef PUBKEY
+#define CP_FLAGS	39
+#define CP_HOST		40
+#define CP_PUBLIC	41
+#define	CP_CERTIF	42
+#define	CP_SESKEY	43
+#define	CP_SASKEY	44
+#define	CP_INITSEQ	45
+#define	CP_INITKEY	46
+#define	CP_INITTSP	47
+#define	CP_MAXCODE	CP_INITTSP
+#else
 #define	CP_MAXCODE	CP_VARLIST
+#endif /* PUBKEY */
 
 /*
  * Clock variables we understand

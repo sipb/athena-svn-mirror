@@ -150,5 +150,3 @@ void reportAnEEvent(DWORD dwIdEvent, WORD cStrings, LPTSTR *pszStrings)
   DeregisterEventSource(hAppLog);
   return;
 }
-
-

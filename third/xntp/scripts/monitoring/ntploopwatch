@@ -1,17 +1,19 @@
-#!/local/bin/perl -w--*-perl-*-
+#!/usr/bin/perl -w
+;# --*-perl-*--
 ;#
-;# ntploopwatch,v 3.1 1993/07/06 01:09:13 jbj Exp
+;# /src/NTP/ntp-4/scripts/monitoring/ntploopwatch,v 4.3 1999/02/21 12:18:38 kardel RELEASE_19990228_A
+;# RELEASE_19990228_A
 ;#
 ;# process loop filter statistics file and either
 ;#     - show statistics periodically using gnuplot
 ;#     - or print a single plot
 ;#
-;#  Copyright (c) 1992 
-;#  Rainer Pruy Friedrich-Alexander Universitaet Erlangen-Nuernberg
+;#  Copyright (c) 1992-1998 
+;#  Rainer Pruy, Friedrich-Alexander Universität Erlangen-Nürnberg
 ;#
 ;#
 ;#############################################################
-$0 =~ s!^.*/([^/]+)$!\1!;
+$0 =~ s!^.*/([^/]+)$!$1!;
 $F = ' ' x length($0);
 $|=1;
 
@@ -53,17 +55,17 @@ a file of this name instead of delivered to a printer.
 E-O-P
 
 ;# add directory to look for lr.pl and timelocal.pl (in front of current list)
-unshift(@INC,"/src/NTP/v3/xntp/monitoring");
+unshift(@INC,"/usr/local/xntp/monitoring");
 
 require "lr.pl";	# linear regresion routines
 
 $MJD_1970 = 40587;		# from ntp.h (V3)
 $RecordSize = 48;		# usually a line fits into 42 bytes
-$MinClip = 0.12;		# clip Y scales with greater range than this
+$MinClip = 1;		# clip Y scales with greater range than this
 
 ;# largest extension of Y scale from mean value, factor for standart deviation
-$FuzzLow = 2;			# for side closer to zero
-$FuzzBig = 1;			# for side farther from zero
+$FuzzLow = 2.2;			# for side closer to zero
+$FuzzBig = 1.8;			# for side farther from zero
 
 require "ctime.pl";
 require "timelocal.pl";
@@ -73,12 +75,14 @@ if (defined(@ctime'MoY))
 {
   *Month=*ctime'MoY;
   *Day=*ctime'DoW;
-}
+} 					# ' re-sync emacs fontification
 else
 {
   @Month = ('Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec');
   @Day   = ('Sun','Mon','Tue','Wed','Thu','Fri','Sat');
 }
+print @ctime'DoW if 0; # ' re-sync emacs fontification
+
 ;# max number of days per month
 @MaxNumDaysPerMonth = (31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 
@@ -171,9 +175,9 @@ if (!defined($PrintIt))
 
 ;# configuration file
 $config = "loopwatch.config" unless defined($config);
-($STATHOST = $config) =~ s!.*loopwatch\.config.([^/\.]*)$!\1!
+($STATHOST = $config) =~ s!.*loopwatch\.config.([^/\.]*)$!$1!
     unless defined($STATHOST);
-($STATTAG = $STATHOST) =~ s/^([^\.\*\s]+)\..*$/\1/;
+($STATTAG = $STATHOST) =~ s/^([^\.\*\s]+)\..*$/$1/;
 
 $srcprefix =~ s/\$STATHOST/$STATHOST/g;
 
@@ -230,6 +234,15 @@ sub abs
   ($_[$[] < 0) ? -($_[$[]) : $_[$[];
 }
 
+sub boolval
+{
+  local($v) = ($_[$[]);
+
+  return 1 if ($v eq 'yes') || ($v eq 'y');
+  return 1 if ($v =~ /^[0-9]*$/) && ($v != 0);
+  return 0;
+}
+
 ;#####################
 ;# start of real work 
 
@@ -275,7 +288,7 @@ sub read_config
     s/^([^\#]*[^\#\s]?)\s*\#.*$//;
     next if /^\s*$/;
 
-    s/^\s*([^=\s]*)\s*=\s*(.*\S)\s*$/\1=\2/;
+    s/^\s*([^=\s]*)\s*=\s*(.*\S)\s*$/$1=$2/;
 
     ($c,$v) = split(/=/,$_,2);
     print "processing \"$c=$v\"\n" if $verbose > 3;
@@ -285,15 +298,15 @@ sub read_config
     ($c eq 'srcprefix') && (($srcprefix=$v)=~s/\$STATHOST/$STATHOST/g,1)
 	&& next;
     ($c eq 'showoffs') &&
-	($showoffs = ($v eq 'yes' || $v eq 'y' || $v != 0),1) && next;
+	($showoffs = boolval($v),1) && next;
     ($c eq 'showfreq') &&
-	($showfreq = ($v eq 'yes' || $v eq 'y' || $v != 0),1) && next;
+	($showfreq = boolval($v),1) && next;
     ($c eq 'showcmpl') &&
-	($showcmpl = ($v eq 'yes' || $v eq 'y' || $v != 0),1) && next;
+	($showcmpl = boolval($v),1) && next;
     ($c eq 'showoreg') &&
-	($showoreg = ($v eq 'yes' || $v eq 'y' || $v != 0),1) && next;
+	($showoreg = boolval($v),1) && next;
     ($c eq 'showfreg') &&
-	($showfreg = ($v eq 'yes' || $v eq 'y' || $v != 0),1) && next;
+	($showfreg = boolval($v),1) && next;
 
     ($c eq 'exit') && (unlink($tmpfile),die("$0: exit by config request\n"));
 
@@ -497,6 +510,7 @@ sub make_doplot
 			    $minoffs,$maxoffs,
 			    "[ms]"),
 	 $c = ",");
+    $LastCmplScale = 1 if ! defined($LastCmplScale);
     $showcmpl &&
 	($doplot .= sprintf($fmt,$c,$tmpfile,4,
 			    "compliance" .
@@ -506,6 +520,10 @@ sub make_doplot
 			    $mincmpl/$LastCmplScale,$maxcmpl/$LastCmplScale,
 			    ""),
 	 $c = ",");
+    $LastFreqBase = 0 if ! defined($LastFreqBase);
+    $LastFreqBaseString = "?" if ! defined($LastFreqBaseString);
+    $FreqScale = 1 if ! defined($FreqScale);
+    $FreqScaleInv = 1 if ! defined($FreqScaleInv);
     $showfreq &&
 	($doplot .= sprintf($fmt,$c,$tmpfile,3,
 			    "frequency" .
@@ -585,6 +603,8 @@ sub genfile
     print "memory allocation ready\n" if $verbose > 2;
     sleep(3) if $verbose > 1;
 
+    $fpos[$[] = '' if !defined($fpos[$[]);
+
     if (index($in,"/") < $[)
     {
 	$sdir = ".";
@@ -595,7 +615,8 @@ sub genfile
 	($sdir,$sname) = ($in =~ m!^(.*)/([^/]*)!);
 	$sname = "" unless defined($sname);
     }
-
+    
+    $Ltime = -1 if ! defined($Ltime);
     if (!defined($Lsdir) || $Lsdir ne $sdir || $Ltime != (stat($sdir))[$[+9] ||
 	grep($F_mtime{$_} != (stat($F_name{$_}))[$[+9], @F_files))
 	
@@ -626,7 +647,7 @@ sub genfile
 		$F_key{$name} = $key;
 		$modified++;
 	    }
-	    if (!defined($F_name{$key}) || $F_name{$key} != $name)
+	    if (!defined($F_name{$key}) || $F_name{$key} ne $name)
 	    {
 		$F_name{$key} = $name;
 		$modified++;
@@ -991,19 +1012,20 @@ sub genfile
 	    
 	    @F = split;
 	    
-	    next if @F < 5;	# no valid input line is this short
+	    next if @F < 6;	# no valid input line is this short
 	    next if $F[$[] eq "";
+	    next if ($F[$[] !~ /^\d+$/);
 	    ($F[$[] !~ /^\d+$/) && # A 'never should have happend' error
-		die("$0: unexpected input line: $_\n");
+		die("$0: unexpected input line: >$_<\n");
 	    
 	    ;# modified Julian to UNIX epoch
 	    $t = ($F[$[] - $MJD_1970) * 24 * 60 * 60;
 	    $t += $F[$[+1];	# add seconds + fraction
 	    
 	    ;# multiply offset by 1000 to get ms - try to avoid float op
-	    (($F[$[+2] =~ s/(\d*)\.(\d{3})(\d*)/\1\2.\3/) &&
+	    (($F[$[+2] =~ s/(\d*)\.(\d{3})(\d*)/$1$2.$3/) &&
 	     $F[$[+2] =~ s/0+([\d\.])/($1 eq '.') ? '0.' : $1/e) # strip leading zeros
-		|| $F[$[+2] *= 1000;
+		|| ($F[$[+2] *= 1000);
 
 	    
 	    ;# skip samples out of specified time range
@@ -1014,7 +1036,7 @@ sub genfile
 	    
 	    push(@offs,$F[$[+2]);
 	    push(@freq,$F[$[+3] * (2**20/10**6));
-	    push(@cmpl,$F[$[+4]);
+	    push(@cmpl,$F[$[+5]);
 	    
 	    push(@break, (defined($lastT) && ($t - $lastT > $deltaT))); 
 	    $lastT = $t;
@@ -1047,17 +1069,24 @@ sub genfile
 	local($freqbase) unless defined($freqbase);
 	local($cmplscale) unless defined($cmplscale);
 	
-	undef($mintime,$maxtime,$minoffs,$maxoffs,
-	      $minfreq,$maxfreq,$mincmpl,$maxcmpl,
-	      $miny,$maxy);
+	undef $mintime;
+	undef $maxtime;
+	undef $minoffs;
+	undef $maxoffs;
+	undef $minfreq;
+	undef $maxfreq;
+	undef $mincmpl;
+	undef $maxcmpl;
+	undef $miny;
+	undef $maxy ;
 	
 	print "computing ranges\n" if $verbose > 2;
 	
 	$LastCnt = @time;
 
 	;# @time is in ascending order (;-)
-	$mintime = @time[$[];
-	$maxtime = @time[$#time];
+	$mintime = $time[$[];
+	$maxtime = $time[$#time];
 	unless (defined($timebase))
 	{
 	    local($time,@X) = (time);
@@ -1150,17 +1179,19 @@ sub genfile
 		else
 		{
 		    $FreqScale = 1;
-		    $FreqScale = 10 ** int(log($s)/log(10) - 0.8);
+		    $FreqScale = 10 ** int(log($s)/log(10) - 0.9999);
 		    $FreqScaleInv =
 			("$FreqScale" =~ /^10(0*)$/) ? "0.${1}1" : 
 			 ($FreqScale == 1 ? "" : (1/$FreqScale));
 		    
-		    $freqbase = $m * $FreqScale;
-		    $freqbase -= &lr_mean('offs');
+		    $freqbase = ($maxfreq + $minfreq)/ 2 * $FreqScale; #$m * $FreqScale;
+		    $freqbase -= ($maxy + $miny) / 2; #&lr_mean('offs');
 
 		    ;# round resulting freqbase
 		    ;# to precision of min max difference
-		    $s = int(log(($maxfreq-$minfreq)*$FreqScale)/log(10))-1;
+		    $s = -12;
+		    $s = int(log(($maxfreq-$minfreq)*$FreqScale)/log(10))-1
+			unless ($maxfreq-$minfreq) < 1e-12;
 		    $s = 10 ** $s;
 		    $freqbase = int($freqbase / $s) * $s;
 		}
@@ -1294,9 +1325,10 @@ sub genfile
     
     print "plot command input file created\n"
 	if $verbose > 2;
-    
-    if (($fpos[$[] eq 'cnt' && @loffset >= $cnt) ||
-	($fpos[$[] eq 'start' && $time[$[] <= $StartTime) ||
+	
+	
+    if (($fpos[$[] eq 'cnt' && scalar(@loffset) >= $cnt) ||
+	($fpos[$[] eq 'start' && $mintime <= $StartTime) ||
 	($fpos[$[] eq 'end'))
     {
 	return ($fpos[$[],$filekey[$[],$loffset[$[]);
@@ -1332,7 +1364,7 @@ sub genfile
 	    ;# the primary guess at top of genfile() should usually allow this
 	    ;# assumption
 	    ;# if the offset of the first sample used is within 
-	    ;# a different file than we guessed it must have occured later
+	    ;# a different file than we guessed it must have occurred later
 	    ;# in the sequence of files
 	    ;# this only can happen if our starting file did not contain
 	    ;# a valid sample from the starting point we guessed
@@ -1386,6 +1418,10 @@ sub genfile
 	return ($val < 0) ? 0 : $val;
     }
 }
+
+$Ltime = -1 if ! defined($Ltime);
+$LastFreqBase = 0;
+$LastFreqBaseString = "??";
 
 ;# initial setup of plot
 print "initialize plotting\n" if $verbose;
@@ -1466,7 +1502,7 @@ sub date_time_spec2seconds
 
     local($last) = ();
 
-    s/^\D*(.*\d)\D*/\1/;	# strip off garbage
+    s/^\D*(.*\d)\D*/$1/;	# strip off garbage
 
   PARSE:
     {

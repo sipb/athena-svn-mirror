@@ -87,7 +87,7 @@ extern	u_long	caltontp	P((const struct calendar *));
 
 /*
  * Start day of NTP time as days past the imaginary date 12/1/1 BC.
- * (This is the beginning of the Christian Era, or BCE.)
+ * P((This is the beginning of the Christian Era, or BCE.))
  */
 #define DAY_NTP_STARTS 693596
 /*

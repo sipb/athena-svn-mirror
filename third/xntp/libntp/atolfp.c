@@ -11,23 +11,24 @@
  * Powers of 10
  */
 static u_long ten_to_the_n[10] = {
-		   0,
-		  10,
-		 100,
-		1000,
-	       10000,
-	      100000,
-	     1000000,
-	    10000000,
-	   100000000,
-	  1000000000,
+	0,
+	10,
+	100,
+	1000,
+	10000,
+	100000,
+	1000000,
+	10000000,
+	100000000,
+	1000000000,
 };
 
 
 int
-atolfp(str, lfp)
-	const char *str;
-	l_fp *lfp;
+atolfp(
+	const char *str,
+	l_fp *lfp
+	)
 {
 	register const char *cp;
 	register u_long dec_i;
@@ -47,8 +48,8 @@ atolfp(str, lfp)
 	 *
 	 * [spaces][-|+][digits][.][digits][spaces|\n|\0]
 	 */
-	while (isspace(*cp))
-		cp++;
+	while (isspace((int)*cp))
+	    cp++;
 	
 	if (*cp == '-') {
 		cp++;
@@ -56,10 +57,10 @@ atolfp(str, lfp)
 	}
 	
 	if (*cp == '+')
-		cp++;
+	    cp++;
 
-	if (*cp != '.' && !isdigit(*cp))
-		return 0;
+	if (*cp != '.' && !isdigit((int)*cp))
+	    return 0;
 
 	while (*cp != '\0' && (ind = strchr(digits, *cp)) != NULL) {
 		dec_i = (dec_i << 3) + (dec_i << 1);	/* multiply by 10 */
@@ -67,23 +68,23 @@ atolfp(str, lfp)
 		cp++;
 	}
 
-	if (*cp != '\0' && !isspace(*cp)) {
+	if (*cp != '\0' && !isspace((int)*cp)) {
 		if (*cp++ != '.')
-			return 0;
+		    return 0;
 	
 		while (ndec < 9 && *cp != '\0'
-		    && (ind = strchr(digits, *cp)) != NULL) {
+		       && (ind = strchr(digits, *cp)) != NULL) {
 			ndec++;
 			dec_f = (dec_f << 3) + (dec_f << 1);	/* *10 */
 			dec_f += (ind - digits);
 			cp++;
 		}
 
-		while (isdigit(*cp))
-			cp++;
+		while (isdigit((int)*cp))
+		    cp++;
 		
-		if (*cp != '\0' && !isspace(*cp))
-			return 0;
+		if (*cp != '\0' && !isspace((int)*cp))
+		    return 0;
 	}
 
 	if (ndec > 0) {
@@ -104,12 +105,12 @@ atolfp(str, lfp)
 			bit >>= 1;
 		}
 		if ((dec_f << 1) > ten_fact)
-			tmp++;
+		    tmp++;
 		dec_f = tmp;
 	}
 
 	if (isneg)
-		M_NEG(dec_i, dec_f);
+	    M_NEG(dec_i, dec_f);
 	
 	lfp->l_ui = dec_i;
 	lfp->l_uf = dec_f;

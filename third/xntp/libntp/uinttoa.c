@@ -7,8 +7,9 @@
 #include "ntp_stdlib.h"
 
 char *
-uinttoa(uval)
-	u_long uval;
+uinttoa(
+	u_long uval
+	)
 {
 	register char *buf;
 

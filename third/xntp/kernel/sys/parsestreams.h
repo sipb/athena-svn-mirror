@@ -1,9 +1,9 @@
 /*
- * /src/NTP/REPOSITORY/v4/kernel/sys/parsestreams.h,v 3.20 1996/12/01 16:03:17 kardel Exp
+ * /src/NTP/ntp-4/kernel/sys/parsestreams.h,v 4.4 1998/06/14 21:09:32 kardel RELEASE_19990228_A
  *
- * parsestreams.h,v 3.20 1996/12/01 16:03:17 kardel Exp
+ * parsestreams.h,v 4.4 1998/06/14 21:09:32 kardel RELEASE_19990228_A
  *
- * Copyright (c) 1989,1990,1991,1992,1993,1994,1995,1996 by Frank Kardel
+ * Copyright (c) 1989-1998 by Frank Kardel
  * Friedrich-Alexander Universität Erlangen-Nürnberg, Germany
  *                                   
  * This program is distributed in the hope that it will be useful,
@@ -13,7 +13,7 @@
  */
 
 #if	!(defined(lint) || defined(__GNUC__))
-  static char sysparsehrcsid[]="parsestreams.h,v 3.20 1996/12/01 16:03:17 kardel Exp";
+  static char sysparsehrcsid[] = "parsestreams.h,v 4.4 1998/06/14 21:09:32 kardel RELEASE_19990228_A";
 #endif
 
 #undef PARSEKERNEL
@@ -22,10 +22,28 @@
 #define PARSESTREAM
 #endif
 #endif
-#if defined(PARSESTREAM) && defined(STREAM)
+#if defined(PARSESTREAM) && defined(HAVE_SYS_STREAM_H)
 #define PARSEKERNEL
+
+#ifdef HAVE_SYS_TERMIOS_H
+#include <sys/termios.h>
+#endif
+
 #include <sys/ppsclock.h>
+
 #define NTP_NEED_BOPS
+
+#if defined(PARSESTREAM) && (defined(_sun) || defined(__sun)) && defined(HAVE_SYS_STREAM_H)
+/*
+ * Sorry, but in SunOS 4.x AND Solaris 2.x kernels there are no
+ * mem* operations. I don't want them - bcopy, bzero
+ * are fine in the kernel
+ */
+#undef HAVE_STRING_H	/* don't include that at kernel level - prototype mismatch in Solaris 2.6 */
+#include "ntp_string.h"
+#else
+#include <stdio.h>
+#endif
 
 struct parsestream		/* parse module local data */
 {
@@ -65,3 +83,25 @@ extern int parsedebug;
 
 #endif
 #endif
+
+/*
+ * parsestreams.h,v
+ * Revision 4.4  1998/06/14 21:09:32  kardel
+ * Sun acc cleanup
+ *
+ * Revision 4.3  1998/06/13 18:14:32  kardel
+ * make mem*() to b*() mapping magic work on Solaris too
+ *
+ * Revision 4.2  1998/06/13 15:16:22  kardel
+ * fix mem*() to b*() function macro emulation
+ *
+ * Revision 4.1  1998/06/13 11:50:37  kardel
+ * STREAM macro gone in favor of HAVE_SYS_STREAM_H
+ *
+ * Revision 4.0  1998/04/10 19:51:30  kardel
+ * Start 4.0 release version numbering
+ *
+ * Revision 1.2  1998/04/10 19:27:42  kardel
+ * initial NTP VERSION 4 integration of PARSE with GPS166 binary support
+ *
+ */

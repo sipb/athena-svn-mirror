@@ -15,17 +15,19 @@
 #include "../include/ntp.h"
 #include "../include/ntp_unixtime.h"
 
+#ifdef CHULDISC
 #ifdef STREAM
 # ifdef HAVE_SYS_CHUDEFS_H
-#  include <sys/chudefs.h>
-# endif
+#include <sys/chudefs.h>
+#endif
 #include <stropts.h>
+#endif
 #endif
 
 #ifdef CHULDISC
 # ifdef HAVE_SYS_CHUDEFS_H
-#  include <sys/chudefs.h>
-# endif
+#include <sys/chudefs.h>
+#endif
 #endif
 
 #ifndef CHULDISC
@@ -66,9 +68,11 @@ extern u_long ustotshi[];
 /*
  * main - parse arguments and handle options
  */
-main(argc, argv)
-int argc;
-char *argv[];
+int
+main(
+	int argc,
+	char *argv[]
+	)
 {
 	int c;
 	int errflg = 0;
@@ -78,52 +82,52 @@ char *argv[];
 
 	progname = argv[0];
 	while ((c = ntp_getopt(argc, argv, "cdfpt")) != EOF)
-		switch (c) {
+	    switch (c) {
 		case 'c':
 #ifdef STREAM
-			usechuldisc = 1;
-			break;
+		    usechuldisc = 1;
+		    break;
 #endif
 #ifdef CHULDISC
-			usechuldisc = 1;
-			break;
+		    usechuldisc = 1;
+		    break;
 #endif
 #ifndef STREAM
 #ifndef CHULDISC
-			(void) fprintf(stderr,
-		"%s: CHU line discipline not available on this machine\n",
-			    progname);
-			exit(2);
+		    (void) fprintf(stderr,
+				   "%s: CHU line discipline not available on this machine\n",
+				   progname);
+		    exit(2);
 #endif
 #endif
 		case 'd':
-			++debug;
-			break;
+		    ++debug;
+		    break;
 		case 'f':
-			dofilter = 1;
-			break;
+		    dofilter = 1;
+		    break;
 		case 'p':
-			doprocess = 1;
+		    doprocess = 1;
 		case 't':
-			showtimes = 1;
-			break;
+		    showtimes = 1;
+		    break;
 		default:
-			errflg++;
-			break;
-		}
+		    errflg++;
+		    break;
+	    }
 	if (errflg || ntp_optind+1 != argc) {
 #ifdef STREAM
 		(void) fprintf(stderr, "usage: %s [-dft] tty_device\n",
-		    progname);
+			       progname);
 #endif
 #ifdef CHULDISC
 		(void) fprintf(stderr, "usage: %s [-dft] tty_device\n",
-		    progname);
+			       progname);
 #endif
 #ifndef STREAM
 #ifndef CHULDISC
 		(void) fprintf(stderr, "usage: %s [-cdft] tty_device\n",
-		    progname);
+			       progname);
 #endif
 #endif
 		exit(2);
@@ -134,15 +138,15 @@ char *argv[];
 	init_chu();
 #ifdef STREAM
 	if (usechuldisc)
-		process_ldisc(c);
+	    process_ldisc(c);
 	else
 #endif
 #ifdef CHULDISC
-	if (usechuldisc)
+	    if (usechuldisc)
 		process_ldisc(c);
-	else
+	    else
 #endif
-	process_raw(c);
+		process_raw(c);
 	/*NOTREACHED*/
 }
 
@@ -151,63 +155,64 @@ char *argv[];
  * openterm - open a port to the CHU clock
  */
 int
-openterm(dev)
-	char *dev;
+openterm(
+	char *dev
+	)
 {
 	int s;
 	struct sgttyb ttyb;
 
 	if (debug)
-		(void) fprintf(stderr, "Doing open...");
+	    (void) fprintf(stderr, "Doing open...");
 	if ((s = open(dev, O_RDONLY, 0777)) < 0)
-		error("open(%s)", dev, "");
+	    error("open(%s)", dev, "");
 	if (debug)
-		(void) fprintf(stderr, "open okay\n");
+	    (void) fprintf(stderr, "open okay\n");
 
 	if (debug)
-		(void) fprintf(stderr, "Setting exclusive use...");
+	    (void) fprintf(stderr, "Setting exclusive use...");
 	if (ioctl(s, TIOCEXCL, (char *)0) < 0)
-		error("ioctl(TIOCEXCL)", "", "");
+	    error("ioctl(TIOCEXCL)", "", "");
 	if (debug)
-		(void) fprintf(stderr, "done\n");
+	    (void) fprintf(stderr, "done\n");
 	
 	ttyb.sg_ispeed = ttyb.sg_ospeed = B300;
 	ttyb.sg_erase = ttyb.sg_kill = 0;
 	ttyb.sg_flags = EVENP|ODDP|RAW;
 	if (debug)
-		(void) fprintf(stderr, "Setting baud rate et al...");
+	    (void) fprintf(stderr, "Setting baud rate et al...");
 	if (ioctl(s, TIOCSETP, (char *)&ttyb) < 0)
-		error("ioctl(TIOCSETP, raw)", "", "");
+	    error("ioctl(TIOCSETP, raw)", "", "");
 	if (debug)
-		(void) fprintf(stderr, "done\n");
+	    (void) fprintf(stderr, "done\n");
 
 #ifdef CHULDISC
 	if (usechuldisc) {
 		int ldisc;
 
 		if (debug)
-			(void) fprintf(stderr, "Switching to CHU ldisc...");
+		    (void) fprintf(stderr, "Switching to CHU ldisc...");
 		ldisc = CHULDISC;
 		if (ioctl(s, TIOCSETD, (char *)&ldisc) < 0)
-			error("ioctl(TIOCSETD, CHULDISC)", "", "");
+		    error("ioctl(TIOCSETD, CHULDISC)", "", "");
 		if (debug)
-			(void) fprintf(stderr, "okay\n");
+		    (void) fprintf(stderr, "okay\n");
 	}
 #endif
 #ifdef STREAM
 	if (usechuldisc) {
 
-	if (debug)
-		(void) fprintf(stderr, "Poping off streams...");
-	while (ioctl(s, I_POP, 0) >=0) ;
-	if (debug)
-		(void) fprintf(stderr, "okay\n");
-	if (debug)
-		(void) fprintf(stderr, "Pushing CHU stream...");
-	if (ioctl(s, I_PUSH, "chu") < 0)
-		error("ioctl(I_PUSH, \"chu\")", "", "");
-	if (debug)
-		(void) fprintf(stderr, "okay\n");
+		if (debug)
+		    (void) fprintf(stderr, "Poping off streams...");
+		while (ioctl(s, I_POP, 0) >=0) ;
+		if (debug)
+		    (void) fprintf(stderr, "okay\n");
+		if (debug)
+		    (void) fprintf(stderr, "Pushing CHU stream...");
+		if (ioctl(s, I_PUSH, "chu") < 0)
+		    error("ioctl(I_PUSH, \"chu\")", "", "");
+		if (debug)
+		    (void) fprintf(stderr, "okay\n");
 	}
 #endif
 	return s;
@@ -217,8 +222,10 @@ openterm(dev)
 /*
  * process_raw - process characters in raw mode
  */
-process_raw(s)
-	int s;
+int
+process_raw(
+	int s
+	)
 {
 	u_char c;
 	int n;
@@ -228,7 +235,7 @@ process_raw(s)
 	while ((n = read(s, &c, sizeof(char))) > 0) {
 		(void) gettimeofday(&tv, (struct timezone *)0);
 		if (dofilter)
-			raw_filter((unsigned int)c, &tv);
+		    raw_filter((unsigned int)c, &tv);
 		else {
 			difftv.tv_sec = tv.tv_sec - lasttv.tv_sec;
 			difftv.tv_usec = tv.tv_usec - lasttv.tv_usec;
@@ -237,8 +244,8 @@ process_raw(s)
 				difftv.tv_usec += 1000000;
 			}
 			(void) printf("%02x\t%lu.%06lu\t%lu.%06lu\n",
-			    c, tv.tv_sec, tv.tv_usec, difftv.tv_sec,
-			    difftv.tv_usec);
+				      c, tv.tv_sec, tv.tv_usec, difftv.tv_sec,
+				      difftv.tv_usec);
 			lasttv = tv;
 		}
 	}
@@ -247,16 +254,18 @@ process_raw(s)
 		(void) fprintf(stderr, "%s: zero returned on read\n", progname);
 		exit(1);
 	} else
-		error("read()", "", "");
+	    error("read()", "", "");
 }
 
 
 /*
  * raw_filter - run the line discipline filter over raw data
  */
-raw_filter(c, tv)
-	unsigned int c;
-	struct timeval *tv;
+int
+raw_filter(
+	unsigned int c,
+	struct timeval *tv
+	)
 {
 	static struct timeval diffs[10] = { 0 };
 	struct timeval diff;
@@ -265,50 +274,50 @@ raw_filter(c, tv)
 
 	if ((c & 0xf) > 9 || ((c>>4)&0xf) > 9) {
 		if (debug)
-			(void) fprintf(stderr,
-			    "character %02x failed BCD test\n");
+		    (void) fprintf(stderr,
+				   "character %02x failed BCD test\n");
 		chudata.ncodechars = 0;
 		return;
 	}
 
 	if (chudata.ncodechars > 0) {
 		diff.tv_sec = tv->tv_sec
-		    - chudata.codetimes[chudata.ncodechars].tv_sec;
+			- chudata.codetimes[chudata.ncodechars].tv_sec;
 		diff.tv_usec = tv->tv_usec
-		    - chudata.codetimes[chudata.ncodechars].tv_usec;
+			- chudata.codetimes[chudata.ncodechars].tv_usec;
 		if (diff.tv_usec < 0) {
 			diff.tv_sec--;
 			diff.tv_usec += 1000000;
 		} /*
-		if (diff.tv_sec != 0 || diff.tv_usec > 900000) {
-			if (debug)
-				(void) fprintf(stderr,
-				    "character %02x failed time test\n");
-			chudata.ncodechars = 0;
-			return;
-		} */
+		    if (diff.tv_sec != 0 || diff.tv_usec > 900000) {
+		    if (debug)
+		    (void) fprintf(stderr,
+		    "character %02x failed time test\n");
+		    chudata.ncodechars = 0;
+		    return;
+		    } */
 	}
 
 	chudata.codechars[chudata.ncodechars] = c;
 	chudata.codetimes[chudata.ncodechars] = *tv;
 	if (chudata.ncodechars > 0)
-		diffs[chudata.ncodechars] = diff;
+	    diffs[chudata.ncodechars] = diff;
 	if (++chudata.ncodechars == 10) {
 		if (doprocess) {
 			TVTOTS(&chudata.codetimes[NCHUCHARS-1], &ts);
 			ts.l_ui += JAN_1970;
 			chufilter(&chudata, &chudata.codetimes[NCHUCHARS-1]);
 		} else {
-		register int i;
+			register int i;
 
-		for (i = 0; i < chudata.ncodechars; i++) {
-			(void) printf("%x%x\t%lu.%06lu\t%lu.%06lu\n",
-			    chudata.codechars[i] & 0xf,
-			    (chudata.codechars[i] >>4 ) & 0xf,
-			    chudata.codetimes[i].tv_sec,
-			    chudata.codetimes[i].tv_usec,
-			    diffs[i].tv_sec, diffs[i].tv_usec);
-		}
+			for (i = 0; i < chudata.ncodechars; i++) {
+				(void) printf("%x%x\t%lu.%06lu\t%lu.%06lu\n",
+					      chudata.codechars[i] & 0xf,
+					      (chudata.codechars[i] >>4 ) & 0xf,
+					      chudata.codetimes[i].tv_sec,
+					      chudata.codetimes[i].tv_usec,
+					      diffs[i].tv_sec, diffs[i].tv_usec);
+			}
 		}
 		chudata.ncodechars = 0;
 	}
@@ -319,8 +328,10 @@ raw_filter(c, tv)
 /*
  * process_ldisc - process line discipline
  */
-process_ldisc(s)
-	int s;
+int
+process_ldisc(
+	int s
+	)
 {
 	struct chucode chu;
 	int n;
@@ -332,7 +343,7 @@ process_ldisc(s)
 	while ((n = read(s, (char *)&chu, sizeof chu)) > 0) {
 		if (n != sizeof chu) {
 			(void) fprintf(stderr, "Expected %d, got %d\n",
-			    sizeof chu, n);
+				       sizeof chu, n);
 			continue;
 		}
 
@@ -341,31 +352,31 @@ process_ldisc(s)
 			ts.l_ui += JAN_1970;
 			chufilter(&chu, &ts);
 		} else {
-		for (i = 0; i < NCHUCHARS; i++) {
-			if (i == 0)
-				diff.tv_sec = diff.tv_usec = 0;
-			else {
-				diff.tv_sec = chu.codetimes[i].tv_sec
-				    - chu.codetimes[i-1].tv_sec;
-				diff.tv_usec = chu.codetimes[i].tv_usec
-				    - chu.codetimes[i-1].tv_usec;
-				if (diff.tv_usec < 0) {
-					diff.tv_sec--;
-					diff.tv_usec += 1000000;
+			for (i = 0; i < NCHUCHARS; i++) {
+				if (i == 0)
+				    diff.tv_sec = diff.tv_usec = 0;
+				else {
+					diff.tv_sec = chu.codetimes[i].tv_sec
+						- chu.codetimes[i-1].tv_sec;
+					diff.tv_usec = chu.codetimes[i].tv_usec
+						- chu.codetimes[i-1].tv_usec;
+					if (diff.tv_usec < 0) {
+						diff.tv_sec--;
+						diff.tv_usec += 1000000;
+					}
 				}
+				(void) printf("%x%x\t%lu.%06lu\t%lu.%06lu\n",
+					      chu.codechars[i] & 0xf, (chu.codechars[i]>>4)&0xf,
+					      chu.codetimes[i].tv_sec, chu.codetimes[i].tv_usec,
+					      diff.tv_sec, diff.tv_usec);
 			}
-			(void) printf("%x%x\t%lu.%06lu\t%lu.%06lu\n",
-			    chu.codechars[i] & 0xf, (chu.codechars[i]>>4)&0xf,
-			    chu.codetimes[i].tv_sec, chu.codetimes[i].tv_usec,
-			    diff.tv_sec, diff.tv_usec);
-		}
 		}
 	}
 	if (n == 0) {
 		(void) fprintf(stderr, "%s: zero returned on read\n", progname);
 		exit(1);
 	} else
-		error("read()", "", "");
+	    error("read()", "", "");
 }
 /*#endif*/
 
@@ -373,10 +384,12 @@ process_ldisc(s)
 /*
  * error - print an error message
  */
-error(fmt, s1, s2)
-	char *fmt;
-	char *s1;
-	char *s2;
+void
+error(
+	char *fmt,
+	char *s1,
+	char *s2
+	)
 {
 	(void) fprintf(stderr, "%s: ", progname);
 	(void) fprintf(stderr, fmt, s1, s2);
@@ -495,7 +508,7 @@ extern u_long ustotshi[];
  * init_chu - initialize internal chu driver data
  */
 void
-init_chu()
+init_chu(void)
 {
 
 	/*
@@ -513,9 +526,10 @@ init_chu()
 
 
 void
-chufilter(chuc, rtime)
-	struct chucode *chuc;
-	l_fp *rtime;
+chufilter(
+	struct chucode *chuc,
+	l_fp *rtime
+	)
 {
 	register int i;
 	register u_long date_ui;
@@ -544,18 +558,18 @@ chufilter(chuc, rtime)
 	 * print the code
 	 */
 	for (i = 0; i < NCHUCHARS; i++)
-		printf("%c%c", (chuc->codechars[i] & 0xf) + '0',
-		    ((chuc->codechars[i]>>4) & 0xf) + '0');
+	    printf("%c%c", (chuc->codechars[i] & 0xf) + '0',
+		   ((chuc->codechars[i]>>4) & 0xf) + '0');
 	printf("\n");
 
 	/*
 	 * Format check.  Make sure the two halves match.
 	 */
 	for (i = 0; i < NCHUCHARS/2; i++)
-		if (chuc->codechars[i] != chuc->codechars[i+(NCHUCHARS/2)]) {
-			(void) printf("Bad format, halves don't match\n");
-			return;
-		}
+	    if (chuc->codechars[i] != chuc->codechars[i+(NCHUCHARS/2)]) {
+		    (void) printf("Bad format, halves don't match\n");
+		    return;
+	    }
 	
 	/*
 	 * Break out the code into the BCD nibbles.  Only need to fiddle
@@ -599,7 +613,7 @@ chufilter(chuc, rtime)
 	    || hour > 23 || minute > 59
 	    || second < 31 || second > 39) {
 		(void) printf("Failed date sanity check: %d %d %d %d\n",
-		    day, hour, minute, second);
+			      day, hour, minute, second);
 		return;
 	}
 
@@ -620,7 +634,7 @@ chufilter(chuc, rtime)
 	date_ui = tmp + yearstart;
 	if (date_ui < (rtime->l_ui + CLOCK_WAYTOOBIG)
 	    && date_ui > (rtime->l_ui - CLOCK_WAYTOOBIG))
-		goto codeokay;	/* looks good */
+	    goto codeokay;	/* looks good */
 
 	/*
 	 * Trouble.  Next check is to see if the year rolled over and, if
@@ -631,10 +645,10 @@ chufilter(chuc, rtime)
 		yearstart = date_ui;
 		date_ui += tmp;
 		(void) printf("time %u, code %u, difference %d\n",
-			date_ui, rtime->l_ui, (long)date_ui-(long)rtime->l_ui);
+			      date_ui, rtime->l_ui, (long)date_ui-(long)rtime->l_ui);
 		if (date_ui < (rtime->l_ui + CLOCK_WAYTOOBIG)
 		    && date_ui > (rtime->l_ui - CLOCK_WAYTOOBIG))
-			goto codeokay;	/* okay this time */
+		    goto codeokay;	/* okay this time */
 	}
 
 	ts.l_uf = 0;
@@ -654,7 +668,7 @@ chufilter(chuc, rtime)
 	if ((rtime->l_ui - yearstart) < CLOCK_WAYTOOBIG) {
 		date_ui = tmp + calyearstart(yearstart - CLOCK_WAYTOOBIG);
 		if ((rtime->l_ui - date_ui) < CLOCK_WAYTOOBIG)
-			goto codeokay;
+		    goto codeokay;
 	}
 
 	/*
@@ -668,7 +682,7 @@ chufilter(chuc, rtime)
 		return;		/* hopeless, let it sync to other peers */
 	}
 
-codeokay:
+    codeokay:
 	reftime = date_ui;
 	/*
 	 * We've now got the integral seconds part of the time code (we hope).
@@ -704,11 +718,11 @@ codeokay:
 	date_ui = 0;
 	tmp = 0;
 	for (i = 0; i < NCHUCHARS; i++)
-		M_ADD(date_ui, tmp, off[i].l_ui, off[i].l_uf);
+	    M_ADD(date_ui, tmp, off[i].l_ui, off[i].l_uf);
 	if (M_ISNEG(date_ui, tmp))
-		isneg = 1;
+	    isneg = 1;
 	else
-		isneg = 0;
+	    isneg = 0;
 	
 	/*
 	 * Here is a multiply-by-0.1 optimization that should apply
@@ -727,7 +741,7 @@ codeokay:
 		for (i = 1; i < NZPOBITS; i++) {
 			M_LSHIFT(date_ui, tmp);
 			if (ZEROPTONE & (1<<i))
-				M_ADD(prod_ui, prod_uf, date_ui, tmp);
+			    M_ADD(prod_ui, prod_uf, date_ui, tmp);
 		}
 
 		/*
@@ -735,11 +749,11 @@ codeokay:
 		 * fraction.
 		 */
 		if (prod_uf & 0x80000000)
-			prod_ui++;
+		    prod_ui++;
 		if (isneg)
-			date_ui = 0xffffffff;
+		    date_ui = 0xffffffff;
 		else
-			date_ui = 0;
+		    date_ui = 0;
 		tmp = prod_ui;
 		/*
 		 * date_ui is integral part, tmp is fraction.
@@ -752,21 +766,21 @@ codeokay:
 
 		prod_ovr = prod_ui = prod_uf = 0;
 		if (isneg)
-			highbits = 0xffffffff;	/* sign extend */
+		    highbits = 0xffffffff;	/* sign extend */
 		else
-			highbits = 0;
+		    highbits = 0;
 		/*
 		 * This code knows the low order bit in 0.1 is zero
 		 */
 		for (i = 1; i < NZPOBITS; i++) {
 			M_LSHIFT3(highbits, date_ui, tmp);
 			if (ZEROPTONE & (1<<i))
-				M_ADD3(prod_ovr, prod_uf, prod_ui,
-				    highbits, date_ui, tmp);
+			    M_ADD3(prod_ovr, prod_uf, prod_ui,
+				   highbits, date_ui, tmp);
 		}
 
 		if (prod_uf & 0x80000000)
-			M_ADDUF(prod_ovr, prod_ui, (u_long)1);
+		    M_ADDUF(prod_ovr, prod_ui, (u_long)1);
 		date_ui = prod_ovr;
 		tmp = prod_ui;
 	}
@@ -795,8 +809,8 @@ codeokay:
 
 	L_ADD(&off[imin], &offset_fudge);
 	if (imin != imax)
-		L_ADD(&off[imax], &offset_fudge);
+	    L_ADD(&off[imax], &offset_fudge);
 	(void) printf("mean %s, min %s, max %s\n",
-	     mfptoa(date_ui, tmp, 8), lfptoa(&off[imin], 8),
-	     lfptoa(&off[imax], 8));
+		      mfptoa(date_ui, tmp, 8), lfptoa(&off[imin], 8),
+		      lfptoa(&off[imax], 8));
 }

@@ -1,7 +1,6 @@
-#include <sys/types.h>
-#include <sys/time.h>
-#include <stdio.h>
 #include "ntp_unixtime.h"
+
+#include <stdio.h>
 
 #define	DEFAULT_SYS_PRECISION	-99
 
@@ -9,10 +8,14 @@ int default_get_resolution();
 int default_get_precision();
 
 int
-main() {
+main(
+	int argc,
+	char *argv[]
+	)
+{
 	printf("log2(resolution) = %d, log2(precision) = %d\n",
-		default_get_resolution(),
-		default_get_precision());
+	       default_get_resolution(),
+	       default_get_precision());
 	return 0;
 }
 
@@ -50,13 +53,14 @@ main() {
 #define	DUSECS	1000000
 #define	HUSECS	(1024 * 1024)
 #define	MINSTEP	5	/* some systems increment uS on each call */
-			/* Don't use "1" as some *other* process may read too*/
-			/*We assume no system actually *ANSWERS* in this time*/
+/* Don't use "1" as some *other* process may read too*/
+/*We assume no system actually *ANSWERS* in this time*/
 #define MAXSTEP 20000   /* maximum clock increment (us) */
 #define MINLOOPS 5      /* minimum number of step samples */
 #define	MAXLOOPS HUSECS	/* Assume precision < .1s ! */
 
-int default_get_resolution()
+int
+default_get_resolution(void)
 {
 	struct timeval tp;
 	struct timezone tzp;
@@ -77,18 +81,18 @@ int default_get_resolution()
 	}
 
 	printf("resolution = %ld usec after %d loop%s\n",
-		diff, i, (i==1) ? "" : "s");
+	       diff, i, (i==1) ? "" : "s");
 
 	diff = (diff *3)/2;
-        if (i >= MAXLOOPS) {
+	if (i >= MAXLOOPS) {
 		printf(
-		"     (Boy this machine is fast ! %d loops without a step)\n",
+			"     (Boy this machine is fast ! %d loops without a step)\n",
 			MAXLOOPS);
 		diff = 1; /* No STEP, so FAST machine */
 	}
 	if (i == 0) {
 		printf(
-"     (The resolution is less than the time to read the clock -- Assume 1us)\n");
+			"     (The resolution is less than the time to read the clock -- Assume 1us)\n");
 		diff = 1; /* time to read clock >= resolution */
 	}
 	for (i=0, val=HUSECS; val>0; i--, val >>= 1) if (diff >= val) return i;
@@ -110,12 +114,13 @@ int default_get_resolution()
  * happen to hit a fat interrupt, we do this for MINLOOPS times and
  * keep the minimum value obtained.
  */  
-int default_get_precision()
+int
+default_get_precision(void)
 {
 	struct timeval tp;
 	struct timezone tzp;
 #ifdef HAVE_GETCLOCK
-        struct timespec ts;
+	struct timespec ts;
 #endif
 	long last;
 	int i;
@@ -126,16 +131,16 @@ int default_get_precision()
 	usec = 0;
 	val = MAXSTEP;
 #ifdef HAVE_GETCLOCK
-        (void) getclock(TIMEOFDAY, &ts);
-        tp.tv_sec = ts.tv_sec;
-        tp.tv_usec = ts.tv_nsec / 1000;
+	(void) getclock(TIMEOFDAY, &ts);
+	tp.tv_sec = ts.tv_sec;
+	tp.tv_usec = ts.tv_nsec / 1000;
 #else /*  not HAVE_GETCLOCK */
 	GETTIMEOFDAY(&tp, &tzp);
 #endif /* not HAVE_GETCLOCK */
 	last = tp.tv_usec;
 	for (i = 0; i < MINLOOPS && usec < HUSECS;) {
 #ifdef HAVE_GETCLOCK
-	        (void) getclock(TIMEOFDAY, &ts);
+		(void) getclock(TIMEOFDAY, &ts);
 		tp.tv_sec = ts.tv_sec;
 		tp.tv_usec = ts.tv_nsec / 1000;
 #else /*  not HAVE_GETCLOCK */
@@ -144,23 +149,23 @@ int default_get_precision()
 		diff = tp.tv_usec - last;
 		last = tp.tv_usec;
 		if (diff < 0)
-			diff += DUSECS;
+		    diff += DUSECS;
 		usec += diff;
 		if (diff > MINSTEP) {
 			i++;
 			if (diff < val)
-				val = diff;
+			    val = diff;
 		}
 	}
 	printf("precision  = %ld usec after %d loop%s\n",
-		val, i, (i == 1) ? "" : "s");
+	       val, i, (i == 1) ? "" : "s");
 	if (usec >= HUSECS) {
 		printf("     (Boy this machine is fast ! usec was %ld)\n",
-			usec);
+		       usec);
 		val = MINSTEP;	/* val <= MINSTEP; fast machine */
 	}
 	diff = HUSECS;
 	for (i = 0; diff > val; i--)
-		diff >>= 1;
+	    diff >>= 1;
 	return (i);
 }

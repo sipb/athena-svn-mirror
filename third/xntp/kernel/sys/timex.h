@@ -204,8 +204,8 @@
 #define MOD_ESTERROR	0x0008	/* set estimated time error */
 #define MOD_STATUS	0x0010	/* set clock status bits */
 #define MOD_TIMECONST	0x0020	/* set pll time constant */
-#define MOD_CLKB	0x4000	/* set clock B */
-#define MOD_CLKA	0x8000	/* set clock A */
+#define MOD_CANSCALE	0x0040	/* kernel can scale offset field */
+#define MOD_DOSCALE	0x0080	/* userland wants to scale offset field */
 
 /*
  * Status codes (timex.status)
@@ -237,7 +237,7 @@
 #define TIME_INS	1	/* insert leap second warning */
 #define TIME_DEL	2	/* delete leap second warning */
 #define TIME_OOP	3	/* leap second in progress */
-#define TIME_WAIT	4	/* leap second has occured */
+#define TIME_WAIT	4	/* leap second has occurred */
 #define TIME_ERROR	5	/* clock not synchronized */
 
 /*

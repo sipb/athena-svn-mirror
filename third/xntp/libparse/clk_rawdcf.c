@@ -1,11 +1,11 @@
 /*
- * /src/NTP/REPOSITORY/v4/libparse/clk_rawdcf.c,v 3.23 1997/01/19 12:44:39 kardel Exp
+ * /src/NTP/ntp-4/libparse/clk_rawdcf.c,v 4.9 1999/12/06 13:42:23 kardel Exp
  *  
- * clk_rawdcf.c,v 3.23 1997/01/19 12:44:39 kardel Exp
+ * clk_rawdcf.c,v 4.9 1999/12/06 13:42:23 kardel Exp
  *
  * Raw DCF77 pulse clock support
  *
- * Copyright (C) 1992,1993,1994,1995,1996 by Frank Kardel
+ * Copyright (C) 1992-1998 by Frank Kardel
  * Friedrich-Alexander Universität Erlangen-Nürnberg, Germany
  *                                    
  * This program is distributed in the hope that it will be useful,
@@ -15,25 +15,22 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+# include <config.h>
 #endif
 
-#if defined(REFCLOCK) && (defined(PARSE) || defined(PARSEPPS)) && defined(CLOCK_RAWDCF)
+#if defined(REFCLOCK) && defined(CLOCK_PARSE) && defined(CLOCK_RAWDCF)
 
-#include <sys/types.h>
-#include <sys/time.h>
-#include <sys/errno.h>
 #include "ntp_fp.h"
 #include "ntp_unixtime.h"
 #include "ntp_calendar.h"
 
 #include "parse.h"
 #ifdef PARSESTREAM
-#include <sys/parsestreams.h>
+# include <sys/parsestreams.h>
 #endif
 
 #ifndef PARSEKERNEL
-#include "ntp_stdlib.h"
+# include "ntp_stdlib.h"
 #endif
 
 /*
@@ -84,46 +81,43 @@
  * 59		      - usually missing (minute indication), except for leap insertion
  */
 
-static u_long cvt_rawdcf();
-static u_long pps_rawdcf();
-static u_long snt_rawdcf();
+static u_long pps_rawdcf P((parse_t *, int, timestamp_t *));
+static u_long cvt_rawdcf P((unsigned char *, int, struct format *, clocktime_t *, void *));
+static u_long inp_rawdcf P((parse_t *, unsigned int, timestamp_t  *));
+
+typedef struct last_tcode {
+	time_t tcode;	/* last converted time code */
+} last_tcode_t;
 
 clockformat_t clock_rawdcf =
 {
-  (unsigned long (*)())0,	/* no input handling */
+  inp_rawdcf,			/* DCF77 input handling */
   cvt_rawdcf,			/* raw dcf input conversion */
-  (void (*)())0,		/* no character bound synchronisation */
   pps_rawdcf,			/* examining PPS information */
-  snt_rawdcf,			/* synthesize time code from input */
-  (void *)0,			/* buffer bit representation */
+  0,				/* no private configuration data */
   "RAW DCF77 Timecode",		/* direct decoding / time synthesis */
+
   61,				/* bit buffer */
-  SYNC_ONE|SYNC_ZERO|SYNC_TIMEOUT|SYNC_SYNTHESIZE|CVT_FIXEDONLY,
-  /* catch all transitions, buffer restart on timeout, fixed configuration only */
-  0,				/* no private data (currently in input buffer) */
-  { 1, 500000},			/* restart after 1.5 seconds */
-  '\0',
-  '\0',
-  '\0'
+  sizeof(last_tcode_t)
 };
 
 static struct dcfparam
 {
-  unsigned char onebits[60];
-  unsigned char zerobits[60];
-} dcfparam = 
+	unsigned char onebits[60];
+	unsigned char zerobits[60];
+} dcfparameter = 
 {
-  "###############RADMLS1248124P124812P1248121241248112481248P", /* 'ONE' representation */
-  "--------------------s-------p------p----------------------p"  /* 'ZERO' representation */
+	"###############RADMLS1248124P124812P1248121241248112481248P", /* 'ONE' representation */
+	"--------------------s-------p------p----------------------p"  /* 'ZERO' representation */
 };
 
 static struct rawdcfcode 
 {
-  char offset;			/* start bit */
+	char offset;			/* start bit */
 } rawdcfcode[] =
 {
-  {  0 }, { 15 }, { 16 }, { 17 }, { 19 }, { 20 }, { 21 }, { 25 }, { 28 }, { 29 },
-  { 33 }, { 35 }, { 36 }, { 40 }, { 42 }, { 45 }, { 49 }, { 50 }, { 54 }, { 58 }, { 59 }
+	{  0 }, { 15 }, { 16 }, { 17 }, { 19 }, { 20 }, { 21 }, { 25 }, { 28 }, { 29 },
+	{ 33 }, { 35 }, { 36 }, { 40 }, { 42 }, { 45 }, { 49 }, { 50 }, { 54 }, { 58 }, { 59 }
 };
 
 #define DCF_M	0
@@ -149,10 +143,10 @@ static struct rawdcfcode
 
 static struct partab
 {
-  char offset;			/* start bit of parity field */
+	char offset;			/* start bit of parity field */
 } partab[] =
 {
-  { 21 }, { 29 }, { 36 }, { 59 }
+	{ 21 }, { 29 }, { 36 }, { 59 }
 };
 
 #define DCF_P_P1	0
@@ -162,307 +156,334 @@ static struct partab
 #define DCF_Z_MET 0x2
 #define DCF_Z_MED 0x1
 
-static u_long ext_bf(buf, idx, zero)
-  register char *buf;
-  register int   idx;
-  register char *zero;
+static u_long
+ext_bf(
+	register unsigned char *buf,
+	register int   idx,
+	register unsigned char *zero
+	)
 {
-  register u_long sum = 0;
-  register int i, first;
+	register u_long sum = 0;
+	register int i, first;
 
-  first = rawdcfcode[idx].offset;
+	first = rawdcfcode[idx].offset;
   
-  for (i = rawdcfcode[idx+1].offset - 1; i >= first; i--)
-    {
-      sum <<= 1;
-      sum |= (buf[i] != zero[i]);
-    }
-  return sum;
+	for (i = rawdcfcode[idx+1].offset - 1; i >= first; i--)
+	{
+		sum <<= 1;
+		sum |= (buf[i] != zero[i]);
+	}
+	return sum;
 }
 
-static unsigned pcheck(buf, idx, zero)
-  register char *buf;
-  register int   idx;
-  register char *zero;
+static unsigned
+pcheck(
+       unsigned char *buf,
+       int   idx,
+       unsigned char *zero
+       )
 {
-  register int i,last;
-  register unsigned psum = 1;
+	int i,last;
+	unsigned psum = 1;
 
-  last = partab[idx+1].offset;
+	last = partab[idx+1].offset;
 
-  for (i = partab[idx].offset; i < last; i++)
-    psum ^= (buf[i] != zero[i]);
+	for (i = partab[idx].offset; i < last; i++)
+	    psum ^= (buf[i] != zero[i]);
 
-  return psum;
+	return psum;
 }
 
-static u_long convert_rawdcf(buffer, size, dcfparam, clock)
-  register unsigned char   *buffer;
-  register int              size;
-  register struct dcfparam *dcfparam;
-  register clocktime_t     *clock;
+static u_long
+convert_rawdcf(
+	       unsigned char   *buffer,
+	       int              size,
+	       struct dcfparam *dcfprm,
+	       clocktime_t     *clock_time
+	       )
 {
-  register unsigned char *s = buffer;
-  register unsigned char *b = dcfparam->onebits;
-  register unsigned char *c = dcfparam->zerobits;
-  register int i;
+	register unsigned char *s = buffer;
+	register unsigned char *b = dcfprm->onebits;
+	register unsigned char *c = dcfprm->zerobits;
+	register int i;
 
-  parseprintf(DD_RAWDCF,("parse: convert_rawdcf: \"%s\"\n", buffer));
+	parseprintf(DD_RAWDCF,("parse: convert_rawdcf: \"%s\"\n", buffer));
 
-  if (size < 57)
-    {
-#ifdef PARSEKERNEL
-          printf("parse: convert_rawdcf: INCOMPLETE DATA - time code only has %d bits\n", size);
-#else
-          msyslog(LOG_ERR, "parse: convert_rawdcf: INCOMPLETE DATA - time code only has %d bits\n", size);
-#endif
-	  return CVT_NONE;
-    }
-  
-  for (i = 0; i < 58; i++)
-    {
-      if ((*s != *b) && (*s != *c))
+	if (size < 57)
 	{
-	  /*
-	   * we only have two types of bytes (ones and zeros)
-	   */
-#ifdef PARSEKERNEL
-          printf("parse: convert_rawdcf: BAD DATA - no conversion for \"%s\"\n", buffer);
-#else
-          msyslog(LOG_ERR, "parse: convert_rawdcf: BAD DATA - no conversion for \"%s\"\n", buffer);
+#ifndef PARSEKERNEL
+		msyslog(LOG_ERR, "parse: convert_rawdcf: INCOMPLETE DATA - time code only has %d bits\n", size);
 #endif
-	  return CVT_NONE;
+		return CVT_NONE;
 	}
-      b++;
-      c++;
-      s++;
-    }
   
-  /*
-   * check Start and Parity bits
-   */
-  if ((ext_bf(buffer, DCF_S, dcfparam->zerobits) == 1) &&
-      pcheck(buffer, DCF_P_P1, dcfparam->zerobits) &&
-      pcheck(buffer, DCF_P_P2, dcfparam->zerobits) &&
-      pcheck(buffer, DCF_P_P3, dcfparam->zerobits))
-    {
-      /*
-       * buffer OK
-       */
-      parseprintf(DD_RAWDCF,("parse: convert_rawdcf: parity check passed\n"));
-
-      clock->flags  = PARSEB_S_ANTENNA|PARSEB_S_LEAP;
-      clock->utctime= 0;
-      clock->usecond= 0;
-      clock->second = 0;
-      clock->minute = ext_bf(buffer, DCF_M10, dcfparam->zerobits);
-      clock->minute = TIMES10(clock->minute) + ext_bf(buffer, DCF_M1, dcfparam->zerobits);
-      clock->hour   = ext_bf(buffer, DCF_H10, dcfparam->zerobits);
-      clock->hour   = TIMES10(clock->hour) + ext_bf(buffer, DCF_H1, dcfparam->zerobits);
-      clock->day    = ext_bf(buffer, DCF_D10, dcfparam->zerobits);
-      clock->day    = TIMES10(clock->day) + ext_bf(buffer, DCF_D1, dcfparam->zerobits);
-      clock->month  = ext_bf(buffer, DCF_MO0, dcfparam->zerobits);
-      clock->month  = TIMES10(clock->month) + ext_bf(buffer, DCF_MO, dcfparam->zerobits);
-      clock->year   = ext_bf(buffer, DCF_Y10, dcfparam->zerobits);
-      clock->year   = TIMES10(clock->year) + ext_bf(buffer, DCF_Y1, dcfparam->zerobits);
-
-      switch (ext_bf(buffer, DCF_Z, dcfparam->zerobits))
+	for (i = 0; i < 58; i++)
 	{
-	case DCF_Z_MET:
-	  clock->utcoffset = -1*60*60;
-	  break;
-
-	case DCF_Z_MED:
-	  clock->flags     |= PARSEB_DST;
-	  clock->utcoffset  = -2*60*60;
-	  break;
-
-	default:
-          parseprintf(DD_RAWDCF,("parse: convert_rawdcf: BAD TIME ZONE\n"));
-	  return CVT_FAIL|CVT_BADFMT;
-	}
-
-      if (ext_bf(buffer, DCF_A1, dcfparam->zerobits))
-	clock->flags |= PARSEB_ANNOUNCE;
-
-      if (ext_bf(buffer, DCF_A2, dcfparam->zerobits))
-	clock->flags |= PARSEB_LEAPADD; /* default: DCF77 data format deficiency */
-
-      if (ext_bf(buffer, DCF_R, dcfparam->zerobits))
-	clock->flags |= PARSEB_ALTERNATE;
-
-      parseprintf(DD_RAWDCF,("parse: convert_rawdcf: TIME CODE OK: %d:%d, %d.%d.%d, flags 0x%lx\n",
-			  (int)clock->hour, (int)clock->minute, (int)clock->day, (int)clock->month,(int) clock->year,
-			  (u_long)clock->flags));
-      return CVT_OK;
-    }
-  else
-    {
-      /*
-       * bad format - not for us
-       */
-#ifdef PARSEKERNEL
-      printf("parse: convert_rawdcf: parity check FAILED for \"%s\"\n", buffer);
-#else
-      msyslog(LOG_ERR, "parse: convert_rawdcf: parity check FAILED for \"%s\"\n", buffer);
+		if ((*s != *b) && (*s != *c))
+		{
+			/*
+			 * we only have two types of bytes (ones and zeros)
+			 */
+#ifndef PARSEKERNEL
+			msyslog(LOG_ERR, "parse: convert_rawdcf: BAD DATA - no conversion for \"%s\"\n", buffer);
 #endif
-      return CVT_FAIL|CVT_BADFMT;
-    }
+			return CVT_NONE;
+		}
+		b++;
+		c++;
+		s++;
+	}
+  
+	/*
+	 * check Start and Parity bits
+	 */
+	if ((ext_bf(buffer, DCF_S, dcfprm->zerobits) == 1) &&
+	    pcheck(buffer, DCF_P_P1, dcfprm->zerobits) &&
+	    pcheck(buffer, DCF_P_P2, dcfprm->zerobits) &&
+	    pcheck(buffer, DCF_P_P3, dcfprm->zerobits))
+	{
+		/*
+		 * buffer OK
+		 */
+		parseprintf(DD_RAWDCF,("parse: convert_rawdcf: parity check passed\n"));
+
+		clock_time->flags  = PARSEB_S_ANTENNA|PARSEB_S_LEAP;
+		clock_time->utctime= 0;
+		clock_time->usecond= 0;
+		clock_time->second = 0;
+		clock_time->minute = ext_bf(buffer, DCF_M10, dcfprm->zerobits);
+		clock_time->minute = TIMES10(clock_time->minute) + ext_bf(buffer, DCF_M1, dcfprm->zerobits);
+		clock_time->hour   = ext_bf(buffer, DCF_H10, dcfprm->zerobits);
+		clock_time->hour   = TIMES10(clock_time->hour) + ext_bf(buffer, DCF_H1, dcfprm->zerobits);
+		clock_time->day    = ext_bf(buffer, DCF_D10, dcfprm->zerobits);
+		clock_time->day    = TIMES10(clock_time->day) + ext_bf(buffer, DCF_D1, dcfprm->zerobits);
+		clock_time->month  = ext_bf(buffer, DCF_MO0, dcfprm->zerobits);
+		clock_time->month  = TIMES10(clock_time->month) + ext_bf(buffer, DCF_MO, dcfprm->zerobits);
+		clock_time->year   = ext_bf(buffer, DCF_Y10, dcfprm->zerobits);
+		clock_time->year   = TIMES10(clock_time->year) + ext_bf(buffer, DCF_Y1, dcfprm->zerobits);
+
+		switch (ext_bf(buffer, DCF_Z, dcfprm->zerobits))
+		{
+		    case DCF_Z_MET:
+			clock_time->utcoffset = -1*60*60;
+			break;
+
+		    case DCF_Z_MED:
+			clock_time->flags     |= PARSEB_DST;
+			clock_time->utcoffset  = -2*60*60;
+			break;
+
+		    default:
+			parseprintf(DD_RAWDCF,("parse: convert_rawdcf: BAD TIME ZONE\n"));
+			return CVT_FAIL|CVT_BADFMT;
+		}
+
+		if (ext_bf(buffer, DCF_A1, dcfprm->zerobits))
+		    clock_time->flags |= PARSEB_ANNOUNCE;
+
+		if (ext_bf(buffer, DCF_A2, dcfprm->zerobits))
+		    clock_time->flags |= PARSEB_LEAPADD; /* default: DCF77 data format deficiency */
+
+		if (ext_bf(buffer, DCF_R, dcfprm->zerobits))
+		    clock_time->flags |= PARSEB_ALTERNATE;
+
+		parseprintf(DD_RAWDCF,("parse: convert_rawdcf: TIME CODE OK: %d:%d, %d.%d.%d, flags 0x%lx\n",
+				       (int)clock_time->hour, (int)clock_time->minute, (int)clock_time->day, (int)clock_time->month,(int) clock_time->year,
+				       (u_long)clock_time->flags));
+		return CVT_OK;
+	}
+	else
+	{
+		/*
+		 * bad format - not for us
+		 */
+#ifndef PARSEKERNEL
+		msyslog(LOG_ERR, "parse: convert_rawdcf: parity check FAILED for \"%s\"\n", buffer);
+#endif
+		return CVT_FAIL|CVT_BADFMT;
+	}
 }
 
 /*
  * raw dcf input routine - needs to fix up 50 baud
  * characters for 1/0 decision
  */
-static u_long cvt_rawdcf(buffer, size, param, clock)
-  register unsigned char   *buffer;
-  register int              size;
-  register void            *param;
-  register clocktime_t     *clock;
+static u_long
+cvt_rawdcf(
+	   unsigned char   *buffer,
+	   int              size,
+	   struct format   *param,
+	   clocktime_t     *clock_time,
+	   void            *local
+	   )
 {
-  register unsigned char *s = buffer;
-  register unsigned char *e = buffer + size;
-  register unsigned char *b = dcfparam.onebits;
-  register unsigned char *c = dcfparam.zerobits;
-  register unsigned rtc = CVT_NONE;
-  register unsigned int i, lowmax, highmax, cutoff, span;
+	         last_tcode_t  *t = (last_tcode_t *)local;
+	register unsigned char *s = (unsigned char *)buffer;
+	register unsigned char *e = s + size;
+	register unsigned char *b = dcfparameter.onebits;
+	register unsigned char *c = dcfparameter.zerobits;
+	         u_long   rtc = CVT_NONE;
+	register unsigned int i, lowmax, highmax, cutoff, span;
 #define BITS 9
-  unsigned char     histbuf[BITS];
-  /*
-   * the input buffer contains characters with runs of consecutive
-   * bits set. These set bits are an indication of the DCF77 pulse
-   * length. We assume that we receive the pulse at 50 Baud. Thus
-   * a 100ms pulse would generate a 4 bit train (20ms per bit and
-   * start bit)
-   * a 200ms pulse would create all zeroes (and probably a frame error)
-   */
+	unsigned char     histbuf[BITS];
+	/*
+	 * the input buffer contains characters with runs of consecutive
+	 * bits set. These set bits are an indication of the DCF77 pulse
+	 * length. We assume that we receive the pulse at 50 Baud. Thus
+	 * a 100ms pulse would generate a 4 bit train (20ms per bit and
+	 * start bit)
+	 * a 200ms pulse would create all zeroes (and probably a frame error)
+	 */
 
-  for (i = 0; i < BITS; i++)
-    {
-      histbuf[i] = 0;
-    }
-
-  cutoff = 0;
-  lowmax = 0;
-
-  while (s < e)
-    {
-      register unsigned int ch = *s ^ 0xFF;
-      /*
-       * these lines are left as an excercise to the reader 8-)
-       */
-      if (!((ch+1) & ch) || !*s)
+	for (i = 0; i < BITS; i++)
 	{
-
-	  for (i = 0; ch; i++)
-	    {
-	      ch >>= 1;
-	    }
-
-	  *s = i;
-	  histbuf[i]++;
-	  cutoff += i;
-	  lowmax++;
+		histbuf[i] = 0;
 	}
-      else
+
+	cutoff = 0;
+	lowmax = 0;
+
+	while (s < e)
 	{
-	  parseprintf(DD_RAWDCF,("parse: cvt_rawdcf: character check for 0x%x@%d FAILED\n", *s, s - buffer));
-	  *s = ~0;
-	  rtc = CVT_FAIL|CVT_BADFMT;
+		register unsigned int ch = *s ^ 0xFF;
+		/*
+		 * these lines are left as an excercise to the reader 8-)
+		 */
+		if (!((ch+1) & ch) || !*s)
+		{
+
+			for (i = 0; ch; i++)
+			{
+				ch >>= 1;
+			}
+
+			*s = i;
+			histbuf[i]++;
+			cutoff += i;
+			lowmax++;
+		}
+		else
+		{
+			parseprintf(DD_RAWDCF,("parse: cvt_rawdcf: character check for 0x%x@%d FAILED\n", *s, (int)(s - (unsigned char *)buffer)));
+			*s = (unsigned char)~0;
+			rtc = CVT_FAIL|CVT_BADFMT;
+		}
+		s++;
 	}
-      s++;
-    }
 
-  if (lowmax)
-    {
-      cutoff /= lowmax;
-    }
-  else
-    {
-      cutoff = 4;	/* doesn't really matter - it'll fail anyway, but gives error output */
-    }
-
-  parseprintf(DD_RAWDCF,("parse: cvt_rawdcf: average bit count: %d\n", cutoff));
-
-  lowmax = 0;
-  highmax = 0;
-
-  parseprintf(DD_RAWDCF,("parse: cvt_rawdcf: histogram:"));
-  for (i = 0; i <= cutoff; i++)
-    {
-      lowmax+=histbuf[i] * i;
-      highmax += histbuf[i];
-      parseprintf(DD_RAWDCF,(" %d", histbuf[i]));
-    }
-  parseprintf(DD_RAWDCF, (" <M>"));
-
-  lowmax += highmax / 2;
-
-  if (highmax)
-    {
-      lowmax /= highmax;
-    }
-  else
-    {
-      lowmax = 0;
-    }
-
-  highmax = 0;
-  cutoff = 0;
-
-  for (; i < BITS; i++)
-    {
-      highmax+=histbuf[i] * i;
-      cutoff +=histbuf[i];
-      parseprintf(DD_RAWDCF,(" %d", histbuf[i]));
-    }
-  parseprintf(DD_RAWDCF,("\n"));
-
-  if (cutoff)
-    {
-      highmax /= cutoff;
-    }
-  else
-    {
-      highmax = BITS-1;
-    }
-
-  span = cutoff = lowmax;
-  for (i = lowmax; i <= highmax; i++)
-    {
-      if (histbuf[cutoff] > histbuf[i])
+	if (lowmax)
 	{
-	  cutoff = i;
-	  span = i;
+		cutoff /= lowmax;
 	}
-      else
-        if (histbuf[cutoff] == histbuf[i])
-	  {
-	    span = i;
-	  }
-    }
-
-  cutoff = (cutoff + span) / 2;
-
-  parseprintf(DD_RAWDCF,("parse: cvt_rawdcf: lower maximum %d, higher maximum %d, cutoff %d\n", lowmax, highmax, cutoff));
-
-  s = buffer;
-  while ((s < e) && *c && *b)
-    {
-      if (*s == (unsigned char)~0)
+	else
 	{
-	  *s = '?';
+		cutoff = 4;	/* doesn't really matter - it'll fail anyway, but gives error output */
 	}
-      else
-	{
-	  *s = (*s >= cutoff) ? *b : *c;
-	}
-      s++;
-      b++;
-      c++;
-    }
 
-  return (rtc == CVT_NONE) ? convert_rawdcf(buffer, size, &dcfparam, clock) : rtc;
+	parseprintf(DD_RAWDCF,("parse: cvt_rawdcf: average bit count: %d\n", cutoff));
+
+	lowmax = 0;
+	highmax = 0;
+
+	parseprintf(DD_RAWDCF,("parse: cvt_rawdcf: histogram:"));
+	for (i = 0; i <= cutoff; i++)
+	{
+		lowmax+=histbuf[i] * i;
+		highmax += histbuf[i];
+		parseprintf(DD_RAWDCF,(" %d", histbuf[i]));
+	}
+	parseprintf(DD_RAWDCF, (" <M>"));
+
+	lowmax += highmax / 2;
+
+	if (highmax)
+	{
+		lowmax /= highmax;
+	}
+	else
+	{
+		lowmax = 0;
+	}
+
+	highmax = 0;
+	cutoff = 0;
+
+	for (; i < BITS; i++)
+	{
+		highmax+=histbuf[i] * i;
+		cutoff +=histbuf[i];
+		parseprintf(DD_RAWDCF,(" %d", histbuf[i]));
+	}
+	parseprintf(DD_RAWDCF,("\n"));
+
+	if (cutoff)
+	{
+		highmax /= cutoff;
+	}
+	else
+	{
+		highmax = BITS-1;
+	}
+
+	span = cutoff = lowmax;
+	for (i = lowmax; i <= highmax; i++)
+	{
+		if (histbuf[cutoff] > histbuf[i])
+		{
+			cutoff = i;
+			span = i;
+		}
+		else
+		    if (histbuf[cutoff] == histbuf[i])
+		    {
+			    span = i;
+		    }
+	}
+
+	cutoff = (cutoff + span) / 2;
+
+	parseprintf(DD_RAWDCF,("parse: cvt_rawdcf: lower maximum %d, higher maximum %d, cutoff %d\n", lowmax, highmax, cutoff));
+
+	s = (unsigned char *)buffer;
+	while ((s < e) && *c && *b)
+	{
+		if (*s == (unsigned char)~0)
+		{
+			*s = '?';
+		}
+		else
+		{
+			*s = (*s >= cutoff) ? *b : *c;
+		}
+		s++;
+		b++;
+		c++;
+	}
+
+        if (rtc == CVT_NONE)
+        {
+	       rtc = convert_rawdcf(buffer, size, &dcfparameter, clock_time);
+	       if (rtc == CVT_OK)
+	       {
+			time_t newtime;
+
+			newtime = parse_to_unixtime(clock_time, &rtc);
+			if ((rtc == CVT_OK) && t)
+			{
+				if ((newtime - t->tcode) == 60) /* guard against multi bit errors */
+				{
+					clock_time->utctime = newtime;
+				}
+				else
+				{
+					rtc = CVT_FAIL|CVT_BADTIME;
+				}
+				t->tcode            = newtime;
+			}
+	       }
+        }
+	 
+    	return rtc;
 }
 
 /*
@@ -472,138 +493,123 @@ static u_long cvt_rawdcf(buffer, size, param, clock)
  * also ones and zeros (which is easy)
  */
 /*ARGSUSED*/
-static u_long pps_rawdcf(parseio, status, ptime)
-  register parse_t *parseio;
-  register int status;
-  register timestamp_t *ptime;
+static u_long
+pps_rawdcf(
+	register parse_t *parseio,
+	register int status,
+	register timestamp_t *ptime
+	)
 {
-  if (status)
-    {
-      parseio->parse_dtime.parse_ptime  = *ptime;
-      parseio->parse_dtime.parse_state |= PARSEB_PPS|PARSEB_S_PPS;
-    }
-
-  return CVT_NONE;
-}
-
-/*ARGSUSED*/
-static u_long snt_rawdcf(parseio, ptime)
-  register parse_t *parseio;
-  register timestamp_t *ptime;
-{
-  clocktime_t clock;
-  u_long cvtrtc;
-  time_t t;
-  
-  /*
-   * start at last sample and add second index - gross, may have to be much more careful
-   */
-  if (convert_rawdcf(parseio->parse_ldata, parseio->parse_ldsize - 1, &dcfparam, &clock) == CVT_OK)
-    {
-      if ((t = parse_to_unixtime(&clock, &cvtrtc)) == -1)
+	if (!status)		/* negative edge for simpler wiring (Rx->DCD) */
 	{
-	  parseprintf(DD_RAWDCF,("parse: snt_rawdcf: time conversion FAILED\n"));
-	  return CVT_FAIL|cvtrtc;
+		parseio->parse_dtime.parse_ptime  = *ptime;
+		parseio->parse_dtime.parse_state |= PARSEB_PPS|PARSEB_S_PPS;
 	}
-    }
-  else
-    {
-      parseprintf(DD_RAWDCF,("parse: snt_rawdcf: data conversion FAILED\n"));
-      return CVT_NONE;
-    }
 
-  parseio->parse_dtime.parse_stime = *ptime;
-
-  t += parseio->parse_index - 1;
-
-  /*
-   * time stamp
-   */
-#ifdef PARSEKERNEL
-  parseio->parse_dtime.parse_time.tv.tv_sec  = t;
-  parseio->parse_dtime.parse_time.tv.tv_usec = clock.usecond;
-#else
-  parseio->parse_dtime.parse_time.fp.l_ui  = t + JAN_1970;
-  TVUTOTSF(clock.usecond, parseio->parse_dtime.parse_time.fp.l_uf);
-#endif
-
-  parseprintf(DD_RAWDCF,("parse: snt_rawdcf: time stamp synthesized offset %d seconds\n", parseio->parse_index - 1));
-
-  return updatetimeinfo(parseio, t, clock.usecond, clock.flags);
+	return CVT_NONE;
 }
 
-#else /* not (REFCLOCK && (PARSE || PARSEPPS) && CLOCK_RAWDCF) */
+static u_long
+snt_rawdcf(
+	register parse_t *parseio,
+	register timestamp_t *ptime
+	)
+{
+	if ((parseio->parse_dtime.parse_status & CVT_MASK) == CVT_OK)
+	{
+		parseio->parse_dtime.parse_stime = *ptime;
+
+#ifdef PARSEKERNEL
+		parseio->parse_dtime.parse_time.tv.tv_sec++;
+#else
+		parseio->parse_dtime.parse_time.fp.l_ui++;
+#endif
+		
+		parseprintf(DD_RAWDCF,("parse: snt_rawdcf: time stamp synthesized offset %d seconds\n", parseio->parse_index - 1));
+		
+		return updatetimeinfo(parseio, parseio->parse_lstate);
+	}
+	return CVT_NONE;
+}
+
+/*
+ * inp_rawdcf
+ *
+ * grep DCF77 data from input stream
+ */
+static u_long
+inp_rawdcf(
+	  parse_t      *parseio,
+	  unsigned int  ch,
+	  timestamp_t  *tstamp
+	  )
+{
+	static struct timeval timeout = { 1, 500000 }; /* 1.5 secongs denote second #60 */
+	
+	parseprintf(DD_PARSE, ("inp_rawdcf(0x%x, 0x%x, ...)\n", (int)parseio, (int)ch));
+	
+	parseio->parse_dtime.parse_stime = *tstamp; /* collect timestamp */
+
+	if (parse_timedout(parseio, tstamp, &timeout))
+	{
+		parseprintf(DD_PARSE, ("inp_rawdcf: time out seen\n"));
+
+		(void) parse_end(parseio);
+		(void) parse_addchar(parseio, ch);
+		return PARSE_INP_TIME;
+	}
+	else
+	{
+		unsigned int rtc;
+		
+		rtc = parse_addchar(parseio, ch);
+		if (rtc == PARSE_INP_SKIP)
+		{
+			if (snt_rawdcf(parseio, tstamp) == CVT_OK)
+				return PARSE_INP_SYNTH;
+		}
+		return rtc;
+	}
+}
+
+#else /* not (REFCLOCK && CLOCK_PARSE && CLOCK_RAWDCF) */
 int clk_rawdcf_bs;
-#endif /* not (REFCLOCK && (PARSE || PARSEPPS) && CLOCK_RAWDCF) */
+#endif /* not (REFCLOCK && CLOCK_PARSE && CLOCK_RAWDCF) */
 
 /*
  * History:
  *
  * clk_rawdcf.c,v
- * Revision 3.23  1997/01/19 12:44:39  kardel
- * 3-5.88.1 reconcilation
+ * Revision 4.9  1999/12/06 13:42:23  kardel
+ * transfer correctly converted time codes always into tcode
  *
- * Revision 3.22  1996/12/01 16:04:15  kardel
- * freeze for 5.86.12.2 PARSE-Patch
+ * Revision 4.8  1999/11/28 09:13:50  kardel
+ * RECON_4_0_98F
  *
- * Revision 3.21  1996/11/24 23:16:31  kardel
- * checkpoint - partial autoconfigure update for parse modules
+ * Revision 4.7  1999/04/01 20:07:20  kardel
+ * added checking for minutie increment of timestamps in clk_rawdcf.c
  *
- * Revision 3.20  1996/11/24 20:09:45  kardel
- * RELEASE_5_86_12_2 reconcilation
+ * Revision 4.6  1998/06/14 21:09:37  kardel
+ * Sun acc cleanup
  *
- * Revision 3.19  1996/10/05 13:30:20  kardel
- * general update
+ * Revision 4.5  1998/06/13 12:04:16  kardel
+ * fix SYSV clock name clash
  *
- * Revision 3.18  1994/10/03  21:59:22  kardel
- * 3.4e cleanup/integration
+ * Revision 4.4  1998/06/12 15:22:28  kardel
+ * fix prototypes
  *
- * Revision 3.17  1994/10/03  10:04:07  kardel
- * 3.4e reconcilation
+ * Revision 4.3  1998/06/06 18:33:36  kardel
+ * simplified condidional compile expression
  *
- * Revision 3.16  1994/05/31  20:02:40  kardel
- * sync on ONE transition
+ * Revision 4.2  1998/05/24 11:04:18  kardel
+ * triggering PPS on negative edge for simpler wiring (Rx->DCD)
  *
- * Revision 3.15  1994/05/30  10:20:01  kardel
- * LONG cleanup
+ * Revision 4.1  1998/05/24 09:39:53  kardel
+ * implementation of the new IO handling model
  *
- * Revision 3.14  1994/05/12  12:49:09  kardel
- * printf fmt/arg cleanup
+ * Revision 4.0  1998/04/10 19:45:30  kardel
+ * Start 4.0 release version numbering
  *
- * Revision 3.13  1994/03/10  19:00:43  kardel
- * clear utctime field to avoid confusion on synthesize time stamps
- *
- * Revision 3.12  1994/02/20  13:04:39  kardel
- * parse add/delete second support
- *
- * Revision 3.11  1994/02/02  17:45:23  kardel
- * rcs ids fixed
- *
- * Revision 3.9  1994/01/25  19:05:12  kardel
- * 94/01/23 reconcilation
- *
- * Revision 3.8  1994/01/22  11:24:11  kardel
- * fixed PPS handling
- *
- * Revision 3.7  1993/10/30  09:44:41  kardel
- * conditional compilation flag cleanup
- *
- * Revision 3.6  1993/10/03  19:10:45  kardel
- * restructured I/O handling
- *
- * Revision 3.5  1993/09/27  21:08:07  kardel
- * utcoffset now in seconds
- *
- * Revision 3.4  1993/09/26  23:40:25  kardel
- * new parse driver logic
- *
- * Revision 3.3  1993/09/01  21:44:54  kardel
- * conditional cleanup
- *
- * Revision 3.2  1993/07/09  11:37:18  kardel
- * Initial restructured version + GPS support
- *
- * Revision 3.1  1993/07/06  10:00:19  kardel
- * DCF77 driver goes generic...
+ * from V3 3.24 log info deleted 1998/04/11 kardel
  *
  */

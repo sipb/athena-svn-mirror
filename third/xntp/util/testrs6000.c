@@ -11,12 +11,20 @@
 #include <sys/time.h>
 #include <time.h>
 #include <stdio.h>
+
 int timeout();
 struct timeval adjustment, result;
-main () {
+
+int
+main (
+	int argc,
+	char *argv[]
+	)
+{
 	struct itimerval value, oldvalue;
 	int i;
 	time_t curtime;
+
 	curtime = time(0);
 	printf("Starting: %s", ctime(&curtime));
 	value.it_interval.tv_sec = value.it_value.tv_sec = 1;
@@ -30,15 +38,18 @@ main () {
 	}
 }
 
-int timeout(sig, code, scp)
-int sig,code;
-struct sigcontext *scp;
+int
+timeout(
+	int sig,
+	int code,
+	struct sigcontext *scp
+	)
 {
 	signal (SIGALRM, timeout);
 	if (adjtime(&adjustment, &result)) 
-		printf("adjtime call failed\n");
+	    printf("adjtime call failed\n");
 	if (result.tv_sec != 0 || result.tv_usec != 0) {
 		printf("result.u = %d.%06.6d  ", (int) result.tv_sec,
-			(int) result.tv_usec);
+		       (int) result.tv_usec);
 	}
 }

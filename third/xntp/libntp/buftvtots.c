@@ -3,19 +3,24 @@
  *	       an octet stream and convert it to a l_fp time stamp.
  *	       This is useful when using the clock line discipline.
  */
+
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #include "ntp_fp.h"
 #include "ntp_unixtime.h"
 
 int
-buftvtots(bufp, ts)
-	const char *bufp;
-	l_fp *ts;
+buftvtots(
+	const char *bufp,
+	l_fp *ts
+	)
 {
 	register const u_char *bp;
 	register u_long sec;
 	register u_long usec;
 
-#ifdef XNTP_BIG_ENDIAN
+#ifdef WORDS_BIGENDIAN
 	bp = (const u_char *)bufp;
 
 	sec = (u_long)*bp++ & 0xff;
@@ -34,7 +39,7 @@ buftvtots(bufp, ts)
 	usec <<= 8;
 	usec += (u_long)*bp & 0xff;
 #else
-	bp = (u_char *)bufp + 7;
+	bp = (const u_char *)bufp + 7;
 
 	usec = (u_long)*bp-- & 0xff;
 	usec <<= 8;
@@ -52,10 +57,9 @@ buftvtots(bufp, ts)
 	sec <<= 8;
 	sec += (u_long)*bp & 0xff;
 #endif
-	if (usec > 999999)
-		return 0;
-
 	ts->l_ui = sec + (u_long)JAN_1970;
+	if (usec > 999999)
+	    return 0;
 	TVUTOTSF(usec, ts->l_uf);
 	return 1;
 }

@@ -4,9 +4,10 @@
 #include "ntp_fp.h"
 
 char *
-fptoms(fpv, ndec)
-	s_fp fpv;
-	int ndec;
+fptoms(
+	s_fp fpv,
+	int ndec
+	)
 {
 	u_fp plusfp;
 	int neg;

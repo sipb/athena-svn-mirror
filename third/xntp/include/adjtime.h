@@ -15,7 +15,7 @@
 /* "adjtime.h,v 3.1 1993/07/06 01:04:43 jbj Exp" */
 /* adjtime.h,v
  * Revision 3.1  1993/07/06  01:04:43  jbj
- * XNTP release 3.1
+ * NTP release 3.1
  *
  *
  * Revision 1.5  90/02/07  15:34:18  15:34:18  src (Source Hacker)

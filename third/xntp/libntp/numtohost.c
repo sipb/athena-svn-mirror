@@ -12,8 +12,9 @@
 #define	LOOPBACKNETMASK	0xff000000
 
 char *
-numtohost(netnum)
-	u_int32 netnum;
+numtohost(
+	u_int32 netnum
+	)
 {
 	char *bp;
 	struct hostent *hp;
@@ -25,10 +26,10 @@ numtohost(netnum)
 	 * host itself.
 	 */
 	if ((((ntohl(netnum) & LOOPBACKNETMASK) == LOOPBACKNET)
-	    && (ntohl(netnum) != LOOPBACKHOST))
+	     && (ntohl(netnum) != LOOPBACKHOST))
 	    || ((hp = gethostbyaddr((char *)&netnum, sizeof netnum, AF_INET))
-	      == 0))
-		return numtoa(netnum);
+		== 0))
+	    return numtoa(netnum);
 	
 	LIB_GETBUF(bp);
 	

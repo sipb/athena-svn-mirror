@@ -1,6 +1,6 @@
 /*
  * calleapwhen - determine the number of seconds to the next possible
- *		 leap occurance and the last one.
+ *		 leap occurance.
  */
 #include <sys/types.h>
 
@@ -22,14 +22,13 @@ long calleaptab[10] = {
 	(MAR+APR+MAY+JUN)*SECSPERDAY + 3*SECSPERYEAR,
 	(MAR+APR+MAY+JUN+JUL+AUG+SEP+OCT+NOV+DEC)*SECSPERDAY + 3*SECSPERYEAR,
 	(MAR+APR+MAY+JUN+JUL+AUG+SEP+OCT+NOV+DEC+JAN+FEBLEAP+MAR+APR+MAY+JUN)
-	    *SECSPERDAY + 3*SECSPERYEAR,	/* next after current cycle */
+	*SECSPERDAY + 3*SECSPERYEAR,	/* next after current cycle */
 };
 
-void
-calleapwhen(ntpdate, leaplast, leapnext)
-	u_long ntpdate;
-	u_long *leaplast;
-	u_long *leapnext;
+u_long
+calleapwhen(
+	u_long ntpdate
+	)
 {
 	register u_long dateincycle;
 	register int i;
@@ -39,23 +38,22 @@ calleapwhen(ntpdate, leaplast, leapnext)
 	 */
 	dateincycle = ntpdate;
 	if (dateincycle >= MAR1988)
-		dateincycle -= MAR1988;
+	    dateincycle -= MAR1988;
 	else
-		dateincycle -= MAR1900;
+	    dateincycle -= MAR1900;
 
 	while (dateincycle >= SECSPERCYCLE)
-		dateincycle -= SECSPERCYCLE;
+	    dateincycle -= SECSPERCYCLE;
 
 	/*
 	 * Find where we are with respect to the leap events.
 	 */
 	for (i = 1; i < 9; i++)
-		if (dateincycle < (u_long)calleaptab[i])
-			break;
+	    if (dateincycle < (u_long)calleaptab[i])
+		break;
 	
 	/*
 	 * i points at the next leap.  Compute the last and the next.
 	 */
-	*leaplast = (u_long)((long)dateincycle - calleaptab[i-1]);
-	*leapnext = (u_long)(calleaptab[i] - (long)dateincycle);
+	return (u_long)(calleaptab[i] - (long)dateincycle);
 }

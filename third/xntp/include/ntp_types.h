@@ -22,6 +22,17 @@
 #endif
 
 /*
+ * Set up for prototyping
+ */
+#ifndef P
+#if defined(__STDC__) || defined(HAVE_PROTOTYPES)
+#define	P(x)	x
+#else /* not __STDC__ and not HAVE_PROTOTYPES */
+#define P(x)	()
+#endif /* not __STDC__ and HAVE_PROTOTYPES */
+#endif /* P */
+
+/*
  * VMS DECC (v4.1), {u_char,u_short,u_long} are only in SOCKET.H,
  *			and u_int isn't defined anywhere
  */
@@ -34,30 +45,6 @@ typedef unsigned int u_int;
  */
 #endif /* VMS */
 
-/* HMS: I want to see if this is REALLY true... */
-#if 0
-/*
- * DEC Alpha systems need int32 and u_int32 defined as int and u_int
- */
-#ifdef __alpha
-# ifndef int32
-#  define int32 int
-# endif /* int32 */
-# ifndef u_int32
-#  define u_int32 u_int
-# endif /* u_int32 */
-/*
- *  All other systems fall into this part
- */
-#else /* __alpha */
-# ifndef int32
-#  define int32 long
-# endif /* int32 */
-# ifndef u_int32
-#  define u_int32 u_long
-# endif /* u_int32 */
-#endif /* __ alplha */
-#else /* not 0 */	/* WE USE THE FOLLOWING: */
 #if (SIZEOF_INT == 4)
 # ifndef int32
 #  define int32 int
@@ -77,7 +64,10 @@ typedef unsigned int u_int;
 # endif /* not sizeof(long) == 4 */
 # include "Bletch: what's 32 bits on this machine?"
 #endif /* not sizeof(int) == 4 */
-#endif
+
+typedef unsigned short associd_t; /* association ID */
+typedef u_int32 keyid_t;	/* cryptographic key ID */
+typedef u_int32 tstamp_t;	/* NTP seconds timestamp */
 
 #endif /* _NTP_TYPES_ */
 

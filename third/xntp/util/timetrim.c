@@ -21,18 +21,26 @@
  * 
  */
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <stdio.h>
 #include <ctype.h>
-#include <sys/syssgi.h>
+#ifdef HAVE_SYS_SYSSGI_H
+# include <sys/syssgi.h>
+#endif
 
 #define abs(X) (((X) < 0) ? -(X) : (X))
 #define USAGE "usage: timetrim [-n] [[-i] value]\n"
 #define SGITONTP(X) ((double)(X) * 1048576.0/1.0e9)
 #define NTPTOSGI(X) ((long)((X) * 1.0e9/1048576.0))
 
-main(argc, argv)
-int argc;
-char **argv;
+int
+main(
+	int argc,
+	char *argv[]
+	)
 {
 	char *rem;
 	int c, incremental = 0, ntpunits = 0;
@@ -41,13 +49,13 @@ char **argv;
 	
 	while (--argc && **++argv == '-' && isalpha(argv[0][1])) {
 		switch (argv[0][1]) {
-		case 'i':
+		    case 'i':
 			incremental++;
 			break;
-		case 'n':
+		    case 'n':
 			ntpunits++;
 			break;
-		default:
+		    default:
 			fprintf(stderr, USAGE);
 			exit(1);
 		}
@@ -60,9 +68,9 @@ char **argv;
 
 	if (argc == 0) {
 		if (ntpunits)
-			fprintf(stdout, "%0.5lf\n", SGITONTP(timetrim));
+		    fprintf(stdout, "%0.5lf\n", SGITONTP(timetrim));
 		else
-			fprintf(stdout, "%ld\n", timetrim);
+		    fprintf(stdout, "%ld\n", timetrim);
 	} else if (argc != 1) {
 		fprintf(stderr, USAGE);
 		exit(1);
@@ -73,11 +81,11 @@ char **argv;
 			exit(1);
 		}
 		if (ntpunits)
-			value = NTPTOSGI(value);
+		    value = NTPTOSGI(value);
 		if (incremental)
-			timetrim += value;
+		    timetrim += value;
 		else
-			timetrim = value;
+		    timetrim = value;
 		if (syssgi(SGI_SETTIMETRIM, timetrim) < 0) {
 			perror("syssgi");
 			exit(2);

@@ -8,8 +8,9 @@
 #include "ntp_stdlib.h"
 
 u_long
-caltontp(jt)
-	register const struct calendar *jt;
+caltontp(
+	register const struct calendar *jt
+	)
 {
     u_long ace_days;			     /* absolute Christian Era days */
     u_long ntp_days;

@@ -9,12 +9,13 @@
 #include "ntp_stdlib.h"
 
 char *
-dolfptoa(fpi, fpv, neg, ndec, msec)
-	u_long fpi;
-	u_long fpv;
-	int neg;
-	int ndec;
-	int msec;
+dolfptoa(
+	u_long fpi,
+	u_long fpv,
+	int neg,
+	int ndec,
+	int msec
+	)
 {
 	register u_char *cp, *cpend;
 	register u_long lwork;
@@ -71,16 +72,16 @@ dolfptoa(fpi, fpv, neg, ndec, msec)
 	if (msec) {
 		dec = ndec + 3;
 		if (dec < 3)
-			dec = 3;
+		    dec = 3;
 		cpdec = &cbuf[13];
 	} else {
 		dec = ndec;
 		if (dec < 0)
-			dec = 0;
+		    dec = 0;
 		cpdec = &cbuf[10];
 	}
 	if (dec > 12)
-		dec = 12;
+	    dec = 12;
 	
 	/*
 	 * If there's a fraction to deal with, do so.
@@ -108,7 +109,7 @@ dolfptoa(fpi, fpv, neg, ndec, msec)
 			L_ADD(&work, &ftmp);
 			*cpend++ = (u_char)work.l_ui;
 			if (work.l_uf == 0)
-				break;
+			    break;
 		}
 
 		/*
@@ -123,7 +124,7 @@ dolfptoa(fpi, fpv, neg, ndec, msec)
 				*(--tp) += 1;
 			};
 			if (tp < cp)
-				cp = tp;
+			    cp = tp;
 		}
 	}
 	cpend += dec;
@@ -138,18 +139,18 @@ dolfptoa(fpi, fpv, neg, ndec, msec)
 	 */
 	while (cp < cpdec) {
 		if (*cp != 0)
-			break;
+		    break;
 		cp++;
 	}
 	if (cp == cpdec)
-		--cp;
+	    --cp;
 
 	bp = buf;
 	if (neg)
-		*bp++ = '-';
+	    *bp++ = '-';
 	while (cp < cpend) {
 		if (cp == cpdec)
-			*bp++ = '.';
+		    *bp++ = '.';
 		*bp++ = (char)(*cp++ + '0');	/* ascii dependent? */
 	}
 	*bp = '\0';

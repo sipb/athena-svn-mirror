@@ -6,13 +6,17 @@
  * analysis. From this you can determine the jitter and if the clock ever
  * runs backwards.
  */
-#include <sys/time.h>
+
 #include <stdio.h>
+#include <sys/time.h>
 
 #define NBUF 20002
 
-void
-main()
+int
+main(
+	int argc,
+	char *argv[]
+	)
 {
 	struct timeval ts, tr;
 	struct timezone tzp;
@@ -24,7 +28,7 @@ main()
 	 * Force pages into memory
 	 */
 	for (i = 0; i < NBUF; i ++)
-		gtod[i] = 0;
+	    gtod[i] = 0;
 
 	/*
 	 * Construct gtod array
@@ -37,12 +41,12 @@ main()
 	/*
 	 * Write out gtod array for later processing with S
 	 */
-        for (i = 0; i < NBUF - 2; i++) {
-/*
-                printf("%lu\n", gtod[i]);
-*/
+	for (i = 0; i < NBUF - 2; i++) {
+		/*
+		  printf("%lu\n", gtod[i]);
+		*/
 		gtod[i] = gtod[i + 1] - gtod[i];
-                printf("%lu\n", gtod[i]);
+		printf("%lu\n", gtod[i]);
 	}
 
 	/*
@@ -59,8 +63,9 @@ main()
 	}
 	fprintf(stderr, "First rank\n");
 	for (i = 0; i < 10; i++)
-		fprintf(stderr, "%10ld%10ld\n", i, gtod[i]);
+	    fprintf(stderr, "%10ld%10ld\n", i, gtod[i]);
 	fprintf(stderr, "Last rank\n");
-        for (i = NBUF - 12; i < NBUF - 2; i++)
-                fprintf(stderr, "%10ld%10ld\n", i, gtod[i]);
+	for (i = NBUF - 12; i < NBUF - 2; i++)
+	    fprintf(stderr, "%10ld%10ld\n", i, gtod[i]);
+	exit(0);
 }

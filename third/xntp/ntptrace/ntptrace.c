@@ -8,27 +8,9 @@
  *
  *	Large portions stolen from ntpdate.c
  */
-#include <stdio.h>
-#include <signal.h>
-#include <ctype.h>
-#include <errno.h>
-#include <netdb.h>
-#include <sys/types.h>
-#include <sys/signal.h>
-#include <sys/ioctl.h>
-#include <sys/time.h>
-#include <sys/resource.h>
 
-#ifndef SYS_WINNT
-#ifdef __STDC__
-#include <stdarg.h>
-#else
-#include <varargs.h>
-#endif /* __STDC__ */
-#endif /* SYS_WINNT */
-
-#if defined(SYS_HPUX)
-#include <utmp.h>
+#ifdef HAVE_CONFIG_H
+# include <config.h>
 #endif
 
 #include "ntp_fp.h"
@@ -40,11 +22,27 @@
 #include "ntp_syslog.h"
 #include "ntp_select.h"
 #include "ntp_stdlib.h"
+#include "recvbuff.h"
+
+#include <stdio.h>
+#include <signal.h>
+#include <ctype.h>
+#include <netdb.h>
+#include <sys/signal.h>
+#ifdef HAVE_SYS_IOCTL_H
+# include <sys/ioctl.h>
+#endif
+#include <sys/resource.h>
+
+/*
+ * only 16 stratums, so this is more than enough.
+ */
+int maxhosts = 20;  
 
 /*
  * Debugging flag
  */
-int debug = 0;
+volatile int debug = 0;
 
 #ifndef SYS_VXWORKS
 int nonames = 0;			/* if set, don't print hostnames */
@@ -63,17 +61,9 @@ int sys_retries = 5;			/* # of retry attempts per server */
 int sys_timeout = 2;			/* timeout time, in seconds */
 struct server **sys_servers;		/* the server list */
 int sys_numservers = 0;			/* number of servers to poll */
-int sys_maxservers = NTP_MAXSTRATUM+1;	/* max number of servers to deal with */
+int sys_maxservers = STRATUM_UNSPEC;	/* max number of servers to deal with */
 int sys_version = NTP_OLDVERSION;	/* version to poll with */
 
-/*
- * recvbuf lists
- */
-struct recvbuf *freelist;	/* free buffers */
-struct recvbuf *fulllist;	/* buffers with data */
-
-int full_recvbufs;		/* number of full ones */
-int free_recvbufs;
 
 /*
  * File descriptor masks etc. for call to select
@@ -87,100 +77,116 @@ fd_set fdmask;
 int verbose = 0;
 int always_step = 0;
 
-extern int errno;
-
+int		ntptracemain	P((int,	char **));
 static	void	DoTrace		P((struct server *));
 static	void	DoTransmit	P((struct server *));
-static	int	DoReceive	P((struct server *));
-static	int	ReceiveBuf	P((struct server *, struct recvbuf *));
-static	struct server *addserver	P((struct in_addr *));
-static	struct server *addservbyname	P((char *));
+static	int		DoReceive	P((struct server *));
+static	int		ReceiveBuf	P((struct server *, struct recvbuf *));
+static	struct	server *addserver	P((struct in_addr *));
+static	struct	server *addservbyname	P((const char *));
 static	void	setup_io	P((void));
-static	void	freerecvbuf	P((struct recvbuf *));
 static	void	sendpkt	P((struct sockaddr_in *, struct pkt *, int));
-static	int	getipaddr	P((char *, u_int32 *));
-static	int	decodeipaddr	P((char *, u_int32 *));
+static	int		getipaddr	P((const char *, u_int32 *));
+static	int		decodeipaddr	P((const char *, u_int32 *));
 static	void	printserver	P((struct server *, FILE *));
 static	void	printrefid	P((FILE *, struct server *));
+void		input_handler	P((l_fp * x));
+
+#ifdef SYS_WINNT
+int on = 1;
+WORD wVersionRequested;
+WSADATA wsaData;
+
+HANDLE	TimerThreadHandle = NULL;	/* 1998/06/03 - Used in ntplib/machines.c */
+void timer(void)	{  ; };	/* 1998/06/03 - Used in ntplib/machines.c */
+#endif /* SYS_WINNT */
+
+void
+input_handler(l_fp * x)
+{ ;
+}
+
+#ifdef NO_MAIN_ALLOWED
+CALL(ntptrace,"ntptrace",ntptracemain);
+#endif
 
 /*
  * Main program.  Initialize us and loop waiting for I/O and/or
  * timer expiries.
  */
-#ifdef NO_MAIN_ALLOWED
-CALL(ntptrace,"ntptrace",ntptracemain);
-#endif
-void
 #ifndef NO_MAIN_ALLOWED
-main
-#else
-ntptracemain
-#endif /* NO_MAIN_ALLOWED */
-(argc, argv)
-	int argc;
-	char *argv[];
+int
+main(
+	int argc,
+	char *argv[]
+	)
+{
+	return ntptracemain(argc, argv);
+}
+#endif
+
+int
+ntptracemain(
+	int argc,
+	char *argv[]
+	)
 {
 	struct server *firstserver;
 	int errflg;
 	int c;
-	extern char *ntp_optarg;
-	extern int ntp_optind;
-	extern char *Version;
-#ifdef SYS_WINNT
-	int on = 1;
- 	WORD wVersionRequested;
-	WSADATA wsaData;
-#endif /* SYS_WINNT */
 
-    errflg = 0;
+	errflg = 0;
 	progname = argv[0];
 
 	/*
 	 * Decode argument list
 	 */
-	while ((c = ntp_getopt(argc, argv, "do:nr:t:v")) != EOF)
-		switch (c) {
+	while ((c = ntp_getopt(argc, argv, "dm:no:r:t:v")) != EOF)
+	    switch (c) {
 		case 'd':
-			++debug;
-			break;
+		    ++debug;
+		    break;
+		case 'm':
+		    maxhosts = atoi(ntp_optarg);
+		    break;
 		case 'n':
-			nonames = 1;
-			break;
+		    nonames = 1;
+		    break;
 		case 'o':
-			sys_version = atoi(ntp_optarg);
-			break;
+		    sys_version = atoi(ntp_optarg);
+		    break;
 		case 'r':
-			sys_retries = atoi(ntp_optarg);
-			if (sys_retries < 1) {
+		    sys_retries = atoi(ntp_optarg);
+		    if (sys_retries < 1) {
 			    (void)fprintf(stderr,
-					"%s: retries (%d) too small\n",
-					progname, sys_retries);
+					  "%s: retries (%d) too small\n",
+					  progname, sys_retries);
 			    errflg++;
-			}
-			break;
+		    }
+		    break;
 		case 't':
-			sys_timeout = atoi(ntp_optarg);
-			if (sys_timeout < 1) {
+		    sys_timeout = atoi(ntp_optarg);
+		    if (sys_timeout < 1) {
 			    (void)fprintf(stderr,
-					"%s: timeout (%d) too short\n",
-					progname, sys_timeout);
+					  "%s: timeout (%d) too short\n",
+					  progname, sys_timeout);
 			    errflg++;
-			}
-			break;
+		    }
+		    break;
 		case 'v':
-			verbose = 1;
-			break;
+		    verbose = 1;
+		    break;
 		case '?':
-			++errflg;
-			break;
+		    ++errflg;
+		    break;
 		default:
-			break;
-		}
+		    break;
+	    }
 	
 	if (errflg || (argc - ntp_optind) > 1) {
 		(void) fprintf(stderr,
-			"usage: %s [-dnv] [-o version#] [-r retries] [-t timeout] [server]\n",
-			    progname);
+			       "usage: %s [-dnv] [-m maxhosts] [-o version#] [-r retries] [-t timeout] [server]\n",
+			       progname);
 		exit(2);
 	}
 
@@ -193,31 +199,31 @@ ntptracemain
 #endif /* SYS_WINNT */
 
 	sys_servers = (struct server **)
-	    emalloc(sys_maxservers * sizeof(struct server *));
+		emalloc(sys_maxservers * sizeof(struct server *));
 
 	if (debug) {
 #ifdef HAVE_SETVBUF
-                static char buf[BUFSIZ];
-                setvbuf(stdout, buf, _IOLBF, BUFSIZ);
+		static char buf[BUFSIZ];
+		setvbuf(stdout, buf, _IOLBF, BUFSIZ);
 #else
 		setlinebuf(stdout);
 #endif
-        }
+	}
 
 	if (debug || verbose)
-		msyslog(LOG_NOTICE, "%s", Version);
+	    msyslog(LOG_NOTICE, "%s", Version);
 
 	if ((argc - ntp_optind) == 1)
-		firstserver = addservbyname(argv[ntp_optind]);
+	    firstserver = addservbyname(argv[ntp_optind]);
 	else
-		firstserver = addservbyname("localhost");
+	    firstserver = addservbyname("localhost");
 		
 	if (firstserver == NULL) {
 		/* a message has already been printed */
 		exit(2);
 	}
 
-   /*
+	/*
 	 * Initialize the time of day routines and the I/O subsystem
 	 */
 	setup_io();
@@ -227,33 +233,43 @@ ntptracemain
 #ifdef SYS_WINNT
 	WSACleanup();
 #endif
-	exit(0);
+	return(0);
 } /* main end */
 
 
 static void
-DoTrace(server)
-register struct server *server;
+DoTrace(
+	register struct server *server
+	)
 {
 	int retries = sys_retries;
 
-	if (!verbose) {
-	    if (nonames)
-		printf("%s: ", ntoa(&server->srcadr));
-	    else
-		printf("%s: ", ntohost(&server->srcadr));
-	    fflush(stdout);
-	}
-	while (retries-- > 0) {
-	    DoTransmit(server);
-	    if (DoReceive(server))
+	if (!server->srcadr.sin_addr.s_addr) {
+		if (nonames)
+		    printf("%s:\t*Not Synchronized*\n", ntoa(&server->srcadr));
+		else
+		    printf("%s:\t*Not Synchronized*\n", ntohost(&server->srcadr));
+		fflush(stdout);
 		return;
 	}
+
+	if (!verbose) {
+		if (nonames)
+		    printf("%s: ", ntoa(&server->srcadr));
+		else
+		    printf("%s: ", ntohost(&server->srcadr));
+		fflush(stdout);
+	}
+	while (retries-- > 0) {
+		DoTransmit(server);
+		if (DoReceive(server))
+		    return;
+	}
 	if (verbose) {
-	    if (nonames)
-		printf("%s:\t*Timeout*\n", ntoa(&server->srcadr));
-	    else
-		printf("%s:\t*Timeout*\n", ntohost(&server->srcadr));
+		if (nonames)
+		    printf("%s:\t*Timeout*\n", ntoa(&server->srcadr));
+		else
+		    printf("%s:\t*Timeout*\n", ntohost(&server->srcadr));
 	}
 	else
 	    printf("\t*Timeout*\n");
@@ -263,19 +279,20 @@ register struct server *server;
  * Dotransmit - transmit a packet to the given server
  */
 static void
-DoTransmit(server)
-register struct server *server;
+DoTransmit(
+	register struct server *server
+	)
 {
 	struct pkt xpkt;
 
 	if (debug)
-		printf("DoTransmit(%s)\n", ntoa(&server->srcadr));
+	    printf("DoTransmit(%s)\n", ntoa(&server->srcadr));
 
 	/*
 	 * Fill in the packet and let 'er rip.
 	 */
 	xpkt.li_vn_mode = PKT_LI_VN_MODE(LEAP_NOTINSYNC,
-					sys_version, MODE_CLIENT);
+					 sys_version, MODE_CLIENT);
 	xpkt.stratum = STRATUM_TO_PKT(STRATUM_UNSPEC);
 	xpkt.ppoll = NTP_MINPOLL;
 	xpkt.precision = NTPTRACE_PRECISION;
@@ -294,15 +311,16 @@ register struct server *server;
 	sendpkt(&(server->srcadr), &xpkt, LEN_PKT_NOMAC);
 
 	if (debug)
-		printf("DoTransmit to %s\n", ntoa(&(server->srcadr)));
+	    printf("DoTransmit to %s\n", ntoa(&(server->srcadr)));
 }
 
 /*
  * DoReceive - attempt to receive a packet from a specific server
  */
 static int
-DoReceive(server)
-register struct server *server;
+DoReceive(
+	register struct server *server
+	)
 {
 	register int n;
 	fd_set fds;
@@ -316,56 +334,50 @@ register struct server *server;
 	 * Loop until we see the packet we want or until we time out
 	 */
 	for (;;) {
-	    fds = fdmask;
-	    timeout.tv_sec = sys_timeout;
-	    timeout.tv_usec = 0;
-	    n = select(fd+1, &fds, (fd_set *)0, (fd_set *)0, &timeout);
+		fds = fdmask;
+		timeout.tv_sec = sys_timeout;
+		timeout.tv_usec = 0;
+		n = select(fd+1, &fds, (fd_set *)0, (fd_set *)0, &timeout);
 	    
-	    if (n == 0) {	/* timed out */
-		if (debug)
-			printf("timeout\n");
-		return(0);
-	    }
-	    else if (n == -1) {
-		msyslog(LOG_ERR, "select() error: %m");
-		return(0);
-	    }
-	    get_systime(&ts);
+		if (n == 0) {	/* timed out */
+			if (debug)
+			    printf("timeout\n");
+			return(0);
+		}
+		else if (n == -1) {
+			msyslog(LOG_ERR, "select() error: %m");
+			return(0);
+		}
+		get_systime(&ts);
 	    
-	    if (free_recvbufs == 0) {
-		msyslog(LOG_ERR, "no buffers");
-		exit(1);
-	    }
+		if (free_recvbuffs() == 0) {
+			msyslog(LOG_ERR, "no buffers");
+			exit(1);
+		}
 
-	    rb = freelist;
-	    freelist = rb->next;
-	    free_recvbufs--;
+		rb = get_free_recv_buffer();
 
-	    fromlen = sizeof(struct sockaddr_in);
-	    rb->recv_length = recvfrom(fd, (char *)&rb->recv_pkt,
-		sizeof(rb->recv_pkt), 0,
-		(struct sockaddr *)&rb->srcadr, &fromlen);
-	    if (rb->recv_length == -1) {
-		    rb->next = freelist;
-		    freelist = rb;
-		    free_recvbufs++;
-		    continue;
-	    }
+		fromlen = sizeof(struct sockaddr_in);
+		rb->recv_length = recvfrom(fd, (char *)&rb->recv_pkt,
+					   sizeof(rb->recv_pkt), 0,
+					   (struct sockaddr *)&rb->recv_srcadr, &fromlen);
+		if (rb->recv_length == -1) {
+			freerecvbuf(rb);
+			continue;
+		}
 
-	    /*
-	     * Got one.  Mark how and when it got here,
-	     * put it on the full list.
-	     */
-	    rb->recv_time = ts;
-	    rb->next = fulllist;
-	    fulllist = rb;
-	    full_recvbufs++;
+		/*
+		 * Got one.  Mark how and when it got here,
+		 * put it on the full list.
+		 */
+		rb->recv_time = ts;
+		add_full_recv_buffer(rb);
 
-	    status = ReceiveBuf(server, rb);
+		status = ReceiveBuf(server, rb);
 
-	    freerecvbuf(rb);
+		freerecvbuf(rb);
 	    
-	    return(status);
+		return(status);
 	}
 }
 
@@ -374,9 +386,10 @@ register struct server *server;
  *	Return 1 on success, 0 on failure
  */
 static int
-ReceiveBuf(server, rbufp)
-	struct server *server;
-	struct recvbuf *rbufp;
+ReceiveBuf(
+	struct server *server,
+	struct recvbuf *rbufp
+	)
 {
 	register struct pkt *rpkt;
 	register s_fp di;
@@ -390,7 +403,7 @@ ReceiveBuf(server, rbufp)
 
 	if (debug) {
 		printf("ReceiveBuf(%s, ", ntoa(&server->srcadr));
-		printf("%s)\n", ntoa(&rbufp->srcadr));
+		printf("%s)\n", ntoa(&rbufp->recv_srcadr));
 	}
 
 	/*
@@ -399,35 +412,35 @@ ReceiveBuf(server, rbufp)
 	 */
 	if (rbufp->recv_length < LEN_PKT_NOMAC) {
 		if (debug)
-			printf("receive: packet length %d\n",
-			    rbufp->recv_length);
+		    printf("receive: packet length %d\n",
+			   rbufp->recv_length);
 		return(0);		/* funny length packet */
 	}
-	if (rbufp->srcadr.sin_addr.s_addr != server->srcadr.sin_addr.s_addr) {
+	if (rbufp->recv_srcadr.sin_addr.s_addr != server->srcadr.sin_addr.s_addr) {
 		if (debug)
-			printf("receive: wrong server\n");
+		    printf("receive: wrong server\n");
 		return(0);		/* funny length packet */
 	}
 
 	rpkt = &(rbufp->recv_pkt);
 
 	if (PKT_VERSION(rpkt->li_vn_mode) < NTP_OLDVERSION) {
-	    if (debug)
-		printf("receive: version %d\n", PKT_VERSION(rpkt->li_vn_mode));
-	    return(0);
+		if (debug)
+		    printf("receive: version %d\n", PKT_VERSION(rpkt->li_vn_mode));
+		return(0);
 	}
 	if (PKT_VERSION(rpkt->li_vn_mode) > NTP_VERSION) {
-	    if (debug)
-		printf("receive: version %d\n", PKT_VERSION(rpkt->li_vn_mode));
-	    return(0);
+		if (debug)
+		    printf("receive: version %d\n", PKT_VERSION(rpkt->li_vn_mode));
+		return(0);
 	}
 
 	if ((PKT_MODE(rpkt->li_vn_mode) != MODE_SERVER
-	    && PKT_MODE(rpkt->li_vn_mode) != MODE_PASSIVE)
-	    || rpkt->stratum > NTP_MAXSTRATUM) {
+	     && PKT_MODE(rpkt->li_vn_mode) != MODE_PASSIVE)
+	    || rpkt->stratum >= STRATUM_UNSPEC) {
 		if (debug)
-			printf("receive: mode %d stratum %d\n",
-			    PKT_MODE(rpkt->li_vn_mode), rpkt->stratum);
+		    printf("receive: mode %d stratum %d\n",
+			   PKT_MODE(rpkt->li_vn_mode), rpkt->stratum);
 		return(0);
 	}
 	
@@ -438,7 +451,7 @@ ReceiveBuf(server, rbufp)
 	NTOHL_FP(&rpkt->org, &org);
 	if (!L_ISEQU(&org, &server->xmt)) {
 		if (debug)
-			printf("receive: pkt.org and peer.xmt differ\n");
+		    printf("receive: pkt.org and peer.xmt differ\n");
 		return(0);
 	}
 	
@@ -497,12 +510,13 @@ ReceiveBuf(server, rbufp)
 	/*
 	 * End of recursion if we reach stratum 1 or a local refclock
 	 */
-	if ((server->stratum <= 1) || ((server->refid & 0xff) == 127))
-		return(1);
+	if ((server->stratum <= 1) || (--maxhosts <= 0) || ((server->refid & 0xff) == 127))
+	    return(1);
 
 	nextia.s_addr = server->refid;
 	nextserver = addserver(&nextia);
-	DoTrace(nextserver);
+	if (nextserver)
+	  DoTrace(nextserver);
 	return(1);
 }
 
@@ -512,8 +526,9 @@ ReceiveBuf(server, rbufp)
  *		Returns a pointer to that structure.
  */
 static struct server *
-addserver(iap)
-struct in_addr *iap;
+addserver(
+	struct in_addr *iap
+	)
 {
 	register struct server *server;
 	static int toomany = 0;
@@ -522,8 +537,8 @@ struct in_addr *iap;
 		if (!toomany) {
 			toomany = 1;
 			msyslog(LOG_ERR,
-		"too many servers (> %d) specified, remainder not used",
-			    sys_maxservers);
+				"too many servers (> %d) specified, remainder not used",
+				sys_maxservers);
 		}
 		return(NULL);
 	}
@@ -539,13 +554,16 @@ struct in_addr *iap;
 	
 	return(server);
 }
+
+
 /*
  * addservbyname - determine a server's address and allocate a new structure
  *	       for it.  Returns a pointer to that structure.
  */
 static struct server *
-addservbyname(serv)
-	char *serv;
+addservbyname(
+	const char *serv
+	)
 {
 	u_int32 ipaddr;
 	struct in_addr ia;
@@ -559,38 +577,23 @@ addservbyname(serv)
 	return(addserver(&ia));
 }
 
-/* XXX ELIMINATE getrecvbufs (almost) identical to ntpdate.c, ntptrace.c, ntp_io.c */
-/*
- * setup_io - initialize I/O data and open socket
- */
-static void
-setup_io()
-{
-	register int i;
-	register struct recvbuf *rb;
 
+static void
+setup_io(void)
+{
 	/*
 	 * Init buffer free list and stat counters
 	 */
-	rb = (struct recvbuf *)
-	    emalloc((sys_maxservers + 2) * sizeof(struct recvbuf));
-	freelist = 0;
-	for (i = sys_maxservers + 2; i > 0; i--) {
-		rb->next = freelist;
-		freelist = rb;
-		rb++;
-	}
-
-	fulllist = 0;
-	full_recvbufs = 0;
-	free_recvbufs = sys_maxservers + 2;
+	init_recvbuff(sys_maxservers + 2);
 
 	/* create a datagram (UDP) socket */
+	if ((fd = socket(AF_INET, SOCK_DGRAM, 0))
 #ifndef SYS_WINNT
-	if ((fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
+	    < 0
 #else
-	if ((fd = socket(AF_INET, SOCK_DGRAM, 0)) == INVALID_SOCKET) {
+	    == INVALID_SOCKET
 #endif
+	    ) {
 		msyslog(LOG_ERR, "socket() failed: %m");
 		exit(1);
 		/*NOTREACHED*/
@@ -600,18 +603,6 @@ setup_io()
 	FD_SET(fd, &fdmask);
 }
 
-/* XXX ELIMINATE freerecvbuf (almost) identical to ntpdate.c, ntptrace.c, ntp_io.c */
-/*
- * freerecvbuf - make a single recvbuf available for reuse
- */
-static void
-freerecvbuf(rb)
-	struct recvbuf *rb;
-{
-	rb->next = freelist;
-	freelist = rb;
-	free_recvbufs++;
-}
 
 
 /* XXX ELIMINATE sendpkt similar in ntpq.c, ntpdc.c, ntp_io.c, ntptrace.c */
@@ -619,23 +610,24 @@ freerecvbuf(rb)
  * sendpkt - send a packet to the specified destination
  */
 static void
-sendpkt(dest, pkt, len)
-	struct sockaddr_in *dest;
-	struct pkt *pkt;
-	int len;
+sendpkt(
+	struct sockaddr_in *dest,
+	struct pkt *pkt,
+	int len
+	)
 {
 	int cc;
 
 	cc = sendto(fd, (char *)pkt, len, 0, (struct sockaddr *)dest,
-	    sizeof(struct sockaddr_in));
+		    sizeof(struct sockaddr_in));
 	if (cc == -1) {
 #ifndef SYS_WINNT
 		if (errno != EWOULDBLOCK && errno != ENOBUFS)
 #else /* SYS_WINNT */
-        int iSockErr = WSAGetLastError();
+		    int iSockErr = WSAGetLastError();
 		if (iSockErr != WSAEWOULDBLOCK && iSockErr != WSAENOBUFS)
 #endif /* SYS_WINNT */
-			msyslog(LOG_ERR, "sendto(%s): %m", ntoa(dest));
+		    msyslog(LOG_ERR, "sendto(%s): %m", ntoa(dest));
 	}
 }
 
@@ -643,9 +635,10 @@ sendpkt(dest, pkt, len)
  * getipaddr - given a host name, return its host address
  */
 static int
-getipaddr(host, num)
-	char *host;
-	u_int32 *num;
+getipaddr(
+	const char *host,
+	u_int32 *num
+	)
 {
 	struct hostent *hp;
 
@@ -662,11 +655,12 @@ getipaddr(host, num)
  * decodeipaddr - return a host address (this is crude, but careful)
  */
 static int
-decodeipaddr(num, ipaddr)
-	char *num;
-	u_int32 *ipaddr;
+decodeipaddr(
+	const char *num,
+	u_int32 *ipaddr
+	)
 {
-	register char *cp;
+	register const char *cp;
 	register char *bp;
 	register int i;
 	register int temp;
@@ -676,27 +670,27 @@ decodeipaddr(num, ipaddr)
 	*ipaddr = 0;
 	for (i = 0; i < 4; i++) {
 		bp = buf;
-		while (isdigit(*cp))
-			*bp++ = *cp++;
+		while (isdigit((int)*cp))
+		    *bp++ = *cp++;
 		if (bp == buf)
-			break;
+		    break;
 
 		if (i < 3) {
 			if (*cp++ != '.')
-				break;
+			    break;
 		} else if (*cp != '\0')
-			break;
+		    break;
 
 		*bp = '\0';
 		temp = atoi(buf);
 		if (temp > 255)
-			break;
+		    break;
 		*ipaddr <<= 8;
 		*ipaddr += temp;
 	}
 	
 	if (i < 4)
-		return 0;
+	    return 0;
 	*ipaddr = htonl(*ipaddr);
 	return 1;
 }
@@ -707,48 +701,42 @@ decodeipaddr(num, ipaddr)
  * printserver - print detail information for a server
  */
 static void
-printserver(pp, fp)
-	register struct server *pp;
-	FILE *fp;
+printserver(
+	register struct server *pp,
+	FILE *fp
+	)
 {
 	u_fp synchdist;
 
 	synchdist = pp->rootdispersion + (pp->rootdelay/2);
 
 	if (!verbose) {
-	    (void) fprintf(fp, "stratum %d, offset %s, synch distance %s",
-			   pp->stratum,
-			   lfptoa(&pp->offset, 6),
-			   ufptoa(synchdist, 5));
-	    if (pp->stratum == 1) {
-		(void) fprintf(fp, ", refid ");
-		printrefid(fp, pp);
-	    }
-	    (void) fprintf(fp, "\n");
-	    return;
+		(void) fprintf(fp, "stratum %d, offset %s, synch distance %s",
+		    pp->stratum, lfptoa(&pp->offset, 6), ufptoa(synchdist, 5));
+		if (pp->stratum == 1) {
+			(void) fprintf(fp, ", refid ");
+			printrefid(fp, pp);
+		}
+		(void) fprintf(fp, "\n");
+		return;
 	}
 
-	(void) fprintf(fp, "server %s, port %d\n",
-	    ntoa(&pp->srcadr), ntohs(pp->srcadr.sin_port));
+	(void) fprintf(fp, "server %s, port %d\n", ntoa(&pp->srcadr),
+	    ntohs(pp->srcadr.sin_port));
 
 	(void) fprintf(fp, "stratum %d, precision %d, leap %c%c\n",
-	    pp->stratum, pp->precision,
-	    pp->leap & 0x2 ? '1' : '0',
+	    pp->stratum, pp->precision, pp->leap & 0x2 ? '1' : '0',
 	    pp->leap & 0x1 ? '1' : '0');
 	
 	(void) fprintf(fp, "refid ");
 	printrefid(fp, pp);
 
-	(void) fprintf(fp,
-	    " delay %s, dispersion %s ",
-	    fptoa(pp->delay, 5),
+	(void) fprintf(fp, " delay %s, dispersion %s ", fptoa(pp->delay, 5),
 	    ufptoa(pp->dispersion, 5));
-	(void) fprintf(fp, "offset %s\n",
-	    lfptoa(&pp->offset, 6));
+	(void) fprintf(fp, "offset %s\n", lfptoa(&pp->offset, 6));
 	(void) fprintf(fp, "rootdelay %s, rootdispersion %s",
-		fptoa(pp->rootdelay, 5), ufptoa(pp->rootdispersion, 5));
-	(void) fprintf(fp, ", synch dist %s\n",
-		ufptoa(synchdist, 5));
+	    ufptoa(pp->rootdelay, 5), ufptoa(pp->rootdispersion, 5));
+	(void) fprintf(fp, ", synch dist %s\n", ufptoa(synchdist, 5));
 	
 	(void) fprintf(fp, "reference time:      %s\n",
 	    prettydate(&pp->reftime));
@@ -762,9 +750,10 @@ printserver(pp, fp)
 }
 
 static void
-printrefid(fp, pp)
-FILE *fp;
-struct server *pp;
+printrefid(
+	FILE *fp,
+	struct server *pp
+	)
 {
 	char junk[5];
 	char *str;
@@ -775,30 +764,24 @@ struct server *pp;
 		str = junk;
 		(void) fprintf(fp, "'%s'", str);
 	} else {
-	    if (nonames) {
-		str = numtoa(pp->refid);
-		(void) fprintf(fp, "[%s]", str);
-	    }
-	    else {
-		str = numtohost(pp->refid);
-		(void) fprintf(fp, "%s", str);
-	    }
+		if (nonames) {
+			str = numtoa(pp->refid);
+			(void) fprintf(fp, "[%s]", str);
+		}
+		else {
+			str = numtohost(pp->refid);
+			(void) fprintf(fp, "%s", str);
+		}
 	}
 }
 
 #if !defined(HAVE_VSPRINTF)
-/*
- * This nugget for pre-tahoe 4.3bsd systems
- */
-#if !defined(__STDC__) || !__STDC__
-#define const
-#endif
-
 int
-vsprintf(str, fmt, ap)
-	char *str;
-	const char *fmt;
-	va_list ap;
+vsprintf(
+	char *str,
+	const char *fmt,
+	va_list ap
+	)
 {
 	FILE f;
 	int len;

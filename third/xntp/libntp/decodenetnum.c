@@ -9,9 +9,10 @@
 #include "ntp_stdlib.h"
 
 int
-decodenetnum(num, netnum)
-	const char *num;
-	u_int32 *netnum;
+decodenetnum(
+	const char *num,
+	u_int32 *netnum
+	)
 {
 	register const char *cp;
 	register char *bp;
@@ -32,27 +33,27 @@ decodenetnum(num, netnum)
 
 	for (i = 0; i < 4; i++) {
 		bp = buf;
-		while (isdigit(*cp))
-			*bp++ = *cp++;
+		while (isdigit((int)*cp))
+		    *bp++ = *cp++;
 		if (bp == buf)
-			break;
+		    break;
 
 		if (i < 3) {
 			if (*cp++ != '.')
-				break;
+			    break;
 		} else if (*cp != eos)
-			break;
+		    break;
 
 		*bp = '\0';
 		temp = atoi(buf);
 		if (temp > 255)
-			break;
+		    break;
 		*netnum <<= 8;
 		*netnum += temp;
 	}
 	
 	if (i < 4)
-		return 0;
+	    return 0;
 	*netnum = htonl(*netnum);
 	return 1;
 }
