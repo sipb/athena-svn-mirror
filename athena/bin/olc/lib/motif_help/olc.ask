@@ -5,19 +5,8 @@ You may scroll to see the complete list of topics.  When you see a topic that
 looks suitable, simply click on that line with the mouse.  The line will be
 higlighted to indicate your choice.
 
-Enter the text of your question in the bottom half of the window.  To type
-your question, you can use one of two methods.
-
-The first method involves simply moving the mouse into the outlined box in
-the bottom half of the window and typing your question.  If you do this, you
-will only be able to type while the mouse is in the outlined box, and you will
-not be able to see the text cursor as you type.
-
-The second, easier method, is to click the mouse button somewhere inside
-the outlined box.  The text cursor will begin flashing, and you no longer
-need to keep the mouse inside the outlined box to type.  The "text area"
-will have the keyboard "focus" as long as the mouse remains within the
-XOLC window.
+Enter the text of your question in the bottom half of the window; you can edit
+it using the same keys as you would in emacs or EZ.
 
 Once you have chosen a topic and entered the initial text of your question,
 click on the `enter this question' button to enter your question in OLC.
