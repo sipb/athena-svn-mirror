@@ -1917,7 +1917,8 @@ do_auth()
 	      
 
 	      if (maj_stat!=GSS_S_COMPLETE && maj_stat!=GSS_S_CONTINUE_NEEDED){
-		user_gss_error(maj_stat, min_stat, "initializing context");
+		if (service_name == end_service_name)
+		  user_gss_error(maj_stat, min_stat, "initializing context");
 		(void) gss_release_name(&min_stat, &target_name);
 		/* could just be that we missed on the service name */
 		goto outer_loop;
