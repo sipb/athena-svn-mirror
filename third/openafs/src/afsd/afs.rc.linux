@@ -128,8 +128,9 @@ choose_client() {
 	VERSION=`uname -r`
 
 	# Kernels compiled for different machine types may have
-        # different symbol versions.  Yay Linux.
-        MACHINE=`rpm -q --queryformat='%{ARCH}' kernel`
+	# different symbol versions.  Yay Linux.
+	MACHINE=`rpm -q --queryformat='%{ARCH}\n' kernel-$VERSION | tail -n 1`
+	: ${MACHINE:=`uname -m`}
 
 	LIBAFS=libafs-$VERSION.$MACHINE$MP.o
 }
