@@ -29,7 +29,7 @@ getafsquota(ap, explicit)
     ibuf.out=(caddr_t) &vs;
     code = pioctl(ap->mntpt,VIOCGETVOLSTAT,&ibuf,1);
     if (code) {
-	if (explicit || (errno != EACCES)) {
+	if (explicit || ((errno != EACCES) && (errno != EPERM)) {
 	    fprintf(stderr, "Error getting AFS quota: ");
 	    perror(ap->mntpt);
 	}
