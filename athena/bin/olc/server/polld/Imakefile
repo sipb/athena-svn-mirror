@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/Imakefile,v $
- * $Id: Imakefile,v 1.5 1991-03-28 23:06:20 lwvanels Exp $
+ * $Id: Imakefile,v 1.6 1991-03-29 01:12:34 lwvanels Exp $
  */
 
 /*#define Profiling*/
@@ -25,8 +25,11 @@ DEFINES=-DSYSLOG
 
 DEPLIBS=$(LOCAL_LIBRARIES)
 
-SYS_LIBRARIES=	$(HesiodLib) $(ZephyrLib) $(KerberosLib)
-
+#if HaveKerberos || HaveZephyr
+SYS_LIBRARIES=	$(HesiodLib) $(ZephyrLib) $(KerberosLib) $(ComErrLib)
+#else
+SYS_LIBRARIES=	$(HesiodLib) $(ZephyrLib) $(KerberosLib) $(ComErrLib)
+#endif
 INCLUDES= -I.
 
 NormalProgramTarget(polld,$(OBJS),$(LOCAL_LIBRARIES),$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
