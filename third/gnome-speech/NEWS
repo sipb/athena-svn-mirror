@@ -1,5 +1,19 @@
 (top)
 
+gnome-speech 0.3.6:
+
+* Festival driver now supports callbacks and end-of-speech markers - thanks to
+  Oana Serb of BAUM Retec.
+
+* FreeTTS driver is less intolerant of nonstandard JAVA environments at 
+  build time (Callum McKenzie).
+
+* IBM ViaVoice driver updated to work with new Linux ViaVoice runtime
+  (Marc Mulcahy)
+
+* Critical fixes for FreeTTS 1.2 driver which could cause speech to fail
+  (Marc)
+
 gnome-speech 0.3.5:
 
 * Improved locale matching when creating a speaker -- thanks billh

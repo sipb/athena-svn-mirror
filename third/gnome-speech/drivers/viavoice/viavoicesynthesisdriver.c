@@ -70,12 +70,14 @@ viavoice_synthesis_driver_flush_index_queue (ViavoiceSynthesisDriver *d)
 	
 	/* Flush the index queues */
 
+	g_mutex_lock (d->mutex);
 	for (tmp = d->index_queue; tmp; tmp = tmp->next) {
 		index_queue_entry *e = (index_queue_entry *) tmp->data;
 		index_queue_entry_destroy (e);
 	}
 	g_slist_free (d->index_queue);
 	d->index_queue = NULL;
+	g_mutex_unlock (d->mutex);
 }
 
 static ViavoiceSynthesisDriver *
@@ -96,9 +98,9 @@ viavoice_synthesis_driver_timeout_callback (void *data)
 
 
 
-static ECICallbackReturn
+static enum ECICallbackReturn
 viavoice_synthesis_driver_index_callback (ECIHand handle,
-			   ECIMessage msg,
+			   enum ECIMessage msg,
 			   long param,
 			   void *data)
 {
@@ -106,10 +108,12 @@ viavoice_synthesis_driver_index_callback (ECIHand handle,
 	index_queue_entry *e = NULL;
 	CORBA_Environment ev;
 	
+	g_mutex_lock (d->mutex);
 	if (d && d->index_queue) {
 		e = (index_queue_entry *) d->index_queue->data;
 		d->index_queue = g_slist_remove_link (d->index_queue, d->index_queue);
 	}
+	g_mutex_unlock (d->mutex);
 	switch (msg) {
 	case eciIndexReply:
 		if (e) {
@@ -355,6 +359,7 @@ viavoice_createSpeaker (PortableServer_Servant servant,
 static void
 viavoice_synthesis_driver_init (ViavoiceSynthesisDriver *driver)
 {
+	driver->mutex = g_mutex_new ();
 	driver->last_speaker = NULL;
 	driver->index_queue = NULL;
 	driver->timeout_id = -1;
@@ -444,6 +449,11 @@ main (int argc,
 		g_error ("Could not initialize Bonobo Activation / Bonobo");
 	}
 
+	/* If threads haven't been initialized, initialize them */
+
+	if (!g_threads_got_initialized)
+		g_thread_init (NULL);
+	
 	obj_id = "OAFIID:GNOME_Speech_SynthesisDriver_Viavoice:proto0.3";
 
 	driver = viavoice_synthesis_driver_new ();
@@ -480,7 +490,9 @@ viavoice_synthesis_driver_add_index (ViavoiceSynthesisDriver *d,
 	e->type = type;
 	e->text_id = text_id;
 	e->offset = offset;
+	g_mutex_lock (d->mutex);
 	d->index_queue = g_slist_append(d->index_queue, e);
+	g_mutex_unlock (d->mutex);
 
 	eciInsertIndex (d->handle, 0);
 }
@@ -566,7 +578,7 @@ viavoice_synthesis_driver_is_speaking (ViavoiceSynthesisDriver *d)
 
 void
 viavoice_synthesis_driver_set_voice_param (const ViavoiceSynthesisDriver *d,
-					   ECIVoiceParam param,
+					   enum ECIVoiceParam param,
 					   gint new_value)
 {
 	eciSetVoiceParam (d->handle, 0, param, new_value);

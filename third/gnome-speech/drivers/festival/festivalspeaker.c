@@ -72,12 +72,34 @@ festival_stop (PortableServer_Servant servant,
 }
 
 
-static CORBA_boolean
-festival_registerSpeechCallback (PortableServer_Servant servant,
-				 const GNOME_Speech_SpeechCallback callback,
-				 CORBA_Environment *ev)
+static CORBA_boolean 
+festival_isSpeaking (PortableServer_Servant servant, 
+ 		     CORBA_Environment *ev) 
+{ 
+	FestivalSpeaker *speaker = festival_speaker_from_servant (servant); 
+	Speaker *s = SPEAKER (speaker); 
+	FestivalSynthesisDriver *d = FESTIVAL_SYNTHESIS_DRIVER(s->driver); 
+	
+	return festival_synthesis_driver_is_speaking (d); 
+} 
+
+
+static CORBA_boolean 
+festival_registerSpeechCallback (PortableServer_Servant servant, 
+ 				 const GNOME_Speech_SpeechCallback callback, 
+ 				 CORBA_Environment *ev) 
 {
-	return FALSE;
+	FestivalSpeaker *s = festival_speaker_from_servant (servant); 
+	GNOME_Speech_SpeechCallback cb;
+	Speaker *speaker = SPEAKER (s); 
+
+	/* Store reference to callback */ 
+
+	cb = CORBA_Object_duplicate (callback, ev);
+	if (cb && !BONOBO_EX (ev))
+		speaker->clb_list = g_slist_append (speaker->clb_list, cb);
+
+	return TRUE; 
 }
 
 
@@ -100,10 +122,11 @@ festival_set_rate (Speaker *speaker,
 
 
 
-static void
-festival_speaker_init (FestivalSpeaker *s)
+static void 
+festival_speaker_init (FestivalSpeaker *s) 
 {
-	s->voice = NULL;
+	s->voice = NULL; 
+	SPEAKER(s)->clb_list = NULL; 
 }
 
 
@@ -139,6 +162,7 @@ festival_speaker_class_init (FestivalSpeakerClass *klass)
 
 	class->epv.say = festival_say;
 	class->epv.stop = festival_stop;
+	class->epv.isSpeaking = festival_isSpeaking; 
 	class->epv.registerSpeechCallback = festival_registerSpeechCallback;
 }
 

@@ -6,13 +6,14 @@ serverinfo_DATA = $(serverinfo_in_files:.server.in=.server)
 endif
 
 INCLUDES = -I$(top_srcdir)          \
-	-I$(top_builddir)        \
-	-I$(top_srcdir)/gnome-speech\
+	-I$(top_builddir) \
+	-I$(top_srcdir)/gnome-speech \
+	$(viavoice_INCLUDES) \
 	$(WARN_CFLAGS) \
 	$(gnome_speech_CFLAGS)
 
 LDADD = $(top_builddir)/gnome-speech/libgnomespeech.la	\
-	$(gnome_speech_LIBS)\
+	$(gnome_speech_LIBS) \
 	$(viavoice_LIBS)
 
 

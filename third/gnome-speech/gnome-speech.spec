@@ -1,6 +1,6 @@
 Summary: GNOME Desktop text-to-speech services
 Name: gnome-speech
-Version: 0.3.5
+Version: 0.3.6
 Release: 1
 License: LGPL
 Group: Desktop/Accessibility

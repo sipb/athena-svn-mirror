@@ -10,6 +10,7 @@ import com.sun.speech.freetts.Voice;
 import com.sun.speech.freetts.VoiceManager;
 import com.sun.speech.freetts.Gender;
 import com.sun.speech.freetts.audio.JavaClipAudioPlayer;
+import com.sun.speech.freetts.audio.JavaStreamingAudioPlayer;
 
 public class FreeTTSSynthesisDriver extends UnknownImpl implements SynthesisDriverOperations {
 
@@ -220,7 +221,10 @@ public class FreeTTSSynthesisDriver extends UnknownImpl implements SynthesisDriv
 			if (!voices[i].isLoaded ())
 			{
 				System.out.println ("Loading voice.");
-				voices[i].setAudioPlayer (new JavaClipAudioPlayer());
+				if (System.getProperty ("ft_audio_player") == "streaming")
+					voices[i].setAudioPlayer (new JavaStreamingAudioPlayer());
+				else
+					voices[i].setAudioPlayer (new JavaClipAudioPlayer());
 				voices[i].allocate ();
 			}
 			speaker = SpeakerHelper.narrow ((new FreeTTSSpeaker (this, voices[i])).tie());
