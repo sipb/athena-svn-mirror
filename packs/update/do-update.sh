@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.7 1997-02-11 18:34:48 ghudson Exp $
+# $Id: do-update.sh,v 1.8 1997-02-15 20:04:58 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -190,7 +190,6 @@ if [ "$TRACKOS" = true ]; then
 	sgi)
 		/install/install/track -v -F /install -T / -d \
 			-W /install/install/lib
-		rm -f /etc/athena/.rc.conf.sync
 		;;
 	sun4)
 		# Sun ships multiple revisions of OS config files
@@ -201,6 +200,7 @@ if [ "$TRACKOS" = true ]; then
 	esac
 fi
 track -v -F /srvd -T / -d -W /srvd/usr/athena/lib
+rm -f /etc/athena/.rc.conf.sync
 
 if [ "$NEWOS" = true ]; then
 	case "$HOSTTYPE" in
