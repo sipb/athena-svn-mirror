@@ -3,11 +3,11 @@
  * 		keeping the a specified number of backup files around.
  *
  * 	$Source: /afs/dev.mit.edu/source/repository/athena/etc/newsyslog/newsyslog.c,v $
- * 	$Author: bert $    $Revision: 1.6 $
+ * 	$Author: cfields $    $Revision: 1.7 $
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/newsyslog/newsyslog.c,v 1.6 1996-04-30 01:00:44 bert Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/newsyslog/newsyslog.c,v 1.7 1996-08-04 03:18:34 cfields Exp $";
 #endif  /* lint */
 
 #include "config.h"
@@ -35,10 +35,22 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/new
 
 #include "signames.h"
 
+#ifdef sgi
+/* Note: Irix has the "killall" command, which is like kill except
+   that it takes a process name instead of an id. This command is
+   not to be confused with the Solaris killall command, which kills
+   just about everything. It would probably be nice just to go
+   ahead and read the process table instead of execing an external
+   program, but... */
+#define ALLOW_PROCNAME
+#define USE_PROCNAME
+#endif
+
 /*** defines ***/
 
 #define CONF "/etc/athena/newsyslog.conf"	/* Configuration file */
 #define SYSLOG_PID "/etc/syslog.pid"		/* Pidfile for syslogd */
+#define SYSLOG_PNAME "syslogd"			/* Process name for syslogd */
 
 /* COMPRESS is now defined in config.h */
 
@@ -66,6 +78,8 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/new
 #define KEYWORD_EXEC "filter"
 /* This describes a process to restart, other than syslogd */
 #define KEYWORD_PID  "signal"
+/* This works as "signal," only takes a process name rather than a pid file. */
+#define KEYWORD_PNAME "signame"
 
 /* Definitions of the predefined flag letters. */
 #define FL_BINARY 'B'   /* reserved */
@@ -95,15 +109,15 @@ struct log_entry {
 /* This wastes a little run-time space, but makes my life easier. */
 struct flag_entry {
     char  option;		/* Option character used for this program */
-    enum { EXEC, PID } type;	/* Type of flag ('run' vs. 'signal') */
+    enum { EXEC, PID, PNAME } type;	/* Type of flag ('run' vs. 'signal') */
 
     /* EXEC flag options */
     char  *extension;		/* Extension added by this program */
     char  **args;		/* Program name and command-line arguments */
     int	  nargs;		/* Number of arguments not including args[0] */
 
-    /* PID flag options */
-    char  *pidfile;		/* Path to the PID file */
+    /* PID/PNAME flag options */
+    char  *pidident;		/* Path to the PID file, or the process name */
     int	signal;			/* Signal to restart the process */
     int	ref_count;		/* Number of times used (if 0, no restart) */
 
@@ -615,7 +629,7 @@ void parse_logfile_line(char *line, struct log_entry **first,
 	else if (( opt = get_flag_entry(qq, flags_list) )) {
 	    if ( opt->type == EXEC )
 		grow_option_string( &(working->exec_flags), qq );
-	    else if ( opt->type == PID )
+	    else if ( opt->type == PID || opt->type == PNAME )
 		grow_option_string( &(working->pid_flags), qq );
 	    else abort();
 	} else {
@@ -735,9 +749,15 @@ void parse_pid_line(char *line, struct flag_entry **first)
     }
 
     working->next = (struct flag_entry *)NULL;
-    working->type = PID;
 
     parse = missing_field(sob(line),errline);
+
+    if (!strncasecmp(parse, KEYWORD_PID, sizeof(KEYWORD_PID)-1)
+	&& isspace(parse[sizeof(KEYWORD_PID)-1]))
+      working->type = PID;
+    else
+      working->type = PNAME;
+
     parse = missing_field(son(parse),errline);   /* skip over the keyword */
 
     parse = missing_field(sob(parse),errline);
@@ -759,7 +779,7 @@ void parse_pid_line(char *line, struct flag_entry **first)
     q = parse = missing_field(sob(++parse),errline);
     oops = *(parse = son(parse));
     (*parse) = '\0';
-    working->pidfile = strdup(q);
+    working->pidident = strdup(q);
     (*parse) = oops;  /* parse may have been pointing at the end of
 		       * the line already, so we can't just ++ it.
 		       * (Falling off the edge of the world would be bad.) */
@@ -833,10 +853,14 @@ void add_default_flags(struct flag_entry **first)
     }
 
     /* add unnamed flag for restarting syslogd. */
-    working->option = 0;
+#ifdef USE_PROCNAME
+    working->type = PNAME;
+    working->pidident = SYSLOG_PNAME;
+#else
     working->type = PID;
-
-    working->pidfile = SYSLOG_PID;
+    working->pidident = SYSLOG_PID;
+#endif
+    working->option = 0;
     working->signal = SIGHUP;
     working->ref_count = 0;
 
@@ -872,8 +896,14 @@ void parse_file(struct log_entry **logfiles, struct flag_entry **flags)
 	    parse_exec_line(line, flags);
 	    continue;
 	}
-	if (!strncasecmp(line, KEYWORD_PID, sizeof(KEYWORD_PID)-1)
-	    && isspace(line[sizeof(KEYWORD_PID)-1])) {
+	if ((!strncasecmp(line, KEYWORD_PID, sizeof(KEYWORD_PID)-1)
+	     && isspace(line[sizeof(KEYWORD_PID)-1]))
+#ifdef ALLOW_PROCNAME
+	    || (!strncasecmp(line, KEYWORD_PNAME, sizeof(KEYWORD_PNAME)-1)
+		&& isspace(line[sizeof(KEYWORD_PNAME)-1]))) {
+#else
+	    ) {
+#endif
 	    parse_pid_line(line, flags);
 	    continue;
 	}
@@ -1000,6 +1030,85 @@ void restart_proc(char *pidfile, int signum)
 	perror("warning - could not read pidfile");
     }
 }
+
+#ifdef ALLOW_PROCNAME
+static int run(char *what)
+{
+  char cmd[1024], *args[20], *ptr;
+  int i = 0, status;
+  sigset_t mask, omask;
+  pid_t pid;
+
+  if (what == NULL)
+    return -1;
+
+  strcpy(cmd, what);
+  ptr = cmd;
+  while (*ptr != '\0')
+    {
+      args[i++] = ptr;
+      while (*ptr != '\0' && *ptr != ' ') ptr++;
+      if (*ptr == ' ')
+        *ptr++ = '\0';
+    }
+  args[i] = NULL;
+
+  /* Guard against kidnapping. */
+  sigemptyset(&mask);
+  sigaddset(&mask, SIGCHLD);
+  sigprocmask(SIG_BLOCK, &mask, &omask);
+
+  if ((pid = fork()) == 0)
+    {
+      sigprocmask(SIG_SETMASK, &omask, NULL);
+      execvp(args[0], args);
+      exit(-1);
+    }
+
+  if (pid == -1)
+    {
+      sigprocmask(SIG_SETMASK, &omask, NULL);
+      return -1;
+    }
+
+  while (pid != waitpid(pid, &status, 0));
+  sigprocmask(SIG_SETMASK, &omask, NULL);
+
+  if (WIFEXITED(status))
+    return WEXITSTATUS(status);
+
+  return -2;
+}
+
+int killproc(char *procname, int signum)
+{
+    char line[BUFSIZ];
+
+    sprintf(line, "killall -%d %s", signum, procname);
+    return run(line);
+}
+
+/* Restart the process whose name has been specified */
+void restart_procname(char *procname, int signum)
+{
+    char *signame;
+
+    if (noaction) {
+       if (( signame = signal_name(signum) ))
+	  printf("  killproc -%s %s\n", signame, procname);
+       else
+	  printf("  killproc -%d %s\n", signum, procname);
+       printf("  sleep %d\n", sleeptm);
+    } else {
+       if (killproc(procname, signum)) {
+	  fprintf(stderr,"%s: %s: ", progname, procname);
+	  perror("warning - could not restart process");
+       }
+       if (sleeptm > 0)
+	 sleep(sleeptm);
+    }
+}
+#endif /* ALLOW_PROCNAME */
 
 /*** various fun+games with logfile entries ***/
 
@@ -1147,14 +1256,14 @@ void do_trim(struct log_entry *ent)
 	char* pid;
 	for (pid = ent->pid_flags; *pid; pid++) {
 	    flg = get_flag_entry(*pid, flags);
-	    if (!flg || (flg->type != PID)) abort();
+	    if (!flg || ((flg->type != PID) && (flg->type != PNAME))) abort();
 
 	    flg->ref_count++;
 	}
     } else {
 	/* do the default restart. ('\0' is special.) */
 	flg = get_flag_entry('\0', flags);
-	if (!flg || (flg->type != PID)) abort();
+	if (!flg || ((flg->type != PID) && flg->type != PNAME)) abort();
 
 	flg->ref_count++;
     }
@@ -1220,9 +1329,17 @@ int main(int argc, char **argv)
 
     for (flg = flags; flg; flg = flg->next)
 	if ((flg->type == PID) && flg->ref_count) {
-	    if (verbose>1) printf("Restarting %s\n", flg->pidfile);
-	    restart_proc(flg->pidfile, flg->signal);
+	    if (verbose>1) printf("Restarting %s\n", flg->pidident);
+	    restart_proc(flg->pidident, flg->signal);
 	}
+
+#ifdef ALLOW_PROCNAME
+    for (flg = flags; flg; flg = flg->next)
+	if ((flg->type == PNAME) && flg->ref_count) {
+	    if (verbose>1) printf("Restarting %s\n", flg->pidident);
+	    restart_procname(flg->pidident, flg->signal);
+	}
+#endif
 
     for (p = q; p; p = p->next) {
         if (p->flags & CE_ACTIVE) {
