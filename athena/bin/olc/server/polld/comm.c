@@ -9,14 +9,14 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/comm.c,v $
- *	$Id: comm.c,v 1.2 1991-03-28 13:29:39 lwvanels Exp $
- *	$Author: lwvanels $
+ *	$Id: comm.c,v 1.3 1994-08-21 18:34:51 cfields Exp $
+ *	$Author: cfields $
  */
 
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/comm.c,v 1.2 1991-03-28 13:29:39 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/polld/comm.c,v 1.3 1994-08-21 18:34:51 cfields Exp $";
 #endif
 #endif
 
@@ -58,8 +58,6 @@ tell_main_daemon(user)
     }
     tf_close();
     strcpy(request.requester.username, kname);
-    strcat(request.requester.username,".");
-    strcat(request.requester.username,kinst);
     strcpy(INSTANCE,kinst);
     strcpy(REALM,DFLT_SERVER_REALM);
 #else
