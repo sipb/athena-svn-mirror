@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_server_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v 1.36 1988-06-27 10:44:41 jtkohl Exp $";
+static char rcsid_server_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/server.c,v 1.37 1988-07-08 14:30:14 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -368,6 +368,9 @@ server_reset()
 			zdbug((LOG_DEBUG, "reset timer for %s",
 			       inet_ntoa(otherservers[i].zs_addr.sin_addr)));
 		}
+	xfree(ok_list_old);
+	xfree(ok_list_new);
+
 	zdbug((LOG_DEBUG, "server_reset: %d servers now", nservers));
 	return;
 }

@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_bdump_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/bdump.c,v 1.26 1988-06-24 22:45:06 jtkohl Exp $";
+static char rcsid_bdump_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/bdump.c,v 1.27 1988-07-08 14:29:59 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -631,6 +631,8 @@ struct sockaddr_in *from;
 			break;
 		}
 	}
+	if (zeph_version)
+	    xfree(zeph_version);
 	return(ZERR_NONE);
 }
 
