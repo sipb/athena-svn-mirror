@@ -1,9 +1,8 @@
 /* -*- Mode: C; tab-width: 4 -*- */
 /* flow --- flow of strange bees */
 
-#if !defined( lint ) && !defined( SABER )
+#if 0
 static const char sccsid[] = "@(#)flow.c 4.10 98/04/24 xlockmore";
-
 #endif
 
 /*-
@@ -113,7 +112,7 @@ typedef enum {
 	FLOW_2D = 8,     /* Allow 2D attractors */
 	FLOW_BOX = 16,    /* Compute a box around the attractor */
 	FLOW_SLOW = 32,   /* Some bees are slower (and have antifreeze) */
-	FLOW_FREEZE = 64, /* Freeze some of the bees in action */
+	FLOW_FREEZE = 64  /* Freeze some of the bees in action */
 } FlowMode;
 
 #define FLOW_DEFAULT (FLOW_ROTATE|FLOW_RIDE|FLOW_ZOOM|FLOW_2D|\
@@ -807,7 +806,8 @@ draw_flow(ModeInfo * mi)
 					double A=0;
 					for(i=0; i<3; i++) A+=C[j][i]*C[j][i]; /* sum squares */
 					A=sqrt(A);
-					for(i=0; i<3; i++) C[j][i]/=A;
+                    if (A != 0) /* #### is this right? */
+                      for(i=0; i<3; i++) C[j][i]/=A;
 				}
 
 				/* Interpolate between Center and Trained Bee matrices */

@@ -1,7 +1,7 @@
 /* passwd-pam.c --- verifying typed passwords with PAM
  * (Pluggable Authentication Modules.)
  * written by Bill Nottingham <notting@redhat.com> (and jwz) for
- * xscreensaver, Copyright (c) 1993-1998, 2000 Jamie Zawinski <jwz@jwz.org>
+ * xscreensaver, Copyright (c) 1993-2003 Jamie Zawinski <jwz@jwz.org>
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
  * documentation for any purpose is hereby granted without fee, provided that
@@ -52,9 +52,13 @@ extern char *blurb(void);
 #include <pwd.h>
 #include <grp.h>
 #include <security/pam_appl.h>
+#include <signal.h>
+#include <errno.h>
 
 #include <sys/stat.h>
 
+extern sigset_t block_sigchld (void);
+extern void unblock_sigchld (void);
 
 /* blargh */
 #undef  Bool
@@ -66,6 +70,13 @@ extern char *blurb(void);
 
 #undef countof
 #define countof(x) (sizeof((x))/sizeof(*(x)))
+
+/* Some time between Red Hat 4.2 and 7.0, the words were transposed 
+   in the various PAM_x_CRED macro names.  Yay!
+ */
+#ifndef  PAM_REFRESH_CRED
+# define PAM_REFRESH_CRED PAM_CRED_REFRESH
+#endif
 
 static int pam_conversation (int nmsgs,
                              const struct pam_message **msg,
@@ -170,6 +181,8 @@ pam_passwd_valid_p (const char *typed_passwd, Bool verbose_p)
   struct pam_conv pc;
   struct pam_closure c;
   char *user = 0;
+  sigset_t set;
+  struct timespec timeout;
 
   struct passwd *p = getpwuid (getuid ());
   if (!p) return False;
@@ -203,17 +216,43 @@ pam_passwd_valid_p (const char *typed_passwd, Bool verbose_p)
      far as PAM is concerned...)
    */
   {
-    const char *tty = ":0.0";
-    status = pam_set_item (pamh, PAM_TTY, strdup(tty));
+    char *tty = strdup (":0.0");
+    status = pam_set_item (pamh, PAM_TTY, tty);
     if (verbose_p)
       fprintf (stderr, "%s:   pam_set_item (p, PAM_TTY, \"%s\") ==> %d (%s)\n",
                blurb(), tty, status, PAM_STRERROR(pamh, status));
+    free (tty);
   }
 
   /* Try to authenticate as the current user.
+     We must turn off our SIGCHLD handler for the duration of the call to
+     pam_authenticate(), because in some cases, the underlying PAM code
+     will do this:
+
+        1: fork a setuid subprocess to do some dirty work;
+        2: read a response from that subprocess;
+        3: waitpid(pid, ...) on that subprocess.
+
+    If we (the ignorant parent process) have a SIGCHLD handler, then there's
+    a race condition between steps 2 and 3: if the subprocess exits before
+    waitpid() was called, then our SIGCHLD handler fires, and gets notified
+    of the subprocess death; then PAM's call to waitpid() fails, because the
+    process has already been reaped.
+
+    I consider this a bug in PAM, since the caller should be able to have
+    whatever signal handlers it wants -- the PAM documentation doesn't say
+    "oh by the way, if you use PAM, you can't use SIGCHLD."
    */
+
   PAM_NO_DELAY(pamh);
+
+  timeout.tv_sec = 0;
+  timeout.tv_nsec = 1;
+  set = block_sigchld();
   status = pam_authenticate (pamh, 0);
+  sigtimedwait (&set, NULL, &timeout);
+  unblock_sigchld();
+
   if (verbose_p)
     fprintf (stderr, "%s:   pam_authenticate (...) ==> %d (%s)\n",
              blurb(), status, PAM_STRERROR(pamh, status));
@@ -222,8 +261,13 @@ pam_passwd_valid_p (const char *typed_passwd, Bool verbose_p)
       /* Each time we successfully authenticate, refresh credentials,
          for Kerberos/AFS/DCE/etc.  If this fails, just ignore that
          failure and blunder along; it shouldn't matter.
+
+         Note: this used to be PAM_REFRESH_CRED instead of
+         PAM_REINITIALIZE_CRED, but Jason Heiss <jheiss@ee.washington.edu>
+         says that the Linux PAM library ignores that one, and only refreshes
+         credentials when using PAM_REINITIALIZE_CRED.
        */
-      int status2 = pam_setcred (pamh, PAM_REFRESH_CRED);
+      int status2 = pam_setcred (pamh, PAM_REINITIALIZE_CRED);
       if (verbose_p)
         fprintf (stderr, "%s:   pam_setcred (...) ==> %d (%s)\n",
                  blurb(), status2, PAM_STRERROR(pamh, status2));
@@ -232,15 +276,22 @@ pam_passwd_valid_p (const char *typed_passwd, Bool verbose_p)
 
   /* If that didn't work, set the user to root, and try to authenticate again.
    */
-  c.user = "root";
-  status = pam_set_item (pamh, PAM_USER, strdup(c.user));
+  if (user) free (user);
+  user = strdup ("root");
+  c.user = user;
+  status = pam_set_item (pamh, PAM_USER, c.user);
   if (verbose_p)
     fprintf (stderr, "%s:   pam_set_item(p, PAM_USER, \"%s\") ==> %d (%s)\n",
              blurb(), c.user, status, PAM_STRERROR(pamh, status));
   if (status != PAM_SUCCESS) goto DONE;
 
   PAM_NO_DELAY(pamh);
+
+  set = block_sigchld();
   status = pam_authenticate (pamh, 0);
+  sigtimedwait(&set, NULL, &timeout);
+  unblock_sigchld();
+
   if (verbose_p)
     fprintf (stderr, "%s:   pam_authenticate (...) ==> %d (%s)\n",
              blurb(), status, PAM_STRERROR(pamh, status));

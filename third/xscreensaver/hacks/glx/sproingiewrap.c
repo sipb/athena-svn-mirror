@@ -1,9 +1,8 @@
 /* -*- Mode: C; tab-width: 4 -*- */
 /* sproingiewrap.c - sproingies wrapper */
 
-#if !defined( lint ) && !defined( SABER )
+#if 0
 static const char sccsid[] = "@(#)sproingiewrap.c	4.07 97/11/24 xlockmore";
-
 #endif
 
 /*-
@@ -22,10 +21,15 @@ static const char sccsid[] = "@(#)sproingiewrap.c	4.07 97/11/24 xlockmore";
  * other special, indirect and consequential damages.
  *
  *    Programming:  Ed Mackey, http://www.netaxs.com/~emackey/
+ *                  Gordon Wrigley, gdw33@student.canterbury.ac.nz
  *    Sproingie 3D objects modeled by:  Al Mackey, al@iam.com
  *       (using MetaNURBS in NewTek's Lightwave 3D v5).
  *
  * Revision History:
+ * 13-Dec-02: Changed triangle normals into vertex normals to give a smooth
+                apperance and moved the sproingies from Display Lists to 
+				Vertex Arrays, still need to do this for the TopsSides.
+                (gordon)
  * 26-Apr-97: Added glPointSize() calls around explosions, plus other fixes.
  * 28-Mar-97: Added size support.
  * 22-Mar-97: Updated to use glX interface instead of xmesa one.
@@ -59,7 +63,7 @@ static const char sccsid[] = "@(#)sproingiewrap.c	4.07 97/11/24 xlockmore";
 # define HACK_DRAW					draw_sproingies
 # define HACK_RESHAPE				reshape_sproingies
 # define sproingies_opts			xlockmore_opts
-# define DEFAULTS	"*delay:		20000   \n"			\
+# define DEFAULTS	"*delay:		25000   \n"			\
 					"*count:		5       \n"			\
 					"*cycles:		0       \n"			\
 					"*size:			0       \n"			\

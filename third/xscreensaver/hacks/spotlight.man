@@ -3,9 +3,21 @@
 spotlight - move spotlight around desktop
 .SH SYNOPSIS
 .B spotlight
-[\-display \fIhost:display.screen\fP] [\-foreground \fIcolor\fP] [\-background \fIcolor\fP] [\-window] [\-root] [\-mono] [\-install] [\-visual \fIvisual\fP] [\-delay \fIusecs\fP] [\-radius \fIpixels\fP]
+[\-display \fIhost:display.screen\fP] [\-foreground \fIcolor\fP]
+[\-background \fIcolor\fP] [\-window] [\-root] [\-mono] [\-install]
+[\-visual \fIvisual\fP] [\-delay \fIusecs\fP] [\-radius \fIpixels\fP]
 .SH DESCRIPTION
-The \fIspotlight\fP program draws random rectangles.
+The \fIspotlight\fP program takes an image and exposes small sections
+of it as if through a wandering spotlight beam.
+
+The image that it manipulates will be grabbed from the portion of
+the screen underlying the window, or from the system's video input,
+or from a random file on disk, as indicated by
+the \fIgrabDesktopImages\fP, \fIgrabVideoFrames\fP,
+and \fIchooseRandomImages\fP options in the \fI~/.xscreensaver\fP
+file; see
+.BR xscreensaver-demo (1)
+for more details.
 .SH OPTIONS
 .I spotlight
 accepts the following options:
@@ -42,7 +54,9 @@ to get the name of a resource file that overrides the global resources
 stored in the RESOURCE_MANAGER property.
 .SH SEE ALSO
 .BR X (1),
-.BR xscreensaver (1)
+.BR xscreensaver (1),
+.BR xscreensaver\-demo (1),
+.BR xscreensaver\-getimage (1)
 .SH COPYRIGHT
 Copyright \(co 1999 by Rick Schultz.  Permission to use, copy, modify, 
 distribute, and sell this software and its documentation for any purpose is 
@@ -54,4 +68,3 @@ express or implied warranty.
 .SH CREDITS
 Hacked together by Rick Schultz <rick@skapunx.net>, based on StefView for
 BackSpace by Darcy Brockbank and on several other xscreensaver hacks.
-

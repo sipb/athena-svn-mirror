@@ -1,9 +1,8 @@
 /* -*- Mode: C; tab-width: 4 -*- */
 /* gears --- 3D gear wheels */
 
-#if !defined( lint ) && !defined( SABER )
+#if 0
 static const char sccsid[] = "@(#)gears.c	4.07 97/11/24 xlockmore";
-
 #endif
 
 /*-
@@ -47,6 +46,8 @@ static const char sccsid[] = "@(#)gears.c	4.07 97/11/24 xlockmore";
 # define HACK_INIT					init_gears
 # define HACK_DRAW					draw_gears
 # define HACK_RESHAPE				reshape_gears
+# define HACK_HANDLE_EVENT			gears_handle_event
+# define EVENT_MASK					PointerMotionMask
 # define gears_opts					xlockmore_opts
 # define DEFAULTS	"*count:		1       \n"			\
 					"*cycles:		2       \n"			\
@@ -60,6 +61,9 @@ static const char sccsid[] = "@(#)gears.c	4.07 97/11/24 xlockmore";
 #endif /* !STANDALONE */
 
 #ifdef USE_GL
+
+#include "rotator.h"
+#include "gltrackball.h"
 
 #undef countof
 #define countof(x) (sizeof((x))/sizeof((*x)))
@@ -88,19 +92,25 @@ ModStruct   gears_description =
 
 #endif
 
+#define SMOOTH_TUBE       /* whether to have smooth or faceted tubes */
+
+#ifdef SMOOTH_TUBE
+# define TUBE_FACES  20   /* how densely to render tubes */
+#else
+# define TUBE_FACES  6
+#endif
+
+
 typedef struct {
-
-  GLfloat rotx, roty, rotz;	   /* current object rotation */
-  GLfloat dx, dy, dz;		   /* current rotational velocity */
-  GLfloat ddx, ddy, ddz;	   /* current rotational acceleration */
-  GLfloat d_max;			   /* max velocity */
-
   GLuint      gear1, gear2, gear3;
   GLuint      gear_inner, gear_outer;
   GLuint      armature;
   GLfloat     angle;
   GLXContext *glx_context;
   Window      window;
+  rotator    *rot;
+  trackball_state *trackball;
+  Bool		  button_down_p;
 } gearsstruct;
 
 static gearsstruct *gears = NULL;
@@ -336,79 +346,112 @@ gear(GLfloat inner_radius, GLfloat outer_radius, GLfloat width,
 }
 
 
-
 static void
-tube(GLfloat radius, GLfloat width, GLint facets, Bool wire)
+unit_tube (Bool wire)
 {
-  GLint i;
-  GLfloat da = 2.0 * M_PI / facets / 4.0;
+  int i;
+  int faces = TUBE_FACES;
+  GLfloat step = M_PI * 2 / faces;
+  GLfloat th;
+  int z = 0;
 
+  /* side walls
+   */
   glFrontFace(GL_CCW);
 
-  /* draw bottom of tube */
+# ifdef SMOOTH_TUBE
+  glBegin(wire ? GL_LINES : GL_QUAD_STRIP);
+# else
+  glBegin(wire ? GL_LINES : GL_QUADS);
+# endif
 
-  glShadeModel(GL_FLAT);
-  glNormal3f(0, 0, 1);
-  if (!wire)
+  for (i = 0, th = 0; i <= faces; i++)
     {
-      glBegin(GL_TRIANGLE_FAN);
-      glVertex3f(0, 0, width * 0.5);
-      for (i = 0; i <= facets; i++) {
-        GLfloat angle = i * 2.0 * M_PI / facets;
-        glVertex3f(radius * cos(angle), radius * sin(angle), width * 0.5);
-      }
-      glEnd();
+      GLfloat x = cos (th);
+      GLfloat y = sin (th);
+      glNormal3f(x, 0, y);
+      glVertex3f(x, 0.0, y);
+      glVertex3f(x, 1.0, y);
+      th += step;
+
+# ifndef SMOOTH_TUBE
+      x = cos (th);
+      y = sin (th);
+      glVertex3f(x, 1.0, y);
+      glVertex3f(x, 0.0, y);
+# endif
     }
+  glEnd();
 
-  /* draw top of tube */
-
-  glShadeModel(GL_FLAT);
-  glNormal3f(0, 0, -1);
-  glFrontFace(GL_CW);
-  if (!wire)
+  /* End caps
+   */
+  for (z = 0; z <= 1; z++)
     {
-      glBegin(GL_TRIANGLE_FAN);
-      glVertex3f(0, 0, -width * 0.5);
-      for (i = 0; i <= facets; i++) {
-        GLfloat angle = i * 2.0 * M_PI / facets;
-        glVertex3f(radius * cos(angle), radius * sin(angle), -width * 0.5);
-      }
+      glFrontFace(z == 0 ? GL_CCW : GL_CW);
+      glNormal3f(0, (z == 0 ? -1 : 1), 0);
+      glBegin(wire ? GL_LINE_LOOP : GL_TRIANGLE_FAN);
+      if (! wire) glVertex3f(0, z, 0);
+      for (i = 0, th = 0; i <= faces; i++)
+        {
+          GLfloat x = cos (th);
+          GLfloat y = sin (th);
+          glVertex3f(x, z, y);
+          th += step;
+        }
       glEnd();
     }
-
-  /* draw side of tube */
-  glFrontFace(GL_CW);
-  glShadeModel(GL_SMOOTH);
-
-  if (!wire)
-    glBegin(GL_QUAD_STRIP);
-
-  for (i = 0; i <= facets; i++) {
-    GLfloat angle = i * 2.0 * M_PI / facets;
-    
-    if (wire)
-      glBegin(GL_LINES);
-
-    glNormal3f(cos(angle), sin(angle), 0.0);
-
-    glVertex3f(radius * cos(angle), radius * sin(angle), -width * 0.5);
-    glVertex3f(radius * cos(angle), radius * sin(angle), width * 0.5);
-
-    if (wire) {
-      glVertex3f(radius * cos(angle), radius * sin(angle), -width * 0.5);
-      glVertex3f(radius * cos(angle + 4 * da), radius * sin(angle + 4 * da), -width * 0.5);
-      glVertex3f(radius * cos(angle), radius * sin(angle), width * 0.5);
-      glVertex3f(radius * cos(angle + 4 * da), radius * sin(angle + 4 * da), width * 0.5);
-      glEnd();
-    }
-  }
-
-  if (!wire)
-    glEnd();
-
-  glFrontFace(GL_CCW);
 }
 
+
+static void
+tube (GLfloat x1, GLfloat y1, GLfloat z1,
+      GLfloat x2, GLfloat y2, GLfloat z2,
+      GLfloat diameter, GLfloat cap_size,
+      Bool wire)
+{
+  GLfloat length, angle, a, b, c;
+
+  if (diameter <= 0) abort();
+
+  a = (x2 - x1);
+  b = (y2 - y1);
+  c = (z2 - z1);
+
+  length = sqrt (a*a + b*b + c*c);
+  angle = acos (a / length);
+
+  glPushMatrix();
+  glTranslatef(x1, y1, z1);
+  glScalef (length, length, length);
+
+  if (c == 0 && b == 0)
+    glRotatef (angle / (M_PI / 180), 0, 1, 0);
+  else
+    glRotatef (angle / (M_PI / 180), 0, -c, b);
+
+  glRotatef (-90, 0, 0, 1);
+  glScalef (diameter/length, 1, diameter/length);
+
+  /* extend the endpoints of the tube by the cap size in both directions */
+  if (cap_size != 0)
+    {
+      GLfloat c = cap_size/length;
+      glTranslatef (0, -c, 0);
+      glScalef (1, 1+c+c, 1);
+    }
+
+  unit_tube (wire);
+  glPopMatrix();
+}
+
+
+static void
+ctube (GLfloat diameter, GLfloat width, Bool wire)
+{
+  tube (0, 0,  width/2,
+        0, 0, -width/2,
+        diameter, 0, wire);
+}
 
 static void
 arm(GLfloat length,
@@ -498,16 +541,14 @@ draw(ModeInfo * mi)
 
 	glPushMatrix();
 
+    gltrackball_rotate (gp->trackball);
+
     {
-      GLfloat x = gp->rotx;
-      GLfloat y = gp->roty;
-      GLfloat z = gp->rotz;
-      if (x < 0) x = 1 - (x + 1);
-      if (y < 0) y = 1 - (y + 1);
-      if (z < 0) z = 1 - (z + 1);
-      glRotatef(x * 360, 1.0, 0.0, 0.0);
-      glRotatef(y * 360, 0.0, 1.0, 0.0);
-      glRotatef(z * 360, 0.0, 0.0, 1.0);
+      double x, y, z;
+      get_rotation (gp->rot, &x, &y, &z, !gp->button_down_p);
+      glRotatef (x * 360, 1.0, 0.0, 0.0);
+      glRotatef (y * 360, 0.0, 1.0, 0.0);
+      glRotatef (z * 360, 0.0, 0.0, 1.0);
     }
 
     if (!planetary) {
@@ -785,21 +826,22 @@ pinit(ModeInfo * mi)
       glPushMatrix();
       glTranslatef(7.0, 0, 0);
       glRotatef(90, 0, 1, 0);
-      tube(0.5, 0.5, 10, wire);   /* nub 1 */
+
+      ctube(0.5, 0.5, wire);   /* nub 1 */
       glPopMatrix();
 
       glPushMatrix();
       glRotatef(120, 0, 0, 1);
       glTranslatef(7.0, 0, 0);
       glRotatef(90, 0, 1, 0);
-      tube(0.5, 0.5, 10, wire);   /* nub 2 */
+      ctube(0.5, 0.5, wire);   /* nub 2 */
       glPopMatrix();
 
       glPushMatrix();
       glRotatef(240, 0, 0, 1);
       glTranslatef(7.0, 0, 0);
       glRotatef(90, 0, 1, 0);
-      tube(0.5, 0.5, 10, wire);   /* nub 3 */
+      ctube(0.5, 0.5, wire);   /* nub 3 */
       glPopMatrix();
 
 
@@ -822,34 +864,33 @@ pinit(ModeInfo * mi)
       }
 
       glTranslatef(0, 0, 1.5);
-
-      tube(0.5, 10, 15, wire);       /* center axle */
+      ctube(0.5, 10, wire);       /* center axle */
 
       glPushMatrix();
       glTranslatef(0.0, 4.2, -1);
-      tube(0.5, 3, 15, wire);       /* axle 1 */
+      ctube(0.5, 3, wire);       /* axle 1 */
       glTranslatef(0, 0, 1.8);
-      tube(0.7, 0.7, 15, wire);
+      ctube(0.7, 0.7, wire);
       glPopMatrix();
 
       glPushMatrix();
       glRotatef(120, 0.0, 0.0, 1.0);
       glTranslatef(0.0, 4.2, -1);
-      tube(0.5, 3, 15, wire);       /* axle 2 */
+      ctube(0.5, 3, wire);       /* axle 2 */
       glTranslatef(0, 0, 1.8);
-      tube(0.7, 0.7, 15, wire);
+      ctube(0.7, 0.7, wire);
       glPopMatrix();
 
       glPushMatrix();
       glRotatef(240, 0.0, 0.0, 1.0);
       glTranslatef(0.0, 4.2, -1);
-      tube(0.5, 3, 15, wire);       /* axle 3 */
+      ctube(0.5, 3, wire);       /* axle 3 */
       glTranslatef(0, 0, 1.8);
-      tube(0.7, 0.7, 15, wire);
+      ctube(0.7, 0.7, wire);
       glPopMatrix();
 
       glTranslatef(0, 0, 1.5);      /* center disk */
-      tube(1.5, 2, 20, wire);
+      ctube(1.5, 2, wire);
 
       glPushMatrix();
       glRotatef(270, 0, 0, 1);
@@ -879,74 +920,36 @@ pinit(ModeInfo * mi)
 }
 
 
-/* lifted from lament.c */
-#define RAND(n) ((long) ((random() & 0x7fffffff) % ((long) (n))))
-#define RANDSIGN() ((random() & 1) ? 1 : -1)
-
-static void
-rotate(GLfloat *pos, GLfloat *v, GLfloat *dv, GLfloat max_v)
+Bool
+gears_handle_event (ModeInfo *mi, XEvent *event)
 {
-  double ppos = *pos;
+  gearsstruct *gp = &gears[MI_SCREEN(mi)];
 
-  /* tick position */
-  if (ppos < 0)
-    ppos = -(ppos + *v);
-  else
-    ppos += *v;
-
-  if (ppos > 1.0)
-    ppos -= 1.0;
-  else if (ppos < 0)
-    ppos += 1.0;
-
-  if (ppos < 0) abort();
-  if (ppos > 1.0) abort();
-  *pos = (*pos > 0 ? ppos : -ppos);
-
-  /* accelerate */
-  *v += *dv;
-
-  /* clamp velocity */
-  if (*v > max_v || *v < -max_v)
+  if (event->xany.type == ButtonPress &&
+      event->xbutton.button & Button1)
     {
-      *dv = -*dv;
+      gp->button_down_p = True;
+      gltrackball_start (gp->trackball,
+                         event->xbutton.x, event->xbutton.y,
+                         MI_WIDTH (mi), MI_HEIGHT (mi));
+      return True;
     }
-  /* If it stops, start it going in the other direction. */
-  else if (*v < 0)
+  else if (event->xany.type == ButtonRelease &&
+           event->xbutton.button & Button1)
     {
-      if (random() % 4)
-	{
-	  *v = 0;
-
-	  /* keep going in the same direction */
-	  if (random() % 2)
-	    *dv = 0;
-	  else if (*dv < 0)
-	    *dv = -*dv;
-	}
-      else
-	{
-	  /* reverse gears */
-	  *v = -*v;
-	  *dv = -*dv;
-	  *pos = -*pos;
-	}
+      gp->button_down_p = False;
+      return True;
+    }
+  else if (event->xany.type == MotionNotify &&
+           gp->button_down_p)
+    {
+      gltrackball_track (gp->trackball,
+                         event->xmotion.x, event->xmotion.y,
+                         MI_WIDTH (mi), MI_HEIGHT (mi));
+      return True;
     }
 
-  /* Alter direction of rotational acceleration randomly. */
-  if (! (random() % 120))
-    *dv = -*dv;
-
-  /* Change acceleration very occasionally. */
-  if (! (random() % 200))
-    {
-      if (*dv == 0)
-	*dv = 0.00001;
-      else if (random() & 1)
-	*dv *= 1.2;
-      else
-	*dv *= 0.8;
-    }
+  return False;
 }
 
 
@@ -968,24 +971,8 @@ init_gears(ModeInfo * mi)
 
 	gp->window = MI_WINDOW(mi);
 
-    gp->rotx = frand(1.0) * RANDSIGN();
-    gp->roty = frand(1.0) * RANDSIGN();
-    gp->rotz = frand(1.0) * RANDSIGN();
-
-    /* bell curve from 0-1.5 degrees, avg 0.75 */
-    gp->dx = (frand(1) + frand(1) + frand(1)) / (360*2);
-    gp->dy = (frand(1) + frand(1) + frand(1)) / (360*2);
-    gp->dz = (frand(1) + frand(1) + frand(1)) / (360*2);
-
-    gp->d_max = gp->dx * 2;
-
-    gp->ddx = 0.00006 + frand(0.00003);
-    gp->ddy = 0.00006 + frand(0.00003);
-    gp->ddz = 0.00006 + frand(0.00003);
-
-    gp->ddx = 0.00001;
-    gp->ddy = 0.00001;
-    gp->ddz = 0.00001;
+    gp->rot = make_rotator (1, 1, 1, 1, 0, True);
+    gp->trackball = gltrackball_init ();
 
 	if ((gp->glx_context = init_GL(mi)) != NULL) {
 		reshape_gears(mi, MI_WIDTH(mi), MI_HEIGHT(mi));
@@ -1016,10 +1003,6 @@ draw_gears(ModeInfo * mi)
 
 	/* let's do something so we don't get bored */
 	gp->angle = (int) (gp->angle + angle_incr) % 360;
-
-    rotate(&gp->rotx, &gp->dx, &gp->ddx, gp->d_max);
-    rotate(&gp->roty, &gp->dy, &gp->ddy, gp->d_max);
-    rotate(&gp->rotz, &gp->dz, &gp->ddz, gp->d_max);
 
     if (mi->fps_p) do_fps (mi);
 	glFinish();

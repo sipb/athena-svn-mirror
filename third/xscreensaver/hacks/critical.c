@@ -96,7 +96,7 @@ model_allocate (int model_w, int model_h)
   model->width = model_w;
   model->height = model_h;
 
-  model->cells = malloc (sizeof (int) * model_w * model_h);
+  model->cells = malloc (sizeof (unsigned short) * model_w * model_h);
   if (!model->cells)
     return 0;
 
@@ -128,7 +128,7 @@ model_initialize (CriticalModel *model)
 {
   int i;
   
-  for (i = model->width * model->height; i >= 0; i--)
+  for (i = model->width * model->height - 1; i >= 0; i--)
     {
       model->cells[i] = (unsigned short) random ();
     }
@@ -199,8 +199,8 @@ setup_colormap (Display *dpy, XWindowAttributes *wattr,
 
   /* Make a colormap */
   *n_colors = get_integer_resource ("ncolors", "Integer");
-  if (*n_colors < 2)
-    *n_colors = 2;
+  if (*n_colors < 3)
+    *n_colors = 3;
   
   *colors = (XColor *) calloc (sizeof(XColor), *n_colors);
   if (!*colors)
@@ -235,6 +235,17 @@ setup_colormap (Display *dpy, XWindowAttributes *wattr,
 			     &writable, True);
     }
 }
+
+
+/* Free allocated colormap created by setup_colormap. */
+static void
+free_colormap (Display *dpy, XWindowAttributes *wattr,
+               XColor **colors, int n_colors)
+{
+  free_colors (dpy, wattr->colormap, *colors, n_colors);
+  free (*colors);
+}
+
 
 
 /* Draw one step of the hack.  Positions are cell coordinates. */
@@ -341,6 +352,7 @@ screenhack (Display *dpy, Window window)
 	setup_colormap (dpy, &wattr, &colors, &n_colors);
 	erase_full_window (dpy, window);
 	model_initialize (model);
+	model_step (model, &history[0]);
 	pos = 1;
 	wrapped = 0;
       }
@@ -382,13 +394,11 @@ screenhack (Display *dpy, Window window)
       }
     
     i_restart = (i_restart + 1) % n_restart;
+
+    if (i_restart == 0)
+      {
+	/* Clean up after completing a simulation. */
+	free_colormap (dpy, &wattr, &colors, n_colors);
+      }
   }
 }
-
-
-/*
- * Local variables:
- * c-indent-mode: gnu
- * compile-command "make critical && ./critical"
- * End:
- */

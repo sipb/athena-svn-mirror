@@ -1,4 +1,4 @@
-/* xscreensaver, Copyright (c) 1993-2001 Jamie Zawinski <jwz@jwz.org>
+/* xscreensaver, Copyright (c) 1993-2003 Jamie Zawinski <jwz@jwz.org>
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
  * documentation for any purpose is hereby granted without fee, provided that
@@ -20,6 +20,8 @@ struct screenhack {
   char *command;
 };
 
+typedef enum { RANDOM_HACKS, ONE_HACK, BLANK_ONLY, DONT_BLANK } saver_mode;
+
 typedef struct saver_preferences saver_preferences;
 
 
@@ -39,6 +41,8 @@ struct saver_preferences {
   Bool verbose_p;		/* whether to print out lots of status info */
   Bool timestamp_p;		/* whether to mark messages with a timestamp */
   Bool capture_stderr_p;	/* whether to redirect stdout/stderr  */
+  Bool ignore_uninstalled_p;	/* whether to avoid displaying or complaining
+                                   about hacks that are not on $PATH */
   Bool debug_p;			/* pay no mind to the man behind the curtain */
   Bool xsync_p;			/* whether XSynchronize has been called */
 
@@ -54,10 +58,16 @@ struct saver_preferences {
   Bool install_cmap_p;		/* whether we should use our own colormap
 				   when using the screen's default visual. */
 
+  Bool quad_p;			/* whether to run four savers per monitor */
+
   screenhack **screenhacks;	/* the programs to run */
   int screenhacks_count;
 
+  saver_mode mode;		/* hack-selection mode */
+  int selected_hack;		/* in one_hack mode, this is the one */
+
   int nice_inferior;		/* nice value for subprocs */
+  int inferior_memory_limit;	/* setrlimit(LIMIT_AS) value for subprocs */
 
   Time initial_delay;		/* how long to sleep after launch */
   Time splash_duration;		/* how long the splash screen stays up */
@@ -73,6 +83,11 @@ struct saver_preferences {
   Time dpms_standby;		/* how long until monitor goes black */
   Time dpms_suspend;		/* how long until monitor power-saves */
   Time dpms_off;		/* how long until monitor powers down */
+
+  Bool grab_desktop_p;		/* These are not used by "xscreensaver" */
+  Bool grab_video_p;		/*  itself: they are used by the external */
+  Bool random_image_p;		/*  "xscreensaver-getimage" program, and set */
+  char *image_directory;	/*  by the "xscreensaver-demo" configurator. */
 
   Bool use_xidle_extension;	/* which extension to use, if possible */
   Bool use_mit_saver_extension;

@@ -38,6 +38,8 @@
 # define HACK_INIT						init_screensaver
 # define HACK_DRAW						draw_screensaver
 # define HACK_RESHAPE					reshape_screensaver
+# define HACK_HANDLE_EVENT				screensaver_handle_event
+# define EVENT_MASK						PointerMotionMask
 # define screensaver_opts				xlockmore_opts
 #define	DEFAULTS                        "*delay:			10000	\n" \
 										"*showFPS:      	False	\n" \
@@ -55,13 +57,6 @@
 
 #ifdef USE_GL /* whole file */
 
-#ifdef HAVE_XPM
-# include <X11/xpm.h>
-# ifndef PIXEL_ALREADY_TYPEDEFED
-# define PIXEL_ALREADY_TYPEDEFED /* Sigh, Xmu/Drawing.h needs this... */
-# endif
-#endif
-
 #ifdef HAVE_XMU
 # ifndef VMS
 #  include <X11/Xmu/Drawing.h>
@@ -70,11 +65,10 @@
 # endif /* VMS */
 #endif
 
-#include <malloc.h>
+#include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <malloc.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #ifdef HAVE_GLE3
@@ -86,6 +80,8 @@
 #undef countof
 #define countof(x) (sizeof((x))/sizeof((*x)))
 
+#include "xpm-ximage.h"
+#include "rotator.h"
 
 #define checkImageWidth 64
 #define checkImageHeight 64
@@ -161,7 +157,7 @@ static OptionStruct desc[] =
   {"-/+ light", "whether to do enable lighting (slower)"},
   {"-/+ wire", "whether to do use wireframe instead of filled (faster)"},
   {"-/+ texture", "whether to apply a texture (slower)"},
-  {"-image <filename>", "texture image to load (PPM or PPM4)"},
+  {"-image <filename>", "texture image to load"},
   {"-/+ texture_quality", "whether to use texture smoothing (slower)"},
   {"-/+ mipmap", "whether to use texture mipmap (slower)"},
 };
@@ -181,6 +177,9 @@ ModStruct   screensaver_description =
 typedef struct {
   int screen_width, screen_height;
   GLXContext *glx_context;
+  rotator *rot;
+  Bool button_down_p;
+  int mouse_x, mouse_y;
   Window window;
   XColor fg, bg;
 } screensaverstruct;
@@ -200,20 +199,12 @@ static GLfloat lightTwoPosition[] = {-40.0, 40, 100.0, 0.0};
 static GLfloat lightTwoColor[] = {0.99, 0.99, 0.99, 1.0}; 
 
 float rot_x=0, rot_y=0, rot_z=0;
-static float dx=0, dy=0, dz=0;
-static float ddx=0, ddy=0, ddz=0;
-static float d_max = 0;
-static int screensaver_number;
+float lastx=0, lasty=0;
 
 static float max_lastx=300, max_lasty=400;
 static float min_lastx=-400, min_lasty=-400;
-static float d_lastx=0, d_lasty=0;
-static float dd_lastx=0, dd_lasty=0;
-static float max_dlastx=0, max_dlasty=0;
-float lastx=0, lasty=0;
 
-static int errCode;
-static GLubyte * errString;
+static int screensaver_number;
 
 struct functions {
   void (*InitStuff)(void);
@@ -225,7 +216,7 @@ struct functions {
    like we're looking at them from the back or something
 */
 
-struct functions funcs_ptr[] = {
+static struct functions funcs_ptr[] = {
   {InitStuff_helix2, DrawStuff_helix2, "helix2"},
   {InitStuff_helix3, DrawStuff_helix3, "helix3"},
   {InitStuff_helix4, DrawStuff_helix4, "helix4"},
@@ -241,21 +232,8 @@ static int num_screensavers = countof(funcs_ptr);
 /* BEGINNING OF FUNCTIONS */
 
 
-/* check for errors, bail if any.  useful for debugging */
-int checkError(int line, char *file)
-{
-  if((errCode = glGetError()) != GL_NO_ERROR) {
-    errString = (GLubyte *)gluErrorString(errCode);
-    fprintf(stderr, "%s: OpenGL error: %s detected at line %d in file %s\n",
-            progname, errString, line, file);
-    exit(1);
-  }
-  return 0;
-}
-
-
-/* generate a checkered image for texturing */
-GLubyte *Generate_Image(int *width, int *height, int *format)
+GLubyte *
+Generate_Image(int *width, int *height, int *format)
 {
   GLubyte *result;
   int i, j, c;
@@ -263,7 +241,7 @@ GLubyte *Generate_Image(int *width, int *height, int *format)
 
   *width = checkImageWidth;
   *height = checkImageHeight;
-  result = (GLubyte *)malloc(4 * *width * *height);
+  result = (GLubyte *)malloc(4 * (*width) * (*height));
 
   counter = 0;
   for (i = 0; i < checkImageWidth; i++) {
@@ -279,153 +257,11 @@ GLubyte *Generate_Image(int *width, int *height, int *format)
   *format = GL_RGBA;
   return result;
 }
-/* Load a modified version of PPM format with an extra byte for alpha */
-GLubyte *LoadPPM4(const char *filename, int *width, int *height, int *format)
-{
-  char buff[1024];
-  GLubyte *data;
-  int sizeX, sizeY;
-  FILE *fp;
-  int maxval;
 
-  fp = fopen(filename, "rb");
-  if (!fp)
-    {
-      fprintf(stderr, "%s: unable to open file '%s'\n", progname, filename);
-      return  Generate_Image(width, height, format);
-    }
 
-  if (!fgets(buff, sizeof(buff), fp))
-    {
-      perror("Unable to read header filename\n");
-      return  Generate_Image(width, height, format);
-    }
-
-  if (buff[0] != '6' || buff[1] != 'P')
-    {
-      fprintf(stderr, "%s: Invalid image format (must be `6P')\n", progname);
-      return  Generate_Image(width, height, format);
-    }
-
-  do
-    {
-      fgets(buff, sizeof(buff), fp);
-    }
-  while (buff[0] == '#');
-    
-  if (sscanf(buff, "%d %d", &sizeX, &sizeY) != 2)
-    {
-      fprintf(stderr, "%s: error loading image `%s'\n", progname, filename);
-      return  Generate_Image(width, height, format);
-    }
-
-  if (fscanf(fp, "%d", &maxval) != 1)
-    {
-      fprintf(stderr, "%s: error loading image `%s'\n", progname, filename);
-      return  Generate_Image(width, height, format);
-    }
-
-  while (fgetc(fp) != '\n')
-    ;
-
-  data = (GLubyte *)malloc(4 * sizeX * sizeY);
-  if (data == NULL)
-    {
-      fprintf(stderr, "%s: unable to allocate memory\n", progname);
-	  exit(1);
-    }
-
-  if (fread(data, 4 * sizeX, sizeY, fp) != sizeY)
-    {
-      fprintf(stderr, "%s: error loading image `%s'\n", progname, filename);
-      return  Generate_Image(width, height, format);
-    }
-
-  fclose(fp);
-
-  *width = sizeX;
-  *height = sizeY;
-  *format = GL_RGBA;
-  return data;
-}
-
-/* Load a plain PPM image */
-GLubyte *LoadPPM(const char *filename, int *width, int *height, int *format)
-{
-  char buff[1024];
-  GLubyte *data;
-  GLint sizeX, sizeY;
-  FILE *fp;
-  int maxval;
-
-  fp = fopen(filename, "rb");
-  if (!fp)
-    {
-      fprintf(stderr, "%s: unable to open file '%s'\n", progname, filename);
-      return  Generate_Image(width, height, format);
-      exit(1);
-    }
-  if (!fgets(buff, sizeof(buff), fp))
-    {
-      perror(filename);
-      return  Generate_Image(width, height, format);
-    }
-
-  if (buff[0] != 'P' || buff[1] != '6')
-    {
-      fprintf(stderr, "%s: invalid image format (must be `P6')\n", progname);
-      return  Generate_Image(width, height, format);
-    }
-
-  do
-    {
-      fgets(buff, sizeof(buff), fp);
-    }
-  while (buff[0] == '#');
-    
-  if (sscanf(buff, "%d %d", &sizeX, &sizeY) != 2)
-    {
-      fprintf(stderr, "%s: error loading image `%s'\n", progname, filename);
-      return  Generate_Image(width, height, format);
-    }
-
-  if (fscanf(fp, "%d", &maxval) != 1)
-    {
-      fprintf(stderr, "%s: error loading image `%s'\n", progname, filename);
-      return  Generate_Image(width, height, format);
-    }
-
-  while (fgetc(fp) != '\n')
-    ;
-
-  data = (GLubyte *)malloc(3 * sizeX * sizeY);
-  if (data == NULL)
-    {
-      fprintf(stderr, "%s: unable to allocate memory\n", progname);
-	  exit(1);
-    }
-
-  if (fread(data, 3 * sizeX, sizeY, fp) != sizeY)
-    {
-      fprintf(stderr, "%s: error loading image `%s'\n", progname, filename);
-      return  Generate_Image(width, height, format);
-    }
-
-  fclose(fp);
-
-  *width = sizeX;
-  *height = sizeY;
-  *format = GL_RGB;
-  return data;
-}
-
-/* create a texture to be applied to the surface
-   this function loads a file using a loader depending on
-   that extension of the file. there is very little error
-   checking.  
-*/
-
-void Create_Texture(char *filename, int do_mipmap, int do_texture_quality)
+/* Create a texture in OpenGL.  First an image is loaded 
+   and stored in a raster buffer, then it's  */
+void Create_Texture(ModeInfo *mi, const char *filename)
 {
   int height, width;
   GLubyte *image;
@@ -433,180 +269,72 @@ void Create_Texture(char *filename, int do_mipmap, int do_texture_quality)
 
   if ( !strncmp(filename, "BUILTIN", 7))
     image = Generate_Image(&width, &height, &format);
-  else if ( !strncmp((filename+strlen(filename)-3), "ppm", 3))
-    image = LoadPPM(filename, &width, &height, &format);
-  else if ( !strncmp((filename+strlen(filename)-4), "ppm4", 4))
-    image = LoadPPM4(filename, &width, &height, &format);
-  else {
-    fprintf(stderr, "%s: unknown file format extension: '%s'\n",
-            progname, filename);
-	exit(1);
-  }
+  else
+    {
+      XImage *ximage = xpm_file_to_ximage (MI_DISPLAY (mi), MI_VISUAL (mi),
+                                           MI_COLORMAP (mi), filename);
+      image  = (GLubyte *) ximage->data;
+      width  = ximage->width;
+      height = ximage->height;
+      format = GL_RGBA;
+    }
 
   /* GL_MODULATE or GL_DECAL depending on what you want */
   glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+  /* perhaps we can edge a bit more speed at the expense of quality */
+  glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 
-  /* default is to do it quick and dirty */
-  /* if you have mipmaps turned on, but not texture quality, nothing will happen! */
   if (do_texture_quality) {
-    /* with texture_quality, the min and mag filters look *much* nice but are *much* slower */
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-  } else {
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  }
-
-  if (do_mipmap) {
-    gluBuild2DMipmaps(GL_TEXTURE_2D, format, width, height, 
-		      format, GL_UNSIGNED_BYTE, image);
+	/* with texture_quality, the min and mag filters look *much* nice but are *much* slower */
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
   }
   else {
-    clear_gl_error();
-    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0,
-		 format, GL_UNSIGNED_BYTE, image);
-    check_gl_error("texture");
+	/* default is to do it quick and dirty */
+	/* if you have mipmaps turned on, but not texture quality, nothing will happen! */
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   }
-  free(image);
-}
 
-
-/* mostly lifted from lament.c */
-static void
-rotate (float *pos, float *v, float *dv, float max_v)
-{
-  double ppos = *pos;
-
-  /* tick position */
-  if (ppos < 0)
-    ppos = -(ppos + *v);
+  /* mipmaps make the image look much nicer */
+  if (do_mipmap)
+    {
+      int status;
+      clear_gl_error();
+      status = gluBuild2DMipmaps(GL_TEXTURE_2D, 3, width, height, format,
+                                 GL_UNSIGNED_BYTE, image);
+      if (status)
+        {
+          const char *s = (char *) gluErrorString (status);
+          fprintf (stderr, "%s: error mipmapping %dx%d texture: %s\n",
+                   progname, width, height,
+                   (s ? s : "(unknown)"));
+          exit (1);
+        }
+      check_gl_error("mipmapping");
+    }
   else
-    ppos += *v;
-
-  if (ppos > 360)
-    ppos -= 360;
-  else if (ppos < 0)
-    ppos += 360;
-
-  if (ppos < 0) abort();
-  if (ppos > 360) abort();
-  *pos = (*pos > 0 ? ppos : -ppos);
-
-  /* accelerate */
-  *v += *dv;
-
-  /* clamp velocity */
-  if (*v > max_v || *v < -max_v)
     {
-      *dv = -*dv;
-    }
-  /* If it stops, start it going in the other direction. */
-  else if (*v < 0)
-    {
-      if (random() % 4)
-        {
-          *v = 0;
-
-          /* keep going in the same direction */
-          if (random() % 2)
-            *dv = 0;
-          else if (*dv < 0)
-            *dv = -*dv;
-        }
-      else
-        {
-          /* reverse gears */
-          *v = -*v;
-          *dv = -*dv;
-          *pos = -*pos;
-        }
-    }
-
-  /* Alter direction of rotational acceleration randomly. */
-  if (! (random() % 120))
-    *dv = -*dv;
-
-  /* Change acceleration very occasionally. */
-  if (! (random() % 200))
-    {
-      if (*dv == 0)
-        *dv = 0.00001;
-      else if (random() & 1)
-        *dv *= 1.2;
-      else
-        *dv *= 0.8;
+      clear_gl_error();
+      glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0,
+                   format, GL_UNSIGNED_BYTE, image);
+      check_gl_error("texture");
     }
 }
 
 
 static void
-bounce (float *pos, float *v, float *dv, float max_v)
+init_rotation (ModeInfo *mi)
 {
-  *pos += *v;
-
-  if (*pos > 1.0)
-    *pos = 1.0, *v = -*v, *dv = -*dv;
-  else if (*pos < 0)
-    *pos = 0, *v = -*v, *dv = -*dv;
-
-  if (*pos < 0.0) abort();
-  if (*pos > 1.0) abort();
-
-  /* accelerate */
-  *v += *dv;
-
-  /* clamp velocity */
-  if (*v > max_v || *v < -max_v)
-    {
-      *dv = -*dv;
-    }
-
-  /* Alter direction of rotational acceleration randomly. */
-  if (! (random() % 120))
-    *dv = -*dv;
-
-  /* Change acceleration very occasionally. */
-  if (! (random() % 200))
-    {
-      if (*dv == 0)
-        *dv = 0.00001;
-      else if (random() & 1)
-        *dv *= 1.2;
-      else
-        *dv *= 0.8;
-    }
-}
-
-
-static void
-init_rotation (void)
-{
-  rot_x = (float) (random() % (360 * 2)) - 360;  /* -360 - 360 */
-  rot_y = (float) (random() % (360 * 2)) - 360;
-  rot_z = (float) (random() % (360 * 2)) - 360;
-
-  /* bell curve from 0-1.5 degrees, avg 0.75 */
-  dx = (frand(1) + frand(1) + frand(1)) / 2.0;
-  dy = (frand(1) + frand(1) + frand(1)) / 2.0;
-  dz = (frand(1) + frand(1) + frand(1)) / 2.0;
-
-  d_max = dx * 2;
-
-  ddx = 0.004;
-  ddy = 0.004;
-  ddz = 0.004;
+  screensaverstruct *gp = &Screensaver[MI_SCREEN(mi)];
+  double spin_speed = 1.0;
+  gp->rot = make_rotator (spin_speed, spin_speed, spin_speed, 1.0, 0.0, True);
 
   lastx = (random() % (int) (max_lastx - min_lastx)) + min_lastx;
   lasty = (random() % (int) (max_lasty - min_lasty)) + min_lasty;
-  d_lastx = (frand(1) + frand(1) + frand(1));
-  d_lasty = (frand(1) + frand(1) + frand(1));
-  max_dlastx = d_lastx * 2;
-  max_dlasty = d_lasty * 2;
-  dd_lastx = 0.004;
-  dd_lasty = 0.004;
 }
 
 
@@ -617,11 +345,6 @@ void draw_screensaver(ModeInfo * mi)
   Display    *display = MI_DISPLAY(mi);
   Window      window = MI_WINDOW(mi);
 
-  Window root, child;
-  int rootx, rooty, winx, winy;
-  unsigned int mask;
-  XEvent event;
-
   if (!gp->glx_context)
 	return;
 
@@ -629,44 +352,22 @@ void draw_screensaver(ModeInfo * mi)
 
   funcs_ptr[screensaver_number].DrawStuff();
 	  
-  rotate(&rot_x, &dx, &ddx, d_max);
-  rotate(&rot_y, &dy, &ddy, d_max);
-  rotate(&rot_z, &dz, &ddz, d_max);
-
-  /* swallow any ButtonPress events */
-  while (XCheckMaskEvent (MI_DISPLAY(mi), ButtonPressMask, &event))
-    ;
-  /* check the pointer position and button state. */
-  XQueryPointer (MI_DISPLAY(mi), MI_WINDOW(mi),
-                 &root, &child, &rootx, &rooty, &winx, &winy, &mask);
-
   /* track the mouse only if a button is down. */
-  if (mask & (Button1Mask|Button2Mask|Button3Mask|Button4Mask|Button5Mask))
+  if (gp->button_down_p)
     {
-      lastx = winx;
-      lasty = winy;
+      lastx = gp->mouse_x;
+      lasty = gp->mouse_y;
     }
   else
     {
       float scale = (max_lastx - min_lastx);
-      lastx -= min_lastx;
-      lasty -= min_lasty;
-      lastx /= scale;
-      lasty /= scale;
-      d_lastx /= scale;
-      d_lasty /= scale;
-      dd_lastx /= scale;
-      dd_lasty /= scale;
-      bounce(&lastx, &d_lastx, &dd_lastx, max_dlastx);
-      bounce(&lasty, &d_lasty, &dd_lasty, max_dlasty);
-      lastx *= scale;
-      lasty *= scale;
-      lastx += min_lastx;
-      lasty += min_lasty;
-      d_lastx *= scale;
-      d_lasty *= scale;
-      dd_lastx *= scale;
-      dd_lasty *= scale;
+      double x, y, z;
+      get_rotation (gp->rot, &x, &y, &z, True);
+      rot_x = x * 360;
+      rot_y = y * 360;
+      rot_z = z * 360;
+      lastx = x * scale + min_lastx;
+      lasty = y * scale + min_lasty;
     }
 
   if (mi->fps_p) do_fps (mi);
@@ -675,7 +376,7 @@ void draw_screensaver(ModeInfo * mi)
 
 
 /* set up lighting conditions */
-void SetupLight(void)
+static void SetupLight(void)
 {
   glLightfv (GL_LIGHT0, GL_POSITION, lightOnePosition);
   glLightfv (GL_LIGHT0, GL_DIFFUSE, lightOneColor);
@@ -692,7 +393,7 @@ void SetupLight(void)
 }
 
 /* reset the projection matrix */
-void resetProjection(void) {
+static void resetProjection(void) {
   glMatrixMode(GL_PROJECTION);
   glLoadIdentity();
   glFrustum (-9, 9, -9, 9, 50, 150.0);
@@ -712,7 +413,8 @@ reshape_screensaver(ModeInfo *mi, int width, int height)
 
 
 /* decide which screensaver example to run */
-void chooseScreensaverExample(void) {
+static void chooseScreensaverExample(ModeInfo *mi)
+{
   int i;
   /* call the extrusion init routine */
 
@@ -735,12 +437,12 @@ void chooseScreensaverExample(void) {
 	  fprintf(stderr,"\t%s\n", funcs_ptr[i].name);
 	exit(1);
   }
-  init_rotation();
+  init_rotation(mi);
   funcs_ptr[screensaver_number].InitStuff();
 }
 
 /* main OpenGL initialization routine */
-void
+static void
 initializeGL(ModeInfo *mi, GLsizei width, GLsizei height) 
 {
   int style;
@@ -753,6 +455,7 @@ initializeGL(ModeInfo *mi, GLsizei width, GLsizei height)
   glClearColor(0,0,0,0);
 /*    glCullFace(GL_BACK); */
 /*    glEnable(GL_CULL_FACE); */
+  glLightModeli (GL_LIGHT_MODEL_TWO_SIDE, TRUE);
   glShadeModel(GL_SMOOTH);
 
   if (do_light)
@@ -762,7 +465,7 @@ initializeGL(ModeInfo *mi, GLsizei width, GLsizei height)
   	glPolygonMode(GL_BACK,GL_LINE);
   }
   if (do_texture) {
-	Create_Texture(which_image, do_mipmap, do_texture_quality);
+	Create_Texture(mi, which_image);
 	glEnable(GL_TEXTURE_2D);
 
 	/* configure the pipeline */
@@ -782,6 +485,37 @@ initializeGL(ModeInfo *mi, GLsizei width, GLsizei height)
 
 }
 
+Bool
+screensaver_handle_event (ModeInfo *mi, XEvent *event)
+{
+  screensaverstruct *gp = &Screensaver[MI_SCREEN(mi)];
+
+  if (event->xany.type == ButtonPress &&
+      event->xbutton.button & Button1)
+    {
+      gp->button_down_p = True;
+      gp->mouse_x = event->xbutton.x;
+      gp->mouse_y = event->xbutton.y;
+      return True;
+    }
+  else if (event->xany.type == ButtonRelease &&
+           event->xbutton.button & Button1)
+    {
+      gp->button_down_p = False;
+      return True;
+    }
+  else if (event->xany.type == MotionNotify)
+    {
+      gp->mouse_x = event->xmotion.x;
+      gp->mouse_y = event->xmotion.y;
+      return True;
+    }
+
+  return False;
+}
+
+
+
 /* xscreensaver initialization routine */
 void init_screensaver(ModeInfo * mi)
 {
@@ -798,7 +532,7 @@ void init_screensaver(ModeInfo * mi)
   if ((gp->glx_context = init_GL(mi)) != NULL) {
 	reshape_screensaver(mi, MI_WIDTH(mi), MI_HEIGHT(mi));
 	initializeGL(mi, MI_WIDTH(mi), MI_HEIGHT(mi));
-	chooseScreensaverExample();
+	chooseScreensaverExample(mi);
   } else {
 	MI_CLEARWINDOW(mi);
   }

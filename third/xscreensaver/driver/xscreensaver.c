@@ -1,4 +1,4 @@
-/* xscreensaver, Copyright (c) 1991-2001 Jamie Zawinski <jwz@jwz.org>
+/* xscreensaver, Copyright (c) 1991-2003 Jamie Zawinski <jwz@jwz.org>
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
  * documentation for any purpose is hereby granted without fee, provided that
@@ -16,11 +16,11 @@
  *   on (nearly) all windows; or by waiting for the MIT-SCREEN-SAVER extension
  *   to send us a "you are idle" event.
  *
- *   Then, we map a full screen black window (or, in the case of the 
- *   MIT-SCREEN-SAVER extension, use the one it gave us.)
+ *   Then, we map a full screen black window.
  *
  *   We place a __SWM_VROOT property on this window, so that newly-started
- *   clients will think that this window is a "virtual root" window.
+ *   clients will think that this window is a "virtual root" window (as per
+ *   the logic in the historical "vroot.h" header.)
  *
  *   If there is an existing "virtual root" window (one that already had
  *   an __SWM_VROOT property) then we remove that property from that window.
@@ -38,10 +38,18 @@
  *   When they are, we kill the inferior process, unmap the window, and restore
  *   the __SWM_VROOT property to the real virtual root window if there was one.
  *
- *   While we are waiting, we also set up timers so that, after a certain 
- *   amount of time has passed, we can start a different screenhack.  We do
- *   this by killing the running child process with SIGTERM, and then starting
- *   a new one in the same way.
+ *   On multi-screen systems, we do the above on each screen, and start
+ *   multiple programs, each with a different value of $DISPLAY.
+ *
+ *   On Xinerama systems, we do a similar thing, but instead create multiple
+ *   windows on the (only) display, and tell the subprocess which one to use
+ *   via the $XSCREENSAVER_WINDOW environment variable -- this trick requires
+ *   a recent (Aug 2003) revision of vroot.h.
+ *
+ *   While we are waiting for user activity, we also set up timers so that,
+ *   after a certain amount of time has passed, we can start a different
+ *   screenhack.  We do this by killing the running child process with
+ *   SIGTERM, and then starting a new one in the same way.
  *
  *   If there was a real virtual root, meaning that we removed the __SWM_VROOT
  *   property from it, meaning we must (absolutely must) restore it before we
@@ -57,7 +65,7 @@
  *   can really fuck up the world by killing this process with "kill -9".
  *
  *   This program accepts ClientMessages of type SCREENSAVER; these messages
- *   may contain the atom ACTIVATE or DEACTIVATE, meaning to turn the 
+ *   may contain the atoms ACTIVATE, DEACTIVATE, etc, meaning to turn the 
  *   screensaver on or off now, regardless of the idleness of the user,
  *   and a few other things.  The included "xscreensaver-command" program
  *   sends these messsages.
@@ -92,9 +100,15 @@
  *   "client changing event mask" problem that the KeyPress events hack does.
  *   I think polling is more reliable.
  *
- *   None of this crap happens if we're using one of the extensions, so install
- *   one of them if the description above sounds just too flaky to live.  It
- *   is, but those are your choices.
+ *   On systems with /proc/interrupts (Linux) we poll that file and note when
+ *   the interrupt counter numbers on the "keyboard" and "PS/2" lines change.
+ *   (There is no reliable way, using /proc/interrupts, to detect non-PS/2
+ *   mice, so it doesn't help for serial or USB mice.)
+ *
+ *   None of this crap happens if we're using one of the extensions.  Sadly,
+ *   the XIdle extension hasn't been available for many years; the SGI
+ *   extension only exists on SGIs; and the MIT extension, while widely
+ *   deployed, is garbage in several ways.
  *
  *   A third idle-detection option could be implemented (but is not): when
  *   running on the console display ($DISPLAY is `localhost`:0) and we're on a
@@ -127,11 +141,16 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <X11/Xlib.h>
+
+#include <X11/Xlibint.h>
+
 #include <X11/Xatom.h>
 #include <X11/Intrinsic.h>
 #include <X11/StringDefs.h>
 #include <X11/Shell.h>
 #include <X11/Xos.h>
+#include <time.h>
+#include <sys/time.h>
 #include <netdb.h>	/* for gethostbyname() */
 #ifdef HAVE_XMU
 # ifndef VMS
@@ -146,6 +165,10 @@
 #ifdef HAVE_XIDLE_EXTENSION
 # include <X11/extensions/xidle.h>
 #endif /* HAVE_XIDLE_EXTENSION */
+
+#ifdef HAVE_XINERAMA
+# include <X11/extensions/Xinerama.h>
+#endif /* HAVE_XINERAMA */
 
 #include "xscreensaver.h"
 #include "version.h"
@@ -169,6 +192,23 @@ Atom XA_DEMO, XA_PREFS, XA_EXIT, XA_LOCK, XA_BLANK;
 
 
 static XrmOptionDescRec options [] = {
+
+  { "-verbose",		   ".verbose",		XrmoptionNoArg, "on" },
+  { "-silent",		   ".verbose",		XrmoptionNoArg, "off" },
+
+  /* xscreensaver-demo uses this one */
+  { "-nosplash",	   ".splash",		XrmoptionNoArg, "off" },
+  { "-no-splash",	   ".splash",		XrmoptionNoArg, "off" },
+
+  /* useful for debugging */
+  { "-no-capture-stderr",  ".captureStderr",	XrmoptionNoArg, "off" },
+
+  /* There's really no reason to have these command-line args; they just
+     lead to confusion when the .xscreensaver file has conflicting values.
+   */
+#if 0
+  { "-splash",		   ".splash",		XrmoptionNoArg, "on" },
+  { "-capture-stderr",	   ".captureStderr",	XrmoptionNoArg, "on" },
   { "-timeout",		   ".timeout",		XrmoptionSepArg, 0 },
   { "-cycle",		   ".cycle",		XrmoptionSepArg, 0 },
   { "-lock-mode",	   ".lock",		XrmoptionNoArg, "on" },
@@ -180,11 +220,7 @@ static XrmOptionDescRec options [] = {
   { "-visual",		   ".visualID",		XrmoptionSepArg, 0 },
   { "-install",		   ".installColormap",	XrmoptionNoArg, "on" },
   { "-no-install",	   ".installColormap",	XrmoptionNoArg, "off" },
-  { "-verbose",		   ".verbose",		XrmoptionNoArg, "on" },
-  { "-silent",		   ".verbose",		XrmoptionNoArg, "off" },
   { "-timestamp",	   ".timestamp",	XrmoptionNoArg, "on" },
-  { "-capture-stderr",	   ".captureStderr",	XrmoptionNoArg, "on" },
-  { "-no-capture-stderr",  ".captureStderr",	XrmoptionNoArg, "off" },
   { "-xidle-extension",	   ".xidleExtension",	XrmoptionNoArg, "on" },
   { "-no-xidle-extension", ".xidleExtension",	XrmoptionNoArg, "off" },
   { "-mit-extension",	   ".mitSaverExtension",XrmoptionNoArg, "on" },
@@ -193,16 +229,16 @@ static XrmOptionDescRec options [] = {
   { "-no-sgi-extension",   ".sgiSaverExtension",XrmoptionNoArg, "off" },
   { "-proc-interrupts",	   ".procInterrupts",	XrmoptionNoArg, "on" },
   { "-no-proc-interrupts", ".procInterrupts",	XrmoptionNoArg, "off" },
-  { "-splash",		   ".splash",		XrmoptionNoArg, "on" },
-  { "-no-splash",	   ".splash",		XrmoptionNoArg, "off" },
-  { "-nosplash",	   ".splash",		XrmoptionNoArg, "off" },
   { "-idelay",		   ".initialDelay",	XrmoptionSepArg, 0 },
   { "-nice",		   ".nice",		XrmoptionSepArg, 0 },
-
-  /* Actually these are built in to Xt, but just to be sure... */
-  { "-synchronous",	   ".synchronous",	XrmoptionNoArg, "on" },
-  { "-xrm",		   NULL,		XrmoptionResArg, NULL }
+#endif /* 0 */
 };
+
+#ifdef __GNUC__
+ __extension__     /* shut up about "string length is greater than the length
+                      ISO C89 compilers are required to support" when including
+                      the .ad file... */
+#endif
 
 static char *defaults[] = {
 #include "XScreenSaver_ad.h"
@@ -219,36 +255,25 @@ do_help (saver_info *si)
   fflush (stdout);
   fflush (stderr);
   fprintf (stdout, "\
-xscreensaver %s, copyright (c) 1991-2001 by Jamie Zawinski <jwz@jwz.org>\n\
-The standard Xt command-line options are accepted; other options include:\n\
+xscreensaver %s, copyright (c) 1991-2003 by Jamie Zawinski <jwz@jwz.org>\n\
 \n\
-    -timeout <minutes>       When the screensaver should activate.\n\
-    -cycle <minutes>         How long to let each hack run before switching.\n\
-    -lock-mode               Require a password before deactivating.\n\
-    -lock-timeout <minutes>  Grace period before locking; default 0.\n\
-    -visual <id-or-class>    Which X visual to run on.\n\
-    -install                 Install a private colormap.\n\
-    -verbose                 Be loud.\n\
-    -no-splash               Don't display a splash-screen at startup.\n\
-    -help                    This message.\n\
-\n\
-See the manual for other options and X resources.\n\
-\n\
-The `xscreensaver' program should be left running in the background.\n\
-Use the `xscreensaver-demo' and `xscreensaver-command' programs to\n\
-manipulate a running xscreensaver.\n\
-\n\
-The `*programs' resource controls which graphics demos will be launched by\n\
-the screensaver.  See `man xscreensaver' or the web page for more details.\n\
-\n\
-Just getting started?  Try this:\n\
+  All xscreensaver configuration is via the `~/.xscreensaver' file.\n\
+  Rather than editing that file by hand, just run `xscreensaver-demo':\n\
+  that program lets you configure the screen saver graphically,\n\
+  including timeouts, locking, and display modes.\n\
+\n",
+	  si->version);
+  fprintf (stdout, "\
+  Just getting started?  Try this:\n\
 \n\
         xscreensaver &\n\
         xscreensaver-demo\n\
 \n\
-For updates, check http://www.jwz.org/xscreensaver/\n\
-\n",
-	  si->version);
+  For updates, online manual, and FAQ, please see the web page:\n\
+\n\
+       http://www.jwz.org/xscreensaver/\n\
+\n");
+
   fflush (stdout);
   fflush (stderr);
   exit (1);
@@ -292,19 +317,44 @@ int
 saver_ehandler (Display *dpy, XErrorEvent *error)
 {
   saver_info *si = global_si_kludge;	/* I hate C so much... */
+  int i;
+  Bool fatal_p;
 
   if (!real_stderr) real_stderr = stderr;
 
   fprintf (real_stderr, "\n"
 	   "#######################################"
 	   "#######################################\n\n"
-	   "%s: X Error!  PLEASE REPORT THIS BUG.\n\n"
-	   "#######################################"
-	   "#######################################\n\n",
+	   "%s: X Error!  PLEASE REPORT THIS BUG.\n",
 	   blurb());
-  if (XmuPrintDefaultErrorMessage (dpy, error, real_stderr))
+
+  for (i = 0; i < si->nscreens; i++)
     {
-      fprintf (real_stderr, "\n");
+      saver_screen_info *ssi = &si->screens[i];
+      fprintf (real_stderr, "%s: screen %d/%d: 0x%x, 0x%x, 0x%x\n",
+               blurb(), ssi->real_screen_number, ssi->number,
+               (unsigned int) RootWindowOfScreen (si->screens[i].screen),
+               (unsigned int) si->screens[i].real_vroot,
+               (unsigned int) si->screens[i].screensaver_window);
+    }
+
+  fprintf (real_stderr, "\n"
+	   "#######################################"
+	   "#######################################\n\n");
+
+  fatal_p = XmuPrintDefaultErrorMessage (dpy, error, real_stderr);
+
+  fatal_p = True;  /* The only time I've ever seen a supposedly nonfatal error,
+                      it has been BadImplementation / Xlib sequence lost, which
+                      are in truth pretty damned fatal.
+                    */
+
+  fprintf (real_stderr, "\n");
+
+  if (! fatal_p)
+    fprintf (real_stderr, "%s: nonfatal error.\n\n", blurb());
+  else
+    {
       if (si->prefs.xsync_p)
 	{
 	  saver_exit (si, -1, "because of synchronous X Error");
@@ -315,12 +365,13 @@ saver_ehandler (Display *dpy, XErrorEvent *error)
                    "#######################################"
                    "#######################################\n\n");
           fprintf (real_stderr,
-   "    If at all possible, please re-run xscreensaver with the command\n"
+   "    If at all possible, please re-run xscreensaver with the command\n"
    "    line arguments `-sync -verbose -no-capture', and reproduce this\n"
    "    bug.  That will cause xscreensaver to dump a `core' file to the\n"
    "    current directory.  Please include the stack trace from that core\n"
    "    file in your bug report.  *DO NOT* mail the core file itself!\n"
-   "    That won't work.\n"
+   "    That won't work.\n");
+          fprintf (real_stderr,
    "\n"
    "    http://www.jwz.org/xscreensaver/bugs.html explains how to create\n"
    "    the most useful bug reports, and how to examine core files.\n"
@@ -335,8 +386,7 @@ saver_ehandler (Display *dpy, XErrorEvent *error)
 	  saver_exit (si, -1, 0);
 	}
     }
-  else
-    fprintf (real_stderr, " (nonfatal.)\n");
+
   return 0;
 }
 
@@ -466,9 +516,48 @@ lock_initialization (saver_info *si, int *argc, char **argv)
       si->locking_disabled_p = True;
       si->nolock_reason = "error getting password";
     }
-#endif /* NO_LOCKING */
 
-  hack_uid (si);
+  /* If locking is currently enabled, but the environment indicates that
+     we have been launched as GDM's "Background" program, then disable
+     locking just in case.
+   */
+  if (!si->locking_disabled_p && getenv ("RUNNING_UNDER_GDM"))
+    {
+      si->locking_disabled_p = True;
+      si->nolock_reason = "running under GDM";
+    }
+
+  /* If the server is XDarwin (MacOS X) then disable locking.
+     (X grabs only affect X programs, so you can use Command-Tab
+     to bring any other Mac program to the front, e.g., Terminal.)
+   */
+  if (!si->locking_disabled_p)
+    {
+      int op = 0, event = 0, error = 0;
+      Bool macos_p = False;
+
+#ifdef __APPLE__
+      /* Disable locking if *running* on Apple hardware, since we have no
+         reliable way to determine whether the server is running on MacOS.
+         Hopefully __APPLE__ means "MacOS" and not "Linux on Mac hardware"
+         but I'm not really sure about that.
+       */
+      macos_p = True;
+#endif
+
+      if (!macos_p)
+        /* This extension exists on the Apple X11 server, but not
+           on earlier versions of the XDarwin server. */
+        macos_p = XQueryExtension (si->dpy, "Apple-DRI", &op, &event, &error);
+
+      if (macos_p)
+        {
+          si->locking_disabled_p = True;
+          si->nolock_reason = "Cannot lock securely on MacOS X";
+        }
+    }
+
+#endif /* NO_LOCKING */
 }
 
 
@@ -483,13 +572,17 @@ connect_to_server (saver_info *si, int *argc, char **argv)
   char *d = getenv ("DISPLAY");
   if (!d || !*d)
     {
-      char ndpy[] = "DISPLAY=:0.0";
+      char *ndpy = strdup("DISPLAY=:0.0");
       /* if (si->prefs.verbose_p) */      /* sigh, too early to test this... */
         fprintf (stderr,
                  "%s: warning: $DISPLAY is not set: defaulting to \"%s\".\n",
                  blurb(), ndpy+8);
       if (putenv (ndpy))
         abort ();
+      /* don't free (ndpy) -- some implementations of putenv (BSD 4.4,
+         glibc 2.0) copy the argument, but some (libc4,5, glibc 2.1.2)
+         do not.  So we must leak it (and/or the previous setting). Yay.
+       */
     }
 #endif /* HAVE_PUTENV */
 
@@ -518,6 +611,8 @@ connect_to_server (saver_info *si, int *argc, char **argv)
   XA_SCREENSAVER_RESPONSE = XInternAtom (si->dpy, "_SCREENSAVER_RESPONSE",
 					 False);
   XA_XSETROOT_ID = XInternAtom (si->dpy, "_XSETROOT_ID", False);
+  XA_ESETROOT_PMAP_ID = XInternAtom (si->dpy, "ESETROOT_PMAP_ID", False);
+  XA_XROOTPMAP_ID = XInternAtom (si->dpy, "_XROOTPMAP_ID", False);
   XA_ACTIVATE = XInternAtom (si->dpy, "ACTIVATE", False);
   XA_DEACTIVATE = XInternAtom (si->dpy, "DEACTIVATE", False);
   XA_RESTART = XInternAtom (si->dpy, "RESTART", False);
@@ -624,7 +719,7 @@ print_banner (saver_info *si)
 
   if (p->verbose_p)
     fprintf (stderr,
-	     "%s %s, copyright (c) 1991-2001 "
+	     "%s %s, copyright (c) 1991-2003 "
 	     "by Jamie Zawinski <jwz@jwz.org>.\n",
 	     progname, si->version);
 
@@ -657,11 +752,17 @@ print_banner (saver_info *si)
       fprintf (stderr, "%s: in process %lu.\n", blurb(),
 	       (unsigned long) getpid());
     }
+}
+
+static void
+print_lock_failure_banner (saver_info *si)
+{
+  saver_preferences *p = &si->prefs;
 
   /* If locking was not able to be initalized for some reason, explain why.
      (This has to be done after we've read the lock_p resource.)
    */
-  if (p->lock_p && si->locking_disabled_p)
+  if (si->locking_disabled_p)
     {
       p->lock_p = False;
       fprintf (stderr, "%s: locking is disabled (%s).\n", blurb(),
@@ -676,6 +777,7 @@ print_banner (saver_info *si)
 		 "\t See the manual for details.\n",
 		 blurb());
     }
+
 }
 
 
@@ -688,17 +790,126 @@ initialize_per_screen_info (saver_info *si, Widget toplevel_shell)
   Bool found_any_writable_cells = False;
   int i;
 
-  si->nscreens = ScreenCount(si->dpy);
-  si->screens = (saver_screen_info *)
-    calloc(sizeof(saver_screen_info), si->nscreens);
+# ifdef HAVE_XINERAMA
+  {
+    int event, error;
+    si->xinerama_p = (XineramaQueryExtension (si->dpy, &event, &error) &&
+                      XineramaIsActive (si->dpy));
+  }
 
-  si->default_screen = &si->screens[DefaultScreen(si->dpy)];
+  if (si->xinerama_p && ScreenCount (si->dpy) != 1)
+    {
+      si->xinerama_p = False;
+      if (si->prefs.verbose_p)
+	fprintf (stderr,
+                 "%s: Xinerama AND %d screens?  Disabling Xinerama support!\n",
+                 blurb(), ScreenCount(si->dpy));
+    }
 
+  if (si->xinerama_p)
+    {
+      XineramaScreenInfo *xsi = XineramaQueryScreens (si->dpy, &si->nscreens);
+      if (!xsi)
+        si->xinerama_p = False;
+      else
+        {
+          si->screens = (saver_screen_info *)
+            calloc(sizeof(saver_screen_info), si->nscreens);
+          for (i = 0; i < si->nscreens; i++)
+            {
+              si->screens[i].x      = xsi[i].x_org;
+              si->screens[i].y      = xsi[i].y_org;
+              si->screens[i].width  = xsi[i].width;
+              si->screens[i].height = xsi[i].height;
+            }
+          XFree (xsi);
+        }
+      si->default_screen = &si->screens[0];
+      si->default_screen->real_screen_p = True;
+    }
+# endif /* !HAVE_XINERAMA */
+
+  if (!si->xinerama_p)
+    {
+      si->nscreens = ScreenCount(si->dpy);
+      si->screens = (saver_screen_info *)
+        calloc(sizeof(saver_screen_info), si->nscreens);
+      si->default_screen = &si->screens[DefaultScreen(si->dpy)];
+
+      for (i = 0; i < si->nscreens; i++)
+        {
+          saver_screen_info *ssi = &si->screens[i];
+          ssi->width  = DisplayWidth  (si->dpy, i);
+          ssi->height = DisplayHeight (si->dpy, i);
+          ssi->real_screen_p = True;
+          ssi->real_screen_number = i;
+        }
+    }
+
+
+  /* In "quad mode", we use the Xinerama code to pretend that there are 4
+     screens for every physical screen, and run four times as many hacks...
+   */
+  if (si->prefs.quad_p)
+    {
+      int ns2 = si->nscreens * 4;
+      saver_screen_info *ssi2 = (saver_screen_info *)
+        calloc(sizeof(saver_screen_info), ns2);
+
+      for (i = 0; i < si->nscreens; i++)
+        {
+          saver_screen_info *old = &si->screens[i];
+
+          if (si->prefs.debug_p) old->width = old->width / 2;
+
+          ssi2[i*4  ] = *old;
+          ssi2[i*4+1] = *old;
+          ssi2[i*4+2] = *old;
+          ssi2[i*4+3] = *old;
+
+          ssi2[i*4  ].width  /= 2;
+          ssi2[i*4  ].height /= 2;
+
+          ssi2[i*4+1].x      += ssi2[i*4  ].width;
+          ssi2[i*4+1].width  -= ssi2[i*4  ].width;
+          ssi2[i*4+1].height /= 2;
+
+          ssi2[i*4+2].y      += ssi2[i*4  ].height;
+          ssi2[i*4+2].width  /= 2;
+          ssi2[i*4+2].height -= ssi2[i*4  ].height;
+
+          ssi2[i*4+3].x      += ssi2[i*4+2].width;
+          ssi2[i*4+3].y      += ssi2[i*4+2].height;
+          ssi2[i*4+3].width  -= ssi2[i*4+2].width;
+          ssi2[i*4+3].height -= ssi2[i*4+2].height;
+
+          ssi2[i*4+1].real_screen_p = False;
+          ssi2[i*4+2].real_screen_p = False;
+          ssi2[i*4+3].real_screen_p = False;
+        }
+
+      si->nscreens = ns2;
+      free (si->screens);
+      si->screens = ssi2;
+      si->default_screen = &si->screens[DefaultScreen(si->dpy) * 4];
+      si->xinerama_p = True;
+    }
+
+  /* finish initializing the screens.
+   */
   for (i = 0; i < si->nscreens; i++)
     {
       saver_screen_info *ssi = &si->screens[i];
       ssi->global = si;
-      ssi->screen = ScreenOfDisplay (si->dpy, i);
+
+      ssi->number = i;
+      ssi->screen = ScreenOfDisplay (si->dpy, ssi->real_screen_number);
+
+      if (!si->xinerama_p)
+        {
+          ssi->width  = WidthOfScreen  (ssi->screen);
+          ssi->height = HeightOfScreen (ssi->screen);
+        }
 
       /* Note: we can't use the resource ".visual" because Xt is SO FUCKED. */
       ssi->default_visual =
@@ -722,7 +933,7 @@ initialize_per_screen_info (saver_info *si, Widget toplevel_shell)
 			      XtNvisual, ssi->current_visual,
 			      XtNdepth,  visual_depth (ssi->screen,
 						       ssi->current_visual),
-			      0);
+			      NULL);
 
       if (! found_any_writable_cells)
 	{
@@ -740,6 +951,10 @@ initialize_per_screen_info (saver_info *si, Widget toplevel_shell)
     }
 
   si->fading_possible_p = found_any_writable_cells;
+
+#ifdef HAVE_XF86VMODE_GAMMA
+  si->fading_possible_p = True;  /* if we can gamma fade, go for it */
+#endif
 }
 
 
@@ -810,6 +1025,15 @@ initialize_server_extensions (saver_info *si)
 		 blurb());
     }
 
+  /* These are incompatible (or at least, our support for them is...) */
+  if (si->xinerama_p && si->using_mit_saver_extension)
+    {
+      si->using_mit_saver_extension = False;
+      if (p->verbose_p)
+        fprintf (stderr, "%s: Xinerama in use: disabling MIT-SCREEN-SAVER.\n",
+                 blurb());
+    }
+
   if (!system_has_proc_interrupts_p)
     {
       si->using_proc_interrupts = False;
@@ -874,8 +1098,12 @@ select_events (saver_info *si)
      for window creation events, so that new subwindows will be noticed.
    */
   for (i = 0; i < si->nscreens; i++)
-    start_notice_events_timer (si, RootWindowOfScreen (si->screens[i].screen),
-                               False);
+    {
+      saver_screen_info *ssi = &si->screens[i];
+      if (ssi->real_screen_p)
+        start_notice_events_timer (si,
+           RootWindowOfScreen (si->screens[i].screen), False);
+    }
 
   if (p->verbose_p)
     fprintf (stderr, " done.\n");
@@ -900,7 +1128,9 @@ maybe_reload_init_file (saver_info *si)
 
       /* If the DPMS settings in the init file have changed,
          change the settings on the server to match. */
-      sync_server_dpms_settings (si->dpy, p->dpms_enabled_p,
+      sync_server_dpms_settings (si->dpy,
+                                 (p->dpms_enabled_p  &&
+                                  p->mode != DONT_BLANK),
                                  p->dpms_standby / 1000,
                                  p->dpms_suspend / 1000,
                                  p->dpms_off / 1000,
@@ -927,7 +1157,13 @@ main_loop (saver_info *si)
   while (1)
     {
       Bool was_locked = False;
+
+      if (p->verbose_p)
+	fprintf (stderr, "%s: awaiting idleness.\n", blurb());
+
+      check_for_leaks ("unblanked A");
       sleep_until_idle (si, True);
+      check_for_leaks ("unblanked B");
 
       if (p->verbose_p)
 	{
@@ -935,12 +1171,24 @@ main_loop (saver_info *si)
 	    fprintf (stderr, "%s: demoing %d at %s.\n", blurb(),
 		     si->selection_mode, timestring());
 	  else
-	    if (p->verbose_p)
-	      fprintf (stderr, "%s: blanking screen at %s.\n", blurb(),
-		       timestring());
+            fprintf (stderr, "%s: blanking screen at %s.\n", blurb(),
+                     timestring());
 	}
 
       maybe_reload_init_file (si);
+
+      if (p->mode == DONT_BLANK)
+        {
+          if (p->verbose_p)
+            fprintf (stderr, "%s: idle with blanking disabled at %s.\n",
+                     blurb(), timestring());
+
+          /* Go around the loop and wait for the next bout of idleness,
+             or for the init file to change, or for a remote command to
+             come in, or something.
+           */
+          continue;
+        }
 
       if (! blank_screen (si))
         {
@@ -980,6 +1228,8 @@ main_loop (saver_info *si)
 
 
 #ifndef NO_LOCKING
+      /* Maybe start locking the screen.
+       */
       {
         Time lock_timeout = p->lock_timeout;
 
@@ -1019,10 +1269,15 @@ main_loop (saver_info *si)
       ok_to_unblank = True;
       do {
 
+        check_for_leaks ("blanked A");
 	sleep_until_idle (si, False);		/* until not idle */
+        check_for_leaks ("blanked B");
+
 	maybe_reload_init_file (si);
 
 #ifndef NO_LOCKING
+        /* Maybe unlock the screen.
+         */
 	if (si->locked_p)
 	  {
 	    saver_screen_info *ssi = si->default_screen;
@@ -1093,12 +1348,57 @@ main_loop (saver_info *si)
 	  si->lock_id = 0;
 	}
 
-      if (p->verbose_p)
-	fprintf (stderr, "%s: awaiting idleness.\n", blurb());
+      /* It's possible that a race condition could have led to the saver
+         window being unexpectedly still mapped.  This can happen like so:
+
+          - screen is blanked
+          - hack is launched
+          - that hack tries to grab a screen image (it does this by
+            first unmapping the saver window, then remapping it.)
+          - hack unmaps window
+          - hack waits
+          - user becomes active
+          - hack re-maps window (*)
+          - driver kills subprocess
+          - driver unmaps window (**)
+
+         The race is that (*) might have been sent to the server before
+         the client process was killed, but, due to scheduling randomness,
+         might not have been received by the server until after (**).
+         In other words, (*) and (**) might happen out of order, meaning
+         the driver will unmap the window, and then after that, the
+         recently-dead client will re-map it.  This leaves the user
+         locked out (it looks like a desktop, but it's not!)
+
+         To avoid this: after un-blanking the screen, sleep for a second,
+         and then really make sure the window is unmapped.
+       */
+      {
+        int i;
+        XSync (si->dpy, False);
+        sleep (1);
+        for (i = 0; i < si->nscreens; i++)
+          {
+            saver_screen_info *ssi = &si->screens[i];
+            Window w = ssi->screensaver_window;
+            XWindowAttributes xgwa;
+            XGetWindowAttributes (si->dpy, w, &xgwa);
+            if (xgwa.map_state != IsUnmapped)
+              {
+                if (p->verbose_p)
+                  fprintf (stderr,
+                           "%s: %d: client race! emergency unmap 0x%lx.\n",
+                           blurb(), i, (unsigned long) w);
+                XUnmapWindow (si->dpy, w);
+              }
+          }
+        XSync (si->dpy, False);
+      }
     }
 }
 
 static void analyze_display (saver_info *si);
+static void fix_fds (void);
 
 int
 main (int argc, char **argv)
@@ -1111,6 +1411,8 @@ main (int argc, char **argv)
 
   memset(si, 0, sizeof(*si));
   global_si_kludge = si;	/* I hate C so much... */
+
+  fix_fds();
 
 # undef ya_rand_init
   ya_rand_init (0);
@@ -1125,9 +1427,10 @@ main (int argc, char **argv)
   print_banner (si);
 
   load_init_file (p);  /* must be before initialize_per_screen_info() */
+  blurb_timestamp_p = p->timestamp_p;  /* kludge */
   initialize_per_screen_info (si, shell); /* also sets si->fading_possible_p */
 
-  /* We can only issue this warnings now. */
+  /* We can only issue this warning now. */
   if (p->verbose_p && !si->fading_possible_p && (p->fade_p || p->unfade_p))
     fprintf (stderr,
              "%s: there are no PseudoColor or GrayScale visuals.\n"
@@ -1135,13 +1438,17 @@ main (int argc, char **argv)
              blurb(), blurb());
 
   for (i = 0; i < si->nscreens; i++)
-    if (ensure_no_screensaver_running (si->dpy, si->screens[i].screen))
-      exit (1);
+    {
+      saver_screen_info *ssi = &si->screens[i];
+      if (ssi->real_screen_p)
+        if (ensure_no_screensaver_running (si->dpy, si->screens[i].screen))
+          exit (1);
+    }
 
   lock_initialization (si, &argc, argv);
+  print_lock_failure_banner (si);
 
   if (p->xsync_p) XSynchronize (si->dpy, True);
-  blurb_timestamp_p = p->timestamp_p;  /* kludge */
 
   if (p->verbose_p) analyze_display (si);
   initialize_server_extensions (si);
@@ -1153,13 +1460,16 @@ main (int argc, char **argv)
   init_sigchld ();
 
   disable_builtin_screensaver (si, True);
-  sync_server_dpms_settings (si->dpy, p->dpms_enabled_p,
+  sync_server_dpms_settings (si->dpy,
+                             (p->dpms_enabled_p  &&
+                              p->mode != DONT_BLANK),
                              p->dpms_standby / 1000,
                              p->dpms_suspend / 1000,
                              p->dpms_off / 1000,
                              False);
 
   initialize_stderr (si);
+  handle_signals (si);
 
   make_splash_dialog (si);
 
@@ -1167,14 +1477,47 @@ main (int argc, char **argv)
   return 0;
 }
 
+static void
+fix_fds (void)
+{
+  /* Bad Things Happen if stdin, stdout, and stderr have been closed
+     (as by the `sh incantation "xscreensaver >&- 2>&-").  When you do
+     that, the X connection gets allocated to one of these fds, and
+     then some random library writes to stderr, and random bits get
+     stuffed down the X pipe, causing "Xlib: sequence lost" errors.
+     So, we cause the first three file descriptors to be open to
+     /dev/null if they aren't open to something else already.  This
+     must be done before any other files are opened (or the closing
+     of that other file will again free up one of the "magic" first
+     three FDs.)
+
+     We do this by opening /dev/null three times, and then closing
+     those fds, *unless* any of them got allocated as #0, #1, or #2,
+     in which case we leave them open.  Gag.
+
+     Really, this crap is technically required of *every* X program,
+     if you want it to be robust in the face of "2>&-".
+   */
+  int fd0 = open ("/dev/null", O_RDWR);
+  int fd1 = open ("/dev/null", O_RDWR);
+  int fd2 = open ("/dev/null", O_RDWR);
+  if (fd0 > 2) close (fd0);
+  if (fd1 > 2) close (fd1);
+  if (fd2 > 2) close (fd2);
+}
+
+
 
 /* Processing ClientMessage events.
  */
 
 
+static Bool error_handler_hit_p = False;
+
 static int
 ignore_all_errors_ehandler (Display *dpy, XErrorEvent *error)
 {
+  error_handler_hit_p = True;
   return 0;
 }
 
@@ -1190,18 +1533,20 @@ XGetAtomName_safe (Display *dpy, Atom atom)
   if (!atom) return 0;
 
   XSync (dpy, False);
+  error_handler_hit_p = False;
   old_handler = XSetErrorHandler (ignore_all_errors_ehandler);
   result = XGetAtomName (dpy, atom);
   XSync (dpy, False);
   XSetErrorHandler (old_handler);
   XSync (dpy, False);
+  if (error_handler_hit_p) result = 0;
 
   if (result)
     return result;
   else
     {
       char buf[100];
-      sprintf (buf, "<<undefined atom 0x%04X>>", (unsigned long) atom);
+      sprintf (buf, "<<undefined atom 0x%04X>>", (unsigned int) atom);
       return strdup (buf);
     }
 }
@@ -1215,6 +1560,8 @@ clientmessage_response (saver_info *si, Window w, Bool error,
   char *proto;
   int L;
   saver_preferences *p = &si->prefs;
+  XErrorHandler old_handler;
+
   if (error || p->verbose_p)
     fprintf (stderr, "%s: %s\n", blurb(), stderr_msg);
 
@@ -1224,10 +1571,78 @@ clientmessage_response (saver_info *si, Window w, Bool error,
   strcpy (proto+1, protocol_msg);
   L++;
 
+  /* Ignore all X errors while sending a response to a ClientMessage.
+     Pretty much the only way we could get an error here is if the
+     window we're trying to send the reply on has been deleted, in
+     which case, the sender of the ClientMessage won't see our response
+     anyway.
+   */
+  XSync (si->dpy, False);
+  error_handler_hit_p = False;
+  old_handler = XSetErrorHandler (ignore_all_errors_ehandler);
+
   XChangeProperty (si->dpy, w, XA_SCREENSAVER_RESPONSE, XA_STRING, 8,
 		   PropModeReplace, (unsigned char *) proto, L);
+
   XSync (si->dpy, False);
+  XSetErrorHandler (old_handler);
+  XSync (si->dpy, False);
+
   free (proto);
+}
+
+
+static void
+bogus_clientmessage_warning (saver_info *si, XEvent *event)
+{
+  char *str = XGetAtomName_safe (si->dpy, event->xclient.message_type);
+  Window w = event->xclient.window;
+  char wdesc[255];
+  int screen = 0;
+
+  *wdesc = 0;
+  for (screen = 0; screen < si->nscreens; screen++)
+    if (w == si->screens[screen].screensaver_window)
+      {
+        strcpy (wdesc, "xscreensaver");
+        break;
+      }
+    else if (w == RootWindow (si->dpy, screen))
+      {
+        strcpy (wdesc, "root");
+        break;
+      }
+
+  if (!*wdesc)
+    {
+      XErrorHandler old_handler;
+      XClassHint hint;
+      XWindowAttributes xgwa;
+      memset (&hint, 0, sizeof(hint));
+      memset (&xgwa, 0, sizeof(xgwa));
+
+      XSync (si->dpy, False);
+      old_handler = XSetErrorHandler (ignore_all_errors_ehandler);
+      XGetClassHint (si->dpy, w, &hint);
+      XGetWindowAttributes (si->dpy, w, &xgwa);
+      XSync (si->dpy, False);
+      XSetErrorHandler (old_handler);
+      XSync (si->dpy, False);
+
+      screen = (xgwa.screen ? screen_number (xgwa.screen) : -1);
+
+      sprintf (wdesc, "%.20s / %.20s",
+               (hint.res_name  ? hint.res_name  : "(null)"),
+               (hint.res_class ? hint.res_class : "(null)"));
+      if (hint.res_name)  XFree (hint.res_name);
+      if (hint.res_class) XFree (hint.res_class);
+    }
+
+  fprintf (stderr, "%s: %d: unrecognised ClientMessage \"%s\" received\n",
+           blurb(), screen, (str ? str : "(null)"));
+  fprintf (stderr, "%s: %d: for window 0x%lx (%s)\n",
+           blurb(), screen, (unsigned long) w, wdesc);
+  if (str) XFree (str);
 }
 
 Bool
@@ -1240,19 +1655,10 @@ handle_clientmessage (saver_info *si, XEvent *event, Bool until_idle_p)
   /* Preferences might affect our handling of client messages. */
   maybe_reload_init_file (si);
 
-  if (event->xclient.message_type != XA_SCREENSAVER)
+  if (event->xclient.message_type != XA_SCREENSAVER ||
+      event->xclient.format != 32)
     {
-      char *str;
-      str = XGetAtomName_safe (si->dpy, event->xclient.message_type);
-      fprintf (stderr, "%s: unrecognised ClientMessage type %s received\n",
-	       blurb(), (str ? str : "(null)"));
-      if (str) XFree (str);
-      return False;
-    }
-  if (event->xclient.format != 32)
-    {
-      fprintf (stderr, "%s: ClientMessage of format %d received, not 32\n",
-	       blurb(), event->xclient.format);
+      bogus_clientmessage_warning (si, event);
       return False;
     }
 
@@ -1261,6 +1667,14 @@ handle_clientmessage (saver_info *si, XEvent *event, Bool until_idle_p)
     {
       if (until_idle_p)
 	{
+          if (p->mode == DONT_BLANK)
+            {
+              clientmessage_response(si, window, True,
+                         "ACTIVATE ClientMessage received in DONT_BLANK mode.",
+                                     "screen blanking is currently disabled.");
+              return False;
+            }
+
 	  clientmessage_response(si, window, False,
 				 "ACTIVATE ClientMessage received.",
 				 "activating.");
@@ -1306,9 +1720,10 @@ handle_clientmessage (saver_info *si, XEvent *event, Bool until_idle_p)
 	      return True;
 	    }
 	}
-      clientmessage_response(si, window, True,
-			   "ClientMessage DEACTIVATE received while inactive.",
-			     "not active.");
+      clientmessage_response(si, window, False,
+     "ClientMessage DEACTIVATE received while inactive: resetting idle timer.",
+			     "not active: idle timer reset.");
+      reset_timers (si);
     }
   else if (type == XA_CYCLE)
     {
@@ -1363,6 +1778,14 @@ handle_clientmessage (saver_info *si, XEvent *event, Bool until_idle_p)
       char buf [255];
       char buf2 [255];
       long which = event->xclient.data.l[1];
+
+      if (p->mode == DONT_BLANK)
+        {
+          clientmessage_response(si, window, True,
+                           "SELECT ClientMessage received in DONT_BLANK mode.",
+                                 "screen blanking is currently disabled.");
+          return False;
+        }
 
       sprintf (buf, "SELECT %ld ClientMessage received.", which);
       sprintf (buf2, "activating (%ld).", which);
@@ -1424,17 +1847,8 @@ handle_clientmessage (saver_info *si, XEvent *event, Bool until_idle_p)
 	      XSync (si->dpy, False);
 	    }
 
-          fflush (stdout);
-          fflush (stderr);
-          if (real_stdout) fflush (real_stdout);
-          if (real_stderr) fflush (real_stderr);
-	  /* make sure error message shows up before exit. */
-	  if (real_stderr && stderr != real_stderr)
-	    dup2 (fileno(real_stderr), fileno(stderr));
-
-	  restart_process (si);
-	  exit (1);	/* shouldn't get here; but if restarting didn't work,
-			   make this command be the same as EXIT. */
+	  restart_process (si);  /* does not return */
+          abort();
 	}
       else
 	clientmessage_response (si, window, True,
@@ -1492,7 +1906,11 @@ handle_clientmessage (saver_info *si, XEvent *event, Bool until_idle_p)
 			      "not compiled with support for locking.",
 			      "locking not enabled.");
 #else /* !NO_LOCKING */
-      if (si->locking_disabled_p)
+      if (p->mode == DONT_BLANK)
+        clientmessage_response(si, window, True,
+                             "LOCK ClientMessage received in DONT_BLANK mode.",
+                               "screen blanking is currently disabled.");
+      else if (si->locking_disabled_p)
 	clientmessage_response (si, window, True,
 		      "LOCK ClientMessage received, but locking is disabled.",
 			      "locking not enabled.");
@@ -1624,13 +2042,13 @@ analyze_display (saver_info *si)
     const char *name; const char *desc; Bool useful_p;
   } exts[] = {
 
-   { "SCREEN_SAVER",                            "SGI Screen-Saver",
+   { "SCREEN_SAVER", /* underscore */           "SGI Screen-Saver",
 #     ifdef HAVE_SGI_SAVER_EXTENSION
         True
 #     else
         False
 #     endif
-   }, { "SCREEN-SAVER",                         "SGI Screen-Saver",
+   }, { "SCREEN-SAVER", /* dash */              "SGI Screen-Saver",
 #     ifdef HAVE_SGI_SAVER_EXTENSION
         True
 #     else
@@ -1692,32 +2110,51 @@ analyze_display (saver_info *si)
 #     endif
    }, { "XINERAMA",                             "Xinerama",
         True
+   }, { "Apple-DRI",                            "Apple-DRI (XDarwin)",
+        True
    },
   };
 
-  fprintf (stderr, "%s: running on display \"%s\"\n", blurb(),
-	   DisplayString(si->dpy));
-  fprintf (stderr, "%s: vendor is %s, %d\n", blurb(),
+  fprintf (stderr, "%s: running on display \"%s\" (%d %sscreen%s).\n",
+           blurb(),
+	   DisplayString(si->dpy),
+           si->nscreens,
+           (si->xinerama_p ? "Xinerama " : ""),
+           (si->nscreens == 1 ? "" : "s"));
+  fprintf (stderr, "%s: vendor is %s, %d.\n", blurb(),
 	   ServerVendor(si->dpy), VendorRelease(si->dpy));
 
   fprintf (stderr, "%s: useful extensions:\n", blurb());
   for (i = 0; i < countof(exts); i++)
     {
       int op = 0, event = 0, error = 0;
-      if (XQueryExtension (si->dpy, exts[i].name, &op, &event, &error))
-	fprintf (stderr, "%s:  %s%s\n", blurb(),
-                 exts[i].desc,
-                 (exts[i].useful_p ? "" :
-                  "       \t<== unsupported at compile-time!"));
+      char buf [255];
+      int j;
+      if (!XQueryExtension (si->dpy, exts[i].name, &op, &event, &error))
+        continue;
+      sprintf (buf, "%s:   ", blurb());
+      j = strlen (buf);
+      strcat (buf, exts[i].desc);
+      if (!exts[i].useful_p)
+        {
+          int k = j + 18;
+          while (strlen (buf) < k) strcat (buf, " ");
+          strcat (buf, "<-- not supported at compile time!");
+        }
+      fprintf (stderr, "%s\n", buf);
     }
 
   for (i = 0; i < si->nscreens; i++)
     {
+      saver_screen_info *ssi = &si->screens[i];
       unsigned long colormapped_depths = 0;
       unsigned long non_mapped_depths = 0;
       XVisualInfo vi_in, *vi_out;
       int out_count;
-      vi_in.screen = i;
+
+      if (!ssi->real_screen_p) continue;
+
+      vi_in.screen = ssi->real_screen_number;
       vi_out = XGetVisualInfo (si->dpy, VisualScreenMask, &vi_in, &out_count);
       if (!vi_out) continue;
       for (j = 0; j < out_count; j++)
@@ -1729,20 +2166,36 @@ analyze_display (saver_info *si)
 
       if (colormapped_depths)
 	{
-	  fprintf (stderr, "%s: screen %d colormapped depths:", blurb(), i);
+	  fprintf (stderr, "%s: screen %d colormapped depths:", blurb(),
+                   ssi->real_screen_number);
 	  for (j = 0; j < 32; j++)
 	    if (colormapped_depths & (1 << j))
 	      fprintf (stderr, " %d", j);
-	  fprintf (stderr, "\n");
+	  fprintf (stderr, ".\n");
 	}
       if (non_mapped_depths)
 	{
-	  fprintf (stderr, "%s: screen %d non-mapped depths:", blurb(), i);
+	  fprintf (stderr, "%s: screen %d non-colormapped depths:",
+                   blurb(), ssi->real_screen_number);
 	  for (j = 0; j < 32; j++)
 	    if (non_mapped_depths & (1 << j))
 	      fprintf (stderr, " %d", j);
-	  fprintf (stderr, "\n");
+	  fprintf (stderr, ".\n");
 	}
+    }
+
+  if (si->xinerama_p)
+    {
+      fprintf (stderr, "%s: Xinerama layout:\n", blurb());
+      for (i = 0; i < si->nscreens; i++)
+        {
+          saver_screen_info *ssi = &si->screens[i];
+          fprintf (stderr, "%s:   %c %d/%d: %dx%d+%d+%d\n",
+                   blurb(),
+                   (ssi->real_screen_p ? '+' : ' '),
+                   ssi->number, ssi->real_screen_number,
+                   ssi->width, ssi->height, ssi->x, ssi->y);
+        }
     }
 }
 
@@ -1791,4 +2244,21 @@ display_is_on_console_p (saver_info *si)
 	}
     }
   return !not_on_console;
+}
+
+
+/* Do a little bit of heap introspection...
+ */
+void
+check_for_leaks (const char *where)
+{
+#ifdef HAVE_SBRK
+  static unsigned long last_brk = 0;
+  int b = (unsigned long) sbrk(0);
+  if (last_brk && last_brk < b)
+    fprintf (stderr, "%s: %s: brk grew by %luK.\n",
+             blurb(), where,
+             (((b - last_brk) + 1023) / 1024));
+  last_brk = b;
+#endif /* HAVE_SBRK */
 }

@@ -1,6 +1,5 @@
 /* timers.c --- detecting when the user is idle, and other timer-related tasks.
- * xscreensaver, Copyright (c) 1991-1997, 1998
- *  Jamie Zawinski <jwz@jwz.org>
+ * xscreensaver, Copyright (c) 1991-2002 Jamie Zawinski <jwz@jwz.org>
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
  * documentation for any purpose is hereby granted without fee, provided that
@@ -15,12 +14,12 @@
 # include "config.h"
 #endif
 
-/* #define DEBUG_TIMERS */
-
 #include <stdio.h>
 #include <X11/Xlib.h>
 #include <X11/Intrinsic.h>
 #include <X11/Xos.h>
+#include <time.h>
+#include <sys/time.h>
 #ifdef HAVE_XMU
 # ifndef VMS
 #  include <X11/Xmu/Error.h>
@@ -83,11 +82,9 @@ schedule_wakeup_event (saver_info *si, Time when, Bool verbose_p)
   si->timer_id = XtAppAddTimeOut (si->app, when, idle_timer,
                                   (XtPointer) si);
 
-#ifdef DEBUG_TIMERS
   if (verbose_p)
     fprintf (stderr, "%s: starting idle_timer (%ld, %ld)\n",
              blurb(), when, si->timer_id);
-#endif /* DEBUG_TIMERS */
 }
 
 
@@ -99,6 +96,7 @@ notice_events (saver_info *si, Window window, Bool top_p)
   unsigned long events;
   Window root, parent, *kids;
   unsigned int nkids;
+  int screen_no;
 
   if (XtWindowToWidget (si->dpy, window))
     /* If it's one of ours, don't mess up its event mask. */
@@ -108,6 +106,11 @@ notice_events (saver_info *si, Window window, Bool top_p)
     return;
   if (window == root)
     top_p = False;
+
+  /* Figure out which screen this window is on, for the diagnostics. */
+  for (screen_no = 0; screen_no < si->nscreens; screen_no++)
+    if (root == RootWindowOfScreen (si->screens[screen_no].screen))
+      break;
 
   XGetWindowAttributes (si->dpy, window, &attrs);
   events = ((attrs.all_event_masks | attrs.do_not_propagate_mask)
@@ -125,14 +128,20 @@ notice_events (saver_info *si, Window window, Bool top_p)
      the mouse or touching the keyboard, we won't know that they've been
      active, and the screensaver will come on.  That sucks, but I don't
      know how to get around it.
+
+     Since X presents mouse wheels as clicks, this applies to those, too:
+     scrolling through a document using only the mouse wheel doesn't
+     count as activity...  Fortunately, /proc/interrupts helps, on
+     systems that have it.  Oh, if it's a PS/2 mouse, not serial or USB.
+     This sucks!
    */
   XSelectInput (si->dpy, window, SubstructureNotifyMask | events);
 
-  if (top_p && p->verbose_p && (events & KeyPressMask))
+  if (top_p && p->debug_p && (events & KeyPressMask))
     {
       /* Only mention one window per tree (hack hack). */
-      fprintf (stderr, "%s: selected KeyPress on 0x%lX\n", blurb(),
-	       (unsigned long) window);
+      fprintf (stderr, "%s: %d: selected KeyPress on 0x%lX\n",
+               blurb(), screen_no, (unsigned long) window);
       top_p = False;
     }
 
@@ -243,14 +252,21 @@ cycle_timer (XtPointer closure, XtIntervalId *id)
         }
     }
 
-  si->cycle_id = XtAppAddTimeOut (si->app, how_long, cycle_timer,
-				  (XtPointer) si);
+  if (how_long > 0)
+    {
+      si->cycle_id = XtAppAddTimeOut (si->app, how_long, cycle_timer,
+                                      (XtPointer) si);
 
-#ifdef DEBUG_TIMERS
-  if (p->verbose_p)
-    fprintf (stderr, "%s: starting cycle_timer (%ld, %ld)\n",
-	    blurb(), how_long, si->cycle_id);
-#endif /* DEBUG_TIMERS */
+      if (p->debug_p)
+        fprintf (stderr, "%s: starting cycle_timer (%ld, %ld)\n",
+                 blurb(), how_long, si->cycle_id);
+    }
+  else
+    {
+      if (p->debug_p)
+        fprintf (stderr, "%s: not starting cycle_timer: how_long == %ld\n",
+                 blurb(), (unsigned long) how_long);
+    }
 }
 
 
@@ -268,7 +284,7 @@ activate_lock_timer (XtPointer closure, XtIntervalId *id)
 
 /* Call this when user activity (or "simulated" activity) has been noticed.
  */
-static void
+void
 reset_timers (saver_info *si)
 {
   saver_preferences *p = &si->prefs;
@@ -277,15 +293,13 @@ reset_timers (saver_info *si)
 
   if (si->timer_id)
     {
-#ifdef DEBUG_TIMERS
-      if (p->verbose_p)
+      if (p->debug_p)
         fprintf (stderr, "%s: killing idle_timer  (%ld, %ld)\n",
                  blurb(), p->timeout, si->timer_id);
-#endif /* DEBUG_TIMERS */
       XtRemoveTimeOut (si->timer_id);
     }
 
-  schedule_wakeup_event (si, p->timeout, p->verbose_p); /* sets si->timer_id */
+  schedule_wakeup_event (si, p->timeout, p->debug_p); /* sets si->timer_id */
 
   if (si->cycle_id) abort ();	/* no cycle timer when inactive */
 
@@ -325,8 +339,16 @@ check_pointer_timer (XtPointer closure, XtIntervalId *id)
       int root_x, root_y, x, y;
       unsigned int mask;
 
-      XQueryPointer (si->dpy, ssi->screensaver_window, &root, &child,
-		     &root_x, &root_y, &x, &y, &mask);
+      if (!ssi->real_screen_p) continue;
+
+      if (!XQueryPointer (si->dpy, ssi->screensaver_window, &root, &child,
+                          &root_x, &root_y, &x, &y, &mask))
+        {
+          /* If XQueryPointer() returns false, the mouse is not on this screen.
+           */
+          root_x = -1;
+          root_y = -1;
+        }
 
       if (root_x == ssi->poll_mouse_last_root_x &&
 	  root_y == ssi->poll_mouse_last_root_y &&
@@ -336,27 +358,38 @@ check_pointer_timer (XtPointer closure, XtIntervalId *id)
 
       active_p = True;
 
-#ifdef DEBUG_TIMERS
-      if (p->verbose_p)
-	if (root_x == ssi->poll_mouse_last_root_x &&
-	    root_y == ssi->poll_mouse_last_root_y &&
-	    child  == ssi->poll_mouse_last_child)
-	  fprintf (stderr, "%s: modifiers changed at %s on screen %d.\n",
-		   blurb(), timestring(), i);
-	else
-	  fprintf (stderr, "%s: pointer moved at %s on screen %d.\n",
-		   blurb(), timestring(), i);
-
-# if 0
-      fprintf (stderr, "%s: old: %d %d 0x%x ; new: %d %d 0x%x\n",
-               blurb(), 
-               ssi->poll_mouse_last_root_x,
-               ssi->poll_mouse_last_root_y,
-               (unsigned int) ssi->poll_mouse_last_child,
-               root_x, root_y, (unsigned int) child);
-# endif /* 0 */
-
-#endif /* DEBUG_TIMERS */
+      if (p->debug_p)
+        {
+          if (root_x == ssi->poll_mouse_last_root_x &&
+              root_y == ssi->poll_mouse_last_root_y &&
+              child  == ssi->poll_mouse_last_child)
+            fprintf (stderr, "%s: %d: modifiers changed: 0x%04x -> 0x%04x.\n",
+                     blurb(), i, ssi->poll_mouse_last_mask, mask);
+          else
+            {
+              fprintf (stderr, "%s: %d: pointer moved: ", blurb(), i);
+              if (ssi->poll_mouse_last_root_x == -1)
+                fprintf (stderr, "off screen");
+              else
+                fprintf (stderr, "%d,%d",
+                         ssi->poll_mouse_last_root_x,
+                         ssi->poll_mouse_last_root_y);
+              fprintf (stderr, " -> ");
+              if (root_x == -1)
+                fprintf (stderr, "off screen.");
+              else
+                fprintf (stderr, "%d,%d", root_x, root_y);
+              if (ssi->poll_mouse_last_root_x == -1 || root_x == -1)
+                fprintf (stderr, ".\n");
+              else
+#   undef ABS
+#   define ABS(x)((x)<0?-(x):(x))
+                fprintf (stderr, " (%d,%d).\n",
+                         ABS(ssi->poll_mouse_last_root_x - root_x),
+                         ABS(ssi->poll_mouse_last_root_y - root_y));
+# undef ABS
+            }
+        }
 
       si->last_activity_screen    = ssi;
       ssi->poll_mouse_last_root_x = root_x;
@@ -370,11 +403,6 @@ check_pointer_timer (XtPointer closure, XtIntervalId *id)
       si->using_proc_interrupts &&
       proc_interrupts_activity_p (si))
     {
-# ifdef DEBUG_TIMERS
-      if (p->verbose_p)
-        fprintf (stderr, "%s: /proc/interrupts activity at %s.\n",
-                 blurb(), timestring());
-# endif /* DEBUG_TIMERS */
       active_p = True;
     }
 #endif /* HAVE_PROC_INTERRUPTS */
@@ -411,17 +439,20 @@ check_for_clock_skew (saver_info *si)
   time_t now = time ((time_t *) 0);
   long shift = now - si->last_wall_clock_time;
 
-#ifdef DEBUG_TIMERS
-  if (p->verbose_p)
-    fprintf (stderr, "%s: checking wall clock (%d).\n", blurb(),
-             (si->last_wall_clock_time == 0 ? 0 : shift));
-#endif /* DEBUG_TIMERS */
+  if (p->debug_p)
+    {
+      int i = (si->last_wall_clock_time == 0 ? 0 : shift);
+      fprintf (stderr,
+               "%s: checking wall clock for hibernation (%d:%02d:%02d).\n",
+               blurb(),
+               (i / (60 * 60)), ((i / 60) % 60), (i % 60));
+    }
 
   if (si->last_wall_clock_time != 0 &&
       shift > (p->timeout / 1000))
     {
       if (p->verbose_p)
-        fprintf (stderr, "%s: wall clock has jumped by %d:%02d:%02d!\n",
+        fprintf (stderr, "%s: wall clock has jumped by %ld:%02ld:%02ld!\n",
                  blurb(),
                  (shift / (60 * 60)), ((shift / 60) % 60), (shift % 60));
 
@@ -566,7 +597,7 @@ sleep_until_idle (saver_info *si, Bool until_idle_p)
            is economical: for example, if the screensaver should come on in 5
            minutes, and the user has been idle for 2 minutes, then this
            timeout will go off no sooner than 3 minutes from now.  */
-        schedule_wakeup_event (si, p->timeout, p->verbose_p);
+        schedule_wakeup_event (si, p->timeout, p->debug_p);
 
       if (polling_mouse_position)
         /* Check to see if the mouse has moved, and set up a repeating timer
@@ -648,7 +679,7 @@ sleep_until_idle (saver_info *si, Bool until_idle_p)
                    yet been idle for long enough.  So re-signal the event.
                    */
                 if (polling_for_idleness)
-                  schedule_wakeup_event (si, p->timeout - idle, p->verbose_p);
+                  schedule_wakeup_event (si, p->timeout - idle, p->debug_p);
               }
 	  }
 	break;
@@ -664,11 +695,7 @@ sleep_until_idle (saver_info *si, Bool until_idle_p)
 	if (scanning_all_windows)
 	  {
             Window w = event.xcreatewindow.window;
-#ifdef DEBUG_TIMERS
-	    start_notice_events_timer (si, w, p->verbose_p);
-#else  /* !DEBUG_TIMERS */
-	    start_notice_events_timer (si, w, False);
-#endif /* !DEBUG_TIMERS */
+	    start_notice_events_timer (si, w, p->debug_p);
 	  }
 	break;
 
@@ -678,19 +705,62 @@ sleep_until_idle (saver_info *si, Bool until_idle_p)
       case ButtonRelease:
       case MotionNotify:
 
-#ifdef DEBUG_TIMERS
-	if (p->verbose_p)
+	if (p->debug_p)
 	  {
+            Window root=0, window=0;
+            int x=-1, y=-1;
+            const char *type = 0;
 	    if (event.xany.type == MotionNotify)
-	      fprintf (stderr,"%s: MotionNotify at %s\n",blurb(),timestring());
+              {
+                type = "MotionNotify";
+                root = event.xmotion.root;
+                window = event.xmotion.window;
+                x = event.xmotion.x_root;
+                y = event.xmotion.y_root;
+              }
 	    else if (event.xany.type == KeyPress)
-	      fprintf (stderr, "%s: KeyPress seen on 0x%X at %s\n", blurb(),
-		       (unsigned int) event.xkey.window, timestring ());
+              {
+                type = "KeyPress";
+                root = event.xkey.root;
+                window = event.xkey.window;
+                x = y = -1;
+              }
 	    else if (event.xany.type == ButtonPress)
-	      fprintf (stderr, "%s: ButtonPress seen on 0x%X at %s\n", blurb(),
-		       (unsigned int) event.xbutton.window, timestring ());
+              {
+                type = "ButtonPress";
+                root = event.xkey.root;
+                window = event.xkey.window;
+                x = event.xmotion.x_root;
+                y = event.xmotion.y_root;
+              }
+
+            if (type)
+              {
+                int i;
+                for (i = 0; i < si->nscreens; i++)
+                  if (root == RootWindowOfScreen (si->screens[i].screen))
+                    break;
+                fprintf (stderr,"%s: %d: %s on 0x%lx",
+                         blurb(), i, type, (unsigned long) window);
+
+                /* Be careful never to do this unless in -debug mode, as
+                   this could expose characters from the unlock password. */
+                if (p->debug_p && event.xany.type == KeyPress)
+                  {
+                    KeySym keysym;
+                    char c = 0;
+                    XLookupString (&event.xkey, &c, 1, &keysym, 0);
+                    fprintf (stderr, " (%s%s)",
+                             (event.xkey.send_event ? "synthetic " : ""),
+                             XKeysymToString (keysym));
+                  }
+
+                if (x == -1)
+                  fprintf (stderr, "\n");
+                else
+                  fprintf (stderr, " at %d,%d.\n", x, y);
+              }
 	  }
-#endif /* DEBUG_TIMERS */
 
 	/* If any widgets want to handle this event, let them. */
 	dispatch_event (si, &event);
@@ -954,8 +1024,8 @@ proc_interrupts_activity_p (saver_info *si)
   static char last_kbd_line[255] = { 0, };
   static char last_ptr_line[255] = { 0, };
   char new_line[sizeof(last_kbd_line)];
-  Bool got_kbd = False, kbd_diff = False;
-  Bool got_ptr = False, ptr_diff = False;
+  Bool checked_kbd = False, kbd_changed = False;
+  Bool checked_ptr = False, ptr_changed = False;
 
   if (!f0)
     {
@@ -1006,27 +1076,35 @@ proc_interrupts_activity_p (saver_info *si)
 
   while (fgets (new_line, sizeof(new_line)-1, f1))
     {
-      if (!got_kbd && strstr (new_line, "keyboard"))
+      if (!checked_kbd && strstr (new_line, "keyboard"))
         {
-          kbd_diff = (*last_kbd_line && !!strcmp (new_line, last_kbd_line));
+          kbd_changed = (*last_kbd_line && !!strcmp (new_line, last_kbd_line));
           strcpy (last_kbd_line, new_line);
-          got_kbd = True;
+          checked_kbd = True;
         }
-      else if (!got_ptr && strstr (new_line, "PS/2 Mouse"))
+      else if (!checked_ptr && strstr (new_line, "PS/2 Mouse"))
         {
-          ptr_diff = (*last_ptr_line && !!strcmp (new_line, last_ptr_line));
+          ptr_changed = (*last_ptr_line && !!strcmp (new_line, last_ptr_line));
           strcpy (last_ptr_line, new_line);
-          got_ptr = True;
+          checked_ptr = True;
         }
 
-      if (got_kbd && got_ptr)
+      if (checked_kbd && checked_ptr)
         break;
     }
 
-  if (got_kbd || got_ptr)
+  if (checked_kbd || checked_ptr)
     {
       fclose (f1);
-      return (kbd_diff || ptr_diff);
+
+      if (si->prefs.debug_p && (kbd_changed || ptr_changed))
+        fprintf (stderr, "%s: /proc/interrupts activity: %s\n",
+                 blurb(),
+                 ((kbd_changed && ptr_changed) ? "mouse and kbd" :
+                  kbd_changed ? "kbd" :
+                  ptr_changed ? "mouse" : "ERR"));
+
+      return (kbd_changed || ptr_changed);
     }
 
 
@@ -1077,7 +1155,9 @@ watchdog_timer (XtPointer closure, XtIntervalId *id)
 
   /* If the DPMS settings on the server have changed, change them back to
      what ~/.xscreensaver says they should be. */
-  sync_server_dpms_settings (si->dpy, p->dpms_enabled_p,
+  sync_server_dpms_settings (si->dpy,
+                             (p->dpms_enabled_p  &&
+                              p->mode != DONT_BLANK),
                              p->dpms_standby / 1000,
                              p->dpms_suspend / 1000,
                              p->dpms_off / 1000,
@@ -1089,19 +1169,15 @@ watchdog_timer (XtPointer closure, XtIntervalId *id)
 
       if (si->dbox_up_p)
         {
-#ifdef DEBUG_TIMERS
-          if (si->prefs.verbose_p)
+          if (si->prefs.debug_p)
             fprintf (stderr, "%s: dialog box is up: not raising screen.\n",
                      blurb());
-#endif /* DEBUG_TIMERS */
         }
       else
         {
-#ifdef DEBUG_TIMERS
-          if (si->prefs.verbose_p)
+          if (si->prefs.debug_p)
             fprintf (stderr, "%s: watchdog timer raising %sscreen.\n",
                      blurb(), (running_p ? "" : "and clearing "));
-#endif /* DEBUG_TIMERS */
 
           raise_window (si, True, True, running_p);
         }
@@ -1141,11 +1217,8 @@ reset_watchdog_timer (saver_info *si, Bool on_p)
       si->watchdog_id = XtAppAddTimeOut (si->app, p->watchdog_timeout,
 					 watchdog_timer, (XtPointer) si);
 
-#ifdef DEBUG_TIMERS
-      if (p->verbose_p)
+      if (p->debug_p)
 	fprintf (stderr, "%s: restarting watchdog_timer (%ld, %ld)\n",
 		 blurb(), p->watchdog_timeout, si->watchdog_id);
-#endif /* DEBUG_TIMERS */
-
     }
 }

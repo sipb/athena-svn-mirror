@@ -1,5 +1,5 @@
 /* windows.c --- turning the screen black; dealing with visuals, virtual roots.
- * xscreensaver, Copyright (c) 1991-2001 Jamie Zawinski <jwz@jwz.org>
+ * xscreensaver, Copyright (c) 1991-2003 Jamie Zawinski <jwz@jwz.org>
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
  * documentation for any purpose is hereby granted without fee, provided that
@@ -36,6 +36,8 @@
 #include <X11/Xatom.h>
 #include <X11/Xos.h>		/* for time() */
 #include <signal.h>		/* for the signal names */
+#include <time.h>
+#include <sys/time.h>
 
 #ifdef HAVE_MIT_SAVER_EXTENSION
 # include <X11/extensions/scrnsaver.h>
@@ -44,7 +46,6 @@
 #ifdef HAVE_XF86VMODE
 # include <X11/extensions/xf86vmode.h>
 #endif /* HAVE_XF86VMODE */
-
 
 /* This file doesn't need the Xt headers, so stub these types out... */
 #undef XtPointer
@@ -61,13 +62,15 @@
 
 extern int kill (pid_t, int);		/* signal() is in sys/signal.h... */
 
-Atom XA_VROOT, XA_XSETROOT_ID;
+Atom XA_VROOT, XA_XSETROOT_ID, XA_ESETROOT_PMAP_ID, XA_XROOTPMAP_ID;
 Atom XA_SCREENSAVER, XA_SCREENSAVER_VERSION, XA_SCREENSAVER_ID;
 Atom XA_SCREENSAVER_STATUS;
 
 
 extern saver_info *global_si_kludge;	/* I hate C so much... */
 
+static void maybe_transfer_grabs (saver_screen_info *ssi,
+                                  Window old_w, Window new_w, int new_screen);
 
 #define ALL_POINTER_EVENTS \
 	(ButtonPressMask | ButtonReleaseMask | EnterWindowMask | \
@@ -96,7 +99,7 @@ grab_string(int status)
 }
 
 static int
-grab_kbd(saver_info *si, Window w)
+grab_kbd(saver_info *si, Window w, int screen_no)
 {
   saver_preferences *p = &si->prefs;
   int status = XGrabKeyboard (si->dpy, w, True,
@@ -105,28 +108,34 @@ grab_kbd(saver_info *si, Window w)
 			      GrabModeSync, GrabModeAsync,
 			      CurrentTime);
   if (status == GrabSuccess)
-    si->keyboard_grab_window = w;
+    {
+      si->keyboard_grab_window = w;
+      si->keyboard_grab_screen = screen_no;
+    }
 
   if (p->verbose_p)
-    fprintf(stderr, "%s: grabbing keyboard on 0x%x... %s.\n",
-	    blurb(), (unsigned long) w, grab_string(status));
+    fprintf(stderr, "%s: %d: grabbing keyboard on 0x%lx... %s.\n",
+	    blurb(), screen_no, (unsigned long) w, grab_string(status));
   return status;
 }
 
 
 static int
-grab_mouse (saver_info *si, Window w, Cursor cursor)
+grab_mouse (saver_info *si, Window w, Cursor cursor, int screen_no)
 {
   saver_preferences *p = &si->prefs;
   int status = XGrabPointer (si->dpy, w, True, ALL_POINTER_EVENTS,
 			     GrabModeAsync, GrabModeAsync, w,
 			     cursor, CurrentTime);
   if (status == GrabSuccess)
-    si->mouse_grab_window = w;
+    {
+      si->mouse_grab_window = w;
+      si->mouse_grab_screen = screen_no;
+    }
 
   if (p->verbose_p)
-    fprintf(stderr, "%s: grabbing mouse on 0x%x... %s.\n",
-	    blurb(), (unsigned long) w, grab_string(status));
+    fprintf(stderr, "%s: %d: grabbing mouse on 0x%lx... %s.\n",
+	    blurb(), screen_no, (unsigned long) w, grab_string(status));
   return status;
 }
 
@@ -137,8 +146,9 @@ ungrab_kbd(saver_info *si)
   saver_preferences *p = &si->prefs;
   XUngrabKeyboard(si->dpy, CurrentTime);
   if (p->verbose_p)
-    fprintf(stderr, "%s: ungrabbing keyboard (was 0x%x).\n", blurb(),
-	    (unsigned long) si->keyboard_grab_window);
+    fprintf(stderr, "%s: %d: ungrabbing keyboard (was 0x%lx).\n",
+            blurb(), si->keyboard_grab_screen,
+            (unsigned long) si->keyboard_grab_window);
   si->keyboard_grab_window = 0;
 }
 
@@ -149,23 +159,25 @@ ungrab_mouse(saver_info *si)
   saver_preferences *p = &si->prefs;
   XUngrabPointer(si->dpy, CurrentTime);
   if (p->verbose_p)
-    fprintf(stderr, "%s: ungrabbing mouse (was 0x%x).\n", blurb(),
-	    (unsigned long) si->mouse_grab_window);
+    fprintf(stderr, "%s: %d: ungrabbing mouse (was 0x%lx).\n",
+            blurb(), si->mouse_grab_screen,
+            (unsigned long) si->mouse_grab_window);
   si->mouse_grab_window = 0;
 }
 
 
 static Bool
-grab_keyboard_and_mouse (saver_info *si, Window window, Cursor cursor)
+grab_keyboard_and_mouse (saver_info *si, Window window, Cursor cursor,
+                         int screen_no)
 {
-  Status mstatus, kstatus;
+  Status mstatus = 0, kstatus = 0;
   int i;
   int retries = 4;
 
   for (i = 0; i < retries; i++)
     {
       XSync (si->dpy, False);
-      kstatus = grab_kbd (si, window);
+      kstatus = grab_kbd (si, window, screen_no);
       if (kstatus == GrabSuccess)
         break;
 
@@ -180,7 +192,7 @@ grab_keyboard_and_mouse (saver_info *si, Window window, Cursor cursor)
   for (i = 0; i < retries; i++)
     {
       XSync (si->dpy, False);
-      mstatus = grab_mouse (si, window, cursor);
+      mstatus = grab_mouse (si, window, cursor, screen_no);
       if (mstatus == GrabSuccess)
         break;
 
@@ -205,12 +217,12 @@ ungrab_keyboard_and_mouse (saver_info *si)
 
 
 int
-move_mouse_grab (saver_info *si, Window to, Cursor cursor)
+move_mouse_grab (saver_info *si, Window to, Cursor cursor, int to_screen_no)
 {
   Window old = si->mouse_grab_window;
 
   if (old == 0)
-    return grab_mouse (si, to, cursor);
+    return grab_mouse (si, to, cursor, to_screen_no);
   else
     {
       saver_preferences *p = &si->prefs;
@@ -224,18 +236,18 @@ move_mouse_grab (saver_info *si, Window to, Cursor cursor)
         fprintf(stderr, "%s: grabbing server...\n", blurb());
 
       ungrab_mouse (si);
-      status = grab_mouse (si, to, cursor);
+      status = grab_mouse (si, to, cursor, to_screen_no);
 
       if (status != GrabSuccess)   /* Augh! */
         {
           sleep (1);               /* Note dramatic evil of sleeping
                                       with server grabbed. */
           XSync (si->dpy, False);
-          status = grab_mouse (si, to, cursor);
+          status = grab_mouse (si, to, cursor, to_screen_no);
         }
 
       if (status != GrabSuccess)   /* Augh!  Try to get the old one back... */
-        grab_mouse (si, to, cursor);
+        grab_mouse (si, old, cursor, to_screen_no);
 
       XUngrabServer (si->dpy);
       XSync (si->dpy, False);			/* ###### (danger over) */
@@ -342,8 +354,17 @@ remove_vroot_property (Display *dpy, Window win)
 }
 
 
+static Bool safe_XKillClient (Display *dpy, XID id);
+
+#ifdef HAVE_XF86VMODE
+static Bool safe_XF86VidModeGetViewPort (Display *, int, int *, int *);
+#endif /* HAVE_XF86VMODE */
+
+
 static void
-kill_xsetroot_data (Display *dpy, Window window, Bool verbose_p)
+kill_xsetroot_data_1 (Display *dpy, Window window,
+                      Atom prop, const char *atom_name,
+                      Bool verbose_p)
 {
   Atom type;
   int format;
@@ -361,8 +382,12 @@ kill_xsetroot_data (Display *dpy, Window window, Bool verbose_p)
      delete of the _XSETROOT_ID property, and if it held a pixmap, then we
      cause the RetainPermanent resources of the client which created it
      (and which no longer exists) to be freed.
+
+     Update: it seems that Gnome and KDE do this same trick, but with the
+     properties "ESETROOT_PMAP_ID" and/or "_XROOTPMAP_ID" instead of
+     "_XSETROOT_ID".  So, we'll kill those too.
    */
-  if (XGetWindowProperty (dpy, window, XA_XSETROOT_ID, 0, 1,
+  if (XGetWindowProperty (dpy, window, prop, 0, 1,
 			  True, AnyPropertyType, &type, &format, &nitems, 
 			  &bytesafter, (unsigned char **) &dataP)
       == Success
@@ -372,20 +397,31 @@ kill_xsetroot_data (Display *dpy, Window window, Bool verbose_p)
 	  nitems == 1 && bytesafter == 0)
 	{
 	  if (verbose_p)
-	    fprintf (stderr, "%s: destroying xsetroot data (0x%lX).\n",
-		     blurb(), *dataP);
-	  XKillClient (dpy, *dataP);
+	    fprintf (stderr, "%s: destroying %s data (0x%lX).\n",
+		     blurb(), atom_name, *dataP);
+	  safe_XKillClient (dpy, *dataP);
 	}
       else
-	fprintf (stderr, "%s: deleted unrecognised _XSETROOT_ID property: \n\
-	%lu, %lu; type: %lu, format: %d, nitems: %lu, bytesafter %ld\n",
-		 blurb(), (unsigned long) dataP, (dataP ? *dataP : 0), type,
+	fprintf (stderr,
+                 "%s: deleted unrecognised %s property: \n"
+                 "\t%lu, %lu; type: %lu, format: %d, "
+                 "nitems: %lu, bytesafter %ld\n",
+		 blurb(), atom_name,
+                 (unsigned long) dataP, (dataP ? *dataP : 0), type,
 		 format, nitems, bytesafter);
     }
 }
 
 
-static void handle_signals (saver_info *si, Bool on_p);
+static void
+kill_xsetroot_data (Display *dpy, Window w, Bool verbose_p)
+{
+  kill_xsetroot_data_1 (dpy, w, XA_XSETROOT_ID, "_XSETROOT_ID", verbose_p);
+  kill_xsetroot_data_1 (dpy, w, XA_ESETROOT_PMAP_ID, "ESETROOT_PMAP_ID",
+                        verbose_p);
+  kill_xsetroot_data_1 (dpy, w, XA_XROOTPMAP_ID, "_XROOTPMAP_ID", verbose_p);
+}
+
 
 static void
 save_real_vroot (saver_screen_info *ssi)
@@ -422,6 +458,17 @@ save_real_vroot (saver_screen_info *ssi)
       int format;
       unsigned long nitems, bytesafter;
       Window *vrootP = 0;
+      int j;
+
+      /* Skip this window if it is the xscreensaver window of any other
+         screen (this can happen in the Xinerama case.)
+       */
+      for (j = 0; j < si->nscreens; j++)
+        {
+          saver_screen_info *ssi2 = &si->screens[j];
+          if (kids[i] == ssi2->screensaver_window)
+            goto SKIP;
+        }
 
       if (XGetWindowProperty (dpy, kids[i], XA_VROOT, 0, 1, False, XA_WINDOW,
 			      &type, &format, &nitems, &bytesafter,
@@ -440,6 +487,8 @@ save_real_vroot (saver_screen_info *ssi)
 	}
       ssi->real_vroot = kids [i];
       ssi->real_vroot_value = *vrootP;
+    SKIP:
+      ;
     }
 
   XSync (dpy, False);
@@ -448,7 +497,6 @@ save_real_vroot (saver_screen_info *ssi)
 
   if (ssi->real_vroot)
     {
-      handle_signals (si, True);
       remove_vroot_property (si->dpy, ssi->real_vroot);
       XSync (dpy, False);
     }
@@ -458,7 +506,7 @@ save_real_vroot (saver_screen_info *ssi)
 
 
 static Bool
-restore_real_vroot_2 (saver_screen_info *ssi)
+restore_real_vroot_1 (saver_screen_info *ssi)
 {
   saver_info *si = ssi->global;
   saver_preferences *p = &si->prefs;
@@ -481,25 +529,18 @@ restore_real_vroot_2 (saver_screen_info *ssi)
   return False;
 }
 
-static Bool
-restore_real_vroot_1 (saver_info *si)
+Bool
+restore_real_vroot (saver_info *si)
 {
   int i;
   Bool did_any = False;
   for (i = 0; i < si->nscreens; i++)
     {
       saver_screen_info *ssi = &si->screens[i];
-      if (restore_real_vroot_2 (ssi))
+      if (restore_real_vroot_1 (ssi))
 	did_any = True;
     }
   return did_any;
-}
-
-void
-restore_real_vroot (saver_info *si)
-{
-  if (restore_real_vroot_1 (si))
-    handle_signals (si, False);
 }
 
 
@@ -588,64 +629,101 @@ restore_real_vroot_handler (int sig)
   saver_info *si = global_si_kludge;	/* I hate C so much... */
 
   signal (sig, SIG_DFL);
-  if (restore_real_vroot_1 (si))
+  if (restore_real_vroot (si))
     fprintf (real_stderr, "\n%s: %s intercepted, vroot restored.\n",
 	     blurb(), signal_name(sig));
   kill (getpid (), sig);
 }
 
 static void
-catch_signal (saver_info *si, int sig, Bool on_p)
+catch_signal (saver_info *si, int sig, RETSIGTYPE (*handler) (int))
 {
-  if (! on_p)
-    signal (sig, SIG_DFL);
-  else
+# ifdef HAVE_SIGACTION
+
+  struct sigaction a;
+  a.sa_handler = handler;
+  sigemptyset (&a.sa_mask);
+  a.sa_flags = 0;
+
+  /* On Linux 2.4.9 (at least) we need to tell the kernel to not mask delivery
+     of this signal from inside its handler, or else when we execvp() the
+     process again, it starts up with SIGHUP blocked, meaning that killing
+     it with -HUP only works *once*.  You'd think that execvp() would reset
+     all the signal masks, but it doesn't.
+   */
+#  if defined(SA_NOMASK)
+  a.sa_flags |= SA_NOMASK;
+#  elif defined(SA_NODEFER)
+  a.sa_flags |= SA_NODEFER;
+#  endif
+
+  if (sigaction (sig, &a, 0) < 0)
+# else  /* !HAVE_SIGACTION */
+  if (((long) signal (sig, handler)) == -1L)
+# endif /* !HAVE_SIGACTION */
     {
-      if (((long) signal (sig, restore_real_vroot_handler)) == -1L)
-	{
-	  char buf [255];
-	  sprintf (buf, "%s: couldn't catch %s", blurb(), signal_name(sig));
-	  perror (buf);
-	  saver_exit (si, 1, 0);
-	}
+      char buf [255];
+      sprintf (buf, "%s: couldn't catch %s", blurb(), signal_name(sig));
+      perror (buf);
+      saver_exit (si, 1, 0);
     }
 }
 
-static void
-handle_signals (saver_info *si, Bool on_p)
-{
-#if 0
-  if (on_p) fprintf (stderr, "handling signals\n");
-  else fprintf (stderr, "unhandling signals\n");
-#endif
+static RETSIGTYPE saver_sighup_handler (int sig);
 
-  catch_signal (si, SIGHUP,  on_p);
-  catch_signal (si, SIGINT,  on_p);
-  catch_signal (si, SIGQUIT, on_p);
-  catch_signal (si, SIGILL,  on_p);
-  catch_signal (si, SIGTRAP, on_p);
-  catch_signal (si, SIGIOT,  on_p);
-  catch_signal (si, SIGABRT, on_p);
+void
+handle_signals (saver_info *si)
+{
+  catch_signal (si, SIGHUP, saver_sighup_handler);
+
+  catch_signal (si, SIGINT,  restore_real_vroot_handler);
+  catch_signal (si, SIGQUIT, restore_real_vroot_handler);
+  catch_signal (si, SIGILL,  restore_real_vroot_handler);
+  catch_signal (si, SIGTRAP, restore_real_vroot_handler);
+#ifdef SIGIOT
+  catch_signal (si, SIGIOT,  restore_real_vroot_handler);
+#endif
+  catch_signal (si, SIGABRT, restore_real_vroot_handler);
 #ifdef SIGEMT
-  catch_signal (si, SIGEMT,  on_p);
+  catch_signal (si, SIGEMT,  restore_real_vroot_handler);
 #endif
-  catch_signal (si, SIGFPE,  on_p);
-  catch_signal (si, SIGBUS,  on_p);
-  catch_signal (si, SIGSEGV, on_p);
+  catch_signal (si, SIGFPE,  restore_real_vroot_handler);
+  catch_signal (si, SIGBUS,  restore_real_vroot_handler);
+  catch_signal (si, SIGSEGV, restore_real_vroot_handler);
 #ifdef SIGSYS
-  catch_signal (si, SIGSYS,  on_p);
+  catch_signal (si, SIGSYS,  restore_real_vroot_handler);
 #endif
-  catch_signal (si, SIGTERM, on_p);
+  catch_signal (si, SIGTERM, restore_real_vroot_handler);
 #ifdef SIGXCPU
-  catch_signal (si, SIGXCPU, on_p);
+  catch_signal (si, SIGXCPU, restore_real_vroot_handler);
 #endif
 #ifdef SIGXFSZ
-  catch_signal (si, SIGXFSZ, on_p);
+  catch_signal (si, SIGXFSZ, restore_real_vroot_handler);
 #endif
 #ifdef SIGDANGER
-  catch_signal (si, SIGDANGER, on_p);
+  catch_signal (si, SIGDANGER, restore_real_vroot_handler);
 #endif
 }
+
+
+static RETSIGTYPE
+saver_sighup_handler (int sig)
+{
+  saver_info *si = global_si_kludge;	/* I hate C so much... */
+
+  /* Re-establish SIGHUP handler */
+  catch_signal (si, SIGHUP, saver_sighup_handler);
+
+  fprintf (stderr, "%s: %s received: restarting...\n",
+           blurb(), signal_name(sig));
+  unblank_screen (si);
+  kill_screenhack (si);
+  XSync (si->dpy, False);
+  restart_process (si);   /* Does not return */
+  abort ();
+}
+
+
 
 void
 saver_exit (saver_info *si, int status, const char *dump_core_reason)
@@ -660,7 +738,7 @@ saver_exit (saver_info *si, int status, const char *dump_core_reason)
 
   exiting = True;
   
-  vrs = restore_real_vroot_1 (si);
+  vrs = restore_real_vroot (si);
   emergency_kill_subproc (si);
   shutdown_stderr (si);
 
@@ -693,7 +771,7 @@ saver_exit (saver_info *si, int status, const char *dump_core_reason)
       if (bugp)
 	fprintf(real_stderr,
 		"%s: see http://www.jwz.org/xscreensaver/bugs.html\n"
-		"\t\tfor bug reporting information.\n\n",
+		"\t\t\tfor bug reporting information.\n\n",
 		blurb());
 
 # if defined(HAVE_GETCWD)
@@ -819,6 +897,7 @@ store_saver_status (saver_info *si)
                    XA_SCREENSAVER_STATUS,
                    XA_INTEGER, 32, PropModeReplace,
                    (unsigned char *) status, size);
+  free (status);
 }
 
 
@@ -832,6 +911,7 @@ void
 get_screen_viewport (saver_screen_info *ssi,
                      int *x_ret, int *y_ret,
                      int *w_ret, int *h_ret,
+                     int target_x, int target_y,
                      Bool verbose_p)
 {
   int w = WidthOfScreen (ssi->screen);
@@ -839,20 +919,68 @@ get_screen_viewport (saver_screen_info *ssi,
 
 #ifdef HAVE_XF86VMODE
   saver_info *si = ssi->global;
-  int screen_no = screen_number (ssi->screen);
-  int op, event, error;
+  int event, error;
   int dot;
   XF86VidModeModeLine ml;
   int x, y;
+  Bool xinerama_p = si->xinerama_p;
 
-  /* Check for Xinerama first, because the VidModeExtension is broken
-     when Xinerama is present.  Wheee!
-   */
+#ifndef HAVE_XINERAMA
+  /* Even if we don't have the client-side Xinerama lib, check to see if
+     the server supports Xinerama, so that we know to ignore the VidMode
+     extension -- otherwise a server crash could result.  Yay. */
+  xinerama_p = XQueryExtension (si->dpy, "XINERAMA", &error, &event, &error);
+#endif /* !HAVE_XINERAMA */
 
-  if (!XQueryExtension (si->dpy, "XINERAMA", &op, &event, &error) &&
+#ifdef HAVE_XINERAMA
+  if (xinerama_p)
+    {
+      int mouse_p = (target_x != -1 && target_y != -1);
+      int which = -1;
+      int i;
+
+      /* If a mouse position wasn't passed in, assume we're talking about
+         this screen. */
+      if (!mouse_p)
+        {
+          target_x = ssi->x;
+          target_y = ssi->y;
+        }
+
+      /* Find the Xinerama rectangle that contains the mouse position. */
+      for (i = 0; i < si->nscreens; i++)
+        {
+          if (target_x >= si->screens[i].x &&
+              target_y >= si->screens[i].y &&
+              target_x <  si->screens[i].x + si->screens[i].width &&
+              target_y <  si->screens[i].y + si->screens[i].height)
+            which = i;
+        }
+      if (which == -1) which = 0;  /* didn't find it?  Use the first. */
+      *x_ret = si->screens[which].x;
+      *y_ret = si->screens[which].y;
+      *w_ret = si->screens[which].width;
+      *h_ret = si->screens[which].height;
+
+      if (verbose_p)
+        {
+          fprintf (stderr, "%s: %d: xinerama vp: %dx%d+%d+%d",
+                   blurb(), which,
+                   si->screens[which].width, si->screens[which].height,
+                   si->screens[which].x, si->screens[which].y);
+          if (mouse_p)
+            fprintf (stderr, "; mouse at %d,%d", target_x, target_y);
+          fprintf (stderr, ".\n");
+        }
+
+      return;
+    }
+#endif /* HAVE_XINERAMA */
+
+  if (!xinerama_p &&  /* Xinerama + VidMode = broken. */
       XF86VidModeQueryExtension (si->dpy, &event, &error) &&
-      XF86VidModeGetModeLine (si->dpy, screen_no, &dot, &ml) &&
-      XF86VidModeGetViewPort (si->dpy, screen_no, &x, &y))
+      safe_XF86VidModeGetViewPort (si->dpy, ssi->number, &x, &y) &&
+      XF86VidModeGetModeLine (si->dpy, ssi->number, &dot, &ml))
     {
       char msg[512];
       *x_ret = x;
@@ -891,10 +1019,10 @@ get_screen_viewport (saver_screen_info *ssi,
           *h_ret = h;
           return;
         }
-          
 
-      sprintf (msg, "%s: vp is %dx%d+%d+%d",
-               blurb(), *w_ret, *h_ret, *x_ret, *y_ret);
+      sprintf (msg, "%s: %d: vp is %dx%d+%d+%d",
+               blurb(), ssi->number,
+               *w_ret, *h_ret, *x_ret, *y_ret);
 
 
       /* Apparently, though the server stores the X position in increments of
@@ -957,6 +1085,128 @@ get_screen_viewport (saver_screen_info *ssi,
 }
 
 
+static Bool error_handler_hit_p = False;
+
+static int
+ignore_all_errors_ehandler (Display *dpy, XErrorEvent *error)
+{
+  error_handler_hit_p = True;
+  return 0;
+}
+
+
+/* Returns True if successful, False if an X error occurred.
+   We need this because other programs might have done things to
+   our window that will cause XChangeWindowAttributes() to fail:
+   if that happens, we give up, destroy the window, and re-create
+   it.
+ */
+static Bool
+safe_XChangeWindowAttributes (Display *dpy, Window window,
+                              unsigned long mask,
+                              XSetWindowAttributes *attrs)
+{
+  XErrorHandler old_handler;
+  XSync (dpy, False);
+  error_handler_hit_p = False;
+  old_handler = XSetErrorHandler (ignore_all_errors_ehandler);
+
+  XChangeWindowAttributes (dpy, window, mask, attrs);
+
+  XSync (dpy, False);
+  XSetErrorHandler (old_handler);
+  XSync (dpy, False);
+
+  return (!error_handler_hit_p);
+}
+
+
+/* This might not be necessary, but just in case. */
+static Bool
+safe_XConfigureWindow (Display *dpy, Window window,
+                       unsigned long mask, XWindowChanges *changes)
+{
+  XErrorHandler old_handler;
+  XSync (dpy, False);
+  error_handler_hit_p = False;
+  old_handler = XSetErrorHandler (ignore_all_errors_ehandler);
+
+  XConfigureWindow (dpy, window, mask, changes);
+
+  XSync (dpy, False);
+  XSetErrorHandler (old_handler);
+  XSync (dpy, False);
+
+  return (!error_handler_hit_p);
+}
+
+/* This might not be necessary, but just in case. */
+static Bool
+safe_XDestroyWindow (Display *dpy, Window window)
+{
+  XErrorHandler old_handler;
+  XSync (dpy, False);
+  error_handler_hit_p = False;
+  old_handler = XSetErrorHandler (ignore_all_errors_ehandler);
+
+  XDestroyWindow (dpy, window);
+
+  XSync (dpy, False);
+  XSetErrorHandler (old_handler);
+  XSync (dpy, False);
+
+  return (!error_handler_hit_p);
+}
+
+
+static Bool
+safe_XKillClient (Display *dpy, XID id)
+{
+  XErrorHandler old_handler;
+  XSync (dpy, False);
+  error_handler_hit_p = False;
+  old_handler = XSetErrorHandler (ignore_all_errors_ehandler);
+
+  XKillClient (dpy, id);
+
+  XSync (dpy, False);
+  XSetErrorHandler (old_handler);
+  XSync (dpy, False);
+
+  return (!error_handler_hit_p);
+}
+
+
+#ifdef HAVE_XF86VMODE
+static Bool
+safe_XF86VidModeGetViewPort (Display *dpy, int screen, int *xP, int *yP)
+{
+  Bool result;
+  XErrorHandler old_handler;
+  XSync (dpy, False);
+  error_handler_hit_p = False;
+  old_handler = XSetErrorHandler (ignore_all_errors_ehandler);
+
+  result = XF86VidModeGetViewPort (dpy, screen, xP, yP);
+
+  XSync (dpy, False);
+  XSetErrorHandler (old_handler);
+  XSync (dpy, False);
+
+  return (error_handler_hit_p
+          ? False
+          : result);
+}
+
+/* There is no "safe_XF86VidModeGetModeLine" because it fails with an
+   untrappable I/O error instead of an X error -- so one must call
+   safe_XF86VidModeGetViewPort first, and assume that both have the
+   same error condition.  Thank you XFree, may I have another.
+ */
+
+#endif /* HAVE_XF86VMODE */
+
+
 static void
 initialize_screensaver_window_1 (saver_screen_info *ssi)
 {
@@ -974,8 +1224,9 @@ initialize_screensaver_window_1 (saver_screen_info *ssi)
   unsigned long attrmask;
   int x, y, width, height;
   static Bool printed_visual_info = False;  /* only print the message once. */
+  Window horked_window = 0;
 
-  get_screen_viewport (ssi, &x, &y, &width, &height,
+  get_screen_viewport (ssi, &x, &y, &width, &height, -1, -1,
                        (p->verbose_p && !si->screen_blanked_p));
 
   black.red = black.green = black.blue = 0;
@@ -1030,13 +1281,13 @@ initialize_screensaver_window_1 (saver_screen_info *ssi)
   attrs.backing_pixel = ssi->black_pixel;
   attrs.border_pixel = ssi->black_pixel;
 
-  if (p->debug_p) width = width / 2;
+  if (p->debug_p && !p->quad_p) width = width / 2;
 
   if (!p->verbose_p || printed_visual_info)
     ;
   else if (ssi->current_visual == DefaultVisualOfScreen (ssi->screen))
     {
-      fprintf (stderr, "%s: using default visual ", blurb());
+      fprintf (stderr, "%s: %d: visual ", blurb(), ssi->number);
       describe_visual (stderr, ssi->screen, ssi->current_visual,
 		       install_cmap_p);
     }
@@ -1113,12 +1364,17 @@ initialize_screensaver_window_1 (saver_screen_info *ssi)
       changes.height = height;
       changes.border_width = 0;
 
-      XConfigureWindow (si->dpy, ssi->screensaver_window,
-			changesmask, &changes);
-      XChangeWindowAttributes (si->dpy, ssi->screensaver_window,
-			       attrmask, &attrs);
+      if (! (safe_XConfigureWindow (si->dpy, ssi->screensaver_window,
+                                  changesmask, &changes) &&
+             safe_XChangeWindowAttributes (si->dpy, ssi->screensaver_window,
+                                           attrmask, &attrs)))
+        {
+          horked_window = ssi->screensaver_window;
+          ssi->screensaver_window = 0;
+        }
     }
-  else
+
+  if (!ssi->screensaver_window)
     {
       ssi->screensaver_window =
 	XCreateWindow (si->dpy, RootWindowOfScreen (ssi->screen),
@@ -1127,9 +1383,22 @@ initialize_screensaver_window_1 (saver_screen_info *ssi)
 		       ssi->current_visual, attrmask, &attrs);
 
       reset_stderr (ssi);
+
+      if (horked_window)
+        {
+          fprintf (stderr,
+            "%s: someone horked our saver window (0x%lx)!  Recreating it...\n",
+                   blurb(), (unsigned long) horked_window);
+          maybe_transfer_grabs (ssi, horked_window, ssi->screensaver_window,
+                                ssi->number);
+          safe_XDestroyWindow (si->dpy, horked_window);
+          horked_window = 0;
+        }
+
       if (p->verbose_p)
-	fprintf (stderr, "%s: saver window is 0x%lx.\n",
-		 blurb(), (unsigned long) ssi->screensaver_window);
+	fprintf (stderr, "%s: %d: saver window is 0x%lx.\n",
+                 blurb(), ssi->number,
+                 (unsigned long) ssi->screensaver_window);
     }
 
   store_saver_id (ssi);       /* store window name and IDs */
@@ -1220,7 +1489,8 @@ raise_window (saver_info *si,
 
       /* Note!  The server is grabbed, and this will take several seconds
 	 to complete! */
-      fade_screens (si->dpy, current_maps, current_windows,
+      fade_screens (si->dpy, current_maps,
+                    current_windows, si->nscreens,
 		    p->fade_seconds/1000, p->fade_ticks, True, !dont_clear);
 
       free(current_maps);
@@ -1269,22 +1539,64 @@ raise_window (saver_info *si,
     }
 }
 
+
+int
+mouse_screen (saver_info *si)
+{
+  saver_preferences *p = &si->prefs;
+  Window pointer_root, pointer_child;
+  int root_x, root_y, win_x, win_y;
+  unsigned int mask;
+  int i;
+
+  if (si->nscreens == 1)
+    return 0;
+
+  for (i = 0; i < si->nscreens; i++)
+    {
+      saver_screen_info *ssi = &si->screens[i];
+      if (XQueryPointer (si->dpy, RootWindowOfScreen (ssi->screen),
+                         &pointer_root, &pointer_child,
+                         &root_x, &root_y, &win_x, &win_y, &mask) &&
+          root_x >= ssi->x &&
+          root_y >= ssi->y &&
+          root_x <  ssi->x + ssi->width &&
+          root_y <  ssi->y + ssi->height)
+        {
+          if (p->verbose_p)
+            fprintf (stderr, "%s: mouse is on screen %d of %d\n",
+                     blurb(), i, si->nscreens);
+          return i;
+        }
+    }
+
+  /* couldn't figure out where the mouse is?  Oh well. */
+  return 0;
+}
+
+
 Bool
 blank_screen (saver_info *si)
 {
   int i;
   Bool ok;
+  Window w;
+  int mscreen;
 
   /* Note: we do our grabs on the root window, not on the screensaver window.
      If we grabbed on the saver window, then the demo mode and lock dialog
      boxes wouldn't get any events.
+
+     By "the root window", we mean "the root window that contains the mouse."
+     We use to always grab the mouse on screen 0, but that has the effect of
+     moving the mouse to screen 0 from whichever screen it was on, on
+     multi-head systems.
    */
-  ok = grab_keyboard_and_mouse (si,
-                                /*si->screens[0].screensaver_window,*/
-                                RootWindowOfScreen(si->screens[0].screen),
-                                (si->demoing_p
-                                 ? 0
-                                 : si->screens[0].cursor));
+  mscreen = mouse_screen (si);
+  w = RootWindowOfScreen(si->screens[mscreen].screen);
+  ok = grab_keyboard_and_mouse (si, w,
+                                (si->demoing_p ? 0 : si->screens[0].cursor),
+                                mscreen);
 
 
   if (si->using_mit_saver_extension || si->using_sgi_saver_extension)
@@ -1300,8 +1612,8 @@ blank_screen (saver_info *si)
   for (i = 0; i < si->nscreens; i++)
     {
       saver_screen_info *ssi = &si->screens[i];
-
-      save_real_vroot (ssi);
+      if (ssi->real_screen_p)
+        save_real_vroot (ssi);
       store_vroot_property (si->dpy,
 			    ssi->screensaver_window,
 			    ssi->screensaver_window);
@@ -1310,9 +1622,9 @@ blank_screen (saver_info *si)
       {
         int ev, er;
         if (!XF86VidModeQueryExtension (si->dpy, &ev, &er) ||
-            !XF86VidModeGetViewPort (si->dpy, i,
-                                     &ssi->blank_vp_x,
-                                     &ssi->blank_vp_y))
+            !safe_XF86VidModeGetViewPort (si->dpy, i,
+                                          &ssi->blank_vp_x,
+                                          &ssi->blank_vp_y))
           ssi->blank_vp_x = ssi->blank_vp_y = -1;
       }
 #endif /* HAVE_XF86VMODE */
@@ -1376,8 +1688,8 @@ unblank_screen (saver_info *si)
       XUngrabServer (si->dpy);
       XSync (si->dpy, False);			/* ###### (danger over) */
 
-
-      fade_screens (si->dpy, 0, current_windows,
+      fade_screens (si->dpy, 0,
+                    current_windows, si->nscreens,
 		    p->fade_seconds/1000, p->fade_ticks,
 		    False, False);
 
@@ -1450,6 +1762,47 @@ unblank_screen (saver_info *si)
 }
 
 
+/* Transfer any grabs from the old window to the new.
+   Actually I think none of this is necessary, since we always
+   hold our grabs on the root window, but I wrote this before
+   re-discovering that...
+ */
+static void
+maybe_transfer_grabs (saver_screen_info *ssi,
+                      Window old_w, Window new_w,
+                      int new_screen_no)
+{
+  saver_info *si = ssi->global;
+
+  /* If the old window held our mouse grab, transfer the grab to the new
+     window.  (Grab the server while so doing, to avoid a race condition.)
+   */
+  if (old_w == si->mouse_grab_window)
+    {
+      XGrabServer (si->dpy);		/* ############ DANGER! */
+      ungrab_mouse (si);
+      grab_mouse (si, ssi->screensaver_window,
+                  (si->demoing_p ? 0 : ssi->cursor),
+                  new_screen_no);
+      XUngrabServer (si->dpy);
+      XSync (si->dpy, False);		/* ###### (danger over) */
+    }
+
+  /* If the old window held our keyboard grab, transfer the grab to the new
+     window.  (Grab the server while so doing, to avoid a race condition.)
+   */
+  if (old_w == si->keyboard_grab_window)
+    {
+      XGrabServer (si->dpy);		/* ############ DANGER! */
+      ungrab_kbd(si);
+      grab_kbd(si, ssi->screensaver_window, ssi->number);
+      XUngrabServer (si->dpy);
+      XSync (si->dpy, False);		/* ###### (danger over) */
+    }
+}
+
+
+
 Bool
 select_visual (saver_screen_info *ssi, const char *visual_name)
 {
@@ -1511,10 +1864,10 @@ select_visual (saver_screen_info *ssi, const char *visual_name)
 
       if (p->verbose_p)
 	{
-	  fprintf (stderr, "%s: switching to visual ", blurb());
+	  fprintf (stderr, "%s: %d: visual ", blurb(), ssi->number);
 	  describe_visual (stderr, ssi->screen, new_v, install_cmap_p);
 #if 0
-	  fprintf (stderr, "%s:                from ", blurb());
+	  fprintf (stderr, "%s:                  from ", blurb());
 	  describe_visual (stderr, ssi->screen, ssi->current_visual,
 			   was_installed_p);
 #endif
@@ -1538,50 +1891,15 @@ select_visual (saver_screen_info *ssi, const char *visual_name)
       store_vroot_property (si->dpy,
 			    ssi->screensaver_window, ssi->screensaver_window);
 
+      /* Transfer any grabs from the old window to the new. */
+      maybe_transfer_grabs (ssi, old_w, ssi->screensaver_window, ssi->number);
 
-      /* Transfer the grabs from the old window to the new.
-	 Actually I think none of this is necessary, since we always
-	 hold our grabs on the root window, but I wrote this before
-	 re-discovering that...
-       */
-
-
-      /* If we're destroying the window that holds our mouse grab,
-	 transfer the grab to the new window.  (Grab the server while
-	 so doing, to avoid a race condition.)
-       */
-      if (old_w == si->mouse_grab_window)
-	{
-	  XGrabServer (si->dpy);		/* ############ DANGER! */
-	  ungrab_mouse (si);
-	  grab_mouse (si, ssi->screensaver_window,
-		      (si->demoing_p
-		       ? 0
-		       : ssi->cursor));
-	  XUngrabServer (si->dpy);
-	  XSync (si->dpy, False);		/* ###### (danger over) */
-	}
-
-      /* If we're destroying the window that holds our keyboard grab,
-	 transfer the grab to the new window.  (Grab the server while
-	 so doing, to avoid a race condition.)
-       */
-      if (old_w == si->keyboard_grab_window)
-	{
-	  XGrabServer (si->dpy);		/* ############ DANGER! */
-	  ungrab_kbd(si);
-	  grab_kbd(si, ssi->screensaver_window);
-	  XUngrabServer (si->dpy);
-	  XSync (si->dpy, False);		/* ###### (danger over) */
-	}
-
-      /* Now we can destroy this window without horking our grabs. */
-
+      /* Now we can destroy the old window without horking our grabs. */
       XDestroyWindow (si->dpy, old_w);
 
       if (p->verbose_p)
-	fprintf (stderr, "%s: destroyed old saver window 0x%lx.\n",
-		 blurb(), (unsigned long) old_w);
+	fprintf (stderr, "%s: %d: destroyed old saver window 0x%lx.\n",
+		 blurb(), ssi->number, (unsigned long) old_w);
 
       if (old_c &&
 	  old_c != DefaultColormapOfScreen (ssi->screen) &&

@@ -50,7 +50,7 @@ char *progclass="Kumppa";
 char *defaults [] ={
 	".background:		black",
 	"*speed:		0.1",
-	"*delay:		0",
+	"*delay:		10000",
 #ifdef HAVE_DOUBLE_BUFFER_EXTENSION
         /* leave this off by default, since it slows things down.  -- jwz. */
         "*useDBE:		False",
@@ -68,7 +68,7 @@ XrmOptionDescRec options [] = {
 	{0,0,0,0}
 };
 
-const char colors[96]=
+const unsigned char colors[96]=
 	{0,0,255, 0,51,255, 0,102,255, 0,153,255, 0,204,255,
 	0,255,255,0,255,204, 0,255,153, 0,255,102, 0,255,51,
 	0,255,0, 51,255,0, 102,255,0, 153,255,0, 204,255,0,

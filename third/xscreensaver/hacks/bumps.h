@@ -1,4 +1,4 @@
-/* Bumps, Copyright (c) 1999 Shane Smit <blackend@inconnect.com>
+/* Bumps, Copyright (c) 2001 Shane Smit <CodeWeaver@DigitalLoom.org>
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
  * documentation for any purpose is hereby granted without fee, provided that
@@ -12,11 +12,15 @@
  * Tab Size: 4
  *
  * Description:
- *  Header file for module "Bumps.cpp"
+ *  Header file for module "Bumps.c"
  *
  * Modification History:
  *  [10/01/99] - Shane Smit: Creation
  *  [10/08/99] - Shane Smit: Port to C. (Ick)
+ *  [03/08/02] - Shane Smit: New movement code.
+ *  [09/12/02] - Shane Smit: MIT-SHM XImages.
+ * 							 Thanks to Kennett Galbraith <http://www.Alpha-II.com/>
+ * 							 for code optimization.
  */
 
 
@@ -28,10 +32,13 @@
 #include "screenhack.h"
 #include <X11/Xutil.h>
 
+#ifdef HAVE_XSHM_EXTENSION
+#include "xshm.h"
+#endif /* HAVE_XSHM_EXTENSION */
+
 
 /* Defines: */
 /* #define VERBOSE */
-#define PI		3.141592654
 #define RANDOM() ((int) (random() & 0X7FFFFFFFL))
 
 typedef signed char		int8_;
@@ -47,22 +54,33 @@ typedef unsigned char	BOOL;
 char *progclass = "Bumps";
 
 char *defaults [] = {
-  "*degrees:	360",
+  ".background: black",
+  ".foreground: white",
   "*color:		random",
   "*colorcount:	64",
-  "*delay:		50000",
+  "*delay:		30000",
   "*soften:		1",
   "*invert:		FALSE",
+#ifdef __sgi    /* really, HAVE_READ_DISPLAY_EXTENSION */
+  "*visualID:	Best",
+#endif
+#ifdef HAVE_XSHM_EXTENSION
+  "*useSHM:		True",
+#endif /* HAVE_XSHM_EXTENSION */
   0
 };
 
 XrmOptionDescRec options [] = {
-  { "-degrees",		".degrees",		XrmoptionSepArg, 0 },
   { "-color",		".color",		XrmoptionSepArg, 0 },
   { "-colorcount",	".colorcount",	XrmoptionSepArg, 0 },
   { "-delay",		".delay",		XrmoptionSepArg, 0 },
   { "-soften",		".soften",		XrmoptionSepArg, 0 },
   { "-invert",		".invert",		XrmoptionNoArg, "TRUE" },
+#ifdef HAVE_XSHM_EXTENSION
+  { "-shm",			".useSHM",		XrmoptionNoArg, "True" },
+  { "-no-shm",		".useSHM",		XrmoptionNoArg, "False" },
+#endif /* HAVE_XSHM_EXTENSION */
+
   { 0, 0, 0, 0 }
 };
 
@@ -71,20 +89,19 @@ XrmOptionDescRec options [] = {
  * a member of TBumps. */
 typedef struct
 {
-	uint16_ nDegreeCount;
-	double *aSinTable;
-
 	uint8_ *aLightMap;
-	uint16_ nDiameter, nRadius;
-	float nAngleX, nAngleY;		/* Spotlight's movement direction. */
+	uint16_ nFalloffDiameter, nFalloffRadius;
+	uint16_ nLightDiameter, nLightRadius;
+	float nAccelX, nAccelY;
+	float nAccelMax;
 	float nVelocityX, nVelocityY;
-	uint16_ iWinXCenter, iWinYCenter;
+	float nVelocityMax;
+	float nXPos, nYPos;
 } SSpotLight;
 
 void CreateSpotLight( SSpotLight *, uint16_, uint16_ );
 void CreateTables( SSpotLight * );
-void CalcLightPos( SSpotLight *, uint16_ *, uint16_ * );
-void DestroySpotLight( SSpotLight *pSpotLight ) { free( pSpotLight->aLightMap ); free( pSpotLight->aSinTable ); }
+void DestroySpotLight( SSpotLight *pSpotLight ) { free( pSpotLight->aLightMap ); }
 
 
 /* The entire program's operation is contained within this structure. */
@@ -94,10 +111,15 @@ typedef struct
 	Display *pDisplay;
 	Window Win;
 	GC GraphicsContext;
-	XColor *aXColors;
+	uint32_ *aColors;
 	XImage *pXImage;
+#ifdef HAVE_XSHM_EXTENSION
+	XShmSegmentInfo XShmInfo;
+	Bool	bUseShm;
+#endif /* HAVE_XSHM_EXTENSION */
 
 	uint8_ nColorCount;				/* Number of colors used. */
+	uint8_ bytesPerPixel;
 	uint16_ iWinWidth, iWinHeight;
 	uint16_ *aBumpMap;				/* The actual bump map. */
 
@@ -115,10 +137,6 @@ void SoftenBumpMap( SBumps * );
 
 #endif /* _BUMPS_H */
 
-
-/*
- * End of Module: "Bumps.h"
- */
 
 /* vim: ts=4
  */

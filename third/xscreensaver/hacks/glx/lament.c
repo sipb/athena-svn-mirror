@@ -67,13 +67,6 @@
 
      *  Needs music.  ("Hellraiser Themes" by Coil: TORSO CD161; also
         duplicated on the "Unnatural History 2" compilation, WORLN M04699.)
-
-     *  I'm not totally happy with the spinning motion; I like the
-        acceleration and deceleration, but it often feels like it's going too
-        fast, or not naturally enough, or something.
-
-     *  However, the motion is better than that used by gears, superquadrics,
-        etc.; so maybe I should make them all share the same motion code.
  */
 
 #include <X11/Intrinsic.h>
@@ -82,6 +75,8 @@
 #define HACK_INIT	init_lament
 #define HACK_DRAW	draw_lament
 #define HACK_RESHAPE	reshape_lament
+#define HACK_HANDLE_EVENT lament_handle_event
+#define EVENT_MASK	PointerMotionMask
 #define lament_opts	xlockmore_opts
 #define DEFAULTS	"*delay:	10000   \n"	\
 			"*showFPS:      False   \n"     \
@@ -109,6 +104,8 @@ static argtype vars[] = {
 ModeSpecOpt lament_opts = {countof(opts), opts, countof(vars), vars, NULL};
 
 #include "xpm-ximage.h"
+#include "rotator.h"
+#include "gltrackball.h"
 #include "../images/lament.xpm"
 
 #define RAND(n) ((long) ((random() & 0x7fffffff) % ((long) (n))))
@@ -140,12 +137,24 @@ typedef enum {
 
 } lament_type;
 
-static GLfloat exterior_color[] = { 0.70, 0.60, 0.00, 1.00 };
-static GLfloat interior_color[] = { 0.25, 0.25, 0.20, 1.00 };
+static GLfloat exterior_color[] = { 0.33, 0.22, 0.03, 1.00,  /* ambient    */
+                                    0.78, 0.57, 0.11, 1.00,  /* specular   */
+                                    0.99, 0.91, 0.81, 1.00,  /* diffuse    */
+                                   27.80                     /* shininess  */
+                                  };
+static GLfloat interior_color[] = { 0.20, 0.20, 0.15, 1.00,  /* ambient    */
+                                    0.40, 0.40, 0.32, 1.00,  /* specular   */
+                                    0.99, 0.99, 0.81, 1.00,  /* diffuse    */
+                                   50.80                     /* shininess  */
+                                  };
 
 
 typedef struct {
   GLXContext *glx_context;
+  rotator *rot;
+  double rotx, roty, rotz;
+  trackball_state *trackball;
+  Bool button_down_p;
 
   GLuint box;			   /* display list IDs */
   GLuint star1, star2;
@@ -153,10 +162,6 @@ typedef struct {
   GLuint lid_0, lid_1, lid_2, lid_3, lid_4;
   GLuint taser_base, taser_lifter, taser_slider;
 
-  GLfloat rotx, roty, rotz;	   /* current object rotation */
-  GLfloat dx, dy, dz;		   /* current rotational velocity */
-  GLfloat ddx, ddy, ddz;	   /* current rotational acceleration */
-  GLfloat d_max;		   /* max velocity */
   XImage *texture;		   /* image bits */
   GLuint texids[6];		   /* texture map IDs */
   lament_type type;		   /* which mode of the object is current */
@@ -186,95 +191,95 @@ parse_image_data(ModeInfo *mi)
 }
 
 
-/* Computing normal vectors (thanks to Nat Friedman <ndf@mit.edu>)
+typedef struct {
+  double x,y,z;
+} XYZ;
+
+static void
+normalize (XYZ *p)
+{
+  double length;
+  length = sqrt (p->x * p->x +
+                 p->y * p->y +
+                 p->z * p->z);
+  if (length != 0)
+    {
+      p->x /= length;
+      p->y /= length;
+      p->z /= length;
+    }
+  else
+    {
+      p->x = 0;
+      p->y = 0;
+      p->z = 0;
+    }
+}
+
+/* Calculate the unit normal at p given two other points p1,p2 on the
+   surface. The normal points in the direction of p1 crossproduct p2
  */
-
-typedef struct vector {
-  GLfloat x, y, z;
-} vector;
-
-typedef struct plane {
-  vector p1, p2, p3;
-} plane;
-
-static void
-vector_set(vector *v, GLfloat x, GLfloat y, GLfloat z)
+static XYZ
+calc_normal (XYZ p, XYZ p1, XYZ p2)
 {
-  v->x = x;
-  v->y = y;
-  v->z = z;
+  XYZ n, pa, pb;
+  pa.x = p1.x - p.x;
+  pa.y = p1.y - p.y;
+  pa.z = p1.z - p.z;
+  pb.x = p2.x - p.x;
+  pb.y = p2.y - p.y;
+  pb.z = p2.z - p.z;
+  n.x = pa.y * pb.z - pa.z * pb.y;
+  n.y = pa.z * pb.x - pa.x * pb.z;
+  n.z = pa.x * pb.y - pa.y * pb.x;
+  normalize (&n);
+  return (n);
 }
 
-static void
-vector_cross(vector v1, vector v2, vector *v3)
-{
-  v3->x = (v1.y * v2.z) - (v1.z * v2.y);
-  v3->y = (v1.z * v2.x) - (v1.x * v2.z);
-  v3->z = (v1.x * v2.y) - (v1.y * v2.x);
-}
-
-static void
-vector_subtract(vector v1, vector v2, vector *res)
-{
-  res->x = v1.x - v2.x;
-  res->y = v1.y - v2.y;
-  res->z = v1.z - v2.z;
-}
-
-static void
-plane_normal(plane p, vector *n)
-{
-  vector v1, v2;
-  vector_subtract(p.p1, p.p2, &v1);
-  vector_subtract(p.p1, p.p3, &v2);
-  vector_cross(v2, v1, n);
-}
 
 static void
 do_normal(GLfloat x1, GLfloat y1, GLfloat z1,
 	  GLfloat x2, GLfloat y2, GLfloat z2,
 	  GLfloat x3, GLfloat y3, GLfloat z3)
 {
-  plane plane;
-  vector n;
-  vector_set(&plane.p1, x1, y1, z1);
-  vector_set(&plane.p2, x2, y2, z2);
-  vector_set(&plane.p3, x3, y3, z3);
-  plane_normal(plane, &n);
-  n.x = -n.x; n.y = -n.y; n.z = -n.z;
+  XYZ p1, p2, p3, p;
+  p1.x = x1; p1.y = y1; p1.z = z1;
+  p2.x = x2; p2.y = y2; p2.z = z2;
+  p3.x = x3; p3.y = y3; p3.z = z3;
 
-  glNormal3f(n.x, n.y, n.z);
+  p = calc_normal (p1, p2, p3);
+
+  glNormal3f (p.x, p.y, p.z);
 
 #ifdef DEBUG
   /* Draw a line in the direction of this face's normal. */
   {
-    GLfloat ax = n.x > 0 ? n.x : -n.x;
-    GLfloat ay = n.y > 0 ? n.y : -n.y;
-    GLfloat az = n.z > 0 ? n.z : -n.z;
-    GLfloat mx = (x1 + x2 + x3) / 3;
-    GLfloat my = (y1 + y2 + y3) / 3;
-    GLfloat mz = (z1 + z2 + z3) / 3;
-    GLfloat xx, yy, zz;
-
-    GLfloat max = ax > ay ? ax : ay;
-    if (az > max) max = az;
-    max *= 2;
-    xx = n.x / max;
-    yy = n.y / max;
-    zz = n.z / max;
-
+    glPushMatrix();
+    glTranslatef ((x1 + x2 + x3) / 3,
+                  (y1 + y2 + y3) / 3,
+                  (z1 + z2 + z3) / 3);
+    glScalef (0.5, 0.5, 0.5);
     glBegin(GL_LINE_LOOP);
-    glVertex3f(mx, my, mz);
-    glVertex3f(mx+xx, my+yy, mz+zz);
+    glVertex3f(0, 0, 0);
+    glVertex3f(p.x, p.y, p.z);
     glEnd();
+    glPopMatrix();
   }
 #endif /* DEBUG */
 }
 
-
 
 /* Shorthand utilities for making faces, with proper normals.
  */
+
+static void
+set_colors (GLfloat *color)
+{
+  glMaterialfv(GL_FRONT, GL_AMBIENT, color+0);
+  glMaterialfv(GL_FRONT, GL_DIFFUSE, color+4);
+  glMaterialfv(GL_FRONT, GL_SPECULAR, color+8);
+  glMaterialfv(GL_FRONT, GL_SHININESS, color+12);
+}
 
 static void
 face3(GLint texture, GLfloat *color, Bool wire,
@@ -285,7 +290,8 @@ face3(GLint texture, GLfloat *color, Bool wire,
 #ifdef HAVE_GLBINDTEXTURE
   glBindTexture(GL_TEXTURE_2D, texture);
 #endif /* HAVE_GLBINDTEXTURE */
-  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
+  set_colors(color);
+
   do_normal(x1, y1, z1,  x2, y2, z2,  x3, y3, z3);
   glBegin(wire ? GL_LINE_LOOP : GL_TRIANGLES);
   glTexCoord2f(s1, t1); glVertex3f(x1, y1, z1);
@@ -304,7 +310,7 @@ face4(GLint texture, GLfloat *color, Bool wire,
 #ifdef HAVE_GLBINDTEXTURE
   glBindTexture(GL_TEXTURE_2D, texture);
 #endif /* HAVE_GLBINDTEXTURE */
-  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
+  set_colors(color);
   do_normal(x1, y1, z1,  x2, y2, z2,  x3, y3, z3);
   glBegin(wire ? GL_LINE_LOOP : GL_QUADS);
   glTexCoord2f(s1, t1); glVertex3f(x1, y1, z1);
@@ -325,7 +331,7 @@ face5(GLint texture, GLfloat *color, Bool wire,
 #ifdef HAVE_GLBINDTEXTURE
   glBindTexture(GL_TEXTURE_2D, texture);
 #endif /* HAVE_GLBINDTEXTURE */
-  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, color);
+  set_colors(color);
   do_normal(x1, y1, z1,  x2, y2, z2,  x3, y3, z3);
   glBegin(wire ? GL_LINE_LOOP : GL_POLYGON);
   glTexCoord2f(s1, t1); glVertex3f(x1, y1, z1);
@@ -542,7 +548,7 @@ star(ModeInfo *mi, Bool top, Bool wire)
 #ifdef HAVE_GLBINDTEXTURE
   glBindTexture(GL_TEXTURE_2D, lc->texids[top ? FACE_U : FACE_D]);
 #endif /* HAVE_GLBINDTEXTURE */
-  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, exterior_color);
+  set_colors(exterior_color);
 
   i = 1;
   do_normal(points[i+0][0], points[i+0][1], 0,
@@ -564,7 +570,7 @@ star(ModeInfo *mi, Bool top, Bool wire)
 #ifdef HAVE_GLBINDTEXTURE
   glBindTexture(GL_TEXTURE_2D, 0);
 #endif /* HAVE_GLBINDTEXTURE */
-  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, interior_color);
+  set_colors(interior_color);
 
   i = countof(points) - 9;
   do_normal(points[i+0][0], points[i+0][1], 0,
@@ -1010,7 +1016,7 @@ taser(ModeInfo *mi, Bool wire)
 #ifdef HAVE_GLBINDTEXTURE
       glBindTexture(GL_TEXTURE_2D, lc->texids[FACE_E]);
 #endif /* HAVE_GLBINDTEXTURE */
-      glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, exterior_color);
+      set_colors(exterior_color);
 
       do_normal(0, body_face_points[(i*5)+0][0], body_face_points[(i*5)+0][1],
 		0, body_face_points[(i*5)+1][0], body_face_points[(i*5)+1][1],
@@ -1135,7 +1141,7 @@ taser(ModeInfo *mi, Bool wire)
 #ifdef HAVE_GLBINDTEXTURE
       glBindTexture(GL_TEXTURE_2D, lc->texids[FACE_E]);
 #endif /* HAVE_GLBINDTEXTURE */
-      glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, exterior_color);
+      set_colors(exterior_color);
 
       do_normal(
          0, lifter_face_points[(i*5)+0][0], lifter_face_points[(i*5)+0][1],
@@ -1273,7 +1279,7 @@ taser(ModeInfo *mi, Bool wire)
 #ifdef HAVE_GLBINDTEXTURE
       glBindTexture(GL_TEXTURE_2D, lc->texids[FACE_E]);
 #endif /* HAVE_GLBINDTEXTURE */
-      glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, exterior_color);
+      set_colors(exterior_color);
 
       do_normal(
 	   0, slider_face_points[(i*5)+0][0], slider_face_points[(i*5)+0][1],
@@ -1302,7 +1308,7 @@ taser(ModeInfo *mi, Bool wire)
 #ifdef HAVE_GLBINDTEXTURE
       glBindTexture(GL_TEXTURE_2D, 0);
 #endif /* HAVE_GLBINDTEXTURE */
-      glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, interior_color);
+      set_colors(interior_color);
 
       do_normal(
 	   0, slider_face_points[(i*5)+2][0], slider_face_points[(i*5)+2][1],
@@ -1385,6 +1391,39 @@ taser(ModeInfo *mi, Bool wire)
 /* Rendering and animating object models
  */
 
+Bool
+lament_handle_event (ModeInfo *mi, XEvent *event)
+{
+  lament_configuration *lc = &lcs[MI_SCREEN(mi)];
+
+  if (event->xany.type == ButtonPress &&
+      event->xbutton.button & Button1)
+    {
+      lc->button_down_p = True;
+      gltrackball_start (lc->trackball,
+                         event->xbutton.x, event->xbutton.y,
+                         MI_WIDTH (mi), MI_HEIGHT (mi));
+      return True;
+    }
+  else if (event->xany.type == ButtonRelease &&
+           event->xbutton.button & Button1)
+    {
+      lc->button_down_p = False;
+      return True;
+    }
+  else if (event->xany.type == MotionNotify &&
+           lc->button_down_p)
+    {
+      gltrackball_track (lc->trackball,
+                         event->xmotion.x, event->xmotion.y,
+                         MI_WIDTH (mi), MI_HEIGHT (mi));
+      return True;
+    }
+
+  return False;
+}
+
+
 static void
 draw(ModeInfo *mi)
 {
@@ -1397,24 +1436,14 @@ draw(ModeInfo *mi)
     glClear(GL_COLOR_BUFFER_BIT);
 
   glPushMatrix();
-  {
-    GLfloat x = lc->rotx;
-    GLfloat y = lc->roty;
-    GLfloat z = lc->rotz;
 
-#if 0
- x=0.75; y=0; z=0; 
-#endif
+  gltrackball_rotate (lc->trackball);
 
-    if (x < 0) x = 1 - (x + 1);
-    if (y < 0) y = 1 - (y + 1);
-    if (z < 0) z = 1 - (z + 1);
+  /* Make into the screen be +Y right be +X, and up be +Z. */
+  glRotatef(-90.0, 1.0, 0.0, 0.0);
 
-    /* Make into the screen be +Y right be +X, and up be +Z. */
-    glRotatef(-90.0, 1.0, 0.0, 0.0);
-
-    /* Scale it up. */
-    glScalef(4.0, 4.0, 4.0);
+  /* Scale it up. */
+  glScalef(4.0, 4.0, 4.0);
 
 #ifdef DEBUG
     glPushMatrix();
@@ -1440,9 +1469,12 @@ draw(ModeInfo *mi)
     glPushMatrix();
     {
       /* Apply rotation to the object. */
-      glRotatef(x * 360, 1.0, 0.0, 0.0);
-      glRotatef(y * 360, 0.0, 1.0, 0.0);
-      glRotatef(z * 360, 0.0, 0.0, 1.0);
+      if (lc->type != LAMENT_LID_ZOOM)
+        get_rotation (lc->rot, &lc->rotx, &lc->roty, &lc->rotz,
+                      !lc->button_down_p);
+      glRotatef (lc->rotx * 360, 1.0, 0.0, 0.0);
+      glRotatef (lc->roty * 360, 0.0, 1.0, 0.0);
+      glRotatef (lc->rotz * 360, 0.0, 0.0, 1.0);
 
       switch (lc->type)
 	{
@@ -1552,7 +1584,6 @@ draw(ModeInfo *mi)
     }
     glPopMatrix();
 
-  }
   glPopMatrix();
 }
 
@@ -1746,9 +1777,6 @@ animate(ModeInfo *mi)
 	{
 	  lc->anim_r = 0.0;
 	  lc->anim_z = 0.0;
-	  lc->rotx = frand(1.0) * RANDSIGN();
-	  lc->roty = frand(1.0) * RANDSIGN();
-	  lc->rotz = frand(1.0) * RANDSIGN();
 	  lc->type = LAMENT_BOX;
 	}
       break;
@@ -1802,73 +1830,6 @@ animate(ModeInfo *mi)
 }
 
 
-static void
-rotate(GLfloat *pos, GLfloat *v, GLfloat *dv, GLfloat max_v)
-{
-  double ppos = *pos;
-
-  /* tick position */
-  if (ppos < 0)
-    ppos = -(ppos + *v);
-  else
-    ppos += *v;
-
-  if (ppos > 1.0)
-    ppos -= 1.0;
-  else if (ppos < 0)
-    ppos += 1.0;
-
-  if (ppos < 0) abort();
-  if (ppos > 1.0) abort();
-  *pos = (*pos > 0 ? ppos : -ppos);
-
-  /* accelerate */
-  *v += *dv;
-
-  /* clamp velocity */
-  if (*v > max_v || *v < -max_v)
-    {
-      *dv = -*dv;
-    }
-  /* If it stops, start it going in the other direction. */
-  else if (*v < 0)
-    {
-      if (random() % 4)
-	{
-	  *v = 0;
-
-	  /* keep going in the same direction */
-	  if (random() % 2)
-	    *dv = 0;
-	  else if (*dv < 0)
-	    *dv = -*dv;
-	}
-      else
-	{
-	  /* reverse gears */
-	  *v = -*v;
-	  *dv = -*dv;
-	  *pos = -*pos;
-	}
-    }
-
-  /* Alter direction of rotational acceleration randomly. */
-  if (! (random() % 120))
-    *dv = -*dv;
-
-  /* Change acceleration very occasionally. */
-  if (! (random() % 200))
-    {
-      if (*dv == 0)
-	*dv = 0.00001;
-      else if (random() & 1)
-	*dv *= 1.2;
-      else
-	*dv *= 0.8;
-    }
-}
-
-
 
 /* Window management, etc
  */
@@ -1900,7 +1861,7 @@ reshape_lament(ModeInfo *mi, int width, int height)
      Note that the image-map bits we have are 128x128.  Therefore, if the
      image is magnified a lot, it looks pretty blocky.  So it's better to
      have a 128x128 animation on a 1280x1024 screen that looks good, than
-     a 1024x1024 animation that looks really pixellated.
+     a 1024x1024 animation that looks really pixelated.
    */
   if (win_size > target_size * 1.5)
     {
@@ -1927,31 +1888,26 @@ gl_init(ModeInfo *mi)
 
   if (!wire)
     {
-      static GLfloat pos0[]  = { -4.0, 2.0, 5.0, 1.0 };
-      static GLfloat pos1[]  = { 12.0, 5.0, 1.0, 1.0 };
-      static GLfloat local[] = { 0.0 };
-      static GLfloat ambient[] = { 0.3, 0.3, 0.3, 1.0 };
-      static GLfloat spec[] = { 1.0, 1.0, 1.0, 1.0 };
-      static GLfloat shine[] = { 100.0 };
+      static GLfloat pos0[]  = { -4.0,  2.0, 5.0, 1.0 };
+      static GLfloat pos1[]  = {  6.0, -1.0, 3.0, 1.0 };
+
+      static GLfloat amb0[]  = { 0.7, 0.7, 0.7, 1.0 };
+/*    static GLfloat amb1[]  = { 0.7, 0.0, 0.0, 1.0 }; */
+      static GLfloat dif0[]  = { 1.0, 1.0, 1.0, 1.0 };
+      static GLfloat dif1[]  = { 0.3, 0.1, 0.1, 1.0 };
 
       glLightfv(GL_LIGHT0, GL_POSITION, pos0);
       glLightfv(GL_LIGHT1, GL_POSITION, pos1);
 
-      glLightfv(GL_LIGHT0, GL_AMBIENT, ambient);
-      glLightfv(GL_LIGHT1, GL_AMBIENT, ambient);
-
-      glLightfv(GL_LIGHT0, GL_SPECULAR, spec);
-      glLightfv(GL_LIGHT1, GL_SPECULAR, spec);
-
-      glLightModelfv(GL_LIGHT_MODEL_LOCAL_VIEWER, local);
-      glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, exterior_color);
-      glMaterialfv(GL_FRONT, GL_SPECULAR, spec);
-      glMaterialfv(GL_FRONT, GL_SHININESS, shine);
+      glLightfv(GL_LIGHT0, GL_AMBIENT,  amb0);
+/*    glLightfv(GL_LIGHT1, GL_AMBIENT,  amb1); */
+      glLightfv(GL_LIGHT0, GL_DIFFUSE,  dif0);
+      glLightfv(GL_LIGHT1, GL_DIFFUSE,  dif1);
+      set_colors(exterior_color);
 
       glEnable(GL_LIGHTING);
       glEnable(GL_LIGHT0);
-      glEnable(GL_LIGHT1);
-      glDisable(GL_LIGHT1);
+/*    glEnable(GL_LIGHT1); */
 
       glEnable(GL_DEPTH_TEST);
       glEnable(GL_TEXTURE_2D);
@@ -1975,12 +1931,14 @@ gl_init(ModeInfo *mi)
 	{
 	  int height = lc->texture->width;	/* assume square */
 	  glBindTexture(GL_TEXTURE_2D, lc->texids[i]);
-	  glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, exterior_color);
+	  set_colors(exterior_color);
 
           clear_gl_error();
 	  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
 		       lc->texture->width, height, 0,
-		       GL_RGBA, GL_UNSIGNED_BYTE,
+		       GL_RGBA,
+                       /* GL_UNSIGNED_BYTE, */
+                       GL_UNSIGNED_INT_8_8_8_8_REV,
 		       (lc->texture->data +
 			(lc->texture->bytes_per_line * height * i)));
           check_gl_error("texture");
@@ -2040,14 +1998,13 @@ lament_signal_kludge (int sig)
            "\n"
            "%s: dying with signal %d (%s).\n"
            "\n"
-           "\tThis is almost certainly a bug in the MesaGL library,\n"
+           "\tThis is almost certainly a bug in the Mesa GL library,\n"
            "\tespecially if the stack trace in the core file mentions\n"
            "\t`lambda_textured_triangle' or `render_quad'.\n"
            "\n"
-           "\tI encourage you to report this to the Mesa maintainers\n"
-           "\tat <http://www.mesa3d.org/>.  I reported this bug more\n"
-           "\tthan a year ago, and it is trivially reproducible.\n"
-           "\tI do not know a workaround.\n"
+           "\tFirst make sure that you have the latest version of Mesa.\n"
+           "\tIf that doesn't fix it, then I encourage you to report this\n"
+           "\tbug to the Mesa maintainers at <http://www.mesa3d.org/>.\n"
            "\n",
            progname,
            sig,
@@ -2087,24 +2044,11 @@ init_lament(ModeInfo *mi)
 
   lc = &lcs[MI_SCREEN(mi)];
 
-  lc->rotx = frand(1.0) * RANDSIGN();
-  lc->roty = frand(1.0) * RANDSIGN();
-  lc->rotz = frand(1.0) * RANDSIGN();
-
-  /* bell curve from 0-1.5 degrees, avg 0.75 */
-  lc->dx = (frand(1) + frand(1) + frand(1)) / (360*2);
-  lc->dy = (frand(1) + frand(1) + frand(1)) / (360*2);
-  lc->dz = (frand(1) + frand(1) + frand(1)) / (360*2);
-
-  lc->d_max = lc->dx * 2;
-
-  lc->ddx = 0.00006 + frand(0.00003);
-  lc->ddy = 0.00006 + frand(0.00003);
-  lc->ddz = 0.00006 + frand(0.00003);
-
-  lc->ddx = 0.00001;
-  lc->ddy = 0.00001;
-  lc->ddz = 0.00001;
+  {
+    double rot_speed = 0.5;
+    lc->rot = make_rotator (rot_speed, rot_speed, rot_speed, 1, 0, True);
+    lc->trackball = gltrackball_init ();
+  }
 
   lc->type = LAMENT_BOX;
   lc->anim_pause = 300 + (random() % 100);
@@ -2139,13 +2083,6 @@ draw_lament(ModeInfo *mi)
 
   glFinish();
   glXSwapBuffers(dpy, window);
-
-  if (lc->type != LAMENT_LID_ZOOM)
-    {
-      rotate(&lc->rotx, &lc->dx, &lc->ddx, lc->d_max);
-      rotate(&lc->roty, &lc->dy, &lc->ddy, lc->d_max);
-      rotate(&lc->rotz, &lc->dz, &lc->ddz, lc->d_max);
-    }
 
   if (lc->anim_pause)
     lc->anim_pause--;

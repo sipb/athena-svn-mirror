@@ -16,6 +16,14 @@
 
 #include "config.h"
 
+/* ******************************   NOTE   ******************************
+
+     This is not the xlockmore version of forest, but a much better
+     looking rewrite.  Be careful not to delete it in a merging frenzy...
+
+   **********************************************************************
+ */
+
 #ifdef STANDALONE
 # define PROGCLASS          "Forest" /*"XTree"*/
 # define HACK_INIT          init_trees

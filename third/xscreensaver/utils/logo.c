@@ -1,4 +1,4 @@
-/* xscreensaver, Copyright (c) 2001 Jamie Zawinski <jwz@jwz.org>
+/* xscreensaver, Copyright (c) 2001-2002, 2003 Jamie Zawinski <jwz@jwz.org>
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
  * documentation for any purpose is hereby granted without fee, provided that
@@ -29,12 +29,13 @@
 
 #include "utils.h"
 #include "resources.h"
+#include "visual.h"
 
 #include <stdio.h>
 #include <X11/Xutil.h>
 
-#include "logo-50.xpm"
-#include "logo-180.xpm"
+#include "images/logo-50.xpm"
+#include "images/logo-180.xpm"
 
 static const char hex[128] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                               0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -48,13 +49,14 @@ static const char hex[128] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 static XImage *
 parse_xpm_data (Display *dpy, Visual *visual, Colormap colormap, int depth,
                 unsigned long transparent_color,
-                unsigned const char * const * data,
+                const char * const * data,
                 int *width_ret, int *height_ret,
-                unsigned long **pixels_ret, int *npixels_ret)
+                unsigned long **pixels_ret, int *npixels_ret,
+                unsigned char **mask_ret)
 {
-  int w, h, ncolors, nbytes;
+  int w, w8, h, ncolors, nbytes;
   char c;
-  int i;
+  int i, pixel_count;
   struct {
     char byte;
     int cr; int cg; int cb;
@@ -65,16 +67,30 @@ parse_xpm_data (Display *dpy, Visual *visual, Colormap colormap, int depth,
   unsigned long *pixels;
   XImage *ximage = 0;
 
-  if (4 != sscanf (*data, "%d %d %d %d %c", &w, &h, &ncolors, &nbytes, &c))
+  if (4 != sscanf ((const char *) *data,
+                   "%d %d %d %d %c", &w, &h, &ncolors, &nbytes, &c))
     abort();
   if (ncolors < 1 || ncolors > 255)
     abort();
   if (nbytes != 1)
     abort();
   data++;
+
+  w8 = (w + 8) / 8;
+
+  if (mask_ret)
+    {
+      int s = (w8 * h) + 1;
+      *mask_ret = (unsigned char *) malloc (s);
+      if (!*mask_ret)
+        mask_ret = 0;
+      else
+        memset (*mask_ret, 255, s);
+    }
+
   for (i = 0; i < ncolors; i++)
     {
-      const unsigned char *line = *data;
+      const char *line = *data;
       cmap[i].byte = *line++;
       while (*line)
         {
@@ -121,6 +137,7 @@ parse_xpm_data (Display *dpy, Visual *visual, Colormap colormap, int depth,
   if (depth == 1) transparent_color = 1;
 
   pixels = (unsigned long *) calloc (ncolors+1, sizeof(*pixels));
+  pixel_count = 0;
   for (i = 0; i < ncolors; i++)
     {
       if (cmap[i].cr == -1) /* transparent */
@@ -137,10 +154,15 @@ parse_xpm_data (Display *dpy, Visual *visual, Colormap colormap, int depth,
           if (depth == 1 ||
               !XAllocColor (dpy, colormap, &color))
             {
-              color.pixel = (cmap[i].mr ? 1 : 0);
+              color.red   = (cmap[i].mr << 8) | cmap[i].mr;
+              color.green = (cmap[i].mg << 8) | cmap[i].mg;
+              color.blue  = (cmap[i].mb << 8) | cmap[i].mb;
+              if (!XAllocColor (dpy, colormap, &color))
+                abort();
             }
-          pixels[i] = color.pixel;
-          rmap[(int) cmap[i].byte] = i;
+          pixels[pixel_count] = color.pixel;
+          rmap[(int) cmap[i].byte] = pixel_count;
+          pixel_count++;
         }
     }
 
@@ -150,16 +172,19 @@ parse_xpm_data (Display *dpy, Visual *visual, Colormap colormap, int depth,
   if (ximage)
     {
       int x, y;
-      ximage->data = (char *)
-        calloc ( ximage->height, ximage->bytes_per_line);
+      ximage->data = (char *) calloc (ximage->height, ximage->bytes_per_line);
       for (y = 0; y < h; y++)
         {
-          const unsigned char *line = *data++;
+          const char *line = *data++;
           for (x = 0; x < w; x++)
             {
-              int p = rmap[*line++];
+              int p = rmap[(int) *line];
+              line++;
               XPutPixel (ximage, x, y,
                          (p == 255 ? transparent_color : pixels[p]));
+
+              if (p == 255 && mask_ret)
+                (*mask_ret)[(y * w8) + (x >> 3)] &= (~(1 << (x % 8)));
             }
         }
     }
@@ -167,41 +192,53 @@ parse_xpm_data (Display *dpy, Visual *visual, Colormap colormap, int depth,
   *width_ret = w;
   *height_ret = h;
   *pixels_ret = pixels;
-  *npixels_ret = ncolors;
+  *npixels_ret = pixel_count;
   return ximage;
 }
 
 
 
-/* Draws the logo centered in the given Drawable (presumably a Pixmap.)
-   next_frame_p means randomize the flame shape.
+/* Returns a pixmap of the xscreensaver logo.
  */
 Pixmap
-xscreensaver_logo (Display *dpy, Window window, Colormap cmap,
+xscreensaver_logo (Screen *screen, Visual *visual,
+                   Drawable drawable, Colormap cmap,
                    unsigned long background_color,
                    unsigned long **pixels_ret, int *npixels_ret,
+                   Pixmap *mask_ret,
                    Bool big_p)
 {
-  int npixels, iw, ih;
-  unsigned long *pixels;
+  Display *dpy = DisplayOfScreen (screen);
+  int depth = visual_depth (screen, visual);
+  int iw, ih;
   XImage *image;
   Pixmap p = 0;
-  XWindowAttributes xgwa;
-  XGetWindowAttributes (dpy, window, &xgwa);
+  unsigned char *mask = 0;
 
-  image = parse_xpm_data (dpy, xgwa.visual, xgwa.colormap, xgwa.depth,
-                          background_color,
+  image = parse_xpm_data (dpy, visual, cmap, depth, background_color,
                           (big_p ? logo_180_xpm : logo_50_xpm),
-                          &iw, &ih, &pixels, &npixels);
+                          &iw, &ih, pixels_ret, npixels_ret,
+                          (mask_ret ? &mask : 0));
+
   if (image)
     {
       XGCValues gcv;
       GC gc;
-      p = XCreatePixmap (dpy, window, iw, ih, xgwa.depth);
+      p = XCreatePixmap (dpy, drawable, iw, ih, depth);
       gc = XCreateGC (dpy, p, 0, &gcv);
       XPutImage (dpy, p, gc, image, 0, 0, 0, 0, iw, ih);
+      free (image->data);
+      image->data = 0;
       XDestroyImage (image);
       XFreeGC (dpy, gc);
+
+      if (mask_ret && mask)
+        {
+          *mask_ret = (Pixmap)
+            XCreatePixmapFromBitmapData (dpy, drawable, (char *) mask,
+                                         iw, ih, 1L, 0L, 1);
+          free (mask);
+        }
     }
   return p;
 }

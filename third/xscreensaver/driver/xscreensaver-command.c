@@ -1,5 +1,4 @@
-/* xscreensaver-command, Copyright (c) 1991-2001
- *  by Jamie Zawinski <jwz@jwz.org>
+/* xscreensaver-command, Copyright (c) 1991-2003 Jamie Zawinski <jwz@jwz.org>
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
  * documentation for any purpose is hereby granted without fee, provided that
@@ -16,6 +15,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <sys/time.h>
 #include <sys/types.h>
 
@@ -48,11 +48,16 @@ static Atom XA_ACTIVATE, XA_DEACTIVATE, XA_CYCLE, XA_NEXT, XA_PREV;
 static Atom XA_RESTART, XA_PREFS, XA_THROTTLE, XA_UNTHROTTLE;
 
 static char *screensaver_version;
+# ifdef __GNUC__
+  __extension__   /* don't warn about "string length is greater than the
+                     length ISO C89 compilers are required to support" in the
+                     usage string... */
+# endif
 static char *usage = "\n\
 usage: %s -<option>\n\
 \n\
   This program provides external control of a running xscreensaver process.\n\
-  Version %s, copyright (c) 1991-2001 Jamie Zawinski <jwz@jwz.org>.\n\
+  Version %s, copyright (c) 1991-2003 Jamie Zawinski <jwz@jwz.org>.\n\
 \n\
   The xscreensaver program is a daemon that runs in the background.\n\
   You control a running xscreensaver process by sending it messages\n\
@@ -402,7 +407,7 @@ watch (Display *dpy)
               if (running && changed)
                 {
                   int i;
-                  fprintf (stdout, "RUN", s);
+                  fprintf (stdout, "RUN");
                   for (i = 2; i < nitems; i++)
                     fprintf (stdout, " %d", (int) data[i]);
                   fprintf (stdout, "\n");

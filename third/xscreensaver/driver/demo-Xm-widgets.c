@@ -1,5 +1,5 @@
 /* demo-Xm.c --- implements the interactive demo-mode and options dialogs.
- * xscreensaver, Copyright (c) 1999 Jamie Zawinski <jwz@jwz.org>
+ * xscreensaver, Copyright (c) 1999, 2003 Jamie Zawinski <jwz@jwz.org>
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
  * documentation for any purpose is hereby granted without fee, provided that
@@ -46,6 +46,7 @@
 #endif /* HAVE_XMCOMBOBOX */
 
 #include <stdio.h>
+#include <stdlib.h>
 
 
 
@@ -69,7 +70,7 @@ tab_cb (Widget button, XtPointer client_data, XtPointer ignored)
   Cardinal nkids = 0;
   if (!tabber) abort();
   
-  XtVaGetValues (tabber, XmNnumChildren, &nkids, XmNchildren, &kids, 0);
+  XtVaGetValues (tabber, XmNnumChildren, &nkids, XmNchildren, &kids, NULL);
   if (!kids) abort();
   if (nkids > 0)
     XtUnmanageChildren (kids, nkids);
@@ -104,7 +105,7 @@ create_xscreensaver_demo (Widget parent)
                  XmNtopAttachment, XmATTACH_FORM,
                  XmNleftAttachment, XmATTACH_FORM,
                  XmNrightAttachment, XmATTACH_FORM,
-                 0);
+                 NULL);
 
   {
     Widget menu = 0, item = 0;
@@ -127,7 +128,7 @@ create_xscreensaver_demo (Widget parent)
             item = XmCreateCascadeButtonGadget (menubar, menus[i]+1, av, ac);
 
             if (!strcmp (menus[i]+1, "help"))
-              XtVaSetValues(menubar, XmNmenuHelpWidget, item, 0);
+              XtVaSetValues(menubar, XmNmenuHelpWidget, item, NULL);
           }
         XtManageChild (item);
       }
@@ -139,7 +140,7 @@ create_xscreensaver_demo (Widget parent)
                  XmNleftAttachment, XmATTACH_FORM,
                  XmNtopAttachment, XmATTACH_WIDGET,
                  XmNtopWidget, menubar,
-                 0);
+                 NULL);
 
   options_tab = XmCreatePushButtonGadget (form, "optionsTab", av, ac);
   XtVaSetValues (options_tab,
@@ -149,7 +150,7 @@ create_xscreensaver_demo (Widget parent)
                  XmNtopWidget, demo_tab,
                  XmNbottomAttachment, XmATTACH_OPPOSITE_WIDGET,
                  XmNbottomWidget, demo_tab,
-                 0);
+                 NULL);
 
   hr = XmCreateSeparatorGadget (form, "hr", av, ac);
   XtVaSetValues (hr,
@@ -157,7 +158,7 @@ create_xscreensaver_demo (Widget parent)
                  XmNrightAttachment, XmATTACH_FORM,
                  XmNtopAttachment, XmATTACH_WIDGET,
                  XmNtopWidget, demo_tab,
-                 0);
+                 NULL);
 
   tabber = XmCreateForm (form, "folder", av, ac);
   XtVaSetValues (tabber,
@@ -166,7 +167,7 @@ create_xscreensaver_demo (Widget parent)
                  XmNleftAttachment, XmATTACH_FORM,
                  XmNrightAttachment, XmATTACH_FORM,
                  XmNbottomAttachment, XmATTACH_FORM,
-                 0);
+                 NULL);
 
   demos = create_demos_page (tabber);
   options = create_options_page (tabber);
@@ -233,7 +234,7 @@ create_demos_page (Widget parent)
                  XmNtopAttachment, XmATTACH_FORM,
                  XmNleftAttachment, XmATTACH_FORM,
                  XmNbottomAttachment, XmATTACH_FORM,
-                 0);
+                 NULL);
 
   scroller = XmCreateScrolledWindow (form2, "scroller", av, ac);
   XtVaSetValues (scroller,
@@ -241,7 +242,7 @@ create_demos_page (Widget parent)
                  XmNleftAttachment, XmATTACH_FORM,
                  XmNrightAttachment, XmATTACH_FORM,
                  XmNbottomAttachment, XmATTACH_WIDGET,
-                 0);
+                 NULL);
   list = XmCreateList (scroller, "list", av, ac);
 
   buttonbox1 = XmCreateForm (form2, "buttonbox1", av, ac);
@@ -249,22 +250,22 @@ create_demos_page (Widget parent)
                  XmNleftAttachment, XmATTACH_FORM,
                  XmNrightAttachment, XmATTACH_FORM,
                  XmNbottomAttachment, XmATTACH_FORM,
-                 0);
-  XtVaSetValues (scroller, XmNbottomWidget, buttonbox1, 0);
+                 NULL);
+  XtVaSetValues (scroller, XmNbottomWidget, buttonbox1, NULL);
 
   down = XmCreatePushButton (buttonbox1, "down", av, ac);
   XtVaSetValues (down,
                  XmNleftAttachment, XmATTACH_FORM,
                  XmNtopAttachment, XmATTACH_FORM,
                  XmNbottomAttachment, XmATTACH_FORM,
-                 0);
+                 NULL);
   up = XmCreatePushButton (buttonbox1, "up", av, ac);
   XtVaSetValues (up,
                  XmNleftAttachment, XmATTACH_WIDGET,
                  XmNleftWidget, down,
                  XmNtopAttachment, XmATTACH_FORM,
                  XmNbottomAttachment, XmATTACH_FORM,
-                 0);
+                 NULL);
 
   form3 = XmCreateForm (form1, "form3", av, ac);
   XtVaSetValues (form3,
@@ -273,7 +274,7 @@ create_demos_page (Widget parent)
                  XmNleftWidget, form2,
                  XmNrightAttachment, XmATTACH_FORM,
                  XmNbottomAttachment, XmATTACH_FORM,
-                 0);
+                 NULL);
   frame = XmCreateFrame (form3, "frame", av, ac);
 
   ac = 0;
@@ -286,7 +287,7 @@ create_demos_page (Widget parent)
                  XmNleftAttachment, XmATTACH_FORM,
                  XmNrightAttachment, XmATTACH_FORM,
                  XmNbottomAttachment, XmATTACH_WIDGET,
-                 0);
+                 NULL);
 
   ac = 0;
   XtSetArg (av [ac], XmNchildType, XmFRAME_WORKAREA_CHILD); ac++;
@@ -299,45 +300,45 @@ create_demos_page (Widget parent)
                  XmNwordWrap, TRUE,
                  XmNeditMode, XmMULTI_LINE_EDIT,
                  XmNshadowThickness, 0,
-                 0);
+                 NULL);
 
   cmd_label = XmCreateLabelGadget (form3, "cmdLabel", av, ac);
   XtVaSetValues (cmd_label,
                  XmNleftAttachment, XmATTACH_FORM,
                  XmNrightAttachment, XmATTACH_FORM,
                  XmNbottomAttachment, XmATTACH_WIDGET,
-                 0);
-  XtVaSetValues (frame, XmNbottomWidget, cmd_label, 0);
+                 NULL);
+  XtVaSetValues (frame, XmNbottomWidget, cmd_label, NULL);
 
   cmd_text = XmCreateTextField (form3, "cmdText", av, ac);
   XtVaSetValues (cmd_text,
                  XmNleftAttachment, XmATTACH_FORM,
                  XmNrightAttachment, XmATTACH_FORM,
                  XmNbottomAttachment, XmATTACH_WIDGET,
-                 0);
-  XtVaSetValues (cmd_label, XmNbottomWidget, cmd_text, 0);
+                 NULL);
+  XtVaSetValues (cmd_label, XmNbottomWidget, cmd_text, NULL);
 
   form4 = XmCreateForm (form3, "form4", av, ac);
   XtVaSetValues (form4,
                  XmNleftAttachment, XmATTACH_FORM,
                  XmNrightAttachment, XmATTACH_FORM,
                  XmNbottomAttachment, XmATTACH_WIDGET,
-                 0);
-  XtVaSetValues (cmd_text, XmNbottomWidget, form4, 0);
+                 NULL);
+  XtVaSetValues (cmd_text, XmNbottomWidget, form4, NULL);
 
   enabled = XmCreateToggleButtonGadget (form4, "enabled", av, ac);
   XtVaSetValues (enabled,
                  XmNtopAttachment, XmATTACH_FORM,
                  XmNleftAttachment, XmATTACH_FORM,
                  XmNbottomAttachment, XmATTACH_FORM,
-                 0);
+                 NULL);
   vis_label = XmCreateLabelGadget (form4, "visLabel", av, ac);
   XtVaSetValues (vis_label,
                  XmNtopAttachment, XmATTACH_FORM,
                  XmNleftAttachment, XmATTACH_WIDGET,
                  XmNleftWidget, enabled,
                  XmNbottomAttachment, XmATTACH_FORM,
-                 0);
+                 NULL);
 #ifdef HAVE_XMCOMBOBOX
   {
     Widget list;
@@ -351,8 +352,8 @@ create_demos_page (Widget parent)
         XmComboBoxAddItem (combo, xs, 0, False);
         XmStringFree (xs);
       }
-    XtVaGetValues (combo, XmNlist, &list, 0);
-    XtVaSetValues (list, XmNvisibleItemCount, i, 0);
+    XtVaGetValues (combo, XmNlist, &list, NULL);
+    XtVaSetValues (list, XmNvisibleItemCount, i, NULL);
   }
 #else /* !HAVE_XMCOMBOBOX */
   {
@@ -383,36 +384,36 @@ create_demos_page (Widget parent)
                  XmNleftAttachment, XmATTACH_WIDGET,
                  XmNleftWidget, vis_label,
                  XmNbottomAttachment, XmATTACH_FORM,
-                 0);
+                 NULL);
 
   hr = XmCreateSeparatorGadget (form3, "hr", av, ac);
   XtVaSetValues (hr,
                  XmNleftAttachment, XmATTACH_FORM,
                  XmNrightAttachment, XmATTACH_FORM,
                  XmNbottomAttachment, XmATTACH_WIDGET,
-                 0);
-  XtVaSetValues (form4, XmNbottomWidget, hr, 0);
+                 NULL);
+  XtVaSetValues (form4, XmNbottomWidget, hr, NULL);
 
   buttonbox2 = XmCreateForm (form3, "buttonbox2", av, ac);
   XtVaSetValues (buttonbox2,
                  XmNleftAttachment, XmATTACH_FORM,
                  XmNrightAttachment, XmATTACH_FORM,
                  XmNbottomAttachment, XmATTACH_FORM,
-                 0);
-  XtVaSetValues (hr, XmNbottomWidget, buttonbox2, 0);
+                 NULL);
+  XtVaSetValues (hr, XmNbottomWidget, buttonbox2, NULL);
 
   demo = XmCreatePushButtonGadget (buttonbox2, "demo", av, ac);
   XtVaSetValues (demo,
                  XmNleftAttachment, XmATTACH_FORM,
                  XmNtopAttachment, XmATTACH_FORM,
                  XmNbottomAttachment, XmATTACH_FORM,
-                 0);
+                 NULL);
   man = XmCreatePushButtonGadget (buttonbox2, "man", av, ac);
   XtVaSetValues (man,
                  XmNrightAttachment, XmATTACH_FORM,
                  XmNtopAttachment, XmATTACH_FORM,
                  XmNbottomAttachment, XmATTACH_FORM,
-                 0);
+                 NULL);
 
   XtManageChild (demo);
   XtManageChild (man);
@@ -447,7 +448,7 @@ create_demos_page (Widget parent)
                  XmNrightAttachment, XmATTACH_FORM,
                  XmNtopAttachment, XmATTACH_FORM,
                  XmNbottomAttachment, XmATTACH_FORM,
-                 0);
+                 NULL);
 
   return form1;
 }
@@ -457,6 +458,111 @@ create_demos_page (Widget parent)
 static Widget
 create_options_page (Widget parent)
 {
+  /* This is what the layout is today:
+
+     Form (horizontal)
+       Label ("Saver Timeout")
+       Label ("Cycle Timeout")
+       Label ("Fade Duration")
+       Label ("Fade Ticks")
+       Label ("Lock Timeout")
+       Label ("Password Timeout")
+
+       Text (timeout)
+       Text (cycle)
+       Text (fade seconds)
+       Text (fade ticks)
+       Text (lock)
+       Text (passwd)
+
+       Toggle ("Verbose")
+       Toggle ("Install Colormap")
+       Toggle ("Fade Colormap")
+       Toggle ("Unfade Colormap")
+       Toggle ("Require Password")
+
+       HR
+       Button ("OK")
+       Button ("Cancel")
+   */
+
+  /* This is what it should be:
+
+     Form (horizontal)
+       Form (vertical) ("column1")
+         Frame
+           Label ("Blanking and Locking")
+           Form
+             Label ("Blank After")
+             Label ("Cycle After")
+             Text ("Blank After")
+             Text ("Cycle After")
+             HR
+             Checkbox ("Require Password")
+             Label ("Lock After")
+             Text ("Lock After")
+         Frame
+           Label ("Image Manipulation")
+           Form
+             Checkbox ("Grab Desktop Images")
+             Checkbox ("Grab Video Frames")
+             Checkbox ("Choose Random Image")
+             Text (pathname)
+             Button ("Browse")
+         Frame
+           Label ("Diagnostics")
+           Form
+             Checkbox ("Verbose Diagnostics")
+             Checkbox ("Display Subprocess Errors")
+             Checkbox ("Display Splash Screen at Startup")
+       Form (vertical) ("column2")
+         Frame
+           Label ("Display Power Management")
+           Form
+             Checkbox ("Power Management Enabled")
+             Label ("Standby After")
+             Label ("Suspend After")
+             Label ("Off After")
+             Text ("Standby After")
+             Text ("Suspend After")
+             Text ("Off After")
+         Frame
+           Label ("Colormaps")
+           Form
+             Checkbox ("Install Colormap")
+             HR
+             Checkbox ("Fade To Black When Blanking")
+             Checkbox ("Fade From Black When Unblanking")
+             Label ("Fade Duration")
+             Text ("Fade Duration")
+
+       timeoutLabel
+       cycleLabel
+       fadeSecondsLabel
+       fadeTicksLabel
+       lockLabel
+       passwdLabel
+
+       timeoutText
+       cycleText
+       fadeSecondsText
+       fadeTicksText
+       lockText
+       passwdText
+
+       verboseToggle
+       cmapToggle
+       fadeToggle
+       unfadeToggle
+       lockToggle
+
+       separator
+       OK
+       Cancel
+   */
+
+
+
   Arg av[64];
   int ac = 0;
   Widget children[100];
@@ -548,7 +654,7 @@ create_options_page (Widget parent)
                  XmNrightAttachment, XmATTACH_WIDGET,
                  XmNrightOffset, 4,
                  XmNrightWidget, timeout_text,
-                 0);
+                 NULL);
 
   XtVaSetValues (cycle_label,
                  XmNtopAttachment, XmATTACH_OPPOSITE_WIDGET,
@@ -562,7 +668,7 @@ create_options_page (Widget parent)
                  XmNrightAttachment, XmATTACH_WIDGET,
                  XmNrightOffset, 4,
                  XmNrightWidget, cycle_text,
-                 0);
+                 NULL);
 
   XtVaSetValues (fade_seconds_label,
                  XmNtopAttachment, XmATTACH_OPPOSITE_WIDGET,
@@ -576,7 +682,7 @@ create_options_page (Widget parent)
                  XmNrightAttachment, XmATTACH_WIDGET,
                  XmNrightOffset, 4,
                  XmNrightWidget, fade_text,
-                 0);
+                 NULL);
 
   XtVaSetValues (fade_ticks_label,
                  XmNtopAttachment, XmATTACH_OPPOSITE_WIDGET,
@@ -590,7 +696,7 @@ create_options_page (Widget parent)
                  XmNrightAttachment, XmATTACH_WIDGET,
                  XmNrightOffset, 4,
                  XmNrightWidget, fade_ticks_text,
-                 0);
+                 NULL);
 
   XtVaSetValues (lock_label,
                  XmNtopAttachment, XmATTACH_OPPOSITE_WIDGET,
@@ -604,7 +710,7 @@ create_options_page (Widget parent)
                  XmNrightAttachment, XmATTACH_WIDGET,
                  XmNrightOffset, 4,
                  XmNrightWidget, lock_timeout_text,
-                 0);
+                 NULL);
 
   XtVaSetValues (passwd_label,
                  XmNtopAttachment, XmATTACH_OPPOSITE_WIDGET,
@@ -618,14 +724,14 @@ create_options_page (Widget parent)
                  XmNrightAttachment, XmATTACH_WIDGET,
                  XmNrightOffset, 4,
                  XmNrightWidget, passwd_timeout_text,
-                 0);
+                 NULL);
 
   XtVaSetValues (timeout_text,
                  XmNtopAttachment, XmATTACH_FORM,
                  XmNtopOffset, 4,
                  XmNleftAttachment, XmATTACH_FORM,
                  XmNleftOffset, 141,
-                 0);
+                 NULL);
 
   XtVaSetValues (cycle_text,
                  XmNtopAttachment, XmATTACH_WIDGET,
@@ -634,7 +740,7 @@ create_options_page (Widget parent)
                  XmNleftAttachment, XmATTACH_OPPOSITE_WIDGET,
                  XmNleftOffset, 0,
                  XmNleftWidget, timeout_text,
-                 0);
+                 NULL);
 
   XtVaSetValues (fade_text,
                  XmNtopAttachment, XmATTACH_WIDGET,
@@ -643,7 +749,7 @@ create_options_page (Widget parent)
                  XmNleftAttachment, XmATTACH_OPPOSITE_WIDGET,
                  XmNleftOffset, 0,
                  XmNleftWidget, cycle_text,
-                 0);
+                 NULL);
 
   XtVaSetValues (fade_ticks_text,
                  XmNtopAttachment, XmATTACH_WIDGET,
@@ -652,7 +758,7 @@ create_options_page (Widget parent)
                  XmNleftAttachment, XmATTACH_OPPOSITE_WIDGET,
                  XmNleftOffset, 0,
                  XmNleftWidget, fade_text,
-                 0);
+                 NULL);
 
   XtVaSetValues (lock_timeout_text,
                  XmNtopAttachment, XmATTACH_WIDGET,
@@ -661,7 +767,7 @@ create_options_page (Widget parent)
                  XmNleftAttachment, XmATTACH_OPPOSITE_WIDGET,
                  XmNleftOffset, 0,
                  XmNleftWidget, fade_ticks_text,
-                 0);
+                 NULL);
 
   XtVaSetValues (passwd_timeout_text,
                  XmNtopAttachment, XmATTACH_WIDGET,
@@ -670,7 +776,7 @@ create_options_page (Widget parent)
                  XmNleftAttachment, XmATTACH_OPPOSITE_WIDGET,
                  XmNleftOffset, 0,
                  XmNleftWidget, lock_timeout_text,
-                 0);
+                 NULL);
 
   XtVaSetValues (verbose_toggle,
                  XmNtopAttachment, XmATTACH_FORM,
@@ -683,7 +789,7 @@ create_options_page (Widget parent)
                  XmNleftWidget, timeout_text,
                  XmNrightAttachment, XmATTACH_FORM,
                  XmNrightOffset, 20,
-                 0);
+                 NULL);
 
   XtVaSetValues (install_cmap_toggle,
                  XmNtopAttachment, XmATTACH_OPPOSITE_WIDGET,
@@ -697,7 +803,7 @@ create_options_page (Widget parent)
                  XmNleftWidget, verbose_toggle,
                  XmNrightAttachment, XmATTACH_FORM,
                  XmNrightOffset, 20,
-                 0);
+                 NULL);
 
   XtVaSetValues (fade_toggle,
                  XmNtopAttachment, XmATTACH_OPPOSITE_WIDGET,
@@ -711,7 +817,7 @@ create_options_page (Widget parent)
                  XmNleftWidget, install_cmap_toggle,
                  XmNrightAttachment, XmATTACH_FORM,
                  XmNrightOffset, 20,
-                 0);
+                 NULL);
 
   XtVaSetValues (unfade_toggle,
                  XmNtopAttachment, XmATTACH_OPPOSITE_WIDGET,
@@ -725,7 +831,7 @@ create_options_page (Widget parent)
                  XmNleftWidget, fade_toggle,
                  XmNrightAttachment, XmATTACH_FORM,
                  XmNrightOffset, 20,
-                 0);
+                 NULL);
 
   XtVaSetValues (lock_toggle,
                  XmNtopAttachment, XmATTACH_OPPOSITE_WIDGET,
@@ -739,7 +845,7 @@ create_options_page (Widget parent)
                  XmNleftWidget, unfade_toggle,
                  XmNrightAttachment, XmATTACH_FORM,
                  XmNrightOffset, 20,
-                 0);
+                 NULL);
 
   XtVaSetValues (hr,
                  XmNtopWidget, passwd_timeout_text,
@@ -747,20 +853,20 @@ create_options_page (Widget parent)
                  XmNbottomOffset, 4,
                  XmNleftAttachment, XmATTACH_FORM,
                  XmNrightAttachment, XmATTACH_FORM,
-                 0);
+                 NULL);
 
   XtVaSetValues (prefs_done,
                  XmNleftAttachment, XmATTACH_FORM,
                  XmNbottomAttachment, XmATTACH_FORM,
-                 0);
+                 NULL);
   XtVaSetValues (prefs_cancel,
                  XmNrightAttachment, XmATTACH_FORM,
                  XmNbottomAttachment, XmATTACH_FORM,
-                 0);
+                 NULL);
   XtVaSetValues (hr,
                  XmNbottomAttachment, XmATTACH_WIDGET,
                  XmNbottomWidget, prefs_done,
-                 0);
+                 NULL);
 
   ac = 0;
   children[ac++] = timeout_label;
@@ -795,7 +901,7 @@ create_options_page (Widget parent)
                  XmNrightAttachment, XmATTACH_FORM,
                  XmNtopAttachment, XmATTACH_FORM,
                  XmNbottomAttachment, XmATTACH_FORM,
-                 0);
+                 NULL);
 
   return preferences_form;
 }

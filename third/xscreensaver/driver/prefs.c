@@ -1,5 +1,5 @@
 /* dotfile.c --- management of the ~/.xscreensaver file.
- * xscreensaver, Copyright (c) 1998 Jamie Zawinski <jwz@jwz.org>
+ * xscreensaver, Copyright (c) 1998, 2003 Jamie Zawinski <jwz@jwz.org>
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
  * documentation for any purpose is hereby granted without fee, provided that
@@ -23,6 +23,7 @@
 #include <stdio.h>
 #include <ctype.h>
 #include <string.h>
+#include <time.h>
 #include <sys/stat.h>
 #include <sys/time.h>
 
@@ -76,6 +77,8 @@ static void get_screenhacks (saver_preferences *p);
 static char *format_command (const char *cmd, Bool wrap_p);
 static void merge_system_screenhacks (saver_preferences *p,
                                       screenhack **system_list, int count);
+static void stop_the_insanity (saver_preferences *p);
+
 
 static char *
 chase_symlinks (const char *file)
@@ -87,7 +90,7 @@ chase_symlinks (const char *file)
       if (realpath (file, buf))
         return strdup (buf);
 
-      sprintf (buf, "%s: realpath", blurb());
+      sprintf (buf, "%.100s: realpath %.200s", blurb(), file);
       perror(buf);
     }
 # endif /* HAVE_REALPATH */
@@ -192,6 +195,41 @@ init_file_tmp_name (void)
     return 0;
 }
 
+static int
+get_byte_resource (char *name, char *class)
+{
+  char *s = get_string_resource (name, class);
+  char *s2 = s;
+  int n = 0;
+  if (!s) return 0;
+
+  while (isspace(*s2)) s2++;
+  while (*s2 >= '0' && *s2 <= '9')
+    {
+      n = (n * 10) + (*s2 - '0');
+      s2++;
+    }
+  while (isspace(*s2)) s2++;
+  if      (*s2 == 'k' || *s2 == 'K') n <<= 10;
+  else if (*s2 == 'm' || *s2 == 'M') n <<= 20;
+  else if (*s2 == 'g' || *s2 == 'G') n <<= 30;
+  else if (*s2)
+    {
+    LOSE:
+      fprintf (stderr, "%s: %s must be a number of bytes, not \"%s\".\n",
+               progname, name, s);
+      free (s);
+      return 0;
+    }
+  s2++;
+  if (*s2 == 'b' || *s2 == 'B') s2++;
+  while (isspace(*s2)) s2++;
+  if (*s2) goto LOSE;
+
+  free (s);
+  return n;
+}
+
 
 static const char * const prefs[] = {
   "timeout",
@@ -206,22 +244,31 @@ static const char * const prefs[] = {
   "timestamp",
   "splash",
   "splashDuration",
+  "quad",
   "demoCommand",
   "prefsCommand",
   "helpURL",
   "loadURL",
   "nice",
+  "memoryLimit",
   "fade",
   "unfade",
   "fadeSeconds",
   "fadeTicks",
   "captureStderr",
   "captureStdout",		/* not saved -- obsolete */
+  "ignoreUninstalledPrograms",
   "font",
   "dpmsEnabled",
   "dpmsStandby",
   "dpmsSuspend",
   "dpmsOff",
+  "grabDesktopImages",
+  "grabVideoFrames",
+  "chooseRandomImages",
+  "imageDirectory",
+  "mode",
+  "selected",
   "",
   "programs",
   "",
@@ -495,6 +542,9 @@ write_entry (FILE *out, const char *key, const char *value)
   fprintf(out, "%s:", key);
   col = strlen(key) + 1;
 
+  if (strlen(key) > 14)
+    col = tab_to (out, col, 20);
+
   while (1)
     {
       if (!programs_p)
@@ -588,6 +638,11 @@ write_init_file (saver_preferences *p, const char *version_string,
 
   if (n2) name = n2;
 
+  /* Throttle the various timeouts to reasonable values before writing
+     the file to disk. */
+  stop_the_insanity (p);
+
+
   if (verbose_p)
     fprintf (stderr, "%s: writing \"%s\".\n", blurb(), name);
 
@@ -657,6 +712,7 @@ write_init_file (saver_preferences *p, const char *version_string,
 	*ss++ = '\n';
 	*ss = 0;
       }
+    free (hack_strings);
   }
 
   {
@@ -680,7 +736,7 @@ write_init_file (saver_preferences *p, const char *version_string,
     {
       char buf[255];
       const char *pr = prefs[j];
-      enum pref_type { pref_str, pref_int, pref_bool, pref_time
+      enum pref_type { pref_str, pref_int, pref_bool, pref_byte, pref_time
       } type = pref_str;
       const char *s = 0;
       int i = 0;
@@ -712,22 +768,43 @@ write_init_file (saver_preferences *p, const char *version_string,
       CHECK("timestamp")	type = pref_bool, b = p->timestamp_p;
       CHECK("splash")		type = pref_bool, b = p->splash_p;
       CHECK("splashDuration")	type = pref_time, t = p->splash_duration;
+      CHECK("quad")		type = pref_bool, b = p->quad_p;
       CHECK("demoCommand")	type = pref_str,  s = p->demo_command;
       CHECK("prefsCommand")	type = pref_str,  s = p->prefs_command;
-      CHECK("helpURL")		type = pref_str,  s = p->help_url;
-      CHECK("loadURL")		type = pref_str,  s = p->load_url_command;
+/*    CHECK("helpURL")		type = pref_str,  s = p->help_url; */
+      CHECK("helpURL")		continue;  /* don't save */
+/*    CHECK("loadURL")		type = pref_str,  s = p->load_url_command; */
+      CHECK("loadURL")		continue;  /* don't save */
       CHECK("nice")		type = pref_int,  i = p->nice_inferior;
+      CHECK("memoryLimit")	type = pref_byte, i = p->inferior_memory_limit;
       CHECK("fade")		type = pref_bool, b = p->fade_p;
       CHECK("unfade")		type = pref_bool, b = p->unfade_p;
       CHECK("fadeSeconds")	type = pref_time, t = p->fade_seconds;
       CHECK("fadeTicks")	type = pref_int,  i = p->fade_ticks;
       CHECK("captureStderr")	type = pref_bool, b = p->capture_stderr_p;
       CHECK("captureStdout")	continue;  /* don't save */
+      CHECK("ignoreUninstalledPrograms")
+                                type = pref_bool, b = p->ignore_uninstalled_p;
+
       CHECK("font")		type = pref_str,  s =    stderr_font;
+
       CHECK("dpmsEnabled")	type = pref_bool, b = p->dpms_enabled_p;
       CHECK("dpmsStandby")	type = pref_time, t = p->dpms_standby;
       CHECK("dpmsSuspend")	type = pref_time, t = p->dpms_suspend;
       CHECK("dpmsOff")		type = pref_time, t = p->dpms_off;
+
+      CHECK("grabDesktopImages") type =pref_bool, b = p->grab_desktop_p;
+      CHECK("grabVideoFrames")   type =pref_bool, b = p->grab_video_p;
+      CHECK("chooseRandomImages")type =pref_bool, b = p->random_image_p;
+      CHECK("imageDirectory")    type =pref_str,  s = p->image_directory;
+
+      CHECK("mode")             type = pref_str,
+                                s = (p->mode == ONE_HACK ? "one" :
+                                     p->mode == BLANK_ONLY ? "blank" :
+                                     p->mode == DONT_BLANK ? "off" :
+                                     "random");
+      CHECK("selected")         type = pref_int,  i = p->selected_hack;
+
       CHECK("programs")		type = pref_str,  s =    programs;
       CHECK("pointerPollTime")	type = pref_time, t = p->pointer_timeout;
       CHECK("windowCreationTimeout")type=pref_time,t= p->notice_events_timeout;
@@ -771,10 +848,26 @@ write_init_file (saver_preferences *p, const char *version_string,
 	    s = buf;
 	  }
 	  break;
+	case pref_byte:
+	  {
+            if      (i >= (1<<30) && i == ((i >> 30) << 30))
+              sprintf(buf, "%dG", i >> 30);
+            else if (i >= (1<<20) && i == ((i >> 20) << 20))
+              sprintf(buf, "%dM", i >> 20);
+            else if (i >= (1<<10) && i == ((i >> 10) << 10))
+              sprintf(buf, "%dK", i >> 10);
+            else
+              sprintf(buf, "%d", i);
+            s = buf;
+          }
+	  break;
 	default:
 	  abort();
 	  break;
 	}
+
+      if (pr && !strcmp(pr, "mode")) fprintf(out, "\n");
+
       write_entry (out, pr, s);
     }
 
@@ -864,6 +957,7 @@ free_screenhack_list (screenhack **list, int count)
 }
 
 
+
 /* Populate `saver_preferences' with the contents of the resource database.
    Note that this may be called multiple times -- it is re-run each time
    the ~/.xscreensaver file is reloaded.
@@ -910,8 +1004,12 @@ load_init_file (saver_preferences *p)
   p->fade_ticks	    = get_integer_resource ("fadeTicks", "Integer");
   p->install_cmap_p = get_boolean_resource ("installColormap", "Boolean");
   p->nice_inferior  = get_integer_resource ("nice", "Nice");
+  p->inferior_memory_limit = get_byte_resource ("memoryLimit", "MemoryLimit");
   p->splash_p       = get_boolean_resource ("splash", "Boolean");
+  p->quad_p         = get_boolean_resource ("quad", "Boolean");
   p->capture_stderr_p = get_boolean_resource ("captureStderr", "Boolean");
+  p->ignore_uninstalled_p = get_boolean_resource ("ignoreUninstalledPrograms",
+                                                  "Boolean");
 
   p->initial_delay   = 1000 * get_seconds_resource ("initialDelay", "Time");
   p->splash_duration = 1000 * get_seconds_resource ("splashDuration", "Time");
@@ -924,9 +1022,15 @@ load_init_file (saver_preferences *p)
 						       "Time");
 
   p->dpms_enabled_p  = get_boolean_resource ("dpmsEnabled", "Boolean");
-  p->dpms_standby    = 1000 * get_seconds_resource ("dpmsStandby", "Time");
-  p->dpms_suspend    = 1000 * get_seconds_resource ("dpmsSuspend", "Time");
-  p->dpms_off        = 1000 * get_seconds_resource ("dpmsOff",     "Time");
+  p->dpms_standby    = 1000 * get_minutes_resource ("dpmsStandby", "Time");
+  p->dpms_suspend    = 1000 * get_minutes_resource ("dpmsSuspend", "Time");
+  p->dpms_off        = 1000 * get_minutes_resource ("dpmsOff",     "Time");
+
+  p->grab_desktop_p  = get_boolean_resource ("grabDesktopImages",  "Boolean");
+  p->grab_video_p    = get_boolean_resource ("grabVideoFrames",    "Boolean");
+  p->random_image_p  = get_boolean_resource ("chooseRandomImages", "Boolean");
+  p->image_directory = get_string_resource  ("imageDirectory",
+                                             "ImageDirectory");
 
   p->shell = get_string_resource ("bourneShell", "BourneShell");
 
@@ -945,6 +1049,15 @@ load_init_file (saver_preferences *p)
       p->splash_p = True;
   }
 
+  /* If "*grabDesktopImages" is unset, default to true. */
+  {
+    char *s = get_string_resource ("grabDesktopImages", "Boolean");
+    if (s)
+      free (s);
+    else
+      p->grab_desktop_p = True;
+  }
+
   p->use_xidle_extension = get_boolean_resource ("xidleExtension","Boolean");
   p->use_mit_saver_extension = get_boolean_resource ("mitSaverExtension",
 						     "Boolean");
@@ -952,30 +1065,20 @@ load_init_file (saver_preferences *p)
 						     "Boolean");
   p->use_proc_interrupts = get_boolean_resource ("procInterrupts", "Boolean");
 
-  /* Throttle the various timeouts to reasonable values.
-   */
-  if (p->passwd_timeout <= 0) p->passwd_timeout = 30000;	 /* 30 secs */
-  if (p->timeout < 10000) p->timeout = 10000;			 /* 10 secs */
-  if (p->cycle != 0 && p->cycle < 2000) p->cycle = 2000;	 /*  2 secs */
-  if (p->pointer_timeout <= 0) p->pointer_timeout = 5000;	 /*  5 secs */
-  if (p->notice_events_timeout <= 0)
-    p->notice_events_timeout = 10000;				 /* 10 secs */
-  if (p->fade_seconds <= 0 || p->fade_ticks <= 0)
-    p->fade_p = False;
-  if (! p->fade_p) p->unfade_p = False;
+  get_screenhacks (p);                /* Parse the "programs" resource. */
 
-  if (p->dpms_standby <= 0 || p->dpms_suspend <= 0 || p->dpms_off <= 0)
-    p->dpms_enabled_p = False;
+  p->selected_hack = get_integer_resource ("selected", "Integer");
+  if (p->selected_hack < 0 || p->selected_hack >= p->screenhacks_count)
+    p->selected_hack = -1;
 
-  if (p->dpms_standby <= 10000) p->dpms_standby = 10000;	 /* 10 secs */
-  if (p->dpms_suspend <= 10000) p->dpms_suspend = 10000;	 /* 10 secs */
-  if (p->dpms_off     <= 10000) p->dpms_off     = 10000;	 /* 10 secs */
-
-  p->watchdog_timeout = p->cycle * 0.6;
-  if (p->watchdog_timeout < 30000) p->watchdog_timeout = 30000;	  /* 30 secs */
-  if (p->watchdog_timeout > 3600000) p->watchdog_timeout = 3600000; /*  1 hr */
-
-  get_screenhacks (p);
+  {
+    char *s = get_string_resource ("mode", "Mode");
+    if      (s && !strcasecmp (s, "one"))   p->mode = ONE_HACK;
+    else if (s && !strcasecmp (s, "blank")) p->mode = BLANK_ONLY;
+    else if (s && !strcasecmp (s, "off"))   p->mode = DONT_BLANK;
+    else                                    p->mode = RANDOM_HACKS;
+    if (s) free (s);
+  }
 
   if (system_default_screenhack_count)  /* note: first_time is also true */
     {
@@ -994,6 +1097,10 @@ load_init_file (saver_preferences *p)
       p->timestamp_p = True;
       p->initial_delay = 0;
     }
+
+  /* Throttle the various timeouts to reasonable values after reading the
+     disk file. */
+  stop_the_insanity (p);
 }
 
 
@@ -1049,7 +1156,7 @@ merge_system_screenhacks (saver_preferences *p,
               made_space = 10;
               p->screenhacks = (screenhack **)
                 realloc (p->screenhacks,
-                         (p->screenhacks_count + made_space) 
+                         (p->screenhacks_count + made_space + 1)
                          * sizeof(screenhack));
               if (!p->screenhacks) abort();
             }
@@ -1060,6 +1167,7 @@ merge_system_screenhacks (saver_preferences *p,
           nh->command   = oh->command ? strdup(oh->command) : 0;
 
           p->screenhacks[p->screenhacks_count++] = nh;
+          p->screenhacks[p->screenhacks_count] = 0;
           made_space--;
 
 #if 0
@@ -1202,7 +1310,10 @@ make_hack_name (const char *shell_command)
   sprintf (res_name, "hacks.%s.name", s);		/* resource? */
   s2 = get_string_resource (res_name, res_name);
   if (s2)
-    return s2;
+    {
+      free (s);
+      return s2;
+    }
 
   for (s2 = s; *s2; s2++)	/* if it has any capitals, return it */
     if (*s2 >= 'A' && *s2 <= 'Z')
@@ -1212,6 +1323,10 @@ make_hack_name (const char *shell_command)
     s[0] -= 'a'-'A';
   if (s[0] == 'X' && s[1] >= 'a' && s[1] <= 'z')	/* (magic leading X) */
     s[1] -= 'a'-'A';
+  if (s[0] == 'G' && s[1] == 'l' && 
+      s[2] >= 'a' && s[2] <= 'z')		       /* (magic leading GL) */
+    s[1] -= 'a'-'A',
+    s[2] -= 'a'-'A';
   return s;
 }
 
@@ -1220,14 +1335,27 @@ char *
 format_hack (screenhack *hack, Bool wrap_p)
 {
   int tab = 32;
-  int size = (2 * (strlen(hack->command) +
-                   (hack->visual ? strlen(hack->visual) : 0) +
-                   (hack->name ? strlen(hack->name) : 0) +
-                   tab));
-  char *h2 = (char *) malloc (size);
-  char *out = h2;
-  char *s;
+  int size;
+  char *h2, *out, *s;
   int col = 0;
+
+  char *def_name = make_hack_name (hack->command);
+
+  /* Don't ever write out a name for a hack if it's the same as the default.
+   */
+  if (hack->name && !strcmp (hack->name, def_name))
+    {
+      free (hack->name);
+      hack->name = 0;
+    }
+  free (def_name);
+
+  size = (2 * (strlen(hack->command) +
+               (hack->visual ? strlen(hack->visual) : 0) +
+               (hack->name ? strlen(hack->name) : 0) +
+               tab));
+  h2 = (char *) malloc (size);
+  out = h2;
 
   if (!hack->enabled_p) *out++ = '-';		/* write disabled flag */
 
@@ -1259,10 +1387,7 @@ format_hack (screenhack *hack, Bool wrap_p)
 
       col = string_columns (h2, strlen (h2), 0);
       if (wrap_p && col >= tab)
-        {
-          out = stab_to (out, col, 77);
-          *out += strlen(out);
-        }
+        out = stab_to (out, col, 77);
       else
         *out++ = ' ';
 
@@ -1287,7 +1412,7 @@ format_hack (screenhack *hack, Bool wrap_p)
 static void
 get_screenhacks (saver_preferences *p)
 {
-  int i = 0;
+  int i, j;
   int start = 0;
   int end = 0;
   int size;
@@ -1320,15 +1445,14 @@ get_screenhacks (saver_preferences *p)
 
 
   /* Count up the number of newlines (which will be equal to or larger than
-     the number of hacks.)
+     one less than the number of hacks.)
    */
-  i = 0;
-  for (i = 0; d[i]; i++)
+  for (i = j = 0; d[i]; i++)
     if (d[i] == '\n')
-      i++;
-  i++;
+      j++;
+  j++;
 
-  p->screenhacks = (screenhack **) calloc (sizeof (screenhack *), i+1);
+  p->screenhacks = (screenhack **) calloc (j + 1, sizeof (screenhack *));
 
   /* Iterate over the lines in `d' (the string with newlines)
      and make new strings to stuff into the `screenhacks' array.
@@ -1355,9 +1479,51 @@ get_screenhacks (saver_preferences *p)
       start = end+1;
     }
 
+  free (d);
+
   if (p->screenhacks_count == 0)
     {
       free (p->screenhacks);
       p->screenhacks = 0;
     }
+}
+
+
+/* Make sure all the values in the preferences struct are sane.
+ */
+static void
+stop_the_insanity (saver_preferences *p)
+{
+  if (p->passwd_timeout <= 0) p->passwd_timeout = 30000;	 /* 30 secs */
+  if (p->timeout < 15000) p->timeout = 15000;			 /* 15 secs */
+  if (p->cycle != 0 && p->cycle < 2000) p->cycle = 2000;	 /*  2 secs */
+  if (p->pointer_timeout <= 0) p->pointer_timeout = 5000;	 /*  5 secs */
+  if (p->notice_events_timeout <= 0)
+    p->notice_events_timeout = 10000;				 /* 10 secs */
+  if (p->fade_seconds <= 0 || p->fade_ticks <= 0)
+    p->fade_p = False;
+  if (! p->fade_p) p->unfade_p = False;
+
+  /* The DPMS settings may have the value 0.
+     But if they are negative, or are a range less than 10 seconds,
+     reset them to sensible defaults.  (Since that must be a mistake.)
+   */
+  if (p->dpms_standby != 0 &&
+      p->dpms_standby < 10 * 1000)
+    p->dpms_standby =  2 * 60 * 60 * 1000;			 /* 2 hours */
+  if (p->dpms_suspend != 0 &&
+      p->dpms_suspend < 10 * 1000)
+    p->dpms_suspend =  2 * 60 * 60 * 1000;			 /* 2 hours */
+  if (p->dpms_off != 0 &&
+      p->dpms_off < 10 * 1000)
+    p->dpms_off      = 4 * 60 * 60 * 1000;			 /* 4 hours */
+
+  if (p->dpms_standby == 0 &&	   /* if *all* are 0, then DPMS is disabled */
+      p->dpms_suspend == 0 &&
+      p->dpms_off     == 0)
+    p->dpms_enabled_p = False;
+
+  p->watchdog_timeout = p->cycle * 0.6;
+  if (p->watchdog_timeout < 30000) p->watchdog_timeout = 30000;	  /* 30 secs */
+  if (p->watchdog_timeout > 3600000) p->watchdog_timeout = 3600000; /*  1 hr */
 }

@@ -1,4 +1,4 @@
-/* xscreensaver, Copyright (c) 1992, 1995, 1997, 1998
+/* xscreensaver, Copyright (c) 1992, 1995, 1997, 1998, 2001, 2002, 2003
  *  Jamie Zawinski <jwz@jwz.org>
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
@@ -57,6 +57,10 @@
 #include "version.h"
 #include "vroot.h"
 
+#ifndef _XSCREENSAVER_VROOT_H_
+# error Error!  You have an old version of vroot.h!  Check -I args.
+#endif /* _XSCREENSAVER_VROOT_H_ */
+
 #ifndef isupper
 # define isupper(c)  ((c) >= 'A' && (c) <= 'Z')
 #endif
@@ -88,6 +92,7 @@ static char *default_defaults[] = {
   "*installColormap:	false",
   "*visualID:		default",
   "*windowID:		",
+  "*desktopGrabber:	xscreensaver-getimage %s",
   0
 };
 
@@ -292,10 +297,10 @@ visual_warning (Screen *screen, Window window, Visual *visual, Colormap cmap,
   if (window == RootWindowOfScreen (screen))
     strcpy (win, "root window");
   else
-    sprintf (win, "window 0x%x", (unsigned long) window);
+    sprintf (win, "window 0x%lx", (unsigned long) window);
 
   if (window_p)
-    sprintf (why, "-window-id 0x%x", (unsigned long) window);
+    sprintf (why, "-window-id 0x%lx", (unsigned long) window);
   else
     strcpy (why, "-root");
 
@@ -314,7 +319,7 @@ visual_warning (Screen *screen, Window window, Visual *visual, Colormap cmap,
         {
           fprintf (stderr, "%s: ignoring `-visual %s' because of `%s'.\n",
                    progname, visual_string, why);
-          fprintf (stderr, "%s: using %s's visual 0x%x.\n",
+          fprintf (stderr, "%s: using %s's visual 0x%lx.\n",
                    progname, win, XVisualIDFromVisual (visual));
         }
       free (visual_string);
@@ -326,7 +331,7 @@ visual_warning (Screen *screen, Window window, Visual *visual, Colormap cmap,
     {
       fprintf (stderr, "%s: ignoring `-install' because of `%s'.\n",
                progname, why);
-      fprintf (stderr, "%s: using %s's colormap 0x%x.\n",
+      fprintf (stderr, "%s: using %s's colormap 0x%lx.\n",
                progname, win, (unsigned long) cmap);
     }
 
@@ -334,6 +339,36 @@ visual_warning (Screen *screen, Window window, Visual *visual, Colormap cmap,
   if (!validate_gl_visual (stderr, screen, win, visual))
     exit (1);
 # endif /* USE_GL */
+}
+
+
+static void
+fix_fds (void)
+{
+  /* Bad Things Happen if stdin, stdout, and stderr have been closed
+     (as by the `sh incantation "attraction >&- 2>&-").  When you do
+     that, the X connection gets allocated to one of these fds, and
+     then some random library writes to stderr, and random bits get
+     stuffed down the X pipe, causing "Xlib: sequence lost" errors.
+     So, we cause the first three file descriptors to be open to
+     /dev/null if they aren't open to something else already.  This
+     must be done before any other files are opened (or the closing
+     of that other file will again free up one of the "magic" first
+     three FDs.)
+
+     We do this by opening /dev/null three times, and then closing
+     those fds, *unless* any of them got allocated as #0, #1, or #2,
+     in which case we leave them open.  Gag.
+
+     Really, this crap is technically required of *every* X program,
+     if you want it to be robust in the face of "2>&-".
+   */
+  int fd0 = open ("/dev/null", O_RDWR);
+  int fd1 = open ("/dev/null", O_RDWR);
+  int fd2 = open ("/dev/null", O_RDWR);
+  if (fd0 > 2) close (fd0);
+  if (fd1 > 2) close (fd1);
+  if (fd2 > 2) close (fd2);
 }
 
 
@@ -351,6 +386,8 @@ main (int argc, char **argv)
   XEvent event;
   Boolean dont_clear /*, dont_map */;
   char version[255];
+
+  fix_fds();
 
 #ifdef XLOCKMORE
   pre_merge_options ();
@@ -406,7 +443,8 @@ main (int argc, char **argv)
       int i;
       int x = 18;
       int end = 78;
-      Bool help_p = !strcmp(argv[1], "-help");
+      Bool help_p = (!strcmp(argv[1], "-help") ||
+                     !strcmp(argv[1], "--help"));
       fprintf (stderr, "%s\n", version);
       for (s = progclass; *s; s++) fprintf(stderr, " ");
       fprintf (stderr, "  http://www.jwz.org/xscreensaver/\n\n");
@@ -429,7 +467,44 @@ main (int argc, char **argv)
 	  if (argp) fprintf (stderr, " <arg>");
 	  if (i != merged_options_size - 1) fprintf (stderr, ", ");
 	}
+
       fprintf (stderr, ".\n");
+
+#if 0
+      if (help_p)
+        {
+          fprintf (stderr, "\nResources:\n\n");
+          for (i = 0; i < merged_options_size; i++)
+            {
+              const char *opt = merged_options [i].option;
+              const char *res = merged_options [i].specifier + 1;
+              const char *val = merged_options [i].value;
+              char *s = get_string_resource ((char *) res, (char *) res);
+
+              if (s)
+                {
+                  int L = strlen(s);
+                while (L > 0 && (s[L-1] == ' ' || s[L-1] == '\t'))
+                  s[--L] = 0;
+                }
+
+              fprintf (stderr, "    %-16s %-18s ", opt, res);
+              if (merged_options [i].argKind == XrmoptionSepArg)
+                {
+                  fprintf (stderr, "[%s]", (s ? s : "?"));
+                }
+              else
+                {
+                  fprintf (stderr, "%s", (val ? val : "(null)"));
+                  if (val && s && !strcasecmp (val, s))
+                    fprintf (stderr, " [default]");
+                }
+              fprintf (stderr, "\n");
+            }
+          fprintf (stderr, "\n");
+        }
+#endif
+
       exit (help_p ? 0 : 1);
     }
 
@@ -456,12 +531,27 @@ main (int argc, char **argv)
       XGetWindowAttributes (dpy, window, &xgwa);
       cmap = xgwa.colormap;
       visual = xgwa.visual;
+      screen = xgwa.screen;
       visual_warning (screen, window, visual, cmap, True);
+
+      /* Select KeyPress events on the external window.
+       */
+      xgwa.your_event_mask |= KeyPressMask;
+      XSelectInput (dpy, window, xgwa.your_event_mask);
+
+      /* Select ButtonPress and ButtonRelease events on the external window,
+         if no other app has already selected them (only one app can select
+         ButtonPress at a time: BadAccess results.)
+       */
+      if (! (xgwa.all_event_masks & (ButtonPressMask | ButtonReleaseMask)))
+        XSelectInput (dpy, window,
+                      (xgwa.your_event_mask |
+                       ButtonPressMask | ButtonReleaseMask));
     }
   else if (root_p)
     {
       XWindowAttributes xgwa;
-      window = RootWindowOfScreen (XtScreen (toplevel));
+      window = VirtualRootWindowOfScreen (XtScreen (toplevel));
       XtDestroyWidget (toplevel);
       XGetWindowAttributes (dpy, window, &xgwa);
       cmap = xgwa.colormap;
@@ -490,7 +580,7 @@ main (int argc, char **argv)
 	  unsigned int bg, bd;
 	  Widget new;
 
-	  cmap = XCreateColormap (dpy, RootWindowOfScreen(screen),
+	  cmap = XCreateColormap (dpy, VirtualRootWindowOfScreen(screen),
 				  visual, AllocNone);
 	  bg = get_pixel_resource ("background", "Background", dpy, cmap);
 	  bd = get_pixel_resource ("borderColor", "Foreground", dpy, cmap);
@@ -506,7 +596,7 @@ main (int argc, char **argv)
 				    XtNbackground, (Pixel) bg,
 				    XtNborderColor, (Pixel) bd,
 				    XtNinput, True,  /* for WM_HINTS */
-				    0);
+				    NULL);
 	  XtDestroyWidget (toplevel);
 	  toplevel = new;
 	  XtRealizeWidget (toplevel);
@@ -517,7 +607,7 @@ main (int argc, char **argv)
 	  XtVaSetValues (toplevel,
                          XtNmappedWhenManaged, False,
                          XtNinput, True,  /* for WM_HINTS */
-                         0);
+                         NULL);
 	  XtRealizeWidget (toplevel);
 	  window = XtWindow (toplevel);
 
@@ -537,7 +627,7 @@ main (int argc, char **argv)
 /*
       if (dont_map)
 	{
-	  XtVaSetValues (toplevel, XtNmappedWhenManaged, False, 0);
+	  XtVaSetValues (toplevel, XtNmappedWhenManaged, False, NULL);
 	  XtRealizeWidget (toplevel);
 	}
       else
@@ -546,7 +636,7 @@ main (int argc, char **argv)
 	  XtPopup (toplevel, XtGrabNone);
 	}
 
-      XtVaSetValues(toplevel, XtNtitle, version, 0);
+      XtVaSetValues(toplevel, XtNtitle, version, NULL);
 
       /* For screenhack_handle_events(): select KeyPress, and
          announce that we accept WM_DELETE_WINDOW. */
@@ -554,7 +644,8 @@ main (int argc, char **argv)
         XWindowAttributes xgwa;
         XGetWindowAttributes (dpy, window, &xgwa);
         XSelectInput (dpy, window,
-                      xgwa.your_event_mask | KeyPressMask | ButtonPressMask);
+                      (xgwa.your_event_mask | KeyPressMask |
+                       ButtonPressMask | ButtonReleaseMask));
         XChangeProperty (dpy, window, XA_WM_PROTOCOLS, XA_ATOM, 32,
                          PropModeReplace,
                          (unsigned char *) &XA_WM_DELETE_WINDOW, 1);

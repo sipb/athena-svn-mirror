@@ -1,5 +1,5 @@
 /* xlockmore.h --- xscreensaver compatibility layer for xlockmore modules.
- * xscreensaver, Copyright (c) 1997, 1998, 2001 Jamie Zawinski <jwz@jwz.org>
+ * xscreensaver, Copyright (c) 1997-2003 Jamie Zawinski <jwz@jwz.org>
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
  * documentation for any purpose is hereby granted without fee, provided that
@@ -37,7 +37,11 @@ ERROR!  Sorry, xlockmore.h requires ANSI C (gcc, for example.)
   extern GLXContext *init_GL (ModeInfo *);
   extern void clear_gl_error (void);
   extern void check_gl_error (const char *type);
+
   extern void do_fps (ModeInfo *);
+  extern GLfloat fps_1 (ModeInfo *);
+  extern void    fps_2 (ModeInfo *);
+
 # define FreeAllGL(dpy) /* */
 #endif /* !USE_GL */
 
@@ -77,10 +81,11 @@ ERROR!  Sorry, xlockmore.h requires ANSI C (gcc, for example.)
 #define MI_BATCHCOUNT(MI)	((MI)->batchcount)
 #define MI_SIZE(MI)		((MI)->size)
 #define MI_IS_DRAWN(MI)		((MI)->is_drawn)
-#define MI_IS_DRAWN(MI)		((MI)->is_drawn)
+#define MI_IS_FPS(MI)		((MI)->fps_p)
 #define MI_NCOLORS(MI)		((MI)->npixels)
 #define MI_NAME(MI)		(progname)
 
+#define MI_COLORMAP(MI)	        (MI_WIN_COLORMAP((MI)))
 #define MI_WIDTH(MI)		(MI_WIN_WIDTH((MI)))
 #define MI_HEIGHT(MI)		(MI_WIN_HEIGHT((MI)))
 #define MI_IS_ICONIC(MI)	(MI_WIN_IS_ICONIC((MI)))
@@ -135,6 +140,12 @@ extern void HACK_DRAW(ModeInfo *);
 # define HACK_RESHAPE 0
 #endif
 
+#ifdef HACK_HANDLE_EVENT
+  extern Bool HACK_HANDLE_EVENT(ModeInfo *, XEvent *e);
+#else
+# define HACK_HANDLE_EVENT 0
+#endif
+
 
 /* Emit code for the entrypoint used by screenhack.c, and pass control
    down into xlockmore.c with the appropriate parameters.
@@ -170,9 +181,16 @@ void screenhack (Display *dpy, Window window)
 			False,
 #endif
 
+#ifdef EVENT_MASK
+			EVENT_MASK,
+#else
+			0,
+#endif
+
 			HACK_INIT,
 			HACK_DRAW,
 			HACK_RESHAPE,
+			HACK_HANDLE_EVENT,
 			HACK_FREE);
 }
 
