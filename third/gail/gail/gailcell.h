@@ -37,6 +37,7 @@ extern "C" {
 typedef struct _GailCell                  GailCell;
 typedef struct _GailCellClass             GailCellClass;
 typedef struct _ActionInfo ActionInfo;
+typedef void (*ACTION_FUNC) (GailCell *cell);
   
 struct _GailCell
 {
@@ -51,6 +52,8 @@ struct _GailCell
   AtkStateSet *state_set;
   GList       *action_list;
   void (*refresh_index) (GailCell *cell);
+  gint         action_idle_handler;
+  ACTION_FUNC  action_func;
 };
 
 GType gail_cell_get_type (void);
@@ -60,15 +63,12 @@ struct _GailCellClass
   AtkObjectClass parent_class;
 };
 
-typedef gboolean (*ACTION_FUNC) (GailCell *cell);
-
 struct _ActionInfo {
   gchar *name;
   gchar *description;
   gchar *keybinding;
   ACTION_FUNC do_action_func;
 };
-
 
 
 void      gail_cell_init                 (GailCell        *cell,

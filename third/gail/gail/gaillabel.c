@@ -1,5 +1,5 @@
 /* GAIL - The GNOME Accessibility Enabling Library
- * Copyright 2001 Sun Microsystems Inc.
+ * Copyright 2001, 2002, 2003 Sun Microsystems Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -159,6 +159,7 @@ gail_label_real_initialize (AtkObject *obj,
                             gpointer  data)
 {
   GtkLabel  *label;
+  GtkWidget  *widget;
   GailLabel *gail_label;
   const gchar *label_text;
 
@@ -166,8 +167,8 @@ gail_label_real_initialize (AtkObject *obj,
   
   gail_label = GAIL_LABEL (obj);
 
-  gail_label->cursor_position = -1;
-  gail_label->selection_bound = -1;
+  gail_label->cursor_position = 0;
+  gail_label->selection_bound = 0;
   
   gail_label->textutil = gail_text_util_new ();
 
@@ -179,6 +180,21 @@ gail_label_real_initialize (AtkObject *obj,
     gail_label->label_length = 0;
   else
     gail_label->label_length = g_utf8_strlen (label_text, -1);
+
+  /* 
+   * Check whether ancestor of GtkLabel is a GtkButton  and if so
+   * set accessible parent for GailLabel
+   */
+  widget = GTK_WIDGET (data);
+  while (widget != NULL)
+    {
+      widget = gtk_widget_get_parent (widget);
+      if (GTK_IS_BUTTON (widget))
+        {
+          atk_object_set_parent (obj, gtk_widget_get_accessible (widget));
+          break;
+        }
+    }
 }
 
 AtkObject* 
@@ -277,8 +293,8 @@ gail_label_real_notify_gtk (GObject           *obj,
             {
               /* GtkLabel has become non selectable */
 
-              gail_label->cursor_position = -1;
-              gail_label->selection_bound = -1;
+              gail_label->cursor_position = 0;
+              gail_label->selection_bound = 0;
               text_caret_moved = TRUE;
             }
             
@@ -829,7 +845,6 @@ gail_label_get_default_attributes (AtkText        *text)
   GtkWidget *widget;
   GtkLabel *label;
   AtkAttributeSet *at_set = NULL;
-  gboolean wrap_value;
 
   widget = GTK_ACCESSIBLE (text)->widget;
   if (widget == NULL)

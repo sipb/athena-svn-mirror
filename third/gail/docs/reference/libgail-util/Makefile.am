@@ -11,10 +11,6 @@ DOC_MAIN_SGML_FILE=gail-libgail-util-docs.sgml
 # The directory containing the source code (if it contains documentation).
 DOC_SOURCE_DIR=../../../libgail-util
 
-INSTALLDIR=$(prefix)/share/gtk-doc
-
-HTML_DIR = ${datadir}/gtk-doc/html
-
 TARGET_DIR=$(HTML_DIR)/$(DOC_MODULE)
 
 # Images to copy into HTML directory

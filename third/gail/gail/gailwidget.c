@@ -237,17 +237,17 @@ gail_widget_connect_widget_destroyed (GtkAccessible *accessible)
 {
   if (accessible->widget)
     {
-      g_signal_connect (accessible->widget,
-                        "destroy",
-                        G_CALLBACK (gail_widget_destroyed),
-                        accessible);
+      g_signal_connect_after (accessible->widget,
+                              "destroy",
+                              G_CALLBACK (gail_widget_destroyed),
+                              accessible);
     }
 }
 
 /*
  * This function is called when the widget is destroyed.
  * It sets the widget field in the GtkAccessible structure to NULL
- * and emits a tate-change signal for the state ATK_STATE_DEFUNCT
+ * and emits a state-change signal for the state ATK_STATE_DEFUNCT
  */
 static void 
 gail_widget_destroyed (GtkWidget     *widget,
@@ -255,7 +255,7 @@ gail_widget_destroyed (GtkWidget     *widget,
 {
   accessible->widget = NULL;
   atk_object_notify_state_change (ATK_OBJECT (accessible), ATK_STATE_DEFUNCT,
-                                  TRUE); 
+                                  TRUE);
 }
 
 static G_CONST_RETURN gchar*
@@ -358,6 +358,7 @@ gail_widget_ref_state_set (AtkObject *accessible)
       if (GTK_WIDGET_IS_SENSITIVE (widget))
         {
           atk_state_set_add_state (state_set, ATK_STATE_SENSITIVE);
+          atk_state_set_add_state (state_set, ATK_STATE_ENABLED);
         }
   
       if (GTK_WIDGET_CAN_FOCUS (widget))
@@ -400,7 +401,6 @@ gail_widget_ref_state_set (AtkObject *accessible)
         {
           atk_state_set_add_state (state_set, ATK_STATE_FOCUSED);
         }
-      atk_state_set_add_state (state_set, ATK_STATE_ENABLED);
     }
   return state_set;
 }
@@ -592,8 +592,6 @@ gail_widget_get_layer (AtkComponent *component)
 {
   gint layer;
   layer = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (component), "atk-component-layer"));
-  g_assert (layer >= ATK_LAYER_INVALID);
-  g_assert (layer <= ATK_LAYER_OVERLAY);
 
   return (AtkLayer) layer;
 }
@@ -602,11 +600,15 @@ static gboolean
 gail_widget_grab_focus (AtkComponent   *component)
 {
   GtkWidget *widget = GTK_ACCESSIBLE (component)->widget;
+  GtkWidget *toplevel;
 
   g_return_val_if_fail (GTK_IS_WIDGET (widget), FALSE);
   if (GTK_WIDGET_CAN_FOCUS (widget))
     {
       gtk_widget_grab_focus (widget);
+      toplevel = gtk_widget_get_toplevel (widget);
+      if (GTK_WIDGET_TOPLEVEL (toplevel))
+        gtk_window_present (GTK_WINDOW (toplevel)); 
       return TRUE;
     }
   else
@@ -839,17 +841,17 @@ gail_widget_real_notify_gtk (GObject     *obj,
   AtkState state;
   gboolean value;
 
-  if (strcmp (pspec->name, "visible") == 0)
-    {
-      state = ATK_STATE_VISIBLE;
-      value = GTK_WIDGET_VISIBLE (widget);
-    }
-  else if (strcmp (pspec->name, "has-focus") == 0)
+  if (strcmp (pspec->name, "has-focus") == 0)
     /*
      * We use focus-in-event and focus-out-event signals to catch
      * focus changes so we ignore this.
      */
     return;
+  else if (strcmp (pspec->name, "visible") == 0)
+    {
+      state = ATK_STATE_VISIBLE;
+      value = GTK_WIDGET_VISIBLE (widget);
+    }
   else if (strcmp (pspec->name, "sensitive") == 0)
     {
       state = ATK_STATE_SENSITIVE;

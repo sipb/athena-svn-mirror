@@ -49,6 +49,7 @@ struct _GailTreeView
   GArray*	row_data;
   GList*        cell_data;
   GtkTreeModel  *tree_model;
+  AtkObject     *focus_cell;
 };
 
 GType gail_tree_view_get_type (void);

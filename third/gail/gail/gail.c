@@ -17,6 +17,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <atk/atk.h>
 #include <gtk/gtk.h>
@@ -43,6 +44,7 @@ static AtkObject* gail_get_accessible_for_widget (GtkWidget    *widget,
                                                   gboolean     *transient);
 static void     gail_finish_select       (GtkWidget            *widget);
 static void     gail_map_cb              (GtkWidget            *widget);
+static void     gail_show_cb             (GtkWidget            *widget);
 static gint     gail_focus_idle_handler  (gpointer             data);
 static void     gail_focus_notify        (GtkWidget            *widget);
 static void     gail_focus_notify_when_idle (GtkWidget            *widget);
@@ -280,6 +282,49 @@ gail_select_watcher (GSignalInvocationHint *ihint,
 static void
 gail_finish_select (GtkWidget *widget)
 {
+  if (GTK_IS_MENU_ITEM (widget))
+    {
+      GtkMenuItem* menu_item;
+
+      menu_item = GTK_MENU_ITEM (widget);
+      if (menu_item->submenu &&
+          !GTK_WIDGET_VISIBLE (menu_item->submenu))
+        {
+          /*
+           * If the submenu is not visble, wait until it is before
+           * reporting focus on the menu item.
+           */
+          gulong handler_id;
+
+          handler_id = g_signal_handler_find (menu_item->submenu,
+                                              G_SIGNAL_MATCH_FUNC,
+                                              g_signal_lookup ("show",
+                                                               GTK_TYPE_WINDOW),
+                                              0,
+                                              NULL,
+                                              (gpointer) gail_show_cb,
+                                              NULL); 
+          if (!handler_id)
+            g_signal_connect (menu_item->submenu, "show",
+                              G_CALLBACK (gail_show_cb),
+                              NULL);
+
+          /*
+           * If we are waiting to report focus on a menubar or a menu item
+           * because of a previous deselect, cancel it.
+           */
+          if (focus_notify_handler &&
+              next_focus_widget &&
+              (GTK_IS_MENU_BAR (next_focus_widget) ||
+               GTK_IS_MENU_ITEM (next_focus_widget)))
+            {
+              gtk_idle_remove (focus_notify_handler);
+              g_object_remove_weak_pointer (G_OBJECT (next_focus_widget), (gpointer *)&next_focus_widget);
+              focus_notify_handler = 0;
+            }
+          return;
+        }
+    } 
   /*
    * If previously focused widget is not a GtkMenuItem or a GtkMenu,
    * keep track of it so we can return to it after menubar is deactivated
@@ -302,6 +347,17 @@ gail_map_cb (GtkWidget *widget)
 {
   gail_finish_select (widget);
 }
+
+static void
+gail_show_cb (GtkWidget *widget)
+{
+  if (GTK_IS_MENU (widget))
+    {
+      if (GTK_MENU (widget)->parent_menu_item)
+        gail_finish_select (GTK_MENU (widget)->parent_menu_item);
+    }
+}
+
 
 static gboolean
 gail_deselect_watcher (GSignalInvocationHint *ihint,
@@ -562,7 +618,7 @@ gail_accessibility_module_init (void)
     }
   gail_initialized = TRUE;
 
-  g_print ("GTK Accessibility Module initialized\n");
+  fprintf (stderr, "GTK Accessibility Module initialized\n");
 
   GAIL_WIDGET_SET_FACTORY (GTK_TYPE_WIDGET, gail_widget);
   GAIL_WIDGET_SET_FACTORY (GTK_TYPE_CONTAINER, gail_container);
@@ -647,7 +703,7 @@ gnome_accessibility_module_shutdown (void)
     }
   gail_initialized = FALSE;
 
-  g_print("Gtk Accessibilty Module shutdown\n");
+  fprintf (stderr, "Gtk Accessibilty Module shutdown\n");
 
   /* FIXME: de-register the factory types so we can unload ? */
 }

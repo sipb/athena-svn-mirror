@@ -53,6 +53,7 @@ struct _GailEntry
   gint           selection_bound;
 
   gchar          *activate_description;
+  guint          action_idle_handler;
 };
 
 GType gail_entry_get_type (void);

@@ -107,7 +107,6 @@ gail_statusbar_get_name (AtkObject *obj)
        */
       GtkWidget *widget;
       GtkWidget *label;
-      GValue  value = { 0, };
 
       widget = GTK_ACCESSIBLE (obj)->widget;
       if (widget == NULL)
@@ -120,9 +119,7 @@ gail_statusbar_get_name (AtkObject *obj)
      label = GTK_STATUSBAR (widget)->label;
      g_return_val_if_fail (GTK_IS_LABEL (label), NULL);
     
-     g_value_init (&value, G_TYPE_STRING);
-     g_object_get_property (G_OBJECT (label), "label", &value);
-     return g_value_get_string (&value);
+     return gtk_label_get_label (GTK_LABEL (label));
    }
 }
 

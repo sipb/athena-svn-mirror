@@ -1,3 +1,94 @@
+Overview of Changes in GAIL 1.2.0
+=================================
+* Allow for more than one label within a button (bug #103465) 
+[Padraig O'Briain]
+* Report correct offsets for text when images embedded in text (bug #103035)
+[Padraig]
+* Allow for label for bhutton not existing when GailButton is created
+(bug #101350) [Padraig]
+
+Overview of Changes in GAIL 1.1.7
+=================================
+* Add --with-html-dir option to configure.in to allow location of
+documentation to be changed (bug #102599) [Padraig O'Briain]
+
+Overview of Changes in GAIL 1.1.6
+=================================
+* Do not emit warning messages after double click on a treeview row when
+accessibility is enabled (bug #101349) [Padraig O'Briain]
+* Fix crash in mixer applet when accessibility is enabled (bug #101137)
+[Padraig]
+
+Overview of Changes in GAIL 1.1.5
+=================================
+* Do not emit active-descendant-changed signal if active descendant
+is unchanged (bug #100829) [Padraig O'Briain]
+* Add AtkText interface to GailButton [Padraig]
+* Correct return value for atk_text_get_caret_offset() for GailLabel
+(bug #101020) [Padraig]
+
+Overview of Changes in GAIL 1.1.4
+=================================
+* Emit destroy notification while window still exists (bug #95794)
+[Padraig O'Briain]
+* Have GailTreeView report state MANAGES_DESCENDANTS [Padraig]
+* Have Gailtreeview emit active-descendant-changed signal when focus cell
+changes [Padraig]
+* Report correct cell area for cell in multi-renderer column (bug #84133)
+[Padraig]
+
+Overview of Changes in GAIL 1.1.3
+=================================
+* Set role for tooltip window to ATK_ROLE_TOOL_TIP and return contents
+of tooltip for name (bug #95824) [Padraig O'Briain]
+* Use queue to store pending button actions (bug #98275) [Bill Haneman]
+* Set role for toplevel to ATK_ROLE_APPLICATION [Bill}
+* Minor bug fixes [Padraig, Bill]
+
+Overview of Changes in GAIL 1.1.2
+=================================
+* Provide implementation of atk_selection_add_selection() for GtkTreeView
+which has only one visible column [Padraig O'Briain]
+* Correct implementation of atk_text_set_caret_offset() for GtkTextView.
+(bug #95056) [Padraig]
+* Include modifier in keybinding name for GtkButton action (bug #95151)
+[Padraig]
+* Minor bug fixes [Padraig]
+
+Overview of Changes in GAIL 1.1.1
+=================================
+* Fix warning messages emitted trying to set GtkTextBuffer to NULL.
+(bug #91717) [Padraig O'Briain]
+* Do not emit signals for GtkEntry on Delete or BackSpace if no text is 
+deleted. Ensure that signal is emitted if text is deselected. (bug #90356)
+[Padraig]
+* Implement atk_component_grab_focus() for cells in a TreeView. (bug #91718)
+[Padraig]
+* Update children of toplevel before emitting children-changed signal.
+(bug #91957) [Padraig]
+* Call gtk_window_present() on toplevel in implementations of
+atk_component_grab_focus() (bug #91964) [Padraig]
+* Ensure that implementations of atk_action_do_action() return before
+action is done. (bug #90756) [Padraig]
+* Update docs so that all symbols are documented. [Padraig]
+* Add implementation for atk_component_get_mdi_zorder() for GailWindow.
+(bug #84097) [Mark Mc Loughlin]. 
+* Use +NET_WM_DESKTOP value of Window when getting its zorder [Padraig]
+* Minor bug fixes [Padraig]
+
+Overview of Changes in GAIL 1.1.0
+=================================
+* Decouple version number of package from number of current interface exported
+by libgailutil (bug #89327) [Padraig O'Briain]
+* Do not do action for insensitive button (bug #89505) [Padraig]
+* If a menu item being selected has a submenu wait until the submenu is shown 
+before reporting focus on the menu item (bug #89611) [Padraig]
+* Do not output actual text for GtkEntry for which visible property is false.
+(bug #89323) [Padraig]
+* Update autogen.sh so that users with both automake 1.6 and 1.4 installed
+get the right automake [Havoc Pennington]
+* Minor bug fixes [Padraig]
+
 Overview of Changes in GAIL 0.17
 ================================
 

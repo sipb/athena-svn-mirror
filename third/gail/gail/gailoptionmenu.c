@@ -28,6 +28,7 @@ static void                  atk_action_interface_init         (AtkActionIface  
 
 static gboolean              gail_option_menu_do_action        (AtkAction       *action,
                                                                 gint            i);
+static gboolean              idle_do_action                    (gpointer        data);
 static gint                  gail_option_menu_get_n_actions    (AtkAction       *action);
 static G_CONST_RETURN gchar* gail_option_menu_get_description  (AtkAction       *action,
                                                                 gint            i);
@@ -116,10 +117,11 @@ static gboolean
 gail_option_menu_do_action (AtkAction *action,
                             gint      i)
 {
-  GtkButton *button; 
   GtkWidget *widget;
+  GailButton *button; 
   gboolean return_value = TRUE;
 
+  button = GAIL_BUTTON (action);
   widget = GTK_ACCESSIBLE (action)->widget;
   if (widget == NULL)
     /*
@@ -130,34 +132,60 @@ gail_option_menu_do_action (AtkAction *action,
   if (!GTK_WIDGET_SENSITIVE (widget) || !GTK_WIDGET_VISIBLE (widget))
     return FALSE;
 
-  button = GTK_BUTTON (widget); 
   switch (i)
     {
     case 0:
-      {
-        GdkEvent tmp_event;
-
-        button->in_button = TRUE;
-        gtk_button_enter (button);
-        /*
-         * Simulate a button press event. calling gtk_button_pressed() does
-         * not get the job done for a GtkOptionMenu.  
-         */
-        tmp_event.button.type = GDK_BUTTON_PRESS;
-        tmp_event.button.window = widget->window;
-        tmp_event.button.button = 1;
-        tmp_event.button.send_event = TRUE;
-        tmp_event.button.time = GDK_CURRENT_TIME;
-        tmp_event.button.axes = NULL;
-
-        gtk_widget_event (widget, &tmp_event);
-        break;
-      }
+      if (button->action_idle_handler)
+        return_value = FALSE;
+      else
+        button->action_idle_handler = gtk_idle_add (idle_do_action, button);
+      break;
     default:
       return_value = FALSE;
       break;
     }
   return return_value; 
+}
+
+static gboolean 
+idle_do_action (gpointer data)
+{
+  GtkButton *button; 
+  GtkWidget *widget;
+  GdkEvent tmp_event;
+  GailButton *gail_button;
+
+  gail_button = GAIL_BUTTON (data);
+  gail_button->action_idle_handler = 0;
+
+  widget = GTK_ACCESSIBLE (gail_button)->widget;
+  if (widget == NULL)
+    /*
+     * State is defunct
+     */
+    return FALSE;
+
+  if (!GTK_WIDGET_SENSITIVE (widget) || !GTK_WIDGET_VISIBLE (widget))
+    return FALSE;
+
+  button = GTK_BUTTON (widget); 
+
+  button->in_button = TRUE;
+  gtk_button_enter (button);
+  /*
+   * Simulate a button press event. calling gtk_button_pressed() does
+   * not get the job done for a GtkOptionMenu.  
+   */
+  tmp_event.button.type = GDK_BUTTON_PRESS;
+  tmp_event.button.window = widget->window;
+  tmp_event.button.button = 1;
+  tmp_event.button.send_event = TRUE;
+  tmp_event.button.time = GDK_CURRENT_TIME;
+  tmp_event.button.axes = NULL;
+
+  gtk_widget_event (widget, &tmp_event);
+
+  return FALSE; 
 }
 
 static gint

@@ -637,7 +637,10 @@ gail_text_util_get_substring (GailTextUtil *textutil,
      return NULL;
 
   gtk_text_buffer_get_iter_at_offset (buffer, &start, start_pos);
-  gtk_text_buffer_get_iter_at_offset (buffer, &end, end_pos);
+  if (end_pos < 0)
+    gtk_text_buffer_get_end_iter (buffer, &end);
+  else
+    gtk_text_buffer_get_iter_at_offset (buffer, &end, end_pos);
 
   return gtk_text_buffer_get_text (buffer, &start, &end, FALSE);
 }

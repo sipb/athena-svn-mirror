@@ -26,24 +26,25 @@ gail_cell_parent_get_type ()
 {
   static GType type = 0;
 
-  if (!type) {
-    static const GTypeInfo tinfo =
+  if (!type) 
     {
-      sizeof (GailCellParentIface),
-      (GBaseInitFunc) NULL,
-      (GBaseFinalizeFunc) NULL,
+      static const GTypeInfo tinfo =
+      {
+        sizeof (GailCellParentIface),
+        (GBaseInitFunc) NULL,
+        (GBaseFinalizeFunc) NULL,
 
-    };
+      };
 
-    type = g_type_register_static (G_TYPE_INTERFACE, "GailCellParent", &tinfo, 0);
-  }
+      type = g_type_register_static (G_TYPE_INTERFACE, "GailCellParent", &tinfo, 0);
+    }
 
   return type;
 }
 
 /**
  * gail_cell_parent_get_cell_extents:
- * @image: a #GObject instance that implements GailCellParentIface
+ * @parent: a #GObject instance that implements GailCellParentIface
  * @cell: a #GailCell whose extents is required
  * @x: address of #gint to put x coordinate
  * @y: address of #gint to put y coordinate
@@ -56,13 +57,13 @@ gail_cell_parent_get_type ()
  *
  **/
 void
-gail_cell_parent_get_cell_extents (GailCellParent        *parent,
-                                   GailCell              *cell,
-                                   gint                  *x,
-                                   gint                  *y,
-                                   gint                  *width,
-                                   gint                  *height,
-                                   AtkCoordType          coord_type)
+gail_cell_parent_get_cell_extents (GailCellParent *parent,
+                                   GailCell       *cell,
+                                   gint           *x,
+                                   gint           *y,
+                                   gint           *width,
+                                   gint           *height,
+                                   AtkCoordType   coord_type)
 {
   GailCellParentIface *iface;
 
@@ -71,12 +72,12 @@ gail_cell_parent_get_cell_extents (GailCellParent        *parent,
   iface = GAIL_CELL_PARENT_GET_IFACE (parent);
 
   if (iface->get_cell_extents)
-      (iface->get_cell_extents) (parent, cell, x, y, width, height, coord_type);
+    (iface->get_cell_extents) (parent, cell, x, y, width, height, coord_type);
 }
 
 /**
  * gail_cell_parent_get_cell_area:
- * @image: a #GObject instance that implements GailCellParentIface
+ * @parent: a #GObject instance that implements GailCellParentIface
  * @cell: a #GailCell whose area is required
  * @cell_rect: address of #GdkRectangle to put the cell area
  *
@@ -84,9 +85,9 @@ gail_cell_parent_get_cell_extents (GailCellParent        *parent,
  *
  **/
 void
-gail_cell_parent_get_cell_area (GailCellParent        *parent,
-                                GailCell              *cell,
-                                GdkRectangle          *cell_rect)
+gail_cell_parent_get_cell_area (GailCellParent *parent,
+                                GailCell       *cell,
+                                GdkRectangle   *cell_rect)
 {
   GailCellParentIface *iface;
 
@@ -96,5 +97,28 @@ gail_cell_parent_get_cell_area (GailCellParent        *parent,
   iface = GAIL_CELL_PARENT_GET_IFACE (parent);
 
   if (iface->get_cell_area)
-      (iface->get_cell_area) (parent, cell, cell_rect);
+    (iface->get_cell_area) (parent, cell, cell_rect);
+}
+/**
+ * gail_cell_parent_grab_focus:
+ * @parent: a #GObject instance that implements GailCellParentIface
+ * @cell: a #GailCell whose area is required
+ *
+ * Puts focus in the specified cell.
+ *
+ **/
+gboolean
+gail_cell_parent_grab_focus (GailCellParent *parent,
+                             GailCell       *cell)
+{
+  GailCellParentIface *iface;
+
+  g_return_val_if_fail (GAIL_IS_CELL_PARENT (parent), FALSE);
+
+  iface = GAIL_CELL_PARENT_GET_IFACE (parent);
+
+  if (iface->grab_focus)
+    return (iface->grab_focus) (parent, cell);
+  else
+    return FALSE;
 }

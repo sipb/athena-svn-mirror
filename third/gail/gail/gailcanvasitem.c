@@ -40,7 +40,7 @@ static void       gail_canvas_item_get_extents              (AtkComponent      *
 					                     gint              *width,
 					                     gint              *height,
 					                     AtkCoordType      coord_type);
-
+static gint       gail_canvas_item_get_mdi_zorder           (AtkComponent      *component);
 static gboolean   gail_canvas_item_grab_focus               (AtkComponent      *component);
 static void       gail_canvas_item_remove_focus_handler     (AtkComponent      *component,
 					                     guint             handler_id);
@@ -115,7 +115,8 @@ gail_canvas_item_initialize (AtkObject   *obj,
 {
   ATK_OBJECT_CLASS (parent_class)->initialize (obj, data);
 
-  obj->layer = ATK_LAYER_MDI;
+  g_object_set_data (G_OBJECT (obj), "atk-component-layer",
+                     GINT_TO_POINTER (ATK_LAYER_MDI));
 }
 
 static void
@@ -127,7 +128,6 @@ gail_canvas_item_class_init (GailCanvasItemClass *klass)
 
   class->get_parent = gail_canvas_item_get_parent;
   class->get_index_in_parent = gail_canvas_item_get_index_in_parent;
-  class->get_mdi_zorder = gail_canvas_item_get_index_in_parent;
   class->ref_state_set = gail_canvas_item_ref_state_set;
   class->initialize = gail_canvas_item_initialize;
 }
@@ -231,6 +231,7 @@ gail_canvas_item_component_interface_init (AtkComponentIface *iface)
 
   iface->add_focus_handler = gail_canvas_item_add_focus_handler;
   iface->get_extents = gail_canvas_item_get_extents;
+  iface->get_mdi_zorder = gail_canvas_item_get_mdi_zorder;
   iface->grab_focus = gail_canvas_item_grab_focus;
   iface->remove_focus_handler = gail_canvas_item_remove_focus_handler;
 }
@@ -314,12 +315,21 @@ gail_canvas_item_get_extents (AtkComponent *component,
   return;
 }
 
+static gint
+gail_canvas_item_get_mdi_zorder (AtkComponent *component)
+{
+  g_return_val_if_fail (ATK_OBJECT (component), -1); 
+
+  return gail_canvas_item_get_index_in_parent (ATK_OBJECT (component));
+}
+
 static gboolean
 gail_canvas_item_grab_focus (AtkComponent    *component)
 {
   AtkGObjectAccessible *atk_gobj;
   GObject *obj;
   GnomeCanvasItem *item;
+  GtkWidget *toplevel;
 
   g_return_val_if_fail (GAIL_IS_CANVAS_ITEM (component), FALSE);
   atk_gobj = ATK_GOBJECT_ACCESSIBLE (component);
@@ -332,6 +342,10 @@ gail_canvas_item_grab_focus (AtkComponent    *component)
     return FALSE;
 
   gnome_canvas_item_grab_focus (item);
+  toplevel = gtk_widget_get_toplevel (GTK_WIDGET (item->canvas));
+  if (GTK_WIDGET_TOPLEVEL (toplevel))
+    gtk_window_present (GTK_WINDOW (toplevel));
+
   return TRUE;
 }
 

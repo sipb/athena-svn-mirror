@@ -94,7 +94,7 @@ gail_toplevel_new (void)
   g_return_val_if_fail ((object != NULL), NULL);
 
   accessible = ATK_OBJECT (object);
-  accessible->role = ATK_ROLE_INVALID;
+  accessible->role = ATK_ROLE_APPLICATION;
   accessible->name = g_get_prgname();
 
   return accessible;
@@ -305,11 +305,11 @@ _gail_toplevel_remove_child (GailToplevel *toplevel,
           if (window == tmp_window)
             {
               /* Remove the window from the window_list & emit the signal */
+              toplevel->window_list = g_list_remove (toplevel->window_list,
+                                                     l->data);
               g_signal_emit_by_name (atk_obj, "children-changed::remove",
                                      window_count, 
                                      gtk_widget_get_accessible (GTK_WIDGET (window)), NULL);
-              toplevel->window_list = g_list_remove (toplevel->window_list,
-                                                     l->data);
               break;
             }
 

@@ -33,13 +33,12 @@ static void                  gail_menu_item_real_initialize
 static gint                  gail_menu_item_get_n_children (AtkObject      *obj);
 static AtkObject*            gail_menu_item_ref_child      (AtkObject      *obj,
                                                             gint           i);
-static AtkStateSet*          gail_menu_item_ref_state_set  (AtkObject      *obj);
-
 static void                  gail_menu_item_finalize       (GObject        *object);
 
 static void                  atk_action_interface_init     (AtkActionIface *iface);
 static gboolean              gail_menu_item_do_action      (AtkAction      *action,
                                                             gint           i);
+static gboolean              idle_do_action                (gpointer       data);
 static gint                  gail_menu_item_get_n_actions  (AtkAction      *action);
 static G_CONST_RETURN gchar* gail_menu_item_get_description(AtkAction      *action,
                                                             gint           i);
@@ -106,7 +105,6 @@ gail_menu_item_class_init (GailMenuItemClass *klass)
 
   class->get_n_children = gail_menu_item_get_n_children;
   class->ref_child = gail_menu_item_ref_child;
-  class->ref_state_set = gail_menu_item_ref_state_set;
   class->initialize = gail_menu_item_real_initialize;
 
   parent_class = g_type_class_peek_parent (klass);
@@ -248,30 +246,6 @@ gail_menu_item_ref_child (AtkObject *obj,
   return accessible;
 }
 
-static AtkStateSet*
-gail_menu_item_ref_state_set (AtkObject *obj)
-{
-  AtkStateSet *state_set;
-  GtkWidget *widget;
-  GtkWidget *parent;
-
-  state_set = ATK_OBJECT_CLASS (parent_class)->ref_state_set (obj);
-  widget = GTK_ACCESSIBLE (obj)->widget;
-
-  if (widget == NULL)
-    return state_set;
-
-  if (!GTK_WIDGET_IS_SENSITIVE (widget))
-    atk_state_set_remove_state (state_set, ATK_STATE_SELECTABLE);
-
-  parent = gtk_widget_get_parent (widget);
-  if (!GTK_WIDGET_VISIBLE (parent))
-    atk_state_set_remove_state (state_set, ATK_STATE_VISIBLE);
-  if (!GTK_WIDGET_MAPPED (parent))
-    atk_state_set_remove_state (state_set, ATK_STATE_SHOWING);
-  return state_set;
-}
-
 static void
 atk_action_interface_init (AtkActionIface *iface)
 {
@@ -292,7 +266,7 @@ gail_menu_item_do_action (AtkAction *action,
   if (i == 0)
     {
       GtkWidget *item;
-      GtkWidget *item_parent;
+      GailMenuItem *gail_menu_item;
 
       item = GTK_ACCESSIBLE (action)->widget;
       if (item == NULL)
@@ -302,17 +276,42 @@ gail_menu_item_do_action (AtkAction *action,
       if (!GTK_WIDGET_SENSITIVE (item) || !GTK_WIDGET_VISIBLE (item))
         return FALSE;
 
-      item_parent = gtk_widget_get_parent (item);
-      gtk_menu_shell_select_item (GTK_MENU_SHELL (item_parent), item);
-      /*
-       * This is what is called when <Return> is pressed for a menu item
-       */
-      g_signal_emit_by_name (item_parent, "activate_current",  
-                               /*force_hide*/ 1); 
+      gail_menu_item = GAIL_MENU_ITEM (action);
+      if (gail_menu_item->action_idle_handler)
+        return FALSE;
+      else
+        gail_menu_item->action_idle_handler = gtk_idle_add (idle_do_action, gail_menu_item);
       return TRUE;
     }
   else
     return FALSE;
+}
+
+static gboolean
+idle_do_action (gpointer data)
+{
+  GtkWidget *item;
+  GtkWidget *item_parent;
+  GailMenuItem *menu_item;
+
+  menu_item = GAIL_MENU_ITEM (data);
+  menu_item->action_idle_handler = 0;
+  item = GTK_ACCESSIBLE (menu_item)->widget;
+  if (item == NULL)
+    /* State is defunct */
+    return FALSE;
+
+  if (!GTK_WIDGET_SENSITIVE (item) || !GTK_WIDGET_VISIBLE (item))
+    return FALSE;
+
+  item_parent = gtk_widget_get_parent (item);
+  gtk_menu_shell_select_item (GTK_MENU_SHELL (item_parent), item);
+  /*
+   * This is what is called when <Return> is pressed for a menu item
+   */
+  g_signal_emit_by_name (item_parent, "activate_current",  
+                         /*force_hide*/ 1); 
+  return FALSE;
 }
 
 static gint
@@ -532,6 +531,12 @@ gail_menu_item_finalize (GObject *object)
 
   g_free (menu_item->click_keybinding);
   g_free (menu_item->click_description);
+  if (menu_item->action_idle_handler)
+    {
+      gtk_idle_remove (menu_item->action_idle_handler);
+      menu_item->action_idle_handler = 0;
+    }
+
   G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 

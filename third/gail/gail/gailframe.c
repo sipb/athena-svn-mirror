@@ -93,9 +93,6 @@ gail_frame_get_name (AtkObject *obj)
      * Get the text on the label
      */
     GtkWidget *widget;
-    GValue val, *value;
-
-    value = &val;
 
     widget = GTK_ACCESSIBLE (obj)->widget;
     if (widget == NULL)
@@ -105,9 +102,6 @@ gail_frame_get_name (AtkObject *obj)
        */
       return NULL;
     }
-    memset(value, 0, sizeof(GValue));
-    g_value_init (value, G_TYPE_STRING);
-    g_object_get_property (G_OBJECT (widget), "label", value);
-    return g_value_get_string (value);
+    return gtk_frame_get_label (GTK_FRAME (widget));
   }
 }

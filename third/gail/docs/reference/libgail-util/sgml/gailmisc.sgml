@@ -85,23 +85,19 @@ Creates an <link linkend="AtkAttribute">AtkAttribute</link> from <parameter>attr
 to <parameter>attrib_set</parameter>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>attrib_set</parameter>&nbsp;:</entry>
-<entry> The <link linkend="AtkAttributeSet">AtkAttributeSet</link> to add the attribute to
-</entry></row>
-<row><entry align="right"><parameter>attr</parameter>&nbsp;:</entry>
-<entry> The AtkTextAttrribute which identifies the attribute to be added
-</entry></row>
-<row><entry align="right"><parameter>value</parameter>&nbsp;:</entry>
-<entry> The attribute value
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A pointer to the new <link linkend="AtkAttributeSet">AtkAttributeSet</link>.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>attrib_set</parameter>&nbsp;:</term>
+<listitem><para> The <link linkend="AtkAttributeSet">AtkAttributeSet</link> to add the attribute to
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>attr</parameter>&nbsp;:</term>
+<listitem><para> The AtkTextAttrribute which identifies the attribute to be added
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>value</parameter>&nbsp;:</term>
+<listitem><para> The attribute value
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> A pointer to the new <link linkend="AtkAttributeSet">AtkAttributeSet</link>.
+</para></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gail-misc-layout-get-run-attributes">gail_misc_layout_get_run_attributes ()</title>
 <programlisting><link linkend="AtkAttributeSet">AtkAttributeSet</link>* gail_misc_layout_get_run_attributes
@@ -116,32 +112,28 @@ Adds the attributes for the run starting at offset to the specified
 attribute set.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>attrib_set</parameter>&nbsp;:</entry>
-<entry> The <link linkend="AtkAttributeSet">AtkAttributeSet</link> to add the attribute to
-</entry></row>
-<row><entry align="right"><parameter>layout</parameter>&nbsp;:</entry>
-<entry> The PangoLayout from which the attributes will be obtained
-</entry></row>
-<row><entry align="right"><parameter>text</parameter>&nbsp;:</entry>
-<entry> The text 
-</entry></row>
-<row><entry align="right"><parameter>offset</parameter>&nbsp;:</entry>
-<entry> The offset at which the attributes are required
-</entry></row>
-<row><entry align="right"><parameter>start_offset</parameter>&nbsp;:</entry>
-<entry> The start offset of the current run
-</entry></row>
-<row><entry align="right"><parameter>end_offset</parameter>&nbsp;:</entry>
-<entry> The end offset of the current run
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A pointer to the <link linkend="AtkAttributeSet">AtkAttributeSet</link>.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>attrib_set</parameter>&nbsp;:</term>
+<listitem><para> The <link linkend="AtkAttributeSet">AtkAttributeSet</link> to add the attribute to
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>layout</parameter>&nbsp;:</term>
+<listitem><para> The PangoLayout from which the attributes will be obtained
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>text</parameter>&nbsp;:</term>
+<listitem><para> The text 
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>offset</parameter>&nbsp;:</term>
+<listitem><para> The offset at which the attributes are required
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>start_offset</parameter>&nbsp;:</term>
+<listitem><para> The start offset of the current run
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>end_offset</parameter>&nbsp;:</term>
+<listitem><para> The end offset of the current run
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> A pointer to the <link linkend="AtkAttributeSet">AtkAttributeSet</link>.
+</para></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gail-misc-get-default-attributes">gail_misc_get_default_attributes ()</title>
 <programlisting><link linkend="AtkAttributeSet">AtkAttributeSet</link>* gail_misc_get_default_attributes
@@ -152,23 +144,19 @@ attribute set.</para>
 Adds the default attributes to the specified attribute set.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>attrib_set</parameter>&nbsp;:</entry>
-<entry> The <link linkend="AtkAttributeSet">AtkAttributeSet</link> to add the attribute to
-</entry></row>
-<row><entry align="right"><parameter>layout</parameter>&nbsp;:</entry>
-<entry> The PangoLayout from which the attributes will be obtained
-</entry></row>
-<row><entry align="right"><parameter>widget</parameter>&nbsp;:</entry>
-<entry> The GtkWidget for which the default attributes are required.
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A pointer to the <link linkend="AtkAttributeSet">AtkAttributeSet</link>.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>attrib_set</parameter>&nbsp;:</term>
+<listitem><para> The <link linkend="AtkAttributeSet">AtkAttributeSet</link> to add the attribute to
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>layout</parameter>&nbsp;:</term>
+<listitem><para> The PangoLayout from which the attributes will be obtained
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>widget</parameter>&nbsp;:</term>
+<listitem><para> The GtkWidget for which the default attributes are required.
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> A pointer to the <link linkend="AtkAttributeSet">AtkAttributeSet</link>.
+</para></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gail-misc-get-extents-from-pango-rectangle">gail_misc_get_extents_from_pango_rectangle ()</title>
 <programlisting>void        gail_misc_get_extents_from_pango_rectangle
@@ -187,42 +175,38 @@ relative to either top-level window or screen coordinates as
 specified by <parameter>coords</parameter>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>widget</parameter>&nbsp;:</entry>
-<entry> The widget that contains the PangoLayout, that contains
+</para><variablelist role="params">
+<varlistentry><term><parameter>widget</parameter>&nbsp;:</term>
+<listitem><para> The widget that contains the PangoLayout, that contains
   the PangoRectangle
-</entry></row>
-<row><entry align="right"><parameter>char_rect</parameter>&nbsp;:</entry>
-<entry> The <link linkend="PangoRectangle">PangoRectangle</link> from which to calculate extents
-</entry></row>
-<row><entry align="right"><parameter>x_layout</parameter>&nbsp;:</entry>
-<entry> The x-offset at which the widget displays the
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>char_rect</parameter>&nbsp;:</term>
+<listitem><para> The <link linkend="PangoRectangle">PangoRectangle</link> from which to calculate extents
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>x_layout</parameter>&nbsp;:</term>
+<listitem><para> The x-offset at which the widget displays the
   PangoLayout that contains the PangoRectangle, relative to <parameter>widget</parameter>
-</entry></row>
-<row><entry align="right"><parameter>y_layout</parameter>&nbsp;:</entry>
-<entry> The y-offset at which the widget displays the
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>y_layout</parameter>&nbsp;:</term>
+<listitem><para> The y-offset at which the widget displays the
   PangoLayout that contains the PangoRectangle, relative to <parameter>widget</parameter>
-</entry></row>
-<row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
-<entry> The x-position of the <link linkend="PangoRectangle">PangoRectangle</link> relative to <parameter>coords</parameter>
-</entry></row>
-<row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
-<entry> The y-position of the <link linkend="PangoRectangle">PangoRectangle</link> relative to <parameter>coords</parameter>
-</entry></row>
-<row><entry align="right"><parameter>width</parameter>&nbsp;:</entry>
-<entry> The width of the <link linkend="PangoRectangle">PangoRectangle</link>
-</entry></row>
-<row><entry align="right"><parameter>height</parameter>&nbsp;:</entry>
-<entry> The  height of the <link linkend="PangoRectangle">PangoRectangle</link>
-</entry></row>
-<row><entry align="right"><parameter>coords</parameter>&nbsp;:</entry>
-<entry> An <link linkend="AtkCoordType">AtkCoordType</link> enumeration
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
+<listitem><para> The x-position of the <link linkend="PangoRectangle">PangoRectangle</link> relative to <parameter>coords</parameter>
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
+<listitem><para> The y-position of the <link linkend="PangoRectangle">PangoRectangle</link> relative to <parameter>coords</parameter>
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>width</parameter>&nbsp;:</term>
+<listitem><para> The width of the <link linkend="PangoRectangle">PangoRectangle</link>
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>height</parameter>&nbsp;:</term>
+<listitem><para> The  height of the <link linkend="PangoRectangle">PangoRectangle</link>
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>coords</parameter>&nbsp;:</term>
+<listitem><para> An <link linkend="AtkCoordType">AtkCoordType</link> enumeration
+</para></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gail-misc-get-index-at-point-in-layout">gail_misc_get_index_at_point_in_layout ()</title>
 <programlisting><link linkend="gint">gint</link>        gail_misc_get_index_at_point_in_layout
@@ -237,41 +221,37 @@ specified by <parameter>coords</parameter>.</para>
 Gets the byte offset at the specified <parameter>x</parameter> and <parameter>y</parameter> in a <link linkend="PangoLayout">PangoLayout</link>.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>widget</parameter>&nbsp;:</entry>
-<entry> A <link linkend="GtkWidget">GtkWidget</link>
-</entry></row>
-<row><entry align="right"><parameter>layout</parameter>&nbsp;:</entry>
-<entry> The <link linkend="PangoLayout">PangoLayout</link> from which to get the index at the
+</para><variablelist role="params">
+<varlistentry><term><parameter>widget</parameter>&nbsp;:</term>
+<listitem><para> A <link linkend="GtkWidget">GtkWidget</link>
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>layout</parameter>&nbsp;:</term>
+<listitem><para> The <link linkend="PangoLayout">PangoLayout</link> from which to get the index at the
   specified point.
-</entry></row>
-<row><entry align="right"><parameter>x_layout</parameter>&nbsp;:</entry>
-<entry> The x-offset at which the widget displays the
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>x_layout</parameter>&nbsp;:</term>
+<listitem><para> The x-offset at which the widget displays the
   <link linkend="PangoLayout">PangoLayout</link>, relative to <parameter>widget</parameter>
-</entry></row>
-<row><entry align="right"><parameter>y_layout</parameter>&nbsp;:</entry>
-<entry> The y-offset at which the widget displays the
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>y_layout</parameter>&nbsp;:</term>
+<listitem><para> The y-offset at which the widget displays the
   <link linkend="PangoLayout">PangoLayout</link>, relative to <parameter>widget</parameter>
-</entry></row>
-<row><entry align="right"><parameter>x</parameter>&nbsp;:</entry>
-<entry> The x-coordinate relative to <parameter>coords</parameter> at which to
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>x</parameter>&nbsp;:</term>
+<listitem><para> The x-coordinate relative to <parameter>coords</parameter> at which to
   calculate the index
-</entry></row>
-<row><entry align="right"><parameter>y</parameter>&nbsp;:</entry>
-<entry> The y-coordinate relative to <parameter>coords</parameter> at which to
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>y</parameter>&nbsp;:</term>
+<listitem><para> The y-coordinate relative to <parameter>coords</parameter> at which to
   calculate the index
-</entry></row>
-<row><entry align="right"><parameter>coords</parameter>&nbsp;:</entry>
-<entry> An <link linkend="AtkCoordType">AtkCoordType</link> enumeration
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> the byte offset at the specified <parameter>x</parameter> and <parameter>y</parameter> in a
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>coords</parameter>&nbsp;:</term>
+<listitem><para> An <link linkend="AtkCoordType">AtkCoordType</link> enumeration
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> the byte offset at the specified <parameter>x</parameter> and <parameter>y</parameter> in a
   <link linkend="PangoLayout">PangoLayout</link>
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gail-misc-get-origins">gail_misc_get_origins ()</title>
 <programlisting>void        gail_misc_get_origins           (<link linkend="GtkWidget">GtkWidget</link> *widget,
@@ -284,27 +264,23 @@ Gets the origin of the widget window, and the origin of the
 widgets top-level window.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>widget</parameter>&nbsp;:</entry>
-<entry> a <link linkend="GtkWidget">GtkWidget</link>
-</entry></row>
-<row><entry align="right"><parameter>x_window</parameter>&nbsp;:</entry>
-<entry> the x-origin of the widget-&gt;window
-</entry></row>
-<row><entry align="right"><parameter>y_window</parameter>&nbsp;:</entry>
-<entry> the y-origin of the widget-&gt;window
-</entry></row>
-<row><entry align="right"><parameter>x_toplevel</parameter>&nbsp;:</entry>
-<entry> the x-origin of the toplevel window for widget-&gt;window
-</entry></row>
-<row><entry align="right"><parameter>y_toplevel</parameter>&nbsp;:</entry>
-<entry> the y-origin of the toplevel window for widget-&gt;window
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>widget</parameter>&nbsp;:</term>
+<listitem><para> a <link linkend="GtkWidget">GtkWidget</link>
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>x_window</parameter>&nbsp;:</term>
+<listitem><para> the x-origin of the widget-&gt;window
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>y_window</parameter>&nbsp;:</term>
+<listitem><para> the y-origin of the widget-&gt;window
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>x_toplevel</parameter>&nbsp;:</term>
+<listitem><para> the x-origin of the toplevel window for widget-&gt;window
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>y_toplevel</parameter>&nbsp;:</term>
+<listitem><para> the y-origin of the toplevel window for widget-&gt;window
+</para></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gail-misc-add-to-attr-set">gail_misc_add_to_attr_set ()</title>
 <programlisting><link linkend="AtkAttributeSet">AtkAttributeSet</link>* gail_misc_add_to_attr_set  (<link linkend="AtkAttributeSet">AtkAttributeSet</link> *attrib_set,
@@ -315,23 +291,19 @@ Gets the value for the AtkTextAttribute from the GtkTextAttributes
 and adds it to the AttributeSet.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>attrib_set</parameter>&nbsp;:</entry>
-<entry> An <link linkend="AtkAttributeSet">AtkAttributeSet</link>
-</entry></row>
-<row><entry align="right"><parameter>attrs</parameter>&nbsp;:</entry>
-<entry> The <link linkend="GtkTextAttributes">GtkTextAttributes</link> containing the attribute value
-</entry></row>
-<row><entry align="right"><parameter>attr</parameter>&nbsp;:</entry>
-<entry> The <link linkend="AtkTextAttribute">AtkTextAttribute</link> to be added
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A pointer to the updated <link linkend="AtkAttributeSet">AtkAttributeSet</link>.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>attrib_set</parameter>&nbsp;:</term>
+<listitem><para> An <link linkend="AtkAttributeSet">AtkAttributeSet</link>
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>attrs</parameter>&nbsp;:</term>
+<listitem><para> The <link linkend="GtkTextAttributes">GtkTextAttributes</link> containing the attribute value
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>attr</parameter>&nbsp;:</term>
+<listitem><para> The <link linkend="AtkTextAttribute">AtkTextAttribute</link> to be added
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> A pointer to the updated <link linkend="AtkAttributeSet">AtkAttributeSet</link>.
+</para></listitem></varlistentry>
+</variablelist></refsect2>
 <refsect2>
 <title><anchor id="gail-misc-buffer-get-run-attributes">gail_misc_buffer_get_run_attributes ()</title>
 <programlisting><link linkend="AtkAttributeSet">AtkAttributeSet</link>* gail_misc_buffer_get_run_attributes
@@ -344,26 +316,22 @@ Creates an AtkAttributeSet which contains the attributes for the
 run starting at offset.</para>
 <para>
 
-</para><informaltable pgwide="1" frame="none" role="params">
-<tgroup cols="2">
-<colspec colwidth="2*">
-<colspec colwidth="8*">
-<tbody>
-<row><entry align="right"><parameter>buffer</parameter>&nbsp;:</entry>
-<entry> The <link linkend="GtkTextBuffer">GtkTextBuffer</link> for which the attributes will be obtained
-</entry></row>
-<row><entry align="right"><parameter>offset</parameter>&nbsp;:</entry>
-<entry> The offset at which the attributes are required
-</entry></row>
-<row><entry align="right"><parameter>start_offset</parameter>&nbsp;:</entry>
-<entry> The start offset of the current run
-</entry></row>
-<row><entry align="right"><parameter>end_offset</parameter>&nbsp;:</entry>
-<entry> The end offset of the current run
-</entry></row>
-<row><entry align="right"><emphasis>Returns</emphasis> :</entry><entry> A pointer to the <link linkend="AtkAttributeSet">AtkAttributeSet</link>.
-</entry></row>
-</tbody></tgroup></informaltable></refsect2>
+</para><variablelist role="params">
+<varlistentry><term><parameter>buffer</parameter>&nbsp;:</term>
+<listitem><para> The <link linkend="GtkTextBuffer">GtkTextBuffer</link> for which the attributes will be obtained
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>offset</parameter>&nbsp;:</term>
+<listitem><para> The offset at which the attributes are required
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>start_offset</parameter>&nbsp;:</term>
+<listitem><para> The start offset of the current run
+</para></listitem></varlistentry>
+<varlistentry><term><parameter>end_offset</parameter>&nbsp;:</term>
+<listitem><para> The end offset of the current run
+</para></listitem></varlistentry>
+<varlistentry><term><emphasis>Returns</emphasis> :</term><listitem><para> A pointer to the <link linkend="AtkAttributeSet">AtkAttributeSet</link>.
+</para></listitem></varlistentry>
+</variablelist></refsect2>
 
 </refsect1>
 
