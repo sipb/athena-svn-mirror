@@ -12,9 +12,12 @@
  * 15 April 1990
  *
  *    $Source: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/stat_grp.c,v $
- *    $Author: ghudson $
+ *    $Author: jweiss $
  *    $Locker:  $
  *    $Log: not supported by cvs2svn $
+ *    Revision 2.3  1997/02/27 06:47:49  ghudson
+ *    BSD -> ANSI memory functions
+ *
  *    Revision 2.2  1993/06/18 14:35:54  root
  *    first cut at solaris port
  *
@@ -51,7 +54,7 @@
  */
 
 #ifndef lint
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/stat_grp.c,v 2.3 1997-02-27 06:47:49 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/stat_grp.c,v 2.4 1997-05-08 07:35:46 jweiss Exp $";
 #endif
 
 
@@ -65,6 +68,15 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
 #endif EMPTY
 
 #include <utmp.h>
+
+#ifdef SOLARIS
+#include <sys/param.h>
+#include <kvm.h>
+#include <nlist.h>
+#include <fcntl.h>
+#define KVM_ROUTINES
+#endif
+
 
 static int  get_rtload();
 static int  get_time();
@@ -108,6 +120,8 @@ lu_status(varnode, repl, instptr, reqflg)
       return(get_rtload(&(repl->val.value.intgr)));
     case N_STATLOGIN:
       return(get_inuse(&(repl->val.value.intgr)));
+    case N_STATLOGINENABLE:
+      return(get_loginok(&(repl->val.value.intgr)));
 #ifdef RSPOS 
     case N_LINIT:
       repl->val.type = TIME;
@@ -224,20 +238,60 @@ get_rtload(ret)
 {
   int load = 0;
 
+#ifdef KVM_ROUTINES
+  struct nlist nl[2];
+  kvm_t *kd;
+  double loadavg;
+  long temp;
+
+  kd = kvm_open(NULL, NULL, NULL, O_RDONLY, "snmpd");
+  if (kd == NULL)
+    {
+      syslog(LOG_ERR,"cannot get access to kernel address space");
+      return(BUILD_ERR);
+    }
+  
+  nl[0].n_name = "avenrun";
+  nl[1].n_name = NULL;
+  
+  if (kvm_nlist(kd, nl) != 0)
+    {
+      syslog(LOG_ERR,"cannot get name list");
+      return(BUILD_ERR);
+    }
+  
+  if (nl[0].n_value == 0)
+    {
+      syslog(LOG_ERR,"Cannot find address for avenrun in the kernel\n");
+      return(BUILD_ERR);
+    }
+  
+  if (kvm_read(kd, nl[0].n_value, (char *) &temp, sizeof(temp)) != 
+      sizeof (temp))
+    {
+      syslog(LOG_ERR,"Kernel read error");
+      return (BUILD_ERR);
+    }
+  loadavg = (double) temp / FSCALE;
+  kvm_close(kd);
+  load = loadavg * 100;
+  
+#else   /* KVM_ROUTINES */
+
 #if defined(vax) || defined(ibm032)
   double avenrun[3];
 #else
   int avenrun[3];
 #endif
 
-  if(nl[N_AVENRUN].n_value == 0)
+  if (nl[N_AVENRUN].n_value == 0)
     {
       syslog(LOG_ERR, "Couldn't find load average from name list.\n");
       return(BUILD_ERR);      
     }
 
 #ifdef notdef	
-  if(nl[N_HZ].n_value == 0 || nl[N_CPTIME].n_value == 0)
+  if (nl[N_HZ].n_value == 0 || nl[N_CPTIME].n_value == 0)
     {
       syslog(LOG_ERR, "Couldn't find cpu time from name list.\n");
       return(BUILD_ERR);
@@ -245,7 +299,7 @@ get_rtload(ret)
 #endif
 
   (void) lseek(kmem, nl[N_AVENRUN].n_value, L_SET);
-  if(read(kmem, avenrun, sizeof(avenrun)) == -1)
+  if (read(kmem, avenrun, sizeof(avenrun)) == -1)
     {
 #if defined(decmips)
       syslog(LOG_ERR, "avenrun read(%d, %#x, %d) failed.\n",
@@ -271,6 +325,8 @@ get_rtload(ret)
        load = (int) (FIX_TO_DBL(avenrun[0]) * 100);
 #endif
     }
+
+#endif  /* KVM_ROUTINES */
   
   *ret = load;
 
@@ -279,7 +335,27 @@ get_rtload(ret)
 
 
 
+/*
+ * Function:    get_loginok()
+ * Description: Determines whether /etc/nologin can be accessed.
+ *              If so, ret is set to zero, otherwise ret is set to 1.
+ * Returns:     BUILD_SUCCESS on success
+ */
 
+int get_loginok(ret)
+     int *ret;
+{
+  int fd;
+  
+  fd = open("/etc/nologin", O_RDONLY, 0);
+  if (fd >= 0)
+    *ret = 0;
+  else
+    *ret = 1;
+  if (fd >= 0)
+    close(fd);
+  return(BUILD_SUCCESS);
+}
 
 
 
@@ -288,7 +364,7 @@ get_rtload(ret)
  * Description: Decides if one is logegd in. If so, ret is set to # entries
  *              in utmp. 
  * Returns:     BUILD_SUCCESS on success
- *              BUILD_ERRon error
+ *              BUILD_ERR on error
  */
 
 int

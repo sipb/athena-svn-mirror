@@ -1,9 +1,12 @@
 #ifndef lint
-static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 2.3 1997-03-27 03:08:19 ghudson Exp $";
+static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 2.4 1997-05-08 07:35:44 jweiss Exp $";
 #endif
 
 /*
  * $Log: not supported by cvs2svn $
+ * Revision 2.3  1997/03/27 03:08:19  ghudson
+ * Support getting the boot time under Solaris.
+ *
  * Revision 2.2  1993/06/18 14:32:52  tom
  * first cut at solaris port
  *
@@ -62,7 +65,7 @@ static char *RCSid = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/snm
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 2.3 1997-03-27 03:08:19 ghudson Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/ext.c,v 2.4 1997-05-08 07:35:44 jweiss Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -921,6 +924,11 @@ objident loadCPU = {
 objident statLogin = {
         10,					/* Length of variable */
         1, 3, 6, 1, 4, 1, 20, 1, 3, 4
+};
+
+objident statLoginEnable = {
+        10,
+        1, 3, 6, 1, 4, 1, 20, 1, 3, 6
 };
 
 /* @begin(backward compatibility for pre 7.4) */
@@ -2389,10 +2397,11 @@ struct snmp_tree_info  var_tree_info[] = {  /* must be NULL terminated */
 #endif /* ATHENA */
 
 { &statTime,     lu_status,   NULL, N_STATTIME,     NULL_OBJINST|VAL_INT  },
-#if !defined(SOLARIS) && !defined(RSPOS)
+#if !defined(RSPOS)
 { &loadRunTime,  lu_status,   NULL, N_STATLOAD,     NULL_OBJINST|VAL_INT  },
 #endif /* RSPOS */
 { &statLogin, 	 lu_status,   NULL, N_STATLOGIN,    NULL_OBJINST|VAL_INT  },
+{ &statLoginEnable,lu_status, NULL, N_STATLOGINENABLE,NULL_OBJINST|VAL_INT  },
 
 #if !defined(ultrix) && !defined(RSPOS) && !defined(SOLARIS)
 { &statDkNParts, lu_ndparts,  NULL, N_PTTOTAL,      NULL_OBJINST|VAL_INT  },

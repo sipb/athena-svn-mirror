@@ -1,7 +1,10 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/var_tree.h,v 2.1 1993-06-18 14:33:43 tom Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/var_tree.h,v 2.2 1997-05-08 07:35:47 jweiss Exp $
  *
  * $Log: not supported by cvs2svn $
+ * Revision 2.1  1993/06/18 14:33:43  tom
+ * first cut at solaris port
+ *
  * Revision 2.0  92/04/22  01:46:56  tom
  * release 7.4
  * 	defines for new variables
@@ -36,7 +39,7 @@
  */
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/var_tree.h,v 2.1 1993-06-18 14:33:43 tom Exp $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/var_tree.h,v 2.2 1997-05-08 07:35:47 jweiss Exp $
  *
  *  June 28, 1988 - Mark S. Fedor
  *  Copyright (c) NYSERNet Incorporated, 1988, All Rights Reserved
@@ -422,6 +425,7 @@ struct snmp_tree_info {
 #define N_STATLOAD    	  315
 #define N_STATCPU    	  316
 #define N_STATLOGIN       317
+#define N_STATLOGINENABLE 318
 
 #define N_VMPROCR         313
 #define N_VMPROCB	  314
