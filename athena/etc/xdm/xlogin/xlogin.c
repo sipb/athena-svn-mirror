@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.70 1998-04-08 02:19:03 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.71 1998-04-08 22:14:13 cfields Exp $ */
  
 #include <unistd.h>
 #include <string.h>
@@ -253,6 +253,7 @@ void main(argc, argv)
      char* argv[];
 {
   XtAppContext app;
+  XEvent e;
   Widget hitanykey, namew;
   Display *dpy1;
   char hname[1024], *c;
@@ -520,7 +521,13 @@ void main(argc, argv)
       XtFree(orig_dpy);
     }
 
-  XtMainLoop();
+  /* This is just XtMainLoop() with a send_event filter. */
+  while (1)
+    {
+      XtAppNextEvent(app, &e);
+      if (e.xany.send_event == False)
+	XtDispatchEvent(&e);
+    }
 }
 
 static Dimension x_max = 0, y_max = 0;
@@ -1379,7 +1386,8 @@ prompt_user(msg, abort_proc, abort_arg)
   while (!done)
     {
       XtAppNextEvent((XtAppContext)_XtDefaultAppContext(), &e);
-      XtDispatchEvent(&e);
+      if (e.xany.send_event == False)
+	XtDispatchEvent(&e);
     }
 
   XtRemoveTimeOut(curr_timerid);
