@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v $
- *	$Id: data_utils.c,v 1.28 1991-01-15 18:01:39 lwvanels Exp $
+ *	$Id: data_utils.c,v 1.29 1991-01-18 10:43:32 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.28 1991-01-15 18:01:39 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data_utils.c,v 1.29 1991-01-18 10:43:32 lwvanels Exp $";
 #endif
 #endif
 
@@ -689,7 +689,7 @@ get_user(person,user)
       }
 
   return(USER_NOT_FOUND);
-}	
+}
 
 
 /*
@@ -856,8 +856,7 @@ find_knuckle(person,knuckle)
   int status;
 
   status = get_knuckle(person->username, person->instance,knuckle,0);
-  if(status == USER_NOT_FOUND || status == EMPTY_LIST
-     || status == INSTANCE_NOT_FOUND)
+  if (status == USER_NOT_FOUND || status == EMPTY_LIST)
     {
       sprintf(mesg,"find_knuckle: creating %s",person->username);
       log_status(mesg);
@@ -870,7 +869,7 @@ find_knuckle(person,knuckle)
       else
 	return(ERROR);
     }
-  else {
+  else if (status == SUCCESS) {
     strcpy((*knuckle)->user->machine,person->machine);
     (*knuckle)->user->status = ACTIVE;
   }
