@@ -1,36 +1,30 @@
-#
-#     Ademola Aderibigbe
-#     MIT Project Athena
-#     7/7/88
-#
-#      This sets up the subject window and its environment.  It is sourced 
-#      by the "setup" command.  When setup is invoked with the subject number,
-#      it creates a new  window (xterm) ,changes the prompt to the subject
-#      number, sources the .attachrc file in the locker (if one exists) and
-#      modifies the path according to the type of machine being used.
+# Prototype file for setting up course-specific environment
+# $Author: epeisach $
+# $Source: /afs/dev.mit.edu/source/repository/packs/dotfiles/env_setup,v $
+# $Header: /afs/dev.mit.edu/source/repository/packs/dotfiles/env_setup,v 1.2 1989-08-18 14:59:05 epeisach Exp $
 
+alias extend 'if (-d \!:2) if ("$\!:1" \!~ *"\!:2"*) setenv \!:1 ${\!:1}:\!:2'
 
- set dir = `/bin/athena/attach -p $SUBJECT`
- if (! $status) then
-        set prompt = "$SUBJECT% "
-        if ( -r $dir/.attachrc) then
-              source $dir/.attachrc
+set dir = `/bin/athena/attach -p $SUBJECT`
+if (! $status) then
+	set prompt = "$SUBJECT% "
+	if ( -r $dir/.attachrc) then
+		source $dir/.attachrc
         else
-
-#          Do this only if no .attachrc (This should encourage instructors
-#          to keep two sets of binaries in the appropriate directories
-#          even if they are not using .attachrc/.detachrc files). 
-
-               set path = ($path $dir/${hosttype}bin)
+		extend PATH $dir/${hosttype}bin
+		extend MANPATH $dir/man
         endif  
-  else
-        echo " "
-        echo "There is a problem--the locker may have already been attached,"
-        echo "the server on which the locker resides may be inaccessible"
-        echo "at this time or the locker may not exist (wrong name?). "
-        echo "     If you want to kill this window type exit"   
-  endif
-  unset dir
-  unsetenv SUBJECT
-
-
+else
+	echo ""
+        echo "The $SUBJECT filesystem could not be attached."
+	set filsys = `hesinfo $SUBJECT filsys`
+	if ($#filsys < 3) then
+		echo "Check your spelling of the filesystem name."
+	else
+		echo "The $filsys[1] fileserver named $filsys[3] may be down."
+	endif
+	echo ""
+        echo "Type exit to get rid of this window."   
+endif
+unset dir
+unsetenv SUBJECT	# so that child shells won't do all this again.
