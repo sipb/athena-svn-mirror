@@ -113,7 +113,7 @@ maintainer-clean: clean
 	$(RM) Makefile
 
 installdirs:	$(top_srcdir)/support/mkdirs
-	-$(SHELL) $(top_srcdir)/support/mkdirs $(infodir) $(man3dir)
+	-$(SHELL) $(top_srcdir)/support/mkdirs ${DESTDIR}$(infodir) ${DESTDIR}$(man3dir)
 
 install:	installdirs
 	if test -f readline.info; then \
