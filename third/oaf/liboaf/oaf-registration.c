@@ -450,8 +450,14 @@ rloc_file_lock (const OAFBaseServiceRegistry *registry,
 	struct flock lock;
         int retval;
         char *err;
+        char *session_dir;
 
-        fn = g_strdup_printf ("/tmp/orbit-%s/oaf-register.lock", g_get_user_name ());
+	/* Athena modification: Use the per-session temporary directory. */
+	session_dir = getenv ("ATHENA_SESSION_TMPDIR");
+	if (session_dir)
+                fn = g_strdup_printf ("%s/orbit/oaf-register.lock", session_dir);
+        else
+                fn = g_strdup_printf ("/tmp/orbit-%s/oaf-register.lock", g_get_user_name ());
 
 	lock_fd = open (fn, O_CREAT | O_RDWR, 0700);
 	fcntl (lock_fd, F_SETFD, FD_CLOEXEC);
@@ -513,24 +519,38 @@ rloc_file_check (const OAFBaseServiceRegistry *registry,
 	FILE *fh;
 	char *fn, *uname;
 	char *namecopy;
+	char *session_dir;
 
 	namecopy = g_strdup (base_service->name);
 	filename_fixup (namecopy);
 
 	uname = g_get_user_name ();
 
-	fn = g_strdup_printf ("/tmp/orbit-%s/reg.%s-%s",
-                              uname,
-                              namecopy,
-                              base_service->session_name ? base_service->session_name : "local");
+	/* Athena modification: Use the per-session temporary directory. */
+	session_dir = getenv ("ATHENA_SESSION_TMPDIR");
+	if (session_dir)
+                fn = g_strdup_printf ("%s/orbit/reg.%s-%s",
+                                      session_dir,
+                                      namecopy,
+                                      base_service->session_name ? base_service->session_name : "local");
+        else
+                fn = g_strdup_printf ("/tmp/orbit-%s/reg.%s-%s",
+                                      uname,
+                                      namecopy,
+                                      base_service->session_name ? base_service->session_name : "local");
         
 	fh = fopen (fn, "r");
         g_free (fn);
 
         if (fh == NULL) {
-                fn = g_strdup_printf ("/tmp/orbit-%s/reg.%s",
-                                      uname,
-                                      namecopy);
+                if (session_dir)
+                        fn = g_strdup_printf ("%s/orbit/reg.%s",
+                                              session_dir,
+                                              namecopy);
+                else
+                        fn = g_strdup_printf ("/tmp/orbit-%s/reg.%s",
+                                              uname,
+                                              namecopy);
                 
                 fh = fopen (fn, "r");
                 g_free (fn);
@@ -566,18 +586,28 @@ rloc_file_register (const OAFBaseServiceRegistry *registry, const char *ior,
 	char *fn, *fn2, *uname;
 	FILE *fh;
 	char *namecopy;
+	char *session_dir;
 
 	namecopy = g_strdup (base_service->name);
 	filename_fixup (namecopy);
 
 	uname = g_get_user_name ();
 
-	fn = g_strdup_printf ("/tmp/orbit-%s/reg.%s-%s",
-                              uname,
-                              namecopy,
-                              base_service->session_name ? base_service->session_name : "local");
-
-	fn2 = g_strdup_printf ("/tmp/orbit-%s/reg.%s", uname, namecopy);
+	/* Athena modification: Use the per-session temporary directory. */
+	session_dir = getenv ("ATHENA_SESSION_TMPDIR");
+	if (session_dir) {
+                fn = g_strdup_printf ("%s/orbit/reg.%s-%s",
+                                      session_dir,
+                                      namecopy,
+                                      base_service->session_name ? base_service->session_name : "local");
+                fn2 = g_strdup_printf ("%s/orbit/reg.%s", session_dir, namecopy);
+        } else {
+                fn = g_strdup_printf ("/tmp/orbit-%s/reg.%s-%s",
+                                      uname,
+                                      namecopy,
+                                      base_service->session_name ? base_service->session_name : "local");
+                fn2 = g_strdup_printf ("/tmp/orbit-%s/reg.%s", uname, namecopy);
+        }
         g_free (namecopy);
 
 	fh = fopen (fn, "w");
@@ -603,19 +633,29 @@ rloc_file_unregister (const OAFBaseServiceRegistry *registry,
 	char *uname;
 	char *namecopy;
         int link_length;
+        char *session_dir;
 
 	namecopy = g_strdup (base_service->name);
 	filename_fixup (namecopy);
 
 	uname = g_get_user_name ();
 
-	fn = g_strdup_printf ("/tmp/orbit-%s/reg.%s-%s",
-                              uname,
-                              namecopy,
-                              base_service->session_name ? base_service->session_name : "local");
+	/* Athena modification: Use the per-session temporary directory. */
+	session_dir = getenv ("ATHENA_SESSION_TMPDIR");
+	if (session_dir) {
+                fn = g_strdup_printf ("%s/orbit/reg.%s-%s",
+                                      session_dir,
+                                      namecopy,
+                                      base_service->session_name ? base_service->session_name : "local");
+                fn2 = g_strdup_printf ("%s/orbit/reg.%s", uname, namecopy);
+        } else {
+                fn = g_strdup_printf ("/tmp/orbit-%s/reg.%s-%s",
+                                      uname,
+                                      namecopy,
+                                      base_service->session_name ? base_service->session_name : "local");
+                fn2 = g_strdup_printf ("/tmp/orbit-%s/reg.%s", uname, namecopy);
+        }
 	unlink (fn);
-
-	fn2 = g_strdup_printf ("/tmp/orbit-%s/reg.%s", uname, namecopy);
 
 	link_length = readlink (fn2, fn3, sizeof (fn3) - 1);
 

@@ -184,10 +184,16 @@ ORBit_make_local_tmpdir(void)
 {
 	struct stat statbuf;
 	GString *tmpstr;
+	char *session_dir;
 
 	tmpstr = g_string_new(NULL);
 
-	g_string_sprintf(tmpstr, "/tmp/orbit-%s", g_get_user_name());
+	/* Athena modification: Use the per-session temporary directory. */
+	session_dir = getenv("ATHENA_SESSION_TMPDIR");
+	if (session_dir)
+		g_string_sprintf(tmpstr, "%s/orbit", session_dir);
+	else
+		g_string_sprintf(tmpstr, "/tmp/orbit-%s", g_get_user_name());
 		
 	if(mkdir(tmpstr->str, 0700) != 0) {
 		int e = errno;
@@ -230,12 +236,18 @@ ORBit_ORB_make_usock_connection(void)
 {
 	GIOPConnection *retval = NULL;
 	GString *tmpstr;
+	char *session_dir;
 
 	tmpstr = g_string_new(NULL);
 
+	/* Athena modification: Use the per-session temporary directory. */
+	session_dir = getenv("ATHENA_SESSION_TMPDIR");
 #ifdef WE_DONT_CARE_ABOUT_STUPID_2DOT0DOTX_KERNELS
-	g_string_sprintf(tmpstr, "/tmp/orbit-%s",
-			 g_get_user_name());
+	if (session_dir)
+		g_string_sprintf(tmpstr, "%s/orbit", session_dir);
+	else
+		g_string_sprintf(tmpstr, "/tmp/orbit-%s",
+				 g_get_user_name());
 	dirh = opendir(tmpstr->str);
 	while(!retval && (dent = readdir(dirh))) {
 		int usfd, ret;
@@ -247,8 +259,8 @@ ORBit_ORB_make_usock_connection(void)
 			continue;
 
 		g_snprintf(saddr.sun_path, sizeof(saddr.sun_path),
-			   "/tmp/orbit-%s/%s",
-			   g_get_user_name(), dent->d_name);
+			   "%s/%s",
+			   tmpstr->str, dent->d_name);
 
 		usfd = socket(AF_UNIX, SOCK_STREAM, 0);
 		g_assert(usfd >= 0);
@@ -266,8 +278,12 @@ ORBit_ORB_make_usock_connection(void)
 
 	srand(time(NULL));
 	while(!retval) {
-		g_string_sprintf(tmpstr, "/tmp/orbit-%s/orb-%d%d",
-				 g_get_user_name(), rand(), rand());
+		if (session_dir)
+			g_string_sprintf(tmpstr, "%s/orbit/orb-%d%d",
+					 session_dir, rand(), rand());
+		else
+			g_string_sprintf(tmpstr, "/tmp/orbit-%s/orb-%d%d",
+					 g_get_user_name(), rand(), rand());
 		retval =
 			GIOP_CONNECTION(iiop_connection_server_unix(tmpstr->str));
 	}
