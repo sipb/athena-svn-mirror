@@ -91,6 +91,10 @@ cd $destdir/SOURCES
 (cd $sourcedir/$athena_dir; tar cf - .) | (cd $source_name; tar xfp -)
 (cd $sourcedir/$athena_dir; tar cf - .) | (cd $source_name-orig; tar xfp -)
 
+# Force all source files to the same timestamp, to prevent third-party
+# build systems from thinking some are out of date with respect to others.
+find $source_name-orig -print0 | xargs -0 touch -t `date +%Y%m%d%H%M.%S`
+
 # Copy the "patches" in.
 if [ -a $sourcedir/packs/build/rpm/patches/$source_name ]; then
   (cd $sourcedir/packs/build/rpm/patches/$source_name; tar cf - .) | \
