@@ -1,13 +1,8 @@
+/* Mode: -*- C -*- */
 %{
 #include <sys/file.h>
 #include <signal.h>
 extern int sighandler();
-struct sigvec vector =
-{
-	sighandler,
-	(int) 0xFFFFFFFF,
-	(int) 0
-};
 char *reset="\033c";			/* ris	*/
 char *land_length="\033[2550t";
 char *landscape="\033[10m";
@@ -38,6 +33,18 @@ PRINTABLE    [0-9A-Za-z \t`\[\];'\\<,./-=~!@#$%^&*()_+{}:"|>?]
 				printf(endunderline);
 				fflush(stdout);
 			}
+\031\1			{ /* ^Y^A */
+				/*
+				 * lpd needs to use a different filter to
+				 * print data so stop what we are doing and
+				 * wait for lpd to restart us.
+				 */
+				fflush(stdout);
+				kill(getpid(), SIGSTOP);
+				printf("%s%s%s",reset,mode,form_length);
+				fflush(stdout);
+			}
+
 %%
 
 yywrap()
@@ -51,9 +58,6 @@ int argc;
 register char *argv[];
 {
 	register int i;
-	for(i = 1; i <= 27; ++i) {
-		sigvec(i, &vector, 0);
-	}
 	flock(1, LOCK_EX);
 	if(!strcmp(argv[0], "ln01l")) {
 		mode = landscape;
@@ -69,14 +73,6 @@ register char *argv[];
 	while(1) {
 			if(yylex() <= 0) break;
 	}
-}
-
-int
-sighandler(sig)
-register int sig;
-{
-	yywrap();
-	exit(sig);
 }
 
 /* Local Modes: */
