@@ -1,11 +1,11 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.35 1991-03-07 13:48:25 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.36 1991-06-19 18:34:50 epeisach Exp $
  */
 
 #ifndef lint
 static char *rcsid_login_c =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.35 1991-03-07 13:48:25 epeisach Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/login/login.c,v 1.36 1991-06-19 18:34:50 epeisach Exp $";
 #endif	/* lint */
 
 /*
@@ -38,7 +38,7 @@ static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
 #endif
 
 #include <sys/param.h>
-#if !defined(VFS) || defined(_I386)
+#if !defined(VFS) || defined(_I386) || defined(ultrix)
 #include <sys/quota.h>
 #endif !VFS
 #include <sys/stat.h>
