@@ -22,7 +22,7 @@
 #include <sys/file.h>
 #include <sys/param.h>
 #ifndef lint
-static char *rcsid_zctl_c = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/zctl.c,v 1.15 1990-07-12 13:56:38 raeburn Exp $";
+static char *rcsid_zctl_c = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zctl/zctl.c,v 1.16 1990-09-04 09:49:28 raeburn Exp $";
 #endif lint
 
 #define SUBSATONCE 7
@@ -114,13 +114,13 @@ main(argc,argv)
 		for (i=1;i<argc;i++)
 			(void) sprintf(ssline+strlen(ssline),"%s ",argv[i]);
 		ssline[strlen(ssline)-1] = '\0';
-		ss_execute_line(sci_idx,ssline,&code);
+		code = ss_execute_line(sci_idx,ssline);
 		if (code)
 			ss_perror(sci_idx,code,ssline);
 		exit((code != 0));
 	} 
 
-	printf("ZCTL $Revision: 1.15 $ (Protocol %s%d.%d) - Type '?' for a list of commands.\n\n",
+	printf("ZCTL $Revision: 1.16 $ (Protocol %s%d.%d) - Type '?' for a list of commands.\n\n",
 	       ZVERSIONHDR,
 	       ZVERSIONMAJOR,ZVERSIONMINOR);
 	
