@@ -1,7 +1,9 @@
+/* vim: set sw=4: -*- Mode: C; tab-width: 4; indent-tabs-mode: t; c-basic-offset: 4 -*- */
 /*
    rsvg.c: SAX-based renderer for SVG files into a GdkPixbuf.
 
    Copyright (C) 2000 Eazel, Inc.
+   Copyright (C) 2002 Dom Lachowicz <cinamod@hotmail.com>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -22,1376 +24,870 @@
 */
 
 #include "config.h"
+
 #include "rsvg.h"
+#include "rsvg-css.h"
+#include "rsvg-styles.h"
+#include "rsvg-private.h"
+#include "rsvg-shapes.h"
+#include "rsvg-text.h"
 
 #include <math.h>
 #include <string.h>
 #include <stdarg.h>
 
 #include <libart_lgpl/art_affine.h>
-#include <libart_lgpl/art_vpath_bpath.h>
-#include <libart_lgpl/art_svp_vpath_stroke.h>
-#include <libart_lgpl/art_svp_vpath.h>
-#include <libart_lgpl/art_svp_intersect.h>
-#include <libart_lgpl/art_render_mask.h>
-#include <libart_lgpl/art_render_svp.h>
-#include <libart_lgpl/art_rgba.h>
-
-#include <libxml/SAX.h>
-#include <libxml/xmlmemory.h>
-
-#include <pango/pangoft2.h>
 
 #include "rsvg-bpath-util.h"
 #include "rsvg-path.h"
-#include "rsvg-css.h"
 #include "rsvg-paint-server.h"
 
-#define noVERBOSE
-
-#define SVG_BUFFER_SIZE (1024 * 8)
-
-typedef struct {
-  double affine[6];
-
-  gint opacity; /* 0..255 */
-
-  RsvgPaintServer *fill;
-  gint fill_opacity; /* 0..255 */
-
-  RsvgPaintServer *stroke;
-  gint stroke_opacity; /* 0..255 */
-  double stroke_width;
-
-  ArtPathStrokeCapType cap;
-  ArtPathStrokeJoinType join;
-
-  double font_size;
-  char *font_family;
-
-  guint32 stop_color; /* rgb */
-  gint stop_opacity; /* 0..255 */
-
-  gboolean in_defs;
-
-  GdkPixbuf *save_pixbuf;
-} RsvgState;
-
-typedef struct RsvgSaxHandler RsvgSaxHandler;
-
-struct RsvgSaxHandler {
-  void (*free) (RsvgSaxHandler *self);
-  void (*start_element) (RsvgSaxHandler *self, const xmlChar *name, const xmlChar **atts);
-  void (*end_element) (RsvgSaxHandler *self, const xmlChar *name);
-  void (*characters) (RsvgSaxHandler *self, const xmlChar *ch, int len);
-};
-
-struct RsvgHandle {
-  RsvgSizeFunc size_func;
-  gpointer user_data;
-  GDestroyNotify user_data_destroy;
-  GdkPixbuf *pixbuf;
-
-  /* stack; there is a state for each element */
-  RsvgState *state;
-  int n_state;
-  int n_state_max;
-
-  RsvgDefs *defs;
-
-  RsvgSaxHandler *handler; /* should this be a handler stack? */
-  int handler_nest;
-
-  GHashTable *entities; /* g_malloc'd string -> xmlEntityPtr */
-
-  PangoContext *pango_context;
-  xmlParserCtxtPtr ctxt;
-  GError **error;
-};
-
-static void
-rsvg_state_init (RsvgState *state)
-{
-  memset (state, 0, sizeof (*state));
-
-  art_affine_identity (state->affine);
-
-  state->opacity = 0xff;
-  state->fill = rsvg_paint_server_parse (NULL, "#000");
-  state->fill_opacity = 0xff;
-  state->stroke_opacity = 0xff;
-  state->stroke_width = 1;
-  state->cap = ART_PATH_STROKE_CAP_BUTT;
-  state->join = ART_PATH_STROKE_JOIN_MITER;
-  state->stop_opacity = 0xff;
-}
-
-static void
-rsvg_state_clone (RsvgState *dst, const RsvgState *src)
-{
-  *dst = *src;
-  dst->font_family = g_strdup (src->font_family);
-  rsvg_paint_server_ref (dst->fill);
-  rsvg_paint_server_ref (dst->stroke);
-  dst->save_pixbuf = NULL;
-}
-
-static void
-rsvg_state_finalize (RsvgState *state)
-{
-  g_free (state->font_family);
-  rsvg_paint_server_unref (state->fill);
-  rsvg_paint_server_unref (state->stroke);
-}
+/*
+ * This is configurable at runtime
+ */
+#define RSVG_DEFAULT_DPI 90.0
+static double internal_dpi = RSVG_DEFAULT_DPI;
 
 static void
 rsvg_ctx_free_helper (gpointer key, gpointer value, gpointer user_data)
 {
-  xmlEntityPtr entval = (xmlEntityPtr)value;
-
-  /* key == entval->name, so it's implicitly freed below */
-
-  g_free ((char *) entval->name);
-  g_free ((char *) entval->ExternalID);
-  g_free ((char *) entval->SystemID);
-  xmlFree (entval->content);
-  xmlFree (entval->orig);
-  g_free (entval);
+	xmlEntityPtr entval = (xmlEntityPtr)value;
+	
+	/* key == entval->name, so it's implicitly freed below */
+	
+	g_free ((char *) entval->name);
+	g_free ((char *) entval->ExternalID);
+	g_free ((char *) entval->SystemID);
+	xmlFree (entval->content);
+	xmlFree (entval->orig);
+	g_free (entval);
 }
 
 static void
 rsvg_pixmap_destroy (guchar *pixels, gpointer data)
 {
-  g_free (pixels);
+	g_free (pixels);
 }
 
 static void
 rsvg_start_svg (RsvgHandle *ctx, const xmlChar **atts)
 {
-  int i;
-  int width = -1, height = -1;
-  int rowstride;
-  art_u8 *pixels;
-  gint fixed;
-  RsvgState *state;
-  gboolean has_alpha = 1;
-  gint new_width, new_height;
-  double x_zoom;
-  double y_zoom;
+	int i;
+	int width = -1, height = -1, x = -1, y = -1;
+	int rowstride;
+	art_u8 *pixels;
+	gint percent, em, ex;
+	RsvgState *state;
+	gboolean has_alpha = TRUE;
+	gint new_width, new_height;
+	double x_zoom = 1.;
+	double y_zoom = 1.;
+	
+	double vbox_x = 0, vbox_y = 0, vbox_w = 0, vbox_h = 0;
+	gboolean has_vbox = TRUE;
 
-  if (atts != NULL)
-    {
-      for (i = 0; atts[i] != NULL; i += 2)
-	{
-	  if (!strcmp ((char *)atts[i], "width"))
-	    width = rsvg_css_parse_length ((char *)atts[i + 1], &fixed);
-	  else if (!strcmp ((char *)atts[i], "height"))
-	    height = rsvg_css_parse_length ((char *)atts[i + 1], &fixed);
-	}
-
-#ifdef VERBOSE
-      fprintf (stdout, "rsvg_start_svg: width = %d, height = %d\n",
-	       width, height);
+	if (atts != NULL)
+		{
+			for (i = 0; atts[i] != NULL; i += 2)
+				{
+					/* x & y should be ignored since we should always be the outermost SVG,
+					   at least for now, but i'll include them here anyway */
+					if (!strcmp ((char *)atts[i], "width"))
+						width = rsvg_css_parse_length ((char *)atts[i + 1], ctx->dpi, &percent, &em, &ex);
+					else if (!strcmp ((char *)atts[i], "height"))	    
+						height = rsvg_css_parse_length ((char *)atts[i + 1], ctx->dpi, &percent, &em, &ex);
+					else if (!strcmp ((char *)atts[i], "x"))	    
+						x = rsvg_css_parse_length ((char *)atts[i + 1], ctx->dpi, &percent, &em, &ex);
+					else if (!strcmp ((char *)atts[i], "y"))	    
+						y = rsvg_css_parse_length ((char *)atts[i + 1], ctx->dpi, &percent, &em, &ex);
+					else if (!strcmp ((char *)atts[i], "viewBox"))
+						{
+							has_vbox = rsvg_css_parse_vbox ((char *)atts[i + 1], &vbox_x, &vbox_y,
+															&vbox_w, &vbox_h);
+						}
+				}
+			
+			if (has_vbox && vbox_w > 0. && vbox_h > 0.)
+				{
+					new_width  = (int)floor (vbox_w);
+					new_height = (int)floor (vbox_h);
+					
+					/* apply the sizing function on the *original* width and height
+					   to acquire our real destination size. we'll scale it against
+					   the viewBox's coordinates later */
+					if (ctx->size_func)
+						(* ctx->size_func) (&width, &height, ctx->user_data);
+				}
+			else
+				{
+					new_width  = width;
+					new_height = height;
+					
+					/* apply the sizing function to acquire our new width and height.
+					   we'll scale this against the old values later */
+					if (ctx->size_func)
+						(* ctx->size_func) (&new_width, &new_height, ctx->user_data);
+				}
+			
+			/* set these here because % are relative to viewbox */
+			ctx->width = new_width;
+			ctx->height = new_height;
+			
+			if (!has_vbox)
+				{
+					x_zoom = (width < 0 || new_width < 0) ? 1 : (double) new_width / width;
+					y_zoom = (height < 0 || new_height < 0) ? 1 : (double) new_height / height;
+				}
+			else
+				{
+#if 1
+					x_zoom = (width < 0 || new_width < 0) ? 1 : (double) width / new_width;
+					y_zoom = (height < 0 || new_height < 0) ? 1 : (double) height / new_height;
+#else
+					x_zoom = (width < 0 || new_width < 0) ? 1 : (double) new_width / width;
+					y_zoom = (height < 0 || new_height < 0) ? 1 : (double) new_height / height;	  
 #endif
-
-      if (width == 0 || height == 0)
-        {
-          /* FIXME: GError here? */
-          g_warning ("rsvg_start_svg: can't render 0-sized SVG");
-          return;
-        }
-
-      new_width = width;
-      new_height = height;
-      if (ctx->size_func)
-	(* ctx->size_func) (&new_width, &new_height, ctx->user_data);
-
-      if (new_width == 0 || new_height == 0)
-	{
-          /* FIXME: GError here? */
-          g_warning ("rsvg_start_svg: can't render 0-sized SVG");
-          return;
-	}
-
-      x_zoom = (width < 0 || new_width < 0) ? 1 : (double) new_width / width;
-      y_zoom = (height < 0 || new_height < 0) ? 1 : (double) new_height / height;
-
-      /* Scale size of target pixbuf */
-      state = &ctx->state[ctx->n_state - 1];
-      art_affine_scale (state->affine, x_zoom, y_zoom);
-
-      if (new_width < 0 || new_height < 0)
-        {
-          g_warning ("rsvg_start_svg: width and height not specified in the SVG, nor supplied by the size callback");
-          if (new_width < 0) new_width = 500;
-          if (new_height < 0) new_height = 500;
-        }
-
-      if (new_width >= INT_MAX / 4)
-        {
-          /* FIXME: GError here? */
-          g_warning ("rsvg_start_svg: width too large");
-	  return;
-        }
-      rowstride = (new_width * (has_alpha ? 4 : 3) + 3) & ~3;
-      if (rowstride > INT_MAX / new_height)
-        {
-          /* FIXME: GError here? */
-          g_warning ("rsvg_start_svg: width too large");
-	  return;
-        }
-
-      /* FIXME: Add GError here if size is too big. */
-
-      pixels = g_try_malloc (rowstride * new_height);
-      if (pixels == NULL)
-        {
-          /* FIXME: GError here? */
-          g_warning ("rsvg_start_svg: dimensions too large");
-	  return;
-        }
-      memset (pixels, has_alpha ? 0 : 255, rowstride * new_height);
-      ctx->pixbuf = gdk_pixbuf_new_from_data (pixels,
-					      GDK_COLORSPACE_RGB,
-					      has_alpha, 8,
-					      new_width, new_height,
-					      rowstride,
-					      rsvg_pixmap_destroy,
-					      NULL);
-    }
-}
-
-/* Parse a CSS2 style argument, setting the SVG context attributes. */
-static void
-rsvg_parse_style_arg (RsvgHandle *ctx, RsvgState *state, const char *str)
-{
-  int arg_off;
-
-  arg_off = rsvg_css_param_arg_offset (str);
-  if (rsvg_css_param_match (str, "opacity"))
-    {
-      state->opacity = rsvg_css_parse_opacity (str + arg_off);
-    }
-  else if (rsvg_css_param_match (str, "fill"))
-    {
-      rsvg_paint_server_unref (state->fill);
-      state->fill = rsvg_paint_server_parse (ctx->defs, str + arg_off);
-    }
-  else if (rsvg_css_param_match (str, "fill-opacity"))
-    {
-      state->fill_opacity = rsvg_css_parse_opacity (str + arg_off);
-    }
-  else if (rsvg_css_param_match (str, "stroke"))
-    {
-      rsvg_paint_server_unref (state->stroke);
-      state->stroke = rsvg_paint_server_parse (ctx->defs, str + arg_off);
-    }
-  else if (rsvg_css_param_match (str, "stroke-width"))
-    {
-      int fixed;
-      state->stroke_width = rsvg_css_parse_length (str + arg_off, &fixed);
-    }
-  else if (rsvg_css_param_match (str, "stroke-linecap"))
-    {
-      if (!strcmp (str + arg_off, "butt"))
-	state->cap = ART_PATH_STROKE_CAP_BUTT;
-      else if (!strcmp (str + arg_off, "round"))
-	state->cap = ART_PATH_STROKE_CAP_ROUND;
-      else if (!strcmp (str + arg_off, "square"))
-	state->cap = ART_PATH_STROKE_CAP_SQUARE;
-      else
-	g_warning ("unknown line cap style %s", str + arg_off);
-    }
-  else if (rsvg_css_param_match (str, "stroke-opacity"))
-    {
-      state->stroke_opacity = rsvg_css_parse_opacity (str + arg_off);
-    }
-  else if (rsvg_css_param_match (str, "stroke-linejoin"))
-    {
-      if (!strcmp (str + arg_off, "miter"))
-	state->join = ART_PATH_STROKE_JOIN_MITER;
-      else if (!strcmp (str + arg_off, "round"))
-	state->join = ART_PATH_STROKE_JOIN_ROUND;
-      else if (!strcmp (str + arg_off, "bevel"))
-	state->join = ART_PATH_STROKE_JOIN_BEVEL;
-      else
-	g_warning ("unknown line join style %s", str + arg_off);
-    }
-  else if (rsvg_css_param_match (str, "font-size"))
-    {
-      state->font_size = rsvg_css_parse_fontsize (str + arg_off);
-    }
-  else if (rsvg_css_param_match (str, "font-family"))
-    {
-      g_free (state->font_family);
-      state->font_family = g_strdup (str + arg_off);
-    }
-  else if (rsvg_css_param_match (str, "stop-color"))
-    {
-      state->stop_color = rsvg_css_parse_color (str + arg_off);
-    }
-  else if (rsvg_css_param_match (str, "stop-opacity"))
-    {
-      state->stop_opacity = rsvg_css_parse_opacity (str + arg_off);
-    }
-}
-
-/* Split a CSS2 style into individual style arguments, setting attributes
-   in the SVG context.
-
-   It's known that this is _way_ out of spec. A more complete CSS2
-   implementation will happen later.
-*/
-static void
-rsvg_parse_style (RsvgHandle *ctx, RsvgState *state, const char *str)
-{
-  int start, end;
-  char *arg;
-
-  start = 0;
-  while (str[start] != '\0')
-    {
-      for (end = start; str[end] != '\0' && str[end] != ';'; end++);
-      arg = g_new (char, 1 + end - start);
-      memcpy (arg, str + start, end - start);
-      arg[end - start] = '\0';
-      rsvg_parse_style_arg (ctx, state, arg);
-      g_free (arg);
-      start = end;
-      if (str[start] == ';') start++;
-      while (str[start] == ' ') start++;
-    }
-}
-
-/* Parse an SVG transform string into an affine matrix. Reference: SVG
-   working draft dated 1999-07-06, section 8.5. Return TRUE on
-   success. */
-static gboolean
-rsvg_parse_transform (double dst[6], const char *src)
-{
-  int idx;
-  char keyword[32];
-  double args[6];
-  int n_args;
-  guint key_len;
-  double tmp_affine[6];
-
-  art_affine_identity (dst);
-
-  idx = 0;
-  while (src[idx])
-    {
-      /* skip initial whitespace */
-      while (g_ascii_isspace (src[idx]))
-	idx++;
-
-      /* parse keyword */
-      for (key_len = 0; key_len < sizeof (keyword); key_len++)
-	{
-	  char c;
-
-	  c = src[idx];
-	  if (g_ascii_isalpha (c) || c == '-')
-	    keyword[key_len] = src[idx++];
-	  else
-	    break;
-	}
-      if (key_len >= sizeof (keyword))
-	return FALSE;
-      keyword[key_len] = '\0';
-
-      /* skip whitespace */
-      while (g_ascii_isspace (src[idx]))
-	idx++;
-
-      if (src[idx] != '(')
-	return FALSE;
-      idx++;
-
-      for (n_args = 0; ; n_args++)
-	{
-	  char c;
-	  char *end_ptr;
-
-	  /* skip whitespace */
-	  while (g_ascii_isspace (src[idx]))
-	    idx++;
-	  c = src[idx];
-	  if (g_ascii_isdigit (c) || c == '+' || c == '-' || c == '.')
-	    {
-	      if (n_args == sizeof(args) / sizeof(args[0]))
-		return FALSE; /* too many args */
-	      args[n_args] = strtod (src + idx, &end_ptr);
-	      idx = end_ptr - src;
-
-	      while (g_ascii_isspace (src[idx]))
-		idx++;
-
-	      /* skip optional comma */
-	      if (src[idx] == ',')
-		idx++;
-	    }
-	  else if (c == ')')
-	    break;
-	  else
-	    return FALSE;
-	}
-      idx++;
-
-      /* ok, have parsed keyword and args, now modify the transform */
-      if (!strcmp (keyword, "matrix"))
-	{
-	  if (n_args != 6)
-	    return FALSE;
-	  art_affine_multiply (dst, args, dst);
-	}
-      else if (!strcmp (keyword, "translate"))
-	{
-	  if (n_args == 1)
-	    args[1] = 0;
-	  else if (n_args != 2)
-	    return FALSE;
-	  art_affine_translate (tmp_affine, args[0], args[1]);
-	  art_affine_multiply (dst, tmp_affine, dst);
-	}
-      else if (!strcmp (keyword, "scale"))
-	{
-	  if (n_args == 1)
-	    args[1] = args[0];
-	  else if (n_args != 2)
-	    return FALSE;
-	  art_affine_scale (tmp_affine, args[0], args[1]);
-	  art_affine_multiply (dst, tmp_affine, dst);
-	}
-      else if (!strcmp (keyword, "rotate"))
-	{
-	  if (n_args != 1)
-	    return FALSE;
-	  art_affine_rotate (tmp_affine, args[0]);
-	  art_affine_multiply (dst, tmp_affine, dst);
-	}
-      else if (!strcmp (keyword, "skewX"))
-	{
-	  if (n_args != 1)
-	    return FALSE;
-	  art_affine_shear (tmp_affine, args[0]);
-	  art_affine_multiply (dst, tmp_affine, dst);
-	}
-      else if (!strcmp (keyword, "skewY"))
-	{
-	  if (n_args != 1)
-	    return FALSE;
-	  art_affine_shear (tmp_affine, args[0]);
-	  /* transpose the affine, given that we know [1] is zero */
-	  tmp_affine[1] = tmp_affine[2];
-	  tmp_affine[2] = 0;
-	  art_affine_multiply (dst, tmp_affine, dst);
-	}
-      else
-	return FALSE; /* unknown keyword */
-    }
-  return TRUE;
-}
-
-/**
- * rsvg_parse_transform_attr: Parse transform attribute and apply to state.
- * @ctx: Rsvg context.
- * @state: State in which to apply the transform.
- * @str: String containing transform.
- *
- * Parses the transform attribute in @str and applies it to @state.
- **/
-static void
-rsvg_parse_transform_attr (RsvgHandle *ctx, RsvgState *state, const char *str)
-{
-  double affine[6];
-
-  if (rsvg_parse_transform (affine, str))
-    {
-      art_affine_multiply (state->affine, affine, state->affine);
-    }
-  else
-    {
-      /* parse error for transform attribute. todo: report */
-    }
-}
-
-/**
- * rsvg_parse_style_attrs: Parse style attribute.
- * @ctx: Rsvg context.
- * @atts: Attributes in SAX style.
- *
- * Parses style and transform attributes and modifies state at top of
- * stack.
- **/
-static void
-rsvg_parse_style_attrs (RsvgHandle *ctx, const xmlChar **atts)
-{
-  int i;
-
-  if (atts != NULL)
-    {
-      for (i = 0; atts[i] != NULL; i += 2)
-	{
-	  if (!strcmp ((char *)atts[i], "style"))
-	    rsvg_parse_style (ctx, &ctx->state[ctx->n_state - 1],
-			      (char *)atts[i + 1]);
-	  else if (!strcmp ((char *)atts[i], "transform"))
-	    rsvg_parse_transform_attr (ctx, &ctx->state[ctx->n_state - 1],
-				       (char *)atts[i + 1]);
-	}
-    }
-}
-
-/**
- * rsvg_push_opacity_group: Begin a new transparency group.
- * @ctx: Context in which to push.
- *
- * Pushes a new transparency group onto the stack. The top of the stack
- * is stored in the context, while the "saved" value is in the state
- * stack.
- **/
-static void
-rsvg_push_opacity_group (RsvgHandle *ctx)
-{
-  RsvgState *state;
-  GdkPixbuf *pixbuf;
-  art_u8 *pixels;
-  int width, height, rowstride;
-
-  state = &ctx->state[ctx->n_state - 1];
-  pixbuf = ctx->pixbuf;
-
-  state->save_pixbuf = pixbuf;
-
-  if (pixbuf == NULL)
-    {
-      /* FIXME: What warning/GError here? */
-      return;
-    }
-
-  if (!gdk_pixbuf_get_has_alpha (pixbuf))
-    {
-      g_warning ("push/pop transparency group on non-alpha buffer nyi");
-      return;
-    }
-
-  width = gdk_pixbuf_get_width (pixbuf);
-  height = gdk_pixbuf_get_height (pixbuf);
-  rowstride = gdk_pixbuf_get_rowstride (pixbuf);
-  pixels = g_new (art_u8, rowstride * height);
-  memset (pixels, 0, rowstride * height);
-
-  pixbuf = gdk_pixbuf_new_from_data (pixels,
-				     GDK_COLORSPACE_RGB,
-				     TRUE,
-				     gdk_pixbuf_get_bits_per_sample (pixbuf),
-				     width,
-				     height,
-				     rowstride,
-				     rsvg_pixmap_destroy,
-				     NULL);
-  ctx->pixbuf = pixbuf;
-}
-
-/**
- * rsvg_pop_opacity_group: End a transparency group.
- * @ctx: Context in which to push.
- * @opacity: Opacity for blending (0..255).
- *
- * Pops a new transparency group from the stack, recompositing with the
- * next on stack.
- **/
-static void
-rsvg_pop_opacity_group (RsvgHandle *ctx, int opacity)
-{
-  RsvgState *state = &ctx->state[ctx->n_state - 1];
-  GdkPixbuf *tos, *nos;
-  art_u8 *tos_pixels, *nos_pixels;
-  int width;
-  int height;
-  int rowstride;
-  int x, y;
-  int tmp;
-
-  tos = ctx->pixbuf;
-  nos = state->save_pixbuf;
-
-  if (tos == NULL || nos == NULL)
-    {
-      /* FIXME: What warning/GError here? */
-      return;
-    }
-
-  if (!gdk_pixbuf_get_has_alpha (nos))
-    {
-      g_warning ("push/pop transparency group on non-alpha buffer nyi");
-      return;
-    }
-
-  width = gdk_pixbuf_get_width (tos);
-  height = gdk_pixbuf_get_height (tos);
-  rowstride = gdk_pixbuf_get_rowstride (tos);
-
-  tos_pixels = gdk_pixbuf_get_pixels (tos);
-  nos_pixels = gdk_pixbuf_get_pixels (nos);
-
-  for (y = 0; y < height; y++)
-    {
-      for (x = 0; x < width; x++)
-	{
-	  art_u8 r, g, b, a;
-	  a = tos_pixels[4 * x + 3];
-	  if (a)
-	    {
-	      r = tos_pixels[4 * x];
-	      g = tos_pixels[4 * x + 1];
-	      b = tos_pixels[4 * x + 2];
-	      tmp = a * opacity + 0x80;
-	      a = (tmp + (tmp >> 8)) >> 8;
-	      art_rgba_run_alpha (nos_pixels + 4 * x, r, g, b, a, 1);
-	    }
-	}
-      tos_pixels += rowstride;
-      nos_pixels += rowstride;
-    }
-
-  g_object_unref (tos);
-  ctx->pixbuf = nos;
+					
+					/* reset these so that we get a properly sized SVG and not a huge one */
+					new_width  = (width == -1 ? new_width : width);
+					new_height = (height == -1 ? new_height : height);
+				}
+			
+			/* Scale size of target pixbuf */
+			state = &ctx->state[ctx->n_state - 1];
+			art_affine_scale (state->affine, x_zoom, y_zoom);
+			
+#if 0
+			if (vbox_x != 0. || vbox_y != 0.)
+				{
+					double affine[6];
+					art_affine_translate (affine, vbox_x, vbox_y);
+					art_affine_multiply (state->affine, affine, state->affine);
+				}
+#endif
+			
+			if (new_width < 0 || new_height < 0)
+				{
+					g_warning ("rsvg_start_svg: width and height not specified in the SVG, nor supplied by the size callback");
+					if (new_width < 0) new_width = 500;
+					if (new_height < 0) new_height = 500;
+				}
+			
+			if (new_width >= INT_MAX / 4)
+				{
+					/* FIXME: GError here? */
+					g_warning ("rsvg_start_svg: width too large");
+					return;
+				}
+			rowstride = (new_width * (has_alpha ? 4 : 3) + 3) & ~3;
+			if (rowstride > INT_MAX / new_height)
+				{
+					/* FIXME: GError here? */
+					g_warning ("rsvg_start_svg: width too large");
+					return;
+				}
+			
+			/* FIXME: Add GError here if size is too big. */
+			
+			pixels = g_try_malloc (rowstride * new_height);
+			if (pixels == NULL)
+				{
+					/* FIXME: GError here? */
+					g_warning ("rsvg_start_svg: dimensions too large");
+					return;
+				}
+			memset (pixels, has_alpha ? 0 : 255, rowstride * new_height);
+			ctx->pixbuf = gdk_pixbuf_new_from_data (pixels,
+													GDK_COLORSPACE_RGB,
+													has_alpha, 8,
+													new_width, new_height,
+													rowstride,
+													rsvg_pixmap_destroy,
+													NULL);
+		}
 }
 
 static void
 rsvg_start_g (RsvgHandle *ctx, const xmlChar **atts)
 {
-  RsvgState *state = &ctx->state[ctx->n_state - 1];
-
-  rsvg_parse_style_attrs (ctx, atts);
-
-  if (state->opacity != 0xff)
-    rsvg_push_opacity_group (ctx);
+	RsvgState *state = &ctx->state[ctx->n_state - 1];
+	const char * klazz = NULL, * id = NULL;
+	int i;
+	
+	if (atts != NULL)
+		{
+			for (i = 0; atts[i] != NULL; i += 2)
+				{
+					if (!strcmp ((char *)atts[i], "class"))
+						klazz = (const char *)atts[i + 1];
+					else if (!strcmp ((char *)atts[i], "id"))
+						id = (const char *)atts[i + 1];
+				}
+		}
+	
+	rsvg_parse_style_attrs (ctx, "g", klazz, id, atts);
+	if (state->opacity != 0xff)
+		rsvg_push_opacity_group (ctx);
 }
 
 static void
 rsvg_end_g (RsvgHandle *ctx)
 {
-  RsvgState *state = &ctx->state[ctx->n_state - 1];
-
-  if (state->opacity != 0xff)
-    rsvg_pop_opacity_group (ctx, state->opacity);
+	RsvgState *state = &ctx->state[ctx->n_state - 1];
+	
+	if (state->opacity != 0xff)
+		rsvg_pop_opacity_group (ctx, state->opacity);
 }
 
-/**
- * rsvg_close_vpath: Close a vector path.
- * @src: Source vector path.
- *
- * Closes any open subpaths in the vector path.
- *
- * Return value: Closed vector path, allocated with g_new.
- **/
-static ArtVpath *
-rsvg_close_vpath (const ArtVpath *src)
-{
-  ArtVpath *result;
-  int n_result, n_result_max;
-  int src_ix;
-  double beg_x, beg_y;
-  gboolean open;
+typedef struct _RsvgSaxHandlerDefs {
+	RsvgSaxHandler super;
+	RsvgHandle *ctx;
+} RsvgSaxHandlerDefs;
 
-  n_result = 0;
-  n_result_max = 16;
-  result = g_new (ArtVpath, n_result_max);
+typedef struct _RsvgSaxHandlerStyle {
+	RsvgSaxHandler super;
+	RsvgSaxHandlerDefs *parent;
+	RsvgHandle *ctx;
+	GString *style;
+} RsvgSaxHandlerStyle;
 
-  beg_x = 0;
-  beg_y = 0;
-  open = FALSE;
-
-  for (src_ix = 0; src[src_ix].code != ART_END; src_ix++)
-    {
-      if (n_result == n_result_max)
-	result = g_renew (ArtVpath, result, n_result_max <<= 1);
-      result[n_result].code = src[src_ix].code == ART_MOVETO_OPEN ?
-	ART_MOVETO : src[src_ix].code;
-      result[n_result].x = src[src_ix].x;
-      result[n_result].y = src[src_ix].y;
-      n_result++;
-      if (src[src_ix].code == ART_MOVETO_OPEN)
-	{
-	  beg_x = src[src_ix].x;
-	  beg_y = src[src_ix].y;
-	  open = TRUE;
-	}
-      else if (src[src_ix + 1].code != ART_LINETO)
-	{
-	  if (open && (beg_x != src[src_ix].x || beg_y != src[src_ix].y))
-	    {
-	      if (n_result == n_result_max)
-		result = g_renew (ArtVpath, result, n_result_max <<= 1);
-	      result[n_result].code = ART_LINETO;
-	      result[n_result].x = beg_x;
-	      result[n_result].y = beg_y;
-	      n_result++;
-	    }
-	  open = FALSE;
-	}
-    }
-  if (n_result == n_result_max)
-    result = g_renew (ArtVpath, result, n_result_max <<= 1);
-  result[n_result].code = ART_END;
-  result[n_result].x = 0.0;
-  result[n_result].y = 0.0;
-  return result;
-}
-
-/**
- * rsvg_render_svp: Render an SVP.
- * @ctx: Context in which to render.
- * @svp: SVP to render.
- * @ps: Paint server for rendering.
- * @opacity: Opacity as 0..0xff.
- *
- * Renders the SVP over the pixbuf in @ctx.
- **/
-static void
-rsvg_render_svp (RsvgHandle *ctx, const ArtSVP *svp,
-		 RsvgPaintServer *ps, int opacity)
-{
-  GdkPixbuf *pixbuf;
-  ArtRender *render;
-  gboolean has_alpha;
-
-  pixbuf = ctx->pixbuf;
-  if (pixbuf == NULL)
-    {
-      /* FIXME: What warning/GError here? */
-      return;
-    }
-
-  has_alpha = gdk_pixbuf_get_has_alpha (pixbuf);
-
-  render = art_render_new (0, 0,
-			   gdk_pixbuf_get_width (pixbuf),
-			   gdk_pixbuf_get_height (pixbuf),
-			   gdk_pixbuf_get_pixels (pixbuf),
-			   gdk_pixbuf_get_rowstride (pixbuf),
-			   gdk_pixbuf_get_n_channels (pixbuf) -
-			   (has_alpha ? 1 : 0),
-			   gdk_pixbuf_get_bits_per_sample (pixbuf),
-			   has_alpha ? ART_ALPHA_SEPARATE : ART_ALPHA_NONE,
-			   NULL);
-
-  art_render_svp (render, svp);
-  art_render_mask_solid (render, (opacity << 8) + opacity + (opacity >> 7));
-  rsvg_render_paint_server (render, ps, NULL); /* todo: paint server ctx */
-  art_render_invoke (render);
-}
-
-static void
-rsvg_render_bpath (RsvgHandle *ctx, const ArtBpath *bpath)
-{
-  RsvgState *state;
-  ArtBpath *affine_bpath;
-  ArtVpath *vpath;
-  ArtSVP *svp;
-  GdkPixbuf *pixbuf;
-  gboolean need_tmpbuf;
-  int opacity;
-  int tmp;
-
-  pixbuf = ctx->pixbuf;
-  if (pixbuf == NULL)
-    {
-      /* FIXME: What warning/GError here? */
-      return;
-    }
-
-  state = &ctx->state[ctx->n_state - 1];
-  affine_bpath = art_bpath_affine_transform (bpath,
-					     state->affine);
-
-  vpath = art_bez_path_to_vec (affine_bpath, 0.25);
-  art_free (affine_bpath);
-
-  need_tmpbuf = (state->fill != NULL) && (state->stroke != NULL) &&
-    state->opacity != 0xff;
-
-  if (need_tmpbuf)
-    rsvg_push_opacity_group (ctx);
-
-  if (state->fill != NULL)
-    {
-      ArtVpath *closed_vpath;
-      ArtSVP *svp2;
-      ArtSvpWriter *swr;
-
-      closed_vpath = rsvg_close_vpath (vpath);
-      svp = art_svp_from_vpath (closed_vpath);
-      g_free (closed_vpath);
-      
-      swr = art_svp_writer_rewind_new (ART_WIND_RULE_NONZERO);
-      art_svp_intersector (svp, swr);
-
-      svp2 = art_svp_writer_rewind_reap (swr);
-      art_svp_free (svp);
-
-      opacity = state->fill_opacity;
-      if (!need_tmpbuf && state->opacity != 0xff)
-	{
-	  tmp = opacity * state->opacity + 0x80;
-	  opacity = (tmp + (tmp >> 8)) >> 8;
-	}
-      rsvg_render_svp (ctx, svp2, state->fill, opacity);
-      art_svp_free (svp2);
-    }
-
-  if (state->stroke != NULL)
-    {
-      /* todo: libart doesn't yet implement anamorphic scaling of strokes */
-      double stroke_width = state->stroke_width *
-	art_affine_expansion (state->affine);
-
-      if (stroke_width < 0.25)
-	stroke_width = 0.25;
-
-      svp = art_svp_vpath_stroke (vpath, state->join, state->cap,
-				  stroke_width, 4, 0.25);
-      opacity = state->stroke_opacity;
-      if (!need_tmpbuf && state->opacity != 0xff)
-	{
-	  tmp = opacity * state->opacity + 0x80;
-	  opacity = (tmp + (tmp >> 8)) >> 8;
-	}
-      rsvg_render_svp (ctx, svp, state->stroke, opacity);
-      art_svp_free (svp);
-    }
-
-  if (need_tmpbuf)
-    rsvg_pop_opacity_group (ctx, state->opacity);
-
-  art_free (vpath);
-}
-
-static void
-rsvg_start_path (RsvgHandle *ctx, const xmlChar **atts)
-{
-  int i;
-  char *d = NULL;
-
-  rsvg_parse_style_attrs (ctx, atts);
-  if (atts != NULL)
-    {
-      for (i = 0; atts[i] != NULL; i += 2)
-	{
-	  if (!strcmp ((char *)atts[i], "d"))
-	    d = (char *)atts[i + 1];
-	}
-    }
-  if (d != NULL)
-    {
-      RsvgBpathDef *bpath_def;
-
-      bpath_def = rsvg_parse_path (d);
-      rsvg_bpath_def_art_finish (bpath_def);
-
-      rsvg_render_bpath (ctx, bpath_def->bpath);
-
-      rsvg_bpath_def_free (bpath_def);
-    }
-}
-
-/* begin text - this should likely get split into its own .c file */
-
-typedef struct _RsvgSaxHandlerText RsvgSaxHandlerText;
-
-struct _RsvgSaxHandlerText {
-  RsvgSaxHandler super;
-  RsvgHandle *ctx;
-  double xpos;
-  double ypos;
-};
-
-static void
-rsvg_text_handler_free (RsvgSaxHandler *self)
-{
-  g_free (self);
-}
-
-static void
-rsvg_text_handler_characters (RsvgSaxHandler *self, const xmlChar *ch, int len)
-{
-  RsvgSaxHandlerText *z = (RsvgSaxHandlerText *)self;
-  RsvgHandle *ctx = z->ctx;
-  char *string;
-  int beg, end;
-  RsvgState *state;
-  ArtRender *render;
-  GdkPixbuf *pixbuf;
-  gboolean has_alpha;
-  int opacity;
-  PangoLayout *layout;
-  PangoFontDescription *font;
-  PangoLayoutLine *line;
-  PangoRectangle ink_rect, line_ink_rect;
-  FT_Bitmap bitmap;
-
-  state = &ctx->state[ctx->n_state - 1];
-  if (state->fill == NULL && state->font_size <= 0)
-    {
-      return;
-    }
-
-  pixbuf = ctx->pixbuf;
-  if (pixbuf == NULL)
-    {
-      /* FIXME: What warning/GError here? */
-      return;
-    }
-
-  /* Copy ch into string, chopping off leading and trailing whitespace */
-  for (beg = 0; beg < len; beg++)
-    if (!g_ascii_isspace (ch[beg]))
-      break;
-
-  for (end = len; end > beg; end--)
-    if (!g_ascii_isspace (ch[end - 1]))
-      break;
-
-  string = g_malloc (end - beg + 1);
-  memcpy (string, ch + beg, end - beg);
-  string[end - beg] = 0;
-
-#ifdef VERBOSE
-  fprintf (stderr, "text characters(%s, %d)\n", string, len);
-#endif
-
-  if (ctx->pango_context == NULL)
-    ctx->pango_context = pango_ft2_get_context (72, 72); /* FIXME: dpi? */
-
-  has_alpha = gdk_pixbuf_get_has_alpha (pixbuf);
-  
-  render = art_render_new (0, 0,
-			   gdk_pixbuf_get_width (pixbuf),
-			   gdk_pixbuf_get_height (pixbuf),
-			   gdk_pixbuf_get_pixels (pixbuf),
-			   gdk_pixbuf_get_rowstride (pixbuf),
-			   gdk_pixbuf_get_n_channels (pixbuf) -
-			   (has_alpha ? 1 : 0),
-			   gdk_pixbuf_get_bits_per_sample (pixbuf),
-			   has_alpha ? ART_ALPHA_SEPARATE : ART_ALPHA_NONE,
-			   NULL);
-  
-  layout = pango_layout_new (ctx->pango_context);
-  pango_layout_set_text (layout, string, -1);
-  font = pango_font_description_copy (pango_context_get_font_description (ctx->pango_context));
-  if (state->font_family)
-    pango_font_description_set_family_static (font, state->font_family);
-  pango_font_description_set_size (font, state->font_size * PANGO_SCALE);
-  pango_layout_set_font_description (layout, font);
-  pango_font_description_free (font);
-  
-  pango_layout_get_pixel_extents (layout, &ink_rect, NULL);
-  
-  line = pango_layout_get_line (layout, 0);
-  if (line == NULL)
-    line_ink_rect = ink_rect; /* nothing to draw anyway */
-  else
-    pango_layout_line_get_pixel_extents (line, &line_ink_rect, NULL);
-  
-  bitmap.rows = ink_rect.height;
-  bitmap.width = ink_rect.width;
-  bitmap.pitch = (bitmap.width + 3) & ~3;
-  bitmap.buffer = g_malloc0 (bitmap.rows * bitmap.pitch);
-  bitmap.num_grays = 0x100;
-  bitmap.pixel_mode = ft_pixel_mode_grays;
-  
-  pango_ft2_render_layout (&bitmap, layout, -ink_rect.x, -ink_rect.y);
-  
-  g_object_unref (layout);
-  
-  rsvg_render_paint_server (render, state->fill, NULL); /* todo: paint server ctx */
-  opacity = state->fill_opacity * state->opacity;
-  opacity = opacity + (opacity >> 7) + (opacity >> 14);
-#ifdef VERBOSE
-  fprintf (stderr, "opacity = %d\n", opacity);
-#endif
-  art_render_mask_solid (render, opacity);
-  art_render_mask (render,
-		   state->affine[4] + line_ink_rect.x,
-		   state->affine[5] + line_ink_rect.y,
-		   state->affine[4] + line_ink_rect.x + bitmap.width,
-		   state->affine[5] + line_ink_rect.y + bitmap.rows,
-		   bitmap.buffer, bitmap.pitch);
-  art_render_invoke (render);
-  g_free (bitmap.buffer);
-
-  g_free (string);
-}
-
-static void
-rsvg_start_text (RsvgHandle *ctx, const xmlChar **atts)
-{
-  RsvgSaxHandlerText *handler = g_new0 (RsvgSaxHandlerText, 1);
-
-  handler->super.free = rsvg_text_handler_free;
-  handler->super.characters = rsvg_text_handler_characters;
-  handler->ctx = ctx;
-
-  /* todo: parse "x" and "y" attributes */
-  handler->xpos = 0;
-  handler->ypos = 0;
-
-  rsvg_parse_style_attrs (ctx, atts);
-  ctx->handler = &handler->super;
-#ifdef VERBOSE
-  fprintf (stderr, "begin text!\n");
-#endif
-}
-
-/* end text */
-
-static void
-rsvg_start_defs (RsvgHandle *ctx, const xmlChar **atts)
-{
-  RsvgState *state = &ctx->state[ctx->n_state - 1];
-
-  state->in_defs = TRUE;
-}
-
-typedef struct _RsvgSaxHandlerGstops RsvgSaxHandlerGstops;
-
-struct _RsvgSaxHandlerGstops {
-  RsvgSaxHandler super;
-  RsvgHandle *ctx;
-  RsvgGradientStops *stops;
-};
+typedef struct _RsvgSaxHandlerGstops {
+	RsvgSaxHandler super;
+	RsvgSaxHandlerDefs *parent;
+	RsvgHandle *ctx;
+	RsvgGradientStops *stops;
+	const char * parent_tag;
+} RsvgSaxHandlerGstops;
 
 static void
 rsvg_gradient_stop_handler_free (RsvgSaxHandler *self)
 {
-  g_free (self);
+	g_free (self);
 }
 
 static void
 rsvg_gradient_stop_handler_start (RsvgSaxHandler *self, const xmlChar *name,
-				  const xmlChar **atts)
+								  const xmlChar **atts)
 {
-  RsvgSaxHandlerGstops *z = (RsvgSaxHandlerGstops *)self;
-  RsvgGradientStops *stops = z->stops;
-  int i;
-  double offset = 0;
-  gboolean got_offset = FALSE;
-  gint fixed;
-  RsvgState state;
-  int n_stop;
-
-  if (strcmp ((char *)name, "stop"))
-    {
-      g_warning ("unexpected <%s> element in gradient\n", name);
-      return;
-    }
-
-  rsvg_state_init (&state);
-
-  if (atts != NULL)
-    {
-      for (i = 0; atts[i] != NULL; i += 2)
-	{
-	  if (!strcmp ((char *)atts[i], "offset"))
-	    {
-	      offset = rsvg_css_parse_length ((char *)atts[i + 1], &fixed);
-	      got_offset = TRUE;
-	    }
-	  else if (!strcmp ((char *)atts[i], "style"))
-	    rsvg_parse_style (z->ctx, &state, (char *)atts[i + 1]);
-	}
-    }
-
-  rsvg_state_finalize (&state);
-
-  if (!got_offset)
-    {
-      g_warning ("gradient stop must specify offset\n");
-      return;
-    }
-
-  n_stop = stops->n_stop++;
-  if (n_stop == 0)
-    stops->stop = g_new (RsvgGradientStop, 1);
-  else if (!(n_stop & (n_stop - 1)))
-    /* double the allocation if size is a power of two */
-    stops->stop = g_renew (RsvgGradientStop, stops->stop, n_stop << 1);
-  stops->stop[n_stop].offset = offset;
-  stops->stop[n_stop].rgba = (state.stop_color << 8) | state.stop_opacity;
+	RsvgSaxHandlerGstops *z = (RsvgSaxHandlerGstops *)self;
+	RsvgGradientStops *stops = z->stops;
+	int i;
+	double offset = 0;
+	gboolean got_offset = FALSE;
+	RsvgState state;
+	int n_stop;
+	
+	if (strcmp ((char *)name, "stop"))
+		{
+			g_warning ("unexpected <%s> element in gradient\n", name);
+			return;
+		}
+	
+	rsvg_state_init (&state);
+	
+	if (atts != NULL)
+		{
+			for (i = 0; atts[i] != NULL; i += 2)
+				{
+					if (!strcmp ((char *)atts[i], "offset"))
+						{
+							/* either a number [0,1] or a percentage */
+							offset = rsvg_css_parse_normalized_length ((char *)atts[i + 1], z->ctx->dpi, 1., 0.);
+							
+							if (offset < 0.)
+								offset = 0.;
+							else if (offset > 1.)
+								offset = 1.;
+							
+							got_offset = TRUE;
+						}
+					else if (!strcmp ((char *)atts[i], "style"))
+						rsvg_parse_style (z->ctx, &state, (char *)atts[i + 1]);
+					else if (rsvg_is_style_arg ((char *)atts[i]))
+						rsvg_parse_style_pair (z->ctx, &state,
+											   (char *)atts[i], (char *)atts[i + 1]);
+				}
+		}
+	
+	rsvg_state_finalize (&state);
+	
+	if (!got_offset)
+		{
+			g_warning ("gradient stop must specify offset\n");
+			return;
+		}
+	
+	n_stop = stops->n_stop++;
+	if (n_stop == 0)
+		stops->stop = g_new (RsvgGradientStop, 1);
+	else if (!(n_stop & (n_stop - 1)))
+		/* double the allocation if size is a power of two */
+		stops->stop = g_renew (RsvgGradientStop, stops->stop, n_stop << 1);
+	stops->stop[n_stop].offset = offset;
+	stops->stop[n_stop].rgba = (state.stop_color << 8) | state.stop_opacity;
 }
 
 static void
 rsvg_gradient_stop_handler_end (RsvgSaxHandler *self, const xmlChar *name)
 {
+	RsvgSaxHandlerGstops *z = (RsvgSaxHandlerGstops *)self;
+	RsvgHandle *ctx = z->ctx;
+	
+	if (!strcmp((char *)name, z->parent_tag))
+		{
+			if (ctx->handler != NULL)
+				{
+					ctx->handler->free (ctx->handler);
+					ctx->handler = &z->parent->super;
+				}
+		}
 }
 
 static RsvgSaxHandler *
-rsvg_gradient_stop_handler_new (RsvgHandle *ctx, RsvgGradientStops **p_stops)
+rsvg_gradient_stop_handler_new_clone (RsvgHandle *ctx, RsvgGradientStops *stops, 
+									  const char * parent)
 {
-  RsvgSaxHandlerGstops *gstops = g_new0 (RsvgSaxHandlerGstops, 1);
-  RsvgGradientStops *stops = g_new (RsvgGradientStops, 1);
-
-  gstops->super.free = rsvg_gradient_stop_handler_free;
-  gstops->super.start_element = rsvg_gradient_stop_handler_start;
-  gstops->super.end_element = rsvg_gradient_stop_handler_end;
-  gstops->ctx = ctx;
-  gstops->stops = stops;
-
-  stops->n_stop = 0;
-  stops->stop = NULL;
-
-  *p_stops = stops;
-  return &gstops->super;
+	RsvgSaxHandlerGstops *gstops = g_new0 (RsvgSaxHandlerGstops, 1);
+	
+	gstops->super.free = rsvg_gradient_stop_handler_free;
+	gstops->super.start_element = rsvg_gradient_stop_handler_start;
+	gstops->super.end_element = rsvg_gradient_stop_handler_end;
+	gstops->ctx = ctx;
+	gstops->stops = stops;
+	gstops->parent_tag = parent;
+	
+	gstops->parent = (RsvgSaxHandlerDefs*)ctx->handler;
+	return &gstops->super;
 }
 
-static void
+static RsvgSaxHandler *
+rsvg_gradient_stop_handler_new (RsvgHandle *ctx, RsvgGradientStops **p_stops,
+								const char * parent)
+{
+	RsvgSaxHandlerGstops *gstops = g_new0 (RsvgSaxHandlerGstops, 1);
+	RsvgGradientStops *stops = g_new (RsvgGradientStops, 1);
+	
+	gstops->super.free = rsvg_gradient_stop_handler_free;
+	gstops->super.start_element = rsvg_gradient_stop_handler_start;
+	gstops->super.end_element = rsvg_gradient_stop_handler_end;
+	gstops->ctx = ctx;
+	gstops->stops = stops;
+	gstops->parent_tag = parent;
+	
+	stops->n_stop = 0;
+	stops->stop = NULL;
+	
+	gstops->parent = (RsvgSaxHandlerDefs*)ctx->handler;
+	*p_stops = stops;
+	return &gstops->super;
+}
+
+/* exported to the paint server via rsvg-private.h */
+void
 rsvg_linear_gradient_free (RsvgDefVal *self)
 {
-  RsvgLinearGradient *z = (RsvgLinearGradient *)self;
-
-  g_free (z->stops->stop);
-  g_free (z->stops);
-  g_free (self);
+	RsvgLinearGradient *z = (RsvgLinearGradient *)self;
+	
+	g_free (z->stops->stop);
+	g_free (z->stops);
+	g_free (self);
 }
 
 static void
 rsvg_start_linear_gradient (RsvgHandle *ctx, const xmlChar **atts)
 {
-  RsvgState *state = &ctx->state[ctx->n_state - 1];
-  RsvgLinearGradient *grad;
-  int i;
-  char *id = NULL;
-  double x1 = 0, y1 = 0, x2 = 100, y2 = 0;
-  ArtGradientSpread spread = ART_GRADIENT_PAD;
+	RsvgState *state = &ctx->state[ctx->n_state - 1];
+	RsvgLinearGradient *grad = NULL;
+	int i;
+	const char *id = NULL;
+	double x1 = 0., y1 = 0., x2 = 0., y2 = 0.;
+	ArtGradientSpread spread = ART_GRADIENT_PAD;
+	const char * xlink_href = NULL;
+	gboolean got_x1, got_x2, got_y1, got_y2, got_spread, got_transform, cloned, shallow_cloned;
+	double affine[6];
 
-  /* todo: only handles numeric coordinates in gradientUnits = userSpace */
-  if (atts != NULL)
-    {
-      for (i = 0; atts[i] != NULL; i += 2)
-	{
-	  if (!strcmp ((char *)atts[i], "id"))
-	    id = (char *)atts[i + 1];
-	  else if (!strcmp ((char *)atts[i], "x1"))
-	    x1 = atof ((char *)atts[i + 1]);
-	  else if (!strcmp ((char *)atts[i], "y1"))
-	    y1 = atof ((char *)atts[i + 1]);
-	  else if (!strcmp ((char *)atts[i], "x2"))
-	    x2 = atof ((char *)atts[i + 1]);
-	  else if (!strcmp ((char *)atts[i], "y2"))
-	    y2 = atof ((char *)atts[i + 1]);
-	  else if (!strcmp ((char *)atts[i], "spreadMethod"))
-	    {
-	      if (!strcmp ((char *)atts[i + 1], "pad"))
-		spread = ART_GRADIENT_PAD;
-	      else if (!strcmp ((char *)atts[i + 1], "reflect"))
-		spread = ART_GRADIENT_REFLECT;
-	      else if (!strcmp ((char *)atts[i + 1], "repeat"))
-		spread = ART_GRADIENT_REPEAT;
-	    }
-	}
-    }
+	got_x1 = got_x2 = got_y1 = got_y2 = got_spread = got_transform = cloned = shallow_cloned = FALSE;
+	
+	/* 100% is the default */
+	x2 = rsvg_css_parse_normalized_length ("100%", ctx->dpi, (gdouble)ctx->width, state->font_size);
+	
+	/* todo: only handles numeric coordinates in gradientUnits = userSpace */
+	if (atts != NULL)
+		{
+			for (i = 0; atts[i] != NULL; i += 2)
+				{
+					if (!strcmp ((char *)atts[i], "id"))
+						id = (const char *)atts[i + 1];
+					else if (!strcmp ((char *)atts[i], "x1")) {
+						x1 = rsvg_css_parse_normalized_length ((char *)atts[i + 1], ctx->dpi, (gdouble)ctx->width, state->font_size);
+						got_x1 = TRUE;
+					}
+					else if (!strcmp ((char *)atts[i], "y1")) {
+						y1 = rsvg_css_parse_normalized_length ((char *)atts[i + 1], ctx->dpi, (gdouble)ctx->height, state->font_size);
+						got_y1 = TRUE;
+					}
+					else if (!strcmp ((char *)atts[i], "x2")) {
+						x2 = rsvg_css_parse_normalized_length ((char *)atts[i + 1], ctx->dpi, (gdouble)ctx->width, state->font_size);
+						got_x2 = TRUE;
+					}
+					else if (!strcmp ((char *)atts[i], "y2")) {
+						y2 = rsvg_css_parse_normalized_length ((char *)atts[i + 1], ctx->dpi, (gdouble)ctx->height, state->font_size);
+						got_y2 = TRUE;
+					}
+					else if (!strcmp ((char *)atts[i], "spreadMethod"))
+						{
+							if (!strcmp ((char *)atts[i + 1], "pad")) {
+								spread = ART_GRADIENT_PAD;
+								got_spread = TRUE;
+							}
+							else if (!strcmp ((char *)atts[i + 1], "reflect")) {
+								spread = ART_GRADIENT_REFLECT;
+								got_spread = TRUE;
+							}
+							else if (!strcmp ((char *)atts[i + 1], "repeat")) {
+								spread = ART_GRADIENT_REPEAT;
+								got_spread = TRUE;
+							}
+						}
+					else if (!strcmp ((char *)atts[i], "xlink:href"))
+						xlink_href = (const char *)atts[i + 1];
+					else if (!strcmp ((char *)atts[i], "gradientTransform")) {
+						got_transform = rsvg_parse_transform (affine, (const char *)atts[i + 1]);
+					}
+				}
+		}
+	
+	if (xlink_href != NULL)
+		{
+			RsvgLinearGradient * parent = (RsvgLinearGradient*)rsvg_defs_lookup (ctx->defs, xlink_href+1);
+			if (parent != NULL)
+				{
+					cloned = TRUE;
+					grad = rsvg_clone_linear_gradient (parent, &shallow_cloned); 
+					ctx->handler = rsvg_gradient_stop_handler_new_clone (ctx, grad->stops, "linearGradient");
+				}
+		}
+	
+	if (!cloned)
+		{
+			grad = g_new (RsvgLinearGradient, 1);
+			grad->super.type = RSVG_DEF_LINGRAD;
+			grad->super.free = rsvg_linear_gradient_free;
+			ctx->handler = rsvg_gradient_stop_handler_new (ctx, &grad->stops, "linearGradient");
+		}
+	
+	rsvg_defs_set (ctx->defs, id, &grad->super);
+	
+	for (i = 0; i < 6; i++)
+		grad->affine[i] = state->affine[i];
 
-  grad = g_new (RsvgLinearGradient, 1);
-  grad->super.type = RSVG_DEF_LINGRAD;
-  grad->super.free = rsvg_linear_gradient_free;
-
-  ctx->handler = rsvg_gradient_stop_handler_new (ctx, &grad->stops);
-
-  rsvg_defs_set (ctx->defs, id, &grad->super);
-
-  for (i = 0; i < 6; i++)
-    grad->affine[i] = state->affine[i];
-  grad->x1 = x1;
-  grad->y1 = y1;
-  grad->x2 = x2;
-  grad->y2 = y2;
-  grad->spread = spread;
+	if (got_transform)
+		art_affine_multiply (grad->affine, affine, grad->affine);
+	
+	/* state inherits parent/cloned information unless it's explicity gotten */
+	grad->x1 = (cloned && !got_x1) ? grad->x1 : x1;
+	grad->y1 = (cloned && !got_y1) ? grad->y1 : y1;
+	grad->x2 = (cloned && !got_x2) ? grad->x2 : x2;
+	grad->y2 = (cloned && !got_y2) ? grad->y1 : y2;
+	grad->spread = (cloned && !got_spread) ? grad->spread : spread;
 }
 
-static void
+/* exported to the paint server via rsvg-private.h */
+void
 rsvg_radial_gradient_free (RsvgDefVal *self)
 {
-  RsvgRadialGradient *z = (RsvgRadialGradient *)self;
-
-  g_free (z->stops->stop);
-  g_free (z->stops);
-  g_free (self);
+	RsvgRadialGradient *z = (RsvgRadialGradient *)self;
+	
+	g_free (z->stops->stop);
+	g_free (z->stops);
+	g_free (self);
 }
 
 static void
-rsvg_start_radial_gradient (RsvgHandle *ctx, const xmlChar **atts)
+rsvg_start_radial_gradient (RsvgHandle *ctx, const xmlChar **atts, const char * tag) /* tag for conicalGradient */
 {
-  RsvgState *state = &ctx->state[ctx->n_state - 1];
-  RsvgRadialGradient *grad;
-  int i;
-  char *id = NULL;
-  double cx = 50, cy = 50, r = 50, fx = 50, fy = 50;
-
-  /* todo: only handles numeric coordinates in gradientUnits = userSpace */
-  if (atts != NULL)
-    {
-      for (i = 0; atts[i] != NULL; i += 2)
-	{
-	  if (!strcmp ((char *)atts[i], "id"))
-	    id = (char *)atts[i + 1];
-	  else if (!strcmp ((char *)atts[i], "cx"))
-	    cx = atof ((char *)atts[i + 1]);
-	  else if (!strcmp ((char *)atts[i], "cy"))
-	    cy = atof ((char *)atts[i + 1]);
-	  else if (!strcmp ((char *)atts[i], "r"))
-	    r = atof ((char *)atts[i + 1]);
-	  else if (!strcmp ((char *)atts[i], "fx"))
-	    fx = atof ((char *)atts[i + 1]);
-	  else if (!strcmp ((char *)atts[i], "fy"))
-	    fy = atof ((char *)atts[i + 1]);
-	}
+	RsvgState *state = &ctx->state[ctx->n_state - 1];
+	RsvgRadialGradient *grad = NULL;
+	int i;
+	const char *id = NULL;
+	double cx = 0., cy = 0., r = 0., fx = 0., fy = 0.;  
+	const char * xlink_href = NULL;
+	ArtGradientSpread spread = ART_GRADIENT_PAD;
+	gboolean got_cx, got_cy, got_r, got_fx, got_fy, got_spread, got_transform, cloned, shallow_cloned;
+	double affine[6];
+	
+	got_cx = got_cy = got_r = got_fx = got_fy = got_spread = got_transform = cloned = shallow_cloned = FALSE;
+	
+	/* setup defaults */
+	cx = rsvg_css_parse_normalized_length ("50%", ctx->dpi, (gdouble)ctx->width, state->font_size);
+	cy = rsvg_css_parse_normalized_length ("50%", ctx->dpi, (gdouble)ctx->height, state->font_size);
+	r  = rsvg_css_parse_normalized_length ("50%", ctx->dpi, rsvg_viewport_percentage((gdouble)ctx->width, (gdouble)ctx->height), state->font_size);
+	
+	/* todo: only handles numeric coordinates in gradientUnits = userSpace */
+	if (atts != NULL)
+		{
+			for (i = 0; atts[i] != NULL; i += 2)
+				{
+					if (!strcmp ((char *)atts[i], "id"))
+						id = (const char *)atts[i + 1];
+					else if (!strcmp ((char *)atts[i], "cx")) {
+						cx = rsvg_css_parse_normalized_length ((char *)atts[i + 1], ctx->dpi, (gdouble)ctx->width, state->font_size);
+						got_cx = TRUE;
+					}
+					else if (!strcmp ((char *)atts[i], "cy")) {
+						cy = rsvg_css_parse_normalized_length ((char *)atts[i + 1], ctx->dpi, (gdouble)ctx->height, state->font_size);
+						got_cy = TRUE;
+					}
+					else if (!strcmp ((char *)atts[i], "r")) {
+						r = rsvg_css_parse_normalized_length ((char *)atts[i + 1], ctx->dpi, 
+															  rsvg_viewport_percentage((gdouble)ctx->width, (gdouble)ctx->height), 
+															  state->font_size);
+						got_r = TRUE;
+					}
+					else if (!strcmp ((char *)atts[i], "fx")) {
+						fx = rsvg_css_parse_normalized_length ((char *)atts[i + 1], ctx->dpi, (gdouble)ctx->width, state->font_size);
+						got_fx = TRUE;
+					}
+					else if (!strcmp ((char *)atts[i], "fy")) {
+						fy = rsvg_css_parse_normalized_length ((char *)atts[i + 1], ctx->dpi, (gdouble)ctx->height, state->font_size);
+						got_fy = TRUE;
+					}
+					else if (!strcmp ((char *)atts[i], "xlink:href"))
+						xlink_href = (const char *)atts[i + 1];
+					else if (!strcmp ((char *)atts[i], "gradientTransform")) {
+						got_transform = rsvg_parse_transform (affine, (const char *)atts[i + 1]);
+					}
+					else if (!strcmp ((char *)atts[i], "spreadMethod"))
+						{
+							if (!strcmp ((char *)atts[i + 1], "pad")) {
+								spread = ART_GRADIENT_PAD;
+								got_spread = TRUE;
+							}
+							else if (!strcmp ((char *)atts[i + 1], "reflect")) {
+								spread = ART_GRADIENT_REFLECT;
+								got_spread = TRUE;
+							}
+							else if (!strcmp ((char *)atts[i + 1], "repeat")) {
+								spread = ART_GRADIENT_REPEAT;
+								got_spread = TRUE;
+							}
+						}
+				}
+		}
+	
+	if (xlink_href != NULL)
+		{
+			RsvgRadialGradient * parent = (RsvgRadialGradient*)rsvg_defs_lookup (ctx->defs, xlink_href+1);
+			if (parent != NULL)
+				{
+					cloned = TRUE;
+					grad = rsvg_clone_radial_gradient (parent, &shallow_cloned); 
+					ctx->handler = rsvg_gradient_stop_handler_new_clone (ctx, grad->stops, tag);
+				}
     }
+	if (!cloned)
+		{
+			grad = g_new (RsvgRadialGradient, 1);
+			grad->super.type = RSVG_DEF_RADGRAD;
+			grad->super.free = rsvg_radial_gradient_free;
+			ctx->handler = rsvg_gradient_stop_handler_new (ctx, &grad->stops, tag);		   
+		}
 
-  grad = g_new (RsvgRadialGradient, 1);
-  grad->super.type = RSVG_DEF_RADGRAD;
-  grad->super.free = rsvg_radial_gradient_free;
+	if (!cloned || shallow_cloned) {
+		if (!got_fx) {
+			fx = cx;
+			got_fx = TRUE;
+		}
+		if (!got_fy) {
+			fy = cy;
+			got_fy = TRUE;
+		}
+	}
+	
+	rsvg_defs_set (ctx->defs, id, &grad->super);
+	
+	for (i = 0; i < 6; i++)
+		grad->affine[i] = state->affine[i];
 
-  ctx->handler = rsvg_gradient_stop_handler_new (ctx, &grad->stops);
-
-  rsvg_defs_set (ctx->defs, id, &grad->super);
-
-  for (i = 0; i < 6; i++)
-    grad->affine[i] = state->affine[i];
-  grad->cx = cx;
-  grad->cy = cy;
-  grad->r = r;
-  grad->fx = fx;
-  grad->fy = fy;
+	if (got_transform)
+		art_affine_multiply (grad->affine, affine, grad->affine);
+	
+	/* state inherits parent/cloned information unless it's explicity gotten */
+	grad->cx = (cloned && !got_cx) ? grad->cx : cx;
+	grad->cy = (cloned && !got_cy) ? grad->cy : cy;
+	grad->r =  (cloned && !got_r)  ? grad->r  : r;
+	grad->fx = (cloned && !got_fx) ? grad->fx : fx;
+	grad->fy = (cloned && !got_fy) ? grad->fy : fy;
+	grad->spread = (cloned && !got_spread) ? grad->spread : spread;
 }
+
+/* end gradients */
+
+static void
+rsvg_style_handler_free (RsvgSaxHandler *self)
+{
+	RsvgSaxHandlerStyle *z = (RsvgSaxHandlerStyle *)self;
+	RsvgHandle *ctx = z->ctx;
+	
+	rsvg_parse_cssbuffer (ctx, z->style->str, z->style->len);
+	
+	g_string_free (z->style, TRUE);
+	g_free (z);
+}
+
+static void
+rsvg_style_handler_characters (RsvgSaxHandler *self, const xmlChar *ch, int len)
+{
+	RsvgSaxHandlerStyle *z = (RsvgSaxHandlerStyle *)self;
+	g_string_append_len (z->style, (const char *)ch, len);
+}
+
+static void
+rsvg_style_handler_start (RsvgSaxHandler *self, const xmlChar *name,
+						  const xmlChar **atts)
+{
+}
+
+static void
+rsvg_style_handler_end (RsvgSaxHandler *self, const xmlChar *name)
+{
+	RsvgSaxHandlerStyle *z = (RsvgSaxHandlerStyle *)self;
+	RsvgHandle *ctx = z->ctx;
+	
+	if (!strcmp ((char *)name, "style"))
+		{
+			if (ctx->handler != NULL)
+				{
+					ctx->handler->free (ctx->handler);
+					ctx->handler = &z->parent->super;
+				}
+		}
+}
+
+static void
+rsvg_start_style (RsvgHandle *ctx, const xmlChar **atts)
+{
+	RsvgSaxHandlerStyle *handler = g_new0 (RsvgSaxHandlerStyle, 1);
+	
+	handler->super.free = rsvg_style_handler_free;
+	handler->super.characters = rsvg_style_handler_characters;
+	handler->super.start_element = rsvg_style_handler_start;
+	handler->super.end_element   = rsvg_style_handler_end;
+	handler->ctx = ctx;
+	
+	handler->style = g_string_new (NULL);
+	
+	handler->parent = (RsvgSaxHandlerDefs*)ctx->handler;
+	ctx->handler = &handler->super;
+}
+
+/* */
+
+static void
+rsvg_defs_handler_free (RsvgSaxHandler *self)
+{
+	g_free (self);
+}
+
+static void
+rsvg_defs_handler_characters (RsvgSaxHandler *self, const xmlChar *ch, int len)
+{
+}
+
+static void
+rsvg_defs_handler_start (RsvgSaxHandler *self, const xmlChar *name,
+						 const xmlChar **atts)
+{
+	RsvgSaxHandlerDefs *z = (RsvgSaxHandlerDefs *)self;
+	RsvgHandle *ctx = z->ctx;
+	
+	/* push the state stack */
+	if (ctx->n_state == ctx->n_state_max)
+		ctx->state = g_renew (RsvgState, ctx->state, ctx->n_state_max <<= 1);
+	if (ctx->n_state)
+		rsvg_state_clone (&ctx->state[ctx->n_state],
+						  &ctx->state[ctx->n_state - 1]);
+	else
+		rsvg_state_init (ctx->state);
+	ctx->n_state++;
+
+	/**
+	 * conicalGradient isn't in the SVG spec and I'm not sure exactly what it does. libart definitely
+	 * has no analogue. But it does seem similar enough to a radialGradient that i'd rather get the
+	 * onscreen representation of the colour wrong than not have any colour displayed whatsoever
+	 */
+
+	if (!strcmp ((char *)name, "linearGradient"))
+		rsvg_start_linear_gradient (ctx, atts);
+	else if (!strcmp ((char *)name, "radialGradient"))
+		rsvg_start_radial_gradient (ctx, atts, "radialGradient");
+	else if (!strcmp((char *)name, "conicalGradient"))
+		rsvg_start_radial_gradient (ctx, atts, "conicalGradient");
+	else if (!strcmp ((char *)name, "style"))
+		rsvg_start_style (ctx, atts);
+}
+
+static void
+rsvg_defs_handler_end (RsvgSaxHandler *self, const xmlChar *name)
+{
+	RsvgSaxHandlerDefs *z = (RsvgSaxHandlerDefs *)self;
+	RsvgHandle *ctx = z->ctx;
+	
+	if (!strcmp((char *)name, "defs"))
+		{
+			if (ctx->handler != NULL)
+				{
+					ctx->handler->free (ctx->handler);
+					ctx->handler = NULL;
+				}
+		}
+	
+	/* pop the state stack */
+	ctx->n_state--;
+	rsvg_state_finalize (&ctx->state[ctx->n_state]);
+}
+
+static void
+rsvg_start_defs (RsvgHandle *ctx, const xmlChar **atts)
+{
+	RsvgSaxHandlerDefs *handler = g_new0 (RsvgSaxHandlerDefs, 1);
+	
+	handler->super.free = rsvg_defs_handler_free;
+	handler->super.characters = rsvg_defs_handler_characters;
+	handler->super.start_element = rsvg_defs_handler_start;
+	handler->super.end_element   = rsvg_defs_handler_end;
+	handler->ctx = ctx;
+	
+	ctx->handler = &handler->super;
+}
+
+/* end defs */
 
 static void
 rsvg_start_element (void *data, const xmlChar *name, const xmlChar **atts)
 {
-  RsvgHandle *ctx = (RsvgHandle *)data;
-#ifdef VERBOSE
-  int i;
-#endif
+	RsvgHandle *ctx = (RsvgHandle *)data;
 
-#ifdef VERBOSE
-  fprintf (stdout, "SAX.startElement(%s", (char *) name);
-  if (atts != NULL) {
-    for (i = 0;(atts[i] != NULL);i++) {
-      fprintf (stdout, ", %s='", atts[i++]);
-      fprintf (stdout, "%s'", atts[i]);
-    }
-  }
-  fprintf (stdout, ")\n");
-#endif
-
-  if (ctx->handler)
-    {
-      ctx->handler_nest++;
-      if (ctx->handler->start_element != NULL)
-	ctx->handler->start_element (ctx->handler, name, atts);
-    }
-  else
-    {
-      /* push the state stack */
-      if (ctx->n_state == ctx->n_state_max)
-	ctx->state = g_renew (RsvgState, ctx->state, ctx->n_state_max <<= 1);
-      if (ctx->n_state)
-	rsvg_state_clone (&ctx->state[ctx->n_state],
-			  &ctx->state[ctx->n_state - 1]);
-      else
-	rsvg_state_init (ctx->state);
-      ctx->n_state++;
-
-      if (!strcmp ((char *)name, "svg"))
-	rsvg_start_svg (ctx, atts);
-      else if (!strcmp ((char *)name, "g"))
-	rsvg_start_g (ctx, atts);
-      else if (!strcmp ((char *)name, "path"))
-	rsvg_start_path (ctx, atts);
-      else if (!strcmp ((char *)name, "text"))
-	rsvg_start_text (ctx, atts);
-      else if (!strcmp ((char *)name, "defs"))
-	rsvg_start_defs (ctx, atts);
-      else if (!strcmp ((char *)name, "linearGradient"))
-	rsvg_start_linear_gradient (ctx, atts);
-      else if (!strcmp ((char *)name, "radialGradient"))
-	rsvg_start_radial_gradient (ctx, atts);
+	if (ctx->handler)
+		{
+			ctx->handler_nest++;
+			if (ctx->handler->start_element != NULL)
+				ctx->handler->start_element (ctx->handler, name, atts);
+		}
+	else
+		{
+			/* push the state stack */
+			if (ctx->n_state == ctx->n_state_max)
+				ctx->state = g_renew (RsvgState, ctx->state, ctx->n_state_max <<= 1);
+			if (ctx->n_state)
+				rsvg_state_clone (&ctx->state[ctx->n_state],
+								  &ctx->state[ctx->n_state - 1]);
+			else
+				rsvg_state_init (ctx->state);
+			ctx->n_state++;
+			
+			if (!strcmp ((char *)name, "svg"))
+				rsvg_start_svg (ctx, atts);
+			else if (!strcmp ((char *)name, "g"))
+				rsvg_start_g (ctx, atts);
+			else if (!strcmp ((char *)name, "path"))
+				rsvg_start_path (ctx, atts);
+			else if (!strcmp ((char *)name, "text"))
+				rsvg_start_text (ctx, atts);
+			else if (!strcmp ((char *)name, "image"))
+				rsvg_start_image (ctx, atts);
+			else if (!strcmp ((char *)name, "line"))
+				rsvg_start_line (ctx, atts);
+			else if (!strcmp ((char *)name, "rect"))
+				rsvg_start_rect (ctx, atts);
+			else if (!strcmp ((char *)name, "circle"))
+				rsvg_start_circle (ctx, atts);
+			else if (!strcmp ((char *)name, "ellipse"))
+				rsvg_start_ellipse (ctx, atts);
+			else if (!strcmp ((char *)name, "defs"))
+				rsvg_start_defs (ctx, atts);
+			else if (!strcmp ((char *)name, "polygon"))
+				rsvg_start_polygon (ctx, atts);
+			else if (!strcmp ((char *)name, "polyline"))
+				rsvg_start_polyline (ctx, atts);
+			
+			/* see conicalGradient discussion above */
+			else if (!strcmp ((char *)name, "linearGradient"))
+				rsvg_start_linear_gradient (ctx, atts);
+			else if (!strcmp ((char *)name, "radialGradient"))
+				rsvg_start_radial_gradient (ctx, atts, "radialGradient");
+			else if (!strcmp ((char *)name, "conicalGradient"))
+				rsvg_start_radial_gradient (ctx, atts, "conicalGradient");
     }
 }
 
 static void
 rsvg_end_element (void *data, const xmlChar *name)
 {
-  RsvgHandle *ctx = (RsvgHandle *)data;
+	RsvgHandle *ctx = (RsvgHandle *)data;
+	
+	if (ctx->handler_nest > 0)
+		{
+			if (ctx->handler->end_element != NULL)
+				ctx->handler->end_element (ctx->handler, name);
+			ctx->handler_nest--;
+		}
+	else
+		{
+			if (ctx->handler != NULL)
+				{
+					ctx->handler->free (ctx->handler);
+					ctx->handler = NULL;
+				}
 
-  if (ctx->handler_nest > 0)
-    {
-      if (ctx->handler->end_element != NULL)
-	ctx->handler->end_element (ctx->handler, name);
-      ctx->handler_nest--;
-    }
-  else
-    {
-      if (ctx->handler != NULL)
-	{
-	  ctx->handler->free (ctx->handler);
-	  ctx->handler = NULL;
-	}
-
-      if (!strcmp ((char *)name, "g"))
-	rsvg_end_g (ctx);
-
-      /* pop the state stack */
-      ctx->n_state--;
-      rsvg_state_finalize (&ctx->state[ctx->n_state]);
-
-#ifdef VERBOSE
-      fprintf (stdout, "SAX.endElement(%s)\n", (char *) name);
-#endif
-    }
+			if (!strcmp ((char *)name, "g"))
+				rsvg_end_g (ctx);
+			
+			/* pop the state stack */
+			ctx->n_state--;
+			rsvg_state_finalize (&ctx->state[ctx->n_state]);
+		}
 }
 
 static void
 rsvg_characters (void *data, const xmlChar *ch, int len)
 {
-  RsvgHandle *ctx = (RsvgHandle *)data;
-
-  if (ctx->handler && ctx->handler->characters != NULL)
-    ctx->handler->characters (ctx->handler, ch, len);
+	RsvgHandle *ctx = (RsvgHandle *)data;
+	
+	if (ctx->handler && ctx->handler->characters != NULL)
+		ctx->handler->characters (ctx->handler, ch, len);
 }
 
 static xmlEntityPtr
 rsvg_get_entity (void *data, const xmlChar *name)
 {
-  RsvgHandle *ctx = (RsvgHandle *)data;
-
-  return (xmlEntityPtr)g_hash_table_lookup (ctx->entities, name);
+	RsvgHandle *ctx = (RsvgHandle *)data;
+	
+	return (xmlEntityPtr)g_hash_table_lookup (ctx->entities, name);
 }
 
 static void
 rsvg_entity_decl (void *data, const xmlChar *name, int type,
-		  const xmlChar *publicId, const xmlChar *systemId, xmlChar *content)
+				  const xmlChar *publicId, const xmlChar *systemId, xmlChar *content)
 {
-  RsvgHandle *ctx = (RsvgHandle *)data;
-  GHashTable *entities = ctx->entities;
-  xmlEntityPtr entity;
-  char *dupname;
+	RsvgHandle *ctx = (RsvgHandle *)data;
+	GHashTable *entities = ctx->entities;
+	xmlEntityPtr entity;
+	char *dupname;
 
-  entity = g_new0 (xmlEntity, 1);
-  entity->type = type;
-  entity->length = strlen (name);
-  dupname = g_strdup (name);
-  entity->name = dupname;
-  entity->ExternalID = g_strdup (publicId);
-  entity->SystemID = g_strdup (systemId);
-  if (content)
-    {
-      entity->content = xmlMemStrdup (content);
-      entity->length = strlen (content);
-    }
-  g_hash_table_insert (entities, dupname, entity);
+	entity = g_new0 (xmlEntity, 1);
+	entity->type = type;
+	entity->length = strlen (name);
+	dupname = g_strdup (name);
+	entity->name = dupname;
+	entity->ExternalID = g_strdup (publicId);
+	entity->SystemID = g_strdup (systemId);
+	if (content)
+		{
+			entity->content = xmlMemStrdup (content);
+			entity->length = strlen (content);
+		}
+	g_hash_table_insert (entities, dupname, entity);
 }
 
 static void
@@ -1400,9 +896,6 @@ rsvg_error_cb (void *data, const char *msg, ...)
 	va_list args;
 	
 	va_start (args, msg);
-#ifdef VERBOSE
-	fprintf (stderr, "fatal svg parse error: ");
-#endif
 	vfprintf (stderr, msg, args);
 	va_end (args);
 }
@@ -1433,16 +926,18 @@ static xmlSAXHandler rsvgSAXHandlerStruct = {
     rsvg_error_cb, /* xmlParserError */
     rsvg_error_cb, /* xmlParserFatalError */
     NULL, /* getParameterEntity */
+    rsvg_characters, /* cdataCallback */
+    NULL /* */
 };
 
 GQuark
 rsvg_error_quark (void)
 {
-  static GQuark q = 0;
-  if (q == 0)
-    q = g_quark_from_static_string ("rsvg-error-quark");
-
-  return q;
+	static GQuark q = 0;
+	if (q == 0)
+		q = g_quark_from_static_string ("rsvg-error-quark");
+	
+	return q;
 }
 
 /**
@@ -1459,19 +954,60 @@ rsvg_error_quark (void)
 RsvgHandle *
 rsvg_handle_new (void)
 {
-  RsvgHandle *handle;
+	RsvgHandle *handle;
+	
+	handle = g_new0 (RsvgHandle, 1);
+	handle->n_state = 0;
+	handle->n_state_max = 16;
+	handle->state = g_new (RsvgState, handle->n_state_max);
+	handle->defs = rsvg_defs_new ();
+	handle->handler_nest = 0;
+	handle->entities = g_hash_table_new (g_str_hash, g_str_equal);
+	handle->dpi = internal_dpi;
+	
+	handle->css_props = g_hash_table_new_full (g_str_hash, g_str_equal,
+											   g_free, g_free);
+	
+	handle->ctxt = NULL;
+	
+	return handle;
+}
 
-  handle = g_new0 (RsvgHandle, 1);
-  handle->n_state = 0;
-  handle->n_state_max = 16;
-  handle->state = g_new (RsvgState, handle->n_state_max);
-  handle->defs = rsvg_defs_new ();
-  handle->handler_nest = 0;
-  handle->entities = g_hash_table_new (g_str_hash, g_str_equal);
+/**
+ * rsvg_set_default_dpi
+ * @dpi: Dots Per Inch (aka Pixels Per Inch)
+ *
+ * Sets the DPI for the all future outgoing pixbufs. Common values are
+ * 72, 90, and 300 DPI. Passing a number <= 0 to #dpi will 
+ * reset the DPI to whatever the default value happens to be.
+ */
+void
+rsvg_set_default_dpi (double dpi)
+{
+	if (dpi <= 0.)
+		internal_dpi = RSVG_DEFAULT_DPI;
+	else
+		internal_dpi = dpi;
+}
 
-  handle->ctxt = NULL;
-
-  return handle;
+/**
+ * rsvg_handle_set_dpi
+ * @handle: An #RsvgHandle
+ * @dpi: Dots Per Inch (aka Pixels Per Inch)
+ *
+ * Sets the DPI for the outgoing pixbuf. Common values are
+ * 72, 90, and 300 DPI. Passing a number <= 0 to #dpi will 
+ * reset the DPI to whatever the default value happens to be.
+ */
+void
+rsvg_handle_set_dpi (RsvgHandle * handle, double dpi)
+{
+	g_return_if_fail (handle != NULL);
+	
+    if (dpi <= 0.)
+        handle->dpi = internal_dpi;
+    else
+        handle->dpi = dpi;
 }
 
 /**
@@ -1489,18 +1025,18 @@ rsvg_handle_new (void)
  **/
 void
 rsvg_handle_set_size_callback (RsvgHandle     *handle,
-			       RsvgSizeFunc    size_func,
-			       gpointer        user_data,
-			       GDestroyNotify  user_data_destroy)
+							   RsvgSizeFunc    size_func,
+							   gpointer        user_data,
+							   GDestroyNotify  user_data_destroy)
 {
-  g_return_if_fail (handle != NULL);
-
-  if (handle->user_data_destroy)
-    (* handle->user_data_destroy) (handle->user_data);
-
-  handle->size_func = size_func;
-  handle->user_data = user_data;
-  handle->user_data_destroy = user_data_destroy;
+	g_return_if_fail (handle != NULL);
+	
+	if (handle->user_data_destroy)
+		(* handle->user_data_destroy) (handle->user_data);
+	
+	handle->size_func = size_func;
+	handle->user_data = user_data;
+	handle->user_data_destroy = user_data_destroy;
 }
 
 /**
@@ -1520,30 +1056,29 @@ rsvg_handle_set_size_callback (RsvgHandle     *handle,
  **/
 gboolean
 rsvg_handle_write (RsvgHandle    *handle,
-		   const guchar  *buf,
-		   gsize          count,
-		   GError       **error)
+				   const guchar  *buf,
+				   gsize          count,
+				   GError       **error)
 {
-  GError *real_error;
-  g_return_val_if_fail (handle != NULL, FALSE);
-
-  handle->error = &real_error;
-  if (handle->ctxt == NULL)
-    {
-      handle->ctxt = xmlCreatePushParserCtxt (
-	      &rsvgSAXHandlerStruct, handle, NULL, 0, NULL);
-      handle->ctxt->replaceEntities = TRUE;
-    }
-
-  xmlParseChunk (handle->ctxt, buf, count, 0);
-
-  handle->error = NULL;
-  /* FIXME: Error handling not implemented. */
-  /*  if (*real_error != NULL)
-    {
-      g_propagate_error (error, real_error);
-      return FALSE;
-      }*/
+	GError *real_error;
+	g_return_val_if_fail (handle != NULL, FALSE);
+	
+	handle->error = &real_error;
+	if (handle->ctxt == NULL)
+		{
+			handle->ctxt = xmlCreatePushParserCtxt (&rsvgSAXHandlerStruct, handle, NULL, 0, NULL);
+			handle->ctxt->replaceEntities = TRUE;
+		}
+	
+	xmlParseChunk (handle->ctxt, buf, count, 0);
+	
+	handle->error = NULL;
+	/* FIXME: Error handling not implemented. */
+	/*  if (*real_error != NULL)
+		{
+		g_propagate_error (error, real_error);
+		return FALSE;
+		}*/
   return TRUE;
 }
 
@@ -1560,27 +1095,27 @@ rsvg_handle_write (RsvgHandle    *handle,
  **/
 gboolean
 rsvg_handle_close (RsvgHandle  *handle,
-		   GError     **error)
+				   GError     **error)
 {
-  gchar chars[1] = { '\0' };
-  GError *real_error;
-
-  handle->error = &real_error;
-
-  if (handle->ctxt != NULL)
-  {
-    xmlParseChunk (handle->ctxt, chars, 1, TRUE);
-    xmlFreeParserCtxt (handle->ctxt);
-  }
+	gchar chars[1] = { '\0' };
+	GError *real_error;
+	
+	handle->error = &real_error;
+	
+	if (handle->ctxt != NULL)
+		{
+			xmlParseChunk (handle->ctxt, chars, 1, TRUE);
+			xmlFreeParserCtxt (handle->ctxt);
+		}
   
-  /* FIXME: Error handling not implemented. */
-  /*
-  if (real_error != NULL)
-    {
+	/* FIXME: Error handling not implemented. */
+	/*
+	  if (real_error != NULL)
+	  {
       g_propagate_error (error, real_error);
       return FALSE;
       }*/
-  return TRUE;
+	return TRUE;
 }
 
 /**
@@ -1598,12 +1133,12 @@ rsvg_handle_close (RsvgHandle  *handle,
 GdkPixbuf *
 rsvg_handle_get_pixbuf (RsvgHandle *handle)
 {
-  g_return_val_if_fail (handle != NULL, NULL);
+	g_return_val_if_fail (handle != NULL, NULL);
+	
+	if (handle->pixbuf)
+		return g_object_ref (handle->pixbuf);
 
-  if (handle->pixbuf)
-    return g_object_ref (handle->pixbuf);
-
-  return NULL;
+	return NULL;
 }
 
 /**
@@ -1615,339 +1150,25 @@ rsvg_handle_get_pixbuf (RsvgHandle *handle)
 void
 rsvg_handle_free (RsvgHandle *handle)
 {
-  int i;
-
-  if (handle->pango_context != NULL)
-    g_object_unref (handle->pango_context);
-  rsvg_defs_free (handle->defs);
-
-  for (i = 0; i < handle->n_state; i++)
-    rsvg_state_finalize (&handle->state[i]);
-  g_free (handle->state);
-
-  g_hash_table_foreach (handle->entities, rsvg_ctx_free_helper, NULL);
-  g_hash_table_destroy (handle->entities);
-
-  if (handle->user_data_destroy)
-    (* handle->user_data_destroy) (handle->user_data);
-  if (handle->pixbuf)
-    g_object_unref (handle->pixbuf);
-  g_free (handle);
-}
-
-typedef enum {
-  RSVG_SIZE_ZOOM,
-  RSVG_SIZE_WH,
-  RSVG_SIZE_WH_MAX,
-  RSVG_SIZE_ZOOM_MAX
-} RsvgSizeType;
-
-struct RsvgSizeCallbackData
-{
-  double x_zoom;
-  double y_zoom;
-  gint width;
-  gint height;
-  RsvgSizeType type;
-  gboolean zoom_set;
-  gboolean max_size_set;
-};
-
-static void
-rsvg_size_callback (int *width,
-		    int *height,
-		    gpointer  data)
-{
-  struct RsvgSizeCallbackData *real_data = (struct RsvgSizeCallbackData *) data;
-  double zoomx, zoomy, zoom;
-
-  switch (real_data->type) {
-  case RSVG_SIZE_ZOOM:
-    if (*width < 0 || *height < 0)
-      return;
-
-    *width = floor (real_data->x_zoom * *width + 0.5);
-    *height = floor (real_data->y_zoom * *height + 0.5);
-    return;
-
-  case RSVG_SIZE_ZOOM_MAX:
-    if (*width < 0 || *height < 0)
-      return;
-
-    *width = floor (real_data->x_zoom * *width + 0.5);
-    *height = floor (real_data->y_zoom * *height + 0.5);
-    
-    if (*width > real_data->width || *height > real_data->height)
-      {
-	zoomx = (double) real_data->width / *width;
-	zoomy = (double) real_data->height / *height;
-	zoom = MIN (zoomx, zoomy);
+	int i;
 	
-	*width = floor (zoom * *width + 0.5);
-	*height = floor (zoom * *height + 0.5);
-      }
-    return;
-
-  case RSVG_SIZE_WH_MAX:
-    if (*width < 0 || *height < 0)
-      return;
-
-    zoomx = (double) real_data->width / *width;
-    zoomy = (double) real_data->height / *height;
-    zoom = MIN (zoomx, zoomy);
-    
-    *width = floor (zoom * *width + 0.5);
-    *height = floor (zoom * *height + 0.5);
-    return;
-
-  case RSVG_SIZE_WH:
-    if (*width < 0 || *height < 0)
-      return;
-
-    if (real_data->width != -1)
-      *width = real_data->width;
-    if (real_data->height != -1)
-      *height = real_data->height;
-    return;
-  }
-
-  g_assert_not_reached ();
+	if (handle->pango_context != NULL)
+		g_object_unref (handle->pango_context);
+	rsvg_defs_free (handle->defs);
+	
+	for (i = 0; i < handle->n_state; i++)
+		rsvg_state_finalize (&handle->state[i]);
+	g_free (handle->state);
+	
+	g_hash_table_foreach (handle->entities, rsvg_ctx_free_helper, NULL);
+	g_hash_table_destroy (handle->entities);
+	
+	g_hash_table_destroy (handle->css_props);
+	
+	if (handle->user_data_destroy)
+		(* handle->user_data_destroy) (handle->user_data);
+	if (handle->pixbuf)
+		g_object_unref (handle->pixbuf);
+	g_free (handle);
 }
-
-/**
- * rsvg_pixbuf_from_file:
- * @file_name: A file name
- * @error: return location for errors
- * 
- * Loads a new #GdkPixbuf from @file_name and returns it.  The caller must
- * assume the reference to the reurned pixbuf. If an error occurred, @error is
- * set and %NULL is returned.
- * 
- * Return value: A newly allocated #GdkPixbuf, or %NULL
- **/
-GdkPixbuf *
-rsvg_pixbuf_from_file (const gchar *file_name,
-		       GError     **error)
-{
-  return rsvg_pixbuf_from_file_at_size (file_name, -1, -1, error);
-}
-
-/**
- * rsvg_pixbuf_from_file_at_zoom:
- * @file_name: A file name
- * @x_zoom: The horizontal zoom factor
- * @y_zoom: The vertical zoom factor
- * @error: return location for errors
- * 
- * Loads a new #GdkPixbuf from @file_name and returns it.  This pixbuf is scaled
- * from the size indicated by the file by a factor of @x_zoom and @y_zoom.  The
- * caller must assume the reference to the returned pixbuf. If an error
- * occurred, @error is set and %NULL is returned.
- * 
- * Return value: A newly allocated #GdkPixbuf, or %NULL
- **/
-GdkPixbuf *
-rsvg_pixbuf_from_file_at_zoom (const gchar *file_name,
-			       double       x_zoom,
-			       double       y_zoom,
-			       GError     **error)
-{
-  FILE *f;
-  char chars[SVG_BUFFER_SIZE];
-  gint result;
-  GdkPixbuf *retval;
-  RsvgHandle *handle;
-  struct RsvgSizeCallbackData data;
-
-  g_return_val_if_fail (file_name != NULL, NULL);
-  g_return_val_if_fail (x_zoom > 0.0 && y_zoom > 0.0, NULL);
-
-  f = fopen (file_name, "r");
-  if (!f)
-    {
-      /* FIXME: Set up error. */
-      return NULL;
-    }
-
-  handle = rsvg_handle_new ();
-  data.type = RSVG_SIZE_ZOOM;
-  data.x_zoom = x_zoom;
-  data.y_zoom = y_zoom;
-
-  rsvg_handle_set_size_callback (handle, rsvg_size_callback, &data, NULL);
-  while ((result = fread (chars, 1, SVG_BUFFER_SIZE, f)) > 0)
-    rsvg_handle_write (handle, chars, result, error);
-  rsvg_handle_close (handle, error);
-  
-  retval = rsvg_handle_get_pixbuf (handle);
-
-  fclose (f);
-  rsvg_handle_free (handle);
-  return retval;
-}
-
-/**
- * rsvg_pixbuf_from_file_at_zoom_with_max:
- * @file_name: A file name
- * @x_zoom: The horizontal zoom factor
- * @y_zoom: The vertical zoom factor
- * @max_width: The requested max width
- * @max_height: The requested max heigh
- * @error: return location for errors
- * 
- * Loads a new #GdkPixbuf from @file_name and returns it.  This pixbuf is scaled
- * from the size indicated by the file by a factor of @x_zoom and @y_zoom. If the
- * resulting pixbuf would be larger than max_width/max_heigh it is uniformly scaled
- * down to fit in that rectangle. The caller must assume the reference to the
- * returned pixbuf. If an error occurred, @error is set and %NULL is returned.
- * 
- * Return value: A newly allocated #GdkPixbuf, or %NULL
- **/
-GdkPixbuf  *
-rsvg_pixbuf_from_file_at_zoom_with_max (const gchar  *file_name,
-					double        x_zoom,
-					double        y_zoom,
-					gint          max_width,
-					gint          max_height,
-					GError      **error)
-{
-  FILE *f;
-  char chars[SVG_BUFFER_SIZE];
-  gint result;
-  GdkPixbuf *retval;
-  RsvgHandle *handle;
-  struct RsvgSizeCallbackData data;
-
-  g_return_val_if_fail (file_name != NULL, NULL);
-  g_return_val_if_fail (x_zoom > 0.0 && y_zoom > 0.0, NULL);
-
-  f = fopen (file_name, "r");
-  if (!f)
-    {
-      /* FIXME: Set up error. */
-      return NULL;
-    }
-
-  handle = rsvg_handle_new ();
-  data.type = RSVG_SIZE_ZOOM_MAX;
-  data.x_zoom = x_zoom;
-  data.y_zoom = y_zoom;
-  data.width = max_width;
-  data.height = max_height;
-
-  rsvg_handle_set_size_callback (handle, rsvg_size_callback, &data, NULL);
-  while ((result = fread (chars, 1, SVG_BUFFER_SIZE, f)) > 0)
-    rsvg_handle_write (handle, chars, result, error);
-  rsvg_handle_close (handle, error);
-  
-  retval = rsvg_handle_get_pixbuf (handle);
-
-  fclose (f);
-  rsvg_handle_free (handle);
-  return retval;
-}
-
-/**
- * rsvg_pixbuf_from_file_at_size:
- * @file_name: A file name
- * @width: The new width, or -1
- * @height: The new height, or -1
- * @error: return location for errors
- * 
- * Loads a new #GdkPixbuf from @file_name and returns it.  This pixbuf is scaled
- * from the size indicated to the new size indicated by @width and @height.  If
- * either of these are -1, then the default size of the image being loaded is
- * used.  The caller must assume the reference to the returned pixbuf. If an
- * error occurred, @error is set and %NULL is returned.
- * 
- * Return value: A newly allocated #GdkPixbuf, or %NULL
- **/
-GdkPixbuf *
-rsvg_pixbuf_from_file_at_size (const gchar *file_name,
-			       gint         width,
-			       gint         height,
-			       GError     **error)
-{
-  FILE *f;
-  char chars[SVG_BUFFER_SIZE];
-  gint result;
-  GdkPixbuf *retval;
-  RsvgHandle *handle;
-  struct RsvgSizeCallbackData data;
-
-  f = fopen (file_name, "r");
-  if (!f)
-    {
-      /* FIXME: Set up error. */
-      return NULL;
-    }
-  handle = rsvg_handle_new ();
-  data.type = RSVG_SIZE_WH;
-  data.width = width;
-  data.height = height;
-
-  rsvg_handle_set_size_callback (handle, rsvg_size_callback, &data, NULL);
-  while ((result = fread (chars, 1, SVG_BUFFER_SIZE, f)) > 0)
-    rsvg_handle_write (handle, chars, result, error);
-
-  rsvg_handle_close (handle, error);
-  
-  retval = rsvg_handle_get_pixbuf (handle);
-
-  fclose (f);
-  rsvg_handle_free (handle);
-  return retval;
-}
-
-/**
- * rsvg_pixbuf_from_file_at_max_size:
- * @file_name: A file name
- * @max_width: The requested max width
- * @max_height: The requested max heigh
- * @error: return location for errors
- * 
- * Loads a new #GdkPixbuf from @file_name and returns it.  This pixbuf is uniformly
- * scaled so that the it fits into a rectangle of size max_width * max_height. The
- * caller must assume the reference to the returned pixbuf. If an error occurred,
- * @error is set and %NULL is returned.
- * 
- * Return value: A newly allocated #GdkPixbuf, or %NULL
- **/
-GdkPixbuf  *
-rsvg_pixbuf_from_file_at_max_size (const gchar     *file_name,
-				   gint             max_width,
-				   gint             max_height,
-				   GError         **error)
-{
-  FILE *f;
-  char chars[SVG_BUFFER_SIZE];
-  gint result;
-  GdkPixbuf *retval;
-  RsvgHandle *handle;
-  struct RsvgSizeCallbackData data;
-
-  f = fopen (file_name, "r");
-  if (!f)
-    {
-      /* FIXME: Set up error. */
-      return NULL;
-    }
-  handle = rsvg_handle_new ();
-  data.type = RSVG_SIZE_WH_MAX;
-  data.width = max_width;
-  data.height = max_height;
-
-  rsvg_handle_set_size_callback (handle, rsvg_size_callback, &data, NULL);
-  while ((result = fread (chars, 1, SVG_BUFFER_SIZE, f)) > 0)
-    rsvg_handle_write (handle, chars, result, error);
-
-  rsvg_handle_close (handle, error);
-  
-  retval = rsvg_handle_get_pixbuf (handle);
-
-  fclose (f);
-  rsvg_handle_free (handle);
-  return retval;
-}
-
 
