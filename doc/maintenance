@@ -391,10 +391,11 @@ following guidelines should help the release go smoothly:
 
 One thing that needs to happen externally during a release cycle, if
 there is an OS upgrade involved, is the addition of compatibility
-symlinks under the arch directories of various lockers.  All of the
-lockers listed in packs/glue/specs definitely need to be hit, and the
-popular software lockers need to be hit as well.  Here is a reasonable
-list of popular lockers to get in addition to the glue ones:
+symlinks under the arch directories of various lockers. All of the
+lockers listed in packs/glue/specs, as well as tellme, mkserv, and
+andrew, definitely need to be hit, and the popular software lockers
+need to be hit as well. Here is a reasonable list of popular lockers
+to get in addition to the glue ones:
 
 	consult
 	games
