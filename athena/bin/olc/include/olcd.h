@@ -16,8 +16,8 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olcd.h,v $
- *      $Author: vanharen $
- *      $Id: olcd.h,v 1.15 1990-02-06 03:41:15 vanharen Exp $
+ *      $Author: raeburn $
+ *      $Id: olcd.h,v 1.16 1990-02-20 05:51:19 raeburn Exp $
  */
 
 #ifndef __olcd_h
@@ -380,6 +380,7 @@ extern int	list_user_knuckles (KNUCKLE *, LIST **, int *);
 extern int	list_queue (int, LIST **, int, int *, int, char *, int *);
 extern int	connect_knuckles (KNUCKLE *, KNUCKLE *);
 extern int	init_question (KNUCKLE *, char *, char *);
+extern void	free_new_messages (KNUCKLE *);
 
 /* notifications */
 extern ERRCODE	write_message_to_user (KNUCKLE *, char *, int);
