@@ -10,6 +10,7 @@ sun4)
   echo "107636-05"					>> $PATCHES
   echo "108374-04"					>> $PATCHES
   echo "108376-18"					>> $PATCHES
+  echo "MINIROOT=true"					>> $PATCHES
   echo "OSCHANGES=true"					>> $CONFVARS
   echo "/etc/athena/athinfo.defs"			>> $CONFCHG
   ;;
