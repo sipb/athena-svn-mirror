@@ -19,6 +19,16 @@
 
 #include <sys/types.h>
 #include <stdio.h>
+#include <stdlib.h>
+
+static char *_findenv(char *, int *);
+
+#ifndef HAVE_SETENV
+extern int setenv(char *, char *, int);
+#endif
+#ifndef HAVE_UNSETENV
+extern void unsetenv(char *);
+#endif
 
 /*
  * setenv --
@@ -26,6 +36,7 @@
  *	"value".  If rewrite is set, replace any current value.
  */
 #ifndef HAVE_SETENV
+int
 setenv(name, value, rewrite)
 	register char *name, *value;
 	int rewrite;
@@ -34,7 +45,6 @@ setenv(name, value, rewrite)
 	static int alloced;			/* if allocated space before */
 	register char *C;
 	int l_value, offset;
-	char *malloc(), *realloc(), *_findenv();
 
 	if (*value == '=')			/* no `=' in value */
 		++value;
@@ -43,7 +53,7 @@ setenv(name, value, rewrite)
 		if (!rewrite)
 			return(0);
 		if (strlen(C) >= l_value) {	/* old larger; copy over */
-			while (*C++ = *value++);
+			while ((*C++ = *value++));
 			return(0);
 		}
 	}
@@ -75,7 +85,7 @@ setenv(name, value, rewrite)
 	    malloc((u_int)((int)(C - name) + l_value + 2))))
 		return(-1);
 	for (C = environ[offset]; (*C = *name++) &&( *C != '='); ++C);
-	for (*C++ = '='; *C++ = *value++;);
+	for (*C++ = '='; (*C++ = *value++) != NULL;);
 	return(0);
 }
 #endif
@@ -92,7 +102,6 @@ unsetenv(name)
 	extern	char	**environ;
 	register char	**P;
 	int	offset;
-	char    *_findenv();
 
 	while (_findenv(name, &offset))		/* if set multiple times */
 		for (P = &environ[offset];; ++P)
@@ -129,7 +138,6 @@ getenv(name)
 	char *name;
 {
 	int offset;
-	char *_findenv();
 
 	return(_findenv(name, &offset));
 }

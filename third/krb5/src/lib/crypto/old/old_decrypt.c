@@ -27,21 +27,14 @@
 #include "k5-int.h"
 #include "old.h"
 
-#ifndef HAVE_MEMMOVE
-#ifdef HAVE_BCOPY
-#define memmove(dst,src,size) bcopy(src,dst,size)
-#endif
-#endif
-
 krb5_error_code
-krb5_old_decrypt(enc, hash, key, usage, ivec, input, arg_output)
-     krb5_const struct krb5_enc_provider *enc;
-     krb5_const struct krb5_hash_provider *hash;
-     krb5_const krb5_keyblock *key;
-     krb5_keyusage usage;
-     krb5_const krb5_data *ivec;
-     krb5_const krb5_data *input;
-     krb5_data *arg_output;
+krb5_old_decrypt(const struct krb5_enc_provider *enc,
+		 const struct krb5_hash_provider *hash,
+		 const krb5_keyblock *key,
+		 krb5_keyusage usage,
+		 const krb5_data *ivec,
+		 const krb5_data *input,
+		 krb5_data *arg_output)
 {
     krb5_error_code ret;
     size_t blocksize, hashsize, plainsize;
@@ -66,7 +59,7 @@ krb5_old_decrypt(enc, hash, key, usage, ivec, input, arg_output)
     if (arg_output->length < input->length) {
 	output.length = input->length;
 
-	if ((output.data = (krb5_octet *) malloc(output.length)) == NULL) {
+	if ((output.data = (char *) malloc(output.length)) == NULL) {
 	    free(cksumdata);
 	    return(ENOMEM);
 	}
@@ -96,7 +89,7 @@ krb5_old_decrypt(enc, hash, key, usage, ivec, input, arg_output)
     /* XXX this is gross, but I don't have much choice */
     if ((key->enctype == ENCTYPE_DES_CBC_CRC) && (ivec == 0)) {
 	crcivec.length = key->length;
-	crcivec.data = key->contents;
+	crcivec.data = (char *) key->contents;
 	ivec = &crcivec;
     }
 

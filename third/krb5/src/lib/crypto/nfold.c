@@ -25,7 +25,9 @@
  */
 
 #include "k5-int.h"
+#ifdef HAVE_MEMORY_H
 #include <memory.h>
+#endif
 
 /*
 n-fold(k-bits):
@@ -45,9 +47,9 @@ n-fold(k-bits):
 
 void
 krb5_nfold(inbits, in, outbits, out)
-     int inbits;
-     krb5_const unsigned char *in;
-     int outbits;
+     unsigned int inbits;
+     const unsigned char *in;
+     unsigned int outbits;
      unsigned char *out;
 {
     int a,b,c,lcm;

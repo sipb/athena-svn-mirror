@@ -8,6 +8,87 @@
 static	char sccsid[] = "@(#)getpass.c 1.1 90/04/28 SMI"; /* from UCB 5.4 3/7/86 */
 #endif /* not lint */
 
+#ifdef _WIN32
+#include <io.h>
+#include <windows.h>
+#include <stdio.h>
+
+static DWORD old_mode;
+static HANDLE cons_handle;
+
+BOOL WINAPI
+GetPassConsoleControlHandler(DWORD dwCtrlType)
+{
+	switch(dwCtrlType){
+	case CTRL_BREAK_EVENT:
+	case CTRL_C_EVENT:
+		printf("Interrupt\n");
+		fflush(stdout);
+		(void) SetConsoleMode(cons_handle, old_mode);
+		ExitProcess(-1);
+		break;
+	default:
+		break;
+	}
+	return TRUE;
+}
+
+char *
+mygetpass(char *prompt)
+{
+	DWORD new_mode;
+	char *ptr;
+	int scratchchar;
+	static char password[50+1];
+	int pwsize = sizeof(password);
+
+	cons_handle = GetStdHandle(STD_INPUT_HANDLE);
+	if (cons_handle == INVALID_HANDLE_VALUE)
+		return NULL;
+	if (!GetConsoleMode(cons_handle, &old_mode))
+		return NULL;
+
+	new_mode = old_mode;
+	new_mode |=  ( ENABLE_LINE_INPUT | ENABLE_PROCESSED_INPUT );
+	new_mode &= ~( ENABLE_ECHO_INPUT );
+
+	if (!SetConsoleMode(cons_handle, new_mode))
+		return NULL;
+
+	SetConsoleCtrlHandler(&GetPassConsoleControlHandler, TRUE);
+
+	(void) fputs(prompt, stdout);
+	(void) fflush(stdout);
+	(void) memset(password, 0, pwsize);
+
+	if (fgets(password, pwsize, stdin) == NULL) {
+		if (ferror(stdin))
+			goto out;
+		(void) putchar('\n');
+	}
+	else {
+		(void) putchar('\n');
+
+		if ((ptr = strchr(password, '\n')))
+			*ptr = '\0';
+		else /* need to flush */
+			do {
+				scratchchar = getchar();
+			} while (scratchchar != EOF && scratchchar != '\n');
+	}
+
+out:
+	(void) SetConsoleMode(cons_handle, old_mode);
+	SetConsoleCtrlHandler(&GetPassConsoleControlHandler, FALSE);
+
+	return password;
+}
+
+#else /* !_WIN32 */
+
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
 #include <stdio.h>
 #include <signal.h>
 
@@ -21,11 +102,9 @@ static	struct termios ttyo, ttyb;
 static	struct sgttyb ttyo, ttyb;
 #endif
 
-static	FILE *fi;
+#include "ftp_var.h"
 
-#define sig_t my_sig_t
-#define sigtype krb5_sigtype
-typedef sigtype (*sig_t)();
+static	FILE *fi;
 
 static sigtype
 intfix(sig)
@@ -41,7 +120,7 @@ mygetpass(prompt)
 char *prompt;
 {
 	register char *p;
-	register c;
+	register int c;
 	static char pbuf[50+1];
 	sigtype (*sig)();
 
@@ -71,3 +150,5 @@ char *prompt;
 		(void) fclose(fi);
 	return(pbuf);
 }
+
+#endif /* !_WIN32 */

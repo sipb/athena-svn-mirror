@@ -3,6 +3,7 @@
 #elif HAVE_TCL_TCL_H
 #include <tcl/tcl.h>
 #endif
+#include "tcl_kadm5.h"
 
 #define _TCL_MAIN ((TCL_MAJOR_VERSION * 100 + TCL_MINOR_VERSION) >= 704)
 

@@ -80,4 +80,21 @@
 #include <gssrpc/netdb.h>	/* structures and routines to parse /etc/rpc */
 #endif
 
+/*
+ * get the local host's IP address without consulting
+ * name service library functions
+ */
+#define get_myaddress	gssrpc_get_myaddress
+extern int get_myaddress (struct sockaddr_in *);
+
+#define bindresvport 	gssrpc_bindresvport
+extern int bindresvport(int, struct sockaddr_in *);
+
+#define callrpc         gssrpc_callrpc
+extern int callrpc (char *, rpc_u_int32, rpc_u_int32, rpc_u_int32, xdrproc_t, 
+		    char *, xdrproc_t , char *);
+
+#define getrpcport     gssrpc_getrpcport
+extern int getrpcport (char *, rpc_u_int32, rpc_u_int32, rpc_u_int32);
+
 #endif /* ndef __RPC_HEADER__ */

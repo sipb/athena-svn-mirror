@@ -15,6 +15,9 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+#include <sys/param.h>
+#include <string.h>
+
 /*
   kadm_supp.c
   this holds the support routines for the kerberos administration server
@@ -27,6 +30,7 @@
 
 #include "kadm.h"
 #include "krb_db.h"
+#include "kadm_server.h"
     
 /*
 prin_vals:
@@ -35,10 +39,11 @@ prin_vals:
 void prin_vals(vals)
 Kadm_vals *vals;
 {
+   time_t t = vals->exp_date;
    printf("Info in Database for %s.%s:\n", vals->name, vals->instance);
    printf("   Max Life: %d   Exp Date: %s\n",vals->max_life, 
-	  asctime(localtime((long *)&vals->exp_date)));
-   printf("   Attribs: %.2x  key: %u %u\n",vals->attributes,
+	  asctime(localtime(&t)));
+   printf("   Attribs: %.2x  key: %ld %ld\n",vals->attributes,
 	  vals->key_low, vals->key_high);
 }
 
@@ -56,6 +61,7 @@ int s;
    it copies the fields in Principal specified by fields into Kadm_vals, 
    i.e from old to new */
 
+void
 kadm_prin_to_vals(fields, new, old)
 u_char fields[FLDSZ];
 Kadm_vals *new;
@@ -89,6 +95,7 @@ Principal *old;
   }
 }
 
+void
 kadm_vals_to_prin(fields, new, old)
 u_char fields[FLDSZ];
 Principal *new;

@@ -39,6 +39,8 @@
  */
 
 
+#include <gssrpc/xdr.h>
+
 #define MAX_AUTH_BYTES	400
 #define MAXNETNAMELEN	255	/* maximum length of network user's name */
 
@@ -73,7 +75,7 @@ union des_block {
 };
 typedef union des_block des_block;
 #define xdr_des_block	gssrpc_xdr_des_block
-extern bool_t xdr_des_block();
+extern bool_t xdr_des_block(XDR *, des_block *);
 
 /*
  * Authentication info.  Opaque to client.
@@ -88,20 +90,31 @@ struct opaque_auth {
 /*
  * Auth handle, interface to client side authenticators.
  */
-typedef struct {
+struct rpc_msg;
+
+typedef struct __rpc_auth {
 	struct	opaque_auth	ah_cred;
 	struct	opaque_auth	ah_verf;
 	union	des_block	ah_key;
 	struct auth_ops {
-		void	(*ah_nextverf)();
-		int	(*ah_marshal)();	/* nextverf & serialize */
-		int	(*ah_validate)();	/* validate varifier */
-		int	(*ah_refresh)();	/* refresh credentials */
-		void	(*ah_destroy)();	/* destroy this structure */
-		int     (*ah_wrap)();		/* encode data for wire */
-		int	(*ah_unwrap)();		/* decode data from wire */
+		void	(*ah_nextverf)(struct __rpc_auth *);
+	        /* nextverf & serialize */
+		int	(*ah_marshal)(struct __rpc_auth *, XDR *);
+	        /* validate varifier */
+		int	(*ah_validate)(struct __rpc_auth *,
+				       struct opaque_auth *);
+	        /* refresh credentials */
+		int	(*ah_refresh)(struct __rpc_auth *, struct rpc_msg *);
+	        /* destroy this structure */
+		void	(*ah_destroy)(struct __rpc_auth *);
+		/* encode data for wire */
+		int     (*ah_wrap)(struct __rpc_auth *, XDR *, 
+				   xdrproc_t, caddr_t);
+	        /* decode data from wire */
+  	        int	(*ah_unwrap)(struct __rpc_auth *, XDR *, 
+				     xdrproc_t, caddr_t);	
 	} *ah_ops;
-	caddr_t ah_private;
+	void *ah_private;
 } AUTH;
 
 
@@ -136,13 +149,13 @@ typedef struct {
 #define AUTH_WRAP(auth, xdrs, xfunc, xwhere)		\
 		((*((auth)->ah_ops->ah_wrap))(auth, xdrs, \
 					      xfunc, xwhere))
-#define AUTH_WRAP(auth, xdrs, xfunc, xwhere)		\
+#define AUTH_wrap(auth, xdrs, xfunc, xwhere)		\
 		((*((auth)->ah_ops->ah_wrap))(auth, xdrs, \
 					      xfunc, xwhere))
 #define AUTH_UNWRAP(auth, xdrs, xfunc, xwhere)		\
 		((*((auth)->ah_ops->ah_unwrap))(auth, xdrs, \
 					      xfunc, xwhere))
-#define AUTH_UNWRAP(auth, xdrs, xfunc, xwhere)		\
+#define AUTH_unwrap(auth, xdrs, xfunc, xwhere)		\
 		((*((auth)->ah_ops->ah_unwrap))(auth, xdrs, \
 					      xfunc, xwhere))
 
@@ -168,7 +181,7 @@ extern struct opaque_auth _null_auth;
 #define authany_wrap	gssrpc_authany_wrap
 #define authany_unwrap	gssrpc_authany_unwrap
 
-int authany_wrap(), authany_unwrap();
+int authany_wrap(AUTH *, XDR *, xdrproc_t, caddr_t), authany_unwrap();
 	
 /*
  * Unix style authentication
@@ -184,9 +197,10 @@ int authany_wrap(), authany_unwrap();
 #define authnone_create		gssrpc_authnone_create
 #define authdes_create		gssrpc_authdes_create
 
-extern AUTH *authunix_create();
-extern AUTH *authunix_create_default();	/* takes no parameters */
-extern AUTH *authnone_create();		/* takes no parameters */
+extern AUTH *authunix_create(char *machname, int uid, int gid, int len,
+			     int *aup_gids);
+extern AUTH *authunix_create_default(void);	/* takes no parameters */
+extern AUTH *authnone_create(void);		/* takes no parameters */
 extern AUTH *authdes_create();
 
 /*
@@ -206,3 +220,10 @@ extern AUTH *authdes_create();
  * need to accept this value until 1.0 is dead.
  */
 #define AUTH_GSSAPI_COMPAT		4
+
+/*
+ * XDR an opaque authentication struct.
+ */
+#define xdr_opaque_auth	   gssrpc_xdr_opaque_auth
+
+extern bool_t xdr_opaque_auth (XDR *, struct opaque_auth *);

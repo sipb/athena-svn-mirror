@@ -1,9 +1,13 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/adb_free.c,v 1.1.1.3 1999-02-09 21:00:19 danw Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/adb_free.c,v 1.1.1.4 2004-02-27 04:16:14 zacheiss Exp $
  * 
  * $Log: not supported by cvs2svn $
+ * Revision 1.3  2000/06/01 02:02:03  tritan
+ * Check for existance of <memory.h>.
+ * (from Nathan Neulinger <nneul@umr.edu>)
+ *
  * Revision 1.2  1996/10/18 19:45:49  bjaspan
  * 	* svr_misc_free.c, server_dict.c, adb_policy.c, adb_free.c:
  *  	include stdlib.h instead of malloc.h [krb5-admin/35]
@@ -48,11 +52,13 @@
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/adb_free.c,v 1.1.1.3 1999-02-09 21:00:19 danw Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/adb_free.c,v 1.1.1.4 2004-02-27 04:16:14 zacheiss Exp $";
 #endif
 
 #include	"adb.h"
+#ifdef HAVE_MEMORY_H
 #include	<memory.h>
+#endif
 #include	<stdlib.h>
 
 void

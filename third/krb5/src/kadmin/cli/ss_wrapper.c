@@ -29,10 +29,10 @@
 #include <ss/ss.h>
 #include <stdio.h>
 #include <string.h>
+#include "kadmin.h"
 
 extern ss_request_table kadmin_cmds;
 extern int exit_status;
-extern char *kadmin_startup();
 extern char *whoami;
 
 int main(argc, argv)
@@ -59,6 +59,6 @@ int main(argc, argv)
 		    exit_status++;
 	    }
     } else
-	    ss_listen(sci_idx, &retval);
+            retval = ss_listen(sci_idx);
     return quit() ? 1 : exit_status;
 }

@@ -59,16 +59,16 @@
 
 #include <stdio.h>
 
-void convert PROTOTYPE((char *, unsigned char []));
+void convert (char *, unsigned char []);
 
-void des_cblock_print_file PROTOTYPE((mit_des_cblock, FILE *));
+void des_cblock_print_file (mit_des_cblock, FILE *);
 
 krb5_octet zeroblock[8] = {0,0,0,0,0,0,0,0};
 
-void
+int
 main(argc, argv)
-int argc;
-char *argv[];
+    int argc;
+    char *argv[];
 {
     char block1[17], block2[17], block3[17];
 
@@ -84,11 +84,13 @@ char *argv[];
 	convert(block2, input);
 	convert(block3, output);
 
-	if (retval = mit_des_key_sched(key, sched)) {
+	retval = mit_des_key_sched(key, sched);
+	if (retval) {
             fprintf(stderr, "des test: can't process key");
             exit(1);
         }
-	mit_des_cbc_encrypt(&input, &output2, 8, sched, zeroblock, 1);
+	mit_des_cbc_encrypt((const mit_des_cblock *) &input, &output2, 8, 
+			    sched, zeroblock, 1);
 
 	if (memcmp((char *)output2, (char *)output, 8)) {
 	    fprintf(stderr, 
@@ -102,7 +104,8 @@ char *argv[];
 	/*
 	 * Now try decrypting....
 	 */
-	mit_des_cbc_encrypt(&output, &output2, 8, sched, zeroblock, 0);
+	mit_des_cbc_encrypt((const mit_des_cblock *) &output, &output2, 8, 
+			    sched, zeroblock, 0);
 
 	if (memcmp((char *)output2, (char *)input, 8)) {
 	    fprintf(stderr, 
@@ -124,7 +127,7 @@ char *argv[];
     exit( (error > 256 && error % 256) ? 1 : error);
 }
 
-unsigned int value[128] = {
+int value[128] = {
 -1, -1, -1, -1, -1, -1, -1, -1,
 -1, -1, -1, -1, -1, -1, -1, -1,
 -1, -1, -1, -1, -1, -1, -1, -1,
@@ -145,16 +148,18 @@ unsigned int value[128] = {
 
 void
 convert(text, cblock)
-char *text;
-unsigned char cblock[];
+    char *text;
+    unsigned char cblock[];
 {
     register int i;
     for (i = 0; i < 8; i++) {
-	if (value[text[i*2]] == -1 || value[text[i*2+1]] == -1) {
+	if (text[i*2] < 0 || text[i*2] >= 128)
+	    abort ();
+	if (value[(int) text[i*2]] == -1 || value[(int) text[i*2+1]] == -1) {
 	    printf("Bad value byte %d in %s\n", i, text);
 	    exit(1);
 	}
-	cblock[i] = 16*value[text[i*2]] + value[text[i*2+1]];
+	cblock[i] = 16*value[(int) text[i*2]] + value[(int) text[i*2+1]];
     }
     return;
 }

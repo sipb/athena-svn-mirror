@@ -41,7 +41,7 @@ k5_crc32_block_size(size_t *output)
 }
 
 static krb5_error_code
-k5_crc32_hash(unsigned int icount, krb5_const krb5_data *input,
+k5_crc32_hash(unsigned int icount, const krb5_data *input,
 	      krb5_data *output)
 {
     unsigned long c, cn;
@@ -64,7 +64,7 @@ k5_crc32_hash(unsigned int icount, krb5_const krb5_data *input,
     return(0);
 }
 
-const struct krb5_hash_provider krb5_hash_crc32 = {
+const struct krb5_hash_provider krb5int_hash_crc32 = {
     k5_crc32_hash_size,
     k5_crc32_block_size,
     k5_crc32_hash

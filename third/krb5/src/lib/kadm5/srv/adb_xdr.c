@@ -1,11 +1,11 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/adb_xdr.c,v 1.1.1.4 1999-10-05 16:12:42 ghudson Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/adb_xdr.c,v 1.1.1.5 2004-02-27 04:18:53 zacheiss Exp $
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/adb_xdr.c,v 1.1.1.4 1999-10-05 16:12:42 ghudson Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/srv/adb_xdr.c,v 1.1.1.5 2004-02-27 04:18:53 zacheiss Exp $";
 #endif
 
 #include <sys/types.h>
@@ -13,7 +13,9 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src
 #include <gssrpc/rpc.h>
 #include "adb.h"
 #include "admin_xdr.h"
+#ifdef HAVE_MEMORY_H
 #include <memory.h>
+#endif
 
 bool_t
 xdr_krb5_key_data(XDR *xdrs, krb5_key_data *objp)
@@ -28,9 +30,9 @@ xdr_krb5_key_data(XDR *xdrs, krb5_key_data *objp)
 	return(FALSE);
     if (!xdr_krb5_int16(xdrs, &objp->key_data_type[1]))
 	return(FALSE);
-    if (!xdr_krb5_int16(xdrs, &objp->key_data_length[0]))
+    if (!xdr_krb5_ui_2(xdrs, &objp->key_data_length[0]))
 	return(FALSE);
-    if (!xdr_krb5_int16(xdrs, &objp->key_data_length[1]))
+    if (!xdr_krb5_ui_2(xdrs, &objp->key_data_length[1]))
 	return(FALSE);
 
     tmp = (unsigned int) objp->key_data_length[0];

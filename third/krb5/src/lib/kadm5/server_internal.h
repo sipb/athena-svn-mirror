@@ -1,7 +1,7 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved
  *
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/server_internal.h,v 1.1.1.3 1999-02-09 21:00:10 danw Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/server_internal.h,v 1.1.1.4 2004-02-27 04:18:37 zacheiss Exp $
  */
 
 /*
@@ -13,7 +13,9 @@
 #ifndef __KADM5_SERVER_INTERNAL_H__
 #define __KADM5_SERVER_INTERNAL_H__
 
+#ifdef HAVE_MEMORY_H
 #include    <memory.h>
+#endif
 #include    <stdlib.h>
 #include    "k5-int.h"
 #include    <krb5/kdb.h>
@@ -52,10 +54,20 @@ krb5_error_code     kdb_put_entry(kadm5_server_handle_t handle,
 				  krb5_db_entry *kdb, osa_princ_ent_rec *adb);
 krb5_error_code     kdb_delete_entry(kadm5_server_handle_t handle,
 				     krb5_principal name);
+krb5_error_code     kdb_iter_entry(kadm5_server_handle_t handle,
+				   void (*iter_fct)(void *, krb5_principal), 
+				   void *data);
 
 int		    init_dict(kadm5_config_params *);
 int		    find_word(const char *word);
 void		    destroy_dict(void);
+
+/* XXX this ought to be in libkrb5.a, but isn't */
+kadm5_ret_t krb5_copy_key_data_contents(krb5_context context,
+					krb5_key_data *from, 
+					krb5_key_data *to);
+kadm5_ret_t krb5_free_key_data_contents(krb5_context context, 
+					krb5_key_data *key);
 
 /*
  * *Warning* 

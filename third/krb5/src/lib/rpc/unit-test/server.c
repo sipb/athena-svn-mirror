@@ -1,16 +1,19 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved.
  *
- * $Id: server.c,v 1.1.1.5 2001-12-05 20:48:20 rbasch Exp $
+ * $Id: server.c,v 1.1.1.6 2004-02-27 04:18:56 zacheiss Exp $
  * $Source: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/unit-test/server.c,v $
  */
 
 #if !defined(lint) && !defined(__CODECENTER__)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/unit-test/server.c,v 1.1.1.5 2001-12-05 20:48:20 rbasch Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/rpc/unit-test/server.c,v 1.1.1.6 2004-02-27 04:18:56 zacheiss Exp $";
 #endif
 
 #include <stdio.h>
 #include <stdlib.h>
+#ifdef HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 #include <string.h>
 #include <signal.h>
 #include <gssrpc/rpc.h>
@@ -22,12 +25,10 @@ static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/third/krb5/src
 #include <sys/param.h>	/* MAXHOSTNAMELEN */
 #include "rpc_test.h"
 
-extern void rpc_test_prog_1();
-
 extern int svc_debug_gssapi, misc_debug_gssapi;
 
 void rpc_test_badauth(OM_uint32 major, OM_uint32 minor,
-		 struct sockaddr_in *addr, void *data);
+		 struct sockaddr_in *addr, caddr_t data);
 void log_miscerr(struct svc_req *rqst, struct rpc_msg *msg, char
 		 *error, char *data);
 void log_badauth_display_status(OM_uint32 major, OM_uint32 minor);
@@ -40,17 +41,22 @@ static void rpc_test_badverf(gss_name_t client, gss_name_t server,
 #define SERVICE_NAME "server"
 #endif
 
-void usage()
+static void usage()
 {
      fprintf(stderr, "Usage: server {-t|-u} [svc-debug] [misc-debug]\n");
      exit(1);
 }
 
-void handlesig(void)
+#ifdef POSIX_SIGNALS
+static void handlesig(int dummy)
+#else
+static void handlesig(void)
+#endif
 {
     exit(0);
 }
 
+int
 main(int argc, char **argv)
 {
      int c, prot;
@@ -109,7 +115,7 @@ main(int argc, char **argv)
 	  exit(1);
      }
      if (!svc_register(transp, RPC_TEST_PROG, RPC_TEST_VERS_1,
-		       rpc_test_prog_1, prot)) { 
+		       rpc_test_prog_1_svc, prot)) { 
 	  fprintf(stderr,
 		  "unable to register (RPC_TEST_PROG, RPC_TEST_VERS_1, %s).",
 		  prot == IPPROTO_TCP ? "tcp" : "udp");
@@ -145,7 +151,7 @@ main(int argc, char **argv)
      /* NOTREACHED */
 }
 
-char **rpc_test_echo_1(char **arg, struct svc_req *h)
+char **rpc_test_echo_1_svc(char **arg, struct svc_req *h)
 {
      static char *res = NULL;
 
@@ -167,11 +173,11 @@ static void rpc_test_badverf(gss_name_t client, gss_name_t server,
      (void) gss_display_name(&minor_stat, client, &client_name, &type);
      (void) gss_display_name(&minor_stat, server, &server_name, &type);
 
-     printf("rpc_test server: bad verifier from %s at %s:%d for %s\n",
-	    client_name.value,
+     printf("rpc_test server: bad verifier from %.*s at %s:%d for %.*s\n",
+	    (int) client_name.length, (char *) client_name.value,
 	    inet_ntoa(rqst->rq_xprt->xp_raddr.sin_addr), 
 	    ntohs(rqst->rq_xprt->xp_raddr.sin_port),
-	    server_name.value);
+	    (int) server_name.length, (char *) server_name.value);
 
      (void) gss_release_buffer(&minor_stat, &client_name);
      (void) gss_release_buffer(&minor_stat, &server_name);
@@ -194,7 +200,7 @@ static void rpc_test_badverf(gss_name_t client, gss_name_t server,
  * Logs the GSS-API error to stdout.
  */
 void rpc_test_badauth(OM_uint32 major, OM_uint32 minor,
-		 struct sockaddr_in *addr, void *data)
+		 struct sockaddr_in *addr, caddr_t data)
 {
      char *a;
      
@@ -225,9 +231,8 @@ void log_badauth_display_status(OM_uint32 major, OM_uint32 minor)
 
 void log_badauth_display_status_1(OM_uint32 code, int type, int rec)
 {
-     OM_uint32 gssstat, minor_stat;
+     OM_uint32 gssstat, minor_stat, msg_ctx;
      gss_buffer_desc msg;
-     int msg_ctx;
 
      msg_ctx = 0;
      while (1) {
@@ -240,12 +245,13 @@ void log_badauth_display_status_1(OM_uint32 code, int type, int rec)
 		    log_badauth_display_status_1(minor_stat,
 						 GSS_C_MECH_CODE, 1);
 	       } else
-		    printf("GSS-API authentication error %s: "
-			   "recursive failure!\n", msg);
+		    printf("GSS-API authentication error %.*s: "
+			   "recursive failure!\n", (int) msg.length, 
+			   (char *)msg.value);
 	       return;
 	  }
 	  
-	  printf(", %s", (char *)msg.value); 
+	  printf(", %.*s", (int) msg.length, (char *)msg.value); 
 	  (void) gss_release_buffer(&minor_stat, &msg);
 	  
 	  if (!msg_ctx)

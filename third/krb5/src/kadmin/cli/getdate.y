@@ -55,6 +55,10 @@ void *alloca ();
 #include <stdio.h>
 #include <ctype.h>
 
+#if defined(HAVE_STDLIB_H)
+#include <stdlib.h>
+#endif
+
 /* The code at the top of get_date which figures out the offset of the
    current time zone checks various CPP symbols to see if special
    tricks are need, but defaults to using the gettimeofday system call.
@@ -115,13 +119,8 @@ extern struct tm	*localtime();
 #define yylex getdate_yylex
 #define yyerror getdate_yyerror
 
-static int yylex ();
-static int yyerror ();
-
-#if	!defined(lint) && !defined(SABER)
-static char RCS[] =
-	"$Header: /afs/dev.mit.edu/source/repository/third/krb5/src/kadmin/cli/getdate.y,v 1.1.1.5 2001-12-05 20:47:43 rbasch Exp $";
-#endif	/* !defined(lint) && !defined(SABER) */
+static int getdate_yylex (void);
+static int getdate_yyerror (char *);
 
 
 #define EPOCH		1970
@@ -692,8 +691,8 @@ LookupWord(buff)
 
     /* Make it lowercase. */
     for (p = buff; *p; p++)
-	if (isupper(*p))
-	    *p = tolower(*p);
+	if (isupper((int) *p))
+	    *p = tolower((int) *p);
 
     if (strcmp(buff, "am") == 0 || strcmp(buff, "a.m.") == 0) {
 	yylval.Meridian = MERam;
@@ -788,27 +787,28 @@ yylex()
     int			sign;
 
     for ( ; ; ) {
-	while (isspace(*yyInput))
+	while (isspace((int) *yyInput))
 	    yyInput++;
 
-	if (isdigit(c = *yyInput) || c == '-' || c == '+') {
+	c = *yyInput;
+	if (isdigit((int) c) || c == '-' || c == '+') {
 	    if (c == '-' || c == '+') {
 		sign = c == '-' ? -1 : 1;
-		if (!isdigit(*++yyInput))
+		if (!isdigit((int) (*++yyInput)))
 		    /* skip the '-' sign */
 		    continue;
 	    }
 	    else
 		sign = 0;
-	    for (yylval.Number = 0; isdigit(c = *yyInput++); )
+	    for (yylval.Number = 0; isdigit((int) (c = *yyInput++)); )
 		yylval.Number = 10 * yylval.Number + c - '0';
 	    yyInput--;
 	    if (sign < 0)
 		yylval.Number = -yylval.Number;
 	    return sign ? tSNUMBER : tUNUMBER;
 	}
-	if (isalpha(c)) {
-	    for (p = buff; isalpha(c = *yyInput++) || c == '.'; )
+	if (isalpha((int) c)) {
+	    for (p = buff; isalpha((int) (c = *yyInput++)) || c == '.'; )
 		if (p < &buff[sizeof buff - 1])
 		    *p++ = c;
 	    *p = '\0';

@@ -1,14 +1,12 @@
 /*
  * Copyright 1993 OpenVision Technologies, Inc., All Rights Reserved.
- * 
- * $Header: /afs/dev.mit.edu/source/repository/third/krb5/src/lib/kadm5/chpass_util.c,v 1.1.1.4 2001-12-05 20:48:07 rbasch Exp $
- *
- *
  */
 
 
 #include <stdio.h>
+#ifdef HAVE_MEMORY_H
 #include <memory.h>
+#endif
 #include <time.h>
 
 #include <kadm5/admin.h>
@@ -62,9 +60,10 @@ kadm5_ret_t _kadm5_chpass_principal_util(void *server_handle,
 					 char *new_pw, 
 					 char **ret_pw,
 					 char *msg_ret,
-					 int msg_len)
+					 unsigned int msg_len)
 {
-  int code, code2, pwsize;
+  int code, code2;
+  unsigned int pwsize;
   static char buffer[255];
   char *new_password;
   kadm5_principal_ent_rec princ_ent;

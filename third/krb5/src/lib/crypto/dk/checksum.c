@@ -32,10 +32,10 @@
 
 krb5_error_code
 krb5_dk_make_checksum(hash, key, usage, input, output)
-     krb5_const struct krb5_hash_provider *hash;
-     krb5_const krb5_keyblock *key;
+     const struct krb5_hash_provider *hash;
+     const krb5_keyblock *key;
      krb5_keyusage usage;
-     krb5_const krb5_data *input;
+     const krb5_data *input;
      krb5_data *output;
 {
     int i;
@@ -73,7 +73,7 @@ krb5_dk_make_checksum(hash, key, usage, input, output)
 
     /* derive the key */
  
-    datain.data = constantdata;
+    datain.data = (char *) constantdata;
     datain.length = K5CLENGTH;
 
     datain.data[0] = (usage>>24)&0xff;
@@ -81,7 +81,7 @@ krb5_dk_make_checksum(hash, key, usage, input, output)
     datain.data[2] = (usage>>8)&0xff;
     datain.data[3] = usage&0xff;
 
-    datain.data[4] = 0x99;
+    datain.data[4] = (char) 0x99;
 
     if ((ret = krb5_derive_key(enc, key, &kc, &datain)) != 0)
 	goto cleanup;
@@ -106,10 +106,10 @@ cleanup:
 #ifdef ATHENA_DES3_KLUDGE
 krb5_error_code
 krb5_marc_dk_make_checksum(hash, key, usage, input, output)
-     krb5_const struct krb5_hash_provider *hash;
-     krb5_const krb5_keyblock *key;
+     const struct krb5_hash_provider *hash;
+     const krb5_keyblock *key;
      krb5_keyusage usage;
-     krb5_const krb5_data *input;
+     const krb5_data *input;
      krb5_data *output;
 {
     int i;

@@ -41,7 +41,7 @@ k5_sha1_block_size(size_t *output)
 }
 
 static krb5_error_code
-k5_sha1_hash(unsigned int icount, krb5_const krb5_data *input,
+k5_sha1_hash(unsigned int icount, const krb5_data *input,
 	     krb5_data *output)
 {
     SHS_INFO ctx;
@@ -52,7 +52,7 @@ k5_sha1_hash(unsigned int icount, krb5_const krb5_data *input,
 
     shsInit(&ctx);
     for (i=0; i<icount; i++)
-	shsUpdate(&ctx, input[i].data, input[i].length);
+	shsUpdate(&ctx, (unsigned char *) input[i].data, (int) input[i].length);
     shsFinal(&ctx);
 
     for (i=0; i<(sizeof(ctx.digest)/sizeof(ctx.digest[0])); i++) {
@@ -65,7 +65,7 @@ k5_sha1_hash(unsigned int icount, krb5_const krb5_data *input,
     return(0);
 }
 
-const struct krb5_hash_provider krb5_hash_sha1 = {
+const struct krb5_hash_provider krb5int_hash_sha1 = {
     k5_sha1_hash_size,
     k5_sha1_block_size,
     k5_sha1_hash
