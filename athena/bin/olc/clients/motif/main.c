@@ -25,19 +25,11 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.6 1989-10-11 16:10:03 vanharen Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/main.c,v 1.7 1989-12-01 16:22:06 vanharen Exp $";
 #endif
 
 #include "xolc.h"
 #include "data.h"
-
-/*
- *  X- and Motif-type variables.
- */
-
-Display *display;
-Window root;
-int screen;
 
 /*
  *  OLC-type variables.
@@ -89,17 +81,9 @@ main(argc, argv)
   char hostname[LINE_LENGTH];  /* Name of local machine. */
   struct hostent *host;
   int uid;                     /* User ID number. */
-  char *tty;                   /* Terminal path name. */
-  char *prompt;
 
   Arg args[10];
   int n = 0;
-  XEvent event;
-  XtAppContext my_app_context;
-
-  unsigned int icon_h, icon_w;
-  int *xh, *yh;
-  Pixmap pixmap;
 
 #ifdef HESIOD
   char **hp;                   /* return value of Hesiod resolver */
@@ -170,25 +154,17 @@ main(argc, argv)
  *  If opening display was successful, then initialize toolkit, display,
  *  interface, etc.
  */
-  setenv("XAPPLRESDIR", APP_DEF_DIR, 1);
+  MuSetAppPath(APP_DEF_DIR);
   toplevel = XtInitialize(NULL, "Xolc", NULL, 0, &argc, argv);
 
-  display = XtDisplay(toplevel); 
-  screen = DefaultScreen(display);
-  root = RootWindow(display, screen);
-
-  XReadBitmapFile(display, root, ICON_FILENAME,
-		  &icon_h, &icon_w,
-		  &pixmap, &xh, &yh);
+  MuSetIconPixmap(toplevel, ICON_PATH, ICON_FILE);
 
   n=0;
   XtSetArg(args[n], XmNallowShellResize, TRUE); n++;
-/*  XtSetArg(args[n], XmNwidth, 570); n++;
- *  XtSetArg(args[n], XmNheight, 355); n++;
- */
+  XtSetArg(args[n], XmNwidth, 530); n++;
+  XtSetArg(args[n], XmNheight, 355); n++;
   XtSetArg(args[n], XmNminWidth, 530); n++;
   XtSetArg(args[n], XmNminHeight, 355); n++;
-  XtSetArg(args[n], XmNiconPixmap, pixmap); n++;
   XtSetValues(toplevel, args, n);
 
   MuInitialize(toplevel);
@@ -235,10 +211,8 @@ olc_init()
   int fd;			/* File descriptor for socket. */
   RESPONSE response;		/* Response code from daemon. */
   REQUEST Request;
-  ERRCODE errcode=0;		/* Error code to return. */
-  int n,first=0;
+  int n=0;
   char file[NAME_LENGTH];
-  char topic[TOPIC_SIZE];
   int status;
   Arg arg;
 
