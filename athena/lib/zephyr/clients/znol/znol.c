@@ -17,19 +17,12 @@
 #include <string.h>
 
 #ifndef lint
-static char rcsid_znol_c[] = "$Id: znol.c,v 1.10 1993-09-24 16:31:31 probe Exp $";
+static char rcsid_znol_c[] = "$Id: znol.c,v 1.11 1993-11-19 15:30:25 probe Exp $";
 #endif 
 
 #define SUBSATONCE 7
 #define ON 1
 #define OFF 0
-
-#ifdef POSIX
-#include <stdlib.h>
-#else
-extern char *getenv(), *malloc();
-#endif
-extern uid_t getuid();
 
 main(argc,argv)
 	int argc;
@@ -156,7 +149,7 @@ main(argc,argv)
 
 		subs[ind].zsub_class = LOGIN_CLASS;
 		(void) strcpy(name,cleanname);
-		if (!index(name,'@')) {
+		if (!strchr(name,'@')) {
 			cp = name + strlen(name);
 			*cp++ = '@';
 			(void) strcpy(cp,ZGetRealm());
