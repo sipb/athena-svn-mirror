@@ -1,4 +1,4 @@
-.\" $Id: attach.1,v 1.15 2002-10-17 05:19:49 ghudson Exp $
+.\" $Id: attach.1,v 1.16 2004-08-11 15:20:17 ghudson Exp $
 .\"
 .\" Copyright 1997 by the Massachusetts Institute of Technology.
 .\"
@@ -113,8 +113,9 @@ Don't subscribe to
 messages about the server host.
 .TP 8
 .I --readonly (-r), --write (-w)
-Overrides the default access mode for the next filesystem.
-"-r" indicates read-only access, and "-w" indicates write access.
+Overrides the default access mode for the next filesystem.  "-r"
+indicates read-only access, and "-w" indicates write access.  These
+options have no effect for AFS filesystems.
 .TP 8
 .I --mountpoint \fImount-point\fP (-m \fImount-point\fP)
 Overrides the default mount point for the next filesystem.
@@ -190,13 +191,11 @@ deleted, if possible.
 
 .SH EXAMPLES
 .nf
-attach -r -q -m /mymount/X11 x11 -w gnu
+attach -t afs -m /mit/gnu -e /afs/.athena.mit.edu/project/gnu
 .fi
 
-Attach the filesystem \fIx11\fP to the mountpoint /mymount/X11 in
-read-only mode.  Then attach the filesystem \fIgnu\fP
-to its default mount point in write mode.  Don't print success
-messages for either mount.
+Attach the read-write AFS path to the gnu locker to the mountpoint
+/mit/gnu.
 
 .SH DIAGNOSTICS
 If \fIattach\fP is unable to initalize the locker library, it will
