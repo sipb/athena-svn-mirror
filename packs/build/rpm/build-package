@@ -94,24 +94,13 @@ if [ -a $sourcedir/packs/build/rpm/prep/$package_name ]; then
       || exit 1
 fi
 
-# Copy in the version script and point do.sh at it.  This is a gross
-# hack; do.sh should take care of this.
-sed -e 's%$source/packs/build/version%athena-version%' < $sourcedir/packs/build/do.sh > $source_name/do.sh
-chmod a+x $source_name/do.sh
-cp $sourcedir/packs/build/version $source_name/athena-version
-
-# Do the `do.sh dist' step
-(cd $source_name; \
- $sourcedir/packs/build/do.sh  \
-        -s $sourcedir \
-	-d $destdir/INSTALL \
-	dist )
-if [ $? -ne 0 ]; then
-    exit 1
-fi
+# Copy in do.sh and run the "do dist" step to prepare a
+# self-sufficient source tree.
+cp $sourcedir/packs/build/do.sh $source_name/do.sh
+(cd $source_name && ./do.sh -s $sourcedir -d $destdir/INSTALL dist) || exit 1
 
 # Generate the sources file, and remove what we don't need any more.
-(cd $destdir/SOURCES; tar cfz $source_name.tar.gz $source_name )
+(cd $destdir/SOURCES && tar cfz $source_name.tar.gz $source_name)
 rm -rf $source_name
 
 
