@@ -1,7 +1,7 @@
 /* This file is part of the Project Athena Global Message System.
  * Created by: Mark W. Eichin <eichin@athena.mit.edu>
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/gms/message_daemon.c,v $
- * $Author: probe $
+ * $Author: vrt $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -9,7 +9,7 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_message_daemon_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/message_daemon.c,v 1.7 1992-11-08 23:05:28 probe Exp $";
+static char rcsid_message_daemon_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/message_daemon.c,v 1.8 1994-04-30 13:17:42 vrt Exp $";
 #endif lint
 
 #include "globalmessage.h"
@@ -29,7 +29,12 @@ static char rcsid_message_daemon_c[] = "$Header: /afs/dev.mit.edu/source/reposit
  * This version of the daemon is run out of inetd, with a conf line of:
  * globalmessage dgram udp wait unswitched nobody /etc/messaged messaged
  */
+#ifndef ultrix
 #include <syslog.h>
+#else
+#include <nsyslog.h>
+#endif
+
 char *error_message();
 
 #define saddr_list(sin) (unsigned)sin[0],(unsigned)sin[1],(unsigned)sin[2],(unsigned)sin[3]

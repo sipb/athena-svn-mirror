@@ -1,7 +1,7 @@
 /* This file is part of the Project Athena Global Message System.
  * Created by: Mark W. Eichin <eichin@athena.mit.edu>
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/gms/get_message.c,v $
- * $Author: epeisach $
+ * $Author: vrt $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -9,7 +9,7 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_get_message_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/get_message.c,v 1.3 1990-07-12 14:04:49 epeisach Exp $";
+static char rcsid_get_message_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/get_message.c,v 1.4 1994-04-30 13:17:40 vrt Exp $";
 #endif lint
 
 #include "globalmessage.h"
@@ -17,7 +17,11 @@ void Usage();
 
 #include <stdio.h>
 #include <sys/types.h>
+#ifndef ultrix
 #include <syslog.h>
+#else
+#include <nsyslog.h>
+#endif
 char *error_message();
 
 

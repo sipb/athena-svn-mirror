@@ -1,7 +1,7 @@
 /* This file is part of the Project Athena Global Message System.
  * Created by: Mark W. Eichin <eichin@athena.mit.edu>
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/gms/get_a_message.c,v $
- * $Author: eichin $
+ * $Author: vrt $
  *
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -9,7 +9,7 @@
  */
 #include <mit-copyright.h>
 #ifndef lint
-static char rcsid_get_a_message_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/get_a_message.c,v 1.1 1988-09-26 15:49:33 eichin Exp $";
+static char rcsid_get_a_message_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/gms/get_a_message.c,v 1.2 1994-04-30 13:17:25 vrt Exp $";
 #endif lint
 
 #include "globalmessage.h"
@@ -18,7 +18,11 @@ static char rcsid_get_a_message_c[] = "$Header: /afs/dev.mit.edu/source/reposito
 /* return 0 status if the message is returned at all, else an error
  * code of some sort.
  */
+#ifndef ultrix
 #include <syslog.h>
+#else
+#include <nsyslog.h>
+#endif
 
 Code_t get_a_message(buf)
      char **buf;
