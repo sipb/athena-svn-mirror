@@ -5,7 +5,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/h/zephyr/zephyr.h,v $
  *	$Author: raeburn $
- *	$Id: zephyr.h,v 1.42 1991-03-22 18:19:33 raeburn Exp $
+ *	$Id: zephyr.h,v 1.43 1991-03-22 18:45:15 raeburn Exp $
  *
  *	Copyright (c) 1987,1988,1991 by the Massachusetts Institute of
  *	Technology. For copying and distribution information, see the
@@ -32,6 +32,7 @@
 #include <stdarg.h>
 #else
 #include <varargs.h>
+#define Z_varargs
 #endif
 #endif
 
@@ -219,7 +220,9 @@ extern "C" {
 						  int*, C_Block));
 #endif
     extern Code_t ZFormatRawNotice Zproto ((ZNotice_t *, char**, int *));
+#ifndef Z_varargs
     extern void Z_debug Zproto ((const char *, ...));
+#endif
 
 #ifdef Z_HaveKerberos
     /* ZGetSession() macro */
