@@ -15,8 +15,11 @@
  *
  * MotifUtils:   Utilities for use with Motif and UIL
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Mu/MuModalDialogs.c,v $
- * $Author: djf $
+ * $Author: vanharen $
  * $Log: not supported by cvs2svn $
+ * Revision 1.1  89/12/09  15:14:36  djf
+ * Initial revision
+ * 
  *
  */
 
@@ -42,10 +45,10 @@ static void CreateWidget()
 						 args,n);
     dummy = XmMessageBoxGetChild(_MuModalDialogWidget,
 				 XmDIALOG_CANCEL_BUTTON);
-    XtUnmanageChild(dummy);
+    XtDestroyWidget(dummy);
     dummy = XmMessageBoxGetChild(_MuModalDialogWidget,
 				 XmDIALOG_HELP_BUTTON);
-    XtUnmanageChild(dummy);
+    XtDestroyWidget(dummy);
     XtRealizeWidget(_MuModalDialogWidget);
     MuSetStandardCursor(_MuModalDialogWidget);
 }
@@ -67,5 +70,3 @@ int type;
     if (!XtIsManaged(_MuModalDialogWidget)) 
 	XtManageChild(_MuModalDialogWidget);
 }
-
-
