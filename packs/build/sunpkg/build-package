@@ -55,6 +55,7 @@ fi
 pkg_version=$version.$release
 
 source_name=$package_name-$pkg_version
+pkgdir=$destdir/PKG/$pkg_version
 
 # Check that we are where we ought to be, and set up the environment.
 case `uname -s` in
@@ -77,7 +78,7 @@ echo "==== create top-level build directories"
 mkdir -p \
   $destdir/BUILD \
   $destdir/INSTALL \
-  $destdir/PKG \
+  $pkgdir \
   $destdir/athtools 
 
 
@@ -280,27 +281,27 @@ cp $prototype $destdir/INSTALL/$source_name/prototype
 echo "==== generate the installable package"
 
 # Make the package.
-rm -rf $destdir/PKG/$package_name
+rm -rf $pkgdir/$package_name
 (cd $destdir/INSTALL/$source_name && \
-  pkgmk -d $destdir/PKG -b $destdir/INSTALL/$source_name) || exit 1
+  pkgmk -d $pkgdir -b $destdir/INSTALL/$source_name) || exit 1
 
 echo "==== build a compressed archive of the package files"
 
 # Build a compressed cpio archive of the package's files in class "none".
 filelist=/tmp/filelist$$
-mkdir -p $destdir/PKG/$package_name/archive
+mkdir -p $pkgdir/$package_name/archive
 rm -rf $filelist
 awk '(($2 == "f" || $2 == "v" || $2 == "e") && $3 == "none") { print $4; }' \
-  $destdir/PKG/$package_name/pkgmap > $filelist
+  $pkgdir/$package_name/pkgmap > $filelist
 if [ -s $filelist ]; then
-  (cd $destdir/PKG/$package_name/reloc && cpio -oc -C 512 < $filelist) | \
-    bzip2 -c > $destdir/PKG/$package_name/archive/none.bz2 || exit 1
-  if [ ! -s $destdir/PKG/$package_name/archive/none.bz2 ]; then
+  (cd $pkgdir/$package_name/reloc && cpio -oc -C 512 < $filelist) | \
+    bzip2 -c > $pkgdir/$package_name/archive/none.bz2 || exit 1
+  if [ ! -s $pkgdir/$package_name/archive/none.bz2 ]; then
     echo "Failed to create compressed archive" 1>&2
     exit 1
   fi
   # The archived files are no longer needed in the package reloc directory.
-  (cd $destdir/PKG/$package_name/reloc && cat $filelist | xargs rm -f)
+  (cd $pkgdir/$package_name/reloc && cat $filelist | xargs rm -f)
 fi
 
 # Clean up.
