@@ -1,5 +1,5 @@
 /* fonts.c -- font manipulation
-   $Id: fonts.c,v 1.1.1.4 2003-01-05 00:33:31 ghudson Exp $
+   $Id: fonts.c,v 1.2 2004-10-14 14:05:34 rbasch Exp $
 
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
 
@@ -444,7 +444,7 @@ interpreted based on the value of the string TYPE.
     for (f = font_list; f != NULL; f = f->next)
     {
 	if (strcmp (rep_STR(name), rep_STR(f->name)) == 0
-	    && strcmp (rep_STR (type), rep_STR (f->name)) == 0)
+	    && strcmp (rep_STR (type), rep_STR (f->type)) == 0)
 	{
 	    return rep_VAL (f);
 	}
