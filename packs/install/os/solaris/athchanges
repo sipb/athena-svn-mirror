@@ -1,5 +1,5 @@
 #!/sbin/sh
-# $Id: athchanges,v 1.7 2003-04-10 05:59:46 ghudson Exp $
+# $Id: athchanges,v 1.8 2003-04-10 20:57:29 ghudson Exp $
 # athchanges - Set up configuration files required by Athena software.
 
 umask 022
@@ -27,5 +27,5 @@ mkdir -p /etc/athena/gtk-2.0
 gtk-query-immodules-2.0 > /etc/athena/gtk-2.0/gtk.immodules
 gdk-pixbuf-query-loaders > /etc/athena/gtk-2.0/gdk-pixbuf.loaders
 
-# Create fontconfig cache.
-fc-cache -f 2>/dev/null
+# Create fontconfig cache.  (fc-cache dumps core if HOME is not set.)
+HOME=/ fc-cache -f 2>/dev/null
