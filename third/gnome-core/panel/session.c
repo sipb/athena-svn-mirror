@@ -1367,7 +1367,7 @@ load_up_globals(void)
 		gnome_config_get_bool("use_large_icons=FALSE");
 
 	global_config.merge_menus =
-		gnome_config_get_bool("merge_menus=TRUE");
+		gnome_config_get_bool("merge_menus=FALSE");
 
 	global_config.off_panel_popups =
 		gnome_config_get_bool("off_panel_popups=TRUE");
