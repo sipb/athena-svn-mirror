@@ -1,0 +1,86 @@
+%!
+%
+% This program scans all the fonts available on a printer, including fonts
+% on a hard disk, and reports back up the serial channel the information
+% needed for customizing a ppd file.  All the information will go into the
+% printer log. 
+%
+/first (*Font ) def
+/colon (: ) def
+/stan (Standard ) def
+/spec (Special ) def
+/sp ( ) def
+/open ("\() def
+/close (\)") def
+/nl (\n) def
+/str 256 string def
+/err1 (`version' key missing from FontInfo dictionary) def
+/err2 (no FontInfo dictionary present) def
+/match (fonts/*) def
+/nomatch (|______) def
+/scratch 128 string def
+
+FontDirectory
+{
+   pop
+   save exch
+   scratch cvs
+   dup nomatch anchorsearch { pop pop pop } 
+      { pop
+	dup findfont begin
+	first print
+	scratch cvs print
+	colon print
+	Encoding StandardEncoding eq {
+	     stan
+	}{
+	     spec
+	} ifelse print
+	open print
+	currentdict /FontInfo known { %ifelse
+	     FontInfo /version known { %ifelse
+		FontInfo /version get
+	     }{ %else
+		err1
+	     } ifelse
+	 }{ %else
+	     err2
+	 } ifelse
+	 scratch cvs print
+	 close print
+	 nl print
+	 end } ifelse
+    restore
+} bind forall flush
+
+/filenameforall where { 
+ pop match {
+  save exch
+  dup length 6 sub 6 exch getinterval
+  dup findfont begin
+   first print
+   scratch cvs print
+   colon print
+   Encoding StandardEncoding eq {
+        stan
+   }{
+        spec
+   } ifelse print
+   open print
+   currentdict /FontInfo known { %ifelse
+	FontInfo /version known { %ifelse
+	   FontInfo /version get
+	}{ %else
+           err1
+	} ifelse
+    }{ %else
+        err2
+    } ifelse
+    scratch cvs print
+    close print
+    nl print
+      end	% font dictionary
+    restore
+ } bind str filenameforall 
+} if 
+

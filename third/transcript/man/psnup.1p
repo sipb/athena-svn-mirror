@@ -1,0 +1,160 @@
+.TH PSNUP 1 "19 August 1992" "Adobe Systems"
+\" Copyright (c) 1985,1987,1991,1992 Adobe Systems Incorporated. All Rights Reserved.
+\" ATTN GOVERNMENT END USERS: See notice of rights in file XPSLIBDIRX/Notice
+\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/psnup.1p,v 1.1.1.1 1996-10-07 20:25:39 ghudson Exp $
+.ds PS P\s-2OST\s+2S\s-2CRIPT\s+2
+.SH NAME
+psnup\(emprint multiple pages on a sheet of paper. 
+.SH SYNOPSIS
+.B psnup
+[
+.B -rGf
+] [
+.BI -n nupspec
+] [
+.BI -S  papersize
+] [
+.BI -s  pagesize
+] [
+.BI -w pagewidth
+] [
+.BI -h pageheight
+]
+.br
+[
+.BI -p  outputfile
+] [
+.BI -P printer
+] [
+.BI -d printer
+] [
+.I file
+]
+.SH DESCRIPTION
+.I psnup
+reads in a \*(PS language 
+.I file
+(or the standard input if no file is named) and, if the
+input conforms to the \*(PS language document structuring conventions,
+provides page rotation, printing of multiple pages on a sheet 
+of paper (n-up printing), selection of page and paper sizes,
+and writes the resulting file on the standard output.  The output
+may be directed to a file.
+.sp
+The possible options are:
+.TP
+.BI -n nupspec
+.I nupspec
+may be a single number specifying how many pages will be
+printed on each sheet of paper, or a specification  of the form: 
+.I n
+x
+.I m,
+where 
+.I n
+and
+.I m
+specify rows and columns, respectively. Rows refers to 
+the number of page images across a sheet of paper, columns to the
+number of page images down a sheet of paper.  The specification
+.BI -n 2x2 
+is  equivalent to the specification
+.BI -n 4. 
+If the number of pages on a sheet is specified as a single
+number, the number must be a power of 2.
+.TP
+.B -r
+rotates the page 90 degrees (landscape mode).
+When using the n-up capability of
+.I psnup,
+this option
+is preferable to the landscape option of pslpr because the rotation of the page
+is taken into account when laying out multiple pages on a sheet of paper.
+.TP
+.BI -S papersize
+specifies size of paper for which output is to be formatted.  The 
+default is Letter (8.5 x 11).
+.TP
+.BI -s pagesize
+specifies the size of pages being printed n-up (i.e., the original size).  The
+default is Letter (8.5 x 11).
+.TP
+.BI -w pagewidth
+if the size of the pages being printed n-up isn't a standard size, you can
+specify the width and height instead.  Numbers followed by "i" will be
+interpreted in inches, by "m" in millimeters, and numbers without
+qualification will be interpreted as specifying the distance in points.
+.TP
+.BI -h pageheight
+specifies the height of the page being printed n-up.
+.TP
+.B -G
+formats the document in psnup's "gaudy" mode, with borders around the virtual
+pages.  If no n-up specification is given, the input file is printed with
+four virtual pages per sheet of paper.
+.TP
+.BI -p outputfile
+writes output to the specified file.
+.BI-p -
+means write output to standard output.
+.TP
+.BI -P printername
+.TP
+.BI -d printername
+uses
+.IR printername's
+\*(PS Printer Description file for information about available paper sizes.
+The 
+result is 
+.IR not
+spooled to the printer.
+
+.SH EXAMPLES
+The following command reads a \*(PS language file called printfile.ps
+and formats it with four pages on a sheet of paper.  The file is 
+piped through pslpr to be printed on the printer called ps.
+
+.RS
+psnup -n4 printfile.ps | pslpr -Pps
+
+.RE
+In this example, a text file is processed by enscript, creating a \*(PS
+language file, which is piped to 
+.I
+psnup,
+which rotates the file and formats it with three virtual pages across 
+and two virtual pages down the paper.
+The formatted file is printed by piping the file through pslpr.
+
+.RS
+enscript -p- textfile | psnup -r -n3x2 | pslpr
+
+.RE
+In this example, a text file is processed by enscript, creating a \*(PS
+language file, which is piped to
+.I psnup,
+formatted in gaudy mode (
+.B -G
+option),
+with four virtual pages per actual page of output.
+The formatted file is printed by piping the file through pslpr.  The
+result is printed pages with four original text pages on each sheet, with each
+original text page surrounded by a border.
+
+.RS
+enscript -p- textfile | psnup -G -n4 | pslpr
+
+.RE
+.SH FILES
+.TP 2.2i
+XPSLIBDIRX/psnup.pro
+the prologue for
+.I psnup
+files.
+.br
+.SH "SEE ALSO"
+transcript(1), enscript(1), pslpr (1), postscript(7).
+.SH AUTHOR
+Adobe Systems Incorporated
+.SH "NOTES"
+\*(PS is a registered trademark of Adobe Systems Incorporated.

@@ -1,0 +1,16 @@
+# transcript/src/Makelp
+#
+# Copyright (C) 1992 Adobe Systems Incorporated. All rights reserved.
+# GOVERNMENT END USERS: See notice of rights in Notice file in release
+# directory. 
+
+#RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/src/Makeas,v 1.1.1.1 1996-10-07 20:25:45 ghudson Exp $
+
+SHELL = /bin/sh
+CC = $$CCOMP
+CFLAGS = $$CCFLAGS
+
+programs: ascomm
+
+ascomm: ascomm.o psutil.o psspool.h compat.h config.h transcript.h
+	${CC} ${CFLAGS} -o ascomm ascomm.o psutil.o ${SOCKFLAGS}

@@ -1,0 +1,198 @@
+
+
+
+   19 August 1992                                                   PSROFF(1)
+
+
+
+
+
+
+   NAME
+     psroff-ditroff to a POSTSCRIPT printer
+
+   SYNOPSIS
+     psroff [ -t ] [ _t_r_o_f_f _o_p_t_i_o_n_s ] [ _s_p_o_o_l _o_p_t_i_o_n_s ] [ _f_i_l_e_s ]
+
+   DESCRIPTION
+     _p_s_r_o_f_f is a shell script that runs [di]troff(1) in an environment to
+     produce output on a POSTSCRIPT printer.  It uses psdit to convert ditr-
+     off intermediate output to POSTSCRIPT language format and spools this
+     for printing.  If no _f_i_l_e_s are specified, the standard input is used.
+
+     For those interested in including arbitrary POSTSCRIPT language commands
+     or files in a ditroff document, see psdit(1).
+
+     In addition to the standard ditroff options, the following options are
+     understood by _p_s_r_o_f_f.
+
+     -t   sends the POSTSCRIPT language file to the standard output, rather
+          than spooling it to a printer.  Note that this overrides the mean-
+          ing of the ditroff -t option; if you want that, run ditroff
+          directly.
+
+     -F_f_o_n_t_f_a_m_i_l_y
+          use the specified font family for the R/I/B/BI fonts, rather than
+          the default family, which is Times.  Font families Times, Courier,
+          and Helvetica are probably defined at your site, and others may be
+          available as well.  Make sure the printer you will use contains the
+          font family you pick.  Note that this overrides the meaning of the
+          ditroff -F option; if you want that, run ditroff directly, or use
+          the -D option.
+
+     -D_f_o_n_t_d_i_r_e_c_t_o_r_y
+          finds font family directories in the specified _f_o_n_t_d_i_r_e_c_t_o_r_y rather
+          than the standard font directory which was configured in the
+          installation procedure.  Note that it may be necessary to use both
+          this option and the -F option to imitate the -F option in ditroff.
+
+     In BSD UNIX systems, the following spooler options are passed on to lpr.
+
+     -P_p_r_i_n_t_e_r
+          causes the output to be sent to the named printer.
+
+     -#_n  causes _n copies of the output to be produced.  The default is one.
+
+     -h   suppresses the printing of the job burst page.
+
+     -C_c_l_a_s_s
+          set the job classification for use on the burst page.
+
+
+
+   Adobe Systems                                                            1
+
+
+
+
+
+
+   PSROFF(1)                                                   19 August 1992
+
+
+     -J_n_a_m_e
+          sets the job name for use on the burst page.  Otherwise, the name
+          of the first input file will be used.
+
+     -m   sends mail after files have been printed.
+
+     In System V UNIX systems, the following spooler options are passed on to
+     lp.
+
+     -d_d_e_s_t
+          causes the output to be sent to the named destination.
+
+     -n_n  causes _n copies of the output to be produced.  The default is one.
+
+     -h   suppresses the printing of the job burst page.
+
+     -r   don't page-reverse the output.
+
+     -s   suppresses messages from lp.
+
+     -m   sends mail after files have been printed.
+
+     -w   writes to user's terminal after files have been printed.
+
+   ENVIRONMENT
+
+     PRINTER (BSD)
+          the name of a printer (as in the -P option) for lpr to use.  If no
+          -P option is specified, lpr will use this printer.  If neither -P
+          nor PRINTER is set, _p_s_r_o_f_f will spool to a printer named
+          "PostScript".
+
+     LPDEST (System V)
+          the name of a printer (as in the -d option) for lp to use.  If no
+          -d option is specified, lp will use this printer.  If neither -d
+          nor LPDEST is set, _p_s_r_o_f_f will spool to a printer class named
+          "PostScript".
+
+   FILES
+
+     /usr/lib/tmac/tmac.*  standard macro files
+
+     XDITDIRX/devpsc/*     ditroff description files for the POSTSCRIPT
+                           printer virtual device
+
+   SEE ALSO
+     transcript(1), psdit(1), ptroff(1), psfonts(1), [di]troff(1), eqn(1),
+     tbl(1), pic(1), refer(1), ideal(1)
+     BSD: lpr(1)
+     System V: lp(1)
+     J. F. Ossanna, _N_r_o_f_f/_T_r_o_f_f _U_s_e_r'_s _M_a_n_u_a_l
+     B. W. Kernighan, _A _T_R_O_F_F _T_u_t_o_r_i_a_l and _A _T_y_p_e_s_e_t_t_e_r-_i_n_d_e_p_e_n_d_e_n_t _T_R_O_F_F
+     _D_o_c_u_m_e_n_t_e_r'_s _W_o_r_k_b_e_n_c_h
+
+
+
+   2                                                            Adobe Systems
+
+
+
+
+
+
+   19 August 1992                                                   PSROFF(1)
+
+
+   AUTHOR
+     Adobe Systems Incorporated
+
+   BUGS
+     The eqn supplied with ditroff is different from the original.  Use the
+     options -r576 -m2 for best results.  Other programs (e.g., pic ) distri-
+     buted with ditroff have the device names compiled in (so much for device
+     independence!).  They should just have a -T option and read the device
+     description file for the information they need.  Use -T576 with the pic
+     distributed with DWB.
+
+   NOTES
+     POSTSCRIPT is a registered trademark of Adobe Systems Incorporated.
+     Documenter's Workbench is a trademark of AT&T Technologies.
+     Unix is a trademark of AT&T Bell Laboratories.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   Adobe Systems                                                            3
+
+
+99

@@ -1,0 +1,89 @@
+#!/bin/sh
+# 4.2BSD line printer spooler interface for PostScript/TranScript printer
+# this is the printcap/lpd-invoked top level filter program for ALL file types
+# Copyright (c) 1985,1987,1990,1992 Adobe Systems Incorporated. All Rights
+# Reserved.  
+# GOVERNMENT END USERS: See Notice file in TranScript library directory
+# -- probably /usr/lib/ps/Notice
+# RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/lib/psint.bsd,v 1.1.1.1 1996-10-07 20:25:32 ghudson Exp $
+
+BINDIR=XBINDIRX
+PATH=$BINDIR:/bin:/usr/bin:/usr/ucb
+export PATH
+
+# set up initial undefined variable values
+width= length= indent= login= host= afile=
+prog=$0
+cwd=`pwd`
+pname=`basename $cwd`
+
+# Some versions of Unix save up all entries to the log until the job is
+# done.  The exec command commented out below causes all entries to the log
+# to be written to the log as they occur.  If you desire this behavior,
+# remove the comment from this line, and put in the appropriate file name
+# for the log file.
+#
+# exec 2>>XLOGDIRX/${pname}-log
+#
+
+# define the default printer-specific and TranScript
+# configuration options, these may be overridden by
+# real printer-specific options in the .options file
+
+PSLIBDIR=XPSLIBDIRX
+REVERSE=XREVERSEX
+VERBOSELOG=XVERBOSELOGX
+BANNERFIRST=XBANNERFIRSTX
+BANNERLAST=XBANNERLASTX
+BANNERPRO=$PSLIBDIR/banner.pro
+PSCOMM=$PSLIBDIR/pscomm
+PSDMAN=$PSLIBDIR/psdman
+export PSLIBDIR VERBOSELOG BANNERFIRST BANNERLAST BANNERPRO REVERSE
+
+# load the values from the .options file if present
+test -r ./.options && . ./.options
+
+# parse the command line arguments, most get ignored
+# the -hhost vs. -h host is due to one report of someone doing it wrong.
+# you could add or filter out non-standard options here (-p and -f)
+
+while test $# != 0
+do	case "$1" in
+	-c)	;;
+	-w*)	width=$1 ;;
+	-l*)	length=$1 ;;
+	-i*)	indent=$1 ;;
+	-x*)	width=$1 ;;
+	-y*)	length=$1 ;;
+	-n)	user=$2 ; shift ;;
+	-n*)	user=`expr $1 : '-.\(.*\)'` ;;
+	-h)	host=$2 ; shift ;;
+	-h*)	host=`expr $1 : '-.\(.*\)'` ;;
+	-*)	;; 
+	*)	afile=$1 ;;
+	esac
+	shift
+done
+
+PATH=$PSLIBDIR:$PATH
+export PATH
+
+# now exec the format-specific filter, based on $prog
+# if - communications filter [default]
+# of - banner filter [execed directly]
+# nf - ditroff, tf - troff (CAT), gf - plot
+# vf - raster, df - TeX DVI, cf - cifplot, rf - fortran
+
+prog=`basename $prog`
+comm="$PSCOMM -P $pname -p $prog -n $user -h $host $afile"
+dman="$PSDMAN -P $pname -p $prog -n $user -h $host $afile"
+
+case $prog in
+	psif) $dman | $comm ;;
+	psof) exec psbanner $pname ; exit 0 ;;
+	psnf) psdit | $dman | $comm ;;
+	pstf) pscat | $dman | $comm ;;
+	psgf) psplot | $dman | $comm ;;
+	psvf|pscf|psdf|psrf) echo "$prog: filter not available." 1>&2  ;
+			psbad $prog $pname $user $host | $comm ;;
+esac

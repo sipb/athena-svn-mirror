@@ -1,0 +1,132 @@
+
+
+
+   4 April 1994                                                     ASCOMM(8)
+
+
+
+
+
+
+   NAME
+     ascomm-TRANSCRIPT AppSocket TCP/IP communication filter for POSTSCRIPT
+     printers
+
+   SYNOPSIS
+     XPSLIBDIRX/ascomm
+
+   DESCRIPTION
+     This is the low-level TRANSCRIPT AppSocket TCP/IP communication filter
+     for use by the 4.2BSD line printer spooling system through the printer
+     description file /etc/printcap, or by the System V spooling system.  For
+     4.2BSD, it is called from the _p_s_i_n_t._s_h shell script.  This script uses
+     argv[0] (the name it was invoked under) to determine which action to
+     take, which may involve invoking a translation filter or management
+     filter before invoking the communications filter. The options are as
+     specified in the _4._2_B_S_D _L_i_n_e _P_r_i_n_t_e_r _S_p_o_o_l_e_r _M_a_n_u_a_l. If a log file is
+     specified in /etc/printcap, will maintain a log of each job processed,
+     as well as any error output from the printer.  For System V, it is
+     called from the _p_s_i_n_t_e_r_f_a_c_e shell script.  The program _a_s_c_o_m_m is the
+     lowest level filter.  It manages communication with the printer, error
+     handling, status reporting, etc.  It also manages a printer log file
+     named transcript/_p_r_i_n_t_e_r-log (under the lp spooling directory).
+
+   ENVIRONMENT
+
+     VERBOSELOG=_n_u_m_b_e_r
+          print verbose log messages
+
+     ASCONTROL=_n_u_m_b_e_r
+          if 1, use AppSocket control protocol (default)
+
+     ASSTATUS=_n_u_m_b_e_r
+          if 1, query status during job on status port (default)
+
+   FILES
+
+     _p_r_i_n_t_e_r.acct          printer accounting file  (4.2BSD)
+
+     _p_r_i_n_t_e_r-log           printer log file
+
+     status                printer status file (in the spool directory),
+                           shared by _l_p_d(_8) and _a_s_c_o_m_m (4.2BSD)
+
+   SEE ALSO
+     lpr(1), lpc(8), lpd(8), printcap(5), psint(8) (4.2BSD)
+     lp(1), lpstat(1), lpsched(1M), lpadmin(1M), psinterface(8) (SysV)
+     transcript(1)
+     _4._2_B_S_D _L_i_n_e _P_r_i_n_t_e_r _S_p_o_o_l_e_r _M_a_n_u_a_l
+     _S_y_s_t_e_m _V _L_i_n_e _P_r_i_n_t_e_r _S_p_o_o_l_i_n_g _U_t_i_l_i_t_i_e_s
+
+
+
+   Adobe Systems                                                            1
+
+
+
+
+
+
+   ASCOMM(8)                                                     4 April 1994
+
+
+   AUTHOR
+     Adobe Systems Incorporated
+
+   NOTES
+     To use ascomm to communicate with HP printers via TCP/IP, set both
+     ASCONTROL and ASSTATUS to 0 (in the .options or _p_r_i_n_t_e_r.opt files.)
+     POSTSCRIPT is a registered trademark of Adobe Systems Incorporated.
+     TRANSCRIPT is a trademark of Adobe Systems Incorporated.
+     Unix is a trademark of AT&T Bell Laboratories.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   2                                                            Adobe Systems
+
+
+99

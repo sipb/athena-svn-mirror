@@ -1,0 +1,68 @@
+PS-Resources-1.0
+% must begin with the above
+% next is list of resource types described in this file, terminated by a . on 
+% a line.
+FontAFM
+.
+% if the files are in a directory other than the one containing this file,
+% the path prefix to attach to each file should be next, marked with a '/'
+% at the beginning, as in "//usr/lib/fonts".
+//usr/psres/tsafm
+% After that, for each resource types listed above, list the resources.
+% Format is type name on one line, followed by resources, one per line, in
+% the form resourcename=resourcefile.
+% Each list is terminated by a . on a line.  Make sure the file ends with a \n!
+FontAFM
+AvantGarde-Book=AvGarBk.afm
+AvantGarde-BookOblique=AvGarBkO.afm
+AvantGarde-Demi=AvGarDe.afm
+AvantGarde-DemiOblique=AvGarDeO.afm
+Bookman-Demi=BookDe.afm
+Bookman-DemiItalic=BookDeI.afm
+Bookman-Light=BookLi.afm
+Bookman-LightItalic=BookLiI.afm
+Courier=Cour.afm
+Courier-Bold=CourBo.afm
+Courier-BoldOblique=CourBoO.afm
+Courier-Oblique=CourO.afm
+DIThacks=DIThacks.afm
+Garamond-Bold=Gara.afm
+Garamond-BoldItalic=GaraBoI.afm
+Garamond-Light=GaraLi.afm
+Garamond-LightItalic=GaraLiI.afm
+Helvetica=Helv.afm
+Helvetica-Bold=HelvBo.afm
+Helvetica-BoldOblique=HelvBoO.afm
+Helvetica-Narrow=HelvNa.afm
+Helvetica-Narrow-Bold=HelvNaBo.afm
+Helvetica-Narrow-BoldOblique=HelvNaBoO.afm
+Helvetica-Narrow-Oblique=HelvNaO.afm
+Helvetica-Oblique=HelvO.afm
+LubalinGraph-Book=LubGrBk.afm
+LubalinGraph-BookOblique=LubGrBkO.afm
+LubalinGraph-Demi=LubGrDe.afm
+LubalinGraph-DemiOblique=LubGrDeO.afm
+NewCenturySchlbk-Bold=NewCenBo.afm
+NewCenturySchlbk-BoldItalic=NewCenBoI.afm
+NewCenturySchlbk-Italic=NewCenI.afm
+NewCenturySchlbk-Roman=NewCenRo.afm
+Optima=Opti.afm
+Optima-Bold=OptiBo.afm
+Optima-BoldOblique=OptiBoO.afm
+Optima-Oblique=OptiO.afm
+Palatino-Bold=PalBo.afm
+Palatino-BoldItalic=PalBoI.afm
+Palatino-Italic=PalI.afm
+Palatino-Roman=PalRo.afm
+Souvenir-Demi=SouvDe.afm
+Souvenir-DemiItalic=SouvDeI.afm
+Souvenir-Light=SouvLi.afm
+Souvenir-LightItalic=SouvLiI.afm
+Symbol=Symbol.afm
+Times-Bold=TimesBo.afm
+Times-BoldItalic=TimesBoI.afm
+Times-Italic=TimesI.afm
+Times-Roman=TimesRo.afm
+ZapfChancery-MediumItalic=ZapChaMeI.afm
+ZapfDingbats=ZapDing.afm
+.

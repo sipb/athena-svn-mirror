@@ -1,0 +1,198 @@
+
+
+
+   18 August 1992                                                    PSDIT(1)
+
+
+
+
+
+
+   NAME
+     psdit-convert ditroff intermediate format to POSTSCRIPT language format
+
+   SYNOPSIS
+     psdit [ -F_f_o_n_t_d_i_r ] [ -p_p_r_o_l_o_g_u_e ] [ -o_l_i_s_t ] [ _f_i_l_e ]
+
+   DESCRIPTION
+     _p_s_d_i_t translates a _f_i_l_e created by device-independent [di]troff (1) to
+     POSTSCRIPT language format for printing on a POSTSCRIPT printer.  If no
+     _f_i_l_e is mentioned, the standard input is used.  The POSTSCRIPT language
+     file is sent to the standard output.  The options are:
+
+     -F_f_o_n_t_d_i_r
+          take font information from _f_o_n_t_d_i_r instead of the default (see
+          below).
+
+     -p_p_r_o_l_o_g_u_e
+          use the contents of _p_r_o_l_o_g_u_e instead of the default POSTSCRIPT
+          language prologue (see below).
+
+     -o_l_i_s_t
+          prints pages whose numbers are given in the comma-separated _l_i_s_t.
+          The list contains single numbers _N and ranges _N_1-_N_2.  A missing _N_1
+          means the lowest-numbered page, a missing _N_2 means the highest.
+
+     Note: the input for _p_s_d_i_t should be prepared with the corresponding -
+     Tpsc option of [ di ] troff , pic , etc.
+     eqn should be run with the flags -r576 and -m2 to produce suitable out-
+     put.
+     pic should be run with the -D flag.  With DWB pic , use -T576 to set the
+     correct resolution.
+
+     _p_s_d_i_t allows for users to cause _t_r_o_f_f to include arbitrary POSTSCRIPT
+     language code in the generated document.  _p_s_d_i_t recognizes the undefined
+     "%" command in the ditroff intermediate file format to signal the start
+     of raw POSTSCRIPT language to be placed _a_s _i_s in the the output file.
+     Everthing between (but not including) the percent sign and a line con-
+     taining a single period (".") will be placed in the generated output.
+     This code is not insulated from the ditroff coordinate system or the
+     state of the generated code. However, two functions are defined in the
+     prologue so that users may insulate themselves if they so desire.  The
+     PB function (for _p_i_c_t_u_r_e _b_e_g_i_n) will execute the POSTSCRIPT language
+     operator save , translate the coordinate system to ditroff's idea of the
+     current position on the page, and change the scale and orientation of
+     the coordinate system axes to be the standard 72 units per inch.  The PE
+     macro (for _p_i_c_t_u_r_e _e_n_d) will end this protected environment.
+
+     Several methods may be employed to incorporate such included POSTSCRIPT
+     language code into the ditroff intermediate file.  The ".sy", "\!" and
+     ".cf" troff commands may be useful.  For example, the following sequence
+
+
+   Adobe Systems                                                            1
+
+
+
+
+
+
+   PSDIT(1)                                                    18 August 1992
+
+
+     could be used to include the POSTSCRIPT language description of a com-
+     pletely separate, printable document.  Note that the "showpage" operator
+     is redefined.
+          (usual troff input)
+          \&
+          .fl
+          \!%PB
+          \!/showpage{}def
+          .fl
+          .sy cat mypic.ps
+          \!PE
+          \!.
+          (more regular troff input)
+     This example includes _m_y_p_i_c._p_s as an illustration.  This facility is
+     both powerful and useful.  Indiscriminate inclusion of badly behaving
+     POSTSCRIPT language code may be dangerous to your document's health.
+
+     _p_s_d_i_t also supports the \X feature of DWB 2.0 and has support for the
+     psfig package.
+
+   ENVIRONMENT
+
+     PSLIBDIR
+          path name of a directory to use instead of XPSLIBDIRX for the _p_s_d_i_t
+          prologue
+
+   FILES
+
+     XDITDIRX/devpsc/*     ditroff default description files for a POSTSCRIPT
+                           printer virtual device
+
+     XPSLIBDIRX/psdit.pro  default POSTSCRIPT language prologue
+
+   SEE ALSO
+     transcript(1), psroff(1), psfonts(1).
+     BSD: ditroff(1), lpr(1).
+     System V: troff(1), lp(1).
+     _A _T_y_p_e_s_e_t_t_e_r-_i_n_d_e_p_e_n_d_e_n_t _T_R_O_F_F Brian W. Kernighan, Bell Laboratories
+     1982
+     _D_o_c_u_m_e_n_t_e_r'_s _W_o_r_k_b_e_n_c_h
+
+   AUTHOR
+     Adobe Systems Incorporated
+
+   BUGS
+     The versions of eqn and pic distributed with ditroff (from AT&T) have
+     the device names compiled in (so much for device independence!).  They
+     should just read the device description file for the information they
+     need.  You should be sure to know which version of eqn you are running
+     or you will get undesirable results.
+     The B-splines generated by _d_i_t_r_o_f_f are drawn with an approximation.  The
+     functions D~ and D~~ in the prologue need a little work.
+
+
+
+
+   2                                                            Adobe Systems
+
+
+
+
+
+
+   18 August 1992                                                    PSDIT(1)
+
+
+   NOTES
+     POSTSCRIPT is a registered trademark of Adobe Systems Incorporated.
+     Documenter's Workbench is a trademark of AT&T Technologies.
+     Unix is a trademark of AT&T Bell Laboratories.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   Adobe Systems                                                            3
+
+
+99

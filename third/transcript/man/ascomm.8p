@@ -1,0 +1,77 @@
+.TH ASCOMM 8 "4 April 1994" "Adobe Systems"
+\" Copyright (c) 1994 Adobe Systems Incorporated. All Rights Reserved.
+\" ATTN GOVERNMENT END USERS: See notice of rights in file XPSLIBDIRX/Notice
+\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/ascomm.8p,v 1.1.1.1 1996-10-07 20:25:40 ghudson Exp $
+.ds PS P\s-2OST\s+2S\s-2CRIPT\s+2
+.ds TS T\s-2RAN\s+2S\s-2CRIPT\s+2
+.SH NAME
+ascomm\(em\*(TS AppSocket TCP/IP communication filter for \*(PS printers
+.SH "SYNOPSIS"
+.B XPSLIBDIRX/ascomm
+.SH "DESCRIPTION"
+This is the low-level \*(TS AppSocket TCP/IP communication filter for use
+by the 4.2BSD line printer spooling system through the printer description
+file /etc/printcap, or by the System V spooling system.
+For 4.2BSD, it is called from the
+.I psint.sh
+shell script.  This script uses argv[0] (the name it was invoked under)
+to determine which action to take, which may involve invoking a translation
+filter or management filter before invoking the communications filter. 
+The options are as specified in the
+.I 4.2BSD Line Printer Spooler Manual.
+If a log file is specified in /etc/printcap, 
+.ascomm
+will maintain a log of each job processed, as well as any error output from
+the printer.
+For System V, it is called from the 
+.I psinterface
+shell script.
+The program 
+.I ascomm
+is the lowest level filter.  It manages communication with the printer,
+error handling, status reporting, etc.  It also manages a printer log file
+named transcript/\fIprinter\fP-log (under the lp spooling directory). 
+.SH ENVIRONMENT
+.IP VERBOSELOG=\fInumber\fP
+print verbose log messages
+.IP ASCONTROL=\fInumber\fP
+if 1, use AppSocket control protocol (default)
+.IP ASSTATUS=\fInumber\fP
+if 1, query status during job on status port (default)
+.br
+.SH FILES
+.TP 2.2i
+\fIprinter\fP.acct
+printer accounting file  (4.2BSD)
+.TP 2.2i
+\fIprinter\fP-log
+printer log file
+.TP 2.2i
+status
+printer status file (in the spool directory), shared by 
+.I lpd(8)
+and
+.I ascomm
+(4.2BSD)
+.SH "SEE ALSO"
+lpr(1), lpc(8), lpd(8), printcap(5), psint(8) (4.2BSD)
+.br
+lp(1), lpstat(1), lpsched(1M), lpadmin(1M), psinterface(8) (SysV)
+.br
+transcript(1)
+.br
+.I 4.2BSD Line Printer Spooler Manual
+.br
+.I System V Line Printer Spooling Utilities
+.SH AUTHOR
+Adobe Systems Incorporated
+.SH NOTES
+To use ascomm to communicate with HP printers via TCP/IP, set both
+ASCONTROL and ASSTATUS to 0 (in the .options or \fIprinter\fP.opt files.)
+.br
+\*(PS is a registered trademark of Adobe Systems Incorporated.
+.br
+\*(TS is a trademark of Adobe Systems Incorporated.
+.br
+Unix is a trademark of AT&T Bell Laboratories.
+

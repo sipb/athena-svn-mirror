@@ -1,0 +1,159 @@
+.TH PSDMAN 8 "19 August 1992" "Adobe Systems"
+\" Copyright (c) 1985,1987,1991,1992 Adobe Systems Incorporated. All Rights Reserved.
+\" ATTN GOVERNMENT END USERS: See notice of rights in file XPSLIBDIRX/Notice
+\" RCSID: $Header: /afs/dev.mit.edu/source/repository/third/transcript/man/psdman.8p,v 1.1.1.1 1996-10-07 20:25:39 ghudson Exp $
+.ds PS P\s-2OST\s+2S\s-2CRIPT\s+2
+.ds TS T\s-2RAN\s+2S\s-2CRIPT\s+2
+.SH NAME
+psdman\(emT\s-2RAN\s+2S\s-2CRIPT\s+2 document manager for P\s-2OST\s+2S\s-2CRIPT\s+2 printers
+.SH "SYNOPSIS"
+.B  psdman
+[
+.B -\s-1rfsGFaL\s+1
+] [
+.BI -P printername
+] [
+.BI -p prog
+] [
+.BI -n user
+] [
+.BI -h host
+]
+.SH "DESCRIPTION"
+.I psdman
+is the \*(TS document manager invoked by the printer interface script
+psinterface
+(System V) or
+psint.sh
+(BSD)
+after the printer interface program has been invoked by the print spooler.
+.PP
+.I psdman
+is responsible for reading the the document file to be printed, and
+taking the appropriate action to prepare the file for printing on a
+\*(PS printer.
+.I psdman
+distinguishes between text files (which get formatted) and \*(PS language 
+files.  If the input to 
+.I psdman
+does not begin with the \*(PS language
+magic number\(emthe first two characters being "%!"\(em
+.I psdman
+will invoke
+enscript
+to create a listing of the file.
+If the first bytes of the input file are "%!PS-Adobe-",
+and if the printer options so specify,
+.I psdman
+will also will perform various document management tasks,
+such as page reversal, font and other resource downloading, and
+printer-specific feature inclusion (manual feed, duplex, paper tray
+setting, etc.)
+before printing, if so requested.
+.I psdman 
+supports LZW compression and ASCII85 encodingfor Level 2 printers.
+.sp
+The possible options are:
+.TP
+.BI -r
+never reverse.
+.TP
+.BI -f
+continues processing despite errors.  This is the default.
+.TP
+.BI -s
+stops when errors are encountered.
+.TP
+.BI -G
+do not attempt to rearrange fonts for more efficient downloading.
+.TP
+.BI -F
+turns off parsing.  If this is specified,
+.I psdman
+will simply pass the data
+through without attempting to perform any document management.  Conversion
+of text files will still occur.
+.TP
+.BI -a
+strips out comments.  If this is specified, psdman will strip out any line
+that begins with "%".
+.TP
+.BI -L
+landscape.  
+.I Psdman
+will cause the input to be printed rotated 90 degrees.
+It will not attempt to make sure the resulting image will fit on the page.
+.TP
+.BI -P printername
+.I printername
+is the name of the \*(PS printer for which output is intended.
+.TP
+.BI -p program
+.I program
+(BSD only) is the name of the program through which psdman was invoked.
+Typically this is 
+psif.
+.TP
+.BI -h host
+.I host
+(BSD only) is the name of the host from which the print job originated.
+.TP
+.BI -n user
+.I user
+(BSD only) is the name of the user for whom the print job is being printed.
+.SH ENVIRONMENT 
+.br
+There are a number of environment variables used by
+.I psdman
+which are listed below.
+The
+psinterface
+(System V) or
+psint.sh
+(BSD)
+script sets the initial value for each,
+and the printer options file can be used to change the value for a
+particular printer.
+Note that Bourne shell syntax must be used in the printer options file.
+For BSD, this file is in the spool directory; for System V, look in
+/usr/spool/lp/transcript/ps.opt.
+Many of the variables take a numerical value, and specify whether
+an action should take place or not; 1 means do the action and
+0 means don't do it.
+.TP 
+.BI REVERSE "=\fInumber\fP "
+reverse the page order
+.TP
+.BI VERBOSELOG "=\fInumber\fP "	
+print verbose log messages
+.TP
+.BI COMPRESS "=\fInumber\fP "
+perform LZW compression on the file
+.TP
+.BI PSTEMPDIR "=\fIDirectory name\fP "
+directory for temporary files
+.PP
+You could turn off page reversal for a particular printer
+by adding this line to the printer options file:
+.br
+\ \ \ \ REVERSE=0
+\ \ \ \ export REVERSE
+.SH FILES
+.TP 2.2i
+XPSLIBDIRX/bogusmsg.ps
+\*(PS language file for a "spooled binary file rejected" message to printer
+.TP 2.2i
+XPSTEMPDIRX/t*
+Temporary file to format text files.
+.SH "SEE ALSO"
+transcript(1), pscomm(1), lp(1), enscript(1)
+.br
+.I System V Line Printer Spooling Utilities
+.SH AUTHOR
+Adobe Systems Incorporated
+.SH NOTES
+\*(PS is a registered trademark of Adobe Systems Incorporated.
+.br
+\*(TS is a trademark of Adobe Systems Incorporated.
+.br
+Unix is a trademark of AT&T Bell Laboratories.
