@@ -1,6 +1,6 @@
 /* vmh.c - visual front-end to mh */
 #ifndef	lint
-static char ident[] = "@(#)$Id: vmh.c,v 1.3 1997-12-22 20:10:20 ghudson Exp $";
+static char ident[] = "@(#)$Id: vmh.c,v 1.4 1999-01-29 18:32:28 ghudson Exp $";
 #endif	/* lint */
 #if defined(SYS5) && !defined(TERMINFO)
 /*
@@ -30,6 +30,9 @@ static char ident[] = "@(#)$Id: vmh.c,v 1.3 1997-12-22 20:10:20 ghudson Exp $";
 #undef	OK			/* tricky */
 #ifdef	TERMINFO
 #include <term.h>	/* variables describing terminal capabilities */
+#ifdef __linux__
+#include <sys/ioctl.h>
+#endif
 #endif	/* TERMINFO */
 #include "../h/mh.h"
 #include "../h/vmhsbr.h"
@@ -1130,10 +1133,12 @@ WINDOW *w;
 	adios (NULLCP, "unable to allocate line storage");
 
     lp -> l_no = (ltail ? ltail -> l_no : 0) + 1;
-#ifndef	BSD44
-    lp -> l_buf = getcpy (w -> _y[w -> _cury]);
+#ifdef BSD44
+    lp -> l_buf = getcpy (w->lines[w->_cury]->line);
+#elif defined(NCURSES_VERSION)
+    lp -> l_buf = getcpy (w->_line[w->_cury].text);
 #else
-    lp -> l_buf = getcpy (w -> lines[w -> _cury]->line);
+    lp -> l_buf = getcpy (w->_y[w->_cury]);
 #endif
     for (cp = lp -> l_buf + strlen (lp -> l_buf) - 1; cp >= lp -> l_buf; cp--)
 	if (isspace (*cp))
