@@ -16,7 +16,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_create.c,v 1.1.1.1 2002-01-31 21:48:52 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_create.c,v 1.1.1.1.2.1 2002-08-06 16:40:04 ghudson Exp $");
 
 #include "../afs/sysincludes.h"	/* Standard vendor system headers */
 #include "../afs/afsincludes.h"	/* Afs-based standard headers */
@@ -72,6 +72,7 @@ afs_create(OSI_VC_ARG(adp), aname, attrs, aexcl, amode, avcp, acred)
     struct server *hostp=0;
     struct vcache *tvc;
     struct volume*	volp = 0;
+    struct afs_fakestat_state fakestate;
     XSTATS_DECLS
     OSI_VC_CONVERT(adp)
 
@@ -80,6 +81,8 @@ afs_create(OSI_VC_ARG(adp), aname, attrs, aexcl, amode, avcp, acred)
     if (code = afs_InitReq(&treq, acred)) return code;
     afs_Trace3(afs_iclSetp, CM_TRACE_CREATE, ICL_TYPE_POINTER, adp,
 	       ICL_TYPE_STRING, aname, ICL_TYPE_INT32, amode);
+
+    afs_InitFakeStat(&fakestate);
 
 #ifdef AFS_SGI65_ENV
     /* If avcp is passed not null, it's the old reference to this file.
@@ -105,6 +108,8 @@ afs_create(OSI_VC_ARG(adp), aname, attrs, aexcl, amode, avcp, acred)
 	code = EINVAL;		
 	goto done;
     }
+    code = afs_EvalFakeStat(&adp, &fakestate, &treq);
+    if (code) goto done;
 tagain:
     code = afs_VerifyVCache(adp, &treq);
     if (code) goto done;
@@ -448,6 +453,7 @@ done:
     afs_PutVCache(adp, 0);
 #endif	/* AFS_OSF_ENV */
 
+    afs_PutFakeStat(&fakestate);
     code = afs_CheckCode(code, &treq, 20);
     return code;
 }

@@ -22,7 +22,7 @@
 #include <afsconfig.h>
 #include "../afs/param.h"
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_remove.c,v 1.1.1.1 2002-01-31 21:33:11 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/afs/VNOPS/afs_vnop_remove.c,v 1.1.1.1.2.1 2002-08-06 16:40:03 ghudson Exp $");
 
 #include "../afs/sysincludes.h"	/* Standard vendor system headers */
 #include "../afs/afsincludes.h"	/* Afs-based standard headers */
@@ -226,6 +226,7 @@ afs_remove(OSI_VC_ARG(adp), aname, acred)
     afs_int32 offset, len;
     struct AFSFetchStatus OutDirStatus;
     struct AFSVolSync tsync;
+    struct afs_fakestat_state fakestate;
     XSTATS_DECLS
     OSI_VC_CONVERT(adp)
 
@@ -233,12 +234,23 @@ afs_remove(OSI_VC_ARG(adp), aname, acred)
     afs_Trace2(afs_iclSetp, CM_TRACE_REMOVE, ICL_TYPE_POINTER, adp,
 	       ICL_TYPE_STRING, aname);
 
-    /* Check if this is dynroot */
-    if (afs_IsDynroot(adp))
-	return afs_DynrootVOPRemove(adp, acred, aname);
-
     if (code = afs_InitReq(&treq, acred))
       return code;
+
+    afs_InitFakeStat(&fakestate);
+    code = afs_EvalFakeStat(&adp, &fakestate, &treq);
+    if (code) {
+      afs_PutFakeStat(&fakestate);
+      return code;
+    }
+
+    /* Check if this is dynroot */
+    if (afs_IsDynroot(adp)) {
+      code = afs_DynrootVOPRemove(adp, acred, aname);
+      afs_PutFakeStat(&fakestate);
+      return code;
+    }
+
 tagain:
     code = afs_VerifyVCache(adp, &treq);
 #ifdef	AFS_OSF_ENV
@@ -246,13 +258,15 @@ tagain:
     if (code) {
 	afs_PutVCache(adp, 0);
 	afs_PutVCache(tvc, 0);
+	afs_PutFakeStat(&fakestate);
 	return afs_CheckCode(code, &treq, 22);
     }
 #else	/* AFS_OSF_ENV */
     tvc = (struct vcache *) 0;
     if (code) {
-      code = afs_CheckCode(code, &treq, 23);
-      return code;
+	code = afs_CheckCode(code, &treq, 23);
+	afs_PutFakeStat(&fakestate);
+	return code;
     }
 #endif
 
@@ -261,6 +275,7 @@ tagain:
       */
     if ( adp->states & CRO ) {
         code = EROFS;
+	afs_PutFakeStat(&fakestate);
 	return code;
     }
 
@@ -331,7 +346,7 @@ tagain:
 	char *unlname = newname();
 
 	ReleaseWriteLock(&adp->lock);
-	code = afsrename(adp, aname, adp, unlname, acred);
+	code = afsrename(adp, aname, adp, unlname, acred, &treq);
 	Tnam1 = unlname;
 	if (!code) {
 	    tvc->mvid = (struct VenusFid *)unlname;
@@ -353,6 +368,7 @@ tagain:
 #ifdef	AFS_OSF_ENV
     afs_PutVCache(adp, WRITE_LOCK);
 #endif	/* AFS_OSF_ENV */
+    afs_PutFakeStat(&fakestate);
     return code;
 }
 
