@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v $
- * $Author: ghudson $ 
+ * $Author: cfields $ 
  *
  * Copyright 1990, 1991 by the Massachusetts Institute of Technology. 
  *
@@ -11,7 +11,7 @@
 
 #if  (!defined(lint))  &&  (!defined(SABER))
 static char *rcsid =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v 1.17 1997-12-03 21:47:35 ghudson Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/dash/dash.c,v 1.18 1998-03-31 21:45:35 cfields Exp $";
 #endif
 
 #include "mit-copyright.h"
@@ -28,6 +28,7 @@ static char *rcsid =
 #include <sys/resource.h>
 #include <sys/param.h>
 #include <fcntl.h>
+#include <athdir.h>
 #include <X11/Xos.h>
 #include <Jets.h>
 #include <X11/Xutil.h>
@@ -594,7 +595,7 @@ void expand(what, where)
 {
   static int initialized = 0;
   static char sys[20], bin[20], sysdir[50], bindir[50], home[100];
-  char *start, *wherestart, *tmp, bdirname[1024];
+  char *start, *wherestart, *tmp, **found;
   struct stat bdir;
 
   if (initialized == 0)
@@ -659,6 +660,10 @@ void expand(what, where)
 		what++;
 		break;
 	      case 'B':
+		/* Make tmp point to the beginning of the path we're
+		 * looking for binary directories under, and null
+		 * terminate it.
+		 */
 		tmp = where;
 		if (where != wherestart)
 		  {
@@ -667,18 +672,27 @@ void expand(what, where)
 		      tmp--;
 		    if (*tmp == ' ') tmp++;
 		  }
+		*where = '\0';
 
-		strncpy(bdirname, tmp, where - tmp);
-		bdirname[where - tmp] = '\0';
-		strcat(bdirname, sysdir);
-		/* put "cd" on front, if set. Or not... */
-		if (!stat(bdirname, &bdir))
-		  tmp = sysdir;
+		/* Let athdir do the work... */
+		found = athdir_get_paths(tmp, "bin",
+					 NULL, NULL, NULL, NULL, 0);
+		if (found)
+		  {
+		    /* Replace partially constructed path ending with
+		     * %B with the path athdir returned.
+		     */
+		    strcpy(tmp, *found);
+		    where = tmp + strlen(*found);
+		    athdir_free_paths(found);
+		  }
 		else
-		  tmp = bindir;
+		  {
+		    /* If we found nothing to substitute, don't. */
+		    strcpy(where, "%B");
+		    where += 2;
+		  }
 
-		strncpy(where, tmp, strlen(tmp));
-		where += strlen(tmp);
 		what++;
 		break;
 	      default:
