@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: build.sh,v 1.5 1996-10-12 22:02:53 ghudson Exp $
+# $Id: build.sh,v 1.6 1996-10-13 15:55:00 ghudson Exp $
 
 source="/source"
 build="/build"
@@ -26,7 +26,6 @@ done
 shift `expr $OPTIND - 1`
 
 # Determine the platform type.
-export ATHENA_SYS HOSTTYPE
 case "`uname -a`" in
 	SunOS*sparc)	platform=sun4 ;;
 	IRIX*5.3*)	platform=sgi ;;
@@ -38,10 +37,10 @@ exec >> $build/LOGS/washlog.`date '+%y.%m.%d.%H'` 2>&1
 
 echo ========
 echo starting `date`
-echo on a $HOSTTYPE
+echo on a $platform
 
 # Read in the list of packages, filtering for platform type.
-packages=`( echo "$HOSTTYPE"; cat "$source/packs/build/packages" ) | awk '
+packages=`( echo "$platform"; cat "$source/packs/build/packages" ) | awk '
 	NR == 1 {
 		platform = $1;
 		next;
@@ -70,13 +69,6 @@ packages=`( echo "$HOSTTYPE"; cat "$source/packs/build/packages" ) | awk '
 found=""
 done=""
 for package in $packages; do
-
-	# /bin/sh isn't supposed to do path hashing, but on Solaris it does.
-	# Yech.
-	if [ "$HOSTTYPE" = sun4 ]; then
-		hash -r
-	fi
-
 	# If arguments given, filter for start and end packages.
 	if [ -n "$done" ]; then
 		break;
