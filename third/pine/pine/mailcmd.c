@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: mailcmd.c,v 1.1.1.3 2003-05-01 01:13:02 ghudson Exp $";
+static char rcsid[] = "$Id: mailcmd.c,v 1.1.1.4 2004-03-01 21:16:30 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -2583,8 +2583,13 @@ cmd_save(state, stream, msgmap, agg, in_index)
 	    return;
 	}
     }
-    else
-      sprintf(nmsgs, "%s msgs ", comatose(mn_total_cur(msgmap)));
+    else{
+	sprintf(nmsgs, "%s msgs ", comatose(mn_total_cur(msgmap)));
+
+	/* e is just used to get a default save folder from the first msg */
+	e = mail_fetchstructure(stream, mn_m2raw(msgmap, mn_first_cur(msgmap)),
+				NULL);
+    }
 
     if(save_prompt(state,&cntxt,newfolder,sizeof(newfolder),nmsgs,e,raw,NULL)){
 	del = !READONLY_FOLDER && F_OFF(F_SAVE_WONT_DELETE, ps_global);
@@ -3745,7 +3750,7 @@ long save_fetch_append_cb (stream, data, flags, date, message)
 	    mail_gc(pkg->stream, GC_TEXTS);
 #endif
 
-	    fetch = mail_fetch_text(pkg->stream, raw, NULL, &tlen, FT_PEEK);
+	    fetch = pine_mail_fetch_text(pkg->stream, raw, NULL, &tlen, FT_PEEK);
 
 #if	!(defined(DOS) && !defined(WIN32))
 	    if(!(fetch && so_nputs(pkg->so, fetch, tlen)))
@@ -3919,7 +3924,7 @@ save_fetch_append(stream, raw, sect, save_stream, save_folder,
 	old_imap_server = is_imap_stream(stream) && !modern_imap_stream(stream);
 
 	/* Second, go fetch the corresponding text... */
-	fetch = mail_fetch_text(stream, raw, sect, &tlen,
+	fetch = pine_mail_fetch_text(stream, raw, sect, &tlen,
 				!old_imap_server ? FT_PEEK : 0);
 
 	/*
@@ -6276,6 +6281,9 @@ do_broach_folder(newfolder, new_context, streamp)
 	ps_global->msgmap		    = ps_global->inbox_msgmap;
 	ps_global->inbox_msgmap		    = NULL;
 
+	if(was_dead)
+	  icon_text(NULL, IT_MCLOSED);
+
 	dprint(7, (debugfile, "%ld %ld %x\n",
 		   mn_get_cur(ps_global->msgmap),
                    mn_get_total(ps_global->msgmap),
@@ -6494,6 +6502,9 @@ do_broach_folder(newfolder, new_context, streamp)
 	    mn_set_cur(ps_global->msgmap, -1L);
             strcpy(ps_global->cur_folder, "");
         }
+	if(was_dead && ps_global->dead_stream == 0
+	   && ps_global->dead_inbox == 0)
+	  icon_text(NULL, IT_MCLOSED);
         return(rv);
     } else {
         if(old_folder != NULL) {
@@ -8500,8 +8511,8 @@ raw_pipe_getc(c)
     if((!raw_pipe.cur
 	&& !(raw_pipe.cur = mail_fetchheader(raw_pipe.stream, raw_pipe.msgno)))
        || (!*raw_pipe.cur && !raw_pipe.body
-	   && !(raw_pipe.cur = raw_pipe.body = mail_fetchtext(raw_pipe.stream,
-							      raw_pipe.msgno)))
+	   && !(raw_pipe.cur = raw_pipe.body = pine_mail_fetch_text(raw_pipe.stream,
+						   raw_pipe.msgno, NULL, NULL, NIL)))
        || (!*raw_pipe.cur && raw_pipe.body))
       return(0);
 
@@ -11569,7 +11580,8 @@ flag_callback(set, flags)
     }
 
     msgno = mn_m2raw(ps_global->msgmap, mn_get_cur(ps_global->msgmap));
-    if((mc = mail_elt(ps_global->mail_stream, msgno)) && mc->valid){
+    if(ps_global->mail_stream && (mc = mail_elt(ps_global->mail_stream, msgno))
+       && mc->valid){
 	/*
 	 * NOTE: code below is *VERY* sensitive to the order of
 	 * the messages defined in resource.h for flag handling.

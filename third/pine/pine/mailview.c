@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: mailview.c,v 1.1.1.3 2003-05-01 01:12:43 ghudson Exp $";
+static char rcsid[] = "$Id: mailview.c,v 1.1.1.4 2004-03-01 21:16:27 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -156,7 +156,7 @@ static char *g_editorial_prefix, *g_editorial_postfix;
 	"The following text is in the \"%.40s\" character set.\015\012Your "
 #define	CHARSET_DISCLAIMER_2	"display is set"
 #define	CHARSET_DISCLAIMER_3	\
-       " for the \"%.40s\" character set. \015\012Some characters may be displayed incorrectly."
+       " for the \"%.40s\" character set. \015\012Some %.40scharacters may be displayed incorrectly."
 #define ENCODING_DISCLAIMER      \
         "The following text contains the unknown encoding type \"%.20s\". \015\012Some or all of the text may be displayed incorrectly."
 
@@ -254,7 +254,7 @@ int         is_an_addr_hdr PROTO((char *));
 int         any_hdr_color PROTO((char *));
 int	    format_blip_seen PROTO((long));
 int	    charset_editorial PROTO((char *, long, HANDLE_S **, int, int,
-				     gf_io_t));
+				     int, gf_io_t));
 int	    encoding_editorial PROTO((BODY *, int, gf_io_t));
 int	    rfc2369_editorial PROTO((long, HANDLE_S **, int, int, gf_io_t));
 void	    format_envelope PROTO((MAILSTREAM *, long, char *, ENVELOPE *,
@@ -528,7 +528,12 @@ mail_view_screen(ps)
 #endif
 	  clrbitn(VIEW_PIPE_KEY, scrollargs.keys.bitmap);
 
-	if(ps_global->full_header)
+	/* 
+	 * turn off attachment viewing for raw msg txt, atts 
+	 * haven't been set up at this point
+	 */
+	if(ps_global->full_header
+	   && F_ON(F_ENABLE_FULL_HDR_AND_TEXT, ps_global))
 	  clrbitn(VIEW_ATT_KEY, scrollargs.keys.bitmap);
 
 	if(F_OFF(F_ENABLE_BOUNCE, ps_global))
@@ -1151,18 +1156,25 @@ type_desc(type, subtype, params, full)
 	      }
 
 	    if(i >= 0){			/* charset to write */
-		sstrcpy(&p, " (charset: ");
-		sstrcpy(&p, charset_names[i].rfcname
-			      ? charset_names[i].rfcname : "Unknown");
-		if(full){
-		    sstrcpy(&p, " \"");
-		    sstrcpy(&p, charset_names[i].humanname
-			    ? charset_names[i].humanname
-			    : strsquish(tmp_20k_buf + 500, parmval, 40));
-		    *p++ = '\"';
-		}
+		if(charset_names[i].rfcname){
+		    sstrcpy(&p, " (charset: ");
+		    sstrcpy(&p, charset_names[i].rfcname
+				  ? charset_names[i].rfcname : "Unknown");
+		    if(full){
+			sstrcpy(&p, " \"");
+			sstrcpy(&p, charset_names[i].humanname
+				? charset_names[i].humanname
+				: strsquish(tmp_20k_buf + 500, parmval, 40));
+			*p++ = '\"';
+		    }
 
-		sstrcpy(&p, ")");
+		    sstrcpy(&p, ")");
+		}
+		else{
+		    sstrcpy(&p, " (charset: ");
+		    sstrcpy(&p, strsquish(tmp_20k_buf + 500, parmval, 40));
+		    sstrcpy(&p, ")");
+		}
 	    }
 
 	    fs_give((void **) &parmval);
@@ -1494,7 +1506,8 @@ format_message(msgno, env, body, handlesp, flgs, pc)
 	}
 #endif
 
-        if(text2 = (void *)mail_fetchtext(ps_global->mail_stream, msgno)){
+        if(text2 = (void *)pine_mail_fetch_text(ps_global->mail_stream,
+						msgno, NULL, NULL, NIL)){
  	    if(!gf_puts(NEWLINE, pc))		/* write delimiter */
 	      goto write_error;
 #if	defined(DOS) && !defined(WIN32)
@@ -1789,6 +1802,10 @@ format_message(msgno, env, body, handlesp, flgs, pc)
 	      goto write_error;
 
 	    if(a->body->subtype && strucmp(a->body->subtype, "rfc822") == 0){
+		/* imapenvonly, we may not have all the headers we need */
+		if(a->body->nested.msg->env->imapenvonly)
+		  mail_fetch_header(ps_global->mail_stream, msgno,
+				    a->number, NULL, NULL, FT_PEEK);
 		switch(format_header(ps_global->mail_stream, msgno, a->number,
 				     a->body->nested.msg->env, &h,
 				     NULL, handlesp, flgs, pc)){
@@ -1925,11 +1942,12 @@ quote_editorial(linenum, line, ins, local)
  * Format editorial comment about charset mismatch
  */
 int
-charset_editorial(charset, msgno, handlesp, flags, width, pc)
+charset_editorial(charset, msgno, handlesp, flags, quality, width, pc)
     char      *charset;
     long       msgno;
     HANDLE_S **handlesp;
     int	       flags;
+    int        quality;
     int	       width;
     gf_io_t    pc;
 {
@@ -1985,11 +2003,13 @@ charset_editorial(charset, msgno, handlesp, flags, width, pc)
     }
 
     sprintf(p, CHARSET_DISCLAIMER_3,
-	    ps_global->VAR_CHAR_SET ? ps_global->VAR_CHAR_SET : "US-ASCII");
+	    ps_global->VAR_CHAR_SET ? ps_global->VAR_CHAR_SET : "US-ASCII",
+	    (quality == CV_LOSES_SPECIAL_CHARS) ? "special " : "");
 
     return(format_editorial(buf, width, pc) == NULL
 	   && gf_puts(NEWLINE, pc) && gf_puts(NEWLINE, pc));
 }
+
 
 /*
  * Format editorial comment about unknown encoding
@@ -3394,8 +3414,6 @@ color_a_quote(linenum, line, ins, local)
 
 /*
  * Paint the signature.
- * 
- * Patch contributed by Nicolas Christin <nicolas@cs.virginia.edu>, 2003
  */
 int
 color_signature(linenum, line, ins, is_in_sig)
@@ -5007,6 +5025,7 @@ decode_text(att, msgno, pc, handlesp, style, flags)
     char       *err, *charset;
     int		filtcnt = 0, error_found = 0, column, wrapit;
     int         is_in_sig = OUT_SIG_BLOCK;
+    CONV_TABLE *ct = NULL;
 
     column = (flags & FM_DISPLAY) ? ps_global->ttyo->screen_cols : 80;
     wrapit = column;
@@ -5017,11 +5036,11 @@ decode_text(att, msgno, pc, handlesp, style, flags)
 
     if(charset = rfc2231_get_param(att->body->parameter,"charset",NULL,NULL)){
 	if(F_OFF(F_DISABLE_CHARSET_CONVERSIONS, ps_global)){
-	    unsigned char *tab;
 
-	    if(tab = conversion_table(charset, ps_global->VAR_CHAR_SET)){
+	    ct = conversion_table(charset, ps_global->VAR_CHAR_SET);
+	    if(ct && ct->table){
 		filters[filtcnt].filter = gf_convert_charset;
-		filters[filtcnt++].data = gf_convert_charset_opt(tab);
+		filters[filtcnt++].data = gf_convert_charset_opt(ct->table);
 	    }
 	}
 
@@ -5124,13 +5143,16 @@ decode_text(att, msgno, pc, handlesp, style, flags)
      * local charset's undefined or it's not the same as the specified
      * charset, put up a warning...
      */
-    if(charset = rfc2231_get_param(att->body->parameter,"charset",NULL,NULL)){
+    if((!ct || ct->quality != CV_NO_TRANSLATE_NEEDED) &&
+       (charset = rfc2231_get_param(att->body->parameter,"charset",NULL,NULL))){
 	int rv = TRUE;
 
 	if(strucmp(charset, "us-ascii")
 	   && (!ps_global->VAR_CHAR_SET
 	       || strucmp(charset, ps_global->VAR_CHAR_SET)))
-	  rv = charset_editorial(charset, msgno, handlesp, flags, column, pc);
+	  rv = charset_editorial(charset, msgno, handlesp, flags,
+				 ct ? ct->quality : CV_NO_TRANSLATE_POSSIBLE,
+				 column, pc);
 
 	fs_give((void **) &charset);
 	if(!rv)
@@ -5637,12 +5659,8 @@ format_envelope(s, n, sect, e, pc, which, flags)
       format_addr_string(s, n, sect, "Return-Path: ", e->return_path,
 			 flags, pc);
 
-    if((which & FE_NEWSGROUPS) && e->newsgroups){
-	format_newsgroup_string("Newsgroups: ", e->newsgroups, flags, pc);
-	if(e->ngbogus)
-	  q_status_message(SM_ORDER, 0, 3,
-     "Unverified Newsgroup header -- Message MAY or MAY NOT have been posted");
-    }
+    if((which & FE_NEWSGROUPS) && e->newsgroups)
+      format_newsgroup_string("Newsgroups: ", e->newsgroups, flags, pc);
 
     if((which & FE_FOLLOWUPTO) && e->followup_to)
       format_newsgroup_string("Followup-To: ", e->followup_to, flags, pc);
@@ -8769,7 +8787,7 @@ display_parameters(params)
 
     for(p = params; p; p = p->next)	/* ok if we include *'s */
       if(p->attribute && (n = strlen(p->attribute)) > longest)
-	longest = n;
+	longest = min(32, n);   /* shouldn't be any bigger than 32 */
 
     d = tmp_20k_buf;
     if(parmlist = rfc2231_newparmlist(params)){

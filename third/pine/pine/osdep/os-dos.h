@@ -1,6 +1,6 @@
 #line 2 "osdep/os-dos.h"
 /*----------------------------------------------------------------------
-  $Id: os-dos.h,v 1.1.1.2 2003-02-12 08:09:26 ghudson Exp $
+  $Id: os-dos.h,v 1.1.1.3 2004-03-01 21:15:52 ghudson Exp $
 
             T H E    P I N E    M A I L   S Y S T E M
 
@@ -322,7 +322,7 @@ extern	unsigned alarm(unsigned);
     Various maximum field lengths, probably shouldn't be changed.
  ----*/
 #define MAX_FULLNAME     (100) 
-#define MAX_NICKNAME      (40)
+#define MAX_NICKNAME      (80)
 #define MAX_ADDRESS      (500)
 #define MAX_NEW_LIST     (500)  /* Max addrs to be added when creating list */
 #define MAX_SEARCH       (100)  /* Longest string to search for             */

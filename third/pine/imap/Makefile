@@ -9,10 +9,10 @@
 #		Internet: MRC@CAC.Washington.EDU
 #
 # Date:		7 December 1989
-# Last Edited:	4 November 2002
+# Last Edited:	14 July 2003
 #
 # The IMAP toolkit provided in this Distribution is
-# Copyright 2002 University of Washington.
+# Copyright 1988-2003 University of Washington.
 #
 # The full text of our legal notices is contained in the file called
 # CPYRIGHT, included with this Distribution.
@@ -71,6 +71,7 @@
 # hpx	HP-UX 10.x (see ghp, ghs, hxd, and shp)
 # hxd	HP-UX 10.x with DCE security (see shp)
 # isc	Interactive Systems
+# ldb	Debian Linux
 # lnx	Linux with traditional passwords and crypt() in the C library
 #	 (see lnp, sl4, sl5, and slx)
 # lnp	Linux with Pluggable Authentication Modules (PAM)
@@ -269,14 +270,14 @@ SPECIALS:
 
 # Note on SCO you may have to set LN to "ln".
 
-a32 a41 aix bs3 bsf bsi bso d-g d54 do4 drs epx gas gh9 ghp ghs go5 gsc gsg gso gsu gul hpp hpx lnp lyn mct mnt neb nec nto nxt nx3 osf os4 ptx qnx sc5 sco sgi sg6 shp sl4 sl5 slx snx sol sos uw2: an
+a32 a41 aix bs3 bsf bsi bso d-g d54 do4 drs epx gas gh9 ghp ghs go5 gsc gsg gso gul hpp hpx lnp lyn mct mnt neb nec nto nxt nx3 osf os4 ptx qnx sc5 sco sgi sg6 shp sl4 sl5 slx snx sol sos uw2: an
 	$(BUILD) BUILDTYPE=$@
 
 # If you use sv4, you may find that it works to move it to use the an process.
 # If so, you probably will want to delete the "-Dconst=" from the sv4 CFLAGS in
 # the c-client Makefile.
 
-aos art asv aux bsd cvx dpx dyn isc pyr s40 sv4 ult vul vu2: ua
+aos art asv aux bsd cvx dpx dyn isc pyr sv4 ult vul vu2: ua
 	$(BUILD) BUILDTYPE=$@
 
 # Knotheads moved Kerberos and SSL locations on these platforms
@@ -284,6 +285,10 @@ aos art asv aux bsd cvx dpx dyn isc pyr s40 sv4 ult vul vu2: ua
 cyg:	an
 	$(BUILD) BUILDTYPE=cyg \
 	SPECIALS="SSLDIR=/usr/ssl SSLINCLUDE=/usr/include/openssl SSLLIB=/usr/lib"
+
+ldb:	an
+	$(BUILD) BUILDTYPE=lnp \
+	SPECIALS="GSSDIR=/usr SSLDIR=/usr/lib/ssl SSLINCLUDE=/usr/include/openssl SSLLIB=/usr/lib SSLCERTS=/etc/ssl/certs SSLKEYS=/etc/ssl/private"
 
 lrh:	an
 	$(BUILD) BUILDTYPE=lnp \
@@ -324,13 +329,36 @@ lnxok:
 	@$(TOUCH) lnxok
 
 
-# SUN-OS makes you load libdl by hand...
+# SUN-OS C compiler makes you load libdl by hand...
 
-ssn sun: suntools ua
+ssn sun: sunok suntools ua
 	$(BUILD) BUILDTYPE=$@
 
 suntools:
 	$(CD) tools;$(MAKE) LDFLAGS=-ldl
+
+gsu:	sunok an
+	$(BUILD) BUILDTYPE=$@
+
+s40:	sunok ua
+	$(BUILD) BUILDTYPE=$@
+
+sunok:
+	@echo You are building for the old BSD-based SUN-OS.  This is NOT
+	@echo the modern SVR4-based Solaris.  If you want to build for
+	@echo Solaris, you should use make gso or make sol.  Do you want
+	@echo to continue this build?  Type y or n please:
+	@$(SH) -c 'read x; case "$$x" in y) exit 0;; *) exit 1;; esac'
+	@echo OK, I will remember that you really want to build for the old
+	@echo BSD-based SUN-OS.  You will not see this message again.
+	@echo If the build fails and you realize that you really wanted to
+	@echo build for Solaris, then do the following commands:
+	@echo % rm sunok
+	@echo % make clean
+	@echo % make gso
+	@echo If gso does not work, try sol.  Be sure to do a make clean
+	@echo between each try!
+	@$(TOUCH) sunok
 
 
 # SVR2 doesn't have symbolic links (at least my SVR2 system doesn't)

@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: mailcap.c,v 1.1.1.2 2003-02-12 08:01:27 ghudson Exp $";
+static char rcsid[] = "$Id: mailcap.c,v 1.1.1.3 2004-03-01 21:16:32 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -637,10 +637,8 @@ mc_get_command(type, subtype, params, check_extension)
 
     mc_init();
 
-    if(check_extension || 
-       (type == TYPEAPPLICATION 
-	&& subtype && !strucmp(subtype,"octet-stream"))){
-	char	 *namep;
+    if(check_extension){
+	char	 *namep, *dec_namebuf = NULL, *dec_namep = NULL;
 	MT_MAP_T  e2b;
 
 	/*
@@ -653,7 +651,19 @@ mc_get_command(type, subtype, params, check_extension)
 	 *       though, and allowing for it would mean two scans.
 	 */
 	if(namep = rfc2231_get_param(params, "name", NULL, NULL)){
-	    if(mt_get_file_ext((char *) namep, &e2b.from.ext)){
+	    if(namep[0] == '=' && namep[1] == '?'){
+	    /*
+	     * Here we have a client that wrongly sent us rfc2047 encoded
+	     * parameter instead of what rfc2231 suggests.  Grudgingly,
+	     * we try to fix what we didn't break.
+	     */
+		dec_namebuf = (char *)fs_get((strlen(namep)+1)*sizeof(char));
+		dec_namep =
+		  (char *)rfc1522_decode((unsigned char *)dec_namebuf,
+					 strlen(namep)+1, namep, NULL);
+	    }
+	    if(mt_get_file_ext((char *) dec_namep ? dec_namep : namep,
+			       &e2b.from.ext)){
 		if(strlen(e2b.from.ext) < sizeof(tmp_ext) - 2){
 		    strcpy(ext = tmp_ext, e2b.from.ext - 1); /* remember it */
 		    if(mt_srch_mime_type(mt_srch_by_ext, &e2b)){
@@ -668,6 +678,8 @@ mc_get_command(type, subtype, params, check_extension)
 	    }
 
 	    fs_give((void **) &namep);
+	    if(dec_namebuf)
+	      fs_give((void **) &dec_namebuf);
 	}
 	else
 	  return(NULL);

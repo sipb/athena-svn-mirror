@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: init.c,v 1.1.1.3 2003-05-01 01:13:33 ghudson Exp $";
+static char rcsid[] = "$Id: init.c,v 1.1.1.4 2004-03-01 21:15:53 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -320,7 +320,7 @@ CONF_TXT_T cf_text_mailcheck[] =	"The approximate number of seconds between chec
 
 CONF_TXT_T cf_text_maildropcheck[] =	"The minimum number of seconds between checks for new mail in a Mail Drop.\n# This is always effectively at least as large as the mail-check-interval";
 
-CONF_TXT_T cf_text_nntprange[] =	"For newsgroups accessed using NNTP, only messages numbered in the range\n$ lastmsg-range+1 to lastmsg will be considered";
+CONF_TXT_T cf_text_nntprange[] =	"For newsgroups accessed using NNTP, only messages numbered in the range\n# lastmsg-range+1 to lastmsg will be considered";
 
 CONF_TXT_T cf_text_news_active[] =	"Path and filename of news configation's active file.\n# The default is typically \"/usr/lib/news/active\".";
 
@@ -2575,6 +2575,8 @@ feature_list(index)
 	 F_COMPOSE_TO_NEWSGRP, h_config_compose_news_wo_conf, PREF_NEWS},
 	{"enable-8bit-nntp-posting",
 	 F_ENABLE_8BIT_NNTP, h_config_8bit_nntp, PREF_NEWS},
+	{"enable-multiple-newsrcs",
+	 F_ENABLE_MULNEWSRCS, h_config_enable_mulnewsrcs, PREF_NEWS},
 	{"news-approximates-new-status",
 	 F_FAKE_NEW_IN_NEWS, h_config_news_uses_recent, PREF_NEWS},
 	{"news-deletes-across-groups",
@@ -2585,6 +2587,8 @@ feature_list(index)
 	 F_NO_NEWS_VALIDATION, h_config_post_wo_validation, PREF_NEWS},
 	{"news-read-in-newsrc-order",
 	 F_READ_IN_NEWSRC_ORDER, h_config_read_in_newsrc_order, PREF_NEWS},
+	{"predict-nntp-server",
+	 F_PREDICT_NNTP_SERVER, h_config_predict_nntp_server, PREF_NEWS},
 	{"quell-extra-post-prompt",
 	 F_QUELL_EXTRA_POST_PROMPT, h_config_quell_post_prompt, PREF_NEWS},
 
@@ -2728,6 +2732,8 @@ feature_list(index)
 	{"store-window-position-in-config",
 	 F_STORE_WINPOS_IN_CONFIG, h_config_winpos_in_config, PREF_MISC},
 #endif
+	{"tab-checks-recent",
+	 F_TAB_CHK_RECENT, h_config_tab_checks_recent, PREF_MISC},
 	{"try-alternative-authentication-driver-first",
 	 F_PREFER_ALT_AUTH, h_config_alt_auth, PREF_MISC},
 	{"unselect-will-not-advance",
@@ -2866,6 +2872,11 @@ process_feature_list(ps, list, old_growth, hir, osr)
     int                       i,
                               yorn;
     FEATURE_S		     *feat;
+
+
+    /* clear all previous settings and then reset them */
+    for(i = 0; (feat = feature_list(i)) != NULL; i++)
+      F_SET(feat->id, ps, 0);
 
 
     /* backwards compatibility */
@@ -4283,8 +4294,10 @@ set_feature_list_current_val(var)
    Read input line and expand shell-variables/meta-characters
 
 	<input>		<replaced by>
-	${variable}	getenv("variable")
 	$variable	getenv("variable")
+	${variable}	getenv("variable")
+	${variable:-defvalue} is getenv("variable") if variable is defined and
+	                      is defvalue otherwise
 	~		getenv("HOME")
 	\c		c
 	<others>	<just copied>
@@ -4349,38 +4362,68 @@ expand_variables(lineout, lineoutlen, linein, colon_path)
         }else
 #endif
 	if(*src == '$'){		/* shell variable */
-	    char word[128+1];
-	    int  found_brace = 0;
+	    char word[128+1], *colon = NULL, *rbrace = NULL;
 
 	    envexpand++;		/* signal that we've expanded a var */
 	    src++;			/* skip dollar */
-	    p = word;
 	    if(*src == '{'){		/* starts with brace? */
 		src++;        
-		found_brace = 1;
+		rbrace = strindex(src, '}');
+		if(rbrace){
+		    /* look for default value */
+		    colon = strstr(src, ":-");
+		    if(colon && (rbrace < colon))
+		      colon = NULL;
+		}
 	    }
 
-	    while(*src && !isspace((unsigned char) *src)
-		  && (p-word < sizeof(word)-1)
-		  && (!found_brace || *src != '}'))
-	      *p++ = *src++;		/* copy to word */
+	    p = word;
 
-	    if(found_brace){	/* look for closing  brace */
-		while(*src && *src != '}')
-		  src++;		/* skip until brace */
+	    /* put the env variable to be looked up in word */
+	    if(rbrace){
+		while(*src
+		      && (p-word < sizeof(word)-1)
+		      && ((colon && src < colon) || (!colon && src < rbrace))){
+		    if(isspace((unsigned char) *src)){
+			/*
+			 * Illegal input. This should be an error of some
+			 * sort but instead of that we'll just backup to the
+			 * $ and treat it like it wasn't there.
+			 */
+			while(*src != '$')
+			  src--;
+			
+			envexpand--;
+			goto just_copy;
+		    }
+		    else
+		      *p++ = *src++;
+		}
 
-		if(*src == '}')	/* skip brace */
-		  src++;
+		/* adjust src for next char */
+		src = rbrace + 1;
+	    }
+	    else{
+		while(*src && !isspace((unsigned char) *src)
+		      && (p-word < sizeof(word)-1))
+		  *p++ = *src++;
 	    }
 
-	    *p = '\0';			/* tie off word */
+	    *p = '\0';
 
-	    if(p = getenv(word)) 	/* check for word in environment */
-	      while(*p && dest < limit)
-		*dest++ = *p++;
+	    if((p = getenv(word)) != NULL){ /* check for word in environment */
+		while(*p && dest < limit)
+		  *dest++ = *p++;
+	    }
+	    else if(colon){		    /* else possible default value */
+		p = colon + 2;
+		while(*p && p < rbrace && dest < limit)
+		  *dest++ = *p++;
+	    }
 
 	    continue;
 	}else{				/* other cases: just copy */
+just_copy:
 	    if(dest < limit)
 	      *dest++ = *src;
 	}
@@ -9545,29 +9588,21 @@ rd_update_remote(rd, returndate)
 	    /*
 	     * C-client expects CRLF-terminated lines. Convert them
 	     * as we copy into c-client. Read ahead isn't available.
+	     * Leave CRLF as is, convert LF to CRLF, leave CR as is.
 	     */
-	    if(last_c == '\r' || last_c == '\n'){
-		/* write the CRFL */
+	    if(last_c != '\r' && c == '\n'){
+		/* Convert \n to CRFL */
 		if(so_writec('\r', rd->so) == 0 || so_writec('\n', rd->so) == 0)
 		  err = 1;
 		
 		last_c = 0;
-
-		/* write this char if not CR or LF */
-		if(!err && !(c == '\r' || c == '\n'))
-		  if(so_writec((int)c, rd->so) == 0)
-		    err = 1;
 	    }
-	    else if(c == '\r' || c == '\n')
-	      last_c = c;
-	    else if(so_writec((int)c, rd->so) == 0)
-	      err = 1;
+	    else{
+		last_c = c;
+		if(so_writec((int) c, rd->so) == 0)
+		  err = 1;
+	    }
 	}
-
-	/* pick up a trailing CR or LF */
-	if(last_c == '\r' || last_c == '\n')
-	  if(so_writec('\r', rd->so) == 0 || so_writec('\n', rd->so) == 0)
-	    err = 1;
 
 	/*
 	 * Take that message from so to the remote folder.

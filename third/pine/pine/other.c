@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: other.c,v 1.1.1.3 2003-05-01 01:13:25 ghudson Exp $";
+static char rcsid[] = "$Id: other.c,v 1.1.1.4 2004-03-01 21:16:25 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -764,7 +764,7 @@ INST_KEY_MENU(config_role_file_res_keymenu, config_role_file_res_keys);
 
 static struct key config_role_keys[] = 
        {HELP_MENU,
-	OTHER_MENU,
+	NULL_MENU,
 	EXIT_SETUP_MENU,
 	{"C", "[Change Val]", {MC_EDIT,3,{'c',ctrl('M'),ctrl('J')}}, KS_NONE},
 	PREV_MENU,
@@ -5250,7 +5250,7 @@ dir_edit_screen(ps, def, title, raw_server)
 
     sprintf(tmp, "%s DIRECTORY SERVER", title);
     memset(&screen, 0, sizeof(screen));
-    screen.ro_warning = saved_screen->deferred_ro_warning;
+    screen.ro_warning = saved_screen ? saved_screen->deferred_ro_warning : 0;
     rv = conf_scroll_screen(ps, &screen, first_line, tmp, "servers ", 0);
 
     /*
@@ -6240,7 +6240,7 @@ conf_scroll_screen(ps, screen, start_line, title, pdesc, multicol)
 
     dprint(7,(debugfile, "conf_scroll_screen()\n"));
 
-    if(screen->ro_warning)
+    if(screen && screen->ro_warning)
       q_status_message1(SM_ORDER, 1, 3,
 			"%.200s can't change options or settings",
 			ps_global->restricted ? "Pine demo"
@@ -6994,7 +6994,7 @@ no_down:
 	    break;
 
 	  default:
-	    if(screen->ro_warning){
+	    if(screen && screen->ro_warning){
 		if(cmd == MC_EXIT){
 		    retval = 0;
 		    done++;
@@ -15589,7 +15589,8 @@ bitmap_t feat_option_list;
 #define INICK_TEMPL_CONF    6
 #define INICK_CSTM_CONF     7
 #define INICK_SMTP_CONF     8
-CONF_S *inick_confs[INICK_SMTP_CONF+1];
+#define INICK_NNTP_CONF     9
+CONF_S *inick_confs[INICK_NNTP_CONF+1];
 
 
 /*
@@ -15626,7 +15627,7 @@ role_config_edit_screen(ps, def, title, rflags, result)
 		     stat_rec_var, stat_8bit_var,
 		     from_act_var, replyto_act_var, fcc_act_var,
 		     sig_act_var, litsig_act_var, templ_act_var,
-		     cstm_act_var, smtp_act_var,
+                     cstm_act_var, smtp_act_var, nntp_act_var,
 		     sort_act_var, iform_act_var, startup_var,
 		     repl_type_var, forw_type_var, comp_type_var, score_act_var,
 		     rolecolor_vars[2], filter_type_var, folder_act_var,
@@ -15650,7 +15651,7 @@ role_config_edit_screen(ps, def, title, rflags, result)
 		    *score_act = NULL, *folder_act = NULL, *filter_type = NULL,
 		    *iform_act = NULL, *startup_act = NULL,
 		    *old_fg = NULL, *old_bg = NULL, *spat;
-    char           **cstm_act = NULL, **smtp_act = NULL;
+    char           **cstm_act = NULL, **smtp_act = NULL, **nntp_act = NULL;
     char             tmp[MAXPATH+1], **apval, **lval, ***alval;
     char            *fstr = " CURRENT FOLDER CONDITIONS BEGIN HERE ";
     char             mstr[50];
@@ -15728,6 +15729,7 @@ role_config_edit_screen(ps, def, title, rflags, result)
     varlist[++j] = &templ_act_var;
     varlist[++j] = &cstm_act_var;
     varlist[++j] = &smtp_act_var;
+    varlist[++j] = &nntp_act_var;
     varlist[++j] = &score_act_var;
     varlist[++j] = &repl_type_var;
     varlist[++j] = &forw_type_var;
@@ -16171,6 +16173,14 @@ role_config_edit_screen(ps, def, title, rflags, result)
     alval = ALVAL(&smtp_act_var, ew);
     *alval = (def && def->action && def->action->smtp)
 		 ? copy_list_array(def->action->smtp) : NULL;
+
+    nntp_act_var.name       = cpystr("Use NNTP Server");
+    nntp_act_var.is_used    = 1;
+    nntp_act_var.is_user    = 1;
+    nntp_act_var.is_list    = 1;
+    alval = ALVAL(&nntp_act_var, ew);
+    *alval = (def && def->action && def->action->nntp)
+		 ? copy_list_array(def->action->nntp) : NULL;
 
     score_act_global_ptr     = &score_act_var;
     score_act_var.name       = cpystr("Score Value");
@@ -16896,6 +16906,37 @@ role_config_edit_screen(ps, def, title, rflags, result)
 	else
 	  ctmp->varmem = 0;
 
+	/* NNTP Server Action */
+	new_confline(&ctmp);
+	inick_confs[INICK_NNTP_CONF] = ctmp;
+	ctmp->help_title= "HELP FOR NNTP SERVER ACTION";
+	ctmp->var       = &nntp_act_var;
+	ctmp->valoffset = indent;
+	ctmp->keymenu   = &config_text_wshuf_keymenu;
+	ctmp->help      = h_config_role_usenntp;
+	ctmp->tool      = t_tool;
+	sprintf(tmp, "%-*.100s =", indent-3, nntp_act_var.name);
+	ctmp->varname   = cpystr(tmp);
+	ctmp->varnamep  = ctmpb = ctmp;
+	ctmp->flags     = CF_STARTITEM;
+
+	if((lval = LVAL(&nntp_act_var, ew)) != NULL){
+	    for(i = 0; lval[i]; i++){
+		if(i)
+		  (void)new_confline(&ctmp);
+
+		ctmp->var       = &nntp_act_var;
+		ctmp->varmem    = i;
+		ctmp->valoffset = indent;
+		ctmp->keymenu   = &config_text_wshuf_keymenu;
+		ctmp->help      = h_config_role_usenntp;
+		ctmp->tool      = t_tool;
+		ctmp->varnamep  = ctmpb;
+	    }
+	}
+	else
+	  ctmp->varmem = 0;
+
 	calculate_inick_stuff(ps);
     }
     else
@@ -17492,7 +17533,7 @@ role_config_edit_screen(ps, def, title, rflags, result)
     }
 
     memset(&screen, 0, sizeof(screen));
-    screen.ro_warning = saved_screen->deferred_ro_warning;
+    screen.ro_warning = saved_screen ? saved_screen->deferred_ro_warning : 0;
     rv = conf_scroll_screen(ps, &screen, first_line, title, "roles ", 1);
 
     /*
@@ -17739,6 +17780,9 @@ role_config_edit_screen(ps, def, title, rflags, result)
 	smtp_act = *alval;
 	*alval = NULL;
 
+	alval = ALVAL(&nntp_act_var, ew);
+	nntp_act = *alval;
+	*alval = NULL;
 
 	if(ps->VAR_OPER_DIR && sig_act &&
 	   is_absolute_path(sig_act) &&
@@ -18049,6 +18093,14 @@ role_config_edit_screen(ps, def, title, rflags, result)
 	    smtp_act = NULL;
 	}
 
+	if(nntp_act){
+	    if(!nntp_act[0])
+	      fs_give((void **)&nntp_act);
+
+	    (*result)->action->nntp = nntp_act;
+	    nntp_act = NULL;
+	}
+
 	if(filter_type && *filter_type){
 	  (*result)->action->non_terminating =
 			bitnset(FEAT_NONTERM, feat_option_list) ? 1 : 0;
@@ -18338,6 +18390,9 @@ role_config_edit_screen(ps, def, title, rflags, result)
     if(smtp_act)
       free_list_array(&smtp_act);
 
+    if(nntp_act)
+      free_list_array(&nntp_act);
+
     opt_screen = saved_screen;
     ps->mangled_screen = 1;
     return(rv);
@@ -18384,7 +18439,7 @@ calculate_inick_stuff(ps)
     if(inick_confs[INICK_INICK_CONF] == NULL)
       return;
 
-    for(i = INICK_FROM_CONF; i <= INICK_SMTP_CONF; i++){
+    for(i = INICK_FROM_CONF; i <= INICK_NNTP_CONF; i++){
 	v = inick_confs[i] ? inick_confs[i]->var : NULL;
 	if(v)
 	  if(v->is_list){
@@ -18458,11 +18513,16 @@ calculate_inick_stuff(ps)
 	v->global_val.l = (irole && irole->smtp) ? copy_list_array(irole->smtp)
 						 : NULL;
 
+	ctmp = inick_confs[INICK_NNTP_CONF];
+	v = ctmp ? ctmp->var : NULL;
+	v->global_val.l = (irole && irole->nntp) ? copy_list_array(irole->nntp)
+						 : NULL;
+
 	free_action(&role);
 	free_action(&irole);
     }
 
-    for(i = INICK_INICK_CONF; i <= INICK_SMTP_CONF; i++){
+    for(i = INICK_INICK_CONF; i <= INICK_NNTP_CONF; i++){
 	ctmp = inick_confs[i];
 	v = ctmp ? ctmp->var : NULL;
 	/*
@@ -18545,6 +18605,7 @@ calculate_inick_stuff(ps)
 	      case INICK_TEMPL_CONF:
 	      case INICK_CSTM_CONF:
 	      case INICK_SMTP_CONF:
+	      case INICK_NNTP_CONF:
 		break;
 	    }
 	}
@@ -19862,24 +19923,32 @@ role_text_tool(ps, cmd, cl, flags)
 	else
 	  *((*cl)->d.earb) = ea;
 
-	/* make ctmp point to BodyText line */
+	/*
+	 * Make ctmp point to BodyText line, the last line with
+	 * an earb attached.
+	 */
 	for(ctmp = *cl;
 	    ctmp && ctmp->next && ctmp->next->d.earb;
 	    ctmp = next_confline(ctmp))
 	  ;
 	
 	/* 
-	 * now we're on BodyText line, move back three 
-	 * (was two before "Add Extra Header" line)
+	 * Now we're on BodyText line, move back three 
+	 * to the line before Add Extra Headers.
+	 * This is yucky.
 	 */
 	ctmp = prev_confline(ctmp);
 	ctmp = prev_confline(ctmp);
 	ctmp = prev_confline(ctmp);
 	
-	/* add new ctmp line before AllText line */
+	/*
+	 * Add a new line after this point, which is after the last
+	 * extra header (if any) or after the Participant pattern, and
+	 * before the Add Extra Headers placeholder line.
+	 */
 	new_confline(&ctmp);
 
-	ea->v->name = (char *)fs_get(strlen(tmp) + 9);
+	ea->v->name = (char *) fs_get(strlen(tmp) + 9);
 	sprintf(ea->v->name, "%s pattern", tmp);
 	ea->v->is_used    = 1;
 	ea->v->is_user    = 1;
@@ -19900,7 +19969,7 @@ role_text_tool(ps, cmd, cl, flags)
 	ctmp->d.earb    = ctmp->prev->d.earb;
 	/*
 	 * This works for the first one because the varmem for the
-	 * previous pattern (Participant) is set to -1.
+	 * previous pattern (Participant) is unused and is set to -1.
 	 */
 	ctmp->varmem    = ctmp->prev->varmem + 1;
 
@@ -19910,13 +19979,22 @@ role_text_tool(ps, cmd, cl, flags)
 
 	newcp = ctmp;
 
+	/*
+	 * Keep the right lines visible.
+	 * The if triggers if the new line is off the top of the screen, and
+	 * it makes the new line be the top line.
+	 * The else counts how many lines down the screen the new line is.
+	 */
 	i = 0;
 	if(opt_screen->top_line->prev == newcp
 	   || (opt_screen->top_line->prev
-	       && opt_screen->top_line->prev->prev == newcp))
-	  opt_screen->top_line = ctmp;
+	       && opt_screen->top_line->prev->prev == newcp)
+	   || (opt_screen->top_line->prev
+	       && opt_screen->top_line->prev->prev
+	       && opt_screen->top_line->prev->prev->prev == newcp))
+	  opt_screen->top_line = newcp;
 	else{
-	    for(ctmp = opt_screen->top_line; ctmp != newcp;
+	    for(ctmp = opt_screen->top_line; ctmp && ctmp != newcp;
 		i++, ctmp = next_confline(ctmp))
 	      ;
 	}
@@ -22103,7 +22181,7 @@ color_edit_screen(ps, cl)
 
     saved_screen = opt_screen;
     memset(&screen, 0, sizeof(screen));
-    screen.ro_warning = saved_screen->deferred_ro_warning;
+    screen.ro_warning = saved_screen ? saved_screen->deferred_ro_warning : 0;
     rv = conf_scroll_screen(ps, &screen, first_line,
 			    ew == Post ? "SETUP COLOR EXCEPTIONS"
 				       : "SETUP COLOR",

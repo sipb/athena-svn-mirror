@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: help.c,v 1.1.1.2 2003-02-12 08:01:26 ghudson Exp $";
+static char rcsid[] = "$Id: help.c,v 1.1.1.3 2004-03-01 21:16:26 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -1650,7 +1650,8 @@ gripe_newbody(ps, body, msgno, flags)
 		/* HACK!  See mailview.c:format_message for details... */
 		ps->mail_stream->text = NULL;
 		/* write the body */
-		if(!mail_fetchtext(ps->mail_stream, msgno))
+		if(!pine_mail_fetch_text(ps->mail_stream, msgno,
+					 NULL, NULL, NIL))
 		  return(-1);
 
 		pb->size.bytes = ftell(append_file);
@@ -1663,7 +1664,9 @@ gripe_newbody(ps, body, msgno, flags)
 		pb->size.bytes = strlen(p);
 		so_puts(store, "\015\012");
 
-		if((p = mail_fetchtext(ps->mail_stream, msgno)) &&  *p)
+		if((p = pine_mail_fetch_text(ps->mail_stream, 
+					     msgno, NULL, NULL, NIL))
+		   &&  *p)
 		  so_puts(store, p);
 		else
 		  return(-1);

@@ -1,5 +1,5 @@
 #if !defined(lint) && !defined(DOS)
-static char rcsid[] = "$Id: adrbkcmd.c,v 1.1.1.3 2003-05-01 01:12:31 ghudson Exp $";
+static char rcsid[] = "$Id: adrbkcmd.c,v 1.1.1.4 2004-03-01 21:15:46 ghudson Exp $";
 #endif
 /*----------------------------------------------------------------------
 
@@ -4414,7 +4414,7 @@ ab_forward(ps, cur_line, agg)
 			goto bomb;
 		    }
 		    else{
-			write_single_vcard_entry(ps, pc, 1, &csp, vinfo);
+			write_single_vcard_entry(ps, pc, 0, &csp, vinfo);
 			free_vcard_info(&vinfo);
 		    }
 		    
@@ -4435,7 +4435,7 @@ ab_forward(ps, cur_line, agg)
 		goto bomb;
 	    }
 	    else{
-		write_single_vcard_entry(ps, pc, 1, &csp, vinfo);
+		write_single_vcard_entry(ps, pc, 0, &csp, vinfo);
 		free_vcard_info(&vinfo);
 	    }
 

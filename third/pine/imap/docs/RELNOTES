@@ -1,3 +1,48 @@
+Updated: 27 August 2003
+
+imap-2002e is a minor release, released concurrently with Pine 4.57, and
+contains primarily bugfixes.  Programs written for imap-2002d should build
+with this version without modification.
+
+The NNTP client code now tries to perform better with legacy NNTP servers
+which do not comply with the current NNTP protocol specification draft, most
+notably Netscape Collabra.
+
+Delivery notifications now work reliably with SMTP servers that support it.
+
+The following changes are primarily of concern to developers and power users:
+
+There is a "limited advertise" option in env_unix.c which, if set, will only
+advertise the user's own namespace and the #shared/ namespace.
+
+It is now possible to build the IMAP toolkit with a separate SSL KEY file
+from the certificate file (SSLKEYS vs. SSLCERTS).
+
+A new BODY structure element, sparep, is available for the main program to
+use as a pointer for its own purposes; as well as a SET_FREEBODYSPAREP
+function, similar to SET_FREEENVELOPESPAREP, SET_FREEELTSPAREP, etc.
+
+
+Updated: 28 May 2003
+
+imap-2002d is a minor release, released concurrently with Pine 4.56, and
+contains primarily bugfixes.  Programs written for imap-2002 should build
+with this version without modification, with one exception.  That exception
+is the ngbogus envelope flag, which stopped being used in imap-2002c and is
+now gone for good.
+
+The NNTP newsgroup listing code now tries to use wildmats on the NNTP server,
+which should result in better performance especially on slow lines.  It is
+also once again permitted to log in on NNTP servers when /loser is set.
+
+imapd now supports the UNSELECT command.
+
+A new envelope flag, imapenvonly, indicates that the envelope in a
+MESSAGE/RFC822 BODY structure only has the IMAP envelope components and
+not the additional components from c-client: Newsgroups, Followup-To,
+and References.
+
+
 Updated: 7 April 2003
 
 imap-2002c is a minor release, released concurrently with Pine 4.55, and

@@ -1,5 +1,5 @@
 /*----------------------------------------------------------------------
-  $Id: os-sc5.h,v 1.1.1.3 2003-05-01 01:12:52 ghudson Exp $
+  $Id: os-sc5.h,v 1.1.1.4 2004-03-01 21:15:52 ghudson Exp $
 
             T H E    P I N E    M A I L   S Y S T E M
 
@@ -292,7 +292,7 @@
     Various maximum field lengths, probably shouldn't be changed.
  ----*/
 #define MAX_FULLNAME      (50) 
-#define MAX_NICKNAME      (20)
+#define MAX_NICKNAME      (80)
 #define MAX_ADDRESS      (500)
 #define MAX_NEW_LIST     (100)  /* Max addrs to be added when creating list */
 #define MAX_SEARCH       (100)  /* Longest string to search for             */

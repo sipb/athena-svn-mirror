@@ -51,6 +51,11 @@
 #
 #	NOTE: the -Y L, and -Y U, options of cc are not valid 
 
+if [ "$CC" ] ; then
+	$CC "$@"
+	exit 0
+fi
+
 if [ -f /usr/ccs/bin/ucbcc ]
 then
 	# get the directory where ucbcc points to and set the LD_LIBRARY_PATH
