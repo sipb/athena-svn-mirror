@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do.sh,v 1.54 2000-04-02 21:53:04 ghudson Exp $
+# $Id: do.sh,v 1.55 2000-05-18 15:57:10 ghudson Exp $
 
 source=/mit/source
 srvd=/afs/dev.mit.edu/system/$ATHENA_SYS/srvd-current
@@ -157,6 +157,11 @@ PATH=$athtoolroot/usr/athena/bin:$PATH
 
 if [ false = "$mungepath" ]; then
 	PATH=$savepath
+fi
+
+if [ -n "$athtoolroot" ]; then
+	ext=${LD_LIBRARY_PATH+:$LD_LIBRARY_PATH}
+	LD_LIBRARY_PATH=$athtoolroot/usr/athena/lib$ext
 fi
 
 # Determine the Athena version
