@@ -81,3 +81,17 @@ fi
 if [ -f /var/tmp/attachtab.lock ]; then
 	mv /var/tmp/attachtab.lock /var/athena/attachtab.lock
 fi
+
+# Move some pid files to /var/athena.
+if [ -f /etc/athena/console.pid ]; then
+	mv /etc/athena/console.pid /var/athena/console.pid
+fi
+if [ -f /etc/athena/dm.pid ]; then
+	mv /etc/athena/dm.pid /var/athena/dm.pid
+fi
+if [ -f /etc/athena/snmpd.pid ]; then
+	mv /etc/athena/snmpd.pid /var/athena/snmpd.pid
+fi
+if [ -f /etc/athena/inetd.pid ]; then
+	mv /etc/athena/inetd.pid /var/athena/inetd.pid
+fi
