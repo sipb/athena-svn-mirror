@@ -11,6 +11,18 @@
 # CHANGES,v 3.47 1998/03/29 18:37:09 papowell Exp
 ###########################################################################
 
+Release LPRng 3.6.12 Tue Oct 26 16:59:35 PDT 1999
+  AIX does not like control files where Nxxx comes before data file lines.
+   Added a 'nline_after_file' option to cause LPRng to put Nlines after
+   data file lines.
+   (Noticed by: Nik Conwell <nik@bu.edu>)
+ configure - kerberos libraries are now specified at the start
+   of the library list (LIBS="-lkrb5 $LIBS")
+   (Suggested by: John Perkins <john@cs.wisc.edu>)
+ Typo caused LPD not to read the permissions file.
+   (Noticed by EVERYBODY,  but first by: Patrick O'Brien" <pdo@cs.umd.edu>)
+
+
 Release LPRng 3.6.11 Sun Oct 24 13:37:44 PDT 1999
   Permissions checking: SERVICE=* was not getting handled correctly.
    (Found by: Dejan Ilic <svedja@lysator.liu.se>)

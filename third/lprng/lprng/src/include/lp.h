@@ -4,7 +4,7 @@
  * Copyright 1988-1999, Patrick Powell, San Diego, CA
  *     papowell@astart.com
  * See LICENSE for conditions of use.
- * $Id: lp.h,v 1.1.1.4 1999-10-27 20:10:07 mwhitson Exp $
+ * $Id: lp.h,v 1.1.1.5 1999-10-28 17:12:31 mwhitson Exp $
  ***************************************************************************/
 
 
@@ -357,6 +357,7 @@ EXTERN int Minfree_DYN; /**/
 EXTERN int Ms_time_resolution_DYN;
 EXTERN int Network_connect_grace_DYN; /* grace period for reconnections */
 EXTERN char* New_debug_DYN; /* debug level set for queue handler */
+EXTERN int Nline_after_file_DYN;	/* Put Nxxx after fcfA... line in control file */
 EXTERN int No_FF_separator_DYN; /* suppress form feeds separating multiple jobs */
 EXTERN int Nonblocking_open_DYN; /* nonblocking open on io device */
 EXTERN char* OF_Filter_DYN; /* output filter, run once for all output */

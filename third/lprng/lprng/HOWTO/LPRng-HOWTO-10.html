@@ -233,9 +233,11 @@ on status queries.
 </H2>
 
 <P>
+<A NAME="nline_after_file"></A> 
 <UL>
 <LI> <CODE>longnumber</CODE><EM>&nbsp;&nbsp; long job number</EM></LI>
 <LI> <CODE>default_priority=</CODE><EM>default job priority</EM></LI>
+<LI> <CODE>nline_after_file=</CODE><EM>N line after data file</EM></LI>
 </UL>
 <P>A print job consists of a control file and one or more data files.
 <A HREF="LPRng-HOWTO-6.html#rfc1179">RFC1179</A>
@@ -307,6 +309,12 @@ Z</TD><TD>zopts *</TD><TD>lpr -Z zopts</TD></TR><TR><TD>
 are associated with a print file.
 The <CODE>N</CODE> line is the original name of the print
 file.
+By default,
+LPRng places this line <I>before</I>
+the corresponding data file.
+You can use the
+<CODE>nline_after_file</CODE>
+option to have LPRng place the N line after the data file line.
 The <CODE>U</CODE> line originally was used to indicate that the
 named file was to be unlinked after printing.
 This information is now ignored by LPRng.

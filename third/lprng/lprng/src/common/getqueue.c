@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: getqueue.c,v 1.1.1.3 1999-10-27 20:10:00 mwhitson Exp $";
+"$Id: getqueue.c,v 1.1.1.4 1999-10-28 17:12:27 mwhitson Exp $";
 
 
 /***************************************************************************
@@ -1568,10 +1568,13 @@ char *Fix_datafile_info( struct job *job, char *number, char *suffix )
 			copies = Find_flag_value(lp,COPIES,Value_sep);
 			if( copies == 0 ) copies = 1;
 			for(i = 0; i < copies; ++i ){
-				if( Nline ){
+				if( Nline && !Nline_after_file_DYN ){
 					dataline = safeextend4(dataline,"N",Nline,"\n",__FILE__,__LINE__);
 				}
 				dataline = safeextend4(dataline,fmt,transfername,"\n",__FILE__,__LINE__);
+				if( Nline && Nline_after_file_DYN ){
+					dataline = safeextend4(dataline,"N",Nline,"\n",__FILE__,__LINE__);
+				}
 			}
 			DEBUG4("Fix_datafile_info: file [%d], dataline '%s'",
 				linecount, dataline);

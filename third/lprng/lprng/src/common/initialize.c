@@ -8,7 +8,7 @@
  ***************************************************************************/
 
  static char *const _id =
-"$Id: initialize.c,v 1.1.1.3 1999-10-27 20:09:55 mwhitson Exp $";
+"$Id: initialize.c,v 1.1.1.4 1999-10-28 17:12:25 mwhitson Exp $";
 
 #include "lp.h"
 #include "initialize.h"
@@ -164,7 +164,7 @@ void Setup_configuration()
 		Getprintcap_pathlist( 0, &raw, &PC_filters_line_list,
 			Lpd_printcap_path_DYN );
 		DEBUG2("Setup_configuration: Printer_perms_path '%s'", Printer_perms_path_DYN );
-		Getprintcap_pathlist( 1, &raw, &Perm_filters_line_list,
+		Getprintcap_pathlist( 1, &RawPerm_line_list, &Perm_filters_line_list,
 			Printer_perms_path_DYN );
 	} else {
 		DEBUG2("Setup_configuration: Printcap_path '%s'", Printcap_path_DYN );
@@ -180,7 +180,7 @@ void Setup_configuration()
 		Dump_line_list("Setup_configuration: PC names", &PC_names_line_list );
 		Dump_line_list("Setup_configuration: PC order", &PC_order_line_list );
 		Dump_line_list("Setup_configuration: PC info", &PC_info_line_list );
-		Dump_line_list("Setup_configuration: PC names", &PC_names_line_list );
+		Dump_line_list("Setup_configuration: Perms", &RawPerm_line_list );
 	}
 }
 

@@ -6,7 +6,7 @@
 <author> Patrick Powell <tt><htmlurl url="mailto:papowell@astart.com"
     name="papowell@astart.com"></tt>
 <!--VERSION-->
-<date> 24 Oct 1999 (For LPRng-3.6.11)
+<date> 27 Oct 1999 (For LPRng-3.6.12)
 <abstract>
 The LPRng software is an enhanced, extended, and portable implementation
 of the Berkeley LPR print spooler functionality. While providing the same
@@ -5710,9 +5710,11 @@ option causes short (hour:minute) timestamps to be displayed
 on status queries.
 <sect1>Job Files
 <p>
+<label id="nline_after_file">
 <itemize>
 <item> <tt>longnumber</tt><em>&nbsp;&nbsp; long job number</em>
 <item> <tt>default_priority=</tt><em>default job priority</em>
+<item> <tt>nline_after_file=</tt><em>N line after data file</em>
 </itemize>
 <p>
 A print job consists of a control file and one or more data files.
@@ -5898,6 +5900,12 @@ The entries marked with * are used only by LPRng.
 are associated with a print file.
 The <tt>N</tt> line is the original name of the print
 file.
+By default,
+LPRng places this line <it>before</it>
+the corresponding data file.
+You can use the
+<tt/nline_after_file/
+option to have LPRng place the N line after the data file line.
 The <tt>U</tt> line originally was used to indicate that the
 named file was to be unlinked after printing.
 This information is now ignored by LPRng.
@@ -12261,6 +12269,7 @@ and made requests for <em>just one more feature</em>.
 <tt><ref id="mx" name="mx"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  maximum job size (1Kb blocks, 0 = unlimited) <newline>
 <tt><ref id="nb" name="nb"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  use nonblocking device open <newline>
 <tt><ref id="networkconnectgrace" name="network&lowbar;connect&lowbar;grace"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  pause between transferring jobs to remote printer <newline>
+<tt><ref id="nline_after_file" name="nline&lowbar;after&lowbar;file"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  N line after file name <newline>
 <tt><ref id="of" name="of"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  banner output filter <newline>
 <tt><ref id="offilteroptions" name="of&lowbar;filter&lowbar;options"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  OF filter options <newline>
 <tt><ref id="oh" name="oh"></tt><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt>  Printcap entry valid only on these hosts <newline>
