@@ -59,13 +59,38 @@ typedef	int		Position;
 #define	XtPending()	XPending(DISP)
 #endif	/* TOOLKIT */
 
-#if	HAS_SIGIO
 #include <signal.h>
+#include <sys/file.h>	/* this defines FASYNC */
+
+#ifdef	STRMS2
+#include <stropts.h>
+#include <sys/conf.h>
+#endif
+
+#if	HAS_SIGIO && !defined(STRMS2)
 #ifndef	FASYNC
 #undef	HAS_SIGIO
 #define	HAS_SIGIO 0
 #endif
 #endif
+
+#ifdef	FLAKY_SIGPOLL
+#define	GOOD_SIGPOLL	0
+#else
+#define	GOOD_SIGPOLL	HAS_SIGIO
+#endif
+
+#if	! GOOD_SIGPOLL
+#ifdef	STREAMSCONN
+#include <poll.h>
+#endif	/* STREAMSCONN */
+
+#include <errno.h>
+
+#if	X_NOT_STDC_ENV
+extern	int	errno;
+#endif	/* X_NOT_STDC_ENV */
+#endif	/* ! GOOD_SIGPOLL */
 
 #ifndef	X11HEIGHT
 #define	X11HEIGHT	8	/* Height of server default font */
@@ -88,11 +113,28 @@ extern	struct _resource	resource;
 #define	clip_h	mane.height
 static	Position main_x, main_y;
 static	Position mag_x, mag_y, new_mag_x, new_mag_y;
-static	Boolean	mag_moved = False;
+static	Boolean	mag_moved	= False;
+
+#ifdef	TOOLKIT
+static	Boolean	busycurs	= False;
+#else
+static	Boolean	busycurs	= True;
+#endif
+
+#if	GOOD_SIGPOLL
+sigset_t		sigpollusr;
+#else	/* ! GOOD_SIGPOLL */
+#ifndef	STREAMSCONN
+static	fd_set		readfds;
+#else	/* STREAMSCONN */
+static	struct pollfd	fds[1]	= {{0, POLLIN, 0}};
+#endif	/* STREAMSCONN */
+#endif	/* ! GOOD_SIGPOLL */
 
 #ifdef	TOOLKIT
 #ifdef	BUTTONS
 static	Widget	line_widget, panel_widget;
+static	int	destroy_count	= 0;
 #endif
 static	Widget	x_bar, y_bar;	/* horizontal and vertical scroll bars */
 
@@ -194,6 +236,28 @@ create_buttons(h)
 	panel_widget = XtCreateManagedWidget("panel", compositeWidgetClass,
 		form_widget, panel_args, XtNumber(panel_args));
 
+	for (i = 0; i <= XtNumber(command_table) - 4; ++i)
+	    if (strcmp(command_table[i].name, "sh1") == 0) {
+		int j;
+
+		for (j = 0; j < 4; ++j) {
+		    int k = resource.shrinkbutton[j];
+
+		    if (k != 0) {
+			char *s = xmalloc(9, "Shrink button label");
+
+			if (k < 1)
+			    k = 1;
+			if (k > 99)
+			    k = 99;
+			Sprintf(s, "Shrink%d", k);
+			command_table[i + j].label = s;
+			command_table[i + j].closure = k << 8 | 's';
+		    }
+		}
+		break;
+	    }
+
 	command_args[2].value = (XtArgVal) vport_widget;
 	for (i = 0; i < XtNumber(command_table); ++i) {
 	    command_args[0].value = (XtArgVal) command_table[i].label;
@@ -235,35 +299,165 @@ static	void	can_exposures(), keystroke();
 #ifdef	GREY
 #define	gamma	resource._gamma
 
+static	void
+mask_shifts(mask, pshift1, pshift2)
+	Pixel	mask;
+	int	*pshift1, *pshift2;
+{
+	int	k, l;
+
+	for (k = 0; (mask & 1) == 0; ++k)
+	    mask >>= 1;
+	for (l = 0; (mask & 1) == 1; ++l)
+	    mask >>= 1;
+	*pshift1 = sizeof(short) * 8 - l;
+	*pshift2 = k;
+}
+
+double	pow();
+
+#define	MakeGC(fcn, fg, bg)	(values.function = fcn, values.foreground=fg,\
+		values.background=bg,\
+		XCreateGC(DISP, RootWindowOfScreen(SCRN),\
+			GCFunction|GCForeground|GCBackground, &values))
+
 void
 init_pix(warn)
-	Boolean	warn;
+	wide_bool	warn;
 {
 	static	int	shrink_allocated_for = 0;
 	static	float	oldgamma	= 0.0;
+	static	Pixel	palette[17];
+	static	XColor	fc, bc;
+	XGCValues	values;
+	Visual		*visual	= DefaultVisualOfScreen(SCRN);
 	int	i;
 
-	if (gamma != oldgamma) {
-	    static Pixel plane_masks[4];
-	    static Pixel pixel;
-	    XColor color, fc, bc;
-	    XGCValues	values;
-
-	    if (!copy)
-		/* allocate 4 color planes for 16 colors (for GXor drawing) */
-		if (oldgamma == 0.0 && !XAllocColorCells(DISP,
-			DefaultColormapOfScreen(SCRN), False, plane_masks, 4,
-			&pixel, 1))
-		    copy = warn = True;
-
+	if (oldgamma == 0.0) {
 	    /* get foreground and background RGB values for interpolating */
 	    fc.pixel = fore_Pixel;
 	    XQueryColor(DISP, DefaultColormapOfScreen(SCRN), &fc);
 	    bc.pixel = back_Pixel;
 	    XQueryColor(DISP, DefaultColormapOfScreen(SCRN), &bc);
+	}
+
+	if (visual->class == TrueColor) {
+	    /* This mirrors the non-grey code in xdvi.c */
+	    static int		shift1_r, shift1_g, shift1_b;
+	    static int		shift2_r, shift2_g, shift2_b;
+	    static Pixel	set_bits;
+	    static Pixel	clr_bits;
+	    unsigned int	sf_squared;
+
+	    if (oldgamma == 0.0) {
+		mask_shifts(visual->red_mask,   &shift1_r, &shift2_r);
+		mask_shifts(visual->green_mask, &shift1_g, &shift2_g);
+		mask_shifts(visual->blue_mask,  &shift1_b, &shift2_b);
+
+		set_bits = fc.pixel & ~bc.pixel;
+		clr_bits = bc.pixel & ~fc.pixel;
+
+		if (set_bits & visual->red_mask) set_bits |= visual->red_mask;
+		if (clr_bits & visual->red_mask) clr_bits |= visual->red_mask;
+		if (set_bits & visual->green_mask)
+		    set_bits |= visual->green_mask;
+		if (clr_bits & visual->green_mask)
+		    clr_bits |= visual->green_mask;
+		if (set_bits & visual->blue_mask) set_bits |= visual->blue_mask;
+		if (clr_bits & visual->blue_mask) clr_bits |= visual->blue_mask;
+
+		/*
+		 * Make the GCs
+		 */
+
+		foreGC = foreGC2 = ruleGC = NULL;
+		if (copy || (set_bits && clr_bits)) {
+		    ruleGC = MakeGC(GXcopy, fore_Pixel, back_Pixel);
+		    if (!resource.thorough) copy = True;
+		}
+		if (copy) {
+		    foreGC = ruleGC;
+		    if (resource.copy != True)
+			Puts("Note:  overstrike characters may be incorrect.");
+		}
+		else {
+		    if (set_bits) foreGC = MakeGC(GXor, set_bits & fc.pixel, 0);
+		    if (clr_bits || !set_bits)
+			*(foreGC ? &foreGC2 : &foreGC) =
+			    MakeGC(GXandInverted, clr_bits & ~fc.pixel, 0);
+		    if (!ruleGC) ruleGC = foreGC;
+		}
+	    }
+
+	    if (mane.shrinkfactor == 1) return;
+	    sf_squared = mane.shrinkfactor * mane.shrinkfactor;
+
+	    if (shrink_allocated_for < mane.shrinkfactor) {
+		if (pixeltbl != NULL) {
+		    free((char *) pixeltbl);
+		    if (pixeltbl_t != NULL)
+			free((char *) pixeltbl_t);
+		}
+		pixeltbl = (Pixel *) xmalloc((sf_squared + 1) * sizeof(Pixel),
+		    "pixel table");
+		if (foreGC2 != NULL)
+		    pixeltbl_t = (Pixel *) xmalloc((sf_squared + 1)
+			* sizeof(Pixel), "pixel table");
+		shrink_allocated_for = mane.shrinkfactor;
+	    }
+
+	    /*
+	     * Compute pixel values directly.
+	     */
+
+#define	SHIFTIFY(x, shift1, shift2)	((((Pixel)(x)) >> (shift1)) << (shift2))
+
+	    for (i = 0; i <= sf_squared; ++i) {
+		double		frac	= gamma > 0
+		    ? pow((double) i / sf_squared, 1 / gamma)
+		    : 1 - pow((double) (sf_squared - i) / sf_squared, -gamma);
+		unsigned int	red, green, blue;
+		Pixel		pixel;
+
+		red = frac * ((double) fc.red - bc.red) + bc.red;
+		green = frac * ((double) fc.green - bc.green) + bc.green;
+		blue = frac * ((double) fc.blue - bc.blue) + bc.blue;
+
+		pixel = SHIFTIFY(red,   shift1_r, shift2_r) |
+			SHIFTIFY(green, shift1_g, shift2_g) |
+			SHIFTIFY(blue,  shift1_b, shift2_b);
+
+		if (copy) pixeltbl[i] = pixel;
+		else {
+		    pixeltbl[i] = set_bits ? pixel & set_bits
+			: ~pixel & clr_bits;
+		    if (pixeltbl_t != NULL)
+			pixeltbl_t[i] = ~pixel & clr_bits;
+		}
+	    }
+
+#undef	SHIFTIFY
+
+	    return;
+	}
+
+	/* if not TrueColor ... */
+
+	if (gamma != oldgamma) {
+	    static Pixel plane_masks[4];
+	    static Pixel pixel;
+	    XColor	color;
+
+	    if (oldgamma == 0.0) {
+		/* try to allocate 4 color planes for 16 colors */
+		/* (for GXor drawing) */
+		if (!copy && !XAllocColorCells(DISP,
+			DefaultColormapOfScreen(SCRN), False,
+			plane_masks, 4, &pixel, 1))
+		    copy = warn = True;
+	    }
 
 	    for (i = 0; i < 16; ++i) {
-		double	pow();
 		double	frac = gamma > 0 ? pow((double) i / 15, 1 / gamma)
 		    : 1 - pow((double) (15 - i) / 15, -gamma);
 
@@ -298,11 +492,6 @@ init_pix(warn)
 	    if (mane.win != (Window) 0)
 		XSetWindowBackground(DISP, mane.win, palette[0]);
 
-#define	MakeGC(fcn, fg, bg)	(values.function = fcn, values.foreground=fg,\
-		values.background=bg,\
-		XCreateGC(DISP, RootWindowOfScreen(SCRN),\
-			GCFunction|GCForeground|GCBackground, &values))
-
 	    foreGC = ruleGC = MakeGC(copy ? GXcopy : GXor,
 		fore_Pixel, back_Pixel);
 	    foreGC2 = NULL;
@@ -311,7 +500,6 @@ init_pix(warn)
 	    if (resource.copy == Maybe && copy && warn)
 		Puts("Note:  overstrike characters may be incorrect.");
 	}
-#undef	MakeGC
 
 	if (mane.shrinkfactor == 1) return;
 
@@ -328,6 +516,9 @@ init_pix(warn)
 		palette[(i * 30 + mane.shrinkfactor * mane.shrinkfactor)
 		    / (2 * mane.shrinkfactor * mane.shrinkfactor)];
 }
+
+#undef	MakeGC
+
 #endif	/* GREY */
 
 /*
@@ -473,6 +664,16 @@ home(scrl)
 	}
 }
 
+	/*ARGSUSED*/
+static	void
+handle_destroy_bar(w, client_data, call_data)
+	Widget		w;
+	XtPointer	client_data;
+	XtPointer	call_data;
+{
+	* (Widget *) client_data = NULL;
+}
+
 static	Boolean	resized	= False;
 
 static	void
@@ -488,10 +689,18 @@ get_geom()
 	XtGetValues(vport_widget, arg_wh, XtNumber(arg_wh));
 	XtGetValues(clip_widget, arg_wh_clip, XtNumber(arg_wh_clip));
 	/* Note:  widgets may be destroyed but not forgotten */
-	x_bar = page_w <= new_clip_w ? NULL
-	    : XtNameToWidget(vport_widget, "horizontal");
-	y_bar = page_h <= new_clip_h ? NULL
-	    : XtNameToWidget(vport_widget, "vertical");
+	if (x_bar == NULL) {
+	    x_bar = XtNameToWidget(vport_widget, "horizontal");
+	    if (x_bar != NULL)
+		XtAddCallback(x_bar, XtNdestroyCallback, handle_destroy_bar,
+		    (XtPointer) &x_bar);
+	}
+	if (y_bar == NULL) {
+	    y_bar = XtNameToWidget(vport_widget, "vertical");
+	    if (y_bar != NULL)
+		XtAddCallback(y_bar, XtNdestroyCallback, handle_destroy_bar,
+		    (XtPointer) &y_bar);
+	}
 	old_clip_w = clip_w;
 			/* we need to do this because */
 			/* sizeof(Dimension) != sizeof(int) */
@@ -540,6 +749,25 @@ handle_command(widget, client_data_p, call_data)
 
 	keystroke((client_data) & 0xff, (client_data) >> 8,
 		((client_data) >> 8) != 0, (XEvent *) NULL);
+}
+
+	/*ARGSUSED*/
+static	void
+handle_destroy_buttons(w, client_data, call_data)
+	Widget		w;
+	XtPointer	client_data;
+	XtPointer	call_data;
+{
+	if (--destroy_count != 0) return;
+	XtSetValues(vport_widget, resizable_on, XtNumber(resizable_on));
+	if (resource.expert) {
+	    XtGetValues(form_widget, arg_wh, XtNumber(arg_wh));
+	    XdviResizeWidget(vport_widget, window_w, window_h);
+	}
+	else {
+	    XdviResizeWidget(vport_widget, window_w -= XTRA_WID, window_h);
+	    create_buttons((XtArgVal) window_h);
+	}
 }
 #endif	/* BUTTONS */
 
@@ -661,6 +889,7 @@ reconfig()
 	    (void) XGetWindowAttributes(DISP, mane.win, &attrs);
 	    backing_store = attrs.backing_store;
 	    XMapWindow(DISP, mane.win);
+	    busycurs = True;
 	}
 	else
 	    XMoveResizeWindow(DISP, mane.win, y_thick, x_thick, clip_w, clip_h);
@@ -1065,20 +1294,26 @@ keystroke(ch, number0, arg0, eventp)
 #ifdef	BUTTONS
 	    case 'x':
 		if (arg0 && resource.expert == (number0 != 0)) return;
-		XtSetValues(vport_widget, resizable_on,
-		    XtNumber(resizable_off));
 		if (resource.expert) {	/* create buttons */
+		    resource.expert = False;
+		    if (destroy_count != 0) return;
+		    XtSetValues(vport_widget, resizable_on,
+			XtNumber(resizable_on));
 		    XdviResizeWidget(vport_widget,
 			window_w -= XTRA_WID, window_h);
 		    create_buttons((XtArgVal) window_h);
-		    resource.expert = False;
 		}
 		else {		/* destroy buttons */
+		    resource.expert = True;
+		    if (destroy_count != 0) return;
+		    destroy_count = 2;
+		    XtAddCallback(panel_widget, XtNdestroyCallback,
+			handle_destroy_buttons, (XtPointer) 0);
+		    XtAddCallback(line_widget, XtNdestroyCallback,
+			handle_destroy_buttons, (XtPointer) 0);
 		    XtDestroyWidget(panel_widget);
 		    XtDestroyWidget(line_widget);
-		    XdviResizeWidget(vport_widget,
-			window_w += XTRA_WID, window_h);
-		    resource.expert = True;
+		    window_w += XTRA_WID;
 		}
 		return;
 #endif	/* BUTTONS */
@@ -1200,9 +1435,28 @@ keystroke(ch, number0, arg0, eventp)
 	bad:  XBell(DISP, 10);
 }
 
+/*
+ *	Since redrawing the screen is (potentially) a slow task, xdvi checks
+ *	for incoming events while this is occurring.  It does not register
+ *	a work proc that draws and returns every so often, as the toolkit
+ *	documentation suggests.  Instead, it checks for events periodically
+ *	(or not, if SIGPOLL can be used instead) and processes them in
+ *	a subroutine called by the page drawing routine.  This routine (below)
+ *	checks to see if anything has happened and processes those events and
+ *	signals.  (Or, if it is called when there is no redrawing that needs
+ *	to be done, it blocks until something happens.)
+ */
+
 void
+#if	PS
+ps_read_events(wait, allow_can)
+	wide_bool	wait;
+	wide_bool	allow_can;
+#else
 read_events(wait)
 	wide_bool	wait;
+#define	allow_can	True
+#endif
 {
 	XEvent	event;
 
@@ -1214,18 +1468,101 @@ read_events(wait)
 	     * pending.  So if an event comes in right now, the flag will be
 	     * set again needlessly, but we just end up making an extra call.
 	     * Also, be careful about destroying the magnifying glass while
-	     * writing it.
+	     * drawing on it.
 	     */
-	    if (!XtPending() && (!wait || canit || mane.min_x < MAXDIM ||
-		    alt.min_x < MAXDIM || mag_moved)) {
+
+#if	GOOD_SIGPOLL	/* this is the preferred method */
+
+	    if (!XtPending()) {
+		sigset_t oldsig;
+
+		(void) sigprocmask(SIG_BLOCK, &sigpollusr, &oldsig);
+		while (!XtPending())
+		{
+		    /*
+		     * The following code eliminates unnecessary calls to
+		     * XDefineCursor, since this is a slow operation on some
+		     * hardware (e.g., S3 chips).
+		     */
+		    if (busycurs && wait && !canit && !mag_moved
+			    && alt.min_x == MAXDIM && mane.min_x == MAXDIM) {
+			XSync(DISP, False);
+			if (XtPending()) break;
+			XDefineCursor(DISP, mane.win, ready_cursor);
+			XFlush(DISP);
+			busycurs = False;
+		    }
+		    if (!wait && (canit | alt_canit)) {
+#if	PS
+			psp.interrupt();
+#endif
+			if (allow_can) {
+			    (void) sigprocmask(SIG_SETMASK, &oldsig,
+				(sigset_t *)NULL);
+			    longjmp(canit_env, 1);
+			}
+		    }
+		    if (!wait || canit || mane.min_x < MAXDIM
+			    || alt.min_x < MAXDIM || mag_moved) {
+			(void) sigprocmask(SIG_SETMASK, &oldsig,
+			    (sigset_t *) NULL);
+			return;
+		    }
+		    (void) sigsuspend(&oldsig);
+		}
+		(void) sigprocmask(SIG_SETMASK, &oldsig, (sigset_t *) NULL);
+	    }
+
+#else	/* ! GOOD_SIGPOLL */
+
+	    while (!XtPending()) {
+#ifdef	STREAMSCONN
+		int	retval;
+#endif
+
+		/*
+		 * The following code eliminates unnecessary calls to
+		 * XDefineCursor, since this is a slow operation on some
+		 * hardware (e.g., S3 chips).
+		 */
+		if (busycurs && wait && !canit && !mag_moved
+			&& alt.min_x == MAXDIM && mane.min_x == MAXDIM) {
+		    XSync(DISP, False);
+		    if (XtPending()) break;
+		    XDefineCursor(DISP, mane.win, ready_cursor);
+		    XFlush(DISP);
+		    busycurs = False;
+		}
 		if (!wait && (canit | alt_canit)) {
 #if	PS
 		    psp.interrupt();
 #endif
 		    if (allow_can) longjmp(canit_env, 1);
 		}
-		return;
+		if (!wait || canit || mane.min_x < MAXDIM || alt.min_x < MAXDIM
+			|| mag_moved)
+		    return;
+		/* If a SIGUSR1 signal comes right now, then it will wait
+		   until an X event or another SIGUSR1 signal comes along. */
+
+#ifndef	STREAMSCONN
+		FD_SET(ConnectionNumber(DISP), &readfds);
+		if (select(ConnectionNumber(DISP) + 1, &readfds,
+			(fd_set *) NULL, (fd_set *) NULL,
+			(struct timeval *) NULL) < 0 && errno != EINTR)
+		    perror("select (xdvi read_events)");
+#else	/* STREAMSCONN */
+		do {
+		    retval = poll(fds, XtNumber(fds), -1);
+		} while (retval < 0 && errno == EAGAIN);
+
+		if (retval < 0 && errno != EINTR)
+		    perror("poll (xdvi read_events)");
+#endif	/* STREAMSCONN */
 	    }
+
+#endif	/* ! GOOD_SIGPOLL */
+
 #ifdef	TOOLKIT
 	    XtNextEvent(&event);
 	    if (resized) get_geom();
@@ -1362,8 +1699,11 @@ redraw(windowrec)
 	if (debug & DBG_EVENT)
 	    Printf("Redraw %d x %d at (%d, %d) (base=%d,%d)\n", max_x - min_x,
 		max_y - min_y, min_x, min_y, currwin.base_x, currwin.base_y);
-	XDefineCursor(DISP, mane.win, redraw_cursor);
-	XFlush(DISP);
+	if (!busycurs) {
+	    XDefineCursor(DISP, mane.win, redraw_cursor);
+	    XFlush(DISP);
+	    busycurs = True;
+	}
 	if (setjmp(dvi_env)) {
 	    XClearWindow(DISP, mane.win);
 	    showmessage(dvi_oops_msg);
@@ -1429,41 +1769,97 @@ can_exposures(windowrec)
 #if	HAS_SIGIO
 /* ARGSUSED */
 static	void
-handle_intr(signo)
+handle_sigpoll(signo)
 	int	signo;
 {
 	event_counter = 1;
 	event_freq = -1;	/* forget Plan B */
+#ifndef	SA_RESTART
+	(void) signal(SIGPOLL, handle_sigpoll);	/* reset the signal */
+#endif
+}
+#endif	/* HAS_SIGIO */
+
+/* ARGSUSED */
+static	void
+handle_sigusr(signo)
+	int	signo;
+{
+	event_counter = 1;
+	canit = True;
+	dvi_time = 0;
+#ifndef	SA_RESTART
+	(void) signal(SIGUSR1, handle_sigusr);	/* reset the signal */
+#endif
 }
 
 static	void
 enable_intr() {
-	int	socket	= ConnectionNumber(DISP);
+#if	HAS_SIGIO
+	int		socket	= ConnectionNumber(DISP);
+#endif
+#ifdef	SA_RESTART
+	struct sigaction a;
+#endif
 
-#ifdef SA_RESTART
+#if	HAS_SIGIO
+#ifdef	SA_RESTART
 	/* Subprocess handling, e.g., MakeTeXPK, fails on the Alpha without
 	   this, because SIGIO interrupts the call of system(3), since OSF/1
 	   doesn't retry interrupted wait calls by default.  From code by
 	   maj@cl.cam.ac.uk.  */
-	{
-	    struct sigaction a;
-	    a.sa_handler = handle_intr;
-	    sigemptyset(&a.sa_mask);
-	    sigaddset(&a.sa_mask, SIGIO);
-	    a.sa_flags = SA_RESTART;
-	    sigaction(SIGIO, &a, NULL);
-	}
+	a.sa_handler = handle_sigpoll;
+	(void) sigemptyset(&a.sa_mask);
+	(void) sigaddset(&a.sa_mask, SIGPOLL);
+	a.sa_flags = SA_RESTART;
+	sigaction(SIGPOLL, &a, NULL);
 #else
-	(void) signal(SIGIO, handle_intr);
+	(void) signal(SIGPOLL, handle_sigpoll);
 #endif	/* SA_RESTART */
-	(void) fcntl(socket, F_SETOWN, getpid());
-	(void) fcntl(socket, F_SETFL, fcntl(socket, F_GETFL, 0) | FASYNC);
-}
+
+#ifdef	STRMS2
+	if (ioctl(socket, I_SETSIG, S_RDNORM | S_WRNORM) == -1)
+	    perror("ioctl F_SETSIG (xdvi)");
+#else
+	if (fcntl(socket, F_SETOWN, getpid()) == -1)
+	    perror("fcntl F_SETOWN (xdvi)");
+	if (fcntl(socket, F_SETFL, fcntl(socket, F_GETFL, 0) | FASYNC) == -1)
+	    perror("fcntl F_SETFL (xdvi)");
+#endif	/* STRMS2 */
 #endif	/* HAS_SIGIO */
+
+#ifdef	SA_RESTART
+	a.sa_handler = handle_sigusr;
+	(void) sigemptyset(&a.sa_mask);
+	(void) sigaddset(&a.sa_mask, SIGUSR1);
+	a.sa_flags = 0;
+	sigaction(SIGUSR1, &a, NULL);
+#else
+	(void) signal(SIGUSR1, handle_sigusr);
+#endif	/* SA_RESTART */
+
+#if	GOOD_SIGPOLL
+
+	(void) sigemptyset(&sigpollusr);
+	(void) sigaddset(&sigpollusr, SIGPOLL);
+	(void) sigaddset(&sigpollusr, SIGUSR1);
+
+#else	/* ! GOOD_SIGPOLL */
+
+#ifndef	STREAMSCONN
+	FD_ZERO(&readfds);
+#else
+	fds[0].fd = ConnectionNumber(DISP);
+#endif
+
+#endif	/* ! GOOD_SIGPOLL */
+
+}
 
 void
 do_pages()
 {
+	enable_intr();
 	if (debug & DBG_BATCH) {
 #ifdef	TOOLKIT
 	    while (mane.min_x == MAXDIM) read_events(True);
@@ -1485,9 +1881,6 @@ do_pages()
 	    }
 	}
 	else {	/* normal operation */
-#if	HAS_SIGIO
-	    enable_intr();
-#endif
 #ifdef	__convex__
 	    /* convex C turns off optimization for the entire function
 	       if setjmp return value is discarded.*/
@@ -1496,8 +1889,6 @@ do_pages()
 	    (void) setjmp(canit_env);
 #endif
 	    for (;;) {
-		if (mane.win != (Window) 0)
-		    XDefineCursor(DISP, mane.win, ready_cursor);
 		read_events(True);
 		if (canit) {
 		    canit = False;

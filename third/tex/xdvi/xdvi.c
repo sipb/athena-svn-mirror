@@ -57,6 +57,8 @@
  *	BMSHORT	store bitmaps in shorts instead of bytes
  *	BMLONG	store bitmaps in longs instead of bytes
  *	ALTFONT	default for -altfont option
+ *	SHRINK	default for -s option (shrink factor)
+ *	MFMODE	default for -mfmode option
  *	A4	use European size paper
  *	TEXXET	support reflection dvi codes (right-to-left typesetting)
  *	GREY	use grey levels to shrink fonts
@@ -73,6 +75,18 @@ static	char	copyright[] =
 
 #ifndef	ALTFONT
 #define	ALTFONT	"cmr10"
+#endif
+
+#ifndef	SHRINK
+#define	SHRINK	6
+#endif
+
+#ifndef	BDPI
+#define	BDPI	300
+#endif
+
+#ifndef	MFMODE
+#define	MFMODE	NULL
 #endif
 
 #if	defined(PS_GS) && !defined(GS_PATH)
@@ -184,7 +198,7 @@ struct	mg_size_rec	mg_size[5]	= {{200, 150}, {400, 250}, {700, 500},
 
 static	char	*curr_page;
 
-struct WindowRec mane	= {(Window) 0, 3, 0, 0, 0, 0, MAXDIM, 0, MAXDIM, 0};
+struct WindowRec mane	={(Window) 0, SHRINK, 0, 0, 0, 0, MAXDIM, 0, MAXDIM, 0};
 struct WindowRec alt	= {(Window) 0, 1, 0, 0, 0, 0, MAXDIM, 0, MAXDIM, 0};
 /*	currwin is temporary storage except for within redraw() */
 struct WindowRec currwin = {(Window) 0, 3, 0, 0, 0, 0, MAXDIM, 0, MAXDIM, 0};
@@ -206,7 +220,11 @@ static	_Xconst	char	silent[] = " ";	/* flag value for usage() */
 
 static	_Xconst	char	subst[]	= "x";	/* another flag value */
 
-static	_Xconst char	*subst_val[] = {"-mgs[n] <size>"};
+static	_Xconst char	*subst_val[] = {
+#ifdef	BUTTONS
+					"-shrinkbutton[1-4] <shrink>",
+#endif
+					"-mgs[n] <size>"};
 
 #ifdef	TOOLKIT
 
@@ -240,6 +258,10 @@ static	XrmOptionDescRec	options[] = {
 #ifdef	BUTTONS
 {"-expert",	".expert",	XrmoptionNoArg,		(caddr_t) "on"},
 {"+expert",	".expert",	XrmoptionNoArg,		(caddr_t) "off"},
+{"-shrinkbutton1",".shrinkButton1",XrmoptionSepArg,	(caddr_t) NULL},
+{"-shrinkbutton2",".shrinkButton2",XrmoptionSepArg,	(caddr_t) NULL},
+{"-shrinkbutton3",".shrinkButton3",XrmoptionSepArg,	(caddr_t) NULL},
+{"-shrinkbutton4",".shrinkButton4",XrmoptionSepArg,	(caddr_t) NULL},
 #endif
 {"-mgs",	".magnifierSize1",XrmoptionSepArg,	(caddr_t) NULL},
 {"-mgs1",	".magnifierSize1",XrmoptionSepArg,	(caddr_t) NULL},
@@ -301,13 +323,11 @@ static	XrmOptionDescRec	options[] = {
 
 #define	offset(field)	XtOffsetOf(struct _resource, field)
 
-static	int	basedpi	= BDPI;		/* default value for -p option */
-
 static	char	XtRBool3[]	= "Bool3";	/* resource for Bool3 */
 
 static	XtResource	application_resources[] = {
 {"shrinkFactor", "ShrinkFactor", XtRInt, sizeof(int),
-  offset(shrinkfactor), XtRString, "6"},
+  offset(shrinkfactor), XtRImmediate, (XtPointer) SHRINK},
 {"densityPercent", "DensityPercent", XtRInt, sizeof(int),
   offset(_density), XtRString, "20"},
 #ifdef	GREY
@@ -315,7 +335,7 @@ static	XtResource	application_resources[] = {
   offset(_gamma), XtRString, "1"},
 #endif
 {"pixelsPerInch", "PixelsPerInch", XtRInt, sizeof(int),
-  offset(_pixels_per_inch), XtRInt, (caddr_t) &basedpi},
+  offset(_pixels_per_inch), XtRImmediate, (XtPointer) BDPI},
 {"sideMargin", "Margin", XtRString, sizeof(char *),
   offset(sidemargin), XtRString, (caddr_t) NULL},
 {"topMargin", "Margin", XtRString, sizeof(char *),
@@ -333,7 +353,7 @@ static	XtResource	application_resources[] = {
   offset(makepk), XtRString, "true"},
 #endif
 {"mfMode", "MfMode", XtRString, sizeof(char *),
-  offset(mfmode), XtRString, NULL},
+  offset(mfmode), XtRString, MFMODE},
 {"listFonts", "ListFonts", XtRBoolean, sizeof(Boolean),
   offset(_list_fonts), XtRString, "false"},
 {"reverseVideo", "ReverseVideo", XtRBoolean, sizeof(Boolean),
@@ -407,6 +427,14 @@ static	XtResource	application_resources[] = {
 #ifdef	BUTTONS
 {"expert", "Expert", XtRBoolean, sizeof(Boolean),
   offset(expert), XtRString, "false"},
+{"shrinkButton1", "ShrinkButton1", XtRInt, sizeof(int),
+  offset(shrinkbutton[0]), XtRImmediate, (XtPointer) 1},
+{"shrinkButton2", "ShrinkButton2", XtRInt, sizeof(int),
+  offset(shrinkbutton[1]), XtRImmediate, (XtPointer) 2},
+{"shrinkButton3", "ShrinkButton3", XtRInt, sizeof(int),
+  offset(shrinkbutton[2]), XtRImmediate, (XtPointer) 3},
+{"shrinkButton4", "ShrinkButton4", XtRInt, sizeof(int),
+  offset(shrinkbutton[3]), XtRImmediate, (XtPointer) 4},
 #endif
 {"magnifierSize1", "MagnifierSize", XtRString, sizeof(char *),
   offset(mg_arg[0]), XtRString, (caddr_t) NULL},
@@ -447,12 +475,19 @@ static	_Xconst	char	*usagestr[] = {
 	/* altfont */		"font",
 	/* mfmode */		"mode-def",
 	/* rv */		"^-l", "-rv",
+#ifdef	BUTTONS
+	/* shrinkbutton1 */	subst,
+	/* shrinkbutton2 */	silent,
+	/* shrinkbutton3 */	silent,
+	/* shrinkbutton4 */	silent,
+#endif
 	/* mgs */		subst,
-	/* msg1 */		silent,
-	/* msg2 */		silent,
-	/* msg3 */		silent,
-	/* msg4 */		silent,
-	/* msg5 */		silent,
+	/* mgs1 */		silent,
+	/* mgs2 */		silent,
+	/* mgs3 */		silent,
+	/* mgs4 */		silent,
+	/* mgs5 */		silent,
+	/* bw */		"^-safer", "-bw <width>",
 	/* fg */		"color",
 	/* foreground */	silent,
 	/* bg */		"color",
@@ -460,7 +495,6 @@ static	_Xconst	char	*usagestr[] = {
 	/* hl */		"color",
 	/* bd */		"^-hl", "-bd <color>",
 	/* cr */		"color",
-	/* bw */		"^-cr", "-bw <width>",
 #ifndef VMS
 	/* display */		"^-cr", "-display <host:display>",
 #else
@@ -683,6 +717,8 @@ static	struct option {
   NULL,		ADDR(safer)},
 {"+safer",	"safer",	FalseArg, BooleanArg, 1,
   NULL,		ADDR(safer)},
+{"-bw",		NULL,		SepArg,	NumberArg, 2,
+  "width",	(caddr_t) &bwidth},
 {"-borderwidth", "borderWidth",	SepArg,	NumberArg, 1,
   silent,	(caddr_t) &bwidth},
 {"-fg",		NULL,		SepArg,	StringArg, 2,
@@ -701,8 +737,6 @@ static	struct option {
   silent,	ADDR(brdr_color)},
 {"-cr",		"cursorColor",	SepArg,	StringArg, 1,
   "color",	ADDR(curs_color)},
-{"-bw",		NULL,		SepArg,	NumberArg, 2,
-  "width",	(caddr_t) &bwidth},
 #ifndef VMS
 {"-display",	NULL,		SepArg,	StringArg, 1,
   "host:display", (caddr_t) &display},
@@ -966,7 +1000,7 @@ struct _resource	resource = {
 #ifdef	MAKEPK
 	/* makepk		*/	True,
 #endif
-	/* mfmode		*/	NULL,
+	/* mfmode		*/	MFMODE,
 	/* list_fonts		*/	False,
 	/* reverse		*/	False,
 	/* hush_spec		*/	False,
@@ -1314,6 +1348,43 @@ main(argc, argv)
 	    exit(0);
 	}
 
+#if	CFGFILE
+	/* get the debug value (if any) from the environment */
+	/* (it's too early to get it from the command line) */
+	{
+	    _Xconst char *dbg_str;
+
+	    dbg_str = getenv("XDVIDEBUG");
+	    if (dbg_str != NULL)
+		debug = atoi(dbg_str);
+	}
+#ifdef	SELFAUTO
+	argv0 = argv[0];
+#endif
+#ifndef	CFG2RES
+	readconfig();		/* read config file(s). */
+#else	/* CFG2RES */
+	{
+	    static _Xconst struct cfg2res cfg2reslist[] = {
+		{"MFMODE",		"mfMode",		False},
+		{"PIXELSPERINCH",	"pixelsPerInch",	True},
+		{"SHRINKFACTOR",	"shrinkFactor",		True},
+#ifdef	BUTTONS
+		{"SHRINKBUTTON1",	"shrinkButton1",	True},
+		{"SHRINKBUTTON2",	"shrinkButton2",	True},
+		{"SHRINKBUTTON3",	"shrinkButton3",	True},
+		{"SHRINKBUTTON4",	"shrinkButton4",	True},
+#endif
+		{"PAPER",		"paper",		False},
+	    };
+
+	    readconfig(cfg2reslist, cfg2reslist + XtNumber(cfg2reslist),
+	      application_resources,
+	      application_resources + XtNumber(application_resources));
+	}
+#endif	/* CFG2RES */
+#endif	/* CFGFILE */
+
 #ifdef	TOOLKIT
 	top_level = XtInitialize(prog, "XDvi", options, XtNumber(options),
 		&argc, argv);
@@ -1394,7 +1465,12 @@ main(argc, argv)
 	    if (cgmp == NULL)
 		oops("Illegal value %s for gs palette option",
 		    resource.gs_palette);
-	    if (cgmp >= CGMcgm + 3) resource.gs_palette[0] = *(cgmp - 3);
+	    if (cgmp >= CGMcgm + 3) {
+		static	char	gsp[]	= "x";
+
+		gsp[0] = *(cgmp - 3);
+		resource.gs_palette = gsp;
+	    }
 	}
 #endif
 	if (resource.version_flag) Puts((_Xconst char *) &version);
@@ -1435,28 +1511,18 @@ main(argc, argv)
 	    if (!resource.fore_color) fore_Pixel = WhitePixelOfScreen(SCRN);
 	    if (!resource.back_color) back_Pixel = BlackPixelOfScreen(SCRN);
 	    /* Set them nonzero */
-	    resource.fore_color = resource.back_color = (char *) &version;
+	    resource.fore_color = resource.back_color =
+	      (_Xconst char *) &version;
 	} else {
 	    if (!resource.fore_color) fore_Pixel = BlackPixelOfScreen(SCRN);
 	    if (!resource.back_color) back_Pixel = WhitePixelOfScreen(SCRN);
 	}
 
+	copy = (resource.copy == True);
+
 #ifdef	GREY
 	if (DefaultDepthOfScreen(SCRN) == 1)
 	    use_grey = False;
-#endif
-
-	copy = resource.copy;
-	if (copy == Maybe)
-#ifdef	GREY
-	    copy = (!resource.thorough && !use_grey
-		&& DefaultDepthOfScreen(SCRN) > 1);
-#else
-	    copy = (!resource.thorough
-		&& DefaultDepthOfScreen(SCRN) > 1);
-#endif
-
-#ifdef	GREY
 	if (resource._gamma == 0.0) resource._gamma = 1.0;
 	if (use_grey)
 	    init_pix(True);
@@ -1472,12 +1538,14 @@ main(argc, argv)
 		XCreateGC(DISP, RootWindowOfScreen(SCRN),\
 			GCFunction|GCForeground|GCBackground, &values))
 
-	    if (copy || (set_bits && clr_bits))
+	    if (copy || (set_bits && clr_bits)) {
 		ruleGC = MakeGC(GXcopy, fore_Pixel, back_Pixel);
-	    if (copy) foreGC = ruleGC;
-	    else if (!resource.thorough && ruleGC) {
+		if (!resource.thorough) copy = True;
+	    }
+	    if (copy) {
 		foreGC = ruleGC;
-		Puts("Note:  overstrike characters may be incorrect.");
+		if (resource.copy != True)
+		    Puts("Note:  overstrike characters may be incorrect.");
 	    }
 	    else {
 		if (set_bits) foreGC = MakeGC(GXor, set_bits, 0);
@@ -1562,12 +1630,14 @@ main(argc, argv)
 #ifdef	BUTTONS
 	form_widget = XtCreateManagedWidget("form", formWidgetClass,
 		top_level, form_args, XtNumber(form_args));
-
+#define	form_or_top	form_widget	/* for calls later on */
+#define	form_or_vport	form_widget
 #else	/* !BUTTONS */
-#define	form_widget	top_level	/* for calls to XtAddEventHandler */
+#define	form_or_top	top_level	/* for calls later on */
+#define	form_or_vport	vport_widget
 #endif	/* BUTTONS */
 	vport_widget = XtCreateManagedWidget("vport", viewportWidgetClass,
-		form_widget, vport_args, XtNumber(vport_args));
+		form_or_top, vport_args, XtNumber(vport_args));
 	clip_widget = XtNameToWidget(vport_widget, "clip");
 	draw_args[0].value = (XtArgVal) page_w;
 	draw_args[1].value = (XtArgVal) page_h;
@@ -1630,7 +1700,7 @@ main(argc, argv)
 	    XtSetValues(draw_widget, &back_args, 1);
 	    XtSetValues(clip_widget, &back_args, 1);
 	}
-	XtAddEventHandler(form_widget, KeyPressMask, False, handle_key,
+	XtAddEventHandler(form_or_vport, KeyPressMask, False, handle_key,
 		(caddr_t) NULL);
 	XtAddEventHandler(vport_widget, StructureNotifyMask, False,
 		handle_resize, (caddr_t) NULL);
@@ -1736,11 +1806,12 @@ main(argc, argv)
 	rebindkey(XK_KP_Down, "d");
 	rebindkey(XK_KP_Prior, "b");
 	rebindkey(XK_KP_Next, "f");
+	rebindkey(XK_KP_Delete, "\177");
 #endif	/* XK_KP_Left */
 #undef	rebindkey
 
 	image = XCreateImage(DISP, DefaultVisualOfScreen(SCRN), 1, XYBitmap, 0,
-			     (char *)NULL, 0, 0, BITS_PER_BMUNIT, 0);
+			     (char *) NULL, 0, 0, BITS_PER_BMUNIT, 0);
 	image->bitmap_unit = BITS_PER_BMUNIT;
 #ifndef	MSBITFIRST
 	image->bitmap_bit_order = LSBFirst;
