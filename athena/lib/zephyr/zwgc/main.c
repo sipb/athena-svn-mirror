@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_main_c[] = "$Id: main.c,v 1.18 1990-10-22 04:11:07 raeburn Exp $";
+static char rcsid_main_c[] = "$Id: main.c,v 1.19 1990-11-09 14:42:42 raeburn Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -355,11 +355,13 @@ static void signal_exit()
 static signal_child()
 {
   union wait status;
-  int pid;
+  extern int errno;
+  int pid, old_errno = errno;
 
   do {
       pid = wait3(&status, WNOHANG, (struct rusage *)0);
   } while (pid != 0 && pid != -1);
+  errno = old_errno;
 }
 
 static void setup_signals(dofork)
