@@ -13,7 +13,7 @@
 # ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS
 # SOFTWARE.
 
-# $Id: Makefile,v 1.1.1.1 1998-05-04 22:23:38 ghudson Exp $
+# $Id: Makefile,v 1.2 1998-05-07 21:53:24 ghudson Exp $
 
 SUBDIRS = resolv irs isc bsd inet nameser
 
@@ -65,7 +65,7 @@ clean:: FRC
 	rm -f *~ *.BAK *.CKP *.orig
 	rm -f ${LIBBIND}
 
-install:: ${DESTDIR}${DESTLIB} ${DESTDIR}${DESTLIB}/${LIB}
+install::
 
 ${DESTDIR}${DESTLIB}:
 	mkdir -p ${DESTDIR}${DESTLIB}
