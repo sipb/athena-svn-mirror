@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 1998-12-17 16:23:05 ghudson Exp $
+# $Id: Makefile.in,v 1.2 1998-12-27 15:43:58 ghudson Exp $
 
 SHELL=/bin/sh
 
@@ -67,6 +67,8 @@ install:
 	${INSTALL} -m 444 TextDisplay.h ${DESTDIR}${includedir}/Jets
 	${INSTALL} -m 444 Tree.h ${DESTDIR}${includedir}/Jets
 	${INSTALL} -m 444 Window.h ${DESTDIR}${includedir}/Jets
+	${INSTALL} -m 444 hash.h ${DESTDIR}${includedir}/Jets
+	${INSTALL} -m 444 warn.h ${DESTDIR}${includedir}/Jets
 
 clean:
 	rm -f ${OBJS} sintable.o sintable libXj.a
