@@ -11,7 +11,7 @@
 
 #ifndef lint
 static char rcsid_send_to_kdc_c[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/aklog/krb_util.c,v 1.4 1996-09-19 22:09:31 ghudson Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/aklog/krb_util.c,v 1.5 1997-09-30 19:16:03 ghudson Exp $";
 #endif /* lint */
 
 #include <mit-copyright.h>
@@ -349,7 +349,7 @@ char *afs_realm_of_cell(cellconfig)
 	return 0;
     
     strcpy(krbrlm, (char *)krb_realmofhost(cellconfig->hostName[0]));
-    if (krb_get_krbhst(krbhst, krbrlm, 1) != KSUCCESS) {
+    if (krb_get_admhst(krbhst, krbrlm, 1) != KSUCCESS) {
 	char *s = krbrlm;
 	char *t = cellconfig->name;
 	int c;
