@@ -1,0 +1,12 @@
+#!/bin/sh
+
+case "$HOSTTYPE" in
+sun4)
+  ;;
+
+sgi)
+  ;;
+esac
+
+echo "/etc/ntp.conf"					>> "$CONFCHG"
+echo "/etc/sshd_config"					>> "$CONFCHG"
