@@ -102,6 +102,9 @@ if [ "$runinst" -ne 0 ]; then
 	fi
 
 	sh /srvd/install/oschanges --root $UPDATE_ROOT/
+
+	# Update the OS checker's timestamp.
+	touch ${UPDATE_ROOT}/var/athena/.oscheck
 fi
 
 # See if we need to update the documentation trees.
