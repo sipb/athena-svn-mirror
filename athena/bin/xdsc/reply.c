@@ -10,7 +10,7 @@
 #include	<X11/Shell.h>
 #include	"xdsc.h"
 
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/reply.c,v 1.1 1990-12-03 13:47:57 sao Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/xdsc/reply.c,v 1.2 1990-12-06 16:46:51 sao Exp $";
 
 extern char	*strchr();
 extern char     *getenv();
@@ -66,7 +66,7 @@ int	myreplynum;
 **  Find and use the subject of the previous transaction if we are replying.
 */
 	if (replynum != 0) {
-		sprintf (buffer, "(gti %d %s)\n", replynum, CurrentMtg());
+		sprintf (buffer, "(gti %d %s)\n", replynum, CurrentMtg(0));
 		returndata = RunCommand (buffer, NULL, NULL, True);
 
 		if ((int) returndata <= 0)  {
@@ -106,13 +106,13 @@ int	myreplynum;
 	if (replynum == 0) {
 		sprintf (	buffer,
 				" (Entering new transaction in %s)", 
-				CurrentMtg());
+				CurrentMtg(0));
 	}
 
 	else {
 		sprintf (	buffer,
 				" (Replying to transaction %d in %s)",
-				replynum, CurrentMtg());
+				replynum, CurrentMtg(0));
 	}
 
 	n = 0;
@@ -200,7 +200,7 @@ XtPointer	call_data;
 	Arg		args[5];
 	unsigned int	n;
 	char		*tempstring;
-	char		command [80];
+	char		command [LONGNAMELEN + 25];
 	char		filename[50];
 	FILE		*fp;
 	char		*returndata;
@@ -225,7 +225,7 @@ XtPointer	call_data;
 ** on the next line.  (No parens around subject line)
 */
 			sprintf(command, "(at %d %s %s)\n",
-				replynum, filename, CurrentMtg());
+				replynum, filename, CurrentMtg(0));
 			(void) RunCommand (command, NULL, NULL, False);
 
 			n = 0;
@@ -242,9 +242,9 @@ XtPointer	call_data;
 	XtDestroyWidget(sendPopupW);
 
 	sendPopupW = 0;
-	(void) HighestTransaction(topW);
+	(void) HighestTransaction();
 	sprintf (command, "Reading %s [%d-%d]", 
-			CurrentMtg(),
+			CurrentMtg(0),
 			TransactionNum(FIRST),
 			TransactionNum(LAST));
 
@@ -268,12 +268,9 @@ int	current;
 
 	CheckButtonSensitivity(BUTTONS_OFF);
 
-/*
-** PROBLEM WITH LONG NAMES AND SPACES HERE!  BUG!
-*/
 	sprintf (	destfile, 
 			"%s/xdsc/%s-%d", getenv("HOME"), 
-			CurrentMtg(), current);
+			CurrentMtg(1), current);
 
 	sprintf (	sourcefile,
 			"%s-%d", filebase, current);
@@ -337,11 +334,15 @@ XtPointer	call_data;
 /*
 ** Make directory path.  We ignore errors until we actually try to copy.
 */
-		tempptr1 = strchr(destfile,'/');
+		tempptr1 = strchr(destfile + 1,'/');
 
 		while (tempptr1) {
 			*tempptr1 = '\0';
-			mkdir (destfile, 0x777);
+			sprintf (command, "test -d %s", destfile);
+			if (system (command) != 0) {
+				sprintf (command, "mkdir %s", destfile);
+				system (command);
+			}
 			*tempptr1 = '/';
 			tempptr1 = strchr(tempptr1+1,'/');
 		}
@@ -781,10 +782,10 @@ XtPointer	call_data;
 		XtSetArg(args[n], XtNstring, &tempstring1);		n++;
 		XtGetValues (deleteMtgTextW, args, n);
 /*
-** HACK!  Protect us when we remove the current meeting.
+** Protect us when we remove the current meeting.
 */
-		if (!strcmp (tempstring1, CurrentMtg()))
-			EnterMeeting("", topW);
+		if (!strcmp (tempstring1, CurrentMtg(0)))
+			EnterMeeting("", "");
 
 		sprintf (buffer, "(dm %s)\n", tempstring1);
 		returndata = RunCommand (buffer, NULL, NULL, True);
@@ -936,6 +937,10 @@ the upper window.\n\
 The keyboard equivalent for clicking on a button is always the first\n\
 character on the button.  Note that uppercase and lowercase\n\
 letters can be distinct.\n\
+\n\
+If a button is grayed out, this action is not possible at this time.\n\
+For example, the 'Next' button will gray out when you are at the last\n\
+transaction in a meeting.\n\
 ";
 
 static char *helptext2 =
@@ -976,6 +981,8 @@ static char *helptext3 =
   spacebar	'do the right thing'\n\
   backspace	reverse what space did\n\
 +-------------------------------------------------------------------+\n\
+You can read a specific transaction by clicking on its header.\n\
+\n\
 The keyboard equivalent for clicking on a button is always the first\n\
 character on the button.  Note that uppercase and lowercase\n\
 letters can be distinct.\n\
