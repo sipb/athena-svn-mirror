@@ -242,7 +242,7 @@ static const char * krb_get_err_text(kerror)
 #define	BSHELL		"/bin/sh"
 
 #if !defined(OQUOTA) && !defined(QUOTAWARN)
-#define QUOTAWARN	"/usr/ucb/quota" /* warn user about quotas */
+#define QUOTAWARN	"/usr/athena/bin/quota" /* warn user about quotas */
 #endif
 
 #ifndef NO_UT_HOST
