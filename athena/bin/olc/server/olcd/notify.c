@@ -16,11 +16,12 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v $
- *      $Author: tjcoppet $
+ *      $Author: raeburn $
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.5 1989-11-17 13:58:29 tjcoppet Exp $";
+static char rcsid[] =
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/notify.c,v 1.6 1989-12-18 10:21:51 raeburn Exp $";
 #endif
 
 
@@ -28,6 +29,7 @@ static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/
 #include <olcd.h>
 
 #ifdef ZEPHYR
+#include <com_err.h>
 #include <zephyr/zephyr.h>      /* Zephyr defs. */
 #endif ZEPHYR
 
@@ -386,7 +388,8 @@ zsend(notice)
   if ((ret = ZSendNotice(notice, ZAUTH)) != ZERR_NONE)
     {
       /* Some sort of unknown communications error. */
-      fprintf(stderr, "zsend: error %d from ZSendNotice\n", ret);
+      fprintf(stderr, "zsend: error %s from ZSendNotice\n",
+	      error_message (ret));
       return(ERROR);
     }
 
@@ -398,14 +401,15 @@ zsend(notice)
       ZERR_NONE)
     {
       /* Server acknowledgement error here. */
-      fprintf(stderr, "zsend: error %d from ZIfNotice\n", ret);
+      fprintf(stderr, "zsend: error %s from ZIfNotice\n",
+	      error_message (ret));
       ZFreeNotice(&retnotice);
       return(ERROR);
     }
 
   if (retnotice.z_kind == SERVNAK)
     {
-      fprintf(stderr, "zsend: authentication failure\n");
+      fprintf(stderr, "zsend: authentication failure (SERVNAK)\n");
       ZFreeNotice(&retnotice);
       return(ERROR);
     }
