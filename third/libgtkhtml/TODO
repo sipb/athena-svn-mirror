@@ -1,0 +1,20 @@
+
+Gtkhtml2 Roadmap.
+
+* Milestone 1 (due to ?)
+   
+   - Forms support.
+
+   - Multiple views support.
+
+   - Fix memory leaks.
+
+* Milestone 2
+
+   - Frames support.
+      
+   - Printing support.
+
+   - Animated images.
+
+   - Fix memory leaks.
