@@ -16,7 +16,7 @@
 #include <afs/param.h>
 #endif
 
-RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx.c,v 1.3 2002-02-24 10:39:51 zacheiss Exp $");
+RCSID("$Header: /afs/dev.mit.edu/source/repository/third/openafs/src/rx/rx.c,v 1.4 2002-04-02 10:53:44 zacheiss Exp $");
 
 #ifdef KERNEL
 #include "../afs/sysincludes.h"
@@ -2878,7 +2878,6 @@ static void rxi_CheckReachEvent(event, conn, acall)
     struct clock when;
     int i, waiting;
 
-    MUTEX_ENTER(&conn->conn_call_lock);
     MUTEX_ENTER(&conn->conn_data_lock);
     conn->checkReachEvent = (struct rxevent *) 0;
     waiting = conn->flags & RX_CONN_ATTACHWAIT;
@@ -2886,7 +2885,8 @@ static void rxi_CheckReachEvent(event, conn, acall)
     MUTEX_EXIT(&conn->conn_data_lock);
 
     if (waiting) {
-	if (!call)
+	if (!call) {
+	    MUTEX_ENTER(&conn->conn_call_lock);
 	    for (i=0; i<RX_MAXCALLS; i++) {
 		struct rx_call *tc = conn->call[i];
 		if (tc && tc->state == RX_STATE_PRECALL) {
@@ -2894,22 +2894,25 @@ static void rxi_CheckReachEvent(event, conn, acall)
 		    break;
 		}
 	    }
+	    MUTEX_EXIT(&conn->conn_call_lock);
+	}
 
 	if (call) {
 	    if (call != acall) MUTEX_ENTER(&call->lock);
 	    rxi_SendAck(call, NULL, 0, 0, 0, RX_ACK_PING, 0);
 	    if (call != acall) MUTEX_EXIT(&call->lock);
 
-	    MUTEX_ENTER(&conn->conn_data_lock);
-	    conn->refCount++;
-	    MUTEX_EXIT(&conn->conn_data_lock);
 	    clock_GetTime(&when);
 	    when.sec += RX_CHECKREACH_TIMEOUT;
-	    conn->checkReachEvent =
-		rxevent_Post(&when, rxi_CheckReachEvent, conn, NULL);
+	    MUTEX_ENTER(&conn->conn_data_lock);
+	    if (!conn->checkReachEvent) {
+		conn->refCount++;
+		conn->checkReachEvent =
+		    rxevent_Post(&when, rxi_CheckReachEvent, conn, NULL);
+	    }
+	    MUTEX_EXIT(&conn->conn_data_lock);
 	}
     }
-    MUTEX_EXIT(&conn->conn_call_lock);
 }
 
 static int rxi_CheckConnReach(conn, call)
@@ -3333,7 +3336,6 @@ static void rxi_UpdatePeerReach(conn, acall)
     peer->lastReachTime = clock_Sec();
     MUTEX_EXIT(&peer->peer_lock);
 
-    MUTEX_ENTER(&conn->conn_call_lock);
     MUTEX_ENTER(&conn->conn_data_lock);
     if (conn->flags & RX_CONN_ATTACHWAIT) {
 	int i;
@@ -3351,7 +3353,6 @@ static void rxi_UpdatePeerReach(conn, acall)
 	}
     } else
 	MUTEX_EXIT(&conn->conn_data_lock);
-    MUTEX_EXIT(&conn->conn_call_lock);
 }
 
 /* The real smarts of the whole thing.  */
@@ -4282,12 +4283,16 @@ void rxi_ConnectionError(conn, error)
 {
     if (error) {
 	register int i;
+	MUTEX_ENTER(&conn->conn_data_lock);
 	if (conn->challengeEvent)
 	    rxevent_Cancel(conn->challengeEvent, (struct rx_call*)0, 0);
 	if (conn->checkReachEvent) {
 	    rxevent_Cancel(conn->checkReachEvent, (struct rx_call*)0, 0);
 	    conn->checkReachEvent = 0;
+	    conn->flags &= ~RX_CONN_ATTACHWAIT;
+	    conn->refCount--;
 	}
+	MUTEX_EXIT(&conn->conn_data_lock);
 	for (i=0; i<RX_MAXCALLS; i++) {
 	    struct rx_call *call = conn->call[i];
 	    if (call) {
