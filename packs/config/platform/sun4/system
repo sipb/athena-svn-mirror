@@ -57,6 +57,7 @@
 *
 *	Example:
 *		forceload: drv/foo
+forceload: misc/obpsym
 
 
 
