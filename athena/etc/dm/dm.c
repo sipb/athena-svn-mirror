@@ -1,4 +1,4 @@
-/* $Id: dm.c,v 1.24 2002-05-11 18:34:30 amb Exp $
+/* $Id: dm.c,v 1.25 2003-04-06 22:28:01 ghudson Exp $
  *
  * Copyright (c) 1990, 1991 by the Massachusetts Institute of Technology
  * For copying and distribution information, please see the file
@@ -67,7 +67,7 @@
 #include <al.h>
 
 #ifndef lint
-static const char rcsid[] = "$Id: dm.c,v 1.24 2002-05-11 18:34:30 amb Exp $";
+static const char rcsid[] = "$Id: dm.c,v 1.25 2003-04-06 22:28:01 ghudson Exp $";
 #endif
 
 /* Process states */
@@ -734,7 +734,6 @@ static void shutdown(int signo)
   int pgrp;
   struct termios tc;
 
-  syslog(LOG_DEBUG, "Received SIGFPE, performing shutdown");
   if (login_running == RUNNING)
     kill(loginpid, SIGHUP);
   if (console_running == RUNNING)
@@ -853,16 +852,9 @@ static void child(int signo)
 	return;
 
       if (pid == xpid)
-	{
-	  syslog(LOG_DEBUG, "Received SIGCHLD for xpid (%d), status %d", pid,
-		 status);
-	  x_running = NONEXISTENT;
-	}
+	x_running = NONEXISTENT;
       else if (pid == consolepid)
 	{
-	  syslog(LOG_DEBUG,
-		 "Received SIGCHLD for consolepid (%d), status %d", pid,
-		 status);
 	  if (!WIFEXITED(status) || WEXITSTATUS(status) != 0)
 	    console_running = FAILED;
 	  else
@@ -870,8 +862,6 @@ static void child(int signo)
 	}
       else if (pid == loginpid)
 	{
-	  syslog(LOG_DEBUG, "Received SIGCHLD for loginpid (%d), status %d",
-		 pid, status);
 	  if (WIFEXITED(status) && WEXITSTATUS(status) == CONSOLELOGIN)
 	    login_running = STARTUP;
 	  else
@@ -888,13 +878,11 @@ static void child(int signo)
 
 static void xready(int signo)
 {
-  syslog(LOG_DEBUG, "Received SIGUSR1; setting x_running.");
   x_running = RUNNING;
 }
 
 static void loginready(int signo)
 {
-  syslog(LOG_DEBUG, "Received SIGUSR1; setting login_running.");
   login_running = RUNNING;
 }
 
@@ -902,7 +890,6 @@ static void loginready(int signo)
 
 static void catchalarm(int signo)
 {
-  syslog(LOG_DEBUG, "Received SIGALRM.");
   alarm_running = NONEXISTENT;
 }
 
@@ -911,7 +898,6 @@ static void catchalarm(int signo)
 
 static void die(int signo)
 {
-  syslog(LOG_DEBUG, "Dying on signal %d", signo);
   cleanup(logintty);
   _exit(0);
 }
