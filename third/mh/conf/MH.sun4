@@ -14,7 +14,7 @@ mf		off
 pop		on
 popdir		/usr/athena/etc
 bboards		off
-cc		/usr/gcc/bin/gcc -traditional
+cc		/usr/gcc/bin/gcc
 ln		ln -s
 options		ATHENA
 options		ATZ
