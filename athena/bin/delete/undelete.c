@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.15 1989-03-27 12:08:08 jik Exp $";
+     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.16 1989-10-23 13:10:32 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -20,24 +20,21 @@
 #include <sys/param.h>
 #include <strings.h>
 #include <sys/stat.h>
+#include <com_err.h>
+#include <errno.h>
+#include "delete_errs.h"
 #include "directories.h"
 #include "pattern.h"
 #include "util.h"
 #include "undelete.h"
+#include "shell_regexp.h"
 #include "mit-copyright.h"
+#include "errors.h"
 
-#define ERROR_MASK 1
-#define NO_DELETE_MASK 2
-
-char *malloc(), *realloc();
+extern char *malloc(), *realloc();
+extern int errno;
 
 int interactive, recursive, verbose, directoriesonly, noop, force;
-int del_recursive = 0; /* this tells the pattern matcher that we do */
-		       /* *not* want it to recurse deleted directories */
-		       /* when recursive is set to false. */
-
-char *whoami, *error_buf;
-
 
 
 
@@ -48,15 +45,13 @@ char *argv[];
      extern char *optarg;
      extern int optind;
      int arg;
-     int status = 0;
+     int retval;
+     
+     initialize_del_error_table();
      
      whoami = lastpart(argv[0]);
      interactive = recursive = verbose = directoriesonly = noop = force = 0;
-     error_buf = malloc(MAXPATHLEN + strlen(whoami));
-     if (! error_buf) {
-	  perror(whoami);
-	  exit(1);
-     }
+
      while ((arg = getopt(argc, argv, "firvnR")) != -1) {
 	  switch (arg) {
 	  case 'f':
@@ -88,18 +83,26 @@ char *argv[];
 		    usage();
 		    exit(1);
 	       }
+	       break;
 	  default:
 	       usage();
 	       exit(1);
 	  }
      }
-     if (optind == argc)
-	  exit(interactive_mode());
+
+     report_errors = ! force;
+     
+     if (optind == argc) {
+	  if (interactive_mode())
+	       error("interactive_mode");
+     }
      else while (optind < argc) {
-	  status = status | undelete(argv[optind]);
+	  retval = undelete(argv[optind]);
+	  if (retval)
+	       error(argv[optind]);
 	  optind++;
      }
-     exit(status & ERROR_MASK);
+     exit(((! force) && error_occurred) ? 1 : 0);
 }
 
 
@@ -109,7 +112,8 @@ interactive_mode()
      char buf[MAXPATHLEN];
      char *ptr;
      int status = 0;
-
+     int retval;
+     
      if (verbose) {
 	  printf("Enter the files to be undeleted, one file per line.\n");
 	  printf("Hit <RETURN> on a line by itself to exit.\n\n");
@@ -119,16 +123,20 @@ interactive_mode()
 	  ptr = fgets(buf, MAXPATHLEN, stdin);
 	  if (! ptr) {
 	       printf("\n");
-	       return(status);
+	       return status;
 	  }
 	  ptr = index(buf, '\n');  /* fgets breakage */
 	  if (ptr)
 	       *ptr = '\0';
 	  if (! *buf)
-	       return(status);
-	  status = status | undelete(buf);
-     } while (*ptr);
-     return(status);
+	       return status;
+	  retval = undelete(buf);
+	  if (retval) {
+	       error(buf);
+	       status = retval;
+	  }
+     } while (*buf);
+     return status;
 }
 
 
@@ -147,7 +155,6 @@ usage()
      fprintf(stderr, "-r and -D are mutually exclusive\n");
 }
 
-
 undelete(file_exp)
 char *file_exp;
 {
@@ -157,127 +164,167 @@ char *file_exp;
      char *startdir;
      int status = 0;
      filerec *current;
+     int retval;
      
      if (*file_exp == '/') {
 	  startdir = "/";
-	  file_re = parse_pattern(file_exp + 1);
+	  file_re = file_exp + 1;
      }
      else {
 	  startdir = "";
-	  file_re = parse_pattern(file_exp);
+	  file_re = file_exp;
      }
-     if (! file_re)
-	  return(ERROR_MASK);
-     found_files = get_the_files(startdir, file_re, &num_found);
-     free(file_re);
+
+     if (retval =  get_the_files(startdir, file_re, &num_found,
+				 &found_files)) {
+	  error(file_exp);
+	  return retval;
+     }
+     
      if (num_found) {
-	  process_files(found_files, num_found);
+	  if (retval = process_files(found_files, num_found)) {
+	       error(file_exp);
+	       return retval;
+	  }
 	  if (*file_exp == '/')
 	       current = get_root_tree();
 	  else
 	       current = get_cwd_tree();
+
 	  status = recurs_and_undelete(current);
+	  if (status) {
+	       error(file_exp);
+	       return status;
+	  }
      }
      else {
-	  if (! force)
-	       fprintf(stderr, "%s: %s not found\n", whoami, file_exp);
-	  status = ERROR_MASK;
+	  if (no_wildcards(file_exp)) {
+	       set_error(ENOENT)
+	  }
+	  else
+	       set_error(ENOMATCH);
+	  error(file_exp);
+	  return error_code;
      }
-     return(status);
+
+     return status;
 }
 
 
 
 
 
-recurs_and_undelete(leaf)
+int recurs_and_undelete(leaf)
 filerec *leaf;
 {
      int status = 0;
-
-     if ((leaf->specified) && ((leaf->specs.st_mode & S_IFMT) == S_IFDIR))
-	  status = do_directory_undelete(leaf);
-     /* the "do_directory_undelete" really only asks the user if he */
-     /* wants to expunge the directory, it doesn't do any deleting. */
-     if (! status) {
-	  if (leaf->dirs)
-	       status |= recurs_and_undelete(leaf->dirs);
-	  if (leaf->files)
-	       status |= recurs_and_undelete(leaf->files);
-     }
-     if (leaf->specified)
-	  status |= do_undelete(leaf);
-     if (leaf->next)
-	  status |= recurs_and_undelete(leaf->next);
-     free_leaf(leaf);
-     return(status);
-}
-
-
-
-
-
-
-do_directory_undelete(file_ent)
-filerec *file_ent;
-{
-     char buf[MAXPATHLEN];
-
-     get_leaf_path(file_ent, buf);
-     convert_to_user_name(buf, buf);
+     int retval;
      
-     if (interactive) {
-	  printf("%s: Undelete directory %s? ", whoami, buf);
-	  if (! yes())
-	       return(NO_DELETE_MASK);
+     if (leaf->specified) {
+	  retval = do_undelete(leaf);
+	  if (retval) {
+	       error("do_undelete");
+	       return retval;
+	  }
      }
-     return(0);
+
+     if (leaf->dirs) {
+	  retval = recurs_and_undelete(leaf->dirs);
+	  if (retval) {
+	       error("recurs_and_undelete");
+	       status = retval;
+	  }
+     }
+
+     if (leaf->files) {
+	  retval = recurs_and_undelete(leaf->files);
+	  if (retval) {
+	       error("recurs_and_undelete");
+	       status = retval;
+	  }
+     }
+     
+     if (leaf->next) {
+	  retval = recurs_and_undelete(leaf->next);
+	  if (retval) {
+	       error("recurs_and_undelete");
+	       status = retval;
+	  }
+     }
+     
+     if (retval = free_leaf(leaf)) {
+	  error("free_leaf");
+	  status = retval;
+     }
+
+     return status;
 }
 
 
 
 
 
-process_files(files, num)
+
+int process_files(files, num)
 char **files;
 int num;
 {
      int i;
-     listrec *new_files;
      listrec *filelist;
-
-     filelist = (listrec *) malloc(sizeof(listrec) * num);
+     struct filrec *not_needed;
+     int retval;
+     
+     filelist = (listrec *) malloc((unsigned) (sizeof(listrec) * num));
      if (! filelist) {
-	  perror(sprintf(error_buf, "%s: process_files\n", whoami));
-	  exit(1);
+	  set_error(errno);
+	  error("process_files");
+	  return error_code;
      }
+     
      for (i = 0; i < num; i++) {
-	  filelist[i].real_name = malloc(strlen(files[i]) + 1);
-	  strcpy(filelist[i].real_name, files[i]);
-	  filelist[i].user_name = malloc(strlen(files[i]) + 1);
-	  convert_to_user_name(files[i], filelist[i].user_name);
+	  filelist[i].real_name = malloc((unsigned) (strlen(files[i]) + 1));
+	  if (! filelist[i].real_name) {
+	       set_error(errno);
+	       error("process_files");
+	       return error_code;
+	  }
+	  (void) strcpy(filelist[i].real_name, files[i]);
+	  filelist[i].user_name = malloc((unsigned) (strlen(files[i]) + 1));
+	  if (! filelist[i].user_name) {
+	       set_error(errno);
+	       error("process_files");
+	       return error_code;
+	  }
+ 	  convert_to_user_name(files[i], filelist[i].user_name);
 	  free(files[i]);
      }
-     free(files);
-     
-     new_files = sort_files(filelist, num);
-     new_files = unique(new_files, &num);
-     if (initialize_tree()) {
-	  exit(1);
+     free((char *) files);
+	  
+     if (retval = sort_files(filelist, num)) {
+	  error("sort_files");
+	  return retval;
      }
+     if (retval = unique(&filelist, &num)) {
+	  error("unique");
+	  return retval;
+     }
+     if (retval = initialize_tree()) {
+	  error("initialize_tree");
+	  return retval;
+     }
+	  
      for (i = 0; i < num; i++) {
-	  if (!add_path_to_tree(new_files[i].real_name)) {
-	       fprintf(stderr, "%s: error adding path to filename tree\n",
-		       whoami);
-	       exit(1);
+	  if (retval = add_path_to_tree(filelist[i].real_name, &not_needed)) {
+	       error("add_path_to_tree");
+	       return retval;
 	  }
 	  else {
-	       free(new_files[i].real_name);
-	       free(new_files[i].user_name);
+	       free(filelist[i].real_name);
+	       free(filelist[i].user_name);
 	  }
      }
-     free(new_files);
-     return(0);
+     free((char *) filelist);
+     return 0;
 }
 
      
@@ -292,8 +339,15 @@ filerec *file_ent;
 {
      struct stat stat_buf;
      char user_name[MAXPATHLEN], real_name[MAXPATHLEN];
-
-     get_leaf_path(file_ent, real_name);
+     int retval;
+     
+     if (retval = get_leaf_path(file_ent, real_name)) {
+	  if (! force)
+	       fprintf(stderr, "%s: %s: %s\n", whoami, "get_leaf_path",
+		       error_message(retval));
+	  return retval;
+     }
+     
      convert_to_user_name(real_name, user_name);
 
      if (interactive) {
@@ -301,30 +355,36 @@ filerec *file_ent;
 	       printf("%s: Undelete directory %s? ", whoami, user_name);
 	  else
 	       printf("%s: Undelete %s? ", whoami, user_name);
-	  if (! yes())
-	       return(NO_DELETE_MASK);
+	  if (! yes()) {
+	       set_status(UNDEL_NOT_UNDELETED);
+	       return error_code;
+	  }
      }
      if (! lstat(user_name, &stat_buf)) if (! force) {
 	  printf("%s: An undeleted %s already exists.\n", whoami, user_name);
 	  printf("Do you wish to continue with the undelete and overwrite that version? ");
-	  if (! yes())
-	       return(NO_DELETE_MASK);
-	  unlink_completely(user_name);
+	  if (! yes()) {
+	       set_status(UNDEL_NOT_UNDELETED);
+	       return error_code;
+	  }
+	  if (! noop) if (retval = unlink_completely(user_name)) {
+	       error(user_name);
+	       return retval;
+	  }
      }
      if (noop) {
 	  printf("%s: %s would be undeleted\n", whoami, user_name);
-	  return(0);
+	  return 0;
      }
 
-     if (! do_file_rename(real_name, user_name)) {
-	  if (verbose)
-	       printf("%s: %s undeleted\n", whoami, user_name);
-	  return(0);
+     if (retval = do_file_rename(real_name, user_name)) {
+	  error("do_file_rename");
+	  return retval;
      }
      else {
-	  if (! force)
-	       fprintf(stderr, "%s: %s not undeleted\n", whoami, user_name);
-	  return(ERROR_MASK);
+	  if (verbose)
+	       printf("%s: %s undeleted\n", whoami, user_name);
+	  return 0;
      }
 }
 
@@ -335,28 +395,37 @@ do_file_rename(real_name, user_name)
 char *real_name, *user_name;
 {
      char *ptr;
-     
+     int retval;
+     char error_buf[MAXPATHLEN+MAXPATHLEN+14];
      char old_name[MAXPATHLEN], new_name[MAXPATHLEN];
      char buf[MAXPATHLEN];
-     
-     strcpy(old_name, real_name);
-     strcpy(new_name, real_name);
+
+     (void) strcpy(old_name, real_name);
+     (void) strcpy(new_name, real_name);
 
      while (ptr = strrindex(new_name, ".#")) {
 	  convert_to_user_name(ptr, ptr);
-	  strcpy(ptr, firstpart(ptr, buf));
-	  strcpy(&old_name[ptr - new_name],
-		 firstpart(&old_name[ptr - new_name], buf));
+	  (void) strcpy(ptr, firstpart(ptr, buf));
+	  (void) strcpy(&old_name[ptr - new_name],
+			firstpart(&old_name[ptr - new_name], buf));
 	  if (rename(old_name, new_name)) {
-	       return(ERROR_MASK);
+	       set_error(errno);
+	       (void) sprintf(error_buf, "renaming %s to %s",
+			      old_name, new_name);
+	       error(error_buf);
+	       return error_code;
 	  }
 	  if (ptr > new_name) {
 	       *--ptr = '\0';
 	       old_name[ptr - new_name] = '\0';
 	  }
      }
-     change_path(real_name, user_name);
-     return(0);
+     if (retval = change_path(real_name, user_name)) {
+	  error("change_path");
+	  return retval;
+     }
+     
+     return 0;
 }
 
 
@@ -372,25 +441,28 @@ listrec *file1, *file2;
 
      
      
-listrec *sort_files(data, num_data)
+int sort_files(data, num_data)
 listrec *data;
 int num_data;
 {
-     qsort(data, num_data, sizeof(listrec), filecmp);
-     return(data);
+     qsort((char *) data, num_data, sizeof(listrec), filecmp);
+
+     return 0;
 }
 
 
 
 
 
-listrec *unique(files, number)
-listrec *files;
+int unique(the_files, number)
+listrec **the_files;
 int *number;
 {
      int i, last;
      int offset;
-     
+     listrec *files;
+
+     files = *the_files;
      for (last = 0, i = 1; i < *number; i++) {
 	  if (! strcmp(files[last].user_name, files[i].user_name)) {
 	       int better;
@@ -420,12 +492,16 @@ int *number;
 	       files[i] = files[i + offset];
      }
      *number -= offset;
-     files = (listrec *) realloc(files, sizeof(listrec) * *number);
+     files = (listrec *) realloc((char *) files,
+				 (unsigned) (sizeof(listrec) * *number));
      if (! files) {
-	  perror(sprintf(error_buf, "%s: unique", whoami));
-	  exit(1);
+	  set_error(errno);
+	  error("realloc");
+	  return errno;
      }
-     return(files);
+
+     *the_files = files;
+     return 0;
 }
 
 
@@ -463,60 +539,91 @@ char *filename;
      struct stat stat_buf;
      DIR *dirp;
      struct direct *dp;
+     int retval;
      int status = 0;
      
-     if (lstat(filename, &stat_buf))
-	  return(1);
+     if (lstat(filename, &stat_buf)) {
+	  set_error(errno);
+	  error(filename);
+	  return error_code;
+     }
 
      if ((stat_buf.st_mode & S_IFMT) == S_IFDIR) {
 	  dirp = opendir(filename);
-	  if (! dirp)
-	       return(1);
+	  if (! dirp) {
+	       set_error(errno);
+	       error(filename);
+	       return error_code;
+	  }
+	       
 	  for (dp = readdir(dirp); dp != NULL; dp = readdir(dirp)) {
 	       if (is_dotfile(dp->d_name))
 		    continue;
-	       strcpy(buf, append(filename, dp->d_name));
-	       if (! buf) {
-		    status = 1;
-		    continue;
+	       (void) strcpy(buf, append(filename, dp->d_name));
+	       if (retval = unlink_completely(buf)) {
+		    error(buf);
+		    status = retval;
 	       }
-	       status = status | unlink_completely(buf);
 	  }
 	  closedir(dirp);
+	  if (retval = rmdir(filename)) {
+	       set_error(errno);
+	       error(filename);
+	       return error_code;
+	  }
      }
-     else
-	  return(unlink(filename) == -1);
-     return(0);
+     else if (retval = unlink(filename)) {
+	  set_error(errno);
+	  error(filename);
+	  return error_code;
+     }
+
+     return status;
 }
 
 
 
 
-char **get_the_files(base, reg_exp, num_found)
+int get_the_files(base, reg_exp, num_found, found)
 char *base, *reg_exp;
 int *num_found;
+char ***found;
 {
      char **matches;
      int num_matches;
-     char **found;
      int num;
      int i;
+     int retval;
      
-     found = (char **) malloc(0);
+     *found = (char **) malloc(0);
      num = 0;
      
-     matches = find_matches(base, reg_exp, &num_matches);
+     if (retval = find_matches(base, reg_exp, &num_matches, &matches)) {
+	  error("find_matches");
+	  return retval;
+     }
      if (recursive) {
 	  char **recurs_found;
 	  int recurs_num;
 	  
 	  for (i = 0; i < num_matches; free(matches[i]), i++) {
 	       if (is_deleted(lastpart(matches[i]))) {
-		    found = add_str(found, num, matches[i]);
+		    if (retval = add_str(found, num, matches[i])) {
+			 error("add_str");
+			 return retval;
+		    }
 		    num++;
 	       }
-	       recurs_found = find_deleted_recurses(matches[i], &recurs_num);
-	       add_arrays(&found, &num, &recurs_found, &recurs_num);
+	       if (retval = find_deleted_recurses(matches[i], &recurs_num,
+						  &recurs_found)) {
+		    error(matches[i]);
+		    return retval;
+	       }
+	       if (retval = add_arrays(found, &num, &recurs_found,
+				       &recurs_num)) {
+		    error("add_arrays");
+		    return retval;
+	       }
 	  }
      }
      else {
@@ -526,28 +633,33 @@ int *num_found;
 	  
 	  for (i = 0; i < num_matches; free(matches[i]), i++) {
 	       if (is_deleted(lastpart(matches[i]))) {
-		    found = add_str(found, num, matches[i]);
+		    if (retval = add_str(found, num, matches[i])) {
+			 error("add_str");
+			 return retval;
+		    }
 		    num++;
 	       }
 	       else if (! directoriesonly) {
 		    if (lstat(matches[i], &stat_buf))
 			 continue;
 		    if ((stat_buf.st_mode & S_IFMT) == S_IFDIR) {
-			 contents_found = find_deleted_contents(matches[i],
-								&num_contents);
-			 add_arrays(&found, &num, &contents_found,
-				    &num_contents);
+			 if (retval =
+			     find_deleted_contents(matches[i], &num_contents,
+						   &contents_found)) {
+			      error(matches[i]);
+			      return retval;
+			 }
+			 if (retval = add_arrays(found, &num, &contents_found,
+						 &num_contents)) {
+			      error("add_arrays");
+			      return retval;
+			 }
 		    }
 	       }
 	  }
 	  
      }
-     free(matches);
+     free((char *) matches);
      *num_found = num;
-     return(found);
+     return 0;
 }
-
-			 
-		    
-	  
-	  
