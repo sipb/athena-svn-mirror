@@ -1,9 +1,13 @@
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.h,v 2.2 1997-02-28 01:42:00 jweiss Exp $
- *  $Author: jweiss $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.h,v 2.3 1997-04-01 01:14:24 ghudson Exp $
+ *  $Author: ghudson $
  *  $Locker:  $
  *  $Log: not supported by cvs2svn $
+ *  Revision 2.2  1997/02/28 01:42:00  jweiss
+ *  all the world is not a vax, and more importantly none of our platforms
+ *  since the vax had /site/server/.services; change to /var.
+ *
  *  Revision 2.1  1993/06/18 14:33:24  tom
  *  first cut at solaris port
  *
@@ -83,7 +87,7 @@
  *  standard definitions of where we want things to be.
  */
 #define SNMPINITFILE	"/etc/athena/snmpd.conf"
-#define PIDFILE		"/etc/athena/snmpd.pid"
+#define PIDFILE		"/var/athena/snmpd.pid"
 #define VERSION		"3.4"
 
 #ifdef  MIT
