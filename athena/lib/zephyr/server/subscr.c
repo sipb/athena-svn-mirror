@@ -15,7 +15,7 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_subscr_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/subscr.c,v 1.8 1987-07-16 16:58:05 jtkohl Exp $";
+static char rcsid_subscr_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/subscr.c,v 1.9 1987-07-17 09:54:25 jtkohl Exp $";
 #endif SABER
 #endif lint
 
@@ -42,7 +42,7 @@ static char rcsid_subscr_s_c[] = "$Header: /afs/dev.mit.edu/source/repository/at
  *	ZNotice_t *notice;
  *	ZAcl_t *acl;
  *
- * void subscr_list_free(list)
+ * void subscr_free_list(list)
  *	ZClientList_t *list;
  *
  * void subscr_sendlist(notice, who)
@@ -365,7 +365,7 @@ ZAcl_t *acl;
  */
 
 void
-subscr_list_free(list)
+subscr_free_list(list)
 ZClientList_t *list;
 {
 	register ZClientList_t *lyst;
