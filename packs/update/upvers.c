@@ -1,7 +1,7 @@
 /*
- * $Header: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v 1.8 1990-08-10 18:15:39 probe Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v 1.9 1991-07-09 08:37:48 epeisach Exp $
  * $Source: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v $
- * $Author: probe $
+ * $Author: epeisach $
  */
  
 #include	<sys/types.h>
@@ -15,7 +15,7 @@ struct	verfile {
 } vf[1024];
 
 #ifndef lint
-char	rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v 1.8 1990-08-10 18:15:39 probe Exp $";
+char	rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/packs/update/upvers.c,v 1.9 1991-07-09 08:37:48 epeisach Exp $";
 #endif
 
 main(argc, argv)
@@ -29,8 +29,11 @@ char	*argv[];
 	int	olddeg, newdeg, start, end, vcmp();
 	char	file[80];
 	extern	int	errno;
+#ifdef POSIX
+	struct	dirent	*dirp;
+#else
 	struct	direct	*dirp;
-
+#endif
 	if (argc < 4) 
 		puts("Usage: verup <old-vers> <new-vers> <libdir>"), exit(2);
 
