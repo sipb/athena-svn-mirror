@@ -1,4 +1,4 @@
-# $Id: athena,v 1.60 1998-05-08 15:57:00 ghudson Exp $
+# $Id: athena,v 1.61 1998-05-08 16:51:26 miki Exp $
 # /etc/init.d/athena - Start/Stop the athena daemons
 
 # First, set up some useful variables.
@@ -161,6 +161,14 @@ if [ "$PUBLIC" = true ]; then
 					cp -p /os$i $i
 				fi
 			done
+			platform=`uname -m`
+			cp -p "/srvd/etc/driver_aliases.$platform"  \
+ 			  /etc/driver_aliases
+			cp -p "/srvd/etc/driver_classes.$platform" \
+	 		  /etc/driver_classes
+			cp -p "/srvd/etc/minor_perm.$platform" /etc/minor_perm
+			cp -p "/srvd/etc/name_to_major.$platform" \
+			  /etc/name_to_major
 			ps -e | awk '$4 == "inetd" { print $1; }' \
 				| xargs kill -HUP
 		fi
