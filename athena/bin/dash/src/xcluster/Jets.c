@@ -11,7 +11,7 @@
 
 #ifndef	lint
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/xcluster/Jets.c,v 1.1 1991-07-17 10:56:25 epeisach Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/xcluster/Jets.c,v 1.2 1991-07-17 10:58:09 epeisach Exp $";
 #endif	lint
 
 #include "mit-copyright.h"
@@ -30,6 +30,10 @@ static char rcsid[] =
 #include "Jets.h"
 #include "fd.h"
 #include "hash.h"
+
+#ifndef APPDEFDIR
+#define APPDEFDIR "/usr/lib/X11/app-defaults"
+#endif
 
 int DEBUG = 0;
 
@@ -1039,17 +1043,34 @@ int appTableCount;
 
   if (ad_rdb == NULL) /* fallback */
     {
+      char *appdefs;
+
+      appdefs = (char *) XjMalloc(strlen(APPDEFDIR) +
+				  strlen(programClass) + 2);
+      sprintf(appdefs, "%s/%s", APPDEFDIR, programClass);
+      ad_rdb = XrmGetFileDatabase(appdefs);
+      XjFree(appdefs);
+
       xenvironment = (char *)getenv("XENVIRONMENT");
       if (xenvironment != NULL)
 	{
-	  ad_rdb = XrmGetFileDatabase(xenvironment);
-	  if (ad_rdb == NULL)
+	  XrmDatabase env_rdb = NULL;
+
+	  env_rdb = XrmGetFileDatabase(xenvironment);
+	  if (env_rdb == NULL)
 	    {
 	      sprintf(errtext, "couldn't load %s", xenvironment);
 	      XjWarning(errtext);
 	    }
+	  else
+	    {
+	      if (ad_rdb == NULL)
+		ad_rdb = env_rdb;
+	      else
+		XrmMergeDatabases(env_rdb, &ad_rdb);
+	    }
 	}
-    }	      
+    }
 
   /*
    * Load user's defaults into user_rdb

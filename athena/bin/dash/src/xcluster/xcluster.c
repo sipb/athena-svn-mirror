@@ -11,7 +11,7 @@
 
 #ifndef	lint
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/xcluster/xcluster.c,v 1.1 1991-07-17 10:57:12 epeisach Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/xcluster/xcluster.c,v 1.2 1991-07-17 10:58:17 epeisach Exp $";
 #endif	lint
 
 #include "mit-copyright.h"
@@ -116,7 +116,7 @@ static XjResource appResources[] =
 int div;
 int xleft = 0, yleft = 0;
 struct cluster *circled = NULL;
-Pixmap pixmap = NULL;
+Pixmap pixmap_on = NULL, pixmap_off = NULL;
 
 int resize(draw, foo, data)
      DrawingJet draw;
@@ -144,13 +144,20 @@ int resize(draw, foo, data)
     }
   XClearWindow(XjDisplay(draw), XjWindow(draw));
 
-  if (pixmap != NULL)
-    XFreePixmap(XjDisplay(map), pixmap);
-  pixmap = XCreatePixmap(XjDisplay(map), 
-			 XjWindow(map),
-			 800/div+2, 800/div+2,
-			 DefaultDepth(XjDisplay(map), 
-				      DefaultScreen(XjDisplay(map))));
+  if (pixmap_on != NULL)
+    XFreePixmap(XjDisplay(map), pixmap_on);
+  if (pixmap_off != NULL)
+    XFreePixmap(XjDisplay(map), pixmap_off);
+  pixmap_on = XCreatePixmap(XjDisplay(map), 
+			    XjWindow(map),
+			    800/div+2, 800/div+2,
+			    DefaultDepth(XjDisplay(map), 
+					 DefaultScreen(XjDisplay(map))));
+  pixmap_off = XCreatePixmap(XjDisplay(map), 
+			     XjWindow(map),
+			     800/div+2, 800/div+2,
+			     DefaultDepth(XjDisplay(map), 
+					  DefaultScreen(XjDisplay(map))));
   circled = NULL;
 
   return 0;
@@ -166,7 +173,7 @@ void draw_circle(c)
 {
   if (circled != NULL  &&  circled != c)
     {
-      XCopyArea(XjDisplay(map), pixmap, XjWindow(map),
+      XCopyArea(XjDisplay(map), pixmap_off, XjWindow(map),
 		((DrawingJet) map)->drawing.foreground_gc,
 		0, 0, 800/div+2, 800/div+2,
 		(circled->x_coord-400)/div+xleft-1,
@@ -175,7 +182,7 @@ void draw_circle(c)
 
   if (c != NULL  &&  circled != c)
     {
-      XCopyArea(XjDisplay(map), XjWindow(map), pixmap,
+      XCopyArea(XjDisplay(map), XjWindow(map), pixmap_off,
 		((DrawingJet) map)->drawing.foreground_gc,
 		(c->x_coord-400)/div + xleft - 1,
 		(c->y_coord-400)/div + yleft - 1,
@@ -186,6 +193,12 @@ void draw_circle(c)
 	       (c->y_coord-400)/div + yleft,
 	       800/div, 800/div,
 	       0, 64 * 365);
+      XCopyArea(XjDisplay(map), XjWindow(map), pixmap_on,
+		((DrawingJet) map)->drawing.foreground_gc,
+		(c->x_coord-400)/div + xleft - 1,
+		(c->y_coord-400)/div + yleft - 1,
+		800/div+2, 800/div+2,
+		0, 0);
       /* There's only 360 degrees in a circle, I know, but for the */
       /* xterminal, we have to go a bit extra.  Sigh. */
 
@@ -345,11 +358,12 @@ fatal(display)
 
 void reset_timer()
 {
-  static int timerid=0;
+  static int timerid=-1;
 
   if (parms.inactive != 0)
     {
-      (void) XjRemoveWakeup(timerid);
+      if (timerid != -1)
+	(void) XjRemoveWakeup(timerid);
       timerid = XjAddWakeup(quit, 0, 1000 * parms.inactive);
     }
 }
@@ -359,8 +373,15 @@ void set_curr(c)
      struct cluster *c;
 {
   Current = c;
+
+  for(c=cluster_list; c != NULL; c=c->next)
+    if (c != Current)
+      SetToggleState(c->btn, False, False);
+    else
+      SetToggleState(c->btn, True, False);
+
   XjCallCallbacks(text, ((DrawingJet) text)->drawing.exposeProc, NULL);
-  draw_circle(c);
+  draw_circle(Current);
   reset_timer();
 }
 
@@ -377,6 +398,16 @@ int btn(me, curr, data)
   set_curr(c);
   return 0;
 }
+
+int unset(me, curr, data)
+     DrawingJet me;
+     int curr;
+     caddr_t data;
+{
+  SetToggleState(me, True, True);
+  return(0);
+}
+
 
 
 
@@ -449,6 +480,34 @@ int text_hit(me, curr, event)
 }
 
 
+int state = 0;
+
+int flash(fromJet, what, data)
+     caddr_t fromJet;
+     int what;
+     caddr_t data;
+{
+  if (circled != NULL)
+    {
+      if (state)
+	XCopyArea(XjDisplay(map), pixmap_on, XjWindow(map),
+		  ((DrawingJet) map)->drawing.foreground_gc,
+		  0, 0, 800/div+2, 800/div+2,
+		  (circled->x_coord-400)/div+xleft-1,
+		  (circled->y_coord-400)/div+yleft-1);
+      else
+	XCopyArea(XjDisplay(map), pixmap_off, XjWindow(map),
+		  ((DrawingJet) map)->drawing.foreground_gc,
+		  0, 0, 800/div+2, 800/div+2,
+		  (circled->x_coord-400)/div+xleft-1,
+		  (circled->y_coord-400)/div+yleft-1);
+    }
+  state = !state;
+  (void) XjAddWakeup(flash, 0, 1000);
+  return 0;
+}
+
+
 
 XjCallbackRec callbacks[] =
 {
@@ -460,6 +519,7 @@ XjCallbackRec callbacks[] =
   { "expose", expos },
   { "check_cluster", check_cluster },
   { "button", btn },
+  { "unset", unset },
   { "map_hit", map_hit },
   { "text_hit", text_hit },
 };
@@ -470,7 +530,7 @@ void make_btns(Form)
 {
   struct cluster *c;
   int n;
-  Jet w, b, l;
+  Jet w, l;
   int first = 1;
   char prev[10];
   char buf[BUFSIZ];
@@ -480,8 +540,8 @@ void make_btns(Form)
     {
       sprintf(buf1, "button%d", n);
       w = XjVaCreateJet(buf1, windowJetClass, Form, NULL, NULL);
-      b = XjVaCreateJet("foo", buttonJetClass, w, NULL, NULL);
-      l = XjVaCreateJet("bar", labelJetClass, b,
+      c->btn = (ButtonJet) XjVaCreateJet("foo", buttonJetClass, w, NULL, NULL);
+      l = XjVaCreateJet("bar", labelJetClass, c->btn,
 			XjNlabel, c->button_name, NULL, NULL);
 
       if (first)
@@ -557,6 +617,7 @@ char **argv;
   setForm(xclusterForm, form);
 
   XjRealizeJet(root);
+  flash();
   reset_timer();
 
   XjEventLoop(root);

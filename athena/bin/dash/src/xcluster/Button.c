@@ -11,7 +11,7 @@
 
 #ifndef	lint
 static char rcsid[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/xcluster/Button.c,v 1.1 1991-07-17 10:55:17 epeisach Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/bin/dash/src/xcluster/Button.c,v 1.2 1991-07-17 10:57:43 epeisach Exp $";
 #endif	lint
 
 #include "mit-copyright.h"
@@ -26,6 +26,8 @@ extern int DEBUG;
 static XjResource resources[] = {
   { XjNactivateProc, XjCActivateProc, XjRCallback, sizeof(XjCallback *),
       offset(button.activateProc), XjRString, NULL },
+  { XjNdeactivateProc, XjCDeactivateProc, XjRCallback, sizeof(XjCallback *),
+      offset(button.deactivateProc), XjRString, NULL },
   { XjNx, XjCX, XjRInt, sizeof(int),
       offset(core.x), XjRString, XjInheritValue },
   { XjNy, XjCY, XjRInt, sizeof(int),
@@ -46,6 +48,10 @@ static XjResource resources[] = {
       offset(button.background), XjRString, XjDefaultBackground },
   { XjNreverseVideo, XjCReverseVideo, XjRBoolean, sizeof(Boolean),
       offset(button.reverseVideo), XjRBoolean, (caddr_t)False },
+  { XjNtoggle, XjCToggle, XjRBoolean, sizeof(Boolean),
+      offset(button.toggle), XjRBoolean, (caddr_t)False },
+  { XjNstate, XjCState, XjRBoolean, sizeof(Boolean),
+      offset(button.state), XjRBoolean, (caddr_t)False },
 };
 
 #undef offset
@@ -213,11 +219,13 @@ static void resize(me, size)
     }
 }
 
-static void outline(me, gc)
+static void outline(me, foreground)
      ButtonJet me;
-     GC gc;
+     Boolean foreground;
 {
-  XDrawRectangle(me->core.display, me->core.window, gc,
+  XDrawRectangle(me->core.display, me->core.window,
+		 (foreground) ?
+		   me->button.foreground_gc : me->button.background_gc,
 		 me->button.borderWidth + me->button.borderThickness / 2,
 		 me->button.borderWidth + me->button.borderThickness / 2,
 		 me->core.width - (2 * me->button.borderWidth) -
@@ -258,6 +266,24 @@ static void btn_select(me, flag)
     }
 }
 
+static void btn_invert(me, flag)
+     ButtonJet me;
+     Boolean flag;
+{
+  if (flag)
+    {
+      XFillRectangle(me->core.display, me->core.window,
+		     me->button.invert_gc,
+		     me->button.borderWidth + me->button.borderThickness,
+		     me->button.borderWidth + me->button.borderThickness,
+		     me->core.width - 2 * (me->button.borderWidth +
+					   me->button.borderThickness),
+		     me->core.height - 2 * (me->button.borderWidth +
+					    me->button.borderThickness));
+    }
+}
+
+
 static Boolean event_handler(me, event)
      ButtonJet me;
      XEvent *event;
@@ -268,6 +294,9 @@ static Boolean event_handler(me, event)
     case Expose:
       if (event->xexpose.count != 0)
 	break;
+
+      XClearWindow(me->core.display, me->core.window);
+
       /* we can deal properly with a single child... */
       if (me->core.child != NULL)
 	if (me->core.child->core.classRec->core_class.expose != NULL)
@@ -275,10 +304,29 @@ static Boolean event_handler(me, event)
 							   event);
 
       frame(me);
-      if (me->button.inside)
+      if (me->button.toggle)
 	{
-	  outline(me, me->button.foreground_gc);
-	  btn_select(me, me->button.pressed); /* prob can never happen */
+	  if (me->button.inside)
+	    {
+	      outline(me, !me->button.state);
+	      if (me->button.pressed)
+		btn_invert(me, me->button.state);
+	      else
+		btn_invert(me, !me->button.state);
+	    }
+	  else
+	    {
+	      outline(me, me->button.state);
+	      if (me->button.pressed)
+		btn_invert(me, !me->button.state);
+	      else
+		btn_invert(me, me->button.state);
+	    }
+	}
+      else if (me->button.inside)
+	{
+	  outline(me, True);
+	  btn_invert(me, me->button.pressed);
 	}
       break;
 
@@ -286,17 +334,33 @@ static Boolean event_handler(me, event)
       if (me->button.inside == 1)
 	break;
       me->button.inside = 1;
-      outline(me, me->button.foreground_gc);
-      btn_select(me, me->button.pressed);
-
+      if (me->button.toggle)
+	{
+	  outline(me, !me->button.state);
+	  if (me->button.pressed)
+	    btn_select(me, !me->button.state);
+	}
+      else
+	{
+	  outline(me, True);
+	  btn_select(me, me->button.pressed);
+	}
       break;
 
     case LeaveNotify:
       if (me->button.inside == 0)
 	break;
       me->button.inside = 0;
-      outline(me, me->button.background_gc);
-      btn_select(me, False);
+      if (me->button.toggle)
+	{
+	  outline(me, me->button.state);
+	  btn_select(me, me->button.state);
+	}
+      else
+	{
+	  outline(me, False);
+	  btn_select(me, False);
+	}
       break;
  
     case ConfigureNotify:
@@ -324,15 +388,66 @@ static Boolean event_handler(me, event)
 
     case ButtonPress:
     case ButtonRelease:
-      btn_select(me, event->type == ButtonPress);
-      if (me->button.pressed == True &&
-          me->button.inside == True &&
-          event->type == ButtonRelease)
-	XjCallCallbacks((caddr_t) me, me->button.activateProc, event);
+      if (me->button.toggle)
+	{
+	  if (event->type == ButtonPress)
+	    btn_select(me, !me->button.state);
+	  else
+	    outline(me, me->button.state);
+	}
+      else
+	btn_select(me, event->type == ButtonPress);
+
+      if (event->type == ButtonRelease  &&
+	  me->button.pressed == True   &&
+          me->button.inside == True)
+	{
+	  if (me->button.toggle)
+	    {
+	      me->button.state = !(me->button.state);
+	      if (me->button.state)
+		XjCallCallbacks((caddr_t) me, me->button.activateProc, event);
+	      else
+		XjCallCallbacks((caddr_t) me, me->button.deactivateProc,
+				event);
+	    }
+	  else
+	    XjCallCallbacks((caddr_t) me, me->button.activateProc, event);
+	}
+
       me->button.pressed = (event->type == ButtonPress);
       break;
+
     default:
       return False;
     }
   return True;
+}
+
+
+void SetToggleState(me, bool, callcallback)
+     ButtonJet me;
+     Boolean bool, callcallback;
+{
+  if (me->button.inside)
+    outline(me, !bool);
+  else
+    outline(me, bool);
+
+  if (me->button.state != bool)
+    btn_select(me, bool);
+
+  me->button.state = bool;
+
+  if (callcallback)
+    if (bool)
+      XjCallCallbacks((caddr_t) me, me->button.activateProc, NULL);
+    else
+      XjCallCallbacks((caddr_t) me, me->button.deactivateProc, NULL);
+}
+
+Boolean GetToggleState(me)
+     ButtonJet me;
+{
+  return (me->button.state);
 }

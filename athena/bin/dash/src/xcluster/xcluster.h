@@ -30,7 +30,7 @@ struct cluster
 {
   int cluster_number;		/* For internal use... */
   char button_name[25];		/* Name to be shown on the button. */
-  Window btn;			/* Window for the button. */
+  ButtonJet btn;		/* Jet for the button. */
   char cluster_names[4][25];	/* Names of clusters in group, as in cmon. */
   int cluster_info[4][20];	/* Machine info for clusters in group. */
   int x_coord;			/* Location on map. */

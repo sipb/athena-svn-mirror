@@ -11,6 +11,9 @@
 
 #include "Jets.h"
 
+extern void SetToggleState();
+extern Boolean GetToggleState();
+
 extern JetClass buttonJetClass;
 
 typedef struct {int littlefoo;} ButtonClassPart;
@@ -24,6 +27,7 @@ extern ButtonClassRec buttonClassRec;
 
 typedef struct {
   XjCallback *activateProc;
+  XjCallback *deactivateProc;
   GC gc;
   GC foreground_gc;
   GC background_gc;
@@ -36,6 +40,8 @@ typedef struct {
   Boolean inside;
   Boolean selected;
   Boolean pressed;
+  Boolean toggle;
+  Boolean state;
 } ButtonPart;
 
 typedef struct _ButtonRec {
@@ -50,3 +56,9 @@ typedef struct _ButtonClassRec *ButtonJetClass;
 #define XjNborderThickness "borderThickness"
 #define XjCBorderWidth "BorderWidth"
 #define XjNborderWidth "borderWidth"
+#define XjCToggle "Toggle"
+#define XjNtoggle "toggle"
+#define XjCState "State"
+#define XjNstate "state"
+#define XjCDeactivateProc "DeactivateProc"
+#define XjNdeactivateProc "deactivateProc"

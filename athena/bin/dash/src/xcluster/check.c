@@ -39,28 +39,33 @@ static char *printers = "Printers";
 static char *status = "Status";
 static char *jobs = "Jobs";
 
+int xspace = 0;
 int height = 0;
 
 struct cluster *find_text(a, b)
      int a, b;
 {
-  int y = 20;
+  int y_init, y;
+  int x = 20;
   int i;
   struct cluster *c;
 
-  y += 2*height+4;
+  y_init = 20 + height+4;
+  y = 20 + 2*height+4;
 
   for (c = cluster_list; c != NULL; c = c->next)
     {
       for(i = 0; strcmp(c->cluster_names[i], "XXXXX"); i++)
 	{
-	  if (b < y)
+	  if (b < y  &&  b > y_init &&
+	      a > x  &&  a < x + (num_machtypes+1)*xspace)
 	    return c;
 	  y += height;
 	}
     }
   return c;
 }
+
 
 /*
  *  check_cluster prints out the information for the specified cluster.
@@ -81,7 +86,7 @@ int check_cluster(me, foo, data)
   struct cluster *c;
   static struct cluster *old_c = NULL;
   char name[15], stat[15], number[5];
-  static int init = 0, xspace = 0, plen = 0, slen = 0, jlen =0;
+  static int init = 0, plen = 0, slen = 0, jlen =0;
 
   if (!init)
     {

@@ -7,6 +7,8 @@
 *Button.borderWidth:		0
 *Button.borderThickness:	2
 *Button.padding:		1
+*Button.toggle:			True
+*Button*deactivateProc:		unset()
 *Form.padding:			2
 
 
@@ -27,6 +29,8 @@
 
 *quit*quitLabel.label:		Quit
 *help*helpLabel.label:		Help
+*quit*Button.toggle:		False
+*help*Button.toggle:		False
 
 *buttonQuit.activateProc:	quit()
 *buttonHelp.activateProc:	createTree("helpDialog"),mapTree("helpDialog")
@@ -113,3 +117,4 @@
 
 *helpDialog*close.activateProc:		unmapTree("helpDialog")
 *helpDialog*close.label:		Close Help Window
+*helpDialog*close.toggle:		False
