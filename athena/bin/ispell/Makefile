@@ -36,13 +36,13 @@ ispell.hash: buildhash $(DEFDICT)
 install: all
 	-mkdir ${BINDIR}
 	-mkdir ${LIBDIR}
-	install -m 755 -s ispell $(BINDIR)/ispell
-	install -m 755 -s icombine $(LIBDIR)/icombine
-	install -m 755 munchlist $(BINDIR)/munchlist
-	install -m 644 ispell.hash $(LIBDIR)/$(DEFHASH)
-	install -m 644 expand1.sed $(LIBDIR)/expand1.sed
-	install -m 644 expand2.sed $(LIBDIR)/expand2.sed
-	install -m 644 ispell.1 $(MANDIR)/ispell.1
+	install -c -m 755 -s ispell $(BINDIR)/ispell
+	install -c -m 755 -s icombine $(LIBDIR)/icombine
+	install -c -m 755 munchlist $(BINDIR)/munchlist
+	install -c -m 644 ispell.hash $(LIBDIR)/$(DEFHASH)
+	install -c -m 644 expand1.sed $(LIBDIR)/expand1.sed
+	install -c -m 644 expand2.sed $(LIBDIR)/expand2.sed
+	install -c -m 644 ispell.1 $(MANDIR)/ispell.1
 
 buildhash: buildhash.o hash.o
 	$(CC) $(CFLAGS) -o buildhash buildhash.o hash.o

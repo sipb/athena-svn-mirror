@@ -79,14 +79,14 @@ install: $(PROGS)
 	rm -fr $(DESTDIR)$(LIB)
 	rm -f $(DESTDIR)$(CONFDIR)/cxref
 	mkdir $(DESTDIR)$(LIB)
-	install -s -m 755 -o $(OWNER) -g $(GROUP) $(CXREF) \
+	install -c -s -m 755 -o $(OWNER) -g $(GROUP) $(CXREF) \
 		$(DESTDIR)$(CONFDIR)/$(CXREF)
 	for i in docxref fmtxref cxrfilt; do \
-		install -s -m 755 -o $(OWNER) -g $(GROUP) $$i \
+		install -c -s -m 755 -o $(OWNER) -g $(GROUP) $$i \
 		$(DESTDIR)$(LIB)/$$i; \
 	done
 
-	install -m 644 cxref.1 $(DESTDIR)/usr/man/man$(MANSEC)/cxref.$(MANSEC)
+	install -c -m 644 cxref.1 $(DESTDIR)/usr/man/man$(MANSEC)/cxref.$(MANSEC)
 
 clean:
 	rm -f $(SCANOBJS)
