@@ -59,7 +59,7 @@ choose_client() {
 	esac
 
 	# For now, just use uname -r to get the module version. 
-	VERSION=`uname -r`
+	VERSION=`uname -r | sed -e 's/-.*$//'`
 
 	LIBAFS=libafs-$VERSION$MP.o
 }
