@@ -1,8 +1,13 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 4.7 1988-06-20 18:57:38 don Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 4.8 1988-06-21 19:44:36 don Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 4.7  88/06/20  18:57:38  don
+ * support for stamp.c version 4.4 :
+ * this version's dec_entry has less static state, because it
+ * detects that the entry hasn't been processed before, in a better way.
+ * 
  * Revision 4.6  88/06/10  15:58:39  don
  * changed DEV usage to RDEV.
  * 
@@ -79,7 +84,7 @@
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 4.7 1988-06-20 18:57:38 don Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/stamp.c,v 4.8 1988-06-21 19:44:36 don Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -444,9 +449,15 @@ char *line; struct currentness *c;
  * via the KEYCPY macro.
  */
 
+/* XXX: not the best, but not the worst approach either.
+ * this  allows main() to call readstat() twice, with correct initialization.
+ */
+int prev_ent = 0;;
+
 int cur_ent = 0;	/* not global! index into entries[]. */
 
 init_next_match() {
+	prev_ent = 0;
 	cur_ent = 1;
 }
 
@@ -558,7 +569,8 @@ int entnum; char *fr[], *to[], *cmp[], *tail; {
 	}
 	currency_buf.sbuf.st_mode = S_IFMT;	/* kill short-term data. */
 
-	if ( ! tail || ! *tail) {
+	if (    prev_ent != entnum) {
+		prev_ent =  entnum;
 
 		/* a subtler, longer search would set this flag less often.
 		 */
