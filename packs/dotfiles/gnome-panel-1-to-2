@@ -1,8 +1,8 @@
-#!/usr/bin/perl -w
+#!/usr/athena/bin/perl -w
 # -*- coding: utf-8 -*-
 # Convert GNOME 1 panel settings and applets → GNOME 2 GConf keys
 # Copyright © 2002 Colin Walters <walters@verbum.org>
-# $Id: gnome-panel-1-to-2,v 1.1 2003-04-20 01:41:42 ghudson Exp $
+# $Id: gnome-panel-1-to-2,v 1.2 2003-04-22 05:37:21 ghudson Exp $
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -247,11 +247,30 @@ LINE: while (defined ($line = <F>)) {
 	} elsif ($appletid =~ /Menu/) {
 	  $count = $object_id_count;
 	  $scount = sprintf_objid($count);
-	  gconftool("/apps/panel/profiles/default/objects/$scount/path", "string", "applications://");
-	  gconftool("/apps/panel/profiles/default/objects/$scount/global_main", "boolean", "true");
-	  gconftool("/apps/panel/profiles/default/objects/$scount/main-menu", "boolean", "true");
+	  # Athena local mod: in GNOME 1, we hacked the default menu
+	  # path; in GNOME 2, we use a schemas file to set a path and
+	  # custom icon and to turn off the main-menu flags.  We have
+	  # to do the same in translation.
+	  gconftool("/apps/panel/profiles/default/objects/$scount/path", "string", "file:///var/athena/menus");
+	  gconftool("/apps/panel/profiles/default/objects/$scount/global-main", "boolean", "false");
+	  gconftool("/apps/panel/profiles/default/objects/$scount/main-menu", "boolean", "false");
 	  gconftool("/apps/panel/profiles/default/objects/$scount/object_type", "string", "menu-object");
-	  gconftool("/apps/panel/profiles/default/objects/$scount/custom-icon", "boolean", "false");
+	  gconftool("/apps/panel/profiles/default/objects/$scount/custom-icon", "boolean", "true");
+	  gconftool("/apps/panel/profiles/default/objects/$scount/custom-icon-file", "string", "/usr/athena/share/gnome/athena/menu-icon");
+	  push @object_id_list, sprintf_objid($object_id_count);
+	  $count = $object_id_count;
+	  $object_id_count++;
+	  $type = 'objects';
+	} elsif ($appletid =~ /Logout/) {
+	  # Athena local mod: understand the logout button.  Treat it
+	  # in a very Athena-specific way; in our environment, the
+	  # logout button needs to be a launcher which runs
+	  # gathlogout, because we don't run a session manager.
+	  $count = $object_id_count;
+	  $scount = sprintf_objid($count);
+	  gconftool("/apps/panel/profiles/default/objects/$scount/panel_right_stick", "boolean", "false");
+	  gconftool("/apps/panel/profiles/default/objects/$scount/object_type", "string", "launcher-object");
+	  gconftool("/apps/panel/profiles/default/objects/$scount/launcher_location", "string", "file:///usr/athena/share/gnome/athena/logout.desktop");
 	  push @object_id_list, sprintf_objid($object_id_count);
 	  $count = $object_id_count;
 	  $object_id_count++;
@@ -482,9 +501,9 @@ LINE: while (defined ($line = <F>)) {
       my $main_menu_flags = 0;
       my $global_main = 'true';
       foreach my $line (@lines) {
-	if ($line =~ /^main-menu-flags=(.+)$/) {
+	if ($line =~ /^main_menu_flags=(.+)$/) {
 	  $main_menu_flags = $1;
-	} elsif ($line =~ /^global-main=(.+)$/) {
+	} elsif ($line =~ /^global_main=(.+)$/) {
 	  $global_main = $1;
 	}
       }
@@ -493,7 +512,12 @@ LINE: while (defined ($line = <F>)) {
     }
     foreach my $line (@lines) {
       if ($line =~ /^right_stick=(.+)$/) {
-	gconftool("/apps/panel/profiles/default/$type/$scount/panel_right_stick", "boolean", $1);
+# Athena local mod: In GNOME 2, right_stick means to apply the position
+# from the right side of the screen, which isn't how GNOME 1 treats it.
+# Furthermore, the GNOME 2 panel always saves applets and objects with
+# right_stick false after recomputing the position from the left.
+# Since our position is already left-relative, we can just ignore it.
+#	gconftool("/apps/panel/profiles/default/$type/$scount/panel_right_stick", "boolean", $1);
       } elsif ($line =~ /^position=(.+)$/) {
 	gconftool("/apps/panel/profiles/default/$type/$scount/position", "int", $1);
       } elsif ($line =~ /^unique_panel_id=(.+)$/) {
