@@ -4,16 +4,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtNotice.c,v $
- *	$Author: jtkohl $
+ *	$Author: raeburn $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtNotice.c,v 1.10 1988-06-29 16:40:59 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtNotice.c,v 1.11 1990-12-01 17:47:24 raeburn Exp $ */
 
 #ifndef lint
-static char rcsid_ZFormatNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtNotice.c,v 1.10 1988-06-29 16:40:59 jtkohl Exp $";
+static char rcsid_ZFormatNotice_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZFmtNotice.c,v 1.11 1990-12-01 17:47:24 raeburn Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -24,7 +24,7 @@ Code_t ZFormatNotice(notice, buffer, ret_len, cert_routine)
     ZNotice_t *notice;
     char **buffer;
     int *ret_len;
-    int (*cert_routine)();
+    Z_AuthProc cert_routine;
 {
     char header[Z_MAXHEADERLEN];
     int hdrlen;
