@@ -1,4 +1,4 @@
-# $Id: packages,v 1.211 2003-02-16 19:14:23 ghudson Exp $
+# $Id: packages,v 1.212 2003-02-21 18:28:15 zacheiss Exp $
 
 # This file gives the list of packages to build for the release.
 # Each line gives a package name and, optionally, additional
@@ -156,6 +156,7 @@ third/fcpackage/fontconfig	requires expat,freetype
 third/fcpackage/Xft		requires fontconfig,freetype,Xrender
 third/fcpackage/Xrender		except linux
 third/file-roller		requires gettext,intltool,glib2,gtk2,libgnome,libgnomeui,gnome-vfs2,libglade2,bonobo-activation,libbonobo,libbonoboui,scrollkeeper
+third/findutils			on solaris
 third/freetype
 third/gail			requires atk,gtk2,libgnomecanvas
 third/gal			requires gnome-vfs,libglade
