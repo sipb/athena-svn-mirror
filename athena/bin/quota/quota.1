@@ -4,49 +4,115 @@
 .SH NAME
 quota \- display disk usage and limits
 .SH SYNOPSIS
-.B quota
-[
-.B \-v
-] [
-\-g group | user ]
+\fBquota\fP [\fB\-v\fP] [\fB\-f\fP dirname] [\fB\-f\fP dirname] ... [user]
+[user] 
+.br
+\fBquota\fP [\fB\-v\fP] [\fB\-f\fP dirname] [\fB\-f\fP dirname] ... \fB\-u\fP
+[user] [user] ...
+.br
+\fBquota\fP [\fB\-v\fP] [\fB\-f\fP dirname] [\fB\-f\fP dirname] ... \fB\-g\fP
+group [group] ...
 .SH DESCRIPTION
 .IX "quota command"  ""  "\fLquota\fP \(em display disk usage and limits"
 .IX "file system"  "display disk usage and limits quota" ""  "display disk usage and limits \(em \fLquota\fP"
 .IX display  "disk usage and limits quota"  ""  "disk usage and limits \(em \fLquota\fP"
 .IX  "limits of disk space quota"  ""  "limits of disk space \(em \fLquota\fP"
 .I Quota
-displays users' and groups' disk usage and limits.  If a user or group
-is specified (by name or by id), then only those usages and limits on
-locally mounted filesystems for the given user or group are displayed.
+displays users' and groups' disk usage and limits on local and NFS mounted file
+systems.  If a user or group is specified (by name or by id), \fIquota\fP will
+return what information it can obtain on disk usage and limits for the given
+user or group.  The super-user may check quotas for any user and group on 
+local filesystems.  Normal users may only check their own user quotas and the
+quotas of any group they're a member of.
 .LP
 .I Quota
 without options displays only warnings 
 about mounted file systems where usage is over quota.
 .SH OPTIONS
+
 .IP \fB\-v\fP
-Without a username or user id after the -v, this option will display
+This option will display
 usages and limits for the user and any groups the user is a member of
-on all mounted file systems where quotas exist.
+on all local and NFS mounted file systems where quotas exist, in the following
+format:
 
-With a username or UID, this option will display usages and limits for
-the given user on locally mounted file systems running user quotas.
-If the user is not the super-user, then he can specify only his own
-username here or else get a 'permission denied' error.
+.nf
+.if n .in -.75in
+.if n .ta 1.3i 2.0i 2.8i 3.5i 4.5i 5.2i 5.9i 6.6i
+.if t .ta .9i 1.4i 2.1i 2.7i 3.4i 4.2i 4.6i 5.2i
+Disk quotas for krishna (uid 69):
+Filesystem	Type	ID	usage	quota	limit	files	quota	limit
+/mit/krishna	user	krishna	2394	2000	2400<<	313	1000	1200
 
+User krishna over disk quota on /mit/krishna, remove 395K within 7.0 days
+.ta .5in
+.if n .in +.755i
+.fi
+
+Everyone has a "soft" limit for disk space usage (given in the first
+.B quota
+column) and a
+"hard" limit (given in the first
+.B limit
+column).  The amount of space
+currently in use is shown in the
+.B usage
+column.  These values
+are measured in kilobytes (1024 characters).
+
+When the "soft" limit is exceeded, the
+.B limit
+column will be marked with \fB<<\fP,
+as shown above.  If the higher "hard" limit is reached, you will no longer be
+able to write anything into the directory.  Also, if you wait until the seven
+days time limit runs out, the "soft" limit will become the "hard" limit.
+
+In addition, there is a quota and limit on the number of inodes (files and
+directories) that may exist.  Each file or directory counts as a single inode
+(the sum total of which is listed in the
+.B files
+column).  The soft and hard
+limits for inodes are similar to those for disk space usage, except that when
+the "hard" limit is reached, you will not be able to create new subdirectories
+or files within that filesystem.
+
+If no quotas for the user (or groups that the user is a member of) exist on any
+local or NFS mounted file systems, nothing will be displayed.
+.IP \fB\-f\fP dirname
+With this option, quota information will be returned on any filesystems whose
+mount-points begin with the given directory name.  A single directory name
+must be present with each \fB\-f\fP option.  For example, a typical command to
+check one's home directory quota would be:
+.nf
+.ta .3i
+
+	quota -v -f\  ~
+.fi
+
+Up to 16 `\fB\-f\fP dirname' pairs may be specified.
+
+.IP \fB\-u\fP
+This option will only report user quota information (ie. no group quotas), 
+in the following format:
+
+.nf
+.if n .in -.75in
+.if n .ta 1.3i 2.0i 2.7i 3.5i 4.5i 5.2i 5.9i 6.6i
+.if t .ta .9i 1.4i 2.1i 2.7i 3.4i 4.2i 4.6i 5.2i
+Disk quotas for user krishna (uid 69):
+Filesystem	usage	quota	limit	timeleft	files	quota	limit	timeleft
+/mit/krishna	2394	2000	2400	7.0 days	313	1000	1200
+.if n .in +.755i
+.fi
 .IP \fB\-g\fP
-A group name or group id must be present with this option.  Without
-the -v option, warnings about usages which are over quota on locally
-mounted filesystems are displayed for the specified group.  With the
--v flag, all usages and limits are displayed for the group on locally
-mounted filesystems.
-
-The user must either be the super-user or be a member of the
-specified group.
-
+Similar to the \fB-u\fP option, but reports only group quota information.  At
+least one group must be specified on the command line.
 .SH FILES
+.nf
 .ta 2i
 \fIquotas\fP	quota file at the file system root
 \fI/etc/qotab\fP	quota options file
+.fi
 .DT
 .SH "SEE ALSO"
 quotactl(2), quotaon(8), edquota(8), rquotad(8c)
