@@ -1,4 +1,4 @@
-# $Id: packages,v 1.25 1997-10-13 21:57:21 ghudson Exp $
+# $Id: packages,v 1.26 1997-10-21 14:18:23 ghudson Exp $
 
 # This file gives the list of packages to build for the release, the
 # order they will be built in, and which platforms they will be built
@@ -20,6 +20,7 @@ third/afsbin
 athena/lib/et
 athena/lib/ss
 athena/lib/hesiod
+athena/lib/al
 third/krb5
 athena/etc/synctree
 athena/lib/Mu
