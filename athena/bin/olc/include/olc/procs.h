@@ -19,8 +19,8 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/procs.h,v $
- *	$Id: procs.h,v 1.14 1991-08-23 13:03:21 raek Exp $
- *	$Author: raek $
+ *	$Id: procs.h,v 1.15 1991-10-31 14:58:46 lwvanels Exp $
+ *	$Author: lwvanels $
  */
 
 #include <mit-copyright.h>
@@ -41,7 +41,8 @@ ERRCODE OListAcl P((REQUEST *Request , char *acl , char *file ));
 ERRCODE OGetAccesses P((REQUEST *Request , char *file ));
 
 /* ask.c */
-ERRCODE OAsk P((REQUEST *Request , char *topic , char *file ));
+ERRCODE OAsk_buffer P((REQUEST *Request , char *topic , char *buf ));
+ERRCODE OAsk_file P((REQUEST *Request , char *topic , char *file ));
 
 /* connect.c */
 ERRCODE OGrab P((REQUEST *Request ));
