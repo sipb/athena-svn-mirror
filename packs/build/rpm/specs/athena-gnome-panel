@@ -13,7 +13,9 @@ The GNOME panel provides the window list, workspace switcher, menus,
 and other features for the GNOME desktop.
 
 %post
-export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
+PATH=/usr/athena/bin:$PATH
+GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
+export PATH GCONF_CONFIG_SOURCE
 SCHEMAS="clock.schemas fish.schemas gnome-panel-screenshot.schemas mailcheck.schemas pager.schemas panel-global-config.schemas panel-per-panel-config.schemas tasklist.schemas"
 for S in $SCHEMAS; do
   gconftool-2 --makefile-install-rule /etc/athena/gconf/schemas/$S > /dev/null

@@ -12,7 +12,9 @@ This package contains the GNOME terminal emulator application, which
 is the GNOME analog of xterm.
 
 %post
-export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
+PATH=/usr/athena/bin:$PATH
+GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
+export PATH GCONF_CONFIG_SOURCE
 SCHEMAS="gnome-terminal.schemas"
 for S in $SCHEMAS; do
   gconftool-2 --makefile-install-rule /etc/athena/gconf/schemas/$S > /dev/null

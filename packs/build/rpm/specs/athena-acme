@@ -12,7 +12,9 @@ Power, Eject, My Home, Search, E-Mail, Sleep, Screensaver, Finance and
 Help buttons.
 
 %post
-export GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
+PATH=/usr/athena/bin:$PATH
+GCONF_CONFIG_SOURCE=`gconftool-2 --get-default-source`
+export PATH GCONF_CONFIG_SOURCE
 SCHEMAS="acme.schemas"
 for S in $SCHEMAS; do
   gconftool-2 --makefile-install-rule /etc/athena/gconf/schemas/$S > /dev/null
