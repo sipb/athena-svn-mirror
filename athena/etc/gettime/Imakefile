@@ -1,5 +1,5 @@
 #
-# $Header: /afs/dev.mit.edu/source/repository/athena/etc/gettime/Imakefile,v 1.8 1991-03-05 13:00:22 epeisach Exp $
+# $Id: Imakefile,v 1.9 1991-05-26 07:16:51 probe Exp $
 #
 
 #define ISUBDIRS	cleanup netconfig newsyslog rvd track xdm
@@ -12,9 +12,9 @@ SCRIPT= clean_tmp_areas csh_commands_path reactivate \
 	sh_commands_path shutdown_notify \
 	suid_afs_cells rti_users $(XSCRIPTS)
 
-SimpleProgram(gettime,gettime.o,,/etc/athena/)
+SimpleProgram(gettime,gettime.o,,$(ATHRETCDIR)/)
 
 install::
 	for i in ${SCRIPT}; do \
-		$(INSTALL) -m 0755 $$i.sh ${DESTDIR}/etc/athena/$$i; \
+		$(INSTALL) -m 0755 $$i.sh $(DESTDIR)$(ATHRETCDIR)/$$i; \
 		done
