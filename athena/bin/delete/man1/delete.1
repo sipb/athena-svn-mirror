@@ -1,6 +1,6 @@
 .\"	$Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/man1/delete.1,v $
-.\"	$Author: jik $
-.\"	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/man1/delete.1,v 1.5 1989-09-14 03:42:51 jik Exp $
+.\"	$Author: lwvanels $
+.\"	$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/man1/delete.1,v 1.6 1991-08-13 21:56:48 lwvanels Exp $
 .\"
 .\" Copyright 1989 by the Massachusetts Institute of Technology.  All
 .\" rights reserved.  The file /usr/include/mit-copyright.h specifies
@@ -131,6 +131,14 @@ Two dashes indicate that all the arguments following it are to be treated as
 file names, even if they start with a dash.
 .SH "SEE ALSO"
 undelete(1), purge(1), expunge(1), lsdel(1), rm(1), rmdir(1)
+.SH BUGS
+.I Delete
+may change the access and modification times on a file when it is
+deleted.  This is necessary in order to guarantee that
+.I expunge
+will work correctly in
+.I AFS
+filesystems.
 .SH AUTHOR
 Jonathan I. Kamens (MIT-Project Athena)
 .SH COPYRIGHT
