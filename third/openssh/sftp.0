@@ -4,8 +4,9 @@ NAME
      sftp - Secure file transfer program
 
 SYNOPSIS
-     sftp [-1Cv] [-b batchfile] [-F ssh_config] [-o ssh_option]
-          [-s subsystem | sftp_server] [-S program] host
+     sftp [-vC1] [-b batchfile] [-o ssh_option] [-s subsystem | sftp_server]
+          [-B buffer_size] [-F ssh_config] [-P sftp_server path]
+          [-R num_requests] [-S program] host
      sftp [[user@]host[:file [file]]]
      sftp [[user@]host[:dir[/]]]
 
@@ -25,8 +26,6 @@ DESCRIPTION
 
      The options are as follows:
 
-     -1      Specify the use of protocol version 1.
-
      -b batchfile
              Batch mode reads a series of commands from an input batchfile
              instead of stdin.  Since it lacks user interaction it should be
@@ -34,17 +33,11 @@ DESCRIPTION
              will abort if any of the following commands fail: get, put,
              rename, ln, rm, mkdir, chdir, lchdir and lmkdir.
 
-     -C      Enables compression (via ssh's -C flag).
-
-     -F ssh_config
-             Specifies an alternative per-user configuration file for ssh.
-             This option is directly passed to ssh(1).
-
      -o ssh_option
-             Can be used to pass options to ssh in the format used in the
-             ssh(1) configuration file. This is useful for specifying options
-             for which there is no separate sftp command-line flag.  For examM--
-             ple, to specify an alternate port use: sftp -oPort=24.
+             Can be used to pass options to ssh in the format used in
+             ssh_config(5).  This is useful for specifying options for which
+             there is no separate sftp command-line flag.  For example, to
+             specify an alternate port use: sftp -oPort=24.
 
      -s subsystem | sftp_server
              Specifies the SSH2 subsystem or the path for an sftp server on
@@ -52,11 +45,33 @@ DESCRIPTION
              version 1, or when the remote sshd does not have an sftp subsysM--
              tem configured.
 
+     -v      Raise logging level. This option is also passed to ssh.
+
+     -B buffer_size
+             Specify  the size of the buffer that sftp uses when transferring
+             files. Larger buffers require fewer round trips at the cost of
+             higher memory consumption. The default is 32768 bytes.
+
+     -C      Enables compression (via ssh's -C flag).
+
+     -F ssh_config
+             Specifies an alternative per-user configuration file for ssh.
+             This option is directly passed to ssh(1).
+
+     -P sftp_server path
+             Connect directly to a local sftp-server (rather than via ssh)
+             This option may be useful in debugging the client and server.
+
+     -R num_requests
+             Specify how many requests may be outstanding at any one time.
+             Increasing this may slightly improve file transfer speed but will
+             increase memory usage. The default is 16 outstanding requests.
+
      -S program
              Name of the program to use for the encrypted connection.  The
              program must understand ssh(1) options.
 
-     -v      Raise logging level. This option is also passed to ssh.
+     -1      Specify the use of protocol version 1.
 
 INTERACTIVE COMMANDS
      Once in interactive mode, sftp understands a set of commands similar to
@@ -102,9 +117,11 @@ INTERACTIVE COMMANDS
 
      lpwd    Print local working directory.
 
-     ls [path]
+     ls [flags] [path]
              Display remote directory listing of either path or current direcM--
-             tory if path is not specified.
+             tory if path is not specified. If the -l flag is specified, then
+             display additional details including permissions and ownership
+             information.
 
      lumask umask
              Set local umask to umask.
@@ -145,7 +162,8 @@ AUTHORS
      Damien Miller <djm@mindrot.org>
 
 SEE ALSO
-     scp(1), ssh(1), ssh-add(1), ssh-keygen(1), sftp-server(8), sshd(8)
+     scp(1), ssh(1), ssh-add(1), ssh-keygen(1), ssh_config(5), sftp-server(8),
+     sshd(8)
 
      T. Ylonen and S. Lehtinen, SSH File Transfer Protocol, draft-ietf-secsh-
      filexfer-00.txt, January 2001, work in progress material.

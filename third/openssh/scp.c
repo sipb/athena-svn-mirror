@@ -75,7 +75,7 @@
  */
 
 #include "includes.h"
-RCSID("$OpenBSD: scp.c,v 1.85 2001/10/01 08:06:28 markus Exp $");
+RCSID("$OpenBSD: scp.c,v 1.91 2002/06/19 00:27:55 deraadt Exp $");
 
 #include "xmalloc.h"
 #include "atomicio.h"
@@ -93,14 +93,6 @@ char *__progname;
 #define STALLTIME	5
 /* alarm() interval for updating progress meter */
 #define PROGRESSTIME	1
-
-/* Progress meter bar */
-#define BAR \
-	"************************************************************"\
-	"************************************************************"\
-	"************************************************************"\
-	"************************************************************"
-#define MAX_BARLENGTH (sizeof(BAR) - 1)
 
 /* Visual statistics about files as they are transferred. */
 void progressmeter(int);
@@ -235,10 +227,9 @@ main(argc, argv)
 	__progname = get_progname(argv[0]);
 
 	args.list = NULL;
-	addargs(&args, "ssh");	 	/* overwritten with ssh_program */
+	addargs(&args, "ssh");		/* overwritten with ssh_program */
 	addargs(&args, "-x");
 	addargs(&args, "-oForwardAgent no");
-	addargs(&args, "-oFallBackToRsh no");
 	addargs(&args, "-oClearAllForwardings yes");
 
 	fflag = tflag = 0;
@@ -373,8 +364,7 @@ toremote(targ, argc, argv)
 		src = colon(argv[i]);
 		if (src) {	/* remote to remote */
 			static char *ssh_options =
-			    "-x -o'FallBackToRsh no' "
-			    "-o'ClearAllForwardings yes'";
+			    "-x -o'ClearAllForwardings yes'";
 			*src++ = 0;
 			if (*src == 0)
 				src = ".";
@@ -548,14 +538,13 @@ syserr:			run_err("%s: %s", name, strerror(errno));
 #ifdef HAVE_LONG_LONG_INT
 		snprintf(buf, sizeof buf, "C%04o %lld %s\n",
 		    (u_int) (stb.st_mode & FILEMODEMASK),
-		    (long long) stb.st_size, last);
+		    (long long)stb.st_size, last);
 #else
 		/* XXX: Handle integer overflow? */
 		snprintf(buf, sizeof buf, "C%04o %lu %s\n",
 		    (u_int) (stb.st_mode & FILEMODEMASK),
 		    (u_long) stb.st_size, last);
 #endif
-
 		if (verbose_mode) {
 			fprintf(stderr, "Sending file modes: %s", buf);
 			fflush(stderr);
@@ -783,7 +772,7 @@ sink(argc, argv)
 				cursize = need;
 			}
 			(void) snprintf(namebuf, need, "%s%s%s", targ,
-			    *targ ? "/" : "", cp);
+			    strcmp(targ, "/") ? "/" : "", cp);
 			np = namebuf;
 		} else
 			np = targ;
@@ -930,7 +919,7 @@ screwup:
 }
 
 int
-response()
+response(void)
 {
 	char ch, *cp, resp, rbuf[2048];
 
@@ -963,12 +952,12 @@ response()
 }
 
 void
-usage()
+usage(void)
 {
 	(void) fprintf(stderr,
-	    "usage: scp [-pqrvBC46] [-F config] [-S ssh] [-P port] [-c cipher] [-i identity]\n"
-	    "           [-o option] f1 f2\n"
-	    "   or: scp [options] f1 ... fn directory\n");
+	    "usage: scp [-pqrvBC46] [-F config] [-S program] [-P port]\n"
+	    "           [-c cipher] [-i identity] [-o option]\n"
+	    "           [[user@]host1:]file1 [...] [[user@]host2:]file2\n");
 	exit(1);
 }
 
@@ -1117,7 +1106,7 @@ progressmeter(int flag)
 	off_t cursize, abbrevsize;
 	double elapsed;
 	int ratio, barlength, i, remaining;
-	char buf[256];
+	char buf[512];
 
 	if (flag == -1) {
 		(void) gettimeofday(&start, (struct timezone *) 0);
@@ -1139,11 +1128,18 @@ progressmeter(int flag)
 	snprintf(buf, sizeof(buf), "\r%-20.20s %3d%% ", curfile, ratio);
 
 	barlength = getttywidth() - 51;
-	barlength = (barlength <= MAX_BARLENGTH)?barlength:MAX_BARLENGTH;
 	if (barlength > 0) {
 		i = barlength * ratio / 100;
 		snprintf(buf + strlen(buf), sizeof(buf) - strlen(buf),
-			 "|%.*s%*s|", i, BAR, barlength - i, "");
+		    "|%.*s%*s|", i,
+		    "*******************************************************"
+		    "*******************************************************"
+		    "*******************************************************"
+		    "*******************************************************"
+		    "*******************************************************"
+		    "*******************************************************"
+		    "*******************************************************",
+		    barlength - i, "");
 	}
 	i = 0;
 	abbrevsize = cursize;

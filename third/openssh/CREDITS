@@ -26,6 +26,7 @@ Chun-Chung Chen <cjj@u.washington.edu> - RPM fixes
 Corinna Vinschen <vinschen@cygnus.com> - Cygwin support
 Dan Brosemer <odin@linuxfreak.com> - Autoconf support, build fixes
 Darren Hall <dhall@virage.org> - AIX patches
+Darren Tucker <dtucker@zip.com.au> - AIX BFF package scripts
 David Agraz <dagraz@jahoopa.com> - Build fixes
 David Del Piero <David.DelPiero@qed.qld.gov.au> - bug fixes
 David Hesprich <darkgrue@gue-tech.org> - Configure fixes
@@ -35,7 +36,7 @@ Garrick James <garrick@james.net> - configure fixes
 Gary E. Miller <gem@rellim.com> - SCO support
 Ged Lodder <lodder@yacc.com.au> - HPUX fixes and enhancements
 Gert Doering <gd@hilb1.medat.de> - bug and portability fixes
-HARUYAMA Seigo <haruyama@klab.org> - Translations & doc fixes
+HARUYAMA Seigo <haruyama@unixuser.org> - Translations & doc fixes
 Hideaki YOSHIFUJI <yoshfuji@ecei.tohoku.ac.jp> - IPv6 and bug fixes
 Hiroshi Takekawa <takekawa@sr3.t.u-tokyo.ac.jp> - Configure fixes
 Holger Trapp <Holger.Trapp@Informatik.TU-Chemnitz.DE> - KRB4/AFS config patch
@@ -74,7 +75,8 @@ Philippe WILLEM <Philippe.WILLEM@urssaf.fr> - Bugfixes
 Phill Camp <P.S.S.Camp@ukc.ac.uk> - login code fix
 Rip Loomis <loomisg@cist.saic.com> - Solaris package support, fixes
 SAKAI Kiyotaka <ksakai@kso.netwk.ntt-at.co.jp> - Multiple bugfixes
-Simon Wilkinson <sxw@dcs.ed.ac.uk> - PAM fixes
+Simon Wilkinson <sxw@dcs.ed.ac.uk> - PAM fixes, Compat with MIT KrbV
+Solar Designer <solar@openwall.com> - many patches and technical assistance
 Svante Signell <svante.signell@telia.com> - Bugfixes
 Thomas Neumann <tom@smart.ruhr.de> - Shadow passwords
 Tim Rice <tim@multitalents.net> - Portability & SCO fixes
@@ -89,5 +91,5 @@ Apologies to anyone I have missed.
 
 Damien Miller <djm@mindrot.org>
 
-$Id: CREDITS,v 1.1.1.2 2002-02-13 00:08:03 zacheiss Exp $
+$Id: CREDITS,v 1.1.1.3 2003-02-05 19:03:51 zacheiss Exp $
 

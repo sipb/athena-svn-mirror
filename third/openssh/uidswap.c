@@ -12,7 +12,7 @@
  */
 
 #include "includes.h"
-RCSID("$OpenBSD: uidswap.c,v 1.18 2001/08/08 21:34:19 markus Exp $");
+RCSID("$OpenBSD: uidswap.c,v 1.23 2002/07/15 17:15:31 stevesk Exp $");
 
 #include "log.h"
 #include "uidswap.h"
@@ -52,8 +52,9 @@ temporarily_use_uid(struct passwd *pw)
 #ifdef SAVED_IDS_WORK_WITH_SETEUID
 	saved_euid = geteuid();
 	saved_egid = getegid();
-	debug("temporarily_use_uid: %d/%d (e=%d)",
-	    pw->pw_uid, pw->pw_gid, saved_euid);
+	debug("temporarily_use_uid: %u/%u (e=%u/%u)",
+	    (u_int)pw->pw_uid, (u_int)pw->pw_gid,
+	    (u_int)saved_euid, (u_int)saved_egid);
 	if (saved_euid != 0) {
 		privileged = 0;
 		return;
@@ -67,7 +68,7 @@ temporarily_use_uid(struct passwd *pw)
 
 	privileged = 1;
 	temporarily_use_uid_effective = 1;
-	saved_egroupslen = getgroups(NGROUPS_MAX, saved_egroups);                           
+	saved_egroupslen = getgroups(NGROUPS_MAX, saved_egroups);
 	if (saved_egroupslen < 0)
 		fatal("getgroups: %.100s", strerror(errno));
 
@@ -76,15 +77,13 @@ temporarily_use_uid(struct passwd *pw)
 		if (initgroups(pw->pw_name, pw->pw_gid) < 0)
 			fatal("initgroups: %s: %.100s", pw->pw_name,
 			    strerror(errno));
-		user_groupslen = getgroups(NGROUPS_MAX, user_groups);                           
+		user_groupslen = getgroups(NGROUPS_MAX, user_groups);
 		if (user_groupslen < 0)
 			fatal("getgroups: %.100s", strerror(errno));
 	}
-#ifndef HAVE_CYGWIN
 	/* Set the effective uid to the given (unprivileged) uid. */
 	if (setgroups(user_groupslen, user_groups) < 0)
 		fatal("setgroups: %.100s", strerror(errno));
-#endif /* !HAVE_CYWIN */
 #ifndef SAVED_IDS_WORK_WITH_SETEUID
 	/* Propagate the privileged gid to all of our gids. */
 	if (setgid(getegid()) < 0)
@@ -94,10 +93,10 @@ temporarily_use_uid(struct passwd *pw)
 		debug("setuid %u: %.100s", (u_int) geteuid(), strerror(errno));
 #endif /* SAVED_IDS_WORK_WITH_SETEUID */
 	if (setegid(pw->pw_gid) < 0)
-		fatal("setegid %u: %.100s", (u_int) pw->pw_gid,
+		fatal("setegid %u: %.100s", (u_int)pw->pw_gid,
 		    strerror(errno));
 	if (seteuid(pw->pw_uid) == -1)
-		fatal("seteuid %u: %.100s", (u_int) pw->pw_uid,
+		fatal("seteuid %u: %.100s", (u_int)pw->pw_uid,
 		    strerror(errno));
 }
 
@@ -107,20 +106,21 @@ temporarily_use_uid(struct passwd *pw)
 void
 restore_uid(void)
 {
-	debug("restore_uid");
 	/* it's a no-op unless privileged */
-	if (!privileged)
+	if (!privileged) {
+		debug("restore_uid: (unprivileged)");
 		return;
+	}
 	if (!temporarily_use_uid_effective)
 		fatal("restore_uid: temporarily_use_uid not effective");
 
 #ifdef SAVED_IDS_WORK_WITH_SETEUID
+	debug("restore_uid: %u/%u", (u_int)saved_euid, (u_int)saved_egid);
 	/* Set the effective uid back to the saved privileged uid. */
 	if (seteuid(saved_euid) < 0)
-		fatal("seteuid %u: %.100s", (u_int) saved_euid, strerror(errno));
+		fatal("seteuid %u: %.100s", (u_int)saved_euid, strerror(errno));
 	if (setegid(saved_egid) < 0)
-		fatal("setegid %u: %.100s", (u_int) saved_egid, 
-		    strerror(errno));
+		fatal("setegid %u: %.100s", (u_int)saved_egid, strerror(errno));
 #else /* SAVED_IDS_WORK_WITH_SETEUID */
 	/*
 	 * We are unable to restore the real uid to its unprivileged value.
@@ -131,10 +131,8 @@ restore_uid(void)
 	setgid(getgid());
 #endif /* SAVED_IDS_WORK_WITH_SETEUID */
 
-#ifndef HAVE_CYGWIN
 	if (setgroups(saved_egroupslen, saved_egroups) < 0)
 		fatal("setgroups: %.100s", strerror(errno));
-#endif /* !HAVE_CYGWIN */
 	temporarily_use_uid_effective = 0;
 }
 
@@ -146,9 +144,11 @@ void
 permanently_set_uid(struct passwd *pw)
 {
 	if (temporarily_use_uid_effective)
-		fatal("restore_uid: temporarily_use_uid effective");
+		fatal("permanently_set_uid: temporarily_use_uid effective");
+	debug("permanently_set_uid: %u/%u", (u_int)pw->pw_uid,
+	    (u_int)pw->pw_gid);
 	if (setgid(pw->pw_gid) < 0)
-		fatal("setgid %u: %.100s", (u_int) pw->pw_gid, strerror(errno));
+		fatal("setgid %u: %.100s", (u_int)pw->pw_gid, strerror(errno));
 	if (setuid(pw->pw_uid) < 0)
-		fatal("setuid %u: %.100s", (u_int) pw->pw_uid, strerror(errno));
+		fatal("setuid %u: %.100s", (u_int)pw->pw_uid, strerror(errno));
 }

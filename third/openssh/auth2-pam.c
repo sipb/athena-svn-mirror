@@ -1,5 +1,5 @@
 #include "includes.h"
-RCSID("$Id: auth2-pam.c,v 1.1.1.1 2001-11-15 19:25:07 ghudson Exp $");
+RCSID("$Id: auth2-pam.c,v 1.1.1.2 2003-02-05 19:03:20 zacheiss Exp $");
 
 #ifdef USE_PAM
 #include <security/pam_appl.h>
@@ -16,7 +16,7 @@ RCSID("$Id: auth2-pam.c,v 1.1.1.1 2001-11-15 19:25:07 ghudson Exp $");
 static int do_pam_conversation_kbd_int(int num_msg, 
     const struct pam_message **msg, struct pam_response **resp, 
     void *appdata_ptr);
-void input_userauth_info_response_pam(int type, int plen, void *ctxt);
+void input_userauth_info_response_pam(int type, u_int32_t seqnr, void *ctxt);
 
 struct {
 	int finished, num_received, num_expected;
@@ -116,11 +116,11 @@ do_pam_conversation_kbd_int(int num_msg, const struct pam_message **msg,
 	while(context_pam2.finished == 0) {
 		done = 1;
 		dispatch_run(DISPATCH_BLOCK, &done, appdata_ptr);
-		if(context_pam2.finished == 0)
+		if (context_pam2.finished == 0)
 			debug("extra packet during conversation");
 	}
 
-	if(context_pam2.num_received == context_pam2.num_expected) {
+	if (context_pam2.num_received == context_pam2.num_expected) {
 		*resp = context_pam2.responses;
 		return PAM_SUCCESS;
 	} else
@@ -128,7 +128,7 @@ do_pam_conversation_kbd_int(int num_msg, const struct pam_message **msg,
 }
 
 void
-input_userauth_info_response_pam(int type, int plen, void *ctxt)
+input_userauth_info_response_pam(int type, u_int32_t seqnr, void *ctxt)
 {
 	Authctxt *authctxt = ctxt;
 	unsigned int nresp = 0, rlen = 0, i = 0;
@@ -139,6 +139,15 @@ input_userauth_info_response_pam(int type, int plen, void *ctxt)
 
 	nresp = packet_get_int();	/* Number of responses. */
 	debug("got %d responses", nresp);
+
+
+	if (nresp != context_pam2.num_expected)
+		fatal("%s: Received incorrect number of responses "
+		    "(expected %d, received %u)", __func__, 
+		    context_pam2.num_expected, nresp);
+
+	if (nresp > 100)
+		fatal("%s: too many replies", __func__);
 
 	for (i = 0; i < nresp; i++) {
 		int j = context_pam2.prompts[i];
@@ -152,7 +161,6 @@ input_userauth_info_response_pam(int type, int plen, void *ctxt)
 
 	context_pam2.finished = 1;
 
-	packet_done();
+	packet_check_eom();
 }
-
 #endif

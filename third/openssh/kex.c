@@ -23,7 +23,7 @@
  */
 
 #include "includes.h"
-RCSID("$OpenBSD: kex.c,v 1.36 2001/06/25 08:25:37 markus Exp $");
+RCSID("$OpenBSD: kex.c,v 1.51 2002/06/24 14:55:38 markus Exp $");
 
 #include <openssl/crypto.h>
 
@@ -40,8 +40,14 @@ RCSID("$OpenBSD: kex.c,v 1.36 2001/06/25 08:25:37 markus Exp $");
 #include "mac.h"
 #include "match.h"
 #include "dispatch.h"
+#include "monitor.h"
 
 #define KEX_COOKIE_LEN	16
+
+/* Use privilege separation for sshd */
+int use_privsep;
+struct monitor *pmonitor;
+
 
 /* prototype */
 static void kex_kexinit_finish(Kex *);
@@ -51,16 +57,15 @@ static void kex_choose_conf(Kex *);
 static void
 kex_prop2buf(Buffer *b, char *proposal[PROPOSAL_MAX])
 {
-	u_int32_t rand = 0;
 	int i;
 
 	buffer_clear(b);
-	for (i = 0; i < KEX_COOKIE_LEN; i++) {
-		if (i % 4 == 0)
-			rand = arc4random();
-		buffer_put_char(b, rand & 0xff);
-		rand >>= 8;
-	}
+	/*
+	 * add a dummy cookie, the cookie will be overwritten by
+	 * kex_send_kexinit(), each time a kexinit is set
+	 */
+	for (i = 0; i < KEX_COOKIE_LEN; i++)
+		buffer_put_char(b, 0);
 	for (i = 0; i < PROPOSAL_MAX; i++)
 		buffer_put_cstring(b, proposal[i]);
 	buffer_put_char(b, 0);			/* first_kex_packet_follows */
@@ -107,27 +112,23 @@ kex_prop_free(char **proposal)
 }
 
 static void
-kex_protocol_error(int type, int plen, void *ctxt)
+kex_protocol_error(int type, u_int32_t seq, void *ctxt)
 {
-	error("Hm, kex protocol error: type %d plen %d", type, plen);
+	error("Hm, kex protocol error: type %d seq %u", type, seq);
 }
 
 static void
-kex_clear_dispatch(void)
+kex_reset_dispatch(void)
 {
-	int i;
-
-	/* Numbers 30-49 are used for kex packets */
-	for (i = 30; i <= 49; i++)
-		dispatch_set(i, &kex_protocol_error);
+	dispatch_range(SSH2_MSG_TRANSPORT_MIN,
+	    SSH2_MSG_TRANSPORT_MAX, &kex_protocol_error);
+	dispatch_set(SSH2_MSG_KEXINIT, &kex_input_kexinit);
 }
 
 void
 kex_finish(Kex *kex)
 {
-	int plen;
-
-	kex_clear_dispatch();
+	kex_reset_dispatch();
 
 	packet_start(SSH2_MSG_NEWKEYS);
 	packet_send();
@@ -135,7 +136,8 @@ kex_finish(Kex *kex)
 	debug("SSH2_MSG_NEWKEYS sent");
 
 	debug("waiting for SSH2_MSG_NEWKEYS");
-	packet_read_expect(&plen, SSH2_MSG_NEWKEYS);
+	packet_read_expect(SSH2_MSG_NEWKEYS);
+	packet_check_eom();
 	debug("SSH2_MSG_NEWKEYS received");
 
 	kex->done = 1;
@@ -149,6 +151,10 @@ kex_finish(Kex *kex)
 void
 kex_send_kexinit(Kex *kex)
 {
+	u_int32_t rand = 0;
+	u_char *cookie;
+	int i;
+
 	if (kex == NULL) {
 		error("kex_send_kexinit: no kex, cannot rekey");
 		return;
@@ -158,6 +164,17 @@ kex_send_kexinit(Kex *kex)
 		return;
 	}
 	kex->done = 0;
+
+	/* generate a random cookie */
+	if (buffer_len(&kex->my) < KEX_COOKIE_LEN)
+		fatal("kex_send_kexinit: kex proposal too short");
+	cookie = buffer_ptr(&kex->my);
+	for (i = 0; i < KEX_COOKIE_LEN; i++) {
+		if (i % 4 == 0)
+			rand = arc4random();
+		cookie[i] = rand;
+		rand >>= 8;
+	}
 	packet_start(SSH2_MSG_KEXINIT);
 	packet_put_raw(buffer_ptr(&kex->my), buffer_len(&kex->my));
 	packet_send();
@@ -166,7 +183,7 @@ kex_send_kexinit(Kex *kex)
 }
 
 void
-kex_input_kexinit(int type, int plen, void *ctxt)
+kex_input_kexinit(int type, u_int32_t seq, void *ctxt)
 {
 	char *ptr;
 	int dlen;
@@ -185,9 +202,9 @@ kex_input_kexinit(int type, int plen, void *ctxt)
 		packet_get_char();
 	for (i = 0; i < PROPOSAL_MAX; i++)
 		xfree(packet_get_string(NULL));
-	packet_get_char();
-	packet_get_int();
-	packet_done();
+	(void) packet_get_char();
+	(void) packet_get_int();
+	packet_check_eom();
 
 	kex_kexinit_finish(kex);
 }
@@ -205,8 +222,7 @@ kex_setup(char *proposal[PROPOSAL_MAX])
 	kex->done = 0;
 
 	kex_send_kexinit(kex);					/* we start */
-	kex_clear_dispatch();
-	dispatch_set(SSH2_MSG_KEXINIT, &kex_input_kexinit);
+	kex_reset_dispatch();
 
 	return kex;
 }
@@ -219,7 +235,7 @@ kex_kexinit_finish(Kex *kex)
 
 	kex_choose_conf(kex);
 
-	switch(kex->kex_type) {
+	switch (kex->kex_type) {
 	case DH_GRP1_SHA1:
 		kexdh(kex);
 		break;
@@ -237,13 +253,14 @@ choose_enc(Enc *enc, char *client, char *server)
 	char *name = match_list(client, server, NULL);
 	if (name == NULL)
 		fatal("no matching cipher found: client %s server %s", client, server);
-	enc->cipher = cipher_by_name(name);
-	if (enc->cipher == NULL)
+	if ((enc->cipher = cipher_by_name(name)) == NULL)
 		fatal("matching cipher is not supported: %s", name);
 	enc->name = name;
 	enc->enabled = 0;
 	enc->iv = NULL;
 	enc->key = NULL;
+	enc->key_len = cipher_keylen(enc->cipher);
+	enc->block_size = cipher_blocksize(enc->cipher);
 }
 static void
 choose_mac(Mac *mac, char *client, char *server)
@@ -346,10 +363,10 @@ kex_choose_conf(Kex *kex)
 	need = 0;
 	for (mode = 0; mode < MODE_MAX; mode++) {
 		newkeys = kex->newkeys[mode];
-		if (need < newkeys->enc.cipher->key_len)
-			need = newkeys->enc.cipher->key_len;
-		if (need < newkeys->enc.cipher->block_size)
-			need = newkeys->enc.cipher->block_size;
+		if (need < newkeys->enc.key_len)
+			need = newkeys->enc.key_len;
+		if (need < newkeys->enc.block_size)
+			need = newkeys->enc.block_size;
 		if (need < newkeys->mac.key_len)
 			need = newkeys->mac.key_len;
 	}
@@ -364,11 +381,11 @@ static u_char *
 derive_key(Kex *kex, int id, int need, u_char *hash, BIGNUM *shared_secret)
 {
 	Buffer b;
-	EVP_MD *evp_md = EVP_sha1();
+	const EVP_MD *evp_md = EVP_sha1();
 	EVP_MD_CTX md;
 	char c = id;
 	int have;
-	int mdsz = evp_md->md_size;
+	int mdsz = EVP_MD_size(evp_md);
 	u_char *digest = xmalloc(roundup(need, mdsz));
 
 	buffer_init(&b);
@@ -444,7 +461,7 @@ dump_digest(char *msg, u_char *digest, int len)
 	int i;
 
 	fprintf(stderr, "%s\n", msg);
-	for (i = 0; i< len; i++){
+	for (i = 0; i< len; i++) {
 		fprintf(stderr, "%02x", digest[i]);
 		if (i%32 == 31)
 			fprintf(stderr, "\n");

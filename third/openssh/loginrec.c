@@ -163,7 +163,7 @@
 #include "log.h"
 #include "atomicio.h"
 
-RCSID("$Id: loginrec.c,v 1.1.1.2 2002-02-13 00:07:59 zacheiss Exp $");
+RCSID("$Id: loginrec.c,v 1.1.1.3 2003-02-05 19:04:33 zacheiss Exp $");
 
 #ifdef HAVE_UTIL_H
 #  include <util.h>
@@ -564,6 +564,11 @@ line_abbrevname(char *dst, const char *src, int dstsize)
 	if (strncmp(src, "/dev/", 5) == 0)
 		src += 5;
 
+#ifdef WITH_ABBREV_NO_TTY
+	if (strncmp(src, "tty", 3) == 0)
+		src += 3;
+#endif
+
 	len = strlen(src);
 
 	if (len > 0) {
@@ -617,13 +622,13 @@ construct_utmp(struct logininfo *li,
 	switch (li->type) {
 	case LTYPE_LOGIN:
 		ut->ut_type = USER_PROCESS;
-#ifdef _CRAY
+#ifdef _UNICOS
 		cray_set_tmpdir(ut);
 #endif
 		break;
 	case LTYPE_LOGOUT:
 		ut->ut_type = DEAD_PROCESS;
-#ifdef _CRAY
+#ifdef _UNICOS
 		cray_retain_utmp(ut, li->pid);
 #endif
 		break;
@@ -701,6 +706,8 @@ construct_utmpx(struct logininfo *li, struct utmpx *utx)
 	line_stripname(utx->ut_line, li->line, sizeof(utx->ut_line));
 	set_utmpx_time(li, utx);
 	utx->ut_pid = li->pid;
+	/* strncpy(): Don't necessarily want null termination */
+	strncpy(utx->ut_name, li->username, MIN_SIZEOF(utx->ut_name, li->username));
 
 	if (li->type == LTYPE_LOGOUT)
 		return;
@@ -710,8 +717,6 @@ construct_utmpx(struct logininfo *li, struct utmpx *utx)
 	 * for logouts.
 	 */
 
-	/* strncpy(): Don't necessarily want null termination */
-	strncpy(utx->ut_name, li->username, MIN_SIZEOF(utx->ut_name, li->username));
 # ifdef HAVE_HOST_IN_UTMPX
 	strncpy(utx->ut_host, li->hostname, MIN_SIZEOF(utx->ut_host, li->hostname));
 # endif
@@ -942,9 +947,7 @@ utmpx_perform_logout(struct logininfo *li)
 {
 	struct utmpx utx;
 
-	memset(&utx, '\0', sizeof(utx));
-	set_utmpx_time(li, &utx);
-	line_stripname(utx.ut_line, li->line, sizeof(utx.ut_line));
+	construct_utmpx(li, &utx);
 # ifdef HAVE_ID_IN_UTMPX
 	line_abbrevname(utx.ut_id, li->line, sizeof(utx.ut_id));
 # endif
@@ -1246,7 +1249,7 @@ wtmpx_get_entry(struct logininfo *li)
 	}
 	if (fstat(fd, &st) != 0) {
 		log("wtmpx_get_entry: couldn't stat %s: %s",
-		    WTMP_FILE, strerror(errno));
+		    WTMPX_FILE, strerror(errno));
 		close(fd);
 		return 0;
 	}
@@ -1268,6 +1271,7 @@ wtmpx_get_entry(struct logininfo *li)
 		/* Logouts are recorded as a blank username on a particular line.
 		 * So, we just need to find the username in struct utmpx */
 		if ( wtmpx_islogin(li, &utx) ) {
+			found = 1;
 # ifdef HAVE_TV_IN_UTMPX
 			li->tv_sec = utx.ut_tv.tv_sec;
 # else

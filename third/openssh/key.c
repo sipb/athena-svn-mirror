@@ -32,7 +32,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #include "includes.h"
-RCSID("$OpenBSD: key.c,v 1.33 2001/10/04 14:34:16 markus Exp $");
+RCSID("$OpenBSD: key.c,v 1.49 2002/09/09 14:54:14 markus Exp $");
 
 #include <openssl/evp.h>
 
@@ -60,17 +60,25 @@ key_new(int type)
 	switch (k->type) {
 	case KEY_RSA1:
 	case KEY_RSA:
-		rsa = RSA_new();
-		rsa->n = BN_new();
-		rsa->e = BN_new();
+		if ((rsa = RSA_new()) == NULL)
+			fatal("key_new: RSA_new failed");
+		if ((rsa->n = BN_new()) == NULL)
+			fatal("key_new: BN_new failed");
+		if ((rsa->e = BN_new()) == NULL)
+			fatal("key_new: BN_new failed");
 		k->rsa = rsa;
 		break;
 	case KEY_DSA:
-		dsa = DSA_new();
-		dsa->p = BN_new();
-		dsa->q = BN_new();
-		dsa->g = BN_new();
-		dsa->pub_key = BN_new();
+		if ((dsa = DSA_new()) == NULL)
+			fatal("key_new: DSA_new failed");
+		if ((dsa->p = BN_new()) == NULL)
+			fatal("key_new: BN_new failed");
+		if ((dsa->q = BN_new()) == NULL)
+			fatal("key_new: BN_new failed");
+		if ((dsa->g = BN_new()) == NULL)
+			fatal("key_new: BN_new failed");
+		if ((dsa->pub_key = BN_new()) == NULL)
+			fatal("key_new: BN_new failed");
 		k->dsa = dsa;
 		break;
 	case KEY_UNSPEC:
@@ -81,6 +89,7 @@ key_new(int type)
 	}
 	return k;
 }
+
 Key *
 key_new_private(int type)
 {
@@ -88,15 +97,22 @@ key_new_private(int type)
 	switch (k->type) {
 	case KEY_RSA1:
 	case KEY_RSA:
-		k->rsa->d = BN_new();
-		k->rsa->iqmp = BN_new();
-		k->rsa->q = BN_new();
-		k->rsa->p = BN_new();
-		k->rsa->dmq1 = BN_new();
-		k->rsa->dmp1 = BN_new();
+		if ((k->rsa->d = BN_new()) == NULL)
+			fatal("key_new_private: BN_new failed");
+		if ((k->rsa->iqmp = BN_new()) == NULL)
+			fatal("key_new_private: BN_new failed");
+		if ((k->rsa->q = BN_new()) == NULL)
+			fatal("key_new_private: BN_new failed");
+		if ((k->rsa->p = BN_new()) == NULL)
+			fatal("key_new_private: BN_new failed");
+		if ((k->rsa->dmq1 = BN_new()) == NULL)
+			fatal("key_new_private: BN_new failed");
+		if ((k->rsa->dmp1 = BN_new()) == NULL)
+			fatal("key_new_private: BN_new failed");
 		break;
 	case KEY_DSA:
-		k->dsa->priv_key = BN_new();
+		if ((k->dsa->priv_key = BN_new()) == NULL)
+			fatal("key_new_private: BN_new failed");
 		break;
 	case KEY_UNSPEC:
 		break;
@@ -105,6 +121,7 @@ key_new_private(int type)
 	}
 	return k;
 }
+
 void
 key_free(Key *k)
 {
@@ -154,14 +171,14 @@ key_equal(Key *a, Key *b)
 	return 0;
 }
 
-static u_char*
-key_fingerprint_raw(Key *k, enum fp_type dgst_type, size_t *dgst_raw_length)
+static u_char *
+key_fingerprint_raw(Key *k, enum fp_type dgst_type, u_int *dgst_raw_length)
 {
-	EVP_MD *md = NULL;
+	const EVP_MD *md = NULL;
 	EVP_MD_CTX ctx;
 	u_char *blob = NULL;
 	u_char *retval = NULL;
-	int len = 0;
+	u_int len = 0;
 	int nlen, elen;
 
 	*dgst_raw_length = 0;
@@ -201,8 +218,7 @@ key_fingerprint_raw(Key *k, enum fp_type dgst_type, size_t *dgst_raw_length)
 		retval = xmalloc(EVP_MAX_MD_SIZE);
 		EVP_DigestInit(&ctx, md);
 		EVP_DigestUpdate(&ctx, blob, len);
-		EVP_DigestFinal(&ctx, retval, NULL);
-		*dgst_raw_length = md->md_size;
+		EVP_DigestFinal(&ctx, retval, dgst_raw_length);
 		memset(blob, 0, len);
 		xfree(blob);
 	} else {
@@ -211,15 +227,15 @@ key_fingerprint_raw(Key *k, enum fp_type dgst_type, size_t *dgst_raw_length)
 	return retval;
 }
 
-static char*
-key_fingerprint_hex(u_char* dgst_raw, size_t dgst_raw_len)
+static char *
+key_fingerprint_hex(u_char *dgst_raw, u_int dgst_raw_len)
 {
 	char *retval;
 	int i;
 
 	retval = xmalloc(dgst_raw_len * 3 + 1);
 	retval[0] = '\0';
-	for(i = 0; i < dgst_raw_len; i++) {
+	for (i = 0; i < dgst_raw_len; i++) {
 		char hex[4];
 		snprintf(hex, sizeof(hex), "%02x:", dgst_raw[i]);
 		strlcat(retval, hex, dgst_raw_len * 3);
@@ -228,8 +244,8 @@ key_fingerprint_hex(u_char* dgst_raw, size_t dgst_raw_len)
 	return retval;
 }
 
-static char*
-key_fingerprint_bubblebabble(u_char* dgst_raw, size_t dgst_raw_len)
+static char *
+key_fingerprint_bubblebabble(u_char *dgst_raw, u_int dgst_raw_len)
 {
 	char vowels[] = { 'a', 'e', 'i', 'o', 'u', 'y' };
 	char consonants[] = { 'b', 'c', 'd', 'f', 'g', 'h', 'k', 'l', 'm',
@@ -275,17 +291,17 @@ key_fingerprint_bubblebabble(u_char* dgst_raw, size_t dgst_raw_len)
 	return retval;
 }
 
-char*
+char *
 key_fingerprint(Key *k, enum fp_type dgst_type, enum fp_rep dgst_rep)
 {
 	char *retval = NULL;
 	u_char *dgst_raw;
-	size_t dgst_raw_len;
-	
+	u_int dgst_raw_len;
+
 	dgst_raw = key_fingerprint_raw(k, dgst_type, &dgst_raw_len);
 	if (!dgst_raw)
 		fatal("key_fingerprint: null from key_fingerprint_raw()");
-	switch(dgst_rep) {
+	switch (dgst_rep) {
 	case SSH_FP_HEX:
 		retval = key_fingerprint_hex(dgst_raw, dgst_raw_len);
 		break;
@@ -345,6 +361,7 @@ read_bignum(char **cpp, BIGNUM * value)
 	*cpp = cp;
 	return 1;
 }
+
 static int
 write_bignum(FILE *f, BIGNUM *num)
 {
@@ -371,7 +388,7 @@ key_read(Key *ret, char **cpp)
 
 	cp = *cpp;
 
-	switch(ret->type) {
+	switch (ret->type) {
 	case KEY_RSA1:
 		/* Get number of bits. */
 		if (*cp < '0' || *cp > '9')
@@ -420,14 +437,15 @@ key_read(Key *ret, char **cpp)
 		n = uudecode(cp, blob, len);
 		if (n < 0) {
 			error("key_read: uudecode %s failed", cp);
+			xfree(blob);
 			return -1;
 		}
 		k = key_from_blob(blob, n);
+		xfree(blob);
 		if (k == NULL) {
 			error("key_read: key_from_blob %s failed", cp);
 			return -1;
 		}
-		xfree(blob);
 		if (k->type != type) {
 			error("key_read: type mismatch: encoding error");
 			key_free(k);
@@ -454,9 +472,9 @@ key_read(Key *ret, char **cpp)
 #endif
 		}
 /*XXXX*/
+		key_free(k);
 		if (success != 1)
 			break;
-		key_free(k);
 		/* advance cp: skip whitespace and data */
 		while (*cp == ' ' || *cp == '\t')
 			cp++;
@@ -470,11 +488,14 @@ key_read(Key *ret, char **cpp)
 	}
 	return success;
 }
+
 int
 key_write(Key *key, FILE *f)
 {
-	int success = 0;
-	u_int bits = 0;
+	int n, success = 0;
+	u_int len, bits = 0;
+	u_char *blob;
+	char *uu;
 
 	if (key->type == KEY_RSA1 && key->rsa != NULL) {
 		/* size of modulus 'n' */
@@ -488,8 +509,6 @@ key_write(Key *key, FILE *f)
 		}
 	} else if ((key->type == KEY_DSA && key->dsa != NULL) ||
 	    (key->type == KEY_RSA && key->rsa != NULL)) {
-		int len, n;
-		u_char *blob, *uu;
 		key_to_blob(key, &blob, &len);
 		uu = xmalloc(2*len);
 		n = uuencode(blob, len, uu, 2*len);
@@ -502,6 +521,7 @@ key_write(Key *key, FILE *f)
 	}
 	return success;
 }
+
 char *
 key_type(Key *k)
 {
@@ -518,6 +538,7 @@ key_type(Key *k)
 	}
 	return "unknown";
 }
+
 char *
 key_ssh_name(Key *k)
 {
@@ -531,8 +552,10 @@ key_ssh_name(Key *k)
 	}
 	return "ssh-unknown";
 }
+
 u_int
-key_size(Key *k){
+key_size(Key *k)
+{
 	switch (k->type) {
 	case KEY_RSA1:
 	case KEY_RSA:
@@ -615,15 +638,15 @@ key_from_private(Key *k)
 int
 key_type_from_name(char *name)
 {
-	if (strcmp(name, "rsa1") == 0){
+	if (strcmp(name, "rsa1") == 0) {
 		return KEY_RSA1;
-	} else if (strcmp(name, "rsa") == 0){
+	} else if (strcmp(name, "rsa") == 0) {
 		return KEY_RSA;
-	} else if (strcmp(name, "dsa") == 0){
+	} else if (strcmp(name, "dsa") == 0) {
 		return KEY_DSA;
-	} else if (strcmp(name, "ssh-rsa") == 0){
+	} else if (strcmp(name, "ssh-rsa") == 0) {
 		return KEY_RSA;
-	} else if (strcmp(name, "ssh-dss") == 0){
+	} else if (strcmp(name, "ssh-dss") == 0) {
 		return KEY_DSA;
 	}
 	debug2("key_type_from_name: unknown key type '%s'", name);
@@ -639,7 +662,7 @@ key_names_valid2(const char *names)
 		return 0;
 	s = cp = xstrdup(names);
 	for ((p = strsep(&cp, ",")); p && *p != '\0';
-	     (p = strsep(&cp, ","))) {
+	    (p = strsep(&cp, ","))) {
 		switch (key_type_from_name(p)) {
 		case KEY_RSA1:
 		case KEY_UNSPEC:
@@ -668,7 +691,7 @@ key_from_blob(u_char *blob, int blen)
 	ktype = buffer_get_string(&b, NULL);
 	type = key_type_from_name(ktype);
 
-	switch(type){
+	switch (type) {
 	case KEY_RSA:
 		key = key_new(type);
 		buffer_get_bignum2(&b, key->rsa->e);
@@ -707,14 +730,13 @@ key_to_blob(Key *key, u_char **blobp, u_int *lenp)
 {
 	Buffer b;
 	int len;
-	u_char *buf;
 
 	if (key == NULL) {
 		error("key_to_blob: key == NULL");
 		return 0;
 	}
 	buffer_init(&b);
-	switch(key->type){
+	switch (key->type) {
 	case KEY_DSA:
 		buffer_put_cstring(&b, key_ssh_name(key));
 		buffer_put_bignum2(&b, key->dsa->p);
@@ -733,24 +755,24 @@ key_to_blob(Key *key, u_char **blobp, u_int *lenp)
 		return 0;
 	}
 	len = buffer_len(&b);
-	buf = xmalloc(len);
-	memcpy(buf, buffer_ptr(&b), len);
-	memset(buffer_ptr(&b), 0, len);
-	buffer_free(&b);
 	if (lenp != NULL)
 		*lenp = len;
-	if (blobp != NULL)
-		*blobp = buf;
+	if (blobp != NULL) {
+		*blobp = xmalloc(len);
+		memcpy(*blobp, buffer_ptr(&b), len);
+	}
+	memset(buffer_ptr(&b), 0, len);
+	buffer_free(&b);
 	return len;
 }
 
 int
 key_sign(
     Key *key,
-    u_char **sigp, int *lenp,
-    u_char *data, int datalen)
+    u_char **sigp, u_int *lenp,
+    u_char *data, u_int datalen)
 {
-	switch(key->type){
+	switch (key->type) {
 	case KEY_DSA:
 		return ssh_dss_sign(key, sigp, lenp, data, datalen);
 		break;
@@ -764,16 +786,20 @@ key_sign(
 	}
 }
 
+/*
+ * key_verify returns 1 for a correct signature, 0 for an incorrect signature
+ * and -1 on error.
+ */
 int
 key_verify(
     Key *key,
-    u_char *signature, int signaturelen,
-    u_char *data, int datalen)
+    u_char *signature, u_int signaturelen,
+    u_char *data, u_int datalen)
 {
 	if (signaturelen == 0)
 		return -1;
 
-	switch(key->type){
+	switch (key->type) {
 	case KEY_DSA:
 		return ssh_dss_verify(key, signature, signaturelen, data, datalen);
 		break;
@@ -785,4 +811,46 @@ key_verify(
 		return -1;
 		break;
 	}
+}
+
+/* Converts a private to a public key */
+Key *
+key_demote(Key *k)
+{
+	Key *pk;
+
+	pk = xmalloc(sizeof(*pk));
+	pk->type = k->type;
+	pk->flags = k->flags;
+	pk->dsa = NULL;
+	pk->rsa = NULL;
+
+	switch (k->type) {
+	case KEY_RSA1:
+	case KEY_RSA:
+		if ((pk->rsa = RSA_new()) == NULL)
+			fatal("key_demote: RSA_new failed");
+		if ((pk->rsa->e = BN_dup(k->rsa->e)) == NULL)
+			fatal("key_demote: BN_dup failed");
+		if ((pk->rsa->n = BN_dup(k->rsa->n)) == NULL)
+			fatal("key_demote: BN_dup failed");
+		break;
+	case KEY_DSA:
+		if ((pk->dsa = DSA_new()) == NULL)
+			fatal("key_demote: DSA_new failed");
+		if ((pk->dsa->p = BN_dup(k->dsa->p)) == NULL)
+			fatal("key_demote: BN_dup failed");
+		if ((pk->dsa->q = BN_dup(k->dsa->q)) == NULL)
+			fatal("key_demote: BN_dup failed");
+		if ((pk->dsa->g = BN_dup(k->dsa->g)) == NULL)
+			fatal("key_demote: BN_dup failed");
+		if ((pk->dsa->pub_key = BN_dup(k->dsa->pub_key)) == NULL)
+			fatal("key_demote: BN_dup failed");
+		break;
+	default:
+		fatal("key_free: bad key type %d", k->type);
+		break;
+	}
+
+	return (pk);
 }

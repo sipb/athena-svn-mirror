@@ -12,7 +12,7 @@
  */
 
 #include "includes.h"
-RCSID("$OpenBSD: canohost.c,v 1.27 2001/06/23 15:12:17 itojun Exp $");
+RCSID("$OpenBSD: canohost.c,v 1.34 2002/09/23 20:46:27 stevesk Exp $");
 
 #include "packet.h"
 #include "xmalloc.h"
@@ -27,7 +27,7 @@ static void check_ip_options(int, char *);
  */
 
 static char *
-get_remote_hostname(int socket, int reverse_mapping_check)
+get_remote_hostname(int socket, int verify_reverse_mapping)
 {
 	struct sockaddr_storage from;
 	int i;
@@ -64,19 +64,22 @@ get_remote_hostname(int socket, int reverse_mapping_check)
 		}
 	}
 #endif
-	if (from.ss_family == AF_INET)
-		check_ip_options(socket, ntop);
 
 	if (getnameinfo((struct sockaddr *)&from, fromlen, ntop, sizeof(ntop),
-	     NULL, 0, NI_NUMERICHOST) != 0)
+	    NULL, 0, NI_NUMERICHOST) != 0)
 		fatal("get_remote_hostname: getnameinfo NI_NUMERICHOST failed");
+
+	if (from.ss_family == AF_INET)
+		check_ip_options(socket, ntop);
 
 	debug3("Trying to reverse map address %.100s.", ntop);
 	/* Map the IP address to a host name. */
 	if (getnameinfo((struct sockaddr *)&from, fromlen, name, sizeof(name),
-	     NULL, 0, NI_NAMEREQD) != 0) {
+	    NULL, 0, NI_NAMEREQD) != 0) {
 		/* Host name not found.  Use ip address. */
+#if 0
 		log("Could not reverse map address %.100s.", ntop);
+#endif
 		return xstrdup(ntop);
 	}
 
@@ -90,7 +93,7 @@ get_remote_hostname(int socket, int reverse_mapping_check)
 		if (isupper(name[i]))
 			name[i] = tolower(name[i]);
 
-	if (!reverse_mapping_check)
+	if (!verify_reverse_mapping)
 		return xstrdup(name);
 	/*
 	 * Map it back to an IP address and check that the given
@@ -154,7 +157,7 @@ check_ip_options(int socket, char *ipaddr)
 	else
 		ipproto = IPPROTO_IP;
 	option_size = sizeof(options);
-	if (getsockopt(socket, ipproto, IP_OPTIONS, (void *)options,
+	if (getsockopt(socket, ipproto, IP_OPTIONS, options,
 	    &option_size) >= 0 && option_size != 0) {
 		text[0] = '\0';
 		for (i = 0; i < option_size; i++)
@@ -174,14 +177,14 @@ check_ip_options(int socket, char *ipaddr)
  */
 
 const char *
-get_canonical_hostname(int reverse_mapping_check)
+get_canonical_hostname(int verify_reverse_mapping)
 {
 	static char *canonical_host_name = NULL;
-	static int reverse_mapping_checked = 0;
+	static int verify_reverse_mapping_done = 0;
 
 	/* Check if we have previously retrieved name with same option. */
 	if (canonical_host_name != NULL) {
-		if (reverse_mapping_checked != reverse_mapping_check)
+		if (verify_reverse_mapping_done != verify_reverse_mapping)
 			xfree(canonical_host_name);
 		else
 			return canonical_host_name;
@@ -190,11 +193,11 @@ get_canonical_hostname(int reverse_mapping_check)
 	/* Get the real hostname if socket; otherwise return UNKNOWN. */
 	if (packet_connection_is_on_socket())
 		canonical_host_name = get_remote_hostname(
-		    packet_get_connection_in(), reverse_mapping_check);
+		    packet_get_connection_in(), verify_reverse_mapping);
 	else
 		canonical_host_name = xstrdup("UNKNOWN");
 
-	reverse_mapping_checked = reverse_mapping_check;
+	verify_reverse_mapping_done = verify_reverse_mapping;
 	return canonical_host_name;
 }
 
@@ -215,22 +218,16 @@ get_socket_address(int socket, int remote, int flags)
 
 	if (remote) {
 		if (getpeername(socket, (struct sockaddr *)&addr, &addrlen)
-		    < 0) {
-			debug("get_socket_ipaddr: getpeername failed: %.100s",
-			    strerror(errno));
+		    < 0)
 			return NULL;
-		}
 	} else {
 		if (getsockname(socket, (struct sockaddr *)&addr, &addrlen)
-		    < 0) {
-			debug("get_socket_ipaddr: getsockname failed: %.100s",
-			    strerror(errno));
+		    < 0)
 			return NULL;
-		}
 	}
 	/* Get the address in ascii. */
 	if (getnameinfo((struct sockaddr *)&addr, addrlen, ntop, sizeof(ntop),
-	     NULL, 0, flags) != 0) {
+	    NULL, 0, flags) != 0) {
 		error("get_socket_ipaddr: getnameinfo %d failed", flags);
 		return NULL;
 	}
@@ -240,13 +237,21 @@ get_socket_address(int socket, int remote, int flags)
 char *
 get_peer_ipaddr(int socket)
 {
-	return get_socket_address(socket, 1, NI_NUMERICHOST);
+	char *p;
+
+	if ((p = get_socket_address(socket, 1, NI_NUMERICHOST)) != NULL)
+		return p;
+	return xstrdup("UNKNOWN");
 }
 
 char *
 get_local_ipaddr(int socket)
 {
-	return get_socket_address(socket, 0, NI_NUMERICHOST);
+	char *p;
+
+	if ((p = get_socket_address(socket, 0, NI_NUMERICHOST)) != NULL)
+		return p;
+	return xstrdup("UNKNOWN");
 }
 
 char *
@@ -261,7 +266,7 @@ get_local_name(int socket)
  */
 
 const char *
-get_remote_ipaddr()
+get_remote_ipaddr(void)
 {
 	static char *canonical_host_ip = NULL;
 
@@ -281,11 +286,11 @@ get_remote_ipaddr()
 }
 
 const char *
-get_remote_name_or_ip(u_int utmp_len, int reverse_mapping_check)
+get_remote_name_or_ip(u_int utmp_len, int verify_reverse_mapping)
 {
 	static const char *remote = "";
 	if (utmp_len > 0)
-		remote = get_canonical_hostname(reverse_mapping_check);
+		remote = get_canonical_hostname(verify_reverse_mapping);
 	if (utmp_len == 0 || strlen(remote) > utmp_len)
 		remote = get_remote_ipaddr();
 	return remote;
@@ -316,7 +321,7 @@ get_sock_port(int sock, int local)
 	}
 	/* Return port number. */
 	if (getnameinfo((struct sockaddr *)&from, fromlen, NULL, 0,
-	     strport, sizeof(strport), NI_NUMERICSERV) != 0)
+	    strport, sizeof(strport), NI_NUMERICSERV) != 0)
 		fatal("get_sock_port: getnameinfo NI_NUMERICSERV failed");
 	return atoi(strport);
 }
@@ -344,13 +349,13 @@ get_peer_port(int sock)
 }
 
 int
-get_remote_port()
+get_remote_port(void)
 {
 	return get_port(0);
 }
 
 int
-get_local_port()
+get_local_port(void)
 {
 	return get_port(1);
 }

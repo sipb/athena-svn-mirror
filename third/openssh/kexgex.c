@@ -24,7 +24,7 @@
  */
 
 #include "includes.h"
-RCSID("$OpenBSD: kexgex.c,v 1.9 2001/09/17 19:27:15 stevesk Exp $");
+RCSID("$OpenBSD: kexgex.c,v 1.22 2002/03/24 17:27:03 stevesk Exp $");
 
 #include <openssl/bn.h>
 
@@ -38,6 +38,7 @@ RCSID("$OpenBSD: kexgex.c,v 1.9 2001/09/17 19:27:15 stevesk Exp $");
 #include "dh.h"
 #include "ssh2.h"
 #include "compat.h"
+#include "monitor_wrap.h"
 
 static u_char *
 kexgex_hash(
@@ -53,7 +54,7 @@ kexgex_hash(
 {
 	Buffer b;
 	static u_char digest[EVP_MAX_MD_SIZE];
-	EVP_MD *evp_md = EVP_sha1();
+	const EVP_MD *evp_md = EVP_sha1();
 	EVP_MD_CTX md;
 
 	buffer_init(&b);
@@ -92,7 +93,7 @@ kexgex_hash(
 	buffer_free(&b);
 
 #ifdef DEBUG_KEXDH
-	dump_digest("hash", digest, evp_md->md_size);
+	dump_digest("hash", digest, EVP_MD_size(evp_md));
 #endif
 	return digest;
 }
@@ -107,7 +108,7 @@ kexgex_client(Kex *kex)
 	Key *server_host_key;
 	u_char *kbuf, *hash, *signature = NULL, *server_host_key_blob = NULL;
 	u_int klen, kout, slen, sbloblen;
-	int dlen, plen, min, max, nbits;
+	int min, max, nbits;
 	DH *dh;
 
 	nbits = dh_estimate(kex->we_need * 8);
@@ -138,15 +139,15 @@ kexgex_client(Kex *kex)
 	packet_send();
 
 	debug("expecting SSH2_MSG_KEX_DH_GEX_GROUP");
-	packet_read_expect(&plen, SSH2_MSG_KEX_DH_GEX_GROUP);
+	packet_read_expect(SSH2_MSG_KEX_DH_GEX_GROUP);
 
 	if ((p = BN_new()) == NULL)
 		fatal("BN_new");
-	packet_get_bignum2(p, &dlen);
+	packet_get_bignum2(p);
 	if ((g = BN_new()) == NULL)
 		fatal("BN_new");
-	packet_get_bignum2(g, &dlen);
-	packet_done();
+	packet_get_bignum2(g);
+	packet_check_eom();
 
 	if (BN_num_bits(p) < min || BN_num_bits(p) > max)
 		fatal("DH_GEX group out of range: %d !< %d !< %d",
@@ -169,24 +170,24 @@ kexgex_client(Kex *kex)
 	packet_send();
 
 	debug("expecting SSH2_MSG_KEX_DH_GEX_REPLY");
-	packet_read_expect(&plen, SSH2_MSG_KEX_DH_GEX_REPLY);
+	packet_read_expect(SSH2_MSG_KEX_DH_GEX_REPLY);
 
 	/* key, cert */
 	server_host_key_blob = packet_get_string(&sbloblen);
 	server_host_key = key_from_blob(server_host_key_blob, sbloblen);
 	if (server_host_key == NULL)
 		fatal("cannot decode server_host_key_blob");
-
+	if (server_host_key->type != kex->hostkey_type)
+		fatal("type mismatch for decoded server_host_key_blob");
 	if (kex->verify_host_key == NULL)
 		fatal("cannot verify server_host_key");
 	if (kex->verify_host_key(server_host_key) == -1)
 		fatal("server_host_key verification failed");
 
 	/* DH paramter f, server public DH key */
-	dh_server_pub = BN_new();
-	if (dh_server_pub == NULL)
+	if ((dh_server_pub = BN_new()) == NULL)
 		fatal("dh_server_pub == NULL");
-	packet_get_bignum2(dh_server_pub, &dlen);
+	packet_get_bignum2(dh_server_pub);
 
 #ifdef DEBUG_KEXDH
 	fprintf(stderr, "dh_server_pub= ");
@@ -197,7 +198,7 @@ kexgex_client(Kex *kex)
 
 	/* signed H */
 	signature = packet_get_string(&slen);
-	packet_done();
+	packet_check_eom();
 
 	if (!dh_pub_is_valid(dh, dh_server_pub))
 		packet_disconnect("bad server public DH value");
@@ -208,7 +209,8 @@ kexgex_client(Kex *kex)
 #ifdef DEBUG_KEXDH
 	dump_digest("shared secret", kbuf, kout);
 #endif
-	shared_secret = BN_new();
+	if ((shared_secret = BN_new()) == NULL)
+		fatal("kexgex_client: BN_new failed");
 	BN_bin2bn(kbuf, kout, shared_secret);
 	memset(kbuf, 0, klen);
 	xfree(kbuf);
@@ -232,7 +234,7 @@ kexgex_client(Kex *kex)
 	/* have keys, free DH */
 	DH_free(dh);
 	xfree(server_host_key_blob);
-	BN_free(dh_server_pub);
+	BN_clear_free(dh_server_pub);
 
 	if (key_verify(server_host_key, signature, slen, hash, 20) != 1)
 		fatal("key_verify failed for server_host_key");
@@ -258,10 +260,10 @@ kexgex_server(Kex *kex)
 {
 	BIGNUM *shared_secret = NULL, *dh_client_pub = NULL;
 	Key *server_host_key;
-	DH *dh = dh;
+	DH *dh;
 	u_char *kbuf, *hash, *signature = NULL, *server_host_key_blob = NULL;
-	u_int sbloblen, klen, kout;
-	int min = -1, max = -1, nbits = -1, type, plen, dlen, slen;
+	u_int sbloblen, klen, kout, slen;
+	int min = -1, max = -1, nbits = -1, type;
 
 	if (kex->load_host_key == NULL)
 		fatal("Cannot load hostkey");
@@ -269,8 +271,8 @@ kexgex_server(Kex *kex)
 	if (server_host_key == NULL)
 		fatal("Unsupported hostkey type %d", kex->hostkey_type);
 
-	type = packet_read(&plen);
-	switch(type){
+	type = packet_read();
+	switch (type) {
 	case SSH2_MSG_KEX_DH_GEX_REQUEST:
 		debug("SSH2_MSG_KEX_DH_GEX_REQUEST received");
 		min = packet_get_int();
@@ -289,13 +291,14 @@ kexgex_server(Kex *kex)
 	default:
 		fatal("protocol error during kex, no DH_GEX_REQUEST: %d", type);
 	}
-	packet_done();
+	packet_check_eom();
 
 	if (max < min || nbits < min || max < nbits)
 		fatal("DH_GEX_REQUEST, bad parameters: %d !< %d !< %d",
 		    min, nbits, max);
 
-	dh = choose_dh(min, nbits, max);
+	/* Contact privileged parent */
+	dh = PRIVSEP(choose_dh(min, nbits, max));
 	if (dh == NULL)
 		packet_disconnect("Protocol error: no matching DH grp found");
 
@@ -312,13 +315,13 @@ kexgex_server(Kex *kex)
 	dh_gen_key(dh, kex->we_need * 8);
 
 	debug("expecting SSH2_MSG_KEX_DH_GEX_INIT");
-	packet_read_expect(&plen, SSH2_MSG_KEX_DH_GEX_INIT);
+	packet_read_expect(SSH2_MSG_KEX_DH_GEX_INIT);
 
 	/* key, cert */
-	dh_client_pub = BN_new();
-	if (dh_client_pub == NULL)
+	if ((dh_client_pub = BN_new()) == NULL)
 		fatal("dh_client_pub == NULL");
-	packet_get_bignum2(dh_client_pub, &dlen);
+	packet_get_bignum2(dh_client_pub);
+	packet_check_eom();
 
 #ifdef DEBUG_KEXDH
 	fprintf(stderr, "dh_client_pub= ");
@@ -342,7 +345,8 @@ kexgex_server(Kex *kex)
 #ifdef DEBUG_KEXDH
 	dump_digest("shared secret", kbuf, kout);
 #endif
-	shared_secret = BN_new();
+	if ((shared_secret = BN_new()) == NULL)
+		fatal("kexgex_server: BN_new failed");
 	BN_bin2bn(kbuf, kout, shared_secret);
 	memset(kbuf, 0, klen);
 	xfree(kbuf);
@@ -365,7 +369,7 @@ kexgex_server(Kex *kex)
 	    dh->pub_key,
 	    shared_secret
 	);
-	BN_free(dh_client_pub);
+	BN_clear_free(dh_client_pub);
 
 	/* save session id := H */
 	/* XXX hashlen depends on KEX */
@@ -377,7 +381,7 @@ kexgex_server(Kex *kex)
 
 	/* sign H */
 	/* XXX hashlen depends on KEX */
-	key_sign(server_host_key, &signature, &slen, hash, 20);
+	PRIVSEP(key_sign(server_host_key, &signature, &slen, hash, 20));
 
 	/* destroy_sensitive_data(); */
 
@@ -388,6 +392,7 @@ kexgex_server(Kex *kex)
 	packet_put_bignum2(dh->pub_key);	/* f */
 	packet_put_string(signature, slen);
 	packet_send();
+
 	xfree(signature);
 	xfree(server_host_key_blob);
 	/* have keys, free DH */

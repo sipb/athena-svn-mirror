@@ -12,7 +12,7 @@
  */
 
 #include "includes.h"
-RCSID("$OpenBSD: sshpty.c,v 1.3 2001/07/22 21:32:27 markus Exp $");
+RCSID("$OpenBSD: sshpty.c,v 1.7 2002/06/24 17:57:20 deraadt Exp $");
 
 #ifdef HAVE_UTIL_H
 # include <util.h>
@@ -156,16 +156,16 @@ pty_allocate(int *ptyfd, int *ttyfd, char *namebuf, int namebuflen)
 	*ttyfd = open(name, O_RDWR | O_NOCTTY);
 	if (*ttyfd < 0) {
 		error("Could not open pty slave side %.100s: %.100s",
-		      name, strerror(errno));
+		    name, strerror(errno));
 		close(*ptyfd);
 		return 0;
 	}
 	return 1;
 #else /* HAVE_DEV_PTS_AND_PTC */
-#ifdef _CRAY
+#ifdef _UNICOS
 	char buf[64];
-  	int i;
-  	int highpty;
+	int i;
+	int highpty;
 
 #ifdef _SC_CRAY_NPTY
 	highpty = sysconf(_SC_CRAY_NPTY);
@@ -199,6 +199,7 @@ pty_allocate(int *ptyfd, int *ttyfd, char *namebuf, int namebuflen)
 	const char *ptyminors = "0123456789abcdef";
 	int num_minors = strlen(ptyminors);
 	int num_ptys = strlen(ptymajors) * num_minors;
+	struct termios tio;
 
 	for (i = 0; i < num_ptys; i++) {
 		snprintf(buf, sizeof buf, "/dev/pty%c%c", ptymajors[i / num_minors],
@@ -223,6 +224,19 @@ pty_allocate(int *ptyfd, int *ttyfd, char *namebuf, int namebuflen)
 			close(*ptyfd);
 			return 0;
 		}
+		/* set tty modes to a sane state for broken clients */
+		if (tcgetattr(*ptyfd, &tio) < 0)
+			log("Getting tty modes for pty failed: %.100s", strerror(errno));
+		else {
+			tio.c_lflag |= (ECHO | ISIG | ICANON);
+			tio.c_oflag |= (OPOST | ONLCR);
+			tio.c_iflag |= ICRNL;
+
+			/* Set the new modes for the terminal. */
+			if (tcsetattr(*ptyfd, TCSANOW, &tio) < 0)
+				log("Setting tty modes for pty failed: %.100s", strerror(errno));
+		}
+
 		return 1;
 	}
 	return 0;
@@ -254,7 +268,7 @@ pty_make_controlling_tty(int *ttyfd, const char *ttyname)
 	void *old;
 #endif /* USE_VHANGUP */
 
-#ifdef _CRAY
+#ifdef _UNICOS
 	if (setsid() < 0)
 		error("setsid: %.100s", strerror(errno));
 
@@ -275,8 +289,8 @@ pty_make_controlling_tty(int *ttyfd, const char *ttyname)
 	if (fd < 0)
 		error("%.100s: %.100s", ttyname, strerror(errno));
 	close(*ttyfd);
-       	*ttyfd = fd;
-#else /* _CRAY */
+	*ttyfd = fd;
+#else /* _UNICOS */
 
 	/* First disconnect from the old controlling tty. */
 #ifdef TIOCNOTTY
@@ -328,20 +342,20 @@ pty_make_controlling_tty(int *ttyfd, const char *ttyname)
 	fd = open(_PATH_TTY, O_WRONLY);
 	if (fd < 0)
 		error("open /dev/tty failed - could not set controlling tty: %.100s",
-		      strerror(errno));
-	else {
+		    strerror(errno));
+	else 
 		close(fd);
-	}
-#endif /* _CRAY */
+#endif /* _UNICOS */
 }
 
 /* Changes the window size associated with the pty. */
 
 void
 pty_change_window_size(int ptyfd, int row, int col,
-		       int xpixel, int ypixel)
+	int xpixel, int ypixel)
 {
 	struct winsize w;
+
 	w.ws_row = row;
 	w.ws_col = col;
 	w.ws_xpixel = xpixel;
@@ -378,15 +392,15 @@ pty_setowner(struct passwd *pw, const char *ttyname)
 
 	if (st.st_uid != pw->pw_uid || st.st_gid != gid) {
 		if (chown(ttyname, pw->pw_uid, gid) < 0) {
-			if (errno == EROFS && 
-			   (st.st_uid == pw->pw_uid || st.st_uid == 0))
-				error("chown(%.100s, %d, %d) failed: %.100s",
-				      ttyname, pw->pw_uid, gid,
-				      strerror(errno));
+			if (errno == EROFS &&
+			    (st.st_uid == pw->pw_uid || st.st_uid == 0))
+				error("chown(%.100s, %u, %u) failed: %.100s",
+				    ttyname, (u_int)pw->pw_uid, (u_int)gid,
+				    strerror(errno));
 			else
-				fatal("chown(%.100s, %d, %d) failed: %.100s",
-				      ttyname, pw->pw_uid, gid,
-				      strerror(errno));
+				fatal("chown(%.100s, %u, %u) failed: %.100s",
+				    ttyname, (u_int)pw->pw_uid, (u_int)gid,
+				    strerror(errno));
 		}
 	}
 
@@ -395,10 +409,10 @@ pty_setowner(struct passwd *pw, const char *ttyname)
 			if (errno == EROFS &&
 			    (st.st_mode & (S_IRGRP | S_IROTH)) == 0)
 				error("chmod(%.100s, 0%o) failed: %.100s",
-				      ttyname, mode, strerror(errno));
+				    ttyname, mode, strerror(errno));
 			else
 				fatal("chmod(%.100s, 0%o) failed: %.100s",
-				      ttyname, mode, strerror(errno));
+				    ttyname, mode, strerror(errno));
 		}
 	}
 }

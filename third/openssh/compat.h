@@ -1,3 +1,5 @@
+/*	$OpenBSD: compat.h,v 1.33 2002/09/27 10:42:09 mickey Exp $	*/
+
 /*
  * Copyright (c) 1999, 2000, 2001 Markus Friedl.  All rights reserved.
  *
@@ -21,7 +23,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* RCSID("$OpenBSD: compat.h,v 1.29 2001/09/20 13:50:40 markus Exp $"); */
 
 #ifndef COMPAT_H
 #define COMPAT_H
@@ -51,6 +52,9 @@
 #define SSH_BUG_OPENFAILURE	0x00020000
 #define SSH_BUG_DERIVEKEY	0x00040000
 #define SSH_BUG_DUMMYCHAN	0x00100000
+#define SSH_BUG_EXTEOF		0x00200000
+#define SSH_BUG_K5USER		0x00400000
+#define SSH_BUG_PROBE		0x00800000
 
 void     enable_compat13(void);
 void     enable_compat20(void);

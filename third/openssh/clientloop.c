@@ -59,7 +59,7 @@
  */
 
 #include "includes.h"
-RCSID("$OpenBSD: clientloop.c,v 1.87 2001/11/09 18:59:23 markus Exp $");
+RCSID("$OpenBSD: clientloop.c,v 1.104 2002/08/22 19:38:42 stevesk Exp $");
 
 #include "ssh.h"
 #include "ssh1.h"
@@ -81,6 +81,7 @@ RCSID("$OpenBSD: clientloop.c,v 1.87 2001/11/09 18:59:23 markus Exp $");
 #include "atomicio.h"
 #include "sshtty.h"
 #include "misc.h"
+#include "readpass.h"
 
 /* import options */
 extern Options options;
@@ -101,8 +102,8 @@ extern char *host;
  * window size to be sent to the server a little later.  This is volatile
  * because this is updated in a signal handler.
  */
-static volatile int received_window_change_signal = 0;
-static volatile int received_signal = 0;
+static volatile sig_atomic_t received_window_change_signal = 0;
+static volatile sig_atomic_t received_signal = 0;
 
 /* Flag indicating whether the user\'s terminal is in non-blocking mode. */
 static int in_non_blocking_mode = 0;
@@ -254,7 +255,7 @@ client_make_packets_from_stdin_data(void)
 
 	/* Send buffered stdin data to the server. */
 	while (buffer_len(&stdin_buffer) > 0 &&
-	       packet_not_very_much_data_to_write()) {
+	    packet_not_very_much_data_to_write()) {
 		len = buffer_len(&stdin_buffer);
 		/* Keep the packets at reasonable size. */
 		if (len > packet_get_maxsize())
@@ -417,9 +418,9 @@ client_suspend_self(Buffer *bin, Buffer *bout, Buffer *berr)
 	/* Check if the window size has changed. */
 	if (ioctl(fileno(stdin), TIOCGWINSZ, &newws) >= 0 &&
 	    (oldws.ws_row != newws.ws_row ||
-	     oldws.ws_col != newws.ws_col ||
-	     oldws.ws_xpixel != newws.ws_xpixel ||
-	     oldws.ws_ypixel != newws.ws_ypixel))
+	    oldws.ws_col != newws.ws_col ||
+	    oldws.ws_xpixel != newws.ws_xpixel ||
+	    oldws.ws_ypixel != newws.ws_ypixel))
 		received_window_change_signal = 1;
 
 	/* OK, we have been continued by the user. Reinitialize buffers. */
@@ -468,6 +469,67 @@ client_process_net_input(fd_set * readset)
 		}
 		packet_process_incoming(buf, len);
 	}
+}
+
+static void
+process_cmdline(void)
+{
+	void (*handler)(int);
+	char *s, *cmd;
+	u_short fwd_port, fwd_host_port;
+	char buf[1024], sfwd_port[6], sfwd_host_port[6];
+	int local = 0;
+
+	leave_raw_mode();
+	handler = signal(SIGINT, SIG_IGN);
+	cmd = s = read_passphrase("\r\nssh> ", RP_ECHO);
+	if (s == NULL)
+		goto out;
+	while (*s && isspace(*s))
+		s++;
+	if (*s == 0)
+		goto out;
+	if (strlen(s) < 2 || s[0] != '-' || !(s[1] == 'L' || s[1] == 'R')) {
+		log("Invalid command.");
+		goto out;
+	}
+	if (s[1] == 'L')
+		local = 1;
+	if (!local && !compat20) {
+		log("Not supported for SSH protocol version 1.");
+		goto out;
+	}
+	s += 2;
+	while (*s && isspace(*s))
+		s++;
+
+	if (sscanf(s, "%5[0-9]:%255[^:]:%5[0-9]",
+	    sfwd_port, buf, sfwd_host_port) != 3 &&
+	    sscanf(s, "%5[0-9]/%255[^/]/%5[0-9]",
+	    sfwd_port, buf, sfwd_host_port) != 3) {
+		log("Bad forwarding specification.");
+		goto out;
+	}
+	if ((fwd_port = a2port(sfwd_port)) == 0 ||
+	    (fwd_host_port = a2port(sfwd_host_port)) == 0) {
+		log("Bad forwarding port(s).");
+		goto out;
+	}
+	if (local) {
+		if (channel_setup_local_fwd_listener(fwd_port, buf,
+		    fwd_host_port, options.gateway_ports) < 0) {
+			log("Port forwarding failed.");
+			goto out;
+		}
+	} else
+		channel_request_remote_forwarding(fwd_port, buf,
+		    fwd_host_port);
+	log("Forwarding port.");
+out:
+	signal(SIGINT, handler);
+	enter_raw_mode();
+	if (cmd)
+		xfree(cmd);
 }
 
 /* process the characters one by one */
@@ -573,15 +635,18 @@ process_escapes(Buffer *bin, Buffer *bout, Buffer *berr, char *buf, int len)
 				snprintf(string, sizeof string,
 "%c?\r\n\
 Supported escape sequences:\r\n\
-~.  - terminate connection\r\n\
-~R  - Request rekey (SSH protocol 2 only)\r\n\
-~^Z - suspend ssh\r\n\
-~#  - list forwarded connections\r\n\
-~&  - background ssh (when waiting for connections to terminate)\r\n\
-~?  - this message\r\n\
-~~  - send the escape character by typing it twice\r\n\
+%c.  - terminate connection\r\n\
+%cC  - open a command line\r\n\
+%cR  - Request rekey (SSH protocol 2 only)\r\n\
+%c^Z - suspend ssh\r\n\
+%c#  - list forwarded connections\r\n\
+%c&  - background ssh (when waiting for connections to terminate)\r\n\
+%c?  - this message\r\n\
+%c%c  - send the escape character by typing it twice\r\n\
 (Note that escapes are only recognized immediately after newline.)\r\n",
-					 escape_char);
+				    escape_char, escape_char, escape_char, escape_char,
+				    escape_char, escape_char, escape_char, escape_char,
+				    escape_char, escape_char);
 				buffer_append(berr, string, strlen(string));
 				continue;
 
@@ -591,6 +656,10 @@ Supported escape sequences:\r\n\
 				s = channel_open_message();
 				buffer_append(berr, s, strlen(s));
 				xfree(s);
+				continue;
+
+			case 'C':
+				process_cmdline();
 				continue;
 
 			default:
@@ -949,7 +1018,7 @@ client_loop(int have_pty, int escape_char_arg, int ssh2_chan_id)
 	if (received_signal) {
 		if (in_non_blocking_mode)	/* XXX */
 			leave_non_blocking();
-		fatal("Killed by signal %d.", received_signal);
+		fatal("Killed by signal %d.", (int) received_signal);
 	}
 
 	/*
@@ -994,11 +1063,11 @@ client_loop(int have_pty, int escape_char_arg, int ssh2_chan_id)
 	/* Report bytes transferred, and transfer rates. */
 	total_time = get_current_time() - start_time;
 	debug("Transferred: stdin %lu, stdout %lu, stderr %lu bytes in %.1f seconds",
-	      stdin_bytes, stdout_bytes, stderr_bytes, total_time);
+	    stdin_bytes, stdout_bytes, stderr_bytes, total_time);
 	if (total_time > 0)
 		debug("Bytes per second: stdin %.1f, stdout %.1f, stderr %.1f",
-		      stdin_bytes / total_time, stdout_bytes / total_time,
-		      stderr_bytes / total_time);
+		    stdin_bytes / total_time, stdout_bytes / total_time,
+		    stderr_bytes / total_time);
 
 	/* Return the exit status of the program. */
 	debug("Exit status %d", exit_status);
@@ -1008,30 +1077,30 @@ client_loop(int have_pty, int escape_char_arg, int ssh2_chan_id)
 /*********/
 
 static void
-client_input_stdout_data(int type, int plen, void *ctxt)
+client_input_stdout_data(int type, u_int32_t seq, void *ctxt)
 {
 	u_int data_len;
 	char *data = packet_get_string(&data_len);
-	packet_integrity_check(plen, 4 + data_len, type);
+	packet_check_eom();
 	buffer_append(&stdout_buffer, data, data_len);
 	memset(data, 0, data_len);
 	xfree(data);
 }
 static void
-client_input_stderr_data(int type, int plen, void *ctxt)
+client_input_stderr_data(int type, u_int32_t seq, void *ctxt)
 {
 	u_int data_len;
 	char *data = packet_get_string(&data_len);
-	packet_integrity_check(plen, 4 + data_len, type);
+	packet_check_eom();
 	buffer_append(&stderr_buffer, data, data_len);
 	memset(data, 0, data_len);
 	xfree(data);
 }
 static void
-client_input_exit_status(int type, int plen, void *ctxt)
+client_input_exit_status(int type, u_int32_t seq, void *ctxt)
 {
-	packet_integrity_check(plen, 4, type);
 	exit_status = packet_get_int();
+	packet_check_eom();
 	/* Acknowledge the exit. */
 	packet_start(SSH_CMSG_EXIT_CONFIRMATION);
 	packet_send();
@@ -1047,7 +1116,7 @@ client_input_exit_status(int type, int plen, void *ctxt)
 static Channel *
 client_request_forwarded_tcpip(const char *request_type, int rchan)
 {
-	Channel* c = NULL;
+	Channel *c = NULL;
 	char *listen_address, *originator_address;
 	int listen_port, originator_port;
 	int sock;
@@ -1057,7 +1126,7 @@ client_request_forwarded_tcpip(const char *request_type, int rchan)
 	listen_port = packet_get_int();
 	originator_address = packet_get_string(NULL);
 	originator_port = packet_get_int();
-	packet_done();
+	packet_check_eom();
 
 	debug("client_request_forwarded_tcpip: listen %s port %d, originator %s port %d",
 	    listen_address, listen_port, originator_address, originator_port);
@@ -1072,16 +1141,12 @@ client_request_forwarded_tcpip(const char *request_type, int rchan)
 	    SSH_CHANNEL_CONNECTING, sock, sock, -1,
 	    CHAN_TCP_WINDOW_DEFAULT, CHAN_TCP_WINDOW_DEFAULT, 0,
 	    xstrdup(originator_address), 1);
-	if (c == NULL) {
-		error("client_request_forwarded_tcpip: channel_new failed");
-		close(sock);
-	}
 	xfree(originator_address);
 	xfree(listen_address);
 	return c;
 }
 
-static Channel*
+static Channel *
 client_request_x11(const char *request_type, int rchan)
 {
 	Channel *c = NULL;
@@ -1101,7 +1166,7 @@ client_request_x11(const char *request_type, int rchan)
 	} else {
 		originator_port = packet_get_int();
 	}
-	packet_done();
+	packet_check_eom();
 	/* XXX check permission */
 	debug("client_request_x11: request from %s %d", originator,
 	    originator_port);
@@ -1113,15 +1178,11 @@ client_request_x11(const char *request_type, int rchan)
 	    SSH_CHANNEL_X11_OPEN, sock, sock, -1,
 	    CHAN_TCP_WINDOW_DEFAULT, CHAN_X11_PACKET_DEFAULT, 0,
 	    xstrdup("x11"), 1);
-	if (c == NULL) {
-		error("client_request_x11: channel_new failed");
-		close(sock);
-	}
 	c->force_drain = 1;
 	return c;
 }
 
-static Channel*
+static Channel *
 client_request_agent(const char *request_type, int rchan)
 {
 	Channel *c = NULL;
@@ -1139,24 +1200,18 @@ client_request_agent(const char *request_type, int rchan)
 	    SSH_CHANNEL_OPEN, sock, sock, -1,
 	    CHAN_X11_WINDOW_DEFAULT, CHAN_TCP_WINDOW_DEFAULT, 0,
 	    xstrdup("authentication agent connection"), 1);
-	if (c == NULL) {
-		error("client_request_agent: channel_new failed");
-		close(sock);
-	}
 	c->force_drain = 1;
 	return c;
 }
 
 /* XXXX move to generic input handler */
 static void
-client_input_channel_open(int type, int plen, void *ctxt)
+client_input_channel_open(int type, u_int32_t seq, void *ctxt)
 {
 	Channel *c = NULL;
 	char *ctype;
-	u_int len;
 	int rchan;
-	int rmaxpack;
-	int rwindow;
+	u_int rmaxpack, rwindow, len;
 
 	ctype = packet_get_string(&len);
 	rchan = packet_get_int();
@@ -1201,7 +1256,7 @@ client_input_channel_open(int type, int plen, void *ctxt)
 	xfree(ctype);
 }
 static void
-client_input_channel_req(int type, int plen, void *ctxt)
+client_input_channel_req(int type, u_int32_t seq, void *ctxt)
 {
 	Channel *c = NULL;
 	int id, reply, success = 0;
@@ -1226,7 +1281,7 @@ client_input_channel_req(int type, int plen, void *ctxt)
 	} else if (strcmp(rtype, "exit-status") == 0) {
 		success = 1;
 		exit_status = packet_get_int();
-		packet_done();
+		packet_check_eom();
 	}
 	if (reply) {
 		packet_start(success ?
@@ -1236,11 +1291,30 @@ client_input_channel_req(int type, int plen, void *ctxt)
 	}
 	xfree(rtype);
 }
+static void
+client_input_global_request(int type, u_int32_t seq, void *ctxt)
+{
+	char *rtype;
+	int want_reply;
+	int success = 0;
+
+	rtype = packet_get_string(NULL);
+	want_reply = packet_get_char();
+	debug("client_input_global_request: rtype %s want_reply %d", rtype, want_reply);
+	if (want_reply) {
+		packet_start(success ?
+		    SSH2_MSG_REQUEST_SUCCESS : SSH2_MSG_REQUEST_FAILURE);
+		packet_send();
+		packet_write_wait();
+	}
+	xfree(rtype);
+}
 
 static void
 client_init_dispatch_20(void)
 {
 	dispatch_init(&dispatch_protocol_error);
+
 	dispatch_set(SSH2_MSG_CHANNEL_CLOSE, &channel_input_oclose);
 	dispatch_set(SSH2_MSG_CHANNEL_DATA, &channel_input_data);
 	dispatch_set(SSH2_MSG_CHANNEL_EOF, &channel_input_ieof);
@@ -1250,9 +1324,14 @@ client_init_dispatch_20(void)
 	dispatch_set(SSH2_MSG_CHANNEL_OPEN_FAILURE, &channel_input_open_failure);
 	dispatch_set(SSH2_MSG_CHANNEL_REQUEST, &client_input_channel_req);
 	dispatch_set(SSH2_MSG_CHANNEL_WINDOW_ADJUST, &channel_input_window_adjust);
+	dispatch_set(SSH2_MSG_GLOBAL_REQUEST, &client_input_global_request);
 
 	/* rekeying */
 	dispatch_set(SSH2_MSG_KEXINIT, &kex_input_kexinit);
+
+	/* global request reply messages */
+	dispatch_set(SSH2_MSG_REQUEST_FAILURE, &client_global_request_reply);
+	dispatch_set(SSH2_MSG_REQUEST_SUCCESS, &client_global_request_reply);
 }
 static void
 client_init_dispatch_13(void)

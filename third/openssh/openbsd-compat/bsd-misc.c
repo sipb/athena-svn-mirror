@@ -24,7 +24,7 @@
 
 #include "includes.h"
 
-RCSID("$Id: bsd-misc.c,v 1.1.1.2 2002-02-13 00:07:49 zacheiss Exp $");
+RCSID("$Id: bsd-misc.c,v 1.1.1.3 2003-02-05 19:03:30 zacheiss Exp $");
 
 char *get_progname(char *argv0)
 {
@@ -93,9 +93,39 @@ int utimes(char *filename, struct timeval *tvp)
 {
 	struct utimbuf ub;
 
-	ub.actime = tvp->tv_sec;
-	ub.modtime = tvp->tv_usec;
+	ub.actime = tvp[0].tv_sec;
+	ub.modtime = tvp[1].tv_sec;
 	
 	return(utime(filename, &ub));
 }
 #endif 
+
+#ifndef HAVE_TRUNCATE
+int truncate (const char *path, off_t length)
+{
+	int fd, ret, saverrno;
+
+	fd = open(path, O_WRONLY);
+	if (fd < 0)
+		return -1;
+
+	ret = ftruncate(fd, length);
+	saverrno = errno;
+	(void) close (fd);
+	if (ret == -1)
+		errno = saverrno;
+	return(ret);
+}
+#endif /* HAVE_TRUNCATE */
+
+#if !defined(HAVE_SETGROUPS) && defined(SETGROUPS_NOOP)
+/*
+ * Cygwin setgroups should be a noop.
+ */
+int
+setgroups(size_t size, const gid_t *list)
+{
+	return 0;
+}
+#endif 
+

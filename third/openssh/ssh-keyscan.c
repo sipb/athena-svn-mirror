@@ -7,14 +7,9 @@
  */
 
 #include "includes.h"
-RCSID("$OpenBSD: ssh-keyscan.c,v 1.30 2001/10/08 19:05:05 markus Exp $");
+RCSID("$OpenBSD: ssh-keyscan.c,v 1.40 2002/07/06 17:47:58 stevesk Exp $");
 
-#if defined(HAVE_SYS_QUEUE_H) && !defined(HAVE_BOGUS_SYS_QUEUE_H)
-#include <sys/queue.h>
-#else
-#include "openbsd-compat/fake-queue.h"
-#endif
-#include <errno.h>
+#include "openbsd-compat/sys-queue.h"
 
 #include <openssl/bn.h>
 
@@ -121,7 +116,8 @@ Linebuf_alloc(const char *filename, void (*errfun) (const char *,...))
 
 	if (!(lb = malloc(sizeof(*lb)))) {
 		if (errfun)
-			(*errfun) ("linebuf (%s): malloc failed\n", lb->filename);
+			(*errfun) ("linebuf (%s): malloc failed\n",
+			    filename ? filename : "(stdin)");
 		return (NULL);
 	}
 	if (filename) {
@@ -176,13 +172,14 @@ static char *
 Linebuf_getline(Linebuf * lb)
 {
 	int n = 0;
+	void *p;
 
 	lb->lineno++;
 	for (;;) {
 		/* Read a line */
 		if (!fgets(&lb->buf[n], lb->size - n, lb->stream)) {
 			if (ferror(lb->stream) && lb->errfun)
-				(*lb->errfun) ("%s: %s\n", lb->filename,
+				(*lb->errfun)("%s: %s\n", lb->filename,
 				    strerror(errno));
 			return (NULL);
 		}
@@ -195,17 +192,20 @@ Linebuf_getline(Linebuf * lb)
 		}
 		if (n != lb->size - 1) {
 			if (lb->errfun)
-				(*lb->errfun) ("%s: skipping incomplete last line\n",
+				(*lb->errfun)("%s: skipping incomplete last line\n",
 				    lb->filename);
 			return (NULL);
 		}
 		/* Double the buffer if we need more space */
-		if (!(lb->buf = realloc(lb->buf, (lb->size *= 2)))) {
+		lb->size *= 2;
+		if ((p = realloc(lb->buf, lb->size)) == NULL) {
+			lb->size /= 2;
 			if (lb->errfun)
-				(*lb->errfun) ("linebuf (%s): realloc failed\n",
+				(*lb->errfun)("linebuf (%s): realloc failed\n",
 				    lb->filename);
 			return (NULL);
 		}
+		lb->buf = p;
 	}
 }
 
@@ -234,6 +234,7 @@ fdlim_set(int lim)
 #if defined(HAVE_SETRLIMIT) && defined(RLIMIT_NOFILE)
 	struct rlimit rlfd;
 #endif
+
 	if (lim <= 0)
 		return (-1);
 #if defined(HAVE_SETRLIMIT) && defined(RLIMIT_NOFILE)
@@ -416,8 +417,8 @@ tcpconnect(char *host)
 static int
 conalloc(char *iname, char *oname, int keytype)
 {
-	int s;
 	char *namebase, *name, *namelist;
+	int s;
 
 	namebase = namelist = xstrdup(iname);
 
@@ -481,8 +482,8 @@ contouch(int s)
 static int
 conrecycle(int s)
 {
-	int ret;
 	con *c = &fdcon[s];
+	int ret;
 
 	ret = conalloc(c->c_namelist, c->c_output_name, c->c_keytype);
 	confree(s);
@@ -492,9 +493,10 @@ conrecycle(int s)
 static void
 congreet(int s)
 {
+	int remote_major, remote_minor, n = 0;
 	char buf[256], *cp;
+	char remote_version[sizeof buf];
 	size_t bufsiz;
-	int n = 0;
 	con *c = &fdcon[s];
 
 	bufsiz = sizeof(buf);
@@ -510,26 +512,32 @@ congreet(int s)
 		conrecycle(s);
 		return;
 	}
+	if (n == 0) {
+		error("%s: Connection closed by remote host", c->c_name);
+		conrecycle(s);
+		return;
+	}
 	if (*cp != '\n' && *cp != '\r') {
 		error("%s: bad greeting", c->c_name);
 		confree(s);
 		return;
 	}
 	*cp = '\0';
+	if (sscanf(buf, "SSH-%d.%d-%[^\n]\n",
+	    &remote_major, &remote_minor, remote_version) == 3)
+		compat_datafellows(remote_version);
+	else
+		datafellows = 0;
 	if (c->c_keytype != KT_RSA1) {
-		int remote_major, remote_minor;
-		char remote_version[sizeof buf];
-
-		if (sscanf(buf, "SSH-%d.%d-%[^\n]\n",
-		    &remote_major, &remote_minor, remote_version) == 3)
-			compat_datafellows(remote_version);
-		else
-			datafellows = 0;
 		if (!ssh2_capable(remote_major, remote_minor)) {
 			debug("%s doesn't support ssh2", c->c_name);
 			confree(s);
 			return;
 		}
+	} else if (remote_major != 1) {
+		debug("%s doesn't support ssh1", c->c_name);
+		confree(s);
+		return;
 	}
 	fprintf(stderr, "# %s %s\n", c->c_name, chop(buf));
 	n = snprintf(buf, sizeof buf, "SSH-%d.%d-OpenSSH-keyscan\r\n",
@@ -552,8 +560,8 @@ congreet(int s)
 static void
 conread(int s)
 {
-	int n;
 	con *c = &fdcon[s];
+	int n;
 
 	if (c->c_status == CS_CON) {
 		congreet(s);
@@ -592,13 +600,13 @@ conread(int s)
 static void
 conloop(void)
 {
-	fd_set *r, *e;
 	struct timeval seltime, now;
-	int i;
+	fd_set *r, *e;
 	con *c;
+	int i;
 
 	gettimeofday(&now, NULL);
-	c = tq.tqh_first;
+	c = TAILQ_FIRST(&tq);
 
 	if (c && (c->c_tv.tv_sec > now.tv_sec ||
 	    (c->c_tv.tv_sec == now.tv_sec && c->c_tv.tv_usec > now.tv_usec))) {
@@ -631,12 +639,12 @@ conloop(void)
 	xfree(r);
 	xfree(e);
 
-	c = tq.tqh_first;
+	c = TAILQ_FIRST(&tq);
 	while (c && (c->c_tv.tv_sec < now.tv_sec ||
 	    (c->c_tv.tv_sec == now.tv_sec && c->c_tv.tv_usec < now.tv_usec))) {
 		int s = c->c_fd;
 
-		c = c->c_link.tqe_next;
+		c = TAILQ_NEXT(c, c_link);
 		conrecycle(s);
 	}
 }
@@ -647,6 +655,8 @@ do_host(char *host)
 	char *name = strnnsep(&host, " \t\n");
 	int j;
 
+	if (name == NULL)
+		return;
 	for (j = KT_RSA1; j <= KT_RSA; j *= 2) {
 		if (get_keytypes & j) {
 			while (ncon >= MAXCON)
@@ -656,26 +666,26 @@ do_host(char *host)
 	}
 }
 
-static void
-fatal_callback(void *arg)
+void
+fatal(const char *fmt,...)
 {
+	va_list args;
+
+	va_start(args, fmt);
+	do_log(SYSLOG_LEVEL_FATAL, fmt, args);
+	va_end(args);
 	if (nonfatal_fatal)
 		longjmp(kexjmp, -1);
+	else
+		fatal_cleanup();
 }
 
 static void
 usage(void)
 {
-	fprintf(stderr, "Usage: %s [options] host ...\n",
+	fprintf(stderr, "usage: %s [-v46] [-p port] [-T timeout] [-f file]\n"
+	    "\t\t   [host | addrlist namelist] [...]\n",
 	    __progname);
-	fprintf(stderr, "Options:\n");
-	fprintf(stderr, "  -f file     Read hosts or addresses from file.\n");
-	fprintf(stderr, "  -p port     Connect to the specified port.\n");
-	fprintf(stderr, "  -t keytype  Specify the host key type.\n");
-	fprintf(stderr, "  -T timeout  Set connection timeout.\n");
-        fprintf(stderr, "  -v          Verbose; display verbose debugging messages.\n");
-        fprintf(stderr, "  -4          Use IPv4 only.\n");
-        fprintf(stderr, "  -6          Use IPv6 only.\n");
 	exit(1);
 }
 
@@ -707,9 +717,11 @@ main(int argc, char **argv)
 			}
 			break;
 		case 'T':
-			timeout = atoi(optarg);
-			if (timeout <= 0)
+			timeout = convtime(optarg);
+			if (timeout == -1 || timeout == 0) {
+				fprintf(stderr, "Bad timeout '%s'\n", optarg);
 				usage();
+			}
 			break;
 		case 'v':
 			if (!debug_flag) {
@@ -742,7 +754,7 @@ main(int argc, char **argv)
 					get_keytypes |= KT_RSA;
 					break;
 				case KEY_UNSPEC:
-					fatal("unknown key type %s\n", tname);
+					fatal("unknown key type %s", tname);
 				}
 				tname = strtok(NULL, ",");
 			}
@@ -762,7 +774,6 @@ main(int argc, char **argv)
 		usage();
 
 	log_init("ssh-keyscan", log_level, SYSLOG_FACILITY_USER, 1);
-	fatal_add_cleanup(fatal_callback, NULL);
 
 	maxfd = fdlim_get(1);
 	if (maxfd < 0)

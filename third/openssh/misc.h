@@ -1,4 +1,4 @@
-/*	$OpenBSD: misc.h,v 1.10 2001/06/26 17:27:24 markus Exp $	*/
+/*	$OpenBSD: misc.h,v 1.12 2002/03/19 10:49:35 markus Exp $	*/
 
 /*
  * Author: Tatu Ylonen <ylo@cs.hut.fi>
@@ -16,6 +16,7 @@ char	*chop(char *);
 char	*strdelim(char **);
 void	 set_nonblock(int);
 void	 unset_nonblock(int);
+void	 set_nodelay(int);
 int	 a2port(const char *);
 char	*cleanhostname(char *);
 char	*colon(char *);
@@ -25,9 +26,9 @@ struct passwd *pwcopy(struct passwd *);
 
 typedef struct arglist arglist;
 struct arglist {
-        char    **list;
-        int     num;
-        int     nalloc;
+	char    **list;
+	int     num;
+	int     nalloc;
 };
 void	 addargs(arglist *, char *, ...) __attribute__((format(printf, 2, 3)));
 
