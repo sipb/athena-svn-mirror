@@ -220,8 +220,9 @@ fi
 # fail to autonegotiate.  Twiddling the eeprom settings on the card
 # works around this problem, so do that for now.
 if /sbin/lspci -n | grep -q 10b7:9200; then
-  if /etc/athena/vortex-diag | grep -q "Would write"; then
-    /etc/athena/vortex-diag -w > /dev/null
+  if /etc/athena/vortex-diag -x 2 | grep -q "Would write"; then
+    /etc/athena/vortex-diag -w -x 2 > /dev/null
+    mii-tool -R
   fi
 fi
 
