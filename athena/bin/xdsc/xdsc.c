@@ -58,6 +58,7 @@ void		Update(), Stub();
 void		PrintEvent();
 int		simplemode = 0;
 int		edscversion;
+Boolean		nocache;
 
 /*
 ** External functions
@@ -219,6 +220,7 @@ char *argv[];
 
 	oldpath = getenv("XFILESEARCHPATH");
 
+
 #ifdef mips
 	if (!oldpath) {
 		newpath = (char *) malloc (100);
@@ -365,7 +367,6 @@ BuildUserInterface()
 			args,
 			n);
 
-#ifdef LOGGING_ON
 /*
 ** Cheezy hack...Set borderwidth of pane to zero to turn off logging.
 */
@@ -381,7 +382,6 @@ BuildUserInterface()
 		XtSetArg(args[n], XtNborderWidth, 0);		n++;
 		XtSetValues (paneW, args, n);
 	}
-#endif
 
 	n = 0;
 	topboxW = XtCreateManagedWidget(
@@ -676,19 +676,19 @@ XtPointer	call_data;
 
 	case 0:
 		if (TransactionNum(CURRENT) < TransactionNum(LAST))
-			GoToTransaction(TransactionNum(NEXT), True);
+			GoToTransaction(NEXT, True);
 		else 
-			GoToTransaction(TransactionNum(CURRENT), True);
+			GoToTransaction(CURRENT, True);
 		break;
 
 	case 1:
-		GoToTransaction(TransactionNum(PREV), True);
+		GoToTransaction(PREV, True);
 		break;
 	case 2:
-		GoToTransaction(TransactionNum(NREF), True);
+		GoToTransaction(NREF, True);
 		break;
 	case 3:
-		GoToTransaction(TransactionNum(PREF), True);
+		GoToTransaction(PREF, True);
 		break;
 	case 4:
 		switch (entrynum) {
@@ -696,10 +696,10 @@ XtPointer	call_data;
 			GetTransactionNum();
 			break;
 		case 1:
-			GoToTransaction(TransactionNum(FIRST), True);
+			GoToTransaction(FIRST, True);
 			break;
 		case 2:
-			GoToTransaction(TransactionNum(LAST), True);
+			GoToTransaction(LAST, True);
 			break;
 		}
 		break;
@@ -717,7 +717,7 @@ XtPointer	call_data;
 /*
 **  This makes the buttons update to reflect the new transaction.
 */
-		GoToTransaction(TransactionNum(CURRENT), False);
+		GoToTransaction(CURRENT, False);
 		break;
 	case 6:
 		switch (entrynum) {
@@ -1083,6 +1083,8 @@ CheckEdscVersion()
 		fprintf (stderr, "Caution...using edsc version %1.1f.  ",(float) edscversion/10.0);
 		fprintf (stderr, "Should be using at least 2.4.\n");
 	}
+
+	nocache = (edscversion >= 25) ? True : False;
 }
 
 ParseMeetingsFile()
