@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/list.c,v $
- *	$Id: list.c,v 1.8 1992-01-28 20:40:00 lwvanels Exp $
+ *	$Id: list.c,v 1.9 1992-02-11 18:15:30 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/list.c,v 1.8 1992-01-28 20:40:00 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/list.c,v 1.9 1992-02-11 18:15:30 lwvanels Exp $";
 #endif
 #endif
 
@@ -67,6 +67,9 @@ OListQueue(Request,list,queues,topics,users,stati)
     }
 
   read_response(fd, &status);
+
+  if (status == PERMISSION_DENIED)
+    return(status);
 
   if(!is_option(Request->options,LIST_PERSONAL))
     {
