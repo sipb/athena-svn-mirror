@@ -7,10 +7,15 @@ CFLAGS=-O
 TAGSFILE=tags
 
 SRCS= etherxdr.c mountxdr.c rquotaxdr.c rstatxdr.c rusersxdr.c rwallxdr.c \
-      sprayxdr.c util.c yppasswdxdr.c
+      sprayxdr.c util.c yppasswdxdr.c \
+      rcquotaxdr.c
 OBJS= etherxdr.o mountxdr.o rquotaxdr.o rstatxdr.o rusersxdr.o rwallxdr.o \
-      sprayxdr.o util.o yppasswdxdr.o
-HDRS= ether.h mount.h rwall.h rquota.h rstat.h rusers.h spray.h yppasswd.h
+      sprayxdr.o util.o yppasswdxdr.o \
+      rcquotaxdr.o
+HDRS= ether.h mount.h rwall.h rquota.h rstat.h rusers.h spray.h yppasswd.h \
+      rcquota.h
+
+all:	librpcsvc.a
 
 librpcsvc.a: $(OBJS)
 	ar cr librpcsvc.a $(OBJS)
