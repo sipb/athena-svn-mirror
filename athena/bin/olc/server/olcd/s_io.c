@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v $
- *	$Id: s_io.c,v 1.18 1990-12-05 21:21:18 lwvanels Exp $
+ *	$Id: s_io.c,v 1.19 1991-02-26 19:54:04 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.18 1990-12-05 21:21:18 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/s_io.c,v 1.19 1991-02-26 19:54:04 lwvanels Exp $";
 #endif
 #endif
 
@@ -108,7 +108,7 @@ read_request(fd, request)
     }
 
 #ifdef KERBEROS
-  if (read(fd, (char *) &(request->kticket.length), sizeof(int)) != 
+  if (sread(fd, (char *) &(request->kticket.length), sizeof(int)) != 
       sizeof(int)) 
     {
       log_error("error on read: klength failure");
@@ -123,7 +123,7 @@ read_request(fd, request)
 
   ltr = MIN(sizeof(unsigned char)*request->kticket.length,
 	    sizeof(request->kticket.dat));
-  if (read(fd, (char *) request->kticket.dat,ltr) != ltr) 
+  if (sread(fd, (char *) request->kticket.dat,ltr) != ltr) 
     {
       log_error("error on read: kdata failure");
       return(ERROR);
