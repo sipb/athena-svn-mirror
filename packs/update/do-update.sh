@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: do-update.sh,v 1.1 1996-12-27 22:01:15 ghudson Exp $
+# $Id: do-update.sh,v 1.2 1997-01-02 09:54:00 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -172,21 +172,6 @@ sgi)
 		rm -f /etc/athena/.rc.conf.sync
 	fi
 	track -v -F /srvd -T / -d -W /srvd/usr/athena/lib
-	;;
-esac
-
-# XXX should apply to all platforms, need to pay attention to Sun when
-# generalizing.  (Also, this is a new way of dealing with Athena additions
-# to vendor files; it may not be such a great idea.)
-case "$HOSTTYPE" in
-sgi)
-	echo "Updating /etc/services (old services is in /tmp/services.old)"
-	cp /etc/services /tmp/services.old
-	(sed -e '/Athena additions - BEGIN/,/Athena additions - END/d' \
-		/tmp/services.old; \
-		echo "# Athena additions - BEGIN"; \
-		cat $LIBDIR/services.add; \
-		echo "# Athena additions - END") > /etc/services
 	;;
 esac
 
