@@ -16,8 +16,16 @@
  *
  * MotifUtils:   Utilities for use with Motif and UIL
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/Mu/MuRegisterWidget.c,v $
- * $Author: vanharen $
+ * $Author: cfields $
  * $Log: not supported by cvs2svn $
+ * Revision 1.4  1990/09/07  18:03:29  vanharen
+ * Changed MuGetWidget to MuLookupWidget since the include file "Mu.h"
+ * defines MuGetWidget(w) as MuLookupWidget(w).  I think the intent was to
+ * rename the function, but provide the macro for backwards compatibility.
+ *
+ * Also, modified MuLookupWidget to return NULL if the hash table hasn't
+ * been initialized yet.
+ *
  * Revision 1.3  90/02/13  14:26:54  djf
  * fixed bad buffer declaration in MuRegisterWidget()
  * 
@@ -43,7 +51,7 @@
 
 #include "Mu.h"
 #include <stdio.h>
-
+#include <stdlib.h>
 
 /*
  *
@@ -93,7 +101,6 @@ struct hash *create_hash(size)
 int size;
 {
     struct hash *h;
-    extern char * malloc();
 
     h = (struct hash *) malloc(sizeof(struct hash));
     h->size = size;
