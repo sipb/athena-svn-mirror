@@ -1,3 +1,30 @@
+2003-07-28  Mike Kestner  <mkestner@ximian.com>
+
+	* configure.in : bump the so versioning for api removal
+	* gal/Makefile.am : remove the e-paned dir from the build
+	* gal/widgets/e-hscrollbar.* : kill
+	* gal/widgets/e-vscrollbar.* : kill
+	* gal/widgets/e-scroll-frame.* : kill
+
+2003-07-23  Dan Winship  <danw@ximian.com>
+
+	* gal/e-text/e-text.h: add missing e_text_copy_clipboard()
+	prototype
+
+2003-07-09  Mike Kestner  <mkestner@ximian.com>
+
+	* gal/util/e-util.c (e_utf8_strftime): check null after conversions.
+	(e_utf8_strftime_fix_am_pm): ditto.  fixes [44904].
+
+2003-07-04  Chris Toshok  <toshok@ximian.com>
+
+	* gal/widgets/e-reflow.c (e_reflow_dispose): make sure we don't
+	unref the sorter more than once.
+
+2003-06-30  Dan Winship  <danw@ximian.com>
+
+	* gal/widgets/e-reflow.c (e_reflow_dispose): unref the sorter
+
 2003-06-25  Mike Kestner  <mkestner@ximian.com>
 
 	* configure.in : releasing 1.99.8

@@ -341,4 +341,4 @@ e_text_model_uri_new (void)
 }
 
 
-/* $Id: e-text-model-uri.c,v 1.1.2.1 2003-07-14 16:58:59 ghudson Exp $ */
+/* $Id: e-text-model-uri.c,v 1.1.2.2 2003-08-13 23:32:13 ghudson Exp $ */

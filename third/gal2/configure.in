@@ -1,6 +1,6 @@
 -*- mode: m4 -*-
 AC_PREREQ(2.52)
-AC_INIT(gal, 1.99.8,
+AC_INIT(gal, 1.99.9,
 	http://bugzilla.ximian.com/enter_bug.cgi?product=GAL)
 
 AM_CONFIG_HEADER(config.h)
@@ -21,20 +21,20 @@ GAL_API_VERSION=2.0
 
 dnl libtool versioning
 
-dnl gal-1.99.8 = 1
+dnl gal-1.99.9 = 0
 dnl increment if any interfaces have been added; set to 0
 dnl  if any interfaces have been removed. removal has 
 dnl  precedence over adding, so set to 0 if both happened.
-GAL_AGE=1
+GAL_AGE=0
 
-dnl gal-1.99.8 = 1
+dnl gal-1.99.9 = 0
 dnl increment any time the source changes; set to 
 dnl  0 if you increment CURRENT
-GAL_REVISION=1
+GAL_REVISION=0
 
-dnl gal-1.99.8 = 4
+dnl gal-1.99.9 = 5
 dnl increment if the interface has additions, changes, removals.
-GAL_CURRENT=4
+GAL_CURRENT=5
 
 AC_SUBST(GAL_API_VERSION)
 AC_SUBST(GAL_CURRENT)
@@ -289,7 +289,6 @@ gal/a11y/e-table/Makefile
 gal/util/Makefile
 gal/widgets/Makefile
 gal/e-text/Makefile
-gal/e-paned/Makefile
 gal/e-table/Makefile
 gal/menus/Makefile
 gal/shortcut-bar/Makefile

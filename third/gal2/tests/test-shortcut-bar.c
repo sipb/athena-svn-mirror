@@ -28,7 +28,7 @@
 #include <gnome.h>
 
 #include <gal/shortcut-bar/e-shortcut-bar.h>
-#include <gal/e-paned/e-hpaned.h>
+#include <gtk/gtkhpaned.h>
 
 #define NUM_SHORTCUT_TYPES 5
 gchar *shortcut_types[NUM_SHORTCUT_TYPES] = {
@@ -118,7 +118,7 @@ main (int argc, char *argv[])
 	gtk_signal_connect (GTK_OBJECT (window), "delete-event",
 			    GTK_SIGNAL_FUNC (quit), NULL);
 
-	hpaned = e_hpaned_new ();
+	hpaned = gtk_hpaned_new ();
 	gnome_app_set_contents (GNOME_APP (window), hpaned);
 	gtk_widget_show (hpaned);
 
@@ -127,7 +127,7 @@ main (int argc, char *argv[])
 	shortcut_bar = e_shortcut_bar_new ();
 	e_shortcut_bar_set_model (E_SHORTCUT_BAR (shortcut_bar),
 				  shortcut_model);
-	e_paned_pack1 (E_PANED (hpaned), shortcut_bar, FALSE, TRUE);
+	gtk_paned_pack1 (GTK_PANED (hpaned), shortcut_bar, FALSE, TRUE);
 	gtk_widget_show (shortcut_bar);
 
 #if 0
@@ -153,11 +153,10 @@ main (int argc, char *argv[])
 	gtk_container_set_border_width (GTK_CONTAINER (shortcut_bar), 4);
 #endif
 
-	e_paned_set_position (E_PANED (hpaned), 100);
-	/*e_paned_set_gutter_size (E_PANED (hpaned), 12);*/
+	gtk_paned_set_position (GTK_PANED (hpaned), 100);
 
 	vbox = gtk_vbox_new (FALSE, 0);
-	e_paned_pack2 (E_PANED (hpaned), vbox, TRUE, TRUE);
+	gtk_paned_pack2 (GTK_PANED (hpaned), vbox, TRUE, TRUE);
 	gtk_widget_show (vbox);
 
 

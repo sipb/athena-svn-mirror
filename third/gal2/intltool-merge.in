@@ -3,7 +3,7 @@
 #
 #  The Intltool Message Merger
 #
-#  Copyright (C) 2000, 2002 Free Software Foundation.
+#  Copyright (C) 2000, 2003 Free Software Foundation.
 #  Copyright (C) 2000, 2001 Eazel, Inc
 #
 #  Intltool is free software; you can redistribute it and/or
@@ -34,7 +34,7 @@
 ## Release information
 my $PROGRAM = "intltool-merge";
 my $PACKAGE = "intltool";
-my $VERSION = "0.25";
+my $VERSION = "0.26";
 
 ## Loaded modules
 use strict; 
@@ -79,6 +79,7 @@ my $OUTFILE;
 
 my %po_files_by_lang = ();
 my %translations = ();
+my $iconv = $ENV{"INTLTOOL_ICONV"} || "iconv";
 
 # Use this instead of \w for XML files to handle more possible characters.
 my $w = "[-A-Za-z0-9._:]";
@@ -186,7 +187,7 @@ sub print_help
 ## Sub for printing error messages
 sub print_error
 {
-    print "Try `${PROGRAM} --help' for more information.\n";
+    print STDERR "Try `${PROGRAM} --help' for more information.\n";
     exit;
 }
 
@@ -226,7 +227,7 @@ sub gather_po_files
 sub get_local_charset
 {
     my ($encoding) = @_;
-    my $alias_file = $ENV{"G_CHARSET_ALIAS"} || "/usr/lib/charset.alias";
+    my $alias_file = $ENV{"G_CHARSET_ALIAS"} || "/usr/local/lib/charset.alias";
 
     # seek character encoding aliases in charset.alias (glib)
 
@@ -265,11 +266,14 @@ sub get_po_encoding
 
     if (!$encoding) 
     {
-        print "Warning: no encoding found in $in_po_file. Assuming ISO-8859-1\n";
+        print STDERR "Warning: no encoding found in $in_po_file. Assuming ISO-8859-1\n" unless $QUIET_ARG;
         $encoding = "ISO-8859-1";
     }
 
-    $encoding = get_local_charset($encoding);
+    system ("$iconv -f $encoding -t UTF-8 </dev/null 2>/dev/null");
+    if ($?) {
+	$encoding = get_local_charset($encoding);
+    }
 
     return $encoding
 }
@@ -303,6 +307,8 @@ sub get_newest_po_age
 	my $file_age = -M $file;
 	$newest_age = $file_age if !$newest_age || $file_age < $newest_age;
     }
+
+    $newest_age = 0 if !$newest_age;
 
     return $newest_age;
 }
@@ -364,7 +370,8 @@ sub create_translation_database
             } 
             else 
             {
-                my $iconv = $ENV{"INTLTOOL_ICONV"} || "iconv";
+		print STDERR "WARNING: $po_file is not in UTF-8 but $encoding, converting...\n" unless $QUIET_ARG;;
+
                 open PO_FILE, "$iconv -f $encoding -t UTF-8 $po_file|";	
             }
         } 
@@ -456,6 +463,11 @@ sub entity_decode
 
     return $_;
 }
+ 
+# entity_encode: (string)
+#
+# Encode the given string to XML format (encode '<' etc). It also 
+# encodes high bit if not in UTF-8 mode.
 
 sub entity_encode
 {
@@ -469,6 +481,7 @@ sub entity_encode
     } 
     else 
     {
+	# with UTF-8 we only encode minimalistic
         return join ('', map (&entity_encode_int_minimalist, @list_of_chars));
     }
 }
