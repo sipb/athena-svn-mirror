@@ -5,7 +5,7 @@
 /**/#
 /**/#	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/Imakefile,v $
 /**/#	$Author: jtkohl $
-/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/Imakefile,v 1.6 1989-09-18 14:24:28 jtkohl Exp $
+/**/#	$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/server/Imakefile,v 1.7 1989-10-18 13:07:03 jtkohl Exp $
 /**/#
 
 #if defined(DO_SYSLOG) && defined(SYSLOG_COMPAT42)
@@ -67,6 +67,7 @@ error_table_noprof(zsrv_err)
 
 src:: zsrv_err.h
 
+depend:: zsrv_err.h
 
 install::
 	-mkdir ${DESTDIR}${ACLDIR}
