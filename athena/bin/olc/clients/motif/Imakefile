@@ -1,5 +1,5 @@
 #
-# $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/Imakefile,v 1.3 1991-04-18 21:52:12 lwvanels Exp $
+# $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/Imakefile,v 1.4 1991-06-29 18:37:43 lwvanels Exp $
 # $Author: lwvanels $
 #
 # For copying and distribution information,
@@ -32,9 +32,11 @@ NormalProgramTarget(xolc,$(OBJS),$(LOCAL_LIBRARIES),$(LOCAL_LIBRARIES),$(SYS_LIB
 SaberProgramTarget(xolc,$(SRCS),$(OBJS),$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
 
 #ifdef InstallAltLoc
-InstallProgram(xolc,/mit/olcdev/@sys)
+InstallProgram(xolc,$(DESTDIR)/usr/athena/bin)
+InstallNonExec(Xolc,$(DESTDIR)/usr/athena/lib/X11/app-defaults)
 #else
-InstallProgram(xolc,$(DESTDIR)/usr/athena/xolc)
+InstallProgram(xolc,$(DESTDIR)/usr/athena)
+InstallNonExec(Xolc,$(DESTDIR)/usr/lib/X11/app-defaults)
 #endif
 
 DependTarget()
