@@ -1,0 +1,41 @@
+
+README.WIN
+
+
+BUILDING:
+
+Directions for building aklog under Windows NT for use with the Transarc
+Windows NT AFS client:
+
+1) You will need the krb524 DLL for windows. I don't currently know of an
+offical distribution site for this. I got my copy from Criag Huckabee
+(huck@cs.wisc.edu). Get a copy and build it.
+
+2) In the afs-krb5/src directory make the aklog.zip file by running:
+	make -f make.win zipfile
+
+3) Copy aklog.zip over to a windows box that has a build environment. I
+used Microsoft's Visual C++ 5.0. Unzip it into a directory of your choice.
+
+4) Edit make.win so that the compiler can find the Kerberos libraries and
+header files, the krb524 library and header file and the AFS library and
+header files.
+
+5) Build it:
+	make /f make.win
+
+6) Make sure the Kerberos, krb524 and AFS DLLs are in your path.
+
+7) Run it. aklog.exe should run silently unless an error is
+encountered in which case it will pop a dialog box. Running it with
+the '-d' option will cause it to pop up dialog boxes for debugging.
+
+
+LIMITATIONS:
+
+Cross-cell authentication works, however path mode (e.g. 'aklog -p
+/afs/ncsa.uiuc.edu' or 'aklog /afs/ncsa.uiuc.edu') does not work. This
+is mainly because the Windows AFS header files are missing the
+ViceIoctl stuff (there may be more missing, that just happened to be
+the first thing I ran into). Use cell mode (e.g. 'aklog
+ncsa.uiuc.edu') for cross-cell.

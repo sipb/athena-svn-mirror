@@ -1,0 +1,572 @@
+# DO NOT DELETE
+
+xlock.o: /usr/include/signal.h /usr/include/sys/signal.h
+xlock.o: /usr/include/sys/siginfo.h /usr/include/stdarg.h
+xlock.o: /usr/include/errno.h /usr/include/sys/errno.h
+xlock.o: /usr/include/sys/types.h /usr/include/sgidefs.h
+xlock.o: /usr/include/sys/bsd_types.h /usr/include/sys/select.h
+xlock.o: /usr/include/sys/time.h xlock.h /afs/cmf/@sys/include/X11/Xlib.h
+xlock.o: /afs/cmf/@sys/include/X11/X.h /afs/cmf/@sys/include/X11/Xfuncproto.h
+xlock.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+xlock.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+xlock.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+xlock.o: /usr/include/unistd.h /afs/cmf/@sys/include/X11/Xresource.h
+xlock.o: /usr/include/stdlib.h /usr/include/memory.h /usr/include/stdio.h
+xlock.o: /usr/include/dirent.h /usr/include/sys/dirent.h mode.h
+xlock.o: /afs/cmf/@sys/include/X11/cursorfont.h
+xlock.o: /afs/cmf/@sys/include/X11/Xatom.h vroot.h
+passwd.o: xlock.h /afs/cmf/@sys/include/X11/Xlib.h /usr/include/sys/types.h
+passwd.o: /usr/include/sgidefs.h /usr/include/sys/bsd_types.h
+passwd.o: /usr/include/sys/select.h /afs/cmf/@sys/include/X11/X.h
+passwd.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+passwd.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+passwd.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+passwd.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+passwd.o: /usr/include/unistd.h /usr/include/sys/time.h
+passwd.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+passwd.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+passwd.o: /usr/include/sys/dirent.h mode.h /usr/include/pwd.h
+passwd.o: /afs/cmf/@sys/include/krb5.h /usr/include/errno.h
+passwd.o: /usr/include/sys/errno.h /usr/include/sys/param.h
+passwd.o: /usr/include/sys/signal.h
+resource.o: xlock.h /afs/cmf/@sys/include/X11/Xlib.h /usr/include/sys/types.h
+resource.o: /usr/include/sgidefs.h /usr/include/sys/bsd_types.h
+resource.o: /usr/include/sys/select.h /afs/cmf/@sys/include/X11/X.h
+resource.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+resource.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+resource.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+resource.o: /usr/include/string.h /usr/include/fcntl.h
+resource.o: /usr/include/sys/fcntl.h /usr/include/unistd.h
+resource.o: /usr/include/sys/time.h /afs/cmf/@sys/include/X11/Xresource.h
+resource.o: /usr/include/stdlib.h /usr/include/memory.h /usr/include/stdio.h
+resource.o: /usr/include/dirent.h /usr/include/sys/dirent.h mode.h
+resource.o: /usr/include/netdb.h /usr/include/math.h /usr/include/ctype.h
+utils.o: xlock.h /afs/cmf/@sys/include/X11/Xlib.h /usr/include/sys/types.h
+utils.o: /usr/include/sgidefs.h /usr/include/sys/bsd_types.h
+utils.o: /usr/include/sys/select.h /afs/cmf/@sys/include/X11/X.h
+utils.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+utils.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+utils.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+utils.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+utils.o: /usr/include/unistd.h /usr/include/sys/time.h
+utils.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+utils.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+utils.o: /usr/include/sys/dirent.h mode.h /usr/include/ctype.h
+utils.o: /afs/cmf/@sys/include/X11/xpm.h ras.h
+mode.o: /usr/include/ctype.h xlock.h /afs/cmf/@sys/include/X11/Xlib.h
+mode.o: /usr/include/sys/types.h /usr/include/sgidefs.h
+mode.o: /usr/include/sys/bsd_types.h /usr/include/sys/select.h
+mode.o: /afs/cmf/@sys/include/X11/X.h /afs/cmf/@sys/include/X11/Xfuncproto.h
+mode.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+mode.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+mode.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+mode.o: /usr/include/unistd.h /usr/include/sys/time.h
+mode.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+mode.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+mode.o: /usr/include/sys/dirent.h mode.h
+ras.o: /usr/include/stdio.h /usr/include/stdlib.h /usr/include/sgidefs.h
+ras.o: /usr/include/time.h /usr/include/sys/types.h
+ras.o: /usr/include/sys/bsd_types.h /usr/include/sys/select.h xlock.h
+ras.o: /afs/cmf/@sys/include/X11/Xlib.h /afs/cmf/@sys/include/X11/X.h
+ras.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+ras.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+ras.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+ras.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+ras.o: /usr/include/unistd.h /usr/include/sys/time.h
+ras.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/memory.h
+ras.o: /usr/include/dirent.h /usr/include/sys/dirent.h mode.h ras.h
+xbm.o: xlock.h /afs/cmf/@sys/include/X11/Xlib.h /usr/include/sys/types.h
+xbm.o: /usr/include/sgidefs.h /usr/include/sys/bsd_types.h
+xbm.o: /usr/include/sys/select.h /afs/cmf/@sys/include/X11/X.h
+xbm.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+xbm.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+xbm.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+xbm.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+xbm.o: /usr/include/unistd.h /usr/include/sys/time.h
+xbm.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+xbm.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+xbm.o: /usr/include/sys/dirent.h mode.h
+color.o: xlock.h /afs/cmf/@sys/include/X11/Xlib.h /usr/include/sys/types.h
+color.o: /usr/include/sgidefs.h /usr/include/sys/bsd_types.h
+color.o: /usr/include/sys/select.h /afs/cmf/@sys/include/X11/X.h
+color.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+color.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+color.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+color.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+color.o: /usr/include/unistd.h /usr/include/sys/time.h
+color.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+color.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+color.o: /usr/include/sys/dirent.h mode.h /usr/include/math.h
+ant.o: xlock.h /afs/cmf/@sys/include/X11/Xlib.h /usr/include/sys/types.h
+ant.o: /usr/include/sgidefs.h /usr/include/sys/bsd_types.h
+ant.o: /usr/include/sys/select.h /afs/cmf/@sys/include/X11/X.h
+ant.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+ant.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+ant.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+ant.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+ant.o: /usr/include/unistd.h /usr/include/sys/time.h
+ant.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+ant.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+ant.o: /usr/include/sys/dirent.h mode.h
+bat.o: xlock.h /afs/cmf/@sys/include/X11/Xlib.h /usr/include/sys/types.h
+bat.o: /usr/include/sgidefs.h /usr/include/sys/bsd_types.h
+bat.o: /usr/include/sys/select.h /afs/cmf/@sys/include/X11/X.h
+bat.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+bat.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+bat.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+bat.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+bat.o: /usr/include/unistd.h /usr/include/sys/time.h
+bat.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+bat.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+bat.o: /usr/include/sys/dirent.h mode.h /usr/include/math.h
+bat.o: /afs/cmf/@sys/include/X11/xpm.h pixmaps/bat-0.xpm pixmaps/bat-1.xpm
+bat.o: pixmaps/bat-2.xpm pixmaps/bat-3.xpm pixmaps/bat-4.xpm
+bat.o: bitmaps/bat-0.xbm bitmaps/bat-1.xbm bitmaps/bat-2.xbm
+bat.o: bitmaps/bat-3.xbm bitmaps/bat-4.xbm
+blot.o: xlock.h /afs/cmf/@sys/include/X11/Xlib.h /usr/include/sys/types.h
+blot.o: /usr/include/sgidefs.h /usr/include/sys/bsd_types.h
+blot.o: /usr/include/sys/select.h /afs/cmf/@sys/include/X11/X.h
+blot.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+blot.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+blot.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+blot.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+blot.o: /usr/include/unistd.h /usr/include/sys/time.h
+blot.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+blot.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+blot.o: /usr/include/sys/dirent.h mode.h
+bouboule.o: xlock.h /afs/cmf/@sys/include/X11/Xlib.h /usr/include/sys/types.h
+bouboule.o: /usr/include/sgidefs.h /usr/include/sys/bsd_types.h
+bouboule.o: /usr/include/sys/select.h /afs/cmf/@sys/include/X11/X.h
+bouboule.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+bouboule.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+bouboule.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+bouboule.o: /usr/include/string.h /usr/include/fcntl.h
+bouboule.o: /usr/include/sys/fcntl.h /usr/include/unistd.h
+bouboule.o: /usr/include/sys/time.h /afs/cmf/@sys/include/X11/Xresource.h
+bouboule.o: /usr/include/stdlib.h /usr/include/memory.h /usr/include/stdio.h
+bouboule.o: /usr/include/dirent.h /usr/include/sys/dirent.h mode.h
+bouboule.o: /usr/include/math.h
+bounce.o: xlock.h /afs/cmf/@sys/include/X11/Xlib.h /usr/include/sys/types.h
+bounce.o: /usr/include/sgidefs.h /usr/include/sys/bsd_types.h
+bounce.o: /usr/include/sys/select.h /afs/cmf/@sys/include/X11/X.h
+bounce.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+bounce.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+bounce.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+bounce.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+bounce.o: /usr/include/unistd.h /usr/include/sys/time.h
+bounce.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+bounce.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+bounce.o: /usr/include/sys/dirent.h mode.h /usr/include/math.h
+bounce.o: bitmaps/bounce-0.xbm bitmaps/bounce-1.xbm bitmaps/bounce-2.xbm
+bounce.o: bitmaps/bounce-3.xbm bitmaps/bounce-mask.xbm
+braid.o: /usr/include/math.h xlock.h /afs/cmf/@sys/include/X11/Xlib.h
+braid.o: /usr/include/sys/types.h /usr/include/sgidefs.h
+braid.o: /usr/include/sys/bsd_types.h /usr/include/sys/select.h
+braid.o: /afs/cmf/@sys/include/X11/X.h /afs/cmf/@sys/include/X11/Xfuncproto.h
+braid.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+braid.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+braid.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+braid.o: /usr/include/unistd.h /usr/include/sys/time.h
+braid.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+braid.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+braid.o: /usr/include/sys/dirent.h mode.h
+bug.o: /usr/include/math.h xlock.h /afs/cmf/@sys/include/X11/Xlib.h
+bug.o: /usr/include/sys/types.h /usr/include/sgidefs.h
+bug.o: /usr/include/sys/bsd_types.h /usr/include/sys/select.h
+bug.o: /afs/cmf/@sys/include/X11/X.h /afs/cmf/@sys/include/X11/Xfuncproto.h
+bug.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+bug.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+bug.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+bug.o: /usr/include/unistd.h /usr/include/sys/time.h
+bug.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+bug.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+bug.o: /usr/include/sys/dirent.h mode.h
+clock.o: xlock.h /afs/cmf/@sys/include/X11/Xlib.h /usr/include/sys/types.h
+clock.o: /usr/include/sgidefs.h /usr/include/sys/bsd_types.h
+clock.o: /usr/include/sys/select.h /afs/cmf/@sys/include/X11/X.h
+clock.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+clock.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+clock.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+clock.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+clock.o: /usr/include/unistd.h /usr/include/sys/time.h
+clock.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+clock.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+clock.o: /usr/include/sys/dirent.h mode.h /usr/include/time.h
+clock.o: /usr/include/math.h
+daisy.o: xlock.h /afs/cmf/@sys/include/X11/Xlib.h /usr/include/sys/types.h
+daisy.o: /usr/include/sgidefs.h /usr/include/sys/bsd_types.h
+daisy.o: /usr/include/sys/select.h /afs/cmf/@sys/include/X11/X.h
+daisy.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+daisy.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+daisy.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+daisy.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+daisy.o: /usr/include/unistd.h /usr/include/sys/time.h
+daisy.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+daisy.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+daisy.o: /usr/include/sys/dirent.h mode.h /usr/include/math.h
+dclock.o: /usr/include/time.h /usr/include/sys/types.h /usr/include/sgidefs.h
+dclock.o: /usr/include/sys/bsd_types.h /usr/include/sys/select.h
+dclock.o: /usr/include/math.h xlock.h /afs/cmf/@sys/include/X11/Xlib.h
+dclock.o: /afs/cmf/@sys/include/X11/X.h
+dclock.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+dclock.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+dclock.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+dclock.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+dclock.o: /usr/include/unistd.h /usr/include/sys/time.h
+dclock.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+dclock.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+dclock.o: /usr/include/sys/dirent.h mode.h
+demon.o: xlock.h /afs/cmf/@sys/include/X11/Xlib.h /usr/include/sys/types.h
+demon.o: /usr/include/sgidefs.h /usr/include/sys/bsd_types.h
+demon.o: /usr/include/sys/select.h /afs/cmf/@sys/include/X11/X.h
+demon.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+demon.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+demon.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+demon.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+demon.o: /usr/include/unistd.h /usr/include/sys/time.h
+demon.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+demon.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+demon.o: /usr/include/sys/dirent.h mode.h
+eyes.o: /usr/include/math.h xlock.h /afs/cmf/@sys/include/X11/Xlib.h
+eyes.o: /usr/include/sys/types.h /usr/include/sgidefs.h
+eyes.o: /usr/include/sys/bsd_types.h /usr/include/sys/select.h
+eyes.o: /afs/cmf/@sys/include/X11/X.h /afs/cmf/@sys/include/X11/Xfuncproto.h
+eyes.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+eyes.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+eyes.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+eyes.o: /usr/include/unistd.h /usr/include/sys/time.h
+eyes.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+eyes.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+eyes.o: /usr/include/sys/dirent.h mode.h eyes.xbm
+flag.o: /usr/include/math.h xlock.h /afs/cmf/@sys/include/X11/Xlib.h
+flag.o: /usr/include/sys/types.h /usr/include/sgidefs.h
+flag.o: /usr/include/sys/bsd_types.h /usr/include/sys/select.h
+flag.o: /afs/cmf/@sys/include/X11/X.h /afs/cmf/@sys/include/X11/Xfuncproto.h
+flag.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+flag.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+flag.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+flag.o: /usr/include/unistd.h /usr/include/sys/time.h
+flag.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+flag.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+flag.o: /usr/include/sys/dirent.h mode.h flag.h
+flame.o: xlock.h /afs/cmf/@sys/include/X11/Xlib.h /usr/include/sys/types.h
+flame.o: /usr/include/sgidefs.h /usr/include/sys/bsd_types.h
+flame.o: /usr/include/sys/select.h /afs/cmf/@sys/include/X11/X.h
+flame.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+flame.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+flame.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+flame.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+flame.o: /usr/include/unistd.h /usr/include/sys/time.h
+flame.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+flame.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+flame.o: /usr/include/sys/dirent.h mode.h /usr/include/math.h
+forest.o: xlock.h /afs/cmf/@sys/include/X11/Xlib.h /usr/include/sys/types.h
+forest.o: /usr/include/sgidefs.h /usr/include/sys/bsd_types.h
+forest.o: /usr/include/sys/select.h /afs/cmf/@sys/include/X11/X.h
+forest.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+forest.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+forest.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+forest.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+forest.o: /usr/include/unistd.h /usr/include/sys/time.h
+forest.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+forest.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+forest.o: /usr/include/sys/dirent.h mode.h /usr/include/math.h
+galaxy.o: /usr/include/math.h xlock.h /afs/cmf/@sys/include/X11/Xlib.h
+galaxy.o: /usr/include/sys/types.h /usr/include/sgidefs.h
+galaxy.o: /usr/include/sys/bsd_types.h /usr/include/sys/select.h
+galaxy.o: /afs/cmf/@sys/include/X11/X.h
+galaxy.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+galaxy.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+galaxy.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+galaxy.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+galaxy.o: /usr/include/unistd.h /usr/include/sys/time.h
+galaxy.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+galaxy.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+galaxy.o: /usr/include/sys/dirent.h mode.h
+geometry.o: xlock.h /afs/cmf/@sys/include/X11/Xlib.h /usr/include/sys/types.h
+geometry.o: /usr/include/sgidefs.h /usr/include/sys/bsd_types.h
+geometry.o: /usr/include/sys/select.h /afs/cmf/@sys/include/X11/X.h
+geometry.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+geometry.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+geometry.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+geometry.o: /usr/include/string.h /usr/include/fcntl.h
+geometry.o: /usr/include/sys/fcntl.h /usr/include/unistd.h
+geometry.o: /usr/include/sys/time.h /afs/cmf/@sys/include/X11/Xresource.h
+geometry.o: /usr/include/stdlib.h /usr/include/memory.h /usr/include/stdio.h
+geometry.o: /usr/include/dirent.h /usr/include/sys/dirent.h mode.h
+geometry.o: /usr/include/math.h
+grav.o: xlock.h /afs/cmf/@sys/include/X11/Xlib.h /usr/include/sys/types.h
+grav.o: /usr/include/sgidefs.h /usr/include/sys/bsd_types.h
+grav.o: /usr/include/sys/select.h /afs/cmf/@sys/include/X11/X.h
+grav.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+grav.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+grav.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+grav.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+grav.o: /usr/include/unistd.h /usr/include/sys/time.h
+grav.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+grav.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+grav.o: /usr/include/sys/dirent.h mode.h /usr/include/math.h
+helix.o: /usr/include/math.h xlock.h /afs/cmf/@sys/include/X11/Xlib.h
+helix.o: /usr/include/sys/types.h /usr/include/sgidefs.h
+helix.o: /usr/include/sys/bsd_types.h /usr/include/sys/select.h
+helix.o: /afs/cmf/@sys/include/X11/X.h /afs/cmf/@sys/include/X11/Xfuncproto.h
+helix.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+helix.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+helix.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+helix.o: /usr/include/unistd.h /usr/include/sys/time.h
+helix.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+helix.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+helix.o: /usr/include/sys/dirent.h mode.h
+hop.o: xlock.h /afs/cmf/@sys/include/X11/Xlib.h /usr/include/sys/types.h
+hop.o: /usr/include/sgidefs.h /usr/include/sys/bsd_types.h
+hop.o: /usr/include/sys/select.h /afs/cmf/@sys/include/X11/X.h
+hop.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+hop.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+hop.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+hop.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+hop.o: /usr/include/unistd.h /usr/include/sys/time.h
+hop.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+hop.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+hop.o: /usr/include/sys/dirent.h mode.h /usr/include/math.h
+hyper.o: /usr/include/math.h xlock.h /afs/cmf/@sys/include/X11/Xlib.h
+hyper.o: /usr/include/sys/types.h /usr/include/sgidefs.h
+hyper.o: /usr/include/sys/bsd_types.h /usr/include/sys/select.h
+hyper.o: /afs/cmf/@sys/include/X11/X.h /afs/cmf/@sys/include/X11/Xfuncproto.h
+hyper.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+hyper.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+hyper.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+hyper.o: /usr/include/unistd.h /usr/include/sys/time.h
+hyper.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+hyper.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+hyper.o: /usr/include/sys/dirent.h mode.h
+image.o: xlock.h /afs/cmf/@sys/include/X11/Xlib.h /usr/include/sys/types.h
+image.o: /usr/include/sgidefs.h /usr/include/sys/bsd_types.h
+image.o: /usr/include/sys/select.h /afs/cmf/@sys/include/X11/X.h
+image.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+image.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+image.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+image.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+image.o: /usr/include/unistd.h /usr/include/sys/time.h
+image.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+image.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+image.o: /usr/include/sys/dirent.h mode.h ras.h image.xbm image.xpm
+kaleid.o: xlock.h /afs/cmf/@sys/include/X11/Xlib.h /usr/include/sys/types.h
+kaleid.o: /usr/include/sgidefs.h /usr/include/sys/bsd_types.h
+kaleid.o: /usr/include/sys/select.h /afs/cmf/@sys/include/X11/X.h
+kaleid.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+kaleid.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+kaleid.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+kaleid.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+kaleid.o: /usr/include/unistd.h /usr/include/sys/time.h
+kaleid.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+kaleid.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+kaleid.o: /usr/include/sys/dirent.h mode.h
+laser.o: xlock.h /afs/cmf/@sys/include/X11/Xlib.h /usr/include/sys/types.h
+laser.o: /usr/include/sgidefs.h /usr/include/sys/bsd_types.h
+laser.o: /usr/include/sys/select.h /afs/cmf/@sys/include/X11/X.h
+laser.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+laser.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+laser.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+laser.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+laser.o: /usr/include/unistd.h /usr/include/sys/time.h
+laser.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+laser.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+laser.o: /usr/include/sys/dirent.h mode.h
+life.o: xlock.h /afs/cmf/@sys/include/X11/Xlib.h /usr/include/sys/types.h
+life.o: /usr/include/sgidefs.h /usr/include/sys/bsd_types.h
+life.o: /usr/include/sys/select.h /afs/cmf/@sys/include/X11/X.h
+life.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+life.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+life.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+life.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+life.o: /usr/include/unistd.h /usr/include/sys/time.h
+life.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+life.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+life.o: /usr/include/sys/dirent.h mode.h life.xbm
+life1d.o: life1d.xbm xlock.h /afs/cmf/@sys/include/X11/Xlib.h
+life1d.o: /usr/include/sys/types.h /usr/include/sgidefs.h
+life1d.o: /usr/include/sys/bsd_types.h /usr/include/sys/select.h
+life1d.o: /afs/cmf/@sys/include/X11/X.h
+life1d.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+life1d.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+life1d.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+life1d.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+life1d.o: /usr/include/unistd.h /usr/include/sys/time.h
+life1d.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+life1d.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+life1d.o: /usr/include/sys/dirent.h mode.h
+life3d.o: /usr/include/math.h xlock.h /afs/cmf/@sys/include/X11/Xlib.h
+life3d.o: /usr/include/sys/types.h /usr/include/sgidefs.h
+life3d.o: /usr/include/sys/bsd_types.h /usr/include/sys/select.h
+life3d.o: /afs/cmf/@sys/include/X11/X.h
+life3d.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+life3d.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+life3d.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+life3d.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+life3d.o: /usr/include/unistd.h /usr/include/sys/time.h
+life3d.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+life3d.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+life3d.o: /usr/include/sys/dirent.h mode.h
+lightning.o: xlock.h /afs/cmf/@sys/include/X11/Xlib.h
+lightning.o: /usr/include/sys/types.h /usr/include/sgidefs.h
+lightning.o: /usr/include/sys/bsd_types.h /usr/include/sys/select.h
+lightning.o: /afs/cmf/@sys/include/X11/X.h
+lightning.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+lightning.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+lightning.o: /afs/cmf/@sys/include/X11/Xutil.h
+lightning.o: /afs/cmf/@sys/include/X11/Xos.h /usr/include/string.h
+lightning.o: /usr/include/fcntl.h /usr/include/sys/fcntl.h
+lightning.o: /usr/include/unistd.h /usr/include/sys/time.h
+lightning.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+lightning.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+lightning.o: /usr/include/sys/dirent.h mode.h /usr/include/math.h
+lissie.o: xlock.h /afs/cmf/@sys/include/X11/Xlib.h /usr/include/sys/types.h
+lissie.o: /usr/include/sgidefs.h /usr/include/sys/bsd_types.h
+lissie.o: /usr/include/sys/select.h /afs/cmf/@sys/include/X11/X.h
+lissie.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+lissie.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+lissie.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+lissie.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+lissie.o: /usr/include/unistd.h /usr/include/sys/time.h
+lissie.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+lissie.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+lissie.o: /usr/include/sys/dirent.h mode.h /usr/include/math.h
+marquee.o: xlock.h /afs/cmf/@sys/include/X11/Xlib.h /usr/include/sys/types.h
+marquee.o: /usr/include/sgidefs.h /usr/include/sys/bsd_types.h
+marquee.o: /usr/include/sys/select.h /afs/cmf/@sys/include/X11/X.h
+marquee.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+marquee.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+marquee.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+marquee.o: /usr/include/string.h /usr/include/fcntl.h
+marquee.o: /usr/include/sys/fcntl.h /usr/include/unistd.h
+marquee.o: /usr/include/sys/time.h /afs/cmf/@sys/include/X11/Xresource.h
+marquee.o: /usr/include/stdlib.h /usr/include/memory.h /usr/include/stdio.h
+marquee.o: /usr/include/dirent.h /usr/include/sys/dirent.h mode.h
+maze.o: xlock.h /afs/cmf/@sys/include/X11/Xlib.h /usr/include/sys/types.h
+maze.o: /usr/include/sgidefs.h /usr/include/sys/bsd_types.h
+maze.o: /usr/include/sys/select.h /afs/cmf/@sys/include/X11/X.h
+maze.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+maze.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+maze.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+maze.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+maze.o: /usr/include/unistd.h /usr/include/sys/time.h
+maze.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+maze.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+maze.o: /usr/include/sys/dirent.h mode.h
+maze.o: /afs/cmf/@sys/include/X11/bitmaps/gray1 maze.xbm
+mountain.o: xlock.h /afs/cmf/@sys/include/X11/Xlib.h /usr/include/sys/types.h
+mountain.o: /usr/include/sgidefs.h /usr/include/sys/bsd_types.h
+mountain.o: /usr/include/sys/select.h /afs/cmf/@sys/include/X11/X.h
+mountain.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+mountain.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+mountain.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+mountain.o: /usr/include/string.h /usr/include/fcntl.h
+mountain.o: /usr/include/sys/fcntl.h /usr/include/unistd.h
+mountain.o: /usr/include/sys/time.h /afs/cmf/@sys/include/X11/Xresource.h
+mountain.o: /usr/include/stdlib.h /usr/include/memory.h /usr/include/stdio.h
+mountain.o: /usr/include/dirent.h /usr/include/sys/dirent.h mode.h
+nose.o: xlock.h /afs/cmf/@sys/include/X11/Xlib.h /usr/include/sys/types.h
+nose.o: /usr/include/sgidefs.h /usr/include/sys/bsd_types.h
+nose.o: /usr/include/sys/select.h /afs/cmf/@sys/include/X11/X.h
+nose.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+nose.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+nose.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+nose.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+nose.o: /usr/include/unistd.h /usr/include/sys/time.h
+nose.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+nose.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+nose.o: /usr/include/sys/dirent.h mode.h bitmaps/nose-0l.xbm
+nose.o: bitmaps/nose-1l.xbm bitmaps/nose-0r.xbm bitmaps/nose-1r.xbm
+nose.o: bitmaps/nose-lf.xbm bitmaps/nose-rf.xbm bitmaps/nose-f.xbm
+nose.o: bitmaps/nose-d.xbm
+penrose.o: xlock.h /afs/cmf/@sys/include/X11/Xlib.h /usr/include/sys/types.h
+penrose.o: /usr/include/sgidefs.h /usr/include/sys/bsd_types.h
+penrose.o: /usr/include/sys/select.h /afs/cmf/@sys/include/X11/X.h
+penrose.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+penrose.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+penrose.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+penrose.o: /usr/include/string.h /usr/include/fcntl.h
+penrose.o: /usr/include/sys/fcntl.h /usr/include/unistd.h
+penrose.o: /usr/include/sys/time.h /afs/cmf/@sys/include/X11/Xresource.h
+penrose.o: /usr/include/stdlib.h /usr/include/memory.h /usr/include/stdio.h
+penrose.o: /usr/include/dirent.h /usr/include/sys/dirent.h mode.h
+penrose.o: /afs/cmf/@sys/include/assert.h /usr/include/math.h
+petal.o: xlock.h /afs/cmf/@sys/include/X11/Xlib.h /usr/include/sys/types.h
+petal.o: /usr/include/sgidefs.h /usr/include/sys/bsd_types.h
+petal.o: /usr/include/sys/select.h /afs/cmf/@sys/include/X11/X.h
+petal.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+petal.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+petal.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+petal.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+petal.o: /usr/include/unistd.h /usr/include/sys/time.h
+petal.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+petal.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+petal.o: /usr/include/sys/dirent.h mode.h /usr/include/math.h
+puzzle.o: /usr/include/time.h /usr/include/sys/types.h /usr/include/sgidefs.h
+puzzle.o: /usr/include/sys/bsd_types.h /usr/include/sys/select.h
+puzzle.o: /usr/include/math.h xlock.h /afs/cmf/@sys/include/X11/Xlib.h
+puzzle.o: /afs/cmf/@sys/include/X11/X.h
+puzzle.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+puzzle.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+puzzle.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+puzzle.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+puzzle.o: /usr/include/unistd.h /usr/include/sys/time.h
+puzzle.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+puzzle.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+puzzle.o: /usr/include/sys/dirent.h mode.h ras.h puzzle.xbm puzzle.xpm
+pyro.o: xlock.h /afs/cmf/@sys/include/X11/Xlib.h /usr/include/sys/types.h
+pyro.o: /usr/include/sgidefs.h /usr/include/sys/bsd_types.h
+pyro.o: /usr/include/sys/select.h /afs/cmf/@sys/include/X11/X.h
+pyro.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+pyro.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+pyro.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+pyro.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+pyro.o: /usr/include/unistd.h /usr/include/sys/time.h
+pyro.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+pyro.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+pyro.o: /usr/include/sys/dirent.h mode.h /usr/include/math.h
+qix.o: xlock.h /afs/cmf/@sys/include/X11/Xlib.h /usr/include/sys/types.h
+qix.o: /usr/include/sgidefs.h /usr/include/sys/bsd_types.h
+qix.o: /usr/include/sys/select.h /afs/cmf/@sys/include/X11/X.h
+qix.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+qix.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+qix.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+qix.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+qix.o: /usr/include/unistd.h /usr/include/sys/time.h
+qix.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+qix.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+qix.o: /usr/include/sys/dirent.h mode.h
+rotor.o: /usr/include/math.h xlock.h /afs/cmf/@sys/include/X11/Xlib.h
+rotor.o: /usr/include/sys/types.h /usr/include/sgidefs.h
+rotor.o: /usr/include/sys/bsd_types.h /usr/include/sys/select.h
+rotor.o: /afs/cmf/@sys/include/X11/X.h /afs/cmf/@sys/include/X11/Xfuncproto.h
+rotor.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+rotor.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+rotor.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+rotor.o: /usr/include/unistd.h /usr/include/sys/time.h
+rotor.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+rotor.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+rotor.o: /usr/include/sys/dirent.h mode.h
+shape.o: xlock.h /afs/cmf/@sys/include/X11/Xlib.h /usr/include/sys/types.h
+shape.o: /usr/include/sgidefs.h /usr/include/sys/bsd_types.h
+shape.o: /usr/include/sys/select.h /afs/cmf/@sys/include/X11/X.h
+shape.o: /afs/cmf/@sys/include/X11/Xfuncproto.h
+shape.o: /afs/cmf/@sys/include/X11/Xosdefs.h /usr/include/stddef.h
+shape.o: /afs/cmf/@sys/include/X11/Xutil.h /afs/cmf/@sys/include/X11/Xos.h
+shape.o: /usr/include/string.h /usr/include/fcntl.h /usr/include/sys/fcntl.h
+shape.o: /usr/include/unistd.h /usr/include/sys/time.h
+shape.o: /afs/cmf/@sys/include/X11/Xresource.h /usr/include/stdlib.h
+shape.o: /usr/include/memory.h /usr/include/stdio.h /usr/include/dirent.h
+shape.o: /usr/include/sys/dirent.h mode.h
+shape.o: /afs/cmf/@sys/include/X11/bitmaps/stipple
+shape.o: /afs/cmf/@sys/include/X11/bitmaps/cross_weave
+shape.o: /afs/cmf/@sys/include/X11/bitmaps/dimple1
+shape.o: /afs/cmf/@sys/include/X11/bitmaps/dimple3
+shape.o: /afs/cmf/@sys/include/X11/bitmaps/flipped_gray
+shape.o: /afs/cmf/@sys/include/X11/bitmaps/gray1
+shape.o: /afs/cmf/@sys/include/X11/bitmaps/gray3
+shape.o: /afs/cmf/@sys/include/X11/bitmaps/hlines2
+shape.o: /afs/cmf/@sys/include/X11/bitmaps/light_gray
+shape.o: /afs/cmf/@sys/include/X11/bitmaps/root_weave
+shape.o: /afs/cmf/@sys/include/X11/bitmaps/vlines2
+shape.o: /afs/cmf/@sys/include/X11/bitmaps/vlines3

@@ -1,0 +1,115 @@
+#
+# $Id: Makefile.in,v 1.1.1.1 2003-02-13 00:14:48 zacheiss Exp $
+#
+# This is the Makefile for the AFS-Kerberos 5 Migration Kit.  See the
+# directions below for the meaning of each flag.
+#
+
+#
+# Support obj directories
+#
+
+srcdir = @srcdir@
+VPATH = @srcdir@
+
+# Your C compiler.  Salt to taste
+CC=@CC@
+
+# Linker
+LD=@LD@ @LDFLAGS@
+
+# Optimizer, debug flags
+OPT=@CFLAGS@
+
+# Defines to add to the command line
+DEFS=@DEFS@ -DALLOW_REGISTER
+
+# Flags to use during linking
+LDPATH_FLAGS=@LDPATH_FLAGS@
+
+# Include files
+INCLUDE=@CPPFLAGS@
+
+# "Extra" include files
+EXTRA_INC=@EXTRA_INC@
+
+# Library files
+LIBS=@LIBS@
+
+# System libraries
+SYSLIBS=@SYSLIBS@
+
+# AFS libraries
+AFSLIBS=@AFSLIBS@
+
+# Location of the 5-2-4 library
+KRB524LIB=@KRB524LIB@
+
+# Location of the kdb5 library
+KDB5LIB=@KDB5LIB@
+
+# Extra library needed for keyfile_dump
+KD_LIBS=@KD_LIBS@
+
+# Extra libraries needed for afs2k5db
+CONV_LIBS=$(KD_LIBS) -lgssapi_krb5 -lgssrpc -ldyn
+
+# Extra libraries needed for fakeka
+FAKEKA_LIBS=-ldes425 -lkadm5srv -lkdb5 -lgssapi_krb5 -lgssrpc -ldyn @EXTRA_DB_LIB@ @REGEXP_LIB@
+
+# Extra object files some programs need
+LIBOBJS=@LIBOBJS@
+
+# Install program and target installation directories
+INSTALL=@INSTALL@
+
+prefix=@prefix@
+INSTALL_BIN=$(prefix)/bin
+INSTALL_SBIN=$(prefix)/sbin
+
+PROGS=afs2k5db asetkey aklog fakeka ka-forwarder keyfile_dump
+CFLAGS=$(OPT) $(INCLUDE) $(DEFS)
+
+AKLOG_OBJS=aklog.o aklog_main.o aklog_param.o krb_util.o linked_list.o $(LIBOBJS)
+
+all: $(PROGS)
+
+clean:
+	rm -f $(PROGS) afs2k5db.o asetkey.o $(AKLOG_OBJS) fakeka.o ka-forwarder.o keyfile_dump.o
+
+distclean: clean
+	rm -f config.cache config.log config.status Makefile
+
+afs2k5db: afs2k5db.o k5dbsubs.o
+	$(LD) $(LDARGS) -o $@ afs2k5db.o k5dbsubs.o $(CONV_LIBS) $(LIBS) $(SYSLIBS) $(LDPATH_FLAGS)
+
+afs2k5db.o: afs2k5db.c
+	$(CC) -c $(CFLAGS) $(EXTRA_INC) $<
+
+k5dbsubs.o: k5dbsubs.c
+	$(CC) -c $(CFLAGS) $(EXTRA_INC) $<
+
+asetkey: asetkey.o
+	$(LD) -o $@ asetkey.o $(LIBS) $(SYSLIBS) $(AFSLIBS) $(LDPATH_FLAGS)
+
+aklog: $(AKLOG_OBJS)
+	$(LD) -o aklog $(AKLOG_OBJS) $(LIBOBJS) $(KRB524LIB) $(LIBS) $(SYSLIBS) $(AFSLIBS) $(LDPATH_FLAGS)
+
+fakeka: fakeka.o
+	$(LD) -o $@ fakeka.o $(LIBS) $(SYSLIBS) $(FAKEKA_LIBS) $(LDPATH_FLAGS)
+
+fakeka.o: fakeka.c
+	$(CC) -c $(CFLAGS) $(EXTRA_INC) $<
+
+ka-forwarder: ka-forwarder.o
+	$(LD) -o $@ ka-forwarder.o $(SYSLIBS)
+
+keyfile_dump: keyfile_dump.o k5dbsubs.o
+	$(LD) -o $@ keyfile_dump.o k5dbsubs.o $(KD_LIBS) $(LIBS) $(LDPATH_FLAGS)$(SYSLIBS)
+
+keyfile_dump.o: keyfile_dump.c
+	$(CC) -c $(CFLAGS) $(EXTRA_INC) $<
+
+install: $(PROGS)
+	$(INSTALL) -s aklog $(DESTDIR)$(INSTALL_BIN)
+	$(INSTALL) -s afs2k5db asetkey fakeka ka-forwarder $(DESTDIR)$(INSTALL_SBIN)
