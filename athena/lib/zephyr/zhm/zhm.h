@@ -6,7 +6,7 @@
  *      Created by:     David C. Jedlinsky
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/zhm/zhm.h,v $
- *      $Author: raeburn $
+ *      $Author: jfc $
  *      $Zephyr: /mit/zephyr/src.rw/zhm/RCS/zhm.h,v 1.13 90/10/19 07:11:48 raeburn Exp $
  *
  *      Copyright (c) 1987, 1991 by the Massachusetts Institute of Technology.
@@ -81,6 +81,18 @@ extern void init_queue(), retransmit_queue();
 #define ok
 #endif /* SUN4_ARCH */
 
+#ifdef _AIX
+#ifdef i386
+#define	MACHINE	"ps2"
+#define adjust_size(size)	size -= 0x800000
+#endif
+#ifdef _IBMR2
+#define	MACHINE "IBM Risc System/6000"
+#define	adjust_size(size)	size -= 0x20000000
+#endif
+#define	ok
+#endif
+
 #ifndef ok
 #if defined (m68k)
 #define MACHINE "sun (unknown 68k)"
@@ -97,11 +109,6 @@ extern void init_queue(), retransmit_queue();
 #define ok
 #endif /* ultrix && mips */
 
-#if defined(AIX) && defined(i386)
-#define	MACHINE	"ps2"
-#define adjust_size(size)	size -= 0x800000
-#define ok
-#endif
 
 #ifdef use_etext
 extern int etext;
