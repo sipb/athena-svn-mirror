@@ -1,4 +1,4 @@
-#!/bin/csh -f
+#!/dev/null
 #
 # add <addargs> <-a attachargs> <lockername> <lockername> ...
 #
@@ -13,7 +13,7 @@
 #
 # fix bugs section of attach manpage
 
-# alias add 'set add_opts = (\!:*); source /afs/dev/user/cfields/misc/add'
+# alias add 'set add_opts = (\!:*); source /afs/dev/user/cfields/add'
 
 # MANPATH search too
 
@@ -121,6 +121,8 @@ foreach add_i ($add_dirs)
 
 #
 # Find the man directory
+# Don't use arch/man unless you actually have architecture
+# dependent man pages in your locker.
 #
 
   if ( -d $add_i/$add_mandir ) then
