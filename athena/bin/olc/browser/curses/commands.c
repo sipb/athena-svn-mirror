@@ -635,7 +635,13 @@ else
   }
   fclose(fp);
 
+#ifdef POSIX
+#define FILENAME_SIZE MAXPATHLEN
+
+  make_path(getcwd(install_dir,FILENAME_SIZE),install_file,install_path);  
+#else
   make_path(getwd(install_dir),install_file,install_path);  
+#endif
 
   if (type == CREF_FILE)
     {
