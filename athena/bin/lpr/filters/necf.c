@@ -9,13 +9,12 @@ static char sccsid[] = "@(#)necf.c	5.1 (Berkeley) 5/15/85";
 #endif not lint
 
 #include <stdio.h>
-#include <sgtty.h>
+#include <string.h>
 
 #define PAGESIZE	66
 
 main()
 {
-	extern char *rindex();
 	char line[256];
 	register char c, *cp;
 	register lnumber;
@@ -35,7 +34,7 @@ main()
 		if (lnumber >= 2) {
 #endif
 #ifdef TTY
-			if ((cp = rindex(line, '\n')) != NULL)
+			if ((cp = strrchr(line, '\n')) != NULL)
 				*cp = '\r';
 #endif
 			printf("%s", line);
