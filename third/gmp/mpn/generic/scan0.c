@@ -1,6 +1,6 @@
 /* mpn_scan0 -- Scan from a given bit position for the next clear bit.
 
-Copyright (C) 1994, 1996 Free Software Foundation, Inc.
+Copyright 1994, 1996, 2001, 2002 Free Software Foundation, Inc.
 
 This file is part of the GNU MP Library.
 
@@ -28,18 +28,12 @@ MA 02111-1307, USA. */
    2. Bit index should be 'unsigned'?
 
    Argument constraints:
-   1. U must sooner ot later have a limb with a clear bit.
+   1. U must sooner or later have a limb with a clear bit.
  */
 
 unsigned long int
-#if __STDC__
 mpn_scan0 (register mp_srcptr up,
 	   register unsigned long int starting_bit)
-#else
-mpn_scan0 (up, starting_bit)
-     register mp_srcptr up;
-     register unsigned long int starting_bit;
-#endif
 {
   mp_size_t starting_word;
   mp_limb_t alimb;
@@ -47,16 +41,16 @@ mpn_scan0 (up, starting_bit)
   mp_srcptr p;
 
   /* Start at the word implied by STARTING_BIT.  */
-  starting_word = starting_bit / BITS_PER_MP_LIMB;
+  starting_word = starting_bit / GMP_NUMB_BITS;
   p = up + starting_word;
-  alimb = ~*p++;
+  alimb = *p++ ^ GMP_NUMB_MASK;
 
   /* Mask off any bits before STARTING_BIT in the first limb.  */
-  alimb &= - (mp_limb_t) 1 << (starting_bit % BITS_PER_MP_LIMB);
+  alimb &= - (mp_limb_t) 1 << (starting_bit % GMP_NUMB_BITS);
 
   while (alimb == 0)
-    alimb = ~*p++;
+    alimb = *p++ ^ GMP_NUMB_MASK;
 
-  count_leading_zeros (cnt, alimb & -alimb);
-  return (p - up) * BITS_PER_MP_LIMB - 1 - cnt;
+  count_trailing_zeros (cnt, alimb);
+  return (p - up - 1) * GMP_NUMB_BITS + cnt;
 }

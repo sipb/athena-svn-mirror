@@ -1,29 +1,22 @@
-This is gmp.info, produced by makeinfo version 4.0 from gmp.texi.
+This is gmp.info, produced by makeinfo version 4.2 from gmp.texi.
 
+This manual describes how to install and use the GNU multiple precision
+arithmetic library, version 4.1.1.
+
+   Copyright 1991, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000,
+2001, 2002 Free Software Foundation, Inc.
+
+   Permission is granted to copy, distribute and/or modify this
+document under the terms of the GNU Free Documentation License, Version
+1.1 or any later version published by the Free Software Foundation;
+with no Invariant Sections, with the Front-Cover Texts being "A GNU
+Manual", and with the Back-Cover Texts being "You have freedom to copy
+and modify this GNU Manual, like GNU software".  A copy of the license
+is included in *Note GNU Free Documentation License::.
 INFO-DIR-SECTION GNU libraries
 START-INFO-DIR-ENTRY
 * gmp: (gmp).                   GNU Multiple Precision Arithmetic Library.
 END-INFO-DIR-ENTRY
-
-   This file documents GNU MP, a library for arbitrary-precision
-arithmetic.
-
-   Copyright (C) 1991, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000
-Free Software Foundation, Inc.
-
-   Permission is granted to make and distribute verbatim copies of this
-manual provided the copyright notice and this permission notice are
-preserved on all copies.
-
-   Permission is granted to copy and distribute modified versions of
-this manual under the conditions for verbatim copying, provided that
-the entire resulting derived work is distributed under the terms of a
-permission notice identical to this one.
-
-   Permission is granted to copy and distribute translations of this
-manual into another language, under the above conditions for modified
-versions, except that this permission notice may be stated in a
-translation approved by the Foundation.
 
 
 File: gmp.info,  Node: Top,  Next: Copying,  Prev: (dir),  Up: (dir)
@@ -31,26 +24,44 @@ File: gmp.info,  Node: Top,  Next: Copying,  Prev: (dir),  Up: (dir)
 GNU MP
 ******
 
-   This manual documents how to install and use the GNU multiple
-precision arithmetic library, version 3.1.1.
+This manual describes how to install and use the GNU multiple precision
+arithmetic library, version 4.1.1.
+
+   Copyright 1991, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000,
+2001, 2002 Free Software Foundation, Inc.
+
+   Permission is granted to copy, distribute and/or modify this
+document under the terms of the GNU Free Documentation License, Version
+1.1 or any later version published by the Free Software Foundation;
+with no Invariant Sections, with the Front-Cover Texts being "A GNU
+Manual", and with the Back-Cover Texts being "You have freedom to copy
+and modify this GNU Manual, like GNU software".  A copy of the license
+is included in *Note GNU Free Documentation License::.
 
 * Menu:
 
 * Copying::                    GMP Copying Conditions (LGPL).
 * Introduction to GMP::        Brief introduction to GNU MP.
 * Installing GMP::             How to configure and compile the GMP library.
-* GMP Basics::                 What every GMP user should now.
+* GMP Basics::                 What every GMP user should know.
 * Reporting Bugs::             How to usefully report bugs.
 * Integer Functions::          Functions for arithmetic on signed integers.
 * Rational Number Functions::  Functions for arithmetic on rational numbers.
 * Floating-point Functions::   Functions for arithmetic on floats.
 * Low-level Functions::        Fast functions for natural numbers.
 * Random Number Functions::    Functions for generating random numbers.
+* Formatted Output::           `printf' style output.
+* Formatted Input::            `scanf' style input.
+* C++ Class Interface::        Class wrappers around GMP types.
 * BSD Compatible Functions::   All functions found in BSD MP.
 * Custom Allocation::          How to customize the internal allocation.
+* Language Bindings::          Using GMP from other languages.
+* Algorithms::                 What happens behind the scenes.
+* Internals::                  How values are represented behind the scenes.
 
 * Contributors::	       Who brings your this library?
 * References::                 Some useful papers and books to read.
+* GNU Free Documentation License::
 * Concept Index::
 * Function Index::
 
@@ -86,8 +97,10 @@ know that what they have is not what we distributed, so that any
 problems introduced by others will not reflect on our reputation.
 
    The precise conditions of the license for the GNU MP library are
-found in the Lesser General Public License that accompany the source
-code.
+found in the Lesser General Public License version 2.1 that accompanies
+the source code, see `COPYING.LIB'.  Certain demonstration programs are
+provided under the terms of the plain General Public License version 2,
+see `COPYING'.
 
 
 File: gmp.info,  Node: Introduction to GMP,  Next: Installing GMP,  Prev: Copying,  Up: Top
@@ -114,26 +127,42 @@ many different CPUs, and by a general emphasis on speed (as opposed to
 simplicity or elegance).
 
    There is carefully optimized assembly code for these CPUs: ARM, DEC
-Alpha 21064, 21164, and 21264, AMD 29000, AMD K6 and Athlon, Hitachi
-SuperH and SH-2, HPPA 1.0, 1.1 and 2.0, Intel Pentium, Pentium
-Pro/Pentium II, generic x86, Intel i960, Motorola MC68000, MC68020,
-MC88100, and MC88110, Motorola/IBM PowerPC 32 and 64, National NS32000,
-IBM POWER, MIPS R3000, R4000, SPARCv7, SuperSPARC, generic SPARCv8,
-UltraSPARC, DEC VAX, and Zilog Z8000.  Some optimizations also for
-Clipper, IBM ROMP (RT), and Pyramid AP/XP.
+Alpha 21064, 21164, and 21264, AMD 29000, AMD K6, K6-2 and Athlon,
+Hitachi SuperH and SH-2, HPPA 1.0, 1.1 and 2.0, Intel Pentium, Pentium
+Pro/II/III, Pentium 4, generic x86, Intel IA-64, i960, Motorola
+MC68000, MC68020, MC88100, and MC88110, Motorola/IBM PowerPC 32 and 64,
+National NS32000, IBM POWER, MIPS R3000, R4000, SPARCv7, SuperSPARC,
+generic SPARCv8, UltraSPARC, DEC VAX, and Zilog Z8000.  Some
+optimizations also for Cray vector systems, Clipper, IBM ROMP (RT), and
+Pyramid AP/XP.
 
-   There is a mailing list for GMP users.  To join it, send a mail to
-<gmp-request@swox.com> with the word `subscribe' in the message *body*
-(not in the subject line).
+   There are two public mailing lists of interest.  One for general
+questions and discussions about usage of the GMP library and one for
+discussions about development of GMP.  There's more information about
+the mailing lists at `http://swox.com/mailman/listinfo/'.  These lists
+are *not* for bug reports.
 
-   For up-to-date information on GMP, please see the GMP Home Pages at
-`http://www.swox.com/gmp/'.
+   The proper place for bug reports is <bug-gmp@gnu.org>.  See *Note
+Reporting Bugs:: for info about reporting bugs.
+
+   For up-to-date information on GMP, please see the GMP web pages at
+
+     `http://swox.com/gmp/'
+
+   The latest version of the library is available at
+
+     `ftp://ftp.gnu.org/gnu/gmp'
+
+   Many sites around the world mirror `ftp.gnu.org', please use a mirror
+near you, see `http://www.gnu.org/order/ftp.html' for a full list.
 
 How to use this Manual
 ======================
 
    Everyone should read *Note GMP Basics::.  If you need to install the
-library yourself, you need to read *Note Installing GMP::, too.
+library yourself, then read *Note Installing GMP::.  If you have a
+system with multiple ABIs, then read *Note ABI and ISA::, for the
+compiler options that must be used on applications.
 
    The rest of the manual can be used for later reference, although it
 is probably a good idea to glance through it.
@@ -144,8 +173,8 @@ File: gmp.info,  Node: Installing GMP,  Next: GMP Basics,  Prev: Introduction to
 Installing GMP
 **************
 
-GMP has an autoconf/automake/libtool based configuration system.  On a
-Unix-like system a basic build can be done with
+   GMP has an autoconf/automake/libtool based configuration system.  On
+a Unix-like system a basic build can be done with
 
      ./configure
      make
@@ -158,9 +187,9 @@ And you can install (under `/usr/local' by default) with
 
      make install
 
-If you experience problems, please report them to <bug-gmp@gnu.org>.
-(*Note Reporting Bugs::, for information on what to include in useful
-bug reports.)
+   If you experience problems, please report them to <bug-gmp@gnu.org>.
+See *Note Reporting Bugs::, for information on what to include in
+useful bug reports.
 
 * Menu:
 
@@ -176,42 +205,103 @@ File: gmp.info,  Node: Build Options,  Next: ABI and ISA,  Prev: Installing GMP,
 Build Options
 =============
 
-All the usual autoconf configure options are available, run `./configure
---help' for a summary.
+   All the usual autoconf configure options are available, run
+`./configure --help' for a summary.  The file `INSTALL.autoconf' has
+some generic installation information too.
 
 Non-Unix Systems
-     `configure' needs various Unix-like tools installed.  On an MS-DOS
-     system cygwin or djgpp should work.  It might be possible to build
-     without the help of `configure', certainly all the code is there,
-     but unfortunately you'll be on your own.
+     `configure' requires various Unix-like tools.  On an MS-DOS system
+     DJGPP can be used, and on MS Windows Cygwin or MINGW can be used,
 
-Object Directory
-     To compile in a separate object directory, `cd' to that directory,
+          `http://www.cygnus.com/cygwin'
+          `http://www.delorie.com/djgpp'
+          `http://www.mingw.org'
+
+     The `macos' directory contains an unsupported port to MacOS 9 on
+     Power Macintosh, see `macos/README'.  Note that MacOS X "Darwin"
+     should use the normal Unix-style `./configure'.
+
+     It might be possible to build without the help of `configure',
+     certainly all the code is there, but unfortunately you'll be on
+     your own.
+
+Build Directory
+     To compile in a separate build directory, `cd' to that directory,
      and prefix the configure command with the path to the GMP source
-     directory.  For example `../src/gmp/configure'.  Not all `make'
-     programs have the necessary features (`VPATH') to support this.
-     In particular, SunOS and Slowaris `make' have bugs that make them
-     unable to build from a separate object directory.  Use GNU `make'
-     instead.
+     directory.  For example
+
+          cd /my/build/dir
+          /my/sources/gmp-4.1.1/configure
+
+     Not all `make' programs have the necessary features (`VPATH') to
+     support this.  In particular, SunOS and Slowaris `make' have bugs
+     that make them unable to build in a separate directory.  Use GNU
+     `make' instead.
 
 `--disable-shared', `--disable-static'
      By default both shared and static libraries are built (where
-     possible), but one or other can be disabled.  Shared libraries are
-     very slightly slower, having a small cost on each function call,
-     but result in smaller executables and permit code sharing between
-     separate running processes.
+     possible), but one or other can be disabled.  Shared libraries
+     result in smaller executables and permit code sharing between
+     separate running processes, but on some CPUs are slightly slower,
+     having a small cost on each function call.
 
-`--target=CPU-VENDOR-OS'
-     The build target can be specified in the usual way, for either
-     native or cross compilation.
+Native Compilation, `--build=CPU-VENDOR-OS'
+     For normal native compilation, the system can be specified with
+     `--build'.  By default `./configure' uses the output from running
+     `./config.guess'.  On some systems `./config.guess' can determine
+     the exact CPU type, on others it will be necessary to give it
+     explicitly.  For example,
 
-     If `--target' isn't given, `./configure' builds for the host
-     system as determined by `./config.guess'.  On some systems this
-     can't distinguish between different CPUs in a family, and you
-     should check the guess.  Running `./config.guess' on the target
-     system will also show the relevant `VENDOR-OS', if you don't
-     already know what it should be.
+          ./configure --build=ultrasparc-sun-solaris2.7
 
+     In all cases the `OS' part is important, since it controls how
+     libtool generates shared libraries.  Running `./config.guess' is
+     the simplest way to see what it should be, if you don't know
+     already.
+
+Cross Compilation, `--host=CPU-VENDOR-OS'
+     When cross-compiling, the system used for compiling is given by
+     `--build' and the system where the library will run is given by
+     `--host'.  For example when using a FreeBSD Athlon system to build
+     GNU/Linux m68k binaries,
+
+          ./configure --build=athlon-pc-freebsd3.5 --host=m68k-mac-linux-gnu
+
+     Compiler tools are sought first with the host system type as a
+     prefix.  For example `m68k-mac-linux-gnu-ranlib' is tried, then
+     plain `ranlib'.  This makes it possible for a set of
+     cross-compiling tools to co-exist with native tools.  The prefix
+     is the argument to `--host', and this can be an alias, such as
+     `m68k-linux'.  But note that tools don't have to be setup this
+     way, it's enough to just have a `PATH' with a suitable
+     cross-compiling `cc' etc.
+
+     Compiling for a different CPU in the same family as the build
+     system is a form of cross-compilation, though very possibly this
+     would merely be special options on a native compiler.  In any case
+     `./configure' avoids depending on being able to run code on the
+     build system, which is important when creating binaries for a
+     newer CPU since they very possibly won't run on the build system.
+
+     In all cases the compiler must be able to produce an executable
+     (of whatever format) from a standard C `main'.  Although only
+     object files will go to make up `libgmp', `./configure' uses
+     linking tests for various purposes, such as determining what
+     functions are available on the host system.
+
+     Currently a warning is given unless an explicit `--build' is used
+     when cross-compiling, because it may not be possible to correctly
+     guess the build system type if the `PATH' has only a
+     cross-compiling `cc'.
+
+     Note that the `--target' option is not appropriate for GMP.  It's
+     for use when building compiler tools, with `--host' being where
+     they will run, and `--target' what they'll produce code for.
+     Ordinary programs or libraries like GMP are only interested in the
+     `--host' part, being where they'll run.  (Some past versions of
+     GMP used `--target' incorrectly.)
+
+CPU types
      In general, if you want a library that runs as fast as possible,
      you should configure GMP for the exact CPU type your system uses.
      However, this may mean the binaries won't run on older members of
@@ -219,99 +309,239 @@ Object Directory
      The best idea is always to build GMP for the exact machine type
      you intend to run it on.
 
-     The following CPU targets have specific assembly code support.  See
-     `configure.in' for which `mpn' subdirectories get used by each.
+     The following CPUs have specific support.  See `configure.in' for
+     details of what code and compiler options they select.
 
-        * Alpha: `alpha', `alphaev5', `alphaev6'
+        * Alpha: alpha, alphaev5, alphaev56, alphapca56, alphapca57,
+          alphaev6, alphaev67, alphaev68
 
-        * Hitachi: `sh', `sh2'
+        * Cray: c90, j90, t90, sv1
 
-        * HPPA: `hppa1.0', `hppa1.1', `hppa2.0', `hppa2.0w'
+        * HPPA: hppa1.0, hppa1.1, hppa2.0, hppa2.0n, hppa2.0w
 
-        * MIPS: `mips', `mips3',
+        * MIPS: mips, mips3, mips64
 
-        * Motorola: `m68000', `m68k', `m88k', `m88110'
+        * Motorola: m68k, m68000, m68010, m68020, m68030, m68040,
+          m68060, m68302, m68360, m88k, m88110
 
-        * POWER: `power1', `power2', `power2sc', `powerpc', `powerpc64'
+        * POWER: power, power1, power2, power2sc
 
-        * SPARC: `sparc', `sparcv8', `microsparc', `supersparc',
-          `sparcv9', `ultrasparc', `sparc64'
+        * PowerPC: powerpc, powerpc64, powerpc401, powerpc403,
+          powerpc405, powerpc505, powerpc601, powerpc602, powerpc603,
+          powerpc603e, powerpc604, powerpc604e, powerpc620, powerpc630,
+          powerpc740, powerpc7400, powerpc7450, powerpc750, powerpc801,
+          powerpc821, powerpc823, powerpc860,
 
-        * 80x86 family: `i386', `i486', `i586', `pentium', `pentiummmx',
-          `pentiumpro', `pentium2', `pentium3', `k6', `k62', `k63',
-          `athlon'
+        * SPARC: sparc, sparcv8, microsparc, supersparc, sparcv9,
+          ultrasparc, ultrasparc2, ultrasparc2i, ultrasparc3, sparc64
 
-        * Other: `a29k', `arm', `clipper', `i960', `ns32k', `pyramid',
-          `vax', `z8k'
+        * 80x86 family: i386, i486, i586, pentium, pentiummmx,
+          pentiumpro, pentium2, pentium3, pentium4, k6, k62, k63, athlon
 
-     CPUs not listed use generic C code.  If some of the assembly code
-     causes problems, the generic C code can be selected with CPU
-     `none'.
+        * Other: a29k, arm, clipper, i960, ns32k, pyramid, sh, sh2, vax,
+          z8k
+
+     CPUs not listed will use generic C code.
+
+Generic C Build
+     If some of the assembly code causes problems, or if otherwise
+     desired, the generic C code can be selected with CPU `none'.  For
+     example,
+
+          ./configure --host=none-unknown-freebsd3.5
+
+     Note that this will run quite slowly, but it should be portable
+     and should at least make it possible to get something running if
+     all else fails.
+
+`ABI'
+     On some systems GMP supports multiple ABIs (application binary
+     interfaces), meaning data type sizes and calling conventions.  By
+     default GMP chooses the best ABI available, but a particular ABI
+     can be selected.  For example
+
+          ./configure --host=mips64-sgi-irix6 ABI=n32
+
+     See *Note ABI and ISA::, for the available choices on relevant
+     CPUs, and what applications need to do.
 
 `CC', `CFLAGS'
-     The C compiler used is chosen from among some likely candidates,
-     with GCC normally preferred if it's present.  The usual
-     `CC=whatever' can be passed to `./configure' to choose something
-     different.
+     By default the C compiler used is chosen from among some likely
+     candidates, with `gcc' normally preferred if it's present.  The
+     usual `CC=whatever' can be passed to `./configure' to choose
+     something different.
 
-     For some configurations specific compiler flags are set based on
-     the target CPU and compiler, see `CFLAGS' in the generated
-     `Makefile's.  The usual `CFLAGS="-whatever"' can be passed to
+     For some systems, default compiler flags are set based on the CPU
+     and compiler.  The usual `CFLAGS="-whatever"' can be passed to
      `./configure' to use something different or to set good flags for
      systems GMP doesn't otherwise know.
 
-     Note that if `CC' is set then `CFLAGS' must also be set.  This
-     applies even if `CC' is merely one of the choices GMP would make
-     itself.  This may change in a future release.
+     The `CC' and `CFLAGS' used are printed during `./configure', and
+     can be found in each generated `Makefile'.  This is the easiest way
+     to check the defaults when considering changing or adding
+     something.
 
-`--disable-alloca'
-     By default, GMP allocates temporary workspace using `alloca' if
-     that function is available, or `malloc' if not.  If you're working
-     with large numbers and `alloca' overflows the available stack
-     space, you can build with `--disable-alloca' to use `malloc'
-     instead.  `malloc' will probably be slightly slower than `alloca'.
+     Note that when `CC' and `CFLAGS' are specified on a system
+     supporting multiple ABIs it's important to give an explicit
+     `ABI=whatever', since GMP can't determine the ABI just from the
+     flags and won't be able to select the correct assembler code.
 
-     When not using `alloca', it's actually the allocation function
-     selected with `mp_set_memory_functions' that's used, this being
-     `malloc' by default.  *Note Custom Allocation::.
+     If just `CC' is selected then normal default `CFLAGS' for that
+     compiler will be used (if GMP recognises it).  For example
+     `CC=gcc' can be used to force the use of GCC, with default flags
+     (and default ABI).
 
-     Depending on your system, the only indication of stack overflow
-     might be a segmentation violation.  It might be possible to
-     increase available stack space with `limit', `ulimit' or
-     `setrlimit', or under DJGPP with `stubedit' or `_stklen'.
+`CPPFLAGS'
+     Any flags like `-D' defines or `-I' includes required by the
+     preprocessor should be set in `CPPFLAGS' rather than `CFLAGS'.
+     Compiling is done with both `CPPFLAGS' and `CFLAGS', but
+     preprocessing uses just `CPPFLAGS'.  This distinction is because
+     most preprocessors won't accept all the flags the compiler does.
+     Preprocessing is done separately in some configure tests, and in
+     the `ansi2knr' support for K&R compilers.
 
-`--enable-fft'
-     By default multiplications are done using Karatsuba and 3-way
-     Toom-Cook algorithms, but a Fermat FFT can be enabled, for use on
-     large to very large operands.  Currently the FFT is recommended
-     only for knowledgeable users who check the algorithm thresholds
-     for their CPU.
+C++ Support, `--enable-cxx'
+     C++ support in GMP can be enabled with `--enable-cxx', in which
+     case a C++ compiler will be required.  As a convenience
+     `--enable-cxx=detect' can be used to enable C++ support only if a
+     compiler can be found.  The C++ support consists of a library
+     `libgmpxx.la' and header file `gmpxx.h'.
 
-`--enable-mpbsd'
-     The Berkeley MP compatibility library (`libmp.a') and header file
+     A separate `libgmpxx.la' has been adopted rather than having C++
+     objects within `libgmp.la' in order to ensure dynamic linked C
+     programs aren't bloated by a dependency on the C++ standard
+     library, and to avoid any chance that the C++ compiler could be
+     required when linking plain C programs.
+
+     `libgmpxx.la' will use certain internals from `libgmp.la' and can
+     only be expected to work with `libgmp.la' from the same GMP
+     version.  Future changes to the relevant internals will be
+     accompanied by renaming, so a mismatch will cause unresolved
+     symbols rather than perhaps mysterious misbehaviour.
+
+     In general `libgmpxx.la' will be usable only with the C++ compiler
+     that built it, since name mangling and runtime support are usually
+     incompatible between different compilers.
+
+`CXX', `CXXFLAGS'
+     When C++ support is enabled, the C++ compiler and its flags can be
+     set with variables `CXX' and `CXXFLAGS' in the usual way.  The
+     default for `CXX' is the first compiler that works from a list of
+     likely candidates, with `g++' normally preferred when available.
+     The default for `CXXFLAGS' is to try `CFLAGS', `CFLAGS' without
+     `-g', then for `g++' either `-g -O2' or `-O2', or for other
+     compilers `-g' or nothing.  Trying `CFLAGS' this way is convenient
+     when using `gcc' and `g++' together, since the flags for `gcc' will
+     usually suit `g++'.
+
+     It's important that the C and C++ compilers match, meaning their
+     startup and runtime support routines are compatible and that they
+     generate code in the same ABI (if there's a choice of ABIs on the
+     system).  `./configure' isn't currently able to check these things
+     very well itself, so for that reason `--disable-cxx' is the
+     default, to avoid a build failure due to a compiler mismatch.
+     Perhaps this will change in the future.
+
+     Incidentally, it's normally not good enough to set `CXX' to the
+     same as `CC'.  Although `gcc' for instance recognises `foo.cc' as
+     C++ code, only `g++' will invoke the linker the right way when
+     building an executable or shared library from object files.
+
+Temporary Memory, `--enable-alloca=<choice>'
+     GMP allocates temporary workspace using one of the following three
+     methods, which can be selected with for instance
+     `--enable-alloca=malloc-reentrant'.
+
+        * `alloca' - C library or compiler builtin.
+
+        * `malloc-reentrant' - the heap, in a re-entrant fashion.
+
+        * `malloc-notreentrant' - the heap, with global variables.
+
+     For convenience, the following choices are also available.
+     `--disable-alloca' is the same as `--enable-alloca=no'.
+
+        * `yes' - a synonym for `alloca'.
+
+        * `no' - a synonym for `malloc-reentrant'.
+
+        * `reentrant' - `alloca' if available, otherwise
+          `malloc-reentrant'.  This is the default.
+
+        * `notreentrant' - `alloca' if available, otherwise
+          `malloc-notreentrant'.
+
+     `alloca' is reentrant and fast, and is recommended, but when
+     working with large numbers it can overflow the available stack
+     space, in which case one of the two malloc methods will need to be
+     used.  Alternately it might be possible to increase available
+     stack with `limit', `ulimit' or `setrlimit', or under DJGPP with
+     `stubedit' or `_stklen'.  Note that depending on the system the
+     only indication of stack overflow might be a segmentation
+     violation.
+
+     `malloc-reentrant' is, as the name suggests, reentrant and thread
+     safe, but `malloc-notreentrant' is faster and should be used if
+     reentrancy is not required.
+
+     The two malloc methods in fact use the memory allocation functions
+     selected by `mp_set_memory_functions', these being `malloc' and
+     friends by default.  *Note Custom Allocation::.
+
+     An additional choice `--enable-alloca=debug' is available, to help
+     when debugging memory related problems (*note Debugging::).
+
+FFT Multiplication, `--disable-fft'
+     By default multiplications are done using Karatsuba, 3-way
+     Toom-Cook, and Fermat FFT.  The FFT is only used on large to very
+     large operands and can be disabled to save code size if desired.
+
+Berkeley MP, `--enable-mpbsd'
+     The Berkeley MP compatibility library (`libmp') and header file
      (`mp.h') are built and installed only if `--enable-mpbsd' is used.
      *Note BSD Compatible Functions::.
 
-`MPN_PATH'
-     Various assembler versions of mpn subroutines are provided, and,
-     for a given CPU target, a search is made though a path to choose a
-     version of each.  For example `sparcv8' has path `"sparc32/v8
-     sparc32 generic"', which means it looks first for v8 code, falls
-     back on plain sparc32, and finally falls back on generic C.
-     Knowledgeable users with special requirements can specify a path
-     with `MPN_PATH="dir list"'.  This will normally be unnecessary
-     because all sensible paths should be available under one or other
-     CPU target.
+MPFR, `--enable-mpfr'
+     The optional MPFR functions are built and installed only if
+     `--enable-mpfr' is used.  These are in a separate library
+     `libmpfr.a' and are documented separately too (*note Introduction
+     to MPFR: (mpfr)Introduction to MPFR.).
 
-Demonstration Programs
-     The `demos' subdirectory has some sample programs using GMP.  These
-     aren't built or installed, but there's a `Makefile' with rules for
-     them.  For instance, `make pexpr' and then `./pexpr 68^975+10'.
+Assertion Checking, `--enable-assert'
+     This option enables some consistency checking within the library.
+     This can be of use while debugging, *note Debugging::.
+
+Execution Profiling, `--enable-profiling=prof/gprof'
+     Profiling support can be enabled either for `prof' or `gprof'.
+     This adds `-p' or `-pg' respectively to `CFLAGS', and for some
+     systems adds corresponding `mcount' calls to the assembler code.
+     *Note Profiling::.
+
+`MPN_PATH'
+     Various assembler versions of each mpn subroutines are provided.
+     For a given CPU, a search is made though a path to choose a
+     version of each.  For example `sparcv8' has
+
+          MPN_PATH="sparc32/v8 sparc32 generic"
+
+     which means look first for v8 code, then plain sparc32 (which is
+     v7), and finally fall back on generic C.  Knowledgeable users with
+     special requirements can specify a different path.  Normally this
+     is completely unnecessary.
 
 Documentation
      The document you're now reading is `gmp.texi'.  The usual automake
-     targets are available to make `gmp.ps' and/or `gmp.dvi'.  Some
-     supplementary notes can be found in the `doc' subdirectory.
+     targets are available to make PostScript `gmp.ps' and/or DVI
+     `gmp.dvi'.
+
+     HTML can be produced with `makeinfo --html', see *Note Generating
+     HTML: (texinfo)makeinfo html.  Or alternately `texi2html', see
+     *Note Texinfo to HTML: (texi2html)Top.
+
+     PDF can be produced with `texi2dvi --pdf' (*note PDF: (texinfo)PDF
+     Output.) or with `pdftex'.
+
+     Some supplementary notes can be found in the `doc' subdirectory.
 
 
 File: gmp.info,  Node: ABI and ISA,  Next: Notes for Package Builds,  Prev: Build Options,  Up: Installing GMP
@@ -326,80 +556,136 @@ the instructions and registers a CPU has available.
 
    Some 64-bit ISA CPUs have both a 64-bit ABI and a 32-bit ABI
 defined, the latter for compatibility with older CPUs in the family.
-GMP chooses the best ABI available for a given target system, and this
-generally gives significantly greater speed.
+GMP supports some CPUs like this in both ABIs.  In fact within GMP
+`ABI' means a combination of chip ABI, plus how GMP chooses to use it.
+For example in some 32-bit ABIs, GMP may support a limb as either a
+32-bit `long' or a 64-bit `long long'.
 
-   The burden is on application programs and cooperating libraries to
-ensure they match the ABI chosen by GMP.  Fortunately this presents a
-difficulty only on a few systems, and if you have one of them then the
-performance gains are enough to make it worth the trouble.
+   By default GMP chooses the best ABI available for a given system,
+and this generally gives significantly greater speed.  But an ABI can
+be chosen explicitly to make GMP compatible with other libraries, or
+particular application requirements.  For example,
 
-   Some of what's described in this section may change in future
-releases of GMP.
+     ./configure ABI=32
 
-HPPA 2.0
-     CPU target `hppa2.0' uses the hppa2.0n 32-bit ABI, but either a
-     32-bit or 64-bit limb.
+   In all cases it's vital that all object code used in a given program
+is compiled for the same ABI.
 
-     A 64-bit limb is available on HP-UX 10 or up when using `c89'.  No
-     `gcc' support is planned for 64-bit operations in this ABI.
-     Applications must be compiled with the same options as GMP, which
-     means
+   Usually a limb is implemented as a `long'.  When a `long long' limb
+is used this is encoded in the generated `gmp.h'.  This is convenient
+for applications, but it does mean that `gmp.h' will vary, and can't be
+just copied around.  `gmp.h' remains compiler independent though, since
+all compilers for a particular ABI will be expected to use the same
+limb type.
 
-          c89  +DA2.0 +e -D_LONG_LONG_LIMB
+   Currently no attempt is made to follow whatever conventions a system
+has for installing library or header files built for a particular ABI.
+This will probably only matter when installing multiple builds of GMP,
+and it might be as simple as configuring with a special `libdir', or it
+might require more than that.  Note that builds for different ABIs need
+to done separately, with a fresh `./configure' and `make' each.
 
-     A 32-bit limb is used in other cases, and no special compiler
-     options are needed.
 
-     CPU target `hppa2.0w' uses the hppa2.0w 64-bit ABI, which is
-     available on HP-UX 11 or up when using `c89'.  `gcc' support for
-     this is in progress.  Applications must be compiled for the same
-     ABI, which means
+HPPA 2.0 (`hppa2.0*')
 
-          c89  +DD64
+    `ABI=2.0w'
+          The 2.0w ABI uses 64-bit limbs and pointers and is available
+          on HP-UX 11 or up when using `cc'.  `gcc' support for this is
+          in progress.  Applications must be compiled with
 
-MIPS 3 and 4 under IRIX 6
-     Targets `mips*-*-irix6*' use the n32 ABI and a 64-bit limb.
-     Applications must be compiled for the same ABI, which means either
+               cc  +DD64
 
-          gcc  -mabi=n32
-          cc   -n32
+    `ABI=2.0n'
+          The 2.0n ABI means the 32-bit HPPA 1.0 ABI but with a 64-bit
+          limb using `long long'.  This is available on HP-UX 10 or up
+          when using `cc'.  No `gcc' support is planned for this.
+          Applications must be compiled with
 
-PowerPC 64
-     CPU target `powerpc64' uses either the 32-bit ABI or the AIX
-     64-bit ABI.  The latter is used on targets `powerpc64-*-aix*' and
-     applications must be compiled using either
+               cc  +DA2.0 +e
 
-          gcc  -maix64
-          xlc  -q64
+    `ABI=1.0'
+          HPPA 2.0 CPUs can run all HPPA 1.0 and 1.1 code in the 32-bit
+          HPPA 1.0 ABI.  No special compiler options are needed for
+          applications.
 
-     On other systems the 32-bit ABI is used, but with 64-bit limbs
-     provided by `long long' in `gcc'.  Applications must be compiled
-     using
+     All three ABIs are available for CPUs `hppa2.0w' and `hppa2.0', but
+     for CPU `hppa2.0n' only 2.0n or 1.0 are allowed.
 
-          gcc  -D_LONG_LONG_LIMB
 
-Sparc V9
-     On a sparc v9 CPU, either the v8plus 32-bit ABI or v9 64-bit ABI
-     is used.  Targets `ultrasparc*-*-solaris2.[7-9]',
-     `sparcv9-*-solaris2.[7-9]' and `sparc64-*-linux*' use the v9 ABI,
-     if the compiler supports it.  Other targets use the v8plus ABI
-     (but with as much of the v9 ISA as possible in the circumstances).
-     Note that Solaris prior to 2.7 doesn't save all registers
-     properly, and hence uses the v8plus ABI.
+MIPS under IRIX 6 (`mips*-*-irix[6789]')
+     IRIX 6 supports the n32 and 64 ABIs and always has a 64-bit MIPS 3
+     or better CPU.  In both these ABIs GMP uses a 64-bit limb.  A new
+     enough `gcc' is required (2.95 for instance).
 
-     For the v8plus ABI, applications can be compiled with either
+    `ABI=n32'
+          The n32 ABI is 32-bit pointers and integers, but with a
+          64-bit limb using a `long long'.  Applications must be
+          compiled with
 
-          gcc  -mv8plus
-          cc   -xarch=v8plus
+               gcc  -mabi=n32
+               cc   -n32
 
-     For the v9 ABI, applications must be compiled with either
+    `ABI=64'
+          The 64-bit ABI is 64-bit pointers and integers.  Applications
+          must be compiled with
 
-          gcc  -m64 -mptr64 -Wa,-xarch=v9 -mcpu=v9
-          cc   -xarch=v9
+               gcc  -mabi=64
+               cc   -64
 
-     Don't be confused by the names of these options, they're called
-     `arch' but they effectively control the ABI.
+     Note that MIPS GNU/Linux, as of kernel version 2.2, doesn't have
+     the necessary support for n32 or 64 and so only gets a 32-bit limb
+     and the MIPS 2 code.
+
+
+PowerPC 64 (`powerpc64', `powerpc620', `powerpc630')
+
+    `ABI=aix64'
+          The AIX 64 ABI uses 64-bit limbs and pointers and is
+          available on systems `*-*-aix*'.  Applications must be
+          compiled (and linked) with
+
+               gcc  -maix64
+               xlc  -q64
+
+    `ABI=32'
+          This is the basic 32-bit PowerPC ABI.  No special compiler
+          options are needed for applications.
+
+
+Sparc V9 (`sparcv9' and `ultrasparc*')
+
+    `ABI=64'
+          The 64-bit V9 ABI is available on Solaris 2.7 and up and
+          GNU/Linux.  GCC 2.95 or up, or Sun `cc' is required.
+          Applications must be compiled with
+
+               gcc  -m64 -mptr64 -Wa,-xarch=v9 -mcpu=v9
+               cc   -xarch=v9
+
+    `ABI=32'
+          On Solaris 2.6 and earlier, and on Solaris 2.7 with the
+          kernel in 32-bit mode, only the plain V8 32-bit ABI can be
+          used, since the kernel doesn't save all registers.  GMP still
+          uses as much of the V9 ISA as it can in these circumstances.
+          No special compiler options are required for applications,
+          though using something like the following requesting V9 code
+          within the V8 ABI is recommended.
+
+               gcc  -mv8plus
+               cc   -xarch=v8plus
+
+          `gcc' 2.8 and earlier only supports `-mv8' though.
+
+     Don't be confused by the names of these sparc `-m' and `-x'
+     options, they're called `arch' but they effectively control the
+     ABI.
+
+     On Solaris 2.7 with the kernel in 32-bit-mode, a normal native
+     build will reject `ABI=64' because the resulting executables won't
+     run.  `ABI=64' can still be built if desired by making it look
+     like a cross-compile, for example
+
+          ./configure --build=none --host=sparcv9-sun-solaris2.7 ABI=64
 
 
 File: gmp.info,  Node: Notes for Package Builds,  Next: Notes for Particular Systems,  Prev: ABI and ISA,  Up: Installing GMP
@@ -411,24 +697,38 @@ Notes for Package Builds
 distribution.
 
    Libtool is used to build the library and `-version-info' is set
-appropriately, having started from `3:0:0' in GMP 3.0.  The GMP 3 series
-will be upwardly binary compatible in each release, but may be adding
-additional function interfaces.  On systems where libtool versioning is
-not fully checked by the loader, an auxiliary mechanism may be needed
-to express that a dynamic linked application depends on a new enough
-minor version of GMP.
+appropriately, having started from `3:0:0' in GMP 3.0.  The GMP 4 series
+will be upwardly binary compatible in each release and will be upwardly
+binary compatible with all of the GMP 3 series.  Additional function
+interfaces may be added in each release, so on systems where libtool
+versioning is not fully checked by the loader an auxiliary mechanism
+may be needed to express that a dynamic linked application depends on a
+new enough GMP.
+
+   An auxiliary mechanism may also be needed to express that
+`libgmpxx.la' (from `--enable-cxx', *note Build Options::) requires
+`libgmp.la' from the same GMP version, since this is not done by the
+libtool versioning, nor otherwise.  A mismatch will result in
+unresolved symbols from the linker, or perhaps the loader.
+
+   Using `DESTDIR' or a `prefix' override with `make install' and a
+shared `libgmpxx' may run into a libtool relinking problem, see *Note
+Known Build Problems::.
 
    When building a package for a CPU family, care should be taken to use
-`--target' to choose the least common denominator among the CPUs which
-might use the package.  For example this might necessitate `i386' for
-x86s, or plain `sparc' (meaning V7) for SPARCs.
+`--host' (or `--build') to choose the least common denominator among
+the CPUs which might use the package.  For example this might
+necessitate `i386' for x86s, or plain `sparc' (meaning V7) for SPARCs.
 
    Users who care about speed will want GMP built for their exact CPU
 type, to make use of the available optimizations.  Providing a way to
 suitably rebuild a package may be useful.  This could be as simple as
-making it possible for a user to omit `--target' in a build so
+making it possible for a user to omit `--build' (and `--host') so
 `./config.guess' will detect the CPU.  But a way to manually specify a
-`--target' will be wanted for systems where `./config.guess' is inexact.
+`--build' will be wanted for systems where `./config.guess' is inexact.
+
+   Note that `gmp.h' is a generated file, and will be architecture and
+ABI dependent.
 
 
 File: gmp.info,  Node: Notes for Particular Systems,  Next: Known Build Problems,  Prev: Notes for Package Builds,  Up: Installing GMP
@@ -436,9 +736,57 @@ File: gmp.info,  Node: Notes for Particular Systems,  Next: Known Build Problems
 Notes for Particular Systems
 ============================
 
-AIX 4.3
-     Targets `*-*-aix4.[3-9]*' have shared libraries disabled since
-     they seem to fail on AIX 4.3.
+AIX 3 and 4
+     On systems `*-*-aix[34]*' shared libraries are disabled by
+     default, since some versions of the native `ar' fail on the
+     convenience libraries used.  A shared build can be attempted with
+
+          ./configure --enable-shared --disable-static
+
+     Note that the `--disable-static' is necessary because in a shared
+     build libtool makes `libgmp.a' a symlink to `libgmp.so',
+     apparently for the benefit of old versions of `ld' which only
+     recognise `.a', but unfortunately this is done even if a fully
+     functional `ld' is available.
+
+ARM
+     On systems `arm*-*-*', versions of GCC up to and including 2.95.3
+     have a bug in unsigned division, giving wrong results for some
+     operands.  GMP `./configure' will demand GCC 2.95.4 or later.
+
+Microsoft Windows
+     On systems `*-*-cygwin*', `*-*-mingw*' and `*-*-pw32*' by default
+     GMP builds only a static library, but a DLL can be built instead
+     using
+
+          ./configure --disable-static --enable-shared
+
+     Static and DLL libraries can't both be built, since certain export
+     directives in `gmp.h' must be different.  `--enable-cxx' cannot be
+     used when building a DLL, since libtool doesn't currently support
+     C++ DLLs.  This might change in the future.
+
+Microsoft C
+     A MINGW DLL build of GMP can be used with Microsoft C.  Libtool
+     doesn't install `.lib' and `.exp' files, but they can be created
+     with the following commands, where `/my/inst/dir' is the install
+     directory (with a `lib' subdirectory).
+
+          lib /machine:IX86 /def:_libs/libgmp-3.dll-def
+          cp libgmp-3.lib /my/inst/dir/lib
+          cp _libs/libgmp-3.dll-exp /my/inst/dir/lib/libgmp-3.exp
+
+     MINGW uses `msvcrt.dll' for I/O, so applications wanting to use
+     the GMP I/O routines must be compiled with `cl /MD' to do the
+     same.  If one of the other I/O choices provided by MS C is desired
+     then the suggestion is to use the GMP string functions and confine
+     I/O to the application.
+
+Motorola 68k CPU Types
+     `m68k' is taken to mean 68000.  `m68020' or higher will give a
+     performance boost on applicable CPUs.  `m68360' can be used for
+     CPU32 series chips.  `m68302' can be used for "Dragonball" series
+     chips, though this is merely a synonym for `m68000'.
 
 OpenBSD 2.6
      `m4' in this release of OpenBSD has a bug in `eval' that makes it
@@ -446,9 +794,21 @@ OpenBSD 2.6
      the problem and either abort or choose another m4 in the `PATH'.
      The bug is fixed in OpenBSD 2.7, so either upgrade or use GNU m4.
 
-Sparc V8
-     Using CPU target `sparcv8' or `supersparc' on relevant systems will
-     give a significant performance increase over the V7 code.
+Power CPU Types
+     In GMP, CPU types `power*' and `powerpc*' will each use
+     instructions not available on the other, so it's important to
+     choose the right one for the CPU that will be used.  Currently GMP
+     has no assembler code support for using just the common
+     instruction subset.  To get executables that run on both, the
+     current suggestion is to use the generic C code (CPU `none'),
+     possibly with appropriate compiler options (like `-mcpu=common' for
+     `gcc').  CPU `rs6000' (which is not a CPU but a family of
+     workstations) is accepted by `config.sub', but is currently
+     equivalent to `none'.
+
+Sparc CPU Types
+     `sparcv8' or `supersparc' on relevant systems will give a
+     significant performance increase over the V7 code.
 
 SunOS 4
      `/usr/bin/m4' lacks various features needed to process `.asm'
@@ -456,26 +816,34 @@ SunOS 4
      `/usr/5bin/m4', which we believe is always available (if not then
      use GNU m4).
 
-x86 Pentium and PentiumPro
-     The Intel Pentium P5 code is good for its intended P5, but quite
-     slow when run on Intel P6 class chips (PPro, P-II, P-III).  `i386'
-     is a better choice if you're making binaries that must run on both.
+x86 CPU Types
+     `i386' selects generic code which will run reasonably well on all
+     x86 chips.
 
-x86 MMX and old GAS
-     Old versions of GAS don't support MMX instructions, in particular
-     version 1.92.3 that comes with FreeBSD 2.2.8 doesn't (and
-     unfortunately there's no newer assembler for that system).
+     `i586', `pentium' or `pentiummmx' code is good for the intended P5
+     Pentium chips, but quite slow when run on Intel P6 class chips
+     (PPro, P-II, P-III).  `i386' is a better choice when making
+     binaries that must run on both.
 
-     If the target CPU has MMX code but the assembler doesn't support
+     `pentium4' and an SSE2 capable assembler are important for best
+     results on Pentium 4.  The specific code is for instance roughly a
+     2x to 3x speedup over the generic `i386' code.
+
+x86 MMX and SSE2 Code
+     If the CPU selected has MMX code but the assembler doesn't support
      it, a warning is given and non-MMX code is used instead.  This
      will be an inferior build, since the MMX code that's present is
      there because it's faster than the corresponding plain integer
-     code.
+     code.  The same applies to SSE2.
 
-x86 GCC 2.95.2 `-march=pentiumpro'
-     GCC 2.95.2 miscompiles `mpz/powm.c' when `-march=pentiumpro' is
-     used, so that option is omitted from the `CFLAGS' chosen for
-     relevant CPUs.  The problem is believed to be fixed in GCC 2.96.
+     Old versions of `gas' don't support MMX instructions, in particular
+     version 1.92.3 that comes with FreeBSD 2.2.8 doesn't (and
+     unfortunately there's no newer assembler for that system).
+
+     Solaris 2.6 and 2.7 `as' generate incorrect object code for
+     register to register `movq' instructions, and so can't be used for
+     MMX code.  Install a recent `gas' if MMX code is wanted on these
+     systems.
 
 
 File: gmp.info,  Node: Known Build Problems,  Prev: Notes for Particular Systems,  Up: Installing GMP
@@ -483,22 +851,78 @@ File: gmp.info,  Node: Known Build Problems,  Prev: Notes for Particular Systems
 Known Build Problems
 ====================
 
-   You might find more up-to-date information at
-`http://www.swox.com/gmp/'.
+   You might find more up-to-date information at `http://swox.com/gmp/'.
 
-Generic C on a 64-bit system
-     When making a generic C build using `--target=none' on a 64-bit
-     system (meaning where `unsigned long' is 64 bits),
-     `BITS_PER_MP_LIMB', `BITS_PER_LONGINT' and `BYTES_PER_MP_LIMB' in
-     `mpn/generic/gmp-mparam.h' need to be changed to 64 and 8.  This
-     will hopefully be automated in a future version of GMP.
+DJGPP
+     The DJGPP port of `bash' 2.03 is unable to run the `configure'
+     script, it exits silently, having died writing a preamble to
+     `config.log'.  Use `bash' 2.04 or higher.
+
+     `make all' was found to run out of memory during the final
+     `libgmp.la' link on one system tested, despite having 64Mb
+     available.  A separate `make libgmp.la' helped, perhaps recursing
+     into the various subdirectories uses up memory.
+
+`DESTDIR' and shared `libgmpxx'
+     `make install DESTDIR=/my/staging/area', or the same with a
+     `prefix' override, to install to a temporary directory is not
+     fully supported by current versions of libtool when building a
+     shared version of a library which depends on another being built
+     at the same time, like `libgmpxx' and `libgmp'.
+
+     The problem is that `libgmpxx' is relinked at the install stage to
+     ensure that if the system puts a hard-coded path to `libgmp' within
+     `libgmpxx' then that path will be correct.  Naturally the linker is
+     directed to look only at the final location, not the staging area,
+     so if `libgmp' is not already in that final location then the link
+     will fail.
+
+     A workaround for this on SVR4 style systems, such as GNU/Linux,
+     where paths are not hard-coded, is to include the staging area in
+     the linker's search using `LD_LIBRARY_PATH'.  For example with
+     `--prefix=/usr' but installing under `/my/staging/area',
+
+          LD_LIBRARY_PATH=/my/staging/area/usr/lib \
+            make install DESTDIR=/my/staging/area
+
+GNU binutils `strip' prior to 2.12
+     `strip' from GNU binutils 2.11 and earlier should not be used on
+     the static libraries `libgmp.a' and `libmp.a' since it will
+     discard all but the last of multiple archive members with the same
+     name, like the three versions of `init.o' in `libgmp.a'.  Binutils
+     2.12 or higher can be used successfully.
+
+     The shared libraries `libgmp.so' and `libmp.so' are not affected by
+     this and any version of `strip' can be used on them.
+
+`make' syntax error
+     On certain versions of SCO OpenServer 5 and IRIX 6.5 the native
+     `make' is unable to handle the long dependencies list for
+     `libgmp.la'.  The symptom is a "syntax error" on the following
+     line of the top-level `Makefile'.
+
+          libgmp.la: $(libgmp_la_OBJECTS) $(libgmp_la_DEPENDENCIES)
+
+     Either use GNU Make, or as a workaround remove
+     `$(libgmp_la_DEPENDENCIES)' from that line (which will make the
+     initial build work, but if any recompiling is done `libgmp.la'
+     might not be rebuilt).
+
+MacOS X and GCC
+     Libtool currently only knows how to create shared libraries on
+     MacOS X using the native `cc' (which is a modified GCC), not a
+     plain GCC.  A static-only build should work though
+     (`--disable-shared').
+
+     Also, libtool currently cannot build C++ shared libraries on MacOS
+     X, so if `--enable-cxx' is desired then `--disable-shared' must be
+     used.  Hopefully this will be fixed in the future.
 
 NeXT prior to 3.3
      The system compiler on old versions of NeXT was a massacred and
      old GCC, even if it called itself `cc'.  This compiler cannot be
-     used to build GMP, you need to get a real GCC, and install that
-     before you compile GMP.  (NeXT may have fixed this in release 3.3
-     of their system.)
+     used to build GMP, you need to get a real GCC, and install that.
+     (NeXT may have fixed this in release 3.3 of their system.)
 
 POWER and PowerPC
      Bugs in GCC 2.7.2 (and 2.6.3) mean it can't be used to compile GMP
@@ -509,47 +933,25 @@ Sequent Symmetry
      Use the GNU assembler instead of the system assembler, since the
      latter has serious bugs.
 
-Stripped Libraries
-     GNU binutils `strip' should not be used on the static libraries
-     `libgmp.a' and `libmp.a', neither directly nor via `make
-     install-strip'.  It can be used on the shared libraries
-     `libgmp.so' and `libmp.so' though.
+Solaris 2.6
+     The system `sed' prints an error "Output line too long" when
+     libtool builds `libgmp.la'.  This doesn't seem to cause any
+     obvious ill effects, but GNU `sed' is recommended, to avoid any
+     doubt.
 
-     Currently (binutils 2.10.0), `strip' extracts archives into a
-     single directory, but GMP contains multiple object files of the
-     same name (eg. three versions of `init.o'), and they overwrite
-     each other, leaving only the one that happens to be last.
+Sparc Solaris 2.7 with gcc 2.95.2 in ABI=32
+     A shared library build of GMP seems to fail in this combination,
+     it builds but then fails the tests, apparently due to some
+     incorrect data relocations within `gmp_randinit_lc_2exp_size'.
+     The exact cause is unknown, `--disable-shared' is recommended.
 
-     If stripped static libraries are wanted, the suggested workaround
-     is to build normally, strip the separate object files, and do
-     another `make all' to rebuild.  Alternately `CFLAGS' with `-g'
-     omitted can always be used if it's just debugging which is
-     unwanted.
-
-SunOS 4 Native Tools
-     The setting for `GSYM_PREFIX' in `config.m4' may be incorrectly
-     determined when using the native `grep', leading at link-time to
-     undefined symbols like `___gmpn_add_n'.  To fix this, after running
-     `./configure', change the relevant line in `config.m4' to
-     `define(<GSYM_PREFIX>, <_>)'.
-
-     The `ranlib' command will need to be run manually when building a
-     static library with the native `ar'.  After `make', run `ranlib
-     .libs/libgmp.a', and when using `--enable-mpbsd' run `ranlib
-     .libs/libmp.a' too.
-
-`version.c' compilation
-     The current `./configure' relies on certain features of `sed' that
-     some old systems don't have.  One symptom is `VERSION' not being
-     set correctly in the generated `config.h', leading to `version.c'
-     failing to compile.  Irix 5.3, MIPS RISC/OS and Ultrix 4.4 are
-     believed to be affected.  GNU `sed' is recommended, though it
-     might be possible to build by editing `config.h' manually instead.
-
-VAX running Ultrix
-     You need to build and install the GNU assembler before you compile
-     GMP.  The VAX assembly in GMP uses an instruction (`jsobgtr') that
-     cannot be assembled by the Ultrix assembler.
+Windows DLL test programs
+     When creating a DLL version of `libgmp', libtool creates wrapper
+     scripts like `t-mul' for programs that would normally be
+     `t-mul.exe', in order to setup the right library paths etc.  This
+     works fine, but the absence of `t-mul.exe' etc causes `make' to
+     think they need recompiling every time, which is an annoyance when
+     re-running a `make check'.
 
 
 File: gmp.info,  Node: GMP Basics,  Next: Reporting Bugs,  Prev: Installing GMP,  Up: Top
@@ -557,25 +959,72 @@ File: gmp.info,  Node: GMP Basics,  Next: Reporting Bugs,  Prev: Installing GMP,
 GMP Basics
 **********
 
-   All declarations needed to use GMP are collected in the include file
-`gmp.h'.  It is designed to work with both C and C++ compilers.
-
    *Using functions, macros, data types, etc. not documented in this
 manual is strongly discouraged.  If you do so your application is
 guaranteed to be incompatible with future versions of GMP.*
 
 * Menu:
 
-* Nomenclature and Types::      	Which data types are there?
-* Function Classes::            	How the functions are organized.
-* GMP Variable Conventions::     	Some rules and hints about variables.
-* GMP and Reentrancy::           	What about reentrancy?
-* Useful Macros and Constants::  	Convenient helpers.
-* Compatibility with older versions::	Compatibility issues.
-* Getting the Latest Version of GMP::  	How to get the software.
+* Headers and Libraries::
+* Nomenclature and Types::
+* Function Classes::
+* Variable Conventions::
+* Parameter Conventions::
+* Memory Management::
+* Reentrancy::
+* Useful Macros and Constants::
+* Compatibility with older versions::
+* Demonstration Programs::
+* Efficiency::
+* Debugging::
+* Profiling::
+* Autoconf::
+* Emacs::
 
 
-File: gmp.info,  Node: Nomenclature and Types,  Next: Function Classes,  Prev: GMP Basics,  Up: GMP Basics
+File: gmp.info,  Node: Headers and Libraries,  Next: Nomenclature and Types,  Prev: GMP Basics,  Up: GMP Basics
+
+Headers and Libraries
+=====================
+
+   All declarations needed to use GMP are collected in the include file
+`gmp.h'.  It is designed to work with both C and C++ compilers.
+
+     #include <gmp.h>
+
+   Note however that prototypes for GMP functions with `FILE *'
+parameters are only provided if `<stdio.h>' is included too.
+
+     #include <stdio.h>
+     #include <gmp.h>
+
+   Likewise `<stdarg.h>' (or `<varargs.h>') is required for prototypes
+with `va_list' parameters, such as `gmp_vprintf'.  And `<obstack.h>'
+for prototypes with `struct obstack' parameters, such as
+`gmp_obstack_printf', when available.
+
+   All programs using GMP must link against the `libgmp' library.  On a
+typical Unix-like system this can be done with `-lgmp', for example
+
+     gcc myprogram.c -lgmp
+
+   GMP C++ functions are in a separate `libgmpxx' library.  This is
+built and installed if C++ support has been enabled (*note Build
+Options::).  For example,
+
+     g++ mycxxprog.cc -lgmpxx -lgmp
+
+   GMP is built using Libtool and an application can use that to link
+if desired, *note Shared library support for GNU: (libtool)Top.
+
+   If GMP has been installed to a non-standard location then it may be
+necessary to use `-I' and `-L' compiler options to point to the right
+directories, and some sort of run-time path for a shared library.
+Consult your compiler documentation, for instance *Note Introduction:
+(gcc)Top.
+
+
+File: gmp.info,  Node: Nomenclature and Types,  Next: Function Classes,  Prev: Headers and Libraries,  Up: GMP Basics
 
 Nomenclature and Types
 ======================
@@ -600,13 +1049,13 @@ mantissa with a limited precision exponent.  The C data type for such
 objects is `mpf_t'.
 
 A "limb" means the part of a multi-precision number that fits in a
-single word.  (We chose this word because a limb of the human body is
-analogous to a digit, only larger, and containing several digits.)
-Normally a limb contains 32 or 64 bits.  The C data type for a limb is
-`mp_limb_t'.
+single machine word.  (We chose this word because a limb of the human
+body is analogous to a digit, only larger, and containing several
+digits.)  Normally a limb is 32 or 64 bits.  The C data type for a limb
+is `mp_limb_t'.
 
 
-File: gmp.info,  Node: Function Classes,  Next: GMP Variable Conventions,  Prev: Nomenclature and Types,  Up: GMP Basics
+File: gmp.info,  Node: Function Classes,  Next: Variable Conventions,  Prev: Nomenclature and Types,  Up: GMP Basics
 
 Function Classes
 ================
@@ -614,43 +1063,41 @@ Function Classes
    There are six classes of functions in the GMP library:
 
   1. Functions for signed integer arithmetic, with names beginning with
-     `mpz_'.  The associated type is `mpz_t'.  There are about 100
+     `mpz_'.  The associated type is `mpz_t'.  There are about 150
      functions in this class.
 
   2. Functions for rational number arithmetic, with names beginning with
-     `mpq_'.  The associated type is `mpq_t'.  There are about 20
-     functions in this class, but the functions in the previous class
-     can be used for performing arithmetic on the numerator and
-     denominator separately.
+     `mpq_'.  The associated type is `mpq_t'.  There are about 40
+     functions in this class, but the integer functions can be used for
+     arithmetic on the numerator and denominator separately.
 
   3. Functions for floating-point arithmetic, with names beginning with
-     `mpf_'.  The associated type is `mpf_t'.  There are about 50
+     `mpf_'.  The associated type is `mpf_t'.  There are about 60
      functions is this class.
 
-  4. Functions compatible with Berkeley GMP, such as `itom', `madd', and
+  4. Functions compatible with Berkeley MP, such as `itom', `madd', and
      `mult'.  The associated type is `MINT'.
 
   5. Fast low-level functions that operate on natural numbers.  These
      are used by the functions in the preceding groups, and you can
      also call them directly from very time-critical user programs.
-     These functions' names begin with `mpn_'.  There are about 30
-     (hard-to-use) functions in this class.
-
-     The associated type is array of `mp_limb_t'.
+     These functions' names begin with `mpn_'.  The associated type is
+     array of `mp_limb_t'.  There are about 30 (hard-to-use) functions
+     in this class.
 
   6. Miscellaneous functions.  Functions for setting up custom
      allocation and functions for generating random numbers.
 
 
-File: gmp.info,  Node: GMP Variable Conventions,  Next: GMP and Reentrancy,  Prev: Function Classes,  Up: GMP Basics
+File: gmp.info,  Node: Variable Conventions,  Next: Parameter Conventions,  Prev: Function Classes,  Up: GMP Basics
 
-GMP Variable Conventions
-========================
+Variable Conventions
+====================
 
-   As a general rule, all GMP functions expect output arguments before
-input arguments.  This notation is based on an analogy with the
-assignment operator.  (The BSD MP compatibility functions disobey this
-rule, having the output argument(s) last.)
+   GMP functions generally have output arguments before input
+arguments.  This notation is by analogy with the assignment operator.
+The BSD MP compatibility functions are exceptions, having the output
+arguments last.
 
    GMP lets you use the same variable for both input and output in one
 call.  For example, the main function for integer multiplication,
@@ -665,39 +1112,55 @@ functions for that purpose.  Which function to use depends on the type
 of variable.  See the chapters on integer functions, rational number
 functions, and floating-point functions for details.
 
-   A variable should only be initialized once, or at least cleared out
+   A variable should only be initialized once, or at least cleared
 between each initialization.  After a variable has been initialized, it
 may be assigned to any number of times.
 
-   For efficiency reasons, avoid initializing and clearing out a GMP
-variable in a loop.  Instead, initialize it before entering the loop,
-and clear it out after the loop has exited.
-
-   GMP variables are small, containing only a couple of sizes, and
-pointers to allocated data.  Once you have initialized a GMP variable,
-you don't need to worry about space allocation.  All functions in GMP
-automatically allocate additional space when a variable does not
-already have enough.  They do not, however, reduce the space when a
-smaller value is stored.  Most of the time this policy is best, since
-it avoids frequent re-allocation.
-
-   When a variable of type `mpz_t' is used as a function parameter, it's
-effectively a call-by-reference, meaning anything the function does to
-it will be be done to the original in the caller.  When a function is
-going to return an `mpz_t' result, it should provide a separate
-parameter or parameters that it sets, like the GMP library functions
-do.  A `return' of an `mpz_t' doesn't return the object, only a pointer
-to it, and this is almost certainly not what you want.  All this
-applies to `mpq_t' and `mpf_t' too.
-
-   Here's an example function accepting an `mpz_t' parameter, doing a
-certain calculation, and returning a result.
+   For efficiency reasons, avoid excessive initializing and clearing.
+In general, initialize near the start of a function and clear near the
+end.  For example,
 
      void
-     myfunction (mpz_t result, mpz_t param, unsigned long n)
+     foo (void)
+     {
+       mpz_t  n;
+       int    i;
+       mpz_init (n);
+       for (i = 1; i < 100; i++)
+         {
+           mpz_mul (n, ...);
+           mpz_fdiv_q (n, ...);
+           ...
+         }
+       mpz_clear (n);
+     }
+
+
+File: gmp.info,  Node: Parameter Conventions,  Next: Memory Management,  Prev: Variable Conventions,  Up: GMP Basics
+
+Parameter Conventions
+=====================
+
+   When a GMP variable is used as a function parameter, it's
+effectively a call-by-reference, meaning if the function stores a value
+there it will change the original in the caller.  Parameters which are
+input-only can be designated `const' to provoke a compiler error or
+warning on attempting to modify them.
+
+   When a function is going to return a GMP result, it should designate
+a parameter that it sets, like the library functions do.  More than one
+value can be returned by having more than one output parameter, again
+like the library functions.  A `return' of an `mpz_t' etc doesn't
+return the object, only a pointer, and this is almost certainly not
+what's wanted.
+
+   Here's an example accepting an `mpz_t' parameter, doing a
+calculation, and storing the result to the indicated parameter.
+
+     void
+     foo (mpz_t result, const mpz_t param, unsigned long n)
      {
        unsigned long  i;
-     
        mpz_mul_ui (result, param, n);
        for (i = 1; i < n; i++)
          mpz_add_ui (result, result, i*7);
@@ -709,412 +1172,46 @@ certain calculation, and returning a result.
        mpz_t  r, n;
        mpz_init (r);
        mpz_init_set_str (n, "123456", 0);
-     
-       myfunction (r, n, 20L);
-       mpz_out_str (stdout, 10, r); printf ("\n");
-     
+       foo (r, n, 20L);
+       gmp_printf ("%Zd\n", r);
        return 0;
      }
 
-   This example will work if `result' and `param' are the same
-variable, just like the library functions.  But sometimes this is
-tricky to arrange, and an application might not want to bother for its
-own subroutines.
+   `foo' works even if the mainline passes the same variable for
+`param' and `result', just like the library functions.  But sometimes
+it's tricky to make that work, and an application might not want to
+bother supporting that sort of thing.
 
-   `mpz_t' is actually implemented as a one-element array of a certain
-structure type.  This is why using it to declare a variable gives an
-object with the fields GMP needs, but then using it as a parameter
-passes a pointer to the object.  Note that the actual contents of an
-`mpz_t' are for internal use only and you should not access them
-directly if you want your code to be compatible with future GMP
+   For interest, the GMP types `mpz_t' etc are implemented as
+one-element arrays of certain structures.  This is why declaring a
+variable creates an object with the fields GMP needs, but then using it
+as a parameter passes a pointer to the object.  Note that the actual
+fields in each `mpz_t' etc are for internal use only and should not be
+accessed directly by code that expects to be compatible with future GMP
 releases.
 
 
-File: gmp.info,  Node: GMP and Reentrancy,  Next: Useful Macros and Constants,  Prev: GMP Variable Conventions,  Up: GMP Basics
-
-GMP and Reentrancy
-==================
-
-   The GMP code is reentrant and thread-safe, with some exceptions:
-
-   * The function `mpf_set_default_prec' saves the selected precision in
-     a global variable.
-
-   * The function `mp_set_memory_functions' uses several global
-     variables for storing the selected memory allocation functions.
-
-   * If the memory allocation functions set by a call to
-     `mp_set_memory_functions' (or `malloc' and friends by default) are
-     not reentrant, GMP will not be reentrant either.
-
-   * The old random number functions (`mpz_random', etc) use a random
-     number generator from the C library, usually `mrand48' or
-     `random'.  These routines are not reentrant, since they rely on
-     global state.  (However the newer random number functions that
-     accept a `gmp_randstate_t' parameter are reentrant.)
-
-   * If `alloca' is not available, or GMP is configured with
-     `--disable-alloca', the library is not reentrant, due to the
-     current implementation of `stack-alloc.c'.  In the generated
-     `config.h', `USE_STACK_ALLOC' set to 1 will mean not reentrant.
-
-
-File: gmp.info,  Node: Useful Macros and Constants,  Next: Compatibility with older versions,  Prev: GMP and Reentrancy,  Up: GMP Basics
-
-Useful Macros and Constants
-===========================
-
- - Global Constant: const int mp_bits_per_limb
-     The number of bits per limb.
-
- - Macro: __GNU_MP_VERSION
- - Macro: __GNU_MP_VERSION_MINOR
- - Macro: __GNU_MP_VERSION_PATCHLEVEL
-     The major and minor GMP version, and patch level, respectively, as
-     integers.  For GMP i.j, these numbers will be i, j, and 0,
-     respectively.  For GMP i.j.k, these numbers will be i, j, and k,
-     respectively.
-
-
-File: gmp.info,  Node: Compatibility with older versions,  Next: Getting the Latest Version of GMP,  Prev: Useful Macros and Constants,  Up: GMP Basics
-
-Compatibility with older versions
-=================================
-
-   This version of GMP is upwardly binary compatible with versions 3.0
-and 3.0.1, and upwardly compatible at the source level with versions
-2.0, 2.0.1, and 2.0.2, with the following exceptions.
-
-   * `mpn_gcd' had its source arguments swapped as of GMP 3.0 for
-     consistency with other `mpn' functions.
-
-   * `mpf_get_prec' counted precision slightly differently in GMP 3.0
-     and 3.0.1, but in 3.1 has reverted to the 2.0.x style.
-
-
-   There are a number of compatibility issues between GMP 1 and GMP 2
-that of course also apply when porting applications from GMP 1 to GMP
-3.  Please see the GMP 2 manual for details.
-
-
-File: gmp.info,  Node: Getting the Latest Version of GMP,  Prev: Compatibility with older versions,  Up: GMP Basics
-
-Getting the Latest Version of GMP
-=================================
-
-   The latest version of the GMP library is available at
-`ftp://ftp.gnu.org/pub/gnu/gmp'.  Many sites around the world mirror
-`ftp.gnu.org'; please use a mirror site near you, see
-`http://www.gnu.org/order/ftp.html'.
-
-
-File: gmp.info,  Node: Reporting Bugs,  Next: Integer Functions,  Prev: GMP Basics,  Up: Top
-
-Reporting Bugs
-**************
-
-   If you think you have found a bug in the GMP library, please
-investigate it and report it.  We have made this library available to
-you, and it is not too much to ask you to report the bugs you find.
-Before you report a bug, you may want to check
-`http://www.swox.com/gmp/' for patches for this release.
-
-   Please include the following in any report,
-
-   * The GMP version number, and if pre-packaged or patched then say so.
-
-   * A test program that makes it possible for us to reproduce the bug.
-     Include instructions on how to run the program.
-
-   * A description of what is wrong.  If the results are incorrect, in
-     what way.  If you get a crash, say so.
-
-   * If you get a crash, include a stack backtrace from the debugger if
-     it's informative (`where' in `gdb', or `$C' in `adb').
-
-   * *Please do not send core dumps, executables or `strace's.*
-
-   * The configuration options you used when building GMP, if any.
-
-   * The name of the compiler and its version.  For `gcc', get the
-     version with `gcc -v', otherwise perhaps `what `which cc`', or
-     similar.
-
-   * The output from running `uname -a'.
-
-   * The output from running `./config.guess'.
-
-   * If the bug is related to `configure', then the contents of
-     `config.log'.
-
-   * If the bug is related to an `asm' file not assembling, then the
-     contents of `config.m4'.
-
-   It is not uncommon that an observed problem is actually due to a bug
-in the compiler; the GMP code tends to explore interesting corners in
-compilers.
-
-   If your bug report is good, we will do our best to help you get a
-corrected version of the library; if the bug report is poor, we won't
-do anything about it (except maybe ask you to send a better report).
-
-   Send your report to: <bug-gmp@gnu.org>.
-
-   If you think something in this manual is unclear, or downright
-incorrect, or if the language needs to be improved, please send a note
-to the same address.
-
-
-File: gmp.info,  Node: Integer Functions,  Next: Rational Number Functions,  Prev: Reporting Bugs,  Up: Top
-
-Integer Functions
-*****************
-
-   This chapter describes the GMP functions for performing integer
-arithmetic.  These functions start with the prefix `mpz_'.
-
-   GMP integers are stored in objects of type `mpz_t'.
-
-* Menu:
-
-* Initializing Integers::
-* Assigning Integers::
-* Simultaneous Integer Init & Assign::
-* Converting Integers::
-* Integer Arithmetic::
-* Integer Division::
-* Integer Exponentiation::
-* Integer Roots::
-* Number Theoretic Functions::
-* Integer Comparisons::
-* Integer Logic and Bit Fiddling::
-* I/O of Integers::
-* Integer Random Numbers::
-* Miscellaneous Integer Functions::
-
-
-File: gmp.info,  Node: Initializing Integers,  Next: Assigning Integers,  Prev: Integer Functions,  Up: Integer Functions
-
-Initialization Functions
-========================
-
-   The functions for integer arithmetic assume that all integer objects
-are initialized.  You do that by calling the function `mpz_init'.
-
- - Function: void mpz_init (mpz_t INTEGER)
-     Initialize INTEGER with limb space and set the initial numeric
-     value to 0.  Each variable should normally only be initialized
-     once, or at least cleared out (using `mpz_clear') between each
-     initialization.
-
-   Here is an example of using `mpz_init':
-
-     {
-       mpz_t integ;
-       mpz_init (integ);
-       ...
-       mpz_add (integ, ...);
-       ...
-       mpz_sub (integ, ...);
-     
-       /* Unless the program is about to exit, do ... */
-       mpz_clear (integ);
-     }
-
-As you can see, you can store new values any number of times, once an
-object is initialized.
-
- - Function: void mpz_clear (mpz_t INTEGER)
-     Free the limb space occupied by INTEGER.  Make sure to call this
-     function for all `mpz_t' variables when you are done with them.
-
- - Function: void * _mpz_realloc (mpz_t INTEGER, mp_size_t NEW_ALLOC)
-     Change the limb space allocation to NEW_ALLOC limbs.  This
-     function is not normally called from user code, but it can be used
-     to give memory back to the heap, or to increase the space of a
-     variable to avoid repeated automatic re-allocation.
-
- - Function: void mpz_array_init (mpz_t INTEGER_ARRAY[], size_t
-          ARRAY_SIZE, mp_size_t FIXED_NUM_BITS)
-     Allocate *fixed* limb space for all ARRAY_SIZE integers in
-     INTEGER_ARRAY.  The fixed allocation for each integer in the array
-     is enough to store FIXED_NUM_BITS.  If the fixed space will be
-     insufficient for storing the result of a subsequent calculation,
-     the result is unpredictable.
-
-     This function is useful for decreasing the working set for some
-     algorithms that use large integer arrays.
-
-     There is no way to de-allocate the storage allocated by this
-     function.  Don't call `mpz_clear'!
-
-
-File: gmp.info,  Node: Assigning Integers,  Next: Simultaneous Integer Init & Assign,  Prev: Initializing Integers,  Up: Integer Functions
-
-Assignment Functions
-====================
-
-   These functions assign new values to already initialized integers
-(*note Initializing Integers::).
-
- - Function: void mpz_set (mpz_t ROP, mpz_t OP)
- - Function: void mpz_set_ui (mpz_t ROP, unsigned long int OP)
- - Function: void mpz_set_si (mpz_t ROP, signed long int OP)
- - Function: void mpz_set_d (mpz_t ROP, double OP)
- - Function: void mpz_set_q (mpz_t ROP, mpq_t OP)
- - Function: void mpz_set_f (mpz_t ROP, mpf_t OP)
-     Set the value of ROP from OP.
-
- - Function: int mpz_set_str (mpz_t ROP, char *STR, int BASE)
-     Set the value of ROP from STR, a '\0'-terminated C string in base
-     BASE.  White space is allowed in the string, and is simply
-     ignored.  The base may vary from 2 to 36.  If BASE is 0, the
-     actual base is determined from the leading characters: if the
-     first two characters are `0x' or `0X', hexadecimal is assumed,
-     otherwise if the first character is `0', octal is assumed,
-     otherwise decimal is assumed.
-
-     This function returns 0 if the entire string up to the '\0' is a
-     valid number in base BASE.  Otherwise it returns -1.
-
-     [It turns out that it is not entirely true that this function
-     ignores white-space.  It does ignore it between digits, but not
-     after a minus sign or within or after "0x".  We are considering
-     changing the definition of this function, making it fail when
-     there is any white-space in the input, since that makes a lot of
-     sense.  Please tell us your opinion about this change.  Do you
-     really want it to accept "3 14" as meaning 314 as it does now?]
-
- - Function: void mpz_swap (mpz_t ROP1, mpz_t ROP2)
-     Swap the values ROP1 and ROP2 efficiently.
-
-
-File: gmp.info,  Node: Simultaneous Integer Init & Assign,  Next: Converting Integers,  Prev: Assigning Integers,  Up: Integer Functions
-
-Combined Initialization and Assignment Functions
-================================================
-
-   For convenience, GMP provides a parallel series of
-initialize-and-set functions which initialize the output and then store
-the value there.  These functions' names have the form `mpz_init_set...'
-
-   Here is an example of using one:
-
-     {
-       mpz_t pie;
-       mpz_init_set_str (pie, "3141592653589793238462643383279502884", 10);
-       ...
-       mpz_sub (pie, ...);
-       ...
-       mpz_clear (pie);
-     }
-
-Once the integer has been initialized by any of the `mpz_init_set...'
-functions, it can be used as the source or destination operand for the
-ordinary integer functions.  Don't use an initialize-and-set function
-on a variable already initialized!
-
- - Function: void mpz_init_set (mpz_t ROP, mpz_t OP)
- - Function: void mpz_init_set_ui (mpz_t ROP, unsigned long int OP)
- - Function: void mpz_init_set_si (mpz_t ROP, signed long int OP)
- - Function: void mpz_init_set_d (mpz_t ROP, double OP)
-     Initialize ROP with limb space and set the initial numeric value
-     from OP.
-
- - Function: int mpz_init_set_str (mpz_t ROP, char *STR, int BASE)
-     Initialize ROP and set its value like `mpz_set_str' (see its
-     documentation above for details).
-
-     If the string is a correct base BASE number, the function returns
-     0; if an error occurs it returns -1.  ROP is initialized even if
-     an error occurs.  (I.e., you have to call `mpz_clear' for it.)
-
-
-File: gmp.info,  Node: Converting Integers,  Next: Integer Arithmetic,  Prev: Simultaneous Integer Init & Assign,  Up: Integer Functions
-
-Conversion Functions
-====================
-
-   This section describes functions for converting GMP integers to
-standard C types.  Functions for converting _to_ GMP integers are
-described in *Note Assigning Integers:: and *Note I/O of Integers::.
-
- - Function: mp_limb_t mpz_getlimbn (mpz_t OP, mp_size_t N)
-     Return limb #N from OP.  This function allows for very efficient
-     decomposition of a number in its limbs.
-
-     The function `mpz_size' can be used to determine the useful range
-     for N.
-
- - Function: unsigned long int mpz_get_ui (mpz_t OP)
-     Return the least significant part from OP.  This function combined
-     with
-     `mpz_tdiv_q_2exp(..., OP, CHAR_BIT*sizeof(unsigned long int))' can
-     be used to decompose an integer into unsigned longs.
-
- - Function: signed long int mpz_get_si (mpz_t OP)
-     If OP fits into a `signed long int' return the value of OP.
-     Otherwise return the least significant part of OP, with the same
-     sign as OP.
-
-     If OP is too large to fit in a `signed long int', the returned
-     result is probably not very useful.  To find out if the value will
-     fit, use the function `mpz_fits_slong_p'.
-
- - Function: double mpz_get_d (mpz_t OP)
-     Convert OP to a double.
-
- - Function: char * mpz_get_str (char *STR, int BASE, mpz_t OP)
-     Convert OP to a string of digits in base BASE.  The base may vary
-     from 2 to 36.
-
-     If STR is `NULL', space for the result string is allocated using
-     the default allocation function.
-
-     If STR is not `NULL', it should point to a block of storage enough
-     large for the result.  To find out the right amount of space to
-     provide for STR, use `mpz_sizeinbase (OP, BASE) + 2'.  The two
-     extra bytes are for a possible minus sign, and for the terminating
-     null character.
-
-     A pointer to the result string is returned.  This pointer will
-     will either equal STR, or if that is `NULL', will point to the
-     allocated storage.
-
-
-File: gmp.info,  Node: Integer Arithmetic,  Next: Integer Division,  Prev: Converting Integers,  Up: Integer Functions
-
-Arithmetic Functions
-====================
-
- - Function: void mpz_add (mpz_t ROP, mpz_t OP1, mpz_t OP2)
- - Function: void mpz_add_ui (mpz_t ROP, mpz_t OP1, unsigned long int
-          OP2)
-     Set ROP to OP1 + OP2.
-
- - Function: void mpz_sub (mpz_t ROP, mpz_t OP1, mpz_t OP2)
- - Function: void mpz_sub_ui (mpz_t ROP, mpz_t OP1, unsigned long int
-          OP2)
-     Set ROP to OP1 - OP2.
-
- - Function: void mpz_mul (mpz_t ROP, mpz_t OP1, mpz_t OP2)
- - Function: void mpz_mul_si (mpz_t ROP, mpz_t OP1, long int OP2)
- - Function: void mpz_mul_ui (mpz_t ROP, mpz_t OP1, unsigned long int
-          OP2)
-     Set ROP to OP1 times OP2.
-
- - Function: void mpz_addmul_ui (mpz_t ROP, mpz_t OP1, unsigned long
-          int OP2)
-     Add OP1 times OP2 to ROP.
-
- - Function: void mpz_mul_2exp (mpz_t ROP, mpz_t OP1, unsigned long int
-          OP2)
-     Set ROP to OP1 times 2 raised to OP2.  This operation can also be
-     defined as a left shift, OP2 steps.
-
- - Function: void mpz_neg (mpz_t ROP, mpz_t OP)
-     Set ROP to -OP.
-
- - Function: void mpz_abs (mpz_t ROP, mpz_t OP)
-     Set ROP to the absolute value of OP.
+File: gmp.info,  Node: Memory Management,  Next: Reentrancy,  Prev: Parameter Conventions,  Up: GMP Basics
+
+Memory Management
+=================
+
+   The GMP types like `mpz_t' are small, containing only a couple of
+sizes, and pointers to allocated data.  Once a variable is initialized,
+GMP takes care of all space allocation.  Additional space is allocated
+whenever a variable doesn't have enough.
+
+   `mpz_t' and `mpq_t' variables never reduce their allocated space.
+Normally this is the best policy, since it avoids frequent reallocation.
+Applications that need to return memory to the heap at some particular
+point can use `mpz_realloc2', or clear variables no longer needed.
+
+   `mpf_t' variables, in the current implementation, use a fixed amount
+of space, determined by the chosen precision and allocated at
+initialization, so their size doesn't change.
+
+   All memory is allocated using `malloc' and friends by default, but
+this can be changed, see *Note Custom Allocation::.  Temporary memory
+on the stack is also used (via `alloca'), but this can be changed at
+build-time if desired, see *Note Build Options::.
 

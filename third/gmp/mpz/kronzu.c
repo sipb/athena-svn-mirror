@@ -1,7 +1,6 @@
-/* mpz_kronecker_ui -- Kronecker/Jacobi symbol. */
+/* mpz_kronecker_ui -- mpz+ulong Kronecker/Jacobi symbol.
 
-/*
-Copyright (C) 1999, 2000 Free Software Foundation, Inc.
+Copyright 1999, 2000, 2001, 2002 Free Software Foundation, Inc.
 
 This file is part of the GNU MP Library.
 
@@ -18,49 +17,71 @@ License for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with the GNU MP Library; see the file COPYING.LIB.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-MA 02111-1307, USA.
-*/
+MA 02111-1307, USA. */
 
 #include "gmp.h"
 #include "gmp-impl.h"
 #include "longlong.h"
 
 
-/* This function is expected to be often used with b an odd prime, so the
-   code for odd b is nice and short. */
+/* This implementation depends on BITS_PER_MP_LIMB being even, so that
+   (a/2)^BITS_PER_MP_LIMB = 1 and so there's no need to pay attention to how
+   many low zero limbs are stripped.  */
+#if BITS_PER_MP_LIMB % 2 != 0
+Error, error, unsupported BITS_PER_MP_LIMB
+#endif
+
 
 int
-#if __STDC__
 mpz_kronecker_ui (mpz_srcptr a, unsigned long b)
-#else
-mpz_kronecker_ui (a, b)
-     mpz_srcptr    a;
-     unsigned long b;
-#endif
 {
-  int  twos;
+  mp_srcptr  a_ptr = PTR(a);
+  mp_size_t  a_size;
+  mp_limb_t  a_rem;
+  int        result_bit1;
 
-  if (b & 1)
+  a_size = SIZ(a);
+  if (a_size == 0)
+    return JACOBI_0U (b);
+
+  if (b > GMP_NUMB_MAX)
     {
-      if (b != 1)
-        return mpn_jacobi_base (mpz_fdiv_ui (a, b), b, 0);
-      else
-        return 1;  /* (a/1)=1 for any a */
+      mp_limb_t  blimbs[2];
+      mpz_t      bz;
+      ALLOC(bz) = numberof (blimbs);
+      PTR(bz) = blimbs;
+      mpz_set_ui (bz, b);
+      return mpz_kronecker (a, bz);
     }
 
-  if (b == 0)
-    return JACOBI_Z0 (a);
+  if ((b & 1) != 0)
+    {
+      result_bit1 = JACOBI_ASGN_SU_BIT1 (a_size, b);
+    }
+  else
+    {
+      mp_limb_t  a_low = a_ptr[0];
+      int        twos;
 
-  /* (a/2)=0 if a even */
-  if (mpz_even_p (a))
-    return 0;
+      if (b == 0)
+        return JACOBI_LS0 (a_low, a_size);   /* (a/0) */
 
-  /* (a/2)=(2/a) when a odd */
-  count_trailing_zeros (twos, b);  
-  b >>= twos;
+      if (! (a_low & 1))
+        return 0;  /* (even/even)=0 */
+
+      /* (a/2)=(2/a) for a odd */
+      count_trailing_zeros (twos, b);
+      b >>= twos;
+      result_bit1 = (JACOBI_TWOS_U_BIT1 (twos, a_low)
+                     ^ JACOBI_ASGN_SU_BIT1 (a_size, b));
+    }
+
   if (b == 1)
-    return JACOBI_TWOS_U (twos, PTR(a)[0]);
+    return JACOBI_BIT1_TO_PN (result_bit1);  /* (a/1)=1 for any a */
 
-  return mpn_jacobi_base (mpz_fdiv_ui (a, b), b,
-                          JACOBI_TWOS_U_BIT1(twos, PTR(a)[0]));
+  a_size = ABS(a_size);
+
+  /* (a/b) = (a mod b / b) */
+  JACOBI_MOD_OR_MODEXACT_1_ODD (result_bit1, a_rem, a_ptr, a_size, b);
+  return mpn_jacobi_base (a_rem, (mp_limb_t) b, result_bit1);
 }

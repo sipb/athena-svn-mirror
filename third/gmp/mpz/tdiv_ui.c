@@ -1,8 +1,7 @@
-/* mpz_tdiv_ui(dividend, divisor_limb)
-   -- Return DIVDEND mod DIVISOR_LIMB.
+/* mpz_tdiv_ui(dividend, divisor_limb) -- Return DIVDEND mod DIVISOR_LIMB.
 
-Copyright (C) 1991, 1993, 1994, 1996, 1997, 1998 Free Software Foundation,
-Inc.
+Copyright 1991, 1993, 1994, 1996, 1997, 1998, 2001, 2002 Free Software
+Foundation, Inc.
 
 This file is part of the GNU MP Library.
 
@@ -23,31 +22,55 @@ MA 02111-1307, USA. */
 
 #include "gmp.h"
 #include "gmp-impl.h"
+#include "longlong.h"
 
 unsigned long int
-#if __STDC__
 mpz_tdiv_ui (mpz_srcptr dividend, unsigned long int divisor)
-#else
-mpz_tdiv_ui (dividend, divisor)
-     mpz_srcptr dividend;
-     unsigned long int divisor;
-#endif
 {
-  mp_size_t dividend_size;
-  mp_size_t size;
-  mp_limb_t remainder_limb;
+  mp_size_t ns, nn;
+  mp_ptr np;
+  mp_limb_t rl;
 
   if (divisor == 0)
     DIVIDE_BY_ZERO;
 
-  dividend_size = dividend->_mp_size;
-  size = ABS (dividend_size);
+  ns = SIZ(dividend);
+  if (ns == 0)
+    {
+      return 0;
+    }
 
-  /* No need for temporary allocation and copying if QUOT == DIVIDEND as
-     the divisor is just one limb, and thus no intermediate remainders
-     need to be stored.  */
+  nn = ABS(ns);
+  np = PTR(dividend);
 
-  remainder_limb = mpn_mod_1 (dividend->_mp_d, size, (mp_limb_t) divisor);
+#if GMP_NAIL_BITS != 0
+  if (divisor > GMP_NUMB_MAX)
+    {
+      mp_limb_t dp[2], rp[2];
+      mp_ptr qp;
+      mp_size_t rn;
+      TMP_DECL (mark);
 
-  return remainder_limb;
+      if (nn == 1)		/* tdiv_qr requirements; tested above for 0 */
+	{
+	  rl = np[0];
+	  return rl;
+	}
+
+      TMP_MARK (mark);
+      dp[0] = divisor & GMP_NUMB_MASK;
+      dp[1] = divisor >> GMP_NUMB_BITS;
+      qp = TMP_ALLOC_LIMBS (nn - 2 + 1);
+      mpn_tdiv_qr (qp, rp, (mp_size_t) 0, np, nn, dp, (mp_size_t) 2);
+      TMP_FREE (mark);
+      rl = rp[0] + (rp[1] << GMP_NUMB_BITS);
+      rn = 2 - (rp[1] == 0);  rn -= (rp[rn - 1] == 0);
+    }
+  else
+#endif
+    {
+      rl = mpn_mod_1 (np, nn, (mp_limb_t) divisor);
+    }
+
+  return rl;
 }

@@ -1,6 +1,6 @@
 /* mpf_ui_sub -- Subtract a float from an unsigned long int.
 
-Copyright (C) 1993, 1994, 1995, 1996 Free Software Foundation, Inc.
+Copyright 1993, 1994, 1995, 1996, 2001, 2002 Free Software Foundation, Inc.
 
 This file is part of the GNU MP Library.
 
@@ -23,14 +23,7 @@ MA 02111-1307, USA. */
 #include "gmp-impl.h"
 
 void
-#if __STDC__
 mpf_ui_sub (mpf_ptr r, unsigned long int u, mpf_srcptr v)
-#else
-mpf_ui_sub (r, u, v)
-     mpf_ptr r;
-     unsigned long int u;
-     mpf_srcptr v;
-#endif
 {
   mp_srcptr up, vp;
   mp_ptr rp, tp;
@@ -217,9 +210,9 @@ mpf_ui_sub (r, u, v)
 		      /* uuuu     */
 		      mp_size_t size, i;
 		      size = usize - vsize;
-		      tp[0] = -up[0];
+		      tp[0] = -up[0] & GMP_NUMB_MASK;
 		      for (i = 1; i < size; i++)
-			tp[i] = ~up[i];
+			tp[i] = ~up[i] & GMP_NUMB_MASK;
 		      mpn_sub_n (tp + size, vp, up + size, vsize);
 		      mpn_sub_1 (tp + size, tp + size, vsize, (mp_limb_t) 1);
 		      negate ^= 1;
@@ -236,9 +229,9 @@ mpf_ui_sub (r, u, v)
 		    {
 		      mp_size_t size, i;
 		      size = vsize - usize;
-		      tp[0] = -vp[0];
+		      tp[0] = -vp[0] & GMP_NUMB_MASK;
 		      for (i = 1; i < size; i++)
-			tp[i] = ~vp[i];
+			tp[i] = ~vp[i] & GMP_NUMB_MASK;
 		      mpn_sub_n (tp + size, up, vp + size, usize);
 		      mpn_sub_1 (tp + size, tp + size, usize, (mp_limb_t) 1);
 		      rsize = vsize;
@@ -294,9 +287,9 @@ mpf_ui_sub (r, u, v)
 		  /*   vvvvv  */
 		  mp_size_t size, i;
 		  size = vsize + ediff - usize;
-		  tp[0] = -vp[0];
+		  tp[0] = -vp[0] & GMP_NUMB_MASK;
 		  for (i = 1; i < size; i++)
-		    tp[i] = ~vp[i];
+		    tp[i] = ~vp[i] & GMP_NUMB_MASK;
 		  mpn_sub (tp + size, up, usize, vp + size, usize - ediff);
 		  mpn_sub_1 (tp + size, tp + size, usize, (mp_limb_t) 1);
 		  rsize = vsize + ediff;
@@ -309,11 +302,11 @@ mpf_ui_sub (r, u, v)
 	  /*      vv  */
 	  mp_size_t size, i;
 	  size = vsize + ediff - usize;
-	  tp[0] = -vp[0];
+	  tp[0] = -vp[0] & GMP_NUMB_MASK;
 	  for (i = 1; i < vsize; i++)
-	    tp[i] = ~vp[i];
+	    tp[i] = ~vp[i] & GMP_NUMB_MASK;
 	  for (i = vsize; i < size; i++)
-	    tp[i] = ~(mp_limb_t) 0;
+	    tp[i] = GMP_NUMB_MAX;
 	  mpn_sub_1 (tp + size, up, usize, (mp_limb_t) 1);
 	  rsize = size + usize;
 	}

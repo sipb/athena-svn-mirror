@@ -1,9 +1,6 @@
 dnl  AMD K7 mpn_mul_1 -- mpn by limb multiply.
-dnl 
-dnl  K7: 3.4 cycles/limb (at 16 limbs/loop).
 
-
-dnl  Copyright (C) 1999, 2000 Free Software Foundation, Inc.
+dnl  Copyright 1999, 2000, 2001, 2002 Free Software Foundation, Inc.
 dnl 
 dnl  This file is part of the GNU MP Library.
 dnl 
@@ -22,8 +19,11 @@ dnl  License along with the GNU MP Library; see the file COPYING.LIB.  If
 dnl  not, write to the Free Software Foundation, Inc., 59 Temple Place -
 dnl  Suite 330, Boston, MA 02111-1307, USA.
 
-
 include(`../config.m4')
+
+
+C K7: 3.4 cycles/limb (at 16 limbs/loop).
+
 
 
 dnl  K7: UNROLL_COUNT cycles/limb
@@ -76,12 +76,12 @@ deflit(UNROLL_THRESHOLD, 7)
 deflit(UNROLL_THRESHOLD, 5)
 ')
 
-	.text
+	TEXT
 	ALIGN(32)
 PROLOGUE(mpn_mul_1c)
 deflit(`FRAME',0)
 	movl	PARAM_CARRY, %edx
-	jmp	LF(mpn_mul_1,start_nc)
+	jmp	L(start_nc)
 EPILOGUE()
 
 
@@ -201,7 +201,7 @@ L(here):
 
 ifdef(`PIC',`
 L(add_eip_to_edx):
-	C See README.family about old gas bugs
+	C See mpn/x86/README about old gas bugs
 	leal	(%edx,%ebp), %edx
 	addl	$L(entry)-L(here), %edx
 	addl	(%esp), %edx

@@ -4,8 +4,8 @@
   example, the number 3.1416 would be returned as "31416" in DIGIT_PTR and
   1 in EXP.
 
-Copyright (C) 1993, 1994, 1995, 1996, 1997, 2000 Free Software Foundation,
-Inc.
+Copyright 1993, 1994, 1995, 1996, 1997, 2000, 2001, 2002 Free Software
+Foundation, Inc.
 
 This file is part of the GNU MP Library.
 
@@ -24,6 +24,7 @@ along with the GNU MP Library; see the file COPYING.LIB.  If not, write to
 the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 MA 02111-1307, USA. */
 
+#include <string.h> /* for strlen */
 #include "gmp.h"
 #include "gmp-impl.h"
 #include "longlong.h"
@@ -40,16 +41,7 @@ MA 02111-1307, USA. */
 */
 
 char *
-#if __STDC__
 mpf_get_str (char *digit_ptr, mp_exp_t *exp, int base, size_t n_digits, mpf_srcptr u)
-#else
-mpf_get_str (digit_ptr, exp, base, n_digits, u)
-     char *digit_ptr;
-     mp_exp_t *exp;
-     int base;
-     size_t n_digits;
-     mpf_srcptr u;
-#endif
 {
   mp_ptr up;
   mp_size_t usize;
@@ -65,6 +57,7 @@ mpf_get_str (digit_ptr, exp, base, n_digits, u)
   unsigned char *tstr;
   mp_exp_t exp_in_base;
   int cnt;
+  size_t alloc_size = 0;
   TMP_DECL (marker);
 
   TMP_MARK (marker);
@@ -88,8 +81,8 @@ mpf_get_str (digit_ptr, exp, base, n_digits, u)
      Also, if 0 digits were requested, give *exactly* as many digits
      as can be accurately represented.  */
   {
-    size_t max_digits = 2 + (size_t) (((prec - 2) * BITS_PER_MP_LIMB)
-				      * __mp_bases[base].chars_per_bit_exactly);
+    size_t max_digits;
+    MPF_SIGNIFICANT_DIGITS (max_digits, base, prec-1);
     if (n_digits == 0 || n_digits > max_digits)
       n_digits = max_digits;
 #if 0
@@ -99,7 +92,7 @@ mpf_get_str (digit_ptr, exp, base, n_digits, u)
 	 desired.  We could probably decrease both this, and avoid the +1
 	 for setting prec above.  */
       prec = 2 + (mp_size_t)
-	(n_digits / (BITS_PER_MP_LIMB * __mp_bases[base].chars_per_bit_exactly));
+	(n_digits / (GMP_NUMB_BITS * __mp_bases[base].chars_per_bit_exactly));
 #endif
   }
 
@@ -107,14 +100,15 @@ mpf_get_str (digit_ptr, exp, base, n_digits, u)
     {
       /* We didn't get a string from the user.  Allocate one (and return
 	 a pointer to it) with space for `-' and terminating null.  */
-      digit_ptr = (char *) (*_mp_allocate_func) (n_digits + 2);
+      alloc_size = n_digits + 2;
+      digit_ptr = (char *) (*__gmp_allocate_func) (n_digits + 2);
     }
 
   if (usize == 0)
     {
       *exp = 0;
       *digit_ptr = 0;
-      return digit_ptr;
+      goto done;
     }
 
   str = (unsigned char *) digit_ptr;
@@ -142,7 +136,7 @@ mpf_get_str (digit_ptr, exp, base, n_digits, u)
 #endif
 
       count_leading_zeros (cnt, up[usize - 1]);
-      exp_in_base = (((double) uexp * BITS_PER_MP_LIMB - cnt)
+      exp_in_base = (((double) uexp * GMP_NUMB_BITS - cnt + GMP_NAIL_BITS)
 		     * __mp_bases[base].chars_per_bit_exactly);
       exp_in_base += 1;
 
@@ -153,9 +147,9 @@ mpf_get_str (digit_ptr, exp, base, n_digits, u)
       rp[0] = base;
       rsize = 1;
       count_leading_zeros (cnt, exp_in_base);
-      for (i = BITS_PER_MP_LIMB - cnt - 2; i >= 0; i--)
+      for (i = GMP_LIMB_BITS - cnt - 2; i >= 0; i--)
 	{
-	  mpn_mul_n (tp, rp, rp, rsize);
+	  mpn_sqr_n (tp, rp, rsize);
 	  rsize = 2 * rsize;
 	  rsize -= tp[rsize - 1] == 0;
 
@@ -177,6 +171,7 @@ mpf_get_str (digit_ptr, exp, base, n_digits, u)
 	}
 
       count_leading_zeros (cnt, rp[rsize - 1]);
+      cnt -= GMP_NAIL_BITS;
       if (cnt != 0)
 	{
 	  mpn_lshift (rp, rp, rsize, cnt);
@@ -245,7 +240,7 @@ mpf_get_str (digit_ptr, exp, base, n_digits, u)
 
       uexp = -uexp;
       count_leading_zeros (cnt, up[usize - 1]);
-      exp_in_base = (((double) uexp * BITS_PER_MP_LIMB + cnt - 1)
+      exp_in_base = (((double) uexp * GMP_NUMB_BITS + cnt - GMP_NAIL_BITS - 1)
 		     * __mp_bases[base].chars_per_bit_exactly);
       if (exp_in_base < 0)
 	exp_in_base = 0;
@@ -259,9 +254,9 @@ mpf_get_str (digit_ptr, exp, base, n_digits, u)
 	  rp[0] = base;
 	  rsize = 1;
 	  count_leading_zeros (cnt, exp_in_base);
-	  for (i = BITS_PER_MP_LIMB - cnt - 2; i >= 0; i--)
+	  for (i = GMP_LIMB_BITS - cnt - 2; i >= 0; i--)
 	    {
-	      mpn_mul_n (tp, rp, rp, rsize);
+	      mpn_sqr_n (tp, rp, rsize);
 	      rsize = 2 * rsize;
 	      rsize -= tp[rsize - 1] == 0;
 	      if (rsize > prec)
@@ -311,7 +306,7 @@ mpf_get_str (digit_ptr, exp, base, n_digits, u)
   if (big_base < 10)		/* logarithm of base when power of two */
     {
       int logbase = big_base;
-      if (dig_per_u * logbase == BITS_PER_MP_LIMB)
+      if (dig_per_u * logbase == GMP_NUMB_BITS)
 	dig_per_u--;
       big_base = (mp_limb_t) 1 << (dig_per_u * logbase);
       /* fall out to general code... */
@@ -324,9 +319,9 @@ mpf_get_str (digit_ptr, exp, base, n_digits, u)
 
   /* Allocate temporary digit space.  We can't put digits directly in the user
      area, since we generate more digits than requested.  (We allocate
-     BITS_PER_MP_LIMB extra bytes because of the digit block nature of the
+     GMP_LIMB_BITS extra bytes because of the digit block nature of the
      conversion.)  */
-  tstr = (unsigned char *) TMP_ALLOC (n_digits + BITS_PER_MP_LIMB + 3);
+  tstr = (unsigned char *) TMP_ALLOC (n_digits + GMP_LIMB_BITS + 3);
 
   for (digits_computed_so_far = 0; digits_computed_so_far < n_digits + 3;
        digits_computed_so_far += dig_per_u)
@@ -342,6 +337,12 @@ mpf_get_str (digit_ptr, exp, base, n_digits, u)
 	}
 
       cy = mpn_mul_1 (rp, rp, rsize, big_base);
+
+      if (! POW2_P (GMP_NUMB_BITS))
+	{
+	  if (digits_computed_so_far == 0 && cy == 0)
+	    cy = mpn_mul_1 (rp, rp, rsize, big_base);
+	}
 
       ASSERT_ALWAYS (! (digits_computed_so_far == 0 && cy == 0));
 
@@ -424,6 +425,18 @@ mpf_get_str (digit_ptr, exp, base, n_digits, u)
 
   *str = 0;
   *exp = exp_in_base;
+
+ done:
   TMP_FREE (marker);
+
+  /* If the string was alloced then resize it down to the actual space
+     required.  */
+  if (alloc_size != 0)
+    {
+      size_t  actual_size = strlen (digit_ptr) + 1;
+      __GMP_REALLOCATE_FUNC_MAYBE_TYPE (digit_ptr, alloc_size, actual_size,
+                                        char);
+    }
+
   return digit_ptr;
 }

@@ -1,9 +1,6 @@
 dnl  Intel Pentium mpn_mul_basecase -- mpn by mpn multiplication.
-dnl 
-dnl  P5: 14.2 cycles/crossproduct (approx)
 
-
-dnl  Copyright (C) 1996, 1998, 1999, 2000 Free Software Foundation, Inc.
+dnl  Copyright 1996, 1998, 1999, 2000, 2002 Free Software Foundation, Inc.
 dnl 
 dnl  This file is part of the GNU MP Library.
 dnl 
@@ -22,8 +19,10 @@ dnl  License along with the GNU MP Library; see the file COPYING.LIB.  If
 dnl  not, write to the Free Software Foundation, Inc., 59 Temple Place -
 dnl  Suite 330, Boston, MA 02111-1307, USA.
 
-
 include(`../config.m4')
+
+
+C P5: 14.2 cycles/crossproduct (approx)
 
 
 C void mpn_mul_basecase (mp_ptr wp,
@@ -38,7 +37,7 @@ defframe(PARAM_WP,    4)
 
 defframe(VAR_COUNTER, -4)
 
-	.text
+	TEXT
 	ALIGN(8)
 PROLOGUE(mpn_mul_basecase)
 

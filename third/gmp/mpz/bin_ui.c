@@ -1,6 +1,6 @@
 /* mpz_bin_uiui - compute n over k.
 
-Copyright (C) 1998, 1999, 2000 Free Software Foundation, Inc.
+Copyright 1998, 1999, 2000, 2001, 2002 Free Software Foundation, Inc.
 
 This file is part of the GNU MP Library.
 
@@ -33,28 +33,22 @@ MA 02111-1307, USA. */
 
 
 /* Enhancement: use mpn_divexact_1 when it exists */
-#define DIVIDE()                                        \
-  ASSERT (SIZ(r) > 0);                                  \
-  ASSERT_NOCARRY (mpn_divrem_1 (PTR(r), (mp_size_t) 0,  \
-                                PTR(r), SIZ(r), kacc)); \
-  SIZ(r) -= (PTR(r)[SIZ(r)-1] == 0);
+#define DIVIDE()                                                \
+  do {                                                          \
+    ASSERT (SIZ(r) > 0);                                        \
+    MPN_DIVREM_OR_DIVEXACT_1 (PTR(r), PTR(r), SIZ(r), kacc);    \
+    SIZ(r) -= (PTR(r)[SIZ(r)-1] == 0);                          \
+  } while (0)
 
 void
-#if __STDC__
 mpz_bin_ui (mpz_ptr r, mpz_srcptr n, unsigned long int k)
-#else
-mpz_bin_ui (r, n, k)
-     mpz_ptr r;
-     mpz_srcptr n;
-     unsigned long int k;
-#endif
 {
   mpz_t      ni;
   mp_limb_t  i;
   mpz_t      nacc;
   mp_limb_t  kacc;
   mp_size_t  negate;
-  
+
   if (mpz_sgn (n) < 0)
     {
       /* bin(n,k) = (-1)^k * bin(-n+k-1,k), and set ni = -n+k-1 - k = -n-1 */
@@ -116,7 +110,8 @@ mpz_bin_ui (r, n, k)
 
       mpz_add_ui (ni, ni, 1);
       mpz_mul (nacc, nacc, ni);
-      umul_ppmm (k1, k0, kacc, i);
+      umul_ppmm (k1, k0, kacc, i << GMP_NAIL_BITS);
+      k0 >>= GMP_NAIL_BITS;
       if (k1 != 0)
 	{
 	  /* Accumulator overflow.  Perform bignum step.  */

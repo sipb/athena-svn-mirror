@@ -1,6 +1,6 @@
 /* mpz_tdiv_r_2exp -- Divide a integer by 2**CNT and produce a remainder.
 
-Copyright (C) 1991, 1993, 1994, 1995 Free Software Foundation, Inc.
+Copyright 1991, 1993, 1994, 1995, 2001, 2002 Free Software Foundation, Inc.
 
 This file is part of the GNU MP Library.
 
@@ -23,18 +23,11 @@ MA 02111-1307, USA. */
 #include "gmp-impl.h"
 
 void
-#if __STDC__
 mpz_tdiv_r_2exp (mpz_ptr res, mpz_srcptr in, unsigned long int cnt)
-#else
-mpz_tdiv_r_2exp (res, in, cnt)
-     mpz_ptr res;
-     mpz_srcptr in;
-     unsigned long int cnt;
-#endif
 {
   mp_size_t in_size = ABS (in->_mp_size);
   mp_size_t res_size;
-  mp_size_t limb_cnt = cnt / BITS_PER_MP_LIMB;
+  mp_size_t limb_cnt = cnt / GMP_NUMB_BITS;
   mp_srcptr in_ptr = in->_mp_d;
 
   if (in_size > limb_cnt)
@@ -42,7 +35,7 @@ mpz_tdiv_r_2exp (res, in, cnt)
       /* The input operand is (probably) greater than 2**CNT.  */
       mp_limb_t x;
 
-      x = in_ptr[limb_cnt] & (((mp_limb_t) 1 << cnt % BITS_PER_MP_LIMB) - 1);
+      x = in_ptr[limb_cnt] & (((mp_limb_t) 1 << cnt % GMP_NUMB_BITS) - 1);
       if (x != 0)
 	{
 	  res_size = limb_cnt + 1;

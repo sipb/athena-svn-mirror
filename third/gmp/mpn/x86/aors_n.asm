@@ -1,6 +1,6 @@
 dnl  x86 mpn_add_n/mpn_sub_n -- mpn addition and subtraction.
 
-dnl  Copyright (C) 1992, 1994, 1995, 1996, 1999, 2000 Free Software
+dnl  Copyright 1992, 1994, 1995, 1996, 1999, 2000, 2001, 2002 Free Software
 dnl  Foundation, Inc.
 dnl 
 dnl  This file is part of the GNU MP Library.
@@ -20,8 +20,15 @@ dnl  License along with the GNU MP Library; see the file COPYING.LIB.  If
 dnl  not, write to the Free Software Foundation, Inc., 59 Temple Place -
 dnl  Suite 330, Boston, MA 02111-1307, USA.
 
-
 include(`../config.m4')
+
+
+C     cycles/limb
+C P5:   3.375
+C P6:   3.7
+C K6:   3.5
+C K7:   2.25
+C P4:   8.75
 
 
 ifdef(`OPERATION_add_n',`
@@ -51,7 +58,7 @@ defframe(PARAM_SRC2, 12)
 defframe(PARAM_SRC1, 8)
 defframe(PARAM_DST,  4)
 
-	.text
+	TEXT
 	ALIGN(8)
 
 PROLOGUE(M4_function_nc)
@@ -69,7 +76,7 @@ deflit(`FRAME',0)
 	shrl	$3,%ecx			C compute count for unrolled loop
 	negl	%eax
 	andl	$7,%eax			C get index where to start loop
-	jz	LF(M4_function_n,oopgo)	C necessary special case for 0
+	jz	L(oopgo)		C necessary special case for 0
 	incl	%ecx			C adjust loop count
 	shll	$2,%eax			C adjustment for pointers...
 	subl	%eax,%edi		C ... since they are offset ...
@@ -83,11 +90,11 @@ ifdef(`PIC',`
 	call	L(0a)
 L(0a):	leal	(%eax,%eax,8),%eax
 	addl	(%esp),%eax
-	addl	$LF(M4_function_n,oop)-L(0a)-3,%eax
+	addl	$L(oop)-L(0a)-3,%eax
 	addl	$4,%esp
 ',`
 	C Calculate start address in loop for non-PIC.
- 	leal	LF(M4_function_n,oop)-3(%eax,%eax,8),%eax
+ 	leal	L(oop)-3(%eax,%eax,8),%eax
 ')
 
 	C These lines initialize carry from the 5th parameter.  Should be

@@ -1,9 +1,6 @@
 dnl  AMD K7 mpn_divexact_by3 -- mpn division by 3, expecting no remainder.
-dnl 
-dnl  K7: 8.0 cycles/limb
 
-
-dnl  Copyright (C) 2000 Free Software Foundation, Inc.
+dnl  Copyright 2000, 2002 Free Software Foundation, Inc.
 dnl 
 dnl  This file is part of the GNU MP Library.
 dnl 
@@ -22,8 +19,10 @@ dnl  License along with the GNU MP Library; see the file COPYING.LIB.  If
 dnl  not, write to the Free Software Foundation, Inc., 59 Temple Place -
 dnl  Suite 330, Boston, MA 02111-1307, USA.
 
-
 include(`../config.m4')
+
+
+C K7: 8.0 cycles/limb
 
 
 C mp_limb_t mpn_divexact_by3c (mp_ptr dst, mp_srcptr src, mp_size_t size,
@@ -41,7 +40,7 @@ dnl  ceil(b/3) and floor(b*2/3) where b=2^32
 deflit(ONE_THIRD_CEIL,   0x55555556)
 deflit(TWO_THIRDS_FLOOR, 0xAAAAAAAA)
 
-	.text
+	TEXT
 	ALIGN(32)
 
 PROLOGUE(mpn_divexact_by3c)
@@ -109,7 +108,7 @@ L(last):
 	C edi	&dst[size-1]
 	C ebp
 
-	imull	$INVERSE_3, %eax
+	imull	$INVERSE_3, %eax, %eax
 
 	cmpl	$ONE_THIRD_CEIL, %eax
 	movl	%eax, (%edi)

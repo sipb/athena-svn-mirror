@@ -1,6 +1,6 @@
 /* double mpz_get_d (mpz_t src) -- Return the double approximation to SRC.
 
-Copyright (C) 1996, 1997, 2000 Free Software Foundation, Inc.
+Copyright 1996, 1997, 2000, 2001, 2002 Free Software Foundation, Inc.
 
 This file is part of the GNU MP Library.
 
@@ -24,34 +24,23 @@ MA 02111-1307, USA. */
 #include "longlong.h"
 
 
-static int
-#if __STDC__
-mpn_zero_p (mp_ptr p, mp_size_t n)
-#else
-mpn_zero_p (p, n)
-     mp_ptr p;
-     mp_size_t n;
-#endif
+/* FIXME: Would prefer to inline this on all compilers, not just those with
+   "inline".  */
+static inline int
+mpn_zero_p (mp_srcptr p, mp_size_t n)
 {
   mp_size_t i;
 
   for (i = 0; i < n; i++)
-    {
-      if (p[i] != 0)
-	return 0;
-    }
+    if (p[i] != 0)
+      return 0;
 
   return 1;
 }
 
 
 double
-#if __STDC__
 mpz_get_d (mpz_srcptr src)
-#else
-mpz_get_d (src)
-     mpz_srcptr src;
-#endif
 {
   double res;
   mp_size_t size;
@@ -79,6 +68,7 @@ mpz_get_d (src)
   else
     {
       count_leading_zeros (cnt, qp[size - 1]);
+      cnt -= GMP_NAIL_BITS;
 
 #if BITS_PER_MP_LIMB == 32
       if (cnt == 0)
@@ -88,8 +78,8 @@ mpz_get_d (src)
 	}
       else
 	{
-	  hz = (qp[size - 1] << cnt) | (qp[size - 2] >> BITS_PER_MP_LIMB - cnt);
-	  lz = (qp[size - 2] << cnt) | (qp[size - 3] >> BITS_PER_MP_LIMB - cnt);
+	  hz = ((qp[size - 1] << cnt) | (qp[size - 2] >> GMP_NUMB_BITS - cnt)) & GMP_NUMB_MASK;
+	  lz = ((qp[size - 2] << cnt) | (qp[size - 3] >> GMP_NUMB_BITS - cnt)) & GMP_NUMB_MASK;
 	}
 #if _GMP_IEEE_FLOATS
       /* Take bits from less significant limbs, but only if they may affect
@@ -97,30 +87,32 @@ mpz_get_d (src)
       if ((lz & 0x7ff) == 0x400)
 	{
 	  if (cnt != 0)
-	    lz += ((qp[size - 3] << cnt) != 0 || ! mpn_zero_p (qp, size - 3));
+	    lz += (((qp[size - 3] << cnt) & GMP_NUMB_MASK) != 0
+		   || ! mpn_zero_p (qp, size - 3));
 	  else
 	    lz += (! mpn_zero_p (qp, size - 2));
 	}
 #endif
       res = MP_BASE_AS_DOUBLE * hz + lz;
-      res = __gmp_scale2 (res, (size - 2) * BITS_PER_MP_LIMB - cnt);
+      res = __gmp_scale2 (res, (size - 2) * GMP_NUMB_BITS - cnt);
 #endif
 #if BITS_PER_MP_LIMB == 64
       if (cnt == 0)
 	hz = qp[size - 1];
       else
-	hz = (qp[size - 1] << cnt) | (qp[size - 2] >> BITS_PER_MP_LIMB - cnt);
+	hz = ((qp[size - 1] << cnt) | (qp[size - 2] >> GMP_NUMB_BITS - cnt)) & GMP_NUMB_MASK;
 #if _GMP_IEEE_FLOATS
       if ((hz & 0x7ff) == 0x400)
 	{
 	  if (cnt != 0)
-	    hz += ((qp[size - 2] << cnt) != 0 || ! mpn_zero_p (qp, size - 2));
+	    hz += (((qp[size - 2] << cnt) & GMP_NUMB_MASK) != 0
+		   || ! mpn_zero_p (qp, size - 2));
 	  else
 	    hz += (! mpn_zero_p (qp, size - 1));
 	}
 #endif
       res = hz;
-      res = __gmp_scale2 (res, (size - 1) * BITS_PER_MP_LIMB - cnt);
+      res = __gmp_scale2 (res, (size - 1) * GMP_NUMB_BITS - cnt);
 #endif
     }
 

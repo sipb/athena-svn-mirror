@@ -1,12 +1,6 @@
 dnl  AMD K7 mpn_addmul_1/mpn_submul_1 -- add or subtract mpn multiple.
-dnl 
-dnl  K7: 3.9 cycles/limb.
-dnl 
-dnl  Future: It should be possible to avoid the separate mul after the
-dnl  unrolled loop by moving the movl/adcl to the top.
 
-
-dnl  Copyright (C) 1999, 2000 Free Software Foundation, Inc.
+dnl  Copyright 1999, 2000, 2001, 2002 Free Software Foundation, Inc.
 dnl 
 dnl  This file is part of the GNU MP Library.
 dnl 
@@ -25,8 +19,14 @@ dnl  License along with the GNU MP Library; see the file COPYING.LIB.  If
 dnl  not, write to the Free Software Foundation, Inc., 59 Temple Place -
 dnl  Suite 330, Boston, MA 02111-1307, USA.
 
-
 include(`../config.m4')
+
+
+C K7: 3.9 cycles/limb.
+C
+C Future: It should be possible to avoid the separate mul after the
+C unrolled loop by moving the movl/adcl to the top.
+
 
 
 dnl  K7: UNROLL_COUNT  cycles/limb
@@ -85,7 +85,7 @@ defframe(SAVE_EDI, -12)
 defframe(SAVE_EBP, -16)
 deflit(SAVE_SIZE, 16)
 
-	.text
+	TEXT
 	ALIGN(32)
 PROLOGUE(M4_function_1)
 	movl	PARAM_SIZE, %edx
@@ -93,7 +93,7 @@ PROLOGUE(M4_function_1)
 	xorl	%ecx, %ecx
 
 	decl	%edx
-	jnz	LF(M4_function_1c,start_1)
+	jnz	L(start_1)
 
 	movl	(%eax), %eax
 	movl	PARAM_DST, %ecx
@@ -264,7 +264,7 @@ L(here):
 
 ifdef(`PIC',`
 L(pic_calc):
-	C See README.family about old gas bugs
+	C See mpn/x86/README about old gas bugs
 	leal	(%edx,%ebx,1), %edx
 	addl	$L(entry)-L(here), %edx
 	addl	(%esp), %edx

@@ -1,7 +1,7 @@
 dnl PowerPC-32 mpn_addmul_1 -- Multiply a limb vector with a limb and add
 dnl the result to a second limb vector.
 
-dnl Copyright (C) 1995, 1997, 1998, 2000 Free Software Foundation, Inc.
+dnl Copyright 1995, 1997, 1998, 2000, 2001, 2002 Free Software Foundation, Inc.
 
 dnl This file is part of the GNU MP Library.
 
@@ -27,15 +27,28 @@ dnl s1_ptr	r4
 dnl size	r5
 dnl s2_limb	r6
 
-dnl This is optimized for the PPC604.  It has not been tested on PPC601, PPC603
-dnl or PPC750 since I don't have access to any such machines.
+dnl This is optimized for the PPC604.  It has not been tuned for PPC601,
+dnl PPC603, PPC750 (G3), 7400 (G4), 7450 (newer G4).
+dnl
+dnl Loop Analysis for the 604:
+dnl 12 mem insn
+dnl 8 serializing insn
+dnl 8 int multiply
+dnl 25 int reg write
+dnl 9 int ops (8 of which serialize)
+dnl
+dnl The multiply insns need 16 cycles/4limb.
+dnl The integer register writes will need 13 cycles/4limb.
+dnl All-in-all, it should be possible to get to 4 cycles/limb,
+dnl but that will require some clever FPNOPS and BNOPS for exact
+dnl issue control.
 
 include(`../config.m4')
 
 ASM_START()
 PROLOGUE(mpn_addmul_1)
 	cmpi	cr0,r5,9	C more than 9 limbs?
-	bgt	cr0,.Lbig	C branch if more than 9 limbs
+	bgt	cr0,L(big)	C branch if more than 9 limbs
 
 	mtctr	r5
 	lwz	r0,0(r4)
@@ -44,8 +57,8 @@ PROLOGUE(mpn_addmul_1)
 	lwz	r9,0(r3)
 	addc	r8,r7,r9
 	addi	r3,r3,-4
-	bdz	.Lend
-.Lloop:
+	bdz	L(end)
+L(loop):
 	lwzu	r0,4(r4)
 	stwu	r8,4(r3)
 	mullw	r8,r0,r6
@@ -54,12 +67,12 @@ PROLOGUE(mpn_addmul_1)
 	lwz	r9,4(r3)
 	addze	r10,r10
 	addc	r8,r7,r9
-	bdnz	.Lloop
-.Lend:	stw	r8,4(r3)
+	bdnz	L(loop)
+L(end):	stw	r8,4(r3)
 	addze	r3,r10
 	blr
 
-.Lbig:	stmw	r30,-32(r1)
+L(big):	stmw	r30,-32(r1)
 	addi	r5,r5,-1
 	srwi	r0,r5,2
 	mtctr	r0
@@ -71,7 +84,7 @@ PROLOGUE(mpn_addmul_1)
 	addc	r8,r8,r7
 	stw	r8,0(r3)
 
-.LloopU:
+L(loopU):
 	lwz	r7,4(r4)
 	lwz	r12,8(r4)
 	lwz	r30,12(r4)
@@ -101,13 +114,13 @@ PROLOGUE(mpn_addmul_1)
 	stw	r10,12(r3)
 	adde	r11,r11,r31
 	stwu	r11,16(r3)
-	bdnz	.LloopU
+	bdnz	L(loopU)
 
 	andi.	r31,r5,3
 	mtctr	r31
-	beq	cr0,.Lendx
+	beq	cr0,L(endx)
 
-.LloopE:
+L(loopE):
 	lwzu	r7,4(r4)
 	mullw	r8,r7,r6
 	adde	r8,r8,r0	C add cy_limb
@@ -116,8 +129,8 @@ PROLOGUE(mpn_addmul_1)
 	addze	r0,r0		C new cy_limb
 	addc	r8,r8,r7
 	stwu	r8,4(r3)
-	bdnz	.LloopE
-.Lendx:
+	bdnz	L(loopE)
+L(endx):
 	addze	r3,r0
 	lmw	r30,-32(r1)
 	blr

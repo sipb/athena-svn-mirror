@@ -1,9 +1,6 @@
 dnl  Intel P5 mpn_lshift -- mpn left shift.
-dnl 
-dnl  P5: 1.75 cycles/limb.
 
-
-dnl  Copyright (C) 2000 Free Software Foundation, Inc.
+dnl  Copyright 2000, 2001, 2002 Free Software Foundation, Inc.
 dnl 
 dnl  This file is part of the GNU MP Library.
 dnl 
@@ -22,8 +19,10 @@ dnl  License along with the GNU MP Library; see the file COPYING.LIB.  If
 dnl  not, write to the Free Software Foundation, Inc., 59 Temple Place -
 dnl  Suite 330, Boston, MA 02111-1307, USA.
 
-
 include(`../config.m4')
+
+
+C P5: 1.75 cycles/limb.
 
 
 C mp_limb_t mpn_lshift (mp_ptr dst, mp_srcptr src, mp_size_t size,
@@ -44,7 +43,7 @@ deflit(`FRAME',0)
 dnl  minimum 5, because the unrolled loop can't handle less
 deflit(UNROLL_THRESHOLD, 5)
 
-	.text
+	TEXT
 	ALIGN(8)
 
 PROLOGUE(mpn_lshift)
@@ -263,8 +262,8 @@ L(unroll_loop):
 	C
 	C mm0
 	C mm1
-	C mm2	src qword from 48(%ebx,%eax,4)
-	C mm3	dst qword ready to store to 56(%edx,%eax,4)
+	C mm2	src qword from 16(%ebx,%eax,4)
+	C mm3	dst qword ready to store to 24(%edx,%eax,4)
 	C
 	C mm5	return value
 	C mm6	lshift
@@ -318,8 +317,8 @@ L(finish_no_two):
 
 	C eax	-4 or -3 representing respectively 0 or 1 limbs remaining
 	C
-	C mm2	src prev qword, from 48(%ebx,%eax,4)
-	C mm3	dst qword, for 56(%edx,%eax,4)
+	C mm2	src prev qword, from 16(%ebx,%eax,4)
+	C mm3	dst qword, for 24(%edx,%eax,4)
 
 	testb	$1, %al
 	movd	%mm5, %eax	C retval

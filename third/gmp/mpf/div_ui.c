@@ -1,6 +1,6 @@
 /* mpf_div_ui -- Divide a float with an unsigned integer.
 
-Copyright (C) 1993, 1994, 1996, 2000 Free Software Foundation, Inc.
+Copyright 1993, 1994, 1996, 2000, 2001, 2002 Free Software Foundation, Inc.
 
 This file is part of the GNU MP Library.
 
@@ -24,14 +24,7 @@ MA 02111-1307, USA. */
 #include "longlong.h"
 
 void
-#if __STDC__
 mpf_div_ui (mpf_ptr r, mpf_srcptr u, unsigned long int v)
-#else
-mpf_div_ui (r, u, v)
-     mpf_ptr r;
-     mpf_srcptr u;
-     unsigned long int v;
-#endif
 {
   mp_srcptr up;
   mp_ptr rp, tp, rtp;
@@ -42,6 +35,21 @@ mpf_div_ui (r, u, v)
   mp_limb_t q_limb;
   mp_exp_t rexp;
   TMP_DECL (marker);
+
+#if GMP_NAIL_BITS != 0
+  if (v > GMP_NUMB_MAX)
+    {
+      mpf_t vf;
+      mp_limb_t vl[2];
+      SIZ(vf) = 2;
+      EXP(vf) = 2;
+      PTR(vf) = vl;
+      vl[0] = v & GMP_NUMB_MASK;
+      vl[1] = v >> GMP_NUMB_BITS;
+      mpf_div (r, u, vf);
+      return;
+    }
+#endif
 
   usize = u->_mp_size;
   sign_quotient = usize;

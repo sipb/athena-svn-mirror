@@ -1,9 +1,6 @@
 dnl  AMD K7 mpn_add_n/mpn_sub_n -- mpn add or subtract.
-dnl 
-dnl  K7: 1.64 cycles/limb (at 16 limb/loop).
 
-
-dnl  Copyright (C) 1999, 2000 Free Software Foundation, Inc.
+dnl  Copyright 1999, 2000, 2001, 2002 Free Software Foundation, Inc.
 dnl 
 dnl  This file is part of the GNU MP Library.
 dnl 
@@ -22,8 +19,11 @@ dnl  License along with the GNU MP Library; see the file COPYING.LIB.  If
 dnl  not, write to the Free Software Foundation, Inc., 59 Temple Place -
 dnl  Suite 330, Boston, MA 02111-1307, USA.
 
-
 include(`../config.m4')
+
+
+C K7: 1.64 cycles/limb (at 16 limbs/loop).
+
 
 
 dnl  K7: UNROLL_COUNT cycles/limb
@@ -89,13 +89,13 @@ defframe(SAVE_EBX, -12)
 defframe(SAVE_EDI, -16)
 deflit(STACK_SPACE, 16)
 
-	.text
+	TEXT
 	ALIGN(32)
 deflit(`FRAME',0)
 
 PROLOGUE(M4_function_nc)
 	movl	PARAM_CARRY, %eax
-	jmp	LF(M4_function_n,start)
+	jmp	L(start)
 EPILOGUE()
 
 PROLOGUE(M4_function_n)
@@ -185,7 +185,7 @@ L(here):
 
 ifdef(`PIC',`
 L(pic_calc):
-	C See README.family about old gas bugs
+	C See mpn/x86/README about old gas bugs
 	leal	(%edi,%edi,8), %esi
 	addl	$L(entry)-L(here), %esi
 	addl	(%esp), %esi
