@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.22 1999-04-03 16:15:09 ghudson Exp $
+# $Id: Makefile,v 1.23 1999-04-08 01:28:29 mwhitson Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -24,6 +24,7 @@ install:
 	install -c -m 0644 krb.conf ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 krb.realms ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 krb5.conf ${DESTDIR}${ETCDIR}
+	install -c -m 0644 lpd.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0444 mandesc ${DESTDIR}${ATHMANDIR}
 	install -c -m 0444 masks ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 named.conf ${DESTDIR}${ETCDIR}
