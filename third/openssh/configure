@@ -13756,17 +13756,17 @@ if test "${enable_suid_ssh+set}" = set; then
   no)
        echo "$as_me:13757: result: no" >&5
 echo "${ECHO_T}no" >&6
-       SSHMODE=0711
+       SSHMODE=0755
        ;;
   *)   echo "$as_me:13761: result: yes" >&5
 echo "${ECHO_T}yes" >&6
-       SSHMODE=4711
+       SSHMODE=4755
        ;;
   esac
 else
   echo "$as_me:13767: result: yes" >&5
 echo "${ECHO_T}yes" >&6
-  SSHMODE=4711
+  SSHMODE=4755
 
 fi;
 

@@ -247,7 +247,7 @@ sighup_restart(void)
 {
 	log("Received SIGHUP; restarting.");
 	close_listen_socks();
-	execv(saved_argv[0], saved_argv);
+	execvp(saved_argv[0], saved_argv);
 	log("RESTART FAILED: av[0]='%.100s', error: %.100s.", saved_argv[0], strerror(errno));
 	exit(1);
 }
@@ -1040,11 +1040,6 @@ main(int ac, char **av)
 				}
 				if (fcntl(newsock, F_SETFL, 0) < 0) {
 					error("newsock del O_NONBLOCK: %s", strerror(errno));
-					continue;
-				}
-				if (drop_connection(startups) == 1) {
-					debug("drop connection #%d", startups);
-					close(newsock);
 					continue;
 				}
 				if (pipe(startup_p) == -1) {
