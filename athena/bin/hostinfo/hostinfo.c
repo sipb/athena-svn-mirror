@@ -22,7 +22,7 @@
  */
 
 #ifndef lint
-static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/hostinfo/hostinfo.c,v 1.6 1991-07-08 10:05:40 epeisach Exp $";
+static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/hostinfo/hostinfo.c,v 1.7 1993-10-23 17:07:42 probe Exp $";
 #endif
 
 #include <stdio.h>			/* Standard IO */
@@ -32,6 +32,7 @@ static char rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/ho
 #include <strings.h>			/* String fct. declarations. */
 #include <ctype.h>			/* Character type macros. */
 #include <netinet/in.h>			/* Internet defs. */
+#include <arpa/inet.h>			/* For inet_addr */
 
 typedef int bool;
 
@@ -40,6 +41,8 @@ typedef int bool;
 #define LINE_LENGTH	128
 #define ERROR		-1
 #define CPNULL		((char *) NULL)
+
+extern char *gethinfobyname(), *getmxbyname();
 
 static char *usage[] = {
   "Usage: %s <options> <host-names-or-addresses>",
@@ -74,7 +77,7 @@ main(argc, argv)
      
 {
   extern int h_errno;
-  struct hostent *host_entry = NULL;	
+  struct hostent *host_entry = (struct hostent *)0;	
   unsigned long host_address;
   char *server = NULL;
   char *hinfo = NULL;
@@ -149,7 +152,7 @@ main(argc, argv)
 	    }
 	}
 
-      if(host_entry <= 0)
+      if(host_entry = (struct hostent *)0)
 	{
 	  host_entry = gethostbyname(hostname);
 	  if(host_entry)
