@@ -4,7 +4,7 @@ GLOBAL : *.CKP *.local *.pid :
 ##	MIT Project Athena
 ##
 ##	$Source: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/os_rvd,v $
-##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/os_rvd,v 1.4 1996-06-19 19:56:04 ghudson Exp $
+##	$Header: /afs/dev.mit.edu/source/repository/packs/update/platform/sun4/os_rvd,v 1.5 1996-07-05 02:13:11 ghudson Exp $
 	.:::
 		dev
 		devices
@@ -366,7 +366,9 @@ GLOBAL : *.CKP *.local *.pid :
 		-> mconnect
 		-> mpstat
 		-> neqn
-		-> new*
+		-> newform
+		-> newgrp
+		-> news
 		-> netstat
 		-> nice
 		-> nis*
