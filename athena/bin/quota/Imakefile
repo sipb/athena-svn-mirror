@@ -11,7 +11,11 @@ INSTOPT=-o root -m 4755
 AFSLIBS= $(AFSDIR)/lib/afs/libsys.a -L$(AFSDIR)/lib -lrx -llwp
 
 OBJS = quota.o attachtab.o nfs.o afs.o $(MACHOBJS)
+#ifdef SOLARIS
+LIBS = $(MACHLIBS) $(AFSLIBS) -lbsd
+#else
 LIBS = $(MACHLIBS) $(AFSLIBS)
+#endif
 
 #if defined(vax) || defined(ibm032)
 BINDIR=/usr/ucb
