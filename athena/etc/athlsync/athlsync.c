@@ -13,7 +13,7 @@
  * without express or implied warranty.
  */
 
-static const char rcsid[] = "$Id: athlsync.c,v 1.1 2002-10-17 05:10:33 ghudson Exp $";
+static const char rcsid[] = "$Id: athlsync.c,v 1.1.2.1 2002-12-09 22:14:21 ghudson Exp $";
 
 /* athlsync - Sync a locker's contents to local disk */
 
