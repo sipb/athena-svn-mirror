@@ -24,7 +24,7 @@ static const char copyright[] =
     "@(#) Copyright (c) 1988, 1989, 1991, 1994, 1995, 1996, 1997\n\
 The Regents of the University of California.  All rights reserved.\n";
 static const char rcsid[] =
-    "@(#)$Header: /afs/dev.mit.edu/source/repository/third/traceroute/traceroute.c,v 1.2 1999-10-19 20:28:33 danw Exp $ (LBL)";
+    "@(#)$Header: /afs/dev.mit.edu/source/repository/third/traceroute/traceroute.c,v 1.3 1999-12-07 21:49:06 danw Exp $ (LBL)";
 #endif
 
 /*
@@ -428,7 +428,7 @@ main(int argc, char **argv)
 			break;
 
 		case 'w':
-			waittime = str2val(optarg, "wait time", 2, -1);
+			waittime = str2val(optarg, "wait time", 2, 24 * 3600);
 			break;
 
 		default:
@@ -842,6 +842,7 @@ wait_for_reply(register int sock, register struct sockaddr_in *fromp,
 	struct timezone tz;
 	register int cc = 0;
 	int fromlen = sizeof(*fromp);
+	int retval;
 
 	FD_ZERO(&fds);
 	FD_SET(sock, &fds);
@@ -851,9 +852,16 @@ wait_for_reply(register int sock, register struct sockaddr_in *fromp,
 	(void)gettimeofday(&now, &tz);
 	tvsub(&wait, &now);
 
-	if (select(sock + 1, &fds, NULL, NULL, &wait) > 0)
+	retval = select(sock + 1, &fds, NULL, NULL, &wait);
+	if (retval < 0)  {
+		/* If we continue, we probably just flood the remote host. */
+		Fprintf(stderr, "%s: select: %s\n", prog, strerror(errno));
+		exit(1);
+	}
+	if (retval > 0)  {
 		cc = recvfrom(s, (char *)packet, sizeof(packet), 0,
 			    (struct sockaddr *)fromp, &fromlen);
+	}
 
 	return(cc);
 }
