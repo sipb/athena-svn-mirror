@@ -1,4 +1,5 @@
 #!/bin/csh -f
+# $Id: root.xsession,v 1.2 1997-12-28 17:51:18 ghudson Exp $
 
 # Source the users .cshrc if one exists otherwise 
 # do some minimal stuff
@@ -9,8 +10,6 @@ else
 	set path=(/usr/athena/bin /etc /etc/athena /bin/athena /usr/bin \
                   /usr/ucb /usr/sbin \
 		  /usr/local . /usr/athena/etc /sbin /usr/openwin/bin)
-	set history=40
-	set cdpath=(/)
 	set prompt="`uname -n`# "
 endif
 
