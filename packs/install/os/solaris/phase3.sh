@@ -1,4 +1,4 @@
-# $Id: phase3.sh,v 1.3 1999-03-31 15:08:25 ghudson Exp $
+# $Id: phase3.sh,v 1.3.2.1 1999-11-09 01:48:48 ghudson Exp $
 
 # This file is run out of the srvd by phase2.sh after it starts AFS.
 # The contents of this file used to live in phase2.sh, which is run
@@ -64,6 +64,12 @@ cp -p /srvd/kernel/strmod/* /root/kernel/strmod/
 echo "copying platform directory"
 cp -rp "/os/platform/$platform" "/root/platform/$platform"
 
+echo "adding some of the sun4u platform directories"
+if [ "$platform" = sun4u ]; then
+	cp -p -r /os/platform/SUNW,Ultra-250 /root/platform
+	cp -p -r /os/platform/SUNW,Ultra-4 /root/platform
+	cp -p -r /os/platform/SUNW,Ultra-Enterpris* /root/platform
+fi
 echo "Create devices and dev"
 mkdir /root/dev
 mkdir /root/devices
@@ -159,7 +165,16 @@ sed -e 	"s#^HOST=[^;]*#HOST=$hostname#
 	s#^SYSTEM=[^;]*#SYSTEM=Solaris#" \
 	< /srvd/etc/athena/rc.conf > /root/etc/athena/rc.conf
 rm -f /root/.rvdinfo
-echo installed on `date` > /root/etc/athena/version
+echo installed on `date` from `df -k / | tail -1 | awk '{print $1}'` \
+	> /root/etc/athena/version
+if [ $CUSTOM = Y ]; then
+	if [ $PARTITION = Y ]; then
+		echo custom install with custom partitioning \
+			>> /root/etc/athena/version
+	else
+		echo custom install >> /root/etc/athena/version
+	fi
+fi
 sed  -e "s/RVD/Workstation/g" < /srvd/.rvdinfo >> /root/etc/athena/version
 
 echo "Updating vfstab"
