@@ -12,6 +12,7 @@
 #undef _BSD
 #endif /* defined(_AIX) || defined(hpux) */
 #include <AL/AL.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
 #include <dirent.h>
