@@ -19,13 +19,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v $
- *	$Id: t_utils.c,v 1.21 1990-12-31 10:57:55 lwvanels Exp $
+ *	$Id: t_utils.c,v 1.22 1990-12-31 16:12:45 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.21 1990-12-31 10:57:55 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_utils.c,v 1.22 1990-12-31 16:12:45 lwvanels Exp $";
 #endif
 #endif
 
@@ -247,7 +247,11 @@ handle_response(response, req)
 {
 #ifdef KERBEROS
   char *kmessage = "\nYou will have been properly authenticated when you do not see this\nmessage the next time you run olc.  If you were having trouble\nwith a program, try again.\n\n";
+#ifdef ATHENA
   char *kmessage2 = "If you continue to have difficulty, feel free to contact a user\nconsultant by phone (253-4435).";
+#else
+  char *kmessage2 = "If you continue to have difficulty, please contact a user\nconsultant in person.";
+#endif /* ATHENA */
 #endif /* KERBEROS */
 
   switch(response)
