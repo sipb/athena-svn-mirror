@@ -4,7 +4,7 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zpopnotify/zpopnotify.c,v $
- *	$Author: lwvanels $
+ *	$Author: probe $
  *
  *	Copyright (c) 1987,1988 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -20,7 +20,7 @@
 #include <com_err.h>
 
 #ifndef lint
-static char rcsid_zpopnotify_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zpopnotify/zpopnotify.c,v 1.8 1991-12-05 15:31:22 lwvanels Exp $";
+static char rcsid_zpopnotify_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/zpopnotify/zpopnotify.c,v 1.9 1993-09-24 21:28:52 probe Exp $";
 #endif /* lint */
 
 #define MAIL_CLASS "MAIL"
@@ -70,7 +70,7 @@ main(argc,argv)
 	(void) strcat(mysender,ZGetRealm());
 
 	for (i = 1; i < argc; i++) {
-	    (void) bzero((char *)&notice, sizeof(notice));
+	    (void) _BZERO((char *)&notice, sizeof(notice));
 	    notice.z_kind = UNSAFE;
 	    notice.z_class = MAIL_CLASS;
 	    notice.z_class_inst = MAIL_INSTANCE;
