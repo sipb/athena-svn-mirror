@@ -1,0 +1,713 @@
+Configuration File Entries:
+
+The configuration file is used to set flags, options, and to invoke
+operations.  Any resemblance in syntax to PERL is pretty intentional
+as the format was ripped off from a PERL Hacker. Sigh...
+
+1.  Blank lines and lines starting with # are ignored.
+
+2.  Keys or flags with an associated value start in column 1
+
+    Syntax       Equivalent To              Class
+    flag         flag=1                     FLAG
+    flag@        flag=0                     FLAG
+    flag=val     flag=val  (string value)   STRING
+    flag#val     flag=val  (string value)   STRING
+    (no flag name present) flag=0
+
+    This syntax is similar to the PRINTCAP FILE entry syntax.
+
+3.  Keys or flags with a LIST of values
+
+    Syntax                                  Class
+    flag=[ v1 v2 v2 ]                       LIST
+
+    The list values are separated by whitespace, and MUST have the
+    format shown above. Each value v can have the form v1, v1@,
+    v1=word, or v1#word, where word does not contain whitespace or
+    the [] characters.
+
+    As described below,  the v1, v2, v3 values are processed
+    sequentially, and the appropriate actions performed performed
+    appropriately.
+
+4.  Flag values can be spread over multiple lines.  Lines starting with
+    whitespace, are treated as a continuation of the previous
+    flags line value.  For example:
+
+    # set x's value
+    x= first
+      second
+      third
+    y=[ f1
+     f2 ]
+
+    x will have string value 'first\n  second\n  third'
+    x will have LIST value '[ f1 f2 ]
+
+5.  Selection lines have the form:
+
+    [ modelglob modelglob ... ]
+
+    These are used to divide the configuration file into sections
+    corresponding to a particular printer setting.   Configuration
+    information is extracted from a file until either an 'end' line
+    or a selection line is encountered.
+
+    An 'end' line consisting of the single work 'end' will terminate
+    reading lines from a particular configuration file.
+
+6.  As the configuration file is read,  flag lines are accumulated,
+    and later values in the file will replace earlier values.
+    
+Configuration Selection:
+
+The recommended format for a  configuration file is to put common
+(default) flag settings at the start of the configuration file,
+followed by selection sections with overridding and additional flag
+values.
+
+To allow a single file to be used for multiple printer configurations,
+you can specify that a section of the file is to be used ONLY by
+a various models of printers.  This is is controlled by the value
+of the 'model' flag and selection lines of the form:
+
+  [ modelglob modelglob ... ]
+
+The first occurrence of a 'model=xx' line in either the -T options
+or the configuration file will set the model flag value to 'xx'.
+
+The 'model' value is matched against the modelglob values using 
+GLOB matching.  For example:
+
+    hp*      matches hp4 hp5x
+    hp[45]   matches hp4 hp5, but not hp5x
+    hp[3-6]* matches hp3, hp5, hp5x, but not hpiii
+
+If a matching entry is found,  successive lines will be used until
+either another selection line or an 'end' line is encountered.  An
+'end' line will terminate reading the current file, and the next
+configuration file will be read.
+
+The default list of configuration files is:
+
+ ifhp.conf, /etc/ifhp.conf, ifhp.conf
+
+This arrangement allows you to read the ifhp.conf file to get
+various model settings,  scan the /etc/ifhp.conf file to get the
+generic ones,  and then to rescan the local ifhp.conf file to
+provide overrides to values set in the /etc/ifhp.conf file.
+
+Flag or Variable Use:
+
+Flags values are used to control printer operation.  Either the
+string (or numerical) value associated with a flag is used to
+control operation or is processed and written to the printer
+(expanded).  Only flags that have a string value (i.e.-
+not 0 or 1 or the strings "0" or "1") will have their expanded
+values sent to the printer.
+
+Recursive Variable Value Expansion:
+
+If a LIST has the form X=[ v1 v2 ... ], then each of v1, v2 will
+be expanded in turn, or the specified operation performed.
+
+Some LIST variables are used in language specific contexts.  For
+example,  pjl_init=[...] specifies a set of operations to be carried
+out for printers that support PJL, and pcl_init=[...] for PCL
+printers.  The expansion of the LIST entries is done in the language
+specific context.
+
+The context dependent expansion is necessary because sometimes it
+is necessary to do operations both using PJL and PCL or PJL and PS
+combinations to ensure correct operation.  For this reason,  when
+trying to perform the operations,  the appropriate lanugage string
+is prefixed to the operation name,  and this is used to check for
+STRING,  BUILTIN, or LIST value.  If the result is a STRING, then
+the STRING value is sent to the printer.  If the result is a BUILTIN,
+then no further checks are done.  If the result is a BUILTIN, then
+expansion is carried out recursively using the language prefix.
+
+For example,  suppose that we have:
+
+    pjl_init=[ test ]
+    pcl_init=[ test ]
+    initstr=NO
+    pjl_initstr=@PJL ECHO YES
+    pcl_initstr=\033(*yeS
+
+When PJL initialization is done, the 'pjl_test' LIST will be
+expanded, and the PJL string '@PJL ECHO YES' will be sent to the
+printer.  When PCL language specific process is done,  then the
+\033(*yeS string will be sent.
+
+String Value Expansion:
+
+String values which are sent to the printer are encoded using a
+simple PERL/C language like method.  The \ (escape) character
+introduces a replacement string.  This has the form:
+
+Standard Character Replacement:
+  \f \r \n \t \nnn  where nnn are 3 octal digits (Standard PERL, C)
+
+Key Value Replacement:
+
+  \%format{key}
+	-Z option keys searched, then -T and configuration keys
+  \%format[key]
+    -T option keys searched, then configuration keys searched.
+
+This form will search for an option or configuration key entry of the
+form key (i.e. - key=1), key@ (i.e. - key=0), key=xx or key#xx.
+If the key is not found then key=0 will be used.  The format specifies HOW
+the value is to be substituted and is based on the printf format:
+
+   %[-][0][length[.precision]][format]
+
+The default format is d, ie, \%{val} would be \%d{val}.
+
+The numerical formats supported are: d, o, x, X, e, f, and g;
+string values will first be translated by the C language atoi (string to
+integer) and atod (string to double) functions and then formatted.
+
+The string format s simply causes the key value to be used.
+
+For example:
+
+	cpi=5
+	pcl_cpi=\033\%x{cpi}D
+
+When the pcl_cpi string is expanded, the \%{cpi} will be replaced
+with 5, producing \033x5D.  If the user has specified -Tcpi=9 on
+the command line,  then \%{cpi} will be replaced with 9, producing
+\033x9D.
+
+Filter Operation:
+
+By default,  the filter is rather passive in its actions, and you
+must FORCE it to do something besides pass through characters from
+its input to its output.
+
+You need to tell it what languages are supported by the printer.
+(pcl, ps, and pjl flags) and you need need to force it to send
+strings to do printer initialization and job termination In the
+current version, these actions are forced by LIST value,  as
+described below.
+
+For example, the init=[...] LIST is used to set flags which will
+then force later actions during processing or to unconditionally
+send strings to the printer.  The most commonly used are:
+
+    uel    - end Universal Exit (UEL string) to a printer
+    sync=ps, sync=pjl, sync@
+     - enabling synchronization and method
+    pagecount=ps, pagecount=pjl, pagecount@
+     - enabling pagecount and method
+    waitend=ps, waitend=pjl, waitend@
+     - wait for job termination and method
+
+If the printer has PJL enabled by the PJL flag in the configuration
+file, pjl_init=[...] LIST actions are performed, followed by PJL
+user actons specified by the -Z and -T command line options.  (These
+are described in User PJL, PS, and PCL options).
+
+After processing all of the PJL language required specifications,
+the filter will then attempt to determine the job language. This
+can be RAW, TEXT, PS, or PCL.  Language specific term operations
+and User -T and -Z language specific options are then processed,
+followed by job transfer to the output device.
+
+After job transfer is completed, language specific term operations
+are carried out, followed by PJL specific operations, followed by
+job termination.
+
+In addition to this operation,  the filter can run in OF mode,
+and simply act as a printer initializer and terminator.  The first
+nonblank input line will be treated as a request to generate a banner.
+The string "\031\001" will cause the filter to suspend operations
+until restarted by a SIGCONT signal.
+
+These steps are best explained algorithmically:
+
+    if user_opts=[...] then check flags in the -Zoptions and perform
+       related initializations. 
+
+	if init=[ ... ] then carry out the ... operations
+
+	if PJL enabled
+		if pjl_init=[...] then carry out the ... operations
+		if !OF_mode && -T options, check for prescence in pjl_user_opts=[ ... ]
+			 and carry out permitted ... operations
+		if !OF_mode && -Z options, check for prescence in pjl_user_opts=[ ... ]
+			 and carry out permitted operations
+	endif
+
+	if sync requested using sync=ps or sync=pjl then
+	  sync using method specified
+	if pagecount requested using pagecount=ps or pagecount=pjl then
+	  get pagecount using method specified
+
+	if OF_MODE goto OF_MODE;
+
+	if input is binary (command line option -c )
+	then
+		language = RAW
+	else
+		the first part of the job file is read and the filter takes
+		a (wimpy) guess at the job file based only on the first couple
+		of characters;  language is  be PJL, PS, or TEXT, or RAW
+
+		language = PJL, PS, TEXT, or RAW
+	endif
+
+	again:
+	switch( language ){
+	PCL: pcl_init=[...], user -T and -Z pcl options processed
+		break;
+	PS:  ps_init=[...],  user -T and -Z ps options processed
+		break;
+	TEXT: if conversion is requested,  then conversion is done.
+		The result of conversion should be PCL, PS, or RAW
+		goto again;
+		break;
+	}
+
+	Transfer job to printer
+
+	switch( language ){
+	PCL: pcl_term=[...] processed
+		break;
+	PS:  ps_init=[...]options processed
+		break;
+	}
+
+	END:
+	if pjl_term=[...] then carry out ... operations
+	if term=[...] then carry out ... operations
+
+	if sync requested using sync=ps or sync=pjl then
+	  sync using method specified
+	if pagecount requested using pagecount=ps or pagecount=pjl then
+	  get pagecount using method specified
+
+	exit
+
+	OF_MODE:
+	  We read input looking for SUSPEND (\033\001) sequence.  When encountered,
+	  suspend filter operation.
+
+	  If banner generation is enabled,  then the first non-blank input line
+	  will cause a banner to be generated.
+
+	  On input EOF, goto END;
+
+Text Conversion:
+
+Many printers cannot handle simple text files,  and produce horrible
+output if they are sent.  The following options control text file
+conversion:
+
+text_converter=/pathname  - STRING
+    specifies the pathname of a text to language program.
+text_output=language
+    Specifies the output language of the conversion program.
+    Examples:   text_output=ps,  text_output=pjl,  text_output=raw
+    The  'raw' lanaguage will not
+text_output=pcl
+text_tempfile=/pathname
+
+Restricting PJL Commands:
+
+While many printers support PJL,  they may not all support the
+same PJL commands.  The following configuration variables are used
+to control PJL commands.
+
+pjl_only=[ cmd cmd cmd ]
+    If this variable is defined, then ONLY the commands listed will be
+    sent to the printer.  Example:
+    pjl_only=[ ECHO UINFO ]
+
+pjl_except=[ cmd cmd cmd ]
+    If this variable is defined, then all commands EXCEPT the ones listed
+    will be sent. Example:
+    pjl_except=[ RESET ]
+
+If you wish to remove restrictions,  then use pjl_only= or pjl_except=
+as appropriate.
+
+Specifying PJL Variables:
+
+If a printer supports PJL, then there are a wide range of variables
+that can be set using the PJL SET variable = value command. The
+following configuration options are used to enable and control
+
+pjl_vars_set=[ var var var ]
+    where var can be:  var  var=DEFAULTVALUE
+
+The variables listed will be recognized as PJL variables,  and
+keys will be expanded as follows:
+
+Option         Expansion
+
+key=value      @PJL SET VAR = VALUE
+key            @PJL SET VAR = DEFAULTVALUE if present
+               @PJL SET VAR = ON otherwise
+key@           @PJL SET VAR = OFF
+
+The expanded value will be sent to the printer.  All key names and
+values will be capitalized.  If no key value is specified in the
+request or in the pjl_vars_set list,  then VAR = ON will be sent,
+and the form var@ will cause VAR = OFF to be sent.
+
+pjl_vars_except=[ var var var ]
+
+If the PJL variable is in this list and the pjl_vars_set list, then
+no value will be sent to the printer.  This allows a standard set
+of PJL variables to be modified by exceptions for a particular
+printer.
+
+User PJL, PS, and PCL Options:
+
+In order to make the operation of the filter reliable and secure,
+there are various restrictions on the form and actions which can
+be specified by -T and -Z options.
+
+1.  the options must have the form -Tv1,v2... or -Zv1,v1
+    where the values v1, v2....  have the form key, key@, key=word,
+    key#word.
+
+2.  The key name must be listed in the pjl_user_opts OPERATION
+    value, Eg:
+       pjl_user_opts=[ top bottom ]
+
+3.  The -T options are processed before -T options,  allowing users to
+    override -T specified operations.
+
+As described above,  users can specify -T or -Z command line options,
+which are then used to control and modify operations.  In order to
+restrict the types of operations performed by users, for each
+langaguage type (PJL, PCL, and PS), the option name must be listed
+in the pjl_user_opts, pcl_user_opts, or ps_user_opts list.
+
+This can also be used to control at which stage the option can be used.
+For example,  if the font=nnn option should be in effect during PCL
+language processing,  then setting pcl_user_opts=[ font ] and leaving
+it out of the other user_options will have this effect.
+
+In addition,  you can create shorthand forms of complicated commands.
+For example, to set the printer output bin, you may need to use the
+PJL command PJL SET OUTBIN = TRAY1 on some printers,  and 
+PJL SET OUTBIN = UPPER on others.  The following allows the -Zupper
+option to generate the right form:
+
+pjl_user_opts=[ upper ]
+[ hp* ]
+pjl_upper=@PJL OUTBIN = TRAY1
+[ lm* ]
+pjl_upper=@PJL OUTBIN = UPPER
+
+Builtin PJL, PCL, and PS Specific Options:
+
+Unfortunately,  there are some options that require additional processing
+and cannot be handled by simple string substition.  These usually have to
+do with generating specific strings in a dynamic manner,  or sending
+files containing font or setup information to the printer.  The following
+is a list of these options and their use.
+
+pjl_job - FLAG, BUILTIN support
+
+This option will cause a PJL JOB and PJL EOJ command to be generated
+and sent to the printer.   The JOB command has the form:
+
+  @PJL JOB NAME = "..." [ START = nnn ] [ END = nnn ]
+
+The START and END values can be specified by -Zstart=nnn and -Zend=nnn
+options.  The EOJ command has the form and must match the JOB command.
+  @PJL EOJ NAME = "..." [ START = nnn ] [ END = nnn ]
+
+pjl_enter - FLAG, BUILTIN support
+
+This option will cause a PJL ENTER LANGUAGE = xx command to be generated
+when PCL or PS jobs are being printed.
+
+Banners and OF Operations:
+
+The OF mode is enabled by the command line -Fo flag or by
+the file name of the executable containing the "of" string.
+
+When operating in the OF mode,  the filter uses the value of the
+banner key to determine what to do with input.  If banners are
+disabled (banner@), then input is simply passed directly to the
+output.  If banners are enabled, then banner generation can be done
+in several manners.
+
+The banner_suppressed flag allows you to suppress banner printing
+until explicitly requested by a user using the -Zbanner flag.
+
+    banner=pcl
+     Uses a built-in PCL banner generator.  Pretty simple.
+    banner=ps,  and banner_file=/path
+     Using information from the command line options,  generates
+     PostScript of the form:
+
+	%!PS-Adobe-2.0
+	/Seq (number) def
+	/Job (banner) def
+	/Host (HOST) def
+	/Class (CLASS) def
+	/User (USER) def
+	/Date (DATE) def
+	/Name (NAME) def
+	/Line (LINE) def
+
+    Then the contents of the banner_file are appended to this.
+
+    banner=/path
+    Opens and copies the file directly to the output.
+    banner=|/path
+    Forks and EXECs the executable specified by /path.  The command
+    line arguments are identical to those passed to the filter and
+    output is to a temporary file.  The file contents are then
+    written to the printer.
+
+PJL Error Message Reporting:
+
+As part of the normal operation,  PJL printers send status message
+back to the filter.  These status messages may need to be reported
+or simply ignored, if they serve no purpose.  The following options
+are supported:
+
+pjl_quiet_codes=[ code code code ]
+
+If the error code is in the pjl_quiet_codes list,  then the error status
+will not be reported to the user unless the log_all option is set.
+
+Example:
+  pjl_quiet_codes=[ 10000 10001 10003 10023 10024 35078 ]
+
+Also, there may be new messages for where there is not a builtin error
+message available.  New messages can be added using the pjl_error_code
+facility.  Each line consists of a code followed by a message:
+
+pjl_error_codes=[
+   code=msg
+   code=msg
+   ...
+]
+
+Example: 
+  pjl_error_codes=[
+     10000=powersave mode
+     10001=Ready Online
+     10002=Ready Offline
+     10003=Warming Up
+     10004=Self Test
+     10005=Reset
+  ]
+
+Obtaining Pagecount Information
+
+In order to do accurate page usage,  you need to get the number
+of pages or impressions used by a particular job.  Many printers
+have a page counter on the hardware that can be read using PJL or
+PostScript code.
+
+Unfortunately,  this is complicated by the lack of coordination between
+end of job reporting and pagecount reporting.  Some printers will report
+that a job has been completed,  and even give the page count,  when in
+actual fact it is still sitting in the printer's memory.
+
+Several methods are available when this happens:  forcing true end of
+job (TEOJ) reporting, enabling waitend operaton, and polling the
+printer until the page count stabilizes.
+
+To enable pagecounting,  you need to specify either the use of PJL or PS.
+When using PS,  you need to send a program that will return a string
+of the form: %%[ pagecount nnn ]%% to the filter,  where nnn is the
+current value of the hardware page counter.
+
+pagecount@      - do not do page counting
+pagecount       - use default PJL if enabled, PS if enabled
+pagecount=ps    - use PS,  and send the ps_pagecount_code
+pagecount=pjl   - use PJL INFO PAGECOUNT command
+ps_pagecount_code  - PostScript code for obtaining pagecount information
+
+  Example:
+
+  pagecount=ps
+  ps_pagecount_code=/p{print}def ( %%[ pagecount: ) p
+    statusdict begin pagecount end 20 string cvs p
+    ( ]%% ) p () = flush
+
+Some printers do not correctly report end of job and must be polled
+until the pagecount information stabilizes.  The following options
+can be used to try to remedy this situation.
+
+true_eoj=@PJL TEOJ=ON
+
+This may work on some printers,  causing end of job reporting to be
+delayed until the last page is printed.
+
+pagecount_poll=nnn
+
+Periodically poll the printer at nnn second intervals until the
+pagecount value stabilizes.
+
+Builtin or Predefined Flags and Actions:
+
+The following keys are used to control printer actions,
+and are BUILTIN or predefined in their actions.
+
+status - FLAG
+  If status is OFF then no response will be expected from the
+  printer.  The filter will set status to OFF if the output
+  device (printer) is not a serial line or socket.
+    status   - no status can be read from printer (write only)
+    status@  - status can be read from printer (read/write)
+
+force_status - FLAG
+  Forces status to be obtained from printer,  even it it appears
+  that the device will not return status.  Covers a loophole where
+  you can have a bidirectional pipe or parallel port device that
+  looks like they should not return status.
+    force_status  - force status to be read
+    force_status@ - do force status to be read
+
+debug - STRING
+  sets the debug level - 0 to n
+  As usual,  turning on debugging will produce very voluminous output.
+  If debugging is turned on, trace messages are also written to the
+  STDERR output unless the trace_on_stderr flag is set off
+    debug=1
+
+trace_on_stderr - FLAG
+  If set, then trace and debugging information will be output to
+  stderr as well as the status file.
+    trace_on_stderr  - trace output on STDERR as well as to status file
+    trace_on_stderr@ - only error messages to STDERR
+
+statusfile - STRING
+  Specifies a status file to be used for filter status and trace information.
+  This value is overridden by the command line '-s file' option.
+    statusfile=status
+    statusfile@   - no status file
+    ifhp -s statusfile  - command line option
+
+logall - FLAG
+  Log all error and output from printer, with no interpretation.
+    logall   - logs all to trace file
+    logall@  - only 'interesting' information is logged
+
+dev    - STRING
+  Open this device RW for output.  For testing and/or desperation use.
+  Look in the source code for some other flags, etc, such as retries, wait
+  times, etc.  This is NOT documented, on purpose.
+  Examples:
+	dev=astart14%9100
+	dev=/tmp/d
+    dev_retries=5   - number of retries
+    dev_sleep=5     - sleep between retries
+
+init=[ ... ]  - LIST
+  actions to request before printer specific action
+
+sync  - STRING BUILTIN OPERATION
+  Request synchronization with printer before transferring data files
+  Synchronization can be done with PJL or PS methods.  If status is OFF
+  then no synchronization will be done.
+    sync@     - no synchronization
+    sync=pjl  - use PJL ECHO facilty
+    sync=ps   - send PS program to generate ECHO string
+sync_interval - STRING
+  If synchronization is not done within this period, then resend the
+  synchronization request.
+
+job_timeout - STRING
+  If the job has not completed within this period of time, abandon
+  the job.
+    job_timeout@  - no timeout
+    job_timeout=nnn - nnn seconds
+
+
+Language Control
+
+pjl  - FLAG
+  printer supports PJL.  See PJL Specific Options
+  pjl   - enabled
+  pjl@  - disabled
+pcl  - FLAG
+  printer supports PCL.  See PCL Specific Options
+ps   - FLAG
+  printer supports PCL.  See PCL Specific Options
+raw  - FLAG
+  printer allows BINARY files.  Default is ON.
+
+Banner Generation for OF Operations
+
+  These flags control operation in the OF mode for banner
+  generation.
+
+banner - STRING
+  specifies the type of banner to be produced
+    banner@    - no banner - does passthrough mode.
+    banner=pcl - use PCL builtin code
+    banner=ps  - use PS setup, then appends bannerfile
+    banner     - equivalent to banner=pcl
+    banner=/pathname  - opens and writes file to output
+    banner=|pathname  - forks and execs filter.
+
+banner_file - STRING
+    file to send after banner PS strings sent
+
+banner_suppressed - FLAG
+    allows you to suppress banner printing until explicitly requested
+    by a user using the -Zbanner flag.
+
+Page Counting:
+
+pagecount - STRING
+  specifies which method to use to get pagecount information
+    pagecount@      - do not do page counting
+	pagecount       - use default PJL if enabled, PS if enabled
+	pagecount=ps    - use PS,  and send the ps_pagecount_code
+	pagecount=pjl   - use PJL INFO PAGECOUNT command
+ps_pagecount_code  - STRING
+    PostScript code for obtaining pagecount information
+pagecount_poll - STRING
+    forces pagecount to be obtained at intervals, and is not
+    reported until it is stable.
+pagecount_interval - STRING
+    if pagecounting is not reported within this interval, then
+    resend the request. 
+
+Action Strings
+
+init=[ ... ]      - LIST
+    initialization actions done before language specific actions.
+    of other options, i.e. - PJL options
+    init=[ sync=ps pagecount=ps ]
+
+term=[ ... ]      - LIST
+    actions done after language specific actions
+
+pjl_init=[ ... ]  - LIST
+    if PJL is enabled, do these actions before language specific
+    actions
+
+pjl_term=[ ... ]  - LIST
+    if PJL is enabled, do these actions after language specific
+    actions
+
+pjl_user_opts=[ ... ] - LIST
+    allow these user options to be processed if requested after
+    the pjl_init actions.
+
+pcl_init=[ ... ], ps_init=[ ... ], raw_init=[ ... ]
+	if job language enabled and job has this form,  do these actions 
+pcl_user_opts=[ ... ], ps_user_opts=[ ... ], raw_user_opts=[ ... ]
+	if job language enabled and job has this form,  do these
+       user requested -T and -Z actions 
+
+pjl_job		- FLAG, BUILTIN
+	Set this if the PJL JOB facility is supported.  This will
+	case @PJL JOB lines to be generated
