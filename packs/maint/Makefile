@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.13 2002-06-26 22:29:11 ghudson Exp $
+# $Id: Makefile,v 1.14 2002-11-11 18:30:01 ghudson Exp $
 
 SHELL=/bin/sh
 ATHRETCDIR=/etc/athena
@@ -21,6 +21,8 @@ install:
 	install -c -m 0555 config_afs.sh ${DESTDIR}${ATHRETCDIR}/config_afs
 	install -c -m 0555 counterlog.sh ${DESTDIR}${ATHRETCDIR}/counterlog
 	install -c -m 0555 local-menus.sh ${DESTDIR}${ATHRETCDIR}/local-menus
+	install -c -m 0555 local-lockers.sh \
+		${DESTDIR}${ATHRETCDIR}/local-lockers
 	install -c -m 0555 local-netscape.sh \
 		${DESTDIR}${ATHRETCDIR}/local-netscape
 	install -c -m 0555 netparams.sh ${DESTDIR}${ATHRETCDIR}/netparams
