@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZInit.c,v 1.25 1998-03-17 19:19:51 ghudson Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZInit.c,v 1.26 1998-06-10 22:29:22 ghudson Exp $ */
 
 #ifndef lint
 static char rcsid_ZInitialize_c[] =
@@ -36,9 +36,9 @@ Code_t ZInitialize()
     struct in_addr servaddr;
     struct sockaddr_in sin;
     int s, sinsize = sizeof(sin);
-#ifdef HAVE_KRB4
     Code_t code;
     ZNotice_t notice;
+#ifdef HAVE_KRB4
     char *krealm = NULL;
     int krbval;
     char d1[ANAME_SZ], d2[INST_SZ];
