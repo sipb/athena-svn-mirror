@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: finish-update.sh,v 1.7 1997-07-26 18:55:06 ghudson Exp $
+# $Id: finish-update.sh,v 1.8 1997-12-06 21:32:12 ghudson Exp $
 
 # Copyright 1996 by the Massachusetts Institute of Technology.
 #
@@ -28,24 +28,10 @@ AUXDEVS=/var/athena/update.auxdevs
 OLDBINS=/var/athena/update.oldbins
 DEADFILES=/var/athena/update.deadfiles
 
+# We get one argument, the new workstation version we're updating to.
+newvers="$1"
+
 . $CONFDIR/rc.conf
-newvers=`awk '{a=$7} END {print a}' $CONFDIR/version`
-
-case "$HOSTTYPE" in
-sgi)
-	# Un-suppress network daemons.
-	echo "Un-suppressing network daemons for next reboot"
-	chkconfig -f suppress-network-daemons off
-	;;
-sun4)
-	# On Solaris we get run before inetsvc (since we don't want to run
-	# inetd), which means named isn't running.  Run it.
-	/usr/sbin/in.named
-	;;
-esac
-
-# Make sure we see the right cells as setuid.
-sh /etc/athena/config_afs
 
 # Do auxiliary device installs.
 if [ -s "$AUXDEVS" ]; then
