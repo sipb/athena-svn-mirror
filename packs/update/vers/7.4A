@@ -21,5 +21,9 @@ DS*)
 		ln -s floppy /dev/floppc
 		ln -s rfloppy /dev/rfloppc
 	fi
+	# Remove incorrect devices from system
+	if [ ${MACH} = "DS5000_100" ]; then
+		rm -f /dev/tty0[2-9]
+	fi
 	;;
 esac
