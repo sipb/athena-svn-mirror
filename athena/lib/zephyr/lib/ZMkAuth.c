@@ -4,16 +4,16 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMkAuth.c,v $
- *	$Author: jtkohl $
+ *	$Author: root $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMkAuth.c,v 1.4 1988-06-17 17:15:57 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMkAuth.c,v 1.5 1988-09-09 14:08:54 root Exp $ */
 
 #ifndef lint
-static char rcsid_ZMakeAuthentication_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMkAuth.c,v 1.4 1988-06-17 17:15:57 jtkohl Exp $";
+static char rcsid_ZMakeAuthentication_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZMkAuth.c,v 1.5 1988-09-09 14:08:54 root Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
@@ -30,11 +30,11 @@ Code_t ZMakeAuthentication(notice, buffer, buffer_len, len)
     int retval, result;
     KTEXT_ST authent;
 
-    notice->z_auth = 1;
     if ((result = krb_mk_req(&authent, SERVER_SERVICE, 
 			     SERVER_INSTANCE, __Zephyr_realm, 0))
 	!= MK_AP_OK)
 	return (result+krb_err_base);
+    notice->z_auth = 1;
     notice->z_authent_len = authent.length;
     notice->z_ascii_authent = (char *)malloc((unsigned)authent.length*3);
     if (!notice->z_ascii_authent)
@@ -52,6 +52,7 @@ Code_t ZMakeAuthentication(notice, buffer, buffer_len, len)
 
     return (retval);
 #else
+    notice->z_auth = 1;
     notice->z_authent_len = 0;
     return (Z_FormatRawHeader(notice, buffer, buffer_len, len, (char **) 0));
 #endif
