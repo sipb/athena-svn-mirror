@@ -2,7 +2,7 @@
 
 $^I = $^O eq 'VMS' ? '_bak' : '.bak';
 
-# $RCSfile: inplace.t,v $$Revision: 1.1.1.3 $$Date: 2000-04-07 20:45:11 $
+# $RCSfile: inplace.t,v $$Revision: 1.1.1.4 $$Date: 2003-01-10 13:40:49 $
 
 print "1..2\n";
 
@@ -12,6 +12,18 @@ if ($^O eq 'MSWin32') {
   `.\\perl -le "print 'foo'" > .a`;
   `.\\perl -le "print 'foo'" > .b`;
   `.\\perl -le "print 'foo'" > .c`;
+}
+elsif ($^O eq 'NetWare') {
+  $CAT = 'perl -e "print<>"';
+  `perl -le "print 'foo'" > .a`;
+  `perl -le "print 'foo'" > .b`;
+  `perl -le "print 'foo'" > .c`;
+}
+elsif ($^O eq 'MacOS') {
+  $CAT = "$^X -e \"print<>\"";
+  `$^X -le "print 'foo'" > .a`;
+  `$^X -le "print 'foo'" > .b`;
+  `$^X -le "print 'foo'" > .c`;
 }
 elsif ($^O eq 'VMS') {
   $CAT = 'MCR []perl. -e "print<>"';

@@ -14,7 +14,7 @@
 # based on original version by Alan R. Martello <al@ee.pitt.edu>
 # And by A.Macpherson@bnr.co.uk for multi-homed hosts
 #
-# $Header: /afs/dev.mit.edu/source/repository/third/perl/lib/ftp.pl,v 1.1.1.3 2002-02-07 21:12:20 zacheiss Exp $
+# $Header: /afs/dev.mit.edu/source/repository/third/perl/lib/ftp.pl,v 1.1.1.4 2003-01-10 13:40:28 zacheiss Exp $
 # $Log: not supported by cvs2svn $
 # Revision 1.17  1993/04/21  10:06:54  lmjm
 # Send all status reports to STDERR not to STDOUT (to allow use by ftpcat).
@@ -330,7 +330,7 @@ sub ftp'cwd
 # &ftp'dir( remote LIST options )
 # Start a list goin with the given options.
 # Presuming that the remote deamon uses the ls command to generate the
-# data to send back then then you can send it some extra options (eg: -lRa)
+# data to send back then you can send it some extra options (eg: -lRa)
 # return 1 if sucessful and 0 on a failure
 sub ftp'dir_open
 {

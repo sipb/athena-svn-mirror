@@ -1,11 +1,11 @@
 #ifndef lint
-static char yysccsid[] = "@(#)yaccpar 1.8 (Berkeley) 01/20/91";
+/* static char yysccsid[] = "@(#)yaccpar 1.8 (Berkeley) 01/20/91"; */
 #endif
 #define YYBYACC 1
 #line 2 "a2p.y"
-/* $RCSfile: a2p.c,v $$Revision: 1.1.1.3 $$Date: 2002-02-07 21:12:49 $
+/* $RCSfile: a2p.c,v $$Revision: 1.1.1.4 $$Date: 2003-01-10 13:40:59 $
  *
- *    Copyright (c) 1991-2001, Larry Wall
+ *    Copyright (c) 1991-2002, Larry Wall
  *
  *    You may distribute under the terms of either the GNU General Public
  *    License or the Artistic License, as specified in the README file.
@@ -2087,10 +2087,9 @@ yyparse()
     register int yym, yyn, yystate;
 #if YYDEBUG
     register char *yys;
-#ifndef __cplusplus
     extern char *getenv();
-#endif
-    if (yys = getenv("YYDEBUG"))
+
+    if ((yys = getenv("YYDEBUG")))
     {
         yyn = *yys;
         if (yyn >= '0' && yyn <= '9')
@@ -2107,7 +2106,7 @@ yyparse()
     *yyssp = yystate = 0;
 
 yyloop:
-    if (yyn = yydefred[yystate]) goto yyreduce;
+    if ((yyn = yydefred[yystate])) goto yyreduce;
     if (yychar < 0)
     {
         if ((yychar = yylex()) < 0) yychar = 0;
@@ -2148,14 +2147,14 @@ yyloop:
     }
     if (yyerrflag) goto yyinrecovery;
 #ifdef lint
-    goto yynewerror;
+
 #endif
-yynewerror:
+
     yyerror("syntax error");
 #ifdef lint
-    goto yyerrlab;
+
 #endif
-yyerrlab:
+
     ++yynerrs;
 yyinrecovery:
     if (yyerrflag < 3)
