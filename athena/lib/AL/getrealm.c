@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/lib/AL/getrealm.c,v $
- * $Author: jtkohl $
+ * $Author: qjb $
  *
  * Copyright 1988 by the Massachusetts Institute of Technology.
  *
@@ -12,7 +12,7 @@
 
 #ifndef	lint
 static char rcsid_getrealm_c[] =
-"$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/getrealm.c,v 4.4 1989-01-23 09:17:58 jtkohl Exp $";
+"$Header: /afs/dev.mit.edu/source/repository/athena/lib/AL/getrealm.c,v 4.5 1989-12-30 19:48:23 qjb Exp $";
 #endif	lint
 
 #include <mit-copyright.h>
@@ -94,7 +94,7 @@ char *host;
 			fclose(trans_file);
 			return(ret_realm);
 		}
-		if ((trans_host[0] = '.') && domain) { 
+		if ((trans_host[0] == '.') && domain) { 
 			/* this is a domain match */
 			if (!strcasecmp(trans_host, domain)) {
 				/* domain match, save for later */
