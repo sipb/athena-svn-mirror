@@ -1,5 +1,5 @@
 #!/sbin/sh
-# $Id: athena-sendmail.rc,v 1.1.2.1 2003-07-30 18:39:34 ghudson Exp $
+# $Id: athena-sendmail.rc,v 1.1.2.2 2003-07-30 18:49:14 ghudson Exp $
 #
 # athena-sendmail: Stop/Start the Athena sendmail service
 #
@@ -19,9 +19,6 @@ start)
   fi
   # Sync aliases db.
   /usr/lib/sendmail -bi
-
-  # Update authinfo hash map.
-  makemap hash /etc/mail/authinfo < /etc/mail/authinfo
 
   if [ "$SENDMAIL" = true ]; then
     echo "Starting Athena sendmail."
