@@ -1,5 +1,5 @@
 /* 
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_rpc.c,v 1.2 1989-11-13 20:34:50 qjb Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_rpc.c,v 1.3 1990-07-03 14:58:56 qjb Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_rpc.c,v $
  * $Author: qjb $
  *
@@ -9,7 +9,7 @@
  */
 
 #if !defined(lint) && !defined(SABER)
-static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_rpc.c,v 1.2 1989-11-13 20:34:50 qjb Exp $";
+static char *rcsid = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/rkinit/lib/rk_rpc.c,v 1.3 1990-07-03 14:58:56 qjb Exp $";
 #endif lint || SABER
 
 #include <stdio.h>
@@ -126,6 +126,12 @@ int rki_get_packet(sock, type, length, data)
 		return(RKINIT_PACKET);
 	    }
 	}
+    }
+
+    if (packet[PKT_TYPE] == MT_DROP) {
+	sprintf(errbuf, "Connection dropped by remote host");
+	rkinit_errmsg(errbuf);
+	return(RKINIT_DROPPED);
     }
 
     if (packet[PKT_TYPE] != type) {
@@ -296,7 +302,13 @@ int rki_get_csaddr(caddrp, saddrp)
     return(RKINIT_SUCCESS);
 }
 
+void rki_drop_server()
+{
+    (void) rki_send_packet(sock, MT_DROP, 0, "");
+}
+
 void rki_cleanup_rpc()
 {
+    rki_drop_server();
     (void) close(sock);
 }
