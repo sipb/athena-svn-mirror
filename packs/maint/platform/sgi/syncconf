@@ -68,6 +68,29 @@ append()
   fi
 }
 
+savevar()
+{
+  cat >> $RCSYNC << EOF
+if [ \$$1 != $2 ]; then CHANGES="\$CHANGES $1"; fi
+EOF
+}
+
+#cat > $RCSYNC << EOF
+#if [ \$TIMECLIENT != $TIMECLIENT ]; then CHANGES="\$CHANGES TIMECLIENT"; fi
+#if [ \$TIMEHUB != $TIMEHUB ]; then CHANGES="\$CHANGES TIMEHUB"; fi
+#if [ \$TIMESRV != $TIMESRV ]; then CHANGES="\$CHANGES TIMESRV"; fi
+#if [ \$AFSCLIENT != $AFSCLIENT ]; then CHANGES="\$CHANGES AFSCLIENT"; fi
+#if [ \$NFSSRV != $NFSSRV ]; then CHANGES="\$CHANGES NFSSRV"; fi
+#if [ \$NFSCLIENT != $NFSCLIENT ]; then CHANGES="\$CHANGES NFSCLIENT"; fi
+#if [ \$SENDMAIL != $SENDMAIL ]; then CHANGES="\$CHANGES SENDMAIL"; fi
+#if [ \$SNMP != $SNMP ]; then CHANGES="\$CHANGES SNMP"; fi
+#if [ \$SAVECORE != $SAVECORE ]; then CHANGES="\$CHANGES SAVECORE"; fi
+#if [ \$ACCOUNT != $ACCOUNT ]; then CHANGES="\$CHANGES ACCOUNT"; fi
+#if [ \$QUOTAS != $QUOTAS ]; then CHANGES="\$CHANGES QUOTAS"; fi
+#if [ \$HOST != $HOST ]; then CHANGES="\$CHANGES HOST"; fi
+#if [ \$ADDR != $ADDR ]; then CHANGES="\$CHANGES ADDR"; fi
+#EOF
+
 usage()
 {
   echo "Usage: syncconf\c"
@@ -113,14 +136,17 @@ for i in $j; do
   TIMECLIENT|timeclient)
     # gettime and AFS time synchronization
     syncvar timeclient ${TIMECLIENT}
+    savevar TIMECLIENT ${TIMECLIENT}
     ;;
 
   TIMEHUB|timehub)
     syncvar timeclient.options ${TIMEHUB}
+    savevar TIMEHUB ${TIMEHUB}
     ;;
 
   TIMESRV|timesrv)
     syncvar timed $TIMESRV
+    savevar TIMESRV ${TIMESRV}
     ;;
 
   AFSCLIENT|afsclient)
@@ -143,6 +169,7 @@ for i in $j; do
       syncvar afsml false
       syncvar afsclient false
     fi
+    savevar AFSCLIENT ${AFSCLIENT}
     ;;
 
   NFSSRV|nfssrv|NFSCLIENT|nfsclient)
@@ -164,6 +191,8 @@ for i in $j; do
         syncvar nfs false
       fi
 
+      savevar NFSSRV ${NFSSRV}
+      savevar NFSCLIENT ${NFSCLIENT}
       nfs_done=1;
     fi
     ;;
@@ -174,10 +203,12 @@ for i in $j; do
     else
       move /etc/rc2.d/s50mail /etc/rc2.d/S50mail
     fi
+    savevar SENDMAIL ${SENDMAIL}
     ;;
 
   SNMP|snmp)
     syncvar snmpd $SNMP
+    savevar SNMP ${SNMP}
     ;;
 
   SAVECORE|savecore)
@@ -187,15 +218,18 @@ for i in $j; do
           *)  minfree=${SAVECORE} ;;
     }
     put /var/adm/crash/minfree $minfree
+    savevar SAVECORE ${SAVECORE}
     ;;
 
   ACCOUNT|account)
     syncvar acct ${ACCOUNT}
+    savevar ACCOUNT ${ACCOUNT}
     ;;
 
   QUOTAS|quotas)
     syncvar quotacheck ${QUOTAS}
     syncvar quotas ${QUOTAS}
+    savevar QUOTAS ${QUOTAS}
     ;;
 
   HOST|host|ADDR|addr)
@@ -219,6 +253,8 @@ for i in $j; do
       append /etc/hosts "127.0.0.1  localhost"
       append /etc/hosts "$ADDR  $HOST.MIT.EDU $HOST"
 
+      savevar HOST ${HOST}
+      savevar ADDR ${ADDR}
       ip_done=1;
     fi
     ;;
@@ -231,19 +267,3 @@ for i in $j; do
 done
 
 echo ""
-
-cat > $RCSYNC << EOF
-if [ \$TIMECLIENT != $TIMECLIENT ]; then CHANGES="\$CHANGES TIMECLIENT"; fi
-if [ \$TIMEHUB != $TIMEHUB ]; then CHANGES="\$CHANGES TIMEHUB"; fi
-if [ \$TIMESRV != $TIMESRV ]; then CHANGES="\$CHANGES TIMESRV"; fi
-if [ \$AFSCLIENT != $AFSCLIENT ]; then CHANGES="\$CHANGES AFSCLIENT"; fi
-if [ \$NFSSRV != $NFSSRV ]; then CHANGES="\$CHANGES NFSSRV"; fi
-if [ \$NFSCLIENT != $NFSCLIENT ]; then CHANGES="\$CHANGES NFSCLIENT"; fi
-if [ \$SENDMAIL != $SENDMAIL ]; then CHANGES="\$CHANGES SENDMAIL"; fi
-if [ \$SNMP != $SNMP ]; then CHANGES="\$CHANGES SNMP"; fi
-if [ \$SAVECORE != $SAVECORE ]; then CHANGES="\$CHANGES SAVECORE"; fi
-if [ \$ACCOUNT != $ACCOUNT ]; then CHANGES="\$CHANGES ACCOUNT"; fi
-if [ \$QUOTAS != $QUOTAS ]; then CHANGES="\$CHANGES QUOTAS"; fi
-if [ \$HOST != $HOST ]; then CHANGES="\$CHANGES HOST"; fi
-if [ \$ADDR != $ADDR ]; then CHANGES="\$CHANGES ADDR"; fi
-EOF
