@@ -22,7 +22,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_topic.c,v 1.2 1991-03-06 15:40:52 lwvanels Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_topic.c,v 1.3 1991-03-24 14:32:44 lwvanels Exp $";
 #endif
 
 #include <Xm/List.h>
@@ -30,7 +30,6 @@ static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include "xolc.h"
 
 TOPIC TopicTable[256];
-
 
 ERRCODE
 x_list_topics(Request, file)
@@ -50,7 +49,7 @@ x_list_topics(Request, file)
       i = 0;
       while (fgets(inbuf, BUF_SIZE, infile) != NULL)
 	{
-	  inbuf[strlen(inbuf) - 1] = (char) NULL;
+	  inbuf[strlen(inbuf) - 1] = (char) '\0';
 	  sscanf(inbuf, "%s", TopicTable[i].topic);
 	  i++;
 	  AddItemToList(w_list, inbuf);
