@@ -1,6 +1,6 @@
 # Global bashrc file
 #
-# $Id: bashrc,v 1.15 2000-10-14 17:33:39 ghudson Exp $
+# $Id: bashrc,v 1.16 2001-03-26 19:59:44 ghudson Exp $
 
 # This file is sourced by default user file ~/.bashrc
 
@@ -183,7 +183,7 @@ if [ "${PS1+set}" = set ]; then
 fi
 
 # Fix coredumpsize limit in case it was reset
-ulimit -c $COREDUMPSIZE_LIMIT
+[ -n "$COREDUMPSIZE_LIMIT" ] && ulimit -c $COREDUMPSIZE_LIMIT
 
 #   alias for re-establishing authentication
 renew () { kinit $USER && fsid -a && zctl load /dev/null ; }
