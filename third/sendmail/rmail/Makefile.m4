@@ -97,7 +97,7 @@ ifdef(`confNO_MAN_INSTALL', `dnl',
 `	${INSTALL} -c -o ${MANOWN} -g ${MANGRP} -m ${MANMODE} rmail.${MAN8SRC} ${MAN8}/rmail.${MAN8EXT}')
 
 clean:
-	rm -f ${OBJS} rmail rmail.${MAN8SRC}
+	rm -f ${OBJS} rmail
 
 ################  Dependency scripts
 include(confBUILDTOOLSDIR/M4/depend/ifdef(`confDEPEND_TYPE', `confDEPEND_TYPE',

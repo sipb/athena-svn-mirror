@@ -145,7 +145,7 @@ ifdef(`confNO_MAN_INSTALL', `dnl',
 	${INSTALL} -c -o ${MANOWN} -g ${MANGRP} -m ${MANMODE} newaliases.${MAN1SRC} ${MAN1}/newaliases.${MAN1EXT}')
 
 clean:
-	rm -f ${OBJS} sendmail aliases.${MAN5SRC} mailq.${MAN1SRC} newaliases.${MAN1SRC} sendmail.${MAN8SRC}
+	rm -f ${OBJS} sendmail
 
 ################  Dependency scripts
 include(confBUILDTOOLSDIR/M4/depend/ifdef(`confDEPEND_TYPE', `confDEPEND_TYPE', `generic').m4)dnl

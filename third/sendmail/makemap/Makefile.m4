@@ -102,7 +102,7 @@ ifdef(`confNO_MAN_INSTALL', `dnl',
 `	${INSTALL} -c -o ${MANOWN} -g ${MANGRP} -m ${MANMODE} makemap.${MAN8SRC} ${MAN8}/makemap.${MAN8EXT}')
 
 clean:
-	rm -f ${OBJS} makemap makemap.${MAN8SRC}
+	rm -f ${OBJS} makemap
 
 ################  Dependency scripts
 include(confBUILDTOOLSDIR/M4/depend/ifdef(`confDEPEND_TYPE', `confDEPEND_TYPE', 

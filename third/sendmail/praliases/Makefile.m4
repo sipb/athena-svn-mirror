@@ -96,7 +96,7 @@ ifdef(`confNO_MAN_INSTALL', `dnl',
 `	${INSTALL} -c -o ${MANOWN} -g ${MANGRP} -m ${MANMODE} praliases.${MAN8SRC} ${MAN8}/praliases.${MAN8EXT}')
 
 clean:
-	rm -f ${OBJS} praliases praliases.${MAN8SRC}
+	rm -f ${OBJS} praliases
 
 ################  Dependency scripts
 include(confBUILDTOOLSDIR/M4/depend/ifdef(`confDEPEND_TYPE', `confDEPEND_TYPE',

@@ -88,7 +88,7 @@ ifdef(`confNO_MAN_INSTALL', `dnl',
 `	${INSTALL} -c -o ${MANOWN} -g ${MANGRP} -m ${MANMODE} smrsh.${MAN8SRC} ${MAN8}/smrsh.${MAN8EXT}')
 
 clean:
-	rm -f ${OBJS} smrsh smrsh.${MAN8SRC}
+	rm -f ${OBJS} smrsh
 
 ################  Dependency scripts
 include(confBUILDTOOLSDIR/M4/depend/ifdef(`confDEPEND_TYPE', `confDEPEND_TYPE',
