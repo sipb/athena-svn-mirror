@@ -2,7 +2,7 @@ ATHRETCDIR=/etc/athena
 
 dist:
 
-prep:
+prepare:
 
 clean:
 	${MAKE} clean
