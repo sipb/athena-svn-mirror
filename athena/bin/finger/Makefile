@@ -1,11 +1,15 @@
-# Makefile for Hesiod client finger
+# Makefile for Hesiod/Zephyr client finger
 #
 #	MIT Project Athena
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/finger/Makefile,v $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/Makefile,v 1.2 1987-08-20 16:11:21 ambar Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/Makefile,v 1.3 1987-08-21 18:28:18 ambar Exp $
 #	$Author: ambar $
 #	$Log: not supported by cvs2svn $
+# Revision 1.2  87/08/20  16:11:21  ambar
+# 
+# oops: excess backslash removed.
+# 
 # Revision 1.1  87/08/20  16:02:51  ambar
 # Initial revision
 # 
@@ -15,11 +19,11 @@ CFLAGS = -O
 CONFDIR = ${DESTDIR}/usr/athena
 BINDIR = ${DESTDIR}/bin
 
-LIBS =  -lhesiod
+LIBS =  -lhesiod -lzephry -lcom_err -lkrb
 
-SRCS =	finger.c hespwnamuid.c
+SRCS =	finger.c hespwnam.c
 
-OBJECTS = finger.o hespwnamuid.o
+OBJECTS = finger.o hespwnam.o
 
 all:	finger
 
@@ -29,8 +33,8 @@ finger:	${OBJECTS}
 finger.o:	finger.c
 	cc -c ${CFLAGS} finger.c
 
-hespwnamuid.o:	hespwnamuid.c
-	cc -c ${CFLAGS} hespwnamuid.c
+hespwnam.o:	hespwnam.c
+	cc -c ${CFLAGS} hespwnam.c
 
 lint:
 	lint -I../../include *.c
