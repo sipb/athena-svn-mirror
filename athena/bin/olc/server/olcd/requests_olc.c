@@ -20,13 +20,13 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v $
- *	$Id: requests_olc.c,v 1.41 1991-03-07 13:32:23 lwvanels Exp $
+ *	$Id: requests_olc.c,v 1.42 1991-04-08 21:11:19 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
 #ifndef SABER
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.41 1991-03-07 13:32:23 lwvanels Exp $";
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/requests_olc.c,v 1.42 1991-04-08 21:11:19 lwvanels Exp $";
 #endif
 #endif
 
@@ -1249,10 +1249,6 @@ olc_send(fd, request)
 
   send_response(fd,SUCCESS);
 
-#if 0
-  printf("olc_send: options %d\n",request->options);
-#endif /* TEST */
-
   if(is_option(request->options,VERIFY))
     return(SUCCESS);
 
@@ -1774,25 +1770,14 @@ olc_list(fd, request)
       read_int_from_fd(fd,&stati);
       send_response(fd,SUCCESS);
 
-#ifdef TEST
-      printf("%s %s %s %d\n",queues,topics,name,stati);
-#endif /* TEST */
-
       if(*name == '\0')
 	if(requester != target)
 	  strcpy(name,request->target.username);
-
-#ifdef TEST 
-      printf("name: %s\n",name);
-#endif /* TEST */
 
       topicP = (int *) NULL;      
       if(*topics != '\0')
 	{
 	  topic_codes[0] = verify_topic(topics);
-#ifdef TEST
-	  printf("topic_code res: %d\n",topic_codes[0]);
-#endif /* TEST */
 	  topic_codes[1] = -1;
 	  topicP = &topic_codes[0];
 	}
@@ -1805,10 +1790,6 @@ olc_list(fd, request)
 
   write_int_to_fd(fd,n);
   
-#ifdef TEST
-  printf("sending %d elements to client\n",n);
-#endif /* TEST */
-
   for(i=0;i<=n;i++)
     {
       status =  send_list(fd,request,&list[i]);
@@ -1916,14 +1897,6 @@ olc_chtopic(fd, request)
     }
   else
     target = requester->connected;
-
-#ifdef TEST
-  sprintf(msg_buf,"%d %d %d %d\n",is_connected_to(requester,target),
-	  is_allowed(requester->user,CONSULT_ACL),
-	  owns_question(target),
-	  is_allowed(requester->user,GCHTOPIC_ACL));
-  log_status(msg_buf);
-#endif
 
   if(!((is_me(requester,target) || is_connected_to(requester,target)) &&
        (is_allowed(requester->user, CONSULT_ACL))) &&
@@ -2215,11 +2188,6 @@ olc_startup(fd, request)
 
   if(!(is_allowed(requester->user,OLC_ACL)))
     return(send_response(fd,PERMISSION_DENIED));
-
-#ifdef TEST
-  printf("olc_startup: %d %s exist\n", requester->user->no_knuckles,
-	 requester->user->username);
-#endif /* TEST */
 
   if(status == SUCCESS)
     {
