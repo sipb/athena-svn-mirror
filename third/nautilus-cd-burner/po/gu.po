@@ -1,15 +1,16 @@
+# translation of nautilus-cd-burner.gnome-2-8.gu.po to Gujarati
 # translation of nautilus-cd-burner.HEAD.gu.po to Gujarati
 # Copyright (C) 2004 Free Software Foundation, Inc.
 # MagNet <magnet@magnet-i.com>, 2004.
 # Ankit Patel <ankit@redhat.com>, 2004.
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus-cd-burner.HEAD.gu\n"
+"Project-Id-Version: nautilus-cd-burner.gnome-2-8.gu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-10 17:06+0100\n"
-"PO-Revision-Date: 2004-08-20 15:21+0530\n"
+"POT-Creation-Date: 2004-12-08 13:17+0100\n"
+"PO-Revision-Date: 2004-12-08 18:35+0530\n"
 "Last-Translator: Ankit Patel <ankit@redhat.com>\n"
-"Language-Team: Gujarati\n"
+"Language-Team: Gujarati <gu@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -17,9 +18,10 @@ msgstr ""
 "Plural-Forms: Plural-Forms: nplurals=2; plural=(n!=1);\n"
 "\n"
 "\n"
-"X-Generator: KBabel 1.3.1\n"
+"\n"
+"X-Generator: KBabel 1.9\n"
 
-#: bacon-cd-selection.c:187
+#: bacon-cd-selection.c:170
 msgid "Unnamed CDROM"
 msgstr "નામ વિનાનું CD-ROM"
 
@@ -47,50 +49,51 @@ msgstr "સમાવિષ્ટો CD અથવા DVD ડિસ્કમાં
 msgid "Write to Disc"
 msgstr "ડિસ્ક પર લખો"
 
-#: cd-drive.c:744
+#: cd-drive.c:855
 #, c-format
 msgid "Unnamed SCSI Drive (%s)"
 msgstr "નામ વિનાનું સ્કઝી ડ્રાઈવ (%s)"
 
-#: cd-drive.c:1304
+#: cd-drive.c:1415
 msgid "File image"
 msgstr "ફાઈલ ચિત્ર"
 
 #. This fits the "open64" and "open"-like messages
-#: cd-recorder.c:313
+#: cd-recorder.c:374
 msgid "The recorder could not be accessed"
 msgstr "રેકોર્ડ કરનાર વાપરી શકાયુ નથી"
 
-#: cd-recorder.c:316
+#: cd-recorder.c:377
 msgid "Not enough space available on the disc"
 msgstr "ડિસ્ક પર પ્રાપ્ય જગ્યા ઉપ્લબ્ધ નથી"
 
-#: cd-recorder.c:319 cd-recorder.c:322 cd-recorder.c:373
+#: cd-recorder.c:380 cd-recorder.c:383 cd-recorder.c:449
 msgid "The files selected did not fit on the CD"
 msgstr "પસંદ કરેલી ફાઈલો CDમાં બેઠી નહિં"
 
-#: cd-recorder.c:330
+#: cd-recorder.c:391
 msgid "Unhandled error, aborting"
 msgstr "અનિયંત્રિત ભૂલ, અડધેથી બંધ કરી રહ્યા છીએ"
 
-#: cd-recorder.c:367
+#: cd-recorder.c:436
 msgid "The CD has already been recorded"
 msgstr "CD પહેલાથી જ રેકોર્ડ થઈ ગઈ છે"
 
-#: cd-recorder.c:377
-msgid ""
-"All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
-msgstr ""
-"બધી અવાજની ફાઈલો સ્ટીરીયો હોવી જોઈએ, ૧૬-બીટ ડીજીટલ અવાજ ૪૪૧૦૦Hz નમૂનાઓ સાથે"
+#: cd-recorder.c:453
+msgid "All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
+msgstr "બધી અવાજની ફાઈલો સ્ટીરીયો હોવી જોઈએ, ૧૬-બીટ ડીજીટલ અવાજ ૪૪૧૦૦Hz નમૂનાઓ સાથે"
 
-#: cd-recorder.c:384
-msgid ""
-"The system is too slow to write the CD at this speed. Try a lower speed."
+#: cd-recorder.c:466
+msgid "The system is too slow to write the CD at this speed. Try a lower speed."
 msgstr "સિસ્ટમ CD ને આ ઝડપે લખવા માટે ખૂબ ધીમી છે. ઓછી ઝડપે પ્રયત્ન કરો."
 
-#: cd-recorder.c:503
+#: cd-recorder.c:757
 msgid "You can only burn 99 tracks on one disc"
 msgstr "તમે એક ડિસ્ક પર માત્ર  ૯૯ ટ્રેકો બર્ન કરી શકો છો"
+
+#: cd-recorder.c:762
+msgid "Burning CD"
+msgstr "CD બનાવી રહ્યા છે"
 
 #: cdburn.glade.h:1
 msgid "    "
@@ -184,103 +187,102 @@ msgstr ""
 msgid "Windows compatibility"
 msgstr "વિન્ડો સુસંગતતા"
 
-#: make-iso.c:576
+#: make-iso.c:581
 msgid "No files selected to write to CD."
 msgstr "CD પર લખવા માટે કોઈ ફાઈલ પસંદ કરાઈ નથી."
 
-#: make-iso.c:578 nautilus-cd-burner.c:1134
+#: make-iso.c:583 nautilus-cd-burner.c:1139
 msgid "No files selected"
 msgstr "કોઈ ફાઈલ પસંદ કરાઈ નથી"
 
-#: make-iso.c:659
+#: make-iso.c:667
 #, c-format
 msgid "Not enough space to store CD image (%ld Megabyte needed)"
 msgid_plural "Not enough space to store CD image (%ld Megabytes needed)"
 msgstr[0] "CD નાં પ્રતિબિંબને સંગ્રહ કરવા માટે પૂરતી જગ્યા નથી (%ld Mbની જરુર છે)"
 msgstr[1] "CD નાં પ્રતિબિંબને સંગ્રહ કરવા માટે પૂરતી જગ્યા નથી (%ld Mbની જરુર છે)"
 
-#: make-iso.c:664
+#: make-iso.c:672
 msgid "Not enough space"
 msgstr "પૂરતી જગ્યા નથી"
 
-#: make-iso.c:700
+#: make-iso.c:710
 msgid "Creating CD image"
 msgstr "CDનું પ્રતિબિંબ બનાવી રહ્યા છે"
 
-#: nautilus-cd-burner.c:137
+#: nautilus-cd-burner.c:138
 msgid " (invalid Unicode)"
 msgstr " (અયોગ્ય યુનિકોડ)"
 
-#: nautilus-cd-burner.c:283
+#: nautilus-cd-burner.c:284
 msgid "Preparing to write CD"
 msgstr "CD લખવાની તૈયારી કરી રહ્યા છે"
 
-#: nautilus-cd-burner.c:285
+#: nautilus-cd-burner.c:286
 msgid "Preparing to write DVD"
 msgstr "DVD લખવા માટે તૈયારી કરી રહ્યા છીએ"
 
-#: nautilus-cd-burner.c:290
+#: nautilus-cd-burner.c:291
 msgid "Writing CD"
 msgstr "CD લખી રહ્યા છે"
 
-#: nautilus-cd-burner.c:292
+#: nautilus-cd-burner.c:293
 msgid "Writing DVD"
 msgstr "DVD લખી રહ્યા છીએ"
 
-#: nautilus-cd-burner.c:297
+#: nautilus-cd-burner.c:298
 msgid "Fixating CD"
 msgstr "CD ગોઠવી રહ્યા છે"
 
-#: nautilus-cd-burner.c:299
+#: nautilus-cd-burner.c:300
 msgid "Fixating DVD"
 msgstr "DVD ચોક્કસ કરી રહ્યા છીએ"
 
-#: nautilus-cd-burner.c:304
+#: nautilus-cd-burner.c:305
 msgid "Erasing CD"
 msgstr "CD ભૂસી રહ્યા છે"
 
-#: nautilus-cd-burner.c:306
+#: nautilus-cd-burner.c:307
 msgid "Erasing DVD"
 msgstr "DVD ભૂંસી રહ્યા છીએ"
 
-#: nautilus-cd-burner.c:332
+#: nautilus-cd-burner.c:333
 msgid "Please make sure another application is not using the disc."
 msgstr "મહેરબાની કરીને ખાતરી કરો કે બીજો કાર્યક્રમ ડિસ્ક વાપરી રહ્યો તો નથી."
 
-#: nautilus-cd-burner.c:333
+#: nautilus-cd-burner.c:334
 msgid "Disc is busy"
 msgstr "ડિસ્ક વ્યસ્ત છે"
 
-#: nautilus-cd-burner.c:335
+#: nautilus-cd-burner.c:336
 msgid "Please insert a rewritable or blank media in the drive tray."
 msgstr "મહેરબાની કરીને ડ્રાઈવ ટ્રેમાં ફરીથી લખી શકાય એવી અથવા ખાલી મિડીયા નાંખો."
 
-#: nautilus-cd-burner.c:336
+#: nautilus-cd-burner.c:337
 msgid "Insert rewritable or blank media"
 msgstr "ફરીથી લખી શકાય એવી અથવા ખાલી મિડીયા નાંખો"
 
-#: nautilus-cd-burner.c:338
+#: nautilus-cd-burner.c:339
 msgid "Please insert a blank media in the drive tray."
 msgstr "મહેરબાની કરીને ડ્રાઈવ ટ્રેમાં કોરી મિડીયા નાંખો."
 
-#: nautilus-cd-burner.c:339
+#: nautilus-cd-burner.c:340
 msgid "Insert blank media"
 msgstr "કોરી મિડીયા નાંખો"
 
-#: nautilus-cd-burner.c:341
-msgid "Please replace the in-drive media by a rewritable or blank media."
-msgstr ""
-"મહેરબાની કરીને ડ્રાઈવમાંનુ મિડીયા ફરીથી લખી શકાય એવી અથવા ખાલી મિડીયાથી બદલી નાંખો."
-
 #: nautilus-cd-burner.c:342
+msgid "Please replace the in-drive media by a rewritable or blank media."
+msgstr "મહેરબાની કરીને ડ્રાઈવમાંનુ મિડીયા ફરીથી લખી શકાય એવી અથવા ખાલી મિડીયાથી બદલી નાંખો."
+
+#: nautilus-cd-burner.c:343
 msgid "Reload rewritable or blank media"
 msgstr "ફરીથી લખી શકાય એવુ અથવા ખાલી મિડીયા ફરીથી લાવો"
 
-#: nautilus-cd-burner.c:344
+#: nautilus-cd-burner.c:345
 msgid "Please replace the in-drive media by a blank media."
 msgstr "મહેરબાની કરીને ડ્રાઈવ માંનુ મિડીયા કોરી મિડીયાથી બદલી નાંખો."
 
-#: nautilus-cd-burner.c:345
+#: nautilus-cd-burner.c:346
 msgid "Reload blank media"
 msgstr "ફરીથી કોરી મિડીયા લાવો"
 
@@ -335,7 +337,7 @@ msgstr "CD-ROMના પ્રતિબિંબ માટે ફાઈલનુ
 msgid "You do not have permissions to overwrite that file (%s)."
 msgstr "તમને આ ફાઈલ પર ફરીથી લખવાની પરવાનગી નથી (%s)."
 
-#: nautilus-cd-burner.c:586 nautilus-cd-burner.c:599
+#: nautilus-cd-burner.c:586 nautilus-cd-burner.c:599 nautilus-cd-burner.c:656
 msgid "File image creation failed"
 msgstr "ફાઈલ ઈમેજ બનાવવામાં નિષ્ફળ"
 
@@ -344,20 +346,24 @@ msgstr "ફાઈલ ઈમેજ બનાવવામાં નિષ્ફળ
 msgid "You do not have permissions to create that file (%s)."
 msgstr "તમને ફાઈલ બનાવવાની પરવાનગી નથી (%s)."
 
-#: nautilus-cd-burner.c:661
+#: nautilus-cd-burner.c:656
+msgid "Incorrectly named files were to be added to the CD"
+msgstr "અયોગ્ય રીતે નામ અપાયેલ ફાઈલો CD માં ઉમેરાવા જઈ રહેલ છે"
+
+#: nautilus-cd-burner.c:664
 #, c-format
 msgid "Completed writing %s"
 msgstr "%s નું લખવાનું પૂર્ણ"
 
-#: nautilus-cd-burner.c:719
+#: nautilus-cd-burner.c:725
 msgid "Complete"
 msgstr "પૂર્ણ"
 
-#: nautilus-cd-burner.c:782
+#: nautilus-cd-burner.c:786
 msgid "Maximum Possible"
 msgstr "મહત્તમ શક્ય"
 
-#: nautilus-cd-burner.c:859
+#: nautilus-cd-burner.c:864
 #, c-format
 msgid "%d MB"
 msgstr "%d MB"
@@ -366,15 +372,15 @@ msgstr "%d MB"
 #. translators: see strftime man page for meaning of %b, %d and %Y
 #. the maximum length for this field is 32 bytes
 #.
-#: nautilus-cd-burner.c:887
+#: nautilus-cd-burner.c:892
 msgid "Personal Data, %b %d, %Y"
 msgstr "ખાનગી માહિતી, %b %d, %Y"
 
-#: nautilus-cd-burner.c:920
+#: nautilus-cd-burner.c:925
 msgid "Cancel write"
 msgstr "લખવાનું નકારો"
 
-#: nautilus-cd-burner.c:921
+#: nautilus-cd-burner.c:926
 msgid ""
 "Are you sure you want to cancel the disc write operation?\n"
 "Some optical media drives may require that you restart the machine to get it "
@@ -384,37 +390,37 @@ msgstr ""
 "અમુક વૈકલ્પિક મિડીયા ડ્રાઈવોને કદાચ એવી જરુર પડે કે તેને ફરીથી કામ કરતું કરવા માટે તમારે "
 "યંત્રને ફરી શરુ કરવું પડે."
 
-#: nautilus-cd-burner.c:925
+#: nautilus-cd-burner.c:930
 msgid "Continue"
 msgstr "ચાલુ રાખો"
 
-#: nautilus-cd-burner.c:977
+#: nautilus-cd-burner.c:982
 #, c-format
 msgid "There was a problem displaying the help contents: %s."
 msgstr "મદદના સમાવિષ્ટો દર્શાવવામાં ભૂલ હતી: %s."
 
-#: nautilus-cd-burner.c:978
+#: nautilus-cd-burner.c:983
 msgid "Cannot display help"
 msgstr "મદદ દર્શાવી શકતા નથી"
 
-#: nautilus-cd-burner.c:1093
+#: nautilus-cd-burner.c:1098
 msgid "Too many parameters"
 msgstr "ઘણા બધા પરિમાણો"
 
-#: nautilus-cd-burner.c:1094
+#: nautilus-cd-burner.c:1099
 msgid "Too many parameters were passed to the application."
 msgstr "કાર્યક્રમને ઘણા બધા પરિમાણો પસાર કરેલા છે."
 
-#: nautilus-cd-burner.c:1116
+#: nautilus-cd-burner.c:1121
 #, c-format
 msgid "The file '%s' is not a valid CD image."
 msgstr "ફાઈલ '%s' એ યોગ્ય CD પ્રતિબિંબ નથી."
 
-#: nautilus-cd-burner.c:1119
+#: nautilus-cd-burner.c:1124
 msgid "Not a valid CD image"
 msgstr "CD ઈમેજ યોગ્ય નથી"
 
-#: nautilus-cd-burner.c:1135
+#: nautilus-cd-burner.c:1140
 msgid ""
 "You need to copy the files you want to write to disc to the CD/DVD Creator "
 "window. Would you like to open it now?"
@@ -422,7 +428,7 @@ msgstr ""
 "તમે જે ફાઈલો ડિસ્કમાં લખવા ઈચ્છો છો તેની તમારે CD/DVD બનાવનાર વિન્ડોમાં નકલ બનાવવી "
 "જોઈએ. તમે એને અત્યારે ખોલવાનું પસંદ કરશો?"
 
-#: nautilus-cd-burner.c:1137
+#: nautilus-cd-burner.c:1142
 msgid "Open CD/DVD Creator"
 msgstr "CD/DVD બનાવનાર ખોલો"
 
@@ -469,3 +475,4 @@ msgstr "શું CD રેકોર્ડ કરવા માટે ભૂલ�
 #: ncb.schemas.in.h:10
 msgid "Whether to use the Burnproof option available on some recorders."
 msgstr "શું અમુક રેકોર્ડરો પર ઉપ્લબ્ધ બર્નસુરક્ષિત વિકલ્પ વાપરવો."
+

@@ -16,8 +16,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-cd-burner 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-10 17:06+0100\n"
-"PO-Revision-Date: 2004-08-02 00:40+0200\n"
+"POT-Creation-Date: 2004-09-25 11:19+0200\n"
+"PO-Revision-Date: 2004-09-25 11:20+0200\n"
 "Last-Translator: Martin Willemoes Hansen <mwh@sysrq.dk>\n"
 "Language-Team: Danish <dansk@klid.dk>\n"
 "MIME-Version: 1.0\n"
@@ -25,7 +25,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: bacon-cd-selection.c:187
+#: bacon-cd-selection.c:200
 msgid "Unnamed CDROM"
 msgstr "Cd-rom uden navn"
 
@@ -53,52 +53,56 @@ msgstr "Skriv indholdet til en cd eller en dvd disk"
 msgid "Write to Disc"
 msgstr "Skriv på disk"
 
-#: cd-drive.c:744
+#: cd-drive.c:855
 #, c-format
 msgid "Unnamed SCSI Drive (%s)"
 msgstr "SCSI-drev (%s) uden navn"
 
-#: cd-drive.c:1304
+#: cd-drive.c:1415
 msgid "File image"
 msgstr "Filaftryk"
 
 #. This fits the "open64" and "open"-like messages
-#: cd-recorder.c:313
+#: cd-recorder.c:350
 msgid "The recorder could not be accessed"
 msgstr "Optageren kunne ikke tilgås"
 
-#: cd-recorder.c:316
+#: cd-recorder.c:353
 msgid "Not enough space available on the disc"
 msgstr "Ikke tilstrækkeligt plads tilgængeligt på disken"
 
-#: cd-recorder.c:319 cd-recorder.c:322 cd-recorder.c:373
+#: cd-recorder.c:356 cd-recorder.c:359 cd-recorder.c:425
 msgid "The files selected did not fit on the CD"
 msgstr "De valgte filer kunne ikke være på cd'en"
 
-#: cd-recorder.c:330
+#: cd-recorder.c:367
 msgid "Unhandled error, aborting"
 msgstr "Ikke-håndteret fejl, afbryder"
 
-#: cd-recorder.c:367
+#: cd-recorder.c:412
 msgid "The CD has already been recorded"
 msgstr "Cd'en er allerede brændt"
 
-#: cd-recorder.c:377
+#: cd-recorder.c:429
 msgid ""
 "All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
 msgstr ""
 "Alle musikfiler skal være stereo 16 bit digital lyd med 44100Hz samples"
 
-#: cd-recorder.c:384
+#: cd-recorder.c:442
 msgid ""
 "The system is too slow to write the CD at this speed. Try a lower speed."
 msgstr ""
 "Systemet er for langsom til at skrive cd'en ved denne hastighed. Prøv en "
 "langsommere hastighed."
 
-#: cd-recorder.c:503
+#: cd-recorder.c:557
 msgid "You can only burn 99 tracks on one disc"
 msgstr "Du kan kun brænde 99 spor på en disk"
+
+#: cd-recorder.c:562
+msgid "Burning CD"
+msgstr "Brænder cd"
 
 #: cdburn.glade.h:1
 msgid "    "
@@ -200,18 +204,18 @@ msgstr "Ingen filer valgt til skrivning til cd."
 msgid "No files selected"
 msgstr "Ingen filer valgt"
 
-#: make-iso.c:659
+#: make-iso.c:663
 #, c-format
 msgid "Not enough space to store CD image (%ld Megabyte needed)"
 msgid_plural "Not enough space to store CD image (%ld Megabytes needed)"
 msgstr[0] "Ikke nok plads til at gemme cd-aftrykket (%ld megabyte krævet)"
 msgstr[1] "Ikke nok plads til at gemme cd-aftrykket (%ld megabyte krævet)"
 
-#: make-iso.c:664
+#: make-iso.c:668
 msgid "Not enough space"
 msgstr "Ikke nok plads"
 
-#: make-iso.c:700
+#: make-iso.c:704
 msgid "Creating CD image"
 msgstr "Opretter cd-aftryk"
 
@@ -291,15 +295,15 @@ msgstr "Erstart venligst mediet i drevet med et tomt medie."
 msgid "Reload blank media"
 msgstr "Genindsæt tomt medie"
 
-#: nautilus-cd-burner.c:373
+#: nautilus-cd-burner.c:372
 msgid "Disc writing error details"
 msgstr "Detaljer om disk-skrivningsfejl"
 
-#: nautilus-cd-burner.c:379
+#: nautilus-cd-burner.c:378
 msgid "Detailed error output from cdrecord:"
 msgstr "Detaljeret fejluddata fra cdrecord:"
 
-#: nautilus-cd-burner.c:420
+#: nautilus-cd-burner.c:419
 #, c-format
 msgid ""
 "There was an error writing to the CD:\n"
@@ -308,19 +312,19 @@ msgstr ""
 "Der opstod en fejl under skrivningen til cd'en:\n"
 "%s"
 
-#: nautilus-cd-burner.c:421
+#: nautilus-cd-burner.c:420
 msgid "There was an error writing to the CD"
 msgstr "Der opstod en fejl under skrivningen til cd'en"
 
-#: nautilus-cd-burner.c:422
+#: nautilus-cd-burner.c:421
 msgid "Error writing to CD"
 msgstr "Fejl under skrivning til cd"
 
-#: nautilus-cd-burner.c:428
+#: nautilus-cd-burner.c:427
 msgid "_Details"
 msgstr "_Detaljer"
 
-#: nautilus-cd-burner.c:501
+#: nautilus-cd-burner.c:500
 #, c-format
 msgid ""
 "A file named \"%s\" already exists.\n"
@@ -329,38 +333,38 @@ msgstr ""
 "En fil med navnet \"%s\" eksisterer allerede.\n"
 "Ønsker du at overskrive den?"
 
-#: nautilus-cd-burner.c:503 nautilus-cd-burner.c:512
+#: nautilus-cd-burner.c:502 nautilus-cd-burner.c:511
 msgid "_Overwrite"
 msgstr "_Overskriv"
 
-#: nautilus-cd-burner.c:530
+#: nautilus-cd-burner.c:529
 msgid "Choose a filename for the cdrom image"
 msgstr "Vælg et filnavn til cd-aftrykket"
 
-#: nautilus-cd-burner.c:585
+#: nautilus-cd-burner.c:584
 #, c-format
 msgid "You do not have permissions to overwrite that file (%s)."
 msgstr "Du har ikke rettighed til at overskrive filen (%s)."
 
-#: nautilus-cd-burner.c:586 nautilus-cd-burner.c:599
+#: nautilus-cd-burner.c:585 nautilus-cd-burner.c:598
 msgid "File image creation failed"
 msgstr "Oprettelse af filaftryk mislykkedes"
 
-#: nautilus-cd-burner.c:598
+#: nautilus-cd-burner.c:597
 #, c-format
 msgid "You do not have permissions to create that file (%s)."
 msgstr "Du har ikke rettighed til at oprette filen (%s)."
 
-#: nautilus-cd-burner.c:661
+#: nautilus-cd-burner.c:660
 #, c-format
 msgid "Completed writing %s"
 msgstr "Færdig med skrivning af %s"
 
-#: nautilus-cd-burner.c:719
+#: nautilus-cd-burner.c:718
 msgid "Complete"
 msgstr "Fuldført"
 
-#: nautilus-cd-burner.c:782
+#: nautilus-cd-burner.c:781
 msgid "Maximum Possible"
 msgstr "Størst mulig"
 

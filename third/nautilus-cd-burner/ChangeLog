@@ -1,3 +1,306 @@
+=== 2.8.7 ===
+
+2005-02-15  William Jon McCann  <mccann@jhu.edu>
+
+	* NEWS: 
+	* configure.in: 2.8.7
+
+2005-02-10  William Jon McCann  <mccann@jhu.edu>
+
+	* cd-drive.c (cd_drive_get_media_type_from_path_full) 
+	(cd_drive_get_media_size_from_path, get_cd_scsi_id) 
+	(get_device_max_read_speed, get_device_max_write_speed):
+	Add fallback to open RDONLY for compatibility with Linux 2.4.
+	(Closes #165962)
+
+2005-02-10  William Jon McCann  <mccann@jhu.edu>
+
+	* transport.hxx: Sync with upstream dvd+rw-tools 5.21.4.10.8.
+	The only difference is the O_EXCL in open in our version.
+	(Closes #166689)
+
+2004-12-17  Ross Burton  <ross@burtonini.com>
+
+	* cd-drive.c:
+	Don't pass a LibHalFunctions to hal_initialize as that struct
+	often changes, just pass a NULL.
+
+=== 2.8.6 ===
+
+2004-12-06  Bastien Nocera  <hadess@hadess.net>
+
+	* configure.in: 2.8.6
+
+2004-12-04  Bastien Nocera  <hadess@hadess.net>
+
+	* make-iso.c: (mkisofs_stderr_read), (make_iso):
+	* nautilus-cd-burner.c: (burn_cd): When an incorrectly encoded file
+	is to be added to an image, we need to error out. Also force utf8
+	encoding on the command-line when building the image (Closes: #149486)
+
+2004-11-29  Bastien Nocera  <hadess@hadess.net>
+
+	* nautilus-cd-burner.c: (burn_cd): fix crash when closing the
+	"Completed" dialog with the window manager buttons instead of the
+	Close button (Closes: #159644)
+
+2004-11-22  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* dvd_plus_rw_utils.cpp:
+	Fix memleak spotted by valgrind.
+
+2004-11-16  Marco Pesenti Gritti  <marco@gnome.org>
+
+	* autogen.sh:
+
+	Fix out of src directory build
+
+2004-11-10  James Henstridge  <james@jamesh.id.au>
+
+	* Makefile.am: make a few changes to work with newer automakes.
+
+	* configure.in: remove some cruft that isn't needed with newer
+	Automakes.
+
+	* autogen.sh (REQUIRED_AUTOMAKE_VERSION): require Automake 1.7.
+
+2004-11-10  Bastien Nocera  <hadess@hadess.net>
+
+	* bacon-cd-selection.c: (combo_device_changed),
+	(bacon_cd_selection_set_recorders_only): fix crash when the first
+	CD drive wasn't a recorder (Closes: #157387)
+	* cd-drive.c: (test_cdroms): added a test_cdroms() that can be used
+	to fake configurations
+
+=== 2.8.5 ===
+
+2004-11-03  Bastien Nocera  <hadess@hadess.net>
+
+	* NEWS:
+	* configure.in: 2.8.5
+
+2004-11-03  Christophe Fergeau  <teuf@gnome.org>
+
+	* bacon-cd-selection.c: (bacon_cd_selection_set_recorders_only): make
+	sure there is still an active combo box entry after filtering the 
+	combo box content to only show cd recorders.
+
+2004-10-26  Bastien Nocera  <hadess@hadess.net>
+
+	* bacon-cd-selection.c: (bacon_cd_selection_init),
+	(bacon_cd_selection_finalize), (bacon_cd_selection_new):
+	move initialisation from _new to _init for use by bindings
+	(patch by Bryan Forbes <bryan@reigndropsfall.net>) (Closes: #154106)
+
+2004-10-22  Bastien Nocera  <hadess@hadess.net>
+
+	* bacon-cd-selection.c:
+	* bacon-cd-selection.h:
+	* burn-extension.c:
+	* cd-drive.c:
+	* cd-drive.h:
+	* cd-recorder.c:
+	* cd-recorder.h:
+	* list_cddrives.c:
+	* make-iso.c:
+	* make-iso.h:
+	* nautilus-cd-burner.c:
+	* nautilus-cd-burner.h: add G_BEGIN_DECLS/G_END_DECLS, update
+	Copyright notices
+
+=== 2.8.4 ===
+
+2004-10-21  Bastien Nocera  <hadess@hadess.net>
+
+	* NEWS: upd
+	* configure.in: 2.8.4
+
+2004-10-20  Alexander Larsson  <alexl@redhat.com>
+
+	* mapping-method.c (fill_in_directory_info):
+	The user should own the folders. This fixed writability for
+	users in the root group.
+
+2004-10-19  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* Makefile.am:
+	Oops, use LDFLAGS, not LIBADD.
+
+	* burn-extension.c:
+	Use glib header for library i18n.
+
+2004-10-19  Frederic Crozat  <fcrozat@mandrakesoft.com>
+
+	* Makefile.am:
+	Don't use version for nautilus extension soname.
+
+2004-10-12  Alexander Larsson  <alexl@redhat.com>
+
+	* cd-recorder.c (unmount_thread_start):
+	Try to unmount the cdrom if its busy.
+
+2004-10-02  Bastien Nocera  <hadess@hadess.net>
+
+	* configure.in: test for Solaris' volmgt library (Closes: #145550)
+
+2004-09-30  Sebastien Bacher  <seb128@canonical.com>
+
+	* cd-recorder.c: (growisofs_stderr_read), (cdrecord_stderr_read):
+	display the cdrecord and growisofs outputs in the right order
+	(Closes: #154160).
+
+2004-09-30  Bastien Nocera  <hadess@hadess.net>
+
+	* cd-drive.c: (cd_drive_get_media_type_from_path_full),
+	(cd_drive_get_media_size_from_path), (get_cd_scsi_id),
+	(get_device_max_read_speed), (get_device_max_write_speed),
+	(linux_scan):
+	* transport.hxx: open the devices read-write, not read-only if we're
+	actually going to write stuff to them. Should fix problems seen
+	on Linux 2.6.8 kernels
+
+2004-09-27  Bastien Nocera  <hadess@hadess.net>
+
+	* cd-drive.c: (cd_drive_copy):
+	* cd-drive.h: add a function to copy a CDDrive struct
+	* configure.in: don't bomb out if HAL is present but not new enough,
+	simply compile with an older version
+
+2004-09-25  Bastien Nocera  <hadess@hadess.net>
+
+	* make-iso.c: (make_iso): Oops, that wasn't supposed to be there
+
+2004-09-24  Bastien Nocera  <hadess@hadess.net>
+
+	* make-iso.c: (make_iso): Force the input character set to UTF-8 when
+	creating an ISO image (Closes: #151480)
+
+=== 2.8.3 ===
+
+2004-09-22  Bastien Nocera  <hadess@hadess.net>
+
+	* NEWS: upd
+	* configure.in: 2.8.3
+
+2004-09-22  Alexander Larsson  <alexl@redhat.com>
+
+	* cd-drive.[ch]:
+	Add functions to lock/unlock drives with hal.
+	* cd-recorder.c:
+	Lock drives while burning.
+	* configure.in:
+	Require hal with lock primitives.
+
+2004-09-21  Bastien Nocera  <hadess@hadess.net>
+
+	* dvd_plus_rw_utils.cpp: fix potential crasher in
+	get_read_write_speed (patch from Martin Pitt
+	<martin.pitt@canonical.com>)
+
+2004-09-21  Bastien Nocera  <hadess@hadess.net>
+
+	* bacon-cd-selection.c: (combo_device_changed),
+	(bacon_cd_selection_set_have_file_image),
+	(bacon_cd_selection_set_recorders_only): Fix crash when no (real)
+	drives are available (Closes: #153268)
+
+=== 2.8.2 ===
+
+2004-09-21  Bastien Nocera  <hadess@hadess.net>
+
+	* NEWS: upd
+	* configure.in: 2.8.2
+
+2004-09-20  Bastien Nocera  <hadess@hadess.net>
+
+	* cd-drive.c: (cd_drive_door_open),
+	(cd_drive_get_media_type_from_path_full),
+	(cd_drive_get_media_type_from_path), (cd_drive_get_media_type),
+	(cd_drive_get_media_type_and_rewritable):
+	* cd-drive.h:
+	* cd-recorder.c: (media_type_matches),
+	(cd_recorder_wait_for_insertion):
+	* dvd_plus_rw_utils.cpp:
+	* list_cddrives.c: (list_cdroms):
+	More fixes for drives that don't handle medium reporting properly,
+	including fixes for blanking (patch from Alex Larsson
+	<alexl@redhat.com>)
+
+2004-09-19  Bastien Nocera  <hadess@hadess.net>
+
+	* nautilus-cd-burner.c: (action_changed_cb): correct translations
+	of the actions (we translated, but not displayed by the program)
+	(Closes: #153074)
+
+2004-09-17  Bastien Nocera  <hadess@hadess.net>
+
+	* cd-drive.c: (cd_drive_get_media_type_from_path),
+	(cd_drive_get_media_type), (hal_scan): use HAL to get the CD medium
+	type if possible (patch from Alex Larsson <alexl@redhat.com>)
+	(Closes: #145196)
+
+2004-09-17  Bastien Nocera  <hadess@hadess.net>
+
+	* cd-recorder.c: (insert_cd_retry), (cdrecord_stdout_read),
+	(growisofs_stderr_read), (cdrecord_stderr_read),
+	(cd_recorder_write_tracks): Revert the changes to assert when
+	cdrecord can't find a medium, fixes potential crashes with older
+	CD drives that don't support MMC v2 commands (patch from Alex
+	Larsson <alexl@redhat.com>)
+
+2004-09-17  Bastien Nocera  <hadess@hadess.net>
+
+	* cd-recorder.h: fix the insert_cd signal prototype
+	* nautilus-cd-burner.c: (insert_cd_request_cb): fix the inverted
+	usage of is_reload in insert_cd_request_cb (Patches from Alex
+	Larsson <alexl@redhat.com>)
+
+=== 2.8.1 ===
+
+2004-09-16  Bastien Nocera  <hadess@hadess.net>
+
+	* NEWS: upd
+	* configure.in: 2.8.1
+
+2004-09-16  Bastien Nocera  <hadess@hadess.net>
+
+	* bacon-cd-selection.c: (bacon_cd_selection_class_init):
+	fix the default value of the default property (patch from Kjartan
+	Maraas <kmaraas@gnome.org>) (Closes: #152854)
+
+2004-09-16  Bastien Nocera  <hadess@hadess.net>
+
+	* .cvsignore: upd
+	* cd-drive.c: (cd_drive_get_media_type_from_path): an MMC Profile
+	of 0 means that there is no medium in the drive, fixes the crash
+	trying to burn a CD without a CD in the drive (Closes: #151986)
+	* nautilus-cd-burner.c: (ncb_hig_dialog), (insert_cd_request_cb),
+	(main): swap the title/reason dialog for CD insertion to the right
+	order, use the right glade file when running n-c-b from its source
+	directory
+
+2004-09-14  Bastien Nocera  <hadess@hadess.net>
+
+	* nautilus-cd-burner.c: (target_optionmenu_create): Only show
+	CD recorders in the main window (Closes: #152387)
+
+2004-09-10  William Jon McCann  <mccann@jhu.edu>
+
+	* bacon-cd-selection.c (bacon_cd_selection_class_init)
+	(cdrom_combo_box, bacon_cd_selection_new, compare_drives)
+	(bacon_cd_selection_set_recorders_only)
+	(bacon_cd_selection_set_property)
+	(bacon_cd_selection_get_property):
+	Add show-recorders-only property.  Fixes #152061.
+
+2004-09-10  Bastien Nocera  <hadess@hadess.net>
+
+	* Makefile.am: upd
+	* bacon-cd-selection.c: (bacon_cd_selection_set_have_file_image):
+	fix an off-by-one mistake (spotted by William Jon McCann
+	<mccann@jhu.edu>)
+	* bcs-test.c: added, based on William Jon McCann's test program
+
 === 2.8.0 ===
 
 2004-09-10  Bastien Nocera  <hadess@hadess.net>

@@ -2,7 +2,7 @@
 
    make-iso.c: code to generate iso files
  
-   Copyright (C) 2002 Red Hat, Inc.
+   Copyright (C) 2002-2004 Red Hat, Inc.
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -495,6 +495,11 @@ mkisofs_stderr_read (GIOChannel   *source,
 				cd_progress_set_fraction (fraction/100.0);
 			}
 		}
+		if (strstr (line, "Incorrectly encoded string")) {
+			cd_progress_set_fraction (1.0);
+			g_main_loop_quit (mkisofs_output->loop);
+			mkisofs_output->result = RESULT_ERROR;
+		}
 
 		g_free (line);
 	}
@@ -589,6 +594,9 @@ retry:
 	if (use_joliet) {
 		argv[i++] = "-J";
 	}
+	/* Undocumented -input-charset option */
+	argv[i++] = "-input-charset";
+	argv[i++] = "utf8";
 	argv[i++] = "-q";
 	argv[i++] = "-graft-points";
 	argv[i++] = "-path-list";
@@ -678,6 +686,8 @@ retry:
 	if (use_joliet) {
 		argv[i++] = "-J";
 	}
+	argv[i++] = "-input-charset";
+	argv[i++] = "utf8";
 	argv[i++] = "-graft-points";
 	argv[i++] = "-path-list";
 	argv[i++] = filelist;

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-cd-burner\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-10 17:06+0100\n"
-"PO-Revision-Date: 2004-08-03 15:59+0200\n"
+"POT-Creation-Date: 2004-09-25 12:17+0200\n"
+"PO-Revision-Date: 2004-09-25 19:25+0200\n"
 "Last-Translator: Laszlo Dvornik <dvornik@gnome.hu>\n"
 "Language-Team: Hungarian <gnome@gnome.hu>\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: bacon-cd-selection.c:187
+#: bacon-cd-selection.c:200
 msgid "Unnamed CDROM"
 msgstr "Névtelen CD-ROM"
 
@@ -45,54 +45,58 @@ msgstr "Tartalom felírása CD- vagy DVD-lemezre"
 msgid "Write to Disc"
 msgstr "Lemezre írás"
 
-#: cd-drive.c:744
+#: cd-drive.c:855
 #, c-format
 msgid "Unnamed SCSI Drive (%s)"
 msgstr "Névtelen SCSI-meghajtó (%s)"
 
-#: cd-drive.c:1304
+#: cd-drive.c:1415
 msgid "File image"
 msgstr "Lemezképfájl"
 
 #. This fits the "open64" and "open"-like messages
-#: cd-recorder.c:313
+#: cd-recorder.c:350
 msgid "The recorder could not be accessed"
 msgstr "A CD-író nem elérhető"
 
-#: cd-recorder.c:316
+#: cd-recorder.c:353
 msgid "Not enough space available on the disc"
 msgstr "Nincs elég hely a lemezen"
 
 # src/file-manager/nautilus-directory-view-ui.xml.h:12
-#: cd-recorder.c:319 cd-recorder.c:322 cd-recorder.c:373
+#: cd-recorder.c:356 cd-recorder.c:359 cd-recorder.c:425
 msgid "The files selected did not fit on the CD"
 msgstr "A kijelölt fájlok nem férnek rá a CD-re"
 
-#: cd-recorder.c:330
+#: cd-recorder.c:367
 msgid "Unhandled error, aborting"
 msgstr "Kezeletlen hiba, megszakítás"
 
-#: cd-recorder.c:367
+#: cd-recorder.c:412
 msgid "The CD has already been recorded"
 msgstr "A CD már meg lett írva"
 
-#: cd-recorder.c:377
+#: cd-recorder.c:429
 msgid ""
 "All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
 msgstr ""
 "A zenei fájloknak sztereó, 16 bites digitális hangfájloknak kell lenniük "
 "44100 Hz-es mintavételezéssel"
 
-#: cd-recorder.c:384
+#: cd-recorder.c:442
 msgid ""
 "The system is too slow to write the CD at this speed. Try a lower speed."
 msgstr ""
 "A rendszer túl lassú a CD ezen sebességgel való írásához. Próbálja meg "
 "alacsonyabb sebességgel."
 
-#: cd-recorder.c:503
+#: cd-recorder.c:557
 msgid "You can only burn 99 tracks on one disc"
 msgstr "Egy lemezre legfeljebb 99 sávot írhat fel"
+
+#: cd-recorder.c:562
+msgid "Burning CD"
+msgstr "CD-írás"
 
 #: cdburn.glade.h:1
 msgid "    "
@@ -196,7 +200,7 @@ msgstr "Nincs fájl kiválasztva a CD-re íráshoz."
 msgid "No files selected"
 msgstr "Nincs fájl kiválasztva"
 
-#: make-iso.c:659
+#: make-iso.c:663
 #, c-format
 msgid "Not enough space to store CD image (%ld Megabyte needed)"
 msgid_plural "Not enough space to store CD image (%ld Megabytes needed)"
@@ -205,11 +209,11 @@ msgstr[0] ""
 msgstr[1] ""
 "Nincs elég hely a CD lemezképének tárolásához (%ld megabájt kellene)"
 
-#: make-iso.c:664
+#: make-iso.c:668
 msgid "Not enough space"
 msgstr "Nincs elég hely"
 
-#: make-iso.c:700
+#: make-iso.c:704
 msgid "Creating CD image"
 msgstr "Lemezkép készítése"
 
@@ -295,15 +299,15 @@ msgstr ""
 msgid "Reload blank media"
 msgstr "Üres adathordozó frissítése"
 
-#: nautilus-cd-burner.c:373
+#: nautilus-cd-burner.c:372
 msgid "Disc writing error details"
 msgstr "A lemezírás hibájának részletei"
 
-#: nautilus-cd-burner.c:379
+#: nautilus-cd-burner.c:378
 msgid "Detailed error output from cdrecord:"
 msgstr "Részletes hibakimenet a cdrecord programtól:"
 
-#: nautilus-cd-burner.c:420
+#: nautilus-cd-burner.c:419
 #, c-format
 msgid ""
 "There was an error writing to the CD:\n"
@@ -312,19 +316,19 @@ msgstr ""
 "Hiba történt a CD-re írás közben:\n"
 "%s"
 
-#: nautilus-cd-burner.c:421
+#: nautilus-cd-burner.c:420
 msgid "There was an error writing to the CD"
 msgstr "Hiba történt a CD-re írás közben"
 
-#: nautilus-cd-burner.c:422
+#: nautilus-cd-burner.c:421
 msgid "Error writing to CD"
 msgstr "Hiba a CD-írás közben"
 
-#: nautilus-cd-burner.c:428
+#: nautilus-cd-burner.c:427
 msgid "_Details"
 msgstr "_Részletek"
 
-#: nautilus-cd-burner.c:501
+#: nautilus-cd-burner.c:500
 #, c-format
 msgid ""
 "A file named \"%s\" already exists.\n"
@@ -333,38 +337,38 @@ msgstr ""
 "\"%s\" nevű fájl már létezik.\n"
 "Felülírja?"
 
-#: nautilus-cd-burner.c:503 nautilus-cd-burner.c:512
+#: nautilus-cd-burner.c:502 nautilus-cd-burner.c:511
 msgid "_Overwrite"
 msgstr "_Felülírás"
 
-#: nautilus-cd-burner.c:530
+#: nautilus-cd-burner.c:529
 msgid "Choose a filename for the cdrom image"
 msgstr "Adja meg a CD-lemezképfájl nevét"
 
-#: nautilus-cd-burner.c:585
+#: nautilus-cd-burner.c:584
 #, c-format
 msgid "You do not have permissions to overwrite that file (%s)."
 msgstr "Nincs jogosultsága a fájl (%s) felülírásához."
 
-#: nautilus-cd-burner.c:586 nautilus-cd-burner.c:599
+#: nautilus-cd-burner.c:585 nautilus-cd-burner.c:598
 msgid "File image creation failed"
 msgstr "Fájlkép létrehozása sikertelen"
 
-#: nautilus-cd-burner.c:598
+#: nautilus-cd-burner.c:597
 #, c-format
 msgid "You do not have permissions to create that file (%s)."
 msgstr "Nincs jogosultsága a fájl (%s) létrehozásához."
 
-#: nautilus-cd-burner.c:661
+#: nautilus-cd-burner.c:660
 #, c-format
 msgid "Completed writing %s"
 msgstr "%s írása kész"
 
-#: nautilus-cd-burner.c:719
+#: nautilus-cd-burner.c:718
 msgid "Complete"
 msgstr "Kész"
 
-#: nautilus-cd-burner.c:782
+#: nautilus-cd-burner.c:781
 msgid "Maximum Possible"
 msgstr "Lehető legnagyobb"
 

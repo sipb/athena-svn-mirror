@@ -2,7 +2,7 @@
 
    nautilus-cd-burner.c: easy to use cd burner software
  
-   Copyright (C) 2002 Red Hat, Inc.
+   Copyright (C) 2002-2004 Red Hat, Inc.
   
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
@@ -20,6 +20,7 @@
    Boston, MA 02111-1307, USA.
   
    Authors: Alexander Larsson <alexl@redhat.com>
+   Bastien Nocera <hadess@hadess.net>
 */
 #include <gtk/gtk.h>
 #include <gtk/gtkfilesel.h>
@@ -64,7 +65,7 @@ ncb_hig_dialog (GtkMessageType type, char *title, char *reason,
 	char *title_esc, *reason_esc;
 
 	if (reason == NULL)
-		g_warning (" called with reason == NULL");
+		g_warning ("ncb_hig_dialog called with reason == NULL");
 
 	title_esc = g_markup_escape_text (title, -1);
 	reason_esc = g_markup_escape_text (reason, -1);
@@ -280,30 +281,30 @@ action_changed_cb (CDRecorder *cdrecorder, CDRecorderActions action,
 	switch (action) {
 	case PREPARING_WRITE:
 		if (media == MEDIA_CD) {
-			text = N_("Preparing to write CD");
+			text = _("Preparing to write CD");
 		} else {
-			text = N_("Preparing to write DVD");
+			text = _("Preparing to write DVD");
 		}
 		break;
 	case WRITING:
 		if (media == MEDIA_CD) {
-			text = N_("Writing CD");
+			text = _("Writing CD");
 		} else {
-			text = N_("Writing DVD");
+			text = _("Writing DVD");
 		}
 		break;
 	case FIXATING:
 		if (media == MEDIA_CD) {
-			text = N_("Fixating CD");
+			text = _("Fixating CD");
 		} else {
-			text = N_("Fixating DVD");
+			text = _("Fixating DVD");
 		}
 		break;
 	case BLANKING:
 		if (media == MEDIA_CD) {
-			text = N_("Erasing CD");
+			text = _("Erasing CD");
 		} else {
-			text = N_("Erasing DVD");
+			text = _("Erasing DVD");
 		}
 		break;
 	default:
@@ -331,10 +332,10 @@ insert_cd_request_cb (CDRecorder *cdrecorder,
 	if (busy_cd) {
 		msg = N_("Please make sure another application is not using the disc.");
 		title = N_("Disc is busy");
-	} else if (is_reload && can_rewrite) {
+	} else if (!is_reload && can_rewrite) {
 		msg = N_("Please insert a rewritable or blank media in the drive tray.");
 		title = N_("Insert rewritable or blank media");
-	} else if (is_reload && !can_rewrite) {
+	} else if (!is_reload && !can_rewrite) {
 		msg = N_("Please insert a blank media in the drive tray.");
 		title = N_("Insert blank media");
 	} else if (can_rewrite) {
@@ -347,14 +348,13 @@ insert_cd_request_cb (CDRecorder *cdrecorder,
 
 	parent = glade_xml_get_widget (xml, "cdr_dialog");
 	dialog = ncb_hig_dialog (GTK_MESSAGE_INFO,
-			_(msg), _(title), GTK_WINDOW (parent));
+			_(title), _(msg), GTK_WINDOW (parent));
 	gtk_dialog_add_buttons (GTK_DIALOG (dialog),
 			GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
 			GTK_STOCK_OK, GTK_RESPONSE_OK,
 			NULL);
 	gtk_dialog_set_default_response (GTK_DIALOG (dialog),
 			GTK_RESPONSE_OK);
-	gtk_window_set_title (GTK_WINDOW (dialog), _(title));
 	res = gtk_dialog_run (GTK_DIALOG (dialog));
 	gtk_widget_destroy (dialog);
 	if (res == GTK_RESPONSE_CANCEL) {
@@ -648,12 +648,15 @@ burn_cd (const CDDrive *rec, const char *source_iso, const char *label, gboolean
 				res = make_iso (filename, label,
 						TRUE, TRUE, debug);
 			}
+		}
 
-			if (!res) {
-				/* User cancelled or we had an error. */
-				cancel = CANCEL_NONE;
-				goto out;
+		if (res != RESULT_FINISHED) {
+			/* User cancelled or we had an error. */
+			if (res == RESULT_ERROR) {
+				ncb_hig_show_error_dialog (_("File image creation failed"), _("Incorrectly named files were to be added to the CD"), NULL);
 			}
+			cancel = CANCEL_NONE;
+			goto out;
 		}
 	}
 
@@ -715,18 +718,19 @@ burn_cd (const CDDrive *rec, const char *source_iso, const char *label, gboolean
 			unlink (filename);
 		}
 
+		cancel = CANCEL_NONE;
+
 		if (res == RESULT_FINISHED) {
+			g_object_unref (cdrecorder);
 			cd_progress_set_text (_("Complete"));
 			setup_close_button ();
 			gtk_main ();
 		} else if (res != RESULT_CANCEL) {
 			show_error_message (cdrecorder);
+			g_object_unref (cdrecorder);
 		}
-
-		cancel = CANCEL_NONE;
-		g_object_unref (cdrecorder);
 	}
-	
+
  out:
 	g_free (filename);
 	g_list_foreach (tracks, (GFunc)cd_recorder_track_free, NULL);
@@ -836,6 +840,7 @@ target_optionmenu_create (void)
 
 	widget = bacon_cd_selection_new ();
 	g_object_set (widget, "file-image", TRUE, NULL);
+	g_object_set (widget, "show-recorders-only", TRUE, NULL);
 	gtk_widget_show (widget);
 
 	return widget;
@@ -1149,7 +1154,7 @@ main (int argc, char *argv[])
 	}
 
 	if (g_file_test ("cdburn.glade", G_FILE_TEST_EXISTS) != FALSE) {
-		xml = glade_xml_new (DATADIR "/cdburn.glade", NULL, NULL);
+		xml = glade_xml_new ("./cdburn.glade", NULL, NULL);
 	} else {
 		xml = glade_xml_new (DATADIR "/cdburn.glade", NULL, NULL);
 	}

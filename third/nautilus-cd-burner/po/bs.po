@@ -8,15 +8,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-cd-burner.HEAD\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-10 17:06+0100\n"
+"POT-Creation-Date: 2004-08-21 04:12+0200\n"
 "PO-Revision-Date: 2004-08-25 03:10+0200\n"
 "Last-Translator: Senad Uka <uka@linux.org.ba>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
-"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: KBabel 1.3\n"
 
 #: bacon-cd-selection.c:187
@@ -78,17 +77,12 @@ msgid "The CD has already been recorded"
 msgstr "CD je već snimljen"
 
 #: cd-recorder.c:377
-msgid ""
-"All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
-msgstr ""
-"Sve audio datoteke moraju biti digitalne 16 bitne, stereo sa 44100Hz "
-"semplovima"
+msgid "All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
+msgstr "Sve audio datoteke moraju biti digitalne 16 bitne, stereo sa 44100Hz semplovima"
 
 #: cd-recorder.c:384
-msgid ""
-"The system is too slow to write the CD at this speed. Try a lower speed."
-msgstr ""
-"Sistem je prespor da piše na CD ovom brzinom. Pokušajte smanjiti brzinu. "
+msgid "The system is too slow to write the CD at this speed. Try a lower speed."
+msgstr "Sistem je prespor da piše na CD ovom brzinom. Pokušajte smanjiti brzinu. "
 
 #: cd-recorder.c:503
 msgid "You can only burn 99 tracks on one disc"
@@ -146,9 +140,7 @@ msgstr "Izaberi brzinu pisanja"
 msgid ""
 "Selected files are to be written to a CD or DVD disc. This operation may "
 "take a long time, depending on data size and write speed."
-msgstr ""
-"Snimanje izabranih datoteka na CD ili DVD treba da počne. Ova operacija može "
-"dugo trajati, zavisno od veličine podataka i brzine pisanja"
+msgstr "Snimanje izabranih datoteka na CD ili DVD treba da počne. Ova operacija može dugo trajati, zavisno od veličine podataka i brzine pisanja"
 
 #: cdburn.glade.h:14
 msgid "Write _speed:"
@@ -199,10 +191,8 @@ msgstr "Nema izabranih datoteka"
 msgid "Not enough space to store CD image (%ld Megabyte needed)"
 msgid_plural "Not enough space to store CD image (%ld Megabytes needed)"
 msgstr[0] "Nema dovoljno prostora da se snimi CD imidž (potreban %ld megabajt)"
-msgstr[1] ""
-"Nema dovoljno prostora da se snimi CD imidž (potrebna %ld megabajta)"
-msgstr[2] ""
-"Nema dovoljno prostora da se snimi CD imidž (potrebno %ld megabajta)"
+msgstr[1] "Nema dovoljno prostora da se snimi CD imidž (potrebna %ld megabajta)"
+msgstr[2] "Nema dovoljno prostora da se snimi CD imidž (potrebno %ld megabajta)"
 
 #: make-iso.c:664
 msgid "Not enough space"
@@ -274,9 +264,7 @@ msgstr "Ubacite prazan medij"
 
 #: nautilus-cd-burner.c:341
 msgid "Please replace the in-drive media by a rewritable or blank media."
-msgstr ""
-"Molim vas zamijenite medij koji je trenutno u pogonu sa prebrisivim ili "
-"praznim medijem. "
+msgstr "Molim vas zamijenite medij koji je trenutno u pogonu sa prebrisivim ili praznim medijem. "
 
 #: nautilus-cd-burner.c:342
 msgid "Reload rewritable or blank media"
@@ -386,8 +374,8 @@ msgid ""
 "Some optical media drives may require that you restart the machine to get it "
 "working again."
 msgstr ""
-"Da li ste sigurni da želite odgoditi operaciju pisanja diska? Nekei optički "
-"pogoni mogu zahtjevati da resetujete kompjuter da ponovo prorade. "
+"Da li ste sigurni da želite odgoditi operaciju pisanja diska? "
+"Nekei optički pogoni mogu zahtjevati da resetujete kompjuter da ponovo prorade. "
 
 #: nautilus-cd-burner.c:925
 msgid "Continue"
@@ -423,9 +411,7 @@ msgstr "Neispravan CD imidž"
 msgid ""
 "You need to copy the files you want to write to disc to the CD/DVD Creator "
 "window. Would you like to open it now?"
-msgstr ""
-"Morate kopirati datoteke koje želite pisati na disk u CD/DVD Creator "
-"program. Da li želite da ga pokrenete sada ? "
+msgstr "Morate kopirati datoteke koje želite pisati na disk u CD/DVD Creator program. Da li želite da ga pokrenete sada ? "
 
 #: nautilus-cd-burner.c:1137
 msgid "Open CD/DVD Creator"
@@ -447,9 +433,7 @@ msgstr "Direktorij za privremene ISO imidže "
 msgid ""
 "Directory used for the temporary ISO images, leave blank to use the default "
 "system temporary directory."
-msgstr ""
-"Direktorij koji se koristi za privremene ISO imidže, ostavite prazno da "
-"koristim podrazumijevani sistemski direktorij za privremene datoteke. "
+msgstr "Direktorij koji se koristi za privremene ISO imidže, ostavite prazno da koristim podrazumijevani sistemski direktorij za privremene datoteke. "
 
 #: ncb.schemas.in.h:5
 msgid "Enable Burnproof option"
@@ -469,11 +453,9 @@ msgstr "Da li da dozvolite podacima da pređu veličinu fizičkog medija. "
 
 #: ncb.schemas.in.h:9
 msgid "Whether to enable the debugging for CD Recording."
-msgstr ""
-"Da li da omogućite ispravljanje grešaka u programu (debug) za pisanje CDova"
+msgstr "Da li da omogućite ispravljanje grešaka u programu (debug) za pisanje CDova"
 
 #: ncb.schemas.in.h:10
 msgid "Whether to use the Burnproof option available on some recorders."
-msgstr ""
-"Da li da koristite opciju sigurnog pisanja (burnproof) koju podržavaju neki "
-"pisači."
+msgstr "Da li da koristite opciju sigurnog pisanja (burnproof) koju podržavaju neki pisači."
+

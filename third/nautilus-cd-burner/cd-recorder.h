@@ -1,9 +1,33 @@
+/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
+/* 
+ * Copyright (C) 2002-2004 Bastien Nocera <hadess@hadess.net>
+ *
+ * cd-recorder.h
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+ *
+ * Authors: Bastien Nocera <hadess@hadess.net>
+ */
 
 #ifndef CD_RECORDER_H
 #define CD_RECORDER_H
 
 #include <glib-object.h>
 #include "cd-drive.h"
+
+G_BEGIN_DECLS
 
 typedef void (*CancelFunc) (gpointer       data);
 
@@ -81,7 +105,7 @@ struct CDRecorderClass {
 					 CDRecorderMedia media);
 	void (*animation_changed)	(CDRecorder *cdrecorder,
 					 gboolean spinning);
-	void (*insert_cd_request)	(CDRecorder *cdrecorder,
+	gboolean (*insert_cd_request)	(CDRecorder *cdrecorder,
 					 gboolean is_reload,
 					 gboolean can_rewrite,
 					 gboolean busy_cd);
@@ -103,5 +127,7 @@ const char*	cd_recorder_get_error_message	(CDRecorder *cdrecorder);
 const char*	cd_recorder_get_error_message_details
 						(CDRecorder *cdrecorder);
 void		cd_recorder_track_free		(Track *track);
+
+G_END_DECLS
 
 #endif /* CD_RECORDER_H */

@@ -5,8 +5,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-cd-burner 0.6.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2004-09-10 17:06+0100\n"
-"PO-Revision-Date: 2004-08-01 01:29+0900\n"
+"POT-Creation-Date: 2004-10-02 19:55+0900\n"
+"PO-Revision-Date: 2004-10-02 19:55+0900\n"
 "Last-Translator: Changwoo Ryu <cwryu@debian.org>\n"
 "Language-Team: GNOME Korea <gnome-kr-hackers@lists.kldp.net>\n"
 "MIME-Version: 1.0\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: bacon-cd-selection.c:187
+#: bacon-cd-selection.c:200
 msgid "Unnamed CDROM"
 msgstr "이름 없는 CDROM"
 
@@ -42,51 +42,55 @@ msgstr "내용을 CD/DVD 디스크에 쓰기"
 msgid "Write to Disc"
 msgstr "디스크에 쓰기"
 
-#: cd-drive.c:744
+#: cd-drive.c:855
 #, c-format
 msgid "Unnamed SCSI Drive (%s)"
 msgstr "이름 없는 SCSI 드라이브 (%s)"
 
-#: cd-drive.c:1304
+#: cd-drive.c:1415
 msgid "File image"
 msgstr "파일 이미지"
 
 #. This fits the "open64" and "open"-like messages
-#: cd-recorder.c:313
+#: cd-recorder.c:350
 msgid "The recorder could not be accessed"
 msgstr "레코더에 접근할 수 없습니다"
 
-#: cd-recorder.c:316
+#: cd-recorder.c:353
 msgid "Not enough space available on the disc"
 msgstr "디스크에 충분한 공간이 남아 있지 않습니다"
 
-#: cd-recorder.c:319 cd-recorder.c:322 cd-recorder.c:373
+#: cd-recorder.c:356 cd-recorder.c:359 cd-recorder.c:425
 msgid "The files selected did not fit on the CD"
 msgstr "선택한 파일이 CD에 맞지 않습니다"
 
-#: cd-recorder.c:330
+#: cd-recorder.c:367
 msgid "Unhandled error, aborting"
 msgstr "처리되지 않는 오류, 중지합니다"
 
-#: cd-recorder.c:367
+#: cd-recorder.c:412
 msgid "The CD has already been recorded"
 msgstr "CD를 이미 기록했습니다"
 
-#: cd-recorder.c:377
+#: cd-recorder.c:429
 msgid ""
 "All audio files must be stereo, 16-bit digital audio with 44100Hz samples"
 msgstr ""
 "모든 음악파일은 스테레오, 44100 샘플링된 16비트 디지털 오디오여야 합니다."
 
-#: cd-recorder.c:384
+#: cd-recorder.c:442
 msgid ""
 "The system is too slow to write the CD at this speed. Try a lower speed."
 msgstr ""
 "이 속도로 CD를 쓰기에는 시스템이 너무 느립니다. 더 낮은 속도로 해 보십시오."
 
-#: cd-recorder.c:503
+#: cd-recorder.c:557
 msgid "You can only burn 99 tracks on one disc"
 msgstr "한 디스크에 99개까지의 트랙만 구울 수 있습니다"
+
+#: cd-recorder.c:562
+msgid "Burning CD"
+msgstr "CD 굽는 중"
 
 #: cdburn.glade.h:1
 msgid "    "
@@ -188,17 +192,17 @@ msgstr "CD에 쓸 파일이 선택되지 않았습니다."
 msgid "No files selected"
 msgstr "파일 선택되지 않음"
 
-#: make-iso.c:659
+#: make-iso.c:662
 #, c-format
 msgid "Not enough space to store CD image (%ld Megabyte needed)"
 msgid_plural "Not enough space to store CD image (%ld Megabytes needed)"
 msgstr[0] "CD 이미지에 저장할 공간이 없습니다 (%ld MB 필요함)"
 
-#: make-iso.c:664
+#: make-iso.c:667
 msgid "Not enough space"
 msgstr "공간이 모자랍니다"
 
-#: make-iso.c:700
+#: make-iso.c:703
 msgid "Creating CD image"
 msgstr "CD 이미지 만드는 중"
 
@@ -212,7 +216,7 @@ msgstr "CD 쓰기 준비 중"
 
 #: nautilus-cd-burner.c:285
 msgid "Preparing to write DVD"
-msgstr "VDV 쓰기 준비 중"
+msgstr "DVD 쓰기 준비 중"
 
 #: nautilus-cd-burner.c:290
 msgid "Writing CD"
@@ -279,15 +283,15 @@ msgstr "드라이브에 있는 미디어를 반복해서 빈 미디어로 바꾸
 msgid "Reload blank media"
 msgstr "빈 미디어로 바꾸기"
 
-#: nautilus-cd-burner.c:373
+#: nautilus-cd-burner.c:372
 msgid "Disc writing error details"
 msgstr "디스크 쓰기 오류 상세 정보"
 
-#: nautilus-cd-burner.c:379
+#: nautilus-cd-burner.c:378
 msgid "Detailed error output from cdrecord:"
 msgstr "CD 레코더에서 나온 자세한 오류 출력:"
 
-#: nautilus-cd-burner.c:420
+#: nautilus-cd-burner.c:419
 #, c-format
 msgid ""
 "There was an error writing to the CD:\n"
@@ -296,19 +300,19 @@ msgstr ""
 "CD를 굽는중 오류가 생겼습니다:\n"
 "%s"
 
-#: nautilus-cd-burner.c:421
+#: nautilus-cd-burner.c:420
 msgid "There was an error writing to the CD"
 msgstr "CD를 굽는중 오류가 생겼습니다"
 
-#: nautilus-cd-burner.c:422
+#: nautilus-cd-burner.c:421
 msgid "Error writing to CD"
 msgstr "CD 굽는중 오류"
 
-#: nautilus-cd-burner.c:428
+#: nautilus-cd-burner.c:427
 msgid "_Details"
 msgstr "자세히 보기(_D)"
 
-#: nautilus-cd-burner.c:501
+#: nautilus-cd-burner.c:500
 #, c-format
 msgid ""
 "A file named \"%s\" already exists.\n"
@@ -317,38 +321,38 @@ msgstr ""
 "이름이 \"%s\"인 파일이 이미 있습니다.\n"
 "덮어 쓰시겠습니까?"
 
-#: nautilus-cd-burner.c:503 nautilus-cd-burner.c:512
+#: nautilus-cd-burner.c:502 nautilus-cd-burner.c:511
 msgid "_Overwrite"
 msgstr "덮어쓰기(_O)"
 
-#: nautilus-cd-burner.c:530
+#: nautilus-cd-burner.c:529
 msgid "Choose a filename for the cdrom image"
 msgstr "CDROM 이미지의 파일이름 선택"
 
-#: nautilus-cd-burner.c:585
+#: nautilus-cd-burner.c:584
 #, c-format
 msgid "You do not have permissions to overwrite that file (%s)."
 msgstr "그 파일을 (%s) 덮어 쓸 권한이 없습니다."
 
-#: nautilus-cd-burner.c:586 nautilus-cd-burner.c:599
+#: nautilus-cd-burner.c:585 nautilus-cd-burner.c:598
 msgid "File image creation failed"
 msgstr "파일 이미지 만들기가 실패했습니다"
 
-#: nautilus-cd-burner.c:598
+#: nautilus-cd-burner.c:597
 #, c-format
 msgid "You do not have permissions to create that file (%s)."
 msgstr "그 파일을 (%s) 만들 권한이 없습니다."
 
-#: nautilus-cd-burner.c:661
+#: nautilus-cd-burner.c:660
 #, c-format
 msgid "Completed writing %s"
 msgstr "%s 쓰기 완료"
 
-#: nautilus-cd-burner.c:719
+#: nautilus-cd-burner.c:718
 msgid "Complete"
 msgstr "완료"
 
-#: nautilus-cd-burner.c:782
+#: nautilus-cd-burner.c:781
 msgid "Maximum Possible"
 msgstr "가능한 최대 속도"
 

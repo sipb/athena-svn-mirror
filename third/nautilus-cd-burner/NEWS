@@ -1,3 +1,42 @@
+2.8.7:
+
+Fallback to opening devices read-only on Linux 2.4 systems.
+
+2.8.5:
+
+Fixes for bindings, and C++ usage
+Fix in the CD selection widget when the first drive isn't a recorder
+
+2.8.4:
+
+Fix problem where users wouldn't be able to remove files from burn:///
+Force input character set to UTF-8 when creating ISO images
+Try to umount the CD in the drive if it's busy
+Show error logs in the same order as in a terminal
+Fix some menu items not being translated
+Open devices read-write instead of read (fixes potential problems with Linux
+2.6.8 and later)
+Fix compilation on Solaris
+
+2.8.3:
+
+Lock drive while burning when using HAL
+Fix potential crasher when getting the Read/Write speed of a drive
+Don't crash when no real drives are available
+
+2.8.2:
+
+Fix problems with some messages not being translated
+Fix wrong messages in dialogs when asking for a CD to be inserted
+Fix problems with CD drives that can't tell which medium is in the drive
+Use HAL to get the medium type if it's available
+
+2.8.1:
+
+Only show CD recorders in the UI
+Fix crash when no medium was present in the drive and we started burning
+Fix two potential crash bugs
+
 2.8.0:
 
 Fix a small HIG mistake

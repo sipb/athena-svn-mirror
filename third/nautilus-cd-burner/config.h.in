@@ -6,6 +6,9 @@
 /* gettext package */
 #undef GETTEXT_PACKAGE
 
+/* Define the location where the catalogs will be installed */
+#undef GNOMELOCALEDIR
+
 /* library gettext package */
 #undef GNOME_EXPLICIT_TRANSLATION_DOMAIN
 
@@ -29,6 +32,9 @@
 
 /* Define to 1 if you have the `cam' library (-lcam). */
 #undef HAVE_LIBCAM
+
+/* Define to 1 if you have the `volmgt' library (-lvolmgt). */
+#undef HAVE_LIBVOLMGT
 
 /* Define to 1 if you have the <locale.h> header file. */
 #undef HAVE_LOCALE_H

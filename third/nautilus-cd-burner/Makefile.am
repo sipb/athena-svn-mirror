@@ -5,7 +5,7 @@ SUBDIRS = po
 lib_LTLIBRARIES = libnautilus-burn.la
 libexec_PROGRAMS = mapping-daemon
 bin_PROGRAMS = nautilus-cd-burner
-noinst_PROGRAMS = list_cddrives
+noinst_PROGRAMS = list_cddrives bcs_test
 
 if MKDTEMP_MISSING
 MKDTEMP_FILES=mkdtemp.c mkdtemp.h
@@ -29,8 +29,7 @@ INCLUDES =					\
 	-DBINDIR=\""$(bindir)"\"	\
 	-DLIBEXECDIR=\""$(libexecdir)"\"	\
 	-DSHAREDIR=\""$(datadir)"\"		\
-	-DDATADIR=\""$(datadir)/nautilus-cd-burner"\"	\
-	-DGNOMELOCALEDIR=\""$(datadir)/locale"\"
+	-DDATADIR=\""$(datadir)/nautilus-cd-burner"\"
 
 EXTRA_DIST =			\
 	mapping-modules.conf 	\
@@ -51,6 +50,8 @@ pkgconfig_DATA = libnautilus-burn.pc
 
 CLEANFILES = $(desktop_in_files:.desktop.in=.desktop) \
 	     $(schema_DATA) $(CDRECMARSHALFILES)
+
+DISTCLEANFILES = intltool-extract intltool-merge intltool-update
 
 modulesconfdir=$(sysconfdir)/gnome-vfs-2.0/modules
 modulesconf_DATA = mapping-modules.conf
@@ -83,9 +84,11 @@ nautilus_cd_burner_LDADD = \
 	$(GUI_LIBS) \
 	$(NULL)
 
-### Test program
+### Test programs
 list_cddrives_SOURCES = list_cddrives.c
 list_cddrives_LDADD = libnautilus-burn.la
+bcs_test_SOURCES = bcs-test.c
+bcs_test_LDADD = libnautilus-burn.la
 
 ### Mapping daemon
 
@@ -107,6 +110,12 @@ libmapping_la_SOURCES = 				\
 	mapping-protocol.c \
 	$(NULL)
 
+# we set this so that Automake will use different file names when
+# compiling, so that the copy of mapping-method.o compiled for
+# libmapping.la doesn't conflict with the copy compiled for
+# mapping-daemon (the library one should be PIC code).
+libmapping_la_CFLAGS =
+
 libmapping_la_LDFLAGS = $(module_flags)
 libmapping_la_LIBADD = $(MAPPING_LIBS)
 
@@ -115,6 +124,7 @@ nautilus_extensiondir=$(libdir)/nautilus/extensions-1.0
 nautilus_extension_LTLIBRARIES=libnautilus-burn-extension.la
 libnautilus_burn_extension_la_SOURCES = burn-extension.c
 libnautilus_burn_extension_la_LIBADD = $(EXTENSION_LIBS)
+libnautilus_burn_extension_la_LDFLAGS = $(module_flags)
 
 
 ### Our burning library
@@ -139,12 +149,11 @@ libnautilus_burn_la_SOURCES = 	\
 
 if LIBSTDCXX_HACK
 AM_CXXFLAGS = -fno-exceptions -fno-rtti
-CXXLD=--tag=CC $(CXX)
-else
-# If we don't set it, it doesn't seem to appear in the Makefile at all
-# and we can't recursively set it, hence
-CXXLD=$(CXX)
-endif
+CXX_LINK_TAG = --tag=CC
+endif 
+CXXLINK = $(LIBTOOL) --mode=link $(CXX_LINK_TAG) $(CXXLD) $(AM_CXXFLAGS) \
+  $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
+
 
 libnautilus_burn_la_LIBADD = $(BURN_LIBS)
 libnautilus_burnincludedir = $(includedir)/libnautilus-burn/
