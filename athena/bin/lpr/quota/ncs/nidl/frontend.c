@@ -77,6 +77,9 @@ extern int  yyprevious;
 # endif
 # define SUFFIXES "_cstub.c,_sstub.c,_cswtch.c"
 #endif
+#ifdef SOLARIS
+# define CPP "/usr/ccs/lib/cpp"
+#endif
 
 #ifdef MSDOS
 # define SUFFIXES "C.C,S.C,W.C"
