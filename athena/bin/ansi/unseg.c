@@ -1,12 +1,12 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/ansi/unseg.c,v $
- *	$Author: builder $
+ *	$Author: vrt $
  *	$Locker:  $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/ansi/unseg.c,v 1.1 1985-04-12 15:28:39 builder Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/ansi/unseg.c,v 1.2 1994-06-28 16:36:28 vrt Exp $
  */
 
 #ifndef lint
-static char *rcsid_unseg_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/ansi/unseg.c,v 1.1 1985-04-12 15:28:39 builder Exp $";
+static char *rcsid_unseg_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/ansi/unseg.c,v 1.2 1994-06-28 16:36:28 vrt Exp $";
 #endif	lint
 
 #include <stdio.h>
@@ -78,7 +78,7 @@ main() {
 			fwrite(&rlength,sizeof(rlength),1,stdout);
 					/* write out real record length*/
 			if(fseek(stdout,bc,0) == 1) {
-				fprintf("unseg: can't seek on stdout!\n");
+				fprintf(stderr,"unseg: can't seek on stdout!\n");
 				exit(1);
 				}
 			/* patch forward pointer*/
