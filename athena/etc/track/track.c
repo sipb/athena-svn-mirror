@@ -1,15 +1,18 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 1.2 1987-03-05 19:20:08 rfrench Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 1.3 1987-08-28 13:47:30 shanzer Exp $
  *
  *	$Log: not supported by cvs2svn $
+ * Revision 1.2  87/03/05  19:20:08  rfrench
+ * Fixed lossage with extra /'s in filenames.
+ * 
  * Revision 1.1  87/02/12  21:15:48  rfrench
  * Initial revision
  * 
  */
 
 #ifndef lint
-static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 1.2 1987-03-05 19:20:08 rfrench Exp $";
+static char *rcsid_header_h = "$Header: /afs/dev.mit.edu/source/repository/athena/etc/track/track.c,v 1.3 1987-08-28 13:47:30 shanzer Exp $";
 #endif lint
 
 #include "mit-copyright.h"
@@ -364,7 +367,7 @@ writestat()
 	setlock();
 
 	sprintf(outname,"%s%s/%s",twdir,DEF_STATDIR,subname);
-	sprintf(tmpoutname,"%s%s/%s.tmp",twdir,DEF_STATDIR,subname);
+	sprintf(tmpoutname,"%s/%s.tmp",DEF_LOCKDIR,subname);
 
 	if (exists(tmpoutname) && (unlink(tmpoutname) == -1)) {
 		sprintf(errmsg,"can't remove %s\n",tmpoutname);
