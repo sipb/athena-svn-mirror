@@ -115,11 +115,6 @@ loader flags: -R XSharedFilePath */
 
 #define	XSharedFilePath /usr/athena/lib/X11/lib
 
-/* MIT Athena path for app-defaults, etc. */
-
-#define XFileSearchPathBase /mit/x11/lib/%T/%N%S:/usr/athena/lib/X11/%T/%N%S:/usr/lib/X11/%T/%N%S
-#define XFileSearchPathDefault /mit/x11/lib/%T/%N%S:/usr/athena/lib/X11/%T/%N%S:/usr/lib/X11/%T/%N%S
-
 #define MotifBC	YES
 
 #endif /* AfterVendorCF */
