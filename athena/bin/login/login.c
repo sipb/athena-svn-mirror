@@ -1,9 +1,9 @@
 /*
- * $Id: login.c,v 1.74 1995-01-20 11:23:18 cfields Exp $
+ * $Id: login.c,v 1.75 1995-01-27 09:57:01 cfields Exp $
  */
 
 #ifndef lint
-static char *rcsid = "$Id: login.c,v 1.74 1995-01-20 11:23:18 cfields Exp $";
+static char *rcsid = "$Id: login.c,v 1.75 1995-01-27 09:57:01 cfields Exp $";
 #endif
 
 /*
@@ -77,7 +77,7 @@ static char sccsid[] = "@(#)login.c	5.15 (Berkeley) 4/12/86";
 #else
 #include <syslog.h>
 #endif
-#include <string.h>
+#include <strings.h>
 #include <krb.h>	
 #include <netdb.h>
 #include <netinet/in.h>
@@ -1515,7 +1515,7 @@ doremoteterm(term, tp)
 	char *speed;
 #ifdef SOLARIS
         strncpy(term1, term, cp-term);
-        term1[cp-term + 1] ="\0";
+        term1[cp-term + 1] = '\0';
 #endif
 	if (cp) {
 		*cp++ = '\0';
