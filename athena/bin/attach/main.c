@@ -6,7 +6,7 @@
  *	Copyright (c) 1988 by the Massachusetts Institute of Technology.
  */
 
-static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.14 1990-11-13 18:45:17 probe Exp $";
+static char *rcsid_main_c = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/attach/main.c,v 1.15 1990-11-13 19:06:32 probe Exp $";
 
 #include "attach.h"
 #include <signal.h>
@@ -298,6 +298,14 @@ nfsidcmd(argc, argv)
 				     == SUCCESS) && verbose)
 					printf("%s: %s %s\n", progname,
 					       atp->hesiodname, ops);
+#ifdef AFS
+			} else if (atp->fs->type == TYPE_AFS &&
+				   op == MOUNTPROC_KUIDMAP) {
+				if ((afs_auth(atp->hesiodname, atp->hostdir)
+				     == SUCCESS) && verbose)
+					printf("%s: %s %s\n", progname,
+					       atp->hesiodname, ops);
+#endif
 			} else
 				if (verbose)
 				    printf("%s: %s ignored (not NFS)\n",
