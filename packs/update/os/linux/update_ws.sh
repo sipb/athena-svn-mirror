@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: update_ws.sh,v 1.4 2000-02-15 15:45:33 ghudson Exp $
+# $Id: update_ws.sh,v 1.5 2000-02-15 16:13:27 ghudson Exp $
 
 # Copyright 2000 by the Massachusetts Institute of Technology.
 #
@@ -196,9 +196,13 @@ failupdate() {
 	echo "Beginning update from $oldvers to $newvers at `date`."
 	echo "Athena Workstation ($hosttype) Version Update `date`" >> \
 		/etc/athena/version
-	rpm --upgrade $oldpackage -v $updates || failupdate
-	rpm --erase -v $removals || logger -t $HOST -p user.notice \
-		"Update ($oldvers -> $newvers) package removal failed"
+	if [ -n "$updates" ]; then
+		rpm --upgrade $oldpackage -v $updates || failupdate
+	fi
+	if [ -n "$removals" ]; then
+		rpm --erase -v $removals || logger -t $HOST -p user.notice \
+			"Update ($oldvers -> $newvers) package removal failed"
+	fi
 	echo "Athena Workstation ($hosttype) Version $newvers `date`" >> \
 		/etc/athena/version
 	echo "Ending update from $oldvers to $newvers at `date`."
