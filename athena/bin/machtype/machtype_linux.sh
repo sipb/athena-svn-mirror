@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: machtype_linux.sh,v 1.4 1999-06-30 19:37:37 jweiss Exp $
+# $Id: machtype_linux.sh,v 1.5 2000-03-07 22:11:08 jweiss Exp $
 
 # We need to support the following options:
 # NOTE: c, v, d, L, and M are needed by olc, and it cares what order
@@ -86,11 +86,7 @@ if [ $at_rel ]; then
 fi
 
 if [ $syspacks ]; then
-	if [ $verbose ]; then
-		cat /srvd/.rvdinfo
-	else
-		awk '{ v = $5; } END { print v; }' /srvd/.rvdinfo
-	fi
+	echo "Linux does not use system packs." >&2
 	printed=1
 fi
 
