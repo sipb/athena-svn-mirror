@@ -12,18 +12,21 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v $
- *	$Id: t_connect.c,v 1.12 1990-07-16 08:08:22 lwvanels Exp $
+ *	$Id: t_connect.c,v 1.13 1990-11-14 14:55:47 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
 #ifndef lint
-static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v 1.12 1990-07-16 08:08:22 lwvanels Exp $";
+#ifndef SABER
+static char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v 1.13 1990-11-14 14:55:47 lwvanels Exp $";
+#endif
 #endif
 
 #include <mit-copyright.h>
@@ -64,7 +67,6 @@ t_grab(Request,flag,hold)
     case HAS_QUESTION:
       printf("Your current instance is busy, creating another one for you.\n");
       return(t_grab(Request,TRUE,hold));
-      break;
 
     case SUCCESS:
       printf("User grabbed.\n");
