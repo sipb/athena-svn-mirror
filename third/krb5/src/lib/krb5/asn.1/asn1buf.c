@@ -140,6 +140,8 @@ asn1_error_code asn1buf_skiptail(buf, length, indef)
       return ASN1_OVERRUN;
   }
   while (nestlevel > 0) {
+    if (buf->bound - buf->next + 1 <= 0)
+      return ASN1_OVERRUN;
     retval = asn1_get_tag_indef(buf, &class, &construction, &tagnum,
 				&taglen, &tagindef);
     if (retval) return retval;
@@ -295,6 +297,7 @@ asn1_error_code asn12krb5_buf(buf, code)
   (*code)->data = (char*)malloc((((*code)->length)+1)*sizeof(char));
   if ((*code)->data == NULL) {
     free(*code);
+    *code = NULL;
     return ENOMEM;
   }
   for(i=0; i < (*code)->length; i++)
