@@ -23,12 +23,14 @@ mkdir $RPM_BUILD_ROOT
 
 # Extra file
 mkdir -p $RPM_BUILD_ROOT/etc/rc.d/init.d
+cp ssh_config $RPM_BUILD_ROOT/etc/ssh_config
 cp sshd_config $RPM_BUILD_ROOT/etc/sshd_config
 cp athena-sshd.rc $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-sshd
 chmod +x $RPM_BUILD_ROOT/etc/rc.d/init.d/athena-sshd
 
 find $RPM_BUILD_ROOT -type f -or -type l |
   sed -e "s|^$RPM_BUILD_ROOT||" \
+      -e "s|^/etc/ssh_config$|%config \0|" \
       -e "s|^/etc/sshd_config$|%config \0|" |
   sort > rpm.filelist
 

@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.29 2001-04-30 20:08:01 rbasch Exp $
+# $Id: Makefile,v 1.30 2001-12-13 22:05:44 zacheiss Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -42,6 +42,7 @@ install:
 	install -c -m 0644 ntp.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 resolv.conf ${DESTDIR}${ETCDIR}
 	install -c -m 0644 shells ${DESTDIR}${ETCDIR}
+	install -c -m 0644 ssh_config ${DESTDIR}${ETCDIR}
 	install -c -m 0644 sshd_config ${DESTDIR}${ETCDIR}
 	install -c -m 0644 zephyr.vars ${DESTDIR}${ATHRETCDIR}
 	rm -f ${DESTDIR}${ETCDIR}/krb.conf

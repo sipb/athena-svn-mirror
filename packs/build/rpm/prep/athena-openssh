@@ -1,4 +1,5 @@
 #!/bin/sh
 
+cp $1/packs/config/ssh_config $2
 cp $1/packs/config/sshd_config $2
 cp $1/packs/maint/os/linux/athena-sshd.rc $2
