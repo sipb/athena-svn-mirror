@@ -2,7 +2,7 @@
 # Global xsession file
 # Accepts one optional argument "nocalls" (i.e., use no user files)
 #
-# $Id: xsession,v 1.36 1993-02-23 15:01:02 mar Exp $
+# $Id: xsession,v 1.37 1993-07-20 17:33:38 vrt Exp $
 
 # Note: This shell script deliberately uses the -f flag.
 
@@ -21,6 +21,7 @@ switch ($#argv)
             echo -n "xsession: Running standard xsession "
             echo "with NO user configuration files..."
             setenv NOCALLS
+	    setenv SHELL /bin/athena/tcsh
         else
             set bad_args
         endif
