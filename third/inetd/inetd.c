@@ -372,7 +372,7 @@ struct biltin {
 
 #define NUMINT	(sizeof(intab) / sizeof(struct inent))
 char	*CONFIG = _PATH_INETDCONF;
-char	*PIDFILE = _PATH_INETPID;
+char	*PIDFILE = _PATH_INETDPID;
 char	**Argv;
 char 	*LastArg;
 extern char	*__progname;
