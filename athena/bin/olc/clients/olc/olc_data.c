@@ -47,11 +47,11 @@ char *OLCA_PROMPT = "olca test> ";
 
 /* Where to find help. */
 
-char *OLC_HELP_DIR  =   "/usr/athena/lib/olc/olc_help";
+char *OLC_HELP_DIR  =   "/mit/olcdev/src/lib/olc/olc_help";
 char *OLC_HELP_EXT  =   ".help";
 char *OLC_HELP_FILE =   "olc";
 
-char *OLCR_HELP_DIR  =   "/usr/athena/lib/olc/olcr_help";
+char *OLCR_HELP_DIR  =   "/mit/olcdev/src/lib/olc/olcr_help";
 char *OLCR_HELP_EXT  =   ".help";
 char *OLCR_HELP_FILE =   "olcr";
 

@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_messages.c,v 1.2 1989-07-13 12:09:01 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_messages.c,v 1.3 1989-07-16 17:05:35 tjcoppet Exp $";
 #endif
 
 
@@ -92,8 +92,8 @@ do_olc_replay(arguments)
 	      else
 		{
 		  fprintf(stderr, 
-			  "Usage is: \treplay [<username> <instance id>]\n");
-		  fprintf(stderr,"\t\t[-file <file name>]\n");
+			  "Usage is: \treplay [<username> <instance id>] ");
+		  fprintf(stderr,"[-file <file name>]\n");
 		}
 	      return(ERROR);
 	    }

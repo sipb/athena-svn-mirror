@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_send.c,v 1.2 1989-07-13 12:10:00 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_send.c,v 1.3 1989-07-16 17:06:06 tjcoppet Exp $";
 #endif
 
 
@@ -44,7 +44,7 @@ do_olc_send(arguments)
   
   for (arguments++; *arguments != (char *) NULL; arguments++) 
     {
-      if (string_equiv("-editor", *arguments,max(strlen(*arguments),2)))
+      if (string_equiv(*arguments, "-editor",max(strlen(*arguments),2)))
 	{
 	  ++arguments;
 	  if(*arguments != (char *) NULL)
@@ -55,7 +55,7 @@ do_olc_send(arguments)
 	  continue;
 	}
 
-      if(string_equiv("-file", *arguments,max(strlen(arguments),2)))
+      if(string_equiv(*arguments, "-file",max(strlen(*arguments),2)))
 	{
 	  ++arguments;
 	  if(*arguments != (char *) NULL)
@@ -79,8 +79,8 @@ do_olc_send(arguments)
 	  else
 	    {
 	      fprintf(stderr,
-		      "Usage is: \tsend  [<username> <instance id>] \n");
-	      fprintf(stderr,"\t\t[-editor <editor>] [-file <file name>]\n");
+		      "Usage is: \tsend  [<username> <instance id>] ");
+	      fprintf(stderr,"[-editor <editor>]\n\t\t[-file <file name>]\n");
 	    }
 	  return(ERROR);
 	}
@@ -123,7 +123,7 @@ do_olc_comment(arguments)
   
   for (arguments++; *arguments != (char *) NULL; arguments++) 
     {
-      if (string_equiv("-editor", *arguments,max(strlen(*arguments),2)))
+      if (string_equiv(*arguments, "-editor", max(strlen(*arguments),2)))
 	{
 	  ++arguments;
 	  if(*arguments != (char *) NULL)
@@ -133,7 +133,7 @@ do_olc_comment(arguments)
 	    }
 	  continue;
 	}
-      if(string_equiv("-file", *arguments,max(strlen(*arguments),2)))
+      if(string_equiv(*arguments, "-file", max(strlen(*arguments),2)))
 	{
 	  ++arguments;
 	  if(*arguments != (char *) NULL)
@@ -150,8 +150,8 @@ do_olc_comment(arguments)
       if(arguments == (char **) NULL)   /* error */
 	{
 	  fprintf(stderr,
-		  "Usage is: \t comment  [<username> <instance id>] \n");
-	  fprintf(stderr,"\t\t[-editor <editor>] [-file <file name>]\n");
+		  "Usage is: \tcomment  [<username> <instance id>] ");
+	  fprintf(stderr,"[-editor <editor>]\n\t\t[-file <file name>]\n");
 	  return(ERROR);
 	}
       if(*arguments == (char *) NULL)   /* end of list */
@@ -191,7 +191,7 @@ do_olc_mail(arguments)
   
   for(++arguments; *arguments != (char *) NULL; arguments++)
     {
-      if (string_equiv("-editor", *arguments,max(strlen(*arguments),2)))
+      if (string_equiv(*arguments, "-editor", max(strlen(*arguments),2)))
 	{
 	  ++arguments;
 	  if(*arguments != (char *) NULL)
@@ -202,7 +202,7 @@ do_olc_mail(arguments)
 	  continue;
 	}
       
-      if (string_equiv("-file", *arguments,max(strlen(*arguments),2)))
+      if (string_equiv(*arguments, "-file", max(strlen(*arguments),2)))
 	{
 	  ++arguments;
 	  if(*arguments != (char *) NULL)
@@ -219,8 +219,8 @@ do_olc_mail(arguments)
       if(arguments == (char **) NULL)   /* error */
 	{
 	  fprintf(stderr,
-		  "Usage is: \t mail  [<username> <instance id>] \n");
-	  fprintf(stderr,"\t\t[-editor <editor>] [-file <file name>]\n");
+		  "Usage is: \tmail  [<username> <instance id>]");
+	  fprintf(stderr,"[-editor <editor>]\n\t\t[-file <file name>]\n");
 	  return(ERROR);
 	}
       if(*arguments == (char *) NULL)   /* end of list */

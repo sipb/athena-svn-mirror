@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_connect.c,v 1.2 1989-07-13 12:08:18 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_connect.c,v 1.3 1989-07-16 17:05:17 tjcoppet Exp $";
 #endif
 
 
@@ -66,7 +66,7 @@ do_olc_grab(arguments)
 	return(ERROR);
       if(arguments == (char **) NULL)   
 	{
-	  fprintf(stderr,"Usage is: \tgrab  [<username> <instance id>] [-create_new_instance] [-do_not_change_instance]\n");
+	  fprintf(stderr,"Usage is: \tgrab  [<username> <instance id>] [-create_new_instance]\n\t\t[-do_not_change_instance]\n");
 	  return(ERROR);
 	}
       if(*arguments == (char *) NULL)   /* end of list */
@@ -104,9 +104,9 @@ do_olc_forward(arguments)
 	
   for (arguments++; *arguments != (char *)NULL; arguments++) 
     {
-      if (string_equiv("-o", *arguments,max(strlen(arguments),2)))
+      if (string_equiv(*arguments, "-o", max(strlen(*arguments),2)))
 	set_option(Request.options,FORWARD_OFF);
-      else if(string_equiv("-un",arguments,max(strlen(arguments),2)))
+      else if(string_equiv("-un",arguments,max(strlen(*arguments),2)))
 	set_option(Request.options, FORWARD_UNANSWERED);
       else 
 	{

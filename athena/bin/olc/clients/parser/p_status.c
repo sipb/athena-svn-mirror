@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_status.c,v 1.2 1989-07-13 12:10:13 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_status.c,v 1.3 1989-07-16 17:06:15 tjcoppet Exp $";
 #endif
 
 
@@ -57,7 +57,7 @@ do_olc_status(arguments)
 	  if(OLC)
 	    fprintf(stderr,"Usage is: \tstatus\n");
 	  else
-	    fprintf(stderr,"Usage is: \t [<username> <instance id>]\n");
+	    fprintf(stderr,"Usage is: \tstatus [<username> <instance id>]\n");
 	  return(ERROR);
 	}
       if(*arguments == (char *) NULL)   /* end of list */
@@ -67,3 +67,41 @@ do_olc_status(arguments)
   status = t_personal_status(&Request);
   return(status);
 }
+
+
+
+
+do_olc_who(arguments)
+     char  **arguments;
+{
+  int fd;
+  REQUEST Request;
+  int response;
+  int status;
+  char *msg;
+
+  if(fill_request(&Request) != SUCCESS)
+    return(ERROR);
+
+  for (arguments++; *arguments != (char *)NULL; arguments++) 
+    {
+      arguments = handle_argument(arguments, &Request, &status);
+      if(status)
+	return(ERROR);
+      if(arguments == (char **) NULL)   /* error */
+	{
+	  if(OLC)
+	    fprintf(stderr,"Usage is: \twho\n");
+	  else
+	    fprintf(stderr,"Usage is: \twho< [<username> <instance id>]\n");
+	  return(ERROR);
+	}
+      if(*arguments == (char *) NULL)   /* end of list */
+	break;
+    }
+
+  status = t_who(&Request);
+  return(status);
+}
+
+

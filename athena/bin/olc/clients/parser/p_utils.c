@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_utils.c,v 1.2 1989-07-13 12:11:23 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_utils.c,v 1.3 1989-07-16 17:06:31 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -36,6 +36,9 @@ handle_argument(args, req, status)
   
   *status = SUCCESS;
 
+  if(string_eq(args[0],"-help"))
+    return((char **) NULL);
+  
   if (string_equiv(args[0], "-instance",strlen(args[0]))) 
     if((*(++args) != (char *) NULL) && (*args[0] != '-'))
       {
@@ -62,7 +65,7 @@ handle_argument(args, req, status)
       }
   else if (*args[0] == '-')
     {
-      fprintf(stderr, "Unknown option %s\n", *args);
+      fprintf(stderr, "The argument, \"%s\", is invalid.\n", *args);
       return((char **) NULL);
     }
   else if(string_equiv(args[0],"-help",max(strlen(args[0]),2)))
@@ -87,7 +90,8 @@ fill_request(req)
   int status;
 
 #ifdef KERBEROS
-    int result;
+  int result;
+  CREDENTIALS k_cred;
 #endif KERBEROS
 
   req->options = NO_OPT;
@@ -106,8 +110,13 @@ fill_request(req)
   (void) strncpy(req->target.machine,  User.machine,  NAME_LENGTH);
 
 #ifdef KERBEROS
+  if(krb_get_cred(K_SERVICE,INSTANCE,REALM, &k_cred) == KSUCCESS)
+    {
+      (void) strncpy(req->target.username, k_cred.pname, LOGIN_SIZE);
+      (void) strncpy(req->requester.username, k_cred.pname, LOGIN_SIZE);
+    }
   result = krb_mk_req(&(req->kticket), K_SERVICE, INSTANCE, REALM, 0);
-
+  
 #ifdef TEST
   printf("kerberos request: %d, size %d\n",result, req->kticket.length);
 #endif TEST

@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/queue.c,v 1.3 1989-07-12 18:04:43 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/queue.c,v 1.4 1989-07-16 17:04:41 tjcoppet Exp $";
 #endif
 
 
@@ -50,9 +50,17 @@ OListQueue(Request,list,queues,topics,stati)
 #ifdef TEST
       printf("reading %d list elements\n",n);
 #endif TEST
-
-      *list = (LIST *) malloc((unsigned) (sizeof(LIST) * (n+1)));
-      status = OReadList(fd, list,n);
+       
+      if(!n)
+        {
+          *list = (LIST *) NULL;
+          status = EMPTY_LIST;
+        }
+      else 
+        {    
+          *list = (LIST *) malloc((unsigned) (sizeof(LIST) * (n+1)));
+          status = OReadList(fd, list,n);
+        }
     }
 
   (void) close(fd);

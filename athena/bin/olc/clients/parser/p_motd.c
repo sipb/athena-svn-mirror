@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_motd.c,v 1.2 1989-07-13 12:09:19 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_motd.c,v 1.3 1989-07-16 17:05:43 tjcoppet Exp $";
 #endif
 
 
@@ -47,6 +47,13 @@ do_olc_motd(arguments)
       if(string_eq(*arguments, ">") || string_equiv(*arguments,"-file",
 						    max(strlen(*arguments),2)))
 	{
+          ++arguments;
+	  if(*arguments == NULL)
+            {
+              fprintf(stderr,"You must specify a file name after the");
+              fprintf(stderr," -file argument.\n");
+              return(ERROR);
+            }
 	  (void) strcpy(file,*arguments);
 	  save_file = TRUE;
 	  continue;

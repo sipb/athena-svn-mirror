@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v 1.2 1989-07-06 21:58:50 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc_stock.c,v 1.3 1989-07-16 17:10:22 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -30,8 +30,9 @@ static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#define STOCK_DIR "/usr/athebna/lib/olc/stock"
+#define STOCK_DIR "stock_answers"
 #define BROWSER "/usr/athena/lib/olc/stock/browser"
+#define MAGIC  "/usr/athena/lib/olc/stock/MAGIC"
 
 /*
  * Function:  do_olcr_stock() allows a consultant to examine the
@@ -53,8 +54,20 @@ do_olc_stock(arguments)
   char *dtopic = "/";         /* default topic */
   int status;                 /* Status returned by whatnow */
   int find_topic=0;
+  
 
-
+  if (stat(MAGIC, &statbuf) < 0) 
+    {
+      call_program("/bin/athena/attach","olc-stock");
+      if (stat(MAGIC, &statbuf) < 0)
+	call_program("/bin/athena/attach","olc-stock_backup");
+      if (stat(MAGIC, &statbuf) < 0)
+	{
+	  fprintf(stderr,"Unable to attach olc-stock file system.\n");
+	  return(ERROR);
+	}
+    }
+ 
   fill_request(&Request);
 
   for (arguments++; *arguments != (char *) NULL; arguments++) 
@@ -92,8 +105,6 @@ do_olc_stock(arguments)
   strcat(bfile, topic);
   make_temp_name(file);
   
-  printf("execing: %s -s %s -f %s\n",BROWSER,file,file);
-
   switch(fork()) 
     {
     case -1:                /* error */
@@ -101,14 +112,17 @@ do_olc_stock(arguments)
       fprintf(stderr, "stock: can't fork to execute OLC browser\n");
       return(ERROR);
     case 0:                 /* child */
-      execlp(BROWSER, BROWSER, "-f", file, 0);
+      execlp(BROWSER, BROWSER, "-s", file, "-f", bfile, 0);
       perror("stock: execlp");
       fprintf(stderr, "stock: could not exec OLC browser\n");
       exit(ERROR);
     default:                /* parent */
       (void) wait(0);
     }
-  
+ 
+  if(OLC)
+     return(SUCCESS);
+ 
   if (stat(file, &statbuf) < 0) 
     {
       if(!OLC)

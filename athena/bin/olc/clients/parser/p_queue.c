@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_queue.c,v 1.2 1989-07-13 12:09:33 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_queue.c,v 1.3 1989-07-16 17:05:50 tjcoppet Exp $";
 #endif
 
 
@@ -143,7 +143,7 @@ do_olc_list(arguments)
       if(arguments == (char **) NULL)   /* error */
 	{
 	  fprintf(stderr,"Usage is: \tlist [-display] [-queue <queues>] ");
-	  fprintf(stderr,"[-topic <topics>] [-status <statuses>]\n");
+	  fprintf(stderr,"[-topic <topics>]\n\t\t[-status <statuses>]\n");
 	  fprintf(stderr,"\t\t[<username> <instance id> ...]\n");
 	  return(ERROR);
 	}

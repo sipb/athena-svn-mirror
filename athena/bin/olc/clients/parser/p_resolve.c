@@ -52,6 +52,7 @@ do_olc_done(arguments)
   int off = 0;
 
   topic[0] = '\0';
+  title[0] = '\0';
 
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
@@ -108,8 +109,8 @@ do_olc_done(arguments)
 	    {
 	      fprintf(stderr,
 		      "Usage is: \tdone  [<username> <instance id>] ");
-	      fprintf(stderr,"[-off]\n\t\t");
-	      fprintf(stderr,"[-title <title>] [-topic <topic>]\n");
+	      fprintf(stderr,"[-off] ");
+	      fprintf(stderr,"[-title <title>]\n\t\t[-topic <topic>]\n");
 	    }
 	  return(ERROR);
 	}
@@ -139,6 +140,7 @@ do_olc_cancel(arguments)
   char *titleP = (char *) NULL;
 
   title[0] = '\0';
+
   if(fill_request(&Request) != SUCCESS)
     return(ERROR);
 

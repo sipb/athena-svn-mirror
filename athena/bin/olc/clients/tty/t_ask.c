@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v 1.2 1989-07-12 17:18:47 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_ask.c,v 1.3 1989-07-16 17:02:34 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -148,8 +148,10 @@ t_ask(Request,topic)
   (void) stat(file, &statbuf);
   if (statbuf.st_size == 0)
     {
-      printf("You have no question to ask.\n");
+      printf("You have not entered a question.\n");
       (void) unlink(file);
+      if(OLC)
+	exit(1);
       return(SUCCESS);
     }
 
@@ -161,10 +163,14 @@ t_ask(Request,topic)
   switch(status)
     {
     case NOT_CONNECTED:
-      printf("\nThere is no specialist currently");
-      printf(" available for topic '%s'. Your\n", topic);
-      printf("request will be forwarded to the first available");
+      printf("\nThere is no consultant currently");
+      printf(" available. Your");
+      printf("request will be forwarded\nto the first available");
       printf(" consultant.\n");
+      printf("\nIf you would like to see answers to common questions,");
+      printf(" please type\n\"answers\" at the olc> prompt. If you find");
+      printf(" the answer to your question, type\n\"cancel\" at the olc> ");
+      printf("prompt.\n");
       status = SUCCESS;
       break;
     case CONNECTED:

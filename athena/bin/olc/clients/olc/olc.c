@@ -24,7 +24,7 @@
  */
 
 #ifndef lint
-static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.5 1989-07-12 17:27:45 tjcoppet Exp $";
+static char rcsid[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/olc/olc.c,v 1.6 1989-07-16 17:09:45 tjcoppet Exp $";
 #endif 
 
 
@@ -66,6 +66,8 @@ extern do_olc_mail();
 extern do_olc_status();
 extern do_olc_live();
 extern do_olc_whoami();
+extern do_olc_load_user();
+extern do_olc_who();
 
 extern int krb_ap_req_debug;
 
@@ -89,40 +91,42 @@ extern int krb_ap_req_debug;
 COMMAND OLC_Command_Table[] = {
   "?",		do_olc_list_cmds,"List available commands",
   "help",	do_olc_help,	"Describe the various commands.",
-  "quit",	do_quit,	"Temporarily exit OLC.",
-  "send",	do_olc_send,	"Send a message to the consultant.",
-  "done",	do_olc_done,	"Mark your question resolved.",
+  "quit",	do_quit,	"Temporarily exit OLC",
+  "send",	do_olc_send,	"Send a message to the consultant",
+  "done",	do_olc_done,	"Mark your question resolved",
   "cancel",     do_olc_cancel,  "Cancel your question",
-  "replay",	do_olc_replay, 	"Replay the conversation so far.",
-  "show",       do_olc_show,	"Show any new messages.",
-  "ask",        do_olc_ask,     "Ask a question.",
-  "topic",      do_olc_topic,   "find question topic",
-  "motd",       do_olc_motd,    "see motd",
-  "answers",    do_olc_stock,   "stock answer browser",
-  "status",     do_olc_status,  "find your status",
+  "replay",	do_olc_replay, 	"Replay the conversation so far",
+  "show",       do_olc_show,	"Show any new messages",
+  "topic",      do_olc_topic,   "Find question topic",
+  "motd",       do_olc_motd,    "See message of the day",
+  "answers",    do_olc_stock,   "Stock answer browser",
+  "status",     do_olc_status,  "Print your status",
+  "who",        do_olc_who,     "Find name of connected consultant",
   (char *) NULL, (int(*)()) NULL,	""
   };
   
 COMMAND OLCR_Command_Table[] = {
   "?",		do_olc_list_cmds,"List available commands",
-  "help",	do_olc_help,	"Describe the various commands.",
-  "quit",	do_quit,	"Temporarily exit OLC.",
-  "send",	do_olc_send,	"Send a message to the consultant.",
-  "done",	do_olc_done,	"Mark your question resolved.",
+  "help",	do_olc_help,	"Describe the various commands",
+  "quit",	do_quit,	"Temporarily exit OLC",
+  "send",	do_olc_send,	"Send a message",                     
+  "done",	do_olc_done,	"Resolve question",               
   "cancel",     do_olc_cancel,  "Cancel your question",
-  "replay",	do_olc_replay, 	"Replay the conversation so far.",
-  "show",       do_olc_show,	"Show any new messages.",
-  "list",       do_olc_list,    "List the world.",
-  "comment",    do_olc_comment, "make a comment",
-  "mail",       do_olc_mail,    "mail a message",
-  "topic",      do_olc_topic,   "find question topic",
-  "instance",   do_olc_instance,  "change default instance",
-  "off",        do_olc_off,     "sign off",
-  "grab",       do_olc_grab,    "grab a user",
-  "forward",    do_olc_forward, "forward a question",
-  "motd",       do_olc_motd,    "see motd",
-  "stock",      do_olc_stock,   "stock answer browser",
-  "status",     do_olc_status,  "find your status",
+  "replay",	do_olc_replay, 	"Replay the conversation",        
+  "show",       do_olc_show,	"Show any new messages",
+  "list",       do_olc_list,    "List the world",
+  "comment",    do_olc_comment, "Make a comment",
+  "mail",       do_olc_mail,    "Mail a message",
+  "topic",      do_olc_topic,   "Find question topic",
+  "instance",   do_olc_instance, "Change default instance",
+  "on",         do_olc_on,      "Sign on",
+  "off",        do_olc_off,     "Sign off",
+  "grab",       do_olc_grab,    "Grab a user",
+  "forward",    do_olc_forward, "Forward a question",
+  "motd",       do_olc_motd,    "See motd",
+  "stock",      do_olc_stock,   "Stock answer browser",
+  "status",     do_olc_status,  "Find your status",
+  "who",        do_olc_who,     "Find status for current instance",
   (char *) NULL, (int(*)()) NULL,	""
   };
 
@@ -131,21 +135,9 @@ COMMAND OLCA_Command_Table[] = {
   "?",		do_olc_list_cmds,"List available commands",
   "help",	do_olc_help,	"Describe the various commands.",
   "quit",	do_quit,	"Temporarily exit OLC.",
-  "send",	do_olc_send,	"Send a message to the consultant.",
-  "done",	do_olc_done,	"Mark your question resolved.",
-  "cancel",     do_olc_cancel,  "Cancel your question",
-  "replay",	do_olc_replay, 	"Replay the conversation so far.",
-  "show",       do_olc_show,	"Show any new messages.",
-  "ask",        do_olc_ask,     "Ask a question.",
   "list",       do_olc_list,    "List the world.",
-  "comment",    do_olc_comment, "make a rude comment",
-  "mail",       do_olc_mail,    "mail a message",
-  "topic",      do_olc_topic,   "find question topic",
-  "on",         do_olc_on,      "sign on as a consultant",
-  "off",        do_olc_off,     "sign off",
-  "grab",       do_olc_grab,    "grab a user",
-  "forward",    do_olc_forward, "forward a question",
   "motd",       do_olc_motd,    "see motd",
+  "reload",  do_olc_load_user, "load user",
   "stock",      do_olc_stock,   "stock answer browser",
   (char *) NULL, (int(*)()) NULL,	""
   };
@@ -205,6 +197,8 @@ main(argc, argv)
  */
 
   program = rindex(*argv,'/');
+  if(program == (char *) NULL)
+     program = *argv;
   if(*program == '/')
      ++program;
 
@@ -354,7 +348,7 @@ olc_init()
     case USER_NOT_FOUND:
       if(subsystem)
 	{
-	  printf("\nWelcome to OLC (2.0), ");
+	  printf("\nWelcome to OLC, ");
 	  printf("Project Athena's On-Line Consulting system.\n");
 	  printf("Copyright (c) 1989 by ");
 	  printf("the Massachusetts Institute of Technology.\n\n");
@@ -377,7 +371,7 @@ olc_init()
     case CONNECTED:
     case SUCCESS:
       read_int_from_fd(fd, &n);
-      printf("\nWelcome back to OLC (2.0). \n\n");
+      printf("\nWelcome back to OLC. \n\n");
       t_personal_status(&Request);
       break; 
    case PERMISSION_DENIED:

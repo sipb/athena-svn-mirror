@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/status.c,v 1.2 1989-07-06 22:03:29 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/lib/status.c,v 1.3 1989-07-16 17:04:48 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -49,11 +49,30 @@ OListPerson(Request,data)
      REQUEST *Request;
      LIST **data;
 {
+  int status;
+  
+  Request->options = LIST_PERSONAL;
+  status = OListQueue(Request,data);
+  return(status);
+}
+
+
+OWho(Request,data)
+     REQUEST *Request;
+     LIST *data;
+{
   int fd;
   int status;
   int n;
   
-  Request->options = LIST_PERSONAL;
-  status = OListQueue(Request,data);
+  Request->request_type = OLC_WHO;
+  fd = open_connection_to_daemon();
+  send_request(fd, Request);
+  read_response(fd, &status);
+
+  if(status == SUCCESS)
+    status = OReadList(fd, &data, 1);
+
+  (void) close(fd);
   return(status);
 }

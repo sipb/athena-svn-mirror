@@ -21,7 +21,7 @@
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_topic.c,v 1.2 1989-07-13 12:10:24 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_topic.c,v 1.3 1989-07-16 17:06:24 tjcoppet Exp $";
 #endif
 
 
@@ -82,6 +82,13 @@ do_olc_topic(arguments)
       if(!strcmp(*arguments, ">") || 
 	 string_equiv(*arguments,"-file",max(strlen(*arguments),2)))
 	{
+          ++arguments;
+	  if(*arguments == (char *) NULL)
+	    {
+               fprintf(stderr,"You must specify a file name after the");
+               fprintf(stderr,"-file argument.\n");
+	       return(ERROR);
+            }
 	  (void) strcpy(file,*arguments);
 	  save_file = TRUE;
 	  continue;
@@ -98,9 +105,9 @@ do_olc_topic(arguments)
 	  else
 	    {
 	      fprintf(stderr,
-		      "Usage is: \ttopic  [<username> <instance id>] \n");
+		      "Usage is: \ttopic  [<username> <instance id>] ");
 	      fprintf(stderr,
-		      "\t\t[\-topic <topic>] [\-list] [-file <file name>]\n");
+		      "[\-topic <topic>] [\-list]\n\t\t[-file <file name>]\n");
 	    }
 	  return(ERROR);
 	}

@@ -20,7 +20,7 @@
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v 1.1 1989-07-06 22:05:25 tjcoppet Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/t_connect.c,v 1.2 1989-07-16 17:02:45 tjcoppet Exp $";
 #endif
 
 #include <olc/olc.h>
@@ -71,7 +71,8 @@ t_grab(Request,flag,hold)
       break;
 
     case ALREADY_CONNECTED:
-      printf("Someone is already connected to that user.\n");
+      printf("Someone is already connected to %s (%d).\n",
+             Request->target.username,Request->target.instance);
       status = NO_ACTION;
       break;
 
@@ -81,6 +82,7 @@ t_grab(Request,flag,hold)
       status = NO_ACTION;
       break;
 
+    case FAILURE:
     case ERROR:
       fprintf(stderr, "Error grabbing user.\n");
       status = ERROR;
