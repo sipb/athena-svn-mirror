@@ -2,7 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *    $Id: machtype_sun4.c,v 1.22 1998-04-18 16:58:45 danw Exp $
+ *    $Id: machtype_sun4.c,v 1.23 1998-09-12 00:17:34 ghudson Exp $
  *    $Locker:  $
  */
 
@@ -56,7 +56,6 @@ kvm_t *kv;
     int dobosV = 0;
     int dosysnam = 0;
     int dosyscompatnam = 0;
-    char *kernel = "/dev/ksyms",  *memory = "/dev/mem";
     FILE *f;
 
     for (i = 1; i < argc; i++) {
@@ -76,14 +75,6 @@ kvm_t *kv;
       case 'M':
           memflg++;
         break;
-      case 'k':
-          kernel = argv[i+1];
-          i++;
-          break;
-      case 'm':
-          memory = argv[i+1];
-          i++;
-          break;
         case 'A':
           doathenaV = 1;
           break;
@@ -215,9 +206,9 @@ kvm_t *kv;
      if (cpuflg)
         do_cpu(kv, memfd);
       if (dpyflg)
-        do_dpy(kernel, memfd);
+        do_dpy(memfd);
       if (raflg)
-        do_disk(kernel, memfd);
+        do_disk(memfd);
       if (memflg)
         do_memory(kv, memfd);
       }
@@ -230,7 +221,7 @@ usage(name)
 char *name;
 {
     fprintf(stderr, "usage: %s [-v] [-c] [-d] [-r] [-E] [-N] [-M]\n",name);
-    fprintf(stderr, "             [-k kernel] [-m memory] [-A] [-L] [-P] [-S]\n");
+    fprintf(stderr, "             [-A] [-L] [-P] [-S]\n");
     exit(1);
 }
 
@@ -340,8 +331,7 @@ short cpu_type;
     return;
 }
 
-do_dpy(kernel, mf)
-char *kernel;
+do_dpy(mf)
 int mf;
 {
   int count;
@@ -364,8 +354,7 @@ int mf;
   printf("%s%s\n", p + 1, verbose ? " frame buffer" : "");
 }
 
-do_disk(kernel, mf)
-char *kernel;
+do_disk(mf)
 int mf;
 {
   DIR *dp;

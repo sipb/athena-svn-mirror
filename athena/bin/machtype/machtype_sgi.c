@@ -2,7 +2,7 @@
  *  Machtype: determine machine type & display type
  *
  * RCS Info
- *	$Id: machtype_sgi.c,v 1.10 1998-09-03 01:14:11 ghudson Exp $
+ *	$Id: machtype_sgi.c,v 1.11 1998-09-12 00:17:33 ghudson Exp $
  *	$Locker:  $
  */
 
@@ -66,7 +66,6 @@ char	**argv;
     int dobosV = 0;
     int dosysnam = 0;
     int dosyscompatnam = 0;
-    char *kernel = KERNEL,  *memory = MEMORY;
     FILE *f;
     int memfd=0;
 
@@ -86,14 +85,6 @@ char	**argv;
 	    break;
 	case 'M':
 	    memflg++;
-	    break;
-	case 'k':
-	    kernel = argv[i+1];
-	    i++;
-	    break;
-	case 'm':
-	    memory = argv[i+1];
-	    i++;
 	    break;
         case 'A':
 	    doathenaV = 1;
@@ -235,25 +226,25 @@ char	**argv;
     if (dosyscompatnam)
         printf("%s\n", ATHSYSCOMPAT);
     if (cpuflg)
-	do_cpu(kernel, memfd);
+	do_cpu();
     if (dpyflg)
-	do_dpy(kernel, memfd);
+	do_dpy();
     if (raflg)
-	do_disk(kernel, memfd);
+	do_disk();
 
     if (memflg)
       {
 
-	if (nlist(kernel, nl) < 0) {
+	if (nlist(KERNEL, nl) < 0) {
 	  fprintf(stderr,"%s: can't get namelist\n", argv[0]);
 	  exit(2);
 	}
-        if ((memfd = open (memory, O_RDONLY)) == -1) {
+        if ((memfd = open (MEMORY, O_RDONLY)) == -1) {
           perror ("machtype: can't open memory");
           exit(2);
 	}
 	if (memflg)
-	  do_memory(kernel, memfd);
+	  do_memory(memfd);
       }
     exit(0);
 }
@@ -264,14 +255,12 @@ usage(name)
 char *name;
 {
     fprintf(stderr, "usage: %s [-v] [-c] [-d] [-r] [-E] [-N] [-M]\n",name);
-    fprintf(stderr, "             [-k kernel] [-m memory] [-A] [-L] [-P] [-S]\n");
+    fprintf(stderr, "             [-A] [-L] [-P] [-S]\n");
     exit(1);
 }
 
 
-do_cpu(kernel, mf)
-char *kernel;
-int mf;
+do_cpu()
 {
 inventory_t *inv;
 int done=0;
@@ -370,9 +359,7 @@ int ka420model()
 }
 #endif /* vax */
 
-do_dpy(kernel, mf)
-char *kernel;
-int mf;
+do_dpy()
 {
 int status;
 inventory_t *inv;
@@ -467,9 +454,7 @@ void do_INV_CAM(inventory_t *i)
 
 
 
-do_disk(kernel, mf)
-char *kernel;
-int mf;
+do_disk()
 {
 inventory_t *inv;
 int t;
@@ -591,8 +576,7 @@ void do_INV_SCSICONTROL(inventory_t *i)
 
 #define MEG (1024*1024)
 
-do_memory (kernel, mf)
-char *kernel;
+do_memory (mf)
 int mf;
 {
   int pos, mem, nbpp;

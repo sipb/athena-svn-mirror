@@ -1,13 +1,13 @@
 .\"     -*- nroff -*- mode
 .\"     $Source: /afs/dev.mit.edu/source/repository/athena/bin/machtype/machtype.1,v $
 .\"     $Author: ghudson $
-.\"     $Header: /afs/dev.mit.edu/source/repository/athena/bin/machtype/machtype.1,v 1.19 1998-09-03 01:14:58 ghudson Exp $
+.\"     $Header: /afs/dev.mit.edu/source/repository/athena/bin/machtype/machtype.1,v 1.20 1998-09-12 00:17:32 ghudson Exp $
 .TH MACHTYPE 1 "May 14 1996"
 .SH NAME
 machtype \- Print machine type to standard output
 .SH SYNOPSIS
 .B machtype
-[-c] [-d] [-r] [-M] [-v] [-A] [-L] [-P] [-N] [-E] [-S] [-C] [-k kernel] [-m memory] 
+[-c] [-d] [-r] [-M] [-v] [-A] [-L] [-P] [-N] [-E] [-S] [-C]
 .SH DESCRIPTION
 .I Machtype
 prints the CPU type to standard output.  It prints "sun4" when run on a
@@ -25,13 +25,6 @@ line, as in "SUN0535".
 .TP
 .B -M
 Print the physical memory present, in kilobytes.
-.TP
-.B -k
-Override the default kernel to examine for symbols.
-.TP
-.B -m
-Override the default memory image used to look up the specific cpu
-type, displays, and disk drives.
 .TP
 .B -v
 Verbose output (suitable for humans to read, instead of computers).
