@@ -4,7 +4,7 @@
  *	Created by:	Robert French
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/clients/znol/znol.c,v $
- *	$Author: jfc $
+ *	$Author: probe $
  *
  *	Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *	For copying and distribution information, see the file
@@ -17,14 +17,14 @@
 #include <string.h>
 
 #ifndef lint
-static char rcsid_znol_c[] = "$Id: znol.c,v 1.9 1991-06-29 23:57:05 jfc Exp $";
+static char rcsid_znol_c[] = "$Id: znol.c,v 1.10 1993-09-24 16:31:31 probe Exp $";
 #endif 
 
 #define SUBSATONCE 7
 #define ON 1
 #define OFF 0
 
-#ifdef _POSIX_SOURCE
+#ifdef POSIX
 #include <stdlib.h>
 #else
 extern char *getenv(), *malloc();
