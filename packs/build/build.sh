@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: build.sh,v 1.18 1998-01-08 07:00:54 ghudson Exp $
+# $Id: build.sh,v 1.19 1998-07-15 18:29:35 ghudson Exp $
 
 # This is the script for building the Athena source tree, or pieces of
 # it.  It is less flexible than the do.sh script in this directory.
@@ -9,9 +9,9 @@
 source="/mit/source"
 build="/build"
 srvd="/srvd"
-usage="build [-s srcdir] [-b builddir] [-d destdir] [package [endpackage]]"
+usage="build [-s srcdir] [-b builddir] [-d destdir] [-n] [package [endpackage]]"
 
-while getopts s:b:d: opt; do
+while getopts s:b:d:n opt; do
 	case "$opt" in
 	s)
 		source="$OPTARG"
@@ -21,6 +21,9 @@ while getopts s:b:d: opt; do
 		;;
 	d)
 		srvd="$OPTARG"
+		;;
+	n)
+		nobuild=true
 		;;
 	\?)
 		echo "$usage"
@@ -38,26 +41,11 @@ case "`uname -sm`" in
 	IRIX*)		platform=sgi ;;
 esac
 
-# Send all output friom this point on to the build log file.
-mkdir -p "$build/logs" 2>/dev/null
-now=`date '+%y.%m.%d.%H'`
-logfile=$build/logs/washlog.$now
-rm -f "$build/logs/current"
-ln -s "washlog.$now" "$build/logs/current"
-exec >> "$logfile" 2>&1
-
-echo ========
-echo Starting at `date` on a $platform
-
 # Read in the list of packages, filtering for platform type.
-packages=`( echo "$platform"; cat "$source/packs/build/packages" ) | awk '
-	NR == 1 {
-		platform = $1;
-		next;
-	}
-	/^#|^$/ {
-		next;
-	}
+packages=`awk '
+	/^#|^$/		{ next; }
+	start == $1	{ start = ""; }
+	start != ""	{ next; }
 	/[ \t]/ {
 		split($2, p, ",");
 		build = 0;
@@ -71,20 +59,30 @@ packages=`( echo "$platform"; cat "$source/packs/build/packages" ) | awk '
 			print $1;
 		next;
 	}
-	{
-		print;
-	}'`
+			{ print; }
+	end == $1	{ exit; }' platform="$platform" start="$start" \
+		end="$end" $source/packs/build/packages`
+
+case $nobuild in
+	true)
+		echo $packages
+		exit
+		;;
+esac
+
+# Send all output friom this point on to the build log file.
+mkdir -p "$build/logs" 2>/dev/null
+now=`date '+%y.%m.%d.%H'`
+logfile=$build/logs/washlog.$now
+rm -f "$build/logs/current"
+ln -s "washlog.$now" "$build/logs/current"
+exec >> "$logfile" 2>&1
+
+echo ========
+echo Starting at `date` on a $platform
 
 # Build the packages.
 for package in $packages; do
-	# If arguments given, filter for start and end packages.
-	if [ "$package" = "$start" ]; then
-		start=""
-	elif [ -n "$start" ]; then
-		continue
-	fi
-
-	# Build the package.
 	cd $build/$package || exit 1
 	echo "**********************"
 	for op in prepare clean all check install; do
@@ -95,10 +93,6 @@ for package in $packages; do
 		# Redo the output redirection command to flush the log file.
 		exec >> "$logfile" 2>&1
 	done
-
-	if [ "$package" = "$end" ]; then
-		break
-	fi
 done
 
 echo "Ending at `date`"
