@@ -3,7 +3,7 @@
 _NOTICE N1[] = "Copyright (c) 1985,1987 Adobe Systems Incorporated";
 _NOTICE N2[] = "GOVERNMENT END USERS: See Notice file in TranScript library directory";
 _NOTICE N3[] = "-- probably /usr/lib/ps/Notice";
-_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/psutil.c,v 1.2 1990-08-25 16:52:40 epeisach Exp $";
+_NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/transcript-v2.1/psutil.c,v 1.3 1995-07-11 21:19:47 miki Exp $";
 #endif
 /* psutil.c
  *
@@ -15,6 +15,9 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
  *
  * RCSLOG:
  * $Log: not supported by cvs2svn $
+ * Revision 1.2  90/08/25  16:52:40  epeisach
+ * Under _AUX include sys/types.h
+ * 
  * Revision 1.1  90/08/25  16:50:09  epeisach
  * Initial revision
  * 
@@ -42,7 +45,8 @@ _NOTICE RCSID[]="$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/tran
  */
 
 #include <stdio.h>
-#ifdef SYSV
+#ifdef POSIX
+#include <unistd.h>
 #include <string.h>
 #include <fcntl.h>
 #else
@@ -134,7 +138,7 @@ char *var;
 #include <sys/utsname.h>
 
 #define SYSVNAMELIMIT 9
-
+#ifndef SOLARIS
 gethostname(name, namelen)
 char *name;
 int namelen;
@@ -144,5 +148,5 @@ int namelen;
     VOIDC strncpy(name,uts.sysname,SYSVNAMELIMIT);
     return(0);
 }
-
+#endif
 #endif
