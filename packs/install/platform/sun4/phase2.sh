@@ -4,7 +4,7 @@
 ### installation program.  It is called by the first script,
 ### athenainstall.
 
-### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.18 1996-05-10 21:13:11 ghudson Exp $
+### $Header: /afs/dev.mit.edu/source/repository/packs/install/platform/sun4/phase2.sh,v 1.19 1996-08-08 19:01:11 ghudson Exp $
 ### $Locker:  $
 
 echo "Set some variables"
@@ -12,6 +12,14 @@ PATH=/srvd/bin:/srvd/bin/athena:/srvd/etc:/srvd/usr/sbin:/bin:/etc:/sbin:/usr/sb
 export PATH
 umask 2
 
+echo "Custom installation ? (will default to n after 60 seconds)[n]"
+
+case x`/util/to 60` in
+xtimeout|xn|xN|x)
+     CUSTOM=N; echo "Doing standard installation"; export CUSTOM;;
+*)
+     CUSTOM=Y; echo "Doing custom installation"; export CUSTOM;;
+esac
 
 # Define the partitions
 echo "Define the partitions"
@@ -30,6 +38,33 @@ rvardrive=/dev/rdsk/c0t3d0s6
 export rootdrive rrootdrive cachedrive rcachedrive usrdrive rusrdrive
 export vardrive rvardrive
 
+
+case $CUSTOM in
+N)
+  echo "standard installation"
+  ln -s /afs/athena/system/sun4m_54/srvd /tmp/srvd
+  ;;
+
+Y)
+   echo "custom installation"
+   echo "Which rev do you want to install ? "
+   read buff
+   case "$buff" in
+   7.7)
+       echo "installing 7.7"
+       ln -s /afs/athena.mit.edu/system/sun4m_53/srvd.77 /tmp/srvd
+       ;;
+   *)
+       echo "installing 8.0"
+       ln -s /afs/athena.mit.edu/system/sun4m_54/srvd /tmp/srvd
+       ;;
+   esac
+   echo "done choosing rev"
+   ;;
+esac
+
+ls -l /srvd
+ls -l /tmp/srvd
 
 echo "formatting  "
 DISK=`/sbin/machtype -r`
