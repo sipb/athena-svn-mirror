@@ -12,17 +12,18 @@
  *
  *      Tom Coppeto
  *	Chris VanHaren
+ *	Lucien Van Elsen
  *      MIT Project Athena
  *
  *      Copyright (c) 1989 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_utils.c,v $
- *      $Author: vanharen $
+ *      $Author: lwvanels $
  */
 
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_utils.c,v 1.1 1989-10-11 16:34:40 vanharen Exp $";
+static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/motif/x_utils.c,v 1.2 1991-03-06 15:43:31 lwvanels Exp $";
 #endif
 
 #include "xolc.h"
@@ -36,7 +37,7 @@ handle_response(response, req)
   char message[BUF_SIZE];
 #ifdef KERBEROS
   char *kmessage = "\n\nIf you were having trouble with some other program, problems with your\nkerberos tickets may have been the reason.  Try the other program again\nafter getting new kerberos tickets with `kinit'.\n\nIf you continue to have difficulty, feel free to contact a user consultant\nby phone at 253-4435.\n\nOnce you have gotten new kerberos tickets, you may try to continue with OLC.\nIf you wish to continue, click on the `Try again' button below.\nIf you wish to exit OLC now, click on the `Quit' button.";
-#endif KERBEROS
+#endif
 
   switch(response)
     {
@@ -174,7 +175,7 @@ handle_response(response, req)
       status = popup_option(message);
       return(status);
 
-#endif KERBEROS
+#endif
 
     case SUCCESS:
       return(SUCCESS);
@@ -198,7 +199,7 @@ popup_option(message)
 {
   Arg arg;
 
-  if (MuGetBoolean(message, "Try again", "Quit", NULL, TRUE, Mu_Popup_Center))
+  if (MuGetBoolean(message, "Try again", "Quit", NULL, TRUE))
     return(FAILURE);
   else
     return(ERROR);
