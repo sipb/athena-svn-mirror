@@ -18,7 +18,7 @@
  * workstation as indicated by the flags.
  */
 
-static const char rcsid[] = "$Id: rpmupdate.c,v 1.2 2000-04-24 19:10:47 ghudson Exp $";
+static const char rcsid[] = "$Id: rpmupdate.c,v 1.3 2000-04-26 19:57:40 ghudson Exp $";
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -300,6 +300,8 @@ static void perform_updates(struct package **pkgtab, int public, int dryrun)
 
   /* The transaction set is complete.  Check for dependency problems. */
   if (rpmdepCheck(rpmdep, &conflicts, &nconflicts) != 0)
+    exit(1);
+  if (conflicts)
     {
       fprintf(stderr, "Update would break dependencies:\n");
       printDepProblems(stderr, conflicts, nconflicts);
