@@ -1,21 +1,17 @@
 /*
- * $Id: Imakefile,v 1.11 1993-10-19 03:38:40 probe Exp $
+ * $Id: Imakefile,v 1.12 1995-07-11 21:06:47 miki Exp $
  *
  * (c) 1993 Massachusetts Institute of Technology.
  */
-
+#ifndef _AIX
 #define ISUBDIRS snmplib
-
+#endif
 PSLIBDIR=/usr/athena/lib/ps
 PSTEMPDIR=/tmp
 DITDIR=/usr/lib/font
 TROFFFONTDIR=$(PSLIBDIR)/troff.font
 
-#if defined(AIX) && defined(_I386)
-OCFLAGS=-D_BSD
-OLIBS=-lbsd
-#endif
-#if defined(_IBMR2)
+#if defined(_AIX)
 OLIBS=-lbsd
 #endif
 #if defined(_AUX_SOURCE)
@@ -34,8 +30,9 @@ SimpleProgram(psrv,psrv.o psutil.o config.o,,$(PSLIBDIR))
 SimpleProgram(duplex2,duplex2.o,,$(PSLIBDIR))
 
 /* Printer-specific filters */
+#ifndef _AIX
 SimpleProgram(hpcomm,hpcomm.o psutil.o config.o hpquery.o snmplib/libsnmp.a,$(LIBS),$(PSLIBDIR))
-
+#endif
 all install:: psif
 
 install_script(psif,,$(PSLIBDIR))
@@ -45,7 +42,7 @@ install::
 		$(RM) $(DESTDIR)$(PSLIBDIR)/$$i; \
 		ln -s psif $(DESTDIR)$(PSLIBDIR)/$$i; \
 		done
-	-for i in pstext.pro banner.pro; do \
+	-for i in bogusmsg.ps pstext.pro banner.pro; do \
 		$(RM) $(DESTDIR)$(PSLIBDIR)/$$i; \
 		$(INSTALL) -c -m 0444 $$i $(DESTDIR)$(PSLIBDIR)/$$i; \
 		done
@@ -71,8 +68,8 @@ psif: psif.proto Makefile
 
 snmplib/libsnmp.a:: snmplib
 config.o: config.c
-pscomm.o: psspool.h
-pscomm.o psutil.o: transcript.h
+pscomm.o hpcomm.o: psspool.h transcript.h
+psutil.o: transcript.h
 pscat.o pscatmap.o: action.h 
 
 clean::
