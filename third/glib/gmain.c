@@ -1134,6 +1134,8 @@ g_main_add_poll_unlocked (gint     priority,
   else
     newrec = g_chunk_new (GPollRec, poll_chunk);
 
+  /* This file descriptor may be checked before we ever poll */
+  fd->revents = 0;
   newrec->fd = fd;
   newrec->priority = priority;
 
@@ -1360,7 +1362,7 @@ g_idle_dispatch (gpointer source_data,
 		 GTimeVal *dispatch_time,
 		 gpointer user_data)
 {
-  GSourceFunc func = source_data;
+  GSourceFunc func = (GSourceFunc) source_data;
 
   return func (user_data);
 }
@@ -1373,7 +1375,7 @@ g_idle_add_full (gint           priority,
 {
   g_return_val_if_fail (function != NULL, 0);
 
-  return g_source_add (priority, FALSE, &idle_funcs, function, data, notify);
+  return g_source_add (priority, FALSE, &idle_funcs, (gpointer) function, data, notify);
 }
 
 guint 

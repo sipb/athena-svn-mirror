@@ -71,6 +71,7 @@ GLIB_MAJOR_VERSION = @GLIB_MAJOR_VERSION@
 GLIB_MICRO_VERSION = @GLIB_MICRO_VERSION@
 GLIB_MINOR_VERSION = @GLIB_MINOR_VERSION@
 GLIB_VERSION = @GLIB_VERSION@
+G_MODULE_BROKEN_RTLD_GLOBAL = @G_MODULE_BROKEN_RTLD_GLOBAL@
 G_MODULE_HAVE_DLERROR = @G_MODULE_HAVE_DLERROR@
 G_MODULE_IMPL = @G_MODULE_IMPL@
 G_MODULE_LDFLAGS = @G_MODULE_LDFLAGS@
@@ -176,7 +177,7 @@ DIST_COMMON =  Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = array-test.c dirname-test.c hash-test.c list-test.c node-test.c relation-test.c slist-test.c string-test.c strfunc-test.c tree-test.c type-test.c
 OBJECTS = array-test.o dirname-test.o hash-test.o list-test.o node-test.o relation-test.o slist-test.o string-test.o strfunc-test.o tree-test.o type-test.o
@@ -327,6 +328,17 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+array-test.o: array-test.c ../glib.h ../glibconfig.h
+dirname-test.o: dirname-test.c ../glib.h ../glibconfig.h
+hash-test.o: hash-test.c ../config.h ../glib.h ../glibconfig.h
+list-test.o: list-test.c ../glib.h ../glibconfig.h
+node-test.o: node-test.c ../config.h ../glib.h ../glibconfig.h
+relation-test.o: relation-test.c ../glib.h ../glibconfig.h
+slist-test.o: slist-test.c ../glib.h ../glibconfig.h
+strfunc-test.o: strfunc-test.c ../glib.h ../glibconfig.h
+string-test.o: string-test.c ../glib.h ../glibconfig.h
+tree-test.o: tree-test.c ../glib.h ../glibconfig.h
+type-test.o: type-test.c ../glib.h ../glibconfig.h
 
 check-TESTS: $(TESTS)
 	@failed=0; all=0; \

@@ -71,6 +71,7 @@ GLIB_MAJOR_VERSION = @GLIB_MAJOR_VERSION@
 GLIB_MICRO_VERSION = @GLIB_MICRO_VERSION@
 GLIB_MINOR_VERSION = @GLIB_MINOR_VERSION@
 GLIB_VERSION = @GLIB_VERSION@
+G_MODULE_BROKEN_RTLD_GLOBAL = @G_MODULE_BROKEN_RTLD_GLOBAL@
 G_MODULE_HAVE_DLERROR = @G_MODULE_HAVE_DLERROR@
 G_MODULE_IMPL = @G_MODULE_IMPL@
 G_MODULE_LDFLAGS = @G_MODULE_LDFLAGS@
@@ -136,7 +137,7 @@ DIST_COMMON =  ChangeLog Makefile.am Makefile.in
 
 DISTFILES = $(DIST_COMMON) $(SOURCES) $(HEADERS) $(TEXINFOS) $(EXTRA_DIST)
 
-TAR = tar
+TAR = gtar
 GZIP_ENV = --best
 SOURCES = $(libgthread_la_SOURCES) testgthread.c
 OBJECTS = $(libgthread_la_OBJECTS) testgthread.o
@@ -275,6 +276,10 @@ distdir: $(DISTFILES)
 	    || cp -p $$d/$$file $(distdir)/$$file || :; \
 	  fi; \
 	done
+gthread.lo gthread.o : gthread.c ../config.h ../glib.h ../glibconfig.h \
+	gthread-posix.c
+testgthread.o: testgthread.c ../config.h ../testglib.c ../glib.h \
+	../glibconfig.h
 
 info-am:
 info: info-am

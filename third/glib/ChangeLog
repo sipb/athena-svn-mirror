@@ -1,3 +1,142 @@
+Fri Mar  2 12:35:40 2001  Owen Taylor  <otaylor@redhat.com>
+
+	* Release 1.2.9
+
+        * NEWS: Final update for 1.2.9
+	 
+	* INSTALL INSTALL.in: Add note about the movement of
+	the include files.
+
+2001-03-01  Tor Lillqvist  <tml@iki.fi>
+
+	* README.win32: Make a note that this version of GLib preferrably
+	shouldn't be used on Windows.
+
+Wed Feb 28 21:26:18 2001  Owen Taylor  <otaylor@redhat.com>
+
+	* README.in: Propagate changes commited to the README.in
+	back to here.
+
+Wed Feb 28 16:59:05 2001  Owen Taylor  <otaylor@redhat.com>
+
+	* configure.in (mem_warn): Add discouraging message if
+	--enable-mem-profile or --enable-mem-check is given.
+
+Mon Feb 26 21:06:17 CST 2001  Shawn T. Amundson <amundson@gtk.org>
+
+	* gstrfuncs.c: Backport implementation of 
+	g_printf_string_upper_bound from 1.3.  Bug #50217.
+
+	* gmain.c: Cast RHS of an assignment to a GSourceFunc variable.
+          Fourth param of g_source_add() is a gpointer, so add a cast to that
+          param.  From Richard K. Lloyd.  A portion of bug #50793.
+
+Mon Feb 26 23:06:54 2001  Owen Taylor  <otaylor@redhat.com>
+
+	* README: Fix information about reporting bugs to 
+	report to bugzilla.gnome.org.
+
+	* HACKING: Minor tweaks.
+
+Tue Feb 13 15:29:06 2001  Owen Taylor  <otaylor@redhat.com>
+
+	* NEWS: Update.
+
+Sat Feb 17 07:33:44 2001  Tim Janik  <timj@gtk.org>
+
+	* configure.in (G_MODULE_BROKEN_RTLD_GLOBAL): check for systems
+	with broken RTLD_GLOBAL.
+
+2001-01-02  Dan Winship  <danw@helixcode.com>
+
+	* garray.h (g_array_append_val, g_array_prepend_val,
+	g_array_insert_val): Use parentheses around an argument to make
+	these cause an error if you pass a non-lvalue for the value,
+	rather than silently doing the wrong thing.
+
+Sat Dec  2 09:24:35 2000  Owen Taylor  <otaylor@redhat.com>
+
+	* gmain.c (g_main_add_poll_unlocked): Initial fd->revents
+	to zero. (#8482, Benjamin Kahn)
+
+2000-11-29  Martin Baulig  <baulig@suse.de>
+
+	* *.pc.in: Make the pkg-config scripts actually work.
+
+Mon Oct 16 11:11:06 2000  Tim Janik  <timj@gtk.org>
+
+	* configure.in: up version number to 1.2.9, interface 9, binary 9.
+
+	* gstrfuncs.c (g_printf_string_upper_bound): added patchy hack to
+	pad us around segfaults for usages of '\'' in decimal conversions.
+	applied patch from jody:
+
+2000-10-15  Jody Goldberg <jgoldberg@home.com>
+
+        * gstrfuncs.c (g_printf_string_upper_bound) : Add 'G' as a valid
+         character.
+
+Sun Aug  6 20:06:02 2000  Tim Janik  <timj@gtk.org>
+
+	* gmessages.c (g_log_domain_check_free): keep *last updated while
+	running through the domain list, so we don't screw up the removal,
+	patch provided by Gady Kozma <gadykozma@hotmail.com>.
+
+Sun Aug  6 20:03:41 2000  Tim Janik  <timj@gtk.org>
+
+	* gmessages.c (g_log_remove_handler): keep *last updated while running
+	through the handler list, so we don't screw up the removal.
+
+2000-09-30  Martin Baulig  <baulig@suse.de>
+
+	* glib.pc.in, gmodule.pc.in, gthread.pc.in: Provide
+	pkg-config scripts.
+
+	* configure.in: Create *.pc scripts from the *.pc.in
+	templates.
+	* Makefile.am (pkgconfig_DATA): Install the *.pc
+	scripts in `$(libdir)/pkgconfig'.
+
+Fri Sep  8 21:46:13 2000  Owen Taylor  <otaylor@redhat.com>
+
+	* gmodule/Makefile.am Makefile.am glib-config.in:
+	Move headers to @includedir@/glib-1.2/ to allow
+	safe coexistance with a glib-2.0 build environment.
+
+Mon Aug 21 14:39:36 2000  Owen Taylor  <otaylor@redhat.com>
+
+	* glib.h: Use C99 varargs macros where possible 
+	(check __STDC_VERSION__), otherwise, on gcc, use an alternate 
+	form of gcc varargs which is more likely
+	to be supported going forward. (Based on some code
+	from Raja Harinath)
+
+Wed Aug  9 14:12:03 2000  Owen Taylor  <otaylor@redhat.com>
+
+	* glib.h: Backport correct descriptive comment from 
+	1.3.1 so I can close #20285.
+
+2000-07-19  Sebastian Wilhelmi  <wilhelmi@ira.uka.de>
+
+	* configure.in: glibconfig.h now includes files outside of the
+	extern "C" block. Makes some C++ compiler happy. Reported by Denis
+	Vakatov <vakatov@peony.nlm.nih.gov>.
+
+Sat Jul 15 09:14:35 2000  Tim Janik  <timj@gtk.org>
+
+        * gstrfuncs.c (g_strncasecmp): fixed an off by 0 error (yeah,
+        the function went off when the while (n--) loop failed due to
+        n==0 ;), reported by Jean-Louis HAMEL <jlhamel@club-internet.fr>.
+
+2000-05-31  Sebastian Wilhelmi  <wilhelmi@ira.uka.de>
+
+	* gutils.c (g_get_any_init): Use sysconf (_SC_GETPW_R_SIZE_MAX)
+	for initial bufsize, where available. This is already in GLib 1.3.
+
+Thu May 25 03:45:41 2000  Tim Janik  <timj@gtk.org>
+
+	* released GLib-1.2.8.
+
 Thu May 25 02:29:35 2000  Tim Janik  <timj@gtk.org>
 
 	* configure.in: glib version 1.2.8, interface age 8, binary age 8.
