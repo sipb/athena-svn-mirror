@@ -10,7 +10,7 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZInit.c,v 1.7 1987-07-01 04:37:06 rfrench Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZInit.c,v 1.8 1987-07-09 05:26:19 rfrench Exp $ */
 
 #include <zephyr/mit-copyright.h>
 
@@ -49,5 +49,8 @@ Code_t ZInitialize()
 	if (get_krbrlm(__Zephyr_realm,1) != KSUCCESS)
 		(void)strcpy(__Zephyr_realm,"NOREALM");
 
+	/* Get the sender so we can cache it */
+	(void) ZGetSender();
+	
 	return (ZERR_NONE);
 }
