@@ -37,9 +37,9 @@ ftpd \- DARPA Internet File Transfer Protocol server
 .SH SYNOPSIS
 .B ftpd
 [\fB\-d\fP] [\fB\-l\fP] [\fB\-t\fP \fItimeout\fP] [\fB\-T\fP
-\fImaxtimeout\fP] [\fB\-p\fP \fIport\fP] [\fb\-a [off]\fP]
+\fImaxtimeout\fP] [\fB\-p\fP \fIport\fP] [\fB\-a\fP] [\fB\-A\fP]
 [\fB\-r\fP \fIrealm-file\fP]
-[\fB\-s\fP \fIsrvtab\fP] [\fB\-E\fP]
+[\fB\-s\fP \fIsrvtab\fP] [\fB\-E\fP] [\fB\-C\fP]
 [\fB\-w\fP[\fBip\fP|\fImaxhostlen\fP[\fB,\fP[\fBno\fP]\fBstriplocal\fP]]]
 .SH DESCRIPTION
 .B Ftpd
@@ -74,11 +74,22 @@ seconds with the
 .B \-T
 option.  The default limit is 2 hours.
 .TP
-.B \-a
-Only permit Kerberos authenticated or anonymous logins.
+.B \-A
+Connections are only allowed for users who can authenticate via the
+ftp AUTH mechanism. (Anonymous ftp may also be allowed if it is 
+configured.) Ftpd will ask the user for a password if one is
+required.
 .TP
-.B \-a off
-Don't allow automatic login of Kerberos authenticated logins.
+.B \-a
+Connections are only allowed for users who can authenticate (via the
+ftp AUTH mechanism) and who are authorized to connect to the named 
+account without a password. (Anonymous ftp may also be allowed if it is 
+configured.)
+.TP
+.B \-C
+Non-anonymous users need local credentials (for example, to authenticate
+to remote fileservers), and so they should be prompted for a password
+unless they forwarded credentials as part of authentication.
 .TP
 .B \-E
 Don't allow passwords to be typed across unencrypted connections.
