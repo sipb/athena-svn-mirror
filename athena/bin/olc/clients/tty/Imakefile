@@ -1,5 +1,5 @@
 #
-# $Id: Imakefile,v 1.6 1991-11-05 14:07:44 lwvanels Exp $
+# $Id: Imakefile,v 1.7 1991-11-06 15:40:29 lwvanels Exp $
 # $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/tty/Imakefile,v $
 #
 # For copying and distribution information,
@@ -22,11 +22,9 @@ OBJS=	t_ask.o t_connect.o t_consult.o t_instance.o \
 	t_list.o t_admin.o t_version.o
 
 depend::
-	-$(RM) libtty.a
 	sh newvers.sh
 
 libtty.a::
-	-$(RM) libtty.a
 	sh newvers.sh
 
 clean::
@@ -42,3 +40,6 @@ ProfiledLibraryTarget(tty,$(OBJS))
 
 LintTarget()
 DependTarget()
+
+
+t_version.o: version.h
