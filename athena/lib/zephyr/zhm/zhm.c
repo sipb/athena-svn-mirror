@@ -3,7 +3,7 @@
  *
  *      Created by:     David C. Jedlinsky
  *
- *      $Id: zhm.c,v 1.60 1999-01-22 23:20:02 ghudson Exp $
+ *      $Id: zhm.c,v 1.61 2000-04-05 14:57:36 ghudson Exp $
  *
  *      Copyright (c) 1987,1991 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -12,7 +12,7 @@
 
 #include "zhm.h"
 
-static const char rcsid_hm_c[] = "$Id: zhm.c,v 1.60 1999-01-22 23:20:02 ghudson Exp $";
+static const char rcsid_hm_c[] = "$Id: zhm.c,v 1.61 2000-04-05 14:57:36 ghudson Exp $";
 
 #ifdef HAVE_HESIOD
 int use_hesiod = 0;
@@ -24,7 +24,7 @@ int use_hesiod = 0;
 
 #define PIDDIR "/var/athena/"
 
-int hmdebug, rebootflag, errflg, dieflag, inetd, oldpid, nofork;
+int hmdebug, rebootflag, noflushflag, errflg, dieflag, inetd, oldpid, nofork;
 int no_server = 1, nservchang, nserv, nclt;
 int booting = 1, timeout_type, deactivated = 1;
 long starttime;
@@ -76,7 +76,7 @@ char *argv[];
 	exit(-1);
     }
     prim_serv[0] = '\0';
-    while ((opt = getopt(argc, argv, "drhin")) != EOF)
+    while ((opt = getopt(argc, argv, "drhinf")) != EOF)
 	switch(opt) {
 	  case 'd':
 	    hmdebug = 1;
@@ -97,6 +97,9 @@ char *argv[];
 	    break;
 	  case 'n':
 	    nofork = 1;
+	    break;
+	  case 'f':
+	    noflushflag = 1;
 	    break;
 	  case '?':
 	  default:

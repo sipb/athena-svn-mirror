@@ -3,7 +3,7 @@
  *
  *      Created by:     David C. Jedlinsky
  *
- *      $Id: zhm_client.c,v 1.11 1999-01-22 23:20:03 ghudson Exp $
+ *      $Id: zhm_client.c,v 1.12 2000-04-05 14:57:37 ghudson Exp $
  *
  *      Copyright (c) 1987 by the Massachusetts Institute of Technology.
  *      For copying and distribution information, see the file
@@ -14,11 +14,11 @@
 
 #ifndef lint
 #ifndef SABER
-static char rcsid_hm_client_c[] = "$Id: zhm_client.c,v 1.11 1999-01-22 23:20:03 ghudson Exp $";
+static char rcsid_hm_client_c[] = "$Id: zhm_client.c,v 1.12 2000-04-05 14:57:37 ghudson Exp $";
 #endif /* SABER */
 #endif /* lint */
 
-extern int no_server, nclt, deactivated;
+extern int no_server, nclt, deactivated, noflushflag;
 extern struct sockaddr_in cli_sin, serv_sin, from;
 
 void transmission_tower(notice, packet, pak_len)
@@ -33,8 +33,12 @@ void transmission_tower(notice, packet, pak_len)
     nclt++;
     if (notice->z_kind == HMCTL) {
 	if (!strcmp(notice->z_opcode, CLIENT_FLUSH)) {
-	    send_flush_notice(HM_FLUSH);
-	    deactivated = 1;
+	    if (noflushflag)
+		syslog(LOG_INFO, "Client requested hm flush (disabled).");
+	    else {
+		send_flush_notice(HM_FLUSH);
+		deactivated = 1;
+	    }
 	} else if (!strcmp(notice->z_opcode, CLIENT_NEW_SERVER)) {
 	    new_server((char *)NULL);
 	} else {
