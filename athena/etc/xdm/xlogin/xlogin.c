@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.18 1992-04-27 19:27:07 mar Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/etc/xdm/xlogin/xlogin.c,v 1.19 1992-05-08 12:58:01 systest Exp $ */
 
 #include <stdio.h>
 #include <signal.h>
@@ -1228,7 +1228,7 @@ static void initOwl(search)
 	      else
 		*ptr = '\0';
 
-	      owlBitmaps[owlNumBitmaps] = XmuLocateBitmapFile(*(XtScreen(owl)),
+	      owlBitmaps[owlNumBitmaps] = XmuLocateBitmapFile(XtScreen(owl),
 							      filenames,
 							      NULL, 0,
 							      &owlWidth,
@@ -1290,7 +1290,7 @@ static void initOwl(search)
 	      else
 		*ptr = '\0';
 
-	      isBitmaps[isNumBitmaps] = XmuLocateBitmapFile(*(XtScreen(is)),
+	      isBitmaps[isNumBitmaps] = XmuLocateBitmapFile(XtScreen(is),
 							      filenames,
 							      NULL, 0,
 							      &isWidth,
