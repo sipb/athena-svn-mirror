@@ -1,6 +1,6 @@
 #!/sbin/sh
 # Undo any undesired changes resulting from the installation of OS pkgs.
-# $Id: oschanges,v 1.19 2004-03-30 23:56:06 rbasch Exp $
+# $Id: oschanges,v 1.20 2004-05-05 03:08:06 zacheiss Exp $
 
 # The SUNWcsr package undoes our inittab mod, so restore it.
 cp -p /srvd/etc/inittab $UPDATE_ROOT/etc && [ ${UPDATE_ROOT:-/} = / ] && \
@@ -16,6 +16,7 @@ rm -f $UPDATE_ROOT/etc/rc2.d/S76nscd
 rm -f $UPDATE_ROOT/etc/rc2.d/S85power
 rm -f $UPDATE_ROOT/etc/rc2.d/S88sendmail
 rm -f $UPDATE_ROOT/etc/rc2.d/S89bdconfig
+rm -f $UPDATE_ROOT/etc/rc2.d/S95IIim
 rm -f $UPDATE_ROOT/etc/rc2.d/S99audit
 rm -f $UPDATE_ROOT/etc/rc2.d/S80lp
 rm -f $UPDATE_ROOT/etc/rc2.d/S90wbem
