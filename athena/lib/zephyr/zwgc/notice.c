@@ -13,7 +13,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char rcsid_notice_c[] = "$Id: notice.c,v 1.5 1989-11-14 16:40:39 jtkohl Exp $";
+static char rcsid_notice_c[] = "$Id: notice.c,v 1.6 1989-12-15 08:35:20 jtkohl Exp $";
 #endif
 
 #include <zephyr/mit-copyright.h>
@@ -27,7 +27,6 @@ static char rcsid_notice_c[] = "$Id: notice.c,v 1.5 1989-11-14 16:40:39 jtkohl E
 #include <zephyr/zephyr.h>
 #include <netdb.h>
 #include <sys/socket.h>
-#include <netinet/in.h>
 #include <arpa/inet.h>
 #include "new_memory.h"
 #include "error.h"
