@@ -1,5 +1,5 @@
 /*
- * $Id: attachtab.c,v 1.3 1992-04-10 20:23:43 probe Exp $
+ * $Id: attachtab.c,v 1.4 1992-04-13 22:06:18 probe Exp $
  *
  * Copyright (c) 1989,1991 by the Massachusetts Institute of Technology.
  *
@@ -7,7 +7,7 @@
  */
 
 #ifndef lint
-static char rcsid_attachtab_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/quota/attachtab.c,v 1.3 1992-04-10 20:23:43 probe Exp $";
+static char rcsid_attachtab_c[] = "$Id: attachtab.c,v 1.4 1992-04-13 22:06:18 probe Exp $";
 #endif lint
 
 #include "attach.h"
@@ -49,7 +49,7 @@ void lock_attachtab()
 		(void) strcat(lockfn, ".lock");
 	
 		if (attach_lock_fd < 0) {
-			attach_lock_fd = open(lockfn, O_CREAT, 0644);
+			attach_lock_fd = open(lockfn, O_CREAT|O_RDWR, 0644);
 			if (attach_lock_fd < 0) {
 				fprintf(stderr,"Can't open %s: %s\n", lockfn,
 					sys_errlist[errno]);
@@ -57,7 +57,12 @@ void lock_attachtab()
 				exit(ERR_FATAL);
 			}
 		}
-		flock(attach_lock_fd, LOCK_EX);
+		if (flock(attach_lock_fd, LOCK_EX) < 0) {
+			fprintf(stderr, "Unable to lock attachtab: %s\n",
+				sys_errlist[errno]);
+			fprintf(stderr, abort_msg);
+			exit(ERR_FATAL);
+		}
 		free(lockfn);
 	}
 	attach_lock_count++;
