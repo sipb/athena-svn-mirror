@@ -38,12 +38,6 @@ rm $RPM_BUILD_ROOT/etc/athena/config_afs
 cp /etc/syslog.conf.athena /etc/syslog.conf
 chkconfig --add athena-ws
 
-# Inaugurate /etc/athena/version
-if [ ! -f /etc/athena/version ]; then
-	echo Athena Workstation '(linux)' Version Layered `date` >> \
-		 /etc/athena/version
-fi
-
 # Add warnings on disabled consoles pointing people at tty7.
 for i in 1 2 3 4 5 6; do
   if grep ^$i: /etc/inittab; then true; else
