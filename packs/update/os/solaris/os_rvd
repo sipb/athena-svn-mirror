@@ -1,5 +1,5 @@
 GLOBAL : *.CKP *.pid :
-## $Id: os_rvd,v 1.6 1999-04-20 19:36:19 ghudson Exp $
+## $Id: os_rvd,v 1.7 1999-04-29 20:55:47 jweiss Exp $
 ## Major subscription list for workstations
 ##
 ##	MIT Project Athena
@@ -223,7 +223,8 @@ GLOBAL : *.CKP *.pid :
 		-> makedbm
 		-> ni*
 		-> nl*
-		-> ns*
+		-> nscd
+		-> nstest
 		-> pass*
 		-> pkg*
 		-> praudit
