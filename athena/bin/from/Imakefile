@@ -1,12 +1,12 @@
 /* 
- * $Id: Imakefile,v 1.7 1991-07-01 15:11:19 epeisach Exp $
+ * $Id: Imakefile,v 1.8 1991-08-16 16:03:54 lwvanels Exp $
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/from/Imakefile,v $
- * $Author: epeisach $
+ * $Author: lwvanels $
  */
 
 AnsiCC()
 
-DEFINES = -DHESIOD -DKPOP
+DEFINES = -DHESIOD -DKPOP -DOFF_SWITCH
 #ifdef _AUX_SOURCE
 LIBS = -lhesiod -lkrb -ldes -lPW -lc
 
