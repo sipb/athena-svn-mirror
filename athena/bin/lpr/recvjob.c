@@ -6,7 +6,7 @@
 
 #ifndef lint
 static char sccsid[] = "@(#)recvjob.c	5.4 (Berkeley) 6/6/86";
-static char *rcsid_recvjob_c = "$Id: recvjob.c,v 1.19 1998-07-05 17:39:11 danw Exp $";
+static char *rcsid_recvjob_c = "$Id: recvjob.c,v 1.20 1998-07-20 16:04:07 danw Exp $";
 #endif
 
 /*
@@ -27,7 +27,7 @@ static char *rcsid_recvjob_c = "$Id: recvjob.c,v 1.19 1998-07-05 17:39:11 danw E
 #include <ustat.h>
 #else
 #ifdef __NetBSD__
-#include <ufs/ffs/dinode.h>
+#include <ufs/ufs/dinode.h>
 #include <ufs/ffs/fs.h>
 #else
 #include <ufs/fs.h>
