@@ -11,19 +11,22 @@
  *      MIT Information Systems
  *
  *      Tom Coppeto
+ *	Chris VanHaren
  *      MIT Project Athena
  *
- *      Copyright (c) 1988 by the Massachusetts Institute of Technology
+ * Copyright (C) 1988,1990 by the Massachusetts Institute of Technology.
+ * For copying and distribution information, see the file "mit-copyright.h".
  *
- *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_list.c,v $
- *      $Author: vanharen $
+ *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_list.c,v $
+ *	$Id: p_list.c,v 1.5 1990-05-26 12:11:11 vanharen Exp $
+ *	$Author: vanharen $
  */
 
 #ifndef lint
-static char rcsid[]= "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_list.c,v 1.4 1990-02-14 14:43:15 vanharen Exp $";
+static const char rcsid[] ="$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/clients/parser/p_list.c,v 1.5 1990-05-26 12:11:11 vanharen Exp $";
 #endif
 
-
+#include <mit-copyright.h>
 #include <olc/olc.h>
 #include <olc/olc_parser.h>
 
