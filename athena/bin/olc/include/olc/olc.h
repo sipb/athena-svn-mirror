@@ -19,7 +19,7 @@
  * For copying and distribution information, see the file "mit-copyright.h".
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/include/olc/olc.h,v $
- *	$Id: olc.h,v 1.15 1990-11-15 09:07:03 lwvanels Exp $
+ *	$Id: olc.h,v 1.16 1990-11-16 07:04:50 lwvanels Exp $
  *	$Author: lwvanels $
  */
 
@@ -62,7 +62,7 @@ struct tREQUEST;
 #include <olc/procs.h>
 #include <olc/status.h>
 
-#define VERSION_STRING "3.0b"
+#define VERSION_STRING "3.0c"
 
 /* 
  * service definitions 
