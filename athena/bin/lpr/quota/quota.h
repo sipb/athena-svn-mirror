@@ -1,7 +1,7 @@
 /*
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota.h,v $
  *	$Author: epeisach $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota.h,v 1.3 1990-07-10 20:44:08 epeisach Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/quota.h,v 1.4 1990-07-11 10:17:51 epeisach Exp $
  */
 
 /*
@@ -31,6 +31,7 @@ extern char *QF;    /* Master quota file */
 extern char *GF;    /* Group quota file */
 extern char *RF;    /* Report file for logger to grok thru */
 extern char *QC;    /* Quota currency */
+exterm int   QD;    /* Quota server "shutdown" for maintainence */
 
 extern char pbuf[]; /* Dont ask :) -Ilham */
 extern char *bp;
