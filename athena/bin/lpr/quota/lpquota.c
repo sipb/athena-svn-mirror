@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.10 1990-11-16 15:06:17 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.11 1991-01-23 13:41:14 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v $ */
 /* $Author: epeisach $ */
 
@@ -8,7 +8,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-static char lpquota_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.10 1990-11-16 15:06:17 epeisach Exp $";
+static char lpquota_rcsid[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/lpquota.c,v 1.11 1991-01-23 13:41:14 epeisach Exp $";
 #endif (!defined(lint) && !defined(SABER))
 
 #include "mit-copyright.h"
@@ -985,8 +985,12 @@ fatal(msg, a1, a2, a3)
 /* Form a complete string name consisting of principal,
  * instance and realm
  */
-make_kname(principal, instance, realm, out_name)
+#ifdef __STDC__
+void make_kname(char *principal, char *instance, char *realm, char *out_name)
+#else
+void make_kname(principal, instance, realm, out_name)
 char *principal, *instance, *realm, *out_name;
+#endif
 {
     if ((instance[0] == '\0') && (realm[0] == '\0'))
         (void) strcpy(out_name, principal);
