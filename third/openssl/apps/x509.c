@@ -131,7 +131,9 @@ static char *x509_usage[]={
 " -extensions     - section from config file with X509V3 extensions to add\n",
 " -clrext         - delete extensions before signing and input certificate\n",
 " -nameopt arg    - various certificate name options\n",
+#ifndef OPENSSL_NO_ENGINE
 " -engine e       - use engine e, possibly a hardware device.\n",
+#endif
 " -certopt arg    - various certificate text options\n",
 NULL
 };
@@ -183,7 +185,9 @@ int MAIN(int argc, char **argv)
 	int need_rand = 0;
 	int checkend=0,checkoffset=0;
 	unsigned long nmflag = 0, certflag = 0;
+#ifndef OPENSSL_NO_ENGINE
 	char *engine=NULL;
+#endif
 
 	reqfile=0;
 
@@ -354,17 +358,13 @@ int MAIN(int argc, char **argv)
 			if (--argc < 1) goto bad;
 			if (!set_name_ex(&nmflag, *(++argv))) goto bad;
 			}
-		else if (strcmp(*argv,"-setalias") == 0)
-			{
-			if (--argc < 1) goto bad;
-			alias= *(++argv);
-			trustout = 1;
-			}
+#ifndef OPENSSL_NO_ENGINE
 		else if (strcmp(*argv,"-engine") == 0)
 			{
 			if (--argc < 1) goto bad;
 			engine= *(++argv);
 			}
+#endif
 		else if (strcmp(*argv,"-C") == 0)
 			C= ++num;
 		else if (strcmp(*argv,"-email") == 0)
@@ -450,7 +450,9 @@ bad:
 		goto end;
 		}
 
+#ifndef OPENSSL_NO_ENGINE
         e = setup_engine(bio_err, engine, 0);
+#endif
 
 	if (need_rand)
 		app_RAND_load_file(NULL, bio_err, 0);
@@ -1143,7 +1145,7 @@ static int x509_certify(X509_STORE *ctx, char *CAfile, const EVP_MD *digest,
 	else if (!(bs = load_serial(CAfile, serialfile, create)))
 		goto end;
 
-	if (!X509_STORE_add_cert(ctx,x)) goto end;
+/*	if (!X509_STORE_add_cert(ctx,x)) goto end;*/
 
 	/* NOTE: this certificate can/should be self signed, unless it was
 	 * a certificate request in which case it is not. */

@@ -122,7 +122,9 @@
 #include <openssl/pkcs12.h>
 #include <openssl/ui.h>
 #include <openssl/safestack.h>
+#ifndef OPENSSL_NO_ENGINE
 #include <openssl/engine.h>
+#endif
 
 #ifdef OPENSSL_SYS_WINDOWS
 #define strcasecmp _stricmp
@@ -137,10 +139,6 @@
 #define NON_MAIN
 #include "apps.h"
 #undef NON_MAIN
-
-#ifdef OPENSSL_SYS_WINDOWS
-#  include "bss_file.c"
-#endif
 
 typedef struct {
 	char *name;
@@ -859,6 +857,7 @@ EVP_PKEY *load_key(BIO *err, const char *file, int format, int maybe_stdin,
 		BIO_printf(err,"no keyfile specified\n");
 		goto end;
 		}
+#ifndef OPENSSL_NO_ENGINE
 	if (format == FORMAT_ENGINE)
 		{
 		if (!e)
@@ -868,6 +867,7 @@ EVP_PKEY *load_key(BIO *err, const char *file, int format, int maybe_stdin,
 				ui_method, &cb_data);
 		goto end;
 		}
+#endif
 	key=BIO_new(BIO_s_file());
 	if (key == NULL)
 		{
@@ -935,6 +935,7 @@ EVP_PKEY *load_pubkey(BIO *err, const char *file, int format, int maybe_stdin,
 		BIO_printf(err,"no keyfile specified\n");
 		goto end;
 		}
+#ifndef OPENSSL_NO_ENGINE
 	if (format == FORMAT_ENGINE)
 		{
 		if (!e)
@@ -944,6 +945,7 @@ EVP_PKEY *load_pubkey(BIO *err, const char *file, int format, int maybe_stdin,
 				ui_method, &cb_data);
 		goto end;
 		}
+#endif
 	key=BIO_new(BIO_s_file());
 	if (key == NULL)
 		{
@@ -1329,6 +1331,7 @@ X509_STORE *setup_verify(BIO *bp, char *CAfile, char *CApath)
 	return NULL;
 }
 
+#ifndef OPENSSL_NO_ENGINE
 /* Try to load an engine in a shareable library */
 static ENGINE *try_load_engine(BIO *err, const char *engine, int debug)
 	{
@@ -1385,6 +1388,7 @@ ENGINE *setup_engine(BIO *err, const char *engine, int debug)
 		}
         return e;
         }
+#endif
 
 int load_config(BIO *err, CONF *cnf)
 	{
