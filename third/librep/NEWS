@@ -1,6 +1,33 @@
 News
 ****
 
+0.16
+====
+
+   * New modules `rep.data.trie', `rep.threads.proxy'
+
+   * Also added `rep.xml.reader' and `rep.xml.printer', though these
+     should probably be used with extreme caution
+
+   * Appending to queues is now O(1) not O(n)
+
+   * Many changes to `rep.net.rpc' module, protocol is incompatible
+     with previous version. Should be more robust
+
+   * `rep.i18n.gettext' module exports the `bindtextdomaincodeset'
+     function (Christophe Fergeau)
+
+   * Slightly more secure way of seeding the rng
+
+   * `inexact->exact' can now convert floating point numbers to
+     rationals (though not optimally). This means that `numerator' and
+     `denominator' also work better with floats now
+
+   * New function `file-ttyp'
+
+   * Some random bug fixes
+
+
 0.15
 ====
 

@@ -1,6 +1,6 @@
 # Makefile.in -- input for the src directory's Makefile
 # Copyright (C) 1998 John Harper <john@dcs.warwick.ac.uk>
-# $Id: Makefile.in,v 1.1.1.3 2002-03-20 04:55:08 ghudson Exp $
+# $Id: Makefile.in,v 1.1.1.4 2003-01-05 00:23:55 ghudson Exp $
 #
 # This file is part of Jade.
 #
@@ -127,7 +127,8 @@ uninstall :
 
 rep-config : rep-config.sh Makefile
 	$(SHELL) $< "${prefix}" "${libdir}" "${version}" \
-	  "${LDFLAGS} ${LIBS} ${GMP_LIBS}" "${repcommonexecdir}">$@
+	  "${LDFLAGS} ${LIBS} ${GMP_LIBS}" "${repcommonexecdir}" \
+	  "${repdir}/site-lisp" >$@
 	chmod +x $@
 
 repdoc : repdoc.o

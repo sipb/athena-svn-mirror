@@ -1,5 +1,5 @@
 /* rep.c -- read-eval-print front end
-   $Id: rep.c,v 1.1.1.1 2000-11-12 06:10:23 ghudson Exp $ */
+   $Id: rep.c,v 1.1.1.2 2003-01-05 00:23:57 ghudson Exp $ */
 
 #define _GNU_SOURCE
 
@@ -11,6 +11,10 @@
 #include "build.h"
 #include <string.h>
 
+#ifdef HAVE_LOCALE_H
+# include <locale.h>
+#endif
+
 int
 main(int argc, char **argv)
 {
@@ -18,6 +22,10 @@ main(int argc, char **argv)
 
     char *prog_name = *argv++;
     argc--;
+
+#ifdef HAVE_SETLOCALE
+    setlocale (LC_ALL, "");
+#endif
 
     rep_init (prog_name, &argc, &argv, 0, 0);
 

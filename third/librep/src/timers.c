@@ -1,6 +1,6 @@
 /* timers.c -- call a function after a period of time has passed
    Copyright (C) 1999 John Harper <john@dcs.warwick.ac.uk>
-   $Id: timers.c,v 1.1.1.3 2002-03-20 04:54:55 ghudson Exp $
+   $Id: timers.c,v 1.1.1.4 2003-01-05 00:24:01 ghudson Exp $
 
    This file is part of librep.
 
@@ -364,7 +364,7 @@ rep_dl_init (void)
 					timer_mark_active, 0, 0, 0, 0, 0, 0);
     pipe (pipe_fds);
     rep_register_input_fd (pipe_fds[0], timer_fd_handler);
-#ifdef HAVE_UNIX
+#ifdef rep_HAVE_UNIX
     rep_unix_set_fd_cloexec (pipe_fds[1]);
 #endif
     sigemptyset (&alrm_sigset);

@@ -1,6 +1,6 @@
 /* lisp.c -- Core of the Lisp, reading and evaluating...
    Copyright (C) 1993, 1994 John Harper <john@dcs.warwick.ac.uk>
-   $Id: lisp.c,v 1.1.1.3 2002-03-20 04:53:09 ghudson Exp $
+   $Id: lisp.c,v 1.1.1.4 2003-01-05 00:23:55 ghudson Exp $
 
    This file is part of Jade.
 
@@ -1770,7 +1770,7 @@ apply FUNCTION ARGS... ARG-LIST
 
 Calls FUNCTION passing all of ARGS to it as well as all elements in ARG-LIST.
 ie,
-  (apply '+ 1 2 3 '(4 5 6))
+  (apply + 1 2 3 '(4 5 6))
    => 21
 ::end:: */
 {

@@ -1,6 +1,6 @@
 /* unix_main.c -- Miscellaneous functions for Unix
    Copyright (C) 1993, 1994 John Harper <john@dcs.warwick.ac.uk>
-   $Id: unix_main.c,v 1.1.1.2 2002-03-20 04:55:02 ghudson Exp $
+   $Id: unix_main.c,v 1.1.1.3 2003-01-05 00:23:59 ghudson Exp $
 
    This file is part of Jade.
 
@@ -79,6 +79,12 @@ rep_lookup_errno(void)
     else
         return rep_VAL(&unknown_err);
 #endif
+}
+
+u_long
+rep_getpid (void)
+{
+    return getpid ();
 }
 
 u_long

@@ -1,6 +1,6 @@
 
 Name: librep
-Version: 0.15.2
+Version: 0.16.1
 Release: 1
 Summary: An embeddable LISP environment
 Copyright: GPL
@@ -26,7 +26,7 @@ deficiencies, with features from Common Lisp and Scheme.
 %package devel
 Summary: librep include files and link libraries
 Group: Development/Languages
-Requires: %{name} = 0.15.2
+Requires: %{name} = 0.16.1
 
 %description devel
 Link libraries and C header files for librep development.

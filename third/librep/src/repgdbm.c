@@ -1,5 +1,5 @@
 /* repgdbm.c -- rep wrapper to libgdbm
-   $Id: repgdbm.c,v 1.1.1.2 2002-03-20 04:53:10 ghudson Exp $ */
+   $Id: repgdbm.c,v 1.1.1.3 2003-01-05 00:23:57 ghudson Exp $ */
 
 #define _GNU_SOURCE
 
@@ -146,7 +146,7 @@ gdbm-delete DBM KEY
     rep_DECLARE1 (dbm, rep_DBMP);
     rep_DECLARE2 (key, rep_STRINGP);
     dkey.dptr = rep_STR (key);
-    dkey.dsize = rep_STRING_LEN (key) + 1;
+    dkey.dsize = rep_STRING_LEN (key);
     return gdbm_delete (rep_DBM(dbm)->dbm, dkey) == 0 ? Qt : Qnil;
 }
 

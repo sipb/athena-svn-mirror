@@ -1,3 +1,90 @@
+2002-06-22  John Harper  <jsh@unfactored.org>
+
+	* version 0.16.1
+
+	* Makefile.in: include rep/xml in installed modules
+
+	* rep/vm/compiler/modules.jl (find-structure): catch the error
+	that happens if the module can't be loaded and return nil
+
+2002-06-20  John Harper  <jsh@unfactored.org>
+
+	* version 0.16
+
+	* rep/xml/reader.jl, rep/xml/printer.jl: some code I wrote when
+	I was interested in making rep speak xml-rpc. I didn't finish
+	it, but, if I recall correctly, the xml parser and printer
+	worked well enough that it might be useful for toy problems..
+
+2002-04-21  John Harper  <jsh@unfactored.org>
+
+	* rep/util/autoloader.jl (make-autoloader): propagate arbitrary
+	arguments after the two we're interested in
+
+2002-04-14  John Harper  <jsh@unfactored.org>
+
+	* rep/data/queues.jl: rewritten so that enqueuing is O(1) not
+	O(n)
+
+2002-04-13  John Harper  <jsh@unfactored.org>
+
+	* rep/threads/proxy.jl: new module, untested, written a long
+	time ago and never used
+
+	* rep/lang/profiler.jl: don't use the "interval" when printing
+	results, it's totally bogus..
+
+	* rep/user.jl (parse-options): in --debug mode, break on failed
+	checks, etc
+
+2002-03-30  John Harper  <jsh@unfactored.org>
+
+	* rep/net/rpc.jl: more reliable/predictable error handling.
+	Also when closing a socket, report failures on any requests
+	pending on that socket (avoids hanging forever..)
+
+2002-03-24  John Harper  <jsh@unfactored.org>
+
+	* rep/vm/compiler/inline.jl (max-inline-depth): increased from
+	8 to 64
+
+2002-03-09  John Harper  <jsh@pixelslut.com>
+
+	* rep/util/repl.jl (repl-eval, define-repl-command): export
+	these functions - they may be useful for custom repls
+
+2002-03-03  John Harper  <jsh@pixelslut.com>
+
+	* rep/data/objects.jl: added an object-lambda macro that's
+	useful when the body of the object (i.e. the method switch)
+	needs to be implemented by hand
+
+2002-02-27  John Harper  <jsh@pixelslut.com>
+
+	* rep/net/rpc.jl (make-proxy): use a table of weak references
+	to cache rpc proxies
+
+2002-02-09  John Harper  <jsh@unfactored.org>
+
+	* rep/util/repl.jl (do-readline): new function to avoid loading
+	and using readline if stdin isn't a tty
+
+2002-01-20  John Harper  <jsh@unfactored.org>
+
+	* rep/data/trie.jl: new module. A useful data structure for
+	encoding word lists as character trees
+
+2001-12-20  John Harper  <jsh@unfactored.org>
+
+	* rep/net/rpc.jl: new (incompatible) rpc protocol. It now
+	allows three types of calls, synchronous, asynchronous (a
+	callback will be called with the result) and one-way
+
+2001-12-14  John Harper  <jsh@unfactored.org>
+
+	* rep/io/streams.jl (format-hooks-alist): initialize this
+	correctly, so the function values are added, not their names
+
 2001-10-28  John Harper  <jsh@unfactored.org>
 
 	* version 0.15.2

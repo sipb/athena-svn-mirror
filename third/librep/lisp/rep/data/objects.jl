@@ -1,6 +1,6 @@
 #| objects.jl -- very basic OO system
 
-   $Id: objects.jl,v 1.1.1.2 2002-03-20 04:54:53 ghudson Exp $
+   $Id: objects.jl,v 1.1.1.3 2003-01-05 00:24:02 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -24,6 +24,7 @@
 (define-structure rep.data.objects
 
     (export object
+	    object-lambda
 	    objectp)
 
     (open rep)
@@ -75,32 +76,36 @@
 	    (t (loop (cdr rest) (1+ i)
 		     (cons `(,(car rest) (nth ,i ,args-var)) out))))))
 
+  (defmacro object-lambda (params . body)
+    (let ((self (gensym)))
+      `(letrec ((,self
+		 (lambda (,(car params) #!key (self ,self) ,@(cdr params))
+		   ,@body)))
+	   ,self)))
+
   (defmacro object (base-object . methods)
     (let ((op (gensym))
 	  (args (gensym))
-	  (self (gensym))
 	  (base (gensym)))
       `(let ((,base ,base-object))
-	 (letrec ((,self
-		  (lambda (,op #!key (self ,self) . ,args)
-		    (case ,op
-		      ,@(mapcar
-			 (lambda (method)
-			   (cond ((consp (car method))
-				  ;; ((METHOD-NAME . PARAM-LIST) BODY...)
-				  `((,(caar method))
-				    (let ,(make-let-bindings
-					   (cdar method) args)
-				      ,@(cdr method))))
-				 ((symbolp (car method))
-				  ;; (METHOD-NAME FUNCTION)
-				  `((,(car method))
-				    (apply ,(cadr method) ,args)))))
-			 methods)
-		      (t (if ,base
-			     (apply ,base ,op #:self self ,args)
-			   (signal 'unknown-method (list ,op))))))))
-	   ,self))))
+	 (object-lambda (,op . ,args)
+	   (case ,op
+	     ,@(mapcar
+		(lambda (method)
+		  (cond ((consp (car method))
+			 ;; ((METHOD-NAME . PARAM-LIST) BODY...)
+			 `((,(caar method))
+			   (let ,(make-let-bindings
+				  (cdar method) args)
+			     ,@(cdr method))))
+			((symbolp (car method))
+			 ;; (METHOD-NAME FUNCTION)
+			 `((,(car method))
+			   (apply ,(cadr method) ,args)))))
+		methods)
+	     (t (if ,base
+		    (apply ,base ,op #:self self ,args)
+		  (signal 'unknown-method (list ,op)))))))))
 
   (define objectp closurep)
 

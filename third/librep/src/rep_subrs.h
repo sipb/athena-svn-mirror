@@ -1,6 +1,6 @@
 /* rep_subrs.h -- mostly LISP subr declarations
    Copyright (C) 1993, 1994 John Harper <john@dcs.warwick.ac.uk>
-   $Id: rep_subrs.h,v 1.1.1.3 2002-03-20 04:52:59 ghudson Exp $
+   $Id: rep_subrs.h,v 1.1.1.4 2003-01-05 00:23:59 ghudson Exp $
 
    This file is part of Jade.
 
@@ -601,6 +601,7 @@ extern u_long rep_file_length(repv file);
 /* from unix_main.c */
 extern u_long rep_time(void);
 extern rep_long_long rep_utime (void);
+extern u_long rep_getpid (void);
 extern void (*rep_register_input_fd_fun)(int fd, void (*callback)(int fd));
 extern void (*rep_deregister_input_fd_fun)(int fd);
 extern void rep_add_event_loop_callback (rep_bool (*callback)(void));

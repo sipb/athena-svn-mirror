@@ -1,6 +1,6 @@
 #| inline.jl -- function inlining
 
-   $Id: inline.jl,v 1.1.1.2 2002-03-20 04:55:00 ghudson Exp $
+   $Id: inline.jl,v 1.1.1.3 2003-01-05 00:24:04 ghudson Exp $
 
    Copyright (C) 2000 John Harper <john@dcs.warwick.ac.uk>
 
@@ -36,7 +36,7 @@
 	  rep.vm.compiler.bindings)
 
   (define inline-depth (make-fluid 0))		;depth of lambda-inlining
-  (defconst max-inline-depth 8)
+  (defconst max-inline-depth 64)
 
   (defun push-inline-args (lambda-list args #!optional pushed-args-already tester)
     (let
