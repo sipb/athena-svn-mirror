@@ -26,7 +26,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/update.c,v $
  *	$Author: lwvanels $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/update.c,v 1.9 1991-04-10 00:45:22 lwvanels Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/update.c,v 1.10 1991-04-14 17:27:13 lwvanels Exp $
  */
 
 #ifndef lint
@@ -38,6 +38,7 @@ static char *rcsid_update_c = "$Header: ";
 #include <stdio.h>			/* Standard I/O definitions. */
 #include <curses.h>			/* Curses package defs. */
 #include <errno.h>			/* Error codes. */
+#include <sys/types.h>
 #include <sys/file.h>			/* System file defs. */
 #include <strings.h>			/* For string functions. */
 #include <ctype.h>			/* Character type macros. */
@@ -108,7 +109,7 @@ parse_contents()
 	  else
 	    {
 	      sprintf(line1, "No index for entry: %s",
-		      Entry_Table[Current_Index-1].title);
+		      Entry_Table[Current_Ind-1].title);
 	      messages(line1,"Please select a different entry.");
 	      extract_parent_dir(preserve_dir,reset_dir);
 	      strcpy(Current_Dir,old_dir);
@@ -134,7 +135,7 @@ parse_contents()
 	continue;
       if ( (delim_ptr = index(ptr, CONTENTS_DELIM)) == NULL)
 	{
-	  sprintf(line1, "Broken index file for entry: %s",Entry_Table[Current_Index-1].title);
+	  sprintf(line1, "Broken index file for entry: %s",Entry_Table[Current_Ind-1].title);
 	  messages(line1, "Please select another entry.");
 	  extract_parent_dir(preserve_dir,reset_dir);
 	  strcpy(Current_Dir,old_dir);	  
@@ -206,11 +207,11 @@ parse_contents()
  */
 
 ENTRY *
-get_entry(index)
-     int index;
+get_entry(ind)
+     int ind;
 {
-  if ( (index > 0) && (index <= Entry_Count) )
-    return( &(Entry_Table[index - 1]) );
+  if ( (ind > 0) && (ind <= Entry_Count) )
+    return( &(Entry_Table[ind - 1]) );
   else
     return(NULL);
 }
@@ -254,7 +255,6 @@ make_abbrev_table()
 
 read_abbrevs(fp)
      FILE *fp;
-/*     int index; */
 {
   char inbuf[LINE_LENGTH];		/* Input line. */
   char *in_ptr;				/* Input character pointer. */

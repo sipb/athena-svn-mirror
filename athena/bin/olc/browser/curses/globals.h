@@ -22,7 +22,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/globals.h,v $
  *	$Author: lwvanels $
- *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/globals.h,v 2.2 1991-02-25 10:05:36 lwvanels Exp $
+ *	$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/globals.h,v 2.3 1991-04-14 17:26:43 lwvanels Exp $
  */
 
 #include <mit-copyright.h>
@@ -35,11 +35,11 @@ extern int errno;				/* System error number. */
 
 extern char Current_Dir[];		/* Current CREF directory. */
 extern char Root_Dir[];			/* CREF root directory. */
-extern int Current_Index;		/* Current CREF entry. */
-extern int Previous_Index;		/* Upper level CREF entry. */
+extern int Current_Ind;		/* Current CREF entry. */
+extern int Previous_Ind;		/* Upper level CREF entry. */
 extern ENTRY Entry_Table[];		/* Table of CREF entries. */
 extern int Entry_Count;			/* Number of entries. */
-extern int Index_Start;			/* Current top of index. */
+extern int Ind_Start;			/* Current top of index. */
 extern COMMAND Command_Table[];		/* CREF command table. */
 extern int Command_Count;		/* Number of CREF commands. */
 extern char Save_File[];		/* Default save file. */

@@ -22,7 +22,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/globals.c,v $
  *	$Author: lwvanels $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/globals.c,v 2.3 1991-04-10 02:51:38 lwvanels Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/globals.c,v 2.4 1991-04-14 17:26:29 lwvanels Exp $
  */
 
 #ifndef lint
@@ -87,11 +87,11 @@ COMMAND Command_Table[] = {
 
 char Current_Dir[FILENAME_SIZE];	/* Current CREF directory. */
 char Root_Dir[FILENAME_SIZE];		/* CREF root directory. */
-int Current_Index;			/* Current CREF entry. */
-int Previous_Index;			/* Upper level CREF entry. */
+int Current_Ind;			/* Current CREF entry. */
+int Previous_Ind;			/* Upper level CREF entry. */
 ENTRY Entry_Table[MAX_ENTRIES];		/* Table of CREF entries. */
 int Entry_Count;			/* Number of entries. */
-int Index_Start;			/* Current top of index. */
+int Ind_Start;			/* Current top of index. */
 int Command_Count;			/* Number of CREF commands. */
 char Save_File[FILENAME_SIZE];		/* Default save file. */
 char Abbrev_File[FILENAME_SIZE];	/* Abbreviation filename. */
@@ -115,10 +115,10 @@ init_globals()
   Command_Count = sizeof(Command_Table)/sizeof(COMMAND);
   strcpy(Root_Dir, (CREF) ? CREF_ROOT : STOCK_ROOT);
   set_current_dir(Root_Dir);
-  Current_Index = 1;
+  Current_Ind = 1;
   Entry_Count = 0;
-  Previous_Index = 0;
-  Index_Start = 1;
+  Previous_Ind = 0;
+  Ind_Start = 1;
   Abbrev_Count = 0;
   Log_File[0] = (char) NULL;
   strcpy(Save_File, "cref_info");

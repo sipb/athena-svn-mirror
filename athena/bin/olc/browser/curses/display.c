@@ -23,7 +23,7 @@
  *
  *	$Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v $
  *	$Author: lwvanels $
- *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v 2.5 1991-04-08 21:22:16 lwvanels Exp $
+ *      $Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/browser/curses/display.c,v 2.6 1991-04-14 17:25:59 lwvanels Exp $
  */
 
 
@@ -156,8 +156,8 @@ make_display()
   char current_dir[FILENAME_SIZE];	/* Current directory. */
   char display_line[LINE_LENGTH];	/* Line to display. */
   int curr_line;			/* Current screen line. */
-  int curr_index;			/* Current index. */
-  int index_line;			/* Current index line. */
+  int curr_ind;			/* Current index. */
+  int ind_line;			/* Current index line. */
   
   for (curr_line = 0; curr_line < LINES - 2 ; curr_line++)
     {
@@ -167,16 +167,16 @@ make_display()
   strcpy(current_dir, Current_Dir);
   center(0, (CREF) ? CREF_HEADER : STOCK_HEADER );
   center(1, current_dir);
-  curr_index = Index_Start;
+  curr_ind = Ind_Start;
   curr_line = 3;
   
-  for (index_line = 0; index_line < MAX_INDEX_LINES; index_line++)
+  for (ind_line = 0; ind_line < MAX_INDEX_LINES; ind_line++)
     {
-      curr_entry = get_entry(curr_index);
+      curr_entry = get_entry(curr_ind);
       if (curr_entry == NULL)
 	break;
       move(curr_line, 15);
-      sprintf(display_line, "%3d", curr_index);
+      sprintf(display_line, "%3d", curr_ind);
       if (curr_entry->type == CREF_DIR)
 	strcat(display_line, "* ");
       else
@@ -184,9 +184,9 @@ make_display()
       strcat(display_line, curr_entry->title);
       addstr(display_line);
       curr_line++;
-      curr_index++;
+      curr_ind++;
     }
-  if (curr_index > Entry_Count)
+  if (curr_ind > Entry_Count)
     center(curr_line + 1, "** End of Index **");
   else
     center(curr_line + 1, "** More **");
@@ -200,17 +200,17 @@ make_display()
  *	directory, we simply change the current directory and redisplay.
  */
 
-display_entry(index)
-     int index;
+display_entry(ind)
+     int ind;
 {
   ENTRY *entry;				/* Entry to be displayed. */
   
-  if ( (entry = get_entry(index)) == NULL)
+  if ( (entry = get_entry(ind)) == NULL)
     {
       message(1, "Invalid entry number.");
       return;
     }
-  Current_Index = index;
+  Current_Ind = ind;
   if (entry->type == CREF_FILE)
     {
 #ifdef LOG_USAGE
@@ -225,9 +225,9 @@ display_entry(index)
     }
   else if (entry->type == CREF_DIR)
     {
-      Previous_Index = Current_Index;
+      Previous_Ind = Current_Ind;
       set_current_dir(entry->filename);
-      Index_Start = Current_Index = 1;
+      Ind_Start = Current_Ind = 1;
       make_display();
 
     }
