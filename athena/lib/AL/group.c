@@ -14,6 +14,23 @@
 #include <string.h>
 #include <limits.h>
 
+/* The maximum number of groups:
+ *   We start with NGROUPS_MAX.
+ *   We subtract 1 for the user's primary group.
+ *   We subtract 2 for AFS.
+ *
+ *   Then we wonder if we still have too many because some NFS
+ *   server on an IBM platform loses if you're in more groups
+ *   than it can handle. So we use ATHENA_NGROUPS_MAX to worry
+ *   about that possibility.
+ */
+
+#if NGROUPS_MAX > ATHENA_NGROUPS_MAX
+#define G_MAX (ATHENA_NGROUPS_MAX - 3)
+#else
+#define G_MAX (NGROUPS_MAX - 3)
+#endif
+
 /* ALcopySubstring("foo:bar", buf, (int)':') puts "foo" in buf
  * and returns a pointer to "bar".
  * ALcopySubstring("foo", buf, (int)':') puts "foo" in buf and
@@ -53,7 +70,7 @@ ALgetGroups(ALsession session)
   for (ptr=hesinfo[0]; *ptr; ptr++)
     if (*ptr == ':') ncolons++;
   ngroups = (ncolons+1)/2;
-  if (ngroups > NGROUPS_MAX-1) ngroups = NGROUPS_MAX-1; /* XXX why -1? */
+  if (ngroups > G_MAX) ngroups = G_MAX;
 
   /* allocate space for groups */
   session->groups = (ALgroup) malloc((ngroups * sizeof(ALgroupStruct)));
@@ -149,6 +166,6 @@ ALappendGroups(ALsession session, int fd)
 long
 ALaddToGroupsFile(ALsession session)
 {
-  return(ALmodifyLinesOfFile(session, "/etc/group", "/etc/gtmp",
+  return(ALmodifyLinesOfFile(session, "/etc/group", ALlockGROUP,
 			     ALmodifyGroupAdd, ALappendGroups));
 }
