@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.14 1989-11-27 03:36:37 jik Exp $";
+     static char rcsid_pattern_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/pattern.c,v 1.15 1989-12-15 04:40:44 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -358,7 +358,7 @@ int options;
  *   base = "" or "/",
  *   name = name or name + 1
  *   initialze found and num_found
- *   dirp = opendir(base)
+ *   dirp = Opendir(base)
  *   first = firstpart(name, rest) (assigns rest as side-effect)
  *   if (! *first) {
  *     add string to list if appropriate
@@ -433,7 +433,7 @@ Boolean match_undeleted, match_deleted;
      }
      *num_found = 0;
      
-     dirp = opendir(base);
+     dirp = Opendir(base);
      if (! dirp) {
 	  set_error(errno);
 	  error(base);
@@ -518,7 +518,7 @@ Boolean match_undeleted, match_deleted;
 	       continue;
 	  }
 	  
-	  dirp = opendir(base);
+	  dirp = Opendir(base);
 	  if (! dirp) {
 	       if (errno != ENOTDIR) {
 		    set_error(errno);
@@ -584,7 +584,7 @@ Boolean match_undeleted, match_deleted;
  * start:
  *   initialze found and num_found
  *   strcopy(base, name)
- *   dirp = opendir(base)
+ *   dirp = Opendir(base)
  *   check if we just opened a deleted symlink and return if we did
  *   check RECURS options and set FIND options as appropriate
  * 
@@ -678,7 +678,7 @@ int options;
 	  return 0;
      }
      
-     dirp = opendir(base);
+     dirp = Opendir(base);
      if (! dirp) {
 	  /* If the problem is that it isn't a directory, just return */
 	  /* with zero matches -- the file exists, but cannot be      */
@@ -770,15 +770,15 @@ int options;
 	  (void) strcpy(base, append(base, dp->d_name));
 
 	  /*
-	   * Originally, I did an opendir() right at the start and
-	   * then only checked things if the opendir resulted in an
+	   * Originally, I did an Opendir() right at the start and
+	   * then only checked things if the Opendir resulted in an
 	   * error.  However, this is inefficient, because the
-	   * opendir() procedure works by first calling open() on the
+	   * Opendir() procedure works by first calling open() on the
 	   * file, and *then* calling fstat on the file descriptor
 	   * that is returned.  since most of the time we will be
 	   * trying to open things that are not directory, it is much
 	   * more effecient to do the stat first here and to do the
-	   * opendir only if the stat results are satisfactory.
+	   * Opendir only if the stat results are satisfactory.
 	   */
 	  use_stat = (options & FOLLW_LINKS) && (! is_deleted(lastpart(base)));
 	  if (use_stat)
@@ -800,7 +800,7 @@ int options;
 	  }
 
 	  /* Actually try to open it. */
-	  dirp = opendir(base);
+	  dirp = Opendir(base);
 	  if (! dirp) {
 	       set_error(errno);
 	       error(base);

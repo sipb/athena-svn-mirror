@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.18 1989-11-22 21:25:42 jik Exp $";
+     static char rcsid_undelete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/undelete.c,v 1.19 1989-12-15 04:39:31 jik Exp $";
 #endif
 
 #include <stdio.h>
@@ -533,7 +533,7 @@ char *filename;
      }
 
      if ((stat_buf.st_mode & S_IFMT) == S_IFDIR) {
-	  dirp = opendir(filename);
+	  dirp = Opendir(filename);
 	  if (! dirp) {
 	       set_error(errno);
 	       error(filename);

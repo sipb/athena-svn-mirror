@@ -11,7 +11,7 @@
  */
 
 #if (!defined(lint) && !defined(SABER))
-     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.20 1989-11-22 21:32:51 jik Exp $";
+     static char rcsid_delete_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/delete.c,v 1.21 1989-12-15 04:39:22 jik Exp $";
 #endif
 
 #include <sys/types.h>
@@ -299,7 +299,7 @@ char *filename;
      DIR *dirp;
      struct direct *dp;
 
-     dirp = opendir(filename);
+     dirp = Opendir(filename);
      if (! dirp) {
 	  set_error(errno);
 	  error(filename);
@@ -331,7 +331,7 @@ int recursed;
      struct direct *dp;
      int status = 0;
      char newfile[MAXPATHLEN];
-     int retval;
+     int retval = 0;
      
      if (interactive && recursed) {
 	  printf("%s: remove directory %s? ", whoami, filename);
@@ -340,7 +340,7 @@ int recursed;
 	       return error_code;
 	  }
      }
-     dirp = opendir(filename);
+     dirp = Opendir(filename);
      if (! dirp) {
 	  if (emulate_rm && (! force))
 	       fprintf(stderr, "%s: %s not changed\n", whoami, filename);
@@ -494,7 +494,7 @@ char *filename;
      }
 
      if ((stat_buf.st_mode & S_IFMT) == S_IFDIR) {
-	  dirp = opendir(filename);
+	  dirp = Opendir(filename);
 	  if (! dirp) {
 	       set_error(errno);
 	       error(filename);
