@@ -9,8 +9,8 @@
 /*	Revised:	9/1/87
 /*
 /*	$Source: /afs/dev.mit.edu/source/repository/athena/bin/cal/postit/postdata.c,v $
-/*	$Author: probe $
-/*	$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/postit/postdata.c,v 1.1 1993-10-12 05:35:06 probe Exp $
+/*	$Author: ghudson $
+/*	$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/postit/postdata.c,v 1.2 1996-09-19 22:15:54 ghudson Exp $
 /*
 /*	Copyright 1987 by the Massachusetts Institute of Technology.
 /*	For copying and distribution information, see the file mit-copyright.h
@@ -26,12 +26,12 @@
 /************************************************************************/
 
 #ifndef lint
-static char rcsid_postdata_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/postit/postdata.c,v 1.1 1993-10-12 05:35:06 probe Exp $";
+static char rcsid_postdata_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/postit/postdata.c,v 1.2 1996-09-19 22:15:54 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
 #include <stdio.h>
-#include <strings.h>
+#include <string.h>
 #include <ctype.h>
 #include <fcntl.h>
 #include <errno.h>

@@ -11,8 +11,8 @@
 /*	Revised:	8/21/87
 /*
 /*	$Source: /afs/dev.mit.edu/source/repository/athena/bin/cal/whatsup/whatsup.c,v $
-/*	$Author: miki $
-/*	$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/whatsup/whatsup.c,v 1.2 1994-03-25 16:05:50 miki Exp $
+/*	$Author: ghudson $
+/*	$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/whatsup/whatsup.c,v 1.3 1996-09-19 22:16:32 ghudson Exp $
 /*
 /*	Copyright 1987 by the Massachusetts Institute of Technology.
 /*	For copying and distribution information, see the file mit-copyright.h
@@ -56,14 +56,14 @@
 /************************************************************************/
 
 #ifndef lint
-static char rcsid_whatsup_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/whatsup/whatsup.c,v 1.2 1994-03-25 16:05:50 miki Exp $";
+static char rcsid_whatsup_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/bin/cal/whatsup/whatsup.c,v 1.3 1996-09-19 22:16:32 ghudson Exp $";
 #endif
 
 #include "mit-copyright.h"
 #include <curses.h>
 #include <signal.h>
 #include <stdio.h>
-#include <strings.h>
+#include <string.h>
 #include "whatsup.h"
 #define LOGINFO "/usr/unsupported/whatsup.logging"
 
