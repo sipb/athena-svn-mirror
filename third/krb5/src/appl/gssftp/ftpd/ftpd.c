@@ -858,8 +858,8 @@ pass(passwd)
 		xpasswd = crypt(passwd, salt);
 #endif
 		if (pw == NULL ||
-		    (*pw->pw_passwd && strcmp(xpasswd, pw->pw_passwd) &&
-			!kpass(pw->pw_name, passwd)) ||
+		    (*pw->pw_passwd && !kpass(pw->pw_name, passwd) &&
+		     strcmp(xpasswd, pw->pw_passwd)) ||
 		    (!*pw->pw_passwd && !kpass(pw->pw_name, passwd))) {
 			reply(530, "Login incorrect.");
 			pw = NULL;
