@@ -104,7 +104,7 @@
  * to local addresses.  You must also define DUMB.  You probably
  * dont' need this unless you are behind a firewall.
  */
-/* #define REALLYDUMB  1 */
+#define REALLYDUMB  1
 
 /*
  * Directs inc/slocal to extract the envelope sender from "From "
