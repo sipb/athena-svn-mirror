@@ -16,7 +16,7 @@
  *      Copyright (c) 1988 by the Massachusetts Institute of Technology
  *
  *      $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v $
- *      $Author: raeburn $
+ *      $Author: vanharen $
  */
 
 
@@ -24,7 +24,7 @@
 #include <olcd.h>
 
 static const char rcsid[] =
-    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.6 1990-01-03 23:36:19 raeburn Exp $";
+    "$Header: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/data.c,v 1.7 1990-01-12 21:04:15 vanharen Exp $";
 
 char *DATABASE_FILE      = "/usr/lib/olc/database";
 char *SPECIALTY_DIR      = "/usr/lib/olc/specialties";
@@ -49,7 +49,7 @@ char K_INSTANCEbuf[INST_SZ];
 
 
 /* NF_PREFIX is prepended to the topic to create a specific discuss mtg */
-#ifndef TEST
+#ifndef OLZ
 char *NF_PREFIX = "MATISSE.MIT.EDU:/usr/spool/discuss/o";
 #else
 char *NF_PREFIX = "FRIES.MIT.EDU:/usr/spool/discuss/o";
