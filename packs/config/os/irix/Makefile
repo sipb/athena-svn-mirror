@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.10 1999-05-12 18:20:46 rbasch Exp $
+# $Id: Makefile,v 1.11 1999-07-21 04:43:04 rbasch Exp $
 
 SHELL=/bin/sh
 ETCDIR=/etc
@@ -47,6 +47,7 @@ install:
 	install -c -m 0644 TIMEZONE ${DESTDIR}${ETCDIR}
 	install -c -m 0644 Toolchest ${DESTDIR}${X11APPDEFS}
 	install -c -m 0644 appletalk ${DESTDIR}${SGICONFIG}
+	install -c -m 0644 array ${DESTDIR}${SGICONFIG}
 	install -c -m 0644 athinfo.defs ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 attach.conf ${DESTDIR}${ATHRETCDIR}
 	install -c -m 0644 autoconfig_ipaddress ${DESTDIR}${SGICONFIG}
