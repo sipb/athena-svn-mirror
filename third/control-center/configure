@@ -5358,8 +5358,6 @@ echo "ftp://ftp.labs.redhat.com/pub/imlib/"
   rm -f conf.imlibtest
 
 
-CFLAGS="-O2 -g -Wall $CFLAGS"
-
 
 
 

@@ -75,8 +75,6 @@ echo "ftp://www.rasterman.com/pub/enlightenment/"
 echo "ftp://ftp.labs.redhat.com/pub/imlib/"
 AC_MSG_ERROR([Fatal Error: no Imlib detected.])])
 
-CFLAGS="-O2 -g -Wall $CFLAGS"
-
 AC_SUBST(CFLAGS)
 AC_SUBST(LDFLAGS)
 
