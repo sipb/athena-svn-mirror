@@ -46,8 +46,6 @@ typedef struct _AppData
   char *check_command;
   char *activate_command;
   char *prefs_command;
-  int logo_width;
-  int logo_height;
   Boolean redirect;
   char *log_file;
 } AppData;
@@ -56,10 +54,6 @@ typedef struct _AppData
 #define XtNcheckCommand "activateCommand"
 #define XtNactivateCommand "activateCommand"
 #define XtNprefsCommand "prefsCommand"
-#define XtNxrogerWidth "xrogerWidth"
-#define XtNxrogerHeight "xrogerHeight"
-#define XtNlogoWidth "logoWidth"
-#define XtNlogoHeight "logoHeight"
 #define XtNredirect "redirect"
 #define XtNlogFile "logFile"
 #define XtCCommand "Command"
@@ -105,43 +99,6 @@ static XtResource resources[] =
     BINDIR "xss-command -prefs"
   },
   {
-    XtNlogoWidth,
-    XtCWidth,
-    XtRInt,
-    sizeof(int),
-    XtOffsetOf(AppData, logo_width),
-    XtRImmediate,
-    (XtPointer)48
-  },
-  {
-    XtNlogoHeight,
-    XtCHeight,
-    XtRInt,
-    sizeof(int),
-    XtOffsetOf(AppData, logo_height),
-    XtRImmediate,
-    (XtPointer)48
-  },
-  /* Accept xrogerWidth and xrogerHeight for backwards-compatibility. */
-  {
-    XtNxrogerWidth,
-    XtCWidth,
-    XtRInt,
-    sizeof(int),
-    XtOffsetOf(AppData, logo_width),
-    XtRImmediate,
-    (XtPointer)48
-  },
-  {
-    XtNxrogerHeight,
-    XtCHeight,
-    XtRInt,
-    sizeof(int),
-    XtOffsetOf(AppData, logo_height),
-    XtRImmediate,
-    (XtPointer)48
-  },
-  {
     XtNredirect,
     XtCRedirect,
     XtRBoolean,
@@ -158,7 +115,7 @@ static XtResource resources[] =
     XtOffsetOf(AppData, log_file),
     XtRString,
     "/dev/null"
-  },
+  }
 };
 
 static XrmOptionDescRec options[] =
@@ -167,10 +124,6 @@ static XrmOptionDescRec options[] =
   { "-check",      "*checkCommand",    XrmoptionSepArg, NULL	},
   { "-activate",   "*activateCommand", XrmoptionSepArg, NULL	},
   { "-prefs",      "*prefsCommand",    XrmoptionSepArg, NULL	},
-  { "-logoWidth",  "*logoWidth",       XrmoptionSepArg, NULL	},
-  { "-logoHeight", "*logoHeight",      XrmoptionSepArg, NULL	},
-  { "-logo-width", "*logoWidth",       XrmoptionSepArg, NULL	},
-  { "-logo-height","*logoHeight",      XrmoptionSepArg, NULL	},
   { "-redirect",   "*redirect",        XrmoptionNoArg,  "true"	},
   { "-noredirect", "*redirect",        XrmoptionNoArg,  "false"	},
   { "-logFile",    "*logFile",         XrmoptionSepArg, NULL	},
@@ -210,6 +163,13 @@ int main(int argc, char **argv)
 			       options, XtNumber(options),
 			       &argc, argv, fallbacks, NULL);
 
+
+  /* Any leftover arguments are unrecognized.  Print an error message,
+     but continue anyway. */
+
+  if (argc > 1)
+    usage (argc, argv);
+  
   XtAppAddActions(context, actions, XtNumber(actions));
   XtVaGetApplicationResources(toplevel, &app_data,
 			      resources, XtNumber(resources), NULL);
@@ -272,6 +232,28 @@ static Pixmap get_pixmap(Widget toplevel)
   return xscreensaver_logo(dpy, RootWindowOfScreen(XtScreen(toplevel)),
 			   cmap, 1, NULL, NULL, 0);
   
+}
+
+static void usage(argc, argv)
+int argc;
+char * argv[];
+{
+  int i;
+
+  fprintf(stderr, "\nxss-button: Ignoring command line option(s): ");
+
+  for (i = 1; i < argc; i++) 
+    fprintf(stderr, "%s ", argv[i]);
+  
+  fprintf(stderr, "\n  Accepted options:\n");
+  fprintf(stderr, "    -xss command\n");
+  fprintf(stderr, "    -check command\n");
+  fprintf(stderr, "    -activate command\n");
+  fprintf(stderr, "    -prefs command\n");
+  fprintf(stderr, "    -redirect\n");
+  fprintf(stderr, "    -noredirect\n");
+  fprintf(stderr, "    -log-file file\n");
+  fprintf(stderr, "    (plus standard X options)\n");
 }
 
 void stop_ss()
