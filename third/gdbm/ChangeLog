@@ -1,3 +1,68 @@
+
+Tue Oct 15 15:00:11 PDT 2002	Jason Downs (downsj@downsj.com)
+
+	* samp1.cc: Remove.
+
+	* gdbm.3, gdbm.texinfo: 1.8.3.
+
+	* version.c: Version 1.8.3., modernize string (release date is in
+	  American format).
+
+	* gdbmreorg.c: Remove small memory leak.
+
+	* Makefile.in: Use more subs from configure, remove mention of SunOS.
+	  Add support for spec'ing an install time prefix via INSTALL_ROOT.
+
+	* INSTALL: Remove extra text from top.
+
+	* config.guess, config.sub: Update to latest versions.
+
+	* autoconf.h.in: Regenerate.
+
+	* configure.in: Modernize.
+
+	* systems.h: HAVE_ST_BLKSIZE -> HAVE_STRUCT_STAT_ST_BLKSIZE.
+
+Fri Sep 27 16:12:44 PDT 2002	Jason Downs (downsj@downsj.com)
+
+	* Makefile.in: Remove `info' target from all, since we don't even
+	  bother installing the one we built anyway.
+
+	* Fix a few checks against dbf.read_write.
+
+Wed Sep 25 15:19:00 PDT 2002	Jason Downs (downsj@downsj.com)
+
+	* Makefile.in: Remove the dbm and ndbm routines from the main
+	  library, moving them to gdbm_compat.  install-compat now
+	  installs the compat headers and the library.  Increment the
+	  MAJOR number of the shared library due to the removal of
+	  the compat functions.
+
+	* gdbm.3, gdbm.texinfo, version.c: 1.8.1; note gdbm_compat.
+
+	* proto.h: Change _gdbm_fatal() to void.
+
+	* update.c(_gdbm_fatal): Change function declaration to void.
+
+	* update.c(_gdbm_fatal): Change default exit status to 1.
+
+	* gdbmopen.c(gdbm_open): Remove setting of flags since we always check
+	  it against the mask.
+
+	* testdbm.c, testndbm.c: Added stdlib.h inclusions.
+
+	* falloc.c(push_avail_block): Fixed extremely rare case where the
+	  header avail table could fill up, causing us to over flow the
+	  table, corrupting memory, and eventually crashing.  Also forced
+	  merging of blocks within the scope of this routine (possibly
+	  should force them whenever the header avail table is being used).
+
+	* gdbmerrno.c: Fix error count, there are more than 18.
+
+	* gdbmerrno.h: Fix typo; GDBM_OPT_ILLEGAL is 20.
+
+	* gdbmopen.c: Fix typo; s/GDBM_OPENMASK/GDBM_WRITER/.
+
 Tue May 18 19:25:25 PDT 1999	Jason Downs	(downsj@downsj.com)
 
 	* gdbm.3, gdbm.texinfo: Update for 1.8.
@@ -45,7 +110,7 @@ Wed May 12 01:26:15 PDT 1999	Jason Downs	(downsj@downsj.com)
 
 [  The following are entries revived from a dead experimental branch. ]
 
-Tue Nov  1 00:35:11 1994  jason downs  (downsj@csos.orst.edu)
+Tue Nov  1 00:35:11 1994  Jason Downs  (downsj@downsj.com)
 
 	* gdbmopen.c (gdbm_open): actually initialize central_free and
 	  coalesce_blocks.
@@ -59,7 +124,7 @@ Tue Nov  1 00:35:11 1994  jason downs  (downsj@csos.orst.edu)
 
 	* gdbmconst.h: added GDBM_COALESCEBLKS option.
 
-Fri Jun  3 09:45:19 1994  jason downs  (downsj@csos.orst.edu)
+Fri Jun  3 09:45:19 1994  Jason Downs  (downsj@downsj.com)
         
 	* falloc.c (_gdbm_free): if central_free is set, all blocks are
 	  put into the header.
@@ -68,7 +133,7 @@ Fri Jun  3 09:45:19 1994  jason downs  (downsj@csos.orst.edu)
         
 	* gdbmdefs.h, gdbmconst.h, gdbm.proto: add central free option.
 
-Fri Jun  3 05:57:36 1994  jason downs  (downsj@csos.orst.edu)
+Fri Jun  3 05:57:36 1994  Jason Downs  (downsj@downsj.com)
 
 	* falloc.c (pop_avail_block): merge block with header, instead
 	  of replace, since header may not be empty any longer.
@@ -76,22 +141,22 @@ Fri Jun  3 05:57:36 1994  jason downs  (downsj@csos.orst.edu)
 	* falloc.c (_gdbm_alloc): pop a block off the stack when the
 	  current header is half empty, instead of zero.
 
-Fri Jun  3 05:11:33 1994  jason downs  (downsj@csos.orst.edu)
+Fri Jun  3 05:11:33 1994  Jason Downs  (downsj@downsj.com)
 
 	* gdbmstore.c (gdbm_store): don't alloc new disk if we're replacing
 	  and the records are the same size. suggested by phil a long time
 	  ago.
 
-Fri Jun  3 03:47:46 1994  jason downs  (downsj@csos.orst.edu)
+Fri Jun  3 03:47:46 1994  Jason Downs  (downsj@downsj.com)
         
 	* falloc.c (_gdbm_put_av_elem): allow adjacent blocks to be
 	  merged. inspired by the enhancement by Tim Howes.
 
-Thu Jun  2 22:15:19 1994  jason downs  (downsj@csos.orst.edu)
+Thu Jun  2 22:15:19 1994  Jason Downs  (downsj@downsj.com)
 
 	* Makefile.in: add installation mode, owner, and group.
 
-Thu Jun  2 04:24:58 1994  jason downs  (downsj@csos.orst.edu)
+Thu Jun  2 04:24:58 1994  Jason Downs  (downsj@downsj.com)
 
 	* Makefile.in: run mkinstalldirs before installing files.
 
@@ -99,7 +164,7 @@ Thu Jun  2 04:24:58 1994  jason downs  (downsj@csos.orst.edu)
 
 [ End of revived entries. ]
 
-Thu May 19 15:50:04 1994  jason downs  (downsj@csos.orst.edu)
+Thu May 19 15:50:04 1994  Jason Downs  (downsj@downsj.com)
 	
 	* NEWS, README: update to 1.7.3.
 	
@@ -107,7 +172,7 @@ Thu May 19 15:50:04 1994  jason downs  (downsj@csos.orst.edu)
 
 	* gdbm.3: update to 1.7.3, slight reformat.
 
-Thu May 19 14:45:51 1994  jason downs  (downsj@csos.orst.edu)
+Thu May 19 14:45:51 1994  Jason Downs  (downsj@downsj.com)
 
 	* gdbmconst.h: removed the header magic numbers from this
 	  branch.
@@ -116,7 +181,7 @@ Thu May 19 14:45:51 1994  jason downs  (downsj@csos.orst.edu)
 
 	* gdbm.proto: added a define for GDBM_FASTMODE.
 
-Sun May 15 02:39:48 1994  jason downs  (downsj@csos.orst.edu)
+Sun May 15 02:39:48 1994  Jason Downs  (downsj@downsj.com)
 
 	* gdbm.3, gdbm.texinfo: updates for 1.7.2
 	
@@ -127,18 +192,18 @@ Sun May 15 02:39:48 1994  jason downs  (downsj@csos.orst.edu)
 
 	* bytewise.c, bytewise.h: removed from this branch.
 
-Wed Mar 23 00:44:43 1994  jason downs  (downsj@csos.orst.edu)
+Wed Mar 23 00:44:43 1994  Jason Downs  (downsj@downsj.com)
 
 	* extern.h: removed bogus (old) function declarations.
 
-Mon Mar 14 01:37:09 1994  jason downs  (downsj@csos.orst.edu)
+Mon Mar 14 01:37:09 1994  Jason Downs  (downsj@downsj.com)
 
 	* Makefile.in: added new files.
 
 	* bytewise.c, bytewise.h: new portable byte order conversion
 	  package; supports 64bit longs/16bit ints.
 
-Sun Mar 13 22:56:10 1994  jason downs  (downsj@csos.orst.edu)
+Sun Mar 13 22:56:10 1994  Jason Downs  (downsj@downsj.com)
 
 	* gdbmsetopt.c, gdbmconst.h: added GDBM_FASTMODE option.
 
@@ -146,7 +211,7 @@ Sun Mar 13 22:56:10 1994  jason downs  (downsj@csos.orst.edu)
 	  hopefully, this will fix the bloating problem. i dunno, though,
 	  as i've never had that problem, myself.
 
-Sun Dec 26 05:17:04 1993  jason downs  (downsj@csos.orst.edu)
+Sun Dec 26 05:17:04 1993  Jason Downs  (downsj@downsj.com)
 
 	* version.c: made gdbm_version const.
 
@@ -163,17 +228,17 @@ Sun Dec 26 05:17:04 1993  jason downs  (downsj@csos.orst.edu)
 	* bucket.c, gdbmopen.c, gdbmseq.c, gdbmdelete.c, gdbmdefs.h:
 	  cleaned up some uses of word_t.
 
-Tue Nov 16 03:11:56 1993  jason downs  (downsj@csos.orst.edu)
+Tue Nov 16 03:11:56 1993  Jason Downs  (downsj@downsj.com)
 
 	* gdbm.3, gdbm.texinfo: updated versions to 1.3 for release
 
 	* version.c, README, NEWS: updated versions to 1.7.1 for release
 
-Sun Nov 14 17:21:03 1993  jason downs  (downsj@csos.orst.edu)
+Sun Nov 14 17:21:03 1993  Jason Downs  (downsj@downsj.com)
 
 	* Makefile.in: added $(srcdir) to a few file references.
 
-Sat Nov 13 13:56:37 1993  jason downs  (downsj@csos.orst.edu)
+Sat Nov 13 13:56:37 1993  Jason Downs  (downsj@downsj.com)
 
 	* gdbm.3, gdbm.texinfo: added new gdbm_firstkey()/gdbm_nextkey()
 	  documentation.
@@ -182,7 +247,7 @@ Sat Nov 13 13:56:37 1993  jason downs  (downsj@csos.orst.edu)
 
 	* Makefile.in: changed installation prefix semantics.
 
-Sat Nov 13 01:52:31 1993  jason downs  (downsj@csos.orst.edu)
+Sat Nov 13 01:52:31 1993  Jason Downs  (downsj@downsj.com)
 
 	* various source: redid the AIX alloca declaration. any new files
 	  that call alloca will have to start with the same header.
@@ -198,19 +263,19 @@ Sat Nov 13 01:52:31 1993  jason downs  (downsj@csos.orst.edu)
 
 	* alloca.c: added inclusion of stdlib.h
 
-Fri Nov 12 13:11:03 1993  jason downs  (downsj@csos.orst.edu)
+Fri Nov 12 13:11:03 1993  Jason Downs  (downsj@downsj.com)
 
 	* Makefile.in, configure.in: fixed getop related bugs.
 
 	* systems.h: moved sys/types.h include to top.
 
-Wed Nov  3 17:18:59 1993  jason downs  (downsj@csos.orst.edu)
+Wed Nov  3 17:18:59 1993  Jason Downs  (downsj@downsj.com)
 
 	* version.c: changed version to 1.7, for release.
 
 	* gdbmdefs.h: Moved all system includes to systems.h.
 
-Sun Oct 31 02:50:12 1993  jason downs  (downsj@csos.orst.edu)
+Sun Oct 31 02:50:12 1993  Jason Downs  (downsj@downsj.com)
 
 	* version.c: changed version number to 1.7alpha.
 
@@ -224,7 +289,7 @@ Sun Oct 31 02:50:12 1993  jason downs  (downsj@csos.orst.edu)
 
 	* gdbm.3: updated to reflect new routines and changes.
 
-Sat Oct 30 05:20:45 1993  jason downs  (downsj@csos.orst.edu)
+Sat Oct 30 05:20:45 1993  Jason Downs  (downsj@downsj.com)
 
         * testgdbm.c: Added support for bucket cache and block sizes,
 	  adding -c, -b and -g flags. Must use -g to specify the file
@@ -256,7 +321,7 @@ Sat Oct 30 05:20:45 1993  jason downs  (downsj@csos.orst.edu)
 	* bucket.c, proto.h: changed _gdbm_get_bucket() and
 	  _gdbm_write_bucket() over to type void.
 
-Sat Oct 30 00:56:24 1993  jason downs  (downsj@csos.orst.edu)
+Sat Oct 30 00:56:24 1993  Jason Downs  (downsj@downsj.com)
 
 	* gdbmerrno.c, gdbmexists.c, close.c, dbmrdonly.c: New files,
 	  adding the routines gdbm_strerror(), gdbm_exists(), and for
@@ -266,7 +331,7 @@ Sat Oct 30 00:56:24 1993  jason downs  (downsj@csos.orst.edu)
 	* various headers: Added prototypes for the new routines, and
 	  rearranged how gdbm.h is generated.
 
-Fri Oct 29 07:02:41 1993  jason downs  (downsj@csos.orst.edu)
+Fri Oct 29 07:02:41 1993  Jason Downs  (downsj@downsj.com)
 
 	* README: split into README, INSTALL, and NEWS.  INSTALL
 	  includes more tips on compiling.  NEWS contains the 'short form'

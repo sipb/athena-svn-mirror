@@ -65,7 +65,7 @@ gdbm_store (dbf, key, content, flags)
 
 
   /* First check to make sure this guy is a writer. */
-  if (dbf->read_write != GDBM_WRITER)
+  if (dbf->read_write == GDBM_READER)
     {
       gdbm_errno = GDBM_READER_CANT_STORE;
       return -1;

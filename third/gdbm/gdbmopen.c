@@ -129,19 +129,17 @@ gdbm_open (file, block_size, flags, mode, fatal_func)
 	dbf->desc = open (dbf->name, O_RDONLY, 0);
 	break;
 
-      case GDBM_OPENMASK:
+      case GDBM_WRITER:
 	dbf->desc = open (dbf->name, O_RDWR, 0);
 	break;
 
       case GDBM_NEWDB:
 	dbf->desc = open (dbf->name, O_RDWR|O_CREAT, mode);
-	flags = GDBM_WRITER;
 	need_trunc = TRUE;
 	break;
 
       default:
 	dbf->desc = open (dbf->name, O_RDWR|O_CREAT, mode);
-	flags = GDBM_WRITER;
 	break;
 
     }

@@ -1,3 +1,14 @@
+CHANGES from 1.8.2 to 1.8.3
+  1.  Various configure related changes and additional updates.
+
+CHANGES from 1.8.1 to 1.8.2
+  1.  Allow `NEWDB'-opened databases to actually, well, store records.
+
+CHANGES from 1.8 to 1.8.1
+  1.  Lots of bug fixes, including a data corruption bug.
+  2.  Updated to current autoconf and libtool.
+  3.  Moved the dbm/ndbm compatibility routines to libgdbm_compat.
+
 CHANGES from 1.7.3 to 1.8
   1.  Added GDBM_CENTFREE functionality and option.
   2.  Added GDBM_COALESCEBLKS functionality and option.

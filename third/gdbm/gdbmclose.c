@@ -43,7 +43,7 @@ gdbm_close (dbf)
   register int index;	/* For freeing the bucket cache. */
 
   /* Make sure the database is all on disk. */
-  if (dbf->read_write == GDBM_WRITER)
+  if (dbf->read_write != GDBM_READER)
     fsync (dbf->desc);
 
   /* Close the file and free all malloced memory. */

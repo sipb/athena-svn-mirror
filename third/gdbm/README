@@ -1,7 +1,7 @@
 GNU dbm is a set of database routines that use extendible hashing and
 works similar to the standard UNIX dbm routines.
 
-This is release 1.8 of GNU dbm.
+This is release 1.8.3 of GNU dbm.
 
 To compile gdbm:
 
@@ -16,15 +16,12 @@ To install the basic package:
 
    a)  make install
 
-To install the optional dbm and ndbm compatibility headers:
+To install the optional dbm and ndbm API compatibility library and headers:
 
    a)  make install-compat
 
-(You might want to "make -n install" to make sure it will put things
-were you want them.)
-
 Please report bugs to
-	bug-gnu-utils@prep.ai.mit.edu
+	bug-gnu-utils@gnu.org
 
 ------------------------------------------
 

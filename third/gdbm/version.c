@@ -29,5 +29,8 @@
 #include "autoconf.h"
 
 /* Keep a string with the version number in it! */
-const char * gdbm_version =
-	"This is GDBM version 1.8.0, as of May 19, 1999.";
+const char * gdbm_version = "GDBM version 1.8.3. 10/15/2002"
+#if defined(__STDC__) && defined(__DATE__) && defined(__TIME__)
+		" (built " __DATE__ " " __TIME__ ")"
+#endif
+		;

@@ -32,6 +32,9 @@
 
 #include <stdio.h>
 #include <sys/types.h>
+#if HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
 #if HAVE_SYS_FILE_H
 #include <sys/file.h>
 #endif

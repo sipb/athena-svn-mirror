@@ -1,5 +1,10 @@
-This is Info file gdbm.info, produced by Makeinfo version 1.68 from the
-input file ./gdbm.texinfo.
+This is gdbm.info, produced by makeinfo version 4.2 from
+../gdbm.texinfo.
+
+INFO-DIR-SECTION Programming & development tools
+START-INFO-DIR-ENTRY
+* GDBM: (gdbm).			The GNU database manager.
+END-INFO-DIR-ENTRY
 
    This file documents the GNU dbm utility.
 
@@ -22,9 +27,9 @@ versions.
 File: gdbm.info,  Node: Top,  Next: Copying,  Prev: (dir),  Up: (dir)
 
    GNU `dbm' is a library of functions implementing a hashed database
-on a disk file.  This manual documents GNU `dbm' Version 1.8 (`gdbm').
-The software was written by Philip A. Nelson. This document was
-originally written by Pierre Gaumond from texts written by Phil.
+on a disk file.  This manual documents GNU `dbm' Version 1.8.3
+(`gdbm').  The software was written by Philip A. Nelson. This document
+was originally written by Pierre Gaumond from texts written by Phil.
 
 * Menu:
 
@@ -88,7 +93,7 @@ what we distributed, so that any problems introduced by others will not
 reflect on our reputation.
 
    `gdbm' is currently distributed under the terms of the GNU General
-Public License, Version 2.  (*NOT* under the GNU General Library Public
+Public License, Version 2.  (_NOT_ under the GNU General Library Public
 License.)  A copy the GNU General Public License is included with the
 distribution of `gdbm'.
 
@@ -101,7 +106,7 @@ Introduction to GNU `dbm'.
    GNU `dbm' (`gdbm')is a library of database functions that use
 extendible hashing and works similar to the standard UNIX `dbm'
 functions.  These routines are provided to a programmer needing to
-create and manipulate a hashed database. (`gdbm' is *NOT* a complete
+create and manipulate a hashed database. (`gdbm' is _NOT_ a complete
 database package for an end user.)
 
    The basic use of `gdbm' is to store key/data pairs in a data file.
@@ -451,7 +456,7 @@ Database Synchronization
 ************************
 
    Unless your database was opened with the GDBM_SYNC flag, `gdbm' does
-not wait for writes to the disk to complete before continuing.  This
+not wait for writes to be flushed to the disk before continuing.  This
 allows faster writing of databases at the risk of having a corrupted
 database if the application terminates in an abnormal fashion.  The
 following function allows the programmer to make sure the disk version
@@ -521,8 +526,8 @@ automatically to 100 upon the first access to the database.
 
    GDBM_FASTMODE - Set fast mode to either on or off.  This allows
 fast mode to be toggled on an already open and active database.
-value (see below) should be set to either TRUE or FALSE.    *This
-option is now obsolete.*
+value (see below) should be set to either TRUE or FALSE.    _This
+option is now obsolete._
 
    GDBM_SYNCMODE - Turn on or off file system synchronization
 operations.  This   setting defaults to off; value (see below) should
@@ -531,17 +536,17 @@ be set to either TRUE or   FALSE.
    GDBM_CENTFREE - Set central free block pool to either on or off.
 The default is off, which is how previous versions of `Gdbm'   handled
 free blocks.  If set, this option causes all subsequent free   blocks
-to be placed in the *global* pool, allowing (in theory)   more file
+to be placed in the _global_ pool, allowing (in theory)   more file
 space to be reused more quickly.  value (see below) should   be set to
-either TRUE or FALSE.    *NOTICE: This feature is still under study.*
+either TRUE or FALSE.    _NOTICE: This feature is still under study._
 
    GDBM_COALESCEBLKS - Set free block merging to either on or off.
 The default is off, which is how previous versions of `Gdbm'   handled
 free blocks.  If set, this option causes adjacent free blocks   to be
 merged.  This can become a CPU expensive process with time, though,
 especially if used in conjunction with GDBM_CENTFREE.  value (see below)
- should be set to either TRUE or FALSE.    *NOTICE: This feature is
-still under study.*
+ should be set to either TRUE or FALSE.    _NOTICE: This feature is
+still under study._
 
    The return value will be -1 upon failure, or 0 upon success.  The
 global variable `gdbm_errno' will be set upon failure.
@@ -573,6 +578,8 @@ simultaneously.
 GDBM_FILE dbf
      The pointer returned by `gdbm_open'.
 
+   The return value will be the file descriptor of the database.
+
 
 File: gdbm.info,  Node: Variables,  Next: Compatibility,  Prev: Locking,  Up: Top
 
@@ -585,7 +592,7 @@ gdbm_error gdbm_errno
      The variable that contains more information about `gdbm' errors
      (`gdbm.h' has the definitions of the error values).
 
-const char * gdbm_version
+char * gdbm_version
      The string containing the version information.
 
 
@@ -650,7 +657,7 @@ compatibility functions will do it for you.
    If you want to compile an old C program that used UNIX `dbm' or
 `ndbm' and want to use `gdbm' files, execute the following `cc' command:
 
-     cc ... -L /usr/local/lib -lgdbm
+     cc ... -L/usr/local/lib -lgdbm -lgdbm_compat
 
 
 File: gdbm.info,  Node: Conversion,  Next: Bugs,  Prev: Compatibility,  Up: Top
@@ -726,24 +733,24 @@ features, please report them too.
 
 
 Tag Table:
-Node: Top775
-Node: Copying2247
-Node: Intro4029
-Node: List5445
-Node: Open6397
-Node: Close9268
-Node: Store9703
-Node: Fetch11498
-Node: Delete12747
-Node: Sequential13413
-Node: Reorganization15096
-Node: Sync16051
-Node: Errors17015
-Node: Options17375
-Node: Locking19724
-Node: Variables20246
-Node: Compatibility20676
-Node: Conversion23050
-Node: Bugs23864
+Node: Top884
+Node: Copying2359
+Node: Intro4141
+Node: List5557
+Node: Open6509
+Node: Close9380
+Node: Store9815
+Node: Fetch11610
+Node: Delete12859
+Node: Sequential13525
+Node: Reorganization15208
+Node: Sync16163
+Node: Errors17129
+Node: Options17489
+Node: Locking19838
+Node: Variables20426
+Node: Compatibility20850
+Node: Conversion23237
+Node: Bugs24051
 
 End Tag Table
