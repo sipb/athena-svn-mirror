@@ -52,7 +52,7 @@ interface Embeddable : Bonobo::Unknown {
 
 	/**
 	 * setClientSite:
-	 * @client_site: the client site for this Object
+	 * @clientSite: the client site for this Object
 	 *
 	 * Sets the client site for this object
 	 */
@@ -100,7 +100,7 @@ interface Embeddable : Bonobo::Unknown {
 
 	/**
 	 * advise:
-	 * @sink: Where can the object inform of state changes
+	 * @advise: Where can the object inform of state changes
 	 *
 	 * Sets the object AdviseSink to @advise.  This is used
 	 * to allow the Object to notify its container of any state

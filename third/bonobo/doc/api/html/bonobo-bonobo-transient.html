@@ -122,7 +122,7 @@ NAME="BONOBO-BONOBO-TRANSIENT"
 ><DIV
 CLASS="REFNAMEDIV"
 ><A
-NAME="AEN5718"
+NAME="AEN5711"
 ></A
 ><H2
 >Name</H2
@@ -130,7 +130,7 @@ NAME="AEN5718"
 ><DIV
 CLASS="REFSYNOPSISDIV"
 ><A
-NAME="AEN5721"
+NAME="AEN5714"
 ></A
 ><H2
 >Synopsis</H2
@@ -241,7 +241,7 @@ HREF="CORBA-ENVIRONMENT"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN5746"
+NAME="AEN5739"
 ></A
 ><H2
 >Description</H2
@@ -263,7 +263,7 @@ CLASS="CLASSNAME"
 ><P
 >   For example, consider the case in which a large list of objects
    needs to be returned to a client application.  For example, an
-   object reference could returned for every file on a directory.
+   object reference could be returned for every file on a directory.
    But it would be wasteful to keep one server running for each file.
    And given that the program has all the information available to
    create the servers on demand, you want to use this system.</P
@@ -368,7 +368,7 @@ HREF="MY-SERVANT-GET-EPV"
 >my_servant_get_epv</GTKDOCLINK
 >();
         servant-&#62;my_data = g_strdup ("Hello world!");
-        POA_My_Iface__init ((PortableServer_Servant) servant, );
+        POA_My_Iface__init ((PortableServer_Servant) servant, &amp;ev);
         return servant;
 }
 
@@ -378,9 +378,9 @@ destroy_servant (PortableServer_Servant servant, void *my_callback_data)
         CORBA_Environment ev;
 
         g_free (servant-&#62;my_data);
-        CORBA_exception_init ();
-        POA_My_Iface__fini (servant, );
-        CORBA_exception_free ();
+        CORBA_exception_init (&amp;ev);
+        POA_My_Iface__fini (servant, &amp;ev);
+        CORBA_exception_free (&amp;ev);
 }
 
 CORBA_Object
@@ -432,14 +432,14 @@ COLOR="RED"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN5777"
+NAME="AEN5770"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5779"
+NAME="AEN5772"
 ></A
 ><H3
 ><A
@@ -465,7 +465,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5784"
+NAME="AEN5777"
 ></A
 ><H3
 ><A
@@ -525,7 +525,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5798"
+NAME="AEN5791"
 ></A
 ><H3
 ><A
@@ -585,7 +585,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5812"
+NAME="AEN5805"
 ></A
 ><H3
 ><A
@@ -645,7 +645,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5826"
+NAME="AEN5819"
 ></A
 ><H3
 ><A
@@ -705,7 +705,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5840"
+NAME="AEN5833"
 ></A
 ><H3
 ><A
@@ -736,7 +736,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5845"
+NAME="AEN5838"
 ></A
 ><H3
 ><A
@@ -764,7 +764,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5850"
+NAME="AEN5843"
 ></A
 ><H3
 ><A
@@ -903,7 +903,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5883"
+NAME="AEN5876"
 ></A
 ><H3
 ><A
@@ -985,7 +985,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5902"
+NAME="AEN5895"
 ></A
 ><H3
 ><A
@@ -1126,7 +1126,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN5936"
+NAME="AEN5929"
 ></A
 ><H3
 ><A
@@ -1265,7 +1265,7 @@ VALIGN="TOP"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN5969"
+NAME="AEN5962"
 ></A
 ><H2
 >See Also</H2

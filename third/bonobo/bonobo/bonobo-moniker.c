@@ -144,10 +144,11 @@ bonobo_moniker_get_name_full (BonoboMoniker *moniker)
  * bonobo_moniker_get_name_escaped:
  * @moniker: a moniker
  * 
- * Get the full; escaped display name of the moniker eg.
+ * Get the full, escaped display name of the moniker eg.
  * file:/tmp/hash\#.gz returns file:/tmp/hash\#.gz
  * 
- * Return value: the string.
+ * Return value: the dynamically allocated string.  
+ * Must release with g_free().
  **/
 char *
 bonobo_moniker_get_name_escaped (BonoboMoniker *moniker)
@@ -447,6 +448,7 @@ BONOBO_X_TYPE_FUNC_FULL (BonoboMoniker,
  * @corba_moniker: a CORBA handle inheriting from Bonobo::Moniker, or
  * CORBA_OBJECT_NIL, in which case a base Bonobo::Moniker is created.
  * @prefix: the prefix name of the moniker eg. 'file:', '!' or 'tar:' or NULL
+ * @shlib_id:
  * 
  *  Constructs a newly created bonobo moniker with the given arguments.
  * 

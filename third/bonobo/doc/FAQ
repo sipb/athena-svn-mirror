@@ -560,3 +560,26 @@ Tips and Hints:
 	able to implement Ettore's initial vision for having an
 	object-based naming space.
 
+@Q: When I run my program loads of daemons start and don't stop, why ?
+
+	When you activate a Bonobo server the oaf daemon starts, this
+parses all your oafinfo files and then can respond to activation
+requests and queries.
+
+	The first access latency in this case is relatively high, the
+second access is extremely quick, consequently it is advantageous to
+leave the oafd process running on a GNOME system. Eventualy many of
+the GNOME desktop services will be using oaf regularly, making
+unloading it wasteful.
+
+	Most people are happy to have many daemons running on their
+machine - kswapd for example, or perhaps umpteen idle copies of
+mingetty - these are left running for performance reasons, and have a
+negligable impact on system performance.
+
+	Finally, patches are welcome to add a _user configurable_
+timeout and die option for those that begrudge the couple of Mb (
+including all dependant shlibs ) to oafd. The command oaf-slay can be
+used to kill all oaf servers at any time and one can profitably look
+for memory savings elsewhere.
+

@@ -230,6 +230,10 @@ encode_value (BonoboUINode      *parent,
 		break;
 
 	case CORBA_tk_alias:
+		encode_value (node, tc->subtypes [0], value, ev);
+		break;
+
+
 	case CORBA_tk_union:
 	case CORBA_tk_Principal:
 	case CORBA_tk_fixed:
@@ -485,7 +489,10 @@ decode_value (BonoboUINode      *node,
 	case CORBA_tk_string:
 	case CORBA_tk_wstring:
 		*value = ALIGN_ADDRESS (*value, ALIGNOF_CORBA_POINTER);
-		*(CORBA_char **) *value = CORBA_string_dup (scratch);
+		if (scratch)
+			*(CORBA_char **) *value = CORBA_string_dup (scratch);
+		else 
+			*(CORBA_char **) *value = CORBA_string_dup ("");
 		*value = ((guchar *)*value) + sizeof (CORBA_char *);
 		break;
 
@@ -580,6 +587,10 @@ decode_value (BonoboUINode      *node,
 		break;
 
 	case CORBA_tk_alias:
+		l = bonobo_ui_node_children (node);
+		decode_value (l, tc->subtypes [0], value, ev);
+		break;
+
 	case CORBA_tk_union:
 	case CORBA_tk_Principal:
 	case CORBA_tk_fixed:

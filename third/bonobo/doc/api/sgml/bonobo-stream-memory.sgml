@@ -1,4 +1,4 @@
-<refentry id="bonobo-bonobo-stream-memory" revision="9 Feb 2001">
+<refentry id="bonobo-bonobo-stream-memory" revision="15 Feb 2001">
 <refmeta>
 <refentrytitle>BonoboStreamMem</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -7,7 +7,7 @@
 
 <refnamediv>
 <refname>BonoboStreamMem</refname><refpurpose>
-In-memory implementaiton of Bonobo::Stream interface.</refpurpose>
+In-memory implementation of Bonobo::Stream interface.</refpurpose>
 </refnamediv>
 
 <refsynopsisdiv><title>Synopsis</title>
@@ -61,7 +61,7 @@ const char* <link linkend="bonobo-stream-mem-get-buffer">bonobo_stream_mem_get_b
      <title>Sample BonoboStreamMem usage</title>
 
      <programlisting>
-BonoboStream *make_bonbo_stream_on_string (char *string)
+BonoboStream *make_bonobo_stream_on_string (char *string)
 {
     return bonobo_stream_mem_create (string, strlen (string), TRUE, FALSE);
 }

@@ -309,9 +309,9 @@ NAME="AEN1481"
 HREF="bonobo-bonobo-object-client.html#BONOBOOBJECTCLIENT"
 >BonoboObjectClient</A
 > object is used primarly to activate Bonobo
-  components (mainly by using <GTKDOCLINK
-HREF="GNOME-OBJECT-ACTIVATE"
->gnome_object_activate</GTKDOCLINK
+  components (mainly by using <A
+HREF="bonobo-bonobo-object-client.html#BONOBO-OBJECT-ACTIVATE"
+>bonobo_object_activate</A
 >()).  The CORBA
   object reference to the Bonobo object is wrapped in a <A
 HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
@@ -326,64 +326,38 @@ HREF="bonobo-bonobo-object-client.html#BONOBOOBJECTCLIENT"
 HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
 >BonoboObject</A
 > (by using
-  <GTKDOCLINK
-HREF="GNOME-OBJECT-CLIENT-FROM-CORBA"
->gnome_object_client_from_corba</GTKDOCLINK
+  <A
+HREF="bonobo-bonobo-object-client.html#BONOBO-OBJECT-CLIENT-FROM-CORBA"
+>bonobo_object_client_from_corba</A
 >()).</P
 ><P
->  The main activation entry point is the <GTKDOCLINK
-HREF="GNOME-OBJECT-ACTIVATE"
->gnome_object_activate</GTKDOCLINK
+>  The main activation entry point is the <A
+HREF="bonobo-bonobo-object-client.html#BONOBO-OBJECT-ACTIVATE"
+>bonobo_object_activate</A
 >()
   function.  This is a high-level routine that knows how to activate
-  components or activate and restore components.  Internally
-  <GTKDOCLINK
-HREF="GNOME-OBJECT-ACTIVATE"
->gnome_object_activate</GTKDOCLINK
->() checks whether its argument is a moniker_url
-  or a GOAD-ID and depending on this it invokes
-  <GTKDOCLINK
-HREF="GNOME-OBJECT-ACTIVATE-WITH-GOAD-ID"
->gnome_object_activate_with_goad_id</GTKDOCLINK
->() or <GTKDOCLINK
-HREF="GNOME-OBJECT-RESTORE-FROM-URL"
->gnome_object_restore_from_url</GTKDOCLINK
->().</P
-><P
->  The <GTKDOCLINK
-HREF="GNOME-OBJECT-ACTIVATE-WITH-GOAD-ID"
->gnome_object_activate_with_goad_id</GTKDOCLINK
->() routine basically uses
-  GNORBA's <GTKDOCLINK
-HREF="GOAD-SERVER-ACTIVATE-WITH-ID"
->goad_server_activate_with_id</GTKDOCLINK
->() to launch the component ( or
-  launch the factory implementing the component and requesting from
-  the factory a new instance).</P
-><P
->  The <GTKDOCLINK
-HREF="GNOME-OBJECT-RESTORE-FROM-URL"
->gnome_object_restore_from_url</GTKDOCLINK
->() takes a textual moniker url
-  description (See <A
-HREF="bonobo-bonobo-moniker.html#BONOBOMONIKER"
->BonoboMoniker</A
->) that represents a specific object
-  that is defined at least by a component and a url to restore its
-  state from.  Optionally, you can specific a subobject to request
-  from the resulting object.</P
+  components or activate and restore components.  <A
+HREF="bonobo-bonobo-object-client.html#BONOBO-OBJECT-ACTIVATE"
+>bonobo_object_activate</A
+>()
+  uses the supplied OAFIID to activate the object with OAF (GOAD 
+  activation is no longer supported).  If you want to activate an 
+  object with a moniker, use <A
+HREF="bonobo-bonobo-moniker-util.html#BONOBO-GET-OBJECT"
+>bonobo_get_object</A
+>() instead.</P
 ></DIV
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1502"
+NAME="AEN1495"
 ></A
 ><H2
 >Details</H2
 ><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1504"
+NAME="AEN1497"
 ></A
 ><H3
 ><A
@@ -412,7 +386,7 @@ HREF="GTKTYPE"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1510"
+NAME="AEN1503"
 ></A
 ><H3
 ><A
@@ -472,7 +446,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1524"
+NAME="AEN1517"
 ></A
 ><H3
 ><A
@@ -532,7 +506,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1538"
+NAME="AEN1531"
 ></A
 ><H3
 ><A
@@ -592,7 +566,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1552"
+NAME="AEN1545"
 ></A
 ><H3
 ><A
@@ -652,7 +626,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1566"
+NAME="AEN1559"
 ></A
 ><H3
 ><A
@@ -680,7 +654,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1571"
+NAME="AEN1564"
 ></A
 ><H3
 ><A
@@ -708,7 +682,7 @@ CLASS="PROGRAMLISTING"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1576"
+NAME="AEN1569"
 ></A
 ><H3
 ><A
@@ -811,7 +785,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1600"
+NAME="AEN1593"
 ></A
 ><H3
 ><A
@@ -893,7 +867,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1620"
+NAME="AEN1613"
 ></A
 ><H3
 ><A
@@ -996,7 +970,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1645"
+NAME="AEN1638"
 ></A
 ><H3
 ><A
@@ -1095,7 +1069,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1669"
+NAME="AEN1662"
 ></A
 ><H3
 ><A
@@ -1218,7 +1192,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1698"
+NAME="AEN1691"
 ></A
 ><H3
 ><A
@@ -1339,7 +1313,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1727"
+NAME="AEN1720"
 ></A
 ><H3
 ><A
@@ -1460,7 +1434,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1756"
+NAME="AEN1749"
 ></A
 ><H3
 ><A
@@ -1544,7 +1518,7 @@ VALIGN="TOP"
 ><HR><DIV
 CLASS="REFSECT2"
 ><A
-NAME="AEN1776"
+NAME="AEN1769"
 ></A
 ><H3
 ><A
@@ -1629,7 +1603,7 @@ VALIGN="TOP"
 ><DIV
 CLASS="REFSECT1"
 ><A
-NAME="AEN1796"
+NAME="AEN1789"
 ></A
 ><H2
 >See Also</H2

@@ -162,6 +162,7 @@ bonobo_event_source_notify_listeners (BonoboEventSource *event_source,
 	} else
 		my_ev = opt_ev;
 
+	bonobo_object_ref (BONOBO_OBJECT (event_source));
 	for (list = event_source->priv->listeners; list; list = list->next) {
 		ListenerDesc *desc = (ListenerDesc *) list->data;
 
@@ -170,6 +171,7 @@ bonobo_event_source_notify_listeners (BonoboEventSource *event_source,
 			Bonobo_Listener_event (desc->listener, 
 					       event_name, value, my_ev);
 	}
+	bonobo_object_unref (BONOBO_OBJECT (event_source));
 	
 	if (!opt_ev)
 		CORBA_exception_free (&ev);

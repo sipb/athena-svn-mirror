@@ -60,7 +60,7 @@ module Bonobo {
 	/*
 	 * RunningContext: a live object tracker.
 	 *
-	 *  This interface is aggregated with a EventSource that
+	 *  This interface is aggregated with an EventSource that
 	 * fires: 'bonobo:last_unref' when all objects are released.
 	 */
 	interface RunningContext : Unknown {
@@ -73,7 +73,7 @@ module Bonobo {
 		void addObject    (in Object object);
 
 		/**
-		 * addObject:
+		 * removeObject:
 		 * @object: an object about to be destroyed
 		 *
 		 * Removes an object from tracking.

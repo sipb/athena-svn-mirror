@@ -1,4 +1,4 @@
-<refentry id="bonobo-bonobo-stream" revision="9 Feb 2001">
+<refentry id="bonobo-bonobo-stream" revision="15 Feb 2001">
 <refmeta>
 <refentrytitle>BonoboStream</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -85,7 +85,7 @@ typedef     <link linkend="BonoboStreamClass">BonoboStreamClass</link>;
 </programlisting>
 <para>
   Returns the GtkType associated with the
-  <classname>GnomeStream</classname> object
+  <classname>BonoboStream</classname> object
 </para></refsect2>
 <refsect2>
 <title><anchor id="BONOBO-STREAM-CAPS">BONOBO_STREAM()</title>

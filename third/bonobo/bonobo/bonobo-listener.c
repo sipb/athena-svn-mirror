@@ -39,16 +39,17 @@ impl_Bonobo_Listener_event (PortableServer_Servant servant,
 
 	listener = BONOBO_LISTENER (bonobo_object_from_servant (servant));
 
+	bonobo_object_ref (BONOBO_OBJECT (listener));
 	if (listener->priv->event_callback) 
 		listener->priv->event_callback (
 			listener, (CORBA_char *) event_name, 
 			(CORBA_any *) args, ev,
 			listener->priv->user_data);
-	
 
 	gtk_signal_emit (GTK_OBJECT (listener),
 			 signals [EVENT_NOTIFY],
 			 event_name, args, ev);
+	bonobo_object_unref (BONOBO_OBJECT (listener));
 }
 
 static void

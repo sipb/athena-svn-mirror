@@ -3,7 +3,7 @@ BonoboStreamMem
 
 <!-- ##### SECTION Short_Description ##### -->
 
-In-memory implementaiton of Bonobo::Stream interface.
+In-memory implementation of Bonobo::Stream interface.
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
@@ -21,7 +21,7 @@ In-memory implementaiton of Bonobo::Stream interface.
      <title>Sample BonoboStreamMem usage</title>
 
      <programlisting>
-BonoboStream *make_bonbo_stream_on_string (char *string)
+BonoboStream *make_bonobo_stream_on_string (char *string)
 {
     return bonobo_stream_mem_create (string, strlen (string), TRUE, FALSE);
 }

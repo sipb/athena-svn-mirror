@@ -1,4 +1,4 @@
-<refentry id="bonobo-bonobo-object-client" revision="9 Feb 2001">
+<refentry id="bonobo-bonobo-object-client" revision="15 Feb 2001">
 <refmeta>
 <refentrytitle>BonoboObjectClient</refentrytitle>
 <manvolnum>3</manvolnum>
@@ -60,38 +60,23 @@ void        <link linkend="bonobo-object-client-unref">bonobo_object_client_unre
 <title>Description</title>
 <para>
   The <link linkend="BonoboObjectClient">BonoboObjectClient</link> object is used primarly to activate Bonobo
-  components (mainly by using <link linkend="gnome-object-activate">gnome_object_activate</link>()).  The CORBA
+  components (mainly by using <link linkend="bonobo-object-activate">bonobo_object_activate</link>()).  The CORBA
   object reference to the Bonobo object is wrapped in a <link linkend="BonoboObject">BonoboObject</link>.
 </para>
 
 <para>
   The <link linkend="BonoboObjectClient">BonoboObjectClient</link> object is also used to wrap an arbitrary
   Bonobo::Unknown CORBA object reference into a <link linkend="BonoboObject">BonoboObject</link> (by using
-  <link linkend="gnome-object-client-from-corba">gnome_object_client_from_corba</link>()).
+  <link linkend="bonobo-object-client-from-corba">bonobo_object_client_from_corba</link>()).
 </para>
 
 <para>
-  The main activation entry point is the <link linkend="gnome-object-activate">gnome_object_activate</link>()
+  The main activation entry point is the <link linkend="bonobo-object-activate">bonobo_object_activate</link>()
   function.  This is a high-level routine that knows how to activate
-  components or activate and restore components.  Internally
-  <link linkend="gnome-object-activate">gnome_object_activate</link>() checks whether its argument is a moniker_url
-  or a GOAD-ID and depending on this it invokes
-  <link linkend="gnome-object-activate-with-goad-id">gnome_object_activate_with_goad_id</link>() or <link linkend="gnome-object-restore-from-url">gnome_object_restore_from_url</link>().
-</para>
-
-<para>
-  The <link linkend="gnome-object-activate-with-goad-id">gnome_object_activate_with_goad_id</link>() routine basically uses
-  GNORBA's <link linkend="goad-server-activate-with-id">goad_server_activate_with_id</link>() to launch the component ( or
-  launch the factory implementing the component and requesting from
-  the factory a new instance).
-</para>
-
-<para>
-  The <link linkend="gnome-object-restore-from-url">gnome_object_restore_from_url</link>() takes a textual moniker url
-  description (See <link linkend="BonoboMoniker">BonoboMoniker</link>) that represents a specific object
-  that is defined at least by a component and a url to restore its
-  state from.  Optionally, you can specific a subobject to request
-  from the resulting object.
+  components or activate and restore components.  <link linkend="bonobo-object-activate">bonobo_object_activate</link>()
+  uses the supplied OAFIID to activate the object with OAF (GOAD 
+  activation is no longer supported).  If you want to activate an 
+  object with a moniker, use <link linkend="bonobo-get-object">bonobo_get_object</link>() instead.
 </para>
 </refsect1>
 

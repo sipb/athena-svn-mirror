@@ -37,12 +37,11 @@ typedef sequence<ZoomLevelName> ZoomLevelNameList;
 	
 /* A zoomable has the responsibility to look for this
  * interface on its Bonobo control frame and call
- * zoom_level_changed whenever it changes the zoom level (on
+ * onLevelChanged whenever it changes the zoom level (on
  * its own or due to calls from the zoomable interface).
 */
 interface ZoomableFrame : ::Bonobo::Unknown {
 	/**
-	 *
 	 * onLevelChanged:
 	 * @zoom_level: The new zoom level.
 	 *
@@ -53,7 +52,6 @@ interface ZoomableFrame : ::Bonobo::Unknown {
 	oneway void onLevelChanged (in float zoom_level);
 
 	/**
-	 *
 	 * onParametersChanged:
 	 *
 	 * Informs the ZoomableFrame that some of the zoom parameters
@@ -68,9 +66,7 @@ interface Zoomable : Bonobo::Unknown {
 	 * This is a read-only value and indicates the actual current
 	 * zoom level of the component. It is changed by the component
 	 * after successfully completing a zooming operation before
-	 * calling the `report_zoom_level_changed' method on its
-	 * ZoomableFrame.
-	 *
+	 * calling the `onLevelChanged' method on its ZoomableFrame.
 	 */
 	readonly attribute float level;
 
@@ -95,15 +91,14 @@ interface Zoomable : Bonobo::Unknown {
 	oneway void zoomDefault ();
 
 	/**
-	 *
 	 * setLevel:
 	 * @zoom_level: The new zoom level.
 	 *
 	 * Tells the component to zoom to @zoom_level.
 	 *
 	 * If the component only supports fixed zoom levels,
-	 * then the actual zoom level will be set to whatever
-	 * is closes possible to @zoom_level.
+	 * then the actual zoom level will be set to the
+	 * closest possible value of @zoom_level.
 	 */
 	void setLevel (in float zoom_level);
 

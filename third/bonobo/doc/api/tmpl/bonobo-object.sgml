@@ -85,14 +85,14 @@ Base object for wrapping Bonobo::Unknown derived objects.
   For example, a help browser can load an HTML renderer component and
   ask this component which sort of features are supported by it:
   <programlisting>
-_animations (BrowserHTML html)
-
+stop_animations (BrowserHTML html)
+{
   BrowserControl control
 
   control = html->query_interface ("IDL:Browser/Control:1.0");
   if (control)
           control->stop_animations ();
-
+}
   </programlisting>
 </para>
 
@@ -117,7 +117,7 @@ _animations (BrowserHTML html)
 
 <para>
   Other implementations reuse this implementation by listing on their
-  VEPV tables the gnome_object_epv entry point vector.
+  VEPV tables the bonobo_object_epv entry point vector.
 </para>
 
 <para>
@@ -177,13 +177,13 @@ Returns the #GtkType for the BonoboObject object.
 
 <para>
   #BonoboObject provides a mapping from the servant to the #BonoboObject
-  by using the gnome_object field in the structure.  Typically in the
+  by using the bonobo_object field in the structure.  Typically in the
   C CORBA binding, per-servant information is piggy-backed to the POA
   servant.  With the BonoboObject setup per-servant information is
   typically attached to the BonoboObject (by using the regular
   inheritance mechanism of Gtk+).  Going from a
   #PortableServer_Servant to the actual #BonoboObject is accomplished 
-  using the gnome_object_from_servant() routine.  
+  using the bonobo_object_from_servant() routine.  
 </para>
 
 <para>

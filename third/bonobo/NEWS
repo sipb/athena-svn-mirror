@@ -1,3 +1,21 @@
+Bonobo 0.37
+
+	* Fix Bonobo Zoomable (Michael Engber)
+
+	* Documentation fixage (John Sheets)
+
+	* Any serialization xml supports aliases (Dietmar)
+
+	* Listener / Event Source fixes (Dan Winship)
+
+	* Bonobo Control fixage (Dan Winship)
+
+	* UI str compare fixage (Darin Adler)
+
+	* Cleanup config dialog (Cody Russell)
+
+	* Publicised XObject type & bits (Me)
+
 Bonobo 0.36
 
 	* Convert print to BonoboXObject (Me) - forgot it.

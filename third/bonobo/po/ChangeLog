@@ -1,3 +1,28 @@
+2001-02-14  Carlos Perelló Marín <carlos@gnome-db.org>
+
+	* es.po: Updated Spanish translation by Juan Manuel García Molina
+	  <juanmagm@mail.com>
+
+2001-02-13  Pauli Virtanen  <pauli.virtanen@saunalahti.fi>
+
+	* fi.po: Updated Finnish translation.
+
+2001-02-12  Valek Filippov  <frob@df.ru>
+
+	* ru.po: updated russian translation.
+
+2001-02-12  Christophe Merlet  <redfox@eikonex.org>
+
+	* fr.po: Updated French translation.
+
+2001-02-12  Christian Rose  <menthos@menthos.com>
+
+	* sv.po: Updated Swedish translation.
+
+2001-02-11  Simos Xenitellis  <simos@hellug.gr>
+
+	* el.po: Updated Greek translation.
+
 2001-02-09  Takayuki KUSANO  <AE5T-KSN@asahi-net.or.jp>
 
 	* ja.po: Updated Japanese translation.
@@ -92,7 +117,7 @@
 
 	* fr.po: Updated French translation.
 
-2001-1-03  John Sullivan  <sullivan@eazel.com>
+2001-01-03  John Sullivan  <sullivan@eazel.com>
 
 	* POTFILES.in: removed bonobo/app.c, since the file
 	no longer exists.

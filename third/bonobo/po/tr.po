@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: bonobo 0.34\n"
-"POT-Creation-Date: 2001-02-09 02:27-0500\n"
+"POT-Creation-Date: 2001-02-15 01:52-0500\n"
 "PO-Revision-Date: 2001-01-26 13:45+0100\n"
 "Last-Translator: Görkem Cetin <gorkem@gelecek.com.tr>\n"
 "Language-Team: GNOME Turk <gnome-turk@gnome.org>\n"
@@ -50,7 +50,7 @@ msgstr "_Metin ve Simge"
 msgid "_Priority text only"
 msgstr "Sadece metin"
 
-#: bonobo/bonobo-ui-engine-config.c:521
+#: bonobo/bonobo-ui-engine-config.c:518
 msgid "Configure UI"
 msgstr "Grafik arayüzü yapýlandýr"
 

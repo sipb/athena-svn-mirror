@@ -57,6 +57,7 @@ module Bonobo {
 
 		/**
 		 * getInfo:
+		 * @mask:
 		 *
 		 * Returns a StorageInfo structure which contains
 		 * the name, content_type and size info.
@@ -66,6 +67,8 @@ module Bonobo {
 		
 		/**	
 		 * setInfo:
+		 * @info:
+		 * @mask:
 		 *
 		 */
 		void setInfo (in StorageInfo info, in StorageInfoFields mask)
@@ -109,7 +112,7 @@ module Bonobo {
 	
 		/**
 		 * copyTo:
-		 * @path: destination file.
+		 * @dest: destination file.
 		 * @bytes: number of bytes to copy, or -1 to copy until eof
 		 * @read: output, how many bytes were read.
 		 * @writen: output, how many bytes were written.
@@ -165,6 +168,8 @@ module Bonobo {
 
 		/**
 		 * getInfo:
+		 * @path:
+		 * @mask:
 		 *
 		 * Returns a StorageInfo structure which contains
 		 * the name, content_type and size info.
@@ -175,6 +180,9 @@ module Bonobo {
 		
 		/**	
 		 * setInfo:
+		 * @path:
+		 * @info:
+		 * @mask:
 		 *
 		 */
 		void setInfo (in string path, in StorageInfo info, 
@@ -215,6 +223,7 @@ module Bonobo {
 		/**
 		 * listContents:
 		 * @path: path that we want to examine.
+		 * @mask:
 		 *
 		 * Returns a list of all the Storage and Streams available
 		 * at @path.

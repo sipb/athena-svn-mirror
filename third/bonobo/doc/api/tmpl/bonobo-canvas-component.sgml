@@ -7,10 +7,10 @@ other applications.
 
 <!-- ##### SECTION Long_Description ##### -->
 <para>
-  The BonoboCanvasComponent objects are used to wrap a GnomeCanvasItems
-  and export them to a container application.  Typically the
+  The BonoboCanvasComponent objects are used to wrap GnomeCanvasItems
+  and export them to container applications.  Typically the
   bonobo_component_canvas_new() function will be invoked in a callback
-  from a BonoboEmbeddable object.  Like this:
+  from a BonoboEmbeddable object.
 </para>
 
 <para>
@@ -21,7 +21,7 @@ other applications.
     <programlisting>
 
 /*
- * Here is where the GnomeCanvasItem (in this case an ellipse
+ * Here is where the GnomeCanvasItem (in this case an ellipse)
  * is created and wrapped in a BonoboCanvasComponent.
  *
  * This function is invoked on demand on the embeddable

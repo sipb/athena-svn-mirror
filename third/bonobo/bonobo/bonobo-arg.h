@@ -14,6 +14,7 @@
 
 #include <bonobo/Bonobo.h>
 #include <libgnome/gnome-defs.h>
+#include <gtk/gtktypeutils.h>
 
 BEGIN_GNOME_DECLS
 

@@ -1,17 +1,18 @@
 # Bonobo Greek PO file
-# Copyright (C) 1999, 2000 Free Software Foundation, Inc.
+# Copyright (C) 1999-2001 Free Software Foundation, Inc.
 # Spiros Papadimitriou <spapadim+@cs.cmu.edu>, 1999.
-# Simos Xenitellis <simos@hellug.gr>, 2000.
+# Simos Xenitellis <simos@hellug.gr>, 2000-2001.
 #
 # spyros:
 #   ~16 messages
 # simos: 
 #   updated: 6 translated messages, 10 fuzzy translations, 99 untranslated messages.
+# simos: 170 messages, 11Feb2001
 msgid ""
 msgstr ""
 "Project-Id-Version: bonobo 0.34\n"
-"POT-Creation-Date: 2001-02-09 02:27-0500\n"
-"PO-Revision-Date: 2001-02-02 22:22:16+0900\n"
+"POT-Creation-Date: 2001-02-15 01:52-0500\n"
+"PO-Revision-Date: 2001-02-11 22:16:51+0900\n"
 "Last-Translator: Simos Xenitellis <simos@hellug.gr>\n"
 "Language-Team: Greek <el@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -56,7 +57,7 @@ msgstr "_Κείμενο και Εικονίδια"
 msgid "_Priority text only"
 msgstr "Μόνο κείμενο _προτεραιότητας"
 
-#: bonobo/bonobo-ui-engine-config.c:521
+#: bonobo/bonobo-ui-engine-config.c:518
 msgid "Configure UI"
 msgstr "Ρύθμιση Διασύνδεση Χρήστη"
 
@@ -342,6 +343,8 @@ msgid ""
 "An exception occured while trying to load data into the component with "
 "PersistFile"
 msgstr ""
+"Συνέβει μια εξαίρεση κατά την προσπάθεια φόρτωσης δεδομένων στο συστατικό με "
+"το PersistFile"
 
 #: gshell/controls.c:119 gshell/inout.c:176
 #: samples/compound-doc/container/component.c:228
@@ -354,6 +357,8 @@ msgid ""
 "An exception occured while trying to load data into the component with "
 "PersistStream"
 msgstr ""
+"Συνέβει μια εξαίρεση κατά την προσπάθεια φόρτωσης δεδομένων στο συστατικό με "
+"το PersistStream"
 
 #: gshell/gshell-ui.xml.h:1
 msgid "About this application"
@@ -439,11 +444,11 @@ msgstr "Αποθήκευση του τρέχοντος αρχείου"
 
 #: gshell/gshell-ui.xml.h:21
 msgid "Save the current file with a different name"
-msgstr ""
+msgstr "Αποθήκευση του τρέχοντος αρχείου με διαφορετικό όνομα"
 
 #: gshell/gshell-ui.xml.h:22
 msgid "Setup the page settings for your current printer"
-msgstr ""
+msgstr "Καθορισμός των ρυθμίσεων σελίδας για το τρέχον εκτυπωτή"
 
 #
 #: gshell/gshell-ui.xml.h:23
@@ -468,7 +473,7 @@ msgstr "Αλλαγή κλίμακας στο εξ' _ορισμού"
 
 #: gshell/gshell-ui.xml.h:28
 msgid "Zoom to _fit"
-msgstr ""
+msgstr "Αλλαγή κλίμακας για _ταίριασμα"
 
 #: gshell/gshell-ui.xml.h:29
 msgid "_About..."
@@ -550,19 +555,23 @@ msgid ""
 "under the conditions of the GNU General Public License. Please report bugs "
 "to dietmar@maurer-it.com"
 msgstr ""
+"Αυτό το πρόγραμμα είναι μέρος του έργου GNOME. Το GNOME Shell (Φλοιός του "
+"GNOME) παρέχεται με ΚΑΜΊΑ ΑΠΟΛΎΤΩΣ ΕΓΓΎΗΣΗ και είστε ελεύθερος να το "
+"επαναδιανείμετε κάτω από τους κανονισμούς της Γενικής Δημόσιας Άδειας GNU. "
+"Παρακαλώ αναφέρετε σφάλματα στο dietmar@maurer-it.com"
 
 #: gshell/gshell.c:89
 msgid "fatal CORBA exception!  Shutting down..."
-msgstr ""
+msgstr "μοιραία εξαίρεση CORBA! Τερματισμός..."
 
 #: gshell/gshell.c:162
 #, c-format
 msgid "New zoom level is %.3g."
-msgstr ""
+msgstr "Το νέο επίπεδο κλίμακας είναι %.3g."
 
 #: gshell/gshell.c:596
 msgid "Set zoom level:"
-msgstr ""
+msgstr "Καθορισμός επιπέδου κλίμακας:"
 
 #: gshell/gshell.c:652
 msgid "Could not initialize Bonobo!"
@@ -573,18 +582,22 @@ msgid ""
 "An exception occured while trying to save data from the component with "
 "PersistFile"
 msgstr ""
+"Συνέβει μια εξαίρεση κατά την προσπάθεια αποθήκευσης δεδομένων από το "
+"συστατικό με το PersistFile"
 
 #
 #: gshell/inout.c:115
 #, c-format
 msgid "Could not save file %s"
-msgstr ""
+msgstr "Αδύνατη η αποθήκευση του %s"
 
 #: gshell/inout.c:151
 msgid ""
 "An exception occured while trying to save data from the component with "
 "PersistStream"
 msgstr ""
+"Συνέβει μια εξαίρεση κατά την προσπάθεια αποθήκευσης δεδομένων από το "
+"συστατικό με το PersistStream"
 
 #
 #: gshell/inout.c:364
@@ -606,67 +619,67 @@ msgstr "Αποθήκευση Ως"
 
 #: gshell/properties.c:152
 msgid "Component has no editable properties"
-msgstr ""
+msgstr "Το συστατικό δεν έχει τροποποιήσιμες ιδιότητες"
 
 #: monikers/Bonobo_Moniker_gzip.oaf.in.h:1
 msgid "Gunzip Moniker factory"
-msgstr ""
+msgstr "Εργοστάσιο απλουστ. ονόματος gunzip"
 
 #: monikers/Bonobo_Moniker_gzip.oaf.in.h:2
 msgid "gunzip Moniker"
-msgstr ""
+msgstr "Απλουστ. όνομα gunzip"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:1
 msgid "HTTP Moniker"
-msgstr ""
+msgstr "Απλουστ. όνομα HTTP"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:2
 msgid "Standard Moniker factory"
-msgstr ""
+msgstr "Γενικό εργοστάσιο απλουστ. ονόματος"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:3
 msgid "file MonikerExtender"
-msgstr ""
+msgstr "αρχείο MonikerExtender"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:4
 msgid "generic Oaf activation moniker"
-msgstr ""
+msgstr "γενικό απλουστ. όνομα ενεργοποίησης Oaf"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:5
 msgid "generic Oaf query moniker"
-msgstr ""
+msgstr "γενικό απλουστ. όνομα επερώτησης Oaf"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:6
 msgid "generic factory 'new' moniker"
-msgstr ""
+msgstr "γενικό απλουστ. όνομα εργοστασίου 'νέο'"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:7
 msgid "generic file moniker"
-msgstr ""
+msgstr "γενικό απλουστ. όνομα αρχείου"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:8
 msgid "generic item moniker"
-msgstr ""
+msgstr "γενικό απλουστ. όνομα στοιχείου"
 
 #: monikers/Bonobo_Moniker_std.oaf.in.in.h:9
 msgid "stream MonikerExtender"
-msgstr ""
+msgstr "ροή MonikerExtender"
 
 #: samples/bonobo-class/Bonobo_Sample_Echo.oaf.in.h:1
 msgid "Bonobo Echo server factory"
-msgstr ""
+msgstr "Εργοστάσιο εξυπηρετητή Ηχούς Bonobo"
 
 #: samples/bonobo-class/Bonobo_Sample_Echo.oaf.in.h:2
 msgid "Bonobo Echo server sample program"
-msgstr ""
+msgstr "Πρόγραμμα-δείγμα εξυπηρετητή Ηχούς Bonobo"
 
 #: samples/bonobo-class/Bonobo_Sample_Echo.oaf.in.h:3
 msgid "Echo component"
-msgstr ""
+msgstr "Συστατικό Ηχούς"
 
 #: samples/bonobo-class/Bonobo_Sample_Echo.oaf.in.h:4
 msgid "Echo component factory"
-msgstr ""
+msgstr "Εργοστάσιο συστατικού ηχούς"
 
 #: samples/bonobo-class/echo-client.c:30
 msgid "I could not initialize Bonobo"
@@ -674,7 +687,7 @@ msgstr "Ανεπιτυχής προσπάθεια αρχικοποίησης του Μπονόμπο"
 
 #: samples/compound-doc/container/component.c:253
 msgid "The component now claims that it doesn't support PersistStream!"
-msgstr ""
+msgstr "Το συστατικό ισχυρίζετε τώρα ότι δεν υποστηρίζει το PersistStream!"
 
 #: samples/compound-doc/container/container-filesel.c:18
 msgid "Select file"
@@ -682,15 +695,15 @@ msgstr "Επιλογή αρχείου"
 
 #: samples/compound-doc/container/container-menu.c:18
 msgid "Select an embeddable Bonobo component to add"
-msgstr ""
+msgstr "Επιλέξτε ένα προσαρτήσιμο συστατικό Bonobo για να προσθέσετε"
 
 #: samples/compound-doc/container/container-menu.c:100
 msgid "Bonobo sample container"
-msgstr ""
+msgstr "Δοχείο-δείγμα Bonobo"
 
 #: samples/compound-doc/container/container.c:45
 msgid "Sample Bonobo container"
-msgstr ""
+msgstr "Δοχείο-δείγμα Bonobo"
 
 #: samples/compound-doc/container/container.c:113
 #, c-format
@@ -702,12 +715,16 @@ msgid ""
 "An exception occured while trying to load data into the component with "
 "PersistStorage"
 msgstr ""
+"Συνέβει μια εξαίρεση κατά την προσπάθεια φόρτωσης δεδομένων στο συστατικό με "
+"το PersistStorage"
 
 #: samples/compound-doc/container/embeddable-io.c:67
 msgid ""
 "An exception occured while trying to save data from the component with "
 "PersistStorage"
 msgstr ""
+"Συνέβει μια εξαίρεση κατά την προσπάθεια αποθήκευσης δεδομένων από το "
+"συστατικό με το PersistStorage"
 
 #: tests/selector_test.c:22 tests/selector_test.c:46
 msgid "Select an object"
@@ -735,7 +752,7 @@ msgstr "Ανεπιτυής εκκίνηση του Προσαρτήσιμου."
 
 #: tests/test-container.c:596
 msgid "Could not launch Control."
-msgstr ""
+msgstr "Αδύνατη η εκκίνηση του Συστατικού."
 
 #: tests/test-container.c:848 tests/test-storage.c:489
 msgid "Can not bonobo_init"

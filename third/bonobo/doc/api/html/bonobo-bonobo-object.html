@@ -517,8 +517,8 @@ CELLPADDING="6"
 ><TD
 ><PRE
 CLASS="PROGRAMLISTING"
->_animations (BrowserHTML html)
-
+>stop_animations (BrowserHTML html)
+{
   BrowserControl control
 
   control = html-&#62;query_interface ("IDL:Browser/Control:1.0");
@@ -527,7 +527,7 @@ CLASS="PROGRAMLISTING"
 HREF="STOP-ANIMATIONS"
 >stop_animations</GTKDOCLINK
 >();
-
+}
   </PRE
 ></TD
 ></TR
@@ -565,7 +565,7 @@ HREF="UNREF"
   query_interface methods.</P
 ><P
 >  Other implementations reuse this implementation by listing on their
-  VEPV tables the gnome_object_epv entry point vector.</P
+  VEPV tables the bonobo_object_epv entry point vector.</P
 ><P
 >  The <TT
 CLASS="CLASSNAME"
@@ -889,7 +889,7 @@ HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
 HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
 >BonoboObject</A
 >
-  by using the gnome_object field in the structure.  Typically in the
+  by using the bonobo_object field in the structure.  Typically in the
   C CORBA binding, per-servant information is piggy-backed to the POA
   servant.  With the BonoboObject setup per-servant information is
   typically attached to the BonoboObject (by using the regular
@@ -901,9 +901,9 @@ HREF="PORTABLESERVER-SERVANT"
 HREF="bonobo-bonobo-object.html#BONOBOOBJECT"
 >BonoboObject</A
 > is accomplished 
-  using the <GTKDOCLINK
-HREF="GNOME-OBJECT-FROM-SERVANT"
->gnome_object_from_servant</GTKDOCLINK
+  using the <A
+HREF="bonobo-bonobo-object.html#BONOBO-OBJECT-FROM-SERVANT"
+>bonobo_object_from_servant</A
 >() routine.  </P
 ><P
 >  If you decide not to use this scheme for fetching your per-servant
@@ -972,7 +972,6 @@ CLASS="PROGRAMLISTING"
 	 */
 	void  (*query_interface) (BonoboObject *object, const char *repo_id,  CORBA_Object      *retval);
 	void  (*system_exception)(BonoboObject *object, CORBA_Object cobject, CORBA_Environment *ev);
-	void  (*object_gone)     (BonoboObject *object, CORBA_Object cobject, CORBA_Environment *ev);
 } BonoboObjectClass;</PRE
 ></TD
 ></TR

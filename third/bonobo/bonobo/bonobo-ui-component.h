@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /**
- * gnome-component-ui.h: Client UI signal multiplexer and verb repository.
+ * bonobo-ui-component.h: Client UI signal multiplexer and verb repository.
  *
  * Author:
  *     Michael Meeks (michael@helixcode.com)
