@@ -8,6 +8,7 @@
 #include <sys/types.h>
 #include <termios.h>
 #include <syslog.h>
+#include <errno.h>
 #include "dpy_irix.h"
 
 #define CHKCONFIG "/etc/chkconfig "
@@ -24,7 +25,7 @@ static int run(char *what, int newpag)
   char cmd[1024], *args[20], *ptr;
   int i = 0, status;
   sigset_t mask, omask;
-  pid_t pid;
+  pid_t pid, ret;
 
   if (what == NULL)
     return -1;
@@ -60,10 +61,11 @@ static int run(char *what, int newpag)
       return -1;
     }
 
-  while (pid != waitpid(pid, &status, 0));
+  while (((ret = waitpid(pid, &status, 0)) == -1) && (errno == EINTR))
+    ;
   sigprocmask(SIG_SETMASK, &omask, NULL);
 
-  if (WIFEXITED(status))
+  if ((ret == pid) && WIFEXITED(status))
     return WEXITSTATUS(status);
 
   return -2;
