@@ -2,7 +2,7 @@
 /*
  * mhparse.c -- routines to parse the contents of MIME messages
  *
- * $Id: mhparse.c,v 1.1.1.1 1999-02-07 18:14:14 danw Exp $
+ * $Id: mhparse.c,v 1.2 2002-05-17 21:32:05 rbasch Exp $
  */
 
 #include <h/mh.h>
@@ -1194,9 +1194,9 @@ InitMessage (CT ct)
     struct k2v *kv;
     CI ci = &ct->c_ctinfo;
 
-    if (ct->c_encoding != CE_7BIT) {
+    if ((ct->c_encoding != CE_7BIT) && (ct->c_encoding != CE_8BIT)) {
 	admonish (NULL,
-		  "\"%s/%s\" type in message %s should be encoded in 7bit",
+		  "\"%s/%s\" type in message %s should be encoded in 7bit or 8bit",
 		  ci->ci_type, ci->ci_subtype, ct->c_file);
 	return NOTOK;
     }
