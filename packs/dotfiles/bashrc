@@ -1,63 +1,62 @@
 # Global bashrc file
 #
-# $Id: bashrc,v 1.1 1999-06-11 15:28:09 tb Exp $
+# $Id: bashrc,v 1.2 1999-06-15 23:19:45 ghudson Exp $
 
 # This file is sourced by default user file ~/.bashrc
 
 initdir=/usr/athena/lib/init
 
-if [ ${HOSTTYPE+set} != set ]; then
-	# Figure out what kind of system we are on
-	export HOSTTYPE="`/bin/athena/machtype`"
-fi
-
-if [ sgi = "$HOSTTYPE" -a ${prompt+set} = set -a -t 0 ]; then
-	# Have no better way to do this at the moment.
-	stty sane intr ^C
-fi
 
 
 # *******************   ENVIRONMENT SETUP   *******************
 
 
 
-# Set standard path variables, for reference (actual paths set later in file).
-
-# Set standard Athena path variables (generic path for all users):
-case "$HOSTTYPE" in
-
-sgi)
-	athena_path=/srvd/patch:/usr/athena/bin:/bin/athena:/usr/sbin:/usr/bsd:/sbin:/usr/bin:/bin:/usr/bin/X11:/usr/andrew/bin:/usr/athena/etc:/usr/etc
-	MANPATH=/usr/athena/man:/usr/freeware/catman:/usr/share/catman:/usr/share/man:/usr/catman:/usr/man
-	;;
-sun4)
-	athena_path=/srvd/patch:/usr/athena/bin:/bin/athena:/usr/openwin/bin:/usr/openwin/demo:/usr/bin:/usr/ccs/bin:/usr/andrew/bin:/usr/athena/etc:/usr/sbin:/sbin:/usr/ucb
-	MANPATH=/usr/athena/man:/usr/openwin/man:/usr/dt/man:/usr/man
-	;;
-linux)
-	athena_path=/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin:/bin:/usr/X11R6/bin:/usr/andrew/bin:/usr/athena/etc:/usr/sbin:/sbin
-	MANPATH=/usr/athena/man:/usr/man
-	;;
-*)
-	echo "Standard dotfiles do not support system type $HOSTTYPE."
-esac
-export MANPATH
-
 # Set up standard system/user environment configuration (including setup of
 # environment variables, attachment of lockers, and setting of search path)
 
-if [ ${ENV_SET+set} != set]; then
+if [ "${ENV_SET+set}" != set]; then
 
 	export ENV_SET=t			# Avoid unnecessary repeat
+	export HOSTTYPE="`/bin/athena/machtype`"
 
 	umask 077				# Strictly protect files
-
 						#  (does not apply in AFS)
-	ulimit -c 0		            	# Don't allow coredumps
+	ulimit -c 0				# Don't allow coredumps
 	export EDITOR=emacs			# Set default editor
 	export VISUAL=emacs			# Set default screen editor
 	export MM_CHARSET=iso-8859-1
 	export MANPAGER="more -s -f"
+
+	# Set standard Athena path variables (generic path for all users).
+	# PATH will get set later after .bash_environment is run.
+	case "$HOSTTYPE" in
+	sgi)
+		athena_path=/srvd/patch:/usr/athena/bin:/bin/athena:/usr/sbin
+		athena_path=$athena_path:/usr/bsd:/sbin:/usr/bin:/bin
+		athena_path=$athena_path:/usr/bin/X11:/usr/andrew/bin
+		athena_path=$athena_path:/usr/athena/etc:/usr/etc
+		MANPATH=/usr/athena/man:/usr/freeware/catman:/usr/share/catman
+		MANPATH=$MANPATH:/usr/share/man:/usr/catman:/usr/man
+		;;
+	sun4)
+		athena_path=/srvd/patch:/usr/athena/bin:/bin/athena
+		athena_path=$athena_path:/usr/openwin/bin:/usr/openwin/demo
+		athena_path=$athena_path:/usr/bin:/usr/ccs/bin:/usr/andrew/bin
+		athena_path=$athena_path:/usr/athena/etc:/usr/sbin:/sbin
+		athena_path=$athena_path:/usr/ucb
+		MANPATH=/usr/athena/man:/usr/openwin/man:/usr/dt/man:/usr/man
+		;;
+	linux)
+		athena_path=/srvd/patch:/usr/athena/bin:/bin/athena:/usr/bin
+		athena_path=$athena_path:/bin:/usr/X11R6/bin:/usr/andrew/bin
+		athena_path=$athena_path:/usr/athena/etc:/usr/sbin:/sbin
+		MANPATH=/usr/athena/man:/usr/man
+		;;
+	*)
+		echo "Standard dotfiles do not support system type $HOSTTYPE."
+	esac
+	export MANPATH
 
 	# Default "more" behavior
 	case $HOSTTYPE in
@@ -83,7 +82,7 @@ if [ ${ENV_SET+set} != set]; then
 		export ATHENA_SYS=@sys
 	endif
 
-	if [ ${PRINTER+set} != set -a -e /var/athena/clusterinfo ]; then
+	if [ "${PRINTER+set}" != set -a -e /var/athena/clusterinfo ]; then
 		PRINTER=`awk '/LPR/ { print $3 }' /var/athena/clusterinfo`
 		if [ -n "$PRINTER" ]; then export PRINTER; fi
 	fi
@@ -92,7 +91,7 @@ if [ ${ENV_SET+set} != set]; then
 	# of the user's home directory.  This will avoid having long
 	# pathnames being printed when /mit/<user> is a symlink to a
 	# path within AFS.
-	# 
+
 	# This code has been optimized to run as quickly as possible.
 	# Since it is being invoked only at the beginning of the
 	# session, and prior to the inclusion of any of the user's
@@ -108,7 +107,7 @@ if [ ${ENV_SET+set} != set]; then
 	# Special version of ADD for the .bash_environment file.
 
 	add () {
-		 eval "$(/bin/athena/attach -b -Padd -P" '$athena_path' "$@" ")"
+		eval "$(/bin/athena/attach -b -Padd -P" '$athena_path' "$@" ")"
 	}
 
 	# Run user environment customizations identified in your
@@ -120,7 +119,7 @@ if [ ${ENV_SET+set} != set]; then
 	# if you selected the xlogin "Ignore your customizations"
 	# option when you logged in).
 
-        if [ ${NOCALLS+set} != set -a -r ~/.bash_environment ]; then
+	if [ "${NOCALLS+set}" != set -a -r ~/.bash_environment ]; then
 		. ~/.bash_environment
 	fi
 	
@@ -129,13 +128,13 @@ if [ ${ENV_SET+set} != set]; then
 
 	# Make sure applications can properly find their appdefs, etc.
 
-	if [ ${XUSERFILESEARCHPATH+set} == set ]; then
+	if [ "${XUSERFILESEARCHPATH+set}" != set ]; then
 		XUSERFILESEARCHPATH=/usr/athena/lib/X11/app-defaults/%N
 	else
-		XUSERFILESEARCHPATH="$XUSERFILESEARCHPATH:/usr/athena/lib/X11/app-defaults/%N
+		XUSERFILESEARCHPATH=$XUSERFILESEARCHPATH:/usr/athena/lib/X11/app-defaults/%N
 	endif
 
-	if [ sgi = "$HOSTTYPE" -a ${skip_sgi+set} != set -a ${NOCALLS+set} != set]; then
+	if [ sgi = "$HOSTTYPE" -a "${skip_sgi+set}" != set -a "${NOCALLS+set}" != set]; then
 		XUSERFILESEARCHPATH="$HOME/.desktop-$host/%N:$HOME/.desktop-$host/0.0/%N:$XUSERFILESEARCHPATH"
 	fi
 
@@ -143,10 +142,10 @@ if [ ${ENV_SET+set} != set]; then
 
 
 	if [ sun4 = "$HOSTTYPE" ]; then
-		if [ ${XFILESEARCHPATH+set} == set]; then
-			  XFILESEARCHPATH="/usr/openwin/lib/locale/%L/%T/%N%S:/usr/openwin/lib/%T/%N%S"
+		if [ "${XFILESEARCHPATH+set}" != set]; then
+			XFILESEARCHPATH="/usr/openwin/lib/locale/%L/%T/%N%S:/usr/openwin/lib/%T/%N%S"
 		else
-	  		XFILESEARCHPATH="$XFILESEARCHPATH:/usr/openwin/lib/locale/%L/%T/%N%S:/usr/openwin/lib/%T/%N%S"
+			XFILESEARCHPATH="$XFILESEARCHPATH:/usr/openwin/lib/locale/%L/%T/%N%S:/usr/openwin/lib/%T/%N%S"
 		fi
 		export XFILESEARCHPATH
 	fi
@@ -159,9 +158,15 @@ fi
 
 set -o noclobber		# Don't overwrite files with redirection
 
-PS1="athena$ "
-HISTSIZE=20
-CDPATH=~
+if [ "${PS1+set}" = set ]; then
+	if [ sgi = "$HOSTTYPE" -a -t 0 ]; then
+		# Have no better way to do this at the moment.
+		stty sane intr ^C
+	fi
+	PS1="athena$ "
+	HISTSIZE=20
+	CDPATH=~
+fi
 
 #   alias for re-establishing authentication
 renew () { kinit $USER && fsid -a && zctl load /dev/null ; }
@@ -176,7 +181,7 @@ Mail () { more /usr/prototype_user/README.mail ; }
 #   aliases dealing with x window system
 xresize () { set -f; eval $(resize -c) || unset -f ; }
 
-if [ ${XSESSION+set} == set ]; then
+if [ "${XSESSION+set}" == set ]; then
 	if [ -z "$XSESSION" ]; then
 		logout () { exit && end_session ; }		# logout for X
 	else
@@ -189,15 +194,15 @@ fi
 add_flags=
 add () { eval "$(/bin/athena/attach -Padd -b "$add_flags "$@"")" ; }
 
-alias setup echo "setup is not supported in bash yet" 
+alias setup echo "setup is not supported in bash yet"
 
 
-# All of the bash initializing commands above can be overridden by using 
-# "unset" or "unalias" commands (or by changing things using "set" or 
+# All of the bash initializing commands above can be overridden by using
+# "unset" or "unalias" commands (or by changing things using "set" or
 # "alias" again) in your ~/.bashrc.mine file, which is sourced here.
 # ~/.bashsrc.mine is not sourced if the xlogin "Ignore your customizations"
 # option was selected to begin the session.
 
-if [ ${NOCALLS+set} != set -a -r ~/.bashrc.mine ]; then
+if [ "${NOCALLS+set}" != set -a -r ~/.bashrc.mine ]; then
 	. ~/.bashrc.mine
 fi
