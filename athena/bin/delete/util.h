@@ -1,7 +1,7 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.h,v $
  * $Author: jik $
- * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.h,v 1.4 1989-03-27 12:08:41 jik Exp $
+ * $Header: /afs/dev.mit.edu/source/repository/athena/bin/delete/util.h,v 1.5 1989-05-04 14:29:19 jik Exp $
  * 
  * This file is part of a package including delete, undelete,
  * lsdel, expunge and purge.  The software suite is meant as a
@@ -19,3 +19,10 @@ char *lastpart();
 char *reg_firstpart();
 char *strindex();
 char *strrindex();
+
+#define is_dotfile(A) ((*A == '.') && \
+		       ((*(A + 1) == '\0') || \
+			((*(A + 1) == '.') && \
+			 (*(A + 2) == '\0'))))
+
+#define is_deleted(A) ((*A == '.') && (*(A + 1) == '#'))
