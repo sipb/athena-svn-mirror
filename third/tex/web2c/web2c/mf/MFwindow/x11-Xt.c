@@ -6,11 +6,6 @@
 
 #ifdef X11WIN			/* almost whole file */
 
-/* See the kpathsea/INSTALL file for the purpose of these #define's.  */
-#ifndef NO_FOIL_X_WCHAR_T
-#define wchar_t foil_x_defining_wchar_t
-#define X_WCHAR
-#endif
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/Intrinsic.h>
