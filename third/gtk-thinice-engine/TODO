@@ -1,0 +1,14 @@
+3d stuff in progress thingie?
+tooltips?
+make the |~/ default button arrow optional
+
+2048 [GIMPNet] [xjjk/moron@user-38ldggf.dialup.mindspring.com] with thinice2, scrolling the handlebar up and down, the 
+          texture on it changes
+2048 [GIMPNet] [xjjk/moron@user-38ldggf.dialup.mindspring.com] ok can you tell why I don't do bug reports
+2048 [GIMPNet] [msg/xjjk] so the texture is static, you just see different parts of it..
+2049 [GIMPNet] [xjjk/moron@user-38ldggf.dialup.mindspring.com] yes
+2049 [GIMPNet] [msg/xjjk] ok.. hm.. I could look into that..
+2049 [GIMPNet] [xjjk/moron@user-38ldggf.dialup.mindspring.com] texture is static to the window, and the handlebar is 
+          letting you see different parts of it
+2049 [GIMPNet] [xjjk/moron@user-38ldggf.dialup.mindspring.com] thinice1, it was static to the handlebar and stayed the same
+
