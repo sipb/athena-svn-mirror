@@ -1,4 +1,4 @@
-/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/journal.c,v 1.4 1990-11-14 17:05:19 epeisach Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/journal.c,v 1.5 1991-01-23 13:37:13 epeisach Exp $ */
 /* $Source: /afs/dev.mit.edu/source/repository/athena/bin/lpr/quota/journal.c,v $ */
 /* $Author: epeisach $ */
 
@@ -30,7 +30,7 @@ static int dbfd = 0;
 char *malloc(), *realloc();
 off_t lseek();
 
-#define jpos(n) ((n) * sizeof(log_entity))
+#define jpos(n) (off_t) ((n) * sizeof(log_entity))
 int logger_journal_set_name(name)
 char *name;
 {
@@ -56,7 +56,8 @@ char *name;
     newent.last_q_time = 0;
     newent.quota_pos = 0;
 
-    if (write(dbfd, &newent, sizeof(log_header)) != sizeof(log_header)) {
+    if (write(dbfd, (char *) &newent, sizeof(log_header)) 
+	!= sizeof(log_header)) {
 	/* Failed write */
 	(void) close_database();
 	return -1;
@@ -270,7 +271,7 @@ Pointer qpos;
 	return -1; /* Failure 2 */
     }
 
-    (void) bcopy(&oldhead, &newhead, sizeof(log_header));
+    (void) bcopy((char *) &oldhead, (char *) &newhead, sizeof(log_header));
     if(qt) newhead.last_q_time = qt;
     if (qpos) newhead.quota_pos = qpos;
     newhead.num_ent++;
@@ -284,7 +285,7 @@ Pointer qpos;
 	    syslog(LOG_ERR, "Add entry - failure 3 %d", errno);
 	    return -1; /* Mode 3 failure */
 	}
-	(void) bcopy(old_ent, &new_ent, sizeof(log_entity));
+	(void) bcopy((char *) old_ent, (char *) &new_ent, sizeof(log_entity));
 	new_ent.next = num;
 	if(logger_journal_write_line(udb.last, &new_ent)) {
 	    UNPROTECT();
