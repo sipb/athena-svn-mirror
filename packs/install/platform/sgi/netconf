@@ -143,7 +143,7 @@ AIS_SWAPSIZE=${AIS_SWAPSIZE:-150}
 AIS_CACHESIZE=${AIS_CACHESIZE:-100}
 AIS_HOST=${AIS_HOST:-nobody}
 AIS_ADDR=${AIS_ADDR:-0.0.0.0}
-AIS_DOMAIN=${AIS_DOMAIN:-MIT.EDU}
+AIS_DOMAIN=${AIS_DOMAIN:-mit.edu}
 AIS_REPARTITION=${AIS_REPARTITION:-1}
 AIS_BOOTHOST=${AIS_BOOTHOST:-tae-kwon-leap}
 AIS_BOOTROOTDIR=${AIS_BOOTROOTDIR:-/var/boot}
@@ -312,18 +312,36 @@ syncvar routed off
 
 case ${AIS_MODE} in
     root|swap)
-	net=`echo ${AIS_ADDR} | awk -F. '{ print $1 "." $2 }'`
-	gateway=$net.0.1
-	broadcast=$net.255.255
-
+	# Get first component of host name.  If the host name is not
+	# fully qualified, append the domain name.
+	first=`echo ${AIS_HOST} | awk -F. '{ print $1 }'`
+	if [ "${AIS_HOST}" = "$first" ]; then
+		AIS_HOST=${AIS_HOST}.${AIS_DOMAIN}
+	fi
+	# Use netparams program w/ masks file if available,
+	# otherwise fall back to using old defaults.
+	if [ -r ${AIS_SRVD}/etc/athena/masks -a \
+	     -x ${AIS_SRVD}/etc/athena/netparams ]; then
+		set -- `${AIS_SRVD}/etc/athena/netparams  \
+		    -f ${AIS_SRVD}/etc/athena/masks "${AIS_ADDR}"`
+		netmask=$1
+		broadcast=$3
+		gateway=$4
+	else	
+		echo "Using default netmask/broadcast/gateway settings"
+		netmask=0xffff0000
+		net=`echo ${AIS_ADDR} | awk -F. '{ print $1 "." $2 }'`
+		broadcast=$net.255.255
+		gateway=$net.0.1
+	fi
 	put    /etc/sys_id ${AIS_HOST}
-	put    $config/ifconfig-1.options "netmask 0xffff0000"
+	put    $config/ifconfig-1.options "netmask $netmask"
 	append $config/ifconfig-1.options "broadcast $broadcast"
 	put    /etc/hosts "#"
 	append /etc/hosts "# Internet host table"
 	append /etc/hosts "#"
 	append /etc/hosts "127.0.0.1	localhost"
-	append /etc/hosts "${AIS_ADDR}	${AIS_HOST}.${AIS_DOMAIN} ${AIS_HOST}"
+	append /etc/hosts "${AIS_ADDR}	${AIS_HOST} ${first}"
 
 	cp ${AIS_LIB}/static-route.options \
 	    ${AIS_ROOT}/$config/static-route.options
