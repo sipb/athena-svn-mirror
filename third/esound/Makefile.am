@@ -16,6 +16,9 @@ bin_SCRIPTS = \
 EXTRA_SCRIPTS = esddsp
 
 EXTRA_DIST = \
+	esound.pc.in	\
+	esound.spec.in	\
+	esd-config.in	\
         esd.conf        \
 	esd.m4 		\
 	TIPS 		\
@@ -110,7 +113,7 @@ esdloop_SOURCES = \
 EXTRA_esdplay_SOURCES = \
 	esdplay.c
 
-LDADD = $(AUDIOFILE_LIBS) libesd.la -lm
+LDADD = libesd.la $(AUDIOFILE_LIBS) -lm
 
 LIBOBJS = @LIBOBJS@
 
@@ -140,7 +143,11 @@ dist-hook: doc esound.spec
 	cp $(SPEC_FILE) $(distdir)
 	test -d $(distdir)/docs || mkdir $(distdir)/docs 
 	cp $(srcdir)/docs/esound.sgml $(distdir)/docs
-	cp -r docs/esound $(distdir)/docs/html
+	cp -r $(srcdir)/docs/esound $(distdir)/docs/html
 	cp $(srcdir)/docs/esound.ps $(distdir)/docs
 
-CLEANFILES=esound.spec
+CLEANFILES=esound.spec esound.pc
+
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = esound.pc
+
