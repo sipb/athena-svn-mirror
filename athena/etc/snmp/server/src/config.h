@@ -1,9 +1,12 @@
 
 /*
- *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.h,v 2.1 1993-06-18 14:33:24 tom Exp $
- *  $Author: tom $
+ *  $Header: /afs/dev.mit.edu/source/repository/athena/etc/snmp/server/src/config.h,v 2.2 1997-02-28 01:42:00 jweiss Exp $
+ *  $Author: jweiss $
  *  $Locker:  $
  *  $Log: not supported by cvs2svn $
+ *  Revision 2.1  1993/06/18 14:33:24  tom
+ *  first cut at solaris port
+ *
  * Revision 2.0  92/04/22  01:44:00  tom
  * release 7.4
  * 	changed path names to conform to 7.3 reorg and added
@@ -101,7 +104,7 @@
 #define LOGIN_FILE       "/etc/utmp"
 #define VERSION_FILE     "/etc/athena/version"
 #define SYSPACK_FILE     "/srvd/.rvdinfo"
-#define SRV_FILE         "/site/server/.services"
+#define SRV_FILE         "/var/server/.services"
 #define DNS_STAT_FILE    "/usr/tmp/named.stats"
 #define USER             "daemon"
 #define WEATHER_TTY      "/dev/weather"
