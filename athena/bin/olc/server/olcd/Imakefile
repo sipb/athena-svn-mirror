@@ -1,6 +1,6 @@
 /*
  * $Source: /afs/dev.mit.edu/source/repository/athena/bin/olc/server/olcd/Imakefile,v $
- * $Id: Imakefile,v 1.6 1990-03-01 18:22:33 vanharen Exp $
+ * $Id: Imakefile,v 1.7 1990-07-16 10:05:44 vanharen Exp $
  */
 
 /*#define UseCPlusPlus*/
@@ -33,6 +33,10 @@ OBJS=	backup.o data_utils.o db.o io.o log.o olcd.o \
 	data.o notify.o utils.o list.o acl_files.o \
 	requests_olc.o requests_admin.o syslog.o statistics.o
 
+L_SRCS=	lumberjack.c
+
+L_OBJS= lumberjack.o
+
 LOCAL_LIBRARIES=$(COMMONLIB)
 DEFINES=-DLOG -DSYSLOG
 DEPLIBS=$(LOCAL_LIBRARIES)
@@ -45,8 +49,10 @@ INCLUDES= -I.
 
 NormalProgramTarget(olcd,$(OBJS),$(LOCAL_LIBRARIES),$(LOCAL_LIBRARIES),$(SYS_LIBRARIES))
 
+NormalProgramTarget(lumberjack,$(L_OBJS),,,)
+
 DependTarget()
 LintTarget()
 TagsTarget()
 
-AllTarget(olcd)
+AllTarget(olcd lumberjack)
