@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.4 1997-03-28 10:44:06 ghudson Exp $
+# $Id: syncconf.sh,v 1.5 1997-07-22 19:34:20 ghudson Exp $
 
 config=/etc/config
 setconfig="/sbin/chkconfig -f"
@@ -227,7 +227,7 @@ handle()
 		append /etc/hosts "# Internet host table"
 		append /etc/hosts "#"
 		append /etc/hosts "127.0.0.1  localhost"
-		append /etc/hosts "$ADDR  $HOST.MIT.EDU $HOST"
+		append /etc/hosts "$ADDR  $HOST.mit.edu $HOST"
 		;;
 
 	*)

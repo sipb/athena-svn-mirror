@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: syncconf.sh,v 1.5 1997-07-08 18:44:23 ghudson Exp $
+# $Id: syncconf.sh,v 1.6 1997-07-22 19:34:06 ghudson Exp $
 
 rcconf=/etc/athena/rc.conf
 rcsync=/var/athena/rc.conf.sync
@@ -108,7 +108,7 @@ handle()
 		append	/etc/inet/hosts "# Internet host table"
 		append	/etc/inet/hosts "#"
 		append	/etc/inet/hosts "127.0.0.1  localhost loghost"
-		append	/etc/inet/hosts "$ADDR  $HOST.MIT.EDU $HOST"
+		append	/etc/inet/hosts "$ADDR  $HOST.mit.edu $HOST"
 
 		# Hostname configuration happens prior to rc scripts on
 		# Solaris.
