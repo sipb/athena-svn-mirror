@@ -10,16 +10,23 @@
  *	For copying and distribution information, see the file
  *	"mit-copyright.h". 
  */
-/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkAuth.c,v 1.8 1988-06-17 17:17:57 jtkohl Exp $ */
+/* $Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkAuth.c,v 1.9 1988-06-20 15:14:13 jtkohl Exp $ */
 
 #ifndef lint
-static char rcsid_ZCheckAuthentication_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkAuth.c,v 1.8 1988-06-17 17:17:57 jtkohl Exp $";
+static char rcsid_ZCheckAuthentication_c[] = "$Header: /afs/dev.mit.edu/source/repository/athena/lib/zephyr/lib/ZCkAuth.c,v 1.9 1988-06-20 15:14:13 jtkohl Exp $";
 #endif lint
 
 #include <zephyr/mit-copyright.h>
 
 #include <zephyr/zephyr_internal.h>
 
+/* Check authentication of the notice.
+   If it looks authentic but fails the Kerberos check, return -1.
+   If it looks authentic and passes the Kerberos check, return 1.
+   If it doesn't look authentic, return 0
+  
+   When not using Kerberos, return (looks-authentic-p)
+ */
 int ZCheckAuthentication(notice, from)
     ZNotice_t *notice;
     struct sockaddr_in *from;
@@ -55,7 +62,7 @@ int ZCheckAuthentication(notice, from)
 			return (0);
 		return(1);
 	} else
-		return (0);		/* didn't decode */
+		return (-1);		/* didn't decode correctly */
     }
 
     if (result = krb_get_cred(SERVER_SERVICE, SERVER_INSTANCE, 
@@ -67,8 +74,10 @@ int ZCheckAuthentication(notice, from)
 					   strlen(notice->z_default_format)+1-
 					   notice->z_packet, 0, cred.session);
 
-    return (our_checksum == notice->z_checksum);
+    /* if mismatched checksum, then the packet was corrupted */
+    return ((our_checksum == notice->z_checksum) ? 0 : -1);
+
 #else
-    return (notice->z_auth);
+    return (notice->z_auth ? 1 : 0);
 #endif
 } 
