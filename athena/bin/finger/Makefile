@@ -3,9 +3,15 @@
 #	MIT Project Athena
 #
 #	$Source: /afs/dev.mit.edu/source/repository/athena/bin/finger/Makefile,v $
-#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/Makefile,v 1.4 1987-08-21 18:30:58 ambar Exp $
+#	$Header: /afs/dev.mit.edu/source/repository/athena/bin/finger/Makefile,v 1.5 1987-08-27 16:56:33 ambar Exp $
 #	$Author: ambar $
 #	$Log: not supported by cvs2svn $
+# Revision 1.5  87/08/27  16:41:44  ambar
+# fixed clean target
+# 
+# Revision 1.4  87/08/21  18:30:58  ambar
+# typo fix
+# 
 # Revision 1.3  87/08/21  18:28:18  ambar
 # changed the name of the hesiod file.
 # 
@@ -43,7 +49,7 @@ lint:
 	lint -I../../include *.c
 
 clean:	
-	rm -f *.o *~
+	rm -f *.o *~ *.BAK
 	rm -f finger
 
 install:	finger
